@@ -8,10 +8,14 @@ module Gitlab
 
         attr_reader :path
 
-        def initialize(path)
+        def initialize(path, allowed_path:)
           @path = path
-          @last_array = nil
           @keys = Set.new
+
+          # This is legacy writer, to be used in transition
+          # period before `.ndjson`,
+          # we strong validate what is being written
+          @allowed_path = allowed_path
 
           mkdir_p(File.dirname(@path))
           file.write('{}')
@@ -22,11 +26,43 @@ module Gitlab
           @file = nil
         end
 
-        def set(hash)
+        def write_attributes(exportable_path, hash)
+          unless exportable_path == @allowed_path
+            raise ArgumentError, "Invalid #{exportable_path}"
+          end
+
           hash.each do |key, value|
             write(key, value)
           end
         end
+
+        def write_relation(exportable_path, key, value)
+          unless exportable_path == @allowed_path
+            raise ArgumentError, "Invalid #{exportable_path}"
+          end
+
+          write(key, value)
+        end
+
+        def write_relation_array(exportable_path, key, items)
+          unless exportable_path == @allowed_path
+            raise ArgumentError, "Invalid #{exportable_path}"
+          end
+
+          write(key, [])
+
+          # rewind by two bytes, to overwrite ']}'
+          file.pos = file.size - 2
+
+          items.each_with_index do |item, idx|
+            file.write(',') if idx > 0
+            file.write(item.to_json)
+          end
+
+          file.write(']}')
+        end
+
+        private
 
         def write(key, value)
           raise ArgumentError, "key '#{key}' already written" if @keys.include?(key)
@@ -41,28 +77,7 @@ module Gitlab
           file.write('}')
 
           @keys.add(key)
-          @last_array = nil
-          @last_array_count = nil
         end
-
-        def append(key, value)
-          unless @last_array == key
-            write(key, [])
-
-            @last_array = key
-            @last_array_count = 0
-          end
-
-          # rewind by two bytes, to overwrite ']}'
-          file.pos = file.size - 2
-
-          file.write(',') if @last_array_count > 0
-          file.write(value.to_json)
-          file.write(']}')
-          @last_array_count += 1
-        end
-
-        private
 
         def file
           @file ||= File.open(@path, "wb")

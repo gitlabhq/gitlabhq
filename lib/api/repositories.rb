@@ -95,6 +95,8 @@ module API
           render_api_error!({ error: ::Gitlab::RateLimitHelpers::ARCHIVE_RATE_LIMIT_REACHED_MESSAGE }, 429)
         end
 
+        not_acceptable! if Gitlab::HotlinkingDetector.intercept_hotlinking?(request)
+
         send_git_archive user_project.repository, ref: params[:sha], format: params[:format], append_sha: true
       rescue
         not_found!('File')

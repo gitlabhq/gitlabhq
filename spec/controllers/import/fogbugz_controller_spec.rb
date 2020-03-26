@@ -25,6 +25,35 @@ describe Import::FogbugzController do
       expect(session[:fogbugz_uri]).to eq(uri)
       expect(response).to redirect_to(new_user_map_import_fogbugz_path)
     end
+
+    context 'verify url' do
+      shared_examples 'denies local request' do |reason|
+        it 'does not allow requests' do
+          post :callback, params: { uri: uri, email: 'test@example.com', password: 'mypassword' }
+
+          expect(response).to redirect_to(new_import_fogbugz_url)
+          expect(flash[:alert]).to eq("Specified URL cannot be used: \"#{reason}\"")
+        end
+      end
+
+      context 'when host is localhost' do
+        let(:uri) { 'https://localhost:3000' }
+
+        include_examples 'denies local request', 'Requests to localhost are not allowed'
+      end
+
+      context 'when host is on local network' do
+        let(:uri) { 'http://192.168.0.1/' }
+
+        include_examples 'denies local request', 'Requests to the local network are not allowed'
+      end
+
+      context 'when host is ftp protocol' do
+        let(:uri) { 'ftp://testing' }
+
+        include_examples 'denies local request', 'Only allowed schemes are http, https'
+      end
+    end
   end
 
   describe 'POST #create_user_map' do

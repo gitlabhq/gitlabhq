@@ -13,9 +13,9 @@ describe Notify do
 
   let(:current_user_sanitized) { 'www_example_com' }
 
-  let_it_be(:user) { create(:user) }
-  let_it_be(:current_user) { create(:user, email: "current@email.com", name: 'www.example.com') }
-  let_it_be(:assignee) { create(:user, email: 'assignee@example.com', name: 'John Doe') }
+  let_it_be(:user, reload: true) { create(:user) }
+  let_it_be(:current_user, reload: true) { create(:user, email: "current@email.com", name: 'www.example.com') }
+  let_it_be(:assignee, reload: true) { create(:user, email: 'assignee@example.com', name: 'John Doe') }
 
   let_it_be(:merge_request) do
     create(:merge_request, source_project: project,

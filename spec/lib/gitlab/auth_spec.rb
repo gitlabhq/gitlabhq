@@ -164,6 +164,12 @@ describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
 
           expect(subject).to eq(Gitlab::Auth::Result.new(build.user, build.project, :build, described_class.build_authentication_abilities))
         end
+
+        it 'fails with blocked user token' do
+          build.update(user: create(:user, :blocked))
+
+          expect(subject).to eq(Gitlab::Auth::Result.new(nil, nil, nil, nil))
+        end
       end
 
       (HasStatus::AVAILABLE_STATUSES - ['running']).each do |build_status|
@@ -259,6 +265,15 @@ describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
 
         gl_auth.find_for_git_client("oauth2", token_w_api_scope.token, project: nil, ip: 'ip')
       end
+
+      context 'blocked user' do
+        let(:user) { create(:user, :blocked) }
+
+        it 'fails' do
+          expect(gl_auth.find_for_git_client("oauth2", token_w_api_scope.token, project: nil, ip: 'ip'))
+            .to eq(Gitlab::Auth::Result.new(nil, nil, nil, nil))
+        end
+      end
     end
 
     context 'while using personal access tokens as passwords' do
@@ -307,9 +322,35 @@ describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
       it 'fails if password is nil' do
         expect_results_with_abilities(nil, nil, false)
       end
+
+      context 'when user is blocked' do
+        let(:user) { create(:user, :blocked) }
+        let(:personal_access_token) { create(:personal_access_token, scopes: ['read_registry'], user: user) }
+
+        before do
+          stub_container_registry_config(enabled: true)
+        end
+
+        it 'fails if user is blocked' do
+          expect(gl_auth.find_for_git_client('', personal_access_token.token, project: nil, ip: 'ip'))
+          .to eq(Gitlab::Auth::Result.new(nil, nil, nil, nil))
+        end
+      end
     end
 
     context 'while using regular user and password' do
+      it 'fails for a blocked user' do
+        user = create(
+          :user,
+          :blocked,
+          username: 'normal_user',
+          password: 'my-secret'
+        )
+
+        expect(gl_auth.find_for_git_client(user.username, user.password, project: nil, ip: 'ip'))
+          .to eq(Gitlab::Auth::Result.new(nil, nil, nil, nil))
+      end
+
       it 'goes through lfs authentication' do
         user = create(
           :user,

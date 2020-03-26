@@ -14,8 +14,9 @@ module Gitlab
           end
         end
 
-        def initialize(exportable, relations_schema, json_writer)
+        def initialize(exportable, relations_schema, json_writer, exportable_path:)
           @exportable = exportable
+          @exportable_path = exportable_path
           @relations_schema = relations_schema
           @json_writer = json_writer
         end
@@ -35,7 +36,7 @@ module Gitlab
         def serialize_root
           attributes = exportable.as_json(
             relations_schema.merge(include: nil, preloads: nil))
-          json_writer.set(attributes)
+          json_writer.write_attributes(@exportable_path, attributes)
         end
 
         def serialize_relation(definition)
@@ -47,16 +48,28 @@ module Gitlab
           record = exportable.public_send(key) # rubocop: disable GitlabSecurity/PublicSend
           if record.is_a?(ActiveRecord::Relation)
             serialize_many_relations(key, record, options)
+          elsif record.respond_to?(:each) # this is to support `project_members` that return an Array
+            serialize_many_each(key, record, options)
           else
             serialize_single_relation(key, record, options)
           end
         end
 
         def serialize_many_relations(key, records, options)
-          key_preloads = preloads&.dig(key)
-          records = records.preload(key_preloads) if key_preloads
+          enumerator = Enumerator.new do |items|
+            key_preloads = preloads&.dig(key)
+            records = records.preload(key_preloads) if key_preloads
 
-          records.find_each(batch_size: BATCH_SIZE) do |record|
+            records.find_each(batch_size: BATCH_SIZE) do |record|
+              items << Raw.new(record.to_json(options))
+            end
+          end
+
+          json_writer.write_relation_array(@exportable_path, key, enumerator)
+        end
+
+        def serialize_many_each(key, records, options)
+          records.each do |record|
             json = Raw.new(record.to_json(options))
 
             json_writer.append(key, json)
@@ -66,7 +79,7 @@ module Gitlab
         def serialize_single_relation(key, record, options)
           json = Raw.new(record.to_json(options))
 
-          json_writer.write(key, json)
+          json_writer.write_relation(@exportable_path, key, json)
         end
 
         def includes

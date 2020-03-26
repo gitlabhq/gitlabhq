@@ -4,12 +4,13 @@ module Gitlab
   module ImportExport
     module Group
       class TreeRestorer
+        include Gitlab::Utils::StrongMemoize
+
         attr_reader :user
         attr_reader :shared
         attr_reader :group
 
         def initialize(user:, shared:, group:, group_hash:)
-          @path = File.join(shared.export_path, 'group.json')
           @user = user
           @shared = shared
           @group = group
@@ -17,17 +18,14 @@ module Gitlab
         end
 
         def restore
-          @relation_reader ||=
-            if @group_hash.present?
-              ImportExport::JSON::LegacyReader::User.new(@group_hash, reader.group_relation_names)
-            else
-              ImportExport::JSON::LegacyReader::File.new(@path, reader.group_relation_names)
-            end
+          @group_attributes = relation_reader.consume_attributes(nil)
+          @group_members = relation_reader.consume_relation(nil, 'members')
 
-          @group_members = @relation_reader.consume_relation('members')
-          @children = @relation_reader.consume_attribute('children')
-          @relation_reader.consume_attribute('name')
-          @relation_reader.consume_attribute('path')
+          # We need to remove `name` and `path` as we did consume it in previous pass
+          @group_attributes.delete('name')
+          @group_attributes.delete('path')
+
+          @children = @group_attributes.delete('children')
 
           if members_mapper.map && restorer.restore
             @children&.each do |group_hash|
@@ -53,16 +51,32 @@ module Gitlab
 
         private
 
+        def relation_reader
+          strong_memoize(:relation_reader) do
+            if @group_hash.present?
+              ImportExport::JSON::LegacyReader::Hash.new(
+                @group_hash,
+                relation_names: reader.group_relation_names)
+            else
+              ImportExport::JSON::LegacyReader::File.new(
+                File.join(shared.export_path, 'group.json'),
+                relation_names: reader.group_relation_names)
+            end
+          end
+        end
+
         def restorer
           @relation_tree_restorer ||= RelationTreeRestorer.new(
-            user:             @user,
-            shared:           @shared,
-            importable:       @group,
-            relation_reader:  @relation_reader,
-            members_mapper:   members_mapper,
-            object_builder:   object_builder,
-            relation_factory: relation_factory,
-            reader:           reader
+            user:                  @user,
+            shared:                @shared,
+            relation_reader:       relation_reader,
+            members_mapper:        members_mapper,
+            object_builder:        object_builder,
+            relation_factory:      relation_factory,
+            reader:                reader,
+            importable:            @group,
+            importable_attributes: @group_attributes,
+            importable_path:       nil
           )
         end
 
@@ -88,7 +102,11 @@ module Gitlab
         end
 
         def members_mapper
-          @members_mapper ||= Gitlab::ImportExport::MembersMapper.new(exported_members: @group_members, user: @user, importable: @group)
+          @members_mapper ||= Gitlab::ImportExport::MembersMapper.new(
+            exported_members: @group_members,
+            user: @user,
+            importable: @group
+          )
         end
 
         def relation_factory

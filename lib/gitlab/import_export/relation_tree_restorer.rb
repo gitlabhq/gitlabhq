@@ -11,7 +11,15 @@ module Gitlab
       attr_reader :importable
       attr_reader :relation_reader
 
-      def initialize(user:, shared:, importable:, relation_reader:, members_mapper:, object_builder:, relation_factory:, reader:)
+      def initialize( # rubocop:disable Metrics/ParameterLists
+        user:, shared:, relation_reader:,
+        members_mapper:, object_builder:,
+        relation_factory:,
+        reader:,
+        importable:,
+        importable_attributes:,
+        importable_path:
+      )
         @user = user
         @shared = shared
         @importable = importable
@@ -20,6 +28,8 @@ module Gitlab
         @object_builder = object_builder
         @relation_factory = relation_factory
         @reader = reader
+        @importable_attributes = importable_attributes
+        @importable_path = importable_path
       end
 
       def restore
@@ -57,7 +67,7 @@ module Gitlab
       end
 
       def process_relation!(relation_key, relation_definition)
-        @relation_reader.consume_relation(relation_key) do |data_hash, relation_index|
+        @relation_reader.consume_relation(@importable_path, relation_key) do |data_hash, relation_index|
           process_relation_item!(relation_key, relation_definition, relation_index, data_hash)
         end
       end
@@ -94,7 +104,7 @@ module Gitlab
       end
 
       def update_params!
-        params = @relation_reader.root_attributes(relations.keys)
+        params = @importable_attributes.except(*relations.keys.map(&:to_s))
         params = params.merge(present_override_params)
 
         # Cleaning all imported and overridden params

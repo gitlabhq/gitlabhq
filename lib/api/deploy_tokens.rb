@@ -53,10 +53,10 @@ module API
 
       params do
         requires :name, type: String, desc: "New deploy token's name"
-        requires :expires_at, type: DateTime, desc: 'Expiration date for the deploy token. Does not expire if no value is provided.'
-        requires :username, type: String, desc: 'Username for deploy token. Default is `gitlab+deploy-token-{n}`'
         requires :scopes, type: Array[String], values: ::DeployToken::AVAILABLE_SCOPES.map(&:to_s),
           desc: 'Indicates the deploy token scopes. Must be at least one of "read_repository" or "read_registry".'
+        optional :expires_at, type: DateTime, desc: 'Expiration date for the deploy token. Does not expire if no value is provided.'
+        optional :username, type: String, desc: 'Username for deploy token. Default is `gitlab+deploy-token-{n}`'
       end
       desc 'Create a project deploy token' do
         detail 'This feature was introduced in GitLab 12.9'
@@ -114,10 +114,10 @@ module API
 
       params do
         requires :name, type: String, desc: 'The name of the deploy token'
-        requires :expires_at, type: DateTime, desc: 'Expiration date for the deploy token. Does not expire if no value is provided.'
-        requires :username, type: String, desc: 'Username for deploy token. Default is `gitlab+deploy-token-{n}`'
         requires :scopes, type: Array[String], values: ::DeployToken::AVAILABLE_SCOPES.map(&:to_s),
           desc: 'Indicates the deploy token scopes. Must be at least one of "read_repository" or "read_registry".'
+        optional :expires_at, type: DateTime, desc: 'Expiration date for the deploy token. Does not expire if no value is provided.'
+        optional :username, type: String, desc: 'Username for deploy token. Default is `gitlab+deploy-token-{n}`'
       end
       desc 'Create a group deploy token' do
         detail 'This feature was introduced in GitLab 12.9'

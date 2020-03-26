@@ -14,23 +14,24 @@ describe Gitlab::ImportExport::RelationTreeRestorer do
 
   let(:user) { create(:user) }
   let(:shared) { Gitlab::ImportExport::Shared.new(importable) }
-  let(:members_mapper) { Gitlab::ImportExport::MembersMapper.new(exported_members: {}, user: user, importable: importable) }
+  let(:attributes) { {} }
 
-  let(:importable_hash) do
-    json = IO.read(path)
-    ActiveSupport::JSON.decode(json)
+  let(:members_mapper) do
+    Gitlab::ImportExport::MembersMapper.new(exported_members: {}, user: user, importable: importable)
   end
 
   let(:relation_tree_restorer) do
     described_class.new(
-      user:             user,
-      shared:           shared,
-      relation_reader:  relation_reader,
-      importable:       importable,
-      object_builder:   object_builder,
-      members_mapper:   members_mapper,
-      relation_factory: relation_factory,
-      reader:           reader
+      user:                  user,
+      shared:                shared,
+      relation_reader:       relation_reader,
+      object_builder:        object_builder,
+      members_mapper:        members_mapper,
+      relation_factory:      relation_factory,
+      reader:                reader,
+      importable:            importable,
+      importable_path:       nil,
+      importable_attributes: attributes
     )
   end
 
@@ -100,7 +101,14 @@ describe Gitlab::ImportExport::RelationTreeRestorer do
     let(:reader) { Gitlab::ImportExport::Reader.new(shared: shared) }
 
     context 'using legacy reader' do
-      let(:relation_reader) { Gitlab::ImportExport::JSON::LegacyReader::File.new(path, reader.project_relation_names) }
+      let(:relation_reader) do
+        Gitlab::ImportExport::JSON::LegacyReader::File.new(
+          path,
+          relation_names: reader.project_relation_names
+        )
+      end
+
+      let(:attributes) { relation_reader.consume_attributes(nil) }
 
       it_behaves_like 'import project successfully'
 
@@ -119,7 +127,7 @@ describe Gitlab::ImportExport::RelationTreeRestorer do
     let(:importable) { create(:group, parent: group) }
     let(:object_builder) { Gitlab::ImportExport::Group::ObjectBuilder }
     let(:relation_factory) { Gitlab::ImportExport::Group::RelationFactory }
-    let(:relation_reader) { Gitlab::ImportExport::JSON::LegacyReader::File.new(path, reader.group_relation_names) }
+    let(:relation_reader) { Gitlab::ImportExport::JSON::LegacyReader::File.new(path, relation_names: reader.group_relation_names) }
     let(:reader) do
       Gitlab::ImportExport::Reader.new(
         shared: shared,

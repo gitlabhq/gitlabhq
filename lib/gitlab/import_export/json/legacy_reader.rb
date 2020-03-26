@@ -5,19 +5,25 @@ module Gitlab
     module JSON
       class LegacyReader
         class File < LegacyReader
-          def initialize(path, relation_names)
+          include Gitlab::Utils::StrongMemoize
+
+          def initialize(path, relation_names:, allowed_path: nil)
             @path = path
-            super(relation_names)
+            super(
+              relation_names: relation_names,
+              allowed_path: allowed_path)
           end
 
-          def valid?
+          def exist?
             ::File.exist?(@path)
           end
 
-          private
+          protected
 
           def tree_hash
-            @tree_hash ||= read_hash
+            strong_memoize(:tree_hash) do
+              read_hash
+            end
           end
 
           def read_hash
@@ -28,13 +34,15 @@ module Gitlab
           end
         end
 
-        class User < LegacyReader
-          def initialize(tree_hash, relation_names)
+        class Hash < LegacyReader
+          def initialize(tree_hash, relation_names:, allowed_path: nil)
             @tree_hash = tree_hash
-            super(relation_names)
+            super(
+              relation_names: relation_names,
+              allowed_path: allowed_path)
           end
 
-          def valid?
+          def exist?
             @tree_hash.present?
           end
 
@@ -43,11 +51,16 @@ module Gitlab
           attr_reader :tree_hash
         end
 
-        def initialize(relation_names)
+        def initialize(relation_names:, allowed_path:)
           @relation_names = relation_names.map(&:to_s)
+
+          # This is legacy reader, to be used in transition
+          # period before `.ndjson`,
+          # we strong validate what is being readed
+          @allowed_path = allowed_path
         end
 
-        def valid?
+        def exist?
           raise NotImplementedError
         end
 
@@ -55,15 +68,22 @@ module Gitlab
           true
         end
 
-        def root_attributes(excluded_attributes = [])
-          attributes.except(*excluded_attributes.map(&:to_s))
+        def consume_attributes(importable_path)
+          unless importable_path == @allowed_path
+            raise ArgumentError, "Invalid #{importable_path} passed to `consume_attributes`. Use #{@allowed_path} instead."
+          end
+
+          attributes
         end
 
-        def consume_relation(key)
+        def consume_relation(importable_path, key)
+          unless importable_path == @allowed_path
+            raise ArgumentError, "Invalid #{importable_name} passed to `consume_relation`. Use #{@allowed_path} instead."
+          end
+
           value = relations.delete(key)
 
           return value unless block_given?
-
           return if value.nil?
 
           if value.is_a?(Array)
@@ -75,17 +95,13 @@ module Gitlab
           end
         end
 
-        def consume_attribute(key)
-          attributes.delete(key)
-        end
-
         def sort_ci_pipelines_by_id
           relations['ci_pipelines']&.sort_by! { |hash| hash['id'] }
         end
 
         private
 
-        attr_reader :relation_names
+        attr_reader :relation_names, :allowed_path
 
         def tree_hash
           raise NotImplementedError

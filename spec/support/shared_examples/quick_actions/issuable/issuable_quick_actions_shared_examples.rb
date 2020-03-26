@@ -224,7 +224,7 @@ RSpec.shared_examples 'issuable quick actions' do
   end
 
   context 'when user can update issuable' do
-    set(:developer) { create(:user) }
+    let_it_be(:developer) { create(:user) }
     let(:note_author) { developer }
 
     before do
@@ -251,7 +251,7 @@ RSpec.shared_examples 'issuable quick actions' do
   end
 
   context 'when user cannot update issuable' do
-    set(:non_member) { create(:user) }
+    let_it_be(:non_member) { create(:user) }
     let(:note_author) { non_member }
 
     it 'applies commands that user can execute' do

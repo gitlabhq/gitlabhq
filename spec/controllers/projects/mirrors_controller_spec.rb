@@ -5,6 +5,72 @@ require 'spec_helper'
 describe Projects::MirrorsController do
   include ReactiveCachingHelpers
 
+  shared_examples 'only admin is allowed when mirroring is disabled' do
+    let(:subject_action) { raise 'subject_action is required' }
+    let(:user) { project.owner }
+    let(:project_settings_path) { project_settings_repository_path(project, anchor: 'js-push-remote-settings') }
+
+    context 'when project mirroring is enabled' do
+      it 'allows requests from a maintainer' do
+        sign_in(user)
+
+        subject_action
+        expect(response).to redirect_to(project_settings_path)
+      end
+
+      it 'allows requests from an admin user' do
+        user.update!(admin: true)
+        sign_in(user)
+
+        subject_action
+        expect(response).to redirect_to(project_settings_path)
+      end
+    end
+
+    context 'when project mirroring is disabled' do
+      before do
+        stub_application_setting(mirror_available: false)
+      end
+
+      it 'disallows requests from a maintainer' do
+        sign_in(user)
+
+        subject_action
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      it 'allows requests from an admin user' do
+        user.update!(admin: true)
+        sign_in(user)
+
+        subject_action
+        expect(response).to redirect_to(project_settings_path)
+      end
+    end
+  end
+
+  describe 'Access control' do
+    let(:project) { create(:project, :repository) }
+
+    describe '#update' do
+      include_examples 'only admin is allowed when mirroring is disabled' do
+        let(:subject_action) do
+          do_put(project, remote_mirrors_attributes: { '0' => { 'enabled' => 1, 'url' => 'http://foo.com' } })
+        end
+      end
+    end
+
+    describe '#update_now' do
+      include_examples 'only admin is allowed when mirroring is disabled' do
+        let(:options) { { namespace_id: project.namespace, project_id: project } }
+
+        let(:subject_action) do
+          get :update_now, params: options.merge(sync_remote: true)
+        end
+      end
+    end
+  end
+
   describe 'setting up a remote mirror' do
     let_it_be(:project) { create(:project, :repository) }
 

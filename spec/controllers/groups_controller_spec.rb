@@ -258,6 +258,18 @@ describe GroupsController do
         end
       end
     end
+
+    context "malicious group name" do
+      subject { post :create, params: { group: { name: "<script>alert('Mayday!');</script>", path: "invalid_group_url" } } }
+
+      before do
+        sign_in(user)
+      end
+
+      it { expect { subject }.not_to change { Group.count } }
+
+      it { expect(subject).to render_template(:new) }
+    end
   end
 
   describe 'GET #index' do
@@ -835,6 +847,16 @@ describe GroupsController do
           expect do
             put :update, params: { id: group.to_param, group: { name: 'world' } }
           end.to change { group.reload.name }
+        end
+
+        context "malicious group name" do
+          subject { put :update, params: { id: group.to_param, group: { name: "<script>alert('Attack!');</script>" } } }
+
+          it { is_expected.to render_template(:edit) }
+
+          it 'does not update name' do
+            expect { subject }.not_to change { group.reload.name }
+          end
         end
       end
 

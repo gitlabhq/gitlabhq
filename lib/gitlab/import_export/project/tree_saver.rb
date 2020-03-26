@@ -15,10 +15,17 @@ module Gitlab
         end
 
         def save
-          json_writer = ImportExport::JSON::LegacyWriter.new(@full_path)
+          json_writer = ImportExport::JSON::LegacyWriter.new(
+            @full_path,
+            allowed_path: "project"
+          )
 
-          serializer = ImportExport::JSON::StreamingSerializer.new(exportable, reader.project_tree, json_writer)
-          serializer.execute
+          ImportExport::JSON::StreamingSerializer.new(
+            exportable,
+            reader.project_tree,
+            json_writer,
+            exportable_path: "project"
+          ).execute
 
           true
         rescue => e

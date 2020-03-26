@@ -68,6 +68,21 @@ module PrometheusHelpers
       })
   end
 
+  def stub_prometheus_query_error(url, error_message = 'error', body: {}, headers: {})
+    response = {
+      status: 'error',
+      errorType: 'bad_data',
+      error: error_message
+    }.merge(body)
+
+    WebMock.stub_request(:get, url)
+      .to_return({
+        status: 400,
+        headers: { 'Content-Type' => 'application/json' }.merge(headers),
+        body: response.to_json
+      })
+  end
+
   def stub_prometheus_request_with_exception(url, exception_type)
     WebMock.stub_request(:get, url).to_raise(exception_type)
   end

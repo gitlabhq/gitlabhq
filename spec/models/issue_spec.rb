@@ -529,88 +529,146 @@ describe Issue do
   end
 
   describe '#visible_to_user?' do
+    let(:project) { build(:project) }
+    let(:issue)   { build(:issue, project: project) }
+    let(:user)    { create(:user) }
+
+    subject { issue.visible_to_user?(user) }
+
+    context 'with a project' do
+      it 'returns false when feature is disabled' do
+        project.project_feature.update_attribute(:issues_access_level, ProjectFeature::DISABLED)
+
+        is_expected.to eq(false)
+      end
+
+      it 'returns false when restricted for members' do
+        project.project_feature.update_attribute(:issues_access_level, ProjectFeature::PRIVATE)
+
+        is_expected.to eq(false)
+      end
+    end
+
     context 'without a user' do
-      let(:issue) { build(:issue) }
+      let(:user) { nil }
 
       it 'returns true when the issue is publicly visible' do
         expect(issue).to receive(:publicly_visible?).and_return(true)
 
-        expect(issue.visible_to_user?).to eq(true)
+        is_expected.to eq(true)
       end
 
       it 'returns false when the issue is not publicly visible' do
         expect(issue).to receive(:publicly_visible?).and_return(false)
 
-        expect(issue.visible_to_user?).to eq(false)
+        is_expected.to eq(false)
       end
     end
 
     context 'with a user' do
-      let(:user) { create(:user) }
-      let(:issue) { build(:issue) }
-
-      it 'returns true when the issue is readable' do
-        expect(issue).to receive(:readable_by?).with(user).and_return(true)
-
-        expect(issue.visible_to_user?(user)).to eq(true)
+      shared_examples 'issue readable by user' do
+        it { is_expected.to eq(true) }
       end
 
-      it 'returns false when the issue is not readable' do
-        expect(issue).to receive(:readable_by?).with(user).and_return(false)
-
-        expect(issue.visible_to_user?(user)).to eq(false)
+      shared_examples 'issue not readable by user' do
+        it { is_expected.to eq(false) }
       end
 
-      it 'returns false when feature is disabled' do
-        expect(issue).not_to receive(:readable_by?)
+      shared_examples 'confidential issue readable by user' do
+        specify do
+          issue.confidential = true
 
-        issue.project.project_feature.update_attribute(:issues_access_level, ProjectFeature::DISABLED)
-
-        expect(issue.visible_to_user?(user)).to eq(false)
-      end
-
-      it 'returns false when restricted for members' do
-        expect(issue).not_to receive(:readable_by?)
-
-        issue.project.project_feature.update_attribute(:issues_access_level, ProjectFeature::PRIVATE)
-
-        expect(issue.visible_to_user?(user)).to eq(false)
-      end
-    end
-
-    describe 'with a regular user that is not a team member' do
-      let(:user) { create(:user) }
-
-      context 'using a public project' do
-        let(:project) { create(:project, :public) }
-
-        it 'returns true for a regular issue' do
-          issue = build(:issue, project: project)
-
-          expect(issue.visible_to_user?(user)).to eq(true)
-        end
-
-        it 'returns false for a confidential issue' do
-          issue = build(:issue, project: project, confidential: true)
-
-          expect(issue.visible_to_user?(user)).to eq(false)
+          is_expected.to eq(true)
         end
       end
 
-      context 'using an internal project' do
-        let(:project) { create(:project, :internal) }
+      shared_examples 'confidential issue not readable by user' do
+        specify do
+          issue.confidential = true
 
-        context 'using an internal user' do
-          it 'returns true for a regular issue' do
-            issue = build(:issue, project: project)
+          is_expected.to eq(false)
+        end
+      end
 
-            expect(issue.visible_to_user?(user)).to eq(true)
+      context 'with an admin user' do
+        let(:user) { build(:admin) }
+
+        it_behaves_like 'issue readable by user'
+        it_behaves_like 'confidential issue readable by user'
+      end
+
+      context 'with an owner' do
+        before do
+          project.add_maintainer(user)
+        end
+
+        it_behaves_like 'issue readable by user'
+        it_behaves_like 'confidential issue readable by user'
+      end
+
+      context 'with a reporter user' do
+        before do
+          project.add_reporter(user)
+        end
+
+        it_behaves_like 'issue readable by user'
+        it_behaves_like 'confidential issue readable by user'
+      end
+
+      context 'with a guest user' do
+        before do
+          project.add_guest(user)
+        end
+
+        it_behaves_like 'issue readable by user'
+        it_behaves_like 'confidential issue not readable by user'
+
+        context 'when user is an assignee' do
+          before do
+            issue.update!(assignees: [user])
           end
 
-          it 'returns false for a confidential issue' do
-            issue = build(:issue, :confidential, project: project)
+          it_behaves_like 'issue readable by user'
+          it_behaves_like 'confidential issue readable by user'
+        end
 
-            expect(issue.visible_to_user?(user)).to eq(false)
+        context 'when user is the author' do
+          before do
+            issue.update!(author: user)
+          end
+
+          it_behaves_like 'issue readable by user'
+          it_behaves_like 'confidential issue readable by user'
+        end
+      end
+
+      context 'with a user that is not a member' do
+        context 'using a public project' do
+          let(:project) { build(:project, :public) }
+
+          it_behaves_like 'issue readable by user'
+          it_behaves_like 'confidential issue not readable by user'
+        end
+
+        context 'using an internal project' do
+          let(:project) { build(:project, :internal) }
+
+          context 'using an internal user' do
+            before do
+              allow(user).to receive(:external?).and_return(false)
+            end
+
+            it_behaves_like 'issue readable by user'
+            it_behaves_like 'confidential issue not readable by user'
+          end
+
+          context 'using an external user' do
+            before do
+              allow(user).to receive(:external?).and_return(true)
+            end
+
+            it_behaves_like 'issue not readable by user'
+            it_behaves_like 'confidential issue not readable by user'
           end
         end
 
@@ -619,132 +677,110 @@ describe Issue do
             allow(user).to receive(:external?).and_return(true)
           end
 
-          it 'returns false for a regular issue' do
-            issue = build(:issue, project: project)
-
-            expect(issue.visible_to_user?(user)).to eq(false)
-          end
-
-          it 'returns false for a confidential issue' do
-            issue = build(:issue, :confidential, project: project)
-
-            expect(issue.visible_to_user?(user)).to eq(false)
-          end
+          it_behaves_like 'issue not readable by user'
+          it_behaves_like 'confidential issue not readable by user'
         end
       end
 
-      context 'using a private project' do
-        let(:project) { create(:project, :private) }
+      context 'with an external authentication service' do
+        before do
+          enable_external_authorization_service_check
+        end
 
-        it 'returns false for a regular issue' do
+        it 'is `false` when an external authorization service is enabled' do
+          issue = build(:issue, project: build(:project, :public))
+
+          expect(issue).not_to be_visible_to_user
+        end
+
+        it 'checks the external service to determine if an issue is readable by a user' do
+          project = build(:project, :public,
+                          external_authorization_classification_label: 'a-label')
           issue = build(:issue, project: project)
+          user = build(:user)
 
-          expect(issue.visible_to_user?(user)).to eq(false)
+          expect(::Gitlab::ExternalAuthorization).to receive(:access_allowed?).with(user, 'a-label') { false }
+          expect(issue.visible_to_user?(user)).to be_falsy
         end
 
-        it 'returns false for a confidential issue' do
-          issue = build(:issue, :confidential, project: project)
+        it 'does not check the external service if a user does not have access to the project' do
+          project = build(:project, :private,
+                          external_authorization_classification_label: 'a-label')
+          issue = build(:issue, project: project)
+          user = build(:user)
 
-          expect(issue.visible_to_user?(user)).to eq(false)
+          expect(::Gitlab::ExternalAuthorization).not_to receive(:access_allowed?)
+          expect(issue.visible_to_user?(user)).to be_falsy
         end
 
-        context 'when the user is the project owner' do
+        it 'does not check the external webservice for admins' do
+          issue = build(:issue)
+          user = build(:admin)
+
+          expect(::Gitlab::ExternalAuthorization).not_to receive(:access_allowed?)
+
+          issue.visible_to_user?(user)
+        end
+      end
+
+      context 'when issue is moved to a private project' do
+        let(:private_project) { build(:project, :private)}
+
+        before do
+          issue.update(project: private_project) # move issue to private project
+        end
+
+        shared_examples 'issue visible if user has guest access' do
+          context 'when user is not a member' do
+            it_behaves_like 'issue not readable by user'
+            it_behaves_like 'confidential issue not readable by user'
+          end
+
+          context 'when user is a guest' do
+            before do
+              private_project.add_guest(user)
+            end
+
+            it_behaves_like 'issue readable by user'
+            it_behaves_like 'confidential issue readable by user'
+          end
+        end
+
+        context 'when user is the author of the original issue' do
           before do
-            project.add_maintainer(user)
+            issue.update!(author: user)
           end
 
-          it 'returns true for a regular issue' do
-            issue = build(:issue, project: project)
+          it_behaves_like 'issue visible if user has guest access'
+        end
 
-            expect(issue.visible_to_user?(user)).to eq(true)
+        context 'when user is an assignee in the original issue' do
+          before do
+            issue.update!(assignees: [user])
           end
 
-          it 'returns true for a confidential issue' do
-            issue = build(:issue, :confidential, project: project)
+          it_behaves_like 'issue visible if user has guest access'
+        end
 
-            expect(issue.visible_to_user?(user)).to eq(true)
+        context 'when user is not the author or an assignee in original issue' do
+          context 'when user is a guest' do
+            before do
+              private_project.add_guest(user)
+            end
+
+            it_behaves_like 'issue readable by user'
+            it_behaves_like 'confidential issue not readable by user'
+          end
+
+          context 'when user is a reporter' do
+            before do
+              private_project.add_reporter(user)
+            end
+
+            it_behaves_like 'issue readable by user'
+            it_behaves_like 'confidential issue readable by user'
           end
         end
-      end
-    end
-
-    context 'with a regular user that is a team member' do
-      let(:user) { create(:user) }
-      let(:project) { create(:project, :public) }
-
-      context 'using a public project' do
-        before do
-          project.add_developer(user)
-        end
-
-        it 'returns true for a regular issue' do
-          issue = build(:issue, project: project)
-
-          expect(issue.visible_to_user?(user)).to eq(true)
-        end
-
-        it 'returns true for a confidential issue' do
-          issue = build(:issue, :confidential, project: project)
-
-          expect(issue.visible_to_user?(user)).to eq(true)
-        end
-      end
-
-      context 'using an internal project' do
-        let(:project) { create(:project, :internal) }
-
-        before do
-          project.add_developer(user)
-        end
-
-        it 'returns true for a regular issue' do
-          issue = build(:issue, project: project)
-
-          expect(issue.visible_to_user?(user)).to eq(true)
-        end
-
-        it 'returns true for a confidential issue' do
-          issue = build(:issue, :confidential, project: project)
-
-          expect(issue.visible_to_user?(user)).to eq(true)
-        end
-      end
-
-      context 'using a private project' do
-        let(:project) { create(:project, :private) }
-
-        before do
-          project.add_developer(user)
-        end
-
-        it 'returns true for a regular issue' do
-          issue = build(:issue, project: project)
-
-          expect(issue.visible_to_user?(user)).to eq(true)
-        end
-
-        it 'returns true for a confidential issue' do
-          issue = build(:issue, :confidential, project: project)
-
-          expect(issue.visible_to_user?(user)).to eq(true)
-        end
-      end
-    end
-
-    context 'with an admin user' do
-      let(:project) { create(:project) }
-      let(:user) { create(:admin) }
-
-      it 'returns true for a regular issue' do
-        issue = build(:issue, project: project)
-
-        expect(issue.visible_to_user?(user)).to eq(true)
-      end
-
-      it 'returns true for a confidential issue' do
-        issue = build(:issue, :confidential, project: project)
-
-        expect(issue.visible_to_user?(user)).to eq(true)
       end
     end
   end
@@ -866,49 +902,6 @@ describe Issue do
 
   it_behaves_like 'throttled touch' do
     subject { create(:issue, updated_at: 1.hour.ago) }
-  end
-
-  context 'when an external authentication service' do
-    before do
-      enable_external_authorization_service_check
-    end
-
-    describe '#visible_to_user?' do
-      it 'is `false` when an external authorization service is enabled' do
-        issue = build(:issue, project: build(:project, :public))
-
-        expect(issue).not_to be_visible_to_user
-      end
-
-      it 'checks the external service to determine if an issue is readable by a user' do
-        project = build(:project, :public,
-                        external_authorization_classification_label: 'a-label')
-        issue = build(:issue, project: project)
-        user = build(:user)
-
-        expect(::Gitlab::ExternalAuthorization).to receive(:access_allowed?).with(user, 'a-label') { false }
-        expect(issue.visible_to_user?(user)).to be_falsy
-      end
-
-      it 'does not check the external service if a user does not have access to the project' do
-        project = build(:project, :private,
-                        external_authorization_classification_label: 'a-label')
-        issue = build(:issue, project: project)
-        user = build(:user)
-
-        expect(::Gitlab::ExternalAuthorization).not_to receive(:access_allowed?)
-        expect(issue.visible_to_user?(user)).to be_falsy
-      end
-
-      it 'does not check the external webservice for admins' do
-        issue = build(:issue)
-        user = build(:admin)
-
-        expect(::Gitlab::ExternalAuthorization).not_to receive(:access_allowed?)
-
-        issue.visible_to_user?(user)
-      end
-    end
   end
 
   describe "#labels_hook_attrs" do

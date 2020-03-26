@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 RSpec.shared_context 'ProjectPolicy context' do
-  set(:guest) { create(:user) }
-  set(:reporter) { create(:user) }
-  set(:developer) { create(:user) }
-  set(:maintainer) { create(:user) }
-  set(:owner) { create(:user) }
-  set(:admin) { create(:admin) }
+  let_it_be(:guest) { create(:user) }
+  let_it_be(:reporter) { create(:user) }
+  let_it_be(:developer) { create(:user) }
+  let_it_be(:maintainer) { create(:user) }
+  let_it_be(:owner) { create(:user) }
+  let_it_be(:admin) { create(:admin) }
   let(:project) { create(:project, :public, namespace: owner.namespace) }
 
   let(:base_guest_permissions) do

@@ -22,6 +22,8 @@ module Gitlab
         return @text unless needs_rewrite?
 
         @text.gsub(@pattern) do |markdown|
+          Gitlab::Utils.check_path_traversal!($~[:file])
+
           file = find_file(@source_project, $~[:secret], $~[:file])
           break markdown unless file.try(:exists?)
 

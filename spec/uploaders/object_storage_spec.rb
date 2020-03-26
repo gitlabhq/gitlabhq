@@ -714,6 +714,19 @@ describe ObjectStorage do
           end
         end
 
+        context 'when empty remote_id is specified' do
+          let(:uploaded_file) do
+            UploadedFile.new(temp_file.path, remote_id: '')
+          end
+
+          it 'uses local storage' do
+            subject
+
+            expect(uploader).to be_file_storage
+            expect(uploader.object_store).to eq(described_class::Store::LOCAL)
+          end
+        end
+
         context 'when valid file is specified' do
           let(:uploaded_file) do
             UploadedFile.new(temp_file.path, filename: "my_file.txt", remote_id: "test/123123")

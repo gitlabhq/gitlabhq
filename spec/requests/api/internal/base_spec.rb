@@ -3,15 +3,14 @@
 require 'spec_helper'
 
 describe API::Internal::Base do
-  set(:user) { create(:user) }
+  let_it_be(:user, reload: true) { create(:user) }
+  let_it_be(:project, reload: true) { create(:project, :repository, :wiki_repo) }
+  let_it_be(:personal_snippet) { create(:personal_snippet, :repository, author: user) }
+  let_it_be(:project_snippet) { create(:project_snippet, :repository, author: user, project: project) }
   let(:key) { create(:key, user: user) }
-  set(:project) { create(:project, :repository, :wiki_repo) }
   let(:secret_token) { Gitlab::Shell.secret_token }
   let(:gl_repository) { "project-#{project.id}" }
   let(:reference_counter) { double('ReferenceCounter') }
-
-  let_it_be(:personal_snippet) { create(:personal_snippet, :repository, author: user) }
-  let_it_be(:project_snippet) { create(:project_snippet, :repository, author: user, project: project) }
   let(:snippet_changes) { "#{TestEnv::BRANCH_SHA['snippet/single-file']} #{TestEnv::BRANCH_SHA['snippet/edit-file']} refs/heads/snippet/edit-file" }
 
   describe "GET /internal/check" do

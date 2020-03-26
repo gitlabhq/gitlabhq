@@ -266,6 +266,16 @@ describe API::Snippets do
 
     it_behaves_like 'snippet creation'
 
+    context 'with an external user' do
+      let(:user) { create(:user, :external) }
+
+      it 'does not create a new snippet' do
+        post api("/snippets/", user), params: params
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
     it 'returns 400 for missing parameters' do
       params.delete(:title)
 

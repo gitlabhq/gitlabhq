@@ -164,6 +164,30 @@ describe API::ProjectSnippets do
       end
     end
 
+    context 'with an external user' do
+      let(:user) { create(:user, :external) }
+
+      context 'that belongs to the project' do
+        before do
+          project.add_developer(user)
+        end
+
+        it 'creates a new snippet' do
+          post api("/projects/#{project.id}/snippets/", user), params: params
+
+          expect(response).to have_gitlab_http_status(:created)
+        end
+      end
+
+      context 'that does not belong to the project' do
+        it 'does not create a new snippet' do
+          post api("/projects/#{project.id}/snippets/", user), params: params
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+    end
+
     context 'with a regular user' do
       let(:user) { create(:user) }
 

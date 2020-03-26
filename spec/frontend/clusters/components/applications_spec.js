@@ -15,6 +15,9 @@ describe('Applications', () => {
 
   beforeEach(() => {
     Applications = Vue.extend(applications);
+
+    gon.features = gon.features || {};
+    gon.features.managedAppsLocalTiller = false;
   });
 
   afterEach(() => {
@@ -153,6 +156,22 @@ describe('Applications', () => {
 
     it('renders a row for Elastic Stack', () => {
       expect(vm.$el.querySelector('.js-cluster-application-row-elastic_stack')).not.toBeNull();
+    });
+  });
+
+  describe('Helm application', () => {
+    describe('when managedAppsLocalTiller enabled', () => {
+      beforeEach(() => {
+        gon.features.managedAppsLocalTiller = true;
+      });
+
+      it('does not render a row for Helm Tiller', () => {
+        vm = mountComponent(Applications, {
+          applications: APPLICATIONS_MOCK_STATE,
+        });
+
+        expect(vm.$el.querySelector('.js-cluster-application-row-helm')).toBeNull();
+      });
     });
   });
 

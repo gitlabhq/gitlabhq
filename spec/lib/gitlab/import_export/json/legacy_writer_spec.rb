@@ -5,20 +5,37 @@ require 'spec_helper'
 describe Gitlab::ImportExport::JSON::LegacyWriter do
   let(:path) { "#{Dir.tmpdir}/legacy_writer_spec/test.json" }
 
-  subject { described_class.new(path) }
+  subject do
+    described_class.new(path, allowed_path: "project")
+  end
 
   after do
     FileUtils.rm_rf(path)
   end
 
-  describe "#write" do
+  describe "#write_attributes" do
+    it "writes correct json" do
+      expected_hash = { "key" => "value_1", "key_1" => "value_2" }
+      subject.write_attributes("project", expected_hash)
+
+      expect(subject_json).to eq(expected_hash)
+    end
+
+    context 'when invalid path is used' do
+      it 'raises an exception' do
+        expect { subject.write_attributes("invalid", { "key" => "value" }) }
+          .to raise_error(ArgumentError)
+      end
+    end
+  end
+
+  describe "#write_relation" do
     context "when key is already written" do
       it "raises exception" do
-        key = "key"
-        value = "value"
-        subject.write(key, value)
+        subject.write_relation("project", "key", "old value")
 
-        expect { subject.write(key, "new value") }.to raise_exception("key '#{key}' already written")
+        expect { subject.write_relation("project", "key", "new value") }
+          .to raise_exception("key 'key' already written")
       end
     end
 
@@ -27,53 +44,58 @@ describe Gitlab::ImportExport::JSON::LegacyWriter do
         it "writes correct json" do
           expected_hash = { "key" => "value_1", "key_1" => "value_2" }
           expected_hash.each do |key, value|
-            subject.write(key, value)
+            subject.write_relation("project", key, value)
           end
-          subject.close
 
-          expect(saved_json(path)).to eq(expected_hash)
+          expect(subject_json).to eq(expected_hash)
         end
+      end
+    end
+
+    context 'when invalid path is used' do
+      it 'raises an exception' do
+        expect { subject.write_relation("invalid", "key", "value") }
+          .to raise_error(ArgumentError)
       end
     end
   end
 
-  describe "#append" do
+  describe "#write_relation_array" do
+    context 'when array is used' do
+      it 'writes correct json' do
+        subject.write_relation_array("project", "key", ["value"])
+
+        expect(subject_json).to eq({ "key" => ["value"] })
+      end
+    end
+
+    context 'when enumerable is used' do
+      it 'writes correct json' do
+        values = %w(value1 value2)
+
+        enumerator = Enumerator.new do |items|
+          values.each { |value| items << value }
+        end
+
+        subject.write_relation_array("project", "key", enumerator)
+
+        expect(subject_json).to eq({ "key" => values })
+      end
+    end
+
     context "when key is already written" do
-      it "appends values under a given key" do
-        key = "key"
-        values = %w(value_1 value_2)
-        expected_hash = { key => values }
-        values.each do |value|
-          subject.append(key, value)
-        end
-        subject.close
+      it "raises an exception" do
+        subject.write_relation_array("project", "key", %w(old_value))
 
-        expect(saved_json(path)).to eq(expected_hash)
-      end
-    end
-
-    context "when key is not already written" do
-      it "writes correct json" do
-        expected_hash = { "key" => ["value"] }
-        subject.append("key", "value")
-        subject.close
-
-        expect(saved_json(path)).to eq(expected_hash)
+        expect { subject.write_relation_array("project", "key", %w(new_value)) }
+          .to raise_error(ArgumentError)
       end
     end
   end
 
-  describe "#set" do
-    it "writes correct json" do
-      expected_hash = { "key" => "value_1", "key_1" => "value_2" }
-      subject.set(expected_hash)
-      subject.close
+  def subject_json
+    subject.close
 
-      expect(saved_json(path)).to eq(expected_hash)
-    end
-  end
-
-  def saved_json(filename)
-    ::JSON.parse(IO.read(filename))
+    ::JSON.parse(IO.read(subject.path))
   end
 end

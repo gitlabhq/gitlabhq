@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
-shared_examples "installing applications on a cluster" do
+shared_examples "installing applications for a cluster" do |managed_apps_local_tiller|
   before do
+    stub_feature_flags(managed_apps_local_tiller: managed_apps_local_tiller)
+
     visit cluster_path
   end
 
@@ -26,48 +28,61 @@ shared_examples "installing applications on a cluster" do
     it 'user can install applications' do
       wait_for_requests
 
-      page.within('.js-cluster-application-row-helm') do
-        expect(page.find(:css, '.js-cluster-application-install-button')['disabled']).to be_nil
+      application_row =
+        if managed_apps_local_tiller
+          '.js-cluster-application-row-ingress'
+        else
+          '.js-cluster-application-row-helm'
+        end
+
+      page.within(application_row) do
+        expect(page).not_to have_css('.js-cluster-application-install-button[disabled]')
         expect(page).to have_css('.js-cluster-application-install-button', exact_text: 'Install')
       end
     end
 
-    context 'when user installs Helm' do
-      before do
-        allow(ClusterInstallAppWorker).to receive(:perform_async)
-        wait_for_requests
-
-        page.within('.js-cluster-application-row-helm') do
-          page.find(:css, '.js-cluster-application-install-button').click
-        end
-
-        wait_for_requests
+    if managed_apps_local_tiller
+      it 'does not show the Helm application' do
+        expect(page).not_to have_selector(:css, '.js-cluster-application-row-helm')
       end
+    else
+      context 'when user installs Helm' do
+        before do
+          allow(ClusterInstallAppWorker).to receive(:perform_async)
+          wait_for_requests
 
-      it 'shows the status transition' do
-        page.within('.js-cluster-application-row-helm') do
-          # FE sends request and gets the response, then the buttons is "Installing"
-          expect(page).to have_css('.js-cluster-application-install-button[disabled]', exact_text: 'Installing')
+          page.within('.js-cluster-application-row-helm') do
+            page.find(:css, '.js-cluster-application-install-button').click
+          end
 
-          Clusters::Cluster.last.application_helm.make_installing!
-
-          # FE starts polling and update the buttons to "Installing"
-          expect(page).to have_css('.js-cluster-application-install-button[disabled]', exact_text: 'Installing')
-
-          Clusters::Cluster.last.application_helm.make_installed!
-
-          expect(page).not_to have_css('button', exact_text: 'Install', visible: :all)
-          expect(page).not_to have_css('button', exact_text: 'Installing', visible: :all)
-          expect(page).to have_css('.js-cluster-application-uninstall-button:not([disabled])', exact_text: 'Uninstall')
+          wait_for_requests
         end
 
-        expect(page).to have_content('Helm Tiller was successfully installed on your Kubernetes cluster')
+        it 'shows the status transition' do
+          page.within('.js-cluster-application-row-helm') do
+            # FE sends request and gets the response, then the buttons is "Installing"
+            expect(page).to have_css('.js-cluster-application-install-button[disabled]', exact_text: 'Installing')
+
+            Clusters::Cluster.last.application_helm.make_installing!
+
+            # FE starts polling and update the buttons to "Installing"
+            expect(page).to have_css('.js-cluster-application-install-button[disabled]', exact_text: 'Installing')
+
+            Clusters::Cluster.last.application_helm.make_installed!
+
+            expect(page).not_to have_css('button', exact_text: 'Install', visible: :all)
+            expect(page).not_to have_css('button', exact_text: 'Installing', visible: :all)
+            expect(page).to have_css('.js-cluster-application-uninstall-button:not([disabled])', exact_text: 'Uninstall')
+          end
+
+          expect(page).to have_content('Helm Tiller was successfully installed on your Kubernetes cluster')
+        end
       end
     end
 
     context 'when user installs Knative' do
       before do
-        create(:clusters_applications_helm, :installed, cluster: cluster)
+        create(:clusters_applications_helm, :installed, cluster: cluster) unless managed_apps_local_tiller
       end
 
       context 'on an abac cluster' do
@@ -153,7 +168,7 @@ shared_examples "installing applications on a cluster" do
         allow(ClusterWaitForIngressIpAddressWorker).to receive(:perform_in)
         allow(ClusterWaitForIngressIpAddressWorker).to receive(:perform_async)
 
-        create(:clusters_applications_helm, :installed, cluster: cluster)
+        create(:clusters_applications_helm, :installed, cluster: cluster) unless managed_apps_local_tiller
 
         page.within('.js-cluster-application-row-cert_manager') do
           click_button 'Install'
@@ -189,7 +204,7 @@ shared_examples "installing applications on a cluster" do
       before do
         allow(ClusterInstallAppWorker).to receive(:perform_async)
 
-        create(:clusters_applications_helm, :installed, cluster: cluster)
+        create(:clusters_applications_helm, :installed, cluster: cluster) unless managed_apps_local_tiller
 
         page.within('.js-cluster-application-row-elastic_stack') do
           click_button 'Install'
@@ -221,7 +236,7 @@ shared_examples "installing applications on a cluster" do
         allow(ClusterWaitForIngressIpAddressWorker).to receive(:perform_in)
         allow(ClusterWaitForIngressIpAddressWorker).to receive(:perform_async)
 
-        create(:clusters_applications_helm, :installed, cluster: cluster)
+        create(:clusters_applications_helm, :installed, cluster: cluster) unless managed_apps_local_tiller
 
         page.within('.js-cluster-application-row-ingress') do
           expect(page).to have_css('.js-cluster-application-install-button:not([disabled])')
@@ -262,4 +277,9 @@ shared_examples "installing applications on a cluster" do
       end
     end
   end
+end
+
+shared_examples "installing applications on a cluster" do
+  it_behaves_like "installing applications for a cluster", false
+  it_behaves_like "installing applications for a cluster", true
 end

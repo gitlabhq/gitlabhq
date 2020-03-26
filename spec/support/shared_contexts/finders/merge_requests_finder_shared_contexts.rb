@@ -13,15 +13,14 @@ RSpec.shared_context 'MergeRequestsFinder multiple projects with merge requests 
     end
   end
 
-  set(:user)  { create(:user) }
-  set(:user2) { create(:user) }
-
-  set(:group) { create(:group) }
-  set(:subgroup) { create(:group, parent: group) }
-  set(:project1) do
+  let_it_be(:user)  { create(:user) }
+  let_it_be(:user2) { create(:user) }
+  let_it_be(:group) { create(:group) }
+  let_it_be(:subgroup) { create(:group, parent: group) }
+  let_it_be(:project1, reload: true) do
     allow_gitaly_n_plus_1 { create(:project, :public, group: group) }
   end
-  # We cannot use `set` here otherwise we get:
+  # We cannot use `let_it_be` here otherwise we get:
   #   Failure/Error: allow(RepositoryForkWorker).to receive(:perform_async).and_return(true)
   #   The use of doubles or partial doubles from rspec-mocks outside of the per-test lifecycle is not supported.
   let(:project2) do
@@ -36,13 +35,13 @@ RSpec.shared_context 'MergeRequestsFinder multiple projects with merge requests 
       end
     end
   end
-  set(:project4) do
+  let_it_be(:project4, reload: true) do
     allow_gitaly_n_plus_1 { create(:project, :repository, group: subgroup) }
   end
-  set(:project5) do
+  let_it_be(:project5, reload: true) do
     allow_gitaly_n_plus_1 { create(:project, group: subgroup) }
   end
-  set(:project6) do
+  let_it_be(:project6, reload: true) do
     allow_gitaly_n_plus_1 { create(:project, group: subgroup) }
   end
 

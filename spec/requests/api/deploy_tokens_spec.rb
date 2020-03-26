@@ -234,6 +234,25 @@ describe API::DeployTokens do
           expect(response).to match_response_schema('public_api/v4/deploy_token')
         end
 
+        context 'with no optional params given' do
+          let(:params) do
+            {
+              name: 'Foo',
+              scopes: [
+                'read_repository'
+              ]
+            }
+          end
+
+          it 'creates the deploy token with default values' do
+            subject
+
+            expect(response).to have_gitlab_http_status(:created)
+            expect(json_response['username']).to match(/gitlab\+deploy-token-\d+/)
+            expect(json_response['expires_at']).to eq(nil)
+          end
+        end
+
         context 'with an invalid scope' do
           before do
             params[:scopes] = %w[read_repository all_access]

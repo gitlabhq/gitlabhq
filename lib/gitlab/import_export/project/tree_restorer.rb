@@ -4,6 +4,8 @@ module Gitlab
   module ImportExport
     module Project
       class TreeRestorer
+        include Gitlab::Utils::StrongMemoize
+
         attr_reader :user
         attr_reader :shared
         attr_reader :project
@@ -15,9 +17,8 @@ module Gitlab
         end
 
         def restore
-          @relation_reader = ImportExport::JSON::LegacyReader::File.new(File.join(shared.export_path, 'project.json'), reader.project_relation_names)
-
-          @project_members = @relation_reader.consume_relation('project_members')
+          @project_attributes = relation_reader.consume_attributes(importable_path)
+          @project_members = relation_reader.consume_relation(importable_path, 'project_members')
 
           if relation_tree_restorer.restore
             import_failure_service.with_retry(action: 'set_latest_merge_request_diff_ids!') do
@@ -35,16 +36,28 @@ module Gitlab
 
         private
 
+        def relation_reader
+          strong_memoize(:relation_reader) do
+            ImportExport::JSON::LegacyReader::File.new(
+              File.join(shared.export_path, 'project.json'),
+              relation_names: reader.project_relation_names,
+              allowed_path: importable_path
+            )
+          end
+        end
+
         def relation_tree_restorer
           @relation_tree_restorer ||= RelationTreeRestorer.new(
             user: @user,
             shared: @shared,
-            importable: @project,
-            relation_reader: @relation_reader,
+            relation_reader: relation_reader,
             object_builder: object_builder,
             members_mapper: members_mapper,
             relation_factory: relation_factory,
-            reader: reader
+            reader: reader,
+            importable: @project,
+            importable_attributes: @project_attributes,
+            importable_path: importable_path
           )
         end
 
@@ -68,6 +81,10 @@ module Gitlab
 
         def import_failure_service
           @import_failure_service ||= ImportFailureService.new(@project)
+        end
+
+        def importable_path
+          "project"
         end
       end
     end

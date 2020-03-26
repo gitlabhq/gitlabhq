@@ -107,8 +107,12 @@ export default {
     isProjectCluster() {
       return this.type === CLUSTER_TYPE.PROJECT;
     },
+    managedAppsLocalTillerEnabled() {
+      return Boolean(gon.features?.managedAppsLocalTiller);
+    },
     helmInstalled() {
       return (
+        this.managedAppsLocalTillerEnabled ||
         this.applications.helm.status === APPLICATION_STATUS.INSTALLED ||
         this.applications.helm.status === APPLICATION_STATUS.UPDATED
       );
@@ -270,6 +274,7 @@ Crossplane runs inside your Kubernetes cluster and supports secure connectivity 
 
     <div class="cluster-application-list prepend-top-10">
       <application-row
+        v-if="!managedAppsLocalTillerEnabled"
         id="helm"
         :logo-url="helmLogo"
         :title="applications.helm.title"

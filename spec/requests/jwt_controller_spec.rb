@@ -25,6 +25,17 @@ describe JwtController do
   end
 
   context 'when using authenticated request' do
+    shared_examples 'rejecting a blocked user' do
+      context 'with blocked user' do
+        let(:user) { create(:user, :blocked) }
+
+        it 'rejects the request as unauthorized' do
+          expect(response).to have_gitlab_http_status(:unauthorized)
+          expect(response.body).to include('HTTP Basic: Access denied')
+        end
+      end
+    end
+
     context 'using CI token' do
       let(:build) { create(:ci_build, :running) }
       let(:project) { build.project }
@@ -61,6 +72,8 @@ describe JwtController do
           expect(response).to have_gitlab_http_status(:ok)
           expect(service_class).to have_received(:new).with(nil, user, ActionController::Parameters.new(parameters).permit!)
         end
+
+        it_behaves_like 'rejecting a blocked user'
       end
     end
 
@@ -71,6 +84,8 @@ describe JwtController do
       subject! { get '/jwt/auth', params: parameters, headers: headers }
 
       it { expect(service_class).to have_received(:new).with(nil, user, ActionController::Parameters.new(parameters).permit!) }
+
+      it_behaves_like 'rejecting a blocked user'
 
       context 'when passing a flat array of scopes' do
         # We use this trick to make rails to generate a query_string:

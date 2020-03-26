@@ -6,9 +6,9 @@ describe 'Git LFS API and storage' do
   include ProjectForksHelper
   include WorkhorseHelpers
 
-  set(:project) { create(:project, :repository) }
-  set(:other_project) { create(:project, :repository) }
-  set(:user) { create(:user) }
+  let_it_be(:project, reload: true) { create(:project, :repository) }
+  let_it_be(:other_project) { create(:project, :repository) }
+  let_it_be(:user) { create(:user) }
   let!(:lfs_object) { create(:lfs_object, :with_file) }
 
   let(:headers) do
