@@ -45,8 +45,19 @@ export const updateExistingFrequentItem = (frequentItem, item) => {
   };
 };
 
-export const sanitizeItem = item => ({
-  ...item,
-  name: sanitize(item.name.toString(), { allowedTags: [] }),
-  namespace: sanitize(item.namespace.toString(), { allowedTags: [] }),
-});
+export const sanitizeItem = item => {
+  // Only sanitize if the key exists on the item
+  const maybeSanitize = key => {
+    if (!Object.prototype.hasOwnProperty.call(item, key)) {
+      return {};
+    }
+
+    return { [key]: sanitize(item[key].toString(), { allowedTags: [] }) };
+  };
+
+  return {
+    ...item,
+    ...maybeSanitize('name'),
+    ...maybeSanitize('namespace'),
+  };
+};

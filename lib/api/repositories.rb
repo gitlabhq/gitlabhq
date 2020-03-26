@@ -89,6 +89,8 @@ module API
         optional :format, type: String, desc: 'The archive format'
       end
       get ':id/repository/archive', requirements: { format: Gitlab::PathRegex.archive_formats_regex } do
+        not_acceptable! if Gitlab::HotlinkingDetector.intercept_hotlinking?(request)
+
         send_git_archive user_project.repository, ref: params[:sha], format: params[:format], append_sha: true
       rescue
         not_found!('File')
