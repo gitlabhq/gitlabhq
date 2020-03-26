@@ -1,5 +1,12 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 12.8.8 (2020-03-26)
+
+### Security (1 change)
+
+- Add NPM package versions SemVer validation.
+
+
 ## 12.8.7 (2020-03-16)
 
 ### Fixed (1 change)
