@@ -3,11 +3,13 @@
 class Projects::RepositoriesController < Projects::ApplicationController
   include ExtractsPath
   include StaticObjectExternalStorage
+  include HotlinkInterceptor
 
   prepend_before_action(only: [:archive]) { authenticate_sessionless_user!(:archive) }
 
   # Authorize
   before_action :require_non_empty_project, except: :create
+  before_action :intercept_hotlinking!, only: :archive
   before_action :assign_archive_vars, only: :archive
   before_action :assign_append_sha, only: :archive
   before_action :authorize_download_code!

@@ -568,6 +568,20 @@ describe API::Groups do
         expect(json_response['shared_projects'].length).to eq(0)
       end
 
+      context 'malicious group name' do
+        subject { put api("/groups/#{group1.id}", user1), params: { name: "<SCRIPT>alert('DOUBLE-ATTACK!')</SCRIPT>" } }
+
+        it 'returns bad request' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+        end
+
+        it 'does not update group name' do
+          expect { subject }.not_to change { group1.reload.name }
+        end
+      end
+
       it 'returns 404 for a non existing group' do
         put api('/groups/1328', user1), params: { name: new_group_name }
 
@@ -997,6 +1011,20 @@ describe API::Groups do
 
         expect(json_response["full_path"]).to eq("#{parent.path}/#{group[:path]}")
         expect(json_response["parent_id"]).to eq(parent.id)
+      end
+
+      context 'malicious group name' do
+        subject { post api("/groups", user3), params: group_params }
+
+        let(:group_params) { attributes_for_group_api name: "<SCRIPT>alert('ATTACKED!')</SCRIPT>", path: "unique-url" }
+
+        it 'returns bad request' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+        end
+
+        it { expect { subject }.not_to change { Group.count } }
       end
 
       it "does not create group, duplicate" do

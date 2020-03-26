@@ -2,6 +2,36 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 12.8.8 (2020-03-26)
+
+### Security (17 changes)
+
+- Redact notes in moved confidential issues.
+- Ignore empty remote_id params from Workhorse accelerated uploads.
+- External user can not create personal snippet through API.
+- Prevent malicious entry for group name.
+- Restrict mirroring changes to admins only when mirroring is disabled.
+- Reject all container registry requests from blocked users.
+- Deny localhost requests on fogbugz importer.
+- Change GitHub service integration token input to password.
+- Add permission check for pipeline status of MR.
+- Fix UploadRewriter Path Traversal vulnerability.
+- Block hotlinking to repository archives.
+- Restrict access to project pipeline metrics reports.
+- vulnerability_feedback records should be restricted to a dev role and above.
+- Exclude Carrierwave remote URL methods from import.
+- Update Nokogiri to fix CVE-2020-7595.
+- Prevent updating trigger by other maintainers.
+- Fix XSS vulnerability in `admin/email` "Recipient Group" dropdown.
+
+
+## 12.8.7 (2020-03-16)
+
+### Fixed (1 change, 1 of them is from the community)
+
+- Fix crl_url parsing and certificate visualization. !25876 (Roger Meier)
+
+
 ## 12.8.6 (2020-03-11)
 
 ### Security (1 change)

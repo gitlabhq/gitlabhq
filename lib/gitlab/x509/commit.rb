@@ -105,13 +105,22 @@ module Gitlab
 
       def certificate_crl
         extension = get_certificate_extension('crlDistributionPoints')
-        extension.split('URI:').each do |item|
-          item.strip
+        crl_url = nil
 
-          if item.start_with?("http")
-            return item.strip
+        extension.each_line do |line|
+          break if crl_url
+
+          line.split('URI:').each do |item|
+            item.strip
+
+            if item.start_with?("http")
+              crl_url = item.strip
+              break
+            end
           end
         end
+
+        crl_url
       end
 
       def get_certificate_extension(extension)

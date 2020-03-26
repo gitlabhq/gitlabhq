@@ -204,5 +204,38 @@ describe Gitlab::X509::Commit do
         expect(described_class.new(commit).signature).to be_nil
       end
     end
+
+    context 'certificate_crl' do
+      let!(:commit) { create :commit, project: project, sha: commit_sha, created_at: Time.utc(2019, 1, 1, 20, 15, 0), committer_email: X509Helpers::User1.emails.first }
+      let(:signed_commit) { described_class.new(commit) }
+
+      describe 'valid crlDistributionPoints' do
+        before do
+          allow(signed_commit).to receive(:get_certificate_extension).and_call_original
+
+          allow(signed_commit).to receive(:get_certificate_extension)
+            .with('crlDistributionPoints')
+            .and_return("\nFull Name:\n  URI:http://ch.siemens.com/pki?ZZZZZZA2.crl\n  URI:ldap://cl.siemens.net/CN=ZZZZZZA2,L=PKI?certificateRevocationList\n  URI:ldap://cl.siemens.com/CN=ZZZZZZA2,o=Trustcenter?certificateRevocationList\n")
+        end
+
+        it 'returns an unverified signature' do
+          expect(signed_commit.signature.x509_certificate.x509_issuer).to have_attributes(user1_issuer_attributes)
+        end
+      end
+
+      describe 'valid crlDistributionPoints providing multiple http URIs' do
+        before do
+          allow(signed_commit).to receive(:get_certificate_extension).and_call_original
+
+          allow(signed_commit).to receive(:get_certificate_extension)
+            .with('crlDistributionPoints')
+            .and_return("\nFull Name:\n  URI:http://cdp1.pca.dfn.de/dfn-ca-global-g2/pub/crl/cacrl.crl\n\nFull Name:\n  URI:http://cdp2.pca.dfn.de/dfn-ca-global-g2/pub/crl/cacrl.crl\n")
+        end
+
+        it 'extracts the first URI' do
+          expect(signed_commit.signature.x509_certificate.x509_issuer.crl_url).to eq("http://cdp1.pca.dfn.de/dfn-ca-global-g2/pub/crl/cacrl.crl")
+        end
+      end
+    end
   end
 end

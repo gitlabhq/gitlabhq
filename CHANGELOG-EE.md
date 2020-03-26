@@ -1,5 +1,12 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 12.8.7 (2020-03-16)
+
+### Fixed (1 change)
+
+- Allow multipart uploads for packages. !26387
+
+
 ## 12.8.6 (2020-03-11)
 
 - No changes.
