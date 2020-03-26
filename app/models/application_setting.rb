@@ -137,7 +137,7 @@ class ApplicationSetting < ApplicationRecord
 
   validates :max_pages_size,
             presence: true,
-            numericality: { only_integer: true, greater_than: 0,
+            numericality: { only_integer: true, greater_than_or_equal_to: 0,
                             less_than: ::Gitlab::Pages::MAX_SIZE / 1.megabyte }
 
   validates :default_artifacts_expire_in, presence: true, duration: true

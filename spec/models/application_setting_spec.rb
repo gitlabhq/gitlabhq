@@ -69,12 +69,12 @@ describe ApplicationSetting do
 
     it { is_expected.to validate_numericality_of(:snippet_size_limit).only_integer.is_greater_than(0) }
     it { is_expected.to validate_presence_of(:max_artifacts_size) }
-    it do
-      is_expected.to validate_numericality_of(:max_pages_size).only_integer.is_greater_than(0)
+    it { is_expected.to validate_numericality_of(:max_artifacts_size).only_integer.is_greater_than(0) }
+    it { is_expected.to validate_presence_of(:max_pages_size) }
+    it 'ensures max_pages_size is an integer greater than 0 (or equal to 0 to indicate unlimited/maximum)' do
+      is_expected.to validate_numericality_of(:max_pages_size).only_integer.is_greater_than_or_equal_to(0)
                        .is_less_than(::Gitlab::Pages::MAX_SIZE / 1.megabyte)
     end
-    it { is_expected.to validate_numericality_of(:max_artifacts_size).only_integer.is_greater_than(0) }
-    it { is_expected.to validate_numericality_of(:max_pages_size).only_integer.is_greater_than(0) }
 
     it { is_expected.not_to allow_value(7).for(:minimum_password_length) }
     it { is_expected.not_to allow_value(129).for(:minimum_password_length) }

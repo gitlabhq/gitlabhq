@@ -15,8 +15,11 @@ module Gitlab
         delegate :params, :url, to: :new
 
         def with
+          pool.with { |redis| yield redis }
+        end
+
+        def pool
           @pool ||= ConnectionPool.new(size: pool_size) { ::Redis.new(params) }
-          @pool.with { |redis| yield redis }
         end
 
         def pool_size

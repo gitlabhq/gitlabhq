@@ -69,11 +69,13 @@ module Gitlab
         end
 
         def serialize_many_each(key, records, options)
-          records.each do |record|
-            json = Raw.new(record.to_json(options))
-
-            json_writer.append(key, json)
+          enumerator = Enumerator.new do |items|
+            records.each do |record|
+              items << Raw.new(record.to_json(options))
+            end
           end
+
+          json_writer.write_relation_array(@exportable_path, key, enumerator)
         end
 
         def serialize_single_relation(key, record, options)
