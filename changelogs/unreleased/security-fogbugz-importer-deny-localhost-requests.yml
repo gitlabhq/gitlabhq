@@ -1,5 +1,0 @@
----
-title: Deny localhost requests on fogbugz importer
-merge_request:
-author:
-type: security
