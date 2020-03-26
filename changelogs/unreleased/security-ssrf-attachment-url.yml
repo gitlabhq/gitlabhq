@@ -1,5 +1,0 @@
----
-title: Exclude Carrierwave remote URL methods from import
-merge_request:
-author:
-type: security
