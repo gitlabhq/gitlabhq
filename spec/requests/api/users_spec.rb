@@ -739,6 +739,17 @@ describe API::Users, :do_not_mock_admin_mode do
       expect(user.reload.bio).to eq('new test bio')
     end
 
+    it "updates user with empty bio" do
+      user.bio = 'previous bio'
+      user.save!
+
+      put api("/users/#{user.id}", admin), params: { bio: '' }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['bio']).to eq('')
+      expect(user.reload.bio).to eq('')
+    end
+
     it "updates user with new password and forces reset on next login" do
       put api("/users/#{user.id}", admin), params: { password: '12345678' }
 

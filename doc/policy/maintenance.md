@@ -168,6 +168,9 @@ Please see the table below for some examples:
 | 12.5.8                | 11.3.4       | `11.3.4` -> `11.11.8` -> `12.0.12` -> `12.5.8`            | `11.11.8` is the last version in version `11`. `12.0.x` [is a required step](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/23211#note_272842444). |
 | 12.8.5                | 9.2.6       | `9.2.6` -> `9.5.10` -> `10.8.7` -> `11.11.8` -> `12.0.12` -> `12.8.5` | Four intermediate versions are required: the final 9.5, 10.8, 11.11 releases, plus 12.0. |
 
+NOTE: **Note:**
+Instructions for installing a specific version of GitLab or downloading the package locally for installation can be found at [GitLab Repositories](https://packages.gitlab.com/gitlab).
+
 ## More information
 
 More information about the release procedures can be found in our

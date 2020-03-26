@@ -657,6 +657,30 @@ describe Gitlab::Database::MigrationHelpers do
         end
       end
 
+      context 'when `update_column_in_batches_args` is given' do
+        let(:column) { UserDetail.columns.find { |c| c.name == "user_id" } }
+
+        it 'uses `user_id` for `update_column_in_batches`' do
+          allow(model).to receive(:transaction_open?).and_return(false)
+          allow(model).to receive(:transaction).and_yield
+          allow(model).to receive(:column_for).with(:user_details, :foo).and_return(column)
+          allow(model).to receive(:update_column_in_batches).with(:user_details, :foo, 10, batch_column_name: :user_id)
+          allow(model).to receive(:change_column_null).with(:user_details, :foo, false)
+          allow(model).to receive(:change_column_default).with(:user_details, :foo, 10)
+
+          expect(model).to receive(:add_column)
+            .with(:user_details, :foo, :integer, default: nil)
+
+          model.add_column_with_default(
+            :user_details,
+            :foo,
+            :integer,
+            default: 10,
+            update_column_in_batches_args: { batch_column_name: :user_id }
+          )
+        end
+      end
+
       context 'when a column limit is set' do
         it 'adds the column with a limit' do
           allow(model).to receive(:transaction_open?).and_return(false)

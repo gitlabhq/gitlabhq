@@ -6152,7 +6152,8 @@ ALTER SEQUENCE public.user_custom_attributes_id_seq OWNED BY public.user_custom_
 
 CREATE TABLE public.user_details (
     user_id bigint NOT NULL,
-    job_title character varying(200) DEFAULT ''::character varying NOT NULL
+    job_title character varying(200) DEFAULT ''::character varying NOT NULL,
+    bio character varying(255) DEFAULT ''::character varying NOT NULL
 );
 
 CREATE SEQUENCE public.user_details_user_id_seq
@@ -10243,6 +10244,8 @@ CREATE UNIQUE INDEX term_agreements_unique_index ON public.term_agreements USING
 
 CREATE INDEX tmp_build_stage_position_index ON public.ci_builds USING btree (stage_id, stage_idx) WHERE (stage_idx IS NOT NULL);
 
+CREATE INDEX tmp_idx_on_user_id_where_bio_is_filled ON public.users USING btree (id) WHERE ((COALESCE(bio, ''::character varying))::text IS DISTINCT FROM ''::text);
+
 CREATE INDEX undefined_vulnerabilities ON public.vulnerability_occurrences USING btree (id) WHERE (severity = 0);
 
 CREATE INDEX undefined_vulnerability ON public.vulnerabilities USING btree (id) WHERE (severity = 0);
@@ -12797,7 +12800,10 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200319203901
 20200320112455
 20200320123839
+20200323071918
+20200323074147
 20200323075043
+20200323080714
 20200323122201
 20200323134519
 20200324115359

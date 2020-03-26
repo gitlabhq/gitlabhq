@@ -217,6 +217,7 @@ class User < ApplicationRecord
   before_save :check_for_verified_email, if: ->(user) { user.email_changed? && !user.new_record? }
   before_validation :ensure_namespace_correct
   before_save :ensure_namespace_correct # in case validation is skipped
+  before_save :ensure_bio_is_assigned_to_user_details, if: :bio_changed?
   after_validation :set_username_errors
   after_update :username_changed_hook, if: :saved_change_to_username?
   after_destroy :post_destroy_hook
@@ -1260,6 +1261,13 @@ class User < ApplicationRecord
     else
       build_namespace(path: username, name: name)
     end
+  end
+
+  # Temporary, will be removed when bio is fully migrated
+  def ensure_bio_is_assigned_to_user_details
+    return if Feature.disabled?(:migrate_bio_to_user_details, default_enabled: true)
+
+    user_detail.bio = bio.to_s[0...255] # bio can be NULL in users, but cannot be NULL in user_details
   end
 
   def set_username_errors

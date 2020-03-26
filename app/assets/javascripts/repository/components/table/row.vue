@@ -141,7 +141,7 @@ export default {
         data-qa-selector="file_name_link"
       >
         <i
-          v-if="!loadingPath"
+          v-if="path !== loadingPath"
           :aria-label="type"
           role="img"
           :class="iconName"

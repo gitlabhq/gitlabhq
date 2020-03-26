@@ -468,6 +468,7 @@ class Member < ApplicationRecord
   # for a Member to be commited before attempting to update the highest role.
   # rubocop: disable CodeReuse/ServiceClass
   def update_highest_role
+    return unless Feature.enabled?(:highest_role_callback)
     return unless user_id.present?
     return unless previous_changes[:access_level].present?
 

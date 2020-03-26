@@ -64,8 +64,19 @@ module Gitlab
 
       def add_team_member(member, existing_user = nil)
         member['user'] = existing_user
+        member_hash = member_hash(member)
 
-        relation_class.create(member_hash(member)).persisted?
+        member = relation_class.create(member_hash)
+
+        if member.persisted?
+          log_member_addition(member_hash)
+
+          true
+        else
+          log_member_addition_failure(member_hash, member.errors.full_messages)
+
+          false
+        end
       end
 
       def member_hash(member)
@@ -102,6 +113,34 @@ module Gitlab
         return relation_class::OWNER if relation_class == GroupMember
 
         relation_class::MAINTAINER
+      end
+
+      def log_member_addition(member_hash)
+        log_params = base_log_params(member_hash)
+        log_params[:message] = '[Project/Group Import] Added new member'
+
+        logger.info(log_params)
+      end
+
+      def log_member_addition_failure(member_hash, errors)
+        log_params = base_log_params(member_hash)
+        log_params[:message] = "[Project/Group Import] Member addition failed: #{errors&.join(', ')}"
+
+        logger.info(log_params)
+      end
+
+      def base_log_params(member_hash)
+        {
+          user_id: member_hash['user']&.id,
+          access_level: member_hash['access_level'],
+          importable_type: @importable.class.to_s,
+          importable_id: @importable.id,
+          root_namespace_id: @importable.try(:root_ancestor)&.id
+        }
+      end
+
+      def logger
+        @logger ||= Gitlab::Import::Logger.build
       end
     end
   end

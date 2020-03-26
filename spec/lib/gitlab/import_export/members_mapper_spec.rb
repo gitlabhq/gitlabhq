@@ -78,6 +78,66 @@ describe Gitlab::ImportExport::MembersMapper do
         members_mapper.map
       end
 
+      context 'logging' do
+        let(:logger) { Gitlab::Import::Logger.build }
+
+        before do
+          allow(logger).to receive(:info)
+          allow(members_mapper).to receive(:logger).and_return(logger)
+        end
+
+        it 'logs member addition' do
+          expected_log_params = ->(user_id) do
+            {
+              user_id: user_id,
+              root_namespace_id: importable.root_ancestor.id,
+              importable_type: importable.class.to_s,
+              importable_id: importable.id,
+              access_level: exported_members.first['access_level'],
+              message: '[Project/Group Import] Added new member'
+            }
+          end
+
+          expect(logger).to receive(:info).with(hash_including(expected_log_params.call(user2.id))).once
+          expect(logger).to receive(:info).with(hash_including(expected_log_params.call(nil))).once
+
+          members_mapper.map
+        end
+
+        context 'when exporter member is invalid' do
+          let(:exported_members) do
+            [
+              {
+                "id" => 2,
+                "access_level" => -5, # invalid access level
+                "source_id" => 14,
+                "source_type" => source_type,
+                "notification_level" => 3,
+                "created_at" => "2016-03-11T10:21:44.822Z",
+                "updated_at" => "2016-03-11T10:21:44.822Z",
+                "created_by_id" => nil,
+                "invite_email" => nil,
+                "invite_token" => nil,
+                "invite_accepted_at" => nil,
+                "user" =>
+                  {
+                    "id" => exported_user_id,
+                    "email" => user2.email,
+                    "username" => 'test'
+                  },
+                "user_id" => 19
+              }
+            ]
+          end
+
+          it 'logs member addition failure' do
+            expect(logger).to receive(:info).with(hash_including(message: a_string_including('Access level is not included in the list'))).once
+
+            members_mapper.map
+          end
+        end
+      end
+
       context 'user is not an admin' do
         let(:user) { create(:user) }
 

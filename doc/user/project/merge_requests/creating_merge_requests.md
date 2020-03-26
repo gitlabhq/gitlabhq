@@ -155,6 +155,26 @@ and the target project and branch where you want to merge the changes into.
 Click on **Compare branches and continue** to go to the
 [**New Merge Request** page](#new-merge-request-page) and fill in the details.
 
+## New merge request from a fork
+
+After forking a project and applying your local changes, complete the following steps to
+create a merge request from your fork to contribute back to the main project:
+
+1. Go to **Projects > Your Projects** and select your fork of the repository.
+1. In the left menu, go to **Merge Requests**, and click **New Merge Request**.
+1. In the **Source branch** drop-down list box, select your branch in your forked repository as the source branch.
+1. In the **Target branch** drop-down list box, select the branch from the upstream repository as the target branch.
+1. After entering the credentials, click **Compare branches and continue** to compare your local changes to the upstream repository.
+1. Assign a user to review your changes, and click **Submit merge request**.
+
+When the changes are merged, your changes are added to the upstream repository and
+the branch as per specification. After your work is merged, if you don't intend to
+make any other contributions to the upstream project, you can unlink your
+fork from its upstream project in the **Settings > Advanced Settings** section by
+[removing the forking relashionship](../settings/index.md#removing-a-fork-relationship).
+
+For further details, [see the forking workflow documentation](../repository/forking_workflow.md).
+
 ## New merge request by email **(CORE ONLY)**
 
 _This feature needs [incoming email](../../../administration/incoming_email.md)

@@ -586,49 +586,97 @@ describe Member do
   end
 
   context 'when after_commit :update_highest_role' do
-    where(:member_type, :source_type) do
-      :project_member | :project
-      :group_member   | :group
-    end
-
-    with_them do
-      describe 'create member' do
-        it 'initializes a new Members::UpdateHighestRoleService object' do
-          source = create(source_type) # source owner initializes a new service object too
-          user = create(:user)
-
-          expect(Members::UpdateHighestRoleService).to receive(:new).with(user.id).and_call_original
-
-          create(member_type, :guest, user: user, source_type => source)
-        end
+    context 'with feature flag enabled' do
+      where(:member_type, :source_type) do
+        :project_member | :project
+        :group_member   | :group
       end
 
-      context 'when member exists' do
-        let!(:member) { create(member_type) }
+      with_them do
+        describe 'create member' do
+          it 'initializes a new Members::UpdateHighestRoleService object' do
+            source = create(source_type) # source owner initializes a new service object too
+            user = create(:user)
 
-        describe 'update member' do
-          context 'when access level was changed' do
+            expect(Members::UpdateHighestRoleService).to receive(:new).with(user.id).and_call_original
+
+            create(member_type, :guest, user: user, source_type => source)
+          end
+        end
+
+        context 'when member exists' do
+          let!(:member) { create(member_type) }
+
+          describe 'update member' do
+            context 'when access level was changed' do
+              it 'initializes a new Members::UpdateHighestRoleService object' do
+                expect(Members::UpdateHighestRoleService).to receive(:new).with(member.user_id).and_call_original
+
+                member.update(access_level: Gitlab::Access::GUEST)
+              end
+            end
+
+            context 'when access level was not changed' do
+              it 'does not initialize a new Members::UpdateHighestRoleService object' do
+                expect(Members::UpdateHighestRoleService).not_to receive(:new).with(member.user_id)
+
+                member.update(notification_level: NotificationSetting.levels[:disabled])
+              end
+            end
+          end
+
+          describe 'destroy member' do
             it 'initializes a new Members::UpdateHighestRoleService object' do
               expect(Members::UpdateHighestRoleService).to receive(:new).with(member.user_id).and_call_original
 
-              member.update(access_level: Gitlab::Access::GUEST)
-            end
-          end
-
-          context 'when access level was not changed' do
-            it 'does not initialize a new Members::UpdateHighestRoleService object' do
-              expect(Members::UpdateHighestRoleService).not_to receive(:new).with(member.user_id)
-
-              member.update(notification_level: NotificationSetting.levels[:disabled])
+              member.destroy
             end
           end
         end
+      end
+    end
 
-        describe 'destroy member' do
-          it 'initializes a new Members::UpdateHighestRoleService object' do
-            expect(Members::UpdateHighestRoleService).to receive(:new).with(member.user_id).and_call_original
+    context 'with feature flag disabled' do
+      before do
+        stub_feature_flags(highest_role_callback: false)
+      end
 
-            member.destroy
+      where(:member_type, :source_type) do
+        :project_member | :project
+        :group_member   | :group
+      end
+
+      with_them do
+        describe 'create member' do
+          it 'does not initialize a new Members::UpdateHighestRoleService object' do
+            source = create(source_type)
+            user = create(:user)
+
+            expect(Members::UpdateHighestRoleService).not_to receive(:new).with(user.id)
+
+            create(member_type, :guest, user: user, source_type => source)
+          end
+        end
+
+        context 'when member exists' do
+          let!(:member) { create(member_type) }
+
+          describe 'update member' do
+            context 'when access level was changed' do
+              it 'does not initialize a new Members::UpdateHighestRoleService object' do
+                expect(Members::UpdateHighestRoleService).not_to receive(:new).with(member.user_id)
+
+                member.update(access_level: Gitlab::Access::GUEST)
+              end
+            end
+          end
+
+          describe 'destroy member' do
+            it 'does not initialize a new Members::UpdateHighestRoleService object' do
+              expect(Members::UpdateHighestRoleService).not_to receive(:new).with(member.user_id)
+
+              member.destroy
+            end
           end
         end
       end
