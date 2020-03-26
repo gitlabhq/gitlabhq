@@ -1,5 +1,0 @@
----
-title: Add permission check for pipeline status of MR
-merge_request:
-author:
-type: security
