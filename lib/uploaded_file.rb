@@ -48,7 +48,7 @@ class UploadedFile
     return if path.blank? && remote_id.blank?
 
     file_path = nil
-    if path
+    if path.present?
       file_path = File.realpath(path)
 
       paths = Array(upload_paths) << Dir.tmpdir
