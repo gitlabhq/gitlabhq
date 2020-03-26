@@ -1,6 +1,6 @@
 # Import/Export development documentation
 
-Troubleshooing and general development guidelines and tips for the [Import/Export feature](../user/project/settings/import_export.md).
+Troubleshooting and general development guidelines and tips for the [Import/Export feature](../user/project/settings/import_export.md).
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> This document is originally based on the [Import/Export 201 presentation available on YouTube](https://www.youtube.com/watch?v=V3i1OfExotE).
 

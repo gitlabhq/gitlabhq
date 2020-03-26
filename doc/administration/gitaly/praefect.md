@@ -631,7 +631,7 @@ and replication jobs will be created to replicate repository data to `internal_s
 #### Automatic failover
 
 When automatic failover is enabled, Praefect will do automatic detection of the health of internal Gitaly nodes. If the
-primary has a certain amount of healthchecks fail, it will decide to promote one of the secondaries to be primary, and
+primary has a certain amount of health checks fail, it will decide to promote one of the secondaries to be primary, and
 demote the primary to be a secondary.
 
 1. To enable automatic failover, edit `/etc/gitlab/gitlab.rb`:

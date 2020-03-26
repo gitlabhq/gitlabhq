@@ -51,7 +51,7 @@ POST /projects/:id/merge_requests/
 
 | Attribute                  | Type    | Required | Description                                                                     |
 | ---------                  | ----    | -------- | -----------                                                                     |
-| `commits`             | string array | yes | The context commits' sha  |
+| `commits`             | string array | yes | The context commits' SHA  |
 
 ```json
 [
@@ -86,4 +86,4 @@ Parameters:
 
 | Attribute                  | Type    | Required | Description                                                                     |
 | ---------                  | ----    | -------- | -----------                                                                     |
-| `commits`             | string array | yes | The context commits' sha  |
+| `commits`             | string array | yes | The context commits' SHA  |

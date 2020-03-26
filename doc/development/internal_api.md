@@ -187,8 +187,8 @@ Example response:
 
 ## Instance information
 
-This get's some generic information about the instance. This is used
-by Geo nodes to get information about eachother
+This gets some generic information about the instance. This is used
+by Geo nodes to get information about each other
 
 ```plaintext
 GET /internal/check

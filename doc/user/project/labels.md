@@ -175,7 +175,7 @@ For example, `workflow::backend::review` and `workflow::backend::development` ar
 scoped labels, but they **can't** exist on the same issue at the same time, as they
 both share the same scope, `workflow::backend`.
 
-Addtionally, `workflow::backend::review` and `workflow::frontend::review` are valid
+Additionally, `workflow::backend::review` and `workflow::frontend::review` are valid
 scoped labels, and they **can** exist on the same issue at the same time, as they
 both have different scopes, `workflow::frontend` and `workflow::backend`.
 

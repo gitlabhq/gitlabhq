@@ -30,5 +30,15 @@ describe Gitlab::SidekiqMiddleware::DuplicateJobs::Client, :clean_gitlab_redis_q
       expect(job2['duplicate-of']).to be_nil
       expect(job3['duplicate-of']).to eq(job1['jid'])
     end
+
+    it "does not mark a job that's scheduled in the future as a duplicate" do
+      TestDeduplicationWorker.perform_async('args1')
+      TestDeduplicationWorker.perform_at(1.day.from_now, 'args1')
+      TestDeduplicationWorker.perform_in(3.hours, 'args1')
+
+      duplicates = TestDeduplicationWorker.jobs.map { |job| job['duplicate-of'] }
+
+      expect(duplicates).to all(be_nil)
+    end
   end
 end

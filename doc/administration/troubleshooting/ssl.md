@@ -7,7 +7,7 @@ type: reference
 This page contains a list of common SSL-related errors and scenarios that you may face while working with GitLab.
 It should serve as an addition to the main SSL docs available here:
 
-- [Omniibus SSL Configuration](https://docs.gitlab.com/omnibus/settings/ssl.html)
+- [Omnibus SSL Configuration](https://docs.gitlab.com/omnibus/settings/ssl.html)
 - [Self-signed certificates or custom Certification Authorities for GitLab Runner](https://docs.gitlab.com/runner/configuration/tls-self-signed.html)
 - [Manually configuring HTTPS](https://docs.gitlab.com/omnibus/settings/nginx.html#manually-configuring-https)
 

@@ -447,7 +447,7 @@ instead of the usual three.
 
 ![A comment editor with a suggestion with a fenced code block](img/suggestion_code_block_editor_v12_8.png)
 
-![Ouput of a comment with a suggestion with a fenced code block](img/suggestion_code_block_output_v12_8.png)
+![Output of a comment with a suggestion with a fenced code block](img/suggestion_code_block_output_v12_8.png)
 
 ### Configure the commit message for applied Suggestions
 

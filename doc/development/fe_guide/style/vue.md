@@ -75,7 +75,7 @@ Please check this [rules](https://github.com/vuejs/eslint-plugin-vue#bulb-rules)
 1. **Props Naming:**  Avoid using DOM component prop names.
 1. **Props Naming:** Use kebab-case instead of camelCase to provide props in templates.
 
-   ```javascript
+   ```html
    // bad
    <component class="btn">
 
@@ -97,7 +97,7 @@ Please check this [rules](https://github.com/vuejs/eslint-plugin-vue#bulb-rules)
 
    1. With more than one attribute, all attributes should be on a new line:
 
-      ```javascript
+      ```html
       // bad
       <component v-if="bar"
           param="baz" />
@@ -117,7 +117,7 @@ Please check this [rules](https://github.com/vuejs/eslint-plugin-vue#bulb-rules)
 
    1. The tag can be inline if there is only one attribute:
 
-      ```javascript
+      ```html
       // good
         <component bar="bar" />
 
@@ -238,7 +238,7 @@ Please check this [rules](https://github.com/vuejs/eslint-plugin-vue#bulb-rules)
 
 1. Shorthand `@` is preferable over `v-on`
 
-   ```javascript
+   ```html
    // bad
    <component v-on:click="eventHandler"/>
 
@@ -248,7 +248,7 @@ Please check this [rules](https://github.com/vuejs/eslint-plugin-vue#bulb-rules)
 
 1. Shorthand `:` is preferable over `v-bind`
 
-   ```javascript
+   ```html
    // bad
    <component v-bind:class="btn"/>
 
@@ -258,7 +258,7 @@ Please check this [rules](https://github.com/vuejs/eslint-plugin-vue#bulb-rules)
 
 1. Shorthand `#` is preferable over `v-slot`
 
-   ```javascript
+   ```html
    // bad
    <template v-slot:header></template>
 
@@ -270,7 +270,7 @@ Please check this [rules](https://github.com/vuejs/eslint-plugin-vue#bulb-rules)
 
 1. Prefer self-closing component tags
 
-   ```javascript
+   ```html
    // bad
    <component></component>
 
@@ -282,7 +282,7 @@ Please check this [rules](https://github.com/vuejs/eslint-plugin-vue#bulb-rules)
 
 1. Prefer a component's kebab-cased name over other styles when using it in a template
 
-   ```javascript
+   ```html
    // bad
    <MyComponent />
 
@@ -372,7 +372,7 @@ Useful links:
 
 1. Tooltips: Do not rely on `has-tooltip` class name for Vue components
 
-   ```javascript
+   ```html
    // bad
    <span
      class="has-tooltip"
@@ -392,7 +392,7 @@ Useful links:
 
 1. Don't change `data-original-title`.
 
-   ```javascript
+   ```html
    // bad
    <span data-original-title="tooltip text">Foo</span>
 

@@ -537,7 +537,7 @@ Arguments can be defined within the resolver, those arguments will be
 made available to the fields using the resolver. When exposing a model
 that had an internal ID (`iid`), prefer using that in combination with
 the namespace path as arguments in a resolver over a database
-ID. Othewise use a [globally unique ID](#exposing-global-ids).
+ID. Otherwise use a [globally unique ID](#exposing-global-ids).
 
 We already have a `FullPathLoader` that can be included in other
 resolvers to quickly find Projects and Namespaces which will have a

@@ -8,31 +8,57 @@ last_update: 2019-07-03
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/9186) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.0.
 > - [Squash and merge](../../../../user/project/merge_requests/squash_and_merge.md) support [introduced](https://gitlab.com/gitlab-org/gitlab/issues/13001) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.6.
 
-[Pipelines for merged results](../index.md#pipelines-for-merged-results-premium) introduces
-running a build on the result of the merged code prior to merging, as a way to keep master green.
+When [pipelines for merged results](../index.md#pipelines-for-merged-results-premium) are
+enabled, the pipeline jobs run as if the changes from your source branch have already
+been merged into the target branch.
 
-There's a scenario, however, for teams with a high number of changes in the target branch (typically master) where in many or even all cases,
-by the time the merged code is validated another commit has made it to master, invalidating the merged result.
-You'd need some kind of queuing, cancellation or retry mechanism for these scenarios
-in order to ensure an orderly flow of changes into the target branch.
+However, the target branch may be changing rapidly. When you're ready to merge,
+if you haven't run the pipeline in a while, the target branch may have already changed.
+Merging now could introduce breaking changes.
 
-Each MR that joins a merge train joins as the last item in the train,
-just as it works in the current state. However, instead of queuing and waiting,
-each item takes the completed state of the previous (pending) merge ref, adds its own changes,
-and starts the pipeline immediately in parallel under the assumption that everything is going to pass.
+*Merge trains* can prevent this from happening. A merge train is a queued list of merge
+requests, each waiting to be merged into the target branch.
 
-This means that if all the pipelines in the train merge successfully, no pipeline time is wasted either queuing or retrying.
-If the button is subsequently pressed in a different MR, instead of creating a new pipeline for the target branch,
-it creates a new pipeline targeting the merge result of the previous MR plus the target branch.
-Pipelines invalidated through failures are immediately canceled and requeued.
+Each merge request on the train runs the merged results pipeline immediately before its
+changes are merged into the target branch. If the pipeline fails, the breaking changes are
+not merged, and the target branch is unaffected.
+
+Many merge requests can be added to the train. Each is trying to merge into the target branch.
+Each request runs its own merged results pipeline, which includes the changes from
+all of the other merge requests in *front* of it on the train. All the pipelines run
+in parallel, to save time.
+
+If the pipeline for the merge request at the front of the train completes successfully,
+the changes are merged into the target branch, and the other pipelines will continue to
+run.
+
+If one of the pipelines fails, it is removed from the train, and all pipelines behind
+it restart, but without the changes that were removed.
+
+Three merge requests (`A`, `B` and `C`) are added to a merge train in order, which
+creates three merged results pipelines that run in parallel:
+
+1. The first pipeline runs on the changes from `A` combined with the target branch.
+1. The second pipeline runs on the changes from `A` and `B` combined with the target branch.
+1. The third pipeline runs on the changes from `A`, `B`, and `C` combined with the target branch.
+
+If the pipeline for `B` fails, it is removed from the train. The pipeline for
+`C` restarts with the `A` and `C` changes, but without the `B` changes.
+
+If `A` then completes successfully, it merges into the target branch, and `C` continues
+to run. If more merge requests are added to the train, they will now include the `A`
+changes that are included in the target branch, and the `C` changes that are from
+the merge request already in the train.
+
+Learn more about
+[how merge trains keep your master green](https://about.gitlab.com/blog/2020/01/30/all-aboard-merge-trains/).
 
 ## Requirements and limitations
 
 Merge trains have the following requirements and limitations:
 
-- GitLab 12.0 and later requires [Redis](https://redis.io/) 3.2 or higher to run Merge Trains.
-- This feature requires that
-  [pipelines for merged results](../index.md#pipelines-for-merged-results-premium) are
+- GitLab 12.0 and later requires [Redis](https://redis.io/) 3.2 or higher.
+- [Pipelines for merged results](../index.md#pipelines-for-merged-results-premium) must be
   **configured properly**.
 - Each merge train can run a maximum of **twenty** pipelines in parallel.
   If more than twenty merge requests are added to the merge train, the merge requests
@@ -70,7 +96,7 @@ current position will be displayed under the pipeline widget:
 ## Start/Add to merge train when pipeline succeeds
 
 You can add a merge request to a merge train only when the latest pipeline in the
-merge request finished. While the pipeline is running or pending, you cannot add
+merge request is finished. While the pipeline is running or pending, you cannot add
 the merge request to a train because the current change of the merge request may
 be broken thus it could affect the following merge requests.
 

@@ -23,7 +23,7 @@ To get the credentials (a pair of Client ID and Client Secret), you must [create
    - **Callback URL**: The callback URL of your GitLab installation. For example, `https://gitlab.example.com/users/auth/salesforce/callback`.
    - **Selected OAuth Scopes**: Move **Access your basic information (id, profile, email, address, phone)** and **Allow access to your unique identifier (OpenID)** to the right column.
 
-   ![Salesforce Oauth App Details](img/salesforce_oauth_app_details.png)
+   ![Salesforce OAuth App Details](img/salesforce_oauth_app_details.png)
 
 1. Click **Save**.
 

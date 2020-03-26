@@ -215,7 +215,7 @@ Top 25 PIDs
 ```
 
 Based on the summary, you can then view the details of syscalls made by one or more
-procsses using the `-p`/`--pid` for a specific process, or `-s`/`--stats` flags for
+processes using the `-p`/`--pid` for a specific process, or `-s`/`--stats` flags for
 a sorted list. `--stats` takes the same sorting and count options as summary.
 
 ```shell

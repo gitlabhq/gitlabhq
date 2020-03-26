@@ -242,7 +242,7 @@ to make the test output easily readable.
 - Ideally, each test case should have a field with a unique identifier
   to use for naming subtests. In the Go standard library, this is commonly the
   `name string` field.
-- Use `want`/`expect`/`actual` when you are specifcing something in the
+- Use `want`/`expect`/`actual` when you are specifying something in the
   test case that will be used for assertion.
 
 #### Variable names

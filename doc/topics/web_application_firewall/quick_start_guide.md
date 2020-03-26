@@ -238,7 +238,7 @@ $ kubectl -n gitlab-managed-apps exec -it $(kubectl get pods -n gitlab-managed-a
 }
 ```
 
-You can see that ModSecurity logs the suspicous behavior. By sending a request
+You can see that ModSecurity logs the suspicious behavior. By sending a request
 with the `User Agent: absinthe` header, which [absinthe](https://github.com/cameronhotchkies/Absinthe), a tool for testing for SQL injections uses, we can detect that someone was
 searching for vulnerabilities on our system. Detecting scanners is useful, because we
 can learn if someone is trying to exploit our system.

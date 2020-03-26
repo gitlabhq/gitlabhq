@@ -103,7 +103,7 @@ The following assumes you already have Vault installed and running.
    vault login -method=oidc port=8250 role=demo
    ```
 
-   Here is a short explaination of what this command does:
+   Here is a short explanation of what this command does:
 
    1. In the **Write the OIDC Role Config** (step 4), we created a role called `demo`. We set `role=demo` so Vault knows which configuration we'd like to login in with.
    1. To set Vault to use the `OIDC` sign-in method, we set `-method=oidc`.

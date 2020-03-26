@@ -210,7 +210,7 @@ secure note named `gitlab-{ce,ee} Review App's root password`.
 
 If [Review App Stability](https://app.periscopedata.com/app/gitlab/496118/Engineering-Productivity-Sandbox?widget=6690556&udv=785399)
 dips this may be a signal that the `review-apps-ce/ee` cluster is unhealthy.
-Leading indicators may be healthcheck failures leading to restarts or majority failure for Review App deployments.
+Leading indicators may be health check failures leading to restarts or majority failure for Review App deployments.
 
 The [Review Apps Overview dashboard](https://app.google.stackdriver.com/dashboards/6798952013815386466?project=gitlab-review-apps&timeDomain=1d)
 aids in identifying load spikes on the cluster, and if nodes are problematic or the entire cluster is trending towards unhealthy.

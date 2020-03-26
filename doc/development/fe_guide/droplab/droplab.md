@@ -185,11 +185,11 @@ DropLab adds some CSS classes to help lower the barrier to integration.
 
 For example:
 
-- The `droplab-item-selected` css class is added to items that have been selected
+- The `droplab-item-selected` CSS class is added to items that have been selected
   either by a mouse click or by enter key selection.
-- The `droplab-item-active` css class is added to items that have been selected
+- The `droplab-item-active` CSS class is added to items that have been selected
   using arrow key navigation.
-- You can add the `droplab-item-ignore` css class to any item that you do not want to be selectable. For example,
+- You can add the `droplab-item-ignore` CSS class to any item that you do not want to be selectable. For example,
   an `<li class="divider"></li>` list divider element that should not be interactive.
 
 ## Internal events

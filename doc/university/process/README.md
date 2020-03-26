@@ -22,9 +22,9 @@ please submit a merge request to add an upcoming class, assign to
 1. To allow people to contribute all content should be in Git.
 1. The content can go in a subdirectory under `/doc/university/`.
 1. To make, view or modify the slides of the classes use [Deckset](https://www.deckset.com)
-   or [RevealJS](https://revealjs.com/#/). Do not use Powerpoint or Google
+   or [RevealJS](https://revealjs.com/#/). Do not use PowerPoint or Google
    Slides since this prevents everyone from contributing.
-1. Please upload any video recordings to our Youtube channel. We prefer them to
+1. Please upload any video recordings to our YouTube channel. We prefer them to
    be public, if needed they can be unlisted but if so they should be linked from
    this page.
 1. Please create a merge request and assign to [Erica](https://gitlab.com/Erica).

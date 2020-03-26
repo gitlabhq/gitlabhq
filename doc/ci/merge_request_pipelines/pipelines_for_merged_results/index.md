@@ -7,31 +7,32 @@ last_update: 2019-07-03
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/7380) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.10.
 
-It's possible for your source and target branches to diverge, which can result
-in the scenario that source branch's pipeline was green, the target's pipeline was green,
-but the combined output fails.
+When you submit a merge request, you are requesting to merge changes from a
+source branch into a target branch. By default, the CI pipeline runs jobs
+against the source branch.
 
-By having your merge request pipeline automatically
-create a new ref that contains the merge result of the source and target branch
-(then running a pipeline on that ref), we can better test that the combined result
-is also valid.
+With *pipelines for merged results*, the pipeline runs as if the changes from
+the source branch have already been merged into the target branch.
 
-GitLab can run pipelines for merge requests
-on this merged result. That is, where the source and target branches are combined into a
-new ref and a pipeline for this ref validates the result prior to merging.
+If the pipeline fails due to a problem in the target branch, you can wait until the
+target is fixed and re-run the pipeline.
+This new pipeline will run as if the source is merged with the updated target, and you
+will not need to rebase.
 
-![Merge request pipeline as the head pipeline](img/merged_result_pipeline_v12_3.png)
+The pipeline does not automatically run when the target branch changes. Only changes
+to the source branch trigger a new pipeline. If a long time has passed since the last successful
+pipeline, you may want to re-run it before merge, to ensure that the source changes
+can still be successfully merged into the target.
 
-There are some cases where creating a combined ref is not possible or not wanted.
-For example, a source branch that has conflicts with the target branch
-or a merge request that is still in WIP status. In this case,
-GitLab doesn't create a merge commit and the pipeline runs on source branch, instead,
-which is a default behavior of [Pipelines for merge requests](../index.md)
- i.e. `detached` label is shown to the pipelines.
+When the merge request can't be merged, the pipeline runs against the source branch only. For example, when:
 
-The detached state serves to warn you that you are working in a situation
-subjected to merge problems, and helps to highlight that you should
-get out of WIP status or resolve merge conflicts as soon as possible.
+- The target branch has changes that conflict with the changes in the source branch.
+- The merge request is a
+  [work in progress](../../../user/project/merge_requests/work_in_progress_merge_requests.md).
+
+In these cases, the pipeline runs as a [pipeline for merge requests](../index.md)
+and is labeled as `detached`. If these cases no longer exist, new pipelines will
+again run against the merged results.
 
 ## Requirements and limitations
 

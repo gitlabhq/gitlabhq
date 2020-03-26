@@ -238,7 +238,7 @@ limited by its own restrictions. The credentials are configured as a
 FDW configuration and credentials definition are managed automatically by the
 Omnibus GitLab `gitlab-ctl reconfigure` command.
 
-#### Refeshing the Foreign Tables
+#### Refreshing the Foreign Tables
 
 Whenever a new Geo node is configured or the database schema changes on the
 **primary** node, you must refresh the foreign tables on the **secondary** node

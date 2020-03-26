@@ -230,7 +230,7 @@ Gitaly is a service designed by GitLab to remove our need for NFS for Git storag
 - Process: `praefect`
 
 Praefect is a transparent proxy between each Git client and the Gitaly coordinating the replication of
-repository updates to secondairy nodes.
+repository updates to secondary nodes.
 
 #### GitLab Geo
 

@@ -214,7 +214,7 @@ for its search function. This is how it works:
 
 1. GitLab is a member of the [docsearch program](https://community.algolia.com/docsearch/#join-docsearch-program),
    which is the free tier of [Algolia](https://www.algolia.com/).
-1. Algolia hosts a [doscsearch config](https://github.com/algolia/docsearch-configs/blob/master/configs/gitlab.json)
+1. Algolia hosts a [DocSearch configuration](https://github.com/algolia/docsearch-configs/blob/master/configs/gitlab.json)
    for the GitLab docs site, and we've worked together to refine it.
 1. That [config](https://community.algolia.com/docsearch/config-file.html) is
    parsed by their [crawler](https://community.algolia.com/docsearch/crawler-overview.html)

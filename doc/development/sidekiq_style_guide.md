@@ -255,7 +255,7 @@ discouraged, and alternative approaches to processing the work should be
 considered.
 
 If a worker needs large amounts of both memory and CPU time, it should
-be marked as memory-bound, due to the above restrction on high urgency
+be marked as memory-bound, due to the above restriction on high urgency
 memory-bound workers.
 
 ## Declaring a Job as CPU-bound

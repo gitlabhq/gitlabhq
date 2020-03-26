@@ -46,11 +46,8 @@ Single file editing is based on the [Ace Editor](https://ace.c9.io).
 ## Commit changes
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/4539) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.4 and [brought to GitLab Core](https://gitlab.com/gitlab-org/gitlab-foss/issues/44157) in 10.7.
-> - From [GitLab 12.7 onwards](https://gitlab.com/gitlab-org/gitlab/issues/33441),
-files were automatically staged.
-> - From [GitLab 12.9 onwards](https://gitlab.com/gitlab-org/gitlab/-/issues/196609), support for staging files was removed
-to prevent loss of unstaged data. All your current changes necessarily have to be
-committed or discarded.
+> - From [GitLab 12.7 onward](https://gitlab.com/gitlab-org/gitlab/issues/33441), files were automatically staged.
+> - From [GitLab 12.9 onward](https://gitlab.com/gitlab-org/gitlab/-/issues/196609), support for staging files was removed to prevent loss of unstaged data. All your current changes necessarily have to be committed or discarded.
 
 After making your changes, click the **Commit** button on the bottom-left to
 review the list of changed files.
