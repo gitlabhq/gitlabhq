@@ -120,4 +120,4 @@ Please see [Getting help for GitLab](https://about.gitlab.com/getting-help/) on 
 
 ## Is it awesome?
 
-[These people](https://twitter.com/gitlab/likes) seem to like it..
+[These people](https://twitter.com/gitlab/likes) seem to like it...
