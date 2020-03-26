@@ -87,6 +87,9 @@ or over the size limit, you can [reduce your repository size with Git](../projec
 | -----------             | ----------------- | ------------- |
 | Repository size including LFS | 10G         | Unlimited     |
 
+NOTE: **Note:**
+A single `git push` is limited to 5GB. LFS is not affected by this limit.
+
 ## IP range
 
 GitLab.com is using the IP range `34.74.90.64/28` for traffic from its Web/API

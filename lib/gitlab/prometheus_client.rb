@@ -6,6 +6,7 @@ module Gitlab
     include Gitlab::Utils::StrongMemoize
     Error = Class.new(StandardError)
     QueryError = Class.new(Gitlab::PrometheusClient::Error)
+    HEALTHY_RESPONSE = "Prometheus is Healthy.\n"
 
     # Target number of data points for `query_range`.
     # Please don't exceed the limit of 11000 data points
@@ -32,13 +33,20 @@ module Gitlab
       json_api_get('query', query: '1')
     end
 
+    def healthy?
+      response_body = handle_management_api_response(get(health_url, {}))
+
+      # From Prometheus docs: This endpoint always returns 200 and should be used to check Prometheus health.
+      response_body == HEALTHY_RESPONSE
+    end
+
     def proxy(type, args)
       path = api_path(type)
       get(path, args)
     rescue Gitlab::HTTP::ResponseError => ex
       raise PrometheusClient::Error, "Network connection error" unless ex.response && ex.response.try(:code)
 
-      handle_response(ex.response)
+      handle_querying_api_response(ex.response)
     end
 
     def query(query, time: Time.now)
@@ -79,6 +87,10 @@ module Gitlab
       [QUERY_RANGE_MIN_STEP, step].max
     end
 
+    def health_url
+      [api_url, '-/healthy'].join('/')
+    end
+
     private
 
     def api_path(type)
@@ -88,11 +100,11 @@ module Gitlab
     def json_api_get(type, args = {})
       path = api_path(type)
       response = get(path, args)
-      handle_response(response)
+      handle_querying_api_response(response)
     rescue Gitlab::HTTP::ResponseError => ex
       raise PrometheusClient::Error, "Network connection error" unless ex.response && ex.response.try(:code)
 
-      handle_response(ex.response)
+      handle_querying_api_response(ex.response)
     end
 
     def gitlab_http_key(key)
@@ -119,7 +131,15 @@ module Gitlab
       raise PrometheusClient::Error, 'Connection refused'
     end
 
-    def handle_response(response)
+    def handle_management_api_response(response)
+      if response.code == 200
+        response.body
+      else
+        raise PrometheusClient::Error, "#{response.code} - #{response.body}"
+      end
+    end
+
+    def handle_querying_api_response(response)
       response_code = response.try(:code)
       response_body = response.try(:body)
 

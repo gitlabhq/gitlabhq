@@ -16,6 +16,26 @@ describe Gitlab::PrometheusClient do
     end
   end
 
+  describe '#healthy?' do
+    it 'returns true when status code is 200 and healthy response body' do
+      stub_request(:get, subject.health_url).to_return(status: 200, body: described_class::HEALTHY_RESPONSE)
+
+      expect(subject.healthy?).to eq(true)
+    end
+
+    it 'returns false when status code is 200 and unhealthy response body' do
+      stub_request(:get, subject.health_url).to_return(status: 200, body: '')
+
+      expect(subject.healthy?).to eq(false)
+    end
+
+    it 'raises error when status code not 200' do
+      stub_request(:get, subject.health_url).to_return(status: 500, body: '')
+
+      expect { subject.healthy? }.to raise_error(Gitlab::PrometheusClient::Error)
+    end
+  end
+
   # This shared examples expect:
   # - query_url: A query URL
   # - execute_query: A query call

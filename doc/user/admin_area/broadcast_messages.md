@@ -4,14 +4,46 @@ type: reference, howto
 
 # Broadcast Messages **(CORE ONLY)**
 
-GitLab can display messages to all users of a GitLab instance in a banner that appears in the UI.
+GitLab can display broadcast messages to all users of a GitLab instance. There are two types of broadcast messages:
 
-![Broadcast Message](img/broadcast_messages.png)
+- banners
+- notifications
+
+You can style a message's content using the `a` and `br` HTML tags. The `br` tag inserts a line break. The `a` HTML tag accepts `class` and `style` attributes with the following CSS properties:
+
+- `color`
+- `border`
+- `background`
+- `padding`
+- `margin`
+- `text-decoration`
+
+## Banners
+
+Banners are shown on the top of a page.
+
+![Broadcast Message Banner](img/broadcast_messages_banner_v12_10.png)
+
+## Notifications
+
+Notifications are shown on the bottom right of a page and can contain placeholders. A placeholder is replaced with an attribute of the active user. Placeholders must be surrounded by curly braces, for example `{{name}}`.
+The available placeholders are:
+
+- `{{email}}`
+- `{{name}}`
+- `{{user_id}}`
+- `{{username}}`
+- `{{instance_id}}`
+
+If the user is not signed in, user related values will be empty.
+
+![Broadcast Message Notification](img/broadcast_messages_notification_v12_10.png)
 
 Broadcast messages can be managed using the [broadcast messages API](../../api/broadcast_messages.md).
 
 NOTE: **Note:**
 If more than one banner message is active at one time, they are displayed in a stack in order of creation.
+If more than one notification message is active at one time, only the newest is shown.
 
 ## Adding a broadcast message
 
