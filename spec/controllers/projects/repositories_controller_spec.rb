@@ -28,6 +28,12 @@ describe Projects::RepositoriesController do
         sign_in(user)
       end
 
+      it_behaves_like "hotlink interceptor" do
+        let(:http_request) do
+          get :archive, params: { namespace_id: project.namespace, project_id: project, id: "master" }, format: "zip"
+        end
+      end
+
       it "uses Gitlab::Workhorse" do
         get :archive, params: { namespace_id: project.namespace, project_id: project, id: "master" }, format: "zip"
 

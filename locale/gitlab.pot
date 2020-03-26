@@ -12780,6 +12780,9 @@ msgstr ""
 msgid "Mirror repository"
 msgstr ""
 
+msgid "Mirror settings are only available to GitLab administrators."
+msgstr ""
+
 msgid "Mirror user"
 msgstr ""
 
@@ -18762,6 +18765,9 @@ msgid "Specific Runners"
 msgstr ""
 
 msgid "Specified URL cannot be used."
+msgstr ""
+
+msgid "Specified URL cannot be used: \"%{reason}\""
 msgstr ""
 
 msgid "Specify an e-mail address regex pattern to identify default internal users."

@@ -238,24 +238,44 @@ describe API::Triggers do
   end
 
   describe 'PUT /projects/:id/triggers/:trigger_id' do
-    context 'authenticated user with valid permissions' do
-      let(:new_description) { 'new description' }
+    context 'user is maintainer of the project' do
+      context 'the trigger belongs to user' do
+        let(:new_description) { 'new description' }
 
-      it 'updates description' do
-        put api("/projects/#{project.id}/triggers/#{trigger.id}", user),
-          params: { description: new_description }
+        it 'updates description' do
+          put api("/projects/#{project.id}/triggers/#{trigger.id}", user),
+            params: { description: new_description }
 
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response).to include('description' => new_description)
-        expect(trigger.reload.description).to eq(new_description)
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to include('description' => new_description)
+          expect(trigger.reload.description).to eq(new_description)
+        end
+      end
+
+      context 'the trigger does not belong to user' do
+        it 'does not update trigger' do
+          put api("/projects/#{project.id}/triggers/#{trigger2.id}", user)
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
       end
     end
 
-    context 'authenticated user with invalid permissions' do
-      it 'does not update trigger' do
-        put api("/projects/#{project.id}/triggers/#{trigger.id}", user2)
+    context 'user is developer of the project' do
+      context 'the trigger belongs to user' do
+        it 'does not update trigger' do
+          put api("/projects/#{project.id}/triggers/#{trigger2.id}", user2)
 
-        expect(response).to have_gitlab_http_status(:forbidden)
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+
+      context 'the trigger does not belong to user' do
+        it 'does not update trigger' do
+          put api("/projects/#{project.id}/triggers/#{trigger.id}", user2)
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
       end
     end
 
