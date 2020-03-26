@@ -3,8 +3,7 @@
 require 'spec_helper'
 
 describe Gitlab::JiraImport::Stage::ImportNotesWorker do
-  let(:project) { create(:project) }
-  let(:worker) { described_class.new }
+  let_it_be(:project) { create(:project) }
 
   describe 'modules' do
     it_behaves_like 'include import workers modules'

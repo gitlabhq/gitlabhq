@@ -34,8 +34,6 @@ module Ci
         end
 
       downstream_pipeline.tap do |pipeline|
-        next if Feature.disabled?(:ci_drop_bridge_on_downstream_errors, project, default_enabled: true)
-
         update_bridge_status!(@bridge, pipeline)
       end
     end

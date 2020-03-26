@@ -63,6 +63,11 @@ input AdminSidekiqQueuesDeleteJobsInput {
   queueName: String!
 
   """
+  Delete jobs matching related_class in the context metadata
+  """
+  relatedClass: String
+
+  """
   Delete jobs matching root_namespace in the context metadata
   """
   rootNamespace: String
@@ -4093,6 +4098,58 @@ Represents untyped JSON
 """
 scalar JSON
 
+type JiraImport {
+  """
+  Project key for the imported Jira project
+  """
+  jiraProjectKey: String!
+
+  """
+  Timestamp of when the Jira import was created/started
+  """
+  scheduledAt: Time
+
+  """
+  User that started the Jira import
+  """
+  scheduledBy: User
+}
+
+"""
+The connection type for JiraImport.
+"""
+type JiraImportConnection {
+  """
+  A list of edges.
+  """
+  edges: [JiraImportEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [JiraImport]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+An edge in a connection.
+"""
+type JiraImportEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: JiraImport
+}
+
 type Label {
   """
   Background color of the label
@@ -5749,7 +5806,7 @@ type Project {
   id: ID!
 
   """
-  Status of project import background job of the project
+  Status of import background job of the project
   """
   importStatus: String
 
@@ -5937,6 +5994,36 @@ type Project {
   (deprecated) Does this project have issues enabled?. Use `issues_access_level` instead
   """
   issuesEnabled: Boolean
+
+  """
+  Status of Jira import background job of the project
+  """
+  jiraImportStatus: String
+
+  """
+  Jira imports into the project
+  """
+  jiraImports(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): JiraImportConnection
 
   """
   (deprecated) Enable jobs for this project. Use `builds_access_level` instead

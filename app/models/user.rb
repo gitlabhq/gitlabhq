@@ -1715,6 +1715,23 @@ class User < ApplicationRecord
     super
   end
 
+  # This is copied from Devise::Models::TwoFactorAuthenticatable#consume_otp!
+  #
+  # An OTP cannot be used more than once in a given timestep
+  # Storing timestep of last valid OTP is sufficient to satisfy this requirement
+  #
+  # See:
+  #   <https://github.com/tinfoil/devise-two-factor/blob/master/lib/devise_two_factor/models/two_factor_authenticatable.rb#L66>
+  #
+  def consume_otp!
+    if self.consumed_timestep != current_otp_timestep
+      self.consumed_timestep = current_otp_timestep
+      return Gitlab::Database.read_only? ? true : save(validate: false)
+    end
+
+    false
+  end
+
   private
 
   def default_private_profile_to_false

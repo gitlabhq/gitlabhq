@@ -39,4 +39,8 @@ class JiraImportData < ProjectImportData
 
     data['jira'].delete(FORCE_IMPORT_KEY)
   end
+
+  def current_project
+    projects.last
+  end
 end

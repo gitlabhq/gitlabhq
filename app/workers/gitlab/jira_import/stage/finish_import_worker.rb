@@ -11,6 +11,7 @@ module Gitlab
         def import(project)
           project.after_import
         ensure
+          JiraImport.cache_cleanup(project.id)
           project.import_data.becomes(JiraImportData).finish_import!
           project.import_data.save!
         end

@@ -37,7 +37,7 @@ module Authenticates2FAForAdminMode
       # Remove any lingering user data from login
       session.delete(:otp_user_id)
 
-      user.save!
+      user.save! unless Gitlab::Database.read_only?
 
       # The admin user has successfully passed 2fa, enable admin mode ignoring password
       enable_admin_mode

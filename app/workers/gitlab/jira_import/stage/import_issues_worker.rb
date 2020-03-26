@@ -9,12 +9,19 @@ module Gitlab
         private
 
         def import(project)
-          # fake issues import workers for now
-          # new job waiter will have zero jobs_remaining by default, so it will just pass on to next stage
-          jobs_waiter = JobWaiter.new
+          jobs_waiter = Gitlab::JiraImport::IssuesImporter.new(project).execute
+
           project.import_state.refresh_jid_expiration
 
-          Gitlab::JiraImport::AdvanceStageWorker.perform_async(project.id, { jobs_waiter.key => jobs_waiter.jobs_remaining }, :attachments)
+          Gitlab::JiraImport::AdvanceStageWorker.perform_async(
+            project.id,
+            { jobs_waiter.key => jobs_waiter.jobs_remaining },
+            next_stage(project)
+          )
+        end
+
+        def next_stage(project)
+          Gitlab::JiraImport.get_issues_next_start_at(project.id) < 0 ? :attachments : :issues
         end
       end
     end

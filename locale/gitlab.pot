@@ -11287,6 +11287,12 @@ msgstr ""
 msgid "Jira Issue Import"
 msgstr ""
 
+msgid "Jira import feature is disabled."
+msgstr ""
+
+msgid "Jira integration not configured."
+msgstr ""
+
 msgid "JiraService|Events for %{noteable_model_name} are disabled."
 msgstr ""
 
@@ -21396,6 +21402,9 @@ msgid "Unable to fetch unscanned projects"
 msgstr ""
 
 msgid "Unable to fetch vulnerable projects"
+msgstr ""
+
+msgid "Unable to find Jira project to import data from."
 msgstr ""
 
 msgid "Unable to generate new instance ID"

@@ -231,14 +231,6 @@ module Ci
         end
       end
 
-      after_transition created: :pending do |pipeline|
-        next if Feature.enabled?(:ci_drop_bridge_on_downstream_errors, pipeline.project, default_enabled: true)
-        next unless pipeline.bridge_triggered?
-        next if pipeline.bridge_waiting?
-
-        pipeline.update_bridge_status!
-      end
-
       after_transition any => [:success, :failed] do |pipeline|
         pipeline.run_after_commit do
           if Feature.enabled?(:ci_pipeline_fixed_notifications)
@@ -759,15 +751,6 @@ module Ci
       else
         [self.id]
       end
-    end
-
-    def update_bridge_status!
-      raise ArgumentError unless bridge_triggered?
-      raise BridgeStatusError unless source_bridge.active?
-
-      source_bridge.success!
-    rescue => e
-      Gitlab::ErrorTracking.track_exception(e, pipeline_id: id)
     end
 
     def bridge_triggered?

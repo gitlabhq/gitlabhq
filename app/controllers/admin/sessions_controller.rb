@@ -64,7 +64,9 @@ class Admin::SessionsController < ApplicationController
   end
 
   def valid_otp_attempt?(user)
-    user.validate_and_consume_otp!(user_params[:otp_attempt]) ||
-        user.invalidate_otp_backup_code!(user_params[:otp_attempt])
+    valid_otp_attempt = user.validate_and_consume_otp!(user_params[:otp_attempt])
+    return valid_otp_attempt if Gitlab::Database.read_only?
+
+    valid_otp_attempt || user.invalidate_otp_backup_code!(user_params[:otp_attempt])
   end
 end

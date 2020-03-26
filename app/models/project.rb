@@ -857,6 +857,12 @@ class Project < ApplicationRecord
     import_state&.status || 'none'
   end
 
+  def jira_import_status
+    return import_status if jira_force_import?
+
+    import_data&.becomes(JiraImportData)&.projects.blank? ? 'none' : 'finished'
+  end
+
   def human_import_status_name
     import_state&.human_status_name || 'none'
   end

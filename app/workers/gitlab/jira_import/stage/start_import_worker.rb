@@ -26,6 +26,7 @@ module Gitlab
         def start_import
           return false unless project
           return false if Feature.disabled?(:jira_issue_import, project)
+          return false unless project.jira_force_import?
           return true if start(project.import_state)
 
           Gitlab::Import::Logger.info(

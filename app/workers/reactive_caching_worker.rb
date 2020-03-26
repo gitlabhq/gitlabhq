@@ -13,6 +13,11 @@ class ReactiveCachingWorker # rubocop:disable Scalability/IdempotentWorker
   urgency :high
   worker_resource_boundary :cpu
 
+  def self.context_for_arguments(arguments)
+    class_name, *_other_args = arguments
+    Gitlab::ApplicationContext.new(related_class: class_name)
+  end
+
   def perform(class_name, id, *args)
     klass = begin
       class_name.constantize

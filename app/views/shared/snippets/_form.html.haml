@@ -3,7 +3,8 @@
 
 .snippet-form-holder
   = form_for @snippet, url: url,
-             html: { class: "snippet-form js-requires-input js-quick-submit common-note-form" } do |f|
+             html: { class: "snippet-form js-requires-input js-quick-submit common-note-form" },
+             data: { "snippet-type": @snippet.project_id ? 'project' : 'personal'} do |f|
     = form_errors(@snippet)
 
     .form-group

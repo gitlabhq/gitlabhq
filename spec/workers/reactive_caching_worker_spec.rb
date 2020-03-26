@@ -28,4 +28,14 @@ describe ReactiveCachingWorker do
       end
     end
   end
+
+  describe 'worker context' do
+    it 'sets the related class on the job' do
+      described_class.perform_async('Environment', 1, 'other', 'argument')
+
+      scheduled_job = described_class.jobs.first
+
+      expect(scheduled_job).to include('meta.related_class' => 'Environment')
+    end
+  end
 end

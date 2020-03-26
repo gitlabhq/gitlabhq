@@ -2282,6 +2282,44 @@ describe Project do
     end
   end
 
+  describe '#jira_import_status' do
+    let(:project) { create(:project, :import_started, import_type: 'jira') }
+
+    context 'when import_data is nil' do
+      it 'returns none' do
+        expect(project.import_data).to be nil
+        expect(project.jira_import_status).to eq('none')
+      end
+    end
+
+    context 'when import_data is set' do
+      let(:jira_import_data) { JiraImportData.new }
+      let(:project) { create(:project, :import_started, import_data: jira_import_data, import_type: 'jira') }
+
+      it 'returns none' do
+        expect(project.import_data.becomes(JiraImportData).force_import?).to be false
+        expect(project.jira_import_status).to eq('none')
+      end
+
+      context 'when jira_force_import is true' do
+        let(:imported_jira_project) do
+          JiraImportData::JiraProjectDetails.new('xx', Time.now.strftime('%Y-%m-%d %H:%M:%S'), { user_id: 1, name: 'root' })
+        end
+
+        before do
+          jira_import_data = project.import_data.becomes(JiraImportData)
+          jira_import_data << imported_jira_project
+          jira_import_data.force_import!
+        end
+
+        it 'returns started' do
+          expect(project.import_data.becomes(JiraImportData).force_import?).to be true
+          expect(project.jira_import_status).to eq('started')
+        end
+      end
+    end
+  end
+
   describe '#human_import_status_name' do
     context 'with import_state' do
       it 'returns the right human import status' do

@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 describe Gitlab::JiraImport::Stage::FinishImportWorker do
-  let(:project) { create(:project) }
-  let(:worker) { described_class.new }
+  let_it_be(:project) { create(:project) }
+  let_it_be(:worker) { described_class.new }
 
   describe 'modules' do
     it_behaves_like 'include import workers modules'
@@ -46,7 +46,7 @@ describe Gitlab::JiraImport::Stage::FinishImportWorker do
         it 'changes import state to finished' do
           worker.perform(project.id)
 
-          expect(project.reload.import_state.status).to eq "finished"
+          expect(project.reload.import_state.status).to eq("finished")
         end
 
         it 'removes force-import flag' do

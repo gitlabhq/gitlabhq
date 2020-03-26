@@ -90,8 +90,9 @@ module Types
           end
 
     field :import_status, GraphQL::STRING_TYPE, null: true,
-          description: 'Status of project import background job of the project'
-
+          description: 'Status of import background job of the project'
+    field :jira_import_status, GraphQL::STRING_TYPE, null: true,
+          description: 'Status of Jira import background job of the project'
     field :only_allow_merge_if_pipeline_succeeds, GraphQL::BOOLEAN_TYPE, null: true,
           description: 'Indicates if merge requests of the project can only be merged with successful jobs'
     field :request_access_enabled, GraphQL::BOOLEAN_TYPE, null: true,
@@ -192,6 +193,12 @@ module Types
           null: true,
           description: 'A single board of the project',
           resolver: Resolvers::BoardsResolver.single
+
+    field :jira_imports,
+          Types::JiraImportType.connection_type,
+          null: true,
+          description: 'Jira imports into the project',
+          resolver: Resolvers::Projects::JiraImportsResolver
   end
 end
 

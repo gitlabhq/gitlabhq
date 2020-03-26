@@ -94,7 +94,7 @@ Images on the Design Management page can be enlarged by clicking on them.
 You can navigate through designs by clicking on the navigation buttons on the
 top-right corner or with <kbd>Left</kbd>/<kbd>Right</kbd> keyboard buttons.
 
-The number of comments on a design — if any — is listed to the right
+The number of discussions on a design — if any — is listed to the right
 of the design filename. Clicking on this number enlarges the design
 just like clicking anywhere else on the design.
 When a design is added or modified, an icon is displayed on the item
@@ -102,7 +102,7 @@ to help summarize changes between versions.
 
 | Indicator | Example |
 | --------- | ------- |
-| Comments | ![Comments Icon](img/design_comments_v12_3.png) |
+| Discussions | ![Discussions Icon](img/design_comments_v12_3.png) |
 | Modified (in the selected version) | ![Design Modified](img/design_modified_v12_3.png) |
 | Added (in the selected version) | ![Design Added](img/design_added_v12_3.png) |
 
@@ -110,7 +110,9 @@ to help summarize changes between versions.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/13217) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.7.
 
-Designs can be explored in greater detail by zooming in and out of the image. Control the amount of zoom with the `+` and `-` buttons at the bottom of the image. While zoomed, you can still [add new annotations](#adding-annotations-to-designs) to the image, and see any existing ones.
+Designs can be explored in greater detail by zooming in and out of the image.
+Control the amount of zoom with the `+` and `-` buttons at the bottom of the image.
+While zoomed, you can still [start new discussions](#starting-discussions-on-designs) on the image, and see any existing ones.
 
 ![Design zooming](img/design_zooming_v12_7.png)
 
@@ -142,23 +144,22 @@ Only the latest version of the designs can be deleted.
 Deleted designs are not permanently lost; they can be
 viewed by browsing previous versions.
 
-## Adding annotations to designs
+## Starting discussions on designs
 
-When a design is uploaded, you can add annotations by clicking on
-the image on the exact location you'd like to add the note to.
-A badge is added to the image identifying the annotation, from
-which you can start a new discussion:
+When a design is uploaded, you can start a discussion by clicking on
+the image on the exact location you would like the discussion to be focused on.
+A pin is added to the image, identifying the discussion's location.
 
 ![Starting a new discussion on design](img/adding_note_to_design_1.png)
 
 [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/34353) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.8,
-you can adjust the badge's position by dragging it around the image. This is useful
+you can adjust a pin's position by dragging it around the image. This is useful
 for when your design layout has changed between revisions, or if you need to move an
-existing badge to add a new one in its place.
+existing pin to add a new one in its place.
 
-Different discussions have different badge numbers:
+Different discussions have different pin numbers:
 
-![Discussions on design annotations](img/adding_note_to_design_2.png)
+![Discussions on designs](img/adding_note_to_design_2.png)
 
-From GitLab 12.5 on, new annotations will be outputted to the issue activity,
+From GitLab 12.5 on, new discussions will be outputted to the issue activity,
 so that everyone involved can participate in the discussion.

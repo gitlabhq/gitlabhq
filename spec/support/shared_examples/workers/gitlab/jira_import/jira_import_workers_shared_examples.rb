@@ -16,7 +16,7 @@ shared_examples 'exit import not started' do
   it 'does nothing, and exits' do
     expect(Gitlab::JiraImport::AdvanceStageWorker).not_to receive(:perform_async)
 
-    worker.perform(project.id)
+    described_class.new.perform(project.id)
   end
 end
 
@@ -25,8 +25,8 @@ shared_examples 'advance to next stage' do |next_stage|
 
   it "advances to #{next_stage} stage" do
     expect(Gitlab::JobWaiter).to receive(:new).and_return(job_waiter)
-    expect(Gitlab::JiraImport::AdvanceStageWorker).to receive(:perform_async).with(project.id, { job_waiter.key => job_waiter.jobs_remaining }, next_stage.to_sym)
+    expect(Gitlab::JiraImport::AdvanceStageWorker).to receive(:perform_async).with(project.id, { job_waiter.key => job_waiter.jobs_remaining }, next_stage.to_sym).and_return([])
 
-    worker.perform(project.id)
+    described_class.new.perform(project.id)
   end
 end

@@ -73,7 +73,7 @@ class BambooService < CiService
   end
 
   def calculate_reactive_cache(sha, ref)
-    response = get_path("rest/api/latest/result/byChangeset/#{sha}")
+    response = try_get_path("rest/api/latest/result/byChangeset/#{sha}")
 
     { build_page: read_build_page(response), commit_status: read_commit_status(response) }
   end
@@ -81,7 +81,7 @@ class BambooService < CiService
   private
 
   def get_build_result(response)
-    return if response.code != 200
+    return if response&.code != 200
 
     # May be nil if no result, a single result hash, or an array if multiple results for a given changeset.
     result = response.dig('results', 'results', 'result')
@@ -107,7 +107,7 @@ class BambooService < CiService
   end
 
   def read_commit_status(response)
-    return :error unless response.code == 200 || response.code == 404
+    return :error unless response && (response.code == 200 || response.code == 404)
 
     result = get_build_result(response)
     status =
@@ -130,24 +130,31 @@ class BambooService < CiService
     end
   end
 
+  def try_get_path(path, query_params = {})
+    params = build_get_params(query_params)
+    params[:extra_log_info] = { project_id: project_id }
+
+    Gitlab::HTTP.try_get(build_url(path), params)
+  end
+
+  def get_path(path, query_params = {})
+    Gitlab::HTTP.get(build_url(path), build_get_params(query_params))
+  end
+
   def build_url(path)
     Gitlab::Utils.append_path(bamboo_url, path)
   end
 
-  def get_path(path, query_params = {})
-    url = build_url(path)
+  def build_get_params(query_params)
+    params = { verify: false, query: query_params }
+    return params if username.blank? && password.blank?
 
-    if username.blank? && password.blank?
-      Gitlab::HTTP.get(url, verify: false, query: query_params)
-    else
-      query_params[:os_authType] = 'basic'
-      Gitlab::HTTP.get(url,
-                       verify: false,
-                       query: query_params,
-                       basic_auth: {
-                         username: username,
-                         password: password
-                       })
-    end
+    query_params[:os_authType] = 'basic'
+    params[:basic_auth] = basic_auth
+    params
+  end
+
+  def basic_auth
+    { username: username, password: password }
   end
 end

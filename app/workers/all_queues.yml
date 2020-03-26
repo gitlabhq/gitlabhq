@@ -556,6 +556,13 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: 
+- :name: jira_importer:jira_import_import_issue
+  :feature_category: :importers
+  :has_external_dependencies: 
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: 
 - :name: jira_importer:jira_import_stage_finish_import
   :feature_category: :importers
   :has_external_dependencies: 
