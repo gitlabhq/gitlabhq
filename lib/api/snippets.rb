@@ -74,6 +74,8 @@ module API
                               desc: 'The visibility of the snippet'
       end
       post do
+        authorize! :create_snippet
+
         attrs = declared_params(include_missing: false).merge(request: request, api: true)
         service_response = ::Snippets::CreateService.new(nil, current_user, attrs).execute
         snippet = service_response.payload[:snippet]

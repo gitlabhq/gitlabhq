@@ -48,6 +48,9 @@ describe Group do
 
   describe 'validations' do
     it { is_expected.to validate_presence_of :name }
+    it { is_expected.to allow_value('group test_4').for(:name) }
+    it { is_expected.not_to allow_value('test/../foo').for(:name) }
+    it { is_expected.not_to allow_value('<script>alert("Attack!")</script>').for(:name) }
     it { is_expected.to validate_presence_of :path }
     it { is_expected.not_to validate_presence_of :owner }
     it { is_expected.to validate_presence_of :two_factor_grace_period }

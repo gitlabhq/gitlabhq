@@ -142,11 +142,7 @@ describe 'Projects > Settings > Repository settings' do
     end
 
     context 'remote mirror settings' do
-      let(:user2) { create(:user) }
-
       before do
-        project.add_maintainer(user2)
-
         visit project_settings_repository_path(project)
       end
 
@@ -204,6 +200,18 @@ describe 'Projects > Settings > Repository settings' do
 
         expect(page).to have_content('Mirroring settings were successfully updated')
         expect(page).to have_selector('[title="Copy SSH public key"]')
+      end
+
+      context 'when project mirroring is disabled' do
+        before do
+          stub_application_setting(mirror_available: false)
+          visit project_settings_repository_path(project)
+        end
+
+        it 'hides remote mirror settings' do
+          expect(page.find('.project-mirror-settings')).not_to have_selector('form')
+          expect(page).to have_content('Mirror settings are only available to GitLab administrators.')
+        end
       end
 
       def select_direction(direction = 'push')
@@ -268,6 +276,33 @@ describe 'Projects > Settings > Repository settings' do
       expect(mirror).to have_selector('.rspec-delete-mirror')
       expect(mirror).to have_selector('.rspec-disabled-mirror-badge')
       expect(mirror).not_to have_selector('.rspec-update-now-button')
+    end
+  end
+
+  context 'for admin' do
+    shared_examples_for 'shows mirror settings' do
+      it 'shows mirror settings' do
+        expect(page.find('.project-mirror-settings')).to have_selector('form')
+        expect(page).not_to have_content('Changing mirroring setting is disabled for non-admin users.')
+      end
+    end
+
+    before do
+      stub_application_setting(mirror_available: mirror_available)
+      user.update!(admin: true)
+      visit project_settings_repository_path(project)
+    end
+
+    context 'when project mirroring is enabled' do
+      let(:mirror_available) { true }
+
+      include_examples 'shows mirror settings'
+    end
+
+    context 'when project mirroring is disabled' do
+      let(:mirror_available) { false }
+
+      include_examples 'shows mirror settings'
     end
   end
 end

@@ -103,11 +103,23 @@ describe IssuePolicy do
         expect(permissions(author, confidential_issue_no_assignee)).to be_disallowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue)
       end
 
+      it 'does not allow issue author to read or update confidential issue moved to an private project' do
+        confidential_issue.project = build(:project, :private)
+
+        expect(permissions(author, confidential_issue)).to be_disallowed(:read_issue, :read_issue_iid, :update_issue)
+      end
+
       it 'allows issue assignees to read and update their confidential issues' do
         expect(permissions(assignee, confidential_issue)).to be_allowed(:read_issue, :read_issue_iid, :update_issue)
         expect(permissions(assignee, confidential_issue)).to be_disallowed(:admin_issue)
 
         expect(permissions(assignee, confidential_issue_no_assignee)).to be_disallowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue)
+      end
+
+      it 'does not allow issue assignees to read or update confidential issue moved to an private project' do
+        confidential_issue.project = build(:project, :private)
+
+        expect(permissions(assignee, confidential_issue)).to be_disallowed(:read_issue, :read_issue_iid, :update_issue)
       end
     end
   end
