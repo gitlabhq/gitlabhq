@@ -59,6 +59,16 @@ describe UploadedFile do
           expect(subject.sha256).to eq('sha256')
           expect(subject.remote_id).to eq('remote_id')
         end
+
+        it 'handles a blank path' do
+          params['file.path'] = ''
+
+          # Not a real file, so can't determine size itself
+          params['file.size'] = 1.byte
+
+          expect { described_class.from_params(params, :file, upload_path) }
+            .not_to raise_error
+        end
       end
     end
 
