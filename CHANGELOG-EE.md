@@ -1,5 +1,34 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 12.7.8 (2020-03-26)
+
+### Security (1 change)
+
+- Add NPM package versions SemVer validation.
+
+
+## 12.7.7
+
+### Security (5 changes)
+
+- Don't show Contribution Analytics to users who are not group members.
+- Update epic tree when group is transfered.
+- Fix Service Side Request Forgery in JenkinsDeprecatedService.
+- Enforce vulnerability feedback pipeline is in the same project.
+- Enforce existing vulnerability feedback pipeline is in the same project.
+
+
+## 12.7.6
+
+- No changes.
+
+## 12.7.5
+
+### Fixed (1 change)
+
+- Fix DB connection pool size for Geo database. !24021
+
+
 ## 12.7.4
 
 - No changes.

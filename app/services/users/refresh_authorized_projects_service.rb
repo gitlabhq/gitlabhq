@@ -19,8 +19,10 @@ module Users
     LEASE_TIMEOUT = 1.minute.to_i
 
     # user - The User for which to refresh the authorized projects.
-    def initialize(user)
+    def initialize(user, incorrect_auth_found_callback: nil, missing_auth_found_callback: nil)
       @user = user
+      @incorrect_auth_found_callback = incorrect_auth_found_callback
+      @missing_auth_found_callback = missing_auth_found_callback
 
       # We need an up to date User object that has access to all relations that
       # may have been created earlier. The only way to ensure this is to reload
@@ -55,6 +57,10 @@ module Users
         # rows not in the new list or with a different access level should be
         # removed.
         if !fresh[project_id] || fresh[project_id] != row.access_level
+          if incorrect_auth_found_callback
+            incorrect_auth_found_callback.call(project_id, row.access_level)
+          end
+
           array << row.project_id
         end
       end
@@ -63,6 +69,10 @@ module Users
         # rows not in the old list or with a different access level should be
         # added.
         if !current[project_id] || current[project_id].access_level != level
+          if missing_auth_found_callback
+            missing_auth_found_callback.call(project_id, level)
+          end
+
           array << [user.id, project_id, level]
         end
       end
@@ -104,5 +114,9 @@ module Users
     def fresh_authorizations
       Gitlab::ProjectAuthorizations.new(user).calculate
     end
+
+    private
+
+    attr_reader :incorrect_auth_found_callback, :missing_auth_found_callback
   end
 end

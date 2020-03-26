@@ -96,8 +96,8 @@ describe PagesDomain do
     it 'saves validity time' do
       domain.save
 
-      expect(domain.certificate_valid_not_before).to be_like_time(Time.parse("2016-02-12 14:32:00 UTC"))
-      expect(domain.certificate_valid_not_after).to be_like_time(Time.parse("2020-04-12 14:32:00 UTC"))
+      expect(domain.certificate_valid_not_before).to be_like_time(Time.parse("2020-03-16 14:20:34 UTC"))
+      expect(domain.certificate_valid_not_after).to be_like_time(Time.parse("2220-01-28 14:20:34 UTC"))
     end
   end
 

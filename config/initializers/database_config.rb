@@ -10,6 +10,16 @@ def log_pool_size(db, previous_pool_size, current_pool_size)
   Gitlab::AppLogger.debug(log_message.join(' '))
 end
 
+Gitlab.ee do
+  # We need to initialize the Geo database before
+  # setting the Geo DB connection pool size.
+  if File.exist?(Rails.root.join('config/database_geo.yml'))
+    Rails.application.configure do
+      config.geo_database = config_for(:database_geo)
+    end
+  end
+end
+
 # When running on multi-threaded runtimes like Puma or Sidekiq,
 # set the number of threads per process as the minimum DB connection pool size.
 # This is to avoid connectivity issues as was documented here:

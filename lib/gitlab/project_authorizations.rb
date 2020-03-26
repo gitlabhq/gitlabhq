@@ -62,18 +62,20 @@ module Gitlab
       cte = Gitlab::SQL::RecursiveCTE.new(:namespaces_cte)
       members = Member.arel_table
       namespaces = Namespace.arel_table
+      group_group_links = GroupGroupLink.arel_table
 
       # Namespaces the user is a member of.
       cte << user.groups
         .select([namespaces[:id], members[:access_level]])
         .except(:order)
 
-      if Feature.enabled?(:share_group_with_group, default_enabled: true)
-        # Namespaces shared with any of the group
-        cte << Group.select([namespaces[:id], 'group_group_links.group_access AS access_level'])
-                    .joins(join_group_group_links)
-                    .joins(join_members_on_group_group_links)
-      end
+      # Namespaces shared with any of the group
+      cte << Group.select([namespaces[:id],
+                           least(members[:access_level],
+                                 group_group_links[:group_access],
+                                 'access_level')])
+                  .joins(join_group_group_links)
+                  .joins(join_members_on_group_group_links)
 
       # Sub groups of any groups the user is a member of.
       cte << Group.select([
@@ -114,6 +116,8 @@ module Gitlab
       members = Member.arel_table
 
       cond = group_group_links[:shared_with_group_id].eq(members[:source_id])
+                    .and(members[:source_type].eq('Namespace'))
+                    .and(members[:requested_at].eq(nil))
                     .and(members[:user_id].eq(user.id))
       Arel::Nodes::InnerJoin.new(members, Arel::Nodes::On.new(cond))
     end

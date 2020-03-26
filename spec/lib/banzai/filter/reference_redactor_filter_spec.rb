@@ -20,8 +20,8 @@ describe Banzai::Filter::ReferenceRedactorFilter do
   it 'skips when the skip_redaction flag is set' do
     user = create(:user)
     project = create(:project)
-
     link = reference_link(project: project.id, reference_type: 'test')
+
     doc = filter(link, current_user: user, skip_redaction: true)
 
     expect(doc.css('a').length).to eq 1
@@ -51,8 +51,8 @@ describe Banzai::Filter::ReferenceRedactorFilter do
         user = create(:user)
         project = create(:project)
         project.add_maintainer(user)
-
         link = reference_link(project: project.id, reference_type: 'test')
+
         doc = filter(link, current_user: user)
 
         expect(doc.css('a').length).to eq 1
@@ -69,8 +69,8 @@ describe Banzai::Filter::ReferenceRedactorFilter do
       it 'removes unpermitted references' do
         user = create(:user)
         project = create(:project)
-
         link = reference_link(project: project.id, reference_type: 'test')
+
         doc = filter(link, current_user: user)
 
         expect(doc.css('a').length).to eq 0
@@ -90,8 +90,8 @@ describe Banzai::Filter::ReferenceRedactorFilter do
         non_member = create(:user)
         project = create(:project, :public)
         issue = create(:issue, :confidential, project: project)
-
         link = reference_link(project: project.id, issue: issue.id, reference_type: 'issue')
+
         doc = filter(link, current_user: non_member)
 
         expect(doc.css('a').length).to eq 0
@@ -124,8 +124,8 @@ describe Banzai::Filter::ReferenceRedactorFilter do
         assignee = create(:user)
         project = create(:project, :public)
         issue = create(:issue, :confidential, project: project, assignees: [assignee])
-
         link = reference_link(project: project.id, issue: issue.id, reference_type: 'issue')
+
         doc = filter(link, current_user: assignee)
 
         expect(doc.css('a').length).to eq 1
@@ -136,8 +136,8 @@ describe Banzai::Filter::ReferenceRedactorFilter do
         project = create(:project, :public)
         project.add_developer(member)
         issue = create(:issue, :confidential, project: project)
-
         link = reference_link(project: project.id, issue: issue.id, reference_type: 'issue')
+
         doc = filter(link, current_user: member)
 
         expect(doc.css('a').length).to eq 1
@@ -147,11 +147,53 @@ describe Banzai::Filter::ReferenceRedactorFilter do
         admin = create(:admin)
         project = create(:project, :public)
         issue = create(:issue, :confidential, project: project)
-
         link = reference_link(project: project.id, issue: issue.id, reference_type: 'issue')
+
         doc = filter(link, current_user: admin)
 
         expect(doc.css('a').length).to eq 1
+      end
+
+      context "when a confidential issue is moved from a public project to a private one" do
+        let(:public_project) { create(:project, :public) }
+        let(:private_project) { create(:project, :private) }
+
+        it 'removes references for author' do
+          author = create(:user)
+          issue = create(:issue, :confidential, project: public_project, author: author)
+          issue.update!(project: private_project) # move issue to private project
+          link = reference_link(project: private_project.id, issue: issue.id, reference_type: 'issue')
+
+          doc = filter(link, current_user: author)
+
+          expect(doc.css('a').length).to eq 0
+        end
+
+        it 'removes references for assignee' do
+          assignee = create(:user)
+          issue = create(:issue, :confidential, project: public_project, assignees: [assignee])
+          issue.update!(project: private_project) # move issue to private project
+          link = reference_link(project: private_project.id, issue: issue.id, reference_type: 'issue')
+
+          doc = filter(link, current_user: assignee)
+
+          expect(doc.css('a').length).to eq 0
+        end
+
+        it 'allows references for project members' do
+          member = create(:user)
+          project = create(:project, :public)
+          project_2 = create(:project, :private)
+          project.add_developer(member)
+          project_2.add_developer(member)
+          issue = create(:issue, :confidential, project: project)
+          issue.update!(project: project_2) # move issue to private project
+          link = reference_link(project: project_2.id, issue: issue.id, reference_type: 'issue')
+
+          doc = filter(link, current_user: member)
+
+          expect(doc.css('a').length).to eq 1
+        end
       end
     end
 
@@ -159,8 +201,8 @@ describe Banzai::Filter::ReferenceRedactorFilter do
       user = create(:user)
       project = create(:project, :public)
       issue = create(:issue, project: project)
-
       link = reference_link(project: project.id, issue: issue.id, reference_type: 'issue')
+
       doc = filter(link, current_user: user)
 
       expect(doc.css('a').length).to eq 1
@@ -172,8 +214,8 @@ describe Banzai::Filter::ReferenceRedactorFilter do
       it 'removes unpermitted Group references' do
         user = create(:user)
         group = create(:group, :private)
-
         link = reference_link(group: group.id, reference_type: 'user')
+
         doc = filter(link, current_user: user)
 
         expect(doc.css('a').length).to eq 0
@@ -183,8 +225,8 @@ describe Banzai::Filter::ReferenceRedactorFilter do
         user = create(:user)
         group = create(:group, :private)
         group.add_developer(user)
-
         link = reference_link(group: group.id, reference_type: 'user')
+
         doc = filter(link, current_user: user)
 
         expect(doc.css('a').length).to eq 1
@@ -200,8 +242,8 @@ describe Banzai::Filter::ReferenceRedactorFilter do
     context 'with data-user' do
       it 'allows any User reference' do
         user = create(:user)
-
         link = reference_link(user: user.id, reference_type: 'user')
+
         doc = filter(link)
 
         expect(doc.css('a').length).to eq 1

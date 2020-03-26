@@ -138,7 +138,7 @@ describe MergeRequestPollWidgetEntity do
   end
 
   describe 'pipeline' do
-    let(:pipeline) { create(:ci_empty_pipeline, project: project, ref: resource.source_branch, sha: resource.source_branch_sha, head_pipeline_of: resource) }
+    let!(:pipeline) { create(:ci_empty_pipeline, project: project, ref: resource.source_branch, sha: resource.source_branch_sha, head_pipeline_of: resource) }
 
     before do
       allow_any_instance_of(MergeRequestPresenter).to receive(:can?).and_call_original
@@ -158,6 +158,10 @@ describe MergeRequestPollWidgetEntity do
 
           expect(subject[:pipeline]).to eq(pipeline_payload)
         end
+
+        it 'returns ci_status' do
+          expect(subject[:ci_status]).to eq('pending')
+        end
       end
 
       context 'when is not up to date' do
@@ -171,9 +175,14 @@ describe MergeRequestPollWidgetEntity do
 
     context 'when user does not have access to pipelines' do
       let(:result) { false }
+      let(:req) { double('request', current_user: user, project: project) }
 
       it 'does not have pipeline' do
         expect(subject[:pipeline]).to eq(nil)
+      end
+
+      it 'does not return ci_status' do
+        expect(subject[:ci_status]).to eq(nil)
       end
     end
   end

@@ -7,7 +7,7 @@ describe FileMover do
 
   let(:user) { create(:user) }
   let(:filename) { 'banana_sample.gif' }
-  let(:secret) { 'secret55' }
+  let(:secret) { SecureRandom.hex }
   let(:temp_file_path) { File.join("uploads/-/system/user/#{user.id}", secret, filename) }
 
   let(:temp_description) do
@@ -47,8 +47,8 @@ describe FileMover do
           subject
 
           expect(snippet.reload.description)
-            .to eq("test ![banana_sample](/uploads/-/system/personal_snippet/#{snippet.id}/secret55/banana_sample.gif) "\
-                   "same ![banana_sample](/uploads/-/system/personal_snippet/#{snippet.id}/secret55/banana_sample.gif) ")
+            .to eq("test ![banana_sample](/uploads/-/system/personal_snippet/#{snippet.id}/#{secret}/banana_sample.gif) "\
+                   "same ![banana_sample](/uploads/-/system/personal_snippet/#{snippet.id}/#{secret}/banana_sample.gif) ")
         end
 
         it 'updates existing upload record' do
@@ -75,8 +75,8 @@ describe FileMover do
           subject
 
           expect(snippet.reload.description)
-            .to eq("test ![banana_sample](/uploads/-/system/user/#{user.id}/secret55/banana_sample.gif) "\
-                   "same ![banana_sample](/uploads/-/system/user/#{user.id}/secret55/banana_sample.gif) ")
+            .to eq("test ![banana_sample](/uploads/-/system/user/#{user.id}/#{secret}/banana_sample.gif) "\
+                   "same ![banana_sample](/uploads/-/system/user/#{user.id}/#{secret}/banana_sample.gif) ")
         end
 
         it 'does not change the upload record' do
@@ -101,8 +101,8 @@ describe FileMover do
           subject
 
           expect(snippet.reload.description)
-            .to eq("test ![banana_sample](/uploads/-/system/personal_snippet/#{snippet.id}/secret55/banana_sample.gif) "\
-                   "same ![banana_sample](/uploads/-/system/personal_snippet/#{snippet.id}/secret55/banana_sample.gif) ")
+            .to eq("test ![banana_sample](/uploads/-/system/personal_snippet/#{snippet.id}/#{secret}/banana_sample.gif) "\
+                   "same ![banana_sample](/uploads/-/system/personal_snippet/#{snippet.id}/#{secret}/banana_sample.gif) ")
         end
 
         it 'creates new target upload record an delete the old upload' do
@@ -121,8 +121,8 @@ describe FileMover do
           subject
 
           expect(snippet.reload.description)
-            .to eq("test ![banana_sample](/uploads/-/system/user/#{user.id}/secret55/banana_sample.gif) "\
-                   "same ![banana_sample](/uploads/-/system/user/#{user.id}/secret55/banana_sample.gif) ")
+            .to eq("test ![banana_sample](/uploads/-/system/user/#{user.id}/#{secret}/banana_sample.gif) "\
+                   "same ![banana_sample](/uploads/-/system/user/#{user.id}/#{secret}/banana_sample.gif) ")
         end
 
         it 'does not change the upload record' do
@@ -138,12 +138,8 @@ describe FileMover do
       let(:temp_file_path) { File.join("uploads/-/system/user/#{user.id}", '..', 'another_subdir_of_temp') }
 
       it 'does not trigger move if path is outside designated directory' do
-        stub_file_mover("uploads/-/system/user/#{user.id}/another_subdir_of_temp")
         expect(FileUtils).not_to receive(:move)
-
-        subject
-
-        expect(snippet.reload.description).to eq(temp_description)
+        expect { subject }.to raise_error(FileUploader::InvalidSecret)
       end
     end
 

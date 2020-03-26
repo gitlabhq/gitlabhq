@@ -3,9 +3,7 @@
 require 'spec_helper'
 
 describe Gitlab::Regex do
-  describe '.project_name_regex' do
-    subject { described_class.project_name_regex }
-
+  shared_examples_for 'project/group name regex' do
     it { is_expected.to match('gitlab-ce') }
     it { is_expected.to match('GitLab CE') }
     it { is_expected.to match('100 lines') }
@@ -13,6 +11,34 @@ describe Gitlab::Regex do
     it { is_expected.to match('Český název') }
     it { is_expected.to match('Dash – is this') }
     it { is_expected.not_to match('?gitlab') }
+  end
+
+  shared_examples_for 'project/group name error message' do
+    it { is_expected.to eq("can contain only letters, digits, emojis, '_', '.', dash, space. It must start with letter, digit, emoji or '_'.") }
+  end
+
+  describe '.project_name_regex' do
+    subject { described_class.project_name_regex }
+
+    it_behaves_like 'project/group name regex'
+  end
+
+  describe '.group_name_regex' do
+    subject { described_class.group_name_regex }
+
+    it_behaves_like 'project/group name regex'
+  end
+
+  describe '.project_name_regex_message' do
+    subject { described_class.project_name_regex_message }
+
+    it_behaves_like 'project/group name error message'
+  end
+
+  describe '.group_name_regex_message' do
+    subject { described_class.group_name_regex_message }
+
+    it_behaves_like 'project/group name error message'
   end
 
   describe '.environment_name_regex' do

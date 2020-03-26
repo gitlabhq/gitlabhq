@@ -2,6 +2,69 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 12.7.8 (2020-03-26)
+
+### Security (17 changes)
+
+- Redact notes in moved confidential issues.
+- Ignore empty remote_id params from Workhorse accelerated uploads.
+- External user can not create personal snippet through API.
+- Prevent malicious entry for group name.
+- Restrict mirroring changes to admins only when mirroring is disabled.
+- Reject all container registry requests from blocked users.
+- Deny localhost requests on fogbugz importer.
+- Change GitHub service integration token input to password.
+- Add permission check for pipeline status of MR.
+- Fix UploadRewriter Path Traversal vulnerability.
+- Block hotlinking to repository archives.
+- Restrict access to project pipeline metrics reports.
+- vulnerability_feedback records should be restricted to a dev role and above.
+- Exclude Carrierwave remote URL methods from import.
+- Update Nokogiri to fix CVE-2020-7595.
+- Prevent updating trigger by other maintainers.
+- Fix XSS vulnerability in `admin/email` "Recipient Group" dropdown.
+
+
+## 12.7.7
+
+### Security (17 changes)
+
+- Update ProjectAuthorization when deleting or updating GroupGroupLink.
+- Respect member access level for group shares.
+- Prevent an endless checking loop for two merge requests targeting each other.
+- Update user 2fa when accepting a group invite.
+- Fix for XSS in branch names.
+- Prevent directory traversal through FileUploader.
+- Run project badge images through the asset proxy.
+- Check merge requests read permissions before showing them in the pipeline widget.
+- Update container registry authentication to account for login request when checking permissions.
+- Remove OID filtering during LFS imports.
+- Protect against denial of service using pipeline webhook recursion.
+- Expire account confirmation token.
+- Prevent XSS in admin grafana URL setting.
+- Don't require base_sha in DiffRefsType.
+- Sanitize output by dependency linkers.
+- Recalculate ProjectAuthorizations for all users.
+- Escape special chars in Sentry error header.
+
+
+## 12.7.6
+
+### Security (1 change)
+
+- Fix ProjectAuthorization calculation for shared groups.
+
+
+## 12.7.5
+
+### Fixed (4 changes, 1 of them is from the community)
+
+- Add accidentally deleted project config for custom apply suggestions. !23687 (Fabio Huser)
+- Fix database permission check for triggers on Amazon RDS. !24035
+- Fix applying the suggestions with an empty custom message. !24144
+- Remove invalid data from issue_tracker_data table.
+
+
 ## 12.7.4
 
 ### Security (1 change)

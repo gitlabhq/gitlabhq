@@ -4,6 +4,8 @@ module API
   class Triggers < Grape::API
     include PaginationParams
 
+    HTTP_GITLAB_EVENT_HEADER = "HTTP_#{WebHookService::GITLAB_EVENT_HEADER}".underscore.upcase
+
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
@@ -18,6 +20,8 @@ module API
       end
       post ":id/(ref/:ref/)trigger/pipeline", requirements: { ref: /.+/ } do
         Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-foss/issues/42283')
+
+        forbidden! if gitlab_pipeline_hook_request?
 
         # validate variables
         params[:variables] = params[:variables].to_h
@@ -105,6 +109,8 @@ module API
         trigger = user_project.triggers.find(params.delete(:trigger_id))
         break not_found!('Trigger') unless trigger
 
+        authorize! :admin_trigger, trigger
+
         if trigger.update(declared_params(include_missing: false))
           present trigger, with: Entities::Trigger, current_user: current_user
         else
@@ -126,6 +132,12 @@ module API
         break not_found!('Trigger') unless trigger
 
         destroy_conditionally!(trigger)
+      end
+    end
+
+    helpers do
+      def gitlab_pipeline_hook_request?
+        request.get_header(HTTP_GITLAB_EVENT_HEADER) == WebHookService.hook_to_event(:pipeline_hooks)
       end
     end
   end

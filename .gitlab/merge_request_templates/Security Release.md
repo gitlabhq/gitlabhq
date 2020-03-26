@@ -8,11 +8,11 @@ See [the general developer security release guidelines](https://gitlab.com/gitla
 
 ## Related issues
 
-<!-- Mention the issue(s) this MR is related to -->
+<!-- Mention the GitLab Security issue this MR is related to -->
 
 ## Developer checklist
 
-- [ ] Link this MR in the `links` section of the related issue on [GitLab Security].
+- [ ] **Make sure this merge request mentions the [GitLab Security] issue it belongs to (i.e. `Related to <issue_id>`).**
 - [ ] Merge request targets `master`, or `X-Y-stable` for backports.
 - [ ] Milestone is set for the version this merge request applies to. A closed milestone can be assigned via [quick actions].
 - [ ] Title of this merge request is the same as for all backports.
