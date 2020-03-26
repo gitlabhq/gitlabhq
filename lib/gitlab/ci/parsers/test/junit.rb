@@ -8,11 +8,11 @@ module Gitlab
           JunitParserError = Class.new(Gitlab::Ci::Parsers::ParserError)
           ATTACHMENT_TAG_REGEX = /\[\[ATTACHMENT\|(?<path>.+?)\]\]/.freeze
 
-          def parse!(xml_data, test_suite)
+          def parse!(xml_data, test_suite, **args)
             root = Hash.from_xml(xml_data)
 
             all_cases(root) do |test_case|
-              test_case = create_test_case(test_case)
+              test_case = create_test_case(test_case, args)
               test_suite.add_test_case(test_case)
             end
           rescue Nokogiri::XML::SyntaxError
@@ -46,7 +46,7 @@ module Gitlab
             [testcase].flatten.compact.map(&blk)
           end
 
-          def create_test_case(data)
+          def create_test_case(data, args)
             if data['failure']
               status = ::Gitlab::Ci::Reports::TestCase::STATUS_FAILED
               system_output = data['failure']
@@ -66,7 +66,8 @@ module Gitlab
               execution_time: data['time'],
               status: status,
               system_output: system_output,
-              attachment: attachment
+              attachment: attachment,
+              job: args.fetch(:job)
             )
           end
 

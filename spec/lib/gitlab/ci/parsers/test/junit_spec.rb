@@ -4,10 +4,11 @@ require 'fast_spec_helper'
 
 describe Gitlab::Ci::Parsers::Test::Junit do
   describe '#parse!' do
-    subject { described_class.new.parse!(junit, test_suite) }
+    subject { described_class.new.parse!(junit, test_suite, args) }
 
     let(:test_suite) { Gitlab::Ci::Reports::TestSuite.new('rspec') }
     let(:test_cases) { flattened_test_cases(test_suite) }
+    let(:args) { { job: { id: 1, project: "project" } } }
 
     context 'when data is JUnit style XML' do
       context 'when there are no <testcases> in <testsuite>' do
@@ -205,7 +206,7 @@ describe Gitlab::Ci::Parsers::Test::Junit do
       end
     end
 
-    context 'when data contains an attachment tag' do
+    context 'when attachment is specified in failed test case' do
       let(:junit) do
         <<~EOF
           <testsuites>
@@ -219,11 +220,15 @@ describe Gitlab::Ci::Parsers::Test::Junit do
         EOF
       end
 
-      it 'add attachment to a test case' do
+      it 'assigns correct attributes to the test case' do
         expect { subject }.not_to raise_error
 
         expect(test_cases[0].has_attachment?).to be_truthy
         expect(test_cases[0].attachment).to eq("some/path.png")
+
+        expect(test_cases[0].job).to be_present
+        expect(test_cases[0].job[:id]).to eq(1)
+        expect(test_cases[0].job[:project]).to eq("project")
       end
     end
 

@@ -1,0 +1,5 @@
+- add_to_breadcrumbs _('Integrations'), scoped_integrations_path
+- breadcrumb_title @integration.title
+- page_title @integration.title, _('Integrations')
+
+= render 'shared/integrations/form', integration: @integration

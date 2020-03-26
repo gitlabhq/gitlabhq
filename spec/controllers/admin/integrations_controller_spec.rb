@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 describe Admin::IntegrationsController do
+  let_it_be(:project) { create(:project) }
   let(:admin) { create(:admin) }
-  let!(:project) { create(:project) }
 
   before do
     sign_in(admin)
@@ -13,7 +13,7 @@ describe Admin::IntegrationsController do
   describe '#edit' do
     context 'when instance_level_integrations not enabled' do
       it 'returns not_found' do
-        allow(Feature).to receive(:enabled?).with(:instance_level_integrations) { false }
+        stub_feature_flags(instance_level_integrations: false)
 
         get :edit, params: { id: Service.available_services_names.sample }
 

@@ -592,6 +592,8 @@ will be saved as a [CI job artifact](../../ci/pipelines/job_artifacts.md).
 
 Note the following:
 
+- We recommend using the cluster management project exclusively for managing deployments to a cluster.
+  Do not add your application's source code to such projects.
 - When you set the value for `installed` key back to `false`, the application will be
   unprovisioned from the cluster.
 - If you update `.gitlab/managed-apps/<application>/values.yaml` with new values, the

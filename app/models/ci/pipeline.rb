@@ -813,7 +813,7 @@ module Ci
 
     def test_reports
       Gitlab::Ci::Reports::TestReports.new.tap do |test_reports|
-        builds.latest.with_reports(Ci::JobArtifact.test_reports).each do |build|
+        builds.latest.with_reports(Ci::JobArtifact.test_reports).preload(:project).find_each do |build|
           build.collect_test_reports!(test_reports)
         end
       end

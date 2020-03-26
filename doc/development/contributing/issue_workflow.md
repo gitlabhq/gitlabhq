@@ -273,45 +273,25 @@ or ~"Stretch". Any open issue for a previous milestone should be labeled
 
 ### Priority labels
 
-Priority labels help us define the time a ~bug fix should be completed. Priority determines how quickly the defect turnaround time must be.
-If there are multiple defects, the priority decides which defect has to be fixed immediately versus later.
-This label documents the planned timeline & urgency which is used to measure against our target SLO on delivering ~bug fixes.
+We have the following priority labels:
 
-| Label | Meaning         | Target SLO (applies only to ~bug and ~security defects)                                                    |
-|-------|-----------------|----------------------------------------------------------------------------|
-| ~P1   | Urgent Priority | The current release + potentially immediate hotfix to GitLab.com (30 days) |
-| ~P2   | High Priority   | The next release (60 days)                                                 |
-| ~P3   | Medium Priority | Within the next 3 releases (approx one quarter or 90 days)                 |
-| ~P4   | Low Priority    | Anything outside the next 3 releases (more than one quarter or 120 days)   |
+- ~P1
+- ~P2
+- ~P3
+- ~P4
+
+Please refer to the issue triage [priority label](https://about.gitlab.com/handbook/engineering/quality/issue-triage/#priority) section in our handbook to see how it's used.
 
 ### Severity labels
 
-Severity labels help us clearly communicate the impact of a ~bug on users.
-There can be multiple facets of the impact. The below is a guideline.
+We have the following severity labels:
 
-| Label | Meaning           | Functionality                                         | Affected Users                   | GitLab.com Availability                            | Performance Degradation                               | API/Web Response time[^1]  |
-|-------|-------------------|-------------------------------------------------------|----------------------------------|----------------------------------------------------|-------------------------------------------------------|----------------------------|
-| ~S1   | Blocker           | Unusable feature with no workaround, user is blocked  | Impacts 50% or more of users     | Outage, Significant impact on all of GitLab.com    |                                                       | Above 9000ms to timing out |
-| ~S2   | Critical Severity | Broken Feature, workaround too complex & unacceptable | Impacts between 25%-50% of users | Significant impact on large portions of GitLab.com | Degradation is guaranteed to occur in the near future | Between 2000ms and 9000ms  |
-| ~S3   | Major Severity    | Broken feature with an acceptable workaround          | Impacts up to 25% of users       | Limited impact on important portions of GitLab.com | Degradation is likely to occur in the near future     | Between 1000ms and 2000ms  |
-| ~S4   | Low Severity      | Functionality inconvenience or cosmetic issue         | Impacts less than 5% of users    | Minor impact on GitLab.com                         | Degradation _may_ occur but it's not likely           | Between 500ms and 1000ms   |
+- ~S1
+- ~S2
+- ~S3
+- ~S4
 
-If a bug seems to fall between two severity labels, assign it to the higher-severity label.
-
-- Example(s) of ~S1
-  - Data corruption/loss.
-  - Security breach.
-  - Unable to create an issue or merge request.
-  - Unable to add a comment or thread to the issue or merge request.
-- Example(s) of ~S2
-  - Cannot submit changes through the web IDE but the commandline works.
-  - A status widget on the merge request page is not working but information can be seen in the test pipeline page.
-- Example(s) of ~S3
-  - Can create merge requests only from the Merge Requests list view, not from an Issue page.
-  - Status is not updated in real time and needs a page refresh.
-- Example(s) of ~S4
-  - Label colors are incorrect.
-  - UI elements are not fully aligned.
+Please refer to the issue triage [severity label](https://about.gitlab.com/handbook/engineering/quality/issue-triage/#severity) section in our handbook to see how it's used.
 
 ### Label for community contributors
 
@@ -505,8 +485,3 @@ to be involved in some capacity when work begins on the follow-up issue.
 ---
 
 [Return to Contributing documentation](index.md)
-
-[^1]: Our current response time standard is based on the TTFB P90 results of the
-      GitLab Performance Tool (GPT) being run against the 10k-user reference
-      environment. This run happens nightly and results are outputted to the
-      [wiki on the GPT project.](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/10k)

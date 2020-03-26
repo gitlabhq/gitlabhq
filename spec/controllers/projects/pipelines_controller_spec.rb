@@ -705,13 +705,45 @@ describe Projects::PipelinesController do
   end
 
   describe 'GET test_report.json' do
-    subject(:get_test_report_json) do
-      get :test_report, params: {
-        namespace_id: project.namespace,
-        project_id: project,
-        id: pipeline.id
-      },
-      format: :json
+    let(:pipeline) { create(:ci_pipeline, project: project) }
+
+    context 'with attachments' do
+      let(:blob) do
+        <<~EOF
+          <testsuites>
+            <testsuite>
+              <testcase classname='Calculator' name='sumTest1' time='0.01'>
+                <failure>Some failure</failure>
+                <system-out>[[ATTACHMENT|some/path.png]]</system-out>
+              </testcase>
+            </testsuite>
+          </testsuites>
+        EOF
+      end
+
+      before do
+        allow_any_instance_of(Ci::JobArtifact).to receive(:each_blob).and_yield(blob)
+      end
+
+      it 'does not have N+1 problem with attachments' do
+        get_test_report_json
+
+        create(:ci_build, name: 'rspec', pipeline: pipeline).tap do |build|
+          create(:ci_job_artifact, :junit, job: build)
+        end
+
+        clear_controller_memoization
+
+        control_count = ActiveRecord::QueryRecorder.new { get_test_report_json }.count
+
+        create(:ci_build, name: 'karma', pipeline: pipeline).tap do |build|
+          create(:ci_job_artifact, :junit, job: build)
+        end
+
+        clear_controller_memoization
+
+        expect { get_test_report_json }.not_to exceed_query_limit(control_count)
+      end
     end
 
     context 'when feature is enabled' do
@@ -771,6 +803,20 @@ describe Projects::PipelinesController do
         expect(response).to have_gitlab_http_status(:no_content)
         expect(response.body).to be_empty
       end
+    end
+
+    def get_test_report_json
+      get :test_report, params: {
+        namespace_id: project.namespace,
+        project_id: project,
+        id: pipeline.id
+      },
+      format: :json
+    end
+
+    def clear_controller_memoization
+      controller.clear_memoization(:pipeline_test_report)
+      controller.instance_variable_set(:@pipeline, nil)
     end
   end
 

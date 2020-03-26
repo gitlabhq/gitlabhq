@@ -31,6 +31,12 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
         patch :update_auto_devops
         post :create_deploy_token, path: 'deploy_token/create'
       end
+
+      resources :integrations, only: [:index, :edit, :update] do
+        member do
+          put :test
+        end
+      end
     end
 
     resource :variables, only: [:show, :update]

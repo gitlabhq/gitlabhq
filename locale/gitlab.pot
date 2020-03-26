@@ -5992,6 +5992,9 @@ msgstr ""
 msgid "Current vulnerabilities count"
 msgstr ""
 
+msgid "CurrentUser|Buy CI minutes"
+msgstr ""
+
 msgid "CurrentUser|Profile"
 msgstr ""
 

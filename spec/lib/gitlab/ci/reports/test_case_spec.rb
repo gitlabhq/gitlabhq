@@ -15,7 +15,8 @@ describe Gitlab::Ci::Reports::TestCase do
             file: 'spec/trace_spec.rb',
             execution_time: 1.23,
             status: described_class::STATUS_SUCCESS,
-            system_output: nil
+            system_output: nil,
+            job: build(:ci_build)
           }
         end
 
@@ -28,6 +29,7 @@ describe Gitlab::Ci::Reports::TestCase do
           expect(test_case.execution_time).to eq(1.23)
           expect(test_case.status).to eq(described_class::STATUS_SUCCESS)
           expect(test_case.system_output).to be_nil
+          expect(test_case.job).to be_present
         end
       end
 
@@ -98,6 +100,22 @@ describe Gitlab::Ci::Reports::TestCase do
 
       it '#has_attachment?' do
         expect(attachment_test_case.has_attachment?).to be_truthy
+      end
+
+      it '#attachment_url' do
+        expect(attachment_test_case.attachment_url).to match(/file\/some\/path.png/)
+      end
+    end
+
+    context 'when attachment is missing' do
+      let(:test_case) { build(:test_case) }
+
+      it '#has_attachment?' do
+        expect(test_case.has_attachment?).to be_falsy
+      end
+
+      it '#attachment_url' do
+        expect(test_case.attachment_url).to be_nil
       end
     end
   end

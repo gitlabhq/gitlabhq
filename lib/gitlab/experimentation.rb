@@ -34,6 +34,12 @@ module Gitlab
         environment: ::Gitlab.dev_env_or_com?,
         enabled_ratio: 0.1,
         tracking_category: 'Growth::Expansion::Experiment::CiNotificationDot'
+      },
+      buy_ci_minutes_version_a: {
+        feature_toggle: :buy_ci_minutes_version_a,
+        environment: ::Gitlab.dev_env_or_com?,
+        enabled_ratio: 0.2,
+        tracking_category: 'Growth::Expansion::Experiment::BuyCiMinutesVersionA'
       }
     }.freeze
 

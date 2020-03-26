@@ -15,7 +15,7 @@ module Gitlab
       end
 
       def self.use(schema_definition)
-        schema_definition.instrument(:field, Instrumentation.new)
+        schema_definition.instrument(:field, ::Gitlab::Graphql::Present::Instrumentation.new)
       end
     end
   end

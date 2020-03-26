@@ -31,5 +31,49 @@ describe TestCaseEntity do
         expect(subject[:execution_time]).to eq(2.22)
       end
     end
+
+    context 'when feature is enabled' do
+      before do
+        stub_feature_flags(junit_pipeline_screenshots_view: true)
+      end
+
+      context 'when attachment is present' do
+        let(:test_case) { build(:test_case, :with_attachment) }
+
+        it 'returns the attachment_url' do
+          expect(subject).to include(:attachment_url)
+        end
+      end
+
+      context 'when attachment is not present' do
+        let(:test_case) { build(:test_case) }
+
+        it 'returns a nil attachment_url' do
+          expect(subject[:attachment_url]).to be_nil
+        end
+      end
+    end
+
+    context 'when feature is disabled' do
+      before do
+        stub_feature_flags(junit_pipeline_screenshots_view: false)
+      end
+
+      context 'when attachment is present' do
+        let(:test_case) { build(:test_case, :with_attachment) }
+
+        it 'returns no attachment_url' do
+          expect(subject).not_to include(:attachment_url)
+        end
+      end
+
+      context 'when attachment is not present' do
+        let(:test_case) { build(:test_case) }
+
+        it 'returns no attachment_url' do
+          expect(subject).not_to include(:attachment_url)
+        end
+      end
+    end
   end
 end

@@ -9,6 +9,7 @@ FactoryBot.define do
     status { "success" }
     system_output { nil }
     attachment { nil }
+    association :job, factory: :ci_build
 
     trait :with_attachment do
       attachment { "some/path.png" }
@@ -24,7 +25,8 @@ FactoryBot.define do
         execution_time: execution_time,
         status: status,
         system_output: system_output,
-        attachment: attachment
+        attachment: attachment,
+        job: job
       )
     end
   end
