@@ -104,6 +104,20 @@ describe Gitlab::Ci::Parsers::Test::Junit do
             'Some error'
         end
 
+        context 'and has skipped' do
+          let(:testcase_content) { '<skipped/>' }
+
+          it_behaves_like '<testcase> XML parser',
+            ::Gitlab::Ci::Reports::TestCase::STATUS_SKIPPED, nil
+
+          context 'with an empty double-tag' do
+            let(:testcase_content) { '<skipped></skipped>' }
+
+            it_behaves_like '<testcase> XML parser',
+              ::Gitlab::Ci::Reports::TestCase::STATUS_SKIPPED, nil
+          end
+        end
+
         context 'and has an unknown type' do
           let(:testcase_content) { '<foo>Some foo</foo>' }
 

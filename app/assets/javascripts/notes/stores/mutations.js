@@ -169,7 +169,7 @@ export default {
     const { id, name, username } = state.userData;
 
     const hasEmojiAwardedByCurrentUser = note.award_emoji.filter(
-      emoji => emoji.name === data.awardName && emoji.user.id === id,
+      emoji => `${emoji.name}` === `${data.awardName}` && emoji.user.id === id,
     );
 
     if (hasEmojiAwardedByCurrentUser.length) {

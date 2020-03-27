@@ -47,13 +47,16 @@ module Gitlab
           end
 
           def create_test_case(data, args)
-            if data['failure']
+            if data.key?('failure')
               status = ::Gitlab::Ci::Reports::TestCase::STATUS_FAILED
               system_output = data['failure']
               attachment = attachment_path(data['system_out'])
-            elsif data['error']
+            elsif data.key?('error')
               status = ::Gitlab::Ci::Reports::TestCase::STATUS_ERROR
               system_output = data['error']
+            elsif data.key?('skipped')
+              status = ::Gitlab::Ci::Reports::TestCase::STATUS_SKIPPED
+              system_output = data['skipped']
             else
               status = ::Gitlab::Ci::Reports::TestCase::STATUS_SUCCESS
               system_output = nil

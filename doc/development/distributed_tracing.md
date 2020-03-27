@@ -8,13 +8,45 @@ According to [Open Tracing](https://opentracing.io/docs/overview/what-is-tracing
 > monitor applications, especially those built using a microservices architecture. Distributed
 > tracing helps to pinpoint where failures occur and what causes poor performance.
 
-Distributed tracing is especially helpful in understanding the lifecycle of a request as it passes
+Distributed tracing is especially helpful in understanding the life cycle of a request as it passes
 through the different components of the GitLab application. At present, Workhorse, Rails, Sidekiq,
 and Gitaly support tracing instrumentation.
 
 Distributed tracing adds minimal overhead when disabled, but imposes only small overhead when
 enabled and is therefore capable in any environment, including production. For this reason, it can
 be useful in diagnosing production issues, particularly performance problems.
+
+## Using Correlation IDs to investigate distributed requests
+
+The GitLab application passes correlation IDs between the various components in a request. A
+correlation ID is a token, unique to a single request, used to correlate a single request between
+different GitLab subsystems (for example, Rails, Workhorse). Since correlation IDs are included in
+log output, Engineers can use the correlation ID to correlate logs from different subsystems and
+better understand the end-to-end path of a request through the system. When a request traverses
+process boundaries, the correlation ID is injected into the outgoing request. This enables
+the propagation of the correlation ID to each downstream subsystem.
+
+Correlation IDs are normally generated in the Rails application in response to
+certain webrequests. Some user facing systems don't generate correlation IDs in
+response to user requests (for example, Git pushes over SSH).
+
+### Developer guidelines for working with correlation IDs
+
+When integrating tracing into a new system, developers should avoid making
+certain assumptions about correlation IDs. The following guidelines apply to
+all subsystems at GitLab:
+
+- Correlation IDs are always optional.
+  - Never have non-tracing features depend on the existence of a correlation ID
+    from an upstream system.
+- Correlation IDs are always free text.
+  - Correlation IDs should never be used to pass context (for example, a username or an IP address).
+  - Correlation IDs should never be _parsed_, or manipulated in other ways (for example, split).
+
+The [LabKit library](https://gitlab.com/gitlab-org/labkit) provides a standardized interface for working with GitLab's
+correlation IDs in the Go programming language. LabKit can be used as a
+reference implementation for developers working with tracing and correlation IDs
+on non-Go GitLab subsystems.
 
 ## Enabling distributed tracing
 

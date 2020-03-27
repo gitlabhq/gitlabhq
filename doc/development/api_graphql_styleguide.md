@@ -798,11 +798,15 @@ that wraps around a query being executed. It is implemented as a module that use
 Example: `Present`
 
 ```ruby
-module Present
-  #... some code above...
+module Gitlab
+  module Graphql
+    module Present
+      #... some code above...
 
-  def self.use(schema_definition)
-    schema_definition.instrument(:field, Instrumentation.new)
+      def self.use(schema_definition)
+        schema_definition.instrument(:field, ::Gitlab::Graphql::Present::Instrumentation.new)
+      end
+    end
   end
 end
 ```

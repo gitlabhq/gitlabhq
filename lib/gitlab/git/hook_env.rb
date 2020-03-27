@@ -4,12 +4,13 @@
 
 module Gitlab
   module Git
-    # Ephemeral (per request) storage for environment variables that some Git
-    # commands need during internal API calls made from Git push hooks.
+    # Ephemeral (per request) storage for environment variables that some
+    # Git commands need during internal API calls made from the Git
+    # pre-receive push hook.
     #
-    # For example, in pre-receive hooks, new objects are put in a temporary
-    # $GIT_OBJECT_DIRECTORY. Without it set, the new objects cannot be retrieved
-    # (this would break push rules for instance).
+    # See
+    # https://gitlab.com/gitlab-org/gitaly/-/blob/master/doc/object_quarantine.md#gitlab-and-git-object-quarantine
+    # for more information.
     #
     # This class is thread-safe via RequestStore.
     class HookEnv
