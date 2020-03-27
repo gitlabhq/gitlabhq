@@ -10,7 +10,7 @@
         %th Service
         %th Description
         %th Last edit
-    - @services.sort_by(&:title).each do |service|
+    - @services.each do |service|
       %tr
         %td
           = boolean_to_icon service.activated?

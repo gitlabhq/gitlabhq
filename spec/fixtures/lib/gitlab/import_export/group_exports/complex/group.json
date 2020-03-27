@@ -1492,7 +1492,7 @@
           "closed_at": null,
           "parent_id": null,
           "relative_position": null,
-          "state_id": "opened",
+          "state": "opened",
           "start_date_sourcing_epic_id": null,
           "due_date_sourcing_epic_id": null,
           "notes": []
@@ -1524,7 +1524,7 @@
           "closed_at": null,
           "parent_id": null,
           "relative_position": null,
-          "state_id": "opened",
+          "state": "closed",
           "start_date_sourcing_epic_id": null,
           "due_date_sourcing_epic_id": null,
           "notes": []
@@ -1556,7 +1556,7 @@
           "closed_at": null,
           "parent_id": null,
           "relative_position": null,
-          "state_id": "opened",
+          "state": "opened",
           "start_date_sourcing_epic_id": null,
           "due_date_sourcing_epic_id": null,
           "notes": []
@@ -1588,7 +1588,7 @@
           "closed_at": null,
           "parent_id": null,
           "relative_position": null,
-          "state_id": "opened",
+          "state": "closed",
           "start_date_sourcing_epic_id": null,
           "due_date_sourcing_epic_id": null,
           "notes": []
@@ -1620,7 +1620,7 @@
           "closed_at": null,
           "parent_id": null,
           "relative_position": null,
-          "state_id": "opened",
+          "state": "opened",
           "start_date_sourcing_epic_id": null,
           "due_date_sourcing_epic_id": null,
           "notes": []

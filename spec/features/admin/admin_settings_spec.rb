@@ -194,6 +194,13 @@ describe 'Admin updates settings', :clean_gitlab_redis_shared_state, :do_not_moc
         expect(page).to have_content "Application settings saved successfully"
         expect(current_settings.terminal_max_session_time).to eq(15)
       end
+    end
+
+    context 'Integrations page' do
+      before do
+        stub_feature_flags(instance_level_integrations: false)
+        visit integrations_admin_application_settings_path
+      end
 
       it 'Enable hiding third party offers' do
         page.within('.as-third-party-offers') do

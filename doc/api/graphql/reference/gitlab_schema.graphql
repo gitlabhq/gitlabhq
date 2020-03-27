@@ -1869,6 +1869,11 @@ type Environment {
   Human-readable name of the environment
   """
   name: String!
+
+  """
+  State of the environment, for example: available/stopped
+  """
+  state: String!
 }
 
 """

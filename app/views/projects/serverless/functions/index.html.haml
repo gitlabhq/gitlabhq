@@ -10,6 +10,8 @@
   help_path: help_page_path('user/project/clusters/serverless/index') } }
 
 %div{ class: [('limit-container-width' unless fluid_layout)] }
+  .js-serverless-survey-banner{ data: { user_name: current_user.name, user_email: current_user.email } }
+
   .js-serverless-functions-notice
     .flash-container
 

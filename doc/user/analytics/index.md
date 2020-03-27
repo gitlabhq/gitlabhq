@@ -1,4 +1,6 @@
-# Analytics workspace
+# Analytics
+
+## Analytics workspace
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/12077) in GitLab 12.2.
 
@@ -6,27 +8,30 @@ The Analytics workspace will make it possible to aggregate analytics across
 GitLab, so that users can view information across multiple projects and groups
 in one place.
 
-To access the centralized analytics workspace, enable at least
-[one of the features](#available-analytics) under the workspace.
+To access the Analytics workspace, click on **More > Analytics** in the top navigation bar.
 
-Once enabled, click on **Analytics** from the top navigation bar.
+## Group-level analytics
 
-## Available analytics
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/195979) in GitLab 12.8.
 
-From the centralized analytics workspace, the following analytics are available:
+The following analytics features are available at the group level:
 
-- [Code Review Analytics](code_review_analytics.md). **(STARTER)**
-- [Value Stream Analytics](value_stream_analytics.md), enabled with the `cycle_analytics`
+- [Contribution](../group/contribution_analytics/index.md). **(STARTER)**
+- [Insights](../group/insights/index.md). **(ULTIMATE)**
+- [Issues](../group/issues_analytics/index.md). **(PREMIUM)**
+- [Productivity](productivity_analytics.md), enabled with the `productivity_analytics`
   [feature flag](../../development/feature_flags/development.md#enabling-a-feature-flag-in-development). **(PREMIUM)**
-- [Productivity Analytics](productivity_analytics.md), enabled with the `productivity_analytics`
+- [Value Stream](value_stream_analytics.md), enabled with the `cycle_analytics`
   [feature flag](../../development/feature_flags/development.md#enabling-a-feature-flag-in-development). **(PREMIUM)**
 
-NOTE: **Note:**
-Project-level Value Stream Analytics are still available at a project's **Project > Value Stream Analytics**.
+## Project-level analytics
 
-## Other analytics tools
+The following analytics features are available at the project level:
 
-In addition to the tools available in the Analytics workspace, GitLab provides:
-
-- [Contribution analytics](../group/contribution_analytics/index.md). **(STARTER)**
-- [Issue analytics](../group/issues_analytics/index.md). **(PREMIUM)**
+- [CI/CD](../../ci/pipelines/index.md#pipeline-success-and-duration-charts). **(STARTER)**
+- [Code Review](code_review_analytics.md). **(STARTER)**
+- [Insights](../group/insights/index.md). **(ULTIMATE)**
+- [Issues](../group/issues_analytics/index.md). **(PREMIUM)**
+- Repository. **(STARTER)**
+- [Value Stream](value_stream_analytics.md), enabled with the `cycle_analytics`
+  [feature flag](../../development/feature_flags/development.md#enabling-a-feature-flag-in-development). **(STARTER)**

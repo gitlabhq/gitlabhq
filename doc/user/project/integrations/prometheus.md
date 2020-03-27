@@ -837,6 +837,11 @@ Prerequisites for embedding from a Grafana instance:
 
 ## Troubleshooting
 
+When troubleshooting issues with a managed Prometheus app, it is often useful to
+[view the Prometheus UI](../../../development/prometheus.md#access-the-ui-of-a-prometheus-managed-application-in-kubernetes).
+
+### "No data found" error on Metrics dashboard page
+
 If the "No data found" screen continues to appear, it could be due to:
 
 - No successful deployments have occurred to this environment.

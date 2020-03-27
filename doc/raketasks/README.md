@@ -16,3 +16,4 @@ comments: false
 - [Rebuild authorized_keys file](../administration/raketasks/maintenance.md#rebuild-authorized_keys-file) task for administrators
 - [Uploads Migrate](../administration/raketasks/uploads/migrate.md)
 - [Uploads Sanitize](../administration/raketasks/uploads/sanitize.md)
+- [Importing large GitLab project exports](../development/import_project.md#importing-via-a-rake-task)

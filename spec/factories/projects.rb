@@ -114,6 +114,10 @@ FactoryBot.define do
       archived { true }
     end
 
+    trait :last_repository_check_failed do
+      last_repository_check_failed { true }
+    end
+
     storage_version { Project::LATEST_STORAGE_VERSION }
 
     trait :legacy_storage do

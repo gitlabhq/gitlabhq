@@ -21,10 +21,7 @@ This project will be used for self monitoring your GitLab instance.
 
 1. Navigate to **Admin Area > Settings > Metrics and profiling**, and expand the **Self monitoring** section.
 1. Toggle the **Create Project** button on.
-1. It can take a few seconds for the project to be created. After the project is
-created, GitLab displays a message with a link to the project. The project
-will also be linked in the help text above the **Create Project** button. You can also
-find the project under **Projects > Your projects**.
+1. Once your GitLab instance creates the project, you'll see a link to the project in the text above the **Create Project** toggle. You can also find it under **Projects > Your projects**.
 
 ## Deleting the self monitoring project
 

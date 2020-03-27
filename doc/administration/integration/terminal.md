@@ -96,7 +96,5 @@ they will receive a `Connection failed` message.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/8413) in GitLab 8.17.
 
-Terminal sessions use long-lived connections; by default, these may last
-forever. You can configure a maximum session time in the Admin Area of your
-GitLab instance if you find this undesirable from a scalability or security
-point of view.
+Terminal sessions, by default, do not expire.
+You can limit terminal session lifetime in your GitLab instance. To do so, navigate to **{admin}** [**Admin Area > Settings > Web terminal**](../../user/admin_area/settings/index.md#general), and set a `max session time`.

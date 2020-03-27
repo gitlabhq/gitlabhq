@@ -12,5 +12,8 @@ module Types
 
     field :id, GraphQL::ID_TYPE, null: false,
           description: 'ID of the environment'
+
+    field :state, GraphQL::STRING_TYPE, null: false,
+          description: 'State of the environment, for example: available/stopped'
   end
 end

@@ -7,7 +7,7 @@ describe BulkInsertSafe do
     include BulkInsertSafe
     include ShaAttribute
 
-    validates :name, :enum_value, :secret_value, :sha_value, presence: true
+    validates :name, :enum_value, :secret_value, :sha_value, :jsonb_value, presence: true
 
     ENUM_VALUES = {
       case_1: 1
@@ -26,6 +26,7 @@ describe BulkInsertSafe do
     default_value_for :enum_value, 'case_1'
     default_value_for :secret_value, 'my-secret'
     default_value_for :sha_value, '2fd4e1c67a2d28fced849ee1bb76e7391b93eb12'
+    default_value_for :jsonb_value, { "key" => "value" }
 
     def self.valid_list(count)
       Array.new(count) { |n| new(name: "item-#{n}") }
@@ -60,6 +61,7 @@ describe BulkInsertSafe do
         t.text :encrypted_secret_value, null: false
         t.string :encrypted_secret_value_iv, null: false
         t.binary :sha_value, null: false, limit: 20
+        t.jsonb :jsonb_value, null: false
 
         t.index :name, unique: true
       end
@@ -114,7 +116,7 @@ describe BulkInsertSafe do
 
         described_class.bulk_insert!(items)
 
-        attribute_names = described_class.attribute_names - %w[id]
+        attribute_names = described_class.attribute_names - %w[id created_at updated_at]
         expect(described_class.last(items.size).pluck(*attribute_names)).to eq(
           items.pluck(*attribute_names))
       end

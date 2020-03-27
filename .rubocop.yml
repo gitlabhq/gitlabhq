@@ -204,7 +204,6 @@ Gitlab/DuplicateSpecLocation:
   Exclude:
     - ee/spec/helpers/auth_helper_spec.rb
     - ee/spec/lib/gitlab/gl_repository_spec.rb
-    - ee/spec/lib/gitlab/usage_data_spec.rb
     - ee/spec/models/namespace_spec.rb
     - ee/spec/models/note_spec.rb
     - ee/spec/serializers/environment_entity_spec.rb
@@ -215,7 +214,6 @@ Gitlab/DuplicateSpecLocation:
     - ee/spec/services/system_hooks_service_spec.rb
     - ee/spec/helpers/ee/auth_helper_spec.rb
     - ee/spec/lib/ee/gitlab/gl_repository_spec.rb
-    - ee/spec/lib/ee/gitlab/usage_data_spec.rb
     - ee/spec/models/ee/namespace_spec.rb
     - ee/spec/models/ee/note_spec.rb
     - ee/spec/serializers/ee/environment_entity_spec.rb
@@ -381,4 +379,7 @@ Style/FloatDivision:
   Enabled: false
 
 Cop/BanCatchThrow:
+  Enabled: true
+
+Performance/ReadlinesEach:
   Enabled: true

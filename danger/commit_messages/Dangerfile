@@ -2,19 +2,28 @@
 
 require_relative File.expand_path('../../lib/gitlab/danger/commit_linter', __dir__)
 
-URL_GIT_COMMIT = "https://chris.beams.io/posts/git-commit/"
+COMMIT_MESSAGE_GUIDELINES = "https://docs.gitlab.com/ee/development/contributing/merge_request_workflow.html#commit-messages-guidelines"
+MORE_INFO = "For more information, take a look at our [Commit message guidelines](#{COMMIT_MESSAGE_GUIDELINES})."
+THE_DANGER_JOB_TEXT = "the `danger-review` job"
 MAX_COMMITS_COUNT = 10
 
 def gitlab_danger
   @gitlab_danger ||= GitlabDanger.new(helper.gitlab_helper)
 end
 
-def fail_commit(commit, message)
-  self.fail("#{commit.sha}: #{message}")
+def fail_commit(commit, message, more_info: true)
+  self.fail(build_message(commit, message, more_info: more_info))
 end
 
-def warn_commit(commit, message)
-  self.warn("#{commit.sha}: #{message}")
+def warn_commit(commit, message, more_info: true)
+  self.warn(build_message(commit, message, more_info: more_info))
+end
+
+def build_message(commit, message, more_info: true)
+  [message].tap do |full_message|
+    full_message << ". #{MORE_INFO}" if more_info
+    full_message.unshift("#{commit.sha}: ") if commit.sha
+  end.join
 end
 
 def squash_mr?
@@ -23,6 +32,10 @@ end
 
 def wip_mr?
   gitlab_danger.ci? ? gitlab.mr_json['work_in_progress'] : false
+end
+
+def danger_job_link
+  gitlab_danger.ci? ? "[#{THE_DANGER_JOB_TEXT}](#{ENV['CI_JOB_URL']})" : THE_DANGER_JOB_TEXT
 end
 
 # Perform various checks against commits. We're not using
@@ -42,11 +55,11 @@ def lint_commit(commit)
   return linter if linter.fixup? && squash_mr?
 
   if linter.fixup?
-    msg = 'Squash or fixup commits must be squashed before merge, or enable squash merge option'
+    msg = "Squash or fixup commits must be squashed before merge, or enable squash merge option and re-run #{danger_job_link}."
     if wip_mr? || squash_mr?
-      warn_commit(commit, msg)
+      warn_commit(commit, msg, more_info: false)
     else
-      fail_commit(commit, msg)
+      fail_commit(commit, msg, more_info: false)
     end
 
     # Makes no sense to process other rules for fixup commits, they trigger just more noise
@@ -56,7 +69,7 @@ def lint_commit(commit)
   # Fail if a suggestion commit is used and squash is not enabled
   if linter.suggestion?
     unless squash_mr?
-      fail_commit(commit, "If you are applying suggestions, enable squash in the merge request and re-run the `danger-review` job")
+      fail_commit(commit, "If you are applying suggestions, enable squash in the merge request and re-run #{danger_job_link}.", more_info: false)
     end
 
     return linter
@@ -93,17 +106,11 @@ def lint_commits(commits)
 
     if multi_line_commit_linter && multi_line_commit_linter.failed?
       warn_or_fail_commits(multi_line_commit_linter)
-      fail_message('The commit message that will be used in the squash commit does not meet our Git commit message standards.')
     else
       title_linter = lint_mr_title(gitlab.mr_json['title'])
       if title_linter.failed?
         warn_or_fail_commits(title_linter)
-        fail_message('The merge request title that will be used in the squash commit does not meet our Git commit message standards.')
       end
-    end
-  else
-    if failed_commit_linters.any?
-      fail_message('One or more commit messages do not meet our Git commit message standards.')
     end
   end
 end
@@ -121,42 +128,6 @@ def warn_or_fail_commits(failed_linters, default_to_fail: true)
       end
     end
   end
-end
-
-def fail_message(intro)
-  markdown(<<~MARKDOWN)
-    ## Commit message standards
-
-    #{intro}
-
-    For more information on how to write a good commit message, take a look at
-    [How to Write a Git Commit Message](#{URL_GIT_COMMIT}).
-
-    Here is an example of a good commit message:
-
-        Reject ruby interpolation in externalized strings
-
-        When using ruby interpolation in externalized strings, they can't be
-        detected. Which means they will never be presented to be translated.
-
-        To mix variables into translations we need to use `sprintf`
-        instead.
-
-        Instead of:
-
-            _("Hello \#{subject}")
-
-        Use:
-
-            _("Hello %{subject}") % { subject: 'world' }
-
-    This is an example of a bad commit message:
-
-        updated README.md
-
-    This commit message is bad because although it tells us that README.md is
-    updated, it doesn't tell us why or how it was updated.
-  MARKDOWN
 end
 
 lint_commits(git.commits)

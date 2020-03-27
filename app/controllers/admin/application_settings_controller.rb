@@ -8,7 +8,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
   # ApplicationSetting model uses Gitlab::ThreadMemoryCache for caching and the
   # cache might be stale immediately after an update.
   # https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/30233
-  before_action :set_application_setting
+  before_action :set_application_setting, except: :integrations
 
   before_action :whitelist_query_limiting, only: [:usage_data]
 
@@ -29,12 +29,11 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
 
   def integrations
     if Feature.enabled?(:instance_level_integrations)
-      # TODO: Update this with actual integrations
-      # To be fixed with https://gitlab.com/gitlab-org/gitlab/-/issues/199388
-      @integrations = []
+      @integrations = Service.find_or_initialize_instances.sort_by(&:title)
+    else
+      set_application_setting
+      perform_update if submitted?
     end
-
-    perform_update if submitted?
   end
 
   def update

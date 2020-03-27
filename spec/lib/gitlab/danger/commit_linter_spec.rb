@@ -86,6 +86,7 @@ describe Gitlab::Danger::CommitLinter do
       "A commit message" | false
       "A commit message\n" | false
       "A commit message\n\n" | false
+      "A commit message\n\nSigned-off-by: User Name <user@name.me>" | false
       "A commit message\n\nWith details" | true
     end
 

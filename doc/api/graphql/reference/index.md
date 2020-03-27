@@ -318,6 +318,7 @@ Describes where code is deployed for a project
 | ---   |  ---- | ----------  |
 | `id` | ID! | ID of the environment |
 | `name` | String! | Human-readable name of the environment |
+| `state` | String! | State of the environment, for example: available/stopped |
 
 ## Epic
 

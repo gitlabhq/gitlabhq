@@ -9,6 +9,11 @@ class Admin::ProjectsController < Admin::ApplicationController
   def index
     params[:sort] ||= 'latest_activity_desc'
     @sort = params[:sort]
+
+    if params[:last_repository_check_failed].present? && params[:archived].nil?
+      params[:archived] = true
+    end
+
     @projects = Admin::ProjectsFinder.new(params: params, current_user: current_user).execute
 
     respond_to do |format|

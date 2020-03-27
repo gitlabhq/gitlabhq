@@ -122,6 +122,19 @@ RDS instances as well:
    | `gitlab-public-10.0.2.0`  | public  | `us-west-2b`      | `10.0.2.0` |
    | `gitlab-private-10.0.3.0` | private | `us-west-2b`      | `10.0.3.0` |
 
+### Create NAT Gateways
+
+Instances deployed in our private subnets need to connect to the internet for updates, but should not be reachable from the public internet. To achieve this, we'll make use of [NAT Gateways](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html) deployed in each of our public subnets:
+
+1. Navigate to the VPC dashboard and click on **NAT Gateways** in the left menu bar.
+1. Click **Create NAT Gateway** and complete the following:
+   1. **Subnet**: Select `gitlab-public-10.0.0.0` from the dropdown.
+   1. **Elastic IP Allocation ID**: Enter an existing Elastic IP or click **Allocate Elastic IP address** to allocate a new IP to your NAT gateway.
+   1. Add tags if needed.
+   1. Click **Create NAT Gateway**.
+
+Create a second NAT gateway but this time place it in the second public subnet, `gitlab-public-10.0.2.0`.
+
 ### Route Table
 
 Up to now all our subnets are private. We need to create a Route Table

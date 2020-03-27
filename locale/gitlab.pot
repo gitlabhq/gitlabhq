@@ -6127,12 +6127,6 @@ msgstr ""
 msgid "CycleAnalyticsEvent|Issue last edited"
 msgstr ""
 
-msgid "CycleAnalyticsEvent|Merge Request label was added"
-msgstr ""
-
-msgid "CycleAnalyticsEvent|Merge Request label was removed"
-msgstr ""
-
 msgid "CycleAnalyticsEvent|Merge request closed"
 msgstr ""
 
@@ -6140,6 +6134,12 @@ msgid "CycleAnalyticsEvent|Merge request created"
 msgstr ""
 
 msgid "CycleAnalyticsEvent|Merge request first deployed to production"
+msgstr ""
+
+msgid "CycleAnalyticsEvent|Merge request label was added"
+msgstr ""
+
+msgid "CycleAnalyticsEvent|Merge request label was removed"
 msgstr ""
 
 msgid "CycleAnalyticsEvent|Merge request last build finish time"
@@ -11159,6 +11159,9 @@ msgid "Issue cannot be found."
 msgstr ""
 
 msgid "Issue events"
+msgstr ""
+
+msgid "Issue first depoloyed to production"
 msgstr ""
 
 msgid "Issue or Merge Request ID is required"
@@ -17972,6 +17975,9 @@ msgstr ""
 msgid "Serverless|Getting started with serverless"
 msgstr ""
 
+msgid "Serverless|Help shape the future of Serverless at GitLab"
+msgstr ""
+
 msgid "Serverless|If you believe none of these apply, please check back later as the function data may be in the process of becoming available."
 msgstr ""
 
@@ -17984,6 +17990,9 @@ msgstr ""
 msgid "Serverless|No functions available"
 msgstr ""
 
+msgid "Serverless|Sign up for First Look"
+msgstr ""
+
 msgid "Serverless|The deploy job has not finished."
 msgstr ""
 
@@ -17991,6 +18000,9 @@ msgid "Serverless|The functions listed in the %{startTag}serverless.yml%{endTag}
 msgstr ""
 
 msgid "Serverless|There is currently no function data available from Knative. This could be for a variety of reasons including:"
+msgstr ""
+
+msgid "Serverless|We are continually striving to improve our Serverless functionality. As a Knative user, we would love to hear how we can make this experience better for you. Sign up for GitLab First Look today and we will be in touch shortly."
 msgstr ""
 
 msgid "Serverless|Your %{startTag}.gitlab-ci.yml%{endTag} file is not properly configured."

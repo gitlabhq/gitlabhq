@@ -8,13 +8,20 @@ import Flash from '../flash';
 import Poll from '../lib/utils/poll';
 import initSettingsPanels from '../settings_panels';
 import eventHub from './event_hub';
-import { APPLICATION_STATUS, INGRESS, INGRESS_DOMAIN_SUFFIX, CROSSPLANE } from './constants';
+import {
+  APPLICATION_STATUS,
+  INGRESS,
+  INGRESS_DOMAIN_SUFFIX,
+  CROSSPLANE,
+  KNATIVE,
+} from './constants';
 import ClustersService from './services/clusters_service';
 import ClustersStore from './stores/clusters_store';
 import Applications from './components/applications.vue';
 import RemoveClusterConfirmation from './components/remove_cluster_confirmation.vue';
 import setupToggleButtons from '../toggle_buttons';
 import initProjectSelectDropdown from '~/project_select';
+import initServerlessSurveyBanner from '~/serverless/survey_banner';
 
 const Environments = () => import('ee_component/clusters/components/environments.vue');
 
@@ -325,6 +332,10 @@ export default class Clusters {
         prevApplicationMap[INGRESS],
         this.store.state.applications[INGRESS],
       );
+    }
+
+    if (this.store.state.applications[KNATIVE]?.status === APPLICATION_STATUS.INSTALLED) {
+      initServerlessSurveyBanner();
     }
   }
 

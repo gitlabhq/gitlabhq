@@ -73,6 +73,10 @@ GET /groups/:id/packages
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/:id/packages?exclude_subgroups=true
 ```
 
+CAUTION: **Deprecation**
+> The `build_info` attribute in the response is deprecated in favour of `pipeline`.
+> Introduced [GitLab 12.10](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28040).
+
 Example response:
 
 ```json
@@ -87,15 +91,17 @@ Example response:
       "delete_api_path": "/namespace1/project1/-/packages/1"
     },
     "created_at": "2019-11-27T03:37:38.711Z",
-    "build_info": {
-      "pipeline": {
-        "id": 123,
-        "status": "pending",
-        "ref": "new-pipeline",
-        "sha": "a91957a858320c0e17f3a0eca7cfacbff50ea29a",
-        "web_url": "https://example.com/foo/bar/pipelines/47",
-        "created_at": "2016-08-11T11:28:34.085Z",
-        "updated_at": "2016-08-11T11:32:35.169Z",
+    "pipeline": {
+      "id": 123,
+      "status": "pending",
+      "ref": "new-pipeline",
+      "sha": "a91957a858320c0e17f3a0eca7cfacbff50ea29a",
+      "web_url": "https://example.com/foo/bar/pipelines/47",
+      "created_at": "2016-08-11T11:28:34.085Z",
+      "updated_at": "2016-08-11T11:32:35.169Z",
+      "user": {
+        "name": "Administrator",
+        "avatar_url": "https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon"
       }
     }
   },
@@ -109,15 +115,17 @@ Example response:
       "delete_api_path": "/namespace1/project1/-/packages/1"
     },
     "created_at": "2019-11-27T03:37:38.711Z",
-    "build_info": {
-      "pipeline": {
-        "id": 123,
-        "status": "pending",
-        "ref": "new-pipeline",
-        "sha": "a91957a858320c0e17f3a0eca7cfacbff50ea29a",
-        "web_url": "https://example.com/foo/bar/pipelines/47",
-        "created_at": "2016-08-11T11:28:34.085Z",
-        "updated_at": "2016-08-11T11:32:35.169Z",
+    "pipeline": {
+      "id": 123,
+      "status": "pending",
+      "ref": "new-pipeline",
+      "sha": "a91957a858320c0e17f3a0eca7cfacbff50ea29a",
+      "web_url": "https://example.com/foo/bar/pipelines/47",
+      "created_at": "2016-08-11T11:28:34.085Z",
+      "updated_at": "2016-08-11T11:32:35.169Z",
+      "user": {
+        "name": "Administrator",
+        "avatar_url": "https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon"
       }
     }
   }
@@ -150,6 +158,10 @@ GET /projects/:id/packages/:package_id
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/:id/packages/:package_id
 ```
 
+CAUTION: **Deprecation**
+> The `build_info` attribute in the response is deprecated in favour of `pipeline`.
+> Introduced [GitLab 12.10](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28040).
+
 Example response:
 
 ```json
@@ -163,15 +175,17 @@ Example response:
     "delete_api_path": "/namespace1/project1/-/packages/1"
   },
   "created_at": "2019-11-27T03:37:38.711Z",
-  "build_info": {
-    "pipeline": {
-      "id": 123,
-      "status": "pending",
-      "ref": "new-pipeline",
-      "sha": "a91957a858320c0e17f3a0eca7cfacbff50ea29a",
-      "web_url": "https://example.com/foo/bar/pipelines/47",
-      "created_at": "2016-08-11T11:28:34.085Z",
-      "updated_at": "2016-08-11T11:32:35.169Z",
+  "pipeline": {
+    "id": 123,
+    "status": "pending",
+    "ref": "new-pipeline",
+    "sha": "a91957a858320c0e17f3a0eca7cfacbff50ea29a",
+    "web_url": "https://example.com/foo/bar/pipelines/47",
+    "created_at": "2016-08-11T11:28:34.085Z",
+    "updated_at": "2016-08-11T11:32:35.169Z",
+    "user": {
+      "name": "Administrator",
+      "avatar_url": "https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon"
     }
   }
 }

@@ -12,7 +12,7 @@
       %th{ role: 'columnheader', scope: 'col', 'aria-colindex': 4 }= _('Last updated')
 
   %tbody{ role: 'rowgroup' }
-    - @integrations&.each do |integration|
+    - @integrations.each do |integration|
       %tr{ role: 'row' }
         %td{ role: 'cell', 'aria-colindex': 1 }
           = boolean_to_icon integration.activated?

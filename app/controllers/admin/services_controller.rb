@@ -6,7 +6,7 @@ class Admin::ServicesController < Admin::ApplicationController
   before_action :service, only: [:edit, :update]
 
   def index
-    @services = Service.find_or_create_templates
+    @services = Service.find_or_create_templates.sort_by(&:title)
   end
 
   def edit

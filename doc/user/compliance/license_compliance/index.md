@@ -18,9 +18,9 @@ that is provided by [Auto DevOps](../../../topics/autodevops/index.md).
 
 GitLab checks the License Compliance report, compares the licenses between the
 source and target branches, and shows the information right on the merge request.
-Blacklisted licenses will be clearly visible with an `x` red icon next to them
+Denied licenses will be clearly visible with an `x` red icon next to them
 as well as new licenses which need a decision from you. In addition, you can
-[manually approve or blacklist](#project-policies-for-license-compliance)
+[manually allow or deny](#project-policies-for-license-compliance)
 licenses in your project's settings.
 
 NOTE: **Note:**
@@ -33,7 +33,7 @@ compliance report will be shown properly.
 ![License Compliance Widget](img/license_compliance.png)
 
 If you are a project or group Maintainer, you can click on a license to be given
-the choice to approve it or blacklist it.
+the choice to allow it or deny it.
 
 ![License approval decision](img/license_compliance_decision.png)
 
@@ -282,9 +282,9 @@ license_scanning:
 From the project's settings:
 
 - The list of licenses and their status can be managed.
-- Licenses can be manually approved or blacklisted.
+- Licenses can be manually allowed or denied.
 
-To approve or blacklist a license:
+To allow or deny a license:
 
 1. Either use the **Manage licenses** button in the merge request widget, or
    navigate to the project's **Settings > CI/CD** and expand the
@@ -298,12 +298,12 @@ To approve or blacklist a license:
      at the top of the list.
    - Enter arbitrary text in the field at the top of the list. This will cause the text to be
      added as a license name to the list.
-1. Select the **Approve** or **Blacklist** radio button to approve or blacklist respectively
+1. Select the **Allow** or **Deny** radio button to allow or deny respectively
    the selected license.
 
 To modify an existing license:
 
-1. In the **License Compliance** list, click the **Approved/Declined** dropdown to change it to the desired status.
+1. In the **License Compliance** list, click the **Allow/Deny** dropdown to change it to the desired status.
 
    ![License Compliance Settings](img/license_compliance_settings_v12_3.png)
 

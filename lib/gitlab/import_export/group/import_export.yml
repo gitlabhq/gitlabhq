@@ -36,6 +36,8 @@ excluded_attributes:
     - :runners_token_encrypted
     - :saml_discovery_token
     - :visibility_level
+  epics:
+    - :state_id
 
 methods:
   labels:
@@ -50,6 +52,8 @@ methods:
     - :action
   lists:
     - :list_type
+  epics:
+    - :state
 
 preloads:
 

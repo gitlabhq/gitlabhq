@@ -173,7 +173,7 @@ module Gitlab
       end
 
       def details
-        message_parts[2]
+        message_parts[2]&.gsub(/^Signed-off-by.*$/, '')
       end
 
       def line_too_long?(line)
