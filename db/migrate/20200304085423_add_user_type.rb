@@ -5,8 +5,6 @@ class AddUserType < ActiveRecord::Migration[6.0]
 
   DOWNTIME = false
 
-  disable_ddl_transaction!
-
   def up
     with_lock_retries do
       add_column :users, :user_type, :integer, limit: 2

@@ -9685,6 +9685,8 @@ CREATE INDEX index_projects_api_created_at_id_for_archived ON public.projects US
 
 CREATE INDEX index_projects_api_created_at_id_for_archived_vis20 ON public.projects USING btree (created_at, id) WHERE ((archived = true) AND (visibility_level = 20) AND (pending_delete = false));
 
+CREATE INDEX index_projects_api_created_at_id_for_vis10 ON public.projects USING btree (created_at, id) WHERE ((visibility_level = 10) AND (pending_delete = false));
+
 CREATE INDEX index_projects_api_last_activity_at_id_desc ON public.projects USING btree (last_activity_at, id DESC);
 
 CREATE INDEX index_projects_api_name_id_desc ON public.projects USING btree (name, id DESC);
@@ -12839,5 +12841,6 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200323134519
 20200324115359
 20200325160952
+20200325183636
 \.
 

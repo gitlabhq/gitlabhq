@@ -487,13 +487,13 @@ Examples:
 - Select all tags, keep at least 1 tag per image, expire any tag older than 14 days, run once a month, and the policy is enabled:
 
   ```shell
-  curl --request PUT --header 'Content-Type: application/json;charset=UTF-8' --header "PRIVATE-TOKEN: <your_access_token>" --data-binary '{"container_expiration_policy_attributes":{"cadence":"1month","enabled":true,"keep_n":1,"older_than":"14d","name_regex":".*"}' 'https://gitlab.example.com/api/v4/projects/2'
+  curl --request PUT --header 'Content-Type: application/json;charset=UTF-8' --header "PRIVATE-TOKEN: <your_access_token>" --data-binary '{"container_expiration_policy_attributes":{"cadence":"1month","enabled":true,"keep_n":1,"older_than":"14d","name_regex":".*"}}' 'https://gitlab.example.com/api/v4/projects/2'
   ```
 
 - Select only tags with a name that contains `stable`, keep at least 50 tag per image, expire any tag older than 7 days, run every day, and the policy is enabled:
 
   ```shell
-  curl --request PUT --header 'Content-Type: application/json;charset=UTF-8' --header "PRIVATE-TOKEN: <your_access_token>" --data-binary '{"container_expiration_policy_attributes":{"cadence":"1day","enabled":true,"keep_n":50"older_than":"7d","name_regex":"*stable"}' 'https://gitlab.example.com/api/v4/projects/2'
+  curl --request PUT --header 'Content-Type: application/json;charset=UTF-8' --header "PRIVATE-TOKEN: <your_access_token>" --data-binary '{"container_expiration_policy_attributes":{"cadence":"1day","enabled":true,"keep_n":50"older_than":"7d","name_regex":"*stable"}}' 'https://gitlab.example.com/api/v4/projects/2'
   ```
 
 See the API documentation for further details: [Edit project](../../../api/projects.md#edit-project).
