@@ -4,7 +4,7 @@ type: concepts, howto
 
 # Using Docker images
 
-GitLab CI in conjunction with [GitLab Runner](../runners/README.md) can use
+GitLab CI/CD in conjunction with [GitLab Runner](../runners/README.md) can use
 [Docker Engine](https://www.docker.com/) to test and build any application.
 
 Docker is an open-source project that allows you to use predefined images to
@@ -12,7 +12,7 @@ run applications in independent "containers" that are run within a single Linux
 instance. [Docker Hub][hub] has a rich database of pre-built images that can be
 used to test and build your applications.
 
-When used with GitLab CI, Docker runs each job in a separate and isolated
+When used with GitLab CI/CD, Docker runs each job in a separate and isolated
 container using the predefined image that is set up in
 [`.gitlab-ci.yml`](../yaml/README.md).
 

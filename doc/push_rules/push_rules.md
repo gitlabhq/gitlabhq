@@ -40,7 +40,7 @@ will be accepted.
 
 Let's assume there's a strict policy for branch names in your company, and
 you want the branches to start with a certain name because you have different
-GitLab CI jobs (`feature`, `hotfix`, `docker`, `android`, etc.) that rely on the
+GitLab CI/CD jobs (`feature`, `hotfix`, `docker`, `android`, etc.) that rely on the
 branch name.
 
 Your developers however, don't always remember that policy, so they push

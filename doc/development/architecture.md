@@ -150,7 +150,7 @@ Component statuses are linked to configuration documentation for each component.
 | [Node Exporter](#node-exporter) | Prometheus endpoint with system metrics | [✅][node-exporter-omnibus] | [N/A][node-exporter-charts] | [N/A][node-exporter-charts] | [✅](https://about.gitlab.com/handbook/engineering/monitoring/) | ❌ | ❌ | CE & EE |
 | [Mattermost](#mattermost) | Open-source Slack alternative | [⚙][mattermost-omnibus] | [⤓][mattermost-charts] | [⤓][mattermost-charts] | [⤓](../user/project/integrations/mattermost.md) | ❌ | ❌ | CE & EE |
 | [MinIO](#minio) | Object storage service | [⤓][minio-omnibus] | [✅][minio-charts] | [✅][minio-charts] | [✅](https://about.gitlab.com/handbook/engineering/infrastructure/production/architecture/#storage-architecture) | ❌ | [⚙][minio-gdk] | CE & EE |
-| [Runner](#gitlab-runner) | Executes GitLab CI jobs | [⤓][runner-omnibus] | [✅][runner-charts] | [⚙][runner-charts] | [✅](../user/gitlab_com/index.md#shared-runners) | [⚙][runner-source] | [⚙][runner-gdk] | CE & EE |
+| [Runner](#gitlab-runner) | Executes GitLab CI/CD jobs | [⤓][runner-omnibus] | [✅][runner-charts] | [⚙][runner-charts] | [✅](../user/gitlab_com/index.md#shared-runners) | [⚙][runner-source] | [⚙][runner-gdk] | CE & EE |
 | [Database Migrations](#database-migrations) | Database migrations | [✅][database-migrations-omnibus] | [✅][database-migrations-charts] | [✅][database-migrations-charts] | ✅ | [⚙][database-migrations-source] | ✅ | CE & EE |
 | [Certificate Management](#certificate-management) | TLS Settings, Let's Encrypt | [✅][certificate-management-omnibus] | [✅][certificate-management-charts] | [⚙][certificate-management-charts] | [✅](https://about.gitlab.com/handbook/engineering/infrastructure/production/architecture/#secrets-management) | [⚙][certificate-management-source] | [⚙][certificate-management-gdk] | CE & EE |
 | [GitLab Geo Node](#gitlab-geo) | Geographically distributed GitLab nodes | [⚙][geo-omnibus] | [❌][geo-charts] | [❌][geo-charts] | ✅ | ❌ | [⚙][geo-gdk] | EE Only |
@@ -263,7 +263,7 @@ You can use it either for personal or business websites, such as portfolios, doc
 
 GitLab Runner runs tests and sends the results to GitLab.
 
-GitLab CI is the open-source continuous integration service included with GitLab that coordinates the testing. The old name of this project was GitLab CI Multi Runner but please use "GitLab Runner" (without CI) from now on.
+GitLab CI/CD is the open-source continuous integration service included with GitLab that coordinates the testing. The old name of this project was `GitLab CI Multi Runner` but please use `GitLab Runner` (without CI) from now on.
 
 #### GitLab Shell
 

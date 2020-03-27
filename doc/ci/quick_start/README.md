@@ -55,7 +55,7 @@ This guide assumes that you have:
 - A project in GitLab that you would like to use CI for.
 - Maintainer or owner access to the project
 
-Let's break it down to pieces and work on solving the GitLab CI puzzle.
+Let's break it down to pieces and work on solving the GitLab CI/CD puzzle.
 
 ## Creating a `.gitlab-ci.yml` file
 

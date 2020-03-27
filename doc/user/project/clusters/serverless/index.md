@@ -14,7 +14,7 @@ GitLab supports several ways deploy Serverless applications in both Kubernetes E
 Currently we support:
 
 - [Knative](#knative): Build Knative applications with Knative and `gitlabktl` on GKE and EKS.
-- [AWS Lambda](aws.md): Create serverless applications via the Serverless Framework and GitLab CI.
+- [AWS Lambda](aws.md): Create serverless applications via the Serverless Framework and GitLab CI/CD.
 
 ## Knative
 

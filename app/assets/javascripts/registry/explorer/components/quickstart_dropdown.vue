@@ -1,6 +1,7 @@
 <script>
 import { GlDropdown, GlFormGroup, GlFormInputGroup } from '@gitlab/ui';
 import { mapGetters } from 'vuex';
+import Tracking from '~/tracking';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import {
   QUICK_START,
@@ -19,6 +20,7 @@ export default {
     GlFormInputGroup,
     ClipboardButton,
   },
+  mixins: [Tracking.mixin({ label: 'quickstart_dropdown' })],
   i18n: {
     dropdownTitle: QUICK_START,
     loginCommandLabel: LOGIN_COMMAND_LABEL,
@@ -34,7 +36,13 @@ export default {
 };
 </script>
 <template>
-  <gl-dropdown :text="$options.i18n.dropdownTitle" variant="primary" size="sm" right>
+  <gl-dropdown
+    :text="$options.i18n.dropdownTitle"
+    variant="primary"
+    size="sm"
+    right
+    @shown="track('click_dropdown')"
+  >
     <!-- This li is used as a container since gl-dropdown produces a root ul, this mimics the functionality exposed by b-dropdown-form -->
     <li role="presentation" class="px-2 py-1 dropdown-menu-large">
       <form>
@@ -49,6 +57,7 @@ export default {
                 class="border"
                 :text="dockerLoginCommand"
                 :title="$options.i18n.copyLoginTitle"
+                @click.native="track('click_copy_login')"
               />
             </template>
           </gl-form-input-group>
@@ -65,6 +74,7 @@ export default {
                 class="border"
                 :text="dockerBuildCommand"
                 :title="$options.i18n.copyBuildTitle"
+                @click.native="track('click_copy_build')"
               />
             </template>
           </gl-form-input-group>
@@ -82,6 +92,7 @@ export default {
                 class="border"
                 :text="dockerPushCommand"
                 :title="$options.i18n.copyPushTitle"
+                @click.native="track('click_copy_push')"
               />
             </template>
           </gl-form-input-group>

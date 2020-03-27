@@ -1,6 +1,7 @@
 import Vuex from 'vuex';
 import { mount, createLocalVue } from '@vue/test-utils';
 import { GlDropdown, GlFormGroup, GlFormInputGroup } from '@gitlab/ui';
+import Tracking from '~/tracking';
 import * as getters from '~/registry/explorer/stores/getters';
 import QuickstartDropdown from '~/registry/explorer/components/quickstart_dropdown.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
@@ -42,6 +43,7 @@ describe('quickstart_dropdown', () => {
   };
 
   beforeEach(() => {
+    jest.spyOn(Tracking, 'event');
     mountComponent();
   });
 
@@ -55,12 +57,21 @@ describe('quickstart_dropdown', () => {
     expect(findDropdownButton().text()).toContain(QUICK_START);
   });
 
+  it('clicking on the dropdown emit a tracking event', () => {
+    findDropdownButton().vm.$emit('shown');
+    expect(Tracking.event).toHaveBeenCalledWith(
+      undefined,
+      'click_dropdown',
+      expect.objectContaining({ label: 'quickstart_dropdown' }),
+    );
+  });
+
   describe.each`
-    index | id                    | labelText              | titleText           | getter
-    ${0}  | ${'docker-login-btn'} | ${LOGIN_COMMAND_LABEL} | ${COPY_LOGIN_TITLE} | ${'dockerLoginCommand'}
-    ${1}  | ${'docker-build-btn'} | ${BUILD_COMMAND_LABEL} | ${COPY_BUILD_TITLE} | ${'dockerBuildCommand'}
-    ${2}  | ${'docker-push-btn'}  | ${PUSH_COMMAND_LABEL}  | ${COPY_PUSH_TITLE}  | ${'dockerPushCommand'}
-  `('form group at $index', ({ index, id, labelText, titleText, getter }) => {
+    index | id                    | labelText              | titleText           | getter                  | trackedEvent
+    ${0}  | ${'docker-login-btn'} | ${LOGIN_COMMAND_LABEL} | ${COPY_LOGIN_TITLE} | ${'dockerLoginCommand'} | ${'click_copy_login'}
+    ${1}  | ${'docker-build-btn'} | ${BUILD_COMMAND_LABEL} | ${COPY_BUILD_TITLE} | ${'dockerBuildCommand'} | ${'click_copy_build'}
+    ${2}  | ${'docker-push-btn'}  | ${PUSH_COMMAND_LABEL}  | ${COPY_PUSH_TITLE}  | ${'dockerPushCommand'}  | ${'click_copy_push'}
+  `('form group at $index', ({ index, id, labelText, titleText, getter, trackedEvent }) => {
     let formGroup;
 
     const findFormInputGroup = parent => parent.find(GlFormInputGroup);
@@ -90,6 +101,20 @@ describe('quickstart_dropdown', () => {
       expect(clipBoardButton.exists()).toBe(true);
       expect(clipBoardButton.props('title')).toBe(titleText);
       expect(clipBoardButton.props('text')).toBe(store.getters[getter]);
+    });
+
+    it('clipboard button tracks click event', () => {
+      const clipBoardButton = findClipboardButton(formGroup);
+      clipBoardButton.trigger('click');
+      /* This expect to be called with first argument undefined so that
+       * the function internally can default to document.body.dataset.page
+       * https://docs.gitlab.com/ee/telemetry/frontend.html#tracking-within-vue-components
+       */
+      expect(Tracking.event).toHaveBeenCalledWith(
+        undefined,
+        trackedEvent,
+        expect.objectContaining({ label: 'quickstart_dropdown' }),
+      );
     });
   });
 });

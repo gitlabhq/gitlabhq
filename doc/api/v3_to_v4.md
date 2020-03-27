@@ -45,7 +45,7 @@ Below are the changes made between V3 and V4.
 - Moved `PUT /users/:id/(block|unblock)` to `POST /users/:id/(block|unblock)` [!9371](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/9371)
 - Make subscription API more RESTful. Use `POST /projects/:id/:subscribable_type/:subscribable_id/subscribe` to subscribe and `POST /projects/:id/:subscribable_type/:subscribable_id/unsubscribe` to unsubscribe from a resource. [!9325](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/9325)
 - Labels filter on `GET /projects/:id/issues` and `GET /issues` now matches only issues containing all labels (i.e.: Logical AND, not OR) [!8849](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/8849)
-- Renamed param `branch_name` to `branch` on the following endpoints [!8936](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/8936)
+- Renamed parameter `branch_name` to `branch` on the following endpoints [!8936](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/8936)
   - `POST /projects/:id/repository/branches`
   - `POST /projects/:id/repository/commits`
   - `POST/PUT/DELETE :id/repository/files`
@@ -56,7 +56,7 @@ Below are the changes made between V3 and V4.
   - `POST /projects/user/:user_id`
   - `PUT /projects/:id`
 - Renamed `branch_name` to `branch` on `DELETE /projects/:id/repository/branches/:branch` response [!8936](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/8936)
-- Remove `public` param from create and edit actions of projects [!8736](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/8736)
+- Remove `public` parameter from create and edit actions of projects [!8736](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/8736)
 - Remove `subscribed` field from responses returning list of issues or merge
   requests. Fetch individual issues or merge requests to obtain the value
   of `subscribed`

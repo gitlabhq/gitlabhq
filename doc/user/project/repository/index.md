@@ -157,7 +157,7 @@ Via command line, you can commit multiple times before pushing.
   - **Skip pipelines:**
   You can add to you commit message the keyword
   [`[ci skip]`](../../../ci/yaml/README.md#skipping-jobs)
-  and GitLab CI will skip that pipeline.
+  and GitLab CI/CD will skip that pipeline.
   - **Cross-link issues and merge requests:**
   [Cross-linking](../issues/crosslinking_issues.md#from-commit-messages)
   is great to keep track of what's is somehow related in your workflow.

@@ -278,7 +278,7 @@ You can update project approval rules using the following endpoint:
 PUT /projects/:id/approval_rules/:approval_rule_id
 ```
 
-**Important:** Approvers and groups not in the `users`/`groups` param will be **removed**
+**Important:** Approvers and groups not in the `users`/`groups` parameters will be **removed**
 
 **Parameters:**
 
@@ -851,7 +851,7 @@ You can update merge request approval rules using the following endpoint:
 PUT /projects/:id/merge_requests/:merge_request_iid/approval_rules/:approval_rule_id
 ```
 
-**Important:** Approvers and groups not in the `users`/`groups` param will be **removed**
+**Important:** Approvers and groups not in the `users`/`groups` parameters will be **removed**
 
 **Important:** Updating a `report_approver` or `code_owner` rule is not allowed.
 These are system generated rules.

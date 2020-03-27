@@ -44,7 +44,7 @@ for all your local checkouts. The `.gitmodules` would look like:
 The above configuration will instruct Git to automatically deduce the URL that
 should be used when cloning sources. Whether you use HTTP(S) or SSH, Git will use
 that same channel and it will allow to make all your CI jobs use HTTP(S)
-(because GitLab CI only uses HTTP(S) for cloning your sources), and all your local
+(because GitLab CI/CD only uses HTTP(S) for cloning your sources), and all your local
 clones will continue using SSH.
 
 For all other submodules not located on the same GitLab server, use the full

@@ -872,7 +872,7 @@ GET /projects/:id/services/packagist
 
 ## Pipeline-Emails
 
-Get emails for GitLab CI pipelines.
+Get emails for GitLab CI/CD pipelines.
 
 ### Create/Edit Pipeline-Emails service
 

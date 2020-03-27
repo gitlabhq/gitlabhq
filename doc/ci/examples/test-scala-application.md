@@ -4,7 +4,7 @@ type: tutorial
 
 # Test and deploy a Scala application to Heroku
 
-This example demonstrates the integration of GitLab CI with Scala
+This example demonstrates the integration of GitLab CI/CD with Scala
 applications using SBT. You can view or fork the [example project](https://gitlab.com/gitlab-examples/scala-sbt)
 and view the logs of its past [CI jobs](https://gitlab.com/gitlab-examples/scala-sbt/-/jobs?scope=finished).
 

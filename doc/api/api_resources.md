@@ -150,5 +150,5 @@ Endpoints are available for:
 
 - [Dockerfile templates](templates/dockerfiles.md).
 - [`.gitignore` templates](templates/gitignores.md).
-- [GitLab CI YAML templates](templates/gitlab_ci_ymls.md).
+- [GitLab CI/CD YAML templates](templates/gitlab_ci_ymls.md).
 - [Open source license templates](templates/licenses.md).

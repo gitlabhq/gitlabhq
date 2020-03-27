@@ -506,17 +506,17 @@ end
 Note that due to namespace differences, we need to use the full qualifier for some
 constants.
 
-#### EE params
+#### EE parameters
 
 We can define `params` and utilize `use` in another `params` definition to
-include params defined in EE. However, we need to define the "interface" first
+include parameters defined in EE. However, we need to define the "interface" first
 in CE in order for EE to override it. We don't have to do this in other places
 due to `prepend_if_ee`, but Grape is complex internally and we couldn't easily
 do that, so we'll follow regular object-oriented practices that we define the
 interface first here.
 
-For example, suppose we have a few more optional params for EE. We can move the
-params out of the `Grape::API` class to a helper module, so we can inject it
+For example, suppose we have a few more optional parameters for EE. We can move the
+paramters out of the `Grape::API` class to a helper module, so we can inject it
 before it would be used in the class.
 
 ```ruby

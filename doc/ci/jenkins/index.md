@@ -243,7 +243,7 @@ default:
 
 #### `stages`
 
-GitLab CI also lets you define stages, but is a little bit more free-form to configure. The GitLab [`stages` keyword](../yaml/README.md#stages)
+GitLab CI/CD also lets you define stages, but is a little bit more free-form to configure. The GitLab [`stages` keyword](../yaml/README.md#stages)
 is a top level setting that enumerates the list of stages, but you are not required to nest individual jobs underneath
 the `stages` section. Any job defined in the `.gitlab-ci.yml` can be made a part of any stage through use of the
 [`stage:` keyword](../yaml/README.md#stage).

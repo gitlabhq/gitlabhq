@@ -37,7 +37,7 @@ The following table lists examples with step-by-step tutorials that are containe
 | Python on Heroku            | [Test and deploy a Python application with GitLab CI/CD](test-and-deploy-python-application-to-heroku.md).                 |
 | Ruby on Heroku              | [Test and deploy a Ruby application with GitLab CI/CD](test-and-deploy-ruby-application-to-heroku.md).                     |
 | Scala on Heroku             | [Test and deploy a Scala application to Heroku](test-scala-application.md).                                                |
-| Parallel testing Ruby & JS  | [GitLab CI parallel jobs testing for Ruby & JavaScript projects](https://docs.knapsackpro.com/2019/how-to-run-parallel-jobs-for-rspec-tests-on-gitlab-ci-pipeline-and-speed-up-ruby-javascript-testing). |
+| Parallel testing Ruby & JS  | [GitLab CI/CD parallel jobs testing for Ruby & JavaScript projects](https://docs.knapsackpro.com/2019/how-to-run-parallel-jobs-for-rspec-tests-on-gitlab-ci-pipeline-and-speed-up-ruby-javascript-testing). |
 
 ### Contributing examples
 
@@ -67,7 +67,7 @@ For examples of setting up GitLab CI/CD for cloud-based environments, see:
 
 See also the following video overviews:
 
-- [Containers, Schedulers, and GitLab CI](https://www.youtube.com/watch?v=d-9awBxEbvQ).
+- [Kubernetes, GitLab, and Cloud Native](https://www.youtube.com/watch?v=d-9awBxEbvQ).
 - [Deploying to IBM Cloud with GitLab CI/CD](https://www.youtube.com/watch?v=6ZF4vgKMd-g).
 
 ### Customer stories

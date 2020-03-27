@@ -107,7 +107,7 @@ The GitLab University curriculum is composed of GitLab videos, screencasts, pres
 ### 2.3. Continuous Integration
 
 1. [Operating Systems, Servers, VMs, Containers and Unix - Video](https://www.youtube.com/watch?v=V61kL6IC-zY&index=8&list=PLFGfElNsQthbQu_IWlNOxul0TbS_2JH-e)
-1. [GitLab CI - Product Page](https://about.gitlab.com/stages-devops-lifecycle/continuous-integration/)
+1. [GitLab CI/CD - Product Page](https://about.gitlab.com/stages-devops-lifecycle/continuous-integration/)
 1. [Getting started with GitLab and GitLab CI](https://about.gitlab.com/blog/2015/12/14/getting-started-with-gitlab-and-gitlab-ci/)
 1. [GitLab Container Registry](https://about.gitlab.com/blog/2016/05/23/gitlab-container-registry/)
 1. [GitLab and Docker - Video](https://www.youtube.com/watch?v=ugOrCcbdHko&index=12&list=PLFGfElNsQthbQu_IWlNOxul0TbS_2JH-e)

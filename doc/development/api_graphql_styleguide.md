@@ -762,7 +762,7 @@ a hash with the input for the mutation. This will return a struct with
 a mutation query, and prepared variables.
 
 This struct can then be passed to the `post_graphql_mutation` helper,
-that will post the request with the correct params, like a GraphQL
+that will post the request with the correct parameters, like a GraphQL
 client would do.
 
 To access the response of a mutation, the `graphql_mutation_response`

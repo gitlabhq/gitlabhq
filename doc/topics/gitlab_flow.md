@@ -309,7 +309,7 @@ In old workflows, the continuous integration (CI) server commonly ran tests on t
 Developers had to ensure their code did not break the `master` branch.
 When using GitLab flow, developers create their branches from this `master` branch, so it is essential that it never breaks.
 Therefore, each merge request must be tested before it is accepted.
-CI software like Travis CI and GitLab CI show the build results right in the merge request itself to make this easy.
+CI software like Travis CI and GitLab CI/CD show the build results right in the merge request itself to make this easy.
 
 There is one drawback to testing merge requests: the CI server only tests the feature branch itself, not the merged result.
 Ideally, the server could also test the `master` branch after each change.

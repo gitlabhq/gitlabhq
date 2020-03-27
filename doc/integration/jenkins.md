@@ -13,7 +13,7 @@ document.
 ## Overview
 
 [Jenkins](https://jenkins.io/) is a great Continuous Integration tool, similar to our built-in
-[GitLab CI](../ci/README.md).
+[GitLab CI/CD](../ci/README.md).
 
 GitLab's Jenkins integration allows you to trigger a Jenkins build when you
 push code to a repository, or when a merge request is created. Additionally,
@@ -26,7 +26,7 @@ and [Migrating from Jenkins to GitLab](https://www.youtube.com/watch?v=RlEVGOpYF
 
 - Suppose you are new to GitLab, and want to keep using Jenkins until you prepare
   your projects to build with [GitLab CI/CD](../ci/README.md). You set up the
-  integration between GitLab and Jenkins, then you migrate to GitLab CI later. While
+  integration between GitLab and Jenkins, then you migrate to GitLab CI/CD later. While
   you organize yourself and your team to onboard GitLab, you keep your pipelines
   running with Jenkins, but view the results in your project's repository in GitLab.
 - Your team uses [Jenkins Plugins](https://plugins.jenkins.io/) for other proceedings,

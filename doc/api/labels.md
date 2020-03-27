@@ -191,7 +191,7 @@ DELETE /projects/:id/labels/:label_id
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/labels/bug"
 ```
 
-NOTE: **Note:** An older endpoint `DELETE /projects/:id/labels` with `name` in the params is still available, but deprecated.
+NOTE: **Note:** An older endpoint `DELETE /projects/:id/labels` with `name` in the parameters is still available, but deprecated.
 
 ## Edit an existing label
 
@@ -234,7 +234,7 @@ Example response:
 }
 ```
 
-NOTE: **Note:** An older endpoint `PUT /projects/:id/labels` with `name` or `label_id` in the params is still available, but deprecated.
+NOTE: **Note:** An older endpoint `PUT /projects/:id/labels` with `name` or `label_id` in the parameters is still available, but deprecated.
 
 ## Promote a project label to a group label
 
@@ -271,7 +271,7 @@ Example response:
 }
 ```
 
-NOTE: **Note:** An older endpoint `PUT /projects/:id/labels/promote` with `name` in the params is still available, but deprecated.
+NOTE: **Note:** An older endpoint `PUT /projects/:id/labels/promote` with `name` in the parameters is still available, but deprecated.
 
 ## Subscribe to a label
 

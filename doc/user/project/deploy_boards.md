@@ -140,7 +140,7 @@ version of your application.
 ## Further reading
 
 - [GitLab Autodeploy][autodeploy]
-- [GitLab CI environment variables][variables]
+- [GitLab CI/CD environment variables][variables]
 - [Environments and deployments][environment]
 - [Kubernetes deploy example][kube-deploy]
 
@@ -153,7 +153,7 @@ version of your application.
 [kube-exec]: https://docs.gitlab.com/runner/executors/kubernetes.html "GitLab Runner Kubernetes executor"
 [kube-service]: integrations/kubernetes.md "Kubernetes project service"
 [review apps]: ../../ci/review_apps/index.md "Review Apps documentation"
-[variables]: ../../ci/variables/README.md "GitLab CI variables"
+[variables]: ../../ci/variables/README.md "GitLab CI/CD variables"
 [autodeploy]: ../../topics/autodevops/index.md#auto-deploy "GitLab Autodeploy"
 [kube-image]: https://gitlab.com/gitlab-examples/kubernetes-deploy/container_registry "Kubernetes deploy Container Registry"
 [runners]: ../../ci/runners/README.md

@@ -317,7 +317,7 @@ export GITLAB_USER_ID="42"
 NOTE: **Note:**
 This feature requires GitLab Runner 0.5.0 or higher and GitLab 7.14 or higher.
 
-GitLab CI allows you to add to `.gitlab-ci.yml` variables that are set in the
+GitLab CI/CD allows you to add to `.gitlab-ci.yml` variables that are set in the
 build environment. The variables are hence saved in the repository, and they
 are meant to store non-sensitive project configuration. For example, `RAILS_ENV` or
 `DATABASE_URL`.

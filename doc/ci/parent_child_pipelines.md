@@ -33,7 +33,7 @@ set of concurrently running child pipelines, but within the same project:
 - Imports are done at the child pipeline level, reducing the likelihood of collisions.
 - Each pipeline has only relevant steps, making it easier to understand what's going on.
 
-Child pipelines work well with other GitLab CI features:
+Child pipelines work well with other GitLab CI/CD features:
 
 - Use [`only: changes`](yaml/README.md#onlychangesexceptchanges) to trigger pipelines only when
   certain files change. This is useful for monorepos, for example.

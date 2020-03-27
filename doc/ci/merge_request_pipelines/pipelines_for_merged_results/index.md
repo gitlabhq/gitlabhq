@@ -66,7 +66,7 @@ otherwise pipelines for merged results won't run and your merge requests will be
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/12996) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.3.
 
-GitLab CI can detect the presence of redundant pipelines,
+GitLab CI/CD can detect the presence of redundant pipelines,
 and will cancel them automatically in order to conserve CI resources.
 
 When a user merges a merge request immediately within an ongoing merge

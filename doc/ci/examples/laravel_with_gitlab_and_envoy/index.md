@@ -608,7 +608,7 @@ If the SSH keys have added successfully, we can run Envoy.
 As mentioned before, GitLab supports [Continuous Delivery](https://about.gitlab.com/blog/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/#continuous-delivery) methods as well.
 The [environment](../../yaml/README.md#environment) keyword tells GitLab that this job deploys to the `production` environment.
 The `url` keyword is used to generate a link to our application on the GitLab Environments page.
-The `only` keyword tells GitLab CI that the job should be executed only when the pipeline is building the `master` branch.
+The `only` keyword tells GitLab CI/CD that the job should be executed only when the pipeline is building the `master` branch.
 Lastly, `when: manual` is used to turn the job from running automatically to a manual action.
 
 ```yaml
@@ -679,6 +679,6 @@ As you see, the `.env` is pointing to the `/var/www/app/.env` file and also `sto
 
 ## Conclusion
 
-We configured GitLab CI to perform automated tests and used the method of [Continuous Delivery](https://continuousdelivery.com/) to deploy to production a Laravel application with Envoy, directly from the codebase.
+We configured GitLab CI/CD to perform automated tests and used the method of [Continuous Delivery](https://continuousdelivery.com/) to deploy to production a Laravel application with Envoy, directly from the codebase.
 
 Envoy also was a great match to help us deploy the application without writing our custom bash script and doing Linux magics.

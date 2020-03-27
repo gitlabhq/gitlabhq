@@ -95,7 +95,7 @@ To learn more about configuration options for GitLab Pages, read the following:
 | --- | --- |
 | [GitLab Pages domain names, URLs, and baseurls](getting_started_part_one.md) | Understand how GitLab Pages default domains work. |
 | [GitLab CI/CD for GitLab Pages](getting_started_part_four.md) | Understand how to create your own `.gitlab-ci.yml` for your site. |
-| [Exploring GitLab Pages](introduction.md) | Requirements, technical aspects, specific GitLab CI's configuration options, Access Control, custom 404 pages, limitations, FAQ. |
+| [Exploring GitLab Pages](introduction.md) | Requirements, technical aspects, specific GitLab CI/CD's configuration options, Access Control, custom 404 pages, limitations, FAQ. |
 |---+---|
 | [Custom domains and SSL/TLS Certificates](custom_domains_ssl_tls_certification/index.md) | How to add custom domains and subdomains to your website, configure DNS records and SSL/TLS certificates. |
 | [Let's Encrypt integration](custom_domains_ssl_tls_certification/lets_encrypt_integration.md) | Secure your Pages sites with Let's Encrypt certificates automatically obtained and renewed by GitLab. |

@@ -799,7 +799,7 @@ networkPolicy:
 ```
 
 For more information on how to install Network Policies, see
-[Install Cilium using GitLab CI](../../user/clusters/applications.md#install-cilium-using-gitlab-cicd).
+[Install Cilium using GitLab CI/CD](../../user/clusters/applications.md#install-cilium-using-gitlab-cicd).
 
 #### Web Application Firewall (ModSecurity) customization
 

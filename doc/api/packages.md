@@ -64,7 +64,7 @@ GET /groups/:id/packages
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id`      | integer/string | yes | ID or [URL-encoded path of the group](README.md#namespaced-path-encoding). |
-| `exclude_subgroups` | boolean | false | If the param is included as true, packages from projects from subgroups are not listed. Default is `false`. |
+| `exclude_subgroups` | boolean | false | If the parameter is included as true, packages from projects from subgroups are not listed. Default is `false`. |
 | `order_by`| string | no | The field to use as order. One of `created_at` (default), `name`, `version`, `type`, or `project_path`. |
 | `sort`    | string | no | The direction of the order, either `asc` (default) for ascending order or `desc` for descending order. |
 | `package_type` | string | no | Filter the returned packages by type. One of `conan`, `maven`, `npm` or `nuget`. (_Introduced in GitLab 12.9_) |

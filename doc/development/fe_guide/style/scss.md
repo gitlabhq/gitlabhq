@@ -245,7 +245,7 @@ ruleset in `.scss-lint.yml`, which is located in the home directory of the
 project.
 
 To check if any warnings will be produced by your changes, you can run `rake
-scss_lint` in the GitLab directory. SCSS Lint will also run in GitLab CI to
+scss_lint` in the GitLab directory. SCSS Lint will also run in GitLab CI/CD to
 catch any warnings.
 
 If the Rake task is throwing warnings you don't understand, SCSS Lint's

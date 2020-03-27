@@ -17,7 +17,7 @@ GET /projects/:id/registry/repositories
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id`      | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) accessible by the authenticated user. |
-| `tags`      | boolean | no | If the param is included as true, each repository will include an array of `"tags"` in the response. |
+| `tags`      | boolean | no | If the parameter is included as true, each repository will include an array of `"tags"` in the response. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/registry/repositories"
@@ -57,7 +57,7 @@ GET /groups/:id/registry/repositories
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id`      | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) accessible by the authenticated user. |
-| `tags`      | boolean | no | If the param is included as true, each repository will include an array of `"tags"` in the response. |
+| `tags`      | boolean | no | If the parameter is included as true, each repository will include an array of `"tags"` in the response. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/2/registry/repositories?tags=1"

@@ -4,12 +4,12 @@ type: reference
 
 # Configuring GitLab Runners
 
-In GitLab CI, Runners run the code defined in [`.gitlab-ci.yml`](../yaml/README.md).
+In GitLab CI/CD, Runners run the code defined in [`.gitlab-ci.yml`](../yaml/README.md).
 They are isolated (virtual) machines that pick up jobs through the coordinator
-API of GitLab CI.
+API of GitLab CI/CD.
 
 A Runner can be specific to a certain project or serve any project
-in GitLab CI. A Runner that serves all projects is called a shared Runner.
+in GitLab CI/CD. A Runner that serves all projects is called a shared Runner.
 
 Ideally, the GitLab Runner should not be installed on the same machine as GitLab.
 Read the [requirements documentation](../../install/requirements.md#gitlab-runner)

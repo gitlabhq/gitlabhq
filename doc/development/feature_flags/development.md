@@ -81,7 +81,7 @@ Feature groups must be defined statically in `lib/feature.rb` (in the
 dynamic (querying the DB etc.).
 
 Once defined in `lib/feature.rb`, you will be able to activate a
-feature for a given feature group via the [`feature_group` param of the features API](../../api/features.md#set-or-create-a-feature)
+feature for a given feature group via the [`feature_group` parameter of the features API](../../api/features.md#set-or-create-a-feature)
 
 ### Frontend
 

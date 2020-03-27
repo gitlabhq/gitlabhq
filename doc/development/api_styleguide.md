@@ -28,7 +28,7 @@ for a good example):
   - The GitLab version when the endpoint was added. If it is behind a feature flag, mention that instead: _This feature is gated by the :feature\_flag\_symbol feature flag._
   - If the endpoint is deprecated, and if so, when will it be removed
 
-- `params` for the method params. This acts as description,
+- `params` for the method parameters. This acts as description,
   [validation, and coercion of the parameters]
 
 A good example is as follows:
@@ -49,22 +49,22 @@ get do
 end
 ```
 
-## Declared params
+## Declared parameters
 
 > Grape allows you to access only the parameters that have been declared by your
-`params` block. It filters out the params that have been passed, but are not
+`params` block. It filters out the parameters that have been passed, but are not
 allowed.
 
 – <https://github.com/ruby-grape/grape#declared>
 
-### Exclude params from parent namespaces
+### Exclude parameters from parent namespaces
 
 > By default `declared(params)`includes parameters that were defined in all
 parent namespaces.
 
 – <https://github.com/ruby-grape/grape#include-parent-namespaces>
 
-In most cases you will want to exclude params from the parent namespaces:
+In most cases you will want to exclude parameters from the parent namespaces:
 
 ```ruby
 declared(params, include_parent_namespaces: false)
@@ -72,7 +72,7 @@ declared(params, include_parent_namespaces: false)
 
 ### When to use `declared(params)`
 
-You should always use `declared(params)` when you pass the params hash as
+You should always use `declared(params)` when you pass the parameters hash as
 arguments to a method call.
 
 For instance:

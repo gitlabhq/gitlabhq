@@ -24,7 +24,7 @@ For an overview, check the video demonstration on [GitLab Service Desk](https://
 
 For instance, let's assume you develop a game for iOS or Android.
 The codebase is hosted in your GitLab instance, built and deployed
-with GitLab CI.
+with GitLab CI/CD.
 
 Here's how Service Desk will work for you:
 

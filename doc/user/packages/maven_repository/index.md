@@ -481,7 +481,7 @@ Docker container), and Maven will utilize the configured CI
 ### Useful Maven command line options
 
 There's some [maven command line options](https://maven.apache.org/ref/current/maven-embedder/cli.html)
-which maybe useful when doing tasks with GitLab CI.
+which maybe useful when doing tasks with GitLab CI/CD.
 
 - File transfer progress can make the CI logs hard to read.
   Option `-ntp,--no-transfer-progress` was added in

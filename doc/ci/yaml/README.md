@@ -18,7 +18,7 @@ This topic covers CI/CD pipeline configuration. For other CI/CD configuration in
 
 We have complete examples of configuring pipelines:
 
-- For a quick introduction to GitLab CI, follow our [quick start guide](../quick_start/README.md).
+- For a quick introduction to GitLab CI/CD, follow our [quick start guide](../quick_start/README.md).
 - For a collection of examples, see [GitLab CI/CD Examples](../examples/README.md).
 - To see a large `.gitlab-ci.yml` file used in an enterprise, see the [`.gitlab-ci.yml` file for `gitlab`](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab-ci.yml).
 
@@ -58,7 +58,7 @@ independently from each other.
 
 ### Validate the `.gitlab-ci.yml`
 
-Each instance of GitLab CI has an embedded debug tool called Lint, which validates the
+Each instance of GitLab CI/CD has an embedded debug tool called Lint, which validates the
 content of your `.gitlab-ci.yml` files. You can find the Lint under the page `ci/lint` of your
 project namespace. For example, `https://gitlab.example.com/gitlab-org/project-123/-/ci/lint`.
 
@@ -312,7 +312,7 @@ For:
 
 - Simple definition examples, see [Define `image` and `services` from `.gitlab-ci.yml`](../docker/using_docker_images.md#define-image-and-services-from-gitlab-ciyml).
 - Detailed usage information, refer to [Docker integration](../docker/README.md) documentation.
-- For example services, see [GitLab CI Services](../services/README.md).
+- For example services, see [GitLab CI/CD Services](../services/README.md).
 
 #### `services:name`
 
@@ -3958,7 +3958,7 @@ lines where the job is defined:
 ```
 
 you can instead start its name with a dot (`.`) and it will not be processed by
-GitLab CI. In the following example, `.hidden_job` will be ignored:
+GitLab CI/CD. In the following example, `.hidden_job` will be ignored:
 
 ```yaml
 .hidden_job:

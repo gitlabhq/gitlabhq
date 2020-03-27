@@ -192,7 +192,7 @@ https://gitlab.example.com/api/v4/projects/9/ref/master/trigger/pipeline?token=T
 ## Making use of trigger variables
 
 You can pass any number of arbitrary variables in the trigger API call and they
-will be available in GitLab CI so that they can be used in your `.gitlab-ci.yml`
+will be available in GitLab CI/CD so that they can be used in your `.gitlab-ci.yml`
 file. The parameter is of the form:
 
 ```plaintext

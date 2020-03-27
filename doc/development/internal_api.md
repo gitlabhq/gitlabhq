@@ -15,7 +15,7 @@ default this is in the root of the rails app named
 `.gitlab_shell_secret`
 
 To authenticate using that token, clients read the contents of that
-file, and include the token Base64 encoded in a `secret_token` param
+file, and include the token Base64 encoded in a `secret_token` parameter
 or in the `Gitlab-Shared-Secret` header.
 
 NOTE: **Note:**

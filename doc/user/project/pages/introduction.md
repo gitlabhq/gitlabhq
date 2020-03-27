@@ -288,17 +288,6 @@ No, you don't. You can create your project first and it will be accessed under
 
 For a list of known issues, visit GitLab's [public issue tracker].
 
-[jekyll]: http://jekyllrb.com/
-[pages-daemon]: https://gitlab.com/gitlab-org/gitlab-pages
-[gitlab ci]: https://about.gitlab.com/gitlab-ci
-[gitlab runner]: https://docs.gitlab.com/runner/
 [pages]: ../../../ci/yaml/README.md#pages
-[yaml]: ../../../ci/yaml/README.md
-[staticgen]: https://www.staticgen.com/
-[pages-jekyll]: https://gitlab.com/pages/jekyll
 [metarefresh]: https://en.wikipedia.org/wiki/Meta_refresh
 [public issue tracker]: https://gitlab.com/gitlab-org/gitlab/-/issues?label_name[]=Category%3APages
-[quick start guide]: ../../../ci/quick_start/README.md
-[pages-index-guide]: index.md
-[pages-quick]: getting_started_part_one.md
-[video-pages-fork]: https://youtu.be/TWqh9MtT4Bg

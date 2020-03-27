@@ -173,7 +173,7 @@ Move on to understanding some of GitLab's more advanced features. You can make u
 - Set up and try [Git LFS](../../administration/lfs/manage_large_binaries_with_git_lfs.md)
 - Get to know the [GitLab API](../../api/README.md), its capabilities and shortcomings
 - Learn how to [migrate from SVN to Git](../../user/project/import/svn.md)
-- Set up [GitLab CI](../../ci/quick_start/README.md)
+- Set up [GitLab CI/CD](../../ci/quick_start/README.md)
 - Create your first [GitLab Page](../../administration/pages/index.md)
 - Get to know the GitLab Codebase by reading through the source code:
   - Find the differences between the [EE codebase](https://gitlab.com/gitlab-org/gitlab-foss)

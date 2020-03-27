@@ -65,7 +65,7 @@ When you create a project in GitLab, you'll have access to a large number of
   images out-of-the-box
   - [Auto Deploy](../../topics/autodevops/index.md#auto-deploy): Configure GitLab CI/CD
   to automatically set up your app's deployment
-  - [Enable and disable GitLab CI](../../ci/enable_or_disable_ci.md)
+  - [Enable and disable GitLab CI/CD](../../ci/enable_or_disable_ci.md)
   - [Pipelines](../../ci/pipelines/index.md): Configure and visualize
     your GitLab CI/CD pipelines from the UI
     - [Scheduled Pipelines](../../ci/pipelines/schedules.md): Schedule a pipeline

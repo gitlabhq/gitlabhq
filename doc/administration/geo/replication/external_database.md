@@ -151,7 +151,7 @@ the tracking database on port 5432.
    sudo -i
    ```
 
-1. Edit `/etc/gitlab/gitlab.rb` with the connection params and credentials for
+1. Edit `/etc/gitlab/gitlab.rb` with the connection parameters and credentials for
    the machine with the PostgreSQL instance:
 
    ```ruby
@@ -177,7 +177,7 @@ the tracking database on port 5432.
    connection and credentials:
 
    Save the script below in a file, ex. `/tmp/geo_fdw.sh` and modify the connection
-   params to match your environment. Execute it to set up the FDW connection.
+   parameters to match your environment. Execute it to set up the FDW connection.
 
    ```shell
    #!/bin/bash
