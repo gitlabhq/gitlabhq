@@ -174,7 +174,7 @@ For example, to add support for files referenced by a `Widget` model with a
 
      def change
        add_column :widgets, :verification_retry_at,  :datetime_with_timezone
-       add_column :widgets, :last_verification_ran_at,  :datetime_with_timezone
+       add_column :widgets, :verified_at,  :datetime_with_timezone
        add_column :widgets, :verification_checksum, :string
        add_column :widgets, :verification_failure, :string
        add_column :widgets, :verification_retry_count, :integer

@@ -202,7 +202,7 @@ module Gitlab
         results = {
           projects_jira_server_active: 0,
           projects_jira_cloud_active: 0,
-          projects_jira_active: -1
+          projects_jira_active: 0
         }
 
         Service.active
@@ -217,14 +217,12 @@ module Gitlab
 
           results[:projects_jira_server_active] += counts[:server].count if counts[:server]
           results[:projects_jira_cloud_active] += counts[:cloud].count if counts[:cloud]
-          if results[:projects_jira_active] == -1
-            results[:projects_jira_active] = services.size
-          else
-            results[:projects_jira_active] += services.size
-          end
+          results[:projects_jira_active] += services.size
         end
 
         results
+      rescue ActiveRecord::StatementInvalid
+        { projects_jira_server_active: -1, projects_jira_cloud_active: -1, projects_jira_active: -1 }
       end
       # rubocop: enable CodeReuse/ActiveRecord
 

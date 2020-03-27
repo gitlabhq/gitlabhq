@@ -98,7 +98,7 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
         @merge_request.merge_request_diff
       end
 
-    return unless @merge_request_diff
+    return unless @merge_request_diff&.id
 
     @comparable_diffs = @merge_request_diffs.select { |diff| diff.id < @merge_request_diff.id }
 

@@ -93,7 +93,10 @@ export default {
       return [UPDATING].includes(this.ingress.status);
     },
     saveButtonDisabled() {
-      return [UNINSTALLING, UPDATING, INSTALLING].includes(this.ingress.status);
+      return (
+        [UNINSTALLING, UPDATING, INSTALLING].includes(this.ingress.status) ||
+        this.ingress.updateAvailable
+      );
     },
     saveButtonLabel() {
       return this.saving ? __('Saving') : __('Save changes');
@@ -105,12 +108,13 @@ export default {
      *     neither getting installed nor updated.
      */
     showButtons() {
-      return (
-        this.saving || (this.hasValueChanged && [INSTALLED, UPDATED].includes(this.ingress.status))
-      );
+      return this.saving || this.valuesChangedByUser;
     },
     modSecurityModeName() {
       return this.modes[this.ingress.modsecurity_mode].name;
+    },
+    valuesChangedByUser() {
+      return this.hasValueChanged && [INSTALLED, UPDATED].includes(this.ingress.status);
     },
   },
   methods: {

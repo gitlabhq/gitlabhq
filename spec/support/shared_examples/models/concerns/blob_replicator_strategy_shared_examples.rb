@@ -27,6 +27,45 @@ RSpec.shared_examples 'a blob replicator' do
       expect(::Geo::Event.last.attributes).to include(
         "replicable_name" => replicator.replicable_name, "event_name" => "created", "payload" => { "model_record_id" => replicator.model_record.id })
     end
+
+    it 'schedules the checksum calculation if needed' do
+      expect(Geo::BlobVerificationPrimaryWorker).to receive(:perform_async)
+      expect(replicator).to receive(:needs_checksum?).and_return(true)
+
+      replicator.handle_after_create_commit
+    end
+
+    it 'does not schedule the checksum calculation if feature flag is disabled' do
+      stub_feature_flags(geo_self_service_framework: false)
+
+      expect(Geo::BlobVerificationPrimaryWorker).not_to receive(:perform_async)
+      allow(replicator).to receive(:needs_checksum?).and_return(true)
+
+      replicator.handle_after_create_commit
+    end
+  end
+
+  describe '#calculate_checksum!' do
+    it 'calculates the checksum' do
+      model_record.save!
+
+      replicator.calculate_checksum!
+
+      expect(model_record.reload.verification_checksum).not_to be_nil
+    end
+
+    it 'saves the error message and increments retry counter' do
+      model_record.save!
+
+      allow(model_record).to receive(:calculate_checksum!) do
+        raise StandardError.new('Failure to calculate checksum')
+      end
+
+      replicator.calculate_checksum!
+
+      expect(model_record.reload.verification_failure).to eq 'Failure to calculate checksum'
+      expect(model_record.verification_retry_count).to be 1
+    end
   end
 
   describe '#consume_created_event' do

@@ -16,6 +16,18 @@ describe Projects::MergeRequests::DiffsController do
         expect(response).to have_gitlab_http_status(:not_found)
       end
     end
+
+    context 'when the merge_request_diff.id is blank' do
+      it 'returns 404' do
+        allow_next_instance_of(MergeRequest) do |instance|
+          allow(instance).to receive(:merge_request_diff).and_return(MergeRequestDiff.new(merge_request_id: instance.id))
+
+          go
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+    end
   end
 
   shared_examples 'forked project with submodules' do

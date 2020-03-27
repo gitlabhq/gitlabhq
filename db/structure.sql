@@ -4364,6 +4364,11 @@ CREATE TABLE public.packages_package_files (
     file_sha1 bytea,
     file_name character varying NOT NULL,
     file text NOT NULL,
+    verification_retry_at timestamp with time zone,
+    verified_at timestamp with time zone,
+    verification_checksum character varying(255),
+    verification_failure character varying(255),
+    verification_retry_count integer,
     file_sha256 bytea
 );
 
@@ -12720,6 +12725,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200212133945
 20200212134201
 20200213093702
+20200213100530
 20200213155311
 20200213204737
 20200213220159

@@ -14,6 +14,7 @@ describe('IngressModsecuritySettings', () => {
     status: 'installable',
     installed: false,
     modsecurity_mode: 'logging',
+    updateAvailable: false,
   };
 
   const createComponent = (props = defaultProps) => {
@@ -61,6 +62,11 @@ describe('IngressModsecuritySettings', () => {
         expect(findCancelButton().exists()).toBe(true);
       });
 
+      it('enables related toggle and buttons', () => {
+        expect(findSaveButton().attributes().disabled).toBeUndefined();
+        expect(findCancelButton().attributes().disabled).toBeUndefined();
+      });
+
       describe('with dropdown changed by the user', () => {
         beforeEach(() => {
           findModSecurityDropdown().vm.$children[1].$emit('click');
@@ -103,6 +109,25 @@ describe('IngressModsecuritySettings', () => {
           expect(eventHub.$emit).toHaveBeenCalledWith('resetIngressModSecurityChanges', INGRESS);
           expect(findSaveButton().exists()).toBe(false);
           expect(findCancelButton().exists()).toBe(false);
+        });
+      });
+
+      describe('with a new version available', () => {
+        beforeEach(() => {
+          wrapper.setProps({
+            ingress: {
+              ...defaultProps,
+              installed: true,
+              status: 'installed',
+              modsecurity_enabled: true,
+              updateAvailable: true,
+            },
+          });
+        });
+
+        it('disables related toggle and buttons', () => {
+          expect(findSaveButton().attributes().disabled).toBe('true');
+          expect(findCancelButton().attributes().disabled).toBe('true');
         });
       });
     });

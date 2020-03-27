@@ -85,6 +85,13 @@ describe Gitlab::UsageData, :aggregate_failures do
 
         expect { subject }.not_to raise_error
       end
+
+      it 'jira usage works when queries time out' do
+        allow_any_instance_of(ActiveRecord::Relation)
+          .to receive(:find_in_batches).and_raise(ActiveRecord::StatementInvalid.new(''))
+
+        expect { described_class.jira_usage }.not_to raise_error
+      end
     end
 
     describe '#usage_data_counters' do
