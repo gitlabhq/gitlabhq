@@ -6,14 +6,28 @@ review from the Data team and Telemetry team is recommended.
 @gitlab-org/growth/telemetry group is mentioned in order to notify team members.
 MSG
 
+USAGE_DATA_FILES_MESSAGE = <<~MSG
+For the following files, a review from the [Data team and Telemetry team](https://gitlab.com/groups/gitlab-org/growth/telemetry/-/group_members?with_inherited_permissions=exclude) is recommended:
+MSG
+
 usage_data_changed_files = git.modified_files.grep(%r{usage_data})
+
+def has_label?(label)
+  gitlab.mr_labels.include?(label)
+end
+
+def labels_for_merge_request(labels)
+  labels_list = labels.map { |label| %Q{~"#{label}"} }.join(' ')
+  "/label #{labels_list}"
+end
 
 if usage_data_changed_files.any?
   warn format(TELEMETRY_CHANGED_FILES_MESSAGE)
 
-  USAGE_DATA_FILES_MESSAGE = <<~MSG
-  For the following files, a review from the [Data team and Telemetry team](https://gitlab.com/groups/gitlab-org/growth/telemetry/-/group_members?with_inherited_permissions=exclude) is recommended:
-  MSG
-
   markdown(USAGE_DATA_FILES_MESSAGE + helper.markdown_list(usage_data_changed_files))
+
+  telemetry_labels = ['telemetry']
+  telemetry_labels << 'telemetry::review pending' unless has_label?('telemetry::reviewed')
+
+  markdown(labels_for_merge_request(telemetry_labels))
 end

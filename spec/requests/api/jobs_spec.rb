@@ -23,9 +23,9 @@ describe API::Jobs do
         json_job['artifacts'].each do |artifact|
           expect(artifact).not_to be_nil
           file_type = Ci::JobArtifact.file_types[artifact['file_type']]
-          expect(artifact['size']).to eq(second_job.job_artifacts.where(file_type: file_type).first.size)
-          expect(artifact['filename']).to eq(second_job.job_artifacts.where(file_type: file_type).first.filename)
-          expect(artifact['file_format']).to eq(second_job.job_artifacts.where(file_type: file_type).first.file_format)
+          expect(artifact['size']).to eq(second_job.job_artifacts.find_by(file_type: file_type).size)
+          expect(artifact['filename']).to eq(second_job.job_artifacts.find_by(file_type: file_type).filename)
+          expect(artifact['file_format']).to eq(second_job.job_artifacts.find_by(file_type: file_type).file_format)
         end
       end
     end

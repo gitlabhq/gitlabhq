@@ -37,7 +37,7 @@ module Gitlab
             reverts_for_type('project') do |path_before_rename, current_path|
               matches_path = MigrationClasses::Route.arel_table[:path].matches(current_path)
               project = MigrationClasses::Project.joins(:route)
-                          .where(matches_path).first
+                          .find_by(matches_path)
 
               if project
                 perform_rename(project, current_path, path_before_rename)

@@ -12,6 +12,10 @@ module NotificationRecipients
         note.noteable
       end
 
+      def recipients_target
+        note
+      end
+
       # NOTE: may be nil, in the case of a PersonalSnippet
       #
       # (this is okay because NotificationRecipient is written

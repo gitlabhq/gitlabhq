@@ -142,6 +142,15 @@ and included in `rules` definitions via [YAML anchors](../ci/yaml/README.md#anch
 | `code-qa-patterns`           | Combination of `code-patterns` and `qa-patterns`.                        |
 | `code-backstage-qa-patterns` | Combination of `code-patterns`, `backstage-patterns`, and `qa-patterns`. |
 
+## Interruptible jobs pipelines
+
+By default, all jobs are [interruptible](../ci/yaml/README.md#interruptible), except the
+`dont-interrupt-me` job which runs automatically on `master`, and is `manual`
+otherwise.
+
+If you want a running pipeline to finish even if you push new commits to a merge
+request, be sure to start the `dont-interrupt-me` job before pushing.
+
 ## Directed acyclic graph
 
 We're using the [`needs:`](../ci/yaml/README.md#needs) keyword to

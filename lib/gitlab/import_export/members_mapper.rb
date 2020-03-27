@@ -19,7 +19,7 @@ module Gitlab
             @exported_members.inject(missing_keys_tracking_hash) do |hash, member|
               if member['user']
                 old_user_id = member['user']['id']
-                existing_user = User.where(find_user_query(member)).first
+                existing_user = User.find_by(find_user_query(member))
                 hash[old_user_id] = existing_user.id if existing_user && add_team_member(member, existing_user)
               else
                 add_team_member(member)

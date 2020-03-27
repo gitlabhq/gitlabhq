@@ -19,7 +19,7 @@ class NotePolicy < BasePolicy
   condition(:confidential, scope: :subject) { @subject.confidential? }
 
   condition(:can_read_confidential) do
-    access_level >= Gitlab::Access::REPORTER || @subject.noteable_assignee_or_author?(@user)
+    access_level >= Gitlab::Access::REPORTER || @subject.noteable_assignee_or_author?(@user) || admin?
   end
 
   rule { ~editable }.prevent :admin_note

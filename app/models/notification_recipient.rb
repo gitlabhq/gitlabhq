@@ -74,10 +74,12 @@ class NotificationRecipient
   end
 
   def unsubscribed?
-    return false unless @target
-    return false unless @target.respond_to?(:subscriptions)
+    subscribable_target = @target.is_a?(Note) ? @target.noteable : @target
 
-    subscription = @target.subscriptions.find { |subscription| subscription.user_id == @user.id }
+    return false unless subscribable_target
+    return false unless subscribable_target.respond_to?(:subscriptions)
+
+    subscription = subscribable_target.subscriptions.find { |subscription| subscription.user_id == @user.id }
     subscription && !subscription.subscribed
   end
 

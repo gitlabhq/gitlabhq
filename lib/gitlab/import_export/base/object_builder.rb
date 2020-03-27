@@ -62,7 +62,7 @@ module Gitlab
         end
 
         def find_object
-          klass.where(where_clause).first
+          klass.find_by(where_clause)
         end
 
         def where_clause

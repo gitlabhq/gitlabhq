@@ -23,6 +23,11 @@ module NotificationRecipients
         raise 'abstract'
       end
 
+      # override if needed
+      def recipients_target
+        target
+      end
+
       def project
         target.project
       end
@@ -59,7 +64,7 @@ module NotificationRecipients
           project: project,
           group: group,
           custom_action: custom_action,
-          target: target,
+          target: recipients_target,
           acting_user: acting_user
         )
       end

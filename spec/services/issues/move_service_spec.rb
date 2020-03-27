@@ -100,7 +100,7 @@ describe Issues::MoveService do
 
         context 'when issue has notes with mentions' do
           it 'saves user mentions with actual mentions for new issue' do
-            expect(new_issue.user_mentions.where(note_id: nil).first.mentioned_users_ids).to match_array([user.id])
+            expect(new_issue.user_mentions.find_by(note_id: nil).mentioned_users_ids).to match_array([user.id])
             expect(new_issue.user_mentions.where.not(note_id: nil).first.mentioned_users_ids).to match_array([user.id])
             expect(new_issue.user_mentions.where.not(note_id: nil).count).to eq 1
             expect(new_issue.user_mentions.count).to eq 2

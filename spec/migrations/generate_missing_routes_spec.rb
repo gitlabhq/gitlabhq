@@ -26,7 +26,7 @@ describe GenerateMissingRoutes do
 
       described_class.new.up
 
-      route = routes.where(source_type: 'Project').take
+      route = routes.find_by(source_type: 'Project')
 
       expect(route.source_id).to eq(project.id)
       expect(route.path).to eq("gitlab/gitlab-ce-#{project.id}")
@@ -37,7 +37,7 @@ describe GenerateMissingRoutes do
 
       described_class.new.up
 
-      route = routes.where(source_type: 'Namespace').take
+      route = routes.find_by(source_type: 'Namespace')
 
       expect(route.source_id).to eq(namespace.id)
       expect(route.path).to eq("gitlab-#{namespace.id}")

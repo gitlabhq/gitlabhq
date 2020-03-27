@@ -321,9 +321,9 @@ describe Projects::ForkService do
       Projects::UpdateRepositoryStorageService.new(project).execute('test_second_storage')
       fork_after_move = fork_project(project)
       pool_repository_before_move = PoolRepository.joins(:shard)
-                                      .where(source_project: project, shards: { name: 'default' }).first
+                                      .find_by(source_project: project, shards: { name: 'default' })
       pool_repository_after_move = PoolRepository.joins(:shard)
-                                     .where(source_project: project, shards: { name: 'test_second_storage' }).first
+                                     .find_by(source_project: project, shards: { name: 'test_second_storage' })
 
       expect(fork_before_move.pool_repository).to eq(pool_repository_before_move)
       expect(fork_after_move.pool_repository).to eq(pool_repository_after_move)

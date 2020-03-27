@@ -16,6 +16,9 @@
 .if-master-refs: &if-master-refs
   if: '$CI_COMMIT_REF_NAME == "master"'
 
+.if-auto-deploy-branches: &if-auto-deploy-branches
+  if: '$CI_COMMIT_BRANCH =~ /^\d+-\d+-auto-deploy-\d+$/'
+
 .if-master-or-tag: &if-master-or-tag
   if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG'
 
@@ -508,6 +511,14 @@
     - <<: *if-master-or-tag
       changes: *code-backstage-qa-patterns
       when: on_success
+
+.setup:rules:dont-interrupt-me:
+  rules:
+    - <<: *if-master-or-tag
+      when: on_success
+    - <<: *if-auto-deploy-branches
+      when: on_success
+    - when: manual
 
 .setup:rules:gitlab_git_test:
   rules:

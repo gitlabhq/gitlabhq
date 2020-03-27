@@ -16,6 +16,8 @@ stages:
 default:
   tags:
     - gitlab-org
+  # All jobs are interruptible by default
+  interruptible: true
 
 workflow:
   rules:

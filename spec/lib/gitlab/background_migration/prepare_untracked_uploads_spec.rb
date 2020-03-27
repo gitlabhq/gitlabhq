@@ -67,7 +67,7 @@ describe Gitlab::BackgroundMigration::PrepareUntrackedUploads, schema: 201802081
       it 'does not add hashed files to the untracked_files_for_uploads table' do
         described_class.new.perform
 
-        hashed_file_path = get_uploads(project2, 'Project').where(uploader: 'FileUploader').first.path
+        hashed_file_path = get_uploads(project2, 'Project').find_by(uploader: 'FileUploader').path
         expect(untracked_files_for_uploads.where("path like '%#{hashed_file_path}%'").exists?).to be_falsey
       end
 

@@ -263,6 +263,7 @@ describe NotePolicy do
         let(:non_member) { create(:user) }
         let(:author) { create(:user) }
         let(:assignee) { create(:user) }
+        let(:admin) { create(:admin) }
 
         before do
           project.add_reporter(reporter)
@@ -292,6 +293,10 @@ describe NotePolicy do
 
           it 'allows maintainers to read all notes and admin them' do
             expect(permissions(maintainer, confidential_note)).to be_allowed(:read_note, :admin_note, :resolve_note, :award_emoji)
+          end
+
+          it 'allows admins to read all notes and admin them' do
+            expect(permissions(admin, confidential_note)).to be_allowed(:read_note, :admin_note, :resolve_note, :award_emoji)
           end
 
           it 'allows noteable author to read and resolve all notes' do

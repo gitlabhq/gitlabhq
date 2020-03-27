@@ -123,7 +123,7 @@ describe Gitlab::ImportExport::Project::TreeRestorer do
       end
 
       it 'preserves updated_at on issues' do
-        issue = Issue.where(description: 'Aliquam enim illo et possimus.').first
+        issue = Issue.find_by(description: 'Aliquam enim illo et possimus.')
 
         expect(issue.reload.updated_at.to_s).to eq('2016-06-14 15:02:47 UTC')
       end
@@ -170,7 +170,7 @@ describe Gitlab::ImportExport::Project::TreeRestorer do
       end
 
       context 'event at forth level of the tree' do
-        let(:event) { Event.where(action: 6).first }
+        let(:event) { Event.find_by(action: 6) }
 
         it 'restores the event' do
           expect(event).not_to be_nil
@@ -440,7 +440,7 @@ describe Gitlab::ImportExport::Project::TreeRestorer do
         end
 
         it 'restores external pull request for the restored pipeline' do
-          pipeline_with_external_pr = @project.ci_pipelines.where(source: 'external_pull_request_event').first
+          pipeline_with_external_pr = @project.ci_pipelines.find_by(source: 'external_pull_request_event')
 
           expect(pipeline_with_external_pr.external_pull_request).to be_persisted
         end
