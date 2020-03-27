@@ -62,6 +62,7 @@ dependency_scanning:
           BUNDLER_AUDIT_ADVISORY_DB_REF_NAME \
           RETIREJS_JS_ADVISORY_DB \
           RETIREJS_NODE_ADVISORY_DB \
+          DS_REMEDIATE \
         ) \
         --volume "$PWD:/code" \
         --volume /var/run/docker.sock:/var/run/docker.sock \

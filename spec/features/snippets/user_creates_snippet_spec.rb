@@ -99,6 +99,11 @@ shared_examples_for 'snippet editor' do
     it 'renders new page' do
       expect(page).to have_content('New Snippet')
     end
+
+    it 'has the correct action path' do
+      action = find('form.snippet-form')['action']
+      expect(action).to match(%r{/snippets\z})
+    end
   end
 
   it 'validation fails for the first time' do

@@ -172,6 +172,10 @@ describe Snippets::CreateService do
         it 'returns the error' do
           expect(snippet.errors.full_messages).to include('Repository could not be created')
         end
+
+        it 'does not return a snippet with an id' do
+          expect(snippet.id).to be_nil
+        end
       end
 
       context 'when the commit action fails' do

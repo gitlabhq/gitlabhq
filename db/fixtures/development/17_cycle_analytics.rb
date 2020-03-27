@@ -160,7 +160,7 @@ class Gitlab::Seeder::CycleAnalytics
       creator: admin,
       namespace: FactoryBot.create(
         :group,
-        name: "Value Stream Management Group (#{suffix})",
+        name: "Value Stream Management Group #{suffix}",
         path: "vsmg-#{suffix}"
       )
     )

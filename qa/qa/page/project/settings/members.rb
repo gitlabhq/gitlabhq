@@ -5,7 +5,6 @@ module QA
     module Project
       module Settings
         class Members < Page::Base
-          include Page::Component::UsersSelect
           include QA::Page::Component::Select2
 
           view 'app/views/shared/members/_invite_member.html.haml' do
@@ -43,7 +42,8 @@ module QA
           end
 
           def add_member(username)
-            select_user :member_select_field, username
+            click_element :member_select_field
+            search_and_select username
             click_element :invite_member_button
           end
 
