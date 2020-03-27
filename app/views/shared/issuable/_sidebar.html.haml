@@ -129,7 +129,7 @@
 
         = render_if_exists 'shared/issuable/sidebar_weight', issuable_sidebar: issuable_sidebar
 
-        - if Feature.enabled?(:save_issuable_health_status, @project.group) && issuable_sidebar[:type] == "issue"
+        - if issuable_sidebar.dig(:features_available, :health_status)
           .js-sidebar-status-entry-point
 
         - if issuable_sidebar.has_key?(:confidential)

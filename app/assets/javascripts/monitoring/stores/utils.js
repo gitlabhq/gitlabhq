@@ -73,14 +73,21 @@ const mapToMetricsViewModel = (metrics, defaultLabel) =>
   }));
 
 /**
- * Maps an axis view model
+ * Maps X-axis view model
+ *
+ * @param {Object} axis
+ */
+const mapXAxisToViewModel = ({ name = '' }) => ({ name });
+
+/**
+ * Maps Y-axis view model
  *
  * Defaults to a 2 digit precision and `number` format. It only allows
  * formats in the SUPPORTED_FORMATS array.
  *
  * @param {Object} axis
  */
-const mapToAxisViewModel = ({ name = '', format = SUPPORTED_FORMATS.number, precision = 2 }) => {
+const mapYAxisToViewModel = ({ name = '', format = SUPPORTED_FORMATS.number, precision = 2 }) => {
   return {
     name,
     format: SUPPORTED_FORMATS[format] || SUPPORTED_FORMATS.number,
@@ -94,15 +101,30 @@ const mapToAxisViewModel = ({ name = '', format = SUPPORTED_FORMATS.number, prec
  * @param {Object} panel - Metrics panel
  * @returns {Object}
  */
-const mapToPanelViewModel = ({ title = '', type, y_label, y_axis = {}, metrics = [] }) => {
+const mapPanelToViewModel = ({
+  title = '',
+  type,
+  x_axis = {},
+  x_label,
+  y_label,
+  y_axis = {},
+  metrics = [],
+}) => {
+  // Both `x_axis.name` and `x_label` are supported for now
+  // https://gitlab.com/gitlab-org/gitlab/issues/210521
+  const xAxis = mapXAxisToViewModel({ name: x_label, ...x_axis }); // eslint-disable-line babel/camelcase
+
   // Both `y_axis.name` and `y_label` are supported for now
   // https://gitlab.com/gitlab-org/gitlab/issues/208385
-  const yAxis = mapToAxisViewModel({ name: y_label, ...y_axis }); // eslint-disable-line babel/camelcase
+  const yAxis = mapYAxisToViewModel({ name: y_label, ...y_axis }); // eslint-disable-line babel/camelcase
+
   return {
     title,
     type,
+    xLabel: xAxis.name,
     y_label: yAxis.name, // Changing y_label to yLabel is pending https://gitlab.com/gitlab-org/gitlab/issues/207198
     yAxis,
+    xAxis,
     metrics: mapToMetricsViewModel(metrics, yAxis.name),
   };
 };
@@ -117,7 +139,7 @@ const mapToPanelGroupViewModel = ({ group = '', panels = [] }, i) => {
   return {
     key: `${slugify(group || 'default')}-${i}`,
     group,
-    panels: panels.map(mapToPanelViewModel),
+    panels: panels.map(mapPanelToViewModel),
   };
 };
 

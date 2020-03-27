@@ -129,22 +129,6 @@ describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state do
         end
       end
 
-      # https://gitlab.com/gitlab-org/gitlab/issues/208813
-      context 'when the create_merge_request_pipelines_in_sidekiq flag is disabled' do
-        before do
-          stub_feature_flags(create_merge_request_pipelines_in_sidekiq: false)
-        end
-
-        it 'creates a pipeline and updates the HEAD pipeline' do
-          expect(service).to receive(:create_pipeline_for)
-          expect_next_instance_of(MergeRequest) do |merge_request|
-            expect(merge_request).to receive(:update_head_pipeline)
-          end
-
-          service.execute
-        end
-      end
-
       context 'when head pipelines already exist for merge request source branch', :sidekiq_inline do
         let(:shas) { project.repository.commits(opts[:source_branch], limit: 2).map(&:id) }
         let!(:pipeline_1) { create(:ci_pipeline, project: project, ref: opts[:source_branch], project_id: project.id, sha: shas[1]) }

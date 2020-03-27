@@ -46,7 +46,6 @@ export const metricStates = {
 };
 
 export const sidebarAnimationDuration = 300; // milliseconds.
-
 export const chartHeight = 300;
 
 export const graphTypes = {

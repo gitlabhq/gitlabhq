@@ -160,7 +160,7 @@ describe Releases::CreateService do
 
     context 'when no milestone is passed in' do
       it 'creates a release without a milestone tied to it' do
-        expect(params.key? :milestones).to be_falsey
+        expect(params.key?(:milestones)).to be_falsey
 
         service.execute
         release = project.releases.last

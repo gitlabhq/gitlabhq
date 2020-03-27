@@ -25,6 +25,10 @@ describe('mapToDashboardViewModel', () => {
           panels: [
             {
               title: 'Title A',
+              xLabel: '',
+              xAxis: {
+                name: '',
+              },
               type: 'chart-type',
               y_label: 'Y Label A',
               metrics: [],
@@ -44,6 +48,10 @@ describe('mapToDashboardViewModel', () => {
             {
               title: 'Title A',
               type: 'chart-type',
+              xLabel: '',
+              xAxis: {
+                name: '',
+              },
               y_label: 'Y Label A',
               yAxis: {
                 name: 'Y Label A',
@@ -114,6 +122,28 @@ describe('mapToDashboardViewModel', () => {
 
     const getMappedPanel = () => mapToDashboardViewModel(dashboard).panelGroups[0].panels[0];
 
+    it('panel with x_label', () => {
+      setupWithPanel({
+        title: panelTitle,
+        x_label: 'x label',
+      });
+
+      expect(getMappedPanel()).toEqual({
+        title: panelTitle,
+        xLabel: 'x label',
+        xAxis: {
+          name: 'x label',
+        },
+        y_label: '',
+        yAxis: {
+          name: '',
+          format: SUPPORTED_FORMATS.number,
+          precision: 2,
+        },
+        metrics: [],
+      });
+    });
+
     it('group y_axis defaults', () => {
       setupWithPanel({
         title: panelTitle,
@@ -121,7 +151,11 @@ describe('mapToDashboardViewModel', () => {
 
       expect(getMappedPanel()).toEqual({
         title: panelTitle,
+        xLabel: '',
         y_label: '',
+        xAxis: {
+          name: '',
+        },
         yAxis: {
           name: '',
           format: SUPPORTED_FORMATS.number,

@@ -44,6 +44,7 @@ module DataFields
   included do
     has_one :issue_tracker_data, autosave: true
     has_one :jira_tracker_data, autosave: true
+    has_one :open_project_tracker_data, autosave: true
 
     def data_fields
       raise NotImplementedError

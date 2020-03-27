@@ -74,7 +74,7 @@ describe Gitlab::Gfm::UploadsRewriter do
       end
 
       it 'throw an error' do
-        expect { rewriter.rewrite(new_project) }.to raise_error(an_instance_of(StandardError).and having_attributes(message: "Invalid path"))
+        expect { rewriter.rewrite(new_project) }.to raise_error(an_instance_of(StandardError).and(having_attributes(message: "Invalid path")))
       end
     end
 

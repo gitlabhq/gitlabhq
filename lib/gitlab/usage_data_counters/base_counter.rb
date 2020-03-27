@@ -14,11 +14,11 @@ module Gitlab::UsageDataCounters
       end
 
       def count(event)
-        increment(redis_key event)
+        increment(redis_key(event))
       end
 
       def read(event)
-        total_count(redis_key event)
+        total_count(redis_key(event))
       end
 
       def totals

@@ -36,7 +36,7 @@ module SystemCheck
           sudo_gitlab("\"#{Gitlab.config.git.bin_path}\" config --global core.autocrlf \"#{OPTIONS['core.autocrlf']}\"")
         )
         for_more_information(
-          see_installation_guide_section 'GitLab'
+          see_installation_guide_section('GitLab')
         )
       end
     end

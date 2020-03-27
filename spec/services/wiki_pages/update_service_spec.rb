@@ -94,7 +94,7 @@ describe WikiPages::UpdateService do
       end
 
       it 'reports the error' do
-        expect(service.execute page).to be_invalid
+        expect(service.execute(page)).to be_invalid
           .and have_attributes(errors: be_present)
       end
     end

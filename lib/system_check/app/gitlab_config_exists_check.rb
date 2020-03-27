@@ -17,7 +17,7 @@ module SystemCheck
           'Update config/gitlab.yml to match your setup'
         )
         for_more_information(
-          see_installation_guide_section 'GitLab'
+          see_installation_guide_section('GitLab')
         )
         fix_and_rerun
       end

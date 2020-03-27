@@ -491,13 +491,6 @@ Style/MultilineIfModifier:
     - 'app/services/ci/process_pipeline_service.rb'
     - 'lib/api/commit_statuses.rb'
 
-# Offense count: 34
-# Cop supports --auto-correct.
-# Configuration parameters: Whitelist.
-# Whitelist: be, be_a, be_an, be_between, be_falsey, be_kind_of, be_instance_of, be_truthy, be_within, eq, eql, end_with, include, match, raise_error, respond_to, start_with
-Style/NestedParenthesizedCalls:
-  Enabled: false
-
 # Offense count: 25
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, MinBodyLength.

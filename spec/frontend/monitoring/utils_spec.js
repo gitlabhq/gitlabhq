@@ -6,6 +6,7 @@ import {
   graphDataPrometheusQuery,
   graphDataPrometheusQueryRange,
   anomalyMockGraphData,
+  barMockData,
 } from './mock_data';
 
 jest.mock('~/lib/utils/url_utility');
@@ -208,6 +209,69 @@ describe('monitoring/utils', () => {
 
       expect(timeRangeToUrl(rollingRange)).toEqual(toUrl);
       expect(mergeUrlParams).toHaveBeenCalledWith({ duration_seconds: `${seconds}` }, fromUrl);
+    });
+  });
+
+  describe('barChartsDataParser', () => {
+    const singleMetricExpected = {
+      SLA: [
+        ['0.9935198135198128', 'api'],
+        ['0.9975296513504401', 'git'],
+        ['0.9994716394716395', 'registry'],
+        ['0.9948251748251747', 'sidekiq'],
+        ['0.9535664335664336', 'web'],
+        ['0.9335664335664336', 'postgresql_database'],
+      ],
+    };
+
+    const multipleMetricExpected = {
+      ...singleMetricExpected,
+      SLA_2: Object.values(singleMetricExpected)[0],
+    };
+
+    const barMockDataWithMultipleMetrics = {
+      ...barMockData,
+      metrics: [
+        barMockData.metrics[0],
+        {
+          ...barMockData.metrics[0],
+          label: 'SLA_2',
+        },
+      ],
+    };
+
+    [
+      {
+        input: { metrics: undefined },
+        output: {},
+        testCase: 'barChartsDataParser returns {} with undefined',
+      },
+      {
+        input: { metrics: null },
+        output: {},
+        testCase: 'barChartsDataParser returns {} with null',
+      },
+      {
+        input: { metrics: [] },
+        output: {},
+        testCase: 'barChartsDataParser returns {} with []',
+      },
+      {
+        input: barMockData,
+        output: singleMetricExpected,
+        testCase: 'barChartsDataParser returns single series object with single metrics',
+      },
+      {
+        input: barMockDataWithMultipleMetrics,
+        output: multipleMetricExpected,
+        testCase: 'barChartsDataParser returns multiple series object with multiple metrics',
+      },
+    ].forEach(({ input, output, testCase }) => {
+      it(testCase, () => {
+        expect(monitoringUtils.barChartsDataParser(input.metrics)).toEqual(
+          expect.objectContaining(output),
+        );
+      });
     });
   });
 });

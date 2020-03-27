@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe JiraTrackerData do
-  let(:service) { create(:jira_service, active: false, properties: {}) }
+  let(:service) { create(:jira_service, active: false) }
 
   describe 'Associations' do
     it { is_expected.to belong_to(:service) }

@@ -1,0 +1,5 @@
+---
+title: Create merge request pipelines in background jobs
+merge_request: 28024
+author:
+type: performance

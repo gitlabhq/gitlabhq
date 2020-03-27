@@ -6229,6 +6229,11 @@ type Project {
   ): Requirement
 
   """
+  Number of requirements for the project by their state
+  """
+  requirementStatesCount: RequirementStatesCount
+
+  """
   Find requirements. Available only when feature flag `requirements_management` is enabled.
   """
   requirements(
@@ -7028,6 +7033,21 @@ State of a requirement
 enum RequirementState {
   ARCHIVED
   OPENED
+}
+
+"""
+Counts of requirements by their state.
+"""
+type RequirementStatesCount {
+  """
+  Number of archived requirements
+  """
+  archived: Int
+
+  """
+  Number of opened requirements
+  """
+  opened: Int
 }
 
 type RootStorageStatistics {

@@ -103,7 +103,7 @@ describe Spam::SpamCheckService do
           issue.description = 'SPAM!'
         end
 
-        context 'when indicated as spam by akismet' do
+        context 'when indicated as spam by Akismet' do
           before do
             allow(Spam::AkismetService).to receive(:new).and_return(double(spam?: true))
           end
@@ -115,7 +115,7 @@ describe Spam::SpamCheckService do
 
             it_behaves_like 'akismet spam'
 
-            it 'checks as spam' do
+            it 'marks as spam' do
               subject
 
               expect(issue.reload.spam).to be_truthy
@@ -125,7 +125,7 @@ describe Spam::SpamCheckService do
           context 'when allow_possible_spam feature flag is true' do
             it_behaves_like 'akismet spam'
 
-            it 'does not check as spam' do
+            it 'does not mark as spam' do
               subject
 
               expect(issue.spam).to be_falsey
@@ -133,7 +133,7 @@ describe Spam::SpamCheckService do
           end
         end
 
-        context 'when not indicated as spam by akismet' do
+        context 'when not indicated as spam by Akismet' do
           before do
             allow(Spam::AkismetService).to receive(:new).and_return(double(spam?: false))
           end

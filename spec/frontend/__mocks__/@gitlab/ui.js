@@ -17,3 +17,20 @@ export const GlTooltip = {
     return h('div', this.$attrs, this.$slots.default);
   },
 };
+
+export const GlPopoverDirective = {
+  bind() {},
+};
+
+export const GlPopover = {
+  props: {
+    cssClasses: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+  },
+  render(h) {
+    return h('div', this.$attrs, this.$slots.default);
+  },
+};

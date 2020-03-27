@@ -21,12 +21,6 @@ module MergeRequests
       todo_service.new_merge_request(issuable, current_user)
       issuable.cache_merge_request_closes_issues!(current_user)
 
-      # https://gitlab.com/gitlab-org/gitlab/issues/208813
-      unless ::Feature.enabled?(:create_merge_request_pipelines_in_sidekiq, project)
-        create_pipeline_for(issuable, current_user)
-        issuable.update_head_pipeline
-      end
-
       Gitlab::UsageDataCounters::MergeRequestCounter.count(:create)
       link_lfs_objects(issuable)
 

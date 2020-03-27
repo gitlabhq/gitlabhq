@@ -35,7 +35,6 @@ module QA
 
         view 'app/helpers/auth_helper.rb' do
           element :saml_login_button
-          element :github_login_button
         end
 
         view 'app/views/layouts/devise.html.haml' do
@@ -137,11 +136,6 @@ module QA
 
         def switch_to_standard_tab
           click_element :standard_tab
-        end
-
-        def sign_in_with_github
-          set_initial_password_if_present
-          click_element :github_login_button
         end
 
         def sign_in_with_saml

@@ -53,19 +53,5 @@ describe MergeRequests::AfterCreateService do
 
       after_create_service.execute(merge_request)
     end
-
-    # https://gitlab.com/gitlab-org/gitlab/issues/208813
-    context 'when the create_merge_request_pipelines_in_sidekiq flag is disabled' do
-      before do
-        stub_feature_flags(create_merge_request_pipelines_in_sidekiq: false)
-      end
-
-      it 'does not create a pipeline or update the HEAD pipeline' do
-        expect(after_create_service).not_to receive(:create_pipeline_for)
-        expect(merge_request).not_to receive(:update_head_pipeline)
-
-        after_create_service.execute(merge_request)
-      end
-    end
   end
 end

@@ -370,6 +370,14 @@ Gitlab.ee do
 end
 
 #
+# Terraform state
+#
+Settings['terraform_state'] ||= Settingslogic.new({})
+Settings.terraform_state['enabled']      = true if Settings.terraform_state['enabled'].nil?
+Settings.terraform_state['storage_path'] = Settings.absolute(Settings.terraform_state['storage_path'] || File.join(Settings.shared['path'], "terraform_state"))
+Settings.terraform_state['object_store'] = ObjectStoreSettings.parse(Settings.terraform_state['object_store'])
+
+#
 # Mattermost
 #
 Settings['mattermost'] ||= Settingslogic.new({})

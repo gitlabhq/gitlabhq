@@ -18630,6 +18630,20 @@
               "deprecationReason": null
             },
             {
+              "name": "requirementStatesCount",
+              "description": "Number of requirements for the project by their state",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "RequirementStatesCount",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "requirements",
               "description": "Find requirements. Available only when feature flag `requirements_management` is enabled.",
               "args": [
@@ -21112,6 +21126,47 @@
               "deprecationReason": null
             }
           ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "RequirementStatesCount",
+          "description": "Counts of requirements by their state.",
+          "fields": [
+            {
+              "name": "archived",
+              "description": "Number of archived requirements",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "opened",
+              "description": "Number of opened requirements",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+
+          ],
+          "enumValues": null,
           "possibleTypes": null
         },
         {

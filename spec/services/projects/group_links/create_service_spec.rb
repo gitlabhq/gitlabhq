@@ -27,6 +27,6 @@ describe Projects::GroupLinks::CreateService, '#execute' do
   end
 
   it 'returns error if user is not allowed to share with a group' do
-    expect { subject.execute(create :group) }.not_to change { project.project_group_links.count }
+    expect { subject.execute(create(:group)) }.not_to change { project.project_group_links.count }
   end
 end

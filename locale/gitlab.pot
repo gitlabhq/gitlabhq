@@ -15900,6 +15900,9 @@ msgstr ""
 msgid "PrometheusAlerts|%{count} alerts applied"
 msgstr ""
 
+msgid "PrometheusAlerts|%{firingCount} firing"
+msgstr ""
+
 msgid "PrometheusAlerts|Add alert"
 msgstr ""
 
@@ -15916,6 +15919,12 @@ msgid "PrometheusAlerts|Error fetching alert"
 msgstr ""
 
 msgid "PrometheusAlerts|Error saving alert"
+msgstr ""
+
+msgid "PrometheusAlerts|Firing: %{alerts}"
+msgstr ""
+
+msgid "PrometheusAlerts|Firing: %{alert}"
 msgstr ""
 
 msgid "PrometheusAlerts|Operator"

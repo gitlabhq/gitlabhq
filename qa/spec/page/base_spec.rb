@@ -23,12 +23,12 @@ describe QA::Page::Base do
 
     it 'makes it possible to define page views' do
       expect(subject.views.size).to eq 2
-      expect(subject.views).to all(be_an_instance_of QA::Page::View)
+      expect(subject.views).to all(be_an_instance_of(QA::Page::View))
     end
 
     it 'populates views objects with data about elements' do
       expect(subject.elements.size).to eq 3
-      expect(subject.elements).to all(be_an_instance_of QA::Page::Element)
+      expect(subject.elements).to all(be_an_instance_of(QA::Page::Element))
       expect(subject.elements.map(&:name))
         .to eq [:something, :something_else, :another_element]
     end

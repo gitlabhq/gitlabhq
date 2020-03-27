@@ -4,4 +4,9 @@
 
 if Rails.env.development?
   Rails.application.config.hosts += [Gitlab.config.gitlab.host, 'unix']
+
+  if ENV['RAILS_HOSTS']
+    additional_hosts = ENV['RAILS_HOSTS'].split(',').select(&:presence)
+    Rails.application.config.hosts += additional_hosts
+  end
 end

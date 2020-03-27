@@ -196,7 +196,7 @@ describe Gitlab::Auth::CurrentUserMode, :do_not_mock_admin_mode, :request_store 
         subject.request_admin_mode!
         subject.enable_admin_mode!(password: user.password)
 
-        expect(session).to include(expected_session_entry(be_within(1.second).of Time.now))
+        expect(session).to include(expected_session_entry(be_within(1.second).of(Time.now)))
       end
     end
 

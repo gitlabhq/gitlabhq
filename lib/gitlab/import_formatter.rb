@@ -14,5 +14,10 @@ module Gitlab
       author ||= "Anonymous"
       "*Created by: #{author}*\n\n"
     end
+
+    def assignee_line(assignee)
+      assignee ||= "Anonymous"
+      "*Assigned to: #{assignee}*\n\n"
+    end
   end
 end

@@ -703,3 +703,50 @@ export const stackedColumnMockedData = {
     },
   ],
 };
+
+export const barMockData = {
+  title: 'SLA Trends - Primary Services',
+  type: 'bar-chart',
+  xLabel: 'service',
+  y_label: 'percentile',
+  metrics: [
+    {
+      id: 'sla_trends_primary_services',
+      series_name: 'group 1',
+      metric_id: 'undefined_sla_trends_primary_services',
+      metricId: 'undefined_sla_trends_primary_services',
+      query_range:
+        'avg(avg_over_time(slo_observation_status{environment="gprd", stage=~"main|", type=~"api|web|git|registry|sidekiq|ci-runners"}[1d])) by (type)',
+      unit: 'Percentile',
+      label: 'SLA',
+      prometheus_endpoint_path:
+        '/gitlab-com/metrics-dogfooding/-/environments/266/prometheus/api/v1/query_range?query=clamp_min%28clamp_max%28avg%28avg_over_time%28slo_observation_status%7Benvironment%3D%22gprd%22%2C+stage%3D~%22main%7C%22%2C+type%3D~%22api%7Cweb%7Cgit%7Cregistry%7Csidekiq%7Cci-runners%22%7D%5B1d%5D%29%29+by+%28type%29%2C1%29%2C0%29',
+      result: [
+        {
+          metric: { type: 'api' },
+          values: [[1583995208, '0.9935198135198128']],
+        },
+        {
+          metric: { type: 'git' },
+          values: [[1583995208, '0.9975296513504401']],
+        },
+        {
+          metric: { type: 'registry' },
+          values: [[1583995208, '0.9994716394716395']],
+        },
+        {
+          metric: { type: 'sidekiq' },
+          values: [[1583995208, '0.9948251748251747']],
+        },
+        {
+          metric: { type: 'web' },
+          values: [[1583995208, '0.9535664335664336']],
+        },
+        {
+          metric: { type: 'postgresql_database' },
+          values: [[1583995208, '0.9335664335664336']],
+        },
+      ],
+    },
+  ],
+};

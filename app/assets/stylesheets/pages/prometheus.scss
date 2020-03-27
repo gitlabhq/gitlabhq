@@ -93,6 +93,11 @@
 
 .alert-current-setting {
   max-width: 240px;
+
+  .badge.badge-danger {
+    color: $red-500;
+    background-color: $red-100;
+  }
 }
 
 .prometheus-graph-cursor {

@@ -328,13 +328,6 @@ RSpec/LeakyConstantDeclaration:
   Exclude:
     - 'spec/**/*.rb'
     - 'qa/spec/**/*.rb'
-    - 'ee/spec/lib/gitlab/geo/log_cursor/logger_spec.rb'
-    - 'ee/spec/lib/gitlab/geo/log_helpers_spec.rb'
-    - 'ee/spec/lib/gitlab/geo/replicator_spec.rb'
-    - 'ee/spec/mailers/emails/service_desk_spec.rb'
-    - 'ee/spec/migrations/remove_creations_in_gitlab_subscription_histories_spec.rb'
-    - 'ee/spec/migrations/set_resolved_state_on_vulnerabilities_spec.rb'
-    - 'ee/spec/models/repository_spec.rb'
     - 'ee/spec/presenters/security/vulnerable_project_presenter_spec.rb'
     - 'ee/spec/serializers/vulnerable_project_entity_spec.rb'
     - 'ee/spec/services/clusters/applications/check_upgrade_progress_service_spec.rb'

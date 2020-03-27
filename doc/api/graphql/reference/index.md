@@ -910,6 +910,7 @@ Information about pagination in a connection.
 | `repository` | Repository | Git repository of the project |
 | `requestAccessEnabled` | Boolean | Indicates if users can request member access to the project |
 | `requirement` | Requirement | Find a single requirement. Available only when feature flag `requirements_management` is enabled. |
+| `requirementStatesCount` | RequirementStatesCount | Number of requirements for the project by their state |
 | `sentryDetailedError` | SentryDetailedError | Detailed version of a Sentry error on the project |
 | `sentryErrors` | SentryErrorCollection | Paginated collection of Sentry errors on the project |
 | `serviceDeskAddress` | String | E-mail address of the service desk. |
@@ -1031,6 +1032,15 @@ Check permissions for the current user on a requirement
 | `destroyRequirement` | Boolean! | Indicates the user can perform `destroy_requirement` on this resource |
 | `readRequirement` | Boolean! | Indicates the user can perform `read_requirement` on this resource |
 | `updateRequirement` | Boolean! | Indicates the user can perform `update_requirement` on this resource |
+
+## RequirementStatesCount
+
+Counts of requirements by their state.
+
+| Name  | Type  | Description |
+| ---   |  ---- | ----------  |
+| `archived` | Int | Number of archived requirements |
+| `opened` | Int | Number of opened requirements |
 
 ## RootStorageStatistics
 

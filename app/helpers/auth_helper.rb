@@ -30,8 +30,7 @@ module AuthHelper
 
   def qa_class_for_provider(provider)
     {
-      saml: 'qa-saml-login-button',
-      github: 'qa-github-login-button'
+      saml: 'qa-saml-login-button'
     }[provider.to_sym]
   end
 
