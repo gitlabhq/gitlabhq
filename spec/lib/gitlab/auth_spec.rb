@@ -250,6 +250,13 @@ describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
       let(:token_w_api_scope) { Doorkeeper::AccessToken.create!(application_id: application.id, resource_owner_id: user.id, scopes: 'api') }
       let(:application) { Doorkeeper::Application.create!(name: 'MyApp', redirect_uri: 'https://app.com', owner: user) }
 
+      shared_examples 'an oauth failure' do
+        it 'fails' do
+          expect(gl_auth.find_for_git_client("oauth2", token_w_api_scope.token, project: nil, ip: 'ip'))
+            .to eq(Gitlab::Auth::Result.new(nil, nil, nil, nil))
+        end
+      end
+
       it 'succeeds for OAuth tokens with the `api` scope' do
         expect(gl_auth.find_for_git_client("oauth2", token_w_api_scope.token, project: nil, ip: 'ip')).to eq(Gitlab::Auth::Result.new(user, nil, :oauth, described_class.full_authentication_abilities))
       end
@@ -269,10 +276,15 @@ describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
       context 'blocked user' do
         let(:user) { create(:user, :blocked) }
 
-        it 'fails' do
-          expect(gl_auth.find_for_git_client("oauth2", token_w_api_scope.token, project: nil, ip: 'ip'))
-            .to eq(Gitlab::Auth::Result.new(nil, nil, nil, nil))
+        it_behaves_like 'an oauth failure'
+      end
+
+      context 'orphaned token' do
+        before do
+          user.destroy
         end
+
+        it_behaves_like 'an oauth failure'
       end
     end
 
