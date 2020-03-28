@@ -42,6 +42,8 @@ GitLab.com uses the SAML NameID to identify users. The NameID element:
 - Is case sensitive. The NameID must match exactly on subsequent login attempts, so should not rely on user input that could change between upper and lower case.
 - Should not be an email address or username. We strongly recommend against these as it is hard to guarantee they will never change, for example when a person's name changes. Email addresses are also case-insensitive, which can result in users being unable to sign in.
 
+The recommended field for supported providers are in the [provider specific notes](#providers).
+
 CAUTION: **Warning:**
 Once users have signed into GitLab using the SSO SAML setup, changing the `NameID` will break the configuration and potentially lock users out of the GitLab group.
 
@@ -355,11 +357,27 @@ The user you are signed in with already has SAML linked to a different identity.
 
 To change which identity you sign in with, you can [unlink the previous SAML identity](#unlinking-accounts) from this GitLab account.
 
+Alternatively, an admin of your Identity Provider can use the [SCIM API](../../../api/scim.md) to update your `extern_uid` to match the current **NameID**.
+
+### Message: "SAML authentication failed: Email has already been taken"
+
+Same as ["SAML authentication failed: User has already been taken"](#message-saml-authentication-failed-user-has-already-been-taken).
+
 ### Message: "SAML authentication failed: Extern uid has already been taken, User has already been taken"
 
 Getting both of these errors at the same time suggests the NameID capitalization provided by the Identity Provider didn't exactly match the previous value for that user.
 
 This can be prevented by configuring the [NameID](#nameid) to return a consistent value. Fixing this for an individual user involves [unlinking SAML in the GitLab account](#unlinking-accounts), although this will cause group membership and Todos to be lost.
+
+### The NameID has changed
+
+As mentioned in the [NameID](#nameid) section, if the NameID changes for any user, the user can be locked out. This is common for setups using an email address as the identifier.
+
+To fix the issue, follow the steps outlined in the ["SAML authentication failed: User has already been taken"](#message-saml-authentication-failed-user-has-already-been-taken) section. We recommend using the API method if many users are affected so that the changes can be done in a scripted batch.
+
+### I need to change my SAML app
+
+Users need to [unlink the previous SAML identity](#unlinking-accounts) and [link their identity](#user-access-and-management) using the new SAML app.
 
 ### My identity provider isn't listed
 
@@ -370,7 +388,7 @@ Your identity provider may also have relevant documentation. It may be generic S
 - [Auth0](https://auth0.com/docs/protocols/saml/saml-idp-generic)
 - [G Suite](https://support.google.com/a/answer/6087519?hl=en)
 - [JumpCloud](https://support.jumpcloud.com/support/s/article/single-sign-on-sso-with-gitlab-2019-08-21-10-36-47)
-- [OneLogin](https://onelogin.service-now.com/support?id=kb_article&sys_id=93f95543db109700d5505eea4b96198f).
+- [PingOne by Ping Identity](https://docs.pingidentity.com/bundle/pingone/page/xsh1564020480660-1.html)
 
 ### I need additional information to configure my identity provider
 

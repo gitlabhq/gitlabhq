@@ -173,6 +173,10 @@ As a workaround, try an alternate mapping:
 1. Delete the `name.formatted` target attribute entry.
 1. Change the `displayName` source attribute to have `name.formatted` target attribute.
 
+### Message: "SAML authentication failed: Email has already been taken"
+
+It is expected for the app's logs to show this error for any existing user until they sign in for the first time. GitLab will not allow multiple accounts to have the same email address.
+
 ### How do I diagnose why a user is unable to sign in
 
 The **Identity** (`extern_uid`) value stored by GitLab is updated by SCIM whenever `id` or `externalId` changes. Users won't be able to sign in unless the GitLab Identity (`extern_uid`) value matches the `NameId` sent by SAML.
@@ -195,13 +199,19 @@ curl 'https://example.gitlab.com/api/scim/v2/groups/GROUP_NAME/Users?startIndex=
 
 To see how this compares to the value returned as the SAML NameId, you can have the user use a [SAML Tracer](index.md#saml-debugging-tools).
 
-### Fix mismatched SCIM externalId and SAML NameId
+### Update or fix mismatched SCIM externalId and SAML NameId
+
+Whether the value was changed or you need to map to a different field, ensure `id`, `externalId`, and `NameId` all map to the same field.
 
 If GitLab's `externalId` doesn't match the SAML NameId, it will need to be updated in order for the user to log in. Ideally your identity provider will be configured to do such an update, but in some cases it may be unable to do so, such as when looking up a user fails due to an ID change.
 
 Fixing the fields your SCIM identity provider sends as `id` and `externalId` can correct this, however we use these IDs to look up users so if the identity provider is unaware of the current values for these it may try to create new duplicate users instead.
 
-If the `externalId` we have stored for a user has an incorrect value that doesn't match the SAML NameId, then it can be corrected with the manual use of the SCIM API.
+If the `externalId` we have stored for a user has an incorrect value that doesn't match the SAML NameId, then it can be corrected ine on or two ways.
+
+One option is to have users can be delinked and relink following details in the ["SAML authentication failed: User has already been taken"](./index.md#message-saml-authentication-failed-user-has-already-been-taken) section. Additionally, to unlink all users at once, remove all users from the SAML app while SCIM is still turned on.
+
+Another option is with the manual use of the SCIM API.
 
 The [SCIM API](../../../api/scim.md#update-a-single-saml-user) can be used to manually correct the `externalId` stored for users so that it matches the SAML NameId. You'll need to know the desired value that matches the `NameId` as well as the current `externalId` to look up the user.
 
@@ -212,3 +222,9 @@ curl --verbose --request PATCH 'https://gitlab.com/api/scim/v2/groups/YOUR_GROUP
 ```
 
 It is important not to update these to incorrect values, since this will cause users to be unable to sign in. It is also important not to assign a value to the wrong user, as this would cause users to get signed into the wrong account.
+
+### I need to change my SCIM app
+
+Individual users can follow the instructions in the ["SAML authentication failed: User has already been taken"](./index.md#i-need-to-change-my-saml-app) section.
+
+Alternatively, users can be removed from the SCIM app which will delink all removed users. Sync can then be turned on for the new SCIM app to [link existing users](#user-access-and-linking-setup).
