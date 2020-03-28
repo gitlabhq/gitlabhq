@@ -5503,9 +5503,6 @@ msgstr ""
 msgid "Contribution Analytics"
 msgstr ""
 
-msgid "Contribution Charts"
-msgstr ""
-
 msgid "ContributionAnalytics|<strong>%{created_count}</strong> created, <strong>%{accepted_count}</strong> accepted."
 msgstr ""
 
@@ -16826,6 +16823,9 @@ msgid "Reports|no changed test results"
 msgstr ""
 
 msgid "Repository"
+msgstr ""
+
+msgid "Repository Analytics"
 msgstr ""
 
 msgid "Repository Graph"
