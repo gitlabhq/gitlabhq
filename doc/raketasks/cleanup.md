@@ -1,6 +1,10 @@
-# Cleanup
+# Clean up
+
+GitLab provides Rake tasks for cleaning up GitLab instances.
 
 ## Remove unreferenced LFS files from filesystem
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/36628) in GitLab 12.10.
 
 DANGER: **Danger:**
 Do not run this within 12 hours of a GitLab upgrade. This is to ensure that all background migrations have finished, which otherwise may lead to data loss.
