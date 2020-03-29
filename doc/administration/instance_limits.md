@@ -55,6 +55,13 @@ Plan.default.limits.update!(group_hooks: 100)
 
 NOTE: **Note:** Set the limit to `0` to disable it.
 
+## Incoming emails from auto-responders
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/30327) in GitLab 12.4.
+
+GitLab ignores all incoming emails sent from auto-responders by looking for the `X-Autoreply`
+header. Such emails don't create comments on issues or merge requests.
+
 ## CI/CD limits
 
 ### Number of jobs in active pipelines
