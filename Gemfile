@@ -399,7 +399,6 @@ group :test do
   gem 'fuubar', '~> 2.2.0'
   gem 'rspec-retry', '~> 0.6.1'
   gem 'rspec_profiling', '~> 0.0.5'
-  gem 'rspec-set', '~> 0.1.3'
   gem 'rspec-parameterized', require: false
 
   gem 'capybara', '~> 3.22.0'

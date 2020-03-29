@@ -211,9 +211,7 @@ describe Gitlab::Alerting::Alert do
     it { is_expected.to be_valid }
 
     context 'without project' do
-      # Redefine to prevent:
-      # project is a NilClass - rspec-set works with ActiveRecord models only
-      let(:alert) { build(:alerting_alert, project: nil, payload: payload) }
+      let(:project) { nil }
 
       it { is_expected.not_to be_valid }
     end
