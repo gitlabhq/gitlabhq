@@ -289,7 +289,7 @@ as even native users of English might misunderstand them.
 | haven't  | have not  |
 | don't    | do not    |
 | we're    | we are    |
-| that's'  | that is   |
+| that's   | that is   |
 | won't    | will not  |
 
 - Avoid less common contractions:
