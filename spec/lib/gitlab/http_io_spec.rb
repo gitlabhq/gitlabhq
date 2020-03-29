@@ -319,4 +319,12 @@ describe Gitlab::HttpIO do
 
     it { is_expected.to be_truthy }
   end
+
+  describe '#send' do
+    subject(:send) { http_io.send(:request) }
+
+    it 'does not set the "accept-encoding" header' do
+      expect(send['accept-encoding']).to be_nil
+    end
+  end
 end

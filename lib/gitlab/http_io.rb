@@ -176,7 +176,7 @@ module Gitlab
     end
 
     def request
-      Net::HTTP::Get.new(uri).tap do |request|
+      Net::HTTP::Get.new(uri, { 'accept-encoding' => nil }).tap do |request|
         request.set_range(chunk_start, BUFFER_SIZE)
       end
     end
