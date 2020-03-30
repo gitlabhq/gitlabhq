@@ -26,6 +26,8 @@ describe PagesDomainSslRenewalWorker do
     shared_examples 'does nothing' do
       it 'does nothing' do
         expect(::PagesDomains::ObtainLetsEncryptCertificateService).not_to receive(:new)
+
+        worker.perform(domain.id)
       end
     end
 

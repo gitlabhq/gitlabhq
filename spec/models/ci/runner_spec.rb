@@ -838,4 +838,33 @@ describe Ci::Runner do
 
     it { is_expected.to eq(contacted_at_stored) }
   end
+
+  describe '.belonging_to_group' do
+    it 'returns the specific group runner' do
+      group = create(:group)
+      runner = create(:ci_runner, :group, groups: [group])
+      unrelated_group = create(:group)
+      create(:ci_runner, :group, groups: [unrelated_group])
+
+      expect(described_class.belonging_to_group(group.id)).to contain_exactly(runner)
+    end
+
+    context 'runner belonging to parent group' do
+      let_it_be(:parent_group) { create(:group) }
+      let_it_be(:parent_runner) { create(:ci_runner, :group, groups: [parent_group]) }
+      let_it_be(:group) { create(:group, parent: parent_group) }
+
+      context 'when include_parent option is passed' do
+        it 'returns the group runner from the parent group' do
+          expect(described_class.belonging_to_group(group.id, include_ancestors: true)).to contain_exactly(parent_runner)
+        end
+      end
+
+      context 'when include_parent option is not passed' do
+        it 'does not return the group runner from the parent group' do
+          expect(described_class.belonging_to_group(group.id)).to be_empty
+        end
+      end
+    end
+  end
 end

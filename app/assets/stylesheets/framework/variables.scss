@@ -11,6 +11,38 @@ $default-transition-duration: 0.15s;
 $contextual-sidebar-width: 220px;
 $contextual-sidebar-collapsed-width: 50px;
 $toggle-sidebar-height: 48px;
+
+/**
+  🚨 Do not use this spacing scale — it is deprecated and being removed. 🚨
+  See https://gitlab.com/gitlab-org/gitlab/issues/36857 for more details.
+
+  Instead, if you need a spacing class, add it to app/assets/stylesheets/framework/common.scss,
+  using the following values.
+
+    $gl-spacing-scale-0: 0;
+    $gl-spacing-scale-1: 2px;
+    $gl-spacing-scale-2: 4px;
+    $gl-spacing-scale-3: 8px;
+    $gl-spacing-scale-4: 12px;
+    $gl-spacing-scale-5: 16px;
+    $gl-spacing-scale-6: 24px;
+    $gl-spacing-scale-7: 32px;
+    $gl-spacing-scale-8: 40px;
+    $gl-spacing-scale-9: 48px;
+    $gl-spacing-scale-10: 56px;
+    $gl-spacing-scale-11: 64px;
+    $gl-spacing-scale-12: 80px;
+    $gl-spacing-scale-13: 96px;
+
+  E.g., a padding top of 96px can be added using:
+  .gl-shim-pt-13 {
+    padding-top: 96px;
+  }
+
+  Please use -shim- so it can be differentiated from the old scale classes.
+
+  These will be replaced when the Gitlab UI utilities are included.
+**/
 $spacing-scale: (
   0: 0,
   1: #{0.5 * $grid-size},

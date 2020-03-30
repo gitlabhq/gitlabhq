@@ -104,6 +104,18 @@
 
       = f.submit _('Save changes'), class: "btn btn-success"
 
+- if Feature.enabled?(:maintenance_mode)
+  %section.settings.no-animate#js-maintenance-mode-toggle{ class: ('expanded' if expanded_by_default?) }
+    .settings-header
+      %h4
+        = _('Maintenance mode')
+      %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+        = expanded_by_default? ? _('Collapse') : _('Expand')
+      %p
+        = _('Prevent users from performing write operations on GitLab while performing maintenance.')
+    .settings-content
+      #js-maintenance-mode-settings
+
 - if Feature.enabled?(:instance_level_integrations)
   = render_if_exists 'admin/application_settings/elasticsearch_form'
   = render 'admin/application_settings/plantuml'

@@ -48,6 +48,7 @@ class DiscussionEntity < Grape::Entity
 
   expose :for_commit?, as: :for_commit
   expose :commit_id
+  expose :confidential?, as: :confidential
 
   private
 

@@ -8,7 +8,6 @@ module Gitlab
       end
 
       def new_challenge
-        authorization = @acme_order.authorizations.first
         challenge = authorization.http
         ::Gitlab::LetsEncrypt::Challenge.new(challenge)
       end
@@ -22,11 +21,19 @@ module Gitlab
         acme_order.finalize(csr: csr)
       end
 
+      def challenge_error
+        authorization.challenges.first&.error
+      end
+
       delegate :url, :status, :expires, :certificate, to: :acme_order
 
       private
 
       attr_reader :acme_order
+
+      def authorization
+        @acme_order.authorizations.first
+      end
     end
   end
 end

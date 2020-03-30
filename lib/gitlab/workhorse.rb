@@ -225,8 +225,8 @@ module Gitlab
 
       def gitaly_server_hash(repository)
         {
-          address: Gitlab::GitalyClient.address(repository.project.repository_storage),
-          token: Gitlab::GitalyClient.token(repository.project.repository_storage),
+          address: Gitlab::GitalyClient.address(repository.container.repository_storage),
+          token: Gitlab::GitalyClient.token(repository.container.repository_storage),
           features: Feature::Gitaly.server_feature_flags
         }
       end

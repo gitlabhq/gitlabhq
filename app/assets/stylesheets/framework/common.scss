@@ -483,6 +483,34 @@ img.emoji {
 }
 
 /** COMMON SPACING CLASSES **/
+/**
+  🚨 Do not use these classes — they are deprecated and being removed. 🚨
+  See https://gitlab.com/gitlab-org/gitlab/issues/36857 for more details.
+
+  Instead, if you need a spacing class, add it below using the following values.
+    $gl-spacing-scale-0: 0;
+    $gl-spacing-scale-1: 2px;
+    $gl-spacing-scale-2: 4px;
+    $gl-spacing-scale-3: 8px;
+    $gl-spacing-scale-4: 12px;
+    $gl-spacing-scale-5: 16px;
+    $gl-spacing-scale-6: 24px;
+    $gl-spacing-scale-7: 32px;
+    $gl-spacing-scale-8: 40px;
+    $gl-spacing-scale-9: 48px;
+    $gl-spacing-scale-10: 56px;
+    $gl-spacing-scale-11: 64px;
+    $gl-spacing-scale-12: 80px;
+    $gl-spacing-scale-13: 96px;
+
+  E.g., a padding top of 96px can be added using:
+  .gl-shim-pt-13 {
+    padding-top: 96px;
+  }
+
+  Please use -shim- so it can be differentiated from the old scale classes.
+  These will be replaced when the Gitlab UI utilities are included.
+**/
 @each $index, $padding in $spacing-scale {
   #{'.gl-p-#{$index}'} { padding: $padding; }
   #{'.gl-pl-#{$index}'} { padding-left: $padding; }
@@ -583,13 +611,11 @@ img.emoji {
 .gl-font-size-large { font-size: $gl-font-size-large; }
 
 .gl-line-height-24 { line-height: $gl-line-height-24; }
-.gl-line-height-14 { line-height: $gl-line-height-14; }
 
 .gl-font-size-0 { font-size: 0; }
 .gl-font-size-12 { font-size: $gl-font-size-12; }
 .gl-font-size-14 { font-size: $gl-font-size-14; }
 .gl-font-size-16 { font-size: $gl-font-size-16; }
-.gl-font-size-20 { font-size: $gl-font-size-20; }
 .gl-font-size-28 { font-size: $gl-font-size-28; }
 .gl-font-size-42 { font-size: $gl-font-size-42; }
 
@@ -599,3 +625,10 @@ img.emoji {
 
   border-top: 1px solid $border-color;
 }
+
+/**
+🚨 Do not use these classes — they clash with the Gitlab UI design system and will be removed. 🚨
+See https://gitlab.com/gitlab-org/gitlab/issues/36857 for more details.
+**/
+.gl-line-height-14 { line-height: $gl-line-height-14; }
+.gl-font-size-20 { font-size: $gl-font-size-20; }

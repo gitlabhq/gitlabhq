@@ -55,7 +55,8 @@
           "human_access": { "type": ["string", "null"] },
           "toggle_award_path": { "type": "string" },
           "path": { "type": "string" },
-          "commands_changes": { "type": "object", "additionalProperties": true }
+          "commands_changes": { "type": "object", "additionalProperties": true },
+          "confidential": { "type": ["boolean", "null"] }
         },
         "required": [
           "id", "attachment", "author", "created_at", "updated_at",

@@ -501,6 +501,11 @@ describe SnippetsController do
   end
 
   describe "GET #raw" do
+    let(:inline) { nil }
+    let(:params) { { id: snippet.to_param, inline: inline } }
+
+    subject { get :raw, params: params }
+
     shared_examples '200 status' do
       before do
         subject
@@ -509,11 +514,6 @@ describe SnippetsController do
       it 'responds with status 200' do
         expect(assigns(:snippet)).to eq(snippet)
         expect(response).to have_gitlab_http_status(:ok)
-      end
-
-      it 'has expected headers' do
-        expect(response.header['Content-Type']).to eq('text/plain; charset=utf-8')
-        expect(response.header['Content-Disposition']).to match(/inline/)
       end
 
       it "sets #{Gitlab::Workhorse::DETECT_HEADER} header" do
@@ -551,12 +551,20 @@ describe SnippetsController do
 
     shared_examples 'successful response' do
       it_behaves_like '200 status'
-      it_behaves_like 'CRLF line ending'
 
-      it 'returns snippet first blob data' do
+      it 'has expected blob headers' do
         subject
 
-        expect(response.body).to eq snippet.blobs.first.data
+        expect(response.header[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with('git-blob:')
+        expect(response.header[Gitlab::Workhorse::DETECT_HEADER]).to eq 'true'
+      end
+
+      it_behaves_like 'content disposition headers'
+
+      it 'sets cache_control public header based on snippet visibility' do
+        subject
+
+        expect(response.cache_control[:public]).to eq snippet.public?
       end
 
       context 'when feature flag version_snippets is disabled' do
@@ -571,12 +579,33 @@ describe SnippetsController do
           subject
 
           expect(response.body).to eq snippet.content
+          expect(response.header['Content-Type']).to eq('text/plain; charset=utf-8')
         end
+
+        it_behaves_like 'content disposition headers'
+      end
+
+      context 'when snippet repository is empty' do
+        before do
+          allow_any_instance_of(Repository).to receive(:empty?).and_return(true)
+        end
+
+        it_behaves_like '200 status'
+        it_behaves_like 'CRLF line ending'
+
+        it 'returns snippet database content' do
+          subject
+
+          expect(response.body).to eq snippet.content
+          expect(response.header['Content-Type']).to eq('text/plain; charset=utf-8')
+        end
+
+        it_behaves_like 'content disposition headers'
       end
     end
 
     context 'when the personal snippet is private' do
-      let_it_be(:personal_snippet) { create(:personal_snippet, :private, :repository, author: user) }
+      let_it_be(:snippet) { create(:personal_snippet, :private, :repository, author: user) }
 
       context 'when signed in' do
         before do
@@ -595,18 +624,13 @@ describe SnippetsController do
         end
 
         context 'when signed in user is the author' do
-          it_behaves_like 'successful response' do
-            let(:snippet) { personal_snippet }
-            let(:params) { { id: snippet.to_param } }
-
-            subject { get :raw, params: params }
-          end
+          it_behaves_like 'successful response'
         end
       end
 
       context 'when not signed in' do
         it 'redirects to the sign in page' do
-          get :raw, params: { id: personal_snippet.to_param }
+          subject
 
           expect(response).to redirect_to(new_user_session_path)
         end
@@ -614,24 +638,19 @@ describe SnippetsController do
     end
 
     context 'when the personal snippet is internal' do
-      let_it_be(:personal_snippet) { create(:personal_snippet, :internal, :repository, author: user) }
+      let_it_be(:snippet) { create(:personal_snippet, :internal, :repository, author: user) }
 
       context 'when signed in' do
         before do
           sign_in(user)
         end
 
-        it_behaves_like 'successful response' do
-          let(:snippet) { personal_snippet }
-          let(:params) { { id: snippet.to_param } }
-
-          subject { get :raw, params: params }
-        end
+        it_behaves_like 'successful response'
       end
 
       context 'when not signed in' do
         it 'redirects to the sign in page' do
-          get :raw, params: { id: personal_snippet.to_param }
+          subject
 
           expect(response).to redirect_to(new_user_session_path)
         end
@@ -639,26 +658,21 @@ describe SnippetsController do
     end
 
     context 'when the personal snippet is public' do
-      let_it_be(:personal_snippet) { create(:personal_snippet, :public, :repository, author: user) }
+      let_it_be(:snippet) { create(:personal_snippet, :public, :repository, author: user) }
 
       context 'when signed in' do
         before do
           sign_in(user)
         end
 
-        it_behaves_like 'successful response' do
-          let(:snippet) { personal_snippet }
-          let(:params) { { id: snippet.to_param } }
-
-          subject { get :raw, params: params }
-        end
+        it_behaves_like 'successful response'
       end
 
       context 'when not signed in' do
         it 'responds with status 200' do
-          get :raw, params: { id: personal_snippet.to_param }
+          subject
 
-          expect(assigns(:snippet)).to eq(personal_snippet)
+          expect(assigns(:snippet)).to eq(snippet)
           expect(response).to have_gitlab_http_status(:ok)
         end
       end

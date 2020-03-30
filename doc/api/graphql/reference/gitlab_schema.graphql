@@ -5336,6 +5336,11 @@ type Note {
   bodyHtml: String
 
   """
+  Indicates if this note is confidential
+  """
+  confidential: Boolean
+
+  """
   Timestamp of the note creation
   """
   createdAt: Time!
@@ -6432,6 +6437,12 @@ type Project {
     """
     state: [VulnerabilityState!]
   ): VulnerabilityConnection
+
+  """
+  Counts for each severity of vulnerability of the project. Available only when
+  feature flag `first_class_vulnerabilities` is enabled
+  """
+  vulnerabilitySeveritiesCount: VulnerabilitySeveritiesCount
 
   """
   Web URL of the project
@@ -9108,6 +9119,41 @@ enum VulnerabilityReportType {
   DAST
   DEPENDENCY_SCANNING
   SAST
+}
+
+"""
+Represents vulnerability counts by severity
+"""
+type VulnerabilitySeveritiesCount {
+  """
+  Number of vulnerabilities of CRITICAL severity of the project
+  """
+  critical: Int
+
+  """
+  Number of vulnerabilities of HIGH severity of the project
+  """
+  high: Int
+
+  """
+  Number of vulnerabilities of INFO severity of the project
+  """
+  info: Int
+
+  """
+  Number of vulnerabilities of LOW severity of the project
+  """
+  low: Int
+
+  """
+  Number of vulnerabilities of MEDIUM severity of the project
+  """
+  medium: Int
+
+  """
+  Number of vulnerabilities of UNKNOWN severity of the project
+  """
+  unknown: Int
 }
 
 """

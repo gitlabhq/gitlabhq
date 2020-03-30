@@ -12,7 +12,6 @@ describe API::Runners do
   let(:project2) { create(:project, creator_id: user.id) }
 
   let(:group) { create(:group).tap { |group| group.add_owner(user) } }
-  let(:group2) { create(:group).tap { |group| group.add_owner(user) } }
 
   let!(:shared_runner) { create(:ci_runner, :instance, description: 'Shared runner') }
   let!(:project_runner) { create(:ci_runner, :project, description: 'Project runner', projects: [project]) }
@@ -734,6 +733,24 @@ describe API::Runners do
     end
   end
 
+  shared_examples_for 'unauthorized access to runners list' do
+    context 'authorized user without maintainer privileges' do
+      it "does not return group's runners" do
+        get api("/#{entity_type}/#{entity.id}/runners", user2)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
+    context 'unauthorized user' do
+      it "does not return project's runners" do
+        get api("/#{entity_type}/#{entity.id}/runners")
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+  end
+
   describe 'GET /projects/:id/runners' do
     context 'authorized user with maintainer privileges' do
       it 'returns response status and headers' do
@@ -813,20 +830,77 @@ describe API::Runners do
       end
     end
 
-    context 'authorized user without maintainer privileges' do
-      it "does not return project's runners" do
-        get api("/projects/#{project.id}/runners", user2)
+    it_behaves_like 'unauthorized access to runners list' do
+      let(:entity_type) { 'projects' }
+      let(:entity) { project }
+    end
+  end
 
-        expect(response).to have_gitlab_http_status(:forbidden)
+  describe 'GET /groups/:id/runners' do
+    context 'authorized user with maintainer privileges' do
+      it 'returns all runners' do
+        get api("/groups/#{group.id}/runners", user)
+
+        expect(json_response).to match_array([
+          a_hash_including('description' => 'Group runner')
+        ])
+      end
+
+      context 'filter by type' do
+        it 'returns record when valid and present' do
+          get api("/groups/#{group.id}/runners?type=group_type", user)
+
+          expect(json_response).to match_array([
+            a_hash_including('description' => 'Group runner')
+          ])
+        end
+
+        it 'returns empty result when type does not match' do
+          get api("/groups/#{group.id}/runners?type=project_type", user)
+
+          expect(json_response).to be_empty
+        end
+
+        it 'does not filter by invalid type' do
+          get api("/groups/#{group.id}/runners?type=bogus", user)
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+        end
+      end
+
+      context 'filter runners by status' do
+        it 'returns runners by valid status' do
+          create(:ci_runner, :group, :inactive, description: 'Inactive group runner', groups: [group])
+
+          get api("/groups/#{group.id}/runners?status=paused", user)
+
+          expect(json_response).to match_array([
+            a_hash_including('description' => 'Inactive group runner')
+          ])
+        end
+
+        it 'does not filter by invalid status' do
+          get api("/groups/#{group.id}/runners?status=bogus", user)
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+        end
+      end
+
+      it 'filters runners by tag_list' do
+        create(:ci_runner, :group, description: 'Runner tagged with tag1 and tag2', groups: [group], tag_list: %w[tag1 tag2])
+        create(:ci_runner, :group, description: 'Runner tagged with tag2', groups: [group], tag_list: %w[tag1])
+
+        get api("/groups/#{group.id}/runners?tag_list=tag1,tag2", user)
+
+        expect(json_response).to match_array([
+          a_hash_including('description' => 'Runner tagged with tag1 and tag2')
+        ])
       end
     end
 
-    context 'unauthorized user' do
-      it "does not return project's runners" do
-        get api("/projects/#{project.id}/runners")
-
-        expect(response).to have_gitlab_http_status(:unauthorized)
-      end
+    it_behaves_like 'unauthorized access to runners list' do
+      let(:entity_type) { 'groups' }
+      let(:entity) { group }
     end
   end
 

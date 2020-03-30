@@ -2,6 +2,7 @@
 
 module SnippetsActions
   extend ActiveSupport::Concern
+  include SendsBlob
 
   def edit
     # We need to load some info from the existing blob
@@ -12,16 +13,26 @@ module SnippetsActions
   end
 
   def raw
-    disposition = params[:inline] == 'false' ? 'attachment' : 'inline'
-
     workhorse_set_content_type!
 
-    send_data(
-      convert_line_endings(blob.data),
-      type: 'text/plain; charset=utf-8',
-      disposition: disposition,
-      filename: Snippet.sanitized_file_name(blob.name)
-    )
+    # Until we don't migrate all snippets to version
+    # snippets we need to support old `SnippetBlob`
+    # blobs
+    if defined?(blob.snippet)
+      send_data(
+        convert_line_endings(blob.data),
+        type: 'text/plain; charset=utf-8',
+        disposition: content_disposition,
+        filename: Snippet.sanitized_file_name(blob.name)
+      )
+    else
+      send_blob(
+        snippet.repository,
+        blob,
+        inline: content_disposition == 'inline',
+        allow_caching: snippet.public?
+      )
+    end
   end
 
   def js_request?
@@ -29,6 +40,10 @@ module SnippetsActions
   end
 
   private
+
+  def content_disposition
+    @disposition ||= params[:inline] == 'false' ? 'attachment' : 'inline'
+  end
 
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def blob

@@ -6,6 +6,7 @@ describe Projects::RawController do
   include RepoHelpers
 
   let(:project) { create(:project, :public, :repository) }
+  let(:inline) { nil }
 
   describe 'GET #show' do
     subject do
@@ -13,7 +14,8 @@ describe Projects::RawController do
           params: {
             namespace_id: project.namespace,
             project_id: project,
-            id: filepath
+            id: filepath,
+            inline: inline
           })
     end
 
@@ -25,10 +27,12 @@ describe Projects::RawController do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response.header['Content-Type']).to eq('text/plain; charset=utf-8')
-        expect(response.header['Content-Disposition']).to eq('inline')
-        expect(response.header[Gitlab::Workhorse::DETECT_HEADER]).to eq "true"
+        expect(response.header[Gitlab::Workhorse::DETECT_HEADER]).to eq 'true'
         expect(response.header[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with('git-blob:')
       end
+
+      it_behaves_like 'project cache control headers'
+      it_behaves_like 'content disposition headers'
     end
 
     context 'image header' do
@@ -38,15 +42,20 @@ describe Projects::RawController do
         subject
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(response.header['Content-Disposition']).to eq('inline')
         expect(response.header[Gitlab::Workhorse::DETECT_HEADER]).to eq "true"
         expect(response.header[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with('git-blob:')
       end
+
+      it_behaves_like 'project cache control headers'
+      it_behaves_like 'content disposition headers'
     end
 
-    it_behaves_like 'a controller that can serve LFS files' do
+    context 'with LFS files' do
       let(:filename) { 'lfs_object.iso' }
       let(:filepath) { "be93687/files/lfs/#{filename}" }
+
+      it_behaves_like 'a controller that can serve LFS files'
+      it_behaves_like 'project cache control headers'
     end
 
     context 'when the endpoint receives requests above the limit', :clean_gitlab_redis_cache do

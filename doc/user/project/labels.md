@@ -74,9 +74,14 @@ and selecting **Delete**.
 #### Promote a project label to a group label
 
 If you previously created a project label and now want to make it available for other
-projects within the same group, you can promote it to a group label. If other projects
-in the same group have a label with the same name, they will all be overwritten by
-the new group label.
+projects within the same group, you can promote it to a group label.
+
+If other projects in the same group have a label with the same title, they will all be
+merged with the new group label. If a group label with the same title exists, it will
+also be merged.
+
+All issues, merge requests, issue board lists, issue board filters, and label subscriptions
+with the old labels will be assigned to the new group label.
 
 WARNING: **Caution:**
 Promoting a label is a permanent action, and cannot be reversed.

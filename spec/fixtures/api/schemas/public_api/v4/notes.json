@@ -28,7 +28,8 @@
       "noteable_type": { "type": "string" },
       "resolved": { "type": "boolean" },
       "resolvable": { "type": "boolean" },
-      "resolved_by": { "type": ["string", "null"] }
+      "resolved_by": { "type": ["string", "null"] },
+      "confidential": { "type": ["boolean", "null"] }
     },
     "required": [
       "id", "body", "attachment", "author", "created_at", "updated_at",

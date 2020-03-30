@@ -34,7 +34,8 @@ describe DiscussionEntity do
       :discussion_path,
       :resolved_at,
       :for_commit,
-      :commit_id
+      :commit_id,
+      :confidential
     )
   end
 

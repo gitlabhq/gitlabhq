@@ -249,6 +249,10 @@ module API
       authorize! :admin_project, user_project
     end
 
+    def authorize_admin_group
+      authorize! :admin_group, user_group
+    end
+
     def authorize_read_builds!
       authorize! :read_build, user_project
     end

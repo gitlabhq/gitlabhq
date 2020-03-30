@@ -449,44 +449,76 @@ describe Projects::SnippetsController do
   end
 
   describe 'GET #raw' do
-    let(:content) { "first line\r\nsecond line\r\nthird line" }
-    let(:formatted_content) { content.gsub(/\r\n/, "\n") }
-    let(:project_snippet) do
-      create(
-        :project_snippet, :public, :repository,
-        project: project,
-        author: user,
-        content: content
-      )
+    let(:inline) { nil }
+    let(:line_ending) { nil }
+    let(:params) do
+      {
+        namespace_id: project.namespace,
+        project_id: project,
+        id: project_snippet.to_param,
+        inline: inline,
+        line_ending: line_ending
+      }
     end
-    let(:blob) { project_snippet.blobs.first }
 
-    context 'CRLF line ending' do
-      let(:params) do
-        {
-          namespace_id: project.namespace,
-          project_id: project,
-          id: project_snippet.to_param
-        }
+    subject { get :raw, params: params }
+
+    context 'when repository is empty' do
+      let(:content) { "first line\r\nsecond line\r\nthird line" }
+      let(:formatted_content) { content.gsub(/\r\n/, "\n") }
+      let(:project_snippet) do
+        create(
+          :project_snippet, :public, :empty_repo,
+          project: project,
+          author: user,
+          content: content
+        )
       end
 
-      before do
-        allow_next_instance_of(Blob) do |instance|
-          allow(instance).to receive(:data).and_return(content)
+      context 'CRLF line ending' do
+        before do
+          allow_next_instance_of(Blob) do |instance|
+            allow(instance).to receive(:data).and_return(content)
+          end
+        end
+
+        it 'returns LF line endings by default' do
+          subject
+
+          expect(response.body).to eq(formatted_content)
+        end
+
+        context 'when line_ending parameter present' do
+          let(:line_ending) { :raw }
+
+          it 'does not convert line endings' do
+            subject
+
+            expect(response.body).to eq(content)
+          end
         end
       end
+    end
 
-      it 'returns LF line endings by default' do
-        get :raw, params: params
-
-        expect(response.body).to eq(formatted_content)
+    context 'when repository is not empty' do
+      let(:project_snippet) do
+        create(
+          :project_snippet, :public, :repository,
+          project: project,
+          author: user
+        )
       end
 
-      it 'does not convert line endings when parameter present' do
-        get :raw, params: params.merge(line_ending: :raw)
+      it 'sends the blob' do
+        subject
 
-        expect(response.body).to eq(content)
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.header[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with('git-blob:')
+        expect(response.header[Gitlab::Workhorse::DETECT_HEADER]).to eq 'true'
       end
+
+      it_behaves_like 'project cache control headers'
+      it_behaves_like 'content disposition headers'
     end
   end
 

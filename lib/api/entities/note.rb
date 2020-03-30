@@ -23,6 +23,8 @@ module API
       expose :resolved?, as: :resolved, if: ->(note, options) { note.resolvable? }
       expose :resolved_by, using: Entities::UserBasic, if: ->(note, options) { note.resolvable? }
 
+      expose :confidential?, as: :confidential
+
       # Avoid N+1 queries as much as possible
       expose(:noteable_iid) { |note| note.noteable.iid if NOTEABLE_TYPES_WITH_IID.include?(note.noteable_type) }
 

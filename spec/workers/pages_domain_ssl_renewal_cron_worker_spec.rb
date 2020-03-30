@@ -21,6 +21,10 @@ describe PagesDomainSslRenewalCronWorker do
     let!(:domain_without_auto_certificate) do
       create(:pages_domain, :without_certificate, :without_key, project: project, auto_ssl_enabled: true)
     end
+    let!(:domain_with_failed_auto_ssl) do
+      create(:pages_domain, :without_certificate, :without_key, project: project,
+             auto_ssl_enabled: true, auto_ssl_failed: true)
+    end
 
     let!(:domain_with_expired_auto_ssl) do
       create(:pages_domain, :letsencrypt, :with_expired_certificate, project: project)
@@ -34,7 +38,8 @@ describe PagesDomainSslRenewalCronWorker do
       end
 
       [domain,
-       domain_with_obtained_letsencrypt].each do |domain|
+       domain_with_obtained_letsencrypt,
+       domain_with_failed_auto_ssl].each do |domain|
         expect(PagesDomainSslRenewalWorker).not_to receive(:perform_async).with(domain.id)
       end
 

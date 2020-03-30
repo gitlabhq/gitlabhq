@@ -8,16 +8,16 @@ module SendsBlob
     include SendFileUpload
   end
 
-  def send_blob(repository, blob, params = {})
+  def send_blob(repository, blob, inline: true, allow_caching: false)
     if blob
       headers['X-Content-Type-Options'] = 'nosniff'
 
-      return if cached_blob?(blob)
+      return if cached_blob?(blob, allow_caching: allow_caching)
 
       if blob.stored_externally?
-        send_lfs_object(blob)
+        send_lfs_object(blob, repository.project)
       else
-        send_git_blob(repository, blob, params)
+        send_git_blob(repository, blob, inline: inline)
       end
     else
       render_404
@@ -26,11 +26,11 @@ module SendsBlob
 
   private
 
-  def cached_blob?(blob)
+  def cached_blob?(blob, allow_caching: false)
     stale = stale?(etag: blob.id) # The #stale? method sets cache headers.
 
     # Because we are opinionated we set the cache headers ourselves.
-    response.cache_control[:public] = project.public?
+    response.cache_control[:public] = allow_caching
 
     response.cache_control[:max_age] =
       if @ref && @commit && @ref == @commit.id # rubocop:disable Gitlab/ModuleWithInstanceVariables
@@ -48,7 +48,7 @@ module SendsBlob
     !stale
   end
 
-  def send_lfs_object(blob)
+  def send_lfs_object(blob, project)
     lfs_object = find_lfs_object(blob)
 
     if lfs_object && lfs_object.project_allowed_access?(project)

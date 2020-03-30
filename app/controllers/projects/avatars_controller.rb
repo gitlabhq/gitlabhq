@@ -8,7 +8,7 @@ class Projects::AvatarsController < Projects::ApplicationController
   def show
     @blob = @repository.blob_at_branch(@repository.root_ref, @project.avatar_in_git)
 
-    send_blob(@repository, @blob)
+    send_blob(@repository, @blob, allow_caching: @project.public?)
   end
 
   def destroy

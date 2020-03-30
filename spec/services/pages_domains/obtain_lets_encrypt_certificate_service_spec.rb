@@ -163,4 +163,22 @@ describe PagesDomains::ObtainLetsEncryptCertificateService do
       expect(PagesDomainAcmeOrder.find_by_id(existing_order.id)).to be_nil
     end
   end
+
+  context 'when order is invalid' do
+    let(:existing_order) do
+      create(:pages_domain_acme_order, pages_domain: pages_domain)
+    end
+
+    let!(:api_order) do
+      stub_lets_encrypt_order(existing_order.url, 'invalid')
+    end
+
+    it 'saves error to domain and deletes acme order' do
+      expect do
+        service.execute
+      end.to change { pages_domain.reload.auto_ssl_failed }.from(false).to(true)
+
+      expect(PagesDomainAcmeOrder.find_by_id(existing_order.id)).to be_nil
+    end
+  end
 end

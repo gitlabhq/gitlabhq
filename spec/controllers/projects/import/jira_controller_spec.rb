@@ -118,10 +118,9 @@ describe Projects::Import::JiraController do
             end
 
             it 'uses the existing import data' do
-              expect(controller).not_to receive(:schedule_import)
-
               post :import, params: { namespace_id: project.namespace, project_id: project, jira_project_key: 'New Project' }
 
+              expect(flash[:notice]).to eq('Jira import is already running.')
               expect(response).to redirect_to(project_import_jira_path(project))
             end
           end
@@ -153,8 +152,6 @@ describe Projects::Import::JiraController do
             end
 
             it 'uses the existing import data' do
-              expect(controller).to receive(:schedule_import).and_call_original
-
               post :import, params: { namespace_id: project.namespace, project_id: project, jira_project_key: 'New Project' }
 
               project.reload

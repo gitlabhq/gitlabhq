@@ -13,10 +13,6 @@ describe Gitlab::Regex do
     it { is_expected.not_to match('?gitlab') }
   end
 
-  shared_examples_for 'project/group name error message' do
-    it { is_expected.to eq("can contain only letters, digits, emojis, '_', '.', dash, space. It must start with letter, digit, emoji or '_'.") }
-  end
-
   describe '.project_name_regex' do
     subject { described_class.project_name_regex }
 
@@ -27,18 +23,26 @@ describe Gitlab::Regex do
     subject { described_class.group_name_regex }
 
     it_behaves_like 'project/group name regex'
+
+    it 'allows parenthesis' do
+      is_expected.to match('Group One (Test)')
+    end
+
+    it 'does not start with parenthesis' do
+      is_expected.not_to match('(Invalid Group name)')
+    end
   end
 
   describe '.project_name_regex_message' do
     subject { described_class.project_name_regex_message }
 
-    it_behaves_like 'project/group name error message'
+    it { is_expected.to eq("can contain only letters, digits, emojis, '_', '.', dash, space. It must start with letter, digit, emoji or '_'.") }
   end
 
   describe '.group_name_regex_message' do
     subject { described_class.group_name_regex_message }
 
-    it_behaves_like 'project/group name error message'
+    it { is_expected.to eq("can contain only letters, digits, emojis, '_', '.', dash, space, parenthesis. It must start with letter, digit, emoji or '_'.") }
   end
 
   describe '.environment_name_regex' do

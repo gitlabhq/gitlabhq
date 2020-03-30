@@ -1377,7 +1377,7 @@ describe Projects::IssuesController do
       it 'returns discussion json' do
         get :discussions, params: { namespace_id: project.namespace, project_id: project, id: issue.iid }
 
-        expect(json_response.first.keys).to match_array(%w[id reply_id expanded notes diff_discussion discussion_path individual_note resolvable resolved resolved_at resolved_by resolved_by_push commit_id for_commit project_id])
+        expect(json_response.first.keys).to match_array(%w[id reply_id expanded notes diff_discussion discussion_path individual_note resolvable resolved resolved_at resolved_by resolved_by_push commit_id for_commit project_id confidential])
       end
 
       it 'renders the author status html if there is a status' do

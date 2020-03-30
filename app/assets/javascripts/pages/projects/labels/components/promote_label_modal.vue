@@ -37,7 +37,8 @@ export default {
     text() {
       return sprintf(
         s__(`Labels|Promoting %{labelTitle} will make it available for all projects inside %{groupName}.
-        Existing project labels with the same title will be merged. This action cannot be reversed.`),
+        Existing project labels with the same title will be merged. If a group label with the same title exists,
+        it will also be merged. This action cannot be reversed.`),
         {
           labelTitle: this.labelTitle,
           groupName: this.groupName,

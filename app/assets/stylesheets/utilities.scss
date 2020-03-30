@@ -67,7 +67,8 @@
 .gl-bg-purple-light { background-color: $purple-light; }
 
 // Classes using mixins coming from @gitlab-ui
-// can be removed once https://gitlab.com/gitlab-org/gitlab/merge_requests/19021 has been merged
+// can be removed once the mixins are added.
+// See https://gitlab.com/gitlab-org/gitlab/issues/36857 for more details.
 .gl-bg-blue-50 { @include gl-bg-blue-50; }
 .gl-bg-red-100 { @include gl-bg-red-100; }
 .gl-bg-orange-100 { @include gl-bg-orange-100; }

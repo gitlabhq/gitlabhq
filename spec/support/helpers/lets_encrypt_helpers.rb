@@ -11,7 +11,8 @@ module LetsEncryptHelpers
     status: 'pending',
     token: 'tokenvalue',
     file_content: 'hereisfilecontent',
-    request_validation: true
+    request_validation: true,
+    error: nil
   }.freeze
 
   def stub_lets_encrypt_settings
@@ -43,16 +44,17 @@ module LetsEncryptHelpers
     challenge
   end
 
-  def acme_authorization_double
+  def acme_authorization_double(challenge = acme_challenge_double)
     authorization = instance_double('Acme::Client::Resources::Authorization')
-    allow(authorization).to receive(:http).and_return(acme_challenge_double)
+    allow(authorization).to receive(:http).and_return(challenge)
+    allow(authorization).to receive(:challenges).and_return([challenge])
     authorization
   end
 
   def acme_order_double(attributes = {})
     acme_order = instance_double('Acme::Client::Resources::Order')
     allow(acme_order).to receive_messages(ACME_ORDER_METHODS.merge(attributes))
-    allow(acme_order).to receive(:authorizations).and_return([acme_authorization_double])
+    allow(acme_order).to receive(:authorizations).and_return([acme_authorization_double]) unless attributes[:authorizations]
     allow(acme_order).to receive(:finalize)
     acme_order
   end

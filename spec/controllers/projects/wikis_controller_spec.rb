@@ -144,14 +144,12 @@ describe Projects::WikisController do
 
       let(:id) { upload_file_to_wiki(project, user, file_name) }
 
-      before do
-        subject
-      end
-
       context 'when file is an image' do
         let(:file_name) { 'dk.png' }
 
         it 'delivers the image' do
+          subject
+
           expect(response.headers['Content-Disposition']).to match(/^inline/)
           expect(response.headers[Gitlab::Workhorse::DETECT_HEADER]).to eq "true"
         end
@@ -160,19 +158,27 @@ describe Projects::WikisController do
           let(:file_name) { 'unsanitized.svg' }
 
           it 'delivers the image' do
+            subject
+
             expect(response.headers['Content-Disposition']).to match(/^inline/)
             expect(response.headers[Gitlab::Workhorse::DETECT_HEADER]).to eq "true"
           end
         end
+
+        it_behaves_like 'project cache control headers'
       end
 
       context 'when file is a pdf' do
         let(:file_name) { 'git-cheat-sheet.pdf' }
 
         it 'sets the content type to sets the content response headers' do
+          subject
+
           expect(response.headers['Content-Disposition']).to match(/^inline/)
           expect(response.headers[Gitlab::Workhorse::DETECT_HEADER]).to eq "true"
         end
+
+        it_behaves_like 'project cache control headers'
       end
     end
   end

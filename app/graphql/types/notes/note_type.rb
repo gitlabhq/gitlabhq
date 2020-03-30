@@ -51,6 +51,9 @@ module Types
             description: "Timestamp of the note's resolution"
       field :position, Types::Notes::DiffPositionType, null: true,
             description: 'The position of this note on a diff'
+      field :confidential, GraphQL::BOOLEAN_TYPE, null: true,
+            description: 'Indicates if this note is confidential',
+            method: :confidential?
     end
   end
 end

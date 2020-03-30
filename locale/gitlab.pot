@@ -7491,6 +7491,9 @@ msgstr ""
 msgid "Enable header and footer in emails"
 msgstr ""
 
+msgid "Enable maintenance mode"
+msgstr ""
+
 msgid "Enable mirror configuration"
 msgstr ""
 
@@ -9633,6 +9636,9 @@ msgstr ""
 msgid "GitLab is obtaining a Let's Encrypt SSL certificate for this domain. This process can take some time. Please try again later."
 msgstr ""
 
+msgid "GitLab is undergoing maintenance and is operating in a read-only mode."
+msgstr ""
+
 msgid "GitLab member or Email address"
 msgstr ""
 
@@ -11305,6 +11311,9 @@ msgstr ""
 msgid "Jira import feature is disabled."
 msgstr ""
 
+msgid "Jira import is already running."
+msgstr ""
+
 msgid "Jira integration not configured."
 msgstr ""
 
@@ -11590,7 +11599,7 @@ msgstr ""
 msgid "Labels|Promote Label"
 msgstr ""
 
-msgid "Labels|Promoting %{labelTitle} will make it available for all projects inside %{groupName}. Existing project labels with the same title will be merged. This action cannot be reversed."
+msgid "Labels|Promoting %{labelTitle} will make it available for all projects inside %{groupName}. Existing project labels with the same title will be merged. If a group label with the same title exists, it will also be merged. This action cannot be reversed."
 msgstr ""
 
 msgid "Labels|and %{count} more"
@@ -12134,6 +12143,9 @@ msgid "MRDiff|Show full file"
 msgstr ""
 
 msgid "Made this issue confidential."
+msgstr ""
+
+msgid "Maintenance mode"
 msgstr ""
 
 msgid "Make and review changes in the browser with the Web IDE"
@@ -13484,6 +13496,9 @@ msgid "Node was successfully updated."
 msgstr ""
 
 msgid "Nodes"
+msgstr ""
+
+msgid "Non-admin users can sign in with read-only access and make read-only API requests."
 msgstr ""
 
 msgid "None"
@@ -14857,6 +14872,9 @@ msgid "Prevent users from changing their profile name"
 msgstr ""
 
 msgid "Prevent users from modifing merge request approvers list"
+msgstr ""
+
+msgid "Prevent users from performing write operations on GitLab while performing maintenance."
 msgstr ""
 
 msgid "Preview"
@@ -23155,6 +23173,9 @@ msgid "You do not have permission to leave this %{namespaceType}."
 msgstr ""
 
 msgid "You do not have permission to run the Web Terminal. Please contact a project administrator."
+msgstr ""
+
+msgid "You do not have permissions to run the import."
 msgstr ""
 
 msgid "You do not have the correct permissions to override the settings from the LDAP group sync."

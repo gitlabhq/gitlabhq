@@ -38,4 +38,23 @@ describe ::Gitlab::LetsEncrypt::Order do
       order.request_certificate(domain: 'example.com', private_key: private_key)
     end
   end
+
+  describe '#challenge_error' do
+    it 'returns error if challenge has errors' do
+      challenge = acme_challenge_double
+
+      # error just to give an example
+      error = {
+        "type" => "urn:ietf:params:acme:error:dns",
+        "detail" => "No valid IP addresses found for test.example.com",
+        "status" => 400
+      }
+
+      allow(challenge).to receive(:error).and_return(error)
+
+      acme_order = acme_order_double(authorizations: [acme_authorization_double(challenge)])
+
+      expect(described_class.new(acme_order).challenge_error).to eq(error)
+    end
+  end
 end

@@ -16,9 +16,8 @@ module Projects
       end
 
       def import
-        import_state = @project.import_state || @project.create_import_state
-
-        schedule_import(jira_import_params) unless import_state.in_progress?
+        response = ::JiraImport::StartImportService.new(current_user, @project, jira_import_params[:jira_project_key]).execute
+        flash[:notice] = response.message if response.message.present?
 
         redirect_to project_import_jira_path(@project)
       end
@@ -37,21 +36,6 @@ module Projects
         flash[:notice] = _("Configure the Jira integration first on your project's %{strong_start} Settings > Integrations > Jira%{strong_end} page." %
            { strong_start: '<strong>'.html_safe, strong_end: '</strong>'.html_safe })
         redirect_to project_issues_path(@project)
-      end
-
-      def schedule_import(params)
-        import_data = @project.create_or_update_import_data(data: {}).becomes(JiraImportData)
-
-        jira_project_details = JiraImportData::JiraProjectDetails.new(
-          params[:jira_project_key],
-          Time.now.strftime('%Y-%m-%d %H:%M:%S'),
-          { user_id: current_user.id, name: current_user.name }
-        )
-        import_data << jira_project_details
-        import_data.force_import!
-
-        @project.import_type = 'jira'
-        @project.import_state.schedule if @project.save
       end
 
       def jira_import_params

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe Projects::AvatarsController do
-  let(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :repository) }
 
   before do
     controller.instance_variable_set(:@project, project)
@@ -34,15 +34,18 @@ describe Projects::AvatarsController do
           expect(response).to have_gitlab_http_status(:ok)
           expect(response.header['Content-Disposition']).to eq('inline')
           expect(response.header[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with('git-blob:')
-          expect(response.header[Gitlab::Workhorse::DETECT_HEADER]).to eq "true"
+          expect(response.header[Gitlab::Workhorse::DETECT_HEADER]).to eq 'true'
         end
+
+        it_behaves_like 'project cache control headers'
       end
 
       context 'when the avatar is stored in lfs' do
-        it_behaves_like 'a controller that can serve LFS files' do
-          let(:filename) { 'lfs_object.iso' }
-          let(:filepath) { "files/lfs/#{filename}" }
-        end
+        let(:filename) { 'lfs_object.iso' }
+        let(:filepath) { "files/lfs/#{filename}" }
+
+        it_behaves_like 'a controller that can serve LFS files'
+        it_behaves_like 'project cache control headers'
       end
     end
   end
