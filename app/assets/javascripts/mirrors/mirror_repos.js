@@ -22,15 +22,18 @@ export default class MirrorRepos {
   }
 
   initMirrorPush() {
+    this.$keepDivergentRefsInput = $('.js-mirror-keep-divergent-refs', this.$form);
     this.$passwordGroup = $('.js-password-group', this.$container);
     this.$password = $('.js-password', this.$passwordGroup);
     this.$authMethod = $('.js-auth-method', this.$form);
 
+    this.$keepDivergentRefsInput.on('change', () => this.updateKeepDivergentRefs());
     this.$authMethod.on('change', () => this.togglePassword());
     this.$password.on('input.updateUrl', () => this.debouncedUpdateUrl());
 
     this.initMirrorSSH();
     this.updateProtectedBranches();
+    this.updateKeepDivergentRefs();
   }
 
   initMirrorSSH() {
@@ -59,6 +62,16 @@ export default class MirrorRepos {
       ? this.$protectedBranchesInput.val()
       : '0';
     $('.js-mirror-protected-hidden', this.$form).val(val);
+  }
+
+  updateKeepDivergentRefs() {
+    const field = this.$keepDivergentRefsInput.get(0);
+
+    // This field only exists after the form is switched to 'Push' mode
+    if (field) {
+      const val = field.checked ? this.$keepDivergentRefsInput.val() : '0';
+      $('.js-mirror-keep-divergent-refs-hidden', this.$form).val(val);
+    }
   }
 
   registerUpdateListeners() {

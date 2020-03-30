@@ -6,6 +6,7 @@
       Domains (#{@domains.count})
     %ul.list-group.list-group-flush.pages-domain-list{ class: ("has-verification-status" if verification_enabled) }
       - @domains.each do |domain|
+        - domain = Gitlab::View::Presenter::Factory.new(domain, current_user: current_user).fabricate!
         %li.pages-domain-list-item.list-group-item.d-flex.justify-content-between
           - if verification_enabled
             - tooltip, status = domain.unverified? ? [s_('GitLabPages|Unverified'), 'failed'] : [s_('GitLabPages|Verified'), 'success']
@@ -13,20 +14,27 @@
               = sprite_icon("status_#{status}", size: 16 )
           .domain-name
             = external_link(domain.url, domain.url)
-            - if domain.subject
+            - if domain.certificate
               %div
                 %span.badge.badge-gray
-                  = s_('GitLabPages|Certificate: %{subject}') % { subject: domain.subject }
+                  = s_('GitLabPages|Certificate: %{subject}') % { subject: domain.pages_domain.subject }
                 - if domain.expired?
                   %span.badge.badge-danger
                     = s_('GitLabPages|Expired')
           %div
             = link_to s_('GitLabPages|Edit'), project_pages_domain_path(@project, domain), class: "btn btn-sm btn-grouped btn-success btn-inverted"
             = link_to s_('GitLabPages|Remove'), project_pages_domain_path(@project, domain), data: { confirm: s_('GitLabPages|Are you sure?')}, method: :delete, class: "btn btn-remove btn-sm btn-grouped"
-        - if verification_enabled && domain.unverified?
+        - if domain.needs_verification?
           %li.list-group-item.bs-callout-warning
             - details_link_start = "<a href='#{project_pages_domain_path(@project, domain)}'>".html_safe
             - details_link_end = '</a>'.html_safe
             = s_('GitLabPages|%{domain} is not verified. To learn how to verify ownership, visit your %{link_start}domain details%{link_end}.').html_safe % { domain: domain.domain,
+                link_start: details_link_start,
+                link_end: details_link_end }
+        - if domain.show_auto_ssl_failed_warning?
+          %li.list-group-item.bs-callout-warning
+            - details_link_start = "<a href='#{project_pages_domain_path(@project, domain)}'>".html_safe
+            - details_link_end = '</a>'.html_safe
+            = s_("GitLabPages|Something went wrong while obtaining Let's Encrypt certificate for %{domain}. To retry visit your %{link_start}domain details%{link_end}.").html_safe % { domain: domain.domain,
                 link_start: details_link_start,
                 link_end: details_link_end }

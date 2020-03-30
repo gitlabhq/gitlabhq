@@ -5,7 +5,11 @@ class AddEncryptedRunnersTokenToProjects < ActiveRecord::Migration[4.2]
 
   DOWNTIME = false
 
+  # rubocop:disable Migration/AddColumnsToWideTables
+  # rubocop:disable Migration/AddLimitToStringColumns
   def change
-    add_column :projects, :runners_token_encrypted, :string # rubocop:disable Migration/AddLimitToStringColumns
+    add_column :projects, :runners_token_encrypted, :string
   end
+  # rubocop:enable Migration/AddColumnsToWideTables
+  # rubocop:enable Migration/AddLimitToStringColumns
 end

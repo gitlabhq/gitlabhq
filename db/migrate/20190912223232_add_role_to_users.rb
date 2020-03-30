@@ -7,6 +7,6 @@ class AddRoleToUsers < ActiveRecord::Migration[5.2]
   DOWNTIME = false
 
   def change
-    add_column :users, :role, :smallint
+    add_column :users, :role, :smallint # rubocop:disable Migration/AddColumnsToWideTables
   end
 end

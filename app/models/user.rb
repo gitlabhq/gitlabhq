@@ -1825,7 +1825,7 @@ class User < ApplicationRecord
     return if restrictions.blank?
 
     if Gitlab::UntrustedRegexp.new(restrictions).match?(email)
-      errors.add(:email, _('is not allowed for sign-up'))
+      errors.add(:email, _('is not allowed. Try again with a different email address, or contact your GitLab admin.'))
     end
   end
 

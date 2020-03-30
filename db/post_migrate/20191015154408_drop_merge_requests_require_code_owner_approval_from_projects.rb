@@ -15,7 +15,7 @@ class DropMergeRequestsRequireCodeOwnerApprovalFromProjects < ActiveRecord::Migr
   end
 
   def down
-    add_column :projects, :merge_requests_require_code_owner_approval, :boolean
+    add_column :projects, :merge_requests_require_code_owner_approval, :boolean # rubocop:disable Migration/AddColumnsToWideTables
 
     add_concurrent_index(
       :projects,

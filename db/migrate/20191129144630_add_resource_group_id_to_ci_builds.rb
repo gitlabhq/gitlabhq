@@ -3,6 +3,7 @@
 class AddResourceGroupIdToCiBuilds < ActiveRecord::Migration[5.2]
   DOWNTIME = false
 
+  # rubocop:disable Migration/AddColumnsToWideTables
   def up
     unless column_exists?(:ci_builds, :resource_group_id)
       add_column :ci_builds, :resource_group_id, :bigint
@@ -12,6 +13,7 @@ class AddResourceGroupIdToCiBuilds < ActiveRecord::Migration[5.2]
       add_column :ci_builds, :waiting_for_resource_at, :datetime_with_timezone
     end
   end
+  # rubocop:enable Migration/AddColumnsToWideTables
 
   def down
     if column_exists?(:ci_builds, :resource_group_id)

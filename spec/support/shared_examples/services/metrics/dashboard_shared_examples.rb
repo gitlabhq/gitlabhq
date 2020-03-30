@@ -107,3 +107,14 @@ RSpec.shared_examples 'valid dashboard update process' do
     service_call
   end
 end
+
+RSpec.shared_examples 'misconfigured dashboard service response with stepable' do |status_code, message = nil|
+  it 'returns an appropriate message and status code', :aggregate_failures do
+    result = service_call
+
+    expect(result.keys).to contain_exactly(:message, :http_status, :status, :last_step)
+    expect(result[:status]).to eq(:error)
+    expect(result[:http_status]).to eq(status_code)
+    expect(result[:message]).to eq(message) if message
+  end
+end

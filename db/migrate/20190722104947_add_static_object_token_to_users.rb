@@ -9,7 +9,7 @@ class AddStaticObjectTokenToUsers < ActiveRecord::Migration[5.2]
   disable_ddl_transaction!
 
   def up
-    add_column :users, :static_object_token, :string, limit: 255
+    add_column :users, :static_object_token, :string, limit: 255 # rubocop:disable Migration/AddColumnsToWideTables
   end
 
   def down

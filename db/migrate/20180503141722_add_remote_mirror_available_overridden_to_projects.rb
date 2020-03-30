@@ -6,7 +6,7 @@ class AddRemoteMirrorAvailableOverriddenToProjects < ActiveRecord::Migration[4.2
   disable_ddl_transaction!
 
   def up
-    add_column(:projects, :remote_mirror_available_overridden, :boolean) unless column_exists?(:projects, :remote_mirror_available_overridden)
+    add_column(:projects, :remote_mirror_available_overridden, :boolean) unless column_exists?(:projects, :remote_mirror_available_overridden) # rubocop:disable Migration/AddColumnsToWideTables
   end
 
   def down

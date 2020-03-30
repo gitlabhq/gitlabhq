@@ -9723,6 +9723,9 @@ msgstr ""
 msgid "GitLabPages|Save"
 msgstr ""
 
+msgid "GitLabPages|Something went wrong while obtaining Let's Encrypt certificate for %{domain}. To retry visit your %{link_start}domain details%{link_end}."
+msgstr ""
+
 msgid "GitLabPages|Support for domains and certificates is disabled.  Ask your system's administrator to enable it."
 msgstr ""
 
@@ -24067,7 +24070,7 @@ msgstr ""
 msgid "is not a valid X509 certificate."
 msgstr ""
 
-msgid "is not allowed for sign-up"
+msgid "is not allowed. Try again with a different email address, or contact your GitLab admin."
 msgstr ""
 
 msgid "is not an email you own"

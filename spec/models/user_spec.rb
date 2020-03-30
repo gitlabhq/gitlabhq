@@ -529,7 +529,7 @@ describe User, :do_not_mock_admin_mode do
             user = build(:user, email: 'info@gitlab.com')
 
             expect(user).not_to be_valid
-            expect(user.errors.messages[:email].first).to eq(_('is not allowed for sign-up'))
+            expect(user.errors.messages[:email].first).to eq(_('is not allowed. Try again with a different email address, or contact your GitLab admin.'))
           end
 
           it 'does accept a valid email address' do

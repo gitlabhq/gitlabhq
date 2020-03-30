@@ -434,6 +434,35 @@ Note the following properties:
 
 ![anomaly panel type](img/prometheus_dashboard_anomaly_panel_type.png)
 
+##### Bar chart
+
+To add a bar chart to a dashboard, look at the following sample dashboard file:
+
+```yaml
+dashboard: 'Dashboard Title'
+panel_groups:
+  - group: 'Group title'
+    panels:
+      - type: bar
+        title: "Http Handlers"
+        x_label: 'Response Size'
+        y_axis:
+          name: "Handlers"
+        metrics:
+          - id: prometheus_http_response_size_bytes_bucket
+            query_range: "sum(increase(prometheus_http_response_size_bytes_bucket[1d])) by (handler)"
+            unit: 'Bytes'
+```
+
+Note the following properties:
+
+| Property | Type | Required | Description |
+| ------ | ------ | ------ | ------ |
+| `type` | string | yes | Type of panel to be rendered. For bar chart types, set to `bar` |
+| `query_range` | yes | yes | For bar chart, you must use a [range query]
+
+![bar chart panel type](img/prometheus_dashboard_bar_chart_panel_type_v12.10.png)
+
 ##### Column chart
 
 To add a column panel type to a dashboard, look at the following sample dashboard file:

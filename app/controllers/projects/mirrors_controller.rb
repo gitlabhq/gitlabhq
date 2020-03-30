@@ -77,6 +77,7 @@ class Projects::MirrorsController < Projects::ApplicationController
         id
         enabled
         only_protected_branches
+        keep_divergent_refs
         auth_method
         password
         ssh_known_hosts

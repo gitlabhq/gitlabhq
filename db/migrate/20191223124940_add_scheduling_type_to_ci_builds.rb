@@ -6,6 +6,6 @@ class AddSchedulingTypeToCiBuilds < ActiveRecord::Migration[5.2]
   DOWNTIME = false
 
   def change
-    add_column :ci_builds, :scheduling_type, :integer, limit: 2
+    add_column :ci_builds, :scheduling_type, :integer, limit: 2 # rubocop:disable Migration/AddColumnsToWideTables
   end
 end

@@ -29,7 +29,7 @@ describe Metrics::Dashboard::CloneDashboardService, :use_clean_rails_memory_stor
     end
 
     context 'user does not have push right to repository' do
-      it_behaves_like 'misconfigured dashboard service response', :forbidden, %q(You are not allowed to push into this branch. Create another branch or open a merge request.)
+      it_behaves_like 'misconfigured dashboard service response with stepable', :forbidden, 'You are not allowed to push into this branch. Create another branch or open a merge request.'
     end
 
     context 'with rights to push to the repository' do
@@ -40,19 +40,19 @@ describe Metrics::Dashboard::CloneDashboardService, :use_clean_rails_memory_stor
       context 'wrong target file extension' do
         let(:file_name) { 'custom_dashboard.txt' }
 
-        it_behaves_like 'misconfigured dashboard service response', :bad_request, 'The file name should have a .yml extension'
+        it_behaves_like 'misconfigured dashboard service response with stepable', :bad_request, 'The file name should have a .yml extension'
       end
 
       context 'wrong source dashboard file' do
         let(:dashboard) { 'config/prometheus/common_metrics_123.yml' }
 
-        it_behaves_like 'misconfigured dashboard service response', :not_found, 'Not found.'
+        it_behaves_like 'misconfigured dashboard service response with stepable', :not_found, 'Not found.'
       end
 
       context 'path traversal attack attempt' do
         let(:dashboard) { 'config/prometheus/../database.yml' }
 
-        it_behaves_like 'misconfigured dashboard service response', :not_found, 'Not found.'
+        it_behaves_like 'misconfigured dashboard service response with stepable', :not_found, 'Not found.'
       end
 
       context 'path traversal attack attempt on target file' do
@@ -92,7 +92,7 @@ describe Metrics::Dashboard::CloneDashboardService, :use_clean_rails_memory_stor
             project.repository.add_branch(user, branch, 'master')
           end
 
-          it_behaves_like 'misconfigured dashboard service response', :bad_request, "There was an error creating the dashboard, branch named: existing_branch already exists."
+          it_behaves_like 'misconfigured dashboard service response with stepable', :bad_request, 'There was an error creating the dashboard, branch named: existing_branch already exists.'
 
           # temporary not available function for first iteration
           # follow up issue https://gitlab.com/gitlab-org/gitlab/issues/196237 which
@@ -111,7 +111,7 @@ describe Metrics::Dashboard::CloneDashboardService, :use_clean_rails_memory_stor
         context 'blank branch name' do
           let(:branch) { '' }
 
-          it_behaves_like 'misconfigured dashboard service response', :bad_request, 'There was an error creating the dashboard, branch name is invalid.'
+          it_behaves_like 'misconfigured dashboard service response with stepable', :bad_request, 'There was an error creating the dashboard, branch name is invalid.'
         end
 
         context 'dashboard file already exists' do
@@ -129,7 +129,7 @@ describe Metrics::Dashboard::CloneDashboardService, :use_clean_rails_memory_stor
             ).execute
           end
 
-          it_behaves_like 'misconfigured dashboard service response', :bad_request, "A file with 'custom_dashboard.yml' already exists in custom_dashboard branch"
+          it_behaves_like 'misconfigured dashboard service response with stepable', :bad_request, "A file with 'custom_dashboard.yml' already exists in custom_dashboard branch"
         end
 
         it 'extends dashboard template path to absolute url' do

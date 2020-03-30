@@ -7,6 +7,6 @@ class AddDetectedRepositoryLanguagesToProjects < ActiveRecord::Migration[5.0]
   DOWNTIME = false
 
   def change
-    add_column :projects, :detected_repository_languages, :boolean
+    add_column :projects, :detected_repository_languages, :boolean # rubocop:disable Migration/AddColumnsToWideTables
   end
 end

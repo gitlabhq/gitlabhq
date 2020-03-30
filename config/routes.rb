@@ -71,6 +71,8 @@ Rails.application.routes.draw do
   # Health check
   get 'health_check(/:checks)' => 'health_check#index', as: :health_check
 
+  # Begin of the /-/ scope.
+  # Use this scope for all new global routes.
   scope path: '-' do
     # '/-/health' implemented by BasicHealthCheck middleware
     get 'liveness' => 'health#liveness'
@@ -122,6 +124,10 @@ Rails.application.routes.draw do
       draw :country_state
       draw :subscription
       draw :analytics
+
+      scope '/push_from_secondary/:geo_node_id' do
+        draw :git_http
+      end
     end
 
     if ENV['GITLAB_CHAOS_SECRET'] || Rails.env.development? || Rails.env.test?
@@ -136,7 +142,24 @@ Rails.application.routes.draw do
 
     # Notification settings
     resources :notification_settings, only: [:create, :update]
+
+    resources :invites, only: [:show], constraints: { id: /[A-Za-z0-9_-]+/ } do
+      member do
+        post :accept
+        match :decline, via: [:get, :post]
+      end
+    end
+
+    resources :sent_notifications, only: [], constraints: { id: /\h{32}/ } do
+      member do
+        get :unsubscribe
+      end
+    end
+
+    # Spam reports
+    resources :abuse_reports, only: [:new, :create]
   end
+  # End of the /-/ scope.
 
   concern :clusterable do
     resources :clusters, only: [:index, :new, :show, :update, :destroy] do
@@ -167,22 +190,24 @@ Rails.application.routes.draw do
     end
   end
 
-  # Invites
-  resources :invites, only: [:show], constraints: { id: /[A-Za-z0-9_-]+/ } do
-    member do
-      post :accept
-      match :decline, via: [:get, :post]
+  # Deprecated routes.
+  # Will be removed as part of https://gitlab.com/gitlab-org/gitlab/-/issues/210024
+  scope as: :deprecated do
+    resources :invites, only: [:show], constraints: { id: /[A-Za-z0-9_-]+/ } do
+      member do
+        post :accept
+        match :decline, via: [:get, :post]
+      end
     end
-  end
 
-  resources :sent_notifications, only: [], constraints: { id: /\h{32}/ } do
-    member do
-      get :unsubscribe
+    resources :sent_notifications, only: [], constraints: { id: /\h{32}/ } do
+      member do
+        get :unsubscribe
+      end
     end
-  end
 
-  # Spam reports
-  resources :abuse_reports, only: [:new, :create]
+    resources :abuse_reports, only: [:new, :create]
+  end
 
   resources :groups, only: [:index, :new, :create] do
     post :preview_markdown
@@ -191,12 +216,6 @@ Rails.application.routes.draw do
   resources :projects, only: [:index, :new, :create]
 
   get '/projects/:id' => 'projects#resolve'
-
-  Gitlab.ee do
-    scope '/-/push_from_secondary/:geo_node_id' do
-      draw :git_http
-    end
-  end
 
   draw :git_http
   draw :api

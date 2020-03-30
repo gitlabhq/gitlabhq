@@ -5,6 +5,6 @@ class AddPrivateProfileToUsers < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def change
-    add_column :users, :private_profile, :boolean
+    add_column :users, :private_profile, :boolean # rubocop:disable Migration/AddColumnsToWideTables
   end
 end

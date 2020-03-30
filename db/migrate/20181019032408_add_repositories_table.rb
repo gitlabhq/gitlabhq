@@ -9,7 +9,7 @@ class AddRepositoriesTable < ActiveRecord::Migration[4.2]
       t.string :disk_path, null: false, index: { unique: true } # rubocop:disable Migration/AddLimitToStringColumns
     end
 
-    add_column :projects, :pool_repository_id, :bigint
+    add_column :projects, :pool_repository_id, :bigint # rubocop:disable Migration/AddColumnsToWideTables
     add_index :projects, :pool_repository_id, where: 'pool_repository_id IS NOT NULL'
   end
 end

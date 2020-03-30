@@ -10,6 +10,6 @@ class AddBridgedPipelineIdToBridges < ActiveRecord::Migration[5.0]
   DOWNTIME = false
 
   def change
-    add_column :ci_builds, :upstream_pipeline_id, :integer
+    add_column :ci_builds, :upstream_pipeline_id, :integer # rubocop:disable Migration/AddColumnsToWideTables
   end
 end

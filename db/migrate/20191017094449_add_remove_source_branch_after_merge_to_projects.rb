@@ -8,7 +8,7 @@ class AddRemoveSourceBranchAfterMergeToProjects < ActiveRecord::Migration[5.1]
   DOWNTIME = false
 
   def up
-    add_column :projects, :remove_source_branch_after_merge, :boolean
+    add_column :projects, :remove_source_branch_after_merge, :boolean # rubocop:disable Migration/AddColumnsToWideTables
   end
 
   def down

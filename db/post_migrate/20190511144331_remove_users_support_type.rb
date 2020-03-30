@@ -17,7 +17,7 @@ class RemoveUsersSupportType < ActiveRecord::Migration[5.1]
   end
 
   def down
-    add_column :users, :support_bot, :boolean
+    add_column :users, :support_bot, :boolean # rubocop:disable Migration/AddColumnsToWideTables
 
     add_concurrent_index :users, :support_bot
     add_concurrent_index :users, :state,

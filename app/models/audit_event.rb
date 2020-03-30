@@ -30,25 +30,11 @@ class AuditEvent < ApplicationRecord
   end
 
   def author_name
-    lazy_author.name
+    self.user.name
   end
 
   def formatted_details
     details.merge(details.slice(:from, :to).transform_values(&:to_s))
-  end
-
-  def lazy_author
-    BatchLoader.for(author_id).batch(default_value: default_author_value) do |author_ids, loader|
-      User.where(id: author_ids).find_each do |user|
-        loader.call(user.id, user)
-      end
-    end
-  end
-
-  private
-
-  def default_author_value
-    ::Gitlab::Audit::NullAuthor.for(author_id, details[:author_name])
   end
 end
 

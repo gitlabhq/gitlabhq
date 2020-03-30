@@ -4,6 +4,6 @@ class AddSuggestionCommitMessageToProjects < ActiveRecord::Migration[5.2]
   DOWNTIME = false
 
   def change
-    add_column :projects, :suggestion_commit_message, :string, limit: 255
+    add_column :projects, :suggestion_commit_message, :string, limit: 255 # rubocop:disable Migration/AddColumnsToWideTables
   end
 end

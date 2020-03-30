@@ -5,8 +5,17 @@
 module Metrics
   module Dashboard
     class CloneDashboardService < ::BaseService
+      include Stepable
+
       ALLOWED_FILE_TYPE = '.yml'
       USER_DASHBOARDS_DIR = ::Metrics::Dashboard::CustomDashboardService::DASHBOARD_ROOT
+
+      steps :check_push_authorized,
+        :check_branch_name,
+        :check_file_type,
+        :check_dashboard_template,
+        :create_file,
+        :refresh_repository_method_caches
 
       class << self
         def allowed_dashboard_templates
@@ -22,21 +31,52 @@ module Metrics
         end
       end
 
-      # rubocop:disable Cop/BanCatchThrow
       def execute
-        catch(:error) do
-          throw(:error, error(_(%q(You are not allowed to push into this branch. Create another branch or open a merge request.)), :forbidden)) unless push_authorized?
-
-          result = ::Files::CreateService.new(project, current_user, dashboard_attrs).execute
-          throw(:error, wrap_error(result)) unless result[:status] == :success
-
-          repository.refresh_method_caches([:metrics_dashboard])
-          success(result.merge(http_status: :created, dashboard: dashboard_details))
-        end
+        execute_steps
       end
-      # rubocop:enable Cop/BanCatchThrow
 
       private
+
+      def check_push_authorized(result)
+        return error(_('You are not allowed to push into this branch. Create another branch or open a merge request.'), :forbidden) unless push_authorized?
+
+        success(result)
+      end
+
+      def check_branch_name(result)
+        return error(_('There was an error creating the dashboard, branch name is invalid.'), :bad_request) unless valid_branch_name?
+        return error(_('There was an error creating the dashboard, branch named: %{branch} already exists.') % { branch: params[:branch] }, :bad_request) unless new_or_default_branch?
+
+        success(result)
+      end
+
+      def check_file_type(result)
+        return error(_('The file name should have a .yml extension'), :bad_request) unless target_file_type_valid?
+
+        success(result)
+      end
+
+      def check_dashboard_template(result)
+        return error(_('Not found.'), :not_found) unless self.class.allowed_dashboard_templates.include?(params[:dashboard])
+
+        success(result)
+      end
+
+      def create_file(result)
+        create_file_response = ::Files::CreateService.new(project, current_user, dashboard_attrs).execute
+
+        if create_file_response[:status] == :success
+          success(result.merge(create_file_response))
+        else
+          wrap_error(create_file_response)
+        end
+      end
+
+      def refresh_repository_method_caches(result)
+        repository.refresh_method_caches([:metrics_dashboard])
+
+        success(result.merge(http_status: :created, dashboard: dashboard_details))
+      end
 
       def dashboard_attrs
         {
@@ -62,26 +102,13 @@ module Metrics
         Gitlab::UserAccess.new(current_user, project: project).can_push_to_branch?(branch)
       end
 
-      # rubocop:disable Cop/BanCatchThrow
       def dashboard_template
-        @dashboard_template ||= begin
-          throw(:error, error(_('Not found.'), :not_found)) unless self.class.allowed_dashboard_templates.include?(params[:dashboard])
-
-          params[:dashboard]
-        end
+        @dashboard_template ||= params[:dashboard]
       end
-      # rubocop:enable Cop/BanCatchThrow
 
-      # rubocop:disable Cop/BanCatchThrow
       def branch
-        @branch ||= begin
-          throw(:error, error(_('There was an error creating the dashboard, branch name is invalid.'), :bad_request)) unless valid_branch_name?
-          throw(:error, error(_('There was an error creating the dashboard, branch named: %{branch} already exists.') % { branch: params[:branch] }, :bad_request)) unless new_or_default_branch? # temporary validation for first UI iteration
-
-          params[:branch]
-        end
+        @branch ||= params[:branch]
       end
-      # rubocop:enable Cop/BanCatchThrow
 
       def new_or_default_branch?
         !repository.branch_exists?(params[:branch]) || project.default_branch == params[:branch]
@@ -95,18 +122,20 @@ module Metrics
         @new_dashboard_path ||= File.join(USER_DASHBOARDS_DIR, file_name)
       end
 
-      # rubocop:disable Cop/BanCatchThrow
       def file_name
-        @file_name ||= begin
-          throw(:error, error(_('The file name should have a .yml extension'), :bad_request)) unless target_file_type_valid?
-
-          File.basename(params[:file_name])
-        end
+        @file_name ||= File.basename(params[:file_name])
       end
-      # rubocop:enable Cop/BanCatchThrow
 
       def target_file_type_valid?
         File.extname(params[:file_name]) == ALLOWED_FILE_TYPE
+      end
+
+      def wrap_error(result)
+        if result[:message] == 'A file with this name already exists'
+          error(_("A file with '%{file_name}' already exists in %{branch} branch") % { file_name: file_name, branch: branch }, :bad_request)
+        else
+          result
+        end
       end
 
       def new_dashboard_content
@@ -117,14 +146,6 @@ module Metrics
 
       def repository
         @repository ||= project.repository
-      end
-
-      def wrap_error(result)
-        if result[:message] == 'A file with this name already exists'
-          error(_("A file with '%{file_name}' already exists in %{branch} branch") % { file_name: file_name, branch: branch }, :bad_request)
-        else
-          result
-        end
       end
 
       def raw_dashboard

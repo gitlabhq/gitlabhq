@@ -23,7 +23,7 @@ class DropProjectsCiId < ActiveRecord::Migration[5.1]
 
   def down
     unless column_exists?(:projects, :ci_id)
-      add_column :projects, :ci_id, :integer
+      add_column :projects, :ci_id, :integer # rubocop:disable Migration/AddColumnsToWideTables
     end
 
     unless index_exists?(:projects, :ci_id)

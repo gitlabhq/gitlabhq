@@ -115,12 +115,12 @@ RDS instances as well:
 
 1. Follow the same steps to create all subnets:
 
-   | Name tag                  | Type    | Availability Zone | CIDR block |
-   | ------------------------- | ------- | ----------------- | ---------- |
-   | `gitlab-public-10.0.0.0`  | public  | `us-west-2a`      | `10.0.0.0` |
-   | `gitlab-private-10.0.1.0` | private | `us-west-2a`      | `10.0.1.0` |
-   | `gitlab-public-10.0.2.0`  | public  | `us-west-2b`      | `10.0.2.0` |
-   | `gitlab-private-10.0.3.0` | private | `us-west-2b`      | `10.0.3.0` |
+   | Name tag                  | Type    | Availability Zone | CIDR block    |
+   | ------------------------- | ------- | ----------------- | ------------- |
+   | `gitlab-public-10.0.0.0`  | public  | `us-west-2a`      | `10.0.0.0/24` |
+   | `gitlab-private-10.0.1.0` | private | `us-west-2a`      | `10.0.1.0/24` |
+   | `gitlab-public-10.0.2.0`  | public  | `us-west-2b`      | `10.0.2.0/24` |
+   | `gitlab-private-10.0.3.0` | private | `us-west-2b`      | `10.0.3.0/24` |
 
 ### Create NAT Gateways
 

@@ -72,6 +72,21 @@ describe 'Projects > Settings > Repository settings' do
         expect(project.remote_mirrors.first.only_protected_branches).to eq(true)
       end
 
+      it 'creates a push mirror that keeps divergent refs', :js do
+        select_direction
+
+        fill_in 'url', with: 'ssh://user@localhost/project.git'
+        fill_in 'Password', with: 'password'
+        check 'Keep divergent refs'
+
+        Sidekiq::Testing.fake! do
+          click_button 'Mirror repository'
+        end
+
+        expect(page).to have_content('Mirroring settings were successfully updated')
+        expect(project.reload.remote_mirrors.first.keep_divergent_refs).to eq(true)
+      end
+
       it 'generates an SSH public key on submission', :js do
         fill_in 'url', with: 'ssh://user@localhost/project.git'
         select 'SSH public key', from: 'Authentication method'
@@ -107,6 +122,20 @@ describe 'Projects > Settings > Repository settings' do
         else
           direction_select.select(direction.capitalize)
         end
+      end
+    end
+
+    # Removal: https://gitlab.com/gitlab-org/gitlab/-/issues/208828
+    context 'with the `keep_divergent_refs` feature flag disabled' do
+      before do
+        stub_feature_flags(keep_divergent_refs: { enabled: false, thing: project })
+      end
+
+      it 'hides the "Keep divergent refs" option' do
+        visit project_settings_repository_path(project)
+
+        expect(page).not_to have_selector('#keep_divergent_refs')
+        expect(page).not_to have_text('Keep divergent refs')
       end
     end
 

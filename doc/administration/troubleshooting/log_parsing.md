@@ -1,0 +1,152 @@
+# Parsing GitLab logs with `jq`
+
+We recommend using log aggregation and search tools like Kibana and Splunk whenever possible,
+but if they are not available you can still quickly parse
+[GitLab logs](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26311) in JSON format
+(the default since GitLab 12.0) using [`jq`](https://stedolan.github.io/jq/).
+
+## What is JQ?
+
+As noted in its [manual](https://stedolan.github.io/jq/manual), jq is a command-line JSON processor. The following examples
+include use cases targeted for parsing GitLab log files.
+
+## Parsing Logs
+
+### General Commands
+
+#### Pipe colorized `jq` output into `less`
+
+```sh
+jq . <FILE> -C | less -R
+```
+
+#### Search for a term and pretty-print all matching lines
+
+```sh
+grep <TERM> <FILE> | jq .
+```
+
+#### Skip invalid lines of JSON
+
+```sh
+jq -cR 'fromjson?' file.json | jq <COMMAND>
+```
+
+By default `jq` will error out when it encounters a line that is not valid JSON.
+This skips over all invalid lines and parses the rest.
+
+### Parsing `production_json.log` and `api_json.log`
+
+#### Find all requests with a 5XX status code
+
+```sh
+jq 'select(status >= 500)' <FILE>
+```
+
+#### Top 10 slowest requests
+
+```sh
+jq -s 'sort_by(-.duration) | limit(10; .[])' <FILE>
+```
+
+#### Find and pretty print all requests related to a project
+
+```sh
+grep <PROJECT_NAME> <FILE> | jq .
+```
+
+#### Find all requests with a total duration > 5 seconds
+
+```sh
+jq 'select(.duration > 5000)' <FILE>
+```
+
+#### Find all project requests with more than 5 rugged calls
+
+```sh
+grep <PROJECT_NAME> <FILE> | jq 'select(.rugged_calls > 5)'
+```
+
+#### Find all requests with a Gitaly duration > 10 seconds
+
+```sh
+jq 'select(.gitaly_duration > 10000)' <FILE>
+```
+
+#### Find all requests with a queue duration > 10 seconds
+
+```sh
+jq 'select(.queue_duration > 10000)' <FILE>
+```
+
+#### Top 10 requests by # of Gitaly calls
+
+```sh
+jq -s 'map(select(.gitaly_calls != null)) | sort_by(-.gitaly_calls) | limit(10; .[])' <FILE>
+```
+
+### Parsing `production_json.log`
+
+#### Print the top three controller methods by request volume and their three longest durations
+
+```sh
+jq -s -r 'group_by(.controller+.action) | sort_by(-length) | limit(3; .[]) | sort_by(-.duration) | "CT: \(length)\tMETHOD: \(.[0].controller)#\(.[0].action)\tDURS: \(.[0].duration),  \(.[1].duration),  \(.[2].duration)"' production_json.log
+```
+
+**Example output**
+
+```plaintext
+CT: 2721   METHOD: SessionsController#new  DURS: 844.06,  713.81,  704.66
+CT: 2435   METHOD: MetricsController#index DURS: 299.29,  284.01,  158.57
+CT: 1328   METHOD: Projects::NotesController#index DURS: 403.99,  386.29,  384.39
+```
+
+### Parsing `api_json.log`
+
+#### Print top three routes with request count and their three longest durations
+
+```sh
+jq -s -r 'group_by(.route) | sort_by(-length) | limit(3; .[]) | sort_by(-.duration) | "CT: \(length)\tROUTE: \(.[0].route)\tDURS: \(.[0].duration),  \(.[1].duration),  \(.[2].duration)"' api_json.log
+```
+
+**Example output**
+
+```plaintext
+CT: 2472 ROUTE: /api/:version/internal/allowed   DURS: 56402.65,  38411.43,  19500.41
+CT: 297  ROUTE: /api/:version/projects/:id/repository/tags       DURS: 731.39,  685.57,  480.86
+CT: 190  ROUTE: /api/:version/projects/:id/repository/commits    DURS: 1079.02,  979.68,  958.21
+```
+
+### Parsing `gitaly/current`
+
+#### Find all Gitaly requests sent from web UI
+
+```sh
+jq 'select(."grpc.meta.client_name" == "gitlab-web")' current
+```
+
+#### Find all failed Gitaly requests
+
+```sh
+jq 'select(."grpc.code" != null and ."grpc.code" != "OK")' current
+```
+
+#### Find all requests that took longer than 30 seconds
+
+```sh
+jq 'select(."grpc.time_ms" > 30000)' current
+```
+
+#### Print top three projects by request volume and their three longest durations
+
+```sh
+jq -s -r 'map(select(."grpc.request.glProjectPath" != null and ."grpc.request.glProjectPath" != "" and ."grpc.time_ms" != null)) | group_by(."grpc.request.glProjectPath") | sort_by(-length) | limit(3; .[]) | sort_by(-."grpc.time_ms") | "CT: \(length)\tPROJECT: \(.[0]."grpc.request.glProjectPath")\tDURS: \(.[0]."grpc.time_ms"),  \(.[1]."grpc.time_ms"),  \(.[2]."grpc.time_ms")"' current
+```
+
+**Example output**
+
+```plaintext
+CT: 635 PROJECT: groupA/project1     DURS: 4292.269,  4228.853,  2885.548
+CT: 462 PROJECT: groupB/project5     DURS: 4368.981,  3623.553,  361.399
+CT: 455 PROJECT: groupC/project7     DURS: 387.295,  381.874,  373.988
+```

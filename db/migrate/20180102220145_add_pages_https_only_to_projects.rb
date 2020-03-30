@@ -4,6 +4,6 @@ class AddPagesHttpsOnlyToProjects < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def change
-    add_column :projects, :pages_https_only, :boolean
+    add_column :projects, :pages_https_only, :boolean # rubocop:disable Migration/AddColumnsToWideTables
   end
 end

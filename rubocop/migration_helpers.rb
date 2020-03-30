@@ -6,7 +6,7 @@ module RuboCop
       plan_limits
     ].freeze
 
-    # Blacklisted table due to:
+    # Blacklisted tables due to:
     #   - size in GB (>= 10 GB on GitLab.com as of 02/2020)
     #   - number of records
     BLACKLISTED_TABLES = %i[
@@ -42,6 +42,15 @@ module RuboCop
        todos
        users
        web_hook_logs
+    ].freeze
+
+    # Blacklisted tables due to:
+    #   - number of columns (> 50 on GitLab.com as of 03/2020)
+    #   - number of records
+    WIDE_TABLES = %i[
+      users
+      projects
+      ci_builds
     ].freeze
 
     # Returns true if the given node originated from the db/migrate directory.
