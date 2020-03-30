@@ -112,6 +112,13 @@ describe Boards::IssuesController do
 
           expect { list_issues(user: user, board: group_board, list: list3) }.not_to exceed_query_limit(control_count + (2 * 8 - 1))
         end
+
+        it 'does not query issues table more than once' do
+          recorder = ActiveRecord::QueryRecorder.new { list_issues(user: user, board: board, list: list1) }
+          query_count = recorder.occurrences.select { |query,| query.start_with?('SELECT issues.*') }.each_value.first
+
+          expect(query_count).to eq(1)
+        end
       end
 
       context 'with invalid list id' do

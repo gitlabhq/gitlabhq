@@ -16,7 +16,7 @@ To use GitLab CI/CD with a Bitbucket Cloud repository:
 
    ![Create project](img/external_repository.png)
 
-   GitLab will import the repository and enable [Pull Mirroring][pull-mirroring].
+   GitLab will import the repository and enable [Pull Mirroring](../../user/project/repository/repository_mirroring.md#pulling-from-a-remote-repository-starter).
 
 1. In GitLab create a
    [Personal Access Token](../../user/profile/personal_access_tokens.md)
@@ -150,8 +150,6 @@ To use GitLab CI/CD with a Bitbucket Cloud repository:
 
 GitLab is now configured to mirror changes from Bitbucket, run CI/CD pipelines
 configured in `.gitlab-ci.yml` and push the status to Bitbucket.
-
-[pull-mirroring]: ../../user/project/repository/repository_mirroring.md#pulling-from-a-remote-repository-starter
 
 <!-- ## Troubleshooting
 

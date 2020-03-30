@@ -45,11 +45,11 @@ Database: nice_marmot
 If you are wondering why we used `postgres` for the `Host`, read more at
 [How services are linked to the job](../docker/using_docker_images.md#how-services-are-linked-to-the-job).
 
-You can also use any other docker image available on [Docker Hub][hub-pg].
+You can also use any other docker image available on [Docker Hub](https://hub.docker.com/_/postgres).
 For example, to use PostgreSQL 9.3 the service becomes `postgres:9.3`.
 
 The `postgres` image can accept some environment variables. For more details
-check the documentation on [Docker Hub][hub-pg].
+check the documentation on [Docker Hub](https://hub.docker.com/_/postgres).
 
 ## Use PostgreSQL with the Shell executor
 
@@ -115,12 +115,9 @@ Database: nice_marmot
 
 ## Example project
 
-We have set up an [Example PostgreSQL Project][postgres-example-repo] for your
+We have set up an [Example PostgreSQL Project](https://gitlab.com/gitlab-examples/postgres) for your
 convenience that runs on [GitLab.com](https://gitlab.com) using our publicly
 available [shared runners](../runners/README.md).
 
 Want to hack on it? Simply fork it, commit and push your changes. Within a few
 moments the changes will be picked by a public runner and the job will begin.
-
-[hub-pg]: https://hub.docker.com/_/postgres
-[postgres-example-repo]: https://gitlab.com/gitlab-examples/postgres

@@ -14,11 +14,11 @@ type: reference
 > - With GitLab 8.12 onward, your permissions are used to evaluate what a CI job
 >   can access. More information about how this system works can be found in the
 >   [Jobs permissions model](../user/permissions.md#job-permissions).
-> - The HTTP(S) Git protocol [must be enabled][gitpro] in your GitLab instance.
+> - The HTTP(S) Git protocol [must be enabled](../user/admin_area/settings/visibility_and_access_controls.md#enabled-git-access-protocols) in your GitLab instance.
 
 ## Configuring the `.gitmodules` file
 
-If dealing with [Git submodules][gitscm], your project will probably have a file
+If dealing with [Git submodules](https://git-scm.com/book/en/v2/Git-Tools-Submodules), your project will probably have a file
 named `.gitmodules`.
 
 Let's consider the following example:
@@ -98,7 +98,3 @@ remote URL. On subsequent jobs on the same Runner, `.git/config` is cached
 and already contains a full URL for the submodule, corresponding to the previous
 job, and to **a token from a previous job**. `sync` allows to force updating
 the full URL.
-
-[gitpro]: ../user/admin_area/settings/visibility_and_access_controls.md#enabled-git-access-protocols
-[gitscm]: https://git-scm.com/book/en/v2/Git-Tools-Submodules "Git submodules documentation"
-[newperms]: ../user/project/new_ci_build_permissions_model.md

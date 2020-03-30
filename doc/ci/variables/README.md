@@ -221,7 +221,7 @@ All variables are set as environment variables in the build environment, and
 they are accessible with normal methods that are used to access such variables.
 In most cases `bash` or `sh` is used to execute the job script.
 
-To access environment variables, use the syntax for your Runner's [shell][shellexecutors].
+To access environment variables, use the syntax for your Runner's [shell](https://docs.gitlab.com/runner/executors/).
 
 | Shell                | Usage           |
 |----------------------|-----------------|
@@ -415,7 +415,7 @@ Click [here](where_variables_can_be_used.md) for a section that describes where 
 
 Variables can be protected. Whenever a variable is
 protected, it would only be securely passed to pipelines running on the
-[protected branches] or [protected tags]. The other pipelines would not get any
+[protected branches](../../user/project/protected_branches.md) or [protected tags](../../user/project/protected_tags.md). The other pipelines would not get any
 protected variables.
 
 Protected variables can be added by going to your project's
@@ -427,7 +427,7 @@ Once you set them, they will be available for all subsequent pipelines.
 ### Limiting environment scopes of environment variables
 
 You can limit the environment scope of a variable by
-[defining which environments][envs] it can be available for.
+[defining which environments](../environments.md) it can be available for.
 
 To learn more about about scoping environments, see [Scoping environments with specs](../environments.md#scoping-environments-with-specs).
 
@@ -802,15 +802,3 @@ if [[ -d "/builds/gitlab-examples/ci-debug-trace/.git" ]]; then
 
 ...
 ```
-
-[ce-13784]: https://gitlab.com/gitlab-org/gitlab-foss/issues/13784 "Simple protection of CI variables"
-[envs]: ../environments.md
-[protected branches]: ../../user/project/protected_branches.md
-[protected tags]: ../../user/project/protected_tags.md
-[shellexecutors]: https://docs.gitlab.com/runner/executors/
-[triggered]: ../triggers/README.md
-[trigger-job-token]: ../triggers/README.md#ci-job-token
-[gitlab-deploy-token]: ../../user/project/deploy_tokens/index.md#gitlab-deploy-token
-[registry]: ../../user/project/container_registry.md
-[dependent-repositories]: ../../user/project/new_ci_build_permissions_model.md#dependent-repositories
-[get-job-artifacts]:  ../../api/jobs.html#get-job-artifacts

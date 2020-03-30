@@ -52,12 +52,12 @@ For more examples on artifacts, follow the [artifacts reference in
 ## Browsing artifacts
 
 > - From GitLab 9.2, PDFs, images, videos and other formats can be previewed directly in the job artifacts browser without the need to download them.
-> - Introduced in [GitLab 10.1][ce-14399], HTML files in a public project can be previewed directly in a new tab without the need to download them when [GitLab Pages](../../administration/pages/index.md) is enabled. The same applies for textual formats (currently supported extensions: `.txt`, `.json`, and `.log`).
-> - Introduced in [GitLab 12.4][gitlab-16675], artifacts in private projects can be previewed when [GitLab Pages access control](../../administration/pages/index.md#access-control) is enabled.
+> - Introduced in [GitLab 10.1](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/14399), HTML files in a public project can be previewed directly in a new tab without the need to download them when [GitLab Pages](../../administration/pages/index.md) is enabled. The same applies for textual formats (currently supported extensions: `.txt`, `.json`, and `.log`).
+> - Introduced in [GitLab 12.4](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/16675), artifacts in private projects can be previewed when [GitLab Pages access control](../../administration/pages/index.md#access-control) is enabled.
 
 After a job finishes, if you visit the job's specific page, there are three
 buttons. You can download the artifacts archive or browse its contents, whereas
-the **Keep** button appears only if you have set an [expiry date] to the
+the **Keep** button appears only if you have set an [expiry date](../yaml/README.md#artifactsexpire_in) to the
 artifacts in case you changed your mind and want to keep them.
 
 ![Job artifacts browser button](img/job_artifacts_browser_button.png)
@@ -197,10 +197,6 @@ To erase a job:
 ## Retrieve artifacts of private projects when using GitLab CI
 
 In order to retrieve a job artifact of a different project, you might need to use a private token in order to [authenticate and download](../../api/jobs.md#get-job-artifacts) the artifacts.
-
-[expiry date]: ../yaml/README.md#artifactsexpire_in
-[ce-14399]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/14399
-[gitlab-16675]: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/16675
 
 <!-- ## Troubleshooting
 

@@ -3333,6 +3333,12 @@ msgstr ""
 msgid "Cannot modify provider during creation"
 msgstr ""
 
+msgid "Cannot promote issue because it does not belong to a group."
+msgstr ""
+
+msgid "Cannot promote issue due to insufficient permissions."
+msgstr ""
+
 msgid "Cannot refer to a group milestone by an internal id!"
 msgstr ""
 
@@ -11147,6 +11153,9 @@ msgid "Issue %{issue_reference} has already been added to epic %{epic_reference}
 msgstr ""
 
 msgid "Issue Boards"
+msgstr ""
+
+msgid "Issue already promoted to epic."
 msgstr ""
 
 msgid "Issue board focus mode"

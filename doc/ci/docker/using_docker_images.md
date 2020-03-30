@@ -9,7 +9,7 @@ GitLab CI/CD in conjunction with [GitLab Runner](../runners/README.md) can use
 
 Docker is an open-source project that allows you to use predefined images to
 run applications in independent "containers" that are run within a single Linux
-instance. [Docker Hub][hub] has a rich database of pre-built images that can be
+instance. [Docker Hub](https://hub.docker.com/) has a rich database of pre-built images that can be
 used to test and build your applications.
 
 When used with GitLab CI/CD, Docker runs each job in a separate and isolated
@@ -23,7 +23,7 @@ test them on a dedicated CI server.
 
 ## Register Docker Runner
 
-To use GitLab Runner with Docker you need to [register a new Runner][register]
+To use GitLab Runner with Docker you need to [register a new Runner](https://docs.gitlab.com/runner/register/)
 to use the `docker` executor.
 
 A one-line example can be seen below:
@@ -48,12 +48,12 @@ accessible during the build process.
 The `image` keyword is the name of the Docker image the Docker executor
 will run to perform the CI tasks.
 
-By default, the executor will only pull images from [Docker Hub][hub],
+By default, the executor will only pull images from [Docker Hub](https://hub.docker.com/),
 however this can be configured in the `gitlab-runner/config.toml` by setting
-the [Docker pull policy][] to allow using local images.
+the [Docker pull policy](https://docs.gitlab.com/runner/executors/docker.html#how-pull-policies-work) to allow using local images.
 
 For more information about images and Docker Hub, please read
-the [Docker Fundamentals][] documentation.
+the [Docker Fundamentals](https://docs.docker.com/engine/understanding-docker/) documentation.
 
 ## What is a service
 
@@ -68,7 +68,7 @@ time the project is built.
 
 You are not limited to have only database services. You can add as many
 services you need to `.gitlab-ci.yml` or manually modify `config.toml`.
-Any image found at [Docker Hub][hub] or your private Container Registry can be
+Any image found at [Docker Hub](https://hub.docker.com/) or your private Container Registry can be
 used as a service.
 
 Services inherit the same DNS servers, search domains, and additional hosts as
@@ -80,7 +80,7 @@ You can see some widely used services examples in the relevant documentation of
 ### How services are linked to the job
 
 To better understand how the container linking works, read
-[Linking containers together][linking-containers].
+[Linking containers together](https://docs.docker.com/engine/userguide/networking/default_network/dockerlinks/).
 
 To summarize, if you add `mysql` as service to your application, the image will
 then be used to create a container that is linked to the job container.
@@ -156,7 +156,7 @@ either:
 Let's say that you need a Wordpress instance to test some API integration with
 your application.
 
-You can then use for example the [tutum/wordpress][] image in your
+You can then use for example the [tutum/wordpress](https://hub.docker.com/r/tutum/wordpress/) image in your
 `.gitlab-ci.yml`:
 
 ```yaml
@@ -332,7 +332,7 @@ For example, the following two definitions are equal:
 | Setting    | Required | GitLab version | Description |
 |------------|----------|----------------| ----------- |
 | `name`     | yes, when used with any other option      | 9.4 |Full name of the image that should be used. It should contain the Registry part if needed. |
-| `entrypoint` | no     | 9.4 |Command or script that should be executed as the container's entrypoint. It will be translated to Docker's `--entrypoint` option while creating the container. The syntax is similar to [`Dockerfile`'s `ENTRYPOINT`][entrypoint] directive, where each shell token is a separate string in the array. |
+| `entrypoint` | no     | 9.4 |Command or script that should be executed as the container's entrypoint. It will be translated to Docker's `--entrypoint` option while creating the container. The syntax is similar to [`Dockerfile`'s `ENTRYPOINT`](https://docs.docker.com/engine/reference/builder/#entrypoint) directive, where each shell token is a separate string in the array. |
 
 ### Available settings for `services`
 
@@ -341,8 +341,8 @@ For example, the following two definitions are equal:
 | Setting    | Required | GitLab version | Description |
 |------------|----------|----------------| ----------- |
 | `name`       | yes, when used with any other option  | 9.4 | Full name of the image that should be used. It should contain the Registry part if needed. |
-| `entrypoint` | no     | 9.4 |Command or script that should be executed as the container's entrypoint. It will be translated to Docker's `--entrypoint` option while creating the container. The syntax is similar to [`Dockerfile`'s `ENTRYPOINT`][entrypoint] directive, where each shell token is a separate string in the array. |
-| `command`    | no       | 9.4 |Command or script that should be used as the container's command. It will be translated to arguments passed to Docker after the image's name. The syntax is similar to [`Dockerfile`'s `CMD`][cmd] directive, where each shell token is a separate string in the array. |
+| `entrypoint` | no     | 9.4 |Command or script that should be executed as the container's entrypoint. It will be translated to Docker's `--entrypoint` option while creating the container. The syntax is similar to [`Dockerfile`'s `ENTRYPOINT`](https://docs.docker.com/engine/reference/builder/#entrypoint) directive, where each shell token is a separate string in the array. |
+| `command`    | no       | 9.4 |Command or script that should be used as the container's command. It will be translated to arguments passed to Docker after the image's name. The syntax is similar to [`Dockerfile`'s `CMD`](https://docs.docker.com/engine/reference/builder/#cmd) directive, where each shell token is a separate string in the array. |
 | `alias`      | no       | 9.4 |Additional alias that can be used to access the service from the job's container. Read [Accessing the services](#accessing-the-services) for more information. |
 
 NOTE: **Note:**
@@ -420,7 +420,7 @@ services:
   command: ["/usr/bin/super-sql", "run"]
 ```
 
-As you can see, the syntax of `command` is similar to [Dockerfile's `CMD`][cmd].
+As you can see, the syntax of `command` is similar to [Dockerfile's `CMD`](https://docs.docker.com/engine/reference/builder/#cmd).
 
 ### Overriding the entrypoint of an image
 
@@ -449,7 +449,7 @@ you should check which one your Runner is using. Specifically:
 - If Docker 17.03 or previous versions are used, the `entrypoint` can be set to
   `/bin/sh -c`, `/bin/bash -c` or an equivalent shell available in the image.
 
-The syntax of `image:entrypoint` is similar to [Dockerfile's `ENTRYPOINT`][entrypoint].
+The syntax of `image:entrypoint` is similar to [Dockerfile's `ENTRYPOINT`](https://docs.docker.com/engine/reference/builder/#entrypoint).
 
 Let's assume you have a `super/sql:experimental` image with some SQL database
 inside it and you would like to use it as a base image for your job because you
@@ -836,14 +836,3 @@ docker rm -f -v build service-mysql service-postgres
 This will forcefully (`-f`) remove the `build` container, the two service
 containers as well as all volumes (`-v`) that were created with the container
 creation.
-
-[Docker Fundamentals]: https://docs.docker.com/engine/understanding-docker/
-[docker pull policy]: https://docs.gitlab.com/runner/executors/docker.html#how-pull-policies-work
-[hub]: https://hub.docker.com/
-[linking-containers]: https://docs.docker.com/engine/userguide/networking/default_network/dockerlinks/
-[tutum/wordpress]: https://hub.docker.com/r/tutum/wordpress/
-[postgres-hub]: https://hub.docker.com/r/_/postgres/
-[mysql-hub]: https://hub.docker.com/r/_/mysql/
-[entrypoint]: https://docs.docker.com/engine/reference/builder/#entrypoint
-[cmd]: https://docs.docker.com/engine/reference/builder/#cmd
-[register]: https://docs.gitlab.com/runner/register/

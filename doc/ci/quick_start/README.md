@@ -6,7 +6,7 @@ type: reference
 
 NOTE: **Note:**
 Starting from version 8.0, GitLab [Continuous Integration](https://about.gitlab.com/stages-devops-lifecycle/continuous-integration/) (CI)
-is fully integrated into GitLab itself and is [enabled] by default on all
+is fully integrated into GitLab itself and is [enabled](../enable_or_disable_ci.md) by default on all
 projects.
 
 NOTE: **Note:**
@@ -75,7 +75,7 @@ Because `.gitlab-ci.yml` is in the repository and is version controlled, old
 versions still build successfully, forks can easily make use of CI, branches can
 have different pipelines and jobs, and you have a single source of truth for CI.
 You can read more about the reasons why we are using `.gitlab-ci.yml` [in our
-blog about it][blog-ci].
+blog about it](https://about.gitlab.com/blog/2015/05/06/why-were-replacing-gitlab-ci-jobs-with-gitlab-ci-dot-yml/).
 
 ### Creating a simple `.gitlab-ci.yml` file
 
@@ -183,7 +183,7 @@ can be found at <https://docs.gitlab.com/runner/>.
 
 In order to have a functional Runner you need to follow two steps:
 
-1. [Install it][runner-install]
+1. [Install it](https://docs.gitlab.com/runner/install/)
 1. [Configure it](../runners/README.md#registering-a-specific-runner)
 
 Follow the links above to set up your own Runner or use a Shared Runner as
@@ -231,10 +231,5 @@ GitLab, such as **Commits** and **Merge requests**.
 
 ## Examples
 
-Visit the [examples README][examples] to see a list of examples using GitLab
+Visit the [examples README](../examples/README.md) to see a list of examples using GitLab
 CI with various languages.
-
-[runner-install]: https://docs.gitlab.com/runner/install/
-[blog-ci]: https://about.gitlab.com/blog/2015/05/06/why-were-replacing-gitlab-ci-jobs-with-gitlab-ci-dot-yml/
-[examples]: ../examples/README.md
-[enabled]: ../enable_or_disable_ci.md
