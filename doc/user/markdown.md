@@ -1086,8 +1086,10 @@ These details <em>will</em> remain <strong>hidden</strong> until expanded.
 
 ---
 
-Markdown inside these tags is supported as well, as long as you have a blank line
-after the `</summary>` tag and before the `</details>` tag, as shown in the example:
+Markdown inside these tags is supported as well.
+
+Remember to leave a blank line after the `</summary>` tag and before the `</details>` tag,
+as shown in the example:
 
 ````html
 <details>
