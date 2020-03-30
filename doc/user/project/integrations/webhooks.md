@@ -252,7 +252,7 @@ X-Gitlab-Event: Tag Push Hook
 }
 ```
 
-### Issues events
+### Issue events
 
 Triggered when a new issue is created or an existing issue was updated/closed/reopened.
 
@@ -267,10 +267,12 @@ X-Gitlab-Event: Issue Hook
 ```json
 {
   "object_kind": "issue",
+  "event_type": "issue",
   "user": {
     "name": "Administrator",
     "username": "root",
-    "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=40\u0026d=identicon"
+    "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=40\u0026d=identicon",
+    "email": "admin@example.com"
   },
   "project": {
     "id": 1,
@@ -284,16 +286,11 @@ X-Gitlab-Event: Issue Hook
     "visibility_level":20,
     "path_with_namespace":"gitlabhq/gitlab-test",
     "default_branch":"master",
+    "ci_config_path": null,
     "homepage":"http://example.com/gitlabhq/gitlab-test",
     "url":"http://example.com/gitlabhq/gitlab-test.git",
     "ssh_url":"git@example.com:gitlabhq/gitlab-test.git",
     "http_url":"http://example.com/gitlabhq/gitlab-test.git"
-  },
-  "repository": {
-    "name": "Gitlab Test",
-    "url": "http://example.com/gitlabhq/gitlab-test.git",
-    "description": "Aut reprehenderit ut est.",
-    "homepage": "http://example.com/gitlabhq/gitlab-test"
   },
   "object_attributes": {
     "id": 301,
@@ -304,14 +301,45 @@ X-Gitlab-Event: Issue Hook
     "project_id": 14,
     "created_at": "2013-12-03T17:15:43Z",
     "updated_at": "2013-12-03T17:15:43Z",
-    "position": 0,
-    "branch_name": null,
+    "updated_by_id": 1,
+    "last_edited_at": null,
+    "last_edited_by_id": null,
+    "relative_position": 0,
     "description": "Create new API for manipulations with repository",
     "milestone_id": null,
-    "state": "opened",
+    "state_id": 1,
+    "confidential": false,
+    "discussion_locked": true,
+    "due_date": null,
+    "moved_to_id": null,
+    "duplicated_to_id": null,
+    "time_estimate": 0,
+    "total_time_spent": 0,
+    "human_total_time_spent": null,
+    "human_time_estimate": null,
+    "weight": null,
     "iid": 23,
     "url": "http://example.com/diaspora/issues/23",
-    "action": "open"
+    "state": "opened",
+    "action": "open",
+    "labels": [{
+        "id": 206,
+        "title": "API",
+        "color": "#ffffff",
+        "project_id": 14,
+        "created_at": "2013-12-03T17:15:43Z",
+        "updated_at": "2013-12-03T17:15:43Z",
+        "template": false,
+        "description": "API related issues",
+        "type": "ProjectLabel",
+        "group_id": 41
+      }]
+  },
+  "repository": {
+    "name": "Gitlab Test",
+    "url": "http://example.com/gitlabhq/gitlab-test.git",
+    "description": "Aut reprehenderit ut est.",
+    "homepage": "http://example.com/gitlabhq/gitlab-test"
   },
   "assignees": [{
     "name": "User1",

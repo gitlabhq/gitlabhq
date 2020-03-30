@@ -142,12 +142,7 @@ module Gitlab
           # returned by database when no `ORDER` is specified
           batch = batch.reorder(batch.klass.primary_key)
 
-          if Feature.enabled?(:export_fast_serialize_with_raw_json, default_enabled: true)
-            data.append(JSONBatchRelation.new(batch, options, preloads[key]).tap(&:raw_json))
-          else
-            batch = batch.preload(preloads[key]) if preloads&.key?(key)
-            data += batch.as_json(options)
-          end
+          data.append(JSONBatchRelation.new(batch, options, preloads[key]).tap(&:raw_json))
         end
 
         data

@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 describe API::ProjectTemplates do
-  let(:public_project) { create(:project, :public) }
-  let(:private_project) { create(:project, :private) }
-  let(:developer) { create(:user) }
+  let_it_be(:public_project) { create(:project, :public) }
+  let_it_be(:private_project) { create(:project, :private) }
+  let_it_be(:developer) { create(:user) }
 
   before do
     private_project.add_developer(developer)

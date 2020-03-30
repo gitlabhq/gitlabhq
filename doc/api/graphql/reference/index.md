@@ -979,13 +979,13 @@ Information about pagination in a connection.
 
 | Name  | Type  | Description |
 | ---   |  ---- | ----------  |
-| `buildArtifactsSize` | Int! | Build artifacts size of the project |
-| `commitCount` | Int! | Commit count of the project |
-| `lfsObjectsSize` | Int! | Large File Storage (LFS) object size of the project |
-| `packagesSize` | Int! | Packages size of the project |
-| `repositorySize` | Int! | Repository size of the project |
-| `storageSize` | Int! | Storage size of the project |
-| `wikiSize` | Int | Wiki size of the project |
+| `buildArtifactsSize` | Float! | Build artifacts size of the project |
+| `commitCount` | Float! | Commit count of the project |
+| `lfsObjectsSize` | Float! | Large File Storage (LFS) object size of the project |
+| `packagesSize` | Float! | Packages size of the project |
+| `repositorySize` | Float! | Repository size of the project |
+| `storageSize` | Float! | Storage size of the project |
+| `wikiSize` | Float | Wiki size of the project |
 
 ## RemoveAwardEmojiPayload
 
@@ -1047,12 +1047,12 @@ Counts of requirements by their state.
 
 | Name  | Type  | Description |
 | ---   |  ---- | ----------  |
-| `buildArtifactsSize` | Int! | The CI artifacts size in bytes |
-| `lfsObjectsSize` | Int! | The LFS objects size in bytes |
-| `packagesSize` | Int! | The packages size in bytes |
-| `repositorySize` | Int! | The Git repository size in bytes |
-| `storageSize` | Int! | The total storage in bytes |
-| `wikiSize` | Int! | The wiki size in bytes |
+| `buildArtifactsSize` | Float! | The CI artifacts size in bytes |
+| `lfsObjectsSize` | Float! | The LFS objects size in bytes |
+| `packagesSize` | Float! | The packages size in bytes |
+| `repositorySize` | Float! | The Git repository size in bytes |
+| `storageSize` | Float! | The total storage in bytes |
+| `wikiSize` | Float! | The wiki size in bytes |
 
 ## SentryDetailedError
 

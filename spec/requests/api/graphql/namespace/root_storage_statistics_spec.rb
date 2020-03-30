@@ -6,7 +6,7 @@ describe 'rendering namespace statistics' do
   include GraphqlHelpers
 
   let(:namespace) { user.namespace }
-  let!(:statistics) { create(:namespace_root_storage_statistics, namespace: namespace, packages_size: 5.megabytes) }
+  let!(:statistics) { create(:namespace_root_storage_statistics, namespace: namespace, packages_size: 5.gigabytes) }
   let(:user) { create(:user) }
 
   let(:query) do
@@ -26,7 +26,7 @@ describe 'rendering namespace statistics' do
       post_graphql(query, current_user: user)
 
       expect(graphql_data['namespace']['rootStorageStatistics']).not_to be_blank
-      expect(graphql_data['namespace']['rootStorageStatistics']['packagesSize']).to eq(5.megabytes)
+      expect(graphql_data['namespace']['rootStorageStatistics']['packagesSize']).to eq(5.gigabytes)
     end
   end
 

@@ -121,6 +121,7 @@ module API
       mount ::API::BroadcastMessages
       mount ::API::Commits
       mount ::API::CommitStatuses
+      mount ::API::ContainerRegistryEvent
       mount ::API::DeployKeys
       mount ::API::DeployTokens
       mount ::API::Deployments

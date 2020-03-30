@@ -1,6 +1,6 @@
 <script>
 /* eslint-disable @gitlab/vue-require-i18n-strings */
-import _ from 'underscore';
+import { isEmpty } from 'lodash';
 import { GlTooltipDirective } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
@@ -79,7 +79,7 @@ export default {
      * @returns {Boolean}
      */
     hasLastDeploymentKey() {
-      if (this.model && this.model.last_deployment && !_.isEmpty(this.model.last_deployment)) {
+      if (this.model && this.model.last_deployment && !isEmpty(this.model.last_deployment)) {
         return true;
       }
       return false;
@@ -390,8 +390,8 @@ export default {
     deploymentHasUser() {
       return (
         this.model &&
-        !_.isEmpty(this.model.last_deployment) &&
-        !_.isEmpty(this.model.last_deployment.user)
+        !isEmpty(this.model.last_deployment) &&
+        !isEmpty(this.model.last_deployment.user)
       );
     },
 
@@ -404,8 +404,8 @@ export default {
     deploymentUser() {
       if (
         this.model &&
-        !_.isEmpty(this.model.last_deployment) &&
-        !_.isEmpty(this.model.last_deployment.user)
+        !isEmpty(this.model.last_deployment) &&
+        !isEmpty(this.model.last_deployment.user)
       ) {
         return this.model.last_deployment.user;
       }
@@ -431,8 +431,8 @@ export default {
     shouldRenderBuildName() {
       return (
         !this.isFolder &&
-        !_.isEmpty(this.model.last_deployment) &&
-        !_.isEmpty(this.model.last_deployment.deployable)
+        !isEmpty(this.model.last_deployment) &&
+        !isEmpty(this.model.last_deployment.deployable)
       );
     },
 
@@ -473,7 +473,7 @@ export default {
     shouldRenderDeploymentID() {
       return (
         !this.isFolder &&
-        !_.isEmpty(this.model.last_deployment) &&
+        !isEmpty(this.model.last_deployment) &&
         this.model.last_deployment.iid !== undefined
       );
     },

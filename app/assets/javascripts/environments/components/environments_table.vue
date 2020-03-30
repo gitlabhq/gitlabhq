@@ -3,7 +3,7 @@
  * Render environments table.
  */
 import { GlLoadingIcon } from '@gitlab/ui';
-import _ from 'underscore';
+import { flow, reverse, sortBy } from 'lodash/fp';
 import environmentTableMixin from 'ee_else_ce/environments/mixins/environments_table_mixin';
 import { s__ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -102,13 +102,13 @@ export default {
        * 4. Reverse (last deployment descending, name ascending),
        * 5. Put folders first.
        */
-      return _.chain(environments)
-        .sortBy(env => (env.isFolder ? env.folderName : env.name))
-        .reverse()
-        .sortBy(env => (env.last_deployment ? env.last_deployment.created_at : '0000'))
-        .reverse()
-        .sortBy(env => (env.isFolder ? -1 : 1))
-        .value();
+      return flow(
+        sortBy(env => (env.isFolder ? env.folderName : env.name)),
+        reverse,
+        sortBy(env => (env.last_deployment ? env.last_deployment.created_at : '0000')),
+        reverse,
+        sortBy(env => (env.isFolder ? -1 : 1)),
+      )(environments);
     },
   },
 };

@@ -6695,37 +6695,37 @@ type ProjectStatistics {
   """
   Build artifacts size of the project
   """
-  buildArtifactsSize: Int!
+  buildArtifactsSize: Float!
 
   """
   Commit count of the project
   """
-  commitCount: Int!
+  commitCount: Float!
 
   """
   Large File Storage (LFS) object size of the project
   """
-  lfsObjectsSize: Int!
+  lfsObjectsSize: Float!
 
   """
   Packages size of the project
   """
-  packagesSize: Int!
+  packagesSize: Float!
 
   """
   Repository size of the project
   """
-  repositorySize: Int!
+  repositorySize: Float!
 
   """
   Storage size of the project
   """
-  storageSize: Int!
+  storageSize: Float!
 
   """
   Wiki size of the project
   """
-  wikiSize: Int
+  wikiSize: Float
 }
 
 type Query {
@@ -7059,32 +7059,32 @@ type RootStorageStatistics {
   """
   The CI artifacts size in bytes
   """
-  buildArtifactsSize: Int!
+  buildArtifactsSize: Float!
 
   """
   The LFS objects size in bytes
   """
-  lfsObjectsSize: Int!
+  lfsObjectsSize: Float!
 
   """
   The packages size in bytes
   """
-  packagesSize: Int!
+  packagesSize: Float!
 
   """
   The Git repository size in bytes
   """
-  repositorySize: Int!
+  repositorySize: Float!
 
   """
   The total storage in bytes
   """
-  storageSize: Int!
+  storageSize: Float!
 
   """
   The wiki size in bytes
   """
-  wikiSize: Int!
+  wikiSize: Float!
 }
 
 """

@@ -17,6 +17,7 @@ module Gitlab
           confidential
           created_at
           description
+          discussion_locked
           due_date
           id
           iid

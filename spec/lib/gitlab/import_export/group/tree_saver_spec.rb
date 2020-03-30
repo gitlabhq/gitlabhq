@@ -23,50 +23,6 @@ describe Gitlab::ImportExport::Group::TreeSaver do
       expect(group_tree_saver.save).to be true
     end
 
-    context ':export_fast_serialize feature flag checks' do
-      before do
-        expect(Gitlab::ImportExport::Reader).to receive(:new).with(shared: shared, config: group_config).and_return(reader)
-        expect(reader).to receive(:group_tree).and_return(group_tree)
-      end
-
-      let(:reader) { instance_double('Gitlab::ImportExport::Reader') }
-      let(:group_config) { Gitlab::ImportExport::Config.new(config: Gitlab::ImportExport.group_config_file).to_h }
-      let(:group_tree) do
-        {
-          include: [{ milestones: { include: [] } }],
-          preload: { milestones: nil }
-        }
-      end
-
-      context 'when :export_fast_serialize feature is enabled' do
-        let(:serializer) { instance_double(Gitlab::ImportExport::FastHashSerializer) }
-
-        before do
-          stub_feature_flags(export_fast_serialize: true)
-
-          expect(Gitlab::ImportExport::FastHashSerializer).to receive(:new).with(group, group_tree).and_return(serializer)
-        end
-
-        it 'uses FastHashSerializer' do
-          expect(serializer).to receive(:execute)
-
-          group_tree_saver.save
-        end
-      end
-
-      context 'when :export_fast_serialize feature is disabled' do
-        before do
-          stub_feature_flags(export_fast_serialize: false)
-        end
-
-        it 'is serialized via built-in `as_json`' do
-          expect(group).to receive(:as_json).with(group_tree).and_call_original
-
-          group_tree_saver.save
-        end
-      end
-    end
-
     # It is mostly duplicated in
     # `spec/lib/gitlab/import_export/fast_hash_serializer_spec.rb`
     # except:

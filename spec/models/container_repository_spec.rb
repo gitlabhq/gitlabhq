@@ -29,6 +29,18 @@ describe ContainerRepository do
     end
   end
 
+  describe '.exists_by_path?' do
+    it 'returns true for known container repository paths' do
+      path = ContainerRegistry::Path.new("#{project.full_path}/#{repository.name}")
+      expect(described_class.exists_by_path?(path)).to be_truthy
+    end
+
+    it 'returns false for unknown container repository paths' do
+      path = ContainerRegistry::Path.new('you/dont/know/me')
+      expect(described_class.exists_by_path?(path)).to be_falsey
+    end
+  end
+
   describe '#tag' do
     it 'has a test tag' do
       expect(repository.tag('test')).not_to be_nil

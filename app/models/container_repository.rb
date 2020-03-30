@@ -16,6 +16,13 @@ class ContainerRepository < ApplicationRecord
     where(project_id: Project.for_group_and_its_subgroups(group).with_container_registry.select(:id))
   end
 
+  def self.exists_by_path?(path)
+    where(
+      project: path.repository_project,
+      name: path.repository_name
+    ).exists?
+  end
+
   # rubocop: disable CodeReuse/ServiceClass
   def registry
     @registry ||= begin
