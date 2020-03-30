@@ -35,6 +35,14 @@ Read more in the [CI documentation](../ci/yaml/README.md#processing-git-pushes).
 
 Activity history for projects and individuals' profiles was limited to one year until [GitLab 11.4](https://gitlab.com/gitlab-org/gitlab-foss/issues/52246) when it was extended to two years, and in [GitLab 12.4](https://gitlab.com/gitlab-org/gitlab/issues/33840) to three years.
 
+## Number of embedded metrics
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14939) in GitLab 12.7.
+
+There is a limit when embedding metrics in GFM for performance reasons.
+
+- **Max limit:** 100 embeds
+
 ## Number of webhooks
 
 On GitLab.com, the [maximum number of webhooks](../user/gitlab_com/index.md#maximum-number-of-webhooks) per project, and per group, is limited.

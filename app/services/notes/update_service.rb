@@ -81,3 +81,5 @@ module Notes
     end
   end
 end
+
+Notes::UpdateService.prepend_if_ee('EE::Notes::UpdateService')

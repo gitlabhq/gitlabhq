@@ -4,62 +4,80 @@ type: reference, concepts
 
 # Scaling and High Availability
 
-GitLab supports a number of options for larger self-managed instances to
-ensure that they are scalable and highly available. While these needs can be tackled
-individually, they typically go hand in hand: a performant scalable environment
-will have availability by default, as its components are separated and pooled.
+GitLab supports a number of scaling options to ensure that your self-managed
+instance is able to scale out to meet your organization's needs when scaling up
+is no longer practical or feasible.
 
-On this page, we present a maturity model for a progression from simple to complex
-GitLab installations as your GitLab usage evolves. For larger setups we give several recommended
-architectures based on experience with GitLab.com and internal scale
-testing that aim to achieve the right balance between both scalability
-and availability.
+GitLab also offers high availability options for organizations that require
+the fault tolerance and redundancy necessary to maintain high-uptime operations.
+
+Scaling and high availability can be tackled separately as GitLab comprises
+modular components which can be individually scaled or made highly available
+depending on your organization's needs and resources.
+
+On this page, we present examples of self-managed instances which demonstrate
+how GitLab can be scaled out and made highly available. These examples progress
+from simple to complex as scaling or highly-available components are added.
+
+For larger setups serving 2,000 or more users, we provide
+[reference architectures](#reference-architectures) based on GitLab's
+experience with GitLab.com and internal scale testing that aim to achieve the
+right balance of scalability and availability.
 
 For detailed insight into how GitLab scales and configures GitLab.com, you can
 watch [this 1 hour Q&A](https://www.youtube.com/watch?v=uCU8jdYzpac)
 with [John Northrup](https://gitlab.com/northrup), and live questions coming
 in from some of our customers.
 
-## Maturity levels
+## Scaling examples
 
-### Level 1: Single-node Omnibus installation
+### Single-node Omnibus installation
 
 This solution is appropriate for many teams that have a single server at their disposal. With automatic backup of the GitLab repositories, configuration, and the database, this can be an optimal solution if you don't have strict availability requirements.
 
-This configuration is supported in [GitLab Starter, Premium and Ultimate](https://about.gitlab.com/pricing/).
+You can also optionally configure GitLab to use an [external PostgreSQL service](../external_database.md)
+or an [external object storage service](object_storage.md) for added
+performance and reliability at a relatively low complexity cost.
 
 References:
 
 - [Installation Docs](../../install/README.md)
 - [Backup/Restore Docs](https://docs.gitlab.com/omnibus/settings/backups.html#backup-and-restore-omnibus-gitlab-configuration)
 
-### Level 2: Multiple application servers
+### Omnibus installation with multiple application servers
 
-By separating components you can see a number of advantages compared to a single-node setup. Namely, you can:
+This solution is appropriate for teams that are starting to scale out when
+scaling up is no longer meeting their needs. In this configuration, additional application nodes will handle frontend traffic, with a load balancer in front to distribute traffic across those nodes. Meanwhile, each application node connects to a shared file server and PostgreSQL and Redis services on the back end.
 
-- Increase the number of users
-- Enable zero-downtime upgrades
-- Increase availability
-
-Additional application nodes will handle frontend traffic, with a load balancer in front to distribute traffic across those nodes. Meanwhile, each application node connects to a shared file server and database systems on the back end. This way, if one of the application servers fails, the workflow is not interrupted.
-
-This configuration is supported in [GitLab Starter, Premium and Ultimate](https://about.gitlab.com/pricing/).
+The additional application servers adds limited fault tolerance to your GitLab
+instance. As long as one application node is online and capable of handling the
+instance's usage load, your team's productivity will not be interrupted. Having
+multiple application nodes also enables [zero-downtime updates](https://docs.gitlab.com/omnibus/update/#zero-downtime-updates).
 
 References:
 
-- [High Availability Reference Architectures](#reference-architectures), without HA components
+- [Configure your load balancer for GitLab](load_balancer.md)
+- [Configure your NFS server to work with GitLab](nfs.md)
+- [Configure packaged PostgreSQL server to listen on TCP/IP](https://docs.gitlab.com/omnibus/settings/database.html#configure-packaged-postgresql-server-to-listen-on-tcpip)
+- [Setting up a Redis-only server](https://docs.gitlab.com/omnibus/settings/redis.html#setting-up-a-redis-only-server)
 
-### Level 3: Highly Available
+## High-availability examples
+
+### Omnibus installation with automatic database failover
 
 By adding automatic failover for database systems, we can enable higher uptime with an additional layer of complexity.
 
-This configuration is supported in [GitLab Premium and Ultimate](https://about.gitlab.com/pricing/).
+- For PostgreSQL, we provide repmgr for server cluster management and failover
+  and a combination of [PgBouncer](pgbouncer.md) and [Consul](consul.md) for
+  database client cutover.
+- For Redis, we use [Redis Sentinel](redis.md) for server failover and client cutover.
 
-References:
+You can also optionally run [additional Sidekiq processes on dedicated hardware](sidekiq.md)
+and configure individual Sidekiq processes to
+[process specific background job queues](../operations/extra_sidekiq_processes.md)
+if you need to scale out background job processing.
 
-- [High Availability Reference Architectures](#reference-architectures)
-
-### Level 4: GitLab Geo
+### GitLab Geo
 
 GitLab Geo allows you to replicate your GitLab instance to other geographical locations as a read-only fully operational instance that can also be promoted in case of disaster.
 
@@ -69,12 +87,6 @@ References:
 
 - [Geo Documentation](../geo/replication/index.md)
 - [GitLab Geo with a highly available configuration](../geo/replication/high_availability.md)
-
-## Recommended setups based on number of users
-
-- 1 - 1000 Users: A single-node [Omnibus](https://docs.gitlab.com/omnibus/) setup with frequent backups. Refer to the [requirements page](../../install/requirements.md) for further details of the specs you will require.
-- 1000 - 10000 Users: A scaled environment based on one of our [Reference Architectures](#reference-architectures), without the HA components applied. This can be a reasonable step towards a fully HA environment.
-- 2000 - 50000+ Users: A scaled HA environment based on one of our [Reference Architectures](#reference-architectures) below.
 
 ## GitLab components and configuration instructions
 
@@ -115,6 +127,12 @@ them.
 | [Prometheus](../../development/architecture.md#prometheus) and [Grafana](../../development/architecture.md#grafana) | GitLab environment monitoring                                       | [Monitoring node for scaling/HA](monitoring_node.md)          |
 
 In some cases, components can be combined on the same nodes to reduce complexity as well.
+
+## Recommended setups based on number of users
+
+- 1 - 1000 Users: A single-node [Omnibus](https://docs.gitlab.com/omnibus/) setup with frequent backups. Refer to the [requirements page](../../install/requirements.md) for further details of the specs you will require.
+- 1000 - 10000 Users: A scaled environment based on one of our [Reference Architectures](#reference-architectures), without the HA components applied. This can be a reasonable step towards a fully HA environment.
+- 2000 - 50000+ Users: A scaled HA environment based on one of our [Reference Architectures](#reference-architectures) below.
 
 ## Reference architectures
 

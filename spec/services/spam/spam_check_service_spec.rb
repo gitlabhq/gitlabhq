@@ -49,6 +49,25 @@ describe Spam::SpamCheckService do
     end
   end
 
+  shared_examples 'akismet spam' do
+    context 'when request is missing' do
+      let(:request) { nil }
+
+      it "doesn't check as spam" do
+        subject
+
+        expect(issue).not_to be_spam
+      end
+    end
+
+    context 'when request exists' do
+      it 'creates a spam log' do
+        expect { subject }
+            .to log_spam(title: issue.title, description: issue.description, noteable_type: 'Issue')
+      end
+    end
+  end
+
   describe '#execute' do
     let(:request) { double(:request, env: env) }
 

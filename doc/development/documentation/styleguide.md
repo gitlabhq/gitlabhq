@@ -100,12 +100,15 @@ The [documentation website](https://docs.gitlab.com) uses GitLab Kramdown as its
 
 The [`gitlab-kramdown`](https://gitlab.com/gitlab-org/gitlab_kramdown)
 Ruby gem will support all [GFM markup](../../user/markdown.md) in the future. That is,
-all markup that is supported for display in the GitLab application itself. For now,
+all markup supported for display in the GitLab application itself. For now,
 use regular Markdown markup, following the rules in the linked style guide.
 
 Note that Kramdown-specific markup (for example, `{:.class}`) will not render properly on GitLab instances under [`/help`](index.md#gitlab-help).
 
-Hard-coded HTML is valid, although it's discouraged to be used while we have `/help`. HTML is permitted as long as:
+### HTML in Markdown
+
+Hard-coded HTML is valid, although it's discouraged from being used while we have `/help`.
+HTML is permitted as long as:
 
 - There's no equivalent markup in Markdown.
 - Advanced tables are necessary.
@@ -130,7 +133,7 @@ to verify that proper capitalization and backticks are used. Words in backticks 
 be ignored by markdownlint.
 
 In general, product names should follow the exact capitalization of the official names
-of the products, protocols, etc.
+of the products, protocols, and so on.
 
 Some examples that will fail if incorrect capitalization is used:
 
@@ -138,7 +141,7 @@ Some examples that will fail if incorrect capitalization is used:
 - NGINX (needs all capitals)
 - runit (needs lowercase `r`)
 
-Additionally, commands, parameters, values, filenames, etc. must be included in backticks.
+Additionally, commands, parameters, values, filenames, and so on must be included in backticks.
 For example:
 
 - "Change the `needs` keyword in your `.gitlab.yml`..."
@@ -198,7 +201,7 @@ The table below shows what kind of documentation goes where.
    1. `doc/user/group/` should contain all group related documentation.
    1. `doc/user/profile/` should contain all profile related documentation.
       Every page you would navigate under `/profile` should have its own document,
-      i.e. `account.md`, `applications.md`, `emails.md`, etc.
+      for example, `account.md`, `applications.md`, or `emails.md`.
    1. `doc/user/dashboard/` should contain all dashboard related documentation.
    1. `doc/user/admin_area/` should contain all admin related documentation
       describing what can be achieved by accessing GitLab's admin interface
@@ -235,7 +238,7 @@ Do not include the same information in multiple places. [Link to a SSOT instead.
 ### Structure within documents
 
 - Include any and all applicable subsections as described on the [structure and template](structure.md) page.
-- Structure content in alphabetical order in tables, lists, etc., unless there is
+- Structure content in alphabetical order in tables, lists, and so on, unless there is
   a logical reason not to (for example, when mirroring the UI or an otherwise ordered sequence).
 
 ## Language
@@ -271,9 +274,9 @@ Do not include the same information in multiple places. [Link to a SSOT instead.
   - Use "may" to indicate giving permission for someone to do something, or consider using "can" instead. "You may select either option on this screen." Or, "you can select either option on this screen."
 - We discourage use of Latin abbreviations, such as "e.g.," "i.e.," or "etc.,"
 as even native users of English might misunderstand them.
-  - Instead of "i.e.", use "that is."
-  - Instead of "e.g.", use "for example," "such as," "for instance," or "like."
-  - Instead of "etc.", either use "and so on" or consider editing it out, since it can be vague.
+  - Instead of "i.e.," use "that is."
+  - Instead of "e.g.," use "for example," "such as," "for instance," or "like."
+  - Instead of "etc.," either use "and so on" or consider editing it out, since it can be vague.
 
 ### Contractions
 
@@ -332,8 +335,9 @@ as even native users of English might misunderstand them.
 - [Write in Markdown](#markdown).
 - Splitting long lines (preferably up to 100 characters) can make it easier to provide feedback on small chunks of text.
 - Insert an empty line for new paragraphs.
+- Add a new line by ending a line with two spaces. [Using a backslash](../../user/markdown.md#newlines) doesn't work in the docs site.
 - Use sentence case for titles, headings, labels, menu items, and buttons.
-- Insert an empty line between different markups (e.g., after every paragraph, header, list, etc). Example:
+- Insert an empty line between different markups (for example, after every paragraph, header, list, and so on). Example:
 
   ```md
   ## Header
@@ -637,7 +641,7 @@ We include guidance for links in the following categories:
   It's easier to read, review, and maintain. **Do not** use `[Text][identifier]`.
 
 - Use [meaningful anchor texts](https://www.futurehosting.com/blog/links-should-have-meaningful-anchor-text-heres-why/).
-  E.g., instead of writing something like `Read more about GitLab Issue Boards [here](LINK)`,
+  For example, instead of writing something like `Read more about GitLab Issue Boards [here](LINK)`,
   write `Read more about [GitLab Issue Boards](LINK)`.
 
 ### Links to internal documentation
@@ -675,7 +679,8 @@ To link to internal documentation:
   - `../../issues/tags.md`
   - `../../issues/tags.md#stages`
 
-- Use the Markdown extension for the [`/help`](index.md#gitlab-help) section of GitLab.
+NOTE: **Note**:
+Using the Markdown extension is necessary for the [`/help`](index.md#gitlab-help) section of GitLab.
 
 ### Links requiring permissions
 
@@ -721,9 +726,9 @@ To indicate the steps of navigation through the UI:
 
 - Use the exact word as shown in the UI, including any capital letters as-is.
 - Use bold text for navigation items and the char "greater than" (`>`) as separator
-  (e.g., `Navigate to your project's **Settings > CI/CD**` ).
+  (for example, `Navigate to your project's **Settings > CI/CD**` ).
 - If there are any expandable menus, make sure to mention that the user
-  needs to expand the tab to find the settings you're referring to (e.g., `Navigate to your project's **Settings > CI/CD** and expand **General pipelines**`).
+  needs to expand the tab to find the settings you're referring to (for example, `Navigate to your project's **Settings > CI/CD** and expand **General pipelines**`).
 
 ## Images
 
@@ -852,7 +857,7 @@ nicely on different mobile devices.
 ## Code blocks
 
 - Always wrap code added to a sentence in inline code blocks (`` ` ``).
-  E.g., `.gitlab-ci.yml`, `git add .`, `CODEOWNERS`, `only: [master]`.
+  For example, `.gitlab-ci.yml`, `git add .`, `CODEOWNERS`, or `only: [master]`.
   File names, commands, entries, and anything that refers to code should be added to code blocks.
   To make things easier for the user, always add a full code block for things that can be
   useful to copy and paste, as they can easily do it with the button on code blocks.
@@ -1197,11 +1202,11 @@ belongs to, says the GitLab version that it became available in, and links to
 the pricing page in case the user wants to upgrade to a paid tier
 to use that feature.
 
-For example, if I'm a regular user and I'm looking at the docs for a feature I haven't used before,
-I can immediately see if that feature is available to me or not. Alternatively,
-if I have been using a certain feature for a long time and it changed in some way,
+For example, if you're a regular user and you're looking at the docs for a feature you haven't used before,
+you can immediately see if that feature is available to you or not. Alternatively,
+if you've been using a certain feature for a long time and it changed in some way,
 it's important
-to me to spot when it changed and what's new in that feature.
+to be able to spot when it changed and what's new in that feature.
 
 This is even more important as we don't have a perfect process for shipping docs.
 Unfortunately, we still see features without docs and docs without
@@ -1265,12 +1270,12 @@ badges and tooltips (`<span class="badge-trigger starter">`). When the keyword
 
 Certain styles should be applied to specific sections. Styles for specific sections are outlined below.
 
-### GitLab Restart
+### GitLab restart
 
 There are many cases that a restart/reconfigure of GitLab is required. To
 avoid duplication, link to the special document that can be found in
-[`doc/administration/restart_gitlab.md`][doc-restart]. Usually the text will
-read like:
+[`doc/administration/restart_gitlab.md`](../../administration/restart_gitlab.md).
+Usually the text will read like:
 
 ```md
 Save the file and [reconfigure GitLab](../../administration/restart_gitlab.md)
@@ -1563,8 +1568,3 @@ restrict the sign-up e-mail domains of a GitLab instance to `*.example.com` and
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --data "domain_whitelist[]=*.example.com" --data "domain_whitelist[]=example.net" https://gitlab.example.com/api/v4/application/settings
 ```
-
-[single spaces]: http://www.slate.com/articles/technology/technology/2011/01/space_invaders.html
-[gfm]: ../../user/markdown.md#newlines "GitLab flavored markdown documentation"
-[ce-1242]: https://gitlab.com/gitlab-org/gitlab-foss/issues/1242
-[doc-restart]: ../../administration/restart_gitlab.md "GitLab restart documentation"

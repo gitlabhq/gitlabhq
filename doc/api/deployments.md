@@ -37,6 +37,7 @@ Example of response
   {
     "created_at": "2016-08-11T07:36:40.222Z",
     "updated_at": "2016-08-11T07:38:12.414Z",
+    "status": "created",
     "deployable": {
       "commit": {
         "author_email": "admin@example.com",
@@ -106,6 +107,7 @@ Example of response
   {
     "created_at": "2016-08-11T11:32:35.444Z",
     "updated_at": "2016-08-11T11:34:01.123Z",
+    "status": "created",
     "deployable": {
       "commit": {
         "author_email": "admin@example.com",

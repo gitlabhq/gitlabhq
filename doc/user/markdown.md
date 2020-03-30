@@ -821,32 +821,30 @@ Footnotes add a link to a note that will be rendered at the end of a Markdown fi
 To make a footnote, you need both a reference tag and a separate line (anywhere in the file) with
 the note content.
 
-Regardless of the tag names, the relative order of the reference tags determines the rendered numbering.
+Regardless of the tag names, the relative order of the reference tags determines the rendered
+numbering.
+
+Reference tags can use letters and other characters. Avoid using lowercase `w` or an underscore
+(`_`) in footnote tag names until [this bug](https://gitlab.com/gitlab-org/gitlab/issues/24423) is
+resolved.
 
 ```markdown
-A footnote reference tag looks like this:[^1]
+A footnote reference tag looks like this: [^1]
 
-[^1]: This is the contents of a footnote.
+This reference tag is a mix of letters and numbers. [^footnote-42]
 
-Reference tags can use letters and other characters.[^footnote-note]
+[^1]: This is the text inside a footnote.
 
-Avoid using lowercase `w` or an underscore (`_`) in footnote tag names until
-[this bug](https://gitlab.com/gitlab-org/gitlab/issues/24423) is resolved. [^this-name-has-w] [^this-name-has_]
-
-[^this-name-has-w]: This won't be rendered, because the name contains "w".
-
-[^this-name-has_]: This won be rendered, because the name contains an underscore.
-
+[^footnote-42]: This is another footnote.
 ```
 
-Reference tags can use letters and other characters.[^footnote-note]
+A footnote reference tag looks like this:[^1]
 
-Avoid using lowercase `w` or an underscore (`_`) in footnote tag names until
-[this bug](https://gitlab.com/gitlab-org/gitlab/issues/24423) is resolved. [^this-name-has-w] [^this-name-has_]
+This reference tag is a mix of letters and numbers.[^footnote-42]
 
-[^this-name-has-w]: This won't be rendered, because the name contains "w".
+[^1]: This is the text inside a footnote.
 
-[^this-name-has_]: This won't be rendered, because the name contains an underscore.
+[^footnote-42]: This is another footnote.
 
 ### Headers
 
