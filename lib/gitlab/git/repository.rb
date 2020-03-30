@@ -944,6 +944,10 @@ module Gitlab
         Gitlab::GitalyClient::ConflictsService.new(self, our_commit_oid, their_commit_oid)
       end
 
+      def praefect_info_client
+        @praefect_info_client ||= Gitlab::GitalyClient::PraefectInfoService.new(self)
+      end
+
       def clean_stale_repository_files
         wrapped_gitaly_errors do
           gitaly_repository_client.cleanup if exists?
@@ -1017,6 +1021,12 @@ module Gitlab
         gitaly_repository_client.calculate_checksum
       rescue GRPC::NotFound
         raise NoRepository # Guard against data races.
+      end
+
+      def replicas
+        wrapped_gitaly_errors do
+          praefect_info_client.replicas
+        end
       end
 
       private

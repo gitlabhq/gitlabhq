@@ -475,27 +475,27 @@ describe API::Issues do
       end
 
       it 'returns an array of group issues with any label' do
-        get api(base_url, user), params: { labels: IssuesFinder::FILTER_ANY }
+        get api(base_url, user), params: { labels: IssuableFinder::Params::FILTER_ANY }
 
         expect_paginated_array_response(group_issue.id)
         expect(json_response.first['id']).to eq(group_issue.id)
       end
 
       it 'returns an array of group issues with any label with labels param as array' do
-        get api(base_url, user), params: { labels: [IssuesFinder::FILTER_ANY] }
+        get api(base_url, user), params: { labels: [IssuableFinder::Params::FILTER_ANY] }
 
         expect_paginated_array_response(group_issue.id)
         expect(json_response.first['id']).to eq(group_issue.id)
       end
 
       it 'returns an array of group issues with no label' do
-        get api(base_url, user), params: { labels: IssuesFinder::FILTER_NONE }
+        get api(base_url, user), params: { labels: IssuableFinder::Params::FILTER_NONE }
 
         expect_paginated_array_response([group_closed_issue.id, group_confidential_issue.id])
       end
 
       it 'returns an array of group issues with no label with labels param as array' do
-        get api(base_url, user), params: { labels: [IssuesFinder::FILTER_NONE] }
+        get api(base_url, user), params: { labels: [IssuableFinder::Params::FILTER_NONE] }
 
         expect_paginated_array_response([group_closed_issue.id, group_confidential_issue.id])
       end

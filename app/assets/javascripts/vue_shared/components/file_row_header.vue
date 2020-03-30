@@ -19,7 +19,7 @@ export default {
 </script>
 
 <template>
-  <div class="file-row-header bg-white sticky-top p-2 js-file-row-header">
+  <div class="file-row-header bg-white sticky-top p-2 js-file-row-header" :title="path">
     <span class="bold">{{ truncatedPath }}</span>
   </div>
 </template>

@@ -1,6 +1,6 @@
 # Bugzilla Service
 
-Navigate to the [Integrations page](project_services.md#accessing-the-project-services),
+Navigate to the [Integrations page](overview.md#accessing-integrations),
 select the **Bugzilla** service and fill in the required details as described
 in the table below.
 
@@ -29,4 +29,4 @@ address specified in `issues_url`.
 
 ## Troubleshooting
 
-To see recent service hook deliveries, check [service hook logs](project_services.md#troubleshooting-project-services).
+To see recent service hook deliveries, check [service hook logs](overview.md#troubleshooting-integrations).

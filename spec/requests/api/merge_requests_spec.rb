@@ -281,14 +281,14 @@ describe API::MergeRequests do
         end
 
         it 'returns an array of merge requests with any label when filtering by any label' do
-          get api(endpoint_path, user), params: { labels: IssuesFinder::FILTER_ANY }
+          get api(endpoint_path, user), params: { labels: IssuableFinder::Params::FILTER_ANY }
 
           expect_paginated_array_response([merge_request.id])
           expect(json_response.first['id']).to eq(merge_request.id)
         end
 
         it 'returns an array of merge requests without a label when filtering by no label' do
-          get api(endpoint_path, user), params: { labels: IssuesFinder::FILTER_NONE }
+          get api(endpoint_path, user), params: { labels: IssuableFinder::Params::FILTER_NONE }
 
           expect_response_contain_exactly(
             merge_request_merged.id, merge_request_locked.id, merge_request_closed.id

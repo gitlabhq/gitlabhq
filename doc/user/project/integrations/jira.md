@@ -65,7 +65,7 @@ In order to enable the Jira service in GitLab, you need to first configure the p
 >   a value of `fromDialog`.
 
 To enable the Jira integration in a project, navigate to the
-[Integrations page](project_services.md#accessing-the-project-services), click
+[Integrations page](overview.md#accessing-integrations), click
 the **Jira** service, and fill in the required details on the page as described
 in the table below.
 
@@ -101,7 +101,7 @@ When you reference a Jira issue, it will always link back to the source commit/M
 
 To disable the automated commenting on Jira issues:
 
-1. Open the [Integrations page](project_services.md#accessing-the-project-services) and select **Jira**.
+1. Open the [Integrations page](overview.md#accessing-integrations) and select **Jira**.
 1. In the **Event Action** section, uncheck **Comment**.
 
 ## Jira issues

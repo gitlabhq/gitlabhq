@@ -57,9 +57,9 @@ GitLab can be integrated with the following enhancements:
 - Attach merge requests to [Trello](trello_power_up.md) cards.
 - Enable integrated code intelligence powered by [Sourcegraph](sourcegraph.md).
 
-## Project services
+## Integrations
 
-Integration with services such as Campfire, Flowdock, HipChat, Pivotal Tracker, and Slack are available as [Project Services](../user/project/integrations/project_services.md).
+Integration with services such as Campfire, Flowdock, HipChat, Pivotal Tracker, and Slack are available as [Integrations](../user/project/integrations/overview.md).
 
 ## Troubleshooting
 

@@ -1919,6 +1919,15 @@ describe Gitlab::Git::Repository, :seed_helper do
     end
   end
 
+  describe '#replicas', :praefect do
+    it 'gets the replica checksum through praefect' do
+      resp = repository.replicas
+
+      expect(resp.replicas).to be_empty
+      expect(resp.primary.checksum).to eq(repository.checksum)
+    end
+  end
+
   describe '#clean_stale_repository_files' do
     let(:worktree_id) { 'rebase-1' }
     let(:gitlab_worktree_path) { File.join(repository_path, 'gitlab-worktree', worktree_id) }

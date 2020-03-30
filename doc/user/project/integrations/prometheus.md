@@ -105,7 +105,7 @@ The actual configuration of Prometheus integration within GitLab is very simple.
 All you will need is the domain name or IP address of the Prometheus server you'd like
 to integrate with.
 
-1. Navigate to the [Integrations page](project_services.md#accessing-the-project-services).
+1. Navigate to the [Integrations page](overview.md#accessing-integrations).
 1. Click the **Prometheus** service.
 1. Provide the domain name or IP address of your server, for example `http://prometheus.example.com/` or `http://192.0.2.1/`.
 1. Click **Save changes**.
@@ -118,7 +118,7 @@ You can configure [Thanos](https://thanos.io/) as a drop-in replacement for Prom
 with GitLab. You will need the domain name or IP address of the Thanos server you'd like
 to integrate with.
 
-1. Navigate to the [Integrations page](project_services.md#accessing-the-project-services).
+1. Navigate to the [Integrations page](overview.md#accessing-integrations).
 1. Click the **Prometheus** service.
 1. Provide the domain name or IP address of your server, for example `http://thanos.example.com/` or `http://192.0.2.1/`.
 1. Click **Save changes**.

@@ -1384,6 +1384,9 @@ msgstr ""
 msgid "AdminSettings|Select a template"
 msgstr ""
 
+msgid "AdminSettings|Service template allows you to set default values for integrations"
+msgstr ""
+
 msgid "AdminSettings|Set an instance-wide auto included %{link_start}pipeline configuration%{link_end}. This pipeline configuration will be run after the project's own configuration."
 msgstr ""
 
@@ -15535,12 +15538,6 @@ msgid "ProjectService|Last edit"
 msgstr ""
 
 msgid "ProjectService|Perform common operations on GitLab project: %{project_name}"
-msgstr ""
-
-msgid "ProjectService|Service"
-msgstr ""
-
-msgid "ProjectService|Services"
 msgstr ""
 
 msgid "ProjectService|To set up this service:"

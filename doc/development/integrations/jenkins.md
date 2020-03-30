@@ -90,3 +90,22 @@ To activate the Jenkins service you must have a Starter subscription or higher.
 ## Test your setup
 
 Make a change in your repository and open an MR. In your Jenkins project it should have triggered a new build and on your MR, there should be a widget saying "Pipeline #NUMBER passed". It will also include a link to your Jenkins build.
+
+### Run QA test
+
+The [jenkins_build_status_spec](https://gitlab.com/gitlab-org/gitlab/-/blob/v12.9.0-ee/qa/qa/specs/features/ee/browser_ui/3_create/jenkins/jenkins_build_status_spec.rb) performs an end-to-end test of the Jenkins setup using [GitLab QA](https://gitlab.com/gitlab-org/gitlab-qa).
+
+To run the test against your GDK, follow the [run QA tests against your GDK setup](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/master/docs/run_qa_against_gdk.md#run-qa-tests-against-your-gdk-setup) instructions.
+
+The following environment variables are required to run the test:
+
+- `GITLAB_USERNAME`
+- `GITLAB_PASSWORD`
+- `GITLAB_ADMIN_USERNAME`
+- `GITLAB_ADMIN_PASSWORD`
+
+Run the test in the **qa** directory using:
+
+```shell
+bundle exec bin/qa Test::Instance::All http://<your_network_ip_address>:3000 -- qa/specs/features/ee/browser_ui/3_create/jenkins/jenkins_build_status_spec.rb --tag quarantine
+```

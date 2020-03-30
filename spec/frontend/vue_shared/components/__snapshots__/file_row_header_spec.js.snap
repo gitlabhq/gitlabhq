@@ -3,6 +3,7 @@
 exports[`File row header component adds multiple ellipsises after 40 characters 1`] = `
 <div
   class="file-row-header bg-white sticky-top p-2 js-file-row-header"
+  title="app/assets/javascripts/merge_requests/widget/diffs/notes"
 >
   <span
     class="bold"
@@ -15,6 +16,7 @@ exports[`File row header component adds multiple ellipsises after 40 characters 
 exports[`File row header component renders file path 1`] = `
 <div
   class="file-row-header bg-white sticky-top p-2 js-file-row-header"
+  title="app/assets"
 >
   <span
     class="bold"
@@ -27,6 +29,7 @@ exports[`File row header component renders file path 1`] = `
 exports[`File row header component trucates path after 40 characters 1`] = `
 <div
   class="file-row-header bg-white sticky-top p-2 js-file-row-header"
+  title="app/assets/javascripts/merge_requests"
 >
   <span
     class="bold"

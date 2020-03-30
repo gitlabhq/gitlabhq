@@ -13,7 +13,7 @@
       %thead
         %tr
           %th
-          %th= s_("ProjectService|Service")
+          %th= _('Integration')
           %th.d-none.d-sm-block= _("Description")
           %th= s_("ProjectService|Last edit")
       - @services.sort_by(&:title).each do |service|

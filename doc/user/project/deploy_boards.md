@@ -72,7 +72,7 @@ To display the Deploy Boards for a specific [environment] you should:
 
 1. [Configure GitLab Runner][runners] with the [Docker][docker-exec] or
    [Kubernetes][kube-exec] executor.
-1. Configure the [Kubernetes service][kube-service] in your project for the
+1. Configure the [Kubernetes integration][kube-integration] in your project for the
    cluster. The Kubernetes namespace is of particular note as you will need it
    for your deployment scripts (exposed by the `KUBE_NAMESPACE` env variable).
 1. Ensure Kubernetes annotations of `app.gitlab.com/env: $CI_ENVIRONMENT_SLUG`
@@ -151,7 +151,7 @@ version of your application.
 [environment]: ../../ci/environments.md "Environments and deployments documentation"
 [docker-exec]: https://docs.gitlab.com/runner/executors/docker.html "GitLab Runner Docker executor"
 [kube-exec]: https://docs.gitlab.com/runner/executors/kubernetes.html "GitLab Runner Kubernetes executor"
-[kube-service]: integrations/kubernetes.md "Kubernetes project service"
+[kube-integration]: clusters/index.md "Kubernetes integration"
 [review apps]: ../../ci/review_apps/index.md "Review Apps documentation"
 [variables]: ../../ci/variables/README.md "GitLab CI/CD variables"
 [autodeploy]: ../../topics/autodevops/index.md#auto-deploy "GitLab Autodeploy"

@@ -228,7 +228,7 @@ This file lives in `/var/log/gitlab/gitlab-rails/integrations_json.log` for
 Omnibus GitLab packages or in `/home/git/gitlab/log/integrations_json.log` for
 installations from source.
 
-It contains information about [integrations](../user/project/integrations/project_services.md) activities such as Jira, Asana, and Irker services. It uses JSON format like the example below:
+It contains information about [integrations](../user/project/integrations/overview.md) activities such as Jira, Asana, and Irker services. It uses JSON format like the example below:
 
 ```json
 {

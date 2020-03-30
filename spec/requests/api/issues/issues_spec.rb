@@ -476,25 +476,25 @@ describe API::Issues do
         end
 
         it 'returns an array of issues with any label' do
-          get api('/issues', user), params: { labels: IssuesFinder::FILTER_ANY }
+          get api('/issues', user), params: { labels: IssuableFinder::Params::FILTER_ANY }
 
           expect_paginated_array_response(issue.id)
         end
 
         it 'returns an array of issues with any label with labels param as array' do
-          get api('/issues', user), params: { labels: [IssuesFinder::FILTER_ANY] }
+          get api('/issues', user), params: { labels: [IssuableFinder::Params::FILTER_ANY] }
 
           expect_paginated_array_response(issue.id)
         end
 
         it 'returns an array of issues with no label' do
-          get api('/issues', user), params: { labels: IssuesFinder::FILTER_NONE }
+          get api('/issues', user), params: { labels: IssuableFinder::Params::FILTER_NONE }
 
           expect_paginated_array_response(closed_issue.id)
         end
 
         it 'returns an array of issues with no label with labels param as array' do
-          get api('/issues', user), params: { labels: [IssuesFinder::FILTER_NONE] }
+          get api('/issues', user), params: { labels: [IssuableFinder::Params::FILTER_NONE] }
 
           expect_paginated_array_response(closed_issue.id)
         end

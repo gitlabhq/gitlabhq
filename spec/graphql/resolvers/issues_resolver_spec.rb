@@ -51,11 +51,11 @@ describe Resolvers::IssuesResolver do
       end
 
       it 'filters by any assignee' do
-        expect(resolve_issues(assignee_id: IssuableFinder::FILTER_ANY)).to contain_exactly(issue2)
+        expect(resolve_issues(assignee_id: IssuableFinder::Params::FILTER_ANY)).to contain_exactly(issue2)
       end
 
       it 'filters by no assignee' do
-        expect(resolve_issues(assignee_id: IssuableFinder::FILTER_NONE)).to contain_exactly(issue1)
+        expect(resolve_issues(assignee_id: IssuableFinder::Params::FILTER_NONE)).to contain_exactly(issue1)
       end
 
       it 'filters by labels' do

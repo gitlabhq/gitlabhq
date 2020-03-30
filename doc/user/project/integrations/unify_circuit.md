@@ -15,8 +15,8 @@ For more information, see the [Unify Circuit documentation for configuring incom
 
 When you have the **Webhook URL** for your Unify Circuit conversation webhook, you can set up the GitLab service.
 
-1. Navigate to the [Integrations page](project_services.md#accessing-the-project-services) in your project's settings, i.e. **Project > Settings > Integrations**.
-1. Select the **Unify Circuit** project service to configure it.
+1. Navigate to the [Integrations page](overview.md#accessing-integrations) in your project's settings, i.e. **Project > Settings > Integrations**.
+1. Select the **Unify Circuit** integration to configure it.
 1. Check the **Active** checkbox to turn on the service.
 1. Check the checkboxes corresponding to the GitLab events you want to receive in Unify Circuit.
 1. Paste the **Webhook URL** that you copied from the Unify Circuit configuration step.

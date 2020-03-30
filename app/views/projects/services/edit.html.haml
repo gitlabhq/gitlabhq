@@ -1,6 +1,6 @@
 - breadcrumb_title @service.title
 - add_to_breadcrumbs _('Integration Settings'), project_settings_integrations_path(@project)
-- page_title @service.title, s_("ProjectService|Services")
+- page_title @service.title, _('Integrations')
 
 = render 'deprecated_message' if @service.deprecation_message
 

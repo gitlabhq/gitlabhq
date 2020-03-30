@@ -1,7 +1,7 @@
 # Custom Issue Tracker Service
 
 To enable the Custom Issue Tracker integration in a project, navigate to the
-[Integrations page](project_services.md#accessing-the-project-services), click
+[Integrations page](overview.md#accessing-integrations), click
 the **Customer Issue Tracker** service, and fill in the required details on the page as described
 in the table below. You will be able to edit the title and description later as well.
 

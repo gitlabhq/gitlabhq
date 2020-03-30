@@ -39,7 +39,7 @@ You can prevent merge requests from being merged if their pipeline did not succe
 or if there are threads to be resolved. This works for both:
 
 - GitLab CI/CD pipelines
-- Pipelines run from an [external CI integration](../integrations/project_services.md#services)
+- Pipelines run from an [external CI integration](../integrations/overview.md#integrations-listing)
 
 As a result, [disabling GitLab CI/CD pipelines](../../../ci/enable_or_disable_ci.md)
 will not disable this feature, as it will still be possible to use pipelines from external

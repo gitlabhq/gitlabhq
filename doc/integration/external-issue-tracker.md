@@ -15,11 +15,11 @@ GitLab menu always opens the internal issue tracker. When disabled, the link is 
 
 ## Configuration
 
-The configuration is done via a project's **Services**.
+The configuration is done via a project's **Integrations**.
 
-### Project Service
+### Integration
 
-To enable an external issue tracker you must configure the appropriate **Service**.
+To enable an external issue tracker you must configure the appropriate **Integration**.
 Visit the links below for details:
 
 - [Redmine](../user/project/integrations/redmine.md)

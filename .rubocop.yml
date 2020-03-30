@@ -382,3 +382,39 @@ Cop/BanCatchThrow:
 
 Performance/ReadlinesEach:
   Enabled: true
+
+# https://gitlab.com/gitlab-org/gitlab/-/issues/212541
+RSpec/RepeatedExample:
+  Exclude:
+    - 'spec/features/issues/filtered_search/filter_issues_spec.rb'
+    - 'spec/features/merge_request/user_posts_diff_notes_spec.rb'
+    - 'spec/features/projects/files/template_type_dropdown_spec.rb'
+    - 'spec/finders/environments_finder_spec.rb'
+    - 'spec/frontend/fixtures/merge_requests.rb'
+    - 'spec/graphql/gitlab_schema_spec.rb'
+    - 'spec/helpers/users_helper_spec.rb'
+    - 'spec/lib/banzai/filter/autolink_filter_spec.rb'
+    - 'spec/lib/banzai/filter/issuable_state_filter_spec.rb'
+    - 'spec/lib/gitlab/closing_issue_extractor_spec.rb'
+    - 'spec/lib/gitlab/danger/changelog_spec.rb'
+    - 'spec/lib/gitlab/git/blob_spec.rb'
+    - 'spec/lib/gitlab/import_export/project/relation_factory_spec.rb'
+    - 'spec/models/ability_spec.rb'
+    - 'spec/models/ci/build_spec.rb'
+    - 'spec/models/concerns/issuable_spec.rb'
+    - 'spec/models/concerns/prometheus_adapter_spec.rb'
+    - 'spec/models/member_spec.rb'
+    - 'spec/models/project_services/chat_message/pipeline_message_spec.rb'
+    - 'spec/models/user_spec.rb'
+    - 'spec/models/wiki_page_spec.rb'
+    - 'spec/requests/api/merge_requests_spec.rb'
+    - 'spec/routing/admin_routing_spec.rb'
+    - 'spec/rubocop/cop/migration/update_large_table_spec.rb'
+    - 'spec/services/notification_service_spec.rb'
+    - 'spec/services/web_hook_service_spec.rb'
+    - 'ee/spec/models/group_spec.rb'
+    - 'ee/spec/models/user_spec.rb'
+    - 'ee/spec/requests/api/merge_request_approvals_spec.rb'
+    - 'ee/spec/services/boards/lists/update_service_spec.rb'
+    - 'ee/spec/services/geo/repository_verification_primary_service_spec.rb'
+    - 'ee/spec/workers/geo/file_download_dispatch_worker_spec.rb'

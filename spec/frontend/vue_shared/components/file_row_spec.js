@@ -33,6 +33,35 @@ describe('File row component', () => {
     expect(name.text().trim()).toEqual(fileName);
   });
 
+  it('renders the full path as title', () => {
+    const filePath = 'path/to/file/with a very long folder name/';
+    const fileName = 'foo.txt';
+
+    createComponent({
+      file: {
+        name: fileName,
+        isHeader: false,
+        tree: [
+          {
+            parentPath: filePath,
+          },
+        ],
+      },
+      level: 1,
+    });
+
+    expect(wrapper.element.title.trim()).toEqual('path/to/file/with a very long folder name/');
+  });
+
+  it('does not render a title attribute if no tree present', () => {
+    createComponent({
+      file: file('f1.txt'),
+      level: 0,
+    });
+
+    expect(wrapper.element.title.trim()).toEqual('');
+  });
+
   it('emits toggleTreeOpen on click', () => {
     const fileName = 't3';
     createComponent({

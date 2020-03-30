@@ -8,7 +8,7 @@ You can configure YouTrack as an [External Issue Tracker](../../../integration/e
 
 To enable YouTrack integration in a project:
 
-1. Navigate to the project's **Settings > [Integrations](project_services.md#accessing-the-project-services)** page.
+1. Navigate to the project's **Settings > [Integrations](overview.md#accessing-integrations)** page.
 1. Click the **YouTrack** service, ensure it's active, and enter the required details on the page as described in the table below.
 
     | Field           | Description                                                                                                                                                                                                 |

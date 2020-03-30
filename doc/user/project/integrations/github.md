@@ -25,7 +25,7 @@ with `repo:status` access granted:
 ### Complete these steps on GitLab
 
 1. Navigate to the project you want to configure.
-1. Navigate to the [Integrations page](project_services.md#accessing-the-project-services)
+1. Navigate to the [Integrations page](overview.md#accessing-integrations)
 1. Click "GitHub".
 1. Select the "Active" checkbox.
 1. Paste the token you've generated on GitHub

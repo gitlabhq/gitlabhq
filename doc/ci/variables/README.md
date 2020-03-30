@@ -435,13 +435,13 @@ To learn more about about scoping environments, see [Scoping environments with s
 
 > Introduced in GitLab 8.15.
 
-[Project services](../../user/project/integrations/project_services.md) that are
+[Integrations](../../user/project/integrations/overview.md) that are
 responsible for deployment configuration may define their own variables that
 are set in the build environment. These variables are only defined for
 [deployment jobs](../environments.md). Please consult the documentation of
-the project services that you are using to learn which variables they define.
+the integrations that you are using to learn which variables they define.
 
-An example project service that defines deployment variables is the
+An example integration that defines deployment variables is the
 [Kubernetes integration](../../user/project/clusters/index.md#deployment-variables).
 
 ### Auto DevOps environment variables

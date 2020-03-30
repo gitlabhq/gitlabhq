@@ -38,10 +38,14 @@ class IssuesFinder < IssuableFinder
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
+  def params_class
+    IssuesFinder::Params
+  end
+
   # rubocop: disable CodeReuse/ActiveRecord
   def with_confidentiality_access_check
-    return Issue.all if user_can_see_all_confidential_issues?
-    return Issue.where('issues.confidential IS NOT TRUE') if user_cannot_see_confidential_issues?
+    return Issue.all if params.user_can_see_all_confidential_issues?
+    return Issue.where('issues.confidential IS NOT TRUE') if params.user_cannot_see_confidential_issues?
 
     Issue.where('
       issues.confidential IS NOT TRUE
@@ -57,15 +61,11 @@ class IssuesFinder < IssuableFinder
   private
 
   def init_collection
-    if public_only?
+    if params.public_only?
       Issue.public_only
     else
       with_confidentiality_access_check
     end
-  end
-
-  def public_only?
-    params.fetch(:public_only, false)
   end
 
   def filter_items(items)
@@ -82,67 +82,19 @@ class IssuesFinder < IssuableFinder
   end
 
   def by_due_date(items)
-    if due_date?
-      if filter_by_no_due_date?
-        items = items.without_due_date
-      elsif filter_by_overdue?
-        items = items.due_before(Date.today)
-      elsif filter_by_due_this_week?
-        items = items.due_between(Date.today.beginning_of_week, Date.today.end_of_week)
-      elsif filter_by_due_this_month?
-        items = items.due_between(Date.today.beginning_of_month, Date.today.end_of_month)
-      elsif filter_by_due_next_month_and_previous_two_weeks?
-        items = items.due_between(Date.today - 2.weeks, (Date.today + 1.month).end_of_month)
-      end
+    return items unless params.due_date?
+
+    if params.filter_by_no_due_date?
+      items.without_due_date
+    elsif params.filter_by_overdue?
+      items.due_before(Date.today)
+    elsif params.filter_by_due_this_week?
+      items.due_between(Date.today.beginning_of_week, Date.today.end_of_week)
+    elsif params.filter_by_due_this_month?
+      items.due_between(Date.today.beginning_of_month, Date.today.end_of_month)
+    elsif params.filter_by_due_next_month_and_previous_two_weeks?
+      items.due_between(Date.today - 2.weeks, (Date.today + 1.month).end_of_month)
     end
-
-    items
-  end
-
-  def filter_by_no_due_date?
-    due_date? && params[:due_date] == Issue::NoDueDate.name
-  end
-
-  def filter_by_overdue?
-    due_date? && params[:due_date] == Issue::Overdue.name
-  end
-
-  def filter_by_due_this_week?
-    due_date? && params[:due_date] == Issue::DueThisWeek.name
-  end
-
-  def filter_by_due_this_month?
-    due_date? && params[:due_date] == Issue::DueThisMonth.name
-  end
-
-  def filter_by_due_next_month_and_previous_two_weeks?
-    due_date? && params[:due_date] == Issue::DueNextMonthAndPreviousTwoWeeks.name
-  end
-
-  def due_date?
-    params[:due_date].present?
-  end
-
-  def user_can_see_all_confidential_issues?
-    return @user_can_see_all_confidential_issues if defined?(@user_can_see_all_confidential_issues)
-
-    return @user_can_see_all_confidential_issues = false if current_user.blank?
-    return @user_can_see_all_confidential_issues = true if current_user.can_read_all_resources?
-
-    @user_can_see_all_confidential_issues =
-      if project? && project
-        project.team.max_member_access(current_user.id) >= CONFIDENTIAL_ACCESS_LEVEL
-      elsif group
-        group.max_member_access_for_user(current_user) >= CONFIDENTIAL_ACCESS_LEVEL
-      else
-        false
-      end
-  end
-
-  def user_cannot_see_confidential_issues?
-    return false if user_can_see_all_confidential_issues?
-
-    current_user.blank?
   end
 end
 

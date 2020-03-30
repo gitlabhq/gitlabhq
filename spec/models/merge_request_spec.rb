@@ -3223,14 +3223,6 @@ describe MergeRequest do
             subject.mark_as_unmergeable
           end
 
-          it 'notifies conflict, with enabled async mergability check' do
-            expect(notification_service).to receive(:merge_request_unmergeable).with(subject).once
-            expect(todo_service).to receive(:merge_request_became_unmergeable).with(subject).once
-
-            subject.mark_as_checking
-            subject.mark_as_unmergeable
-          end
-
           it 'does not notify whenever merge request is newly unmergeable due to other reasons' do
             allow(subject.project.repository).to receive(:can_be_merged?).and_return(true)
 

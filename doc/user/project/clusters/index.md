@@ -78,7 +78,7 @@ Kubernetes clusters can be used without Auto DevOps.
 
 > Introduced in GitLab 8.15.
 
-When enabled, the Kubernetes service adds [web terminal](../../../ci/environments.md#web-terminals)
+When enabled, the Kubernetes integration adds [web terminal](../../../ci/environments.md#web-terminals)
 support to your [environments](../../../ci/environments.md). This is based on the `exec` functionality found in
 Docker and Kubernetes, so you get a new shell session within your existing
 containers. To use this integration, you should deploy to Kubernetes using

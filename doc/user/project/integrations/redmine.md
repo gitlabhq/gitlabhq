@@ -1,7 +1,7 @@
 # Redmine Service
 
 1. To enable the Redmine integration in a project, navigate to the
-   [Integrations page](project_services.md#accessing-the-project-services), click
+   [Integrations page](overview.md#accessing-integrations), click
    the **Redmine** service, and fill in the required details on the page as described
    in the table below.
 

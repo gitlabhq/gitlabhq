@@ -37,7 +37,7 @@ service in GitLab.
 ### Complete these steps in GitLab
 
 1. Navigate to the project you want to configure to trigger builds.
-1. Navigate to the [Integrations page](project_services.md#accessing-the-project-services)
+1. Navigate to the [Integrations page](overview.md#accessing-integrations)
 1. Click 'Atlassian Bamboo CI'
 1. Select the 'Active' checkbox.
 1. Enter the base URL of your Bamboo server. `https://bamboo.example.com`
@@ -55,7 +55,7 @@ service in GitLab.
 ## Troubleshooting
 
 If builds are not triggered, ensure you entered the right GitLab IP address in
-Bamboo under 'Trigger IP addresses'. Also check [service hook logs](project_services.md#troubleshooting-project-services) for request failures.
+Bamboo under 'Trigger IP addresses'. Also check [service hook logs](overview.md#troubleshooting-integrations) for request failures.
 
 NOTE: **Note:**
 Starting with GitLab 8.14.0, builds are triggered on push events.

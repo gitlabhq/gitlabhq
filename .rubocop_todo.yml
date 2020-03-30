@@ -251,10 +251,6 @@ RSpec/LetBeforeExamples:
 RSpec/PredicateMatcher:
   Enabled: false
 
-# Offense count: 69
-RSpec/RepeatedExample:
-  Enabled: false
-
 # Offense count: 584
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.

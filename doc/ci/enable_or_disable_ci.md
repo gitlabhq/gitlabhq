@@ -30,7 +30,7 @@ either:
 
 NOTE: **Note:**
 This only applies to pipelines run as part of GitLab CI/CD. This will not enable or disable
-pipelines that are run from an [external integration](../user/project/integrations/project_services.md#services).
+pipelines that are run from an [external integration](../user/project/integrations/overview.md#integrations-listing).
 
 ## Per-project user setting
 

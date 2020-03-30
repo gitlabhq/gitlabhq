@@ -21,7 +21,7 @@ module Issuable
         params.delete(key) unless params[key].present?
       end
 
-      if params[:assignee_ids] == [IssuableFinder::NONE.to_s]
+      if params[:assignee_ids] == [IssuableFinder::Params::NONE.to_s]
         params[:assignee_ids] = []
       end
 

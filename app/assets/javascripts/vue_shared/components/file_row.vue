@@ -39,6 +39,10 @@ export default {
         'is-open': this.file.opened,
       };
     },
+    textForTitle() {
+      // don't output a title if we don't have the expanded path
+      return this.file?.tree?.length ? this.file.tree[0].parentPath : false;
+    },
   },
   watch: {
     'file.active': function fileActiveWatch(active) {
@@ -106,7 +110,7 @@ export default {
   <div
     v-else
     :class="fileClass"
-    :title="file.name"
+    :title="textForTitle"
     class="file-row"
     role="button"
     @click="clickFile"
