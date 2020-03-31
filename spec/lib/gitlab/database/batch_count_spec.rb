@@ -90,5 +90,13 @@ describe Gitlab::Database::BatchCount do
 
       [1, 2, 4, 5, 6].each { |i| expect(described_class.batch_distinct_count(model, column, batch_size: i)).to eq(2) }
     end
+
+    it 'counts with a start and finish' do
+      expect(described_class.batch_distinct_count(model, column, start: model.minimum(column), finish: model.maximum(column))).to eq(2)
+    end
+
+    it 'counts with User min and max as start and finish' do
+      expect(described_class.batch_distinct_count(model, column, start: User.minimum(:id), finish: User.maximum(:id))).to eq(2)
+    end
   end
 end

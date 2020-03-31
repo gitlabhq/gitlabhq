@@ -777,7 +777,11 @@ The following requirements must be met for the metric to unfurl:
 
  If all of the above are true, then the metric will unfurl as seen below:
 
-![Embedded Metrics](img/embed_metrics.png)
+![Embedded Metrics](img/view_embedded_metrics_v12_10.png)
+
+Metric charts may also be hidden:
+
+![Show Hide](img/hide_embedded_metrics_v12_10.png)
 
 ### Embedding metrics in issue templates
 

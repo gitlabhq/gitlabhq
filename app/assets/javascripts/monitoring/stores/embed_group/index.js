@@ -7,18 +7,17 @@ import state from './state';
 
 Vue.use(Vuex);
 
-export const monitoringDashboard = {
-  namespaced: true,
-  actions,
-  getters,
-  mutations,
-  state,
-};
-
+// In practice this store will have a number of `monitoringDashboard` modules added dynamically
 export const createStore = () =>
   new Vuex.Store({
     modules: {
-      monitoringDashboard,
+      embedGroup: {
+        namespaced: true,
+        actions,
+        getters,
+        mutations,
+        state,
+      },
     },
   });
 

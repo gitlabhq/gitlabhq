@@ -23,15 +23,7 @@ module Gitlab
               private
 
               def template_name
-                if beta_enabled?
-                  'Beta/Auto-DevOps'
-                else
-                  'Auto-DevOps'
-                end
-              end
-
-              def beta_enabled?
-                Feature.enabled?(:auto_devops_beta, project, default_enabled: true)
+                'Auto-DevOps'
               end
             end
           end

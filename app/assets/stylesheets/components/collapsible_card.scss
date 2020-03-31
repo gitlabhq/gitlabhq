@@ -1,0 +1,9 @@
+.collapsible-card {
+  .collapsible-card-btn {
+    color: $gl-text-color;
+
+    &:hover {
+      color: $blue-600;
+    }
+  }
+}

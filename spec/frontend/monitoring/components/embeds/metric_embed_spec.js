@@ -2,20 +2,20 @@ import { createLocalVue, shallowMount } from '@vue/test-utils';
 import Vuex from 'vuex';
 import PanelType from 'ee_else_ce/monitoring/components/panel_type.vue';
 import { TEST_HOST } from 'helpers/test_constants';
-import Embed from '~/monitoring/components/embed.vue';
+import MetricEmbed from '~/monitoring/components/embeds/metric_embed.vue';
 import { groups, initialState, metricsData, metricsWithData } from './mock_data';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
-describe('Embed', () => {
+describe('MetricEmbed', () => {
   let wrapper;
   let store;
   let actions;
   let metricsWithDataGetter;
 
   function mountComponent() {
-    wrapper = shallowMount(Embed, {
+    wrapper = shallowMount(MetricEmbed, {
       localVue,
       store,
       propsData: {

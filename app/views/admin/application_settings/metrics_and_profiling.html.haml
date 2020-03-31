@@ -60,4 +60,6 @@
   .settings-content
     = render 'usage'
 
+= render_if_exists 'admin/application_settings/seat_link_setting', expanded: expanded_by_default?
+
 = render_if_exists 'admin/application_settings/pseudonymizer_settings', expanded: expanded_by_default?

@@ -396,7 +396,8 @@ CREATE TABLE public.application_settings (
     email_restrictions_enabled boolean DEFAULT false NOT NULL,
     email_restrictions text,
     npm_package_requests_forwarding boolean DEFAULT true NOT NULL,
-    namespace_storage_size_limit bigint DEFAULT 0 NOT NULL
+    namespace_storage_size_limit bigint DEFAULT 0 NOT NULL,
+    seat_link_enabled boolean DEFAULT true NOT NULL
 );
 
 CREATE SEQUENCE public.application_settings_id_seq
@@ -9924,6 +9925,8 @@ CREATE INDEX index_serverless_domain_cluster_on_creator_id ON public.serverless_
 
 CREATE INDEX index_serverless_domain_cluster_on_pages_domain_id ON public.serverless_domain_cluster USING btree (pages_domain_id);
 
+CREATE INDEX index_service_desk_enabled_projects_on_id_creator_id_created_at ON public.projects USING btree (id, creator_id, created_at) WHERE (service_desk_enabled = true);
+
 CREATE INDEX index_services_on_project_id_and_type ON public.services USING btree (project_id, type);
 
 CREATE INDEX index_services_on_template ON public.services USING btree (template);
@@ -12846,7 +12849,9 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200323080714
 20200323122201
 20200323134519
+20200324093258
 20200324115359
+20200325152327
 20200325160952
 20200325183636
 \.

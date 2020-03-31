@@ -1,3 +1,5 @@
+import { TEST_HOST } from 'helpers/test_constants';
+
 export const metricsWithData = ['15_metric_a', '16_metric_b'];
 
 export const groups = [
@@ -52,3 +54,34 @@ export const initialState = () => ({
   },
   useDashboardEndpoint: true,
 });
+
+export const initialEmbedGroupState = () => ({
+  modules: [],
+});
+
+export const singleEmbedProps = () => ({
+  dashboardUrl: TEST_HOST,
+  containerClass: 'col-lg-12',
+  namespace: 'monitoringDashboard/0',
+});
+
+export const dashboardEmbedProps = () => ({
+  dashboardUrl: TEST_HOST,
+  containerClass: 'col-lg-6',
+  namespace: 'monitoringDashboard/0',
+});
+
+export const multipleEmbedProps = () => [
+  {
+    dashboardUrl: TEST_HOST,
+    containerClass: 'col-lg-6',
+    namespace: 'monitoringDashboard/0',
+  },
+  {
+    dashboardUrl: TEST_HOST,
+    containerClass: 'col-lg-6',
+    namespace: 'monitoringDashboard/1',
+  },
+];
+
+export const addModuleAction = 'embedGroup/addModule';

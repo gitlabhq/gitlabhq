@@ -4,12 +4,18 @@
 # Implements a distinct and ordinary batch counter
 # Needs indexes on the column below to calculate max, min and range queries
 # For larger tables just set use higher batch_size with index optimization
+#
+# In order to not use a possible complex time consuming query when calculating min and max for batch_distinct_count
+# the start and finish can be sent specifically
+#
 # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/22705
+#
 # Examples:
 #  extend ::Gitlab::Database::BatchCount
 #  batch_count(User.active)
 #  batch_count(::Clusters::Cluster.aws_installed.enabled, :cluster_id)
 #  batch_distinct_count(::Project, :creator_id)
+#  batch_distinct_count(::Project.with_active_services.service_desk_enabled.where(time_period), start: ::User.minimum(:id), finish: ::User.maximum(:id))
 module Gitlab
   module Database
     module BatchCount
@@ -17,8 +23,8 @@ module Gitlab
         BatchCounter.new(relation, column: column).count(batch_size: batch_size)
       end
 
-      def batch_distinct_count(relation, column = nil, batch_size: nil)
-        BatchCounter.new(relation, column: column).count(mode: :distinct, batch_size: batch_size)
+      def batch_distinct_count(relation, column = nil, batch_size: nil, start: nil, finish: nil)
+        BatchCounter.new(relation, column: column).count(mode: :distinct, batch_size: batch_size, start: start, finish: finish)
       end
 
       class << self
@@ -31,9 +37,10 @@ module Gitlab
       MIN_REQUIRED_BATCH_SIZE = 1_250
       MAX_ALLOWED_LOOPS = 10_000
       SLEEP_TIME_IN_SECONDS = 0.01 # 10 msec sleep
-      # Each query should take <<500ms https://gitlab.com/gitlab-org/gitlab/-/merge_requests/22705
-      DEFAULT_DISTINCT_BATCH_SIZE = 10_000
-      DEFAULT_BATCH_SIZE = 100_000
+
+      # Each query should take < 500ms https://gitlab.com/gitlab-org/gitlab/-/merge_requests/22705
+      DEFAULT_DISTINCT_BATCH_SIZE = 100_000
+      DEFAULT_BATCH_SIZE = 10_000
 
       def initialize(relation, column: nil)
         @relation = relation
@@ -46,15 +53,15 @@ module Gitlab
           start > finish
       end
 
-      def count(batch_size: nil, mode: :itself)
+      def count(batch_size: nil, mode: :itself, start: nil, finish: nil)
         raise 'BatchCount can not be run inside a transaction' if ActiveRecord::Base.connection.transaction_open?
         raise "The mode #{mode.inspect} is not supported" unless [:itself, :distinct].include?(mode)
 
         # non-distinct have better performance
         batch_size ||= mode == :distinct ? DEFAULT_DISTINCT_BATCH_SIZE : DEFAULT_BATCH_SIZE
 
-        start = @relation.minimum(@column) || 0
-        finish = @relation.maximum(@column) || 0
+        start = actual_start(start)
+        finish = actual_finish(finish)
 
         raise "Batch counting expects positive values only for #{@column}" if start < 0 || finish < 0
         return FALLBACK if unwanted_configuration?(finish, batch_size, start)
@@ -83,6 +90,16 @@ module Gitlab
       def batch_fetch(start, finish, mode)
         # rubocop:disable GitlabSecurity/PublicSend
         @relation.select(@column).public_send(mode).where(@column => start..(finish - 1)).count
+      end
+
+      private
+
+      def actual_start(start)
+        start || @relation.minimum(@column) || 0
+      end
+
+      def actual_finish(finish)
+        finish || @relation.maximum(@column) || 0
       end
     end
   end

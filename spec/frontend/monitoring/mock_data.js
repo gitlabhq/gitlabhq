@@ -750,3 +750,20 @@ export const barMockData = {
     },
   ],
 };
+
+export const baseNamespace = 'monitoringDashboard';
+
+export const mockNamespace = `${baseNamespace}/1`;
+
+export const mockNamespaces = [`${baseNamespace}/1`, `${baseNamespace}/2`];
+
+export const mockTimeRange = { duration: { seconds: 120 } };
+
+export const mockNamespacedData = {
+  mockDeploymentData: ['mockDeploymentData'],
+  mockProjectPath: '/mockProjectPath',
+};
+
+export const mockLogsPath = '/mockLogsPath';
+
+export const mockLogsHref = `${mockLogsPath}?duration_seconds=${mockTimeRange.duration.seconds}`;

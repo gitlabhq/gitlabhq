@@ -68,6 +68,11 @@ export default {
       required: false,
       default: 'panel-type-chart',
     },
+    namespace: {
+      type: String,
+      required: false,
+      default: 'monitoringDashboard',
+    },
   },
   data() {
     return {
@@ -76,7 +81,22 @@ export default {
     };
   },
   computed: {
-    ...mapState('monitoringDashboard', ['deploymentData', 'projectPath', 'logsPath', 'timeRange']),
+    // Use functions to support dynamic namespaces in mapXXX helpers. Pattern described
+    // in https://github.com/vuejs/vuex/issues/863#issuecomment-329510765
+    ...mapState({
+      deploymentData(state) {
+        return state[this.namespace].deploymentData;
+      },
+      projectPath(state) {
+        return state[this.namespace].projectPath;
+      },
+      logsPath(state) {
+        return state[this.namespace].logsPath;
+      },
+      timeRange(state) {
+        return state[this.namespace].timeRange;
+      },
+    }),
     title() {
       return this.graphData.title || '';
     },

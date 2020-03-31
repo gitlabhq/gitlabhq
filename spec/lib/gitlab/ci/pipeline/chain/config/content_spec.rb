@@ -45,7 +45,7 @@ describe Gitlab::Ci::Pipeline::Chain::Config::Content do
             subject.perform!
 
             expect(pipeline.config_source).to eq 'auto_devops_source'
-            template = Gitlab::Template::GitlabCiYmlTemplate.find('Beta/Auto-DevOps')
+            template = Gitlab::Template::GitlabCiYmlTemplate.find('Auto-DevOps')
             expect(command.config_content).to eq(template.content)
           end
         end
@@ -78,7 +78,7 @@ describe Gitlab::Ci::Pipeline::Chain::Config::Content do
 
           expect(pipeline.config_source).to eq 'auto_devops_source'
           expect(pipeline.pipeline_config).to be_nil
-          template = Gitlab::Template::GitlabCiYmlTemplate.find('Beta/Auto-DevOps')
+          template = Gitlab::Template::GitlabCiYmlTemplate.find('Auto-DevOps')
           expect(command.config_content).to eq(template.content)
         end
       end
@@ -91,7 +91,7 @@ describe Gitlab::Ci::Pipeline::Chain::Config::Content do
 
           expect(pipeline.config_source).to eq 'auto_devops_source'
           expect(pipeline.pipeline_config).to be_nil
-          template = Gitlab::Template::GitlabCiYmlTemplate.find('Beta/Auto-DevOps')
+          template = Gitlab::Template::GitlabCiYmlTemplate.find('Auto-DevOps')
           expect(command.config_content).to eq(template.content)
         end
       end
@@ -122,34 +122,13 @@ describe Gitlab::Ci::Pipeline::Chain::Config::Content do
           expect(project).to receive(:auto_devops_enabled?).and_return(true)
         end
 
-        context 'when beta is enabled' do
-          before do
-            stub_feature_flags(auto_devops_beta: true)
-          end
+        it 'returns the content of AutoDevops template' do
+          subject.perform!
 
-          it 'returns the content of AutoDevops template' do
-            subject.perform!
-
-            expect(pipeline.config_source).to eq 'auto_devops_source'
-            expect(pipeline.pipeline_config).to be_nil
-            template = Gitlab::Template::GitlabCiYmlTemplate.find('Beta/Auto-DevOps')
-            expect(command.config_content).to eq(template.content)
-          end
-        end
-
-        context 'when beta is disabled' do
-          before do
-            stub_feature_flags(auto_devops_beta: false)
-          end
-
-          it 'returns the content of AutoDevops template' do
-            subject.perform!
-
-            expect(pipeline.config_source).to eq 'auto_devops_source'
-            expect(pipeline.pipeline_config).to be_nil
-            template = Gitlab::Template::GitlabCiYmlTemplate.find('Auto-DevOps')
-            expect(command.config_content).to eq(template.content)
-          end
+          expect(pipeline.config_source).to eq 'auto_devops_source'
+          expect(pipeline.pipeline_config).to be_nil
+          template = Gitlab::Template::GitlabCiYmlTemplate.find('Auto-DevOps')
+          expect(command.config_content).to eq(template.content)
         end
       end
 
@@ -285,7 +264,7 @@ describe Gitlab::Ci::Pipeline::Chain::Config::Content do
         <<~EOY
           ---
           include:
-          - template: Beta/Auto-DevOps.gitlab-ci.yml
+          - template: Auto-DevOps.gitlab-ci.yml
         EOY
       end
 
@@ -293,40 +272,12 @@ describe Gitlab::Ci::Pipeline::Chain::Config::Content do
         expect(project).to receive(:auto_devops_enabled?).and_return(true)
       end
 
-      context 'when beta is enabled' do
-        before do
-          stub_feature_flags(auto_devops_beta: true)
-        end
+      it 'builds root config including the auto-devops template' do
+        subject.perform!
 
-        it 'builds root config including the auto-devops template' do
-          subject.perform!
-
-          expect(pipeline.config_source).to eq 'auto_devops_source'
-          expect(pipeline.pipeline_config.content).to eq(config_content_result)
-          expect(command.config_content).to eq(config_content_result)
-        end
-      end
-
-      context 'when beta is disabled' do
-        before do
-          stub_feature_flags(auto_devops_beta: false)
-        end
-
-        let(:config_content_result) do
-          <<~EOY
-            ---
-            include:
-            - template: Auto-DevOps.gitlab-ci.yml
-          EOY
-        end
-
-        it 'builds root config including the auto-devops template' do
-          subject.perform!
-
-          expect(pipeline.config_source).to eq 'auto_devops_source'
-          expect(pipeline.pipeline_config.content).to eq(config_content_result)
-          expect(command.config_content).to eq(config_content_result)
-        end
+        expect(pipeline.config_source).to eq 'auto_devops_source'
+        expect(pipeline.pipeline_config.content).to eq(config_content_result)
+        expect(command.config_content).to eq(config_content_result)
       end
     end
 

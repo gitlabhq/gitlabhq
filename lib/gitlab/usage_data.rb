@@ -240,9 +240,9 @@ module Gitlab
         fallback
       end
 
-      def distinct_count(relation, column = nil, fallback: -1, batch: true)
+      def distinct_count(relation, column = nil, fallback: -1, batch: true, start: nil, finish: nil)
         if batch && Feature.enabled?(:usage_ping_batch_counter, default_enabled: true)
-          Gitlab::Database::BatchCount.batch_distinct_count(relation, column)
+          Gitlab::Database::BatchCount.batch_distinct_count(relation, column, start: start, finish: finish)
         else
           relation.distinct_count_by(column)
         end

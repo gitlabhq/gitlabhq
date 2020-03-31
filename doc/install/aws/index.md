@@ -135,16 +135,6 @@ Instances deployed in our private subnets need to connect to the internet for up
 
 Create a second NAT gateway but this time place it in the second public subnet, `gitlab-public-10.0.2.0`.
 
-### Route Table
-
-Up to now all our subnets are private. We need to create a Route Table
-to associate an Internet Gateway. On the same VPC dashboard:
-
-1. Select **Route Tables** from the left menu.
-1. Click **Create Route Table**.
-1. At the "Name tag" enter `gitlab-public` and choose `gitlab-vpc` under "VPC".
-1. Hit **Yes, Create**.
-
 ### Internet Gateway
 
 Now, still on the same dashboard, go to Internet Gateways and
@@ -160,25 +150,44 @@ create a new one:
 
 1. Choose `gitlab-vpc` from the list and hit **Attach**.
 
-### Configuring subnets
+### Route Tables
 
-We now need to add a new target which will be our Internet Gateway and have
+#### Public Route Table
+
+We need to create a route table for our public subnets to reach the internet via the internet gateway we created in the previous step.
+
+On the VPC dashboard:
+
+1. Select **Route Tables** from the left menu.
+1. Click **Create Route Table**.
+1. At the "Name tag" enter `gitlab-public` and choose `gitlab-vpc` under "VPC".
+1. Click **Create**.
+
+We now need to add our internet gateway as a new target and have
 it receive traffic from any destination.
 
 1. Select **Route Tables** from the left menu and select the `gitlab-public`
    route to show the options at the bottom.
-1. Select the **Routes** tab, hit **Edit > Add another route** and set `0.0.0.0/0`
-   as destination. In the target, select the `gitlab-gateway` we created previously.
-   Hit **Save** once done.
-
-   ![Associate subnet with gateway](img/associate_subnet_gateway.png)
+1. Select the **Routes** tab, click **Edit routes > Add route** and set `0.0.0.0/0`
+   as the destination. In the target column, select the `gitlab-gateway` we created previously.
+   Hit **Save routes** once done.
 
 Next, we must associate the **public** subnets to the route table:
 
-1. Select the **Subnet Associations** tab and hit **Edit**.
-1. Check only the public subnet and hit **Save**.
+1. Select the **Subnet Associations** tab and click **Edit subnet associations**.
+1. Check only the public subnets and click **Save**.
 
-   ![Associate subnet with gateway](img/associate_subnet_gateway_2.png)
+#### Private Route Tables
+
+We also need to create two private route tables so that instances in each private subnet can reach the internet via the NAT gateway in the corresponding public subnet in the same availability zone.
+
+1. Follow the same steps as above to create two private route tables. Name them `gitlab-public-a` and `gitlab-public-b` respectively.
+1. Next, add a new route to each of the private route tables where the destination is `0.0.0.0/0` and the target is one of the NAT gateways we created earlier.
+   1. Add the NAT gateway we created in `gitlab-public-10.0.0.0` as the target for the new route in the `gitlab-public-a` route table.
+   1. Similarly, add the NAT gateway in `gitlab-public-10.0.2.0` as the target for the new route in the `gitlab-public-b`.
+1. Lastly, associate each private subnet with a private route table.
+   1. Associate `gitlab-private-10.0.1.0` with `gitlab-public-a`.
+   1. Associate `gitlab-private-10.0.3.0` with `gitlab-public-b`.
 
 ---
 
