@@ -1,5 +1,19 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 12.9.2 (2020-03-31)
+
+### Fixed (4 changes)
+
+- Fix direct access to individual design on deprecated issue route. !27650
+- Fix error when viewing events from design notes on project activity page. !27840
+- Allow Seat Link to be disabled through configuration or admin toggle. !28015
+- Allow active_users param to be optional for SyncSeatLinkRequestWorker#perform. !28241
+
+### Changed (1 change)
+
+- Send active users for each day in seat link POST request. !27481
+
+
 ## 12.9.1 (2020-03-26)
 
 ### Security (1 change)
