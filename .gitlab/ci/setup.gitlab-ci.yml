@@ -25,13 +25,12 @@ cache gems:
 
 dont-interrupt-me:
   extends: .setup:rules:dont-interrupt-me
-  stage: prepare
+  stage: sync
   image: alpine:edge
   interruptible: false
   allow_failure: true
   variables:
     GIT_STRATEGY: none
-  dependencies: []
   script:
     - echo "This jobs makes sure this pipeline won't be interrupted! See https://docs.gitlab.com/ee/ci/yaml/#interruptible."
 

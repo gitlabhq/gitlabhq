@@ -131,8 +131,8 @@ First upgrade your GitLab server to version 8.0:
 
 After you update, go to the admin panel and temporarily disable CI. As
   an administrator, go to **Admin Area** -> **Settings**, and under
-**Continuous Integration** uncheck **Disable to prevent CI usage until rake
-ci:migrate is run (8.0 only)**.
+**Continuous Integration** uncheck **Disable to prevent CI usage until `rake
+ci:migrate` is run (8.0 only)**.
 
 ### 3. CI settings are now in GitLab
 
@@ -184,7 +184,7 @@ sudo -u gitlab_ci -H bundle exec rake backup:show_secrets RAILS_ENV=production
 ### 2. SQL data and build traces
 
 Create your final CI data export. If you are converting from MySQL to
-PostgreSQL, add `MYSQL_TO_POSTGRESQL=1` to the end of the rake command. When
+PostgreSQL, add `MYSQL_TO_POSTGRESQL=1` to the end of the Rake command. When
 the command finishes it will print the path to your data export archive; you
 will need this file later.
 

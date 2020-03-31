@@ -7,12 +7,12 @@ After [configuring the object storage](../../uploads.md#using-object-storage-cor
 >**Note:**
 All of the processing will be done in a background worker and requires **no downtime**.
 
-### All-in-one rake task
+### All-in-one Rake task
 
-GitLab provides a wrapper rake task that migrates all uploaded files - avatars,
+GitLab provides a wrapper Rake task that migrates all uploaded files - avatars,
 logos, attachments, favicon, etc. - to object storage in one go. Under the hood,
-it invokes individual rake tasks to migrate files falling under each of this
-category one by one. The specifications of these individual rake tasks are
+it invokes individual Rake tasks to migrate files falling under each of this
+category one by one. The specifications of these individual Rake tasks are
 described in the next section.
 
 **Omnibus Installation**
@@ -27,12 +27,12 @@ gitlab-rake "gitlab:uploads:migrate:all"
 sudo RAILS_ENV=production -u git -H bundle exec rake gitlab:uploads:migrate:all
 ```
 
-### Individual rake tasks
+### Individual Rake tasks
 
 >**Note:**
-If you already ran the rake task mentioned above, no need to run these individual rake tasks as that has been done automatically.
+If you already ran the Rake task mentioned above, no need to run these individual Rake tasks as that has been done automatically.
 
-The rake task uses 3 parameters to find uploads to migrate.
+The Rake task uses 3 parameters to find uploads to migrate.
 
 Parameter | Type | Description
 --------- | ---- | -----------
@@ -140,12 +140,12 @@ the migration. A configuration setting will be added soon to allow migrating
 from object storage to local files with only a brief moment of downtime for configuration changes.
 To follow progress, see the [relevant issue](https://gitlab.com/gitlab-org/gitlab/issues/30979).
 
-### All-in-one rake task
+### All-in-one Rake task
 
-GitLab provides a wrapper rake task that migrates all uploaded files - avatars,
+GitLab provides a wrapper Rake task that migrates all uploaded files - avatars,
 logos, attachments, favicon, etc. - to local storage in one go. Under the hood,
-it invokes individual rake tasks to migrate files falling under each of this
-category one by one. For details on these rake tasks please [refer to the section above](#individual-rake-tasks),
+it invokes individual Rake tasks to migrate files falling under each of this
+category one by one. For details on these Rake tasks please [refer to the section above](#individual-rake-tasks),
 keeping in mind the task name in this case is `gitlab:uploads:migrate_to_local`.
 
 **Omnibus Installation**

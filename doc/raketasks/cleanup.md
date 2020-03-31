@@ -9,7 +9,7 @@ GitLab provides Rake tasks for cleaning up GitLab instances.
 DANGER: **Danger:**
 Do not run this within 12 hours of a GitLab upgrade. This is to ensure that all background migrations have finished, which otherwise may lead to data loss.
 
-When you remove LFS files from a repository's history, they become orphaned and continue to consume disk space. With this rake task, you can remove invalid references from the database, which
+When you remove LFS files from a repository's history, they become orphaned and continue to consume disk space. With this Rake task, you can remove invalid references from the database, which
 will allow garbage collection of LFS files.
 
 For example:
@@ -36,7 +36,7 @@ By default, this task does not delete anything but shows how many file reference
 delete. Run the command with `DRY_RUN=false` if you actually want to
 delete the references. You can also use `LIMIT={number}` parameter to limit the number of deleted references.
 
-Note that this rake task only removes the references to LFS files. Unreferenced LFS files will be garbage-collected
+Note that this Rake task only removes the references to LFS files. Unreferenced LFS files will be garbage-collected
 later (once a day). If you need to garbage collect them immediately, run
 `rake gitlab:cleanup:orphan_lfs_files` described below.
 

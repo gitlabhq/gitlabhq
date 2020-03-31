@@ -136,7 +136,7 @@ and comparing the output of the returned headers.
 
 There are two ways to manually do the same thing as automatic uploading (described above).
 
-**Option 1: rake task**
+**Option 1: Rake task**
 
 ```shell
 rake gitlab:lfs:migrate

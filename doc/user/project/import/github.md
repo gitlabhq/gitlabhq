@@ -14,7 +14,7 @@ GitHub repositories using a [personal access token](#using-a-github-token),
 but this method is not recommended because it cannot associate all user activity
 (such as issues and pull requests) with matching GitLab users.
 If you are an administrator of a self-managed GitLab instance, you can also use the
-[GitHub rake task](../../../administration/raketasks/github_import.md) to import projects from
+[GitHub Rake task](../../../administration/raketasks/github_import.md) to import projects from
 GitHub without the constraints of a Sidekiq worker.
 
 The following aspects of a project are imported:

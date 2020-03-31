@@ -38,7 +38,8 @@ module EnvironmentsHelper
       "tags-path" => project_tags_path(project),
       "has-metrics" => "#{environment.has_metrics?}",
       "prometheus-status" => "#{environment.prometheus_status}",
-      "external-dashboard-url" => project.metrics_setting_external_dashboard_url
+      "external-dashboard-url" => project.metrics_setting_external_dashboard_url,
+      "environment-state" => "#{environment.state}"
     }
   end
 

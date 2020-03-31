@@ -37,7 +37,7 @@ For information on how to resolve common errors reported from the UI, see
 If the UI is not working, or you are unable to log in, you can run the Geo
 health check manually to get this information as well as a few more details.
 
-This rake task can be run on an app node in the **primary** or **secondary**
+This Rake task can be run on an app node in the **primary** or **secondary**
 Geo nodes:
 
 ```shell
@@ -70,7 +70,7 @@ All projects are in hashed storage? ... yes
 Checking Geo ... Finished
 ```
 
-Current sync information can be found manually by running this rake task on any
+Current sync information can be found manually by running this Rake task on any
 **secondary** app node:
 
 ```shell
@@ -147,9 +147,9 @@ This machine's Geo node name matches a database record ... no
   doc/administration/geo/replication/troubleshooting.md#can-geo-detect-the-current-node-correctly
 ```
 
-## Fixing errors found when running the Geo check rake task
+## Fixing errors found when running the Geo check Rake task
 
-When running this rake task, you may see errors if the nodes are not properly configured:
+When running this Rake task, you may see errors if the nodes are not properly configured:
 
 ```shell
 sudo gitlab-rake gitlab:geo:check
@@ -789,7 +789,7 @@ sudo gitlab-rake geo:db:refresh_foreign_tables
 ## Expired artifacts
 
 If you notice for some reason there are more artifacts on the Geo
-secondary node than on the Geo primary node, you can use the rake task
+secondary node than on the Geo primary node, you can use the Rake task
 to [cleanup orphan artifact files](../../../raketasks/cleanup.md#remove-orphan-artifact-files).
 
 On a Geo **secondary** node, this command will also clean up all Geo

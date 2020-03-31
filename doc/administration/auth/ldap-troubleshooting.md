@@ -311,7 +311,7 @@ things to check to debug the situation.
 - You've waited an hour or [the configured
   interval](ldap-ee.md#adjusting-ldap-group-sync-schedule) for the group to
   sync. To speed up the process, either go to the GitLab group **Settings ->
-  Members** and press **Sync now** (sync one group) or [run the group sync rake
+  Members** and press **Sync now** (sync one group) or [run the group sync Rake
   task][group-sync-rake] (sync all groups).
 
 If all of the above looks good, jump in to a little more advanced debugging in
@@ -351,7 +351,7 @@ GitLab syncs the `admin_group`.
 #### Sync all groups **(STARTER ONLY)**
 
 NOTE: **NOTE:**
-To sync all groups manually when debugging is unnecessary, [use the rake
+To sync all groups manually when debugging is unnecessary, [use the Rake
 task][group-sync-rake] instead.
 
 The output from a manual [group sync][group-sync] can show you what happens
@@ -541,7 +541,7 @@ for each of these users.
 
 ### LDAP check
 
-The [rake task to check LDAP][ldap-check] is a valuable tool
+The [Rake task to check LDAP][ldap-check] is a valuable tool
 to help determine whether GitLab can successfully establish a connection to
 LDAP and can get so far as to even read users.
 
@@ -550,7 +550,7 @@ with your configuration or a firewall blocking the connection.
 
 - Ensure you don't have a firewall blocking the
 connection, and that the LDAP server is accessible to the GitLab host.
-- Look for an error message in the rake check output, which may lead to your LDAP configuration to
+- Look for an error message in the Rake check output, which may lead to your LDAP configuration to
 confirm that the configuration values (specifically `host`, `port`, `bind_dn`, and
 `password`) are correct.
 - Look for [errors](#connection) in [the logs](#gitlab-logs) to further debug connection failures.

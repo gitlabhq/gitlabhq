@@ -1,0 +1,5 @@
+---
+title: Fix rake gitlab:setup failing on new installs
+merge_request: 28270
+author:
+type: fixed

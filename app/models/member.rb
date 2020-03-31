@@ -257,7 +257,9 @@ class Member < ApplicationRecord
     def retrieve_user(user)
       return user if user.is_a?(User)
 
-      User.find_by(id: user) || User.find_by(email: user) || user
+      return User.find_by(id: user) if user.is_a?(Integer)
+
+      User.find_by(email: user) || user
     end
 
     def retrieve_member(source, user, existing_members)

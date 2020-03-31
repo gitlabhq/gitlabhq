@@ -725,7 +725,7 @@ GitLab Shell has a configuration file at `/home/git/gitlab-shell/config.yml`.
 
 ### Maintenance Tasks
 
-[GitLab](https://gitlab.com/gitlab-org/gitlab/tree/master) provides rake tasks with which you see version information and run a quick check on your configuration to ensure it is configured properly within the application. See [maintenance rake tasks](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/raketasks/maintenance.md).
+[GitLab](https://gitlab.com/gitlab-org/gitlab/tree/master) provides Rake tasks with which you see version information and run a quick check on your configuration to ensure it is configured properly within the application. See [maintenance Rake tasks](../raketasks/maintenance.md).
 In a nutshell, do the following:
 
 ```shell

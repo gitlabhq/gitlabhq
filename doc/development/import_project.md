@@ -45,7 +45,7 @@ There is also an option to [import the project via GitHub](../user/project/impor
 
 This method will take longer to import than the other methods and will depend on several factors. It's recommended to use the other methods.
 
-### Importing via a rake task
+### Importing via a Rake task
 
 [`import.rake`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/tasks/gitlab/import_export/import.rake) was introduced for importing large GitLab project exports.
 

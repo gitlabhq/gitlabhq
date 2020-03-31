@@ -93,12 +93,15 @@ module Gitlab
         #   Commit.last_for_path(repo, 'master', 'Gemfile')
         #
         def last_for_path(repo, ref, path = nil)
+          # rubocop: disable Rails/FindBy
+          # This is not where..first from ActiveRecord
           where(
             repo: repo,
             ref: ref,
             path: path,
             limit: 1
           ).first
+          # rubocop: enable Rails/FindBy
         end
 
         # Get commits between two revspecs

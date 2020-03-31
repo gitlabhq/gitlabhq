@@ -5,7 +5,7 @@
 See also:
 
 - [Project import/export documentation](../user/project/settings/import_export.md).
-- [Project import/export administration rake tasks](../administration/raketasks/project_import_export.md). **(CORE ONLY)**
+- [Project import/export administration Rake tasks](../administration/raketasks/project_import_export.md). **(CORE ONLY)**
 
 ## Schedule an export
 

@@ -45,7 +45,7 @@ need to do.
 
 ### GitLab 8.6+
 
-Pass the version to a database rake task to manually mark the migration as
+Pass the version to a database Rake task to manually mark the migration as
 complete.
 
 ```shell
@@ -56,7 +56,7 @@ sudo -u git -H bundle exec rake gitlab:db:mark_migration_complete[20151103134857
 sudo gitlab-rake gitlab:db:mark_migration_complete[20151103134857]
 ```
 
-Once the migration is successfully marked, run the rake `db:migrate` task again.
+Once the migration is successfully marked, run the Rake `db:migrate` task again.
 You will likely have to repeat this process several times until all failed
 migrations are marked complete.
 
@@ -77,6 +77,6 @@ ActiveRecord::Base.connection.execute("INSERT INTO schema_migrations (version) V
 exit
 ```
 
-Once the migration is successfully marked, run the rake `db:migrate` task again.
+Once the migration is successfully marked, run the Rake `db:migrate` task again.
 You will likely have to repeat this process several times until all failed
 migrations are marked complete.

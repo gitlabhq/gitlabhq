@@ -65,7 +65,7 @@ The following are important notes about 2FA:
 ## Disabling 2FA for everyone
 
 There may be some special situations where you want to disable 2FA for everyone
-even when forced 2FA is disabled. There is a rake task for that:
+even when forced 2FA is disabled. There is a Rake task for that:
 
 ```shell
 # Omnibus installations

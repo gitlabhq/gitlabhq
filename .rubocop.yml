@@ -7,6 +7,10 @@ require:
   - ./rubocop/rubocop
   - rubocop-rspec
 
+inherit_mode:
+  merge:
+    - Include
+
 AllCops:
   TargetRubyVersion: 2.6
   TargetRailsVersion: 5.0
@@ -161,6 +165,14 @@ Rails/ApplicationRecord:
     - ee/db/**/*.rb
     - ee/spec/**/*.rb
 
+Rails/FindBy:
+  Enabled: true
+  Include:
+    - 'ee/app/**/*.rb'
+    - 'ee/lib/**/*.rb'
+    - 'spec/**/*.rb'
+    - 'ee/spec/**/*.rb'
+
 # GitLab ###################################################################
 
 Gitlab/ModuleWithInstanceVariables:
@@ -205,7 +217,6 @@ Gitlab/DuplicateSpecLocation:
     - ee/spec/helpers/auth_helper_spec.rb
     - ee/spec/lib/gitlab/gl_repository_spec.rb
     - ee/spec/models/namespace_spec.rb
-    - ee/spec/models/note_spec.rb
     - ee/spec/serializers/environment_entity_spec.rb
     - ee/spec/services/issues/create_service_spec.rb
     - ee/spec/services/merge_requests/create_service_spec.rb
@@ -214,7 +225,6 @@ Gitlab/DuplicateSpecLocation:
     - ee/spec/services/system_hooks_service_spec.rb
     - ee/spec/helpers/ee/auth_helper_spec.rb
     - ee/spec/models/ee/namespace_spec.rb
-    - ee/spec/models/ee/note_spec.rb
     - ee/spec/serializers/ee/environment_entity_spec.rb
     - ee/spec/services/ee/issues/create_service_spec.rb
     - ee/spec/services/ee/merge_requests/create_service_spec.rb

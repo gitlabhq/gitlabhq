@@ -5,7 +5,11 @@ require 'spec_helper'
 describe 'projects/tree/_tree_row' do
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
+
+  # rubocop: disable Rails/FindBy
+  # This is not ActiveRecord where..first
   let(:blob_item) { Gitlab::Git::Tree.where(repository, SeedRepo::Commit::ID, 'files/ruby').first }
+  # rubocop: enable Rails/FindBy
 
   before do
     assign(:project, project)

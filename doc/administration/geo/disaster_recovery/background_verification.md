@@ -115,7 +115,7 @@ Feature.enable('geo_repository_reverification')
 
 Geo actively try to correct verification failures marking the repository to
 be resynced with a back-off period. If you want to reset them manually, this
-rake task marks projects where verification has failed or the checksum mismatch
+Rake task marks projects where verification has failed or the checksum mismatch
 to be resynced without the back-off period:
 
 For repositories:

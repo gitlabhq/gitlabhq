@@ -19,6 +19,8 @@ The following are available Rake tasks:
 |:-------------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------|
 | [Back up and restore](backup_restore.md)                                                   | Back up, restore, and migrate GitLab instances between servers.                           |
 | [Clean up](cleanup.md)                                                                     | Clean up unneeded items GitLab instances.                                                 |
+| [Development](../development/rake_tasks.md)                                                | Tasks for GitLab contributors.                                                            |
+| [Elasticsearch](../integration/elasticsearch.md#gitlab-elasticsearch-rake-tasks)           | Maintain Elasticsearch in a GitLab instance.                                              |
 | [Enable namespaces](features.md)                                                           | Enable usernames and namespaces for user projects.                                        |
 | [General maintenance](../administration/raketasks/maintenance.md)                          | General maintenance and self-check tasks.                                                 |
 | [Geo maintenance](../administration/raketasks/geo.md) **(PREMIUM ONLY)**                   | [Geo](../administration/geo/replication/index.md)-related maintenance.                    |

@@ -117,7 +117,7 @@ and they will assist you with any issues you are having.
   kubectl get events -w --namespace=gitlab
   ```
 
-- Most of the useful GitLab tools (console, rake tasks, etc) are found in the task-runner
+- Most of the useful GitLab tools (console, Rake tasks, etc) are found in the task-runner
   pod. You may enter it and run commands inside or run them from the outside:
 
   ```shell

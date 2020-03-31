@@ -33,7 +33,8 @@ describe EnvironmentsHelper do
         'tags-path' => project_tags_path(project),
         'has-metrics' => "#{environment.has_metrics?}",
         'prometheus-status' => "#{environment.prometheus_status}",
-        'external-dashboard-url' => nil
+        'external-dashboard-url' => nil,
+        'environment-state' => environment.state
       )
     end
 
@@ -45,6 +46,16 @@ describe EnvironmentsHelper do
       it 'adds external_dashboard_url' do
         expect(metrics_data['external-dashboard-url']).to eq('http://gitlab.com')
       end
+    end
+
+    context 'when the environment is not available' do
+      before do
+        environment.stop
+      end
+
+      subject { metrics_data }
+
+      it { is_expected.to include('environment-state' => 'stopped') }
     end
   end
 end

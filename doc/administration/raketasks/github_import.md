@@ -4,7 +4,7 @@
 
 In order to retrieve and import GitHub repositories, you will need a
 [GitHub personal access token](https://github.com/settings/tokens).
-A username should be passed as the second argument to the rake task
+A username should be passed as the second argument to the Rake task
 which will become the owner of the project. You can resume an import
 with the same command.
 

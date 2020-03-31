@@ -38,9 +38,8 @@ module Gitlab
         identities = ::Identity.arel_table
 
         User.select(:id)
-            .joins(:identities).where(identities[:provider].eq(:github)
-            .and(identities[:extern_uid].eq(id)))
-            .first
+            .joins(:identities)
+            .find_by(identities[:provider].eq(:github).and(identities[:extern_uid].eq(id)))
             .try(:id)
       end
       # rubocop: enable CodeReuse/ActiveRecord

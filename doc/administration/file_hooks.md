@@ -88,9 +88,9 @@ end
 ## Validation
 
 Writing your own file hook can be tricky and it's easier if you can check it
-without altering the system. A rake task is provided so that you can use it
+without altering the system. A Rake task is provided so that you can use it
 in a staging environment to test your file hook before using it in production.
-The rake task will use a sample data and execute each of file hook. The output
+The Rake task will use a sample data and execute each of file hook. The output
 should be enough to determine if the system sees your file hook and if it was
 executed without errors.
 

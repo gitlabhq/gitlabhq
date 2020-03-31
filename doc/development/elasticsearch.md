@@ -25,7 +25,7 @@ Developers making significant changes to Elasticsearch queries should test their
 
 See the [Elasticsearch GDK setup instructions](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/elasticsearch.md)
 
-## Helpful rake tasks
+## Helpful Rake tasks
 
 - `gitlab:elastic:test:index_size`: Tells you how much space the current index is using, as well as how many documents are in the index.
 - `gitlab:elastic:test:index_size_change`: Outputs index size, reindexes, and outputs index size again. Useful when testing improvements to indexing size.
@@ -34,7 +34,7 @@ Additionally, if you need large repos or multiple forks for testing, please cons
 
 ## How does it work?
 
-The Elasticsearch integration depends on an external indexer. We ship an [indexer written in Go](https://gitlab.com/gitlab-org/gitlab-elasticsearch-indexer). The user must trigger the initial indexing via a rake task but, after this is done, GitLab itself will trigger reindexing when required via `after_` callbacks on create, update, and destroy that are inherited from [/ee/app/models/concerns/elastic/application_versioned_search.rb](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/app/models/concerns/elastic/application_versioned_search.rb).
+The Elasticsearch integration depends on an external indexer. We ship an [indexer written in Go](https://gitlab.com/gitlab-org/gitlab-elasticsearch-indexer). The user must trigger the initial indexing via a Rake task but, after this is done, GitLab itself will trigger reindexing when required via `after_` callbacks on create, update, and destroy that are inherited from [/ee/app/models/concerns/elastic/application_versioned_search.rb](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/app/models/concerns/elastic/application_versioned_search.rb).
 
 After initial indexing is complete, create, update, and delete operations for all models except projects (see [#207494](https://gitlab.com/gitlab-org/gitlab/issues/207494)) are tracked in a Redis [`ZSET`](https://redis.io/topics/data-types#sorted-sets). A regular `sidekiq-cron` `ElasticIndexBulkCronWorker` processes this queue, updating many Elasticsearch documents at a time with the [Bulk Request API](https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-bulk.html).
 

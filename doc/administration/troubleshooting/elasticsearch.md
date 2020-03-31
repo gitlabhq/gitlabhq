@@ -204,7 +204,7 @@ If it is, check on the Elasticsearch side to determine if the `gitlab-production
 name for the GitLab index) exists. If it exists, manually delete it on the Elasticsearch
 side and attempt to recreate it from the
 [`create_empty_index`](../../integration/elasticsearch.md#gitlab-elasticsearch-rake-tasks)
-rake task.
+Rake task.
 
 If you still encounter issues, try creating an index manually on the Elasticsearch
 instance. The details of the index aren't important here, as we want to test if indices
@@ -220,7 +220,7 @@ during the indexing of projects. If errors do occur, they will either stem from 
   something you are familiar with, contact GitLab support for guidance.
 - Within the Elasticsearch instance itself. See if the error is [documented and has a fix](../../integration/elasticsearch.md#troubleshooting). If not, speak with your Elasticsearch admin.
 
-If the indexing process does not present errors, you will want to check the status of the indexed projects. You can do this via the following rake tasks:
+If the indexing process does not present errors, you will want to check the status of the indexed projects. You can do this via the following Rake tasks:
 
 - [`sudo gitlab-rake gitlab:elastic:index_projects_status`](../../integration/elasticsearch.md#gitlab-elasticsearch-rake-tasks) (shows the overall status)
 - [`sudo gitlab-rake gitlab:elastic:projects_not_indexed`](../../integration/elasticsearch.md#gitlab-elasticsearch-rake-tasks) (shows specific projects that are not indexed)

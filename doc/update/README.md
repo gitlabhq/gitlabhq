@@ -147,7 +147,7 @@ puts Sidekiq::Queue.new("background_migration").size
 Sidekiq::ScheduledSet.new.select { |r| r.klass == 'BackgroundMigrationWorker' }.size
 ```
 
-There is also a [rake task](../administration/raketasks/maintenance.md#display-status-of-database-migrations)
+There is also a [Rake task](../administration/raketasks/maintenance.md#display-status-of-database-migrations)
 for displaying the status of each database migration.
 
 ## Upgrading to a new major version

@@ -11,7 +11,7 @@ The **GitLab import/export** button is displayed if the project import option is
 See also:
 
 - [Project import/export API](../../../api/project_import_export.md)
-- [Project import/export administration rake tasks](../../../administration/raketasks/project_import_export.md) **(CORE ONLY)**
+- [Project import/export administration Rake tasks](../../../administration/raketasks/project_import_export.md) **(CORE ONLY)**
 - [Group import/export API](../../../api/group_import_export.md)
 
 To set up a project import/export:

@@ -56,7 +56,9 @@ The author then adds a comment to this piece of code and adds a link to the issu
   ```
 
 - Track necessary events. See the [telemetry guide](../../telemetry/index.md) for details.
-- After the merge request is merged, use [`chatops`](../../ci/chatops/README.md) to enable the feature flag and start the experiment. For visibility, please run the command in the `#s_growth` channel:
+- After the merge request is merged, use [`chatops`](../../ci/chatops/README.md) in the
+[appropriate channel](../feature_flags/controls.md#where-to-run-commands) to enable the feature flag and start the experiment.
+For visibility, please also share any commands run against production in the `#s_growth` channel:
 
   ```shell
   /chatops run feature set --project=gitlab-org/gitlab experimental_sign_up_flow true

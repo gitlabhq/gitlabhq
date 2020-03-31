@@ -32,5 +32,15 @@ describe Feature::Gitaly do
 
     it { is_expected.to be_a(Hash) }
     it { is_expected.to eq("gitaly-feature-mep-mep" => "true") }
+
+    context 'when table does not exist' do
+      before do
+        allow(::Gitlab::Database).to receive(:cached_table_exists?).and_return(false)
+      end
+
+      it 'returns an empty Hash' do
+        expect(subject).to eq({})
+      end
+    end
   end
 end

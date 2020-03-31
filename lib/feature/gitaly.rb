@@ -14,6 +14,9 @@ class Feature
       end
 
       def server_feature_flags
+        # We need to check that both the DB connection and table exists
+        return {} unless ::Gitlab::Database.cached_table_exists?(FlipperFeature.table_name)
+
         Feature.persisted_names
           .select { |f| f.start_with?(PREFIX) }
           .map do |f|

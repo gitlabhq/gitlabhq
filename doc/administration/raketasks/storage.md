@@ -1,6 +1,6 @@
 # Repository Storage Rake Tasks
 
-This is a collection of rake tasks you can use to help you list and migrate
+This is a collection of Rake tasks you can use to help you list and migrate
 existing projects and attachments associated with it from Legacy storage to
 the new Hashed storage type.
 
@@ -46,7 +46,7 @@ Any error or warning will be logged in Sidekiq's log file.
 NOTE: **Note:**
 If Geo is enabled, each project that is successfully migrated generates an event to replicate the changes on any **secondary** nodes.
 
-You only need the `gitlab:storage:migrate_to_hashed` rake task to migrate your repositories, but we have additional
+You only need the `gitlab:storage:migrate_to_hashed` Rake task to migrate your repositories, but we have additional
 commands below that helps you inspect projects and attachments in both legacy and hashed storage.
 
 ## Rollback from Hashed storage to Legacy storage

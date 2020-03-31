@@ -29,7 +29,7 @@ sudo RAILS_ENV=production -u git -H bundle exec rake gitlab:uploads:sanitize:rem
 This command by default runs in dry mode and it doesn't remove EXIF data. It can be used for
 checking if (and how many) images should be sanitized.
 
-The rake task accepts following parameters.
+The Rake task accepts following parameters.
 
 Parameter | Type | Description
 --------- | ---- | -----------
@@ -41,7 +41,7 @@ Parameter | Type | Description
 `since` | date | Run sanitization only for uploads newer than given date (e.g. `2019-05-01`)
 
 If you have too many uploads, you can speed up sanitization by setting
-`sleep_time` to a lower value or by running multiple rake tasks in parallel,
+`sleep_time` to a lower value or by running multiple Rake tasks in parallel,
 each with a separate range of upload IDs (by setting `start_id` and `stop_id`).
 
 To run the command without dry mode and remove EXIF data from all uploads, you can use:
@@ -58,7 +58,7 @@ sudo RAILS_ENV=production -u git -H bundle exec rake gitlab:uploads:sanitize:rem
 
 Because the output of commands will be probably long, the output is written also into exif.log file.
 
-If sanitization fails for an upload, an error message should be in the output of the rake task (typical reasons may
+If sanitization fails for an upload, an error message should be in the output of the Rake task (typical reasons may
 be that the file is missing in the storage or it's not a valid image). Please
 [report](https://gitlab.com/gitlab-org/gitlab-foss/issues/new) any issues at `gitlab.com` and use
 prefix 'EXIF' in issue title with the error output and (if possible) the image.

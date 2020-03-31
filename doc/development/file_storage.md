@@ -50,9 +50,9 @@ In the case of Issues/MR/Notes Markdown attachments, there is a different approa
 instead of basing the path into a mutable variable `:project_path_with_namespace`, it's possible to use the
 hash of the project ID instead, if project migrates to the new approach (introduced in 10.2).
 
-> Note: We provide an [all-in-one rake task] to migrate all uploads to object
+> Note: We provide an [all-in-one Rake task] to migrate all uploads to object
 > storage in one go. If a new Uploader class or model type is introduced, make
-> sure you add a rake task invocation corresponding to it to the [category
+> sure you add a Rake task invocation corresponding to it to the [category
 > list].
 
 ### Path segments

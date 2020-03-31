@@ -162,7 +162,7 @@ either runs on the same machine as your repositories are located, or may login t
 to access data (for example, a remote backup solution).
 
 To schedule a complete rollout, see the
-[rake task documentation for storage migration][rake/migrate-to-hashed] for instructions.
+[Rake task documentation for storage migration][rake/migrate-to-hashed] for instructions.
 
 If you do have any existing integration, you may want to do a small rollout first,
 to validate. You can do so by specifying a range with the operation.
@@ -186,7 +186,7 @@ projects:
 1. Uncheck the **Use hashed storage paths for newly created and renamed projects** checkbox.
 
 To schedule a complete rollback, see the
-[rake task documentation for storage rollback](raketasks/storage.md#rollback-from-hashed-storage-to-legacy-storage) for instructions.
+[Rake task documentation for storage rollback](raketasks/storage.md#rollback-from-hashed-storage-to-legacy-storage) for instructions.
 
 The rollback task also supports specifying a range of Project IDs. Here is an example
 of limiting the rollout to Project IDs 50 to 100, in an Omnibus GitLab installation:

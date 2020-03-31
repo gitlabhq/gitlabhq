@@ -31,7 +31,7 @@ from the start of the merge request.
 
 ## Run Danger locally
 
-A subset of the current checks can be run locally with the following rake task:
+A subset of the current checks can be run locally with the following Rake task:
 
 ```shell
 bin/rake danger_local

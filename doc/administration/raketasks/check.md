@@ -20,7 +20,7 @@ to prevent data integrity issues. However, if a Git operation is interrupted the
 locks may not be cleaned up properly.
 
 The following symptoms may indicate a problem with repository integrity. If users
-experience these symptoms you may use the rake tasks described below to determine
+experience these symptoms you may use the Rake tasks described below to determine
 exactly which repositories are causing the trouble.
 
 - Receiving an error when trying to push code - `remote: error: cannot lock ref`

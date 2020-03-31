@@ -87,7 +87,7 @@ describe Ci::RetryPipelineService, '#execute' do
       it 'creates a new job for report job in this case' do
         service.execute(pipeline)
 
-        expect(statuses.where(name: 'report 1').first).to be_retried
+        expect(statuses.find_by(name: 'report 1', status: 'failed')).to be_retried
       end
     end
 
