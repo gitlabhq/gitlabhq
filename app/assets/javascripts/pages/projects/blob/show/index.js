@@ -45,12 +45,13 @@ document.addEventListener('DOMContentLoaded', () => {
       new Vue({
         el: successPipelineEl,
         render(createElement) {
-          const { commitCookie, pipelinesPath: goToPipelinesPath } = this.$el.dataset;
+          const { commitCookie, goToPipelinesPath, humanAccess } = this.$el.dataset;
 
           return createElement(PipelineTourSuccessModal, {
             props: {
               goToPipelinesPath,
               commitCookie,
+              humanAccess,
             },
           });
         },

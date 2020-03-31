@@ -116,7 +116,7 @@ describe Projects::SnippetsController do
       end
 
       context 'when the snippet is public' do
-        it 'rejects the shippet' do
+        it 'rejects the snippet' do
           expect { create_snippet(project, visibility_level: Snippet::PUBLIC) }
             .not_to change { Snippet.count }
           expect(response).to render_template(:new)
@@ -164,6 +164,7 @@ describe Projects::SnippetsController do
 
   describe 'PUT #update' do
     let(:project) { create :project, :public }
+    let(:visibility_level) { Snippet::PUBLIC }
     let(:snippet) { create :project_snippet, author: user, project: project, visibility_level: visibility_level }
 
     def update_snippet(snippet_params = {}, additional_params = {})
@@ -174,11 +175,25 @@ describe Projects::SnippetsController do
       put :update, params: {
         namespace_id: project.namespace.to_param,
         project_id: project,
-        id: snippet.id,
+        id: snippet,
         project_snippet: { title: 'Title', content: 'Content' }.merge(snippet_params)
       }.merge(additional_params)
 
       snippet.reload
+    end
+
+    it_behaves_like 'updating snippet checks blob is binary' do
+      let_it_be(:title) { 'Foo' }
+      let(:params) do
+        {
+          namespace_id: project.namespace.to_param,
+          project_id: project,
+          id: snippet.id,
+          project_snippet: { title: title }
+        }
+      end
+
+      subject { put :update, params: params }
     end
 
     context 'when the snippet is spam' do
@@ -198,9 +213,7 @@ describe Projects::SnippetsController do
       end
 
       context 'when the snippet is public' do
-        let(:visibility_level) { Snippet::PUBLIC }
-
-        it 'rejects the shippet' do
+        it 'rejects the snippet' do
           expect { update_snippet(title: 'Foo') }
             .not_to change { snippet.reload.title }
         end
@@ -245,7 +258,7 @@ describe Projects::SnippetsController do
       context 'when the private snippet is made public' do
         let(:visibility_level) { Snippet::PRIVATE }
 
-        it 'rejects the shippet' do
+        it 'rejects the snippet' do
           expect { update_snippet(title: 'Foo', visibility_level: Snippet::PUBLIC) }
             .not_to change { snippet.reload.title }
         end
@@ -579,6 +592,21 @@ describe Projects::SnippetsController do
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
+    end
+  end
+
+  describe 'GET #edit' do
+    it_behaves_like 'editing snippet checks blob is binary' do
+      let(:snippet) { create(:project_snippet, :private, project: project, author: user) }
+      let(:params) do
+        {
+          namespace_id: project.namespace,
+          project_id: project,
+          id: snippet
+        }
+      end
+
+      subject { get :edit, params: params }
     end
   end
 end

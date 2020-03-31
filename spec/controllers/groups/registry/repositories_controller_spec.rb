@@ -15,7 +15,7 @@ describe Groups::Registry::RepositoriesController do
   end
 
   shared_examples 'renders a list of repositories' do
-    context 'when container registry is enabled' do
+    context 'when user has access to registry' do
       it 'show index page' do
         expect(Gitlab::Tracking).not_to receive(:event)
 
@@ -63,21 +63,7 @@ describe Groups::Registry::RepositoriesController do
       end
     end
 
-    context 'container registry is disabled' do
-      before do
-        stub_container_registry_config(enabled: false)
-      end
-
-      it 'renders not found' do
-        get :index, params: {
-            group_id: group
-        }
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-    end
-
-    context 'user do not have acces to container registry' do
+    context 'user does not have access to container registry' do
       before do
         sign_out(user)
         sign_in(guest)
@@ -88,22 +74,6 @@ describe Groups::Registry::RepositoriesController do
           group_id: group
         }
         expect(response).to have_gitlab_http_status(:not_found)
-      end
-    end
-
-    context 'with :vue_container_registry_explorer feature flag disabled' do
-      before do
-        stub_feature_flags(vue_container_registry_explorer: { enabled: false, thing: group })
-      end
-
-      it 'has the correct response schema' do
-        get :index, params: {
-          group_id: group,
-          format: :json
-        }
-
-        expect(response).to match_response_schema('registry/repositories')
-        expect(response).not_to include_pagination_headers
       end
     end
   end

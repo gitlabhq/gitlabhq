@@ -59,8 +59,6 @@ module Issues
     end
 
     def store_first_mentioned_in_commit_at(issue, merge_request)
-      return unless Feature.enabled?(:store_first_mentioned_in_commit_on_issue_close, issue.project, default_enabled: true)
-
       metrics = issue.metrics
       return if metrics.nil? || metrics.first_mentioned_in_commit_at
 

@@ -2,19 +2,20 @@ import pipelineTourSuccess from '~/blob/pipeline_tour_success_modal.vue';
 import { shallowMount } from '@vue/test-utils';
 import Cookies from 'js-cookie';
 import { GlSprintf, GlModal } from '@gitlab/ui';
+import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
+import modalProps from './pipeline_tour_success_mock_data';
 
 describe('PipelineTourSuccessModal', () => {
   let wrapper;
   let cookieSpy;
-  const goToPipelinesPath = 'some_pipeline_path';
-  const commitCookie = 'some_cookie';
+  let trackingSpy;
 
   beforeEach(() => {
+    document.body.dataset.page = 'projects:blob:show';
+
+    trackingSpy = mockTracking('_category_', undefined, jest.spyOn);
     wrapper = shallowMount(pipelineTourSuccess, {
-      propsData: {
-        goToPipelinesPath,
-        commitCookie,
-      },
+      propsData: modalProps,
     });
 
     cookieSpy = jest.spyOn(Cookies, 'remove');
@@ -22,6 +23,7 @@ describe('PipelineTourSuccessModal', () => {
 
   afterEach(() => {
     wrapper.destroy();
+    unmockTracking();
   });
 
   it('has expected structure', () => {
@@ -35,6 +37,15 @@ describe('PipelineTourSuccessModal', () => {
   it('calls to remove cookie', () => {
     wrapper.vm.disableModalFromRenderingAgain();
 
-    expect(cookieSpy).toHaveBeenCalledWith(commitCookie);
+    expect(cookieSpy).toHaveBeenCalledWith(modalProps.commitCookie);
+  });
+
+  describe('tracking', () => {
+    it('send event for basic view of popover', () => {
+      expect(trackingSpy).toHaveBeenCalledWith(undefined, undefined, {
+        label: 'congratulate_first_pipeline',
+        property: modalProps.humanAccess,
+      });
+    });
   });
 });

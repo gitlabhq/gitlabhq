@@ -111,4 +111,8 @@ module HasRepository
   def web_url(only_path: nil)
     raise NotImplementedError
   end
+
+  def repository_size_checker
+    raise NotImplementedError
+  end
 end

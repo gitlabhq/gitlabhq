@@ -85,22 +85,6 @@ describe Projects::Registry::RepositoriesController do
           end
         end
       end
-
-      context 'with :vue_container_registry_explorer feature flag disabled' do
-        before do
-          stub_feature_flags(vue_container_registry_explorer: { enabled: false, thing: project.group })
-          stub_container_registry_tags(repository: project.full_path,
-                                       tags: %w[rc1 latest])
-        end
-
-        it 'json has a list of projects' do
-          go_to_index(format: :json)
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response).to match_response_schema('registry/repositories')
-          expect(response).not_to include_pagination_headers
-        end
-      end
     end
 
     describe 'GET #index' do

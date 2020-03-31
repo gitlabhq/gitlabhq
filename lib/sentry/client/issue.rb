@@ -4,6 +4,7 @@ module Sentry
   class Client
     module Issue
       BadRequestError = Class.new(StandardError)
+      ResponseInvalidSizeError = Class.new(StandardError)
 
       SENTRY_API_SORT_VALUE_MAP = {
         # <accepted_by_client> => <accepted_by_sentry_api>

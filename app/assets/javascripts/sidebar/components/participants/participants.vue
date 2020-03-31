@@ -127,7 +127,7 @@ export default {
     <div v-if="hasMoreParticipants" class="participants-more hide-collapsed">
       <button
         type="button"
-        class="btn-transparent btn-blank js-toggle-participants-button"
+        class="btn-transparent btn-link js-toggle-participants-button"
         @click="toggleMoreParticipants"
       >
         {{ toggleLabel }}

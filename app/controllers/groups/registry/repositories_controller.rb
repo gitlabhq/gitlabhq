@@ -4,7 +4,6 @@ module Groups
     class RepositoriesController < Groups::ApplicationController
       before_action :verify_container_registry_enabled!
       before_action :authorize_read_container_image!
-      before_action :feature_flag_group_container_registry_browser!
 
       def index
         respond_to do |format|
@@ -17,12 +16,8 @@ module Groups
             serializer = ContainerRepositoriesSerializer
               .new(current_user: current_user)
 
-            if Feature.enabled?(:vue_container_registry_explorer, group)
-              render json: serializer.with_pagination(request, response)
-                .represent_read_only(@images)
-            else
-              render json: serializer.represent_read_only(@images)
-            end
+            render json: serializer.with_pagination(request, response)
+              .represent_read_only(@images)
           end
         end
       end
@@ -33,10 +28,6 @@ module Groups
       end
 
       private
-
-      def feature_flag_group_container_registry_browser!
-        render_404 unless Feature.enabled?(:group_container_registry_browser, group)
-      end
 
       def verify_container_registry_enabled!
         render_404 unless Gitlab.config.registry.enabled

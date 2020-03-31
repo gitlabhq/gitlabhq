@@ -253,6 +253,85 @@ LoadModule proxy_http_module modules/mod_proxy_http.so
 [This snippet](https://gitlab.com/gitlab-org/security-products/dast/snippets/1894732) contains a complete `httpd.conf` file
 configured to act as a remote proxy and add the `Gitlab-DAST-Permission` header.
 
+### API scan
+
+Using an API specification as a scan's target is a useful way to seed URLs for scanning an API.
+Vulnerability rules in an API scan are different than those in a normal website scan.
+
+#### Specification format
+
+API scans support OpenAPI V2 and OpenAPI V3 specifications. You can define these specifications using `JSON` or `YAML`.
+
+#### Import API specification from a URL
+
+If your API specification is accessible at a URL, you can pass that URL in directly as the target.
+The specification doesn't have to be hosted on the same host as the API being tested.
+
+```yml
+include:
+  - template: DAST.gitlab-ci.yml
+
+variables:
+  DAST_API_SPECIFICATION: http://my.api/api-specification.yml
+```
+
+#### Import API specification from a file
+
+If your API specification is in your repository, you can provide the specification's filename directly as the target. The specification file is expected to be in the `/zap/wrk` directory.
+
+```yml
+dast:
+  script:
+    - mkdir -p /zap/wrk
+    - cp api-specification.yml /zap/wrk/api-specification.yml
+    - /analyze -t $DAST_WEBSITE
+  variables:
+    GIT_STRATEGY: fetch
+    DAST_API_SPECIFICATION: api-specification.yml
+```
+
+#### Full scan
+
+API scans support full scanning, which can be enabled by using the `DAST_FULL_SCAN_ENABLED` environment variable. Domain validation isn't supported for full API scans.
+
+#### Host override
+
+Specifications often define a host, which contains a domain name and a port. The host referenced may be different than the host of the API's review instance.
+This can cause incorrect URLs to be imported, or a scan on an incorrect host. Use the `DAST_API_HOST_OVERRIDE` environment variable to override these values.
+
+For example, with a OpenAPI V3 specification containing:
+
+```yml
+servers:
+  - url: https://api.host.com
+```
+
+If the test version of the API is running at `https://api-test.host.com`, then the following DAST configuration can be used:
+
+```yml
+include:
+  - template: DAST.gitlab-ci.yml
+
+variables:
+  DAST_API_SPECIFICATION: http://api-test.host.com/api-specification.yml
+  DAST_API_HOST_OVERRIDE: api-test.host.com
+```
+
+Note that `DAST_API_HOST_OVERRIDE` is only applied to specifications imported by URL.
+
+#### Authentication using headers
+
+Tokens in request headers are often used as a way to authenticate API requests. You can achieve this by using the `DAST_REQUEST_HEADERS` environment variable. Headers are applied to every request DAST makes.
+
+```yml
+include:
+  - template: DAST.gitlab-ci.yml
+
+variables:
+  DAST_API_SPECIFICATION: http://api-test.api.com/api-specification.yml
+  DAST_REQUEST_HEADERS: "Authorization: Bearer my.token"
+```
+
 ### Customizing the DAST settings
 
 The DAST settings can be changed through environment variables by using the
@@ -300,17 +379,21 @@ DAST can be [configured](#customizing-the-dast-settings) using environment varia
 
 | Environment variable        | Required   | Description                                                                    |
 |-----------------------------| ----------|--------------------------------------------------------------------------------|
-| `DAST_WEBSITE`  | yes | The URL of the website to scan. |
-| `DAST_AUTH_URL` | no | The authentication URL of the website to scan. |
+| `DAST_WEBSITE`  | no| The URL of the website to scan. `DAST_API_SPECIFICATION` must be specified if this is omitted. |
+| `DAST_API_SPECIFICATION`  | no | The API specification to import. `DAST_WEBSITE` must be specified if this is omitted. |
+| `DAST_AUTH_URL` | no | The authentication URL of the website to scan. Not supported for API scans. |
 | `DAST_USERNAME` | no | The username to authenticate to in the website. |
 | `DAST_PASSWORD` | no | The password to authenticate to in the website. |
 | `DAST_USERNAME_FIELD` | no | The name of username field at the sign-in HTML form. |
 | `DAST_PASSWORD_FIELD` | no | The name of password field at the sign-in HTML form. |
-| `DAST_AUTH_EXCLUDE_URLS` | no | The URLs to skip during the authenticated scan; comma-separated, no spaces in between. |
+| `DAST_AUTH_EXCLUDE_URLS` | no | The URLs to skip during the authenticated scan; comma-separated, no spaces in between. Not supported for API scans. |
 | `DAST_TARGET_AVAILABILITY_TIMEOUT` | no | Time limit in seconds to wait for target availability. Scan is attempted nevertheless if it runs out. Integer. Defaults to `60`. |
 | `DAST_FULL_SCAN_ENABLED` | no | Switches the tool to execute [ZAP Full Scan](https://github.com/zaproxy/zaproxy/wiki/ZAP-Full-Scan) instead of [ZAP Baseline Scan](https://github.com/zaproxy/zaproxy/wiki/ZAP-Baseline-Scan). Boolean. `true`, `True`, or `1` are considered as true value, otherwise false. Defaults to `false`. |
-| `DAST_FULL_SCAN_DOMAIN_VALIDATION_REQUIRED` | no | Requires [domain validation](#domain-validation) when running DAST full scans. Boolean. `true`, `True`, or `1` are considered as true value, otherwise false. Defaults to `false`. |
+| `DAST_FULL_SCAN_DOMAIN_VALIDATION_REQUIRED` | no | Requires [domain validation](#domain-validation) when running DAST full scans. Boolean. `true`, `True`, or `1` are considered as true value, otherwise false. Defaults to `false`. Not supported for API scans. |
 | `DAST_AUTO_UPDATE_ADDONS` | no | Set to `false` to pin the versions of ZAProxy add-ons to those provided with the DAST image. Defaults to `true`. |
+| `DAST_API_HOST_OVERRIDE` | no | Used to override domains defined in API specification files. |
+| `DAST_EXCLUDE_RULES` | no | Set to a comma-separated list of Vulnerability Rule IDs to exclude them from scans. Rule IDs are numbers and can be found from the DAST log or on the [ZAP project](https://github.com/zaproxy/zaproxy/blob/master/docs/scanners.md). For example, `HTTP Parameter Override` has a rule ID of `10026`. |
+| `DAST_REQUEST_HEADERS` | no | Set to a comma-separated list of request header names and values. For example, `Cache-control: no-cache,User-Agent: DAST/1.0` |
 
 ### DAST command-line options
 

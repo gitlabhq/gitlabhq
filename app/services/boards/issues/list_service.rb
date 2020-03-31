@@ -133,7 +133,7 @@ module Boards
 
       def can_attempt_search_optimization?
         params[:search].present? &&
-          Feature.enabled?(:board_search_optimization, board_group, default_enabled: false)
+          Feature.enabled?(:board_search_optimization, board_group, default_enabled: true)
       end
     end
   end

@@ -1,1 +1,3 @@
-.js-success-pipeline-modal{ 'data-commit-cookie': suggest_pipeline_commit_cookie_name, 'data-pipelines-path': project_pipelines_path(@project) }
+.js-success-pipeline-modal{ data: { 'commit-cookie': suggest_pipeline_commit_cookie_name,
+  'go-to-pipelines-path': project_pipelines_path(@project),
+  'human-access': @project.team.human_max_access(current_user&.id) } }

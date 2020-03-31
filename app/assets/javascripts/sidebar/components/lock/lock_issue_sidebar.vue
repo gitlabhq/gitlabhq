@@ -106,17 +106,17 @@ export default {
 
     <div class="title hide-collapsed">
       {{ sprintf(__('Lock %{issuableDisplayName}'), { issuableDisplayName: issuableDisplayName }) }}
-      <button
+      <a
         v-if="isEditable"
         class="float-right lock-edit"
-        type="button"
+        href="#"
         data-track-event="click_edit_button"
         data-track-label="right_sidebar"
         data-track-property="lock_issue"
         @click.prevent="toggleForm"
       >
         {{ __('Edit') }}
-      </button>
+      </a>
     </div>
 
     <div class="value sidebar-item-value hide-collapsed">

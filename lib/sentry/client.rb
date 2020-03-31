@@ -10,7 +10,6 @@ module Sentry
 
     Error = Class.new(StandardError)
     MissingKeysError = Class.new(StandardError)
-    ResponseInvalidSizeError = Class.new(StandardError)
 
     attr_accessor :url, :token
 

@@ -163,19 +163,6 @@ describe Issues::CloseService do
             expect(issue.metrics.first_mentioned_in_commit_at).to be_nil
           end
         end
-
-        context 'when `store_first_mentioned_in_commit_on_issue_close` feature flag is off' do
-          before do
-            stub_feature_flags(store_first_mentioned_in_commit_on_issue_close: { enabled: false, thing: issue.project })
-          end
-
-          it 'does not update the metrics' do
-            subject
-
-            expect(described_class).not_to receive(:store_first_mentioned_in_commit_at)
-            expect(issue.metrics.first_mentioned_in_commit_at).to be_nil
-          end
-        end
       end
     end
 

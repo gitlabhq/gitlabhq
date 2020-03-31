@@ -187,7 +187,6 @@
 
   .btn-link {
     color: inherit;
-    outline: none;
   }
 
   .issuable-header-text {
@@ -261,15 +260,10 @@
       color: rgba($gray-normal, 0.2);
     }
 
-    .lock-edit, // uses same style, different js behaviour
+    .confidential-edit,
+    .lock-edit,
     .edit-link {
-      @extend .btn-blank;
-      color: $gl-text-color;
-
-      &:hover {
-        text-decoration: underline;
-        color: $blue-800;
-      }
+      @extend .btn-link;
     }
   }
 
@@ -689,7 +683,6 @@
   }
 
   .btn-link {
-    outline: none;
     padding: 0;
   }
 

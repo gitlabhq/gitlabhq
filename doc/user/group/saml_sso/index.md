@@ -316,6 +316,53 @@ For example, to unlink the `MyOrg` account, the following **Disconnect** button 
 | Issuer | How GitLab identifies itself to the identity provider. Also known as a "Relying party trust identifier". |
 | Certificate fingerprint | Used to confirm that communications over SAML are secure by checking that the server is signing communications with the correct certificate. Also known as a certificate thumbprint. |
 
+## Configuring on a self-managed GitLab instance
+
+For self-managed GitLab instances we strongly recommend using the
+[instance-wide SAML OmniAuth Provider](../../../integration/saml.md) instead.
+
+Group SAML SSO helps if you need to allow access via multiple SAML identity providers, but as a multi-tenant solution is less suited to cases where you administer your own GitLab instance.
+
+To proceed with configuring Group SAML SSO instead, you'll need to enable the `group_saml` OmniAuth provider. This can be done from:
+
+- `gitlab.rb` for GitLab [Omnibus installations](#omnibus-installations).
+- `gitlab/config/gitlab.yml` for [source installations](#source-installations).
+
+### Limitations
+
+Group SAML on a self-managed instance is limited when compared to the recommended
+[instance-wide SAML](../../../integration/saml.md). The recommended solution allows you to take advantage of:
+
+- [LDAP compatibility](../../../administration/auth/ldap.md).
+- [LDAP group Sync](../../../administration/auth/how_to_configure_ldap_gitlab_ee/index.md#group-sync).
+- [Required groups](../../../integration/saml.md#required-groups-starter-only).
+- [Admin groups](../../../integration/saml.md#admin-groups-starter-only).
+- [Auditor groups](../../../integration/saml.md#auditor-groups-starter-only).
+
+### Omnibus installations
+
+1. Make sure GitLab is
+   [configured with HTTPS](../../../install/installation.md#using-https).
+1. Enable OmniAuth and the `group_saml` provider in `gitlab.rb`:
+
+   ```ruby
+   gitlab_rails['omniauth_enabled'] = true
+   gitlab_rails['omniauth_providers'] = [{ name: 'group_saml' }]
+   ```
+
+### Source installations
+
+1. Make sure GitLab is
+   [configured with HTTPS](../../../install/installation.md#using-https).
+1. Enable OmniAuth and the `group_saml` provider in `gitlab/config/gitlab.yml`:
+
+    ```yaml
+    omniauth:
+        enabled: true
+        providers:
+          - { name: 'group_saml' }
+    ```
+
 ## Troubleshooting
 
 This section contains possible solutions for problems you might encounter.

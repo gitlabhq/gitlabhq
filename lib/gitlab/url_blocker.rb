@@ -11,8 +11,8 @@ module Gitlab
       # Validates the given url according to the constraints specified by arguments.
       #
       # ports - Raises error if the given URL port does is not between given ports.
-      # allow_localhost - Raises error if URL resolves to a localhost IP address and argument is true.
-      # allow_local_network - Raises error if URL resolves to a link-local address and argument is true.
+      # allow_localhost - Raises error if URL resolves to a localhost IP address and argument is false.
+      # allow_local_network - Raises error if URL resolves to a link-local address and argument is false.
       # ascii_only - Raises error if URL has unicode characters and argument is true.
       # enforce_user - Raises error if URL user doesn't start with alphanumeric characters and argument is true.
       # enforce_sanitization - Raises error if URL includes any HTML/CSS/JS tags and argument is true.

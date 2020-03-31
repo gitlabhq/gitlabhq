@@ -9,7 +9,9 @@ import '~/boards/models/label';
 import '~/boards/models/assignee';
 import '~/boards/models/issue';
 import '~/boards/models/list';
+import { ListType } from '~/boards/constants';
 import boardsStore from '~/boards/stores/boards_store';
+import waitForPromises from 'helpers/wait_for_promises';
 import { listObj, listObjDuplicate, boardsMockInterceptor } from './mock_data';
 
 describe('List model', () => {
@@ -20,22 +22,35 @@ describe('List model', () => {
     mock = new MockAdapter(axios);
     mock.onAny().reply(boardsMockInterceptor);
     boardsStore.create();
+    boardsStore.setEndpoints({
+      listsEndpoint: '/test/-/boards/1/lists',
+    });
 
     list = new List(listObj);
+    return waitForPromises();
   });
 
   afterEach(() => {
     mock.restore();
   });
 
-  it('gets issues when created', done => {
-    setTimeout(() => {
-      expect(list.issues.length).toBe(1);
-      done();
-    }, 0);
+  describe('list type', () => {
+    const notExpandableList = ['blank'];
+
+    const table = Object.keys(ListType).map(k => {
+      const value = ListType[k];
+      return [value, !notExpandableList.includes(value)];
+    });
+    it.each(table)(`when list_type is %s boards isExpandable is %p`, (type, result) => {
+      expect(new List({ id: 1, list_type: type }).isExpandable).toBe(result);
+    });
   });
 
-  it('saves list and returns ID', done => {
+  it('gets issues when created', () => {
+    expect(list.issues.length).toBe(1);
+  });
+
+  it('saves list and returns ID', () => {
     list = new List({
       title: 'test',
       label: {
@@ -45,50 +60,40 @@ describe('List model', () => {
         text_color: 'white',
       },
     });
-    list.save();
-
-    setTimeout(() => {
+    return list.save().then(() => {
       expect(list.id).toBe(listObj.id);
       expect(list.type).toBe('label');
       expect(list.position).toBe(0);
       expect(list.label.color).toBe('red');
       expect(list.label.textColor).toBe('white');
-      done();
-    }, 0);
+    });
   });
 
-  it('destroys the list', done => {
+  it('destroys the list', () => {
     boardsStore.addList(listObj);
     list = boardsStore.findList('id', listObj.id);
 
     expect(boardsStore.state.lists.length).toBe(1);
     list.destroy();
 
-    setTimeout(() => {
+    return waitForPromises().then(() => {
       expect(boardsStore.state.lists.length).toBe(0);
-      done();
-    }, 0);
+    });
   });
 
-  it('gets issue from list', done => {
-    setTimeout(() => {
-      const issue = list.findIssue(1);
+  it('gets issue from list', () => {
+    const issue = list.findIssue(1);
 
-      expect(issue).toBeDefined();
-      done();
-    }, 0);
+    expect(issue).toBeDefined();
   });
 
-  it('removes issue', done => {
-    setTimeout(() => {
-      const issue = list.findIssue(1);
+  it('removes issue', () => {
+    const issue = list.findIssue(1);
 
-      expect(list.issues.length).toBe(1);
-      list.removeIssue(issue);
+    expect(list.issues.length).toBe(1);
+    list.removeIssue(issue);
 
-      expect(list.issues.length).toBe(0);
-      done();
-    }, 0);
+    expect(list.issues.length).toBe(0);
   });
 
   it('sends service request to update issue label', () => {
@@ -105,7 +110,7 @@ describe('List model', () => {
     list.issues.push(issue);
     listDup.issues.push(issue);
 
-    spyOn(boardsStore, 'moveIssue').and.callThrough();
+    jest.spyOn(boardsStore, 'moveIssue');
 
     listDup.updateIssueLabel(issue, list);
 
@@ -120,7 +125,8 @@ describe('List model', () => {
 
   describe('page number', () => {
     beforeEach(() => {
-      spyOn(list, 'getIssues');
+      jest.spyOn(list, 'getIssues').mockImplementation(() => {});
+      list.issues = [];
     });
 
     it('increase page number if current issue count is more than the page size', () => {
@@ -167,7 +173,7 @@ describe('List model', () => {
 
   describe('newIssue', () => {
     beforeEach(() => {
-      spyOn(boardsStore, 'newIssue').and.returnValue(
+      jest.spyOn(boardsStore, 'newIssue').mockReturnValue(
         Promise.resolve({
           data: {
             id: 42,
@@ -178,6 +184,7 @@ describe('List model', () => {
           },
         }),
       );
+      list.issues = [];
     });
 
     it('adds new issue to top of list', done => {

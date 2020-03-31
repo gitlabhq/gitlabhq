@@ -3,6 +3,9 @@ import { GlModal, GlSprintf, GlLink } from '@gitlab/ui';
 import { sprintf, s__, __ } from '~/locale';
 import Cookies from 'js-cookie';
 import { glEmojiTag } from '~/emoji';
+import Tracking from '~/tracking';
+
+const trackingMixin = Tracking.mixin();
 
 export default {
   beginnerLink:
@@ -23,6 +26,7 @@ export default {
     GlSprintf,
     GlLink,
   },
+  mixins: [trackingMixin],
   props: {
     goToPipelinesPath: {
       type: String,
@@ -32,8 +36,21 @@ export default {
       type: String,
       required: true,
     },
+    humanAccess: {
+      type: String,
+      required: true,
+    },
+  },
+  data() {
+    return {
+      tracking: {
+        label: 'congratulate_first_pipeline',
+        property: this.humanAccess,
+      },
+    };
   },
   mounted() {
+    this.track();
     this.disableModalFromRenderingAgain();
   },
   methods: {
