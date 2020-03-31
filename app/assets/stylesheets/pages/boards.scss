@@ -211,7 +211,7 @@
 
 .board-blank-state,
 .board-promotion-state {
-  background-color: $white-light;
+  background-color: $white;
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
@@ -245,7 +245,7 @@
 }
 
 .board-card {
-  background: $white-light;
+  background: $white;
   border: 1px solid $gray-200;
   box-shadow: 0 1px 2px $issue-boards-card-shadow;
   line-height: $gl-padding;
@@ -426,7 +426,7 @@
   max-width: 1100px;
   min-height: 500px;
   padding: 25px 15px 0;
-  background-color: $white-light;
+  background-color: $white;
   box-shadow: 0 2px 12px rgba($black, 0.5);
 
   .empty-state {
@@ -501,7 +501,7 @@
   top: -3px;
   width: 17px;
   background-color: $blue-500;
-  color: $white-light;
+  color: $white;
   border: 1px solid $blue-600;
   font-size: 9px;
   line-height: 15px;

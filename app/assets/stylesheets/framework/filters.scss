@@ -190,7 +190,7 @@
   width: 100%;
   min-width: 0;
   border: 1px solid $border-color;
-  background-color: $white-light;
+  background-color: $white;
   border-radius: $border-radius-default 0 0 $border-radius-default;
 
   @include media-breakpoint-down(sm) {
@@ -244,7 +244,7 @@
 
   .clear-search {
     width: 35px;
-    background-color: $white-light;
+    background-color: $white;
     border: 0;
     outline: none;
     z-index: 1;
@@ -361,7 +361,7 @@
   .issues-details-filters {
     padding-top: 0;
     padding-bottom: 0;
-    background-color: $white-light;
+    background-color: $white;
     border-top: 0;
   }
 
@@ -409,7 +409,7 @@
     }
 
     .dropdown-label-box {
-      border-color: $white-light;
+      border-color: $white;
       border-style: solid;
       border-width: 1px;
       width: 17px;

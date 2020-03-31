@@ -12,7 +12,7 @@
     border-color: $blue-600;
 
     .popover-body {
-      color: $white-light;
+      color: $white;
     }
 
     &.bs-popover-bottom {
@@ -65,7 +65,7 @@
   }
 
   > .popover-header::before {
-    border-color: $white-light;
+    border-color: $white;
   }
 }
 
@@ -78,7 +78,7 @@
 }
 
 .popover-header {
-  background-color: $white-light;
+  background-color: $white;
   font-size: $gl-font-size-small;
 }
 
@@ -116,7 +116,7 @@
 
   .accept-mr-label {
     background-color: $accepting-mr-label-color;
-    color: $white-light;
+    color: $white;
   }
 }
 

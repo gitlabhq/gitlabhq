@@ -48,7 +48,7 @@
 
   .avatar-container {
     flex: 0 0 40px;
-    background-color: $white-light;
+    background-color: $white;
   }
 
   .sidebar-context-title {
@@ -63,7 +63,7 @@
 }
 
 .settings-avatar {
-  background-color: $white-light;
+  background-color: $white;
 
   svg {
     fill: $gl-text-color-secondary;
@@ -282,7 +282,7 @@
           min-width: 150px;
           margin-top: -1px;
           padding: 4px 1px;
-          background-color: $white-light;
+          background-color: $white;
           box-shadow: 2px 1px 3px $dropdown-shadow-color;
           border: 1px solid $gray-darker;
           border-left: 0;

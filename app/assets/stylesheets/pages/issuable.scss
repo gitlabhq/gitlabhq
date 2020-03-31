@@ -137,7 +137,7 @@
     position: absolute;
     bottom: 0;
     right: 0;
-    text-shadow: -1px -1px 0 $white-light, 1px -1px 0 $white-light, -1px 1px 0 $white-light, 1px 1px 0 $white-light;
+    text-shadow: -1px -1px 0 $white, 1px -1px 0 $white, -1px 1px 0 $white, 1px 1px 0 $white;
   }
 }
 
@@ -914,7 +914,7 @@
   }
 
   .time-tracking-help-state {
-    background: $white-light;
+    background: $white;
     margin: 16px -20px -20px;
     padding: 16px 20px;
     border-top: 1px solid $border-gray-light;

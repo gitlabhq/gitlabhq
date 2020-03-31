@@ -8,7 +8,7 @@
   }
 
   .signup-box {
-    background-color: $white-light;
+    background-color: $white;
     box-shadow: 0 0 0 1px $border-color;
     border-radius: $border-radius;
   }
@@ -16,7 +16,7 @@
   .form-control {
     &:active,
     &:focus {
-      background-color: $white-light;
+      background-color: $white;
     }
   }
 

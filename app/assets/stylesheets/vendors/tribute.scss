@@ -1,5 +1,5 @@
 .tribute-container {
-  background: $white-light;
+  background: $white;
   border: 1px solid $gl-gray-100;
   border-radius: $border-radius-base;
   box-shadow: 0 0 5px $issue-boards-card-shadow;
@@ -30,7 +30,7 @@
 
       .avatar {
         @include disable-all-animation;
-        border: 1px solid $white-light;
+        border: 1px solid $white;
       }
 
       small {

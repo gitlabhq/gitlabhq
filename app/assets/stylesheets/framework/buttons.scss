@@ -1,6 +1,6 @@
 @mixin btn-comment-icon {
   border-radius: 50%;
-  background: $white-light;
+  background: $white;
   padding: 1px;
   font-size: 12px;
   color: $blue-500;
@@ -12,7 +12,7 @@
   &.inverted {
     background: $blue-500;
     border-color: $blue-600;
-    color: $white-light;
+    color: $white;
   }
 
   &:active {
@@ -104,23 +104,23 @@
 }
 
 @mixin btn-green {
-  @include btn-color($green-500, $green-600, $green-600, $green-700, $green-700, $green-800, $white-light);
+  @include btn-color($green-500, $green-600, $green-600, $green-700, $green-700, $green-800, $white);
 }
 
 @mixin btn-blue {
-  @include btn-color($blue-500, $blue-600, $blue-600, $blue-700, $blue-700, $blue-800, $white-light);
+  @include btn-color($blue-500, $blue-600, $blue-600, $blue-700, $blue-700, $blue-800, $white);
 }
 
 @mixin btn-orange {
-  @include btn-color($orange-500, $orange-600, $orange-600, $orange-700, $orange-700, $orange-800, $white-light);
+  @include btn-color($orange-500, $orange-600, $orange-600, $orange-700, $orange-700, $orange-800, $white);
 }
 
 @mixin btn-red {
-  @include btn-color($red-500, $red-600, $red-600, $red-700, $red-700, $red-800, $white-light);
+  @include btn-color($red-500, $red-600, $red-600, $red-700, $red-700, $red-800, $white);
 }
 
 @mixin btn-white {
-  @include btn-color($white-light, $border-color, $white-normal, $border-white-normal, $white-dark, $border-gray-dark, $gl-text-color);
+  @include btn-color($white, $border-color, $white-normal, $border-white-normal, $white-dark, $border-gray-dark, $gl-text-color);
 }
 
 @mixin btn-with-margin {
@@ -173,21 +173,21 @@
 
   &.btn-inverted {
     &.btn-success {
-      @include btn-outline($white-light, $green-600, $green-500, $green-100, $green-700, $green-500, $green-200, $green-600, $green-800);
+      @include btn-outline($white, $green-600, $green-500, $green-100, $green-700, $green-500, $green-200, $green-600, $green-800);
     }
 
     &.btn-remove,
     &.btn-danger {
-      @include btn-outline($white-light, $red-500, $red-500, $red-100, $red-700, $red-500, $red-200, $red-600, $red-800);
+      @include btn-outline($white, $red-500, $red-500, $red-100, $red-700, $red-500, $red-200, $red-600, $red-800);
     }
 
     &.btn-warning {
-      @include btn-outline($white-light, $orange-500, $orange-500, $orange-100, $orange-700, $orange-500, $orange-200, $orange-600, $orange-800);
+      @include btn-outline($white, $orange-500, $orange-500, $orange-100, $orange-700, $orange-500, $orange-200, $orange-600, $orange-800);
     }
 
     &.btn-primary,
     &.btn-info {
-      @include btn-outline($white-light, $blue-500, $blue-500, $blue-100, $blue-700, $blue-500, $blue-200, $blue-600, $blue-800);
+      @include btn-outline($white, $blue-500, $blue-500, $blue-100, $blue-700, $blue-500, $blue-200, $blue-600, $blue-800);
     }
   }
 
@@ -202,11 +202,11 @@
 
   &.btn-close,
   &.btn-close-color {
-    @include btn-outline($white-light, $orange-600, $orange-500, $orange-100, $orange-700, $orange-500, $orange-200, $orange-600, $orange-800);
+    @include btn-outline($white, $orange-600, $orange-500, $orange-100, $orange-700, $orange-500, $orange-200, $orange-600, $orange-800);
   }
 
   &.btn-spam {
-    @include btn-outline($white-light, $red-500, $red-500, $red-100, $red-700, $red-500, $red-200, $red-600, $red-800);
+    @include btn-outline($white, $red-500, $red-500, $red-100, $red-700, $red-500, $red-200, $red-600, $red-800);
   }
 
   &.btn-danger,
@@ -249,7 +249,7 @@
     padding: 6px 16px;
     border-color: $border-color;
     color: $gray-darkest;
-    background-color: $white-light;
+    background-color: $white;
 
     &:hover,
     &:active,
@@ -409,13 +409,13 @@
   cursor: default;
 
   &:active {
-    box-shadow: inset 0 0 0 $white-light;
+    box-shadow: inset 0 0 0 $white;
   }
 }
 
 .btn-inverted {
   &-secondary {
-    @include btn-outline($white-light, $blue-500, $blue-500, $blue-100, $blue-700, $blue-500, $blue-200, $blue-600, $blue-800);
+    @include btn-outline($white, $blue-500, $blue-500, $blue-100, $blue-700, $blue-500, $blue-200, $blue-600, $blue-800);
   }
 }
 

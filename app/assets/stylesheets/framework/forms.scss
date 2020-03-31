@@ -9,7 +9,7 @@ input {
 input[type='text'].danger {
   background: $input-danger-bg !important;
   border-color: $red-400;
-  text-shadow: 0 1px 1px $white-light;
+  text-shadow: 0 1px 1px $white;
 }
 
 .datetime-controls {
@@ -81,7 +81,7 @@ label {
 
   .form-control {
     height: 29px;
-    background: $white-light;
+    background: $white;
     font-family: $monospace-font;
   }
 

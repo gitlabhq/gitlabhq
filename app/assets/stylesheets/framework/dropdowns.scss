@@ -66,7 +66,7 @@
 .dropdown-toggle,
 .confidential-merge-request-fork-group .dropdown-toggle {
   padding: 6px 8px 6px 10px;
-  background-color: $white-light;
+  background-color: $white;
   color: $gl-text-color;
   font-size: 14px;
   text-align: left;
@@ -183,7 +183,7 @@
   }
 
   .avatar {
-    border-color: $white-light;
+    border-color: $white;
   }
 }
 
@@ -258,7 +258,7 @@
   font-size: 14px;
   font-weight: $gl-font-weight-normal;
   padding: 8px 0;
-  background-color: $white-light;
+  background-color: $white;
   border: 1px solid $border-color;
   border-radius: $border-radius-base;
   box-shadow: 0 2px 4px $dropdown-shadow-color;
@@ -1009,7 +1009,7 @@ header.header-content .dropdown-menu.frequent-items-dropdown-menu {
     width: 100%;
     position: absolute;
     bottom: 0;
-    background: linear-gradient(to top, $white-light 0, rgba($white-light, 0));
+    background: linear-gradient(to top, $white 0, rgba($white, 0));
     transition: opacity $fade-mask-transition-duration $fade-mask-transition-curve;
     content: '';
     pointer-events: none;
@@ -1024,7 +1024,7 @@ header.header-content .dropdown-menu.frequent-items-dropdown-menu {
   .labels-select-dropdown-contents {
     min-height: $dropdown-min-height;
     max-height: 330px;
-    background-color: $white-light;
+    background-color: $white;
     border: 1px solid $border-color;
     box-shadow: 0 2px 4px $dropdown-shadow-color;
     z-index: 2;
@@ -1038,7 +1038,7 @@ header.header-content .dropdown-menu.frequent-items-dropdown-menu {
     top: 0;
     left: 0;
     opacity: 0.5;
-    background-color: $white-light;
+    background-color: $white;
     z-index: 1;
   }
 

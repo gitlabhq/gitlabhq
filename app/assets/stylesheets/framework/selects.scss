@@ -11,7 +11,7 @@
 .select2-container,
 .select2-container.select2-drop-above {
   .select2-choice {
-    background: $white-light;
+    background: $white;
     border-color: $input-border;
     height: 34px;
     padding: $gl-vert-padding $gl-input-padding;
@@ -166,7 +166,7 @@
 
   input {
     padding: $grid-size;
-    background: $white-light image-url('select2.png');
+    background: $white image-url('select2.png');
     background-clip: content-box;
     background-origin: content-box;
     background-repeat: no-repeat;
@@ -181,7 +181,7 @@
     }
 
     &.select2-active {
-      background-color: $white-light;
+      background-color: $white;
       background-image: image-url('select2-spinner.gif') !important;
       background-origin: content-box;
       background-repeat: no-repeat;

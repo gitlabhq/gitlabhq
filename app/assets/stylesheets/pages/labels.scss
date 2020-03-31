@@ -65,14 +65,14 @@
   padding: 0 $grid-size;
   line-height: 16px;
   border-radius: $label-border-radius;
-  color: $white-light;
+  color: $white;
 }
 
 .dropdown-labels-error {
   padding: 5px 10px;
   margin-bottom: 10px;
   background-color: $red-500;
-  color: $white-light;
+  color: $white;
 }
 
 .manage-labels-list {
@@ -80,7 +80,7 @@
   margin-bottom: 0;
 
   > li:not(.empty-message):not(.no-border) {
-    background-color: $white-light;
+    background-color: $white;
     margin-bottom: 5px;
     display: flex;
     justify-content: space-between;

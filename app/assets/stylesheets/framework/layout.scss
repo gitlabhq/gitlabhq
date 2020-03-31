@@ -12,7 +12,7 @@ body {
   text-decoration-skip: ink;
   // scss-lint:enable PropertySpelling
   &.navless {
-    background-color: $white-light !important;
+    background-color: $white !important;
   }
 
   &.board-card-content {

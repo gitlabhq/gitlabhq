@@ -80,7 +80,7 @@
     }
 
     .diffOverview {
-      background-color: $white-light;
+      background-color: $white;
       border-left: 1px solid $white-dark;
       cursor: ns-resize;
     }
@@ -112,7 +112,7 @@
     }
 
     .margin {
-      background-color: $white-light;
+      background-color: $white;
       border-right: 1px solid $gray-100;
 
       .line-insert {

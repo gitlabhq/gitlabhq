@@ -30,7 +30,7 @@
   &,
   pre.code,
   .line_holder .line_content {
-    background-color: $white-light;
+    background-color: $white;
     color: $gl-text-color;
   }
 
@@ -84,7 +84,7 @@
       }
 
       &.hll:not(.empty-cell) {
-        background-color: $white-light;
+        background-color: $white;
         border-color: $white-normal;
       }
     }
@@ -160,25 +160,25 @@
     text-decoration: underline;
   }
 
-  .hll { background-color: $white-light; }
+  .hll { background-color: $white; }
 
   .gd {
     color: $gl-text-color;
-    background-color: $white-light;
+    background-color: $white;
 
     .x {
       color: $gl-text-color;
-      background-color: $white-light;
+      background-color: $white;
     }
   }
 
   .gi {
     color: $gl-text-color;
-    background-color: $white-light;
+    background-color: $white;
 
     .x {
       color: $gl-text-color;
-      background-color: $white-light;
+      background-color: $white;
     }
   }
 

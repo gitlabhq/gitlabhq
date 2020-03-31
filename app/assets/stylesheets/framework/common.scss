@@ -5,7 +5,7 @@
 .cgreen { color: $green-600; }
 .cdark { color: $common-gray-dark; }
 
-.fwhite { fill: $white-light; }
+.fwhite { fill: $white; }
 .fgray { fill: $gray-700; }
 
 .text-plain,
@@ -207,10 +207,10 @@ li.note {
   padding: 10px;
   background: $red-400;
   margin: 0;
-  color: $white-light;
+  color: $white;
 
   a {
-    color: $white-light;
+    color: $white;
     text-decoration: underline;
   }
 }

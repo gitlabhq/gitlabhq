@@ -542,7 +542,7 @@
 
     .input-group-text {
       width: 100%;
-      background-color: $white-light;
+      background-color: $white;
     }
 
     .selected-icon {
@@ -655,7 +655,7 @@
       z-index: 10;
       padding: $gl-padding-8 0;
       text-align: center;
-      background-color: $white-light;
+      background-color: $white;
       color: $gl-text-color-tertiary;
       transform: translateY(-50%);
       font-size: 12px;
@@ -821,7 +821,7 @@
 .repository-languages-bar {
   height: 8px;
   margin-bottom: $gl-padding-8;
-  background-color: $white-light;
+  background-color: $white;
   border-radius: $border-radius-default;
 
   .progress-bar {
@@ -1150,7 +1150,7 @@ pre.light-well {
 
   .form-control {
     @extend .monospace;
-    background-color: $white-light;
+    background-color: $white;
     border-color: $border-color;
     font-size: 14px;
     margin-left: -1px;
@@ -1181,7 +1181,7 @@ pre.light-well {
   }
 
   i:nth-child(2) {
-    color: $white-light;
+    color: $white;
   }
 }
 
@@ -1385,7 +1385,7 @@ pre.light-well {
   padding: 32px;
   margin: 32px;
   border-radius: 3px;
-  background-color: $white-light;
+  background-color: $white;
 
   h3 {
     margin-top: 0;

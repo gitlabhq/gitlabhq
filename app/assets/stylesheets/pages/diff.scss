@@ -30,7 +30,7 @@
         left: -11px;
         width: 10px;
         height: calc(100% + 1px);
-        background: $white-light;
+        background: $white;
         pointer-events: none;
       }
 
@@ -92,7 +92,7 @@
   }
 
   .diff-content {
-    background: $white-light;
+    background: $white;
     color: $gl-text-color;
     border-radius: 0 0 3px 3px;
 
@@ -133,11 +133,11 @@
 
     .frame {
       display: inline-block;
-      background-color: $white-light;
+      background-color: $white;
       line-height: 0;
 
       img {
-        border: 1px solid $white-light;
+        border: 1px solid $white;
         background-image: linear-gradient(45deg,
         $border-color 25%,
         transparent 25%,
@@ -692,7 +692,7 @@ table.code {
   position: absolute;
   left: 0;
   margin-right: 0;
-  border-color: $white-light;
+  border-color: $white;
   cursor: pointer;
   transition: all 0.1s ease-out;
   @include code-icon-size();
@@ -742,7 +742,7 @@ table.code {
 
   .collapse-icon,
   path {
-    fill: $white-light;
+    fill: $white;
   }
 
   &:focus {
@@ -760,7 +760,7 @@ table.code {
     @include media-breakpoint-up(sm) {
       margin-left: -$gl-padding;
       padding-left: $gl-padding;
-      background-color: $white-light;
+      background-color: $white;
     }
   }
 
@@ -768,7 +768,7 @@ table.code {
     position: -webkit-sticky;
     position: sticky;
     top: $header-height;
-    background-color: $white-light;
+    background-color: $white;
     z-index: 200;
 
     .with-performance-bar & {
@@ -872,27 +872,27 @@ table.code {
     display: block;
     width: 100%;
     height: 10px;
-    background-color: $white-light;
+    background-color: $white;
     background-image: linear-gradient(45deg,
     transparent,
     transparent 73%,
     $diff-jagged-border-gradient-color 75%,
-    $white-light 80%),
+    $white 80%),
       linear-gradient(225deg,
     transparent,
     transparent 73%,
     $diff-jagged-border-gradient-color 75%,
-    $white-light 80%),
+    $white 80%),
       linear-gradient(135deg,
     transparent,
     transparent 73%,
     $diff-jagged-border-gradient-color 75%,
-    $white-light 80%),
+    $white 80%),
       linear-gradient(-45deg,
     transparent,
     transparent 73%,
     $diff-jagged-border-gradient-color 75%,
-    $white-light 80%);
+    $white 80%);
     background-position: 5px 5px, 0 5px, 0 5px, 5px 5px;
     background-size: 10px 10px;
     background-repeat: repeat;
@@ -981,8 +981,8 @@ table.code {
 .notes > .badge.badge-pill {
   position: absolute;
   background-color: $blue-400;
-  color: $white-light;
-  border: $white-light 1px solid;
+  color: $white;
+  border: $white 1px solid;
   min-height: $gl-padding;
   padding: 5px 8px;
   border-radius: 12px;
@@ -1037,7 +1037,7 @@ table.code {
   }
 
   &.collapsed {
-    background-color: $white-light;
+    background-color: $white;
 
     .diff-notes-collapse,
     .note,

@@ -8,7 +8,7 @@ $brand-danger: $red-500;
 
 $border-radius-base: 3px !default;
 
-$modal-body-bg: $white-light;
+$modal-body-bg: $white;
 $input-border: $border-color;
 
 $padding-base-vertical: $gl-vert-padding;
@@ -168,7 +168,7 @@ table {
 .bg-danger,
 .bg-warning {
   .card-header {
-    color: $white-light;
+    color: $white;
   }
 }
 
@@ -310,11 +310,11 @@ pre code {
 .alert-info,
 .alert-warning,
 .alert-danger {
-  color: $white-light;
+  color: $white;
 
   h4,
   .alert-link {
-    color: $white-light;
+    color: $white;
   }
 }
 

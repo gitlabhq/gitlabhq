@@ -714,7 +714,7 @@ $mr-widget-min-height: 69px;
 .table-holder {
   .ci-table {
     th {
-      background-color: $white-light;
+      background-color: $white;
       color: $gl-text-color-secondary;
     }
   }
@@ -729,7 +729,7 @@ $mr-widget-min-height: 69px;
 .mr-version-controls {
   position: relative;
   z-index: 203;
-  background: $white-light;
+  background: $white;
   color: $gl-text-color;
   margin-top: -1px;
 
@@ -806,7 +806,7 @@ $mr-widget-min-height: 69px;
 .epic-tabs-holder {
   top: $header-height;
   z-index: 250;
-  background-color: $white-light;
+  background-color: $white;
   border-bottom: 1px solid $border-color;
 
   @include media-breakpoint-up(sm) {
@@ -857,7 +857,7 @@ $mr-widget-min-height: 69px;
     margin-right: auto;
 
     .inner-page-scroll-tabs {
-      background-color: $white-light;
+      background-color: $white;
       margin-left: -$gl-padding;
       padding-left: $gl-padding;
     }

@@ -40,7 +40,7 @@
   }
 
   &.white {
-    background-color: $white-light;
+    background-color: $white;
   }
 
   &.top-block {
@@ -73,7 +73,7 @@
 
   &.content-component-block {
     padding: 11px 0;
-    background-color: $white-light;
+    background-color: $white;
   }
 
   .title {
@@ -96,13 +96,13 @@
   }
 
   &.build-content {
-    background-color: $white-light;
+    background-color: $white;
     border-top: 0;
   }
 }
 
 .sub-header-block {
-  background-color: $white-light;
+  background-color: $white;
   border-bottom: 1px solid $white-dark;
   padding: 11px 0;
   margin-bottom: 11px;
@@ -176,7 +176,7 @@
   }
 
   &.groups-cover-block {
-    background: $white-light;
+    background: $white;
     border-bottom: 1px solid $border-color;
     text-align: left;
     padding: 24px 0;

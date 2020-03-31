@@ -18,7 +18,7 @@
       width: 55px;
       height: 14px;
       margin: 0;
-      fill: $white-light;
+      fill: $white;
     }
   }
 
@@ -95,7 +95,7 @@
 
     .dropdown.open {
       > a {
-        border-bottom-color: $white-light;
+        border-bottom-color: $white;
       }
     }
 
@@ -209,10 +209,10 @@
           text-decoration: none;
           outline: 0;
           opacity: 1;
-          color: $white-light;
+          color: $white;
 
           &.header-user-dropdown-toggle .header-user-avatar {
-            border-color: $white-light;
+            border-color: $white;
           }
         }
       }
@@ -224,14 +224,14 @@
       .impersonated-user,
       .impersonated-user:hover {
         margin-right: 1px;
-        background-color: $white-light;
+        background-color: $white;
         border-top-right-radius: 0;
         border-bottom-right-radius: 0;
       }
 
       .impersonation-btn,
       .impersonation-btn:hover {
-        background-color: $white-light;
+        background-color: $white;
         border-top-left-radius: 0;
         border-bottom-left-radius: 0;
 
@@ -264,7 +264,7 @@
       &:focus {
         text-decoration: none;
         outline: 0;
-        color: $white-light;
+        color: $white;
       }
     }
 
@@ -441,7 +441,7 @@
   margin: 4px 0 4px 2px;
 
   &:hover {
-    background-color: $white-light;
+    background-color: $white;
   }
 }
 
@@ -452,7 +452,7 @@
     font-weight: $gl-font-weight-normal;
     margin-left: -6px;
     font-size: 11px;
-    color: $white-light;
+    color: $white;
     padding: 0 5px;
     line-height: 12px;
     border-radius: 7px;
@@ -583,7 +583,7 @@
 .navbar-empty {
   justify-content: center;
   height: $header-height;
-  background: $white-light;
+  background: $white;
   border-bottom: 1px solid $white-normal;
 
   .tanuki-logo,

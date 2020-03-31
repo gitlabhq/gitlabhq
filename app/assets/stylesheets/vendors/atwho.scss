@@ -32,7 +32,7 @@
   .cur {
     .avatar {
       @include disable-all-animation;
-      border: 1px solid $white-light;
+      border: 1px solid $white;
     }
   }
 

@@ -305,7 +305,7 @@
 
 .inner-page-scroll-tabs {
   .fade-right {
-    @include fade(left, $white-light);
+    @include fade(left, $white);
     right: 0;
     text-align: right;
 
@@ -315,7 +315,7 @@
   }
 
   .fade-left {
-    @include fade(right, $white-light);
+    @include fade(right, $white);
     left: 0;
     text-align: left;
 
@@ -345,7 +345,7 @@
     @include scrolling-links();
 
     .fade-right {
-      @include fade(left, $white-light);
+      @include fade(left, $white);
       right: -5px;
 
       .fa {
@@ -354,7 +354,7 @@
     }
 
     .fade-left {
-      @include fade(right, $white-light);
+      @include fade(right, $white);
       left: -5px;
 
       .fa {

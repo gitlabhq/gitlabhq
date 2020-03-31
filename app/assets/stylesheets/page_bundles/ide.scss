@@ -84,8 +84,8 @@ $ide-commit-header-height: 48px;
     border-bottom: 1px solid $white-dark;
 
     &.active {
-      background-color: $white-light;
-      border-bottom-color: $white-light;
+      background-color: $white;
+      border-bottom-color: $white;
     }
 
     &:not(.disabled) {
@@ -138,7 +138,7 @@ $ide-commit-header-height: 48px;
 
   &:not([disabled]):focus {
     background-color: $blue-500;
-    color: $white-light;
+    color: $white;
     outline: 0;
 
     svg {
@@ -205,7 +205,7 @@ $ide-commit-header-height: 48px;
 .ide-status-bar {
   border-top: 1px solid $white-dark;
   padding: 2px $gl-padding-8 0;
-  background: $white-light;
+  background: $white;
   display: flex;
   justify-content: space-between;
   height: $ide-statusbar-height;
@@ -306,7 +306,7 @@ $ide-commit-header-height: 48px;
     display: flex;
     flex: 1;
     flex-direction: column;
-    background-color: $white-light;
+    background-color: $white;
     border-left: 1px solid $white-dark;
     border-top: 1px solid $white-dark;
     border-top-left-radius: $border-radius-small;
@@ -418,7 +418,7 @@ $ide-commit-header-height: 48px;
 
 .multi-file-commit-form {
   position: relative;
-  background-color: $white-light;
+  background-color: $white;
   border-left: 1px solid $white-dark;
   transition: all 0.3s ease;
 
@@ -575,7 +575,7 @@ $ide-commit-header-height: 48px;
     // extend width over border of sidebar section
     width: calc(100% + 1px);
     padding-right: $gl-padding + 1px;
-    background-color: $white-light;
+    background-color: $white;
     border-top-color: $white-dark;
     border-bottom-color: $white-dark;
 
@@ -586,7 +586,7 @@ $ide-commit-header-height: 48px;
       top: 0;
       bottom: 0;
       width: 1px;
-      background: $white-light;
+      background: $white;
     }
 
     &.is-right {
@@ -609,7 +609,7 @@ $ide-commit-header-height: 48px;
 
 .ide-commit-message-field {
   height: 200px;
-  background-color: $white-light;
+  background-color: $white;
 
   .md-area {
     display: flex;
@@ -819,7 +819,7 @@ $ide-commit-header-height: 48px;
   bottom: 0;
   right: 0;
   z-index: 10;
-  background: $white-light;
+  background: $white;
   overflow: auto;
   display: flex;
   flex-direction: column;
@@ -889,7 +889,7 @@ $ide-commit-header-height: 48px;
   .multi-file-commit-panel-inner {
     width: 350px;
     padding: $grid-size $gl-padding;
-    background-color: $white-light;
+    background-color: $white;
     border-left: 1px solid $white-dark;
   }
 

@@ -240,14 +240,14 @@ $colors: (
       right: 10px;
       padding: 0;
       outline: none;
-      color: $white-light;
+      color: $white;
       width: 75px; // static width to make 2 buttons have same width
       height: 19px;
     }
   }
 
   .btn-success .fa-spinner {
-    color: $white-light;
+    color: $white;
   }
 
   .editor-wrap {

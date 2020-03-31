@@ -261,7 +261,7 @@
     }
 
     .card-header .label-count {
-      color: $white-light;
+      color: $white;
       background: $common-gray-dark;
     }
 
@@ -325,7 +325,7 @@
 
 .saml-settings.info-well {
   .form-control[readonly] {
-    background: $white-light;
+    background: $white;
   }
 }
 
@@ -340,7 +340,7 @@
 
   a {
     font-weight: $gl-font-weight-bold;
-    color: $white-light;
+    color: $white;
   }
 }
 
@@ -355,7 +355,7 @@
   }
 
   .btn-clipboard {
-    background-color: $white-light;
+    background-color: $white;
     border: 1px solid $gray-200;
   }
 
@@ -368,7 +368,7 @@
 .mirror-error-badge {
   background-color: $red-400;
   border-radius: $border-radius-default;
-  color: $white-light;
+  color: $white;
 }
 
 .push-pull-table {

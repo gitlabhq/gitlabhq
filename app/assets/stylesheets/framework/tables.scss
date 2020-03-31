@@ -15,11 +15,11 @@ table {
     .warning,
     .danger,
     .info {
-      color: $white-light;
+      color: $white;
 
       a:not(.btn) {
         text-decoration: underline;
-        color: $white-light;
+        color: $white;
       }
     }
 
@@ -53,7 +53,7 @@ table {
 
     .thead-white {
       th {
-        background-color: $white-light;
+        background-color: $white;
         color: $gl-text-color-secondary;
         border-top: 0;
       }

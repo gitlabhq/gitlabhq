@@ -1,6 +1,6 @@
 .edit-cluster-form {
   .clipboard-addon {
-    background-color: $white-light;
+    background-color: $white;
   }
 }
 
@@ -35,11 +35,11 @@
 }
 
 .cluster-application-logo {
-  border: 3px solid $white-light;
+  border: 3px solid $white;
   box-shadow: 0 0 0 1px $gray-normal;
 
   &.avatar:hover {
-    border-color: $white-light;
+    border-color: $white;
   }
 }
 

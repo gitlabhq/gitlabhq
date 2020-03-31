@@ -16,7 +16,7 @@
   width: 100%;
   border: 1px solid $border-color;
   border-radius: $border-radius;
-  background-color: $white-light;
+  background-color: $white;
 
   &:hover {
     background-color: $gray-darker;
@@ -675,7 +675,7 @@
     &.ci-action-icon-wrapper {
       height: 30px;
       width: 30px;
-      background: $white-light;
+      background: $white;
       border: 1px solid $border-color;
       border-radius: 100%;
       display: block;
@@ -768,7 +768,7 @@
 
 @mixin mini-pipeline-item() {
   border-radius: 100px;
-  background-color: $white-light;
+  background-color: $white;
   border-width: 1px;
   border-style: solid;
   width: $ci-action-icon-size;
@@ -852,7 +852,7 @@ button.mini-pipeline-graph-dropdown-toggle {
       height: $ci-action-dropdown-button-size;
       width: $ci-action-dropdown-button-size;
 
-      background: $white-light;
+      background: $white;
       border: 1px solid $border-color;
       border-radius: 50%;
       display: block;
@@ -977,7 +977,7 @@ button.mini-pipeline-graph-dropdown-toggle {
   &::after {
     left: -5px;
     border-width: 10px 7px 10px 0;
-    border-right-color: $white-light;
+    border-right-color: $white;
   }
 }
 
@@ -1012,7 +1012,7 @@ button.mini-pipeline-graph-dropdown-toggle {
 
   &::after {
     margin-top: 1px;
-    border-bottom-color: $white-light;
+    border-bottom-color: $white;
   }
 
   /**

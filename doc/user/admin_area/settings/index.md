@@ -36,7 +36,7 @@ Access the default page for admin area settings by navigating to
 | [Slack application](../../../user/project/integrations/gitlab_slack_application.md#configuration) **(FREE ONLY)** | Slack integration allows you to interact with GitLab via slash commands in a chat window. This option is only available on GitLab.com, though it may be [available for self-managed instances in the future](https://gitlab.com/gitlab-org/gitlab/-/issues/28164). |
 | [Third party offers](third_party_offers.md) | Control the display of third party offers. |
 | [Snowplow](../../../telemetry/index.md#enabling-tracking) | Configure the Snowplow integration. |
-| [Amazon EKS](../../project/clusters/add_remove_clusters.md#additional-requirements-for-self-managed-instances-core-only) | Amazon EKS integration allows you to provision EKS clusters from GitLab. |
+| [Amazon EKS](../../project/clusters/add_new_eks_cluster.md#additional-requirements-for-self-managed-instances-core-only) | Amazon EKS integration allows you to provision EKS clusters from GitLab. |
 
 ## Repository
 

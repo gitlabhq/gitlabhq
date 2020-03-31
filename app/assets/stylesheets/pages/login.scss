@@ -175,7 +175,7 @@
   .form-control {
     &:active,
     &:focus {
-      background-color: $white-light;
+      background-color: $white;
     }
   }
 
@@ -236,7 +236,7 @@
       left: 0;
       right: 0;
       height: 40px;
-      background: $white-light;
+      background: $white;
     }
 
     .login-page-broadcast {

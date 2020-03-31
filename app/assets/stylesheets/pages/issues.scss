@@ -5,7 +5,7 @@
     padding: $gl-padding-8;
 
     .issue {
-      background-color: $white-light;
+      background-color: $white;
       margin-bottom: $gl-padding-8;
       border-radius: $border-radius-default;
       border: 1px solid $gray-100;
@@ -160,7 +160,7 @@ ul.related-merge-requests > li {
   margin-bottom: 10px;
 
   .form-control {
-    background-color: $white-light;
+    background-color: $white;
   }
 
   .btn {

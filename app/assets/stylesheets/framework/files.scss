@@ -105,7 +105,7 @@
   }
 
   .file-content {
-    background: $white-light;
+    background: $white;
 
     &.image_file,
     &.audio,
@@ -131,7 +131,7 @@
 
     &.blob-no-preview {
       background: $gray-darker;
-      text-shadow: 0 1px 2px $white-light;
+      text-shadow: 0 1px 2px $white;
       padding: 100px 0;
     }
 
@@ -227,7 +227,7 @@
         padding: 10px 0;
         border-left: 1px solid $border-color;
         margin-bottom: 0;
-        background: $white-light;
+        background: $white;
 
         li {
           color: $logs-li-color;

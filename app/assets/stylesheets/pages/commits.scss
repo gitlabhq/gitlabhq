@@ -88,7 +88,7 @@
     font-family: inherit;
     left: $left;
     height: 100%;
-    border-right: 1px solid mix($input-border, $white-light);
+    border-right: 1px solid mix($input-border, $white);
     position: absolute;
     z-index: 1;
   }
@@ -127,7 +127,7 @@
 
 .text-expander {
   display: inline-flex;
-  background: $white-light;
+  background: $white;
   color: $gl-text-color-secondary;
   padding: 1px $gl-padding-4;
   cursor: pointer;
@@ -260,7 +260,7 @@
     color: $gl-text-color;
 
     &.autodevops-badge {
-      color: $white-light;
+      color: $white;
     }
   }
 

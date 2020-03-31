@@ -39,7 +39,7 @@
   $xterm-fg-12: #00f;
   $xterm-fg-13: #f0f;
   $xterm-fg-14: #0ff;
-  $xterm-fg-15: $white-light;
+  $xterm-fg-15: $white;
   $xterm-fg-16: $black;
   $xterm-fg-17: #00005f;
   $xterm-fg-18: #000087;
@@ -255,7 +255,7 @@
   $xterm-fg-228: #ffff87;
   $xterm-fg-229: #ffffaf;
   $xterm-fg-230: #ffffd7;
-  $xterm-fg-231: $white-light;
+  $xterm-fg-231: $white;
   $xterm-fg-232: #080808;
   $xterm-fg-233: #121212;
   $xterm-fg-234: #1c1c1c;
@@ -490,7 +490,7 @@
   }
 
   .xterm-fg-15 {
-    color: $white-light;
+    color: $white;
   }
 
   .xterm-fg-16 {

@@ -302,7 +302,7 @@
     margin: auto auto 12px;
     border-radius: 50%;
     animation: blinking-dot 1s linear infinite;
-    background: $white-light;
+    background: $white;
 
     &:nth-child(2) {
       animation-delay: 0.33s;
@@ -393,7 +393,7 @@
 
 @mixin avatar-counter($border-radius: 1em) {
   background-color: $gray-darkest;
-  color: $white-light;
+  color: $white;
   border: 1px solid $gray-normal;
   border-radius: $border-radius;
   font-family: $regular-font;
