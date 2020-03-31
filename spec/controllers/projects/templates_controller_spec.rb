@@ -15,7 +15,7 @@ describe Projects::TemplatesController do
       it do
         get(:show, params: { namespace_id: project.namespace, template_type: 'issue', key: 'issue_template', project_id: project }, format: :json)
 
-        expect(response.status).to eq(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['name']).to eq('issue_template')
         expect(json_response['content']).to eq('issue content')
       end
@@ -25,7 +25,7 @@ describe Projects::TemplatesController do
       it do
         get(:show, params: { namespace_id: project.namespace, template_type: 'merge_request', key: 'merge_request_template', project_id: project }, format: :json)
 
-        expect(response.status).to eq(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['name']).to eq('merge_request_template')
         expect(json_response['content']).to eq('merge request content')
       end
@@ -35,7 +35,7 @@ describe Projects::TemplatesController do
       it do
         get(:show, params: { namespace_id: project.namespace, template_type: 'issue', key: 'issue_template', project_id: project }, format: :json)
 
-        expect(response.status).to eq(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -43,7 +43,7 @@ describe Projects::TemplatesController do
       it do
         get(:show, params: { namespace_id: project.namespace, template_type: 'merge_request', key: 'merge_request_template', project_id: project }, format: :json)
 
-        expect(response.status).to eq(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -57,13 +57,13 @@ describe Projects::TemplatesController do
       it 'renders 404 when the format type is invalid' do
         get(:show, params: { namespace_id: project.namespace, template_type: 'issue', key: 'issue_template', project_id: project }, format: :html)
 
-        expect(response.status).to eq(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
 
       it 'renders 404 when the key is unknown' do
         get(:show, params: { namespace_id: project.namespace, template_type: 'issue', key: 'unknown_template', project_id: project }, format: :json)
 
-        expect(response.status).to eq(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 

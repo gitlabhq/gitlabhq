@@ -14,7 +14,7 @@ describe ProfilesController, :request_store do
              params: { user: { password: 'hello12345', password_confirmation: 'hello12345' } }
       end.not_to change { user.reload.encrypted_password }
 
-      expect(response.status).to eq(302)
+      expect(response).to have_gitlab_http_status(:found)
     end
   end
 
@@ -27,7 +27,7 @@ describe ProfilesController, :request_store do
 
       user.reload
 
-      expect(response.status).to eq(302)
+      expect(response).to have_gitlab_http_status(:found)
       expect(user.unconfirmed_email).to eq('john@gmail.com')
     end
 
@@ -41,7 +41,7 @@ describe ProfilesController, :request_store do
 
       user.reload
 
-      expect(response.status).to eq(302)
+      expect(response).to have_gitlab_http_status(:found)
       expect(user.unconfirmed_email).to eq nil
     end
 
@@ -58,7 +58,7 @@ describe ProfilesController, :request_store do
 
       ldap_user.reload
 
-      expect(response.status).to eq(302)
+      expect(response).to have_gitlab_http_status(:found)
       expect(ldap_user.unconfirmed_email).not_to eq('john@gmail.com')
     end
 
@@ -75,7 +75,7 @@ describe ProfilesController, :request_store do
 
       ldap_user.reload
 
-      expect(response.status).to eq(302)
+      expect(response).to have_gitlab_http_status(:found)
       expect(ldap_user.unconfirmed_email).not_to eq('john@gmail.com')
       expect(ldap_user.name).not_to eq('John')
       expect(ldap_user.location).to eq('City, Country')
@@ -114,7 +114,7 @@ describe ProfilesController, :request_store do
 
       user.reload
 
-      expect(response.status).to eq(302)
+      expect(response).to have_gitlab_http_status(:found)
       expect(user.username).to eq(new_username)
     end
 
@@ -127,7 +127,7 @@ describe ProfilesController, :request_store do
           },
           format: :json
 
-      expect(response.status).to eq(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['message']).to eq(s_('Profiles|Username successfully changed'))
     end
 
@@ -140,7 +140,7 @@ describe ProfilesController, :request_store do
           },
           format: :json
 
-      expect(response.status).to eq(422)
+      expect(response).to have_gitlab_http_status(:unprocessable_entity)
       expect(json_response['message']).to match(/Username change failed/)
     end
 
@@ -162,7 +162,7 @@ describe ProfilesController, :request_store do
 
         user.reload
 
-        expect(response.status).to eq(302)
+        expect(response).to have_gitlab_http_status(:found)
         expect(gitlab_shell.repository_exists?(project.repository_storage, "#{new_username}/#{project.path}.git")).to be_truthy
       end
     end
@@ -180,7 +180,7 @@ describe ProfilesController, :request_store do
 
         user.reload
 
-        expect(response.status).to eq(302)
+        expect(response).to have_gitlab_http_status(:found)
         expect(gitlab_shell.repository_exists?(project.repository_storage, "#{project.disk_path}.git")).to be_truthy
         expect(before_disk_path).to eq(project.disk_path)
       end

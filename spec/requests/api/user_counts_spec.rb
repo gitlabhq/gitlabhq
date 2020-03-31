@@ -13,7 +13,7 @@ describe API::UserCounts do
       it 'returns authentication error' do
         get api('/user_counts')
 
-        expect(response.status).to eq(401)
+        expect(response).to have_gitlab_http_status(:unauthorized)
       end
     end
 
@@ -21,7 +21,7 @@ describe API::UserCounts do
       it 'returns open counts for current user' do
         get api('/user_counts', user)
 
-        expect(response.status).to eq(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to be_a Hash
         expect(json_response['merge_requests']).to eq(1)
       end
@@ -31,7 +31,7 @@ describe API::UserCounts do
 
         get api('/user_counts', user)
 
-        expect(response.status).to eq(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to be_a Hash
         expect(json_response['merge_requests']).to eq(2)
       end

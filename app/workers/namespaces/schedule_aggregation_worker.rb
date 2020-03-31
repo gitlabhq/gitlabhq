@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 
 module Namespaces
-  class ScheduleAggregationWorker # rubocop:disable Scalability/IdempotentWorker
+  class ScheduleAggregationWorker
     include ApplicationWorker
 
     queue_namespace :update_namespace_statistics
     feature_category :source_code_management
+    idempotent!
 
     def perform(namespace_id)
       return unless aggregation_schedules_table_exists?

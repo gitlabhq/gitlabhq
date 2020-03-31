@@ -25,7 +25,7 @@ RSpec.shared_examples 'noteable API' do |parent_type, noteable_type, id_name|
 
           get api("/#{parent_type}/#{parent_id}/#{noteable_type}/#{noteable[id_name]}/notes", user)
 
-          expect(response.status).to eq(200)
+          expect(response).to have_gitlab_http_status(:ok)
         end
 
         context '2 notes with equal created_at' do

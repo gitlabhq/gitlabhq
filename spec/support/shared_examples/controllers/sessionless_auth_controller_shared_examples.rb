@@ -86,7 +86,7 @@ RSpec.shared_examples 'authenticates sessionless user' do |path, format, params|
 
       get path, params: default_params.merge(feed_token: 'token')
 
-      expect(response.status).not_to eq 200
+      expect(response).not_to have_gitlab_http_status(:ok)
     end
   end
 
@@ -103,6 +103,6 @@ RSpec.shared_examples 'authenticates sessionless user' do |path, format, params|
 
     get path, params: default_params.merge(private_token: 'token')
 
-    expect(response.status).not_to eq(200)
+    expect(response).not_to have_gitlab_http_status(:ok)
   end
 end

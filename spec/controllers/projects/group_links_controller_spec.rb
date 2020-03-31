@@ -59,7 +59,7 @@ describe Projects::GroupLinksController do
       include_context 'link project to group'
 
       it 'renders 404' do
-        expect(response.status).to eq 404
+        expect(response).to have_gitlab_http_status(:not_found)
       end
 
       it 'does not share project with that group' do
@@ -73,7 +73,7 @@ describe Projects::GroupLinksController do
       include_context 'link project to group'
 
       it 'renders 404' do
-        expect(response.status).to eq 404
+        expect(response).to have_gitlab_http_status(:not_found)
       end
 
       it 'does not share project with that group' do

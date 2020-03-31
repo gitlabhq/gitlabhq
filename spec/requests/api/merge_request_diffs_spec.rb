@@ -18,7 +18,7 @@ describe API::MergeRequestDiffs, 'MergeRequestDiffs' do
       get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/versions", user)
       merge_request_diff = merge_request.merge_request_diffs.last
 
-      expect(response.status).to eq 200
+      expect(response).to have_gitlab_http_status(:ok)
       expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
       expect(json_response.size).to eq(merge_request.merge_request_diffs.size)
@@ -43,7 +43,7 @@ describe API::MergeRequestDiffs, 'MergeRequestDiffs' do
     it 'returns a 200 for a valid merge request' do
       get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/versions/#{merge_request_diff.id}", user)
 
-      expect(response.status).to eq 200
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['id']).to eq(merge_request_diff.id)
       expect(json_response['head_commit_sha']).to eq(merge_request_diff.head_commit_sha)
       expect(json_response['diffs'].size).to eq(merge_request_diff.diffs.size)

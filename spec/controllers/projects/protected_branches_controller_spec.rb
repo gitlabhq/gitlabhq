@@ -103,7 +103,7 @@ describe Projects::ProtectedBranchesController do
       it "prevents deletion of the protected branch rule" do
         delete(:destroy, params: base_params)
 
-        expect(response.status).to eq(403)
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
   end

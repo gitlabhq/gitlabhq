@@ -244,7 +244,7 @@ describe API::Issues do
           title: 'new issue',
           labels: 'label, label?, label&foo, ?, &'
         }
-      expect(response.status).to eq(201)
+      expect(response).to have_gitlab_http_status(:created)
       expect(json_response['labels']).to include 'label'
       expect(json_response['labels']).to include 'label?'
       expect(json_response['labels']).to include 'label&foo'
@@ -258,7 +258,7 @@ describe API::Issues do
           title: 'new issue',
           labels: ['label', 'label?', 'label&foo, ?, &']
         }
-      expect(response.status).to eq(201)
+      expect(response).to have_gitlab_http_status(:created)
       expect(json_response['labels']).to include 'label'
       expect(json_response['labels']).to include 'label?'
       expect(json_response['labels']).to include 'label&foo'

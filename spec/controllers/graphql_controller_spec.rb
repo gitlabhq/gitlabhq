@@ -50,7 +50,7 @@ describe GraphqlController do
 
         post :execute
 
-        expect(response.status).to eq(403)
+        expect(response).to have_gitlab_http_status(:forbidden)
         expect(response).to render_template('errors/access_denied')
       end
     end

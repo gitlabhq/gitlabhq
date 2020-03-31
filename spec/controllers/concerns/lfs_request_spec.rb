@@ -48,7 +48,7 @@ describe LfsRequest do
       it 'returns 403' do
         get :show, params: { id: project.id }
 
-        expect(response.status).to eq(403)
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
 
@@ -57,7 +57,7 @@ describe LfsRequest do
         it 'returns 404' do
           get :show, params: { id: 'does not exist' }
 
-          expect(response.status).to eq(404)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
 
@@ -67,7 +67,7 @@ describe LfsRequest do
         it 'returns 404' do
           get :show, params: { id: project.id }
 
-          expect(response.status).to eq(404)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
     end

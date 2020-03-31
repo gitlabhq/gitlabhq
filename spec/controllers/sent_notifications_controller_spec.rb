@@ -76,7 +76,7 @@ describe SentNotificationsController do
           end
 
           it 'renders unsubscribe page' do
-            expect(response.status).to eq(200)
+            expect(response).to have_gitlab_http_status(:ok)
             expect(response).to render_template :unsubscribe
           end
 

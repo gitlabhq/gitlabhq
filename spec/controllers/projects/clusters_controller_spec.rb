@@ -387,7 +387,7 @@ describe Projects::ClustersController do
 
       cluster = project.clusters.first
 
-      expect(response.status).to eq(201)
+      expect(response).to have_gitlab_http_status(:created)
       expect(response.location).to eq(project_cluster_path(project, cluster))
       expect(cluster).to be_aws
       expect(cluster).to be_kubernetes
@@ -403,7 +403,7 @@ describe Projects::ClustersController do
       it 'does not create a cluster' do
         expect { post_create_aws }.not_to change { Clusters::Cluster.count }
 
-        expect(response.status).to eq(422)
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
         expect(response.content_type).to eq('application/json')
         expect(response.body).to include('is invalid')
       end
@@ -450,7 +450,7 @@ describe Projects::ClustersController do
     it 'creates an Aws::Role record' do
       expect { go }.to change { Aws::Role.count }
 
-      expect(response.status).to eq 200
+      expect(response).to have_gitlab_http_status(:ok)
 
       role = Aws::Role.last
       expect(role.user).to eq user
@@ -464,7 +464,7 @@ describe Projects::ClustersController do
       it 'does not create a record' do
         expect { go }.not_to change { Aws::Role.count }
 
-        expect(response.status).to eq 422
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
       end
     end
 

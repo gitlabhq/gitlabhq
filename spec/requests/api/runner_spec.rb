@@ -1102,7 +1102,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
           end
 
           it 'returns that operation conflicts' do
-            expect(response.status).to eq(409)
+            expect(response).to have_gitlab_http_status(:conflict)
           end
         end
       end
@@ -1185,7 +1185,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
 
       context 'when request is valid' do
         it 'gets correct response' do
-          expect(response.status).to eq 202
+          expect(response).to have_gitlab_http_status(:accepted)
           expect(job.reload.trace.raw).to eq 'BUILD TRACE appended'
           expect(response.header).to have_key 'Range'
           expect(response.header).to have_key 'Job-Status'
@@ -1242,7 +1242,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
           end
 
           it 'responds with forbidden' do
-            expect(response.status).to eq(403)
+            expect(response).to have_gitlab_http_status(:forbidden)
           end
         end
 
@@ -1252,7 +1252,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
           end
 
           it 'has valid trace' do
-            expect(response.status).to eq(202)
+            expect(response).to have_gitlab_http_status(:accepted)
             expect(job.reload.trace.raw).to eq 'BUILD TRACE appended appended'
           end
 
@@ -1267,7 +1267,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
               end
 
               it 'returns Forbidden ' do
-                expect(response.status).to eq(403)
+                expect(response).to have_gitlab_http_status(:forbidden)
               end
             end
           end
@@ -1287,7 +1287,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
               end
 
               it 'returns an error' do
-                expect(response.status).to eq(416)
+                expect(response).to have_gitlab_http_status(:range_not_satisfiable)
                 expect(response.header['Range']).to eq('0-0')
               end
             end
@@ -1298,7 +1298,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
               end
 
               it 'succeeds with updating trace' do
-                expect(response.status).to eq(202)
+                expect(response).to have_gitlab_http_status(:accepted)
                 expect(job.reload.trace.raw).to eq 'BUILD TRACE appended appended hello'
               end
             end
@@ -1313,7 +1313,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
           end
 
           it 'returns that operation conflicts' do
-            expect(response.status).to eq(409)
+            expect(response).to have_gitlab_http_status(:conflict)
           end
         end
 
@@ -1336,7 +1336,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
           it 'returns X-GitLab-Trace-Update-Interval as 3' do
             patch_the_trace
 
-            expect(response.status).to eq 202
+            expect(response).to have_gitlab_http_status(:accepted)
             expect(response.header['X-GitLab-Trace-Update-Interval']).to eq('3')
           end
         end
@@ -1345,7 +1345,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
           it 'returns X-GitLab-Trace-Update-Interval as 30' do
             patch_the_trace
 
-            expect(response.status).to eq 202
+            expect(response).to have_gitlab_http_status(:accepted)
             expect(response.header['X-GitLab-Trace-Update-Interval']).to eq('30')
           end
         end
@@ -1358,7 +1358,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
           it 'does not return X-GitLab-Trace-Update-Interval header' do
             patch_the_trace
 
-            expect(response.status).to eq 202
+            expect(response).to have_gitlab_http_status(:accepted)
             expect(response.header).not_to have_key 'X-GitLab-Trace-Update-Interval'
           end
         end
@@ -1370,7 +1370,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
         end
 
         it 'gets correct response' do
-          expect(response.status).to eq 202
+          expect(response).to have_gitlab_http_status(:accepted)
           expect(job.reload.trace.raw).to eq 'BUILD TRACE appended'
           expect(response.header).to have_key 'Range'
           expect(response.header).to have_key 'Job-Status'
@@ -1381,7 +1381,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
         let(:headers_with_range) { headers.merge({ 'Content-Range' => '15-20/6' }) }
 
         it 'gets 416 error response with range headers' do
-          expect(response.status).to eq 416
+          expect(response).to have_gitlab_http_status(:range_not_satisfiable)
           expect(response.header).to have_key 'Range'
           expect(response.header['Range']).to eq '0-11'
         end
@@ -1391,7 +1391,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
         let(:headers_with_range) { headers.merge({ 'Content-Range' => '8-20/13' }) }
 
         it 'gets 416 error response with range headers' do
-          expect(response.status).to eq 416
+          expect(response).to have_gitlab_http_status(:range_not_satisfiable)
           expect(response.header).to have_key 'Range'
           expect(response.header['Range']).to eq '0-11'
         end
@@ -1400,13 +1400,13 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
       context 'when Content-Range header is missing' do
         let(:headers_with_range) { headers }
 
-        it { expect(response.status).to eq 400 }
+        it { expect(response).to have_gitlab_http_status(:bad_request) }
       end
 
       context 'when job has been errased' do
         let(:job) { create(:ci_build, runner_id: runner.id, erased_at: Time.now) }
 
-        it { expect(response.status).to eq 403 }
+        it { expect(response).to have_gitlab_http_status(:forbidden) }
       end
 
       def patch_the_trace(content = ' appended', request_headers = nil)

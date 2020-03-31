@@ -59,6 +59,8 @@ describe RuboCop::Cop::RSpec::HaveGitlabHttpStatus do
       'have_http_status(var)'        | 'have_gitlab_http_status(var)'
       'have_http_status(:success)'   | 'have_gitlab_http_status(:success)'
       'have_http_status(:invalid)'   | 'have_gitlab_http_status(:invalid)'
+      'expect(response.status).to eq(200)'     | 'expect(response).to have_gitlab_http_status(:ok)'
+      'expect(response.status).not_to eq(200)' | 'expect(response).not_to have_gitlab_http_status(:ok)'
     end
 
     with_them do
@@ -90,7 +92,23 @@ describe RuboCop::Cop::RSpec::HaveGitlabHttpStatus do
         'have_http_status(200, arg)',
         'have_gitlab_http_status',
         'have_gitlab_http_status { }',
-        'have_gitlab_http_status(200, arg)'
+        'have_gitlab_http_status(200, arg)',
+        'expect(response.status).to eq(arg)',
+        'expect(response.status).to eq(:ok)',
+        'expect(response.status).to some_matcher(200)',
+        'expect(response.status).not_to eq(arg)',
+        'expect(response.status).not_to eq(:ok)',
+        'expect(response.status).not_to some_matcher(200)',
+        'expect(result.status).to eq(200)',
+        'expect(result.status).not_to eq(200)',
+        <<~CODE,
+          response = some_assignment
+          expect(response.status).to eq(200)
+        CODE
+        <<~CODE
+          response = some_assignment
+          expect(response.status).not_to eq(200)
+        CODE
       ]
     end
 

@@ -217,7 +217,7 @@ describe API::Internal::Base do
       it "finds the key" do
         get(api('/internal/authorized_keys'), params: { fingerprint: key.fingerprint, secret_token: secret_token })
 
-        expect(response.status).to eq(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response["key"]).to eq(key.key)
       end
     end
@@ -226,7 +226,7 @@ describe API::Internal::Base do
       it "returns 404" do
         get(api('/internal/authorized_keys'), params: { fingerprint: "no:t-:va:li:d0", secret_token: secret_token })
 
-        expect(response.status).to eq(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -234,7 +234,7 @@ describe API::Internal::Base do
       it "returns 404" do
         get(api('/internal/authorized_keys'), params: { fingerprint: "#{key.fingerprint[0..5]}%", secret_token: secret_token })
 
-        expect(response.status).to eq(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -242,20 +242,20 @@ describe API::Internal::Base do
       it "finds the key" do
         get(api('/internal/authorized_keys'), params: { key: key.key.split[1], secret_token: secret_token })
 
-        expect(response.status).to eq(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response["key"]).to eq(key.key)
       end
 
       it "returns 404 with a partial key" do
         get(api('/internal/authorized_keys'), params: { key: key.key.split[1][0...-3], secret_token: secret_token })
 
-        expect(response.status).to eq(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
 
       it "returns 404 with an not valid base64 string" do
         get(api('/internal/authorized_keys'), params: { key: "whatever!", secret_token: secret_token })
 
-        expect(response.status).to eq(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end
@@ -812,7 +812,7 @@ describe API::Internal::Base do
         project.add_developer(user)
         push(key, project, 'web')
 
-        expect(response.status).to eq(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['status']).to be_truthy
       end
     end

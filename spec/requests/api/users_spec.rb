@@ -832,7 +832,7 @@ describe API::Users, :do_not_mock_admin_mode do
     it "updates external status" do
       put api("/users/#{user.id}", admin), params: { external: true }
 
-      expect(response.status).to eq 200
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['external']).to eq(true)
       expect(user.reload.external?).to be_truthy
     end

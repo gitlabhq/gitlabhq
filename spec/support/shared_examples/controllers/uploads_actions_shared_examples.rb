@@ -13,7 +13,7 @@ RSpec.shared_examples 'handle uploads' do
     context 'when a user is not authorized to upload a file' do
       it 'returns 404 status' do
         post :create, params: params.merge(file: jpg), format: :json
-        expect(response.status).to eq(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -319,7 +319,7 @@ RSpec.shared_examples 'handle uploads authorize' do
       it 'returns 404 status' do
         post_authorize
 
-        expect(response.status).to eq(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 

@@ -98,7 +98,7 @@ describe API::GroupLabels do
              color: '#FFAABB'
            }
 
-      expect(response.status).to eq(201)
+      expect(response).to have_gitlab_http_status(:created)
       expect(json_response['name']).to eq('Foo & Bar')
       expect(json_response['color']).to eq('#FFAABB')
       expect(json_response['description']).to be_nil

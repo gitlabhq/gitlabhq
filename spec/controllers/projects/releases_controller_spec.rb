@@ -36,7 +36,7 @@ describe Projects::ReleasesController do
     it 'renders a 200' do
       get_index
 
-      expect(response.status).to eq(200)
+      expect(response).to have_gitlab_http_status(:ok)
     end
 
     context 'when the project is private' do
@@ -54,7 +54,7 @@ describe Projects::ReleasesController do
 
           get_index
 
-          expect(response.status).to eq(200)
+          expect(response).to have_gitlab_http_status(:ok)
         end
       end
 
@@ -66,7 +66,7 @@ describe Projects::ReleasesController do
 
           get_index
 
-          expect(response.status).to eq(404)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
     end

@@ -334,7 +334,7 @@ describe RegistrationsController do
 
     def expect_failure(message)
       expect(flash[:alert]).to eq(message)
-      expect(response.status).to eq(303)
+      expect(response).to have_gitlab_http_status(:see_other)
       expect(response).to redirect_to profile_account_path
     end
 
@@ -348,7 +348,7 @@ describe RegistrationsController do
 
     def expect_success
       expect(flash[:notice]).to eq s_('Profiles|Account scheduled for removal.')
-      expect(response.status).to eq(303)
+      expect(response).to have_gitlab_http_status(:see_other)
       expect(response).to redirect_to new_user_session_path
     end
 

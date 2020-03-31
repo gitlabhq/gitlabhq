@@ -66,7 +66,7 @@ RSpec.shared_examples 'group and project milestones' do |route_definition|
     it 'returns a milestone by iids array' do
       get api("#{route}?iids=#{closed_milestone.iid}", user)
 
-      expect(response.status).to eq 200
+      expect(response).to have_gitlab_http_status(:ok)
       expect(response).to include_pagination_headers
       expect(json_response.size).to eq(1)
       expect(json_response.size).to eq(1)

@@ -543,7 +543,8 @@ expect(metrics.merged_at).to be_like_time(time)
 
 #### `have_gitlab_http_status`
 
-Prefer `have_gitlab_http_status` over `have_http_status` because the former
+Prefer `have_gitlab_http_status` over `have_http_status` and
+`expect(response.status).to` because the former
 could also show the response body whenever the status mismatched. This would
 be very useful whenever some tests start breaking and we would love to know
 why without editing the source and rerun the tests.

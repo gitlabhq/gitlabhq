@@ -54,6 +54,17 @@ describe Namespaces::ScheduleAggregationWorker, '#perform', :clean_gitlab_redis_
     end
   end
 
+  it_behaves_like 'an idempotent worker' do
+    let(:job_args) { [group.id] }
+
+    it 'creates a single aggregation schedule' do
+      expect { worker.perform(*job_args) }
+        .to change { Namespace::AggregationSchedule.count }.by(1)
+      expect { worker.perform(*job_args) }
+        .not_to change { Namespace::AggregationSchedule.count }
+    end
+  end
+
   def stub_aggregation_schedule_statistics
     # Namespace::Aggregations are deleted by
     # Namespace::AggregationSchedule::schedule_root_storage_statistics,

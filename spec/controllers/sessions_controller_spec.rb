@@ -153,7 +153,7 @@ describe SessionsController do
           it 'returns status 403' do
             post(:create, params: { user: user_params })
 
-            expect(response.status).to eq 403
+            expect(response).to have_gitlab_http_status(:forbidden)
           end
         end
 

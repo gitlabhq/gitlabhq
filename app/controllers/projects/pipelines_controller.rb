@@ -13,6 +13,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   before_action do
     push_frontend_feature_flag(:junit_pipeline_view)
   end
+  before_action :ensure_pipeline, only: [:show]
 
   around_action :allow_gitaly_ref_name_caching, only: [:index, :show]
 
@@ -212,6 +213,10 @@ class Projects::PipelinesController < Projects::ApplicationController
 
   def create_params
     params.require(:pipeline).permit(:ref, variables_attributes: %i[key variable_type secret_value])
+  end
+
+  def ensure_pipeline
+    render_404 unless pipeline
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

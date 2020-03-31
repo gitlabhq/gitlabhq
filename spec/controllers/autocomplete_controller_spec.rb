@@ -173,7 +173,7 @@ describe AutocompleteController do
         it 'gives an array of users' do
           get :users, params: { todo_filter: true }
 
-          expect(response.status).to eq 200
+          expect(response).to have_gitlab_http_status(:ok)
           expect(json_response).to be_kind_of(Array)
         end
       end

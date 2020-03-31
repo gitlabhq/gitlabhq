@@ -19,7 +19,7 @@ describe API::DeployKeys do
       it 'returns authentication error' do
         get api('/deploy_keys')
 
-        expect(response.status).to eq(401)
+        expect(response).to have_gitlab_http_status(:unauthorized)
       end
     end
 
@@ -27,7 +27,7 @@ describe API::DeployKeys do
       it 'returns a 403 error' do
         get api('/deploy_keys', user)
 
-        expect(response.status).to eq(403)
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
 
@@ -35,7 +35,7 @@ describe API::DeployKeys do
       it 'returns all deploy keys' do
         get api('/deploy_keys', admin)
 
-        expect(response.status).to eq(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.first['id']).to eq(deploy_keys_project.deploy_key.id)

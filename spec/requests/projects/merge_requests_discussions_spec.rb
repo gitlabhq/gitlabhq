@@ -21,7 +21,7 @@ describe 'merge requests discussions' do
     it 'returns 200' do
       send_request
 
-      expect(response.status).to eq(200)
+      expect(response).to have_gitlab_http_status(:ok)
     end
 
     # https://docs.gitlab.com/ee/development/query_recorder.html#use-request-specs-instead-of-controller-specs

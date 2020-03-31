@@ -39,7 +39,7 @@ RSpec.shared_examples 'update invalid issuable' do |klass|
 
       put :update, params: params
 
-      expect(response.status).to eq(409)
+      expect(response).to have_gitlab_http_status(:conflict)
       expect(json_response).to have_key('errors')
     end
   end

@@ -6,7 +6,8 @@ module Gitlab
   module SidekiqMiddleware
     module DuplicateJobs
       DROPPABLE_QUEUES = Set.new([
-        Namespaces::RootStatisticsWorker.queue
+        Namespaces::RootStatisticsWorker.queue,
+        Namespaces::ScheduleAggregationWorker.queue
       ]).freeze
 
       def self.drop_duplicates?(queue_name)

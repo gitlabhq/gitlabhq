@@ -23,7 +23,7 @@ describe Admin::ApplicationSettingsController do
     it 'returns 404' do
       get :usage_data, format: :html
 
-      expect(response.status).to eq(404)
+      expect(response).to have_gitlab_http_status(:not_found)
     end
   end
 
@@ -37,7 +37,7 @@ describe Admin::ApplicationSettingsController do
       get :usage_data, format: :html
 
       expect(response.body).to start_with('<span')
-      expect(response.status).to eq(200)
+      expect(response).to have_gitlab_http_status(:ok)
     end
 
     it 'returns JSON data' do
@@ -46,7 +46,7 @@ describe Admin::ApplicationSettingsController do
       body = json_response
       expect(body["version"]).to eq(Gitlab::VERSION)
       expect(body).to include('counts')
-      expect(response.status).to eq(200)
+      expect(response).to have_gitlab_http_status(:ok)
     end
   end
 

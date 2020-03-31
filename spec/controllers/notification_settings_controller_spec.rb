@@ -50,7 +50,7 @@ describe NotificationSettingsController do
                  notification_setting: { level: :participating }
                }
 
-          expect(response.status).to eq 200
+          expect(response).to have_gitlab_http_status(:ok)
           expect(notification_setting.level).to eq("participating")
           expect(notification_setting.user_id).to eq(user.id)
           expect(notification_setting.source_id).to eq(project.id)
@@ -65,7 +65,7 @@ describe NotificationSettingsController do
                    notification_setting: { level: :custom }.merge(custom_events)
                  }
 
-            expect(response.status).to eq 200
+            expect(response).to have_gitlab_http_status(:ok)
             expect(notification_setting.level).to eq("custom")
 
             custom_events.each do |event, value|
@@ -85,7 +85,7 @@ describe NotificationSettingsController do
                  notification_setting: { level: :watch }
                }
 
-          expect(response.status).to eq 200
+          expect(response).to have_gitlab_http_status(:ok)
           expect(notification_setting.level).to eq("watch")
           expect(notification_setting.user_id).to eq(user.id)
           expect(notification_setting.source_id).to eq(group.id)
@@ -100,7 +100,7 @@ describe NotificationSettingsController do
                    notification_setting: { level: :custom }.merge(custom_events)
                  }
 
-            expect(response.status).to eq 200
+            expect(response).to have_gitlab_http_status(:ok)
             expect(notification_setting.level).to eq("custom")
 
             custom_events.each do |event, value|
@@ -157,7 +157,7 @@ describe NotificationSettingsController do
               notification_setting: { level: :participating }
             }
 
-        expect(response.status).to eq 200
+        expect(response).to have_gitlab_http_status(:ok)
       end
 
       context 'and setting custom notification setting' do
@@ -176,7 +176,7 @@ describe NotificationSettingsController do
                 notification_setting: { level: :participating, events: custom_events }
               }
 
-          expect(response.status).to eq 200
+          expect(response).to have_gitlab_http_status(:ok)
         end
       end
     end

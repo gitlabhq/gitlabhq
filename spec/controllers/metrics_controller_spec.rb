@@ -33,7 +33,7 @@ describe MetricsController, :request_store do
       it 'returns prometheus metrics' do
         get :index
 
-        expect(response.status).to eq(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response.body).to match(/^prometheus_counter 1$/)
       end
 
@@ -45,7 +45,7 @@ describe MetricsController, :request_store do
         it 'returns proper response' do
           get :index
 
-          expect(response.status).to eq(200)
+          expect(response).to have_gitlab_http_status(:ok)
           expect(response.body).to eq("# Metrics are disabled, see: http://test.host/help/administration/monitoring/prometheus/gitlab_metrics#gitlab-prometheus-metrics\n")
         end
       end
@@ -75,7 +75,7 @@ describe MetricsController, :request_store do
       it 'returns the expected error response' do
         get :index
 
-        expect(response.status).to eq(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end

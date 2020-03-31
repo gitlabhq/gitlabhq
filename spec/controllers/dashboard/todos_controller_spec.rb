@@ -68,7 +68,7 @@ describe Dashboard::TodosController do
         create(:todo, project: project, author: author, user: user, target: merge_request_2)
 
         expect { get :index }.not_to exceed_query_limit(control)
-        expect(response.status).to eq(200)
+        expect(response).to have_gitlab_http_status(:ok)
       end
     end
 

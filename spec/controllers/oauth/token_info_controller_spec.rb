@@ -8,7 +8,7 @@ RSpec.describe Oauth::TokenInfoController do
       it 'responds with a 401' do
         get :show
 
-        expect(response.status).to eq 401
+        expect(response).to have_gitlab_http_status(:unauthorized)
         expect(JSON.parse(response.body)).to include('error' => 'invalid_request')
       end
     end
@@ -22,7 +22,7 @@ RSpec.describe Oauth::TokenInfoController do
       it 'responds with the token info' do
         get :show, params: { access_token: access_token.token }
 
-        expect(response.status).to eq 200
+        expect(response).to have_gitlab_http_status(:ok)
         expect(JSON.parse(response.body)).to eq(
           'scope'              => %w[api],
           'scopes'             => %w[api],
@@ -39,7 +39,7 @@ RSpec.describe Oauth::TokenInfoController do
       it 'responds with a 401' do
         get :show, params: { access_token: 'unknown_token' }
 
-        expect(response.status).to eq 401
+        expect(response).to have_gitlab_http_status(:unauthorized)
         expect(JSON.parse(response.body)).to include('error' => 'invalid_request')
       end
     end
@@ -52,7 +52,7 @@ RSpec.describe Oauth::TokenInfoController do
       it 'responds with a 401' do
         get :show, params: { access_token: access_token.token }
 
-        expect(response.status).to eq 401
+        expect(response).to have_gitlab_http_status(:unauthorized)
         expect(JSON.parse(response.body)).to include('error' => 'invalid_request')
       end
     end
@@ -63,7 +63,7 @@ RSpec.describe Oauth::TokenInfoController do
       it 'responds with a 401' do
         get :show, params: { access_token: access_token.token }
 
-        expect(response.status).to eq 401
+        expect(response).to have_gitlab_http_status(:unauthorized)
         expect(JSON.parse(response.body)).to include('error' => 'invalid_request')
       end
     end

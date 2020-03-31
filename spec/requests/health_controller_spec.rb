@@ -37,7 +37,7 @@ describe HealthController do
     it 'responds with resource not found' do
       subject
 
-      expect(response.status).to eq(404)
+      expect(response).to have_gitlab_http_status(:not_found)
     end
   end
 
@@ -48,7 +48,7 @@ describe HealthController do
       it 'responds with health checks data' do
         subject
 
-        expect(response.status).to eq(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response.body).to eq('GitLab OK')
       end
     end
@@ -95,7 +95,7 @@ describe HealthController do
           expect(json_response['master_check']).to contain_exactly(
             { 'status' => 'failed', 'message' => 'unexpected Master check result: false' })
 
-          expect(response.status).to eq(503)
+          expect(response).to have_gitlab_http_status(:service_unavailable)
           expect(response.headers['X-GitLab-Custom-Error']).to eq(1)
         end
       end
@@ -126,7 +126,7 @@ describe HealthController do
           expect(json_response['redis_check']).to contain_exactly(
             { 'status' => 'failed', 'message' => 'check error' })
 
-          expect(response.status).to eq(503)
+          expect(response).to have_gitlab_http_status(:service_unavailable)
           expect(response.headers['X-GitLab-Custom-Error']).to eq(1)
         end
       end

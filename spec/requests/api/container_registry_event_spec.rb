@@ -27,7 +27,7 @@ describe API::ContainerRegistryEvent do
 
       expect(event).to have_received(:handle!).once
       expect(event).to have_received(:track!).once
-      expect(response.status).to eq 200
+      expect(response).to have_gitlab_http_status(:ok)
     end
 
     it 'returns 401 error status when token is invalid' do
@@ -35,7 +35,7 @@ describe API::ContainerRegistryEvent do
            params: { events: events }.to_json,
            headers: registry_headers.merge('Authorization' => 'invalid_token')
 
-      expect(response.status).to eq 401
+      expect(response).to have_gitlab_http_status(:unauthorized)
     end
   end
 end

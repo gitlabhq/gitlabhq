@@ -26,7 +26,7 @@ describe API::APIGuard::AdminModeMiddleware, :do_not_mock_admin_mode, :request_s
 
       get api('/willfail')
 
-      expect(response.status).to eq(500)
+      expect(response).to have_gitlab_http_status(:internal_server_error)
       expect(response.body).to include('oh noes!')
 
       expect(Gitlab::Auth::CurrentUserMode.bypass_session_admin_id).to be_nil

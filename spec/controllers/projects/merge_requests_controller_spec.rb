@@ -1557,7 +1557,7 @@ describe Projects::MergeRequestsController do
 
         post_rebase
 
-        expect(response.status).to eq(200)
+        expect(response).to have_gitlab_http_status(:ok)
       end
     end
 
@@ -1572,7 +1572,7 @@ describe Projects::MergeRequestsController do
 
         post_rebase
 
-        expect(response.status).to eq(200)
+        expect(response).to have_gitlab_http_status(:ok)
       end
     end
 
@@ -1583,7 +1583,7 @@ describe Projects::MergeRequestsController do
 
         post_rebase
 
-        expect(response.status).to eq(409)
+        expect(response).to have_gitlab_http_status(:conflict)
         expect(json_response['merge_error']).to eq('Failed to enqueue the rebase operation, possibly due to a long-lived transaction. Try again later.')
       end
     end
@@ -1605,7 +1605,7 @@ describe Projects::MergeRequestsController do
 
           post_rebase
 
-          expect(response.status).to eq(404)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
 
@@ -1621,7 +1621,7 @@ describe Projects::MergeRequestsController do
 
           post_rebase
 
-          expect(response.status).to eq(200)
+          expect(response).to have_gitlab_http_status(:ok)
         end
       end
     end
@@ -1639,7 +1639,7 @@ describe Projects::MergeRequestsController do
       it 'returns 200' do
         get :discussions, params: { namespace_id: project.namespace, project_id: project, id: merge_request.iid }
 
-        expect(response.status).to eq(200)
+        expect(response).to have_gitlab_http_status(:ok)
       end
 
       context 'highlight preloading' do

@@ -234,7 +234,7 @@ describe OmniauthCallbacksController, type: :controller, do_not_mock_admin_mode:
           post 'auth0'
 
           expect(request.env['warden']).not_to be_authenticated
-          expect(response.status).to eq(302)
+          expect(response).to have_gitlab_http_status(:found)
           expect(controller).to set_flash[:alert].to('Wrong extern UID provided. Make sure Auth0 is configured correctly.')
         end
       end
@@ -249,7 +249,7 @@ describe OmniauthCallbacksController, type: :controller, do_not_mock_admin_mode:
             post 'salesforce'
 
             expect(request.env['warden']).not_to be_authenticated
-            expect(response.status).to eq(302)
+            expect(response).to have_gitlab_http_status(:found)
             expect(controller).to set_flash[:alert].to('Email not verified. Please verify your email in Salesforce.')
           end
         end

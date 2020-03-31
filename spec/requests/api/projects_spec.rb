@@ -190,7 +190,7 @@ describe API::Projects do
       it 'includes the project labels as the tag_list' do
         get api('/projects', user)
 
-        expect(response.status).to eq 200
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.first.keys).to include('tag_list')
@@ -199,7 +199,7 @@ describe API::Projects do
       it 'includes open_issues_count' do
         get api('/projects', user)
 
-        expect(response.status).to eq 200
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.first.keys).to include('open_issues_count')
@@ -220,7 +220,7 @@ describe API::Projects do
 
         get api('/projects', user)
 
-        expect(response.status).to eq 200
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.find { |hash| hash['id'] == project.id }.keys).not_to include('open_issues_count')
@@ -232,7 +232,7 @@ describe API::Projects do
 
           get api('/projects?with_issues_enabled=true', user)
 
-          expect(response.status).to eq 200
+          expect(response).to have_gitlab_http_status(:ok)
           expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
           expect(json_response.map { |p| p['id'] }).not_to include(project.id)
@@ -281,7 +281,7 @@ describe API::Projects do
         it 'includes open_issues_count' do
           get api('/projects', user)
 
-          expect(response.status).to eq 200
+          expect(response).to have_gitlab_http_status(:ok)
           expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
           expect(json_response.first.keys).to include('open_issues_count')
@@ -293,7 +293,7 @@ describe API::Projects do
 
           get api('/projects', user)
 
-          expect(response.status).to eq 200
+          expect(response).to have_gitlab_http_status(:ok)
           expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
           expect(json_response.find { |hash| hash['id'] == project.id }.keys).not_to include('open_issues_count')
@@ -568,7 +568,7 @@ describe API::Projects do
 
           get api('/projects?with_issues_enabled=true', user2)
 
-          expect(response.status).to eq 200
+          expect(response).to have_gitlab_http_status(:ok)
           expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
           expect(json_response.map { |p| p['id'] }).not_to include(project.id)

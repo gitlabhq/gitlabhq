@@ -81,15 +81,15 @@ describe API::Services do
         end
 
         if required_attributes.empty?
-          expected_code = 200
+          expected_code = :ok
         else
           attrs.delete(required_attributes.sample)
-          expected_code = 400
+          expected_code = :bad_request
         end
 
         put api("/projects/#{project.id}/services/#{dashed_service}", user), params: attrs
 
-        expect(response.status).to eq(expected_code)
+        expect(response).to have_gitlab_http_status(expected_code)
       end
     end
 

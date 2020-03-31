@@ -41,7 +41,7 @@ describe API::Notes do
       end
 
       it 'responds with resource not found error' do
-        expect(response.status).to eq 404
+        expect(response).to have_gitlab_http_status(:not_found)
       end
 
       it 'does not create new note' do

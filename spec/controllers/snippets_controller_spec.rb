@@ -720,7 +720,7 @@ describe SnippetsController do
           post(:toggle_award_emoji, params: { id: personal_snippet.to_param, name: "thumbsup" })
         end.to change { personal_snippet.award_emoji.count }.from(0).to(1)
 
-        expect(response.status).to eq(200)
+        expect(response).to have_gitlab_http_status(:ok)
       end
 
       it "removes the already awarded emoji" do
@@ -730,7 +730,7 @@ describe SnippetsController do
           post(:toggle_award_emoji, params: { id: personal_snippet.to_param, name: "thumbsup" })
         end.to change { personal_snippet.award_emoji.count }.from(1).to(0)
 
-        expect(response.status).to eq(200)
+        expect(response).to have_gitlab_http_status(:ok)
       end
     end
   end

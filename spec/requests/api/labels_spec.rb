@@ -43,7 +43,7 @@ describe API::Labels do
       it "returns 200 if a priority is added (#{route_type} route)" do
         put_labels_api(route_type, user, spec_params, priority: 3)
 
-        expect(response.status).to eq(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['name']).to eq(label1.name)
         expect(json_response['priority']).to eq(3)
       end
@@ -103,7 +103,7 @@ describe API::Labels do
       it "returns 200 if priority is changed (#{route_type} route)" do
         put_labels_api(route_type, user, spec_params, priority: 10)
 
-        expect(response.status).to eq(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['id']).to eq(expected_response_label_id)
         expect(json_response['priority']).to eq(10)
       end
@@ -124,7 +124,7 @@ describe API::Labels do
       put api("/projects/#{project.id}/labels", user),
           params: request_params
 
-      expect(response.status).to eq(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['id']).to eq(expected_response_label_id)
       expect(json_response['priority']).to be_nil
     end
@@ -144,7 +144,7 @@ describe API::Labels do
       put api("/projects/#{project.id}/labels/#{label_id}", user),
           params: request_params
 
-      expect(response.status).to eq(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['id']).to eq(expected_response_label_id)
       expect(json_response['priority']).to be_nil
     end
@@ -321,7 +321,7 @@ describe API::Labels do
              color: '#FFAABB'
            }
 
-      expect(response.status).to eq(201)
+      expect(response).to have_gitlab_http_status(:created)
       expect(json_response['name']).to eq('Foo & Bar')
       expect(json_response['color']).to eq('#FFAABB')
       expect(json_response['description']).to be_nil
@@ -336,7 +336,7 @@ describe API::Labels do
              priority: 3
            }
 
-      expect(response.status).to eq(201)
+      expect(response).to have_gitlab_http_status(:created)
       expect(json_response['name']).to eq('Foo & Bar')
       expect(json_response['color']).to eq('#FFAABB')
       expect(json_response['description']).to be_nil

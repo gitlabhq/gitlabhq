@@ -919,7 +919,7 @@
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
-  :idempotent: 
+  :idempotent: true
 - :name: authorized_keys
   :feature_category: :source_code_management
   :has_external_dependencies: 

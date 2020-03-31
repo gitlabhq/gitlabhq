@@ -96,7 +96,7 @@ describe API::CommitStatuses do
       end
 
       it 'returns empty array' do
-        expect(response.status).to eq 200
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to be_an Array
         expect(json_response).to be_empty
       end

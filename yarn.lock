@@ -761,12 +761,12 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@gitlab/at.js@^1.5.5":
+"@gitlab/at.js@1.5.5":
   version "1.5.5"
   resolved "https://registry.yarnpkg.com/@gitlab/at.js/-/at.js-1.5.5.tgz#5f6bfe6baaef360daa9b038fa78798d7a6a916b4"
   integrity sha512-282Dn3SPVsUHVDhMsXgfnv+Rzog0uxecjttxGRQvxh25es1+xvkGQFsvJfkSKJ3X1kHVkSjKf+Tt5Rra+Jhp9g==
 
-"@gitlab/eslint-plugin@^2.0.0":
+"@gitlab/eslint-plugin@2.0.0":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@gitlab/eslint-plugin/-/eslint-plugin-2.0.0.tgz#4eedd16cf95cf82dc359c1b220d4f5a08361df9c"
   integrity sha512-ctmsGnCuokhfh/5goLdz3NdBIUpwTMkx/17QxxutxkWW7yOGMPIY8Na+WhjnUSdst8Wjwzexc+snbh5NMs8H/A==
@@ -781,12 +781,12 @@
     eslint-plugin-vue "^6.2.1"
     vue-eslint-parser "^7.0.0"
 
-"@gitlab/svgs@^1.116.0":
+"@gitlab/svgs@1.116.0":
   version "1.116.0"
   resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.116.0.tgz#a3c89f950bb256c2e109444c9a85fecdd261292c"
   integrity sha512-sZLn3acu0IyrSnZRU1rE3UjxF6FlwvBNfjKQgn0qclxdbe8Ya6cGNVq4aGdCEkHwvb9rFpKbfHBujVgVKNkxSA==
 
-"@gitlab/ui@^10.1.2":
+"@gitlab/ui@10.1.2":
   version "10.1.2"
   resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-10.1.2.tgz#027f86f69ef08fb90cab5c69545adf37e20c6ceb"
   integrity sha512-xTvLIHrBqvvvHLVPMGdktBv3hNL7FPGPSFbAC3IURrVa/9FIJbzkIYFGlUIbLu/QX1i0CJN+MLmyHhLtzhKgtA==

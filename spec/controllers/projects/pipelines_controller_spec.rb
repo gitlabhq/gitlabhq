@@ -923,8 +923,16 @@ describe Projects::PipelinesController do
     end
 
     context 'ref provided' do
+      render_views
+
       before do
         create(:ci_pipeline, ref: 'master', project: project)
+      end
+
+      it 'shows a 404 if no pipeline exists' do
+        get :show, params: { namespace_id: project.namespace, project_id: project, latest: true, ref: 'non-existence' }
+
+        expect(response).to have_gitlab_http_status(:not_found)
       end
 
       it 'shows the latest pipeline for the provided ref' do

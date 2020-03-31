@@ -23,7 +23,7 @@ describe Repositories::GitHttpController do
     it 'returns 403' do
       head :info_refs, params: params
 
-      expect(response.status).to eq(403)
+      expect(response).to have_gitlab_http_status(:forbidden)
     end
   end
 
@@ -39,7 +39,7 @@ describe Repositories::GitHttpController do
 
         get :info_refs, params: params
 
-        expect(response.status).to eq(401)
+        expect(response).to have_gitlab_http_status(:unauthorized)
       end
 
       context 'with authorized user' do
@@ -50,7 +50,7 @@ describe Repositories::GitHttpController do
         it 'returns 200' do
           get :info_refs, params: params
 
-          expect(response.status).to eq(200)
+          expect(response).to have_gitlab_http_status(:ok)
         end
 
         it 'updates the user activity' do
@@ -72,7 +72,7 @@ describe Repositories::GitHttpController do
 
           get :info_refs, params: params
 
-          expect(response.status).to eq(503)
+          expect(response).to have_gitlab_http_status(:service_unavailable)
         end
 
         it 'returns 503 with timeout error' do
@@ -80,7 +80,7 @@ describe Repositories::GitHttpController do
 
           get :info_refs, params: params
 
-          expect(response.status).to eq(503)
+          expect(response).to have_gitlab_http_status(:service_unavailable)
           expect(response.body).to eq 'Gitlab::GitAccess::TimeoutError'
         end
       end

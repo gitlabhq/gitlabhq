@@ -341,7 +341,7 @@ describe('Panel Type component', () => {
     });
 
     it('adds a copy button to the dropdown', () => {
-      expect(findCopyLink().text()).toContain('Generate link to chart');
+      expect(findCopyLink().text()).toContain('Copy link to chart');
     });
 
     it('opens a toast on click', () => {

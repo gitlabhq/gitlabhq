@@ -2164,7 +2164,7 @@ describe API::MergeRequests do
             labels: 'label, label?, label&foo, ?, &'
           }
 
-        expect(response.status).to eq(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['labels']).to include 'label'
         expect(json_response['labels']).to include 'label?'
         expect(json_response['labels']).to include 'label&foo'
@@ -2179,7 +2179,7 @@ describe API::MergeRequests do
             labels: ['label', 'label?', 'label&foo, ?, &', '1, 2', 3, 4]
           }
 
-        expect(response.status).to eq(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['labels']).to include 'label'
         expect(json_response['labels']).to include 'label?'
         expect(json_response['labels']).to include 'label&foo'
@@ -2198,7 +2198,7 @@ describe API::MergeRequests do
             labels: ''
           }
 
-        expect(response.status).to eq(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['labels']).to eq []
       end
 
@@ -2210,7 +2210,7 @@ describe API::MergeRequests do
           }.to_json,
           headers: { 'Content-Type' => 'application/json' }
 
-        expect(response.status).to eq(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['labels']).to eq []
       end
 
@@ -2221,7 +2221,7 @@ describe API::MergeRequests do
             labels: []
           }
 
-        expect(response.status).to eq(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['labels']).to eq []
       end
 
@@ -2232,7 +2232,7 @@ describe API::MergeRequests do
             labels: ['']
           }
 
-        expect(response.status).to eq(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['labels']).to eq []
       end
 
@@ -2243,7 +2243,7 @@ describe API::MergeRequests do
             labels: ['', '', '']
           }
 
-        expect(response.status).to eq(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['labels']).to eq []
       end
     end

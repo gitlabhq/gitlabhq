@@ -32,7 +32,7 @@ describe GroupsController do
       get :new, params: { parent_id: group.id }
 
       expect(response).not_to render_template(:new)
-      expect(response.status).to eq(404)
+      expect(response).to have_gitlab_http_status(:not_found)
     end
   end
 
@@ -373,7 +373,7 @@ describe GroupsController do
 
         delete :destroy, params: { id: group.to_param }
 
-        expect(response.status).to eq(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 

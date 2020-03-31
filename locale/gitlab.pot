@@ -5656,6 +5656,9 @@ msgstr ""
 msgid "Copy link"
 msgstr ""
 
+msgid "Copy link to chart"
+msgstr ""
+
 msgid "Copy personal access token"
 msgstr ""
 
@@ -9139,9 +9142,6 @@ msgid "Generate a default set of labels"
 msgstr ""
 
 msgid "Generate key"
-msgstr ""
-
-msgid "Generate link to chart"
 msgstr ""
 
 msgid "Generate new export"
