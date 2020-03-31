@@ -811,7 +811,7 @@ module Gitlab
 end
 ```
 
-A [Query Analyzer](https://graphql-ruby.org/queries/analysis.html#analyzer-api) contains a series
+A [Query Analyzer](https://graphql-ruby.org/queries/ast_analysis.html#analyzer-api) contains a series
 of callbacks to validate queries before they are executed. Each field can pass through
 the analyzer, and the final value is also available to you.
 

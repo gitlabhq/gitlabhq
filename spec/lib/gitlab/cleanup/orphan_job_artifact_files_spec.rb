@@ -28,6 +28,12 @@ describe Gitlab::Cleanup::OrphanJobArtifactFiles do
     expect { cleanup.run! }.to raise_error('Invalid niceness')
   end
 
+  it 'passes correct arguments to ionice' do
+    allow(Gitlab::Utils).to receive(:which).with('ionice').and_return('/fake/ionice')
+    expect(Open3).to receive(:popen3).with('/fake/ionice', '-c', any_args)
+    cleanup.run!
+  end
+
   it 'finds artifacts on disk' do
     artifact = create(:ci_job_artifact, :archive)
 

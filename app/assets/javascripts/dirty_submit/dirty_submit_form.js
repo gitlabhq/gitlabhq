@@ -1,4 +1,4 @@
-import _ from 'underscore';
+import { memoize, throttle } from 'lodash';
 import $ from 'jquery';
 
 class DirtySubmitForm {
@@ -21,8 +21,8 @@ class DirtySubmitForm {
   }
 
   registerListeners() {
-    const getThrottledHandlerForInput = _.memoize(() =>
-      _.throttle(event => this.updateDirtyInput(event), DirtySubmitForm.THROTTLE_DURATION),
+    const getThrottledHandlerForInput = memoize(() =>
+      throttle(event => this.updateDirtyInput(event), DirtySubmitForm.THROTTLE_DURATION),
     );
 
     const throttledUpdateDirtyInput = event => {

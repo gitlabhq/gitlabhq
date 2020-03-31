@@ -6,7 +6,7 @@ description: "Learn how GitLab's documentation website is architectured."
 
 The [`gitlab-docs`](https://gitlab.com/gitlab-org/gitlab-docs) project hosts
 the repository which is used to generate the GitLab documentation website and
-is deployed to <https://docs.gitlab.com>. It uses the [Nanoc](http://nanoc.ws)
+is deployed to <https://docs.gitlab.com>. It uses the [Nanoc](https://nanoc.ws/)
 static site generator.
 
 ## Architecture

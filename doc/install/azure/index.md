@@ -108,7 +108,7 @@ ahead and select this one, but please choose the size which best meets your own 
 > **Note:** be aware that while your VM is active (known as "allocated"), it will incur
 "compute charges" which, ultimately, you will be billed for. So, even if you're using the
 free trial credits, you'll likely want to learn
-[how to properly shutdown an Azure VM to save money](https://buildazure.com/properly-shutdown-azure-vm-to-save-money/).
+[how to properly shutdown an Azure VM to save money](https://build5nines.com/properly-shutdown-azure-vm-to-save-money/).
 
 Go ahead and click your chosen size, then click **"Select"** when you're ready to proceed to the
 next step.
@@ -420,7 +420,7 @@ Check out our other [Technical Articles](../../articles/index.md) or browse the 
   - [Azure Portal][Azure-Portal]
   - [Azure - Pricing Calculator][Azure-Pricing-Calculator]
   - [Azure - Troubleshoot SSH Connections to an Azure Linux VM](https://docs.microsoft.com/en-us/azure/virtual-machines/troubleshooting/troubleshoot-ssh-connection)
-  - [Azure - Properly Shutdown an Azure VM](https://buildazure.com/properly-shutdown-azure-vm-to-save-money/)
+  - [Azure - Properly Shutdown an Azure VM](https://build5nines.com/properly-shutdown-azure-vm-to-save-money/)
 - [SSH], [PuTTY](https://www.putty.org) and [Using SSH in PuTTY][Using-SSH-In-Putty]
 
 [Original-Blog-Post]: https://about.gitlab.com/blog/2016/07/13/how-to-setup-a-gitlab-instance-on-microsoft-azure/ "How to Set up a GitLab Instance on Microsoft Azure"

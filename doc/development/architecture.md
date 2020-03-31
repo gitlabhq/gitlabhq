@@ -160,7 +160,7 @@ Component statuses are linked to configuration documentation for each component.
 | [Elasticsearch](#elasticsearch) | Improved search within GitLab | [⤓][elasticsearch-omnibus] | [⤓][elasticsearch-charts] | [⤓][elasticsearch-charts] | [❌](https://gitlab.com/groups/gitlab-org/-/epics/153) | [⤓][elasticsearch-source] | [⤓][elasticsearch-gdk] | EE Only |
 | [Sentry integration](#sentry) | Error tracking for deployed apps | [⤓][sentry-integration] | [⤓][sentry-integration] | [⤓][sentry-integration] | [⤓][sentry-integration] | [⤓][sentry-integration] | [⤓][sentry-integration] | CE & EE |
 | [Jaeger integration](#jaeger) | Distributed tracing for deployed apps | [⤓][jaeger-integration] | [⤓][jaeger-integration] | [⤓][jaeger-integration] | [⤓][jaeger-integration] | [⤓][jaeger-integration] | [⤓][jaeger-integration] | EE Only |
-| [GitLab Managed Apps](#gitlab-managed-apps) | Deploy [Helm](https://helm.sh/docs/), [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/), [Cert-Manager](https://docs.cert-manager.io/en/latest/), [Prometheus](https://prometheus.io/docs/introduction/overview/), a [Runner](https://docs.gitlab.com/runner/), [JupyterHub](https://jupyter.org), [Knative](https://cloud.google.com/knative/) to a cluster | [⤓][managed-k8s-apps] | [⤓][managed-k8s-apps] | [⤓][managed-k8s-apps] | [⤓][managed-k8s-apps] | [⤓][managed-k8s-apps] | [⤓][managed-k8s-apps] | CE & EE |
+| [GitLab Managed Apps](#gitlab-managed-apps) | Deploy [Helm](https://helm.sh/docs/), [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/), [Cert-Manager](https://cert-manager.io/docs/), [Prometheus](https://prometheus.io/docs/introduction/overview/), a [Runner](https://docs.gitlab.com/runner/), [JupyterHub](https://jupyter.org), [Knative](https://cloud.google.com/knative/) to a cluster | [⤓][managed-k8s-apps] | [⤓][managed-k8s-apps] | [⤓][managed-k8s-apps] | [⤓][managed-k8s-apps] | [⤓][managed-k8s-apps] | [⤓][managed-k8s-apps] | CE & EE |
 
 ### Component details
 
@@ -207,7 +207,7 @@ Consul is a tool for service discovery and configuration. Consul is distributed,
 
 #### Elasticsearch
 
-- [Project page](https://github.com/elastic/elasticsearch/blob/master/README.asciidoc)
+- [Project page](https://github.com/elastic/elasticsearch/)
 - Configuration: [Omnibus][elasticsearch-omnibus], [Charts][elasticsearch-charts], [Source][elasticsearch-source], [GDK][elasticsearch-gdk]
 - Layer: Core Service (Data)
 
@@ -424,7 +424,7 @@ An external registry can also be configured to use GitLab as an auth endpoint.
 
 #### Sentry
 
-- [Project page](https://github.com/getsentry/sentry/blob/master/README.rst)
+- [Project page](https://github.com/getsentry/sentry/)
 - Configuration: [Omnibus][sentry-omnibus], [Charts][sentry-charts], [Source][gitlab-yml], [GDK][gitlab-yml]
 - Layer: Monitoring
 

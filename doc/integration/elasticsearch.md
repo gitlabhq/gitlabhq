@@ -31,8 +31,8 @@ of this document.
 
 NOTE: **Note:**
 Elasticsearch should be installed on a separate server, whether you install
-it yourself or use a cloud hosted offering like Elastic's [Elasticsearch Service](https://www.elastic.co/products/elasticsearch/service) (available on AWS, GCP, or Azure) or the
-[Amazon Elasticsearch](http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-gsg.html) service. Running Elasticsearch on the same server as GitLab is not recommended
+it yourself or use a cloud hosted offering like Elastic's [Elasticsearch Service](https://www.elastic.co/elasticsearch/service) (available on AWS, GCP, or Azure) or the
+[Amazon Elasticsearch](https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-gsg.html) service. Running Elasticsearch on the same server as GitLab is not recommended
 and will likely cause a degradation in GitLab instance performance.
 
 NOTE: **Note:**

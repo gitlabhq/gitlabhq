@@ -102,7 +102,7 @@ module Gitlab
           if ionice
             raise ArgumentError, 'Invalid niceness' unless VALID_NICENESS_LEVELS.include?(niceness)
 
-            cmd.unshift(*%W[#{ionice} --class #{niceness}])
+            cmd.unshift(*%W[#{ionice} -c #{niceness}])
           end
 
           log_info("find command: '#{cmd.join(' ')}'")

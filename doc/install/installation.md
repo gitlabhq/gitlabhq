@@ -281,7 +281,7 @@ sudo apt-get update
 sudo apt-get install yarn
 ```
 
-Visit the official websites for [node](https://nodejs.org/en/download/package-manager/) and [yarn](https://yarnpkg.com/en/docs/install/) if you have any trouble with these steps.
+Visit the official websites for [node](https://nodejs.org/en/download/package-manager/) and [yarn](https://classic.yarnpkg.com/en/docs/install/) if you have any trouble with these steps.
 
 ## 5. System users
 
@@ -533,7 +533,7 @@ As of Bundler 1.5.2, you can invoke `bundle install -jN` (where `N` is the numbe
 
 Make sure you have `bundle` (run `bundle -v`):
 
-- `>= 1.5.2`, because some [issues](https://devcenter.heroku.com/changelog-items/411) were [fixed](https://github.com/bundler/bundler/pull/2817) in 1.5.2.
+- `>= 1.5.2`, because some [issues](https://devcenter.heroku.com/changelog-items/411) were [fixed](https://github.com/rubygems/bundler/pull/2817) in 1.5.2.
 - `< 2.x`.
 
 ```shell

@@ -146,9 +146,12 @@ describe Repositories::GitHttpController do
       let(:params) { container_params.merge(service: 'git-upload-pack') }
 
       it 'returns 404' do
+        expect(controller).not_to receive(:access_check)
+
         get :info_refs, params: params
 
         expect(response).to have_gitlab_http_status(:not_found)
+        expect(response.body).to eq "The project you were looking for could not be found."
       end
     end
 
@@ -160,9 +163,12 @@ describe Repositories::GitHttpController do
       end
 
       it 'returns 404' do
+        expect(controller).not_to receive(:access_check)
+
         post :git_upload_pack, params: params
 
         expect(response).to have_gitlab_http_status(:not_found)
+        expect(response.body).to eq "The project you were looking for could not be found."
       end
     end
   end

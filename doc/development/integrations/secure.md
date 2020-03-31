@@ -307,7 +307,7 @@ It is recommended to reuse the identifiers the GitLab scanners already define:
 | [OSVD](https://cve.mitre.org/data/refs/refmap/source-OSVDB.html) | `osvdb` | OSVDB-113928 |
 | [USN](https://usn.ubuntu.com/) | `usn` | USN-4234-1 |
 | [WASC](http://projects.webappsec.org/Threat-Classification-Reference-Grid)  | `wasc` | WASC-19 |
-| [RHSA](https://access.redhat.com/errata) | `rhsa` | RHSA-2020:0111 |
+| [RHSA](https://access.redhat.com/errata/#/) | `rhsa` | RHSA-2020:0111 |
 | [ELSA](https://linux.oracle.com/security/) | `elsa` | ELSA-2020-0085 |
 
 The generic identifiers listed above are defined in the [common library](https://gitlab.com/gitlab-org/security-products/analyzers/common);

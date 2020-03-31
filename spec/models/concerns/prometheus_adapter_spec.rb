@@ -131,7 +131,6 @@ describe PrometheusAdapter, :use_clean_rails_memory_store_caching do
       end
 
       it { expect(subject.to_json).to eq(prometheus_data.to_json) }
-      it { expect(subject.to_json).to eq(prometheus_data.to_json) }
     end
 
     [404, 500].each do |status|

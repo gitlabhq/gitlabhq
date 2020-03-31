@@ -49,7 +49,7 @@ describe Spam::SpamCheckService do
     end
   end
 
-  shared_examples 'akismet spam' do
+  shared_examples 'only checks for spam if a request is provided' do
     context 'when request is missing' do
       let(:request) { nil }
 
@@ -132,7 +132,7 @@ describe Spam::SpamCheckService do
               stub_feature_flags(allow_possible_spam: false)
             end
 
-            it_behaves_like 'akismet spam'
+            it_behaves_like 'only checks for spam if a request is provided'
 
             it 'marks as spam' do
               subject
@@ -142,7 +142,7 @@ describe Spam::SpamCheckService do
           end
 
           context 'when allow_possible_spam feature flag is true' do
-            it_behaves_like 'akismet spam'
+            it_behaves_like 'only checks for spam if a request is provided'
 
             it 'does not mark as spam' do
               subject

@@ -402,7 +402,6 @@ RSpec/RepeatedExample:
     - 'spec/models/ability_spec.rb'
     - 'spec/models/ci/build_spec.rb'
     - 'spec/models/concerns/issuable_spec.rb'
-    - 'spec/models/concerns/prometheus_adapter_spec.rb'
     - 'spec/models/member_spec.rb'
     - 'spec/models/project_services/chat_message/pipeline_message_spec.rb'
     - 'spec/models/user_spec.rb'

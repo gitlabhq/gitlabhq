@@ -44,7 +44,7 @@ infrastructure is up and running, and that your units of code work well together
 
 ## Selenium and WebdriverIO
 
-[Selenium](https://selenium.dev/) is a piece of software that can control web browsers, e.g., to make them
+[Selenium](https://www.selenium.dev/) is a piece of software that can control web browsers, e.g., to make them
 visit a specific URL or interact with elements on the page. It can be programmatically controlled
 from a variety of programming languages. In this article we're going to be using the
 [WebdriverIO](https://webdriver.io/) JavaScript bindings, but the general concept should carry over

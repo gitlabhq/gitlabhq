@@ -70,6 +70,7 @@ describe('DirtySubmitForm', () => {
   describe('throttling tests', () => {
     beforeEach(() => {
       jasmine.clock().install();
+      jasmine.clock().mockDate();
       DirtySubmitForm.THROTTLE_DURATION = 100;
     });
 

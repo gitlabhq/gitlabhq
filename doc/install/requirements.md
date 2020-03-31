@@ -70,7 +70,7 @@ version of Node.js 10.13.0.
 You can check which version you are running with `node -v`. If you are running
 a version older than `v10.13.0`, you need to update to a newer version. You
 can find instructions to install from community maintained packages or compile
-from source at the [Node.js website](https://nodejs.org/en/download).
+from source at the [Node.js website](https://nodejs.org/en/download/).
 
 ## Hardware requirements
 
