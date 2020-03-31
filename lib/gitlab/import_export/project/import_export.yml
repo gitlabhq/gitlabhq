@@ -340,6 +340,7 @@ methods:
     - :diff_head_sha
     - :source_branch_sha
     - :target_branch_sha
+    - :state
   events:
     - :action
   push_event_payload:
@@ -350,6 +351,8 @@ methods:
     - :list_type
   ci_pipelines:
     - :notes
+  issues:
+    - :state
 
 preloads:
   statuses:

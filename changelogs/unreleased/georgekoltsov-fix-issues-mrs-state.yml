@@ -1,0 +1,6 @@
+---
+title: Fix issue/MR state not being preserved when importing a project using Project
+  Import/Export
+merge_request: 27816
+author:
+type: fixed

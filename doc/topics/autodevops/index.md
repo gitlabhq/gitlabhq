@@ -666,9 +666,10 @@ To use Auto Deploy on a Kubernetes 1.16+ cluster, you must:
    This will opt-in to using a version of the PostgreSQL chart that supports Kubernetes
    1.16 and higher.
 
-DANGER: **Danger:** Opting into `AUTO_DEVOPS_POSTGRES_CHANNEL` version `2` will delete
-the version `1` PostgreSQL database. Please backup the contents of the PostgreSQL database
-first before opting into version `2`, so that you can restore into the version `2` database.
+DANGER: **Danger:** Opting into `AUTO_DEVOPS_POSTGRES_CHANNEL` version
+`2` will delete the version `1` PostgreSQL database. Please follow the
+guide on [upgrading PostgreSQL](upgrading_postgresql.md) to backup and
+restore your database before opting into version `2`.
 
 #### Migrations
 
@@ -1099,6 +1100,27 @@ the database are preconfigured, but can be customized by setting the associated
 ```yaml
 postgres://user:password@postgres-host:postgres-port/postgres-database
 ```
+
+#### Upgrading PostgresSQL
+
+CAUTION: **Deprecation**
+The variable `AUTO_DEVOPS_POSTGRES_CHANNEL` that controls default provisioned
+PostgreSQL currently defaults to `1`. This is scheduled to change to `2` in
+[GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/210499).
+
+The version of the chart used to provision PostgreSQL:
+
+- Is 0.7.1 in GitLab 12.8 and earlier.
+- Can be set to from 0.7.1 to 8.2.1 in GitLab 12.9 and later.
+
+GitLab encourages users to [migrate their database](upgrading_postgresql.md)
+to the newer PostgreSQL.
+
+To use the new PostgreSQL:
+
+- New projects can set the `AUTO_DEVOPS_POSTGRES_CHANNEL` variable to `2`.
+- Old projects can be upgraded by following the guide to
+  [upgrading PostgresSQL](upgrading_postgresql.md).
 
 #### Using external PostgreSQL database providers
 

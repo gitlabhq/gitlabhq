@@ -26,14 +26,14 @@ module ContentTypeWhitelist
     # Here we override and extend CarrierWave's method that does not parse the
     # magic headers.
     def check_content_type_whitelist!(new_file)
-      new_file.content_type = mime_magic_content_type(new_file.path)
+      if content_type_whitelist
+        content_type = mime_magic_content_type(new_file.path)
 
-      if content_type_whitelist && !whitelisted_content_type?(new_file.content_type)
-        message = I18n.translate(:"errors.messages.content_type_whitelist_error", allowed_types: Array(content_type_whitelist).join(", "))
-        raise CarrierWave::IntegrityError, message
+        unless whitelisted_content_type?(content_type)
+          message = I18n.translate(:"errors.messages.content_type_whitelist_error", allowed_types: Array(content_type_whitelist).join(", "))
+          raise CarrierWave::IntegrityError, message
+        end
       end
-
-      super(new_file)
     end
 
     def whitelisted_content_type?(content_type)

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_13_123934) do
+ActiveRecord::Schema.define(version: 2020_03_25_152327) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -352,6 +352,7 @@ ActiveRecord::Schema.define(version: 2020_03_13_123934) do
     t.boolean "email_restrictions_enabled", default: false, null: false
     t.text "email_restrictions"
     t.boolean "npm_package_requests_forwarding", default: true, null: false
+    t.boolean "seat_link_enabled", default: true, null: false
     t.index ["custom_project_templates_group_id"], name: "index_application_settings_on_custom_project_templates_group_id"
     t.index ["file_template_project_id"], name: "index_application_settings_on_file_template_project_id"
     t.index ["instance_administration_project_id"], name: "index_applicationsettings_on_instance_administration_project_id"
@@ -3907,6 +3908,7 @@ ActiveRecord::Schema.define(version: 2020_03_13_123934) do
     t.string "note_type"
     t.text "position"
     t.string "in_reply_to_discussion_id"
+    t.index ["noteable_id"], name: "index_sent_notifications_on_noteable_type_noteable_id", where: "((noteable_type)::text = 'Issue'::text)"
     t.index ["reply_key"], name: "index_sent_notifications_on_reply_key", unique: true
   end
 

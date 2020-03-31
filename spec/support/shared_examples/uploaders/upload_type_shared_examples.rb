@@ -26,3 +26,15 @@ shared_examples 'accepted carrierwave upload' do
     expect { uploader.cache!(fixture_file) }.to change { uploader.file }.from(nil).to(kind_of(CarrierWave::SanitizedFile))
   end
 end
+
+# @param path [String] the path to file to upload. E.g. File.join('spec', 'fixtures', 'sanitized.svg')
+# @param uploader [CarrierWave::Uploader::Base] uploader to handle the upload.
+# @param content_type [String] the upload file content type after cache
+shared_examples 'upload with content type' do |content_type|
+  let(:fixture_file) { fixture_file_upload(path, content_type) }
+
+  it 'will not change upload file content type' do
+    uploader.cache!(fixture_file)
+    expect(uploader.file.content_type).to eq(content_type)
+  end
+end

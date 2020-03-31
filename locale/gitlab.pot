@@ -339,6 +339,9 @@ msgstr ""
 msgid "%{lineOneStart}Drag and drop to upload your designs%{lineOneEnd} or %{linkStart}click to upload%{linkEnd}."
 msgstr ""
 
+msgid "%{link_start}Learn more%{link_end} about what information is shared with GitLab Inc."
+msgstr ""
+
 msgid "%{link_start}Read more%{link_end} about role permissions"
 msgstr ""
 
@@ -7402,6 +7405,9 @@ msgstr ""
 msgid "Enable SAML authentication for this group"
 msgstr ""
 
+msgid "Enable Seat Link"
+msgstr ""
+
 msgid "Enable access to Grafana"
 msgstr ""
 
@@ -7439,6 +7445,9 @@ msgid "Enable header and footer in emails"
 msgstr ""
 
 msgid "Enable mirror configuration"
+msgstr ""
+
+msgid "Enable or disable Seat Link."
 msgstr ""
 
 msgid "Enable or disable keyboard shortcuts"
@@ -8921,6 +8930,9 @@ msgid "For more information, see the File Hooks documentation."
 msgstr ""
 
 msgid "For more information, see the documentation on %{deactivating_usage_ping_link_start}deactivating the usage ping%{deactivating_usage_ping_link_end}."
+msgstr ""
+
+msgid "For more information, see the documentation on %{link_start}disabling Seat Link%{link_end}."
 msgstr ""
 
 msgid "For private projects, any member (guest or higher) can view pipelines and access job details (output logs and artifacts)"
@@ -17406,6 +17418,12 @@ msgid_plural "SearchResults|wiki results"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Seat Link"
+msgstr ""
+
+msgid "Seat Link is disabled, and cannot be configured through this form."
+msgstr ""
+
 msgid "Seats currently in use"
 msgstr ""
 
@@ -18287,7 +18305,7 @@ msgstr ""
 msgid "Size settings for static websites"
 msgstr ""
 
-msgid "Skip older, pending deployment jobs"
+msgid "Skip outdated deployment jobs"
 msgstr ""
 
 msgid "Skip this for now"
@@ -20938,6 +20956,9 @@ msgid "To set up SAML authentication for your group through an identity provider
 msgstr ""
 
 msgid "To set up this service:"
+msgstr ""
+
+msgid "To simplify the billing process, GitLab will collect user counts in order to prorate charges for user growth throughout the year using a quarterly reconciliation process."
 msgstr ""
 
 msgid "To specify the notification level per project of a group you belong to, you need to visit project page and change notification level there."

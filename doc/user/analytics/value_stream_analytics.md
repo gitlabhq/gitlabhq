@@ -151,6 +151,56 @@ A few notes:
   cycles, calculate their median time and the result is what the dashboard of
   Value Stream Analytics is showing.
 
+## Customizable Value Stream Analytics
+
+The default stages are designed to work straight out of the box, but they might not be suitable for all teams. Different teams use different approaches to building software, so some teams might want to customize their Value Stream Analytics. From GitLab 12.9, users can hide default stages and create custom stages that align better to their development workflow.
+
+### Adding a stage
+
+In the following example we're creating a new stage that measures and tracks issues from creation time until they are closed.
+
+1. Navigate to your group page.
+1. Open Value Stream Analytics from the sidebar: **Analytics > Value Stream**
+1. Click the "Add a stage" button.
+1. Fill in the new stage form:
+   - Name: Issue start to finish
+   - Start event: Issue created
+   - End event: Issue closed
+1. Click the "Add stage" button.
+
+![New Value Stream Analytics Stage](img/new_vsm_stage_v12_9.png "Form for creating a new stage")
+
+The new stage is persisted and it will always show up on the value stream analytics page for your group. In case you want to alter or delete the stage you can easily do that for customized stages by hovering over the stage and clicking the three-dot icon that appears.
+
+![Value Stream Analytics Stages](img/vsm_stage_list_v12_9.png)
+
+Creating a custom stage requires specifying two events, a start and an end. Be careful to choose a start event that occurs *before* your end event. For example, consider if a stage started when an issue is added to a board, and ended when the issue is created. This stage would not work because the end event has already happened when the start event occurs. To prevent such invalid stages, the form prohibits incompatible start and end events. After you select the start event, the stop event dropdown will only list the compatible events.
+
+Note: The ability to re-order the stages is a [planned enhancement](https://gitlab.com/gitlab-org/gitlab/issues/196698).
+
+### Label based stages
+
+The pre-defined start and end events can cover many use cases involving both issues and merge requests. For supporting more complex workflows, we can use stages based on group labels. These events are based on labels being added/removed. In particular, [scoped labels](../project/labels.md#scoped-labels-premium) are useful for complex workflows.
+
+In this example we'd like to measure more accurate code review times. The workflow is the following:
+
+- When the code review starts, the reviewer adds `workflow::code_review_start` label to the merge request.
+- When the code review is finished, the reviewer adds `workflow::code_review_complete` label to the merge request.
+
+Creating a new stage called "Code Review":
+
+![New Label Based Value Stream Analytics Stage](img/label_based_stage_vsm_v12_9.png "Creating a label based Value Stream Analytics Stage")
+
+### Hiding unused stages
+
+Sometimes certain default stages are not relevant to a team. In this case you can easily hide stages so they no longer appear in the list. First, add a custom stage to activate customizability. Then hover over the default stage you want to hide, click the three-dot icon that appears and select "Hide stage".
+
+To recover a default stage that was previously hidden:
+
+1. Click "Add a stage" button.
+1. In the top right corner open the "Recover hidden stage" dropdown.
+1. Select a stage.
+
 ## Days to completion chart
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21631) in GitLab 12.6.

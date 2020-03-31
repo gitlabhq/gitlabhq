@@ -1,0 +1,5 @@
+---
+title: Index issues on sent_notifications table
+merge_request: 27034
+author:
+type: performance

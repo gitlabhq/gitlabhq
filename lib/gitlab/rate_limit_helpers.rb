@@ -7,7 +7,7 @@ module Gitlab
     ARCHIVE_RATE_THROTTLE_KEY = :project_repositories_archive
 
     def archive_rate_limit_reached?(user, project)
-      return false unless Feature.enabled?(:archive_rate_limit, default_enabled: true)
+      return false unless Feature.enabled?(:archive_rate_limit)
 
       key = ARCHIVE_RATE_THROTTLE_KEY
 

@@ -245,11 +245,12 @@ Seat Link allows us to provide our self-managed customers with prorated charges 
 
 Seat Link sends to GitLab daily a count of all users in connected self-managed instances. That information is used to automate prorated reconciliations. The data is sent securely through an encrypted HTTPS connection.
 
-Seat Link is mandatory because we need the user count data to enable prorated billing. Seat Link provides **only** the following information to GitLab:
+Seat Link provides **only** the following information to GitLab:
 
 - Date
-- Historical maximum user count
 - License key
+- Historical maximum user count
+- Active users count
 
 Here is an example of the POST request:
 
@@ -290,11 +291,38 @@ TjJ4eVlVUkdkWEJtDQpkSHByYWpreVJrcG9UVlo0Y0hKSU9URndiV2RzVFdO
 VlhHNXRhVmszTkV0SVEzcEpNMWRyZEVoRU4ydHINCmRIRnFRVTlCVUVVM1pV
 SlRORE4xUjFaYVJGb3JlWGM5UFZ4dUlpd2lhWFlpt2lKV00yRnNVbk5RTjJk
 Sg0KU1hNMGExaE9SVGR2V2pKQlBUMWNiaUo5DQo=',
-  max_historical_user_count: 10
+  max_historical_user_count: 10,
+  active_users: 6
 }
 ```
 
 For air-gapped or closed network customers, the existing [true-up model](#users-over-license) will be used. Prorated charges are not possible without user count data.
+
+#### Disable Seat Link
+
+Seat Link is enabled by default. To disable this feature, go to
+**{admin}** **Admin Area > Settings > Metrics and profiling** and
+clear the Seat Link checkbox.
+
+To disable Seat Link in an Omnibus GitLab installation, and prevent it from
+being configured in the future through the administration panel, set the following in
+[`gitlab.rb`](https://docs.gitlab.com/omnibus/settings/configuration.html#configuration-options):
+
+```ruby
+gitlab_rails['seat_link_enabled'] = false
+```
+
+To disable Seat Link in a GitLab source installation, and prevent it from
+being configured in the future through the administration panel,
+set the following in `gitlab.yml`:
+
+```yaml
+production: &base
+  # ...
+  gitlab:
+    # ...
+    seat_link_enabled: false
+```
 
 ### Renew or change a GitLab.com subscription
 
