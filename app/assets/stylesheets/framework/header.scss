@@ -1,6 +1,6 @@
 .navbar-gitlab {
   padding: 0 16px;
-  z-index: 1000;
+  z-index: $header-zindex;
   margin-bottom: 0;
   min-height: $header-height;
   border: 0;

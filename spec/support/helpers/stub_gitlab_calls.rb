@@ -30,11 +30,9 @@ module StubGitlabCalls
 
     # Stub the first call to `include:[local: .gitlab-ci.yml]` when
     # evaluating the CI root config content.
-    if Feature.enabled?(:ci_root_config_content, default_enabled: true)
-      allow_any_instance_of(Gitlab::Ci::Config::External::File::Local)
-        .to receive(:content)
-        .and_return(ci_yaml_content)
-    end
+    allow_any_instance_of(Gitlab::Ci::Config::External::File::Local)
+      .to receive(:content)
+      .and_return(ci_yaml_content)
   end
 
   def stub_pipeline_modified_paths(pipeline, modified_paths)

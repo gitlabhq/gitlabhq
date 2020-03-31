@@ -1,44 +1,16 @@
 # frozen_string_literal: true
 
-class MilestoneNote < ::Note
-  attr_accessor :resource_parent, :event, :milestone
+class MilestoneNote < SyntheticNote
+  attr_accessor :milestone
 
   def self.from_event(event, resource: nil, resource_parent: nil)
-    resource ||= event.resource
-
-    attrs = {
-        system: true,
-        author: event.user,
-        created_at: event.created_at,
-        noteable: resource,
-        milestone: event.milestone,
-        discussion_id: event.discussion_id,
-        event: event,
-        system_note_metadata: ::SystemNoteMetadata.new(action: 'milestone'),
-        resource_parent: resource_parent
-    }
-
-    if resource_parent.is_a?(Project)
-      attrs[:project_id] = resource_parent.id
-    end
+    attrs = note_attributes('milestone', event, resource, resource_parent).merge(milestone: event.milestone)
 
     MilestoneNote.new(attrs)
   end
 
-  def note
-    @note ||= note_text
-  end
-
   def note_html
     @note_html ||= Banzai::Renderer.cacheless_render_field(self, :note, { group: group, project: project })
-  end
-
-  def project
-    resource_parent if resource_parent.is_a?(Project)
-  end
-
-  def group
-    resource_parent if resource_parent.is_a?(Group)
   end
 
   private

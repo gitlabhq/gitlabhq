@@ -914,7 +914,7 @@ module Ci
 
     def dependencies
       strong_memoize(:dependencies) do
-        Ci::Processable::Dependencies.new(self)
+        Ci::BuildDependencies.new(self)
       end
     end
 

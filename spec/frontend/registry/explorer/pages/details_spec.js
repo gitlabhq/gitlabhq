@@ -29,10 +29,11 @@ describe('Details Page', () => {
   const findAllDeleteButtons = () => wrapper.findAll('.js-delete-registry');
   const findAllCheckboxes = () => wrapper.findAll('.js-row-checkbox');
   const findCheckedCheckboxes = () => findAllCheckboxes().filter(c => c.attributes('checked'));
+  const findFirsTagColumn = () => wrapper.find('.js-tag-column');
 
   const routeId = window.btoa(JSON.stringify({ name: 'foo', tags_path: 'bar' }));
 
-  beforeEach(() => {
+  const mountComponent = options => {
     wrapper = mount(component, {
       store,
       stubs: {
@@ -49,7 +50,11 @@ describe('Details Page', () => {
         },
         $toast,
       },
+      ...options,
     });
+  };
+
+  beforeEach(() => {
     dispatchSpy = jest.spyOn(store, 'dispatch');
     store.dispatch('receiveTagsListSuccess', tagsListResponse);
     jest.spyOn(Tracking, 'event');
@@ -61,6 +66,7 @@ describe('Details Page', () => {
 
   describe('when isLoading is true', () => {
     beforeEach(() => {
+      mountComponent();
       store.dispatch('receiveTagsListSuccess', { ...tagsListResponse, data: [] });
       store.commit(SET_MAIN_LOADING, true);
     });
@@ -81,6 +87,10 @@ describe('Details Page', () => {
   });
 
   describe('table', () => {
+    beforeEach(() => {
+      mountComponent();
+    });
+
     it.each([
       'rowCheckbox',
       'rowName',
@@ -93,6 +103,10 @@ describe('Details Page', () => {
     });
 
     describe('header checkbox', () => {
+      beforeEach(() => {
+        mountComponent();
+      });
+
       it('exists', () => {
         expect(findMainCheckbox().exists()).toBe(true);
       });
@@ -116,6 +130,10 @@ describe('Details Page', () => {
     });
 
     describe('row checkbox', () => {
+      beforeEach(() => {
+        mountComponent();
+      });
+
       it('if selected adds item to selectedItems', () => {
         findFirstRowItem('rowCheckbox').vm.$emit('change');
         return wrapper.vm.$nextTick().then(() => {
@@ -135,6 +153,10 @@ describe('Details Page', () => {
     });
 
     describe('header delete button', () => {
+      beforeEach(() => {
+        mountComponent();
+      });
+
       it('exists', () => {
         expect(findBulkDeleteButton().exists()).toBe(true);
       });
@@ -182,6 +204,10 @@ describe('Details Page', () => {
     });
 
     describe('row delete button', () => {
+      beforeEach(() => {
+        mountComponent();
+      });
+
       it('exists', () => {
         expect(
           findAllDeleteButtons()
@@ -213,9 +239,39 @@ describe('Details Page', () => {
         });
       });
     });
+
+    describe('tag cell', () => {
+      describe('on desktop viewport', () => {
+        beforeEach(() => {
+          mountComponent();
+        });
+
+        it('has class w-25', () => {
+          expect(findFirsTagColumn().classes()).toContain('w-25');
+        });
+      });
+
+      describe('on mobile viewport', () => {
+        beforeEach(() => {
+          mountComponent({
+            data() {
+              return { isDesktop: false };
+            },
+          });
+        });
+
+        it('does not has class w-25', () => {
+          expect(findFirsTagColumn().classes()).not.toContain('w-25');
+        });
+      });
+    });
   });
 
   describe('pagination', () => {
+    beforeEach(() => {
+      mountComponent();
+    });
+
     it('exists', () => {
       expect(findPagination().exists()).toBe(true);
     });
@@ -238,6 +294,10 @@ describe('Details Page', () => {
   });
 
   describe('modal', () => {
+    beforeEach(() => {
+      mountComponent();
+    });
+
     it('exists', () => {
       expect(findDeleteModal().exists()).toBe(true);
     });

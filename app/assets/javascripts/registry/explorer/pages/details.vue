@@ -77,9 +77,10 @@ export default {
       return name;
     },
     fields() {
+      const tagClass = this.isDesktop ? 'w-25' : '';
       return [
         { key: LIST_KEY_CHECKBOX, label: '', class: 'gl-w-16' },
-        { key: LIST_KEY_TAG, label: LIST_LABEL_TAG, class: 'w-25' },
+        { key: LIST_KEY_TAG, label: LIST_LABEL_TAG, class: `${tagClass} js-tag-column` },
         { key: LIST_KEY_IMAGE_ID, label: LIST_LABEL_IMAGE_ID },
         { key: LIST_KEY_SIZE, label: LIST_LABEL_SIZE },
         { key: LIST_KEY_LAST_UPDATED, label: LIST_LABEL_LAST_UPDATED },

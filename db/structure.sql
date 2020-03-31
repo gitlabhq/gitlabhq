@@ -3304,6 +3304,33 @@ CREATE SEQUENCE public.jira_connect_subscriptions_id_seq
 
 ALTER SEQUENCE public.jira_connect_subscriptions_id_seq OWNED BY public.jira_connect_subscriptions.id;
 
+CREATE TABLE public.jira_imports (
+    id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    user_id bigint,
+    label_id bigint,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    finished_at timestamp with time zone,
+    jira_project_xid bigint NOT NULL,
+    total_issue_count integer DEFAULT 0 NOT NULL,
+    imported_issues_count integer DEFAULT 0 NOT NULL,
+    failed_to_import_count integer DEFAULT 0 NOT NULL,
+    status smallint DEFAULT 0 NOT NULL,
+    jid character varying(255),
+    jira_project_key character varying(255) NOT NULL,
+    jira_project_name character varying(255) NOT NULL
+);
+
+CREATE SEQUENCE public.jira_imports_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.jira_imports_id_seq OWNED BY public.jira_imports.id;
+
 CREATE TABLE public.jira_tracker_data (
     id bigint NOT NULL,
     service_id integer NOT NULL,
@@ -5558,7 +5585,8 @@ CREATE TABLE public.security_scans (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     build_id bigint NOT NULL,
-    scan_type smallint NOT NULL
+    scan_type smallint NOT NULL,
+    scanned_resources_count integer
 );
 
 CREATE SEQUENCE public.security_scans_id_seq
@@ -7119,6 +7147,8 @@ ALTER TABLE ONLY public.jira_connect_installations ALTER COLUMN id SET DEFAULT n
 
 ALTER TABLE ONLY public.jira_connect_subscriptions ALTER COLUMN id SET DEFAULT nextval('public.jira_connect_subscriptions_id_seq'::regclass);
 
+ALTER TABLE ONLY public.jira_imports ALTER COLUMN id SET DEFAULT nextval('public.jira_imports_id_seq'::regclass);
+
 ALTER TABLE ONLY public.jira_tracker_data ALTER COLUMN id SET DEFAULT nextval('public.jira_tracker_data_id_seq'::regclass);
 
 ALTER TABLE ONLY public.keys ALTER COLUMN id SET DEFAULT nextval('public.keys_id_seq'::regclass);
@@ -7871,6 +7901,9 @@ ALTER TABLE ONLY public.jira_connect_installations
 
 ALTER TABLE ONLY public.jira_connect_subscriptions
     ADD CONSTRAINT jira_connect_subscriptions_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.jira_imports
+    ADD CONSTRAINT jira_imports_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY public.jira_tracker_data
     ADD CONSTRAINT jira_tracker_data_pkey PRIMARY KEY (id);
@@ -9242,6 +9275,12 @@ CREATE INDEX index_issues_on_updated_by_id ON public.issues USING btree (updated
 CREATE UNIQUE INDEX index_jira_connect_installations_on_client_key ON public.jira_connect_installations USING btree (client_key);
 
 CREATE INDEX index_jira_connect_subscriptions_on_namespace_id ON public.jira_connect_subscriptions USING btree (namespace_id);
+
+CREATE INDEX index_jira_imports_on_label_id ON public.jira_imports USING btree (label_id);
+
+CREATE INDEX index_jira_imports_on_project_id_and_jira_project_key ON public.jira_imports USING btree (project_id, jira_project_key);
+
+CREATE INDEX index_jira_imports_on_user_id ON public.jira_imports USING btree (user_id);
 
 CREATE INDEX index_jira_tracker_data_on_service_id ON public.jira_tracker_data USING btree (service_id);
 
@@ -11218,6 +11257,9 @@ ALTER TABLE ONLY public.deployment_clusters
 ALTER TABLE ONLY public.evidences
     ADD CONSTRAINT fk_rails_6388b435a6 FOREIGN KEY (release_id) REFERENCES public.releases(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY public.jira_imports
+    ADD CONSTRAINT fk_rails_63cbe52ada FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY public.vulnerability_occurrence_pipelines
     ADD CONSTRAINT fk_rails_6421e35d7d FOREIGN KEY (pipeline_id) REFERENCES public.ci_pipelines(id) ON DELETE CASCADE;
 
@@ -11256,6 +11298,9 @@ ALTER TABLE ONLY public.operations_feature_flags_clients
 
 ALTER TABLE ONLY public.web_hook_logs
     ADD CONSTRAINT fk_rails_666826e111 FOREIGN KEY (web_hook_id) REFERENCES public.web_hooks(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.jira_imports
+    ADD CONSTRAINT fk_rails_675d38c03b FOREIGN KEY (label_id) REFERENCES public.labels(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY public.geo_hashed_storage_migrated_events
     ADD CONSTRAINT fk_rails_687ed7d7c5 FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
@@ -11670,6 +11715,9 @@ ALTER TABLE ONLY public.vulnerability_issue_links
 
 ALTER TABLE ONLY public.geo_hashed_storage_attachments_events
     ADD CONSTRAINT fk_rails_d496b088e9 FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.jira_imports
+    ADD CONSTRAINT fk_rails_da617096ce FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY public.dependency_proxy_blobs
     ADD CONSTRAINT fk_rails_db58bbc5d7 FOREIGN KEY (group_id) REFERENCES public.namespaces(id) ON DELETE CASCADE;
@@ -12826,6 +12874,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200312163407
 20200313101649
 20200313123934
+20200314060834
 20200316111759
 20200316162648
 20200316173312
@@ -12854,5 +12903,11 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200325152327
 20200325160952
 20200325183636
+20200326114443
+20200326124443
+20200326134443
+20200326135443
+20200326144443
+20200326145443
 \.
 

@@ -1,26 +1,13 @@
 # frozen_string_literal: true
 
-class LabelNote < Note
+class LabelNote < SyntheticNote
   attr_accessor :resource_parent
   attr_reader :events
 
   def self.from_events(events, resource: nil, resource_parent: nil)
     resource ||= events.first.issuable
 
-    attrs = {
-      system: true,
-      author: events.first.user,
-      created_at: events.first.created_at,
-      discussion_id: events.first.discussion_id,
-      noteable: resource,
-      system_note_metadata: SystemNoteMetadata.new(action: 'label'),
-      events: events,
-      resource_parent: resource_parent
-    }
-
-    if resource_parent.is_a?(Project)
-      attrs[:project_id] = resource_parent.id
-    end
+    attrs = note_attributes('label', events.first, resource, resource_parent).merge(events: events)
 
     LabelNote.new(attrs)
   end
@@ -35,20 +22,8 @@ class LabelNote < Note
     true
   end
 
-  def note
-    @note ||= note_text
-  end
-
   def note_html
     @note_html ||= "<p dir=\"auto\">#{note_text(html: true)}</p>"
-  end
-
-  def project
-    resource_parent if resource_parent.is_a?(Project)
-  end
-
-  def group
-    resource_parent if resource_parent.is_a?(Group)
   end
 
   private
