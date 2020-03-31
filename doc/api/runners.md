@@ -1,8 +1,6 @@
 # Runners API
 
-> [Introduced][ce-2640] in GitLab 8.5
-
-[ce-2640]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/2640
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/2640) in GitLab 8.5
 
 ## Registration and authentication tokens
 

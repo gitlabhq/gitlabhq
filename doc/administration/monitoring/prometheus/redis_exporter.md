@@ -1,11 +1,12 @@
 # Redis exporter
 
 >**Note:**
-Available since [Omnibus GitLab 8.17][1118]. For installations from source
-you'll have to install and configure it yourself.
+Available since [Omnibus GitLab 8.17](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/1118).
+For installations from source you'll have to install and configure it yourself.
 
-The [Redis exporter] allows you to measure various [Redis] metrics. For more
-information on what's exported [read the upstream documentation][redis-exp].
+The [Redis exporter](https://github.com/oliver006/redis_exporter) allows you to measure
+various [Redis](https://redis.io) metrics. For more information on what's exported,
+[read the upstream documentation](https://github.com/oliver006/redis_exporter/blob/master/README.md#whats-exported).
 
 To enable the Redis exporter:
 
@@ -17,17 +18,10 @@ To enable the Redis exporter:
    redis_exporter['enable'] = true
    ```
 
-1. Save the file and [reconfigure GitLab][reconfigure] for the changes to
-   take effect
+1. Save the file and [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure)
+   for the changes to take effect.
 
 Prometheus will now automatically begin collecting performance data from
 the Redis exporter exposed under `localhost:9121`.
 
 [← Back to the main Prometheus page](index.md)
-
-[1118]: https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/1118
-[redis]: https://redis.io
-[redis exporter]: https://github.com/oliver006/redis_exporter
-[redis-exp]: https://github.com/oliver006/redis_exporter/blob/master/README.md#whats-exported
-[prometheus]: https://prometheus.io
-[reconfigure]: ../../restart_gitlab.md#omnibus-gitlab-reconfigure

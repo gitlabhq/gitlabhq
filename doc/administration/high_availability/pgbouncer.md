@@ -273,3 +273,11 @@ In case you are experiencing any issues connecting through PgBouncer, the first 
 ```
 
 Additionally, you can check the output from `show databases` in the [Administrative console](#administrative-console). In the output, you would expect to see values in the `host` field for the `gitlabhq_production` database. Additionally, `current_connections` should be greater than 1.
+
+### Message: `LOG:  invalid CIDR mask in address`
+
+See the suggested fix [in Geo documentation](../geo/replication/troubleshooting.md#message-log--invalid-cidr-mask-in-address).
+
+### Message: `LOG:  invalid IP mask "md5": Name or service not known`
+
+See the suggested fix [in Geo documentation](../geo/replication/troubleshooting.md#message-log--invalid-ip-mask-md5-name-or-service-not-known).

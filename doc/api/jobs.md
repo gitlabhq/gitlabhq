@@ -346,8 +346,8 @@ Example of response
 > **Notes**:
 >
 > - [Introduced][ce-2893] in GitLab 8.5.
-> - The use of `CI_JOB_TOKEN` in the artifacts download API was [introduced][ee-2346]
->   in [GitLab Premium][ee] 9.5.
+> - The use of `CI_JOB_TOKEN` in the artifacts download API was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/2346)
+>   in [GitLab Premium](https://about.gitlab.com/pricing/) 9.5.
 
 Get the job's artifacts zipped archive of a project.
 
@@ -359,7 +359,7 @@ GET /projects/:id/jobs/:job_id/artifacts
 |-------------|----------------|----------|-------------------------------------------------------------------------------------------------------------------------------------------------|
 | `id`        | integer/string | yes      | ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user.                                |
 | `job_id`    | integer        | yes      | ID of a job.                                                                                                                                |
-| `job_token` **(PREMIUM)** | string         | no       | To be used with [triggers] for multi-project pipelines. It should be invoked only inside `.gitlab-ci.yml`. Its value is always `$CI_JOB_TOKEN`. |
+| `job_token` **(PREMIUM)** | string         | no       | To be used with [triggers](../ci/triggers/README.md#when-a-pipeline-depends-on-the-artifacts-of-another-pipeline-premium) for multi-project pipelines. It should be invoked only inside `.gitlab-ci.yml`. Its value is always `$CI_JOB_TOKEN`. |
 
 Example request using the `PRIVATE-TOKEN` header:
 
@@ -406,8 +406,8 @@ Possible response status codes:
 > **Notes**:
 >
 > - [Introduced][ce-5347] in GitLab 8.10.
-> - The use of `CI_JOB_TOKEN` in the artifacts download API was [introduced][ee-2346]
->   in [GitLab Premium][ee] 9.5.
+> - The use of `CI_JOB_TOKEN` in the artifacts download API was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/2346)
+>   in [GitLab Premium](https://about.gitlab.com/pricing/) 9.5.
 
 Download the artifacts zipped archive from the latest successful pipeline for
 the given reference name and job, provided the job finished successfully. This
@@ -425,7 +425,7 @@ Parameters
 | `id`        | integer/string | yes      | ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user.                                |
 | `ref_name`  | string         | yes      | Branch or tag name in repository. HEAD or SHA references are not supported.                                                                     |
 | `job`       | string         | yes      | The name of the job.                                                                                                                            |
-| `job_token` **(PREMIUM)** | string         | no       | To be used with [triggers] for multi-project pipelines. It should be invoked only inside `.gitlab-ci.yml`. Its value is always `$CI_JOB_TOKEN`. |
+| `job_token` **(PREMIUM)** | string         | no       | To be used with [triggers](../ci/triggers/README.md#when-a-pipeline-depends-on-the-artifacts-of-another-pipeline-premium) for multi-project pipelines. It should be invoked only inside `.gitlab-ci.yml`. Its value is always `$CI_JOB_TOKEN`. |
 
 Example request using the `PRIVATE-TOKEN` header:
 
@@ -841,7 +841,3 @@ Example of response
   "user": null
 }
 ```
-
-[ee]: https://about.gitlab.com/pricing/
-[ee-2346]: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/2346
-[triggers]: ../ci/triggers/README.md#when-a-pipeline-depends-on-the-artifacts-of-another-pipeline-premium

@@ -14,9 +14,7 @@ module WaitableWorker
       # are not likely to finish within the timeout. This assumes we can process
       # 10 jobs per second:
       # https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/205
-      if ::Feature.enabled?(:skip_job_waiter_for_large_batches)
-        return bulk_perform_async(args_list) if args_list.length >= 10 * timeout
-      end
+      return bulk_perform_async(args_list) if args_list.length >= 10 * timeout
 
       waiter = Gitlab::JobWaiter.new(args_list.size, worker_label: self.to_s)
 

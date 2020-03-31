@@ -1,7 +1,7 @@
 # Monitoring GitHub imports
 
 >**Note:**
-Available since [GitLab 10.2][14731].
+Available since [GitLab 10.2](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/14731).
 
 The GitHub importer exposes various Prometheus metrics that you can use to
 monitor the health and progress of the importer.
@@ -97,5 +97,3 @@ The name of the project is stored in the `project` label in the format
 
 This metric tracks the number of imported repositories across all projects. This
 metric does not expose any labels.
-
-[14731]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/14731

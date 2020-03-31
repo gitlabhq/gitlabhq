@@ -21,7 +21,7 @@ In brief, this is what you need to upload your website in GitLab Pages:
 
 1. Domain of the instance: domain name that is used for GitLab Pages
    (ask your administrator).
-1. GitLab CI/CD: a `.gitlab-ci.yml` file with a specific job named [`pages`][pages] in the root directory of your repository.
+1. GitLab CI/CD: a `.gitlab-ci.yml` file with a specific job named [`pages`](../../../ci/yaml/README.md#pages) in the root directory of your repository.
 1. A directory called `public` in your site's repo containing the content
    to be published.
 1. GitLab Runner enabled for the project.
@@ -61,7 +61,7 @@ If the case of `404.html`, there are different scenarios. For example:
 
 Since you cannot use any custom server configuration files, like `.htaccess` or
 any `.conf` file, if you want to redirect a page to another
-location, you can use the [HTTP meta refresh tag][metarefresh].
+location, you can use the [HTTP meta refresh tag](https://en.wikipedia.org/wiki/Meta_refresh).
 
 Some static site generators provide plugins for that functionality so that you
 don't have to create and edit HTML files manually. For example, Jekyll has the
@@ -286,8 +286,4 @@ No, you don't. You can create your project first and it will be accessed under
 
 ## Known issues
 
-For a list of known issues, visit GitLab's [public issue tracker].
-
-[pages]: ../../../ci/yaml/README.md#pages
-[metarefresh]: https://en.wikipedia.org/wiki/Meta_refresh
-[public issue tracker]: https://gitlab.com/gitlab-org/gitlab/-/issues?label_name[]=Category%3APages
+For a list of known issues, visit GitLab's [public issue tracker](https://gitlab.com/gitlab-org/gitlab/-/issues?label_name[]=Category%3APages).

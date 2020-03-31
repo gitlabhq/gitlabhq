@@ -5,8 +5,8 @@
 NOTE: **Note:**
 We intend to [rename IP whitelist as `IP allowlist`](https://gitlab.com/gitlab-org/gitlab/-/issues/7554).
 
-GitLab provides some [monitoring endpoints] that provide health check information
-when probed.
+GitLab provides some [monitoring endpoints](../../user/admin_area/monitoring/health_check.md)
+that provide health check information when probed.
 
 To control access to those endpoints via IP whitelisting, you can add single
 hosts or use IP ranges:
@@ -19,7 +19,7 @@ hosts or use IP ranges:
    gitlab_rails['monitoring_whitelist'] = ['127.0.0.0/8', '192.168.0.1']
    ```
 
-1. Save the file and [reconfigure] GitLab for the changes to take effect.
+1. Save the file and [reconfigure](../restart_gitlab.md#omnibus-gitlab-reconfigure) GitLab for the changes to take effect.
 
 ---
 
@@ -35,8 +35,4 @@ hosts or use IP ranges:
        - 192.168.0.1
    ```
 
-1. Save the file and [restart] GitLab for the changes to take effect.
-
-[reconfigure]: ../restart_gitlab.md#omnibus-gitlab-reconfigure
-[restart]: ../restart_gitlab.md#installations-from-source
-[monitoring endpoints]: ../../user/admin_area/monitoring/health_check.md
+1. Save the file and [restart](../restart_gitlab.md#installations-from-source) GitLab for the changes to take effect.

@@ -45,7 +45,7 @@ module Gitlab
     end
 
     # CSS sprite fallback takes precedence over image fallback
-    def gl_emoji_tag(name)
+    def gl_emoji_tag(name, options = {})
       emoji_name = emojis_aliases[name] || name
       emoji_info = emojis[emoji_name]
       return unless emoji_info
@@ -54,8 +54,9 @@ module Gitlab
         name: emoji_name,
         unicode_version: emoji_unicode_version(emoji_name)
       }
+      options = { title: emoji_info['description'], data: data }.merge(options)
 
-      ActionController::Base.helpers.content_tag('gl-emoji', emoji_info['moji'], title: emoji_info['description'], data: data)
+      ActionController::Base.helpers.content_tag('gl-emoji', emoji_info['moji'], options)
     end
 
     private

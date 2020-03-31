@@ -1,6 +1,6 @@
 # Deploy Tokens
 
-> - [Introduced][ce-17894] in GitLab 10.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17894) in GitLab 10.7.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/issues/199370) from **Settings > Repository** in GitLab 12.9.
 
 Deploy tokens allow you to download (`git clone`) or read the container registry images of a project without having a user and a password.
@@ -43,7 +43,7 @@ the following table.
 | Scope | Description |
 | ----- | ----------- |
 | `read_repository` | Allows read-access to the repository through `git clone` |
-| `read_registry` | Allows read-access to [container registry] images if a project is private and authorization is required. |
+| `read_registry` | Allows read-access to [container registry](../../packages/container_registry/index.md) images if a project is private and authorization is required. |
 
 ## Deploy token custom username
 
@@ -101,7 +101,7 @@ apply consistently when cloning the repository of related projects.
 
 ### GitLab Deploy Token
 
-> [Introduced][ce-18414] in GitLab 10.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18414) in GitLab 10.8.
 
 There's a special case when it comes to Deploy Tokens. If a user creates one
 named `gitlab-deploy-token`, the username and token of the Deploy Token will be
@@ -115,8 +115,3 @@ those variables:
 ```shell
 docker login -u $CI_DEPLOY_USER -p $CI_DEPLOY_PASSWORD $CI_REGISTRY
 ```
-
-[ce-17894]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17894
-[ce-11845]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/11845
-[ce-18414]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18414
-[container registry]: ../../packages/container_registry/index.md

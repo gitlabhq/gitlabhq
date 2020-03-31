@@ -17,12 +17,12 @@ Pages to the latest supported version.
 
 ## Overview
 
-GitLab Pages makes use of the [GitLab Pages daemon], a simple HTTP server
+GitLab Pages makes use of the [GitLab Pages daemon](https://gitlab.com/gitlab-org/gitlab-pages), a simple HTTP server
 written in Go that can listen on an external IP address and provide support for
 custom domains and custom certificates. It supports dynamic certificates through
 SNI and exposes pages using HTTP2 by default.
-You are encouraged to read its [README][pages-readme] to fully understand how
-it works.
+You are encouraged to read its [README](https://gitlab.com/gitlab-org/gitlab-pages/blob/master/README.md)
+to fully understand how it works.
 
 In the case of [custom domains](#custom-domains) (but not
 [wildcard domains](#wildcard-domains)), the Pages daemon needs to listen on
@@ -55,7 +55,7 @@ Before proceeding with the Pages configuration, make sure that:
    Pages artifacts.
 1. (Optional) You have a **wildcard certificate** for the Pages domain if you
    decide to serve Pages (`*.example.io`) under HTTPS.
-1. (Optional but recommended) You have configured and enabled the [Shared Runners][]
+1. (Optional but recommended) You have configured and enabled the [Shared Runners](../../ci/runners/README.md)
    so that your users don't have to bring their own.
 
 ### DNS configuration
@@ -144,7 +144,7 @@ The Pages daemon doesn't listen to the outside world.
    ```
 
 1. Restart NGINX
-1. [Restart GitLab][restart]
+1. [Restart GitLab](../restart_gitlab.md#installations-from-source)
 
 ### Wildcard domains with TLS support
 
@@ -201,7 +201,7 @@ outside world.
    ```
 
 1. Restart NGINX
-1. [Restart GitLab][restart]
+1. [Restart GitLab](../restart_gitlab.md#installations-from-source)
 
 ## Advanced configuration
 
@@ -272,7 +272,7 @@ world. Custom domains are supported, but no TLS.
    `0.0.0.0` with `192.0.2.1`, where `192.0.2.1` the primary IP where GitLab
    listens to.
 1. Restart NGINX
-1. [Restart GitLab][restart]
+1. [Restart GitLab](../restart_gitlab.md#installations-from-source)
 
 ### Custom domains with TLS support
 
@@ -341,7 +341,7 @@ world. Custom domains and TLS are supported.
    `0.0.0.0` with `192.0.2.1`, where `192.0.2.1` the primary IP where GitLab
    listens to.
 1. Restart NGINX
-1. [Restart GitLab][restart]
+1. [Restart GitLab](../restart_gitlab.md#installations-from-source)
 
 ## NGINX caveats
 
@@ -402,7 +402,7 @@ Pages access control is disabled by default. To enable it:
      access_control: true
    ```
 
-1. [Restart GitLab][restart].
+1. [Restart GitLab](../restart_gitlab.md#installations-from-source).
 1. Create a new [system OAuth application](../../integration/oauth_provider.md#adding-an-application-through-the-profile).
    This should be called `GitLab Pages` and have a `Redirect URL` of
    `https://projects.example.io/auth`. It does not need to be a "trusted"
@@ -435,7 +435,7 @@ are stored.
      path: /mnt/storage/pages
    ```
 
-1. [Restart GitLab][restart]
+1. [Restart GitLab](../restart_gitlab.md#installations-from-source)
 
 ## Set maximum Pages size
 
@@ -445,21 +445,9 @@ The default is 100MB.
 
 ## Backup
 
-Pages are part of the [regular backup][backup] so there is nothing to configure.
+Pages are part of the [regular backup](../../raketasks/backup_restore.md) so there is nothing to configure.
 
 ## Security
 
 You should strongly consider running GitLab Pages under a different hostname
 than GitLab to prevent XSS attacks.
-
-[backup]: ../../raketasks/backup_restore.md
-[ee-80]: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80
-[ee-173]: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/173
-[gitlab pages daemon]: https://gitlab.com/gitlab-org/gitlab-pages
-[NGINX configs]: https://gitlab.com/gitlab-org/gitlab/tree/8-5-stable-ee/lib/support/nginx
-[pages-readme]: https://gitlab.com/gitlab-org/gitlab-pages/blob/master/README.md
-[pages-userguide]: ../../user/project/pages/index.md
-[restart]: ../restart_gitlab.md#installations-from-source
-[gitlab-pages]: https://gitlab.com/gitlab-org/gitlab-pages/tree/v0.4.0
-[gl-example]: https://gitlab.com/gitlab-org/gitlab/blob/master/lib/support/init.d/gitlab.default.example
-[shared runners]: ../../ci/runners/README.md

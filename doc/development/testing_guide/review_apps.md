@@ -113,6 +113,10 @@ pipelines (and is manual in merge request) stops stale Review Apps after 5 days,
 deletes their environment after 6 days, and cleans up any dangling Helm releases
 and Kubernetes resources after 7 days.
 
+The `review-gcp-cleanup` job that automatically runs in scheduled pipelines
+(and is manual in merge request) removes any dangling GCP network resources
+that were not removed along with the Kubernetes resources.
+
 ## QA runs
 
 On every [pipeline][gitlab-pipeline] in the `qa` stage (which comes after the

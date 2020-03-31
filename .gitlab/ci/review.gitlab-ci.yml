@@ -42,6 +42,23 @@ review-cleanup:
   script:
     - ruby -rrubygems scripts/review_apps/automated_cleanup.rb
 
+review-gcp-cleanup:
+  extends:
+    - .review:rules:review-gcp-cleanup
+  stage: prepare
+  image: gcr.io/google.com/cloudsdktool/cloud-sdk:latest
+  allow_failure: true
+  environment:
+    name: review/auto-gcp-cleanup
+    action: stop
+  before_script:
+    - gcloud auth activate-service-account --key-file=$REVIEW_APPS_GCP_CREDENTIALS
+    - gcloud config set project $REVIEW_APPS_GCP_PROJECT
+    - apt-get install -y jq
+    - source scripts/review_apps/gcp_cleanup.sh
+  script:
+    - gcp_cleanup
+
 review-build-cng:
   extends:
     - .default-retry

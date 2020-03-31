@@ -10,9 +10,9 @@ It allows you to see (from left to right):
 - the current host serving the page
 - time taken and number of DB queries; click through for details of these queries
   ![SQL profiling using the Performance Bar](img/performance_bar_sql_queries.png)
-- time taken and number of [Gitaly] calls; click through for details of these calls
+- time taken and number of [Gitaly](../../gitaly/index.md) calls; click through for details of these calls
   ![Gitaly profiling using the Performance Bar](img/performance_bar_gitaly_calls.png)
-- time taken and number of [Rugged] calls; click through for details of these calls
+- time taken and number of [Rugged](../../high_availability/nfs.md#improving-nfs-performance-with-gitlab) calls; click through for details of these calls
   ![Rugged profiling using the Performance Bar](img/performance_bar_rugged_calls.png)
 - time taken and number of Redis calls; click through for details of these calls
   ![Redis profiling using the Performance Bar](img/performance_bar_redis_calls.png)
@@ -68,6 +68,3 @@ display it.
 You can toggle the Bar using the same shortcut.
 
 ![GitLab Performance Bar Admin Settings](img/performance_bar_configuration_settings.png)
-
-[Gitaly]: ../../gitaly/index.md
-[Rugged]: ../../high_availability/nfs.md#improving-nfs-performance-with-gitlab

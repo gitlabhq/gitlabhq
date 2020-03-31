@@ -170,7 +170,7 @@ Some basic Ruby runtime metrics are available:
 | Metric                               | Type      | Since | Description |
 |:------------------------------------ |:--------- |:----- |:----------- |
 | `ruby_gc_duration_seconds`           | Counter   | 11.1  | Time spent by Ruby in GC |
-| `ruby_gc_stat_...`                   | Gauge     | 11.1  | Various metrics from [GC.stat] |
+| `ruby_gc_stat_...`                   | Gauge     | 11.1  | Various metrics from [GC.stat](https://ruby-doc.org/core-2.6.5/GC.html#method-c-stat) |
 | `ruby_file_descriptors`              | Gauge     | 11.1  | File descriptors per process |
 | `ruby_memory_bytes`                  | Gauge     | 11.1  | Memory usage by process |
 | `ruby_sampler_duration_seconds`      | Counter   | 11.1  | Time spent collecting stats |
@@ -178,8 +178,6 @@ Some basic Ruby runtime metrics are available:
 | `ruby_process_max_fds`               | Gauge     | 12.0  | Maximum number of open file descriptors per process |
 | `ruby_process_resident_memory_bytes` | Gauge     | 12.0  | Memory usage by process |
 | `ruby_process_start_time_seconds`    | Gauge     | 12.0  | UNIX timestamp of process start time |
-
-[GC.stat]: https://ruby-doc.org/core-2.6.5/GC.html#method-c-stat
 
 ## Unicorn Metrics
 

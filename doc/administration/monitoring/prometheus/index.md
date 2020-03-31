@@ -10,7 +10,7 @@
 > - Prometheus and its exporters don't authenticate users, and will be available
 >  to anyone who can access them.
 
-[Prometheus] is a powerful time-series monitoring service, providing a flexible
+[Prometheus](https://prometheus.io) is a powerful time-series monitoring service, providing a flexible
 platform for monitoring GitLab and other software products.
 GitLab provides out of the box monitoring with Prometheus, providing easy
 access to high quality time-series monitoring of GitLab services.
@@ -43,13 +43,13 @@ To disable Prometheus and all of its exporters, as well as any added in the futu
    prometheus_monitoring['enable'] = false
    ```
 
-1. Save the file and [reconfigure GitLab][reconfigure] for the changes to
+1. Save the file and [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to
    take effect.
 
 ### Changing the port and address Prometheus listens on
 
 NOTE: **Note:**
-The following change was added in [GitLab Omnibus 8.17][1261]. Although possible,
+The following change was added in [GitLab Omnibus 8.17](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/1261). Although possible,
 it's not recommended to change the port Prometheus listens
 on, as this might affect or conflict with other services running on the GitLab
 server. Proceed at your own risk.
@@ -75,7 +75,7 @@ To change the address/port that Prometheus listens on:
    prometheus['listen_address'] = '0.0.0.0:9090'
    ```
 
-1. Save the file and [reconfigure GitLab][reconfigure] for the changes to
+1. Save the file and [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to
    take effect
 
 ### Adding custom scrape configs
@@ -151,7 +151,7 @@ To use an external Prometheus server:
    }
    ```
 
-1. [Reconfigure GitLab][reconfigure] to apply the changes.
+1. [Reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure) to apply the changes.
 1. Edit the Prometheus server's configuration file.
 1. Add each node's exporters to the Prometheus server's
    [scrape target configuration](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#%3Cscrape_config%3E).
@@ -217,17 +217,17 @@ You can visit `http://localhost:9090` for the dashboard that Prometheus offers b
 
 >**Note:**
 If SSL has been enabled on your GitLab instance, you may not be able to access
-Prometheus on the same browser as GitLab if using the same FQDN due to [HSTS][hsts]. We plan to
-[provide access via GitLab][multi-user-prometheus], but in the interim there are
+Prometheus on the same browser as GitLab if using the same FQDN due to [HSTS](https://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security). We plan to
+[provide access via GitLab](https://gitlab.com/gitlab-org/multi-user-prometheus), but in the interim there are
 some workarounds: using a separate FQDN, using server IP, using a separate browser for Prometheus, resetting HSTS, or
-having [NGINX proxy it][nginx-custom-config].
+having [NGINX proxy it](https://docs.gitlab.com/omnibus/settings/nginx.html#inserting-custom-nginx-settings-into-the-gitlab-server-block).
 
 The performance data collected by Prometheus can be viewed directly in the
 Prometheus console, or through a compatible dashboard tool.
 The Prometheus interface provides a [flexible query language](https://prometheus.io/docs/prometheus/latest/querying/basics/)
 to work with the collected data where you can visualize the output.
 For a more fully featured dashboard, Grafana can be used and has
-[official support for Prometheus][prom-grafana].
+[official support for Prometheus](https://prometheus.io/docs/visualization/grafana/).
 
 Sample Prometheus queries:
 
@@ -305,7 +305,7 @@ The GitLab exporter allows you to measure various GitLab metrics, pulled from Re
 > - Introduced in GitLab 9.0.
 > - Pod monitoring introduced in GitLab 9.4.
 
-If your GitLab server is running within Kubernetes, Prometheus will collect metrics from the Nodes and [annotated Pods](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#kubernetes_sd_config) in the cluster, including performance data on each container. This is particularly helpful if your CI/CD environments run in the same cluster, as you can use the [Prometheus project integration][prometheus integration] to monitor them.
+If your GitLab server is running within Kubernetes, Prometheus will collect metrics from the Nodes and [annotated Pods](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#kubernetes_sd_config) in the cluster, including performance data on each container. This is particularly helpful if your CI/CD environments run in the same cluster, as you can use the [Prometheus project integration](../../../user/project/integrations/prometheus.md) to monitor them.
 
 To disable the monitoring of Kubernetes:
 
@@ -316,14 +316,5 @@ To disable the monitoring of Kubernetes:
    prometheus['monitor_kubernetes'] = false
    ```
 
-1. Save the file and [reconfigure GitLab][reconfigure] for the changes to
+1. Save the file and [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to
    take effect.
-
-[hsts]: https://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security
-[multi-user-prometheus]: https://gitlab.com/gitlab-org/multi-user-prometheus
-[nginx-custom-config]: https://docs.gitlab.com/omnibus/settings/nginx.html#inserting-custom-nginx-settings-into-the-gitlab-server-block
-[prometheus]: https://prometheus.io
-[prom-grafana]: https://prometheus.io/docs/visualization/grafana/
-[reconfigure]: ../../restart_gitlab.md#omnibus-gitlab-reconfigure
-[1261]: https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/1261
-[prometheus integration]: ../../../user/project/integrations/prometheus.md

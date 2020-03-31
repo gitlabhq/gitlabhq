@@ -36,7 +36,8 @@ including (but not limited to):
 - Ruby garbage collection statistics.
 
 Metrics data is written to [InfluxDB](https://www.influxdata.com/products/influxdb-overview/)
-over [UDP][influxdb-udp]. Stored data can be visualized using [Grafana](https://grafana.com) or any other application that
+over [UDP](https://docs.influxdata.com/influxdb/v0.9/write_protocols/udp/).
+Stored data can be visualized using [Grafana](https://grafana.com) or any other application that
 supports reading data from InfluxDB. Alternatively data can be queried using the
 InfluxDB CLI.
 
@@ -70,5 +71,3 @@ half above the interval. For example, for a user defined interval of 15 seconds
 the actual interval can be anywhere between 7.5 and 22.5. The interval is
 re-generated for every sampling run instead of being generated once and re-used
 for the duration of the process' lifetime.
-
-[influxdb-udp]: https://docs.influxdata.com/influxdb/v0.9/write_protocols/udp/

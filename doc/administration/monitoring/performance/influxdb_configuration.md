@@ -4,10 +4,10 @@ CAUTION: **InfluxDB is deprecated in favor of Prometheus:**
 InfluxDB support is scheduled to be removed in GitLab 13.0.
 You are advised to use [Prometheus](../prometheus/index.md) instead.
 
-The default settings provided by [InfluxDB] are not sufficient for a high traffic
-GitLab environment. The settings discussed in this document are based on the
-settings GitLab uses for GitLab.com, depending on your own needs you may need to
-further adjust them.
+The default settings provided by [InfluxDB](https://www.influxdata.com/products/influxdb-overview/)
+are not sufficient for a high traffic GitLab environment. The settings discussed in
+this document are based on the settings GitLab uses for GitLab.com. Depending on
+your own needs, you may need to further adjust them.
 
 If you are intending to run InfluxDB on the same server as GitLab, make sure
 you have plenty of RAM since InfluxDB can use quite a bit depending on traffic.
@@ -23,12 +23,13 @@ Unless you are going with a budget setup, it's advised to run it separately.
 
 Note that the RAM and storage requirements can differ greatly depending on the
 amount of data received/stored. To limit the amount of stored data users can
-look into [InfluxDB Retention Policies][influxdb-retention].
+look into
+[InfluxDB Retention Policies](https://docs.influxdata.com/influxdb/v0.9/query_language/database_management/#retention-policy-management).
 
 ## Installation
 
 Installing InfluxDB is out of the scope of this document. Please refer to the
-[InfluxDB documentation].
+[InfluxDB documentation](https://docs.influxdata.com/influxdb/v0.9/).
 
 ## InfluxDB Server Settings
 
@@ -43,7 +44,8 @@ InfluxDB needs to be restarted.
 
 InfluxDB comes with different storage engines and as of InfluxDB 0.9.5 a new
 storage engine is available, called [TSM Tree](https://www.influxdata.com/blog/new-storage-engine-time-structured-merge-tree/).
-All users **must** use the new `tsm1` storage engine as this [will be the default engine][tsm1-commit] in
+All users **must** use the new `tsm1` storage engine as this
+[will be the default engine](https://github.com/influxdata/influxdb/commit/15d723dc77651bac83e09e2b1c94be480966cb0d) in
 upcoming InfluxDB releases.
 
 Make sure you have the following in your configuration file:
@@ -67,9 +69,9 @@ file:
 
 ### HTTP
 
-HTTP is required when using the [InfluxDB CLI] or other tools such as Grafana,
-thus it should be enabled. When enabling make sure to _also_ enable
-authentication:
+HTTP is required when using the [InfluxDB CLI](https://docs.influxdata.com/influxdb/v0.9/tools/shell/)
+or other tools such as Grafana, thus it should be enabled. When enabling
+make sure to _also_ enable authentication:
 
 ```toml
 [http]
@@ -129,14 +131,15 @@ using _at least_ 100 MB.
 
 When enabling UDP, users should take care to not expose the port to the public,
 as doing so will allow anybody to write data into your InfluxDB database (as
-[InfluxDB's UDP protocol][udp] doesn't support authentication). We recommend either
+[InfluxDB's UDP protocol](https://docs.influxdata.com/influxdb/v0.9/write_protocols/udp/)
+doesn't support authentication). We recommend either
 whitelisting the allowed IP addresses/ranges, or setting up a VLAN and only
 allowing traffic from members of said VLAN.
 
 ## Create a new admin user
 
 If you want to [enable authentication](#http), you might want to [create an
-admin user][influx-admin]:
+admin user](https://docs.influxdata.com/influxdb/v0.9/administration/authentication_and_authorization/#create-a-new-admin-user):
 
 ```shell
 influx -execute "CREATE USER jeff WITH PASSWORD '1234' WITH ALL PRIVILEGES"
@@ -186,11 +189,3 @@ Read more on:
 - [GitLab Configuration](gitlab_configuration.md)
 - [InfluxDB Schema](influxdb_schema.md)
 - [Grafana Install/Configuration](grafana_configuration.md)
-
-[influxdb-retention]: https://docs.influxdata.com/influxdb/v0.9/query_language/database_management/#retention-policy-management
-[influxdb documentation]: https://docs.influxdata.com/influxdb/v0.9/
-[influxdb cli]: https://docs.influxdata.com/influxdb/v0.9/tools/shell/
-[udp]: https://docs.influxdata.com/influxdb/v0.9/write_protocols/udp/
-[influxdb]: https://www.influxdata.com/products/influxdb-overview/
-[tsm1-commit]: https://github.com/influxdata/influxdb/commit/15d723dc77651bac83e09e2b1c94be480966cb0d
-[influx-admin]: https://docs.influxdata.com/influxdb/v0.9/administration/authentication_and_authorization/#create-a-new-admin-user

@@ -355,6 +355,30 @@ sudo gitlab-ctl reconfigure
 To help us resolve this problem, consider commenting on
 [the issue](https://gitlab.com/gitlab-org/gitlab/issues/4489).
 
+### Message: `LOG:  invalid CIDR mask in address`
+
+This happens on wrongly-formatted addresses in `postgresql['md5_auth_cidr_addresses']`.
+
+```plaintext
+2020-03-20_23:59:57.60499 LOG:  invalid CIDR mask in address "***"
+2020-03-20_23:59:57.60501 CONTEXT:  line 74 of configuration file "/var/opt/gitlab/postgresql/data/pg_hba.conf"
+```
+
+To fix this, update the IP addresses in `/etc/gitlab/gitlab.rb` under `postgresql['md5_auth_cidr_addresses']`
+to respect the CIDR format (i.e. `1.2.3.4/32`).
+
+### Message: `LOG:  invalid IP mask "md5": Name or service not known`
+
+This happens when you have added IP addresses without a subnet mask in `postgresql['md5_auth_cidr_addresses']`.
+
+```plaintext
+2020-03-21_00:23:01.97353 LOG:  invalid IP mask "md5": Name or service not known
+2020-03-21_00:23:01.97354 CONTEXT:  line 75 of configuration file "/var/opt/gitlab/postgresql/data/pg_hba.conf"
+```
+
+To fix this, add the subnet mask in `/etc/gitlab/gitlab.rb` under `postgresql['md5_auth_cidr_addresses']`
+to respect the CIDR format (i.e. `1.2.3.4/32`).
+
 ### Very large repositories never successfully synchronize on the **secondary** node
 
 GitLab places a timeout on all repository clones, including project imports

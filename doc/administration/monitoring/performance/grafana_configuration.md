@@ -80,7 +80,7 @@ For more information see the [InfluxDB Management README](https://gitlab.com/git
 
 You can now import a set of default dashboards that will give you a good
 start on displaying useful information. GitLab has published a set of default
-[Grafana dashboards][grafana-dashboards] to get you started. Clone the
+[Grafana dashboards](https://gitlab.com/gitlab-org/grafana-dashboards) to get you started. Clone the
 repository or download a zip/tarball, then follow these steps to import each
 JSON file.
 
@@ -102,10 +102,8 @@ navigate away.
 Repeat this process for each dashboard you wish to import.
 
 Alternatively you can automatically import all the dashboards into your Grafana
-instance. See the README of the [Grafana dashboards][grafana-dashboards]
+instance. See the README of the [Grafana dashboards](https://gitlab.com/gitlab-org/grafana-dashboards)
 repository for more information on this process.
-
-[grafana-dashboards]: https://gitlab.com/gitlab-org/grafana-dashboards
 
 ## Integration with GitLab UI
 

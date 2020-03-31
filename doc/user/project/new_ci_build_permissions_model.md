@@ -2,7 +2,7 @@
 
 > Introduced in GitLab 8.12.
 
-GitLab 8.12 has a completely redesigned [job permissions] system. You can find
+GitLab 8.12 has a completely redesigned [job permissions](../permissions.md#job-permissions) system. You can find
 all discussion and all our concerns when choosing the current approach in issue
 [#18994](https://gitlab.com/gitlab-org/gitlab-foss/issues/18994).
 
@@ -32,7 +32,7 @@ as created by the pusher (local push or via the UI) and any job created in this
 pipeline will have the read permissions of the pusher but not write permissions.
 
 This allows us to make it really easy to evaluate the access for all projects
-that have [Git submodules][gitsub] or are using container images that the pusher
+that have [Git submodules](../../ci/git_submodules.md) or are using container images that the pusher
 would have access too. **The permission is granted only for the time that the job
 is running. The access is revoked after the job is finished.**
 
@@ -132,7 +132,7 @@ With the new job permissions model, there is now an easy way to access all
 dependent source code in a project. That way, we can:
 
 1. Access a project's dependent repositories
-1. Access a project's [Git submodules][gitsub]
+1. Access a project's [Git submodules](../../ci/git_submodules.md)
 1. Access private container images
 1. Access project's and submodule LFS objects
 
@@ -151,15 +151,15 @@ In short here's what you need to do should you encounter any issues.
 
 As an administrator:
 
-- **500 errors**: You will need to update [GitLab Workhorse][workhorse] to at
+- **500 errors**: You will need to update [GitLab Workhorse](https://gitlab.com/gitlab-org/gitlab-workhorse) to at
   least 0.8.2. This is done automatically for Omnibus installations, you need to
-  [check manually][update-docs] for installations from source.
+  [check manually](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/doc/update) for installations from source.
 - **500 errors**: Check if you have another web proxy sitting in front of NGINX (HAProxy,
   Apache, etc.). It might be a good idea to let GitLab use the internal NGINX
-  web server and not disable it completely. See [this comment][comment] for an
+  web server and not disable it completely. See [this comment](https://gitlab.com/gitlab-org/gitlab-foss/issues/22484#note_16648302) for an
   example.
 - **403 errors**: You need to make sure that your installation has [HTTP(S)
-  cloning enabled][https]. HTTP(S) support is now a **requirement** by GitLab CI
+  cloning enabled](../admin_area/settings/visibility_and_access_controls.md#enabled-git-access-protocols). HTTP(S) support is now a **requirement** by GitLab CI
   to clone all sources.
 
 As a user:
@@ -170,7 +170,7 @@ As a user:
 
 ### Dependent repositories
 
-The [Job environment variable][jobenv] `CI_JOB_TOKEN` can be used to
+The [Job environment variable](../../ci/variables/README.md#predefined-environment-variables) `CI_JOB_TOKEN` can be used to
 authenticate any clones of dependent repositories. For example:
 
 ```shell
@@ -187,7 +187,7 @@ echo -e "machine gitlab.com\nlogin gitlab-ci-token\npassword ${CI_JOB_TOKEN}" > 
 ### Git submodules
 
 To properly configure submodules with GitLab CI/CD, read the
-[Git submodules documentation][gitsub].
+[Git submodules documentation](../../ci/git_submodules.md).
 
 ### Container Registry
 
@@ -203,8 +203,8 @@ Container Registries for private projects.
 >   access token created explicitly for this purpose). This issue is resolved with
 >   latest changes in GitLab Runner 1.8 which receives GitLab credentials with
 >   build data.
-> - Starting from GitLab 8.12, if you have [2FA] enabled in your account, you need
->   to pass a [personal access token][pat] instead of your password in order to
+> - Starting from GitLab 8.12, if you have [2FA](../profile/account/two_factor_authentication.md) enabled in your account, you need
+>   to pass a [personal access token](../profile/personal_access_tokens.md) instead of your password in order to
 >   login to GitLab's Container Registry.
 
 Your jobs can access all container images that you would normally have access
@@ -223,7 +223,7 @@ test:
 
 ### Pipeline triggers
 
-Since 9.0 [pipeline triggers][triggers] do support the new permission model.
+Since 9.0 [pipeline triggers](../../ci/triggers/README.md#ci-job-token) do support the new permission model.
 The new triggers do impersonate their associated user including their access
 to projects and their project permissions.
 
@@ -231,14 +231,3 @@ to projects and their project permissions.
 
 GitLab API cannot be used via `CI_JOB_TOKEN` but there is a [proposal](https://gitlab.com/gitlab-org/gitlab-foss/issues/29566)
 to support it.
-
-[job permissions]: ../permissions.md#job-permissions
-[comment]: https://gitlab.com/gitlab-org/gitlab-foss/issues/22484#note_16648302
-[gitsub]: ../../ci/git_submodules.md
-[https]: ../admin_area/settings/visibility_and_access_controls.md#enabled-git-access-protocols
-[triggers]: ../../ci/triggers/README.md#ci-job-token
-[update-docs]: https://gitlab.com/gitlab-org/gitlab-foss/tree/master/doc/update
-[workhorse]: https://gitlab.com/gitlab-org/gitlab-workhorse
-[jobenv]: ../../ci/variables/README.md#predefined-environment-variables
-[2fa]: ../profile/account/two_factor_authentication.md
-[pat]: ../profile/personal_access_tokens.md

@@ -58,21 +58,6 @@ describe WaitableWorker do
 
       worker.bulk_perform_and_wait(arguments, timeout: 2)
     end
-
-    context 'when the skip_job_waiter_for_large_batches flag is disabled' do
-      before do
-        stub_feature_flags(skip_job_waiter_for_large_batches: false)
-      end
-
-      it 'runs jobs over 10 * the timeout using a waiter key' do
-        arguments = 1.upto(21).map { |i| [i] }
-        arguments_with_waiter = arguments.map { |arg| arg + [anything] }
-
-        expect(worker).to receive(:bulk_perform_async).with(arguments_with_waiter)
-
-        worker.bulk_perform_and_wait(arguments, timeout: 2)
-      end
-    end
   end
 
   describe '.bulk_perform_inline' do

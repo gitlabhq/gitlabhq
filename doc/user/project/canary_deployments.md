@@ -1,6 +1,6 @@
 # Canary Deployments **(PREMIUM)**
 
-> [Introduced][ee-1659] in [GitLab Premium][eep] 9.1.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/1659) in [GitLab Premium](https://about.gitlab.com/pricing/) 9.1.
 
 A popular [Continuous Deployment](https://en.wikipedia.org/wiki/Continuous_deployment)
 strategy, where a small portion of the fleet is updated to the new version of
@@ -8,7 +8,7 @@ your application.
 
 ## Overview
 
-When embracing [Continuous Delivery][cd-blog], a company needs to decide what
+When embracing [Continuous Delivery](https://about.gitlab.com/blog/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/), a company needs to decide what
 type of deployment strategy to use. One of the most popular strategies is canary
 deployments, where a small portion of the fleet is updated to the new version
 first. This subset, the canaries, then serve as the proverbial
@@ -18,8 +18,8 @@ If there is a problem with the new version of the application, only a small
 percentage of users are affected and the change can either be fixed or quickly
 reverted.
 
-Leveraging [Kubernetes' Canary deployments][kube-canary], visualize your canary
-deployments right inside the [Deploy Board], without the need to leave GitLab.
+Leveraging [Kubernetes' Canary deployments](https://kubernetes.io/docs/concepts/cluster-administration/manage-deployment/#canary-deployments), visualize your canary
+deployments right inside the [Deploy Board](deploy_boards.md), without the need to leave GitLab.
 
 ## Use cases
 
@@ -35,7 +35,7 @@ to be careful when using canaries with user-facing changes, because by default,
 requests from the same user will be randomly distributed between canary and
 non-canary pods, which could result in confusion or even errors. If needed, you
 may want to consider [setting `service.spec.sessionAffinity` to `ClientIP` in
-your Kubernetes service definitions][kube-net], but that is beyond the scope of
+your Kubernetes service definitions][kube-net](https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies), but that is beyond the scope of
 this document.
 
 ## Enabling Canary Deployments
@@ -61,10 +61,3 @@ Canary deployments are marked with a yellow dot in the Deploy Board so that you
 can easily notice them.
 
 ![Canary deployments on Deploy Board](img/deploy_boards_canary_deployments.png)
-
-[eep]: https://about.gitlab.com/pricing/
-[ee-1659]: https://gitlab.com/gitlab-org/gitlab/issues/1659
-[kube-canary]: https://kubernetes.io/docs/concepts/cluster-administration/manage-deployment/#canary-deployments
-[deploy board]: deploy_boards.md
-[cd-blog]: https://about.gitlab.com/blog/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/
-[kube-net]: https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies
