@@ -226,7 +226,7 @@ must be created with the case-sensitive name `License-Check`. This approval grou
 with the number of approvals required greater than zero.
 
 Once this group is added to your project, the approval rule is enabled for all Merge Requests. To
-configure how this rule behaves, you can choose which licenses to `approve` or `blacklist` in the
+configure how this rule behaves, you can choose which licenses to `allow` or `deny` in the
 [project policies for License Compliance](../compliance/license_compliance/index.md#project-policies-for-license-compliance)
 section.
 
@@ -234,13 +234,13 @@ Any code changes cause the approvals required to reset.
 
 An approval is required when a license report:
 
-- Contains a dependency that includes a software license that is `blacklisted`.
+- Contains a dependency that includes a software license that is `denied`.
 - Is not generated during pipeline execution.
 
 An approval is optional when a license report:
 
 - Contains no software license violations.
-- Contains only new licenses that are `approved` or unknown.
+- Contains only new licenses that are `allowed` or unknown.
 
 ## Working in an offline environment
 

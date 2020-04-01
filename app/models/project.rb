@@ -1238,14 +1238,12 @@ class Project < ApplicationRecord
     update_column(:has_external_wiki, services.external_wikis.any?) if Gitlab::Database.read_write?
   end
 
-  def find_or_initialize_services(exceptions: [])
-    available_services_names = Service.available_services_names - exceptions
+  def find_or_initialize_services
+    available_services_names = Service.available_services_names - disabled_services
 
-    available_services = available_services_names.map do |service_name|
+    available_services_names.map do |service_name|
       find_or_initialize_service(service_name)
     end
-
-    available_services.compact
   end
 
   def disabled_services
@@ -1258,13 +1256,11 @@ class Project < ApplicationRecord
     service = find_service(services, name)
     return service if service
 
-    # We should check if template for the service exists
     template = find_service(services_templates, name)
 
     if template
       Service.build_from_template(id, template)
     else
-      # If no template, we should create an instance. Ex `build_gitlab_ci_service`
       public_send("build_#{name}_service") # rubocop:disable GitlabSecurity/PublicSend
     end
   end
@@ -1277,10 +1273,6 @@ class Project < ApplicationRecord
     end
   end
   # rubocop: enable CodeReuse/ServiceClass
-
-  def find_service(list, name)
-    list.find { |service| service.to_param == name }
-  end
 
   def ci_services
     services.where(category: :ci)
@@ -2421,6 +2413,10 @@ class Project < ApplicationRecord
   end
 
   private
+
+  def find_service(services, name)
+    services.find { |service| service.to_param == name }
+  end
 
   def closest_namespace_setting(name)
     namespace.closest_setting(name)

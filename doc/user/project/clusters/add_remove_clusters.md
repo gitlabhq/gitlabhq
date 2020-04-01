@@ -28,13 +28,6 @@ Before [adding a Kubernetes cluster](#add-new-cluster) using GitLab, you need:
   - [Admin Area access](../../admin_area/index.md) for a self-managed instance-level
     cluster. **(CORE ONLY)**
 
-## Add new cluster
-
-New clusters can be added using GitLab for:
-
-- [Google Kubernetes Engine (GKE)](add_new_gke_cluster.md).
-- [Amazon Elastic Kubernetes Service (EKS)](add_new_eks_cluster.md).
-
 ## Access controls
 
 When creating a cluster in GitLab, you will be asked if you would like to create either:
@@ -134,14 +127,21 @@ If you don't want to use GitLab Runner in privileged mode, either:
   1. Installing a Runner
      [using `docker+machine`](https://docs.gitlab.com/runner/executors/docker_machine.html).
 
+## Add new cluster
+
+New clusters can be added using GitLab for:
+
+- [Google Kubernetes Engine (GKE)](add_gke_clusters.md).
+- [Amazon Elastic Kubernetes Service (EKS)](add_eks_clusters.md).
+
 ## Add existing cluster
 
 If you have an existing Kubernetes cluster, you can add it to a project, group, or instance.
 
 For more information, see information for adding an:
 
-- [Existing Kubernetes cluster](#existing-kubernetes-cluster).
-- [Existing Elastic Kubernetes Service cluster](add_new_eks_cluster.md#existing-eks-cluster).
+- [Existing Kubernetes cluster](#existing-kubernetes-cluster), including GKE clusters.
+- [Existing EKS cluster](add_eks_clusters.md#existing-eks-cluster).
 
 NOTE: **Note:**
 Kubernetes integration is not supported for arm64 clusters. See the issue
@@ -152,9 +152,9 @@ Kubernetes integration is not supported for arm64 clusters. See the issue
 To add a Kubernetes cluster to your project, group, or instance:
 
 1. Navigate to your:
-   - Project's **Operations > Kubernetes** page, for a project-level cluster.
-   - Group's **Kubernetes** page, for a group-level cluster.
-   - **Admin Area > Kubernetes** page, for an instance-level cluster.
+   - Project's **{cloud-gear}** **Operations > Kubernetes** page, for a project-level cluster.
+   - Group's **{cloud-gear}** **Kubernetes** page, for a group-level cluster.
+   - **{admin}** **Admin Area >** **{cloud-gear}** **Kubernetes** page, for an instance-level cluster.
 1. Click **Add Kubernetes cluster**.
 1. Click the **Add existing cluster** tab and fill in the details:
    - **Kubernetes cluster name** (required) - The name you wish to give the cluster.
@@ -162,8 +162,8 @@ To add a Kubernetes cluster to your project, group, or instance:
      [associated environment](index.md#setting-the-environment-scope-premium) to this cluster.
    - **API URL** (required) -
      It's the URL that GitLab uses to access the Kubernetes API. Kubernetes
-     exposes several APIs, we want the "base" URL that is common to all of them,
-     e.g., `https://kubernetes.example.com` rather than `https://kubernetes.example.com/api/v1`.
+     exposes several APIs, we want the "base" URL that is common to all of them.
+     For example, `https://kubernetes.example.com` rather than `https://kubernetes.example.com/api/v1`.
 
      Get the API URL by running this command:
 

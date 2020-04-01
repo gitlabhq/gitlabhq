@@ -109,7 +109,7 @@ gemnasium-maven-dependency_scanning:
     variables:
       - $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
         $DS_DEFAULT_ANALYZERS =~ /gemnasium-maven/ &&
-        $CI_PROJECT_REPOSITORY_LANGUAGES =~ /\bjava\b/
+        $CI_PROJECT_REPOSITORY_LANGUAGES =~ /\b(java|scala)\b/
 
 gemnasium-python-dependency_scanning:
   extends: .ds-analyzer

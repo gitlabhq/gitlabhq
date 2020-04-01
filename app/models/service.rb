@@ -348,7 +348,7 @@ class Service < ApplicationRecord
 
     service.template = false
     service.project_id = project_id
-    service.active = false if service.active? && !service.valid?
+    service.active = false if service.active? && service.invalid?
     service
   end
 

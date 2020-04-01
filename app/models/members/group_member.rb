@@ -2,6 +2,7 @@
 
 class GroupMember < Member
   include FromUnion
+  include CreatedAtFilterable
 
   SOURCE_TYPE = 'Namespace'
 

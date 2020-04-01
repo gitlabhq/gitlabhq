@@ -491,7 +491,7 @@ Once a vulnerability is found, you can interact with it. Read more on how to
 For more information about the vulnerabilities database update, check the
 [maintenance table](../index.md#maintenance-and-update-of-the-vulnerabilities-database).
 
-## GitLab SAST in an offline air-gapped installation
+## GitLab SAST in an offline environment deployment
 
 For self-managed GitLab instances in an environment with limited, restricted, or intermittent access
 to external resources via the internet, some adjustments are required for the SAST job to

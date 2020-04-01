@@ -1,4 +1,6 @@
-# Adding a new GKE Cluster
+# Adding GKE clusters
+
+GitLab supports adding new and existing GKE clusters.
 
 ## GKE requirements
 
@@ -39,9 +41,9 @@ Note the following:
 To create and add a new Kubernetes cluster to your project, group, or instance:
 
 1. Navigate to your:
-   - Project's **Operations > Kubernetes** page, for a project-level cluster.
-   - Group's **Kubernetes** page, for a group-level cluster.
-   - **Admin Area > Kubernetes** page, for an instance-level cluster.
+   - Project's **{cloud-gear}** **Operations > Kubernetes** page, for a project-level cluster.
+   - Group's **{cloud-gear}** **Kubernetes** page, for a group-level cluster.
+   - **{admin}** **Admin Area >** **{cloud-gear}** **Kubernetes** page, for an instance-level cluster.
 1. Click **Add Kubernetes cluster**.
 1. Under the **Create new cluster** tab, click **Google GKE**.
 1. Connect your Google account if you haven't done already by clicking the
@@ -74,3 +76,8 @@ You can choose to use Cloud Run for Anthos in place of installing Knative and Is
 separately after the cluster has been created. This means that Cloud Run
 (Knative), Istio, and HTTP Load Balancing will be enabled on the cluster at
 create time and cannot be [installed or uninstalled](../../clusters/applications.md) separately.
+
+## Existing GKE cluster
+
+For information on adding an existing GKE cluster, see
+[Existing Kubernetes cluster](add_remove_clusters.md#existing-kubernetes-cluster).

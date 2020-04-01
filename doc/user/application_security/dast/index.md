@@ -442,9 +442,9 @@ dast:
 The DAST job does not require the project's repository to be present when running, so by default
 [`GIT_STRATEGY`](../../../ci/yaml/README.md#git-strategy) is set to `none`.
 
-## Running DAST in an offline air-gapped installation
+## Running DAST in an offline environment deployment
 
-DAST can be executed on an offline air-gapped GitLab Ultimate installation using the following process:
+DAST can be executed on an offline GitLab Ultimate installation by using the following process:
 
 1. Host the DAST image `registry.gitlab.com/gitlab-org/security-products/dast:latest` in your local
    Docker container registry.

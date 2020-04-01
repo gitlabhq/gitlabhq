@@ -36,7 +36,8 @@ Access the default page for admin area settings by navigating to
 | [Slack application](../../../user/project/integrations/gitlab_slack_application.md#configuration) **(FREE ONLY)** | Slack integration allows you to interact with GitLab via slash commands in a chat window. This option is only available on GitLab.com, though it may be [available for self-managed instances in the future](https://gitlab.com/gitlab-org/gitlab/-/issues/28164). |
 | [Third party offers](third_party_offers.md) | Control the display of third party offers. |
 | [Snowplow](../../../telemetry/index.md#enabling-tracking) | Configure the Snowplow integration. |
-| [Amazon EKS](../../project/clusters/add_new_eks_cluster.md#additional-requirements-for-self-managed-instances-core-only) | Amazon EKS integration allows you to provision EKS clusters from GitLab. |
+| [Google GKE](../../project/clusters/add_gke_clusters.md) | Google GKE integration allows you to provision GKE clusters from GitLab. |
+| [Amazon EKS](../../project/clusters/add_eks_clusters.md) | Amazon EKS integration allows you to provision EKS clusters from GitLab. |
 
 ## Repository
 
@@ -45,7 +46,7 @@ Access the default page for admin area settings by navigating to
 | [Repository mirror](visibility_and_access_controls.md#allow-mirrors-to-be-set-up-for-projects) | Configure repository mirroring. |
 | [Repository storage](../../../administration/repository_storage_types.md#how-to-migrate-to-hashed-storage) | Configure storage path settings. |
 | Repository maintenance | ([Repository checks](../../../administration/repository_checks.md) and [Housekeeping](../../../administration/housekeeping.md)). Configure automatic Git checks and housekeeping on repositories. |
-| [Repository static objects](../../../administration/static_objects_external_storage.md) | Serve repository static objects (e.g. archives, blobs, ...) from an external storage (e.g. a CDN). |
+| [Repository static objects](../../../administration/static_objects_external_storage.md) | Serve repository static objects (for example, archives, blobs, ...) from an external storage (for example, a CDN). |
 
 ## Templates **(PREMIUM ONLY)**
 

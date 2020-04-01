@@ -1,4 +1,6 @@
-# Adding a new EKS Cluster
+# Adding EKS clusters
+
+GitLab supports adding new and existing EKS clusters.
 
 ## EKS requirements
 
@@ -7,7 +9,7 @@ requirements are met:
 
 - An [Amazon Web Services](https://aws.amazon.com/) account is set up and you are able to log in.
 - You have permissions to manage IAM resources.
-- If you want to use an [existing EKS cluster](add_new_eks_cluster.md#existing-eks-cluster):
+- If you want to use an [existing EKS cluster](#existing-eks-cluster):
   - An Amazon EKS cluster with worker nodes properly configured.
   - `kubectl` [installed and configured](https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html#get-started-kubectl)
     for access to the EKS cluster.
@@ -48,9 +50,9 @@ Generate an access key for the IAM user, and configure GitLab with the credentia
 To create and add a new Kubernetes cluster to your project, group, or instance:
 
 1. Navigate to your:
-   - Project's **Operations > Kubernetes** page, for a project-level cluster.
-   - Group's **Kubernetes** page, for a group-level cluster.
-   - **Admin Area > Kubernetes** page, for an instance-level cluster.
+   - Project's **{cloud-gear}** **Operations > Kubernetes** page, for a project-level cluster.
+   - Group's **{cloud-gear}** **Kubernetes** page, for a group-level cluster.
+   - **{admin}** **Admin Area >** **{cloud-gear}** **Kubernetes**, for an instance-level cluster.
 1. Click **Add Kubernetes cluster**.
 1. Under the **Create new cluster** tab, click **Amazon EKS**. You will be provided with an
    `Account ID` and `External ID` to use in the next step.
@@ -246,9 +248,9 @@ To add an existing EKS cluster to your project, group, or instance:
    1. Locate the the API server endpoint so GitLab can connect to the cluster. This is displayed on
       the AWS EKS console, when viewing the EKS cluster details.
 1. Navigate to your:
-   - Project's **Operations > Kubernetes** page, for a project-level cluster.
-   - Group's **Kubernetes** page, for a group-level cluster.
-   - **Admin Area > Kubernetes** page, for an instance-level cluster.
+   - Project's **{cloud-gear}** **Operations > Kubernetes** page, for a project-level cluster.
+   - Group's **{cloud-gear}** **Kubernetes** page, for a group-level cluster.
+   - **{admin}** **Admin Area >** **{cloud-gear}** **Kubernetes** page, for an instance-level cluster.
 1. Click **Add Kubernetes cluster**.
 1. Click the **Add existing cluster** tab and fill in the details:
    - **Kubernetes cluster name**: A name for the cluster to identify it within GitLab.

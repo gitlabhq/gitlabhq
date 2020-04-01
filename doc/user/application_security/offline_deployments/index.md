@@ -2,17 +2,26 @@
 type: reference, howto
 ---
 
-# Air-gapped (or offline) environment deployments
+# Offline environment deployments
 
 It is possible to run most of the GitLab security scanners when not
 connected to the internet.
 
-This document describes how to operate Secure scanners in an air-gapped or offline envionment. These instructions also apply to
-self-managed installations that are secured, have security policies (e.g., firewall policies), or otherwise restricted from
-accessing the full internet. These instructions are designed for physically disconnected networks,
-but can also be followed in these other use cases.
+This document describes how to operate Secure Categories (that is, scanner types) in an offline environment. These instructions also apply to
+self-managed installations that are secured, have security policies (for example, firewall policies), or are otherwise restricted from
+accessing the full internet. GitLab refers to these deployments as _offline environment deployments_.
+Other common names include:
 
-## Air-gapped (or offline) environments
+- Air-gapped environments
+- Limited connectivity environments
+- Local area network (LAN) environments
+- Intranet environments
+
+These environments have physical barriers or security policies (for example, firewalls) that prevent
+or limit internet access. These instructions are designed for physically disconnected networks, but
+can also be followed in these other use cases.
+
+## Offline environments
 
 In this situation, the GitLab instance can be one or more servers and services that can communicate
 on a local network, but with no or very restricted access to the internet. Assume anything within
@@ -64,6 +73,6 @@ hosted within your network.
 Each individual scanner may be slightly different than the steps described
 above. You can find more info at each of the pages below:
 
-- [Container scanning offline directions](../container_scanning/index.md#running-container-scanning-in-an-offline-air-gapped-installation)
-- [SAST offline directions](../sast/index.md#gitlab-sast-in-an-offline-air-gapped-installation)
-- [DAST offline directions](../dast/index.md#running-dast-in-an-offline-air-gapped-installation)
+- [Container scanning offline directions](../container_scanning/index.md#running-container-scanning-in-an-offline-environment-deployment)
+- [SAST offline directions](../sast/index.md#gitlab-sast-in-an-offline-environment-deployment)
+- [DAST offline directions](../dast/index.md#running-dast-in-an-offline-environment-deployment)

@@ -238,7 +238,7 @@ The result will then be:
 
 With GitLab Premium, you can associate more than one Kubernetes cluster to your
 project. That way you can have different clusters for different environments,
-like dev, staging, production, etc.
+like dev, staging, production, and so on.
 
 Simply add another cluster, like you did the first time, and make sure to
 [set an environment scope](#setting-the-environment-scope-premium) that will
@@ -247,7 +247,7 @@ differentiate the new cluster with the rest.
 ## Installing applications
 
 GitLab can install and manage some applications like Helm, GitLab Runner, Ingress,
-Prometheus, etc., in your project-level cluster. For more information on
+Prometheus, and so on, in your project-level cluster. For more information on
 installing, upgrading, uninstalling, and troubleshooting applications for
 your project cluster, see
 [GitLab Managed Apps](../../clusters/applications.md).
