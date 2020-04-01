@@ -96,6 +96,7 @@ gitlab:assets:compile pull-cache:
       - node_modules
       - public/assets
       - assets-compile.log
+    when: always
 
 compile-assets pull-push-cache:
   extends:

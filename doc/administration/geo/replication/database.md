@@ -8,7 +8,7 @@ configuration steps. In this case,
 
 NOTE: **Note:**
 The stages of the setup process must be completed in the documented order.
-Before attempting the steps in this stage, [complete all prior stages][toc].
+Before attempting the steps in this stage, [complete all prior stages](index.md#using-omnibus-gitlab).
 
 This document describes the minimal steps you have to take in order to
 replicate your **primary** GitLab database to a **secondary** node's database. You may
@@ -27,7 +27,7 @@ NOTE: **Note:**
 In database documentation, you may see "**primary**" being referenced as "master"
 and "**secondary**" as either "slave" or "standby" server (read-only).
 
-We recommend using [PostgreSQL replication slots][replication-slots-article]
+We recommend using [PostgreSQL replication slots](https://medium.com/@tk512/replication-slots-in-postgresql-b4b03d277c75)
 to ensure that the **primary** node retains all the data necessary for the **secondary** nodes to
 recover. See below for more details.
 
@@ -97,7 +97,7 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    gitlab_rails['db_password'] = '<your_password_here>'
    ```
 
-1. Omnibus GitLab already has a [replication user]
+1. Omnibus GitLab already has a [replication user](https://wiki.postgresql.org/wiki/Streaming_Replication)
    called `gitlab_replicator`. You must set the password for this user manually.
    You will be prompted to enter a password:
 
@@ -280,7 +280,7 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    NOTE: **Note:**
    This step is important so we don't try to execute anything before the node is fully configured.
 
-1. [Check TCP connectivity][rake-maintenance] to the **primary** node's PostgreSQL server:
+1. [Check TCP connectivity](../../raketasks/maintenance.md) to the **primary** node's PostgreSQL server:
 
    ```shell
    gitlab-rake gitlab:tcp_check[<primary_node_ip>,5432]
@@ -508,8 +508,3 @@ work:
 ## Troubleshooting
 
 Read the [troubleshooting document](troubleshooting.md).
-
-[replication-slots-article]: https://medium.com/@tk512/replication-slots-in-postgresql-b4b03d277c75
-[replication user]:https://wiki.postgresql.org/wiki/Streaming_Replication
-[toc]: index.md#using-omnibus-gitlab
-[rake-maintenance]: ../../raketasks/maintenance.md

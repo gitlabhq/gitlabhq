@@ -5,7 +5,7 @@
 NOTE: **Note:**
 This is the final step in setting up a **secondary** Geo node. Stages of the
 setup process must be completed in the documented order.
-Before attempting the steps in this stage, [complete all prior stages][setup-geo-omnibus].
+Before attempting the steps in this stage, [complete all prior stages](index.md#using-omnibus-gitlab).
 
 The basic steps of configuring a **secondary** node are to:
 
@@ -77,7 +77,7 @@ they must be manually replicated to the **secondary** node.
 GitLab integrates with the system-installed SSH daemon, designating a user
 (typically named `git`) through which all access requests are handled.
 
-In a [Disaster Recovery] situation, GitLab system
+In a [Disaster Recovery](../disaster_recovery/index.md) situation, GitLab system
 administrators will promote a **secondary** node to the **primary** node. DNS records for the
 **primary** domain should also be updated to point to the new **primary** node
 (previously a **secondary** node). Doing so will avoid the need to update Git remotes and API URLs.
@@ -242,7 +242,7 @@ You can safely skip this step if your **primary** node uses a CA-issued HTTPS ce
 If your **primary** node is using a self-signed certificate for *HTTPS* support, you will
 need to add that certificate to the **secondary** node's trust store. Retrieve the
 certificate from the **primary** node and follow
-[these instructions][omnibus-ssl]
+[these instructions](https://docs.gitlab.com/omnibus/settings/ssl.html)
 on the **secondary** node.
 
 ### Step 6. Enable Git access over HTTP/HTTPS
@@ -283,7 +283,7 @@ Please note that disabling a **secondary** node will stop the synchronization pr
 Please note that if `git_data_dirs` is customized on the **primary** node for multiple
 repository shards you must duplicate the same configuration on each **secondary** node.
 
-Point your users to the ["Using a Geo Server" guide][using-geo].
+Point your users to the ["Using a Geo Server" guide](using_a_geo_server.md).
 
 Currently, this is what is synced:
 
@@ -334,10 +334,3 @@ See the [updating the Geo nodes document](updating_the_geo_nodes.md).
 ## Troubleshooting
 
 See the [troubleshooting document](troubleshooting.md).
-
-[setup-geo-omnibus]: index.md#using-omnibus-gitlab
-[Hashed Storage]: ../../repository_storage_types.md
-[Disaster Recovery]: ../disaster_recovery/index.md
-[gitlab-com/infrastructure#2821]: https://gitlab.com/gitlab-com/infrastructure/issues/2821
-[omnibus-ssl]: https://docs.gitlab.com/omnibus/settings/ssl.html
-[using-geo]: using_a_geo_server.md

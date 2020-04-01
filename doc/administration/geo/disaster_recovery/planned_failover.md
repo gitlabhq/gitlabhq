@@ -12,7 +12,7 @@ length of this window is determined by your replication capacity - once the
 data loss.
 
 This document assumes you already have a fully configured, working Geo setup.
-Please read it and the [Disaster Recovery][disaster-recovery] failover
+Please read it and the [Disaster Recovery](index.md) failover
 documentation in full before proceeding. Planned failover is a major operation,
 and if performed incorrectly, there is a high risk of data loss. Consider
 rehearsing the procedure until you are comfortable with the necessary steps and
@@ -20,7 +20,7 @@ have a high degree of confidence in being able to perform them accurately.
 
 ## Not all data is automatically replicated
 
-If you are using any GitLab features that Geo [doesn't support][limitations],
+If you are using any GitLab features that Geo [doesn't support](../replication/index.md#current-limitations),
 you must make separate provisions to ensure that the **secondary** node has an
 up-to-date copy of any data associated with that feature. This may extend the
 required scheduled maintenance period significantly.
@@ -32,7 +32,7 @@ final transfer inside the maintenance window) will then transfer only the
 *changes* between the **primary** node and the **secondary** nodes.
 
 Repository-centric strategies for using `rsync` effectively can be found in the
-[moving repositories][moving-repositories] documentation; these strategies can
+[moving repositories](../../operations/moving_repositories.md) documentation; these strategies can
 be adapted for use with any other file-based data, such as GitLab Pages (to
 be found in `/var/opt/gitlab/gitlab-rails/shared/pages` if using Omnibus).
 
@@ -44,12 +44,12 @@ will go smoothly.
 ### Object storage
 
 If you have a large GitLab installation or cannot tolerate downtime, consider
-[migrating to Object Storage][os-conf] **before** scheduling a planned failover.
+[migrating to Object Storage](../replication/object_storage.md) **before** scheduling a planned failover.
 Doing so reduces both the length of the maintenance window, and the risk of data
 loss as a result of a poorly executed planned failover.
 
 In GitLab 12.4, you can optionally allow GitLab to manage replication of Object Storage for
-**secondary** nodes. For more information, see [Object Storage replication][os-conf].
+**secondary** nodes. For more information, see [Object Storage replication](../replication/object_storage.md).
 
 ### Review the configuration of each **secondary** node
 
@@ -113,7 +113,7 @@ or removing references to the missing data.
 
 ### Verify the integrity of replicated data
 
-This [content was moved to another location][background-verification].
+This [content was moved to another location](background_verification.md).
 
 ### Notify users of scheduled maintenance
 
@@ -126,7 +126,7 @@ will take to finish syncing. An example message would be:
 
 ## Prevent updates to the **primary** node
 
-Until a [read-only mode][ce-19739] is implemented, updates must be prevented
+Until a [read-only mode](https://gitlab.com/gitlab-org/gitlab-foss/issues/19739) is implemented, updates must be prevented
 from happening manually. Note that your **secondary** node still needs read-only
 access to the **primary** node during the maintenance window.
 
@@ -186,7 +186,7 @@ access to the **primary** node during the maintenance window.
 
 1. On the **secondary** node, navigate to **{admin}** **Admin Area >** **{monitor}** **Monitoring > Background Jobs > Queues**
    and wait for all the `geo` queues to drop to 0 queued and 0 running jobs.
-1. On the **secondary** node, use [these instructions][foreground-verification]
+1. On the **secondary** node, use [these instructions](../../raketasks/check.md)
    to verify the integrity of CI artifacts, LFS objects, and uploads in file
    storage.
 
@@ -195,24 +195,12 @@ At this point, your **secondary** node will contain an up-to-date copy of everyt
 
 ## Promote the **secondary** node
 
-Finally, follow the [Disaster Recovery docs][disaster-recovery] to promote the
+Finally, follow the [Disaster Recovery docs](index.md) to promote the
 **secondary** node to a **primary** node. This process will cause a brief outage on the **secondary** node, and users may need to log in again.
 
 Once it is completed, the maintenance window is over! Your new **primary** node will now
 begin to diverge from the old one. If problems do arise at this point, failing
-back to the old **primary** node [is possible][bring-primary-back], but likely to result
+back to the old **primary** node [is possible](bring_primary_back.md), but likely to result
 in the loss of any data uploaded to the new **primary** in the meantime.
 
 Don't forget to remove the broadcast message after failover is complete.
-
-[bring-primary-back]: bring_primary_back.md
-[ce-19739]: https://gitlab.com/gitlab-org/gitlab-foss/issues/19739
-[container-registry]: ../replication/container_registry.md
-[disaster-recovery]: index.md
-[ee-4930]: https://gitlab.com/gitlab-org/gitlab/issues/4930
-[ee-5064]: https://gitlab.com/gitlab-org/gitlab/issues/5064
-[foreground-verification]: ../../raketasks/check.md
-[background-verification]: background_verification.md
-[limitations]: ../replication/index.md#current-limitations
-[moving-repositories]: ../../operations/moving_repositories.md
-[os-conf]: ../replication/object_storage.md

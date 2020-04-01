@@ -261,7 +261,7 @@ default to 1. You may need to increase this value if you have more
 
 Be sure to restart PostgreSQL for this to take
 effect. See the [PostgreSQL replication
-setup][database-pg-replication] guide for more details.
+setup](database.md#postgresql-replication) guide for more details.
 
 ### Message: `FATAL:  could not start WAL streaming: ERROR:  replication slot "geo_secondary_my_domain_com" does not exist`?
 
@@ -273,7 +273,7 @@ process](database.md) on the **secondary** node .
 
 ### Message: "Command exceeded allowed execution time" when setting up replication?
 
-This may happen while [initiating the replication process][database-start-replication] on the **secondary** node,
+This may happen while [initiating the replication process](database.md#step-3-initiate-the-replication-process) on the **secondary** node,
 and indicates that your initial dataset is too large to be replicated in the default timeout (30 minutes).
 
 Re-run `gitlab-ctl replicate-geo-database`, but include a larger value for
@@ -766,9 +766,6 @@ reload of the FDW schema. To manually reload the FDW schema:
    SELECT * from information_schema.foreign_tables;
    SELECT * FROM gitlab_secondary.projects limit 1;
    ```
-
-[database-start-replication]: database.md#step-3-initiate-the-replication-process
-[database-pg-replication]: database.md#postgresql-replication
 
 ### "Geo database has an outdated FDW remote schema" error
 

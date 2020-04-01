@@ -120,6 +120,7 @@
       &:hover:not(.tree-truncated-warning) {
         td {
           background-color: $blue-50;
+          background-clip: padding-box;
           border-top: 1px solid $blue-200;
           border-bottom: 1px solid $blue-200;
           cursor: pointer;

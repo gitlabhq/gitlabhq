@@ -2,7 +2,7 @@
 
 # Using a Geo Server **(PREMIUM ONLY)**
 
-After you set up the [database replication and configure the Geo nodes][req], use your closest GitLab node as you would a normal standalone GitLab instance.
+After you set up the [database replication and configure the Geo nodes](index.md#setup-instructions), use your closest GitLab node as you would a normal standalone GitLab instance.
 
 Pushing directly to a **secondary** node (for both HTTP, SSH including Git LFS) was [introduced](https://about.gitlab.com/releases/2018/09/22/gitlab-11-3-released/) in [GitLab Premium](https://about.gitlab.com/pricing/#self-managed) 11.3.
 
@@ -18,5 +18,3 @@ remote:   ssh://git@primary.geo/user/repo.git
 remote:
 Everything up-to-date
 ```
-
-[req]: index.md#setup-instructions

@@ -4,11 +4,11 @@ Geo replicates your database, your Git repositories, and few other assets.
 We will support and replicate more data in the future, that will enable you to
 failover with minimal effort, in a disaster situation.
 
-See [Geo current limitations][geo-limitations] for more information.
+See [Geo current limitations](../replication/index.md#current-limitations) for more information.
 
 CAUTION: **Warning:**
 Disaster recovery for multi-secondary configurations is in **Alpha**.
-For the latest updates, check the multi-secondary [Disaster Recovery epic][gitlab-org&65].
+For the latest updates, check the multi-secondary [Disaster Recovery epic](https://gitlab.com/groups/gitlab-org/-/epics/65).
 
 ## Promoting a **secondary** Geo node in single-secondary configurations
 
@@ -22,7 +22,7 @@ immediately after following these instructions.
 ### Step 1. Allow replication to finish if possible
 
 If the **secondary** node is still replicating data from the **primary** node, follow
-[the planned failover docs][planned-failover] as closely as possible in
+[the planned failover docs](planned_failover.md) as closely as possible in
 order to avoid unnecessary data loss.
 
 ### Step 2. Permanently disable the **primary** node
@@ -235,7 +235,7 @@ secondary domain, like changing Git remotes and API URLs.
 Promoting a **secondary** node to **primary** node using the process above does not enable
 Geo on the new **primary** node.
 
-To bring a new **secondary** node online, follow the [Geo setup instructions][setup-geo].
+To bring a new **secondary** node online, follow the [Geo setup instructions](../replication/index.md#setup-instructions).
 
 ### Step 6. (Optional) Removing the secondary's tracking database
 
@@ -284,7 +284,7 @@ and after that you also need two extra steps.
    gitlab_rails['auto_migrate'] = false
    ```
 
-   (For more details about these settings you can read [Configure the primary server][configure-the-primary-server])
+   (For more details about these settings you can read [Configure the primary server](../replication/database.md#step-1-configure-the-primary-server))
 
 1. Save the file and reconfigure GitLab for the database listen changes and
    the replication slot changes to be applied.
@@ -317,7 +317,7 @@ and after that you also need two extra steps.
 ### Step 2. Initiate the replication process
 
 Now we need to make each **secondary** node listen to changes on the new **primary** node. To do that you need
-to [initiate the replication process][initiate-the-replication-process] again but this time
+to [initiate the replication process](../replication/database.md#step-3-initiate-the-replication-process) again but this time
 for another **primary** node. All the old replication settings will be overwritten.
 
 ## Troubleshooting
@@ -332,15 +332,6 @@ after a failover.
 
 If you still have access to the old **primary** node, you can follow the
 instructions in the
-[Upgrading to GitLab 10.5][updating-geo]
+[Upgrading to GitLab 10.5](../replication/version_specific_updates.md#updating-to-gitlab-105)
 section to resolve the error. Otherwise, the secret is lost and you'll need to
-[reset two-factor authentication for all users][sec-tfa].
-
-[gitlab-org&65]: https://gitlab.com/groups/gitlab-org/-/epics/65
-[geo-limitations]: ../replication/index.md#current-limitations
-[planned-failover]: planned_failover.md
-[setup-geo]: ../replication/index.md#setup-instructions
-[updating-geo]: ../replication/version_specific_updates.md#updating-to-gitlab-105
-[sec-tfa]: ../../../security/two_factor_authentication.md#disabling-2fa-for-everyone
-[initiate-the-replication-process]: ../replication/database.html#step-3-initiate-the-replication-process
-[configure-the-primary-server]: ../replication/database.html#step-1-configure-the-primary-server
+[reset two-factor authentication for all users](../../../security/two_factor_authentication.md#disabling-2fa-for-everyone).

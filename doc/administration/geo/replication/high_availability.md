@@ -8,7 +8,7 @@ described, it is possible to adapt these instructions to your needs.
 
 ![Geo HA Diagram](../../high_availability/img/geo-ha-diagram.png)
 
-_[diagram source - GitLab employees only][diagram-source]_
+_[diagram source - GitLab employees only](https://docs.google.com/drawings/d/1z0VlizKiLNXVVVaERFwgsIOuEgjcUqDTWPdQYsE7Z4c/edit)_
 
 The topology above assumes that the **primary** and **secondary** Geo clusters
 are located in two separate locations, on their own virtual network
@@ -81,7 +81,7 @@ The following steps enable a GitLab cluster to serve as the **primary** node.
    gitlab_rails['auto_migrate'] = false
    ```
 
-After making these changes, [reconfigure GitLab][gitlab-reconfigure] so the changes take effect.
+After making these changes, [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure) so the changes take effect.
 
 NOTE: **Note:** PostgreSQL and Redis should have already been disabled on the
 application servers, and connections from the application servers to those
@@ -193,7 +193,7 @@ the **primary** database. Use the following as a guide.
    geo_logcursor['enable'] = false
    ```
 
-After making these changes, [reconfigure GitLab][gitlab-reconfigure] so the changes take effect.
+After making these changes, [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure) so the changes take effect.
 
 If using an external PostgreSQL instance, refer also to
 [Geo with external PostgreSQL instances](external_database.md).
@@ -264,7 +264,7 @@ Configure the tracking database.
    unicorn['enable'] = false
    ```
 
-After making these changes, [reconfigure GitLab][gitlab-reconfigure] so the changes take effect.
+After making these changes, [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure) so the changes take effect.
 
 If using an external PostgreSQL instance, refer also to
 [Geo with external PostgreSQL instances](external_database.md).
@@ -342,7 +342,7 @@ servers connect to the databases.
 NOTE: **Note:**
 Make sure that current node IP is listed in `postgresql['md5_auth_cidr_addresses']` setting of your remote database.
 
-After making these changes [Reconfigure GitLab][gitlab-reconfigure] so the changes take effect.
+After making these changes [Reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure) so the changes take effect.
 
 On the secondary the following GitLab frontend services will be enabled:
 
@@ -458,6 +458,3 @@ application servers above, with some changes to run only the `sidekiq` service:
    `sidekiq['enable'] = false`.
 
    These servers do not need to be attached to the load balancer.
-
-[diagram-source]: https://docs.google.com/drawings/d/1z0VlizKiLNXVVVaERFwgsIOuEgjcUqDTWPdQYsE7Z4c/edit
-[gitlab-reconfigure]: ../../restart_gitlab.md#omnibus-gitlab-reconfigure

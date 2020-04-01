@@ -182,7 +182,7 @@ which ideally should not have Redis or Sentinels in the same machine for a HA
 setup:
 
 1. Edit `/home/git/gitlab/config/resque.yml` following the example in
-   [resque.yml.example][resque], and uncomment the Sentinel lines, pointing to
+   [resque.yml.example](https://gitlab.com/gitlab-org/gitlab/blob/master/config/resque.yml.example), and uncomment the Sentinel lines, pointing to
    the correct server credentials:
 
    ```yaml
@@ -201,7 +201,7 @@ setup:
          port: 26379 # point to sentinel, not to redis port
    ```
 
-1. [Restart GitLab][restart] for the changes to take effect.
+1. [Restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
 
 ## Example of minimal configuration with 1 master, 2 slaves and 3 Sentinels
 
@@ -211,7 +211,7 @@ to each other using these IPs.
 
 In a real world usage, you would also set up firewall rules to prevent
 unauthorized access from other machines, and block traffic from the
-outside ([Internet][it]).
+outside ([Internet](https://gitlab.com/gitlab-org/gitlab-foss/uploads/c4cc8cd353604bd80315f9384035ff9e/The_Internet_IT_Crowd.png)).
 
 For this example, **Sentinel 1** will be configured in the same machine as the
 **Redis Master**, **Sentinel 2** and **Sentinel 3** in the same machines as the
@@ -326,7 +326,7 @@ or a failover promotes a different **Master** node.
          port: 26379 # point to sentinel, not to redis port
    ```
 
-1. [Restart GitLab][restart] for the changes to take effect.
+1. [Restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
 
 ## Troubleshooting
 
@@ -336,7 +336,7 @@ the things that are specific to a source installation.
 
 If you get an error in GitLab like `Redis::CannotConnectError: No sentinels available.`,
 there may be something wrong with your configuration files or it can be related
-to [this upstream issue][gh-531].
+to [this upstream issue](https://github.com/redis/redis-rb/issues/531).
 
 You must make sure that `resque.yml` and `sentinel.conf` are configured correctly,
 otherwise `redis-rb` will not work properly.
@@ -369,9 +369,3 @@ production:
 ```
 
 When in doubt, please read [Redis Sentinel documentation](https://redis.io/topics/sentinel).
-
-[gh-531]: https://github.com/redis/redis-rb/issues/531
-[downloads]: https://about.gitlab.com/downloads
-[restart]: ../restart_gitlab.md#installations-from-source
-[it]: https://gitlab.com/gitlab-org/gitlab-foss/uploads/c4cc8cd353604bd80315f9384035ff9e/The_Internet_IT_Crowd.png
-[resque]: https://gitlab.com/gitlab-org/gitlab/blob/master/config/resque.yml.example

@@ -8,8 +8,7 @@ The version of the chart used to provision PostgreSQL:
 - Is 0.7.1 in GitLab 12.8 and earlier.
 - Can be set to from 0.7.1 to 8.2.1 in GitLab 12.9 and later.
 
-GitLab encourages users to GitLab encourages users to migrate their database to the
-newer PostgreSQL chart.
+GitLab encourages users to migrate their database to the newer PostgreSQL chart.
 
 This guide provides instructions on how to migrate your PostgreSQL database, which
 involves:

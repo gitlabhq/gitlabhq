@@ -36,9 +36,9 @@ In the rare case that you need the feature flag to be on automatically, use
 Feature.enabled?(:feature_flag, project, default_enabled: true)
 ```
 
-The [`Project#feature_available?`][project-fa],
-[`Namespace#feature_available?`][namespace-fa] (EE), and
-[`License.feature_available?`][license-fa] (EE) methods all implicitly check for
+The [`Project#feature_available?`](https://gitlab.com/gitlab-org/gitlab/blob/4cc1c62918aa4c31750cb21dfb1a6c3492d71080/app/models/project_feature.rb#L63-68),
+[`Namespace#feature_available?`](https://gitlab.com/gitlab-org/gitlab/blob/4cc1c62918aa4c31750cb21dfb1a6c3492d71080/ee/app/models/ee/namespace.rb#L71-85) (EE), and
+[`License.feature_available?`](https://gitlab.com/gitlab-org/gitlab/blob/4cc1c62918aa4c31750cb21dfb1a6c3492d71080/ee/app/models/license.rb#L293-300) (EE) methods all implicitly check for
 a by default enabled feature flag with the same name as the provided argument.
 
 For example if a feature is license-gated, there's no need to add an additional
@@ -48,10 +48,6 @@ feature flag once the feature has reached general availability.
 
 You'd still want to use an explicit `Feature.enabled?` check if your new feature
 isn't gated by a License or Plan.
-
-[project-fa]: https://gitlab.com/gitlab-org/gitlab/blob/4cc1c62918aa4c31750cb21dfb1a6c3492d71080/app/models/project_feature.rb#L63-68
-[namespace-fa]: https://gitlab.com/gitlab-org/gitlab/blob/4cc1c62918aa4c31750cb21dfb1a6c3492d71080/ee/app/models/ee/namespace.rb#L71-85
-[license-fa]: https://gitlab.com/gitlab-org/gitlab/blob/4cc1c62918aa4c31750cb21dfb1a6c3492d71080/ee/app/models/license.rb#L293-300
 
 **An important side-effect of the implicit feature flags mentioned above is that
 unless the feature is explicitly disabled or limited to a percentage of users,

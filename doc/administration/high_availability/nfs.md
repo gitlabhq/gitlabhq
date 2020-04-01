@@ -229,7 +229,7 @@ following are the 4 locations need to be shared:
 Other GitLab directories should not be shared between nodes. They contain
 node-specific files and GitLab code that does not need to be shared. To ship
 logs to a central location consider using remote syslog. GitLab Omnibus packages
-provide configuration for [UDP log shipping][udp-log-shipping].
+provide configuration for [UDP log shipping](https://docs.gitlab.com/omnibus/settings/logs.html#udp-log-shipping-gitlab-enterprise-edition-only).
 
 Having multiple NFS mounts will require manually making sure the data directories
 are empty before attempting a restore. Read more about the
@@ -243,8 +243,6 @@ Read more on high-availability configuration:
 1. [Configure Redis](redis.md)
 1. [Configure the GitLab application servers](gitlab.md)
 1. [Configure the load balancers](load_balancer.md)
-
-[udp-log-shipping]: https://docs.gitlab.com/omnibus/settings/logs.html#udp-log-shipping-gitlab-enterprise-edition-only "UDP log shipping"
 
 <!-- ## Troubleshooting
 
