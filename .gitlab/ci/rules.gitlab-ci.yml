@@ -499,6 +499,7 @@
 .review:rules:review-gcp-cleanup:
   rules:
     - <<: *if-dot-com-gitlab-org-merge-request
+      changes: *code-qa-patterns
       when: manual
     - <<: *if-dot-com-gitlab-org-schedule
       when: on_success

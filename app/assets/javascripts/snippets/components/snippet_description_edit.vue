@@ -9,11 +9,6 @@ export default {
     MarkdownField,
   },
   props: {
-    description: {
-      type: String,
-      default: '',
-      required: false,
-    },
     markdownPreviewPath: {
       type: String,
       required: true,
@@ -22,11 +17,11 @@ export default {
       type: String,
       required: true,
     },
-  },
-  data() {
-    return {
-      text: this.description,
-    };
+    value: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   mounted() {
     setupCollapsibleInputs();
@@ -37,7 +32,7 @@ export default {
   <div class="form-group js-description-input">
     <label>{{ s__('Snippets|Description (optional)') }}</label>
     <div class="js-collapsible-input">
-      <div class="js-collapsed" :class="{ 'd-none': text }">
+      <div class="js-collapsed" :class="{ 'd-none': value }">
         <gl-form-input
           class="form-control"
           :placeholder="
@@ -50,20 +45,21 @@ export default {
       </div>
       <markdown-field
         class="js-expanded"
-        :class="{ 'd-none': !text }"
+        :class="{ 'd-none': !value }"
         :markdown-preview-path="markdownPreviewPath"
         :markdown-docs-path="markdownDocsPath"
       >
         <textarea
           id="snippet-description"
           slot="textarea"
-          v-model="text"
           class="note-textarea js-gfm-input js-autosize markdown-area
             qa-description-textarea"
           dir="auto"
           data-supports-quick-actions="false"
+          :value="value"
           :aria-label="__('Description')"
           :placeholder="__('Write a comment or drag your files here…')"
+          @input="$emit('input', $event.target.value)"
         >
         </textarea>
       </markdown-field>

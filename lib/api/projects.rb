@@ -73,6 +73,8 @@ module API
         optional :min_access_level, type: Integer, values: Gitlab::Access.all_values, desc: 'Limit by minimum access level of authenticated user'
         optional :id_after, type: Integer, desc: 'Limit results to projects with IDs greater than the specified ID'
         optional :id_before, type: Integer, desc: 'Limit results to projects with IDs less than the specified ID'
+        optional :last_activity_after, type: DateTime, desc: 'Limit results to projects with last_activity after specified time. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
+        optional :last_activity_before, type: DateTime, desc: 'Limit results to projects with last_activity before specified time. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
 
         use :optional_filter_params_ee
       end

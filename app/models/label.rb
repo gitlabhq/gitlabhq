@@ -159,6 +159,11 @@ class Label < ApplicationRecord
     on_project_boards(project_id).where(id: label_id).exists?
   end
 
+  # Generate a hex color based on hex-encoded value
+  def self.color_for(value)
+    "##{Digest::MD5.hexdigest(value)[0..5]}"
+  end
+
   def open_issues_count(user = nil)
     issues_count(user, state: 'opened')
   end

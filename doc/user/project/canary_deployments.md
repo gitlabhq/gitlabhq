@@ -35,7 +35,7 @@ to be careful when using canaries with user-facing changes, because by default,
 requests from the same user will be randomly distributed between canary and
 non-canary pods, which could result in confusion or even errors. If needed, you
 may want to consider [setting `service.spec.sessionAffinity` to `ClientIP` in
-your Kubernetes service definitions][kube-net](https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies), but that is beyond the scope of
+your Kubernetes service definitions](https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies), but that is beyond the scope of
 this document.
 
 ## Enabling Canary Deployments

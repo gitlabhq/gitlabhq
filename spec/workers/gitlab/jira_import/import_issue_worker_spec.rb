@@ -32,12 +32,28 @@ describe Gitlab::JiraImport::ImportIssueWorker do
     end
 
     context 'when record is successfully inserted' do
-      before do
-        subject.perform(project.id, 123, issue_attrs, 'some-key')
+      let(:label) { create(:label, project: project) }
+
+      context 'when import label does not exist' do
+        it 'does not record import failure' do
+          subject.perform(project.id, 123, issue_attrs, 'some-key')
+
+          expect(label.issues.count).to eq(0)
+          expect(Gitlab::Cache::Import::Caching.read(Gitlab::JiraImport.failed_issues_counter_cache_key(project.id)).to_i).to eq(0)
+        end
       end
 
-      it 'does not record import failure' do
-        expect(Gitlab::Cache::Import::Caching.read(Gitlab::JiraImport.failed_issues_counter_cache_key(project.id)).to_i).to eq(0)
+      context 'when import label exists' do
+        before do
+          Gitlab::JiraImport.cache_import_label_id(project.id, label.id)
+        end
+
+        it 'does not record import failure' do
+          subject.perform(project.id, 123, issue_attrs, 'some-key')
+
+          expect(label.issues.count).to eq(1)
+          expect(Gitlab::Cache::Import::Caching.read(Gitlab::JiraImport.failed_issues_counter_cache_key(project.id)).to_i).to eq(0)
+        end
       end
     end
   end

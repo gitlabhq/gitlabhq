@@ -1036,8 +1036,8 @@ Then add any extra changes you want. Your additions will be merged with the
 [Auto DevOps template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml) using the behaviour described for
 [`include`](../../ci/yaml/README.md#include).
 
-It is also possible to copy and paste the contents of the [Auto DevOps
-template] into your project and edit this as needed. You may prefer to do it
+It is also possible to copy and paste the contents of the [Auto DevOps template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml)
+into your project and edit this as needed. You may prefer to do it
 that way if you want to specifically remove any part of it.
 
 ### Customizing the Kubernetes namespace

@@ -362,7 +362,7 @@ Check specific punctuation rules for [lists](#lists) below.
 | Rule | Example |
 | ---- | ------- |
 | Always end full sentences with a period. | _For a complete overview, read through this document._|
-| Always add a space after a period when beginning a new sentence | _For a complete overview, check this doc. For other references, check out this guide._ |
+| Always add a space after a period when beginning a new sentence. | _For a complete overview, check this doc. For other references, check out this guide._ |
 | Do not use double spaces. | --- |
 | Do not use tabs for indentation. Use spaces instead. You can configure your code editor to output spaces instead of tabs when pressing the tab key. | --- |
 | Use serial commas ("Oxford commas") before the final 'and/or' in a list. | _You can create new issues, merge requests, and milestones._ |
@@ -816,7 +816,7 @@ you have your MR reviewed and approved by a technical writer.
 
 1. Copy the code below and paste it into your Markdown file.
    Leave a blank line above and below it. Do NOT edit the code
-   (don't remove or add any spaces, etc).
+   (don't remove or add any spaces).
 1. On YouTube, visit the video URL you want to display. Copy
    the regular URL from your browser (`https://www.youtube.com/watch?v=VIDEO-ID`)
    and replace the video title and link in the line under `<div class="video-fallback">`.
@@ -1000,7 +1000,7 @@ Whenever you need to call special attention to particular sentences,
 use the following markup for highlighting.
 
 _Note that the alert boxes only work for one paragraph only. Multiple paragraphs,
-lists, headers, etc will not render correctly. For multiple lines, use blockquotes instead._
+lists, headers and so on, will not render correctly. For multiple lines, use blockquotes instead._
 
 Alert boxes only render on the GitLab Docs site (<https://docs.gitlab.com>).
 Within GitLab itself, they will appear as plain Markdown text (like the examples

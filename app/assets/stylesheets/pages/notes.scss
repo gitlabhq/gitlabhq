@@ -855,7 +855,7 @@ $note-form-margin-left: 72px;
     line-height: $gl-line-height;
 
     svg {
-      fill: $gray-darkest;
+      fill: $gray-700;
     }
 
     &.discussion-create-issue-btn {
@@ -893,7 +893,7 @@ $note-form-margin-left: 72px;
 
   .line-resolve-btn {
     margin-right: 5px;
-    color: $gray-darkest;
+    color: $gray-700;
 
     svg {
       vertical-align: middle;

@@ -222,6 +222,28 @@ describe ProjectsFinder, :do_not_mock_admin_mode do
         it { is_expected.to match_array([public_project, internal_project]) }
       end
 
+      describe 'filter by last_activity_after' do
+        let(:params) { { last_activity_after: 60.minutes.ago } }
+
+        before do
+          internal_project.update(last_activity_at: Time.now)
+          public_project.update(last_activity_at: 61.minutes.ago)
+        end
+
+        it { is_expected.to match_array([internal_project]) }
+      end
+
+      describe 'filter by last_activity_before' do
+        let(:params) { { last_activity_before: 60.minutes.ago } }
+
+        before do
+          internal_project.update(last_activity_at: Time.now)
+          public_project.update(last_activity_at: 61.minutes.ago)
+        end
+
+        it { is_expected.to match_array([public_project]) }
+      end
+
       describe 'sorting' do
         let(:params) { { sort: 'name_asc' } }
 

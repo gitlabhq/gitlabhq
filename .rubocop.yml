@@ -422,7 +422,6 @@ RSpec/RepeatedExample:
     - 'spec/services/notification_service_spec.rb'
     - 'spec/services/web_hook_service_spec.rb'
     - 'ee/spec/models/group_spec.rb'
-    - 'ee/spec/models/user_spec.rb'
     - 'ee/spec/requests/api/merge_request_approvals_spec.rb'
     - 'ee/spec/services/boards/lists/update_service_spec.rb'
     - 'ee/spec/services/geo/repository_verification_primary_service_spec.rb'

@@ -7,21 +7,18 @@ export default {
     BlobHeaderEdit,
     BlobContentEdit,
   },
+  inheritAttrs: false,
   props: {
-    content: {
-      type: String,
-      required: true,
-    },
     fileName: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
     },
   },
-  data() {
-    return {
-      name: this.fileName,
-      blobContent: this.content,
-    };
+  methods: {
+    emitFileNameChange(newFileName) {
+      this.$emit('name-change', newFileName);
+    },
   },
 };
 </script>
@@ -29,8 +26,8 @@ export default {
   <div class="form-group file-editor">
     <label>{{ s__('Snippets|File') }}</label>
     <div class="file-holder snippet">
-      <blob-header-edit v-model="name" />
-      <blob-content-edit v-model="blobContent" :file-name="name" />
+      <blob-header-edit :value="fileName" @input="emitFileNameChange" />
+      <blob-content-edit v-bind="$attrs" :file-name="fileName" v-on="$listeners" />
     </div>
   </div>
 </template>

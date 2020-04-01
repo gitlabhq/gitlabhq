@@ -224,7 +224,7 @@ with failed showing at the top, skipped next and successful cases last.
 
 This feature comes with the `:junit_pipeline_view` feature flag disabled by default. This
 feature is disabled due to some performance issues with very large data sets.
-When [the performance issue](https://gitlab.com/gitlab-org/gitlab/issues/37725) is resolved, the feature will be enabled by default.
+When [the performance is improved](https://gitlab.com/groups/gitlab-org/-/epics/2854), the feature will be enabled by default.
 
 To enable this feature, ask a GitLab administrator with Rails console access to run the
 following command:

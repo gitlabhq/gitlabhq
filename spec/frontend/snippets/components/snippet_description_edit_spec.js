@@ -6,11 +6,12 @@ describe('Snippet Description Edit component', () => {
   const defaultDescription = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.';
   const markdownPreviewPath = 'foo/';
   const markdownDocsPath = 'help/';
+  const findTextarea = () => wrapper.find('textarea');
 
-  function createComponent(description = defaultDescription) {
+  function createComponent(value = defaultDescription) {
     wrapper = shallowMount(SnippetDescriptionEdit, {
       propsData: {
-        description,
+        value,
         markdownPreviewPath,
         markdownDocsPath,
       },
@@ -47,6 +48,16 @@ describe('Snippet Description Edit component', () => {
 
       expect(isHidden('.js-collapsed')).toBe(false);
       expect(isHidden('.js-expanded')).toBe(true);
+    });
+  });
+
+  describe('functionality', () => {
+    it('emits "input" event when description is changed', () => {
+      expect(wrapper.emitted('input')).toBeUndefined();
+      const newDescription = 'dummy';
+      findTextarea().setValue(newDescription);
+
+      expect(wrapper.emitted('input')[0]).toEqual([newDescription]);
     });
   });
 });

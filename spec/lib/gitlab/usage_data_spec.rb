@@ -147,6 +147,8 @@ describe Gitlab::UsageData, :aggregate_failures do
         subject { described_class.components_usage_data }
 
         it 'gathers components usage data' do
+          expect(Gitlab::UsageData).to receive(:app_server_type).and_return('server_type')
+          expect(subject[:app_server][:type]).to eq('server_type')
           expect(subject[:gitlab_pages][:enabled]).to eq(Gitlab.config.pages.enabled)
           expect(subject[:gitlab_pages][:version]).to eq(Gitlab::Pages::VERSION)
           expect(subject[:git][:version]).to eq(Gitlab::Git.version)
@@ -156,6 +158,28 @@ describe Gitlab::UsageData, :aggregate_failures do
           expect(subject[:gitaly][:servers]).to be >= 1
           expect(subject[:gitaly][:filesystems]).to be_an(Array)
           expect(subject[:gitaly][:filesystems].first).to be_a(String)
+        end
+      end
+
+      describe '#app_server_type' do
+        subject { described_class.app_server_type }
+
+        it 'successfully identifies runtime and returns the identifier' do
+          expect(Gitlab::Runtime).to receive(:identify).and_return(:runtime_identifier)
+
+          is_expected.to eq('runtime_identifier')
+        end
+
+        context 'when runtime is not identified' do
+          let(:exception) { Gitlab::Runtime::IdentificationError.new('exception message from runtime identify') }
+
+          it 'logs the exception and returns unknown app server type' do
+            expect(Gitlab::Runtime).to receive(:identify).and_raise(exception)
+
+            expect(Gitlab::AppLogger).to receive(:error).with(exception.message)
+            expect(Gitlab::ErrorTracking).to receive(:track_exception).with(exception)
+            expect(subject).to eq('unknown_app_server_type')
+          end
         end
       end
 

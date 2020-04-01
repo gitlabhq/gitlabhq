@@ -6901,9 +6901,6 @@ msgstr ""
 msgid "Detect host keys"
 msgstr ""
 
-msgid "Detected %{timeago} in pipeline %{pipelineLink}"
-msgstr ""
-
 msgid "DevOps Score"
 msgstr ""
 
@@ -8479,6 +8476,9 @@ msgid "Failed to create Merge Request. Please try again."
 msgstr ""
 
 msgid "Failed to create a branch for this issue. Please try again."
+msgstr ""
+
+msgid "Failed to create import label for jira import."
 msgstr ""
 
 msgid "Failed to create repository"
@@ -22577,16 +22577,31 @@ msgstr ""
 msgid "VulnerabilityManagement|Confirm"
 msgstr ""
 
+msgid "VulnerabilityManagement|Confirmed %{timeago} by %{user}"
+msgstr ""
+
 msgid "VulnerabilityManagement|Create issue"
+msgstr ""
+
+msgid "VulnerabilityManagement|Detected %{timeago} in pipeline %{pipelineLink}"
 msgstr ""
 
 msgid "VulnerabilityManagement|Dismiss"
 msgstr ""
 
+msgid "VulnerabilityManagement|Dismissed %{timeago} by %{user}"
+msgstr ""
+
 msgid "VulnerabilityManagement|Resolved"
 msgstr ""
 
+msgid "VulnerabilityManagement|Resolved %{timeago} by %{user}"
+msgstr ""
+
 msgid "VulnerabilityManagement|Something went wrong, could not create an issue."
+msgstr ""
+
+msgid "VulnerabilityManagement|Something went wrong, could not get user."
 msgstr ""
 
 msgid "VulnerabilityManagement|Something went wrong, could not update vulnerability state."

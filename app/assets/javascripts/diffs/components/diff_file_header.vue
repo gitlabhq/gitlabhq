@@ -172,7 +172,6 @@ export default {
       />
       <a
         v-once
-        id="diffFile.file_path"
         ref="titleWrapper"
         class="append-right-4"
         :href="titleLink"

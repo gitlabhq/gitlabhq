@@ -41,26 +41,28 @@ GET /projects
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `archived`                    | boolean | no | Limit by archived status |
-| `visibility`                  | string  | no | Limit by visibility `public`, `internal`, or `private` |
-| `order_by`                    | string  | no | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, or `last_activity_at` fields. Default is `created_at` |
-| `sort`                        | string  | no | Return projects sorted in `asc` or `desc` order. Default is `desc` |
-| `search`                      | string  | no | Return list of projects matching the search criteria |
-| `search_namespaces`           | boolean | no | Include ancestor namespaces when matching search criteria. Default is `false` |
-| `simple`                      | boolean | no | Return only limited fields for each project. This is a no-op without authentication as then _only_ simple fields are returned. |
-| `owned`                       | boolean | no | Limit by projects explicitly owned by the current user |
-| `membership`                  | boolean | no | Limit by projects that the current user is a member of |
-| `starred`                     | boolean | no | Limit by projects starred by the current user |
-| `statistics`                  | boolean | no | Include project statistics |
-| `with_custom_attributes`      | boolean | no | Include [custom attributes](custom_attributes.md) in response (admins only) |
-| `with_issues_enabled`         | boolean | no | Limit by enabled issues feature |
-| `with_merge_requests_enabled` | boolean | no | Limit by enabled merge requests feature |
-| `with_programming_language`   | string  | no | Limit by projects which use the given programming language |
-| `wiki_checksum_failed`        | boolean | no | **(PREMIUM)** Limit projects where the wiki checksum calculation has failed ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6137) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.2) |
-| `repository_checksum_failed`  | boolean | no | **(PREMIUM)** Limit projects where the repository checksum calculation has failed ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6137) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.2) |
-| `min_access_level`            | integer | no | Limit by current user minimal [access level](members.md) |
-| `id_after`                    | integer | no | Limit results to projects with IDs greater than the specified ID |
-| `id_before`                   | integer | no | Limit results to projects with IDs less than the specified ID |
+| `archived`                    | boolean  | no | Limit by archived status |
+| `visibility`                  | string   | no | Limit by visibility `public`, `internal`, or `private` |
+| `order_by`                    | string   | no | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, or `last_activity_at` fields. Default is `created_at` |
+| `sort`                        | string   | no | Return projects sorted in `asc` or `desc` order. Default is `desc` |
+| `search`                      | string   | no | Return list of projects matching the search criteria |
+| `search_namespaces`           | boolean  | no | Include ancestor namespaces when matching search criteria. Default is `false` |
+| `simple`                      | boolean  | no | Return only limited fields for each project. This is a no-op without authentication as then _only_ simple fields are returned. |
+| `owned`                       | boolean  | no | Limit by projects explicitly owned by the current user |
+| `membership`                  | boolean  | no | Limit by projects that the current user is a member of |
+| `starred`                     | boolean  | no | Limit by projects starred by the current user |
+| `statistics`                  | boolean  | no | Include project statistics |
+| `with_custom_attributes`      | boolean  | no | Include [custom attributes](custom_attributes.md) in response (admins only) |
+| `with_issues_enabled`         | boolean  | no | Limit by enabled issues feature |
+| `with_merge_requests_enabled` | boolean  | no | Limit by enabled merge requests feature |
+| `with_programming_language`   | string   | no | Limit by projects which use the given programming language |
+| `wiki_checksum_failed`        | boolean  | no | **(PREMIUM)** Limit projects where the wiki checksum calculation has failed ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6137) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.2) |
+| `repository_checksum_failed`  | boolean  | no | **(PREMIUM)** Limit projects where the repository checksum calculation has failed ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6137) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.2) |
+| `min_access_level`            | integer  | no | Limit by current user minimal [access level](members.md) |
+| `id_after`                    | integer  | no | Limit results to projects with IDs greater than the specified ID |
+| `id_before`                   | integer  | no | Limit results to projects with IDs less than the specified ID |
+| `last_activity_after`         | datetime | no | Limit results to projects with last_activity after specified time. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ |
+| `last_activity_before`        | datetime | no | Limit results to projects with last_activity before specified time. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ |
 
 NOTE: **Note:**
 This endpoint supports [keyset pagination](README.md#keyset-based-pagination) for selected `order_by` options.

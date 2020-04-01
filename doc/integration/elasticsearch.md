@@ -427,14 +427,14 @@ There are several Rake tasks available to you via the command line:
 - [`sudo gitlab-rake gitlab:elastic:projects_not_indexed`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/tasks/gitlab/elastic.rake)
   - Displays which projects are not indexed.
 - [`sudo gitlab-rake gitlab:elastic:reindex_to_another_cluster[<SOURCE_CLUSTER_URL>,<DESTINATION_CLUSTER_URL>]`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/tasks/gitlab/elastic.rake)
-  - Creates a new index in the destination cluster and triggers a [reindex from
-   remote](https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-reindex.html#reindex-from-remote)
-   such that the index is fully copied from the source index. This can be
-   useful when you wish to perform a migration to a new cluster as this
-   reindexing should be quicker than reindexing via GitLab. Note that remote
-   reindex requires your source cluster to be whitelisted in your destination
-   cluster in Elasticsearch settings as per [the
-   documentation](https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-reindex.html#reindex-from-remote).
+  - Creates a new index in the destination cluster from the source index using
+    Elasticsearch "reindex from remote", where the source index is copied to the
+    destination. This is useful when migrating to a new cluster because it should be
+    quicker than reindexing via GitLab.
+
+    NOTE: **Note:**
+    Your source cluster must be whitelisted in your destination cluster's Elasticsearch
+    settings. See [Reindex from remote](https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-reindex.html#reindex-from-remote).
 
 ### Environment Variables
 

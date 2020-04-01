@@ -174,8 +174,17 @@ module Gitlab
           git: { version: Gitlab::Git.version },
           gitaly: { version: Gitaly::Server.all.first.server_version, servers: Gitaly::Server.count, filesystems: Gitaly::Server.filesystems },
           gitlab_pages: { enabled: Gitlab.config.pages.enabled, version: Gitlab::Pages::VERSION },
-          database: { adapter: Gitlab::Database.adapter_name, version: Gitlab::Database.version }
+          database: { adapter: Gitlab::Database.adapter_name, version: Gitlab::Database.version },
+          app_server: { type: app_server_type }
         }
+      end
+
+      def app_server_type
+        Gitlab::Runtime.identify.to_s
+      rescue Gitlab::Runtime::IdentificationError => e
+        Gitlab::AppLogger.error(e.message)
+        Gitlab::ErrorTracking.track_exception(e)
+        'unknown_app_server_type'
       end
 
       def ingress_modsecurity_usage

@@ -459,7 +459,7 @@ Note the following properties:
 | Property | Type | Required | Description |
 | ------ | ------ | ------ | ------ |
 | `type` | string | yes | Type of panel to be rendered. For bar chart types, set to `bar` |
-| `query_range` | yes | yes | For bar chart, you must use a [range query]
+| `query_range` | yes | yes | For bar chart, you must use a [range query](https://prometheus.io/docs/prometheus/latest/querying/api/#range-queries)
 
 ![bar chart panel type](img/prometheus_dashboard_bar_chart_panel_type_v12.10.png)
 

@@ -1,6 +1,6 @@
 <script>
 import { GlIcon, GlFormGroup, GlFormRadio, GlFormRadioGroup, GlLink } from '@gitlab/ui';
-import { SNIPPET_VISIBILITY } from '~/snippets/constants';
+import { SNIPPET_VISIBILITY, SNIPPET_VISIBILITY_PRIVATE } from '~/snippets/constants';
 
 export default {
   components: {
@@ -21,48 +21,22 @@ export default {
       required: false,
       default: false,
     },
-    visibilityLevel: {
+    value: {
       type: String,
-      default: '0',
       required: false,
+      default: SNIPPET_VISIBILITY_PRIVATE,
     },
-  },
-  data() {
-    return {
-      selected: this.visibilityLevel,
-    };
   },
   computed: {
     visibilityOptions() {
-      return [
-        {
-          value: '0',
-          icon: 'lock',
-          text: SNIPPET_VISIBILITY.private.label,
-          description: this.isProjectSnippet
-            ? SNIPPET_VISIBILITY.private.description_project
-            : SNIPPET_VISIBILITY.private.description,
-        },
-        {
-          value: '1',
-          icon: 'shield',
-          text: SNIPPET_VISIBILITY.internal.label,
-          description: SNIPPET_VISIBILITY.internal.description,
-        },
-        {
-          value: '2',
-          icon: 'earth',
-          text: SNIPPET_VISIBILITY.public.label,
-          description: SNIPPET_VISIBILITY.public.description,
-        },
-      ];
-    },
-  },
-  methods: {
-    updateSelectedOption(newVal) {
-      if (newVal !== this.selected) {
-        this.selected = newVal;
-      }
+      const options = [];
+      Object.keys(SNIPPET_VISIBILITY).forEach(key => {
+        options.push({
+          value: key,
+          ...SNIPPET_VISIBILITY[key],
+        });
+      });
+      return options;
     },
   },
 };
@@ -76,18 +50,22 @@ export default {
       /></gl-link>
     </label>
     <gl-form-group id="visibility-level-setting">
-      <gl-form-radio-group :checked="selected" stacked @change="updateSelectedOption">
+      <gl-form-radio-group v-bind="$attrs" :checked="value" stacked v-on="$listeners">
         <gl-form-radio
           v-for="option in visibilityOptions"
-          :key="option.icon"
+          :key="option.value"
           :value="option.value"
           class="mb-3"
         >
           <div class="d-flex align-items-center">
             <gl-icon :size="16" :name="option.icon" />
-            <span class="font-weight-bold ml-1">{{ option.text }}</span>
+            <span class="font-weight-bold ml-1 js-visibility-option">{{ option.label }}</span>
           </div>
-          <template #help>{{ option.description }}</template>
+          <template #help>{{
+            isProjectSnippet && option.description_project
+              ? option.description_project
+              : option.description
+          }}</template>
         </gl-form-radio>
       </gl-form-radio-group>
     </gl-form-group>

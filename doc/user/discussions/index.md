@@ -20,7 +20,7 @@ comment at any time, and anyone with [Maintainer access level](../permissions.md
 higher can also edit a comment made by someone else.
 
 You can also reply to a comment notification email to reply to the comment if
-[Reply by email] is configured for your GitLab instance. Replying to a standard comment
+[Reply by email](../../administration/reply_by_email.md) is configured for your GitLab instance. Replying to a standard comment
 creates another standard comment. Replying to a threaded comment creates a reply in the thread. Email replies support
 [Markdown](../markdown.md) and [quick actions](../project/quick_actions.md), just as if you replied from the web.
 
@@ -140,7 +140,7 @@ You can now proceed to merge the merge request from the UI.
 
 ### Moving a single thread to a new issue
 
-> [Introduced][ce-8266] in GitLab 9.1
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/8266) in GitLab 9.1
 
 To create a new issue for a single thread, you can use the **Resolve this
 thread in a new issue** button.

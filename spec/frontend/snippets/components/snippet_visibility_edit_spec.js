@@ -1,36 +1,41 @@
 import SnippetVisibilityEdit from '~/snippets/components/snippet_visibility_edit.vue';
-import { GlFormRadio } from '@gitlab/ui';
-import { SNIPPET_VISIBILITY } from '~/snippets/constants';
+import { GlFormRadio, GlIcon, GlFormRadioGroup, GlLink } from '@gitlab/ui';
+import {
+  SNIPPET_VISIBILITY,
+  SNIPPET_VISIBILITY_PRIVATE,
+  SNIPPET_VISIBILITY_INTERNAL,
+  SNIPPET_VISIBILITY_PUBLIC,
+} from '~/snippets/constants';
 import { mount, shallowMount } from '@vue/test-utils';
 
 describe('Snippet Visibility Edit component', () => {
   let wrapper;
-  let radios;
   const defaultHelpLink = '/foo/bar';
-  const defaultVisibilityLevel = '0';
+  const defaultVisibilityLevel = 'private';
 
-  function findElements(sel) {
-    return wrapper.findAll(sel);
-  }
-
-  function createComponent(
-    {
-      helpLink = defaultHelpLink,
-      isProjectSnippet = false,
-      visibilityLevel = defaultVisibilityLevel,
-    } = {},
-    deep = false,
-  ) {
+  function createComponent(propsData = {}, deep = false) {
     const method = deep ? mount : shallowMount;
     wrapper = method.call(this, SnippetVisibilityEdit, {
       propsData: {
-        helpLink,
-        isProjectSnippet,
-        visibilityLevel,
+        helpLink: defaultHelpLink,
+        isProjectSnippet: false,
+        value: defaultVisibilityLevel,
+        ...propsData,
       },
     });
-    radios = findElements(GlFormRadio);
   }
+
+  const findLabel = () => wrapper.find('label');
+  const findRadios = () => wrapper.find(GlFormRadioGroup).findAll(GlFormRadio);
+  const findRadiosData = () =>
+    findRadios().wrappers.map(x => {
+      return {
+        value: x.find('input').attributes('value'),
+        icon: x.find(GlIcon).props('name'),
+        description: x.find('.help-text').text(),
+        text: x.find('.js-visibility-option').text(),
+      };
+    });
 
   afterEach(() => {
     wrapper.destroy();
@@ -42,53 +47,66 @@ describe('Snippet Visibility Edit component', () => {
       expect(wrapper.element).toMatchSnapshot();
     });
 
-    it.each`
-      label                                | value
-      ${SNIPPET_VISIBILITY.private.label}  | ${`0`}
-      ${SNIPPET_VISIBILITY.internal.label} | ${`1`}
-      ${SNIPPET_VISIBILITY.public.label}   | ${`2`}
-    `('should render correct $label label', ({ label, value }) => {
-      createComponent();
-      const radio = radios.at(parseInt(value, 10));
+    it('renders visibility options', () => {
+      createComponent({}, true);
 
-      expect(radio.attributes('value')).toBe(value);
-      expect(radio.text()).toContain(label);
+      expect(findRadiosData()).toEqual([
+        {
+          value: SNIPPET_VISIBILITY_PRIVATE,
+          icon: SNIPPET_VISIBILITY.private.icon,
+          text: SNIPPET_VISIBILITY.private.label,
+          description: SNIPPET_VISIBILITY.private.description,
+        },
+        {
+          value: SNIPPET_VISIBILITY_INTERNAL,
+          icon: SNIPPET_VISIBILITY.internal.icon,
+          text: SNIPPET_VISIBILITY.internal.label,
+          description: SNIPPET_VISIBILITY.internal.description,
+        },
+        {
+          value: SNIPPET_VISIBILITY_PUBLIC,
+          icon: SNIPPET_VISIBILITY.public.icon,
+          text: SNIPPET_VISIBILITY.public.label,
+          description: SNIPPET_VISIBILITY.public.description,
+        },
+      ]);
     });
 
-    describe('rendered help-text', () => {
-      it.each`
-        description                                | value  | label
-        ${SNIPPET_VISIBILITY.private.description}  | ${`0`} | ${SNIPPET_VISIBILITY.private.label}
-        ${SNIPPET_VISIBILITY.internal.description} | ${`1`} | ${SNIPPET_VISIBILITY.internal.label}
-        ${SNIPPET_VISIBILITY.public.description}   | ${`2`} | ${SNIPPET_VISIBILITY.public.label}
-      `('should render correct $label description', ({ description, value }) => {
-        createComponent({}, true);
+    it('when project snippet, renders special private description', () => {
+      createComponent({ isProjectSnippet: true }, true);
 
-        const help = findElements('.help-text').at(parseInt(value, 10));
-
-        expect(help.text()).toBe(description);
+      expect(findRadiosData()[0]).toEqual({
+        value: SNIPPET_VISIBILITY_PRIVATE,
+        icon: SNIPPET_VISIBILITY.private.icon,
+        text: SNIPPET_VISIBILITY.private.label,
+        description: SNIPPET_VISIBILITY.private.description_project,
       });
+    });
 
-      it('renders correct Private description for a project snippet', () => {
-        createComponent({ isProjectSnippet: true }, true);
+    it('renders label help link', () => {
+      createComponent();
 
-        const helpText = findElements('.help-text')
-          .at(0)
-          .text();
+      expect(
+        findLabel()
+          .find(GlLink)
+          .attributes('href'),
+      ).toBe(defaultHelpLink);
+    });
 
-        expect(helpText).not.toContain(SNIPPET_VISIBILITY.private.description);
-        expect(helpText).toBe(SNIPPET_VISIBILITY.private.description_project);
-      });
+    it('when helpLink is not defined, does not render label help link', () => {
+      createComponent({ helpLink: null });
+
+      expect(findLabel().contains(GlLink)).toBe(false);
     });
   });
 
   describe('functionality', () => {
     it('pre-selects correct option in the list', () => {
-      const pos = 1;
+      const value = SNIPPET_VISIBILITY_INTERNAL;
 
-      createComponent({ visibilityLevel: `${pos}` }, true);
-      const radio = radios.at(pos);
-      expect(radio.find('input[type="radio"]').element.checked).toBe(true);
+      createComponent({ value });
+
+      expect(wrapper.find(GlFormRadioGroup).attributes('checked')).toBe(value);
     });
   });
 });
