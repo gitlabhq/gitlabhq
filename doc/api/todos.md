@@ -1,6 +1,6 @@
 # Todos API
 
-> [Introduced][ce-3188] in GitLab 8.10.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/3188) in GitLab 8.10.
 
 ## Get a list of todos
 
@@ -287,5 +287,3 @@ POST /todos/mark_as_done
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/todos/mark_as_done
 ```
-
-[ce-3188]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/3188

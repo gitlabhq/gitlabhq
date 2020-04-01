@@ -1,6 +1,6 @@
 # Group-level Variables API
 
-> [Introduced][ce-34519] in GitLab 9.5
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/34519) in GitLab 9.5
 
 ## List group variables
 
@@ -142,5 +142,3 @@ DELETE /groups/:id/variables/:key
 ```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/variables/VARIABLE_1"
 ```
-
-[ce-34519]: https://gitlab.com/gitlab-org/gitlab-foss/issues/34519

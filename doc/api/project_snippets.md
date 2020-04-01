@@ -183,7 +183,7 @@ curl https://gitlab.com/api/v4/projects/:id/snippets/:snippet_id/raw \
 
 ## Get user agent details
 
-> [Introduced][ce-29508] in GitLab 9.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/29508) in GitLab 9.4.
 
 Available only for admins.
 
@@ -211,5 +211,3 @@ Example response:
   "akismet_submitted": false
 }
 ```
-
-[ce-29508]: https://gitlab.com/gitlab-org/gitlab-foss/issues/29508

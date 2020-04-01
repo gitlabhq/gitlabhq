@@ -4,8 +4,9 @@
 
 Badges are a unified way to present condensed pieces of information about your
 projects. They consist of a small image and additionally a URL that the image
-points to. Examples for badges can be the [pipeline status], [test coverage],
-or ways to contact the project maintainers.
+points to. Examples for badges can be the [pipeline status](../../ci/pipelines/settings.md#pipeline-status-badge),
+[test coverage](../../ci/pipelines/settings.md#test-coverage-report-badge), or ways to contact the
+project maintainers.
 
 ![Badges on Project overview page](img/project_overview_badges.png)
 
@@ -73,6 +74,3 @@ using these placeholders if the information is sensitive.
 You can also configure badges via the GitLab API. As in the settings, there is
 a distinction between endpoints for badges on the
 [project level](../../api/project_badges.md) and [group level](../../api/group_badges.md).
-
-[pipeline status]: ../../ci/pipelines/settings.md#pipeline-status-badge
-[test coverage]: ../../ci/pipelines/settings.md#test-coverage-report-badge

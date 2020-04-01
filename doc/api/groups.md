@@ -749,6 +749,7 @@ GET /groups/:id/hooks/:hook_id
   "merge_requests_events": true,
   "tag_push_events": true,
   "note_events": true,
+  "confidential_note_events": true,
   "job_events": true,
   "pipeline_events": true,
   "wiki_page_events": true,
@@ -775,6 +776,7 @@ POST /groups/:id/hooks
 | `merge_requests_events`      | boolean        | no       | Trigger hook on merge requests events |
 | `tag_push_events`            | boolean        | no       | Trigger hook on tag push events |
 | `note_events`                | boolean        | no       | Trigger hook on note events |
+| `confidential_note_events`   | boolean        | no       | Trigger hook on confidential note events |
 | `job_events`                 | boolean        | no       | Trigger hook on job events |
 | `pipeline_events`            | boolean        | no       | Trigger hook on pipeline events |
 | `wiki_page_events`           | boolean        | no       | Trigger hook on wiki events |
@@ -800,6 +802,7 @@ PUT /groups/:id/hooks/:hook_id
 | `merge_requests_events`      | boolean        | no       | Trigger hook on merge requests events |
 | `tag_push_events`            | boolean        | no       | Trigger hook on tag push events |
 | `note_events`                | boolean        | no       | Trigger hook on note events |
+| `confidential_note_events`   | boolean        | no       | Trigger hook on confidential note events |
 | `job_events`                 | boolean        | no       | Trigger hook on job events |
 | `pipeline_events`            | boolean        | no       | Trigger hook on pipeline events |
 | `wiki_events`                | boolean        | no       | Trigger hook on wiki events |

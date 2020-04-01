@@ -12,7 +12,7 @@ The [epic issues API](epic_issues.md) allows you to interact with issues associa
 
 ## Milestone dates integration
 
-> [Introduced][ee-6448] in GitLab 11.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6448) in GitLab 11.3.
 
 Since start date and due date can be dynamically sourced from related issue milestones, when user has edit permission,
 additional fields will be shown. These include two boolean fields `start_date_is_fixed` and `due_date_is_fixed`,
@@ -224,7 +224,7 @@ Example response:
 Creates a new epic.
 
 NOTE: **Note:**
-Starting with GitLab [11.3][ee-6448], `start_date` and `end_date` should no longer be assigned
+Starting with GitLab [11.3](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6448), `start_date` and `end_date` should no longer be assigned
 directly, as they now represent composite values. You can configure it via the `*_is_fixed` and
 `*_fixed` fields instead.
 
@@ -298,7 +298,7 @@ Example response:
 Updates an epic.
 
 NOTE: **Note:**
-Starting with GitLab [11.3][ee-6448], `start_date` and `end_date` should no longer be assigned
+Starting with GitLab [11.3](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6448), `start_date` and `end_date` should no longer be assigned
 directly, as they now represent composite values. You can configure it via the `*_is_fixed` and
 `*_fixed` fields instead.
 
@@ -460,5 +460,3 @@ Example response:
   "created_at": "2016-07-01T11:09:13.992Z"
 }
 ```
-
-[ee-6448]: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6448

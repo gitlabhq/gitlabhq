@@ -18,7 +18,7 @@ module QA
         end
       end
 
-      it 'pushes to a project using a specific Praefect repository storage', :smoke, :requires_admin, :requires_praefect, quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/276', type: :new } do
+      it 'pushes to a project using a specific Praefect repository storage', :smoke, :requires_admin, :requires_praefect do
         Flow::Login.sign_in_as_admin
 
         project = Resource::Project.fabricate_via_api! do |storage_project|
