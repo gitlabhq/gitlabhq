@@ -92,7 +92,7 @@ describe Projects::ParticipantsService do
 
       let_it_be(:group_ancestor_owner) { create(:user) }
 
-      before(:context) do
+      before_all do
         public_group.add_owner public_group_owner
         private_group.add_developer private_group_member
         public_project.add_maintainer public_project_maintainer
@@ -102,7 +102,7 @@ describe Projects::ParticipantsService do
       end
 
       context 'when the private group is invited to the public project' do
-        before(:context) do
+        before_all do
           create(:project_group_link, group: private_group, project: public_project)
         end
 

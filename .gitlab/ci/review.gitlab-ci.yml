@@ -85,7 +85,7 @@ review-build-cng:
   variables:
     HOST_SUFFIX: "${CI_ENVIRONMENT_SLUG}"
     DOMAIN: "-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}"
-    GITLAB_HELM_CHART_REF: "v2.6.8"
+    GITLAB_HELM_CHART_REF: "v3.2.2"
     GITLAB_EDITION: "ce"
   environment:
     name: review/${CI_COMMIT_REF_NAME}

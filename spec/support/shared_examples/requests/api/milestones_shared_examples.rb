@@ -56,7 +56,7 @@ RSpec.shared_examples 'group and project milestones' do |route_definition|
     end
 
     it 'does not return any milestone if none found' do
-      get api(route, user), params: { iids: [Milestone.maximum(:iid).succ] }
+      get api(route, user), params: { iids: [non_existing_record_iid] }
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response).to be_an Array
@@ -120,7 +120,7 @@ RSpec.shared_examples 'group and project milestones' do |route_definition|
     end
 
     it 'returns a 404 error if milestone id not found' do
-      get api("#{route}/1234", user)
+      get api("#{route}/#{non_existing_record_id}", user)
 
       expect(response).to have_gitlab_http_status(:not_found)
     end
@@ -183,7 +183,7 @@ RSpec.shared_examples 'group and project milestones' do |route_definition|
     end
 
     it 'returns a 404 error if milestone id not found' do
-      put api("#{route}/1234", user), params: { title: 'updated title' }
+      put api("#{route}/#{non_existing_record_id}", user), params: { title: 'updated title' }
 
       expect(response).to have_gitlab_http_status(:not_found)
     end
@@ -367,7 +367,7 @@ RSpec.shared_examples 'group and project milestones' do |route_definition|
     end
 
     it 'returns a 404 error if milestone id not found' do
-      not_found_route = "#{route}/1234/merge_requests"
+      not_found_route = "#{route}/#{non_existing_record_id}/merge_requests"
 
       get api(not_found_route, user)
 

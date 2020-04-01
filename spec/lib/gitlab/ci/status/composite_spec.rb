@@ -5,7 +5,7 @@ require 'spec_helper'
 describe Gitlab::Ci::Status::Composite do
   let_it_be(:pipeline) { create(:ci_pipeline) }
 
-  before(:all) do
+  before_all do
     @statuses = HasStatus::STATUSES_ENUM.map do |status, idx|
       [status, create(:ci_build, pipeline: pipeline, status: status, importing: true)]
     end.to_h

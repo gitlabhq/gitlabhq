@@ -76,7 +76,7 @@ describe UploadsController do
         end
 
         it "returns 404 status when object not found" do
-          post :create, params: { model: model, id: 9999 }, format: :json
+          post :create, params: { model: model, id: non_existing_record_id }, format: :json
 
           expect(response).to have_gitlab_http_status(:not_found)
         end

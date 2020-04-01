@@ -28,19 +28,10 @@ RSpec.shared_context 'IssuesFinder#execute context' do
   let(:params) { {} }
   let(:issues) { described_class.new(search_user, params.reverse_merge(scope: scope, state: 'opened')).execute }
 
-  before(:context) do
+  before_all do
     project1.add_maintainer(user)
     project2.add_developer(user)
     project2.add_developer(user2)
     project3.add_developer(user)
-
-    issue1
-    issue2
-    issue3
-    issue4
-
-    award_emoji1
-    award_emoji2
-    award_emoji3
   end
 end

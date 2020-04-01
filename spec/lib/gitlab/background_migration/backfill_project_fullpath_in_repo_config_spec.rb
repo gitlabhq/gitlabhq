@@ -39,7 +39,7 @@ describe Gitlab::BackgroundMigration::BackfillProjectFullpathInRepoConfig, schem
       end
 
       it 'raises OrphanedNamespaceError when any parent namespace does not exist' do
-        subgroup.update_attribute(:parent_id, namespaces.maximum(:id).succ)
+        subgroup.update_attribute(:parent_id, non_existing_record_id)
 
         expect { project.full_path }.to raise_error(Gitlab::BackgroundMigration::BackfillProjectFullpathInRepoConfig::OrphanedNamespaceError)
       end

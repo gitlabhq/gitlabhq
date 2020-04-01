@@ -47,7 +47,7 @@ describe API::GroupContainerRepositories do
     it_behaves_like 'a gitlab tracking event', described_class.name, 'list_repositories'
 
     context 'with invalid group id' do
-      let(:url) { '/groups/123412341234/registry/repositories' }
+      let(:url) { "/groups/#{non_existing_record_id}/registry/repositories" }
 
       it 'returns not found' do
         subject

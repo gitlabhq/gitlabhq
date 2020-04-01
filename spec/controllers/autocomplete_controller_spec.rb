@@ -192,9 +192,9 @@ describe AutocompleteController do
         end
 
         it 'rejects non existent user ids' do
-          get(:users, params: { author_id: 99999 })
+          get(:users, params: { author_id: non_existing_record_id })
 
-          expect(json_response.collect { |u| u['id'] }).not_to include(99999)
+          expect(json_response.collect { |u| u['id'] }).not_to include(non_existing_record_id)
         end
       end
 

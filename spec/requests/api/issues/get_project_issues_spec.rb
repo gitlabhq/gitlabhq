@@ -78,7 +78,7 @@ describe API::Issues do
            description: "closes #{issue.to_reference(private_mrs_project)}")
   end
 
-  before(:all) do
+  before_all do
     project.add_reporter(user)
     project.add_guest(guest)
     private_mrs_project.add_reporter(user)

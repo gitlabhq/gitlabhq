@@ -130,7 +130,7 @@ describe Gitlab::ReferenceExtractor do
     @i0 = create(:issue, project: project)
     @i1 = create(:issue, project: project)
 
-    subject.analyze("#{@i0.to_reference}, #{@i1.to_reference}, and #{Issue.reference_prefix}999.")
+    subject.analyze("#{@i0.to_reference}, #{@i1.to_reference}, and #{Issue.reference_prefix}#{non_existing_record_iid}.")
 
     expect(subject.issues).to match_array([@i0, @i1])
   end
@@ -139,7 +139,7 @@ describe Gitlab::ReferenceExtractor do
     @m0 = create(:merge_request, source_project: project, target_project: project, source_branch: 'markdown')
     @m1 = create(:merge_request, source_project: project, target_project: project, source_branch: 'feature_conflict')
 
-    subject.analyze("!999, !#{@m1.iid}, and !#{@m0.iid}.")
+    subject.analyze("!#{non_existing_record_iid}, !#{@m1.iid}, and !#{@m0.iid}.")
 
     expect(subject.merge_requests).to match_array([@m1, @m0])
   end
@@ -149,7 +149,7 @@ describe Gitlab::ReferenceExtractor do
     @l1 = create(:label, title: 'two', project: project)
     @l2 = create(:label)
 
-    subject.analyze("~#{@l0.id}, ~999, ~#{@l2.id}, ~#{@l1.id}")
+    subject.analyze("~#{@l0.id}, ~#{non_existing_record_id}, ~#{@l2.id}, ~#{@l1.id}")
 
     expect(subject.labels).to match_array([@l0, @l1])
   end
@@ -159,7 +159,7 @@ describe Gitlab::ReferenceExtractor do
     @s1 = create(:project_snippet, project: project)
     @s2 = create(:project_snippet)
 
-    subject.analyze("$#{@s0.id}, $999, $#{@s2.id}, $#{@s1.id}")
+    subject.analyze("$#{@s0.id}, $#{non_existing_record_id}, $#{@s2.id}, $#{@s1.id}")
 
     expect(subject.snippets).to match_array([@s0, @s1])
   end
@@ -205,7 +205,7 @@ describe Gitlab::ReferenceExtractor do
       end
 
       it 'returns only Jira issues if the internal one does not exists' do
-        subject.analyze("JIRA-123 and FOOBAR-4567 and #999")
+        subject.analyze("JIRA-123 and FOOBAR-4567 and ##{non_existing_record_iid}")
         expect(subject.issues).to eq [ExternalIssue.new('JIRA-123', project),
                                       ExternalIssue.new('FOOBAR-4567', project)]
       end

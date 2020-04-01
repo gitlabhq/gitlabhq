@@ -50,7 +50,7 @@ describe Notes::CreateService do
       end
 
       it 'enqueues NewNoteWorker' do
-        note = build(:note, id: 999, project: project)
+        note = build(:note, id: non_existing_record_id, project: project)
         allow(Note).to receive(:new).with(opts) { note }
 
         expect(NewNoteWorker).to receive(:perform_async).with(note.id)

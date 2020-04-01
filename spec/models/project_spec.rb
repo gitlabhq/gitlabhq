@@ -827,7 +827,7 @@ describe Project do
       end
 
       it 'returns nil when no issue found' do
-        expect(project.get_issue(999, user)).to be_nil
+        expect(project.get_issue(non_existing_record_id, user)).to be_nil
       end
 
       it "returns nil when user doesn't have access" do

@@ -287,9 +287,9 @@ RSpec.shared_examples 'load mentions from DB' do |mentionable_type|
       before do
         user_mention = note.send(:model_user_mention)
         mention_ids = {
-          mentioned_users_ids: user_mention.mentioned_users_ids.to_a << User.maximum(:id).to_i.succ,
-          mentioned_projects_ids: user_mention.mentioned_projects_ids.to_a << Project.maximum(:id).to_i.succ,
-          mentioned_groups_ids: user_mention.mentioned_groups_ids.to_a << Group.maximum(:id).to_i.succ
+          mentioned_users_ids: user_mention.mentioned_users_ids.to_a << non_existing_record_id,
+          mentioned_projects_ids: user_mention.mentioned_projects_ids.to_a << non_existing_record_id,
+          mentioned_groups_ids: user_mention.mentioned_groups_ids.to_a << non_existing_record_id
         }
         user_mention.update(mention_ids)
       end

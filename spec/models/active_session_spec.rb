@@ -165,10 +165,10 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_shared_state do
       ActiveSession.set(user, request)
 
       Gitlab::Redis::SharedState.with do |redis|
-        expect(redis.scan_each.to_a).to match_array [
+        expect(redis.scan_each.to_a).to include(
           "session:user:gitlab:#{user.id}:6919a6f1bb119dd7396fadc38fd18d0d",
           "session:lookup:user:gitlab:#{user.id}"
-        ]
+        )
       end
     end
 

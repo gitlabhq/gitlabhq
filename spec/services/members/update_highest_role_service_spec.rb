@@ -22,7 +22,9 @@ describe Members::UpdateHighestRoleService, :clean_gitlab_redis_shared_state do
         expect(service.exclusive_lease.exists?).to be_truthy
       end
 
-      it 'schedules a job' do
+      it 'schedules a job in the future', :aggregate_failures do
+        expect(UpdateHighestRoleWorker).to receive(:perform_in).with(described_class::DELAY, user.id).and_call_original
+
         Sidekiq::Testing.fake! do
           expect { subject }.to change(UpdateHighestRoleWorker.jobs, :size).by(1)
         end

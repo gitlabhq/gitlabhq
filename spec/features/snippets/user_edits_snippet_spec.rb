@@ -85,9 +85,11 @@ describe 'User edits snippet', :js do
   end
 
   context 'when the git operation fails' do
+    let(:error_message) { 'foobar' }
+
     before do
       allow_next_instance_of(Snippets::UpdateService) do |instance|
-        allow(instance).to receive(:create_commit).and_raise(StandardError)
+        allow(instance).to receive(:create_commit).and_raise(StandardError, error_message)
       end
 
       fill_in 'personal_snippet_title', with: 'New Snippet Title'
@@ -96,7 +98,7 @@ describe 'User edits snippet', :js do
     end
 
     it 'renders edit page and displays the error' do
-      expect(page.find('.flash-container span').text).to eq('Error updating the snippet')
+      expect(page.find('.flash-container span').text).to eq(error_message)
       expect(page).to have_content('Edit Snippet')
     end
   end

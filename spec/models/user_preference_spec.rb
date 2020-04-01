@@ -53,7 +53,7 @@ describe UserPreference do
       it 'returns the current notes filter' do
         user_preference.set_notes_filter(only_comments, issuable)
 
-        expect(user_preference.set_notes_filter(9999, issuable)).to eq(only_comments)
+        expect(user_preference.set_notes_filter(non_existing_record_id, issuable)).to eq(only_comments)
       end
     end
   end

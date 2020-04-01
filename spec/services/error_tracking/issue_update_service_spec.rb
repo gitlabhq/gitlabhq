@@ -5,7 +5,7 @@ require 'spec_helper'
 describe ErrorTracking::IssueUpdateService do
   include_context 'sentry error tracking context'
 
-  let(:arguments) { { issue_id: 1234, status: 'resolved' } }
+  let(:arguments) { { issue_id: non_existing_record_id, status: 'resolved' } }
 
   subject(:update_service) { described_class.new(project, user, arguments) }
 

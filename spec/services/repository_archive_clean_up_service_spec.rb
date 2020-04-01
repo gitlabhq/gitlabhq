@@ -9,7 +9,7 @@ describe RepositoryArchiveCleanUpService do
     let(:sha) { "0" * 40 }
 
     it 'removes outdated archives and directories in a new-style path' do
-      in_directory_with_files("project-999/#{sha}", %w[tar tar.bz2 tar.gz zip], 3.hours) do |dirname, files|
+      in_directory_with_files("project-#{non_existing_record_id}/#{sha}", %w[tar tar.bz2 tar.gz zip], 3.hours) do |dirname, files|
         service.execute
 
         files.each { |filename| expect(File.exist?(filename)).to be_falsy }
@@ -19,7 +19,7 @@ describe RepositoryArchiveCleanUpService do
     end
 
     it 'does not remove directories when they contain outdated non-archives' do
-      in_directory_with_files("project-999/#{sha}", %w[tar conf rb], 2.hours) do |dirname, files|
+      in_directory_with_files("project-#{non_existing_record_id}/#{sha}", %w[tar conf rb], 2.hours) do |dirname, files|
         service.execute
 
         expect(File.directory?(dirname)).to be_truthy
@@ -27,7 +27,7 @@ describe RepositoryArchiveCleanUpService do
     end
 
     it 'does not remove in-date archives in a new-style path' do
-      in_directory_with_files("project-999/#{sha}", %w[tar tar.bz2 tar.gz zip], 1.hour) do |dirname, files|
+      in_directory_with_files("project-#{non_existing_record_id}/#{sha}", %w[tar tar.bz2 tar.gz zip], 1.hour) do |dirname, files|
         service.execute
 
         files.each { |filename| expect(File.exist?(filename)).to be_truthy }

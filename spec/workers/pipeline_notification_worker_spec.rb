@@ -18,7 +18,7 @@ describe PipelineNotificationWorker, :mailer do
     it 'does nothing when the pipeline does not exist' do
       expect(NotificationService).not_to receive(:new)
 
-      subject.perform(Ci::Pipeline.maximum(:id).to_i.succ)
+      subject.perform(non_existing_record_id)
     end
   end
 end

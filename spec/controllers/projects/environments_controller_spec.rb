@@ -176,7 +176,7 @@ describe Projects::EnvironmentsController do
     context 'with invalid id' do
       it 'responds with a status code 404' do
         params = environment_params
-        params[:id] = 12345
+        params[:id] = non_existing_record_id
         get :show, params: params
 
         expect(response).to have_gitlab_http_status(:not_found)

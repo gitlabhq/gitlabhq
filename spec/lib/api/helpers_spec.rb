@@ -22,7 +22,7 @@ describe API::Helpers do
 
     context 'when ID is used as an argument' do
       let(:existing_id) { project.id }
-      let(:non_existing_id) { (Project.maximum(:id) || 0) + 1 }
+      let(:non_existing_id) { non_existing_record_id }
 
       it_behaves_like 'project finder'
     end
@@ -66,7 +66,7 @@ describe API::Helpers do
 
     context 'when ID is used as an argument' do
       let(:existing_id) { namespace.id }
-      let(:non_existing_id) { 9999 }
+      let(:non_existing_id) { non_existing_record_id }
 
       it_behaves_like 'namespace finder'
     end

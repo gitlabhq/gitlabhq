@@ -21,6 +21,8 @@ export default {
     },
     false,
   ),
+  goToTrackValue: 10,
+  trackEvent: 'click_button',
   components: {
     GlModal,
     GlSprintf,
@@ -43,11 +45,16 @@ export default {
   },
   data() {
     return {
-      tracking: {
-        label: 'congratulate_first_pipeline',
-        property: this.humanAccess,
-      },
+      trackLabel: 'congratulate_first_pipeline',
     };
+  },
+  computed: {
+    tracking() {
+      return {
+        label: this.trackLabel,
+        property: this.humanAccess,
+      };
+    },
   },
   mounted() {
     this.track();
@@ -89,7 +96,17 @@ export default {
       </template>
     </gl-sprintf>
     <template #modal-footer>
-      <a :href="goToPipelinesPath" class="btn btn-success">{{ __('Go to Pipelines') }}</a>
+      <a
+        ref="goto"
+        :href="goToPipelinesPath"
+        class="btn btn-success"
+        :data-track-property="humanAccess"
+        :data-track-value="$options.goToTrackValue"
+        :data-track-event="$options.trackEvent"
+        :data-track-label="trackLabel"
+      >
+        {{ __('Go to Pipelines') }}
+      </a>
     </template>
   </gl-modal>
 </template>

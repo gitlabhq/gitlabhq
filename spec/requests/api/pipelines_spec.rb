@@ -442,7 +442,7 @@ describe API::Pipelines do
       end
 
       it 'returns 404 when it does not exist' do
-        get api("/projects/#{project.id}/pipelines/123456", user)
+        get api("/projects/#{project.id}/pipelines/#{non_existing_record_id}", user)
 
         expect(response).to have_gitlab_http_status(:not_found)
         expect(json_response['message']).to eq '404 Not found'
@@ -599,7 +599,7 @@ describe API::Pipelines do
       end
 
       it 'returns 404 when it does not exist' do
-        delete api("/projects/#{project.id}/pipelines/123456", owner)
+        delete api("/projects/#{project.id}/pipelines/#{non_existing_record_id}", owner)
 
         expect(response).to have_gitlab_http_status(:not_found)
         expect(json_response['message']).to eq '404 Not found'

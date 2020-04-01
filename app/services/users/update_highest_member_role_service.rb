@@ -2,7 +2,7 @@
 
 module Users
   class UpdateHighestMemberRoleService < BaseService
-    attr_reader :user, :identity_params
+    attr_reader :user
 
     def initialize(user)
       @user = user

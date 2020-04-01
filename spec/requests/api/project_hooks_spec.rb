@@ -75,7 +75,7 @@ describe API::ProjectHooks, 'ProjectHooks' do
       end
 
       it "returns a 404 error if hook id is not available" do
-        get api("/projects/#{project.id}/hooks/1234", user)
+        get api("/projects/#{project.id}/hooks/#{non_existing_record_id}", user)
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
@@ -180,7 +180,7 @@ describe API::ProjectHooks, 'ProjectHooks' do
     end
 
     it "returns 404 error if hook id not found" do
-      put api("/projects/#{project.id}/hooks/1234", user), params: { url: 'http://example.org' }
+      put api("/projects/#{project.id}/hooks/#{non_existing_record_id}", user), params: { url: 'http://example.org' }
       expect(response).to have_gitlab_http_status(:not_found)
     end
 

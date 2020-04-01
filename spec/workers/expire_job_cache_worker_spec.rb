@@ -39,7 +39,7 @@ describe ExpireJobCacheWorker do
       it 'does not change the etag store' do
         expect(Gitlab::EtagCaching::Store).not_to receive(:new)
 
-        perform_multiple(9999)
+        perform_multiple(non_existing_record_id)
       end
     end
   end

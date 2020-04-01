@@ -114,7 +114,7 @@ describe SnippetsFinder do
 
       context 'when author is not valid' do
         it 'returns quickly' do
-          finder = described_class.new(admin, author: 1234)
+          finder = described_class.new(admin, author: non_existing_record_id)
 
           expect(finder).not_to receive(:init_collection)
           expect(Snippet).to receive(:none).and_call_original
@@ -208,7 +208,7 @@ describe SnippetsFinder do
 
       context 'when project is not valid' do
         it 'returns quickly' do
-          finder = described_class.new(admin, project: 1234)
+          finder = described_class.new(admin, project: non_existing_record_id)
 
           expect(finder).not_to receive(:init_collection)
           expect(Snippet).to receive(:none).and_call_original

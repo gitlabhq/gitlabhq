@@ -34,7 +34,7 @@ describe API::ImportGithub do
       post api("/import/github", user), params: {
         target_namespace: user.namespace_path,
         personal_access_token: token,
-        repo_id: 1234
+        repo_id: non_existing_record_id
       }
       expect(response).to have_gitlab_http_status(:created)
       expect(json_response).to be_a Hash
@@ -47,7 +47,7 @@ describe API::ImportGithub do
       post api("/import/github", user), params: {
         target_namespace: other_namespace.name,
         personal_access_token: token,
-        repo_id: 1234
+        repo_id: non_existing_record_id
       }
 
       expect(response).to have_gitlab_http_status(:unprocessable_entity)

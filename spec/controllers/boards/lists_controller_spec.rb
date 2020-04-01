@@ -154,7 +154,7 @@ describe Boards::ListsController do
 
     context 'with invalid list id' do
       it 'returns a not found 404 response' do
-        move user: user, board: board, list: 999, position: 1
+        move user: user, board: board, list: non_existing_record_id, position: 1
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
@@ -246,7 +246,7 @@ describe Boards::ListsController do
 
     context 'with invalid list id' do
       it 'returns a not found 404 response' do
-        remove_board_list user: user, board: board, list: 999
+        remove_board_list user: user, board: board, list: non_existing_record_id
 
         expect(response).to have_gitlab_http_status(:not_found)
       end

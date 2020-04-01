@@ -9,14 +9,16 @@ describe Gitlab::ApplicationContext do
     end
 
     it 'passes the expected context on to labkit' do
+      user = build(:user)
+      project = build(:project)
       fake_proc = duck_type(:call)
       expected_context = hash_including(user: fake_proc, project: fake_proc, root_namespace: fake_proc)
 
       expect(Labkit::Context).to receive(:with_context).with(expected_context)
 
       described_class.with_context(
-        user: build(:user),
-        project: build(:project),
+        user: user,
+        project: project,
         namespace: build(:namespace)) {}
     end
 

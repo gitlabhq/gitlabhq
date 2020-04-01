@@ -155,8 +155,6 @@ redis:
     limits:
       cpu: 200m
       memory: 130M
-redis-ha:
-  enabled: false
 registry:
   hpa:
     minReplicas: 1

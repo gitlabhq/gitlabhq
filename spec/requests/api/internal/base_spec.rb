@@ -53,7 +53,7 @@ describe API::Internal::Base do
       post api('/internal/two_factor_recovery_codes'),
            params: {
              secret_token: secret_token,
-             key_id: 12345
+             key_id: non_existing_record_id
            }
 
       expect(json_response['success']).to be_falsey
@@ -152,13 +152,13 @@ describe API::Internal::Base do
       end
 
       it 'returns a 404 when the wrong key is provided' do
-        lfs_auth_key(key.id + 12345, project)
+        lfs_auth_key(non_existing_record_id, project)
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
 
       it 'returns a 404 when the wrong user is provided' do
-        lfs_auth_user(user.id + 12345, project)
+        lfs_auth_user(non_existing_record_id, project)
 
         expect(response).to have_gitlab_http_status(:not_found)
       end

@@ -774,14 +774,16 @@ describe IssuesFinder do
   end
 
   describe '#row_count', :request_store do
+    let_it_be(:admin) { create(:admin) }
+
     it 'returns the number of rows for the default state' do
-      finder = described_class.new(user)
+      finder = described_class.new(admin)
 
       expect(finder.row_count).to eq(4)
     end
 
     it 'returns the number of rows for a given state' do
-      finder = described_class.new(user, state: 'closed')
+      finder = described_class.new(admin, state: 'closed')
 
       expect(finder.row_count).to be_zero
     end

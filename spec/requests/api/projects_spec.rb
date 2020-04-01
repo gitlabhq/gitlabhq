@@ -1101,7 +1101,7 @@ describe API::Projects do
     end
 
     it 'returns error when user not found' do
-      get api('/users/9999/starred_projects/')
+      get api("/users/#{non_existing_record_id}/starred_projects/")
 
       expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 User Not Found')
@@ -2088,13 +2088,13 @@ describe API::Projects do
     end
 
     it 'returns a 404 error when group does not exist' do
-      post api("/projects/#{project.id}/share", user), params: { group_id: 1234, group_access: Gitlab::Access::DEVELOPER }
+      post api("/projects/#{project.id}/share", user), params: { group_id: non_existing_record_id, group_access: Gitlab::Access::DEVELOPER }
 
       expect(response).to have_gitlab_http_status(:not_found)
     end
 
     it "returns a 400 error when wrong params passed" do
-      post api("/projects/#{project.id}/share", user), params: { group_id: group.id, group_access: 1234 }
+      post api("/projects/#{project.id}/share", user), params: { group_id: group.id, group_access: non_existing_record_access_level }
 
       expect(response).to have_gitlab_http_status(:bad_request)
       expect(json_response['error']).to eq 'group_access does not have a valid value'
@@ -2137,13 +2137,13 @@ describe API::Projects do
     end
 
     it 'returns a 404 error when group link does not exist' do
-      delete api("/projects/#{project.id}/share/1234", user)
+      delete api("/projects/#{project.id}/share/#{non_existing_record_id}", user)
 
       expect(response).to have_gitlab_http_status(:not_found)
     end
 
     it 'returns a 404 error when project does not exist' do
-      delete api("/projects/123/share/1234", user)
+      delete api("/projects/123/share/#{non_existing_record_id}", user)
 
       expect(response).to have_gitlab_http_status(:not_found)
     end
@@ -2634,7 +2634,7 @@ describe API::Projects do
     end
 
     it 'returns not_found(404) for not existing project' do
-      get api("/projects/9999999999/starrers", user)
+      get api("/projects/#{non_existing_record_id}/starrers", user)
 
       expect(response).to have_gitlab_http_status(:not_found)
     end

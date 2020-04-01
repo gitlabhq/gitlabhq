@@ -82,7 +82,7 @@ describe NamespacelessProjectDestroyWorker do
 
     context 'project has non-existing namespace' do
       let!(:project) do
-        project = build(:project, namespace_id: Namespace.maximum(:id).to_i.succ)
+        project = build(:project, namespace_id: non_existing_record_id)
         project.save(validate: false)
         project
       end

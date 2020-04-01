@@ -24,7 +24,7 @@ describe Dashboard::TodosController do
       end
 
       it 'renders 404 when given project does not exists' do
-        get :index, params: { project_id: 999 }
+        get :index, params: { project_id: non_existing_record_id }
 
         expect(response).to have_gitlab_http_status(:not_found)
       end

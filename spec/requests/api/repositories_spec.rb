@@ -117,7 +117,7 @@ describe API::Repositories do
 
       context 'when sha does not exist' do
         it_behaves_like '404 response' do
-          let(:request) { get api(route.sub(sample_blob.oid, '123456'), current_user) }
+          let(:request) { get api(route.sub(sample_blob.oid, 'abcd9876'), current_user) }
           let(:message) { '404 Blob Not Found' }
         end
       end
@@ -179,7 +179,7 @@ describe API::Repositories do
 
       context 'when sha does not exist' do
         it_behaves_like '404 response' do
-          let(:request) { get api(route.sub(sample_blob.oid, '123456'), current_user) }
+          let(:request) { get api(route.sub(sample_blob.oid, 'abcd9876'), current_user) }
           let(:message) { '404 Blob Not Found' }
         end
       end

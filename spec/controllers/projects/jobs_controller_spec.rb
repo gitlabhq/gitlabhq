@@ -132,7 +132,7 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
 
       context 'when job does not exist' do
         before do
-          get_show(id: 1234)
+          get_show(id: non_existing_record_id)
         end
 
         it 'renders not_found' do
@@ -1146,7 +1146,7 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
 
     context 'when job does not exist' do
       it 'renders not_found' do
-        get_terminal(id: 1234)
+        get_terminal(id: non_existing_record_id)
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
@@ -1191,7 +1191,7 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
 
       context 'and invalid id' do
         it 'returns 404' do
-          get_terminal_websocket(id: 1234)
+          get_terminal_websocket(id: non_existing_record_id)
 
           expect(response).to have_gitlab_http_status(:not_found)
         end

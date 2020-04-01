@@ -97,7 +97,7 @@ describe API::GroupImport do
 
           context 'when parent group is invalid' do
             it 'returns 404 and does not create new group' do
-              params[:parent_id] = 99999
+              params[:parent_id] = non_existing_record_id
 
               expect { subject }.not_to change { Group.count }
 

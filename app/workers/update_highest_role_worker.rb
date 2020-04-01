@@ -11,9 +11,15 @@ class UpdateHighestRoleWorker
 
   # rubocop: disable CodeReuse/ActiveRecord
   def perform(user_id)
-    user = User.active.find_by(id: user_id)
+    user = User.find_by(id: user_id)
 
-    Users::UpdateHighestMemberRoleService.new(user).execute if user.present?
+    return unless user.present?
+
+    if user.active? && user.user_type.nil? && !user.internal?
+      Users::UpdateHighestMemberRoleService.new(user).execute
+    else
+      UserHighestRole.where(user_id: user_id).delete_all
+    end
   end
   # rubocop: enable CodeReuse/ActiveRecord
 end

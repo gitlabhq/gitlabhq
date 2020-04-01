@@ -12,7 +12,7 @@ describe Projects::ErrorTracking::StackTracesController do
   end
 
   describe 'GET #index' do
-    let(:issue_id) { 1234 }
+    let(:issue_id) { non_existing_record_id }
     let(:issue_stack_trace_service) { spy(:issue_stack_trace_service) }
 
     subject(:get_stack_trace) do

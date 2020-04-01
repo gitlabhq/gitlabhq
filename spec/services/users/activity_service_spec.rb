@@ -30,7 +30,7 @@ describe Users::ActivityService do
       end
 
       it 'tries to obtain ExclusiveLease' do
-        expect(Gitlab::ExclusiveLease).to receive(:new).and_call_original
+        expect(Gitlab::ExclusiveLease).to receive(:new).with("activity_service:#{user.id}", anything).and_call_original
 
         subject.execute
       end
@@ -56,7 +56,7 @@ describe Users::ActivityService do
       end
 
       it 'does not try to obtain ExclusiveLease' do
-        expect(Gitlab::ExclusiveLease).not_to receive(:new)
+        expect(Gitlab::ExclusiveLease).not_to receive(:new).with("activity_service:#{user.id}", anything)
 
         subject.execute
       end

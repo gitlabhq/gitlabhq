@@ -97,7 +97,7 @@ RSpec.shared_examples 'noteable API' do |parent_type, noteable_type, id_name|
     end
 
     it "returns a 404 error when noteable id not found" do
-      get api("/#{parent_type}/#{parent.id}/#{noteable_type}/12345/notes", user)
+      get api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{non_existing_record_id}/notes", user)
 
       expect(response).to have_gitlab_http_status(:not_found)
     end
@@ -120,7 +120,7 @@ RSpec.shared_examples 'noteable API' do |parent_type, noteable_type, id_name|
     end
 
     it "returns a 404 error if note not found" do
-      get api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes/12345", user)
+      get api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes/#{non_existing_record_id}", user)
 
       expect(response).to have_gitlab_http_status(:not_found)
     end
@@ -274,7 +274,7 @@ RSpec.shared_examples 'noteable API' do |parent_type, noteable_type, id_name|
     end
 
     it 'returns a 404 error when note id not found' do
-      put api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes/12345", user),
+      put api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes/#{non_existing_record_id}", user),
               params: { body: 'Hello!' }
 
       expect(response).to have_gitlab_http_status(:not_found)
@@ -301,7 +301,7 @@ RSpec.shared_examples 'noteable API' do |parent_type, noteable_type, id_name|
     end
 
     it 'returns a 404 error when note id not found' do
-      delete api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes/12345", user)
+      delete api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes/#{non_existing_record_id}", user)
 
       expect(response).to have_gitlab_http_status(:not_found)
     end

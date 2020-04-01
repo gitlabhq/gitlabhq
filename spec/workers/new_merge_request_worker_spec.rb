@@ -15,9 +15,11 @@ describe NewMergeRequestWorker do
       end
 
       it 'logs an error' do
+        user = create(:user)
+
         expect(Rails.logger).to receive(:error).with('NewMergeRequestWorker: couldn\'t find MergeRequest with ID=99, skipping job')
 
-        worker.perform(99, create(:user).id)
+        worker.perform(99, user.id)
       end
     end
 
@@ -30,9 +32,11 @@ describe NewMergeRequestWorker do
       end
 
       it 'logs an error' do
+        merge_request = create(:merge_request)
+
         expect(Rails.logger).to receive(:error).with('NewMergeRequestWorker: couldn\'t find User with ID=99, skipping job')
 
-        worker.perform(create(:merge_request).id, 99)
+        worker.perform(merge_request.id, 99)
       end
     end
 

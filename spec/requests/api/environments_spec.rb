@@ -127,7 +127,7 @@ describe API::Environments do
       end
 
       it 'returns a 400 when the required params are missing' do
-        post api("/projects/12345/environments", non_member), params: { external_url: 'http://env.git.com' }
+        post api("/projects/#{non_existing_record_id}/environments", non_member), params: { external_url: 'http://env.git.com' }
       end
     end
   end
@@ -163,7 +163,7 @@ describe API::Environments do
     end
 
     it 'returns a 404 if the environment does not exist' do
-      put api("/projects/#{project.id}/environments/12345", user)
+      put api("/projects/#{project.id}/environments/#{non_existing_record_id}", user)
 
       expect(response).to have_gitlab_http_status(:not_found)
     end
@@ -186,7 +186,7 @@ describe API::Environments do
       end
 
       it 'returns a 404 for non existing id' do
-        delete api("/projects/#{project.id}/environments/12345", user)
+        delete api("/projects/#{project.id}/environments/#{non_existing_record_id}", user)
 
         expect(response).to have_gitlab_http_status(:not_found)
         expect(json_response['message']).to eq('404 Not found')
@@ -229,7 +229,7 @@ describe API::Environments do
       end
 
       it 'returns a 404 for non existing id' do
-        post api("/projects/#{project.id}/environments/12345/stop", user)
+        post api("/projects/#{project.id}/environments/#{non_existing_record_id}/stop", user)
 
         expect(response).to have_gitlab_http_status(:not_found)
         expect(json_response['message']).to eq('404 Not found')

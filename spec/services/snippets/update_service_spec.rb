@@ -141,14 +141,16 @@ describe Snippets::UpdateService do
       end
 
       it 'returns error when the commit action fails' do
+        error_message = 'foobar'
+
         allow_next_instance_of(SnippetRepository) do |instance|
-          allow(instance).to receive(:multi_files_action).and_raise(SnippetRepository::CommitError)
+          allow(instance).to receive(:multi_files_action).and_raise(SnippetRepository::CommitError, error_message)
         end
 
         response = subject
 
         expect(response).to be_error
-        expect(response.payload[:snippet].errors.full_messages).to eq ['Repository Error updating the snippet']
+        expect(response.payload[:snippet].errors[:repository].to_sentence).to eq error_message
       end
     end
 
@@ -168,12 +170,14 @@ describe Snippets::UpdateService do
       end
 
       context 'when an error is raised' do
+        let(:error_message) { 'foobar' }
+
         before do
-          allow(snippet.snippet_repository).to receive(:multi_files_action).and_raise(SnippetRepository::CommitError, 'foobar')
+          allow(snippet.snippet_repository).to receive(:multi_files_action).and_raise(SnippetRepository::CommitError, error_message)
         end
 
         it 'logs the error' do
-          expect(Gitlab::AppLogger).to receive(:error).with('foobar')
+          expect(Gitlab::AppLogger).to receive(:error).with(error_message)
 
           subject
         end
@@ -182,7 +186,7 @@ describe Snippets::UpdateService do
           response = subject
 
           expect(response).to be_error
-          expect(response.payload[:snippet].errors.full_messages).to eq ['Repository Error updating the snippet']
+          expect(response.payload[:snippet].errors[:repository].to_sentence).to eq error_message
         end
       end
 

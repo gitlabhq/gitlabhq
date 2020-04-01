@@ -60,7 +60,7 @@ describe API::MergeRequestDiffs, 'MergeRequestDiffs' do
     end
 
     it 'returns a 404 when merge_request_iid is not found' do
-      get api("/projects/#{project.id}/merge_requests/12345/versions/#{merge_request_diff.id}", user)
+      get api("/projects/#{project.id}/merge_requests/#{non_existing_record_iid}/versions/#{merge_request_diff.id}", user)
       expect(response).to have_gitlab_http_status(:not_found)
     end
   end

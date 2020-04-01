@@ -824,14 +824,14 @@ describe Issues::UpdateService, :mailer do
 
     context 'when moving an issue ' do
       it 'raises an error for invalid move ids within a project' do
-        opts = { move_between_ids: [9000, 9999] }
+        opts = { move_between_ids: [9000, non_existing_record_id] }
 
         expect { described_class.new(issue.project, user, opts).execute(issue) }
             .to raise_error(ActiveRecord::RecordNotFound)
       end
 
       it 'raises an error for invalid move ids within a group' do
-        opts = { move_between_ids: [9000, 9999], board_group_id: create(:group).id }
+        opts = { move_between_ids: [9000, non_existing_record_id], board_group_id: create(:group).id }
 
         expect { described_class.new(issue.project, user, opts).execute(issue) }
             .to raise_error(ActiveRecord::RecordNotFound)

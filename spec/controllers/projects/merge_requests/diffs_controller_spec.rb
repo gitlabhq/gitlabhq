@@ -8,11 +8,9 @@ describe Projects::MergeRequests::DiffsController do
   shared_examples '404 for unexistent diffable' do
     context 'when diffable does not exists' do
       it 'returns 404' do
-        unexistent_diff_id = 9999
+        go(diff_id: non_existing_record_id)
 
-        go(diff_id: unexistent_diff_id)
-
-        expect(MergeRequestDiff.find_by(id: unexistent_diff_id)).to be_nil
+        expect(MergeRequestDiff.find_by(id: non_existing_record_id)).to be_nil
         expect(response).to have_gitlab_http_status(:not_found)
       end
     end

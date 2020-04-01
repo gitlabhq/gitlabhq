@@ -57,11 +57,11 @@ describe ProjectExportWorker do
       end
 
       it 'does not raise error when project cannot be found' do
-        expect { subject.perform(user.id, -234, {}) }.not_to raise_error
+        expect { subject.perform(user.id, non_existing_record_id, {}) }.not_to raise_error
       end
 
       it 'does not raise error when user cannot be found' do
-        expect { subject.perform(-863, project.id, {}) }.not_to raise_error
+        expect { subject.perform(non_existing_record_id, project.id, {}) }.not_to raise_error
       end
     end
   end

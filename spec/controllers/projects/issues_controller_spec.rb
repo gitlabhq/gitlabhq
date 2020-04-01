@@ -338,13 +338,13 @@ describe Projects::IssuesController do
 
       context 'with invalid params' do
         it 'returns a unprocessable entity 422 response for invalid move ids' do
-          reorder_issue(issue1, move_after_id: 99, move_before_id: 999)
+          reorder_issue(issue1, move_after_id: 99, move_before_id: non_existing_record_id)
 
           expect(response).to have_gitlab_http_status(:unprocessable_entity)
         end
 
         it 'returns a not found 404 response for invalid issue id' do
-          reorder_issue(object_double(issue1, iid: 999),
+          reorder_issue(object_double(issue1, iid: non_existing_record_iid),
             move_after_id: issue2.id,
             move_before_id: issue3.id)
 

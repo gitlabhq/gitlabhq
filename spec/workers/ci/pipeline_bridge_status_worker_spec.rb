@@ -25,7 +25,7 @@ describe Ci::PipelineBridgeStatusWorker do
     end
 
     context 'when pipeline does not exist' do
-      let(:pipeline_id) { 1234 }
+      let(:pipeline_id) { non_existing_record_id }
 
       it 'does not call the service' do
         expect(Ci::PipelineBridgeStatusService)

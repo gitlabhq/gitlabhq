@@ -25,13 +25,6 @@ Please provide pros/cons and a weight estimate for each solution.
 - [ ] All potential solutions are listed.
 - [ ] A solution has been chosen for the first iteration: `PUT THE CHOSEN SOLUTION HERE`
 
-## Who and when will the solution be implemented?
-
-<!--
-For history reason, please list the person that will implement the solution and
-the planned milestone/date.
--->
-
 ## Verify that the solution has improved the situation
 
 <!--

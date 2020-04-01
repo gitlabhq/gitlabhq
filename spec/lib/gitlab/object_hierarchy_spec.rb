@@ -165,13 +165,13 @@ describe Gitlab::ObjectHierarchy do
     end
 
     it 'uses ancestors_base #initialize argument for ancestors' do
-      relation = described_class.new(Group.where(id: child1.id), Group.where(id: Group.maximum(:id).succ)).all_objects
+      relation = described_class.new(Group.where(id: child1.id), Group.where(id: non_existing_record_id)).all_objects
 
       expect(relation).to include(parent)
     end
 
     it 'uses descendants_base #initialize argument for descendants' do
-      relation = described_class.new(Group.where(id: Group.maximum(:id).succ), Group.where(id: child1.id)).all_objects
+      relation = described_class.new(Group.where(id: non_existing_record_id), Group.where(id: child1.id)).all_objects
 
       expect(relation).to include(child2)
     end

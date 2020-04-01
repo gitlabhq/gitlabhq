@@ -8,7 +8,7 @@ describe Gitlab::ImportExport::Project::TreeRestorer do
   let(:shared) { project.import_export_shared }
 
   describe 'restore project tree' do
-    before(:context) do
+    before_all do
       # Using an admin for import, so we can check assignment of existing members
       @user = create(:admin)
       @existing_members = [

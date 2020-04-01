@@ -126,7 +126,7 @@ describe API::SystemHooks do
     end
 
     it 'returns 404 if the system hook does not exist' do
-      delete api('/hooks/12345', admin)
+      delete api("/hooks/#{non_existing_record_id}", admin)
 
       expect(response).to have_gitlab_http_status(:not_found)
     end

@@ -61,7 +61,7 @@ describe API::Issues do
   let(:no_milestone_title) { 'None' }
   let(:any_milestone_title) { 'Any' }
 
-  before(:all) do
+  before_all do
     project.add_reporter(user)
     project.add_guest(guest)
     private_mrs_project.add_reporter(user)

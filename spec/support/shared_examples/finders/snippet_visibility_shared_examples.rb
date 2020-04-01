@@ -3,11 +3,6 @@
 RSpec.shared_examples 'snippet visibility' do
   using RSpec::Parameterized::TableSyntax
 
-  # Make sure no snippets exist prior to running the test matrix
-  before(:context) do
-    DatabaseCleaner.clean_with(:truncation)
-  end
-
   let_it_be(:author) { create(:user) }
   let_it_be(:member) { create(:user) }
   let_it_be(:external) { create(:user, :external) }

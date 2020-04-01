@@ -100,6 +100,7 @@ RSpec.configure do |config|
   config.include ExpectOffense
   config.include FactoryBot::Syntax::Methods
   config.include FixtureHelpers
+  config.include NonExistingRecordsHelpers
   config.include GitlabRoutingHelper
   config.include StubFeatureFlags
   config.include StubExperiments

@@ -29,7 +29,7 @@ describe Ci::CreateCrossProjectPipelineWorker do
         expect(Ci::CreateCrossProjectPipelineService)
           .not_to receive(:new)
 
-        described_class.new.perform(1234)
+        described_class.new.perform(non_existing_record_id)
       end
     end
   end

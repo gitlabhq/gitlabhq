@@ -107,7 +107,7 @@ describe API::ProjectEvents do
       end
 
       it 'returns 404 if project does not exist' do
-        get api("/projects/1234/events", user)
+        get api("/projects/#{non_existing_record_id}/events", user)
 
         expect(response).to have_gitlab_http_status(:not_found)
       end

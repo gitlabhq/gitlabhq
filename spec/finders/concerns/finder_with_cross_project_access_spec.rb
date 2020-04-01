@@ -97,7 +97,7 @@ describe FinderWithCrossProjectAccess do
       end
 
       it 're-enables the check after the find failed' do
-        finder.find_by!(id: 9999) rescue ActiveRecord::RecordNotFound
+        finder.find_by!(id: non_existing_record_id) rescue ActiveRecord::RecordNotFound
 
         expect(finder.instance_variable_get(:@should_skip_cross_project_check))
           .to eq(false)

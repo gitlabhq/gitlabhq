@@ -8,7 +8,7 @@ describe Gitlab::ImportExport::Group::TreeRestorer do
   let(:shared) { Gitlab::ImportExport::Shared.new(group) }
 
   describe 'restore group tree' do
-    before(:context) do
+    before_all do
       # Using an admin for import, so we can check assignment of existing members
       user = create(:admin, email: 'root@gitlabexample.com')
       create(:user, email: 'adriene.mcclure@gitlabexample.com')

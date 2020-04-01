@@ -8,7 +8,7 @@ describe UploadChecksumWorker do
 
     context 'without a valid record' do
       it 'rescues ActiveRecord::RecordNotFound' do
-        expect { subject.perform(999_999) }.not_to raise_error
+        expect { subject.perform(non_existing_record_id) }.not_to raise_error
       end
     end
 

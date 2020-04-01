@@ -78,6 +78,10 @@ FDOC=1 bin/rspec spec/[path]/[to]/[spec].rb
 - Use `focus: true` to isolate parts of the specs you want to run.
 - Use [`:aggregate_failures`](https://relishapp.com/rspec/rspec-core/docs/expectation-framework-integration/aggregating-failures) when there is more than one expectation in a test.
 - For [empty test description blocks](https://github.com/rubocop-hq/rspec-style-guide#it-and-specify), use `specify` rather than `it do` if the test is self-explanatory.
+- Use `non_existing_record_id`/`non_existing_record_iid`/`non_existing_record_access_level`
+  when you need an ID/IID/access level that doesn't actually exists. Using 123, 1234,
+  or even 999 is brittle as these IDs could actually exist in the database in the
+  context of a CI run.
 
 ### Coverage
 
@@ -244,7 +248,11 @@ so we need to set some guidelines for their use going forward:
 In some cases, there is no need to recreate the same object for tests
 again for each example. For example, a project and a guest of that project
 is needed to test issues on the same project, one project and user will do for the entire file.
-This can be achieved by using
+
+As much as possible, do not implement this using `before(:all)` or `before(:context)`. If you do,
+you would need to manually clean up the data as those hooks run outside a database transaction.
+
+Instead, this can be achieved by using
 [`let_it_be`](https://test-prof.evilmartians.io/#/let_it_be) variables and the
 [`before_all`](https://test-prof.evilmartians.io/#/before_all) hook
 from the [`test-prof` gem](https://rubygems.org/gems/test-prof).

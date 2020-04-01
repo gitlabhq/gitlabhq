@@ -30,9 +30,11 @@ describe NewIssueWorker do
       end
 
       it 'logs an error' do
+        issue = create(:issue)
+
         expect(Rails.logger).to receive(:error).with('NewIssueWorker: couldn\'t find User with ID=99, skipping job')
 
-        worker.perform(create(:issue).id, 99)
+        worker.perform(issue.id, 99)
       end
     end
 

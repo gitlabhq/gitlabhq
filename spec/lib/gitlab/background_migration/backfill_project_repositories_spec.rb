@@ -90,7 +90,7 @@ describe Gitlab::BackgroundMigration::BackfillProjectRepositories do
         it 'raises OrphanedNamespaceError when any parent namespace does not exist' do
           subgroup = create(:group, parent: group)
           project_orphaned_namespace = create(:project, name: 'baz', path: 'baz', namespace: subgroup, storage_version: nil)
-          subgroup.update_column(:parent_id, Namespace.maximum(:id).succ)
+          subgroup.update_column(:parent_id, non_existing_record_id)
 
           project = described_class.find(project_orphaned_namespace.id)
           project.route.destroy

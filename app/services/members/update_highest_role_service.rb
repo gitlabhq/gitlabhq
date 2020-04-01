@@ -4,7 +4,8 @@ module Members
   class UpdateHighestRoleService < ::BaseService
     include ExclusiveLeaseGuard
 
-    LEASE_TIMEOUT = 30.minutes.to_i
+    LEASE_TIMEOUT = 10.minutes.to_i
+    DELAY = 10.minutes
 
     attr_reader :user_id
 
@@ -14,7 +15,7 @@ module Members
 
     def execute
       try_obtain_lease do
-        UpdateHighestRoleWorker.perform_async(user_id)
+        UpdateHighestRoleWorker.perform_in(DELAY, user_id)
       end
     end
 

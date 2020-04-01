@@ -11,10 +11,6 @@ RSpec.configure do |config|
     DatabaseCleaner.clean_with(:truncation)
   end
 
-  config.append_after(:context) do
-    delete_from_all_tables!
-  end
-
   config.append_after(:context, :migration) do
     delete_from_all_tables!
 

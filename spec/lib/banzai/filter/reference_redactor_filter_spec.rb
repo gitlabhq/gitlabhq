@@ -77,7 +77,7 @@ describe Banzai::Filter::ReferenceRedactorFilter do
       end
 
       it 'handles invalid references' do
-        link = reference_link(project: 12345, reference_type: 'test')
+        link = reference_link(project: non_existing_record_id, reference_type: 'test')
 
         expect { filter(link) }.not_to raise_error
       end

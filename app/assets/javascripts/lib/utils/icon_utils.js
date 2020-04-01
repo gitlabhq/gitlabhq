@@ -9,8 +9,10 @@ const getSvgDom = memoize(() =>
   axios
     .get(gon.sprite_icons)
     .then(({ data: svgs }) => new DOMParser().parseFromString(svgs, 'text/xml'))
-    .catch(() => {
+    .catch(e => {
       getSvgDom.cache.clear();
+
+      throw e;
     }),
 );
 

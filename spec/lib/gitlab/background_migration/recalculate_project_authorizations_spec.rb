@@ -234,10 +234,8 @@ describe Gitlab::BackgroundMigration::RecalculateProjectAuthorizations, schema: 
   end
 
   context 'deleted user' do
-    let(:nonexistent_user_id) { User.maximum(:id).to_i + 999 }
-
     it 'does not fail' do
-      expect { described_class.new.perform([nonexistent_user_id]) }.not_to raise_error
+      expect { described_class.new.perform([non_existing_record_id]) }.not_to raise_error
     end
   end
 end

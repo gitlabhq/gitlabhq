@@ -298,7 +298,7 @@ describe Todos::Destroy::EntityLeaveService do
 
     context 'when entity was not found' do
       it 'does not remove any todos' do
-        expect { described_class.new(user.id, 999999, 'Group').execute }
+        expect { described_class.new(user.id, non_existing_record_id, 'Group').execute }
           .not_to change { Todo.count }
       end
     end

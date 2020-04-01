@@ -70,6 +70,13 @@ NOTE: **Note:** Set the limit to `0` to disable it.
 GitLab ignores all incoming emails sent from auto-responders by looking for the `X-Autoreply`
 header. Such emails don't create comments on issues or merge requests.
 
+## Amount of data sent from Sentry via Error Tracking
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14926) in GitLab 12.6.
+
+Sentry payloads sent to GitLab have a 1 MB maximum limit, both for security reasons
+and to limit memory consumption.
+
 ## CI/CD limits
 
 ### Number of jobs in active pipelines

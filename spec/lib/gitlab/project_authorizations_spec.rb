@@ -234,7 +234,7 @@ describe Gitlab::ProjectAuthorizations do
     end
 
     context 'unrelated project owner' do
-      let(:common_id) { [Project.maximum(:id).to_i, Namespace.maximum(:id).to_i].max + 999 }
+      let(:common_id) { non_existing_record_id }
       let!(:group) { create(:group, id: common_id) }
       let!(:unrelated_project) { create(:project, id: common_id) }
       let(:user) { unrelated_project.owner }

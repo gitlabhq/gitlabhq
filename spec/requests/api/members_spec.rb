@@ -314,9 +314,9 @@ describe API::Members do
         expect(response).to have_gitlab_http_status(:bad_request)
       end
 
-      it 'returns 400  when access_level is not valid' do
+      it 'returns 400 when access_level is not valid' do
         post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
-             params: { user_id: stranger.id, access_level: 1234 }
+             params: { user_id: stranger.id, access_level: non_existing_record_access_level }
 
         expect(response).to have_gitlab_http_status(:bad_request)
       end
@@ -371,9 +371,9 @@ describe API::Members do
         expect(response).to have_gitlab_http_status(:bad_request)
       end
 
-      it 'returns 400  when access level is not valid' do
+      it 'returns 400 when access level is not valid' do
         put api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", maintainer),
-            params: { access_level: 1234 }
+            params: { access_level: non_existing_record_access_level }
 
         expect(response).to have_gitlab_http_status(:bad_request)
       end

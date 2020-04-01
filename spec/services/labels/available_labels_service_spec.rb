@@ -65,7 +65,7 @@ describe Labels::AvailableLabelsService do
   end
 
   describe '#filter_labels_ids_in_param' do
-    let(:label_ids) { labels.map(&:id).push(99999) }
+    let(:label_ids) { labels.map(&:id).push(non_existing_record_id) }
 
     context 'when parent is a project' do
       it 'returns only relevant label ids' do

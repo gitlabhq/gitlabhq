@@ -60,7 +60,7 @@ describe IncidentManagement::ProcessPrometheusAlertWorker do
     end
 
     context 'when project could not be found' do
-      let(:non_existing_project_id) { (Project.maximum(:id) || 0) + 1 }
+      let(:non_existing_project_id) { non_existing_record_id }
 
       it 'does not create an issue' do
         expect { subject.perform(non_existing_project_id, alert_params) }
@@ -75,7 +75,7 @@ describe IncidentManagement::ProcessPrometheusAlertWorker do
 
     context 'when event could not be found' do
       before do
-        alert_params[:labels][:gitlab_alert_id] = (PrometheusAlertEvent.maximum(:id) || 0) + 1
+        alert_params[:labels][:gitlab_alert_id] = non_existing_record_id
       end
 
       it 'does not create an issue' do

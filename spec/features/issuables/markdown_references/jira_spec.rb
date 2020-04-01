@@ -163,7 +163,7 @@ describe "Jira", :js do
     markdown = <<~HEREDOC
       Referencing internal issue #{issue_actual_project.to_reference},
       cross-project #{issue_other_project.to_reference(actual_project)} external JIRA-5
-      and non existing #999
+      and non existing ##{non_existing_record_iid}
     HEREDOC
 
     page.within("#diff-notes-app") do
@@ -186,6 +186,6 @@ describe "Jira", :js do
       expect(page).not_to have_link("JIRA-5", href: "https://jira.example.com/browse/JIRA-5")
     end
 
-    expect(page).not_to have_link("#999")
+    expect(page).not_to have_link("##{non_existing_record_iid}")
   end
 end

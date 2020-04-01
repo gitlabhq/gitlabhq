@@ -182,7 +182,7 @@ describe Projects::ErrorTrackingController do
   end
 
   describe 'GET #issue_details' do
-    let_it_be(:issue_id) { 1234 }
+    let_it_be(:issue_id) { non_existing_record_id }
 
     let(:issue_details_service) { spy(:issue_details_service) }
 
@@ -279,7 +279,7 @@ describe Projects::ErrorTrackingController do
   end
 
   describe 'PUT #update' do
-    let(:issue_id) { 1234 }
+    let(:issue_id) { non_existing_record_id }
     let(:issue_update_service) { spy(:issue_update_service) }
     let(:permitted_params) do
       ActionController::Parameters.new(
@@ -301,7 +301,7 @@ describe Projects::ErrorTrackingController do
       context 'update result is successful' do
         before do
           expect(issue_update_service).to receive(:execute)
-            .and_return(status: :success, updated: true, closed_issue_iid: 1234)
+            .and_return(status: :success, updated: true, closed_issue_iid: non_existing_record_iid)
 
           update_issue
         end

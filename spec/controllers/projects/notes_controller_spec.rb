@@ -585,7 +585,7 @@ describe Projects::NotesController do
 
       context 'when a noteable is not found' do
         it 'returns 404 status' do
-          request_params[:target_id] = 9999
+          request_params[:target_id] = non_existing_record_id
           post :create, params: request_params.merge(format: :json)
 
           expect(response).to have_gitlab_http_status(:not_found)

@@ -43,7 +43,7 @@ describe Mutations::Issues::Update do
 
       context 'when iid does not exist' do
         it 'raises resource not available error' do
-          mutation_params[:iid] = 99999
+          mutation_params[:iid] = non_existing_record_iid
 
           expect { subject }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
         end

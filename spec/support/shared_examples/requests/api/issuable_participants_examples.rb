@@ -18,7 +18,7 @@ RSpec.shared_examples 'issuable participants endpoint' do
   end
 
   it 'returns a 404 when iid does not exist' do
-    get api("/projects/#{project.id}/#{area}/999/participants", user)
+    get api("/projects/#{project.id}/#{area}/#{non_existing_record_iid}/participants", user)
 
     expect(response).to have_gitlab_http_status(:not_found)
   end

@@ -1218,7 +1218,7 @@ describe QuickActions::InterpretService do
         end
 
         it_behaves_like 'empty command' do
-          let(:content) { "/copy_metadata imaginary#1234" }
+          let(:content) { "/copy_metadata imaginary##{non_existing_record_iid}" }
           let(:issuable) { issue }
         end
 
@@ -1253,7 +1253,7 @@ describe QuickActions::InterpretService do
         end
 
         it_behaves_like 'empty command', _('Failed to mark this issue as a duplicate because referenced issue was not found.') do
-          let(:content) { "/duplicate imaginary#1234" }
+          let(:content) { "/duplicate imaginary##{non_existing_record_iid}" }
           let(:issuable) { issue }
         end
 

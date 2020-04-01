@@ -1720,7 +1720,7 @@ describe API::MergeRequests do
       end
 
       it "returns 404 for an invalid merge request IID" do
-        delete api("/projects/#{project.id}/merge_requests/12345", user)
+        delete api("/projects/#{project.id}/merge_requests/#{non_existing_record_iid}", user)
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
@@ -1931,7 +1931,7 @@ describe API::MergeRequests do
     end
 
     it "returns 404 for an invalid merge request IID" do
-      put api("/projects/#{project.id}/merge_requests/12345/merge", user)
+      put api("/projects/#{project.id}/merge_requests/#{non_existing_record_iid}/merge", user)
 
       expect(response).to have_gitlab_http_status(:not_found)
     end
@@ -2053,7 +2053,7 @@ describe API::MergeRequests do
     end
 
     context 'when invalid merge request IID' do
-      let(:merge_request_iid) { '12345' }
+      let(:merge_request_iid) { non_existing_record_iid }
 
       it 'returns 404' do
         get api(url, user)
@@ -2301,7 +2301,7 @@ describe API::MergeRequests do
     end
 
     it "returns 404 for an invalid merge request IID" do
-      put api("/projects/#{project.id}/merge_requests/12345", user), params: { state_event: "close" }
+      put api("/projects/#{project.id}/merge_requests/#{non_existing_record_iid}", user), params: { state_event: "close" }
 
       expect(response).to have_gitlab_http_status(:not_found)
     end
@@ -2366,7 +2366,7 @@ describe API::MergeRequests do
     end
 
     it "returns 404 for an invalid merge request IID" do
-      get api("/projects/#{project.id}/merge_requests/12345/closes_issues", user)
+      get api("/projects/#{project.id}/merge_requests/#{non_existing_record_iid}/closes_issues", user)
 
       expect(response).to have_gitlab_http_status(:not_found)
     end
