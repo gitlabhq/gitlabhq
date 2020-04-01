@@ -24701,6 +24701,9 @@ msgstr ""
 msgid "remove due date"
 msgstr ""
 
+msgid "remove status"
+msgstr ""
+
 msgid "remove weight"
 msgstr ""
 

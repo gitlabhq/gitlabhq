@@ -37,7 +37,11 @@ export default {
     };
   },
   computed: {
-    id() {
+    htmlId() {
+      if (!this.release.tagName) {
+        return null;
+      }
+
       return slugify(this.release.tagName);
     },
     assets() {
@@ -72,7 +76,7 @@ export default {
     this.renderGFM();
 
     const hash = getLocationHash();
-    if (hash && slugify(hash) === this.id) {
+    if (hash && slugify(hash) === this.htmlId) {
       this.isHighlighted = true;
       setTimeout(() => {
         this.isHighlighted = false;
@@ -89,7 +93,7 @@ export default {
 };
 </script>
 <template>
-  <div :id="id" :class="{ 'bg-line-target-blue': isHighlighted }" class="card release-block">
+  <div :id="htmlId" :class="{ 'bg-line-target-blue': isHighlighted }" class="card release-block">
     <release-block-header :release="release" />
     <div class="card-body">
       <div v-if="shouldRenderMilestoneInfo">

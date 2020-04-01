@@ -15,7 +15,7 @@ class ReactiveCachingWorker # rubocop:disable Scalability/IdempotentWorker
 
   def self.context_for_arguments(arguments)
     class_name, *_other_args = arguments
-    Gitlab::ApplicationContext.new(related_class: class_name)
+    Gitlab::ApplicationContext.new(related_class: class_name.to_s)
   end
 
   def perform(class_name, id, *args)

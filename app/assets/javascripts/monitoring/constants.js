@@ -79,3 +79,28 @@ export const dateFormats = {
   timeOfDay: 'h:MM TT',
   default: 'dd mmm yyyy, h:MMTT',
 };
+
+/**
+ * These Vuex store properties are allowed to be
+ * replaced dynamically after component has been created
+ * and initial state has been set.
+ *
+ * Currently used in `receiveMetricsDashboardSuccess` action.
+ */
+export const endpointKeys = [
+  'metricsEndpoint',
+  'deploymentsEndpoint',
+  'dashboardEndpoint',
+  'dashboardsEndpoint',
+  'currentDashboard',
+  'projectPath',
+  'logsPath',
+];
+
+/**
+ * These Vuex store properties are set as soon as the
+ * dashboard component has been created. The values are
+ * passed as data-* attributes and received by dashboard
+ * as Vue props.
+ */
+export const initialStateKeys = [...endpointKeys, 'currentEnvironmentName'];

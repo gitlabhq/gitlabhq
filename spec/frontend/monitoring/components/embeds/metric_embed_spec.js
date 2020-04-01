@@ -26,9 +26,8 @@ describe('MetricEmbed', () => {
 
   beforeEach(() => {
     actions = {
-      setFeatureFlags: jest.fn(),
+      setInitialState: jest.fn(),
       setShowErrorBanner: jest.fn(),
-      setEndpoints: jest.fn(),
       setTimeRange: jest.fn(),
       fetchDashboard: jest.fn(),
     };

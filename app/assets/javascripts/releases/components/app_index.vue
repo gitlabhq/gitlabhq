@@ -103,7 +103,7 @@ export default {
     <div v-else-if="shouldRenderSuccessState" class="js-success-state">
       <release-block
         v-for="(release, index) in releases"
-        :key="release.tagName"
+        :key="index"
         :release="release"
         :class="{ 'linked-card': releases.length > 1 && index !== releases.length - 1 }"
       />

@@ -168,15 +168,15 @@ requires [GraphQL](../../../api/graphql/index.md) to be enabled.
 
 ### Status **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/36427) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.9.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/36427) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.10.
 
 To help you track the status of your issues, you can assign a status to each issue to flag work that's progressing as planned or needs attention to keep on schedule:
 
-- `On track` (green)
-- `Needs attention` (amber)
-- `At risk` (red)
+- **On track** (green)
+- **Needs attention** (amber)
+- **At risk** (red)
 
-!["On track" health status on an issue](img/issue_health_status_v12_9.png)
+!["On track" health status on an issue](img/issue_health_status_v12_10.png)
 
 ---
 

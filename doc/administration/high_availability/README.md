@@ -161,20 +161,20 @@ On different cloud vendors a best effort like for like can be used.
 - **Test RPS rates:** API: 40 RPS, Web: 4 RPS, Git: 4 RPS
 - **Known issues:**  [List of known performance issues](https://gitlab.com/gitlab-org/gitlab/issues?label_name%5B%5D=Quality%3Aperformance-issues)
 
-| Service                     | Nodes | Configuration[^8]     | GCP type      |
-| ----------------------------|-------|-----------------------|---------------|
-| GitLab Rails[^1]            | 3     | 8 vCPU, 7.2GB Memory  | n1-highcpu-8 |
-| PostgreSQL                  | 3     | 2 vCPU, 7.5GB Memory  | n1-standard-2 |
-| PgBouncer                   | 3     | 2 vCPU, 1.8GB Memory  | n1-highcpu-2  |
-| Gitaly[^2] [^5] [^7]        | X     | 4 vCPU, 15GB Memory   | n1-standard-4 |
-| Redis[^3]                   | 3     | 2 vCPU, 7.5GB Memory  | n1-standard-2 |
-| Consul + Sentinel[^3]       | 3     | 2 vCPU, 1.8GB Memory  | n1-highcpu-2  |
-| Sidekiq                     | 4     | 2 vCPU, 7.5GB Memory  | n1-standard-2 |
-| Cloud Object Storage[^4]       | -     | -                     | -             |
-| NFS Server[^5] [^7]         | 1     | 4 vCPU, 3.6GB Memory  | n1-highcpu-4  |
-| Monitoring node             | 1     | 2 vCPU, 1.8GB Memory  | n1-highcpu-2  |
-| External load balancing node[^6] | 1 | 2 vCPU, 1.8GB Memory | n1-highcpu-2  |
-| Internal load balancing node[^6] | 1 | 2 vCPU, 1.8GB Memory | n1-highcpu-2  |
+| Service                     | Nodes | Configuration[^8]     | GCP type      | AWS type[^9] |
+| ----------------------------|-------|-----------------------|---------------|--------------|
+| GitLab Rails[^1]            | 3     | 8 vCPU, 7.2GB Memory  | n1-highcpu-8  | c5.2xlarge   |
+| PostgreSQL                  | 3     | 2 vCPU, 7.5GB Memory  | n1-standard-2 | m5.large     |
+| PgBouncer                   | 3     | 2 vCPU, 1.8GB Memory  | n1-highcpu-2  | c5.large     |
+| Gitaly[^2] [^5] [^7]        | X     | 4 vCPU, 15GB Memory   | n1-standard-4 | m5.xlarge    |
+| Redis[^3]                   | 3     | 2 vCPU, 7.5GB Memory  | n1-standard-2 | m5.large     |
+| Consul + Sentinel[^3]       | 3     | 2 vCPU, 1.8GB Memory  | n1-highcpu-2  | c5.large     |
+| Sidekiq                     | 4     | 2 vCPU, 7.5GB Memory  | n1-standard-2 | m5.large     |
+| Cloud Object Storage[^4]    | -     | -                     | -             | -            |
+| NFS Server[^5] [^7]         | 1     | 4 vCPU, 3.6GB Memory  | n1-highcpu-4  | c5.xlarge    |
+| Monitoring node             | 1     | 2 vCPU, 1.8GB Memory  | n1-highcpu-2  | c5.large     |
+| External load balancing node[^6] | 1 | 2 vCPU, 1.8GB Memory | n1-highcpu-2  | c5.large     |
+| Internal load balancing node[^6] | 1 | 2 vCPU, 1.8GB Memory | n1-highcpu-2  | c5.large     |
 
 ### 5,000 user configuration
 
@@ -182,20 +182,20 @@ On different cloud vendors a best effort like for like can be used.
 - **Test RPS rates:** API: 100 RPS, Web: 10 RPS, Git: 10 RPS
 - **Known issues:**  [List of known performance issues](https://gitlab.com/gitlab-org/gitlab/issues?label_name%5B%5D=Quality%3Aperformance-issues)
 
-| Service                     | Nodes | Configuration[^8]     | GCP type      |
-| ----------------------------|-------|-----------------------|---------------|
-| GitLab Rails[^1]            | 3     | 16 vCPU, 14.4GB Memory | n1-highcpu-16 |
-| PostgreSQL                  | 3     | 2 vCPU, 7.5GB Memory  | n1-standard-2 |
-| PgBouncer                   | 3     | 2 vCPU, 1.8GB Memory  | n1-highcpu-2  |
-| Gitaly[^2] [^5] [^7]        | X     | 8 vCPU, 30GB Memory   | n1-standard-8 |
-| Redis[^3]                   | 3     | 2 vCPU, 7.5GB Memory  | n1-standard-2 |
-| Consul + Sentinel[^3]       | 3     | 2 vCPU, 1.8GB Memory  | n1-highcpu-2  |
-| Sidekiq                     | 4     | 2 vCPU, 7.5GB Memory  | n1-standard-2 |
-| Cloud Object Storage[^4]       | -     | -                     | -             |
-| NFS Server[^5] [^7]         | 1     | 4 vCPU, 3.6GB Memory  | n1-highcpu-4  |
-| Monitoring node             | 1     | 2 vCPU, 1.8GB Memory  | n1-highcpu-2  |
-| External load balancing node[^6] | 1 | 2 vCPU, 1.8GB Memory | n1-highcpu-2  |
-| Internal load balancing node[^6] | 1 | 2 vCPU, 1.8GB Memory | n1-highcpu-2  |
+| Service                     | Nodes | Configuration[^8]      | GCP type      | AWS type[^9] |
+| ----------------------------|-------|------------------------|---------------|--------------|
+| GitLab Rails[^1]            | 3     | 16 vCPU, 14.4GB Memory | n1-highcpu-16 | c5.4xlarge   |
+| PostgreSQL                  | 3     | 2 vCPU, 7.5GB Memory   | n1-standard-2 | m5.large     |
+| PgBouncer                   | 3     | 2 vCPU, 1.8GB Memory   | n1-highcpu-2  | c5.large     |
+| Gitaly[^2] [^5] [^7]        | X     | 8 vCPU, 30GB Memory    | n1-standard-8 | m5.2xlarge   |
+| Redis[^3]                   | 3     | 2 vCPU, 7.5GB Memory   | n1-standard-2 | m5.large     |
+| Consul + Sentinel[^3]       | 3     | 2 vCPU, 1.8GB Memory   | n1-highcpu-2  | c5.large     |
+| Sidekiq                     | 4     | 2 vCPU, 7.5GB Memory   | n1-standard-2 | m5.large     |
+| Cloud Object Storage[^4]    | -     | -                      | -             | -            |
+| NFS Server[^5] [^7]         | 1     | 4 vCPU, 3.6GB Memory   | n1-highcpu-4  | c5.xlarge    |
+| Monitoring node             | 1     | 2 vCPU, 1.8GB Memory   | n1-highcpu-2  | c5.large     |
+| External load balancing node[^6] | 1 | 2 vCPU, 1.8GB Memory  | n1-highcpu-2  | c5.large     |
+| Internal load balancing node[^6] | 1 | 2 vCPU, 1.8GB Memory  | n1-highcpu-2  | c5.large     |
 
 ### 10,000 user configuration
 
@@ -203,23 +203,23 @@ On different cloud vendors a best effort like for like can be used.
 - **Test RPS rates:** API: 200 RPS, Web: 20 RPS, Git: 20 RPS
 - **Known issues:**  [List of known performance issues](https://gitlab.com/gitlab-org/gitlab/issues?label_name%5B%5D=Quality%3Aperformance-issues)
 
-| Service                     | Nodes | Configuration[^8]     | GCP type      |
-| ----------------------------|-------|-----------------------|---------------|
-| GitLab Rails[^1]            | 3     | 32 vCPU, 28.8GB Memory | n1-highcpu-32 |
-| PostgreSQL                  | 3     | 4 vCPU, 15GB Memory   | n1-standard-4 |
-| PgBouncer                   | 3     | 2 vCPU, 1.8GB Memory  | n1-highcpu-2  |
-| Gitaly[^2] [^5] [^7]        | X     | 16 vCPU, 60GB Memory  | n1-standard-16 |
-| Redis[^3] - Cache           | 3     | 4 vCPU, 15GB Memory   | n1-standard-4 |
-| Redis[^3] - Queues / Shared State | 3 | 4 vCPU, 15GB Memory | n1-standard-4 |
-| Redis Sentinel[^3] - Cache  | 3     | 1 vCPU, 1.7GB Memory  | g1-small      |
-| Redis Sentinel[^3] - Queues / Shared State | 3 | 1 vCPU, 1.7GB Memory | g1-small |
-| Consul                      | 3     | 2 vCPU, 1.8GB Memory  | n1-highcpu-2  |
-| Sidekiq                     | 4     | 4 vCPU, 15GB Memory   | n1-standard-4 |
-| Cloud Object Storage[^4]       | -     | -                     | -             |
-| NFS Server[^5] [^7]         | 1     | 4 vCPU, 3.6GB Memory  | n1-highcpu-4  |
-| Monitoring node             | 1     | 4 vCPU, 3.6GB Memory  | n1-highcpu-4  |
-| External load balancing node[^6] | 1 | 2 vCPU, 1.8GB Memory | n1-highcpu-2  |
-| Internal load balancing node[^6] | 1 | 2 vCPU, 1.8GB Memory | n1-highcpu-2  |
+| Service                     | Nodes | GCP Configuration[^8]  | GCP type       | AWS type[^9] |
+| ----------------------------|-------|------------------------|----------------|--------------|
+| GitLab Rails[^1]            | 3     | 32 vCPU, 28.8GB Memory | n1-highcpu-32  | c5.9xlarge   |
+| PostgreSQL                  | 3     | 4 vCPU, 15GB Memory    | n1-standard-4  | m5.xlarge    |
+| PgBouncer                   | 3     | 2 vCPU, 1.8GB Memory   | n1-highcpu-2   | c5.large     |
+| Gitaly[^2] [^5] [^7]        | X     | 16 vCPU, 60GB Memory   | n1-standard-16 | m5.4xlarge   |
+| Redis[^3] - Cache           | 3     | 4 vCPU, 15GB Memory    | n1-standard-4  | m5.xlarge    |
+| Redis[^3] - Queues / Shared State | 3 | 4 vCPU, 15GB Memory  | n1-standard-4  | m5.xlarge    |
+| Redis Sentinel[^3] - Cache  | 3     | 1 vCPU, 1.7GB Memory   | g1-small       | t2.small     |
+| Redis Sentinel[^3] - Queues / Shared State | 3 | 1 vCPU, 1.7GB Memory | g1-small | t2.small |
+| Consul                      | 3     | 2 vCPU, 1.8GB Memory   | n1-highcpu-2   | c5.large     |
+| Sidekiq                     | 4     | 4 vCPU, 15GB Memory    | n1-standard-4  | m5.xlarge    |
+| Cloud Object Storage[^4]    | -     | -                      | -              | -            |
+| NFS Server[^5] [^7]         | 1     | 4 vCPU, 3.6GB Memory   | n1-highcpu-4   | c5.xlarge    |
+| Monitoring node             | 1     | 4 vCPU, 3.6GB Memory   | n1-highcpu-4   | c5.xlarge    |
+| External load balancing node[^6] | 1 | 2 vCPU, 1.8GB Memory  | n1-highcpu-2   | c5.large     |
+| Internal load balancing node[^6] | 1 | 2 vCPU, 1.8GB Memory  | n1-highcpu-2   | c5.large     |
 
 ### 25,000 user configuration
 
@@ -227,23 +227,23 @@ On different cloud vendors a best effort like for like can be used.
 - **Test RPS rates:** API: 500 RPS, Web: 50 RPS, Git: 50 RPS
 - **Known issues:**  [List of known performance issues](https://gitlab.com/gitlab-org/gitlab/issues?label_name%5B%5D=Quality%3Aperformance-issues)
 
-| Service                     | Nodes | Configuration[^8]     | GCP type      |
-| ----------------------------|-------|-----------------------|---------------|
-| GitLab Rails[^1]            | 5     | 32 vCPU, 28.8GB Memory | n1-highcpu-32 |
-| PostgreSQL                  | 3     | 8 vCPU, 30GB Memory   | n1-standard-8 |
-| PgBouncer                   | 3     | 2 vCPU, 1.8GB Memory  | n1-highcpu-2  |
-| Gitaly[^2] [^5] [^7]        | X     | 32 vCPU, 120GB Memory | n1-standard-32 |
-| Redis[^3] - Cache           | 3     | 4 vCPU, 15GB Memory   | n1-standard-4 |
-| Redis[^3] - Queues / Shared State | 3 | 4 vCPU, 15GB Memory | n1-standard-4 |
-| Redis Sentinel[^3] - Cache  | 3     | 1 vCPU, 1.7GB Memory  | g1-small      |
-| Redis Sentinel[^3] - Queues / Shared State | 3 | 1 vCPU, 1.7GB Memory | g1-small |
-| Consul                      | 3     | 2 vCPU, 1.8GB Memory  | n1-highcpu-2  |
-| Sidekiq                     | 4     | 4 vCPU, 15GB Memory   | n1-standard-4 |
-| Cloud Object Storage[^4]       | -     | -                     | -             |
-| NFS Server[^5] [^7]         | 1     | 4 vCPU, 3.6GB Memory  | n1-highcpu-4  |
-| Monitoring node             | 1     | 4 vCPU, 3.6GB Memory  | n1-highcpu-4  |
-| External load balancing node[^6] | 1 | 2 vCPU, 1.8GB Memory | n1-highcpu-2  |
-| Internal load balancing node[^6] | 1 | 4 vCPU, 3.6GB Memory | n1-highcpu-4  |
+| Service                     | Nodes | Configuration[^8]      | GCP type       | AWS type[^9] |
+| ----------------------------|-------|------------------------|----------------|--------------|
+| GitLab Rails[^1]            | 5     | 32 vCPU, 28.8GB Memory | n1-highcpu-32  | c5.9xlarge   |
+| PostgreSQL                  | 3     | 8 vCPU, 30GB Memory    | n1-standard-8  | m5.2xlarge   |
+| PgBouncer                   | 3     | 2 vCPU, 1.8GB Memory   | n1-highcpu-2   | c5.large     |
+| Gitaly[^2] [^5] [^7]        | X     | 32 vCPU, 120GB Memory  | n1-standard-32 | m5.8xlarge   |
+| Redis[^3] - Cache           | 3     | 4 vCPU, 15GB Memory    | n1-standard-4  | m5.xlarge    |
+| Redis[^3] - Queues / Shared State | 3 | 4 vCPU, 15GB Memory  | n1-standard-4  | m5.xlarge    |
+| Redis Sentinel[^3] - Cache  | 3     | 1 vCPU, 1.7GB Memory   | g1-small       | t2.small     |
+| Redis Sentinel[^3] - Queues / Shared State | 3 | 1 vCPU, 1.7GB Memory | g1-small | t2.small |
+| Consul                      | 3     | 2 vCPU, 1.8GB Memory   | n1-highcpu-2   | c5.large     |
+| Sidekiq                     | 4     | 4 vCPU, 15GB Memory    | n1-standard-4  | m5.xlarge    |
+| Cloud Object Storage[^4]    | -     | -                      | -              | -            |
+| NFS Server[^5] [^7]         | 1     | 4 vCPU, 3.6GB Memory   | n1-highcpu-4   | c5.xlarge    |
+| Monitoring node             | 1     | 4 vCPU, 3.6GB Memory   | n1-highcpu-4   | c5.xlarge    |
+| External load balancing node[^6] | 1 | 2 vCPU, 1.8GB Memory  | n1-highcpu-2   | c5.large     |
+| Internal load balancing node[^6] | 1 | 4 vCPU, 3.6GB Memory  | n1-highcpu-4   | c5.xlarge    |
 
 ### 50,000 user configuration
 
@@ -251,23 +251,23 @@ On different cloud vendors a best effort like for like can be used.
 - **Test RPS rates:** API: 1000 RPS, Web: 100 RPS, Git: 100 RPS
 - **Known issues:**  [List of known performance issues](https://gitlab.com/gitlab-org/gitlab/issues?label_name%5B%5D=Quality%3Aperformance-issues)
 
-| Service                     | Nodes | Configuration[^8]     | GCP type      |
-| ----------------------------|-------|-----------------------|---------------|
-| GitLab Rails[^1]            | 12    | 32 vCPU, 28.8GB Memory | n1-highcpu-32 |
-| PostgreSQL                  | 3     | 16 vCPU, 60GB Memory  | n1-standard-16 |
-| PgBouncer                   | 3     | 2 vCPU, 1.8GB Memory  | n1-highcpu-2  |
-| Gitaly[^2] [^5] [^7]        | X     | 64 vCPU, 240GB Memory | n1-standard-64 |
-| Redis[^3] - Cache           | 3     | 4 vCPU, 15GB Memory   | n1-standard-4 |
-| Redis[^3] - Queues / Shared State | 3 | 4 vCPU, 15GB Memory | n1-standard-4 |
-| Redis Sentinel[^3] - Cache  | 3     | 1 vCPU, 1.7GB Memory  | g1-small      |
-| Redis Sentinel[^3] - Queues / Shared State | 3 | 1 vCPU, 1.7GB Memory | g1-small |
-| Consul                      | 3     | 2 vCPU, 1.8GB Memory  | n1-highcpu-2  |
-| Sidekiq                     | 4     | 4 vCPU, 15GB Memory   | n1-standard-4 |
-| NFS Server[^5] [^7]         | 1     | 4 vCPU, 3.6GB Memory  | n1-highcpu-4  |
-| Cloud Object Storage[^4]       | -     | -                     | -             |
-| Monitoring node             | 1     | 4 vCPU, 3.6GB Memory  | n1-highcpu-4  |
-| External load balancing node[^6] | 1 | 2 vCPU, 1.8GB Memory | n1-highcpu-2  |
-| Internal load balancing node[^6] | 1 | 8 vCPU, 7.2GB Memory | n1-highcpu-8  |
+| Service                     | Nodes | Configuration[^8]      | GCP type       | AWS type[^9] |
+| ----------------------------|-------|------------------------|----------------|--------------|
+| GitLab Rails[^1]            | 12    | 32 vCPU, 28.8GB Memory | n1-highcpu-32  | c5.9xlarge   |
+| PostgreSQL                  | 3     | 16 vCPU, 60GB Memory   | n1-standard-16 | m5.4xlarge   |
+| PgBouncer                   | 3     | 2 vCPU, 1.8GB Memory   | n1-highcpu-2   | c5.large     |
+| Gitaly[^2] [^5] [^7]        | X     | 64 vCPU, 240GB Memory  | n1-standard-64 | m5.16xlarge  |
+| Redis[^3] - Cache           | 3     | 4 vCPU, 15GB Memory    | n1-standard-4  | m5.xlarge    |
+| Redis[^3] - Queues / Shared State | 3 | 4 vCPU, 15GB Memory  | n1-standard-4  | m5.xlarge    |
+| Redis Sentinel[^3] - Cache  | 3     | 1 vCPU, 1.7GB Memory   | g1-small       | t2.small     |
+| Redis Sentinel[^3] - Queues / Shared State | 3 | 1 vCPU, 1.7GB Memory | g1-small | t2.small |
+| Consul                      | 3     | 2 vCPU, 1.8GB Memory   | n1-highcpu-2   | c5.large     |
+| Sidekiq                     | 4     | 4 vCPU, 15GB Memory    | n1-standard-4  | m5.xlarge    |
+| NFS Server[^5] [^7]         | 1     | 4 vCPU, 3.6GB Memory   | n1-highcpu-4   | c5.xlarge    |
+| Cloud Object Storage[^4]    | -     | -                      | -              | -            |
+| Monitoring node             | 1     | 4 vCPU, 3.6GB Memory   | n1-highcpu-4   | c5.xlarge    |
+| External load balancing node[^6] | 1 | 2 vCPU, 1.8GB Memory  | n1-highcpu-2   | c5.large     |
+| Internal load balancing node[^6] | 1 | 8 vCPU, 7.2GB Memory  | n1-highcpu-8   | c5.2xlarge   |
 
 [^1]: In our architectures we run each GitLab Rails node using the Puma webserver
       and have its number of workers set to 90% of available CPUs along with 4 threads.
@@ -311,3 +311,6 @@ On different cloud vendors a best effort like for like can be used.
       or higher, are required for your CPU or Node counts accordingly. For more info a
       [Sysbench](https://github.com/akopytov/sysbench) benchmark of the CPU can be found
       [here](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Reference-Architectures/GCP-CPU-Benchmarks).
+
+[^9]: AWS-equivalent configurations are rough suggestions and may change in the
+      future. They have not yet been tested and validated.

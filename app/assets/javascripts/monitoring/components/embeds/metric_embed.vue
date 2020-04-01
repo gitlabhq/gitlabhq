@@ -64,7 +64,10 @@ export default {
     },
   },
   mounted() {
-    this.setInitialState();
+    this.setInitialState({
+      dashboardEndpoint: removeTimeRangeParams(this.dashboardUrl),
+    });
+    this.setShowErrorBanner(false);
     this.setTimeRange(this.timeRange);
     this.fetchDashboard();
 
@@ -90,11 +93,8 @@ export default {
       fetchDashboard(dispatch, payload) {
         return dispatch(`${this.namespace}/fetchDashboard`, payload);
       },
-      setEndpoints(dispatch, payload) {
-        return dispatch(`${this.namespace}/setEndpoints`, payload);
-      },
-      setFeatureFlags(dispatch, payload) {
-        return dispatch(`${this.namespace}/setFeatureFlags`, payload);
+      setInitialState(dispatch, payload) {
+        return dispatch(`${this.namespace}/setInitialState`, payload);
       },
       setShowErrorBanner(dispatch, payload) {
         return dispatch(`${this.namespace}/setShowErrorBanner`, payload);
@@ -107,12 +107,6 @@ export default {
       setTimeout(() => {
         this.elWidth = this.$el.clientWidth;
       }, sidebarAnimationDuration);
-    },
-    setInitialState() {
-      this.setEndpoints({
-        dashboardEndpoint: removeTimeRangeParams(this.dashboardUrl),
-      });
-      this.setShowErrorBanner(false);
     },
   },
 };

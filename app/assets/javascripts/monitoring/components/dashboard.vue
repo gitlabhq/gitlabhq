@@ -250,7 +250,7 @@ export default {
     },
   },
   created() {
-    this.setEndpoints({
+    this.setInitialState({
       metricsEndpoint: this.metricsEndpoint,
       deploymentsEndpoint: this.deploymentsEndpoint,
       dashboardEndpoint: this.dashboardEndpoint,
@@ -258,6 +258,7 @@ export default {
       currentDashboard: this.currentDashboard,
       projectPath: this.projectPath,
       logsPath: this.logsPath,
+      currentEnvironmentName: this.currentEnvironmentName,
     });
   },
   mounted() {
@@ -273,7 +274,7 @@ export default {
       'setTimeRange',
       'fetchData',
       'setGettingStartedEmptyState',
-      'setEndpoints',
+      'setInitialState',
       'setPanelGroupMetrics',
       'filterEnvironments',
     ]),

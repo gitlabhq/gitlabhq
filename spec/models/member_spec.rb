@@ -38,10 +38,6 @@ describe Member do
 
         expect(member).not_to be_valid
       end
-
-      it "is valid otherwise" do
-        expect(member).to be_valid
-      end
     end
 
     context "when an invite email is not provided" do

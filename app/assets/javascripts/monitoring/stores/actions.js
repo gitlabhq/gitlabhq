@@ -30,8 +30,8 @@ export const setGettingStartedEmptyState = ({ commit }) => {
   commit(types.SET_GETTING_STARTED_EMPTY_STATE);
 };
 
-export const setEndpoints = ({ commit }, endpoints) => {
-  commit(types.SET_ENDPOINTS, endpoints);
+export const setInitialState = ({ commit }, initialState) => {
+  commit(types.SET_INITIAL_STATE, initialState);
 };
 
 export const setTimeRange = ({ commit }, timeRange) => {

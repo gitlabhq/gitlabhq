@@ -16,7 +16,7 @@ import {
   fetchEnvironmentsData,
   fetchPrometheusMetrics,
   fetchPrometheusMetric,
-  setEndpoints,
+  setInitialState,
   filterEnvironments,
   setGettingStartedEmptyState,
   duplicateSystemDashboard,
@@ -208,14 +208,14 @@ describe('Monitoring store actions', () => {
     });
   });
 
-  describe('Set endpoints', () => {
+  describe('Set initial state', () => {
     let mockedState;
     beforeEach(() => {
       mockedState = storeState();
     });
-    it('should commit SET_ENDPOINTS mutation', done => {
+    it('should commit SET_INITIAL_STATE mutation', done => {
       testAction(
-        setEndpoints,
+        setInitialState,
         {
           metricsEndpoint: 'additional_metrics.json',
           deploymentsEndpoint: 'deployments.json',
@@ -223,7 +223,7 @@ describe('Monitoring store actions', () => {
         mockedState,
         [
           {
-            type: types.SET_ENDPOINTS,
+            type: types.SET_INITIAL_STATE,
             payload: {
               metricsEndpoint: 'additional_metrics.json',
               deploymentsEndpoint: 'deployments.json',

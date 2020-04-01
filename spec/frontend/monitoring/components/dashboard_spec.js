@@ -88,11 +88,17 @@ describe('Dashboard', () => {
       expect(findEnvironmentsDropdown().exists()).toBe(true);
     });
 
-    it('sets endpoints: logs path', () => {
-      expect(store.dispatch).toHaveBeenCalledWith(
-        'monitoringDashboard/setEndpoints',
-        expect.objectContaining({ logsPath: propsData.logsPath }),
-      );
+    it('sets initial state', () => {
+      expect(store.dispatch).toHaveBeenCalledWith('monitoringDashboard/setInitialState', {
+        currentDashboard: '',
+        currentEnvironmentName: 'production',
+        dashboardEndpoint: 'https://invalid',
+        dashboardsEndpoint: 'https://invalid',
+        deploymentsEndpoint: null,
+        logsPath: '/path/to/logs',
+        metricsEndpoint: 'http://test.host/monitoring/mock',
+        projectPath: '/path/to/project',
+      });
     });
   });
 

@@ -3,7 +3,7 @@ import pick from 'lodash/pick';
 import * as types from './mutation_types';
 import { mapToDashboardViewModel, normalizeQueryResult } from './utils';
 import { BACKOFF_TIMEOUT } from '../../lib/utils/common_utils';
-import { metricStates } from '../constants';
+import { endpointKeys, initialStateKeys, metricStates } from '../constants';
 import httpStatusCodes from '~/lib/utils/http_status';
 
 /**
@@ -150,19 +150,11 @@ export default {
       state: emptyStateFromError(error),
     });
   },
+  [types.SET_INITIAL_STATE](state, initialState = {}) {
+    Object.assign(state, pick(initialState, initialStateKeys));
+  },
   [types.SET_ENDPOINTS](state, endpoints = {}) {
-    const endpointKeys = [
-      'metricsEndpoint',
-      'deploymentsEndpoint',
-      'dashboardEndpoint',
-      'dashboardsEndpoint',
-      'currentDashboard',
-      'projectPath',
-      'logsPath',
-    ];
-    Object.entries(pick(endpoints, endpointKeys)).forEach(([key, value]) => {
-      state[key] = value;
-    });
+    Object.assign(state, pick(endpoints, endpointKeys));
   },
   [types.SET_TIME_RANGE](state, timeRange) {
     state.timeRange = timeRange;

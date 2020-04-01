@@ -165,6 +165,14 @@ describe('Release block', () => {
     });
   });
 
+  it('does not set the ID if tagName is missing', () => {
+    release.tagName = undefined;
+
+    return factory(release).then(() => {
+      expect(wrapper.attributes().id).toBeUndefined();
+    });
+  });
+
   describe('evidence block', () => {
     it('renders the evidence block when the evidence is available and the feature flag is true', () =>
       factory(release, { releaseEvidenceCollection: true }).then(() =>

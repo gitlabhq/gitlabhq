@@ -86,6 +86,58 @@ describe('Monitoring mutations', () => {
       expect(typeof stateCopy.deploymentData[0]).toEqual('object');
     });
   });
+
+  describe('SET_INITIAL_STATE', () => {
+    it('should set all the endpoints', () => {
+      mutations[types.SET_INITIAL_STATE](stateCopy, {
+        metricsEndpoint: 'additional_metrics.json',
+        deploymentsEndpoint: 'deployments.json',
+        dashboardEndpoint: 'dashboard.json',
+        projectPath: '/gitlab-org/gitlab-foss',
+        currentEnvironmentName: 'production',
+      });
+      expect(stateCopy.metricsEndpoint).toEqual('additional_metrics.json');
+      expect(stateCopy.deploymentsEndpoint).toEqual('deployments.json');
+      expect(stateCopy.dashboardEndpoint).toEqual('dashboard.json');
+      expect(stateCopy.projectPath).toEqual('/gitlab-org/gitlab-foss');
+      expect(stateCopy.currentEnvironmentName).toEqual('production');
+    });
+
+    it('should not remove previously set properties', () => {
+      const defaultLogsPath = stateCopy.logsPath;
+
+      mutations[types.SET_INITIAL_STATE](stateCopy, {
+        logsPath: defaultLogsPath,
+      });
+      mutations[types.SET_INITIAL_STATE](stateCopy, {
+        dashboardEndpoint: 'dashboard.json',
+      });
+      mutations[types.SET_INITIAL_STATE](stateCopy, {
+        projectPath: '/gitlab-org/gitlab-foss',
+      });
+      mutations[types.SET_INITIAL_STATE](stateCopy, {
+        currentEnvironmentName: 'canary',
+      });
+
+      expect(stateCopy).toMatchObject({
+        logsPath: defaultLogsPath,
+        dashboardEndpoint: 'dashboard.json',
+        projectPath: '/gitlab-org/gitlab-foss',
+        currentEnvironmentName: 'canary',
+      });
+    });
+
+    it('should not update unknown properties', () => {
+      mutations[types.SET_INITIAL_STATE](stateCopy, {
+        dashboardEndpoint: 'dashboard.json',
+        someOtherProperty: 'some invalid value', // someOtherProperty is not allowed
+      });
+
+      expect(stateCopy.dashboardEndpoint).toBe('dashboard.json');
+      expect(stateCopy.someOtherProperty).toBeUndefined();
+    });
+  });
+
   describe('SET_ENDPOINTS', () => {
     it('should set all the endpoints', () => {
       mutations[types.SET_ENDPOINTS](stateCopy, {

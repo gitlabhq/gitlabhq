@@ -37,5 +37,13 @@ describe ReactiveCachingWorker do
 
       expect(scheduled_job).to include('meta.related_class' => 'Environment')
     end
+
+    it 'sets the related class on the job when it was passed as a class' do
+      described_class.perform_async(Project, 1, 'other', 'argument')
+
+      scheduled_job = described_class.jobs.first
+
+      expect(scheduled_job).to include('meta.related_class' => 'Project')
+    end
   end
 end

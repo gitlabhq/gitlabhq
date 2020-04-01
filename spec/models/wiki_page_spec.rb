@@ -577,6 +577,8 @@ describe WikiPage do
     end
 
     it 'returns false when version is nil' do
+      expect(latest_page).to receive(:version) { nil }
+
       expect(latest_page.historical?).to be_falsy
     end
 
