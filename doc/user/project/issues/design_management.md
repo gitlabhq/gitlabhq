@@ -22,7 +22,7 @@ For an overview, see the video [Design Management (GitLab 12.2)](https://www.you
 ## Requirements
 
 Design Management requires
-[Large File Storage (LFS)](../../../administration/lfs/manage_large_binaries_with_git_lfs.md)
+[Large File Storage (LFS)](../../../topics/git/lfs/index.md)
 to be enabled:
 
 - For GitLab.com, LFS is already enabled.

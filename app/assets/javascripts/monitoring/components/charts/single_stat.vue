@@ -1,7 +1,9 @@
 <script>
 import { GlSingleStat } from '@gitlab/ui/dist/charts';
-import { roundOffFloat } from '~/lib/utils/common_utils';
+import { SUPPORTED_FORMATS, getFormatter } from '~/lib/utils/unit_format';
 import { graphDataValidatorForValues } from '../../utils';
+
+const defaultPrecision = 2;
 
 export default {
   components: {
@@ -25,15 +27,19 @@ export default {
     /**
      * This method formats the query result from a promQL expression
      * allowing a user to format the data in percentile values
-     * by using the `max_value` inner property from the graphData prop
+     * by using the `maxValue` inner property from the graphData prop
      * @returns {(String)}
      */
     statValue() {
-      const chartValue = this.graphData?.max_value
-        ? (this.queryResult / Number(this.graphData.max_value)) * 100
-        : this.queryResult;
+      let formatter;
 
-      return `${roundOffFloat(chartValue, 1)}${this.queryInfo.unit}`;
+      if (this.graphData?.maxValue) {
+        formatter = getFormatter(SUPPORTED_FORMATS.percent);
+        return formatter(this.queryResult / Number(this.graphData.maxValue), defaultPrecision);
+      }
+
+      formatter = getFormatter(SUPPORTED_FORMATS.number);
+      return `${formatter(this.queryResult, defaultPrecision)}${this.queryInfo.unit}`;
     },
     graphTitle() {
       return this.queryInfo.label;

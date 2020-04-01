@@ -201,18 +201,3 @@ Feature.disable(:save_issuable_health_status)
 - [Issues API](../../../api/issues.md)
 - Configure an [external issue tracker](../../../integration/external-issue-tracker.md)
   such as Jira, Redmine, or Bugzilla.
-
-## Limits
-
-This section gives an overview of limits of Issues and an overview of their background.
-
-### Description and comment length
-
-> Introduced in [GitLab 12.2](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/61974).
-
-Descriptions and comments on [issuable](../../../development/issuable-like-models.md) can be no
-longer than 1 million characters.
-
-Previously, there was no limit to issuable description size, which created a
-[possibility of a DoS attack](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/61974) by allowing
-very long descriptions. It's possible that we will set this limit to a lower number in the future.

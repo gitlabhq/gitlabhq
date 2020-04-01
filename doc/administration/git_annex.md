@@ -236,7 +236,7 @@ push origin
 [deprecate-annex-issue]: https://gitlab.com/gitlab-org/gitlab/issues/1648
 [git-annex]: https://git-annex.branchable.com/ "git-annex website"
 [gitlab shell]: https://gitlab.com/gitlab-org/gitlab-shell "GitLab Shell repository"
-[guide]: lfs/migrate_from_git_annex_to_git_lfs.html
+[guide]: ../topics/git/lfs/migrate_from_git_annex_to_git_lfs.md
 [issue]: https://git-annex.branchable.com/forum/Error_from_git-annex-shell_on_creation_of_gcrypt_special_remote/ "git-annex issue"
 [reconfigure GitLab]: restart_gitlab.md#omnibus-gitlab-reconfigure
 [restart GitLab]: restart_gitlab.md#installations-from-source

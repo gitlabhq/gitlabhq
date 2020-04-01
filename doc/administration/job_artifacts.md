@@ -198,6 +198,85 @@ JUnit test report artifact (`junit.xml.gz`) migration
 [is not supported](https://gitlab.com/gitlab-org/gitlab/issues/27698)
 by the `gitlab:artifacts:migrate` script.
 
+### OpenStack compatible connection settings
+
+The connection settings match those provided by [Fog](https://github.com/fog), and are as follows:
+
+| Setting | Description | Default |
+|---------|-------------|---------|
+| `provider` | Always `OpenStack` for compatible hosts | OpenStack |
+| `openstack_username` | OpenStack username | |
+| `openstack_api_key` | OpenStack API key  | |
+| `openstack_temp_url_key` | OpenStack key for generating temporary urls | |
+| `openstack_auth_url` | OpenStack authentication endpont | |
+| `openstack_region` | OpenStack region | |
+| `openstack_tenant_id` | OpenStack tenant ID |
+
+**In Omnibus installations:**
+
+_The uploads are stored by default in
+`/var/opt/gitlab/gitlab-rails/shared/artifacts`._
+
+1. Edit `/etc/gitlab/gitlab.rb` and add the following lines by replacing with
+   the values you want:
+
+   ```ruby
+   gitlab_rails['artifacts_enabled'] = true
+   gitlab_rails['artifacts_object_store_enabled'] = true
+   gitlab_rails['artifacts_object_store_remote_directory'] = "artifacts"
+   gitlab_rails['artifacts_object_store_connection'] = {
+    'provider' => 'OpenStack',
+    'openstack_username' => 'OS_USERNAME',
+    'openstack_api_key' => 'OS_PASSWORD',
+    'openstack_temp_url_key' => 'OS_TEMP_URL_KEY',
+    'openstack_auth_url' => 'https://auth.cloud.ovh.net',
+    'openstack_region' => 'GRA',
+    'openstack_tenant_id' => 'OS_TENANT_ID',
+   }
+   ```
+
+1. Save the file and [reconfigure GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. Migrate any existing local artifacts to the object storage:
+
+   ```shell
+   gitlab-rake gitlab:artifacts:migrate
+   ```
+
+---
+
+**In installations from source:**
+
+_The uploads are stored by default in
+`/home/git/gitlab/shared/artifacts`._
+
+1. Edit `/home/git/gitlab/config/gitlab.yml` and add or amend the following
+   lines:
+
+   ```yaml
+   uploads:
+     object_store:
+       enabled: true
+       direct_upload: false
+       background_upload: true
+       proxy_download: false
+       remote_directory: "artifacts"
+       connection:
+         provider: OpenStack
+         openstack_username: OS_USERNAME
+         openstack_api_key: OS_PASSWORD
+         openstack_temp_url_key: OS_TEMP_URL_KEY
+         openstack_auth_url: 'https://auth.cloud.ovh.net'
+         openstack_region: GRA
+         openstack_tenant_id: OS_TENANT_ID
+   ```
+
+1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
+1. Migrate any existing local artifacts to the object storage:
+
+   ```shell
+   sudo -u git -H bundle exec rake gitlab:artifacts:migrate RAILS_ENV=production
+   ```
+
 ### Migrating from object storage to local storage
 
 **In Omnibus installations:**

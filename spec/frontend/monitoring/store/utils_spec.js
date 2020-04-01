@@ -220,6 +220,15 @@ describe('mapToDashboardViewModel', () => {
 
       expect(getMappedPanel().yAxis.format).toBe(SUPPORTED_FORMATS.number);
     });
+
+    // This property allows single_stat panels to render percentile values
+    it('group maxValue', () => {
+      setupWithPanel({
+        max_value: 100,
+      });
+
+      expect(getMappedPanel().maxValue).toBe(100);
+    });
   });
 
   describe('metrics mapping', () => {

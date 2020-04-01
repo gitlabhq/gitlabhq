@@ -124,11 +124,3 @@ There are two main ways to have a merge request flow with GitLab:
 1. Working with forks of an authoritative project
 
 [Learn more about the authorization for merge requests.](authorization_for_merge_requests.md)
-
-## Limits
-
-This section gives an overview of limits of Merge Requests and an overview of their background.
-
-### Description and comment length
-
-See [Issues: Description and comment length](../issues/index.md#description-and-comment-length)

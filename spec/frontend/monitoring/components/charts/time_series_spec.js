@@ -1,10 +1,14 @@
-import { shallowMount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import { setTestTimeout } from 'helpers/timeout';
 import { GlLink } from '@gitlab/ui';
-import { GlAreaChart, GlLineChart, GlChartSeriesLabel } from '@gitlab/ui/dist/charts';
+import {
+  GlAreaChart,
+  GlLineChart,
+  GlChartSeriesLabel,
+  GlChartLegend,
+} from '@gitlab/ui/dist/charts';
 import { cloneDeep } from 'lodash';
 import { shallowWrapperContainsSlotText } from 'helpers/vue_test_utils_helper';
-import { chartColorValues } from '~/monitoring/constants';
 import { createStore } from '~/monitoring/stores';
 import TimeSeries from '~/monitoring/components/charts/time_series.vue';
 import * as types from '~/monitoring/stores/mutation_types';
@@ -42,13 +46,16 @@ describe('Time series component', () => {
   let store;
 
   const makeTimeSeriesChart = (graphData, type) =>
-    shallowMount(TimeSeries, {
+    mount(TimeSeries, {
       propsData: {
         graphData: { ...graphData, type },
         deploymentData: store.state.monitoringDashboard.deploymentData,
         projectPath: `${mockHost}${mockProjectDir}`,
       },
       store,
+      stubs: {
+        GlPopover: true,
+      },
     });
 
   describe('With a single time series', () => {
@@ -308,10 +315,6 @@ describe('Time series component', () => {
           it('formats line width correctly', () => {
             expect(chartData[0].lineStyle.width).toBe(2);
           });
-
-          it('formats line color correctly', () => {
-            expect(chartData[0].lineStyle.color).toBe(chartColorValues[0]);
-          });
         });
 
         describe('chartOptions', () => {
@@ -557,19 +560,39 @@ describe('Time series component', () => {
         timeSeriesChart.destroy();
       });
 
-      describe('computed', () => {
-        let chartData;
+      describe('Color match', () => {
+        let lineColors;
 
         beforeEach(() => {
-          ({ chartData } = timeSeriesChart.vm);
+          lineColors = timeSeriesChart
+            .find(GlAreaChart)
+            .vm.series.map(item => item.lineStyle.color);
         });
 
-        it('should contain different colors for each time series', () => {
-          expect(chartData[0].lineStyle.color).toBe('#1f78d1');
-          expect(chartData[1].lineStyle.color).toBe('#1aaa55');
-          expect(chartData[2].lineStyle.color).toBe('#fc9403');
-          expect(chartData[3].lineStyle.color).toBe('#6d49cb');
-          expect(chartData[4].lineStyle.color).toBe('#1f78d1');
+        it('should contain different colors for contiguous time series', () => {
+          lineColors.forEach((color, index) => {
+            expect(color).not.toBe(lineColors[index + 1]);
+          });
+        });
+
+        it('should match series color with tooltip label color', () => {
+          const labels = timeSeriesChart.findAll(GlChartSeriesLabel);
+
+          lineColors.forEach((color, index) => {
+            const labelColor = labels.at(index).props('color');
+            expect(color).toBe(labelColor);
+          });
+        });
+
+        it('should match series color with legend color', () => {
+          const legendColors = timeSeriesChart
+            .find(GlChartLegend)
+            .props('seriesInfo')
+            .map(item => item.color);
+
+          lineColors.forEach((color, index) => {
+            expect(color).toBe(legendColors[index]);
+          });
         });
       });
     });

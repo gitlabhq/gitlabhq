@@ -19,6 +19,18 @@ will fail.
 
 - **Max limit:** 5.000 comments
 
+## Size of comments and descriptions of issues, merge requests, and epics
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/61974) in GitLab 12.2.
+
+There is a limit to the size of comments and descriptions of issues, merge requests, and epics.
+Attempting to add a body of text larger than the limit will result in an error, and the
+item will not be created.
+
+It's possible that this limit will be changed to a lower number in the future.
+
+- **Max size:** ~1 million characters / ~1 MB
+
 ## Number of pipelines per Git push
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/51401) in GitLab 11.10.

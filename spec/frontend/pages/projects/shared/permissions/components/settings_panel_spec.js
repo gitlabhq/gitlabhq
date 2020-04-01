@@ -31,9 +31,9 @@ const defaultProps = {
   registryAvailable: false,
   registryHelpPath: '/help/user/packages/container_registry/index',
   lfsAvailable: true,
-  lfsHelpPath: '/help/workflow/lfs/manage_large_binaries_with_git_lfs',
+  lfsHelpPath: '/help/topics/git/lfs/index',
   lfsObjectsExist: false,
-  lfsObjectsRemovalHelpPath: `/help/administration/lfs/manage_large_binaries_with_git_lfs#removing-objects-from-lfs`,
+  lfsObjectsRemovalHelpPath: `/help/topics/git/lfs/index#removing-objects-from-lfs`,
   pagesAvailable: true,
   pagesAccessControlEnabled: false,
   pagesAccessControlForced: false,
@@ -363,7 +363,7 @@ describe('Settings Panel', () => {
             );
             expect(link.text()).toEqual('How do I remove them?');
             expect(link.attributes('href')).toEqual(
-              '/help/administration/lfs/manage_large_binaries_with_git_lfs#removing-objects-from-lfs',
+              '/help/topics/git/lfs/index#removing-objects-from-lfs',
             );
           });
         } else {

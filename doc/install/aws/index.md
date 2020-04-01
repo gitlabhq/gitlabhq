@@ -189,29 +189,47 @@ We also need to create two private route tables so that instances in each privat
    1. Associate `gitlab-private-10.0.1.0` with `gitlab-public-a`.
    1. Associate `gitlab-private-10.0.3.0` with `gitlab-public-b`.
 
----
+## Load Balancer
 
-Now that we're done with the network, let's create a security group.
+On the EC2 dashboard, look for Load Balancer in the left navigation bar:
 
-## Creating a security group
+1. Click the **Create Load Balancer** button.
+   1. Choose the **Classic Load Balancer**.
+   1. Give it a name (we'll use `gitlab-loadbalancer`) and for the **Create LB Inside** option, select `gitlab-vpc` from the dropdown menu.
+   1. In the **Listeners** section, set HTTP port 80, HTTPS port 443, and TCP port 22 for both load balancer and instance protocols and ports.
+   1. In the **Select Subnets** section, select both public subnets from the list.
+1. Click **Assign Security Groups** and select **Create a new security group**, give it a name
+   (we'll use `gitlab-loadbalancer-sec-group`) and description, and allow both HTTP and HTTPS traffic
+   from anywhere (`0.0.0.0/0, ::/0`).
+1. Click **Configure Security Settings** and select an SSL/TLS certificate from ACM or upload a certificate to IAM.
+1. Click **Configure Health Check** and set up a health check for your EC2 instances.
+   1. For **Ping Protocol**, select HTTP.
+   1. For **Ping Port**, enter 80.
+   1. For **Ping Path**, enter `/explore`. (We use `/explore` as it's a public endpoint that does
+   not require authorization.)
+   1. Keep the default **Advanced Details** or adjust them according to your needs.
+1. Click **Add EC2 Instances** but, as we don't have any instances to add yet, come back
+to your load balancer after creating your GitLab instances and add them.
+1. Click **Add Tags** and add any tags you need.
+1. Click **Review and Create**, review all your settings, and click **Create** if you're happy.
 
-The security group is basically the firewall:
+After the Load Balancer is up and running, you can revisit your Security
+Groups to refine the access only through the ELB and any other requirements
+you might have.
 
-1. Select **Security Groups** from the left menu.
-1. Click **Create Security Group** and fill in the details. Give it a name,
-   add a description, and choose the VPC we created previously
-1. Select the security group from the list and at the bottom select the
-   Inbound Rules tab. You will need to open the SSH, HTTP, and HTTPS ports. Set
-   the source to `0.0.0.0/0`.
+### Configure DNS for Load Balancer
 
-   ![Create security group](img/create_security_group.png)
+On the Route 53 dashboard, click **Hosted zones** in the left navigation bar:
 
-   TIP: **Tip:**
-   Based on best practices, you should allow SSH traffic from only a known
-   host or CIDR block. In that case, change the SSH source to be custom and give
-   it the IP you want to SSH from.
-
-1. When done, click **Save**.
+1. Select an existing hosted zone or, if you do not already have one for your domain, click **Create Hosted Zone**, enter your domain name, and click **Create**.
+1. Click **Create Record Set** and provide the following values:
+    1. **Name:** Use the domain name (the default value) or enter a subdomain.
+    1. **Type:** Select **A - IPv4 address**.
+    1. **Alias Target:** Find the **ELB Classic Load Balancers** section and select the classic load balancer we created earlier.
+    1. **Routing Policy:** We'll use **Simple** but you can choose a different policy based on your use case.
+    1. **Evaluate Target Health:** We'll set this to **No** but you can choose to have the load balancer route traffic based on target health.
+    1. Click **Create**.
+1. Update your DNS records with your domain registrar. The steps for doing this vary depending on which registrar you use and is beyond the scope of this guide.
 
 ## PostgreSQL with RDS
 
@@ -265,7 +283,7 @@ Now that the database is created, let's move on to setting up Redis with ElastiC
 ElastiCache is an in-memory hosted caching solution. Redis maintains its own
 persistence and is used for certain types of the GitLab application.
 
-To set up Redis:
+### Redis Subnet Group
 
 1. Navigate to the ElastiCache dashboard from your AWS console.
 1. Go to **Subnet Groups** in the left menu, and create a new subnet group.
@@ -274,6 +292,18 @@ To set up Redis:
 
    ![ElastiCache subnet](img/ec_subnet.png)
 
+### Create a Redis Security Group
+
+1. Navigate to the EC2 dashboard.
+1. Select **Security Groups** from the left menu.
+1. Click **Create security group** and fill in the details. Give it a name (we'll use `gitlab-redis-sec-group`),
+   add a description, and choose the VPC we created previously
+1. In the **Inbound rules** section, click **Add rule** and add a **Custom TCP** rule, set port `6379`, and set the "Custom" source as the `gitlab-loadbalancer-sec-group` we created earlier.
+1. When done, click **Create security group**.
+
+### Create the Redis Cluster
+
+1. Navigate back to the ElastiCache dashboard.
 1. Select **Redis** on the left menu and click **Create** to create a new
    Redis cluster. Depending on your load, you can choose whether to enable
    cluster mode or not. Even without cluster mode on, you still get the
@@ -281,8 +311,9 @@ To set up Redis:
    not to enable it.
 1. In the settings section:
    1. Give the cluster a name (`gitlab-redis`) and a description.
-   1. For the version, select the latest of `3.2` series (e.g., `3.2.10`).
-   1. Select the node type and the number of replicas.
+   1. For the version, select the latest of `5.0` series (e.g., `5.0.6`).
+   1. Leave the port as `6379` since this is what we used in our Redis security group above.
+   1. Select the node type (at least `cache.t3.medium`, but adjust to your needs) and the number of replicas.
 1. In the advanced settings section:
    1. Select the multi-AZ auto-failover option.
    1. Select the subnet group we created previously.
@@ -292,7 +323,7 @@ To set up Redis:
       ![Redis availability zones](img/ec_az.png)
 
 1. In the security settings, edit the security groups and choose the
-   `gitlab-security-group` we had previously created.
+   `gitlab-redis-sec-group` we had previously created.
 1. Leave the rest of the settings to their default values or edit to your liking.
 1. When done, click **Create**.
 
@@ -306,48 +337,6 @@ source.
 
 Similar to the above, jump to the `gitlab-security-group` group
 and add a custom TCP rule for port `6379` accessible within itself.
-
-## Load Balancer
-
-On the EC2 dashboard, look for Load Balancer in the left navigation bar:
-
-1. Click the **Create Load Balancer** button.
-   1. Choose the **Classic Load Balancer**.
-   1. Give it a name (we'll use `gitlab-loadbalancer`) and for the **Create LB Inside** option, select `gitlab-vpc` from the dropdown menu.
-   1. In the **Listeners** section, set HTTP port 80, HTTPS port 443, and TCP port 22 for both load balancer and instance protocols and ports.
-   1. In the **Select Subnets** section, select both public subnets from the list.
-1. Click **Assign Security Groups** and select **Create a new security group**, give it a name
-   (we'll use `gitlab-loadbalancer-sec-group`) and description, and allow both HTTP and HTTPS traffic
-   from anywhere (`0.0.0.0/0, ::/0`).
-1. Click **Configure Security Settings** and select an SSL/TLS certificate from ACM or upload a certificate to IAM.
-1. Click **Configure Health Check** and set up a health check for your EC2 instances.
-   1. For **Ping Protocol**, select HTTP.
-   1. For **Ping Port**, enter 80.
-   1. For **Ping Path**, enter `/explore`. (We use `/explore` as it's a public endpoint that does
-   not require authorization.)
-   1. Keep the default **Advanced Details** or adjust them according to your needs.
-1. Click **Add EC2 Instances** but, as we don't have any instances to add yet, come back
-to your load balancer after creating your GitLab instances and add them.
-1. Click **Add Tags** and add any tags you need.
-1. Click **Review and Create**, review all your settings, and click **Create** if you're happy.
-
-After the Load Balancer is up and running, you can revisit your Security
-Groups to refine the access only through the ELB and any other requirements
-you might have.
-
-### Configure DNS for Load Balancer
-
-On the Route 53 dashboard, click **Hosted zones** in the left navigation bar:
-
-1. Select an existing hosted zone or, if you do not already have one for your domain, click **Create Hosted Zone**, enter your domain name, and click **Create**.
-1. Click **Create Record Set** and provide the following values:
-    1. **Name:** Use the domain name (the default value) or enter a subdomain.
-    1. **Type:** Select **A - IPv4 address**.
-    1. **Alias Target:** Find the **ELB Classic Load Balancers** section and select the classic load balancer we created earlier.
-    1. **Routing Policy:** We'll use **Simple** but you can choose a different policy based on your use case.
-    1. **Evaluate Target Health:** We'll set this to **No** but you can choose to have the load balancer route traffic based on target health.
-    1. Click **Create**.
-1. Update your DNS records with your domain registrar. The steps for doing this vary depending on which registrar you use and is beyond the scope of this guide.
 
 ## Setting up Bastion Hosts
 

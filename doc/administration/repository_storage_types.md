@@ -235,7 +235,7 @@ CI Artifacts are S3 compatible since **9.4** (GitLab Premium), and available in 
 
 ##### LFS Objects
 
-[LFS Objects in GitLab](lfs/manage_large_binaries_with_git_lfs.md) implement a similar
+[LFS Objects in GitLab](../topics/git/lfs/index.md) implement a similar
 storage pattern using 2 chars, 2 level folders, following Git's own implementation:
 
 ```ruby

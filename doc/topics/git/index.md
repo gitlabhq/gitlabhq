@@ -84,9 +84,9 @@ Git-related queries from GitLab.
 The following relate to Git Large File Storage:
 
 - [Getting Started with Git LFS](https://about.gitlab.com/blog/2017/01/30/getting-started-with-git-lfs-tutorial/)
-- [Migrate an existing Git repo with Git LFS](migrate_to_git_lfs/index.md)
-- [Removing objects from LFS](../../administration/lfs/manage_large_binaries_with_git_lfs.md#removing-objects-from-lfs)
-- [GitLab Git LFS user documentation](../../administration/lfs/manage_large_binaries_with_git_lfs.md)
+- [Migrate an existing Git repo with Git LFS](lfs/migrate_to_git_lfs.md)
+- [Removing objects from LFS](lfs/index.md#removing-objects-from-lfs)
+- [GitLab Git LFS user documentation](lfs/index.md)
 - [GitLab Git LFS admin documentation](../../administration/lfs/lfs_administration.md)
-- [git-annex to Git-LFS migration guide](../../administration/lfs/migrate_from_git_annex_to_git_lfs.md)
+- [git-annex to Git-LFS migration guide](lfs/migrate_from_git_annex_to_git_lfs.md)
 - [Towards a production quality open source Git LFS server](https://about.gitlab.com/blog/2015/08/13/towards-a-production-quality-open-source-git-lfs-server/)

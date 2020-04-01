@@ -43,7 +43,13 @@ The process will execute the following access checks:
 - Ensure the user is still present in LDAP.
 - If the LDAP server is Active Directory, ensure the user is active (not
   blocked/disabled state). This will only be checked if
-  `active_directory: true` is set in the LDAP configuration. [^1]
+  `active_directory: true` is set in the LDAP configuration.
+
+NOTE: **Note:**
+In Active Directory, a user is marked as disabled/blocked if the user
+account control attribute (`userAccountControl:1.2.840.113556.1.4.803`)
+has bit 2 set. See <https://ctogonewild.com/2009/09/03/bitmask-searches-in-ldap/>
+for more information.
 
 The user will be set to `ldap_blocked` state in GitLab if the above conditions
 fail. This means the user will not be able to login or push/pull code.
@@ -93,7 +99,7 @@ following.
    EOS
    ```
 
-1. [Reconfigure GitLab][reconfigure] for the changes to take effect.
+1. [Apply your changes to GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
 
 **Source configuration**
 
@@ -108,7 +114,7 @@ following.
            group_base: ou=groups,dc=example,dc=com
    ```
 
-1. [Restart GitLab][restart] for the changes to take effect.
+1. [Restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
 
 To take advantage of group sync, group owners or maintainers will need to [create one
 or more LDAP group links](#adding-group-links).
@@ -183,7 +189,7 @@ group, as opposed to the full DN.
    EOS
    ```
 
-1. [Reconfigure GitLab][reconfigure] for the changes to take effect.
+1. [Apply your changes to GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
 
 **Source configuration**
 
@@ -199,7 +205,7 @@ group, as opposed to the full DN.
            admin_group: my_admin_group
    ```
 
-1. [Restart GitLab][restart] for the changes to take effect.
+1. [Restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
 
 ## Global group memberships lock
 
@@ -318,7 +324,7 @@ task.
    EOS
    ```
 
-1. [Reconfigure GitLab][reconfigure] for the changes to take effect.
+1. [Apply your changes to GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
 
 **Source configuration**
 
@@ -333,7 +339,7 @@ task.
            external_groups: ['interns', 'contractors']
    ```
 
-1. [Restart GitLab][restart] for the changes to take effect.
+1. [Restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
 
 ## Group sync technical details
 

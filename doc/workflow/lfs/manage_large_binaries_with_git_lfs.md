@@ -1,5 +1,5 @@
 ---
-redirect_to: '../../administration/lfs/manage_large_binaries_with_git_lfs.md'
+redirect_to: '../../topics/git/lfs/index.md'
 ---
 
-This document was moved to [another location](../../administration/lfs/manage_large_binaries_with_git_lfs.md).
+This document was moved to [another location](../../topics/git/lfs/index.md).

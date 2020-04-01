@@ -5,7 +5,7 @@ RSpec.shared_examples 'measurable' do
     let(:measurement_enabled) { true }
 
     it 'prints measurement results' do
-      expect { subject }.to output(including('Measuring enabled...', 'Number of sql calls:', 'Total GC count:', 'Total GC count:')).to_stdout
+      expect { subject }.to output(including('Measuring enabled...', 'Number of sql calls:', 'GC stats:')).to_stdout
     end
   end
 

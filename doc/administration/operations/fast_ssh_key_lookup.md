@@ -4,9 +4,9 @@
 > - [Available in](https://gitlab.com/gitlab-org/gitlab/issues/3953) GitLab Community Edition 10.4.
 
 NOTE: **Note:** This document describes a drop-in replacement for the
-`authorized_keys` file for normal (non-deploy key) users. Consider
-using [SSH certificates](ssh_certificates.md), they are even faster,
-but are not a drop-in replacement.
+`authorized_keys` file. For normal (non-deploy key) users, consider using
+[SSH certificates](ssh_certificates.md). They are even faster, but are not a
+drop-in replacement.
 
 Regular SSH operations become slow as the number of users grows because OpenSSH
 searches for a key to authorize a user via a linear search. In the worst case,

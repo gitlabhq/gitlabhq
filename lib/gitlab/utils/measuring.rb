@@ -11,7 +11,7 @@ module Gitlab
 
       def with_measuring
         logger.info "Measuring enabled..."
-        with_gc_counter do
+        with_gc_stats do
           with_count_queries do
             with_measure_time do
               yield
@@ -39,15 +39,17 @@ module Gitlab
         logger.info "Number of sql calls: #{count}"
       end
 
-      def with_gc_counter
-        gc_counts_before = GC.stat.select { |k, _v| k =~ /count/ }
+      def with_gc_stats
+        GC.start # perform a full mark-and-sweep
+        stats_before = GC.stat
         yield
-        gc_counts_after = GC.stat.select { |k, _v| k =~ /count/ }
-        stats = gc_counts_before.merge(gc_counts_after) { |_k, vb, va| va - vb }
-
-        logger.info "Total GC count: #{stats[:count]}"
-        logger.info "Minor GC count: #{stats[:minor_gc_count]}"
-        logger.info "Major GC count: #{stats[:major_gc_count]}"
+        stats_after = GC.stat
+        stats_diff = stats_after.map do |key, after_value|
+          before_value = stats_before[key]
+          [key, before: before_value, after: after_value, diff: after_value - before_value]
+        end.to_h
+        logger.info "GC stats:"
+        logger.info JSON.pretty_generate(stats_diff)
       end
 
       def with_measure_time

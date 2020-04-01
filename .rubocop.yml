@@ -420,4 +420,3 @@ RSpec/RepeatedExample:
     - 'ee/spec/models/group_spec.rb'
     - 'ee/spec/services/boards/lists/update_service_spec.rb'
     - 'ee/spec/services/geo/repository_verification_primary_service_spec.rb'
-    - 'ee/spec/workers/geo/file_download_dispatch_worker_spec.rb'

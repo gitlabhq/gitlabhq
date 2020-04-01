@@ -4,7 +4,7 @@ disqus_identifier: 'https://docs.gitlab.com/ee/workflow/lfs/lfs_administration.h
 
 # GitLab Git LFS Administration
 
-Documentation on how to use Git LFS are under [Managing large binary files with Git LFS doc](manage_large_binaries_with_git_lfs.md).
+Documentation on how to use Git LFS are under [Managing large binary files with Git LFS doc](../../topics/git/lfs/index.md).
 
 ## Requirements
 

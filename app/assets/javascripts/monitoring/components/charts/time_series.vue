@@ -13,7 +13,6 @@ import {
   lineWidths,
   symbolSizes,
   dateFormats,
-  chartColorValues,
 } from '../../constants';
 import { getYAxisOptions, getChartGrid, getTooltipFormatter } from './options';
 import { makeDataSeries } from '~/helpers/monitor_helper';
@@ -124,7 +123,7 @@ export default {
       // Transforms & supplements query data to render appropriate labels & styles
       // Input: [{ queryAttributes1 }, { queryAttributes2 }]
       // Output: [{ seriesAttributes1 }, { seriesAttributes2 }]
-      return this.graphData.metrics.reduce((acc, query, i) => {
+      return this.graphData.metrics.reduce((acc, query) => {
         const { appearance } = query;
         const lineType =
           appearance && appearance.line && appearance.line.type
@@ -145,7 +144,6 @@ export default {
           lineStyle: {
             type: lineType,
             width: lineWidth,
-            color: chartColorValues[i % chartColorValues.length],
           },
           showSymbol: false,
           areaStyle: this.graphData.type === 'area-chart' ? areaStyle : undefined,
