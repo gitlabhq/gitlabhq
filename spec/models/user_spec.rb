@@ -3681,15 +3681,15 @@ describe User, :do_not_mock_admin_mode do
       end
 
       it 'returns false if email can not be synced' do
-        stub_omniauth_setting(sync_profile_attributes: %w(location email))
+        stub_omniauth_setting(sync_profile_attributes: %w(location name))
 
-        expect(user.sync_attribute?(:name)).to be_falsey
+        expect(user.sync_attribute?(:email)).to be_falsey
       end
 
       it 'returns false if location can not be synced' do
-        stub_omniauth_setting(sync_profile_attributes: %w(location email))
+        stub_omniauth_setting(sync_profile_attributes: %w(name email))
 
-        expect(user.sync_attribute?(:name)).to be_falsey
+        expect(user.sync_attribute?(:location)).to be_falsey
       end
 
       it 'returns true for all syncable attributes if all syncable attributes can be synced' do

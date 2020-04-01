@@ -41,6 +41,8 @@ const Api = {
   createBranchPath: '/api/:version/projects/:id/repository/branches',
   releasesPath: '/api/:version/projects/:id/releases',
   releasePath: '/api/:version/projects/:id/releases/:tag_name',
+  releaseLinksPath: '/api/:version/projects/:id/releases/:tag_name/assets/links',
+  releaseLinkPath: '/api/:version/projects/:id/releases/:tag_name/assets/links/:link_id',
   mergeRequestsPipeline: '/api/:version/projects/:id/merge_requests/:merge_request_iid/pipelines',
   adminStatisticsPath: '/api/:version/application/statistics',
   pipelineSinglePath: '/api/:version/projects/:id/pipelines/:pipeline_id',
@@ -458,6 +460,23 @@ const Api = {
       .replace(':tag_name', encodeURIComponent(tagName));
 
     return axios.put(url, release);
+  },
+
+  createReleaseLink(projectPath, tagName, link) {
+    const url = Api.buildUrl(this.releaseLinksPath)
+      .replace(':id', encodeURIComponent(projectPath))
+      .replace(':tag_name', encodeURIComponent(tagName));
+
+    return axios.post(url, link);
+  },
+
+  deleteReleaseLink(projectPath, tagName, linkId) {
+    const url = Api.buildUrl(this.releaseLinkPath)
+      .replace(':id', encodeURIComponent(projectPath))
+      .replace(':tag_name', encodeURIComponent(tagName))
+      .replace(':link_id', encodeURIComponent(linkId));
+
+    return axios.delete(url);
   },
 
   adminStatistics() {

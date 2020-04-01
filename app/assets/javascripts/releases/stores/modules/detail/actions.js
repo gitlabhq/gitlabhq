@@ -41,20 +41,74 @@ export const receiveUpdateReleaseError = ({ commit }, error) => {
   createFlash(s__('Release|Something went wrong while saving the release details'));
 };
 
-export const updateRelease = ({ dispatch, state }) => {
+export const updateRelease = ({ dispatch, state, getters }) => {
   dispatch('requestUpdateRelease');
 
-  return api
-    .updateRelease(state.projectId, state.tagName, {
-      name: state.release.name,
-      description: state.release.description,
-    })
-    .then(() => dispatch('receiveUpdateReleaseSuccess'))
-    .catch(error => {
-      dispatch('receiveUpdateReleaseError', error);
-    });
+  const { release } = state;
+
+  return (
+    api
+      .updateRelease(state.projectId, state.tagName, {
+        name: release.name,
+        description: release.description,
+      })
+
+      /**
+       * Currently, we delete all existing links and then
+       * recreate new ones on each edit. This is because the
+       * REST API doesn't support bulk updating of Release links,
+       * and updating individual links can lead to validation
+       * race conditions (in particular, the "URLs must be unique")
+       * constraint.
+       *
+       * This isn't ideal since this is no longer an atomic
+       * operation - parts of it can fail while others succeed,
+       * leaving the Release in an inconsistent state.
+       *
+       * This logic should be refactored to use GraphQL once
+       * https://gitlab.com/gitlab-org/gitlab/-/issues/208702
+       * is closed.
+       */
+
+      .then(() => {
+        // Delete all links currently associated with this Release
+        return Promise.all(
+          getters.releaseLinksToDelete.map(l =>
+            api.deleteReleaseLink(state.projectId, release.tagName, l.id),
+          ),
+        );
+      })
+      .then(() => {
+        // Create a new link for each link in the form
+        return Promise.all(
+          getters.releaseLinksToCreate.map(l =>
+            api.createReleaseLink(state.projectId, release.tagName, l),
+          ),
+        );
+      })
+      .then(() => dispatch('receiveUpdateReleaseSuccess'))
+      .catch(error => {
+        dispatch('receiveUpdateReleaseError', error);
+      })
+  );
 };
 
 export const navigateToReleasesPage = ({ state }) => {
   redirectTo(state.releasesPagePath);
+};
+
+export const addEmptyAssetLink = ({ commit }) => {
+  commit(types.ADD_EMPTY_ASSET_LINK);
+};
+
+export const updateAssetLinkUrl = ({ commit }, { linkIdToUpdate, newUrl }) => {
+  commit(types.UPDATE_ASSET_LINK_URL, { linkIdToUpdate, newUrl });
+};
+
+export const updateAssetLinkName = ({ commit }, { linkIdToUpdate, newName }) => {
+  commit(types.UPDATE_ASSET_LINK_NAME, { linkIdToUpdate, newName });
+};
+
+export const removeAssetLink = ({ commit }, linkIdToRemove) => {
+  commit(types.REMOVE_ASSET_LINK, linkIdToRemove);
 };

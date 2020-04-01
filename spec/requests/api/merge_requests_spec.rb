@@ -526,12 +526,48 @@ describe API::MergeRequests do
         expect_response_contain_exactly(merge_request3.id)
       end
 
-      it 'returns an array of merge requests authored by the given user' do
-        merge_request3 = create(:merge_request, :simple, author: user2, assignees: [user], source_project: project2, target_project: project2, source_branch: 'other-branch')
+      context 'filter by author' do
+        let(:user3) { create(:user) }
+        let(:project) { create(:project, :public, :repository, creator: user3, namespace: user3.namespace, only_allow_merge_if_pipeline_succeeds: false) }
+        let!(:merge_request3) do
+          create(:merge_request, :simple, author: user3, assignees: [user3], source_project: project, target_project: project, source_branch: 'other-branch')
+        end
 
-        get api('/merge_requests', user), params: { author_id: user2.id, scope: :all }
+        context 'when only `author_id` is passed' do
+          it 'returns an array of merge requests authored by the given user' do
+            get api('/merge_requests', user), params: {
+              author_id: user3.id,
+              scope: :all
+            }
 
-        expect_response_contain_exactly(merge_request3.id)
+            expect_response_contain_exactly(merge_request3.id)
+          end
+        end
+
+        context 'when only `author_username` is passed' do
+          it 'returns an array of merge requests authored by the given user(by `author_username`)' do
+            get api('/merge_requests', user), params: {
+              author_username: user3.username,
+              scope: :all
+            }
+
+            expect_response_contain_exactly(merge_request3.id)
+          end
+        end
+
+        context 'when both `author_id` and `author_username` are passed' do
+          it 'returns a 400' do
+            get api('/merge_requests', user), params: {
+              author_id: user.id,
+              author_username: user2.username,
+              scope: :all
+            }
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response['error']).to eq(
+              'author_id, author_username are mutually exclusive')
+          end
+        end
       end
 
       it 'returns an array of merge requests assigned to the given user' do
@@ -1525,7 +1561,7 @@ describe API::MergeRequests do
 
       it "returns 400 when target_branch is missing" do
         post api("/projects/#{forked_project.id}/merge_requests", user2),
-        params: { title: 'Test merge_request', target_branch: "master", author: user2, target_project_id: project.id }
+        params: { title: 'Test merge_request', source_branch: "master", author: user2, target_project_id: project.id }
         expect(response).to have_gitlab_http_status(:bad_request)
       end
 

@@ -230,7 +230,7 @@ Container Scanning can be executed on an offline GitLab Ultimate installation by
    ```
 
 1. If your local Docker container registry is running securely over `HTTPS`, but you're using a
-   self-signed certificate, then you must set `DOCKER_INSECURE: true` in the above
+   self-signed certificate, then you must set `DOCKER_INSECURE: "true"` in the above
    `container_scanning` section of your `.gitlab-ci.yml`.
 
 It may be worthwhile to set up a [scheduled pipeline](../../../ci/pipelines/schedules.md) to automatically build a new version of the vulnerabilities database on a preset schedule. You can use the following `.gitlab-yml.ci` as a template:

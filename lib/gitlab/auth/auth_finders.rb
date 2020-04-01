@@ -167,6 +167,14 @@ module Gitlab
         oauth_token
       end
 
+      def find_personal_access_token_from_http_basic_auth
+        return unless route_authentication_setting[:basic_auth_personal_access_token]
+        return unless has_basic_credentials?(current_request)
+
+        _username, password = user_name_and_password(current_request)
+        PersonalAccessToken.find_by_token(password)
+      end
+
       def parsed_oauth_token
         Doorkeeper::OAuth::Token.from_request(current_request, *Doorkeeper.configuration.access_token_methods)
       end

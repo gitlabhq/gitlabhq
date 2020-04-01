@@ -541,6 +541,12 @@ Particular attention should be shown to:
    gitlab-ctl reconfigure
    ```
 
+1. Verify each `gitlab-shell` on each Gitaly instance can reach GitLab. On each Gitaly instance run:
+
+   ```shell
+   /opt/gitlab/embedded/service/gitlab-shell/bin/check -config /opt/gitlab/embedded/service/gitlab-shell/config.yml
+   ```
+
 1. Verify that GitLab can reach Praefect:
 
    ```shell

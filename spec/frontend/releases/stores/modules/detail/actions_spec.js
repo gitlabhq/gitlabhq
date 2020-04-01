@@ -9,6 +9,7 @@ import createState from '~/releases/stores/modules/detail/state';
 import createFlash from '~/flash';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { redirectTo } from '~/lib/utils/url_utility';
+import api from '~/api';
 
 jest.mock('~/flash', () => jest.fn());
 
@@ -179,40 +180,92 @@ describe('Release detail actions', () => {
   });
 
   describe('updateRelease', () => {
-    let getReleaseUrl;
+    let getters;
+    let dispatch;
+    let callOrder;
 
     beforeEach(() => {
-      state.release = release;
+      state.release = convertObjectPropsToCamelCase(release);
       state.projectId = '18';
-      state.tagName = 'v1.3';
-      getReleaseUrl = `/api/v4/projects/${state.projectId}/releases/${state.tagName}`;
+      state.tagName = state.release.tagName;
+
+      getters = {
+        releaseLinksToDelete: [{ id: '1' }, { id: '2' }],
+        releaseLinksToCreate: [{ id: 'new-link-1' }, { id: 'new-link-2' }],
+      };
+
+      dispatch = jest.fn();
+
+      callOrder = [];
+      jest.spyOn(api, 'updateRelease').mockImplementation(() => {
+        callOrder.push('updateRelease');
+        return Promise.resolve();
+      });
+      jest.spyOn(api, 'deleteReleaseLink').mockImplementation(() => {
+        callOrder.push('deleteReleaseLink');
+        return Promise.resolve();
+      });
+      jest.spyOn(api, 'createReleaseLink').mockImplementation(() => {
+        callOrder.push('createReleaseLink');
+        return Promise.resolve();
+      });
     });
 
-    it(`dispatches requestUpdateRelease and receiveUpdateReleaseSuccess`, () => {
-      mock.onPut(getReleaseUrl).replyOnce(200);
-
-      return testAction(
-        actions.updateRelease,
-        undefined,
-        state,
-        [],
-        [{ type: 'requestUpdateRelease' }, { type: 'receiveUpdateReleaseSuccess' }],
-      );
+    it('dispatches requestUpdateRelease and receiveUpdateReleaseSuccess', () => {
+      return actions.updateRelease({ dispatch, state, getters }).then(() => {
+        expect(dispatch.mock.calls).toEqual([
+          ['requestUpdateRelease'],
+          ['receiveUpdateReleaseSuccess'],
+        ]);
+      });
     });
 
-    it(`dispatches requestUpdateRelease and receiveUpdateReleaseError with an error object`, () => {
-      mock.onPut(getReleaseUrl).replyOnce(500);
+    it('dispatches requestUpdateRelease and receiveUpdateReleaseError with an error object', () => {
+      jest.spyOn(api, 'updateRelease').mockRejectedValue(error);
 
-      return testAction(
-        actions.updateRelease,
-        undefined,
-        state,
-        [],
-        [
-          { type: 'requestUpdateRelease' },
-          { type: 'receiveUpdateReleaseError', payload: expect.anything() },
-        ],
-      );
+      return actions.updateRelease({ dispatch, state, getters }).then(() => {
+        expect(dispatch.mock.calls).toEqual([
+          ['requestUpdateRelease'],
+          ['receiveUpdateReleaseError', error],
+        ]);
+      });
+    });
+
+    it('updates the Release, then deletes all existing links, and then recreates new links', () => {
+      return actions.updateRelease({ dispatch, state, getters }).then(() => {
+        expect(callOrder).toEqual([
+          'updateRelease',
+          'deleteReleaseLink',
+          'deleteReleaseLink',
+          'createReleaseLink',
+          'createReleaseLink',
+        ]);
+
+        expect(api.updateRelease.mock.calls).toEqual([
+          [
+            state.projectId,
+            state.tagName,
+            {
+              name: state.release.name,
+              description: state.release.description,
+            },
+          ],
+        ]);
+
+        expect(api.deleteReleaseLink).toHaveBeenCalledTimes(getters.releaseLinksToDelete.length);
+        getters.releaseLinksToDelete.forEach(link => {
+          expect(api.deleteReleaseLink).toHaveBeenCalledWith(
+            state.projectId,
+            state.tagName,
+            link.id,
+          );
+        });
+
+        expect(api.createReleaseLink).toHaveBeenCalledTimes(getters.releaseLinksToCreate.length);
+        getters.releaseLinksToCreate.forEach(link => {
+          expect(api.createReleaseLink).toHaveBeenCalledWith(state.projectId, state.tagName, link);
+        });
+      });
     });
   });
 });

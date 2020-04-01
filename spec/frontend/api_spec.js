@@ -570,4 +570,65 @@ describe('Api', () => {
         .catch(done.fail);
     });
   });
+
+  describe('createReleaseLink', () => {
+    const dummyProjectPath = 'gitlab-org/gitlab';
+    const dummyReleaseTag = 'v1.3';
+    const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${encodeURIComponent(
+      dummyProjectPath,
+    )}/releases/${dummyReleaseTag}/assets/links`;
+    const expectedLink = {
+      url: 'https://example.com',
+      name: 'An example link',
+    };
+
+    describe('when the Release is successfully created', () => {
+      it('resolves the Promise', () => {
+        mock.onPost(expectedUrl, expectedLink).replyOnce(201);
+
+        return Api.createReleaseLink(dummyProjectPath, dummyReleaseTag, expectedLink).then(() => {
+          expect(mock.history.post).toHaveLength(1);
+        });
+      });
+    });
+
+    describe('when an error occurs while creating the Release', () => {
+      it('rejects the Promise', () => {
+        mock.onPost(expectedUrl, expectedLink).replyOnce(500);
+
+        return Api.createReleaseLink(dummyProjectPath, dummyReleaseTag, expectedLink).catch(() => {
+          expect(mock.history.post).toHaveLength(1);
+        });
+      });
+    });
+  });
+
+  describe('deleteReleaseLink', () => {
+    const dummyProjectPath = 'gitlab-org/gitlab';
+    const dummyReleaseTag = 'v1.3';
+    const dummyLinkId = '4';
+    const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${encodeURIComponent(
+      dummyProjectPath,
+    )}/releases/${dummyReleaseTag}/assets/links/${dummyLinkId}`;
+
+    describe('when the Release is successfully deleted', () => {
+      it('resolves the Promise', () => {
+        mock.onDelete(expectedUrl).replyOnce(200);
+
+        return Api.deleteReleaseLink(dummyProjectPath, dummyReleaseTag, dummyLinkId).then(() => {
+          expect(mock.history.delete).toHaveLength(1);
+        });
+      });
+    });
+
+    describe('when an error occurs while deleting the Release', () => {
+      it('rejects the Promise', () => {
+        mock.onDelete(expectedUrl).replyOnce(500);
+
+        return Api.deleteReleaseLink(dummyProjectPath, dummyReleaseTag, dummyLinkId).catch(() => {
+          expect(mock.history.delete).toHaveLength(1);
+        });
+      });
+    });
+  });
 });

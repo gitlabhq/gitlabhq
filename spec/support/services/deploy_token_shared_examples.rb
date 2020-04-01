@@ -17,7 +17,7 @@ RSpec.shared_examples 'a deploy token creation service' do
       end
 
       it 'returns a DeployToken' do
-        expect(subject).to be_an_instance_of DeployToken
+        expect(subject[:deploy_token]).to be_an_instance_of DeployToken
       end
     end
 
@@ -25,7 +25,7 @@ RSpec.shared_examples 'a deploy token creation service' do
       let(:deploy_token_params) { attributes_for(:deploy_token, expires_at: '') }
 
       it 'sets Forever.date' do
-        expect(subject.read_attribute(:expires_at)).to eq(Forever.date)
+        expect(subject[:deploy_token].read_attribute(:expires_at)).to eq(Forever.date)
       end
     end
 
@@ -33,7 +33,7 @@ RSpec.shared_examples 'a deploy token creation service' do
       let(:deploy_token_params) { attributes_for(:deploy_token, username: '') }
 
       it 'converts it to nil' do
-        expect(subject.read_attribute(:username)).to be_nil
+        expect(subject[:deploy_token].read_attribute(:username)).to be_nil
       end
     end
 
@@ -41,7 +41,7 @@ RSpec.shared_examples 'a deploy token creation service' do
       let(:deploy_token_params) { attributes_for(:deploy_token, username: 'deployer') }
 
       it 'keeps the provided username' do
-        expect(subject.read_attribute(:username)).to eq('deployer')
+        expect(subject[:deploy_token].read_attribute(:username)).to eq('deployer')
       end
     end
 

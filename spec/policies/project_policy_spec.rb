@@ -53,6 +53,7 @@ describe ProjectPolicy do
       admin_commit_status admin_build admin_container_image
       admin_pipeline admin_environment admin_deployment destroy_release add_cluster
       daily_statistics read_deploy_token create_deploy_token destroy_deploy_token
+      admin_terraform_state
     ]
   end
 

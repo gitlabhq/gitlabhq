@@ -243,12 +243,35 @@ Do not include the same information in multiple places. [Link to a SSOT instead.
 
 ## Language
 
-- Use inclusive language and avoid jargon, as well as uncommon
-  words. The docs should be clear and easy to understand.
-- Do not write in the first person singular. Instead of "I" or "me," use "we," "you," "us," or "one."
-- Be clear, concise, and stick to the goal of the doc.
+GitLab documentation should be clear and easy to understand.
+
+- Be clear, concise, and stick to the goal of the documentation.
 - Write in US English with US grammar.
+- Use inclusive language.
+- Avoid jargon.
+- Avoid uncommon words.
+- Don't write in the first person singular.
+  - Instead of "I" or "me," use "we," "you," "us," or "one."
+
+### Point of view
+
+In most cases, it’s appropriate to use the second-person (you, yours) point of view,
+because it’s friendly and easy to understand.
+
+<!-- How do we harmonize the second person in Pajamas with our first person plural in our doc guide? -->
+
+### Capitalization
+
 - Capitalize "G" and "L" in GitLab.
+- Use sentence case for:
+  - Titles.
+  - Labels.
+  - Menu items.
+  - Buttons.
+  - Headings. Don't capitalize other words in the title, unless
+    it refers to a product feature. For example:
+    - Capitalizing "issues" is acceptable in
+    `## What you can do with GitLab Issues`, but not in `## Closing multiple issues`.
 - Use title case when referring to:
   - [GitLab Features](https://about.gitlab.com/features/). For example, Issue Board,
     Geo, and Runner.
@@ -335,8 +358,6 @@ as even native users of English might misunderstand them.
 - [Write in Markdown](#markdown).
 - Splitting long lines (preferably up to 100 characters) can make it easier to provide feedback on small chunks of text.
 - Insert an empty line for new paragraphs.
-- Add a new line by ending a line with two spaces. [Using a backslash](../../user/markdown.md#newlines) doesn't work in the docs site.
-- Use sentence case for titles, headings, labels, menu items, and buttons.
 - Insert an empty line between different markups (for example, after every paragraph, header, list, and so on). Example:
 
   ```md
@@ -572,13 +593,10 @@ For other punctuation rules, please refer to the
 - Leave exactly one blank line before and after a heading.
 - Do not use links in headings.
 - Add the corresponding [product badge](#product-badges) according to the tier the feature belongs.
-- Use sentence case in headings. Do not capitalize the words of the title, unless
-  it refers to a product feature. For example, capitalizing "issues" is acceptable in
-  `## What you can do with GitLab Issues`, but not in `## Closing multiple issues`.
-- Our docs site search engine prioritizes headings, therefore, make sure to write
-  headings that contextualize the subject and help to take the user to the right
-  document. For example, `## Examples` is a bad heading; `## GitLab Pages examples`
-  is a better one. It's not an exact science, but please consider this carefully.
+- Our docs site search engine prioritizes words used in headings and subheadings.
+  Make you subheading titles clear, descriptive, and complete to help users find the
+  right example, as shown in the section on [heading titles](#heading-titles).
+- See [Capitalization](#capitalization) for guidelines on capitalizing headings.
 
 ### Heading titles
 
@@ -589,6 +607,9 @@ Keep heading titles clear and direct. Make every word count. To accommodate sear
 | Configure GDK | Configuring GDK |
 | GitLab Release and Maintenance Policy | This section covers GitLab's Release and Maintenance Policy |
 | Backport to older releases | Backporting to older releases |
+| GitLab Pages examples | Examples |
+
+For guidelines on capitalizing headings, see the section on [capitalization](#capitalization).
 
 NOTE: **Note:**
 If you change an existing title, be careful. Any such changes may affect not only [links](#anchor-links)

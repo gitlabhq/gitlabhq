@@ -14,6 +14,7 @@ describe 'Projects > Settings > CI / CD settings' do
       project.add_role(user, role)
       sign_in(user)
       stub_container_registry_config(enabled: true)
+      stub_feature_flags(ajax_new_deploy_token: { enabled: false, thing: project })
       visit project_settings_ci_cd_path(project)
     end
 

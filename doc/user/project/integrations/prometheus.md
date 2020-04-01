@@ -637,6 +637,15 @@ clicking on the context menu in the upper-right corner.
 
 If you use the **Timeline zoom** function at the bottom of the chart, logs will narrow down to the time range you selected.
 
+### Timeline zoom and URL sharing
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/198910) in GitLab 12.8.
+
+You can use the **Timeline zoom** function at the bottom of a chart to zoom in
+on a date and time of your choice. When you click and drag the sliders to select
+a different beginning or end date of data to display, GitLab adds your selected start
+and end times to the URL, enabling you to share specific timeframes more easily.
+
 ### Downloading data as CSV
 
 Data from Prometheus charts on the metrics dashboard can be downloaded as CSV.

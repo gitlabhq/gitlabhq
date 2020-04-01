@@ -4,6 +4,7 @@ import ReleaseEditApp from '~/releases/components/app_edit.vue';
 import { release as originalRelease } from '../mock_data';
 import * as commonUtils from '~/lib/utils/common_utils';
 import { BACK_URL_PARAM } from '~/releases/constants';
+import AssetLinksForm from '~/releases/components/asset_links_form.vue';
 
 describe('Release edit component', () => {
   let wrapper;
@@ -11,7 +12,7 @@ describe('Release edit component', () => {
   let actions;
   let state;
 
-  const factory = () => {
+  const factory = (featureFlags = {}) => {
     state = {
       release,
       markdownDocsPath: 'path/to/markdown/docs',
@@ -22,6 +23,7 @@ describe('Release edit component', () => {
     actions = {
       fetchRelease: jest.fn(),
       updateRelease: jest.fn(),
+      addEmptyAssetLink: jest.fn(),
     };
 
     const store = new Vuex.Store({
@@ -36,6 +38,9 @@ describe('Release edit component', () => {
 
     wrapper = mount(ReleaseEditApp, {
       store,
+      provide: {
+        glFeatures: featureFlags,
+      },
     });
   };
 
@@ -130,6 +135,30 @@ describe('Release edit component', () => {
     it('renders a "Cancel" button with an href pointing to the main Releases page', () => {
       const cancelButton = wrapper.find('.js-cancel-button');
       expect(cancelButton.attributes().href).toBe(backUrl);
+    });
+  });
+
+  describe('asset links form', () => {
+    const findAssetLinksForm = () => wrapper.find(AssetLinksForm);
+
+    describe('when the release_asset_link_editing feature flag is disabled', () => {
+      beforeEach(() => {
+        factory({ releaseAssetLinkEditing: false });
+      });
+
+      it('does not render the asset links portion of the form', () => {
+        expect(findAssetLinksForm().exists()).toBe(false);
+      });
+    });
+
+    describe('when the release_asset_link_editing feature flag is enabled', () => {
+      beforeEach(() => {
+        factory({ releaseAssetLinkEditing: true });
+      });
+
+      it('renders the asset links portion of the form', () => {
+        expect(findAssetLinksForm().exists()).toBe(true);
+      });
     });
   });
 });

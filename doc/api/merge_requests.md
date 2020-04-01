@@ -30,6 +30,7 @@ GET /merge_requests?state=all
 GET /merge_requests?milestone=release
 GET /merge_requests?labels=bug,reproduced
 GET /merge_requests?author_id=5
+GET /merge_requests?author_username=gitlab-bot
 GET /merge_requests?my_reaction_emoji=star
 GET /merge_requests?scope=assigned_to_me
 GET /merge_requests?search=foo&in=title
@@ -51,7 +52,8 @@ Parameters:
 | `updated_after`                 | datetime       | no       | Return merge requests updated on or after the given time                                                               |
 | `updated_before`                | datetime       | no       | Return merge requests updated on or before the given time                                                              |
 | `scope`                         | string         | no       | Return merge requests for the given scope: `created_by_me`, `assigned_to_me` or `all`. Defaults to `created_by_me`<br> For versions before 11.0, use the now deprecated `created-by-me` or `assigned-to-me` scopes instead. |
-| `author_id`                     | integer        | no       | Returns merge requests created by the given user `id`. Combine with `scope=all` or `scope=assigned_to_me`              |
+| `author_id`                     | integer        | no       | Returns merge requests created by the given user `id`. Mutually exclusive with `author_username`. Combine with `scope=all` or `scope=assigned_to_me`
+| `author_username`               | string         | no       | Returns merge requests created by the given `username`. Mutually exclusive with `author_id`. _([Introduced][ce-13060] in GitLab 12.10)_             |           |
 | `assignee_id`                   | integer        | no       | Returns merge requests assigned to the given user `id`. `None` returns unassigned merge requests. `Any` returns merge requests with an assignee. |
 | `approver_ids` **(STARTER)**    | integer array  | no       | Returns merge requests which have specified all the users with the given `id`s as individual approvers. `None` returns merge requests without approvers. `Any` returns merge requests with an approver. |
 | `approved_by_ids` **(STARTER)** | integer array  | no       | Returns merge requests which have been approved by all the users with the given `id`s (Max: 5). `None` returns merge requests with no approvals. `Any` returns merge requests with an approval. |
@@ -230,7 +232,8 @@ Parameters:
 | `updated_after`                 | datetime       | no       | Return merge requests updated on or after the given time                                                                       |
 | `updated_before`                | datetime       | no       | Return merge requests updated on or before the given time                                                                      |
 | `scope`                         | string         | no       | Return merge requests for the given scope: `created_by_me`, `assigned_to_me` or `all`.<br> For versions before 11.0, use the now deprecated `created-by-me` or `assigned-to-me` scopes instead.<br> _([Introduced][ce-13060] in GitLab 9.5. [Changed to snake_case][ce-18935] in GitLab 11.0)_ |
-| `author_id`                     | integer        | no       | Returns merge requests created by the given user `id` _([Introduced][ce-13060] in GitLab 9.5)_                                 |
+| `author_id`                     | integer        | no       | Returns merge requests created by the given user `id`. Mutually exclusive with `author_username`. _([Introduced][ce-13060] in GitLab 9.5)_
+| `author_username`               | string         | no       | Returns merge requests created by the given `username`. Mutually exclusive with `author_id`. _([Introduced][ce-13060] in GitLab 12.10)_             |     |
 | `assignee_id`                   | integer        | no       | Returns merge requests assigned to the given user `id`. `None` returns unassigned merge requests. `Any` returns merge requests with an assignee. _([Introduced][ce-13060] in GitLab 9.5)_ |
 | `approver_ids` **(STARTER)**    | integer array  | no       | Returns merge requests which have specified all the users with the given `id`s as individual approvers. `None` returns merge requests without approvers. `Any` returns merge requests with an approver. |
 | `approved_by_ids` **(STARTER)** | integer array  | no       | Returns merge requests which have been approved by all the users with the given `id`s (Max: 5). `None` returns merge requests with no approvals. `Any` returns merge requests with an approval. |
@@ -392,7 +395,8 @@ Parameters:
 | `updated_after`                 | datetime       | no       | Return merge requests updated on or after the given time                                                                       |
 | `updated_before`                | datetime       | no       | Return merge requests updated on or before the given time                                                                      |
 | `scope`                         | string         | no       | Return merge requests for the given scope: `created_by_me`, `assigned_to_me` or `all`.<br>                                     |
-| `author_id`                     | integer        | no       | Returns merge requests created by the given user `id` _([Introduced][ce-13060] in GitLab 9.5)_                                 |
+| `author_id`                     | integer        | no       | Returns merge requests created by the given user `id`. Mutually exclusive with `author_username`. _([Introduced][ce-13060] in GitLab 9.5)_
+| `author_username`               | string         | no       | Returns merge requests created by the given `username`. Mutually exclusive with `author_id`. _([Introduced][ce-13060] in GitLab 12.10)_             |                              |
 | `assignee_id`                   | integer        | no       | Returns merge requests assigned to the given user `id`. `None` returns unassigned merge requests. `Any` returns merge requests with an assignee. _([Introduced][ce-13060] in GitLab 9.5)_ |
 | `approver_ids` **(STARTER)**    | integer array  | no       | Returns merge requests which have specified all the users with the given `id`s as individual approvers. `None` returns merge requests without approvers. `Any` returns merge requests with an approver. |
 | `approved_by_ids` **(STARTER)** | integer array  | no       | Returns merge requests which have been approved by all the users with the given `id`s (Max: 5). `None` returns merge requests with no approvals. `Any` returns merge requests with an approval. |

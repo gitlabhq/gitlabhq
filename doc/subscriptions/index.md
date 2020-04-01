@@ -68,7 +68,10 @@ A self-managed subscription uses a hybrid model. You pay for a subscription acco
 
 Every occupied seat, whether by person, job, or bot is counted in the subscription, with the following exceptions:
 
-- Blocked users who are blocked prior to the renewal of a subscription won't be counted as active users for the renewal subscription. They may count as active users in the subscription period in which they were originally added.
+- [Deactivated](../user/admin_area/activating_deactivating_users.md#deactivating-a-user) and
+[blocked](../user/admin_area/blocking_unblocking_users.md) users who are restricted prior to the
+renewal of a subscription won't be counted as active users for the renewal subscription. They may
+count as active users in the subscription period in which they were originally added.
 - Members with Guest permissions on an Ultimate subscription.
 - GitLab-created service accounts: `Ghost User` and `Support Bot`.
 

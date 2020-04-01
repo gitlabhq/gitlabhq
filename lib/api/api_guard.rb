@@ -46,6 +46,10 @@ module API
       prepend_if_ee('EE::API::APIGuard::HelperMethods') # rubocop: disable Cop/InjectEnterpriseEditionModule
       include Gitlab::Auth::AuthFinders
 
+      def access_token
+        super || find_personal_access_token_from_http_basic_auth
+      end
+
       def find_current_user!
         user = find_user_from_sources
         return unless user

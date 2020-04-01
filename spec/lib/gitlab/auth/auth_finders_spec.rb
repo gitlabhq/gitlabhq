@@ -335,6 +335,54 @@ describe Gitlab::Auth::AuthFinders do
     end
   end
 
+  describe '#find_personal_access_token_from_http_basic_auth' do
+    def auth_header_with(token)
+      env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Basic.encode_credentials('username', token)
+    end
+
+    context 'access token is valid' do
+      let(:personal_access_token) { create(:personal_access_token, user: user) }
+      let(:route_authentication_setting) { { basic_auth_personal_access_token: true } }
+
+      it 'finds the token from basic auth' do
+        auth_header_with(personal_access_token.token)
+
+        expect(find_personal_access_token_from_http_basic_auth).to eq personal_access_token
+      end
+    end
+
+    context 'access token is not valid' do
+      let(:route_authentication_setting) { { basic_auth_personal_access_token: true } }
+
+      it 'returns nil' do
+        auth_header_with('failing_token')
+
+        expect(find_personal_access_token_from_http_basic_auth).to be_nil
+      end
+    end
+
+    context 'route_setting is not set' do
+      let(:personal_access_token) { create(:personal_access_token, user: user) }
+
+      it 'returns nil' do
+        auth_header_with(personal_access_token.token)
+
+        expect(find_personal_access_token_from_http_basic_auth).to be_nil
+      end
+    end
+
+    context 'route_setting is not correct' do
+      let(:personal_access_token) { create(:personal_access_token, user: user) }
+      let(:route_authentication_setting) { { basic_auth_personal_access_token: false } }
+
+      it 'returns nil' do
+        auth_header_with(personal_access_token.token)
+
+        expect(find_personal_access_token_from_http_basic_auth).to be_nil
+      end
+    end
+  end
+
   describe '#find_user_from_basic_auth_job' do
     def basic_http_auth(username, password)
       ActionController::HttpAuthentication::Basic.encode_credentials(username, password)

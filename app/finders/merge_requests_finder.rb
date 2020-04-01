@@ -14,6 +14,7 @@
 #     milestone_title: string
 #     release_tag: string
 #     author_id: integer
+#     author_username: string
 #     assignee_id: integer
 #     search: string
 #     in: 'title', 'description', or a string joining them with comma

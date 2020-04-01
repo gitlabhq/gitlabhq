@@ -1,7 +1,7 @@
 %p.profile-settings-content
   = s_("DeployTokens|Pick a name for the application, and we'll give you a unique deploy token.")
 
-= form_for token, url: create_deploy_token_path(group_or_project, anchor: 'js-deploy-tokens'), method: :post do |f|
+= form_for token, url: create_deploy_token_path(group_or_project, anchor: 'js-deploy-tokens'), method: :post, remote: Feature.enabled?(:ajax_new_deploy_token, group_or_project) do |f|
   = form_errors(token)
 
   .form-group

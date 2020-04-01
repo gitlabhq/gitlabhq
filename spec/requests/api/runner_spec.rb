@@ -1349,19 +1349,6 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
             expect(response.header['X-GitLab-Trace-Update-Interval']).to eq('30')
           end
         end
-
-        context 'when feature flag runner_job_trace_update_interval_header is disabled' do
-          before do
-            stub_feature_flags(runner_job_trace_update_interval_header: { enabled: false })
-          end
-
-          it 'does not return X-GitLab-Trace-Update-Interval header' do
-            patch_the_trace
-
-            expect(response).to have_gitlab_http_status(:accepted)
-            expect(response.header).not_to have_key 'X-GitLab-Trace-Update-Interval'
-          end
-        end
       end
 
       context 'when Runner makes a force-patch' do

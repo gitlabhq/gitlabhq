@@ -1,4 +1,9 @@
 import * as types from './mutation_types';
+import { uniqueId, cloneDeep } from 'lodash';
+
+const findReleaseLink = (release, id) => {
+  return release.assets.links.find(l => l.id === id);
+};
 
 export default {
   [types.REQUEST_RELEASE](state) {
@@ -8,6 +13,7 @@ export default {
     state.fetchError = undefined;
     state.isFetchingRelease = false;
     state.release = data;
+    state.originalRelease = Object.freeze(cloneDeep(state.release));
   },
   [types.RECEIVE_RELEASE_ERROR](state, error) {
     state.fetchError = error;
@@ -32,5 +38,27 @@ export default {
   [types.RECEIVE_UPDATE_RELEASE_ERROR](state, error) {
     state.updateError = error;
     state.isUpdatingRelease = false;
+  },
+
+  [types.ADD_EMPTY_ASSET_LINK](state) {
+    state.release.assets.links.push({
+      id: uniqueId('new-link-'),
+      url: '',
+      name: '',
+    });
+  },
+
+  [types.UPDATE_ASSET_LINK_URL](state, { linkIdToUpdate, newUrl }) {
+    const linkToUpdate = findReleaseLink(state.release, linkIdToUpdate);
+    linkToUpdate.url = newUrl;
+  },
+
+  [types.UPDATE_ASSET_LINK_NAME](state, { linkIdToUpdate, newName }) {
+    const linkToUpdate = findReleaseLink(state.release, linkIdToUpdate);
+    linkToUpdate.name = newName;
+  },
+
+  [types.REMOVE_ASSET_LINK](state, linkIdToRemove) {
+    state.release.assets.links = state.release.assets.links.filter(l => l.id !== linkIdToRemove);
   },
 };

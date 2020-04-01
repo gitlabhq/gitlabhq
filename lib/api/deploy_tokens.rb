@@ -65,11 +65,15 @@ module API
       post ':id/deploy_tokens' do
         authorize!(:create_deploy_token, user_project)
 
-        deploy_token = ::Projects::DeployTokens::CreateService.new(
+        result = ::Projects::DeployTokens::CreateService.new(
           user_project, current_user, scope_params.merge(declared(params, include_missing: false, include_parent_namespaces: false))
         ).execute
 
-        present deploy_token, with: Entities::DeployTokenWithToken
+        if result[:status] == :success
+          present result[:deploy_token], with: Entities::DeployTokenWithToken
+        else
+          render_api_error!(result[:message], result[:http_status])
+        end
       end
 
       desc 'Delete a project deploy token' do
@@ -126,11 +130,15 @@ module API
       post ':id/deploy_tokens' do
         authorize!(:create_deploy_token, user_group)
 
-        deploy_token = ::Groups::DeployTokens::CreateService.new(
+        result = ::Groups::DeployTokens::CreateService.new(
           user_group, current_user, scope_params.merge(declared(params, include_missing: false, include_parent_namespaces: false))
         ).execute
 
-        present deploy_token, with: Entities::DeployTokenWithToken
+        if result[:status] == :success
+          present result[:deploy_token], with: Entities::DeployTokenWithToken
+        else
+          render_api_error!(result[:message], result[:http_status])
+        end
       end
 
       desc 'Delete a group deploy token' do

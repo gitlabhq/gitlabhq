@@ -76,6 +76,11 @@ msgid_plural "%d changed files"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d child epic"
+msgid_plural "%d child epics"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d code quality issue"
 msgid_plural "%d code quality issues"
 msgstr[0] ""
@@ -388,6 +393,9 @@ msgid "%{openedEpics} open, %{closedEpics} closed"
 msgstr ""
 
 msgid "%{openedIssues} open, %{closedIssues} closed"
+msgstr ""
+
+msgid "%{percentage}%% weight completed"
 msgstr ""
 
 msgid "%{percent}%% complete"
@@ -1060,6 +1068,9 @@ msgid_plural "Add %d issues"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Add %{linkStart}assets%{linkEnd} to your Release. GitLab automatically includes read-only assets, like source code and release evidence."
+msgstr ""
+
 msgid "Add CHANGELOG"
 msgstr ""
 
@@ -1136,6 +1147,9 @@ msgid "Add an existing issue to the epic."
 msgstr ""
 
 msgid "Add an issue"
+msgstr ""
+
+msgid "Add another link"
 msgstr ""
 
 msgid "Add approval rule"
@@ -4986,6 +5000,9 @@ msgstr ""
 msgid "Collapse approvers"
 msgstr ""
 
+msgid "Collapse child epics"
+msgstr ""
+
 msgid "Collapse sidebar"
 msgstr ""
 
@@ -8305,6 +8322,9 @@ msgid "Expand all"
 msgstr ""
 
 msgid "Expand approvers"
+msgstr ""
+
+msgid "Expand child epics"
 msgstr ""
 
 msgid "Expand down"
@@ -11994,6 +12014,9 @@ msgstr ""
 msgid "Link copied"
 msgstr ""
 
+msgid "Link title"
+msgstr ""
+
 msgid "Linked emails (%{email_count})"
 msgstr ""
 
@@ -14795,6 +14818,9 @@ msgstr ""
 msgid "Pods in use"
 msgstr ""
 
+msgid "Point to any links you like: documentation, built binaries, or other related materials. These can be internal or external links from your GitLab instance."
+msgstr ""
+
 msgid "Preferences"
 msgstr ""
 
@@ -16539,6 +16565,12 @@ msgid_plural "Releases"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Release assets"
+msgstr ""
+
+msgid "Release assets documentation"
+msgstr ""
+
 msgid "Release does not have the same project as the milestone"
 msgstr ""
 
@@ -16606,6 +16638,9 @@ msgid "Remove approvers"
 msgstr ""
 
 msgid "Remove approvers?"
+msgstr ""
+
+msgid "Remove asset link"
 msgstr ""
 
 msgid "Remove assignee"
@@ -20745,10 +20780,16 @@ msgstr ""
 msgid "ThreatMonitoring|Anomalous Requests"
 msgstr ""
 
-msgid "ThreatMonitoring|At this time, threat monitoring only supports WAF data."
+msgid "ThreatMonitoring|Application firewall not detected"
 msgstr ""
 
 msgid "ThreatMonitoring|Container Network Policy"
+msgstr ""
+
+msgid "ThreatMonitoring|Container NetworkPolicies are not installed or has been disabled. To view this data, ensure you NetworkPolicies are installed and enabled for your cluster."
+msgstr ""
+
+msgid "ThreatMonitoring|Container NetworkPolicies not detected"
 msgstr ""
 
 msgid "ThreatMonitoring|Dropped Packets"
@@ -20757,7 +20798,7 @@ msgstr ""
 msgid "ThreatMonitoring|Environment"
 msgstr ""
 
-msgid "ThreatMonitoring|No traffic to display"
+msgid "ThreatMonitoring|No environments detected"
 msgstr ""
 
 msgid "ThreatMonitoring|Operations Per Second"
@@ -20778,6 +20819,9 @@ msgstr ""
 msgid "ThreatMonitoring|Something went wrong, unable to fetch statistics"
 msgstr ""
 
+msgid "ThreatMonitoring|The firewall is not installed or has been disabled. To view this data, ensure you firewall is installed and enabled for your cluster."
+msgstr ""
+
 msgid "ThreatMonitoring|The graph below is an overview of traffic coming to your application as tracked by the Web Application Firewall (WAF). View the docs for instructions on how to access the WAF logs to see what type of malicious traffic is trying to access your app. The docs link is also accessible by clicking the \"?\" icon next to the title below."
 msgstr ""
 
@@ -20787,13 +20831,10 @@ msgstr ""
 msgid "ThreatMonitoring|Threat Monitoring help page link"
 msgstr ""
 
-msgid "ThreatMonitoring|Threat monitoring is not enabled"
-msgstr ""
-
-msgid "ThreatMonitoring|Threat monitoring provides security monitoring and rules to protect production applications."
-msgstr ""
-
 msgid "ThreatMonitoring|Time"
+msgstr ""
+
+msgid "ThreatMonitoring|To view this data, ensure you have configured an environment for this project and that at least one threat monitoring feature is enabled."
 msgstr ""
 
 msgid "ThreatMonitoring|Total Packets"
@@ -20802,10 +20843,10 @@ msgstr ""
 msgid "ThreatMonitoring|Total Requests"
 msgstr ""
 
-msgid "ThreatMonitoring|Web Application Firewall"
+msgid "ThreatMonitoring|View documentation"
 msgstr ""
 
-msgid "ThreatMonitoring|While it's rare to have no traffic coming to your application, it can happen. In any event, we ask that you double check your settings to make sure you've set up the Network Policies correctly."
+msgid "ThreatMonitoring|Web Application Firewall"
 msgstr ""
 
 msgid "ThreatMonitoring|While it's rare to have no traffic coming to your application, it can happen. In any event, we ask that you double check your settings to make sure you've set up the WAF correctly."

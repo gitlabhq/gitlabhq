@@ -9,25 +9,28 @@ type: reference
 > - In [GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/issues/5164) and later, the epic bars show their title, progress, and completed weight percentage.
 
 An Epic within a group containing **Start date** and/or **Due date**
-can be visualized in a form of a timeline (e.g. a Gantt chart). The Epics Roadmap page
+can be visualized in a form of a timeline (a Gantt chart). The Epics Roadmap page
 shows such a visualization for all the epics which are under a group and/or its subgroups.
 
 On the epic bars, you can see their title, progress, and completed weight percentage.
 When you hover over an epic bar, a popover appears with its title, start and due dates, and weight
 completed.
 
+You can expand epics that contain child epics to show their child epics in the roadmap.
+You can click the chevron **{chevron-down}** next to the epic title to expand and collapse the child epics.
+
 ![roadmap view](img/roadmap_view_v12_9.png)
 
-A dropdown allows you to show only open or closed epics. By default, all epics are shown.
+A dropdown menu allows you to show only open or closed epics. By default, all epics are shown.
 
 ![epics state dropdown](img/epics_state_dropdown.png)
 
-Epics in the view can be sorted by:
+You can sort epics in the Roadmap view by:
 
-- **Created date**
-- **Last updated**
-- **Start date**
-- **Due date**
+- Created date
+- Last updated
+- Start date
+- Due date
 
 Each option contains a button that toggles the sort order between **ascending** and **descending**. The sort option and order will be persisted when browsing Epics,
 including the [epics list view](../epics/index.md).

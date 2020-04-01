@@ -8,6 +8,7 @@ module Groups
       before_action :authorize_update_max_artifacts_size!, only: [:update]
       before_action do
         push_frontend_feature_flag(:new_variables_ui, @group)
+        push_frontend_feature_flag(:ajax_new_deploy_token, @group)
       end
       before_action :define_variables, only: [:show, :create_deploy_token]
 
@@ -42,13 +43,30 @@ module Groups
       end
 
       def create_deploy_token
-        @new_deploy_token = Groups::DeployTokens::CreateService.new(@group, current_user, deploy_token_params).execute
+        result = Projects::DeployTokens::CreateService.new(@group, current_user, deploy_token_params).execute
+        @new_deploy_token = result[:deploy_token]
 
-        if @new_deploy_token.persisted?
-          flash.now[:notice] = s_('DeployTokens|Your new group deploy token has been created.')
+        if result[:status] == :success
+          respond_to do |format|
+            format.json do
+              # IMPORTANT: It's a security risk to expose the token value more than just once here!
+              json = API::Entities::DeployTokenWithToken.represent(@new_deploy_token).as_json
+              render json: json, status: result[:http_status]
+            end
+            format.html do
+              flash.now[:notice] = s_('DeployTokens|Your new group deploy token has been created.')
+              render :show
+            end
+          end
+        else
+          respond_to do |format|
+            format.json { render json: { message: result[:message] }, status: result[:http_status] }
+            format.html do
+              flash.now[:alert] = result[:message]
+              render :show
+            end
+          end
         end
-
-        render 'show'
       end
 
       private
