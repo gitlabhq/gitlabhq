@@ -45,9 +45,30 @@ module Metrics
 
       # Returns a new dashboard Hash, supplemented with DB info
       def process_dashboard
-        ::Gitlab::Metrics::Dashboard::Processor
-          .new(project, raw_dashboard, sequence, process_params)
-          .process
+        # Get the dashboard from cache/disk before beginning the benchmark.
+        dashboard = raw_dashboard
+        processed_dashboard = nil
+
+        benchmark_processing do
+          processed_dashboard = ::Gitlab::Metrics::Dashboard::Processor
+            .new(project, dashboard, sequence, process_params)
+            .process
+        end
+
+        processed_dashboard
+      end
+
+      def benchmark_processing
+        output = nil
+
+        processing_time_seconds = Benchmark.realtime { output = yield }
+
+        if output
+          processing_time_metric.observe(
+            processing_time_metric_labels,
+            processing_time_seconds * 1_000
+          )
+        end
       end
 
       def process_params
@@ -71,6 +92,26 @@ module Metrics
 
       def sequence
         SEQUENCE
+      end
+
+      def processing_time_metric
+        @processing_time_metric ||= ::Gitlab::Metrics.summary(
+          :gitlab_metrics_dashboard_processing_time_ms,
+          'Metrics dashboard processing time in milliseconds'
+        )
+      end
+
+      def processing_time_metric_labels
+        {
+          stages: sequence_string,
+          service: self.class.name
+        }
+      end
+
+      # If @sequence is [STAGES::CommonMetricsInserter, STAGES::CustomMetricsInserter],
+      # this function will output `CommonMetricsInserter-CustomMetricsInserter`.
+      def sequence_string
+        sequence.map { |stage_class| stage_class.to_s.split('::').last }.join('-')
       end
     end
   end

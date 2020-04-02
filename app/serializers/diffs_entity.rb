@@ -70,11 +70,19 @@ class DiffsEntity < Grape::Entity
 
   expose :diff_files do |diffs, options|
     submodule_links = Gitlab::SubmoduleLinks.new(merge_request.project.repository)
-    DiffFileEntity.represent(diffs.diff_files, options.merge(submodule_links: submodule_links))
+    code_navigation_path =
+      Gitlab::CodeNavigationPath.new(merge_request.project, diffs.diff_refs.head_sha)
+
+    DiffFileEntity.represent(diffs.diff_files,
+      options.merge(submodule_links: submodule_links, code_navigation_path: code_navigation_path))
   end
 
   expose :merge_request_diffs, using: MergeRequestDiffEntity, if: -> (_, options) { options[:merge_request_diffs]&.any? } do |diffs|
     options[:merge_request_diffs]
+  end
+
+  expose :definition_path_prefix, if: -> (diff_file) { Feature.enabled?(:code_navigation, merge_request.project) } do |diffs|
+    project_blob_path(merge_request.project, diffs.diff_refs.head_sha)
   end
 
   def merge_request

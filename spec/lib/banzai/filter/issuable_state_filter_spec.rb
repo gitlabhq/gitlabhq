@@ -156,20 +156,6 @@ describe Banzai::Filter::IssuableStateFilter do
       expect(doc.css('a').last.text).to eq(merge_request.to_reference)
     end
 
-    it 'ignores reopened merge request references' do
-      merge_request = create_merge_request(:opened)
-
-      link = create_link(
-        merge_request.to_reference,
-        merge_request: merge_request.id,
-        reference_type: 'merge_request'
-      )
-
-      doc = filter(link, context)
-
-      expect(doc.css('a').last.text).to eq(merge_request.to_reference)
-    end
-
     it 'ignores locked merge request references' do
       merge_request = create_merge_request(:locked)
 

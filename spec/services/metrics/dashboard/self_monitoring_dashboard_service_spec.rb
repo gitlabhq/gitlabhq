@@ -16,11 +16,14 @@ describe Metrics::Dashboard::SelfMonitoringDashboardService, :use_clean_rails_me
 
   describe '#get_dashboard' do
     let(:service_params) { [project, user, { environment: environment }] }
-    let(:service_call) { described_class.new(*service_params).get_dashboard }
+    let(:service_call) { subject.get_dashboard }
+
+    subject { described_class.new(*service_params) }
 
     it_behaves_like 'valid dashboard service response'
     it_behaves_like 'raises error for users with insufficient permissions'
     it_behaves_like 'caches the unprocessed dashboard for subsequent calls'
+    it_behaves_like 'updates gitlab_metrics_dashboard_processing_time_ms metric'
   end
 
   describe '.all_dashboard_paths' do

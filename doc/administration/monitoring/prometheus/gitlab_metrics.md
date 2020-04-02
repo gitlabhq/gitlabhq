@@ -92,6 +92,7 @@ The following metrics are available:
 | `failed_login_captcha_total`                                   | Gauge     |                   11.0 | Counter of failed CAPTCHA attempts during login                                                     |                                                     |
 | `successful_login_captcha_total`                               | Gauge     |                   11.0 | Counter of successful CAPTCHA attempts during login                                                 |                                                     |
 | `auto_devops_pipelines_completed_total`                        | Counter   |                   12.7 | Counter of completed Auto DevOps pipelines, labeled by status                                       |                                                     |
+| `gitlab_metrics_dashboard_processing_time_ms` | Summary | 12.10 | Metrics dashboard processing time in milliseconds | service, stages |
 
 ## Metrics controlled by a feature flag
 

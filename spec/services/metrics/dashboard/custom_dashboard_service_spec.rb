@@ -16,10 +16,20 @@ describe Metrics::Dashboard::CustomDashboardService, :use_clean_rails_memory_sto
   describe '#get_dashboard' do
     let(:dashboard_path) { '.gitlab/dashboards/test.yml' }
     let(:service_params) { [project, user, { environment: environment, dashboard_path: dashboard_path }] }
-    let(:service_call) { described_class.new(*service_params).get_dashboard }
+    let(:service_call) { subject.get_dashboard }
+
+    subject { described_class.new(*service_params) }
 
     context 'when the dashboard does not exist' do
       it_behaves_like 'misconfigured dashboard service response', :not_found
+
+      it 'does not update gitlab_metrics_dashboard_processing_time_ms metric', :prometheus do
+        service_call
+        metric = subject.send(:processing_time_metric)
+        labels = subject.send(:processing_time_metric_labels)
+
+        expect(metric.get(labels)).to eq(0)
+      end
     end
 
     it_behaves_like 'raises error for users with insufficient permissions'
@@ -28,6 +38,7 @@ describe Metrics::Dashboard::CustomDashboardService, :use_clean_rails_memory_sto
       let(:project) { project_with_dashboard(dashboard_path) }
 
       it_behaves_like 'valid dashboard service response'
+      it_behaves_like 'updates gitlab_metrics_dashboard_processing_time_ms metric'
 
       it 'caches the unprocessed dashboard for subsequent calls' do
         expect_any_instance_of(described_class)

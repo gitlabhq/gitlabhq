@@ -23,7 +23,7 @@ describe DiffsEntity do
         :start_version, :latest_diff, :latest_version_path,
         :added_lines, :removed_lines, :render_overflow_warning,
         :email_patch_path, :plain_diff_path, :diff_files,
-        :merge_request_diffs
+        :merge_request_diffs, :definition_path_prefix
       )
     end
   end

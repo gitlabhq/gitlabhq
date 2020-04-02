@@ -64,6 +64,10 @@ class DiffFileEntity < DiffFileBaseEntity
   # Used for parallel diffs
   expose :parallel_diff_lines, using: DiffLineParallelEntity, if: -> (diff_file, options) { parallel_diff_view?(options, diff_file) && diff_file.text? }
 
+  expose :code_navigation_path, if: -> (diff_file) { options[:code_navigation_path] } do |diff_file|
+    options[:code_navigation_path].full_json_path_for(diff_file.new_path)
+  end
+
   private
 
   def parallel_diff_view?(options, diff_file)

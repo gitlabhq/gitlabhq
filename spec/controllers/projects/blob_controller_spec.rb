@@ -118,32 +118,6 @@ describe Projects::BlobController do
         end
       end
     end
-
-    context 'when there is an artifact with code navigation data' do
-      let!(:pipeline) { create(:ci_pipeline, project: project, sha: project.commit.id) }
-      let!(:job) { create(:ci_build, pipeline: pipeline, name: Ci::Build::CODE_NAVIGATION_JOB_NAME) }
-      let!(:artifact) { create(:ci_job_artifact, :lsif, job: job) }
-
-      let(:id) { 'master/README.md' }
-
-      it 'assigns code_navigation_build variable' do
-        request
-
-        expect(assigns[:code_navigation_build]).to eq(job)
-      end
-
-      context 'when code_navigation feature is disabled' do
-        before do
-          stub_feature_flags(code_navigation: false)
-        end
-
-        it 'does not assign code_navigation_build variable' do
-          request
-
-          expect(assigns[:code_navigation_build]).to be_nil
-        end
-      end
-    end
   end
 
   describe 'GET diff' do

@@ -28,8 +28,8 @@ describe DiffsMetadataEntity do
         :start_version, :latest_diff, :latest_version_path,
         :added_lines, :removed_lines, :render_overflow_warning,
         :email_patch_path, :plain_diff_path,
-        :merge_request_diffs,
-        :context_commits,
+        :merge_request_diffs, :context_commits,
+        :definition_path_prefix,
         # Attributes
         :diff_files
       )

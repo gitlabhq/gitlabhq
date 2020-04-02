@@ -9,9 +9,8 @@
   = render "projects/blob/auxiliary_viewer", blob: blob
 
 #blob-content-holder.blob-content-holder
-  - if @code_navigation_build
-    - code_nav_url = raw_project_job_artifacts_url(@project, @code_navigation_build, path: "lsif/#{blob.path}")
-    #js-code-navigation{ data: { code_nav_url: "#{code_nav_url}.json", definition_path_prefix: project_blob_path(@project, @ref) } }
+  - if @code_navigation_path
+    #js-code-navigation{ data: { code_nav_url: @code_navigation_path, definition_path_prefix: project_blob_path(@project, @ref) } }
   %article.file-holder
     = render 'projects/blob/header', blob: blob
     = render 'projects/blob/content', blob: blob

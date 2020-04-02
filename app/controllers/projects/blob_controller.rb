@@ -208,24 +208,12 @@ class Projects::BlobController < Projects::ApplicationController
       .last_for_path(@repository, @ref, @path).sha
   end
 
-  def set_code_navigation_build
-    return if Feature.disabled?(:code_navigation, @project)
-
-    artifact =
-      Ci::JobArtifact
-        .for_sha(@blob.commit_id, @project.id)
-        .for_job_name(Ci::Build::CODE_NAVIGATION_JOB_NAME)
-        .last
-
-    @code_navigation_build = artifact&.job
-  end
-
   def show_html
     environment_params = @repository.branch_exists?(@ref) ? { ref: @ref } : { commit: @commit }
     environment_params[:find_latest] = true
     @environment = EnvironmentsFinder.new(@project, current_user, environment_params).execute.last
     @last_commit = @repository.last_commit_for_path(@commit.id, @blob.path)
-    set_code_navigation_build
+    @code_navigation_path = Gitlab::CodeNavigationPath.new(@project, @blob.commit_id).full_json_path_for(@blob.path)
 
     render 'show'
   end

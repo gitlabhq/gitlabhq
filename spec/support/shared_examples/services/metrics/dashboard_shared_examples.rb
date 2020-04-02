@@ -118,3 +118,13 @@ RSpec.shared_examples 'misconfigured dashboard service response with stepable' d
     expect(result[:message]).to eq(message) if message
   end
 end
+
+RSpec.shared_examples 'updates gitlab_metrics_dashboard_processing_time_ms metric' do
+  specify :prometheus do
+    service_call
+    metric = subject.send(:processing_time_metric)
+    labels = subject.send(:processing_time_metric_labels)
+
+    expect(metric.get(labels)).to be > 0
+  end
+end
