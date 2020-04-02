@@ -1,6 +1,6 @@
 export default () => ({
   commitMessage: '',
-  commitAction: '1',
+  commitAction: null,
   newBranchName: '',
   submitCommitLoading: false,
   shouldCreateMR: true,

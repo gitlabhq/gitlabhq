@@ -37,6 +37,16 @@ module Gitlab
           end
         end
 
+        def with_attachment!
+          @test_cases = @test_cases.extract!("failed")
+
+          @test_cases.keep_if do |status, hash|
+            hash.any? do |key, test_case|
+              test_case.has_attachment?
+            end
+          end
+        end
+
         TestCase::STATUS_TYPES.each do |status_type|
           define_method("#{status_type}") do
             test_cases[status_type] || {}

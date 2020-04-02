@@ -11,7 +11,12 @@ FactoryBot.define do
     attachment { nil }
     association :job, factory: :ci_build
 
+    trait :failed do
+      status { "failed" }
+    end
+
     trait :with_attachment do
+      status { "failed" }
       attachment { "some/path.png" }
     end
 

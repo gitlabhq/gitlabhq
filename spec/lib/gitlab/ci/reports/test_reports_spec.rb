@@ -109,6 +109,38 @@ describe Gitlab::Ci::Reports::TestReports do
     end
   end
 
+  describe '#with_attachment' do
+    let(:test_case) { build(:test_case, :failed) }
+
+    subject { test_reports.with_attachment! }
+
+    context 'when test suites do not contain an attachment' do
+      before do
+        test_reports.get_suite('rspec').add_test_case(create_test_case_rspec_success)
+        test_reports.get_suite('junit').add_test_case(test_case)
+      end
+
+      it 'returns empty test suites' do
+        expect(subject.test_suites).to be_empty
+      end
+    end
+
+    context 'when test suites contain an attachment' do
+      let(:test_case_succes) { build(:test_case) }
+      let(:test_case_with_attachment) { build(:test_case, :with_attachment) }
+
+      before do
+        test_reports.get_suite('rspec').add_test_case(test_case_succes)
+        test_reports.get_suite('junit').add_test_case(test_case_with_attachment)
+      end
+
+      it 'returns test suites with attachment' do
+        expect(subject.test_suites.count).to eq(1)
+        expect(subject.test_suites['junit'].test_cases['failed']).to be_present
+      end
+    end
+  end
+
   Gitlab::Ci::Reports::TestCase::STATUS_TYPES.each do |status_type|
     describe "##{status_type}_count" do
       subject { test_reports.public_send("#{status_type}_count") }

@@ -36,7 +36,9 @@ export default {
     },
   },
   mounted() {
-    this.updateSelectedCommitAction();
+    if (!this.commitAction) {
+      this.updateSelectedCommitAction();
+    }
   },
   methods: {
     ...mapCommitActions(['updateCommitAction']),

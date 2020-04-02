@@ -85,6 +85,13 @@ describe('IDE commit sidebar actions', () => {
       expect(vm.$store.dispatch).not.toHaveBeenCalled();
     });
 
+    it('is not called on mount if there is already a selected commitAction', () => {
+      store.state.commitAction = '1';
+      createComponent({ currentBranchId: null });
+
+      expect(vm.$store.dispatch).not.toHaveBeenCalled();
+    });
+
     it('calls again after staged changes', done => {
       createComponent({ currentBranchId: null });
 
