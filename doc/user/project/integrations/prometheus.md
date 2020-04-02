@@ -624,7 +624,7 @@ The options are:
 
 - [View logs](#view-logs-ultimate)
 - [Download CSV](#downloading-data-as-csv)
-- [Generate link to chart](#embedding-gitlab-managed-kubernetes-metrics)
+- [Copy link to chart](#embedding-gitlab-managed-kubernetes-metrics)
 - [Alerts](#setting-up-alerts-for-prometheus-metrics-ultimate)
 
 ### View Logs **(ULTIMATE)**
@@ -773,9 +773,11 @@ GitLab unfurls the link as an embedded metrics panel:
 
 ![Embedded Metrics Rendered](img/embedded_metrics_rendered_v12_8.png)
 
-A single chart may also be embedded. You can generate a link to the chart via the dropdown located on the right side of the chart:
+You can also embed a single chart. To get a link to a chart, click the
+**{ellipsis_v}** **More info** menu in the upper right corner of the chart,
+and select **Copy link to chart**, as shown in this example:
 
-![Generate Link To Chart](img/generate_link_to_chart.png)
+![Copy Link To Chart](img/copy_link_to_chart_v12_10.png)
 
 The following requirements must be met for the metric to unfurl:
 

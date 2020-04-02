@@ -142,6 +142,26 @@ describe RemoteMirror, :mailer do
     end
   end
 
+  describe '#update_repository' do
+    let(:git_remote_mirror) { spy }
+
+    before do
+      stub_const('Gitlab::Git::RemoteMirror', git_remote_mirror)
+    end
+
+    it 'includes the `keep_divergent_refs` setting' do
+      mirror = build_stubbed(:remote_mirror, keep_divergent_refs: true)
+
+      mirror.update_repository({})
+
+      expect(git_remote_mirror).to have_received(:new).with(
+        anything,
+        mirror.remote_name,
+        hash_including(keep_divergent_refs: true)
+      )
+    end
+  end
+
   describe '#safe_url' do
     context 'when URL contains credentials' do
       it 'masks the credentials' do

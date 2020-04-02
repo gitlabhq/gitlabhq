@@ -1,6 +1,11 @@
 <script>
 import { GlIcon, GlFormGroup, GlFormRadio, GlFormRadioGroup, GlLink } from '@gitlab/ui';
-import { SNIPPET_VISIBILITY, SNIPPET_VISIBILITY_PRIVATE } from '~/snippets/constants';
+import {
+  SNIPPET_VISIBILITY,
+  SNIPPET_VISIBILITY_PRIVATE,
+  SNIPPET_VISIBILITY_INTERNAL,
+  SNIPPET_VISIBILITY_PUBLIC,
+} from '~/snippets/constants';
 
 export default {
   components: {
@@ -29,14 +34,11 @@ export default {
   },
   computed: {
     visibilityOptions() {
-      const options = [];
-      Object.keys(SNIPPET_VISIBILITY).forEach(key => {
-        options.push({
-          value: key,
-          ...SNIPPET_VISIBILITY[key],
-        });
-      });
-      return options;
+      return [
+        SNIPPET_VISIBILITY_PRIVATE,
+        SNIPPET_VISIBILITY_INTERNAL,
+        SNIPPET_VISIBILITY_PUBLIC,
+      ].map(key => ({ value: key, ...SNIPPET_VISIBILITY[key] }));
     },
   },
 };

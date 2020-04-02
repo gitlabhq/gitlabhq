@@ -53,7 +53,7 @@ module Gitlab
         encode_utf8(response.ref)
       end
 
-      def update_remote_mirror(ref_name, only_branches_matching, ssh_key: nil, known_hosts: nil)
+      def update_remote_mirror(ref_name, only_branches_matching, ssh_key: nil, known_hosts: nil, keep_divergent_refs: false)
         req_enum = Enumerator.new do |y|
           first_request = Gitaly::UpdateRemoteMirrorRequest.new(
             repository: @gitaly_repo,
@@ -62,6 +62,7 @@ module Gitlab
 
           first_request.ssh_key = ssh_key if ssh_key.present?
           first_request.known_hosts = known_hosts if known_hosts.present?
+          first_request.keep_divergent_refs = keep_divergent_refs
 
           y.yield(first_request)
 

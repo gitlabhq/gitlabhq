@@ -9635,9 +9635,6 @@ msgstr ""
 msgid "GitLab / Unsubscribe"
 msgstr ""
 
-msgid "GitLab CI Linter has been moved"
-msgstr ""
-
 msgid "GitLab Enterprise Edition %{plan}"
 msgstr ""
 
@@ -21196,9 +21193,6 @@ msgid "To start serving your jobs you can either add specific Runners to your pr
 msgstr ""
 
 msgid "To this GitLab instance"
-msgstr ""
-
-msgid "To validate your GitLab CI configurations, go to 'CI/CD → Pipelines' inside your project, and click on the 'CI Lint' button."
 msgstr ""
 
 msgid "To view the roadmap, add a start or due date to one of your epics in this group or its subgroups. In the months view, only epics in the past month, current month, and next 5 months are shown."

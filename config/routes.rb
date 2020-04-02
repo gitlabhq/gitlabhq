@@ -19,7 +19,6 @@ Rails.application.routes.draw do
 
   draw :sherlock
   draw :development
-  draw :ci
 
   use_doorkeeper do
     controllers applications: 'oauth/applications',

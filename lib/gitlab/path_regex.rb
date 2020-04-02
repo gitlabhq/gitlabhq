@@ -28,7 +28,6 @@ module Gitlab
       apple-touch-icon.png
       assets
       autocomplete
-      ci
       dashboard
       deploy.html
       explore

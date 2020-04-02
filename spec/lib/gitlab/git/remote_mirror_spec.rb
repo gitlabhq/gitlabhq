@@ -7,14 +7,14 @@ describe Gitlab::Git::RemoteMirror do
     let(:project) { create(:project, :repository) }
     let(:repository) { project.repository }
     let(:ref_name) { 'foo' }
-    let(:options) { { only_branches_matching: ['master'], ssh_key: 'KEY', known_hosts: 'KNOWN HOSTS' } }
+    let(:options) { { only_branches_matching: ['master'], ssh_key: 'KEY', known_hosts: 'KNOWN HOSTS', keep_divergent_refs: true } }
 
     subject(:remote_mirror) { described_class.new(repository, ref_name, **options) }
 
     it 'delegates to the Gitaly client' do
       expect(repository.gitaly_remote_client)
         .to receive(:update_remote_mirror)
-        .with(ref_name, ['master'], ssh_key: 'KEY', known_hosts: 'KNOWN HOSTS')
+        .with(ref_name, ['master'], ssh_key: 'KEY', known_hosts: 'KNOWN HOSTS', keep_divergent_refs: true)
 
       remote_mirror.update
     end

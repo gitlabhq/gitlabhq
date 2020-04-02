@@ -15,7 +15,7 @@ class AwardEmoji < ApplicationRecord
   validates :awardable, presence: true, unless: :importing?
 
   validates :name, presence: true, inclusion: { in: Gitlab::Emoji.emojis_names }
-  validates :name, uniqueness: { scope: [:user, :awardable_type, :awardable_id] }, unless: :ghost_user?
+  validates :name, uniqueness: { scope: [:user, :awardable_type, :awardable_id] }, unless: -> { ghost_user? || importing? }
 
   participant :user
 

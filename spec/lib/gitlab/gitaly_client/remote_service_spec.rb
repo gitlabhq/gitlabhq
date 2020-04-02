@@ -66,7 +66,7 @@ describe Gitlab::GitalyClient::RemoteService do
         .with(kind_of(Enumerator), kind_of(Hash))
         .and_return(double(:update_remote_mirror_response))
 
-      client.update_remote_mirror(ref_name, only_branches_matching, ssh_key: ssh_key, known_hosts: known_hosts)
+      client.update_remote_mirror(ref_name, only_branches_matching, ssh_key: ssh_key, known_hosts: known_hosts, keep_divergent_refs: true)
     end
   end
 

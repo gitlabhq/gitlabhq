@@ -55,7 +55,6 @@ Currently the following names are reserved as top level groups:
 - `apple-touch-icon.png`
 - `assets`
 - `autocomplete`
-- `ci`
 - `dashboard`
 - `deploy.html`
 - `explore`

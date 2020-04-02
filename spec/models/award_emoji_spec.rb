@@ -41,6 +41,22 @@ describe AwardEmoji do
 
         expect(new_award).to be_valid
       end
+
+      # Similar to allowing duplicate award emojis for ghost users,
+      # when Importing a project that has duplicate award emoji placed by
+      # ghost user we change the author to be importer user and allow
+      # duplicates, otherwise relation containing such duplicates
+      # fails to be created
+      context 'when importing' do
+        it 'allows duplicate award emoji' do
+          user  = create(:user)
+          issue = create(:issue)
+          create(:award_emoji, user: user, awardable: issue)
+          new_award = build(:award_emoji, user: user, awardable: issue, importing: true)
+
+          expect(new_award).to be_valid
+        end
+      end
     end
   end
 

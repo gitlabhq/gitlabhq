@@ -117,6 +117,8 @@ class RemoteMirror < ApplicationRecord
       end
     end
 
+    options[:keep_divergent_refs] = keep_divergent_refs?
+
     Gitlab::Git::RemoteMirror.new(
       project.repository.raw,
       remote_name,
