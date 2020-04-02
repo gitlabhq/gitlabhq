@@ -8627,6 +8627,8 @@ CREATE INDEX index_boards_on_project_id ON public.boards USING btree (project_id
 
 CREATE INDEX index_broadcast_message_on_ends_at_and_broadcast_type_and_id ON public.broadcast_messages USING btree (ends_at, broadcast_type, id);
 
+CREATE INDEX index_chat_names_on_service_id ON public.chat_names USING btree (service_id);
+
 CREATE UNIQUE INDEX index_chat_names_on_service_id_and_team_id_and_chat_id ON public.chat_names USING btree (service_id, team_id, chat_id);
 
 CREATE UNIQUE INDEX index_chat_names_on_user_id_and_service_id ON public.chat_names USING btree (user_id, service_id);
@@ -10332,6 +10334,9 @@ CREATE UNIQUE INDEX users_security_dashboard_projects_unique_index ON public.use
 CREATE UNIQUE INDEX vulnerability_feedback_unique_idx ON public.vulnerability_feedback USING btree (project_id, category, feedback_type, project_fingerprint);
 
 CREATE UNIQUE INDEX vulnerability_occurrence_pipelines_on_unique_keys ON public.vulnerability_occurrence_pipelines USING btree (occurrence_id, pipeline_id);
+
+ALTER TABLE ONLY public.chat_names
+    ADD CONSTRAINT fk_00797a2bf9 FOREIGN KEY (service_id) REFERENCES public.services(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.epics
     ADD CONSTRAINT fk_013c9f36ca FOREIGN KEY (due_date_sourcing_epic_id) REFERENCES public.epics(id) ON DELETE SET NULL;
@@ -12879,6 +12884,10 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200312163407
 20200313101649
 20200313123934
+20200313202430
+20200313203525
+20200313203550
+20200313204021
 20200314060834
 20200316111759
 20200316162648

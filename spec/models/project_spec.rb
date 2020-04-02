@@ -5729,6 +5729,20 @@ describe Project do
     end
   end
 
+  describe 'with services and chat names' do
+    subject { create(:project) }
+
+    let(:service) { create(:service, project: subject) }
+
+    before do
+      create_list(:chat_name, 5, service: service)
+    end
+
+    it 'removes chat names on removal' do
+      expect { subject.destroy }.to change { ChatName.count }.by(-5)
+    end
+  end
+
   describe 'with_issues_or_mrs_available_for_user' do
     before do
       Project.delete_all
