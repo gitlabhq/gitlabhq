@@ -2,6 +2,7 @@ import { slugify } from '~/lib/utils/text_utility';
 import createGqClient, { fetchPolicies } from '~/lib/graphql';
 import { SUPPORTED_FORMATS } from '~/lib/utils/unit_format';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { NOT_IN_DB_PREFIX } from '../constants';
 
 export const gqClient = createGqClient(
   {},
@@ -14,11 +15,18 @@ export const gqClient = createGqClient(
  * Metrics loaded from project-defined dashboards do not have a metric_id.
  * This method creates a unique ID combining metric_id and id, if either is present.
  * This is hopefully a temporary solution until BE processes metrics before passing to FE
+ *
+ * Related:
+ * https://gitlab.com/gitlab-org/gitlab/-/issues/28241
+ * https://gitlab.com/gitlab-org/gitlab/-/merge_requests/27447
+ *
  * @param {Object} metric - metric
+ * @param {Number} metric.metric_id - Database metric id
+ * @param {String} metric.id - User-defined identifier
  * @returns {Object} - normalized metric with a uniqueID
  */
 // eslint-disable-next-line babel/camelcase
-export const uniqMetricsId = ({ metric_id, id }) => `${metric_id}_${id}`;
+export const uniqMetricsId = ({ metric_id, id }) => `${metric_id || NOT_IN_DB_PREFIX}_${id}`;
 
 /**
  * Project path has a leading slash that doesn't work well

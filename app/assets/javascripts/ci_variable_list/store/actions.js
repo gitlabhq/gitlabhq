@@ -153,3 +153,22 @@ export const fetchEnvironments = ({ dispatch, state }) => {
       createFlash(__('There was an error fetching the environments information.'));
     });
 };
+
+export const setEnvironmentScope = ({ commit, dispatch }, environment) => {
+  commit(types.SET_ENVIRONMENT_SCOPE, environment);
+  dispatch('setSelectedEnvironment', environment);
+};
+
+export const addWildCardScope = ({ commit, dispatch }, environment) => {
+  commit(types.ADD_WILD_CARD_SCOPE, environment);
+  commit(types.SET_ENVIRONMENT_SCOPE, environment);
+  dispatch('setSelectedEnvironment', environment);
+};
+
+export const resetSelectedEnvironment = ({ commit }) => {
+  commit(types.RESET_SELECTED_ENVIRONMENT);
+};
+
+export const setSelectedEnvironment = ({ commit }, environment) => {
+  commit(types.SET_SELECTED_ENVIRONMENT, environment);
+};

@@ -144,7 +144,7 @@ export const fetchPrometheusMetric = ({ commit }, { metric, params }) => {
 
   const minStep = 60;
   const queryDataPoints = 600;
-  const step = Math.max(minStep, Math.ceil(timeDiff / queryDataPoints));
+  const step = metric.step ? metric.step : Math.max(minStep, Math.ceil(timeDiff / queryDataPoints));
 
   const queryParams = {
     start_time,

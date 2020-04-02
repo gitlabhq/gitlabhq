@@ -1,7 +1,7 @@
 export default {
   mockVariables: [
     {
-      environment_scope: 'All environments',
+      environment_scope: 'All (default)',
       id: 113,
       key: 'test_var',
       masked: false,
@@ -37,7 +37,7 @@ export default {
 
   mockVariablesDisplay: [
     {
-      environment_scope: 'All',
+      environment_scope: 'All (default)',
       id: 113,
       key: 'test_var',
       masked: false,
@@ -47,7 +47,7 @@ export default {
       variable_type: 'Var',
     },
     {
-      environment_scope: 'All',
+      environment_scope: 'All (default)',
       id: 114,
       key: 'test_var_2',
       masked: false,
@@ -88,4 +88,67 @@ export default {
   ozakE+8p06BpxegR4BR3FMHf6p+0jQxUEAkAyb/mVgm66TyghDGC6/YkiKoZptXQ
   98TwDIK/39WEB/V607As+KoYazQG8drorw==
   -----END CERTIFICATE REQUEST-----`,
+
+  mockVariableScopes: [
+    {
+      id: 13,
+      key: 'test_var_1',
+      value: 'test_val_1',
+      variable_type: 'File',
+      protected: true,
+      masked: true,
+      environment_scope: 'All (default)',
+      secret_value: 'test_val_1',
+    },
+    {
+      id: 28,
+      key: 'goku_var',
+      value: 'goku_val',
+      variable_type: 'Var',
+      protected: true,
+      masked: true,
+      environment_scope: 'staging',
+      secret_value: 'goku_val',
+    },
+    {
+      id: 25,
+      key: 'test_var_4',
+      value: 'test_val_4',
+      variable_type: 'Var',
+      protected: false,
+      masked: false,
+      environment_scope: 'production',
+      secret_value: 'test_val_4',
+    },
+    {
+      id: 14,
+      key: 'test_var_2',
+      value: 'test_val_2',
+      variable_type: 'File',
+      protected: false,
+      masked: false,
+      environment_scope: 'staging',
+      secret_value: 'test_val_2',
+    },
+    {
+      id: 24,
+      key: 'test_var_3',
+      value: 'test_val_3',
+      variable_type: 'Var',
+      protected: false,
+      masked: false,
+      environment_scope: 'All (default)',
+      secret_value: 'test_val_3',
+    },
+    {
+      id: 26,
+      key: 'test_var_5',
+      value: 'test_val_5',
+      variable_type: 'Var',
+      protected: false,
+      masked: false,
+      environment_scope: 'production',
+      secret_value: 'test_val_5',
+    },
+  ],
 };

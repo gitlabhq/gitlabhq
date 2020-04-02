@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import * as getters from '~/monitoring/stores/getters';
 import mutations from '~/monitoring/stores/mutations';
 import * as types from '~/monitoring/stores/mutation_types';
@@ -272,6 +273,58 @@ describe('Monitoring store Getters', () => {
         });
         expect(getters.filteredEnvironments(state).length).toBe(output);
       });
+    });
+  });
+
+  describe('metricsSavedToDb', () => {
+    let metricsSavedToDb;
+    let state;
+    let mockData;
+
+    beforeEach(() => {
+      mockData = _.cloneDeep(metricsDashboardPayload);
+      state = {
+        dashboard: {
+          panelGroups: [],
+        },
+      };
+    });
+
+    it('return no metrics when dashboard is not persisted', () => {
+      mutations[types.RECEIVE_METRICS_DATA_SUCCESS](state, mockData);
+      metricsSavedToDb = getters.metricsSavedToDb(state);
+
+      expect(metricsSavedToDb).toEqual([]);
+    });
+
+    it('return a metric id when one metric is persisted', () => {
+      const id = 99;
+
+      const [metric] = mockData.panel_groups[0].panels[0].metrics;
+
+      metric.metric_id = id;
+
+      mutations[types.RECEIVE_METRICS_DATA_SUCCESS](state, mockData);
+      metricsSavedToDb = getters.metricsSavedToDb(state);
+
+      expect(metricsSavedToDb).toEqual([`${id}_${metric.id}`]);
+    });
+
+    it('return a metric id when two metrics are persisted', () => {
+      const id1 = 101;
+      const id2 = 102;
+
+      const [metric1] = mockData.panel_groups[0].panels[0].metrics;
+      const [metric2] = mockData.panel_groups[0].panels[1].metrics;
+
+      // database persisted 2 metrics
+      metric1.metric_id = id1;
+      metric2.metric_id = id2;
+
+      mutations[types.RECEIVE_METRICS_DATA_SUCCESS](state, mockData);
+      metricsSavedToDb = getters.metricsSavedToDb(state);
+
+      expect(metricsSavedToDb).toEqual([`${id1}_${metric1.id}`, `${id2}_${metric2.id}`]);
     });
   });
 });

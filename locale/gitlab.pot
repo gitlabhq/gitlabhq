@@ -1631,6 +1631,9 @@ msgstr ""
 msgid "All %{replicableType} are being scheduled for %{action}"
 msgstr ""
 
+msgid "All (default)"
+msgstr ""
+
 msgid "All Members"
 msgstr ""
 
@@ -5904,6 +5907,9 @@ msgstr ""
 msgid "Create project label"
 msgstr ""
 
+msgid "Create wildcard: %{searchTerm}"
+msgstr ""
+
 msgid "Create your first page"
 msgstr ""
 
@@ -6446,6 +6452,9 @@ msgstr ""
 msgid "Delete comment"
 msgstr ""
 
+msgid "Delete domain"
+msgstr ""
+
 msgid "Delete license"
 msgstr ""
 
@@ -6456,6 +6465,9 @@ msgid "Delete pipeline"
 msgstr ""
 
 msgid "Delete project"
+msgstr ""
+
+msgid "Delete serverless domain?"
 msgstr ""
 
 msgid "Delete snippet"
@@ -23079,6 +23091,9 @@ msgstr ""
 msgid "You"
 msgstr ""
 
+msgid "You are about to delete %{domain} from your instance. This domain will no longer be available to any Knative application."
+msgstr ""
+
 msgid "You are about to transfer the control of your account to %{group_name} group. This action is NOT reversible, you won't be able to access any of your groups and projects outside of %{group_name} once this transfer is complete."
 msgstr ""
 
@@ -23353,6 +23368,9 @@ msgid "You may close the milestone now."
 msgstr ""
 
 msgid "You must accept our Terms of Service and privacy policy in order to register an account"
+msgstr ""
+
+msgid "You must disassociate %{domain} from all clusters it is attached to before deletion."
 msgstr ""
 
 msgid "You must have maintainer access to force delete a lock"

@@ -66,13 +66,13 @@ describe('Monitoring mutations', () => {
       const groups = getGroups();
 
       expect(groups[0].panels[0].metrics[0].metricId).toEqual(
-        'undefined_system_metrics_kubernetes_container_memory_total',
+        'NO_DB_system_metrics_kubernetes_container_memory_total',
       );
       expect(groups[1].panels[0].metrics[0].metricId).toEqual(
-        'undefined_response_metrics_nginx_ingress_throughput_status_code',
+        'NO_DB_response_metrics_nginx_ingress_throughput_status_code',
       );
       expect(groups[2].panels[0].metrics[0].metricId).toEqual(
-        'undefined_response_metrics_nginx_ingress_16_throughput_status_code',
+        'NO_DB_response_metrics_nginx_ingress_16_throughput_status_code',
       );
     });
   });
@@ -184,7 +184,7 @@ describe('Monitoring mutations', () => {
   });
 
   describe('Individual panel/metric results', () => {
-    const metricId = 'undefined_response_metrics_nginx_ingress_throughput_status_code';
+    const metricId = 'NO_DB_response_metrics_nginx_ingress_throughput_status_code';
     const result = [
       {
         values: [[0, 1], [1, 1], [1, 3]],

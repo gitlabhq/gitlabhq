@@ -83,4 +83,25 @@ export default {
     state.variableBeingEdited = null;
     state.showInputValue = false;
   },
+
+  [types.SET_ENVIRONMENT_SCOPE](state, environment) {
+    if (state.variableBeingEdited) {
+      state.variableBeingEdited.environment_scope = environment;
+    } else {
+      state.variable.environment_scope = environment;
+    }
+  },
+
+  [types.ADD_WILD_CARD_SCOPE](state, environment) {
+    state.environments.push(environment);
+    state.environments.sort();
+  },
+
+  [types.RESET_SELECTED_ENVIRONMENT](state) {
+    state.selectedEnvironment = '';
+  },
+
+  [types.SET_SELECTED_ENVIRONMENT](state, environment) {
+    state.selectedEnvironment = environment;
+  },
 };

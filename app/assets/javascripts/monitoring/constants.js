@@ -104,3 +104,8 @@ export const endpointKeys = [
  * as Vue props.
  */
 export const initialStateKeys = [...endpointKeys, 'currentEnvironmentName'];
+
+/**
+ * Constant to indicate if a metric exists in the database
+ */
+export const NOT_IN_DB_PREFIX = 'NO_DB';

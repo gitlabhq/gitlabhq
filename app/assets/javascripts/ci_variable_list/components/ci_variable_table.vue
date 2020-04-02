@@ -92,6 +92,7 @@ export default {
       sort-by="key"
       sort-direction="asc"
       stacked="lg"
+      table-class="text-secondary"
       fixed
       show-empty
       sort-icon-left

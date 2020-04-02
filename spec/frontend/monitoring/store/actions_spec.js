@@ -557,6 +557,86 @@ describe('Monitoring store actions', () => {
       ).catch(done.fail);
     });
 
+    describe('without metric defined step', () => {
+      const expectedParams = {
+        start_time: '2019-08-06T12:40:02.184Z',
+        end_time: '2019-08-06T20:40:02.184Z',
+        step: 60,
+      };
+
+      it('uses calculated step', done => {
+        mock.onGet('http://test').reply(200, { data }); // One attempt
+
+        testAction(
+          fetchPrometheusMetric,
+          { metric, params },
+          state,
+          [
+            {
+              type: types.REQUEST_METRIC_RESULT,
+              payload: {
+                metricId: metric.metricId,
+              },
+            },
+            {
+              type: types.RECEIVE_METRIC_RESULT_SUCCESS,
+              payload: {
+                metricId: metric.metricId,
+                result: data.result,
+              },
+            },
+          ],
+          [],
+          () => {
+            expect(mock.history.get[0].params).toEqual(expectedParams);
+            done();
+          },
+        ).catch(done.fail);
+      });
+    });
+
+    describe('with metric defined step', () => {
+      beforeEach(() => {
+        metric.step = 7;
+      });
+
+      const expectedParams = {
+        start_time: '2019-08-06T12:40:02.184Z',
+        end_time: '2019-08-06T20:40:02.184Z',
+        step: 7,
+      };
+
+      it('uses metric step', done => {
+        mock.onGet('http://test').reply(200, { data }); // One attempt
+
+        testAction(
+          fetchPrometheusMetric,
+          { metric, params },
+          state,
+          [
+            {
+              type: types.REQUEST_METRIC_RESULT,
+              payload: {
+                metricId: metric.metricId,
+              },
+            },
+            {
+              type: types.RECEIVE_METRIC_RESULT_SUCCESS,
+              payload: {
+                metricId: metric.metricId,
+                result: data.result,
+              },
+            },
+          ],
+          [],
+          () => {
+            expect(mock.history.get[0].params).toEqual(expectedParams);
+            done();
+          },
+        ).catch(done.fail);
+      });
+    });
+
     it('commits result, when waiting for results', done => {
       // Mock multiple attempts while the cache is filling up
       mock.onGet('http://test').replyOnce(statusCodes.NO_CONTENT);

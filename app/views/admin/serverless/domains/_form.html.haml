@@ -66,3 +66,34 @@
           = _("Upload a private key for your certificate")
 
   = f.submit @domain.persisted? ? _('Save changes') : _('Add domain'), class: "btn btn-success js-serverless-domain-submit", disabled: @domain.persisted?
+  - if @domain.persisted?
+    %button.btn.btn-remove{ type: 'button', data: { toggle: 'modal', target: "#modal-delete-domain" } }
+      = _('Delete domain')
+
+-# haml-lint:disable NoPlainNodes
+- if @domain.persisted?
+  - domain_attached = @domain.serverless_domain_clusters.count > 0
+  .modal{ id: "modal-delete-domain", tabindex: -1 }
+    .modal-dialog
+      .modal-content
+        .modal-header
+          %h3.page-title= _('Delete serverless domain?')
+          %button.close{ type: "button", "data-dismiss": "modal", "aria-label" => _('Close') }
+            %span{ "aria-hidden": true } &times;
+
+        .modal-body
+          - if domain_attached
+            = _("You must disassociate %{domain} from all clusters it is attached to before deletion.").html_safe % { domain: "<code>#{@domain.domain}</code>".html_safe }
+          - else
+            = _("You are about to delete %{domain} from your instance. This domain will no longer be available to any Knative application.").html_safe % { domain: "<code>#{@domain.domain}</code>".html_safe }
+
+        .modal-footer
+          %a{ href: '#', data: { dismiss: 'modal' }, class: 'btn btn-default' }
+            = _('Cancel')
+
+          = link_to _('Delete domain'),
+            admin_serverless_domain_path(@domain.id),
+            title: _('Delete'),
+            method: :delete,
+            class: "btn btn-remove",
+            disabled: domain_attached

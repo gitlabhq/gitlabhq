@@ -6,7 +6,7 @@ export const ADD_CI_VARIABLE_MODAL_ID = 'add-ci-variable';
 export const displayText = {
   variableText: __('Var'),
   fileText: __('File'),
-  allEnvironmentsText: __('All'),
+  allEnvironmentsText: __('All (default)'),
 };
 
 export const types = {

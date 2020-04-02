@@ -21,4 +21,5 @@ export default () => ({
   environments: [],
   typeOptions: [displayText.variableText, displayText.fileText],
   variableBeingEdited: null,
+  selectedEnvironment: '',
 });
