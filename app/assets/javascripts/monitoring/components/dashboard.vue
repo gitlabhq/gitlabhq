@@ -394,6 +394,7 @@ export default {
         >
           <dashboards-dropdown
             id="monitor-dashboards-dropdown"
+            data-qa-selector="dashboards_filter_dropdown"
             class="mb-0 d-flex"
             toggle-class="dropdown-menu-toggle"
             :default-branch="defaultBranch"
@@ -458,6 +459,7 @@ export default {
           label-size="sm"
           label-for="monitor-time-window-dropdown"
           class="col-sm-auto col-md-auto col-lg-auto"
+          data-qa-selector="show_last_dropdown"
         >
           <date-time-picker
             ref="dateTimePicker"
@@ -533,6 +535,7 @@ export default {
               v-if="selectedDashboard.can_edit"
               class="mt-1 js-edit-link"
               :href="selectedDashboard.project_blob_path"
+              data-qa-selector="edit_dashboard_button"
               >{{ __('Edit dashboard') }}</gl-button
             >
 

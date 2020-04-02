@@ -3,11 +3,15 @@
 require 'spec_helper'
 
 describe API::Pipelines do
-  let(:user)        { create(:user) }
-  let(:non_member)  { create(:user) }
-  let(:project)     { create(:project, :repository, creator: user) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:non_member) { create(:user) }
 
-  let!(:pipeline) do
+  # We need to reload as the shared example 'pipelines visibility table' is changing project
+  let_it_be(:project, reload: true) do
+    create(:project, :repository, creator: user)
+  end
+
+  let_it_be(:pipeline) do
     create(:ci_empty_pipeline, project: project, sha: project.commit.id,
                                ref: project.default_branch, user: user)
   end
@@ -26,7 +30,7 @@ describe API::Pipelines do
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
-        expect(json_response.first['sha']).to match /\A\h{40}\z/
+        expect(json_response.first['sha']).to match(/\A\h{40}\z/)
         expect(json_response.first['id']).to eq pipeline.id
         expect(json_response.first['web_url']).to be_present
         expect(json_response.first.keys).to contain_exactly(*%w[id sha ref status web_url created_at updated_at])
@@ -438,7 +442,7 @@ describe API::Pipelines do
         get api("/projects/#{project.id}/pipelines/#{pipeline.id}", user)
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response['sha']).to match /\A\h{40}\z/
+        expect(json_response['sha']).to match(/\A\h{40}\z/)
       end
 
       it 'returns 404 when it does not exist' do

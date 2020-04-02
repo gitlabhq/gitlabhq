@@ -1583,13 +1583,6 @@ class User < ApplicationRecord
   end
 
   def read_only_attribute?(attribute)
-    if Feature.enabled?(:ldap_readonly_attributes, default_enabled: true)
-      enabled = Gitlab::Auth::Ldap::Config.enabled?
-      read_only = attribute.to_sym.in?(UserSyncedAttributesMetadata::SYNCABLE_ATTRIBUTES)
-
-      return true if enabled && read_only
-    end
-
     user_synced_attributes_metadata&.read_only?(attribute)
   end
 

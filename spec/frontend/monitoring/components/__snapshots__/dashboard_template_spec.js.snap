@@ -19,6 +19,7 @@ exports[`Dashboard template matches the default snapshot 1`] = `
       >
         <dashboards-dropdown-stub
           class="mb-0 d-flex"
+          data-qa-selector="dashboards_filter_dropdown"
           defaultbranch="master"
           id="monitor-dashboards-dropdown"
           selecteddashboard="[object Object]"
@@ -74,6 +75,7 @@ exports[`Dashboard template matches the default snapshot 1`] = `
        
       <gl-form-group-stub
         class="col-sm-auto col-md-auto col-lg-auto"
+        data-qa-selector="show_last_dropdown"
         label="Show last"
         label-for="monitor-time-window-dropdown"
         label-size="sm"

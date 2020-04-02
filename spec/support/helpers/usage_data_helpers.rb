@@ -92,6 +92,7 @@ module UsageDataHelpers
       projects_with_repositories_enabled
       projects_with_error_tracking_enabled
       projects_with_alerts_service_enabled
+      projects_with_prometheus_alerts
       pages_domains
       protected_branches
       releases

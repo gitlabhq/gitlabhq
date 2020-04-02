@@ -4263,30 +4263,6 @@ describe User, :do_not_mock_admin_mode do
   end
 
   describe '#read_only_attribute?' do
-    context 'when LDAP server is enabled' do
-      before do
-        allow(Gitlab::Auth::Ldap::Config).to receive(:enabled?).and_return(true)
-      end
-
-      %i[name email location].each do |attribute|
-        it "is true for #{attribute}" do
-          expect(subject.read_only_attribute?(attribute)).to be_truthy
-        end
-      end
-
-      context 'and ldap_readonly_attributes feature is disabled' do
-        before do
-          stub_feature_flags(ldap_readonly_attributes: false)
-        end
-
-        %i[name email location].each do |attribute|
-          it "is false" do
-            expect(subject.read_only_attribute?(attribute)).to be_falsey
-          end
-        end
-      end
-    end
-
     context 'when synced attributes metadata is present' do
       it 'delegates to synced_attributes_metadata' do
         subject.build_user_synced_attributes_metadata
@@ -4297,7 +4273,7 @@ describe User, :do_not_mock_admin_mode do
       end
     end
 
-    context 'when synced attributes metadata is present' do
+    context 'when synced attributes metadata is not present' do
       it 'is false for any attribute' do
         expect(subject.read_only_attribute?(:email)).to be_falsey
       end

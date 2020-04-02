@@ -25,7 +25,7 @@ module QA::Page
       end
 
       def wait_for_latest_pipeline_status
-        wait_until(reload: false, max_duration: 300) do
+        wait_until(reload: false, max_duration: 360) do
           within_element_by_index(:pipeline_commit_status, 0) { yield }
         end
       end

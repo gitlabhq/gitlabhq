@@ -38,6 +38,24 @@ SCIM mapping:
 
 ![Azure AD SCIM](img/AzureAD-scim_attribute_mapping.png)
 
+## Okta
+
+Basic SAML app configuration:
+
+![Okta basic SAML](img/Okta-SAMLsetup.png)
+
+User claims and attributes:
+
+![Okta Attributes](img/Okta-attributes.png)
+
+Advanced SAML app settings (defaults):
+
+![Okta Advanced Settings](img/Okta-advancedsettings.png)
+
+IdP Links and Certificate:
+
+![Okta Links and Certificate](img/Okta-linkscert.png)
+
 ## OneLogin
 
 Application details:

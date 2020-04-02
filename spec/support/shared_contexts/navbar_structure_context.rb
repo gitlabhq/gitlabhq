@@ -121,8 +121,16 @@ RSpec.shared_context 'group navbar structure' do
         _('Projects'),
         _('CI / CD'),
         _('Webhooks'),
-        _('Audit Events'),
-        _('Usage Quotas')
+        _('Audit Events')
+      ]
+    }
+  end
+
+  let(:administration_nav_item) do
+    {
+      nav_item: _('Administration'),
+      nav_sub_items: [
+        s_('UsageQuota|Usage Quotas')
       ]
     }
   end

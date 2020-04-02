@@ -2271,7 +2271,6 @@ CREATE TABLE public.epics (
     state_id smallint DEFAULT 1 NOT NULL,
     start_date_sourcing_epic_id integer,
     due_date_sourcing_epic_id integer,
-    health_status smallint,
     external_key character varying(255)
 );
 
@@ -12819,6 +12818,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200226100614
 20200226100624
 20200226100634
+20200226124757
 20200226162156
 20200226162239
 20200226162634

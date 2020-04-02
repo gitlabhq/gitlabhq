@@ -60,11 +60,7 @@ module Users
     end
 
     def discard_read_only_attributes
-      if Feature.enabled?(:ldap_readonly_attributes, default_enabled: true)
-        params.reject! { |key, _| @user.read_only_attribute?(key.to_sym) }
-      else
-        discard_synced_attributes
-      end
+      discard_synced_attributes
     end
 
     def discard_synced_attributes

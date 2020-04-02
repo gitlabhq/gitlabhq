@@ -55,15 +55,6 @@ describe Users::UpdateService do
       expect(result[:message]).to eq("Emoji is not included in the list")
     end
 
-    it 'ignores read-only attributes' do
-      allow(user).to receive(:read_only_attribute?).with(:name).and_return(true)
-
-      expect do
-        update_user(user, name: 'changed' + user.name)
-        user.reload
-      end.not_to change { user.name }
-    end
-
     it 'updates user detail with provided attributes' do
       result = update_user(user, job_title: 'Backend Engineer')
 

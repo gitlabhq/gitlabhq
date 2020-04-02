@@ -22,7 +22,7 @@ variables:
 stages:
   - production
 
-# This job continuously deploys to production on every push to `master`.
+# This job continuously deploys to staging/production on every push to `master`.
 
 production:
   stage: production

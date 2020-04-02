@@ -30,7 +30,7 @@ The following identity providers are supported:
 
 Once [Single sign-on](index.md) has been configured, we can:
 
-1. Navigate to the group and click **Settings > SAML SSO**.
+1. Navigate to the group and click **Administration > SAML SSO**.
 1. Click on the **Generate a SCIM token** button.
 1. Save the token and URL so they can be used in the next step.
 

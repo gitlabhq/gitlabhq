@@ -255,6 +255,8 @@ configured to act as a remote proxy and add the `Gitlab-DAST-Permission` header.
 
 ### API scan
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10928) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.10.
+
 Using an API specification as a scan's target is a useful way to seed URLs for scanning an API.
 Vulnerability rules in an API scan are different than those in a normal website scan.
 

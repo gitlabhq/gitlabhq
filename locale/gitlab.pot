@@ -1584,6 +1584,9 @@ msgstr ""
 msgid "AdminUsers|You are about to permanently delete the user %{username}. This will delete all of the issues, merge requests, and groups linked to them. To avoid data loss, consider using the %{strong_start}block user%{strong_end} feature instead. Once you %{strong_start}Delete user%{strong_end}, it cannot be undone or recovered."
 msgstr ""
 
+msgid "Administration"
+msgstr ""
+
 msgid "Advanced"
 msgstr ""
 
@@ -7364,9 +7367,6 @@ msgstr ""
 msgid "Email display name"
 msgstr ""
 
-msgid "Email domain is not editable in subgroups. Value inherited from top-level parent group."
-msgstr ""
-
 msgid "Email not verified. Please verify your email in Salesforce."
 msgstr ""
 
@@ -8675,6 +8675,9 @@ msgstr ""
 msgid "FeatureFlags|Active"
 msgstr ""
 
+msgid "FeatureFlags|Add strategy"
+msgstr ""
+
 msgid "FeatureFlags|All users"
 msgstr ""
 
@@ -8699,6 +8702,9 @@ msgstr ""
 msgid "FeatureFlags|Edit Feature Flag"
 msgstr ""
 
+msgid "FeatureFlags|Enable features for specific users and specific environments by defining feature flag strategies. By default, features are available to all users in all environments."
+msgstr ""
+
 msgid "FeatureFlags|Environment Spec"
 msgstr ""
 
@@ -8709,6 +8715,9 @@ msgid "FeatureFlags|Feature Flag"
 msgstr ""
 
 msgid "FeatureFlags|Feature Flag behavior is built up by creating a set of rules to define the status of target environments. A default wildcard rule %{codeStart}*%{codeEnd} for %{boldStart}All Environments%{boldEnd} is set, and you are able to add as many rules as you need by choosing environment specs below. You can toggle the behavior for each of your rules to set them %{boldStart}Active%{boldEnd} or %{boldStart}Inactive%{boldEnd}."
+msgstr ""
+
+msgid "FeatureFlags|Feature Flag has no strategies"
 msgstr ""
 
 msgid "FeatureFlags|Feature Flags"
@@ -8778,6 +8787,9 @@ msgid "FeatureFlags|Rollout Strategy"
 msgstr ""
 
 msgid "FeatureFlags|Status"
+msgstr ""
+
+msgid "FeatureFlags|Strategies"
 msgstr ""
 
 msgid "FeatureFlags|Target environments"
@@ -10681,9 +10693,6 @@ msgid "INFO: Your SSH key is expiring soon. Please generate a new key."
 msgstr ""
 
 msgid "IP Address"
-msgstr ""
-
-msgid "IP address restriction is not editable in subgroups. Value inherited from top-level parent group."
 msgstr ""
 
 msgid "IP subnet restriction only allowed for top-level groups"
@@ -13497,9 +13506,6 @@ msgid "No test coverage"
 msgstr ""
 
 msgid "No thanks, don't show this again"
-msgstr ""
-
-msgid "No value set by top-level parent group."
 msgstr ""
 
 msgid "No vulnerabilities found for this group"

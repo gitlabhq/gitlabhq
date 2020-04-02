@@ -92,8 +92,7 @@ export default {
     <p class="text-muted">
       {{
         s__(`Metrics|You can save a copy of this dashboard to your repository
-      so it can be customized. Select a file name and branch to 
-      save it.`)
+      so it can be customized. Select a file name and branch to save it.`)
       }}
     </p>
     <gl-form-group
@@ -104,7 +103,13 @@ export default {
       label-size="sm"
       label-for="fileName"
     >
-      <gl-form-input id="fileName" ref="fileName" v-model="form.fileName" :required="true" />
+      <gl-form-input
+        id="fileName"
+        ref="fileName"
+        v-model="form.fileName"
+        data-qa-selector="duplicate_dashboard_filename_field"
+        :required="true"
+      />
     </gl-form-group>
     <gl-form-group :label="__('Branch')" label-size="sm" label-for="branch">
       <gl-form-radio-group
