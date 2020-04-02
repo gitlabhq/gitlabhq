@@ -4400,6 +4400,12 @@ describe User, :do_not_mock_admin_mode do
 
       it { is_expected.to be expected_result }
     end
+
+    context 'when email is of Gitlab and is not confirmed' do
+      let(:user) { build(:user, email: 'test@gitlab.com', confirmed_at: nil) }
+
+      it { is_expected.to be false }
+    end
   end
 
   describe '#current_highest_access_level' do

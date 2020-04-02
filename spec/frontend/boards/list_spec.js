@@ -56,7 +56,7 @@ describe('List model', () => {
       label: {
         id: 1,
         title: 'test',
-        color: 'red',
+        color: '#ff0000',
         text_color: 'white',
       },
     });
@@ -64,8 +64,7 @@ describe('List model', () => {
       expect(list.id).toBe(listObj.id);
       expect(list.type).toBe('label');
       expect(list.position).toBe(0);
-      expect(list.label.color).toBe('red');
-      expect(list.label.textColor).toBe('white');
+      expect(list.label).toEqual(listObj.label);
     });
   });
 

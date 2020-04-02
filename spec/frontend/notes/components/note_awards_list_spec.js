@@ -1,14 +1,24 @@
 import Vue from 'vue';
+import AxiosMockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
 import createStore from '~/notes/stores';
 import awardsNote from '~/notes/components/note_awards_list.vue';
 import { noteableDataMock, notesDataMock } from '../mock_data';
+import { TEST_HOST } from 'jest/helpers/test_constants';
 
 describe('note_awards_list component', () => {
   let store;
   let vm;
   let awardsMock;
+  let mock;
+
+  const toggleAwardPath = `${TEST_HOST}/gitlab-org/gitlab-foss/notes/545/toggle_award_emoji`;
 
   beforeEach(() => {
+    mock = new AxiosMockAdapter(axios);
+
+    mock.onPost(toggleAwardPath).reply(200, '');
+
     const Component = Vue.extend(awardsNote);
 
     store = createStore();
@@ -32,12 +42,13 @@ describe('note_awards_list component', () => {
         noteAuthorId: 2,
         noteId: '545',
         canAwardEmoji: true,
-        toggleAwardPath: '/gitlab-org/gitlab-foss/notes/545/toggle_award_emoji',
+        toggleAwardPath,
       },
     }).$mount();
   });
 
   afterEach(() => {
+    mock.restore();
     vm.$destroy();
   });
 
@@ -49,8 +60,8 @@ describe('note_awards_list component', () => {
   });
 
   it('should be possible to remove awarded emoji', () => {
-    spyOn(vm, 'handleAward').and.callThrough();
-    spyOn(vm, 'toggleAwardRequest').and.callThrough();
+    jest.spyOn(vm, 'handleAward');
+    jest.spyOn(vm, 'toggleAwardRequest');
     vm.$el.querySelector('.js-awards-block button').click();
 
     expect(vm.handleAward).toHaveBeenCalledWith('flag_tz');
@@ -138,7 +149,7 @@ describe('note_awards_list component', () => {
     });
 
     it('should not be possible to remove awarded emoji', () => {
-      spyOn(vm, 'toggleAwardRequest').and.callThrough();
+      jest.spyOn(vm, 'toggleAwardRequest');
 
       vm.$el.querySelector('.js-awards-block button').click();
 

@@ -98,6 +98,8 @@ Complementary reads:
 - [Application limits](application_limits.md)
 - [Redis guidelines](redis.md)
 - [Rails initializers](rails_initializers.md)
+- [Code comments](code_comments.md)
+- [Renaming features](renaming_features.md)
 
 ## Performance guides
 
@@ -150,9 +152,7 @@ Complementary reads:
 - [Verifying database capabilities](verifying_database_capabilities.md)
 - [Database Debugging and Troubleshooting](database_debugging.md)
 - [Query Count Limits](query_count_limits.md)
-- [Code comments](code_comments.md)
 - [Creating enums](creating_enums.md)
-- [Renaming features](renaming_features.md)
 
 ### Case studies
 

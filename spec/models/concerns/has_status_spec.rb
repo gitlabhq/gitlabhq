@@ -6,7 +6,7 @@ describe HasStatus do
   describe '.slow_composite_status' do
     using RSpec::Parameterized::TableSyntax
 
-    subject { CommitStatus.slow_composite_status }
+    subject { CommitStatus.slow_composite_status(project: nil) }
 
     shared_examples 'build status summary' do
       context 'all successful' do

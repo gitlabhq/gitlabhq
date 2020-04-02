@@ -409,5 +409,4 @@ RSpec/RepeatedExample:
     - 'spec/rubocop/cop/migration/update_large_table_spec.rb'
     - 'spec/services/notification_service_spec.rb'
     - 'spec/services/web_hook_service_spec.rb'
-    - 'ee/spec/services/boards/lists/update_service_spec.rb'
     - 'ee/spec/services/geo/repository_verification_primary_service_spec.rb'

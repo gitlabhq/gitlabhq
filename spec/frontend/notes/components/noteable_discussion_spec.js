@@ -12,8 +12,8 @@ import {
   loggedOutnoteableData,
   userDataMock,
 } from '../mock_data';
-import mockDiffFile from '../../diffs/mock_data/diff_file';
-import { trimText } from '../../helpers/text_helper';
+import mockDiffFile from 'jest/diffs/mock_data/diff_file';
+import { trimText } from 'helpers/text_helper';
 
 const discussionWithTwoUnresolvedNotes = 'merge_requests/resolved_diff_discussion.json';
 
@@ -47,27 +47,24 @@ describe('noteable_discussion component', () => {
     expect(wrapper.find('.discussion-header').exists()).toBe(false);
   });
 
-  it('should render thread header', done => {
+  it('should render thread header', () => {
     const discussion = { ...discussionMock };
     discussion.diff_file = mockDiffFile;
     discussion.diff_discussion = true;
+    discussion.expanded = false;
 
     wrapper.setProps({ discussion });
 
-    wrapper.vm
-      .$nextTick()
-      .then(() => {
-        expect(wrapper.find('.discussion-header').exists()).toBe(true);
-      })
-      .then(done)
-      .catch(done.fail);
+    return wrapper.vm.$nextTick().then(() => {
+      expect(wrapper.find('.discussion-header').exists()).toBe(true);
+    });
   });
 
   describe('actions', () => {
-    it('should toggle reply form', done => {
+    it('should toggle reply form', () => {
       const replyPlaceholder = wrapper.find(ReplyPlaceholder);
 
-      wrapper.vm
+      return wrapper.vm
         .$nextTick()
         .then(() => {
           expect(wrapper.vm.isReplying).toEqual(false);
@@ -89,9 +86,7 @@ describe('noteable_discussion component', () => {
           expect(noteFormProps.line).toBe(null);
           expect(noteFormProps.saveButtonTitle).toBe('Comment');
           expect(noteFormProps.autosaveKey).toBe(`Note/Issue/${discussionMock.id}/Reply`);
-        })
-        .then(done)
-        .catch(done.fail);
+        });
     });
 
     it('does not render jump to thread button', () => {
@@ -115,7 +110,7 @@ describe('noteable_discussion component', () => {
   });
 
   describe('for unresolved thread', () => {
-    beforeEach(done => {
+    beforeEach(() => {
       const discussion = {
         ...getJSONFixture(discussionWithTwoUnresolvedNotes)[0],
         expanded: true,
@@ -131,10 +126,7 @@ describe('noteable_discussion component', () => {
 
       wrapper.setProps({ discussion });
 
-      wrapper.vm
-        .$nextTick()
-        .then(done)
-        .catch(done.fail);
+      return wrapper.vm.$nextTick();
     });
 
     it('displays a button to resolve with issue', () => {

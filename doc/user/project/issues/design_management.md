@@ -75,6 +75,19 @@ you can drag and drop designs onto the dedicated dropzone to upload them.
 
 ![Drag and drop design uploads](img/design_drag_and_drop_uploads_v12_9.png)
 
+[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/202634)
+in GitLab 12.10, you can also copy images from your file system and
+paste them directly on GitLab's Design page as a new design.
+
+On macOS you can also take a screenshot and immediately copy it to
+the clipboard by simultaneously clicking <kbd>Control</kbd> + <kbd>Command</kbd> + <kbd>Shift</kbd> + <kbd>3</kbd>, and then paste it as a design.
+
+Copy-and-pasting has some limitations:
+
+- You can paste only one image at a time. When copy/pasting multiple files, only the first one will be uploaded.
+- All images will be converted to `png` format under the hood, so when you want to copy/paste `gif` file, it will result in broken animation.
+- Copy/pasting designs is not supported on Internet Explorer.
+
 Designs with the same filename as an existing uploaded design will create a new version
 of the design, and will replace the previous version. [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/34353) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.9, dropping a design on an existing uploaded design will also create a new version,
 provided the filenames are the same.

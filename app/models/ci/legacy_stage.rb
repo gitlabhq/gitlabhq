@@ -32,7 +32,7 @@ module Ci
     end
 
     def status
-      @status ||= statuses.latest.slow_composite_status
+      @status ||= statuses.latest.slow_composite_status(project: project)
     end
 
     def detailed_status(current_user)

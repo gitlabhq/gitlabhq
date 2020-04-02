@@ -89,11 +89,11 @@ module Ci
       end
 
       def status_for_prior_stages(index)
-        pipeline.processables.status_for_prior_stages(index)
+        pipeline.processables.status_for_prior_stages(index, project: pipeline.project)
       end
 
       def status_for_build_needs(needs)
-        pipeline.processables.status_for_names(needs)
+        pipeline.processables.status_for_names(needs, project: pipeline.project)
       end
 
       # rubocop: disable CodeReuse/ActiveRecord

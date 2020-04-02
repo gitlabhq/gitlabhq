@@ -1,4 +1,4 @@
-import fileUpload from '~/lib/utils/file_upload';
+import fileUpload, { getFilename } from '~/lib/utils/file_upload';
 
 describe('File upload', () => {
   beforeEach(() => {
@@ -60,5 +60,17 @@ describe('File upload', () => {
     btn.click();
 
     expect(input.click).not.toHaveBeenCalled();
+  });
+});
+
+describe('getFilename', () => {
+  it('returns first value correctly', () => {
+    const event = {
+      clipboardData: {
+        getData: () => 'test.png\rtest.txt',
+      },
+    };
+
+    expect(getFilename(event)).toBe('test.png');
   });
 });

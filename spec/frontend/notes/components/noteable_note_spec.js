@@ -86,7 +86,7 @@ describe('issue_note', () => {
   it('prevents note preview xss', done => {
     const imgSrc = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
     const noteBody = `<img src="${imgSrc}" onload="alert(1)" />`;
-    const alertSpy = spyOn(window, 'alert');
+    const alertSpy = jest.spyOn(window, 'alert');
     store.hotUpdate({
       actions: {
         updateNote() {},
@@ -96,11 +96,11 @@ describe('issue_note', () => {
 
     noteBodyComponent.vm.$emit('handleFormUpdate', noteBody, null, () => {});
 
-    setTimeout(() => {
+    setImmediate(() => {
       expect(alertSpy).not.toHaveBeenCalled();
       expect(wrapper.vm.note.note_html).toEqual(escape(noteBody));
       done();
-    }, 0);
+    });
   });
 
   describe('cancel edit', () => {

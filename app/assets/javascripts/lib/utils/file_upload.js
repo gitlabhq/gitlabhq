@@ -14,3 +14,14 @@ export default (buttonSelector, fileSelector) => {
     form.querySelector('.js-filename').textContent = fileInput.value.replace(/^.*[\\\/]/, ''); // eslint-disable-line no-useless-escape
   });
 };
+
+export const getFilename = ({ clipboardData }) => {
+  let value;
+  if (window.clipboardData && window.clipboardData.getData) {
+    value = window.clipboardData.getData('Text');
+  } else if (clipboardData && clipboardData.getData) {
+    value = clipboardData.getData('text/plain');
+  }
+  value = value.split('\r');
+  return value[0];
+};

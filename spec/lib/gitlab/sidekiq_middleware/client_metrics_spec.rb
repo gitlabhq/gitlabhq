@@ -9,7 +9,14 @@ describe Gitlab::SidekiqMiddleware::ClientMetrics do
     let(:queue) { :test }
     let(:worker_class) { worker.class }
     let(:job) { {} }
-    let(:default_labels) { { queue: queue.to_s, boundary: "", external_dependencies: "no", feature_category: "", urgency: "low" } }
+    let(:default_labels) do
+      { queue: queue.to_s,
+        worker: worker_class.to_s,
+        boundary: "",
+        external_dependencies: "no",
+        feature_category: "",
+        urgency: "low" }
+    end
 
     shared_examples "a metrics client middleware" do
       context "with mocked prometheus" do

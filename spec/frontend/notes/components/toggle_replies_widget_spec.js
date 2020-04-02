@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import mountComponent from 'helpers/vue_mount_component_helper';
 import toggleRepliesWidget from '~/notes/components/toggle_replies_widget.vue';
 import { note } from '../mock_data';
 
@@ -44,7 +44,7 @@ describe('toggle replies widget for notes', () => {
     });
 
     it('should emit toggle event when the replies text clicked', () => {
-      const spy = spyOn(vm, '$emit');
+      const spy = jest.spyOn(vm, '$emit');
 
       vm.$el.querySelector('.js-replies-text').click();
 
@@ -68,7 +68,7 @@ describe('toggle replies widget for notes', () => {
     });
 
     it('should emit toggle event when the collapse replies text called', () => {
-      const spy = spyOn(vm, '$emit');
+      const spy = jest.spyOn(vm, '$emit');
 
       vm.$el.querySelector('.js-collapse-replies').click();
 

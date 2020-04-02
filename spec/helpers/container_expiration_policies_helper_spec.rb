@@ -37,8 +37,8 @@ describe ContainerExpirationPoliciesHelper do
       expected_result = [
         { key: '7d', label: '7 days until tags are automatically removed' },
         { key: '14d', label: '14 days until tags are automatically removed' },
-        { key: '30d', label: '30 days until tags are automatically removed', default: true },
-        { key: '90d', label: '90 days until tags are automatically removed' }
+        { key: '30d', label: '30 days until tags are automatically removed' },
+        { key: '90d', label: '90 days until tags are automatically removed', default: true }
       ]
 
       expect(helper.older_than_options).to eq(expected_result)

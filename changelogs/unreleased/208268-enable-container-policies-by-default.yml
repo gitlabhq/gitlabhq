@@ -1,0 +1,5 @@
+---
+title: Enable container expiration policies by default for new projects
+merge_request: 28480
+author:
+type: changed

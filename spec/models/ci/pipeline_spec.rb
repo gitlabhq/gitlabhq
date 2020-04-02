@@ -1924,7 +1924,7 @@ describe Ci::Pipeline, :mailer do
   describe '#update_status' do
     context 'when pipeline is empty' do
       it 'updates does not change pipeline status' do
-        expect(pipeline.statuses.latest.slow_composite_status).to be_nil
+        expect(pipeline.statuses.latest.slow_composite_status(project: project)).to be_nil
 
         expect { pipeline.update_legacy_status }
           .to change { pipeline.reload.status }

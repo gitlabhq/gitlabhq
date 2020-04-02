@@ -969,6 +969,15 @@ If you want to switch back to Unicorn, follow these steps:
 1. Edit the system `init.d` script to set the `USE_UNICORN=1` flag. If you have `/etc/default/gitlab`, then you should edit it instead.
 1. Restart GitLab.
 
+### Using Sidekiq instead of Sidekiq Cluster
+
+As of GitLab 12.10, Source installations are using `bin/sidekiq-cluster` for managing Sidekiq processes.
+Using Sidekiq directly will still be supported until 14.0. So if you're experiencing issues, please:
+
+1. Edit the system `init.d` script to remove the `SIDEKIQ_WORKERS` flag. If you have `/etc/default/gitlab`, then you should edit it instead.
+1. Restart GitLab.
+1. [Create an issue](https://gitlab.com/gitlab-org/gitlab/issues/-/new) describing the problem.
+
 ## Troubleshooting
 
 ### "You appear to have cloned an empty repository."

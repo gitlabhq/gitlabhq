@@ -9,7 +9,13 @@ module Gitlab
       private
 
       def create_labels(worker_class, queue)
-        labels = { queue: queue.to_s, urgency: "", external_dependencies: FALSE_LABEL, feature_category: "", boundary: "" }
+        labels = { queue: queue.to_s,
+                   worker: worker_class.to_s,
+                   urgency: "",
+                   external_dependencies: FALSE_LABEL,
+                   feature_category: "",
+                   boundary: "" }
+
         return labels unless worker_class && worker_class.include?(WorkerAttributes)
 
         labels[:urgency] = worker_class.get_urgency.to_s

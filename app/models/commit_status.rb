@@ -178,12 +178,12 @@ class CommitStatus < ApplicationRecord
     select(:name)
   end
 
-  def self.status_for_prior_stages(index)
-    before_stage(index).latest.slow_composite_status || 'success'
+  def self.status_for_prior_stages(index, project:)
+    before_stage(index).latest.slow_composite_status(project: project) || 'success'
   end
 
-  def self.status_for_names(names)
-    where(name: names).latest.slow_composite_status || 'success'
+  def self.status_for_names(names, project:)
+    where(name: names).latest.slow_composite_status(project: project) || 'success'
   end
 
   def self.update_as_processed!

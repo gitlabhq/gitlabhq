@@ -20,7 +20,7 @@ module ContainerExpirationPoliciesHelper
   def older_than_options
     ContainerExpirationPolicy.older_than_options.map do |key, val|
       { key: key.to_s, label: val }.tap do |base|
-        base[:default] = true if key.to_s == '30d'
+        base[:default] = true if key.to_s == '90d'
       end
     end
   end

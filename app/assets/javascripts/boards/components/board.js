@@ -16,6 +16,14 @@ import { getBoardSortableDefaultOptions, sortableEnd } from '../mixins/sortable_
 import { ListType } from '../constants';
 import { isScopedLabel } from '~/lib/utils/common_utils';
 
+/**
+ * Please don't edit this file, have a look at:
+ * ./board_column.vue
+ * https://gitlab.com/gitlab-org/gitlab/-/issues/212300
+ *
+ * This file here will be deleted soon
+ * @deprecated
+ */
 export default Vue.extend({
   components: {
     BoardBlankState,
@@ -53,6 +61,13 @@ export default Vue.extend({
     boardId: {
       type: String,
       required: true,
+    },
+    // Does not do anything but is used
+    // to support the API of the new board_column.vue
+    canAdminList: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   data() {

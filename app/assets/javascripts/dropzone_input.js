@@ -6,6 +6,7 @@ import PasteMarkdownTable from './behaviors/markdown/paste_markdown_table';
 import csrf from './lib/utils/csrf';
 import axios from './lib/utils/axios_utils';
 import { n__, __ } from '~/locale';
+import { getFilename } from '~/lib/utils/file_upload';
 
 Dropzone.autoDiscover = false;
 
@@ -41,7 +42,6 @@ export default function dropzoneInput(form) {
   let addFileToForm;
   let updateAttachingMessage;
   let isImage;
-  let getFilename;
   let uploadFile;
 
   formTextarea.wrap('<div class="div-dropzone"></div>');
@@ -233,17 +233,6 @@ export default function dropzoneInput(form) {
 
   addFileToForm = path => {
     $(form).append(`<input type="hidden" name="files[]" value="${_.escape(path)}">`);
-  };
-
-  getFilename = e => {
-    let value;
-    if (window.clipboardData && window.clipboardData.getData) {
-      value = window.clipboardData.getData('Text');
-    } else if (e.clipboardData && e.clipboardData.getData) {
-      value = e.clipboardData.getData('text/plain');
-    }
-    value = value.split('\r');
-    return value[0];
   };
 
   const showSpinner = () => $uploadingProgressContainer.removeClass('hide');

@@ -65,8 +65,8 @@ module HasStatus
     # This method performs expensive calculation of status:
     # 1. By plucking all related objects,
     # 2. Or executes expensive SQL query
-    def slow_composite_status
-      if Feature.enabled?(:ci_composite_status, default_enabled: false)
+    def slow_composite_status(project:)
+      if Feature.enabled?(:ci_composite_status, project, default_enabled: false)
         Gitlab::Ci::Status::Composite
           .new(all, with_allow_failure: columns_hash.key?('allow_failure'))
           .status

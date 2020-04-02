@@ -1,5 +1,9 @@
 - board = local_assigns.fetch(:board, nil)
 - group = local_assigns.fetch(:group, false)
+-# TODO: Move group_id and can_admin_list to the board store
+  See: https://gitlab.com/gitlab-org/gitlab/-/issues/213082
+- group_id = @group&.id || "null"
+- can_admin_list = can?(current_user, :admin_list, current_board_parent) == true
 - @no_breadcrumb_container = true
 - @no_container = true
 - @content_class = "issue-boards-content js-focus-mode-board"
@@ -22,6 +26,8 @@
     %board{ "v-cloak" => "true",
       "v-for" => "list in state.lists",
       "ref" => "board",
+      ":can-admin-list" => can_admin_list,
+      ":group-id" => group_id,
       ":list" => "list",
       ":disabled" => "disabled",
       ":issue-link-base" => "issueLinkBase",

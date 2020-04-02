@@ -48,7 +48,7 @@ export default {
     },
   },
   mounted() {
-    if (!this.hasTruncatedDiffLines) {
+    if (this.isTextFile && !this.hasTruncatedDiffLines) {
       this.fetchDiff();
     }
   },

@@ -4,6 +4,10 @@ import NoteForm from '~/notes/components/note_form.vue';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import { noteableDataMock, notesDataMock } from '../mock_data';
 
+import { getDraft, updateDraft } from '~/lib/utils/autosave';
+
+jest.mock('~/lib/utils/autosave');
+
 describe('issue_note_form component', () => {
   const dummyAutosaveKey = 'some-autosave-key';
   const dummyDraft = 'dummy draft content';
@@ -23,7 +27,7 @@ describe('issue_note_form component', () => {
   };
 
   beforeEach(() => {
-    spyOnDependency(NoteForm, 'getDraft').and.callFake(key => {
+    getDraft.mockImplementation(key => {
       if (key === dummyAutosaveKey) {
         return dummyDraft;
       }
@@ -55,19 +59,15 @@ describe('issue_note_form component', () => {
       expect(wrapper.vm.noteHash).toBe(`#note_${props.noteId}`);
     });
 
-    it('return note hash as `#` when `noteId` is empty', done => {
+    it('return note hash as `#` when `noteId` is empty', () => {
       wrapper.setProps({
         ...props,
         noteId: '',
       });
 
-      wrapper.vm
-        .$nextTick()
-        .then(() => {
-          expect(wrapper.vm.noteHash).toBe('#');
-        })
-        .then(done)
-        .catch(done.fail);
+      return wrapper.vm.$nextTick().then(() => {
+        expect(wrapper.vm.noteHash).toBe('#');
+      });
     });
   });
 
@@ -76,7 +76,7 @@ describe('issue_note_form component', () => {
       wrapper = createComponentWrapper();
     });
 
-    it('should show conflict message if note changes outside the component', done => {
+    it('should show conflict message if note changes outside the component', () => {
       wrapper.setProps({
         ...props,
         isEditing: true,
@@ -86,21 +86,17 @@ describe('issue_note_form component', () => {
       const message =
         'This comment has changed since you started editing, please review the updated comment to ensure information is not lost.';
 
-      wrapper.vm
-        .$nextTick()
-        .then(() => {
-          const conflictWarning = wrapper.find('.js-conflict-edit-warning');
+      return wrapper.vm.$nextTick().then(() => {
+        const conflictWarning = wrapper.find('.js-conflict-edit-warning');
 
-          expect(conflictWarning.exists()).toBe(true);
-          expect(
-            conflictWarning
-              .text()
-              .replace(/\s+/g, ' ')
-              .trim(),
-          ).toBe(message);
-        })
-        .then(done)
-        .catch(done.fail);
+        expect(conflictWarning.exists()).toBe(true);
+        expect(
+          conflictWarning
+            .text()
+            .replace(/\s+/g, ' ')
+            .trim(),
+        ).toBe(message);
+      });
     });
   });
 
@@ -136,7 +132,7 @@ describe('issue_note_form component', () => {
       describe('up', () => {
         it('should ender edit mode', () => {
           // TODO: do not spy on vm
-          spyOn(wrapper.vm, 'editMyLastNote').and.callThrough();
+          jest.spyOn(wrapper.vm, 'editMyLastNote');
 
           textarea.trigger('keydown.up');
 
@@ -164,61 +160,50 @@ describe('issue_note_form component', () => {
     });
 
     describe('actions', () => {
-      it('should be possible to cancel', done => {
+      it('should be possible to cancel', () => {
         // TODO: do not spy on vm
-        spyOn(wrapper.vm, 'cancelHandler').and.callThrough();
+        jest.spyOn(wrapper.vm, 'cancelHandler');
         wrapper.setProps({
           ...props,
           isEditing: true,
         });
 
-        wrapper.vm
-          .$nextTick()
-          .then(() => {
-            const cancelButton = wrapper.find('.note-edit-cancel');
-            cancelButton.trigger('click');
+        return wrapper.vm.$nextTick().then(() => {
+          const cancelButton = wrapper.find('.note-edit-cancel');
+          cancelButton.trigger('click');
 
-            expect(wrapper.vm.cancelHandler).toHaveBeenCalled();
-          })
-          .then(done)
-          .catch(done.fail);
+          expect(wrapper.vm.cancelHandler).toHaveBeenCalled();
+        });
       });
 
-      it('should be possible to update the note', done => {
+      it('should be possible to update the note', () => {
         wrapper.setProps({
           ...props,
           isEditing: true,
         });
 
-        wrapper.vm
-          .$nextTick()
-          .then(() => {
-            const textarea = wrapper.find('textarea');
-            textarea.setValue('Foo');
-            const saveButton = wrapper.find('.js-vue-issue-save');
-            saveButton.trigger('click');
+        return wrapper.vm.$nextTick().then(() => {
+          const textarea = wrapper.find('textarea');
+          textarea.setValue('Foo');
+          const saveButton = wrapper.find('.js-vue-issue-save');
+          saveButton.trigger('click');
 
-            expect(wrapper.vm.isSubmitting).toEqual(true);
-          })
-          .then(done)
-          .catch(done.fail);
+          expect(wrapper.vm.isSubmitting).toBe(true);
+        });
       });
     });
   });
 
   describe('with autosaveKey', () => {
     describe('with draft', () => {
-      beforeEach(done => {
+      beforeEach(() => {
         Object.assign(props, {
           noteBody: '',
           autosaveKey: dummyAutosaveKey,
         });
         wrapper = createComponentWrapper();
 
-        wrapper.vm
-          .$nextTick()
-          .then(done)
-          .catch(done.fail);
+        return wrapper.vm.$nextTick();
       });
 
       it('displays the draft in textarea', () => {
@@ -229,17 +214,14 @@ describe('issue_note_form component', () => {
     });
 
     describe('without draft', () => {
-      beforeEach(done => {
+      beforeEach(() => {
         Object.assign(props, {
           noteBody: '',
           autosaveKey: 'some key without draft',
         });
         wrapper = createComponentWrapper();
 
-        wrapper.vm
-          .$nextTick()
-          .then(done)
-          .catch(done.fail);
+        return wrapper.vm.$nextTick();
       });
 
       it('leaves the textarea empty', () => {
@@ -250,7 +232,6 @@ describe('issue_note_form component', () => {
     });
 
     it('updates the draft if textarea content changes', () => {
-      const updateDraftSpy = spyOnDependency(NoteForm, 'updateDraft').and.stub();
       Object.assign(props, {
         noteBody: '',
         autosaveKey: dummyAutosaveKey,
@@ -261,7 +242,7 @@ describe('issue_note_form component', () => {
 
       textarea.setValue(dummyContent);
 
-      expect(updateDraftSpy).toHaveBeenCalledWith(dummyAutosaveKey, dummyContent);
+      expect(updateDraft).toHaveBeenCalledWith(dummyAutosaveKey, dummyContent);
     });
   });
 });

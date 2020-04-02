@@ -423,7 +423,7 @@ describe CommitStatus do
       end
 
       it 'returns a correct compound status' do
-        expect(described_class.all.slow_composite_status).to eq 'running'
+        expect(described_class.all.slow_composite_status(project: project)).to eq 'running'
       end
     end
 
@@ -433,7 +433,7 @@ describe CommitStatus do
       end
 
       it 'returns status that indicates success' do
-        expect(described_class.all.slow_composite_status).to eq 'success'
+        expect(described_class.all.slow_composite_status(project: project)).to eq 'success'
       end
     end
 
@@ -444,7 +444,7 @@ describe CommitStatus do
       end
 
       it 'returns status according to the scope' do
-        expect(described_class.latest.slow_composite_status).to eq 'success'
+        expect(described_class.latest.slow_composite_status(project: project)).to eq 'success'
       end
     end
   end

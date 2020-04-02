@@ -247,7 +247,17 @@ create the actual RDS instance.
 
    ![RDS Subnet Group](img/rds_subnet_group.png)
 
-### Creating the database
+### RDS Security Group
+
+We need a security group for our database that will allow inbound traffic from the instances we'll deploy in our `gitlab-loadbalancer-sec-group` later on:
+
+1. From the EC2 dashboard, select **Security Groups** from the left menu bar.
+1. Click **Create security group**.
+1. Give it a name (we'll use `gitlab-rds-sec-group`), a description, and select the `gitlab-vpc` from the **VPC** dropdown.
+1. In the **Inbound rules** section, click **Add rule** and add a **PostgreSQL** rule, and set the "Custom" source as the `gitlab-loadbalancer-sec-group` we created earlier. The default PostgreSQL port is `5432`, which we'll also use when creating our database below.
+1. When done, click **Create security group**.
+
+### Create the database
 
 Now, it's time to create the database:
 
@@ -266,7 +276,7 @@ Now, it's time to create the database:
    1. Select the VPC we created earlier (`gitlab-vpc`) from the **Virtual Private Cloud (VPC)** dropdown menu.
    1. Expand the **Additional connectivity configuration** section and select the subnet group (`gitlab-rds-group`) we created earlier.
    1. Set public accessibility to **No**.
-   1. Under **VPC security group**, select **Create new** and enter a name. We'll use `gitlab-rds-sec-group`.
+   1. Under **VPC security group**, select **Choose existing** and select the `gitlab-rds-sec-group` we create above from the dropdown.
    1. Leave the database port as the default `5432`.
 1. For **Database authentication**, select **Password authentication**.
 1. Expand the **Additional configuration** section and complete the following:
@@ -326,17 +336,6 @@ persistence and is used for certain types of the GitLab application.
    `gitlab-redis-sec-group` we had previously created.
 1. Leave the rest of the settings to their default values or edit to your liking.
 1. When done, click **Create**.
-
-## RDS and Redis Security Group
-
-Let's navigate to our EC2 security groups and add a small change for our EC2
-instances to be able to connect to RDS. First, copy the security group name we
-defined, namely `gitlab-security-group`, select the RDS security group and edit the
-inbound rules. Choose the rule type to be PostgreSQL and paste the name under
-source.
-
-Similar to the above, jump to the `gitlab-security-group` group
-and add a custom TCP rule for port `6379` accessible within itself.
 
 ## Setting up Bastion Hosts
 

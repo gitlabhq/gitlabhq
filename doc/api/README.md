@@ -436,6 +436,24 @@ Keyset-based pagination is only supported for selected resources and ordering op
 | ------------------------- | -------------------------- |
 | [Projects](projects.md)   | `order_by=id` only         |
 
+## Path parameters
+
+If an endpoint has path parameters, the documentation shows them with a preceding colon.
+
+For example:
+
+```plaintext
+DELETE /projects/:id/share/:group_id
+```
+
+The `:id` path parameter needs to be replaced with the project id, and the `:group_id` needs to be replaced with the id of the group. The colons `:` should not be included.
+
+The resulting cURL call for a project with id `5` and a group id of `17` is then:
+
+```shell
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/share/17
+```
+
 ## Namespaced path encoding
 
 If using namespaced API calls, make sure that the `NAMESPACE/PROJECT_PATH` is

@@ -1689,7 +1689,7 @@ class User < ApplicationRecord
   def gitlab_employee?
     strong_memoize(:gitlab_employee) do
       if Gitlab.com?
-        Mail::Address.new(email).domain == "gitlab.com"
+        Mail::Address.new(email).domain == "gitlab.com" && confirmed?
       else
         false
       end
