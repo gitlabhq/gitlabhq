@@ -48,7 +48,7 @@ module Gitlab
       end
 
       def find_import_state(project_id)
-        ProjectImportState.jid_by(project_id: project_id, status: :started)
+        raise NotImplementedError
       end
 
       private

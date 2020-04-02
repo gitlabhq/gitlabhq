@@ -43,6 +43,10 @@ export default class BlobFileDropzone {
       previewsContainer: '.dropzone-previews',
       headers: csrf.headers,
       init() {
+        this.on('processing', function() {
+          this.options.url = form.attr('action');
+        });
+
         this.on('addedfile', () => {
           toggleLoading(submitButton, submitButtonLoadingIcon, false);
           dropzoneMessage.addClass(HIDDEN_CLASS);

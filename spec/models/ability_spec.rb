@@ -137,12 +137,6 @@ describe Ability do
       expect(users_for_snippet(snippet)).to match_array([author])
     end
 
-    it 'internal snippet is readable by all registered users' do
-      snippet = create(:personal_snippet, :public, author: author)
-
-      expect(users_for_snippet(snippet)).to match_array(users)
-    end
-
     it 'public snippet is readable by all users' do
       snippet = create(:personal_snippet, :public, author: author)
 

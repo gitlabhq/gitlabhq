@@ -179,8 +179,10 @@ module API
     end
 
     # rubocop: disable CodeReuse/ActiveRecord
-    def find_project_issue(iid)
-      IssuesFinder.new(current_user, project_id: user_project.id).find_by!(iid: iid)
+    def find_project_issue(iid, project_id = nil)
+      project = project_id ? find_project!(project_id) : user_project
+
+      ::IssuesFinder.new(current_user, project_id: project.id).find_by!(iid: iid)
     end
     # rubocop: enable CodeReuse/ActiveRecord
 

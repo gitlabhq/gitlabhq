@@ -4,7 +4,6 @@ module API
   module Helpers
     module MergeRequestsHelpers
       extend Grape::API::Helpers
-      include ::API::Helpers::CustomValidators
 
       params :merge_requests_base_params do
         optional :state,

@@ -16,12 +16,7 @@ class DiffsEntity < Grape::Entity
   end
 
   expose :commit do |diffs, options|
-    CommitEntity.represent options[:commit], options.merge(
-      type: :full,
-      commit_url_params: { merge_request_iid: merge_request&.iid },
-      pipeline_ref: merge_request&.source_branch,
-      pipeline_project: merge_request&.source_project
-    )
+    CommitEntity.represent(options[:commit], commit_options(options))
   end
 
   expose :context_commits, using: API::Entities::Commit, if: -> (diffs, options) { merge_request&.project&.context_commits_enabled? } do |diffs|
@@ -87,5 +82,32 @@ class DiffsEntity < Grape::Entity
 
   def merge_request
     options[:merge_request]
+  end
+
+  private
+
+  def commit_ids
+    @commit_ids ||= merge_request.recent_commits.map(&:id)
+  end
+
+  def commit_neighbors(commit_id)
+    index = commit_ids.index(commit_id)
+
+    return [] unless index
+
+    [(index > 0 ? commit_ids[index - 1] : nil), commit_ids[index + 1]]
+  end
+
+  def commit_options(options)
+    prev_commit_id, next_commit_id = *commit_neighbors(options[:commit]&.id)
+
+    options.merge(
+      type: :full,
+      commit_url_params: { merge_request_iid: merge_request&.iid },
+      pipeline_ref: merge_request&.source_branch,
+      pipeline_project: merge_request&.source_project,
+      prev_commit_id: prev_commit_id,
+      next_commit_id: next_commit_id
+    )
   end
 end

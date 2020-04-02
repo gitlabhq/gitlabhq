@@ -57,7 +57,7 @@ class Groups::GroupMembersController < Groups::ApplicationController
 
   def find_members
     filter_params = params.slice(:two_factor, :search).merge(sort: @sort)
-    GroupMembersFinder.new(@group, current_user).execute(include_relations: requested_relations, params: filter_params)
+    GroupMembersFinder.new(@group, current_user, params: filter_params).execute(include_relations: requested_relations)
   end
 
   def can_manage_members

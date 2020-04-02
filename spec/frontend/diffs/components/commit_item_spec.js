@@ -30,12 +30,12 @@ describe('diffs/components/commit_item', () => {
   const getCommitActionsElement = () => wrapper.find('.commit-actions');
   const getCommitPipelineStatus = () => wrapper.find(CommitPipelineStatus);
 
-  const defaultProps = {
-    commit: getDiffWithCommit().commit,
-  };
-  const mountComponent = (propsData = defaultProps) => {
+  const mountComponent = propsData => {
     wrapper = mount(Component, {
-      propsData,
+      propsData: {
+        commit,
+        ...propsData,
+      },
       stubs: {
         CommitPipelineStatus: true,
       },
@@ -59,9 +59,7 @@ describe('diffs/components/commit_item', () => {
       expect(titleElement.text()).toBe(commit.title_html);
     });
 
-    // https://gitlab.com/gitlab-org/gitlab/-/issues/209776
-    // eslint-disable-next-line jest/no-disabled-tests
-    it.skip('renders commit description', () => {
+    it('renders commit description', () => {
       const descElement = getDescElement();
       const descExpandElement = getDescExpandElement();
 
@@ -107,7 +105,7 @@ describe('diffs/components/commit_item', () => {
 
   describe('without commit description', () => {
     beforeEach(() => {
-      mountComponent({ defaultProps, commit: { ...defaultProps.commit, description_html: '' } });
+      mountComponent({ commit: { ...commit, description_html: '' } });
     });
 
     it('hides description', () => {
@@ -122,9 +120,8 @@ describe('diffs/components/commit_item', () => {
   describe('with no matching user', () => {
     beforeEach(() => {
       mountComponent({
-        defaultProps,
         commit: {
-          ...defaultProps.commit,
+          ...commit,
           author: null,
           author_email: TEST_AUTHOR_EMAIL,
           author_name: TEST_AUTHOR_NAME,
@@ -154,8 +151,7 @@ describe('diffs/components/commit_item', () => {
   describe('with signature', () => {
     beforeEach(() => {
       mountComponent({
-        defaultProps,
-        commit: { ...defaultProps.commit, signature_html: TEST_SIGNATURE_HTML },
+        commit: { ...commit, signature_html: TEST_SIGNATURE_HTML },
       });
     });
 
@@ -169,8 +165,7 @@ describe('diffs/components/commit_item', () => {
   describe('with pipeline status', () => {
     beforeEach(() => {
       mountComponent({
-        defaultProps,
-        commit: { ...defaultProps.commit, pipeline_status_path: TEST_PIPELINE_STATUS_PATH },
+        commit: { ...commit, pipeline_status_path: TEST_PIPELINE_STATUS_PATH },
       });
     });
 

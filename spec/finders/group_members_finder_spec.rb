@@ -82,7 +82,7 @@ describe GroupMembersFinder, '#execute' do
     group.add_developer(user3)
     member = group.add_maintainer(user1)
 
-    result = described_class.new(group).execute(params: { search: user1.name })
+    result = described_class.new(group, params: { search: user1.name }).execute
 
     expect(result.to_a).to match_array([member])
   end
@@ -92,7 +92,7 @@ describe GroupMembersFinder, '#execute' do
     group.add_developer(user3)
     group.add_maintainer(user1)
 
-    result = described_class.new(group).execute(include_relations: [:inherited], params: { search: user1.name })
+    result = described_class.new(group, params: { search: user1.name }).execute(include_relations: [:inherited])
 
     expect(result.to_a).to match_array([])
   end
@@ -103,7 +103,7 @@ describe GroupMembersFinder, '#execute' do
     nested_group.add_maintainer(create(:user, name: user1.name))
     member = group.add_maintainer(user1)
 
-    result = described_class.new(nested_group).execute(include_relations: [:inherited], params: { search: member.user.name })
+    result = described_class.new(nested_group, params: { search: member.user.name }).execute(include_relations: [:inherited])
 
     expect(result.to_a).to contain_exactly(member)
   end
@@ -113,7 +113,7 @@ describe GroupMembersFinder, '#execute' do
     group.add_maintainer(user1)
     member = group.add_maintainer(user5)
 
-    result = described_class.new(group, user2).execute(params: { two_factor: 'enabled' })
+    result = described_class.new(group, user2, params: { two_factor: 'enabled' }).execute
 
     expect(result.to_a).to contain_exactly(member)
   end
@@ -123,7 +123,7 @@ describe GroupMembersFinder, '#execute' do
     member2 = group.add_maintainer(user1)
     member_with_2fa = group.add_maintainer(user5)
 
-    result = described_class.new(group, user2).execute(params: { two_factor: 'disabled' })
+    result = described_class.new(group, user2, params: { two_factor: 'disabled' }).execute
 
     expect(result.to_a).not_to include(member_with_2fa)
     expect(result.to_a).to match_array([member1, member2])

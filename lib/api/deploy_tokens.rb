@@ -85,12 +85,10 @@ module API
       delete ':id/deploy_tokens/:token_id' do
         authorize!(:destroy_deploy_token, user_project)
 
-        deploy_token = user_project.project_deploy_tokens
-          .find_by_deploy_token_id(params[:token_id])
+        ::Projects::DeployTokens::DestroyService.new(
+          user_project, current_user, token_id: params[:token_id]
+        ).execute
 
-        not_found!('Deploy Token') unless deploy_token
-
-        deploy_token.destroy
         no_content!
       end
     end
@@ -144,13 +142,17 @@ module API
       desc 'Delete a group deploy token' do
         detail 'This feature was introduced in GitLab 12.9'
       end
+      params do
+        requires :token_id, type: Integer, desc: 'The deploy token ID'
+      end
       delete ':id/deploy_tokens/:token_id' do
         authorize!(:destroy_deploy_token, user_group)
 
-        deploy_token = user_group.group_deploy_tokens
-          .find_by_deploy_token_id!(params[:token_id])
+        ::Groups::DeployTokens::DestroyService.new(
+          user_group, current_user, token_id: params[:token_id]
+        ).execute
 
-        destroy_conditionally!(deploy_token)
+        no_content!
       end
     end
   end

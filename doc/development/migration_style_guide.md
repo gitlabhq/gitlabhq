@@ -246,6 +246,7 @@ Example changes:
 - `add_foreign_key` / `remove_foreign_key`
 - `add_column` / `remove_column`
 - `change_column_default`
+- `create_table` / `drop_table`
 
 **Note:** `with_lock_retries` method **cannot** be used with `disable_ddl_transaction!`.
 

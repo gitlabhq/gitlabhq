@@ -175,8 +175,12 @@ describe API::DeployTokens do
 
       it { is_expected.to have_gitlab_http_status(:no_content) }
 
-      it 'deletes the deploy token' do
-        expect { subject }.to change { project.deploy_tokens.count }.by(-1)
+      it 'calls the deploy token destroy service' do
+        expect(::Projects::DeployTokens::DestroyService).to receive(:new)
+          .with(project, user, token_id: deploy_token.id)
+          .and_return(true)
+
+        subject
       end
 
       context 'invalid request' do
@@ -187,9 +191,13 @@ describe API::DeployTokens do
         end
 
         it 'returns bad_request with invalid token id' do
-          delete api("/projects/#{project.id}/deploy_tokens/123abc", user)
+          expect(::Projects::DeployTokens::DestroyService).to receive(:new)
+            .with(project, user, token_id: 999)
+            .and_raise(ActiveRecord::RecordNotFound)
 
-          expect(response).to have_gitlab_http_status(:bad_request)
+          delete api("/projects/#{project.id}/deploy_tokens/999", user)
+
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
     end
@@ -307,10 +315,12 @@ describe API::DeployTokens do
         group.add_maintainer(user)
       end
 
-      it 'deletes the deploy token' do
-        expect { subject }.to change { group.deploy_tokens.count }.by(-1)
+      it 'calls the deploy token destroy service' do
+        expect(::Groups::DeployTokens::DestroyService).to receive(:new)
+          .with(group, user, token_id: group_deploy_token.id)
+          .and_return(true)
 
-        expect(group.deploy_tokens).to be_empty
+        subject
       end
 
       context 'invalid request' do
@@ -321,7 +331,11 @@ describe API::DeployTokens do
         end
 
         it 'returns not found with invalid deploy token id' do
-          delete api("/groups/#{group.id}/deploy_tokens/bad_id", user)
+          expect(::Groups::DeployTokens::DestroyService).to receive(:new)
+            .with(group, user, token_id: 999)
+            .and_raise(ActiveRecord::RecordNotFound)
+
+          delete api("/groups/#{group.id}/deploy_tokens/999", user)
 
           expect(response).to have_gitlab_http_status(:not_found)
         end

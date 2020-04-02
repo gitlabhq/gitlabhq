@@ -1249,6 +1249,26 @@ describe Projects::IssuesController do
       expect(response).to have_gitlab_http_status(:not_found)
     end
 
+    context 'invalid branch name' do
+      it 'is unprocessable' do
+        post(
+          :create_merge_request,
+          params: {
+            target_project_id: nil,
+            branch_name: 'master',
+            ref: 'master',
+            namespace_id: project.namespace.to_param,
+            project_id: project.to_param,
+            id: issue.to_param
+          },
+          format: :json
+        )
+
+        expect(response.body).to eq('Branch already exists')
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+      end
+    end
+
     context 'target_project_id is set' do
       let(:target_project) { fork_project(project, user, repository: true) }
       let(:target_project_id) { target_project.id }

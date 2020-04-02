@@ -10,8 +10,6 @@ module ResourceEvents
     private
 
     def synthetic_notes
-      return [] unless tracking_enabled?
-
       milestone_change_events.map do |event|
         MilestoneNote.from_event(event, resource: resource, resource_parent: resource_parent)
       end
@@ -22,10 +20,6 @@ module ResourceEvents
 
       events = resource.resource_milestone_events.includes(user: :status) # rubocop: disable CodeReuse/ActiveRecord
       since_fetch_at(events)
-    end
-
-    def tracking_enabled?
-      ::Feature.enabled?(:track_resource_milestone_change_events, resource.project)
     end
   end
 end

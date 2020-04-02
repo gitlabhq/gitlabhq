@@ -3337,7 +3337,7 @@ describe Ci::Build do
         end
 
         it "doesn't save timeout" do
-          expect { run_job_without_exception }.not_to change { job.reload.ensure_metadata.timeout_source }
+          expect { run_job_without_exception }.not_to change { job.reload.ensure_metadata.timeout }
         end
 
         it "doesn't save timeout_source" do

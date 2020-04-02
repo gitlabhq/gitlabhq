@@ -10,13 +10,16 @@ class GroupMembersFinder < UnionFinder
   #   created_after: datetime
   #   created_before: datetime
 
-  def initialize(group, user = nil)
+  attr_reader :params
+
+  def initialize(group, user = nil, params: {})
     @group = group
     @user = user
+    @params = params
   end
 
   # rubocop: disable CodeReuse/ActiveRecord
-  def execute(include_relations: [:inherited, :direct], params: {})
+  def execute(include_relations: [:inherited, :direct])
     group_members = group.members
     relations = []
     @params = params
@@ -50,7 +53,7 @@ class GroupMembersFinder < UnionFinder
 
   private
 
-  attr_reader :user, :group, :params
+  attr_reader :user, :group
 
   def filter_members(members)
     members = members.search(params[:search]) if params[:search].present?

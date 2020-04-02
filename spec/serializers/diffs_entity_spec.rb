@@ -26,5 +26,47 @@ describe DiffsEntity do
         :merge_request_diffs, :definition_path_prefix
       )
     end
+
+    context "when a commit_id is passed" do
+      let(:commits) { merge_request.commits }
+      let(:entity) do
+        described_class.new(
+          merge_request_diffs.first.diffs,
+          request: request,
+          merge_request: merge_request,
+          merge_request_diffs: merge_request_diffs,
+          commit: commit
+        )
+      end
+
+      subject { entity.as_json }
+
+      context "when the passed commit is not the first or last in the group" do
+        let(:commit) { commits.third }
+
+        it 'includes commit references for previous and next' do
+          expect(subject[:commit][:prev_commit_id]).to eq(commits.second.id)
+          expect(subject[:commit][:next_commit_id]).to eq(commits.fourth.id)
+        end
+      end
+
+      context "when the passed commit is the first in the group" do
+        let(:commit) { commits.first }
+
+        it 'includes commit references for nil and next' do
+          expect(subject[:commit][:prev_commit_id]).to be_nil
+          expect(subject[:commit][:next_commit_id]).to eq(commits.second.id)
+        end
+      end
+
+      context "when the passed commit is the last in the group" do
+        let(:commit) { commits.last }
+
+        it 'includes commit references for previous and nil' do
+          expect(subject[:commit][:prev_commit_id]).to eq(commits[-2].id)
+          expect(subject[:commit][:next_commit_id]).to be_nil
+        end
+      end
+    end
   end
 end

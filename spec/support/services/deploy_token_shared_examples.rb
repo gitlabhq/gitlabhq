@@ -58,3 +58,25 @@ RSpec.shared_examples 'a deploy token creation service' do
     end
   end
 end
+
+RSpec.shared_examples 'a deploy token deletion service' do
+  let(:user) { create(:user) }
+  let(:deploy_token_params) { { token_id: deploy_token.id } }
+
+  describe '#execute' do
+    subject { described_class.new(entity, user, deploy_token_params).execute }
+
+    it "destroys a token record and it's associated DeployToken" do
+      expect { subject }.to change { deploy_token_class.count }.by(-1)
+        .and change { DeployToken.count }.by(-1)
+    end
+
+    context 'invalid token id' do
+      let(:deploy_token_params) { { token_id: 9999 } }
+
+      it 'raises an error' do
+        expect { subject }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+  end
+end

@@ -186,7 +186,7 @@ class Projects::IssuesController < Projects::ApplicationController
     if result[:status] == :success
       render json: MergeRequestCreateSerializer.new.represent(result[:merge_request])
     else
-      render json: result[:messsage], status: :unprocessable_entity
+      render json: result[:message], status: :unprocessable_entity
     end
   end
 

@@ -23,7 +23,7 @@ module API
         optional :assignee_id, types: [Integer, String], integer_none_any: true,
                  desc: 'Return issues which are assigned to the user with the given ID'
         optional :assignee_username, type: Array[String], check_assignees_count: true,
-                 coerce_with: Validations::CheckAssigneesCount.coerce,
+                 coerce_with: Validations::Validators::CheckAssigneesCount.coerce,
                  desc: 'Return issues which are assigned to the user with the given username'
         mutually_exclusive :assignee_id, :assignee_username
       end
