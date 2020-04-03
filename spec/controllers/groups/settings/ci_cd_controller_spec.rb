@@ -267,7 +267,7 @@ describe Groups::Settings::CiCdController do
         it 'creates the deploy token' do
           subject
 
-          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to have_gitlab_http_status(:created)
           expect(response).to match_response_schema('public_api/v4/deploy_token')
           expect(json_response).to match(expected_response)
         end

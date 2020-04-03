@@ -9,13 +9,13 @@
           = f.check_box :hashed_storage_enabled, class: 'form-check-input qa-hashed-storage-checkbox'
           = f.label :hashed_storage_enabled, _("Use hashed storage"), class: 'label-bold form-check-label'
           .form-text.text-muted
-            = _("Use hashed storage paths for newly created and renamed projects. Enable immutable, hash-based paths and repository names to store repositories on disk. This prevents repositories from having to be moved or renamed when the Project URL changes and may improve disk I/O performance.")
+            = _("Use hashed storage paths for newly created and renamed repositories. Enable immutable, hash-based paths and repository names to store repositories on disk. This prevents repositories from having to be moved or renamed when the Repository URL changes and may improve disk I/O performance.")
     .sub-section
-      %h4= _("Storage nodes for new projects")
+      %h4= _("Storage nodes for new repositories")
       .form-group
         .form-text
           %p.text-secondary
-            = _('Select the configured storaged available for new projects to be placed on.')
+            = _('Select the configured storage available for new repositories to be placed on.')
             = link_to icon('question-circle'), help_page_path('administration/repository_storage_paths')
         .form-check
           = f.collection_check_boxes :repository_storages, Gitlab.config.repositories.storages, :first, :first, include_hidden: false do |b|

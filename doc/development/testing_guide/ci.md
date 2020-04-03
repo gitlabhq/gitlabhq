@@ -25,22 +25,17 @@ After that, the next pipeline will use the up-to-date `knapsack/report-master.js
 
 ## Monitoring
 
-The GitLab test suite is [monitored] for the `master` branch, and any branch
+The GitLab test suite is [monitored](../performance.md#rspec-profiling) for the `master` branch, and any branch
 that includes `rspec-profile` in their name.
 
-A [public dashboard] is available for everyone to see. Feel free to look at the
+A [public dashboard](https://redash.gitlab.com/public/dashboards/l1WhHXaxrCWM5Ai9D7YDqHKehq6OU3bx5gssaiWe?org_slug=default) is available for everyone to see. Feel free to look at the
 slowest test files and try to improve them.
-
-[monitored]: ../performance.md#rspec-profiling
-[public dashboard]: https://redash.gitlab.com/public/dashboards/l1WhHXaxrCWM5Ai9D7YDqHKehq6OU3bx5gssaiWe?org_slug=default
 
 ## CI setup
 
 - Rails logging to `log/test.log` is disabled by default in CI [for
-  performance reasons][logging]. To override this setting, provide the
+  performance reasons](https://jtway.co/speed-up-your-rails-test-suite-by-6-in-1-line-13fedb869ec4). To override this setting, provide the
   `RAILS_ENABLE_TEST_LOG` environment variable.
-
-[logging]: https://jtway.co/speed-up-your-rails-test-suite-by-6-in-1-line-13fedb869ec4
 
 ---
 

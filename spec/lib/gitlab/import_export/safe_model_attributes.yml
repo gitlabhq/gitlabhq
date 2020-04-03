@@ -845,6 +845,7 @@ Epic:
   - due_date_sourcing_epic_id
   - health_status
   - external_key
+  - confidential
 EpicIssue:
   - id
   - relative_position

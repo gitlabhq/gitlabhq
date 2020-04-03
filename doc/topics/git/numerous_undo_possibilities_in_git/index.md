@@ -20,7 +20,7 @@ please refer to the [Git book](https://git-scm.com/book/en/v2).
 
 We will explain a few different techniques to undo your changes based on the stage
 of the change in your current development. Also, keep in mind that [nothing in
-Git is really deleted][git-autoclean-ref].
+Git is really deleted](https://git-scm.com/book/en/v2/Git-Internals-Maintenance-and-Data-Recovery).
 
 This means that until Git automatically cleans detached commits (which cannot be
 accessed by branch or tag) it will be possible to view them with `git reflog` command
@@ -28,7 +28,7 @@ and access them with direct commit-id. Read more about _[redoing the undo](#redo
 
 ## Introduction
 
-This guide is organized depending on the [stage of development][git-basics]
+This guide is organized depending on the [stage of development](https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository)
 where you want to undo your changes from and if they were shared with other developers
 or not. Because Git is tracking changes a created or edited file is in the unstaged state
 (if created it is untracked by Git). After you add it to a repository (`git add`) you put
@@ -52,16 +52,16 @@ Here's what we'll cover in this tutorial:
 
 ### Branching strategy
 
-[Git][git-official] is a de-centralized version control system, which means that beside regular
+[Git](https://git-scm.com/) is a de-centralized version control system, which means that beside regular
 versioning of the whole repository, it has possibilities to exchange changes
 with other repositories.
 
 To avoid chaos with
-[multiple sources of truth][git-distributed], various
+[multiple sources of truth](https://git-scm.com/about/distributed), various
 development workflows have to be followed, and it depends on your internal
 workflow how certain changes or commits can be undone or changed.
 
-[GitLab Flow][gitlab-flow] provides a good
+[GitLab Flow](https://about.gitlab.com/blog/2014/09/29/gitlab-flow/) provides a good
 balance between developers clashing with each other while
 developing the same feature and cooperating seamlessly, but it does not enable
 joined development of the same feature by multiple developers by default.
@@ -71,7 +71,7 @@ with every synchronization is unavoidable, but a proper or chosen Git Workflow w
 prevent that anything is lost or out of sync when feature is complete.
 
 You can also
-read through this blog post on [Git Tips & Tricks][gitlab-git-tips-n-tricks]
+read through this blog post on [Git Tips & Tricks](https://about.gitlab.com/blog/2016/12/08/git-tips-and-tricks/)
 to learn how to easily **do** things in Git.
 
 ## Undo local changes
@@ -234,7 +234,7 @@ git bisect A..E
 ```
 
 Bisect will provide us with commit-id of the middle commit to test, and then guide us
-through simple bisection process. You can read more about it [in official Git Tools][git-debug]
+through simple bisection process. You can read more about it [in official Git Tools](https://git-scm.com/book/en/v2/Git-Tools-Debugging-with-Git)
 In our example we will end up with commit `B`, that introduced bug/error. We have
 4 options on how to remove it (or part of it) from our repository.
 
@@ -333,7 +333,7 @@ Sometimes you realize that the changes you undid were useful and you want them
 back. Well because of first paragraph you are in luck. Command `git reflog`
 enables you to *recall* detached local commits by referencing or applying them
 via commit-id. Although, do not expect to see really old commits in reflog, because
-Git regularly [cleans the commits which are *unreachable* by branches or tags][git-autoclean-ref].
+Git regularly [cleans the commits which are *unreachable* by branches or tags](https://git-scm.com/book/en/v2/Git-Internals-Maintenance-and-Data-Recovery).
 
 To view repository history and to track older commits you can use below command:
 
@@ -403,7 +403,7 @@ the cleanup of detached commits (happens automatically).
 Modified history breaks the development chain of other developers, as changed
 history does not have matching commits'ids. For that reason it should not be
 used on any public branch or on branch that *might* be used by other developers.
-When contributing to big open source repositories (for example, [GitLab][gitlab]
+When contributing to big open source repositories (for example, [GitLab](https://gitlab.com/gitlab-org/gitlab/blob/master/CONTRIBUTING.md#contribution-acceptance-criteria)
 itself), it is acceptable to *squash* commits into a single one, to present a
 nicer history of your contribution.
 
@@ -476,7 +476,7 @@ Git also enables you to delete sensitive information from your past commits and
 it does modify history in the progress. That is why we have included it in this
 section and not as a standalone topic. To do so, you should run the
 `git filter-branch`, which enables you to rewrite history with
-[certain filters][git-filters-manual].
+[certain filters](https://git-scm.com/docs/git-filter-branch#_options).
 This command uses rebase to modify history and if you want to remove certain
 file from history altogether use:
 
@@ -487,7 +487,7 @@ git filter-branch --tree-filter 'rm filename' HEAD
 Since `git filter-branch` command might be slow on big repositories, there are
 tools that can use some of Git specifics to enable faster execution of common
 tasks (which is exactly what removing sensitive information file is about).
-An alternative is the open source community-maintained tool [BFG][bfg-repo-cleaner].
+An alternative is the open source community-maintained tool [BFG](https://rtyley.github.io/bfg-repo-cleaner/).
 Keep in mind that these tools are faster because they do not provide the same
 feature set as `git filter-branch` does, but focus on specific use cases.
 
@@ -512,14 +512,3 @@ If you have none to add when creating a doc, leave this section in place
 but commented out to help encourage others to add to it in the future. -->
 
 <!-- Identifiers, in alphabetical order -->
-
-[bfg-repo-cleaner]: https://rtyley.github.io/bfg-repo-cleaner/
-[git-autoclean-ref]: https://git-scm.com/book/en/v2/Git-Internals-Maintenance-and-Data-Recovery
-[git-basics]: https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository
-[git-debug]: https://git-scm.com/book/en/v2/Git-Tools-Debugging-with-Git
-[git-distributed]: https://git-scm.com/about/distributed
-[git-filters-manual]: https://git-scm.com/docs/git-filter-branch#_options
-[git-official]: https://git-scm.com/
-[gitlab]: https://gitlab.com/gitlab-org/gitlab/blob/master/CONTRIBUTING.md#contribution-acceptance-criteria
-[gitlab-flow]: https://about.gitlab.com/blog/2014/09/29/gitlab-flow/
-[gitlab-git-tips-n-tricks]: https://about.gitlab.com/blog/2016/12/08/git-tips-and-tricks/

@@ -104,16 +104,16 @@ working, you can remove the `repos_path` line.
    Note that Omnibus stores the repositories in a `repositories` subdirectory
    of the `git-data` directory.
 
-## Choose where new project repositories will be stored
+## Choose where new repositories will be stored
 
-Once you set the multiple storage paths, you can choose where new projects will
-be stored under **Admin Area > Settings > Repository > Repository storage > Storage
-nodes for new projects**.
+Once you set the multiple storage paths, you can choose where new repositories
+will be stored under **Admin Area > Settings > Repository >
+Repository storage > Storage nodes for new repositories**.
 
-![Choose repository storage path in Admin Area](img/repository_storages_admin_ui.png)
+![Choose repository storage path in Admin Area](img/repository_storages_admin_ui_v12_10.png)
 
-Beginning with GitLab 8.13.4, multiple paths can be chosen. New projects will be
-randomly placed on one of the selected paths.
+Beginning with GitLab 8.13.4, multiple paths can be chosen. New repositories
+will be randomly placed on one of the selected paths.
 
 [ce-4578]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/4578
 [restart-gitlab]: restart_gitlab.md#installations-from-source

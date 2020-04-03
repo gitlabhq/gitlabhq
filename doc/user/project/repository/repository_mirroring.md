@@ -28,6 +28,10 @@ immediate update, unless:
 - The mirror is already being updated.
 - 5 minutes haven't elapsed since its last update.
 
+For security reasons, from [GitLab 12.10 onwards](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/27166),
+the URL to the original repository is only displayed to users with
+Maintainer or Owner permissions to the mirrored project.
+
 ## Use cases
 
 The following are some possible use cases for repository mirroring:

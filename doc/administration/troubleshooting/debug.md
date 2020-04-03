@@ -156,9 +156,7 @@ unicorn['worker_timeout'] = 300
 
 For source installations, edit `config/unicorn.rb`.
 
-[Reconfigure] GitLab for the changes to take effect.
-
-[Reconfigure]: ../restart_gitlab.md#omnibus-gitlab-reconfigure
+[Reconfigure](../restart_gitlab.md#omnibus-gitlab-reconfigure) GitLab for the changes to take effect.
 
 #### Troubleshooting without affecting other users
 

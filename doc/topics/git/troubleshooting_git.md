@@ -42,7 +42,7 @@ set to 50MB. The default is 1MB.
 **If pushing over SSH**, first check your SSH configuration as 'Broken pipe'
 errors can sometimes be caused by underlying issues with SSH (such as
 authentication). Make sure that SSH is correctly configured by following the
-instructions in the [SSH troubleshooting] docs.
+instructions in the [SSH troubleshooting](../../ssh/README.md#troubleshooting) docs.
 
 There's another option where you can prevent session timeouts by configuring
 SSH 'keep alive' either on the client or on the server (if you are a GitLab
@@ -86,7 +86,7 @@ git push
 ### Upgrade your Git client
 
 In case you're running an older version of Git (< 2.9), consider upgrading
-to >= 2.9 (see [Broken pipe when pushing to Git repository][Broken-Pipe]).
+to >= 2.9 (see [Broken pipe when pushing to Git repository](https://stackoverflow.com/questions/19120120/broken-pipe-when-pushing-to-git-repository/36971469#36971469)).
 
 ## `ssh_exchange_identification` error
 
@@ -168,6 +168,3 @@ The default value of `http.postBuffer`, 1 MiB, is applied if the setting is not 
 ```shell
 git config http.postBuffer 524288000
 ```
-
-[SSH troubleshooting]: ../../ssh/README.md#troubleshooting "SSH Troubleshooting"
-[Broken-Pipe]: https://stackoverflow.com/questions/19120120/broken-pipe-when-pushing-to-git-repository/36971469#36971469 "StackOverflow: 'Broken pipe when pushing to Git repository'"

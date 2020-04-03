@@ -4,12 +4,12 @@ import {
   GlAvatar,
   GlIcon,
   GlSprintf,
-  GlDeprecatedButton,
   GlModal,
   GlAlert,
   GlLoadingIcon,
   GlDropdown,
   GlDropdownItem,
+  GlNewButton,
 } from '@gitlab/ui';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
@@ -22,13 +22,13 @@ export default {
     GlAvatar,
     GlIcon,
     GlSprintf,
-    GlDeprecatedButton,
     GlModal,
     GlAlert,
     GlLoadingIcon,
     GlDropdown,
     GlDropdownItem,
     TimeAgoTooltip,
+    GlNewButton,
   },
   apollo: {
     canCreateSnippet: {
@@ -67,17 +67,14 @@ export default {
           condition: this.snippet.userPermissions.updateSnippet,
           text: __('Edit'),
           href: this.editLink,
-          click: undefined,
-          variant: 'outline-info',
-          cssClass: undefined,
         },
         {
           condition: this.snippet.userPermissions.adminSnippet,
           text: __('Delete'),
-          href: undefined,
           click: this.showDeleteModal,
-          variant: 'outline-danger',
-          cssClass: 'btn-inverted btn-danger ml-2',
+          variant: 'danger',
+          category: 'secondary',
+          cssClass: 'ml-2',
         },
         {
           condition: this.canCreateSnippet,
@@ -85,9 +82,9 @@ export default {
           href: this.snippet.project
             ? `${this.snippet.project.webUrl}/snippets/new`
             : '/snippets/new',
-          click: undefined,
-          variant: 'outline-success',
-          cssClass: 'btn-inverted btn-success ml-2',
+          variant: 'success',
+          category: 'secondary',
+          cssClass: 'ml-2',
         },
       ];
     },
@@ -187,18 +184,20 @@ export default {
     </div>
 
     <div class="detail-page-header-actions">
-      <div class="d-none d-sm-block">
+      <div class="d-none d-sm-flex">
         <template v-for="(action, index) in personalSnippetActions">
-          <gl-deprecated-button
+          <gl-new-button
             v-if="action.condition"
             :key="index"
+            :disabled="action.disabled"
             :variant="action.variant"
+            :category="action.category"
             :class="action.cssClass"
-            :href="action.href || undefined"
+            :href="action.href"
             @click="action.click ? action.click() : undefined"
           >
             {{ action.text }}
-          </gl-deprecated-button>
+          </gl-new-button>
         </template>
       </div>
       <div class="d-block d-sm-none dropdown">
@@ -206,7 +205,7 @@ export default {
           <gl-dropdown-item
             v-for="(action, index) in personalSnippetActions"
             :key="index"
-            :href="action.href || undefined"
+            :href="action.href"
             @click="action.click ? action.click() : undefined"
             >{{ action.text }}</gl-dropdown-item
           >
@@ -228,16 +227,17 @@ export default {
       </gl-sprintf>
 
       <template #modal-footer>
-        <gl-deprecated-button @click="closeDeleteModal">{{ __('Cancel') }}</gl-deprecated-button>
-        <gl-deprecated-button
+        <gl-new-button @click="closeDeleteModal">{{ __('Cancel') }}</gl-new-button>
+        <gl-new-button
           variant="danger"
+          category="primary"
           :disabled="isDeleting"
           data-qa-selector="delete_snippet_button"
           @click="deleteSnippet"
         >
           <gl-loading-icon v-if="isDeleting" inline />
           {{ __('Delete snippet') }}
-        </gl-deprecated-button>
+        </gl-new-button>
       </template>
     </gl-modal>
   </div>

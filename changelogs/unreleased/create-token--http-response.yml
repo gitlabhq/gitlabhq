@@ -1,0 +1,5 @@
+---
+title: Token creation uses HTTP status CREATED
+merge_request: 28587
+author:
+type: fixed

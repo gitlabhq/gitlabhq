@@ -1,6 +1,6 @@
 # Markdown API
 
-> [Introduced][ce-18926] in GitLab 11.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18926) in GitLab 11.0.
 
 Available only in APIv4.
 
@@ -25,5 +25,3 @@ Response example:
 ```json
 { "html": "<p dir=\"auto\">Hello world! <gl-emoji title=\"party popper\" data-name=\"tada\" data-unicode-version=\"6.0\">🎉</gl-emoji></p>" }
 ```
-
-[ce-18926]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18926

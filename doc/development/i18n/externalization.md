@@ -292,9 +292,7 @@ const dateFormat = createDateTimeFormat({ year: 'numeric', month: 'long', day: '
 console.log(dateFormat.format(new Date('2063-04-05'))) // April 5, 2063
 ```
 
-This makes use of [`Intl.DateTimeFormat`].
-
-[`Intl.DateTimeFormat`]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat
+This makes use of [`Intl.DateTimeFormat`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat).
 
 - In Ruby/HAML, we have two ways of adding format to dates and times:
 
@@ -404,9 +402,7 @@ This also applies when using links in between translated sentences, otherwise th
 The reasoning behind this is that in some languages words change depending on context. For example in Japanese は is added to the subject of a sentence and を to the object. This is impossible to translate correctly if we extract individual words from the sentence.
 
 When in doubt, try to follow the best practices described in this [Mozilla
-Developer documentation][mdn].
-
-[mdn]: https://developer.mozilla.org/en-US/docs/Mozilla/Localization/Localization_content_best_practices#Splitting
+Developer documentation](https://developer.mozilla.org/en-US/docs/Mozilla/Localization/Localization_content_best_practices#Splitting).
 
 ##### Vue components interpolation
 

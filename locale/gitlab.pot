@@ -3353,6 +3353,12 @@ msgstr ""
 msgid "Cannot create the abuse report. This user has been blocked."
 msgstr ""
 
+msgid "Cannot make epic confidential if it contains not-confidential issues"
+msgstr ""
+
+msgid "Cannot make epic confidential if it contains not-confidential sub-epics"
+msgstr ""
+
 msgid "Cannot merge"
 msgstr ""
 
@@ -3369,6 +3375,9 @@ msgid "Cannot promote issue due to insufficient permissions."
 msgstr ""
 
 msgid "Cannot refer to a group milestone by an internal id!"
+msgstr ""
+
+msgid "Cannot set confidential epic for not-confidential issue"
 msgstr ""
 
 msgid "Cannot show preview. For previews on sketch files, they must have the file format introduced by Sketch version 43 and above."
@@ -5758,6 +5767,9 @@ msgid "Could not save project ID"
 msgstr ""
 
 msgid "Could not save prometheus manual configuration"
+msgstr ""
+
+msgid "Could not update the LDAP settings"
 msgstr ""
 
 msgid "Could not upload your designs as one or more files uploaded are not supported."
@@ -11585,6 +11597,9 @@ msgstr ""
 msgid "LDAP settings"
 msgstr ""
 
+msgid "LDAP settings updated"
+msgstr ""
+
 msgid "LDAP sync in progress. This could take a few minutes. Refresh the page to see the changes."
 msgstr ""
 
@@ -13596,6 +13611,9 @@ msgid "Not ready yet. Try again later."
 msgstr ""
 
 msgid "Not started"
+msgstr ""
+
+msgid "Not-confidential epic cannot be assigned to a confidential parent epic"
 msgstr ""
 
 msgid "Note"
@@ -17646,9 +17664,6 @@ msgstr ""
 msgid "Security Dashboard"
 msgstr ""
 
-msgid "Security Dashboard|Error fetching the dashboard data. Please check your network connection and try again."
-msgstr ""
-
 msgid "Security Dashboard|Error fetching the vulnerability counts. Please check your network connection and try again."
 msgstr ""
 
@@ -17940,7 +17955,7 @@ msgstr ""
 msgid "Select the branch you want to set as the default for this project. All merge requests and commits will automatically be made against this branch unless you specify a different one."
 msgstr ""
 
-msgid "Select the configured storaged available for new projects to be placed on."
+msgid "Select the configured storage available for new repositories to be placed on."
 msgstr ""
 
 msgid "Select the custom project template source group."
@@ -19226,7 +19241,7 @@ msgstr ""
 msgid "Storage"
 msgstr ""
 
-msgid "Storage nodes for new projects"
+msgid "Storage nodes for new repositories"
 msgstr ""
 
 msgid "Storage:"
@@ -21969,7 +21984,7 @@ msgstr ""
 msgid "Use hashed storage"
 msgstr ""
 
-msgid "Use hashed storage paths for newly created and renamed projects. Enable immutable, hash-based paths and repository names to store repositories on disk. This prevents repositories from having to be moved or renamed when the Project URL changes and may improve disk I/O performance."
+msgid "Use hashed storage paths for newly created and renamed repositories. Enable immutable, hash-based paths and repository names to store repositories on disk. This prevents repositories from having to be moved or renamed when the Repository URL changes and may improve disk I/O performance."
 msgstr ""
 
 msgid "Use one line per URI"
