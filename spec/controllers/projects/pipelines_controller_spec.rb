@@ -788,6 +788,28 @@ describe Projects::PipelinesController do
           expect(json_response['status']).to eq('error_parsing_report')
         end
       end
+
+      context 'when test_report contains attachment and scope is with_attachment as a URL param' do
+        let(:pipeline) { create(:ci_pipeline, :with_test_reports_attachment, project: project) }
+
+        it 'returns a test reports with attachment' do
+          get_test_report_json(scope: 'with_attachment')
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response["test_suites"]).to be_present
+        end
+      end
+
+      context 'when test_report does not contain attachment and scope is with_attachment as a URL param' do
+        let(:pipeline) { create(:ci_pipeline, :with_test_reports, project: project) }
+
+        it 'returns a test reports with empty values' do
+          get_test_report_json(scope: 'with_attachment')
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response["test_suites"]).to be_empty
+        end
+      end
     end
 
     context 'when feature is disabled' do
@@ -805,13 +827,18 @@ describe Projects::PipelinesController do
       end
     end
 
-    def get_test_report_json
-      get :test_report, params: {
+    def get_test_report_json(**args)
+      params = {
         namespace_id: project.namespace,
         project_id: project,
         id: pipeline.id
-      },
-      format: :json
+      }
+
+      params.merge!(args) if args
+
+      get :test_report,
+        params: params,
+        format: :json
     end
 
     def clear_controller_memoization

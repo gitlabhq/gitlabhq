@@ -172,9 +172,15 @@ class Projects::PipelinesController < Projects::ApplicationController
         if pipeline_test_report == :error
           render json: { status: :error_parsing_report }
         else
+          test_reports = if params[:scope] == "with_attachment"
+                           pipeline_test_report.with_attachment!
+                         else
+                           pipeline_test_report
+                         end
+
           render json: TestReportSerializer
             .new(current_user: @current_user)
-            .represent(pipeline_test_report)
+            .represent(test_reports)
         end
       end
     end

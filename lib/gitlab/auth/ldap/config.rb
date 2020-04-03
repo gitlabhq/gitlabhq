@@ -178,7 +178,7 @@ module Gitlab
 
         def default_attributes
           {
-            'username'    => %w(uid sAMAccountName userid),
+            'username'    => %W(#{uid} uid sAMAccountName userid).uniq,
             'email'       => %w(mail email userPrincipalName),
             'name'        => 'cn',
             'first_name'  => 'givenName',

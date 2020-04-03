@@ -99,6 +99,16 @@ FactoryBot.define do
       end
     end
 
+    trait :junit_with_attachment do
+      file_type { :junit }
+      file_format { :gzip }
+
+      after(:build) do |artifact, evaluator|
+        artifact.file = fixture_file_upload(
+          Rails.root.join('spec/fixtures/junit/junit_with_attachment.xml.gz'), 'application/x-gzip')
+      end
+    end
+
     trait :junit_with_ant do
       file_type { :junit }
       file_format { :gzip }

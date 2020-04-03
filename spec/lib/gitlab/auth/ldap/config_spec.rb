@@ -502,6 +502,20 @@ AtlErSqafbECNDSwS5BX8yDpu5yRBJ4xegO/rNlmb8ICRYkuJapD1xXicFOsmfUK
     end
   end
 
+  describe '#default_attributes' do
+    it 'includes the configured uid attribute in the username attributes' do
+      stub_ldap_config(options: { 'uid' => 'my_uid_attr' })
+
+      expect(config.default_attributes['username']).to include('my_uid_attr')
+    end
+
+    it 'only includes unique values for username attributes' do
+      stub_ldap_config(options: { 'uid' => 'uid' })
+
+      expect(config.default_attributes['username']).to contain_exactly('uid', 'sAMAccountName', 'userid')
+    end
+  end
+
   describe '#base' do
     context 'when the configured base is not normalized' do
       it 'returns the normalized base' do

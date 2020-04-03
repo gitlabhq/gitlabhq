@@ -311,6 +311,12 @@ FactoryBot.define do
       end
     end
 
+    trait :test_reports_with_attachment do
+      after(:build) do |build|
+        build.job_artifacts << create(:ci_job_artifact, :junit_with_attachment, job: build)
+      end
+    end
+
     trait :coverage_reports do
       after(:build) do |build|
         build.job_artifacts << create(:ci_job_artifact, :cobertura, job: build)

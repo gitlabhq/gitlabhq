@@ -12185,13 +12185,13 @@ msgstr ""
 msgid "MR widget|The pipeline will now run automatically every time you commit code. Pipelines are useful for deploying static web pages, detecting vulnerabilities in dependencies, static or dynamic application security testing (SAST and DAST), and so much more!"
 msgstr ""
 
+msgid "MRApprovals|Approvals"
+msgstr ""
+
 msgid "MRApprovals|Approved by"
 msgstr ""
 
 msgid "MRApprovals|Approvers"
-msgstr ""
-
-msgid "MRApprovals|Pending approvals"
 msgstr ""
 
 msgid "MRDiff|Show changes only"
