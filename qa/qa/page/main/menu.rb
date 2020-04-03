@@ -77,6 +77,8 @@ module QA
 
         def sign_out
           retry_until do
+            wait_if_retry_later
+
             break true unless signed_in?
 
             within_user_menu do

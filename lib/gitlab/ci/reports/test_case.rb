@@ -12,20 +12,19 @@ module Gitlab
 
         attr_reader :name, :classname, :execution_time, :status, :file, :system_output, :stack_trace, :key, :attachment, :job
 
-        # rubocop: disable Metrics/ParameterLists
-        def initialize(name:, classname:, execution_time:, status:, file: nil, system_output: nil, stack_trace: nil, attachment: nil, job: nil)
-          @name = name
-          @classname = classname
-          @file = file
-          @execution_time = execution_time.to_f
-          @status = status
-          @system_output = system_output
-          @stack_trace = stack_trace
+        def initialize(params)
+          @name = params.fetch(:name)
+          @classname = params.fetch(:classname)
+          @file = params.fetch(:file, nil)
+          @execution_time = params.fetch(:execution_time).to_f
+          @status = params.fetch(:status)
+          @system_output = params.fetch(:system_output, nil)
+          @stack_trace = params.fetch(:stack_trace, nil)
+          @attachment = params.fetch(:attachment, nil)
+          @job = params.fetch(:job, nil)
+
           @key = sanitize_key_name("#{classname}_#{name}")
-          @attachment = attachment
-          @job = job
         end
-        # rubocop: enable Metrics/ParameterLists
 
         def has_attachment?
           attachment.present?

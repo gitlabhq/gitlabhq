@@ -63,8 +63,9 @@ RSpec.configure do |config|
   config.display_try_failure_messages = true
 
   if ENV['CI'] && !QA::Runtime::Env.disable_rspec_retry?
+    non_quarantine_retries = QA::Runtime::Env.ci_project_name =~ /staging|canary|production/ ? 3 : 2
     config.around do |example|
-      retry_times = example.metadata.key?(:quarantine) ? 1 : 2
+      retry_times = example.metadata.key?(:quarantine) ? 1 : non_quarantine_retries
       example.run_with_retry retry: retry_times
     end
   end

@@ -8,6 +8,8 @@ module QA
       def validate_elements_present!
         base_page = self.new
 
+        base_page.wait_if_retry_later
+
         elements.each do |element|
           next unless element.required?
 

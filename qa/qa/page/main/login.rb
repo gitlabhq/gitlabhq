@@ -152,6 +152,8 @@ module QA
         private
 
         def sign_in_using_gitlab_credentials(user:, skip_page_validation: false)
+          wait_if_retry_later
+
           switch_to_sign_in_tab if has_sign_in_tab?
           switch_to_standard_tab if has_standard_tab?
 

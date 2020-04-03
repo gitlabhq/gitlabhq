@@ -43,6 +43,10 @@ module QA
         ENV['GITLAB_QA_ADMIN_ACCESS_TOKEN']
       end
 
+      def ci_project_name
+        ENV['CI_PROJECT_NAME']
+      end
+
       def debug?
         enabled?(ENV['QA_DEBUG'], default: false)
       end

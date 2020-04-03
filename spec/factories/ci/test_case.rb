@@ -6,17 +6,18 @@ FactoryBot.define do
     classname { "trace" }
     file { "spec/trace_spec.rb" }
     execution_time { 1.23 }
-    status { "success" }
+    status { Gitlab::Ci::Reports::TestCase::STATUS_SUCCESS }
     system_output { nil }
     attachment { nil }
     association :job, factory: :ci_build
 
     trait :failed do
-      status { "failed" }
+      status { Gitlab::Ci::Reports::TestCase::STATUS_FAILED }
+      system_output { "Failure/Error: is_expected.to eq(300) expected: 300 got: -100" }
     end
 
     trait :with_attachment do
-      status { "failed" }
+      status { Gitlab::Ci::Reports::TestCase::STATUS_FAILED }
       attachment { "some/path.png" }
     end
 

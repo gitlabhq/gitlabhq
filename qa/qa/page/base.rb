@@ -16,6 +16,10 @@ module QA
 
       def_delegators :evaluator, :view, :views
 
+      def initialize
+        @retry_later_backoff = QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME
+      end
+
       def assert_no_element(name)
         assert_no_selector(element_selector_css(name))
       end
@@ -257,6 +261,19 @@ module QA
 
       def visit_link_in_element(name)
         visit find_element(name)['href']
+      end
+
+      def wait_if_retry_later
+        return if @retry_later_backoff > QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME * 5
+
+        if has_css?('body', text: 'Retry later', wait: 0)
+          QA::Runtime::Logger.warn("`Retry later` error occurred. Sleeping for #{@retry_later_backoff} seconds...")
+          sleep @retry_later_backoff
+          refresh
+          @retry_later_backoff += QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME
+
+          wait_if_retry_later
+        end
       end
 
       def self.path
