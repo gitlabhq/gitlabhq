@@ -1,7 +1,7 @@
 import Vuex from 'vuex';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 
-import { GlButton, GlLoadingIcon, GlIcon, GlSearchBoxByType, GlLink } from '@gitlab/ui';
+import { GlDeprecatedButton, GlLoadingIcon, GlIcon, GlSearchBoxByType, GlLink } from '@gitlab/ui';
 import { UP_KEY_CODE, DOWN_KEY_CODE, ENTER_KEY_CODE, ESC_KEY_CODE } from '~/lib/utils/keycodes';
 import DropdownContentsLabelsView from '~/vue_shared/components/sidebar/labels_select_vue/dropdown_contents_labels_view.vue';
 
@@ -199,7 +199,7 @@ describe('DropdownContentsLabelsView', () => {
     });
 
     it('renders dropdown close button element', () => {
-      const closeButtonEl = wrapper.find('.dropdown-title').find(GlButton);
+      const closeButtonEl = wrapper.find('.dropdown-title').find(GlDeprecatedButton);
 
       expect(closeButtonEl.exists()).toBe(true);
       expect(closeButtonEl.find(GlIcon).exists()).toBe(true);
@@ -253,7 +253,7 @@ describe('DropdownContentsLabelsView', () => {
     });
 
     it('renders footer list items', () => {
-      const createLabelBtn = wrapper.find('.dropdown-footer').find(GlButton);
+      const createLabelBtn = wrapper.find('.dropdown-footer').find(GlDeprecatedButton);
       const manageLabelsLink = wrapper.find('.dropdown-footer').find(GlLink);
 
       expect(createLabelBtn.exists()).toBe(true);

@@ -34,6 +34,8 @@ describe 'Metrics rendering', :js, :use_clean_rails_memory_store_caching, :sidek
     before do
       import_common_metrics
       stub_any_prometheus_request_with_response
+
+      allow(Prometheus::ProxyService).to receive(:new).and_call_original
     end
 
     it 'shows embedded metrics' do
@@ -42,6 +44,12 @@ describe 'Metrics rendering', :js, :use_clean_rails_memory_store_caching, :sidek
       expect(page).to have_css('div.prometheus-graph')
       expect(page).to have_text('Memory Usage (Total)')
       expect(page).to have_text('Core Usage (Total)')
+
+      # Ensure that the FE is calling the BE with expected params
+      expect(Prometheus::ProxyService)
+        .to have_received(:new)
+        .with(environment, 'GET', 'query_range', hash_including('start', 'end', 'step'))
+        .at_least(:once)
     end
 
     context 'when dashboard params are in included the url' do
@@ -61,6 +69,12 @@ describe 'Metrics rendering', :js, :use_clean_rails_memory_store_caching, :sidek
         expect(page).to have_css('div.prometheus-graph')
         expect(page).to have_text(chart_params[:title])
         expect(page).to have_text(chart_params[:y_label])
+
+        # Ensure that the FE is calling the BE with expected params
+        expect(Prometheus::ProxyService)
+          .to have_received(:new)
+          .with(environment, 'GET', 'query_range', hash_including('start', 'end', 'step'))
+          .at_least(:once)
       end
 
       context 'when two dashboard urls are included' do
@@ -83,6 +97,12 @@ describe 'Metrics rendering', :js, :use_clean_rails_memory_store_caching, :sidek
           expect(page).to have_text(chart_params[:y_label])
           expect(page).to have_text(chart_params_2[:title])
           expect(page).to have_text(chart_params_2[:y_label])
+
+          # Ensure that the FE is calling the BE with expected params
+          expect(Prometheus::ProxyService)
+            .to have_received(:new)
+            .with(environment, 'GET', 'query_range', hash_including('start', 'end', 'step'))
+            .at_least(:once)
         end
       end
     end
@@ -97,6 +117,8 @@ describe 'Metrics rendering', :js, :use_clean_rails_memory_store_caching, :sidek
       stub_dashboard_request(grafana_base_url)
       stub_datasource_request(grafana_base_url)
       stub_all_grafana_proxy_requests(grafana_base_url)
+
+      allow(Grafana::ProxyService).to receive(:new).and_call_original
     end
 
     it 'shows embedded metrics' do
@@ -105,6 +127,12 @@ describe 'Metrics rendering', :js, :use_clean_rails_memory_store_caching, :sidek
       expect(page).to have_css('div.prometheus-graph')
       expect(page).to have_text('Expired / Evicted')
       expect(page).to have_text('expired - test-attribute-value')
+
+      # Ensure that the FE is calling the BE with expected params
+      expect(Grafana::ProxyService)
+        .to have_received(:new)
+        .with(project, anything, anything, hash_including('query', 'start', 'end', 'step'))
+        .at_least(:once)
     end
   end
 

@@ -4,7 +4,7 @@ import {
   GlAvatar,
   GlIcon,
   GlSprintf,
-  GlButton,
+  GlDeprecatedButton,
   GlModal,
   GlAlert,
   GlLoadingIcon,
@@ -22,7 +22,7 @@ export default {
     GlAvatar,
     GlIcon,
     GlSprintf,
-    GlButton,
+    GlDeprecatedButton,
     GlModal,
     GlAlert,
     GlLoadingIcon,
@@ -189,7 +189,7 @@ export default {
     <div class="detail-page-header-actions">
       <div class="d-none d-sm-block">
         <template v-for="(action, index) in personalSnippetActions">
-          <gl-button
+          <gl-deprecated-button
             v-if="action.condition"
             :key="index"
             :variant="action.variant"
@@ -198,7 +198,7 @@ export default {
             @click="action.click ? action.click() : undefined"
           >
             {{ action.text }}
-          </gl-button>
+          </gl-deprecated-button>
         </template>
       </div>
       <div class="d-block d-sm-none dropdown">
@@ -228,8 +228,8 @@ export default {
       </gl-sprintf>
 
       <template #modal-footer>
-        <gl-button @click="closeDeleteModal">{{ __('Cancel') }}</gl-button>
-        <gl-button
+        <gl-deprecated-button @click="closeDeleteModal">{{ __('Cancel') }}</gl-deprecated-button>
+        <gl-deprecated-button
           variant="danger"
           :disabled="isDeleting"
           data-qa-selector="delete_snippet_button"
@@ -237,7 +237,7 @@ export default {
         >
           <gl-loading-icon v-if="isDeleting" inline />
           {{ __('Delete snippet') }}
-        </gl-button>
+        </gl-deprecated-button>
       </template>
     </gl-modal>
   </div>

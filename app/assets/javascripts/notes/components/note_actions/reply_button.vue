@@ -1,12 +1,12 @@
 <script>
-import { GlTooltipDirective, GlButton } from '@gitlab/ui';
+import { GlTooltipDirective, GlDeprecatedButton } from '@gitlab/ui';
 import Icon from '~/vue_shared/components/icon.vue';
 
 export default {
   name: 'ReplyButton',
   components: {
     Icon,
-    GlButton,
+    GlDeprecatedButton,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -16,7 +16,7 @@ export default {
 
 <template>
   <div class="note-actions-item">
-    <gl-button
+    <gl-deprecated-button
       ref="button"
       v-gl-tooltip
       class="note-action-button"
@@ -27,6 +27,6 @@ export default {
       @click="$emit('startReplying')"
     >
       <icon name="comment" class="link-highlight" />
-    </gl-button>
+    </gl-deprecated-button>
   </div>
 </template>

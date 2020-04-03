@@ -1,5 +1,5 @@
 <script>
-import { GlTooltipDirective, GlLink, GlButton } from '@gitlab/ui';
+import { GlTooltipDirective, GlLink, GlDeprecatedButton } from '@gitlab/ui';
 import { polyfillSticky } from '~/lib/utils/sticky';
 import Icon from '~/vue_shared/components/icon.vue';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
@@ -10,7 +10,7 @@ export default {
   components: {
     Icon,
     GlLink,
-    GlButton,
+    GlDeprecatedButton,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -111,18 +111,18 @@ export default {
 
       <!-- scroll buttons -->
       <div v-gl-tooltip :title="s__('Job|Scroll to top')" class="controllers-buttons">
-        <gl-button
+        <gl-deprecated-button
           :disabled="isScrollTopDisabled"
           type="button"
           class="js-scroll-top btn-scroll btn-transparent btn-blank"
           @click="handleScrollToTop"
         >
           <icon name="scroll_up" />
-        </gl-button>
+        </gl-deprecated-button>
       </div>
 
       <div v-gl-tooltip :title="s__('Job|Scroll to bottom')" class="controllers-buttons">
-        <gl-button
+        <gl-deprecated-button
           :disabled="isScrollBottomDisabled"
           class="js-scroll-bottom btn-scroll btn-transparent btn-blank"
           :class="{ animate: isScrollingDown }"

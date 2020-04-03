@@ -1,6 +1,6 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
-import { GlTooltipDirective, GlLink, GlButton, GlSprintf } from '@gitlab/ui';
+import { GlTooltipDirective, GlLink, GlDeprecatedButton, GlSprintf } from '@gitlab/ui';
 import { __ } from '~/locale';
 import { polyfillSticky } from '~/lib/utils/sticky';
 import Icon from '~/vue_shared/components/icon.vue';
@@ -14,7 +14,7 @@ export default {
     CompareVersionsDropdown,
     Icon,
     GlLink,
-    GlButton,
+    GlDeprecatedButton,
     GlSprintf,
     SettingsDropdown,
     DiffStats,
@@ -140,16 +140,20 @@ export default {
           :added-lines="addedLines"
           :removed-lines="removedLines"
         />
-        <gl-button
+        <gl-deprecated-button
           v-if="commit || startVersion"
           :href="latestVersionPath"
           class="append-right-8 js-latest-version"
         >
           {{ __('Show latest version') }}
-        </gl-button>
-        <gl-button v-show="hasCollapsedFile" class="append-right-8" @click="expandAllFiles">
+        </gl-deprecated-button>
+        <gl-deprecated-button
+          v-show="hasCollapsedFile"
+          class="append-right-8"
+          @click="expandAllFiles"
+        >
           {{ __('Expand all') }}
-        </gl-button>
+        </gl-deprecated-button>
         <settings-dropdown />
       </div>
     </div>

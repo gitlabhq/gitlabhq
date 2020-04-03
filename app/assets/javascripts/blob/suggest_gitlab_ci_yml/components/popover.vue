@@ -1,5 +1,5 @@
 <script>
-import { GlPopover, GlSprintf, GlButton, GlIcon } from '@gitlab/ui';
+import { GlPopover, GlSprintf, GlDeprecatedButton, GlIcon } from '@gitlab/ui';
 import { parseBoolean, scrollToElement, setCookie, getCookie } from '~/lib/utils/common_utils';
 import { s__ } from '~/locale';
 import { glEmojiTag } from '~/emoji';
@@ -27,7 +27,7 @@ export default {
     GlPopover,
     GlSprintf,
     GlIcon,
-    GlButton,
+    GlDeprecatedButton,
   },
   mixins: [trackingMixin],
   props: {
@@ -109,9 +109,9 @@ export default {
     <template #title>
       <span v-html="suggestTitle"></span>
       <span class="ml-auto">
-        <gl-button :aria-label="__('Close')" class="btn-blank" @click="onDismiss">
+        <gl-deprecated-button :aria-label="__('Close')" class="btn-blank" @click="onDismiss">
           <gl-icon name="close" aria-hidden="true" />
-        </gl-button>
+        </gl-deprecated-button>
       </span>
     </template>
 

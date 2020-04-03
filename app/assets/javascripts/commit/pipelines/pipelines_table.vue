@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlLoadingIcon } from '@gitlab/ui';
+import { GlDeprecatedButton, GlLoadingIcon } from '@gitlab/ui';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import PipelinesService from '~/pipelines/services/pipelines_service';
 import PipelineStore from '~/pipelines/stores/pipelines_store';
@@ -12,7 +12,7 @@ import CIPaginationMixin from '~/vue_shared/mixins/ci_pagination_api_mixin';
 export default {
   components: {
     TablePagination,
-    GlButton,
+    GlDeprecatedButton,
     GlLoadingIcon,
   },
   mixins: [pipelinesMixin, CIPaginationMixin],
@@ -171,7 +171,7 @@ export default {
 
     <div v-else-if="shouldRenderTable" class="table-holder">
       <div v-if="canRenderPipelineButton" class="nav justify-content-end">
-        <gl-button
+        <gl-deprecated-button
           v-if="canRenderPipelineButton"
           variant="success"
           class="js-run-mr-pipeline prepend-top-10 btn-wide-on-xs"
@@ -180,7 +180,7 @@ export default {
         >
           <gl-loading-icon v-if="state.isRunningMergeRequestPipeline" inline />
           {{ s__('Pipelines|Run Pipeline') }}
-        </gl-button>
+        </gl-deprecated-button>
       </div>
 
       <pipelines-table-component

@@ -1,5 +1,5 @@
 <script>
-import { GlButton } from '@gitlab/ui';
+import { GlDeprecatedButton } from '@gitlab/ui';
 import { isString } from 'lodash';
 import Icon from '~/vue_shared/components/icon.vue';
 import ProjectAvatar from '~/vue_shared/components/project_avatar/default.vue';
@@ -11,7 +11,7 @@ export default {
   components: {
     Icon,
     ProjectAvatar,
-    GlButton,
+    GlDeprecatedButton,
   },
   props: {
     project: {
@@ -45,7 +45,7 @@ export default {
 };
 </script>
 <template>
-  <gl-button
+  <gl-deprecated-button
     class="d-flex align-items-center btn pt-1 pb-1 border-0 project-list-item"
     @click="onClick"
   >
@@ -70,5 +70,5 @@ export default {
         v-html="highlightedProjectName"
       ></div>
     </div>
-  </gl-button>
+  </gl-deprecated-button>
 </template>

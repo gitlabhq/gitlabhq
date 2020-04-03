@@ -31,7 +31,7 @@ module Gitlab
       end
 
       def execute
-        Gitlab::Import::SetAsyncJid.set_jid(project)
+        Gitlab::Import::SetAsyncJid.set_jid(project.import_state)
 
         Stage::ImportRepositoryWorker
           .perform_async(project.id)

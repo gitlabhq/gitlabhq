@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlDropdown, GlDropdownItem, GlFormGroup } from '@gitlab/ui';
+import { GlDeprecatedButton, GlDropdown, GlDropdownItem, GlFormGroup } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
 
 import { convertToFixedRange, isEqualTimeRanges, findTimeRange } from '~/lib/utils/datetime_range';
@@ -28,7 +28,7 @@ export default {
     TooltipOnTruncate,
     DateTimePickerInput,
     GlFormGroup,
-    GlButton,
+    GlDeprecatedButton,
     GlDropdown,
     GlDropdownItem,
   },
@@ -192,10 +192,10 @@ export default {
             />
           </div>
           <gl-form-group>
-            <gl-button @click="closeDropdown">{{ __('Cancel') }}</gl-button>
-            <gl-button variant="success" :disabled="!isValid" @click="setFixedRange()">
+            <gl-deprecated-button @click="closeDropdown">{{ __('Cancel') }}</gl-deprecated-button>
+            <gl-deprecated-button variant="success" :disabled="!isValid" @click="setFixedRange()">
               {{ __('Apply') }}
-            </gl-button>
+            </gl-deprecated-button>
           </gl-form-group>
         </gl-form-group>
         <gl-form-group label-for="group-id-dropdown" class="col-md-5 gl-pl-1 gl-pr-1 m-0">

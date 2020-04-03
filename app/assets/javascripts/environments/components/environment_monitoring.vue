@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlTooltipDirective } from '@gitlab/ui';
+import { GlDeprecatedButton, GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
 /**
  * Renders the Monitoring (Metrics) link in environments table.
@@ -9,7 +9,7 @@ import Icon from '~/vue_shared/components/icon.vue';
 export default {
   components: {
     Icon,
-    GlButton,
+    GlDeprecatedButton,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -28,7 +28,7 @@ export default {
 };
 </script>
 <template>
-  <gl-button
+  <gl-deprecated-button
     v-gl-tooltip
     :href="monitoringUrl"
     :title="title"
@@ -38,5 +38,5 @@ export default {
     variant="default"
   >
     <icon name="chart" />
-  </gl-button>
+  </gl-deprecated-button>
 </template>

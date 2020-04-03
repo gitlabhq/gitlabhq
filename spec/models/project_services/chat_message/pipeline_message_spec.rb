@@ -447,14 +447,6 @@ describe ChatMessage::PipelineMessage do
       end
     end
 
-    it "returns the stage name and link as the attachment's second field property" do
-      expect(subject.attachments.first[:fields][1]).to eq({
-        title: "Commit",
-        value: "<http://example.com/commit|A test commit message>",
-        short: true
-      })
-    end
-
     it "returns the project's name as the attachment's footer property" do
       expect(subject.attachments.first[:footer]).to eq("project_name")
     end

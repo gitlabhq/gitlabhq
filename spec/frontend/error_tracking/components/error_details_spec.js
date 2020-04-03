@@ -3,7 +3,7 @@ import Vuex from 'vuex';
 import { __ } from '~/locale';
 import createFlash from '~/flash';
 import {
-  GlButton,
+  GlDeprecatedButton,
   GlLoadingIcon,
   GlLink,
   GlBadge,
@@ -38,7 +38,7 @@ describe('ErrorDetails', () => {
 
   function mountComponent() {
     wrapper = shallowMount(ErrorDetails, {
-      stubs: { GlButton, GlSprintf },
+      stubs: { GlDeprecatedButton, GlSprintf },
       localVue,
       store,
       mocks,
@@ -178,7 +178,7 @@ describe('ErrorDetails', () => {
       expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
       expect(wrapper.find(Stacktrace).exists()).toBe(false);
       expect(wrapper.find(GlBadge).exists()).toBe(false);
-      expect(wrapper.findAll(GlButton).length).toBe(3);
+      expect(wrapper.findAll(GlDeprecatedButton).length).toBe(3);
     });
 
     describe('unsafe chars for culprit field', () => {

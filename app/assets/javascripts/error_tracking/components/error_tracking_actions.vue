@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlIcon, GlButtonGroup, GlTooltipDirective } from '@gitlab/ui';
+import { GlDeprecatedButton, GlIcon, GlButtonGroup, GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
 
 const IGNORED = 'ignored';
@@ -10,7 +10,7 @@ const statusValidation = [IGNORED, RESOLVED, UNRESOLVED];
 
 export default {
   components: {
-    GlButton,
+    GlDeprecatedButton,
     GlIcon,
     GlButtonGroup,
   },
@@ -45,7 +45,7 @@ export default {
 <template>
   <div>
     <gl-button-group class="flex-column flex-md-row ml-0 ml-md-n4">
-      <gl-button
+      <gl-deprecated-button
         :key="ignoreBtn.status"
         :ref="`${ignoreBtn.title.toLowerCase()}Error`"
         v-gl-tooltip.hover
@@ -55,8 +55,8 @@ export default {
       >
         <gl-icon class="d-none d-md-inline m-0" :name="ignoreBtn.icon" :size="12" />
         <span class="d-md-none">{{ ignoreBtn.title }}</span>
-      </gl-button>
-      <gl-button
+      </gl-deprecated-button>
+      <gl-deprecated-button
         :key="resolveBtn.status"
         :ref="`${resolveBtn.title.toLowerCase()}Error`"
         v-gl-tooltip.hover
@@ -66,15 +66,15 @@ export default {
       >
         <gl-icon class="d-none d-md-inline m-0" :name="resolveBtn.icon" :size="12" />
         <span class="d-md-none">{{ resolveBtn.title }}</span>
-      </gl-button>
+      </gl-deprecated-button>
     </gl-button-group>
-    <gl-button
+    <gl-deprecated-button
       :href="detailsLink"
       category="secondary"
       variant="info"
       class="d-block d-md-none mb-2 mb-md-0"
     >
       {{ __('More details') }}
-    </gl-button>
+    </gl-deprecated-button>
   </div>
 </template>

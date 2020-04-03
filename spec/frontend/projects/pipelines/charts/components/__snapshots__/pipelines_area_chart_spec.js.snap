@@ -10,6 +10,7 @@ exports[`PipelinesAreaChart matches the snapshot 1`] = `
    
   <div>
     <glareachart-stub
+      annotations=""
       data="[object Object],[object Object]"
       height="300"
       legendaveragetext="Avg"

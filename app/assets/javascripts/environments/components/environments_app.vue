@@ -1,5 +1,5 @@
 <script>
-import { GlButton } from '@gitlab/ui';
+import { GlDeprecatedButton } from '@gitlab/ui';
 import envrionmentsAppMixin from 'ee_else_ce/environments/mixins/environments_app_mixin';
 import Flash from '~/flash';
 import { s__ } from '~/locale';
@@ -17,7 +17,7 @@ export default {
     ConfirmRollbackModal,
     emptyState,
     EnableReviewAppButton,
-    GlButton,
+    GlDeprecatedButton,
     StopEnvironmentModal,
     DeleteEnvironmentModal,
   },
@@ -105,14 +105,14 @@ export default {
 
       <div class="nav-controls">
         <enable-review-app-button v-if="state.reviewAppDetails.can_setup_review_app" class="mr-2" />
-        <gl-button
+        <gl-deprecated-button
           v-if="canCreateEnvironment && !isLoading"
           :href="newEnvironmentPath"
           category="primary"
           variant="success"
         >
           {{ s__('Environments|New environment') }}
-        </gl-button>
+        </gl-deprecated-button>
       </div>
     </div>
 

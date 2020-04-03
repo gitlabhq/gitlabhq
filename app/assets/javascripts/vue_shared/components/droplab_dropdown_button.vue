@@ -1,11 +1,11 @@
 <script>
-import { GlButton } from '@gitlab/ui';
+import { GlDeprecatedButton } from '@gitlab/ui';
 import Icon from './icon.vue';
 
 export default {
   components: {
     Icon,
-    GlButton,
+    GlDeprecatedButton,
   },
   props: {
     size: {
@@ -59,9 +59,13 @@ export default {
 
 <template>
   <div class="btn-group droplab-dropdown comment-type-dropdown">
-    <gl-button :class="primaryButtonClass" :size="size" @click.prevent="handlePrimaryActionClick">
+    <gl-deprecated-button
+      :class="primaryButtonClass"
+      :size="size"
+      @click.prevent="handlePrimaryActionClick"
+    >
       {{ selectedActionTitle }}
-    </gl-button>
+    </gl-deprecated-button>
     <button
       :class="buttonSizeClass"
       type="button"
@@ -74,13 +78,13 @@ export default {
     <ul :class="dropdownClass" class="dropdown-menu dropdown-open-top">
       <template v-for="(action, index) in actions">
         <li :key="index" :class="{ 'droplab-item-selected': selectedAction === index }">
-          <gl-button class="btn-transparent" @click.prevent="handleActionClick(index)">
+          <gl-deprecated-button class="btn-transparent" @click.prevent="handleActionClick(index)">
             <i aria-hidden="true" class="fa fa-check icon"> </i>
             <div class="description">
               <strong>{{ action.title }}</strong>
               <p>{{ action.description }}</p>
             </div>
-          </gl-button>
+          </gl-deprecated-button>
         </li>
         <li v-if="index === 0" :key="`${index}-separator`" class="divider droplab-item-ignore"></li>
       </template>

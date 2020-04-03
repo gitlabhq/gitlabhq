@@ -18,7 +18,7 @@
  */
 import $ from 'jquery';
 import { mapGetters, mapActions, mapState } from 'vuex';
-import { GlButton, GlSkeletonLoading, GlTooltipDirective } from '@gitlab/ui';
+import { GlDeprecatedButton, GlSkeletonLoading, GlTooltipDirective } from '@gitlab/ui';
 import descriptionVersionHistoryMixin from 'ee_else_ce/notes/mixins/description_version_history';
 import noteHeader from '~/notes/components/note_header.vue';
 import Icon from '~/vue_shared/components/icon.vue';
@@ -35,7 +35,7 @@ export default {
     Icon,
     noteHeader,
     TimelineEntryItem,
-    GlButton,
+    GlDeprecatedButton,
     GlSkeletonLoading,
   },
   directives: {
@@ -131,7 +131,7 @@ export default {
             <gl-skeleton-loading />
           </pre>
           <pre v-else class="wrapper mt-2" v-html="descriptionVersion"></pre>
-          <gl-button
+          <gl-deprecated-button
             v-if="canDeleteDescriptionVersion"
             ref="deleteDescriptionVersionButton"
             v-gl-tooltip
@@ -140,7 +140,7 @@ export default {
             @click="deleteDescriptionVersion"
           >
             <icon name="remove" />
-          </gl-button>
+          </gl-deprecated-button>
         </div>
       </div>
     </div>

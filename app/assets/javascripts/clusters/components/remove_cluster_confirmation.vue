@@ -1,7 +1,7 @@
 <script>
 import { escape as esc } from 'lodash';
 import SplitButton from '~/vue_shared/components/split_button.vue';
-import { GlModal, GlButton, GlFormInput } from '@gitlab/ui';
+import { GlModal, GlDeprecatedButton, GlFormInput } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
 import csrf from '~/lib/utils/csrf';
 
@@ -27,7 +27,7 @@ export default {
   components: {
     SplitButton,
     GlModal,
-    GlButton,
+    GlDeprecatedButton,
     GlFormInput,
   },
   props: {
@@ -148,19 +148,24 @@ export default {
         }}</span>
       </template>
       <template slot="modal-footer">
-        <gl-button variant="secondary" @click="handleCancel">{{ s__('Cancel') }}</gl-button>
+        <gl-deprecated-button variant="secondary" @click="handleCancel">{{
+          s__('Cancel')
+        }}</gl-deprecated-button>
         <template v-if="confirmCleanup">
-          <gl-button :disabled="!canSubmit" variant="warning" @click="handleSubmit">{{
+          <gl-deprecated-button :disabled="!canSubmit" variant="warning" @click="handleSubmit">{{
             s__('ClusterIntegration|Remove integration')
-          }}</gl-button>
-          <gl-button :disabled="!canSubmit" variant="danger" @click="handleSubmit(true)">{{
-            s__('ClusterIntegration|Remove integration and resources')
-          }}</gl-button>
+          }}</gl-deprecated-button>
+          <gl-deprecated-button
+            :disabled="!canSubmit"
+            variant="danger"
+            @click="handleSubmit(true)"
+            >{{ s__('ClusterIntegration|Remove integration and resources') }}</gl-deprecated-button
+          >
         </template>
         <template v-else>
-          <gl-button :disabled="!canSubmit" variant="danger" @click="handleSubmit">{{
+          <gl-deprecated-button :disabled="!canSubmit" variant="danger" @click="handleSubmit">{{
             s__('ClusterIntegration|Remove integration')
-          }}</gl-button>
+          }}</gl-deprecated-button>
         </template>
       </template>
     </gl-modal>

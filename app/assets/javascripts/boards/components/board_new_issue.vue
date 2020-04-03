@@ -1,6 +1,6 @@
 <script>
 import $ from 'jquery';
-import { GlButton } from '@gitlab/ui';
+import { GlDeprecatedButton } from '@gitlab/ui';
 import { getMilestone } from 'ee_else_ce/boards/boards_util';
 import ListIssue from 'ee_else_ce/boards/models/issue';
 import eventHub from '../eventhub';
@@ -11,7 +11,7 @@ export default {
   name: 'BoardNewIssue',
   components: {
     ProjectSelect,
-    GlButton,
+    GlDeprecatedButton,
   },
   props: {
     groupId: {
@@ -120,17 +120,21 @@ export default {
         />
         <project-select v-if="groupId" :group-id="groupId" :list="list" />
         <div class="clearfix prepend-top-10">
-          <gl-button
+          <gl-deprecated-button
             ref="submit-button"
             :disabled="disabled"
             class="float-left"
             variant="success"
             type="submit"
-            >{{ __('Submit issue') }}</gl-button
+            >{{ __('Submit issue') }}</gl-deprecated-button
           >
-          <gl-button class="float-right" type="button" variant="default" @click="cancel">{{
-            __('Cancel')
-          }}</gl-button>
+          <gl-deprecated-button
+            class="float-right"
+            type="button"
+            variant="default"
+            @click="cancel"
+            >{{ __('Cancel') }}</gl-deprecated-button
+          >
         </div>
       </form>
     </div>

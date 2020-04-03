@@ -58,7 +58,7 @@
             = render_if_exists "shared/boards/components/list_weight"
 
         %gl-button-group.board-list-button-group.pl-2{ "v-if" => "isNewIssueShown || isSettingsShown" }
-          %gl-button.issue-count-badge-add-button.no-drag{ type: "button",
+          %gl-deprecated-button.issue-count-badge-add-button.no-drag{ type: "button",
             "@click" => "showNewIssueForm",
             "v-if" => "isNewIssueShown",
             ":class": "{ 'd-none': !list.isExpanded, 'rounded-right': isNewIssueShown && !isSettingsShown }",

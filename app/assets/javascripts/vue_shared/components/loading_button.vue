@@ -2,7 +2,7 @@
 import { GlLoadingIcon } from '@gitlab/ui';
 /* eslint-disable vue/require-default-prop */
 /*
-This component will be deprecated in favor of gl-button.
+This component will be deprecated in favor of gl-deprecated-button.
 https://gitlab-org.gitlab.io/gitlab-ui/?path=/story/base-button--loading-button
 https://gitlab.com/gitlab-org/gitlab/issues/207412
 */

@@ -1,5 +1,11 @@
 <script>
-import { GlButton, GlFormGroup, GlFormInput, GlModal, GlModalDirective } from '@gitlab/ui';
+import {
+  GlDeprecatedButton,
+  GlFormGroup,
+  GlFormInput,
+  GlModal,
+  GlModalDirective,
+} from '@gitlab/ui';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import axios from '~/lib/utils/axios_utils';
 import { __, sprintf } from '~/locale';
@@ -8,7 +14,7 @@ import createFlash from '~/flash';
 export default {
   copyToClipboard: __('Copy'),
   components: {
-    GlButton,
+    GlDeprecatedButton,
     GlFormGroup,
     GlFormInput,
     GlModal,
@@ -112,13 +118,13 @@ export default {
             )
           }}
         </gl-modal>
-        <gl-button v-gl-modal.authKeyModal class="js-reset-auth-key">{{
+        <gl-deprecated-button v-gl-modal.authKeyModal class="js-reset-auth-key">{{
           __('Reset key')
-        }}</gl-button>
+        }}</gl-deprecated-button>
       </template>
-      <gl-button v-else class="js-reset-auth-key" @click="resetKey">{{
+      <gl-deprecated-button v-else class="js-reset-auth-key" @click="resetKey">{{
         __('Generate key')
-      }}</gl-button>
+      }}</gl-deprecated-button>
     </div>
   </div>
 </template>

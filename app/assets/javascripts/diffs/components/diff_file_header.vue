@@ -1,7 +1,7 @@
 <script>
 import { escape as esc } from 'lodash';
 import { mapActions, mapGetters } from 'vuex';
-import { GlButton, GlTooltipDirective, GlLoadingIcon } from '@gitlab/ui';
+import { GlDeprecatedButton, GlTooltipDirective, GlLoadingIcon } from '@gitlab/ui';
 import { polyfillSticky } from '~/lib/utils/sticky';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import Icon from '~/vue_shared/components/icon.vue';
@@ -16,7 +16,7 @@ import { scrollToElement } from '~/lib/utils/common_utils';
 export default {
   components: {
     GlLoadingIcon,
-    GlButton,
+    GlDeprecatedButton,
     ClipboardButton,
     EditButton,
     Icon,
@@ -229,7 +229,7 @@ export default {
       <div class="btn-group" role="group">
         <template v-if="diffFile.blob && diffFile.blob.readable_text">
           <span v-gl-tooltip.hover :title="s__('MergeRequests|Toggle comments for this file')">
-            <gl-button
+            <gl-deprecated-button
               ref="toggleDiscussionsButton"
               :disabled="!diffHasDiscussions(diffFile)"
               :class="{ active: diffHasExpandedDiscussions(diffFile) }"
@@ -242,7 +242,7 @@ export default {
               @click="toggleFileDiscussionWrappers(diffFile)"
             >
               <icon name="comment" />
-            </gl-button>
+            </gl-deprecated-button>
           </span>
 
           <edit-button
@@ -265,7 +265,7 @@ export default {
           v-html="viewReplacedFileButtonText"
         >
         </a>
-        <gl-button
+        <gl-deprecated-button
           v-if="!diffFile.is_fully_expanded"
           ref="expandDiffToFullFileButton"
           v-gl-tooltip.hover
@@ -279,8 +279,8 @@ export default {
           <gl-loading-icon v-if="diffFile.isLoadingFullFile" color="dark" inline />
           <icon v-else-if="diffFile.isShowingFullFile" name="doc-changes" />
           <icon v-else name="doc-expand" />
-        </gl-button>
-        <gl-button
+        </gl-deprecated-button>
+        <gl-deprecated-button
           ref="viewButton"
           v-gl-tooltip.hover
           :href="diffFile.view_path"
@@ -292,7 +292,7 @@ export default {
           :title="viewFileButtonText"
         >
           <icon name="doc-text" />
-        </gl-button>
+        </gl-deprecated-button>
 
         <a
           v-if="diffFile.external_url"

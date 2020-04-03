@@ -1,5 +1,5 @@
 import { shallowMount, createLocalVue } from '@vue/test-utils';
-import { GlButton } from '@gitlab/ui';
+import { GlDeprecatedButton } from '@gitlab/ui';
 import Form from '~/jobs/components/manual_variables_form.vue';
 
 const localVue = createLocalVue();
@@ -95,7 +95,7 @@ describe('Manual Variables Form', () => {
     });
 
     it('removes the variable row', () => {
-      wrapper.find(GlButton).vm.$emit('click');
+      wrapper.find(GlDeprecatedButton).vm.$emit('click');
 
       expect(wrapper.vm.variables.length).toBe(0);
     });

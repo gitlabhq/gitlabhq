@@ -1,10 +1,10 @@
 <script>
-import { GlTooltipDirective, GlButton } from '@gitlab/ui';
+import { GlTooltipDirective, GlDeprecatedButton } from '@gitlab/ui';
 import Icon from '~/vue_shared/components/icon.vue';
 
 export default {
   components: {
-    GlButton,
+    GlDeprecatedButton,
     Icon,
   },
   directives: {
@@ -37,7 +37,7 @@ export default {
 </script>
 
 <template>
-  <gl-button
+  <gl-deprecated-button
     v-gl-tooltip.top
     :href="editPath"
     :title="__('Edit file')"
@@ -45,5 +45,5 @@ export default {
     @click.native="handleEditClick"
   >
     <icon name="pencil" />
-  </gl-button>
+  </gl-deprecated-button>
 </template>

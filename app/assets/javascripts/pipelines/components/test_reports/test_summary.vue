@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlProgressBar } from '@gitlab/ui';
+import { GlDeprecatedButton, GlProgressBar } from '@gitlab/ui';
 import { __ } from '~/locale';
 import { formatTime, secondsToMilliseconds } from '~/lib/utils/datetime_utility';
 import Icon from '~/vue_shared/components/icon.vue';
@@ -7,7 +7,7 @@ import Icon from '~/vue_shared/components/icon.vue';
 export default {
   name: 'TestSummary',
   components: {
-    GlButton,
+    GlDeprecatedButton,
     GlProgressBar,
     Icon,
   },
@@ -62,14 +62,14 @@ export default {
   <div>
     <div class="row">
       <div class="col-12 d-flex prepend-top-8 align-items-center">
-        <gl-button
+        <gl-deprecated-button
           v-if="showBack"
           size="sm"
           class="append-right-default js-back-button"
           @click="onBackClick"
         >
           <icon name="angle-left" />
-        </gl-button>
+        </gl-deprecated-button>
 
         <h4>{{ heading }}</h4>
       </div>

@@ -1,5 +1,5 @@
 <script>
-import { GlTooltipDirective, GlLink, GlButton, GlLoadingIcon } from '@gitlab/ui';
+import { GlTooltipDirective, GlLink, GlDeprecatedButton, GlLoadingIcon } from '@gitlab/ui';
 import defaultAvatarUrl from 'images/no_avatar.png';
 import { sprintf, s__ } from '~/locale';
 import Icon from '../../vue_shared/components/icon.vue';
@@ -19,7 +19,7 @@ export default {
     ClipboardButton,
     CiIcon,
     GlLink,
-    GlButton,
+    GlDeprecatedButton,
     GlLoadingIcon,
   },
   directives: {
@@ -124,7 +124,7 @@ export default {
           >
             {{ commit.title }}
           </gl-link>
-          <gl-button
+          <gl-deprecated-button
             v-if="commit.description"
             :class="{ open: showDescription }"
             :aria-label="__('Show commit description')"
@@ -132,7 +132,7 @@ export default {
             @click="toggleShowDescription"
           >
             <icon name="ellipsis_h" :size="10" />
-          </gl-button>
+          </gl-deprecated-button>
           <div class="committer">
             <gl-link
               v-if="commit.author"

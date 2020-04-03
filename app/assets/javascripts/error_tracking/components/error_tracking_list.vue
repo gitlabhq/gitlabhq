@@ -2,7 +2,7 @@
 import { mapActions, mapState } from 'vuex';
 import {
   GlEmptyState,
-  GlButton,
+  GlDeprecatedButton,
   GlIcon,
   GlLink,
   GlLoadingIcon,
@@ -69,7 +69,7 @@ export default {
   },
   components: {
     GlEmptyState,
-    GlButton,
+    GlDeprecatedButton,
     GlDropdown,
     GlDropdownItem,
     GlDropdownDivider,
@@ -250,7 +250,7 @@ export default {
               />
             </div>
             <div class="gl-search-box-by-type-right-icons">
-              <gl-button
+              <gl-deprecated-button
                 v-if="errorSearchQuery.length > 0"
                 v-gl-tooltip.hover
                 :title="__('Clear')"
@@ -259,7 +259,7 @@ export default {
                 @click="errorSearchQuery = ''"
               >
                 <gl-icon name="close" :size="12" />
-              </gl-button>
+              </gl-deprecated-button>
             </div>
           </div>
         </div>

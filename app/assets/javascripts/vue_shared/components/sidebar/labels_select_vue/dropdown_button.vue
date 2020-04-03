@@ -1,10 +1,10 @@
 <script>
 import { mapGetters } from 'vuex';
-import { GlButton, GlIcon } from '@gitlab/ui';
+import { GlDeprecatedButton, GlIcon } from '@gitlab/ui';
 
 export default {
   components: {
-    GlButton,
+    GlDeprecatedButton,
     GlIcon,
   },
   computed: {
@@ -14,8 +14,8 @@ export default {
 </script>
 
 <template>
-  <gl-button class="labels-select-dropdown-button w-100 text-left">
+  <gl-deprecated-button class="labels-select-dropdown-button w-100 text-left">
     <span class="dropdown-toggle-text">{{ dropdownButtonText }}</span>
     <gl-icon name="chevron-down" class="pull-right" />
-  </gl-button>
+  </gl-deprecated-button>
 </template>

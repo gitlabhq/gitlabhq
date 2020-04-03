@@ -1,13 +1,13 @@
 <script>
 import $ from 'jquery';
-import { GlButton, GlTooltipDirective } from '@gitlab/ui';
+import { GlDeprecatedButton, GlTooltipDirective } from '@gitlab/ui';
 import Clipboard from 'clipboard';
 import { __ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
 
 export default {
   components: {
-    GlButton,
+    GlDeprecatedButton,
     Icon,
   },
 
@@ -113,7 +113,7 @@ export default {
 };
 </script>
 <template>
-  <gl-button
+  <gl-deprecated-button
     v-gl-tooltip="{ placement: tooltipPlacement, container: tooltipContainer }"
     :class="cssClasses"
     :data-clipboard-target="target"
@@ -123,5 +123,5 @@ export default {
     <slot>
       <icon name="copy-to-clipboard" />
     </slot>
-  </gl-button>
+  </gl-deprecated-button>
 </template>

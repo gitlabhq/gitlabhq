@@ -11878,13 +11878,13 @@ msgstr ""
 msgid "LicenseCompliance|License Compliance"
 msgstr ""
 
-msgid "LicenseCompliance|License Compliance detected %d license for the source branch only"
-msgid_plural "LicenseCompliance|License Compliance detected %d licenses for the source branch only"
+msgid "LicenseCompliance|License Compliance detected %d license and policy violation for the source branch only; approval required"
+msgid_plural "LicenseCompliance|License Compliance detected %d licenses and policy violations for the source branch only; approval required"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "LicenseCompliance|License Compliance detected %d license for the source branch only; approval required"
-msgid_plural "LicenseCompliance|License Compliance detected %d licenses for the source branch only; approval required"
+msgid "LicenseCompliance|License Compliance detected %d license for the source branch only"
+msgid_plural "LicenseCompliance|License Compliance detected %d licenses for the source branch only"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -11893,8 +11893,8 @@ msgid_plural "LicenseCompliance|License Compliance detected %d new licenses"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "LicenseCompliance|License Compliance detected %d new license; approval required"
-msgid_plural "LicenseCompliance|License Compliance detected %d new licenses; approval required"
+msgid "LicenseCompliance|License Compliance detected %d new license and policy violation; approval required"
+msgid_plural "LicenseCompliance|License Compliance detected %d new licenses and policy violations; approval required"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -18340,6 +18340,9 @@ msgid "Sherlock Transactions"
 msgstr ""
 
 msgid "Should you ever lose your phone or access to your one time password secret, each of these recovery codes can be used one time each to regain access to your account. Please save them in a safe place, or you %{b_start}will%{b_end} lose access to your account."
+msgstr ""
+
+msgid "Show all %{issuable_type}."
 msgstr ""
 
 msgid "Show all activity"

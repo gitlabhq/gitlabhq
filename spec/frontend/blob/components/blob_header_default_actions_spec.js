@@ -6,7 +6,7 @@ import {
   BTN_RAW_TITLE,
   RICH_BLOB_VIEWER,
 } from '~/blob/components/constants';
-import { GlButtonGroup, GlButton } from '@gitlab/ui';
+import { GlButtonGroup, GlDeprecatedButton } from '@gitlab/ui';
 import { Blob } from './mock_data';
 
 describe('Blob Header Default Actions', () => {
@@ -27,7 +27,7 @@ describe('Blob Header Default Actions', () => {
   beforeEach(() => {
     createComponent();
     btnGroup = wrapper.find(GlButtonGroup);
-    buttons = wrapper.findAll(GlButton);
+    buttons = wrapper.findAll(GlDeprecatedButton);
   });
 
   afterEach(() => {
@@ -62,7 +62,7 @@ describe('Blob Header Default Actions', () => {
       createComponent({
         activeViewer: RICH_BLOB_VIEWER,
       });
-      buttons = wrapper.findAll(GlButton);
+      buttons = wrapper.findAll(GlDeprecatedButton);
 
       expect(buttons.at(0).attributes('disabled')).toBeTruthy();
     });

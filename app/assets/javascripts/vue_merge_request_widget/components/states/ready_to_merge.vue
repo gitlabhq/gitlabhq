@@ -1,6 +1,6 @@
 <script>
 import { isEmpty } from 'lodash';
-import { GlIcon, GlButton } from '@gitlab/ui';
+import { GlIcon, GlDeprecatedButton } from '@gitlab/ui';
 import successSvg from 'icons/_icon_status_success.svg';
 import warningSvg from 'icons/_icon_status_warning.svg';
 import readyToMergeMixin from 'ee_else_ce/vue_merge_request_widget/mixins/ready_to_merge';
@@ -26,7 +26,7 @@ export default {
     CommitEdit,
     CommitMessageDropdown,
     GlIcon,
-    GlButton,
+    GlDeprecatedButton,
     MergeImmediatelyConfirmationDialog: () =>
       import(
         'ee_component/vue_merge_request_widget/components/merge_immediately_confirmation_dialog.vue'
@@ -263,7 +263,7 @@ export default {
       <div class="media-body">
         <div class="mr-widget-body-controls media space-children">
           <span class="btn-group">
-            <gl-button
+            <gl-deprecated-button
               size="sm"
               class="qa-merge-button accept-merge-request"
               :variant="mergeButtonVariant"
@@ -272,7 +272,7 @@ export default {
               @click="handleMergeButtonClick(isAutoMergeAvailable)"
             >
               {{ mergeButtonText }}
-            </gl-button>
+            </gl-deprecated-button>
             <button
               v-if="shouldShowMergeImmediatelyDropdown"
               :disabled="isMergeButtonDisabled"

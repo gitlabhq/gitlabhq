@@ -1,6 +1,6 @@
 import Vuex from 'vuex';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
-import { GlButton } from '@gitlab/ui';
+import { GlDeprecatedButton } from '@gitlab/ui';
 import CiVariableModal from '~/ci_variable_list/components/ci_variable_modal.vue';
 import createStore from '~/ci_variable_list/store';
 import mockData from '../services/mock_data';
@@ -27,11 +27,11 @@ describe('Ci variable modal', () => {
   const findModal = () => wrapper.find(ModalStub);
   const addOrUpdateButton = index =>
     findModal()
-      .findAll(GlButton)
+      .findAll(GlDeprecatedButton)
       .at(index);
   const deleteVariableButton = () =>
     findModal()
-      .findAll(GlButton)
+      .findAll(GlDeprecatedButton)
       .at(1);
 
   beforeEach(() => {

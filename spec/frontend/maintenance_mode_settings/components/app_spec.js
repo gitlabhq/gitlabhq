@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import MaintenanceModeSettingsApp from '~/maintenance_mode_settings/components/app.vue';
-import { GlToggle, GlFormTextarea, GlButton } from '@gitlab/ui';
+import { GlToggle, GlFormTextarea, GlDeprecatedButton } from '@gitlab/ui';
 
 describe('MaintenanceModeSettingsApp', () => {
   let wrapper;
@@ -16,7 +16,7 @@ describe('MaintenanceModeSettingsApp', () => {
   const findMaintenanceModeSettingsContainer = () => wrapper.find('article');
   const findGlToggle = () => wrapper.find(GlToggle);
   const findGlFormTextarea = () => wrapper.find(GlFormTextarea);
-  const findGlButton = () => wrapper.find(GlButton);
+  const findGlButton = () => wrapper.find(GlDeprecatedButton);
 
   describe('template', () => {
     beforeEach(() => {
@@ -35,7 +35,7 @@ describe('MaintenanceModeSettingsApp', () => {
       expect(findGlFormTextarea().exists()).toBe(true);
     });
 
-    it('renders the GlButton', () => {
+    it('renders the GlDeprecatedButton', () => {
       expect(findGlButton().exists()).toBe(true);
     });
   });

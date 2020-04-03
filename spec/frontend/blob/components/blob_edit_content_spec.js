@@ -12,11 +12,12 @@ describe('Blob Header Editing', () => {
   const value = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.';
   const fileName = 'lorem.txt';
 
-  function createComponent() {
+  function createComponent(props = {}) {
     wrapper = shallowMount(BlobEditContent, {
       propsData: {
         value,
         fileName,
+        ...props,
       },
     });
   }
@@ -40,6 +41,14 @@ describe('Blob Header Editing', () => {
   });
 
   describe('functionality', () => {
+    it('does not fail without content', () => {
+      const spy = jest.spyOn(global.console, 'error');
+      createComponent({ value: undefined });
+
+      expect(spy).not.toHaveBeenCalled();
+      expect(wrapper.contains('#editor')).toBe(true);
+    });
+
     it('initialises Editor Lite', () => {
       const el = wrapper.find({ ref: 'editor' }).element;
       expect(initEditorLite).toHaveBeenCalledWith({

@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlButton } from '@gitlab/ui';
+import { GlDeprecatedButton } from '@gitlab/ui';
 import { TEST_HOST } from 'spec/test_constants';
 import UserAvatarList from '~/vue_shared/components/user_avatar/user_avatar_list.vue';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
@@ -37,7 +37,7 @@ describe('UserAvatarList', () => {
   };
 
   const clickButton = () => {
-    const button = wrapper.find(GlButton);
+    const button = wrapper.find(GlDeprecatedButton);
     button.vm.$emit('click');
   };
 
@@ -112,7 +112,7 @@ describe('UserAvatarList', () => {
     it('does not show button', () => {
       factory();
 
-      expect(wrapper.find(GlButton).exists()).toBe(false);
+      expect(wrapper.find(GlDeprecatedButton).exists()).toBe(false);
     });
   });
 

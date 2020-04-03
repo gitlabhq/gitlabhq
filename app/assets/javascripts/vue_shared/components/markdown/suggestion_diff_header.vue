@@ -1,9 +1,9 @@
 <script>
-import { GlButton, GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
+import { GlDeprecatedButton, GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
 import Icon from '~/vue_shared/components/icon.vue';
 
 export default {
-  components: { Icon, GlButton, GlLoadingIcon },
+  components: { Icon, GlDeprecatedButton, GlLoadingIcon },
   directives: { 'gl-tooltip': GlTooltipDirective },
   props: {
     canApply: {
@@ -52,7 +52,7 @@ export default {
       <gl-loading-icon class="d-flex-center mr-2" />
       <span>{{ __('Applying suggestion') }}</span>
     </div>
-    <gl-button
+    <gl-deprecated-button
       v-else-if="canApply"
       v-gl-tooltip.viewport="__('This also resolves the discussion')"
       class="btn-inverted js-apply-btn"
@@ -61,6 +61,6 @@ export default {
       @click="applySuggestion"
     >
       {{ __('Apply suggestion') }}
-    </gl-button>
+    </gl-deprecated-button>
   </div>
 </template>

@@ -1,9 +1,9 @@
 <script>
-import { GlButton } from '@gitlab/ui';
+import { GlDeprecatedButton } from '@gitlab/ui';
 
 export default {
   components: {
-    GlButton,
+    GlDeprecatedButton,
   },
   props: {
     position: {
@@ -77,9 +77,9 @@ export default {
       </p>
     </div>
     <div v-if="definitionPath" class="popover-body">
-      <gl-button :href="definitionPath" target="_blank" class="w-100" variant="default">
+      <gl-deprecated-button :href="definitionPath" target="_blank" class="w-100" variant="default">
         {{ __('Go to definition') }}
-      </gl-button>
+      </gl-deprecated-button>
     </div>
   </div>
 </template>

@@ -2493,6 +2493,84 @@
       "merge_commit_sha": null,
       "notes": [
         {
+          "id": 669,
+          "note": "added 3 commits\n\n<ul><li>16ea4e20...074a2a32 - 2 commits from branch <code>master</code></li><li>ca223a02 - readme: fix typos</li></ul>\n\n[Compare with previous version](/group/project/merge_requests/1/diffs?diff_id=1189&start_sha=16ea4e207fb258fe4e9c73185a725207c9a4f3e1)",
+          "noteable_type": "MergeRequest",
+          "author_id": 26,
+          "created_at": "2020-03-28T12:47:33.461Z",
+          "updated_at": "2020-03-28T12:47:33.461Z",
+          "project_id": 5,
+          "attachment": {
+            "url": null
+          },
+          "line_code": null,
+          "commit_id": null,
+          "system": true,
+          "st_diff": null,
+          "updated_by_id": null,
+          "position": null,
+          "original_position": null,
+          "resolved_at": null,
+          "resolved_by_id": null,
+          "discussion_id": null,
+          "change_position": null,
+          "resolved_by_push": null,
+          "confidential": null,
+          "type": null,
+          "author": {
+            "name": "User 4"
+          },
+          "award_emoji": [],
+          "system_note_metadata": {
+            "id": 4789,
+            "commit_count": 3,
+            "action": "commit",
+            "created_at": "2020-03-28T12:47:33.461Z",
+            "updated_at": "2020-03-28T12:47:33.461Z"
+          },
+          "events": [],
+          "suggestions": []
+        },
+        {
+          "id": 670,
+          "note": "unmarked as a **Work In Progress**",
+          "noteable_type": "MergeRequest",
+          "author_id": 26,
+          "created_at": "2020-03-28T12:48:36.951Z",
+          "updated_at": "2020-03-28T12:48:36.951Z",
+          "project_id": 5,
+          "attachment": {
+            "url": null
+          },
+          "line_code": null,
+          "commit_id": null,
+          "system": true,
+          "st_diff": null,
+          "updated_by_id": null,
+          "position": null,
+          "original_position": null,
+          "resolved_at": null,
+          "resolved_by_id": null,
+          "discussion_id": null,
+          "change_position": null,
+          "resolved_by_push": null,
+          "confidential": null,
+          "type": null,
+          "author": {
+            "name": "User 4"
+          },
+          "award_emoji": [],
+          "system_note_metadata": {
+            "id": 4790,
+            "commit_count": null,
+            "action": "title",
+            "created_at": "2020-03-28T12:48:36.951Z",
+            "updated_at": "2020-03-28T12:48:36.951Z"
+          },
+          "events": [],
+          "suggestions": []
+        },
+        {
           "id": 671,
           "note": "Sit voluptatibus eveniet architecto quidem.",
           "note_html": "<p>something else entirely</p>",

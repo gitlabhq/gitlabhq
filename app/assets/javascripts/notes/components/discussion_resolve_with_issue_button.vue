@@ -1,12 +1,12 @@
 <script>
-import { GlTooltipDirective, GlButton } from '@gitlab/ui';
+import { GlTooltipDirective, GlDeprecatedButton } from '@gitlab/ui';
 import Icon from '~/vue_shared/components/icon.vue';
 
 export default {
   name: 'ResolveWithIssueButton',
   components: {
     Icon,
-    GlButton,
+    GlDeprecatedButton,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -22,13 +22,13 @@ export default {
 
 <template>
   <div class="btn-group" role="group">
-    <gl-button
+    <gl-deprecated-button
       v-gl-tooltip
       :href="url"
       :title="s__('MergeRequests|Resolve this thread in a new issue')"
       class="new-issue-for-discussion discussion-create-issue-btn"
     >
       <icon name="issue-new" />
-    </gl-button>
+    </gl-deprecated-button>
   </div>
 </template>

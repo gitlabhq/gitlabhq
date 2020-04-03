@@ -329,13 +329,6 @@ RSpec/LeakyConstantDeclaration:
   Exclude:
     - 'spec/**/*.rb'
     - 'qa/spec/**/*.rb'
-    - 'ee/spec/presenters/security/vulnerable_project_presenter_spec.rb'
-    - 'ee/spec/serializers/vulnerable_project_entity_spec.rb'
-    - 'ee/spec/services/clusters/applications/check_upgrade_progress_service_spec.rb'
-    - 'ee/spec/services/dashboard/projects/list_service_spec.rb'
-    - 'ee/spec/services/metrics/dashboard/clone_dashboard_service_spec.rb'
-    - 'ee/spec/support/shared_contexts/epic_aggregate_constants.rb'
-    - 'ee/spec/workers/elastic_namespace_rollout_worker_spec.rb'
 
 RSpec/EmptyLineAfterHook:
   Enabled: false
@@ -387,6 +380,13 @@ Cop/BanCatchThrow:
 Performance/ReadlinesEach:
   Enabled: true
 
+Performance/ChainArrayAllocation:
+  Enabled: true
+  Include:
+    - 'lib/gitlab/import_export/**/*'
+    - 'ee/lib/gitlab/import_export/**/*'
+    - 'ee/lib/ee/gitlab/import_export/**/*'
+
 # https://gitlab.com/gitlab-org/gitlab/-/issues/212541
 RSpec/RepeatedExample:
   Exclude:
@@ -400,7 +400,6 @@ RSpec/RepeatedExample:
     - 'spec/lib/gitlab/closing_issue_extractor_spec.rb'
     - 'spec/lib/gitlab/danger/changelog_spec.rb'
     - 'spec/lib/gitlab/import_export/project/relation_factory_spec.rb'
-    - 'spec/models/project_services/chat_message/pipeline_message_spec.rb'
     - 'spec/routing/admin_routing_spec.rb'
     - 'spec/rubocop/cop/migration/update_large_table_spec.rb'
     - 'spec/services/notification_service_spec.rb'

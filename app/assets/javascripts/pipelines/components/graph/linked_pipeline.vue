@@ -1,5 +1,5 @@
 <script>
-import { GlLoadingIcon, GlTooltipDirective, GlButton } from '@gitlab/ui';
+import { GlLoadingIcon, GlTooltipDirective, GlDeprecatedButton } from '@gitlab/ui';
 import CiStatus from '~/vue_shared/components/ci_icon.vue';
 import { __ } from '~/locale';
 
@@ -10,7 +10,7 @@ export default {
   components: {
     CiStatus,
     GlLoadingIcon,
-    GlButton,
+    GlDeprecatedButton,
   },
   props: {
     pipeline: {
@@ -78,7 +78,7 @@ export default {
     class="linked-pipeline build"
     :class="{ 'child-pipeline': childPipeline }"
   >
-    <gl-button
+    <gl-deprecated-button
       :id="buttonId"
       v-gl-tooltip
       :title="tooltipText"
@@ -104,6 +104,6 @@ export default {
           >{{ label }}</span
         >
       </div>
-    </gl-button>
+    </gl-deprecated-button>
   </li>
 </template>

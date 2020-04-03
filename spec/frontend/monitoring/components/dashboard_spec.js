@@ -1,5 +1,5 @@
 import { shallowMount, createLocalVue, mount } from '@vue/test-utils';
-import { GlDropdownItem, GlButton } from '@gitlab/ui';
+import { GlDropdownItem, GlDeprecatedButton } from '@gitlab/ui';
 import VueDraggable from 'vuedraggable';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
@@ -234,7 +234,7 @@ describe('Dashboard', () => {
       const refreshBtn = wrapper.findAll({ ref: 'refreshDashboardBtn' });
 
       expect(refreshBtn).toHaveLength(1);
-      expect(refreshBtn.is(GlButton)).toBe(true);
+      expect(refreshBtn.is(GlDeprecatedButton)).toBe(true);
     });
   });
 
@@ -517,7 +517,7 @@ describe('Dashboard', () => {
       const externalDashboardButton = wrapper.find('.js-external-dashboard-link');
 
       expect(externalDashboardButton.exists()).toBe(true);
-      expect(externalDashboardButton.is(GlButton)).toBe(true);
+      expect(externalDashboardButton.is(GlDeprecatedButton)).toBe(true);
       expect(externalDashboardButton.text()).toContain('View full dashboard');
     });
   });

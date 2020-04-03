@@ -38,14 +38,14 @@ exports[`User Operation confirmation modal renders modal with form included 1`] 
     />
   </form>
    
-  <gl-button-stub
+  <gl-deprecated-button-stub
     size="md"
     variant="secondary"
   >
     Cancel
-  </gl-button-stub>
+  </gl-deprecated-button-stub>
    
-  <gl-button-stub
+  <gl-deprecated-button-stub
     disabled="true"
     size="md"
     variant="warning"
@@ -53,14 +53,14 @@ exports[`User Operation confirmation modal renders modal with form included 1`] 
     
       secondaryAction
     
-  </gl-button-stub>
+  </gl-deprecated-button-stub>
    
-  <gl-button-stub
+  <gl-deprecated-button-stub
     disabled="true"
     size="md"
     variant="danger"
   >
     action
-  </gl-button-stub>
+  </gl-deprecated-button-stub>
 </div>
 `;

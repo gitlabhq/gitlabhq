@@ -1,7 +1,7 @@
 <script>
 import Vue from 'vue';
 import { mapActions, mapGetters, mapState } from 'vuex';
-import { GlButton, GlLoadingIcon } from '@gitlab/ui';
+import { GlDeprecatedButton, GlLoadingIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
 import FindFile from '~/vue_shared/components/file_finder/index.vue';
 import NewModal from './new_dropdown/modal.vue';
@@ -23,7 +23,7 @@ export default {
     FindFile,
     ErrorMessage,
     CommitEditorHeader,
-    GlButton,
+    GlDeprecatedButton,
     GlLoadingIcon,
   },
   props: {
@@ -121,14 +121,14 @@ export default {
                         )
                       }}
                     </p>
-                    <gl-button
+                    <gl-deprecated-button
                       variant="success"
                       :title="__('New file')"
                       :aria-label="__('New file')"
                       @click="openNewEntryModal({ type: 'blob' })"
                     >
                       {{ __('New file') }}
-                    </gl-button>
+                    </gl-deprecated-button>
                   </template>
                   <gl-loading-icon v-else-if="!currentTree || currentTree.loading" size="md" />
                   <p v-else>

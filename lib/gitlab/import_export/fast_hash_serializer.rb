@@ -100,7 +100,7 @@ module Gitlab
 
         includes
           .map(&method(:serialize_include_definition))
-          .compact
+          .tap { |entries| entries.compact! }
           .to_h
       end
 

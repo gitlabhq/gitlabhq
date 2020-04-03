@@ -90,7 +90,7 @@ exports[`Dashboard template matches the default snapshot 1`] = `
       <gl-form-group-stub
         class="col-sm-2 col-md-2 col-lg-1 refresh-dashboard-button"
       >
-        <gl-button-stub
+        <gl-deprecated-button-stub
           size="md"
           title="Reload this page"
           variant="default"
@@ -99,7 +99,7 @@ exports[`Dashboard template matches the default snapshot 1`] = `
             name="repeat"
             size="16"
           />
-        </gl-button-stub>
+        </gl-deprecated-button-stub>
       </gl-form-group-stub>
        
       <!---->

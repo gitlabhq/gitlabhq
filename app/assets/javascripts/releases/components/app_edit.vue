@@ -1,6 +1,6 @@
 <script>
 import { mapState, mapActions } from 'vuex';
-import { GlButton, GlLink, GlFormInput, GlFormGroup } from '@gitlab/ui';
+import { GlDeprecatedButton, GlLink, GlFormInput, GlFormGroup } from '@gitlab/ui';
 import { escape as esc } from 'lodash';
 import { __, sprintf } from '~/locale';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
@@ -15,7 +15,7 @@ export default {
   components: {
     GlFormInput,
     GlFormGroup,
-    GlButton,
+    GlDeprecatedButton,
     GlLink,
     MarkdownField,
     AssetLinksForm,
@@ -163,14 +163,14 @@ export default {
       <asset-links-form v-if="showAssetLinksForm" />
 
       <div class="d-flex pt-3">
-        <gl-button
+        <gl-deprecated-button
           class="mr-auto js-submit-button"
           variant="success"
           type="submit"
           :aria-label="__('Save changes')"
         >
           {{ __('Save changes') }}
-        </gl-button>
+        </gl-deprecated-button>
         <gl-link :href="cancelPath" class="js-cancel-button btn btn-default">
           {{ __('Cancel') }}
         </gl-link>

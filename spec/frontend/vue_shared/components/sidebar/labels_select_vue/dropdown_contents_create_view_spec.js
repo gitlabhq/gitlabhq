@@ -1,7 +1,7 @@
 import Vuex from 'vuex';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 
-import { GlButton, GlIcon, GlFormInput, GlLink, GlLoadingIcon } from '@gitlab/ui';
+import { GlDeprecatedButton, GlIcon, GlFormInput, GlLink, GlLoadingIcon } from '@gitlab/ui';
 import DropdownContentsCreateView from '~/vue_shared/components/sidebar/labels_select_vue/dropdown_contents_create_view.vue';
 
 import labelSelectModule from '~/vue_shared/components/sidebar/labels_select_vue/store';
@@ -127,7 +127,7 @@ describe('DropdownContentsCreateView', () => {
     it('renders dropdown back button element', () => {
       const backBtnEl = wrapper
         .find('.dropdown-title')
-        .findAll(GlButton)
+        .findAll(GlDeprecatedButton)
         .at(0);
 
       expect(backBtnEl.exists()).toBe(true);
@@ -145,7 +145,7 @@ describe('DropdownContentsCreateView', () => {
     it('renders dropdown close button element', () => {
       const closeBtnEl = wrapper
         .find('.dropdown-title')
-        .findAll(GlButton)
+        .findAll(GlDeprecatedButton)
         .at(1);
 
       expect(closeBtnEl.exists()).toBe(true);
@@ -192,7 +192,7 @@ describe('DropdownContentsCreateView', () => {
     it('renders create button element', () => {
       const createBtnEl = wrapper
         .find('.dropdown-actions')
-        .findAll(GlButton)
+        .findAll(GlDeprecatedButton)
         .at(0);
 
       expect(createBtnEl.exists()).toBe(true);
@@ -213,7 +213,7 @@ describe('DropdownContentsCreateView', () => {
     it('renders cancel button element', () => {
       const cancelBtnEl = wrapper
         .find('.dropdown-actions')
-        .findAll(GlButton)
+        .findAll(GlDeprecatedButton)
         .at(1);
 
       expect(cancelBtnEl.exists()).toBe(true);

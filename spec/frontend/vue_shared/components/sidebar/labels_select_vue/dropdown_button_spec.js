@@ -35,7 +35,7 @@ describe('DropdownButton', () => {
 
   describe('template', () => {
     it('renders component container element', () => {
-      expect(wrapper.is('gl-button-stub')).toBe(true);
+      expect(wrapper.is('gl-deprecated-button-stub')).toBe(true);
     });
 
     it('renders button text element', () => {

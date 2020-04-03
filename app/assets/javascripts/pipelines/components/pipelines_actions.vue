@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlTooltipDirective, GlLoadingIcon } from '@gitlab/ui';
+import { GlDeprecatedButton, GlTooltipDirective, GlLoadingIcon } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
 import flash from '~/flash';
 import { s__, __, sprintf } from '~/locale';
@@ -14,7 +14,7 @@ export default {
   components: {
     Icon,
     GlCountdown,
-    GlButton,
+    GlDeprecatedButton,
     GlLoadingIcon,
   },
   props: {
@@ -94,7 +94,7 @@ export default {
 
     <ul class="dropdown-menu dropdown-menu-right">
       <li v-for="action in actions" :key="action.path">
-        <gl-button
+        <gl-deprecated-button
           :class="{ disabled: isActionDisabled(action) }"
           :disabled="isActionDisabled(action)"
           class="js-pipeline-action-link no-btn btn d-flex align-items-center justify-content-between flex-wrap"
@@ -105,7 +105,7 @@ export default {
             <icon name="clock" />
             <gl-countdown :end-date-string="action.scheduled_at" />
           </span>
-        </gl-button>
+        </gl-deprecated-button>
       </li>
     </ul>
   </div>

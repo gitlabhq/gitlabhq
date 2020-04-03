@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlButtonGroup, GlIcon, GlTooltipDirective } from '@gitlab/ui';
+import { GlDeprecatedButton, GlButtonGroup, GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import {
   BTN_COPY_CONTENTS_TITLE,
   BTN_DOWNLOAD_TITLE,
@@ -12,7 +12,7 @@ export default {
   components: {
     GlIcon,
     GlButtonGroup,
-    GlButton,
+    GlDeprecatedButton,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -43,7 +43,7 @@ export default {
 </script>
 <template>
   <gl-button-group>
-    <gl-button
+    <gl-deprecated-button
       v-gl-tooltip.hover
       :aria-label="$options.BTN_COPY_CONTENTS_TITLE"
       :title="$options.BTN_COPY_CONTENTS_TITLE"
@@ -51,8 +51,8 @@ export default {
       data-clipboard-target="#blob-code-content"
     >
       <gl-icon name="copy-to-clipboard" :size="14" />
-    </gl-button>
-    <gl-button
+    </gl-deprecated-button>
+    <gl-deprecated-button
       v-gl-tooltip.hover
       :aria-label="$options.BTN_RAW_TITLE"
       :title="$options.BTN_RAW_TITLE"
@@ -60,8 +60,8 @@ export default {
       target="_blank"
     >
       <gl-icon name="doc-code" :size="14" />
-    </gl-button>
-    <gl-button
+    </gl-deprecated-button>
+    <gl-deprecated-button
       v-gl-tooltip.hover
       :aria-label="$options.BTN_DOWNLOAD_TITLE"
       :title="$options.BTN_DOWNLOAD_TITLE"
@@ -69,6 +69,6 @@ export default {
       target="_blank"
     >
       <gl-icon name="download" :size="14" />
-    </gl-button>
+    </gl-deprecated-button>
   </gl-button-group>
 </template>

@@ -16,7 +16,7 @@ module Gitlab
 
           return unless start_import
 
-          Gitlab::Import::SetAsyncJid.set_jid(project)
+          Gitlab::Import::SetAsyncJid.set_jid(project.import_state)
 
           Gitlab::JiraImport::Stage::ImportLabelsWorker.perform_async(project.id)
         end

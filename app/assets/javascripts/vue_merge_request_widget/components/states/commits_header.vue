@@ -1,5 +1,5 @@
 <script>
-import { GlButton } from '@gitlab/ui';
+import { GlDeprecatedButton } from '@gitlab/ui';
 import { escape as esc } from 'lodash';
 import { __, n__, sprintf, s__ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
@@ -7,7 +7,7 @@ import Icon from '~/vue_shared/components/icon.vue';
 export default {
   components: {
     Icon,
-    GlButton,
+    GlDeprecatedButton,
   },
   props: {
     isSquashEnabled: {
@@ -80,20 +80,20 @@ export default {
       class="js-mr-widget-commits-count mr-widget-extension clickable d-flex align-items-center px-3 py-2"
       @click="toggle()"
     >
-      <gl-button
+      <gl-deprecated-button
         :aria-label="ariaLabel"
         variant="blank"
         class="commit-edit-toggle square s24 append-right-default"
         @click.stop="toggle()"
       >
         <icon :name="collapseIcon" :size="16" />
-      </gl-button>
+      </gl-deprecated-button>
       <span v-if="expanded">{{ __('Collapse') }}</span>
       <span v-else>
         <span class="vertical-align-middle" v-html="message"></span>
-        <gl-button variant="link" class="modify-message-button">
+        <gl-deprecated-button variant="link" class="modify-message-button">
           {{ modifyLinkMessage }}
-        </gl-button>
+        </gl-deprecated-button>
       </span>
     </div>
     <div v-show="expanded"><slot></slot></div>

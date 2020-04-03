@@ -1,5 +1,5 @@
 <script>
-import { GlTooltipDirective, GlButton, GlLoadingIcon } from '@gitlab/ui';
+import { GlTooltipDirective, GlDeprecatedButton, GlLoadingIcon } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
 import { dasherize } from '~/lib/utils/text_utility';
 import { __ } from '~/locale';
@@ -19,7 +19,7 @@ import Icon from '~/vue_shared/components/icon.vue';
 export default {
   components: {
     Icon,
-    GlButton,
+    GlDeprecatedButton,
     GlLoadingIcon,
   },
   directives: {
@@ -82,7 +82,7 @@ export default {
 };
 </script>
 <template>
-  <gl-button
+  <gl-deprecated-button
     :id="`js-ci-action-${link}`"
     v-gl-tooltip="{ boundary: 'viewport' }"
     :title="tooltipText"
@@ -93,5 +93,5 @@ export default {
   >
     <gl-loading-icon v-if="isLoading" class="js-action-icon-loading" />
     <icon v-else :name="actionIcon" />
-  </gl-button>
+  </gl-deprecated-button>
 </template>

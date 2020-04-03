@@ -15,6 +15,7 @@ exports[`Contributors charts should render charts when loading completed and the
      
     <div>
       <glareachart-stub
+        annotations=""
         data="[object Object]"
         height="264"
         includelegendavgmax="true"
@@ -42,6 +43,7 @@ exports[`Contributors charts should render charts when loading completed and the
          
         <div>
           <glareachart-stub
+            annotations=""
             data="[object Object]"
             height="216"
             includelegendavgmax="true"

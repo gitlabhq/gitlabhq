@@ -1,6 +1,6 @@
 import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
 import Vuex from 'vuex';
-import { GlButton, GlCard } from '@gitlab/ui';
+import { GlDeprecatedButton, GlCard } from '@gitlab/ui';
 import { TEST_HOST } from 'helpers/test_constants';
 import EmbedGroup from '~/monitoring/components/embeds/embed_group.vue';
 import MetricEmbed from '~/monitoring/components/embeds/metric_embed.vue';
@@ -80,7 +80,7 @@ describe('Embed Group', () => {
       metricsWithDataGetter.mockReturnValue([1]);
       mountComponent({ shallow: false, stubs: { MetricEmbed: '<div />' } });
 
-      wrapper.find(GlButton).trigger('click');
+      wrapper.find(GlDeprecatedButton).trigger('click');
 
       wrapper.vm.$nextTick(() => {
         expect(wrapper.find('.card-body').classes()).toContain('d-none');
@@ -150,14 +150,14 @@ describe('Embed Group', () => {
       metricsWithDataGetter.mockReturnValue([1]);
       mountComponent({ shallow: false, stubs: { MetricEmbed: '<div />' } });
 
-      expect(wrapper.find(GlButton).text()).toBe('Hide chart');
+      expect(wrapper.find(GlDeprecatedButton).text()).toBe('Hide chart');
     });
 
     it('has a plural label when there are multiple embeds', () => {
       metricsWithDataGetter.mockReturnValue([2]);
       mountComponent({ shallow: false, stubs: { MetricEmbed: '<div />' } });
 
-      expect(wrapper.find(GlButton).text()).toBe('Hide charts');
+      expect(wrapper.find(GlDeprecatedButton).text()).toBe('Hide charts');
     });
   });
 });

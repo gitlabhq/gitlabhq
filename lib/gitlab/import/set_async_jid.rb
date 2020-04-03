@@ -10,17 +10,18 @@
 module Gitlab
   module Import
     module SetAsyncJid
-      def self.set_jid(project)
-        jid = generate_jid(project)
+      def self.set_jid(import_state)
+        jid = generate_jid(import_state)
 
         Gitlab::SidekiqStatus
           .set(jid, StuckImportJobsWorker::IMPORT_JOBS_EXPIRATION)
 
-        project.import_state.update_column(:jid, jid)
+        import_state.update_column(:jid, jid)
       end
 
-      def self.generate_jid(project)
-        "async-import/#{project.id}"
+      def self.generate_jid(import_state)
+        importer_name = import_state.class.name.underscore.dasherize
+        "async-import/#{importer_name}/#{import_state.project_id}"
       end
     end
   end

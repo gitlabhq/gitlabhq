@@ -4391,12 +4391,12 @@ CREATE TABLE public.packages_package_files (
     file_sha1 bytea,
     file_name character varying NOT NULL,
     file text NOT NULL,
+    file_sha256 bytea,
     verification_retry_at timestamp with time zone,
     verified_at timestamp with time zone,
     verification_checksum character varying(255),
     verification_failure character varying(255),
-    verification_retry_count integer,
-    file_sha256 bytea
+    verification_retry_count integer
 );
 
 CREATE SEQUENCE public.packages_package_files_id_seq

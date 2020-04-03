@@ -1,10 +1,10 @@
 <script>
-import { GlButton } from '@gitlab/ui';
+import { GlDeprecatedButton } from '@gitlab/ui';
 
 export default {
   name: 'PipelinesEmptyState',
   components: {
-    GlButton,
+    GlDeprecatedButton,
   },
   props: {
     helpPagePath: {
@@ -43,9 +43,13 @@ export default {
           </p>
 
           <div class="text-center">
-            <gl-button :href="helpPagePath" variant="primary" class="js-get-started-pipelines">
+            <gl-deprecated-button
+              :href="helpPagePath"
+              variant="primary"
+              class="js-get-started-pipelines"
+            >
               {{ s__('Pipelines|Get started with Pipelines') }}
-            </gl-button>
+            </gl-deprecated-button>
           </div>
         </template>
 

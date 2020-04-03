@@ -241,7 +241,7 @@ describe('ErrorTrackingList', () => {
         stubs: {
           GlTable: false,
           GlLink: false,
-          GlButton: false,
+          GlDeprecatedButton: false,
         },
       });
     });
@@ -280,7 +280,7 @@ describe('ErrorTrackingList', () => {
         stubs: {
           GlTable: false,
           GlLink: false,
-          GlButton: false,
+          GlDeprecatedButton: false,
         },
       });
     });

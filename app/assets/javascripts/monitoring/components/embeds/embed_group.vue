@@ -1,14 +1,14 @@
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex';
 import sum from 'lodash/sum';
-import { GlButton, GlCard, GlIcon } from '@gitlab/ui';
+import { GlDeprecatedButton, GlCard, GlIcon } from '@gitlab/ui';
 import { n__ } from '~/locale';
 import { monitoringDashboard } from '~/monitoring/stores';
 import MetricEmbed from './metric_embed.vue';
 
 export default {
   components: {
-    GlButton,
+    GlDeprecatedButton,
     GlCard,
     GlIcon,
     MetricEmbed,
@@ -78,7 +78,7 @@ export default {
     :body-class="bodyClass"
   >
     <template #header>
-      <gl-button
+      <gl-deprecated-button
         class="collapsible-card-btn d-flex text-decoration-none"
         :aria-label="buttonLabel"
         variant="link"
@@ -86,7 +86,7 @@ export default {
       >
         <gl-icon class="mr-1" :name="arrowIconName" />
         {{ buttonLabel }}
-      </gl-button>
+      </gl-deprecated-button>
     </template>
     <div class="d-flex flex-wrap">
       <metric-embed

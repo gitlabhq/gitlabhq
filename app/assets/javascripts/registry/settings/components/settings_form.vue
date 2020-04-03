@@ -1,6 +1,6 @@
 <script>
 import { mapActions, mapState, mapGetters } from 'vuex';
-import { GlCard, GlButton, GlLoadingIcon } from '@gitlab/ui';
+import { GlCard, GlDeprecatedButton, GlLoadingIcon } from '@gitlab/ui';
 import Tracking from '~/tracking';
 import {
   UPDATE_SETTINGS_ERROR_MESSAGE,
@@ -12,7 +12,7 @@ import ExpirationPolicyFields from '../../shared/components/expiration_policy_fi
 export default {
   components: {
     GlCard,
-    GlButton,
+    GlDeprecatedButton,
     GlLoadingIcon,
     ExpirationPolicyFields,
   },
@@ -73,15 +73,15 @@ export default {
       </template>
       <template #footer>
         <div class="d-flex justify-content-end">
-          <gl-button
+          <gl-deprecated-button
             ref="cancel-button"
             type="reset"
             class="mr-2 d-block"
             :disabled="isCancelButtonDisabled"
           >
             {{ __('Cancel') }}
-          </gl-button>
-          <gl-button
+          </gl-deprecated-button>
+          <gl-deprecated-button
             ref="save-button"
             type="submit"
             :disabled="isSubmitButtonDisabled"
@@ -90,7 +90,7 @@ export default {
           >
             {{ __('Save expiration policy') }}
             <gl-loading-icon v-if="isLoading" class="ml-2" />
-          </gl-button>
+          </gl-deprecated-button>
         </div>
       </template>
     </gl-card>

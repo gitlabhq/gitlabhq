@@ -1,6 +1,6 @@
 <script>
 import $ from 'jquery';
-import { GlButton } from '@gitlab/ui';
+import { GlDeprecatedButton } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import createFlash from '~/flash';
 import StatusIcon from '../mr_widget_status_icon.vue';
@@ -11,7 +11,7 @@ export default {
   name: 'WorkInProgress',
   components: {
     StatusIcon,
-    GlButton,
+    GlDeprecatedButton,
   },
   directives: {
     tooltip,
@@ -66,7 +66,7 @@ export default {
         >
         </i>
       </span>
-      <gl-button
+      <gl-deprecated-button
         v-if="mr.removeWIPPath"
         size="sm"
         variant="default"
@@ -76,7 +76,7 @@ export default {
         @click="handleRemoveWIP"
       >
         {{ s__('mrWidget|Resolve WIP status') }}
-      </gl-button>
+      </gl-deprecated-button>
     </div>
   </div>
 </template>

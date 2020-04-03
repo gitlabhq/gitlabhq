@@ -1,7 +1,7 @@
 <script>
 import $ from 'jquery';
 import Sortable from 'sortablejs';
-import { GlButtonGroup, GlButton, GlLabel, GlTooltip, GlIcon } from '@gitlab/ui';
+import { GlButtonGroup, GlDeprecatedButton, GlLabel, GlTooltip, GlIcon } from '@gitlab/ui';
 import isWipLimitsOn from 'ee_else_ce/boards/mixins/is_wip_limits';
 import { s__, __, sprintf } from '~/locale';
 import Tooltip from '~/vue_shared/directives/tooltip';
@@ -24,7 +24,7 @@ export default {
     BoardList,
     GlButtonGroup,
     IssueCount,
-    GlButton,
+    GlDeprecatedButton,
     GlLabel,
     GlTooltip,
     GlIcon,
@@ -333,7 +333,7 @@ export default {
             v-if="isNewIssueShown || isSettingsShown"
             class="board-list-button-group pl-2"
           >
-            <gl-button
+            <gl-deprecated-button
               v-if="isNewIssueShown"
               ref="newIssueBtn"
               :class="{
@@ -346,10 +346,10 @@ export default {
               @click="showNewIssueForm"
             >
               <i aria-hidden="true" data-hidden="true" class="fa fa-plus"></i>
-            </gl-button>
+            </gl-deprecated-button>
             <gl-tooltip :target="() => $refs.newIssueBtn">{{ __('New Issue') }}</gl-tooltip>
 
-            <gl-button
+            <gl-deprecated-button
               v-if="isSettingsShown"
               ref="settingsBtn"
               :aria-label="__(`List settings`)"
@@ -359,7 +359,7 @@ export default {
               @click="openSidebarSettings"
             >
               <gl-icon name="settings" />
-            </gl-button>
+            </gl-deprecated-button>
             <gl-tooltip :target="() => $refs.settingsBtn">{{ __('List settings') }}</gl-tooltip>
           </gl-button-group>
         </h3>

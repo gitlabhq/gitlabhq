@@ -3,7 +3,7 @@ import {
   GlProgressBar,
   GlLink,
   GlBadge,
-  GlButton,
+  GlDeprecatedButton,
   GlTooltipDirective,
   GlSprintf,
 } from '@gitlab/ui';
@@ -17,7 +17,7 @@ export default {
     GlProgressBar,
     GlLink,
     GlBadge,
-    GlButton,
+    GlDeprecatedButton,
     GlSprintf,
   },
   directives: {
@@ -134,9 +134,13 @@ export default {
             <span :key="'bullet-' + milestone.id" class="append-right-4">&bull;</span>
           </template>
           <template v-if="shouldRenderShowMoreLink(index)">
-            <gl-button :key="'more-button-' + milestone.id" variant="link" @click="toggleShowAll">
+            <gl-deprecated-button
+              :key="'more-button-' + milestone.id"
+              variant="link"
+              @click="toggleShowAll"
+            >
               {{ moreText }}
-            </gl-button>
+            </gl-deprecated-button>
           </template>
         </template>
       </div>

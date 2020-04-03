@@ -1,11 +1,11 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
-import { GlButton } from '@gitlab/ui';
+import { GlDeprecatedButton } from '@gitlab/ui';
 import Icon from '~/vue_shared/components/icon.vue';
 
 export default {
   components: {
-    GlButton,
+    GlDeprecatedButton,
     Icon,
   },
   computed: {
@@ -37,26 +37,26 @@ export default {
       <div>
         <span class="bold d-block mb-1">{{ __('File browser') }}</span>
         <div class="btn-group d-flex">
-          <gl-button
+          <gl-deprecated-button
             :class="{ active: !renderTreeList }"
             class="w-100 js-list-view"
             @click="setRenderTreeList(false)"
           >
             {{ __('List view') }}
-          </gl-button>
-          <gl-button
+          </gl-deprecated-button>
+          <gl-deprecated-button
             :class="{ active: renderTreeList }"
             class="w-100 js-tree-view"
             @click="setRenderTreeList(true)"
           >
             {{ __('Tree view') }}
-          </gl-button>
+          </gl-deprecated-button>
         </div>
       </div>
       <div class="mt-2">
         <span class="bold d-block mb-1">{{ __('Compare changes') }}</span>
         <div class="btn-group d-flex js-diff-view-buttons">
-          <gl-button
+          <gl-deprecated-button
             id="inline-diff-btn"
             :class="{ active: isInlineView }"
             class="w-100 js-inline-diff-button"
@@ -64,8 +64,8 @@ export default {
             @click="setInlineDiffViewType"
           >
             {{ __('Inline') }}
-          </gl-button>
-          <gl-button
+          </gl-deprecated-button>
+          <gl-deprecated-button
             id="parallel-diff-btn"
             :class="{ active: isParallelView }"
             class="w-100 js-parallel-diff-button"
@@ -73,7 +73,7 @@ export default {
             @click="setParallelDiffViewType"
           >
             {{ __('Side-by-side') }}
-          </gl-button>
+          </gl-deprecated-button>
         </div>
       </div>
       <div class="mt-2">

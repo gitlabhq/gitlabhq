@@ -5,7 +5,12 @@
  *
  * Makes a post request when the button is clicked.
  */
-import { GlTooltipDirective, GlLoadingIcon, GlModalDirective, GlButton } from '@gitlab/ui';
+import {
+  GlTooltipDirective,
+  GlLoadingIcon,
+  GlModalDirective,
+  GlDeprecatedButton,
+} from '@gitlab/ui';
 import { s__ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
 import eventHub from '../event_hub';
@@ -14,7 +19,7 @@ export default {
   components: {
     Icon,
     GlLoadingIcon,
-    GlButton,
+    GlDeprecatedButton,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -68,7 +73,7 @@ export default {
 };
 </script>
 <template>
-  <gl-button
+  <gl-deprecated-button
     v-gl-tooltip
     v-gl-modal.confirm-rollback-modal
     :disabled="isLoading"
@@ -78,5 +83,5 @@ export default {
   >
     <icon v-if="isLastDeployment" name="repeat" /> <icon v-else name="redo" />
     <gl-loading-icon v-if="isLoading" />
-  </gl-button>
+  </gl-deprecated-button>
 </template>

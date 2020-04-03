@@ -20,8 +20,8 @@ describe Projects::GrafanaApiController do
         proxy_path: 'api/v1/query_range',
         datasource_id: '1',
         query: 'rate(relevant_metric)',
-        start: '1570441248',
-        end: '1570444848',
+        start_time: '1570441248',
+        end_time: '1570444848',
         step: '900'
       }
     end
@@ -50,7 +50,10 @@ describe Projects::GrafanaApiController do
         expect(Grafana::ProxyService)
           .to have_received(:new)
           .with(project, '1', 'api/v1/query_range',
-                params.slice(:query, :start, :end, :step).stringify_keys)
+                 { 'query' => params[:query],
+                   'start' => params[:start_time],
+                   'end'   => params[:end_time],
+                   'step'  => params[:step] })
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to eq({})

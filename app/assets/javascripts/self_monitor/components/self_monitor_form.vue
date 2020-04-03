@@ -1,6 +1,6 @@
 <script>
 import Vue from 'vue';
-import { GlFormGroup, GlButton, GlModal, GlToast, GlToggle } from '@gitlab/ui';
+import { GlFormGroup, GlDeprecatedButton, GlModal, GlToast, GlToggle } from '@gitlab/ui';
 import { mapState, mapActions } from 'vuex';
 import { __, s__, sprintf } from '~/locale';
 import { visitUrl, getBaseURL } from '~/lib/utils/url_utility';
@@ -10,7 +10,7 @@ Vue.use(GlToast);
 export default {
   components: {
     GlFormGroup,
-    GlButton,
+    GlDeprecatedButton,
     GlModal,
     GlToggle,
   },
@@ -122,7 +122,7 @@ export default {
       <h4 class="js-section-header">
         {{ s__('SelfMonitoring|Self monitoring') }}
       </h4>
-      <gl-button class="js-settings-toggle">{{ __('Expand') }}</gl-button>
+      <gl-deprecated-button class="js-settings-toggle">{{ __('Expand') }}</gl-deprecated-button>
       <p class="js-section-sub-header">
         {{ s__('SelfMonitoring|Enable or disable instance self monitoring') }}
       </p>

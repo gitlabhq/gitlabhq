@@ -1,5 +1,5 @@
 <script>
-import { GlTooltipDirective, GlLink, GlButton } from '@gitlab/ui';
+import { GlTooltipDirective, GlLink, GlDeprecatedButton } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
 import CiIconBadge from './ci_badge_link.vue';
 import TimeagoTooltip from './time_ago_tooltip.vue';
@@ -18,7 +18,7 @@ export default {
     TimeagoTooltip,
     UserAvatarImage,
     GlLink,
-    GlButton,
+    GlDeprecatedButton,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -108,7 +108,7 @@ export default {
     <section v-if="$slots.default" class="header-action-buttons">
       <slot></slot>
     </section>
-    <gl-button
+    <gl-deprecated-button
       v-if="hasSidebarButton"
       id="toggleSidebar"
       class="d-block d-sm-none
@@ -116,6 +116,6 @@ sidebar-toggle-btn js-sidebar-build-toggle js-sidebar-build-toggle-header"
       @click="onClickSidebarButton"
     >
       <i class="fa fa-angle-double-left" aria-hidden="true" aria-labelledby="toggleSidebar"> </i>
-    </gl-button>
+    </gl-deprecated-button>
   </header>
 </template>

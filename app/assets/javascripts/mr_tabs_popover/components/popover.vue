@@ -1,12 +1,12 @@
 <script>
-import { GlPopover, GlButton, GlLink } from '@gitlab/ui';
+import { GlPopover, GlDeprecatedButton, GlLink } from '@gitlab/ui';
 import Icon from '~/vue_shared/components/icon.vue';
 import axios from '~/lib/utils/axios_utils';
 
 export default {
   components: {
     GlPopover,
-    GlButton,
+    GlDeprecatedButton,
     GlLink,
     Icon,
   },
@@ -57,13 +57,13 @@ export default {
         <icon name="external-link" :size="10" />
       </gl-link>
     </p>
-    <gl-button
+    <gl-deprecated-button
       variant="primary"
       size="sm"
       data-qa-selector="dismiss_popover_button"
       @click="onDismiss"
     >
       {{ __('Got it') }}
-    </gl-button>
+    </gl-deprecated-button>
   </gl-popover>
 </template>

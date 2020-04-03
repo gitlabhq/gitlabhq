@@ -848,3 +848,9 @@ Epic:
 EpicIssue:
   - id
   - relative_position
+SystemNoteMetadata:
+  - id
+  - commit_count
+  - action
+  - created_at
+  - updated_at

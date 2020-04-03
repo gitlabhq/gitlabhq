@@ -37,7 +37,8 @@ module AwardEmojis
           awardable.noteable unless awardable.for_personal_snippet?
         when MergeRequest, Issue
           awardable
-        when Snippet
+        else
+          # No todos for all other awardables
           nil
         end
       end

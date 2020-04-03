@@ -80,6 +80,7 @@ the following preparations into account.
 - Add the output of the migration(s) to the MR description.
 - Add tests for the migration in `spec/migrations` if necessary. See [Testing Rails migrations at GitLab](testing_guide/testing_migrations_guide.md) for more details.
 - When [high-traffic](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/migration_helpers.rb#L12) tables are involved in the migration, use the [`with_lock_retries`](migration_style_guide.md#retry-mechanism-when-acquiring-database-locks) helper method. Review the relevant [examples in our documentation](migration_style_guide.md#examples) for use cases and solutions.
+- Ensure RuboCop checks are not disabled unless there's a valid reason to.
 
 #### Preparation when adding or modifying queries
 

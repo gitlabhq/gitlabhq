@@ -1,11 +1,11 @@
 <script>
-import { GlFormInputGroup, GlButton, GlIcon } from '@gitlab/ui';
+import { GlFormInputGroup, GlDeprecatedButton, GlIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
 
 export default {
   components: {
     GlFormInputGroup,
-    GlButton,
+    GlDeprecatedButton,
     GlIcon,
   },
   props: {
@@ -33,9 +33,9 @@ export default {
     select-on-click
   >
     <template #append>
-      <gl-button new-style data-clipboard-target="#embeddable-text">
+      <gl-deprecated-button new-style data-clipboard-target="#embeddable-text">
         <gl-icon name="copy-to-clipboard" :title="__('Copy')" />
-      </gl-button>
+      </gl-deprecated-button>
     </template>
   </gl-form-input-group>
 </template>

@@ -1,6 +1,6 @@
 <script>
 import $ from 'jquery';
-import { GlButton } from '@gitlab/ui';
+import { GlDeprecatedButton } from '@gitlab/ui';
 import { __ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
 /**
@@ -15,7 +15,7 @@ export default {
   name: 'FilteredSearchDropdown',
   components: {
     Icon,
-    GlButton,
+    GlDeprecatedButton,
   },
   props: {
     title: {
@@ -141,10 +141,10 @@ export default {
 
         <div v-if="shouldRenderCreateButton" class="dropdown-footer">
           <slot name="footer" :filter="filter">
-            <gl-button
+            <gl-deprecated-button
               class="js-dropdown-create-button btn-transparent"
               @click="$emit('createItem', filter)"
-              >{{ computedCreateButtonText }}</gl-button
+              >{{ computedCreateButtonText }}</gl-deprecated-button
             >
           </slot>
         </div>

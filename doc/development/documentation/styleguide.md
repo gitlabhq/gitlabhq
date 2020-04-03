@@ -28,7 +28,7 @@ It also informs decisions about the kinds of content we include in our documenta
 Include problem-solving actions that may address rare cases or be considered 'risky', so long as proper context is provided in the form of fully detailed warnings and caveats. This kind of content should be included as it could be helpful to others and, when properly explained, its benefits outweigh the risks. If you think you have found an exception to this rule, contact the Technical Writing team.
 
 We will add all troubleshooting information to the documentation, no matter how unlikely a user is to encounter a situation.
-For the Troubleshooting sections, people in GitLab Support can merge additions themselves.
+For the [Troubleshooting sections](#troubleshooting), people in GitLab Support can merge additions themselves.
 
 ### All media types
 
@@ -83,7 +83,7 @@ We employ a **docs-first methodology** to help ensure that the docs remain a com
 
 New information that would be useful toward the future usage or troubleshooting of GitLab should not be written directly in a forum or other messaging system, but added to a docs MR and then referenced, as described above. Note that among any other doc changes, you can either:
 
-- Add a Troubleshooting section to a doc if none exists.
+- Add a [Troubleshooting section](#troubleshooting) to a doc if none exists.
 - Un-comment and use the placeholder Troubleshooting section included as part of our [doc template](structure.md#template-for-new-docs), if present.
 
 The more we reflexively add useful information to the docs, the more (and more successfully) the docs will be used to efficiently accomplish tasks and solve problems.
@@ -1373,6 +1373,16 @@ In this case:
   correctly.
 - Different highlighting languages are used for each config in the code block.
 - The [GitLab Restart](#gitlab-restart) section is used to explain a required restart/reconfigure of GitLab.
+
+### Troubleshooting
+
+For troubleshooting sections, you should provide as much context as possible so
+users can identify the problem they are facing and resolve it on their own. You
+can facilitate this by making sure the troubleshooting content addresses:
+
+1. The problem the user needs to solve.
+1. How the user can confirm they have the problem.
+1. Steps the user can take towards resolution of the problem.
 
 ## Feature flags
 

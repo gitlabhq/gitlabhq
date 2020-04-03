@@ -1,13 +1,13 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex';
-import { GlLoadingIcon, GlButton, GlIcon, GlSearchBoxByType, GlLink } from '@gitlab/ui';
+import { GlLoadingIcon, GlDeprecatedButton, GlIcon, GlSearchBoxByType, GlLink } from '@gitlab/ui';
 
 import { UP_KEY_CODE, DOWN_KEY_CODE, ENTER_KEY_CODE, ESC_KEY_CODE } from '~/lib/utils/keycodes';
 
 export default {
   components: {
     GlLoadingIcon,
-    GlButton,
+    GlDeprecatedButton,
     GlIcon,
     GlSearchBoxByType,
     GlLink,
@@ -125,7 +125,7 @@ export default {
     />
     <div class="dropdown-title d-flex align-items-center pt-0 pb-2">
       <span class="flex-grow-1">{{ labelsListTitle }}</span>
-      <gl-button
+      <gl-deprecated-button
         :aria-label="__('Close')"
         variant="link"
         size="sm"
@@ -133,7 +133,7 @@ export default {
         @click="toggleDropdownContents"
       >
         <gl-icon name="close" />
-      </gl-button>
+      </gl-deprecated-button>
     </div>
     <div class="dropdown-input">
       <gl-search-box-by-type v-model="searchKey" :autofocus="true" />
@@ -160,11 +160,11 @@ export default {
     <div class="dropdown-footer">
       <ul class="list-unstyled">
         <li>
-          <gl-button
+          <gl-deprecated-button
             variant="link"
             class="d-flex w-100 flex-row text-break-word label-item"
             @click="toggleDropdownContentsCreateView"
-            >{{ footerCreateLabelTitle }}</gl-button
+            >{{ footerCreateLabelTitle }}</gl-deprecated-button
           >
         </li>
         <li>

@@ -1,12 +1,12 @@
 <script>
-import { GlPopover, GlIcon, GlButton, GlTooltipDirective } from '@gitlab/ui';
+import { GlPopover, GlIcon, GlDeprecatedButton, GlTooltipDirective } from '@gitlab/ui';
 
 export default {
   maxTextLength: 95,
   components: {
     GlPopover,
     GlIcon,
-    GlButton,
+    GlDeprecatedButton,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -41,14 +41,14 @@ export default {
     <gl-popover :target="target" triggers="hover" placement="top" container="popover-container">
       <div class="d-flex justify-content-between position-relative">
         <div class="pr-5 w-100 ci-popover-value">{{ displayValue }}</div>
-        <gl-button
+        <gl-deprecated-button
           v-gl-tooltip
           class="btn-transparent btn-clipboard position-absolute position-top-0 position-right-0"
           :title="tooltipText"
           :data-clipboard-text="value"
         >
           <gl-icon name="copy-to-clipboard" />
-        </gl-button>
+        </gl-deprecated-button>
       </div>
     </gl-popover>
   </div>

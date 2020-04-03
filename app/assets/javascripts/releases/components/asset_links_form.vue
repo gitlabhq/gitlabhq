@@ -4,7 +4,7 @@ import {
   GlSprintf,
   GlLink,
   GlFormGroup,
-  GlButton,
+  GlDeprecatedButton,
   GlIcon,
   GlTooltipDirective,
   GlFormInput,
@@ -12,7 +12,7 @@ import {
 
 export default {
   name: 'AssetLinksForm',
-  components: { GlSprintf, GlLink, GlFormGroup, GlButton, GlIcon, GlFormInput },
+  components: { GlSprintf, GlLink, GlFormGroup, GlDeprecatedButton, GlIcon, GlFormInput },
   directives: { GlTooltip: GlTooltipDirective },
   computed: {
     ...mapState('detail', ['release', 'releaseAssetsDocsPath']),
@@ -106,7 +106,7 @@ export default {
         />
       </gl-form-group>
 
-      <gl-button
+      <gl-deprecated-button
         v-gl-tooltip
         class="mb-5 mb-sm-3 flex-grow-0 flex-shrink-0 remove-button"
         :aria-label="__('Remove asset link')"
@@ -115,10 +115,14 @@ export default {
       >
         <gl-icon class="m-0" name="remove" />
         <span class="d-inline d-sm-none">{{ __('Remove asset link') }}</span>
-      </gl-button>
+      </gl-deprecated-button>
     </div>
-    <gl-button variant="link" class="align-self-end mb-5 mb-sm-0" @click="onAddAnotherClicked">
+    <gl-deprecated-button
+      variant="link"
+      class="align-self-end mb-5 mb-sm-0"
+      @click="onAddAnotherClicked"
+    >
       {{ __('Add another link') }}
-    </gl-button>
+    </gl-deprecated-button>
   </div>
 </template>

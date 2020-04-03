@@ -1,4 +1,4 @@
-import { GlButton } from '@gitlab/ui';
+import { GlDeprecatedButton } from '@gitlab/ui';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import { TEST_HOST } from 'spec/test_constants';
 import ResolveWithIssueButton from '~/notes/components/discussion_resolve_with_issue_button.vue';
@@ -23,7 +23,7 @@ describe('ResolveWithIssueButton', () => {
   });
 
   it('it should have a link with the provided link property as href', () => {
-    const button = wrapper.find(GlButton);
+    const button = wrapper.find(GlDeprecatedButton);
 
     expect(button.attributes().href).toBe(url);
   });

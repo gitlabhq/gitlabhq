@@ -1,11 +1,11 @@
 <script>
-import { GlButton, GlTooltipDirective } from '@gitlab/ui';
+import { GlDeprecatedButton, GlTooltipDirective } from '@gitlab/ui';
 import Icon from '~/vue_shared/components/icon.vue';
 
 export default {
   components: {
     Icon,
-    GlButton,
+    GlDeprecatedButton,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -51,14 +51,14 @@ export default {
       :title="__('Scroll to top')"
       aria-labelledby="scroll-to-top"
     >
-      <gl-button
+      <gl-deprecated-button
         id="scroll-to-top"
         class="btn-blank js-scroll-to-top"
         :aria-label="__('Scroll to top')"
         :disabled="scrollUpButtonDisabled"
         @click="handleScrollUp()"
         ><icon name="scroll_up"
-      /></gl-button>
+      /></gl-deprecated-button>
     </div>
     <div
       v-if="scrollDownAvailable"
@@ -68,7 +68,7 @@ export default {
       :title="__('Scroll to bottom')"
       aria-labelledby="scroll-to-bottom"
     >
-      <gl-button
+      <gl-deprecated-button
         id="scroll-to-bottom"
         class="btn-blank js-scroll-to-bottom"
         :aria-label="__('Scroll to bottom')"
@@ -76,9 +76,9 @@ export default {
         :disabled="scrollDownButtonDisabled"
         @click="handleScrollDown()"
         ><icon name="scroll_down"
-      /></gl-button>
+      /></gl-deprecated-button>
     </div>
-    <gl-button
+    <gl-deprecated-button
       id="refresh-log"
       v-gl-tooltip
       class="ml-1 px-2 js-refresh-log"
@@ -87,6 +87,6 @@ export default {
       @click="handleRefreshClick"
     >
       <icon name="retry" />
-    </gl-button>
+    </gl-deprecated-button>
   </div>
 </template>

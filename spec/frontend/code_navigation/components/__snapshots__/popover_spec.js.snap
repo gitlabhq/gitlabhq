@@ -23,7 +23,7 @@ exports[`Code navigation popover component renders popover 1`] = `
   <div
     class="popover-body"
   >
-    <gl-button-stub
+    <gl-deprecated-button-stub
       class="w-100"
       href="http://test.com"
       size="md"
@@ -33,7 +33,7 @@ exports[`Code navigation popover component renders popover 1`] = `
       
       Go to definition
     
-    </gl-button-stub>
+    </gl-deprecated-button-stub>
   </div>
 </div>
 `;

@@ -4,7 +4,7 @@ import { mapActions, mapState } from 'vuex';
 import { ADD_CI_VARIABLE_MODAL_ID } from '../constants';
 import CiEnvironmentsDropdown from './ci_environments_dropdown.vue';
 import {
-  GlButton,
+  GlDeprecatedButton,
   GlModal,
   GlFormSelect,
   GlFormGroup,
@@ -19,7 +19,7 @@ export default {
   modalId: ADD_CI_VARIABLE_MODAL_ID,
   components: {
     CiEnvironmentsDropdown,
-    GlButton,
+    GlDeprecatedButton,
     GlModal,
     GlFormSelect,
     GlFormGroup,
@@ -212,22 +212,22 @@ export default {
       </gl-form-group>
     </form>
     <template #modal-footer>
-      <gl-button @click="hideModal">{{ __('Cancel') }}</gl-button>
-      <gl-button
+      <gl-deprecated-button @click="hideModal">{{ __('Cancel') }}</gl-deprecated-button>
+      <gl-deprecated-button
         v-if="variableBeingEdited"
         ref="deleteCiVariable"
         category="secondary"
         variant="danger"
         @click="deleteVarAndClose"
-        >{{ __('Delete variable') }}</gl-button
+        >{{ __('Delete variable') }}</gl-deprecated-button
       >
-      <gl-button
+      <gl-deprecated-button
         ref="updateOrAddVariable"
         :disabled="!canSubmit"
         variant="success"
         @click="updateOrAddVariable"
         >{{ modalActionText }}
-      </gl-button>
+      </gl-deprecated-button>
     </template>
   </gl-modal>
 </template>

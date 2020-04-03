@@ -113,6 +113,12 @@ describe Gitlab::ImportExport::Project::TreeSaver do
         expect(saved_project_json['issues'].first['notes'].first['author']).not_to be_empty
       end
 
+      it 'has system note metadata on issue comments' do
+        metadata = saved_project_json['issues'].first['notes'].first['system_note_metadata']
+
+        expect(metadata['action']).to eq('description')
+      end
+
       it 'has project members' do
         expect(saved_project_json['project_members']).not_to be_empty
       end
@@ -135,6 +141,13 @@ describe Gitlab::ImportExport::Project::TreeSaver do
 
       it 'has author on merge requests comments' do
         expect(saved_project_json['merge_requests'].first['notes'].first['author']).not_to be_empty
+      end
+
+      it 'has system note metadata on merge requests comments' do
+        metadata = saved_project_json['merge_requests'].first['notes'].first['system_note_metadata']
+
+        expect(metadata['commit_count']).to eq(1)
+        expect(metadata['action']).to eq('commit')
       end
 
       it 'has pipeline stages' do
@@ -314,13 +327,16 @@ describe Gitlab::ImportExport::Project::TreeSaver do
     create(:commit_status, project: project, pipeline: ci_build.pipeline)
 
     create(:milestone, project: project)
-    create(:discussion_note, noteable: issue, project: project)
-    create(:note, noteable: merge_request, project: project)
+    discussion_note = create(:discussion_note, noteable: issue, project: project)
+    mr_note = create(:note, noteable: merge_request, project: project)
     create(:note, noteable: snippet, project: project)
     create(:note_on_commit,
            author: user,
            project: project,
            commit_id: ci_build.pipeline.sha)
+
+    create(:system_note_metadata, action: 'description', note: discussion_note)
+    create(:system_note_metadata, commit_count: 1, action: 'commit', note: mr_note)
 
     create(:resource_label_event, label: project_label, issue: issue)
     create(:resource_label_event, label: group_label, merge_request: merge_request)

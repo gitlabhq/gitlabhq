@@ -1,6 +1,6 @@
 <script>
 import { omit, throttle } from 'lodash';
-import { GlLink, GlButton, GlTooltip, GlResizeObserverDirective } from '@gitlab/ui';
+import { GlLink, GlDeprecatedButton, GlTooltip, GlResizeObserverDirective } from '@gitlab/ui';
 import { GlAreaChart, GlLineChart, GlChartSeriesLabel } from '@gitlab/ui/dist/charts';
 import dateFormat from 'dateformat';
 import { s__, __ } from '~/locale';
@@ -41,7 +41,7 @@ export default {
     GlAreaChart,
     GlLineChart,
     GlTooltip,
-    GlButton,
+    GlDeprecatedButton,
     GlChartSeriesLabel,
     GlLink,
     Icon,

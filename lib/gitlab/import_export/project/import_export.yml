@@ -17,6 +17,7 @@ tree:
       - notes:
         - :author
         - :award_emoji
+        - :system_note_metadata
         - events:
           - :push_event_payload
       - label_links:
@@ -47,6 +48,7 @@ tree:
       - notes:
         - :author
         - :award_emoji
+        - :system_note_metadata
         - events:
           - :push_event_payload
         - :suggestions
@@ -323,6 +325,9 @@ excluded_attributes:
   epic_issue:
     - :epic_id
     - :issue_id
+  system_note_metadata:
+    - :description_version_id
+    - :note_id
 methods:
   notes:
     - :type

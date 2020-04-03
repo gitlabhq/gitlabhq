@@ -1,11 +1,11 @@
 <script>
-import { GlButton, GlLoadingIcon } from '@gitlab/ui';
+import { GlDeprecatedButton, GlLoadingIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
 
 export default {
   components: {
-    GlButton,
+    GlDeprecatedButton,
     GlLoadingIcon,
     Icon,
   },
@@ -58,7 +58,7 @@ export default {
       </div>
 
       <template v-else>
-        <gl-button
+        <gl-deprecated-button
           class="btn-blank btn s32 square append-right-default"
           :aria-label="ariaLabel"
           :disabled="isLoading"
@@ -66,8 +66,8 @@ export default {
         >
           <gl-loading-icon v-if="isLoading" />
           <icon v-else :name="arrowIconName" class="js-icon" />
-        </gl-button>
-        <gl-button
+        </gl-deprecated-button>
+        <gl-deprecated-button
           variant="link"
           class="js-title"
           :disabled="isLoading"
@@ -76,7 +76,7 @@ export default {
         >
           <template v-if="isCollapsed">{{ title }}</template>
           <template v-else>{{ __('Collapse') }}</template>
-        </gl-button>
+        </gl-deprecated-button>
       </template>
     </div>
 

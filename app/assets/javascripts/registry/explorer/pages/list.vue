@@ -4,7 +4,7 @@ import {
   GlEmptyState,
   GlPagination,
   GlTooltipDirective,
-  GlButton,
+  GlDeprecatedButton,
   GlIcon,
   GlModal,
   GlSprintf,
@@ -30,7 +30,7 @@ export default {
     ProjectPolicyAlert,
     ClipboardButton,
     QuickstartDropdown,
-    GlButton,
+    GlDeprecatedButton,
     GlIcon,
     GlModal,
     GlSprintf,
@@ -201,7 +201,7 @@ export default {
               class="d-none d-sm-block"
               :title="$options.i18n.deleteButtonDisabled"
             >
-              <gl-button
+              <gl-deprecated-button
                 ref="deleteImageButton"
                 v-gl-tooltip
                 :disabled="!listItem.destroy_path"
@@ -212,7 +212,7 @@ export default {
                 @click="deleteImage(listItem)"
               >
                 <gl-icon name="remove" />
-              </gl-button>
+              </gl-deprecated-button>
             </div>
           </div>
           <gl-pagination

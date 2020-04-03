@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import Sortable from 'sortablejs';
 import Vue from 'vue';
-import { GlButtonGroup, GlButton, GlLabel, GlTooltip } from '@gitlab/ui';
+import { GlButtonGroup, GlDeprecatedButton, GlLabel, GlTooltip } from '@gitlab/ui';
 import isWipLimitsOn from 'ee_else_ce/boards/mixins/is_wip_limits';
 import { s__, __, sprintf } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
@@ -32,7 +32,7 @@ export default Vue.extend({
     Icon,
     GlButtonGroup,
     IssueCount,
-    GlButton,
+    GlDeprecatedButton,
     GlLabel,
     GlTooltip,
   },

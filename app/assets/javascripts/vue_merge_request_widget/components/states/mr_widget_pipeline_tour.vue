@@ -1,6 +1,6 @@
 <script>
 import { s__, sprintf } from '~/locale';
-import { GlPopover, GlButton } from '@gitlab/ui';
+import { GlPopover, GlDeprecatedButton } from '@gitlab/ui';
 import Icon from '~/vue_shared/components/icon.vue';
 import Cookies from 'js-cookie';
 import { parseBoolean } from '~/lib/utils/common_utils';
@@ -29,7 +29,7 @@ export default {
   ),
   components: {
     GlPopover,
-    GlButton,
+    GlDeprecatedButton,
     Icon,
   },
   mixins: [trackingMixin],
@@ -111,7 +111,7 @@ export default {
       <img :src="pipelineSvgPath" />
     </div>
     <p v-html="$options.popoverContent"></p>
-    <gl-button
+    <gl-deprecated-button
       ref="ok"
       category="primary"
       class="mt-2 mb-0"
@@ -124,8 +124,8 @@ export default {
       :data-track-label="trackLabel"
     >
       {{ __('Show me how') }}
-    </gl-button>
-    <gl-button
+    </gl-deprecated-button>
+    <gl-deprecated-button
       ref="no-thanks"
       category="secondary"
       class="mt-2 mb-0"
@@ -138,6 +138,6 @@ export default {
       @click="dismissPopover"
     >
       {{ __("No thanks, don't show this again") }}
-    </gl-button>
+    </gl-deprecated-button>
   </gl-popover>
 </template>
