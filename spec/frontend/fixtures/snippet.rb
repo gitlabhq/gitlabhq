@@ -27,7 +27,7 @@ describe SnippetsController, '(JavaScript fixtures)', type: :controller do
   end
 
   it 'snippets/show.html' do
-    create(:discussion_note_on_snippet, noteable: snippet, project: project, author: admin, note: '- [ ] Task List Item')
+    create(:discussion_note_on_project_snippet, noteable: snippet, project: project, author: admin, note: '- [ ] Task List Item')
 
     get(:show, params: { id: snippet.to_param })
 

@@ -310,7 +310,7 @@ class Snippet < ApplicationRecord
   end
 
   def versioned_enabled_for?(user)
-    repository_exists? && ::Feature.enabled?(:version_snippets, user)
+    ::Feature.enabled?(:version_snippets, user) && repository_exists?
   end
 
   class << self

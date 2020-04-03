@@ -31,7 +31,7 @@ describe API::Discussions do
 
   context 'when noteable is a Snippet' do
     let!(:snippet) { create(:project_snippet, project: project, author: user) }
-    let!(:snippet_note) { create(:discussion_note_on_snippet, noteable: snippet, project: project, author: user) }
+    let!(:snippet_note) { create(:discussion_note_on_project_snippet, noteable: snippet, project: project, author: user) }
 
     it_behaves_like 'discussions API', 'projects', 'snippets', 'id' do
       let(:parent) { project }

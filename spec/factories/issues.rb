@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :issue do
+  factory :issue, traits: [:has_internal_id] do
     title { generate(:title) }
     project
     author { project.creator }

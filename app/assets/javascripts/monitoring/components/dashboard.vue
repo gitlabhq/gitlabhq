@@ -478,7 +478,7 @@ export default {
             :title="s__('Metrics|Reload this page')"
             @click="refreshDashboard"
           >
-            <icon name="repeat" />
+            <icon name="retry" />
           </gl-deprecated-button>
         </gl-form-group>
 

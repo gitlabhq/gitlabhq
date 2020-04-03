@@ -28,18 +28,6 @@ describe Gitlab::Danger::Changelog do
   describe '#needed?' do
     subject { changelog.needed? }
 
-    [
-      { docs: nil },
-      { none: nil },
-      { docs: nil, none: nil }
-    ].each do |categories|
-      let(:changes_by_category) { categories }
-
-      it "is falsy when categories don't require a changelog" do
-        is_expected.to be_falsy
-      end
-    end
-
     where(:categories, :labels) do
       { backend: nil }                             | %w[backend backstage]
       { frontend: nil, docs: nil }                 | ['ci-build']
@@ -50,7 +38,7 @@ describe Gitlab::Danger::Changelog do
       let(:changes_by_category) { categories }
       let(:mr_labels) { labels }
 
-      it "is falsy when labels require no changelog" do
+      it "is falsy when categories and labels require no changelog" do
         is_expected.to be_falsy
       end
     end

@@ -3,11 +3,11 @@
 require 'spec_helper'
 
 describe Gitlab::Gfm::ReferenceRewriter do
-  let(:group) { create(:group) }
-  let(:old_project) { create(:project, name: 'old-project', group: group) }
-  let(:new_project) { create(:project, name: 'new-project', group: group) }
-  let(:user) { create(:user) }
+  let_it_be(:group) { create(:group) }
+  let_it_be(:user) { create(:user) }
 
+  let(:new_project) { create(:project, name: 'new-project', group: group) }
+  let(:old_project) { create(:project, name: 'old-project', group: group) }
   let(:old_project_ref) { old_project.to_reference_base(new_project) }
   let(:text) { 'some text' }
 

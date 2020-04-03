@@ -33,6 +33,7 @@ eos
   def sample_commit
     OpenStruct.new(
       id: "570e7b2abdd848b95f2f578043fc23bd6f6fd24d",
+      sha: "570e7b2abdd848b95f2f578043fc23bd6f6fd24d",
       parent_id: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9',
       author_full_name: "Dmitriy Zaporozhets",
       author_email: "dmitriy.zaporozhets@gmail.com",
@@ -50,6 +51,7 @@ eos
   def another_sample_commit
     OpenStruct.new(
       id: "e56497bb5f03a90a51293fc6d516788730953899",
+      sha: "e56497bb5f03a90a51293fc6d516788730953899",
       parent_id: '4cd80ccab63c82b4bad16faa5193fbd2aa06df40',
       author_full_name: "Sytse Sijbrandij",
       author_email: "sytse@gitlab.com",
@@ -69,6 +71,7 @@ eos
   def sample_big_commit
     OpenStruct.new(
       id: "913c66a37b4a45b9769037c55c2d238bd0942d2e",
+      sha: "913c66a37b4a45b9769037c55c2d238bd0942d2e",
       author_full_name: "Dmitriy Zaporozhets",
       author_email: "dmitriy.zaporozhets@gmail.com",
       message: <<eos
@@ -81,6 +84,7 @@ eos
   def sample_image_commit
     OpenStruct.new(
       id: "2f63565e7aac07bcdadb654e253078b727143ec4",
+      sha: "2f63565e7aac07bcdadb654e253078b727143ec4",
       author_full_name: "Dmitriy Zaporozhets",
       author_email: "dmitriy.zaporozhets@gmail.com",
       old_blob_id: '33f3729a45c02fc67d00adb1b8bca394b0e761d9',

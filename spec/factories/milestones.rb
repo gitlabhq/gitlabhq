@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :milestone do
+  factory :milestone, traits: [:has_internal_id] do
     title
 
     transient do

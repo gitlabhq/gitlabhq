@@ -203,9 +203,10 @@ If you don't have editing permission in a board, you're still able to see the co
 
 ![Viewing board configuration](img/issue_board_view_scope.png)
 
-### Focus mode **(STARTER)**
+### Focus mode
 
-> Introduced in [GitLab Starter 9.1](https://about.gitlab.com/releases/2017/04/22/gitlab-9-1-released/#issue-boards-focus-mode-ees-eep).
+> - Introduced in [GitLab Starter 9.1](https://about.gitlab.com/releases/2017/04/22/gitlab-9-1-released/#issue-boards-focus-mode-ees-eep).
+> - Focus mode moved to GitLab Core in GitLab 12.10.
 
 Click the button at the top right to toggle focus mode on and off. In focus mode, the navigation UI is hidden, allowing you to focus on issues in the board.
 

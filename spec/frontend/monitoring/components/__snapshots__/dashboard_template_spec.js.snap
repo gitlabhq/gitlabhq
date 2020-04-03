@@ -96,7 +96,7 @@ exports[`Dashboard template matches the default snapshot 1`] = `
           variant="default"
         >
           <icon-stub
-            name="repeat"
+            name="retry"
             size="16"
           />
         </gl-deprecated-button-stub>

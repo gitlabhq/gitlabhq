@@ -4475,4 +4475,73 @@ describe User, :do_not_mock_admin_mode do
       end
     end
   end
+
+  describe '#active_for_authentication?' do
+    subject { user.active_for_authentication? }
+
+    let(:user) { create(:user) }
+
+    context 'when user is blocked' do
+      before do
+        user.block
+      end
+
+      it { is_expected.to be false }
+    end
+
+    context 'when user is a ghost user' do
+      before do
+        user.update(ghost: true)
+      end
+
+      it { is_expected.to be false }
+    end
+
+    context 'based on user type' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:user_type, :expected_result) do
+        'human'             | true
+        'alert_bot'         | false
+      end
+
+      with_them do
+        before do
+          user.update(user_type: user_type)
+        end
+
+        it { is_expected.to be expected_result }
+      end
+    end
+  end
+
+  describe '#inactive_message' do
+    subject { user.inactive_message }
+
+    let(:user) { create(:user) }
+
+    context 'when user is blocked' do
+      before do
+        user.block
+      end
+
+      it { is_expected.to eq User::BLOCKED_MESSAGE }
+    end
+
+    context 'when user is an internal user' do
+      before do
+        user.update(ghost: true)
+      end
+
+      it { is_expected.to be User::LOGIN_FORBIDDEN }
+    end
+
+    context 'when user is locked' do
+      before do
+        user.lock_access!
+      end
+
+      it { is_expected.to be :locked }
+    end
+  end
 end

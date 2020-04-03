@@ -40,7 +40,7 @@ FactoryBot.define do
 
     factory :discussion_note_on_personal_snippet, traits: [:on_personal_snippet], class: 'DiscussionNote'
 
-    factory :discussion_note_on_snippet, traits: [:on_snippet], class: 'DiscussionNote'
+    factory :discussion_note_on_project_snippet, traits: [:on_project_snippet], class: 'DiscussionNote'
 
     factory :legacy_diff_note_on_commit, traits: [:on_commit, :legacy_diff_note], class: 'LegacyDiffNote'
 
@@ -120,23 +120,19 @@ FactoryBot.define do
     end
 
     trait :on_issue do
-      noteable { create(:issue, project: project) }
-    end
-
-    trait :on_snippet do
-      noteable { create(:snippet, project: project) }
+      noteable { association(:issue, project: project) }
     end
 
     trait :on_merge_request do
-      noteable { create(:merge_request, source_project: project) }
+      noteable { association(:merge_request, source_project: project) }
     end
 
     trait :on_project_snippet do
-      noteable { create(:project_snippet, project: project) }
+      noteable { association(:project_snippet, project: project) }
     end
 
     trait :on_personal_snippet do
-      noteable { create(:personal_snippet) }
+      noteable { association(:personal_snippet) }
       project { nil }
     end
 

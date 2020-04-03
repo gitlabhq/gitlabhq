@@ -181,7 +181,7 @@ describe EventsHelper do
     end
 
     it 'returns a project snippet note url' do
-      event.target = create(:note, :on_snippet, note: 'keep going')
+      event.target = create(:note_on_project_snippet, note: 'keep going')
 
       expect(subject).to eq("#{project_base_url}/snippets/#{event.note_target.id}#note_#{event.target.id}")
     end

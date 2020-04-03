@@ -29,6 +29,7 @@ FactoryBot.define do
     end
 
     pipeline factory: :ci_pipeline
+    project { pipeline.project }
 
     trait :degenerated do
       options { nil }
@@ -218,10 +219,6 @@ FactoryBot.define do
       after(:build) do |build, evaluator|
         build.resource_group = create(:ci_resource_group, project: build.project)
       end
-    end
-
-    after(:build) do |build, evaluator|
-      build.project ||= build.pipeline.project
     end
 
     trait :with_deployment do

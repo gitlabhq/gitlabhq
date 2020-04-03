@@ -46,6 +46,7 @@ describe GraphqlController do
         # User cannot access API in a couple of cases
         # * When user is internal(like ghost users)
         # * When user is blocked
+        expect(Ability).to receive(:allowed?).with(user, :log_in, :global).and_call_original
         expect(Ability).to receive(:allowed?).with(user, :access_api, :global).and_return(false)
 
         post :execute

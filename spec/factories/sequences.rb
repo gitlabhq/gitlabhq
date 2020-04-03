@@ -11,4 +11,5 @@ FactoryBot.define do
   sequence(:label_title) { |n| "label#{n}" }
   sequence(:branch) { |n| "my-branch-#{n}" }
   sequence(:past_time) { |n| 4.hours.ago + (2 * n).seconds }
+  sequence(:iid)
 end

@@ -741,16 +741,40 @@ Parameters:
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/repository/commits/da738facbc19eb2fc2cef57c49be0e6038570352/signature"
 ```
 
-Example response if commit is signed:
+Example response if commit is GPG signed:
 
 ```json
 {
+  "signature_type": "PGP",
+  "verification_status": "verified",
   "gpg_key_id": 1,
   "gpg_key_primary_keyid": "8254AAB3FBD54AC9",
   "gpg_key_user_name": "John Doe",
   "gpg_key_user_email": "johndoe@example.com",
-  "verification_status": "verified",
   "gpg_key_subkey_id": null
+}
+```
+
+Example response if commit is x509 signed:
+
+```json
+{
+  "signature_type": "X509",
+  "verification_status": "unverified",
+  "x509_certificate": {
+    "id": 1,
+    "subject": "CN=gitlab@example.org,OU=Example,O=World",
+    "subject_key_identifier": "BC:BC:BC:BC:BC:BC:BC:BC:BC:BC:BC:BC:BC:BC:BC:BC:BC:BC:BC:BC",
+    "email": "gitlab@example.org",
+    "serial_number": 278969561018901340486471282831158785578,
+    "certificate_status": "good",
+    "x509_issuer": {
+      "id": 1,
+      "subject": "CN=PKI,OU=Example,O=World",
+      "subject_key_identifier": "AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB",
+      "crl_url": "http://example.com/pki.crl"
+    }
+  }
 }
 ```
 

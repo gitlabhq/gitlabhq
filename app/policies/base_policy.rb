@@ -25,8 +25,7 @@ class BasePolicy < DeclarativePolicy::Base
   with_options scope: :user, score: 0
   condition(:inactive) do
     Feature.enabled?(:inactive_policy_condition, default_enabled: true) &&
-      @user &&
-      !@user&.active_for_authentication?
+      @user&.confirmation_required_on_sign_in? || @user&.access_locked?
   end
 
   with_options scope: :user, score: 0

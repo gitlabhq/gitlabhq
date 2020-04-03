@@ -1889,11 +1889,11 @@ describe API::Commits do
     context 'unsigned commit' do
       it_behaves_like '404 response' do
         let(:request) { get api(route, current_user) }
-        let(:message) { '404 GPG Signature Not Found'}
+        let(:message) { '404 Signature Not Found'}
       end
     end
 
-    context 'signed commit' do
+    context 'gpg signed commit' do
       let(:commit) { project.repository.commit(GpgHelpers::SIGNED_COMMIT_SHA) }
       let(:commit_id) { commit.id }
 
@@ -1901,10 +1901,34 @@ describe API::Commits do
         get api(route, current_user)
 
         expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['signature_type']).to eq('PGP')
         expect(json_response['gpg_key_id']).to eq(commit.signature.gpg_key_id)
         expect(json_response['gpg_key_subkey_id']).to eq(commit.signature.gpg_key_subkey_id)
         expect(json_response['gpg_key_primary_keyid']).to eq(commit.signature.gpg_key_primary_keyid)
         expect(json_response['verification_status']).to eq(commit.signature.verification_status)
+      end
+    end
+
+    context 'x509 signed commit' do
+      let(:commit) { project.repository.commit_by(oid: '189a6c924013fc3fe40d6f1ec1dc20214183bc97') }
+      let(:commit_id) { commit.id }
+
+      it 'returns correct JSON' do
+        get api(route, current_user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['signature_type']).to eq('X509')
+        expect(json_response['verification_status']).to eq(commit.signature.verification_status)
+        expect(json_response['x509_certificate']['id']).to eq(commit.signature.x509_certificate.id)
+        expect(json_response['x509_certificate']['subject']).to eq(commit.signature.x509_certificate.subject)
+        expect(json_response['x509_certificate']['subject_key_identifier']).to eq(commit.signature.x509_certificate.subject_key_identifier)
+        expect(json_response['x509_certificate']['email']).to eq(commit.signature.x509_certificate.email)
+        expect(json_response['x509_certificate']['serial_number']).to eq(commit.signature.x509_certificate.serial_number)
+        expect(json_response['x509_certificate']['certificate_status']).to eq(commit.signature.x509_certificate.certificate_status)
+        expect(json_response['x509_certificate']['x509_issuer']['id']).to eq(commit.signature.x509_certificate.x509_issuer.id)
+        expect(json_response['x509_certificate']['x509_issuer']['subject']).to eq(commit.signature.x509_certificate.x509_issuer.subject)
+        expect(json_response['x509_certificate']['x509_issuer']['subject_key_identifier']).to eq(commit.signature.x509_certificate.x509_issuer.subject_key_identifier)
+        expect(json_response['x509_certificate']['x509_issuer']['crl_url']).to eq(commit.signature.x509_certificate.x509_issuer.crl_url)
       end
     end
   end

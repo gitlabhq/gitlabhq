@@ -11228,9 +11228,6 @@ msgstr ""
 msgid "Issue already promoted to epic."
 msgstr ""
 
-msgid "Issue board focus mode"
-msgstr ""
-
 msgid "Issue cannot be found."
 msgstr ""
 
@@ -22706,6 +22703,9 @@ msgid "Vulnerability|Class"
 msgstr ""
 
 msgid "Vulnerability|Description"
+msgstr ""
+
+msgid "Vulnerability|Evidence"
 msgstr ""
 
 msgid "Vulnerability|File"

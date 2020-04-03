@@ -3,10 +3,14 @@
 module API
   module Entities
     class CommitSignature < Grape::Entity
-      expose :gpg_key_id
-      expose :gpg_key_primary_keyid, :gpg_key_user_name, :gpg_key_user_email
-      expose :verification_status
-      expose :gpg_key_subkey_id
+      expose :signature_type
+      expose :signature, merge: true do |commit, options|
+        if commit.signature.is_a?(GpgSignature)
+          ::API::Entities::GpgCommitSignature.represent commit.signature, options
+        elsif commit.signature.is_a?(X509CommitSignature)
+          ::API::Entities::X509Signature.represent commit.signature, options
+        end
+      end
     end
   end
 end

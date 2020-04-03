@@ -217,12 +217,10 @@ Gitlab/DuplicateSpecLocation:
     - ee/spec/helpers/auth_helper_spec.rb
     - ee/spec/lib/gitlab/gl_repository_spec.rb
     - ee/spec/models/namespace_spec.rb
-    - ee/spec/services/merge_requests/create_service_spec.rb
     - ee/spec/services/merge_requests/refresh_service_spec.rb
     - ee/spec/services/merge_requests/update_service_spec.rb
     - ee/spec/helpers/ee/auth_helper_spec.rb
     - ee/spec/models/ee/namespace_spec.rb
-    - ee/spec/services/ee/merge_requests/create_service_spec.rb
     - ee/spec/services/ee/merge_requests/refresh_service_spec.rb
     - ee/spec/services/ee/merge_requests/update_service_spec.rb
 
@@ -398,7 +396,6 @@ RSpec/RepeatedExample:
     - 'spec/graphql/gitlab_schema_spec.rb'
     - 'spec/helpers/users_helper_spec.rb'
     - 'spec/lib/gitlab/closing_issue_extractor_spec.rb'
-    - 'spec/lib/gitlab/danger/changelog_spec.rb'
     - 'spec/lib/gitlab/import_export/project/relation_factory_spec.rb'
     - 'spec/rubocop/cop/migration/update_large_table_spec.rb'
     - 'spec/services/notification_service_spec.rb'

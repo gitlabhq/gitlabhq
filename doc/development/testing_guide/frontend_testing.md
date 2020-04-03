@@ -550,8 +550,9 @@ The more challenging part are mocks, which can be used for functions or even dep
 Manual mocks are used to mock modules across the entire Jest environment. This is a very powerful testing tool that helps simplify
 unit testing by mocking out modules which cannot be easily consumned in our test environment.
 
-> NOTE: Do not use manual mocks if a mock should not be consistently applied (i.e. it's only needed by a few specs).
-> Instead, consider using `jest.mock` in the relevant spec file.
+> **WARNING:** Do not use manual mocks if a mock should not be consistently applied in every spec (i.e. it's only needed by a few specs).
+> Instead, consider using [`jest.mock(..)`](https://jestjs.io/docs/en/jest-object#jestmockmodulename-factory-options)
+> (or a similar mocking function) in the relevant spec file.
 
 #### Where should I put manual mocks?
 
@@ -568,23 +569,27 @@ If a manual mock is needed for a CE module, please place it in `spec/frontend/mo
 - We don't support mocking EE modules yet.
 - If a mock is found for which a source module doesn't exist, the test suite will fail. 'Virtual' mocks, or mocks that don't have a 1-to-1 association with a source module, are not supported yet.
 
-### Writing a mock
+#### Manual mock examples
 
-Create a JS module in the appropriate place in `spec/frontend/mocks/`. That's it. It will automatically mock its source package in all tests.
-
-Make sure that your mock's export has the same format as the mocked module. So, if you're mocking a CommonJS module, you'll need to use `module.exports` instead of the ES6 `export`.
-
-It might be useful for a mock to expose a property that indicates if the mock was loaded. This way, tests can assert the presence of a mock without calling any logic and causing side-effects. The `~/lib/utils/axios_utils` module mock has such a property, `isMock`, that is `true` in the mock and undefined in the original class. Jest's mock functions also have a `mock` property that you can test.
-
-### Bypassing mocks
-
-If you ever need to import the original module in your tests, use [`jest.requireActual()`](https://jestjs.io/docs/en/jest-object#jestrequireactualmodulename) (or `jest.requireActual().default` for the default export). The `jest.mock()` and `jest.unmock()` won't have an effect on modules that have a manual mock, because mocks are imported and cached before any tests are run.
+- [`mocks/axios_utils`](https://gitlab.com/gitlab-org/gitlab/blob/bd20aeb64c4eed117831556c54b40ff4aee9bfd1/spec/frontend/mocks/ce/lib/utils/axios_utils.js#L1) -
+  This mock is helpful because we don't want any unmocked requests to pass any tests. Also, we are able to inject some test helpers such as `axios.waitForAll`.
+- [`__mocks__/mousetrap/index.js`](https://gitlab.com/gitlab-org/gitlab/blob/cd4c086d894226445be9d18294a060ba46572435/spec/frontend/__mocks__/mousetrap/index.js#L1) -
+  This mock is helpful because the module itself uses amd format which webpack understands, but is incompatible with the jest environment. This mock doesn't remove
+  any behavior, only provides a nice es6 compatible wrapper.
+- [`__mocks__/monaco-editor/index.js`](https://gitlab.com/gitlab-org/gitlab/blob/b7f914cddec9fc5971238cdf12766e79fa1629d7/spec/frontend/__mocks__/monaco-editor/index.js) -
+  This mock is helpful because the monaco package is completely incompatible in a Jest environment. In fact, webpack requires a special loader to make it work. This mock
+  simply makes this package consumable by Jest.
 
 ### Keep mocks light
 
-Global mocks introduce magic and can affect how modules are imported in your tests. Try to keep them as light as possible and dependency-free. A global mock should be useful for any unit test. For example, the `axios_utils` and `jquery` module mocks throw an error when an HTTP request is attempted, since this is useful behaviour in &gt;99% of tests.
+Global mocks introduce magic and technically can reduce test coverage. When mocking is deemed profitable:
 
-When in doubt, construct mocks in your test file using [`jest.mock()`](https://jestjs.io/docs/en/jest-object#jestmockmodulename-factory-options), [`jest.spyOn()`](https://jestjs.io/docs/en/jest-object#jestspyonobject-methodname), etc.
+- Keep the mock short and focused.
+- Please leave a top-level comment in the mock on why it is necessary.
+
+### Additional mocking techniques
+
+Please consult the [official Jest docs](https://jestjs.io/docs/en/jest-object#mock-modules) for a full overview of the available mocking features.
 
 ## Running Frontend Tests
 

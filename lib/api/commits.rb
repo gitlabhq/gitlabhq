@@ -356,7 +356,7 @@ module API
         present paginate(commit_merge_requests), with: Entities::MergeRequestBasic
       end
 
-      desc "Get a commit's GPG signature" do
+      desc "Get a commit's signature" do
         success Entities::CommitSignature
       end
       params do
@@ -365,11 +365,9 @@ module API
       get ':id/repository/commits/:sha/signature', requirements: API::COMMIT_ENDPOINT_REQUIREMENTS do
         commit = user_project.commit(params[:sha])
         not_found! 'Commit' unless commit
+        not_found! 'Signature' unless commit.has_signature?
 
-        signature = commit.signature
-        not_found! 'GPG Signature' unless signature
-
-        present signature, with: Entities::CommitSignature
+        present commit, with: Entities::CommitSignature
       end
     end
   end

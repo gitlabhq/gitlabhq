@@ -39,6 +39,7 @@ class ProjectWiki
   def full_path
     @project.full_path + '.wiki'
   end
+  alias_method :id, :full_path
 
   # @deprecated use full_path when you need it for an URL route or disk_path when you want to point to the filesystem
   alias_method :path_with_namespace, :full_path

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :merge_request do
+  factory :merge_request, traits: [:has_internal_id] do
     title { generate(:title) }
     association :source_project, :repository, factory: :project
     target_project { source_project }

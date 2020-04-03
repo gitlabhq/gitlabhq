@@ -58,6 +58,8 @@ class User < ApplicationRecord
 
   BLOCKED_MESSAGE = "Your account has been blocked. Please contact your GitLab " \
                     "administrator if you think this is an error."
+  LOGIN_FORBIDDEN = "Your account does not have the required permission to login. Please contact your GitLab " \
+                    "administrator if you think this is an error."
 
   MINIMUM_INACTIVE_DAYS = 180
 
@@ -299,14 +301,6 @@ class User < ApplicationRecord
       def blocked?
         true
       end
-
-      def active_for_authentication?
-        false
-      end
-
-      def inactive_message
-        BLOCKED_MESSAGE
-      end
     end
 
     before_transition do
@@ -352,6 +346,20 @@ class User < ApplicationRecord
           ::PersonalAccessToken
             .where('personal_access_tokens.user_id = users.id')
             .expiring_and_not_notified(at).select(1))
+  end
+
+  def active_for_authentication?
+    super && can?(:log_in)
+  end
+
+  def inactive_message
+    if blocked?
+      BLOCKED_MESSAGE
+    elsif internal?
+      LOGIN_FORBIDDEN
+    else
+      super
+    end
   end
 
   def self.with_visible_profile(user)
@@ -1699,6 +1707,10 @@ class User < ApplicationRecord
   # Load the current highest access by looking directly at the user's memberships
   def current_highest_access_level
     members.non_request.maximum(:access_level)
+  end
+
+  def confirmation_required_on_sign_in?
+    !confirmed? && !confirmation_period_valid?
   end
 
   protected
