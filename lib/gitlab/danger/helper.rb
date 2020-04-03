@@ -100,6 +100,7 @@ module Gitlab
         test: "~test ~Quality for `spec/features/*`",
         engineering_productivity: '~"Engineering Productivity" for CI, Danger'
       }.freeze
+      # First-match win, so be sure to put more specific regex at the top...
       CATEGORIES = {
         %r{\Adoc/} => :none, # To reinstate roulette for documentation, set to `:docs`.
         %r{\A(CONTRIBUTING|LICENSE|MAINTENANCE|PHILOSOPHY|PROCESS|README)(\.md)?\z} => :none, # To reinstate roulette for documentation, set to `:docs`.
@@ -145,9 +146,8 @@ module Gitlab
         %r{\A(ee/)?app/(?!assets|views)[^/]+} => :backend,
         %r{\A(ee/)?(bin|config|generator_templates|lib|rubocop)/} => :backend,
         %r{\A(ee/)?spec/features/} => :test,
-        %r{\A(ee/)?spec/(?!javascripts|frontend)[^/]+} => :backend,
-        %r{\A(ee/)?vendor/(?!assets)[^/]+} => :backend,
-        %r{\A(ee/)?vendor/(languages\.yml|licenses\.csv)\z} => :backend,
+        %r{\A(ee/)?spec/} => :backend,
+        %r{\A(ee/)?vendor/} => :backend,
         %r{\A(Gemfile|Gemfile.lock|Rakefile)\z} => :backend,
         %r{\A[A-Z_]+_VERSION\z} => :backend,
         %r{\A\.rubocop(_todo)?\.yml\z} => :backend,

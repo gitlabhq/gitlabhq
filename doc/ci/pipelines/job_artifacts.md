@@ -3,7 +3,7 @@ disqus_identifier: 'https://docs.gitlab.com/ee/user/project/pipelines/job_artifa
 type: reference, howto
 ---
 
-# Introduction to job artifacts
+# Job artifacts
 
 > - Introduced in GitLab 8.2 and GitLab Runner 0.7.0.
 > - Starting with GitLab 8.4 and GitLab Runner 1.0, the artifacts archive format changed to `ZIP`, and it is now possible to browse its contents, with the added ability of downloading the files separately.

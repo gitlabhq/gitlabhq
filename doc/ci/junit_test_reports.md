@@ -151,6 +151,21 @@ java:
         - target/failsafe-reports/TEST-*.xml
 ```
 
+### Python example
+
+This example uses pytest with the `--junitxml=report.xml` flag to format the output
+for JUnit:
+
+```yaml
+pytest:
+  stage: test
+  script:
+  - pytest --junitxml=report.xml
+  artifacts:
+    reports:
+      junit: report.xml
+```
+
 ### C/C++ example
 
 There are a few tools that can produce JUnit reports in C/C++.

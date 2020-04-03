@@ -109,7 +109,7 @@ To make full use of Auto DevOps, you will need:
   To enable deployments, you will need:
 
   1. A [Kubernetes 1.12+ cluster](../../user/project/clusters/index.md) for the project. The easiest
-     way is to add a [new cluster using the GitLab UI](../../user/project/clusters/add_remove_clusters.md#add-new-cluster).
+     way is to create a [new cluster using the GitLab UI](../../user/project/clusters/add_remove_clusters.md#create-new-cluster).
      For Kubernetes 1.16+ clusters, there is some additional configuration for [Auto Deploy for Kubernetes 1.16+](#kubernetes-116).
   1. NGINX Ingress. You can deploy it to your Kubernetes cluster by installing
      the [GitLab-managed app for Ingress](../../user/clusters/applications.md#ingress),
@@ -403,6 +403,33 @@ TIP: **Tip:**
 If Auto Build fails despite the project meeting the buildpack requirements, set
 a project variable `TRACE=true` to enable verbose logging, which may help to
 troubleshoot.
+
+#### Auto Build using Cloud Native Buildpacks (beta)
+
+> Introduced in [GitLab 12.10](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28165).
+
+Auto Build supports building your application using [Cloud Native Buildpacks](https://buildpacks.io)
+through the [`pack` command](https://github.com/buildpacks/pack). To use Cloud Native Buildpacks,
+set the CI variable `AUTO_DEVOPS_BUILD_IMAGE_CNB_ENABLED` to a non-empty value.
+
+Cloud Native Buildpacks (CNBs) are an evolution of Heroku buildpacks, and
+will eventually supersede Herokuish-based builds within Auto DevOps. For more
+information, see [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/212692).
+
+Builds using Cloud Native Buildpacks support the same options as builds using
+Heroku buildpacks, with the following caveats:
+
+- The buildpack must be a Cloud Native Buildpack. A Heroku buildpack can be
+  converted to a Cloud Native Buildpack using Heroku's
+  [`cnb-shim`](https://github.com/heroku/cnb-shim).
+- `BUILDPACK_URL` must be in a form
+  [supported by `pack`](https://buildpacks.io/docs/app-developer-guide/specific-buildpacks/).
+- The `/bin/herokuish` command is not present in the resulting image, and prefixing
+  commands with `/bin/herokuish procfile exec` is no longer required (nor possible).
+
+NOTE: **Note**: Auto Test still uses Herokuish, as test suite detection is not
+yet part of the Cloud Native Buildpack specification. For more information, see
+[this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/212689).
 
 ### Auto Test
 
@@ -1162,6 +1189,7 @@ applications.
 |-----------------------------------------|------------------------------------|
 | `ADDITIONAL_HOSTS`                      | Fully qualified domain names specified as a comma-separated list that are added to the Ingress hosts. |
 | `<ENVIRONMENT>_ADDITIONAL_HOSTS`        | For a specific environment, the fully qualified domain names specified as a comma-separated list that are added to the Ingress hosts. This takes precedence over `ADDITIONAL_HOSTS`. |
+| `AUTO_DEVOPS_BUILD_IMAGE_CNB_ENABLED`   | When set to a non-empty value and no `Dockerfile` is present, Auto Build builds your application using Cloud Native Buildpacks instead of Herokuish. [More details](#auto-build-using-cloud-native-buildpacks-beta). |
 | `AUTO_DEVOPS_BUILD_IMAGE_EXTRA_ARGS`    | Extra arguments to be passed to the `docker build` command. Note that using quotes will not prevent word splitting. [More details](#passing-arguments-to-docker-build). |
 | `AUTO_DEVOPS_BUILD_IMAGE_FORWARDED_CI_VARIABLES` | A [comma-separated list of CI variable names](#passing-secrets-to-docker-build) to be passed to the `docker build` command as secrets. |
 | `AUTO_DEVOPS_CHART`                     | Helm Chart used to deploy your apps. Defaults to the one [provided by GitLab](https://gitlab.com/gitlab-org/charts/auto-deploy-app). |

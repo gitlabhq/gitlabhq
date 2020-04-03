@@ -12,8 +12,6 @@ Watch our
 ["Mastering continuous software development"](https://about.gitlab.com/webcast/mastering-ci-cd/)
 webcast to see a comprehensive demo of GitLab CI/CD pipeline.
 
-## Introduction
-
 Pipelines are the top-level component of continuous integration, delivery, and deployment.
 
 Pipelines comprise:
@@ -33,7 +31,7 @@ If you have a [mirrored repository that GitLab pulls from](../../user/project/re
 you may need to enable pipeline triggering in your project's
 **Settings > Repository > Pull from a remote repository > Trigger pipelines for mirror updates**.
 
-### Simple pipeline example
+## Simple pipeline example
 
 As an example, imagine a pipeline consisting of four stages, executed in the following order:
 

@@ -123,8 +123,13 @@ describe Projects::ImportService do
 
         it 'succeeds if repository import is successful' do
           expect(project.repository).to receive(:import_repository).and_return(true)
-          expect_any_instance_of(Gitlab::BitbucketImport::Importer).to receive(:execute).and_return(true)
-          expect_any_instance_of(Projects::LfsPointers::LfsImportService).to receive(:execute).and_return(status: :success)
+          expect_next_instance_of(Gitlab::BitbucketImport::Importer) do |importer|
+            expect(importer).to receive(:execute).and_return(true)
+          end
+
+          expect_next_instance_of(Projects::LfsPointers::LfsImportService) do |service|
+            expect(service).to receive(:execute).and_return(status: :success)
+          end
 
           result = subject.execute
 
@@ -147,8 +152,15 @@ describe Projects::ImportService do
             error_message = 'error message'
 
             expect(project.repository).to receive(:import_repository).and_return(true)
-            expect_any_instance_of(Gitlab::BitbucketImport::Importer).to receive(:execute).and_return(true)
-            expect_any_instance_of(Projects::LfsPointers::LfsImportService).to receive(:execute).and_return(status: :error, message: error_message)
+
+            expect_next_instance_of(Gitlab::BitbucketImport::Importer) do |importer|
+              expect(importer).to receive(:execute).and_return(true)
+            end
+
+            expect_next_instance_of(Projects::LfsPointers::LfsImportService) do |service|
+              expect(service).to receive(:execute).and_return(status: :error, message: error_message)
+            end
+
             expect(Gitlab::AppLogger).to receive(:error).with("The Lfs import process failed. #{error_message}")
 
             subject.execute

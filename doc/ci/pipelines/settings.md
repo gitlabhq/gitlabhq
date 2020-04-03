@@ -3,7 +3,7 @@ disqus_identifier: 'https://docs.gitlab.com/ee/user/project/pipelines/settings.h
 type: reference, howto
 ---
 
-# Pipelines settings
+# Pipeline settings
 
 To reach the pipelines settings navigate to your project's
 **Settings > CI/CD**.

@@ -87,6 +87,7 @@ describe Gitlab::BitbucketImport::Importer do
       values: sample_issues_statuses
     }
   end
+  let(:counter) { double('counter', increment: true) }
 
   subject { described_class.new(project) }
 
@@ -213,6 +214,24 @@ describe Gitlab::BitbucketImport::Importer do
         expect(merge_request_diff.start_commit_sha).to eq target_branch_sha
       end
     end
+
+    context 'metrics' do
+      before do
+        allow(Gitlab::Metrics).to receive(:counter) { counter }
+        allow(pull_request).to receive(:raw).and_return('hello world')
+      end
+
+      it 'counts imported pull requests' do
+        expect(Gitlab::Metrics).to receive(:counter).with(
+          :bitbucket_importer_imported_pull_requests,
+          'The number of imported Bitbucket pull requests'
+        )
+
+        expect(counter).to receive(:increment)
+
+        subject.execute
+      end
+    end
   end
 
   context 'issues statuses' do
@@ -337,6 +356,55 @@ describe Gitlab::BitbucketImport::Importer do
         expect(project.issues.where("description LIKE ?", '%reporter2%').size).to eq(1)
         expect(project.issues.where("description LIKE ?", '%reporter3%').size).to eq(1)
         expect(importer.errors).to be_empty
+      end
+    end
+
+    context 'metrics' do
+      before do
+        allow(Gitlab::Metrics).to receive(:counter) { counter }
+      end
+
+      it 'counts imported issues' do
+        expect(Gitlab::Metrics).to receive(:counter).with(
+          :bitbucket_importer_imported_issues,
+          'The number of imported Bitbucket issues'
+        )
+
+        expect(counter).to receive(:increment)
+
+        subject.execute
+      end
+    end
+  end
+
+  describe '#execute' do
+    context 'metrics' do
+      let(:histogram) { double(:histogram) }
+
+      before do
+        allow(subject).to receive(:import_wiki)
+        allow(subject).to receive(:import_issues)
+        allow(subject).to receive(:import_pull_requests)
+
+        allow(Gitlab::Metrics).to receive(:counter) { counter }
+        allow(Gitlab::Metrics).to receive(:histogram) { histogram }
+      end
+
+      it 'counts and measures duration of imported projects' do
+        expect(Gitlab::Metrics).to receive(:counter).with(
+          :bitbucket_importer_imported_projects,
+          'The number of imported Bitbucket projects'
+        )
+
+        expect(Gitlab::Metrics).to receive(:histogram).with(
+          :bitbucket_importer_total_duration_seconds,
+          'Total time spent importing Bitbucket projects, in seconds'
+        )
+
+        expect(counter).to receive(:increment)
+        expect(histogram).to receive(:observe).with({ importer: described_class::IMPORTER }, anything)
+
+        subject.execute
       end
     end
   end

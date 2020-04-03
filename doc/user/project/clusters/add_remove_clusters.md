@@ -14,7 +14,7 @@ Google Kubernetes Engine Integration. All you have to do is [follow this link](h
 
 ## Before you begin
 
-Before [adding a Kubernetes cluster](#add-new-cluster) using GitLab, you need:
+Before [adding a Kubernetes cluster](#create-new-cluster) using GitLab, you need:
 
 - GitLab itself. Either:
   - A GitLab.com [account](https://about.gitlab.com/pricing/#gitlab-com).
@@ -127,9 +127,9 @@ If you don't want to use GitLab Runner in privileged mode, either:
   1. Installing a Runner
      [using `docker+machine`](https://docs.gitlab.com/runner/executors/docker_machine.html).
 
-## Add new cluster
+## Create new cluster
 
-New clusters can be added using GitLab for:
+New clusters can be created using GitLab for:
 
 - [Google Kubernetes Engine (GKE)](add_gke_clusters.md).
 - [Amazon Elastic Kubernetes Service (EKS)](add_eks_clusters.md).
