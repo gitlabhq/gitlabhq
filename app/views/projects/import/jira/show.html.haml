@@ -9,7 +9,7 @@
   %h3.page-title.d-flex.align-items-center
     = sprite_icon('issues', size: 16, css_class: 'mr-1')
     = _('Import in progress')
-- else
+- elsif @jira_projects.present?
   %h3.page-title.d-flex.align-items-center
     = sprite_icon('issues', size: 16, css_class: 'mr-1')
     = _('Import issues from Jira')

@@ -6,20 +6,28 @@ describe API::Runners do
   let(:admin) { create(:user, :admin) }
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
+  let(:group_guest) { create(:user) }
+  let(:group_reporter) { create(:user) }
+  let(:group_developer) { create(:user) }
   let(:group_maintainer) { create(:user) }
 
   let(:project) { create(:project, creator_id: user.id) }
   let(:project2) { create(:project, creator_id: user.id) }
 
   let(:group) { create(:group).tap { |group| group.add_owner(user) } }
+  let(:subgroup) { create(:group, parent: group) }
 
   let!(:shared_runner) { create(:ci_runner, :instance, description: 'Shared runner') }
   let!(:project_runner) { create(:ci_runner, :project, description: 'Project runner', projects: [project]) }
   let!(:two_projects_runner) { create(:ci_runner, :project, description: 'Two projects runner', projects: [project, project2]) }
-  let!(:group_runner) { create(:ci_runner, :group, description: 'Group runner', groups: [group]) }
+  let!(:group_runner_a) { create(:ci_runner, :group, description: 'Group runner A', groups: [group]) }
+  let!(:group_runner_b) { create(:ci_runner, :group, description: 'Group runner B', groups: [subgroup]) }
 
   before do
     # Set project access for users
+    create(:group_member, :guest, user: group_guest, group: group)
+    create(:group_member, :reporter, user: group_reporter, group: group)
+    create(:group_member, :developer, user: group_developer, group: group)
     create(:group_member, :maintainer, user: group_maintainer, group: group)
     create(:project_member, :maintainer, user: user, project: project)
     create(:project_member, :maintainer, user: user, project: project2)
@@ -41,7 +49,8 @@ describe API::Runners do
         expect(json_response).to match_array [
           a_hash_including('description' => 'Project runner'),
           a_hash_including('description' => 'Two projects runner'),
-          a_hash_including('description' => 'Group runner')
+          a_hash_including('description' => 'Group runner A'),
+          a_hash_including('description' => 'Group runner B')
         ]
       end
 
@@ -131,7 +140,8 @@ describe API::Runners do
           expect(json_response).to match_array [
             a_hash_including('description' => 'Project runner'),
             a_hash_including('description' => 'Two projects runner'),
-            a_hash_including('description' => 'Group runner'),
+            a_hash_including('description' => 'Group runner A'),
+            a_hash_including('description' => 'Group runner B'),
             a_hash_including('description' => 'Shared runner')
           ]
         end
@@ -156,7 +166,8 @@ describe API::Runners do
           expect(json_response).to match_array [
             a_hash_including('description' => 'Project runner'),
             a_hash_including('description' => 'Two projects runner'),
-            a_hash_including('description' => 'Group runner')
+            a_hash_including('description' => 'Group runner A'),
+            a_hash_including('description' => 'Group runner B')
           ]
         end
 
@@ -165,12 +176,21 @@ describe API::Runners do
           expect(response).to have_gitlab_http_status(:bad_request)
         end
 
-        it 'filters runners by type' do
+        it 'filters runners by project type' do
           get api('/runners/all?type=project_type', admin)
 
           expect(json_response).to match_array [
             a_hash_including('description' => 'Project runner'),
             a_hash_including('description' => 'Two projects runner')
+          ]
+        end
+
+        it 'filters runners by group type' do
+          get api('/runners/all?type=group_type', admin)
+
+          expect(json_response).to match_array [
+            a_hash_including('description' => 'Group runner A'),
+            a_hash_including('description' => 'Group runner B')
           ]
         end
 
@@ -526,15 +546,41 @@ describe API::Runners do
           end.to change { Ci::Runner.project_type.count }.by(-1)
         end
 
-        it 'does not delete group runner with maintainer access' do
-          delete api("/runners/#{group_runner.id}", group_maintainer)
+        it 'does not delete group runner with guest access' do
+          delete api("/runners/#{group_runner_a.id}", group_guest)
 
           expect(response).to have_gitlab_http_status(:forbidden)
         end
 
-        it 'deletes group runner with owner access' do
+        it 'does not delete group runner with reporter access' do
+          delete api("/runners/#{group_runner_a.id}", group_reporter)
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+
+        it 'does not delete group runner with developer access' do
+          delete api("/runners/#{group_runner_a.id}", group_developer)
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+
+        it 'does not delete group runner with maintainer access' do
+          delete api("/runners/#{group_runner_a.id}", group_maintainer)
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+
+        it 'deletes owned group runner with owner access' do
           expect do
-            delete api("/runners/#{group_runner.id}", user)
+            delete api("/runners/#{group_runner_a.id}", user)
+
+            expect(response).to have_gitlab_http_status(:no_content)
+          end.to change { Ci::Runner.group_type.count }.by(-1)
+        end
+
+        it 'deletes inherited group runner with owner access' do
+          expect do
+            delete api("/runners/#{group_runner_b.id}", user)
 
             expect(response).to have_gitlab_http_status(:no_content)
           end.to change { Ci::Runner.group_type.count }.by(-1)
@@ -842,7 +888,7 @@ describe API::Runners do
         get api("/groups/#{group.id}/runners", user)
 
         expect(json_response).to match_array([
-          a_hash_including('description' => 'Group runner')
+          a_hash_including('description' => 'Group runner A')
         ])
       end
 
@@ -851,7 +897,7 @@ describe API::Runners do
           get api("/groups/#{group.id}/runners?type=group_type", user)
 
           expect(json_response).to match_array([
-            a_hash_including('description' => 'Group runner')
+            a_hash_including('description' => 'Group runner A')
           ])
         end
 
@@ -939,7 +985,7 @@ describe API::Runners do
       end
 
       it 'does not enable group runner' do
-        post api("/projects/#{project.id}/runners", user), params: { runner_id: group_runner.id }
+        post api("/projects/#{project.id}/runners", user), params: { runner_id: group_runner_a.id }
 
         expect(response).to have_gitlab_http_status(:forbidden)
       end

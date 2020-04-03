@@ -2835,61 +2835,88 @@ describe User, :do_not_mock_admin_mode do
 
   describe '#ci_owned_runners' do
     let(:user) { create(:user) }
-    let!(:project) { create(:project) }
-    let(:runner) { create(:ci_runner, :project, projects: [project]) }
 
-    context 'without any projects nor groups' do
-      it 'does not load' do
-        expect(user.ci_owned_runners).to be_empty
-      end
-    end
+    shared_examples :nested_groups_owner do
+      context 'when the user is the owner of a multi-level group' do
+        before do
+          set_permissions_for_users
+        end
 
-    context 'with personal projects runners' do
-      let(:namespace) { create(:namespace, owner: user) }
-      let!(:project) { create(:project, namespace: namespace) }
-
-      it 'loads' do
-        expect(user.ci_owned_runners).to contain_exactly(runner)
-      end
-    end
-
-    context 'with personal group runner' do
-      let!(:project) { create(:project) }
-      let(:group_runner) { create(:ci_runner, :group, groups: [group]) }
-      let!(:group) do
-        create(:group).tap do |group|
-          group.add_owner(user)
+        it 'loads all the runners in the tree of groups' do
+          expect(user.ci_owned_runners).to contain_exactly(runner, group_runner)
         end
       end
-
-      it 'loads' do
-        expect(user.ci_owned_runners).to contain_exactly(group_runner)
-      end
     end
 
-    context 'with personal project and group runner' do
-      let(:namespace) { create(:namespace, owner: user) }
-      let!(:project) { create(:project, namespace: namespace) }
-      let!(:group_runner) { create(:ci_runner, :group, groups: [group]) }
-
-      let!(:group) do
-        create(:group).tap do |group|
+    shared_examples :group_owner do
+      context 'when the user is the owner of a one level group' do
+        before do
           group.add_owner(user)
         end
-      end
 
-      it 'loads' do
-        expect(user.ci_owned_runners).to contain_exactly(runner, group_runner)
+        it 'loads the runners in the group' do
+          expect(user.ci_owned_runners).to contain_exactly(group_runner)
+        end
       end
     end
 
-    shared_examples :member do
+    shared_examples :project_owner do
+      context 'when the user is the owner of a project' do
+        it 'loads the runner belonging to the project' do
+          expect(user.ci_owned_runners).to contain_exactly(runner)
+        end
+      end
+    end
+
+    shared_examples :project_member do
       context 'when the user is a maintainer' do
         before do
           add_user(:maintainer)
         end
 
-        it 'does not load' do
+        it 'loads the runners of the project' do
+          expect(user.ci_owned_runners).to contain_exactly(project_runner)
+        end
+      end
+
+      context 'when the user is a developer' do
+        before do
+          add_user(:developer)
+        end
+
+        it 'does not load any runner' do
+          expect(user.ci_owned_runners).to be_empty
+        end
+      end
+
+      context 'when the user is a reporter' do
+        before do
+          add_user(:reporter)
+        end
+
+        it 'does not load any runner' do
+          expect(user.ci_owned_runners).to be_empty
+        end
+      end
+
+      context 'when the user is a guest' do
+        before do
+          add_user(:guest)
+        end
+
+        it 'does not load any runner' do
+          expect(user.ci_owned_runners).to be_empty
+        end
+      end
+    end
+
+    shared_examples :group_member do
+      context 'when the user is a maintainer' do
+        before do
+          add_user(:maintainer)
+        end
+
+        it 'does not load the runners of the group' do
           expect(user.ci_owned_runners).to be_empty
         end
       end
@@ -2899,40 +2926,49 @@ describe User, :do_not_mock_admin_mode do
           add_user(:developer)
         end
 
-        it 'does not load' do
+        it 'does not load any runner' do
+          expect(user.ci_owned_runners).to be_empty
+        end
+      end
+
+      context 'when the user is a reporter' do
+        before do
+          add_user(:reporter)
+        end
+
+        it 'does not load any runner' do
+          expect(user.ci_owned_runners).to be_empty
+        end
+      end
+
+      context 'when the user is a guest' do
+        before do
+          add_user(:guest)
+        end
+
+        it 'does not load any runner' do
           expect(user.ci_owned_runners).to be_empty
         end
       end
     end
 
-    shared_examples :group_member do
-      context 'when the user is owner' do
-        before do
-          add_user(:owner)
-        end
-
-        it 'loads' do
-          expect(user.ci_owned_runners).to contain_exactly(runner)
-        end
+    context 'without any projects nor groups' do
+      it 'does not load any runner' do
+        expect(user.ci_owned_runners).to be_empty
       end
-
-      it_behaves_like :member
     end
 
-    context 'with groups projects runners' do
-      let(:group) { create(:group) }
-      let!(:project) { create(:project, group: group) }
+    context 'with runner in a personal project' do
+      let!(:namespace) { create(:namespace, owner: user) }
+      let!(:project) { create(:project, namespace: namespace) }
+      let!(:runner) { create(:ci_runner, :project, projects: [project]) }
 
-      def add_user(access)
-        group.add_user(user, access)
-      end
-
-      it_behaves_like :group_member
+      it_behaves_like :project_owner
     end
 
-    context 'with groups runners' do
-      let!(:runner) { create(:ci_runner, :group, groups: [group]) }
+    context 'with group runner in a non owned group' do
       let!(:group) { create(:group) }
+      let!(:runner) { create(:ci_runner, :group, groups: [group]) }
 
       def add_user(access)
         group.add_user(user, access)
@@ -2941,26 +2977,114 @@ describe User, :do_not_mock_admin_mode do
       it_behaves_like :group_member
     end
 
-    context 'with other projects runners' do
-      let!(:project) { create(:project) }
+    context 'with group runner in an owned group' do
+      let!(:group) { create(:group) }
+      let!(:group_runner) { create(:ci_runner, :group, groups: [group]) }
+
+      it_behaves_like :group_owner
+    end
+
+    context 'with group runner in an owned group and group runner in a different owner subgroup' do
+      let!(:group) { create(:group) }
+      let!(:runner) { create(:ci_runner, :group, groups: [group]) }
+      let!(:subgroup) { create(:group, parent: group) }
+      let!(:group_runner) { create(:ci_runner, :group, groups: [subgroup]) }
+      let!(:another_user) { create(:user) }
+
+      def set_permissions_for_users
+        group.add_owner(user)
+        subgroup.add_owner(another_user)
+      end
+
+      it_behaves_like :nested_groups_owner
+    end
+
+    context 'with personal project runner in an an owned group and a group runner in that same group' do
+      let!(:group) { create(:group) }
+      let!(:group_runner) { create(:ci_runner, :group, groups: [group]) }
+      let!(:project) { create(:project, group: group) }
+      let!(:runner) { create(:ci_runner, :project, projects: [project]) }
+
+      def set_permissions_for_users
+        group.add_owner(user)
+      end
+
+      it_behaves_like :nested_groups_owner
+    end
+
+    context 'with personal project runner in an owned group and a group runner in a subgroup' do
+      let!(:group) { create(:group) }
+      let!(:subgroup) { create(:group, parent: group) }
+      let!(:group_runner) { create(:ci_runner, :group, groups: [subgroup]) }
+      let!(:project) { create(:project, group: group) }
+      let!(:runner) { create(:ci_runner, :project, projects: [project]) }
+
+      def set_permissions_for_users
+        group.add_owner(user)
+      end
+
+      it_behaves_like :nested_groups_owner
+    end
+
+    context 'with personal project runner in an owned group in an owned namespace and a group runner in that group' do
+      let!(:namespace) { create(:namespace, owner: user) }
+      let!(:group) { create(:group) }
+      let!(:group_runner) { create(:ci_runner, :group, groups: [group]) }
+      let!(:project) { create(:project, namespace: namespace, group: group) }
+      let!(:runner) { create(:ci_runner, :project, projects: [project]) }
+
+      def set_permissions_for_users
+        group.add_owner(user)
+      end
+
+      it_behaves_like :nested_groups_owner
+    end
+
+    context 'with personal project runner in an owned namespace, an owned group, a subgroup and a group runner in that subgroup' do
+      let!(:namespace) { create(:namespace, owner: user) }
+      let!(:group) { create(:group) }
+      let!(:subgroup) { create(:group, parent: group) }
+      let!(:group_runner) { create(:ci_runner, :group, groups: [subgroup]) }
+      let!(:project) { create(:project, namespace: namespace, group: group) }
+      let!(:runner) { create(:ci_runner, :project, projects: [project]) }
+
+      def set_permissions_for_users
+        group.add_owner(user)
+      end
+
+      it_behaves_like :nested_groups_owner
+    end
+
+    context 'with a project runner that belong to projects that belong to a not owned group' do
+      let!(:group) { create(:group) }
+      let!(:project) { create(:project, group: group) }
+      let!(:project_runner) { create(:ci_runner, :project, projects: [project]) }
 
       def add_user(access)
         project.add_user(user, access)
       end
 
-      it_behaves_like :member
+      it_behaves_like :project_member
     end
 
-    context 'with subgroup with different owner for project runner' do
-      let(:group) { create(:group) }
-      let(:another_user) { create(:user) }
-      let(:subgroup) { create(:group, parent: group) }
-      let!(:project) { create(:project, group: subgroup) }
+    context 'with project runners that belong to projects that do not belong to any group' do
+      let!(:project) { create(:project) }
+      let!(:runner) { create(:ci_runner, :project, projects: [project]) }
+
+      it 'does not load any runner' do
+        expect(user.ci_owned_runners).to be_empty
+      end
+    end
+
+    context 'with a group runner that belongs to a subgroup of a group owned by another user' do
+      let!(:group) { create(:group) }
+      let!(:subgroup) { create(:group, parent: group) }
+      let!(:runner) { create(:ci_runner, :group, groups: [subgroup]) }
+      let!(:another_user) { create(:user) }
 
       def add_user(access)
-        group.add_user(user, access)
+        subgroup.add_user(user, access)
         group.add_user(another_user, :owner)
-        subgroup.add_user(another_user, :owner)
       end
 
       it_behaves_like :group_member
@@ -4406,6 +4530,16 @@ describe User, :do_not_mock_admin_mode do
 
       it { is_expected.to be false }
     end
+
+    context 'when `:gitlab_employee_badge` feature flag is disabled' do
+      let(:user) { build(:user, email: 'test@gitlab.com') }
+
+      before do
+        stub_feature_flags(gitlab_employee_badge: false)
+      end
+
+      it { is_expected.to be false }
+    end
   end
 
   describe '#current_highest_access_level' do
@@ -4425,6 +4559,27 @@ describe User, :do_not_mock_admin_mode do
 
         expect(user.current_highest_access_level).to eq(Gitlab::Access::REPORTER)
       end
+    end
+  end
+
+  describe '#organization' do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:user) { build(:user, organization: 'ACME') }
+
+    subject { user.organization }
+
+    where(:gitlab_employee?, :expected_result) do
+      true  | 'GitLab'
+      false | 'ACME'
+    end
+
+    with_them do
+      before do
+        allow(user).to receive(:gitlab_employee?).and_return(gitlab_employee?)
+      end
+
+      it { is_expected.to eql(expected_result) }
     end
   end
 

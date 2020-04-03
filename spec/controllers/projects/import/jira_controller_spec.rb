@@ -66,13 +66,29 @@ describe Projects::Import::JiraController do
 
         context 'when running jira import first time' do
           context 'get show' do
-            it 'renders show template' do
-              allow(JIRA::Resource::Project).to receive(:all).and_return([])
+            before do
+              allow(JIRA::Resource::Project).to receive(:all).and_return(jira_projects)
+
               expect(project.import_state).to be_nil
 
               get :show, params: { namespace_id: project.namespace.to_param, project_id: project }
+            end
 
-              expect(response).to render_template :show
+            context 'when no projects have been retrieved from Jira' do
+              let(:jira_projects) { [] }
+
+              it 'render an error message' do
+                expect(flash[:alert]).to eq('No projects have been returned from Jira. Please check your Jira configuration.')
+                expect(response).to render_template(:show)
+              end
+            end
+
+            context 'when everything is ok' do
+              let(:jira_projects) { [double(name: 'FOO project', key: 'FOO')] }
+
+              it 'renders show template' do
+                expect(response).to render_template(:show)
+              end
             end
           end
 

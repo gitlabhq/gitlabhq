@@ -6567,6 +6567,9 @@ msgstr ""
 msgid "Dependencies|All"
 msgstr ""
 
+msgid "Dependencies|Based on the %{linkStart}latest successful%{linkEnd} scan"
+msgstr ""
+
 msgid "Dependencies|Component"
 msgstr ""
 
@@ -7122,9 +7125,6 @@ msgid "Display rendered file"
 msgstr ""
 
 msgid "Display source"
-msgstr ""
-
-msgid "Displays dependencies and known vulnerabilities, based on the %{linkStart}latest successful%{linkEnd} scan"
 msgstr ""
 
 msgid "Do not display offers from third parties within GitLab"

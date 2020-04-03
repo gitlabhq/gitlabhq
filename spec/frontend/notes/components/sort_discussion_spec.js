@@ -3,6 +3,7 @@ import Vuex from 'vuex';
 import SortDiscussion from '~/notes/components/sort_discussion.vue';
 import createStore from '~/notes/stores';
 import { ASC, DESC } from '~/notes/constants';
+import Tracking from '~/tracking';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -22,6 +23,7 @@ describe('Sort Discussion component', () => {
 
   beforeEach(() => {
     store = createStore();
+    jest.spyOn(Tracking, 'event');
   });
 
   afterEach(() => {
@@ -37,6 +39,9 @@ describe('Sort Discussion component', () => {
         wrapper.find('.js-newest-first').trigger('click');
 
         expect(store.dispatch).toHaveBeenCalledWith('setDiscussionSortDirection', DESC);
+        expect(Tracking.event).toHaveBeenCalledWith(undefined, 'change_discussion_sort_direction', {
+          property: DESC,
+        });
       });
     });
 
@@ -58,6 +63,9 @@ describe('Sort Discussion component', () => {
         wrapper.find('.js-oldest-first').trigger('click');
 
         expect(store.dispatch).toHaveBeenCalledWith('setDiscussionSortDirection', ASC);
+        expect(Tracking.event).toHaveBeenCalledWith(undefined, 'change_discussion_sort_direction', {
+          property: ASC,
+        });
       });
 
       it('applies the active class to the correct button in the dropdown', () => {

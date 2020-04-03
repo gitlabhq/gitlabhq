@@ -9,7 +9,13 @@ module Projects
       def show
         unless @project.import_state&.in_progress?
           jira_client = @project.jira_service.client
-          @jira_projects = jira_client.Project.all.map { |p| ["#{p.name} (#{p.key})", p.key] }
+          jira_projects = jira_client.Project.all
+
+          if jira_projects.present?
+            @jira_projects = jira_projects.map { |p| ["#{p.name} (#{p.key})", p.key] }
+          else
+            flash[:alert] = 'No projects have been returned from Jira. Please check your Jira configuration.'
+          end
         end
 
         flash[:notice] = _("Import %{status}") % { status: @project.import_state.status } if @project.import_state.present? && !@project.import_state.none?

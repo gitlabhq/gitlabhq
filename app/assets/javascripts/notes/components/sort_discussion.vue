@@ -2,6 +2,7 @@
 import { GlIcon } from '@gitlab/ui';
 import { mapActions, mapGetters } from 'vuex';
 import { __ } from '~/locale';
+import Tracking from '~/tracking';
 import { ASC, DESC } from '../constants';
 
 const SORT_OPTIONS = [
@@ -14,6 +15,7 @@ export default {
   components: {
     GlIcon,
   },
+  mixins: [Tracking.mixin()],
   computed: {
     ...mapGetters(['sortDirection']),
     selectedOption() {
@@ -31,6 +33,7 @@ export default {
       }
 
       this.setDiscussionSortDirection(direction);
+      this.track('change_discussion_sort_direction', { property: direction });
     },
     isDropdownItemActive(sortDir) {
       return sortDir === this.sortDirection;

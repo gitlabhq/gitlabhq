@@ -11,7 +11,6 @@ import {
   FILE_VIEW_MODE_PREVIEW,
 } from '../constants';
 import Editor from '../lib/editor';
-import ExternalLink from './external_link.vue';
 import FileTemplatesBar from './file_templates/bar.vue';
 import { __ } from '~/locale';
 
@@ -19,7 +18,6 @@ export default {
   components: {
     ContentViewer,
     DiffViewer,
-    ExternalLink,
     FileTemplatesBar,
   },
   props: {
@@ -275,8 +273,8 @@ export default {
 
 <template>
   <div id="ide" class="blob-viewer-container blob-editor-container">
-    <div class="ide-mode-tabs clearfix">
-      <ul v-if="!shouldHideEditor && isEditModeActive" class="nav-links float-left border-bottom-0">
+    <div v-if="!shouldHideEditor && isEditModeActive" class="ide-mode-tabs clearfix">
+      <ul class="nav-links float-left border-bottom-0">
         <li :class="editTabCSS">
           <a
             href="javascript:void(0);"
@@ -296,7 +294,6 @@ export default {
           >
         </li>
       </ul>
-      <external-link :file="file" />
     </div>
     <file-templates-bar v-if="showFileTemplatesBar(file.name)" />
     <div
