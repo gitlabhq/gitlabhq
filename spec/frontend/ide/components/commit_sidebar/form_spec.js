@@ -1,7 +1,7 @@
 import Vue from 'vue';
-import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
-import getSetTimeoutPromise from 'spec/helpers/set_timeout_promise_helper';
-import { projectData } from 'spec/ide/mock_data';
+import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
+import waitForPromises from 'helpers/wait_for_promises';
+import { projectData } from 'jest/ide/mock_data';
 import store from '~/ide/stores';
 import CommitForm from '~/ide/components/commit_sidebar/form.vue';
 import { leftSidebarViews } from '~/ide/constants';
@@ -12,8 +12,6 @@ describe('IDE commit form', () => {
   let vm;
 
   beforeEach(() => {
-    spyOnProperty(window, 'innerHeight').and.returnValue(800);
-
     store.state.changedFiles.push('test');
     store.state.currentProjectId = 'abcproject';
     store.state.currentBranchId = 'master';
@@ -111,7 +109,7 @@ describe('IDE commit form', () => {
 
       textarea.dispatchEvent(new Event('input'));
 
-      getSetTimeoutPromise()
+      waitForPromises()
         .then(() => {
           expect(vm.$store.state.commit.commitMessage).toBe('testing commit message');
         })
@@ -148,7 +146,7 @@ describe('IDE commit form', () => {
       it('resets commitMessage when clicking discard button', done => {
         vm.$store.state.commit.commitMessage = 'testing commit message';
 
-        getSetTimeoutPromise()
+        waitForPromises()
           .then(() => {
             vm.$el.querySelector('.btn-default').click();
           })
@@ -163,14 +161,14 @@ describe('IDE commit form', () => {
 
     describe('when submitting', () => {
       beforeEach(() => {
-        spyOn(vm, 'commitChanges');
+        jest.spyOn(vm, 'commitChanges').mockImplementation(() => {});
         vm.$store.state.stagedFiles.push('test');
       });
 
       it('calls commitChanges', done => {
         vm.$store.state.commit.commitMessage = 'testing commit message';
 
-        getSetTimeoutPromise()
+        waitForPromises()
           .then(() => {
             vm.$el.querySelector('.btn-success').click();
           })

@@ -400,8 +400,6 @@ RSpec/RepeatedExample:
     - 'spec/lib/gitlab/closing_issue_extractor_spec.rb'
     - 'spec/lib/gitlab/danger/changelog_spec.rb'
     - 'spec/lib/gitlab/import_export/project/relation_factory_spec.rb'
-    - 'spec/routing/admin_routing_spec.rb'
     - 'spec/rubocop/cop/migration/update_large_table_spec.rb'
     - 'spec/services/notification_service_spec.rb'
     - 'spec/services/web_hook_service_spec.rb'
-    - 'ee/spec/services/geo/repository_verification_primary_service_spec.rb'

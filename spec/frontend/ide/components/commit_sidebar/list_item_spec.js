@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import { trimText } from 'spec/helpers/text_helper';
-import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
+import { trimText } from 'helpers/text_helper';
+import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
 import store from '~/ide/stores';
 import listItem from '~/ide/components/commit_sidebar/list_item.vue';
 import router from '~/ide/ide_router';
@@ -61,12 +61,12 @@ describe('Multi-file editor commit sidebar list item', () => {
   });
 
   it('opens a closed file in the editor when clicking the file path', done => {
-    spyOn(vm, 'openPendingTab').and.callThrough();
-    spyOn(router, 'push');
+    jest.spyOn(vm, 'openPendingTab');
+    jest.spyOn(router, 'push').mockImplementation(() => {});
 
     findPathEl.click();
 
-    setTimeout(() => {
+    setImmediate(() => {
       expect(vm.openPendingTab).toHaveBeenCalled();
       expect(router.push).toHaveBeenCalled();
 
@@ -75,13 +75,13 @@ describe('Multi-file editor commit sidebar list item', () => {
   });
 
   it('calls updateViewer with diff when clicking file', done => {
-    spyOn(vm, 'openFileInEditor').and.callThrough();
-    spyOn(vm, 'updateViewer').and.callThrough();
-    spyOn(router, 'push');
+    jest.spyOn(vm, 'openFileInEditor');
+    jest.spyOn(vm, 'updateViewer');
+    jest.spyOn(router, 'push').mockImplementation(() => {});
 
     findPathEl.click();
 
-    setTimeout(() => {
+    setImmediate(() => {
       expect(vm.updateViewer).toHaveBeenCalledWith('diff');
 
       done();

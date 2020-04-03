@@ -38,6 +38,27 @@ describe Ci::DailyReportResultService, '#execute' do
     expect(Ci::DailyReportResult.find_by(title: 'extra')).to be_nil
   end
 
+  context 'when there are multiple builds with the same group name that report coverage' do
+    let!(:test_job_1) { create(:ci_build, pipeline: pipeline, name: '1/2 test', coverage: 70) }
+    let!(:test_job_2) { create(:ci_build, pipeline: pipeline, name: '2/2 test', coverage: 80) }
+
+    it 'creates daily code coverage record with the average as the value' do
+      described_class.new.execute(pipeline)
+
+      Ci::DailyReportResult.find_by(title: 'test').tap do |coverage|
+        expect(coverage).to have_attributes(
+          project_id: pipeline.project.id,
+          last_pipeline_id: pipeline.id,
+          ref_path: pipeline.source_ref_path,
+          param_type: 'coverage',
+          title: test_job_2.group_name,
+          value: 75,
+          date: pipeline.created_at.to_date
+        )
+      end
+    end
+  end
+
   context 'when there is an existing daily code coverage for the matching date, project, ref_path, and group name' do
     let!(:new_pipeline) do
       create(

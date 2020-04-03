@@ -121,6 +121,7 @@
     }
 
     > .btn,
+    > .btn-group,
     > .btn-container,
     > .dropdown,
     > input,
@@ -161,7 +162,8 @@
       .dropdown,
       .dropdown-toggle,
       .dropdown-menu-toggle,
-      .form-control {
+      .form-control,
+      > .btn-group {
         margin: 0 0 $gl-padding-8;
         display: block;
         width: 100%;

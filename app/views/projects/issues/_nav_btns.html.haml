@@ -6,7 +6,7 @@
   - if show_feed_buttons
     = render 'shared/issuable/feed_buttons'
 
-  .btn-group.append-right-10<
+  .btn-group
     - if show_export_button
       = render_if_exists 'projects/issues/export_csv/button'
 

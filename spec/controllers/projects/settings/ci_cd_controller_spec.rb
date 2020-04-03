@@ -157,6 +157,14 @@ describe Projects::Settings::CiCdController do
 
             subject
           end
+
+          it 'creates a pipeline', :sidekiq_inline do
+            project.repository.create_file(user, 'Gemfile', 'Gemfile contents',
+                                           message: 'Add Gemfile',
+                                           branch_name: 'master')
+
+            expect { subject }.to change { Ci::Pipeline.count }.by(1)
+          end
         end
       end
 

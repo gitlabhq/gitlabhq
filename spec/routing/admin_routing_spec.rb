@@ -40,10 +40,6 @@ describe Admin::UsersController, "routing" do
     expect(get("/admin/users/1/edit")).to route_to('admin/users#edit', id: '1')
   end
 
-  it "to #show" do
-    expect(get("/admin/users/1")).to route_to('admin/users#show', id: '1')
-  end
-
   it "to #update" do
     expect(put("/admin/users/1")).to route_to('admin/users#update', id: '1')
   end

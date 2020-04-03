@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
-import { projectData, branches } from 'spec/ide/mock_data';
+import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
+import { projectData, branches } from 'jest/ide/mock_data';
 import NewMergeRequestOption from '~/ide/components/commit_sidebar/new_merge_request_option.vue';
 import { createStore } from '~/ide/stores';
 import { PERMISSION_CREATE_MR } from '~/ide/constants';
@@ -200,11 +200,11 @@ describe('create new MR checkbox', () => {
       currentBranchId: 'regular',
     });
     const el = vm.$el.querySelector('input[type="checkbox"]');
-    spyOn(vm.$store, 'dispatch');
+    jest.spyOn(vm.$store, 'dispatch').mockImplementation(() => {});
     el.dispatchEvent(new Event('change'));
 
-    expect(vm.$store.dispatch.calls.allArgs()).toEqual(
-      jasmine.arrayContaining([['commit/toggleShouldCreateMR', jasmine.any(Object)]]),
+    expect(vm.$store.dispatch.mock.calls).toEqual(
+      expect.arrayContaining([['commit/toggleShouldCreateMR', expect.any(Object)]]),
     );
   });
 });

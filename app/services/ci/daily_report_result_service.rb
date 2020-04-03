@@ -19,12 +19,21 @@ module Ci
         last_pipeline_id: pipeline.id
       }
 
-      pipeline.builds.with_coverage.map do |build|
+      aggregate(pipeline.builds.with_coverage).map do |group_name, group|
         base_attrs.merge(
-          title: build.group_name,
-          value: build.coverage
+          title: group_name,
+          value: average_coverage(group)
         )
       end
+    end
+
+    def aggregate(builds)
+      builds.group_by(&:group_name)
+    end
+
+    def average_coverage(group)
+      total_coverage = group.reduce(0.0) { |sum, build| sum + build.coverage }
+      (total_coverage / group.size).round(2)
     end
   end
 end

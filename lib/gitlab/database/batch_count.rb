@@ -39,8 +39,8 @@ module Gitlab
       SLEEP_TIME_IN_SECONDS = 0.01 # 10 msec sleep
 
       # Each query should take < 500ms https://gitlab.com/gitlab-org/gitlab/-/merge_requests/22705
-      DEFAULT_DISTINCT_BATCH_SIZE = 100_000
-      DEFAULT_BATCH_SIZE = 10_000
+      DEFAULT_DISTINCT_BATCH_SIZE = 10_000
+      DEFAULT_BATCH_SIZE = 100_000
 
       def initialize(relation, column: nil)
         @relation = relation

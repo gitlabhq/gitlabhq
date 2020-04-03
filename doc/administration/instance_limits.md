@@ -31,6 +31,16 @@ It's possible that this limit will be changed to a lower number in the future.
 
 - **Max size:** ~1 million characters / ~1 MB
 
+## Number of issues in the milestone overview
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/39453) in GitLab 12.10.
+
+The maximum number of issues loaded on the milestone overview page is 3000.
+When the number exceeds the limit the page displays an alert and links to a paginated
+[issue list](../user/project/issues/index.md#issues-list) of all issues in the milestone.
+
+- **Limit:** 3000 issues
+
 ## Number of pipelines per Git push
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/51401) in GitLab 11.10.

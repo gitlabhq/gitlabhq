@@ -302,20 +302,55 @@ describe Milestone, 'Milestoneish' do
     end
   end
 
-  describe '#total_issue_time_spent' do
-    it 'calculates total issue time spent' do
+  describe '#total_time_spent' do
+    it 'calculates total time spent' do
       closed_issue_1.spend_time(duration: 300, user_id: author.id)
       closed_issue_1.save!
       closed_issue_2.spend_time(duration: 600, user_id: assignee.id)
       closed_issue_2.save!
 
-      expect(milestone.total_issue_time_spent).to eq(900)
+      expect(milestone.total_time_spent).to eq(900)
+    end
+
+    it 'includes merge request time spent' do
+      closed_issue_1.spend_time(duration: 300, user_id: author.id)
+      closed_issue_1.save!
+      merge_request.spend_time(duration: 900, user_id: author.id)
+      merge_request.save!
+
+      expect(milestone.total_time_spent).to eq(1200)
     end
   end
 
-  describe '#human_total_issue_time_spent' do
+  describe '#human_total_time_spent' do
     it 'returns nil if no time has been spent' do
-      expect(milestone.human_total_issue_time_spent).to be_nil
+      expect(milestone.human_total_time_spent).to be_nil
+    end
+  end
+
+  describe '#total_time_estimate' do
+    it 'calculates total estimate' do
+      closed_issue_1.time_estimate = 300
+      closed_issue_1.save!
+      closed_issue_2.time_estimate = 600
+      closed_issue_2.save!
+
+      expect(milestone.total_time_estimate).to eq(900)
+    end
+
+    it 'includes merge request time estimate' do
+      closed_issue_1.time_estimate = 300
+      closed_issue_1.save!
+      merge_request.time_estimate = 900
+      merge_request.save!
+
+      expect(milestone.total_time_estimate).to eq(1200)
+    end
+  end
+
+  describe '#human_total_time_estimate' do
+    it 'returns nil if no time has been spent' do
+      expect(milestone.human_total_time_estimate).to be_nil
     end
   end
 end

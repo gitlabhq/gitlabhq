@@ -14,6 +14,29 @@ describe Gitlab::JiraImport::IssueSerializer do
     let(:updated_at) { '2020-01-10 20:00:00' }
     let(:assignee) { double(displayName: 'Solver') }
     let(:jira_status) { 'new' }
+
+    let(:parent_field) do
+      { 'key' => 'FOO-2', 'id' => '1050', 'fields' => { 'summary' => 'parent issue FOO' } }
+    end
+    let(:issue_type_field) { { 'name' => 'Task' } }
+    let(:fix_versions_field) { [{ 'name' => '1.0' }, { 'name' => '1.1' }] }
+    let(:priority_field) { { 'name' => 'Medium' } }
+    let(:labels_field) { %w(bug backend) }
+    let(:environment_field) { 'staging' }
+    let(:duedate_field) { '2020-03-01' }
+
+    let(:fields) do
+      {
+        'parent' => parent_field,
+        'issuetype' => issue_type_field,
+        'fixVersions' => fix_versions_field,
+        'priority' => priority_field,
+        'labels' => labels_field,
+        'environment' => environment_field,
+        'duedate' => duedate_field
+      }
+    end
+
     let(:jira_issue) do
       double(
         id: '1234',
@@ -24,10 +47,14 @@ describe Gitlab::JiraImport::IssueSerializer do
         updated: updated_at,
         assignee: assignee,
         reporter: double(displayName: 'Reporter'),
-        status: double(statusCategory: { 'key' => jira_status })
+        status: double(statusCategory: { 'key' => jira_status }),
+        fields: fields
       )
     end
+
     let(:params) { { iid: iid } }
+
+    subject { described_class.new(project, jira_issue, params).execute }
 
     let(:expected_description) do
       <<~MD
@@ -36,10 +63,20 @@ describe Gitlab::JiraImport::IssueSerializer do
         *Assigned to: Solver*
 
         basic description
+
+        ---
+
+        **Issue metadata**
+
+        - Issue type: Task
+        - Priority: Medium
+        - Labels: bug, backend
+        - Environment: staging
+        - Due date: 2020-03-01
+        - Parent issue: [FOO-2] parent issue FOO
+        - Fix versions: 1.0, 1.1
       MD
     end
-
-    subject { described_class.new(project, jira_issue, params).execute }
 
     context 'attributes setting' do
       it 'sets the basic attributes' do
@@ -54,6 +91,54 @@ describe Gitlab::JiraImport::IssueSerializer do
           author_id: project.creator_id
         )
       end
+
+      context 'when some metadata fields are missing' do
+        let(:assignee) { nil }
+        let(:parent_field) { nil }
+        let(:fix_versions_field) { [] }
+        let(:labels_field) { [] }
+        let(:environment_field) { nil }
+        let(:duedate_field) { '2020-03-01' }
+
+        it 'skips the missing fields' do
+          expected_description = <<~MD
+            *Created by: Reporter*
+
+            basic description
+
+            ---
+
+            **Issue metadata**
+
+            - Issue type: Task
+            - Priority: Medium
+            - Due date: 2020-03-01
+          MD
+
+          expect(subject[:description]).to eq(expected_description.strip)
+        end
+      end
+
+      context 'when all metadata fields are missing' do
+        let(:assignee) { nil }
+        let(:parent_field) { nil }
+        let(:issue_type_field) { nil }
+        let(:fix_versions_field) { [] }
+        let(:priority_field) { nil }
+        let(:labels_field) { [] }
+        let(:environment_field) { nil }
+        let(:duedate_field) { nil }
+
+        it 'skips the whole metadata secction' do
+          expected_description = <<~MD
+            *Created by: Reporter*
+
+            basic description
+          MD
+
+          expect(subject[:description]).to eq(expected_description.strip)
+        end
+      end
     end
 
     context 'with done status' do
@@ -61,20 +146,6 @@ describe Gitlab::JiraImport::IssueSerializer do
 
       it 'maps the status to closed' do
         expect(subject[:state_id]).to eq(2)
-      end
-    end
-
-    context 'without the assignee' do
-      let(:assignee) { nil }
-
-      it 'does not include assignee in the description' do
-        expected_description = <<~MD
-          *Created by: Reporter*
-
-          basic description
-        MD
-
-        expect(subject[:description]).to eq(expected_description.strip)
       end
     end
 

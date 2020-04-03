@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
+import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
 import store from '~/ide/stores';
 import commitSidebarList from '~/ide/components/commit_sidebar/list.vue';
 import { file, resetStore } from '../../helpers';

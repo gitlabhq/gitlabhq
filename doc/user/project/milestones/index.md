@@ -133,7 +133,7 @@ The milestone sidebar on the milestone view shows the following:
 
 - Percentage complete, which is calculated as number of closed issues divided by total number of issues.
 - The start date and due date.
-- The total time spent on all issues assigned to the milestone.
+- The total time spent on all issues and merge requests assigned to the milestone.
 - The total issue weight of all issues assigned to the milestone.
 
 ![Project milestone page](img/milestones_project_milestone_page.png)

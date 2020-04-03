@@ -15,6 +15,11 @@ module Gitlab
           validations do
             validates :config, hash_or_string: true
             validates :config, allowed_keys: ALLOWED_KEYS
+            validate do
+              if config[:artifact] && config[:job].blank?
+                errors.add(:config, "must specify the job where to fetch the artifact from")
+              end
+            end
           end
         end
       end

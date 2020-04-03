@@ -94,7 +94,7 @@ class GlobalMilestone
   end
 
   def merge_requests
-    @merge_requests ||= MergeRequest.of_milestones(milestone).includes(:target_project, :assignee, :labels)
+    @merge_requests ||= MergeRequest.of_milestones(milestone).includes(:target_project, :assignees, :labels)
   end
 
   def labels
