@@ -76,14 +76,14 @@ describe RuboCop::Cop::Migration::UpdateLargeTable do
       expect(cop.offenses).to be_empty
     end
 
-    it 'registers no offense for update_column_in_batches' do
+    it 'registers no offense for rename_column_concurrently' do
       inspect_source("rename_column_concurrently :#{table}, :column, default: true")
 
       expect(cop.offenses).to be_empty
     end
 
-    it 'registers no offense for update_column_in_batches' do
-      inspect_source("add_column_with_default :#{table}, :column, default: true")
+    it 'registers no offense for update_column_concurrently' do
+      inspect_source("update_column_concurrently :#{table}, :column, default: true")
 
       expect(cop.offenses).to be_empty
     end

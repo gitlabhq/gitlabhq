@@ -10,8 +10,8 @@ describe GitlabSchema do
     expect(field_instrumenters).to include(BatchLoader::GraphQL)
   end
 
-  it 'enables the preload instrumenter' do
-    expect(field_instrumenters).to include(BatchLoader::GraphQL)
+  it 'enables the generic instrumenter' do
+    expect(field_instrumenters).to include(instance_of(::Gitlab::Graphql::GenericTracing))
   end
 
   it 'enables the authorization instrumenter' do
