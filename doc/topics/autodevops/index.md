@@ -508,7 +508,7 @@ Any licenses are also shown in the merge request widget. Read more how
 > Introduced in GitLab 10.4.
 
 Vulnerability Static Analysis for containers uses
-[Clair](https://github.com/coreos/clair) to run static analysis on a
+[Clair](https://github.com/quay/clair) to run static analysis on a
 Docker image and checks for potential security issues. The Auto Container Scanning stage
 will be skipped on licenses other than Ultimate.
 

@@ -65,7 +65,7 @@ in a safe place.
 
 ### Enable 2FA via U2F device
 
-GitLab officially only supports [YubiKey](https://www.yubico.com/products/yubikey-hardware/)
+GitLab officially only supports [YubiKey](https://www.yubico.com/products/)
 U2F devices, but users have successfully used [SoloKeys](https://solokeys.com/).
 
 The U2F workflow is [supported by](https://caniuse.com/#search=U2F) the

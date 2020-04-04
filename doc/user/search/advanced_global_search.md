@@ -63,13 +63,13 @@ then the "Code" tab in the search result page will be served by the regular
 search even if Elasticsearch is enabled.
 
 [ee-1305]: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1305
-[aws-elastic]: http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-gsg.html
+[aws-elastic]: https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-gsg.html
 [aws-iam]: http://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html
 [aws-instance-profile]: http://docs.aws.amazon.com/codedeploy/latest/userguide/getting-started-create-iam-instance-profile.html#getting-started-create-iam-instance-profile-cli
 [ee-109]: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/109 "Elasticsearch Merge Request"
-[elasticsearch]: https://www.elastic.co/products/elasticsearch "Elasticsearch website"
+[elasticsearch]: https://www.elastic.co/elasticsearch "Elasticsearch website"
 [install]: https://www.elastic.co/guide/en/elasticsearch/reference/current/_installation.html "Elasticsearch installation documentation"
 [pkg]: https://about.gitlab.com/downloads/ "Download Omnibus GitLab"
 [elastic-settings]: https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-configuration.html#settings "Elasticsearch configuration settings"
 [ee]: https://about.gitlab.com/pricing/
-[es]: https://www.elastic.co/products/elasticsearch
+[es]: https://www.elastic.co/elasticsearch

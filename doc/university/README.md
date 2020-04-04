@@ -145,7 +145,7 @@ The GitLab University curriculum is composed of GitLab videos, screencasts, pres
 
 1. [Xebia Labs: Dev Ops Terminology](https://xebialabs.com/glossary/)
 1. [Xebia Labs: Periodic Table of DevOps Tools](https://xebialabs.com/periodic-table-of-devops-tools/)
-1. [Puppet Labs: State of Dev Ops 2016 - Book](https://puppet.com/resources/whitepaper/2016-state-of-devops-report)
+1. [Puppet Labs: State of Dev Ops 2016 - Book](https://puppet.com/resources/report/2016-state-devops-report/)
 
 ### 3.2. Installing GitLab with Omnibus
 
@@ -181,7 +181,7 @@ The GitLab University curriculum is composed of GitLab videos, screencasts, pres
 ### 3.8 Cycle Analytics
 
 1. [GitLab Cycle Analytics Overview](https://about.gitlab.com/blog/2016/09/21/cycle-analytics-feature-highlight/)
-1. [GitLab Cycle Analytics - Product Page](https://about.gitlab.com/stages-devops-lifecycle/cycle-analytics/)
+1. [GitLab Cycle Analytics - Product Page](https://about.gitlab.com/stages-devops-lifecycle/value-stream-analytics/)
 
 ### 3.9. Integrations
 
@@ -196,7 +196,7 @@ The GitLab University curriculum is composed of GitLab videos, screencasts, pres
 ## 4. External Articles
 
 1. [2011 WSJ article by Marc Andreessen - Software is Eating the World](https://www.wsj.com/articles/SB10001424053111903480904576512250915629460)
-1. [2014 Blog post by Chris Dixon - Software eats software development](https://cdixon.org/2014/04/13/software-eats-software-development)
+1. [2014 Blog post by Chris Dixon - Software eats software development](https://cdixon.org/2014/04/13/software-eats-software-development/)
 1. [2015 Venture Beat article - Actually, Open Source is Eating the World](https://venturebeat.com/2015/12/06/its-actually-open-source-software-thats-eating-the-world/)
 
 ## 5. Resources for GitLab Team Members

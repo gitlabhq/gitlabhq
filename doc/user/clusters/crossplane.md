@@ -71,14 +71,14 @@ export REGION=us-central1 # the GCP region where the GKE cluster is provisioned.
 
 ## Configure Crossplane with a cloud provider
 
-See [Configure Your Cloud Provider Account](https://crossplane.io/docs/v0.4/cloud-providers.html)
+See [Configure Your Cloud Provider Account](https://crossplane.github.io/docs/v0.4/cloud-providers.html)
 to configure the installed cloud provider stack with a user account.
 
 Note that the Secret and the Provider resource referencing the Secret needs to be
 applied to the `gitlab-managed-apps` namespace in the guide. Make sure you change that
 while following the process.
 
-[Configure Providers](https://crossplane.io/docs/v0.4/cloud-providers.html)
+[Configure Providers](https://crossplane.github.io/docs/v0.4/cloud-providers.html)
 
 ## Configure Managed Service Access
 

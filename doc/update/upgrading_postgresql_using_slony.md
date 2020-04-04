@@ -6,7 +6,7 @@ you have two database servers: one database server running an older version of
 PostgreSQL (e.g. 9.2.18) and one server running a newer version (e.g. 9.6.0).
 
 For this process we'll use a PostgreSQL replication tool called
-["Slony"](http://www.slony.info/). Slony allows replication between different
+["Slony"](https://www.slony.info/). Slony allows replication between different
 PostgreSQL versions and as such can be used to upgrade a cluster with a minimal
 amount of downtime.
 
@@ -57,7 +57,7 @@ server.
 ## Installing Slony
 
 Slony will be used to upgrade the database without requiring long downtimes.
-Slony can be downloaded from <http://www.slony.info/>. If you have installed
+Slony can be downloaded from <https://www.slony.info/>. If you have installed
 PostgreSQL using your operating system's package manager you may also be able to
 install Slony using said package manager.
 

@@ -91,7 +91,7 @@ There are multiple ways to create a branch from GitLab's web interface.
 
 ### Create a new branch from an issue
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/2808) in GitLab 8.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/2808) in GitLab 8.6.
 
 If your development workflow dictates to have an issue for every merge
 request, you can quickly create a branch directly from the issue to speed the process up.

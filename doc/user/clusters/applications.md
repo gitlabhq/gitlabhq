@@ -427,7 +427,7 @@ file.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/34702) in GitLab 12.5 for project-level clusters.
 
-[Crossplane](https://crossplane.io/docs) is a multi-cloud control plane useful for
+[Crossplane](https://crossplane.github.io/docs/v0.9/) is a multi-cloud control plane useful for
 managing applications and infrastructure across multiple clouds. It extends the
 Kubernetes API using:
 
@@ -452,14 +452,14 @@ For information on configuring Crossplane installed on the cluster, see
 NOTE: **Note:**
 [`alpha/crossplane`](https://charts.crossplane.io/alpha/) chart v0.4.1 is used to
 install Crossplane using the
-[`values.yaml`](https://github.com/crossplaneio/crossplane/blob/master/cluster/charts/crossplane/values.yaml.tmpl)
+[`values.yaml`](https://github.com/crossplane/crossplane/blob/master/cluster/charts/crossplane/values.yaml.tmpl)
 file.
 
 ### Elastic Stack
 
 > Introduced in GitLab 12.7 for project- and group-level clusters.
 
-[Elastic Stack](https://www.elastic.co/products/elastic-stack) is a complete end-to-end
+[Elastic Stack](https://www.elastic.co/elastic-stack) is a complete end-to-end
 log analysis solution which helps in deep searching, analyzing and visualizing the logs
 generated from different machines.
 
@@ -829,7 +829,7 @@ agent:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/9982) in GitLab 12.9.
 
-[Hashicorp Vault](https://vaultproject.io/) is a secrets management solution which
+[Hashicorp Vault](https://www.vaultproject.io/) is a secrets management solution which
 can be used to safely manage and store passwords, credentials, certificates and more. A Vault
 installation could be leveraged to provide a single secure data store for credentials
 used in your applications, GitLab CI/CD jobs, and more. It could also serve as a way of

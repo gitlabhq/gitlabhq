@@ -47,7 +47,7 @@ The SAML application that was created during [Single sign-on](index.md) setup no
    ![Name identifier value mapping](img/scim_name_identifier_mapping.png)
 
 1. Set up automatic provisioning and administrative credentials by following the
-   [Provisioning users and groups to applications that support SCIM](https://docs.microsoft.com/en-us/azure/active-directory/manage-apps/use-scim-to-provision-users-and-groups#provisioning-users-and-groups-to-applications-that-support-scim) section in Azure's SCIM setup documentation.
+   [Provisioning users and groups to applications that support SCIM](https://docs.microsoft.com/en-us/azure/active-directory/app-provisioning/use-scim-to-provision-users-and-groups#provisioning-users-and-groups-to-applications-that-support-scim) section in Azure's SCIM setup documentation.
 
 During this configuration, note the following:
 

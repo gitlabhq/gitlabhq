@@ -98,7 +98,7 @@ sudo apt-get update
 sudo apt-get install yarn
 ```
 
-More information can be found on the [Yarn website](https://yarnpkg.com/en/docs/install).
+More information can be found on the [Yarn website](https://classic.yarnpkg.com/en/docs/install).
 
 ### 5. Update Go
 

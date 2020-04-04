@@ -10,7 +10,7 @@ changes.
 
 ## SCSS style guide
 
-Our [SCSS conventions](scss.md) which are enforced through [`scss-lint`](https://github.com/brigade/scss-lint).
+Our [SCSS conventions](scss.md) which are enforced through [`scss-lint`](https://github.com/sds/scss-lint).
 
 ## HTML style guide
 

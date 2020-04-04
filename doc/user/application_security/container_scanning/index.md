@@ -10,7 +10,7 @@ type: reference, howto
 
 If you are using [GitLab CI/CD](../../../ci/README.md), you can check your Docker
 images (or more precisely the containers) for known vulnerabilities by using
-[Clair](https://github.com/coreos/clair) and [klar](https://github.com/optiopay/klar),
+[Clair](https://github.com/quay/clair) and [klar](https://github.com/optiopay/klar),
 two open source tools for Vulnerability Static Analysis for containers.
 
 You can take advantage of Container Scanning by either [including the CI job](#configuration) in
@@ -263,7 +263,7 @@ against a Docker container without needing to run it within the context of a CI 
 image directly, follow these steps:
 
 1. Run [Docker Desktop](https://www.docker.com/products/docker-desktop) or [Docker Machine](https://github.com/docker/machine).
-1. Run the latest [prefilled vulnerabilities database](https://cloud.docker.com/repository/docker/arminc/clair-db) Docker image:
+1. Run the latest [prefilled vulnerabilities database](https://hub.docker.com/repository/docker/arminc/clair-db) Docker image:
 
    ```shell
    docker run -p 5432:5432 -d --name clair-db arminc/clair-db:latest

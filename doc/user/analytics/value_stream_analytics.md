@@ -306,6 +306,6 @@ For Value Stream Analytics functionality introduced in GitLab 12.3 and later:
 
 Learn more about Value Stream Analytics in the following resources:
 
-- [Value Stream Analytics feature page](https://about.gitlab.com/stages-devops-lifecycle/cycle-analytics/).
+- [Value Stream Analytics feature page](https://about.gitlab.com/stages-devops-lifecycle/value-stream-analytics/).
 - [Value Stream Analytics feature preview](https://about.gitlab.com/blog/2016/09/16/feature-preview-introducing-cycle-analytics/).
 - [Value Stream Analytics feature highlight](https://about.gitlab.com/blog/2016/09/21/cycle-analytics-feature-highlight/).

@@ -74,7 +74,7 @@ Before you begin, ensure that any GitHub users who you want to map to GitLab use
 
 - A GitLab account that has logged in using the GitHub icon
   \- or -
-- A GitLab account with an email address that matches the [public email address](https://help.github.com/en/articles/setting-your-commit-email-address) of the GitHub user
+- A GitLab account with an email address that matches the [public email address](https://help.github.com/en/github/setting-up-and-managing-your-github-user-account/setting-your-commit-email-address) of the GitHub user
 
 User-matching attempts occur in that order, and if a user is not identified either way, the activity is associated with
 the user account that is performing the import.

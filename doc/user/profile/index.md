@@ -224,7 +224,7 @@ and expires after "Application settings -> Session duration (minutes)"/`session_
 
 When signing in to the main GitLab application, you can also check the
 "Remember me" option which sets the `remember_user_token`
-cookie (via [`devise`](https://github.com/plataformatec/devise)).
+cookie (via [`devise`](https://github.com/heartcombo/devise)).
 `remember_user_token` expires after
 `config/initializers/devise.rb` -> `config.remember_for` (defaults to 2 weeks).
 
