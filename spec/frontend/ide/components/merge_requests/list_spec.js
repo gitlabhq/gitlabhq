@@ -134,9 +134,7 @@ describe('IDE merge requests list', () => {
         createComponent(defaultStateWithMergeRequests);
         const input = findTokenedInput();
         input.vm.$emit('input', 'something');
-        fetchMergeRequestsMock.mockClear();
 
-        jest.runAllTimers();
         return wrapper.vm.$nextTick().then(() => {
           expect(fetchMergeRequestsMock).toHaveBeenCalledWith(
             expect.any(Object),

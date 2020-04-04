@@ -93,7 +93,7 @@ export default class ClusterStore {
           ...applicationInitialState,
           title: s__('ClusterIntegration|Knative'),
           hostname: null,
-          isEditingHostName: false,
+          isEditingDomain: false,
           externalIp: null,
           externalHostname: null,
           updateSuccessful: false,
@@ -234,7 +234,12 @@ export default class ClusterStore {
           'jupyter',
         );
       } else if (appId === KNATIVE) {
-        if (!this.state.applications.knative.isEditingHostName) {
+        if (serverAppEntry.available_domains) {
+          this.state.applications.knative.availableDomains = serverAppEntry.available_domains;
+        }
+        if (!this.state.applications.knative.isEditingDomain) {
+          this.state.applications.knative.pagesDomain =
+            serverAppEntry.pages_domain || this.state.applications.knative.pagesDomain;
           this.state.applications.knative.hostname =
             serverAppEntry.hostname || this.state.applications.knative.hostname;
         }

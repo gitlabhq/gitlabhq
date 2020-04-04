@@ -485,4 +485,30 @@ describe('URL utility', () => {
       );
     });
   });
+
+  describe('getHTTPProtocol', () => {
+    const httpProtocol = 'http:';
+    const httpsProtocol = 'https:';
+
+    it.each([[httpProtocol], [httpsProtocol]])(
+      'when no url passed, returns correct protocol for %i from window location',
+      protocol => {
+        setWindowLocation({
+          protocol,
+        });
+        expect(urlUtils.getHTTPProtocol()).toBe(protocol.slice(0, -1));
+      },
+    );
+
+    it.each`
+      url                      | expectation
+      ${'not-a-url'}           | ${undefined}
+      ${'wss://example.com'}   | ${'wss'}
+      ${'https://foo.bar'}     | ${'https'}
+      ${'http://foo.bar'}      | ${'http'}
+      ${'http://foo.bar:8080'} | ${'http'}
+    `('returns correct protocol for $url', ({ url, expectation }) => {
+      expect(urlUtils.getHTTPProtocol(url)).toBe(expectation);
+    });
+  });
 });

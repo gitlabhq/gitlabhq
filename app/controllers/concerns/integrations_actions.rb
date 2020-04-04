@@ -37,11 +37,7 @@ module IntegrationsActions
   end
 
   def test
-    if integration.can_test?
-      render json: service_test_response, status: :ok
-    else
-      render json: {}, status: :not_found
-    end
+    render json: {}, status: :ok
   end
 
   private
@@ -50,17 +46,11 @@ module IntegrationsActions
     false
   end
 
-  # TODO: Use actual integrations on the group / instance level
-  # To be completed in https://gitlab.com/groups/gitlab-org/-/epics/2430
-  def project
-    Project.first
-  end
-
   def integration
     # Using instance variable `@service` still required as it's used in ServiceParams
     # and app/views/shared/_service_settings.html.haml. Should be removed once
     # those 2 are refactored to use `@integration`.
-    @integration = @service ||= project.find_or_initialize_service(params[:id]) # rubocop:disable Gitlab/ModuleWithInstanceVariables
+    @integration = @service ||= find_or_initialize_integration(params[:id]) # rubocop:disable Gitlab/ModuleWithInstanceVariables
   end
 
   def success_message
@@ -73,22 +63,5 @@ module IntegrationsActions
     integration
       .as_json(only: integration.json_fields)
       .merge(errors: integration.errors.as_json)
-  end
-
-  def service_test_response
-    unless integration.update(service_params[:service])
-      return { error: true, message: _('Validations failed.'), service_response: integration.errors.full_messages.join(','), test_failed: false }
-    end
-
-    data = integration.test_data(project, current_user)
-    outcome = integration.test(data)
-
-    unless outcome[:success]
-      return { error: true, message: _('Test failed.'), service_response: outcome[:result].to_s, test_failed: true }
-    end
-
-    {}
-  rescue Gitlab::HTTP::BlockedUrlError => e
-    { error: true, message: _('Test failed.'), service_response: e.message, test_failed: true }
   end
 end

@@ -140,7 +140,7 @@ describe('Clusters Store', () => {
             statusReason: mockResponseData.applications[5].status_reason,
             requestReason: null,
             hostname: null,
-            isEditingHostName: false,
+            isEditingDomain: false,
             externalIp: null,
             externalHostname: null,
             installed: false,

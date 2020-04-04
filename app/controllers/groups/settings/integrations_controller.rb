@@ -9,6 +9,12 @@ module Groups
 
       private
 
+      # TODO: Make this compatible with group-level integration
+      # https://gitlab.com/groups/gitlab-org/-/epics/2543
+      def find_or_initialize_integration(name)
+        Project.first.find_or_initialize_service(name)
+      end
+
       def integrations_enabled?
         Feature.enabled?(:group_level_integrations, group)
       end

@@ -53,7 +53,7 @@ class PipelinesEmailService < Service
   end
 
   def can_test?
-    project.ci_pipelines.any?
+    project&.ci_pipelines&.any?
   end
 
   def test_data(project, user)

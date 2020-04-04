@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+import { GlDropdownItem } from '@gitlab/ui';
 import KnativeDomainEditor from '~/clusters/components/knative_domain_editor.vue';
 import LoadingButton from '~/vue_shared/components/loading_button.vue';
 import { APPLICATION_STATUS } from '~/clusters/constants';
@@ -80,7 +81,7 @@ describe('KnativeDomainEditor', () => {
     it('triggers save event and pass current knative hostname', () => {
       wrapper.find(LoadingButton).vm.$emit('click');
       return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.emitted('save')[0]).toEqual([knative.hostname]);
+        expect(wrapper.emitted('save').length).toEqual(1);
       });
     });
   });
@@ -104,14 +105,43 @@ describe('KnativeDomainEditor', () => {
 
   describe('when knative domain name input changes', () => {
     it('emits "set" event with updated domain name', () => {
-      createComponent({ knative });
+      const newDomain = {
+        id: 4,
+        domain: 'newhostname.com',
+      };
 
+      createComponent({ knative: { ...knative, availableDomains: [newDomain] } });
+      jest.spyOn(wrapper.vm, 'selectDomain');
+
+      wrapper.find(GlDropdownItem).vm.$emit('click');
+
+      return wrapper.vm.$nextTick().then(() => {
+        expect(wrapper.vm.selectDomain).toHaveBeenCalledWith(newDomain);
+        expect(wrapper.emitted('set')[0]).toEqual([
+          {
+            domain: newDomain.domain,
+            domainId: newDomain.id,
+          },
+        ]);
+      });
+    });
+
+    it('emits "set" event with updated custom domain name', () => {
       const newHostname = 'newhostname.com';
+
+      createComponent({ knative });
+      jest.spyOn(wrapper.vm, 'selectCustomDomain');
 
       wrapper.setData({ knativeHostname: newHostname });
 
       return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.emitted('set')[0]).toEqual([newHostname]);
+        expect(wrapper.vm.selectCustomDomain).toHaveBeenCalledWith(newHostname);
+        expect(wrapper.emitted('set')[0]).toEqual([
+          {
+            domain: newHostname,
+            domainId: null,
+          },
+        ]);
       });
     });
   });

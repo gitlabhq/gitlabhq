@@ -1,5 +1,12 @@
 <script>
-import { GlLoadingIcon } from '@gitlab/ui';
+import {
+  GlDropdown,
+  GlDropdownDivider,
+  GlDropdownItem,
+  GlLoadingIcon,
+  GlSearchBoxByType,
+  GlSprintf,
+} from '@gitlab/ui';
 import LoadingButton from '~/vue_shared/components/loading_button.vue';
 import ClipboardButton from '../../vue_shared/components/clipboard_button.vue';
 import { __, s__ } from '~/locale';
@@ -13,6 +20,11 @@ export default {
     LoadingButton,
     ClipboardButton,
     GlLoadingIcon,
+    GlDropdown,
+    GlDropdownDivider,
+    GlDropdownItem,
+    GlSearchBoxByType,
+    GlSprintf,
   },
   props: {
     knative: {
@@ -24,6 +36,11 @@ export default {
       default: '',
       required: false,
     },
+  },
+  data() {
+    return {
+      searchQuery: '',
+    };
   },
   computed: {
     saveButtonDisabled() {
@@ -49,8 +66,21 @@ export default {
         return this.knative.hostname;
       },
       set(hostname) {
-        this.$emit('set', hostname);
+        this.selectCustomDomain(hostname);
       },
+    },
+    domainDropdownText() {
+      return this.knativeHostname || s__('ClusterIntegration|Select existing domain or use new');
+    },
+    availableDomains() {
+      return this.knative.availableDomains || [];
+    },
+    filteredDomains() {
+      const query = this.searchQuery.toLowerCase();
+      return this.availableDomains.filter(({ domain }) => domain.toLowerCase().includes(query));
+    },
+    showDomainsDropdown() {
+      return this.availableDomains.length > 0;
     },
   },
   watch: {
@@ -58,6 +88,14 @@ export default {
       if (updateSuccessful) {
         this.$toast.show(s__('ClusterIntegration|Knative domain name was updated successfully.'));
       }
+    },
+  },
+  methods: {
+    selectDomain({ id, domain }) {
+      this.$emit('set', { domain, domainId: id });
+    },
+    selectCustomDomain(domain) {
+      this.$emit('set', { domain, domainId: null });
     },
   },
 };
@@ -72,22 +110,55 @@ export default {
       {{ s__('ClusterIntegration|Something went wrong while updating Knative domain name.') }}
     </div>
 
-    <template>
-      <div
-        :class="{ 'col-md-6': knativeInstalled, 'col-12': !knativeInstalled }"
-        class="form-group col-sm-12 mb-0"
+    <div
+      :class="{ 'col-md-6': knativeInstalled, 'col-12': !knativeInstalled }"
+      class="form-group col-sm-12 mb-0"
+    >
+      <label for="knative-domainname">
+        <strong>{{ s__('ClusterIntegration|Knative Domain Name:') }}</strong>
+      </label>
+
+      <gl-dropdown
+        v-if="showDomainsDropdown"
+        :text="domainDropdownText"
+        toggle-class="dropdown-menu-toggle"
+        class="w-100 mb-2"
       >
-        <label for="knative-domainname">
-          <strong>{{ s__('ClusterIntegration|Knative Domain Name:') }}</strong>
-        </label>
-        <input
-          id="knative-domainname"
-          v-model="knativeHostname"
-          type="text"
-          class="form-control js-knative-domainname"
+        <gl-search-box-by-type
+          v-model.trim="searchQuery"
+          :placeholder="s__('ClusterIntegration|Search domains')"
+          class="m-2"
         />
-      </div>
-    </template>
+        <gl-dropdown-item
+          v-for="domain in filteredDomains"
+          :key="domain.id"
+          @click="selectDomain(domain)"
+        >
+          <span class="ml-1">{{ domain.domain }}</span>
+        </gl-dropdown-item>
+        <template v-if="searchQuery">
+          <gl-dropdown-divider />
+          <gl-dropdown-item key="custom-domain" @click="selectCustomDomain(searchQuery)">
+            <span class="ml-1">
+              <gl-sprintf :message="s__('ClusterIntegration|Use %{query}')">
+                <template #query>
+                  <code>{{ searchQuery }}</code>
+                </template>
+              </gl-sprintf>
+            </span>
+          </gl-dropdown-item>
+        </template>
+      </gl-dropdown>
+
+      <input
+        v-else
+        id="knative-domainname"
+        v-model="knativeHostname"
+        type="text"
+        class="form-control js-knative-domainname"
+      />
+    </div>
+
     <template v-if="knativeInstalled">
       <div class="form-group col-sm-12 col-md-6 pl-md-0 mb-0 mt-3 mt-md-0">
         <label for="knative-endpoint">
@@ -144,7 +215,7 @@ export default {
         :loading="saving"
         :disabled="saveButtonDisabled"
         :label="saveButtonLabel"
-        @click="$emit('save', knativeHostname)"
+        @click="$emit('save')"
       />
     </template>
   </div>

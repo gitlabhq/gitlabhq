@@ -184,8 +184,10 @@ class Service < ApplicationRecord
     { success: result.present?, result: result }
   end
 
+  # Disable test for instance-level services.
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/213138
   def can_test?
-    true
+    !instance?
   end
 
   # Provide convenient accessor methods

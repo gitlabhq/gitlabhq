@@ -1,0 +1,115 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Clone Dropdown Button rendering matches the snapshot 1`] = `
+<gl-new-dropdown-stub
+  category="primary"
+  headertext=""
+  size="medium"
+  text="Clone"
+  variant="info"
+>
+  <div
+    class="pb-2 mx-1"
+  >
+    <gl-new-dropdown-header-stub>
+      Clone with SSH
+    </gl-new-dropdown-header-stub>
+     
+    <div
+      class="mx-3"
+    >
+      <div
+        readonly="readonly"
+      >
+        <b-input-group-stub
+          tag="div"
+        >
+          <b-input-group-prepend-stub
+            tag="div"
+          >
+             
+            <!---->
+          </b-input-group-prepend-stub>
+           
+          <b-form-input-stub
+            class="gl-form-input"
+            debounce="0"
+            readonly="true"
+            type="text"
+            value="ssh://foo.bar"
+          />
+           
+          <b-input-group-append-stub
+            tag="div"
+          >
+            <gl-new-button-stub
+              category="tertiary"
+              data-clipboard-text="ssh://foo.bar"
+              icon=""
+              size="medium"
+              title="Copy URL"
+              variant="default"
+            >
+              <gl-icon-stub
+                name="copy-to-clipboard"
+                size="16"
+                title="Copy URL"
+              />
+            </gl-new-button-stub>
+          </b-input-group-append-stub>
+        </b-input-group-stub>
+      </div>
+    </div>
+     
+    <gl-new-dropdown-header-stub>
+      Clone with HTTP
+    </gl-new-dropdown-header-stub>
+     
+    <div
+      class="mx-3"
+    >
+      <div
+        readonly="readonly"
+      >
+        <b-input-group-stub
+          tag="div"
+        >
+          <b-input-group-prepend-stub
+            tag="div"
+          >
+             
+            <!---->
+          </b-input-group-prepend-stub>
+           
+          <b-form-input-stub
+            class="gl-form-input"
+            debounce="0"
+            readonly="true"
+            type="text"
+            value="http://foo.bar"
+          />
+           
+          <b-input-group-append-stub
+            tag="div"
+          >
+            <gl-new-button-stub
+              category="tertiary"
+              data-clipboard-text="http://foo.bar"
+              icon=""
+              size="medium"
+              title="Copy URL"
+              variant="default"
+            >
+              <gl-icon-stub
+                name="copy-to-clipboard"
+                size="16"
+                title="Copy URL"
+              />
+            </gl-new-button-stub>
+          </b-input-group-append-stub>
+        </b-input-group-stub>
+      </div>
+    </div>
+  </div>
+</gl-new-dropdown-stub>
+`;

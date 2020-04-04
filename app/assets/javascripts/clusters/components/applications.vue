@@ -240,16 +240,20 @@ Crossplane runs inside your Kubernetes cluster and supports secure connectivity 
     this.helmInstallIllustration = helmInstallIllustration;
   },
   methods: {
-    saveKnativeDomain(hostname) {
+    saveKnativeDomain() {
       eventHub.$emit('saveKnativeDomain', {
         id: 'knative',
-        params: { hostname },
+        params: {
+          hostname: this.applications.knative.hostname,
+          pages_domain_id: this.applications.knative.pagesDomain?.id,
+        },
       });
     },
-    setKnativeHostname(hostname) {
-      eventHub.$emit('setKnativeHostname', {
+    setKnativeDomain({ domainId, domain }) {
+      eventHub.$emit('setKnativeDomain', {
         id: 'knative',
-        hostname,
+        domainId,
+        domain,
       });
     },
     setCrossplaneProviderStack(stack) {
@@ -591,7 +595,10 @@ Crossplane runs inside your Kubernetes cluster and supports secure connectivity 
         :request-reason="applications.knative.requestReason"
         :installed="applications.knative.installed"
         :install-failed="applications.knative.installFailed"
-        :install-application-request-params="{ hostname: applications.knative.hostname }"
+        :install-application-request-params="{
+          hostname: applications.knative.hostname,
+          pages_domain_id: applications.knative.pagesDomain && applications.knative.pagesDomain.id,
+        }"
         :installed-via="installedVia"
         :uninstallable="applications.knative.uninstallable"
         :uninstall-successful="applications.knative.uninstallSuccessful"
@@ -628,7 +635,7 @@ Crossplane runs inside your Kubernetes cluster and supports secure connectivity 
             :knative="knative"
             :ingress-dns-help-path="ingressDnsHelpPath"
             @save="saveKnativeDomain"
-            @set="setKnativeHostname"
+            @set="setKnativeDomain"
           />
         </div>
       </application-row>

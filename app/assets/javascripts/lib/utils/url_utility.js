@@ -318,3 +318,11 @@ export const setUrlParams = (params, url = window.location.href, clearParams = f
 export function urlIsDifferent(url, compare = String(window.location)) {
   return url !== compare;
 }
+
+export function getHTTPProtocol(url) {
+  if (!url) {
+    return window.location.protocol.slice(0, -1);
+  }
+  const protocol = url.split(':');
+  return protocol.length > 1 ? protocol[0] : undefined;
+}

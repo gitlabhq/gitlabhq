@@ -47,7 +47,7 @@ class Clusters::ApplicationsController < Clusters::BaseController
   end
 
   def cluster_application_params
-    params.permit(:application, :hostname, :email, :stack, :modsecurity_enabled, :modsecurity_mode)
+    params.permit(:application, :hostname, :pages_domain_id, :email, :stack, :modsecurity_enabled, :modsecurity_mode)
   end
 
   def cluster_application_destroy_params

@@ -104,21 +104,29 @@ describe Service do
 
   describe "Test Button" do
     describe '#can_test?' do
+      subject { service.can_test? }
+
       let(:service) { create(:service, project: project) }
 
       context 'when repository is not empty' do
         let(:project) { create(:project, :repository) }
 
-        it 'returns true' do
-          expect(service.can_test?).to be true
-        end
+        it { is_expected.to be true }
       end
 
       context 'when repository is empty' do
         let(:project) { create(:project) }
 
-        it 'returns true' do
-          expect(service.can_test?).to be true
+        it { is_expected.to be true }
+      end
+
+      context 'when instance-level service' do
+        Service.available_services_types.each do |service_type|
+          let(:service) do
+            service_type.constantize.new(instance: true)
+          end
+
+          it { is_expected.to be_falsey }
         end
       end
     end

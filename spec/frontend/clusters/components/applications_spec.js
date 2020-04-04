@@ -400,6 +400,10 @@ describe('Applications', () => {
   });
 
   describe('Knative application', () => {
+    const availableDomain = {
+      id: 4,
+      domain: 'newhostname.com',
+    };
     const propsData = {
       applications: {
         ...APPLICATIONS_MOCK_STATE,
@@ -409,10 +413,11 @@ describe('Applications', () => {
           status: 'installed',
           externalIp: '1.1.1.1',
           installed: true,
+          availableDomains: [availableDomain],
+          pagesDomain: null,
         },
       },
     };
-    const newHostname = 'newhostname.com';
     let wrapper;
     let knativeDomainEditor;
 
@@ -428,20 +433,44 @@ describe('Applications', () => {
     });
 
     it('emits saveKnativeDomain event when knative domain editor emits save event', () => {
-      knativeDomainEditor.vm.$emit('save', newHostname);
+      propsData.applications.knative.hostname = availableDomain.domain;
+      propsData.applications.knative.pagesDomain = availableDomain;
+      knativeDomainEditor.vm.$emit('save');
 
       expect(eventHub.$emit).toHaveBeenCalledWith('saveKnativeDomain', {
         id: 'knative',
-        params: { hostname: newHostname },
+        params: {
+          hostname: availableDomain.domain,
+          pages_domain_id: availableDomain.id,
+        },
+      });
+    });
+
+    it('emits saveKnativeDomain event when knative domain editor emits save event with custom domain', () => {
+      const newHostName = 'someothernewhostname.com';
+      propsData.applications.knative.hostname = newHostName;
+      propsData.applications.knative.pagesDomain = null;
+      knativeDomainEditor.vm.$emit('save');
+
+      expect(eventHub.$emit).toHaveBeenCalledWith('saveKnativeDomain', {
+        id: 'knative',
+        params: {
+          hostname: newHostName,
+          pages_domain_id: undefined,
+        },
       });
     });
 
     it('emits setKnativeHostname event when knative domain editor emits change event', () => {
-      wrapper.find(KnativeDomainEditor).vm.$emit('set', newHostname);
+      wrapper.find(KnativeDomainEditor).vm.$emit('set', {
+        domain: availableDomain.domain,
+        domainId: availableDomain.id,
+      });
 
-      expect(eventHub.$emit).toHaveBeenCalledWith('setKnativeHostname', {
+      expect(eventHub.$emit).toHaveBeenCalledWith('setKnativeDomain', {
         id: 'knative',
-        hostname: newHostname,
+        domain: availableDomain.domain,
+        domainId: availableDomain.id,
       });
     });
   });

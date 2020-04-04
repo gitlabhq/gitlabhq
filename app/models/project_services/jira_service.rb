@@ -201,8 +201,7 @@ class JiraService < IssueTrackerService
   end
 
   # Jira does not need test data.
-  # We are requesting the project that belongs to the project key.
-  def test_data(user = nil, project = nil)
+  def test_data(_, _)
     nil
   end
 
@@ -221,7 +220,6 @@ class JiraService < IssueTrackerService
   def test_settings
     return unless client_url.present?
 
-    # Test settings by getting the project
     jira_request { client.ServerInfo.all.attrs }
   end
 

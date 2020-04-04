@@ -67,40 +67,11 @@ describe Groups::Settings::IntegrationsController do
     end
 
     context 'invalid params' do
-      let(:url) { 'ftp://jira.localhost' }
+      let(:url) { 'https://jira.localhost' }
 
       it 'does not update the integration' do
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response).to render_template(:edit)
-        expect(integration.reload.url).not_to eq(url)
-      end
-    end
-  end
-
-  describe '#test' do
-    context 'testable' do
-      let(:integration) { create(:jira_service, project: project) }
-
-      before do
-        group.add_owner(user)
-      end
-
-      it 'returns ok' do
-        allow_any_instance_of(integration.class).to receive(:test) { { success: true } }
-
-        put :test, params: { group_id: group, id: integration.class.to_param }
-
-        expect(response).to have_gitlab_http_status(:ok)
-      end
-    end
-
-    context 'not testable' do
-      let(:integration) { create(:alerts_service, project: project) }
-
-      it 'returns not found' do
-        put :test, params: { group_id: group, id: integration.class.to_param }
-
-        expect(response).to have_gitlab_http_status(:not_found)
+        expect(response).to have_gitlab_http_status(:found)
+        expect(integration.reload.url).to eq(url)
       end
     end
   end

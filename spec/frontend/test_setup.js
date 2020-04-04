@@ -20,7 +20,7 @@ afterEach(() =>
   // give Promises a bit more time so they fail the right test
   new Promise(setImmediate).then(() => {
     // wait for pending setTimeout()s
-    jest.runAllTimers();
+    jest.runOnlyPendingTimers();
   }),
 );
 
