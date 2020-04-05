@@ -6,28 +6,11 @@ import dateFormat from 'dateformat';
 import { s__, __ } from '~/locale';
 import { getSvgIconPathContent } from '~/lib/utils/icon_utils';
 import Icon from '~/vue_shared/components/icon.vue';
-import {
-  chartHeight,
-  graphTypes,
-  lineTypes,
-  lineWidths,
-  symbolSizes,
-  dateFormats,
-} from '../../constants';
+import { chartHeight, lineTypes, lineWidths, dateFormats } from '../../constants';
 import { getYAxisOptions, getChartGrid, getTooltipFormatter } from './options';
+import { annotationsYAxis, generateAnnotationsSeries, isAnnotation } from './annotations';
 import { makeDataSeries } from '~/helpers/monitor_helper';
 import { graphDataValidatorForValues } from '../../utils';
-
-/**
- * A "virtual" coordinates system for the deployment icons.
- * Deployment icons are displayed along the [min, max]
- * range at height `pos`.
- */
-const deploymentYAxisCoords = {
-  min: 0,
-  pos: 3, // 3% height of chart's grid
-  max: 100,
-};
 
 const THROTTLED_DATAZOOM_WAIT = 1000; // milliseconds
 const timestampToISODate = timestamp => new Date(timestamp).toISOString();
@@ -154,9 +137,7 @@ export default {
       }, []);
     },
     chartOptionSeries() {
-      return (this.option.series || []).concat(
-        this.deploymentSeries ? [this.deploymentSeries] : [],
-      );
+      return (this.option.series || []).concat(generateAnnotationsSeries(this.recentDeployments));
     },
     chartOptions() {
       const { yAxis, xAxis } = this.option;
@@ -165,16 +146,6 @@ export default {
       const dataYAxis = {
         ...getYAxisOptions(this.graphData.yAxis),
         ...yAxis,
-      };
-
-      const deploymentsYAxis = {
-        show: false,
-        min: deploymentYAxisCoords.min,
-        max: deploymentYAxisCoords.max,
-        axisLabel: {
-          // formatter fn required to trigger tooltip re-positioning
-          formatter: () => {},
-        },
       };
 
       const timeXAxis = {
@@ -192,7 +163,7 @@ export default {
       return {
         series: this.chartOptionSeries,
         xAxis: timeXAxis,
-        yAxis: [dataYAxis, deploymentsYAxis],
+        yAxis: [dataYAxis, annotationsYAxis],
         grid: getChartGrid(),
         dataZoom: [this.dataZoomConfig],
         ...option,
@@ -249,28 +220,13 @@ export default {
             tagUrl: tag ? `${this.tagsPath}/${ref.name}` : null,
             ref: ref.name,
             showDeploymentFlag: false,
+            icon: this.svgs.rocket,
+            color: this.primaryColor,
           });
         }
 
         return acc;
       }, []);
-    },
-    deploymentSeries() {
-      return {
-        type: graphTypes.deploymentData,
-
-        yAxisIndex: 1, // deploymentsYAxis index
-        data: this.recentDeployments.map(deployment => [
-          deployment.createdAt,
-          deploymentYAxisCoords.pos,
-        ]),
-
-        symbol: this.svgs.rocket,
-        symbolSize: symbolSizes.default,
-        itemStyle: {
-          color: this.primaryColor,
-        },
-      };
     },
     tooltipYFormatter() {
       // Use same format as y-axis
@@ -297,7 +253,7 @@ export default {
       params.seriesData.forEach(dataPoint => {
         if (dataPoint.value) {
           const [xVal, yVal] = dataPoint.value;
-          this.tooltip.isDeployment = dataPoint.componentSubType === graphTypes.deploymentData;
+          this.tooltip.isDeployment = isAnnotation(dataPoint.componentSubType);
           if (this.tooltip.isDeployment) {
             const [deploy] = this.recentDeployments.filter(
               deployment => deployment.createdAt === xVal,

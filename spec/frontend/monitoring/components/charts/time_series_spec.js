@@ -413,16 +413,24 @@ describe('Time series component', () => {
           });
         });
 
-        describe('deploymentSeries', () => {
+        describe('annotationSeries', () => {
           it('utilizes deployment data', () => {
-            expect(timeSeriesChart.vm.deploymentSeries.yAxisIndex).toBe(1); // same as deployment y axis
-            expect(timeSeriesChart.vm.deploymentSeries.data).toEqual([
-              ['2019-07-16T10:14:25.589Z', expect.any(Number)],
-              ['2019-07-16T11:14:25.589Z', expect.any(Number)],
-              ['2019-07-16T12:14:25.589Z', expect.any(Number)],
+            const annotationSeries = timeSeriesChart.vm.chartOptionSeries[0];
+            expect(annotationSeries.yAxisIndex).toBe(1); // same as annotations y axis
+            expect(annotationSeries.data).toEqual([
+              expect.objectContaining({
+                symbolSize: 14,
+                value: ['2019-07-16T10:14:25.589Z', expect.any(Number)],
+              }),
+              expect.objectContaining({
+                symbolSize: 14,
+                value: ['2019-07-16T11:14:25.589Z', expect.any(Number)],
+              }),
+              expect.objectContaining({
+                symbolSize: 14,
+                value: ['2019-07-16T12:14:25.589Z', expect.any(Number)],
+              }),
             ]);
-
-            expect(timeSeriesChart.vm.deploymentSeries.symbolSize).toBe(14);
           });
         });
 

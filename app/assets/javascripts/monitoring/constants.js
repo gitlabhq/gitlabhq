@@ -49,7 +49,7 @@ export const sidebarAnimationDuration = 300; // milliseconds.
 export const chartHeight = 300;
 
 export const graphTypes = {
-  deploymentData: 'scatter',
+  annotationsData: 'scatter',
 };
 
 export const symbolSizes = {
