@@ -31,6 +31,6 @@ export const GlPopover = {
     },
   },
   render(h) {
-    return h('div', this.$attrs, this.$slots.default);
+    return h('div', this.$attrs, Object.keys(this.$slots).map(s => this.$slots[s]));
   },
 };

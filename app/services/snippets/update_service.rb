@@ -35,28 +35,43 @@ module Snippets
     private
 
     def save_and_commit(snippet)
-      snippet.with_transaction_returning_status do
-        snippet.save.tap do |saved|
-          break false unless saved
+      return false unless snippet.save
 
-          # In order to avoid non migrated snippets scenarios,
-          # if the snippet does not have a repository we created it
-          # We don't need to check if the repository exists
-          # because `create_repository` already handles it
-          if Feature.enabled?(:version_snippets, current_user)
-            create_repository_for(snippet)
-          end
-
-          # If the snippet repository exists we commit always
-          # the changes
-          create_commit(snippet) if snippet.repository_exists?
-        end
-      rescue => e
-        snippet.errors.add(:repository, e.message)
-        log_error(e.message)
-
-        false
+      # In order to avoid non migrated snippets scenarios,
+      # if the snippet does not have a repository we created it
+      # We don't need to check if the repository exists
+      # because `create_repository` already handles it
+      if Feature.enabled?(:version_snippets, current_user)
+        create_repository_for(snippet)
       end
+
+      # If the snippet repository exists we commit always
+      # the changes
+      create_commit(snippet) if snippet.repository_exists?
+
+      true
+    rescue => e
+      # Restore old attributes
+      unless snippet.previous_changes.empty?
+        snippet.previous_changes.each { |attr, value| snippet[attr] = value[0] }
+        snippet.save
+      end
+
+      snippet.errors.add(:repository, 'Error updating the snippet')
+      log_error(e.message)
+
+      # If the commit action failed we remove it because
+      # we don't want to leave empty repositories
+      # around, to allow cloning them.
+      if repository_empty?(snippet)
+        snippet.repository.remove
+        snippet.snippet_repository&.delete
+      end
+
+      # Purge any existing value for repository_exists?
+      snippet.repository.expire_exists_cache
+
+      false
     end
 
     def create_repository_for(snippet)
@@ -80,6 +95,14 @@ module Snippets
       [{ previous_path: snippet.blobs.first&.path,
          file_path: params[:file_name],
          content: params[:content] }]
+    end
+
+    # Because we are removing repositories we don't want to remove
+    # any existing repository with data. Therefore, we cannot
+    # rely on cached methods for that check in order to avoid losing
+    # data.
+    def repository_empty?(snippet)
+      snippet.repository._uncached_exists? && !snippet.repository._uncached_has_visible_content?
     end
   end
 end

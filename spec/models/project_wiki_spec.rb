@@ -28,7 +28,7 @@ describe ProjectWiki do
 
   describe '#web_url' do
     it 'returns the full web URL to the wiki' do
-      expect(subject.web_url).to eq("#{Gitlab.config.gitlab.url}/#{project.full_path}/-/wikis/home")
+      expect(subject.web_url).to eq(Gitlab::UrlBuilder.build(subject))
     end
   end
 

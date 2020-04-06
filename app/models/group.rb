@@ -172,8 +172,8 @@ class Group < Namespace
     "#{self.class.reference_prefix}#{full_path}"
   end
 
-  def web_url
-    Gitlab::Routing.url_helpers.group_canonical_url(self)
+  def web_url(only_path: nil)
+    Gitlab::UrlBuilder.build(self, only_path: only_path)
   end
 
   def human_name

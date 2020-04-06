@@ -385,4 +385,3 @@ Performance/ChainArrayAllocation:
 RSpec/RepeatedExample:
   Exclude:
     - 'spec/features/merge_request/user_posts_diff_notes_spec.rb'
-    - 'spec/services/notification_service_spec.rb'

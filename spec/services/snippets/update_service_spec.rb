@@ -139,18 +139,80 @@ describe Snippets::UpdateService do
           subject
         end
       end
+    end
 
-      it 'returns error when the commit action fails' do
-        error_message = 'foobar'
+    shared_examples 'commit operation fails' do
+      let_it_be(:gitlab_shell) { Gitlab::Shell.new }
 
-        allow_next_instance_of(SnippetRepository) do |instance|
-          allow(instance).to receive(:multi_files_action).and_raise(SnippetRepository::CommitError, error_message)
-        end
+      before do
+        allow(service).to receive(:create_commit).and_raise(SnippetRepository::CommitError)
+      end
 
+      it 'returns error' do
         response = subject
 
         expect(response).to be_error
-        expect(response.payload[:snippet].errors[:repository].to_sentence).to eq error_message
+        expect(response.payload[:snippet].errors[:repository].to_sentence).to eq 'Error updating the snippet'
+      end
+
+      context 'when repository is empty' do
+        before do
+          allow(service).to receive(:repository_empty?).and_return(true)
+        end
+
+        it 'destroys the created repository in disk' do
+          subject
+
+          expect(gitlab_shell.repository_exists?(snippet.repository.storage, "#{snippet.disk_path}.git")).to be_falsey
+        end
+
+        it 'destroys the SnippetRepository object' do
+          subject
+
+          expect(snippet.reload.snippet_repository).to be_nil
+        end
+
+        it 'expires the repository exists method cache' do
+          response = subject
+
+          expect(response).to be_error
+          expect(response.payload[:snippet].repository_exists?).to be_falsey
+        end
+      end
+
+      context 'when repository is not empty' do
+        before do
+          allow(service).to receive(:repository_empty?).and_return(false)
+        end
+
+        it 'does not destroy the repository' do
+          subject
+
+          expect(gitlab_shell.repository_exists?(snippet.repository.storage, "#{snippet.disk_path}.git")).to be_truthy
+        end
+
+        it 'does not destroy the snippet repository' do
+          subject
+
+          expect(snippet.reload.snippet_repository).not_to be_nil
+        end
+
+        it 'expires the repository exists method cache' do
+          response = subject
+
+          expect(response).to be_error
+          expect(response.payload[:snippet].repository_exists?).to be_truthy
+        end
+      end
+
+      it 'rolls back any snippet modifications' do
+        option_keys = options.stringify_keys.keys
+        orig_attrs = snippet.attributes.select { |k, v| k.in?(option_keys) }
+
+        subject
+
+        current_attrs = snippet.attributes.select { |k, v| k.in?(option_keys) }
+        expect(orig_attrs).to eq current_attrs
       end
     end
 
@@ -186,12 +248,13 @@ describe Snippets::UpdateService do
           response = subject
 
           expect(response).to be_error
-          expect(response.payload[:snippet].errors[:repository].to_sentence).to eq error_message
+          expect(response.payload[:snippet].errors[:repository].to_sentence).to eq 'Error updating the snippet'
         end
       end
 
       it 'returns error if snippet does not have a snippet_repository' do
         allow(snippet).to receive(:snippet_repository).and_return(nil)
+        allow(snippet).to receive(:track_snippet_repository).and_return(nil)
 
         expect(subject).to be_error
       end
@@ -219,11 +282,13 @@ describe Snippets::UpdateService do
       it_behaves_like 'public visibility level restrictions apply'
       it_behaves_like 'snippet update data is tracked'
       it_behaves_like 'updates repository content'
+      it_behaves_like 'commit operation fails'
 
       context 'when snippet does not have a repository' do
         let!(:snippet) { create(:project_snippet, author: user, project: project) }
 
         it_behaves_like 'creates repository and creates file'
+        it_behaves_like 'commit operation fails'
       end
     end
 
@@ -235,11 +300,13 @@ describe Snippets::UpdateService do
       it_behaves_like 'public visibility level restrictions apply'
       it_behaves_like 'snippet update data is tracked'
       it_behaves_like 'updates repository content'
+      it_behaves_like 'commit operation fails'
 
       context 'when snippet does not have a repository' do
         let!(:snippet) { create(:personal_snippet, author: user, project: project) }
 
         it_behaves_like 'creates repository and creates file'
+        it_behaves_like 'commit operation fails'
       end
     end
   end

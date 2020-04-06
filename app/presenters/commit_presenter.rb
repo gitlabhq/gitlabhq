@@ -18,7 +18,7 @@ class CommitPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def web_url
-    Gitlab::UrlBuilder.new(commit).url
+    url_builder.build(commit)
   end
 
   def signature_html

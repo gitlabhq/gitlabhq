@@ -1022,24 +1022,6 @@ describe NotificationService, :mailer do
         should_not_email(@u_lazy_participant)
       end
 
-      it 'emails new assignee' do
-        issue.assignees = [@u_mentioned]
-        notification.reassigned_issue(issue, @u_disabled, [@u_mentioned])
-
-        expect(issue.assignees.first).to be @u_mentioned
-        should_email(issue.assignees.first)
-        should_email(@u_watcher)
-        should_email(@u_guest_watcher)
-        should_email(@u_guest_custom)
-        should_email(@u_participant_mentioned)
-        should_email(@subscriber)
-        should_email(@u_custom_global)
-        should_not_email(@unsubscriber)
-        should_not_email(@u_participating)
-        should_not_email(@u_disabled)
-        should_not_email(@u_lazy_participant)
-      end
-
       it 'does not email new assignee if they are the current user' do
         issue.assignees = [@u_mentioned]
         notification.reassigned_issue(issue, @u_mentioned, [@u_mentioned])

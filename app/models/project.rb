@@ -1121,10 +1121,6 @@ class Project < ApplicationRecord
     end
   end
 
-  def web_url(only_path: nil)
-    Gitlab::Routing.url_helpers.project_url(self, only_path: only_path)
-  end
-
   def readme_url
     readme_path = repository.readme_path
     if readme_path

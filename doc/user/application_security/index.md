@@ -251,6 +251,35 @@ environment.
 
 Read how to [operate the Secure scanners in an offline environment](offline_deployments/index.md).
 
+## Using private Maven repos
+
+If you have a private Apache Maven repository that requires login credentials,
+you can use the `MAVEN_CLI_OPTS` environment variable
+to pass a username and password. You can set it under your project's settings
+so that your credentials aren't exposed in `.gitlab-ci.yml`.
+
+If the username is `myuser` and the password is `verysecret` then you would
+[set the following variable](../../ci/variables/README.md#via-the-ui)
+under your project's settings:
+
+| Type | Key | Value |
+| ---- | --- | ----- |
+| Variable | `MAVEN_CLI_OPTS` | `--settings mysettings.xml -Drepository.password=verysecret -Drepository.user=myuser` |
+
+```xml
+<!-- mysettings.xml -->
+<settings>
+    ...
+    <servers>
+        <server>
+            <id>private_server</id>
+            <username>${private.username}</username>
+            <password>${private.password}</password>
+        </server>
+    </servers>
+</settings>
+```
+
 ## Outdated security reports
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/4913) in GitLab 12.7.

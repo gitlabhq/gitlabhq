@@ -110,7 +110,7 @@ module HasRepository
   end
 
   def web_url(only_path: nil)
-    raise NotImplementedError
+    Gitlab::UrlBuilder.build(self, only_path: only_path)
   end
 
   def repository_size_checker

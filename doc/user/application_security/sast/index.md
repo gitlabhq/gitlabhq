@@ -166,18 +166,10 @@ it via [custom environment variables](#custom-environment-variables).
 
 #### Using a variable to pass username and password to a private Maven repository
 
-If you have a private Apache Maven repository that requires login credentials,
-you can use the `MAVEN_CLI_OPTS` [environment variable](#available-variables)
-to pass a username and password. You can set it under your project's settings
-so that your credentials aren't exposed in `.gitlab-ci.yml`.
+If you have a private Maven repository which requires login credentials,
+you can use the `MAVEN_CLI_OPTS` environment variable.
 
-If the username is `myuser` and the password is `verysecret` then you would
-[set the following variable](../../../ci/variables/README.md#via-the-ui)
-under your project's settings:
-
-| Type | Key | Value |
-| ---- | --- | ----- |
-| Variable | `MAVEN_CLI_OPTS` | `-Drepository.password=verysecret -Drepository.user=myuser` |
+Read more on [how to use private Maven repos](../index.md#using-private-maven-repos).
 
 ### Disabling Docker in Docker for SAST
 
@@ -193,6 +185,15 @@ variables:
 ```
 
 This will create individual `<analyzer-name>-sast` jobs for each analyzer that runs in your CI/CD pipeline.
+
+By removing Docker-in-Docker (DIND), GitLab relies on [Linguist](https://github.com/github/linguist)
+to start relevant analyzers depending on the detected repository language(s) instead of the
+[orchestrator](https://gitlab.com/gitlab-org/security-products/dependency-scanning/). However, there
+are some differences in the way repository languages are detected between DIND and non-DIND. You can
+observe these differences by checking both Linguist and the common library. For instance, Linguist
+looks for `*.java` files to spin up the [spotbugs](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs)
+image, while orchestrator only looks for the existence of `pom.xml`, `build.xml`, `gradlew`,
+`grailsw`, or `mvnw`.
 
 #### Enabling kubesec analyzer
 

@@ -26,6 +26,10 @@ module Gitlab
           self
         end
 
+        def url_builder
+          Gitlab::UrlBuilder.instance
+        end
+
         class_methods do
           def presenter?
             true

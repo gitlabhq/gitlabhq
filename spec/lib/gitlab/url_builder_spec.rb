@@ -3,186 +3,116 @@
 require 'spec_helper'
 
 describe Gitlab::UrlBuilder do
+  subject { described_class }
+
+  describe '#build' do
+    it 'delegates to the class method' do
+      expect(subject).to receive(:build).with(:foo, bar: :baz)
+
+      subject.instance.build(:foo, bar: :baz)
+    end
+  end
+
   describe '.build' do
-    context 'when passing a Commit' do
-      it 'returns a proper URL' do
-        commit = build_stubbed(:commit)
+    using RSpec::Parameterized::TableSyntax
 
-        url = described_class.build(commit)
+    where(:factory, :path_generator) do
+      :project           | ->(project)       { "/#{project.full_path}" }
+      :commit            | ->(commit)        { "/#{commit.project.full_path}/-/commit/#{commit.id}" }
+      :issue             | ->(issue)         { "/#{issue.project.full_path}/-/issues/#{issue.iid}" }
+      :merge_request     | ->(merge_request) { "/#{merge_request.project.full_path}/-/merge_requests/#{merge_request.iid}" }
+      :project_milestone | ->(milestone)     { "/#{milestone.project.full_path}/-/milestones/#{milestone.iid}" }
+      :project_snippet   | ->(snippet)       { "/#{snippet.project.full_path}/snippets/#{snippet.id}" }
+      :project_wiki      | ->(wiki)          { "/#{wiki.project.full_path}/-/wikis/home" }
+      :ci_build          | ->(build)         { "/#{build.project.full_path}/-/jobs/#{build.id}" }
 
-        expect(url).to eq "#{Settings.gitlab['url']}/#{commit.project.full_path}/-/commit/#{commit.id}"
+      :group             | ->(group)         { "/groups/#{group.full_path}" }
+      :group_milestone   | ->(milestone)     { "/groups/#{milestone.group.full_path}/-/milestones/#{milestone.iid}" }
+
+      :user              | ->(user)          { "/#{user.full_path}" }
+      :personal_snippet  | ->(snippet)       { "/snippets/#{snippet.id}" }
+      :wiki_page         | ->(wiki_page)     { "#{wiki_page.wiki.wiki_base_path}/#{wiki_page.slug}" }
+
+      :note_on_commit                      | ->(note) { "/#{note.project.full_path}/-/commit/#{note.commit_id}#note_#{note.id}" }
+      :diff_note_on_commit                 | ->(note) { "/#{note.project.full_path}/-/commit/#{note.commit_id}#note_#{note.id}" }
+      :discussion_note_on_commit           | ->(note) { "/#{note.project.full_path}/-/commit/#{note.commit_id}#note_#{note.id}" }
+      :legacy_diff_note_on_commit          | ->(note) { "/#{note.project.full_path}/-/commit/#{note.commit_id}#note_#{note.id}" }
+
+      :note_on_issue                       | ->(note) { "/#{note.project.full_path}/-/issues/#{note.noteable.iid}#note_#{note.id}" }
+      :discussion_note_on_issue            | ->(note) { "/#{note.project.full_path}/-/issues/#{note.noteable.iid}#note_#{note.id}" }
+
+      :note_on_merge_request               | ->(note) { "/#{note.project.full_path}/-/merge_requests/#{note.noteable.iid}#note_#{note.id}" }
+      :diff_note_on_merge_request          | ->(note) { "/#{note.project.full_path}/-/merge_requests/#{note.noteable.iid}#note_#{note.id}" }
+      :discussion_note_on_merge_request    | ->(note) { "/#{note.project.full_path}/-/merge_requests/#{note.noteable.iid}#note_#{note.id}" }
+      :legacy_diff_note_on_merge_request   | ->(note) { "/#{note.project.full_path}/-/merge_requests/#{note.noteable.iid}#note_#{note.id}" }
+
+      :note_on_project_snippet             | ->(note) { "/#{note.project.full_path}/snippets/#{note.noteable_id}#note_#{note.id}" }
+      :discussion_note_on_project_snippet  | ->(note) { "/#{note.project.full_path}/snippets/#{note.noteable_id}#note_#{note.id}" }
+      :discussion_note_on_personal_snippet | ->(note) { "/snippets/#{note.noteable_id}#note_#{note.id}" }
+      :note_on_personal_snippet            | ->(note) { "/snippets/#{note.noteable_id}#note_#{note.id}" }
+    end
+
+    with_them do
+      let(:object) { build_stubbed(factory) }
+      let(:path) { path_generator.call(object) }
+
+      it 'returns the full URL' do
+        expect(subject.build(object)).to eq("#{Gitlab.config.gitlab.url}#{path}")
+      end
+
+      it 'returns only the path if only_path is given' do
+        expect(subject.build(object, only_path: true)).to eq(path)
       end
     end
 
-    context 'when passing a batch loaded Commit' do
-      it 'returns a proper URL' do
-        commit = BatchLoader.for(:commit).batch do |batch, loader|
-          batch.each { |commit| loader.call(:commit, build_stubbed(:commit)) }
-        end
+    context 'when passing a commit without a project' do
+      let(:commit) { build_stubbed(:commit) }
 
-        url = described_class.build(commit)
+      it 'returns an empty string' do
+        allow(commit).to receive(:project).and_return(nil)
 
-        expect(url).to eq "#{Settings.gitlab['url']}/#{commit.project.full_path}/-/commit/#{commit.id}"
+        expect(subject.build(commit)).to eq('')
       end
     end
 
-    context 'when passing an Issue' do
-      it 'returns a proper URL' do
-        issue = build_stubbed(:issue, iid: 42)
+    context 'when passing a commit note without a project' do
+      let(:note) { build_stubbed(:note_on_commit) }
 
-        url = described_class.build(issue)
+      it 'returns an empty string' do
+        allow(note).to receive(:project).and_return(nil)
 
-        expect(url).to eq "#{Settings.gitlab['url']}/#{issue.project.full_path}/-/issues/#{issue.iid}"
+        expect(subject.build(note)).to eq('')
       end
     end
 
-    context 'when passing a Milestone' do
-      let(:group) { create(:group) }
-      let(:project) { create(:project, :public, namespace: group) }
+    context 'when passing a Snippet' do
+      let(:snippet) { build_stubbed(:personal_snippet) }
 
-      context 'belonging to a project' do
-        it 'returns a proper URL' do
-          milestone = create(:milestone, project: project)
+      it 'returns a raw snippet URL if requested' do
+        url = subject.build(snippet, raw: true)
 
-          url = described_class.build(milestone)
-
-          expect(url).to eq "#{Settings.gitlab['url']}/#{milestone.project.full_path}/-/milestones/#{milestone.iid}"
-        end
-      end
-
-      context 'belonging to a group' do
-        it 'returns a proper URL' do
-          milestone = create(:milestone, group: group)
-
-          url = described_class.build(milestone)
-
-          expect(url).to eq "#{Settings.gitlab['url']}/groups/#{milestone.group.full_path}/-/milestones/#{milestone.iid}"
-        end
+        expect(url).to eq "#{Gitlab.config.gitlab.url}/snippets/#{snippet.id}/raw"
       end
     end
 
-    context 'when passing a MergeRequest' do
-      it 'returns a proper URL' do
-        merge_request = build_stubbed(:merge_request, iid: 42)
+    context 'when passing an unsupported class' do
+      let(:object) { Object.new }
 
-        url = described_class.build(merge_request)
-
-        expect(url).to eq "#{Settings.gitlab['url']}/#{merge_request.project.full_path}/-/merge_requests/#{merge_request.iid}"
+      it 'raises an exception' do
+        expect { subject.build(object) }.to raise_error(NotImplementedError)
       end
     end
 
-    context 'when passing a ProjectSnippet' do
-      it 'returns a proper URL' do
-        project_snippet = create(:project_snippet)
-
-        url = described_class.build(project_snippet)
-
-        expect(url).to eq "#{Settings.gitlab['url']}/#{project_snippet.project.full_path}/snippets/#{project_snippet.id}"
-      end
-    end
-
-    context 'when passing a PersonalSnippet' do
-      it 'returns a proper URL' do
-        personal_snippet = create(:personal_snippet)
-
-        url = described_class.build(personal_snippet)
-
-        expect(url).to eq "#{Settings.gitlab['url']}/snippets/#{personal_snippet.id}"
-      end
-    end
-
-    context 'when passing a Note' do
-      context 'on a Commit' do
-        it 'returns a proper URL' do
-          note = build_stubbed(:note_on_commit)
-
-          url = described_class.build(note)
-
-          expect(url).to eq "#{Settings.gitlab['url']}/#{note.project.full_path}/-/commit/#{note.commit_id}#note_#{note.id}"
+    context 'when passing a batch loaded model' do
+      let(:project) { build_stubbed(:project) }
+      let(:object) do
+        BatchLoader.for(:project).batch do |batch, loader|
+          batch.each { |_| loader.call(:project, project) }
         end
       end
 
-      context 'on a Commit Diff' do
-        it 'returns a proper URL' do
-          note = build_stubbed(:diff_note_on_commit)
-
-          url = described_class.build(note)
-
-          expect(url).to eq "#{Settings.gitlab['url']}/#{note.project.full_path}/-/commit/#{note.commit_id}#note_#{note.id}"
-        end
-      end
-
-      context 'on an Issue' do
-        it 'returns a proper URL' do
-          issue = create(:issue, iid: 42)
-          note = build_stubbed(:note_on_issue, noteable: issue)
-
-          url = described_class.build(note)
-
-          expect(url).to eq "#{Settings.gitlab['url']}/#{issue.project.full_path}/-/issues/#{issue.iid}#note_#{note.id}"
-        end
-      end
-
-      context 'on a MergeRequest' do
-        it 'returns a proper URL' do
-          merge_request = create(:merge_request, iid: 42)
-          note = build_stubbed(:note_on_merge_request, noteable: merge_request)
-
-          url = described_class.build(note)
-
-          expect(url).to eq "#{Settings.gitlab['url']}/#{merge_request.project.full_path}/-/merge_requests/#{merge_request.iid}#note_#{note.id}"
-        end
-      end
-
-      context 'on a MergeRequest Diff' do
-        it 'returns a proper URL' do
-          merge_request = create(:merge_request, iid: 42)
-          note = build_stubbed(:diff_note_on_merge_request, noteable: merge_request)
-
-          url = described_class.build(note)
-
-          expect(url).to eq "#{Settings.gitlab['url']}/#{merge_request.project.full_path}/-/merge_requests/#{merge_request.iid}#note_#{note.id}"
-        end
-      end
-
-      context 'on a ProjectSnippet' do
-        it 'returns a proper URL' do
-          project_snippet = create(:project_snippet)
-          note = build_stubbed(:note_on_project_snippet, noteable: project_snippet)
-
-          url = described_class.build(note)
-
-          expect(url).to eq "#{Settings.gitlab['url']}/#{project_snippet.project.full_path}/snippets/#{note.noteable_id}#note_#{note.id}"
-        end
-      end
-
-      context 'on a PersonalSnippet' do
-        it 'returns a proper URL' do
-          personal_snippet = create(:personal_snippet)
-          note = build_stubbed(:note_on_personal_snippet, noteable: personal_snippet)
-
-          url = described_class.build(note)
-
-          expect(url).to eq "#{Settings.gitlab['url']}/snippets/#{note.noteable_id}#note_#{note.id}"
-        end
-      end
-
-      context 'on another object' do
-        it 'returns a proper URL' do
-          project = build_stubbed(:project)
-
-          expect { described_class.build(project) }
-            .to raise_error(NotImplementedError, "No URL builder defined for #{project.inspect}")
-        end
-      end
-    end
-
-    context 'when passing a WikiPage' do
-      it 'returns a proper URL' do
-        wiki_page = build(:wiki_page)
-        url = described_class.build(wiki_page)
-
-        expect(url).to eq "#{Gitlab.config.gitlab.url}#{wiki_page.wiki.wiki_base_path}/#{wiki_page.slug}"
+      it 'returns the URL for the real object' do
+        expect(subject.build(object, only_path: true)).to eq("/#{project.full_path}")
       end
     end
   end
