@@ -108,6 +108,23 @@ By default, the DAST template will use the latest major version of the DAST Dock
 you can choose to automatically update DAST with new features and fixes by pinning to a major version (e.g. 1), only update fixes by pinning to a minor version (e.g. 1.6) or prevent all updates by pinning to a specific version (e.g. 1.6.4).
 Find the latest DAST versions on the [Releases](https://gitlab.com/gitlab-org/security-products/dast/-/releases) page.
 
+### When DAST scans run
+
+When using `DAST.gitlab-ci.yml` template, the `dast` job is run last as shown in the example below. To ensure DAST is scanning the latest code, your CI pipeline should deploy changes to the web server in one of the jobs preceeding the `dast` job.
+
+```yaml
+stages:
+  - build
+  - test
+  - deploy
+  - dast
+```
+
+Be aware that if your pipeline is configured to deploy to the same webserver in each run, running a pipeline while another is still running, could cause a race condition
+where one pipeline overwrites the code from another pipeline. The site to be scanned should be excluded from changes for the duration of a DAST scan.
+The only changes to the site should be from the DAST scanner. Be aware that any changes that users, scheduled tasks, database or code changes, other pipelines, or other scanners make to
+the site during a scan could lead to inaccurate results.
+
 ### Authenticated scan
 
 It's also possible to authenticate the user before performing the DAST checks:

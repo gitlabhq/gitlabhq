@@ -2,7 +2,7 @@
 
 module QA
   context 'Configure' do
-    describe 'Kubernetes Cluster Integration', :orchestrated, :kubernetes, :requires_admin do
+    describe 'Kubernetes Cluster Integration', :orchestrated, :kubernetes, :requires_admin, quarantine: { type: :new } do
       context 'Project Clusters' do
         let(:cluster) { Service::KubernetesCluster.new(provider_class: Service::ClusterProvider::K3s).create! }
         let(:project) do
@@ -20,7 +20,7 @@ module QA
           cluster.remove!
         end
 
-        it 'can create and associate a project cluster', :smoke, quarantine: { type: :new } do
+        it 'can create and associate a project cluster', :smoke do
           Resource::KubernetesCluster.fabricate_via_browser_ui! do |k8s_cluster|
             k8s_cluster.project = project
             k8s_cluster.cluster = cluster
