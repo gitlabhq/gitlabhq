@@ -3,9 +3,10 @@
 Sometimes things don't work the way they should. Here are some tips on debugging issues out
 in production.
 
-## Starting a Rails console
+## Starting a Rails console session
 
-Troubleshooting and debugging often requires a rails console.
+Troubleshooting and debugging your GitLab instance often requires a
+[Rails console](https://guides.rubyonrails.org/command_line.html#rails-console).
 
 **For Omnibus installations**
 
@@ -13,22 +14,81 @@ Troubleshooting and debugging often requires a rails console.
 sudo gitlab-rails console
 ```
 
----
+**For installations from source**
+
+```shell
+sudo -u git -H bundle exec rails console -e production
+```
+
+Kubernetes: the console is in the task-runner pod, refer to our [Kubernetes cheat sheet](kubernetes_cheat_sheet.md#gitlab-specific-kubernetes-information) for details.
+
+### Enabling Active Record logging
+
+You can enable output of Active Record debug logging in the Rails console
+session by running:
+
+```ruby
+ActiveRecord::Base.logger = Logger.new(STDOUT)
+```
+
+This will show information about database queries triggered by any Ruby code
+you may run in the console. To turn off logging again, run:
+
+```ruby
+ActiveRecord::Base.logger = nil
+```
+
+### Disabling database statement timeout
+
+You can disable the PostgreSQL statement timeout for the current Rails console
+session by running:
+
+```ruby
+ActiveRecord::Base.connection.execute('SET statement_timeout TO 0')
+```
+
+Note that this change only affects the current Rails console session and will
+not be persisted in the GitLab production environment or in the next Rails
+console session.
+
+### Output Rails console session history
+
+If you'd like to output your Rails console command history in a format that's
+easy to copy and save for future reference, you can run:
+
+```ruby
+puts Readline::HISTORY.to_a
+```
+
+## Using the Rails Runner
+
+If you need to run some Ruby code in thex context of your GitLab production
+environment, you can do so using the [Rails Runner](https://guides.rubyonrails.org/command_line.html#rails-runner).
+
+**For Omnibus installations**
+
+```shell
+sudo gitlab-rails runner "RAILS_COMMAND"
+
+# Example with a two-line Ruby script
+sudo gitlab-rails runner "user = User.first; puts user.username"
+```
 
 **For installations from source**
 
 ```shell
-bundle exec rails console production
-```
+sudo -u git -H bundle exec rails runner -e production "RAILS_COMMAND"
 
-Kubernetes: the console is in the task-runner pod, refer to our [Kubernetes cheat sheet](kubernetes_cheat_sheet.md#gitlab-specific-kubernetes-information) for details.
+# Example with a two-line Ruby script
+sudo -u git -H bundle exec rails runner -e production "user = User.first; puts user.username"
+```
 
 ## Mail not working
 
 A common problem is that mails are not being sent for some reason. Suppose you configured
 an SMTP server, but you're not seeing mail delivered. Here's how to check the settings:
 
-1. Run a [Rails console.](#starting-a-rails-console)
+1. Run a [Rails console](#starting-a-rails-console-session).
 
 1. Look at the ActionMailer `delivery_method` to make sure it matches what you
    intended. If you configured SMTP, it should say `:smtp`. If you're using
@@ -168,7 +228,7 @@ separate Rails process to debug the issue:
 1. Log in to your GitLab account.
 1. Copy the URL that is causing problems (e.g. `https://gitlab.com/ABC`).
 1. Create a Personal Access Token for your user (Profile Settings -> Access Tokens).
-1. Bring up the [GitLab Rails console.](#starting-a-rails-console)
+1. Bring up the [GitLab Rails console.](#starting-a-rails-console-session)
 1. At the Rails console, run:
 
    ```ruby

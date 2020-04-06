@@ -21969,6 +21969,9 @@ msgstr ""
 msgid "UsageQuota|Usage of group resources across the projects in the %{strong_start}%{group_name}%{strong_end} group"
 msgstr ""
 
+msgid "UsageQuota|Usage of resources across your projects"
+msgstr ""
+
 msgid "UsageQuota|Usage since"
 msgstr ""
 

@@ -676,7 +676,8 @@ This includes additional information about the users who have already approved
         }
       ],
       "source_rule": null,
-      "approved": true
+      "approved": true,
+      "overridden": false
     }
   ]
 }
@@ -753,7 +754,8 @@ GET /projects/:id/merge_requests/:merge_request_iid/approval_rules
         "ldap_access": null
       }
     ],
-    "contains_hidden_groups": false
+    "contains_hidden_groups": false,
+    "overridden": false
   }
 ]
 ```
@@ -837,7 +839,8 @@ will be used.
       "ldap_access": null
     }
   ],
-  "contains_hidden_groups": false
+  "contains_hidden_groups": false,
+  "overridden": false
 }
 ```
 
@@ -921,7 +924,8 @@ These are system generated rules.
       "ldap_access": null
     }
   ],
-  "contains_hidden_groups": false
+  "contains_hidden_groups": false,
+  "overridden": false
 }
 ```
 

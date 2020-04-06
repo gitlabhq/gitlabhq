@@ -16,6 +16,8 @@ module Resolvers
       end
 
       def authorized_resource?(project)
+        return false unless Feature.enabled?(:jira_issue_import, project)
+
         Ability.allowed?(context[:current_user], :admin_project, project)
       end
     end

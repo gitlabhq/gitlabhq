@@ -13,6 +13,7 @@ navigating to your project's **Security & Compliance > Threat Monitoring** page.
 GitLab supports statistics for the following security features:
 
 - [Web Application Firewall](../../clusters/applications.md#web-application-firewall-modsecurity)
+- [Container Network Policies](../../../topics/autodevops/index.md#network-policy)
 
 ## Web Application Firewall
 
@@ -38,3 +39,38 @@ about your Ingress traffic:
 If a significant percentage of traffic is anomalous, you should
 investigate it for potential threats by
 [examining the application logs](../../clusters/applications.md#web-application-firewall-modsecurity).
+
+## Container Network Policy
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/32365) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.9.
+
+The **Container Network Policy** section provides packet flow metrics for
+your application's Kubernetes namespace. This section has the following
+prerequisites:
+
+- Your project contains at least one [environment](../../../ci/environments.md)
+- You've [installed Cilium](../../clusters/applications.md#install-cilium-using-gitlab-cicd)
+- You've configured the [Prometheus service](../../project/integrations/prometheus.md#enabling-prometheus-integration)
+
+If you're using custom Helm values for Cilium, you must enable Hubble
+with flow metrics for each namespace by adding the following lines to
+your [Hubble values](../../clusters/applications.md#install-cilium-using-gitlab-cicd):
+
+```yaml
+metrics:
+  enabled:
+    - 'flow:sourceContext=namespace;destinationContext=namespace'
+```
+
+The **Container Network Policy** section displays the following information
+about your packet flow:
+
+- The total amount of the inbound and outbound packets
+- The proportion of packets dropped according to the configured
+  policies
+- The per-second average rate of the forwarded and dropped packets
+  accumulated over time window for the requested time interval
+
+If a significant percentage of packets is dropped, you should
+investigate it for potential threats by
+[examining the Cilium logs](../../clusters/applications.md#install-cilium-using-gitlab-cicd).

@@ -167,6 +167,7 @@ RSpec.shared_examples 'model with repository' do
   describe 'Respond to' do
     it { is_expected.to respond_to(:base_dir) }
     it { is_expected.to respond_to(:disk_path) }
+    it { is_expected.to respond_to(:gitlab_shell) }
   end
 
   describe '.pick_repository_storage' do

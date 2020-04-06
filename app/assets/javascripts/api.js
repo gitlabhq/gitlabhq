@@ -47,6 +47,7 @@ const Api = {
   adminStatisticsPath: '/api/:version/application/statistics',
   pipelineSinglePath: '/api/:version/projects/:id/pipelines/:pipeline_id',
   environmentsPath: '/api/:version/projects/:id/environments',
+  rawFilePath: '/api/:version/projects/:id/repository/files/:path/raw',
 
   group(groupId, callback) {
     const url = Api.buildUrl(Api.groupPath).replace(':id', groupId);
@@ -495,6 +496,14 @@ const Api = {
   environments(id) {
     const url = Api.buildUrl(this.environmentsPath).replace(':id', encodeURIComponent(id));
     return axios.get(url);
+  },
+
+  getRawFile(id, path, params = { ref: 'master' }) {
+    const url = Api.buildUrl(this.rawFilePath)
+      .replace(':id', encodeURIComponent(id))
+      .replace(':path', encodeURIComponent(path));
+
+    return axios.get(url, { params });
   },
 
   buildUrl(url) {

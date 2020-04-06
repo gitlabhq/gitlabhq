@@ -125,7 +125,7 @@ There is an [open issue to add a migration to make all bare repositories
 importable](https://gitlab.com/gitlab-org/gitlab-foss/issues/41776).
 
 Until then, you may wish to manually migrate repositories yourself. You can use
-[Rails console](https://docs.gitlab.com/omnibus/maintenance/#starting-a-rails-console-session)
+[Rails console](../administration/troubleshooting/debug.md#starting-a-rails-console-session)
 to do so. In a Rails console session, run the following to migrate a project:
 
 ```ruby

@@ -970,6 +970,7 @@ GET /projects/:id/users
 
 | Attribute    | Type          | Required | Description |
 | ------------ | ------------- | -------- | ----------- |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `search`     | string        | no       | Search for specific users |
 | `skip_users` | integer array | no       | Filter out users with the specified IDs |
 
@@ -1515,6 +1516,7 @@ GET /projects/:id/starrers
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `search` | string | no | Search for specific users. |
 
 ```shell
@@ -1557,6 +1559,10 @@ Get languages used in a project with percentage value.
 ```plaintext
 GET /projects/:id/languages
 ```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/languages"
@@ -2183,6 +2189,7 @@ PUT /projects/:id/transfer
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `namespace` | integer/string | yes | The ID or path of the namespace to transfer to project to |
 
 ## Branches

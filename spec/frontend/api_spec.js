@@ -631,4 +631,32 @@ describe('Api', () => {
       });
     });
   });
+
+  describe('getRawFile', () => {
+    const dummyProjectPath = 'gitlab-org/gitlab';
+    const dummyFilePath = 'doc/CONTRIBUTING.md';
+    const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${encodeURIComponent(
+      dummyProjectPath,
+    )}/repository/files/${encodeURIComponent(dummyFilePath)}/raw`;
+
+    describe('when the raw file is successfully fetched', () => {
+      it('resolves the Promise', () => {
+        mock.onGet(expectedUrl).replyOnce(200);
+
+        return Api.getRawFile(dummyProjectPath, dummyFilePath).then(() => {
+          expect(mock.history.get).toHaveLength(1);
+        });
+      });
+    });
+
+    describe('when an error occurs while getting a raw file', () => {
+      it('rejects the Promise', () => {
+        mock.onDelete(expectedUrl).replyOnce(500);
+
+        return Api.getRawFile(dummyProjectPath, dummyFilePath).catch(() => {
+          expect(mock.history.get).toHaveLength(1);
+        });
+      });
+    });
+  });
 });

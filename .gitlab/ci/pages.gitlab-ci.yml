@@ -1,7 +1,6 @@
 pages:
   extends:
     - .default-retry
-    - .default-cache
     - .pages:rules
   stage: pages
   dependencies: ["rspec:coverage", "karma", "gitlab:assets:compile pull-cache"]

@@ -135,13 +135,9 @@ compile-assets pull-cache as-if-foss:
     - .default-retry
     - .default-cache
     - .default-before_script
-    - .use-pg9
+    - .use-pg10
   stage: fixtures
-  needs:
-    - job: "setup-test-env"
-      artifacts: true
-    - job: "compile-assets pull-cache"
-      artifacts: true
+  needs: ["setup-test-env pg10", "compile-assets pull-cache"]
   script:
     - date
     - scripts/gitaly-test-spawn
@@ -270,7 +266,6 @@ coverage-frontend:
 .qa-frontend-node:
   extends:
     - .default-retry
-    - .default-cache
     - .frontend:rules:qa-frontend-node
   stage: test
   dependencies: []
@@ -300,7 +295,7 @@ webpack-dev-server:
     - .default-cache
     - .frontend:rules:default-frontend-jobs
   stage: test
-  needs: ["setup-test-env", "compile-assets pull-cache"]
+  needs: ["setup-test-env pg10", "compile-assets pull-cache"]
   variables:
     WEBPACK_MEMORY_TEST: "true"
     WEBPACK_VENDOR_DLL: "true"

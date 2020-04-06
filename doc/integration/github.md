@@ -151,7 +151,7 @@ via Omnibus, or [restart GitLab] if you installed from source.
 Check the [`production.log`](../administration/logs.md#productionlog)
 on your GitLab server to obtain further details. If you are getting the error like
 `Faraday::ConnectionFailed (execution expired)` in the log, there may be a connectivity issue
-between your GitLab instance and GitHub Enterprise. To verify it, [start the rails console](https://docs.gitlab.com/omnibus/maintenance/#starting-a-rails-console-session)
+between your GitLab instance and GitHub Enterprise. To verify it, [start the rails console](../administration/troubleshooting/debug.md#starting-a-rails-console-session)
 and run the commands below replacing `<github_url>` with the URL of your GitHub Enterprise instance:
 
 ```ruby

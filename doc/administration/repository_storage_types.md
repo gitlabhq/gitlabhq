@@ -100,7 +100,7 @@ The "Gitaly relative path" is shown there, for example:
 This is the path under `/var/opt/gitlab/git-data/repositories/` on a
 default Omnibus installation.
 
-In a [Rails console](troubleshooting/debug.md#starting-a-rails-console),
+In a [Rails console](troubleshooting/debug.md#starting-a-rails-console-session),
 get this information using either the numeric project ID or the full path:
 
 ```ruby
@@ -112,7 +112,7 @@ Project.find_by_full_path('group/project').disk_path
 
 To translate from a hashed storage path to a project name:
 
-1. Start a [Rails console](troubleshooting/debug.md#starting-a-rails-console).
+1. Start a [Rails console](troubleshooting/debug.md#starting-a-rails-console-session).
 1. Run the following:
 
 ```ruby

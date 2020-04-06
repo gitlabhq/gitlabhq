@@ -70,7 +70,7 @@ There is a limit when embedding metrics in GFM for performance reasons.
 On GitLab.com, the [maximum number of webhooks](../user/gitlab_com/index.md#maximum-number-of-webhooks) per project, and per group, is limited.
 
 To set this limit on a self-managed installation, run the following in the
-[GitLab Rails console](https://docs.gitlab.com/omnibus/maintenance/#starting-a-rails-console-session):
+[GitLab Rails console](troubleshooting/debug.md#starting-a-rails-console-session):
 
 ```ruby
 # If limits don't exist for the default plan, you can create one with:
@@ -120,7 +120,7 @@ will fail with a `job_activity_limit_exceeded` error.
   This limit is disabled by default.
 
 To set this limit on a self-managed installation, run the following in the
-[GitLab Rails console](https://docs.gitlab.com/omnibus/maintenance/#starting-a-rails-console-session):
+[GitLab Rails console](troubleshooting/debug.md#starting-a-rails-console-session):
 
 ```ruby
 # If limits don't exist for the default plan, you can create one with:
@@ -145,7 +145,7 @@ limit, the subscription will be considered invalid.
 - On [GitLab Starter](https://about.gitlab.com/pricing/#self-managed) tier or higher self-managed installations, this limit is defined for the `default` plan that affects all projects.
 
 To set this limit on a self-managed installation, run the following in the
-[GitLab Rails console](https://docs.gitlab.com/omnibus/maintenance/#starting-a-rails-console-session):
+[GitLab Rails console](troubleshooting/debug.md#starting-a-rails-console-session):
 
 ```ruby
 Plan.default.limits.update!(ci_project_subscriptions: 500)
@@ -170,7 +170,7 @@ or higher tiers), this limit is defined for the `default` plan that affects all
 projects. By default, there is no limit.
 
 To set this limit on a self-managed installation, run the following in the
-[GitLab Rails console](https://docs.gitlab.com/omnibus/maintenance/#starting-a-rails-console-session):
+[GitLab Rails console](troubleshooting/debug.md#starting-a-rails-console-session):
 
 ```ruby
 Plan.default.limits.update!(ci_pipeline_schedules: 100)

@@ -25,36 +25,6 @@ mentioned above, we recommend running these scripts under the supervision of a
 Support Engineer, who can also verify that they will continue to work as they
 should and, if needed, update the script for the latest version of GitLab.
 
-## Use the Rails Runner
-
-If the script you want to run is short, you can use the Rails Runner to avoid
-entering the rails console in the first place. Here's an example of its use:
-
-```shell
-gitlab-rails runner "RAILS_COMMAND"
-
-# Example with a 2-line script
-gitlab-rails runner "user = User.first; puts user.username"
-```
-
-## Enable debug logging on rails console
-
-```ruby
-Rails.logger.level = 0
-```
-
-## Enable debug logging for ActiveRecord (db issues)
-
-```ruby
-ActiveRecord::Base.logger = Logger.new(STDOUT)
-```
-
-## Temporarily Disable Timeout
-
-```ruby
-ActiveRecord::Base.connection.execute('SET statement_timeout TO 0')
-```
-
 ## Find specific methods for an object
 
 ```ruby
@@ -83,12 +53,6 @@ o = Object.where('attribute like ?', 'ex')
 
 ```ruby
 Rails.cache.instance_variable_get(:@data).keys
-```
-
-## Rails console history
-
-```ruby
-puts Readline::HISTORY.to_a
 ```
 
 ## Profile a page

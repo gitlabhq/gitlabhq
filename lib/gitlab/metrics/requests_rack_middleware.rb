@@ -15,6 +15,8 @@ module Gitlab
         "report" =>  %w(404)
       }.freeze
 
+      HEALTH_ENDPOINT = /^\/-\/(liveness|readiness|health|metrics)\/?$/.freeze
+
       def initialize(app)
         @app = app
       end
@@ -32,6 +34,10 @@ module Gitlab
                                                            {}, [0.05, 0.1, 0.25, 0.5, 0.7, 1, 2.5, 5, 10, 25])
       end
 
+      def self.http_health_requests_total
+        @http_health_requests_total ||= ::Gitlab::Metrics.counter(:http_health_requests_total, 'Health endpoint request count')
+      end
+
       def self.initialize_http_request_duration_seconds
         HTTP_METHODS.each do |method, statuses|
           statuses.each do |status|
@@ -43,8 +49,13 @@ module Gitlab
       def call(env)
         method = env['REQUEST_METHOD'].downcase
         started = Time.now.to_f
+
         begin
-          RequestsRackMiddleware.http_request_total.increment(method: method)
+          if health_endpoint?(env['PATH_INFO'])
+            RequestsRackMiddleware.http_health_requests_total.increment(method: method)
+          else
+            RequestsRackMiddleware.http_request_total.increment(method: method)
+          end
 
           status, headers, body = @app.call(env)
 
@@ -56,6 +67,12 @@ module Gitlab
           RequestsRackMiddleware.rack_uncaught_errors_count.increment
           raise
         end
+      end
+
+      def health_endpoint?(path)
+        return false if path.blank?
+
+        HEALTH_ENDPOINT.match?(CGI.unescape(path))
       end
     end
   end

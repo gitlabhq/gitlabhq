@@ -11,6 +11,7 @@ module HasRepository
   extend ActiveSupport::Concern
   include AfterCommitQueue
   include Referable
+  include Gitlab::ShellAdapter
   include Gitlab::Utils::StrongMemoize
 
   delegate :base_dir, :disk_path, to: :storage

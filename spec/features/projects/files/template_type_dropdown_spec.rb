@@ -40,10 +40,6 @@ describe 'Projects > Files > Template type dropdown selector', :js do
       check_type_selector_display(true)
     end
 
-    it 'is displayed when input matches' do
-      check_type_selector_display(true)
-    end
-
     it 'selects every template type correctly' do
       try_selecting_all_types
     end

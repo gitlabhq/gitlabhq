@@ -122,7 +122,7 @@ If using GitLab 12.9 and newer, run:
 sudo gitlab-rails runner -e production 'puts Gitlab::BackgroundMigration.remaining'
 ```
 
-If using GitLab 12.8 and older, run the following using a [Rails console](../administration/troubleshooting/debug.md#starting-a-rails-console):
+If using GitLab 12.8 and older, run the following using a [Rails console](../administration/troubleshooting/debug.md#starting-a-rails-console-session):
 
 ```ruby
 puts Sidekiq::Queue.new("background_migration").size
@@ -140,7 +140,7 @@ cd /home/git/gitlab
 sudo -u git -H bundle exec rails runner -e production 'puts Gitlab::BackgroundMigration.remaining'
 ```
 
-If using GitLab 12.8 and older, run the following using a [Rails console](../administration/troubleshooting/debug.md#starting-a-rails-console):
+If using GitLab 12.8 and older, run the following using a [Rails console](../administration/troubleshooting/debug.md#starting-a-rails-console-session):
 
 ```ruby
 puts Sidekiq::Queue.new("background_migration").size

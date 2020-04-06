@@ -176,7 +176,7 @@ graph RL;
   O[coverage-frontend];
   N["pages (master only)"];
   Q[package-and-qa];
-  S["RSpec<br/>(e.g. rspec unit pg9)"]
+  S["RSpec<br/>(e.g. rspec unit pg10)"]
   T[retrieve-tests-metadata];
   QA["qa:internal, qa:selectors"];
   QA2["qa:internal-as-if-foss, qa:selectors-as-if-foss<br/>(EE default refs only)"];

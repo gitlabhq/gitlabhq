@@ -216,10 +216,8 @@ Gitlab/DuplicateSpecLocation:
   Exclude:
     - ee/spec/helpers/auth_helper_spec.rb
     - ee/spec/lib/gitlab/gl_repository_spec.rb
-    - ee/spec/models/namespace_spec.rb
     - ee/spec/services/merge_requests/refresh_service_spec.rb
     - ee/spec/helpers/ee/auth_helper_spec.rb
-    - ee/spec/models/ee/namespace_spec.rb
     - ee/spec/services/ee/merge_requests/refresh_service_spec.rb
 
 Cop/InjectEnterpriseEditionModule:
@@ -387,5 +385,4 @@ Performance/ChainArrayAllocation:
 RSpec/RepeatedExample:
   Exclude:
     - 'spec/features/merge_request/user_posts_diff_notes_spec.rb'
-    - 'spec/features/projects/files/template_type_dropdown_spec.rb'
     - 'spec/services/notification_service_spec.rb'

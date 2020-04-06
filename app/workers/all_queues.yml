@@ -1021,7 +1021,7 @@
 - :name: emails_on_push
   :feature_category: :source_code_management
   :has_external_dependencies: 
-  :urgency: :high
+  :urgency: :low
   :resource_boundary: :cpu
   :weight: 2
   :idempotent: 

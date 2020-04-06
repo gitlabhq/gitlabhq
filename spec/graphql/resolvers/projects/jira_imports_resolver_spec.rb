@@ -14,6 +14,16 @@ describe Resolvers::Projects::JiraImportsResolver do
       data
     end
 
+    context 'when feature flag disabled' do
+      let_it_be(:project) { create(:project, :private, import_data: jira_import_data) }
+
+      before do
+        stub_feature_flags(jira_issue_import: false)
+      end
+
+      it_behaves_like 'no jira import access'
+    end
+
     context 'when project does not have Jira import data' do
       let_it_be(:project) { create(:project, :private, import_data: nil) }
 

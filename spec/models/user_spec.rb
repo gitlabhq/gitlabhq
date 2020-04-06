@@ -28,7 +28,6 @@ describe User, :do_not_mock_admin_mode do
   describe 'associations' do
     it { is_expected.to have_one(:namespace) }
     it { is_expected.to have_one(:status) }
-    it { is_expected.to have_one(:max_access_level_membership) }
     it { is_expected.to have_one(:user_detail) }
     it { is_expected.to have_one(:user_highest_role) }
     it { is_expected.to have_many(:snippets).dependent(:destroy) }
@@ -1000,91 +999,42 @@ describe User, :do_not_mock_admin_mode do
   end
 
   describe '#highest_role' do
-    let(:user) { create(:user) }
-    let(:group) { create(:group) }
+    let_it_be(:user) { create(:user) }
 
-    context 'with association :max_access_level_membership' do
-      let(:another_user) { create(:user) }
+    context 'when user_highest_role does not exist' do
+      it 'returns NO_ACCESS' do
+        expect(user.highest_role).to eq(Gitlab::Access::NO_ACCESS)
+      end
+    end
 
-      before do
-        create(:project, group: group) do |project|
-          group.add_user(user, GroupMember::GUEST)
-          group.add_user(another_user, GroupMember::DEVELOPER)
-        end
+    context 'when user_highest_role exists' do
+      context 'stored highest access level is nil' do
+        it 'returns Gitlab::Access::NO_ACCESS' do
+          create(:user_highest_role, user: user)
 
-        create(:project, group: create(:group)) do |project|
-          project.add_guest(another_user)
-        end
-
-        create(:project, group: create(:group)) do |project|
-          project.add_maintainer(user)
+          expect(user.highest_role).to eq(Gitlab::Access::NO_ACCESS)
         end
       end
 
-      it 'returns the correct highest role' do
-        users = User.includes(:max_access_level_membership).where(id: [user.id, another_user.id])
+      context 'stored highest access level present' do
+        context 'with association :user_highest_role' do
+          let(:another_user) { create(:user) }
 
-        expect(users.collect { |u| [u.id, u.highest_role] }).to contain_exactly(
-          [user.id, Gitlab::Access::MAINTAINER],
-          [another_user.id, Gitlab::Access::DEVELOPER]
-        )
+          before do
+            create(:user_highest_role, :maintainer, user: user)
+            create(:user_highest_role, :developer, user: another_user)
+          end
+
+          it 'returns the correct highest role' do
+            users = User.includes(:user_highest_role).where(id: [user.id, another_user.id])
+
+            expect(users.collect { |u| [u.id, u.highest_role] }).to contain_exactly(
+              [user.id, Gitlab::Access::MAINTAINER],
+              [another_user.id, Gitlab::Access::DEVELOPER]
+            )
+          end
+        end
       end
-    end
-
-    it 'returns NO_ACCESS if none has been set' do
-      expect(user.highest_role).to eq(Gitlab::Access::NO_ACCESS)
-    end
-
-    it 'returns MAINTAINER if user is maintainer of a project' do
-      create(:project, group: group) do |project|
-        project.add_maintainer(user)
-      end
-
-      expect(user.highest_role).to eq(Gitlab::Access::MAINTAINER)
-    end
-
-    it 'returns the highest role if user is member of multiple projects' do
-      create(:project, group: group) do |project|
-        project.add_maintainer(user)
-      end
-
-      create(:project, group: group) do |project|
-        project.add_developer(user)
-      end
-
-      expect(user.highest_role).to eq(Gitlab::Access::MAINTAINER)
-    end
-
-    it 'returns MAINTAINER if user is maintainer of a group' do
-      create(:group) do |group|
-        group.add_user(user, GroupMember::MAINTAINER)
-      end
-
-      expect(user.highest_role).to eq(Gitlab::Access::MAINTAINER)
-    end
-
-    it 'returns the highest role if user is member of multiple groups' do
-      create(:group) do |group|
-        group.add_user(user, GroupMember::MAINTAINER)
-      end
-
-      create(:group) do |group|
-        group.add_user(user, GroupMember::DEVELOPER)
-      end
-
-      expect(user.highest_role).to eq(Gitlab::Access::MAINTAINER)
-    end
-
-    it 'returns the highest role if user is member of multiple groups and projects' do
-      create(:group) do |group|
-        group.add_user(user, GroupMember::DEVELOPER)
-      end
-
-      create(:project, group: group) do |project|
-        project.add_maintainer(user)
-      end
-
-      expect(user.highest_role).to eq(Gitlab::Access::MAINTAINER)
     end
   end
 

@@ -36,6 +36,74 @@ describe Gitlab::Metrics::RequestsRackMiddleware do
 
         Timecop.scale(3600) { subject.call(env) }
       end
+
+      context 'request is a health check endpoint' do
+        it 'increments health endpoint counter' do
+          env['PATH_INFO'] = '/-/liveness'
+
+          expect(described_class).to receive_message_chain(:http_health_requests_total, :increment).with(method: 'get')
+
+          subject.call(env)
+        end
+
+        context 'with trailing slash' do
+          before do
+            env['PATH_INFO'] = '/-/liveness/'
+          end
+
+          it 'increments health endpoint counter' do
+            expect(described_class).to receive_message_chain(:http_health_requests_total, :increment).with(method: 'get')
+
+            subject.call(env)
+          end
+        end
+
+        context 'with percent encoded values' do
+          before do
+            env['PATH_INFO'] = '/-/%6D%65%74%72%69%63%73' # /-/metrics
+          end
+
+          it 'increments health endpoint counter' do
+            expect(described_class).to receive_message_chain(:http_health_requests_total, :increment).with(method: 'get')
+
+            subject.call(env)
+          end
+        end
+      end
+
+      context 'request is not a health check endpoint' do
+        it 'does not increment health endpoint counter' do
+          env['PATH_INFO'] = '/-/ordinary-requests'
+
+          expect(described_class).not_to receive(:http_health_requests_total)
+
+          subject.call(env)
+        end
+
+        context 'path info is a root path' do
+          before do
+            env['PATH_INFO'] = '/-/'
+          end
+
+          it 'does not increment health endpoint counter' do
+            expect(described_class).not_to receive(:http_health_requests_total)
+
+            subject.call(env)
+          end
+        end
+
+        context 'path info is a subpath' do
+          before do
+            env['PATH_INFO'] = '/-/health/subpath'
+          end
+
+          it 'does not increment health endpoint counter' do
+            expect(described_class).not_to receive(:http_health_requests_total)
+
+            subject.call(env)
+          end
+        end
+      end
     end
 
     context '@app.call throws exception' do

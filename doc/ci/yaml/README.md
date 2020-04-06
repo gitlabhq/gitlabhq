@@ -2549,7 +2549,7 @@ This example creates four paths of execution:
 
 The maximum number of jobs that can be defined within `needs:` defaults to 10, but
 can be changed to 50 via a feature flag. To change the limit to 50,
-[start a Rails console session](https://docs.gitlab.com/omnibus/maintenance/#starting-a-rails-console-session)
+[start a Rails console session](../../administration/troubleshooting/debug.md#starting-a-rails-console-session)
 and run:
 
 ```ruby
