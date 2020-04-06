@@ -9314,9 +9314,6 @@ msgstr ""
 msgid "GeoNodes|Not checksummed"
 msgstr ""
 
-msgid "GeoNodes|Out of sync"
-msgstr ""
-
 msgid "GeoNodes|Pausing replication stops the sync process. Are you sure?"
 msgstr ""
 
@@ -9363,9 +9360,6 @@ msgid "GeoNodes|Storage config"
 msgstr ""
 
 msgid "GeoNodes|Sync settings"
-msgstr ""
-
-msgid "GeoNodes|Synced"
 msgstr ""
 
 msgid "GeoNodes|Unused slots"
@@ -13772,6 +13766,9 @@ msgstr ""
 msgid "Now you can access the merge request navigation tabs at the top, where they’re easier to find."
 msgstr ""
 
+msgid "Number of %{itemTitle}"
+msgstr ""
+
 msgid "Number of Elasticsearch replicas"
 msgstr ""
 
@@ -16439,6 +16436,9 @@ msgid "Query cannot be processed"
 msgstr ""
 
 msgid "Query is valid"
+msgstr ""
+
+msgid "Queued"
 msgstr ""
 
 msgid "Quick actions can be used in the issues description and comment boxes."
@@ -19566,6 +19566,9 @@ msgid "Switch to the source to copy the file contents"
 msgstr ""
 
 msgid "Sync information"
+msgstr ""
+
+msgid "Synced"
 msgstr ""
 
 msgid "System"

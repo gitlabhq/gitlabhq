@@ -769,7 +769,7 @@ To indicate the steps of navigation through the UI:
   a valid name for an illustration is `devops_diagram_v11_1.png`.
 - Keep all file names in lower case.
 - Consider using PNG images instead of JPEG.
-- Compress all images with <https://pngquant.org/> or similar tool.
+- [Compress all PNG images](#compress-images).
 - Compress gifs with <https://ezgif.com/optimize> or similar tool.
 - Images should be used (only when necessary) to _illustrate_ the description
   of a process, not to _replace_ it.
@@ -795,6 +795,35 @@ directly to an HTML `img` tag:
 ```html
 <img src="path/to/image.jpg" alt="Alt text (required)" class="image-noshadow">
 ```
+
+### Compress images
+
+You should always compress any new images you add to the documentation. One
+known tool is [`pngquant`](https://pngquant.org/), which is cross-platform and
+open source. Install it by visiting the official website and following the
+instructions for your OS.
+
+GitLab has a [raketask](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/tasks/pngquant.rake)
+that you can use to automate the process. In the root directory of your local
+copy of `https://gitlab.com/gitlab-org/gitlab`, run in a terminal:
+
+- Before compressing, if you want, check that all documentation PNG images have
+  been compressed:
+
+  ```shell
+  bundle exec rake pngquant:lint
+  ```
+
+- Compress all documentation PNG images using `pngquant`:
+
+  ```shell
+  bundle exec rake pngquant:compress
+  ```
+
+The only caveat is that the task runs on all images under `doc/`, not only the
+ones you might have included in a merge request. In that case, you can run the
+compress task and only commit the images that are relevant to your merge
+request.
 
 ## Videos
 

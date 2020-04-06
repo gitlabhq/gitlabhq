@@ -340,4 +340,18 @@ describe QA::Runtime::Env do
       end
     end
   end
+
+  describe '.dot_com?' do
+    it 'returns true when url has .com' do
+      QA::Runtime::Scenario.define(:gitlab_address, "https://staging.gitlab.com")
+
+      expect(described_class.dot_com?).to be_truthy
+    end
+
+    it 'returns false when url does not have .com' do
+      QA::Runtime::Scenario.define(:gitlab_address, "https://gitlab.test")
+
+      expect(described_class.dot_com?).to be_falsy
+    end
+  end
 end

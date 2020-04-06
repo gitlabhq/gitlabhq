@@ -327,6 +327,8 @@ but commented out to help encourage others to add to it in the future. -->
 |dependency_scanning_jobs|counts||
 |license_management_jobs|counts||
 |sast_jobs|counts||
+|status_page_projects|counts|monitor|
+|status_page_issues|counts|monitor|
 |epics_deepest_relationship_level|counts||
 |operations_dashboard_default_dashboard|counts||
 |operations_dashboard_users_with_projects_added|counts||

@@ -28,11 +28,11 @@
               %span
                 = _('Projects')
           = nav_link(controller: :users) do
-            = link_to admin_users_path, title: _('Users') , data: { qa_selector: 'users_overview_link' } do
+            = link_to admin_users_path, title: _('Users'), data: { qa_selector: 'users_overview_link' } do
               %span
                 = _('Users')
           = nav_link(controller: :groups) do
-            = link_to admin_groups_path, title: _('Groups') do
+            = link_to admin_groups_path, title: _('Groups'), data: { qa_selector: 'groups_overview_link' } do
               %span
                 = _('Groups')
           = nav_link path: 'jobs#index' do

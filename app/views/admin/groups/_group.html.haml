@@ -1,7 +1,7 @@
 - group = local_assigns.fetch(:group)
 - css_class = 'no-description' if group.description.blank?
 
-%li.group-row.py-3{ class: css_class }
+%li.group-row.py-3{ class: css_class, data: { qa_selector: 'group_row_content' } }
   .controls
     = link_to _('Edit'), admin_group_edit_path(group), id: "edit_#{dom_id(group)}", class: 'btn'
     = link_to _('Delete'), [:admin, group], data: { confirm: _("Are you sure you want to remove %{group_name}?") % { group_name: group.name } }, method: :delete, class: 'btn btn-remove'
@@ -26,7 +26,7 @@
   .avatar-container.rect-avatar.s40
     = group_icon(group, class: "avatar s40 d-none d-sm-block")
   .title
-    = link_to [:admin, group], class: 'group-name' do
+    = link_to [:admin, group], class: 'group-name', data: { qa_selector: 'group_name_link' } do
       = group.full_name
 
   - if group.description.present?

@@ -46,6 +46,27 @@ module Gitlab
         end
       end
 
+      context "with requested path" do
+        input = <<~ADOC
+          Document name: {docname}.
+        ADOC
+
+        it "ignores {docname} when not available" do
+          expect(render(input, {})).to include(input.strip)
+        end
+
+        [
+          ['/',                   '',       'root'],
+          ['README',              'README', 'just a filename'],
+          ['doc/api/',            '',       'a directory'],
+          ['doc/api/README.adoc', 'README', 'a complete path']
+        ].each do |path, basename, desc|
+          it "sets {docname} for #{desc}" do
+            expect(render(input, { requested_path: path })).to include(": #{basename}.")
+          end
+        end
+      end
+
       context "XSS" do
         items = {
           'link with extra attribute' => {

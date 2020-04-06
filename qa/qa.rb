@@ -369,6 +369,12 @@ module QA
           autoload :Index, 'qa/page/admin/overview/users/index'
           autoload :Show, 'qa/page/admin/overview/users/show'
         end
+
+        module Groups
+          autoload :Index, 'qa/page/admin/overview/groups/index'
+          autoload :Show, 'qa/page/admin/overview/groups/show'
+          autoload :Edit, 'qa/page/admin/overview/groups/edit'
+        end
       end
     end
 

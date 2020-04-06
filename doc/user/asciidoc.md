@@ -91,6 +91,8 @@ stem:[sqrt(4) = 2]
 
 ### Attributes
 
+**User-defined attributes**
+
 ```asciidoc
 // define attributes in the document header
 :name: value
@@ -103,6 +105,15 @@ You can download and install Asciidoctor {asciidoctor-version} from {url-gem}.
 C{pp} is not required, only Ruby.
 Use a leading backslash to output a word enclosed in curly braces, like \{name}.
 ```
+
+**Environment attributes**
+
+GitLab sets the following environment attributes:
+
+| Attribute       | Description                                                                                                            |
+| :-------------- | :--------------------------------------------------------------------------------------------------------------------- |
+| `docname`       | Root name of the source document (no leading path or file extension).                                                  |
+| `outfilesuffix` | File extension corresponding to the backend output (defaults to `.adoc` to make inter-document cross references work). |
 
 ### Links
 

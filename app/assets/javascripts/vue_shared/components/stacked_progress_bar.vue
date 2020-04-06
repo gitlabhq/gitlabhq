@@ -14,15 +14,18 @@ export default {
     },
     successLabel: {
       type: String,
-      required: true,
+      required: false,
+      default: 'successful',
     },
     failureLabel: {
       type: String,
-      required: true,
+      required: false,
+      default: 'failed',
     },
     neutralLabel: {
       type: String,
-      required: true,
+      required: false,
+      default: 'neutral',
     },
     successCount: {
       type: Number,
@@ -35,6 +38,11 @@ export default {
     totalCount: {
       type: Number,
       required: true,
+    },
+    hideTooltips: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   computed: {
@@ -87,7 +95,7 @@ export default {
       return `width: ${percent}%;`;
     },
     getTooltip(label, count) {
-      return `${label}: ${count}`;
+      return this.hideTooltips ? '' : `${label}: ${count}`;
     },
   },
 };

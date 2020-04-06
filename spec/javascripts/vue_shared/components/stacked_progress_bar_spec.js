@@ -68,8 +68,20 @@ describe('StackedProgressBarComponent', () => {
     });
 
     describe('getTooltip', () => {
-      it('returns label string based on label and count provided', () => {
-        expect(vm.getTooltip('Synced', 10)).toBe('Synced: 10');
+      describe('when hideTooltips is false', () => {
+        it('returns label string based on label and count provided', () => {
+          expect(vm.getTooltip('Synced', 10)).toBe('Synced: 10');
+        });
+      });
+
+      describe('when hideTooltips is true', () => {
+        beforeEach(() => {
+          vm = createComponent({ hideTooltips: true });
+        });
+
+        it('returns an empty string', () => {
+          expect(vm.getTooltip('Synced', 10)).toBe('');
+        });
       });
     });
   });

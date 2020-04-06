@@ -16,9 +16,7 @@ module QA
           element :admin_sidebar_monitoring_submenu_content
           element :admin_sidebar_overview_submenu_content
           element :users_overview_link
-        end
-
-        view 'app/views/layouts/nav/sidebar/_admin.html.haml' do
+          element :groups_overview_link
           element :integration_settings_link
         end
 
@@ -73,6 +71,12 @@ module QA
         def go_to_users_overview
           within_submenu(:admin_sidebar_overview_submenu_content) do
             click_element :users_overview_link
+          end
+        end
+
+        def go_to_groups_overview
+          within_submenu(:admin_sidebar_overview_submenu_content) do
+            click_element :groups_overview_link
           end
         end
 

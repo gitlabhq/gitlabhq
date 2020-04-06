@@ -380,8 +380,3 @@ Performance/ChainArrayAllocation:
     - 'lib/gitlab/import_export/**/*'
     - 'ee/lib/gitlab/import_export/**/*'
     - 'ee/lib/ee/gitlab/import_export/**/*'
-
-# https://gitlab.com/gitlab-org/gitlab/-/issues/212541
-RSpec/RepeatedExample:
-  Exclude:
-    - 'spec/features/merge_request/user_posts_diff_notes_spec.rb'

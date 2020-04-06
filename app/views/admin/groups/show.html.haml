@@ -4,7 +4,7 @@
 %h3.page-title
   = _('Group: %{group_name}') % { group_name: @group.full_name }
 
-  = link_to admin_group_edit_path(@group), class: "btn float-right" do
+  = link_to admin_group_edit_path(@group), class: "btn float-right", data: { qa_selector: 'edit_group_link' } do
     %i.fa.fa-pencil-square-o
     = _('Edit')
 %hr

@@ -62,6 +62,14 @@
 .gl-h-32 { height: px-to-rem($grid-size * 4); }
 .gl-h-64 { height: px-to-rem($grid-size * 8); }
 
+.gl-shim-h-2 {
+  height: px-to-rem(4px);
+}
+
+.gl-shim-w-5 {
+  width: px-to-rem(16px);
+}
+
 .gl-text-purple { color: $purple; }
 .gl-text-gray-800 { color: $gray-800; }
 .gl-bg-purple-light { background-color: $purple-light; }

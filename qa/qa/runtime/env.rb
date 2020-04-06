@@ -23,6 +23,10 @@ module QA
         SUPPORTED_FEATURES
       end
 
+      def dot_com?
+        Runtime::Scenario.gitlab_address.include?(".com")
+      end
+
       def additional_repository_storage
         ENV['QA_ADDITIONAL_REPOSITORY_STORAGE']
       end
