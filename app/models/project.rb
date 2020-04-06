@@ -314,6 +314,7 @@ class Project < ApplicationRecord
   has_one :pages_metadatum, class_name: 'ProjectPagesMetadatum', inverse_of: :project
 
   has_many :import_failures, inverse_of: :project
+  has_many :jira_imports, -> { order 'jira_imports.created_at' }, class_name: 'JiraImportState', inverse_of: :project
 
   has_many :daily_report_results, class_name: 'Ci::DailyReportResult'
 
@@ -2422,6 +2423,10 @@ class Project < ApplicationRecord
     quoted_scope = ::Gitlab::SQL::Glob.q(scope)
 
     environments.where("name LIKE (#{::Gitlab::SQL::Glob.to_like(quoted_scope)})") # rubocop:disable GitlabSecurity/SqlInjection
+  end
+
+  def latest_jira_import
+    jira_imports.last
   end
 
   private

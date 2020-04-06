@@ -5,7 +5,6 @@ module API
   module Internal
     class Pages < Grape::API
       before do
-        not_found! unless Feature.enabled?(:pages_internal_api)
         authenticate_gitlab_pages_request!
       end
 

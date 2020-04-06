@@ -110,6 +110,7 @@ describe Project do
     it { is_expected.to have_many(:source_pipelines) }
     it { is_expected.to have_many(:prometheus_alert_events) }
     it { is_expected.to have_many(:self_managed_prometheus_alert_events) }
+    it { is_expected.to have_many(:jira_imports) }
 
     it_behaves_like 'model with repository' do
       let_it_be(:container) { create(:project, :repository, path: 'somewhere') }
@@ -5984,6 +5985,34 @@ describe Project do
       environment = project.environments.first
 
       expect(project.environments_for_scope(environment.name)).to eq([environment])
+    end
+  end
+
+  describe '#latest_jira_import' do
+    let_it_be(:project) { create(:project) }
+    context 'when no jira imports' do
+      it 'returns nil' do
+        expect(project.latest_jira_import).to be nil
+      end
+    end
+
+    context 'when single jira import' do
+      let!(:jira_import1) { create(:jira_import_state, project: project) }
+
+      it 'returns the jira import' do
+        expect(project.latest_jira_import).to eq(jira_import1)
+      end
+    end
+
+    context 'when multiple jira imports' do
+      let!(:jira_import1) { create(:jira_import_state, :finished, created_at: 1.day.ago, project: project) }
+      let!(:jira_import2) { create(:jira_import_state, :failed, created_at: 2.days.ago, project: project) }
+      let!(:jira_import3) { create(:jira_import_state, :started, created_at: 3.days.ago, project: project) }
+
+      it 'returns latest jira import by created_at' do
+        expect(project.jira_imports.pluck(:id)).to eq([jira_import3.id, jira_import2.id, jira_import1.id])
+        expect(project.latest_jira_import).to eq(jira_import1)
+      end
     end
   end
 

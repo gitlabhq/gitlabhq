@@ -461,7 +461,7 @@ dast:
 The DAST job does not require the project's repository to be present when running, so by default
 [`GIT_STRATEGY`](../../../ci/yaml/README.md#git-strategy) is set to `none`.
 
-## Running DAST in an offline environment deployment
+## Running DAST in an offline environment
 
 DAST can be executed on an offline GitLab Ultimate installation by using the following process:
 

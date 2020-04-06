@@ -30,7 +30,7 @@ You can find these nightly pipelines at `https://gitlab.com/gitlab-org/quality/s
 #### Using the `package-and-qa` job
 
 It is possible to run end-to-end tests for a merge request, eventually being run in
-a pipeline in the [`gitlab-qa`](https://gitlab.com/gitlab-org/gitlab-qa/) project,
+a pipeline in the [`gitlab-qa-mirror`](https://gitlab.com/gitlab-org/gitlab-qa-mirror/) project,
 by triggering the `package-and-qa` manual action in the `test` stage (not
 available for forks).
 
@@ -49,8 +49,8 @@ pipelines.
 
 ```mermaid
 graph LR
-    A1 -.->|1. Triggers an omnibus-gitlab pipeline and wait for it to be done| A2
-    B2[`Trigger-qa` stage<br>`Trigger:qa-test` job] -.->|2. Triggers a gitlab-qa pipeline and wait for it to be done| A3
+    A1 -.->|1. Triggers an omnibus-gitlab-mirror pipeline and wait for it to be done| A2
+    B2[`Trigger-qa` stage<br>`Trigger:qa-test` job] -.->|2. Triggers a gitlab-qa-mirror pipeline and wait for it to be done| A3
 
 subgraph "gitlab-foss/gitlab pipeline"
     A1[`test` stage<br>`package-and-qa` job]
@@ -60,7 +60,7 @@ subgraph "omnibus-gitlab pipeline"
     A2[`Trigger-docker` stage<br>`Trigger:gitlab-docker` job] -->|once done| B2
     end
 
-subgraph "gitlab-qa pipeline"
+subgraph "gitlab-qa-mirror pipeline"
     A3>QA jobs run] -.->|3. Reports back the pipeline result to the `package-and-qa` job<br>and post the result  on the original commit tested| A1
     end
 ```
@@ -68,7 +68,7 @@ subgraph "gitlab-qa pipeline"
 1. Developer triggers a manual action, that can be found in CE / EE merge
    requests. This starts a chain of pipelines in multiple projects.
 
-1. The script being executed triggers a pipeline in [Omnibus GitLab][omnibus-gitlab]
+1. The script being executed triggers a pipeline in [Omnibus GitLab Mirror][omnibus-gitlab-mirror]
    and waits for the resulting status. We call this a _status attribution_.
 
 1. GitLab packages are being built in the [Omnibus GitLab][omnibus-gitlab]
@@ -76,7 +76,7 @@ subgraph "gitlab-qa pipeline"
 
 1. When packages are ready, and available in the registry, a final step in the
    [Omnibus GitLab][omnibus-gitlab] pipeline, triggers a new
-   GitLab QA pipeline (those with access can view them at `https://gitlab.com/gitlab-org/gitlab-qa/pipelines`). It also waits for a resulting status.
+   GitLab QA pipeline (those with access can view them at `https://gitlab.com/gitlab-org/gitlab-qa-mirror/pipelines`). It also waits for a resulting status.
 
 1. GitLab QA pulls images from the registry, spins-up containers and runs tests
    against a test environment that has been just orchestrated by the `gitlab-qa`
@@ -86,12 +86,12 @@ subgraph "gitlab-qa pipeline"
    propagated upstream, through Omnibus, back to the CE / EE merge request.
 
 Please note, we plan to [add more specific information](https://gitlab.com/gitlab-org/quality/team-tasks/issues/156)
-about the tests included in each job/scenario that runs in `gitlab-qa`.
+about the tests included in each job/scenario that runs in `gitlab-qa-mirror`.
 
 #### With Pipeline for Merged Results
 
 In a Pipeline for Merged Results, the pipeline runs on a new ref that contains the merge result of the source and target branch.
-However, this ref is not available to the `gitlab-qa` pipeline.
+However, this ref is not available to the `gitlab-qa-mirror` pipeline.
 
 For this reason, the end-to-end tests on a Pipeline for Merged Results would use the head of the merge request source branch.
 
@@ -112,7 +112,7 @@ C --> D["Pipeline for merged results"]
 ##### Running custom tests
 
 The [existing scenarios](https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/what_tests_can_be_run.md)
-that run in the downstream `gitlab-qa` pipeline include many tests, but there are times when you might want to run a
+that run in the downstream `gitlab-qa-mirror` pipeline include many tests, but there are times when you might want to run a
 test or a group of tests that are different than the groups in any of the existing scenarios.
 
 For example, when we [dequarantine](https://about.gitlab.com/handbook/engineering/quality/guidelines/debugging-qa-test-failures/#dequarantining-tests)
@@ -197,6 +197,7 @@ you can find an issue you would like to work on in
 [the `gitlab-qa` issue tracker][gitlab-qa-issues].
 
 [omnibus-gitlab]: https://gitlab.com/gitlab-org/omnibus-gitlab
+[omnibus-gitlab-mirror]: https://gitlab.com/gitlab-org/omnibus-gitlab-mirror
 [gitlab-qa]: https://gitlab.com/gitlab-org/gitlab-qa
 [gitlab-qa-readme]: https://gitlab.com/gitlab-org/gitlab-qa/tree/master/README.md
 [review-apps]: ../review_apps.md

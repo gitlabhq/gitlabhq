@@ -93,7 +93,7 @@ A single `git push` is limited to 5GB. LFS is not affected by this limit.
 ## IP range
 
 GitLab.com is using the IP range `34.74.90.64/28` for traffic from its Web/API
-fleet. You can expect connections from webhooks or repository mirroring to come
+fleet. This whole range is solely allocated to GitLab. You can expect connections from webhooks or repository mirroring to come
 from those IPs and whitelist them.
 
 GitLab.com is fronted by Cloudflare. For incoming connections to GitLab.com you might need to whitelist CIDR blocks of Cloudflare ([IPv4](https://www.cloudflare.com/ips-v4) and [IPv6](https://www.cloudflare.com/ips-v6))

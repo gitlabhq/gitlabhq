@@ -1,7 +1,7 @@
-# Air-gapped GitLab
+# Offline GitLab
 
-Computers in an air-gapped network are isolated from the public internet as a security measure.
-This page lists all the information available for running GitLab in an air-gapped environment.
+Computers in an offline environment are isolated from the public internet as a security measure. This
+page lists all the information available for running GitLab in an offline environment.
 
 ## Quick start
 
@@ -14,7 +14,7 @@ Follow these best practices to use GitLab's features in an offline environment:
 
 - [Operating the GitLab Secure scanners in an offline environment](../../user/application_security/offline_deployments/index.md).
 
-## Loading Docker images onto your air-gapped host
+## Loading Docker images onto your offline host
 
 To use many GitLab features, including
 [security scans](../../user/application_security/index.md#working-in-an-offline-environment)
@@ -22,13 +22,13 @@ and [Auto Devops](../autodevops/), the GitLab Runner must be able to fetch the
 relevant Docker images.
 
 The process for making these images available without direct access to the public internet
-involves downloading the images then packaging and transferring them to the air-gapped host.
-Here's an example of such a transfer:
+involves downloading the images then packaging and transferring them to the offline host. Here's an
+example of such a transfer:
 
 1. Download Docker images from public internet.
 1. Package Docker images as tar archives.
-1. Transfer images to air-gapped environment.
-1. Load transferred images into air-gapped Docker registry.
+1. Transfer images to offline environment.
+1. Load transferred images into offline Docker registry.
 
 ### Example image packager script
 
@@ -51,7 +51,7 @@ done
 
 ### Example image loader script
 
-This example loads the images from a bastion host to an air-gapped host. In certain configurations,
+This example loads the images from a bastion host to an offline host. In certain configurations,
 physical media may be needed for such a transfer:
 
 ```sh

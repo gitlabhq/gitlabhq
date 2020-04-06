@@ -1,4 +1,4 @@
-# Getting started with an air-gapped GitLab Installation
+# Getting started with an offline GitLab Installation
 
 This is a step-by-step guide that helps you install, configure, and use a self-managed GitLab
 instance entirely offline.

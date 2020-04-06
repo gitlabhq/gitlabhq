@@ -491,10 +491,10 @@ Once a vulnerability is found, you can interact with it. Read more on how to
 For more information about the vulnerabilities database update, check the
 [maintenance table](../index.md#maintenance-and-update-of-the-vulnerabilities-database).
 
-## GitLab SAST in an offline environment deployment
+## GitLab SAST in an offline environment
 
 For self-managed GitLab instances in an environment with limited, restricted, or intermittent access
-to external resources via the internet, some adjustments are required for the SAST job to
+to external resources through the internet, some adjustments are required for the SAST job to
 successfully run.
 
 ### Requirements for offline SAST

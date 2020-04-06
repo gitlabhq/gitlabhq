@@ -64,7 +64,7 @@ source projects, GitLab grants access to **Gold** features for all GitLab.com
 
 #### Self-managed
 
-A self-managed subscription uses a hybrid model. You pay for a subscription according to the maximum number of users enabled during the subscription period. For instances that aren't air-gapped or on a closed network, the maximum number of simultaneous users in the self-managed installation is checked each quarter, using [Seat Link](#seat-link).
+A self-managed subscription uses a hybrid model. You pay for a subscription according to the maximum number of users enabled during the subscription period. For instances that aren't offline or on a closed network, the maximum number of simultaneous users in the self-managed installation is checked each quarter, using [Seat Link](#seat-link).
 
 Every occupied seat, whether by person, job, or bot is counted in the subscription, with the following exceptions:
 
@@ -255,7 +255,7 @@ Seat Link provides **only** the following information to GitLab:
 - Historical maximum user count
 - Active users count
 
-For air-gapped or closed network customers, the existing [true-up model](#users-over-license) will be used. Prorated charges are not possible without user count data.
+For offline or closed network customers, the existing [true-up model](#users-over-license) will be used. Prorated charges are not possible without user count data.
 
 <details>
 <summary>Click here to view example content of a Seat Link POST request.</summary>

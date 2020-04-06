@@ -31,6 +31,15 @@ Attach the screenshot and HTML snapshot of the page from the job's artifacts:
 1. Open the `gitlab-qa-run-2020-*/gitlab-{ce,ee}-qa-*/{,ee}/{api,browser_ui}/<path to failed test>` folder.
 1. Select the `.png` and `.html` files that appears in the job logs (look for `HTML screenshot: /path/to/html/page.html` / `Image screenshot: `/path/to/html/page.png`).
 1. Drag and drop them here.
+
+Note: You don't need to include a screenshot if the information it contains can be included as text. Include the text instead.
+E.g., error 500/404, "Retry later" errors, etc.
+
+If you include multiple screenshots it can be helpful to hide all but the first in a details/summary element, to avoid excessive scrolling:
+
+<details><summary>Expand for screenshot</summary>
+  drag and drop the screenshot here
+</details>
 -->
 
 ### Possible fixes

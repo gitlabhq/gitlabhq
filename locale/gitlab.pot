@@ -3353,6 +3353,9 @@ msgstr ""
 msgid "Cannot create the abuse report. This user has been blocked."
 msgstr ""
 
+msgid "Cannot have multiple Jira imports running at the same time"
+msgstr ""
+
 msgid "Cannot make epic confidential if it contains not-confidential issues"
 msgstr ""
 

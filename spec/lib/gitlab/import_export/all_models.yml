@@ -476,6 +476,7 @@ project:
 - requirements
 - export_jobs
 - daily_report_results
+- jira_imports
 award_emoji:
 - awardable
 - user
