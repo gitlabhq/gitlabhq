@@ -40,7 +40,13 @@ module Projects
           return true
         end
 
-        gitlab_shell.mv_repository(project.repository_storage, from_name, to_name)
+        gitlab_shell.mv_repository(project.repository_storage, from_name, to_name).tap do |moved|
+          if moved
+            logger.info("Repository moved from '#{from_name}' to '#{to_name}' (PROJECT_ID=#{project.id})")
+          else
+            logger.error("Repository cannot be moved from '#{from_name}' to '#{to_name}' (PROJECT_ID=#{project.id})")
+          end
+        end
       end
 
       def move_repositories

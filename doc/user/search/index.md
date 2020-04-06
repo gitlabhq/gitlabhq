@@ -171,5 +171,3 @@ GitLab instance.
 Use advanced queries for more targeted search results.
 
 [Learn how to use the Advanced Syntax Search.](advanced_search_syntax.md)
-
-[ee]: https://about.gitlab.com/pricing/

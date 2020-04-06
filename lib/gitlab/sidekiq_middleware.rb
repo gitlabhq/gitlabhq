@@ -29,12 +29,12 @@ module Gitlab
     # eg: `config.client_middleware(&Gitlab::SidekiqMiddleware.client_configurator)`
     def self.client_configurator
       lambda do |chain|
-        chain.add ::Gitlab::SidekiqStatus::ClientMiddleware
-        chain.add ::Gitlab::SidekiqMiddleware::ClientMetrics
         chain.add ::Gitlab::SidekiqMiddleware::WorkerContext::Client # needs to be before the Labkit middleware
         chain.add ::Labkit::Middleware::Sidekiq::Client
-        chain.add ::Gitlab::SidekiqMiddleware::AdminMode::Client
         chain.add ::Gitlab::SidekiqMiddleware::DuplicateJobs::Client
+        chain.add ::Gitlab::SidekiqStatus::ClientMiddleware
+        chain.add ::Gitlab::SidekiqMiddleware::AdminMode::Client
+        chain.add ::Gitlab::SidekiqMiddleware::ClientMetrics
       end
     end
   end

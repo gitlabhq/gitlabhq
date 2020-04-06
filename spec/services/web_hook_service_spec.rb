@@ -71,16 +71,6 @@ describe WebHookService do
       end
     end
 
-    it 'POSTs to the webhook URL' do
-      stub_full_request(project_hook.url, method: :post)
-
-      service_instance.execute
-
-      expect(WebMock).to have_requested(:post, stubbed_hostname(project_hook.url)).with(
-        headers: headers
-      ).once
-    end
-
     it 'POSTs the data as JSON' do
       stub_full_request(project_hook.url, method: :post)
 

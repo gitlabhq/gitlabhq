@@ -142,7 +142,6 @@ module Gitlab
           validate_job_stage!(name, job)
           validate_job_dependencies!(name, job)
           validate_job_needs!(name, job)
-          validate_dynamic_child_pipeline_dependencies!(name, job)
           validate_job_environment!(name, job)
         end
       end
@@ -164,50 +163,35 @@ module Gitlab
       def validate_job_dependencies!(name, job)
         return unless job[:dependencies]
 
+        stage_index = @stages.index(job[:stage])
+
         job[:dependencies].each do |dependency|
-          validate_job_dependency!(name, dependency)
-        end
-      end
+          raise ValidationError, "#{name} job: undefined dependency: #{dependency}" unless @jobs[dependency.to_sym]
 
-      def validate_dynamic_child_pipeline_dependencies!(name, job)
-        return unless includes = job.dig(:trigger, :include)
+          dependency_stage_index = @stages.index(@jobs[dependency.to_sym][:stage])
 
-        includes.each do |included|
-          next unless dependency = included[:job]
-
-          validate_job_dependency!(name, dependency)
+          unless dependency_stage_index.present? && dependency_stage_index < stage_index
+            raise ValidationError, "#{name} job: dependency #{dependency} is not defined in prior stages"
+          end
         end
       end
 
       def validate_job_needs!(name, job)
-        return unless needs = job.dig(:needs, :job)
+        return unless job.dig(:needs, :job)
 
-        needs.each do |need|
-          dependency = need[:name]
-          validate_job_dependency!(name, dependency, 'need')
+        stage_index = @stages.index(job[:stage])
+
+        job.dig(:needs, :job).each do |need|
+          need_job_name = need[:name]
+
+          raise ValidationError, "#{name} job: undefined need: #{need_job_name}" unless @jobs[need_job_name.to_sym]
+
+          needs_stage_index = @stages.index(@jobs[need_job_name.to_sym][:stage])
+
+          unless needs_stage_index.present? && needs_stage_index < stage_index
+            raise ValidationError, "#{name} job: need #{need_job_name} is not defined in prior stages"
+          end
         end
-      end
-
-      def validate_job_dependency!(name, dependency, dependency_type = 'dependency')
-        unless @jobs[dependency.to_sym]
-          raise ValidationError, "#{name} job: undefined #{dependency_type}: #{dependency}"
-        end
-
-        job_stage_index = stage_index(name)
-        dependency_stage_index = stage_index(dependency)
-
-        # A dependency might be defined later in the configuration
-        # with a stage that does not exist
-        unless dependency_stage_index.present? && dependency_stage_index < job_stage_index
-          raise ValidationError, "#{name} job: #{dependency_type} #{dependency} is not defined in prior stages"
-        end
-      end
-
-      def stage_index(name)
-        job = @jobs[name.to_sym]
-        return unless job
-
-        @stages.index(job[:stage])
       end
 
       def validate_job_environment!(name, job)

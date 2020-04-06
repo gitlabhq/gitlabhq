@@ -228,20 +228,8 @@ When disabling `sidekiq_cluster`, you must copy your configuration for
 `sidekiq_cluster` will be overridden by the options for `sidekiq` when
 setting `sidekiq['cluster'] = true`.
 
-When using this feature, replace the `sidekiq` service with the
-`sidekiq-cluster`service for `gitlab-ctl` commands.
-
-For example, instead of:
-
-```shell
-sudo gitlab-ctl restart sidekiq
-```
-
-Use:
-
-```shell
-sudo gitlab-ctl restart sidekiq-cluster
-```
+When using this feature, the service called `sidekiq` will now be
+running `sidekiq-cluster`.
 
 The [concurrency](#managing-concurrency) and other options configured
 for Sidekiq will be respected.

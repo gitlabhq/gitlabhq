@@ -2,7 +2,7 @@
 
 You can find the available integrations under your project's
 **Settings ➔ Integrations** page. You need to have at least
-[maintainer permission][permissions] on the project.
+[maintainer permission](../../permissions.md) on the project.
 
 ## Integrations
 
@@ -20,5 +20,3 @@ like pushes, issues or merge requests. GitLab will send a POST request with data
 to the webhook URL.
 
 [Learn more about webhooks.](webhooks.md)
-
-[permissions]: ../../permissions.md

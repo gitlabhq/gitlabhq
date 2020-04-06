@@ -44,12 +44,12 @@ That's all! You can now start using the Slack slash commands.
 ## Usage
 
 After confirming the installation, you, and everyone else in your Slack team,
-can use all the [slash commands].
+can use all the [slash commands](../../../integration/slash_commands.md).
 
 When you perform your first slash command you will be asked to authorize your
 Slack user on GitLab.com.
 
-The only difference with the [manually configurable Slack slash commands][slack-manual]
+The only difference with the [manually configurable Slack slash commands](slack_slash_commands.md)
 is that all the commands should be prefixed with the `/gitlab` keyword.
 We are working on making this configurable in the future.
 
@@ -59,6 +59,3 @@ project, you would do:
 ```plaintext
 /gitlab gitlab-org/gitlab issue show 1001
 ```
-
-[slash commands]: ../../../integration/slash_commands.md
-[slack-manual]: slack_slash_commands.md

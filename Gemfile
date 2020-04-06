@@ -319,7 +319,7 @@ gem 'peek', '~> 1.1'
 gem 'snowplow-tracker', '~> 0.6.1'
 
 # Memory benchmarks
-gem 'gitlab-derailed_benchmarks', require: false
+gem 'derailed_benchmarks', require: false
 
 # Metrics
 group :metrics do

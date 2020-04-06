@@ -91,8 +91,9 @@ this needs to happen when the stable branches for all products have been created
    Once you push, the `image:docker-singe` job will create a new Docker image
    tagged with the branch name you created in the first step. In the end, the
    image will be uploaded in the [Container Registry](https://gitlab.com/gitlab-org/gitlab-docs/container_registry)
-   and it will be listed under the
-   [`registry` environment folder](https://gitlab.com/gitlab-org/gitlab-docs/-/environments/folders/registry).
+   and it will be listed under the `registry` environment folder at
+   `https://gitlab.com/gitlab-org/gitlab-docs/-/environments/folders/registry` (must
+   have developer access).
 
 Optionally, you can test locally by building the image and running it:
 

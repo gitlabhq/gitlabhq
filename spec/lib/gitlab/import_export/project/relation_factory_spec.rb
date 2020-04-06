@@ -160,7 +160,7 @@ describe Gitlab::ImportExport::Project::RelationFactory do
     end
 
     it 'has preloaded target project' do
-      expect(created_object.source_project).to equal(project)
+      expect(created_object.target_project).to equal(project)
     end
   end
 

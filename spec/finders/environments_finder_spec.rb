@@ -37,11 +37,6 @@ describe EnvironmentsFinder do
           .to be_empty
       end
 
-      it 'returns environment when with_tags is set' do
-        expect(described_class.new(project, user, ref: 'master', commit: commit, with_tags: true).execute)
-          .to contain_exactly(environment, environment_two)
-      end
-
       # We expect two Gitaly calls: FindCommit, CommitIsAncestor
       # This tests to ensure we don't call one CommitIsAncestor per environment
       it 'only calls Gitaly twice when multiple environments are present', :request_store do

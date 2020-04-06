@@ -256,9 +256,9 @@ application server, or a Gitaly node.
 
    ```ruby
    # Name of storage hash must match storage name in git_data_dirs on GitLab
-   # server ('storage_1') and in git_data_dirs on Gitaly nodes ('gitaly-1')
+   # server ('praefect') and in git_data_dirs on Gitaly nodes ('gitaly-1')
    praefect['virtual_storages'] = {
-     'storage_1' => {
+     'praefect' => {
        'gitaly-1' => {
          'address' => 'tcp://GITALY_HOST:8075',
          'token'   => 'PRAEFECT_INTERNAL_TOKEN',

@@ -1,18 +1,18 @@
 # Kerberos integration **(STARTER ONLY)**
 
-GitLab can integrate with [Kerberos][kerb] as an authentication mechanism.
+GitLab can integrate with [Kerberos](https://web.mit.edu/kerberos/) as an authentication mechanism.
 
 ## Overview
 
-[Kerberos][kerb] is a secure method for authenticating a request for a service in a
+[Kerberos](https://web.mit.edu/kerberos/) is a secure method for authenticating a request for a service in a
 computer network. Kerberos was developed in the Athena Project at the
-[Massachusetts Institute of Technology (MIT)][mit]. The name is taken from Greek
+[Massachusetts Institute of Technology (MIT)](http://web.mit.edu/). The name is taken from Greek
 mythology; Kerberos was a three-headed dog who guarded the gates of Hades.
 
 ## Use-cases
 
 - GitLab can be configured to allow your users to sign with their Kerberos credentials.
-- You can use Kerberos to [prevent][why-kerb] anyone from intercepting or eavesdropping on the transmitted password.
+- You can use Kerberos to [prevent](http://web.mit.edu/sipb/doc/working/guide/guide/node20.html) anyone from intercepting or eavesdropping on the transmitted password.
 
 ## Configuration
 
@@ -65,7 +65,7 @@ For source installations, make sure the `kerberos` gem group
      keytab: /etc/http.keytab
    ```
 
-1. [Restart GitLab] for the changes to take effect.
+1. [Restart GitLab](../administration/restart_gitlab.md#installations-from-source) for the changes to take effect.
 
 **Omnibus package installations**
 
@@ -78,7 +78,7 @@ For source installations, make sure the `kerberos` gem group
    gitlab_rails['kerberos_keytab'] = "/etc/http.keytab"
    ```
 
-1. [Reconfigure GitLab] for the changes to take effect.
+1. [Reconfigure GitLab](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
 GitLab will now offer the `negotiate` authentication method for signing in and
 HTTP Git access, enabling Git clients that support this authentication protocol
@@ -165,7 +165,7 @@ keep offering only `basic` authentication.
      https: true
    ```
 
-1. [Restart GitLab] and NGINX for the changes to take effect.
+1. [Restart GitLab](../administration/restart_gitlab.md#installations-from-source) and NGINX for the changes to take effect.
 
 **For Omnibus package installations**
 
@@ -177,7 +177,7 @@ keep offering only `basic` authentication.
    gitlab_rails['kerberos_https'] = true
    ```
 
-1. [Reconfigure GitLab] for the changes to take effect.
+1. [Reconfigure GitLab](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
 After this change, all Git remote URLs will have to be updated to
 `https://gitlab.example.com:8443/mygroup/myproject.git` in order to use
@@ -212,7 +212,7 @@ remove the OmniAuth provider named `kerberos` from your `gitlab.yml` /
        - { name: 'kerberos' } # <-- remove this line
    ```
 
-1. [Restart GitLab] for the changes to take effect.
+1. [Restart GitLab](../administration/restart_gitlab.md#installations-from-source) for the changes to take effect.
 
 **For Omnibus installations**
 
@@ -225,7 +225,7 @@ remove the OmniAuth provider named `kerberos` from your `gitlab.yml` /
    ]
    ```
 
-1. [Reconfigure GitLab] for the changes to take effect.
+1. [Reconfigure GitLab](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
 ## Support for Active Directory Kerberos environments
 
@@ -233,7 +233,7 @@ When using Kerberos ticket-based authentication in an Active Directory domain,
 it may be necessary to increase the maximum header size allowed by NGINX,
 as extensions to the Kerberos protocol may result in HTTP authentication headers
 larger than the default size of 8kB. Configure `large_client_header_buffers`
-to a larger value in [the NGINX configuration][nginx].
+to a larger value in [the NGINX configuration](http://nginx.org/en/docs/http/ngx_http_core_module.html#large_client_header_buffers).
 
 ## Troubleshooting
 
@@ -293,11 +293,3 @@ See also: [Git v2.11 release notes](https://github.com/git/git/blob/master/Docum
 - <https://help.ubuntu.com/community/Kerberos>
 - <http://blog.manula.org/2012/04/setting-up-kerberos-server-with-debian.html>
 - <https://www.roguelynn.com/words/explain-like-im-5-kerberos/>
-
-[restart gitlab]: ../administration/restart_gitlab.md#installations-from-source
-[reconfigure gitlab]: ../administration/restart_gitlab.md#omnibus-gitlab-reconfigure
-[nginx]: http://nginx.org/en/docs/http/ngx_http_core_module.html#large_client_header_buffers
-[kerb]: https://web.mit.edu/kerberos/
-[mit]: http://web.mit.edu/
-[why-kerb]: http://web.mit.edu/sipb/doc/working/guide/guide/node20.html
-[ee]: https://about.gitlab.com/pricing/

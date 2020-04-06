@@ -218,11 +218,9 @@ Gitlab/DuplicateSpecLocation:
     - ee/spec/lib/gitlab/gl_repository_spec.rb
     - ee/spec/models/namespace_spec.rb
     - ee/spec/services/merge_requests/refresh_service_spec.rb
-    - ee/spec/services/merge_requests/update_service_spec.rb
     - ee/spec/helpers/ee/auth_helper_spec.rb
     - ee/spec/models/ee/namespace_spec.rb
     - ee/spec/services/ee/merge_requests/refresh_service_spec.rb
-    - ee/spec/services/ee/merge_requests/update_service_spec.rb
 
 Cop/InjectEnterpriseEditionModule:
   Enabled: true
@@ -388,11 +386,6 @@ Performance/ChainArrayAllocation:
 # https://gitlab.com/gitlab-org/gitlab/-/issues/212541
 RSpec/RepeatedExample:
   Exclude:
-    - 'spec/features/issues/filtered_search/filter_issues_spec.rb'
     - 'spec/features/merge_request/user_posts_diff_notes_spec.rb'
     - 'spec/features/projects/files/template_type_dropdown_spec.rb'
-    - 'spec/finders/environments_finder_spec.rb'
-    - 'spec/helpers/users_helper_spec.rb'
-    - 'spec/lib/gitlab/import_export/project/relation_factory_spec.rb'
     - 'spec/services/notification_service_spec.rb'
-    - 'spec/services/web_hook_service_spec.rb'

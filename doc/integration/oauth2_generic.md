@@ -51,7 +51,7 @@ This strategy is designed to allow configuration of the simple OmniAuth SSO proc
 
 1. See [Initial OmniAuth Configuration](omniauth.md#initial-omniauth-configuration) for initial settings
 
-1. Add the provider-specific configuration for your provider, as [described in the gem's README][1]
+1. Add the provider-specific configuration for your provider, as [described in the gem's README](https://gitlab.com/satorix/omniauth-oauth2-generic#gitlab-config-example)
 
 1. Save the configuration file
 
@@ -61,5 +61,3 @@ On the sign in page there should now be a new button below the regular sign in f
 Click the button to begin your provider's authentication process. This will direct
 the browser to your OAuth2 Provider's authentication page. If everything goes well
 the user will be returned to your GitLab instance and will be signed in.
-
-[1]: https://gitlab.com/satorix/omniauth-oauth2-generic#gitlab-config-example

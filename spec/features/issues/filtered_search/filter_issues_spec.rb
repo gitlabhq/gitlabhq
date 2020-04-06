@@ -224,14 +224,6 @@ describe 'Filter issues', :js do
         expect_no_issues_list
         expect_filtered_search_input_empty
       end
-
-      it 'does show issues for bug label' do
-        input_filtered_search("label:!=~#{bug_label.title}")
-
-        expect_tokens([label_token(bug_label.title)])
-        expect_issues_list_count(6)
-        expect_filtered_search_input_empty
-      end
     end
 
     context 'label with multiple words' do

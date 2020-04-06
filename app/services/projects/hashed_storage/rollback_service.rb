@@ -5,6 +5,12 @@ module Projects
     class RollbackService < BaseService
       attr_reader :logger, :old_disk_path
 
+      def initialize(project, old_disk_path, logger: nil)
+        @project = project
+        @old_disk_path = old_disk_path
+        @logger = logger || Gitlab::AppLogger
+      end
+
       def execute
         # Rollback attachments from Hashed Storage to Legacy
         if project.hashed_storage?(:attachments)

@@ -2,7 +2,7 @@
 
 > **Notes:**
 >
-> - Introduced in [GitLab Enterprise Starter][ee] 9.2
+> - Introduced in [GitLab Enterprise Starter](https://about.gitlab.com/pricing/) 9.2
 > - This is the user documentation. To install and configure Elasticsearch,
 >   visit the [administrator documentation](../../integration/elasticsearch.md).
 
@@ -37,7 +37,7 @@ better results.
 The Advanced Syntax Search supports fuzzy or exact search queries with prefixes,
 boolean operators, and much more.
 
-Full details can be found in the [Elasticsearch documentation][elastic], but
+Full details can be found in the [Elasticsearch documentation](https://www.elastic.co/guide/en/elasticsearch/reference/5.3/query-dsl-simple-query-string-query.html#_simple_query_string_syntax), but
 here's a quick guide:
 
 - Searches look for all the words in a query, in any order - e.g.: searching
@@ -67,6 +67,3 @@ Examples:
 - Finding the text 'def create' inside files with the `.rb` extension: `def create extension:rb`
 - Finding the text `sha` inside files in a folder called `encryption`: `sha path:encryption`
 - Finding any file starting with `hello` containing `world` and with the `.js` extension: `world filename:hello* extension:js`
-
-[ee]: https://about.gitlab.com/pricing/
-[elastic]: https://www.elastic.co/guide/en/elasticsearch/reference/5.3/query-dsl-simple-query-string-query.html#_simple_query_string_syntax

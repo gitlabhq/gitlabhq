@@ -3701,4 +3701,18 @@ describe MergeRequest do
       end
     end
   end
+
+  describe '#predefined_variables' do
+    let(:merge_request) { create(:merge_request) }
+
+    it 'caches all SQL-sourced data on the first call' do
+      control = ActiveRecord::QueryRecorder.new { merge_request.predefined_variables }.count
+
+      expect(control).to be > 0
+
+      count = ActiveRecord::QueryRecorder.new { merge_request.predefined_variables }.count
+
+      expect(count).to eq(0)
+    end
+  end
 end

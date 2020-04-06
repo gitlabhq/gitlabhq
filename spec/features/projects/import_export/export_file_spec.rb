@@ -38,51 +38,109 @@ describe 'Import/Export - project export integration test', :js do
       sign_in(user)
     end
 
-    it 'exports a project successfully', :sidekiq_might_not_need_inline do
-      visit edit_project_path(project)
+    shared_examples 'export file without sensitive words' do
+      it 'exports a project successfully', :sidekiq_inline do
+        export_project_and_download_file(page, project)
 
-      expect(page).to have_content('Export project')
+        in_directory_with_expanded_export(project) do |exit_status, tmpdir|
+          expect(exit_status).to eq(0)
 
-      find(:link, 'Export project').send_keys(:return)
+          project_json_path = File.join(tmpdir, 'project.json')
+          expect(File).to exist(project_json_path)
 
-      visit edit_project_path(project)
+          project_hash = JSON.parse(IO.read(project_json_path))
 
-      expect(page).to have_content('Download export')
+          sensitive_words.each do |sensitive_word|
+            found = find_sensitive_attributes(sensitive_word, project_hash)
 
-      expect(project.export_status).to eq(:finished)
-      expect(project.export_file.path).to include('tar.gz')
-
-      in_directory_with_expanded_export(project) do |exit_status, tmpdir|
-        expect(exit_status).to eq(0)
-
-        project_json_path = File.join(tmpdir, 'project.json')
-        expect(File).to exist(project_json_path)
-
-        project_hash = JSON.parse(IO.read(project_json_path))
-
-        sensitive_words.each do |sensitive_word|
-          found = find_sensitive_attributes(sensitive_word, project_hash)
-
-          expect(found).to be_nil, failure_message(found.try(:key_found), found.try(:parent), sensitive_word)
+            expect(found).to be_nil, failure_message(found.try(:key_found), found.try(:parent), sensitive_word)
+          end
         end
       end
     end
 
-    def failure_message(key_found, parent, sensitive_word)
-      <<-MSG
-        Found a new sensitive word <#{key_found}>, which is part of the hash #{parent.inspect}
+    context "with legacy export" do
+      before do
+        stub_feature_flags(streaming_serializer: false)
+        stub_feature_flags(project_export_as_ndjson: false)
+      end
 
-        If you think this information shouldn't get exported, please exclude the model or attribute in IMPORT_EXPORT_CONFIG.
-
-        Otherwise, please add the exception to +safe_list+ in CURRENT_SPEC using #{sensitive_word} as the key and the
-        correspondent hash or model as the value.
-
-        Also, if the attribute is a generated unique token, please add it to RelationFactory::TOKEN_RESET_MODELS if it needs to be
-        reset (to prevent duplicate column problems while importing to the same instance).
-
-        IMPORT_EXPORT_CONFIG: #{Gitlab::ImportExport.config_file}
-        CURRENT_SPEC: #{__FILE__}
-      MSG
+      it_behaves_like "export file without sensitive words"
     end
+
+    context "with streaming serializer" do
+      before do
+        stub_feature_flags(streaming_serializer: true)
+        stub_feature_flags(project_export_as_ndjson: false)
+      end
+
+      it_behaves_like "export file without sensitive words"
+    end
+
+    context "with ndjson" do
+      before do
+        stub_feature_flags(streaming_serializer: true)
+        stub_feature_flags(project_export_as_ndjson: true)
+      end
+
+      it 'exports a project successfully', :sidekiq_inline do
+        export_project_and_download_file(page, project)
+
+        in_directory_with_expanded_export(project) do |exit_status, tmpdir|
+          expect(exit_status).to eq(0)
+
+          project_json_path = File.join(tmpdir, 'tree', 'project.json')
+          expect(File).to exist(project_json_path)
+
+          relations = []
+          relations << JSON.parse(IO.read(project_json_path))
+          Dir.glob(File.join(tmpdir, 'tree/project', '*.ndjson')) do |rb_filename|
+            File.foreach(rb_filename) do |line|
+              json = ActiveSupport::JSON.decode(line)
+              relations << json
+            end
+          end
+
+          relations.each do |relation_hash|
+            sensitive_words.each do |sensitive_word|
+              found = find_sensitive_attributes(sensitive_word, relation_hash)
+
+              expect(found).to be_nil, failure_message(found.try(:key_found), found.try(:parent), sensitive_word)
+            end
+          end
+        end
+      end
+    end
+  end
+
+  def export_project_and_download_file(page, project)
+    visit edit_project_path(project)
+
+    expect(page).to have_content('Export project')
+
+    find(:link, 'Export project').send_keys(:return)
+
+    visit edit_project_path(project)
+
+    expect(page).to have_content('Download export')
+    expect(project.export_status).to eq(:finished)
+    expect(project.export_file.path).to include('tar.gz')
+  end
+
+  def failure_message(key_found, parent, sensitive_word)
+    <<-MSG
+      Found a new sensitive word <#{key_found}>, which is part of the hash #{parent.inspect}
+
+      If you think this information shouldn't get exported, please exclude the model or attribute in IMPORT_EXPORT_CONFIG.
+
+      Otherwise, please add the exception to +safe_list+ in CURRENT_SPEC using #{sensitive_word} as the key and the
+      correspondent hash or model as the value.
+
+      Also, if the attribute is a generated unique token, please add it to RelationFactory::TOKEN_RESET_MODELS if it needs to be
+      reset (to prevent duplicate column problems while importing to the same instance).
+
+      IMPORT_EXPORT_CONFIG: #{Gitlab::ImportExport.config_file}
+      CURRENT_SPEC: #{__FILE__}
+    MSG
   end
 end

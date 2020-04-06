@@ -1,8 +1,8 @@
 # Prometheus integration
 
-> [Introduced][ce-8935] in GitLab 9.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/8935) in GitLab 9.0.
 
-GitLab offers powerful integration with [Prometheus] for monitoring key metrics of your apps, directly within GitLab.
+GitLab offers powerful integration with [Prometheus](https://prometheus.io) for monitoring key metrics of your apps, directly within GitLab.
 Metrics for each environment are retrieved from Prometheus, and then displayed
 within the GitLab interface.
 
@@ -727,7 +727,7 @@ If the metric exceeds the threshold of the alert for over 5 minutes, an email wi
 
 ## Determining the performance impact of a merge
 
-> - [Introduced][ce-10408] in GitLab 9.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/10408) in GitLab 9.2.
 > - GitLab 9.3 added the [numeric comparison](https://gitlab.com/gitlab-org/gitlab-foss/issues/27439) of the 30 minute averages.
 
 Developers can view the performance impact of their changes within the merge
@@ -755,7 +755,7 @@ Prometheus server.
 
 ### Embedding GitLab-managed Kubernetes metrics
 
-> [Introduced][ce-29691] in GitLab 12.2.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/29691) in GitLab 12.2.
 
 It is possible to display metrics charts within [GitLab Flavored Markdown](../../markdown.md#gitlab-flavored-markdown-gfm) fields such as issue or merge request descriptions. The maximum number of embedded charts allowed in a GitLab Flavored Markdown field is 100.
 
@@ -895,18 +895,3 @@ If the "No data found" screen continues to appear, it could be due to:
   [run a query](prometheus_library/kubernetes.md#metrics-supported), replacing `$CI_ENVIRONMENT_SLUG`
   with the name of your environment.
 - You may need to re-add the GitLab predefined common metrics. This can be done by running the [import common metrics Rake task](../../../administration/raketasks/maintenance.md#import-common-metrics).
-
-[autodeploy]: ../../../topics/autodevops/index.md#auto-deploy
-[kubernetes]: https://kubernetes.io
-[kube]: ./kubernetes.md
-[prometheus-k8s-sd]: https://prometheus.io/docs/operating/configuration/#<kubernetes_sd_config>
-[prometheus]: https://prometheus.io
-[gitlab-prometheus-k8s-monitor]: ../../../administration/monitoring/prometheus/index.md#configuring-prometheus-to-monitor-kubernetes
-[prometheus-docker-image]: https://hub.docker.com/r/prom/prometheus/
-[prometheus-yml]:samples/prometheus.yml
-[gitlab.com-ip-range]: https://gitlab.com/gitlab-com/infrastructure/issues/434
-[ci-environment-slug]: ../../../ci/variables/#predefined-environment-variables
-[ce-8935]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/8935
-[ce-10408]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/10408
-[ce-29691]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/29691
-[promgldocs]: ../../../administration/monitoring/prometheus/index.md

@@ -126,6 +126,8 @@ to help summarize changes between versions.
 Designs can be explored in greater detail by zooming in and out of the image.
 Control the amount of zoom with the `+` and `-` buttons at the bottom of the image.
 While zoomed, you can still [start new discussions](#starting-discussions-on-designs) on the image, and see any existing ones.
+[Introduced](https://gitlab.com/gitlab-org/gitlab/issues/197324) in GitLab 12.10, while zoomed in,
+you can click-and-drag on the image to move around it.
 
 ![Design zooming](img/design_zooming_v12_7.png)
 

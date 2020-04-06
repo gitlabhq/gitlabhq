@@ -120,7 +120,7 @@ in your SAML IdP:
 1. Change the value of `issuer` to a unique name, which will identify the application
    to the IdP.
 
-1. For the changes to take effect, you must [reconfigure][] GitLab if you installed via Omnibus or [restart GitLab][] if you installed from source.
+1. For the changes to take effect, you must [reconfigure](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure) GitLab if you installed via Omnibus or [restart GitLab](../administration/restart_gitlab.md#installations-from-source) if you installed from source.
 
 1. Register the GitLab SP in your SAML 2.0 IdP, using the application name specified
    in `issuer`.
@@ -294,7 +294,7 @@ If you want some SAML authentication methods to count as 2FA on a per session ba
    ]
    ```
 
-1. Save the file and [reconfigure][] GitLab for the changes to take effect.
+1. Save the file and [reconfigure](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure) GitLab for the changes to take effect.
 
 ---
 
@@ -324,7 +324,7 @@ If you want some SAML authentication methods to count as 2FA on a per session ba
          }
    ```
 
-1. Save the file and [restart GitLab][] for the changes ot take effect
+1. Save the file and [restart GitLab](../administration/restart_gitlab.md#installations-from-source) for the changes ot take effect
 
 In addition to the changes in GitLab, make sure that your Idp is returning the
 `AuthnContext`. For example:
@@ -630,6 +630,3 @@ For this you need take the following into account:
 
 Make sure that one of the above described scenarios is valid, or the requests will
 fail with one of the mentioned errors.
-
-[reconfigure]: ../administration/restart_gitlab.md#omnibus-gitlab-reconfigure
-[restart GitLab]: ../administration/restart_gitlab.md#installations-from-source

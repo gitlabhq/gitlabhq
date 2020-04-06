@@ -162,6 +162,8 @@ When the user is authenticated and `simple` is not set this returns something li
     "merge_method": "merge",
     "autoclose_referenced_issues": true,
     "suggestion_commit_message": null,
+    "marked_for_deletion_at": "2020-04-03",
+    "marked_for_deletion_on": "2020-04-03",
     "statistics": {
       "commit_count": 37,
       "storage_size": 1038090,
@@ -406,6 +408,8 @@ This endpoint supports [keyset pagination](README.md#keyset-based-pagination) fo
     "merge_method": "merge",
     "autoclose_referenced_issues": true,
     "suggestion_commit_message": null,
+    "marked_for_deletion_at": "2020-04-03",
+    "marked_for_deletion_on": "2020-04-03",
     "statistics": {
       "commit_count": 37,
       "storage_size": 1038090,
@@ -870,6 +874,8 @@ GET /projects/:id
   "service_desk_address": null,
   "autoclose_referenced_issues": true,
   "suggestion_commit_message": null,
+  "marked_for_deletion_at": "2020-04-03",
+  "marked_for_deletion_on": "2020-04-03",
   "statistics": {
     "commit_count": 37,
     "storage_size": 1038090,

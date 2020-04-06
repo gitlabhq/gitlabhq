@@ -95,9 +95,9 @@ describe UsersHelper do
     end
 
     it 'includes the settings tab if the user can update themself' do
-      expect(helper).to receive(:can?).with(user, :read_user, user) { true }
+      expect(helper).to receive(:can?).with(user, :update_user, user) { true }
 
-      expect(items).to include(:profile)
+      expect(items).to include(:settings)
     end
 
     context 'when terms are enforced' do

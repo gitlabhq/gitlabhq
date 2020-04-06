@@ -15,7 +15,7 @@ Mattermost 3.4 and up is required.
 
 If you have the Omnibus GitLab package installed, Mattermost is already bundled
 in it. All you have to do is configure it. Read more in the
-[Omnibus GitLab Mattermost documentation][omnimmdocs].
+[Omnibus GitLab Mattermost documentation](https://docs.gitlab.com/omnibus/gitlab-mattermost/).
 
 ## Automated Configuration
 
@@ -133,7 +133,7 @@ The available slash commands are:
 | ------- | ----------- | ------- |
 | <kbd>/&lt;trigger&gt; issue new &lt;title&gt; <kbd>⇧ Shift</kbd>+<kbd>↵ Enter</kbd> &lt;description&gt;</kbd> | Create a new issue in the project that `<trigger>` is tied to. `<description>` is optional. | `/gitlab issue new We need to change the homepage` |
 | <kbd>/&lt;trigger&gt; issue show &lt;issue-number&gt;</kbd> | Show the issue with ID `<issue-number>` from the project that `<trigger>` is tied to. | `/gitlab issue show 42` |
-| <kbd>/&lt;trigger&gt; deploy &lt;environment&gt; to &lt;environment&gt;</kbd> | Start the CI job that deploys from one environment to another, for example `staging` to `production`. CI/CD must be [properly configured][ciyaml]. | `/gitlab deploy staging to production` |
+| <kbd>/&lt;trigger&gt; deploy &lt;environment&gt; to &lt;environment&gt;</kbd> | Start the CI job that deploys from one environment to another, for example `staging` to `production`. CI/CD must be [properly configured](../../../ci/yaml/README.md). | `/gitlab deploy staging to production` |
 
 To see a list of available commands to interact with GitLab, type the
 trigger word followed by <kbd>help</kbd>. Example: `/gitlab help`
@@ -147,9 +147,5 @@ the [permissions you have on the project](../../permissions.md#project-members-p
 
 ## Further reading
 
-- [Mattermost slash commands documentation][mmslashdocs]
-- [Omnibus GitLab Mattermost][omnimmdocs]
-
-[omnimmdocs]: https://docs.gitlab.com/omnibus/gitlab-mattermost/
-[mmslashdocs]: https://docs.mattermost.com/developer/slash-commands.html
-[ciyaml]: ../../../ci/yaml/README.md
+- [Mattermost slash commands documentation](https://docs.mattermost.com/developer/slash-commands.html)
+- [Omnibus GitLab Mattermost](https://docs.gitlab.com/omnibus/gitlab-mattermost/)

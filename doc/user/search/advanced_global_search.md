@@ -1,6 +1,6 @@
 # Advanced Global Search **(STARTER ONLY)**
 
-> - [Introduced][ee-109] in GitLab [Starter][ee] 8.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/109) in GitLab [Starter](https://about.gitlab.com/pricing/) 8.4.
 > - This is the user documentation. To install and configure Elasticsearch,
 >   visit the [administrator documentation](../../integration/elasticsearch.md).
 
@@ -16,7 +16,7 @@ The Advanced Global Search in GitLab is a powerful search service that saves
 you time. Instead of creating duplicate code and wasting time, you can
 now search for code within other teams that can help your own project.
 
-GitLab leverages the search capabilities of [Elasticsearch] and enables it when
+GitLab leverages the search capabilities of [Elasticsearch](https://www.elastic.co/elasticsearch/) and enables it when
 searching in:
 
 - GitLab application
@@ -56,20 +56,8 @@ project you have access to.
 You can also use the [Advanced Syntax Search](advanced_search_syntax.md) which
 provides some useful queries.
 
->**Note:**
+NOTE: **Note:**
 Elasticsearch has only data for the default branch. That means that if you go
 to the repository tree and switch the branch from the default to something else,
 then the "Code" tab in the search result page will be served by the regular
 search even if Elasticsearch is enabled.
-
-[ee-1305]: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1305
-[aws-elastic]: https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-gsg.html
-[aws-iam]: http://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html
-[aws-instance-profile]: http://docs.aws.amazon.com/codedeploy/latest/userguide/getting-started-create-iam-instance-profile.html#getting-started-create-iam-instance-profile-cli
-[ee-109]: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/109 "Elasticsearch Merge Request"
-[elasticsearch]: https://www.elastic.co/elasticsearch "Elasticsearch website"
-[install]: https://www.elastic.co/guide/en/elasticsearch/reference/current/_installation.html "Elasticsearch installation documentation"
-[pkg]: https://about.gitlab.com/downloads/ "Download Omnibus GitLab"
-[elastic-settings]: https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-configuration.html#settings "Elasticsearch configuration settings"
-[ee]: https://about.gitlab.com/pricing/
-[es]: https://www.elastic.co/elasticsearch

@@ -134,12 +134,12 @@ describe Gitlab::SidekiqMiddleware do
     let(:middleware_expected_args) { [worker_class_arg, job, queue, redis_pool] }
     let(:expected_middlewares) do
       [
-        Gitlab::SidekiqStatus::ClientMiddleware,
-        Gitlab::SidekiqMiddleware::ClientMetrics,
-        Gitlab::SidekiqMiddleware::WorkerContext::Client,
-        Labkit::Middleware::Sidekiq::Client,
-        Gitlab::SidekiqMiddleware::AdminMode::Client,
-        Gitlab::SidekiqMiddleware::DuplicateJobs::Client
+         ::Gitlab::SidekiqMiddleware::WorkerContext::Client,
+         ::Labkit::Middleware::Sidekiq::Client,
+         ::Gitlab::SidekiqMiddleware::DuplicateJobs::Client,
+         ::Gitlab::SidekiqStatus::ClientMiddleware,
+         ::Gitlab::SidekiqMiddleware::AdminMode::Client,
+         ::Gitlab::SidekiqMiddleware::ClientMetrics
       ]
     end
 

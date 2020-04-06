@@ -32,6 +32,8 @@ describe 'forked project import' do
   end
 
   before do
+    stub_feature_flags(project_export_as_ndjson: false)
+
     allow_next_instance_of(Gitlab::ImportExport) do |instance|
       allow(instance).to receive(:storage_path).and_return(export_path)
     end
