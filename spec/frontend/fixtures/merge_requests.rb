@@ -94,7 +94,7 @@ describe Projects::MergeRequestsController, '(JavaScript fixtures)', type: :cont
   end
 
   it 'merge_requests/discussions.json' do
-    create(:diff_note_on_merge_request, project: project, author: admin, position: position, noteable: merge_request)
+    create(:discussion_note_on_merge_request, project: project, author: admin, position: position, noteable: merge_request)
     render_discussions_json(merge_request)
   end
 

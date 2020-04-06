@@ -19,8 +19,8 @@
 module Gitlab
   module Database
     module BatchCount
-      def batch_count(relation, column = nil, batch_size: nil)
-        BatchCounter.new(relation, column: column).count(batch_size: batch_size)
+      def batch_count(relation, column = nil, batch_size: nil, start: nil, finish: nil)
+        BatchCounter.new(relation, column: column).count(batch_size: batch_size, start: start, finish: finish)
       end
 
       def batch_distinct_count(relation, column = nil, batch_size: nil, start: nil, finish: nil)

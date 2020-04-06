@@ -3,23 +3,18 @@
 require 'spec_helper'
 
 describe 'User activates Packagist' do
-  let(:project) { create(:project) }
-  let(:user) { create(:user) }
+  include_context 'project service activation'
 
   before do
-    project.add_maintainer(user)
-    sign_in(user)
-
-    visit(project_settings_integrations_path(project))
-
-    click_link('Packagist')
+    stub_request(:post, /.*packagist.org.*/)
   end
 
-  it 'activates service' do
-    check('Active')
+  it 'activates service', :js do
+    visit_project_integration('Packagist')
     fill_in('Username', with: 'theUser')
     fill_in('Token', with: 'verySecret')
-    click_button('Save')
+
+    click_test_then_save_integration
 
     expect(page).to have_content('Packagist activated.')
   end

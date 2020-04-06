@@ -2,37 +2,37 @@
 
 require 'spec_helper'
 
-describe 'User activates HipChat' do
-  let(:project) { create(:project) }
-  let(:user) { create(:user) }
-
-  before do
-    project.add_maintainer(user)
-    sign_in(user)
-
-    visit(project_settings_integrations_path(project))
-
-    click_link('HipChat')
-  end
+describe 'User activates HipChat', :js do
+  include_context 'project service activation'
 
   context 'with standart settings' do
+    before do
+      stub_request(:post, /.*api.hipchat.com.*/)
+    end
+
     it 'activates service' do
-      check('Active')
+      visit_project_integration('HipChat')
       fill_in('Room', with: 'gitlab')
       fill_in('Token', with: 'verySecret')
-      click_button('Save')
+
+      click_test_integration
 
       expect(page).to have_content('HipChat activated.')
     end
   end
 
   context 'with custom settings' do
+    before do
+      stub_request(:post, /.*chat.example.com.*/)
+    end
+
     it 'activates service' do
-      check('Active')
+      visit_project_integration('HipChat')
       fill_in('Room', with: 'gitlab_custom')
       fill_in('Token', with: 'secretCustom')
       fill_in('Server', with: 'https://chat.example.com')
-      click_button('Save')
+
+      click_test_integration
 
       expect(page).to have_content('HipChat activated.')
     end

@@ -8,7 +8,7 @@ This document defines the standards for GitLab's documentation content and files
 
 For broader information about the documentation, see the [Documentation guidelines](index.md).
 
-For programmatic help adhering to the guidelines, see [linting](index.md#linting).
+For programmatic help adhering to the guidelines, see [Testing](index.md#testing).
 
 See the GitLab handbook for further [writing style guidelines](https://about.gitlab.com/handbook/communication/#writing-style-guidelines)
 that apply to all GitLab content, not just documentation.

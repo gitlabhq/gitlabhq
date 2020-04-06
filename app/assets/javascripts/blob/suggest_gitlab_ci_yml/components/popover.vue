@@ -23,6 +23,8 @@ const popoverStates = {
   },
 };
 export default {
+  dismissTrackValue: 10,
+  clickTrackValue: 'click_button',
   components: {
     GlPopover,
     GlSprintf,
@@ -109,7 +111,16 @@ export default {
     <template #title>
       <span v-html="suggestTitle"></span>
       <span class="ml-auto">
-        <gl-deprecated-button :aria-label="__('Close')" class="btn-blank" @click="onDismiss">
+        <gl-deprecated-button
+          :aria-label="__('Close')"
+          class="btn-blank"
+          name="dismiss"
+          :data-track-property="humanAccess"
+          :data-track-value="$options.dismissTrackValue"
+          :data-track-event="$options.clickTrackValue"
+          :data-track-label="trackLabel"
+          @click="onDismiss"
+        >
           <gl-icon name="close" aria-hidden="true" />
         </gl-deprecated-button>
       </span>

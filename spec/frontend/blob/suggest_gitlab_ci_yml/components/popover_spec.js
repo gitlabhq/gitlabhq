@@ -1,7 +1,8 @@
 import { shallowMount } from '@vue/test-utils';
 import Popover from '~/blob/suggest_gitlab_ci_yml/components/popover.vue';
-import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
+import { mockTracking, unmockTracking, triggerEvent } from 'helpers/tracking_helper';
 import * as utils from '~/lib/utils/common_utils';
+import { GlDeprecatedButton } from '@gitlab/ui';
 
 jest.mock('~/lib/utils/common_utils', () => ({
   ...jest.requireActual('~/lib/utils/common_utils'),
@@ -26,6 +27,9 @@ describe('Suggest gitlab-ci.yml Popover', () => {
         trackLabel,
         dismissKey,
         humanAccess,
+      },
+      stubs: {
+        'gl-popover': '<div><slot name="title"></slot><slot></slot></div>',
       },
     });
   }
@@ -86,6 +90,22 @@ describe('Suggest gitlab-ci.yml Popover', () => {
       expect(trackingSpy).toHaveBeenCalledWith(expectedCategory, expectedAction, {
         label: expectedLabel,
         property: expectedProperty,
+      });
+    });
+
+    it('sends a tracking event when the popover is dismissed', () => {
+      const expectedLabel = commitTrackLabel;
+      const expectedAction = 'click_button';
+      const expectedProperty = 'owner';
+      const expectedValue = '10';
+      const dismissButton = wrapper.find(GlDeprecatedButton);
+
+      triggerEvent(dismissButton.element);
+
+      expect(trackingSpy).toHaveBeenCalledWith('_category_', expectedAction, {
+        label: expectedLabel,
+        property: expectedProperty,
+        value: expectedValue,
       });
     });
   });

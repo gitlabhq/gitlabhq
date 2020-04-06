@@ -103,7 +103,7 @@ describe Gitlab::ClosingIssueExtractor do
       end
 
       it do
-        message = "Awesome commit (Fixes: #{reference})"
+        message = "Awesome commit (fixes: #{reference})"
         expect(subject.closed_by_message(message)).to eq([issue])
       end
 
@@ -396,7 +396,7 @@ describe Gitlab::ClosingIssueExtractor do
       end
 
       it 'allows mixed comma-separated and non-comma-separated issue numbers in single line message' do
-        message = "Closes #{reference}, #{reference2} and #{reference3}"
+        message = "Closes #{reference}, #{reference2} #{reference3}"
 
         expect(subject.closed_by_message(message))
             .to match_array([issue, other_issue, third_issue])

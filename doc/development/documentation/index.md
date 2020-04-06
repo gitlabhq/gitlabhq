@@ -410,7 +410,7 @@ merge request with new or changed docs is submitted, are:
 - If any code or the `doc/README.md` file is changed, a full pipeline will run, which
   runs tests for [`/help`](#gitlab-help-tests).
 
-### Running tests & lint checks locally
+### Running tests
 
 Apart from [previewing your changes locally](#previewing-the-changes-live), you can also run all lint checks
 and Nanoc tests locally.
@@ -462,61 +462,19 @@ The output should be similar to:
 Note that this requires you to either have the required lint tools installed on your machine,
 or a working Docker installation, in which case an image with these tools pre-installed will be used.
 
-For more information on available linters refer to the [linting](#linting) section.
-
-### Linting
+### Local linting
 
 To help adhere to the [documentation style guidelines](styleguide.md), and improve the content
 added to documentation, consider locally installing and running documentation linters. This will
 help you catch common issues before raising merge requests for review of documentation.
 
-The following are some suggested linters you can install locally and sample configuration:
+Running the following locally allows you to match the checks in the build pipeline:
 
-- [`proselint`](#proselint)
-- [markdownlint](#markdownlint), which is the same as the test run in [`docs-lint`](#testing)
-- [Vale](#vale), for English language grammar and syntax suggestions
+- [markdownlint](#markdownlint).
+- [Vale](#vale).
 
 NOTE: **Note:**
 This list does not limit what other linters you can add to your local documentation writing toolchain.
-
-#### `proselint`
-
-`proselint` checks for common problems with English prose. It provides a
- [plethora of checks](http://proselint.com/checks/) that are helpful for technical writing.
-
-`proselint` can be used [on the command line](http://proselint.com/utility/), either on a single
- Markdown file or on all Markdown files in a project. For example, to run `proselint` on all
- documentation in the [`gitlab` project](https://gitlab.com/gitlab-org/gitlab), run the
- following commands from within the `gitlab` project:
-
-```shell
-cd doc
-proselint **/*.md
-```
-
-`proselint` can also be run from within editors using plugins. For example, the following plugins
- are available:
-
-- [Sublime Text](https://packagecontrol.io/packages/SublimeLinter-contrib-proselint)
-- [Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=PatrykPeszko.vscode-proselint)
-- [Others](https://github.com/amperser/proselint#plugins-for-other-software)
-
-##### Sample `proselint` configuration
-
-All of the checks are good to use. However, excluding the `typography.symbols` and `misc.phrasal_adjectives` checks will reduce
-noise. The following sample `proselint` configuration disables these checks:
-
-```json
-{
-  "checks": {
-    "typography.symbols": false,
-    "misc.phrasal_adjectives": false
-  }
-}
-```
-
-A file with `proselint` configuration must be placed in a
-[valid location](https://github.com/amperser/proselint#checks). For example, `~/.config/proselint/config`.
 
 #### markdownlint
 
@@ -595,8 +553,6 @@ vale --glob='*.{md}' doc
 You can also
 [configure the text editor of your choice](https://errata-ai.github.io/vale/#local-use-by-a-single-writer)
 to display the results.
-
-Vale's test results are not currently displayed in CI, but may be displayed in the future.
 
 ## Danger Bot
 

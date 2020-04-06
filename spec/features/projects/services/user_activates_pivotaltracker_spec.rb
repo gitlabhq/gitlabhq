@@ -3,22 +3,17 @@
 require 'spec_helper'
 
 describe 'User activates PivotalTracker' do
-  let(:project) { create(:project) }
-  let(:user) { create(:user) }
+  include_context 'project service activation'
 
   before do
-    project.add_maintainer(user)
-    sign_in(user)
-
-    visit(project_settings_integrations_path(project))
-
-    click_link('PivotalTracker')
+    stub_request(:post, /.*www.pivotaltracker.com.*/)
   end
 
-  it 'activates service' do
-    check('Active')
+  it 'activates service', :js do
+    visit_project_integration('PivotalTracker')
     fill_in('Token', with: 'verySecret')
-    click_button('Save')
+
+    click_test_integration
 
     expect(page).to have_content('PivotalTracker activated.')
   end

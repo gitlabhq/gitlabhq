@@ -468,7 +468,7 @@ helped us with overall code quality (using delegation, `&.` those
 types of things), and making the code more robust.
 
 **["Support multiple assignees for merge requests"](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/10161)**:
-A good example of collaboration on an MR touching multiple parts of the codebase. Nick pointed out interesting edge cases, James Lopes also joined in raising concerns on import/export feature.
+A good example of collaboration on an MR touching multiple parts of the codebase. Nick pointed out interesting edge cases, James Lopez also joined in raising concerns on import/export feature.
 
 ### Credits
 

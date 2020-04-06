@@ -3,32 +3,26 @@
 require 'spec_helper'
 
 describe 'User activates Slack notifications' do
-  let(:user) { create(:user) }
-  let(:service) { SlackService.new }
-  let(:project) { create(:project, slack_service: service) }
-
-  before do
-    project.add_maintainer(user)
-    sign_in(user)
-  end
+  include_context 'project service activation'
 
   context 'when service is not configured yet' do
     before do
-      visit(project_settings_integrations_path(project))
-
-      click_link('Slack notifications')
+      visit_project_integration('Slack notifications')
     end
 
-    it 'activates service' do
-      check('Active')
+    it 'activates service', :js do
       fill_in('Webhook', with: 'https://hooks.slack.com/services/SVRWFV0VVAR97N/B02R25XN3/ZBqu7xMupaEEICInN685')
-      click_button('Save')
+
+      click_test_then_save_integration
 
       expect(page).to have_content('Slack notifications activated.')
     end
   end
 
   context 'when service is already configured' do
+    let(:service) { SlackService.new }
+    let(:project) { create(:project, slack_service: service) }
+
     before do
       service.fields
       service.update(
