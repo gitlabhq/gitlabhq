@@ -6093,7 +6093,7 @@ type Project {
   ): IssueConnection
 
   """
-  (deprecated) Does this project have issues enabled?. Use `issues_access_level` instead
+  Indicates if Issues are enabled for the current user
   """
   issuesEnabled: Boolean
 
@@ -6128,7 +6128,7 @@ type Project {
   ): JiraImportConnection
 
   """
-  (deprecated) Enable jobs for this project. Use `builds_access_level` instead
+  Indicates if CI/CD pipeline jobs are enabled for the current user
   """
   jobsEnabled: Boolean
 
@@ -6193,7 +6193,7 @@ type Project {
   ): MergeRequestConnection
 
   """
-  (deprecated) Does this project have merge_requests enabled?. Use `merge_requests_access_level` instead
+  Indicates if Merge Requests are enabled for the current user
   """
   mergeRequestsEnabled: Boolean
 
@@ -6406,7 +6406,7 @@ type Project {
   serviceDeskEnabled: Boolean
 
   """
-  Indicates if shared runners are enabled on the project
+  Indicates if Shared Runners are enabled for the project
   """
   sharedRunnersEnabled: Boolean
 
@@ -6446,7 +6446,7 @@ type Project {
   ): SnippetConnection
 
   """
-  (deprecated) Does this project have snippets enabled?. Use `snippets_access_level` instead
+  Indicates if Snippets are enabled for the current user
   """
   snippetsEnabled: Boolean
 
@@ -6542,7 +6542,7 @@ type Project {
   webUrl: String
 
   """
-  (deprecated) Does this project have wiki enabled?. Use `wiki_access_level` instead
+  Indicates if Wikis are enabled for the current user
   """
   wikiEnabled: Boolean
 }

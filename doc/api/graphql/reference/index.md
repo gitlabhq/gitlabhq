@@ -901,13 +901,13 @@ Information about pagination in a connection.
 | `id` | ID! | ID of the project |
 | `importStatus` | String | Status of import background job of the project |
 | `issue` | Issue | A single issue of the project |
-| `issuesEnabled` | Boolean | (deprecated) Does this project have issues enabled?. Use `issues_access_level` instead |
+| `issuesEnabled` | Boolean | Indicates if Issues are enabled for the current user |
 | `jiraImportStatus` | String | Status of Jira import background job of the project |
-| `jobsEnabled` | Boolean | (deprecated) Enable jobs for this project. Use `builds_access_level` instead |
+| `jobsEnabled` | Boolean | Indicates if CI/CD pipeline jobs are enabled for the current user |
 | `lastActivityAt` | Time | Timestamp of the project last activity |
 | `lfsEnabled` | Boolean | Indicates if the project has Large File Storage (LFS) enabled |
 | `mergeRequest` | MergeRequest | A single merge request of the project |
-| `mergeRequestsEnabled` | Boolean | (deprecated) Does this project have merge_requests enabled?. Use `merge_requests_access_level` instead |
+| `mergeRequestsEnabled` | Boolean | Indicates if Merge Requests are enabled for the current user |
 | `mergeRequestsFfOnlyEnabled` | Boolean | Indicates if no merge commits should be created and all merges should instead be fast-forwarded, which means that merging is only allowed if the branch could be fast-forwarded. |
 | `name` | String! | Name of the project (without namespace) |
 | `nameWithNamespace` | String! | Full name of the project with its namespace |
@@ -927,8 +927,8 @@ Information about pagination in a connection.
 | `sentryErrors` | SentryErrorCollection | Paginated collection of Sentry errors on the project |
 | `serviceDeskAddress` | String | E-mail address of the service desk. |
 | `serviceDeskEnabled` | Boolean | Indicates if the project has service desk enabled. |
-| `sharedRunnersEnabled` | Boolean | Indicates if shared runners are enabled on the project |
-| `snippetsEnabled` | Boolean | (deprecated) Does this project have snippets enabled?. Use `snippets_access_level` instead |
+| `sharedRunnersEnabled` | Boolean | Indicates if Shared Runners are enabled for the project |
+| `snippetsEnabled` | Boolean | Indicates if Snippets are enabled for the current user |
 | `sshUrlToRepo` | String | URL to connect to the project via SSH |
 | `starCount` | Int! | Number of times the project has been starred |
 | `statistics` | ProjectStatistics | Statistics of the project |
@@ -938,7 +938,7 @@ Information about pagination in a connection.
 | `visibility` | String | Visibility of the project |
 | `vulnerabilitySeveritiesCount` | VulnerabilitySeveritiesCount | Counts for each severity of vulnerability of the project. Available only when feature flag `first_class_vulnerabilities` is enabled |
 | `webUrl` | String | Web URL of the project |
-| `wikiEnabled` | Boolean | (deprecated) Does this project have wiki enabled?. Use `wiki_access_level` instead |
+| `wikiEnabled` | Boolean | Indicates if Wikis are enabled for the current user |
 
 ## ProjectPermissions
 

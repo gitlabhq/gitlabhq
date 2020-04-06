@@ -44,7 +44,7 @@ module Types
     field :latest_pipeline,
           type: Types::Ci::PipelineType,
           null: true,
-          deprecated: { reason: 'Use `pipelines`', milestone: 12.5 },
+          deprecated: { reason: 'Use `pipelines`', milestone: '12.5' },
           description: 'Latest pipeline of the commit',
           resolver: Resolvers::CommitPipelinesResolver.last
   end

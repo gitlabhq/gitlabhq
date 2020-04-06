@@ -52,6 +52,36 @@ management between systems:
 - [NetApp instructions](https://library.netapp.com/ecmdocs/ECMP1401220/html/GUID-24367A9F-E17B-4725-ADC1-02D86F56F78E.html)
 - For non-NetApp devices, disable NFSv4 `idmapping` by performing opposite of [enable NFSv4 idmapper](https://wiki.archlinux.org/index.php/NFS#Enabling_NFSv4_idmapping)
 
+### Disable NFS server delegation
+
+We recommend that all NFS users disable the NFS server delegation feature. This
+is to avoid a [Linux kernel bug](https://bugzilla.redhat.com/show_bug.cgi?id=1552203)
+which causes NFS clients to slow precipitously due to
+[excessive network traffic from numerous `TEST_STATEID` NFS messages](https://gitlab.com/gitlab-org/gitlab-foss/issues/52017).
+
+To disable NFS server delegation, do the following:
+
+1. On the NFS server, run:
+
+   ```shell
+   echo 0 > /proc/sys/fs/leases-enable
+   sysctl -w fs.leases-enable=0
+   ```
+
+1. Restart the NFS server process. For example, on CentOS run `service nfs restart`.
+
+#### Important notes
+
+The kernel bug may be fixed in
+[more recent kernels with this commit](https://github.om/torvalds/linux/commit/95da1b3a5aded124dd1bda1e3cdb876184813140).
+
+Red Hat Enterprise 7 [shipped a kernel update](https://access.redhat.com/errata/RHSA-2019:2029)
+on August 6, 2019 that may also have resolved this problem.
+
+You may not need to disable NFS server delegation if you know you are using a version of
+the Linux kernel that has been fixed. That said, GitLab still encourages instance
+administrators to keep NFS server delegation disabled.
+
 ### Improving NFS performance with GitLab
 
 #### Improving NFS performance with Unicorn
@@ -78,33 +108,7 @@ If the Rugged feature flag is explicitly set to either true or false, GitLab wil
 
 ### Known issues
 
-On some customer systems, we have seen NFS clients slow precipitously due to
-[excessive network traffic from numerous `TEST_STATEID` NFS
-messages](https://gitlab.com/gitlab-org/gitlab-foss/issues/52017). This is
-likely due to a [Linux kernel
-bug](https://bugzilla.redhat.com/show_bug.cgi?id=1552203) that may be fixed in
-[more recent kernels with this
-commit](https://github.com/torvalds/linux/commit/95da1b3a5aded124dd1bda1e3cdb876184813140).
-
-NOTE: **Note** Red Hat Enterprise 7 [shipped a kernel
-update](https://access.redhat.com/errata/RHSA-2019:2029) on August 6,
-2019 that may have resolved this problem. The following instructions may
-not be needed if the latest kernel is updated properly.
-
-GitLab recommends all NFS users disable the NFS server
-delegation feature. To disable NFS server delegations
-on an Linux NFS server, do the following:
-
-1. On the NFS server, run:
-
-   ```shell
-   echo 0 > /proc/sys/fs/leases-enable
-   sysctl -w fs.leases-enable=0
-   ```
-
-1. Restart the NFS server process. For example, on CentOS run `service nfs restart`.
-
-## Avoid using AWS's Elastic File System (EFS)
+#### Avoid using AWS's Elastic File System (EFS)
 
 GitLab strongly recommends against using AWS Elastic File System (EFS).
 Our support team will not be able to assist on performance issues related to
@@ -120,12 +124,12 @@ stored on a local volume.
 
 For more details on another person's experience with EFS, see this [Commit Brooklyn 2019 video](https://youtu.be/K6OS8WodRBQ?t=313).
 
-## Avoid using CephFS and GlusterFS
+#### Avoid using CephFS and GlusterFS
 
 GitLab strongly recommends against using CephFS and GlusterFS.
 These distributed file systems are not well-suited for GitLab's input/output access patterns because Git uses many small files and access times and file locking times to propagate will make Git activity very slow.
 
-## Avoid using PostgreSQL with NFS
+#### Avoid using PostgreSQL with NFS
 
 GitLab strongly recommends against running your PostgreSQL database
 across NFS. The GitLab support team will not be able to assist on performance issues related to

@@ -76,7 +76,7 @@ describe Gitlab::Graphql::Docs::Renderer do
         Class.new(Types::BaseObject) do
           graphql_name 'DeprecatedTest'
 
-          field :foo, GraphQL::STRING_TYPE, null: false, deprecated: { reason: 'This is deprecated', milestone: 1.0 }, description: 'A description'
+          field :foo, GraphQL::STRING_TYPE, null: false, deprecated: { reason: 'This is deprecated', milestone: '1.10' }, description: 'A description'
         end
       end
 
@@ -86,7 +86,7 @@ describe Gitlab::Graphql::Docs::Renderer do
 
           | Name  | Type  | Description |
           | ---   |  ---- | ----------  |
-          | `foo` **{warning-solid}** | String! | **Deprecated:** This is deprecated. Deprecated in 1.0 |
+          | `foo` **{warning-solid}** | String! | **Deprecated:** This is deprecated. Deprecated in 1.10 |
         DOC
 
         is_expected.to include(expectation)

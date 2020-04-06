@@ -39,14 +39,21 @@ module Gitlab
       # from the uploaded attachments
       def filter_signature_attachments(message)
         attachments = message.attachments
+        content_type = normalize_mime(message.content_type)
+        protocol = normalize_mime(message.content_type_parameters[:protocol])
 
-        if message.content_type&.starts_with?('multipart/signed')
-          signature_protocol = message.content_type_parameters[:protocol]
-
-          attachments.delete_if { |attachment| attachment.content_type.starts_with?(signature_protocol) } if signature_protocol.present?
+        if content_type == 'multipart/signed' && protocol
+          attachments.delete_if { |attachment| protocol == normalize_mime(attachment.content_type) }
         end
 
         attachments
+      end
+
+      # normalizes mime-type ignoring case and removing extra data
+      # also removes potential "x-" prefix from subtype, since some MUAs mix them
+      # e.g. "application/x-pkcs7-signature" with "application/pkcs7-signature"
+      def normalize_mime(content_type)
+        MIME::Type.simplified(content_type, remove_x_prefix: true)
       end
     end
   end

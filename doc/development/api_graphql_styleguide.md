@@ -45,8 +45,8 @@ For example, `app/graphql/types/issue_type.rb`:
 ```ruby
 graphql_name 'Issue'
 
-field :iid, GraphQL::ID_TYPE, null: false
-field :title, GraphQL::STRING_TYPE, null: false
+field :iid, GraphQL::ID_TYPE, null: true
+field :title, GraphQL::STRING_TYPE, null: true
 
 # we also have a method here that we've defined, that extends `field`
 markdown_field :title_html, null: true
@@ -258,30 +258,78 @@ end
 
 ## Feature flags
 
-Features controlled by feature flags often provide GraphQL functionality. When a feature
-is enabled or disabled by a feature flag, the related GraphQL functionality should also
-be enabled or disabled.
+Developers can add [feature flags](../development/feature_flags/index.md) to GraphQL
+fields in the following ways:
 
-Fields can be put behind a feature flag so they can conditionally return the value for
-the field depending on if the feature has been enabled or not.
+- Add the `feature_flag` property to a field. This will allow the field to be _hidden_
+  from the GraphQL schema when the flag is disabled.
+- Toggle the return value when resolving the field.
 
-GraphQL feature flags use the common
-[GitLab feature flag](../development/feature_flags.md) system, and can be added to a
-field using the `feature_flag` property.
+You can refer to these guidelines to decide which approach to use:
 
-For example:
+- If your field is experimental, and its name or type is subject to
+  change, use the `feature_flag` property.
+- If your field is stable and its definition will not change, even after the flag is
+  removed, toggle the return value of the field instead. Note that
+  [all fields should be nullable](#nullable-fields) anyway.
+
+### `feature_flag` property
+
+The `feature_flag` property allows you to toggle the field's
+[visibility](https://graphql-ruby.org/authorization/visibility.html)
+within the GraphQL schema. This will remove the field from the schema
+when the flag is disabled.
+
+A description is [appended](https://gitlab.com/gitlab-org/gitlab/-/blob/497b556/app/graphql/types/base_field.rb#L44-53)
+to the field indicating that it is behind a feature flag.
+
+CAUTION: **Caution:**
+If a client queries for the field when the feature flag is disabled, the query will
+fail. Consider this when toggling the visibility of the feature on or off on
+production.
+
+The `feature_flag` property does not allow the use of
+[feature gates based on actors](../development/feature_flags/development.md).
+This means that the feature flag cannot be toggled only for particular
+projects, groups, or users, but instead can only be toggled globally for
+everyone.
+
+Example:
 
 ```ruby
 field :test_field, type: GraphQL::STRING_TYPE,
-      null: false,
+      null: true,
       description: 'Some test field',
-      feature_flag: :some_feature_flag
+      feature_flag: :my_feature_flag
 ```
 
-In the above example, the `test_field` field will only be returned if
-the `some_feature_flag` feature flag is enabled.
+### Toggle the value of a field
 
-If the feature flag is not enabled, an error will be returned saying the field does not exist.
+This method of using feature flags for fields is to toggle the
+return value of the field. This can be done in the resolver, in the
+type, or even in a model method, depending on your preference and
+situation.
+
+When applying a feature flag to toggle the value of a field, the
+`description` of the field must:
+
+- State that the value of the field can be toggled by a feature flag.
+- Name the feature flag.
+- State what the field will return when the feature flag is disabled (or
+  enabled, if more appropriate).
+
+Example:
+
+```ruby
+field :foo, GraphQL::STRING_TYPE,
+      null: true,
+      description: 'Some test field. Will always return `null`' \
+                   'if `my_feature_flag` feature flag is disabled'
+
+def foo
+  object.foo unless Feature.enabled?(:my_feature_flag, object)
+end
+```
 
 ## Deprecating fields
 
@@ -301,7 +349,7 @@ Example:
 
 ```ruby
 field :token, GraphQL::STRING_TYPE, null: true,
-      deprecated: { reason: 'Login via token has been removed', milestone: 10.0 },
+      deprecated: { reason: 'Login via token has been removed', milestone: '10.0' },
       description: 'Token for login'
 ```
 
@@ -321,7 +369,7 @@ Example:
 
 ```ruby
 field :designs, ::Types::DesignManagement::DesignCollectionType, null: true,
-      deprecated: { reason: 'Use `designCollection`', milestone: 10.0 },
+      deprecated: { reason: 'Use `designCollection`', milestone: '10.0' },
       description: 'The designs associated with this issue',
 ```
 
@@ -741,7 +789,7 @@ and handles time inputs.
 Example:
 
 ```ruby
-field :created_at, Types::TimeType, null: false, description: 'Timestamp of when the issue was created'
+field :created_at, Types::TimeType, null: true, description: 'Timestamp of when the issue was created'
 ```
 
 ## Testing

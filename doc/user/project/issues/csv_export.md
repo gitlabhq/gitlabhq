@@ -30,7 +30,7 @@ Among numerous use cases for exporting issues for CSV, we can name a few:
 
 After selecting a project, from the issues page you can narrow down which issues to export using the search bar, along with the All/Open/Closed tabs. All issues returned will be exported, including those not shown on the first page.
 
-![CSV export button](img/csv_export_button.png)
+![CSV export button](img/csv_export_button_v12_9.png)
 
 You will be asked to confirm the number of issues and email address for the export, after which the email will begin being prepared.
 

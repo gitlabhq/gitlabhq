@@ -65,6 +65,7 @@ module Types
 
       raise ArgumentError, 'Please provide a `milestone` within `deprecated`' unless milestone
       raise ArgumentError, 'Please provide a `reason` within `deprecated`' unless reason
+      raise ArgumentError, '`milestone` must be a `String`' unless milestone.is_a?(String)
 
       deprecated_in = "Deprecated in #{milestone}"
       kwargs[:deprecation_reason] = "#{reason}. #{deprecated_in}"
