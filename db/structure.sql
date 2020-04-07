@@ -3872,6 +3872,26 @@ CREATE SEQUENCE public.merge_trains_id_seq
 
 ALTER SEQUENCE public.merge_trains_id_seq OWNED BY public.merge_trains.id;
 
+CREATE TABLE public.metrics_dashboard_annotations (
+    id bigint NOT NULL,
+    starting_at timestamp with time zone NOT NULL,
+    ending_at timestamp with time zone,
+    environment_id bigint,
+    cluster_id bigint,
+    dashboard_path character varying(255) NOT NULL,
+    panel_xid character varying(255),
+    description text NOT NULL
+);
+
+CREATE SEQUENCE public.metrics_dashboard_annotations_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.metrics_dashboard_annotations_id_seq OWNED BY public.metrics_dashboard_annotations.id;
+
 CREATE TABLE public.milestone_releases (
     milestone_id bigint NOT NULL,
     release_id bigint NOT NULL
@@ -7196,6 +7216,8 @@ ALTER TABLE ONLY public.merge_requests_closing_issues ALTER COLUMN id SET DEFAUL
 
 ALTER TABLE ONLY public.merge_trains ALTER COLUMN id SET DEFAULT nextval('public.merge_trains_id_seq'::regclass);
 
+ALTER TABLE ONLY public.metrics_dashboard_annotations ALTER COLUMN id SET DEFAULT nextval('public.metrics_dashboard_annotations_id_seq'::regclass);
+
 ALTER TABLE ONLY public.milestones ALTER COLUMN id SET DEFAULT nextval('public.milestones_id_seq'::regclass);
 
 ALTER TABLE ONLY public.namespace_statistics ALTER COLUMN id SET DEFAULT nextval('public.namespace_statistics_id_seq'::regclass);
@@ -7973,6 +7995,9 @@ ALTER TABLE ONLY public.merge_requests
 
 ALTER TABLE ONLY public.merge_trains
     ADD CONSTRAINT merge_trains_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.metrics_dashboard_annotations
+    ADD CONSTRAINT metrics_dashboard_annotations_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY public.milestones
     ADD CONSTRAINT milestones_pkey PRIMARY KEY (id);
@@ -9458,6 +9483,10 @@ CREATE UNIQUE INDEX index_merge_trains_on_merge_request_id ON public.merge_train
 CREATE INDEX index_merge_trains_on_pipeline_id ON public.merge_trains USING btree (pipeline_id);
 
 CREATE INDEX index_merge_trains_on_user_id ON public.merge_trains USING btree (user_id);
+
+CREATE INDEX index_metrics_dashboard_annotations_on_cluster_id_and_3_columns ON public.metrics_dashboard_annotations USING btree (cluster_id, dashboard_path, starting_at, ending_at) WHERE (cluster_id IS NOT NULL);
+
+CREATE INDEX index_metrics_dashboard_annotations_on_environment_id_and_3_col ON public.metrics_dashboard_annotations USING btree (environment_id, dashboard_path, starting_at, ending_at) WHERE (environment_id IS NOT NULL);
 
 CREATE INDEX index_milestone_releases_on_release_id ON public.milestone_releases USING btree (release_id);
 
@@ -11063,6 +11092,9 @@ ALTER TABLE ONLY public.suggestions
 ALTER TABLE ONLY public.requirements
     ADD CONSTRAINT fk_rails_33fed8aa4e FOREIGN KEY (author_id) REFERENCES public.users(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY public.metrics_dashboard_annotations
+    ADD CONSTRAINT fk_rails_345ab51043 FOREIGN KEY (cluster_id) REFERENCES public.clusters(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY public.wiki_page_slugs
     ADD CONSTRAINT fk_rails_358b46be14 FOREIGN KEY (wiki_page_meta_id) REFERENCES public.wiki_page_meta(id) ON DELETE CASCADE;
 
@@ -11581,6 +11613,9 @@ ALTER TABLE ONLY public.clusters
 
 ALTER TABLE ONLY public.analytics_cycle_analytics_group_stages
     ADD CONSTRAINT fk_rails_ae5da3409b FOREIGN KEY (group_id) REFERENCES public.namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.metrics_dashboard_annotations
+    ADD CONSTRAINT fk_rails_aeb11a7643 FOREIGN KEY (environment_id) REFERENCES public.environments(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.pool_repositories
     ADD CONSTRAINT fk_rails_af3f8c5d62 FOREIGN KEY (shard_id) REFERENCES public.shards(id) ON DELETE RESTRICT;
@@ -12911,6 +12946,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200318175008
 20200319071702
 20200319123041
+20200319124127
 20200319203901
 20200320112455
 20200320123839

@@ -75,6 +75,9 @@ class GroupPolicy < BasePolicy
   rule { developer }.policy do
     enable :admin_milestone
     enable :read_package
+    enable :create_metrics_dashboard_annotation
+    enable :delete_metrics_dashboard_annotation
+    enable :update_metrics_dashboard_annotation
   end
 
   rule { reporter }.policy do
@@ -82,6 +85,7 @@ class GroupPolicy < BasePolicy
     enable :admin_label
     enable :admin_list
     enable :admin_issue
+    enable :read_metrics_dashboard_annotation
   end
 
   rule { maintainer }.policy do

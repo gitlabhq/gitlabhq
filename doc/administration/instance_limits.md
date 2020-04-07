@@ -176,6 +176,14 @@ To set this limit on a self-managed installation, run the following in the
 Plan.default.limits.update!(ci_pipeline_schedules: 100)
 ```
 
+## Instance monitoring and metrics
+
+### Prometheus Alert JSON payloads
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14929) in GitLab 12.6.
+
+Prometheus alert payloads sent to the `notify.json` endpoint are limited to 1 MB in size.
+
 ## Environment data on Deploy Boards
 
 [Deploy Boards](../user/project/deploy_boards.md) load information from Kubernetes about

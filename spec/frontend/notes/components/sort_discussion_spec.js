@@ -1,6 +1,7 @@
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
 import SortDiscussion from '~/notes/components/sort_discussion.vue';
+import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import createStore from '~/notes/stores';
 import { ASC, DESC } from '~/notes/constants';
 import Tracking from '~/tracking';
@@ -21,6 +22,8 @@ describe('Sort Discussion component', () => {
     });
   };
 
+  const findLocalStorageSync = () => wrapper.find(LocalStorageSync);
+
   beforeEach(() => {
     store = createStore();
     jest.spyOn(Tracking, 'event');
@@ -29,6 +32,22 @@ describe('Sort Discussion component', () => {
   afterEach(() => {
     wrapper.destroy();
     wrapper = null;
+  });
+
+  describe('default', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it('has local storage sync', () => {
+      expect(findLocalStorageSync().exists()).toBe(true);
+    });
+
+    it('calls setDiscussionSortDirection when update is emitted', () => {
+      findLocalStorageSync().vm.$emit('input', ASC);
+
+      expect(store.dispatch).toHaveBeenCalledWith('setDiscussionSortDirection', ASC);
+    });
   });
 
   describe('when asc', () => {

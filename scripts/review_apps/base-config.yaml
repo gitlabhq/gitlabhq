@@ -146,8 +146,7 @@ prometheus:
   install: false
 redis:
   metrics:
-    resources:
-      enabled: false
+    enabled: false
   resources:
     requests:
       cpu: 100m

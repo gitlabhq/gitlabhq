@@ -20,7 +20,7 @@ describe('Monitoring mutations', () => {
     stateCopy = state();
   });
 
-  describe('RECEIVE_METRICS_DATA_SUCCESS', () => {
+  describe('RECEIVE_METRICS_DASHBOARD_SUCCESS', () => {
     let payload;
     const getGroups = () => stateCopy.dashboard.panelGroups;
 
@@ -29,7 +29,7 @@ describe('Monitoring mutations', () => {
       payload = metricsDashboardPayload;
     });
     it('adds a key to the group', () => {
-      mutations[types.RECEIVE_METRICS_DATA_SUCCESS](stateCopy, payload);
+      mutations[types.RECEIVE_METRICS_DASHBOARD_SUCCESS](stateCopy, payload);
       const groups = getGroups();
 
       expect(groups[0].key).toBe('system-metrics-kubernetes-0');
@@ -37,7 +37,7 @@ describe('Monitoring mutations', () => {
       expect(groups[2].key).toBe('response-metrics-nginx-ingress-2');
     });
     it('normalizes values', () => {
-      mutations[types.RECEIVE_METRICS_DATA_SUCCESS](stateCopy, payload);
+      mutations[types.RECEIVE_METRICS_DASHBOARD_SUCCESS](stateCopy, payload);
       const expectedLabel = 'Pod average (MB)';
 
       const { label, queryRange } = getGroups()[0].panels[2].metrics[0];
@@ -45,7 +45,7 @@ describe('Monitoring mutations', () => {
       expect(queryRange.length).toBeGreaterThan(0);
     });
     it('contains six groups, with panels with a metric each', () => {
-      mutations[types.RECEIVE_METRICS_DATA_SUCCESS](stateCopy, payload);
+      mutations[types.RECEIVE_METRICS_DASHBOARD_SUCCESS](stateCopy, payload);
 
       const groups = getGroups();
 
@@ -61,7 +61,7 @@ describe('Monitoring mutations', () => {
       expect(groups[1].panels[0].metrics).toHaveLength(1);
     });
     it('assigns metrics a metric id', () => {
-      mutations[types.RECEIVE_METRICS_DATA_SUCCESS](stateCopy, payload);
+      mutations[types.RECEIVE_METRICS_DASHBOARD_SUCCESS](stateCopy, payload);
 
       const groups = getGroups();
 
@@ -195,7 +195,7 @@ describe('Monitoring mutations', () => {
 
     describe('REQUEST_METRIC_RESULT', () => {
       beforeEach(() => {
-        mutations[types.RECEIVE_METRICS_DATA_SUCCESS](stateCopy, dashboard);
+        mutations[types.RECEIVE_METRICS_DASHBOARD_SUCCESS](stateCopy, dashboard);
       });
       it('stores a loading state on a metric', () => {
         expect(stateCopy.showEmptyState).toBe(true);
@@ -218,7 +218,7 @@ describe('Monitoring mutations', () => {
 
     describe('RECEIVE_METRIC_RESULT_SUCCESS', () => {
       beforeEach(() => {
-        mutations[types.RECEIVE_METRICS_DATA_SUCCESS](stateCopy, dashboard);
+        mutations[types.RECEIVE_METRICS_DASHBOARD_SUCCESS](stateCopy, dashboard);
       });
       it('clears empty state', () => {
         expect(stateCopy.showEmptyState).toBe(true);
@@ -251,7 +251,7 @@ describe('Monitoring mutations', () => {
 
     describe('RECEIVE_METRIC_RESULT_FAILURE', () => {
       beforeEach(() => {
-        mutations[types.RECEIVE_METRICS_DATA_SUCCESS](stateCopy, dashboard);
+        mutations[types.RECEIVE_METRICS_DASHBOARD_SUCCESS](stateCopy, dashboard);
       });
       it('maintains the loading state when a metric fails', () => {
         expect(stateCopy.showEmptyState).toBe(true);

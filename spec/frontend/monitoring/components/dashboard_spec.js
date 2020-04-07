@@ -202,7 +202,7 @@ describe('Dashboard', () => {
     createMountedWrapper({ hasMetrics: true }, { stubs: ['graph-group', 'panel-type'] });
 
     wrapper.vm.$store.commit(
-      `monitoringDashboard/${types.RECEIVE_METRICS_DATA_SUCCESS}`,
+      `monitoringDashboard/${types.RECEIVE_METRICS_DASHBOARD_SUCCESS}`,
       metricsDashboardPayload,
     );
     wrapper.vm.$store.commit(

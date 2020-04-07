@@ -18,8 +18,8 @@ RSpec.shared_context 'GroupPolicy context' do
    ]
   end
   let(:read_group_permissions) { %i[read_label read_list read_milestone read_board] }
-  let(:reporter_permissions) { %i[admin_label read_container_image] }
-  let(:developer_permissions) { [:admin_milestone] }
+  let(:reporter_permissions) { %i[admin_label read_container_image read_metrics_dashboard_annotation] }
+  let(:developer_permissions) { %i[admin_milestone create_metrics_dashboard_annotation delete_metrics_dashboard_annotation update_metrics_dashboard_annotation] }
   let(:maintainer_permissions) do
     %i[
       create_projects

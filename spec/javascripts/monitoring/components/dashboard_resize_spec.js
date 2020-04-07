@@ -39,7 +39,7 @@ const propsData = {
 function setupComponentStore(component) {
   // Load 2 panel groups
   component.$store.commit(
-    `monitoringDashboard/${types.RECEIVE_METRICS_DATA_SUCCESS}`,
+    `monitoringDashboard/${types.RECEIVE_METRICS_DASHBOARD_SUCCESS}`,
     metricsDashboardPayload,
   );
 

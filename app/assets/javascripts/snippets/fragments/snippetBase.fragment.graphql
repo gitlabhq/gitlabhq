@@ -7,6 +7,8 @@ fragment SnippetBase on Snippet {
   updatedAt
   visibilityLevel
   webUrl
+  httpUrlToRepo
+  sshUrlToRepo
   userPermissions {
     adminSnippet
     updateSnippet

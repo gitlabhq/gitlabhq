@@ -1,15 +1,15 @@
 # Translating GitLab
 
-For managing the translation process we use [Crowdin](https://crowdin.com).
+For managing the translation process we use [CrowdIn](https://crowdin.com).
 
-## Using Crowdin
+## Using CrowdIn
 
-The first step is to get familiar with Crowdin.
+The first step is to get familiar with CrowdIn.
 
 ### Sign In
 
 To contribute translations at <https://translate.gitlab.com>
-you must create a Crowdin account.
+you must create a CrowdIn account.
 You may create a new account or use any of their supported sign in services.
 
 ### Language Selections
@@ -24,7 +24,7 @@ GitLab is being translated into many languages.
 
 The online translation editor is the easiest way to contribute translations.
 
-![Crowdin Editor](img/crowdin-editor.png)
+![CrowdIn Editor](img/crowdin-editor.png)
 
 1. Strings for translation are listed in the left panel
 1. Translations are entered into the central panel.

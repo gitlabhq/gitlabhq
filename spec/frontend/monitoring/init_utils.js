@@ -32,7 +32,7 @@ export const propsData = {
 
 export const setupComponentStore = wrapper => {
   wrapper.vm.$store.commit(
-    `monitoringDashboard/${types.RECEIVE_METRICS_DATA_SUCCESS}`,
+    `monitoringDashboard/${types.RECEIVE_METRICS_DASHBOARD_SUCCESS}`,
     metricsDashboardPayload,
   );
 

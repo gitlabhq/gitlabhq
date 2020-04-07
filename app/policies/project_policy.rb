@@ -224,6 +224,7 @@ class ProjectPolicy < BasePolicy
     enable :read_sentry_issue
     enable :update_sentry_issue
     enable :read_prometheus
+    enable :read_metrics_dashboard_annotation
   end
 
   # We define `:public_user_access` separately because there are cases in gitlab-ee
@@ -276,6 +277,9 @@ class ProjectPolicy < BasePolicy
     enable :update_deployment
     enable :create_release
     enable :update_release
+    enable :create_metrics_dashboard_annotation
+    enable :delete_metrics_dashboard_annotation
+    enable :update_metrics_dashboard_annotation
   end
 
   rule { can?(:developer_access) & user_confirmed? }.policy do

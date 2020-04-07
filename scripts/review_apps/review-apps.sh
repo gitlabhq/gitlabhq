@@ -7,7 +7,7 @@ function deploy_exists() {
 
   echoinfo "Checking if ${release} exists in the ${namespace} namespace..." true
 
-  helm status --tiller-namespace "${namespace}" "${release}" >/dev/null 2>&1
+  helm status --namespace "${namespace}" "${release}" >/dev/null 2>&1
   deploy_exists=$?
 
   echoinfo "Deployment status for ${release} is ${deploy_exists}"
@@ -20,15 +20,15 @@ function previous_deploy_failed() {
 
   echoinfo "Checking for previous deployment of ${release}" true
 
-  helm status --tiller-namespace "${namespace}" "${release}" >/dev/null 2>&1
+  helm status --namespace "${namespace}" "${release}" >/dev/null 2>&1
   local status=$?
 
   # if `status` is `0`, deployment exists, has a status
   if [ $status -eq 0 ]; then
     echoinfo "Previous deployment found, checking status..."
-    deployment_status=$(helm status --tiller-namespace "${namespace}" "${release}" | grep ^STATUS | cut -d' ' -f2)
+    deployment_status=$(helm status --namespace "${namespace}" "${release}" | grep ^STATUS | cut -d' ' -f2)
     echoinfo "Previous deployment state: ${deployment_status}"
-    if [[ "$deployment_status" == "FAILED" || "$deployment_status" == "PENDING_UPGRADE" || "$deployment_status" == "PENDING_INSTALL" ]]; then
+    if [[ "$deployment_status" == "failed" || "$deployment_status" == "pending-upgrade" || "$deployment_status" == "pending-install" ]]; then
       status=0;
     else
       status=1;
@@ -58,7 +58,7 @@ function helm_delete_release() {
 
   echoinfo "Deleting Helm release '${release}'..." true
 
-  helm delete --tiller-namespace "${namespace}" --purge "${release}"
+  helm uninstall --namespace "${namespace}" "${release}"
 }
 
 function kubectl_cleanup_release() {
@@ -95,6 +95,36 @@ function delete_failed_release() {
   fi
 }
 
+function helm2_deploy_exists() {
+  local namespace="${1}"
+  local release="${2}"
+  local deploy_exists
+
+  echoinfo "Checking if Helm 2 ${release} exists in the ${namespace} namespace..." true
+
+  kubectl get cm -l OWNER=TILLER -n ${namespace} | grep ${release} 2>&1
+  deploy_exists=$?
+
+  echoinfo "Helm 2 release for ${release} is ${deploy_exists}"
+  return $deploy_exists
+}
+
+function delete_helm2_release() {
+  local namespace="${KUBE_NAMESPACE}"
+  local release="${CI_ENVIRONMENT_SLUG}"
+
+  if [ -z "${release}" ]; then
+    echoerr "No release given, aborting the delete!"
+    return
+  fi
+
+  if ! helm2_deploy_exists "${namespace}" "${release}"; then
+    echoinfo "No Review App with ${release} is currently deployed by Helm 2."
+  else
+    echoinfo "Cleaning up ${release} installed by Helm 2"
+    kubectl_cleanup_release "${namespace}" "${release}"
+  fi
+}
 
 function get_pod() {
   local namespace="${KUBE_NAMESPACE}"
@@ -148,54 +178,22 @@ function ensure_namespace() {
   kubectl describe namespace "${namespace}" || kubectl create namespace "${namespace}"
 }
 
-function install_tiller() {
-  local namespace="${KUBE_NAMESPACE}"
-
-  echoinfo "Checking deployment/tiller-deploy status in the ${namespace} namespace..." true
-
-  echoinfo "Initiating the Helm client..."
-  helm init --client-only
-
-  # Set toleration for Tiller to be installed on a specific node pool
-  helm init \
-    --tiller-namespace "${namespace}" \
-    --wait \
-    --upgrade \
-    --force-upgrade \
-    --node-selectors "app=helm" \
-    --replicas 3 \
-    --override "spec.template.spec.tolerations[0].key"="dedicated" \
-    --override "spec.template.spec.tolerations[0].operator"="Equal" \
-    --override "spec.template.spec.tolerations[0].value"="helm" \
-    --override "spec.template.spec.tolerations[0].effect"="NoSchedule"
-
-  kubectl rollout status --namespace "${namespace}" --watch "deployment/tiller-deploy"
-
-  if ! helm version --tiller-namespace "${namespace}" --debug; then
-    echo "Failed to init Tiller."
-    return 1
-  fi
-}
-
 function install_external_dns() {
   local namespace="${KUBE_NAMESPACE}"
-  local release="dns-gitlab-review-app"
+  local release="dns-gitlab-review-app-helm3"
   local domain
   domain=$(echo "${REVIEW_APPS_DOMAIN}" | awk -F. '{printf "%s.%s", $(NF-1), $NF}')
   echoinfo "Installing external DNS for domain ${domain}..." true
 
   if ! deploy_exists "${namespace}" "${release}" || previous_deploy_failed "${namespace}" "${release}" ; then
     echoinfo "Installing external-dns Helm chart"
-    helm repo update --tiller-namespace "${namespace}"
+    helm repo add bitnami https://charts.bitnami.com/bitnami
+    helm repo update
 
     # Default requested: CPU => 0, memory => 0
-    # Chart > 2.6.1 has a problem with AWS so we're pinning it for now.
-    # See https://gitlab.com/gitlab-org/gitlab/issues/37269 and https://github.com/kubernetes-sigs/external-dns/issues/1262
-    helm install stable/external-dns \
-      --tiller-namespace "${namespace}" \
+    helm install "${release}" bitnami/external-dns \
       --namespace "${namespace}" \
-      --version '2.6.1' \
-      --name "${release}" \
+      --version '2.13.3' \
       --set provider="aws" \
       --set aws.credentials.secretKey="${REVIEW_APPS_AWS_SECRET_KEY}" \
       --set aws.credentials.accessKey="${REVIEW_APPS_AWS_ACCESS_KEY}" \
@@ -289,11 +287,10 @@ function deploy() {
 
 HELM_CMD=$(cat << EOF
   helm upgrade \
-    --tiller-namespace="${namespace}" \
     --namespace="${namespace}" \
     --install \
     --wait \
-    --timeout 900 \
+    --timeout 900s \
     --set ci.branch="${CI_COMMIT_REF_NAME}" \
     --set ci.commit.sha="${CI_COMMIT_SHORT_SHA}" \
     --set ci.job.url="${CI_JOB_URL}" \

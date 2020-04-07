@@ -5937,6 +5937,9 @@ msgstr ""
 msgid "Create project label"
 msgstr ""
 
+msgid "Create requirement"
+msgstr ""
+
 msgid "Create wildcard: %{searchTerm}"
 msgstr ""
 
@@ -6850,6 +6853,9 @@ msgid "Descending"
 msgstr ""
 
 msgid "Describe the goal of the changes and what reviewers should be aware of."
+msgstr ""
+
+msgid "Describe the requirement here"
 msgstr ""
 
 msgid "Description"
@@ -12698,6 +12704,27 @@ msgstr ""
 msgid "Metrics for environment"
 msgstr ""
 
+msgid "Metrics::Dashboard::Annotation|Annotation can't belong to both a cluster and an environment at the same time"
+msgstr ""
+
+msgid "Metrics::Dashboard::Annotation|Annotation has not been deleted"
+msgstr ""
+
+msgid "Metrics::Dashboard::Annotation|Annotation must belong to a cluster or an environment"
+msgstr ""
+
+msgid "Metrics::Dashboard::Annotation|Dashboard with requested path can not be found"
+msgstr ""
+
+msgid "Metrics::Dashboard::Annotation|You are not authorized to create annotation for selected cluster"
+msgstr ""
+
+msgid "Metrics::Dashboard::Annotation|You are not authorized to create annotation for selected environment"
+msgstr ""
+
+msgid "Metrics::Dashboard::Annotation|You are not authorized to delete this annotation"
+msgstr ""
+
 msgid "Metrics|Add metric"
 msgstr ""
 
@@ -16988,6 +17015,9 @@ msgstr ""
 msgid "Require users to prove ownership of custom domains"
 msgstr ""
 
+msgid "Requirement"
+msgstr ""
+
 msgid "Requirements"
 msgstr ""
 
@@ -18647,6 +18677,9 @@ msgstr ""
 msgid "Something went wrong while closing the %{issuable}. Please try again later"
 msgstr ""
 
+msgid "Something went wrong while creating a requirement."
+msgstr ""
+
 msgid "Something went wrong while deleting description changes. Please try again."
 msgstr ""
 
@@ -18720,6 +18753,9 @@ msgid "Something went wrong while resolving this discussion. Please try again."
 msgstr ""
 
 msgid "Something went wrong while stopping this environment. Please try again."
+msgstr ""
+
+msgid "Something went wrong while updating a requirement."
 msgstr ""
 
 msgid "Something went wrong while updating your list settings"

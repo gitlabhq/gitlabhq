@@ -74,18 +74,18 @@ export default {
   /**
    * Dashboard panels structure and global state
    */
-  [types.REQUEST_METRICS_DATA](state) {
+  [types.REQUEST_METRICS_DASHBOARD](state) {
     state.emptyState = 'loading';
     state.showEmptyState = true;
   },
-  [types.RECEIVE_METRICS_DATA_SUCCESS](state, dashboard) {
+  [types.RECEIVE_METRICS_DASHBOARD_SUCCESS](state, dashboard) {
     state.dashboard = mapToDashboardViewModel(dashboard);
 
     if (!state.dashboard.panelGroups.length) {
       state.emptyState = 'noData';
     }
   },
-  [types.RECEIVE_METRICS_DATA_FAILURE](state, error) {
+  [types.RECEIVE_METRICS_DASHBOARD_FAILURE](state, error) {
     state.emptyState = error ? 'unableToConnect' : 'noData';
     state.showEmptyState = true;
   },

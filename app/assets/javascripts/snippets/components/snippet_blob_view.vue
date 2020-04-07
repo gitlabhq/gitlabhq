@@ -4,6 +4,7 @@ import { SNIPPET_VISIBILITY_PUBLIC } from '../constants';
 import BlobHeader from '~/blob/components/blob_header.vue';
 import BlobContent from '~/blob/components/blob_content.vue';
 import { GlLoadingIcon } from '@gitlab/ui';
+import CloneDropdownButton from '~/vue_shared/components/clone_dropdown.vue';
 
 import GetSnippetBlobQuery from '../queries/snippet.blob.query.graphql';
 import GetBlobContent from '../queries/snippet.blob.content.query.graphql';
@@ -16,6 +17,7 @@ export default {
     BlobHeader,
     BlobContent,
     GlLoadingIcon,
+    CloneDropdownButton,
   },
   apollo: {
     blob: {
@@ -72,6 +74,9 @@ export default {
       const { richViewer, simpleViewer } = this.blob;
       return this.activeViewerType === RICH_BLOB_VIEWER ? richViewer : simpleViewer;
     },
+    canBeCloned() {
+      return this.snippet.sshUrlToRepo || this.snippet.httpUrlToRepo;
+    },
   },
   methods: {
     switchViewer(newViewer, respectHash = false) {
@@ -90,7 +95,15 @@ export default {
       class="prepend-top-20 append-bottom-20"
     />
     <article v-else class="file-holder snippet-file-content">
-      <blob-header :blob="blob" :active-viewer-type="viewer.type" @viewer-changed="switchViewer" />
+      <blob-header :blob="blob" :active-viewer-type="viewer.type" @viewer-changed="switchViewer">
+        <template #actions>
+          <clone-dropdown-button
+            v-if="canBeCloned"
+            :ssh-link="snippet.sshUrlToRepo"
+            :http-link="snippet.httpUrlToRepo"
+          />
+        </template>
+      </blob-header>
       <blob-content :loading="isContentLoading" :content="blobContent" :active-viewer="viewer" />
     </article>
   </div>
