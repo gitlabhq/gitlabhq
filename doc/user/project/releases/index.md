@@ -183,7 +183,7 @@ we recommend doing this as one of the last steps in your CI/CD release pipeline.
 
 ## Editing a release
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/26016) in GitLab 12.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/26016) in GitLab 12.6. Asset link editing was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9427) in GitLab 12.10.
 
 To edit the details of a release, navigate to **Project overview > Releases** and click
 the edit button (pencil icon) in the top-right corner of the release you want to modify.
@@ -193,14 +193,13 @@ the edit button (pencil icon) in the top-right corner of the release you want to
 This will bring you to the **Edit Release** page, from which you can
 change some of the release's details.
 
-![Edit release page](img/edit_release_page_v12_6.png)
+![Edit release page](img/edit_release_page_v12_10.png)
 
-Currently, it is only possible to edit the release title and notes.
-To change other release information, such as its tag, associated
-milestones, or release date, use the
-[Releases API](../../../api/releases/index.md#update-a-release). Editing this
-information through the **Edit Release** page is planned for a future version
-of GitLab.
+Currently, it is only possible to edit the release title, notes, and asset
+links. To change other release information, such as its tag, associated
+milestones, or release date, use the [Releases
+API](../../../api/releases/index.md#update-a-release). Editing this information
+through the **Edit Release** page is planned for a future version of GitLab.
 
 ## Notification for Releases
 

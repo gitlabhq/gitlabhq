@@ -1,5 +1,12 @@
 # frozen_string_literal: true
 
+# For hardening usage ping and make it easier to add measures there is in place alt_usage_data method
+# which handles StandardError and fallbacks into -1
+# this way not all measures fail if we encounter one exception
+#
+# Examples:
+#  alt_usage_data { Gitlab::VERSION }
+#  alt_usage_data { Gitlab::CurrentSettings.uuid }
 module Gitlab
   class UsageData
     BATCH_SIZE = 100
@@ -24,17 +31,15 @@ module Gitlab
       end
 
       def license_usage_data
-        usage_data = {
-          uuid: Gitlab::CurrentSettings.uuid,
-          hostname: Gitlab.config.gitlab.host,
-          version: Gitlab::VERSION,
-          installation_type: installation_type,
+        {
+          uuid: alt_usage_data { Gitlab::CurrentSettings.uuid },
+          hostname: alt_usage_data { Gitlab.config.gitlab.host },
+          version: alt_usage_data { Gitlab::VERSION },
+          installation_type: alt_usage_data { installation_type },
           active_user_count: count(User.active),
           recorded_at: Time.now,
           edition: 'CE'
         }
-
-        usage_data
       end
 
       # rubocop: disable Metrics/AbcSize
@@ -134,18 +139,18 @@ module Gitlab
 
       def features_usage_data_ce
         {
-          container_registry_enabled: Gitlab.config.registry.enabled,
+          container_registry_enabled: alt_usage_data { Gitlab.config.registry.enabled },
           dependency_proxy_enabled: Gitlab.config.try(:dependency_proxy)&.enabled,
-          gitlab_shared_runners_enabled: Gitlab.config.gitlab_ci.shared_runners_enabled,
-          gravatar_enabled: Gitlab::CurrentSettings.gravatar_enabled?,
-          influxdb_metrics_enabled: Gitlab::Metrics.influx_metrics_enabled?,
-          ldap_enabled: Gitlab.config.ldap.enabled,
-          mattermost_enabled: Gitlab.config.mattermost.enabled,
-          omniauth_enabled: Gitlab::Auth.omniauth_enabled?,
-          prometheus_metrics_enabled: Gitlab::Metrics.prometheus_metrics_enabled?,
-          reply_by_email_enabled: Gitlab::IncomingEmail.enabled?,
-          signup_enabled: Gitlab::CurrentSettings.allow_signup?,
-          web_ide_clientside_preview_enabled: Gitlab::CurrentSettings.web_ide_clientside_preview_enabled?,
+          gitlab_shared_runners_enabled: alt_usage_data { Gitlab.config.gitlab_ci.shared_runners_enabled },
+          gravatar_enabled: alt_usage_data { Gitlab::CurrentSettings.gravatar_enabled? },
+          influxdb_metrics_enabled: alt_usage_data { Gitlab::Metrics.influx_metrics_enabled? },
+          ldap_enabled: alt_usage_data { Gitlab.config.ldap.enabled },
+          mattermost_enabled: alt_usage_data { Gitlab.config.mattermost.enabled },
+          omniauth_enabled: alt_usage_data { Gitlab::Auth.omniauth_enabled? },
+          prometheus_metrics_enabled: alt_usage_data { Gitlab::Metrics.prometheus_metrics_enabled? },
+          reply_by_email_enabled: alt_usage_data { Gitlab::IncomingEmail.enabled? },
+          signup_enabled: alt_usage_data { Gitlab::CurrentSettings.allow_signup? },
+          web_ide_clientside_preview_enabled: alt_usage_data { Gitlab::CurrentSettings.web_ide_clientside_preview_enabled? },
           ingress_modsecurity_enabled: Feature.enabled?(:ingress_modsecurity)
         }
       end
@@ -172,10 +177,20 @@ module Gitlab
 
       def components_usage_data
         {
-          git: { version: Gitlab::Git.version },
-          gitaly: { version: Gitaly::Server.all.first.server_version, servers: Gitaly::Server.count, filesystems: Gitaly::Server.filesystems },
-          gitlab_pages: { enabled: Gitlab.config.pages.enabled, version: Gitlab::Pages::VERSION },
-          database: { adapter: Gitlab::Database.adapter_name, version: Gitlab::Database.version },
+          git: { version: alt_usage_data { Gitlab::Git.version } },
+          gitaly: {
+            version: alt_usage_data { Gitaly::Server.all.first.server_version },
+            servers: alt_usage_data { Gitaly::Server.count },
+            filesystems: alt_usage_data { Gitaly::Server.filesystems }
+          },
+          gitlab_pages: {
+            enabled: alt_usage_data { Gitlab.config.pages.enabled },
+            version: alt_usage_data { Gitlab::Pages::VERSION }
+          },
+          database: {
+            adapter: alt_usage_data { Gitlab::Database.adapter_name },
+            version: alt_usage_data { Gitlab::Database.version }
+          },
           app_server: { type: app_server_type }
         }
       end
@@ -259,6 +274,18 @@ module Gitlab
       rescue ActiveRecord::StatementInvalid
         fallback
       end
+
+      def alt_usage_data(value = nil, fallback: -1, &block)
+        if block_given?
+          yield
+        else
+          value
+        end
+      rescue
+        fallback
+      end
+
+      private
 
       def installation_type
         if Rails.env.production?

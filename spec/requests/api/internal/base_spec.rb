@@ -325,12 +325,12 @@ describe API::Internal::Base do
 
       shared_examples 'snippets with disabled feature flag' do
         context 'when feature flag :version_snippets is disabled' do
-          it 'returns 404' do
+          it 'returns 401' do
             stub_feature_flags(version_snippets: false)
 
             subject
 
-            expect(response).to have_gitlab_http_status(:not_found)
+            expect(response).to have_gitlab_http_status(:unauthorized)
           end
         end
       end

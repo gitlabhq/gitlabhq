@@ -98,7 +98,7 @@ export default {
           <icon name="comment-next" />
         </button>
       </div>
-      <div v-if="isLoggedIn" class="btn-group btn-group-sm" role="group">
+      <div class="btn-group btn-group-sm" role="group">
         <button
           v-gl-tooltip
           :title="__('Toggle all threads')"

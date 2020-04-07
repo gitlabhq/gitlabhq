@@ -93,6 +93,20 @@ describe 'projects/merge_requests/show.html.haml' do
     end
   end
 
+  context 'when merge request is created by a GitLab team member' do
+    let(:user) { create(:user, email: 'test@gitlab.com') }
+
+    before do
+      allow(Gitlab).to receive(:com?).and_return(true)
+    end
+
+    it 'renders an employee badge next to their name' do
+      render
+
+      expect(rendered).to have_selector('[aria-label="GitLab Team Member"]')
+    end
+  end
+
   def serialize_issuable_sidebar(user, project, merge_request)
     MergeRequestSerializer
       .new(current_user: user, project: project)

@@ -1697,6 +1697,9 @@ msgstr ""
 msgid "Allow only the selected protocols to be used for Git access."
 msgstr ""
 
+msgid "Allow owners to manually add users outside of LDAP"
+msgstr ""
+
 msgid "Allow projects within this group to use Git LFS"
 msgstr ""
 
@@ -9623,6 +9626,9 @@ msgstr ""
 msgid "GitLab Support Bot"
 msgstr ""
 
+msgid "GitLab Team Member"
+msgstr ""
+
 msgid "GitLab User"
 msgstr ""
 
@@ -16571,7 +16577,7 @@ msgstr ""
 msgid "Releases are based on Git tags and mark specific points in a project's development history. They can contain information about the type of changes and can also deliver binaries, like compiled versions of your software."
 msgstr ""
 
-msgid "Releases are based on Git tags. We recommend naming tags that fit within semantic versioning, for example %{codeStart}v1.0%{codeEnd}, %{codeStart}v2.0-pre%{codeEnd}."
+msgid "Releases are based on Git tags. We recommend tags that use semantic versioning, for example %{codeStart}v1.0%{codeEnd}, %{codeStart}v2.0-pre%{codeEnd}."
 msgstr ""
 
 msgid "Releases documentation"

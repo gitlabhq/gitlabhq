@@ -757,10 +757,8 @@ To indicate the steps of navigation through the UI:
   the `.md` document that you're working on is located.
 - Images should have a specific, non-generic name that will
   differentiate and describe them properly.
-- Always add to the end of the file name the GitLab release version
-  corresponding to the version the screenshot was taken from, using the format
-  `image_name_vX_Y.png`.
-  ([Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/61027) in GitLab 12.1.)
+- For screenshots of GitLab software, append the GitLab version the screenshot was taken from to the
+  file name. Use the following format: `image_name_vX_Y.png`.
 - For example, for a screenshot taken from the pipelines page of
   GitLab 11.1, a valid name is `pipelines_v11_1.png`. If you're
   adding an illustration that does not include parts of the UI,

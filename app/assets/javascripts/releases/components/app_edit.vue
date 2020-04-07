@@ -39,7 +39,7 @@ export default {
     subtitleText() {
       return sprintf(
         __(
-          'Releases are based on Git tags. We recommend naming tags that fit within semantic versioning, for example %{codeStart}v1.0%{codeEnd}, %{codeStart}v2.0-pre%{codeEnd}.',
+          'Releases are based on Git tags. We recommend tags that use semantic versioning, for example %{codeStart}v1.0%{codeEnd}, %{codeStart}v2.0-pre%{codeEnd}.',
         ),
         {
           codeStart: '<code>',

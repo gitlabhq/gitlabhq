@@ -145,13 +145,13 @@ describe Repositories::GitHttpController do
     describe 'GET #info_refs' do
       let(:params) { container_params.merge(service: 'git-upload-pack') }
 
-      it 'returns 404' do
+      it 'returns 403' do
         expect(controller).not_to receive(:access_check)
 
         get :info_refs, params: params
 
-        expect(response).to have_gitlab_http_status(:not_found)
-        expect(response.body).to eq "The project you were looking for could not be found."
+        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(response.body).to eq 'Snippet git access is disabled.'
       end
     end
 
@@ -162,13 +162,13 @@ describe Repositories::GitHttpController do
         allow(controller).to receive(:access_check).and_return(nil)
       end
 
-      it 'returns 404' do
+      it 'returns 403' do
         expect(controller).not_to receive(:access_check)
 
         post :git_upload_pack, params: params
 
-        expect(response).to have_gitlab_http_status(:not_found)
-        expect(response.body).to eq "The project you were looking for could not be found."
+        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(response.body).to eq 'Snippet git access is disabled.'
       end
     end
   end

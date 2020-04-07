@@ -121,7 +121,7 @@ module Repositories
     def snippet_request_allowed?
       if repo_type.snippet? && Feature.disabled?(:version_snippets, user)
         Gitlab::AppLogger.info('Snippet access attempt with feature disabled')
-        render plain: 'The project you were looking for could not be found.', status: :not_found
+        render plain: 'Snippet git access is disabled.', status: :forbidden
       end
     end
   end
