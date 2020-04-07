@@ -90,7 +90,7 @@ This configuration relies on valid AWS credentials to be configured already.
 Use an object storage option like AWS S3 to store job artifacts.
 
 DANGER: **Danger:**
-If you're enabling S3 in [GitLab HA](high_availability/README.md), you will need to have an [NFS mount set up for CI logs and artifacts](high_availability/nfs.md#a-single-nfs-mount) or enable [incremental logging](job_logs.md#new-incremental-logging-architecture). If these settings are not set, you will risk job logs disappearing or not being saved.
+If you configure GitLab to store CI logs and artifacts on object storage, you must also enable [incremental logging](job_logs.md#new-incremental-logging-architecture). Otherwise, job logs will disappear or not be saved.
 
 #### Object Storage Settings
 

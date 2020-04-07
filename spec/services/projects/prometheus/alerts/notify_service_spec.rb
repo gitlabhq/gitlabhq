@@ -30,7 +30,7 @@ describe Projects::Prometheus::Alerts::NotifyService do
       expect(notification_service)
         .to receive_message_chain(:async, :prometheus_alerts_fired)
 
-      expect(subject).to eq(true)
+      expect(subject).to be_success
     end
   end
 
@@ -44,7 +44,7 @@ describe Projects::Prometheus::Alerts::NotifyService do
         .exactly(amount).times
 
       Sidekiq::Testing.inline! do
-        expect(subject).to eq(true)
+        expect(subject).to be_success
       end
     end
   end
@@ -54,7 +54,7 @@ describe Projects::Prometheus::Alerts::NotifyService do
       expect(IncidentManagement::ProcessPrometheusAlertWorker)
         .not_to receive(:perform_async)
 
-      expect(subject).to eq(true)
+      expect(subject).to be_success
     end
   end
 
@@ -69,7 +69,7 @@ describe Projects::Prometheus::Alerts::NotifyService do
       expect(create_events_service)
         .to receive(:execute)
 
-      expect(subject).to eq(true)
+      expect(subject).to be_success
     end
   end
 
@@ -78,7 +78,7 @@ describe Projects::Prometheus::Alerts::NotifyService do
     it_behaves_like 'persists events'
   end
 
-  shared_examples 'no notifications' do
+  shared_examples 'no notifications' do |http_status:|
     let(:notification_service) { spy }
     let(:create_events_service) { spy }
 
@@ -86,7 +86,8 @@ describe Projects::Prometheus::Alerts::NotifyService do
       expect(notification_service).not_to receive(:async)
       expect(create_events_service).not_to receive(:execute)
 
-      expect(subject).to eq(false)
+      expect(subject).to be_error
+      expect(subject.http_status).to eq(http_status)
     end
   end
 
@@ -130,7 +131,7 @@ describe Projects::Prometheus::Alerts::NotifyService do
         when :success
           it_behaves_like 'notifies alerts'
         when :failure
-          it_behaves_like 'no notifications'
+          it_behaves_like 'no notifications', http_status: :unauthorized
         else
           raise "invalid result: #{result.inspect}"
         end
@@ -140,7 +141,7 @@ describe Projects::Prometheus::Alerts::NotifyService do
     context 'without project specific cluster' do
       let!(:cluster) { create(:cluster, enabled: true) }
 
-      it_behaves_like 'no notifications'
+      it_behaves_like 'no notifications', http_status: :unauthorized
     end
 
     context 'with manual prometheus installation' do
@@ -171,7 +172,7 @@ describe Projects::Prometheus::Alerts::NotifyService do
         when :success
           it_behaves_like 'notifies alerts'
         when :failure
-          it_behaves_like 'no notifications'
+          it_behaves_like 'no notifications', http_status: :unauthorized
         else
           raise "invalid result: #{result.inspect}"
         end
@@ -193,7 +194,7 @@ describe Projects::Prometheus::Alerts::NotifyService do
           expect_any_instance_of(NotificationService)
             .not_to receive(:async)
 
-          expect(subject).to eq(true)
+          expect(subject).to be_success
         end
       end
 
@@ -211,7 +212,7 @@ describe Projects::Prometheus::Alerts::NotifyService do
         it 'does not send notification' do
           expect(NotificationService).not_to receive(:new)
 
-          expect(subject).to eq(true)
+          expect(subject).to be_success
         end
       end
     end
@@ -260,19 +261,19 @@ describe Projects::Prometheus::Alerts::NotifyService do
     context 'without version' do
       let(:payload) { {} }
 
-      it_behaves_like 'no notifications'
+      it_behaves_like 'no notifications', http_status: :unprocessable_entity
     end
 
     context 'when version is not "4"' do
       let(:payload) { { 'version' => '5' } }
 
-      it_behaves_like 'no notifications'
+      it_behaves_like 'no notifications', http_status: :unprocessable_entity
     end
 
     context 'with missing alerts' do
       let(:payload) { { 'version' => '4' } }
 
-      it_behaves_like 'no notifications'
+      it_behaves_like 'no notifications', http_status: :unauthorized
     end
 
     context 'when the payload is too big' do
@@ -283,7 +284,7 @@ describe Projects::Prometheus::Alerts::NotifyService do
         allow(Gitlab::Utils::DeepSize).to receive(:new).and_return(deep_size_object)
       end
 
-      it_behaves_like 'no notifications'
+      it_behaves_like 'no notifications', http_status: :bad_request
 
       it 'does not process issues' do
         expect(IncidentManagement::ProcessPrometheusAlertWorker)

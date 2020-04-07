@@ -87,26 +87,15 @@ module HasRepository
   end
 
   def url_to_repo
-    Gitlab::Shell.url_to_repo(full_path)
+    ssh_url_to_repo
   end
 
   def ssh_url_to_repo
-    url_to_repo
+    Gitlab::RepositoryUrlBuilder.build(repository.full_path, protocol: :ssh)
   end
 
   def http_url_to_repo
-    custom_root = Gitlab::CurrentSettings.custom_http_clone_url_root
-
-    url = if custom_root.present?
-            Gitlab::Utils.append_path(
-              custom_root,
-              web_url(only_path: true)
-            )
-          else
-            web_url
-          end
-
-    "#{url}.git"
+    Gitlab::RepositoryUrlBuilder.build(repository.full_path, protocol: :http)
   end
 
   def web_url(only_path: nil)

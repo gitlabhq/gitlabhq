@@ -5,6 +5,7 @@ require 'spec_helper'
 describe User, :do_not_mock_admin_mode do
   include ProjectForksHelper
   include TermsHelper
+  include ExclusiveLeaseHelpers
 
   it_behaves_like 'having unique enum values'
 
@@ -4535,17 +4536,22 @@ describe User, :do_not_mock_admin_mode do
 
   context 'when after_commit :update_highest_role' do
     describe 'create user' do
-      it 'initializes a new Members::UpdateHighestRoleService object' do
-        expect_next_instance_of(Members::UpdateHighestRoleService) do |service|
-          expect(service).to receive(:execute)
+      subject { create(:user) }
+
+      it 'schedules a job in the future', :aggregate_failures, :clean_gitlab_redis_shared_state do
+        allow_next_instance_of(Gitlab::ExclusiveLease) do |instance|
+          allow(instance).to receive(:try_obtain).and_return('uuid')
         end
 
-        create(:user)
+        expect(UpdateHighestRoleWorker).to receive(:perform_in).and_call_original
+
+        expect { subject }.to change(UpdateHighestRoleWorker.jobs, :size).by(1)
       end
     end
 
     context 'when user already exists' do
       let!(:user) { create(:user) }
+      let(:user_id) { user.id }
 
       describe 'update user' do
         using RSpec::Parameterized::TableSyntax
@@ -4560,23 +4566,23 @@ describe User, :do_not_mock_admin_mode do
 
         with_them do
           context 'when state was changed' do
-            it 'initializes a new Members::UpdateHighestRoleService object' do
-              expect_next_instance_of(Members::UpdateHighestRoleService) do |service|
-                expect(service).to receive(:execute)
-              end
+            subject { user.update(attributes) }
 
-              user.update(attributes)
-            end
+            include_examples 'update highest role with exclusive lease'
           end
         end
 
         context 'when state was not changed' do
-          it 'does not initialize a new Members::UpdateHighestRoleService object' do
-            expect(Members::UpdateHighestRoleService).not_to receive(:new)
+          subject { user.update(email: 'newmail@example.com') }
 
-            user.update(email: 'newmail@example.com')
-          end
+          include_examples 'does not update the highest role'
         end
+      end
+
+      describe 'destroy user' do
+        subject { user.destroy }
+
+        include_examples 'does not update the highest role'
       end
     end
   end

@@ -20,7 +20,7 @@ describe Projects::Alerting::NotifyService do
         .exactly(amount).times
 
       Sidekiq::Testing.inline! do
-        expect(subject.status).to eq(:success)
+        expect(subject).to be_success
       end
     end
   end
@@ -36,7 +36,7 @@ describe Projects::Alerting::NotifyService do
       expect(notification_service)
         .to receive_message_chain(:async, :prometheus_alerts_fired)
 
-      expect(subject.status).to eq(:success)
+      expect(subject).to be_success
     end
   end
 
@@ -45,7 +45,7 @@ describe Projects::Alerting::NotifyService do
       expect(IncidentManagement::ProcessAlertWorker)
         .not_to receive(:perform_async)
 
-      expect(subject.status).to eq(:success)
+      expect(subject).to be_success
     end
   end
 
@@ -54,7 +54,7 @@ describe Projects::Alerting::NotifyService do
       expect(IncidentManagement::ProcessAlertWorker)
         .not_to receive(:perform_async)
 
-      expect(subject.status).to eq(:error)
+      expect(subject).to be_error
       expect(subject.http_status).to eq(http_status)
     end
   end
@@ -102,7 +102,7 @@ describe Projects::Alerting::NotifyService do
                 .and_raise(Gitlab::Alerting::NotificationPayloadParser::BadPayloadError)
             end
 
-            it_behaves_like 'does not process incident issues due to error', http_status: 400
+            it_behaves_like 'does not process incident issues due to error', http_status: :bad_request
           end
         end
 
@@ -114,13 +114,13 @@ describe Projects::Alerting::NotifyService do
       end
 
       context 'with invalid token' do
-        it_behaves_like 'does not process incident issues due to error', http_status: 401
+        it_behaves_like 'does not process incident issues due to error', http_status: :unauthorized
       end
 
       context 'with deactivated Alerts Service' do
         let!(:alerts_service) { create(:alerts_service, :inactive, project: project) }
 
-        it_behaves_like 'does not process incident issues due to error', http_status: 403
+        it_behaves_like 'does not process incident issues due to error', http_status: :forbidden
       end
     end
   end

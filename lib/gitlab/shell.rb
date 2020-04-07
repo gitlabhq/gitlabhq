@@ -47,14 +47,6 @@ module Gitlab
         @version ||= File.read(gitlab_shell_version_file).chomp if File.readable?(gitlab_shell_version_file)
       end
 
-      # Return a SSH url for a given project path
-      #
-      # @param [String] full_path project path (URL)
-      # @return [String] SSH URL
-      def url_to_repo(full_path)
-        Gitlab.config.gitlab_shell.ssh_path_prefix + "#{full_path}.git"
-      end
-
       private
 
       def gitlab_shell_path

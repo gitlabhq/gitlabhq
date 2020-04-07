@@ -34,7 +34,7 @@ describe ProjectWiki do
 
   describe "#url_to_repo" do
     it "returns the correct ssh url to the repo" do
-      expect(subject.url_to_repo).to eq(Gitlab::Shell.url_to_repo(subject.full_path))
+      expect(subject.url_to_repo).to eq(Gitlab::RepositoryUrlBuilder.build(subject.repository.full_path, protocol: :ssh))
     end
   end
 
@@ -45,27 +45,8 @@ describe ProjectWiki do
   end
 
   describe "#http_url_to_repo" do
-    let(:project) { create :project }
-
-    context 'when a custom HTTP clone URL root is not set' do
-      it 'returns the full http url to the repo' do
-        expected_url = "#{Gitlab.config.gitlab.url}/#{subject.full_path}.git"
-
-        expect(project_wiki.http_url_to_repo).to eq(expected_url)
-        expect(project_wiki.http_url_to_repo).not_to include('@')
-      end
-    end
-
-    context 'when a custom HTTP clone URL root is set' do
-      before do
-        stub_application_setting(custom_http_clone_url_root: 'https://git.example.com:51234')
-      end
-
-      it 'returns the full http url to the repo, with the root replaced with the custom one' do
-        expected_url = "https://git.example.com:51234/#{subject.full_path}.git"
-
-        expect(project_wiki.http_url_to_repo).to eq(expected_url)
-      end
+    it "returns the correct http url to the repo" do
+      expect(subject.http_url_to_repo).to eq(Gitlab::RepositoryUrlBuilder.build(subject.repository.full_path, protocol: :http))
     end
   end
 

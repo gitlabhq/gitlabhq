@@ -3749,7 +3749,9 @@ CREATE TABLE public.merge_request_metrics (
     modified_paths_size integer,
     commits_count integer,
     first_approved_at timestamp with time zone,
-    first_reassigned_at timestamp with time zone
+    first_reassigned_at timestamp with time zone,
+    added_lines integer,
+    removed_lines integer
 );
 
 CREATE SEQUENCE public.merge_request_metrics_id_seq
@@ -12936,6 +12938,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200330123739
 20200330132913
 20200331220930
+20200402123926
 20200402135250
 20200403184110
 20200403185127

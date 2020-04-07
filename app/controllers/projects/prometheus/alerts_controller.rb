@@ -26,12 +26,9 @@ module Projects
 
       def notify
         token = extract_alert_manager_token(request)
+        result = notify_service.execute(token)
 
-        if notify_service.execute(token)
-          head :ok
-        else
-          head :unprocessable_entity
-        end
+        head result.http_status
       end
 
       def create

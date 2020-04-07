@@ -4,7 +4,7 @@
 
 .form-group.js-ssh-host-keys-section{ class: ('collapse' unless mirror.ssh_mirror_url?) }
   %button.btn.btn-inverted.btn-secondary.inline.js-detect-host-keys.append-right-10{ type: 'button', data: { qa_selector: 'detect_host_keys' } }
-    = icon('spinner spin', class: 'js-spinner d-none')
+    .js-spinner.d-none.spinner.mr-1
     = _('Detect host keys')
   .fingerprint-ssh-info.js-fingerprint-ssh-info.prepend-top-10.append-bottom-10{ class: ('collapse' unless mirror.ssh_mirror_url?) }
     %label.label-bold

@@ -8,15 +8,15 @@ module Projects
         include IncidentManagement::Settings
 
         def execute(token)
-          return false unless valid_payload_size?
-          return false unless valid_version?
-          return false unless valid_alert_manager_token?(token)
+          return bad_request unless valid_payload_size?
+          return unprocessable_entity unless valid_version?
+          return unauthorized unless valid_alert_manager_token?(token)
 
           persist_events
           send_alert_email if send_email?
           process_incident_issues if process_issues?
 
-          true
+          ServiceResponse.success
         end
 
         private
@@ -117,6 +117,18 @@ module Projects
 
         def persist_events
           CreateEventsService.new(project, nil, params).execute
+        end
+
+        def bad_request
+          ServiceResponse.error(message: 'Bad Request', http_status: :bad_request)
+        end
+
+        def unauthorized
+          ServiceResponse.error(message: 'Unauthorized', http_status: :unauthorized)
+        end
+
+        def unprocessable_entity
+          ServiceResponse.error(message: 'Unprocessable Entity', http_status: :unprocessable_entity)
         end
       end
     end

@@ -26,28 +26,10 @@ describe Projects::ImportExport::ExportService do
       service.execute
     end
 
-    context 'when :streaming_serializer feature is enabled' do
-      before do
-        stub_feature_flags(streaming_serializer: true)
-      end
+    it 'saves the models' do
+      expect(Gitlab::ImportExport::Project::TreeSaver).to receive(:new).and_call_original
 
-      it 'saves the models' do
-        expect(Gitlab::ImportExport::Project::TreeSaver).to receive(:new).and_call_original
-
-        service.execute
-      end
-    end
-
-    context 'when :streaming_serializer feature is disabled' do
-      before do
-        stub_feature_flags(streaming_serializer: false)
-      end
-
-      it 'saves the models' do
-        expect(Gitlab::ImportExport::Project::LegacyTreeSaver).to receive(:new).and_call_original
-
-        service.execute
-      end
+      service.execute
     end
 
     it 'saves the uploads' do

@@ -73,7 +73,7 @@ The following items will be exported:
 - Project and wiki repositories
 - Project uploads
 - Project configuration, including services
-- Issues with comments, merge requests with diffs and comments, labels, milestones, snippets,
+- Issues with comments, merge requests with diffs and comments, labels, milestones, snippets, time tracking,
   and other project entities
 - Design Management files and data
 - LFS objects

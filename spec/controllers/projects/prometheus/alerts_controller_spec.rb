@@ -158,7 +158,8 @@ describe Projects::Prometheus::AlertsController do
   end
 
   describe 'POST #notify' do
-    let(:notify_service) { spy }
+    let(:service_response) { ServiceResponse.success }
+    let(:notify_service) { instance_double(Projects::Prometheus::Alerts::NotifyService, execute: service_response) }
 
     before do
       sign_out(user)
@@ -170,7 +171,7 @@ describe Projects::Prometheus::AlertsController do
     end
 
     it 'returns ok if notification succeeds' do
-      expect(notify_service).to receive(:execute).and_return(true)
+      expect(notify_service).to receive(:execute).and_return(ServiceResponse.success)
 
       post :notify, params: project_params, session: { as: :json }
 
@@ -178,7 +179,9 @@ describe Projects::Prometheus::AlertsController do
     end
 
     it 'returns unprocessable entity if notification fails' do
-      expect(notify_service).to receive(:execute).and_return(false)
+      expect(notify_service).to receive(:execute).and_return(
+        ServiceResponse.error(message: 'Unprocessable Entity', http_status: :unprocessable_entity)
+      )
 
       post :notify, params: project_params, session: { as: :json }
 

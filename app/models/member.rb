@@ -9,6 +9,7 @@ class Member < ApplicationRecord
   include Presentable
   include Gitlab::Utils::StrongMemoize
   include FromUnion
+  include UpdateHighestRole
 
   attr_accessor :raw_invite_token
 
@@ -100,7 +101,6 @@ class Member < ApplicationRecord
   after_destroy :destroy_notification_setting
   after_destroy :post_destroy_hook, unless: :pending?
   after_commit :refresh_member_authorized_projects
-  after_commit :update_highest_role
 
   default_value_for :notification_level, NotificationSetting.levels[:global]
 
@@ -463,21 +463,15 @@ class Member < ApplicationRecord
     end
   end
 
-  # Triggers the service to schedule a Sidekiq job to update the highest role
-  # for a User
-  #
-  # The job will be called outside of a transaction in order to ensure the changes
-  # for a Member to be commited before attempting to update the highest role.
-  # rubocop: disable CodeReuse/ServiceClass
-  def update_highest_role
+  def update_highest_role?
     return unless user_id.present?
-    return unless previous_changes[:access_level].present?
 
-    run_after_commit_or_now do
-      Members::UpdateHighestRoleService.new(user_id).execute
-    end
+    previous_changes[:access_level].present?
   end
-  # rubocop: enable CodeReuse/ServiceClass
+
+  def update_highest_role_attribute
+    user_id
+  end
 end
 
 Member.prepend_if_ee('EE::Member')

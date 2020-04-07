@@ -14,7 +14,7 @@ module Projects
         token = extract_alert_manager_token(request)
         result = notify_service.execute(token)
 
-        head(response_status(result))
+        head result.http_status
       end
 
       private
@@ -31,12 +31,6 @@ module Projects
       def notify_service
         Projects::Alerting::NotifyService
           .new(project, current_user, notification_payload)
-      end
-
-      def response_status(result)
-        return :ok if result.success?
-
-        result.http_status
       end
 
       def notification_payload

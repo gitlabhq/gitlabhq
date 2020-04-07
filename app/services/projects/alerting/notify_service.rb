@@ -46,15 +46,15 @@ module Projects
       end
 
       def bad_request
-        ServiceResponse.error(message: 'Bad Request', http_status: 400)
+        ServiceResponse.error(message: 'Bad Request', http_status: :bad_request)
       end
 
       def unauthorized
-        ServiceResponse.error(message: 'Unauthorized', http_status: 401)
+        ServiceResponse.error(message: 'Unauthorized', http_status: :unauthorized)
       end
 
       def forbidden
-        ServiceResponse.error(message: 'Forbidden', http_status: 403)
+        ServiceResponse.error(message: 'Forbidden', http_status: :forbidden)
       end
     end
   end

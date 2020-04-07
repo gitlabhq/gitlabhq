@@ -283,6 +283,8 @@ MergeRequest::Metrics:
 - commits_count
 - first_approved_at
 - first_reassigned_at
+- added_lines
+- removed_lines
 Ci::Pipeline:
 - id
 - project_id

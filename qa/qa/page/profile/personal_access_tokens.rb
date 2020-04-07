@@ -1,10 +1,13 @@
 # frozen_string_literal: true
 
+require 'date'
+
 module QA
   module Page
     module Profile
       class PersonalAccessTokens < Page::Base
         view 'app/views/shared/_personal_access_tokens_form.html.haml' do
+          element :expiry_date_field
           element :personal_access_token_name_field
           element :create_token_button
         end
@@ -34,6 +37,13 @@ module QA
 
         def created_access_token
           find_element(:created_personal_access_token, wait: 30).value
+        end
+
+        def fill_expiry_date(date)
+          date = date.to_s if date.is_a?(Date)
+          Date.strptime(date, '%Y-%m-%d') rescue ArgumentError raise "Expiry date must be in YYYY-MM-DD format"
+
+          fill_element(:expiry_date_field, date)
         end
 
         def has_token_row_for_name?(token_name)

@@ -735,22 +735,6 @@ describe Snippet do
     end
   end
 
-  describe '#url_to_repo' do
-    subject { snippet.url_to_repo }
-
-    context 'with personal snippet' do
-      let(:snippet) { create(:personal_snippet) }
-
-      it { is_expected.to eq(Gitlab.config.gitlab_shell.ssh_path_prefix + "snippets/#{snippet.id}.git") }
-    end
-
-    context 'with project snippet' do
-      let(:snippet) { create(:project_snippet) }
-
-      it { is_expected.to eq(Gitlab.config.gitlab_shell.ssh_path_prefix + "#{snippet.project.full_path}/snippets/#{snippet.id}.git") }
-    end
-  end
-
   describe '#versioned_enabled_for?' do
     let_it_be(:user) { create(:user) }
 

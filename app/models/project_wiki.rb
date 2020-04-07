@@ -49,15 +49,15 @@ class ProjectWiki
   end
 
   def url_to_repo
-    Gitlab::Shell.url_to_repo(full_path)
+    ssh_url_to_repo
   end
 
   def ssh_url_to_repo
-    url_to_repo
+    Gitlab::RepositoryUrlBuilder.build(repository.full_path, protocol: :ssh)
   end
 
   def http_url_to_repo
-    @project.http_url_to_repo.sub(%r{git\z}, 'wiki.git')
+    Gitlab::RepositoryUrlBuilder.build(repository.full_path, protocol: :http)
   end
 
   def wiki_base_path

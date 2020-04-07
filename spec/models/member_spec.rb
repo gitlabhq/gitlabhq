@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 describe Member do
+  include ExclusiveLeaseHelpers
+
   using RSpec::Parameterized::TableSyntax
 
   describe "Associations" do
@@ -593,6 +595,9 @@ describe Member do
   end
 
   context 'when after_commit :update_highest_role' do
+    let!(:user) { create(:user) }
+    let(:user_id) { user.id }
+
     where(:member_type, :source_type) do
       :project_member | :project
       :group_member   | :group
@@ -600,43 +605,34 @@ describe Member do
 
     with_them do
       describe 'create member' do
-        it 'initializes a new Members::UpdateHighestRoleService object' do
-          source = create(source_type) # source owner initializes a new service object too
-          user = create(:user)
+        let!(:source) { create(source_type) }
 
-          expect(Members::UpdateHighestRoleService).to receive(:new).with(user.id).and_call_original
+        subject { create(member_type, :guest, user: user, source_type => source) }
 
-          create(member_type, :guest, user: user, source_type => source)
-        end
+        include_examples 'update highest role with exclusive lease'
       end
 
       context 'when member exists' do
-        let!(:member) { create(member_type) }
+        let!(:member) { create(member_type, user: user) }
 
         describe 'update member' do
           context 'when access level was changed' do
-            it 'initializes a new Members::UpdateHighestRoleService object' do
-              expect(Members::UpdateHighestRoleService).to receive(:new).with(member.user_id).and_call_original
+            subject { member.update(access_level: Gitlab::Access::GUEST) }
 
-              member.update(access_level: Gitlab::Access::GUEST)
-            end
+            include_examples 'update highest role with exclusive lease'
           end
 
           context 'when access level was not changed' do
-            it 'does not initialize a new Members::UpdateHighestRoleService object' do
-              expect(Members::UpdateHighestRoleService).not_to receive(:new).with(member.user_id)
+            subject { member.update(notification_level: NotificationSetting.levels[:disabled]) }
 
-              member.update(notification_level: NotificationSetting.levels[:disabled])
-            end
+            include_examples 'does not update the highest role'
           end
         end
 
         describe 'destroy member' do
-          it 'initializes a new Members::UpdateHighestRoleService object' do
-            expect(Members::UpdateHighestRoleService).to receive(:new).with(member.user_id).and_call_original
+          subject { member.destroy }
 
-            member.destroy
-          end
+          include_examples 'update highest role with exclusive lease'
         end
       end
     end

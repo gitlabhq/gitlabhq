@@ -12,7 +12,7 @@
 
 .form-group
   .collapse.js-well-changing-auth
-    .changing-auth-method= icon('spinner spin lg')
+    .changing-auth-method
   .well-password-auth.collapse.js-well-password-auth
     = f.label :password, _("Password"), class: "label-bold"
     = f.password_field :password, value: mirror.password, class: 'form-control qa-password', autocomplete: 'new-password'

@@ -38,7 +38,11 @@ describe 'Import/Export - project export integration test', :js do
       sign_in(user)
     end
 
-    shared_examples 'export file without sensitive words' do
+    context "with streaming serializer" do
+      before do
+        stub_feature_flags(project_export_as_ndjson: false)
+      end
+
       it 'exports a project successfully', :sidekiq_inline do
         export_project_and_download_file(page, project)
 
@@ -59,27 +63,8 @@ describe 'Import/Export - project export integration test', :js do
       end
     end
 
-    context "with legacy export" do
-      before do
-        stub_feature_flags(streaming_serializer: false)
-        stub_feature_flags(project_export_as_ndjson: false)
-      end
-
-      it_behaves_like "export file without sensitive words"
-    end
-
-    context "with streaming serializer" do
-      before do
-        stub_feature_flags(streaming_serializer: true)
-        stub_feature_flags(project_export_as_ndjson: false)
-      end
-
-      it_behaves_like "export file without sensitive words"
-    end
-
     context "with ndjson" do
       before do
-        stub_feature_flags(streaming_serializer: true)
         stub_feature_flags(project_export_as_ndjson: true)
       end
 

@@ -72,7 +72,7 @@ module SubmoduleHelper
                                      project].join('')
 
     url_with_dotgit = url_no_dotgit + '.git'
-    url_with_dotgit == Gitlab::Shell.url_to_repo([namespace, '/', project].join(''))
+    url_with_dotgit == Gitlab::RepositoryUrlBuilder.build([namespace, '/', project].join(''))
   end
 
   def relative_self_url?(url)

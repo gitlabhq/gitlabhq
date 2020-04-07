@@ -5,9 +5,9 @@ require 'spec_helper'
 describe MergeRequestWidgetEntity do
   include ProjectForksHelper
 
-  let(:project)  { create :project, :repository }
+  let(:project) { create :project, :repository }
   let(:resource) { create(:merge_request, source_project: project, target_project: project) }
-  let(:user)     { create(:user) }
+  let(:user) { create(:user) }
 
   let(:request) { double('request', current_user: user, project: project) }
 
@@ -54,15 +54,17 @@ describe MergeRequestWidgetEntity do
   end
 
   describe 'merge_request_add_ci_config_path' do
+    let!(:project_auto_devops) { create(:project_auto_devops, :disabled, project: project) }
+
     before do
       project.add_role(user, role)
     end
 
-    context 'when there are pipelines' do
+    context 'when there is a standard ci config file in the source project' do
       let(:role) { :developer }
 
       before do
-        create(:ci_empty_pipeline, project: project, sha: resource.all_commit_shas.first, ref: resource.source_branch)
+        project.repository.create_file(user, Gitlab::FileDetector::PATTERNS[:gitlab_ci], 'CONTENT', message: 'Add .gitlab-ci.yml', branch_name: 'master')
       end
 
       it 'no ci config path' do
@@ -70,7 +72,7 @@ describe MergeRequestWidgetEntity do
       end
     end
 
-    context 'when there are no pipelines' do
+    context 'when there is no standard ci config file in the source project' do
       context 'when user has permissions' do
         let(:role) { :developer }
 
@@ -78,6 +80,16 @@ describe MergeRequestWidgetEntity do
           expected_path = "/#{resource.project.full_path}/-/new/#{resource.source_branch}?commit_message=Add+.gitlab-ci.yml&file_name=.gitlab-ci.yml&suggest_gitlab_ci_yml=true"
 
           expect(subject[:merge_request_add_ci_config_path]).to eq(expected_path)
+        end
+
+        context 'when auto devops is enabled' do
+          before do
+            project_auto_devops.enabled = true
+          end
+
+          it 'returns a blank ci config path' do
+            expect(subject[:merge_request_add_ci_config_path]).to be_nil
+          end
         end
 
         context 'when source project is missing' do

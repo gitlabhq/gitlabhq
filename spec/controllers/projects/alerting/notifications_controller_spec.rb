@@ -48,7 +48,7 @@ describe Projects::Alerting::NotificationsController do
     end
 
     context 'when notification service fails' do
-      let(:service_response) { ServiceResponse.error(message: 'Unauthorized', http_status: 401) }
+      let(:service_response) { ServiceResponse.error(message: 'Unauthorized', http_status: :unauthorized) }
 
       it 'responds with the service response' do
         make_request

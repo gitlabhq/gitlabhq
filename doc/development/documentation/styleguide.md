@@ -915,7 +915,7 @@ nicely on different mobile devices.
 - When providing a command without output, don't prefix the shell command with `$`.
 - If you need to include triple backticks inside a code block, use four backticks
   for the codeblock fences instead of three.
-- For regular code blocks, always use a highlighting class corresponding to the
+- For regular fenced code blocks, always use a highlighting class corresponding to the
   language for better readability. Examples:
 
   ````markdown
@@ -936,7 +936,7 @@ nicely on different mobile devices.
   ```
   ````
 
-Syntax highlighting is required for code blocks added to the GitLab documentation.
+Syntax highlighting is required for fenced code blocks added to the GitLab documentation.
 Refer to the table below for the most common language classes, or check the
 [complete list](https://github.com/rouge-ruby/rouge/wiki/List-of-supported-languages-and-lexers)
 of language classes available.
