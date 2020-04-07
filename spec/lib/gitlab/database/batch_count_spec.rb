@@ -49,6 +49,12 @@ describe Gitlab::Database::BatchCount do
       [1, 2, 4, 5, 6].each { |i| expect(described_class.batch_count(model, batch_size: i)).to eq(5) }
     end
 
+    it 'will raise an error if distinct count is requested' do
+      expect do
+        described_class.batch_count(model.distinct(column))
+      end.to raise_error 'Use distinct count for optimized distinct counting'
+    end
+
     context 'in a transaction' do
       let(:in_transaction) { true }
 

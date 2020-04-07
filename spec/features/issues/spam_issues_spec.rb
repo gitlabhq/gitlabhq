@@ -23,7 +23,7 @@ describe 'New issue', :js do
     sign_in(user)
   end
 
-  context 'when identified as a spam' do
+  context 'when identified as spam' do
     before do
       WebMock.stub_request(:any, /.*akismet.com.*/).to_return(body: "true", status: 200)
 
@@ -74,7 +74,7 @@ describe 'New issue', :js do
     end
   end
 
-  context 'when not identified as a spam' do
+  context 'when not identified as spam' do
     before do
       WebMock.stub_request(:any, /.*akismet.com.*/).to_return(body: 'false', status: 200)
 

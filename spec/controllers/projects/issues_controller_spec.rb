@@ -725,7 +725,7 @@ describe Projects::IssuesController do
                 stub_feature_flags(allow_possible_spam: false)
               end
 
-              it 'rejects an issue recognized as a spam' do
+              it 'rejects an issue recognized as spam' do
                 expect { update_issue }.not_to change { issue.reload.title }
               end
 
@@ -981,7 +981,7 @@ describe Projects::IssuesController do
               stub_feature_flags(allow_possible_spam: false)
             end
 
-            it 'rejects an issue recognized as a spam' do
+            it 'rejects an issue recognized as spam' do
               expect { post_spam_issue }.not_to change(Issue, :count)
             end
 

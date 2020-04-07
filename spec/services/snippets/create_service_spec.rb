@@ -76,7 +76,7 @@ describe Snippets::CreateService do
 
     shared_examples 'spam check is performed' do
       shared_examples 'marked as spam' do
-        it 'marks a snippet as spam ' do
+        it 'marks a snippet as spam' do
           expect(snippet).to be_spam
         end
 

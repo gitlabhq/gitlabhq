@@ -383,20 +383,21 @@ describe Issues::CreateService do
       context 'when recaptcha was verified' do
         let(:log_user)  { user }
         let(:spam_logs) { create_list(:spam_log, 2, user: log_user, title: 'Awesome issue') }
+        let(:target_spam_log) { spam_logs.last }
 
         before do
           opts[:recaptcha_verified] = true
-          opts[:spam_log_id]        = spam_logs.last.id
+          opts[:spam_log_id] = target_spam_log.id
 
           expect(Spam::AkismetService).not_to receive(:new)
         end
 
-        it 'does no mark an issue as a spam ' do
+        it 'does not mark an issue as spam' do
           expect(issue).not_to be_spam
         end
 
-        it 'an issue is valid ' do
-          expect(issue.valid?).to be_truthy
+        it 'issue is valid ' do
+          expect(issue).to be_valid
         end
 
         it 'does not assign a spam_log to an issue' do
@@ -431,7 +432,7 @@ describe Issues::CreateService do
           end
 
           context 'when issuables_recaptcha_enabled feature flag is true' do
-            it 'marks an issue as a spam ' do
+            it 'marks an issue as spam' do
               expect(issue).to be_spam
             end
 
@@ -444,7 +445,7 @@ describe Issues::CreateService do
                   .to have_spam_log(title: issue.title, description: issue.description, user_id: user.id, noteable_type: 'Issue')
             end
 
-            it 'assigns a spam_log to an issue' do
+            it 'assigns a spam_log to the issue' do
               expect(issue.spam_log).to eq(SpamLog.last)
             end
           end
@@ -454,7 +455,7 @@ describe Issues::CreateService do
               stub_feature_flags(allow_possible_spam: true)
             end
 
-            it 'does not mark an issue as a spam ' do
+            it 'does not mark an issue as spam' do
               expect(issue).not_to be_spam
             end
 
@@ -480,7 +481,7 @@ describe Issues::CreateService do
             end
           end
 
-          it 'does not mark an issue as a spam ' do
+          it 'does not mark an issue as spam' do
             expect(issue).not_to be_spam
           end
 

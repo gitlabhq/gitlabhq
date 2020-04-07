@@ -56,6 +56,7 @@ module Gitlab
       def count(batch_size: nil, mode: :itself, start: nil, finish: nil)
         raise 'BatchCount can not be run inside a transaction' if ActiveRecord::Base.connection.transaction_open?
         raise "The mode #{mode.inspect} is not supported" unless [:itself, :distinct].include?(mode)
+        raise 'Use distinct count for optimized distinct counting' if @relation.limit(1).distinct_value.present? && mode != :distinct
 
         # non-distinct have better performance
         batch_size ||= mode == :distinct ? DEFAULT_DISTINCT_BATCH_SIZE : DEFAULT_BATCH_SIZE

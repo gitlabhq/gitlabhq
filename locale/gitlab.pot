@@ -3794,9 +3794,6 @@ msgstr ""
 msgid "Choose which shards you wish to synchronize to this secondary node"
 msgstr ""
 
-msgid "Choose which shards you wish to synchronize to this secondary node."
-msgstr ""
-
 msgid "Choose which status most accurately reflects the current state of this issue:"
 msgstr ""
 
@@ -9416,28 +9413,7 @@ msgstr ""
 msgid "Geo|All projects are being scheduled for re-verify"
 msgstr ""
 
-msgid "Geo|Allow this secondary node to replicate content on Object Storage"
-msgstr ""
-
 msgid "Geo|Batch operations"
-msgstr ""
-
-msgid "Geo|Choose which groups you wish to synchronize to this secondary node."
-msgstr ""
-
-msgid "Geo|Container repositories sync capacity"
-msgstr ""
-
-msgid "Geo|Control the maximum concurrency of LFS/attachment backfill for this secondary node"
-msgstr ""
-
-msgid "Geo|Control the maximum concurrency of container repository operations for this Geo node"
-msgstr ""
-
-msgid "Geo|Control the maximum concurrency of verification operations for this Geo node"
-msgstr ""
-
-msgid "Geo|Control the minimum interval in days that a repository should be reverified for this primary node"
 msgstr ""
 
 msgid "Geo|Could not remove tracking entry for an existing project."
@@ -9449,22 +9425,10 @@ msgstr ""
 msgid "Geo|Failed"
 msgstr ""
 
-msgid "Geo|File sync capacity"
-msgstr ""
-
 msgid "Geo|Geo Status"
 msgstr ""
 
-msgid "Geo|Groups to synchronize"
-msgstr ""
-
-msgid "Geo|If enabled, and if object storage is enabled, GitLab will handle Object Storage replication using Geo"
-msgstr ""
-
 msgid "Geo|In sync"
-msgstr ""
-
-msgid "Geo|Internal URL (optional)"
 msgstr ""
 
 msgid "Geo|Last repository check run"
@@ -9512,9 +9476,6 @@ msgstr ""
 msgid "Geo|Projects in certain storage shards"
 msgstr ""
 
-msgid "Geo|Re-verification interval"
-msgstr ""
-
 msgid "Geo|Redownload"
 msgstr ""
 
@@ -9525,9 +9486,6 @@ msgid "Geo|Remove entry"
 msgstr ""
 
 msgid "Geo|Remove tracking database entry"
-msgstr ""
-
-msgid "Geo|Repository sync capacity"
 msgstr ""
 
 msgid "Geo|Resync"
@@ -9545,15 +9503,6 @@ msgstr ""
 msgid "Geo|Reverify all projects"
 msgstr ""
 
-msgid "Geo|Select groups to replicate."
-msgstr ""
-
-msgid "Geo|Selective synchronization"
-msgstr ""
-
-msgid "Geo|Shards to synchronize"
-msgstr ""
-
 msgid "Geo|Status"
 msgstr ""
 
@@ -9566,16 +9515,10 @@ msgstr ""
 msgid "Geo|Synchronization failed - %{error}"
 msgstr ""
 
-msgid "Geo|The URL defined on the primary node that secondary nodes should use to contact it. Defaults to URL"
-msgstr ""
-
 msgid "Geo|The database is currently %{db_lag} behind the primary node."
 msgstr ""
 
 msgid "Geo|The node is currently %{minutes_behind} behind the primary node."
-msgstr ""
-
-msgid "Geo|This is a primary node"
 msgstr ""
 
 msgid "Geo|Tracking database entry will be removed. Are you sure?"
@@ -9587,13 +9530,7 @@ msgstr ""
 msgid "Geo|Tracking entry for upload (%{type}/%{id}) was successfully removed."
 msgstr ""
 
-msgid "Geo|URL"
-msgstr ""
-
 msgid "Geo|Unknown state"
-msgstr ""
-
-msgid "Geo|Verification capacity"
 msgstr ""
 
 msgid "Geo|Verification failed - %{error}"
@@ -20169,9 +20106,6 @@ msgid "The total stage shows the time it takes between creating an issue and dep
 msgstr ""
 
 msgid "The unique identifier for the Geo node. Must match %{geoNodeName} if it is set in gitlab.rb, otherwise it must match %{externalUrl} with a trailing slash"
-msgstr ""
-
-msgid "The unique identifier for the Geo node. Must match `geo_node_name` if it is set in gitlab.rb, otherwise it must match `external_url` with a trailing slash"
 msgstr ""
 
 msgid "The update action will time out after %{number_of_minutes} minutes. For big repositories, use a clone/push combination."

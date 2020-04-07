@@ -52,7 +52,7 @@ shared_examples_for 'snippet editor' do
     end
   end
 
-  context 'when identified as a spam' do
+  context 'when identified as spam' do
     before do
       WebMock.stub_request(:any, /.*akismet.com.*/).to_return(body: "true", status: 200)
     end
@@ -66,7 +66,7 @@ shared_examples_for 'snippet editor' do
     end
   end
 
-  context 'when not identified as a spam' do
+  context 'when not identified as spam' do
     before do
       WebMock.stub_request(:any, /.*akismet.com.*/).to_return(body: "false", status: 200)
     end

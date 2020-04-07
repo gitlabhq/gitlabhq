@@ -52,7 +52,7 @@ Some applications are installable only for a project-level cluster.
 Support for installing these applications in a group-level cluster is
 planned for future releases.
 For updates, see [the issue tracking
-progress](https://gitlab.com/gitlab-org/gitlab-foss/issues/51989).
+progress](https://gitlab.com/gitlab-org/gitlab/-/issues/24411).
 
 CAUTION: **Caution:**
 If you have an existing Kubernetes cluster with Helm already installed,

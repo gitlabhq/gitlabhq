@@ -47,23 +47,6 @@ describe MergeRequests::MergeService do
         expect(note.note).to include 'merged'
       end
 
-      it 'is idempotent' do
-        repository = project.repository
-        commit_count = repository.commit_count
-        merge_commit = merge_request.merge_commit.id
-
-        # a first invocation of execute is performed on the before block
-        service.execute(merge_request)
-
-        expect(merge_request.merge_error).to be_falsey
-        expect(merge_request).to be_valid
-        expect(merge_request).to be_merged
-
-        expect(repository.commits_by(oids: [merge_commit]).size).to eq(1)
-        expect(repository.commit_count).to eq(commit_count)
-        expect(merge_request.in_progress_merge_commit_sha).to be_nil
-      end
-
       context 'when squashing' do
         let(:merge_params) do
           { commit_message: 'Merge commit message',

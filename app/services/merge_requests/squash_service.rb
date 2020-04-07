@@ -4,14 +4,12 @@ module MergeRequests
   class SquashService < MergeRequests::BaseService
     include Git::Logger
 
-    def idempotent?
-      true
-    end
-
     def execute
       # If performing a squash would result in no change, then
       # immediately return a success message without performing a squash
-      return success(squash_sha: merge_request.diff_head_sha) if squash_redundant?
+      if merge_request.commits_count < 2 && message.nil?
+        return success(squash_sha: merge_request.diff_head_sha)
+      end
 
       if merge_request.squash_in_progress?
         return error(s_('MergeRequests|Squash task canceled: another squash is already in progress.'))
@@ -21,12 +19,6 @@ module MergeRequests
     end
 
     private
-
-    def squash_redundant?
-      return true if merge_request.merged?
-
-      merge_request.commits_count < 2 && message.nil?
-    end
 
     def squash!
       squash_sha = repository.squash(current_user, merge_request, message || merge_request.default_squash_commit_message)

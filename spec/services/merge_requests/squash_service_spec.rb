@@ -137,24 +137,6 @@ describe MergeRequests::SquashService do
       include_examples 'the squash succeeds'
     end
 
-    context 'when the merge request has already been merged' do
-      let(:merge_request) { merge_request_with_one_commit }
-
-      it 'checks the side-effects for multiple calls' do
-        merge_request.mark_as_merged
-
-        expect(service).to be_idempotent
-        expect { IdempotentWorkerHelper::WORKER_EXEC_TIMES.times { service.execute } }.not_to raise_error
-      end
-
-      it 'idempotently returns a success' do
-        merge_request.mark_as_merged
-        result = service.execute
-
-        expect(result).to match(status: :success, squash_sha: merge_request.diff_head_sha)
-      end
-    end
-
     context 'git errors' do
       let(:merge_request) { merge_request_with_only_new_files }
       let(:error) { 'A test error' }

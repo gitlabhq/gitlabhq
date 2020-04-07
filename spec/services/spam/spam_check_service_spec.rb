@@ -91,9 +91,7 @@ describe Spam::SpamCheckService do
       end
 
       it 'updates spam log' do
-        subject
-
-        expect(existing_spam_log.reload.recaptcha_verified).to be_truthy
+        expect { subject }.to change { existing_spam_log.reload.recaptcha_verified }.from(false).to(true)
       end
     end
 
@@ -137,7 +135,7 @@ describe Spam::SpamCheckService do
             it 'marks as spam' do
               subject
 
-              expect(issue.reload.spam).to be_truthy
+              expect(issue).to be_spam
             end
           end
 
@@ -147,7 +145,7 @@ describe Spam::SpamCheckService do
             it 'does not mark as spam' do
               subject
 
-              expect(issue.spam).to be_falsey
+              expect(issue).not_to be_spam
             end
           end
         end
