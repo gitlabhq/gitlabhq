@@ -199,7 +199,7 @@ according to each stage (Verify, Package, Release).
    - Deploy your features behind [Feature Flags](../../user/project/operations/feature_flags.md). **(PREMIUM)**
    - Add release notes to any Git tag with [GitLab Releases](../../user/project/releases/index.md).
    - View of the current health and status of each CI environment running on Kubernetes with [Deploy Boards](../../user/project/deploy_boards.md). **(PREMIUM)**
-   - Deploy your application to a production environment in a Kubernetes cluster with [Auto Deploy](../../topics/autodevops/index.md#auto-deploy).
+   - Deploy your application to a production environment in a Kubernetes cluster with [Auto Deploy](../../topics/autodevops/stages.md#auto-deploy).
 
 With GitLab CI/CD you can also:
 

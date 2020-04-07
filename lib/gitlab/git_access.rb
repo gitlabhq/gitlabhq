@@ -45,6 +45,8 @@ module Gitlab
 
     attr_reader :actor, :project, :protocol, :authentication_abilities, :namespace_path, :repository_path, :redirected_path, :auth_result_type, :changes, :logger
 
+    alias_method :container, :project
+
     def initialize(actor, project, protocol, authentication_abilities:, namespace_path: nil, repository_path: nil, redirected_path: nil, auth_result_type: nil)
       @actor    = actor
       @project  = project
@@ -429,7 +431,72 @@ module Gitlab
     end
 
     def repository
-      project.repository
+      container&.repository
+    end
+
+    def check_size_before_push!
+      if check_size_limit? && size_checker.above_size_limit?
+        raise ForbiddenError, size_checker.error_message.push_error
+      end
+    end
+
+    def check_push_size!
+      return unless check_size_limit?
+
+      # If there are worktrees with a HEAD pointing to a non-existent object,
+      # calls to `git rev-list --all` will fail in git 2.15+. This should also
+      # clear stale lock files.
+      repository.clean_stale_repository_files
+
+      # Use #check_repository_disk_size to get correct push size whenever a lot of changes
+      # gets pushed at the same time containing the same blobs. This is only
+      # doable if GIT_OBJECT_DIRECTORY_RELATIVE env var is set and happens
+      # when git push comes from CLI (not via UI and API).
+      #
+      # Fallback to determining push size using the changes_list so we can still
+      # determine the push size if env var isn't set (e.g. changes are made
+      # via UI and API).
+      if check_quarantine_size?
+        check_repository_disk_size
+      else
+        check_changes_size
+      end
+    end
+
+    def check_quarantine_size?
+      git_env = ::Gitlab::Git::HookEnv.all(repository.gl_repository)
+
+      git_env['GIT_OBJECT_DIRECTORY_RELATIVE'].present?
+    end
+
+    def check_repository_disk_size
+      check_size_against_limit(repository.object_directory_size)
+    end
+
+    def check_changes_size
+      changes_size = 0
+
+      changes_list.each do |change|
+        changes_size += repository.new_blobs(change[:newrev]).sum(&:size) # rubocop: disable CodeReuse/ActiveRecord
+
+        check_size_against_limit(changes_size)
+      end
+    end
+
+    def check_size_against_limit(size)
+      if size_checker.changes_will_exceed_size_limit?(size)
+        raise ForbiddenError, size_checker.error_message.new_changes_error
+      end
+    end
+
+    def check_size_limit?
+      strong_memoize(:check_size_limit) do
+        changes_list.any? { |change| !Gitlab::Git.blank_ref?(change[:newrev]) }
+      end
+    end
+
+    def size_checker
+      container.repository_size_checker
     end
   end
 end

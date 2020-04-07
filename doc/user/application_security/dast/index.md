@@ -24,7 +24,7 @@ for known vulnerabilities using Dynamic Application Security Testing (DAST).
 
 You can take advantage of DAST by either [including the CI job](#configuration) in
 your existing `.gitlab-ci.yml` file or by implicitly using
-[Auto DAST](../../../topics/autodevops/index.md#auto-dast-ultimate)
+[Auto DAST](../../../topics/autodevops/stages.md#auto-dast-ultimate)
 that is provided by [Auto DevOps](../../../topics/autodevops/index.md).
 
 GitLab checks the DAST report, compares the found vulnerabilities between the source and target

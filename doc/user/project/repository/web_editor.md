@@ -126,7 +126,7 @@ a blank `README.md` file to it, and creates and redirects you to a new branch
 based on the issue title.
 If your [project is already configured with a deployment service](../integrations/overview.md),
 such as Kubernetes, GitLab takes one step further and prompts you to set up
-[auto deploy](../../../topics/autodevops/index.md#auto-deploy)
+[auto deploy](../../../topics/autodevops/stages.md#auto-deploy)
 by helping you create a `.gitlab-ci.yml` file.
 
 After the branch is created, you can edit files in the repository to fix

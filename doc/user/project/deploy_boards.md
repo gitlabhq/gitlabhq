@@ -81,7 +81,7 @@ To display the Deploy Boards for a specific [environment](../../ci/environments.
    `$CI_PROJECT_PATH_SLUG` are the values of the CI variables. This is so we can
    lookup the proper environment in a cluster/namespace which may have more
    than one. These resources should be contained in the namespace defined in
-   the Kubernetes service setting. You can use an [Autodeploy](../../topics/autodevops/index.md#auto-deploy) `.gitlab-ci.yml`
+   the Kubernetes service setting. You can use an [Autodeploy](../../topics/autodevops/stages.md#auto-deploy) `.gitlab-ci.yml`
    template which has predefined stages and commands to use, and automatically
    applies the annotations. Each project will need to have a unique namespace in
    Kubernetes as well. The image below demonstrates how this is shown inside
@@ -139,7 +139,7 @@ version of your application.
 
 ## Further reading
 
-- [GitLab Autodeploy](../../topics/autodevops/index.md#auto-deploy)
+- [GitLab Autodeploy](../../topics/autodevops/stages.md#auto-deploy)
 - [GitLab CI/CD environment variables](../../ci/variables/README.md)
 - [Environments and deployments](../../ci/environments.md)
 - [Kubernetes deploy example](https://gitlab.com/gitlab-examples/kubernetes-deploy)

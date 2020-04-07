@@ -120,7 +120,7 @@ Its feature set is listed on the table below according to DevOps stages.
 | [Using Docker images](docker/using_docker_images.md) | Use GitLab and GitLab Runner with Docker to build and test applications. |
 |---+---|
 | **Release** ||
-| [Auto Deploy](../topics/autodevops/index.md#auto-deploy) | Deploy your application to a production environment in a Kubernetes cluster. |
+| [Auto Deploy](../topics/autodevops/stages.md#auto-deploy) | Deploy your application to a production environment in a Kubernetes cluster. |
 | [Building Docker images](docker/using_docker_build.md) | Maintain Docker-based projects using GitLab CI/CD. |
 | [Canary Deployments](../user/project/canary_deployments.md) **(PREMIUM)** | Ship features to only a portion of your pods and let a percentage of your user base to visit the temporarily deployed feature. |
 | [Deploy Boards](../user/project/deploy_boards.md) **(PREMIUM)** | Check the current health and status of each CI/CD environment running on Kubernetes. |

@@ -62,7 +62,7 @@ You can then test the connection by clicking on **Test Connection**. If the conn
 
 #### Configure attribute mapping
 
-1. Click on `Synchronize Azure Active Directory Users to AppName`, to configure the attribute mapping.
+1. Click on `Synchronize Azure Active Directory Users to AppName` to configure the attribute mapping.
 1. Click **Delete** next to the `mail` mapping.
 1. Map `userPrincipalName` to `emails[type eq "work"].value` and change its **Matching precedence** to `2`.
 1. Map `mailNickname` to `userName`.
@@ -74,32 +74,24 @@ You can then test the connection by clicking on **Test Connection**. If the conn
 1. Create a new mapping:
    1. Click **Add New Mapping**.
    1. Set:
-      - **Source attribute** to the unique identifier determined above.
-      - **Target attribute** to `id`.
+      - **Source attribute** to the unique identifier determined above, typically `objectId`.
+      - **Target attribute** to `externalId`.
       - **Match objects using this attribute** to `Yes`.
       - **Matching precedence** to `1`.
-1. Create another new mapping:
-   1. Click **Add New Mapping**.
-   1. Set:
-      - **Source attribute** to the unique identifier determined above.
-      - **Target attribute** to `externalId`.
+
 1. Click the `userPrincipalName` mapping and change **Match objects using this attribute** to `No`.
 
-   Save your changes and you should have the following configuration:
+1. Save your changes. For reference, you can view [an example configuration in the troubleshooting reference](../../../administration/troubleshooting/group_saml_scim.md#azure-active-directory).
 
-   ![Azure's attribute mapping configuration](img/scim_attribute_mapping.png)
-
-   NOTE: **Note:** If you used a unique identifier **other than** `objectId`, be sure to map it instead to both `id` and `externalId`.
+   NOTE: **Note:** If you used a unique identifier **other than** `objectId`, be sure to map it to `externalId`.
 
 1. Below the mapping list click on **Show advanced options > Edit attribute list for AppName**.
 
-1. Leave the `id` as the primary and only required field.
+1. Ensure the `id` is the primary and required field, and `externalId` is also required.
 
    NOTE: **Note:**
    `username` should neither be primary nor required as we don't support
    that field on GitLab SCIM yet.
-
-   ![Azure's attribute advanced configuration](img/scim_advanced.png)
 
 1. Save all the screens and, in the **Provisioning** step, set
    the `Provisioning Status` to `On`.

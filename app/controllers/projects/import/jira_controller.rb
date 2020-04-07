@@ -22,8 +22,14 @@ module Projects
       end
 
       def import
-        response = ::JiraImport::StartImportService.new(current_user, @project, jira_import_params[:jira_project_key]).execute
-        flash[:notice] = response.message if response.message.present?
+        jira_project_key = jira_import_params[:jira_project_key]
+
+        if jira_project_key.present?
+          response = ::JiraImport::StartImportService.new(current_user, @project, jira_project_key).execute
+          flash[:notice] = response.message if response.message.present?
+        else
+          flash[:alert] = 'No jira project key has been provided.'
+        end
 
         redirect_to project_import_jira_path(@project)
       end

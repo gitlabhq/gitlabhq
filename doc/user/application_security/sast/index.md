@@ -19,7 +19,7 @@ vulnerabilities using Static Application Security Testing (SAST).
 You can take advantage of SAST by doing one of the following:
 
 - [Including the CI job](#configuration) in your existing `.gitlab-ci.yml` file.
-- Implicitly using [Auto SAST](../../../topics/autodevops/index.md#auto-sast-ultimate) provided by
+- Implicitly using [Auto SAST](../../../topics/autodevops/stages.md#auto-sast-ultimate) provided by
   [Auto DevOps](../../../topics/autodevops/index.md).
 
 GitLab checks the SAST report, compares the found vulnerabilities between the
@@ -96,7 +96,7 @@ The [Security Scanner Integration](../../../development/integrations/secure.md) 
 ## Configuration
 
 NOTE: **Note:**
-You don't have to configure SAST manually as shown in this section if you're using [Auto SAST](../../../topics/autodevops/index.md#auto-sast-ultimate)
+You don't have to configure SAST manually as shown in this section if you're using [Auto SAST](../../../topics/autodevops/stages.md#auto-sast-ultimate)
 provided by [Auto DevOps](../../../topics/autodevops/index.md).
 
 For GitLab 11.9 and later, to enable SAST you must [include](../../../ci/yaml/README.md#includetemplate)

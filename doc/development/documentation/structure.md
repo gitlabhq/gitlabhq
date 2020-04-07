@@ -21,8 +21,10 @@ with exceptions and details noted below and in the template included on this pag
 
 - **Title**: Top-level heading with the feature name, or a use case name, which would start with
   a verb, like Configuring, Enabling, etc.
-- **Introduction**: A couple sentences about the subject matter and what's to be found on this page.
-- **Overview** Describe what it is, what it does, and in what context it should be used.
+- **Introduction**: A couple sentences about the subject matter and what's to be found
+on this page. Describe what the feature or topic is, what it does, and in what context it should
+be used. There is no need to add a title called "Introduction" or "Overview," because people rarely
+ search for these terms. Just put this information after the title.
 - **Use cases**: describes real use case scenarios for that feature/configuration.
 - **Requirements**: describes what software, configuration, account, or knowledge is required.
 - **Instructions**: One or more sets of detailed instructions to follow.
@@ -54,12 +56,10 @@ description: "Short document description." # Up to ~200 chars long. They will be
 > [Introduced](link_to_issue_or_mr) in GitLab (Tier) X.Y (2).
 
 An introduction -- without its own additional header -- goes here.
-Offer a very short description of the feature or use case, and what to expect on this page.
+Offer a description of the feature or use case, and what to expect on this page.
 (You can reuse this content, or part of it, for the front matter's `description` at the top of this file).
 
-## Overview
-
-The feature overview should answer the following questions:
+The introduction should answer the following questions:
 
 - What is this feature or use case?
 - Who is it for?

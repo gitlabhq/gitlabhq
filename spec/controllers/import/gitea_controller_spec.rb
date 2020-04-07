@@ -42,7 +42,7 @@ describe Import::GiteaController do
             get :status, format: :json
 
             expect(controller).to redirect_to(new_import_url)
-            expect(flash[:alert]).to eq('Specified URL cannot be used.')
+            expect(flash[:alert]).to eq('Specified URL cannot be used: "Only allowed schemes are http, https"')
           end
         end
       end

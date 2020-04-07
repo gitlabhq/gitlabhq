@@ -5,12 +5,14 @@ module Gitlab
   class RepositorySizeChecker
     attr_reader :limit
 
+    # @param current_size_proc [Proc] returns repository size in bytes
     def initialize(current_size_proc:, limit:, enabled: true)
       @current_size_proc = current_size_proc
       @limit = limit
       @enabled = enabled && limit != 0
     end
 
+    # @return [Integer] bytes
     def current_size
       @current_size ||= @current_size_proc.call
     end

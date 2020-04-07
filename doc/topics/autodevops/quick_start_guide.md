@@ -144,33 +144,33 @@ The pipeline is split into 4 stages, each running a couple of jobs.
 ![Pipeline stages](img/guide_pipeline_stages_v12_3.png)
 
 In the **build** stage, the application is built into a Docker image and then
-uploaded to your project's [Container Registry](../../user/packages/container_registry/index.md) ([Auto Build](index.md#auto-build)).
+uploaded to your project's [Container Registry](../../user/packages/container_registry/index.md) ([Auto Build](stages.md#auto-build)).
 
 In the **test** stage, GitLab runs various checks on the application:
 
 - The `test` job runs unit and integration tests by detecting the language and
-  framework ([Auto Test](index.md#auto-test))
+  framework ([Auto Test](stages.md#auto-test))
 - The `code_quality` job checks the code quality and is allowed to fail
-  ([Auto Code Quality](index.md#auto-code-quality-starter)) **(STARTER)**
+  ([Auto Code Quality](stages.md#auto-code-quality-starter)) **(STARTER)**
 - The `container_scanning` job checks the Docker container if it has any
-  vulnerabilities and is allowed to fail ([Auto Container Scanning](index.md#auto-container-scanning-ultimate))
+  vulnerabilities and is allowed to fail ([Auto Container Scanning](stages.md#auto-container-scanning-ultimate))
 - The `dependency_scanning` job checks if the application has any dependencies
-  susceptible to vulnerabilities and is allowed to fail ([Auto Dependency Scanning](index.md#auto-dependency-scanning-ultimate)) **(ULTIMATE)**
+  susceptible to vulnerabilities and is allowed to fail ([Auto Dependency Scanning](stages.md#auto-dependency-scanning-ultimate)) **(ULTIMATE)**
 - The `sast` job runs static analysis on the current code to check for potential
-  security issues and is allowed to fail([Auto SAST](index.md#auto-sast-ultimate)) **(ULTIMATE)**
+  security issues and is allowed to fail([Auto SAST](stages.md#auto-sast-ultimate)) **(ULTIMATE)**
 - The `license_management` job searches the application's dependencies to determine each of their
-  licenses and is allowed to fail ([Auto License Compliance](index.md#auto-license-compliance-ultimate)) **(ULTIMATE)**
+  licenses and is allowed to fail ([Auto License Compliance](stages.md#auto-license-compliance-ultimate)) **(ULTIMATE)**
 
 NOTE: **Note:**
 As you might have noticed, all jobs except `test` are allowed to fail in the
 test stage.
 
 The **production** stage is run after the tests and checks finish, and it automatically
-deploys the application in Kubernetes ([Auto Deploy](index.md#auto-deploy)).
+deploys the application in Kubernetes ([Auto Deploy](stages.md#auto-deploy)).
 
 Lastly, in the **performance** stage, some performance tests will run
 on the deployed application
-([Auto Browser Performance Testing](index.md#auto-browser-performance-testing-premium)). **(PREMIUM)**
+([Auto Browser Performance Testing](stages.md#auto-browser-performance-testing-premium)). **(PREMIUM)**
 
 ---
 
@@ -260,7 +260,7 @@ Let's fix that:
 1. Write a commit message and click **Commit**.
 
 Now, if you go back to the merge request you should not only see the test passing, but
-also the application deployed as a [review app](index.md#auto-review-apps). You
+also the application deployed as a [review app](stages.md#auto-review-apps). You
 can visit it by following clicking the **View app** button. You will see
 the changes that we previously made.
 

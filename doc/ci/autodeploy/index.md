@@ -1,5 +1,5 @@
 ---
-redirect_to: '../../topics/autodevops/index.md#auto-deploy'
+redirect_to: '../../topics/autodevops/stages.md#auto-deploy'
 ---
 
-This document was moved to [another location](../../topics/autodevops/index.md#auto-deploy).
+This document was moved to [another location](../../topics/autodevops/stages.md#auto-deploy).

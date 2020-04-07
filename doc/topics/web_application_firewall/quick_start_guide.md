@@ -150,12 +150,12 @@ The pipeline is split into a few stages, each running a couple of jobs.
 ![Pipeline stages](../autodevops/img/guide_pipeline_stages_v12_3.png)
 
 In the **build** stage, the application is built into a Docker image and then
-uploaded to your project's [Container Registry](../../user/packages/container_registry/index.md) ([Auto Build](../autodevops/index.md#auto-build)).
+uploaded to your project's [Container Registry](../../user/packages/container_registry/index.md) ([Auto Build](../autodevops/stages.md#auto-build)).
 
 In the **test** stage, GitLab runs various checks on the application.
 
 The **production** stage is run after the tests and checks finish, and it automatically
-deploys the application in Kubernetes ([Auto Deploy](../autodevops/index.md#auto-deploy)).
+deploys the application in Kubernetes ([Auto Deploy](../autodevops/stages.md#auto-deploy)).
 
 The **production** stage creates Kubernetes objects
 like a Deployment, Service, and Ingress resource. The

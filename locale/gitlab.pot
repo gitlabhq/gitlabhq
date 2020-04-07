@@ -19025,9 +19025,6 @@ msgstr ""
 msgid "Specific Runners"
 msgstr ""
 
-msgid "Specified URL cannot be used."
-msgstr ""
-
 msgid "Specified URL cannot be used: \"%{reason}\""
 msgstr ""
 

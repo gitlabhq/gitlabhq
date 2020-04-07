@@ -13,7 +13,7 @@ navigating to your project's **Security & Compliance > Threat Monitoring** page.
 GitLab supports statistics for the following security features:
 
 - [Web Application Firewall](../../clusters/applications.md#web-application-firewall-modsecurity)
-- [Container Network Policies](../../../topics/autodevops/index.md#network-policy)
+- [Container Network Policies](../../../topics/autodevops/stages.md#network-policy)
 
 ## Web Application Firewall
 

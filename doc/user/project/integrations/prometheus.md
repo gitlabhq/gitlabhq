@@ -76,7 +76,7 @@ The Prometheus server will [automatically detect and monitor](https://prometheus
 - `prometheus.io/port` to define the port of the metrics endpoint.
 - `prometheus.io/path` to define the path of the metrics endpoint. Defaults to `/metrics`.
 
-CPU and Memory consumption is monitored, but requires [naming conventions](prometheus_library/kubernetes.md#specifying-the-environment) in order to determine the environment. If you are using [Auto DevOps](../../../topics/autodevops/), this is handled automatically.
+CPU and Memory consumption is monitored, but requires [naming conventions](prometheus_library/kubernetes.md#specifying-the-environment) in order to determine the environment. If you are using [Auto DevOps](../../../topics/autodevops/index.md), this is handled automatically.
 
 The [NGINX Ingress](../clusters/index.md#installing-applications) that is deployed by GitLab to clusters, is automatically annotated for monitoring providing key response metrics: latency, throughput, and error rates.
 

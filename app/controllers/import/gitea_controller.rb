@@ -3,6 +3,8 @@
 class Import::GiteaController < Import::GithubController
   extend ::Gitlab::Utils::Override
 
+  before_action :verify_blocked_uri, only: :status
+
   def new
     if session[access_token_key].present? && provider_url.present?
       redirect_to status_import_url
@@ -16,13 +18,7 @@ class Import::GiteaController < Import::GithubController
 
   # Must be defined or it will 404
   def status
-    if blocked_url?
-      session[access_token_key] = nil
-
-      redirect_to new_import_url, alert: _('Specified URL cannot be used.')
-    else
-      super
-    end
+    super
   end
 
   private
@@ -61,8 +57,8 @@ class Import::GiteaController < Import::GithubController
     { host: provider_url, api_version: 'v1' }
   end
 
-  def blocked_url?
-    Gitlab::UrlBlocker.blocked_url?(
+  def verify_blocked_uri
+    Gitlab::UrlBlocker.validate!(
       provider_url,
       {
         allow_localhost: allow_local_requests?,
@@ -70,6 +66,10 @@ class Import::GiteaController < Import::GithubController
         schemes: %w(http https)
       }
     )
+  rescue Gitlab::UrlBlocker::BlockedUrlError => e
+    session[access_token_key] = nil
+
+    redirect_to new_import_url, alert: _('Specified URL cannot be used: "%{reason}"') % { reason: e.message }
   end
 
   def allow_local_requests?

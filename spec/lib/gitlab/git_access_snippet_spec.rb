@@ -11,6 +11,7 @@ describe Gitlab::GitAccessSnippet do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:snippet) { create(:project_snippet, :public, :repository, project: project) }
+  let(:repository) { snippet.repository }
 
   let(:actor) { user }
   let(:protocol) { 'ssh' }
@@ -208,6 +209,84 @@ describe Gitlab::GitAccessSnippet do
       end
 
       expect { push_access_check }.to raise_forbidden('foo')
+    end
+  end
+
+  describe 'repository size restrictions' do
+    let(:snippet) { create(:personal_snippet, :public, :repository) }
+    let(:actor) { snippet.author }
+
+    let(:oldrev) { TestEnv::BRANCH_SHA["snippet/single-file"] }
+    let(:newrev) { TestEnv::BRANCH_SHA["snippet/edit-file"] }
+    let(:ref) { "refs/heads/snippet/edit-file" }
+    let(:changes) { "#{oldrev} #{newrev} #{ref}" }
+
+    shared_examples_for 'a push to repository already over the limit' do
+      it 'errs' do
+        expect(snippet.repository_size_checker).to receive(:above_size_limit?).and_return(true)
+
+        expect do
+          push_access_check
+        end.to raise_error(described_class::ForbiddenError, /Your push has been rejected/)
+      end
+    end
+
+    shared_examples_for 'a push to repository below the limit' do
+      it 'does not err' do
+        expect(snippet.repository_size_checker).to receive(:above_size_limit?).and_return(false)
+        expect(snippet.repository_size_checker)
+          .to receive(:changes_will_exceed_size_limit?)
+            .with(change_size)
+            .and_return(false)
+
+        expect { push_access_check }.not_to raise_error
+      end
+    end
+
+    shared_examples_for 'a push to repository to make it over the limit' do
+      it 'errs' do
+        expect(snippet.repository_size_checker).to receive(:above_size_limit?).and_return(false)
+        expect(snippet.repository_size_checker)
+          .to receive(:changes_will_exceed_size_limit?)
+            .with(change_size)
+            .and_return(true)
+
+        expect do
+          push_access_check
+        end.to raise_error(described_class::ForbiddenError, /Your push to this repository would cause it to exceed the size limit/)
+      end
+    end
+
+    context 'when GIT_OBJECT_DIRECTORY_RELATIVE env var is set' do
+      let(:change_size) { 100 }
+
+      before do
+        allow(Gitlab::Git::HookEnv)
+          .to receive(:all)
+            .with(repository.gl_repository)
+            .and_return({ 'GIT_OBJECT_DIRECTORY_RELATIVE' => 'objects' })
+
+        # Stub the object directory size to "simulate" quarantine size
+        allow(repository).to receive(:object_directory_size).and_return(change_size)
+      end
+
+      it_behaves_like 'a push to repository already over the limit'
+      it_behaves_like 'a push to repository below the limit'
+      it_behaves_like 'a push to repository to make it over the limit'
+    end
+
+    context 'when GIT_OBJECT_DIRECTORY_RELATIVE env var is not set' do
+      let(:change_size) { 200 }
+
+      before do
+        allow(snippet.repository).to receive(:new_blobs).and_return(
+          [double(:blob, size: change_size)]
+        )
+      end
+
+      it_behaves_like 'a push to repository already over the limit'
+      it_behaves_like 'a push to repository below the limit'
+      it_behaves_like 'a push to repository to make it over the limit'
     end
   end
 

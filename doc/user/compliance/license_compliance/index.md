@@ -13,7 +13,7 @@ using License Compliance.
 
 You can take advantage of License Compliance by either [including the job](#configuration)
 in your existing `.gitlab-ci.yml` file or by implicitly using
-[Auto License Compliance](../../../topics/autodevops/index.md#auto-license-compliance-ultimate)
+[Auto License Compliance](../../../topics/autodevops/stages.md#auto-license-compliance-ultimate)
 that is provided by [Auto DevOps](../../../topics/autodevops/index.md).
 
 GitLab checks the License Compliance report, compares the licenses between the

@@ -18,7 +18,7 @@ All dependencies are scanned, including the transitive dependencies (also known 
 
 You can take advantage of Dependency Scanning by either [including the CI job](#configuration)
 in your existing `.gitlab-ci.yml` file or by implicitly using
-[Auto Dependency Scanning](../../../topics/autodevops/index.md#auto-dependency-scanning-ultimate)
+[Auto Dependency Scanning](../../../topics/autodevops/stages.md#auto-dependency-scanning-ultimate)
 that is provided by [Auto DevOps](../../../topics/autodevops/index.md).
 
 GitLab checks the Dependency Scanning report, compares the found vulnerabilities
