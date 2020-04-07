@@ -11,14 +11,19 @@ describe('Code component', () => {
     json = getJSONFixture('blob/notebook/basic.json');
   });
 
+  const setupComponent = cell => {
+    const comp = new Component({
+      propsData: {
+        cell,
+      },
+    });
+    comp.$mount();
+    return comp;
+  };
+
   describe('without output', () => {
     beforeEach(done => {
-      vm = new Component({
-        propsData: {
-          cell: json.cells[0],
-        },
-      });
-      vm.$mount();
+      vm = setupComponent(json.cells[0]);
 
       setTimeout(() => {
         done();
@@ -32,12 +37,7 @@ describe('Code component', () => {
 
   describe('with output', () => {
     beforeEach(done => {
-      vm = new Component({
-        propsData: {
-          cell: json.cells[2],
-        },
-      });
-      vm.$mount();
+      vm = setupComponent(json.cells[2]);
 
       setTimeout(() => {
         done();
@@ -50,6 +50,25 @@ describe('Code component', () => {
 
     it('renders output cell', () => {
       expect(vm.$el.querySelector('.output')).toBeDefined();
+    });
+  });
+
+  describe('with string for cell.source', () => {
+    beforeEach(done => {
+      const cell = json.cells[0];
+      cell.source = cell.source.join('');
+
+      vm = setupComponent(cell);
+
+      setTimeout(() => {
+        done();
+      });
+    });
+
+    it('renders the same input as when cell.source is an array', () => {
+      const expected = "console.log('test')";
+
+      expect(vm.$el.querySelector('.input').innerText).toContain(expected);
     });
   });
 });

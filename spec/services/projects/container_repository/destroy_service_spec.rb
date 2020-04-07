@@ -36,6 +36,16 @@ describe Projects::ContainerRepository::DestroyService do
         expect(repository).to receive(:delete_tags!).and_call_original
         expect { described_class.new(project, user).execute(repository) }.to change { ContainerRepository.all.count }.by(-1)
       end
+
+      context 'when destroy fails' do
+        it 'set delete_status' do
+          allow(repository).to receive(:destroy).and_return(false)
+
+          subject.execute(repository)
+
+          expect(repository).to be_delete_failed
+        end
+      end
     end
   end
 end

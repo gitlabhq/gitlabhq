@@ -8,6 +8,8 @@ class ContainerRepository < ApplicationRecord
   validates :name, length: { minimum: 0, allow_nil: false }
   validates :name, uniqueness: { scope: :project_id }
 
+  enum status: { delete_scheduled: 0, delete_failed: 1 }
+
   delegate :client, to: :registry
 
   scope :ordered, -> { order(:name) }

@@ -1,0 +1,14 @@
+query getJiraProjects($fullPath: ID!) {
+  project(fullPath: $fullPath) {
+    jiraImportStatus
+    jiraImports {
+      nodes {
+        jiraProjectKey
+        scheduledAt
+        scheduledBy {
+          username
+        }
+      }
+    }
+  }
+}

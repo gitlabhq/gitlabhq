@@ -110,6 +110,7 @@ describe Projects::Registry::RepositoriesController do
 
           delete_repository(repository)
 
+          expect(repository.reload).to be_delete_scheduled
           expect(response).to have_gitlab_http_status(:no_content)
         end
 

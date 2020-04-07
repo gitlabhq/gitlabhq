@@ -1233,6 +1233,14 @@ a helpful link back to how the feature was developed.
   > - Enabled by default in GitLab 11.4.
   ```
 
+- If a feature is moved to another tier:
+
+  ```md
+  > - [Introduced](<link-to-issue>) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.5.
+  > - [Moved](<link-to-issue>) to [GitLab Starter](https://about.gitlab.com/pricing/) in 11.8.
+  > - [Moved](<link-to-issue>) to GitLab Core in 12.0.
+  ```
+
 NOTE: **Note:**
 Version text must be on its own line and surounded by blank lines to render correctly.
 

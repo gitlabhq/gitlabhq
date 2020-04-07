@@ -2,18 +2,15 @@
 type: reference, concepts
 ---
 
-# Scaling and High Availability
+# High Availability
 
-GitLab supports a number of scaling options to ensure that your self-managed
-instance is able to scale out to meet your organization's needs when scaling up
-is no longer practical or feasible.
-
-GitLab also offers high availability options for organizations that require
+GitLab offers high availability options for organizations that require
 the fault tolerance and redundancy necessary to maintain high-uptime operations.
 
-Scaling and high availability can be tackled separately as GitLab comprises
-modular components which can be individually scaled or made highly available
-depending on your organization's needs and resources.
+Please consult our [scaling documentation](../scaling) if you want to resolve
+performance bottlenecks you encounter in individual GitLab components without
+incurring the additional complexity costs associated with maintaining a
+highly-available architecture.
 
 On this page, we present examples of self-managed instances which demonstrate
 how GitLab can be scaled out and made highly available. These examples progress
@@ -29,39 +26,7 @@ watch [this 1 hour Q&A](https://www.youtube.com/watch?v=uCU8jdYzpac)
 with [John Northrup](https://gitlab.com/northrup), and live questions coming
 in from some of our customers.
 
-## Scaling examples
-
-### Single-node Omnibus installation
-
-This solution is appropriate for many teams that have a single server at their disposal. With automatic backup of the GitLab repositories, configuration, and the database, this can be an optimal solution if you don't have strict availability requirements.
-
-You can also optionally configure GitLab to use an [external PostgreSQL service](../external_database.md)
-or an [external object storage service](object_storage.md) for added
-performance and reliability at a relatively low complexity cost.
-
-References:
-
-- [Installation Docs](../../install/README.md)
-- [Backup/Restore Docs](https://docs.gitlab.com/omnibus/settings/backups.html#backup-and-restore-omnibus-gitlab-configuration)
-
-### Omnibus installation with multiple application servers
-
-This solution is appropriate for teams that are starting to scale out when
-scaling up is no longer meeting their needs. In this configuration, additional application nodes will handle frontend traffic, with a load balancer in front to distribute traffic across those nodes. Meanwhile, each application node connects to a shared file server and PostgreSQL and Redis services on the back end.
-
-The additional application servers adds limited fault tolerance to your GitLab
-instance. As long as one application node is online and capable of handling the
-instance's usage load, your team's productivity will not be interrupted. Having
-multiple application nodes also enables [zero-downtime updates](https://docs.gitlab.com/omnibus/update/#zero-downtime-updates).
-
-References:
-
-- [Configure your load balancer for GitLab](load_balancer.md)
-- [Configure your NFS server to work with GitLab](nfs.md)
-- [Configure packaged PostgreSQL server to listen on TCP/IP](https://docs.gitlab.com/omnibus/settings/database.html#configure-packaged-postgresql-server-to-listen-on-tcpip)
-- [Setting up a Redis-only server](https://docs.gitlab.com/omnibus/settings/redis.html#setting-up-a-redis-only-server)
-
-## High-availability examples
+## Examples
 
 ### Omnibus installation with automatic database failover
 

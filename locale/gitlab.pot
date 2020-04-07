@@ -862,6 +862,9 @@ msgstr ""
 msgid "A project boilerplate for Salesforce App development with Salesforce Developer tools."
 msgstr ""
 
+msgid "A project containing issues for each audit inquiry in the HIPAA Audit Protocol published by the U.S. Department of Health & Human Services"
+msgstr ""
+
 msgid "A project is where you house your files (repository), plan your work (issues), and publish your documentation (wiki), %{among_other_things_link}."
 msgstr ""
 
@@ -15800,6 +15803,9 @@ msgid "ProjectTemplates|Android"
 msgstr ""
 
 msgid "ProjectTemplates|Go Micro"
+msgstr ""
+
+msgid "ProjectTemplates|HIPAA Audit Protocol"
 msgstr ""
 
 msgid "ProjectTemplates|Netlify/GitBook"

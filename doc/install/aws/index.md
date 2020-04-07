@@ -381,7 +381,103 @@ EC2 instances running Linux use private key files for SSH authentication. You'll
 
 Storing private key files on your bastion host is a bad idea. To get around this, use SSH agent forwarding on your client. See [Securely Connect to Linux Instances Running in a Private Amazon VPC](https://aws.amazon.com/blogs/security/securely-connect-to-linux-instances-running-in-a-private-amazon-vpc/) for a step-by-step guide on how to use SSH agent forwarding.
 
-## Setting up Gitaly
+## Install GitLab and create custom AMI
+
+We will need a preconfigured, custom GitLab AMI to use in our launch configuration later. As a starting point, we will use the official GitLab AMI to create a GitLab instance. Then, we'll add our custom configuration for PostgreSQL, Redis, and Gitaly. If you prefer, instead of using the official GitLab AMI, you can also spin up an EC2 instance of your choosing and [manually install GitLab](https://about.gitlab.com/install/).
+
+### Install GitLab
+
+From the EC2 dashboard:
+
+1. Click **Launch Instance** and select **Community AMIs** from the left menu.
+1. In the search bar, search for `GitLab EE <version>` where `<version>` is the latest version as seen on the [releases page](https://about.gitlab.com/releases/). Select the latest patch release, for example `GitLab EE 12.9.2`.
+1. Select an instance type based on your workload. Consult the [hardware requirements](../../install/requirements.md#hardware-requirements) to choose one that fits your needs (at least `c5.xlarge`, which is sufficient to accommodate 100 users).
+1. Click **Configure Instance Details**:
+   1. In the **Network** dropdown, select `gitlab-vpc`, the VPC we created earlier.
+   1. In the **Subnet** dropdown, `select gitlab-private-10.0.1.0` from the list of subnets we created earlier.
+   1. Double check that **Auto-assign Public IP** is set to `Use subnet setting (Disable)`.
+   1. Click **Add Storage**.
+   1. The root volume is 8GiB by default and should be enough given that we won’t store any data there.
+1. Click **Add Tags** and add any tags you may need. In our case, we'll only set `Key: Name` and `Value: GitLab`.
+1. Click **Configure Security Group**. Check **Select an existing security group** and select the `gitlab-loadbalancer-sec-group` we created earlier.
+1. Click **Review and launch** followed by **Launch** if you’re happy with your settings.
+1. Finally, acknowledge that you have access to the selected private key file or create a new one. Click **Launch Instances**.
+
+### Add custom configuration
+
+Connect to your GitLab instance via **Bastion Host A** using [SSH Agent Forwarding](#use-ssh-agent-forwarding). Once connected, add the following custom configuration:
+
+#### Install the `pg_trgm` extension for PostgreSQL
+
+From your GitLab instance, connect to the RDS instance to verify access and to install the required `pg_trgm` extension.
+
+To find the host or endpoint, navigate to **Amazon RDS > Databases** and click on the database you created earlier. Look for the endpoint under the **Connectivity & security** tab.
+
+Do not to include the colon and port number:
+
+```shell
+sudo /opt/gitlab/embedded/bin/psql -U gitlab -h <rds-endpoint> -d gitlabhq_production
+```
+
+At the `psql` prompt create the extension and then quit the session:
+
+```shell
+psql (10.9)
+Type "help" for help.
+
+gitlab=# CREATE EXTENSION pg_trgm;
+gitlab=# \q
+```
+
+#### Configure GitLab to connect to PostgreSQL and Redis
+
+1. Edit `/etc/gitlab/gitlab.rb`, find the `external_url 'http://<domain>'` option
+   and change it to the `https` domain you will be using.
+
+1. Look for the GitLab database settings and uncomment as necessary. In
+   our current case we'll specify the database adapter, encoding, host, name,
+   username, and password:
+
+   ```ruby
+   # Disable the built-in Postgres
+    postgresql['enable'] = false
+
+   # Fill in the connection details
+   gitlab_rails['db_adapter'] = "postgresql"
+   gitlab_rails['db_encoding'] = "unicode"
+   gitlab_rails['db_database'] = "gitlabhq_production"
+   gitlab_rails['db_username'] = "gitlab"
+   gitlab_rails['db_password'] = "mypassword"
+   gitlab_rails['db_host'] = "<rds-endpoint>"
+   ```
+
+1. Next, we need to configure the Redis section by adding the host and
+   uncommenting the port:
+
+   ```ruby
+   # Disable the built-in Redis
+   redis['enable'] = false
+
+   # Fill in the connection details
+   gitlab_rails['redis_host'] = "<redis-endpoint>"
+   gitlab_rails['redis_port'] = 6379
+   ```
+
+1. Finally, reconfigure GitLab for the changes to take effect:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+1. You might also find it useful to run a check and a service status to make sure
+   everything has been setup correctly:
+
+   ```shell
+   sudo gitlab-rake gitlab:check
+   sudo gitlab-ctl status
+   ```
+
+#### Set up Gitaly
 
 CAUTION: **Caution:** In this architecture, having a single Gitaly server creates a single point of failure. This limitation will be removed once [Gitaly HA](https://gitlab.com/groups/gitlab-org/-/epics/842) is released.
 
@@ -410,7 +506,79 @@ Let's create an EC2 instance where we'll install Gitaly:
 
   > **Optional:** Instead of storing configuration _and_ repository data on the root volume, you can also choose to add an additional EBS volume for repository storage. Follow the same guidance as above. See the [Amazon EBS pricing](https://aws.amazon.com/ebs/pricing/).
 
-Now that we have our EC2 instance ready, follow the [documentation to install GitLab and set up Gitaly on its own server](../../administration/gitaly/index.md#running-gitaly-on-its-own-server).
+Now that we have our EC2 instance ready, follow the [documentation to install GitLab and set up Gitaly on its own server](../../administration/gitaly/index.md#running-gitaly-on-its-own-server). Perform the client setup steps from that document on the [GitLab instance we created](#install-gitlab) above.
+
+#### Add Support for Proxied SSL
+
+As we are terminating SSL at our [load balancer](#load-balancer), follow the steps at [Supporting proxied SSL](https://docs.gitlab.com/omnibus/settings/nginx.html#supporting-proxied-ssl) to configure this in `/etc/gitlab/gitlab.rb`.
+
+Remember to run `sudo gitlab-ctl reconfigure` after saving the changes to the `gitlab.rb` file.
+
+#### Disable Let's Encrypt
+
+Since we're adding our SSL certificate at the load balancer, we do not need GitLab's built-in support for Let's Encrypt. Let's Encrypt [is enabled by default](https://docs.gitlab.com/omnibus/settings/ssl.html#lets-encrypt-integration) when using an `https` domain since GitLab 10.7, so we need to explicitly disable it:
+
+1. Open `/etc/gitlab/gitlab.rb` and disable it:
+
+   ```ruby
+   letsencrypt['enable'] = false
+   ```
+
+1. Save the file and reconfigure for the changes to take effect:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+#### Configure host keys
+
+Ordinarily we would manually copy the contents (primary and public keys) of `/etc/ssh/` on the primary application server to `/etc/ssh` on all secondary servers. This prevents false man-in-the-middle-attack alerts when accessing servers in your High Availability cluster behind a load balancer.
+
+We'll automate this by creating static host keys as part of our custom AMI. As these host keys are also rotated every time an EC2 instance boots up, "hard coding" them into our custom AMI serves as a handy workaround.
+
+On your GitLab instance run the following:
+
+```shell
+mkdir /etc/ssh_static
+cp -R /etc/ssh/* /etc/ssh_static
+```
+
+In `/etc/ssh/sshd_config` update the following:
+
+```bash
+  # HostKeys for protocol version 2
+  HostKey /etc/ssh_static/ssh_host_rsa_key
+  HostKey /etc/ssh_static/ssh_host_dsa_key
+  HostKey /etc/ssh_static/ssh_host_ecdsa_key
+  HosstKey /etc/ssh_static/ssh_host_ed25519_key
+```
+
+#### Amazon S3 object storage
+
+Since we're not using NFS for shared storage, we will use [Amazon S3](https://aws.amazon.com/s3/) buckets to store backups, artifacts, LFS objects, uploads, merge request diffs, container registry images, and more. For instructions on how to configure each of these, please see [Cloud Object Storage](../../administration/high_availability/object_storage.md).
+
+Remember to run `sudo gitlab-ctl reconfigure` after saving the changes to the `gitlab.rb` file.
+
+NOTE: **Note:**
+One current feature of GitLab that still requires a shared directory (NFS) is
+[GitLab Pages](../../user/project/pages/index.md).
+There is [work in progress](https://gitlab.com/gitlab-org/gitlab-pages/issues/196)
+to eliminate the need for NFS to support GitLab Pages.
+
+---
+
+That concludes the configuration changes for our GitLab instance. Next, we'll create a custom AMI based on this instance to use for our launch configuration and auto scaling group.
+
+### Create custom AMI
+
+On the EC2 dashboard:
+
+1. Select the `GitLab` instance we [created earlier](#install-gitLab).
+1. Click on **Actions**, scroll down to **Image** and click **Create Image**.
+1. Give your image a name and description (we'll use `GitLab-Source` for both).
+1. Leave everything else as default and click **Create Image**
+
+Now we have a custom AMI that we'll use to create our launch configuration the the next step.
 
 ## Deploying GitLab inside an auto scaling group
 
@@ -496,129 +664,6 @@ auto scaling group.
 You'll notice that after we save the configuration, AWS starts launching our two
 instances in different AZs and without a public IP which is exactly what
 we intended.
-
-## After deployment
-
-After a few minutes, the instances should be up and accessible via the internet.
-Let's connect to the primary and configure some things before logging in.
-
-### Installing the `pg_trgm` extension for PostgreSQL
-
-Connect to the RDS instance to verify access and to install the required `pg_trgm` extension.
-
-To find the host or endpoint, naviagate to **Amazon RDS > Databases** and click on the database you created earlier. Look for the endpoint under the **Connectivity & security** tab.
-
-Do not to include the colon and port number:
-
-```shell
-sudo /opt/gitlab/embedded/bin/psql -U gitlab -h <rds-endpoint> -d gitlabhq_production
-```
-
-At the psql prompt create the extension and then quit the session:
-
-```shell
-psql (10.9)
-Type "help" for help.
-
-gitlab=# CREATE EXTENSION pg_trgm;
-gitlab=# \q
-```
-
----
-
-### Configuring GitLab to connect with PostgreSQL and Redis
-
-Edit the `gitlab.rb` file at `/etc/gitlab/gitlab.rb`
-find the `external_url 'http://gitlab.example.com'` option and change it
-to the domain you will be using or the public IP address of the current
-instance to test the configuration.
-
-For a more detailed description about configuring GitLab, see [Configuring GitLab for HA](../../administration/high_availability/gitlab.md)
-
-Now look for the GitLab database settings and uncomment as necessary. In
-our current case we'll specify the database adapter, encoding, host, name,
-username, and password:
-
-```ruby
-# Disable the built-in Postgres
-postgresql['enable'] = false
-
-# Fill in the connection details
-gitlab_rails['db_adapter'] = "postgresql"
-gitlab_rails['db_encoding'] = "unicode"
-gitlab_rails['db_database'] = "gitlabhq_production"
-gitlab_rails['db_username'] = "gitlab"
-gitlab_rails['db_password'] = "mypassword"
-gitlab_rails['db_host'] = "<rds-endpoint>"
-```
-
-Next, we need to configure the Redis section by adding the host and
-uncommenting the port:
-
-```ruby
-# Disable the built-in Redis
-redis['enable'] = false
-
-# Fill in the connection details
-gitlab_rails['redis_host'] = "<redis-endpoint>"
-gitlab_rails['redis_port'] = 6379
-```
-
-Finally, reconfigure GitLab for the change to take effect:
-
-```shell
-sudo gitlab-ctl reconfigure
-```
-
-You might also find it useful to run a check and a service status to make sure
-everything has been setup correctly:
-
-```shell
-sudo gitlab-rake gitlab:check
-sudo gitlab-ctl status
-```
-
-If everything looks good, you should be able to reach GitLab in your browser.
-
-### Using Amazon S3 object storage
-
-GitLab stores many objects outside the Git repository, many of which can be
-uploaded to S3. That way, you can offload the root disk volume of these objects
-which would otherwise take much space.
-
-In particular, you can store in S3:
-
-- [The Git LFS objects](../../administration/lfs/lfs_administration.md#s3-for-omnibus-installations) ((Omnibus GitLab installations))
-- [The Container Registry images](../../administration/packages/container_registry.md#container-registry-storage-driver) (Omnibus GitLab installations)
-- [The GitLab CI/CD job artifacts](../../administration/job_artifacts.md#using-object-storage) (Omnibus GitLab installations)
-
-### Setting up a domain name
-
-After you SSH into the instance, configure the domain name:
-
-1. Open `/etc/gitlab/gitlab.rb` with your preferred editor.
-1. Edit the `external_url` value:
-
-   ```ruby
-   external_url 'http://example.com'
-   ```
-
-1. Reconfigure GitLab:
-
-   ```shell
-   sudo gitlab-ctl reconfigure
-   ```
-
-You should now be able to reach GitLab at the URL you defined. To use HTTPS
-(recommended), see the [HTTPS documentation](https://docs.gitlab.com/omnibus/settings/nginx.html#enable-https).
-
-### Logging in for the first time
-
-If you followed the previous section, you should be now able to visit GitLab
-in your browser. The very first time, you will be asked to set up a password
-for the `root` user which has admin privileges on the GitLab instance.
-
-After you set it up, login with username `root` and the newly created password.
 
 ## Health check and monitoring with Prometheus
 

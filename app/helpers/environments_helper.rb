@@ -18,6 +18,10 @@ module EnvironmentsHelper
     }
   end
 
+  def custom_metrics_available?(project)
+    can?(current_user, :admin_project, project)
+  end
+
   def metrics_data(project, environment)
     {
       "settings-path" => edit_project_service_path(project, 'prometheus'),
@@ -39,7 +43,10 @@ module EnvironmentsHelper
       "has-metrics" => "#{environment.has_metrics?}",
       "prometheus-status" => "#{environment.prometheus_status}",
       "external-dashboard-url" => project.metrics_setting_external_dashboard_url,
-      "environment-state" => "#{environment.state}"
+      "environment-state" => "#{environment.state}",
+      "custom-metrics-path" => project_prometheus_metrics_path(project),
+      "validate-query-path" => validate_query_project_prometheus_metrics_path(project),
+      "custom-metrics-available" => "#{custom_metrics_available?(project)}"
     }
   end
 

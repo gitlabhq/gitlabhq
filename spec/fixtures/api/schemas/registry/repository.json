@@ -32,6 +32,12 @@
     "destroy_path": {
       "type": "string"
     },
+    "status": {
+      "oneOf": [
+        { "type": "null" },
+        { "type": "string", "enum": ["delete_scheduled", "delete_failed"] }
+      ]
+    },
     "tags": { "$ref": "tags.json" }
   },
   "additionalProperties": false

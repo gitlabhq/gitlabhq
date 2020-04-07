@@ -59,6 +59,7 @@ describe Projects::Import::JiraController do
     context 'when feature flag enabled' do
       before do
         stub_feature_flags(jira_issue_import: true)
+        stub_feature_flags(jira_issue_import_vue: false)
       end
 
       context 'when jira service is enabled for the project' do

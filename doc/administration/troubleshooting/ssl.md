@@ -137,3 +137,36 @@ To fix this problem:
     ```shell
     git config --global http.sslVerify false
     ```
+
+## SSL_connect wrong version number
+
+A misconfiguration may result in:
+
+- `gitlab-rails/exceptions_json.log` entries containing:
+
+  ```plaintext
+  "exception.class":"Excon::Error::Socket","exception.message":"SSL_connect returned=1 errno=0 state=error: wrong version number (OpenSSL::SSL::SSLError)",
+  "exception.class":"Excon::Error::Socket","exception.message":"SSL_connect returned=1 errno=0 state=error: wrong version number (OpenSSL::SSL::SSLError)",
+  ```
+
+- `gitlab-workhorse/current` containing:
+
+  ```plaintext
+  http: server gave HTTP response to HTTPS client
+  http: server gave HTTP response to HTTPS client
+  ```
+
+- `gitlab-rails/sidekiq.log` or `sidekiq/current` containing:
+
+  ```plaintext
+  message: SSL_connect returned=1 errno=0 state=error: wrong version number (OpenSSL::SSL::SSLError)
+  message: SSL_connect returned=1 errno=0 state=error: wrong version number (OpenSSL::SSL::SSLError)
+  ```
+
+Some of these errors come from the Excon Ruby gem, and could be generated in circumstances
+where GitLab is configured to initiate an HTTPS session to a remote server
+that is serving just HTTP.
+
+One scenario is that you're using [object storage](../high_availability/object_storage.md)
+which is not served under HTTPS. GitLab is misconfigured and attempts a TLS handshake,
+but the object storage will respond with plain HTTP.

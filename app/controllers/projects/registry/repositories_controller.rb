@@ -28,6 +28,7 @@ module Projects
       end
 
       def destroy
+        image.delete_scheduled!
         DeleteContainerRepositoryWorker.perform_async(current_user.id, image.id) # rubocop:disable CodeReuse/Worker
         track_event(:delete_repository)
 

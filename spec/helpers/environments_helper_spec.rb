@@ -34,7 +34,10 @@ describe EnvironmentsHelper do
         'has-metrics' => "#{environment.has_metrics?}",
         'prometheus-status' => "#{environment.prometheus_status}",
         'external-dashboard-url' => nil,
-        'environment-state' => environment.state
+        'environment-state' => environment.state,
+        'custom-metrics-path' => project_prometheus_metrics_path(project),
+        'validate-query-path' => validate_query_project_prometheus_metrics_path(project),
+        'custom-metrics-available' => 'true'
       )
     end
 
@@ -56,6 +59,24 @@ describe EnvironmentsHelper do
       subject { metrics_data }
 
       it { is_expected.to include('environment-state' => 'stopped') }
+    end
+  end
+
+  describe '#custom_metrics_available?' do
+    subject { helper.custom_metrics_available?(project) }
+
+    before do
+      project.add_maintainer(user)
+
+      allow(helper).to receive(:current_user).and_return(user)
+
+      allow(helper).to receive(:can?)
+        .with(user, :admin_project, project)
+        .and_return(true)
+    end
+
+    it 'returns true' do
+      expect(subject).to eq(true)
     end
   end
 end

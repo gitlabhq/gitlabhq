@@ -1850,7 +1850,8 @@ CREATE TABLE public.container_repositories (
     project_id integer NOT NULL,
     name character varying NOT NULL,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    status smallint
 );
 
 CREATE SEQUENCE public.container_repositories_id_seq
@@ -12935,6 +12936,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200330123739
 20200330132913
 20200331220930
+20200402135250
 20200403184110
 20200403185127
 20200403185422

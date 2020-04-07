@@ -51,11 +51,11 @@ module ApiHelpers
     expect(json_response).to be_an Array
   end
 
-  def expect_paginated_array_response(items)
+  def expect_paginated_array_response(*items)
     expect(response).to have_gitlab_http_status(:ok)
     expect(response).to include_pagination_headers
     expect(json_response).to be_an Array
-    expect(json_response.map { |item| item['id'] }).to eq(Array(items))
+    expect(json_response.map { |item| item['id'] }).to eq(items.flatten)
   end
 
   def expect_response_contain_exactly(*items)

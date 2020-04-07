@@ -20,6 +20,85 @@ module Projects
         end
       end
 
+      def validate_query
+        respond_to do |format|
+          format.json do
+            result = prometheus_adapter.query(:validate, params[:query])
+
+            if result
+              render json: result
+            else
+              head :accepted
+            end
+          end
+        end
+      end
+
+      def new
+        @metric = project.prometheus_metrics.new
+      end
+
+      def index
+        respond_to do |format|
+          format.json do
+            metrics = ::PrometheusMetricsFinder.new(
+              project: project,
+              ordered: true
+            ).execute.to_a
+
+            response = {}
+            if metrics.any?
+              response[:metrics] = ::PrometheusMetricSerializer
+                                     .new(project: project)
+                                     .represent(metrics)
+            end
+
+            render json: response
+          end
+        end
+      end
+
+      def create
+        @metric = project.prometheus_metrics.create(
+          metrics_params.to_h.symbolize_keys
+        )
+
+        if @metric.persisted?
+          redirect_to edit_project_service_path(project, ::PrometheusService),
+                      notice: _('Metric was successfully added.')
+        else
+          render 'new'
+        end
+      end
+
+      def update
+        @metric = update_metrics_service(prometheus_metric).execute
+
+        if @metric.persisted?
+          redirect_to edit_project_service_path(project, ::PrometheusService),
+                      notice: _('Metric was successfully updated.')
+        else
+          render 'edit'
+        end
+      end
+
+      def edit
+        @metric = prometheus_metric
+      end
+
+      def destroy
+        destroy_metrics_service(prometheus_metric).execute
+
+        respond_to do |format|
+          format.html do
+            redirect_to edit_project_service_path(project, ::PrometheusService), status: :see_other
+          end
+          format.json do
+            head :ok
+          end
+        end
+      end
+
       private
 
       def prometheus_adapter
@@ -29,8 +108,22 @@ module Projects
       def require_prometheus_metrics!
         render_404 unless prometheus_adapter&.can_query?
       end
+
+      def prometheus_metric
+        @prometheus_metric ||= ::PrometheusMetricsFinder.new(id: params[:id]).execute.first
+      end
+
+      def update_metrics_service(metric)
+        ::Projects::Prometheus::Metrics::UpdateService.new(metric, metrics_params)
+      end
+
+      def destroy_metrics_service(metric)
+        ::Projects::Prometheus::Metrics::DestroyService.new(metric)
+      end
+
+      def metrics_params
+        params.require(:prometheus_metric).permit(:title, :query, :y_label, :unit, :legend, :group)
+      end
     end
   end
 end
-
-Projects::Prometheus::MetricsController.prepend_if_ee('EE::Projects::Prometheus::MetricsController')

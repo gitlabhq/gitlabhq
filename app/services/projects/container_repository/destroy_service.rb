@@ -8,7 +8,7 @@ module Projects
 
         # Delete tags outside of the transaction to avoid hitting an idle-in-transaction timeout
         container_repository.delete_tags!
-        container_repository.destroy
+        container_repository.delete_failed! unless container_repository.destroy
       end
     end
   end

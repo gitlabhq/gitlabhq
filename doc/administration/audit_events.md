@@ -41,6 +41,7 @@ From there, you can see the following actions:
 - Group created or deleted
 - Group changed visibility
 - User was added to group and with which [permissions]
+- User sign-in via [Group SAML](../user/group/saml_sso/index.md)
 - Permissions changes of a user assigned to a group
 - Removed user from group
 - Project added to group and with which visibility level

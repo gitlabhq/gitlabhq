@@ -13,9 +13,9 @@ class PrometheusService < MonitoringService
   # to allow localhost URLs when the following conditions are true:
   # 1. project is the self-monitoring project.
   # 2. api_url is the internal Prometheus URL.
-  with_options presence: true, if: :manual_configuration? do
-    validates :api_url, public_url: true, unless: proc { |object| object.allow_local_api_url? }
-    validates :api_url, url: true, if: proc { |object| object.allow_local_api_url? }
+  with_options presence: true do
+    validates :api_url, public_url: true, if: ->(object) { object.manual_configuration? && !object.allow_local_api_url? }
+    validates :api_url, url: true, if: ->(object) { object.manual_configuration? && object.allow_local_api_url? }
   end
 
   before_save :synchronize_service_state

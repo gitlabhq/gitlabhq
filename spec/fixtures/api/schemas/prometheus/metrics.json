@@ -1,0 +1,28 @@
+{
+  "type": "object",
+  "properties": {
+    "metrics": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "title": {
+            "type": "string"
+          },
+          "group": {
+            "type": "string"
+          },
+          "group_title": {
+            "type": "string"
+          },
+          "edit_path": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

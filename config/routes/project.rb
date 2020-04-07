@@ -356,6 +356,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
         resources :metrics, constraints: { id: %r{[^\/]+} }, only: [:index, :new, :create, :edit, :update, :destroy] do
           get :active_common, on: :collection
+          post :validate_query, on: :collection
         end
       end
 

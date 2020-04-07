@@ -21,11 +21,11 @@ export default {
   },
   computed: {
     rawInputCode() {
-      if (this.cell.source) {
+      if (this.cell.source && Array.isArray(this.cell.source)) {
         return this.cell.source.join('');
       }
 
-      return '';
+      return this.cell.source || '';
     },
     hasOutput() {
       return this.cell.outputs.length;

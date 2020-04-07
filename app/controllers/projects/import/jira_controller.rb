@@ -7,6 +7,8 @@ module Projects
       before_action :jira_integration_configured?
 
       def show
+        return if Feature.enabled?(:jira_issue_import_vue, @project)
+
         unless @project.import_state&.in_progress?
           jira_client = @project.jira_service.client
           jira_projects = jira_client.Project.all

@@ -48,6 +48,18 @@ describe PrometheusService, :use_clean_rails_memory_store_caching do
 
       it 'does not validate presence of api_url' do
         expect(service).not_to validate_presence_of(:api_url)
+        expect(service.valid?).to eq(true)
+      end
+
+      context 'local connections allowed' do
+        before do
+          stub_application_setting(allow_local_requests_from_web_hooks_and_services: true)
+        end
+
+        it 'does not validate presence of api_url' do
+          expect(service).not_to validate_presence_of(:api_url)
+          expect(service.valid?).to eq(true)
+        end
       end
     end
 
