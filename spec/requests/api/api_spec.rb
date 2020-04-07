@@ -13,13 +13,5 @@ describe API::API do
     it 'updates the users last_activity_on date' do
       expect { get api('/groups', user) }.to change { user.reload.last_activity_on }.to(Date.today)
     end
-
-    context 'when the the api_activity_logging feature is disabled' do
-      it 'does not touch last_activity_on' do
-        stub_feature_flags(api_activity_logging: false)
-
-        expect { get api('/groups', user) }.not_to change { user.reload.last_activity_on }
-      end
-    end
   end
 end

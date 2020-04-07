@@ -6,6 +6,7 @@
 # rubocop:disable Migration/AddConcurrentForeignKey
 # rubocop:disable Style/WordArray
 # rubocop:disable Migration/AddLimitToStringColumns
+# rubocop:disable Migration/Datetime
 
 class InitSchema < ActiveRecord::Migration[4.2]
   DOWNTIME = false

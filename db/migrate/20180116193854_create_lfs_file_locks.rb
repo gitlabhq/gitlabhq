@@ -9,7 +9,7 @@ class CreateLfsFileLocks < ActiveRecord::Migration[4.2]
     create_table :lfs_file_locks do |t|
       t.references :project, null: false, foreign_key: { on_delete: :cascade }
       t.references :user, null: false, index: true, foreign_key: { on_delete: :cascade }
-      t.datetime :created_at, null: false
+      t.datetime :created_at, null: false # rubocop:disable Migration/Datetime
       t.string :path, limit: 511
     end
 

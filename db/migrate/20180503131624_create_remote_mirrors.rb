@@ -14,9 +14,9 @@ class CreateRemoteMirrors < ActiveRecord::Migration[4.2]
       t.string :url
       t.boolean :enabled, default: true
       t.string :update_status
-      t.datetime :last_update_at
-      t.datetime :last_successful_update_at
-      t.datetime :last_update_started_at
+      t.datetime :last_update_at # rubocop:disable Migration/Datetime
+      t.datetime :last_successful_update_at # rubocop:disable Migration/Datetime
+      t.datetime :last_update_started_at # rubocop:disable Migration/Datetime
       t.string :last_error
       t.boolean :only_protected_branches, default: false, null: false
       t.string :remote_name

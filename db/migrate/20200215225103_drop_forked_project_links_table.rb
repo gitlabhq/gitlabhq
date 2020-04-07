@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# rubocop:disable Migration/Datetime
+
 class DropForkedProjectLinksTable < ActiveRecord::Migration[6.0]
   include Gitlab::Database::MigrationHelpers
 

@@ -4,11 +4,11 @@ module Resolvers
   class MergeRequestsResolver < BaseResolver
     argument :iid, GraphQL::STRING_TYPE,
               required: false,
-              description: 'The IID of the merge request, e.g., "1"'
+              description: 'IID of the merge request, for example `1`'
 
     argument :iids, [GraphQL::STRING_TYPE],
               required: false,
-              description: 'The list of IIDs of issues, e.g., [1, 2]'
+              description: 'Array of IIDs of merge requests, for example `[1, 2]`'
 
     type Types::MergeRequestType, null: true
 

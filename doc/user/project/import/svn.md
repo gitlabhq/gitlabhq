@@ -100,9 +100,6 @@ Running SubGit in a mirror mode requires a
 [registration](https://subgit.com/pricing). Registration is free for open
 source, academic and startup projects.
 
-We're currently working on deeper GitLab/SubGit integration. You may track our
-progress at [this issue](https://gitlab.com/gitlab-org/gitlab/issues/990).
-
 ### SubGit support
 
 For any questions related to SVN to GitLab migration with SubGit, you can

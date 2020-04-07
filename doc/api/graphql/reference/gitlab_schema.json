@@ -18471,7 +18471,7 @@
               "args": [
                 {
                   "name": "iid",
-                  "description": "The IID of the merge request, e.g., \"1\"",
+                  "description": "IID of the merge request, for example `1`",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -18481,7 +18481,7 @@
                 },
                 {
                   "name": "iids",
-                  "description": "The list of IIDs of issues, e.g., [1, 2]",
+                  "description": "Array of IIDs of merge requests, for example `[1, 2]`",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -18512,7 +18512,7 @@
               "args": [
                 {
                   "name": "iid",
-                  "description": "The IID of the merge request, e.g., \"1\"",
+                  "description": "IID of the merge request, for example `1`",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -18522,7 +18522,7 @@
                 },
                 {
                   "name": "iids",
-                  "description": "The list of IIDs of issues, e.g., [1, 2]",
+                  "description": "Array of IIDs of merge requests, for example `[1, 2]`",
                   "type": {
                     "kind": "LIST",
                     "name": null,
