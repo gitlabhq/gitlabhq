@@ -329,6 +329,30 @@ rspec:
   - rspec spec
 ```
 
+### Caching Go dependencies
+
+Assuming your project is using [Go Modules](https://github.com/golang/go/wiki/Modules) to install
+Go dependencies, the following example defines `cache` in a `go-cache` template, that
+any job can extend. Go modules are installed in `${GOPATH}/pkg/mod/` and
+are cached for all of the `go` projects:
+
+```yaml
+.go-cache:
+  variables:
+    GOPATH: $CI_PROJECT_DIR/.go
+  before_script:
+    - mkdir -p .go
+  cache:
+    paths:
+      - .go/pkg/mod/
+
+test:
+  image: golang:1.13
+  extends: .go-cache
+  script:
+  - go test ./... -v -short
+```
+
 ## Availability of the cache
 
 Caching is an optimization, but isn't guaranteed to always work, so you need to

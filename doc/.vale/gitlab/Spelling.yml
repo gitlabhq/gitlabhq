@@ -1,0 +1,14 @@
+# Checks for possible spelling mistakes in content, not code. May find false positives
+# due to links using angle brackets: <https://example.com>. These can be ignored.
+#
+# If a word is flagged as a spelling mistake incorrectly, such as a product name,
+# you can submit an MR to update `spelling-exceptions.txt` with the missing word.
+# Commands, like `git clone` must use backticks, and must not be added to the
+# exceptions.
+#
+# For a list of all options, see https://errata-ai.github.io/vale/styles/
+extends: spelling
+message: 'Spelling check: "%s"?'
+level: warning
+ignore:
+  - gitlab/spelling-exceptions.txt

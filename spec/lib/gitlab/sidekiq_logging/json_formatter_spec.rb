@@ -9,6 +9,8 @@ describe Gitlab::SidekiqLogging::JSONFormatter do
   let(:timestamp_iso8601) { now.iso8601(3) }
 
   describe 'with a Hash' do
+    subject { JSON.parse(described_class.new.call('INFO', now, 'my program', hash_input)) }
+
     let(:hash_input) do
       {
         foo: 1,
@@ -23,9 +25,6 @@ describe Gitlab::SidekiqLogging::JSONFormatter do
     end
 
     it 'properly formats timestamps into ISO 8601 form' do
-      result = subject.call('INFO', now, 'my program', hash_input)
-
-      data = JSON.parse(result)
       expected_output = hash_input.stringify_keys.merge!(
         {
           'severity' => 'INFO',
@@ -39,20 +38,39 @@ describe Gitlab::SidekiqLogging::JSONFormatter do
         }
       )
 
-      expect(data).to eq(expected_output)
+      expect(subject).to eq(expected_output)
+    end
+
+    context 'when the job args are bigger than the maximum allowed' do
+      it 'keeps args from the front until they exceed the limit' do
+        half_limit = Gitlab::Utils::LogLimitedArray::MAXIMUM_ARRAY_LENGTH / 2
+        hash_input['args'] = [1, 2, 'a' * half_limit, 'b' * half_limit, 3]
+
+        expected_args = hash_input['args'].take(3).map(&:to_s) + ['...']
+
+        expect(subject['args']).to eq(expected_args)
+      end
+    end
+
+    it 'properly flattens arguments to a String' do
+      hash_input['args'] = [1, "test", 2, { 'test' => 1 }]
+
+      expect(subject['args']).to eq(["1", "test", "2", %({"test"=>1})])
     end
   end
 
-  it 'wraps a String' do
-    result = subject.call('DEBUG', now, 'my string', message)
+  describe 'with a String' do
+    it 'accepts strings with no changes' do
+      result = subject.call('DEBUG', now, 'my string', message)
 
-    data = JSON.parse(result)
-    expected_output = {
-      severity: 'DEBUG',
-      time: timestamp_iso8601,
-      message: message
-    }
+      data = JSON.parse(result)
+      expected_output = {
+        severity: 'DEBUG',
+        time: timestamp_iso8601,
+        message: message
+      }
 
-    expect(data).to eq(expected_output.stringify_keys)
+      expect(data).to eq(expected_output.stringify_keys)
+    end
   end
 end

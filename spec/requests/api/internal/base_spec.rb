@@ -335,6 +335,27 @@ describe API::Internal::Base do
         end
       end
 
+      shared_examples 'snippet success' do
+        it 'responds with success' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['status']).to be_truthy
+        end
+      end
+
+      shared_examples 'snippets with web protocol' do
+        it_behaves_like 'snippet success'
+
+        context 'with disabled version flag' do
+          before do
+            stub_feature_flags(version_snippets: false)
+          end
+
+          it_behaves_like 'snippet success'
+        end
+      end
+
       context 'git push with personal snippet' do
         subject { push(key, personal_snippet, env: env.to_json, changes: snippet_changes) }
 
@@ -349,14 +370,21 @@ describe API::Internal::Base do
         end
 
         it_behaves_like 'snippets with disabled feature flag'
+
+        it_behaves_like 'snippets with web protocol' do
+          subject { push(key, personal_snippet, 'web', env: env.to_json, changes: snippet_changes) }
+        end
+
         it_behaves_like 'sets hook env' do
           let(:gl_repository) { Gitlab::GlRepository::SNIPPET.identifier_for_container(personal_snippet) }
         end
       end
 
       context 'git pull with personal snippet' do
+        subject { pull(key, personal_snippet) }
+
         it 'responds with success' do
-          pull(key, personal_snippet)
+          subject
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response["status"]).to be_truthy
@@ -365,8 +393,10 @@ describe API::Internal::Base do
           expect(user.reload.last_activity_on).to eql(Date.today)
         end
 
-        it_behaves_like 'snippets with disabled feature flag' do
-          subject { pull(key, personal_snippet) }
+        it_behaves_like 'snippets with disabled feature flag'
+
+        it_behaves_like 'snippets with web protocol' do
+          subject { pull(key, personal_snippet, 'web') }
         end
       end
 
@@ -384,6 +414,11 @@ describe API::Internal::Base do
         end
 
         it_behaves_like 'snippets with disabled feature flag'
+
+        it_behaves_like 'snippets with web protocol' do
+          subject { push(key, project_snippet, 'web', env: env.to_json, changes: snippet_changes) }
+        end
+
         it_behaves_like 'sets hook env' do
           let(:gl_repository) { Gitlab::GlRepository::SNIPPET.identifier_for_container(project_snippet) }
         end
@@ -402,6 +437,10 @@ describe API::Internal::Base do
 
         it_behaves_like 'snippets with disabled feature flag' do
           subject { pull(key, project_snippet) }
+        end
+
+        it_behaves_like 'snippets with web protocol' do
+          subject { pull(key, project_snippet, 'web') }
         end
       end
 

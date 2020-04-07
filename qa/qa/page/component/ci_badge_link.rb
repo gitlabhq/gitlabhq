@@ -13,6 +13,10 @@ module QA
             timeout ? completed?(timeout: timeout) : completed?
             status_badge == status
           end
+
+          # has_passed? => passed?
+          # has_failed? => failed?
+          alias_method :"has_#{status}?", :"#{status}?"
         end
 
         # e.g. def pending?; status_badge == 'pending'; end

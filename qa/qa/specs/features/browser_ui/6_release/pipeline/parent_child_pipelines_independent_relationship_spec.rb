@@ -32,7 +32,7 @@ module QA
           parent_pipeline.click_linked_job(project.name)
 
           expect(parent_pipeline).to have_job("child_job")
-          expect(parent_pipeline).to be_passed
+          expect(parent_pipeline).to have_passed
         end
       end
 
@@ -44,7 +44,7 @@ module QA
           parent_pipeline.click_linked_job(project.name)
 
           expect(parent_pipeline).to have_job("child_job")
-          expect(parent_pipeline).to be_passed
+          expect(parent_pipeline).to have_passed
         end
       end
 

@@ -306,9 +306,12 @@ Sg0KU1hNMGExaE9SVGR2V2pKQlBUMWNiaUo5DQo=',
 
 #### Disable Seat Link
 
-Seat Link is enabled by default. To disable this feature, go to
-**{admin}** **Admin Area > Settings > Metrics and profiling** and
-clear the Seat Link checkbox.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/212375) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.10.
+
+Seat Link is enabled by default.
+
+To disable this feature, go to
+**{admin}** **Admin Area > Settings > Metrics and profiling** and clear the **Seat Link** checkbox.
 
 To disable Seat Link in an Omnibus GitLab installation, and prevent it from
 being configured in the future through the administration panel, set the following in

@@ -380,9 +380,6 @@ msgstr ""
 msgid "%{name}'s avatar"
 msgstr ""
 
-msgid "%{numberOfDays} days"
-msgstr ""
-
 msgid "%{number_commits_behind} commits behind %{default_branch}, %{number_commits_ahead} commits ahead"
 msgstr ""
 
@@ -2264,6 +2261,9 @@ msgid "ApprovalRule|e.g. QA, Security, etc."
 msgstr ""
 
 msgid "Approvals"
+msgstr ""
+
+msgid "Approvals (you've approved)"
 msgstr ""
 
 msgid "Approve"
@@ -10080,6 +10080,9 @@ msgid "Group: %{group_name}"
 msgstr ""
 
 msgid "Group: %{name}"
+msgstr ""
+
+msgid "GroupActivityMetrics|New Members created"
 msgstr ""
 
 msgid "GroupActivyMetrics|Issues created"

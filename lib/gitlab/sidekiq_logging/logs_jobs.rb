@@ -7,6 +7,7 @@ module Gitlab
         "#{payload['class']} JID-#{payload['jid']}"
       end
 
+      # NOTE: Arguments are truncated/stringified in sidekiq_logging/json_formatter.rb
       def parse_job(job)
         # Error information from the previous try is in the payload for
         # displaying in the Sidekiq UI, but is very confusing in logs!
@@ -16,7 +17,6 @@ module Gitlab
         job['pid'] = ::Process.pid
 
         job.delete('args') unless ENV['SIDEKIQ_LOG_ARGUMENTS']
-        job['args'] = Gitlab::Utils::LogLimitedArray.log_limited_array(job['args'].map(&:to_s)) if job['args']
 
         job
       end

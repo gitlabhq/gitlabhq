@@ -19,6 +19,7 @@ module Gitlab
           output[:message] = data
         when Hash
           convert_to_iso8601!(data)
+          stringify_args!(data)
           output.merge!(data)
         end
 
@@ -38,6 +39,10 @@ module Gitlab
         return timestamp unless timestamp.is_a?(Numeric)
 
         Time.at(timestamp).utc.iso8601(3)
+      end
+
+      def stringify_args!(payload)
+        payload['args'] = Gitlab::Utils::LogLimitedArray.log_limited_array(payload['args'].map(&:to_s)) if payload['args']
       end
     end
   end

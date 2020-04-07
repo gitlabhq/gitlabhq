@@ -37,15 +37,23 @@ module Spammable
     end
   end
 
-  def invalidate_if_spam
-    error_msg = if Gitlab::Recaptcha.enabled?
-                  "Your #{spammable_entity_type} has been recognized as spam. "\
-                  "Please, change the content or solve the reCAPTCHA to proceed."
-                else
-                  "Your #{spammable_entity_type} has been recognized as spam and has been discarded."
-                end
+  def needs_recaptcha!
+    self.errors.add(:base, "Your #{spammable_entity_type} has been recognized as spam. "\
+                  "Please, change the content or solve the reCAPTCHA to proceed.")
+  end
 
-    self.errors.add(:base, error_msg) if spam?
+  def unrecoverable_spam_error!
+    self.errors.add(:base, "Your #{spammable_entity_type} has been recognized as spam and has been discarded.")
+  end
+
+  def invalidate_if_spam
+    return unless spam?
+
+    if Gitlab::Recaptcha.enabled?
+      needs_recaptcha!
+    else
+      unrecoverable_spam_error!
+    end
   end
 
   def spammable_entity_type
