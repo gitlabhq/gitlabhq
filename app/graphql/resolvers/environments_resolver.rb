@@ -10,6 +10,10 @@ module Resolvers
               required: false,
               description: 'Search query'
 
+    argument :states, [GraphQL::STRING_TYPE],
+              required: false,
+              description: 'States of environments that should be included in result'
+
     type Types::EnvironmentType, null: true
 
     alias_method :project, :object
@@ -18,6 +22,8 @@ module Resolvers
       return unless project.present?
 
       EnvironmentsFinder.new(project, context[:current_user], args).find
+    rescue EnvironmentsFinder::InvalidStatesError => exception
+      raise Gitlab::Graphql::Errors::ArgumentError, exception.message
     end
   end
 end

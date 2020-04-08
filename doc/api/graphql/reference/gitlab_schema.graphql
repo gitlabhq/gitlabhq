@@ -5875,6 +5875,11 @@ type Project {
     Search query
     """
     search: String
+
+    """
+    States of environments that should be included in result
+    """
+    states: [String!]
   ): EnvironmentConnection
 
   """

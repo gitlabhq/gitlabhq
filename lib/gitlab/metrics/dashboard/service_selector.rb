@@ -16,6 +16,7 @@ module Gitlab
             ::Metrics::Dashboard::GitlabAlertEmbedService,
             ::Metrics::Dashboard::CustomMetricEmbedService,
             ::Metrics::Dashboard::GrafanaMetricEmbedService,
+            ::Metrics::Dashboard::TransientEmbedService,
             ::Metrics::Dashboard::DynamicEmbedService,
             ::Metrics::Dashboard::DefaultEmbedService,
             ::Metrics::Dashboard::SystemDashboardService,

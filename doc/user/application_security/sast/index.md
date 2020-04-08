@@ -298,6 +298,9 @@ Some analyzers make it possible to filter out vulnerabilities under a given thre
 | `SAST_FLAWFINDER_LEVEL` |         1 | Ignore Flawfinder vulnerabilities under given risk level. Integer, 0=No risk, 5=High risk. |
 | `SAST_GITLEAKS_ENTROPY_LEVEL` | 8.0 | Minimum entropy for secret detection. Float, 0.0 = low, 8.0 = high. |
 | `SAST_GOSEC_LEVEL`      |         0 | Ignore gosec vulnerabilities under given confidence level. Integer, 0=Undefined, 1=Low, 2=Medium, 3=High. |
+| `SAST_GITLEAKS_COMMIT_FROM` | -     | The commit a gitleaks scan starts at. |
+| `SAST_GITLEAKS_COMMIT_TO` | -       | The commit a gitleaks scan ends at. |
+| `SAST_GITLEAKS_HISTORIC_SCAN` | false | Flag to enable a historic gitleaks scan. |
 
 #### Timeouts
 

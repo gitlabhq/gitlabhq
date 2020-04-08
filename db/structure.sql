@@ -1649,6 +1649,28 @@ CREATE SEQUENCE public.clusters_applications_elastic_stacks_id_seq
 
 ALTER SEQUENCE public.clusters_applications_elastic_stacks_id_seq OWNED BY public.clusters_applications_elastic_stacks.id;
 
+CREATE TABLE public.clusters_applications_fluentd (
+    id bigint NOT NULL,
+    protocol smallint NOT NULL,
+    status integer NOT NULL,
+    port integer NOT NULL,
+    cluster_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    version character varying(255) NOT NULL,
+    host character varying(255) NOT NULL,
+    status_reason text
+);
+
+CREATE SEQUENCE public.clusters_applications_fluentd_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.clusters_applications_fluentd_id_seq OWNED BY public.clusters_applications_fluentd.id;
+
 CREATE TABLE public.clusters_applications_helm (
     id integer NOT NULL,
     cluster_id integer NOT NULL,
@@ -7018,6 +7040,8 @@ ALTER TABLE ONLY public.clusters_applications_crossplane ALTER COLUMN id SET DEF
 
 ALTER TABLE ONLY public.clusters_applications_elastic_stacks ALTER COLUMN id SET DEFAULT nextval('public.clusters_applications_elastic_stacks_id_seq'::regclass);
 
+ALTER TABLE ONLY public.clusters_applications_fluentd ALTER COLUMN id SET DEFAULT nextval('public.clusters_applications_fluentd_id_seq'::regclass);
+
 ALTER TABLE ONLY public.clusters_applications_helm ALTER COLUMN id SET DEFAULT nextval('public.clusters_applications_helm_id_seq'::regclass);
 
 ALTER TABLE ONLY public.clusters_applications_ingress ALTER COLUMN id SET DEFAULT nextval('public.clusters_applications_ingress_id_seq'::regclass);
@@ -7686,6 +7710,9 @@ ALTER TABLE ONLY public.clusters_applications_crossplane
 
 ALTER TABLE ONLY public.clusters_applications_elastic_stacks
     ADD CONSTRAINT clusters_applications_elastic_stacks_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.clusters_applications_fluentd
+    ADD CONSTRAINT clusters_applications_fluentd_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY public.clusters_applications_helm
     ADD CONSTRAINT clusters_applications_helm_pkey PRIMARY KEY (id);
@@ -8891,6 +8918,8 @@ CREATE UNIQUE INDEX index_clusters_applications_cert_managers_on_cluster_id ON p
 CREATE UNIQUE INDEX index_clusters_applications_crossplane_on_cluster_id ON public.clusters_applications_crossplane USING btree (cluster_id);
 
 CREATE UNIQUE INDEX index_clusters_applications_elastic_stacks_on_cluster_id ON public.clusters_applications_elastic_stacks USING btree (cluster_id);
+
+CREATE UNIQUE INDEX index_clusters_applications_fluentd_on_cluster_id ON public.clusters_applications_fluentd USING btree (cluster_id);
 
 CREATE UNIQUE INDEX index_clusters_applications_helm_on_cluster_id ON public.clusters_applications_helm USING btree (cluster_id);
 
@@ -11164,6 +11193,9 @@ ALTER TABLE ONLY public.ci_refs
 ALTER TABLE ONLY public.ci_resources
     ADD CONSTRAINT fk_rails_430336af2d FOREIGN KEY (resource_group_id) REFERENCES public.ci_resource_groups(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY public.clusters_applications_fluentd
+    ADD CONSTRAINT fk_rails_4319b1dcd2 FOREIGN KEY (cluster_id) REFERENCES public.clusters(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY public.lfs_file_locks
     ADD CONSTRAINT fk_rails_43df7a0412 FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
 
@@ -12976,6 +13008,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200331220930
 20200402123926
 20200402135250
+20200402185044
 20200403184110
 20200403185127
 20200403185422

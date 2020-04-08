@@ -136,6 +136,36 @@ describe 'Metrics rendering', :js, :use_clean_rails_memory_store_caching, :sidek
     end
   end
 
+  context 'transient metrics embeds' do
+    let(:metrics_url) { urls.metrics_project_environment_url(project, environment, embed_json: embed_json) }
+    let(:title) { 'Important Metrics' }
+    let(:embed_json) do
+      {
+        panel_groups: [{
+          panels: [{
+            type: "line-graph",
+            title: title,
+            y_label: "metric",
+            metrics: [{
+              query_range: "metric * 0.5 < 1"
+            }]
+          }]
+        }]
+      }.to_json
+    end
+
+    before do
+      stub_any_prometheus_request_with_response
+    end
+
+    it 'shows embedded metrics' do
+      visit project_issue_path(project, issue)
+
+      expect(page).to have_css('div.prometheus-graph')
+      expect(page).to have_text(title)
+    end
+  end
+
   def import_common_metrics
     ::Gitlab::DatabaseImporters::CommonMetrics::Importer.new.execute
   end

@@ -7,6 +7,14 @@ FactoryBot.define do
     association :project, :repository
     sequence(:external_url) { |n| "https://env#{n}.example.gitlab.com" }
 
+    trait :available do
+      state { :available }
+    end
+
+    trait :stopped do
+      state { :stopped }
+    end
+
     trait :with_review_app do |environment|
       transient do
         ref { 'master' }

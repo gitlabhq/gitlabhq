@@ -119,6 +119,10 @@ class Environment < ApplicationRecord
     find_or_create_by(name: name)
   end
 
+  def self.valid_states
+    self.state_machine.states.map(&:name)
+  end
+
   class << self
     ##
     # This method returns stop actions (jobs) for multiple environments within one

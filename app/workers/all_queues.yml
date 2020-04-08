@@ -262,6 +262,13 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: 
+- :name: cronjob:users_create_statistics
+  :feature_category: :users
+  :has_external_dependencies: 
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: 
 - :name: deployment:deployments_finished
   :feature_category: :continuous_delivery
   :has_external_dependencies: 

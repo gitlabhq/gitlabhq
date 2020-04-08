@@ -10,9 +10,9 @@ describe Resolvers::EnvironmentsResolver do
   context "with a group" do
     let(:group)   { create(:group) }
     let(:project) { create(:project, :public, group: group) }
-    let!(:environment1) { create(:environment, name: 'production', project: project) }
-    let!(:environment2) { create(:environment, name: 'test', project: project) }
-    let!(:environment3) { create(:environment, name: 'test2', project: project) }
+    let!(:environment1) { create(:environment, :available, name: 'production', project: project) }
+    let!(:environment2) { create(:environment, :stopped, name: 'test', project: project) }
+    let!(:environment3) { create(:environment, :available, name: 'test2', project: project) }
 
     before do
       group.add_developer(current_user)
@@ -38,6 +38,18 @@ describe Resolvers::EnvironmentsResolver do
           it 'is empty' do
             expect(resolve_environments(search: 'nonsense')).to be_empty
           end
+        end
+      end
+
+      context 'with states' do
+        it 'searches environments by state' do
+          expect(resolve_environments(states: ['available'])).to contain_exactly(environment1, environment3)
+        end
+
+        it 'returns error if requested state is invalid' do
+          expect { resolve_environments(states: ['invalid']) }.to(
+            raise_error(Gitlab::Graphql::Errors::ArgumentError)
+          )
         end
       end
 

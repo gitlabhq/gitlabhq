@@ -98,6 +98,17 @@ describe Gitlab::Metrics::Dashboard::ServiceSelector do
 
         it { is_expected.to be Metrics::Dashboard::GrafanaMetricEmbedService }
       end
+
+      context 'with the embed defined in the arguments' do
+        let(:arguments) do
+          {
+            embedded: true,
+            embed_json: '{}'
+          }
+        end
+
+        it { is_expected.to be Metrics::Dashboard::TransientEmbedService }
+      end
     end
   end
 end
