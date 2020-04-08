@@ -25,7 +25,7 @@ To enable external storage of merge request diffs, follow the instructions below
    gitlab_rails['external_diffs_enabled'] = true
    ```
 
-1. _The external diffs will be stored in in
+1. _The external diffs will be stored in
    `/var/opt/gitlab/gitlab-rails/shared/external-diffs`._ To change the path,
    for example, to `/mnt/storage/external-diffs`, edit `/etc/gitlab/gitlab.rb`
    and add the following line:

@@ -9,7 +9,27 @@ describe 'getting project information' do
   let(:current_user) { create(:user) }
 
   let(:query) do
-    graphql_query_for('project', 'fullPath' => project.full_path)
+    graphql_query_for(
+      'project',
+      { 'fullPath' => project.full_path },
+      all_graphql_fields_for('project'.to_s.classify, excluded: %w(jiraImports services))
+    )
+  end
+
+  context 'when the user has full access to the project' do
+    let(:full_access_query) do
+      graphql_query_for('project', 'fullPath' => project.full_path)
+    end
+
+    before do
+      project.add_maintainer(current_user)
+    end
+
+    it 'includes the project' do
+      post_graphql(query, current_user: current_user)
+
+      expect(graphql_data['project']).not_to be_nil
+    end
   end
 
   context 'when the user has access to the project' do

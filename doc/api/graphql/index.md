@@ -73,7 +73,7 @@ Root-level queries are defined in
 GitLab supports batching queries into a single request using
 [apollo-link-batch-http](https://www.apollographql.com/docs/link/links/batch-http/). More
 information about multiplexed queries is also available for
-[graphql-ruby](https://graphql-ruby.org/queries/multiplex.html) the
+[GraphQL Ruby](https://graphql-ruby.org/queries/multiplex.html), the
 library GitLab uses on the backend.
 
 ## Reference

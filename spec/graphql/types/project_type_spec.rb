@@ -24,7 +24,7 @@ describe GitlabSchema.types['Project'] do
       namespace group statistics repository merge_requests merge_request issues
       issue pipelines removeSourceBranchAfterMerge sentryDetailedError snippets
       grafanaIntegration autocloseReferencedIssues suggestion_commit_message environments
-      boards jira_import_status jira_imports
+      boards jira_import_status jira_imports services
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)
@@ -83,5 +83,17 @@ describe GitlabSchema.types['Project'] do
     subject { described_class.fields['boards'] }
 
     it { is_expected.to have_graphql_type(Types::BoardType.connection_type) }
+  end
+
+  describe 'jira_imports field' do
+    subject { described_class.fields['jiraImports'] }
+
+    it { is_expected.to have_graphql_type(Types::JiraImportType.connection_type) }
+  end
+
+  describe 'services field' do
+    subject { described_class.fields['services'] }
+
+    it { is_expected.to have_graphql_type(Types::Projects::ServiceType.connection_type) }
   end
 end

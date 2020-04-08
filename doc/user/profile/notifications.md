@@ -222,7 +222,7 @@ The following table lists all GitLab-specific email headers:
 
 ### X-GitLab-NotificationReason
 
-The `X-GitLab-NotificationReason` header contains the reason for the notification. The value is one of the the following, in order of priority:
+The `X-GitLab-NotificationReason` header contains the reason for the notification. The value is one of the following, in order of priority:
 
 - `own_activity`
 - `assigned`

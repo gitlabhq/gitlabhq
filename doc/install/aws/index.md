@@ -578,7 +578,7 @@ On the EC2 dashboard:
 1. Give your image a name and description (we'll use `GitLab-Source` for both).
 1. Leave everything else as default and click **Create Image**
 
-Now we have a custom AMI that we'll use to create our launch configuration the the next step.
+Now we have a custom AMI that we'll use to create our launch configuration the next step.
 
 ## Deploying GitLab inside an auto scaling group
 

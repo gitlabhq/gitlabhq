@@ -21,7 +21,7 @@ part of a source installation and their configuration instructions for scaling.
 |-----------|-------------|----------------------------|
 | [PostgreSQL](../../development/architecture.md#postgresql) | Database | [PostgreSQL configuration](https://docs.gitlab.com/omnibus/settings/database.html) |
 | [Redis](../../development/architecture.md#redis)  | Key/value store for fast data lookup and caching | [Redis configuration](../high_availability/redis.md) |
-| [GitLab application services](../../development/architecture.md#unicorn) | Unicorn/Puma, Workhorse, GitLab Shell - serves front-end requests requests (UI, API, Git over HTTP/SSH) | [GitLab app scaling configuration](../high_availability/gitlab.md) |
+| [GitLab application services](../../development/architecture.md#unicorn) | Unicorn/Puma, Workhorse, GitLab Shell - serves front-end requests (UI, API, Git over HTTP/SSH) | [GitLab app scaling configuration](../high_availability/gitlab.md) |
 | [PgBouncer](../../development/architecture.md#pgbouncer) | Database connection pooler | [PgBouncer configuration](../high_availability/pgbouncer.md#running-pgbouncer-as-part-of-a-non-ha-gitlab-installation) **(PREMIUM ONLY)** |
 | [Sidekiq](../../development/architecture.md#sidekiq) | Asynchronous/background jobs | [Sidekiq configuration](../high_availability/sidekiq.md) |
 | [Gitaly](../../development/architecture.md#gitaly) | Provides access to Git repositories | [Gitaly configuration](../gitaly/index.md#running-gitaly-on-its-own-server) |

@@ -149,7 +149,7 @@ module GraphqlHelpers
     FIELDS
   end
 
-  def all_graphql_fields_for(class_name, parent_types = Set.new, max_depth: 3)
+  def all_graphql_fields_for(class_name, parent_types = Set.new, max_depth: 3, excluded: [])
     # pulling _all_ fields can generate a _huge_ query (like complexity 180,000),
     # and significantly increase spec runtime. so limit the depth by default
     return if max_depth <= 0
@@ -165,6 +165,7 @@ module GraphqlHelpers
     type.fields.map do |name, field|
       # We can't guess arguments, so skip fields that require them
       next if required_arguments?(field)
+      next if excluded.include?(name)
 
       singular_field_type = field_type(field)
 

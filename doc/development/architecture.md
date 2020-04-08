@@ -775,7 +775,7 @@ When referring to `~git` in the pictures it means the home directory of the Git 
 
 GitLab is primarily installed within the `/home/git` user home directory as `git` user. Within the home directory is where the gitlabhq server software resides as well as the repositories (though the repository location is configurable).
 
-The bare repositories are located in `/home/git/repositories`. GitLab is a ruby on rails application so the particulars of the inner workings can be learned by studying how a ruby on rails application works.
+The bare repositories are located in `/home/git/repositories`. GitLab is a Ruby on rails application so the particulars of the inner workings can be learned by studying how a Ruby on rails application works.
 
 To serve repositories over SSH there's an add-on application called GitLab Shell which is installed in `/home/git/gitlab-shell`.
 
@@ -794,7 +794,7 @@ GitLab has several components to operate. It requires a persistent database
 Unicorn. All these components should run as different system users to GitLab
 (e.g., `postgres`, `redis` and `www-data`, instead of `git`).
 
-As the `git` user it starts Sidekiq and Unicorn (a simple ruby HTTP server
+As the `git` user it starts Sidekiq and Unicorn (a simple Ruby HTTP server
 running on port `8080` by default). Under the GitLab user there are normally 4
 processes: `unicorn_rails master` (1 process), `unicorn_rails worker`
 (2 processes), `sidekiq` (1 process).

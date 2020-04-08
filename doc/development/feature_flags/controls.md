@@ -98,7 +98,8 @@ Slack:
 
 This will enable the feature for GitLab.com, with `new_navigation_bar` being the
 name of the feature.
-This command does *not* enable the feature for 25% of the total users. Instead, when the feature is checked with `enabled?`, it will return `true` 25% of the time.
+This command does *not* enable the feature for 25% of the total users.
+Instead, when the feature is checked with `enabled?`, it will return `true` 25% of the time.
 
 If you are not certain what percentages to use, simply use the following steps:
 

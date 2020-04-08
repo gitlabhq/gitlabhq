@@ -245,7 +245,7 @@ To add an existing EKS cluster to your project, group, or instance:
          token:      <authentication_token>
          ```
 
-   1. Locate the the API server endpoint so GitLab can connect to the cluster. This is displayed on
+   1. Locate the API server endpoint so GitLab can connect to the cluster. This is displayed on
       the AWS EKS console, when viewing the EKS cluster details.
 1. Navigate to your:
    - Project's **{cloud-gear}** **Operations > Kubernetes** page, for a project-level cluster.

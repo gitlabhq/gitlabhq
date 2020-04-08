@@ -138,7 +138,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 
 These endpoints require group maintainer access or higher.
 
-### List group deploy deploy tokens
+### List group deploy tokens
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/21811) in GitLab 12.9.
 

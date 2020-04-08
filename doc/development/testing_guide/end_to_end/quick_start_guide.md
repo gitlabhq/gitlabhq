@@ -458,7 +458,7 @@ By defining the `api_get_path` method, we **would** allow for the [`ApiFabricato
 
 By defining the `api_post_path` method, we allow for the [`ApiFabricator`](https://gitlab.com/gitlab-org/gitlab/blob/master/qa/qa/resource/api_fabricator.rb) module to know which path to use to create a new label in a specific project.
 
-By defining the `api_post_body` method, we we allow for the [`ApiFabricator.api_post`](https://gitlab.com/gitlab-org/gitlab/blob/a9177ca1812bac57e2b2fa4560e1d5dd8ffac38b/qa/qa/resource/api_fabricator.rb#L68) method to know which data to send when making the `POST` request.
+By defining the `api_post_body` method, we allow for the [`ApiFabricator.api_post`](https://gitlab.com/gitlab-org/gitlab/blob/a9177ca1812bac57e2b2fa4560e1d5dd8ffac38b/qa/qa/resource/api_fabricator.rb#L68) method to know which data to send when making the `POST` request.
 
 > Notice that we pass both `color` and `name` attributes in the `api_post_body` since [those are required](../../../api/labels.md#create-a-new-label). Also, notice that we keep them alphabetically organized.
 

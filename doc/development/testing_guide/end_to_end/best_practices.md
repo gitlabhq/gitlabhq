@@ -74,7 +74,10 @@ point of failure and so the screenshot would not be captured at the right moment
 
 All QA tests expect to be able to log in at the start of the test.
 
-That's not possible if a test leaves the browser logged in when it finishes. Normally this isn't a problem because [Capybara resets the session after each test](https://github.com/teamcapybara/capybara/blob/9ebc5033282d40c73b0286e60217515fd1bb0b5d/lib/capybara/rspec.rb#L18). But Capybara does that in an `after` block, so when a test logs in in an `after(:context)` block, the browser returns to a logged in state *after* Capybara had logged it out. And so the next test will fail.
+That's not possible if a test leaves the browser logged in when it finishes. Normally this isn't a
+problem because [Capybara resets the session after each test](https://github.com/teamcapybara/capybara/blob/9ebc5033282d40c73b0286e60217515fd1bb0b5d/lib/capybara/rspec.rb#L18).
+But Capybara does that in an `after` block, so when a test logs in within an `after(:context)` block,
+the browser returns to a logged in state *after* Capybara had logged it out. And so the next test will fail.
 
 For an example see: <https://gitlab.com/gitlab-org/gitlab/issues/34736>
 

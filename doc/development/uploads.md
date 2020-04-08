@@ -1,7 +1,7 @@
 # Uploads development documentation
 
 [GitLab Workhorse](https://gitlab.com/gitlab-org/gitlab-workhorse) has special rules for handling uploads.
-To prevent occupying a ruby process on I/O operations, we process the upload in workhorse, where is cheaper.
+To prevent occupying a Ruby process on I/O operations, we process the upload in workhorse, where is cheaper.
 This process can also directly upload to object storage.
 
 ## The problem description
@@ -40,7 +40,7 @@ We have three challenges here: performance, availability, and scalability.
 
 ### Performance
 
-Rails process are expensive in terms of both CPU and memory. Ruby [global interpreter lock](https://en.wikipedia.org/wiki/Global_interpreter_lock) adds to cost too because the ruby process will spend time on I/O operations on step 3 causing incoming requests to pile up.
+Rails process are expensive in terms of both CPU and memory. Ruby [global interpreter lock](https://en.wikipedia.org/wiki/Global_interpreter_lock) adds to cost too because the Ruby process will spend time on I/O operations on step 3 causing incoming requests to pile up.
 
 In order to improve this, [disk buffered upload](#disk-buffered-upload) was implemented. With this, Rails no longer deals with writing uploaded files to disk.
 

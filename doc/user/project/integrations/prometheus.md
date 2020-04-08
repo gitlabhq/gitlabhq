@@ -397,7 +397,7 @@ Starting in [version 12.8](https://gitlab.com/gitlab-org/gitlab/issues/202696), 
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/16530) in GitLab 12.5.
 
-To add an anomaly chart panel type to a dashboard, add add a panel with *exactly* 3 metrics.
+To add an anomaly chart panel type to a dashboard, add a panel with *exactly* 3 metrics.
 
 The first metric represents the current state, and the second and third metrics represent the upper and lower limit respectively:
 

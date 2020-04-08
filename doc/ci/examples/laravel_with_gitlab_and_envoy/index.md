@@ -277,7 +277,7 @@ The `releases` directory will hold all our deployments:
 ...
 ```
 
-While our project grows, its Git history will be very very long over time.
+While our project grows, its Git history will be very long over time.
 Since we are creating a directory per release, it might not be necessary to have the history of the project downloaded for each release.
 The `--depth 1` option is a great solution which saves systems time and disk space as well.
 

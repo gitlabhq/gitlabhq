@@ -50,7 +50,7 @@ If you have the problems listed above, add your certificate to `/etc/gitlab/trus
 
 Besides getting the errors mentioned in
 [Using an internal CA certificate with GitLab](ssl.md#using-an-internal-ca-certificate-with-gitlab),
-your CI pipelines may stuck stuck in `Pending` status. In the runner logs you may see the below error:
+your CI pipelines may get stuck in `Pending` status. In the runner logs you may see the below error:
 
 ```shell
 Dec  6 02:43:17 runner-host01 gitlab-runner[15131]: #033[0;33mWARNING: Checking for jobs... failed

@@ -37,7 +37,7 @@ For instance, it is common practice to use `before_script` to install system lib
 a particular project needs before performing SAST or Dependency Scanning.
 
 Similarly, [`after_script`](../../ci/yaml/README.md#before_script-and-after_script)
-should not not be used in the job definition, because it may be overridden by users.
+should not be used in the job definition, because it may be overridden by users.
 
 ### Stage
 
@@ -403,7 +403,7 @@ It may also have an `end_line`, a `class`, and a `method`.
 
 For instance, here is the `location` object for a security flaw found
 at line `41` of `src/main/java/com/gitlab/example/App.java`,
-in the the `generateSecretToken` method of the `com.gitlab.security_products.tests.App` Java class:
+in the `generateSecretToken` method of the `com.gitlab.security_products.tests.App` Java class:
 
 ```json
 {

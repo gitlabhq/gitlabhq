@@ -8,6 +8,17 @@ class Service < ApplicationRecord
   include ProjectServicesLoggable
   include DataFields
 
+  SERVICE_NAMES = %w[
+    alerts asana assembla bamboo bugzilla buildkite campfire custom_issue_tracker discord
+    drone_ci emails_on_push external_wiki flowdock hangouts_chat hipchat irker jira
+    mattermost mattermost_slash_commands microsoft_teams packagist pipelines_email
+    pivotaltracker prometheus pushover redmine slack slack_slash_commands teamcity unify_circuit youtrack
+  ].freeze
+
+  DEV_SERVICE_NAMES = %w[
+    mock_ci mock_deployment mock_monitoring
+  ].freeze
+
   serialize :properties, JSON # rubocop:disable Cop/ActiveRecordSerialize
 
   default_value_for :active, false
@@ -46,6 +57,7 @@ class Service < ApplicationRecord
   scope :active, -> { where(active: true) }
   scope :without_defaults, -> { where(default: false) }
   scope :by_type, -> (type) { where(type: type) }
+  scope :by_active_flag, -> (flag) { where(active: flag) }
   scope :templates, -> { where(template: true, type: available_services_types) }
   scope :instances, -> { where(instance: true, type: available_services_types) }
 
@@ -295,49 +307,28 @@ class Service < ApplicationRecord
   end
 
   def self.available_services_names
-    service_names = %w[
-      alerts
-      asana
-      assembla
-      bamboo
-      bugzilla
-      buildkite
-      campfire
-      custom_issue_tracker
-      discord
-      drone_ci
-      emails_on_push
-      external_wiki
-      flowdock
-      hangouts_chat
-      hipchat
-      irker
-      jira
-      mattermost
-      mattermost_slash_commands
-      microsoft_teams
-      packagist
-      pipelines_email
-      pivotaltracker
-      prometheus
-      pushover
-      redmine
-      slack
-      slack_slash_commands
-      teamcity
-      unify_circuit
-      youtrack
-    ]
-
-    if Rails.env.development?
-      service_names += %w[mock_ci mock_deployment mock_monitoring]
-    end
+    service_names = services_names
+    service_names += dev_services_names
 
     service_names.sort_by(&:downcase)
   end
 
+  def self.services_names
+    SERVICE_NAMES
+  end
+
+  def self.dev_services_names
+    return [] unless Rails.env.development?
+
+    DEV_SERVICE_NAMES
+  end
+
   def self.available_services_types
     available_services_names.map { |service_name| "#{service_name}_service".camelize }
+  end
+
+  def self.services_types
+    services_names.map { |service_name| "#{service_name}_service".camelize }
   end
 
   def self.build_from_template(project_id, template)

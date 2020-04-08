@@ -498,7 +498,7 @@ the configuration option `lowercase_usernames`. By default, this configuration o
 
 ## Disable LDAP web sign in
 
-It can be be useful to prevent using LDAP credentials through the web UI when
+It can be useful to prevent using LDAP credentials through the web UI when
 an alternative such as SAML is preferred. This allows LDAP to be used for group
 sync, while also allowing your SAML identity provider to handle additional
 checks like custom 2FA.

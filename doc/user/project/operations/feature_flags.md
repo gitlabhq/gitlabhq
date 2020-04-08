@@ -175,10 +175,10 @@ a number of community contributed libraries.
 
 Official clients:
 
-- [unleash/unleash-client-java](https://github.com/unleash/unleash-client-java)
-- [unleash/unleash-client-node](https://github.com/unleash/unleash-client-node)
-- [unleash/unleash-client-go](https://github.com/unleash/unleash-client-go)
-- [unleash/unleash-client-ruby](https://github.com/unleash/unleash-client-ruby)
+- [Unleash client SDK for Java](https://github.com/unleash/unleash-client-java)
+- [Unleash client SDK for Node.js](https://github.com/unleash/unleash-client-node)
+- [Unleash client for Go](https://github.com/unleash/unleash-client-go)
+- [Unleash client for Ruby](https://github.com/unleash/unleash-client-ruby)
 
 Community contributed clients:
 

@@ -19172,6 +19172,30 @@ msgstr ""
 msgid "Static Application Security Testing (SAST)"
 msgstr ""
 
+msgid "StaticSiteEditor|A merge request was created:"
+msgstr ""
+
+msgid "StaticSiteEditor|A new branch was created:"
+msgstr ""
+
+msgid "StaticSiteEditor|Return to site"
+msgstr ""
+
+msgid "StaticSiteEditor|Success!"
+msgstr ""
+
+msgid "StaticSiteEditor|Summary of changes"
+msgstr ""
+
+msgid "StaticSiteEditor|View merge request"
+msgstr ""
+
+msgid "StaticSiteEditor|Your changes have been submitted and a merge request has been created. The changes won’t be visible on the site until the merge request has been accepted."
+msgstr ""
+
+msgid "StaticSiteEditor|Your changes were committed to it:"
+msgstr ""
+
 msgid "Statistics"
 msgstr ""
 

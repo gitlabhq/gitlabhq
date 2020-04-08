@@ -27,7 +27,7 @@ Management projects are restricted to the following:
 - For project-level clusters, the management project must be in the same
   namespace (or descendants) as the cluster's project.
 - For group-level clusters, the management project must be in the same
-  group (or descendants) as as the cluster's group.
+  group (or descendants) as the cluster's group.
 - For instance-level clusters, there are no such restrictions.
 
 ## Usage

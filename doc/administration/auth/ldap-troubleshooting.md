@@ -227,7 +227,7 @@ uid: John
 
 There's a lot here, so let's go over what could be helpful when debugging.
 
-First, GitLab will look for all users that have have previously
+First, GitLab will look for all users that have previously
 logged in with LDAP and iterate on them. Each user's sync will start with
 the following line that contains the user's username and email, as they
 exist in GitLab now:

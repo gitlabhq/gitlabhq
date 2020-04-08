@@ -420,7 +420,7 @@ spec:
 
 - Auto Build and Auto Test may fail in detecting your language/framework. There
   may be no buildpack for your application, or your application may be missing the
-  key files the buildpack is looking for. For example, for ruby apps, you must
+  key files the buildpack is looking for. For example, for Ruby applications, you must
   have a `Gemfile` to be properly detected, even though it is possible to write a
   Ruby app without a `Gemfile`. Try specifying a [custom
   buildpack](customize.md#custom-buildpacks).

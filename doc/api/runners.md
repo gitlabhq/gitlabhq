@@ -42,7 +42,7 @@ GET /runners?tag_list=tag1,tag2
 | `scope`     | string         | no       | Deprecated: Use `type` or `status` instead. The scope of specific runners to show, one of: `active`, `paused`, `online`, `offline`; showing all runners if none provided |
 | `type`      | string         | no       | The type of runners to show, one of: `instance_type`, `group_type`, `project_type` |
 | `status`    | string         | no       | The status of runners to show, one of: `active`, `paused`, `online`, `offline` |
-| `tag_list`  | string array   | no       | List of of the runner's tags |
+| `tag_list`  | string array   | no       | List of the runner's tags |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/runners"
@@ -93,7 +93,7 @@ GET /runners/all?tag_list=tag1,tag2
 | `scope`     | string         | no       | Deprecated: Use `type` or `status` instead. The scope of runners to show, one of: `specific`, `shared`, `active`, `paused`, `online`, `offline`; showing all runners if none provided |
 | `type`      | string         | no       | The type of runners to show, one of: `instance_type`, `group_type`, `project_type` |
 | `status`    | string         | no       | The status of runners to show, one of: `active`, `paused`, `online`, `offline` |
-| `tag_list`  | string array   | no       | List of of the runner's tags |
+| `tag_list`  | string array   | no       | List of the runner's tags |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/runners/all"
@@ -385,7 +385,7 @@ GET /projects/:id/runners?tag_list=tag1,tag2
 | `scope`    | string         | no       | Deprecated: Use `type` or `status` instead. The scope of specific runners to show, one of: `active`, `paused`, `online`, `offline`; showing all runners if none provided |
 | `type`     | string         | no       | The type of runners to show, one of: `instance_type`, `group_type`, `project_type` |
 | `status`   | string         | no       | The status of runners to show, one of: `active`, `paused`, `online`, `offline` |
-| `tag_list` | string array   | no       | List of of the runner's tags |
+| `tag_list` | string array   | no       | List of the runner's tags |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/9/runners"
@@ -486,7 +486,7 @@ GET /groups/:id/runners?tag_list=tag1,tag2
 | `id`       | integer        | yes      | The ID of the group owned by the authenticated user |
 | `type`     | string         | no       | The type of runners to show, one of: `instance_type`, `group_type`, `project_type` |
 | `status`   | string         | no       | The status of runners to show, one of: `active`, `paused`, `online`, `offline` |
-| `tag_list` | string array   | no       | List of of the runner's tags |
+| `tag_list` | string array   | no       | List of the runner's tags |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/9/runners"

@@ -28,7 +28,7 @@ button and start a merge request from there.
 ## New Merge Request page
 
 On the **New Merge Request** page, start by filling in the title
-and description for the merge request. If there are are already
+and description for the merge request. If there are already
 commits on the branch, the title will be prefilled with the first
 line of the first commit message, and the description will be
 prefilled with any additional lines in the commit message.

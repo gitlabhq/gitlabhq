@@ -120,7 +120,7 @@ Example response:
 
 ## Create and assign a child epic
 
-Creates a a new epic and associates it with provided parent epic. The response is LinkedEpic object.
+Creates a new epic and associates it with provided parent epic. The response is LinkedEpic object.
 
 ```plaintext
 POST /groups/:id/epics/:epic_iid/epics

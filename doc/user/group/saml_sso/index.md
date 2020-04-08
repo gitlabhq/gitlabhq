@@ -281,7 +281,7 @@ GitLab [isn't limited to the SAML providers listed above](#my-identity-provider-
 | Additional URLs | | You may need to use the `Identifier` or `Assertion consumer service URL` in other fields on some providers. |
 | Single Sign Out URL | | Not supported |
 
-If the information information you need isn't listed above you may wish to check our [troubleshooting docs below](#i-need-additional-information-to-configure-my-identity-provider).
+If the information you need isn't listed above you may wish to check our [troubleshooting docs below](#i-need-additional-information-to-configure-my-identity-provider).
 
 ## Linking SAML to your existing GitLab.com account
 

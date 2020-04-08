@@ -4,7 +4,7 @@ type: reference
 
 # LDAP Additions in GitLab EE **(STARTER ONLY)**
 
-This section documents LDAP features specific to to GitLab Enterprise Edition
+This section documents LDAP features specific to GitLab Enterprise Edition
 [Starter](https://about.gitlab.com/pricing/#self-managed) and above.
 
 For documentation relevant to both Community Edition and Enterprise Edition,

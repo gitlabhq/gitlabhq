@@ -552,7 +552,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab
 ### Create new epic thread
 
 Creates a new thread to a single group epic. This is similar to creating
-a note but but other comments (replies) can be added to it later.
+a note but other comments (replies) can be added to it later.
 
 ```plaintext
 POST /groups/:id/epics/:epic_id/discussions

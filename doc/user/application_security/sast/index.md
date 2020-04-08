@@ -352,7 +352,7 @@ analyzer containers: `DOCKER_`, `CI`, `GITLAB_`, `FF_`, `HOME`, `PWD`, `OLDPWD`,
 CAUTION: **Caution:**
 The JSON report artifacts are not a public API of SAST and their format may change in the future.
 
-The SAST tool emits a JSON report report file. Here is an example of the report structure with all important parts of
+The SAST tool emits a JSON report file. Here is an example of the report structure with all important parts of
 it highlighted:
 
 ```json-doc

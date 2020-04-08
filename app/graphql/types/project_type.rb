@@ -199,6 +199,12 @@ module Types
           null: true,
           description: 'Jira imports into the project',
           resolver: Resolvers::Projects::JiraImportsResolver
+
+    field :services,
+          Types::Projects::ServiceType.connection_type,
+          null: true,
+          description: 'Project services',
+          resolver: Resolvers::Projects::ServicesResolver
   end
 end
 

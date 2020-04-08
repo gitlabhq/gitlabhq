@@ -58,7 +58,7 @@ of Gitaly and `gitaly-proto` during testing and development.
 - See [below](#running-tests-with-a-locally-modified-version-of-gitaly) for instructions on running GitLab CE tests with a modified version of Gitaly.
 - In GDK run `gdk install` and restart `gdk run` (or `gdk run app`) to use a locally modified Gitaly version for development
 
-### Gitaly-ruby
+### `gitaly-ruby`
 
 It is possible to implement and test RPC's in Gitaly using Ruby code,
 in

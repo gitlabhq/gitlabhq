@@ -241,7 +241,7 @@ separate Rails process to debug the issue:
    app.get 'https://gitlab.com/gitlab-org/gitlab-foss/issues/1?private_token=123456'
    ```
 
-1. In a new window, run `top`. It should show this ruby process using 100% CPU. Write down the PID.
+1. In a new window, run `top`. It should show this Ruby process using 100% CPU. Write down the PID.
 1. Follow step 2 from the previous section on using gdb.
 
 ### GitLab: API is not accessible
@@ -275,4 +275,4 @@ The output in `/tmp/unicorn.txt` may help diagnose the root cause.
 ## More information
 
 - [Debugging Stuck Ruby Processes](https://blog.newrelic.com/engineering/debugging-stuck-ruby-processes-what-to-do-before-you-kill-9/)
-- [Cheatsheet of using gdb and ruby processes](gdb-stuck-ruby.txt)
+- [Cheatsheet of using gdb and Ruby processes](gdb-stuck-ruby.txt)

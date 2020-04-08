@@ -138,6 +138,18 @@ type AwardEmoji {
   user: User!
 }
 
+type BaseService implements Service {
+  """
+  Indicates if the service is active
+  """
+  active: Boolean
+
+  """
+  Class name of the service
+  """
+  type: String
+}
+
 type Blob implements Entry {
   """
   Flat path of the entry
@@ -4246,6 +4258,18 @@ type JiraImportStartPayload {
   jiraImport: JiraImport
 }
 
+type JiraService implements Service {
+  """
+  Indicates if the service is active
+  """
+  active: Boolean
+
+  """
+  Class name of the service
+  """
+  type: String
+}
+
 type Label {
   """
   Background color of the label
@@ -6411,6 +6435,41 @@ type Project {
   serviceDeskEnabled: Boolean
 
   """
+  Project services
+  """
+  services(
+    """
+    Indicates if the service is active
+    """
+    active: Boolean
+
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    Class name of the service
+    """
+    type: ServiceType
+  ): ServiceConnection
+
+  """
   Indicates if Shared Runners are enabled for the project
   """
   sharedRunnersEnabled: Boolean
@@ -7635,6 +7694,90 @@ type SentryErrorTags {
   Logger of the Sentry Error
   """
   logger: String
+}
+
+interface Service {
+  """
+  Indicates if the service is active
+  """
+  active: Boolean
+
+  """
+  Class name of the service
+  """
+  type: String
+}
+
+"""
+The connection type for Service.
+"""
+type ServiceConnection {
+  """
+  A list of edges.
+  """
+  edges: [ServiceEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [Service]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+An edge in a connection.
+"""
+type ServiceEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: Service
+}
+
+enum ServiceType {
+  ALERTS_SERVICE
+  ASANA_SERVICE
+  ASSEMBLA_SERVICE
+  BAMBOO_SERVICE
+  BUGZILLA_SERVICE
+  BUILDKITE_SERVICE
+  CAMPFIRE_SERVICE
+  CUSTOM_ISSUE_TRACKER_SERVICE
+  DISCORD_SERVICE
+  DRONE_CI_SERVICE
+  EMAILS_ON_PUSH_SERVICE
+  EXTERNAL_WIKI_SERVICE
+  FLOWDOCK_SERVICE
+  GITHUB_SERVICE
+  HANGOUTS_CHAT_SERVICE
+  HIPCHAT_SERVICE
+  IRKER_SERVICE
+  JENKINS_DEPRECATED_SERVICE
+  JENKINS_SERVICE
+  JIRA_SERVICE
+  MATTERMOST_SERVICE
+  MATTERMOST_SLASH_COMMANDS_SERVICE
+  MICROSOFT_TEAMS_SERVICE
+  PACKAGIST_SERVICE
+  PIPELINES_EMAIL_SERVICE
+  PIVOTALTRACKER_SERVICE
+  PROMETHEUS_SERVICE
+  PUSHOVER_SERVICE
+  REDMINE_SERVICE
+  SLACK_SERVICE
+  SLACK_SLASH_COMMANDS_SERVICE
+  TEAMCITY_SERVICE
+  UNIFY_CIRCUIT_SERVICE
+  YOUTRACK_SERVICE
 }
 
 """

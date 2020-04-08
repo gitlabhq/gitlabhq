@@ -90,7 +90,7 @@ based on *all* of the following:
 1. Potentially affecting one or more strategic accounts due to a proven inability by the user to upgrade to the current stable version.
 
 If *all* of the above are satisfied, the backport releases can be created for
-the current stable stable release, and two previous monthly releases.
+the current stable release, and two previous monthly releases.
 For instance, if we release `11.2.1` with a fix for a severe bug introduced in
 `11.0.0`, we could backport the fix to a new `11.0.x`, and `11.1.x` patch release.
 
@@ -186,7 +186,7 @@ Check [our release posts](https://about.gitlab.com/releases/categories/releases/
 
 Each month, we publish either a major or minor release of GitLab. At the end
 of those release posts there are three sections to look for: deprecations, important notes,
-and upgrade barometer. These will will draw your attention to:
+and upgrade barometer. These will draw your attention to:
 
 - Steps you need to perform as part of an upgrade.
   For example [8.12](https://about.gitlab.com/releases/2016/09/22/gitlab-8-12-released/#upgrade-barometer)

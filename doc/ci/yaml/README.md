@@ -318,25 +318,25 @@ For:
 
 An [extended docker configuration option](../docker/using_docker_images.md#extended-docker-configuration-options).
 
-For more information, see see [Available settings for `services`](../docker/using_docker_images.md#available-settings-for-services).
+For more information, see [Available settings for `services`](../docker/using_docker_images.md#available-settings-for-services).
 
 #### `services:alias`
 
 An [extended docker configuration option](../docker/using_docker_images.md#extended-docker-configuration-options).
 
-For more information, see see [Available settings for `services`](../docker/using_docker_images.md#available-settings-for-services).
+For more information, see [Available settings for `services`](../docker/using_docker_images.md#available-settings-for-services).
 
 #### `services:entrypoint`
 
 An [extended docker configuration option](../docker/using_docker_images.md#extended-docker-configuration-options).
 
-For more information, see see [Available settings for `services`](../docker/using_docker_images.md#available-settings-for-services).
+For more information, see [Available settings for `services`](../docker/using_docker_images.md#available-settings-for-services).
 
 #### `services:command`
 
 An [extended docker configuration option](../docker/using_docker_images.md#extended-docker-configuration-options).
 
-For more information, see see [Available settings for `services`](../docker/using_docker_images.md#available-settings-for-services).
+For more information, see [Available settings for `services`](../docker/using_docker_images.md#available-settings-for-services).
 
 ### `before_script` and `after_script`
 
@@ -1630,7 +1630,7 @@ The `stop_review_app` job is **required** to have the following keywords defined
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/20956) in GitLab 12.8.
 
 The `auto_stop_in` keyword is for specifying life period of the environment,
-that when expired, GitLab GitLab automatically stops them.
+that when expired, GitLab automatically stops them.
 
 For example,
 

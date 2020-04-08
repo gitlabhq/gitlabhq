@@ -270,4 +270,4 @@ To generate GraphQL schema files based on the GitLab schema, run:
 bundle exec rake gitlab:graphql:schema:dump
 ```
 
-This uses graphql-ruby's built-in Rake tasks to generate files in both [IDL](https://www.prisma.io/blog/graphql-sdl-schema-definition-language-6755bcb9ce51) and JSON formats.
+This uses GraphQL Ruby's built-in Rake tasks to generate files in both [IDL](https://www.prisma.io/blog/graphql-sdl-schema-definition-language-6755bcb9ce51) and JSON formats.

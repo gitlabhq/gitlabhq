@@ -244,7 +244,7 @@ Registry.
 
 ## Installing a package
 
-NPM packages are commonly installed using the the `npm` or `yarn` commands
+NPM packages are commonly installed using the `npm` or `yarn` commands
 inside a JavaScript project. If you haven't already, you will need to set the
 URL for scoped packages. You can do this with the following command:
 

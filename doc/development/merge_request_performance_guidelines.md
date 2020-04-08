@@ -375,7 +375,7 @@ Examples:
    In such cases it's rather expected that this is either misuse
    or abuse of the feature. Lack of the upper limit can result
    in service degradation as the system will try to process all schedules
-   assigned the the project.
+   assigned the project.
 
 1. GitLab CI/CD includes: We started with the limit of maximum of 50 nested includes.
    We understood that performance of the feature was acceptable at that level.

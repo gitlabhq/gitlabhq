@@ -18,6 +18,15 @@ or a `.buildpacks` file in your project:
   and add the URL of the buildpack to use on a line in the file. If you want to
   use multiple buildpacks, you can enter them in, one on each line.
 
+The buildpack URL can point to either a Git repository URL or a tarball URL.
+For Git repositories, it is possible to point to a specific Git reference (for example,
+commit SHA, tag name, or branch name) by appending `#<ref>` to the Git repository URL.
+For example:
+
+- The tag `v142`: `https://github.com/heroku/heroku-buildpack-ruby.git#v142`.
+- The branch `mybranch`: `https://github.com/heroku/heroku-buildpack-ruby.git#mybranch`.
+- The commit SHA `f97d8a8ab49`: `https://github.com/heroku/heroku-buildpack-ruby.git#f97d8a8ab49`.
+
 ### Multiple buildpacks
 
 Using multiple buildpacks isn't fully supported by Auto DevOps because, when using the `.buildpacks`
@@ -291,7 +300,7 @@ applications.
 | `AUTO_DEVOPS_CHART_REPOSITORY_USERNAME` | From GitLab 11.11, used to set a username to connect to the Helm repository. Defaults to no credentials. Also set `AUTO_DEVOPS_CHART_REPOSITORY_PASSWORD`. |
 | `AUTO_DEVOPS_CHART_REPOSITORY_PASSWORD` | From GitLab 11.11, used to set a password to connect to the Helm repository. Defaults to no credentials. Also set `AUTO_DEVOPS_CHART_REPOSITORY_USERNAME`. |
 | `AUTO_DEVOPS_MODSECURITY_SEC_RULE_ENGINE` | From GitLab 12.5, used in combination with [Modsecurity feature flag](../../user/clusters/applications.md#web-application-firewall-modsecurity) to toggle [Modsecurity's `SecRuleEngine`](https://github.com/SpiderLabs/ModSecurity/wiki/Reference-Manual-(v2.x)#SecRuleEngine) behavior. Defaults to `DetectionOnly`. |
-| `BUILDPACK_URL`                         | Buildpack's full URL. Can point to either Git repositories or a tarball URL. For Git repositories, it is possible to point to a specific `ref`. For example `https://github.com/heroku/heroku-buildpack-ruby.git#v142`. |
+| `BUILDPACK_URL`                         | Buildpack's full URL. Can point to either [a Git repository URL or a tarball URL](#custom-buildpacks). |
 | `CANARY_ENABLED`                        | From GitLab 11.0, used to define a [deploy policy for canary environments](#deploy-policy-for-canary-environments-premium). |
 | `CANARY_PRODUCTION_REPLICAS`            | Number of canary replicas to deploy for [Canary Deployments](../../user/project/canary_deployments.md) in the production environment. Takes precedence over `CANARY_REPLICAS`. Defaults to 1. |
 | `CANARY_REPLICAS`                       | Number of canary replicas to deploy for [Canary Deployments](../../user/project/canary_deployments.md). Defaults to 1. |

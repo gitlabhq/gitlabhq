@@ -475,7 +475,7 @@ to an updated status.
 This functionality is only available:
 
 - For users with at least Developer access.
-- If the the stage contains [manual actions](#manual-actions-from-pipeline-graphs).
+- If the stage contains [manual actions](#manual-actions-from-pipeline-graphs).
 
 ### Deleting a single pipeline
 
