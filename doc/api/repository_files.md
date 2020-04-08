@@ -82,7 +82,7 @@ X-Gitlab-Size: 1476
 
 ## Get file blame from repository
 
-Allows you to receive blame information. Each blame range contains lines and corresponding commit info.
+Allows you to receive blame information. Each blame range contains lines and corresponding commit information.
 
 ```plaintext
 GET /projects/:id/repository/files/:file_path/blame

@@ -532,7 +532,7 @@ runtime.
 
 There are two approaches that you can take in order to access a
 private registry. Both require setting the environment variable
-`DOCKER_AUTH_CONFIG` with appropriate authentication info.
+`DOCKER_AUTH_CONFIG` with appropriate authentication information.
 
 1. Per-job: To configure one job to access a private registry, add
    `DOCKER_AUTH_CONFIG` as a job variable.

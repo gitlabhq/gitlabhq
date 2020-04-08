@@ -2,7 +2,7 @@
 
 module Gitlab
   module Graphql
-    module Connections
+    module Pagination
       module Keyset
         class OrderInfo
           attr_reader :attribute_name, :sort_direction, :named_function

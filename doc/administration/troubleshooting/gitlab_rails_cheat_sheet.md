@@ -751,7 +751,7 @@ This content has been moved to the [Troubleshooting Sidekiq docs](./sidekiq.md).
 
 ## LFS
 
-### Get info about LFS objects and associated project
+### Get information about LFS objects and associated project
 
 ```ruby
 o=LfsObject.find_by(oid: "<oid>")

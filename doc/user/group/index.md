@@ -99,7 +99,7 @@ To create a new Group, either:
 
 Add the following information:
 
-![new group info](img/create_new_group_info.png)
+![new group information](img/create_new_group_info.png)
 
 1. The **Group name** will automatically populate the URL. Optionally, you can change it.
    This is the name that displays in group views.

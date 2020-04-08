@@ -73,7 +73,7 @@ hosted within your network.
 ## Specific scanner instructions
 
 Each individual scanner may be slightly different than the steps described
-above. You can find more info at each of the pages below:
+above. You can find more information at each of the pages below:
 
 - [Container scanning offline directions](../container_scanning/index.md#running-container-scanning-in-an-offline-environment)
 - [SAST offline directions](../sast/index.md#gitlab-sast-in-an-offline-environment)

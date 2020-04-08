@@ -1,0 +1,113 @@
+# frozen_string_literal: true
+
+require 'spec_helper'
+
+describe Gitlab::ImportExport::JSON::NdjsonReader do
+  include ImportExport::CommonUtil
+
+  let(:fixture) { 'spec/fixtures/lib/gitlab/import_export/light/tree' }
+  let(:root_tree) { JSON.parse(File.read(File.join(fixture, 'project.json'))) }
+  let(:ndjson_reader) { described_class.new(dir_path) }
+  let(:importable_path) { 'project' }
+
+  before :all do
+    extract_archive('spec/fixtures/lib/gitlab/import_export/light', 'tree.tar.gz')
+  end
+
+  after :all do
+    cleanup_artifacts_from_extract_archive('light')
+  end
+
+  describe '#exist?' do
+    subject { ndjson_reader.exist? }
+
+    context 'given valid dir_path' do
+      let(:dir_path) { fixture }
+
+      it { is_expected.to be true }
+    end
+
+    context 'given invalid dir_path' do
+      let(:dir_path) { 'invalid-dir-path' }
+
+      it { is_expected.to be false }
+    end
+  end
+
+  describe '#legacy?' do
+    let(:dir_path) { fixture }
+
+    subject { ndjson_reader.legacy? }
+
+    it { is_expected.to be false }
+  end
+
+  describe '#consume_attributes' do
+    let(:dir_path) { fixture }
+
+    subject { ndjson_reader.consume_attributes(importable_path) }
+
+    it 'returns the whole root tree from parsed JSON' do
+      expect(subject).to eq(root_tree)
+    end
+  end
+
+  describe '#consume_relation' do
+    let(:dir_path) { fixture }
+
+    subject { ndjson_reader.consume_relation(importable_path, key) }
+
+    context 'given any key' do
+      let(:key) { 'any-key' }
+
+      it 'returns an Enumerator' do
+        expect(subject).to be_an_instance_of(Enumerator)
+      end
+    end
+
+    context 'key has been consumed' do
+      let(:key) { 'issues' }
+
+      before do
+        ndjson_reader.consume_relation(importable_path, key).first
+      end
+
+      it 'yields nothing to the Enumerator' do
+        expect(subject.to_a).to eq([])
+      end
+    end
+
+    context 'key has not been consumed' do
+      context 'relation file does not exist' do
+        let(:key) { 'non-exist-relation-file-name' }
+
+        before do
+          relation_file_path = File.join(dir_path, importable_path, "#{key}.ndjson")
+          expect(File).to receive(:exist?).with(relation_file_path).and_return(false)
+        end
+
+        it 'yields nothing to the Enumerator' do
+          expect(subject.to_a).to eq([])
+        end
+      end
+
+      context 'relation file is empty' do
+        let(:key) { 'empty' }
+
+        it 'yields nothing to the Enumerator' do
+          expect(subject.to_a).to eq([])
+        end
+      end
+
+      context 'relation file contains multiple lines' do
+        let(:key) { 'custom_attributes' }
+        let(:attr_1) { JSON.parse('{"id":201,"project_id":5,"created_at":"2016-06-14T15:01:51.315Z","updated_at":"2016-06-14T15:01:51.315Z","key":"color","value":"red"}') }
+        let(:attr_2) { JSON.parse('{"id":202,"project_id":5,"created_at":"2016-06-14T15:01:51.315Z","updated_at":"2016-06-14T15:01:51.315Z","key":"size","value":"small"}') }
+
+        it 'yields every relation value to the Enumerator' do
+          expect(subject.to_a).to eq([[attr_1, 0], [attr_2, 1]])
+        end
+      end
+    end
+  end
+end

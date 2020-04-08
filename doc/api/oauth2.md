@@ -102,7 +102,7 @@ CAUTION: **Important:**
 Avoid using this flow for applications that store data outside of the GitLab
 instance. If you do, make sure to verify `application id` associated with the
 access token before granting access to the data
-(see [`/oauth/token/info`](#retrieving-the-token-info)).
+(see [`/oauth/token/info`](#retrieving-the-token-information)).
 
 Unlike the web flow, the client receives an `access token` immediately as a
 result of the authorization request. The flow does not use the client secret
@@ -213,7 +213,7 @@ or you can put the token to the Authorization header:
 curl --header "Authorization: Bearer OAUTH-TOKEN" https://gitlab.example.com/api/v4/user
 ```
 
-## Retrieving the Token Info
+## Retrieving the token information
 
 To verify the details of a token, use the `token/info` endpoint provided by the Doorkeeper gem.
 For more information, see [`/oauth/token/info`](https://github.com/doorkeeper-gem/doorkeeper/wiki/API-endpoint-descriptions-and-examples#get----oauthtokeninfo).

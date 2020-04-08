@@ -116,7 +116,7 @@ Once saved, you can see the build quota in the group admin view.
 The quota can also be viewed in the project admin view if shared Runners
 are enabled.
 
-![Project admin info](img/admin_project_quota_view.png)
+![Project admin information](img/admin_project_quota_view.png)
 
 You can see an overview of the pipeline minutes quota of all projects of
 a group in the **Usage Quotas** page available to the group page settings list.

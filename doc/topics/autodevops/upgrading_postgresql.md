@@ -1,6 +1,6 @@
 # Upgrading PostgreSQL for Auto DevOps
 
-Auto DevOps provides an [in-cluster PostgreSQL database](index.md#postgresql-database-support)
+Auto DevOps provides an [in-cluster PostgreSQL database](customize.md#postgresql-database-support)
 for your application.
 
 The version of the chart used to provision PostgreSQL:

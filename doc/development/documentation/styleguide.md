@@ -583,7 +583,7 @@ For other punctuation rules, please refer to the
 - [Avoid using symbols and special chars](https://gitlab.com/gitlab-org/gitlab-docs/issues/84)
   in headers. Whenever possible, they should be plain and short text.
 - Avoid adding things that show ephemeral statuses. For example, if a feature is
-  considered beta or experimental, put this info in a note, not in the heading.
+  considered beta or experimental, put this information in a note, not in the heading.
 - When introducing a new document, be careful for the headings to be
   grammatically and syntactically correct. Mention an [assigned technical writer (TW)](https://about.gitlab.com/handbook/product/categories/)
   for review.

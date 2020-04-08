@@ -14,7 +14,7 @@ describe Gitlab::ImportExport::RelationTreeRestorer do
 
   let(:user) { create(:user) }
   let(:shared) { Gitlab::ImportExport::Shared.new(importable) }
-  let(:attributes) { {} }
+  let(:attributes) { relation_reader.consume_attributes(importable_name) }
 
   let(:members_mapper) do
     Gitlab::ImportExport::MembersMapper.new(exported_members: {}, user: user, importable: importable)
@@ -30,7 +30,7 @@ describe Gitlab::ImportExport::RelationTreeRestorer do
       relation_factory:      relation_factory,
       reader:                reader,
       importable:            importable,
-      importable_path:       nil,
+      importable_path:       importable_path,
       importable_attributes: attributes
     )
   end
@@ -94,21 +94,24 @@ describe Gitlab::ImportExport::RelationTreeRestorer do
   end
 
   context 'when restoring a project' do
-    let(:path) { 'spec/fixtures/lib/gitlab/import_export/complex/project.json' }
     let(:importable) { create(:project, :builds_enabled, :issues_disabled, name: 'project', path: 'project') }
+    let(:importable_name) { 'project' }
+    let(:importable_path) { 'project' }
     let(:object_builder) { Gitlab::ImportExport::Project::ObjectBuilder }
     let(:relation_factory) { Gitlab::ImportExport::Project::RelationFactory }
     let(:reader) { Gitlab::ImportExport::Reader.new(shared: shared) }
 
     context 'using legacy reader' do
+      let(:path) { 'spec/fixtures/lib/gitlab/import_export/complex/project.json' }
       let(:relation_reader) do
         Gitlab::ImportExport::JSON::LegacyReader::File.new(
           path,
-          relation_names: reader.project_relation_names
+          relation_names: reader.project_relation_names,
+          allowed_path: 'project'
         )
       end
 
-      let(:attributes) { relation_reader.consume_attributes(nil) }
+      let(:attributes) { relation_reader.consume_attributes('project') }
 
       it_behaves_like 'import project successfully'
 
@@ -118,6 +121,21 @@ describe Gitlab::ImportExport::RelationTreeRestorer do
 
         include_examples 'logging of relations creation'
       end
+
+      context 'using ndjson reader' do
+        let(:path) { 'spec/fixtures/lib/gitlab/import_export/complex/tree' }
+        let(:relation_reader) { Gitlab::ImportExport::JSON::NdjsonReader.new(path) }
+
+        before :all do
+          extract_archive('spec/fixtures/lib/gitlab/import_export/complex', 'tree.tar.gz')
+        end
+
+        after :all do
+          cleanup_artifacts_from_extract_archive('complex')
+        end
+
+        it_behaves_like 'import project successfully'
+      end
     end
   end
 
@@ -125,14 +143,25 @@ describe Gitlab::ImportExport::RelationTreeRestorer do
     let(:path) { 'spec/fixtures/lib/gitlab/import_export/group_exports/no_children/group.json' }
     let(:group) { create(:group) }
     let(:importable) { create(:group, parent: group) }
+    let(:importable_name) { nil }
+    let(:importable_path) { nil }
     let(:object_builder) { Gitlab::ImportExport::Group::ObjectBuilder }
     let(:relation_factory) { Gitlab::ImportExport::Group::RelationFactory }
-    let(:relation_reader) { Gitlab::ImportExport::JSON::LegacyReader::File.new(path, relation_names: reader.group_relation_names) }
+    let(:relation_reader) do
+      Gitlab::ImportExport::JSON::LegacyReader::File.new(
+        path,
+        relation_names: reader.group_relation_names)
+    end
+
     let(:reader) do
       Gitlab::ImportExport::Reader.new(
         shared: shared,
         config: Gitlab::ImportExport::Config.new(config: Gitlab::ImportExport.group_config_file).to_h
       )
+    end
+
+    it 'restores group tree' do
+      expect(subject).to eq(true)
     end
 
     include_examples 'logging of relations creation'

@@ -207,7 +207,7 @@ deployment and clicking a square will take you to the pod's logs page.
 
 TIP: **Tip:**
 There is only one pod hosting the application at the moment, but you can add
-more pods by defining the [`REPLICAS` variable](index.md#environment-variables)
+more pods by defining the [`REPLICAS` variable](customize.md#environment-variables)
 under **Settings > CI/CD > Environment variables**.
 
 ### Working with branches
@@ -278,8 +278,8 @@ and customized to fit your workflow. Here are some helpful resources for further
 
 1. [Auto DevOps](index.md)
 1. [Multiple Kubernetes clusters](index.md#using-multiple-kubernetes-clusters-premium) **(PREMIUM)**
-1. [Incremental rollout to production](index.md#incremental-rollout-to-production-premium) **(PREMIUM)**
-1. [Disable jobs you don't need with environment variables](index.md#environment-variables)
+1. [Incremental rollout to production](customize.md#incremental-rollout-to-production-premium) **(PREMIUM)**
+1. [Disable jobs you don't need with environment variables](customize.md#environment-variables)
 1. [Use a static IP for your cluster](../../user/clusters/applications.md#using-a-static-ip)
-1. [Use your own buildpacks to build your application](index.md#custom-buildpacks)
+1. [Use your own buildpacks to build your application](customize.md#custom-buildpacks)
 1. [Prometheus monitoring](../../user/project/integrations/prometheus.md)

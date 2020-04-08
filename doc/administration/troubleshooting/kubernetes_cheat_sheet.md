@@ -168,7 +168,7 @@ and they will assist you with any issues you are having.
   kubectl exec -it <task-runner-pod-name> -- /srv/gitlab/bin/rails dbconsole -p
   ```
 
-- How to get info about Helm installation status:
+- How to get information about Helm installation status:
 
   ```shell
   helm status name-of-installation
@@ -199,7 +199,7 @@ and they will assist you with any issues you are having.
     helm upgrade <release name> <chart path> -f gitlab.yaml
     ```
 
-- How to get the manifest for a release. It can be useful because it contains the info about
+- How to get the manifest for a release. It can be useful because it contains the information about
 all Kubernetes resources and dependent charts:
 
   ```shell

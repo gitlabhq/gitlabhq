@@ -270,7 +270,7 @@ terminal:
 - The `webide-file-sync` executable must start **after** the project
   directory is available. This is why we need to add `sleep 5` to the `command`.
   See [this issue](https://gitlab.com/gitlab-org/webide-file-sync/issues/7) for
-  more info.
+  more information.
 - `$CI_PROJECT_DIR` is a
   [predefined environment variable](../../../ci/variables/predefined_variables.md)
   for GitLab Runners. This is where your project's repository will be.

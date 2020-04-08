@@ -100,7 +100,7 @@ directly from GitLab. No third-party integrations needed.
 There is a lot you can customize and configure
 to enjoy the best of GitLab.
 
-- [Settings](profile/index.md): Manage your user settings to change your personal info,
+- [Settings](profile/index.md): Manage your user settings to change your personal information,
   personal access tokens, authorized applications, etc.
 - [Authentication](../topics/authentication/index.md): Read through the authentication
   methods available in GitLab.

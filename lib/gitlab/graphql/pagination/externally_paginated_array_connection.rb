@@ -3,20 +3,14 @@
 # Make a customized connection type
 module Gitlab
   module Graphql
-    module Connections
-      class ExternallyPaginatedArrayConnection < GraphQL::Relay::ArrayConnection
-        # As the pagination happens externally
-        # we just return all the nodes here.
-        def sliced_nodes
-          @nodes
-        end
-
+    module Pagination
+      class ExternallyPaginatedArrayConnection < GraphQL::Pagination::ArrayConnection
         def start_cursor
-          nodes.previous_cursor
+          items.previous_cursor
         end
 
         def end_cursor
-          nodes.next_cursor
+          items.next_cursor
         end
 
         def next_page?

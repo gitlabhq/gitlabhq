@@ -453,7 +453,7 @@ pass CI variables to the running application by prefixing the key of the
 variable with `K8S_SECRET_`.
 
 These [prefixed
-variables](../../topics/autodevops/index.md#application-secret-variables) will
+variables](../../topics/autodevops/customize.md#application-secret-variables) will
 then be available as environment variables on the running application
 container.
 

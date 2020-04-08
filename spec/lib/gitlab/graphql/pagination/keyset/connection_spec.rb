@@ -2,25 +2,28 @@
 
 require 'spec_helper'
 
-describe Gitlab::Graphql::Connections::Keyset::Connection do
+describe Gitlab::Graphql::Pagination::Keyset::Connection do
   let(:nodes) { Project.all.order(id: :asc) }
   let(:arguments) { {} }
+  let(:query_type) { GraphQL::ObjectType.new }
+  let(:schema) { GraphQL::Schema.define(query: query_type, mutation: nil)}
+  let(:context) { GraphQL::Query::Context.new(query: OpenStruct.new(schema: schema), values: nil, object: nil) }
 
   subject(:connection) do
-    described_class.new(nodes, arguments, max_page_size: 3)
+    described_class.new(nodes, { context: context, max_page_size: 3 }.merge(arguments))
   end
 
   def encoded_cursor(node)
-    described_class.new(nodes, {}).cursor_from_node(node)
+    described_class.new(nodes, { context: context }).cursor_for(node)
   end
 
   def decoded_cursor(cursor)
     JSON.parse(Base64Bp.urlsafe_decode64(cursor))
   end
 
-  describe '#cursor_from_nodes' do
+  describe '#cursor_for' do
     let(:project) { create(:project) }
-    let(:cursor)  { connection.cursor_from_node(project) }
+    let(:cursor)  { connection.cursor_for(project) }
 
     it 'returns an encoded ID' do
       expect(decoded_cursor(cursor)).to eq('id' => project.id.to_s)
@@ -264,11 +267,11 @@ describe Gitlab::Graphql::Connections::Keyset::Connection do
     end
   end
 
-  describe '#paged_nodes' do
+  describe '#nodes' do
     let_it_be(:all_nodes) { create_list(:project, 5) }
-    let(:paged_nodes) { subject.paged_nodes }
+    let(:paged_nodes) { subject.nodes }
 
-    it_behaves_like "connection with paged nodes" do
+    it_behaves_like 'connection with paged nodes' do
       let(:paged_nodes_size) { 3 }
     end
 

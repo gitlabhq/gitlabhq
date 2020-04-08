@@ -2,7 +2,7 @@
 
 module Gitlab
   module Graphql
-    module Connections
+    module Pagination
       module Keyset
         class QueryBuilder
           def initialize(arel_table, order_list, decoded_cursor, before_or_after)

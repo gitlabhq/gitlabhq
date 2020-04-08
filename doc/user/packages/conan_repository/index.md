@@ -246,9 +246,9 @@ conan search Hello/0.1@my-group+my-project/beta --all --remote=gitlab
 
 The scope of your search will include all projects you have permission to access, this includes your private projects as well as all public projects.
 
-## Fetching Conan package info from the GitLab Package Registry
+## Fetching Conan package information from the GitLab Package Registry
 
-The `conan info` command will return info about a given package:
+The `conan info` command will return information about a given package:
 
 ```shell
 conan info Hello/0.1@my-group+my-project/beta
@@ -261,7 +261,7 @@ The GitLab Conan repository supports the following Conan CLI commands:
 - `conan upload`: Upload your recipe and package files to the GitLab Package Registry.
 - `conan install`: Install a conan package from the GitLab Package Registry, this includes using the `conanfile.txt` file.
 - `conan search`: Search the GitLab Package Registry for public packages, and private packages you have permission to view.
-- `conan info`: View the info on a given package from the GitLab Package Registry.
+- `conan info`: View the information on a given package from the GitLab Package Registry.
 - `conan remove`: Delete the package from the GitLab Package Registry.
 
 ## Using GitLab CI with Conan packages

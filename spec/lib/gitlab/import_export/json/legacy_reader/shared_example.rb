@@ -15,7 +15,6 @@ RSpec.shared_examples 'import/export json legacy reader' do
       subject { legacy_reader.consume_attributes("project") }
 
       context 'no excluded attributes' do
-        let(:excluded_attributes) { [] }
         let(:relation_names) { [] }
 
         it 'returns the whole tree from parsed JSON' do
@@ -42,60 +41,53 @@ RSpec.shared_examples 'import/export json legacy reader' do
 
   describe '#consume_relation' do
     context 'when valid path is passed' do
-      let(:key) { 'description' }
+      let(:key) { 'labels' }
 
-      context 'block not given' do
-        it 'returns value of the key' do
-          expect(legacy_reader).to receive(:relations).and_return({ key => 'test value' })
-          expect(legacy_reader.consume_relation("project", key)).to eq('test value')
+      subject { legacy_reader.consume_relation("project", key) }
+
+      context 'key has not been consumed' do
+        it 'returns an Enumerator' do
+          expect(subject).to be_an_instance_of(Enumerator)
+        end
+
+        context 'value is nil' do
+          before do
+            expect(legacy_reader).to receive(:relations).and_return({ key => nil })
+          end
+
+          it 'yields nothing to the Enumerator' do
+            expect(subject.to_a).to eq([])
+          end
+        end
+
+        context 'value is an array' do
+          before do
+            expect(legacy_reader).to receive(:relations).and_return({ key => %w[label1 label2] })
+          end
+
+          it 'yields every relation value to the Enumerator' do
+            expect(subject.to_a).to eq([['label1', 0], ['label2', 1]])
+          end
+        end
+
+        context 'value is not array' do
+          before do
+            expect(legacy_reader).to receive(:relations).and_return({ key => 'non-array value' })
+          end
+
+          it 'yields the value with index 0 to the Enumerator' do
+            expect(subject.to_a).to eq([['non-array value', 0]])
+          end
         end
       end
 
       context 'key has been consumed' do
         before do
-          legacy_reader.consume_relation("project", key)
+          legacy_reader.consume_relation("project", key).first
         end
 
-        it 'does not yield' do
-          expect do |blk|
-            legacy_reader.consume_relation("project", key, &blk)
-          end.not_to yield_control
-        end
-      end
-
-      context 'value is nil' do
-        before do
-          expect(legacy_reader).to receive(:relations).and_return({ key => nil })
-        end
-
-        it 'does not yield' do
-          expect do |blk|
-            legacy_reader.consume_relation("project", key, &blk)
-          end.not_to yield_control
-        end
-      end
-
-      context 'value is not array' do
-        before do
-          expect(legacy_reader).to receive(:relations).and_return({ key => 'value' })
-        end
-
-        it 'yield the value with index 0' do
-          expect do |blk|
-            legacy_reader.consume_relation("project", key, &blk)
-          end.to yield_with_args('value', 0)
-        end
-      end
-
-      context 'value is an array' do
-        before do
-          expect(legacy_reader).to receive(:relations).and_return({ key => %w[item1 item2 item3] })
-        end
-
-        it 'yield each array element with index' do
-          expect do |blk|
-            legacy_reader.consume_relation("project", key, &blk)
-          end.to yield_successive_args(['item1', 0], ['item2', 1], ['item3', 2])
+        it 'yields nothing to the Enumerator' do
+          expect(subject.to_a).to eq([])
         end
       end
     end

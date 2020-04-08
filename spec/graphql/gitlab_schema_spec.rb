@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe GitlabSchema do
-  let_it_be(:implementations) { GraphQL::Relay::BaseConnection::CONNECTION_IMPLEMENTATIONS }
+  let_it_be(:connections) { GitlabSchema.connections.all_wrappers }
   let(:user) { build :user }
 
   it 'uses batch loading' do
@@ -34,22 +34,22 @@ describe GitlabSchema do
     expect(described_class.query).to eq(::Types::QueryType)
   end
 
-  it 'paginates active record relations using `Connections::Keyset::Connection`' do
-    connection = implementations[ActiveRecord::Relation.name]
+  it 'paginates active record relations using `Pagination::Keyset::Connection`' do
+    connection = connections[ActiveRecord::Relation]
 
-    expect(connection).to eq(Gitlab::Graphql::Connections::Keyset::Connection)
+    expect(connection).to eq(Gitlab::Graphql::Pagination::Keyset::Connection)
   end
 
-  it 'paginates ExternallyPaginatedArray using `Connections::ExternallyPaginatedArrayConnection`' do
-    connection = implementations[Gitlab::Graphql::ExternallyPaginatedArray.name]
+  it 'paginates ExternallyPaginatedArray using `Pagination::ExternallyPaginatedArrayConnection`' do
+    connection = connections[Gitlab::Graphql::ExternallyPaginatedArray]
 
-    expect(connection).to eq(Gitlab::Graphql::Connections::ExternallyPaginatedArrayConnection)
+    expect(connection).to eq(Gitlab::Graphql::Pagination::ExternallyPaginatedArrayConnection)
   end
 
-  it 'paginates FilterableArray using `Connections::FilterableArrayConnection`' do
-    connection = implementations[Gitlab::Graphql::FilterableArray.name]
+  it 'paginates FilterableArray using `Pagination::FilterableArrayConnection`' do
+    connection = connections[Gitlab::Graphql::FilterableArray]
 
-    expect(connection).to eq(Gitlab::Graphql::Connections::FilterableArrayConnection)
+    expect(connection).to eq(Gitlab::Graphql::Pagination::FilterableArrayConnection)
   end
 
   describe '.execute' do

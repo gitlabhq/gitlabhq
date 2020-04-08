@@ -775,7 +775,7 @@ GitLab unfurls the link as an embedded metrics panel:
 ![Embedded Metrics Rendered](img/embedded_metrics_rendered_v12_8.png)
 
 You can also embed a single chart. To get a link to a chart, click the
-**{ellipsis_v}** **More info** menu in the upper right corner of the chart,
+**{ellipsis_v}** **More actions** menu in the upper right corner of the chart,
 and select **Copy link to chart**, as shown in this example:
 
 ![Copy Link To Chart](img/copy_link_to_chart_v12_10.png)

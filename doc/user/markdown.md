@@ -110,7 +110,7 @@ changing how standard Markdown is used:
 | [emphasis](#emphasis)                 | [multiple underscores in words](#multiple-underscores-in-words-and-mid-word-emphasis)
 | [headers](#headers)                   | [linkable Header IDs](#header-ids-and-links) |
 | [images](#images)                     | [embedded videos](#videos) and [audio](#audio) |
-| [linebreaks](#line-breaks)            | [more linebreak control](#newlines) |
+| [line breaks](#line-breaks)           | [more line break control](#newlines) |
 | [links](#links)                       | [automatically linking URLs](#url-auto-linking) |
 
 ## New GFM Markdown extensions
@@ -256,7 +256,7 @@ when rendered within GitLab, may appear different depending on the OS and browse
 Most emoji are natively supported on macOS, Windows, iOS, Android and will fallback to image-based emoji where there is lack of support.
 
 NOTE: **Note:** On Linux, you can download [Noto Color Emoji](https://www.google.com/get/noto/help/emoji/)
-to get full native emoji support. Ubuntu 18.04 (like many modern Linux distros) has
+to get full native emoji support. Ubuntu 18.04 (like many modern Linux distributions) has
 this font installed by default.
 
 ### Front matter
@@ -1148,7 +1148,7 @@ GFM adheres to the Markdown specification in how [paragraphs and line breaks are
 A paragraph is one or more consecutive lines of text, separated by one or
 more blank lines (two newlines at the end of the first paragraph), as [explained above](#line-breaks).
 
-If you need more control over line-breaks or soft returns, you can add a single line-break
+If you need more control over line breaks or soft returns, you can add a single line break
 by ending a line with a backslash, or two or more spaces. Two newlines in a row will create a new
 paragraph, with a blank line in between:
 
@@ -1162,21 +1162,6 @@ Second paragraph.
 Another line, this time ending with a backslash.\
 A new line due to the previous backslash.
 ```
-
-<!-- (Do *NOT* remove the two ending whitespaces in the third line) -->
-<!-- (They are needed for the Markdown text to render correctly) -->
-
-First paragraph.
-Another line in the same paragraph.
-A third line in the same paragraph, but this time ending with two spaces.  
-A new line directly under the first paragraph.
-
-<!-- (Do *NOT* remove the two ending whitespaces in the second line) -->
-<!-- (They are needed for the Markdown text to render correctly on docs.gitlab.com, the backslash works fine inside GitLab itself) -->
-
-Second paragraph.
-Another line, this time ending with a backslash.  
-A new line due to the previous backslash.
 
 ### Links
 
@@ -1406,7 +1391,7 @@ Example:
 | header 1 | header 2 | header 3 |
 | ---      |  ------  |---------:|
 | cell 1   | cell 2   | cell 3   |
-| cell 4 | cell 5 is longer | cell 6 is much longer than the others, but that's ok. It will eventually wrap the text when the cell is too large for the display size. |
+| cell 4 | cell 5 is longer | cell 6 is much longer than the others, but that's okay. It will eventually wrap the text when the cell is too large for the display size. |
 | cell 7   |          | cell <br> 9 |
 
 Additionally, you can choose the alignment of text within columns by adding colons (`:`)

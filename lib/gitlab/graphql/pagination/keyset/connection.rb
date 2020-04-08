@@ -27,21 +27,21 @@
 #
 module Gitlab
   module Graphql
-    module Connections
+    module Pagination
       module Keyset
-        class Connection < GraphQL::Relay::BaseConnection
+        class Connection < GraphQL::Pagination::ActiveRecordRelationConnection
           include Gitlab::Utils::StrongMemoize
 
-          def cursor_from_node(node)
+          def cursor_for(node)
             encoded_json_from_ordering(node)
           end
 
           def sliced_nodes
             @sliced_nodes ||=
               begin
-                OrderInfo.validate_ordering(ordered_nodes, order_list)
+                OrderInfo.validate_ordering(ordered_items, order_list)
 
-                sliced = ordered_nodes
+                sliced = ordered_items
                 sliced = slice_nodes(sliced, before, :before) if before.present?
                 sliced = slice_nodes(sliced, after, :after) if after.present?
 
@@ -49,12 +49,12 @@ module Gitlab
               end
           end
 
-          def paged_nodes
+          def nodes
             # These are the nodes that will be loaded into memory for rendering
             # So we're ok loading them into memory here as that's bound to happen
             # anyway. Having them ready means we can modify the result while
             # rendering the fields.
-            @paged_nodes ||= load_paged_nodes.to_a
+            @nodes ||= load_paged_nodes.to_a
           end
 
           private
@@ -85,31 +85,31 @@ module Gitlab
             @limit_value ||= [first, last, max_page_size].compact.min
           end
 
-          def ordered_nodes
-            strong_memoize(:order_nodes) do
-              unless nodes.primary_key.present?
+          def ordered_items
+            strong_memoize(:ordered_items) do
+              unless items.primary_key.present?
                 raise ArgumentError.new('Relation must have a primary key')
               end
 
-              list = OrderInfo.build_order_list(nodes)
+              list = OrderInfo.build_order_list(items)
 
               # ensure there is a primary key ordering
-              if list&.last&.attribute_name != nodes.primary_key
-                nodes.order(arel_table[nodes.primary_key].desc) # rubocop: disable CodeReuse/ActiveRecord
+              if list&.last&.attribute_name != items.primary_key
+                items.order(arel_table[items.primary_key].desc) # rubocop: disable CodeReuse/ActiveRecord
               else
-                nodes
+                items
               end
             end
           end
 
           def order_list
             strong_memoize(:order_list) do
-              OrderInfo.build_order_list(ordered_nodes)
+              OrderInfo.build_order_list(ordered_items)
             end
           end
 
           def arel_table
-            nodes.arel_table
+            items.arel_table
           end
 
           # Storing the current order values in the cursor allows us to

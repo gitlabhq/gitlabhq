@@ -80,7 +80,7 @@ See [GitLab CI/CD predefined variables](../../ci/variables/predefined_variables.
 
 Also, scanning jobs should be skipped when the corresponding variable prefixed with `_DISABLED` is present.
 See `DEPENDENCY_SCANNING_DISABLED`, `CONTAINER_SCANNING_DISABLED`, `SAST_DISABLED`, and `DAST_DISABLED`
-in [Auto DevOps documentation](../../topics/autodevops/index.md#disable-jobs).
+in [Auto DevOps documentation](../../topics/autodevops/customize.md#disable-jobs).
 
 Finally, SAST and Dependency Scanning job definitions should use
 `CI_PROJECT_REPOSITORY_LANGUAGES` (comma-separated list of values)

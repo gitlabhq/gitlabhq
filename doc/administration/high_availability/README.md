@@ -273,7 +273,7 @@ On different cloud vendors a best effort like for like can be used.
 
 [^8]: The architectures were built and tested with the [Intel Xeon E5 v3 (Haswell)](https://cloud.google.com/compute/docs/cpu-platforms)
       CPU platform on GCP. On different hardware you may find that adjustments, either lower
-      or higher, are required for your CPU or Node counts accordingly. For more info a
+      or higher, are required for your CPU or Node counts accordingly. For more information, a
       [Sysbench](https://github.com/akopytov/sysbench) benchmark of the CPU can be found
       [here](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Reference-Architectures/GCP-CPU-Benchmarks).
 

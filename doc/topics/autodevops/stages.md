@@ -19,7 +19,7 @@ If a project's repository contains a `Dockerfile` at its root, Auto Build will u
 If you are also using Auto Review Apps and Auto Deploy and choose to provide
 your own `Dockerfile`, make sure you expose your application to port
 `5000` as this is the port assumed by the
-[default Helm chart](https://gitlab.com/gitlab-org/charts/auto-deploy-app). Alternatively you can override the default values by [customizing the Auto Deploy Helm chart](index.md#custom-helm-chart)
+[default Helm chart](https://gitlab.com/gitlab-org/charts/auto-deploy-app). Alternatively you can override the default values by [customizing the Auto Deploy Helm chart](customize.md#custom-helm-chart)
 
 ### Auto Build using Heroku buildpacks
 
@@ -78,7 +78,7 @@ Auto Test automatically runs the appropriate tests for your application using
 buildpacks](https://devcenter.heroku.com/articles/buildpacks) by analyzing
 your project to detect the language and framework. Several languages and
 frameworks are detected automatically, but if your language is not detected,
-you may succeed with a [custom buildpack](index.md#custom-buildpacks). Check the
+you may succeed with a [custom buildpack](customize.md#custom-buildpacks). Check the
 [currently supported languages](index.md#currently-supported-languages).
 
 Auto Test uses tests you already have in your application. If there are no
@@ -182,7 +182,7 @@ be deleted.
 
 Review apps are deployed using the
 [auto-deploy-app](https://gitlab.com/gitlab-org/charts/auto-deploy-app) chart with
-Helm, which can be [customized](index.md#custom-helm-chart). The app will be deployed into the [Kubernetes
+Helm, which can be [customized](customize.md#custom-helm-chart). The app will be deployed into the [Kubernetes
 namespace](../../user/project/clusters/index.md#deployment-variables)
 for the environment.
 
@@ -265,8 +265,8 @@ Auto Deploy doesn't include deployments to staging or canary by default, but the
 [Auto DevOps template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml) contains job definitions for these tasks if you want to
 enable them.
 
-You can make use of [environment variables](index.md#environment-variables) to automatically
-scale your pod replicas and to apply custom arguments to the Auto DevOps `helm upgrade` commands. This is an easy way to [customize the Auto Deploy Helm chart](index.md#custom-helm-chart).
+You can make use of [environment variables](customize.md#environment-variables) to automatically
+scale your pod replicas and to apply custom arguments to the Auto DevOps `helm upgrade` commands. This is an easy way to [customize the Auto Deploy Helm chart](customize.md#custom-helm-chart).
 
 Apps are deployed using the
 [auto-deploy-app](https://gitlab.com/gitlab-org/charts/auto-deploy-app) chart with
@@ -315,7 +315,7 @@ including support for `Deployment` in the `extensions/v1beta1` version.
 
 To use Auto Deploy on a Kubernetes 1.16+ cluster, you must:
 
-1. Set the following in the [`.gitlab/auto-deploy-values.yaml` file](index.md#customize-values-for-helm-chart):
+1. Set the following in the [`.gitlab/auto-deploy-values.yaml` file](customize.md#customize-values-for-helm-chart):
 
    ```yml
    deploymentApiVersion: apps/v1
@@ -391,7 +391,7 @@ need to:
 
 Once you have configured your worker to respond to health checks, run a Sidekiq
 worker for your Rails application. You can enable workers by setting the
-following in the [`.gitlab/auto-deploy-values.yaml` file](index.md#customize-values-for-helm-chart):
+following in the [`.gitlab/auto-deploy-values.yaml` file](customize.md#customize-values-for-helm-chart):
 
 ```yml
 workers:

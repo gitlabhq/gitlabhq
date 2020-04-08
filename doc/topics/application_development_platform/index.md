@@ -37,7 +37,7 @@ with various cloud providers.
 In order to provide modern DevOps workflows, our Application Development Platform will rely on
 [Auto DevOps](../autodevops/index.md) to provide those workflows. Auto DevOps works with
 any Kubernetes cluster; you're not limited to running on GitLab's infrastructure. Additionally, Auto DevOps offers
-an incremental consumption path. Because it is [composable](../autodevops/index.md#using-components-of-auto-devops),
+an incremental consumption path. Because it is [composable](../autodevops/customize.md#using-components-of-auto-devops),
 you can use as much or as little of the default pipeline as you'd like, and deeply customize without having to integrate a completely different platform.
 
 ### Security

@@ -116,7 +116,7 @@ environment.
 Deployments that are ongoing will be shown, as well as the deploying/deployed state
 for environments. If it's the first time the branch is deployed, the link
 will return a `404` error until done. During the deployment, the stop button will
-be disabled. If the pipeline fails to deploy, the deployment info will be hidden.
+be disabled. If the pipeline fails to deploy, the deployment information will be hidden.
 
 ![Merge request pipeline](img/merge_request_pipeline.png)
 

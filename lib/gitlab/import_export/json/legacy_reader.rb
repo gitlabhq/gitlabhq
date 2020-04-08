@@ -53,6 +53,7 @@ module Gitlab
 
         def initialize(relation_names:, allowed_path:)
           @relation_names = relation_names.map(&:to_s)
+          @consumed_relations = Set.new
 
           # This is legacy reader, to be used in transition
           # period before `.ndjson`,
@@ -81,17 +82,19 @@ module Gitlab
             raise ArgumentError, "Invalid #{importable_name} passed to `consume_relation`. Use #{@allowed_path} instead."
           end
 
-          value = relations.delete(key)
+          Enumerator.new do |documents|
+            next unless @consumed_relations.add?("#{importable_path}/#{key}")
 
-          return value unless block_given?
-          return if value.nil?
+            value = relations.delete(key)
+            next if value.nil?
 
-          if value.is_a?(Array)
-            value.each.with_index do |item, idx|
-              yield(item, idx)
+            if value.is_a?(Array)
+              value.each.with_index do |item, idx|
+                documents << [item, idx]
+              end
+            else
+              documents << [value, 0]
             end
-          else
-            yield(value, 0)
           end
         end
 

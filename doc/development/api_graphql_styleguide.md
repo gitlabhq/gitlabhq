@@ -150,7 +150,7 @@ query($project_path: ID!) {
 ```
 
 This would return the first 2 pipelines of a project and related
-pagination info., ordered by descending ID. The returned data would
+pagination information, ordered by descending ID. The returned data would
 look like this:
 
 ```json

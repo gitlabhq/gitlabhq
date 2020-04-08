@@ -2,7 +2,7 @@
 
 module Gitlab
   module Graphql
-    module Connections
+    module Pagination
       module Keyset
         module Conditions
           class BaseCondition

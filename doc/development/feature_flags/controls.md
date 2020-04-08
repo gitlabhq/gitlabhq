@@ -98,6 +98,7 @@ Slack:
 
 This will enable the feature for GitLab.com, with `new_navigation_bar` being the
 name of the feature.
+This command does *not* enable the feature for 25% of the total users. Instead, when the feature is checked with `enabled?`, it will return `true` 25% of the time.
 
 If you are not certain what percentages to use, simply use the following steps:
 
@@ -136,9 +137,8 @@ you run these 2 commands:
 /chatops run feature set some_feature 25
 ```
 
-Then `some_feature` will be enabled for 25% of the time the users are interacting with
-`gitlab-org/gitlab`. Note that the the feature is not enabled to 25%
-of the users, rather a simple randomization is made each time the `enabled?` is checked.
+Then `some_feature` will be enabled for both 25% of users and all users interacting with
+`gitlab-org/gitlab`.
 
 NOTE: **Note:**
 **Percentage of time** rollout is not a good idea if what you want is to make sure a feature

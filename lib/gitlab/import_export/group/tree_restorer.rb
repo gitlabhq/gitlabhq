@@ -20,6 +20,7 @@ module Gitlab
         def restore
           @group_attributes = relation_reader.consume_attributes(nil)
           @group_members = relation_reader.consume_relation(nil, 'members')
+            .map(&:first)
 
           # We need to remove `name` and `path` as we did consume it in previous pass
           @group_attributes.delete('name')

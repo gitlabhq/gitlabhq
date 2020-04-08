@@ -14,7 +14,7 @@ In this tutorial, we will show you different ways of undoing your work in Git, f
 we will assume you have a basic working knowledge of. Check GitLab's
 [Git documentation](../index.md) for reference.
 
-Also, we will only provide some general info of the commands, which is enough
+Also, we will only provide some general information of the commands, which is enough
 to get you started for the easy cases/examples, but for anything more advanced
 please refer to the [Git book](https://git-scm.com/book/en/v2).
 

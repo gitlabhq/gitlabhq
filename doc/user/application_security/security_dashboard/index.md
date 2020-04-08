@@ -156,7 +156,7 @@ That way, reports are created even if no code change happens.
 ## Security scans using Auto DevOps
 
 When using [Auto DevOps](../../../topics/autodevops/index.md), use
-[special environment variables](../../../topics/autodevops/index.md#environment-variables)
+[special environment variables](../../../topics/autodevops/customize.md#environment-variables)
 to configure daily security scans.
 
 <!-- ## Troubleshooting

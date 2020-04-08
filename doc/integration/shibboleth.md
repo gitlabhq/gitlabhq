@@ -8,7 +8,7 @@ In order to enable Shibboleth support in GitLab we need to use Apache instead of
 
 To enable the Shibboleth OmniAuth provider you must configure Apache Shibboleth module.
 The installation and configuration of the module itself is out of the scope of this document.
-Check <https://wiki.shibboleth.net/confluence/display/SP3/Apache> for more info.
+Check <https://wiki.shibboleth.net/confluence/display/SP3/Apache> for more information.
 
 You can find Apache config in [GitLab Recipes](https://gitlab.com/gitlab-org/gitlab-recipes/tree/master/web-server/apache).
 
