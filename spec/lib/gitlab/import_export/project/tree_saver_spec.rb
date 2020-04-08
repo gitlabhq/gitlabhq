@@ -16,7 +16,6 @@ describe Gitlab::ImportExport::Project::TreeSaver do
       let_it_be(:group) { create(:group) }
       let_it_be(:project) { setup_project }
       let_it_be(:shared) { project.import_export_shared }
-      let_it_be(:project_tree_saver ) { described_class.new(project: project, current_user: user, shared: shared) }
 
       let(:relation_name) { :projects }
 
@@ -29,9 +28,17 @@ describe Gitlab::ImportExport::Project::TreeSaver do
       end
 
       before_all do
-        Feature.enable(:project_export_as_ndjson) if ndjson_enabled
-        project.add_maintainer(user)
-        project_tree_saver.save
+        RSpec::Mocks.with_temporary_scope do
+          allow(Feature).to receive(:enabled?).and_call_original
+          stub_feature_flags(project_export_as_ndjson: ndjson_enabled)
+
+          project.add_maintainer(user)
+
+          stub_feature_flags(project_export_as_ndjson: ndjson_enabled)
+          project_tree_saver = described_class.new(project: project, current_user: user, shared: shared)
+
+          project_tree_saver.save
+        end
       end
 
       after :all do

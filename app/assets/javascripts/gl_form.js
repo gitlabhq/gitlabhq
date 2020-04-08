@@ -45,7 +45,7 @@ export default class GLForm {
       );
       this.autoComplete = new GfmAutoComplete(gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources);
       this.autoComplete.setup(this.form.find('.js-gfm-input'), this.enableGFM);
-      dropzoneInput(this.form);
+      dropzoneInput(this.form, { parallelUploads: 1 });
       autosize(this.textarea);
     }
     // form and textarea event listeners

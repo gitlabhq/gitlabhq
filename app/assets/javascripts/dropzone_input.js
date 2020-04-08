@@ -23,7 +23,7 @@ function getErrorMessage(res) {
   return res.message;
 }
 
-export default function dropzoneInput(form) {
+export default function dropzoneInput(form, config = { parallelUploads: 2 }) {
   const divHover = '<div class="div-dropzone-hover"></div>';
   const iconPaperclip = '<i class="fa fa-paperclip div-dropzone-icon"></i>';
   const $attachButton = form.find('.button-attach-file');
@@ -69,6 +69,7 @@ export default function dropzoneInput(form) {
     uploadMultiple: false,
     headers: csrf.headers,
     previewContainer: false,
+    ...config,
     processing: () => $('.div-dropzone-alert').alert('close'),
     dragover: () => {
       $mdArea.addClass('is-dropzone-hover');

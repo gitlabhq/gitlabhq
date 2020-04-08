@@ -6,6 +6,7 @@ import statusCodes from '~/lib/utils/http_status';
 import * as commonUtils from '~/lib/utils/common_utils';
 import createFlash from '~/flash';
 import { defaultTimeRange } from '~/vue_shared/constants';
+import { ENVIRONMENT_AVAILABLE_STATE } from '~/monitoring/constants';
 
 import store from '~/monitoring/stores';
 import * as types from '~/monitoring/stores/mutation_types';
@@ -157,17 +158,21 @@ describe('Monitoring store actions', () => {
         variables: {
           projectPath: state.projectPath,
           search: searchTerm,
+          states: [ENVIRONMENT_AVAILABLE_STATE],
         },
       };
       state.environmentsSearchTerm = searchTerm;
-      mockMutate.mockReturnValue(Promise.resolve());
+      mockMutate.mockResolvedValue({});
 
       return testAction(
         fetchEnvironmentsData,
         null,
         state,
         [],
-        [{ type: 'requestEnvironmentsData' }, { type: 'receiveEnvironmentsDataFailure' }],
+        [
+          { type: 'requestEnvironmentsData' },
+          { type: 'receiveEnvironmentsDataSuccess', payload: [] },
+        ],
         () => {
           expect(mockMutate).toHaveBeenCalledWith(mutationVariables);
         },

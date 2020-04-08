@@ -10,7 +10,7 @@ import statusCodes from '../../lib/utils/http_status';
 import { backOff, convertObjectPropsToCamelCase } from '../../lib/utils/common_utils';
 import { s__, sprintf } from '../../locale';
 
-import { PROMETHEUS_TIMEOUT } from '../constants';
+import { PROMETHEUS_TIMEOUT, ENVIRONMENT_AVAILABLE_STATE } from '../constants';
 
 function prometheusMetricQueryParams(timeRange) {
   const { start, end } = convertToFixedRange(timeRange);
@@ -238,6 +238,7 @@ export const fetchEnvironmentsData = ({ state, dispatch }) => {
       variables: {
         projectPath: removeLeadingSlash(state.projectPath),
         search: state.environmentsSearchTerm,
+        states: [ENVIRONMENT_AVAILABLE_STATE],
       },
     })
     .then(resp =>

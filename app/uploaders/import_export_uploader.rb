@@ -14,4 +14,12 @@ class ImportExportUploader < AttachmentUploader
   def move_to_cache
     false
   end
+
+  def work_dir
+    File.join(Settings.shared['path'], 'tmp', 'work')
+  end
+
+  def cache_dir
+    File.join(Settings.shared['path'], 'tmp', 'cache')
+  end
 end

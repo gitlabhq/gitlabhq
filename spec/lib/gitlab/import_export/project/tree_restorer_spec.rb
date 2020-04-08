@@ -11,7 +11,7 @@ describe Gitlab::ImportExport::Project::TreeRestorer do
 
   let(:shared) { project.import_export_shared }
 
-  RSpec.shared_examples 'project tree restorer work properly' do |reader|
+  RSpec.shared_examples 'project tree restorer work properly' do |reader, ndjson_enabled|
     describe 'restore project tree' do
       before_all do
         # Using an admin for import, so we can check assignment of existing members
@@ -24,6 +24,9 @@ describe Gitlab::ImportExport::Project::TreeRestorer do
         RSpec::Mocks.with_temporary_scope do
           @project = create(:project, :builds_enabled, :issues_disabled, name: 'project', path: 'project')
           @shared = @project.import_export_shared
+
+          allow(Feature).to receive(:enabled?).and_call_original
+          stub_feature_flags(project_import_ndjson: ndjson_enabled)
 
           setup_import_export_config('complex')
           setup_reader(reader)
@@ -999,23 +1002,12 @@ describe Gitlab::ImportExport::Project::TreeRestorer do
   end
 
   context 'enable ndjson import' do
-    before_all do
-      # Test suite `restore project tree` run `project_tree_restorer.restore` in `before_all`.
-      # `Enable all features by default for testing` happens in `before(:each)`
-      # So it requires manually enable feature flag to allow ndjson_reader
-      Feature.enable(:project_import_ndjson)
-    end
+    it_behaves_like 'project tree restorer work properly', :legacy_reader, true
 
-    it_behaves_like 'project tree restorer work properly', :legacy_reader
-
-    it_behaves_like 'project tree restorer work properly', :ndjson_reader
+    it_behaves_like 'project tree restorer work properly', :ndjson_reader, true
   end
 
   context 'disable ndjson import' do
-    before do
-      stub_feature_flags(project_import_ndjson: false)
-    end
-
-    it_behaves_like 'project tree restorer work properly', :legacy_reader
+    it_behaves_like 'project tree restorer work properly', :legacy_reader, false
   end
 end

@@ -10,7 +10,7 @@ module GroupsHelper
     ]
   end
 
-  def group_nav_link_paths
+  def group_settings_nav_link_paths
     %w[
       groups#projects
       groups#edit

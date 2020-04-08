@@ -205,16 +205,6 @@ module API
 
         post '/notify_post_receive' do
           status 200
-
-          # TODO: Re-enable when Gitaly is processing the post-receive notification
-          # return unless Gitlab::GitalyClient.enabled?
-          #
-          # begin
-          #   repository = wiki? ? project.wiki.repository : project.repository
-          #   Gitlab::GitalyClient::NotificationService.new(repository.raw_repository).post_receive
-          # rescue GRPC::Unavailable => e
-          #   render_api_error!(e, 500)
-          # end
         end
 
         post '/post_receive' do

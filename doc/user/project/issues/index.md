@@ -197,7 +197,7 @@ Feature.disable(:save_issuable_health_status)
 - [Bulk edit issues](../bulk_editing.md) - From the Issues List, select multiple issues
   in order to change their status, assignee, milestone, or labels in bulk.
 - [Import issues](csv_import.md)
-- [Export issues](csv_export.md) **(STARTER)**
+- [Export issues](csv_export.md)
 - [Issues API](../../../api/issues.md)
 - Configure an [external issue tracker](../../../integration/external-issue-tracker.md)
   such as Jira, Redmine, or Bugzilla.
