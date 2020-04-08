@@ -53,7 +53,7 @@ describe Ci::Group do
       it 'calls the status from the object itself' do
         expect(jobs.first).to receive(:detailed_status)
 
-        expect(subject.detailed_status(double(:user)))
+        subject.detailed_status(double(:user))
       end
     end
 

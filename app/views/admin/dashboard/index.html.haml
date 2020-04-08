@@ -30,7 +30,7 @@
           %hr
           .btn-group.d-flex{ role: 'group' }
             = link_to 'New user', new_admin_user_path, class: "btn btn-success"
-            = render_if_exists 'admin/dashboard/users_statistics'
+            = link_to s_('AdminArea|Users statistics'), admin_dashboard_stats_path, class: 'btn btn-primary'
     .col-sm-4
       .info-well.dark-well
         .well-segment.well-centered

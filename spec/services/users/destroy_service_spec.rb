@@ -15,7 +15,7 @@ describe Users::DestroyService do
       it 'deletes the user' do
         user_data = service.execute(user)
 
-        expect { user_data['email'].to eq(user.email) }
+        expect(user_data['email']).to eq(user.email)
         expect { User.find(user.id) }.to raise_error(ActiveRecord::RecordNotFound)
         expect { Namespace.find(namespace.id) }.to raise_error(ActiveRecord::RecordNotFound)
       end

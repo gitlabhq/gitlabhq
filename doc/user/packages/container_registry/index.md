@@ -488,7 +488,9 @@ older tags and images are regularly removed from the Container Registry.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/15398) in GitLab 12.8.
 
 NOTE: **Note:**
-Expiration policies are only available for projects created in GitLab 12.8 and later.
+Expiration policies for projects created before GitLab 12.8 may be enabled by an
+admin in the [CI/CD Package Registry settings](./../../admin_area/settings/index.md#cicd).
+Note the inherant [risks involved](./index.md#use-with-external-container-registries).
 
 It is possible to create a per-project expiration policy, so that you can make sure that
 older tags and images are regularly removed from the Container Registry.
@@ -538,6 +540,15 @@ Examples:
   ```
 
 See the API documentation for further details: [Edit project](../../../api/projects.md#edit-project).
+
+### Use with external container registries
+
+When using an [external container registry](./../../../administration/packages/container_registry.md#use-an-external-container-registry-with-gitlab-as-an-auth-endpoint),
+running an experation policy on a project may have some performance risks. If a project is going to run
+a policy that will remove large quantities of tags (in the thousands), the GitLab background jobs that
+run the policy may get backed up or fail completely. It is recommended you only enable container expiration
+policies for projects that were created before GitLab 12.8 if you are confident the amount of tags
+being cleaned up will be minimal.
 
 ## Limitations
 

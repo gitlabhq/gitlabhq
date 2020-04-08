@@ -1,0 +1,75 @@
+- page_title s_('AdminArea|Users statistics')
+
+%h3.my-4
+  = s_('AdminArea|Users statistics')
+%table.table.gl-text-gray-700
+  %tr
+    %td.p-3
+      = s_('AdminArea|Users without a Group and Project')
+      = render_if_exists 'admin/dashboard/included_free_in_license_tooltip'
+    %td.p-3.text-right
+      = @users_statistics&.without_groups_and_projects.to_i
+  %tr
+    %td.p-3
+      = s_('AdminArea|Users with highest role')
+      %strong
+        = s_('AdminArea|Guest')
+      = render_if_exists 'admin/dashboard/included_free_in_license_tooltip'
+    %td.p-3.text-right
+      = @users_statistics&.with_highest_role_guest.to_i
+  %tr
+    %td.p-3
+      = s_('AdminArea|Users with highest role')
+      %strong
+        = s_('AdminArea|Reporter')
+    %td.p-3.text-right
+      = @users_statistics&.with_highest_role_reporter.to_i
+  %tr
+    %td.p-3
+      = s_('AdminArea|Users with highest role')
+      %strong
+        = s_('AdminArea|Developer')
+    %td.p-3.text-right
+      = @users_statistics&.with_highest_role_developer.to_i
+  %tr
+    %td.p-3
+      = s_('AdminArea|Users with highest role')
+      %strong
+        = s_('AdminArea|Maintainer')
+    %td.p-3.text-right
+      = @users_statistics&.with_highest_role_maintainer.to_i
+  %tr
+    %td.p-3
+      = s_('AdminArea|Users with highest role')
+      %strong
+        = s_('AdminArea|Owner')
+    %td.p-3.text-right
+      = @users_statistics&.with_highest_role_owner.to_i
+  %tr
+    %td.p-3
+      = s_('AdminArea|Bots')
+    %td.p-3.text-right
+      = @users_statistics&.bots.to_i
+
+  %tr.bg-gray-light.gl-text-gray-900
+    %td.p-3
+      %strong
+        = s_('AdminArea|Active users')
+        = render_if_exists 'admin/dashboard/billable_users_text'
+    %td.p-3.text-right
+      %strong
+        = @users_statistics&.active.to_i
+  %tr.bg-gray-light.gl-text-gray-900
+    %td.p-3
+      %strong
+        = s_('AdminArea|Blocked users')
+    %td.p-3.text-right
+      %strong
+        = @users_statistics&.blocked.to_i
+  %tr.bg-gray-light.gl-text-gray-900
+    %td.p-3
+      %strong
+        = s_('AdminArea|Total users')
+    %td.p-3.text-right
+      %strong
+        = @users_statistics&.total.to_i

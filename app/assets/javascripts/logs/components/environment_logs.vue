@@ -56,7 +56,6 @@ export default {
       required: true,
     },
   },
-  traceHeight: 600,
   data() {
     return {
       isElasticStackCalloutDismissed: false,
@@ -94,6 +93,9 @@ export default {
       'showEnvironment',
       'fetchEnvironments',
       'fetchMoreLogsPrepend',
+      'dismissRequestEnvironmentsError',
+      'dismissInvalidTimeRangeWarning',
+      'dismissRequestLogsError',
     ]),
 
     isCurrentEnvironment(envName) {
@@ -115,7 +117,7 @@ export default {
 };
 </script>
 <template>
-  <div class="environment-logs-viewer mt-3">
+  <div class="environment-logs-viewer d-flex flex-column py-3">
     <gl-alert
       v-if="shouldShowElasticStackCallout"
       class="mb-3 js-elasticsearch-alert"
@@ -132,6 +134,31 @@ export default {
         </strong>
       </a>
     </gl-alert>
+    <gl-alert
+      v-if="environments.fetchError"
+      class="mb-3"
+      variant="danger"
+      @dismiss="dismissRequestEnvironmentsError"
+    >
+      {{ s__('Metrics|There was an error fetching the environments data, please try again') }}
+    </gl-alert>
+    <gl-alert
+      v-if="timeRange.invalidWarning"
+      class="mb-3"
+      variant="warning"
+      @dismiss="dismissInvalidTimeRangeWarning"
+    >
+      {{ s__('Metrics|Invalid time range, please verify.') }}
+    </gl-alert>
+    <gl-alert
+      v-if="logs.fetchError"
+      class="mb-3"
+      variant="danger"
+      @dismiss="dismissRequestLogsError"
+    >
+      {{ s__('Environments|There was an error fetching the logs. Please try again.') }}
+    </gl-alert>
+
     <div class="top-bar d-md-flex border bg-secondary-50 pt-2 pr-1 pb-0 pl-2">
       <div class="flex-grow-0">
         <gl-dropdown
@@ -183,16 +210,15 @@ export default {
 
     <gl-infinite-scroll
       ref="infiniteScroll"
-      class="log-lines"
-      :style="{ height: `${$options.traceHeight}px` }"
-      :max-list-height="$options.traceHeight"
+      class="log-lines overflow-auto flex-grow-1 min-height-0"
       :fetched-items="logs.lines.length"
       @topReached="topReached"
       @scroll="scroll"
     >
       <template #items>
         <pre
-          class="build-trace js-log-trace"
+          ref="logTrace"
+          class="build-trace"
         ><code class="bash js-build-output"><div v-if="showLoader" class="build-loader-animation js-build-loader-animation">
           <div class="dot"></div>
           <div class="dot"></div>
@@ -205,7 +231,7 @@ export default {
       ></template>
     </gl-infinite-scroll>
 
-    <div ref="logFooter" class="log-footer py-2 px-3">
+    <div ref="logFooter" class="py-2 px-3 text-white bg-secondary-900">
       <gl-sprintf :message="s__('Environments|Logs from %{start} to %{end}.')">
         <template #start>{{ timeRange.current.start | formatDate }}</template>
         <template #end>{{ timeRange.current.end | formatDate }}</template>

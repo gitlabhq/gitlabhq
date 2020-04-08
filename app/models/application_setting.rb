@@ -142,6 +142,9 @@ class ApplicationSetting < ApplicationRecord
 
   validates :default_artifacts_expire_in, presence: true, duration: true
 
+  validates :container_expiration_policies_enable_historic_entries,
+             inclusion: { in: [true, false], message: 'must be a boolean value' }
+
   validates :container_registry_token_expire_delay,
             presence: true,
             numericality: { only_integer: true, greater_than: 0 }

@@ -45,6 +45,7 @@ Example response:
    "default_group_visibility" : "private",
    "gravatar_enabled" : true,
    "sign_in_text" : null,
+   "container_expiration_policies_enable_historic_entries": true,
    "container_registry_token_expire_delay": 5,
    "repository_storages": ["default"],
    "plantuml_enabled": false,

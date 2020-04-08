@@ -7,7 +7,7 @@ describe Ci::PipelinePresenter do
 
   let(:user) { create(:user) }
   let(:current_user) { user }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :test_repo) }
   let(:pipeline) { create(:ci_pipeline, project: project) }
 
   subject(:presenter) do
@@ -87,34 +87,32 @@ describe Ci::PipelinePresenter do
   end
 
   describe '#name' do
+    before do
+      allow(pipeline).to receive(:merge_request_event_type) { event_type }
+    end
+
     subject { presenter.name }
 
-    context 'when pipeline is detached merge request pipeline' do
-      let(:merge_request) { create(:merge_request, :with_detached_merge_request_pipeline) }
-      let(:pipeline) { merge_request.all_pipelines.last }
+    context 'for a detached merge request pipeline' do
+      let(:event_type) { :detached }
 
       it { is_expected.to eq('Detached merge request pipeline') }
     end
 
-    context 'when pipeline is merge request pipeline' do
-      let(:merge_request) { create(:merge_request, :with_merge_request_pipeline) }
-      let(:pipeline) { merge_request.all_pipelines.last }
+    context 'for a merged result pipeline' do
+      let(:event_type) { :merged_result }
 
       it { is_expected.to eq('Merged result pipeline') }
     end
 
-    context 'when pipeline is merge train pipeline' do
-      let(:pipeline) { create(:ci_pipeline, project: project) }
-
-      before do
-        allow(pipeline).to receive(:merge_request_event_type) { :merge_train }
-      end
+    context 'for a merge train pipeline' do
+      let(:event_type) { :merge_train }
 
       it { is_expected.to eq('Merge train pipeline') }
     end
 
     context 'when pipeline is branch pipeline' do
-      let(:pipeline) { create(:ci_pipeline, project: project) }
+      let(:event_type) { nil }
 
       it { is_expected.to eq('Pipeline') }
     end
@@ -145,8 +143,6 @@ describe Ci::PipelinePresenter do
     end
 
     context 'when pipeline is branch pipeline' do
-      let(:pipeline) { create(:ci_pipeline, project: project) }
-
       context 'when ref exists in the repository' do
         before do
           allow(pipeline).to receive(:ref_exists?) { true }
@@ -165,7 +161,7 @@ describe Ci::PipelinePresenter do
         end
       end
 
-      context 'when ref exists in the repository' do
+      context 'when ref does not exist in the repository' do
         before do
           allow(pipeline).to receive(:ref_exists?) { false }
         end
@@ -188,12 +184,17 @@ describe Ci::PipelinePresenter do
   describe '#all_related_merge_request_text' do
     subject { presenter.all_related_merge_request_text }
 
+    let(:mr_1) { create(:merge_request) }
+    let(:mr_2) { create(:merge_request) }
+
     context 'with zero related merge requests (branch pipeline)' do
       it { is_expected.to eq('No related merge requests found.') }
     end
 
     context 'with one related merge request' do
-      let!(:mr_1) { create(:merge_request, project: project, source_project: project) }
+      before do
+        allow(pipeline).to receive(:all_merge_requests).and_return(MergeRequest.where(id: mr_1.id))
+      end
 
       it {
         is_expected.to eq("1 related merge request: " \
@@ -202,8 +203,9 @@ describe Ci::PipelinePresenter do
     end
 
     context 'with two related merge requests' do
-      let!(:mr_1) { create(:merge_request, project: project, source_project: project, target_branch: 'staging') }
-      let!(:mr_2) { create(:merge_request, project: project, source_project: project, target_branch: 'feature') }
+      before do
+        allow(pipeline).to receive(:all_merge_requests).and_return(MergeRequest.where(id: [mr_1.id, mr_2.id]))
+      end
 
       it {
         is_expected.to eq("2 related merge requests: " \
@@ -223,22 +225,25 @@ describe Ci::PipelinePresenter do
   end
 
   describe '#all_related_merge_requests' do
-    it 'memoizes the returned relation' do
-      query_count = ActiveRecord::QueryRecorder.new do
-        3.times { presenter.send(:all_related_merge_requests).count }
-      end.count
+    subject(:all_related_merge_requests) do
+      presenter.send(:all_related_merge_requests)
+    end
 
-      expect(query_count).to eq(2)
+    it 'memoizes the returned relation' do
+      expect(pipeline).to receive(:all_merge_requests_by_recency).exactly(1).time.and_call_original
+      2.times { presenter.send(:all_related_merge_requests).count }
+    end
+
+    context 'for a branch pipeline with two open MRs' do
+      let!(:one) { create(:merge_request, source_project: project, source_branch: pipeline.ref) }
+      let!(:two) { create(:merge_request, source_project: project, source_branch: pipeline.ref, target_branch: 'wip') }
+
+      it { is_expected.to contain_exactly(one, two) }
     end
 
     context 'permissions' do
-      let!(:merge_request) do
-        create(:merge_request, project: project, source_project: project)
-      end
-
-      subject(:all_related_merge_requests) do
-        presenter.send(:all_related_merge_requests)
-      end
+      let(:merge_request) { create(:merge_request, :with_detached_merge_request_pipeline, source_project: project) }
+      let(:pipeline) { merge_request.all_pipelines.take }
 
       shared_examples 'private merge requests' do
         context 'when not logged in' do
@@ -315,61 +320,51 @@ describe Ci::PipelinePresenter do
   describe '#link_to_merge_request' do
     subject { presenter.link_to_merge_request }
 
-    let(:merge_request) { create(:merge_request, :with_detached_merge_request_pipeline) }
-    let(:pipeline) { merge_request.all_pipelines.last }
+    context 'with a related merge request' do
+      let(:merge_request) { create(:merge_request, :with_detached_merge_request_pipeline, source_project: project) }
+      let(:pipeline) { merge_request.all_pipelines.take }
 
-    it 'returns a correct link' do
-      is_expected
-        .to include(project_merge_request_path(merge_request.project, merge_request))
+      it 'returns a correct link' do
+        is_expected.to include(project_merge_request_path(project, merge_request))
+      end
     end
 
     context 'when pipeline is branch pipeline' do
-      let(:pipeline) { create(:ci_pipeline, project: project) }
-
-      it 'returns nothing' do
-        is_expected.to be_nil
-      end
+      it { is_expected.to be_nil }
     end
   end
 
   describe '#link_to_merge_request_source_branch' do
     subject { presenter.link_to_merge_request_source_branch }
 
-    let(:merge_request) { create(:merge_request, :with_detached_merge_request_pipeline) }
-    let(:pipeline) { merge_request.all_pipelines.last }
+    context 'with a related merge request' do
+      let(:merge_request) { create(:merge_request, :with_detached_merge_request_pipeline, source_project: project) }
+      let(:pipeline) { merge_request.all_pipelines.take }
 
-    it 'returns a correct link' do
-      is_expected
-        .to include(project_commits_path(merge_request.source_project,
-                                             merge_request.source_branch))
+      it 'returns a correct link' do
+        is_expected.to include(project_commits_path(project, merge_request.source_branch))
+      end
     end
 
     context 'when pipeline is branch pipeline' do
-      let(:pipeline) { create(:ci_pipeline, project: project) }
-
-      it 'returns nothing' do
-        is_expected.to be_nil
-      end
+      it { is_expected.to be_nil }
     end
   end
 
   describe '#link_to_merge_request_target_branch' do
     subject { presenter.link_to_merge_request_target_branch }
 
-    let(:merge_request) { create(:merge_request, :with_merge_request_pipeline) }
-    let(:pipeline) { merge_request.all_pipelines.last }
+    context 'with a related merge request' do
+      let(:merge_request) { create(:merge_request, :with_detached_merge_request_pipeline, source_project: project) }
+      let(:pipeline) { merge_request.all_pipelines.take }
 
-    it 'returns a correct link' do
-      is_expected
-        .to include(project_commits_path(merge_request.target_project, merge_request.target_branch))
+      it 'returns a correct link' do
+        is_expected.to include(project_commits_path(project, merge_request.target_branch))
+      end
     end
 
     context 'when pipeline is branch pipeline' do
-      let(:pipeline) { create(:ci_pipeline, project: project) }
-
-      it 'returns nothing' do
-        is_expected.to be_nil
-      end
+      it { is_expected.to be_nil }
     end
   end
 end

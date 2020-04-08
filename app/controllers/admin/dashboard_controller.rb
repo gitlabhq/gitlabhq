@@ -16,6 +16,10 @@ class Admin::DashboardController < Admin::ApplicationController
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
+  def stats
+    @users_statistics = UsersStatistics.latest
+  end
+
   def show_license_breakdown?
     false
   end

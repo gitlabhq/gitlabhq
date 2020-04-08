@@ -2,14 +2,14 @@
 
 require 'spec_helper'
 
-describe 'admin visits dashboard', :js do
+describe 'admin visits dashboard' do
   include ProjectForksHelper
 
   before do
     sign_in(create(:admin))
   end
 
-  context 'counting forks' do
+  context 'counting forks', :js do
     it 'correctly counts 2 forks of a project' do
       project = create(:project)
       project_fork = fork_project(project)
@@ -23,6 +23,28 @@ describe 'admin visits dashboard', :js do
       visit admin_root_path
 
       expect(page).to have_content('Forks 2')
+    end
+  end
+
+  describe 'Users statistic' do
+    let_it_be(:users_statistics) { create(:users_statistics) }
+
+    it 'shows correct amounts of users', :aggregate_failures do
+      expected_active_users_text = Gitlab.ee? ? 'Active users (Billable users) 71' : 'Active users 71'
+
+      sign_in(create(:admin))
+      visit admin_dashboard_stats_path
+
+      expect(page).to have_content('Users without a Group and Project 23')
+      expect(page).to have_content('Users with highest role Guest 5')
+      expect(page).to have_content('Users with highest role Reporter 9')
+      expect(page).to have_content('Users with highest role Developer 21')
+      expect(page).to have_content('Users with highest role Maintainer 6')
+      expect(page).to have_content('Users with highest role Owner 5')
+      expect(page).to have_content('Bots 2')
+      expect(page).to have_content(expected_active_users_text)
+      expect(page).to have_content('Blocked users 7')
+      expect(page).to have_content('Total users 78')
     end
   end
 end

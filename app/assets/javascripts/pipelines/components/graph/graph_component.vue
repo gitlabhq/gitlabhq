@@ -99,7 +99,17 @@ export default {
         downstreamNode.classList.contains('child-pipeline') ? 15 : 30,
       );
 
-      this.$emit('onClickTriggered', this.pipeline, pipeline);
+      /**
+       * If the expanded trigger is defined and the id is different than the
+       * pipeline we clicked, then it means we clicked on a sibling downstream link
+       * and we want to reset the pipeline store. Triggering the reset without
+       * this condition would mean not allowing downstreams of downstreams to expand
+       */
+      if (this.expandedTriggered?.id !== pipeline.id) {
+        this.$emit('onResetTriggered', this.pipeline, pipeline);
+      }
+
+      this.$emit('onClickTriggered', pipeline);
     },
     calculateMarginTop(downstreamNode, pixelDiff) {
       return `${downstreamNode.offsetTop - downstreamNode.offsetParent.offsetTop - pixelDiff}px`;
@@ -136,9 +146,7 @@ export default {
           :pipeline="expandedTriggeredBy"
           :is-linked-pipeline="true"
           :mediator="mediator"
-          @onClickTriggeredBy="
-            (parentPipeline, pipeline) => clickTriggeredByPipeline(parentPipeline, pipeline)
-          "
+          @onClickTriggeredBy="clickTriggeredByPipeline"
           @refreshPipelineGraph="requestRefreshPipelineGraph"
         />
 
@@ -148,9 +156,7 @@ export default {
           :column-title="__('Upstream')"
           :project-id="pipelineProjectId"
           graph-position="left"
-          @linkedPipelineClick="
-            linkedPipeline => $emit('onClickTriggeredBy', pipeline, linkedPipeline)
-          "
+          @linkedPipelineClick="$emit('onClickTriggeredBy', $event)"
         />
 
         <ul
@@ -197,9 +203,7 @@ export default {
           :is-linked-pipeline="true"
           :style="{ 'margin-top': downstreamMarginTop }"
           :mediator="mediator"
-          @onClickTriggered="
-            (parentPipeline, pipeline) => clickTriggeredPipeline(parentPipeline, pipeline)
-          "
+          @onClickTriggered="clickTriggeredPipeline"
           @refreshPipelineGraph="requestRefreshPipelineGraph"
         />
       </div>

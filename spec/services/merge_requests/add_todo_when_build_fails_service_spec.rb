@@ -8,10 +8,6 @@ describe MergeRequests::AddTodoWhenBuildFailsService do
   let(:sha) { '1234567890abcdef1234567890abcdef12345678' }
   let(:ref) { merge_request.source_branch }
 
-  let(:pipeline) do
-    create(:ci_pipeline, ref: ref, project: project, sha: sha)
-  end
-
   let(:service) do
     described_class.new(project, user, commit_message: 'Awesome message')
   end
@@ -19,12 +15,11 @@ describe MergeRequests::AddTodoWhenBuildFailsService do
   let(:todo_service) { spy('todo service') }
 
   let(:merge_request) do
-    create(:merge_request, merge_user: user,
-                           source_branch: 'master',
-                           target_branch: 'feature',
-                           source_project: project,
-                           target_project: project,
-                           state: 'opened')
+    create(:merge_request, :with_detached_merge_request_pipeline, :opened, merge_user: user)
+  end
+
+  let(:pipeline) do
+    merge_request.all_pipelines.take
   end
 
   before do

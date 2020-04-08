@@ -159,7 +159,6 @@ describe('graph component', () => {
 
             expect(component.$emit).toHaveBeenCalledWith(
               'onClickTriggeredBy',
-              component.pipeline,
               component.pipeline.triggered_by[0],
             );
           });
@@ -196,7 +195,6 @@ describe('graph component', () => {
 
             expect(component.$emit).toHaveBeenCalledWith(
               'onClickTriggered',
-              component.pipeline,
               component.pipeline.triggered[0],
             );
           });

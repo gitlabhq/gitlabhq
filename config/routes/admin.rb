@@ -161,5 +161,7 @@ namespace :admin do
 
   concerns :clusterable
 
+  get '/dashboard/stats', to: 'dashboard#stats'
+
   root to: 'dashboard#index'
 end

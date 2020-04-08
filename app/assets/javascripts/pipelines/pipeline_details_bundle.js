@@ -42,10 +42,10 @@ export default () => {
         },
         on: {
           refreshPipelineGraph: this.requestRefreshPipelineGraph,
-          onClickTriggeredBy: (parentPipeline, pipeline) =>
-            this.clickTriggeredByPipeline(parentPipeline, pipeline),
-          onClickTriggered: (parentPipeline, pipeline) =>
-            this.clickTriggeredPipeline(parentPipeline, pipeline),
+          onResetTriggered: (parentPipeline, pipeline) =>
+            this.resetTriggeredPipelines(parentPipeline, pipeline),
+          onClickTriggeredBy: pipeline => this.clickTriggeredByPipeline(pipeline),
+          onClickTriggered: pipeline => this.clickTriggeredPipeline(pipeline),
         },
       });
     },

@@ -3,13 +3,36 @@
 require 'spec_helper'
 
 describe API::Internal::Pages do
-  describe "GET /internal/pages" do
-    let(:pages_secret) { SecureRandom.random_bytes(Gitlab::Pages::SECRET_LENGTH) }
+  let(:auth_headers) do
+    jwt_token = JWT.encode({ 'iss' => 'gitlab-pages' }, Gitlab::Pages.secret, 'HS256')
+    { Gitlab::Pages::INTERNAL_API_REQUEST_HEADER => jwt_token }
+  end
+  let(:pages_secret) { SecureRandom.random_bytes(Gitlab::Pages::SECRET_LENGTH) }
 
-    before do
-      allow(Gitlab::Pages).to receive(:secret).and_return(pages_secret)
+  before do
+    allow(Gitlab::Pages).to receive(:secret).and_return(pages_secret)
+  end
+
+  describe "GET /internal/pages/status" do
+    def query_enabled(headers = {})
+      get api("/internal/pages/status"), headers: headers
     end
 
+    it 'responds with 401 Unauthorized' do
+      query_enabled
+
+      expect(response).to have_gitlab_http_status(:unauthorized)
+    end
+
+    it 'responds with 204 no content' do
+      query_enabled(auth_headers)
+
+      expect(response).to have_gitlab_http_status(:no_content)
+      expect(response.body).to be_empty
+    end
+  end
+
+  describe "GET /internal/pages" do
     def query_host(host, headers = {})
       get api("/internal/pages"), headers: headers, params: { host: host }
     end

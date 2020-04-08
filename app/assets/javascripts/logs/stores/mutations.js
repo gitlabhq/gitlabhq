@@ -18,6 +18,12 @@ export default {
     state.timeRange.selected = timeRange;
     state.timeRange.current = convertToFixedRange(timeRange);
   },
+  [types.SHOW_TIME_RANGE_INVALID_WARNING](state) {
+    state.timeRange.invalidWarning = true;
+  },
+  [types.HIDE_TIME_RANGE_INVALID_WARNING](state) {
+    state.timeRange.invalidWarning = false;
+  },
 
   // Environments Data
   [types.SET_PROJECT_ENVIRONMENT](state, environmentName) {
@@ -38,6 +44,10 @@ export default {
   [types.RECEIVE_ENVIRONMENTS_DATA_ERROR](state) {
     state.environments.options = [];
     state.environments.isLoading = false;
+    state.environments.fetchError = true;
+  },
+  [types.HIDE_REQUEST_ENVIRONMENTS_ERROR](state) {
+    state.environments.fetchError = false;
   },
 
   // Logs data
@@ -63,6 +73,7 @@ export default {
   [types.RECEIVE_LOGS_DATA_ERROR](state) {
     state.logs.lines = [];
     state.logs.isLoading = false;
+    state.logs.fetchError = true;
   },
 
   [types.REQUEST_LOGS_DATA_PREPEND](state) {
@@ -80,6 +91,10 @@ export default {
   },
   [types.RECEIVE_LOGS_DATA_PREPEND_ERROR](state) {
     state.logs.isLoading = false;
+    state.logs.fetchError = true;
+  },
+  [types.HIDE_REQUEST_LOGS_ERROR](state) {
+    state.logs.fetchError = false;
   },
 
   // Pods data

@@ -138,6 +138,12 @@
   }
 
   .tree-item {
+    .file-icon,
+    .folder-icon {
+      position: relative;
+      top: 2px;
+    }
+
     .link-container {
       padding: 0;
 

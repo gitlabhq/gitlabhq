@@ -176,6 +176,7 @@ module ApplicationSettingsHelper
       :authorized_keys_enabled,
       :auto_devops_enabled,
       :auto_devops_domain,
+      :container_expiration_policies_enable_historic_entries,
       :container_registry_token_expire_delay,
       :default_artifacts_expire_in,
       :default_branch_protection,

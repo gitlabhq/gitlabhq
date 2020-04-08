@@ -147,6 +147,9 @@ The **Total users** is calculated as: **Active users** + **Blocked users**.
 GitLab billing is based on the number of active users. For details of active users, see
 [Choosing the number of users](../../subscriptions/index.md#choosing-the-number-of-users).
 
+**Please note** that during the initial stage, the information won't be 100% accurate given that
+background processes are still recollecting data.
+
 ### Administering Groups
 
 You can administer all groups in the GitLab instance from the Admin Area's Groups page.

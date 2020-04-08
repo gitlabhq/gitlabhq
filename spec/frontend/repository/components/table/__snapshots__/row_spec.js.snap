@@ -7,17 +7,16 @@ exports[`Repository table row component renders table row 1`] = `
   <td
     class="tree-item-file-name cursor-default position-relative"
   >
-    <!---->
-     
     <a
       class="tree-item-link str-truncated"
       data-qa-selector="file_name_link"
       href="https://test.com"
     >
-      <i
-        aria-label="file"
-        class="fa fa-fw mr-1 fa-file-text-o"
-        role="img"
+      <file-icon-stub
+        class="mr-1 position-relative text-secondary"
+        cssclasses="position-relative file-icon"
+        filename="test"
+        size="16"
       />
       <span
         class="position-relative"
@@ -60,17 +59,16 @@ exports[`Repository table row component renders table row for path with special 
   <td
     class="tree-item-file-name cursor-default position-relative"
   >
-    <!---->
-     
     <a
       class="tree-item-link str-truncated"
       data-qa-selector="file_name_link"
       href="https://test.com"
     >
-      <i
-        aria-label="file"
-        class="fa fa-fw mr-1 fa-file-text-o"
-        role="img"
+      <file-icon-stub
+        class="mr-1 position-relative text-secondary"
+        cssclasses="position-relative file-icon"
+        filename="test"
+        size="16"
       />
       <span
         class="position-relative"

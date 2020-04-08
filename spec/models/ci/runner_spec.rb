@@ -526,14 +526,14 @@ describe Ci::Runner do
     it 'sets a new last_update value when it is called the first time' do
       last_update = runner.ensure_runner_queue_value
 
-      expect_value_in_queues.to eq(last_update)
+      expect(value_in_queues).to eq(last_update)
     end
 
     it 'does not change if it is not expired and called again' do
       last_update = runner.ensure_runner_queue_value
 
       expect(runner.ensure_runner_queue_value).to eq(last_update)
-      expect_value_in_queues.to eq(last_update)
+      expect(value_in_queues).to eq(last_update)
     end
 
     context 'updates runner queue after changing editable value' do
@@ -544,7 +544,7 @@ describe Ci::Runner do
       end
 
       it 'sets a new last_update value' do
-        expect_value_in_queues.not_to eq(last_update)
+        expect(value_in_queues).not_to eq(last_update)
       end
     end
 
@@ -556,14 +556,14 @@ describe Ci::Runner do
       end
 
       it 'has an old last_update value' do
-        expect_value_in_queues.to eq(last_update)
+        expect(value_in_queues).to eq(last_update)
       end
     end
 
-    def expect_value_in_queues
+    def value_in_queues
       Gitlab::Redis::SharedState.with do |redis|
         runner_queue_key = runner.send(:runner_queue_key)
-        expect(redis.get(runner_queue_key))
+        redis.get(runner_queue_key)
       end
     end
   end

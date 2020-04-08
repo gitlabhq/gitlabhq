@@ -67,6 +67,7 @@ describe('Logs Store Mutations', () => {
         options: [],
         isLoading: false,
         current: null,
+        fetchError: true,
       });
     });
   });
@@ -83,6 +84,7 @@ describe('Logs Store Mutations', () => {
       expect(state.logs).toEqual({
         lines: [],
         cursor: null,
+        fetchError: false,
         isLoading: true,
         isComplete: false,
       });
@@ -101,6 +103,7 @@ describe('Logs Store Mutations', () => {
         isLoading: false,
         cursor: mockCursor,
         isComplete: false,
+        fetchError: false,
       });
     });
 
@@ -115,6 +118,7 @@ describe('Logs Store Mutations', () => {
         isLoading: false,
         cursor: null,
         isComplete: true,
+        fetchError: false,
       });
     });
   });
@@ -128,6 +132,7 @@ describe('Logs Store Mutations', () => {
         isLoading: false,
         cursor: null,
         isComplete: false,
+        fetchError: true,
       });
     });
   });
@@ -152,6 +157,7 @@ describe('Logs Store Mutations', () => {
         isLoading: false,
         cursor: mockCursor,
         isComplete: false,
+        fetchError: false,
       });
     });
 
@@ -171,6 +177,7 @@ describe('Logs Store Mutations', () => {
         isLoading: false,
         cursor: mockNextCursor,
         isComplete: false,
+        fetchError: false,
       });
     });
 
@@ -185,6 +192,7 @@ describe('Logs Store Mutations', () => {
         isLoading: false,
         cursor: null,
         isComplete: true,
+        fetchError: false,
       });
     });
   });
@@ -194,6 +202,7 @@ describe('Logs Store Mutations', () => {
       mutations[types.RECEIVE_LOGS_DATA_PREPEND_ERROR](state);
 
       expect(state.logs.isLoading).toBe(false);
+      expect(state.logs.fetchError).toBe(true);
     });
   });
 

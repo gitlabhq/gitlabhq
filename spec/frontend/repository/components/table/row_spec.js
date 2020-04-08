@@ -1,7 +1,7 @@
 import { shallowMount, RouterLinkStub } from '@vue/test-utils';
-import { GlBadge, GlLink, GlLoadingIcon } from '@gitlab/ui';
+import { GlBadge, GlLink, GlIcon } from '@gitlab/ui';
 import TableRow from '~/repository/components/table/row.vue';
-import Icon from '~/vue_shared/components/icon.vue';
+import FileIcon from '~/vue_shared/components/file_icon.vue';
 
 let vm;
 let $router;
@@ -188,7 +188,8 @@ describe('Repository table row component', () => {
     vm.setData({ commit: { lockLabel: 'Locked by Root', committedDate: '2019-01-01' } });
 
     return vm.vm.$nextTick().then(() => {
-      expect(vm.find(Icon).exists()).toBe(true);
+      expect(vm.find(GlIcon).exists()).toBe(true);
+      expect(vm.find(GlIcon).props('name')).toBe('lock');
     });
   });
 
@@ -202,6 +203,6 @@ describe('Repository table row component', () => {
       loadingPath: 'test',
     });
 
-    expect(vm.find(GlLoadingIcon).exists()).toBe(true);
+    expect(vm.find(FileIcon).props('loading')).toBe(true);
   });
 });

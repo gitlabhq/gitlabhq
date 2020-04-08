@@ -269,14 +269,6 @@ RSpec/ScatteredSetup:
     - 'spec/requests/api/jobs_spec.rb'
     - 'spec/services/projects/create_service_spec.rb'
 
-# Offense count: 4
-RSpec/VoidExpect:
-  Exclude:
-    - 'spec/features/projects/services/user_activates_mattermost_slash_command_spec.rb'
-    - 'spec/models/ci/group_spec.rb'
-    - 'spec/models/ci/runner_spec.rb'
-    - 'spec/services/users/destroy_service_spec.rb'
-
 # Offense count: 10
 # Cop supports --auto-correct.
 Rails/ApplicationController:

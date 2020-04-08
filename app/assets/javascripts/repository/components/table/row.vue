@@ -1,10 +1,16 @@
 <script>
 import { escapeRegExp } from 'lodash';
-import { GlBadge, GlLink, GlSkeletonLoading, GlTooltipDirective, GlLoadingIcon } from '@gitlab/ui';
+import {
+  GlBadge,
+  GlLink,
+  GlSkeletonLoading,
+  GlTooltipDirective,
+  GlLoadingIcon,
+  GlIcon,
+} from '@gitlab/ui';
 import { escapeFileUrl } from '~/lib/utils/url_utility';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
-import Icon from '~/vue_shared/components/icon.vue';
-import { getIconName } from '../../utils/icon';
+import FileIcon from '~/vue_shared/components/file_icon.vue';
 import getRefMixin from '../../mixins/get_ref';
 import getCommit from '../../queries/getCommit.query.graphql';
 
@@ -14,8 +20,9 @@ export default {
     GlLink,
     GlSkeletonLoading,
     GlLoadingIcon,
+    GlIcon,
     TimeagoTooltip,
-    Icon,
+    FileIcon,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -95,9 +102,6 @@ export default {
         ? { path: `/-/tree/${escape(this.ref)}/${escapeFileUrl(this.path)}` }
         : null;
     },
-    iconName() {
-      return `fa-${getIconName(this.type, this.path)}`;
-    },
     isFolder() {
       return this.type === 'tree';
     },
@@ -123,12 +127,6 @@ export default {
 <template>
   <tr class="tree-item">
     <td class="tree-item-file-name cursor-default position-relative">
-      <gl-loading-icon
-        v-if="path === loadingPath"
-        size="sm"
-        inline
-        class="d-inline-block align-text-bottom fa-fw"
-      />
       <component
         :is="linkComponent"
         ref="link"
@@ -140,27 +138,27 @@ export default {
         class="tree-item-link str-truncated"
         data-qa-selector="file_name_link"
       >
-        <i
-          v-if="path !== loadingPath"
-          :aria-label="type"
-          role="img"
-          :class="iconName"
-          class="fa fa-fw mr-1"
-        ></i
-        ><span class="position-relative">{{ fullPath }}</span>
+        <file-icon
+          :file-name="fullPath"
+          :folder="isFolder"
+          :submodule="isSubmodule"
+          :loading="path === loadingPath"
+          css-classes="position-relative file-icon"
+          class="mr-1 position-relative text-secondary"
+        /><span class="position-relative">{{ fullPath }}</span>
       </component>
       <!-- eslint-disable-next-line @gitlab/vue-require-i18n-strings -->
       <gl-badge v-if="lfsOid" variant="default" class="label-lfs ml-1">LFS</gl-badge>
       <template v-if="isSubmodule">
         @ <gl-link :href="submoduleTreeUrl" class="commit-sha">{{ shortSha }}</gl-link>
       </template>
-      <icon
+      <gl-icon
         v-if="hasLockLabel"
         v-gl-tooltip
         :title="commit.lockLabel"
         name="lock"
         :size="12"
-        class="ml-2 vertical-align-middle"
+        class="ml-1"
       />
     </td>
     <td class="d-none d-sm-table-cell tree-commit cursor-default">

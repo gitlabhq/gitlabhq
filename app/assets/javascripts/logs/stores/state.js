@@ -16,6 +16,8 @@ export default () => ({
     selected: defaultTimeRange,
     // Current time range, must be fixed
     current: convertToFixedRange(defaultTimeRange),
+
+    invalidWarning: false,
   },
 
   /**
@@ -25,6 +27,7 @@ export default () => ({
     options: [],
     isLoading: false,
     current: null,
+    fetchError: false,
   },
 
   /**
@@ -39,6 +42,8 @@ export default () => ({
      */
     cursor: null,
     isComplete: false,
+
+    fetchError: false,
   },
 
   /**

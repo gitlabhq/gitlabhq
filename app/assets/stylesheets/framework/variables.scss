@@ -641,6 +641,14 @@ $issue-boards-breadcrumbs-height-xs: 63px;
 $issue-board-list-difference-xs: $header-height + $issue-boards-breadcrumbs-height-xs;
 $issue-board-list-difference-sm: $header-height + $breadcrumb-min-height;
 $issue-board-list-difference-md: $issue-board-list-difference-sm + $issue-boards-filter-height;
+/*
+ The following heights are used in environment_logs.scss and are used for calculation of the log viewer height.
+*/
+$environment-logs-breadcrumbs-height: 63px;
+$environment-logs-breadcrumbs-height-md: $breadcrumb-min-height;
+
+$environment-logs-difference-xs-up: $header-height + $environment-logs-breadcrumbs-height;
+$environment-logs-difference-md-up: $header-height + $environment-logs-breadcrumbs-height-md;
 
 /*
 * Avatar

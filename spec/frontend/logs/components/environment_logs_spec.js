@@ -47,7 +47,7 @@ describe('EnvironmentLogs', () => {
   const findLogControlButtons = () => wrapper.find({ name: 'log-control-buttons-stub' });
 
   const findInfiniteScroll = () => wrapper.find({ ref: 'infiniteScroll' });
-  const findLogTrace = () => wrapper.find('.js-log-trace');
+  const findLogTrace = () => wrapper.find({ ref: 'logTrace' });
   const findLogFooter = () => wrapper.find({ ref: 'logFooter' });
   const getInfiniteScrollAttr = attr => parseInt(findInfiniteScroll().attributes(attr), 10);
 
@@ -169,16 +169,12 @@ describe('EnvironmentLogs', () => {
       expect(updateControlBtnsMock).not.toHaveBeenCalled();
     });
 
-    it('shows an infinite scroll with height and no content', () => {
-      expect(getInfiniteScrollAttr('max-list-height')).toBeGreaterThan(0);
+    it('shows an infinite scroll with no content', () => {
       expect(getInfiniteScrollAttr('fetched-items')).toBe(0);
     });
 
-    it('shows an infinite scroll container with equal height and max-height ', () => {
-      const height = getInfiniteScrollAttr('max-list-height');
-
-      expect(height).toEqual(expect.any(Number));
-      expect(findInfiniteScroll().attributes('style')).toMatch(`height: ${height}px;`);
+    it('shows an infinite scroll container with no set max-height ', () => {
+      expect(findInfiniteScroll().attributes('max-list-height')).toBeUndefined();
     });
 
     it('shows a logs trace', () => {
@@ -270,8 +266,7 @@ describe('EnvironmentLogs', () => {
       expect(findAdvancedFilters().exists()).toBe(true);
     });
 
-    it('shows infinite scroll with height and no content', () => {
-      expect(getInfiniteScrollAttr('max-list-height')).toBeGreaterThan(0);
+    it('shows infinite scroll with content', () => {
       expect(getInfiniteScrollAttr('fetched-items')).toBe(mockTrace.length);
     });
 

@@ -34,6 +34,10 @@ describe ApplicationSetting do
     it { is_expected.to allow_value("dev.gitlab.com").for(:commit_email_hostname) }
     it { is_expected.not_to allow_value("@dev.gitlab").for(:commit_email_hostname) }
 
+    it { is_expected.to allow_value(true).for(:container_expiration_policies_enable_historic_entries) }
+    it { is_expected.to allow_value(false).for(:container_expiration_policies_enable_historic_entries) }
+    it { is_expected.not_to allow_value(nil).for(:container_expiration_policies_enable_historic_entries) }
+
     it { is_expected.to allow_value("myemail@gitlab.com").for(:lets_encrypt_notification_email) }
     it { is_expected.to allow_value(nil).for(:lets_encrypt_notification_email) }
     it { is_expected.not_to allow_value("notanemail").for(:lets_encrypt_notification_email) }

@@ -1320,10 +1320,34 @@ msgstr ""
 msgid "Admin notes"
 msgstr ""
 
+msgid "AdminArea|Active users"
+msgstr ""
+
+msgid "AdminArea|Billable users"
+msgstr ""
+
+msgid "AdminArea|Blocked users"
+msgstr ""
+
 msgid "AdminArea|Bots"
 msgstr ""
 
+msgid "AdminArea|Developer"
+msgstr ""
+
+msgid "AdminArea|Guest"
+msgstr ""
+
 msgid "AdminArea|Included Free in license"
+msgstr ""
+
+msgid "AdminArea|Maintainer"
+msgstr ""
+
+msgid "AdminArea|Owner"
+msgstr ""
+
+msgid "AdminArea|Reporter"
 msgstr ""
 
 msgid "AdminArea|Stop all jobs"
@@ -1338,13 +1362,16 @@ msgstr ""
 msgid "AdminArea|Stopping jobs failed"
 msgstr ""
 
+msgid "AdminArea|Total users"
+msgstr ""
+
 msgid "AdminArea|Users statistics"
 msgstr ""
 
-msgid "AdminArea|Users total"
+msgid "AdminArea|Users with highest role"
 msgstr ""
 
-msgid "AdminArea|Users with highest role"
+msgid "AdminArea|Users without a Group and Project"
 msgstr ""
 
 msgid "AdminArea|You’re about to stop all jobs.This will halt all current jobs that are running."
@@ -7538,6 +7565,9 @@ msgstr ""
 msgid "Enable classification control using an external service"
 msgstr ""
 
+msgid "Enable container expiration and retention policies for projects created earlier than GitLab 12.7."
+msgstr ""
+
 msgid "Enable email restrictions for sign ups"
 msgstr ""
 
@@ -7932,6 +7962,9 @@ msgid "Environments|Stop environment"
 msgstr ""
 
 msgid "Environments|Stopping"
+msgstr ""
+
+msgid "Environments|There was an error fetching the logs. Please try again."
 msgstr ""
 
 msgid "Environments|This action will relaunch the job for commit %{commit_id}, putting the environment in a previous version. Are you sure you want to continue?"
@@ -8355,6 +8388,9 @@ msgid "Excluding merge commits. Limited to 6,000 commits."
 msgstr ""
 
 msgid "Existing members and groups"
+msgstr ""
+
+msgid "Existing projects will be able to use expiration policies. Avoid enabling this if an external Container Registry is being used, as there is a performance risk if many images exist on one project."
 msgstr ""
 
 msgid "Existing shares"
@@ -10650,9 +10686,6 @@ msgstr ""
 msgid "IDE|Live Preview"
 msgstr ""
 
-msgid "IDE|Open in file view"
-msgstr ""
-
 msgid "IDE|Preview your web application using Web IDE client-side evaluation."
 msgstr ""
 
@@ -12808,9 +12841,6 @@ msgstr ""
 msgid "Metrics|There was an error fetching the environments data, please try again"
 msgstr ""
 
-msgid "Metrics|There was an error fetching the logs, please try again"
-msgstr ""
-
 msgid "Metrics|There was an error getting deployment information."
 msgstr ""
 
@@ -13904,9 +13934,6 @@ msgid "Open errors"
 msgstr ""
 
 msgid "Open in Xcode"
-msgstr ""
-
-msgid "Open in file view"
 msgstr ""
 
 msgid "Open issues"

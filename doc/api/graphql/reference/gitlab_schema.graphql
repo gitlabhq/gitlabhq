@@ -2984,6 +2984,103 @@ type EpicTreeReorderPayload {
   errors: [String!]!
 }
 
+type GeoNode {
+  """
+  The maximum concurrency of container repository sync for this secondary node
+  """
+  containerRepositoriesMaxCapacity: Int
+
+  """
+  Indicates whether this Geo node is enabled
+  """
+  enabled: Boolean
+
+  """
+  The maximum concurrency of LFS/attachment backfill for this secondary node
+  """
+  filesMaxCapacity: Int
+
+  """
+  ID of this GeoNode
+  """
+  id: ID!
+
+  """
+  The URL defined on the primary node that secondary nodes should use to contact it
+  """
+  internalUrl: String
+
+  """
+  The interval (in days) in which the repository verification is valid. Once expired, it will be reverified
+  """
+  minimumReverificationInterval: Int
+
+  """
+  The unique identifier for this Geo node
+  """
+  name: String
+
+  """
+  Indicates whether this Geo node is the primary
+  """
+  primary: Boolean
+
+  """
+  The maximum concurrency of repository backfill for this secondary node
+  """
+  reposMaxCapacity: Int
+
+  """
+  The namespaces that should be synced, if `selective_sync_type` == `namespaces`
+  """
+  selectiveSyncNamespaces(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): NamespaceConnection
+
+  """
+  The repository storages whose projects should be synced, if `selective_sync_type` == `shards`
+  """
+  selectiveSyncShards: [String!]
+
+  """
+  Indicates if syncing is limited to only specific groups, or shards
+  """
+  selectiveSyncType: String
+
+  """
+  Indicates if this secondary node will replicate blobs in Object Storage
+  """
+  syncObjectStorage: Boolean
+
+  """
+  The user-facing URL for this Geo node
+  """
+  url: String
+
+  """
+  The maximum concurrency of repository verification for this secondary node
+  """
+  verificationMaxCapacity: Int
+}
+
 type GrafanaIntegration {
   """
   Timestamp of the issue's creation
@@ -5435,6 +5532,41 @@ type Namespace {
   visibility: String
 }
 
+"""
+The connection type for Namespace.
+"""
+type NamespaceConnection {
+  """
+  A list of edges.
+  """
+  edges: [NamespaceEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [Namespace]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+An edge in a connection.
+"""
+type NamespaceEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: Namespace
+}
+
 type Note {
   """
   User who wrote this note
@@ -6915,6 +7047,16 @@ type Query {
     """
     text: String!
   ): String!
+
+  """
+  Find a Geo node
+  """
+  geoNode(
+    """
+    The name of the Geo node. Defaults to the current Geo node name.
+    """
+    name: String
+  ): GeoNode
 
   """
   Find a group

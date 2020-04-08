@@ -38,7 +38,7 @@ jest.mock('~/logs/utils');
 
 const mockDefaultRange = {
   start: '2020-01-10T18:00:00.000Z',
-  end: '2020-01-10T10:00:00.000Z',
+  end: '2020-01-10T19:00:00.000Z',
 };
 const mockFixedRange = {
   start: '2020-01-09T18:06:20.000Z',
@@ -145,9 +145,6 @@ describe('Logs Store actions', () => {
           { type: types.RECEIVE_ENVIRONMENTS_DATA_ERROR },
         ],
         [],
-        () => {
-          expect(flash).toHaveBeenCalledTimes(1);
-        },
       );
     });
   });
@@ -186,6 +183,7 @@ describe('Logs Store actions', () => {
 
       it('should commit logs and pod data when there is pod name defined', () => {
         state.pods.current = mockPodName;
+        state.timeRange.current = mockFixedRange;
 
         return testAction(fetchLogs, null, state, expectedMutations, expectedActions, () => {
           expect(latestGetParams()).toMatchObject({
@@ -214,22 +212,26 @@ describe('Logs Store actions', () => {
         state.search = mockSearch;
         state.timeRange.current = 'INVALID_TIME_RANGE';
 
+        expectedMutations.splice(1, 0, {
+          type: types.SHOW_TIME_RANGE_INVALID_WARNING,
+        });
+
         return testAction(fetchLogs, null, state, expectedMutations, expectedActions, () => {
           expect(latestGetParams()).toEqual({
             pod_name: mockPodName,
             search: mockSearch,
           });
-          // Warning about time ranges was issued
-          expect(flash).toHaveBeenCalledTimes(1);
-          expect(flash).toHaveBeenCalledWith(expect.any(String), 'warning');
         });
       });
 
       it('should commit logs and pod data when no pod name defined', () => {
-        state.timeRange.current = mockDefaultRange;
+        state.timeRange.current = defaultTimeRange;
 
         return testAction(fetchLogs, null, state, expectedMutations, expectedActions, () => {
-          expect(latestGetParams()).toEqual({});
+          expect(latestGetParams()).toEqual({
+            start_time: expect.any(String),
+            end_time: expect.any(String),
+          });
         });
       });
     });
@@ -249,6 +251,7 @@ describe('Logs Store actions', () => {
 
       it('should commit logs and pod data when there is pod name defined', () => {
         state.pods.current = mockPodName;
+        state.timeRange.current = mockFixedRange;
 
         expectedActions = [];
 
@@ -293,6 +296,10 @@ describe('Logs Store actions', () => {
         state.search = mockSearch;
         state.timeRange.current = 'INVALID_TIME_RANGE';
 
+        expectedMutations.splice(1, 0, {
+          type: types.SHOW_TIME_RANGE_INVALID_WARNING,
+        });
+
         return testAction(
           fetchMoreLogsPrepend,
           null,
@@ -304,15 +311,12 @@ describe('Logs Store actions', () => {
               pod_name: mockPodName,
               search: mockSearch,
             });
-            // Warning about time ranges was issued
-            expect(flash).toHaveBeenCalledTimes(1);
-            expect(flash).toHaveBeenCalledWith(expect.any(String), 'warning');
           },
         );
       });
 
       it('should commit logs and pod data when no pod name defined', () => {
-        state.timeRange.current = mockDefaultRange;
+        state.timeRange.current = defaultTimeRange;
 
         return testAction(
           fetchMoreLogsPrepend,
@@ -321,7 +325,10 @@ describe('Logs Store actions', () => {
           expectedMutations,
           expectedActions,
           () => {
-            expect(latestGetParams()).toEqual({});
+            expect(latestGetParams()).toEqual({
+              start_time: expect.any(String),
+              end_time: expect.any(String),
+            });
           },
         );
       });
@@ -357,6 +364,7 @@ describe('Logs Store actions', () => {
     it('fetchLogs should commit logs and pod errors', () => {
       state.environments.options = mockEnvironments;
       state.environments.current = mockEnvName;
+      state.timeRange.current = defaultTimeRange;
 
       return testAction(
         fetchLogs,
@@ -377,6 +385,7 @@ describe('Logs Store actions', () => {
     it('fetchMoreLogsPrepend should commit logs and pod errors', () => {
       state.environments.options = mockEnvironments;
       state.environments.current = mockEnvName;
+      state.timeRange.current = defaultTimeRange;
 
       return testAction(
         fetchMoreLogsPrepend,

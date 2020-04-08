@@ -174,7 +174,7 @@ describe 'Set up Mattermost slash commands', :js do
 
   describe 'stable logo url' do
     it 'shows a publicly available logo' do
-      expect(File.exist?(Rails.root.join('public/slash-command-logo.png')))
+      expect(File.exist?(Rails.root.join('public/slash-command-logo.png'))).to be_truthy
     end
   end
 end

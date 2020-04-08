@@ -1,7 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlLoadingIcon, GlIcon } from '@gitlab/ui';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
-import Icon from '~/vue_shared/components/icon.vue';
 
 describe('File Icon component', () => {
   let wrapper;
@@ -48,7 +47,7 @@ describe('File Icon component', () => {
     });
 
     expect(findIcon().exists()).toBe(false);
-    expect(wrapper.find(Icon).classes()).toContain('folder-icon');
+    expect(wrapper.find(GlIcon).classes()).toContain('folder-icon');
   });
 
   it('should render a loading icon', () => {

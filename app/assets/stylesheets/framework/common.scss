@@ -474,6 +474,9 @@ img.emoji {
 .mw-70p { max-width: 70%; }
 .mw-90p { max-width: 90%; }
 
+// By default flex items don't shrink below their minimum content size.
+// To change this, these clases set a min-width or min-height
+.min-width-0 { min-width: 0; }
 .min-height-0 { min-height: 0; }
 
 .svg-w-100 {

@@ -1,7 +1,6 @@
 <script>
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlLoadingIcon, GlIcon } from '@gitlab/ui';
 import getIconForFile from './file_icon/file_icon_map';
-import icon from '../../vue_shared/components/icon.vue';
 
 /* This is a re-usable vue component for rendering a svg sprite
     icon
@@ -17,8 +16,8 @@ import icon from '../../vue_shared/components/icon.vue';
   */
 export default {
   components: {
-    icon,
     GlLoadingIcon,
+    GlIcon,
   },
   props: {
     fileName: {
@@ -31,7 +30,11 @@ export default {
       required: false,
       default: false,
     },
-
+    submodule: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     opened: {
       type: Boolean,
       required: false,
@@ -58,7 +61,7 @@ export default {
   },
   computed: {
     spriteHref() {
-      const iconName = getIconForFile(this.fileName) || 'file';
+      const iconName = this.submodule ? 'folder-git' : getIconForFile(this.fileName) || 'file';
       return `${gon.sprite_file_icons}#${iconName}`;
     },
     folderIconName() {
@@ -73,9 +76,12 @@ export default {
 <template>
   <span>
     <svg v-if="!loading && !folder" :class="[iconSizeClass, cssClasses]">
-      <use v-bind="{ 'xlink:href': spriteHref }" />
-    </svg>
-    <icon v-if="!loading && folder" :name="folderIconName" :size="size" class="folder-icon" />
-    <gl-loading-icon v-if="loading" :inline="true" />
+      <use v-bind="{ 'xlink:href': spriteHref }" /></svg
+    ><gl-icon
+      v-if="!loading && folder"
+      :name="folderIconName"
+      :size="size"
+      class="folder-icon"
+    /><gl-loading-icon v-if="loading" :inline="true" />
   </span>
 </template>

@@ -15,7 +15,21 @@ tag) with an API call.
 
 ## Authentication tokens
 
-The following methods of authentication are supported.
+The following methods of authentication are supported:
+
+- [Trigger token](#trigger-token)
+- [CI job token](#ci-job-token)
+
+If using the `$CI_PIPELINE_SOURCE` [predefined environment variable](../variables/predefined_variables.md#variables-reference)
+to limit which jobs run in a pipeline, the value could be either `pipeline` or `trigger`,
+depending on which trigger method is used.
+
+| `$CI_PIPELINE_SOURCE` value | Trigger method |
+|-----------------------------|----------------|
+| `pipeline`                  | Using the `trigger:` keyword in the CI/CD configuration file, or using the trigger API with `$CI_JOB_TOKEN`. |
+| `trigger`                   | Using the trigger API using a generated trigger token |
+
+This also applies when using the `pipelines` or `triggers` keywords with the legacy [`only/except` basic syntax](../yaml/README.md#onlyexcept-basic).
 
 ### Trigger token
 

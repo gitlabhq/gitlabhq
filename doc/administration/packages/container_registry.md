@@ -516,6 +516,10 @@ on how to achieve that.
 
 ## Use an external container registry with GitLab as an auth endpoint
 
+NOTE: **Note:**
+In using an external container registry, some features associated with the
+container registry may be unavailable or have [inherant risks](./../../user/packages/container_registry/index.md#use-with-external-container-registries)
+
 **Omnibus GitLab**
 
 You can use GitLab as an auth endpoint with an external container registry.

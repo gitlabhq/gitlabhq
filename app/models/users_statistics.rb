@@ -1,16 +1,29 @@
 # frozen_string_literal: true
 
 class UsersStatistics < ApplicationRecord
-  STATISTICS_NAMES = [
-    :without_groups_and_projects,
-    :with_highest_role_guest,
-    :with_highest_role_reporter,
-    :with_highest_role_developer,
-    :with_highest_role_maintainer,
-    :with_highest_role_owner,
-    :bots,
-    :blocked
-  ].freeze
+  scope :order_created_at_desc, -> { order(created_at: :desc) }
+
+  class << self
+    def latest
+      order_created_at_desc.first
+    end
+  end
+
+  def active
+    [
+      without_groups_and_projects,
+      with_highest_role_guest,
+      with_highest_role_reporter,
+      with_highest_role_developer,
+      with_highest_role_maintainer,
+      with_highest_role_owner,
+      bots
+    ].sum
+  end
+
+  def total
+    active + blocked
+  end
 
   class << self
     def create_current_stats!
