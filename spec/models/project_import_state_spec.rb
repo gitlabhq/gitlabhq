@@ -14,8 +14,8 @@ describe ProjectImportState, type: :model do
   end
 
   describe 'Project import job' do
-    let(:import_state) { create(:import_state, import_url: generate(:url)) }
-    let(:project) { import_state.project }
+    let_it_be(:import_state) { create(:import_state, import_url: generate(:url)) }
+    let_it_be(:project) { import_state.project }
 
     before do
       allow_any_instance_of(Gitlab::GitalyClient::RepositoryService).to receive(:import_repository)
@@ -29,8 +29,16 @@ describe ProjectImportState, type: :model do
     it 'imports a project', :sidekiq_might_not_need_inline do
       expect(RepositoryImportWorker).to receive(:perform_async).and_call_original
 
-      expect { import_state.schedule }.to change { import_state.jid }
-      expect(import_state.status).to eq('finished')
+      expect { import_state.schedule }.to change { import_state.status }.from('none').to('finished')
+    end
+
+    it 'records job and correlation IDs', :sidekiq_might_not_need_inline do
+      allow(Labkit::Correlation::CorrelationId).to receive(:current_or_new_id).and_return('abc')
+
+      import_state.schedule
+
+      expect(import_state.jid).to be_an_instance_of(String)
+      expect(import_state.correlation_id).to eq('abc')
     end
   end
 

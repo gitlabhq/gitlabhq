@@ -49,7 +49,7 @@ Visit the page for any pipeline which has run any of the [supported reports](#su
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/6165) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.1.
 
 At the project level, the Security Dashboard displays the latest security reports
-for your project. Use it to find and fix vulnerabilities affecting the
+for your project from the last successful pipeline. Use it to find and fix vulnerabilities affecting the
 [default branch](../../project/repository/branches/index.md#default-branch).
 
 ![Project Security Dashboard](img/project_security_dashboard_v12_3.png)
@@ -74,7 +74,8 @@ Once you're on the dashboard, at the top you should see a series of filters for:
 To the right of the filters, you should see a **Hide dismissed** toggle button.
 
 NOTE: **Note:**
-The dashboard only shows projects with [security reports](#supported-reports) enabled in a group.
+The dashboard only shows projects with [security reports](#supported-reports) enabled in a group
+according to the last successful projects' pipelines.
 
 ![dashboard with action buttons and metrics](img/group_security_dashboard_v12_6.png)
 

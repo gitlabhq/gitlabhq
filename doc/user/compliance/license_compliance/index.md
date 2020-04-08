@@ -250,6 +250,28 @@ license_scanning:
       license_scanning: gl-license-scanning-report.json
 ```
 
+## Running License Compliance in an offline environment
+
+License Compliance can be executed on an offline GitLab Ultimate installation by using the following
+process:
+
+1. Host the License Compliance image
+   `registry.gitlab.com/gitlab-org/security-products/license-management:latest` in your local Docker
+   container registry.
+1. Add the following configuration to your `.gitlab-ci.yml` file. You must replace `image` to refer
+   to the License Compliance Docker image hosted on your local Docker container registry:
+
+   ```yaml
+   include:
+     - template: License-Scanning.gitlab-ci.yml
+
+   license_scanning:
+     image: registry.example.com/namespace/license-management:latest
+   ```
+
+1. Ensure the package registry is reachable from within the GitLab environment and that the package
+   manager is configured to use your preferred package registry.
+
 ## Project policies for License Compliance
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/5940) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.4.

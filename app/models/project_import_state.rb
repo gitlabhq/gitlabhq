@@ -10,6 +10,8 @@ class ProjectImportState < ApplicationRecord
 
   validates :project, presence: true
 
+  alias_attribute :correlation_id, :correlation_id_value
+
   state_machine :status, initial: :none do
     event :schedule do
       transition [:none, :finished, :failed] => :scheduled
@@ -39,7 +41,11 @@ class ProjectImportState < ApplicationRecord
     after_transition [:none, :finished, :failed] => :scheduled do |state, _|
       state.run_after_commit do
         job_id = project.add_import_job
-        update(jid: job_id) if job_id
+
+        if job_id
+          correlation_id = Labkit::Correlation::CorrelationId.current_or_new_id
+          update(jid: job_id, correlation_id_value: correlation_id)
+        end
       end
     end
 

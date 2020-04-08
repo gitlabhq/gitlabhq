@@ -7,6 +7,10 @@ module Groups
 
       before_action :authorize_admin_group!
 
+      def index
+        @integrations = []
+      end
+
       private
 
       # TODO: Make this compatible with group-level integration

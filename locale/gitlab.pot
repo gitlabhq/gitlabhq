@@ -10310,6 +10310,9 @@ msgstr ""
 msgid "GroupSAML|should be a random persistent ID, emails are discouraged"
 msgstr ""
 
+msgid "GroupSettings|Apply integration settings to all Projects"
+msgstr ""
+
 msgid "GroupSettings|Auto DevOps pipeline was updated for the group"
 msgstr ""
 
@@ -10344,6 +10347,9 @@ msgid "GroupSettings|Disable group mentions"
 msgstr ""
 
 msgid "GroupSettings|If the parent group's visibility is lower than the group current visibility, visibility levels for subgroups and projects will be changed to match the new parent group's visibility."
+msgstr ""
+
+msgid "GroupSettings|Integrations configured here will automatically apply to all projects in this group."
 msgstr ""
 
 msgid "GroupSettings|Learn more about badges."

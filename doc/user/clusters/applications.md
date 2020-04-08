@@ -295,7 +295,7 @@ from processing any requests for the given application or environment.
 1. Switching its respective toggle to the disabled position and applying changes through the **Save changes** button. This will reinstall
 Ingress with the recent changes.
 
-![Disabling WAF](../../topics/web_application_firewall/img/guide_waf_ingress_save_changes_v12_9.png)
+![Disabling WAF](../../topics/web_application_firewall/img/guide_waf_ingress_save_changes_v12_10.png)
 
 ##### Viewing Web Application Firewall traffic
 

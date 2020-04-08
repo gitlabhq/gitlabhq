@@ -99,7 +99,7 @@ class DiffsEntity < Grape::Entity
   end
 
   def commit_options(options)
-    prev_commit_id, next_commit_id = *commit_neighbors(options[:commit]&.id)
+    next_commit_id, prev_commit_id = *commit_neighbors(options[:commit]&.id)
 
     options.merge(
       type: :full,

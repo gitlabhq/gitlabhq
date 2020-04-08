@@ -120,6 +120,7 @@ RSpec.shared_context 'group navbar structure' do
         _('General'),
         _('Projects'),
         _('CI / CD'),
+        _('Integrations'),
         _('Webhooks'),
         _('Audit Events')
       ]

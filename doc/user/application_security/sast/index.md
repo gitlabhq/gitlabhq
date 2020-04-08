@@ -18,7 +18,7 @@ vulnerabilities using Static Application Security Testing (SAST).
 
 You can take advantage of SAST by doing one of the following:
 
-- [Including the CI job](#configuration) in your existing `.gitlab-ci.yml` file.
+- [Including the SAST template](#configuration) in your existing `.gitlab-ci.yml` file.
 - Implicitly using [Auto SAST](../../../topics/autodevops/stages.md#auto-sast-ultimate) provided by
   [Auto DevOps](../../../topics/autodevops/index.md).
 
@@ -193,7 +193,15 @@ are some differences in the way repository languages are detected between DIND a
 observe these differences by checking both Linguist and the common library. For instance, Linguist
 looks for `*.java` files to spin up the [spotbugs](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs)
 image, while orchestrator only looks for the existence of `pom.xml`, `build.xml`, `gradlew`,
-`grailsw`, or `mvnw`.
+`grailsw`, or `mvnw`. GitLab uses Linguist to detect new file types in the default branch. This
+means that when introducing files or dependencies for a new language or package manager, the
+corresponding scans won't be triggered in the MR and will only run on the default branch once the
+MR is merged. This will be addressed by [#211702](https://gitlab.com/gitlab-org/gitlab/-/issues/211702).
+
+NOTE: **Note:**
+With the current language detection logic, any new languages or frameworks introduced within the
+context of a merge request don't trigger a corresponding scan. These scans only occur once the code
+is committed to the default branch.
 
 #### Enabling kubesec analyzer
 
@@ -279,12 +287,10 @@ The following are Docker image-related variables.
 
 | Environment variable         | Description                                                                                                                                                                                                              |
 |------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `SAST_ANALYZER_IMAGES`       | Comma separated list of custom images. Default images are still enabled. Read more about [customizing analyzers](analyzers.md). Not available when [Docker in Docker is disabled](#disabling-docker-in-docker-for-sast). |
 | `SAST_ANALYZER_IMAGE_PREFIX` | Override the name of the Docker registry providing the default images (proxy). Read more about [customizing analyzers](analyzers.md).                                                                                    |
-| `SAST_ANALYZER_IMAGE_TAG`    | Override the Docker tag of the default images. Read more about [customizing analyzers](analyzers.md).                                                                                                                    |
+| `SAST_ANALYZER_IMAGE_TAG`    | **DEPRECATED:** Override the Docker tag of the default images. Read more about [customizing analyzers](analyzers.md).                                                                                                                    |
 | `SAST_DEFAULT_ANALYZERS`     | Override the names of default images. Read more about [customizing analyzers](analyzers.md).                                                                                                                             |
 | `SAST_DISABLE_DIND`          | Disable Docker in Docker and run analyzers [individually](#disabling-docker-in-docker-for-sast).                                                                                                                         |
-| `SAST_PULL_ANALYZER_IMAGES`  | Pull the images from the Docker registry (set to 0 to disable). Read more about [customizing analyzers](analyzers.md). Not available when [Docker in Docker is disabled](#disabling-docker-in-docker-for-sast).          |
 
 #### Vulnerability filters
 
@@ -302,12 +308,14 @@ Some analyzers make it possible to filter out vulnerabilities under a given thre
 | `SAST_GITLEAKS_COMMIT_TO` | -       | The commit a gitleaks scan ends at. |
 | `SAST_GITLEAKS_HISTORIC_SCAN` | false | Flag to enable a historic gitleaks scan. |
 
-#### Timeouts
+#### Docker-in-Docker orchestrator
 
-The following variables configure timeouts.
+The following variables configure the Docker-in-Docker orchestrator.
 
-| Environment variable | Default value | Description |
-|----------------------|---------------|-------------|
+| Environment variable                     | Default value | Description |
+|------------------------------------------|---------------|-------------|
+| `SAST_ANALYZER_IMAGES`                   |         |  Comma-separated list of custom images. Default images are still enabled. Read more about [customizing analyzers](analyzers.md). Not available when [Docker-in-Docker is disabled](#disabling-docker-in-docker-for-sast). |
+| `SAST_PULL_ANALYZER_IMAGES`              |       1 | Pull the images from the Docker registry (set to 0 to disable). Read more about [customizing analyzers](analyzers.md). Not available when [Docker-in-Docker is disabled](#disabling-docker-in-docker-for-sast).          |
 | `SAST_DOCKER_CLIENT_NEGOTIATION_TIMEOUT` |      2m | Time limit for Docker client negotiation. Timeouts are parsed using Go's [`ParseDuration`](https://golang.org/pkg/time/#ParseDuration). Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h". For example, "300ms", "1.5h" or "2h45m". |
 | `SAST_PULL_ANALYZER_IMAGE_TIMEOUT`       |      5m | Time limit when pulling the image of an analyzer. Timeouts are parsed using Go's [`ParseDuration`](https://golang.org/pkg/time/#ParseDuration). Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h". For example, "300ms", "1.5h" or "2h45m". |
 | `SAST_RUN_ANALYZER_TIMEOUT`              |     20m | Time limit when running an analyzer. Timeouts are parsed using Go's [`ParseDuration`](https://golang.org/pkg/time/#ParseDuration). Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h". For example, "300ms", "1.5h" or "2h45m".|

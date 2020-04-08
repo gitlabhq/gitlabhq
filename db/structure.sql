@@ -4932,7 +4932,8 @@ CREATE TABLE public.project_mirror_data (
     jid character varying,
     last_error text,
     last_update_at timestamp with time zone,
-    last_successful_update_at timestamp with time zone
+    last_successful_update_at timestamp with time zone,
+    correlation_id_value character varying(128)
 );
 
 CREATE SEQUENCE public.project_mirror_data_id_seq
@@ -13062,6 +13063,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200331220930
 20200401211005
 20200402123926
+20200402124802
 20200402135250
 20200402185044
 20200403184110

@@ -12,12 +12,12 @@
       %th{ role: 'columnheader', scope: 'col', 'aria-colindex': 4 }= _('Last updated')
 
   %tbody{ role: 'rowgroup' }
-    - @integrations.each do |integration|
+    - integrations.each do |integration|
       %tr{ role: 'row' }
         %td{ role: 'cell', 'aria-colindex': 1 }
           = boolean_to_icon integration.activated?
         %td{ role: 'cell', 'aria-colindex': 2 }
-          = link_to edit_integration_path(integration) do
+          = link_to scoped_edit_integration_path(integration) do
             %strong= integration.title
         %td.d-none.d-sm-block{ role: 'cell', 'aria-colindex': 3 }
           = integration.description

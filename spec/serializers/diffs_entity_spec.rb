@@ -45,26 +45,26 @@ describe DiffsEntity do
         let(:commit) { commits.third }
 
         it 'includes commit references for previous and next' do
-          expect(subject[:commit][:prev_commit_id]).to eq(commits.second.id)
-          expect(subject[:commit][:next_commit_id]).to eq(commits.fourth.id)
+          expect(subject[:commit][:next_commit_id]).to eq(commits.second.id)
+          expect(subject[:commit][:prev_commit_id]).to eq(commits.fourth.id)
         end
       end
 
       context "when the passed commit is the first in the group" do
         let(:commit) { commits.first }
 
-        it 'includes commit references for nil and next' do
-          expect(subject[:commit][:prev_commit_id]).to be_nil
-          expect(subject[:commit][:next_commit_id]).to eq(commits.second.id)
+        it 'includes commit references for nil and previous commit' do
+          expect(subject[:commit][:next_commit_id]).to be_nil
+          expect(subject[:commit][:prev_commit_id]).to eq(commits.second.id)
         end
       end
 
       context "when the passed commit is the last in the group" do
         let(:commit) { commits.last }
 
-        it 'includes commit references for previous and nil' do
-          expect(subject[:commit][:prev_commit_id]).to eq(commits[-2].id)
-          expect(subject[:commit][:next_commit_id]).to be_nil
+        it 'includes commit references for the next and nil' do
+          expect(subject[:commit][:next_commit_id]).to eq(commits[-2].id)
+          expect(subject[:commit][:prev_commit_id]).to be_nil
         end
       end
     end

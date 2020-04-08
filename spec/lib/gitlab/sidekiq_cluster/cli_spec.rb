@@ -236,7 +236,7 @@ describe Gitlab::SidekiqCluster::CLI do
         .with([]).and_return([])
 
       expect(Gitlab::SidekiqCluster).to receive(:signal_processes)
-        .with([], :KILL)
+        .with([], "-KILL")
 
       stub_const("Gitlab::SidekiqCluster::CLI::CHECK_TERMINATE_INTERVAL_SECONDS", 0.1)
       allow(cli).to receive(:terminate_timeout_seconds) { 1 }
@@ -264,7 +264,7 @@ describe Gitlab::SidekiqCluster::CLI do
           .with(worker_pids).and_return([102])
 
         expect(Gitlab::SidekiqCluster).to receive(:signal_processes)
-          .with([102], :KILL)
+          .with([102], "-KILL")
 
         cli.run(%w(foo))
 

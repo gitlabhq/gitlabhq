@@ -44,7 +44,7 @@ describe Gitlab::SidekiqCluster do
   end
 
   describe '.signal_processes' do
-    it 'sends a signal to every thread' do
+    it 'sends a signal to every given process' do
       expect(described_class).to receive(:signal).with(1, :INT)
 
       described_class.signal_processes([1], :INT)

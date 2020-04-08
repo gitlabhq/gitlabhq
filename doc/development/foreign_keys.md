@@ -87,3 +87,13 @@ create_table :user_configs, id: false do |t|
   ...
 end
 ```
+
+You will also need to add the new primary key to the model:
+
+```ruby
+class UserConfig < ActiveRecord::Base
+  self.primary_key = :user_id
+
+  belongs_to :user
+end
+```

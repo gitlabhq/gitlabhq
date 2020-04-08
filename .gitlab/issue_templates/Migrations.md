@@ -63,5 +63,5 @@ Here is an example of what this list might look like once populated: https://git
  
 ------
 
-/label ~Open-Source ~movingtogitlab
+/label ~"Open Source" ~movingtogitlab
 /cc @nuritzi 

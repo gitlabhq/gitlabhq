@@ -159,6 +159,11 @@
               = link_to group_settings_ci_cd_path(@group), title: _('CI / CD') do
                 %span
                   = _('CI / CD')
+            - if Feature.enabled?(:group_level_integrations, @group)
+              = nav_link(controller: :integrations) do
+                = link_to group_settings_integrations_path(@group), title: _('Integrations') do
+                  %span
+                    = _('Integrations')
 
             = render_if_exists "groups/ee/settings_nav"
 

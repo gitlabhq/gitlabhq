@@ -16,7 +16,7 @@ If you are using [GitLab CI/CD](../../../ci/README.md), you can analyze your dep
 vulnerabilities using Dependency Scanning.
 All dependencies are scanned, including the transitive dependencies (also known as nested dependencies).
 
-You can take advantage of Dependency Scanning by either [including the CI job](#configuration)
+You can take advantage of Dependency Scanning by either [including the Dependency Scanning template](#configuration)
 in your existing `.gitlab-ci.yml` file or by implicitly using
 [Auto Dependency Scanning](../../../topics/autodevops/stages.md#auto-dependency-scanning-ultimate)
 that is provided by [Auto DevOps](../../../topics/autodevops/index.md).
@@ -137,19 +137,26 @@ using environment variables.
 
 The following variables allow configuration of global dependency scanning settings.
 
+| Environment variable                    | Description |
+| --------------------------------------- |------------ |
+| `DS_ANALYZER_IMAGE_PREFIX`              | Override the name of the Docker registry providing the official default images (proxy). Read more about [customizing analyzers](analyzers.md). |
+| `DS_DEFAULT_ANALYZERS`                  | Override the names of the official default images. Read more about [customizing analyzers](analyzers.md). |
+| `DS_DISABLE_DIND`                       | Disable Docker-in-Docker and run analyzers [individually](#disabling-docker-in-docker-for-dependency-scanning).|
+| `ADDITIONAL_CA_CERT_BUNDLE`             | Bundle of CA certs to trust. |
+| `DS_EXCLUDED_PATHS`                     | Exclude vulnerabilities from output based on the paths. A comma-separated list of patterns. Patterns can be globs, or file or folder paths (for example, `doc,spec`). Parent directories also match patterns. |
+
+#### Configuring Docker-in-Docker orchestrator
+
+The following variables configure the Docker-in-Docker orchestrator.
+
 | Environment variable                    | Default     | Description |
 | --------------------------------------- | ----------- | ----------- |
 | `DS_ANALYZER_IMAGES`                    |             | Comma separated list of custom images. The official default images are still enabled. Read more about [customizing analyzers](analyzers.md). |
-| `DS_ANALYZER_IMAGE_PREFIX`              |             | Override the name of the Docker registry providing the official default images (proxy). Read more about [customizing analyzers](analyzers.md). |
 | `DS_ANALYZER_IMAGE_TAG`                 |             | Override the Docker tag of the official default images. Read more about [customizing analyzers](analyzers.md). |
-| `DS_DEFAULT_ANALYZERS`                  |             | Override the names of the official default images. Read more about [customizing analyzers](analyzers.md). |
-| `DS_DISABLE_DIND`                       |             | Disable Docker in Docker and run analyzers [individually](#disabling-docker-in-docker-for-dependency-scanning).|
 | `DS_PULL_ANALYZER_IMAGES`               |             | Pull the images from the Docker registry (set to `0` to disable). |
-| `DS_EXCLUDED_PATHS`                     |             | Exclude vulnerabilities from output based on the paths. A comma-separated list of patterns. Patterns can be globs, file or folder paths (for example, `doc,spec`). Parent directories will also match patterns. |
 | `DS_DOCKER_CLIENT_NEGOTIATION_TIMEOUT`  | 2m          | Time limit for Docker client negotiation. Timeouts are parsed using Go's [`ParseDuration`](https://golang.org/pkg/time/#ParseDuration). Valid time units are `ns`, `us` (or `µs`), `ms`, `s`, `m`, or `h`. For example, `300ms`, `1.5h`, or `2h45m`. |
 | `DS_PULL_ANALYZER_IMAGE_TIMEOUT`        | 5m          | Time limit when pulling an analyzer's image. Timeouts are parsed using Go's [`ParseDuration`](https://golang.org/pkg/time/#ParseDuration). Valid time units are `ns`, `us` (or `µs`), `ms`, `s`, `m`, or `h`. For example, `300ms`, `1.5h`, or `2h45m`. |
 | `DS_RUN_ANALYZER_TIMEOUT`               | 20m         | Time limit when running an analyzer. Timeouts are parsed using Go's [`ParseDuration`](https://golang.org/pkg/time/#ParseDuration). Valid time units are `ns`, `us` (or `µs`), `ms`, `s`, `m`, or `h`. For example, `300ms`, `1.5h`, or `2h45m`. |
-| `ADDITIONAL_CA_CERT_BUNDLE`   |  | Bundle of CA certs that you want to trust. |
 
 #### Configuring specific analyzers used by Dependency Scanning
 
@@ -204,7 +211,11 @@ to start relevant analyzers depending on the detected repository language(s) ins
 are some differences in the way repository languages are detected between DIND and non-DIND. You can
 observe these differences by checking both Linguist and the common library. For instance, Linguist
 looks for `*.java` files to spin up the [gemnasium-maven](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium-maven)
-image, while orchestrator only looks for the existence of `pom.xml` or `build.gradle`.
+image, while orchestrator only looks for the existence of `pom.xml` or `build.gradle`. GitLab uses
+Linguist to detect new file types in the default branch. This means that when introducing files or
+dependencies for a new language or package manager, the corresponding scans won't be triggered in
+the MR and will only run on the default branch once the MR is merged. This will be addressed by
+[#211702](https://gitlab.com/gitlab-org/gitlab/-/issues/211702).
 
 ## Interacting with the vulnerabilities
 

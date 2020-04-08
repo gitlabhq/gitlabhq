@@ -115,7 +115,7 @@ module Gitlab
       end
 
       def hard_stop_stuck_pids
-        SidekiqCluster.signal_processes(SidekiqCluster.pids_alive(@processes), :KILL)
+        SidekiqCluster.signal_processes(SidekiqCluster.pids_alive(@processes), "-KILL")
       end
 
       def wait_for_termination

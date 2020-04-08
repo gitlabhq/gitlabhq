@@ -172,7 +172,8 @@ requests.post(url, headers=headers, data=data, files=files)
   "path": "api-project",
   "path_with_namespace": "root/api-project",
   "created_at": "2018-02-13T09:05:58.023Z",
-  "import_status": "scheduled"
+  "import_status": "scheduled",
+  "correlation_id": "mezklWso3Za"
 }
 ```
 
@@ -211,6 +212,7 @@ If the status is `failed`, it will include the import error message under `impor
   "path": "gitlab-test",
   "path_with_namespace": "gitlab-org/gitlab-test",
   "created_at": "2017-08-29T04:36:44.383Z",
-  "import_status": "started"
+  "import_status": "started",
+  "correlation_id": "mezklWso3Za"
 }
 ```
