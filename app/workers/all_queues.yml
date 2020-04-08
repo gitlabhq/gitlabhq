@@ -1256,6 +1256,13 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: 
+- :name: prometheus_create_default_alerts
+  :feature_category: :incident_management
+  :has_external_dependencies: 
+  :urgency: :high
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
 - :name: propagate_service_template
   :feature_category: :source_code_management
   :has_external_dependencies: 

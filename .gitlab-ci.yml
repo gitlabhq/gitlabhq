@@ -12,7 +12,9 @@ stages:
   - post-qa
   - pages
 
-# always use `gitlab-org` runners
+# always use `gitlab-org` runners, however
+# in cases where jobs require Docker-in-Docker, the job
+# definition must be extended with `.use-docker-in-docker`
 default:
   tags:
     - gitlab-org
@@ -49,6 +51,7 @@ variables:
   BUILD_ASSETS_IMAGE: "false"
   ES_JAVA_OPTS: "-Xms256m -Xmx256m"
   ELASTIC_URL: "http://elastic:changeme@elasticsearch:9200"
+  DOCKER_VERSION: "19.03.0"
 
 include:
   - local: .gitlab/ci/cache-repo.gitlab-ci.yml

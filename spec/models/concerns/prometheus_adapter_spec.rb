@@ -18,6 +18,29 @@ describe PrometheusAdapter, :use_clean_rails_memory_store_caching do
   let(:environment_query) { Gitlab::Prometheus::Queries::EnvironmentQuery }
 
   describe '#query' do
+    describe 'validate_query' do
+      let(:environment) { build_stubbed(:environment, slug: 'env-slug') }
+      let(:validation_query) { Gitlab::Prometheus::Queries::ValidateQuery.name }
+      let(:query) { 'avg(response)' }
+      let(:validation_respone) { { data: { valid: true } } }
+
+      around do |example|
+        Timecop.freeze { example.run }
+      end
+
+      context 'with valid data' do
+        subject { service.query(:validate, query) }
+
+        before do
+          stub_reactive_cache(service, validation_respone, validation_query, query)
+        end
+
+        it 'returns query data' do
+          is_expected.to eq(query: { valid: true })
+        end
+      end
+    end
+
     describe 'environment' do
       let(:environment) { build_stubbed(:environment, slug: 'env-slug') }
 

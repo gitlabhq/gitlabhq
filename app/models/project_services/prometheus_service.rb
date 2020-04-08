@@ -24,6 +24,8 @@ class PrometheusService < MonitoringService
 
   after_commit :track_events
 
+  after_create_commit :create_default_alerts
+
   def initialize_properties
     if properties.nil?
       self.properties = {}
@@ -146,5 +148,11 @@ class PrometheusService < MonitoringService
 
   def disabled_manual_prometheus?
     manual_configuration_changed? && !manual_configuration?
+  end
+
+  def create_default_alerts
+    return unless project_id
+
+    Prometheus::CreateDefaultAlertsWorker.perform_async(project_id: project_id)
   end
 end

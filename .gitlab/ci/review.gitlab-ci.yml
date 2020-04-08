@@ -1,15 +1,9 @@
 .review-docker:
   extends:
     - .default-retry
+    - .use-docker-in-docker
   image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-qa-alpine-ruby-2.6
-  services:
-    - docker:19.03.0-dind
-  tags:
-    - gitlab-org
-    - docker
   variables:
-    DOCKER_DRIVER: overlay2
-    DOCKER_HOST: tcp://docker:2375
     GITLAB_EDITION: "ce"
 
 build-qa-image:

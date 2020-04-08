@@ -200,6 +200,8 @@
   - 1
 - - project_update_repository_storage
   - 1
+- - prometheus_create_default_alerts
+  - 1
 - - propagate_service_template
   - 1
 - - reactive_caching
