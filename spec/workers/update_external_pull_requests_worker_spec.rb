@@ -28,10 +28,10 @@ describe UpdateExternalPullRequestsWorker do
 
     context 'when ref is a branch' do
       let(:ref) { 'refs/heads/feature-1' }
-      let(:create_pipeline_service) { instance_double(ExternalPullRequests::CreatePipelineService) }
+      let(:create_pipeline_service) { instance_double(Ci::ExternalPullRequests::CreatePipelineService) }
 
       it 'runs CreatePipelineService for each pull request matching the source branch and repository' do
-        expect(ExternalPullRequests::CreatePipelineService)
+        expect(Ci::ExternalPullRequests::CreatePipelineService)
           .to receive(:new)
           .and_return(create_pipeline_service)
           .twice
@@ -45,7 +45,7 @@ describe UpdateExternalPullRequestsWorker do
       let(:ref) { 'refs/tags/v1.2.3' }
 
       it 'does nothing' do
-        expect(ExternalPullRequests::CreatePipelineService).not_to receive(:new)
+        expect(Ci::ExternalPullRequests::CreatePipelineService).not_to receive(:new)
 
         subject
       end

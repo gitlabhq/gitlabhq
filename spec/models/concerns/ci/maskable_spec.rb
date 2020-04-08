@@ -61,8 +61,12 @@ describe Ci::Maskable do
       expect(subject.match?(string)).to eq(false)
     end
 
+    it 'does not match strings using unsupported characters' do
+      expect(subject.match?('HelloWorld%#^')).to eq(false)
+    end
+
     it 'matches valid strings' do
-      expect(subject.match?('helloworld')).to eq(true)
+      expect(subject.match?('Hello+World_123/@:-.')).to eq(true)
     end
   end
 

@@ -28,6 +28,7 @@ module API
                   ]
 
     allow_access_with_scope :api
+    allow_access_with_scope :read_api, if: -> (request) { request.get? }
     prefix :api
 
     version 'v3', using: :path do

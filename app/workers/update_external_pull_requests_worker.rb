@@ -21,7 +21,7 @@ class UpdateExternalPullRequestsWorker # rubocop:disable Scalability/IdempotentW
       .by_source_branch(branch)
 
     external_pull_requests.find_each do |pull_request|
-      ExternalPullRequests::CreatePipelineService.new(project, user)
+      Ci::ExternalPullRequests::CreatePipelineService.new(project, user)
         .execute(pull_request)
     end
   end

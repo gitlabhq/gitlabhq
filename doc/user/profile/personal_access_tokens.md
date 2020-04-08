@@ -43,6 +43,7 @@ the following table.
 | ------------------ | ------------- | ----------- |
 | `read_user`        | [GitLab 8.15](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5951)   | Allows access to the read-only endpoints under `/users`. Essentially, any of the `GET` requests in the [Users API][users] are allowed. |
 | `api`              | [GitLab 8.15](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5951)   | Grants complete read/write access to the API, including all groups and projects, the container registry, and the package registry. |
+| `read_api`           | [GitLab 12.10](https://https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28944)  | Grants read access to the API, including all groups and projects, the container registry, and the package registry. |
 | `read_registry`    | [GitLab 9.3](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/11845)   | Allows to read (pull) [container registry] images if a project is private and authorization is required. |
 | `sudo`             | [GitLab 10.2](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/14838)  | Allows performing API actions as any user in the system (if the authenticated user is an admin). |
 | `read_repository`  | [GitLab 10.7](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17894)  | Allows read-only access (pull) to the repository through `git clone`. |

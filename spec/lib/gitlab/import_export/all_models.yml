@@ -477,6 +477,7 @@ project:
 - export_jobs
 - daily_report_results
 - jira_imports
+- compliance_framework_setting
 award_emoji:
 - awardable
 - user

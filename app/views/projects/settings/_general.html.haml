@@ -20,6 +20,8 @@
         = f.text_field :tag_list, value: @project.tag_list.join(', '), maxlength: 2000, class: "form-control"
         %p.form-text.text-muted= _('Separate topics with commas.')
 
+    = render_if_exists 'compliance_management/compliance_framework/project_settings', f: f
+
     .row
       .form-group.col-md-9
         = f.label :description, _('Project description (optional)'), class: 'label-bold'

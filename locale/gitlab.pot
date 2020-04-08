@@ -2090,6 +2090,9 @@ msgstr ""
 msgid "An error occurred. Please try again."
 msgstr ""
 
+msgid "An error ocurred while loading your content. Please try again."
+msgstr ""
+
 msgid "An instance-level serverless domain already exists."
 msgstr ""
 
@@ -3830,6 +3833,9 @@ msgstr ""
 msgid "Choose which status most accurately reflects the current state of this issue:"
 msgstr ""
 
+msgid "Choose your framework"
+msgstr ""
+
 msgid "CiStatusLabel|canceled"
 msgstr ""
 
@@ -5234,6 +5240,24 @@ msgid "Compliance"
 msgstr ""
 
 msgid "Compliance Dashboard"
+msgstr ""
+
+msgid "Compliance framework (optional)"
+msgstr ""
+
+msgid "ComplianceFramework|GDPR - General Data Protection Regulation"
+msgstr ""
+
+msgid "ComplianceFramework|HIPAA - Health Insurance Portability and Accountability Act"
+msgstr ""
+
+msgid "ComplianceFramework|PCI-DSS - Payment Card Industry-Data Security Standard"
+msgstr ""
+
+msgid "ComplianceFramework|SOC 2 - Service Organization Control 2"
+msgstr ""
+
+msgid "ComplianceFramework|SOX - Sarbanes-Oxley"
 msgstr ""
 
 msgid "Confidence: %{confidence}"
@@ -17965,6 +17989,9 @@ msgid "Select projects"
 msgstr ""
 
 msgid "Select projects you want to import."
+msgstr ""
+
+msgid "Select required regulatory standard"
 msgstr ""
 
 msgid "Select shards to replicate"

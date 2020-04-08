@@ -129,6 +129,7 @@ module API
           :avatar,
           :suggestion_commit_message,
           :repository_storage,
+          :compliance_framework_setting,
 
           # TODO: remove in API v5, replaced by *_access_level
           :issues_enabled,

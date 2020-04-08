@@ -1,5 +1,5 @@
 <script>
-import { mapState, mapActions } from 'vuex';
+import { mapState, mapGetters, mapActions } from 'vuex';
 import { GlSkeletonLoader } from '@gitlab/ui';
 
 import EditArea from './edit_area.vue';
@@ -10,7 +10,8 @@ export default {
     GlSkeletonLoader,
   },
   computed: {
-    ...mapState(['content', 'isContentLoaded', 'isLoadingContent']),
+    ...mapState(['content', 'isLoadingContent']),
+    ...mapGetters(['isContentLoaded']),
   },
   mounted() {
     this.loadContent();

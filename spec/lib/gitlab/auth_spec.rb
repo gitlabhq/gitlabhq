@@ -8,7 +8,7 @@ describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
 
   describe 'constants' do
     it 'API_SCOPES contains all scopes for API access' do
-      expect(subject::API_SCOPES).to eq %i[api read_user]
+      expect(subject::API_SCOPES).to eq %i[api read_user read_api]
     end
 
     it 'ADMIN_SCOPES contains all scopes for ADMIN access' do
@@ -30,7 +30,7 @@ describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
     it 'optional_scopes contains all non-default scopes' do
       stub_container_registry_config(enabled: true)
 
-      expect(subject.optional_scopes).to eq %i[read_user read_repository write_repository read_registry sudo openid profile email]
+      expect(subject.optional_scopes).to eq %i[read_user read_api read_repository write_repository read_registry sudo openid profile email]
     end
   end
 
@@ -38,21 +38,21 @@ describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
     it 'contains all non-default scopes' do
       stub_container_registry_config(enabled: true)
 
-      expect(subject.all_available_scopes).to eq %i[api read_user read_repository write_repository read_registry sudo]
+      expect(subject.all_available_scopes).to eq %i[api read_user read_api read_repository write_repository read_registry sudo]
     end
 
     it 'contains for non-admin user all non-default scopes without ADMIN access' do
       stub_container_registry_config(enabled: true)
       user = create(:user, admin: false)
 
-      expect(subject.available_scopes_for(user)).to eq %i[api read_user read_repository write_repository read_registry]
+      expect(subject.available_scopes_for(user)).to eq %i[api read_user read_api read_repository write_repository read_registry]
     end
 
     it 'contains for admin user all non-default scopes with ADMIN access' do
       stub_container_registry_config(enabled: true)
       user = create(:user, admin: true)
 
-      expect(subject.available_scopes_for(user)).to eq %i[api read_user read_repository write_repository read_registry sudo]
+      expect(subject.available_scopes_for(user)).to eq %i[api read_user read_api read_repository write_repository read_registry sudo]
     end
 
     context 'registry_scopes' do

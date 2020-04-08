@@ -159,6 +159,7 @@ excluded_attributes:
     - :max_artifacts_size
     - :marked_for_deletion_at
     - :marked_for_deletion_by_user_id
+    - :compliance_framework_setting
   namespaces:
     - :runners_token
     - :runners_token_encrypted

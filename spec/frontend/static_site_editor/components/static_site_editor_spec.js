@@ -17,11 +17,15 @@ describe('StaticSiteEditor', () => {
   let store;
   let loadContentActionMock;
 
-  const buildStore = (initialState = {}) => {
+  const buildStore = ({ initialState, getters } = {}) => {
     loadContentActionMock = jest.fn();
 
     store = new Vuex.Store({
       state: createState(initialState),
+      getters: {
+        isContentLoaded: () => false,
+        ...getters,
+      },
       actions: {
         loadContent: loadContentActionMock,
       },
@@ -56,7 +60,7 @@ describe('StaticSiteEditor', () => {
     const content = 'edit area content';
 
     beforeEach(() => {
-      buildStore({ content, isContentLoaded: true });
+      buildStore({ initialState: { content }, getters: { isContentLoaded: () => true } });
       buildWrapper();
     });
 
@@ -70,7 +74,7 @@ describe('StaticSiteEditor', () => {
   });
 
   it('displays skeleton loader while loading content', () => {
-    buildStore({ isLoadingContent: true });
+    buildStore({ initialState: { isLoadingContent: true } });
     buildWrapper();
 
     expect(wrapper.find(GlSkeletonLoader).exists()).toBe(true);

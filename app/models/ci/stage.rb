@@ -109,7 +109,7 @@ module Ci
     end
 
     def groups
-      @groups ||= Ci::Group.fabricate(self)
+      @groups ||= Ci::Group.fabricate(project, self)
     end
 
     def has_warnings?
