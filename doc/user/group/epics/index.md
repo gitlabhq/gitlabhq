@@ -28,7 +28,7 @@ graph TD
 ## Use cases
 
 - Suppose your team is working on a large feature that involves multiple discussions throughout different issues created in distinct projects within a [Group](../index.md). With Epics, you can track all the related activities that together contribute to that single feature.
-- Track when the work for the group of issues is targeted to begin, and when it is targeted to end.
+- Track when the work for the group of issues is targeted to begin, and when it's targeted to end.
 - Discuss and collaborate on feature ideas and scope at a high level.
 
 ![epics list view](img/epics_list_view_v12.5.png)
@@ -62,7 +62,7 @@ An epic's page contains the following tabs:
 
 ## Adding an issue to an epic
 
-You can add an existing issue to an epic, or, from an epic's page, create a new issue that is automatically added to the epic.
+You can add an existing issue to an epic, or, from an epic's page, create a new issue that's automatically added to the epic.
 
 ### Adding an existing issue to an epic
 
@@ -70,7 +70,7 @@ Existing issues that belong to a project in an epic's group, or any of the epic'
 subgroups, are eligible to be added to the epic. Newly added issues appear at the top of the list of issues in the **Epics and Issues** tab.
 
 An epic contains a list of issues and an issue can be associated with at most
-one epic. When you add an issue that is already linked to an epic,
+one epic. When you add an issue that's already linked to an epic,
 the issue is automatically unlinked from its current parent.
 
 To add an issue to an epic:
@@ -101,6 +101,19 @@ To remove an issue from an epic:
 1. Click on the <kbd>x</kbd> button in the epic's issue list.
 1. Click **Remove** in the **Remove issue** warning message.
 
+## Issue health status in Epic tree **(ULTIMATE)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/199184) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.10.
+
+You can report on and quickly respond to the health of individual issues and epics by setting a
+red, amber, or green [health status on an issue](../../project/issues/index.md#health-status-ultimate),
+which will appear on your Epic tree.
+
+### Disable Issue health status in Epic tree
+
+This feature comes with a feature flag enabled by default. For steps to disable it, see
+[Disable issue health status](../../project/issues/index.md#disable-issue-health-status).
+
 ## Multi-level child epics **(ULTIMATE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/8333) in GitLab Ultimate 11.7.
@@ -108,7 +121,7 @@ To remove an issue from an epic:
 Any epic that belongs to a group, or subgroup of the parent epic's group, is
 eligible to be added. New child epics appear at the top of the list of epics in the **Epics and Issues** tab.
 
-When you add an epic that is already linked to a parent epic, the link to its current parent is removed.
+When you add an epic that's already linked to a parent epic, the link to its current parent is removed.
 
 An epic can have multiple child epics with
 the maximum depth being 5.

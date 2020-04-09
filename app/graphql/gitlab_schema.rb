@@ -144,4 +144,15 @@ class GitlabSchema < GraphQL::Schema
   end
 end
 
-GitlabSchema.prepend_if_ee('EE::GitlabSchema')
+GitlabSchema.prepend_if_ee('EE::GitlabSchema') # rubocop: disable Cop/InjectEnterpriseEditionModule
+
+# Force the schema to load as a workaround for intermittent errors we
+# see due to a lack of thread safety.
+#
+# TODO: We can remove this workaround when we convert the schema to use
+# the new query interpreter runtime.
+#
+# See:
+# - https://gitlab.com/gitlab-org/gitlab/-/issues/211478
+# - https://gitlab.com/gitlab-org/gitlab/-/issues/210556
+GitlabSchema.graphql_definition

@@ -55,7 +55,7 @@ export const shouldHideNewMrOption = (_state, getters, _rootState, rootGetters) 
   rootGetters.canPushToBranch;
 
 export const shouldDisableNewMrOption = (state, getters, rootState, rootGetters) =>
-  !rootGetters.canCreateMergeRequests;
+  !rootGetters.canCreateMergeRequests || rootGetters.emptyRepo;
 
 export const shouldCreateMR = (state, getters) =>
   state.shouldCreateMR && !getters.shouldDisableNewMrOption;

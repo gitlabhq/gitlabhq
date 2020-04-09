@@ -115,3 +115,12 @@ export const NOT_IN_DB_PREFIX = 'NO_DB';
  * Used as a value for the 'states' query filter
  */
 export const ENVIRONMENT_AVAILABLE_STATE = 'available';
+
+/**
+ * Time series charts have different types of
+ * tooltip based on the hovered data point.
+ */
+export const tooltipTypes = {
+  deployments: 'deployments',
+  annotations: 'annotations',
+};

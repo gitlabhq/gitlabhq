@@ -120,10 +120,12 @@ module QA
 
           def add_to_modified_content(content)
             finished_loading?
+            modified_text_area.click
             modified_text_area.set content
           end
 
           def modified_text_area
+            wait_for_animated_element(:editor_container)
             within_element(:editor_container) do
               find('.modified textarea.inputarea')
             end

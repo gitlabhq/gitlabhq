@@ -10,6 +10,7 @@ export const FILE_VIEW_MODE_PREVIEW = 'preview';
 
 export const PERMISSION_CREATE_MR = 'createMergeRequestIn';
 export const PERMISSION_READ_MR = 'readMergeRequest';
+export const PERMISSION_PUSH_CODE = 'pushCode';
 
 export const viewerTypes = {
   mr: 'mrdiff',

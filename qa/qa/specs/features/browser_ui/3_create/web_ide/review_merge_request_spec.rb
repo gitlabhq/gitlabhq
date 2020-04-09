@@ -4,12 +4,13 @@ module QA
   context 'Create', quarantine: { type: :new } do
     describe 'Review a merge request in Web IDE' do
       let(:new_file) { 'awesome_new_file.txt' }
+      let(:original_text) { 'Text' }
       let(:review_text) { 'Reviewed ' }
 
       let(:merge_request) do
         Resource::MergeRequest.fabricate_via_api! do |mr|
           mr.file_name = new_file
-          mr.file_content = 'Text'
+          mr.file_content = original_text
         end
       end
 

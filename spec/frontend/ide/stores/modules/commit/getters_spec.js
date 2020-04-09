@@ -292,4 +292,15 @@ describe('IDE commit module getters', () => {
       expect(getters.shouldHideNewMrOption(state, localGetters, null, rootGetters)).toBeFalsy();
     });
   });
+
+  describe('shouldDisableNewMrOption', () => {
+    it.each`
+      rootGetters                                            | expectedValue
+      ${{ canCreateMergeRequests: false, emptyRepo: false }} | ${true}
+      ${{ canCreateMergeRequests: true, emptyRepo: true }}   | ${true}
+      ${{ canCreateMergeRequests: true, emptyRepo: false }}  | ${false}
+    `('with $rootGetters, it is $expectedValue', ({ rootGetters, expectedValue }) => {
+      expect(getters.shouldDisableNewMrOption(state, getters, {}, rootGetters)).toBe(expectedValue);
+    });
+  });
 });

@@ -159,7 +159,13 @@ module QA
 
           fill_element :login_field, user.username
           fill_element :password_field, user.password
-          click_element :sign_in_button, !skip_page_validation && Page::Main::Menu
+          click_element :sign_in_button
+
+          Page::Main::Terms.perform do |terms|
+            terms.accept_terms if terms.visible?
+          end
+
+          Page::Main::Menu.validate_elements_present! unless skip_page_validation
         end
 
         def set_initial_password_if_present

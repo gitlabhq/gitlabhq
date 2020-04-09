@@ -10,9 +10,10 @@ module QA
 
         sign_in(as: as, address: address)
 
-        yield
+        result = yield
 
         Page::Main::Menu.perform(&:sign_out)
+        result
       end
 
       def while_signed_in_as_admin(address: :gitlab)

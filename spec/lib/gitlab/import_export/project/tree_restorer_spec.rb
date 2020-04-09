@@ -956,6 +956,37 @@ describe Gitlab::ImportExport::Project::TreeRestorer do
           end
         end
       end
+
+      context 'with project members' do
+        let(:user) { create(:user, :admin) }
+        let(:user2) { create(:user) }
+        let(:project_members) do
+          [
+            {
+              "id" => 2,
+              "access_level" => 40,
+              "source_type" => "Project",
+              "notification_level" => 3,
+              "user" => {
+                "id" => user2.id,
+                "email" => user2.email,
+                "username" => 'test'
+              }
+            }
+          ]
+        end
+        let(:tree_hash) { { 'project_members' => project_members } }
+
+        before do
+          project.add_maintainer(user)
+        end
+
+        it 'restores project members' do
+          restorer.restore
+
+          expect(project.members.map(&:user)).to contain_exactly(user, user2)
+        end
+      end
     end
 
     context 'JSON with invalid records' do

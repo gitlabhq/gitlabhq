@@ -107,4 +107,76 @@ describe QA::Page::Base do
       end
     end
   end
+
+  context 'elements' do
+    subject do
+      Class.new(described_class) do
+        view 'path/to/some/view.html.haml' do
+          element :something, required: true
+          element :something_else
+        end
+      end
+    end
+
+    describe '#elements' do
+      it 'returns all elements' do
+        expect(subject.elements.size).to eq(2)
+      end
+    end
+
+    describe '#required_elements' do
+      it 'returns only required elements' do
+        expect(subject.required_elements.size).to eq(1)
+      end
+    end
+
+    describe '#visible?', 'Page is currently visible' do
+      let(:page) { subject.new }
+
+      context 'with elements' do
+        context 'on the page' do
+          before do
+            # required elements not there, meaning not on page
+            allow(page).to receive(:has_no_element?).and_return(false)
+          end
+
+          it 'is visible' do
+            expect(page).to be_visible
+          end
+        end
+
+        context 'not on the page' do
+          before do
+            # required elements are not on the page
+            allow(page).to receive(:has_no_element?).and_return(true)
+          end
+
+          it 'is not visible' do
+            expect(page).not_to be_visible
+          end
+        end
+
+        it 'does not raise error if page has elements' do
+          expect { page.visible? }.not_to raise_error
+        end
+      end
+
+      context 'no elements' do
+        subject do
+          Class.new(described_class) do
+            view 'path/to/some/view.html.haml' do
+              element :something
+              element :something_else
+            end
+          end
+        end
+
+        let(:page) { subject.new }
+
+        it 'raises error if page has no required elements' do
+          expect { page.visible? }.to raise_error(described_class::NoRequiredElementsError)
+        end
+      end
+    end
+  end
 end

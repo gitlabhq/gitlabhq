@@ -30,6 +30,12 @@ describe BasePolicy, :do_not_mock_admin_mode do
 
     it { is_expected.to be_allowed(:read_cross_project) }
 
+    context 'for anonymous' do
+      let(:current_user) { nil }
+
+      it { is_expected.to be_allowed(:read_cross_project) }
+    end
+
     context 'when an external authorization service is enabled' do
       before do
         enable_external_authorization_service_check
@@ -51,6 +57,12 @@ describe BasePolicy, :do_not_mock_admin_mode do
         it 'prevented when not in admin mode' do
           is_expected.not_to be_allowed(:read_cross_project)
         end
+      end
+
+      context 'for anonymous' do
+        let(:current_user) { nil }
+
+        it { is_expected.not_to be_allowed(:read_cross_project) }
       end
     end
   end

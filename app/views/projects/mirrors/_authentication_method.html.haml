@@ -11,8 +11,6 @@
     = f.hidden_field :auth_method, value: "password", class: "js-hidden-mirror-auth-type"
 
 .form-group
-  .collapse.js-well-changing-auth
-    .changing-auth-method
   .well-password-auth.collapse.js-well-password-auth
     = f.label :password, _("Password"), class: "label-bold"
     = f.password_field :password, value: mirror.password, class: 'form-control qa-password', autocomplete: 'new-password'

@@ -25,6 +25,11 @@ module Gitlab
           @project_members = relation_reader.consume_relation(importable_path, 'project_members')
             .map(&:first)
 
+          # ensure users are mapped before tree restoration
+          # so that even if there is no content to associate
+          # users with, they are still added to the project
+          members_mapper.map
+
           if relation_tree_restorer.restore
             import_failure_service.with_retry(action: 'set_latest_merge_request_diff_ids!') do
               @project.merge_requests.set_latest_merge_request_diff_ids!

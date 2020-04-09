@@ -4,6 +4,7 @@ import {
   packageJsonPath,
   PERMISSION_READ_MR,
   PERMISSION_CREATE_MR,
+  PERMISSION_PUSH_CODE,
 } from '../constants';
 
 export const activeFile = state => state.openFiles.find(file => file.active) || null;
@@ -120,8 +121,9 @@ export const packageJson = state => state.entries[packageJsonPath];
 export const isOnDefaultBranch = (_state, getters) =>
   getters.currentProject && getters.currentProject.default_branch === getters.branchName;
 
-export const canPushToBranch = (_state, getters) =>
-  getters.currentBranch && getters.currentBranch.can_push;
+export const canPushToBranch = (_state, getters) => {
+  return Boolean(getters.currentBranch ? getters.currentBranch.can_push : getters.canPushCode);
+};
 
 export const isFileDeletedAndReadded = (state, getters) => path => {
   const stagedFile = getters.getStagedFile(path);
@@ -156,6 +158,9 @@ export const canReadMergeRequests = (state, getters) =>
 
 export const canCreateMergeRequests = (state, getters) =>
   Boolean(getters.findProjectPermissions(state.currentProjectId)[PERMISSION_CREATE_MR]);
+
+export const canPushCode = (state, getters) =>
+  Boolean(getters.findProjectPermissions(state.currentProjectId)[PERMISSION_PUSH_CODE]);
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};

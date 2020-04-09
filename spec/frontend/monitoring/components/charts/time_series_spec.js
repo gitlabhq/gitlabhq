@@ -169,6 +169,7 @@ describe('Time series component', () => {
                   componentSubType: type,
                   value: [mockDate, 5.55555],
                   dataIndex: 0,
+                  ...(type === 'scatter' && { name: 'deployments' }),
                 },
               ],
               value: mockDate,
@@ -223,6 +224,10 @@ describe('Time series component', () => {
           describe('when series is of scatter type, for deployments', () => {
             beforeEach(() => {
               timeSeriesChart.vm.formatTooltipText(generateSeriesData('scatter'));
+            });
+
+            it('set tooltip type to deployments', () => {
+              expect(timeSeriesChart.vm.tooltip.type).toBe('deployments');
             });
 
             it('formats tooltip title', () => {
@@ -521,7 +526,11 @@ describe('Time series component', () => {
             const commitUrl = `${mockProjectDir}/-/commit/${mockSha}`;
 
             beforeEach(done => {
-              timeSeriesAreaChart.vm.tooltip.isDeployment = true;
+              timeSeriesAreaChart.setData({
+                tooltip: {
+                  type: 'deployments',
+                },
+              });
               timeSeriesAreaChart.vm.$nextTick(done);
             });
 

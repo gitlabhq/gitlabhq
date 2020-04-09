@@ -210,6 +210,30 @@ export const deploymentData = [
   },
 ];
 
+export const annotationsData = [
+  {
+    id: 'gid://gitlab/Metrics::Dashboard::Annotation/1',
+    from: '2020-04-01T12:51:58.373Z',
+    to: null,
+    panelId: null,
+    description: 'This is a test annotation',
+  },
+  {
+    id: 'gid://gitlab/Metrics::Dashboard::Annotation/2',
+    description: 'test annotation 2',
+    from: '2020-04-02T12:51:58.373Z',
+    to: null,
+    panelId: null,
+  },
+  {
+    id: 'gid://gitlab/Metrics::Dashboard::Annotation/3',
+    description: 'test annotation 3',
+    from: '2020-04-04T12:51:58.373Z',
+    to: null,
+    panelId: null,
+  },
+];
+
 export const metricsNewGroupsAPIResponse = [
   {
     group: 'System metrics (Kubernetes)',

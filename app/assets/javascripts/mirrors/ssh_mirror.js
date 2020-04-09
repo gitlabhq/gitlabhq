@@ -22,7 +22,6 @@ export default class SSHMirror {
     this.$dropdownAuthType = this.$form.find('.js-mirror-auth-type');
     this.$hiddenAuthType = this.$form.find('.js-hidden-mirror-auth-type');
 
-    this.$wellAuthTypeChanging = this.$form.find('.js-well-changing-auth');
     this.$wellPasswordAuth = this.$form.find('.js-well-password-auth');
   }
 

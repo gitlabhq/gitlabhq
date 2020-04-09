@@ -17,7 +17,11 @@ describe('IDE commit sidebar actions', () => {
   let store;
   let vm;
 
-  const createComponent = ({ hasMR = false, currentBranchId = 'master' } = {}) => {
+  const createComponent = ({
+    hasMR = false,
+    currentBranchId = 'master',
+    emptyRepo = false,
+  } = {}) => {
     const Component = Vue.extend(commitActions);
 
     vm = createComponentWithStore(Component, store);
@@ -27,6 +31,7 @@ describe('IDE commit sidebar actions', () => {
 
     const proj = { ...projectData };
     proj.branches[currentBranchId] = branches.find(branch => branch.name === currentBranchId);
+    proj.empty_repo = emptyRepo;
 
     Vue.set(vm.$store.state.projects, 'abcproject', proj);
 
@@ -52,24 +57,27 @@ describe('IDE commit sidebar actions', () => {
     vm = null;
   });
 
+  const findText = () => vm.$el.textContent;
+  const findRadios = () => Array.from(vm.$el.querySelectorAll('input[type="radio"]'));
+
   it('renders 2 groups', () => {
     createComponent();
 
-    expect(vm.$el.querySelectorAll('input[type="radio"]').length).toBe(2);
+    expect(findRadios().length).toBe(2);
   });
 
   it('renders current branch text', () => {
     createComponent();
 
-    expect(vm.$el.textContent).toContain('Commit to master branch');
+    expect(findText()).toContain('Commit to master branch');
   });
 
   it('hides merge request option when project merge requests are disabled', done => {
-    createComponent({ mergeRequestsEnabled: false });
+    createComponent({ hasMR: false });
 
     vm.$nextTick(() => {
-      expect(vm.$el.querySelectorAll('input[type="radio"]').length).toBe(2);
-      expect(vm.$el.textContent).not.toContain('Create a new branch and merge request');
+      expect(findRadios().length).toBe(2);
+      expect(findText()).not.toContain('Create a new branch and merge request');
 
       done();
     });
@@ -119,6 +127,7 @@ describe('IDE commit sidebar actions', () => {
     it.each`
       input                                                            | expectedOption
       ${{ currentBranchId: BRANCH_DEFAULT }}                           | ${consts.COMMIT_TO_NEW_BRANCH}
+      ${{ currentBranchId: BRANCH_DEFAULT, emptyRepo: true }}          | ${consts.COMMIT_TO_CURRENT_BRANCH}
       ${{ currentBranchId: BRANCH_PROTECTED, hasMR: true }}            | ${consts.COMMIT_TO_CURRENT_BRANCH}
       ${{ currentBranchId: BRANCH_PROTECTED, hasMR: false }}           | ${consts.COMMIT_TO_CURRENT_BRANCH}
       ${{ currentBranchId: BRANCH_PROTECTED_NO_ACCESS, hasMR: true }}  | ${consts.COMMIT_TO_NEW_BRANCH}
@@ -137,5 +146,16 @@ describe('IDE commit sidebar actions', () => {
         ]);
       },
     );
+  });
+
+  describe('when empty project', () => {
+    beforeEach(() => {
+      createComponent({ emptyRepo: true });
+    });
+
+    it('only renders commit to current branch', () => {
+      expect(findRadios().length).toBe(1);
+      expect(findText()).toContain('Commit to master branch');
+    });
   });
 });

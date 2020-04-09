@@ -168,6 +168,7 @@ module QA
       autoload :Menu, 'qa/page/main/menu'
       autoload :OAuth, 'qa/page/main/oauth'
       autoload :SignUp, 'qa/page/main/sign_up'
+      autoload :Terms, 'qa/page/main/terms'
     end
 
     module Settings

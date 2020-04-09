@@ -14,6 +14,20 @@ module QA
 
       ElementNotFound = Class.new(RuntimeError)
 
+      class NoRequiredElementsError < RuntimeError
+        def initialize(page_class)
+          @page_class = page_class
+          super
+        end
+
+        def to_s
+          <<~MSG.strip % { page: @page_class }
+            %{page} has no required elements.
+            See https://docs.gitlab.com/ee/development/testing_guide/end_to_end/dynamic_element_validation.html#required-elements
+          MSG
+        end
+      end
+
       def_delegators :evaluator, :view, :views
 
       def initialize
@@ -250,6 +264,8 @@ module QA
       end
 
       def element_selector_css(name, *attributes)
+        return name.selector_css if name.is_a? Page::Element
+
         Page::Element.new(name, *attributes).selector_css
       end
 
@@ -296,8 +312,22 @@ module QA
         views.flat_map(&:elements)
       end
 
+      def self.required_elements
+        elements.select(&:required?)
+      end
+
       def send_keys_to_element(name, keys)
         find_element(name).send_keys(keys)
+      end
+
+      def visible?
+        raise NoRequiredElementsError.new(self.class) if self.class.required_elements.empty?
+
+        self.class.required_elements.each do |required_element|
+          return false if has_no_element? required_element
+        end
+
+        true
       end
 
       class DSL

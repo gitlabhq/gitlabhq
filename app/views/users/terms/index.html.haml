@@ -1,12 +1,12 @@
 - redirect_params = { redirect: @redirect } if @redirect
 
-.card-body.rendered-terms
+.card-body.rendered-terms{ data: { qa_selector: 'terms_content' } }
   = markdown_field(@term, :terms)
 - if current_user
   .card-footer.footer-block.clearfix
     - if can?(current_user, :accept_terms, @term)
       .float-right
-        = button_to accept_term_path(@term, redirect_params), class: 'btn btn-success prepend-left-8' do
+        = button_to accept_term_path(@term, redirect_params), class: 'btn btn-success prepend-left-8', data: { qa_selector: 'accept_terms_button' } do
           = _('Accept terms')
     - else
       .pull-right

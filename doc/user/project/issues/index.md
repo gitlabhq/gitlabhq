@@ -52,7 +52,7 @@ must be set.
             <li>State</li>
             <ul>
                 <li>State (open or closed)</li>
-                <li>Status (On track, Needs attention, or At risk)</li>
+                <li>Health status (on track, needs attention, or at risk)</li>
                 <li>Confidentiality</li>
                 <li>Tasks (completed vs. outstanding)</li>
             </ul>
@@ -166,11 +166,12 @@ requires [GraphQL](../../../api/graphql/index.md) to be enabled.
 
 ---
 
-### Status **(ULTIMATE)**
+### Health status **(ULTIMATE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/36427) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.10.
 
-To help you track the status of your issues, you can assign a status to each issue to flag work that's progressing as planned or needs attention to keep on schedule:
+To help you track the status of your issues, you can assign a status to each issue to flag work
+that's progressing as planned or needs attention to keep on schedule:
 
 - **On track** (green)
 - **Needs attention** (amber)
@@ -178,9 +179,10 @@ To help you track the status of your issues, you can assign a status to each iss
 
 !["On track" health status on an issue](img/issue_health_status_v12_10.png)
 
----
+You can then see issue statuses on the
+[Epic tree](../../group/epics/index.md#issue-health-status-in-epic-tree-ultimate).
 
-#### Enable issue health status
+#### Disable issue health status
 
 This feature comes with the `:save_issuable_health_status` feature flag enabled by default. However, in some cases
 this feature is incompatible with old configuration. To turn off the feature while configuration is

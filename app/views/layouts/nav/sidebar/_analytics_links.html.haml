@@ -1,17 +1,18 @@
 - navbar_links = links.sort_by(&:title)
 - all_paths = navbar_links.map(&:path)
+- analytics_link = navbar_links.find { |link| link.title == _('Value Stream') } || navbar_links.first
 
 - if navbar_links.any?
   = nav_link(path: all_paths) do
-    = link_to navbar_links.first.link do
+    = link_to analytics_link.link, { data: { qa_selector: 'analytics_anchor' } } do
       .nav-icon-container
         = sprite_icon('chart')
       %span.nav-item-name{ data: { qa_selector: 'analytics_link' } }
         = _('Analytics')
 
     %ul.sidebar-sub-level-items{ data: { qa_selector: 'analytics_sidebar_submenu' } }
-      = nav_link(path: navbar_links.first.path, html_options: { class: "fly-out-top-item" } ) do
-        = link_to navbar_links.first.link do
+      = nav_link(path: analytics_link.path, html_options: { class: "fly-out-top-item" } ) do
+        = link_to analytics_link.link do
           %strong.fly-out-top-item-name
             = _('Analytics')
       %li.divider.fly-out-top-item

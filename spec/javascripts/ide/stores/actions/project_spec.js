@@ -4,7 +4,7 @@ import {
   refreshLastCommitData,
   showBranchNotFoundError,
   createNewBranchFromDefault,
-  showEmptyState,
+  loadEmptyBranch,
   openBranch,
   loadFile,
   loadBranch,
@@ -16,6 +16,8 @@ import router from '~/ide/ide_router';
 import { resetStore } from '../../helpers';
 import testAction from '../../../helpers/vuex_action_helper';
 
+const TEST_PROJECT_ID = 'abc/def';
+
 describe('IDE store project actions', () => {
   let mock;
   let store;
@@ -24,7 +26,7 @@ describe('IDE store project actions', () => {
     store = createStore();
     mock = new MockAdapter(axios);
 
-    store.state.projects['abc/def'] = {
+    store.state.projects[TEST_PROJECT_ID] = {
       branches: {},
     };
   });
@@ -83,7 +85,7 @@ describe('IDE store project actions', () => {
           {
             type: 'SET_BRANCH_COMMIT',
             payload: {
-              projectId: 'abc/def',
+              projectId: TEST_PROJECT_ID,
               branchId: 'master',
               commit: { id: '123' },
             },
@@ -200,17 +202,17 @@ describe('IDE store project actions', () => {
     });
   });
 
-  describe('showEmptyState', () => {
+  describe('loadEmptyBranch', () => {
     it('creates a blank tree and sets loading state to false', done => {
       testAction(
-        showEmptyState,
-        { projectId: 'abc/def', branchId: 'master' },
+        loadEmptyBranch,
+        { projectId: TEST_PROJECT_ID, branchId: 'master' },
         store.state,
         [
-          { type: 'CREATE_TREE', payload: { treePath: 'abc/def/master' } },
+          { type: 'CREATE_TREE', payload: { treePath: `${TEST_PROJECT_ID}/master` } },
           {
             type: 'TOGGLE_LOADING',
-            payload: { entry: store.state.trees['abc/def/master'], forceValue: false },
+            payload: { entry: store.state.trees[`${TEST_PROJECT_ID}/master`], forceValue: false },
           },
         ],
         jasmine.any(Object),
@@ -218,13 +220,15 @@ describe('IDE store project actions', () => {
       );
     });
 
-    it('sets the currentBranchId to the branchId that was passed', done => {
+    it('does nothing, if tree already exists', done => {
+      const trees = { [`${TEST_PROJECT_ID}/master`]: [] };
+
       testAction(
-        showEmptyState,
-        { projectId: 'abc/def', branchId: 'master' },
-        store.state,
-        jasmine.any(Object),
-        [{ type: 'setCurrentBranchId', payload: 'master' }],
+        loadEmptyBranch,
+        { projectId: TEST_PROJECT_ID, branchId: 'master' },
+        { trees },
+        [],
+        [],
         done,
       );
     });
@@ -278,9 +282,28 @@ describe('IDE store project actions', () => {
   });
 
   describe('loadBranch', () => {
-    const projectId = 'abc/def';
+    const projectId = TEST_PROJECT_ID;
     const branchId = '123-lorem';
     const ref = 'abcd2322';
+
+    it('when empty repo, loads empty branch', done => {
+      const mockGetters = { emptyRepo: true };
+
+      testAction(
+        loadBranch,
+        { projectId, branchId },
+        { ...store.state, ...mockGetters },
+        [],
+        [{ type: 'loadEmptyBranch', payload: { projectId, branchId } }],
+        done,
+      );
+    });
+
+    it('when branch already exists, does nothing', done => {
+      store.state.projects[projectId].branches[branchId] = {};
+
+      testAction(loadBranch, { projectId, branchId }, store.state, [], [], done);
+    });
 
     it('fetches branch data', done => {
       const mockGetters = { findBranch: () => ({ commit: { id: ref } }) };
@@ -317,7 +340,7 @@ describe('IDE store project actions', () => {
   });
 
   describe('openBranch', () => {
-    const projectId = 'abc/def';
+    const projectId = TEST_PROJECT_ID;
     const branchId = '123-lorem';
 
     const branch = {
@@ -332,55 +355,6 @@ describe('IDE store project actions', () => {
           'foo/bar-pending': { pending: true },
           'foo/bar': { pending: false },
         },
-      });
-    });
-
-    it('loads file right away if the branch has already been fetched', done => {
-      spyOn(store, 'dispatch');
-
-      Object.assign(store.state, {
-        projects: {
-          [projectId]: {
-            branches: {
-              [branchId]: { foo: 'bar' },
-            },
-          },
-        },
-      });
-
-      openBranch(store, branch)
-        .then(() => {
-          expect(store.dispatch.calls.allArgs()).toEqual([['loadFile', { basePath: undefined }]]);
-        })
-        .then(done)
-        .catch(done.fail);
-    });
-
-    describe('empty repo', () => {
-      beforeEach(() => {
-        spyOn(store, 'dispatch').and.returnValue(Promise.resolve());
-
-        Object.assign(store.state, {
-          currentProjectId: 'abc/def',
-          projects: {
-            'abc/def': {
-              empty_repo: true,
-            },
-          },
-        });
-      });
-
-      afterEach(() => {
-        resetStore(store);
-      });
-
-      it('dispatches showEmptyState action right away', done => {
-        openBranch(store, branch)
-          .then(() => {
-            expect(store.dispatch.calls.allArgs()).toEqual([['showEmptyState', branch]]);
-            done();
-          })
-          .catch(done.fail);
       });
     });
 
@@ -410,11 +384,17 @@ describe('IDE store project actions', () => {
 
       it('dispatches correct branch actions', done => {
         openBranch(store, branch)
-          .then(() => {
+          .then(val => {
             expect(store.dispatch.calls.allArgs()).toEqual([
               ['setCurrentBranchId', branchId],
               ['loadBranch', { projectId, branchId }],
             ]);
+
+            expect(val).toEqual(
+              new Error(
+                `An error occurred while getting files for - <strong>${projectId}/${branchId}</strong>`,
+              ),
+            );
           })
           .then(done)
           .catch(done.fail);
