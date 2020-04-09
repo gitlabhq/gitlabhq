@@ -17,7 +17,7 @@ module Gitlab
       }.freeze
 
       def find_import_state(project_id)
-        ProjectImportState.jid_by(project_id: project_id, status: :started)
+        JiraImportState.jid_by(project_id: project_id, status: :started)
       end
 
       private

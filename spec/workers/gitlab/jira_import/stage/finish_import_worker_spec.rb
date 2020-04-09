@@ -16,46 +16,29 @@ describe Gitlab::JiraImport::Stage::FinishImportWorker do
         stub_feature_flags(jira_issue_import: false)
       end
 
-      it_behaves_like 'exit import not started'
+      it_behaves_like 'cannot do jira import'
     end
 
     context 'when feature flag enabled' do
+      let_it_be(:jira_import) { create(:jira_import_state, :scheduled, project: project) }
+
       before do
         stub_feature_flags(jira_issue_import: true)
       end
 
       context 'when import did not start' do
-        let!(:import_state) { create(:import_state, project: project) }
-
-        it_behaves_like 'exit import not started'
+        it_behaves_like 'cannot do jira import'
       end
 
       context 'when import started' do
-        let(:imported_jira_project) do
-          JiraImportData::JiraProjectDetails.new('xx', Time.now.strftime('%Y-%m-%d %H:%M:%S'), { user_id: 1, name: 'root' })
+        before do
+          jira_import.start!
         end
-        let(:jira_import_data) do
-          data = JiraImportData.new
-          data << imported_jira_project
-          data.force_import!
-          data
-        end
-        let(:import_state) { create(:import_state, status: :started) }
-        let(:project) { create(:project, import_type: 'jira', import_data: jira_import_data, import_state: import_state) }
 
         it 'changes import state to finished' do
           worker.perform(project.id)
 
-          expect(project.reload.import_state.status).to eq("finished")
-        end
-
-        it 'removes force-import flag' do
-          expect(project.reload.import_data.data['jira'][JiraImportData::FORCE_IMPORT_KEY]).to be true
-
-          worker.perform(project.id)
-
-          expect(project.reload.import_data.data['jira'][JiraImportData::FORCE_IMPORT_KEY]).to be nil
-          expect(project.reload.import_data.data['jira']).not_to be nil
+          expect(project.jira_import_status).to eq('finished')
         end
       end
     end

@@ -90,7 +90,7 @@ module Gitlab
             issues_created_from_gitlab_error_tracking_ui: count(SentryIssue),
             issues_with_associated_zoom_link: count(ZoomMeeting.added_to_issue),
             issues_using_zoom_quick_actions: distinct_count(ZoomMeeting, :issue_id),
-            issues_with_embedded_grafana_charts_approx: ::Gitlab::GrafanaEmbedUsageData.issue_count,
+            issues_with_embedded_grafana_charts_approx: grafana_embed_usage_data,
             incident_issues: count(::Issue.authored(::User.alert_bot)),
             keys: count(Key),
             label_lists: count(List.label),
@@ -132,6 +132,14 @@ module Gitlab
       rescue ActiveRecord::StatementInvalid
         { avg_cycle_analytics: {} }
       end
+
+      # rubocop:disable CodeReuse/ActiveRecord
+      def grafana_embed_usage_data
+        count(Issue.joins('JOIN grafana_integrations USING (project_id)')
+          .where("issues.description LIKE '%' || grafana_integrations.grafana_url || '%'")
+          .where(grafana_integrations: { enabled: true }))
+      end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def features_usage_data
         features_usage_data_ce

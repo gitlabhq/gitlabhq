@@ -9,7 +9,7 @@ module Gitlab
         raise Projects::ImportService::Error, _('Jira import feature is disabled.') unless Feature.enabled?(:jira_issue_import, project)
         raise Projects::ImportService::Error, _('Jira integration not configured.') unless project.jira_service&.active?
 
-        @jira_project_key = project&.import_data&.becomes(JiraImportData)&.current_project&.key
+        @jira_project_key = project.latest_jira_import&.jira_project_key
         raise Projects::ImportService::Error, _('Unable to find Jira project to import data from.') unless @jira_project_key
 
         @project = project

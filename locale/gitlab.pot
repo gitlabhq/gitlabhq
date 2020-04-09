@@ -10112,6 +10112,15 @@ msgstr ""
 msgid "Group details"
 msgstr ""
 
+msgid "Group export could not be started."
+msgstr ""
+
+msgid "Group export link has expired. Please generate a new export from your group settings."
+msgstr ""
+
+msgid "Group export started."
+msgstr ""
+
 msgid "Group has been already marked for deletion"
 msgstr ""
 

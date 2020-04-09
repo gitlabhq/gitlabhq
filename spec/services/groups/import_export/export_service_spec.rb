@@ -3,6 +3,37 @@
 require 'spec_helper'
 
 describe Groups::ImportExport::ExportService do
+  describe '#async_execute' do
+    let(:user) { create(:user) }
+    let(:group) { create(:group) }
+
+    context 'when the job can be successfully scheduled' do
+      let(:export_service) { described_class.new(group: group, user: user) }
+
+      it 'enqueues an export job' do
+        expect(GroupExportWorker).to receive(:perform_async).with(user.id, group.id, {})
+
+        export_service.async_execute
+      end
+
+      it 'returns truthy' do
+        expect(export_service.async_execute).to be_present
+      end
+    end
+
+    context 'when the job cannot be scheduled' do
+      let(:export_service) { described_class.new(group: group, user: user) }
+
+      before do
+        allow(GroupExportWorker).to receive(:perform_async).and_return(nil)
+      end
+
+      it 'returns falsey' do
+        expect(export_service.async_execute).to be_falsey
+      end
+    end
+  end
+
   describe '#execute' do
     let!(:user) { create(:user) }
     let(:group) { create(:group) }
@@ -101,6 +132,24 @@ describe Groups::ImportExport::ExportService do
 
           expect { service.execute }.to raise_error(Gitlab::ImportExport::Error)
         end
+      end
+    end
+
+    context 'when there is an existing export file' do
+      subject(:export_service) { described_class.new(group: group, user: user) }
+
+      let(:import_export_upload) do
+        create(
+          :import_export_upload,
+          group: group,
+          export_file: fixture_file_upload('spec/fixtures/group_export.tar.gz')
+        )
+      end
+
+      it 'removes it' do
+        existing_file = import_export_upload.export_file
+
+        expect { export_service.execute }.to change { existing_file.file }.to(be_nil)
       end
     end
   end

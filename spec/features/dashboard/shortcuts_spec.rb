@@ -29,6 +29,10 @@ describe 'Dashboard shortcuts', :js do
       find('body').send_keys([:shift, 'P'])
 
       check_page_title('Projects')
+
+      find('body').send_keys([:shift, 'A'])
+
+      check_page_title('Activity')
     end
   end
 

@@ -9,6 +9,7 @@ import axios from '~/lib/utils/axios_utils';
 import waitForPromises from 'helpers/wait_for_promises';
 
 import eventHub from '~/boards/eventhub';
+import sidebarEventHub from '~/sidebar/event_hub';
 import '~/boards/models/label';
 import '~/boards/models/assignee';
 import '~/boards/models/list';
@@ -201,13 +202,37 @@ describe('Board card', () => {
 
     it('resets detail issue to empty if already set', () => {
       jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
-      [boardsStore.detail.issue] = list.issues;
+      const [issue] = list.issues;
+      boardsStore.detail.issue = issue;
       mountComponent();
 
       wrapper.trigger('mousedown');
       wrapper.trigger('mouseup');
 
       expect(eventHub.$emit).toHaveBeenCalledWith('clearDetailIssue', undefined);
+    });
+  });
+
+  describe('sidebarHub events', () => {
+    it('closes all sidebars before showing an issue if no issues are opened', () => {
+      jest.spyOn(sidebarEventHub, '$emit').mockImplementation(() => {});
+      boardsStore.detail.issue = {};
+      mountComponent();
+
+      wrapper.trigger('mouseup');
+
+      expect(sidebarEventHub.$emit).toHaveBeenCalledWith('sidebar.closeAll');
+    });
+
+    it('it does not closes all sidebars before showing an issue if an issue is opened', () => {
+      jest.spyOn(sidebarEventHub, '$emit').mockImplementation(() => {});
+      const [issue] = list.issues;
+      boardsStore.detail.issue = issue;
+      mountComponent();
+
+      wrapper.trigger('mousedown');
+
+      expect(sidebarEventHub.$emit).not.toHaveBeenCalledWith('sidebar.closeAll');
     });
   });
 });

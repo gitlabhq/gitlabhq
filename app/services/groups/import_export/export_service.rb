@@ -10,8 +10,14 @@ module Groups
         @shared       = @params[:shared] || Gitlab::ImportExport::Shared.new(@group)
       end
 
+      def async_execute
+        GroupExportWorker.perform_async(@current_user.id, @group.id, @params)
+      end
+
       def execute
         validate_user_permissions
+
+        remove_existing_export! if @group.export_file_exists?
 
         save!
       ensure
@@ -28,6 +34,13 @@ module Groups
 
           notify_error!
         end
+      end
+
+      def remove_existing_export!
+        import_export_upload = @group.import_export_upload
+
+        import_export_upload.remove_export_file!
+        import_export_upload.save
       end
 
       def save!

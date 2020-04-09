@@ -9,7 +9,7 @@ module Projects
       def show
         return if Feature.enabled?(:jira_issue_import_vue, @project)
 
-        unless @project.import_state&.in_progress?
+        unless @project.latest_jira_import&.in_progress?
           jira_client = @project.jira_service.client
           jira_projects = jira_client.Project.all
 
@@ -20,7 +20,7 @@ module Projects
           end
         end
 
-        flash[:notice] = _("Import %{status}") % { status: @project.import_state.status } if @project.import_state.present? && !@project.import_state.none?
+        flash[:notice] = _("Import %{status}") % { status: @project.jira_import_status } unless @project.latest_jira_import&.initial?
       end
 
       def import

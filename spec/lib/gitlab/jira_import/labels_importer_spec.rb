@@ -3,14 +3,10 @@
 require 'spec_helper'
 
 describe Gitlab::JiraImport::LabelsImporter do
-  let(:user) { create(:user) }
-  let(:jira_import_data) do
-    data = JiraImportData.new
-    data << JiraImportData::JiraProjectDetails.new('XX', Time.now.strftime('%Y-%m-%d %H:%M:%S'), { user_id: user.id, name: user.name })
-    data
-  end
-  let(:project) { create(:project, import_data: jira_import_data) }
-  let!(:jira_service) { create(:jira_service, project: project) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project) }
+  let_it_be(:jira_import) { create(:jira_import_state, project: project) }
+  let_it_be(:jira_service) { create(:jira_service, project: project) }
 
   subject { described_class.new(project).execute }
 

@@ -30,7 +30,7 @@
                 = _('Groups')
           - if dashboard_nav_link?(:activity)
             = nav_link(path: 'dashboard#activity') do
-              = link_to activity_dashboard_path do
+              = link_to activity_dashboard_path, class: 'dashboard-shortcuts-activity' do
                 = _('Activity')
 
           - if dashboard_nav_link?(:milestones)

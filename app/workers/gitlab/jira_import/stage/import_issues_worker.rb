@@ -11,7 +11,7 @@ module Gitlab
         def import(project)
           jobs_waiter = Gitlab::JiraImport::IssuesImporter.new(project).execute
 
-          project.import_state.refresh_jid_expiration
+          project.latest_jira_import.refresh_jid_expiration
 
           Gitlab::JiraImport::AdvanceStageWorker.perform_async(
             project.id,

@@ -6,18 +6,20 @@ class GroupsController < Groups::ApplicationController
   include ParamsBackwardCompatibility
   include PreviewMarkdown
   include RecordUserLastActivity
+  include SendFileUpload
   extend ::Gitlab::Utils::Override
 
   respond_to :html
 
   prepend_before_action(only: [:show, :issues]) { authenticate_sessionless_user!(:rss) }
   prepend_before_action(only: [:issues_calendar]) { authenticate_sessionless_user!(:ics) }
+  prepend_before_action :ensure_export_enabled, only: [:export, :download_export]
 
   before_action :authenticate_user!, only: [:new, :create]
   before_action :group, except: [:index, :new, :create]
 
   # Authorize
-  before_action :authorize_admin_group!, only: [:edit, :update, :destroy, :projects, :transfer]
+  before_action :authorize_admin_group!, only: [:edit, :update, :destroy, :projects, :transfer, :export, :download_export]
   before_action :authorize_create_group!, only: [:new]
 
   before_action :group_projects, only: [:projects, :activity, :issues, :merge_requests]
@@ -28,6 +30,8 @@ class GroupsController < Groups::ApplicationController
   before_action do
     push_frontend_feature_flag(:vue_issuables_list, @group)
   end
+
+  before_action :export_rate_limit, only: [:export, :download_export]
 
   skip_cross_project_access_check :index, :new, :create, :edit, :update,
                                   :destroy, :projects
@@ -134,6 +138,25 @@ class GroupsController < Groups::ApplicationController
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
+  def export
+    export_service = Groups::ImportExport::ExportService.new(group: @group, user: current_user)
+
+    if export_service.async_execute
+      redirect_to edit_group_path(@group), notice: _('Group export started.')
+    else
+      redirect_to edit_group_path(@group), alert: _('Group export could not be started.')
+    end
+  end
+
+  def download_export
+    if @group.export_file_exists?
+      send_upload(@group.export_file, attachment: @group.export_file.filename)
+    else
+      redirect_to edit_group_path(@group),
+        alert: _('Group export link has expired. Please generate a new export from your group settings.')
+    end
+  end
+
   protected
 
   def render_show_html
@@ -232,6 +255,21 @@ class GroupsController < Groups::ApplicationController
     params[:id] = group.to_param
 
     url_for(safe_params)
+  end
+
+  def export_rate_limit
+    prefixed_action = "group_#{params[:action]}".to_sym
+
+    if Gitlab::ApplicationRateLimiter.throttled?(prefixed_action, scope: [current_user, prefixed_action, @group])
+      Gitlab::ApplicationRateLimiter.log_request(request, "#{prefixed_action}_request_limit".to_sym, current_user)
+
+      flash[:alert] = _('This endpoint has been requested too many times. Try again later.')
+      redirect_to edit_group_path(@group)
+    end
+  end
+
+  def ensure_export_enabled
+    render_404 unless Feature.enabled?(:group_import_export, @group, default_enabled: true)
   end
 
   private

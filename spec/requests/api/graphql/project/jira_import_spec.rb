@@ -6,19 +6,10 @@ describe 'query jira import data' do
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:jira_import_data) do
-    data = JiraImportData.new
-    data << JiraImportData::JiraProjectDetails.new(
-      'AA', 2.days.ago.strftime('%Y-%m-%d %H:%M:%S'),
-      { user_id: current_user.id, name: current_user.name }
-    )
-    data << JiraImportData::JiraProjectDetails.new(
-      'BB', 5.days.ago.strftime('%Y-%m-%d %H:%M:%S'),
-      { user_id: current_user.id, name: current_user.name }
-    )
-    data
-  end
-  let_it_be(:project) { create(:project, :private, :import_started, import_data: jira_import_data, import_type: 'jira') }
+  let_it_be(:project) { create(:project, :private, :import_started, import_type: 'jira') }
+  let_it_be(:jira_import1) { create(:jira_import_state, :finished, project: project, jira_project_key: 'AA', user: current_user, created_at: 2.days.ago) }
+  let_it_be(:jira_import2) { create(:jira_import_state, :finished, project: project, jira_project_key: 'BB', user: current_user, created_at: 5.days.ago) }
+
   let(:query) do
     %(
       query {
@@ -48,7 +39,7 @@ describe 'query jira import data' do
     context 'when anonymous user' do
       let(:current_user) { nil }
 
-      it { expect(jira_imports).to be nil }
+      it { expect(jira_imports).to be_nil }
     end
 
     context 'when user developer' do
@@ -56,7 +47,7 @@ describe 'query jira import data' do
         project.add_developer(current_user)
       end
 
-      it { expect(jira_imports).to be nil }
+      it { expect(jira_imports).to be_nil }
     end
   end
 
@@ -139,7 +130,7 @@ describe 'query jira import data' do
       it 'does not return import status' do
         post_graphql(query, current_user: current_user)
 
-        expect(graphql_data['project']).to be nil
+        expect(graphql_data['project']).to be_nil
       end
     end
 
@@ -149,12 +140,12 @@ describe 'query jira import data' do
       end
 
       context 'when import never ran' do
-        let(:project) { create(:project) }
+        let_it_be(:initial_jira_import) { create(:jira_import_state, project: project, jira_project_key: 'BB', user: current_user) }
 
         it 'returns import status' do
           post_graphql(query, current_user: current_user)
 
-          expect(jira_import_status).to eq('none')
+          expect(jira_import_status).to eq('initial')
         end
       end
 
@@ -166,11 +157,8 @@ describe 'query jira import data' do
         end
       end
 
-      context 'when import running, i.e. force-import: true' do
-        before do
-          project.import_data.becomes(JiraImportData).force_import!
-          project.save!
-        end
+      context 'when import running' do
+        let_it_be(:started_jira_import) { create(:jira_import_state, :started, project: project, jira_project_key: 'BB', user: current_user) }
 
         it 'returns import status' do
           post_graphql(query, current_user: current_user)

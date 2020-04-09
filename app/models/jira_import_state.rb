@@ -22,6 +22,8 @@ class JiraImportState < ApplicationRecord
     message: _('Cannot have multiple Jira imports running at the same time')
   }
 
+  alias_method :scheduled_by, :user
+
   state_machine :status, initial: :initial do
     event :schedule do
       transition initial: :scheduled
@@ -46,6 +48,11 @@ class JiraImportState < ApplicationRecord
       end
     end
 
+    before_transition any => :finished do |state, _|
+      InternalId.flush_records!(project: state.project)
+      state.project.update_project_counter_caches
+    end
+
     after_transition any => :finished do |state, _|
       if state.jid.present?
         Gitlab::SidekiqStatus.unset(state.jid)
@@ -66,5 +73,9 @@ class JiraImportState < ApplicationRecord
 
   def in_progress?
     scheduled? || started?
+  end
+
+  def non_initial?
+    !initial?
   end
 end

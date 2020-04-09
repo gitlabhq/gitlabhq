@@ -103,12 +103,14 @@ export default Vue.extend({
     eventHub.$on('sidebar.addAssignee', this.addAssignee);
     eventHub.$on('sidebar.removeAllAssignees', this.removeAllAssignees);
     eventHub.$on('sidebar.saveAssignees', this.saveAssignees);
+    eventHub.$on('sidebar.closeAll', this.closeSidebar);
   },
   beforeDestroy() {
     eventHub.$off('sidebar.removeAssignee', this.removeAssignee);
     eventHub.$off('sidebar.addAssignee', this.addAssignee);
     eventHub.$off('sidebar.removeAllAssignees', this.removeAllAssignees);
     eventHub.$off('sidebar.saveAssignees', this.saveAssignees);
+    eventHub.$off('sidebar.closeAll', this.closeSidebar);
   },
   mounted() {
     new IssuableContext(this.currentUser);

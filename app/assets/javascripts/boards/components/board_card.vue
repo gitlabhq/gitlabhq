@@ -2,6 +2,7 @@
 /* eslint-disable vue/require-default-prop */
 import IssueCardInner from './issue_card_inner.vue';
 import eventHub from '../eventhub';
+import sidebarEventHub from '~/sidebar/event_hub';
 import boardsStore from '../stores/boards_store';
 
 export default {
@@ -72,6 +73,11 @@ export default {
     },
     showIssue(e) {
       if (e.target.classList.contains('js-no-trigger')) return;
+
+      // If no issues are opened, close all sidebars first
+      if (!boardsStore.detail?.issue?.id) {
+        sidebarEventHub.$emit('sidebar.closeAll');
+      }
 
       // If CMD or CTRL is clicked
       const isMultiSelect = this.canMultiSelect && (e.ctrlKey || e.metaKey);

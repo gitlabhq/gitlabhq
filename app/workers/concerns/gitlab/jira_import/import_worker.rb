@@ -28,7 +28,7 @@ module Gitlab
         return false unless project
         return false if Feature.disabled?(:jira_issue_import, project)
 
-        project.import_state.started?
+        project.latest_jira_import&.started?
       end
     end
   end

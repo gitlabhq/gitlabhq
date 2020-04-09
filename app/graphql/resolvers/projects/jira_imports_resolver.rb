@@ -8,11 +8,9 @@ module Resolvers
       alias_method :project, :object
 
       def resolve(**args)
-        return JiraImportData.none unless project&.import_data.present?
-
         authorize!(project)
 
-        project.import_data.becomes(JiraImportData).projects
+        project.jira_imports
       end
 
       def authorized_resource?(project)

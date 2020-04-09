@@ -105,16 +105,16 @@ describe Projects::Import::JiraController do
 
             context 'when everything is ok' do
               it 'creates import state' do
-                expect(project.import_state).to be_nil
+                expect(project.latest_jira_import).to be_nil
 
                 post :import, params: { namespace_id: project.namespace, project_id: project, jira_project_key: 'Test' }
 
                 project.reload
 
-                jira_project = project.import_data.data.dig('jira', 'projects').first
+                jira_import = project.latest_jira_import
                 expect(project.import_type).to eq 'jira'
-                expect(project.import_state.status).to eq 'scheduled'
-                expect(jira_project['key']).to eq 'Test'
+                expect(jira_import.status).to eq 'scheduled'
+                expect(jira_import.jira_project_key).to eq 'Test'
                 expect(response).to redirect_to(project_import_jira_path(project))
               end
             end
@@ -122,29 +122,19 @@ describe Projects::Import::JiraController do
         end
 
         context 'when import state is scheduled' do
-          let_it_be(:import_state) { create(:import_state, project: project, status: :scheduled) }
+          let_it_be(:jira_import_state) { create(:jira_import_state, :scheduled, project: project) }
 
           context 'get show' do
             it 'renders import status' do
               get :show, params: { namespace_id: project.namespace.to_param, project_id: project }
 
-              expect(project.import_state.status).to eq 'scheduled'
+              jira_import = project.latest_jira_import
+              expect(jira_import.status).to eq 'scheduled'
               expect(flash.now[:notice]).to eq 'Import scheduled'
             end
           end
 
           context 'post import' do
-            before do
-              project.reload
-              project.create_import_data(
-                data: {
-                  'jira': {
-                    'projects': [{ 'key': 'Test', scheduled_at: 5.days.ago, scheduled_by: { user_id: user.id, name: user.name } }]
-                  }
-                }
-              )
-            end
-
             it 'uses the existing import data' do
               post :import, params: { namespace_id: project.namespace, project_id: project, jira_project_key: 'New Project' }
 
@@ -155,39 +145,27 @@ describe Projects::Import::JiraController do
         end
 
         context 'when jira import ran before' do
-          let_it_be(:import_state) { create(:import_state, project: project, status: :finished) }
+          let_it_be(:jira_import_state) { create(:jira_import_state, :finished, project: project, jira_project_key: 'Test') }
 
           context 'get show' do
             it 'renders import status' do
               allow(JIRA::Resource::Project).to receive(:all).and_return([])
               get :show, params: { namespace_id: project.namespace.to_param, project_id: project }
 
-              expect(project.import_state.status).to eq 'finished'
+              expect(project.latest_jira_import.status).to eq 'finished'
               expect(flash.now[:notice]).to eq 'Import finished'
             end
           end
 
           context 'post import' do
-            before do
-              project.reload
-              project.create_import_data(
-                data: {
-                  'jira': {
-                    'projects': [{ 'key': 'Test', scheduled_at: 5.days.ago, scheduled_by: { user_id: user.id, name: user.name } }]
-                  }
-                }
-              )
-            end
-
             it 'uses the existing import data' do
               post :import, params: { namespace_id: project.namespace, project_id: project, jira_project_key: 'New Project' }
 
               project.reload
-              expect(project.import_state.status).to eq 'scheduled'
-              jira_imported_projects = project.import_data.data.dig('jira', 'projects')
-              expect(jira_imported_projects.size).to eq 2
-              expect(jira_imported_projects.first['key']).to eq 'Test'
-              expect(jira_imported_projects.last['key']).to eq 'New Project'
+              expect(project.latest_jira_import.status).to eq 'scheduled'
+              expect(project.jira_imports.size).to eq 2
+              expect(project.jira_imports.first.jira_project_key).to eq 'Test'
+              expect(project.jira_imports.last.jira_project_key).to eq 'New Project'
               expect(response).to redirect_to(project_import_jira_path(project))
             end
           end

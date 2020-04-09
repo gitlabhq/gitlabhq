@@ -30,11 +30,11 @@ module Mutations
         service_response = ::JiraImport::StartImportService
                              .new(context[:current_user], project, jira_project_key)
                              .execute
-        import_data = service_response.payload[:import_data]
-
+        jira_import = service_response.success? ? service_response.payload[:import_data] : nil
+        errors = service_response.error? ? [service_response.message] : []
         {
-          jira_import: import_data.errors.blank? ? import_data.projects.last : nil,
-          errors: errors_on_object(import_data)
+          jira_import: jira_import,
+          errors: errors
         }
       end
 

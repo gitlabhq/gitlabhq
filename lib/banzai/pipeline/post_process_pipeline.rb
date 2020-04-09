@@ -3,8 +3,6 @@
 module Banzai
   module Pipeline
     class PostProcessPipeline < BasePipeline
-      prepend_if_ee('EE::Banzai::Pipeline::PostProcessPipeline') # rubocop: disable Cop/InjectEnterpriseEditionModule
-
       def self.filters
         @filters ||= FilterArray[
           *internal_link_filters,
@@ -34,3 +32,5 @@ module Banzai
     end
   end
 end
+
+Banzai::Pipeline::PostProcessPipeline.prepend_if_ee('EE::Banzai::Pipeline::PostProcessPipeline')

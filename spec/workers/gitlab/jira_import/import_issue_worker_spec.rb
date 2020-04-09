@@ -5,6 +5,7 @@ require 'spec_helper'
 describe Gitlab::JiraImport::ImportIssueWorker do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
+  let(:some_key) { 'some-key' }
 
   describe 'modules' do
     it { expect(described_class).to include_module(ApplicationWorker) }
@@ -23,7 +24,7 @@ describe Gitlab::JiraImport::ImportIssueWorker do
         allow(subject).to receive(:insert_and_return_id).and_raise(StandardError)
         expect(Gitlab::JobWaiter).to receive(:notify)
 
-        subject.perform(project.id, 123, issue_attrs, 'some-key')
+        subject.perform(project.id, 123, issue_attrs, some_key)
       end
 
       it 'record a failed to import issue' do
@@ -36,7 +37,7 @@ describe Gitlab::JiraImport::ImportIssueWorker do
 
       context 'when import label does not exist' do
         it 'does not record import failure' do
-          subject.perform(project.id, 123, issue_attrs, 'some-key')
+          subject.perform(project.id, 123, issue_attrs, some_key)
 
           expect(label.issues.count).to eq(0)
           expect(Gitlab::Cache::Import::Caching.read(Gitlab::JiraImport.failed_issues_counter_cache_key(project.id)).to_i).to eq(0)
@@ -49,7 +50,7 @@ describe Gitlab::JiraImport::ImportIssueWorker do
         end
 
         it 'does not record import failure' do
-          subject.perform(project.id, 123, issue_attrs, 'some-key')
+          subject.perform(project.id, 123, issue_attrs, some_key)
 
           expect(label.issues.count).to eq(1)
           expect(Gitlab::Cache::Import::Caching.read(Gitlab::JiraImport.failed_issues_counter_cache_key(project.id)).to_i).to eq(0)

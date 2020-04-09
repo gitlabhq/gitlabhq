@@ -16,7 +16,7 @@ module ImportState
       end
 
       def self.jid_by(project_id:, status:)
-        select(:jid).with_status(status).find_by(project_id: project_id)
+        select(:jid).where(status: status).find_by(project_id: project_id)
       end
     end
   end

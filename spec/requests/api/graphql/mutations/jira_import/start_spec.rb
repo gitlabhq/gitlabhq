@@ -118,9 +118,8 @@ describe 'Starting a Jira Import' do
 
               expect(jira_import['jiraProjectKey']).to eq 'AA'
               expect(jira_import['scheduledBy']['username']).to eq current_user.username
-              expect(project.import_state).not_to be nil
-              expect(project.import_state.status).to eq 'scheduled'
-              expect(project.import_data.becomes(JiraImportData).projects.last.scheduled_by['user_id']).to eq current_user.id
+              expect(project.latest_jira_import).not_to be_nil
+              expect(project.latest_jira_import).to be_scheduled
             end
           end
         end

@@ -2,7 +2,7 @@
 
 shared_examples 'no jira import data present' do
   it 'returns none' do
-    expect(resolve_imports).to eq JiraImportData.none
+    expect(resolve_imports).to eq JiraImportState.none
   end
 end
 

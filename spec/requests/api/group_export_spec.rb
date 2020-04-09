@@ -102,6 +102,19 @@ describe API::GroupExport do
         end
       end
 
+      context 'when the export cannot be started' do
+        before do
+          group.add_owner(user)
+          allow(GroupExportWorker).to receive(:perform_async).and_return(nil)
+        end
+
+        it 'returns an error' do
+          post api(path, user)
+
+          expect(response).to have_gitlab_http_status(:error)
+        end
+      end
+
       context 'when user is not a group owner' do
         before do
           group.add_developer(user)

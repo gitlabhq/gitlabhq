@@ -8,20 +8,12 @@ module Types
     graphql_name 'JiraImport'
 
     field :scheduled_at, Types::TimeType, null: true,
-          description: 'Timestamp of when the Jira import was created/started'
+          method: :created_at,
+          description: 'Timestamp of when the Jira import was created'
     field :scheduled_by, Types::UserType, null: true,
           description: 'User that started the Jira import'
     field :jira_project_key, GraphQL::STRING_TYPE, null: false,
-          description: 'Project key for the imported Jira project',
-          method: :key
-
-    def scheduled_at
-      DateTime.parse(object.scheduled_at)
-    end
-
-    def scheduled_by
-      ::Gitlab::Graphql::Loaders::BatchModelLoader.new(User, object.scheduled_by['user_id']).find
-    end
+          description: 'Project key for the imported Jira project'
   end
   # rubocop: enable Graphql/AuthorizeTypes
 end

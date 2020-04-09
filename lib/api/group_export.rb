@@ -27,9 +27,13 @@ module API
         detail 'This feature was introduced in GitLab 12.5.'
       end
       post ':id/export' do
-        GroupExportWorker.perform_async(current_user.id, user_group.id, params) # rubocop:disable CodeReuse/Worker
+        export_service = ::Groups::ImportExport::ExportService.new(group: user_group, user: current_user)
 
-        accepted!
+        if export_service.async_execute
+          accepted!
+        else
+          render_api_error!(message: 'Group export could not be started.')
+        end
       end
     end
   end

@@ -764,6 +764,136 @@ describe GroupsController do
     end
   end
 
+  describe 'POST #export' do
+    context 'when the group export feature flag is not enabled' do
+      before do
+        sign_in(admin)
+        stub_feature_flags(group_import_export: false)
+      end
+
+      it 'returns a not found error' do
+        post :export, params: { id: group.to_param }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when the user does not have permission to export the group' do
+      before do
+        sign_in(guest)
+      end
+
+      it 'returns an error' do
+        post :export, params: { id: group.to_param }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when supplied valid params' do
+      before do
+        sign_in(admin)
+      end
+
+      it 'triggers the export job' do
+        expect(GroupExportWorker).to receive(:perform_async).with(admin.id, group.id, {})
+
+        post :export, params: { id: group.to_param }
+      end
+
+      it 'redirects to the edit page' do
+        post :export, params: { id: group.to_param }
+
+        expect(response).to have_gitlab_http_status(:found)
+      end
+    end
+
+    context 'when the endpoint receives requests above the rate limit' do
+      before do
+        sign_in(admin)
+        allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(true)
+      end
+
+      it 'throttles the endpoint' do
+        post :export, params: { id: group.to_param }
+
+        expect(flash[:alert]).to eq('This endpoint has been requested too many times. Try again later.')
+        expect(response).to have_gitlab_http_status(:found)
+      end
+    end
+  end
+
+  describe 'GET #download_export' do
+    context 'when there is a file available to download' do
+      let(:export_file) { fixture_file_upload('spec/fixtures/group_export.tar.gz') }
+
+      before do
+        sign_in(admin)
+        create(:import_export_upload, group: group, export_file: export_file)
+      end
+
+      it 'sends the file' do
+        get :download_export, params: { id: group.to_param }
+
+        expect(response.body).to eq export_file.tempfile.read
+      end
+    end
+
+    context 'when there is no file available to download' do
+      before do
+        sign_in(admin)
+      end
+
+      it 'returns not found' do
+        get :download_export, params: { id: group.to_param }
+
+        expect(flash[:alert])
+          .to eq 'Group export link has expired. Please generate a new export from your group settings.'
+
+        expect(response).to redirect_to(edit_group_path(group))
+      end
+    end
+
+    context 'when the group export feature flag is not enabled' do
+      before do
+        sign_in(admin)
+        stub_feature_flags(group_import_export: false)
+      end
+
+      it 'returns a not found error' do
+        post :export, params: { id: group.to_param }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when the user does not have the required permissions' do
+      before do
+        sign_in(guest)
+      end
+
+      it 'returns not_found' do
+        get :download_export, params: { id: group.to_param }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when the endpoint receives requests above the rate limit' do
+      before do
+        sign_in(admin)
+        allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(true)
+      end
+
+      it 'throttles the endpoint' do
+        get :download_export, params: { id: group.to_param }
+
+        expect(flash[:alert]).to eq('This endpoint has been requested too many times. Try again later.')
+        expect(response).to have_gitlab_http_status(:found)
+      end
+    end
+  end
+
   context 'token authentication' do
     it_behaves_like 'authenticates sessionless user', :show, :atom, public: true do
       before do

@@ -98,6 +98,39 @@ describe 'gitlab:db namespace rake task' do
     end
   end
 
+  describe 'clean_structure_sql' do
+    let_it_be(:clean_rake_task) { 'gitlab:db:clean_structure_sql' }
+    let_it_be(:test_task_name) { 'gitlab:db:_test_multiple_structure_cleans' }
+    let_it_be(:structure_file) { 'db/structure.sql' }
+    let_it_be(:input) { 'this is structure data' }
+    let(:output) { StringIO.new }
+
+    before do
+      allow(File).to receive(:read).with(structure_file).and_return(input)
+      allow(File).to receive(:open).with(structure_file, any_args).and_yield(output)
+    end
+
+    after do
+      Rake::Task[test_task_name].clear if Rake::Task.task_defined?(test_task_name)
+    end
+
+    it 'can be executed multiple times within another rake task' do
+      Rake::Task.define_task(test_task_name => :environment) do
+        expect_next_instance_of(Gitlab::Database::SchemaCleaner) do |cleaner|
+          expect(cleaner).to receive(:clean).with(output)
+        end
+        Rake::Task[clean_rake_task].invoke
+
+        expect_next_instance_of(Gitlab::Database::SchemaCleaner) do |cleaner|
+          expect(cleaner).to receive(:clean).with(output)
+        end
+        Rake::Task[clean_rake_task].invoke
+      end
+
+      run_rake_task(test_task_name)
+    end
+  end
+
   def run_rake_task(task_name)
     Rake::Task[task_name].reenable
     Rake.application.invoke_task task_name

@@ -37,12 +37,8 @@ describe Gitlab::JiraImport::BaseImporter do
         end
 
         context 'when import data exists' do
-          let(:jira_import_data) do
-            data = JiraImportData.new
-            data << JiraImportData::JiraProjectDetails.new('xx', Time.now.strftime('%Y-%m-%d %H:%M:%S'), { user_id: 1, name: 'root' })
-            data
-          end
-          let(:project) { create(:project, import_data: jira_import_data) }
+          let_it_be(:project) { create(:project) }
+          let_it_be(:jira_import) { create(:jira_import_state, project: project) }
           let(:subject) { described_class.new(project) }
 
           context 'when #imported_items_cache_key is not implemented' do

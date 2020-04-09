@@ -20,12 +20,11 @@ build-qa-image:
     - time docker build --cache-from "${QA_MASTER_IMAGE}" --tag ${QA_IMAGE} --file ./qa/Dockerfile ./
     - time docker push ${QA_IMAGE}
 
-review-cleanup:
+.review-cleanup-base:
   extends:
     - .default-retry
     - .review:rules:review-cleanup
   stage: prepare
-  image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-charts-build-base
   allow_failure: true
   environment:
     name: review/auto-cleanup
@@ -35,6 +34,18 @@ review-cleanup:
     - install_gitlab_gem
   script:
     - ruby -rrubygems scripts/review_apps/automated_cleanup.rb
+
+review-cleanup:
+  extends:
+    - .review-cleanup-base
+  image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-charts-build-base
+
+review-cleanup-helm3:
+  extends:
+    - .review-cleanup-base
+  variables:
+    HELM_3: 1
+  image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-helm3-kubectl1.14
 
 review-gcp-cleanup:
   extends:

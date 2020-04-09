@@ -4265,7 +4265,7 @@ type JiraImport {
   jiraProjectKey: String!
 
   """
-  Timestamp of when the Jira import was created/started
+  Timestamp of when the Jira import was created
   """
   scheduledAt: Time
 

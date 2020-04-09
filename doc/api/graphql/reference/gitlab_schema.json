@@ -12108,7 +12108,7 @@
             },
             {
               "name": "scheduledAt",
-              "description": "Timestamp of when the Jira import was created/started",
+              "description": "Timestamp of when the Jira import was created",
               "args": [
 
               ],

@@ -13,7 +13,7 @@ module Gitlab
           # new job waiter will have zero jobs_remaining by default, so it will just pass on to next stage
           fake_waiter = JobWaiter.new
 
-          project.import_state.refresh_jid_expiration
+          project.latest_jira_import.refresh_jid_expiration
           Gitlab::JiraImport::AdvanceStageWorker.perform_async(project.id, { fake_waiter.key => fake_waiter.jobs_remaining }, :notes)
         end
       end

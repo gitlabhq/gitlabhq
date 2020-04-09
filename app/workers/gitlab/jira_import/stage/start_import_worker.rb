@@ -16,7 +16,7 @@ module Gitlab
 
           return unless start_import
 
-          Gitlab::Import::SetAsyncJid.set_jid(project.import_state)
+          Gitlab::Import::SetAsyncJid.set_jid(project.latest_jira_import)
 
           Gitlab::JiraImport::Stage::ImportLabelsWorker.perform_async(project.id)
         end
@@ -26,14 +26,13 @@ module Gitlab
         def start_import
           return false unless project
           return false if Feature.disabled?(:jira_issue_import, project)
-          return false unless project.jira_force_import?
-          return true if start(project.import_state)
+          return true if start(project.latest_jira_import)
 
           Gitlab::Import::Logger.info(
             {
               project_id: project.id,
               project_path: project.full_path,
-              state: project&.import_status,
+              state: project&.jira_import_status,
               message: 'inconsistent state while importing'
             }
           )

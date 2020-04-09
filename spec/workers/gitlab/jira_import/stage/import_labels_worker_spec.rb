@@ -4,41 +4,40 @@ require 'spec_helper'
 
 describe Gitlab::JiraImport::Stage::ImportLabelsWorker do
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project) { create(:project, import_type: 'jira') }
 
   describe 'modules' do
     it_behaves_like 'include import workers modules'
   end
 
   describe '#perform' do
-    context 'when feature flag enabled' do
+    context 'when feature flag disabled' do
       before do
         stub_feature_flags(jira_issue_import: false)
       end
 
-      it_behaves_like 'exit import not started'
+      it_behaves_like 'cannot do jira import'
+      it_behaves_like 'does not advance to next stage'
     end
 
     context 'when feature flag enabled' do
+      let_it_be(:jira_import, reload: true) { create(:jira_import_state, :scheduled, project: project) }
+
       before do
         stub_feature_flags(jira_issue_import: true)
       end
 
       context 'when import did not start' do
-        let!(:import_state) { create(:import_state, project: project) }
-
-        it_behaves_like 'exit import not started'
+        it_behaves_like 'cannot do jira import'
+        it_behaves_like 'does not advance to next stage'
       end
 
       context 'when import started' do
-        let(:jira_import_data) do
-          data = JiraImportData.new
-          data << JiraImportData::JiraProjectDetails.new('XX', Time.now.strftime('%Y-%m-%d %H:%M:%S'), { user_id: user.id, name: user.name })
-          data
-        end
-        let(:project) { create(:project, import_data: jira_import_data) }
         let!(:jira_service) { create(:jira_service, project: project) }
-        let!(:import_state) { create(:import_state, status: :started, project: project) }
+
+        before do
+          jira_import.start!
+        end
 
         it_behaves_like 'advance to next stage', :issues
 

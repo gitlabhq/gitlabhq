@@ -20,23 +20,27 @@ module JiraImport
     private
 
     def create_and_schedule_import
-      import_data = project.create_or_update_import_data(data: {}).becomes(JiraImportData)
-      jira_project_details = JiraImportData::JiraProjectDetails.new(
-        jira_project_key,
-        Time.now.strftime('%Y-%m-%d %H:%M:%S'),
-        { user_id: user.id, name: user.name }
-      )
-      import_data << jira_project_details
-      import_data.force_import!
-
+      jira_import = build_jira_import
       project.import_type = 'jira'
-      project.import_state.schedule if project.save!
+      project.save! && jira_import.schedule!
 
-      ServiceResponse.success(payload: { import_data: import_data } )
+      ServiceResponse.success(payload: { import_data: jira_import } )
     rescue => ex
       # in case project.save! raises an erorr
       Gitlab::ErrorTracking.track_exception(ex, project_id: project.id)
       build_error_response(ex.message)
+      jira_import.do_fail!
+    end
+
+    def build_jira_import
+      project.jira_imports.build(
+        user: user,
+        jira_project_key: jira_project_key,
+        # we do not have the jira_project_name or jira_project_xid yet so just set a mock value,
+        # we will once https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28190
+        jira_project_name: jira_project_key,
+        jira_project_xid: 0
+      )
     end
 
     def validate
@@ -48,18 +52,11 @@ module JiraImport
     end
 
     def build_error_response(message)
-      import_data = JiraImportData.new(project: project)
-      import_data.errors.add(:base, message)
-      ServiceResponse.error(
-        message: import_data.errors.full_messages.to_sentence,
-        http_status: 400,
-        payload: { import_data: import_data }
-      )
+      ServiceResponse.error(message: message, http_status: 400)
     end
 
     def import_in_progress?
-      import_state = project.import_state || project.create_import_state
-      import_state.in_progress?
+      project.latest_jira_import&.in_progress?
     end
   end
 end
