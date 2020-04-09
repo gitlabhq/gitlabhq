@@ -11,7 +11,7 @@ There are three main ways to structure your pipelines, each with their
 own advantages. These methods can be mixed and matched if needed:
 
 - [Basic](#basic-pipelines): Good for straightforward projects where all the configuration is in one easy to find place.
-- [Directed Acylic Graph](#directed-acyclic-graph-pipelines): Good for large, complex projects that need efficient execution.
+- [Directed Acyclic Graph](#directed-acyclic-graph-pipelines): Good for large, complex projects that need efficient execution.
 - [Child/Parent Pipelines](#child--parent-pipelines): Good for monorepos and projects with lots of independently defined components.
 
 For more details about
@@ -92,7 +92,7 @@ deploy_b:
 ## Directed Acyclic Graph Pipelines
 
 If efficiency is important to you and you want everything to run as quickly as possible,
-you can use [Directed Acylic Graphs (DAG)](../directed_acyclic_graph/index.md). Use the
+you can use [Directed Acyclic Graphs (DAG)](../directed_acyclic_graph/index.md). Use the
 [`needs` keyword](../yaml/README.md#needs) to define dependency relationships between
 your jobs. When GitLab knows the relationships between your jobs, it can run everything
 as fast as possible, and even skips into subsequent stages when possible.

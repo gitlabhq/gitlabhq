@@ -3588,8 +3588,8 @@ Floats are not legal and cannot be used.
 
 GitLab CI/CD allows you to define variables inside `.gitlab-ci.yml` that are
 then passed in the job environment. They can be set globally and per-job.
-When the `variables` keyword is used on a job level, it overrides the global
-YAML variables and predefined ones.
+When the `variables` keyword is used on a job level, it will override the global
+YAML variables and predefined ones of the same name.
 
 They are stored in the Git repository and are meant to store non-sensitive
 project configuration, for example:

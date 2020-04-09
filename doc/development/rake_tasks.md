@@ -65,6 +65,16 @@ bin/rake "gitlab:seed:group_seed[subgroup_depth, username]"
 
 Group are additionally seeded with epics if GitLab instance has epics feature available.
 
+#### Seeding custom metrics for the monitoring dashboard
+
+A lot of different types of metrics are supported in the monitoring dashboard.
+
+To import these metrics, you can run:
+
+```shell
+bundle exec rake 'gitlab:seed:development_metrics[your_project_id]'
+```
+
 ### Automation
 
 If you're very sure that you want to **wipe the current database** and refill
