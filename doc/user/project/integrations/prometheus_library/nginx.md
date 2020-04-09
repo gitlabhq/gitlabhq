@@ -17,6 +17,7 @@ NGINX server metrics are detected, which tracks the pages and content directly s
 | Throughput (req/sec) | `sum(rate(nginx_server_requests{server_zone!="*", server_zone!="_", %{environment_filter}}[2m])) by (code)` |
 | Latency (ms) | `avg(nginx_server_requestMsec{%{environment_filter}})` |
 | HTTP Error Rate (HTTP Errors / sec) | `sum(rate(nginx_server_requests{code="5xx", %{environment_filter}}[2m]))` |
+| HTTP Error (%)| `sum(rate(nginx_server_requests{code=~"5.*", host="*", %{environment_filter}}[2m])) / sum(rate(nginx_server_requests{code="total", host="*", %{environment_filter}}[2m])) * 100` |
 
 ## Configuring Prometheus to monitor for NGINX metrics
 

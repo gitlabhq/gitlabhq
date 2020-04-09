@@ -180,7 +180,7 @@ class Projects::PipelinesController < Projects::ApplicationController
 
           render json: TestReportSerializer
             .new(current_user: @current_user)
-            .represent(test_reports)
+            .represent(test_reports, project: project)
         end
       end
     end

@@ -149,6 +149,18 @@ otherwise.
 If you want a running pipeline to finish even if you push new commits to a merge
 request, be sure to start the `dont-interrupt-me` job before pushing.
 
+## PostgreSQL versions testing
+
+We follow [the PostgreSQL versions Omnibus support policy](https://gitlab.com/groups/gitlab-org/-/epics/2184#proposal):
+
+|        | 12.10 (April 2020) | 13.0 (May 2020) | 13.1 (June 2020) | 13.2 (July 2020) | 13.3 (August 2020) | 13.4, 13.5   | 13.6 (November 2020) | 14.0 (May 2021?)     |
+| ------ | ------------------ | --------------- | ---------------- | ---------------- | ------------------ | ------------ | -------------------- | -------------------- |
+| PG9.6  | nightly            | -               | -                | -                | -                  | -            | -                    | -                    |
+| PG10   | `master`           | -               | -                | -                | -                  | -            | -                    | -                    |
+| PG11   | MRs/`master`       | MRs/`master`    | MRs/`master`     | MRs/`master`     | MRs/`master`       | MRs/`master` | nightly              | -                    |
+| PG12   | -                  | -               | -                | -                | `master`           | `master`     | MRs/`master`         | `master`             |
+| PG13   | -                  | -               | -                | -                | -                  | -            | -                    | MRs/`master`         |
+
 ## Directed acyclic graph
 
 We're using the [`needs:`](../ci/yaml/README.md#needs) keyword to

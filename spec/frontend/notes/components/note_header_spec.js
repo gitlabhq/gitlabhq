@@ -1,6 +1,7 @@
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
 import NoteHeader from '~/notes/components/note_header.vue';
+import GitlabTeamMemberBadge from '~/vue_shared/components/user_avatar/badges/gitlab_team_member_badge.vue';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -16,6 +17,15 @@ describe('NoteHeader component', () => {
   const findChevronIcon = () => wrapper.find({ ref: 'chevronIcon' });
   const findActionText = () => wrapper.find({ ref: 'actionText' });
   const findTimestamp = () => wrapper.find({ ref: 'noteTimestamp' });
+
+  const author = {
+    avatar_url: null,
+    id: 1,
+    name: 'Root',
+    path: '/root',
+    state: 'active',
+    username: 'root',
+  };
 
   const createComponent = props => {
     wrapper = shallowMount(NoteHeader, {
@@ -83,16 +93,7 @@ describe('NoteHeader component', () => {
   });
 
   it('renders an author link if author is passed to props', () => {
-    createComponent({
-      author: {
-        avatar_url: null,
-        id: 1,
-        name: 'Root',
-        path: '/root',
-        state: 'active',
-        username: 'root',
-      },
-    });
+    createComponent({ author });
 
     expect(wrapper.find('.js-user-link').exists()).toBe(true);
   });
@@ -138,4 +139,18 @@ describe('NoteHeader component', () => {
       expect(actions.setTargetNoteHash).toHaveBeenCalled();
     });
   });
+
+  test.each`
+    props                                                   | expected | message1            | message2
+    ${{ author: { ...author, is_gitlab_employee: true } }}  | ${true}  | ${'renders'}        | ${'true'}
+    ${{ author: { ...author, is_gitlab_employee: false } }} | ${false} | ${"doesn't render"} | ${'false'}
+    ${{ author }}                                           | ${false} | ${"doesn't render"} | ${'undefined'}
+  `(
+    '$message1 GitLab team member badge when `is_gitlab_employee` is $message2',
+    ({ props, expected }) => {
+      createComponent(props);
+
+      expect(wrapper.find(GitlabTeamMemberBadge).exists()).toBe(expected);
+    },
+  );
 });

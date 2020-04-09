@@ -368,11 +368,11 @@ it highlighted:
   "version": "2.0",
   "vulnerabilities": [
     {
+      "id": "9e96e0ab-23da-4d7d-a09e-0acbaa5e83ca",
       "category": "sast",
       "name": "Predictable pseudorandom number generator",
       "message": "Predictable pseudorandom number generator",
       "description": "The use of java.util.Random is predictable",
-      "cve": "818bf5dacb291e15d9e6dc3c5ac32178:PREDICTABLE_RANDOM",
       "severity": "Medium",
       "confidence": "Medium",
       "scanner": {
@@ -405,9 +405,9 @@ it highlighted:
       ]
     },
     {
+      "id": "e6dbf91f-4c07-46f7-a365-0169489c27d1",
       "category": "sast",
       "message": "Probable insecure usage of temp file/directory.",
-      "cve": "python/hardcoded/hardcoded-tmp.py:4ad6d4c40a8c263fc265f3384724014e0a4f8dd6200af83e51ff120420038031:B108",
       "severity": "Medium",
       "confidence": "Medium",
       "scanner": {
@@ -446,11 +446,12 @@ the report JSON unless stated otherwise. Presence of optional fields depends on 
 |-----------------------------------------|----------|
 | `version`                               | Report syntax version used to generate this JSON. |
 | `vulnerabilities`                       | Array of vulnerability objects. |
+| `vulnerabilities[].id`                  | Unique identifier of the vulnerability. |
 | `vulnerabilities[].category`            | Where this vulnerability belongs (SAST, Dependency Scanning etc.). For SAST, it will always be `sast`. |
 | `vulnerabilities[].name`                | Name of the vulnerability, this must not include the occurrence's specific information. Optional. |
 | `vulnerabilities[].message`             | A short text that describes the vulnerability, it may include the occurrence's specific information. Optional. |
 | `vulnerabilities[].description`         | A long text that describes the vulnerability. Optional. |
-| `vulnerabilities[].cve`                 | A fingerprint string value that represents a concrete occurrence of the vulnerability. Is used to determine whether two vulnerability occurrences are same or different. May not be 100% accurate. **This is NOT a [CVE](https://cve.mitre.org/)**. |
+| `vulnerabilities[].cve`                 | (**DEPRECATED - use `vulnerabilities[].id` instead**) A fingerprint string value that represents a concrete occurrence of the vulnerability. It's used to determine whether two vulnerability occurrences are same or different. May not be 100% accurate. **This is NOT a [CVE](https://cve.mitre.org/)**.                                                                                                                                      |
 | `vulnerabilities[].severity`            | How much the vulnerability impacts the software. Possible values: `Undefined` (an analyzer has not provided this information), `Info`, `Unknown`, `Low`, `Medium`, `High`, `Critical`. |
 | `vulnerabilities[].confidence`          | How reliable the vulnerability's assessment is. Possible values: `Undefined` (an analyzer has not provided this information), `Ignore`, `Unknown`, `Experimental`, `Low`, `Medium`, `High`, `Confirmed`. |
 | `vulnerabilities[].solution`            | Explanation of how to fix the vulnerability. Optional. |

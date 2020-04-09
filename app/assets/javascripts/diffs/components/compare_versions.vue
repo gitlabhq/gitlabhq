@@ -4,14 +4,14 @@ import { GlTooltipDirective, GlLink, GlDeprecatedButton, GlSprintf } from '@gitl
 import { __ } from '~/locale';
 import { polyfillSticky } from '~/lib/utils/sticky';
 import Icon from '~/vue_shared/components/icon.vue';
-import CompareVersionsDropdown from './compare_versions_dropdown.vue';
+import CompareDropdownLayout from './compare_dropdown_layout.vue';
 import SettingsDropdown from './settings_dropdown.vue';
 import DiffStats from './diff_stats.vue';
 import { CENTERED_LIMITED_CONTAINER_CLASSES } from '../constants';
 
 export default {
   components: {
-    CompareVersionsDropdown,
+    CompareDropdownLayout,
     Icon,
     GlLink,
     GlDeprecatedButton,
@@ -27,16 +27,6 @@ export default {
       type: Array,
       required: true,
     },
-    mergeRequestDiff: {
-      type: Object,
-      required: false,
-      default: () => ({}),
-    },
-    targetBranch: {
-      type: Object,
-      required: false,
-      default: null,
-    },
     isLimitedContainer: {
       type: Boolean,
       required: false,
@@ -48,7 +38,11 @@ export default {
     },
   },
   computed: {
-    ...mapGetters('diffs', ['hasCollapsedFile']),
+    ...mapGetters('diffs', [
+      'hasCollapsedFile',
+      'diffCompareDropdownTargetVersions',
+      'diffCompareDropdownSourceVersions',
+    ]),
     ...mapState('diffs', [
       'commit',
       'showTreeList',
@@ -57,17 +51,11 @@ export default {
       'addedLines',
       'removedLines',
     ]),
-    comparableDiffs() {
-      return this.mergeRequestDiffs.slice(1);
-    },
     showDropdowns() {
       return !this.commit && this.mergeRequestDiffs.length;
     },
     toggleFileBrowserTitle() {
       return this.showTreeList ? __('Hide file browser') : __('Show file browser');
-    },
-    baseVersionPath() {
-      return this.mergeRequestDiff.base_version_path;
     },
   },
   created() {
@@ -113,19 +101,14 @@ export default {
         :message="s__('MergeRequest|Compare %{source} and %{target}')"
       >
         <template #source>
-          <compare-versions-dropdown
-            :other-versions="mergeRequestDiffs"
-            :merge-request-version="mergeRequestDiff"
-            :show-commit-count="true"
+          <compare-dropdown-layout
+            :versions="diffCompareDropdownSourceVersions"
             class="mr-version-dropdown"
           />
         </template>
         <template #target>
-          <compare-versions-dropdown
-            :other-versions="comparableDiffs"
-            :base-version-path="baseVersionPath"
-            :start-version="startVersion"
-            :target-branch="targetBranch"
+          <compare-dropdown-layout
+            :versions="diffCompareDropdownTargetVersions"
             class="mr-version-compare-dropdown"
           />
         </template>

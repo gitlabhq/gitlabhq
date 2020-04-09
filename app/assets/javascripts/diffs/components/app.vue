@@ -112,7 +112,6 @@ export default {
       mergeRequestDiffs: state => state.diffs.mergeRequestDiffs,
       mergeRequestDiff: state => state.diffs.mergeRequestDiff,
       commit: state => state.diffs.commit,
-      targetBranchName: state => state.diffs.targetBranchName,
       renderOverflowWarning: state => state.diffs.renderOverflowWarning,
       numTotalFiles: state => state.diffs.realSize,
       numVisibleFiles: state => state.diffs.size,
@@ -123,18 +122,8 @@ export default {
     ...mapState('diffs', ['showTreeList', 'isLoading', 'startVersion']),
     ...mapGetters('diffs', ['isParallelView', 'currentDiffIndex']),
     ...mapGetters(['isNotesFetched', 'getNoteableData']),
-    targetBranch() {
-      return {
-        branchName: this.targetBranchName,
-        versionIndex: -1,
-        path: '',
-      };
-    },
     canCurrentUserFork() {
       return this.currentUser.can_fork === true && this.currentUser.can_create_merge_request;
-    },
-    showCompareVersions() {
-      return this.mergeRequestDiffs && this.mergeRequestDiff;
     },
     renderDiffFiles() {
       return (
@@ -369,8 +358,6 @@ export default {
     <div v-else id="diffs" :class="{ active: shouldShow }" class="diffs tab-pane">
       <compare-versions
         :merge-request-diffs="mergeRequestDiffs"
-        :merge-request-diff="mergeRequestDiff"
-        :target-branch="targetBranch"
         :is-limited-container="isLimitedContainer"
         :diff-files-length="diffFilesLength"
       />

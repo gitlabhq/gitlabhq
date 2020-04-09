@@ -12,23 +12,25 @@ localVue.use(Vuex);
 
 describe('CompareVersions', () => {
   let wrapper;
-  const targetBranch = { branchName: 'tmp-wine-dev', versionIndex: -1 };
+  const targetBranchName = 'tmp-wine-dev';
 
   const createWrapper = props => {
     const store = createStore();
+    const mergeRequestDiff = diffsMockData[0];
 
     store.state.diffs.addedLines = 10;
     store.state.diffs.removedLines = 20;
     store.state.diffs.diffFiles.push('test');
+    store.state.diffs.targetBranchName = targetBranchName;
+    store.state.diffs.mergeRequestDiff = mergeRequestDiff;
+    store.state.diffs.mergeRequestDiffs = diffsMockData;
 
     wrapper = mount(CompareVersionsComponent, {
       localVue,
       store,
       propsData: {
         mergeRequestDiffs: diffsMockData,
-        mergeRequestDiff: diffsMockData[0],
         diffFilesLength: 0,
-        targetBranch,
         ...props,
       },
     });
@@ -59,7 +61,7 @@ describe('CompareVersions', () => {
       expect(sourceDropdown.exists()).toBe(true);
       expect(targetDropdown.exists()).toBe(true);
       expect(sourceDropdown.find('a span').html()).toContain('latest version');
-      expect(targetDropdown.find('a span').html()).toContain(targetBranch.branchName);
+      expect(targetDropdown.find('a span').html()).toContain(targetBranchName);
     });
 
     it('should not render comparison dropdowns if no mergeRequestDiffs are specified', () => {
@@ -116,21 +118,6 @@ describe('CompareVersions', () => {
       viewTypeBtn.trigger('click');
 
       expect(window.location.toString()).toContain('?view=parallel');
-    });
-  });
-
-  describe('comparableDiffs', () => {
-    it('should not contain the first item in the mergeRequestDiffs property', () => {
-      const { comparableDiffs } = wrapper.vm;
-      const comparableDiffsMock = diffsMockData.slice(1);
-
-      expect(comparableDiffs).toEqual(comparableDiffsMock);
-    });
-  });
-
-  describe('baseVersionPath', () => {
-    it('should be set correctly from mergeRequestDiff', () => {
-      expect(wrapper.vm.baseVersionPath).toEqual(wrapper.vm.mergeRequestDiff.base_version_path);
     });
   });
 

@@ -312,7 +312,7 @@ From there, you can see tracked over time:
 
 If a significant percentage of traffic is anomalous, it should be investigated
 for potential threats, which can be done by
-[examining the application logs](#web-application-firewall-modsecurity).
+[examining the Web Application Firewall logs](#web-application-firewall-modsecurity).
 
 ![Threat Monitoring](img/threat_monitoring_v12_9.png)
 

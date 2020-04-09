@@ -17951,6 +17951,9 @@ msgstr ""
 msgid "SecurityDashboard|The security dashboard displays the latest security report. Use it to find and fix vulnerabilities."
 msgstr ""
 
+msgid "SecurityDashboard|There was an error while generating the report."
+msgstr ""
+
 msgid "SecurityDashboard|Unable to add %{invalidProjects}"
 msgstr ""
 
@@ -23400,6 +23403,9 @@ msgid "You can invite another group to <strong>%{project_name}</strong>."
 msgstr ""
 
 msgid "You can move around the graph by using the arrow keys."
+msgstr ""
+
+msgid "You can now export your security dashboard to a CSV report."
 msgstr ""
 
 msgid "You can now submit a merge request to get this change into the original branch."

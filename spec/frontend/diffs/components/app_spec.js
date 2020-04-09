@@ -613,13 +613,7 @@ describe('diffs/components/app', () => {
       expect(wrapper.contains(CompareVersions)).toBe(true);
       expect(wrapper.find(CompareVersions).props()).toEqual(
         expect.objectContaining({
-          targetBranch: {
-            branchName: 'target-branch',
-            versionIndex: -1,
-            path: '',
-          },
           mergeRequestDiffs: diffsMockData,
-          mergeRequestDiff,
         }),
       );
     });

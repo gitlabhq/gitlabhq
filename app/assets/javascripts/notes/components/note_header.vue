@@ -1,10 +1,12 @@
 <script>
 import { mapActions } from 'vuex';
-import timeAgoTooltip from '../../vue_shared/components/time_ago_tooltip.vue';
+import timeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import GitlabTeamMemberBadge from '~/vue_shared/components/user_avatar/badges/gitlab_team_member_badge.vue';
 
 export default {
   components: {
     timeAgoTooltip,
+    GitlabTeamMemberBadge,
   },
   props: {
     author: {
@@ -48,6 +50,9 @@ export default {
     hasAuthor() {
       return this.author && Object.keys(this.author).length;
     },
+    showGitlabTeamMemberBadge() {
+      return this.author?.is_gitlab_employee;
+    },
   },
   methods: {
     ...mapActions(['setTargetNoteHash']),
@@ -73,19 +78,21 @@ export default {
         {{ __('Toggle thread') }}
       </button>
     </div>
-    <a
-      v-if="hasAuthor"
-      v-once
-      :href="author.path"
-      class="js-user-link"
-      :data-user-id="author.id"
-      :data-username="author.username"
-    >
-      <slot name="note-header-info"></slot>
-      <span class="note-header-author-name bold">{{ author.name }}</span>
-      <span v-if="author.status_tooltip_html" v-html="author.status_tooltip_html"></span>
-      <span class="note-headline-light">@{{ author.username }}</span>
-    </a>
+    <template v-if="hasAuthor">
+      <a
+        v-once
+        :href="author.path"
+        class="js-user-link"
+        :data-user-id="author.id"
+        :data-username="author.username"
+      >
+        <slot name="note-header-info"></slot>
+        <span class="note-header-author-name bold">{{ author.name }}</span>
+        <span v-if="author.status_tooltip_html" v-html="author.status_tooltip_html"></span>
+        <span class="note-headline-light">@{{ author.username }}</span>
+      </a>
+      <gitlab-team-member-badge v-if="showGitlabTeamMemberBadge" />
+    </template>
     <span v-else>{{ __('A deleted user') }}</span>
     <span class="note-headline-light note-headline-meta">
       <span class="system-note-message"> <slot></slot> </span>

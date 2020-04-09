@@ -81,6 +81,7 @@ Example response:
   "title": "Accusamus iste et ullam ratione voluptatem omnis debitis dolor est.",
   "description": "Molestias dolorem eos vitae expedita impedit necessitatibus quo voluptatum.",
   "state": "opened",
+  "confidential": "false",
   "web_url": "http://localhost:3001/groups/test/-/epics/4",
   "reference": "&4",
   "references": {
@@ -240,6 +241,7 @@ POST /groups/:id/epics
 | `title`             | string           | yes        | The title of the epic |
 | `labels`            | string           | no         | The comma separated list of labels |
 | `description`       | string           | no         | The description of the epic. Limited to 1,048,576 characters.  |
+| `confidential`      | boolean          | no         | Whether the epic should be confidential. Will be ignored if `confidential_epics` feature flag is disabled. |
 | `start_date_is_fixed` | boolean        | no         | Whether start date should be sourced from `start_date_fixed` or from milestones (since 11.3) |
 | `start_date_fixed`  | string           | no         | The fixed start date of an epic (since 11.3) |
 | `due_date_is_fixed` | boolean          | no         | Whether due date should be sourced from `due_date_fixed` or from milestones (since 11.3) |
@@ -260,6 +262,7 @@ Example response:
   "title": "Epic",
   "description": "Epic description",
   "state": "opened",
+  "confidential": "false",
   "web_url": "http://localhost:3001/groups/test/-/epics/6",
   "reference": "&6",
   "references": {
@@ -314,6 +317,7 @@ PUT /groups/:id/epics/:epic_iid
 | `epic_iid`          | integer/string   | yes        | The internal ID of the epic  |
 | `title`             | string           | no         | The title of an epic |
 | `description`       | string           | no         | The description of an epic. Limited to 1,048,576 characters.  |
+| `confidential`      | boolean          | no         | Whether the epic should be confidential. Will be ignored if `confidential_epics` feature flag is disabled. |
 | `labels`            | string           | no         | The comma separated list of labels |
 | `start_date_is_fixed` | boolean        | no         | Whether start date should be sourced from `start_date_fixed` or from milestones (since 11.3) |
 | `start_date_fixed`  | string           | no         | The fixed start date of an epic (since 11.3) |
@@ -335,6 +339,7 @@ Example response:
   "title": "New Title",
   "description": "Epic description",
   "state": "opened",
+  "confidential": "false",
   "web_url": "http://localhost:3001/groups/test/-/epics/6",
   "reference": "&6",
   "references": {

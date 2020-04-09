@@ -218,3 +218,13 @@ panel_groups:
       query_range: 'sum(rate(nginx_server_requests{code="5xx", %{environment_filter}}[2m]))'
       label: HTTP Errors
       unit: "errors / sec"
+  - title: "HTTP Error Rate"
+    type: "area-chart"
+    y_label: "HTTP Errors (%)"
+    weight: 1
+    metrics:
+    - id: response_metrics_nginx_http_error_percentage
+      query_range: 'sum(rate(nginx_server_requests{code=~"5.*", host="*", %{environment_filter}}[2m])) / sum(rate(nginx_server_requests{code="total", host="*", %{environment_filter}}[2m])) * 100'
+      label: 5xx Errors (%)
+      unit: "%"
+

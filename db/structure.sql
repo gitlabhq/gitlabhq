@@ -10036,6 +10036,8 @@ CREATE INDEX index_resource_label_events_on_merge_request_id ON public.resource_
 
 CREATE INDEX index_resource_label_events_on_user_id ON public.resource_label_events USING btree (user_id);
 
+CREATE INDEX index_resource_milestone_events_created_at ON public.resource_milestone_events USING btree (created_at);
+
 CREATE INDEX index_resource_milestone_events_on_issue_id ON public.resource_milestone_events USING btree (issue_id);
 
 CREATE INDEX index_resource_milestone_events_on_merge_request_id ON public.resource_milestone_events USING btree (merge_request_id);
@@ -13070,7 +13072,9 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200403184110
 20200403185127
 20200403185422
+20200406135648
 20200407094005
 20200407094923
+20200408110856
 \.
 

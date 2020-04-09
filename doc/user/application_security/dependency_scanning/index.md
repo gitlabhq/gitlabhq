@@ -259,11 +259,11 @@ it highlighted:
   "version": "2.0",
   "vulnerabilities": [
     {
+      "id": "51e83874-0ff6-4677-a4c5-249060554eae",
       "category": "dependency_scanning",
       "name": "Regular Expression Denial of Service",
       "message": "Regular Expression Denial of Service in debug",
       "description": "The debug module is vulnerable to regular expression denial of service when untrusted user input is passed into the `o` formatter. It takes around 50k characters to block for 2 seconds making this a low severity issue.",
-      "cve": "yarn.lock:debug:gemnasium:37283ed4-0380-40d7-ada7-2d994afcc62a",
       "severity": "Unknown",
       "solution": "Upgrade to latest versions.",
       "scanner": {
@@ -300,11 +300,11 @@ it highlighted:
       ]
     },
     {
+      "id": "5d681b13-e8fa-4668-957e-8d88f932ddc7",
       "category": "dependency_scanning",
       "name": "Authentication bypass via incorrect DOM traversal and canonicalization",
       "message": "Authentication bypass via incorrect DOM traversal and canonicalization in saml2-js",
       "description": "Some XML DOM traversal and canonicalization APIs may be inconsistent in handling of comments within XML nodes. Incorrect use of these APIs by some SAML libraries results in incorrect parsing of the inner text of XML nodes such that any inner text after the comment is lost prior to cryptographically signing the SAML message. Text after the comment therefore has no impact on the signature on the SAML message.\r\n\r\nA remote attacker can modify SAML content for a SAML service provider without invalidating the cryptographic signature, which may allow attackers to bypass primary authentication for the affected SAML service provider.",
-      "cve": "yarn.lock:saml2-js:gemnasium:9952e574-7b5b-46fa-a270-aeb694198a98",
       "severity": "Unknown",
       "solution": "Upgrade to fixed version.\r\n",
       "scanner": {
@@ -351,7 +351,7 @@ it highlighted:
     {
       "fixes": [
         {
-          "cve": "yarn.lock:saml2-js:gemnasium:9952e574-7b5b-46fa-a270-aeb694198a98"
+          "id": "5d681b13-e8fa-4668-957e-8d88f932ddc7",
         }
       ],
       "summary": "Upgrade saml2-js",
@@ -371,11 +371,12 @@ the report JSON unless stated otherwise. Presence of optional fields depends on 
 |------------------------------------------------------|-------------|
 | `version`                                            | Report syntax version used to generate this JSON. |
 | `vulnerabilities`                                    | Array of vulnerability objects. |
+| `vulnerabilities[].id`                               | Unique identifier of the vulnerability. |
 | `vulnerabilities[].category`                         | Where this vulnerability belongs (SAST, Dependency Scanning etc.). For Dependency Scanning, it will always be `dependency_scanning`. |
 | `vulnerabilities[].name`                             | Name of the vulnerability, this must not include the occurrence's specific information. Optional. |
 | `vulnerabilities[].message`                          | A short text that describes the vulnerability, it may include occurrence's specific information. Optional. |
 | `vulnerabilities[].description`                      | A long text that describes the vulnerability. Optional. |
-| `vulnerabilities[].cve`                              | A fingerprint string value that represents a concrete occurrence of the vulnerability. It's used to determine whether two vulnerability occurrences are same or different. May not be 100% accurate. **This is NOT a [CVE](https://cve.mitre.org/)**. |
+| `vulnerabilities[].cve`                              | (**DEPRECATED - use `vulnerabilities[].id` instead**) A fingerprint string value that represents a concrete occurrence of the vulnerability. It's used to determine whether two vulnerability occurrences are same or different. May not be 100% accurate. **This is NOT a [CVE](https://cve.mitre.org/)**.                                                                                                                                      |
 | `vulnerabilities[].severity`                         | How much the vulnerability impacts the software. Possible values: `Undefined` (an analyzer has not provided this information), `Info`, `Unknown`, `Low`, `Medium`, `High`, `Critical`. |
 | `vulnerabilities[].confidence`                       | How reliable the vulnerability's assessment is. Possible values: `Undefined` (an analyzer has not provided this information), `Ignore`, `Unknown`, `Experimental`, `Low`, `Medium`, `High`, `Confirmed`. |
 | `vulnerabilities[].solution`                         | Explanation of how to fix the vulnerability. Optional. |
@@ -398,7 +399,8 @@ the report JSON unless stated otherwise. Presence of optional fields depends on 
 | `vulnerabilities[].links[].url`                      | URL of the vulnerability details document. Optional. |
 | `remediations`                                       | An array of objects containing information on cured vulnerabilities along with patch diffs to apply. Empty if no remediations provided by an underlying analyzer. |
 | `remediations[].fixes`                               | An array of strings that represent references to vulnerabilities fixed by this particular remediation. |
-| `remediations[].fixes[].cve`                         | A string value that describes a fixed vulnerability occurrence in the same format as `vulnerabilities[].cve`. |
+| `remediations[].fixes[].id`                          | The id of a fixed vulnerability. |
+| `remediations[].fixes[].cve`                         | (**DEPRECATED - use `remediations[].fixes[].id` instead**) A string value that describes a fixed vulnerability in the same format as `vulnerabilities[].cve`. |
 | `remediations[].summary`                             | Overview of how the vulnerabilities have been fixed. |
 | `remediations[].diff`                                | base64-encoded remediation code diff, compatible with [`git apply`](https://git-scm.com/docs/git-format-patch#_discussion). |
 

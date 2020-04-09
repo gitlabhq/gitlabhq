@@ -60,12 +60,18 @@ GitLab](https://about.gitlab.com/install/).
 
 - 1 Praefect node (minimal storage required)
 - 3 Gitaly nodes (high CPU, high memory, fast storage)
+- 1 GitLab server
 
 You will need the IP/host address for each node.
 
 1. `POSTGRESQL_SERVER_ADDRESS`: the IP/host address of the PostgreSQL server
-1. `PRAEFECT_SERVER_ADDRESS`: the IP/host address of the Praefect server
-1. `GITALY_SERVER_ADDRESS`: the IP/host address of each Gitaly node
+1. `PRAEFECT_HOST`: the IP/host address of the Praefect server
+1. `GITALY_HOST`: the IP/host address of each Gitaly server
+1. `GITLAB_HOST`: the IP/host address of the GitLab server
+
+If you are using a cloud provider, you can look up the addresses for each server through your cloud provider's management console.
+
+If you are using Google Cloud Platform, SoftLayer, or any other vendor that provides a virtual private cloud (VPC) you can use the private addresses for each cloud instance (corresponds to “internal address” for Google Cloud Platform) for `PRAEFECT_HOST`, `GITALY_HOST`, and `GITLAB_HOST`.
 
 #### Secrets
 
@@ -183,14 +189,18 @@ application server, or a Gitaly node.
 1. Configure **Praefect** to listen on network interfaces by editing
    `/etc/gitlab/gitlab.rb`:
 
+   You will need to replace:
+
+   - `PRAEFECT_HOST` with the IP address or hostname of the Praefect node
+
    ```ruby
    # Make Praefect accept connections on all network interfaces.
    # Use firewalls to restrict access to this address/port.
-   praefect['listen_addr'] = '0.0.0.0:2305'
+   praefect['listen_addr'] = 'PRAEFECT_HOST:2305'
 
    # Enable Prometheus metrics access to Praefect. You must use firewalls
    # to restrict access to this address/port.
-   praefect['prometheus_listen_addr'] = '0.0.0.0:9652'
+   praefect['prometheus_listen_addr'] = 'PRAEFECT_HOST:9652'
    ```
 
 1. Configure a strong `auth_token` for **Praefect** by editing
@@ -357,14 +367,18 @@ documentation](index.md#3-gitaly-server-configuration).
 1. Configure **Gitaly** to listen on network interfaces by editing
    `/etc/gitlab/gitlab.rb`:
 
+   You will need to replace:
+
+   - `GITALY_HOST` with the IP address or hostname of the Gitaly node
+
    ```ruby
    # Make Gitaly accept connections on all network interfaces.
    # Use firewalls to restrict access to this address/port.
-   gitaly['listen_addr'] = '0.0.0.0:8075'
+   gitaly['listen_addr'] = 'GITALY_HOST:8075'
 
    # Enable Prometheus metrics access to Gitaly. You must use firewalls
    # to restrict access to this address/port.
-   gitaly['prometheus_listen_addr'] = '0.0.0.0:9236'
+   gitaly['prometheus_listen_addr'] = 'GITALY_HOST:9236'
    ```
 
 1. Configure a strong `auth_token` for **Gitaly** by editing
@@ -387,7 +401,7 @@ documentation](index.md#3-gitaly-server-configuration).
    # Configure the gitlab-shell API callback URL. Without this, `git push` will
    # fail. This can be your front door GitLab URL or an internal load balancer.
    # Examples: 'https://example.gitlab.com', 'http://1.2.3.4'
-   gitlab_rails['internal_api_url'] = 'GITLAB_SERVER_URL'
+   gitlab_rails['internal_api_url'] = 'http://GITLAB_HOST'
    ```
 
 1. Configure the storage location for Git data by setting `git_data_dirs` in
@@ -499,18 +513,26 @@ Particular attention should be shown to:
    You will need to replace:
 
    - `PRAEFECT_HOST` with the IP address or hostname of the Praefect node
+   - `GITLAB_HOST` with the IP address or hostname of the GitLab server
    - `PRAEFECT_EXTERNAL_TOKEN` with the real secret
 
    ```ruby
    git_data_dirs({
      "default" => {
-       "path" => "/var/opt/gitlab/git-data"
+       "gitaly_address" => "tcp://GITLAB_HOST:8075"
      },
      "praefect" => {
        "gitaly_address" => "tcp://PRAEFECT_HOST:2305",
        "gitaly_token" => 'PRAEFECT_EXTERNAL_TOKEN'
      }
    })
+   ```
+
+1. Allow Gitaly to listen on a tcp port by editing
+   `/etc/gitlab/gitlab.rb`
+
+   ```ruby
+   gitaly['listen_addr'] = 'tcp://GITLAB_HOST:8075'
    ```
 
 1. Configure the `gitlab_shell['secret_token']` so that callbacks from Gitaly
@@ -526,7 +548,7 @@ Particular attention should be shown to:
 1. Configure the `external_url` so that files could be served by GitLab
    by proper endpoint access by editing `/etc/gitlab/gitlab.rb`:
 
-   You will need to replace `GITLAB_SERVER_URL` with the real URL on which
+   You will need to replace `GITLAB_SERVER_URL` with the real external facing URL on which
    current GitLab instance is serving:
 
    ```ruby

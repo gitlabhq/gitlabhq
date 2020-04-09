@@ -3,16 +3,16 @@
 require 'spec_helper'
 
 describe SearchService do
-  let(:user) { create(:user) }
+  let_it_be(:user) { create(:user) }
 
-  let(:accessible_group) { create(:group, :private) }
-  let(:inaccessible_group) { create(:group, :private) }
-  let!(:group_member) { create(:group_member, group: accessible_group, user: user) }
+  let_it_be(:accessible_group) { create(:group, :private) }
+  let_it_be(:inaccessible_group) { create(:group, :private) }
+  let_it_be(:group_member) { create(:group_member, group: accessible_group, user: user) }
 
-  let!(:accessible_project) { create(:project, :private, name: 'accessible_project') }
-  let(:note) { create(:note_on_issue, project: accessible_project) }
+  let_it_be(:accessible_project) { create(:project, :repository, :private, name: 'accessible_project') }
+  let_it_be(:note) { create(:note_on_issue, project: accessible_project) }
 
-  let!(:inaccessible_project) { create(:project, :private, name: 'inaccessible_project') }
+  let_it_be(:inaccessible_project) { create(:project, :repository, :private, name: 'inaccessible_project') }
 
   let(:snippet) { create(:snippet, author: user) }
   let(:group_project) { create(:project, group: accessible_group, name: 'group_project') }
@@ -298,67 +298,129 @@ describe SearchService do
     end
 
     context 'redacting search results' do
-      shared_examples 'it redacts incorrect results' do
-        before do
-          allow(Ability).to receive(:allowed?).and_return(allowed)
-        end
+      let(:search) { 'anything' }
 
-        context 'when allowed' do
-          let(:allowed) { true }
+      subject(:result) { search_service.search_objects }
 
-          it 'does nothing' do
-            expect(results).not_to be_empty
-            expect(results).to all(be_an(model_class))
-          end
-        end
+      def found_blob(project)
+        Gitlab::Search::FoundBlob.new(project: project)
+      end
 
-        context 'when disallowed' do
-          let(:allowed) { false }
+      def found_wiki_page(project)
+        Gitlab::Search::FoundWikiPage.new(found_blob(project))
+      end
 
-          it 'does nothing' do
-            expect(results).to be_empty
-          end
-        end
+      before do
+        expect(search_service)
+          .to receive(:search_results)
+          .and_return(double('search results', objects: unredacted_results))
+      end
+
+      def ar_relation(klass, *objects)
+        klass.id_in(objects.map(&:id))
+      end
+
+      def kaminari_array(*objects)
+        Kaminari.paginate_array(objects).page(1).per(20)
       end
 
       context 'issues' do
-        let(:issue) { create(:issue, project: accessible_project) }
+        let(:readable) { create(:issue, project: accessible_project) }
+        let(:unreadable) { create(:issue, project: inaccessible_project) }
+        let(:unredacted_results) { ar_relation(Issue, readable, unreadable) }
         let(:scope) { 'issues' }
-        let(:model_class) { Issue }
-        let(:ability) { :read_issue }
-        let(:search) { issue.title }
-        let(:results) { subject.search_objects }
 
-        it_behaves_like 'it redacts incorrect results'
+        it 'redacts the inaccessible issue' do
+          expect(result).to contain_exactly(readable)
+        end
       end
 
       context 'notes' do
-        let(:note) { create(:note_on_commit, project: accessible_project) }
+        let(:readable) { create(:note_on_commit, project: accessible_project) }
+        let(:unreadable) { create(:note_on_commit, project: inaccessible_project) }
+        let(:unredacted_results) { ar_relation(Note, readable, unreadable) }
         let(:scope) { 'notes' }
-        let(:model_class) { Note }
-        let(:ability) { :read_note }
-        let(:search) { note.note }
-        let(:results) do
-          described_class.new(
-            user,
-            project_id: accessible_project.id,
-            scope: scope,
-            search: note.note
-          ).search_objects
-        end
 
-        it_behaves_like 'it redacts incorrect results'
+        it 'redacts the inaccessible note' do
+          expect(result).to contain_exactly(readable)
+        end
       end
 
       context 'merge_requests' do
+        let(:readable) { create(:merge_request, source_project: accessible_project, author: user) }
+        let(:unreadable) { create(:merge_request, source_project: inaccessible_project) }
+        let(:unredacted_results) { ar_relation(MergeRequest, readable, unreadable) }
         let(:scope) { 'merge_requests' }
-        let(:model_class) { MergeRequest }
-        let(:ability) { :read_merge_request }
-        let(:merge_request) { create(:merge_request, source_project: accessible_project, author: user) }
-        let(:search) { merge_request.title }
-        let(:results) { subject.search_objects }
 
-        it_behaves_like 'it redacts incorrect results'
+        it 'redacts the inaccessible merge request' do
+          expect(result).to contain_exactly(readable)
+        end
+      end
+
+      context 'project repository blobs' do
+        let(:readable) { found_blob(accessible_project) }
+        let(:unreadable) { found_blob(inaccessible_project) }
+        let(:unredacted_results) { kaminari_array(readable, unreadable) }
+        let(:scope) { 'blobs' }
+
+        it 'redacts the inaccessible blob' do
+          expect(result).to contain_exactly(readable)
+        end
+      end
+
+      context 'project wiki blobs' do
+        let(:readable) { found_wiki_page(accessible_project) }
+        let(:unreadable) { found_wiki_page(inaccessible_project) }
+        let(:unredacted_results) { kaminari_array(readable, unreadable) }
+        let(:scope) { 'wiki_blobs' }
+
+        it 'redacts the inaccessible blob' do
+          expect(result).to contain_exactly(readable)
+        end
+      end
+
+      context 'project snippets' do
+        let(:readable) { create(:project_snippet, project: accessible_project) }
+        let(:unreadable) { create(:project_snippet, project: inaccessible_project) }
+        let(:unredacted_results) { ar_relation(ProjectSnippet, readable, unreadable) }
+        let(:scope) { 'snippet_blobs' }
+
+        it 'redacts the inaccessible snippet' do
+          expect(result).to contain_exactly(readable)
+        end
+      end
+
+      context 'personal snippets' do
+        let(:readable) { create(:personal_snippet, :private, author: user) }
+        let(:unreadable) { create(:personal_snippet, :private) }
+        let(:unredacted_results) { ar_relation(PersonalSnippet, readable, unreadable) }
+        let(:scope) { 'snippet_blobs' }
+
+        it 'redacts the inaccessible snippet' do
+          expect(result).to contain_exactly(readable)
+        end
+      end
+
+      context 'commits' do
+        let(:readable) { accessible_project.commit }
+        let(:unreadable) { inaccessible_project.commit }
+        let(:unredacted_results) { kaminari_array(readable, unreadable) }
+        let(:scope) { 'commits' }
+
+        it 'redacts the inaccessible commit' do
+          expect(result).to contain_exactly(readable)
+        end
+      end
+
+      context 'users' do
+        let(:other_user) { create(:user) }
+        let(:unredacted_results) { ar_relation(User, user, other_user) }
+        let(:scope) { 'users' }
+
+        it 'passes the users through' do
+          # Users are always visible to everyone
+          expect(result).to contain_exactly(user, other_user)
+        end
       end
     end
   end

@@ -28,6 +28,10 @@ export default class PrometheusMetrics {
     this.$panelToggle.on('click', e => this.handlePanelToggle(e));
   }
 
+  init() {
+    this.loadActiveMetrics();
+  }
+
   /* eslint-disable class-methods-use-this */
   handlePanelToggle(e) {
     const $toggleBtn = $(e.currentTarget);

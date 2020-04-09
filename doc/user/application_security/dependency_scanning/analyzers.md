@@ -83,8 +83,11 @@ That's needed when one totally relies on [custom analyzers](#custom-analyzers).
 
 ## Custom analyzers
 
-You can provide your own analyzers as a comma separated list of Docker images.
-Here's how to add `analyzers/nugget` and `analyzers/perl` to the default images.
+### Custom analyzers with Docker-in-Docker
+
+When Docker-in-Docker for Dependency Scanning is enabled,
+you can provide your own analyzers as a comma-separated list of Docker images.
+Here's how to add `analyzers/nuget` and `analyzers/perl` to the default images.
 In `.gitlab-ci.yml` define:
 
 ```yaml
@@ -92,7 +95,7 @@ include:
   template: Dependency-Scanning.gitlab-ci.yml
 
 variables:
-  DS_ANALYZER_IMAGES: "my-docker-registry/analyzers/nugget,amy-docker-registry/nalyzers/perl"
+  DS_ANALYZER_IMAGES: "my-docker-registry/analyzers/nuget,amy-docker-registry/analyzers/perl"
 ```
 
 The values must be the full path to the container registry images,
@@ -102,6 +105,28 @@ NOTE: **Note:**
 This configuration doesn't benefit from the integrated detection step. Dependency
 Scanning has to fetch and spawn each Docker image to establish whether the
 custom analyzer can scan the source code.
+
+### Custom analyzers without Docker-in-Docker
+
+When Docker-in-Docker for Dependency Scanning is disabled, you can provide your own analyzers by
+defining CI jobs in your CI configuration. For consistency, you should suffix your custom Dependency
+Scanning jobs with `-dependency_scanning`. Here's how to add a scanning job that's based on the
+Docker image `my-docker-registry/analyzers/nuget` and generates a Dependency Scanning report
+`gl-dependency-scanning-report.json` when `/analyzer run` is executed. Define the following in
+`.gitlab-ci.yml`:
+
+```yaml
+nuget-dependency_scanning:
+  image:
+    name: "my-docker-registry/analyzers/nuget"
+  script:
+    - /analyzer run
+  artifacts:
+    reports:
+      dependency_scanning: gl-dependency-scanning-report.json
+```
+
+The [Security Scanner Integration](../../../development/integrations/secure.md) documentation explains how to integrate custom security scanners into GitLab.
 
 ## Analyzers data
 

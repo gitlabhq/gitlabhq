@@ -1,6 +1,8 @@
 import { __, n__ } from '~/locale';
 import { PARALLEL_DIFF_VIEW_TYPE, INLINE_DIFF_VIEW_TYPE } from '../constants';
 
+export * from './getters_versions_dropdowns';
+
 export const isParallelView = state => state.diffViewType === PARALLEL_DIFF_VIEW_TYPE;
 
 export const isInlineView = state => state.diffViewType === INLINE_DIFF_VIEW_TYPE;
