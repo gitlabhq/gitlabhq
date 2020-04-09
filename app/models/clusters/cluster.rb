@@ -123,6 +123,7 @@ module Clusters
     scope :managed, -> { where(managed: true) }
     scope :with_persisted_applications, -> { eager_load(*APPLICATIONS_ASSOCIATIONS) }
     scope :default_environment, -> { where(environment_scope: DEFAULT_ENVIRONMENT) }
+    scope :with_management_project, -> { where.not(management_project: nil) }
 
     scope :for_project_namespace, -> (namespace_id) { joins(:projects).where(projects: { namespace_id: namespace_id }) }
 

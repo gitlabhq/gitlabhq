@@ -52,6 +52,7 @@ RSpec.shared_examples 'a blob replicator' do
       replicator.calculate_checksum!
 
       expect(model_record.reload.verification_checksum).not_to be_nil
+      expect(model_record.reload.verified_at).not_to be_nil
     end
 
     it 'saves the error message and increments retry counter' do

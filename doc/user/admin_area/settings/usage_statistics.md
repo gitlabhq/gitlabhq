@@ -197,9 +197,11 @@ but commented out to help encourage others to add to it in the future. -->
 |clusters_enabled|counts||
 |project_clusters_enabled|counts||
 |group_clusters_enabled|counts||
+|instance_clusters_enabled|counts||
 |clusters_disabled|counts||
 |project_clusters_disabled|counts||
 |group_clusters_disabled|counts||
+|instance_clusters_disabled|counts||
 |clusters_platforms_eks|counts||
 |clusters_platforms_gke|counts||
 |clusters_platforms_user|counts||
@@ -211,6 +213,7 @@ but commented out to help encourage others to add to it in the future. -->
 |clusters_applications_runner|counts||
 |clusters_applications_knative|counts||
 |clusters_applications_elastic_stack|counts||
+|clusters_management_project|counts||
 |in_review_folder|counts||
 |grafana_integrated_projects|counts||
 |groups|counts||
@@ -382,11 +385,14 @@ but commented out to help encourage others to add to it in the future. -->
 |clusters_applications_helm|usage_activity_by_stage|configure|
 |clusters_applications_ingress|usage_activity_by_stage|configure|
 |clusters_applications_knative|usage_activity_by_stage|configure|
+|clusters_management_project|usage_activity_by_stage|configure|
 |clusters_disabled|usage_activity_by_stage|configure|
 |clusters_enabled|usage_activity_by_stage|configure|
 |clusters_platforms_gke|usage_activity_by_stage|configure|
 |clusters_platforms_eks|usage_activity_by_stage|configure|
 |clusters_platforms_user|usage_activity_by_stage|configure|
+|instance_clusters_disabled|usage_activity_by_stage|configure|
+|instance_clusters_enabled|usage_activity_by_stage|configure|
 |group_clusters_disabled|usage_activity_by_stage|configure|
 |group_clusters_enabled|usage_activity_by_stage|configure|
 |project_clusters_disabled|usage_activity_by_stage|configure|

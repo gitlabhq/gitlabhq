@@ -32,6 +32,23 @@ describe ProjectGroupLink do
     end
   end
 
+  describe 'scopes' do
+    describe '.non_guests' do
+      let!(:project_group_link_reporter) { create :project_group_link, :reporter }
+      let!(:project_group_link_maintainer) { create :project_group_link, :maintainer }
+      let!(:project_group_link_developer) { create :project_group_link }
+      let!(:project_group_link_guest) { create :project_group_link, :guest }
+
+      it 'returns all records which are greater than Guests access' do
+        expect(described_class.non_guests).to match_array([
+                                                           project_group_link_reporter,
+                                                           project_group_link_developer,
+                                                           project_group_link_maintainer
+                                                          ])
+      end
+    end
+  end
+
   describe "destroying a record", :delete do
     it "refreshes group users' authorized projects" do
       project     = create(:project, :private)

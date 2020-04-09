@@ -13,6 +13,8 @@ class GroupGroupLink < ApplicationRecord
   validates :group_access, inclusion: { in: Gitlab::Access.all_values },
                            presence: true
 
+  scope :non_guests, -> { where('group_access > ?', Gitlab::Access::GUEST) }
+
   def self.access_options
     Gitlab::Access.options_with_owner
   end

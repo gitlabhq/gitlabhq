@@ -63,6 +63,8 @@ The current state of existing package registries availability is:
 | Maven           | Yes           | Yes         | Yes            |
 | Conan           | No - [open issue](https://gitlab.com/gitlab-org/gitlab/issues/11679) | No - [open issue](https://gitlab.com/gitlab-org/gitlab/issues/11679) | Yes |
 | NPM             | No - [open issue](https://gitlab.com/gitlab-org/gitlab/issues/36853) | Yes | No - [open issue](https://gitlab.com/gitlab-org/gitlab/issues/36853) |
+| NuGet           | Yes | No - [open issue](https://gitlab.com/gitlab-org/gitlab/-/issues/36423) | No |
+| PyPI            | Yes | No | No |
 
 NOTE: **Note:** NPM is currently a hybrid of the instance level and group level.
 It is using the top-level group or namespace as the defining portion of the name

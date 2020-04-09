@@ -13,7 +13,7 @@ describe Groups::SharedProjectsController do
     Projects::GroupLinks::CreateService.new(
       project,
       user,
-      link_group_access: ProjectGroupLink::DEVELOPER
+      link_group_access: Gitlab::Access::DEVELOPER
     ).execute(group)
   end
 

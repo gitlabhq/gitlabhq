@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
+import { parseBoolean } from '~/lib/utils/common_utils';
 import App from './components/jira_import_app.vue';
 
 Vue.use(VueApollo);
@@ -23,7 +24,9 @@ export default function mountJiraImportApp() {
     render(createComponent) {
       return createComponent(App, {
         props: {
+          isJiraConfigured: parseBoolean(el.dataset.isJiraConfigured),
           projectPath: el.dataset.projectPath,
+          setupIllustration: el.dataset.setupIllustration,
         },
       });
     },

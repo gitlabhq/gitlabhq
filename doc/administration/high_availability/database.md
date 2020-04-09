@@ -199,7 +199,7 @@ Few notes on the service itself:
 - Passwords will be stored in the following locations:
   - `/etc/gitlab/gitlab.rb`: hashed
   - `/var/opt/gitlab/pgbouncer/pg_auth`: hashed
-  - `/var/opt/gitlab/gitlab-consul/.pgpass`: plaintext
+  - `/var/opt/gitlab/consul/.pgpass`: plaintext
 
 ##### PostgreSQL information
 

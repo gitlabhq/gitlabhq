@@ -39,12 +39,14 @@ FactoryBot.define do
       gcp_cluster = create(:cluster_provider_gcp, :created).cluster
       create(:cluster_provider_aws, :created)
       create(:cluster_platform_kubernetes)
+      create(:cluster, :management_project, management_project: projects[0])
       create(:cluster, :group)
+      create(:cluster, :instance, :production_environment)
 
       # Disabled clusters
       create(:cluster, :disabled)
       create(:cluster, :group, :disabled)
-      create(:cluster, :group, :disabled)
+      create(:cluster, :instance, :disabled)
 
       # Applications
       create(:clusters_applications_helm, :installed, cluster: gcp_cluster)

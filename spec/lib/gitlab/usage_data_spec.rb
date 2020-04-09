@@ -58,13 +58,14 @@ describe Gitlab::UsageData, :aggregate_failures do
         expect(count_data[:issues_with_embedded_grafana_charts_approx]).to eq(2)
         expect(count_data[:incident_issues]).to eq(4)
 
-        expect(count_data[:clusters_enabled]).to eq(4)
-        expect(count_data[:project_clusters_enabled]).to eq(3)
+        expect(count_data[:clusters_enabled]).to eq(6)
+        expect(count_data[:project_clusters_enabled]).to eq(4)
         expect(count_data[:group_clusters_enabled]).to eq(1)
+        expect(count_data[:instance_clusters_enabled]).to eq(1)
         expect(count_data[:clusters_disabled]).to eq(3)
         expect(count_data[:project_clusters_disabled]).to eq(1)
-        expect(count_data[:group_clusters_disabled]).to eq(2)
-        expect(count_data[:group_clusters_enabled]).to eq(1)
+        expect(count_data[:group_clusters_disabled]).to eq(1)
+        expect(count_data[:instance_clusters_disabled]).to eq(1)
         expect(count_data[:clusters_platforms_eks]).to eq(1)
         expect(count_data[:clusters_platforms_gke]).to eq(1)
         expect(count_data[:clusters_platforms_user]).to eq(1)
@@ -78,6 +79,7 @@ describe Gitlab::UsageData, :aggregate_failures do
         expect(count_data[:clusters_applications_elastic_stack]).to eq(1)
         expect(count_data[:grafana_integrated_projects]).to eq(2)
         expect(count_data[:clusters_applications_jupyter]).to eq(1)
+        expect(count_data[:clusters_management_project]).to eq(1)
       end
 
       it 'works when queries time out' do

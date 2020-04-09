@@ -156,6 +156,22 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
     end
   end
 
+  describe '.with_management_project' do
+    subject { described_class.with_management_project }
+
+    context 'cluster has a management project' do
+      let!(:cluster) { create(:cluster, :management_project) }
+
+      it { is_expected.to include(cluster) }
+    end
+
+    context 'cluster does not have a management project' do
+      let!(:cluster) { create(:cluster) }
+
+      it { is_expected.not_to include(cluster) }
+    end
+  end
+
   describe '.for_project_namespace' do
     subject { described_class.for_project_namespace(namespace_id) }
 

@@ -57,7 +57,7 @@ The following table depicts the various user permission levels in a project.
 | View Dependency list **(ULTIMATE)**               | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
 | View License list **(ULTIMATE)**                  | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
 | View licenses in Dependency list **(ULTIMATE)**   | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
-| View [Design Management](project/issues/design_management.md) pages | ✓       | ✓          | ✓           | ✓        | ✓      |
+| View [Design Management](project/issues/design_management.md) pages | ✓ | ✓ | ✓        | ✓        | ✓      |
 | View project code                                 | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
 | Pull project code                                 | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
 | View GitLab Pages protected by [access control](project/pages/introduction.md#gitlab-pages-access-control-core) | ✓       | ✓          | ✓           | ✓        | ✓      |
@@ -84,15 +84,15 @@ The following table depicts the various user permission levels in a project.
 | See a list of merge requests                      |         | ✓          | ✓           | ✓        | ✓      |
 | View project statistics                           |         | ✓          | ✓           | ✓        | ✓      |
 | View Error Tracking list                          |         | ✓          | ✓           | ✓        | ✓      |
-| Create/edit/delete [Releases](project/releases/index.md)|   |            | ✓           | ✓        | ✓      |
+| Create new merge request                          |         | ✓          | ✓           | ✓        | ✓      |
 | Pull from [Conan repository](packages/conan_repository/index.md), [Maven repository](packages/maven_repository/index.md), or [NPM registry](packages/npm_registry/index.md) **(PREMIUM)** |         | ✓          | ✓           | ✓        | ✓      |
 | Publish to [Conan repository](packages/conan_repository/index.md), [Maven repository](packages/maven_repository/index.md), or [NPM registry](packages/npm_registry/index.md) **(PREMIUM)** |         |            | ✓           | ✓        | ✓      |
-| Upload [Design Management](project/issues/design_management.md) files |         |            | ✓           | ✓        | ✓      |
+| Upload [Design Management](project/issues/design_management.md) files |  |  | ✓        | ✓        | ✓      |
+| Create/edit/delete [Releases](project/releases/index.md)|   |            | ✓           | ✓        | ✓      |
 | Create new branches                               |         |            | ✓           | ✓        | ✓      |
 | Push to non-protected branches                    |         |            | ✓           | ✓        | ✓      |
 | Force push to non-protected branches              |         |            | ✓           | ✓        | ✓      |
 | Remove non-protected branches                     |         |            | ✓           | ✓        | ✓      |
-| Create new merge request                          |         | ✓          | ✓           | ✓        | ✓      |
 | Assign merge requests                             |         |            | ✓           | ✓        | ✓      |
 | Label merge requests                              |         |            | ✓           | ✓        | ✓      |
 | Lock merge request threads                        |         |            | ✓           | ✓        | ✓      |
@@ -107,8 +107,12 @@ The following table depicts the various user permission levels in a project.
 | Remove a container registry image                 |         |            | ✓           | ✓        | ✓      |
 | Create/edit/delete project milestones             |         |            | ✓           | ✓        | ✓      |
 | Use security dashboard **(ULTIMATE)**             |         |            | ✓           | ✓        | ✓      |
-| View vulnerabilities in Dependency list **(ULTIMATE)** |    |            | ✓           | ✓        | ✓      |
-| Create issue from vulnerability **(ULTIMATE)**    |         |            | ✓           | ✓        | ✓      |
+| View vulnerability findings in Dependency list **(ULTIMATE)** |    |     | ✓           | ✓        | ✓      |
+| Create issue from vulnerability finding **(ULTIMATE)** |    |            | ✓           | ✓        | ✓      |
+| Dismiss vulnerability finding **(ULTIMATE)**      |         |            | ✓           | ✓        | ✓      |
+| View vulnerability **(ULTIMATE)**                 |         |            | ✓           | ✓        | ✓      |
+| Create vulnerability from vulnerability finding **(ULTIMATE)** |   |     | ✓           | ✓        | ✓      |
+| Resolve vulnerability **(ULTIMATE)**              |         |            | ✓           | ✓        | ✓      |
 | Dismiss vulnerability **(ULTIMATE)**              |         |            | ✓           | ✓        | ✓      |
 | Apply code change suggestions                     |         |            | ✓           | ✓        | ✓      |
 | Create and edit wiki pages                        |         |            | ✓           | ✓        | ✓      |
@@ -217,21 +221,21 @@ group.
 | View group epic **(ULTIMATE)**                         | ✓     | ✓        | ✓         | ✓          | ✓     |
 | Create/edit group epic **(ULTIMATE)**                  |       | ✓        | ✓         | ✓          | ✓     |
 | Manage group labels                                    |       | ✓        | ✓         | ✓          | ✓     |
+| See a container registry                               |       | ✓        | ✓         | ✓          | ✓     |
 | Create project in group                                |       |          | ✓ (3)     | ✓ (3)      | ✓ (3) |
 | Create/edit/delete group milestones                    |       |          | ✓         | ✓          | ✓     |
-| See a container registry                               |       | ✓        | ✓         | ✓          | ✓     |
 | Enable/disable a dependency proxy **(PREMIUM)**        |       |          | ✓         | ✓          | ✓     |
 | Use security dashboard **(ULTIMATE)**                  |       |          | ✓         | ✓          | ✓     |
+| View/manage group-level Kubernetes cluster             |       |          |           | ✓          | ✓     |
 | Create subgroup                                        |       |          |           | ✓ (1)      | ✓     |
+| Edit epic comments (posted by any user) **(ULTIMATE)** |       |          |           | ✓ (2)      | ✓ (2) |
 | Edit group                                             |       |          |           |            | ✓     |
 | Manage group level CI/CD variables                     |       |          |           |            | ✓     |
 | Manage group members                                   |       |          |           |            | ✓     |
 | Remove group                                           |       |          |           |            | ✓     |
 | Delete group epic **(ULTIMATE)**                       |       |          |           |            | ✓     |
-| Edit epic comments (posted by any user) **(ULTIMATE)** |       |          |           | ✓ (2)      | ✓ (2) |
 | View group Audit Events                                |       |          |           |            | ✓     |
 | Disable notification emails                            |       |          |           |            | ✓     |
-| View/manage group-level Kubernetes cluster             |       |          |           | ✓          | ✓     |
 
 1. Groups can be set to [allow either Owners or Owners and
   Maintainers to create subgroups](group/subgroups/index.md#creating-a-subgroup)

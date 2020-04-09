@@ -1,5 +1,7 @@
 - if Feature.enabled?(:jira_issue_import_vue, @project)
-  .js-jira-import-root{ data: { project_path: @project.full_path } }
+  .js-jira-import-root{ data: { project_path: @project.full_path,
+    is_jira_configured: @is_jira_configured.to_s,
+    setup_illustration: image_path('illustrations/manual_action.svg') } }
 - else
   - title = _('Jira Issue Import')
   - page_title title

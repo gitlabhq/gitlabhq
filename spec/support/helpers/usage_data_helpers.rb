@@ -43,9 +43,11 @@ module UsageDataHelpers
       clusters_enabled
       project_clusters_enabled
       group_clusters_enabled
+      instance_clusters_enabled
       clusters_disabled
       project_clusters_disabled
       group_clusters_disabled
+      instance_clusters_disabled
       clusters_platforms_eks
       clusters_platforms_gke
       clusters_platforms_user
@@ -58,6 +60,7 @@ module UsageDataHelpers
       clusters_applications_knative
       clusters_applications_elastic_stack
       clusters_applications_jupyter
+      clusters_management_project
       in_review_folder
       grafana_integrated_projects
       groups

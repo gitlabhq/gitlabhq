@@ -198,6 +198,22 @@ you can use the `MAVEN_CLI_OPTS` environment variable.
 
 Read more on [how to use private Maven repos](../../application_security/index.md#using-private-maven-repos).
 
+You can also use `MAVEN_CLI_OPTS` to connect to a trusted Maven repository that uses a self-signed
+or internally trusted certificate. For example:
+
+```yaml
+include:
+  - template: License-Scanning.gitlab-ci.yml
+
+license_scanning:
+  variables:
+    MAVEN_CLI_OPTS: -Dmaven.wagon.http.ssl.allowall=true -Dmaven.wagon.http.ssl.ignore.validity.dates=true -Dmaven.wagon.http.ssl.insecure=true
+```
+
+Alternatively, you can use a Java key store to verify the TLS connection. For instructions on how to
+generate a key store file, see the
+[Maven Guide to Remote repository access through authenticated HTTPS](http://maven.apache.org/guides/mini/guide-repository-ssl.html).
+
 ### Selecting the version of Python
 
 > - [Introduced](https://gitlab.com/gitlab-org/security-products/license-management/-/merge_requests/36) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.0.
@@ -304,6 +320,9 @@ process:
 
 1. Ensure the package registry is reachable from within the GitLab environment and that the package
    manager is configured to use your preferred package registry.
+
+Additional [configuration](#using-private-maven-repos) may be needed for connecting to private Maven
+repositories.
 
 ## Project policies for License Compliance
 

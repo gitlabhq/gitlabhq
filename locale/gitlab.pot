@@ -931,6 +931,9 @@ msgstr ""
 msgid "Accept terms"
 msgstr ""
 
+msgid "Acceptable for use in this project"
+msgstr ""
+
 msgid "Accepted MR"
 msgstr ""
 
@@ -4001,6 +4004,9 @@ msgstr ""
 msgid "Class"
 msgstr ""
 
+msgid "Class:"
+msgstr ""
+
 msgid "Classification Label (optional)"
 msgstr ""
 
@@ -6645,6 +6651,11 @@ msgid_plural "Dependencies|%d vulnerabilities"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Dependencies|%d vulnerability detected"
+msgid_plural "Dependencies|%d vulnerabilities detected"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Dependencies|%{remainingLicensesCount} more"
 msgstr ""
 
@@ -6682,6 +6693,9 @@ msgid "Dependencies|Status"
 msgstr ""
 
 msgid "Dependencies|The %{codeStartTag}dependency_scanning%{codeEndTag} job has failed and cannot generate the list. Please ensure the job is running properly and run the pipeline again."
+msgstr ""
+
+msgid "Dependencies|Toggle vulnerability list"
 msgstr ""
 
 msgid "Dependencies|Unsupported file(s) detected"
@@ -8997,6 +9011,9 @@ msgid "File templates"
 msgstr ""
 
 msgid "File upload error."
+msgstr ""
+
+msgid "File:"
 msgstr ""
 
 msgid "Files"
@@ -12000,6 +12017,15 @@ msgstr ""
 msgid "LicenseCompliance|You are about to remove the license, %{name}, from this project."
 msgstr ""
 
+msgid "LicenseManagement|Allowed"
+msgstr ""
+
+msgid "LicenseManagement|Denied"
+msgstr ""
+
+msgid "LicenseManagement|Uncategorized"
+msgstr ""
+
 msgid "Licensed Features"
 msgstr ""
 
@@ -12171,6 +12197,9 @@ msgid "Loading…"
 msgstr ""
 
 msgid "Localization"
+msgstr ""
+
+msgid "Location"
 msgstr ""
 
 msgid "Lock"
@@ -12750,6 +12779,9 @@ msgid "Messages"
 msgstr ""
 
 msgid "Method"
+msgstr ""
+
+msgid "Method:"
 msgstr ""
 
 msgid "Metric was successfully added."
@@ -13556,6 +13588,9 @@ msgstr ""
 msgid "No pods available"
 msgstr ""
 
+msgid "No policy matches this license"
+msgstr ""
+
 msgid "No preview for this file type"
 msgstr ""
 
@@ -14084,6 +14119,9 @@ msgid "Other merge requests block this MR"
 msgstr ""
 
 msgid "Other visibility settings have been disabled by the administrator."
+msgstr ""
+
+msgid "Out-of-compliance with this project's policies and should be removed"
 msgstr ""
 
 msgid "Outbound requests"
@@ -17850,9 +17888,6 @@ msgstr ""
 msgid "SecurityConfiguration|Status"
 msgstr ""
 
-msgid "SecurityDashboard| The security dashboard displays the latest security report. Use it to find and fix vulnerabilities."
-msgstr ""
-
 msgid "SecurityDashboard|%{firstProject} and %{secondProject}"
 msgstr ""
 
@@ -17911,6 +17946,9 @@ msgid "SecurityDashboard|Status"
 msgstr ""
 
 msgid "SecurityDashboard|The security dashboard displays the latest security findings for projects you wish to monitor. Select \"Edit dashboard\" to add and remove projects."
+msgstr ""
+
+msgid "SecurityDashboard|The security dashboard displays the latest security report. Use it to find and fix vulnerabilities."
 msgstr ""
 
 msgid "SecurityDashboard|Unable to add %{invalidProjects}"
@@ -18322,6 +18360,12 @@ msgid "Set time estimate to %{time_estimate}."
 msgstr ""
 
 msgid "Set up CI/CD"
+msgstr ""
+
+msgid "Set up Jira Integration"
+msgstr ""
+
+msgid "Set up Jira Integration illustration"
 msgstr ""
 
 msgid "Set up a %{type} Runner automatically"
@@ -23581,6 +23625,9 @@ msgid "You tried to fork %{link_to_the_project} but it failed for the following 
 msgstr ""
 
 msgid "You will be removed from existing projects/groups"
+msgstr ""
+
+msgid "You will first need to set up Jira Integration to use this feature."
 msgstr ""
 
 msgid "You will lose all changes you've made to this file. This action cannot be undone."

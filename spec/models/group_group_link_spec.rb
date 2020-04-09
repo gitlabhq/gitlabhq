@@ -15,6 +15,22 @@ describe GroupGroupLink do
     it { is_expected.to belong_to(:shared_with_group) }
   end
 
+  describe 'scopes' do
+    describe '.non_guests' do
+      let!(:group_group_link_reporter) { create :group_group_link, :reporter }
+      let!(:group_group_link_maintainer) { create :group_group_link, :maintainer }
+      let!(:group_group_link_owner) { create :group_group_link, :owner }
+      let!(:group_group_link_guest) { create :group_group_link, :guest }
+
+      it 'returns all records which are greater than Guests access' do
+        expect(described_class.non_guests).to match_array([
+                                                           group_group_link_reporter, group_group_link,
+                                                           group_group_link_maintainer, group_group_link_owner
+                                                          ])
+      end
+    end
+  end
+
   describe 'validation' do
     it { is_expected.to validate_presence_of(:shared_group) }
 

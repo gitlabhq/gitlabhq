@@ -3,11 +3,6 @@
 class ProjectGroupLink < ApplicationRecord
   include Expirable
 
-  GUEST     = 10
-  REPORTER  = 20
-  DEVELOPER = 30
-  MAINTAINER = 40
-
   belongs_to :project
   belongs_to :group
 
@@ -18,6 +13,8 @@ class ProjectGroupLink < ApplicationRecord
   validates :group_access, inclusion: { in: Gitlab::Access.values }, presence: true
   validate :different_group
 
+  scope :non_guests, -> { where('group_access > ?', Gitlab::Access::GUEST) }
+
   after_commit :refresh_group_members_authorized_projects
 
   alias_method :shared_with_group, :group
@@ -27,7 +24,7 @@ class ProjectGroupLink < ApplicationRecord
   end
 
   def self.default_access
-    DEVELOPER
+    Gitlab::Access::DEVELOPER
   end
 
   def self.search(query)
