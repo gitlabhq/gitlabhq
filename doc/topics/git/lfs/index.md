@@ -21,7 +21,7 @@ instructions from where to fetch or where to push the large file.
 
 ## GitLab server configuration
 
-Documentation for GitLab instance administrators is under [LFS administration doc](../../../administration/lfs/lfs_administration.md).
+Documentation for GitLab instance administrators is under [LFS administration doc](../../../administration/lfs/index.md).
 
 ## Requirements
 
@@ -201,7 +201,7 @@ If the status `error 501` is shown, it is because:
 
 - Git LFS support is not enabled on the GitLab server. Check with your GitLab
   administrator why Git LFS is not enabled on the server. See
-  [LFS administration documentation](../../../administration/lfs/lfs_administration.md) for instructions
+  [LFS administration documentation](../../../administration/lfs/index.md) for instructions
   on how to enable LFS support.
 
 - Git LFS client version is not supported by GitLab server. Check your Git LFS

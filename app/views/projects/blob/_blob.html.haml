@@ -10,7 +10,7 @@
 
 #blob-content-holder.blob-content-holder
   - if @code_navigation_path
-    #js-code-navigation{ data: { code_nav_url: @code_navigation_path, definition_path_prefix: project_blob_path(@project, @ref) } }
+    #js-code-navigation{ data: { code_navigation_path: @code_navigation_path, blob_path: blob.path, definition_path_prefix: project_blob_path(@project, @ref) } }
   %article.file-holder
     = render 'projects/blob/header', blob: blob
     = render 'projects/blob/content', blob: blob

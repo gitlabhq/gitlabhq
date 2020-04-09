@@ -11,11 +11,11 @@ describe('Code navigation mutations', () => {
   describe('SET_INITIAL_DATA', () => {
     it('sets initial data', () => {
       mutations.SET_INITIAL_DATA(state, {
-        codeNavUrl: 'https://test.com/builds/1005',
+        blobs: ['test'],
         definitionPathPrefix: 'https://test.com/blob/master',
       });
 
-      expect(state.codeNavUrl).toBe('https://test.com/builds/1005');
+      expect(state.blobs).toEqual(['test']);
       expect(state.definitionPathPrefix).toBe('https://test.com/blob/master');
     });
   });
@@ -36,9 +36,9 @@ describe('Code navigation mutations', () => {
     });
 
     it('sets data', () => {
-      mutations.REQUEST_DATA_SUCCESS(state, ['test']);
+      mutations.REQUEST_DATA_SUCCESS(state, { path: 'index.js', normalizedData: ['test'] });
 
-      expect(state.data).toEqual(['test']);
+      expect(state.data).toEqual({ 'index.js': ['test'] });
     });
   });
 

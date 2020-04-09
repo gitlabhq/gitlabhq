@@ -51,6 +51,8 @@
 
     .tab-content#diff-notes-app
       #js-diff-file-finder
+      - if native_code_navigation_enabled?(@project)
+        #js-code-navigation
       = render "projects/merge_requests/tabs/pane", id: "notes", class: "notes voting_notes" do
         .row
           %section.col-md-12

@@ -245,7 +245,7 @@ storage pattern using 2 chars, 2 level folders, following Git's own implementati
 "shared/lfs-objects/89/09/029eb962194cfb326259411b22ae3f4a814b5be4f80651735aeef9f3229c"
 ```
 
-LFS objects are also [S3 compatible](lfs/lfs_administration.md#storing-lfs-objects-in-remote-object-storage).
+LFS objects are also [S3 compatible](lfs/index.md#storing-lfs-objects-in-remote-object-storage).
 
 [ce-2821]: https://gitlab.com/gitlab-com/infrastructure/issues/2821
 [ce-28283]: https://gitlab.com/gitlab-org/gitlab-foss/issues/28283

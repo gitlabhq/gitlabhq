@@ -129,6 +129,18 @@ export const fetchDiffFilesBatch = ({ commit, state }) => {
 
         if (!pagination.next_page) {
           commit(types.SET_RETRIEVING_BATCHES, false);
+          if (gon.features?.codeNavigation) {
+            // eslint-disable-next-line promise/catch-or-return,promise/no-nesting
+            import('~/code_navigation').then(m =>
+              m.default({
+                blobs: state.diffFiles.map(f => ({
+                  path: f.new_path,
+                  codeNavigationPath: f.code_navigation_path,
+                })),
+                definitionPathPrefix: state.definitionPathPrefix,
+              }),
+            );
+          }
         }
 
         return pagination.next_page;

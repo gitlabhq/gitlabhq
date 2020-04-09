@@ -28,9 +28,9 @@ describe('Code navigation actions', () => {
   describe('fetchData', () => {
     let mock;
 
-    const codeNavUrl =
+    const codeNavigationPath =
       'gitlab-org/gitlab-shell/-/jobs/1114/artifacts/raw/lsif/cmd/check/main.go.json';
-    const state = { codeNavUrl };
+    const state = { blobs: [{ path: 'index.js', codeNavigationPath }] };
 
     beforeEach(() => {
       window.gon = { api_version: '1' };
@@ -43,7 +43,7 @@ describe('Code navigation actions', () => {
 
     describe('success', () => {
       beforeEach(() => {
-        mock.onGet(codeNavUrl).replyOnce(200, [
+        mock.onGet(codeNavigationPath).replyOnce(200, [
           {
             start_line: 0,
             start_char: 0,
@@ -66,7 +66,12 @@ describe('Code navigation actions', () => {
             { type: 'REQUEST_DATA' },
             {
               type: 'REQUEST_DATA_SUCCESS',
-              payload: { '0:0': { start_line: 0, start_char: 0, hover: { value: '123' } } },
+              payload: {
+                path: 'index.js',
+                normalizedData: {
+                  '0:0': { start_line: 0, start_char: 0, hover: { value: '123' } },
+                },
+              },
             },
           ],
           [],
@@ -83,13 +88,18 @@ describe('Code navigation actions', () => {
             { type: 'REQUEST_DATA' },
             {
               type: 'REQUEST_DATA_SUCCESS',
-              payload: { '0:0': { start_line: 0, start_char: 0, hover: { value: '123' } } },
+              payload: {
+                path: 'index.js',
+                normalizedData: {
+                  '0:0': { start_line: 0, start_char: 0, hover: { value: '123' } },
+                },
+              },
             },
           ],
           [],
         )
           .then(() => {
-            expect(addInteractionClass).toHaveBeenCalledWith({
+            expect(addInteractionClass).toHaveBeenCalledWith('index.js', {
               start_line: 0,
               start_char: 0,
               hover: { value: '123' },
@@ -102,7 +112,7 @@ describe('Code navigation actions', () => {
 
     describe('error', () => {
       beforeEach(() => {
-        mock.onGet(codeNavUrl).replyOnce(500);
+        mock.onGet(codeNavigationPath).replyOnce(500);
       });
 
       it('dispatches requestDataError', done => {
@@ -118,11 +128,29 @@ describe('Code navigation actions', () => {
     });
   });
 
+  describe('showBlobInteractionZones', () => {
+    it('calls addInteractionClass with data for a path', () => {
+      const state = {
+        data: {
+          'index.js': { '0:0': 'test', '1:1': 'console.log' },
+        },
+      };
+
+      actions.showBlobInteractionZones({ state }, 'index.js');
+
+      expect(addInteractionClass).toHaveBeenCalled();
+      expect(addInteractionClass.mock.calls.length).toBe(2);
+      expect(addInteractionClass.mock.calls[0]).toEqual(['index.js', 'test']);
+      expect(addInteractionClass.mock.calls[1]).toEqual(['index.js', 'console.log']);
+    });
+  });
+
   describe('showDefinition', () => {
     let target;
 
     beforeEach(() => {
-      target = document.createElement('div');
+      setFixtures('<div data-path="index.js"><div class="js-test"></div></div>');
+      target = document.querySelector('.js-test');
     });
 
     it('returns early when no data exists', done => {
@@ -130,19 +158,7 @@ describe('Code navigation actions', () => {
     });
 
     it('commits SET_CURRENT_DEFINITION when target is not code navitation element', done => {
-      testAction(
-        actions.showDefinition,
-        { target },
-        { data: {} },
-        [
-          {
-            type: 'SET_CURRENT_DEFINITION',
-            payload: { definition: undefined, position: undefined },
-          },
-        ],
-        [],
-        done,
-      );
+      testAction(actions.showDefinition, { target }, { data: {} }, [], [], done);
     });
 
     it('commits SET_CURRENT_DEFINITION with LSIF data', done => {
@@ -153,7 +169,7 @@ describe('Code navigation actions', () => {
       testAction(
         actions.showDefinition,
         { target },
-        { data: { '0:0': { hover: 'test' } } },
+        { data: { 'index.js': { '0:0': { hover: 'test' } } } },
         [
           {
             type: 'SET_CURRENT_DEFINITION',
@@ -173,7 +189,7 @@ describe('Code navigation actions', () => {
       return testAction(
         actions.showDefinition,
         { target },
-        { data: { '0:0': { hover: 'test' } } },
+        { data: { 'index.js': { '0:0': { hover: 'test' } } } },
         [
           {
             type: 'SET_CURRENT_DEFINITION',
@@ -194,7 +210,7 @@ describe('Code navigation actions', () => {
       return testAction(
         actions.showDefinition,
         { target },
-        { data: { '0:0': { hover: 'test' } } },
+        { data: { 'index.js': { '0:0': { hover: 'test' } } } },
         [
           {
             type: 'SET_CURRENT_DEFINITION',

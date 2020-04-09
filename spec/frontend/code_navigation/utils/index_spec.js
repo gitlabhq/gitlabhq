@@ -36,7 +36,7 @@ describe('setCurrentHoverElement', () => {
 describe('addInteractionClass', () => {
   beforeEach(() => {
     setFixtures(
-      '<div id="LC1"><span>console</span><span>.</span><span>log</span></div><div id="LC2"><span>function</span></div>',
+      '<div data-path="index.js"><div class="blob-content"><div id="LC1"><span>console</span><span>.</span><span>log</span></div><div id="LC2"><span>function</span></div></div></div>',
     );
   });
 
@@ -48,7 +48,7 @@ describe('addInteractionClass', () => {
   `(
     'it sets code navigation attributes for line $line and character $char',
     ({ line, char, index }) => {
-      addInteractionClass({ start_line: line, start_char: char });
+      addInteractionClass('index.js', { start_line: line, start_char: char });
 
       expect(document.querySelectorAll(`#LC${line + 1} span`)[index].classList).toContain(
         'js-code-navigation',

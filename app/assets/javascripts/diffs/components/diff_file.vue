@@ -145,6 +145,7 @@ export default {
     :class="{
       'is-active': currentDiffFileId === file.file_hash,
     }"
+    :data-path="file.new_path"
     class="diff-file file-holder"
   >
     <diff-file-header

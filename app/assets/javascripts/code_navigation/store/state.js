@@ -1,7 +1,5 @@
 export default () => ({
-  projectPath: null,
-  commitId: null,
-  blobPath: null,
+  blobs: [],
   loading: false,
   data: null,
   currentDefinition: null,

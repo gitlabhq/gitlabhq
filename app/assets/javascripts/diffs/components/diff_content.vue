@@ -12,6 +12,7 @@ import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_
 import NoteForm from '../../notes/components/note_form.vue';
 import ImageDiffOverlay from './image_diff_overlay.vue';
 import DiffDiscussions from './diff_discussions.vue';
+import eventHub from '../../notes/event_hub';
 import { IMAGE_DIFF_POSITION_TYPE } from '../constants';
 import { getDiffMode } from '../store/utils';
 import { diffViewerModes } from '~/ide/constants';
@@ -76,6 +77,13 @@ export default {
     author() {
       return this.getUserData;
     },
+  },
+  updated() {
+    if (window.gon?.features?.codeNavigation) {
+      this.$nextTick(() => {
+        eventHub.$emit('showBlobInteractionZones', this.diffFile.new_path);
+      });
+    }
   },
   methods: {
     ...mapActions('diffs', ['saveDiffDiscussion', 'closeDiffFileCommentForm']),

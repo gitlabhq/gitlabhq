@@ -27,7 +27,7 @@ to be enabled:
 
 - For GitLab.com, LFS is already enabled.
 - For self-managed instances, a GitLab administrator must have
-  [enabled LFS globally](../../../administration/lfs/lfs_administration.md).
+  [enabled LFS globally](../../../administration/lfs/index.md).
 - For both GitLab.com and self-managed instances: LFS must be enabled for the project itself.
   If enabled globally, LFS will be enabled by default to all projects. To enable LFS on the
   project level, navigate to your project's **Settings > General**, expand **Visibility, project features, permissions**

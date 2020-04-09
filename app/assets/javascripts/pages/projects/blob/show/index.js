@@ -33,8 +33,16 @@ document.addEventListener('DOMContentLoaded', () => {
   GpgBadges.fetch();
 
   if (gon.features?.codeNavigation) {
+    const el = document.getElementById('js-code-navigation');
+    const { codeNavigationPath, blobPath, definitionPathPrefix } = el.dataset;
+
     // eslint-disable-next-line promise/catch-or-return
-    import('~/code_navigation').then(m => m.default());
+    import('~/code_navigation').then(m =>
+      m.default({
+        blobs: [{ path: blobPath, codeNavigationPath }],
+        definitionPathPrefix,
+      }),
+    );
   }
 
   if (gon.features?.suggestPipeline) {

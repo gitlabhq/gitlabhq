@@ -1,6 +1,7 @@
 <script>
 import { mapActions, mapState } from 'vuex';
 import Popover from './popover.vue';
+import eventHub from '../../notes/event_hub';
 
 export default {
   components: {
@@ -10,24 +11,27 @@ export default {
     ...mapState(['currentDefinition', 'currentDefinitionPosition', 'definitionPathPrefix']),
   },
   mounted() {
-    this.blobViewer = document.querySelector('.blob-viewer');
+    this.body = document.body;
+
+    eventHub.$on('showBlobInteractionZones', this.showBlobInteractionZones);
 
     this.addGlobalEventListeners();
     this.fetchData();
   },
   beforeDestroy() {
+    eventHub.$off('showBlobInteractionZones', this.showBlobInteractionZones);
     this.removeGlobalEventListeners();
   },
   methods: {
-    ...mapActions(['fetchData', 'showDefinition']),
+    ...mapActions(['fetchData', 'showDefinition', 'showBlobInteractionZones']),
     addGlobalEventListeners() {
-      if (this.blobViewer) {
-        this.blobViewer.addEventListener('click', this.showDefinition);
+      if (this.body) {
+        this.body.addEventListener('click', this.showDefinition);
       }
     },
     removeGlobalEventListeners() {
-      if (this.blobViewer) {
-        this.blobViewer.removeEventListener('click', this.showDefinition);
+      if (this.body) {
+        this.body.removeEventListener('click', this.showDefinition);
       }
     },
   },

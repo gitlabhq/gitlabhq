@@ -2014,6 +2014,15 @@ release-job:
     - tags
 ```
 
+You can use wildcards for directories too. For example, if you want to get all the files inside the directories that end with `xyz`:
+
+```yaml
+job:
+  artifacts:
+    paths:
+      - path/*xyz/*
+```
+
 #### `artifacts:expose_as`
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/15018) in GitLab 12.5.

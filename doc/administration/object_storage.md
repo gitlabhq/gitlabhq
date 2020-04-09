@@ -27,7 +27,7 @@ For configuring GitLab to use Object Storage refer to the following guides:
 1. Configure [object storage for backups](../raketasks/backup_restore.md#uploading-backups-to-a-remote-cloud-storage).
 1. Configure [object storage for job artifacts](job_artifacts.md#using-object-storage)
    including [incremental logging](job_logs.md#new-incremental-logging-architecture).
-1. Configure [object storage for LFS objects](lfs/lfs_administration.md#storing-lfs-objects-in-remote-object-storage).
+1. Configure [object storage for LFS objects](lfs/index.md#storing-lfs-objects-in-remote-object-storage).
 1. Configure [object storage for uploads](uploads.md#using-object-storage-core-only).
 1. Configure [object storage for merge request diffs](merge_request_diffs.md#using-object-storage).
 1. Configure [object storage for Container Registry](packages/container_registry.md#container-registry-storage-driver) (optional feature).

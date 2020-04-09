@@ -5,10 +5,10 @@ import App from './components/app.vue';
 
 Vue.use(Vuex);
 
-export default () => {
+export default initialData => {
   const el = document.getElementById('js-code-navigation');
 
-  store.dispatch('setInitialData', el.dataset);
+  store.dispatch('setInitialData', initialData);
 
   return new Vue({
     el,
