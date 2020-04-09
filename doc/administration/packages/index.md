@@ -86,7 +86,9 @@ To change the local storage path:
 ### Using object storage
 
 Instead of relying on the local storage, you can use an object storage to
-upload packages:
+store packages.
+
+[Read more about using object storage with GitLab](../object_storage.md).
 
 **Omnibus GitLab installations**
 

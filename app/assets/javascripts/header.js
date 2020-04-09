@@ -5,6 +5,7 @@ import { highCountTrim } from '~/lib/utils/text_utility';
 import SetStatusModalTrigger from './set_status_modal/set_status_modal_trigger.vue';
 import SetStatusModalWrapper from './set_status_modal/set_status_modal_wrapper.vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
+import Tracking from '~/tracking';
 
 /**
  * Updates todo counter when todos are toggled.
@@ -73,6 +74,24 @@ function initStatusTriggers() {
   }
 }
 
+export function initNavUserDropdownTracking() {
+  const el = document.querySelector('.js-nav-user-dropdown');
+  const buyEl = document.querySelector('.js-buy-ci-minutes-link');
+
+  if (el && buyEl) {
+    const { trackLabel, trackProperty } = buyEl.dataset;
+    const trackEvent = 'show_buy_ci_minutes';
+
+    $(el).on('shown.bs.dropdown', () => {
+      Tracking.event(undefined, trackEvent, {
+        label: trackLabel,
+        property: trackProperty,
+      });
+    });
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   requestIdleCallback(initStatusTriggers);
+  initNavUserDropdownTracking();
 });

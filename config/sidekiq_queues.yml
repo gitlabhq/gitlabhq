@@ -66,6 +66,8 @@
   - 1
 - - delete_user
   - 1
+- - dependency_proxy
+  - 1
 - - deployment
   - 3
 - - design_management_new_version

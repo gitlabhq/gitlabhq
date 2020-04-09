@@ -35,8 +35,9 @@ describe('Static Site Editor Store mutations', () => {
       expect(state.title).toBe(payload.title);
     });
 
-    it('sets content', () => {
+    it('sets originalContent and content', () => {
       expect(state.content).toBe(payload.content);
+      expect(state.originalContent).toBe(payload.content);
     });
   });
 
@@ -47,6 +48,14 @@ describe('Static Site Editor Store mutations', () => {
 
     it('sets current state to LOADING_ERROR', () => {
       expect(state.isLoadingContent).toBe(false);
+    });
+  });
+
+  describe('setContent', () => {
+    it('sets content', () => {
+      mutations[types.SET_CONTENT](state, content);
+
+      expect(state.content).toBe(content);
     });
   });
 });

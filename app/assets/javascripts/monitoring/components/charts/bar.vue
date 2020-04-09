@@ -58,7 +58,7 @@ export default {
   },
   methods: {
     formatLegendLabel(query) {
-      return `${query.label}`;
+      return query.label;
     },
     onResize() {
       if (!this.$refs.barChart) return;

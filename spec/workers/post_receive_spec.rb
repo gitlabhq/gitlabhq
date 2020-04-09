@@ -394,6 +394,7 @@ describe PostReceive do
           it 'expires the status cache' do
             expect(snippet.repository).to receive(:empty?).and_return(true)
             expect(snippet.repository).to receive(:expire_status_cache)
+            expect(snippet.repository).to receive(:expire_statistics_caches)
 
             perform
           end

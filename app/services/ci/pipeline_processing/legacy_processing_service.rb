@@ -43,8 +43,6 @@ module Ci
       end
 
       def process_dag_builds_without_needs
-        return false unless Feature.enabled?(:ci_dag_support, project, default_enabled: true)
-
         created_processables.scheduling_type_dag.without_needs.each do |build|
           process_build(build, 'success')
         end
@@ -52,7 +50,6 @@ module Ci
 
       def process_dag_builds_with_needs(trigger_build_ids)
         return false unless trigger_build_ids.present?
-        return false unless Feature.enabled?(:ci_dag_support, project, default_enabled: true)
 
         # we find processables that are dependent:
         # 1. because of current dependency,
@@ -110,11 +107,7 @@ module Ci
       end
 
       def created_stage_scheduled_processables
-        if Feature.enabled?(:ci_dag_support, project, default_enabled: true)
-          created_processables.scheduling_type_stage
-        else
-          created_processables
-        end
+        created_processables.scheduling_type_stage
       end
 
       def created_processables

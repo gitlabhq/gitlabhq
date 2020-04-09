@@ -309,6 +309,8 @@ In the example below we use Amazon S3 for storage, but Fog also lets you use
 for AWS, Google, OpenStack Swift, Rackspace and Aliyun as well. A local driver is
 [also available](#uploading-to-locally-mounted-shares).
 
+[Read more about using object storage with GitLab](../administration/object_storage.md).
+
 #### Using Amazon S3
 
 For Omnibus GitLab packages:

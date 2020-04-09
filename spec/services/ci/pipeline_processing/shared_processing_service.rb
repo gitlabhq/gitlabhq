@@ -757,73 +757,19 @@ shared_examples 'Pipeline Processing Service' do
       expect(builds.pending).to contain_exactly(deploy)
     end
 
-    context 'when feature ci_dag_support is disabled' do
-      before do
-        stub_feature_flags(ci_dag_support: false)
-      end
-
-      it 'when linux:build finishes first it follows stages' do
-        expect(process_pipeline).to be_truthy
-
-        expect(stages).to eq(%w(pending created created))
-        expect(builds.pending).to contain_exactly(linux_build, mac_build)
-
-        # we follow the single path of linux
-        linux_build.reset.success!
-
-        expect(stages).to eq(%w(running created created))
-        expect(builds.success).to contain_exactly(linux_build)
-        expect(builds.pending).to contain_exactly(mac_build)
-
-        mac_build.reset.success!
-
-        expect(stages).to eq(%w(success pending created))
-        expect(builds.success).to contain_exactly(linux_build, mac_build)
-        expect(builds.pending).to contain_exactly(
-          linux_rspec, linux_rubocop, mac_rspec, mac_rubocop)
-
-        linux_rspec.reset.success!
-        linux_rubocop.reset.success!
-        mac_rspec.reset.success!
-        mac_rubocop.reset.success!
-
-        expect(stages).to eq(%w(success success pending))
-        expect(builds.success).to contain_exactly(
-          linux_build, linux_rspec, linux_rubocop, mac_build, mac_rspec, mac_rubocop)
-        expect(builds.pending).to contain_exactly(deploy)
-      end
-    end
-
     context 'when one of the jobs is run on a failure' do
       let!(:linux_notify) { create_build('linux:notify', stage: 'deploy', stage_idx: 2, when: 'on_failure', scheduling_type: :dag) }
 
       let!(:linux_notify_on_build) { create(:ci_build_need, build: linux_notify, name: 'linux:build') }
 
       context 'when another job in build phase fails first' do
-        context 'when ci_dag_support is enabled' do
-          it 'does skip linux:notify' do
-            expect(process_pipeline).to be_truthy
+        it 'does skip linux:notify' do
+          expect(process_pipeline).to be_truthy
 
-            mac_build.reset.drop!
-            linux_build.reset.success!
+          mac_build.reset.drop!
+          linux_build.reset.success!
 
-            expect(linux_notify.reset).to be_skipped
-          end
-        end
-
-        context 'when ci_dag_support is disabled' do
-          before do
-            stub_feature_flags(ci_dag_support: false)
-          end
-
-          it 'does run linux:notify' do
-            expect(process_pipeline).to be_truthy
-
-            mac_build.reset.drop!
-            linux_build.reset.success!
-
-            expect(linux_notify.reset).to be_pending
-          end
+          expect(linux_notify.reset).to be_skipped
         end
       end
 
@@ -863,19 +809,6 @@ shared_examples 'Pipeline Processing Service' do
 
         expect(stages).to eq(%w(success success running))
         expect(builds.pending).to contain_exactly(deploy)
-      end
-
-      context 'when ci_dag_support is disabled' do
-        before do
-          stub_feature_flags(ci_dag_support: false)
-        end
-
-        it 'does run deploy_pages at the start' do
-          expect(process_pipeline).to be_truthy
-
-          expect(stages).to eq(%w(pending created created))
-          expect(builds.pending).to contain_exactly(linux_build, mac_build)
-        end
       end
     end
   end

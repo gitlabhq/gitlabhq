@@ -29,4 +29,16 @@ describe Gitlab::Git::DiffStatsCollection do
       expect(collection.paths).to eq %w[foo bar]
     end
   end
+
+  describe '#real_size' do
+    it 'returns the number of modified files' do
+      expect(collection.real_size).to eq('2')
+    end
+
+    it 'returns capped number when it is bigger than max_files' do
+      allow(::Commit).to receive(:max_diff_options).and_return(max_files: 1)
+
+      expect(collection.real_size).to eq('1+')
+    end
+  end
 end

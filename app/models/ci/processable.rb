@@ -25,8 +25,6 @@ module Ci
     end
 
     def self.select_with_aggregated_needs(project)
-      return all unless Feature.enabled?(:ci_dag_support, project, default_enabled: true)
-
       aggregated_needs_names = Ci::BuildNeed
         .scoped_build
         .select("ARRAY_AGG(name)")

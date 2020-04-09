@@ -3,27 +3,29 @@ import { mapState, mapGetters, mapActions } from 'vuex';
 import { GlSkeletonLoader } from '@gitlab/ui';
 
 import EditArea from './edit_area.vue';
+import Toolbar from './publish_toolbar.vue';
 
 export default {
   components: {
     EditArea,
     GlSkeletonLoader,
+    Toolbar,
   },
   computed: {
     ...mapState(['content', 'isLoadingContent']),
-    ...mapGetters(['isContentLoaded']),
+    ...mapGetters(['isContentLoaded', 'contentChanged']),
   },
   mounted() {
     this.loadContent();
   },
   methods: {
-    ...mapActions(['loadContent']),
+    ...mapActions(['loadContent', 'setContent']),
   },
 };
 </script>
 <template>
-  <div class="d-flex justify-content-center h-100">
-    <div v-if="isLoadingContent" class="w-50 h-50 mt-2">
+  <div class="d-flex justify-content-center h-100  pt-2">
+    <div v-if="isLoadingContent" class="w-50 h-50">
       <gl-skeleton-loader :width="500" :height="102">
         <rect width="500" height="16" rx="4" />
         <rect y="20" width="375" height="16" rx="4" />
@@ -33,6 +35,13 @@ export default {
         <rect x="410" y="40" width="90" height="16" rx="4" />
       </gl-skeleton-loader>
     </div>
-    <edit-area v-if="isContentLoaded" class="w-75 h-100 shadow-none" :value="content" />
+    <div v-if="isContentLoaded" class="d-flex flex-grow-1 flex-column">
+      <edit-area
+        class="w-75 h-100 shadow-none align-self-center"
+        :value="content"
+        @input="setContent"
+      />
+      <toolbar :saveable="contentChanged" />
+    </div>
   </div>
 </template>

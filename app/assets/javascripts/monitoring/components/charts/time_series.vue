@@ -251,7 +251,7 @@ export default {
   },
   methods: {
     formatLegendLabel(query) {
-      return `${query.label}`;
+      return query.label;
     },
     isTooltipOfType(tooltipType, defaultType) {
       return tooltipType === defaultType;

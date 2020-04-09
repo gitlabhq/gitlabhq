@@ -7,6 +7,8 @@ After [configuring the object storage](../../uploads.md#using-object-storage-cor
 >**Note:**
 All of the processing will be done in a background worker and requires **no downtime**.
 
+[Read more about using object storage with GitLab](../../object_storage.md).
+
 ### All-in-one Rake task
 
 GitLab provides a wrapper Rake task that migrates all uploaded files - avatars,

@@ -67,7 +67,6 @@ module Ci
     end
 
     def from_needs(scope)
-      return scope unless Feature.enabled?(:ci_dag_support, project, default_enabled: true)
       return scope unless processable.scheduling_type_dag?
 
       needs_names = processable.needs.artifacts.select(:name)

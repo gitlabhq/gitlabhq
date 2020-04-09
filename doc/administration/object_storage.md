@@ -21,9 +21,6 @@ Object storage options that GitLab has tested, or is aware of customers using in
 
 For configuring GitLab to use Object Storage refer to the following guides:
 
-1. Make sure the [`git` user home directory](https://docs.gitlab.com/omnibus/settings/configuration.html#moving-the-home-directory-for-a-user) is on local disk.
-1. Configure [database lookup of SSH keys](operations/fast_ssh_key_lookup.md)
-   to eliminate the need for a shared `authorized_keys` file.
 1. Configure [object storage for backups](../raketasks/backup_restore.md#uploading-backups-to-a-remote-cloud-storage).
 1. Configure [object storage for job artifacts](job_artifacts.md#using-object-storage)
    including [incremental logging](job_logs.md#new-incremental-logging-architecture).
@@ -36,6 +33,19 @@ For configuring GitLab to use Object Storage refer to the following guides:
 1. Configure [object storage for Dependency Proxy](packages/dependency_proxy.md#using-object-storage) (optional feature). **(PREMIUM ONLY)**
 1. Configure [object storage for Pseudonymizer](pseudonymizer.md#configuration) (optional feature). **(ULTIMATE ONLY)**
 1. Configure [object storage for autoscale Runner caching](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching) (optional - for improved performance).
+1. Configure [object storage for Terraform state files](terraform_state.md#using-object-storage-core-only)
+
+### Other alternatives to filesystem storage
+
+If you're working to [scale out](scaling/index.md) your GitLab implementation,
+or add [fault tolerance and redundancy](high_availability/README.md) you may be
+looking at removing dependencies on block or network filesystems.
+See the following guides and
+[note that Pages requires disk storage](#gitlab-pages-requires-nfs):
+
+1. Make sure the [`git` user home directory](https://docs.gitlab.com/omnibus/settings/configuration.html#moving-the-home-directory-for-a-user) is on local disk.
+1. Configure [database lookup of SSH keys](operations/fast_ssh_key_lookup.md)
+   to eliminate the need for a shared `authorized_keys` file.
 
 ## Warnings, limitations, and known issues
 
@@ -67,8 +77,9 @@ with the Fog library that GitLab uses. Symptoms include:
 
 ### GitLab Pages requires NFS
 
-If you're working to [scale out](high_availability/README.md) your GitLab implementation and
-one of your requirements is [GitLab Pages](../user/project/pages/index.md) this currently requires
+If you're working to add more GitLab servers for [scaling](scaling/index.md) or
+[fault tolerance](high_availability/README.md) and one of your requirements
+is [GitLab Pages](../user/project/pages/index.md) this currently requires
 NFS. There is [work in progress](https://gitlab.com/gitlab-org/gitlab-pages/issues/196)
 to remove this dependency. In the future, GitLab Pages may use
 [object storage](https://gitlab.com/gitlab-org/gitlab/-/issues/208135).

@@ -1116,3 +1116,22 @@ To avoid installation errors:
   kubectl get secrets/tiller-secret -n gitlab-managed-apps -o "jsonpath={.data['ca\.crt']}" | base64 -d > b.pem
   diff a.pem b.pem
   ```
+
+### Error installing managed apps on EKS cluster
+
+If you're using a managed cluster on AWS EKS, and you are not able to install some of the managed
+apps, consider checking the logs.
+
+You can check the logs by running following commands:
+
+```shell
+kubectl get pods --all-namespaces
+kubectl get services --all-namespaces
+```
+
+If you are getting the `Failed to assign an IP address to container` error, it's probably due to the
+instance type you've specified in the AWS configuration.
+The number and size of nodes might not have enough IP addresses to run or install those pods.
+
+For reference, all the AWS instance IP limits are found
+[in this AWS repository on GitHub](https://github.com/aws/amazon-vpc-cni-k8s/blob/master/pkg/awsutils/vpc_ip_resource_limit.go) (search for `InstanceENIsAvailable`).

@@ -251,7 +251,7 @@ describe('mapToDashboardViewModel', () => {
     };
 
     it('creates a metric', () => {
-      const dashboard = dashboardWithMetric({});
+      const dashboard = dashboardWithMetric({ label: 'Panel Label' });
 
       expect(getMappedMetric(dashboard)).toEqual({
         label: expect.any(String),
@@ -268,11 +268,11 @@ describe('mapToDashboardViewModel', () => {
       expect(getMappedMetric(dashboard).metricId).toEqual('1_http_responses');
     });
 
-    it('creates a metric with a default label', () => {
+    it('creates a metric without a default label', () => {
       const dashboard = dashboardWithMetric({});
 
       expect(getMappedMetric(dashboard)).toMatchObject({
-        label: defaultLabel,
+        label: undefined,
       });
     });
 

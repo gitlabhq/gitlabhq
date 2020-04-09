@@ -703,7 +703,7 @@ describe Snippet do
     let(:current_size) { 60 }
 
     before do
-      allow(subject.repository).to receive(:_uncached_size).and_return(current_size)
+      allow(subject.repository).to receive(:size).and_return(current_size)
     end
 
     it 'sets up size checker', :aggregate_failures do

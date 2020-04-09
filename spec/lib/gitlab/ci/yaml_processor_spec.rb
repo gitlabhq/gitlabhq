@@ -2052,6 +2052,54 @@ module Gitlab
         end
       end
 
+      describe 'with parent-child pipeline' do
+        context 'when artifact and job are specified' do
+          let(:config) do
+            YAML.dump({
+              build1: { stage: 'build', script: 'test' },
+              test1: { stage: 'test', trigger: {
+                include: [{ artifact: 'generated.yml', job: 'build1' }]
+              } }
+            })
+          end
+
+          it { expect { subject }.not_to raise_error }
+        end
+
+        context 'when job is not specified specified while artifact is' do
+          let(:config) do
+            YAML.dump({
+              build1: { stage: 'build', script: 'test' },
+              test1: { stage: 'test', trigger: {
+                include: [{ artifact: 'generated.yml' }]
+              } }
+            })
+          end
+
+          it do
+            expect { subject }.to raise_error(
+              described_class::ValidationError,
+              /include config must specify the job where to fetch the artifact from/)
+          end
+        end
+
+        context 'when include is a string' do
+          let(:config) do
+            YAML.dump({
+              build1: { stage: 'build', script: 'test' },
+              test1: {
+                stage: 'test',
+                trigger: {
+                  include: 'generated.yml'
+                }
+              }
+            })
+          end
+
+          it { expect { subject }.not_to raise_error }
+        end
+      end
+
       describe "Error handling" do
         it "fails to parse YAML" do
           expect do

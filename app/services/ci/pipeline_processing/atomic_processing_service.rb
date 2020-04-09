@@ -93,7 +93,7 @@ module Ci
       end
 
       def processable_status(processable)
-        if Feature.enabled?(:ci_dag_support, project, default_enabled: true) && processable.scheduling_type_dag?
+        if processable.scheduling_type_dag?
           # Processable uses DAG, get status of all dependent needs
           @collection.status_for_names(processable.aggregated_needs_names.to_a)
         else

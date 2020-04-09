@@ -92,6 +92,8 @@ Use an object storage option like AWS S3 to store job artifacts.
 DANGER: **Danger:**
 If you configure GitLab to store CI logs and artifacts on object storage, you must also enable [incremental logging](job_logs.md#new-incremental-logging-architecture). Otherwise, job logs will disappear or not be saved.
 
+[Read more about using object storage with GitLab](object_storage.md).
+
 #### Object Storage Settings
 
 For source installations the following settings are nested under `artifacts:` and then `object_store:`. On Omnibus GitLab installs they are prefixed by `artifacts_object_store_`.

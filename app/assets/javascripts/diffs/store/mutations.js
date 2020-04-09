@@ -326,6 +326,7 @@ export default {
   },
   [types.SET_SHOW_WHITESPACE](state, showWhitespace) {
     state.showWhitespace = showWhitespace;
+    state.diffFiles = [];
   },
   [types.TOGGLE_FILE_FINDER_VISIBLE](state, visible) {
     state.fileFinderVisible = visible;

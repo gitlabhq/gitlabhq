@@ -73,7 +73,7 @@ for Wiki and Design Repository cases.
 GitLab stores files and blobs such as Issue attachments or LFS objects into either:
 
 - The filesystem in a specific location.
-- An Object Storage solution. Object Storage solutions can be:
+- An [Object Storage](../../object_storage.md) solution. Object Storage solutions can be:
   - Cloud based like Amazon S3 Google Cloud Storage.
   - Hosted by you (like MinIO).
   - A Storage Appliance that exposes an Object Storage-compatible API.

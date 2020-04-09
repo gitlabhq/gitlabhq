@@ -26,6 +26,8 @@ To configure the pseudonymizer, you need to:
   Alternatively, you can use an absolute file path.
 - Use an object storage and specify the connection parameters in the `pseudonymizer.upload.connection` configuration option.
 
+[Read more about using object storage with GitLab](object_storage.md).
+
 **For Omnibus installations:**
 
 1. Edit `/etc/gitlab/gitlab.rb` and add the following lines by replacing with

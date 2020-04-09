@@ -73,4 +73,15 @@ describe('Static Site Editor Store actions', () => {
       });
     });
   });
+
+  describe('setContent', () => {
+    it('commits setContent mutation', () => {
+      testAction(actions.setContent, content, state, [
+        {
+          type: mutationTypes.SET_CONTENT,
+          payload: content,
+        },
+      ]);
+    });
+  });
 });

@@ -68,12 +68,11 @@ export const parseEnvironmentsResponse = (response = [], projectPath) =>
  * https://gitlab.com/gitlab-org/gitlab/issues/207198
  *
  * @param {Array} metrics - Array of prometheus metrics
- * @param {String} defaultLabel - Default label for metrics
  * @returns {Object}
  */
-const mapToMetricsViewModel = (metrics, defaultLabel) =>
+const mapToMetricsViewModel = metrics =>
   metrics.map(({ label, id, metric_id, query_range, prometheus_endpoint_path, ...metric }) => ({
-    label: label || defaultLabel,
+    label,
     queryRange: query_range,
     prometheusEndpointPath: prometheus_endpoint_path,
     metricId: uniqMetricsId({ metric_id, id }),

@@ -22,6 +22,15 @@ module Gitlab
         @collection.map(&:path)
       end
 
+      def real_size
+        max_files = ::Commit.max_diff_options[:max_files]
+        if paths.size > max_files
+          "#{max_files}+"
+        else
+          paths.size.to_s
+        end
+      end
+
       private
 
       def indexed_by_path

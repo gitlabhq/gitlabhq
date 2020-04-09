@@ -68,6 +68,8 @@ Instead of storing the external diffs on disk, we recommended the use of an obje
 store like AWS S3 instead. This configuration relies on valid AWS credentials to
 be configured already.
 
+[Read more about using object storage with GitLab](object_storage.md).
+
 ## Object Storage Settings
 
 For source installations, these settings are nested under `external_diffs:` and

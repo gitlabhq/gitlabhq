@@ -3,7 +3,9 @@ const createState = (initialState = {}) => ({
   sourcePath: null,
 
   isLoadingContent: false,
+  isSavingChanges: false,
 
+  originalContent: '',
   content: '',
   title: '',
 

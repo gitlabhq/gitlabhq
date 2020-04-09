@@ -77,7 +77,9 @@ To change the local storage path:
 ### Using object storage
 
 Instead of relying on the local storage, you can use an object storage to
-upload the blobs of the dependency proxy:
+store the blobs of the dependency proxy.
+
+[Read more about using object storage with GitLab](../object_storage.md).
 
 **Omnibus GitLab installations**
 

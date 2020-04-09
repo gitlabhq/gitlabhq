@@ -25,20 +25,6 @@ describe Ci::Processable do
         it 'returns all needs' do
           expect(with_aggregated_needs.first.aggregated_needs_names).to contain_exactly('test1', 'test2')
         end
-
-        context 'with ci_dag_support disabled' do
-          before do
-            stub_feature_flags(ci_dag_support: false)
-          end
-
-          it 'returns all processables' do
-            expect(with_aggregated_needs).to contain_exactly(processable)
-          end
-
-          it 'returns empty needs' do
-            expect(with_aggregated_needs.first.aggregated_needs_names).to be_nil
-          end
-        end
       end
 
       context 'without needs' do

@@ -61,6 +61,8 @@ You can also use external object storage in a private local network. For example
 
 GitLab provides two different options for the uploading mechanism: "Direct upload" and "Background upload".
 
+[Read more about using object storage with GitLab](../object_storage.md).
+
 **Option 1. Direct upload**
 
 1. User pushes an `lfs` file to the GitLab instance

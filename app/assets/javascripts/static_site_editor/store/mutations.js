@@ -8,8 +8,12 @@ export default {
     state.isLoadingContent = false;
     state.title = title;
     state.content = content;
+    state.originalContent = content;
   },
   [types.RECEIVE_CONTENT_ERROR](state) {
     state.isLoadingContent = false;
+  },
+  [types.SET_CONTENT](state, content) {
+    state.content = content;
   },
 };

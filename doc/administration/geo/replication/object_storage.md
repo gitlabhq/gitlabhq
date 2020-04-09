@@ -12,6 +12,8 @@ To have:
 - GitLab manage replication, follow [Enabling GitLab replication](#enabling-gitlab-managed-object-storage-replication).
 - Third-party services manage replication, follow [Third-party replication services](#third-party-replication-services).
 
+[Read more about using object storage with GitLab](../../object_storage.md).
+
 ## Enabling GitLab managed object storage replication
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/10586) in GitLab 12.4.

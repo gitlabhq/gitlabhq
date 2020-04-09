@@ -19388,6 +19388,9 @@ msgstr ""
 msgid "Subkeys"
 msgstr ""
 
+msgid "Submit Changes"
+msgstr ""
+
 msgid "Submit a review"
 msgstr ""
 
@@ -20510,7 +20513,7 @@ msgstr ""
 msgid "There was an error while fetching value stream analytics duration median data."
 msgstr ""
 
-msgid "There was an error while fetching value stream analytics summary data."
+msgid "There was an error while fetching value stream analytics recent activity data."
 msgstr ""
 
 msgid "There was an error with the reCAPTCHA. Please solve the reCAPTCHA again."

@@ -367,6 +367,8 @@ The different supported drivers are:
 Read more about the individual driver's config options in the
 [Docker Registry docs](https://docs.docker.com/registry/configuration/#storage).
 
+[Read more about using object storage with GitLab](../object_storage.md).
+
 CAUTION: **Warning:** GitLab will not backup Docker images that are not stored on the
 filesystem. Remember to enable backups with your object storage provider if
 desired.

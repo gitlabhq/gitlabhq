@@ -555,7 +555,7 @@ In `/etc/ssh/sshd_config` update the following:
 
 #### Amazon S3 object storage
 
-Since we're not using NFS for shared storage, we will use [Amazon S3](https://aws.amazon.com/s3/) buckets to store backups, artifacts, LFS objects, uploads, merge request diffs, container registry images, and more. For instructions on how to configure each of these, please see [Cloud Object Storage](../../administration/high_availability/object_storage.md).
+Since we're not using NFS for shared storage, we will use [Amazon S3](https://aws.amazon.com/s3/) buckets to store backups, artifacts, LFS objects, uploads, merge request diffs, container registry images, and more. Our [documentation includes configuration instructions](../../administration/object_storage.md) for each of these, and other information about using object storage with GitLab.
 
 Remember to run `sudo gitlab-ctl reconfigure` after saving the changes to the `gitlab.rb` file.
 
@@ -580,90 +580,55 @@ On the EC2 dashboard:
 
 Now we have a custom AMI that we'll use to create our launch configuration the next step.
 
-## Deploying GitLab inside an auto scaling group
+## Deploy GitLab inside an auto scaling group
 
-We'll use AWS's wizard to deploy GitLab and then SSH into the instance to
-configure the PostgreSQL and Redis connections.
+### Create a launch configuration
 
-The Auto Scaling Group option is available through the EC2 dashboard on the left
-sidebar.
+From the EC2 dashboard:
 
-1. Click **Create Auto Scaling group**.
-1. Create a new launch configuration.
+1. Select **Launch Configurations** from the left menu and click **Create launch configuration**.
+1. Select **My AMIs** from the left menu and select the `GitLab` custom AMI we created above.
+1. Select an instance type best suited for your needs (at least a `c5.xlarge`) and click **Configure details**.
+1. Enter a name for your launch configuration (we'll use `gitlab-ha-launch-config`).
+1. **Do not** check **Request Spot Instance**.
+1. From the **IAM Role** dropdown, pick the `GitLabAdmin` instance role we [created earlier](#creating-an-iam-ec2-instance-role-and-profile).
+1. Leave the rest as defaults and click **Add Storage**.
+1. The root volume is 8GiB by default and should be enough given that we won’t store any data there. Click **Configure Security Group**.
+1. Check **Select and existing security group** and select the `gitlab-loadbalancer-sec-group` we created earlier.
+1. Click **Review**, review your changes, and click **Create launch configuration**.
+1. Acknowledge that you have access to the private key or create a new one. Click **Create launch configuration**.
 
-### Choose the AMI
+### Create an auto scaling group
 
-Choose the AMI:
-
-1. Go to the Community AMIs and search for `GitLab EE <version>`
-   where `<version>` the latest version as seen on the
-   [releases page](https://about.gitlab.com/releases/).
-
-   ![Choose AMI](img/choose_ami.png)
-
-### Choose an instance type
-
-You should choose an instance type based on your workload. Consult
-[the hardware requirements](../requirements.md#hardware-requirements) to choose
-one that fits your needs (at least `c5.xlarge`, which is enough to accommodate 100 users):
-
-1. Choose the your instance type.
-1. Click **Next: Configure Instance Details**.
-
-### Configure details
-
-In this step we'll configure some details:
-
-1. Enter a name (`gitlab-autoscaling`).
-1. Select the IAM role we created.
-1. Optionally, enable CloudWatch and the EBS-optimized instance settings.
-1. In the "Advanced Details" section, set the IP address type to
-   "Do not assign a public IP address to any instances."
-1. Click **Next: Add Storage**.
-
-### Add storage
-
-The root volume is 8GB by default and should be enough given that we won't store any data there.
-
-### Configure security group
-
-As a last step, configure the security group:
-
-1. Select the existing load balancer security group we have [created](#load-balancer).
-1. Select **Review**.
-
-### Review and launch
-
-Now is a good time to review all the previous settings. When ready, click
-**Create launch configuration** and select the SSH key pair with which you will
-connect to the instance.
-
-### Create Auto Scaling Group
-
-We are now able to start creating our Auto Scaling Group:
-
-1. Give it a group name.
-1. Set the group size to 2 as we want to always start with two instances.
-1. Assign it our network VPC and add the **private subnets**.
-1. In the "Advanced Details" section, choose to receive traffic from ELBs
-   and select our ELB.
-1. Choose the ELB health check.
-1. Click **Next: Configure scaling policies**.
-
-This is the really great part of Auto Scaling; we get to choose when AWS
-launches new instances and when it removes them. For this group we'll
-scale between 2 and 4 instances where one instance will be added if CPU
+1. As soon as the launch configuration is created, you'll see an option to **Create an Auto Scaling group using this launch configuration**. Click that to start creating the auto scaling group.
+1. Enter a **Group name** (we'll use `gitlab-auto-scaling-group`).
+1. For **Group size**, enter the number of instances you want to start with (we'll enter `2`).
+1. Select the `gitlab-vpc` from the **Network** dropdown.
+1. Add both the private [subnets we created earlier](#subnets).
+1. Expand the **Advanced Details** section and check the **Receive traffic from one or more load balancers** option.
+1. From the **Classic Load Balancers** dropdown, Select the load balancer we created earlier.
+1. For **Health Check Type**, select **ELB**.
+1. We'll leave our **Health Check Grace Period** as the default `300` seconds. Click **Configure scaling policies**.
+1. Check **Use scaling policies to adjust the capacity of this group**.
+1. For this group we'll scale between 2 and 4 instances where one instance will be added if CPU
 utilization is greater than 60% and one instance is removed if it falls
 to less than 45%.
 
 ![Auto scaling group policies](img/policies.png)
 
-Finally, configure notifications and tags as you see fit, and create the
+1. Finally, configure notifications and tags as you see fit, review your changes, and create the
 auto scaling group.
 
-You'll notice that after we save the configuration, AWS starts launching our two
-instances in different AZs and without a public IP which is exactly what
-we intended.
+As the auto scaling group is created, you'll see your new instances spinning up in your EC2 dashboard. You'll also see the new instances added to your load balancer. Once the instances pass the heath check, they are ready to start receiving traffic from the load balancer.
+
+Since our instances are created by the auto scaling group, go back to your instances and terminate the [instance we created manually above](#install-gitlab). We only needed this instance to create our custom AMI.
+
+### Log in for the first time
+
+Using the domain name you used when setting up [DNS for the load balancer](#configure-dns-for-load-balancer), you should now be able to visit GitLab in your browser. The very first time you will be asked to set up a password
+for the `root` user which has admin privileges on the GitLab instance.
+
+After you set it up, login with username `root` and the newly created password.
 
 ## Health check and monitoring with Prometheus
 

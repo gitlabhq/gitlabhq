@@ -15,4 +15,8 @@ export const loadContent = ({ commit, state: { sourcePath, projectId } }) => {
     });
 };
 
+export const setContent = ({ commit }, content) => {
+  commit(mutationTypes.SET_CONTENT, content);
+};
+
 export default () => {};

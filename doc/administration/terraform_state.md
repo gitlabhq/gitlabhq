@@ -51,6 +51,8 @@ Instead of storing Terraform state files on disk, we recommend the use of an obj
 store that is S3-compatible instead. This configuration relies on valid credentials to
 be configured already.
 
+[Read more about using object storage with GitLab](object_storage.md).
+
 ### Object storage settings
 
 The following settings are:

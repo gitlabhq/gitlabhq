@@ -796,11 +796,13 @@ describe('DiffsStoreMutations', () => {
     it('sets showWhitespace', () => {
       const state = {
         showWhitespace: true,
+        diffFiles: ['test'],
       };
 
       mutations[types.SET_SHOW_WHITESPACE](state, false);
 
       expect(state.showWhitespace).toBe(false);
+      expect(state.diffFiles).toEqual([]);
     });
   });
 

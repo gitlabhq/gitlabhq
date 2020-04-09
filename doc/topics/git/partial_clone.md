@@ -1,82 +1,115 @@
-# Partial Clone for Large Repositories
+# Partial Clone
 
-CAUTION: **Alpha:**
-Partial Clone is an experimental feature, and will significantly increase
-Gitaly resource utilization when performing a partial clone, and decrease
-performance of subsequent fetch operations.
-
-As Git repositories become very large, usability decreases as performance
-decreases. One major challenge is cloning the repository, because Git will
-download the entire repository including every commit and every version of
-every object. This can be slow to transfer, and require large amounts of disk
-space.
-
-Historically, performing a **shallow clone**
-([`--depth`](https://www.git-scm.com/docs/git-clone#Documentation/git-clone.txt---depthltdepthgt))
-has been the only way to reduce the amount of data transferred when cloning
-a Git repository. This does not, however, allow filtering by sub-tree which is
-important for monolithic repositories containing many projects, or by object
-size preventing unnecessary large objects being downloaded.
+As Git repositories grow in size, they can become cumbersome to work with
+because of the large amount of history that must be downloaded, and the large
+amount of disk space they require.
 
 [Partial clone](https://github.com/git/git/blob/master/Documentation/technical/partial-clone.txt)
 is a performance optimization that "allows Git to function without having a
 complete copy of the repository. The goal of this work is to allow Git better
 handle extremely large repositories."
 
-Specifically, using partial clone, it should be possible for Git to natively
-support:
+## Filter by file size
 
-- large objects, instead of using [Git LFS](https://git-lfs.github.com/)
-- enormous repositories
+> [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/2553) in GitLab 12.10.
 
-Briefly, partial clone works by:
+Storing large binary files in Git is normally discouraged, because every large
+file added will be downloaded by everyone who clones or fetches changes
+thereafter. This is slow, if not a complete obstruction when working from a slow
+or unreliable internet connection.
 
-- excluding objects from being transferred when cloning or fetching a
-  repository using a new `--filter` flag
-- downloading missing objects on demand
+Using partial clone with a file size filter solves this problem, by excluding
+troublesome large files from clones and fetches. When Git encounters a missing
+file, it will be downloaded on demand.
 
-Follow [Git for enormous repositories](https://gitlab.com/groups/gitlab-org/-/epics/773) for roadmap and updates.
-
-## Enabling partial clone
-
-> [Introduced](https://gitlab.com/gitlab-org/gitaly/issues/1553) in GitLab 12.4.
-
-To enable partial clone, use the [feature flags API](../../api/features.md).
-For example:
+When cloning a repository, use the `--filter=blob:limit=<size>` argument. For example,
+to clone the repository excluding files larger than 1 megabyte:
 
 ```shell
-curl --data "value=true" --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/features/gitaly_upload_pack_filter
+git clone --filter=blob:limit=1m git@gitlab.com:gitlab-com/www-gitlab-com.git
 ```
 
-Alternatively, flip the switch and enable the feature flag:
+This would produce the following output:
 
-```ruby
-Feature.enable(:gitaly_upload_pack_filter)
+```plaintext
+Cloning into 'www-gitlab-com'...
+remote: Enumerating objects: 832467, done.
+remote: Counting objects: 100% (832467/832467), done.
+remote: Compressing objects: 100% (207226/207226), done.
+remote: Total 832467 (delta 585563), reused 826624 (delta 580099), pack-reused 0
+Receiving objects: 100% (832467/832467), 2.34 GiB | 5.05 MiB/s, done.
+Resolving deltas: 100% (585563/585563), done.
+remote: Enumerating objects: 146, done.
+remote: Counting objects: 100% (146/146), done.
+remote: Compressing objects: 100% (138/138), done.
+remote: Total 146 (delta 8), reused 144 (delta 8), pack-reused 0
+Receiving objects: 100% (146/146), 471.45 MiB | 4.60 MiB/s, done.
+Resolving deltas: 100% (8/8), done.
+Updating files: 100% (13008/13008), done.
+Filtering content: 100% (3/3), 131.24 MiB | 4.65 MiB/s, done.
 ```
 
-## Excluding objects by size
+The output will be longer because Git will first clone the repository excluding
+files larger than 1 megabyte, and second download any missing large files needed
+to checkout the `master` branch.
 
-Partial Clone allows large objects to be stored directly in the Git repository,
-and be excluded from clones as desired by the user. This eliminates the error
-prone process of deciding which objects should be stored in LFS or not. Using
-partial clone, all files – large or small – may be treated the same.
+When changing branches, Git may need to download more missing files.
 
-With the `uploadpack.allowFilter` and `uploadpack.allowAnySHA1InWant` options
-enabled on the Git server:
+## Filter by object type
 
-```shell
-# clone the repo, excluding blobs larger than 1 megabyte
-git clone --filter=blob:limit=1m <url>
+> [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/2553) in GitLab 12.10.
 
-# in the checkout step of the clone, and any subsequent operations
-# any blobs that are needed will be downloaded on demand
-git checkout feature-branch
+For enormous repositories with millions of files, and long history, it may be
+helpful to exclude all files and use in combination with `sparse-checkout` to
+reduce the size of your working copy.
+
+```plaintext
+# Clone the repo excluding all files
+$ git clone --filter=blob:none --sparse git@gitlab.com:gitlab-com/www-gitlab-com/git
+Cloning into 'www-gitlab-com'...
+remote: Enumerating objects: 678296, done.
+remote: Counting objects: 100% (678296/678296), done.
+remote: Compressing objects: 100% (165915/165915), done.
+remote: Total 678296 (delta 472342), reused 673292 (delta 467476), pack-reused 0
+Receiving objects: 100% (678296/678296), 81.06 MiB | 5.74 MiB/s, done.
+Resolving deltas: 100% (472342/472342), done.
+remote: Enumerating objects: 28, done.
+remote: Counting objects: 100% (28/28), done.
+remote: Compressing objects: 100% (25/25), done.
+remote: Total 28 (delta 0), reused 12 (delta 0), pack-reused 0
+Receiving objects: 100% (28/28), 140.29 KiB | 341.00 KiB/s, done.
+Updating files: 100% (28/28), done.
+
+$ cd www-gitlab-com
+
+$ git sparse-checkout init --cone
+
+$ git sparse-checkout add data
+remote: Enumerating objects: 301, done.
+remote: Counting objects: 100% (301/301), done.
+remote: Compressing objects: 100% (292/292), done.
+remote: Total 301 (delta 16), reused 102 (delta 9), pack-reused 0
+Receiving objects: 100% (301/301), 1.15 MiB | 608.00 KiB/s, done.
+Resolving deltas: 100% (16/16), done.
+Updating files: 100% (302/302), done.
 ```
 
-## Excluding objects by path
+For more details, see the Git documentation for
+[`sparse-checkout`](https://git-scm.com/docs/git-sparse-checkout).
 
-Partial Clone allows clones to be filtered by path using a format similar to a
-`.gitignore` file stored inside the repository.
+## Filter by file path
+
+CAUTION: **Experimental:**
+Partial Clone using `sparse` filters is experimental, slow, and will
+significantly increase Gitaly resource utilization when cloning and fetching.
+
+Deeper integration between Partial Clone and Sparse Checkout is being explored
+through the `--filter=sparse:oid=<blob-ish>` filter spec, but this is highly
+experimental. This mode of filtering uses a format similar to a `.gitignore`
+file to specify which files should be included when cloning and fetching.
+
+For more details, see the Git documentation for
+[`rev-list-options`](https://gitlab.com/gitlab-org/git/-/blob/9fadedd637b312089337d73c3ed8447e9f0aa775/Documentation/rev-list-options.txt#L735-780).
 
 With the `uploadpack.allowFilter` and `uploadpack.allowAnySHA1InWant` options
 enabled on the Git server:

@@ -1,0 +1,5 @@
+---
+title: Remove `ci_dag_support` feature flag
+merge_request: 28863
+author: Lee Tickett
+type: added

@@ -8,7 +8,8 @@ module Ci
   # issue: https://gitlab.com/gitlab-org/gitlab/issues/34224
   class CompareReportsBaseService < ::BaseService
     def execute(base_pipeline, head_pipeline)
-      comparer = comparer_class.new(get_report(base_pipeline), get_report(head_pipeline))
+      comparer = build_comparer(base_pipeline, head_pipeline)
+
       {
         status: :parsed,
         key: key(base_pipeline, head_pipeline),
@@ -26,6 +27,12 @@ module Ci
 
     def latest?(base_pipeline, head_pipeline, data)
       data&.fetch(:key, nil) == key(base_pipeline, head_pipeline)
+    end
+
+    protected
+
+    def build_comparer(base_pipeline, head_pipeline)
+      comparer_class.new(get_report(base_pipeline), get_report(head_pipeline))
     end
 
     private

@@ -96,14 +96,6 @@ describe Ci::BuildDependencies do
         end
 
         it { is_expected.to contain_exactly(build, rspec_test, staging) }
-
-        context 'when ci_dag_support is disabled' do
-          before do
-            stub_feature_flags(ci_dag_support: false)
-          end
-
-          it { is_expected.to contain_exactly(build, rspec_test, rubocop_test, staging) }
-        end
       end
 
       context 'when need artifacts are defined' do
