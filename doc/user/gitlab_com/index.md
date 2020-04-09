@@ -5,11 +5,12 @@ In this page you will find information about the settings that are used on
 
 ## SSH host keys fingerprints
 
-Below are the fingerprints for GitLab.com's SSH host keys.
+Below are the fingerprints for GitLab.com's SSH host keys. The first time you connect
+to a GitLab.com repository, you'll see one of these keys in the output.
 
-| Algorithm | MD5 | SHA256  |
+| Algorithm | MD5 (deprecated) | SHA256  |
 | --------- | --- | ------- |
-|  DSA      | `7a:47:81:3a:ee:89:89:64:33:ca:44:52:3d:30:d4:87` | `p8vZBUOR0XQz6sYiaWSMLmh0t9i8srqYKool/Xfdfqw` |
+|  DSA (deprecated)      | `7a:47:81:3a:ee:89:89:64:33:ca:44:52:3d:30:d4:87` | `p8vZBUOR0XQz6sYiaWSMLmh0t9i8srqYKool/Xfdfqw` |
 |  ECDSA    | `f1:d0:fb:46:73:7a:70:92:5a:ab:5d:ef:43:e2:1c:35` | `HbW3g8zUjNSksFbqTiUWPWg2Bq1x8xdGUrliXFzSnUw` |
 |  ED25519  | `2e:65:6a:c8:cf:bf:b2:8b:9a:bd:6d:9f:11:5c:12:16` | `eUXGGm1YGsMAS7vkcx6JOJdOGHPem5gQp4taiCfCLB8` |
 |  RSA      | `b6:03:0e:39:97:9e:d0:e7:24:ce:a3:77:3e:01:42:09` | `ROQFvPThGrW4RuWLoL9tq9I9zJ42fK4XywyRtbOz/EQ` |
