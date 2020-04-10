@@ -163,8 +163,31 @@ module Gitlab
           signup_enabled: alt_usage_data { Gitlab::CurrentSettings.allow_signup? },
           web_ide_clientside_preview_enabled: alt_usage_data { Gitlab::CurrentSettings.web_ide_clientside_preview_enabled? },
           ingress_modsecurity_enabled: Feature.enabled?(:ingress_modsecurity)
-        }
+        }.merge(features_usage_data_container_expiration_policies)
       end
+
+      # rubocop: disable CodeReuse/ActiveRecord
+      def features_usage_data_container_expiration_policies
+        results = {}
+        start = ::Project.minimum(:id)
+        finish = ::Project.maximum(:id)
+
+        results[:projects_with_expiration_policy_disabled] = distinct_count(::ContainerExpirationPolicy.where(enabled: false), :project_id, start: start, finish: finish)
+        base = ::ContainerExpirationPolicy.active
+        results[:projects_with_expiration_policy_enabled] = distinct_count(base, :project_id, start: start, finish: finish)
+
+        %i[keep_n cadence older_than].each do |option|
+          ::ContainerExpirationPolicy.public_send("#{option}_options").keys.each do |value| # rubocop: disable GitlabSecurity/PublicSend
+            results["projects_with_expiration_policy_enabled_with_#{option}_set_to_#{value}".to_sym] = distinct_count(base.where(option => value), :project_id, start: start, finish: finish)
+          end
+        end
+
+        results[:projects_with_expiration_policy_enabled_with_keep_n_unset] = distinct_count(base.where(keep_n: nil), :project_id, start: start, finish: finish)
+        results[:projects_with_expiration_policy_enabled_with_older_than_unset] = distinct_count(base.where(older_than: nil), :project_id, start: start, finish: finish)
+
+        results
+      end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       # @return [Hash<Symbol, Integer>]
       def usage_counters

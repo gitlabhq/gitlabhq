@@ -25299,7 +25299,7 @@
           "fields": [
             {
               "name": "date",
-              "description": "The date when the time tracked was spent at",
+              "description": "Timestamp of when the time tracked was spent at. Deprecated in 12.10: Use `spentAt`",
               "args": [
 
               ],
@@ -25312,8 +25312,8 @@
                   "ofType": null
                 }
               },
-              "isDeprecated": false,
-              "deprecationReason": null
+              "isDeprecated": true,
+              "deprecationReason": "Use `spentAt`. Deprecated in 12.10"
             },
             {
               "name": "issue",
@@ -25324,6 +25324,20 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "Issue",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "spentAt",
+              "description": "Timestamp of when the time tracked was spent at",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Time",
                 "ofType": null
               },
               "isDeprecated": false,

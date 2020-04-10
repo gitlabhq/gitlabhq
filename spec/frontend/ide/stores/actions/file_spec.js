@@ -408,7 +408,7 @@ describe('IDE store file actions', () => {
     beforeEach(() => {
       jest.spyOn(service, 'getRawFileData');
 
-      tmpFile = file('tmpFile');
+      tmpFile = { ...file('tmpFile'), rawPath: 'raw_path' };
       store.state.entries[tmpFile.path] = tmpFile;
     });
 

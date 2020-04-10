@@ -787,7 +787,7 @@ class Project < ApplicationRecord
   end
 
   def jira_issues_import_feature_flag_enabled?
-    Feature.enabled?(:jira_issue_import, self)
+    Feature.enabled?(:jira_issue_import, self, default_enabled: true)
   end
 
   def team

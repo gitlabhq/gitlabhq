@@ -1,0 +1,5 @@
+---
+title: Fix incorrect content returned on empty dotfile
+merge_request: 28144
+author:
+type: fixed

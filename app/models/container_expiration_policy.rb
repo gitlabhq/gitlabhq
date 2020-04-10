@@ -2,6 +2,7 @@
 
 class ContainerExpirationPolicy < ApplicationRecord
   include Schedulable
+  include UsageStatistics
 
   belongs_to :project, inverse_of: :container_expiration_policy
 

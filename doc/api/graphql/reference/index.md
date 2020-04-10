@@ -1306,8 +1306,9 @@ Completion status of tasks
 
 | Name  | Type  | Description |
 | ---   |  ---- | ----------  |
-| `date` | Time! | The date when the time tracked was spent at |
+| `date` **{warning-solid}** | Time! | **Deprecated:** Use `spentAt`. Deprecated in 12.10 |
 | `issue` | Issue | The issue that logged time was added to |
+| `spentAt` | Time | Timestamp of when the time tracked was spent at |
 | `timeSpent` | Int! | The time spent displayed in seconds |
 | `user` | User! | The user that logged the time |
 

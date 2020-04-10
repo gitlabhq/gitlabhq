@@ -4,6 +4,7 @@ require 'spec_helper'
 
 describe 'Project navbar' do
   include NavbarStructureHelper
+  include WaitForRequests
 
   include_context 'project navbar structure'
 
@@ -18,6 +19,22 @@ describe 'Project navbar' do
   it_behaves_like 'verified navigation bar' do
     before do
       visit project_path(project)
+    end
+  end
+
+  context 'when value stream is available' do
+    before do
+      visit project_path(project)
+    end
+
+    it 'redirects to value stream when Analytics item is clicked' do
+      page.within('.sidebar-top-level-items') do
+        find('[data-qa-selector=analytics_anchor]').click
+      end
+
+      wait_for_requests
+
+      expect(page).to have_current_path(project_cycle_analytics_path(project))
     end
   end
 

@@ -144,6 +144,43 @@ describe Gitlab::UsageData, :aggregate_failures do
           expect(subject[:gitlab_shared_runners_enabled]).to eq(Gitlab.config.gitlab_ci.shared_runners_enabled)
           expect(subject[:web_ide_clientside_preview_enabled]).to eq(Gitlab::CurrentSettings.web_ide_clientside_preview_enabled?)
         end
+
+        context 'with existing container expiration policies' do
+          let_it_be(:disabled) { create(:container_expiration_policy, enabled: false) }
+          let_it_be(:enabled) { create(:container_expiration_policy, enabled: true) }
+          %i[keep_n cadence older_than].each do |attribute|
+            ContainerExpirationPolicy.send("#{attribute}_options").keys.each do |value|
+              let_it_be("container_expiration_policy_with_#{attribute}_set_to_#{value}") { create(:container_expiration_policy, attribute => value) }
+            end
+          end
+
+          let(:inactive_policies) { ::ContainerExpirationPolicy.where(enabled: false) }
+          let(:active_policies) { ::ContainerExpirationPolicy.active }
+
+          it 'gathers usage data' do
+            expect(subject[:projects_with_expiration_policy_enabled]).to eq 16
+            expect(subject[:projects_with_expiration_policy_disabled]).to eq 1
+
+            expect(subject[:projects_with_expiration_policy_enabled_with_keep_n_unset]).to eq 10
+            expect(subject[:projects_with_expiration_policy_enabled_with_keep_n_set_to_1]).to eq 1
+            expect(subject[:projects_with_expiration_policy_enabled_with_keep_n_set_to_5]).to eq 1
+            expect(subject[:projects_with_expiration_policy_enabled_with_keep_n_set_to_10]).to eq 1
+            expect(subject[:projects_with_expiration_policy_enabled_with_keep_n_set_to_25]).to eq 1
+            expect(subject[:projects_with_expiration_policy_enabled_with_keep_n_set_to_50]).to eq 1
+
+            expect(subject[:projects_with_expiration_policy_enabled_with_older_than_unset]).to eq 12
+            expect(subject[:projects_with_expiration_policy_enabled_with_older_than_set_to_7d]).to eq 1
+            expect(subject[:projects_with_expiration_policy_enabled_with_older_than_set_to_14d]).to eq 1
+            expect(subject[:projects_with_expiration_policy_enabled_with_older_than_set_to_30d]).to eq 1
+            expect(subject[:projects_with_expiration_policy_enabled_with_older_than_set_to_90d]).to eq 1
+
+            expect(subject[:projects_with_expiration_policy_enabled_with_cadence_set_to_1d]).to eq 12
+            expect(subject[:projects_with_expiration_policy_enabled_with_cadence_set_to_7d]).to eq 1
+            expect(subject[:projects_with_expiration_policy_enabled_with_cadence_set_to_14d]).to eq 1
+            expect(subject[:projects_with_expiration_policy_enabled_with_cadence_set_to_1month]).to eq 1
+            expect(subject[:projects_with_expiration_policy_enabled_with_cadence_set_to_3month]).to eq 1
+          end
+        end
       end
 
       describe '#components_usage_data' do

@@ -25,7 +25,7 @@ export default {
       return Promise.resolve(file.content);
     }
 
-    if (file.raw) {
+    if (file.raw || !file.rawPath) {
       return Promise.resolve(file.raw);
     }
 

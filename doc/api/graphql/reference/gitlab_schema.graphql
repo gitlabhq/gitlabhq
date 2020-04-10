@@ -8353,14 +8353,19 @@ scalar Time
 
 type Timelog {
   """
-  The date when the time tracked was spent at
+  Timestamp of when the time tracked was spent at. Deprecated in 12.10: Use `spentAt`
   """
-  date: Time!
+  date: Time! @deprecated(reason: "Use `spentAt`. Deprecated in 12.10")
 
   """
   The issue that logged time was added to
   """
   issue: Issue
+
+  """
+  Timestamp of when the time tracked was spent at
+  """
+  spentAt: Time
 
   """
   The time spent displayed in seconds
