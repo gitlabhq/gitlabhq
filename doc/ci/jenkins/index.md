@@ -50,7 +50,7 @@ There are some high level differences between the products worth mentioning:
 
   - on push
   - on [schedule](../pipelines/schedules.md)
-  - from the [GitLab UI](../pipelines/index.md#manually-executing-pipelines)
+  - from the [GitLab UI](../pipelines/index.md#run-a-pipeline-manually)
   - by [API call](../triggers/README.md)
   - by [webhook](../triggers/README.md#triggering-a-pipeline-from-a-webhook)
   - by [ChatOps](../chatops/README.md)

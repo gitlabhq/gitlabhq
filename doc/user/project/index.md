@@ -70,7 +70,7 @@ When you create a project in GitLab, you'll have access to a large number of
     your GitLab CI/CD pipelines from the UI
     - [Scheduled Pipelines](../../ci/pipelines/schedules.md): Schedule a pipeline
       to start at a chosen time
-    - [Pipeline Graphs](../../ci/pipelines/index.md#visualizing-pipelines): View your
+    - [Pipeline Graphs](../../ci/pipelines/index.md#visualize-pipelines): View your
       entire pipeline from the UI
     - [Job artifacts](../../ci/pipelines/job_artifacts.md): Define,
       browse, and download job artifacts

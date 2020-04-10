@@ -12,14 +12,14 @@ export default {
     Toolbar,
   },
   computed: {
-    ...mapState(['content', 'isLoadingContent']),
+    ...mapState(['content', 'isLoadingContent', 'isSavingChanges']),
     ...mapGetters(['isContentLoaded', 'contentChanged']),
   },
   mounted() {
     this.loadContent();
   },
   methods: {
-    ...mapActions(['loadContent', 'setContent']),
+    ...mapActions(['loadContent', 'setContent', 'submitChanges']),
   },
 };
 </script>
@@ -41,7 +41,11 @@ export default {
         :value="content"
         @input="setContent"
       />
-      <toolbar :saveable="contentChanged" />
+      <toolbar
+        :saveable="contentChanged"
+        :saving-changes="isSavingChanges"
+        @submit="submitChanges"
+      />
     </div>
   </div>
 </template>

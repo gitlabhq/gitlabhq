@@ -6,7 +6,7 @@ const initStaticSiteEditor = el => {
   const { projectId, path: sourcePath } = el.dataset;
 
   const store = createStore({
-    initialState: { projectId, sourcePath },
+    initialState: { projectId, sourcePath, username: window.gon.current_username },
   });
 
   return new Vue({

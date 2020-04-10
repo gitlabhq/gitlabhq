@@ -1,61 +1,50 @@
 import createState from '~/static_site_editor/store/state';
 import mutations from '~/static_site_editor/store/mutations';
 import * as types from '~/static_site_editor/store/mutation_types';
-import { sourceContentTitle as title, sourceContent as content } from '../mock_data';
+import {
+  sourceContentTitle as title,
+  sourceContent as content,
+  savedContentMeta,
+} from '../mock_data';
 
 describe('Static Site Editor Store mutations', () => {
   let state;
+  const contentLoadedPayload = { title, content };
 
   beforeEach(() => {
     state = createState();
   });
 
-  describe('loadContent', () => {
-    beforeEach(() => {
-      mutations[types.LOAD_CONTENT](state);
+  it.each`
+    mutation                         | stateProperty         | payload                 | expectedValue
+    ${types.LOAD_CONTENT}            | ${'isLoadingContent'} | ${undefined}            | ${true}
+    ${types.RECEIVE_CONTENT_SUCCESS} | ${'isLoadingContent'} | ${contentLoadedPayload} | ${false}
+    ${types.RECEIVE_CONTENT_SUCCESS} | ${'title'}            | ${contentLoadedPayload} | ${title}
+    ${types.RECEIVE_CONTENT_SUCCESS} | ${'content'}          | ${contentLoadedPayload} | ${content}
+    ${types.RECEIVE_CONTENT_SUCCESS} | ${'originalContent'}  | ${contentLoadedPayload} | ${content}
+    ${types.RECEIVE_CONTENT_ERROR}   | ${'isLoadingContent'} | ${undefined}            | ${false}
+    ${types.SET_CONTENT}             | ${'content'}          | ${content}              | ${content}
+    ${types.SUBMIT_CHANGES}          | ${'isSavingChanges'}  | ${undefined}            | ${true}
+    ${types.SUBMIT_CHANGES_SUCCESS}  | ${'savedContentMeta'} | ${savedContentMeta}     | ${savedContentMeta}
+    ${types.SUBMIT_CHANGES_SUCCESS}  | ${'isSavingChanges'}  | ${savedContentMeta}     | ${false}
+    ${types.SUBMIT_CHANGES_ERROR}    | ${'isSavingChanges'}  | ${undefined}            | ${false}
+  `(
+    '$mutation sets $stateProperty to $expectedValue',
+    ({ mutation, stateProperty, payload, expectedValue }) => {
+      mutations[mutation](state, payload);
+      expect(state[stateProperty]).toBe(expectedValue);
+    },
+  );
+
+  it(`${types.SUBMIT_CHANGES_SUCCESS} sets originalContent to content current value`, () => {
+    const editedContent = `${content} plus something else`;
+
+    state = createState({
+      originalContent: content,
+      content: editedContent,
     });
+    mutations[types.SUBMIT_CHANGES_SUCCESS](state);
 
-    it('sets isLoadingContent to true', () => {
-      expect(state.isLoadingContent).toBe(true);
-    });
-  });
-
-  describe('receiveContentSuccess', () => {
-    const payload = { title, content };
-
-    beforeEach(() => {
-      mutations[types.RECEIVE_CONTENT_SUCCESS](state, payload);
-    });
-
-    it('sets current state to LOADING', () => {
-      expect(state.isLoadingContent).toBe(false);
-    });
-
-    it('sets title', () => {
-      expect(state.title).toBe(payload.title);
-    });
-
-    it('sets originalContent and content', () => {
-      expect(state.content).toBe(payload.content);
-      expect(state.originalContent).toBe(payload.content);
-    });
-  });
-
-  describe('receiveContentError', () => {
-    beforeEach(() => {
-      mutations[types.RECEIVE_CONTENT_ERROR](state);
-    });
-
-    it('sets current state to LOADING_ERROR', () => {
-      expect(state.isLoadingContent).toBe(false);
-    });
-  });
-
-  describe('setContent', () => {
-    it('sets content', () => {
-      mutations[types.SET_CONTENT](state, content);
-
-      expect(state.content).toBe(content);
-    });
+    expect(state.originalContent).toBe(state.content);
   });
 });

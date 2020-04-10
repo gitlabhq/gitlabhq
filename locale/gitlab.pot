@@ -71,6 +71,11 @@ msgstr ""
 msgid "\"%{path}\" did not exist on \"%{ref}\""
 msgstr ""
 
+msgid "%d URL scanned"
+msgid_plural "%d URLs scanned"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d changed file"
 msgid_plural "%d changed files"
 msgstr[0] ""
@@ -22622,6 +22627,9 @@ msgid "View dependency details for your project"
 msgstr ""
 
 msgid "View deployment"
+msgstr ""
+
+msgid "View details"
 msgstr ""
 
 msgid "View details: %{details_url}"

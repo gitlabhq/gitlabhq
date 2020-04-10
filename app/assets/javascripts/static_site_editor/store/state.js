@@ -1,4 +1,5 @@
 const createState = (initialState = {}) => ({
+  username: null,
   projectId: null,
   sourcePath: null,
 

@@ -9,6 +9,8 @@ import StaticSiteEditor from '~/static_site_editor/components/static_site_editor
 import EditArea from '~/static_site_editor/components/edit_area.vue';
 import PublishToolbar from '~/static_site_editor/components/publish_toolbar.vue';
 
+import { sourceContent } from '../mock_data';
+
 const localVue = createLocalVue();
 
 localVue.use(Vuex);
@@ -18,10 +20,12 @@ describe('StaticSiteEditor', () => {
   let store;
   let loadContentActionMock;
   let setContentActionMock;
+  let submitChangesActionMock;
 
   const buildStore = ({ initialState, getters } = {}) => {
     loadContentActionMock = jest.fn();
     setContentActionMock = jest.fn();
+    submitChangesActionMock = jest.fn();
 
     store = new Vuex.Store({
       state: createState(initialState),
@@ -33,6 +37,7 @@ describe('StaticSiteEditor', () => {
       actions: {
         loadContent: loadContentActionMock,
         setContent: setContentActionMock,
+        submitChanges: submitChangesActionMock,
       },
     });
   };
@@ -119,18 +124,35 @@ describe('StaticSiteEditor', () => {
     expect(findSkeletonLoader().exists()).toBe(true);
   });
 
+  it('sets toolbar as saving when saving changes', () => {
+    buildContentLoadedStore({
+      initialState: {
+        isSavingChanges: true,
+      },
+    });
+    buildWrapper();
+
+    expect(findPublishToolbar().props('savingChanges')).toBe(true);
+  });
+
   it('dispatches load content action', () => {
     expect(loadContentActionMock).toHaveBeenCalled();
   });
 
   it('dispatches setContent action when edit area emits input event', () => {
-    const content = 'new content';
-
     buildContentLoadedStore();
     buildWrapper();
 
-    findEditArea().vm.$emit('input', content);
+    findEditArea().vm.$emit('input', sourceContent);
 
-    expect(setContentActionMock).toHaveBeenCalledWith(expect.anything(), content, undefined);
+    expect(setContentActionMock).toHaveBeenCalledWith(expect.anything(), sourceContent, undefined);
+  });
+
+  it('dispatches submitChanges action when toolbar emits submit event', () => {
+    buildContentLoadedStore();
+    buildWrapper();
+    findPublishToolbar().vm.$emit('submit');
+
+    expect(submitChangesActionMock).toHaveBeenCalled();
   });
 });

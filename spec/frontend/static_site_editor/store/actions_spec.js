@@ -3,18 +3,23 @@ import createState from '~/static_site_editor/store/state';
 import * as actions from '~/static_site_editor/store/actions';
 import * as mutationTypes from '~/static_site_editor/store/mutation_types';
 import loadSourceContent from '~/static_site_editor/services/load_source_content';
+import submitContentChanges from '~/static_site_editor/services/submit_content_changes';
 
 import createFlash from '~/flash';
 
 import {
+  username,
   projectId,
   sourcePath,
   sourceContentTitle as title,
   sourceContent as content,
+  savedContentMeta,
+  submitChangesError,
 } from '../mock_data';
 
 jest.mock('~/flash');
 jest.mock('~/static_site_editor/services/load_source_content', () => jest.fn());
+jest.mock('~/static_site_editor/services/submit_content_changes', () => jest.fn());
 
 describe('Static Site Editor Store actions', () => {
   let state;
@@ -82,6 +87,61 @@ describe('Static Site Editor Store actions', () => {
           payload: content,
         },
       ]);
+    });
+  });
+
+  describe('submitChanges', () => {
+    describe('on success', () => {
+      beforeEach(() => {
+        state = createState({
+          projectId,
+          content,
+          username,
+          sourcePath,
+        });
+        submitContentChanges.mockResolvedValueOnce(savedContentMeta);
+      });
+
+      it('commits submitChangesSuccess mutation', () => {
+        testAction(
+          actions.submitChanges,
+          null,
+          state,
+          [
+            { type: mutationTypes.SUBMIT_CHANGES },
+            { type: mutationTypes.SUBMIT_CHANGES_SUCCESS, payload: savedContentMeta },
+          ],
+          [],
+        );
+
+        expect(submitContentChanges).toHaveBeenCalledWith({
+          username,
+          projectId,
+          content,
+          sourcePath,
+        });
+      });
+    });
+
+    describe('on error', () => {
+      const expectedMutations = [
+        { type: mutationTypes.SUBMIT_CHANGES },
+        { type: mutationTypes.SUBMIT_CHANGES_ERROR },
+      ];
+
+      beforeEach(() => {
+        submitContentChanges.mockRejectedValueOnce(new Error(submitChangesError));
+      });
+
+      it('dispatches receiveContentError', () => {
+        testAction(actions.submitChanges, null, state, expectedMutations);
+      });
+
+      it('displays flash communicating error', () => {
+        return testAction(actions.submitChanges, null, state, expectedMutations).then(() => {
+          expect(createFlash).toHaveBeenCalledWith(submitChangesError);
+        });
+      });
     });
   });
 });

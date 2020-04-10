@@ -3,6 +3,7 @@ import { __ } from '~/locale';
 
 import * as mutationTypes from './mutation_types';
 import loadSourceContent from '~/static_site_editor/services/load_source_content';
+import submitContentChanges from '~/static_site_editor/services/submit_content_changes';
 
 export const loadContent = ({ commit, state: { sourcePath, projectId } }) => {
   commit(mutationTypes.LOAD_CONTENT);
@@ -17,6 +18,17 @@ export const loadContent = ({ commit, state: { sourcePath, projectId } }) => {
 
 export const setContent = ({ commit }, content) => {
   commit(mutationTypes.SET_CONTENT, content);
+};
+
+export const submitChanges = ({ state: { projectId, content, sourcePath, username }, commit }) => {
+  commit(mutationTypes.SUBMIT_CHANGES);
+
+  return submitContentChanges({ content, projectId, sourcePath, username })
+    .then(data => commit(mutationTypes.SUBMIT_CHANGES_SUCCESS, data))
+    .catch(error => {
+      commit(mutationTypes.SUBMIT_CHANGES_ERROR);
+      createFlash(error.message);
+    });
 };
 
 export default () => {};

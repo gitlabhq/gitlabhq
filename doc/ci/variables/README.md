@@ -465,7 +465,7 @@ limitations with the current Auto DevOps scripting environment.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/44059) in GitLab 10.8.
 
-[Manually triggered pipelines](../pipelines/index.md#manually-executing-pipelines) allow you to override the value of a current variable.
+[Manually triggered pipelines](../pipelines/index.md#run-a-pipeline-manually) allow you to override the value of a current variable.
 
 For instance, suppose you added a
 [custom variable `$TEST`](#creating-a-custom-environment-variable)
@@ -621,7 +621,7 @@ variables that were set, etc.
 
 Before enabling this, you should ensure jobs are visible to
 [team members only](../../user/permissions.md#project-features). You should
-also [erase](../pipelines/index.md#accessing-individual-jobs) all generated job logs
+also [erase](../pipelines/index.md#view-jobs-in-a-pipeline) all generated job logs
 before making them visible again.
 
 To enable debug logs (traces), set the `CI_DEBUG_TRACE` variable to `true`:
