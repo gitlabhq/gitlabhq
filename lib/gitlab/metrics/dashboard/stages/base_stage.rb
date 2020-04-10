@@ -37,16 +37,28 @@ module Gitlab
           def for_metrics
             missing_panel_groups! unless dashboard[:panel_groups].is_a?(Array)
 
-            dashboard[:panel_groups].each do |panel_group|
-              missing_panels! unless panel_group[:panels].is_a?(Array)
-
-              panel_group[:panels].each do |panel|
+            for_panel_groups do |panel_group|
+              for_panels_in(panel_group) do |panel|
                 missing_metrics! unless panel[:metrics].is_a?(Array)
 
                 panel[:metrics].each do |metric|
                   yield metric
                 end
               end
+            end
+          end
+
+          def for_panel_groups
+            dashboard[:panel_groups].each do |panel_group|
+              yield panel_group
+            end
+          end
+
+          def for_panels_in(panel_group)
+            missing_panels! unless panel_group[:panels].is_a?(Array)
+
+            panel_group[:panels].each do |panel|
+              yield panel
             end
           end
         end

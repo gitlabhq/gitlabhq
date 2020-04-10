@@ -41,6 +41,23 @@ module ClustersHelper
     end
   end
 
+  def cluster_type_label(cluster_type)
+    case cluster_type
+    when 'project_type'
+      s_('ClusterIntegration|Project cluster')
+    when 'group_type'
+      s_('ClusterIntegration|Group cluster')
+    when 'instance_type'
+      s_('ClusterIntegration|Instance cluster')
+    else
+      Gitlab::ErrorTracking.track_and_raise_for_dev_exception(
+        ArgumentError.new('Cluster Type Missing'),
+        cluster_error: { error: 'Cluster Type Missing', cluster_type: cluster_type }
+      )
+      _('Cluster')
+    end
+  end
+
   def has_rbac_enabled?(cluster)
     return cluster.platform_kubernetes_rbac? if cluster.platform_kubernetes
 

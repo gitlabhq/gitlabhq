@@ -1,5 +1,7 @@
 - project = local_assigns.fetch(:project)
 
+= render 'projects/services/prometheus/custom_metrics', project: project
+
 .col-lg-3
   %p
     = s_('PrometheusService|Common metrics are automatically monitored based on a library of metrics from popular exporters.')

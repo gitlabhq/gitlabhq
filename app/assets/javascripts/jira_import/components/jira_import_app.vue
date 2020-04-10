@@ -1,10 +1,12 @@
 <script>
 import getJiraProjects from '../queries/getJiraProjects.query.graphql';
+import JiraImportForm from './jira_import_form.vue';
 import JiraImportSetup from './jira_import_setup.vue';
 
 export default {
   name: 'JiraImportApp',
   components: {
+    JiraImportForm,
     JiraImportSetup,
   },
   props: {
@@ -41,6 +43,6 @@ export default {
 <template>
   <div>
     <jira-import-setup v-if="!isJiraConfigured" :illustration="setupIllustration" />
-    <div v-else></div>
+    <jira-import-form v-else />
   </div>
 </template>

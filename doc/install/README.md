@@ -22,7 +22,7 @@ There are many ways you can install GitLab depending on your platform:
 
 TIP: **If in doubt, choose Omnibus:**
 The Omnibus GitLab packages are mature, scalable, support
-[high availability](../administration/high_availability/README.md) and are used
+[high availability](../administration/availability/index.md) and are used
 today on GitLab.com. The Helm charts are recommended for those who are familiar
 with Kubernetes.
 
@@ -36,7 +36,7 @@ The Omnibus GitLab package uses our official deb/rpm repositories. This is
 recommended for most users.
 
 If you need additional flexibility and resilience, we recommend deploying
-GitLab as described in our [High Availability documentation](../administration/high_availability/README.md).
+GitLab as described in our [High Availability documentation](../administration/availability/index.md).
 
 [**> Install GitLab using the Omnibus GitLab package.**](https://about.gitlab.com/install/)
 

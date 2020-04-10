@@ -21,8 +21,9 @@ describe Tags::CreateService do
       it 'returns an error' do
         response = service.execute('v1.1.0', 'foo', 'Foo')
 
-        expect(response).to eq(status: :error,
-                               message: 'Target foo is invalid')
+        expect(response[:status]).to eq(:error)
+        expect(response[:http_status]).to eq(400)
+        expect(response[:message]).to eq('Target foo is invalid')
       end
     end
 
@@ -34,8 +35,19 @@ describe Tags::CreateService do
 
         response = service.execute('v1.1.0', 'master', 'Foo')
 
-        expect(response).to eq(status: :error,
-                               message: 'Tag v1.1.0 already exists')
+        expect(response[:status]).to eq(:error)
+        expect(response[:http_status]).to eq(409)
+        expect(response[:message]).to eq('Tag v1.1.0 already exists')
+      end
+    end
+
+    context 'when tag name is invalid' do
+      it 'returns an error' do
+        response = service.execute('HEAD', 'master', 'Foo')
+
+        expect(response[:status]).to eq(:error)
+        expect(response[:http_status]).to eq(400)
+        expect(response[:message]).to eq('Tag name invalid')
       end
     end
 
@@ -47,8 +59,8 @@ describe Tags::CreateService do
 
         response = service.execute('v1.1.0', 'master', 'Foo')
 
-        expect(response).to eq(status: :error,
-                               message: 'something went wrong')
+        expect(response[:status]).to eq(:error)
+        expect(response[:message]).to eq('something went wrong')
       end
     end
   end

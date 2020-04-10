@@ -77,9 +77,8 @@ with the Fog library that GitLab uses. Symptoms include:
 
 ### GitLab Pages requires NFS
 
-If you're working to add more GitLab servers for [scaling](scaling/index.md) or
-[fault tolerance](high_availability/README.md) and one of your requirements
-is [GitLab Pages](../user/project/pages/index.md) this currently requires
+If you're working to add more GitLab servers for [scaling or fault tolerance](scaling/index.md)
+and one of your requirements is [GitLab Pages](../user/project/pages/index.md) this currently requires
 NFS. There is [work in progress](https://gitlab.com/gitlab-org/gitlab-pages/issues/196)
 to remove this dependency. In the future, GitLab Pages may use
 [object storage](https://gitlab.com/gitlab-org/gitlab/-/issues/208135).

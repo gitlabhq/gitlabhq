@@ -702,10 +702,10 @@ describe API::Releases do
       context 'when tag name is HEAD' do
         let(:tag_name) { 'HEAD' }
 
-        it 'returns an error as failure on tag creation' do
+        it 'returns a 400 error as failure on tag creation' do
           post api("/projects/#{project.id}/releases", maintainer), params: params
 
-          expect(response).to have_gitlab_http_status(:internal_server_error)
+          expect(response).to have_gitlab_http_status(:bad_request)
           expect(json_response['message']).to eq('Tag name invalid')
         end
       end
@@ -713,10 +713,10 @@ describe API::Releases do
       context 'when tag name is empty' do
         let(:tag_name) { '' }
 
-        it 'returns an error as failure on tag creation' do
+        it 'returns a 400 error as failure on tag creation' do
           post api("/projects/#{project.id}/releases", maintainer), params: params
 
-          expect(response).to have_gitlab_http_status(:internal_server_error)
+          expect(response).to have_gitlab_http_status(:bad_request)
           expect(json_response['message']).to eq('Tag name invalid')
         end
       end

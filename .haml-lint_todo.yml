@@ -409,7 +409,6 @@ linters:
       - 'ee/app/views/projects/push_rules/_index.html.haml'
       - 'ee/app/views/projects/services/gitlab_slack_application/_help.html.haml'
       - 'ee/app/views/projects/services/gitlab_slack_application/_slack_integration_form.html.haml'
-      - 'ee/app/views/projects/services/prometheus/_metrics.html.haml'
       - 'ee/app/views/projects/settings/slacks/edit.html.haml'
       - 'ee/app/views/shared/_additional_email_text.html.haml'
       - 'ee/app/views/shared/_mirror_update_button.html.haml'

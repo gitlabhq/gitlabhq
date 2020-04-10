@@ -8,7 +8,7 @@ GitLab supports a number of scaling options to ensure that your self-managed
 instance is able to scale out to meet your organization's needs when scaling up
 a single-box GitLab installation is no longer practical or feasible.
 
-Please consult our [high availability documentation](../high_availability/README.md)
+Please consult our [high availability documentation](../availability/index.md)
 if your organization requires fault tolerance and redundancy features, such as
 automatic database system failover.
 

@@ -4,7 +4,7 @@ module PerformanceMonitoring
   class PrometheusPanel
     include ActiveModel::Model
 
-    attr_accessor :type, :title, :y_label, :weight, :metrics
+    attr_accessor :type, :title, :y_label, :weight, :metrics, :y_axis
 
     validates :title, presence: true
     validates :metrics, presence: true
@@ -19,6 +19,10 @@ module PerformanceMonitoring
       )
 
       panel.tap(&:validate!)
+    end
+
+    def id(group_title)
+      Digest::SHA2.hexdigest([group_title, type, title].join)
     end
   end
 end

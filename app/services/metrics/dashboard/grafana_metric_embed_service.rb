@@ -10,7 +10,8 @@ module Metrics
       include ReactiveCaching
 
       SEQUENCE = [
-        ::Gitlab::Metrics::Dashboard::Stages::GrafanaFormatter
+        ::Gitlab::Metrics::Dashboard::Stages::GrafanaFormatter,
+        ::Gitlab::Metrics::Dashboard::Stages::PanelIdsInserter
       ].freeze
 
       self.reactive_cache_key = ->(service) { service.cache_key }

@@ -4135,6 +4135,9 @@ msgstr ""
 msgid "Closes this %{quick_action_target}."
 msgstr ""
 
+msgid "Cluster"
+msgstr ""
+
 msgid "Cluster Health"
 msgstr ""
 
@@ -9168,6 +9171,9 @@ msgstr ""
 msgid "Footer message"
 msgstr ""
 
+msgid "For each Jira issue successfully imported, we'll create a new GitLab issue with the following data:"
+msgstr ""
+
 msgid "For internal projects, any logged in user can view pipelines and access job details (output logs and artifacts)"
 msgstr ""
 
@@ -10897,6 +10903,9 @@ msgstr ""
 msgid "Import an exported GitLab project"
 msgstr ""
 
+msgid "Import from"
+msgstr ""
+
 msgid "Import from Jira"
 msgstr ""
 
@@ -11302,6 +11311,9 @@ msgid "Issue events"
 msgstr ""
 
 msgid "Issue first depoloyed to production"
+msgstr ""
+
+msgid "Issue label"
 msgstr ""
 
 msgid "Issue or Merge Request ID is required"
@@ -13310,6 +13322,9 @@ msgid "New Issue"
 msgid_plural "New Issues"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "New Jira import"
+msgstr ""
 
 msgid "New Label"
 msgstr ""
@@ -17002,6 +17017,9 @@ msgid "Report abuse to admin"
 msgstr ""
 
 msgid "Reported %{timeAgo} by %{reportedBy}"
+msgstr ""
+
+msgid "Reporter"
 msgstr ""
 
 msgid "Reporting"
@@ -24489,6 +24507,12 @@ msgid "it is too large"
 msgstr ""
 
 msgid "jigsaw is not defined"
+msgstr ""
+
+msgid "jira.issue.description.content"
+msgstr ""
+
+msgid "jira.issue.summary"
 msgstr ""
 
 msgid "latest"

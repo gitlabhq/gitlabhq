@@ -10,7 +10,10 @@ module Metrics
     class GitlabAlertEmbedService < ::Metrics::Dashboard::BaseEmbedService
       include Gitlab::Utils::StrongMemoize
 
-      SEQUENCE = [STAGES::EndpointInserter].freeze
+      SEQUENCE = [
+        STAGES::EndpointInserter,
+        STAGES::PanelIdsInserter
+      ].freeze
 
       class << self
         # Determines whether the provided params are sufficient

@@ -14,6 +14,12 @@ describe 'Clusterable > Show page' do
   end
 
   shared_examples 'show page' do
+    it 'displays cluster type label' do
+      visit cluster_path
+
+      expect(page).to have_content(cluster_type_label)
+    end
+
     it 'allow the user to set domain' do
       visit cluster_path
 
@@ -125,7 +131,9 @@ describe 'Clusterable > Show page' do
       clusterable.add_maintainer(current_user)
     end
 
-    it_behaves_like 'show page'
+    it_behaves_like 'show page' do
+      let(:cluster_type_label) { 'Project cluster' }
+    end
 
     it_behaves_like 'editing a GCP cluster'
 
@@ -143,7 +151,9 @@ describe 'Clusterable > Show page' do
       clusterable.add_maintainer(current_user)
     end
 
-    it_behaves_like 'show page'
+    it_behaves_like 'show page' do
+      let(:cluster_type_label) { 'Group cluster' }
+    end
 
     it_behaves_like 'editing a GCP cluster'
 
@@ -157,7 +167,9 @@ describe 'Clusterable > Show page' do
     let(:cluster_path) { admin_cluster_path(cluster) }
     let(:cluster) { create(:cluster, :provided_by_gcp, :instance) }
 
-    it_behaves_like 'show page'
+    it_behaves_like 'show page' do
+      let(:cluster_type_label) { 'Instance cluster' }
+    end
 
     it_behaves_like 'editing a GCP cluster'
 

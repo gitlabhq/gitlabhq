@@ -113,4 +113,4 @@ Validating file hooks from /plugins directory
 
 [system hooks]: ../system_hooks/system_hooks.md
 [webhooks]: ../user/project/integrations/webhooks.md
-[highly available]: ./high_availability/README.md
+[highly available]: ./availability/index.md

@@ -13,6 +13,7 @@ module Metrics
         STAGES::CustomMetricsInserter,
         STAGES::CustomMetricsDetailsInserter,
         STAGES::EndpointInserter,
+        STAGES::PanelIdsInserter,
         STAGES::Sorter
       ].freeze
 
