@@ -43,16 +43,16 @@ code_quality:
 # We need to duplicate this job's definition because it seems it's impossible to
 # override an included `only.refs`.
 # See https://gitlab.com/gitlab-org/gitlab/issues/31371.
-# Once https://gitlab.com/gitlab-org/gitlab/merge_requests/16487 will be deployed
-# to GitLab.com, we should be able to use the template and set SAST_DISABLE_DIND: "true".
-sast:
+.sast:
   extends:
     - .default-retry
     - .reports:rules:sast
     - .use-docker-in-docker
   stage: test
-  allow_failure: true
+  # `needs: []` starts the job immediately in the pipeline
+  # https://docs.gitlab.com/ee/ci/yaml/README.html#needs
   needs: []
+  allow_failure: true
   artifacts:
     paths:
       - gl-sast-report.json  # GitLab-specific
@@ -63,22 +63,39 @@ sast:
     # emptying DOCKER_HOST so it can be detected properly on kubernetes executor
     # with the script below
     DOCKER_HOST: ""
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
+    SAST_ANALYZER_IMAGE_PREFIX: "registry.gitlab.com/gitlab-org/security-products/analyzers"
+    SAST_ANALYZER_IMAGE_TAG: 2
     SAST_BRAKEMAN_LEVEL: 2  # GitLab-specific
     SAST_EXCLUDED_PATHS: qa,spec,doc,ee/spec  # GitLab-specific
   script:
-    - export SAST_VERSION=${SP_VERSION:-$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')}
-    - |
-      if ! docker info &>/dev/null; then
-        if [ -z "$DOCKER_HOST" -a "$KUBERNETES_PORT" ]; then
-          export DOCKER_HOST='tcp://localhost:2375'
-        fi
-      fi
-    - |
-      ENVS=`printenv | grep -vE '^(DOCKER_|CI|GITLAB_|FF_|HOME|PWD|OLDPWD|PATH|SHLVL|HOSTNAME)' | sed -n '/^[^\t]/s/=.*//p' | sed '/^$/d' | sed 's/^/-e /g' | tr '\n' ' '`
-      docker run "$ENVS" \
-        --volume "$PWD:/code" \
-        --volume /var/run/docker.sock:/var/run/docker.sock \
-        "registry.gitlab.com/gitlab-org/security-products/sast:$SAST_VERSION" /app/bin/run /code
+    - /analyzer run
+
+brakeman-sast:
+  extends: .sast
+  image:
+    name: "$SAST_ANALYZER_IMAGE_PREFIX/brakeman:$SAST_ANALYZER_IMAGE_TAG"
+
+eslint-sast:
+  extends: .sast
+  image:
+    name: "$SAST_ANALYZER_IMAGE_PREFIX/eslint:$SAST_ANALYZER_IMAGE_TAG"
+
+kubesec-sast:
+  extends: .sast
+  image:
+    name: "$SAST_ANALYZER_IMAGE_PREFIX/kubesec:$SAST_ANALYZER_IMAGE_TAG"
+
+nodejs-scan-sast:
+  extends: .sast
+  image:
+    name: "$SAST_ANALYZER_IMAGE_PREFIX/nodejs-scan:$SAST_ANALYZER_IMAGE_TAG"
+
+secrets-sast:
+  extends: .sast
+  image:
+    name: "$SAST_ANALYZER_IMAGE_PREFIX/secrets:$SAST_ANALYZER_IMAGE_TAG"
 
 # We need to duplicate this job's definition because it seems it's impossible to
 # override an included `only.refs`.

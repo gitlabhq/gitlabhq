@@ -192,6 +192,16 @@ describe Gitlab::Alerting::Alert do
     end
   end
 
+  describe '#y_label' do
+    subject { alert.y_label }
+
+    it_behaves_like 'parse payload', 'annotations/gitlab_y_label'
+
+    context 'when y_label is not included in the payload' do
+      it_behaves_like 'parse payload', 'annotations/title'
+    end
+  end
+
   describe '#alert_markdown' do
     subject { alert.alert_markdown }
 

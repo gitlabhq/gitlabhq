@@ -335,6 +335,7 @@ Represents an epic.
 | ---   |  ---- | ----------  |
 | `author` | User! | Author of the epic |
 | `closedAt` | Time | Timestamp of the epic's closure |
+| `confidential` | Boolean | Indicates if the epic is confidential |
 | `createdAt` | Time | Timestamp of the epic's creation |
 | `descendantCounts` | EpicDescendantCount | Number of open and closed descendant epics and issues |
 | `descendantWeightSum` | EpicDescendantWeights | Total weight of open and closed issues in the epic and its descendants |

@@ -87,10 +87,16 @@ export const generateAnnotationsSeries = ({ deployments = [], annotations = [] }
     return {
       name: 'deployments',
       value: [deployment.createdAt, annotationsYAxisCoords.pos],
+      // style options
       symbol: deployment.icon,
       symbolSize: symbolSizes.default,
       itemStyle: {
         color: deployment.color,
+      },
+      // metadata that are accessible in `formatTooltipText` method
+      tooltipData: {
+        sha: deployment.sha.substring(0, 8),
+        commitUrl: deployment.commitUrl,
       },
     };
   });
@@ -100,8 +106,12 @@ export const generateAnnotationsSeries = ({ deployments = [], annotations = [] }
     return {
       name: 'annotations',
       value: [annotation.from, annotationsYAxisCoords.pos],
+      // style options
       symbol: 'none',
-      description: annotation.description,
+      // metadata that are accessible in `formatTooltipText` method
+      tooltipData: {
+        description: annotation.description,
+      },
     };
   });
 

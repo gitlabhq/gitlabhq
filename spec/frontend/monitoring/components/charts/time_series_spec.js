@@ -155,43 +155,56 @@ describe('Time series component', () => {
 
       describe('methods', () => {
         describe('formatTooltipText', () => {
-          let mockDate;
-          let mockCommitUrl;
-          let generateSeriesData;
-
-          beforeEach(() => {
-            mockDate = deploymentData[0].created_at;
-            mockCommitUrl = deploymentData[0].commitUrl;
-            generateSeriesData = type => ({
-              seriesData: [
-                {
-                  seriesName: timeSeriesChart.vm.chartData[0].name,
-                  componentSubType: type,
-                  value: [mockDate, 5.55555],
-                  dataIndex: 0,
-                  ...(type === 'scatter' && { name: 'deployments' }),
-                },
-              ],
-              value: mockDate,
-            });
+          const mockCommitUrl = deploymentData[0].commitUrl;
+          const mockDate = deploymentData[0].created_at;
+          const mockSha = 'f5bcd1d9';
+          const mockLineSeriesData = () => ({
+            seriesData: [
+              {
+                seriesName: timeSeriesChart.vm.chartData[0].name,
+                componentSubType: 'line',
+                value: [mockDate, 5.55555],
+                dataIndex: 0,
+              },
+            ],
+            value: mockDate,
           });
 
+          const annotationsMetadata = {
+            tooltipData: {
+              sha: mockSha,
+              commitUrl: mockCommitUrl,
+            },
+          };
+
+          const mockAnnotationsSeriesData = {
+            seriesData: [
+              {
+                componentSubType: 'scatter',
+                seriesName: 'series01',
+                dataIndex: 0,
+                value: [mockDate, 5.55555],
+                type: 'scatter',
+                name: 'deployments',
+              },
+            ],
+            value: mockDate,
+          };
+
           it('does not throw error if data point is outside the zoom range', () => {
-            const seriesDataWithoutValue = generateSeriesData('line');
-            expect(
-              timeSeriesChart.vm.formatTooltipText({
-                ...seriesDataWithoutValue,
-                seriesData: seriesDataWithoutValue.seriesData.map(data => ({
-                  ...data,
-                  value: undefined,
-                })),
-              }),
-            ).toBeUndefined();
+            const seriesDataWithoutValue = {
+              ...mockLineSeriesData(),
+              seriesData: mockLineSeriesData().seriesData.map(data => ({
+                ...data,
+                value: undefined,
+              })),
+            };
+            expect(timeSeriesChart.vm.formatTooltipText(seriesDataWithoutValue)).toBeUndefined();
           });
 
           describe('when series is of line type', () => {
             beforeEach(done => {
-              timeSeriesChart.vm.formatTooltipText(generateSeriesData('line'));
+              timeSeriesChart.vm.formatTooltipText(mockLineSeriesData());
               timeSeriesChart.vm.$nextTick(done);
             });
 
@@ -223,7 +236,14 @@ describe('Time series component', () => {
 
           describe('when series is of scatter type, for deployments', () => {
             beforeEach(() => {
-              timeSeriesChart.vm.formatTooltipText(generateSeriesData('scatter'));
+              timeSeriesChart.vm.formatTooltipText({
+                ...mockAnnotationsSeriesData,
+                seriesData: mockAnnotationsSeriesData.seriesData.map(data => ({
+                  ...data,
+                  data: annotationsMetadata,
+                })),
+              });
+              return timeSeriesChart.vm.$nextTick;
             });
 
             it('set tooltip type to deployments', () => {
@@ -240,6 +260,25 @@ describe('Time series component', () => {
 
             it('formats tooltip commit url', () => {
               expect(timeSeriesChart.vm.tooltip.commitUrl).toBe(mockCommitUrl);
+            });
+          });
+
+          describe('when series is of scatter type and deployments data is missing', () => {
+            beforeEach(() => {
+              timeSeriesChart.vm.formatTooltipText(mockAnnotationsSeriesData);
+              return timeSeriesChart.vm.$nextTick;
+            });
+
+            it('formats tooltip title', () => {
+              expect(timeSeriesChart.vm.tooltip.title).toBe('16 Jul 2019, 10:14AM');
+            });
+
+            it('formats tooltip sha', () => {
+              expect(timeSeriesChart.vm.tooltip.sha).toBeUndefined();
+            });
+
+            it('formats tooltip commit url', () => {
+              expect(timeSeriesChart.vm.tooltip.commitUrl).toBeUndefined();
             });
           });
         });

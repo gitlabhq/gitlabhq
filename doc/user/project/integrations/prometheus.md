@@ -802,6 +802,22 @@ It is also possible to embed either the default dashboard metrics or individual 
 
 ![Embedded Metrics in issue templates](img/embed_metrics_issue_template.png)
 
+### Embedding metrics based on alerts in incident issues
+
+For [GitLab-managed alerting rules](#setting-up-alerts-for-prometheus-metrics-ultimate), the issue will include an embedded chart for the query corresponding to the alert. The chart displays an hour of data surrounding the starting point of the incident, 30 minutes before and after.
+
+For [manually configured Prometheus instances](#manual-configuration-of-prometheus), a chart corresponding to the query can be included if these requirements are met:
+
+- The alert corresponds to an environment managed through GitLab.
+- The alert corresponds to a [range query](https://prometheus.io/docs/prometheus/latest/querying/api/#range-queries).
+- The alert contains the required attributes listed in the chart below.
+
+| Attributes | Required | Description |
+| ---------- | -------- | ----------- |
+| `annotations/gitlab_environment_name` | Yes | Name of the GitLab-managed environment corresponding to the alert |
+| One of `annotations/title`, `annotations/summary`, `labels/alertname` | Yes | Will be used as the chart title |
+| `annotations/gitlab_y_label` | No | Will be used as the chart's y-axis label |
+
 ### Embedding Cluster Health Charts **(ULTIMATE)**
 
 > [Introduced](<https://gitlab.com/gitlab-org/gitlab/issues/40997>) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.9.

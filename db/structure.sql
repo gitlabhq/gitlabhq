@@ -4493,6 +4493,11 @@ CREATE SEQUENCE public.packages_packages_id_seq
 
 ALTER SEQUENCE public.packages_packages_id_seq OWNED BY public.packages_packages.id;
 
+CREATE TABLE public.packages_pypi_metadata (
+    package_id bigint NOT NULL,
+    required_python character varying(50) NOT NULL
+);
+
 CREATE TABLE public.packages_tags (
     id bigint NOT NULL,
     package_id integer NOT NULL,
@@ -8146,6 +8151,9 @@ ALTER TABLE ONLY public.packages_package_files
 ALTER TABLE ONLY public.packages_packages
     ADD CONSTRAINT packages_packages_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY public.packages_pypi_metadata
+    ADD CONSTRAINT packages_pypi_metadata_pkey PRIMARY KEY (package_id);
+
 ALTER TABLE ONLY public.packages_tags
     ADD CONSTRAINT packages_tags_pkey PRIMARY KEY (id);
 
@@ -11596,6 +11604,9 @@ ALTER TABLE ONLY public.board_labels
 ALTER TABLE ONLY public.scim_identities
     ADD CONSTRAINT fk_rails_9421a0bffb FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY public.packages_pypi_metadata
+    ADD CONSTRAINT fk_rails_9698717cdd FOREIGN KEY (package_id) REFERENCES public.packages_packages(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY public.packages_dependency_links
     ADD CONSTRAINT fk_rails_96ef1c00d3 FOREIGN KEY (package_id) REFERENCES public.packages_packages(id) ON DELETE CASCADE;
 
@@ -13032,6 +13043,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200318164448
 20200318165448
 20200318175008
+20200318183553
 20200319071702
 20200319123041
 20200319124127

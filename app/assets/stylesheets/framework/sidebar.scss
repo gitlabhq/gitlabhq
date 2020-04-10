@@ -210,3 +210,15 @@
     }
   }
 }
+
+.health-status {
+  .dropdown-body {
+    .health-divider {
+      border-top-color: $gray-200;
+    }
+
+    .dropdown-item:not(.health-dropdown-item) {
+      padding: 0;
+    }
+  }
+}

@@ -57,7 +57,7 @@ module Metrics
       # @return [Hash]
       override :raw_dashboard
       def raw_dashboard
-        panels_not_found!(identifiers) if panels.empty?
+        panels_not_found!(identifiers) if metrics.empty?
 
         { 'panel_groups' => [{ 'panels' => panels }] }
       end
@@ -66,11 +66,20 @@ module Metrics
 
       # Generated dashboard panels for each metric which
       # matches the provided input.
+      #
+      # As the panel is generated
+      # on the fly, we're using default values for info
+      # not represented in the DB.
+      #
       # @return [Array<Hash>]
       def panels
-        strong_memoize(:panels) do
-          metrics.map { |metric| panel_for_metric(metric) }
-        end
+        [{
+          type: DEFAULT_PANEL_TYPE,
+          weight: DEFAULT_PANEL_WEIGHT,
+          title: title,
+          y_label: y_label,
+          metrics: metrics.map(&:to_metric_hash)
+        }]
       end
 
       # Metrics which match the provided inputs.
@@ -78,12 +87,14 @@ module Metrics
       # displayed in a single panel/chart.
       # @return [ActiveRecord::AssociationRelation<PromtheusMetric>]
       def metrics
-        PrometheusMetricsFinder.new(
-          project: project,
-          group: group_key,
-          title: title,
-          y_label: y_label
-        ).execute
+        strong_memoize(:metrics) do
+          PrometheusMetricsFinder.new(
+            project: project,
+            group: group_key,
+            title: title,
+            y_label: y_label
+          ).execute
+        end
       end
 
       # Returns a symbol representing the group that
@@ -100,22 +111,6 @@ module Metrics
             .first
             .to_s
         end
-      end
-
-      # Returns a representation of a PromtheusMetric
-      # as a dashboard panel. As the panel is generated
-      # on the fly, we're using default values for info
-      # not represented in the DB.
-      #
-      # @return [Hash]
-      def panel_for_metric(metric)
-        {
-          type: DEFAULT_PANEL_TYPE,
-          weight: DEFAULT_PANEL_WEIGHT,
-          title: metric.title,
-          y_label: metric.y_label,
-          metrics: [metric.to_metric_hash]
-        }
       end
     end
   end

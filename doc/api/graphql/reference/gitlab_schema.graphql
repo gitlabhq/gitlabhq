@@ -468,6 +468,11 @@ input CreateEpicInput {
   clientMutationId: String
 
   """
+  Indicates if the epic is confidential. Will be ignored if `confidential_epics` feature flag is disabled
+  """
+  confidential: Boolean
+
+  """
   The description of the epic
   """
   description: String
@@ -2013,6 +2018,11 @@ type Epic implements Noteable {
   Timestamp of the epic's closure
   """
   closedAt: Time
+
+  """
+  Indicates if the epic is confidential
+  """
+  confidential: Boolean
 
   """
   Timestamp of the epic's creation
@@ -8902,6 +8912,11 @@ input UpdateEpicInput {
   A unique identifier for the client performing the mutation.
   """
   clientMutationId: String
+
+  """
+  Indicates if the epic is confidential. Will be ignored if `confidential_epics` feature flag is disabled
+  """
+  confidential: Boolean
 
   """
   The description of the epic

@@ -262,19 +262,17 @@ export default {
 
       params.seriesData.forEach(dataPoint => {
         if (dataPoint.value) {
-          const [xVal, yVal] = dataPoint.value;
+          const [, yVal] = dataPoint.value;
           this.tooltip.type = dataPoint.name;
           if (this.isTooltipOfType(this.tooltip.type, this.$options.tooltipTypes.deployments)) {
-            const [deploy] = this.recentDeployments.filter(
-              deployment => deployment.createdAt === xVal,
-            );
-            this.tooltip.sha = deploy.sha.substring(0, 8);
-            this.tooltip.commitUrl = deploy.commitUrl;
+            const { data = {} } = dataPoint;
+            this.tooltip.sha = data?.tooltipData?.sha;
+            this.tooltip.commitUrl = data?.tooltipData?.commitUrl;
           } else if (
             this.isTooltipOfType(this.tooltip.type, this.$options.tooltipTypes.annotations)
           ) {
             const { data } = dataPoint;
-            this.tooltip.content.push(data?.description);
+            this.tooltip.content.push(data?.tooltipData?.description);
           } else {
             const { seriesName, color, dataIndex } = dataPoint;
 

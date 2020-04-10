@@ -69,6 +69,12 @@ module Gitlab
         end
       end
 
+      def y_label
+        strong_memoize(:y_label) do
+          parse_y_label_from_payload || title
+        end
+      end
+
       def alert_markdown
         strong_memoize(:alert_markdown) do
           parse_alert_markdown_from_payload
@@ -161,6 +167,10 @@ module Gitlab
 
       def parse_alert_markdown_from_payload
         payload&.dig('annotations', 'gitlab_incident_markdown')
+      end
+
+      def parse_y_label_from_payload
+        payload&.dig('annotations', 'gitlab_y_label')
       end
     end
   end

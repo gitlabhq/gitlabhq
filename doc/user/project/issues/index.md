@@ -177,7 +177,7 @@ that's progressing as planned or needs attention to keep on schedule:
 - **Needs attention** (amber)
 - **At risk** (red)
 
-!["On track" health status on an issue](img/issue_health_status_v12_10.png)
+!["On track" health status on an issue](img/issue_health_status_dropdown_v12_10.png)
 
 You can then see issue statuses on the
 [Epic tree](../../group/epics/index.md#issue-health-status-in-epic-tree-ultimate).

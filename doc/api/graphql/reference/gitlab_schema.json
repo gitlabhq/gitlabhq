@@ -1404,6 +1404,16 @@
               "defaultValue": null
             },
             {
+              "name": "confidential",
+              "description": "Indicates if the epic is confidential. Will be ignored if `confidential_epics` feature flag is disabled",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
               "name": "startDateFixed",
               "description": "The start date of the epic",
               "type": {
@@ -5927,6 +5937,20 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "Time",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "confidential",
+              "description": "Indicates if the epic is confidential",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -26998,6 +27022,16 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "confidential",
+              "description": "Indicates if the epic is confidential. Will be ignored if `confidential_epics` feature flag is disabled",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
                 "ofType": null
               },
               "defaultValue": null

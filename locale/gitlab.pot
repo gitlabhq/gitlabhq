@@ -3850,9 +3850,6 @@ msgstr ""
 msgid "Choose which shards you wish to synchronize to this secondary node"
 msgstr ""
 
-msgid "Choose which status most accurately reflects the current state of this issue:"
-msgstr ""
-
 msgid "Choose your framework"
 msgstr ""
 
@@ -16950,6 +16947,9 @@ msgstr ""
 msgid "Rename/Move"
 msgstr ""
 
+msgid "Reopen"
+msgstr ""
+
 msgid "Reopen epic"
 msgstr ""
 
@@ -17143,6 +17143,9 @@ msgid "Require users to prove ownership of custom domains"
 msgstr ""
 
 msgid "Requirement"
+msgstr ""
+
+msgid "Requirement title cannot have more than %{limit} characters."
 msgstr ""
 
 msgid "Requirements"
@@ -18040,6 +18043,9 @@ msgstr ""
 msgid "Select groups to replicate"
 msgstr ""
 
+msgid "Select health status"
+msgstr ""
+
 msgid "Select labels"
 msgstr ""
 
@@ -18576,16 +18582,22 @@ msgstr ""
 msgid "Side-by-side"
 msgstr ""
 
+msgid "Sidebar|Assign health status"
+msgstr ""
+
 msgid "Sidebar|Change weight"
+msgstr ""
+
+msgid "Sidebar|Health status"
+msgstr ""
+
+msgid "Sidebar|No status"
 msgstr ""
 
 msgid "Sidebar|None"
 msgstr ""
 
 msgid "Sidebar|Only numeral characters allowed"
-msgstr ""
-
-msgid "Sidebar|Status"
 msgstr ""
 
 msgid "Sidebar|Weight"
@@ -18813,6 +18825,9 @@ msgstr ""
 msgid "Something went wrong while applying the suggestion. Please try again."
 msgstr ""
 
+msgid "Something went wrong while archiving a requirement."
+msgstr ""
+
 msgid "Something went wrong while closing the %{issuable}. Please try again later"
 msgstr ""
 
@@ -18883,6 +18898,9 @@ msgid "Something went wrong while moving issues."
 msgstr ""
 
 msgid "Something went wrong while performing the action."
+msgstr ""
+
+msgid "Something went wrong while reopening a requirement."
 msgstr ""
 
 msgid "Something went wrong while reopening the %{issuable}. Please try again later"
@@ -24955,9 +24973,6 @@ msgid "remove"
 msgstr ""
 
 msgid "remove due date"
-msgstr ""
-
-msgid "remove status"
 msgstr ""
 
 msgid "remove weight"
