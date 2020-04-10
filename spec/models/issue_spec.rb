@@ -900,6 +900,22 @@ describe Issue do
     end
   end
 
+  describe '.by_project_id_and_iid' do
+    let_it_be(:issue_a) { create(:issue) }
+    let_it_be(:issue_b) { create(:issue, iid: issue_a.iid) }
+    let_it_be(:issue_c) { create(:issue, project: issue_a.project) }
+    let_it_be(:issue_d) { create(:issue, project: issue_a.project) }
+
+    it_behaves_like 'a where_composite scope', :by_project_id_and_iid do
+      let(:all_results) { [issue_a, issue_b, issue_c, issue_d] }
+      let(:first_result) { issue_a }
+
+      let(:composite_ids) do
+        all_results.map { |issue| { project_id: issue.project_id, iid: issue.iid } }
+      end
+    end
+  end
+
   it_behaves_like 'throttled touch' do
     subject { create(:issue, updated_at: 1.hour.ago) }
   end

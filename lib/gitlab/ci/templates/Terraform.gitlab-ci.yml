@@ -12,6 +12,7 @@ image:
 # Default output file for Terraform plan
 variables:
   PLAN: plan.tfplan
+  JSON_PLAN_FILE: tfplan.json
 
 cache:
   paths:
@@ -37,11 +38,13 @@ plan:
   stage: build
   script:
     - terraform plan -out=$PLAN
-    - "terraform show --json $PLAN | convert_report > tfplan.json"
+    - "terraform show --json $PLAN | convert_report > $JSON_PLAN_FILE"
   artifacts:
     name: plan
     paths:
       - $PLAN
+    reports:
+      terraform: $JSON_PLAN_FILE
 
 # Separate apply job for manual launching Terraform as it can be destructive
 # action.

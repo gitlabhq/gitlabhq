@@ -203,10 +203,6 @@ module API
           { reference_counter_increased: reference_counter_increased }
         end
 
-        post '/notify_post_receive' do
-          status 200
-        end
-
         post '/post_receive' do
           status 200
 

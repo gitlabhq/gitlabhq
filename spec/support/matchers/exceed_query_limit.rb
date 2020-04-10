@@ -73,6 +73,42 @@ module ExceedQueryLimitHelpers
   end
 end
 
+RSpec::Matchers.define :issue_same_number_of_queries_as do
+  supports_block_expectations
+
+  include ExceedQueryLimitHelpers
+
+  def control
+    block_arg
+  end
+
+  def control_recorder
+    @control_recorder ||= ActiveRecord::QueryRecorder.new(&control)
+  end
+
+  def expected_count
+    @expected_count ||= control_recorder.count
+  end
+
+  def verify_count(&block)
+    @subject_block = block
+
+    (expected_count - actual_count).abs <= threshold
+  end
+
+  match do |block|
+    verify_count(&block)
+  end
+
+  failure_message_when_negated do |actual|
+    failure_message
+  end
+
+  def skip_cached
+    false
+  end
+end
+
 RSpec::Matchers.define :exceed_all_query_limit do |expected|
   supports_block_expectations
 
