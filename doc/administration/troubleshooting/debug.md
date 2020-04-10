@@ -62,8 +62,8 @@ puts Readline::HISTORY.to_a
 
 ## Using the Rails Runner
 
-If you need to run some Ruby code in thex context of your GitLab production
-environment, you can do so using the [Rails Runner](https://guides.rubyonrails.org/command_line.html#rails-runner).
+If you need to run some Ruby code in the context of your GitLab production
+environment, you can do so using the [Rails Runner](https://guides.rubyonrails.org/command_line.html#rails-runner). When executing a script file, the script must be accessible by the `git` user.
 
 **For Omnibus installations**
 
@@ -72,6 +72,9 @@ sudo gitlab-rails runner "RAILS_COMMAND"
 
 # Example with a two-line Ruby script
 sudo gitlab-rails runner "user = User.first; puts user.username"
+
+# Example with a ruby script file
+sudo gitlab-rails runner /path/to/script.rb
 ```
 
 **For installations from source**
@@ -81,6 +84,9 @@ sudo -u git -H bundle exec rails runner -e production "RAILS_COMMAND"
 
 # Example with a two-line Ruby script
 sudo -u git -H bundle exec rails runner -e production "user = User.first; puts user.username"
+
+# Example with a ruby script file
+sudo -u git -H bundle exec rails runner -e production /path/to/script.rb
 ```
 
 ## Mail not working

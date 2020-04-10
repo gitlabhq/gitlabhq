@@ -65,7 +65,7 @@ bandit-sast:
     variables:
       - $GITLAB_FEATURES =~ /\bsast\b/ &&
           $SAST_DEFAULT_ANALYZERS =~ /bandit/&&
-          $CI_PROJECT_REPOSITORY_LANGUAGES =~ /python/
+          $CI_PROJECT_REPOSITORY_LANGUAGES =~ /\bpython\b/
 
 brakeman-sast:
   extends: .sast-analyzer
@@ -75,7 +75,7 @@ brakeman-sast:
     variables:
       - $GITLAB_FEATURES =~ /\bsast\b/ &&
           $SAST_DEFAULT_ANALYZERS =~ /brakeman/ &&
-          $CI_PROJECT_REPOSITORY_LANGUAGES =~ /ruby/
+          $CI_PROJECT_REPOSITORY_LANGUAGES =~ /\bruby\b/
 
 eslint-sast:
   extends: .sast-analyzer
@@ -85,7 +85,7 @@ eslint-sast:
     variables:
       - $GITLAB_FEATURES =~ /\bsast\b/ &&
           $SAST_DEFAULT_ANALYZERS =~ /eslint/ &&
-          $CI_PROJECT_REPOSITORY_LANGUAGES =~ /javascript/
+          $CI_PROJECT_REPOSITORY_LANGUAGES =~ /\bjavascript\b/
 
 flawfinder-sast:
   extends: .sast-analyzer
@@ -95,7 +95,7 @@ flawfinder-sast:
     variables:
       - $GITLAB_FEATURES =~ /\bsast\b/ &&
           $SAST_DEFAULT_ANALYZERS =~ /flawfinder/ &&
-          $CI_PROJECT_REPOSITORY_LANGUAGES =~ /\b(c\+\+|c)\b/
+          $CI_PROJECT_REPOSITORY_LANGUAGES =~ /(c(\+\+)?,)|(c(\+\+)?$)/
 
 kubesec-sast:
   extends: .sast-analyzer
@@ -125,7 +125,7 @@ nodejs-scan-sast:
     variables:
       - $GITLAB_FEATURES =~ /\bsast\b/ &&
           $SAST_DEFAULT_ANALYZERS =~ /nodejs-scan/ &&
-          $CI_PROJECT_REPOSITORY_LANGUAGES =~ /javascript/
+          $CI_PROJECT_REPOSITORY_LANGUAGES =~ /\bjavascript\b/
 
 phpcs-security-audit-sast:
   extends: .sast-analyzer
@@ -135,7 +135,7 @@ phpcs-security-audit-sast:
     variables:
       - $GITLAB_FEATURES =~ /\bsast\b/ &&
           $SAST_DEFAULT_ANALYZERS =~ /phpcs-security-audit/ &&
-          $CI_PROJECT_REPOSITORY_LANGUAGES =~ /php/
+          $CI_PROJECT_REPOSITORY_LANGUAGES =~ /\bphp\b/
 
 pmd-apex-sast:
   extends: .sast-analyzer
@@ -145,7 +145,7 @@ pmd-apex-sast:
     variables:
       - $GITLAB_FEATURES =~ /\bsast\b/ &&
           $SAST_DEFAULT_ANALYZERS =~ /pmd-apex/ &&
-          $CI_PROJECT_REPOSITORY_LANGUAGES =~ /apex/
+          $CI_PROJECT_REPOSITORY_LANGUAGES =~ /\bapex\b/
 
 secrets-sast:
   extends: .sast-analyzer
@@ -174,7 +174,7 @@ sobelow-sast:
     variables:
       - $GITLAB_FEATURES =~ /\bsast\b/ &&
           $SAST_DEFAULT_ANALYZERS =~ /sobelow/ &&
-          $CI_PROJECT_REPOSITORY_LANGUAGES =~ /elixir/
+          $CI_PROJECT_REPOSITORY_LANGUAGES =~ /\belixir\b/
 
 spotbugs-sast:
   extends: .sast-analyzer
@@ -194,4 +194,4 @@ tslint-sast:
     variables:
       - $GITLAB_FEATURES =~ /\bsast\b/ &&
           $SAST_DEFAULT_ANALYZERS =~ /tslint/ &&
-          $CI_PROJECT_REPOSITORY_LANGUAGES =~ /typescript/
+          $CI_PROJECT_REPOSITORY_LANGUAGES =~ /\btypescript\b/

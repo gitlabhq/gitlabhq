@@ -504,16 +504,17 @@ Once a vulnerability is found, you can interact with it. Read more on how to
 For more information about the vulnerabilities database update, check the
 [maintenance table](../index.md#maintenance-and-update-of-the-vulnerabilities-database).
 
-## GitLab SAST in an offline environment
+## Running SAST in an offline environment
 
 For self-managed GitLab instances in an environment with limited, restricted, or intermittent access
 to external resources through the internet, some adjustments are required for the SAST job to
-successfully run.
+successfully run. For more information, see [Offline environments](../offline_deployments/index.md).
 
 ### Requirements for offline SAST
 
 To use SAST in an offline environment, you need:
 
+- [Disable Docker-In-Docker](#disabling-docker-in-docker-for-sast)
 - GitLab Runner with the [`docker` or `kubernetes` executor](#requirements).
 - Docker Container Registry with locally available copies of SAST [analyzer](https://gitlab.com/gitlab-org/security-products/analyzers) images.
 

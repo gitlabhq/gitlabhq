@@ -449,7 +449,7 @@ It's common to discover technical debt during development of a new feature. In
 the spirit of "minimum viable change", resolution is often deferred to a
 follow-up issue. However, this cannot be used as an excuse to merge poor-quality
 code that would otherwise not pass review, or to overlook trivial matters that
-don't deserve the be scheduled independently, and would be best resolved in the
+don't deserve to be scheduled independently, and would be best resolved in the
 original merge request - or not tracked at all!
 
 The overheads of scheduling, and rate of change in the GitLab codebase, mean
