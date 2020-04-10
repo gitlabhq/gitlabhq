@@ -7,7 +7,7 @@ describe GitlabSchema.types['Environment'] do
 
   it 'has the expected fields' do
     expected_fields = %w[
-      name id state
+      name id state metrics_dashboard
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)

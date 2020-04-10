@@ -96,7 +96,8 @@ describe PrometheusAlert do
         "for" => "5m",
         "labels" => {
           "gitlab" => "hook",
-          "gitlab_alert_id" => metric.id
+          "gitlab_alert_id" => metric.id,
+          "gitlab_prometheus_alert_id" => subject.id
         })
     end
   end

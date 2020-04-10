@@ -14,7 +14,7 @@ module Gitlab
 
       define_histogram :gitlab_redis_diff_caching_memory_usage_bytes do
         docstring 'Redis diff caching memory usage by key'
-        buckets [100, 1000, 10000, 100000, 1000000, 10000000]
+        buckets [100, 1_000, 10_000, 100_000, 1_000_000, 10_000_000]
       end
 
       define_counter :gitlab_redis_diff_caching_hit do

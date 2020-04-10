@@ -721,7 +721,7 @@ For example, in order to test new index you can do the following:
 Create the index:
 
 ```sql
-exec CREATE INDEX index_projects_marked_for_deletion ON projects (marked_for_deletion_at) WHERE marked_for_deletion_at IS NOT NULL
+exec CREATE INDEX index_projects_last_activity ON projects (last_activity_at) WHERE last_activity_at IS NOT NULL
 ```
 
 Analyze the table to update its statistics:
@@ -733,7 +733,7 @@ exec ANALYZE projects
 Get the query plan:
 
 ```sql
-explain SELECT * FROM projects WHERE marked_for_deletion_at < CURRENT_DATE
+explain SELECT * FROM projects WHERE last_activity_at < CURRENT_DATE
 ```
 
 Once done you can rollback your changes:

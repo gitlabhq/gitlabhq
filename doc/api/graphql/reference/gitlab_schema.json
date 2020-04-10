@@ -5581,6 +5581,33 @@
               "deprecationReason": null
             },
             {
+              "name": "metricsDashboard",
+              "description": "Metrics dashboard schema for the environment",
+              "args": [
+                {
+                  "name": "path",
+                  "description": "Path to a file which defines metrics dashboard eg: 'config/prometheus/common_metrics.yml'",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "MetricsDashboard",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "name",
               "description": "Human-readable name of the environment",
               "args": [
@@ -15105,6 +15132,33 @@
                   "name": "String",
                   "ofType": null
                 }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "MetricsDashboard",
+          "description": null,
+          "fields": [
+            {
+              "name": "path",
+              "description": "Path to a file with the dashboard definition",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
               },
               "isDeprecated": false,
               "deprecationReason": null

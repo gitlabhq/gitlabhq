@@ -15,5 +15,9 @@ module Types
 
     field :state, GraphQL::STRING_TYPE, null: false,
           description: 'State of the environment, for example: available/stopped'
+
+    field :metrics_dashboard, Types::Metrics::DashboardType, null: true,
+          description: 'Metrics dashboard schema for the environment',
+          resolver: Resolvers::Metrics::DashboardResolver
   end
 end

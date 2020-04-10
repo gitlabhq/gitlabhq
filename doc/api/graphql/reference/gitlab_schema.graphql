@@ -1883,6 +1883,16 @@ type Environment {
   id: ID!
 
   """
+  Metrics dashboard schema for the environment
+  """
+  metricsDashboard(
+    """
+    Path to a file which defines metrics dashboard eg: 'config/prometheus/common_metrics.yml'
+    """
+    path: String!
+  ): MetricsDashboard
+
+  """
   Human-readable name of the environment
   """
   name: String!
@@ -5276,6 +5286,13 @@ type Metadata {
   Version
   """
   version: String!
+}
+
+type MetricsDashboard {
+  """
+  Path to a file with the dashboard definition
+  """
+  path: String
 }
 
 """
