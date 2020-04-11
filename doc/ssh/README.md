@@ -105,6 +105,7 @@ You can create and configure an RSA key with the following command, substituting
 
 ```shell
 ssh-keygen -t rsa -b 2048 -C "email@example.com"
+```
 
 The `-C` flag, with a quoted comment such as an email address, is an optional way to label your SSH keys.
 
