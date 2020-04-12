@@ -26,8 +26,6 @@ class CommitStatusPresenter < Gitlab::View::Presenter::Delegated
 
   presents :build
 
-  prepend_if_ee('::EE::CommitStatusPresenter') # rubocop: disable Cop/InjectEnterpriseEditionModule
-
   def self.callout_failure_messages
     CALLOUT_FAILURE_MESSAGES
   end
@@ -44,3 +42,5 @@ class CommitStatusPresenter < Gitlab::View::Presenter::Delegated
     script_failure? || missing_dependency_failure? || archived_failure? || scheduler_failure? || data_integrity_failure?
   end
 end
+
+CommitStatusPresenter.prepend_if_ee('::EE::CommitStatusPresenter')

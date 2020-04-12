@@ -2,7 +2,6 @@
 
 class IssueEntity < IssuableEntity
   include TimeTrackableEntity
-  prepend_if_ee('::EE::IssueEntity') # rubocop: disable Cop/InjectEnterpriseEditionModule
 
   expose :state
   expose :milestone_id
@@ -73,3 +72,5 @@ class IssueEntity < IssuableEntity
     help_page_path('user/project/settings/index.md', anchor: 'archiving-a-project')
   end
 end
+
+IssueEntity.prepend_if_ee('::EE::IssueEntity')

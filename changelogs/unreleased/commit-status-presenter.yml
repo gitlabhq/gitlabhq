@@ -1,0 +1,5 @@
+---
+title: Move prepend to last line in commit status presenter
+merge_request: 29328
+author: Rajendra Kadam
+type: fixed
