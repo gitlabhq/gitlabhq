@@ -1,5 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
-import PrometheusMetrics from '~/prometheus_metrics/custom_metrics';
+import CustomMetrics from '~/prometheus_metrics/custom_metrics';
 import axios from '~/lib/utils/axios_utils';
 import PANEL_STATE from '~/prometheus_metrics/constants';
 import metrics from './mock_data';
@@ -24,99 +24,99 @@ describe('PrometheusMetrics', () => {
   });
 
   describe('Custom Metrics', () => {
-    let prometheusMetrics;
+    let customMetrics;
 
     beforeEach(() => {
-      prometheusMetrics = new PrometheusMetrics('.js-prometheus-metrics-monitoring');
+      customMetrics = new CustomMetrics('.js-prometheus-metrics-monitoring');
     });
 
     it('should initialize wrapper element refs on the class object', () => {
-      expect(prometheusMetrics.$wrapperCustomMetrics).not.toBeNull();
-      expect(prometheusMetrics.$monitoredCustomMetricsPanel).not.toBeNull();
-      expect(prometheusMetrics.$monitoredCustomMetricsCount).not.toBeNull();
-      expect(prometheusMetrics.$monitoredCustomMetricsLoading).not.toBeNull();
-      expect(prometheusMetrics.$monitoredCustomMetricsEmpty).not.toBeNull();
-      expect(prometheusMetrics.$monitoredCustomMetricsList).not.toBeNull();
-      expect(prometheusMetrics.$newCustomMetricButton).not.toBeNull();
-      expect(prometheusMetrics.$flashCustomMetricsContainer).not.toBeNull();
+      expect(customMetrics.$wrapperCustomMetrics).not.toBeNull();
+      expect(customMetrics.$monitoredCustomMetricsPanel).not.toBeNull();
+      expect(customMetrics.$monitoredCustomMetricsCount).not.toBeNull();
+      expect(customMetrics.$monitoredCustomMetricsLoading).not.toBeNull();
+      expect(customMetrics.$monitoredCustomMetricsEmpty).not.toBeNull();
+      expect(customMetrics.$monitoredCustomMetricsList).not.toBeNull();
+      expect(customMetrics.$newCustomMetricButton).not.toBeNull();
+      expect(customMetrics.$flashCustomMetricsContainer).not.toBeNull();
     });
 
     it('should contain api endpoints', () => {
-      expect(prometheusMetrics.activeCustomMetricsEndpoint).toEqual(customMetricsEndpoint);
+      expect(customMetrics.activeCustomMetricsEndpoint).toEqual(customMetricsEndpoint);
     });
 
     it('should show loading state when called with `loading`', () => {
-      prometheusMetrics.showMonitoringCustomMetricsPanelState(PANEL_STATE.LOADING);
+      customMetrics.showMonitoringCustomMetricsPanelState(PANEL_STATE.LOADING);
 
-      expect(prometheusMetrics.$monitoredCustomMetricsLoading.hasClass('hidden')).toEqual(false);
-      expect(prometheusMetrics.$monitoredCustomMetricsEmpty.hasClass('hidden')).toBeTruthy();
-      expect(prometheusMetrics.$monitoredCustomMetricsList.hasClass('hidden')).toBeTruthy();
+      expect(customMetrics.$monitoredCustomMetricsLoading.hasClass('hidden')).toEqual(false);
+      expect(customMetrics.$monitoredCustomMetricsEmpty.hasClass('hidden')).toBeTruthy();
+      expect(customMetrics.$monitoredCustomMetricsList.hasClass('hidden')).toBeTruthy();
       expect(
-        prometheusMetrics.$monitoredCustomMetricsNoIntegrationText.hasClass('hidden'),
+        customMetrics.$monitoredCustomMetricsNoIntegrationText.hasClass('hidden'),
       ).toBeTruthy();
 
-      expect(prometheusMetrics.$newCustomMetricButton.hasClass('hidden')).toBeTruthy();
-      expect(prometheusMetrics.$newCustomMetricText.hasClass('hidden')).toBeTruthy();
+      expect(customMetrics.$newCustomMetricButton.hasClass('hidden')).toBeTruthy();
+      expect(customMetrics.$newCustomMetricText.hasClass('hidden')).toBeTruthy();
     });
 
     it('should show metrics list when called with `list`', () => {
-      prometheusMetrics.showMonitoringCustomMetricsPanelState(PANEL_STATE.LIST);
+      customMetrics.showMonitoringCustomMetricsPanelState(PANEL_STATE.LIST);
 
-      expect(prometheusMetrics.$monitoredCustomMetricsLoading.hasClass('hidden')).toBeTruthy();
-      expect(prometheusMetrics.$monitoredCustomMetricsEmpty.hasClass('hidden')).toBeTruthy();
-      expect(prometheusMetrics.$monitoredCustomMetricsList.hasClass('hidden')).toEqual(false);
+      expect(customMetrics.$monitoredCustomMetricsLoading.hasClass('hidden')).toBeTruthy();
+      expect(customMetrics.$monitoredCustomMetricsEmpty.hasClass('hidden')).toBeTruthy();
+      expect(customMetrics.$monitoredCustomMetricsList.hasClass('hidden')).toEqual(false);
       expect(
-        prometheusMetrics.$monitoredCustomMetricsNoIntegrationText.hasClass('hidden'),
+        customMetrics.$monitoredCustomMetricsNoIntegrationText.hasClass('hidden'),
       ).toBeTruthy();
 
-      expect(prometheusMetrics.$newCustomMetricButton.hasClass('hidden')).toEqual(false);
-      expect(prometheusMetrics.$newCustomMetricText.hasClass('hidden')).toBeTruthy();
+      expect(customMetrics.$newCustomMetricButton.hasClass('hidden')).toEqual(false);
+      expect(customMetrics.$newCustomMetricText.hasClass('hidden')).toBeTruthy();
     });
 
     it('should show empty state when called with `empty`', () => {
-      prometheusMetrics.showMonitoringCustomMetricsPanelState(PANEL_STATE.EMPTY);
+      customMetrics.showMonitoringCustomMetricsPanelState(PANEL_STATE.EMPTY);
 
-      expect(prometheusMetrics.$monitoredCustomMetricsLoading.hasClass('hidden')).toBeTruthy();
-      expect(prometheusMetrics.$monitoredCustomMetricsEmpty.hasClass('hidden')).toEqual(false);
-      expect(prometheusMetrics.$monitoredCustomMetricsList.hasClass('hidden')).toBeTruthy();
+      expect(customMetrics.$monitoredCustomMetricsLoading.hasClass('hidden')).toBeTruthy();
+      expect(customMetrics.$monitoredCustomMetricsEmpty.hasClass('hidden')).toEqual(false);
+      expect(customMetrics.$monitoredCustomMetricsList.hasClass('hidden')).toBeTruthy();
       expect(
-        prometheusMetrics.$monitoredCustomMetricsNoIntegrationText.hasClass('hidden'),
+        customMetrics.$monitoredCustomMetricsNoIntegrationText.hasClass('hidden'),
       ).toBeTruthy();
 
-      expect(prometheusMetrics.$newCustomMetricButton.hasClass('hidden')).toEqual(false);
-      expect(prometheusMetrics.$newCustomMetricText.hasClass('hidden')).toEqual(false);
+      expect(customMetrics.$newCustomMetricButton.hasClass('hidden')).toEqual(false);
+      expect(customMetrics.$newCustomMetricText.hasClass('hidden')).toEqual(false);
     });
 
     it('should show monitored metrics list', () => {
-      prometheusMetrics.customMetrics = metrics;
-      prometheusMetrics.populateCustomMetrics();
+      customMetrics.customMetrics = metrics;
+      customMetrics.populateCustomMetrics();
 
-      const $metricsListLi = prometheusMetrics.$monitoredCustomMetricsList.find('li');
+      const $metricsListLi = customMetrics.$monitoredCustomMetricsList.find('li');
 
-      expect(prometheusMetrics.$monitoredCustomMetricsLoading.hasClass('hidden')).toBeTruthy();
-      expect(prometheusMetrics.$monitoredCustomMetricsList.hasClass('hidden')).toEqual(false);
+      expect(customMetrics.$monitoredCustomMetricsLoading.hasClass('hidden')).toBeTruthy();
+      expect(customMetrics.$monitoredCustomMetricsList.hasClass('hidden')).toEqual(false);
       expect(
-        prometheusMetrics.$monitoredCustomMetricsNoIntegrationText.hasClass('hidden'),
+        customMetrics.$monitoredCustomMetricsNoIntegrationText.hasClass('hidden'),
       ).toBeTruthy();
 
-      expect(prometheusMetrics.$newCustomMetricButton.hasClass('hidden')).toEqual(false);
-      expect(prometheusMetrics.$newCustomMetricText.hasClass('hidden')).toBeTruthy();
+      expect(customMetrics.$newCustomMetricButton.hasClass('hidden')).toEqual(false);
+      expect(customMetrics.$newCustomMetricText.hasClass('hidden')).toBeTruthy();
 
       expect($metricsListLi.length).toEqual(metrics.length);
     });
 
     it('should show the NO-INTEGRATION empty state', () => {
-      prometheusMetrics.setNoIntegrationActiveState();
+      customMetrics.setNoIntegrationActiveState();
 
-      expect(prometheusMetrics.$monitoredCustomMetricsEmpty.hasClass('hidden')).toEqual(false);
-      expect(prometheusMetrics.$monitoredCustomMetricsNoIntegrationText.hasClass('hidden')).toEqual(
+      expect(customMetrics.$monitoredCustomMetricsEmpty.hasClass('hidden')).toEqual(false);
+      expect(customMetrics.$monitoredCustomMetricsNoIntegrationText.hasClass('hidden')).toEqual(
         false,
       );
 
-      expect(prometheusMetrics.$monitoredCustomMetricsLoading.hasClass('hidden')).toBeTruthy();
-      expect(prometheusMetrics.$monitoredCustomMetricsList.hasClass('hidden')).toBeTruthy();
-      expect(prometheusMetrics.$newCustomMetricButton.hasClass('hidden')).toBeTruthy();
-      expect(prometheusMetrics.$newCustomMetricText.hasClass('hidden')).toBeTruthy();
+      expect(customMetrics.$monitoredCustomMetricsLoading.hasClass('hidden')).toBeTruthy();
+      expect(customMetrics.$monitoredCustomMetricsList.hasClass('hidden')).toBeTruthy();
+      expect(customMetrics.$newCustomMetricButton.hasClass('hidden')).toBeTruthy();
+      expect(customMetrics.$newCustomMetricText.hasClass('hidden')).toBeTruthy();
     });
   });
 });

@@ -17941,6 +17941,9 @@ msgstr ""
 msgid "SecurityDashboard|More information"
 msgstr ""
 
+msgid "SecurityDashboard|No vulnerabilities found for dashboard"
+msgstr ""
+
 msgid "SecurityDashboard|Pipeline %{pipelineLink} triggered %{timeago} by %{user}"
 msgstr ""
 
