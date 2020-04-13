@@ -31,6 +31,9 @@ included with your GitLab installation, as shown below.
 Add the following to your `.gitlab-ci.yml` file:
 
 ```yaml
+stages:
+  - accessibility
+
 variables:
   a11y_urls: "https://about.gitlab.com https://gitlab.com/users/sign_in"
 

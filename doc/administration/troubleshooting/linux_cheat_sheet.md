@@ -159,7 +159,7 @@ top -o %CPU
 
 ```shell
 # strace a process
-strace -tt -T -f -y -s 1024 -p <pid>
+strace -tt -T -f -y -yy -s 1024 -p <pid>
 
 # -tt   print timestamps with microsecond accuracy
 
@@ -169,12 +169,14 @@ strace -tt -T -f -y -s 1024 -p <pid>
 
 # -y    print the path associated with file handles
 
+# -yy    print socket and device file handle details
+
 # -s    max string length to print for an event
 
 # -o    output file
 
 # run strace on all unicorn processes
-ps auwx | grep unicorn | awk '{ print " -p " $2}' | xargs strace -tt -T -f -y -s 1024 -o /tmp/unicorn.txt
+ps auwx | grep unicorn | awk '{ print " -p " $2}' | xargs strace -tt -T -f -y -yy -s 1024 -o /tmp/unicorn.txt
 ```
 
 See the [strace zine](https://wizardzines.com/zines/strace/) for a quick walkthrough.

@@ -82,11 +82,12 @@ are very appreciative of the work done by translators and proofreaders!
 - Romanian
   - Proofreaders needed.
 - Russian
-  - Nikita Grylov - [GitLab](https://gitlab.com/nixel2007), [CrowdIn](https://crowdin.com/profile/nixel2007)
-  - Alexy Lustin - [GitLab](https://gitlab.com/allustin), [CrowdIn](https://crowdin.com/profile/lustin)
-  - Mark Minakou - [GitLab](https://gitlab.com/sandzhaj), [CrowdIn](https://crowdin.com/profile/sandzhaj)
-  - NickVolynkin - [CrowdIn](https://crowdin.com/profile/NickVolynkin)
-  - Andrey Komarov - [GitLab](https://gitlab.com/elkamarado), [CrowdIn](https://crowdin.com/profile/kamarado)
+  - Nikita Grylov - [GitLab](https://gitlab.com/nixel2007), [Crowdin](https://crowdin.com/profile/nixel2007)
+  - Alexy Lustin - [GitLab](https://gitlab.com/allustin), [Crowdin](https://crowdin.com/profile/lustin)
+  - Mark Minakou - [GitLab](https://gitlab.com/sandzhaj), [Crowdin](https://crowdin.com/profile/sandzhaj)
+  - NickVolynkin - [Crowdin](https://crowdin.com/profile/NickVolynkin)
+  - Andrey Komarov - [GitLab](https://gitlab.com/elkamarado), [Crowdin](https://crowdin.com/profile/kamarado)
+  - Iaroslav Postovalov - [GitLab](https://gitlab/CMDR_Tvis), [Crowdin](https://crowdin.com/profile/CMDR_Tvis)
 - Serbian (Cyrillic)
   - Proofreaders needed.
 - Serbian (Latin)
