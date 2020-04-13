@@ -167,7 +167,10 @@ As a workaround, try an alternate mapping:
 
 ### Message: "SAML authentication failed: Email has already been taken"
 
-It is expected for the app's logs to show this error for any existing user until they sign in for the first time. GitLab will not allow multiple accounts to have the same email address.
+This message may be caused by the following:
+
+- Existing users have not yet signed into the new app.
+- The identity provider attempts to create a new user account in GitLab with an email address that already exists in GitLab.com.
 
 ### How do I diagnose why a user is unable to sign in
 
@@ -197,15 +200,17 @@ Whether the value was changed or you need to map to a different field, ensure `i
 
 If GitLab's `externalId` doesn't match the SAML NameId, it will need to be updated in order for the user to log in. Ideally your identity provider will be configured to do such an update, but in some cases it may be unable to do so, such as when looking up a user fails due to an ID change.
 
-Fixing the fields your SCIM identity provider sends as `id` and `externalId` can correct this, however we use these IDs to look up users so if the identity provider is unaware of the current values for these it may try to create new duplicate users instead.
+Be cautious if you revise the fields used by your SCIM identity provider, typically `id` and `externalId`.
+We use these IDs to look up users. If the identity provider does not know the current values for these fields,
+that provider may create duplicate users.
 
-If the `externalId` we have stored for a user has an incorrect value that doesn't match the SAML NameId, then it can be corrected ine on or two ways.
+If the `externalId` for a user is not correct, and also doesn't match the SAML NameID,
+you can address the problem in the following ways:
 
-One option is to have users can be delinked and relink following details in the ["SAML authentication failed: User has already been taken"](./index.md#message-saml-authentication-failed-user-has-already-been-taken) section. Additionally, to unlink all users at once, remove all users from the SAML app while SCIM is still turned on.
-
-Another option is with the manual use of the SCIM API.
-
-The [SCIM API](../../../api/scim.md#update-a-single-saml-user) can be used to manually correct the `externalId` stored for users so that it matches the SAML NameId. You'll need to know the desired value that matches the `NameId` as well as the current `externalId` to look up the user.
+- You can have users unlink and relink themselves, based on the ["SAML authentication failed: User has already been taken"](./index.md#message-saml-authentication-failed-user-has-already-been-taken) section.
+- You can unlink all users simultaneously, by removing all users from the SAML app while provisioning is turned on.
+- You can use the [SCIM API](../../../api/scim.md#update-a-single-saml-user) to manually correct the `externalId` stored for users to match the SAML `NameId`.
+  To look up a user, you'll need to know the desired value that matches the `NameId` as well as the current `externalId`.
 
 It is then possible to issue a manual SCIM#update request, for example:
 

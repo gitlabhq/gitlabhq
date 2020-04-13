@@ -233,6 +233,12 @@ describes the Secure report format version.
 
 The `vulnerabilities` field of the report is an array of vulnerability objects.
 
+#### ID
+
+The `id` field is the unique identifier of the vulnerability.
+It is used to reference a fixed vulnerability from a [remediation objects](#remediations).
+We recommend that you generate a UUID and use it as the `id` field's value.
+
 #### Category
 
 The value of the `category` field matches the report type:
@@ -467,6 +473,15 @@ The `remediations` field of the report is an array of remediation objects.
 Each remediation describes a patch that can be applied to automatically fix
 a set of vulnerabilities.
 
-Currently, remediations rely on a deprecated field named `cve` to reference vulnerabilities,
-so it is recommended not to use them until a new format has been defined.
-See [issue #36777](https://gitlab.com/gitlab-org/gitlab/issues/36777).
+#### Summary
+
+The `summary` field is an overview of how the vulnerabilities can be fixed.
+
+#### Fixed vulnerabilities
+
+The `fixes` field is an array of objects that reference the vulnerabilities fixed by the
+remediation. `fixes[].id` contains a fixed vulnerability's unique identifier.
+
+#### Diff
+
+The `diff` field is a base64-encoded remediation code diff, compatible with [`git apply`](https://git-scm.com/docs/git-format-patch#_discussion).

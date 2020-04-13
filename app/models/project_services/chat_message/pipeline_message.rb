@@ -34,7 +34,9 @@ module ChatMessage
       @duration = pipeline_attributes[:duration].to_i
       @finished_at = pipeline_attributes[:finished_at] ? Time.parse(pipeline_attributes[:finished_at]).to_i : nil
       @pipeline_id = pipeline_attributes[:id]
-      @failed_jobs = Array(data[:builds]).select { |b| b[:status] == 'failed' }.reverse # Show failed jobs from oldest to newest
+
+      # Get list of jobs that have actually failed (after exhausting all retries)
+      @failed_jobs = actually_failed_jobs(Array(data[:builds]))
       @failed_stages = @failed_jobs.map { |j| j[:stage] }.uniq
 
       @project = Project.find(data[:project][:id])
@@ -89,6 +91,17 @@ module ChatMessage
     end
 
     private
+
+    def actually_failed_jobs(builds)
+      succeeded_job_names = builds.map { |b| b[:name] if b[:status] == 'success' }.compact.uniq
+
+      failed_jobs = builds.select do |build|
+        # Select jobs which doesn't have a successful retry
+        build[:status] == 'failed' && !succeeded_job_names.include?(build[:name])
+      end
+
+      failed_jobs.uniq { |job| job[:name] }.reverse
+    end
 
     def fancy_notifications?
       Feature.enabled?(:fancy_pipeline_slack_notifications, default_enabled: true)

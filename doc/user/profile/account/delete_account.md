@@ -32,18 +32,22 @@ As an administrator, you can delete a user account by:
    - **Delete user and contributions** to delete the user and
      their associated records.
 
+DANGER: **Danger:** Using the **Delete user and contributions** option may result
+in removing more data than intended. Please see [associated records](#associated-records)
+below for additional details.
+
 ## Associated Records
 
-> - Introduced for issues in
->   [GitLab 9.0](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/7393).
-> - Introduced for merge requests, award emoji, notes, and abuse reports in
->   [GitLab 9.1](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/10467).
-> - Hard deletion from abuse reports and spam logs was introduced in
->   [GitLab 9.1](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/10273),
->   and from the API in
->   [GitLab 9.3](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/11853).
+> - Introduced for issues in [GitLab 9.0](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/7393).
+> - Introduced for merge requests, award emoji, notes, and abuse reports in [GitLab 9.1](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/10467).
+> - Hard deletion from abuse reports and spam logs was introduced in [GitLab 9.1](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/10273), and from the API in [GitLab 9.3](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/11853).
 
-When a user account is deleted, not all associated records are deleted with it.
+There are two options for deleting users:
+
+- **Delete user**
+- **Delete user and contributions**
+
+When using the **Delete user** option, not all associated records are deleted with the user.
 Here's a list of things that will **not** be deleted:
 
 - Issues that the user created.
@@ -56,6 +60,12 @@ Instead of being deleted, these records will be moved to a system-wide
 user with the username "Ghost User", whose sole purpose is to act as a container
 for such records. Any commits made by a deleted user will still display the
 username of the original user.
+
+When using the **Delete user and contributions** option, **all** associated records
+are removed. This includes all of the items mentioned above including issues,
+merge requests, notes/comments, and more. Consider
+[blocking a user](../../admin_area/blocking_unblocking_users.md)
+or using the **Delete user** option instead.
 
 When a user is deleted from an [abuse report](../../admin_area/abuse_reports.md)
 or spam log, these associated

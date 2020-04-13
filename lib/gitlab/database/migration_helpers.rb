@@ -1178,7 +1178,146 @@ into similar problems in the future (e.g. when new tables are created).
         end
       end
 
+      # Returns the name for a check constraint
+      #
+      # type:
+      # - Any value, as long as it is unique
+      # - Constraint names are unique per table in Postgres, and, additionally,
+      #   we can have multiple check constraints over a column
+      #   So we use the (table, column, type) triplet as a unique name
+      # - e.g. we use 'max_length' when adding checks for text limits
+      #        or 'not_null' when adding a NOT NULL constraint
+      #
+      def check_constraint_name(table, column, type)
+        identifier = "#{table}_#{column}_check_#{type}"
+        # Check concurrent_foreign_key_name() for info on why we use a hash
+        hashed_identifier = Digest::SHA256.hexdigest(identifier).first(10)
+
+        "check_#{hashed_identifier}"
+      end
+
+      def check_constraint_exists?(table, constraint_name)
+        # Constraint names are unique per table in Postgres, not per schema
+        # Two tables can have constraints with the same name, so we filter by
+        # the table name in addition to using the constraint_name
+        check_sql = <<~SQL
+          SELECT COUNT(*)
+          FROM pg_constraint
+          JOIN pg_class ON pg_constraint.conrelid = pg_class.oid
+          WHERE pg_constraint.contype = 'c'
+          AND pg_constraint.conname = '#{constraint_name}'
+          AND pg_class.relname = '#{table}'
+        SQL
+
+        connection.select_value(check_sql).positive?
+      end
+
+      # Adds a check constraint to a table
+      #
+      # This method is the generic helper for adding any check constraint
+      # More specialized helpers may use it (e.g. add_text_limit or add_not_null)
+      #
+      # This method only requires minimal locking:
+      # - The constraint is added using NOT VALID
+      #   This allows us to add the check constraint without validating it
+      # - The check will be enforced for new data (inserts) coming in
+      # - If `validate: true` the constraint is also validated
+      #   Otherwise, validate_check_constraint() can be used at a later stage
+      # - Check comments on add_concurrent_foreign_key for more info
+      #
+      # table  - The table the constraint will be added to
+      # check  - The check clause to add
+      #          e.g. 'char_length(name) <= 5' or 'store IS NOT NULL'
+      # constraint_name - The name of the check constraint (otherwise auto-generated)
+      #                   Should be unique per table (not per column)
+      # validate - Whether to validate the constraint in this call
+      #
+      # rubocop:disable Gitlab/RailsLogger
+      def add_check_constraint(table, check, constraint_name, validate: true)
+        # Transactions would result in ALTER TABLE locks being held for the
+        # duration of the transaction, defeating the purpose of this method.
+        if transaction_open?
+          raise 'add_check_constraint can not be run inside a transaction'
+        end
+
+        if check_constraint_exists?(table, constraint_name)
+          warning_message = <<~MESSAGE
+            Check constraint was not created because it exists already
+            (this may be due to an aborted migration or similar)
+            table: #{table}, check: #{check}, constraint name: #{constraint_name}
+          MESSAGE
+
+          Rails.logger.warn warning_message
+        else
+          # Only add the constraint without validating it
+          # Even though it is fast, ADD CONSTRAINT requires an EXCLUSIVE lock
+          # Use with_lock_retries to make sure that this operation
+          # will not timeout on tables accessed by many processes
+          with_lock_retries do
+            execute <<-EOF.strip_heredoc
+            ALTER TABLE #{table}
+            ADD CONSTRAINT #{constraint_name}
+            CHECK ( #{check} )
+            NOT VALID;
+            EOF
+          end
+        end
+
+        if validate
+          validate_check_constraint(table, constraint_name)
+        end
+      end
+
+      def validate_check_constraint(table, constraint_name)
+        unless check_constraint_exists?(table, constraint_name)
+          raise missing_schema_object_message(table, "check constraint", constraint_name)
+        end
+
+        disable_statement_timeout do
+          # VALIDATE CONSTRAINT only requires a SHARE UPDATE EXCLUSIVE LOCK
+          # It only conflicts with other validations and creating indexes
+          execute("ALTER TABLE #{table} VALIDATE CONSTRAINT #{constraint_name};")
+        end
+      end
+
+      def remove_check_constraint(table, constraint_name)
+        # DROP CONSTRAINT requires an EXCLUSIVE lock
+        # Use with_lock_retries to make sure that this will not timeout
+        with_lock_retries do
+          execute <<-EOF.strip_heredoc
+          ALTER TABLE #{table}
+          DROP CONSTRAINT IF EXISTS #{constraint_name}
+          EOF
+        end
+      end
+
+      # Migration Helpers for adding limit to text columns
+      def add_text_limit(table, column, limit, constraint_name: nil, validate: true)
+        add_check_constraint(
+          table,
+          "char_length(#{column}) <= #{limit}",
+          text_limit_name(table, column, name: constraint_name),
+          validate: validate
+        )
+      end
+
+      def validate_text_limit(table, column, constraint_name: nil)
+        validate_check_constraint(table, text_limit_name(table, column, name: constraint_name))
+      end
+
+      def remove_text_limit(table, column, constraint_name: nil)
+        remove_check_constraint(table, text_limit_name(table, column, name: constraint_name))
+      end
+
+      def check_text_limit_exists?(table, column, constraint_name: nil)
+        check_constraint_exists?(table, text_limit_name(table, column, name: constraint_name))
+      end
+
       private
+
+      def text_limit_name(table, column, name: nil)
+        name.presence || check_constraint_name(table, column, 'max_length')
+      end
 
       def missing_schema_object_message(table, type, name)
         <<~MESSAGE

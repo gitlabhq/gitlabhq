@@ -431,6 +431,57 @@ describe ChatMessage::PipelineMessage do
       end
     end
 
+    context "when jobs succeed on retries" do
+      before do
+        args[:builds] = [
+          { id: 1, name: "job-1", status: "failed", stage: "stage-1" },
+          { id: 2, name: "job-2", status: "failed", stage: "stage-2" },
+          { id: 3, name: "job-3", status: "failed", stage: "stage-3" },
+          { id: 7, name: "job-1", status: "failed", stage: "stage-1" },
+          { id: 8, name: "job-1", status: "success", stage: "stage-1" }
+        ]
+      end
+
+      it "do not return a job which succeeded on retry" do
+        expected_jobs = [
+          "<http://example.gitlab.com/-/jobs/3|job-3>",
+          "<http://example.gitlab.com/-/jobs/2|job-2>"
+        ]
+
+        expect(subject.attachments.first[:fields][3]).to eq(
+          title: "Failed jobs",
+          value: expected_jobs.join(", "),
+          short: true
+        )
+      end
+    end
+
+    context "when jobs failed even on retries" do
+      before do
+        args[:builds] = [
+          { id: 1, name: "job-1", status: "failed", stage: "stage-1" },
+          { id: 2, name: "job-2", status: "failed", stage: "stage-2" },
+          { id: 3, name: "job-3", status: "failed", stage: "stage-3" },
+          { id: 7, name: "job-1", status: "failed", stage: "stage-1" },
+          { id: 8, name: "job-1", status: "failed", stage: "stage-1" }
+        ]
+      end
+
+      it "returns only first instance of the failed job" do
+        expected_jobs = [
+          "<http://example.gitlab.com/-/jobs/3|job-3>",
+          "<http://example.gitlab.com/-/jobs/2|job-2>",
+          "<http://example.gitlab.com/-/jobs/1|job-1>"
+        ]
+
+        expect(subject.attachments.first[:fields][3]).to eq(
+          title: "Failed jobs",
+          value: expected_jobs.join(", "),
+          short: true
+        )
+      end
+    end
+
     context "when the CI config file contains a YAML error" do
       let(:has_yaml_errors) { true }
 

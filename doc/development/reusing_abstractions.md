@@ -127,6 +127,8 @@ Everything in `lib/api`.
 
 Everything that resides in `app/services`.
 
+In Service classes the use of `execute` and `#execute` is preferred over `call` and `#call`.
+
 #### ServiceResponse
 
 Service classes usually have an `execute` method, which can return a

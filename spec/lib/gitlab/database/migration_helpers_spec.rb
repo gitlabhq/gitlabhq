@@ -2046,4 +2046,333 @@ describe Gitlab::Database::MigrationHelpers do
       model.bulk_migrate_in(10.minutes, [%w(Class hello world)])
     end
   end
+
+  describe '#check_constraint_name' do
+    it 'returns a valid constraint name' do
+      name = model.check_constraint_name(:this_is_a_very_long_table_name,
+                                         :with_a_very_long_column_name,
+                                         :with_a_very_long_type)
+
+      expect(name).to be_an_instance_of(String)
+      expect(name).to start_with('check_')
+      expect(name.length).to eq(16)
+    end
+  end
+
+  describe '#check_constraint_exists?' do
+    before do
+      ActiveRecord::Base.connection.execute(
+        'ALTER TABLE projects ADD CONSTRAINT check_1 CHECK (char_length(path) <= 5) NOT VALID'
+      )
+    end
+
+    after do
+      ActiveRecord::Base.connection.execute(
+        'ALTER TABLE projects DROP CONSTRAINT IF EXISTS check_1'
+      )
+    end
+
+    it 'returns true if a constraint exists' do
+      expect(model.check_constraint_exists?(:projects, 'check_1'))
+        .to be_truthy
+    end
+
+    it 'returns false if a constraint does not exist' do
+      expect(model.check_constraint_exists?(:projects, 'this_does_not_exist'))
+        .to be_falsy
+    end
+
+    it 'returns false if a constraint with the same name exists in another table' do
+      expect(model.check_constraint_exists?(:users, 'check_1'))
+        .to be_falsy
+    end
+  end
+
+  describe '#add_check_constraint' do
+    before do
+      allow(model).to receive(:check_constraint_exists?).and_return(false)
+    end
+
+    context 'inside a transaction' do
+      it 'raises an error' do
+        expect(model).to receive(:transaction_open?).and_return(true)
+
+        expect do
+          model.add_check_constraint(
+            :test_table,
+            'name IS NOT NULL',
+            'check_name_not_null'
+          )
+        end.to raise_error(RuntimeError)
+      end
+    end
+
+    context 'outside a transaction' do
+      before do
+        allow(model).to receive(:transaction_open?).and_return(false)
+      end
+
+      context 'when the constraint is already defined in the database' do
+        it 'does not create a constraint' do
+          expect(model).to receive(:check_constraint_exists?)
+                       .with(:test_table, 'check_name_not_null')
+                       .and_return(true)
+
+          expect(model).not_to receive(:execute).with(/ADD CONSTRAINT/)
+
+          # setting validate: false to only focus on the ADD CONSTRAINT command
+          model.add_check_constraint(
+            :test_table,
+            'name IS NOT NULL',
+            'check_name_not_null',
+            validate: false
+          )
+        end
+      end
+
+      context 'when the constraint is not defined in the database' do
+        it 'creates the constraint' do
+          expect(model).to receive(:with_lock_retries).and_call_original
+          expect(model).to receive(:execute).with(/ADD CONSTRAINT check_name_not_null/)
+
+          # setting validate: false to only focus on the ADD CONSTRAINT command
+          model.add_check_constraint(
+            :test_table,
+            'char_length(name) <= 255',
+            'check_name_not_null',
+            validate: false
+          )
+        end
+      end
+
+      context 'when validate is not provided' do
+        it 'performs validation' do
+          expect(model).to receive(:check_constraint_exists?)
+                       .with(:test_table, 'check_name_not_null')
+                       .and_return(false).exactly(1)
+
+          expect(model).to receive(:disable_statement_timeout).and_call_original
+          expect(model).to receive(:execute).with(/statement_timeout/)
+          expect(model).to receive(:with_lock_retries).and_call_original
+          expect(model).to receive(:execute).with(/ADD CONSTRAINT check_name_not_null/)
+
+          # we need the check constraint to exist so that the validation proceeds
+          expect(model).to receive(:check_constraint_exists?)
+                       .with(:test_table, 'check_name_not_null')
+                       .and_return(true).exactly(1)
+
+          expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT/)
+          expect(model).to receive(:execute).ordered.with(/RESET ALL/)
+
+          model.add_check_constraint(
+            :test_table,
+            'char_length(name) <= 255',
+            'check_name_not_null'
+          )
+        end
+      end
+
+      context 'when validate is provided with a falsey value' do
+        it 'skips validation' do
+          expect(model).not_to receive(:disable_statement_timeout)
+          expect(model).to receive(:with_lock_retries).and_call_original
+          expect(model).to receive(:execute).with(/ADD CONSTRAINT/)
+          expect(model).not_to receive(:execute).with(/VALIDATE CONSTRAINT/)
+
+          model.add_check_constraint(
+            :test_table,
+            'char_length(name) <= 255',
+            'check_name_not_null',
+            validate: false
+          )
+        end
+      end
+
+      context 'when validate is provided with a truthy value' do
+        it 'performs validation' do
+          expect(model).to receive(:check_constraint_exists?)
+                       .with(:test_table, 'check_name_not_null')
+                       .and_return(false).exactly(1)
+
+          expect(model).to receive(:disable_statement_timeout).and_call_original
+          expect(model).to receive(:execute).with(/statement_timeout/)
+          expect(model).to receive(:with_lock_retries).and_call_original
+          expect(model).to receive(:execute).with(/ADD CONSTRAINT check_name_not_null/)
+
+          expect(model).to receive(:check_constraint_exists?)
+                       .with(:test_table, 'check_name_not_null')
+                       .and_return(true).exactly(1)
+
+          expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT/)
+          expect(model).to receive(:execute).ordered.with(/RESET ALL/)
+
+          model.add_check_constraint(
+            :test_table,
+            'char_length(name) <= 255',
+            'check_name_not_null',
+            validate: true
+          )
+        end
+      end
+    end
+  end
+
+  describe '#validate_check_constraint' do
+    context 'when the constraint does not exist' do
+      it 'raises an error' do
+        error_message = /Could not find check constraint "check_1" on table "test_table"/
+
+        expect(model).to receive(:check_constraint_exists?).and_return(false)
+
+        expect do
+          model.validate_check_constraint(:test_table, 'check_1')
+        end.to raise_error(RuntimeError, error_message)
+      end
+    end
+
+    context 'when the constraint exists' do
+      it 'performs validation' do
+        validate_sql = /ALTER TABLE test_table VALIDATE CONSTRAINT check_name/
+
+        expect(model).to receive(:check_constraint_exists?).and_return(true)
+        expect(model).to receive(:disable_statement_timeout).and_call_original
+        expect(model).to receive(:execute).with(/statement_timeout/)
+        expect(model).to receive(:execute).ordered.with(validate_sql)
+        expect(model).to receive(:execute).ordered.with(/RESET ALL/)
+
+        model.validate_check_constraint(:test_table, 'check_name')
+      end
+    end
+  end
+
+  describe '#remove_check_constraint' do
+    it 'removes the constraint' do
+      drop_sql = /ALTER TABLE test_table\s+DROP CONSTRAINT IF EXISTS check_name/
+
+      expect(model).to receive(:with_lock_retries).and_call_original
+      expect(model).to receive(:execute).with(drop_sql)
+
+      model.remove_check_constraint(:test_table, 'check_name')
+    end
+  end
+
+  describe '#add_text_limit' do
+    context 'when it is called with the default options' do
+      it 'calls add_check_constraint with an infered constraint name and validate: true' do
+        constraint_name = model.check_constraint_name(:test_table,
+                                                      :name,
+                                                      'max_length')
+        check = "char_length(name) <= 255"
+
+        expect(model).to receive(:check_constraint_name).and_call_original
+        expect(model).to receive(:add_check_constraint)
+                     .with(:test_table, check, constraint_name, validate: true)
+
+        model.add_text_limit(:test_table, :name, 255)
+      end
+    end
+
+    context 'when all parameters are provided' do
+      it 'calls add_check_constraint with the correct parameters' do
+        constraint_name = 'check_name_limit'
+        check = "char_length(name) <= 255"
+
+        expect(model).not_to receive(:check_constraint_name)
+        expect(model).to receive(:add_check_constraint)
+                     .with(:test_table, check, constraint_name, validate: false)
+
+        model.add_text_limit(
+          :test_table,
+          :name,
+          255,
+          constraint_name: constraint_name,
+          validate: false
+        )
+      end
+    end
+  end
+
+  describe '#validate_text_limit' do
+    context 'when constraint_name is not provided' do
+      it 'calls validate_check_constraint with an infered constraint name' do
+        constraint_name = model.check_constraint_name(:test_table,
+                                                      :name,
+                                                      'max_length')
+
+        expect(model).to receive(:check_constraint_name).and_call_original
+        expect(model).to receive(:validate_check_constraint)
+                     .with(:test_table, constraint_name)
+
+        model.validate_text_limit(:test_table, :name)
+      end
+    end
+
+    context 'when constraint_name is provided' do
+      it 'calls validate_check_constraint with the correct parameters' do
+        constraint_name = 'check_name_limit'
+
+        expect(model).not_to receive(:check_constraint_name)
+        expect(model).to receive(:validate_check_constraint)
+                     .with(:test_table, constraint_name)
+
+        model.validate_text_limit(:test_table, :name, constraint_name: constraint_name)
+      end
+    end
+  end
+
+  describe '#remove_text_limit' do
+    context 'when constraint_name is not provided' do
+      it 'calls remove_check_constraint with an infered constraint name' do
+        constraint_name = model.check_constraint_name(:test_table,
+                                                      :name,
+                                                      'max_length')
+
+        expect(model).to receive(:check_constraint_name).and_call_original
+        expect(model).to receive(:remove_check_constraint)
+                     .with(:test_table, constraint_name)
+
+        model.remove_text_limit(:test_table, :name)
+      end
+    end
+
+    context 'when constraint_name is provided' do
+      it 'calls remove_check_constraint with the correct parameters' do
+        constraint_name = 'check_name_limit'
+
+        expect(model).not_to receive(:check_constraint_name)
+        expect(model).to receive(:remove_check_constraint)
+                     .with(:test_table, constraint_name)
+
+        model.remove_text_limit(:test_table, :name, constraint_name: constraint_name)
+      end
+    end
+  end
+
+  describe '#check_text_limit_exists?' do
+    context 'when constraint_name is not provided' do
+      it 'calls check_constraint_exists? with an infered constraint name' do
+        constraint_name = model.check_constraint_name(:test_table,
+                                                      :name,
+                                                      'max_length')
+
+        expect(model).to receive(:check_constraint_name).and_call_original
+        expect(model).to receive(:check_constraint_exists?)
+                     .with(:test_table, constraint_name)
+
+        model.check_text_limit_exists?(:test_table, :name)
+      end
+    end
+
+    context 'when constraint_name is provided' do
+      it 'calls check_constraint_exists? with the correct parameters' do
+        constraint_name = 'check_name_limit'
+
+        expect(model).not_to receive(:check_constraint_name)
+        expect(model).to receive(:check_constraint_exists?)
+                     .with(:test_table, constraint_name)
+
+        model.check_text_limit_exists?(:test_table, :name, constraint_name: constraint_name)
+      end
+    end
+  end
 end
