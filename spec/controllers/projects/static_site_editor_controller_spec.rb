@@ -10,7 +10,8 @@ describe Projects::StaticSiteEditorController do
       {
         namespace_id: project.namespace,
         project_id: project,
-        id: 'master/README.md'
+        id: 'master/README.md',
+        return_url: 'http://example.com'
       }
     end
 
@@ -37,6 +38,18 @@ describe Projects::StaticSiteEditorController do
 
           it 'renders the edit page' do
             expect(response).to render_template(:show)
+          end
+
+          it 'assigns a config variable' do
+            expect(assigns(:config)).to be_a(Gitlab::StaticSiteEditor::Config)
+          end
+
+          context 'when combination of ref and file path is incorrect' do
+            let(:default_params) { super().merge(id: 'unknown') }
+
+            it 'responds with 404 page' do
+              expect(response).to have_gitlab_http_status(:not_found)
+            end
           end
         end
       end

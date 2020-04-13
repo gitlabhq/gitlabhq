@@ -39,6 +39,17 @@ describe ProjectImportOptions do
       expect(project.import_state.reload.last_error).to include("import")
     end
 
+    context 'when project is jira import' do
+      let(:project) { create(:project, import_type: 'jira') }
+      let!(:jira_import) { create(:jira_import_state, project: project) }
+
+      it 'logs the appropriate error message for forked projects' do
+        worker_class.sidekiq_retries_exhausted_block.call(job)
+
+        expect(project.latest_jira_import.reload.status).to eq('failed')
+      end
+    end
+
     context 'when project does not have import_state' do
       let(:project) { create(:project) }
 

@@ -43,7 +43,7 @@ describe('EnvironmentLogs', () => {
 
   const findSimpleFilters = () => wrapper.find({ ref: 'log-simple-filters' });
   const findAdvancedFilters = () => wrapper.find({ ref: 'log-advanced-filters' });
-  const findInfoAlert = () => wrapper.find('.js-elasticsearch-alert');
+  const findElasticsearchNotice = () => wrapper.find({ ref: 'elasticsearchNotice' });
   const findLogControlButtons = () => wrapper.find({ name: 'log-control-buttons-stub' });
 
   const findInfiniteScroll = () => wrapper.find({ ref: 'infiniteScroll' });
@@ -160,6 +160,10 @@ describe('EnvironmentLogs', () => {
       initWrapper();
     });
 
+    it('does not display an alert to upgrade to ES', () => {
+      expect(findElasticsearchNotice().exists()).toBe(false);
+    });
+
     it('displays a disabled environments dropdown', () => {
       expect(findEnvironmentsDropdown().attributes('disabled')).toBe('true');
       expect(findEnvironmentsDropdown().findAll(GlDropdownItem).length).toBe(0);
@@ -204,7 +208,7 @@ describe('EnvironmentLogs', () => {
     });
 
     it('displays an alert to upgrade to ES', () => {
-      expect(findInfoAlert().exists()).toBe(true);
+      expect(findElasticsearchNotice().exists()).toBe(true);
     });
 
     it('displays simple filters for kubernetes logs API', () => {
@@ -235,7 +239,7 @@ describe('EnvironmentLogs', () => {
     });
 
     it('does not display an alert to upgrade to ES', () => {
-      expect(findInfoAlert().exists()).toBe(false);
+      expect(findElasticsearchNotice().exists()).toBe(false);
     });
 
     it('populates environments dropdown', () => {

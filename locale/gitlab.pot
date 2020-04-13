@@ -888,6 +888,9 @@ msgstr ""
 msgid "A subscription will trigger a new pipeline on the default branch of this project when a pipeline successfully completes for a new tag on the %{default_branch_docs} of the subscribed project."
 msgstr ""
 
+msgid "A terraform report was generated in your pipelines."
+msgstr ""
+
 msgid "A user with write access to the source branch selected this option"
 msgstr ""
 
@@ -2006,6 +2009,9 @@ msgid "An error occurred while loading issues"
 msgstr ""
 
 msgid "An error occurred while loading merge requests."
+msgstr ""
+
+msgid "An error occurred while loading terraform report"
 msgstr ""
 
 msgid "An error occurred while loading the data. Please try again."
@@ -3524,6 +3530,9 @@ msgid "Changes"
 msgstr ""
 
 msgid "Changes are shown as if the <b>source</b> revision was being merged into the <b>target</b> revision."
+msgstr ""
+
+msgid "Changes are unknown"
 msgstr ""
 
 msgid "Changes suppressed. Click to show."
@@ -15632,6 +15641,12 @@ msgstr ""
 msgid "Project name"
 msgstr ""
 
+msgid "Project name suffix"
+msgstr ""
+
+msgid "Project name suffix is a user-defined string which will be appended to the project path, and will form the Service Desk email address."
+msgstr ""
+
 msgid "Project order will not be saved as local storage is not available."
 msgstr ""
 
@@ -17017,6 +17032,9 @@ msgid "Report abuse to admin"
 msgstr ""
 
 msgid "Reported %{timeAgo} by %{reportedBy}"
+msgstr ""
+
+msgid "Reported Resource Changes: %{addNum} to add, %{changeNum} to change, %{deleteNum} to delete"
 msgstr ""
 
 msgid "Reporter"
@@ -22692,6 +22710,9 @@ msgid "View file @ "
 msgstr ""
 
 msgid "View full dashboard"
+msgstr ""
+
+msgid "View full log"
 msgstr ""
 
 msgid "View group labels"

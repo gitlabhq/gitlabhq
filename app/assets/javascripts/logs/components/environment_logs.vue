@@ -70,9 +70,10 @@ export default {
       return this.logs.isLoading;
     },
     shouldShowElasticStackCallout() {
-      return (
-        !this.isElasticStackCalloutDismissed &&
-        (this.environments.isLoading || !this.showAdvancedFilters)
+      return !(
+        this.environments.isLoading ||
+        this.isElasticStackCalloutDismissed ||
+        this.showAdvancedFilters
       );
     },
   },
@@ -120,7 +121,8 @@ export default {
   <div class="environment-logs-viewer d-flex flex-column py-3">
     <gl-alert
       v-if="shouldShowElasticStackCallout"
-      class="mb-3 js-elasticsearch-alert"
+      ref="elasticsearchNotice"
+      class="mb-3"
       @dismiss="isElasticStackCalloutDismissed = true"
     >
       {{
