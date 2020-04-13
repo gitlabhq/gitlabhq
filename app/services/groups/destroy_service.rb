@@ -29,7 +29,15 @@ module Groups
 
       group.chat_team&.remove_mattermost_team(current_user)
 
+      user_ids_for_project_authorizations_refresh = group.user_ids_for_project_authorizations
+
       group.destroy
+
+      UserProjectAccessChangedService
+        .new(user_ids_for_project_authorizations_refresh)
+        .execute(blocking: true)
+
+      group
     end
     # rubocop: enable CodeReuse/ActiveRecord
   end
