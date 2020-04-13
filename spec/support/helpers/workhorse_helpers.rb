@@ -32,12 +32,12 @@ module WorkhorseHelpers
 
   # workhorse_finalize will transform file_key inside params as if it was the finalize call of an inline object storage upload.
   # note that based on the content of the params it can simulate a disc acceleration or an object storage upload
-  def workhorse_finalize(url, method: :post, file_key:, params:, headers: {})
+  def workhorse_finalize(url, method: :post, file_key:, params:, headers: {}, send_rewritten_field: false)
     workhorse_request_with_file(method, url,
                                 file_key: file_key,
                                 params: params,
                                 extra_headers: headers,
-                                send_rewritten_field: false
+                                send_rewritten_field: send_rewritten_field
     )
   end
 
