@@ -2,6 +2,7 @@ import { backOff } from '~/lib/utils/common_utils';
 import httpStatusCodes from '~/lib/utils/http_status';
 import axios from '~/lib/utils/axios_utils';
 import { convertToFixedRange } from '~/lib/utils/datetime_range';
+import { TOKEN_TYPE_POD_NAME } from '../constants';
 
 import * as types from './mutation_types';
 
@@ -49,19 +50,42 @@ const requestLogsUntilData = ({ commit, state }) => {
   return requestUntilData(logs_api_path, params);
 };
 
+/**
+ * Converts filters emitted by the component, e.g. a filterered-search
+ * to parameters to be applied to the filters of the store
+ * @param {Array} filters - List of strings or objects to filter by.
+ * @returns {Object} - An object with `search` and `podName` keys.
+ */
+const filtersToParams = (filters = []) => {
+  // Strings become part of the `search`
+  const search = filters
+    .filter(f => typeof f === 'string')
+    .join(' ')
+    .trim();
+
+  // null podName to show all pods
+  const podName = filters.find(f => f?.type === TOKEN_TYPE_POD_NAME)?.value?.data ?? null;
+
+  return { search, podName };
+};
+
 export const setInitData = ({ commit }, { timeRange, environmentName, podName }) => {
   commit(types.SET_TIME_RANGE, timeRange);
   commit(types.SET_PROJECT_ENVIRONMENT, environmentName);
   commit(types.SET_CURRENT_POD_NAME, podName);
 };
 
-export const showPodLogs = ({ dispatch, commit }, podName) => {
+export const showFilteredLogs = ({ dispatch, commit }, filters = []) => {
+  const { podName, search } = filtersToParams(filters);
+
   commit(types.SET_CURRENT_POD_NAME, podName);
+  commit(types.SET_SEARCH, search);
+
   dispatch('fetchLogs');
 };
 
-export const setSearch = ({ dispatch, commit }, searchQuery) => {
-  commit(types.SET_SEARCH, searchQuery);
+export const showPodLogs = ({ dispatch, commit }, podName) => {
+  commit(types.SET_CURRENT_POD_NAME, podName);
   dispatch('fetchLogs');
 };
 

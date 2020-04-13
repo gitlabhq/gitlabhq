@@ -10,7 +10,6 @@ import {
   mockPods,
   mockLogsResult,
   mockTrace,
-  mockPodName,
   mockEnvironmentsEndpoint,
   mockDocumentationPath,
 } from '../mock_data';
@@ -302,11 +301,11 @@ describe('EnvironmentLogs', () => {
       });
 
       it('refresh button, trace is refreshed', () => {
-        expect(dispatch).not.toHaveBeenCalledWith(`${module}/showPodLogs`, expect.anything());
+        expect(dispatch).not.toHaveBeenCalledWith(`${module}/fetchLogs`, undefined);
 
         findLogControlButtons().vm.$emit('refresh');
 
-        expect(dispatch).toHaveBeenCalledWith(`${module}/showPodLogs`, mockPodName);
+        expect(dispatch).toHaveBeenCalledWith(`${module}/fetchLogs`, undefined);
       });
     });
   });

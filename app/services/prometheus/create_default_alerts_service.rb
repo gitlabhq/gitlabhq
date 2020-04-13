@@ -16,6 +16,11 @@ module Prometheus
         identifier: 'response_metrics_nginx_ingress_http_error_rate',
         operator: 'gt',
         threshold: 0.1
+      },
+      {
+        identifier: 'response_metrics_nginx_http_error_percentage',
+        operator: 'gt',
+        threshold: 0.1
       }
     ].freeze
 

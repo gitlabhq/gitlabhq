@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
-class ProjectPolicy
-  module ClassMethods
+module CrudPolicyHelpers
+  extend ActiveSupport::Concern
+
+  class_methods do
     def create_read_update_admin_destroy(name)
       [
         :"read_#{name}",

@@ -1,25 +1,15 @@
 <script>
-import { s__ } from '~/locale';
-import DateTimePicker from '~/vue_shared/components/date_time_picker/date_time_picker.vue';
 import { mapActions, mapState } from 'vuex';
-import {
-  GlIcon,
-  GlDropdown,
-  GlDropdownHeader,
-  GlDropdownDivider,
-  GlDropdownItem,
-  GlSearchBoxByClick,
-} from '@gitlab/ui';
+import { GlFilteredSearch } from '@gitlab/ui';
+import { __, s__ } from '~/locale';
+import DateTimePicker from '~/vue_shared/components/date_time_picker/date_time_picker.vue';
 import { timeRanges } from '~/vue_shared/constants';
+import { TOKEN_TYPE_POD_NAME } from '../constants';
+import TokenWithLoadingState from './tokens/token_with_loading_state.vue';
 
 export default {
   components: {
-    GlIcon,
-    GlDropdown,
-    GlDropdownHeader,
-    GlDropdownDivider,
-    GlDropdownItem,
-    GlSearchBoxByClick,
+    GlFilteredSearch,
     DateTimePicker,
   },
   props: {
@@ -32,11 +22,10 @@ export default {
   data() {
     return {
       timeRanges,
-      searchQuery: '',
     };
   },
   computed: {
-    ...mapState('environmentLogs', ['timeRange', 'pods']),
+    ...mapState('environmentLogs', ['timeRange', 'pods', 'logs']),
 
     timeRangeModel: {
       get() {
@@ -46,75 +35,56 @@ export default {
         this.setTimeRange(val);
       },
     },
+    /**
+     * Token options.
+     *
+     * Returns null when no pods are present, so suggestions are displayed in the token
+     */
+    podOptions() {
+      if (this.pods.options.length) {
+        return this.pods.options.map(podName => ({ value: podName, title: podName }));
+      }
+      return null;
+    },
 
-    podDropdownText() {
-      return this.pods.current || s__('Environments|All pods');
+    tokens() {
+      return [
+        {
+          icon: 'pod',
+          type: TOKEN_TYPE_POD_NAME,
+          title: s__('Environments|Pod name'),
+          token: TokenWithLoadingState,
+          operators: [{ value: '=', description: __('is'), default: 'true' }],
+          unique: true,
+          options: this.podOptions,
+          loading: this.logs.isLoading,
+          noOptionsText: s__('Environments|No pods to display'),
+        },
+      ];
     },
   },
   methods: {
-    ...mapActions('environmentLogs', ['setSearch', 'showPodLogs', 'setTimeRange']),
-    isCurrentPod(podName) {
-      return podName === this.pods.current;
+    ...mapActions('environmentLogs', ['showFilteredLogs', 'setTimeRange']),
+
+    filteredSearchSubmit(filters) {
+      this.showFilteredLogs(filters);
     },
   },
 };
 </script>
 <template>
   <div>
-    <gl-dropdown
-      ref="podsDropdown"
-      :text="podDropdownText"
-      :disabled="disabled"
-      class="mb-2 gl-h-32 pr-2 d-flex d-md-block flex-grow-0 qa-pods-dropdown"
-    >
-      <gl-dropdown-header class="text-center">
-        {{ s__('Environments|Filter by pod') }}
-      </gl-dropdown-header>
-
-      <gl-dropdown-item v-if="!pods.options.length" disabled>
-        <span ref="noPodsMsg" class="text-muted">
-          {{ s__('Environments|No pods to display') }}
-        </span>
-      </gl-dropdown-item>
-
-      <template v-else>
-        <gl-dropdown-item ref="allPodsOption" key="all-pods" @click="showPodLogs(null)">
-          <div class="d-flex">
-            <gl-icon
-              :class="{ invisible: pods.current !== null }"
-              name="status_success_borderless"
-            />
-            <div class="flex-grow-1">{{ s__('Environments|All pods') }}</div>
-          </div>
-        </gl-dropdown-item>
-        <gl-dropdown-divider />
-        <gl-dropdown-item
-          v-for="podName in pods.options"
-          :key="podName"
-          class="text-nowrap"
-          @click="showPodLogs(podName)"
-        >
-          <div class="d-flex">
-            <gl-icon
-              :class="{ invisible: !isCurrentPod(podName) }"
-              name="status_success_borderless"
-            />
-            <div class="flex-grow-1">{{ podName }}</div>
-          </div>
-        </gl-dropdown-item>
-      </template>
-    </gl-dropdown>
-
-    <gl-search-box-by-click
-      ref="searchBox"
-      v-model.trim="searchQuery"
-      :disabled="disabled"
-      :placeholder="s__('Environments|Search')"
-      class="mb-2 pr-2 flex-grow-1"
-      type="search"
-      autofocus
-      @submit="setSearch(searchQuery)"
-    />
+    <div class="mb-2 pr-2 flex-grow-1 min-width-0">
+      <gl-filtered-search
+        :placeholder="__('Search')"
+        :clear-button-title="__('Clear')"
+        :close-button-title="__('Close')"
+        class="gl-h-32"
+        :disabled="disabled || logs.isLoading"
+        :available-tokens="tokens"
+        @submit="filteredSearchSubmit"
+      />
+    </div>
 
     <date-time-picker
       ref="dateTimePicker"

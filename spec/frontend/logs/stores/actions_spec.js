@@ -6,7 +6,7 @@ import { convertToFixedRange } from '~/lib/utils/datetime_range';
 import logsPageState from '~/logs/stores/state';
 import {
   setInitData,
-  setSearch,
+  showFilteredLogs,
   showPodLogs,
   fetchEnvironments,
   fetchLogs,
@@ -31,6 +31,7 @@ import {
   mockCursor,
   mockNextCursor,
 } from '../mock_data';
+import { TOKEN_TYPE_POD_NAME } from '~/logs/constants';
 
 jest.mock('~/flash');
 jest.mock('~/lib/utils/datetime_range');
@@ -93,13 +94,80 @@ describe('Logs Store actions', () => {
       ));
   });
 
-  describe('setSearch', () => {
-    it('should commit search mutation', () =>
+  describe('showFilteredLogs', () => {
+    it('empty search should filter with defaults', () =>
       testAction(
-        setSearch,
-        mockSearch,
+        showFilteredLogs,
+        undefined,
         state,
-        [{ type: types.SET_SEARCH, payload: mockSearch }],
+        [
+          { type: types.SET_CURRENT_POD_NAME, payload: null },
+          { type: types.SET_SEARCH, payload: '' },
+        ],
+        [{ type: 'fetchLogs' }],
+      ));
+
+    it('text search should filter with a search term', () =>
+      testAction(
+        showFilteredLogs,
+        [mockSearch],
+        state,
+        [
+          { type: types.SET_CURRENT_POD_NAME, payload: null },
+          { type: types.SET_SEARCH, payload: mockSearch },
+        ],
+        [{ type: 'fetchLogs' }],
+      ));
+
+    it('pod search should filter with a search term', () =>
+      testAction(
+        showFilteredLogs,
+        [{ type: TOKEN_TYPE_POD_NAME, value: { data: mockPodName, operator: '=' } }],
+        state,
+        [
+          { type: types.SET_CURRENT_POD_NAME, payload: mockPodName },
+          { type: types.SET_SEARCH, payload: '' },
+        ],
+        [{ type: 'fetchLogs' }],
+      ));
+
+    it('pod search should filter with a pod selection and a search term', () =>
+      testAction(
+        showFilteredLogs,
+        [{ type: TOKEN_TYPE_POD_NAME, value: { data: mockPodName, operator: '=' } }, mockSearch],
+        state,
+        [
+          { type: types.SET_CURRENT_POD_NAME, payload: mockPodName },
+          { type: types.SET_SEARCH, payload: mockSearch },
+        ],
+        [{ type: 'fetchLogs' }],
+      ));
+
+    it('pod search should filter with a pod selection and two search terms', () =>
+      testAction(
+        showFilteredLogs,
+        ['term1', 'term2'],
+        state,
+        [
+          { type: types.SET_CURRENT_POD_NAME, payload: null },
+          { type: types.SET_SEARCH, payload: `term1 term2` },
+        ],
+        [{ type: 'fetchLogs' }],
+      ));
+
+    it('pod search should filter with a pod selection and a search terms before and after', () =>
+      testAction(
+        showFilteredLogs,
+        [
+          'term1',
+          { type: TOKEN_TYPE_POD_NAME, value: { data: mockPodName, operator: '=' } },
+          'term2',
+        ],
+        state,
+        [
+          { type: types.SET_CURRENT_POD_NAME, payload: mockPodName },
+          { type: types.SET_SEARCH, payload: `term1 term2` },
+        ],
         [{ type: 'fetchLogs' }],
       ));
   });

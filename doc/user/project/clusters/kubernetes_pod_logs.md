@@ -14,7 +14,7 @@ Everything you need to build, test, deploy, and run your app at scale.
 
 [Kubernetes](https://kubernetes.io) logs can be viewed directly within GitLab.
 
-![Pod logs](img/kubernetes_pod_logs_v12_9.png)
+![Pod logs](img/kubernetes_pod_logs_v12_10.png)
 
 ## Requirements
 
@@ -32,7 +32,7 @@ You can access them in two ways.
 
 Go to **{cloud-gear}** **Operations > Logs** on the sidebar menu.
 
-![Sidebar menu](img/sidebar_menu_pod_logs_v12_5.png)
+![Sidebar menu](img/sidebar_menu_pod_logs_v12_10.png)
 
 ### From Deploy Boards
 

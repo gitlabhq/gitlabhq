@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ProjectPolicy < BasePolicy
-  extend ClassMethods
+  include CrudPolicyHelpers
 
   READONLY_FEATURES_WHEN_ARCHIVED = %i[
     issue

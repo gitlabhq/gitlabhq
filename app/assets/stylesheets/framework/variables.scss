@@ -485,7 +485,7 @@ $line-removed-dark: #fac5cd;
 $line-number-old: #f9d7dc;
 $line-number-new: #ddfbe6;
 $line-number-select: #fbf2da;
-$line-target-blue: #f6faff;
+$line-target-blue: $blue-50;
 $line-select-yellow: #fcf8e7;
 $line-select-yellow-dark: #f0e2bd;
 $dark-diff-match-bg: rgba(255, 255, 255, 0.3);
@@ -698,7 +698,7 @@ $logs-p-color: #333;
 */
 $input-height: 34px;
 $input-danger-bg: #f2dede;
-$input-group-addon-bg: #f7f8fa;
+$input-group-addon-bg: $gray-50;
 $gl-field-focus-shadow: rgba(0, 0, 0, 0.075);
 $gl-field-focus-shadow-error: rgba($red-500, 0.6);
 $input-short-width: 200px;
@@ -774,9 +774,6 @@ $select2-drop-shadow2: rgba(31, 37, 50, 0.317647);
 /*
 * Typography
 */
-$kdb-bg: #fcfcfc;
-$kdb-border-bottom: #bbb;
-$kdb-shadow: #bbb;
 $body-text-shadow: rgba(255, 255, 255, 0.01);
 
 /*
@@ -799,20 +796,6 @@ $pipelines-table-header-height: 40px;
 CI variable lists
 */
 $ci-variable-remove-button-width: calc(1em + #{2 * $gl-padding});
-
-/*
-Filtered Search
-*/
-$filter-name-resting-color: #f8f8f8;
-$filter-name-text-color: rgba(0, 0, 0, 0.55);
-$filter-value-text-color: rgba(0, 0, 0, 0.85);
-$filter-name-selected-color: #ebebeb;
-$filter-value-selected-color: #d7d7d7;
-
-/*
-Animation Functions
-*/
-$dropdown-animation-timing: cubic-bezier(0.23, 1, 0.32, 1);
 
 /*
 GitLab Plans

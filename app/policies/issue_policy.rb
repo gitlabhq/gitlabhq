@@ -5,7 +5,7 @@ class IssuePolicy < IssuablePolicy
   # Make sure to sync this class checks with issue.rb to avoid security problems.
   # Check commit 002ad215818450d2cbbc5fa065850a953dc7ada8 for more information.
 
-  extend ProjectPolicy::ClassMethods
+  include CrudPolicyHelpers
 
   desc "User can read confidential issues"
   condition(:can_read_confidential) do

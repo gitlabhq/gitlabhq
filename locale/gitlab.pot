@@ -7869,9 +7869,6 @@ msgstr ""
 msgid "EnvironmentsDashboard|This dashboard displays a maximum of 7 projects and 3 environments per project. %{readMoreLink}"
 msgstr ""
 
-msgid "Environments|All pods"
-msgstr ""
-
 msgid "Environments|An error occurred while canceling the auto stop, please try again"
 msgstr ""
 
@@ -7938,9 +7935,6 @@ msgstr ""
 msgid "Environments|Environments are places where code gets deployed, such as staging or production."
 msgstr ""
 
-msgid "Environments|Filter by pod"
-msgstr ""
-
 msgid "Environments|Install Elastic Stack on your cluster to enable advanced querying capabilities such as full text search."
 msgstr ""
 
@@ -7980,6 +7974,9 @@ msgstr ""
 msgid "Environments|Open live environment"
 msgstr ""
 
+msgid "Environments|Pod name"
+msgstr ""
+
 msgid "Environments|Re-deploy"
 msgstr ""
 
@@ -8005,9 +8002,6 @@ msgid "Environments|Rollback environment %{environment_name}?"
 msgstr ""
 
 msgid "Environments|Rollback environment %{name}?"
-msgstr ""
-
-msgid "Environments|Search"
 msgstr ""
 
 msgid "Environments|Select environment"
@@ -19365,12 +19359,6 @@ msgstr ""
 msgid "Static Application Security Testing (SAST)"
 msgstr ""
 
-msgid "StaticSiteEditor|A merge request was created:"
-msgstr ""
-
-msgid "StaticSiteEditor|A new branch was created:"
-msgstr ""
-
 msgid "StaticSiteEditor|Return to site"
 msgstr ""
 
@@ -19383,10 +19371,16 @@ msgstr ""
 msgid "StaticSiteEditor|View merge request"
 msgstr ""
 
-msgid "StaticSiteEditor|Your changes have been submitted and a merge request has been created. The changes won’t be visible on the site until the merge request has been accepted."
+msgid "StaticSiteEditor|You added a commit:"
 msgstr ""
 
-msgid "StaticSiteEditor|Your changes were committed to it:"
+msgid "StaticSiteEditor|You created a merge request:"
+msgstr ""
+
+msgid "StaticSiteEditor|You created a new branch:"
+msgstr ""
+
+msgid "StaticSiteEditor|Your changes have been submitted and a merge request has been created. The changes won’t be visible on the site until the merge request has been accepted."
 msgstr ""
 
 msgid "Statistics"

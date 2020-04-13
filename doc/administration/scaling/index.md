@@ -40,9 +40,13 @@ needs.
 | Object storage service | Recommended store for shared data objects | [Cloud Object Storage configuration](../high_availability/object_storage.md) |
 | NFS | Shared disk storage service. Can be used as an alternative for Gitaly or Object Storage. Required for GitLab Pages | [NFS configuration](../high_availability/nfs.md) |
 
-## Examples
+## Reference architectures
 
-### Single-node Omnibus installation
+- 1 - 1000 Users: A single-node [Omnibus](https://docs.gitlab.com/omnibus/) setup with frequent backups. Refer to the [Single-node Omnibus installation](#single-node-installation) section below.
+- 1000 to 50000+ Users: A [Scaled-out Omnibus installation with multiple servers](#multi-node-installation-scaled-out-for-availability), it can be with or without high-availability components applied.
+  - To decide the level of Availability please refer to our [Availability](../availability/index.md) page.
+
+### Single-node installation
 
 This solution is appropriate for many teams that have a single server at their disposal. With automatic backup of the GitLab repositories, configuration, and the database, this can be an optimal solution if you don't have strict availability requirements.
 
@@ -55,7 +59,7 @@ References:
 - [Installation Docs](../../install/README.md)
 - [Backup/Restore Docs](https://docs.gitlab.com/omnibus/settings/backups.html#backup-and-restore-omnibus-gitlab-configuration)
 
-### Omnibus installation with multiple application servers
+### Multi-node installation (scaled out for availability)
 
 This solution is appropriate for teams that are starting to scale out when
 scaling up is no longer meeting their needs. In this configuration, additional application nodes will handle frontend traffic, with a load balancer in front to distribute traffic across those nodes. Meanwhile, each application node connects to a shared file server and PostgreSQL and Redis services on the back end.
@@ -71,14 +75,6 @@ References:
 - [Configure your NFS server to work with GitLab](../high_availability/nfs.md)
 - [Configure packaged PostgreSQL server to listen on TCP/IP](https://docs.gitlab.com/omnibus/settings/database.html#configure-packaged-postgresql-server-to-listen-on-tcpip)
 - [Setting up a Redis-only server](https://docs.gitlab.com/omnibus/settings/redis.html#setting-up-a-redis-only-server)
-
-## Recommended setups based on number of users
-
-- 1 - 1000 Users: A single-node [Omnibus](https://docs.gitlab.com/omnibus/) setup with frequent backups. Refer to the [requirements page](../../install/requirements.md) for further details of the specs you will require.
-- 1000 - 10000 Users: A scaled environment based on one of our [Reference Architectures](#reference-architectures), without the HA components applied. This can be a reasonable step towards a fully HA environment.
-- 2000 - 50000+ Users: A scaled HA environment based on one of our [Reference Architectures](#reference-architectures) below.
-
-## Reference architectures
 
 In this section we'll detail the Reference Architectures that can support large numbers
 of users. These were built, tested and verified by our Quality and Support teams.
@@ -99,7 +95,7 @@ how much automation you use, mirroring, and repo/change size. Additionally the
 shown memory values are given directly by [GCP machine types](https://cloud.google.com/compute/docs/machine-types).
 On different cloud vendors a best effort like for like can be used.
 
-### 2,000 user configuration
+#### 2,000 user configuration
 
 - **Supported users (approximate):** 2,000
 - **Test RPS rates:** API: 40 RPS, Web: 4 RPS, Git: 4 RPS
@@ -120,7 +116,7 @@ On different cloud vendors a best effort like for like can be used.
 | External load balancing node[^6] | 1 | 2 vCPU, 1.8GB Memory | n1-highcpu-2  | c5.large     |
 | Internal load balancing node[^6] | 1 | 2 vCPU, 1.8GB Memory | n1-highcpu-2  | c5.large     |
 
-### 5,000 user configuration
+#### 5,000 user configuration
 
 - **Supported users (approximate):** 5,000
 - **Test RPS rates:** API: 100 RPS, Web: 10 RPS, Git: 10 RPS
@@ -141,7 +137,7 @@ On different cloud vendors a best effort like for like can be used.
 | External load balancing node[^6] | 1 | 2 vCPU, 1.8GB Memory  | n1-highcpu-2  | c5.large     |
 | Internal load balancing node[^6] | 1 | 2 vCPU, 1.8GB Memory  | n1-highcpu-2  | c5.large     |
 
-### 10,000 user configuration
+#### 10,000 user configuration
 
 - **Supported users (approximate):** 10,000
 - **Test RPS rates:** API: 200 RPS, Web: 20 RPS, Git: 20 RPS
@@ -165,7 +161,7 @@ On different cloud vendors a best effort like for like can be used.
 | External load balancing node[^6] | 1 | 2 vCPU, 1.8GB Memory  | n1-highcpu-2   | c5.large     |
 | Internal load balancing node[^6] | 1 | 2 vCPU, 1.8GB Memory  | n1-highcpu-2   | c5.large     |
 
-### 25,000 user configuration
+#### 25,000 user configuration
 
 - **Supported users (approximate):** 25,000
 - **Test RPS rates:** API: 500 RPS, Web: 50 RPS, Git: 50 RPS
@@ -189,7 +185,7 @@ On different cloud vendors a best effort like for like can be used.
 | External load balancing node[^6] | 1 | 2 vCPU, 1.8GB Memory  | n1-highcpu-2   | c5.large     |
 | Internal load balancing node[^6] | 1 | 4 vCPU, 3.6GB Memory  | n1-highcpu-4   | c5.xlarge    |
 
-### 50,000 user configuration
+#### 50,000 user configuration
 
 - **Supported users (approximate):** 50,000
 - **Test RPS rates:** API: 1000 RPS, Web: 100 RPS, Git: 100 RPS

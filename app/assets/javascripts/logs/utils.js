@@ -1,7 +1,6 @@
 import { secondsToMilliseconds } from '~/lib/utils/datetime_utility';
 import dateFormat from 'dateformat';
-
-const dateFormatMask = 'UTC:mmm dd HH:MM:ss.l"Z"';
+import { dateFormatMask } from './constants';
 
 /**
  * Returns a time range (`start`, `end`) where `start` is the

@@ -1,8 +1,9 @@
-import { GlIcon, GlDropdownItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { defaultTimeRange } from '~/vue_shared/constants';
+import { GlFilteredSearch } from '@gitlab/ui';
 import { convertToFixedRange } from '~/lib/utils/datetime_range';
 import { createStore } from '~/logs/stores';
+import { TOKEN_TYPE_POD_NAME } from '~/logs/constants';
 import { mockPods, mockSearch } from '../mock_data';
 
 import LogAdvancedFilters from '~/logs/components/log_advanced_filters.vue';
@@ -15,26 +16,19 @@ describe('LogAdvancedFilters', () => {
   let wrapper;
   let state;
 
-  const findPodsDropdown = () => wrapper.find({ ref: 'podsDropdown' });
-  const findPodsNoPodsText = () => wrapper.find({ ref: 'noPodsMsg' });
-  const findPodsDropdownItems = () =>
-    findPodsDropdown()
-      .findAll(GlDropdownItem)
-      .filter(item => !item.is('[disabled]'));
-  const findPodsDropdownItemsSelected = () =>
-    findPodsDropdownItems()
-      .filter(item => {
-        return !item.find(GlIcon).classes('invisible');
-      })
-      .at(0);
-  const findSearchBox = () => wrapper.find({ ref: 'searchBox' });
+  const findFilteredSearch = () => wrapper.find(GlFilteredSearch);
   const findTimeRangePicker = () => wrapper.find({ ref: 'dateTimePicker' });
+  const getSearchToken = type =>
+    findFilteredSearch()
+      .props('availableTokens')
+      .filter(token => token.type === type)[0];
 
   const mockStateLoading = () => {
     state.timeRange.selected = defaultTimeRange;
     state.timeRange.current = convertToFixedRange(defaultTimeRange);
     state.pods.options = [];
     state.pods.current = null;
+    state.logs.isLoading = true;
   };
 
   const mockStateWithData = () => {
@@ -42,6 +36,7 @@ describe('LogAdvancedFilters', () => {
     state.timeRange.current = convertToFixedRange(defaultTimeRange);
     state.pods.options = mockPods;
     state.pods.current = null;
+    state.logs.isLoading = false;
   };
 
   const initWrapper = (propsData = {}) => {
@@ -76,9 +71,16 @@ describe('LogAdvancedFilters', () => {
     expect(wrapper.isVueInstance()).toBe(true);
     expect(wrapper.isEmpty()).toBe(false);
 
-    expect(findPodsDropdown().exists()).toBe(true);
-    expect(findSearchBox().exists()).toBe(true);
+    expect(findFilteredSearch().exists()).toBe(true);
     expect(findTimeRangePicker().exists()).toBe(true);
+  });
+
+  it('displays search tokens', () => {
+    expect(getSearchToken(TOKEN_TYPE_POD_NAME)).toMatchObject({
+      title: 'Pod name',
+      unique: true,
+      operators: [expect.objectContaining({ value: '=' })],
+    });
   });
 
   describe('disabled state', () => {
@@ -90,9 +92,7 @@ describe('LogAdvancedFilters', () => {
     });
 
     it('displays disabled filters', () => {
-      expect(findPodsDropdown().props('text')).toBe('All pods');
-      expect(findPodsDropdown().attributes('disabled')).toBeTruthy();
-      expect(findSearchBox().attributes('disabled')).toBeTruthy();
+      expect(findFilteredSearch().attributes('disabled')).toBeTruthy();
       expect(findTimeRangePicker().attributes('disabled')).toBeTruthy();
     });
   });
@@ -103,16 +103,17 @@ describe('LogAdvancedFilters', () => {
       initWrapper();
     });
 
-    it('displays a enabled filters', () => {
-      expect(findPodsDropdown().props('text')).toBe('All pods');
-      expect(findPodsDropdown().attributes('disabled')).toBeFalsy();
-      expect(findSearchBox().attributes('disabled')).toBeFalsy();
+    it('displays a disabled search', () => {
+      expect(findFilteredSearch().attributes('disabled')).toBeTruthy();
+    });
+
+    it('displays an enable date filter', () => {
       expect(findTimeRangePicker().attributes('disabled')).toBeFalsy();
     });
 
-    it('displays an empty pods dropdown', () => {
-      expect(findPodsNoPodsText().exists()).toBe(true);
-      expect(findPodsDropdownItems()).toHaveLength(0);
+    it('displays no pod options when no pods are available, so suggestions can be displayed', () => {
+      expect(getSearchToken(TOKEN_TYPE_POD_NAME).options).toBe(null);
+      expect(getSearchToken(TOKEN_TYPE_POD_NAME).loading).toBe(true);
     });
   });
 
@@ -122,20 +123,24 @@ describe('LogAdvancedFilters', () => {
       initWrapper();
     });
 
-    it('displays an enabled pods dropdown', () => {
-      expect(findPodsDropdown().attributes('disabled')).toBeFalsy();
-      expect(findPodsDropdown().props('text')).toBe('All pods');
+    it('displays a single token for pods', () => {
+      initWrapper();
+
+      const tokens = findFilteredSearch().props('availableTokens');
+
+      expect(tokens).toHaveLength(1);
+      expect(tokens[0].type).toBe(TOKEN_TYPE_POD_NAME);
     });
 
-    it('displays options in a pods dropdown', () => {
-      const items = findPodsDropdownItems();
-      expect(items).toHaveLength(mockPods.length + 1);
+    it('displays a enabled filters', () => {
+      expect(findFilteredSearch().attributes('disabled')).toBeFalsy();
+      expect(findTimeRangePicker().attributes('disabled')).toBeFalsy();
     });
 
-    it('displays "all pods" selected in a pods dropdown', () => {
-      const selected = findPodsDropdownItemsSelected();
+    it('displays options in the pods token', () => {
+      const { options } = getSearchToken(TOKEN_TYPE_POD_NAME);
 
-      expect(selected.text()).toBe('All pods');
+      expect(options).toHaveLength(mockPods.length);
     });
 
     it('displays options in date time picker', () => {
@@ -146,30 +151,16 @@ describe('LogAdvancedFilters', () => {
     });
 
     describe('when the user interacts', () => {
-      it('clicks on a all options, showPodLogs is dispatched with null', () => {
-        const items = findPodsDropdownItems();
-        items.at(0).vm.$emit('click');
+      it('clicks on the search button, showFilteredLogs is dispatched', () => {
+        findFilteredSearch().vm.$emit('submit', null);
 
-        expect(dispatch).toHaveBeenCalledWith(`${module}/showPodLogs`, null);
+        expect(dispatch).toHaveBeenCalledWith(`${module}/showFilteredLogs`, null);
       });
 
-      it('clicks on a pod name, showPodLogs is dispatched with pod name', () => {
-        const items = findPodsDropdownItems();
-        const index = 2; // any pod
+      it('clicks on the search button, showFilteredLogs is dispatched with null', () => {
+        findFilteredSearch().vm.$emit('submit', [mockSearch]);
 
-        items.at(index + 1).vm.$emit('click'); // skip "All pods" option
-
-        expect(dispatch).toHaveBeenCalledWith(`${module}/showPodLogs`, mockPods[index]);
-      });
-
-      it('clicks on search, a serches is done', () => {
-        expect(findSearchBox().attributes('disabled')).toBeFalsy();
-
-        // input a query and click `search`
-        findSearchBox().vm.$emit('input', mockSearch);
-        findSearchBox().vm.$emit('submit');
-
-        expect(dispatch).toHaveBeenCalledWith(`${module}/setSearch`, mockSearch);
+        expect(dispatch).toHaveBeenCalledWith(`${module}/showFilteredLogs`, [mockSearch]);
       });
 
       it('selects a new time range', () => {
