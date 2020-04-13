@@ -23539,9 +23539,6 @@ msgstr ""
 msgid "You could not create a new trigger."
 msgstr ""
 
-msgid "You didn't renew your %{strong}%{plan_name}%{strong_close} subscription for %{strong}%{namespace_name}%{strong_close} so it was downgraded to the free plan."
-msgstr ""
-
 msgid "You didn't renew your %{strong}%{plan_name}%{strong_close} subscription so it was downgraded to the GitLab Core Plan."
 msgstr ""
 
@@ -23771,9 +23768,6 @@ msgid "You've already enabled two-factor authentication using one time password 
 msgstr ""
 
 msgid "YouTube"
-msgstr ""
-
-msgid "Your %{strong}%{plan_name}%{strong_close} subscription for %{strong}%{namespace_name}%{strong_close} will expire on %{strong}%{expires_on}%{strong_close}. After that, you will not to be able to create issues or merge requests as well as many other features."
 msgstr ""
 
 msgid "Your %{strong}%{plan_name}%{strong_close} subscription will expire on %{strong}%{expires_on}%{strong_close}. After that, you will not to be able to create issues or merge requests as well as many other features."
