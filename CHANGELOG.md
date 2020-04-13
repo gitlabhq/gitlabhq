@@ -4,7 +4,6 @@ entry.
 
 ## 12.9.2 (2020-03-31)
 
-- No changes.
 ### Fixed (5 changes)
 
 - Ensure import by URL works after a failed import. !27546
