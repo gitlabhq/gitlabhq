@@ -1089,6 +1089,15 @@ entry.
 - Add clarifying content to account fields.
 
 
+## 12.7.9 (2020-04-14)
+
+### Security (3 changes)
+
+- Refresh ProjectAuthorization during Group deletion.
+- Prevent filename bypass on artifact upload.
+- Update rack and related gems to 2.0.9 to fix security issue.
+
+
 ## 12.7.5
 
 ### Fixed (4 changes, 1 of them is from the community)
