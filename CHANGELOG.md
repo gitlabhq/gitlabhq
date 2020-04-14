@@ -2,6 +2,15 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 12.7.9 (2020-04-14)
+
+### Security (3 changes)
+
+- Refresh ProjectAuthorization during Group deletion.
+- Prevent filename bypass on artifact upload.
+- Update rack and related gems to 2.0.9 to fix security issue.
+
+
 ## 12.7.8 (2020-03-26)
 
 ### Security (17 changes)
