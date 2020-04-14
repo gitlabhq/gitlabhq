@@ -30,7 +30,7 @@ describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
     it 'optional_scopes contains all non-default scopes' do
       stub_container_registry_config(enabled: true)
 
-      expect(subject.optional_scopes).to eq %i[read_user read_api read_repository write_repository read_registry sudo openid profile email]
+      expect(subject.optional_scopes).to eq %i[read_user read_api read_repository write_repository read_registry write_registry sudo openid profile email]
     end
   end
 
@@ -38,21 +38,21 @@ describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
     it 'contains all non-default scopes' do
       stub_container_registry_config(enabled: true)
 
-      expect(subject.all_available_scopes).to eq %i[api read_user read_api read_repository write_repository read_registry sudo]
+      expect(subject.all_available_scopes).to eq %i[api read_user read_api read_repository write_repository read_registry write_registry sudo]
     end
 
     it 'contains for non-admin user all non-default scopes without ADMIN access' do
       stub_container_registry_config(enabled: true)
       user = create(:user, admin: false)
 
-      expect(subject.available_scopes_for(user)).to eq %i[api read_user read_api read_repository write_repository read_registry]
+      expect(subject.available_scopes_for(user)).to eq %i[api read_user read_api read_repository write_repository read_registry write_registry]
     end
 
     it 'contains for admin user all non-default scopes with ADMIN access' do
       stub_container_registry_config(enabled: true)
       user = create(:user, admin: true)
 
-      expect(subject.available_scopes_for(user)).to eq %i[api read_user read_api read_repository write_repository read_registry sudo]
+      expect(subject.available_scopes_for(user)).to eq %i[api read_user read_api read_repository write_repository read_registry write_registry sudo]
     end
 
     context 'registry_scopes' do
@@ -72,7 +72,7 @@ describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
         end
 
         it 'contains all registry related scopes' do
-          expect(subject.registry_scopes).to eq %i[read_registry]
+          expect(subject.registry_scopes).to eq %i[read_registry write_registry]
         end
       end
     end
@@ -401,6 +401,49 @@ describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
     context 'while using deploy tokens' do
       let(:auth_failure) { Gitlab::Auth::Result.new(nil, nil) }
 
+      shared_examples 'registry token scope' do
+        it 'fails when login is not valid' do
+          expect(gl_auth.find_for_git_client('random_login', deploy_token.token, project: project, ip: 'ip'))
+            .to eq(auth_failure)
+        end
+
+        it 'fails when token is not valid' do
+          expect(gl_auth.find_for_git_client(login, '123123', project: project, ip: 'ip'))
+            .to eq(auth_failure)
+        end
+
+        it 'fails if token is nil' do
+          expect(gl_auth.find_for_git_client(login, nil, project: nil, ip: 'ip'))
+            .to eq(auth_failure)
+        end
+
+        it 'fails if token is not related to project' do
+          expect(gl_auth.find_for_git_client(login, 'abcdef', project: nil, ip: 'ip'))
+            .to eq(auth_failure)
+        end
+
+        it 'fails if token has been revoked' do
+          deploy_token.revoke!
+
+          expect(deploy_token.revoked?).to be_truthy
+          expect(gl_auth.find_for_git_client('deploy-token', deploy_token.token, project: nil, ip: 'ip'))
+            .to eq(auth_failure)
+        end
+      end
+
+      shared_examples 'deploy token with disabled registry' do
+        context 'when registry disabled' do
+          before do
+            stub_container_registry_config(enabled: false)
+          end
+
+          it 'fails when login and token are valid' do
+            expect(gl_auth.find_for_git_client(login, deploy_token.token, project: nil, ip: 'ip'))
+              .to eq(auth_failure)
+          end
+        end
+      end
+
       context 'when deploy token and user have the same username' do
         let(:username) { 'normal_user' }
         let(:user) { create(:user, username: username, password: 'my-secret') }
@@ -425,34 +468,33 @@ describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
         context 'and belong to the same project' do
           let!(:read_registry) { create(:deploy_token, username: 'deployer', read_repository: false, projects: [project]) }
           let!(:read_repository) { create(:deploy_token, username: read_registry.username, read_registry: false, projects: [project]) }
+          let(:auth_success) { Gitlab::Auth::Result.new(read_repository, project, :deploy_token, [:download_code]) }
 
           it 'succeeds for the right token' do
-            auth_success = Gitlab::Auth::Result.new(read_repository, project, :deploy_token, [:download_code])
-
             expect(gl_auth.find_for_git_client('deployer', read_repository.token, project: project, ip: 'ip'))
               .to eq(auth_success)
           end
 
           it 'fails for the wrong token' do
             expect(gl_auth.find_for_git_client('deployer', read_registry.token, project: project, ip: 'ip'))
-              .to eq(auth_failure)
+              .not_to eq(auth_success)
           end
         end
 
         context 'and belong to different projects' do
+          let_it_be(:other_project) { create(:project) }
           let!(:read_registry) { create(:deploy_token, username: 'deployer', read_repository: false, projects: [project]) }
-          let!(:read_repository) { create(:deploy_token, username: read_registry.username, read_registry: false, projects: [project]) }
+          let!(:read_repository) { create(:deploy_token, username: read_registry.username, read_registry: false, projects: [other_project]) }
+          let(:auth_success) { Gitlab::Auth::Result.new(read_repository, other_project, :deploy_token, [:download_code]) }
 
           it 'succeeds for the right token' do
-            auth_success = Gitlab::Auth::Result.new(read_repository, project, :deploy_token, [:download_code])
-
-            expect(gl_auth.find_for_git_client('deployer', read_repository.token, project: project, ip: 'ip'))
+            expect(gl_auth.find_for_git_client('deployer', read_repository.token, project: other_project, ip: 'ip'))
               .to eq(auth_success)
           end
 
           it 'fails for the wrong token' do
-            expect(gl_auth.find_for_git_client('deployer', read_registry.token, project: project, ip: 'ip'))
-              .to eq(auth_failure)
+            expect(gl_auth.find_for_git_client('deployer', read_registry.token, project: other_project, ip: 'ip'))
+              .not_to eq(auth_success)
           end
         end
       end
@@ -542,45 +584,32 @@ describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
               .to eq(auth_success)
           end
 
-          it 'fails when login is not valid' do
-            expect(gl_auth.find_for_git_client('random_login', deploy_token.token, project: project, ip: 'ip'))
-              .to eq(auth_failure)
-          end
-
-          it 'fails when token is not valid' do
-            expect(gl_auth.find_for_git_client(login, '123123', project: project, ip: 'ip'))
-              .to eq(auth_failure)
-          end
-
-          it 'fails if token is nil' do
-            expect(gl_auth.find_for_git_client(login, nil, project: nil, ip: 'ip'))
-              .to eq(auth_failure)
-          end
-
-          it 'fails if token is not related to project' do
-            expect(gl_auth.find_for_git_client(login, 'abcdef', project: nil, ip: 'ip'))
-              .to eq(auth_failure)
-          end
-
-          it 'fails if token has been revoked' do
-            deploy_token.revoke!
-
-            expect(deploy_token.revoked?).to be_truthy
-            expect(gl_auth.find_for_git_client('deploy-token', deploy_token.token, project: nil, ip: 'ip'))
-              .to eq(auth_failure)
-          end
+          it_behaves_like 'registry token scope'
         end
 
-        context 'when registry disabled' do
+        it_behaves_like 'deploy token with disabled registry'
+      end
+
+      context 'when the deploy token has write_registry as a scope' do
+        let_it_be(:deploy_token) { create(:deploy_token, write_registry: true, read_repository: false, read_registry: false, projects: [project]) }
+        let_it_be(:login) { deploy_token.username }
+
+        context 'when registry enabled' do
           before do
-            stub_container_registry_config(enabled: false)
+            stub_container_registry_config(enabled: true)
           end
 
-          it 'fails when login and token are valid' do
-            expect(gl_auth.find_for_git_client(login, deploy_token.token, project: nil, ip: 'ip'))
-              .to eq(auth_failure)
+          it 'succeeds when login and a project token are valid' do
+            auth_success = Gitlab::Auth::Result.new(deploy_token, project, :deploy_token, [:create_container_image])
+
+            expect(gl_auth.find_for_git_client(login, deploy_token.token, project: project, ip: 'ip'))
+              .to eq(auth_success)
           end
+
+          it_behaves_like 'registry token scope'
         end
+
+        it_behaves_like 'deploy token with disabled registry'
       end
     end
   end

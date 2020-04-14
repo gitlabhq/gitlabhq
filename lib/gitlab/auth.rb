@@ -12,7 +12,7 @@ module Gitlab
     REPOSITORY_SCOPES = [:read_repository, :write_repository].freeze
 
     # Scopes used for GitLab Docker Registry access
-    REGISTRY_SCOPES = [:read_registry].freeze
+    REGISTRY_SCOPES = [:read_registry, :write_registry].freeze
 
     # Scopes used for GitLab as admin
     ADMIN_SCOPES = [:sudo].freeze
@@ -200,6 +200,7 @@ module Gitlab
           api: full_authentication_abilities,
           read_api: read_only_authentication_abilities,
           read_registry: [:read_container_image],
+          write_registry: [:create_container_image],
           read_repository: [:download_code],
           write_repository: [:download_code, :push_code]
         }

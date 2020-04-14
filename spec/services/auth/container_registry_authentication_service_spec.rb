@@ -766,8 +766,8 @@ describe Auth::ContainerRegistryAuthenticationService do
       { scopes: ["repository:#{project.full_path}:pull"] }
     end
 
-    context 'when deploy token has read_registry as a scope' do
-      let(:current_user) { create(:deploy_token, projects: [project]) }
+    context 'when deploy token has read and write registry as scopes' do
+      let(:current_user) { create(:deploy_token, write_registry: true, projects: [project]) }
 
       shared_examples 'able to login' do
         context 'registry provides read_container_image authentication_abilities' do
@@ -790,7 +790,7 @@ describe Auth::ContainerRegistryAuthenticationService do
             { scopes: ["repository:#{project.full_path}:push"] }
           end
 
-          it_behaves_like 'an inaccessible'
+          it_behaves_like 'a pushable'
         end
 
         it_behaves_like 'able to login'
@@ -808,7 +808,7 @@ describe Auth::ContainerRegistryAuthenticationService do
             { scopes: ["repository:#{project.full_path}:push"] }
           end
 
-          it_behaves_like 'an inaccessible'
+          it_behaves_like 'a pushable'
         end
 
         it_behaves_like 'able to login'
@@ -826,7 +826,7 @@ describe Auth::ContainerRegistryAuthenticationService do
             { scopes: ["repository:#{project.full_path}:push"] }
           end
 
-          it_behaves_like 'an inaccessible'
+          it_behaves_like 'a pushable'
         end
 
         it_behaves_like 'able to login'

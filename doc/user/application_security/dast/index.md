@@ -463,10 +463,41 @@ The DAST job does not require the project's repository to be present when runnin
 
 ## Running DAST in an offline environment
 
-DAST can be executed on an offline GitLab Ultimate installation by using the following process:
+For self-managed GitLab instances in an environment with limited, restricted, or intermittent access
+to external resources through the internet, some adjustments are required for the DAST job to
+successfully run. For more information, see [Offline environments](../offline_deployments/index.md).
 
-1. Host the DAST image `registry.gitlab.com/gitlab-org/security-products/dast:latest` in your local
-   Docker container registry.
+### Requirements for offline DAST support
+
+To use DAST in an offline environment, you need:
+
+- GitLab Runner with the [`docker` or `kubernetes` executor](#requirements).
+- Docker Container Registry with a locally available copy of the DAST [container image](https://gitlab.com/gitlab-org/security-products/dast), found in the [DAST container registry](https://gitlab.com/gitlab-org/security-products/dast/container_registry).
+
+NOTE: **Note:**
+GitLab Runner has a [default `pull policy` of `always`](https://docs.gitlab.com/runner/executors/docker.html#using-the-always-pull-policy),
+meaning the runner may try to pull remote images even if a local copy is available. Set GitLab
+Runner's [`pull_policy` to `if-not-present`](https://docs.gitlab.com/runner/executors/docker.html#using-the-if-not-present-pull-policy)
+in an offline environment if you prefer using only locally available Docker images.
+
+### Make GitLab DAST analyzer images available inside your Docker registry
+
+For DAST, import the following default DAST analyzer image from `registry.gitlab.com` to your local "offline"
+registry:
+
+- `registry.gitlab.com/gitlab-org/security-products/dast:latest`
+
+The process for importing Docker images into a local offline Docker registry depends on
+**your network security policy**. Please consult your IT staff to find an accepted and approved
+process by which external resources can be imported or temporarily accessed. Note that these scanners are [updated periodically](../index.md#maintenance-and-update-of-the-vulnerabilities-database)
+with new definitions, so consider if you are able to make periodic updates yourself.
+
+For details on saving and transporting Docker images as a file, see Docker's documentation on
+[`docker save`](https://docs.docker.com/engine/reference/commandline/save/), [`docker load`](https://docs.docker.com/engine/reference/commandline/load/),
+[`docker export`](https://docs.docker.com/engine/reference/commandline/export/), and [`docker import`](https://docs.docker.com/engine/reference/commandline/import/).
+
+### Set DAST CI job variables to use local DAST analyzers
+
 1. Add the following configuration to your `.gitlab-ci.yml` file. You must replace `image` to refer
    to the DAST Docker image hosted on your local Docker container registry:
 

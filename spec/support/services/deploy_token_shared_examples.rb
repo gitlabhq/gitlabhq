@@ -46,7 +46,7 @@ RSpec.shared_examples 'a deploy token creation service' do
     end
 
     context 'when the deploy token is invalid' do
-      let(:deploy_token_params) { attributes_for(:deploy_token, read_repository: false, read_registry: false) }
+      let(:deploy_token_params) { attributes_for(:deploy_token, read_repository: false, read_registry: false, write_registry: false) }
 
       it 'does not create a new DeployToken' do
         expect { subject }.not_to change { DeployToken.count }

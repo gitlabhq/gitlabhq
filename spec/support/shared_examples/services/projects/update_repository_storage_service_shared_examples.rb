@@ -22,6 +22,9 @@ RSpec.shared_examples 'moves repository to another storage' do |repository_type|
 
   context 'when the move succeeds', :clean_gitlab_redis_shared_state do
     before do
+      allow(Gitlab::GitalyClient).to receive(:filesystem_id).with('default').and_call_original
+      allow(Gitlab::GitalyClient).to receive(:filesystem_id).with('test_second_storage').and_return(SecureRandom.uuid)
+
       allow(project_repository_double).to receive(:create_repository)
         .and_return(true)
       allow(project_repository_double).to receive(:replicate)
@@ -83,17 +86,19 @@ RSpec.shared_examples 'moves repository to another storage' do |repository_type|
     end
   end
 
-  context 'when the project is already on the target storage' do
+  context 'when the filesystems are the same' do
     it 'bails out and does nothing' do
       result = subject.execute(project.repository_storage)
 
       expect(result[:status]).to eq(:error)
-      expect(result[:message]).to match(/repository and source have the same storage/)
+      expect(result[:message]).to match(/SameFilesystemError/)
     end
   end
 
   context "when the move of the #{repository_type} repository fails" do
     it 'unmarks the repository as read-only without updating the repository storage' do
+      allow(Gitlab::GitalyClient).to receive(:filesystem_id).with('default').and_call_original
+      allow(Gitlab::GitalyClient).to receive(:filesystem_id).with('test_second_storage').and_return(SecureRandom.uuid)
       allow(project_repository_double).to receive(:create_repository)
         .and_return(true)
       allow(project_repository_double).to receive(:replicate)
@@ -119,6 +124,8 @@ RSpec.shared_examples 'moves repository to another storage' do |repository_type|
 
   context "when the checksum of the #{repository_type} repository does not match" do
     it 'unmarks the repository as read-only without updating the repository storage' do
+      allow(Gitlab::GitalyClient).to receive(:filesystem_id).with('default').and_call_original
+      allow(Gitlab::GitalyClient).to receive(:filesystem_id).with('test_second_storage').and_return(SecureRandom.uuid)
       allow(project_repository_double).to receive(:create_repository)
         .and_return(true)
       allow(project_repository_double).to receive(:replicate)

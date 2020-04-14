@@ -4,7 +4,7 @@
 
 - expanded = expanded_by_default?
 - general_expanded = @project.errors.empty? ? expanded : true
-- deploy_token_description = s_('DeployTokens|Deploy tokens allow read-only access to your repository and registry images.')
+- deploy_token_description = s_('DeployTokens|Deploy tokens allow access to your repository and registry images.')
 
 %section.settings#js-general-pipeline-settings.no-animate{ class: ('expanded' if general_expanded) }
   .settings-header

@@ -7,6 +7,7 @@ FactoryBot.define do
     sequence(:name) { |n| "PDT #{n}" }
     read_repository { true }
     read_registry { true }
+    write_registry { false }
     revoked { false }
     expires_at { 5.days.from_now }
     deploy_token_type { DeployToken.deploy_token_types[:project_type] }

@@ -5,12 +5,15 @@ module Projects
     include Gitlab::ShellAdapter
 
     Error = Class.new(StandardError)
+    SameFilesystemError = Class.new(Error)
 
     def initialize(project)
       @project = project
     end
 
     def execute(new_repository_storage_key)
+      raise SameFilesystemError if same_filesystem?(project.repository.storage, new_repository_storage_key)
+
       mirror_repositories(new_repository_storage_key)
 
       mark_old_paths_for_archive
@@ -32,6 +35,10 @@ module Projects
     end
 
     private
+
+    def same_filesystem?(old_storage, new_storage)
+      Gitlab::GitalyClient.filesystem_id(old_storage) == Gitlab::GitalyClient.filesystem_id(new_storage)
+    end
 
     def mirror_repositories(new_repository_storage_key)
       mirror_repository(new_repository_storage_key)

@@ -6835,6 +6835,9 @@ msgstr ""
 msgid "DeployTokens|Allows read-only access to the repository"
 msgstr ""
 
+msgid "DeployTokens|Allows write access to the registry images"
+msgstr ""
+
 msgid "DeployTokens|Copy deploy token"
 msgstr ""
 
@@ -6853,7 +6856,7 @@ msgstr ""
 msgid "DeployTokens|Deploy Tokens"
 msgstr ""
 
-msgid "DeployTokens|Deploy tokens allow read-only access to your repository and registry images."
+msgid "DeployTokens|Deploy tokens allow access to your repository and registry images."
 msgstr ""
 
 msgid "DeployTokens|Expires"

@@ -93,7 +93,7 @@ module Projects
       end
 
       def deploy_token_params
-        params.require(:deploy_token).permit(:name, :expires_at, :read_repository, :read_registry, :username)
+        params.require(:deploy_token).permit(:name, :expires_at, :read_repository, :read_registry, :write_registry, :username)
       end
 
       def run_autodevops_pipeline(service)

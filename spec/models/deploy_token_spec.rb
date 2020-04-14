@@ -62,7 +62,7 @@ describe DeployToken do
 
     context 'with no scopes' do
       it 'is invalid' do
-        deploy_token = build(:deploy_token, read_repository: false, read_registry: false)
+        deploy_token = build(:deploy_token, read_repository: false, read_registry: false, write_registry: false)
 
         expect(deploy_token).not_to be_valid
         expect(deploy_token.errors[:base].first).to eq("Scopes can't be blank")
@@ -79,7 +79,7 @@ describe DeployToken do
 
     context 'with only one scope' do
       it 'returns scopes assigned to DeployToken' do
-        deploy_token = create(:deploy_token, read_registry: false)
+        deploy_token = create(:deploy_token, read_registry: false, write_registry: false)
         expect(deploy_token.scopes).to eq([:read_repository])
       end
     end

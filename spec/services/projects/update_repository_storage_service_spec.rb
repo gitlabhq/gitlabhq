@@ -20,6 +20,8 @@ describe Projects::UpdateRepositoryStorageService do
       let(:project_repository_double) { double(:repository) }
 
       before do
+        allow(Gitlab::GitalyClient).to receive(:filesystem_id).with('default').and_call_original
+        allow(Gitlab::GitalyClient).to receive(:filesystem_id).with('test_second_storage').and_return(SecureRandom.uuid)
         allow(Gitlab::Git::Repository).to receive(:new).and_call_original
         allow(Gitlab::Git::Repository).to receive(:new)
           .with('test_second_storage', project.repository.raw.relative_path, project.repository.gl_repository, project.repository.full_path)
@@ -49,17 +51,20 @@ describe Projects::UpdateRepositoryStorageService do
         end
       end
 
-      context 'when the project is already on the target storage' do
+      context 'when the filesystems are the same' do
         it 'bails out and does nothing' do
           result = subject.execute(project.repository_storage)
 
           expect(result[:status]).to eq(:error)
-          expect(result[:message]).to match(/repository and source have the same storage/)
+          expect(result[:message]).to match(/SameFilesystemError/)
         end
       end
 
       context 'when the move fails' do
         it 'unmarks the repository as read-only without updating the repository storage' do
+          allow(Gitlab::GitalyClient).to receive(:filesystem_id).with('default').and_call_original
+          allow(Gitlab::GitalyClient).to receive(:filesystem_id).with('test_second_storage').and_return(SecureRandom.uuid)
+
           expect(project_repository_double).to receive(:create_repository)
             .and_return(true)
           expect(project_repository_double).to receive(:replicate)
@@ -77,6 +82,9 @@ describe Projects::UpdateRepositoryStorageService do
 
       context 'when the checksum does not match' do
         it 'unmarks the repository as read-only without updating the repository storage' do
+          allow(Gitlab::GitalyClient).to receive(:filesystem_id).with('default').and_call_original
+          allow(Gitlab::GitalyClient).to receive(:filesystem_id).with('test_second_storage').and_return(SecureRandom.uuid)
+
           expect(project_repository_double).to receive(:create_repository)
             .and_return(true)
           expect(project_repository_double).to receive(:replicate)
@@ -97,6 +105,9 @@ describe Projects::UpdateRepositoryStorageService do
         let!(:pool) { create(:pool_repository, :ready, source_project: project) }
 
         it 'leaves the pool' do
+          allow(Gitlab::GitalyClient).to receive(:filesystem_id).with('default').and_call_original
+          allow(Gitlab::GitalyClient).to receive(:filesystem_id).with('test_second_storage').and_return(SecureRandom.uuid)
+
           expect(project_repository_double).to receive(:create_repository)
             .and_return(true)
           expect(project_repository_double).to receive(:replicate)
