@@ -368,10 +368,12 @@ describe Issues::CreateService do
     end
 
     context 'checking spam' do
+      let(:title) { 'Legit issue' }
+      let(:description) { 'please fix' }
       let(:opts) do
         {
-          title: 'Awesome issue',
-          description: 'please fix',
+          title: title,
+          description: description,
           request: double(:request, env: {})
         }
       end
@@ -382,7 +384,7 @@ describe Issues::CreateService do
 
       context 'when recaptcha was verified' do
         let(:log_user)  { user }
-        let(:spam_logs) { create_list(:spam_log, 2, user: log_user, title: 'Awesome issue') }
+        let(:spam_logs) { create_list(:spam_log, 2, user: log_user, title: title) }
         let(:target_spam_log) { spam_logs.last }
 
         before do
@@ -396,7 +398,7 @@ describe Issues::CreateService do
           expect(issue).not_to be_spam
         end
 
-        it 'issue is valid ' do
+        it 'creates a valid issue' do
           expect(issue).to be_valid
         end
 
@@ -405,14 +407,14 @@ describe Issues::CreateService do
         end
 
         it 'marks related spam_log as recaptcha_verified' do
-          expect { issue }.to change {SpamLog.last.recaptcha_verified}.from(false).to(true)
+          expect { issue }.to change { target_spam_log.reload.recaptcha_verified }.from(false).to(true)
         end
 
         context 'when spam log does not belong to a user' do
           let(:log_user) { create(:user) }
 
           it 'does not mark spam_log as recaptcha_verified' do
-            expect { issue }.not_to change {SpamLog.last.recaptcha_verified}
+            expect { issue }.not_to change { target_spam_log.reload.recaptcha_verified }
           end
         end
       end
@@ -431,8 +433,8 @@ describe Issues::CreateService do
             end
           end
 
-          context 'when issuables_recaptcha_enabled feature flag is true' do
-            it 'marks an issue as spam' do
+          context 'when allow_possible_spam feature flag is false' do
+            it 'marks the issue as spam' do
               expect(issue).to be_spam
             end
 
@@ -442,34 +444,26 @@ describe Issues::CreateService do
 
             it 'creates a new spam_log' do
               expect { issue }
-                  .to have_spam_log(title: issue.title, description: issue.description, user_id: user.id, noteable_type: 'Issue')
-            end
-
-            it 'assigns a spam_log to the issue' do
-              expect(issue.spam_log).to eq(SpamLog.last)
+                  .to have_spam_log(title: title, description: description, user_id: user.id, noteable_type: 'Issue')
             end
           end
 
-          context 'when issuable_recaptcha_enabled feature flag is false' do
+          context 'when allow_possible_spam feature flag is true' do
             before do
               stub_feature_flags(allow_possible_spam: true)
             end
 
-            it 'does not mark an issue as spam' do
+            it 'does not mark the issue as spam' do
               expect(issue).not_to be_spam
             end
 
-            it 'accepts the ​issue as valid' do
+            it '​creates a valid issue' do
               expect(issue).to be_valid
             end
 
             it 'creates a new spam_log' do
               expect { issue }
-                  .to have_spam_log(title: issue.title, description: issue.description, user_id: user.id, noteable_type: 'Issue')
-            end
-
-            it 'assigns a spam_log to an issue' do
-              expect(issue.spam_log).to eq(SpamLog.last)
+                  .to have_spam_log(title: title, description: description, user_id: user.id, noteable_type: 'Issue')
             end
           end
         end
@@ -485,8 +479,8 @@ describe Issues::CreateService do
             expect(issue).not_to be_spam
           end
 
-          it 'an issue is valid ' do
-            expect(issue.valid?).to be_truthy
+          it 'creates a valid issue' do
+            expect(issue).to be_valid
           end
 
           it 'does not assign a spam_log to an issue' do

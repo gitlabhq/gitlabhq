@@ -236,7 +236,7 @@ describe Ci::PipelinePresenter do
 
     context 'for a branch pipeline with two open MRs' do
       let!(:one) { create(:merge_request, source_project: project, source_branch: pipeline.ref) }
-      let!(:two) { create(:merge_request, source_project: project, source_branch: pipeline.ref, target_branch: 'wip') }
+      let!(:two) { create(:merge_request, source_project: project, source_branch: pipeline.ref, target_branch: 'fix') }
 
       it { is_expected.to contain_exactly(one, two) }
     end

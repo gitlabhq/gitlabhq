@@ -64,7 +64,9 @@ module Gitlab
       else
         redis.del(*keys)
       end
-    rescue ::Redis::CommandError
+    rescue ::Redis::CommandError => e
+      Gitlab::ErrorTracking.log_exception(e)
+
       redis.del(*keys)
     end
   end

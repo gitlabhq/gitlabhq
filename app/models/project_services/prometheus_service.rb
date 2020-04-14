@@ -153,6 +153,6 @@ class PrometheusService < MonitoringService
   def create_default_alerts
     return unless project_id
 
-    Prometheus::CreateDefaultAlertsWorker.perform_async(project_id: project_id)
+    Prometheus::CreateDefaultAlertsWorker.perform_async(project_id)
   end
 end

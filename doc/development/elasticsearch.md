@@ -60,11 +60,14 @@ Please see the `sha_tokenizer` explanation later below for an example.
 
 #### `code_analyzer`
 
-Used when indexing a blob's filename and content. Uses the `whitespace` tokenizer and the filters: `code`, `edgeNGram_filter`, `lowercase`, and `asciifolding`
+Used when indexing a blob's filename and content. Uses the `whitespace` tokenizer and the filters: [`code`](#code), [`edgeNGram_filter`](#edgengram_filter), `lowercase`, and `asciifolding`
 
 The `whitespace` tokenizer was selected in order to have more control over how tokens are split. For example the string `Foo::bar(4)` needs to generate tokens like `Foo` and `bar(4)` in order to be properly searched.
 
 Please see the `code` filter for an explanation on how tokens are split.
+
+NOTE: **Known Issues**:
+Currently the [Elasticsearch code_analyzer doesn't account for all code cases](../integration/elasticsearch.md#known-issues).
 
 #### `code_search_analyzer`
 

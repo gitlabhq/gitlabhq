@@ -14,7 +14,7 @@ describe Resolvers::MergeRequestPipelinesResolver do
       sha: merge_request.diff_head_sha
     )
   end
-  let_it_be(:other_project_pipeline) { create(:ci_pipeline, project: merge_request.source_project) }
+  let_it_be(:other_project_pipeline) { create(:ci_pipeline, project: merge_request.source_project, ref: 'other-ref') }
   let_it_be(:other_pipeline) { create(:ci_pipeline) }
   let(:current_user) { create(:user) }
 

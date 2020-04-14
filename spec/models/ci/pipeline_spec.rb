@@ -2367,16 +2367,29 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
-  describe "#all_merge_requests" do
+  describe '#all_merge_requests' do
     let(:project) { create(:project) }
 
     shared_examples 'a method that returns all merge requests for a given pipeline' do
       let(:pipeline) { create(:ci_empty_pipeline, status: 'created', project: pipeline_project, ref: 'master') }
 
-      it "returns all merge requests having the same source branch" do
+      it 'returns all merge requests having the same source branch and the pipeline sha' do
         merge_request = create(:merge_request, source_project: pipeline_project, target_project: project, source_branch: pipeline.ref)
 
+        create(:merge_request_diff, merge_request: merge_request).tap do |diff|
+          create(:merge_request_diff_commit, merge_request_diff: diff, sha: pipeline.sha)
+        end
+
         expect(pipeline.all_merge_requests).to eq([merge_request])
+      end
+
+      it "doesn't return merge requests having the same source branch without the pipeline sha" do
+        merge_request = create(:merge_request, source_project: pipeline_project, target_project: project, source_branch: pipeline.ref)
+        create(:merge_request_diff, merge_request: merge_request).tap do |diff|
+          create(:merge_request_diff_commit, merge_request_diff: diff, sha: 'unrelated')
+        end
+
+        expect(pipeline.all_merge_requests).to be_empty
       end
 
       it "doesn't return merge requests having a different source branch" do

@@ -111,6 +111,7 @@ export default {
     v-else
     :class="fileClass"
     :title="textForTitle"
+    :data-level="level"
     class="file-row"
     role="button"
     @click="clickFile"

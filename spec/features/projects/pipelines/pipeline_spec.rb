@@ -133,15 +133,8 @@ describe 'Pipeline', :js do
 
       context 'when there are two related merge requests' do
         before do
-          create(:merge_request,
-            source_project: project,
-            source_branch: pipeline.ref,
-            target_branch: 'feature-1')
-
-          create(:merge_request,
-            source_project: project,
-            source_branch: pipeline.ref,
-            target_branch: 'feature-2')
+          create(:merge_request, source_project: project, source_branch: pipeline.ref)
+          create(:merge_request, source_project: project, source_branch: pipeline.ref, target_branch: 'fix')
         end
 
         it 'links to the most recent related merge request' do

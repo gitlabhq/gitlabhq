@@ -5,7 +5,7 @@ FactoryBot.define do
   factory :ci_empty_pipeline, class: 'Ci::Pipeline' do
     source { :push }
     ref { 'master' }
-    sha { '97de212e80737a608d939f648d959671fb0a0142' }
+    sha { 'b83d6e391c22777fca1ed3012fce84f633d7fed0' }
     status { 'pending' }
     add_attribute(:protected) { false }
 

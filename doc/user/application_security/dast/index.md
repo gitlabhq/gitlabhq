@@ -148,6 +148,9 @@ The results will be saved as a
 that you can later download and analyze.
 Due to implementation limitations, we always take the latest DAST artifact available.
 
+DANGER: **Danger:**
+**DO NOT** run an authenticated scan against a production server. When an authenticated scan is run, it may perform *any* function that the authenticated user can. This includes modifying and deleting data, submitting forms, following links, and so on. Only run an authenticated scan against a test server.
+
 ### Full scan
 
 DAST can be configured to perform [ZAP Full Scan](https://github.com/zaproxy/zaproxy/wiki/ZAP-Full-Scan), which

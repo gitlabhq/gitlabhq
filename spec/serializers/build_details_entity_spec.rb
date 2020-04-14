@@ -15,7 +15,7 @@ describe BuildDetailsEntity do
     let(:project) { create(:project, :repository) }
     let(:pipeline) { create(:ci_pipeline, project: project) }
     let(:build) { create(:ci_build, :failed, pipeline: pipeline) }
-    let(:request) { double('request') }
+    let(:request) { double('request', project: project) }
 
     let(:entity) do
       described_class.new(build, request: request,

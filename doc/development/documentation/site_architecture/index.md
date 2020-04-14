@@ -20,29 +20,27 @@ from where content is sourced, the `gitlab-docs` project, and the published outp
 
 ```mermaid
   graph LR
-    A[gitlab-foss/doc]
-    B[gitlab/doc]
-    C[gitlab-runner/docs]
-    D[omnibus-gitlab/doc]
-    E[charts/doc]
-    F[gitlab-docs]
-    A --> F
-    B --> F
-    C --> F
-    D --> F
-    E --> F
-    F -- Build pipeline --> G
-    G[docs.gitlab.com]
-    H[/ce/]
-    I[/ee/]
-    J[/runner/]
-    K[/omnibus/]
-    L[/charts/]
-    G --> H
-    G --> I
-    G --> J
-    G --> K
-    G --> L
+    A[gitlab/doc]
+    B[gitlab-runner/docs]
+    C[omnibus-gitlab/doc]
+    D[charts/doc]
+    E[gitlab-docs]
+    A --> E
+    B --> E
+    C --> E
+    D --> E
+    E -- Build pipeline --> F
+    F[docs.gitlab.com]
+    G[/ce/]
+    H[/ee/]
+    I[/runner/]
+    J[/omnibus/]
+    K[/charts/]
+    F --> H
+    F --> I
+    F --> J
+    F --> K
+    H -- symlink --> G
 ```
 
 You will not find any GitLab docs content in the `gitlab-docs` repository.

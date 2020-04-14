@@ -103,6 +103,12 @@ describe Gitlab::RepositorySetCache, :clean_gitlab_redis_cache do
         expect(cache.expire(:foo)).to eq(1)
         expect(cache.read(:foo)).to be_empty
       end
+
+      it 'logs the failure' do
+        expect(Gitlab::ErrorTracking).to receive(:log_exception)
+
+        cache.expire(:foo)
+      end
     end
   end
 

@@ -634,6 +634,14 @@ Here are some common pitfalls and how to overcome them:
    You probably have not used either `http://` or `https://` as part of your value in the **"URL"** field of the Elasticseach Integration Menu. Please make sure you are using either `http://` or `https://` in this field as the [Elasticsearch client for Go](https://github.com/olivere/elastic) that we are using [needs the prefix for the URL to be accepted as valid](https://github.com/olivere/elastic/commit/a80af35aa41856dc2c986204e2b64eab81ccac3a).
    Once you have corrected the formatting of the URL, delete the index (via the [dedicated Rake task](#gitlab-elasticsearch-rake-tasks)) and [reindex the content of your instance](#adding-gitlabs-data-to-the-elasticsearch-index).
 
+### Known Issues
+
+- **[Elasticsearch `code_analyzer` doesn't account for all code cases](https://gitlab.com/gitlab-org/gitlab/issues/10693)**
+
+   The `code_analyzer` pattern and filter configuration is being evaluated for improvement. We have noticed [several edge cases](https://gitlab.com/gitlab-org/gitlab/-/issues/10693#note_158382332) that are not returning expected search results due to our pattern and filter configuration.
+
+   An improved strategy for the `code_analyzer` pattern and filters are being discussed in [issue 29443](https://gitlab.com/gitlab-org/gitlab/-/issues/29443).
+
 ### Reverting to basic search
 
 Sometimes there may be issues with your Elasticsearch index data and as such

@@ -1,0 +1,5 @@
+---
+title: Prevent false positives in Ci::Pipeline#all_merge_requests
+merge_request: 28800
+author:
+type: fixed

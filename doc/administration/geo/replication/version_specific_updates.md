@@ -4,6 +4,13 @@ Check this document if it includes instructions for the version you are updating
 These steps go together with the [general steps](updating_the_geo_nodes.md#general-update-steps)
 for updating Geo nodes.
 
+## Updating to GitLab 12.9
+
+CAUTION: **Warning:**
+GitLab 12.9.0 through GitLab 12.9.3 are affected by [a bug that stops
+repository verification](https://gitlab.com/gitlab-org/gitlab/-/issues/213523).
+The issue is fixed in GitLab 12.9.4. Please upgrade to GitLab 12.9.4 or later.
+
 ## Updating to GitLab 12.7
 
 DANGER: **Danger:**
