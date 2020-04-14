@@ -30,7 +30,7 @@ module Environments
     def stop_in_batch
       environments = Environment.auto_stoppable(BATCH_SIZE)
 
-      return false unless environments.exists? && Feature.enabled?(:auto_stop_environments, default_enabled: true)
+      return false unless environments.exists?
 
       Ci::StopEnvironmentsService.execute_in_batch(environments)
     end

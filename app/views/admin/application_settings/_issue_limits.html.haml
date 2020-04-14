@@ -1,0 +1,9 @@
+= form_for @application_setting, url: network_admin_application_settings_path(anchor: 'js-issue-limits-settings'), html: { class: 'fieldset-form' } do |f|
+  = form_errors(@application_setting)
+
+  %fieldset
+    .form-group
+      = f.label :issues_create_limit, 'Max requests per second per user', class: 'label-bold'
+      = f.number_field :issues_create_limit, class: 'form-control'
+
+  = f.submit 'Save changes', class: "btn btn-success", data: { qa_selector: 'save_changes_button' }

@@ -80,7 +80,7 @@ export default {
       @input="onInput"
     />
     <div class="d-flex flex-column">
-      <gl-loading-icon v-if="showLoadingIndicator" :size="1" class="py-2 px-4" />
+      <gl-loading-icon v-if="showLoadingIndicator" size="sm" class="py-2 px-4" />
       <gl-infinite-scroll
         :max-list-height="402"
         :fetched-items="projectSearchResults.length"

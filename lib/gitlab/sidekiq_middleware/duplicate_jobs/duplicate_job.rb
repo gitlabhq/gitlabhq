@@ -67,7 +67,7 @@ module Gitlab
         end
 
         def droppable?
-          idempotent? && duplicate? && DuplicateJobs.drop_duplicates?(queue_name)
+          idempotent? && duplicate?
         end
 
         private

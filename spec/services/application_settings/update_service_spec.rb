@@ -334,4 +334,20 @@ describe ApplicationSettings::UpdateService do
       expect(application_settings.protected_paths).to eq(['/users/password', '/users/sign_in'])
     end
   end
+
+  context 'when issues_create_limit is passsed' do
+    let(:params) do
+      {
+        issues_create_limit: 600
+      }
+    end
+
+    it 'updates issues_create_limit value' do
+      subject.execute
+
+      application_settings.reload
+
+      expect(application_settings.issues_create_limit).to eq(600)
+    end
+  end
 end

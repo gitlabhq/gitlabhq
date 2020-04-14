@@ -894,6 +894,9 @@ msgstr ""
 msgid "A user with write access to the source branch selected this option"
 msgstr ""
 
+msgid "ACTION REQUIRED: Something went wrong while obtaining the Let's Encrypt certificate for GitLab Pages domain '%{domain}'"
+msgstr ""
+
 msgid "API Help"
 msgstr ""
 
@@ -5332,6 +5335,9 @@ msgid "Configure automatic git checks and housekeeping on repositories."
 msgstr ""
 
 msgid "Configure existing installation"
+msgstr ""
+
+msgid "Configure limit for issues created per minute by web and API requests."
 msgstr ""
 
 msgid "Configure limits for web and API requests."
@@ -11385,6 +11391,9 @@ msgstr ""
 msgid "Issues Analytics"
 msgstr ""
 
+msgid "Issues Rate Limits"
+msgstr ""
+
 msgid "Issues can be bugs, tasks or ideas to be discussed. Also, issues are searchable and filterable."
 msgstr ""
 
@@ -12941,7 +12950,13 @@ msgstr ""
 msgid "Metrics|There was an error creating the dashboard. %{error}"
 msgstr ""
 
+msgid "Metrics|There was an error fetching annotations. Please try again."
+msgstr ""
+
 msgid "Metrics|There was an error fetching the environments data, please try again"
+msgstr ""
+
+msgid "Metrics|There was an error getting annotations information."
 msgstr ""
 
 msgid "Metrics|There was an error getting deployment information."
@@ -14898,6 +14913,12 @@ msgid "Please enter or upload a license."
 msgstr ""
 
 msgid "Please fill in a descriptive name for your group."
+msgstr ""
+
+msgid "Please follow the %{link_start}Let's Encrypt troubleshooting instructions%{link_end} to re-obtain your Let's Encrypt certificate."
+msgstr ""
+
+msgid "Please follow the Let's Encrypt troubleshooting instructions to re-obtain your Let's Encrypt certificate: %{docs_url}."
 msgstr ""
 
 msgid "Please migrate all existing projects to hashed storage to avoid security issues and ensure data integrity. %{migrate_link}"
@@ -18937,6 +18958,9 @@ msgid "Something went wrong while merging this merge request. Please try again."
 msgstr ""
 
 msgid "Something went wrong while moving issues."
+msgstr ""
+
+msgid "Something went wrong while obtaining the Let's Encrypt certificate."
 msgstr ""
 
 msgid "Something went wrong while performing the action."

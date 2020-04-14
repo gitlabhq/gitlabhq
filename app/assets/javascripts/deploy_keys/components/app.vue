@@ -119,7 +119,7 @@ export default {
     <gl-loading-icon
       v-if="isLoading && !hasKeys"
       :label="s__('DeployKeys|Loading deploy keys')"
-      :size="2"
+      size="lg"
     />
     <template v-else-if="hasKeys">
       <div class="top-area scrolling-tabs-container inner-page-scroll-tabs">

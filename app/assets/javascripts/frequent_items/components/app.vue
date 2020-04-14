@@ -107,7 +107,7 @@ export default {
     <gl-loading-icon
       v-if="isLoadingItems"
       :label="translations.loadingMessage"
-      :size="2"
+      size="lg"
       class="loading-animation prepend-top-20"
     />
     <div v-if="!isLoadingItems && !hasSearchQuery" class="section-header">

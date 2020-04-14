@@ -54,6 +54,9 @@ When you are ready to send your code back to the upstream project,
 [create a merge request](../merge_requests/creating_merge_requests.md). For **Source branch**,
 choose your forked project's branch. For **Target branch**, choose the original project's branch.
 
+NOTE: **Note:**
+When creating a merge request, if the forked project's visibility is more restrictive than the parent project (for example the fork is private, parent is public), the target branch will default to the forked project's default branch. This prevents potentially exposing private code of the forked project.
+
 ![Selecting branches](img/forking_workflow_branch_select.png)
 
 Then you can add labels, a milestone, and assign the merge request to someone who can review

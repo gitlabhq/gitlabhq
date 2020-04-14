@@ -1,6 +1,6 @@
 - if @related_branches.any?
   %h2.related-branches-title
-    = pluralize(@related_branches.count, 'Related Branch')
+    = pluralize(@related_branches.size, 'Related Branch')
   %ul.unstyled-list.related-merge-requests
     - @related_branches.each do |branch|
       %li

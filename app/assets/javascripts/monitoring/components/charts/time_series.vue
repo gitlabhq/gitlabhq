@@ -55,6 +55,11 @@ export default {
       required: false,
       default: () => [],
     },
+    annotations: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
     projectPath: {
       type: String,
       required: false,
@@ -143,6 +148,7 @@ export default {
       return (this.option.series || []).concat(
         generateAnnotationsSeries({
           deployments: this.recentDeployments,
+          annotations: this.annotations,
         }),
       );
     },

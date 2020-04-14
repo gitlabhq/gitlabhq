@@ -24,6 +24,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:single_mr_diff_view, @project, default_enabled: true)
     push_frontend_feature_flag(:suggest_pipeline) if experiment_enabled?(:suggest_pipeline)
     push_frontend_feature_flag(:code_navigation, @project)
+    push_frontend_feature_flag(:widget_visibility_polling, @project, default_enabled: true)
   end
 
   before_action do

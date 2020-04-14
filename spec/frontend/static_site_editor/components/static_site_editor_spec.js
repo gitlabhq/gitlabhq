@@ -30,7 +30,6 @@ describe('StaticSiteEditor', () => {
     store = new Vuex.Store({
       state: createState(initialState),
       getters: {
-        isContentLoaded: () => false,
         contentChanged: () => false,
         ...getters,
       },
@@ -43,9 +42,11 @@ describe('StaticSiteEditor', () => {
   };
   const buildContentLoadedStore = ({ initialState, getters } = {}) => {
     buildStore({
-      initialState,
+      initialState: {
+        isContentLoaded: true,
+        ...initialState,
+      },
       getters: {
-        isContentLoaded: () => true,
         ...getters,
       },
     });
@@ -85,7 +86,7 @@ describe('StaticSiteEditor', () => {
     const content = 'edit area content';
 
     beforeEach(() => {
-      buildStore({ initialState: { content }, getters: { isContentLoaded: () => true } });
+      buildContentLoadedStore({ initialState: { content } });
       buildWrapper();
     });
 

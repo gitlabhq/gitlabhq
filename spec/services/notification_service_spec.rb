@@ -2604,6 +2604,7 @@ describe NotificationService, :mailer do
       pages_domain_disabled
       pages_domain_verification_succeeded
       pages_domain_verification_failed
+      pages_domain_auto_ssl_failed
     ].each do |sym|
       describe "##{sym}" do
         subject(:notify!) { notification.send(sym, domain) }

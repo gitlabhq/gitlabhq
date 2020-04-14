@@ -20,6 +20,7 @@ export default () => ({
   allDashboards: [],
 
   // Other project data
+  annotations: [],
   deploymentData: [],
   environments: [],
   environmentsSearchTerm: '',

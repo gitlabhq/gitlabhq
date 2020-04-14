@@ -50,6 +50,7 @@ describe('Time series component', () => {
       propsData: {
         graphData: { ...graphData, type },
         deploymentData: store.state.monitoringDashboard.deploymentData,
+        annotations: store.state.monitoringDashboard.annotations,
         projectPath: `${mockHost}${mockProjectDir}`,
       },
       store,

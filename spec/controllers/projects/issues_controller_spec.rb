@@ -1085,6 +1085,48 @@ describe Projects::IssuesController do
         expect { subject }.to change(SentryIssue, :count)
       end
     end
+
+    context 'when the endpoint receives requests above the limit' do
+      before do
+        stub_application_setting(issues_create_limit: 5)
+      end
+
+      it 'prevents from creating more issues', :request_store do
+        5.times { post_new_issue }
+
+        expect { post_new_issue }
+          .to change { Gitlab::GitalyClient.get_request_count }.by(1) # creates 1 projects and 0 issues
+
+        post_new_issue
+        expect(response.body).to eq(_('This endpoint has been requested too many times. Try again later.'))
+        expect(response).to have_gitlab_http_status(:too_many_requests)
+      end
+
+      it 'logs the event on auth.log' do
+        attributes = {
+          message: 'Application_Rate_Limiter_Request',
+          env: :issues_create_request_limit,
+          remote_ip: '0.0.0.0',
+          request_method: 'POST',
+          path: "/#{project.full_path}/-/issues",
+          user_id: user.id,
+          username: user.username
+        }
+
+        expect(Gitlab::AuthLogger).to receive(:error).with(attributes).once
+
+        project.add_developer(user)
+        sign_in(user)
+
+        6.times do
+          post :create, params: {
+            namespace_id: project.namespace.to_param,
+            project_id: project,
+            issue: { title: 'Title', description: 'Description' }
+          }
+        end
+      end
+    end
   end
 
   describe 'POST #mark_as_spam' do

@@ -16,6 +16,7 @@ import {
   fetchDeploymentsData,
   fetchEnvironmentsData,
   fetchDashboardData,
+  fetchAnnotations,
   fetchPrometheusMetric,
   setInitialState,
   filterEnvironments,
@@ -24,10 +25,12 @@ import {
 } from '~/monitoring/stores/actions';
 import { gqClient, parseEnvironmentsResponse } from '~/monitoring/stores/utils';
 import getEnvironments from '~/monitoring/queries/getEnvironments.query.graphql';
+import getAnnotations from '~/monitoring/queries/getAnnotations.query.graphql';
 import storeState from '~/monitoring/stores/state';
 import {
   deploymentData,
   environmentData,
+  annotationsData,
   metricsDashboardResponse,
   metricsDashboardViewModel,
   dashboardGitResponse,
@@ -120,17 +123,15 @@ describe('Monitoring store actions', () => {
     });
 
     it('setting SET_ENVIRONMENTS_FILTER should dispatch fetchEnvironmentsData', () => {
-      jest.spyOn(gqClient, 'mutate').mockReturnValue(
-        Promise.resolve({
-          data: {
-            project: {
-              data: {
-                environments: [],
-              },
+      jest.spyOn(gqClient, 'mutate').mockReturnValue({
+        data: {
+          project: {
+            data: {
+              environments: [],
             },
           },
-        }),
-      );
+        },
+      });
 
       return testAction(
         filterEnvironments,
@@ -180,17 +181,15 @@ describe('Monitoring store actions', () => {
     });
 
     it('dispatches receiveEnvironmentsDataSuccess on success', () => {
-      jest.spyOn(gqClient, 'mutate').mockReturnValue(
-        Promise.resolve({
-          data: {
-            project: {
-              data: {
-                environments: environmentData,
-              },
+      jest.spyOn(gqClient, 'mutate').mockResolvedValue({
+        data: {
+          project: {
+            data: {
+              environments: environmentData,
             },
           },
-        }),
-      );
+        },
+      });
 
       return testAction(
         fetchEnvironmentsData,
@@ -208,7 +207,7 @@ describe('Monitoring store actions', () => {
     });
 
     it('dispatches receiveEnvironmentsDataFailure on error', () => {
-      jest.spyOn(gqClient, 'mutate').mockReturnValue(Promise.reject());
+      jest.spyOn(gqClient, 'mutate').mockRejectedValue({});
 
       return testAction(
         fetchEnvironmentsData,
@@ -216,6 +215,80 @@ describe('Monitoring store actions', () => {
         state,
         [],
         [{ type: 'requestEnvironmentsData' }, { type: 'receiveEnvironmentsDataFailure' }],
+      );
+    });
+  });
+
+  describe('fetchAnnotations', () => {
+    const { state } = store;
+    state.projectPath = 'gitlab-org/gitlab-test';
+    state.currentEnvironmentName = 'production';
+    state.currentDashboard = '.gitlab/dashboards/custom_dashboard.yml';
+
+    afterEach(() => {
+      resetStore(store);
+    });
+
+    it('fetches annotations data and dispatches receiveAnnotationsSuccess', () => {
+      const mockMutate = jest.spyOn(gqClient, 'mutate');
+      const mutationVariables = {
+        mutation: getAnnotations,
+        variables: {
+          projectPath: state.projectPath,
+          environmentName: state.currentEnvironmentName,
+          dashboardId: state.currentDashboard,
+        },
+      };
+
+      mockMutate.mockResolvedValue({
+        data: {
+          project: {
+            environment: {
+              metricDashboard: {
+                annotations: annotationsData,
+              },
+            },
+          },
+        },
+      });
+
+      return testAction(
+        fetchAnnotations,
+        null,
+        state,
+        [],
+        [
+          { type: 'requestAnnotations' },
+          { type: 'receiveAnnotationsSuccess', payload: annotationsData },
+        ],
+        () => {
+          expect(mockMutate).toHaveBeenCalledWith(mutationVariables);
+        },
+      );
+    });
+
+    it('dispatches receiveAnnotationsFailure if the annotations API call fails', () => {
+      const mockMutate = jest.spyOn(gqClient, 'mutate');
+      const mutationVariables = {
+        mutation: getAnnotations,
+        variables: {
+          projectPath: state.projectPath,
+          environmentName: state.currentEnvironmentName,
+          dashboardId: state.currentDashboard,
+        },
+      };
+
+      mockMutate.mockRejectedValue({});
+
+      return testAction(
+        fetchAnnotations,
+        null,
+        state,
+        [],
+        [{ type: 'requestAnnotations' }, { type: 'receiveAnnotationsFailure' }],
+        () => {
+          expect(mockMutate).toHaveBeenCalledWith(mutationVariables);
+        },
       );
     });
   });

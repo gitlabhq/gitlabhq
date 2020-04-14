@@ -46,4 +46,15 @@
   .settings-content
     = render 'protected_paths'
 
+%section.settings.as-issue-limits.no-animate#js-issue-limits-settings{ class: ('expanded' if expanded_by_default?) }
+  .settings-header
+    %h4
+      = _('Issues Rate Limits')
+    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+      = expanded_by_default? ? _('Collapse') : _('Expand')
+    %p
+      = _('Configure limit for issues created per minute by web and API requests.')
+  .settings-content
+    = render 'issue_limits'
+
 = render_if_exists 'admin/application_settings/ee_network_settings'

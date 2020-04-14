@@ -53,6 +53,7 @@ module API
         requires :name, type: String, desc: 'Cluster name'
         optional :enabled, type: Boolean, default: true, desc: 'Determines if cluster is active or not, defaults to true'
         optional :domain, type: String, desc: 'Cluster base domain'
+        optional :management_project_id, type: Integer, desc: 'The ID of the management project'
         optional :managed, type: Boolean, default: true, desc: 'Determines if GitLab will manage namespaces and service accounts for this cluster, defaults to true'
         requires :platform_kubernetes_attributes, type: Hash, desc: %q(Platform Kubernetes data) do
           requires :api_url, type: String, allow_blank: false, desc: 'URL to access the Kubernetes API'

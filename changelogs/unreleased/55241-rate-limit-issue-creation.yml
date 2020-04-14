@@ -1,0 +1,5 @@
+---
+title: Introduce rate limit for creating issues via web UI
+merge_request: 28129
+author:
+type: performance

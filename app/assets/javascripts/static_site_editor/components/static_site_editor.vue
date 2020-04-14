@@ -12,8 +12,8 @@ export default {
     Toolbar,
   },
   computed: {
-    ...mapState(['content', 'isLoadingContent', 'isSavingChanges']),
-    ...mapGetters(['isContentLoaded', 'contentChanged']),
+    ...mapState(['content', 'isLoadingContent', 'isSavingChanges', 'isContentLoaded']),
+    ...mapGetters(['contentChanged']),
   },
   mounted() {
     this.loadContent();

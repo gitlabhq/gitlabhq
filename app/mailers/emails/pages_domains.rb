@@ -41,5 +41,16 @@ module Emails
         subject: subject("ACTION REQUIRED: Verification failed for GitLab Pages domain '#{domain.domain}'")
       )
     end
+
+    def pages_domain_auto_ssl_failed_email(domain, recipient)
+      @domain = domain
+      @project = domain.project
+
+      subject_text = _("ACTION REQUIRED: Something went wrong while obtaining the Let's Encrypt certificate for GitLab Pages domain '%{domain}'") % { domain: domain.domain }
+      mail(
+        to: recipient.notification_email_for(@project.group),
+        subject: subject(subject_text)
+      )
+    end
   end
 end

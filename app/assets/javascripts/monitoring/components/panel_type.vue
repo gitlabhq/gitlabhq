@@ -89,6 +89,9 @@ export default {
       deploymentData(state) {
         return state[this.namespace].deploymentData;
       },
+      annotations(state) {
+        return state[this.namespace].annotations;
+      },
       projectPath(state) {
         return state[this.namespace].projectPath;
       },
@@ -310,6 +313,7 @@ export default {
       ref="timeChart"
       :graph-data="graphData"
       :deployment-data="deploymentData"
+      :annotations="annotations"
       :project-path="projectPath"
       :thresholds="getGraphAlertValues(graphData.metrics)"
       :group-id="groupId"

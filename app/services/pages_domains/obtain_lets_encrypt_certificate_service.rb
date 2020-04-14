@@ -57,6 +57,8 @@ module PagesDomains
       pages_domain.save!(validate: false)
 
       acme_order.destroy!
+
+      NotificationService.new.pages_domain_auto_ssl_failed(pages_domain)
     end
 
     def log_error(api_order)

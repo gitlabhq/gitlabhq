@@ -179,6 +179,7 @@ Parameters:
 | `id` | integer | yes | The ID of the project owned by the authenticated user |
 | `name` | string | yes | The name of the cluster |
 | `domain` | string | no | The [base domain](../user/project/clusters/index.md#base-domain) of the cluster |
+| `management_project_id` | integer | no | The ID of the [management project](../user/clusters/management_project.md) for the cluster |
 | `enabled` | boolean | no | Determines if cluster is active or not, defaults to true |
 | `managed` | boolean | no | Determines if GitLab will manage namespaces and service accounts for this cluster, defaults to true |
 | `platform_kubernetes_attributes[api_url]` | string | yes | The URL to access the Kubernetes API |

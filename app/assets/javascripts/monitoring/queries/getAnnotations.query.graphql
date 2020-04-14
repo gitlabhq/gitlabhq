@@ -1,0 +1,13 @@
+query getAnnotations($projectPath: ID!) {
+  environment(name: $environmentName) {
+    metricDashboard(id: $dashboardId) {
+      annotations: nodes {
+        id
+        description
+        from
+        to
+        panelId
+      }
+    }
+  }
+}

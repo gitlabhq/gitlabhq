@@ -33,7 +33,7 @@ export default class SmartInterval {
     this.state = {
       intervalId: null,
       currentInterval: this.cfg.startingInterval,
-      pageVisibility: 'visible',
+      pagevisibile: true,
     };
 
     this.initInterval();
@@ -91,8 +91,10 @@ export default class SmartInterval {
   }
 
   destroy() {
+    document.removeEventListener('visibilitychange', this.onVisibilityChange);
+    window.removeEventListener('blur', this.onWindowVisibilityChange);
+    window.removeEventListener('focus', this.onWindowVisibilityChange);
     this.cancel();
-    document.removeEventListener('visibilitychange', this.handleVisibilityChange);
     $(document)
       .off('visibilitychange')
       .off('beforeunload');
@@ -124,9 +126,21 @@ export default class SmartInterval {
       });
   }
 
+  onWindowVisibilityChange(e) {
+    this.state.pagevisibile = e.type === 'focus';
+    this.handleVisibilityChange();
+  }
+
+  onVisibilityChange(e) {
+    this.state.pagevisibile = e.target.visibilityState === 'visible';
+    this.handleVisibilityChange();
+  }
+
   initVisibilityChangeHandling() {
-    // cancel interval when tab no longer shown (prevents cached pages from polling)
-    document.addEventListener('visibilitychange', this.handleVisibilityChange.bind(this));
+    // cancel interval when tab or window is no longer shown (prevents cached pages from polling)
+    document.addEventListener('visibilitychange', this.onVisibilityChange.bind(this));
+    window.addEventListener('blur', this.onWindowVisibilityChange.bind(this));
+    window.addEventListener('focus', this.onWindowVisibilityChange.bind(this));
   }
 
   initPageUnloadHandling() {
@@ -135,8 +149,7 @@ export default class SmartInterval {
     $(document).on('beforeunload', () => this.cancel());
   }
 
-  handleVisibilityChange(e) {
-    this.state.pageVisibility = e.target.visibilityState;
+  handleVisibilityChange() {
     const intervalAction = this.isPageVisible()
       ? this.onVisibilityVisible
       : this.onVisibilityHidden;
@@ -166,7 +179,7 @@ export default class SmartInterval {
   }
 
   isPageVisible() {
-    return this.state.pageVisibility === 'visible';
+    return this.state.pagevisibile;
   }
 
   stopTimer() {

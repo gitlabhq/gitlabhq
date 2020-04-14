@@ -273,25 +273,6 @@ describe('mrWidgetOptions', () => {
           };
         });
 
-        it('should not tell service to check status if document is not visible', () => {
-          Object.defineProperty(document, 'visibilityState', {
-            value: 'hidden',
-            configurable: true,
-          });
-          vm.checkStatus(cb);
-
-          return vm.$nextTick().then(() => {
-            expect(vm.service.checkStatus).not.toHaveBeenCalled();
-            expect(vm.mr.setData).not.toHaveBeenCalled();
-            expect(vm.handleNotification).not.toHaveBeenCalled();
-            expect(isCbExecuted).toBeFalsy();
-            Object.defineProperty(document, 'visibilityState', {
-              value: 'visible',
-              configurable: true,
-            });
-          });
-        });
-
         it('should tell service to check status if document is visible', () => {
           vm.checkStatus(cb);
 

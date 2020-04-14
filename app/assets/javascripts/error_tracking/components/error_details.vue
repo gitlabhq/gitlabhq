@@ -225,7 +225,7 @@ export default {
 <template>
   <div>
     <div v-if="errorLoading" class="py-3">
-      <gl-loading-icon :size="3" />
+      <gl-loading-icon size="lg" />
     </div>
     <div v-else-if="error" class="error-details">
       <gl-alert v-if="isAlertVisible" @dismiss="isAlertVisible = false">
@@ -405,7 +405,7 @@ export default {
         </ul>
 
         <div v-if="loadingStacktrace" class="py-3">
-          <gl-loading-icon :size="3" />
+          <gl-loading-icon size="lg" />
         </div>
 
         <template v-else-if="showStacktrace">

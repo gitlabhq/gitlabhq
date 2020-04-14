@@ -28,7 +28,7 @@ export default {
       {{ s__('Badges|Your badges') }}
       <span v-show="!isLoading" class="badge badge-pill">{{ badges.length }}</span>
     </div>
-    <gl-loading-icon v-show="isLoading" :size="2" class="card-body" />
+    <gl-loading-icon v-show="isLoading" size="lg" class="card-body" />
     <div v-if="hasNoBadges" class="card-body">
       <span v-if="isGroupBadge">{{ s__('Badges|This group has no badges') }}</span>
       <span v-else>{{ s__('Badges|This project has no badges') }}</span>

@@ -13,7 +13,7 @@ FactoryBot.define do
     end
 
     trait :remote_store do
-      file_store { JobArtifactUploader::Store::REMOTE}
+      file_store { JobArtifactUploader::Store::REMOTE }
     end
 
     after :build do |artifact|

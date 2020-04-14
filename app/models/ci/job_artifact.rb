@@ -73,11 +73,13 @@ module Ci
 
     validates :file_format, presence: true, unless: :trace?, on: :create
     validate :valid_file_format?, unless: :trace?, on: :create
-    before_save :set_size, if: :file_changed?
 
-    update_project_statistics project_statistics_name: :build_artifacts_size
+    before_save :set_size, if: :file_changed?
+    before_save :set_file_store, if: ->(job_artifact) { job_artifact.file_store.nil? }
 
     after_save :update_file_store, if: :saved_change_to_file?
+
+    update_project_statistics project_statistics_name: :build_artifacts_size
 
     scope :with_files_stored_locally, -> { where(file_store: [nil, ::JobArtifactUploader::Store::LOCAL]) }
     scope :with_files_stored_remotely, -> { where(file_store: ::JobArtifactUploader::Store::REMOTE) }
@@ -224,6 +226,15 @@ module Ci
 
     def set_size
       self.size = file.size
+    end
+
+    def set_file_store
+      self.file_store =
+        if JobArtifactUploader.object_store_enabled? && JobArtifactUploader.direct_upload_enabled?
+          JobArtifactUploader::Store::REMOTE
+        else
+          file.object_store
+        end
     end
 
     def project_destroyed?

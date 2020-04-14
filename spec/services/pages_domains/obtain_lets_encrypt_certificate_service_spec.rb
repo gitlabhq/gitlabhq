@@ -180,5 +180,13 @@ describe PagesDomains::ObtainLetsEncryptCertificateService do
 
       expect(PagesDomainAcmeOrder.find_by_id(existing_order.id)).to be_nil
     end
+
+    it 'sends notification' do
+      expect_next_instance_of(NotificationService) do |notification_service|
+        expect(notification_service).to receive(:pages_domain_auto_ssl_failed).with(pages_domain)
+      end
+
+      service.execute
+    end
   end
 end

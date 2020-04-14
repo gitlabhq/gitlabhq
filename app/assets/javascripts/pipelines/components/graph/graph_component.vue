@@ -135,7 +135,7 @@ export default {
           paddingRight: `${graphRightPadding}px`,
         }"
       >
-        <gl-loading-icon v-if="isLoading" class="m-auto" :size="3" />
+        <gl-loading-icon v-if="isLoading" class="m-auto" size="lg" />
 
         <pipeline-graph
           v-if="pipelineTypeUpstream"

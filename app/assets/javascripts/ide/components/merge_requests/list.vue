@@ -90,7 +90,7 @@ export default {
     <div class="dropdown-content ide-merge-requests-dropdown-content d-flex">
       <gl-loading-icon
         v-if="isLoading"
-        :size="2"
+        size="lg"
         class="mt-3 mb-3 align-self-center ml-auto mr-auto"
       />
       <template v-else>

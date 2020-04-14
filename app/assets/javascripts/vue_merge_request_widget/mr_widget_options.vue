@@ -214,8 +214,6 @@ export default {
       return new MRWidgetService(this.getServiceEndpoints(store));
     },
     checkStatus(cb, isRebased) {
-      if (document.visibilityState !== 'visible') return Promise.resolve();
-
       return this.service
         .checkStatus()
         .then(({ data }) => {
@@ -238,10 +236,10 @@ export default {
     initPolling() {
       this.pollingInterval = new SmartInterval({
         callback: this.checkStatus,
-        startingInterval: 10000,
-        maxInterval: 30000,
-        hiddenInterval: 120000,
-        incrementByFactorOf: 5000,
+        startingInterval: 10 * 1000,
+        maxInterval: 240 * 1000,
+        hiddenInterval: window.gon?.features?.widgetVisibilityPolling && 360 * 1000,
+        incrementByFactorOf: 2,
       });
     },
     initDeploymentsPolling() {
@@ -253,10 +251,9 @@ export default {
     deploymentsPoll(callback) {
       return new SmartInterval({
         callback,
-        startingInterval: 30000,
-        maxInterval: 120000,
-        hiddenInterval: 240000,
-        incrementByFactorOf: 15000,
+        startingInterval: 30 * 1000,
+        maxInterval: 240 * 1000,
+        incrementByFactorOf: 4,
         immediateExecution: true,
       });
     },

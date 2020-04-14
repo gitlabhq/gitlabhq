@@ -219,6 +219,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :domain_blacklist_file,
       :raw_blob_request_limit,
       :namespace_storage_size_limit,
+      :issues_create_limit,
       disabled_oauth_sign_in_sources: [],
       import_sources: [],
       repository_storages: [],

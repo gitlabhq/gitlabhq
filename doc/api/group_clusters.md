@@ -224,6 +224,7 @@ Parameters:
 | `cluster_id` | integer | yes | The ID of the cluster |
 | `name` | string | no | The name of the cluster |
 | `domain` | string | no | The [base domain](../user/group/clusters/index.md#base-domain) of the cluster |
+| `management_project_id` | integer | no | The ID of the [management project](../user/clusters/management_project.md) for the cluster |
 | `platform_kubernetes_attributes[api_url]` | string | no | The URL to access the Kubernetes API |
 | `platform_kubernetes_attributes[token]` | string | no | The token to authenticate against Kubernetes |
 | `platform_kubernetes_attributes[ca_cert]` | string | no | TLS certificate. Required if API is using a self-signed TLS certificate. |

@@ -1,7 +1,7 @@
 - page_title _('Deploy Keys')
 
 %h3.page-title.deploy-keys-title
-  = _('Public deploy keys (%{deploy_keys_count})') % { deploy_keys_count: @deploy_keys.count }
+  = _('Public deploy keys (%{deploy_keys_count})') % { deploy_keys_count: @deploy_keys.load.size }
   .float-right
     = link_to _('New deploy key'), new_admin_deploy_key_path, class: 'btn btn-success btn-sm btn-inverted'
 

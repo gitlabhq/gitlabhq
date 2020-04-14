@@ -489,6 +489,12 @@ class NotificationService
     end
   end
 
+  def pages_domain_auto_ssl_failed(domain)
+    project_maintainers_recipients(domain, action: 'disabled').each do |recipient|
+      mailer.pages_domain_auto_ssl_failed_email(domain, recipient.user).deliver_later
+    end
+  end
+
   def issue_due(issue)
     recipients = NotificationRecipients::BuildService.build_recipients(
       issue,

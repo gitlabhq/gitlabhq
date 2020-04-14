@@ -17,7 +17,7 @@ describe 'projects/pages/show' do
 
     assign(:project, project)
     allow(view).to receive(:current_user).and_return(user)
-    assign(:domains, [domain])
+    assign(:domains, project.pages_domains)
   end
 
   describe 'validation warning' do

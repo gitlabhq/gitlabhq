@@ -113,28 +113,22 @@ describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob, :clean_gitlab_r
   end
 
   describe 'droppable?' do
-    where(:idempotent, :duplicate, :feature_enabled) do
-      # [true, false].repeated_permutation(3)
-      [[true, true, true],
-       [true, true, false],
-       [true, false, true],
-       [true, false, false],
-       [false, true, true],
-       [false, true, false],
-       [false, false, true],
-       [false, false, false]]
+    where(:idempotent, :duplicate) do
+      # [true, false].repeated_permutation(2)
+      [[true, true],
+       [true, false],
+       [false, true],
+       [false, false]]
     end
 
     with_them do
       before do
         allow(AuthorizedProjectsWorker).to receive(:idempotent?).and_return(idempotent)
         allow(duplicate_job).to receive(:duplicate?).and_return(duplicate)
-        allow(Gitlab::SidekiqMiddleware::DuplicateJobs)
-          .to receive(:drop_duplicates?).with(queue).and_return(feature_enabled)
       end
 
       it 'is droppable when all conditions are met' do
-        if idempotent && duplicate && feature_enabled
+        if idempotent && duplicate
           expect(duplicate_job).to be_droppable
         else
           expect(duplicate_job).not_to be_droppable

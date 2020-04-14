@@ -37,7 +37,7 @@ export default {
       <gl-loading-icon
         v-if="isLoading"
         :label="__('Loading snippet')"
-        :size="2"
+        size="lg"
         class="loading-animation prepend-top-20 append-bottom-20"
       />
       <blob-content-edit

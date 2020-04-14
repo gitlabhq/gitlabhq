@@ -78,7 +78,8 @@ describe RecordsUploads do
         path: File.join('uploads', 'rails_sample.jpg'),
         size: 512.kilobytes,
         model: build_stubbed(:user),
-        uploader: uploader.class.to_s
+        uploader: uploader.class.to_s,
+        store: ::ObjectStorage::Store::LOCAL
       )
 
       uploader.upload = existing
@@ -98,7 +99,8 @@ describe RecordsUploads do
         path: File.join('uploads', 'rails_sample.jpg'),
         size: 512.kilobytes,
         model: project,
-        uploader: uploader.class.to_s
+        uploader: uploader.class.to_s,
+        store: ::ObjectStorage::Store::LOCAL
       )
 
       uploader.store!(upload_fixture('rails_sample.jpg'))

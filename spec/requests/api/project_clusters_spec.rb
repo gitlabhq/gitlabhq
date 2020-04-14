@@ -150,6 +150,12 @@ describe API::ProjectClusters do
     let(:api_url) { 'https://kubernetes.example.com' }
     let(:namespace) { project.path }
     let(:authorization_type) { 'rbac' }
+    let(:management_project) { create(:project, namespace: project.namespace) }
+    let(:management_project_id) { management_project.id }
+
+    before do
+      management_project.add_maintainer(current_user)
+    end
 
     let(:platform_kubernetes_attributes) do
       {
@@ -165,7 +171,8 @@ describe API::ProjectClusters do
         name: 'test-cluster',
         domain: 'domain.example.com',
         managed: false,
-        platform_kubernetes_attributes: platform_kubernetes_attributes
+        platform_kubernetes_attributes: platform_kubernetes_attributes,
+        management_project_id: management_project_id
       }
     end
 
@@ -194,6 +201,7 @@ describe API::ProjectClusters do
           expect(cluster_result.name).to eq('test-cluster')
           expect(cluster_result.domain).to eq('domain.example.com')
           expect(cluster_result.managed).to be_falsy
+          expect(cluster_result.management_project_id).to eq management_project_id
           expect(platform_kubernetes.rbac?).to be_truthy
           expect(platform_kubernetes.api_url).to eq(api_url)
           expect(platform_kubernetes.namespace).to eq(namespace)
@@ -224,6 +232,18 @@ describe API::ProjectClusters do
           cluster_result = Clusters::Cluster.find(json_response['id'])
 
           expect(cluster_result.platform.abac?).to be_truthy
+        end
+      end
+
+      context 'current user does not have access to management_project_id' do
+        let(:management_project_id) { create(:project).id }
+
+        it 'responds with 400' do
+          expect(response).to have_gitlab_http_status(:bad_request)
+        end
+
+        it 'returns validation errors' do
+          expect(json_response['message']['management_project_id'].first).to match('don\'t have permission')
         end
       end
 

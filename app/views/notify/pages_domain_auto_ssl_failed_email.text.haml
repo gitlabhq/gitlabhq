@@ -1,0 +1,7 @@
+= _("Something went wrong while obtaining the Let's Encrypt certificate.").html_safe
+
+#{_('Project')}: #{project_url(@project)}
+#{_('Domain')}: #{project_pages_domain_url(@project, @domain)}
+
+- docs_url = help_page_url('user/project/pages/custom_domains_ssl_tls_certification/lets_encrypt_integration.md', anchor: 'troubleshooting')
+= _("Please follow the Let\'s Encrypt troubleshooting instructions to re-obtain your Let's Encrypt certificate: %{docs_url}.").html_safe % { docs_url: docs_url }

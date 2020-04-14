@@ -6,6 +6,7 @@ export default {
   },
   [types.RECEIVE_CONTENT_SUCCESS](state, { title, content }) {
     state.isLoadingContent = false;
+    state.isContentLoaded = true;
     state.title = title;
     state.content = content;
     state.originalContent = content;

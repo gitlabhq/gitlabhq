@@ -36,7 +36,7 @@ export default {
       </div>
     </div>
     <div v-if="loadingStacktrace" class="card">
-      <gl-loading-icon class="py-2" label="Fetching stack trace" :size="1" />
+      <gl-loading-icon class="py-2" label="Fetching stack trace" size="sm" />
     </div>
     <stacktrace v-else :entries="stacktrace" />
   </div>

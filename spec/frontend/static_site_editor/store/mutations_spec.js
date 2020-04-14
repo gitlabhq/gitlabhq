@@ -19,6 +19,7 @@ describe('Static Site Editor Store mutations', () => {
     mutation                         | stateProperty         | payload                 | expectedValue
     ${types.LOAD_CONTENT}            | ${'isLoadingContent'} | ${undefined}            | ${true}
     ${types.RECEIVE_CONTENT_SUCCESS} | ${'isLoadingContent'} | ${contentLoadedPayload} | ${false}
+    ${types.RECEIVE_CONTENT_SUCCESS} | ${'isContentLoaded'}  | ${contentLoadedPayload} | ${true}
     ${types.RECEIVE_CONTENT_SUCCESS} | ${'title'}            | ${contentLoadedPayload} | ${title}
     ${types.RECEIVE_CONTENT_SUCCESS} | ${'content'}          | ${contentLoadedPayload} | ${content}
     ${types.RECEIVE_CONTENT_SUCCESS} | ${'originalContent'}  | ${contentLoadedPayload} | ${content}

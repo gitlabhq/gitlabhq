@@ -176,6 +176,6 @@ export default {
         {{ s__('IDE|Get started with Live Preview') }}
       </a>
     </div>
-    <gl-loading-icon v-else :size="2" class="align-self-center mt-auto mb-auto" />
+    <gl-loading-icon v-else size="lg" class="align-self-center mt-auto mb-auto" />
   </div>
 </template>

@@ -42,6 +42,9 @@ class Projects::IssuesController < Projects::ApplicationController
   before_action :authorize_import_issues!, only: [:import_csv]
   before_action :authorize_download_code!, only: [:related_branches]
 
+  # Limit the amount of issues created per minute
+  before_action :create_rate_limit, only: [:create]
+
   before_action do
     push_frontend_feature_flag(:vue_issuable_sidebar, project.group)
     push_frontend_feature_flag(:save_issuable_health_status, project.group, default_enabled: true)
@@ -295,6 +298,22 @@ class Projects::IssuesController < Projects::ApplicationController
     # 2. https://gitlab.com/gitlab-org/gitlab-foss/issues/42424
     # 3. https://gitlab.com/gitlab-org/gitlab-foss/issues/42426
     Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-foss/issues/42422')
+  end
+
+  private
+
+  def create_rate_limit
+    key = :issues_create
+
+    if rate_limiter.throttled?(key, scope: [@project, @current_user])
+      rate_limiter.log_request(request, "#{key}_request_limit".to_sym, current_user)
+
+      render plain: _('This endpoint has been requested too many times. Try again later.'), status: :too_many_requests
+    end
+  end
+
+  def rate_limiter
+    ::Gitlab::ApplicationRateLimiter
   end
 end
 

@@ -197,7 +197,7 @@ export default {
 <template>
   <div>
     <div v-if="loading" class="contributors-loader text-center">
-      <gl-loading-icon :inline="true" :size="4" />
+      <gl-loading-icon :inline="true" size="xl" />
     </div>
 
     <div v-else-if="showChart" class="contributors-charts">

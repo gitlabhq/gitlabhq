@@ -93,6 +93,16 @@ export default {
   },
 
   /**
+   * Annotations
+   */
+  [types.RECEIVE_ANNOTATIONS_SUCCESS](state, annotations) {
+    state.annotations = annotations;
+  },
+  [types.RECEIVE_ANNOTATIONS_FAILURE](state) {
+    state.annotations = [];
+  },
+
+  /**
    * Individual panel/metric results
    */
   [types.REQUEST_METRIC_RESULT](state, { metricId }) {

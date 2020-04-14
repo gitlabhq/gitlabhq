@@ -397,6 +397,7 @@ CREATE TABLE public.application_settings (
     email_restrictions text,
     npm_package_requests_forwarding boolean DEFAULT true NOT NULL,
     namespace_storage_size_limit bigint DEFAULT 0 NOT NULL,
+    issues_create_limit integer DEFAULT 300 NOT NULL,
     seat_link_enabled boolean DEFAULT true NOT NULL,
     container_expiration_policies_enable_historic_entries boolean DEFAULT false NOT NULL
 );
@@ -2137,6 +2138,30 @@ CREATE SEQUENCE public.design_user_mentions_id_seq
     CACHE 1;
 
 ALTER SEQUENCE public.design_user_mentions_id_seq OWNED BY public.design_user_mentions.id;
+
+CREATE TABLE public.diff_note_positions (
+    id bigint NOT NULL,
+    note_id bigint NOT NULL,
+    old_line integer,
+    new_line integer,
+    diff_content_type smallint NOT NULL,
+    diff_type smallint NOT NULL,
+    line_code character varying(255) NOT NULL,
+    base_sha bytea NOT NULL,
+    start_sha bytea NOT NULL,
+    head_sha bytea NOT NULL,
+    old_path text NOT NULL,
+    new_path text NOT NULL
+);
+
+CREATE SEQUENCE public.diff_note_positions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.diff_note_positions_id_seq OWNED BY public.diff_note_positions.id;
 
 CREATE TABLE public.draft_notes (
     id bigint NOT NULL,
@@ -7124,6 +7149,8 @@ ALTER TABLE ONLY public.design_management_versions ALTER COLUMN id SET DEFAULT n
 
 ALTER TABLE ONLY public.design_user_mentions ALTER COLUMN id SET DEFAULT nextval('public.design_user_mentions_id_seq'::regclass);
 
+ALTER TABLE ONLY public.diff_note_positions ALTER COLUMN id SET DEFAULT nextval('public.diff_note_positions_id_seq'::regclass);
+
 ALTER TABLE ONLY public.draft_notes ALTER COLUMN id SET DEFAULT nextval('public.draft_notes_id_seq'::regclass);
 
 ALTER TABLE ONLY public.emails ALTER COLUMN id SET DEFAULT nextval('public.emails_id_seq'::regclass);
@@ -7670,6 +7697,9 @@ ALTER TABLE ONLY public.ci_daily_report_results
 ALTER TABLE ONLY public.ci_group_variables
     ADD CONSTRAINT ci_group_variables_pkey PRIMARY KEY (id);
 
+ALTER TABLE public.ci_job_artifacts
+    ADD CONSTRAINT ci_job_artifacts_file_store_not_null CHECK ((file_store IS NOT NULL)) NOT VALID;
+
 ALTER TABLE ONLY public.ci_job_artifacts
     ADD CONSTRAINT ci_job_artifacts_pkey PRIMARY KEY (id);
 
@@ -7828,6 +7858,9 @@ ALTER TABLE ONLY public.design_management_versions
 
 ALTER TABLE ONLY public.design_user_mentions
     ADD CONSTRAINT design_user_mentions_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.diff_note_positions
+    ADD CONSTRAINT diff_note_positions_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY public.draft_notes
     ADD CONSTRAINT draft_notes_pkey PRIMARY KEY (id);
@@ -8023,6 +8056,9 @@ ALTER TABLE ONLY public.ldap_group_links
 
 ALTER TABLE ONLY public.lfs_file_locks
     ADD CONSTRAINT lfs_file_locks_pkey PRIMARY KEY (id);
+
+ALTER TABLE public.lfs_objects
+    ADD CONSTRAINT lfs_objects_file_store_not_null CHECK ((file_store IS NOT NULL)) NOT VALID;
 
 ALTER TABLE ONLY public.lfs_objects
     ADD CONSTRAINT lfs_objects_pkey PRIMARY KEY (id);
@@ -8416,6 +8452,9 @@ ALTER TABLE ONLY public.u2f_registrations
 
 ALTER TABLE ONLY public.uploads
     ADD CONSTRAINT uploads_pkey PRIMARY KEY (id);
+
+ALTER TABLE public.uploads
+    ADD CONSTRAINT uploads_store_not_null CHECK ((store IS NOT NULL)) NOT VALID;
 
 ALTER TABLE ONLY public.user_agent_details
     ADD CONSTRAINT user_agent_details_pkey PRIMARY KEY (id);
@@ -9085,6 +9124,8 @@ CREATE INDEX index_design_management_versions_on_issue_id ON public.design_manag
 CREATE UNIQUE INDEX index_design_management_versions_on_sha_and_issue_id ON public.design_management_versions USING btree (sha, issue_id);
 
 CREATE UNIQUE INDEX index_design_user_mentions_on_note_id ON public.design_user_mentions USING btree (note_id);
+
+CREATE UNIQUE INDEX index_diff_note_positions_on_note_id_and_diff_type ON public.diff_note_positions USING btree (note_id, diff_type);
 
 CREATE INDEX index_draft_notes_on_author_id ON public.draft_notes USING btree (author_id);
 
@@ -9885,6 +9926,8 @@ CREATE INDEX index_projects_on_created_at_and_id ON public.projects USING btree 
 CREATE INDEX index_projects_on_creator_id_and_created_at ON public.projects USING btree (creator_id, created_at);
 
 CREATE INDEX index_projects_on_creator_id_and_created_at_and_id ON public.projects USING btree (creator_id, created_at, id);
+
+CREATE INDEX index_projects_on_creator_id_and_id ON public.projects USING btree (creator_id, id);
 
 CREATE INDEX index_projects_on_description_trigram ON public.projects USING gin (description public.gin_trgm_ops);
 
@@ -11067,6 +11110,9 @@ ALTER TABLE ONLY public.project_statistics
 
 ALTER TABLE ONLY public.user_details
     ADD CONSTRAINT fk_rails_12e0b3043d FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.diff_note_positions
+    ADD CONSTRAINT fk_rails_13c7212859 FOREIGN KEY (note_id) REFERENCES public.notes(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.users_security_dashboard_projects
     ADD CONSTRAINT fk_rails_150cd5682c FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
@@ -13064,10 +13110,12 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200323134519
 20200324093258
 20200324115359
+20200325111432
 20200325152327
 20200325160952
 20200325183636
 20200326114443
+20200326122700
 20200326124443
 20200326134443
 20200326135443
@@ -13090,10 +13138,14 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200403185127
 20200403185422
 20200406135648
+20200406165950
+20200406171857
+20200406172135
 20200406192059
 20200407094005
 20200407094923
 20200408110856
+20200408153842
 20200408175424
 \.
 

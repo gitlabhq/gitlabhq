@@ -213,7 +213,6 @@ export default {
       'dashboard',
       'emptyState',
       'showEmptyState',
-      'deploymentData',
       'useDashboardEndpoint',
       'allDashboards',
       'additionalPanelTypesEnabled',

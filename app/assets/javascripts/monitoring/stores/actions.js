@@ -6,8 +6,13 @@ import { convertToFixedRange } from '~/lib/utils/datetime_range';
 import { gqClient, parseEnvironmentsResponse, removeLeadingSlash } from './utils';
 import trackDashboardLoad from '../monitoring_tracking_helper';
 import getEnvironments from '../queries/getEnvironments.query.graphql';
+import getAnnotations from '../queries/getAnnotations.query.graphql';
 import statusCodes from '../../lib/utils/http_status';
-import { backOff, convertObjectPropsToCamelCase } from '../../lib/utils/common_utils';
+import {
+  backOff,
+  convertObjectPropsToCamelCase,
+  isFeatureFlagEnabled,
+} from '../../lib/utils/common_utils';
 import { s__, sprintf } from '../../locale';
 
 import { PROMETHEUS_TIMEOUT, ENVIRONMENT_AVAILABLE_STATE } from '../constants';
@@ -80,6 +85,14 @@ export const setShowErrorBanner = ({ commit }, enabled) => {
 export const fetchData = ({ dispatch }) => {
   dispatch('fetchEnvironmentsData');
   dispatch('fetchDashboard');
+  /**
+   * Annotations data is not yet fetched. This will be
+   * ready after the BE piece is implemented.
+   * https://gitlab.com/gitlab-org/gitlab/-/issues/211330
+   */
+  if (isFeatureFlagEnabled('metrics_dashboard_annotations')) {
+    dispatch('fetchAnnotations');
+  }
 };
 
 // Metrics dashboard
@@ -268,6 +281,40 @@ export const receiveEnvironmentsDataSuccess = ({ commit }, data) => {
 export const receiveEnvironmentsDataFailure = ({ commit }) => {
   commit(types.RECEIVE_ENVIRONMENTS_DATA_FAILURE);
 };
+
+export const fetchAnnotations = ({ state, dispatch }) => {
+  dispatch('requestAnnotations');
+
+  return gqClient
+    .mutate({
+      mutation: getAnnotations,
+      variables: {
+        projectPath: removeLeadingSlash(state.projectPath),
+        dashboardId: state.currentDashboard,
+        environmentName: state.currentEnvironmentName,
+      },
+    })
+    .then(resp => resp.data?.project?.environment?.metricDashboard?.annotations)
+    .then(annotations => {
+      if (!annotations) {
+        createFlash(s__('Metrics|There was an error fetching annotations. Please try again.'));
+      }
+
+      dispatch('receiveAnnotationsSuccess', annotations);
+    })
+    .catch(err => {
+      Sentry.captureException(err);
+      dispatch('receiveAnnotationsFailure');
+      createFlash(s__('Metrics|There was an error getting annotations information.'));
+    });
+};
+
+// While this commit does not update the state it will
+// eventually be useful to show a loading state
+export const requestAnnotations = ({ commit }) => commit(types.REQUEST_ANNOTATIONS);
+export const receiveAnnotationsSuccess = ({ commit }, data) =>
+  commit(types.RECEIVE_ANNOTATIONS_SUCCESS, data);
+export const receiveAnnotationsFailure = ({ commit }) => commit(types.RECEIVE_ANNOTATIONS_FAILURE);
 
 // Dashboard manipulation
 
