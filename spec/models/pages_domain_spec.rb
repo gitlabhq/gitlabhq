@@ -536,6 +536,24 @@ describe PagesDomain do
                      'user_provided', 'gitlab_provided')
   end
 
+  describe '#save' do
+    context 'when we failed to obtain ssl certificate' do
+      let(:domain) { create(:pages_domain, auto_ssl_enabled: true, auto_ssl_failed: true) }
+
+      it 'clears failure if auto ssl is disabled' do
+        expect do
+          domain.update!(auto_ssl_enabled: false)
+        end.to change { domain.auto_ssl_failed }.from(true).to(false)
+      end
+
+      it 'does not clear failure on unrelated updates' do
+        expect do
+          domain.update!(verified_at: Time.now)
+        end.not_to change { domain.auto_ssl_failed }.from(true)
+      end
+    end
+  end
+
   describe '.for_removal' do
     subject { described_class.for_removal }
 

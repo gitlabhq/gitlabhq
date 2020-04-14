@@ -85,6 +85,22 @@ describe "Pages with Let's Encrypt", :https_pages_enabled do
     end
   end
 
+  context "when we failed to obtain Let's Encrypt certificate", :js do
+    let(:domain) do
+      create(:pages_domain, auto_ssl_enabled: true, auto_ssl_failed: true, project: project)
+    end
+
+    it 'user can retry obtaining certificate' do
+      visit project_pages_domain_path(project, domain)
+
+      expect(page).to have_text("Something went wrong while obtaining the Let's Encrypt certificate.")
+
+      click_on('Retry')
+
+      expect(page).to have_text("GitLab is obtaining a Let's Encrypt SSL certificate for this domain. This process can take some time. Please try again later.")
+    end
+  end
+
   shared_examples 'user sees private keys only for user provided certificate' do
     shared_examples 'user do not see private key' do
       it 'user do not see private key' do

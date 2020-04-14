@@ -13,9 +13,13 @@ You are strongly encouraged to get your code **reviewed** by a
 [reviewer](https://about.gitlab.com/handbook/engineering/workflow/code-review/#reviewer) as soon as
 there is any code to review, to get a second opinion on the chosen solution and
 implementation, and an extra pair of eyes looking for bugs, logic problems, or
-uncovered edge cases. The reviewer can be from a different team, but it is
-recommended to pick someone who knows the domain well. You can read more about the
-importance of involving reviewer(s) in the section on the responsibility of the author below.
+uncovered edge cases.
+
+The default approach is to choose a reviewer from your group or team for the first review.
+This is only a recommendation and the reviewer may be from a different team.
+However, it is recommended to pick someone who is a [domain expert](#domain-experts).
+
+You can read more about the importance of involving reviewer(s) in the section on the responsibility of the author below.
 
 If you need some guidance (for example, it's your first merge request), feel free to ask
 one of the [Merge request coaches](https://about.gitlab.com/company/team/).
@@ -32,16 +36,32 @@ widget. Reviewers can add their approval by [approving additionally](../user/pro
 Getting your merge request **merged** also requires a maintainer. If it requires
 more than one approval, the last maintainer to review and approve it will also merge it.
 
+### Domain experts
+
+Domain experts are team members who have substantial experience with a specific technology, product feature or area of the codebase. Team members are encouraged to self-identify as domain experts and add it to their [team profile](https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/master/data/team.yml)
+
+When self-identifying as a domain expert, it is recommended to assign the MR changing the `team.yml` to be merged by an already established Domain Expert or a corresponding Engineering Manager.
+
+We make the following assumption with regards to automatically being considered a domain expert:
+
+- Team members working in a specific stage/group (e.g. create: source code) are considered domain experts for that area of the app they work on
+- Team members working on a specific feature (e.g. search) are considered domain experts for that feature
+
+We default to assigning reviews to team members with domain expertise.
+When a suitable [domain expert](#domain-experts) isn't available, you can choose any team member to review the MR, or simply follow the [Reviewer roulette](#reviewer-roulette) recommendation.
+
+Team members' domain expertise can be viewed on the [engineering projects](https://about.gitlab.com/handbook/engineering/projects/) page or on the [GitLab team page](https://about.gitlab.com/company/team/).
+
 ### Reviewer roulette
 
 The [Danger bot](dangerbot.md) randomly picks a reviewer and a maintainer for
 each area of the codebase that your merge request seems to touch. It only makes
-recommendations - feel free to override it if you think someone else is a better
+**recommendations** and you should override it if you think someone else is a better
 fit!
 
 It picks reviewers and maintainers from the list at the
 [engineering projects](https://about.gitlab.com/handbook/engineering/projects/)
-page, with these behaviours:
+page, with these behaviors:
 
 1. It will not pick people whose [GitLab status](../user/profile/index.md#current-status)
    contains the string 'OOO'.
@@ -56,7 +76,7 @@ page, with these behaviours:
 
 As described in the section on the responsibility of the maintainer below, you
 are recommended to get your merge request approved and merged by maintainer(s)
-from teams other than your own.
+ with [domain expertise](#domain-experts).
 
 1. If your merge request includes backend changes [^1], it must be
    **approved by a [backend maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_maintainers_backend)**.
@@ -103,13 +123,13 @@ To reach the required level of confidence in their solution, an author is expect
 to involve other people in the investigation and implementation processes as
 appropriate.
 
-They are encouraged to reach out to domain experts to discuss different solutions
+They are encouraged to reach out to [domain experts](#domain-experts) to discuss different solutions
 or get an implementation reviewed, to product managers and UX designers to clear
 up confusion or verify that the end result matches what they had in mind, to
 database specialists to get input on the data model or specific queries, or to
 any other developer to get an in-depth review of the solution.
 
-If an author is unsure if a merge request needs a domain expert's opinion, that's
+If an author is unsure if a merge request needs a [domain experts's](#domain-experts) opinion, that's
 usually a pretty good sign that it does, since without it the required level of
 confidence in their solution will not have been reached.
 
@@ -142,9 +162,8 @@ that it meets all requirements, you should:
 
 - Click the Approve button.
 - Advise the author their merge request has been reviewed and approved.
-- Assign the merge request to a maintainer. [Reviewer roulette](#reviewer-roulette)
-should have made a suggestion, but feel free to override if someone else is a
-better choice.
+- Assign the merge request to a maintainer. Default to assigning it to a maintainer with [domain expertise](#domain-experts),
+however, if one isn't available or you think the merge request doesn't need a review by a [domain expert](#domain-experts), feel free to follow the [Reviewer roulette](#reviewer-roulette) suggestion.
 
 ### The responsibility of the maintainer
 
@@ -159,20 +178,17 @@ Since a maintainer's job only depends on their knowledge of the overall GitLab
 codebase, and not that of any specific domain, they can review, approve, and merge
 merge requests from any team and in any product area.
 
-In fact, authors are encouraged to get their merge requests merged by maintainers
-from teams other than their own, to ensure that all code across GitLab is consistent
-and can be easily understood by all contributors, from both inside and outside the
-company, without requiring team-specific expertise.
-
 Maintainers will do their best to also review the specifics of the chosen solution
-before merging, but as they are not necessarily domain experts, they may be poorly
+before merging, but as they are not necessarily [domain experts](#domain-experts), they may be poorly
 placed to do so without an unreasonable investment of time. In those cases, they
-will defer to the judgment of the author and earlier reviewers and involved domain
-experts, in favor of focusing on their primary responsibilities.
+will defer to the judgment of the author and earlier reviewers, in favor of focusing on their primary responsibilities.
+
+If a maintainer feels that an MR is substantial enough that it warrants a review from a [domain expert](#domain-experts),
+and it is unclear whether a domain expert have been involved in the reviews to date,
+they may request a [domain expert's](#domain-experts) review before merging the MR.
 
 If a developer who happens to also be a maintainer was involved in a merge request
-as a domain expert and/or reviewer, it is recommended that they are not also picked
-as the maintainer to ultimately approve and merge it.
+as a reviewer, it is recommended that they are not also picked as the maintainer to ultimately approve and merge it.
 
 Maintainers should check before merging if the merge request is approved by the
 required approvers.
@@ -255,11 +271,13 @@ first time.
 
 ### Assigning a merge request for a review
 
-If you want to have your merge request reviewed, you can assign it to any reviewer. The list of reviewers can be found on [Engineering projects](https://about.gitlab.com/handbook/engineering/projects/) page.
+When you are ready to have your merge request reviewed,
+you should default to assigning it to a reviewer from your group or team for the first review,
+however, you can also assign it to any reviewer. The list of reviewers can be found on [Engineering projects](https://about.gitlab.com/handbook/engineering/projects/) page.
 
 You can also use `workflow::ready for review` label. That means that your merge request is ready to be reviewed and any reviewer can pick it. It is recommended to use that label only if there isn't time pressure and make sure the merge request is assigned to a reviewer.
 
-When your merge request was reviewed and can be passed to a maintainer you can either pick a specific maintainer or use a label `ready for merge`.
+When your merge request was reviewed and can be passed to a maintainer, you should default to choosing a maintainer with [domain expertise](#domain-experts), and otherwise follow the Reviewer Roulette recommendation or use the label `ready for merge`.
 
 It is responsibility of the author of a merge request that the merge request is reviewed. If it stays in `ready for review` state too long it is recommended to assign it to a specific reviewer.
 

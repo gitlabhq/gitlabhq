@@ -10,7 +10,7 @@ class Projects::PagesController < Projects::ApplicationController
 
   # rubocop: disable CodeReuse/ActiveRecord
   def show
-    @domains = @project.pages_domains.order(:domain)
+    @domains = @project.pages_domains.order(:domain).present(current_user: current_user)
   end
   # rubocop: enable CodeReuse/ActiveRecord
 

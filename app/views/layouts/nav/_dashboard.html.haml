@@ -26,7 +26,7 @@
         %ul
           - if dashboard_nav_link?(:groups)
             %li.d-md-none
-              = link_to dashboard_groups_path do
+              = link_to dashboard_groups_path, class: 'dashboard-shortcuts-groups' do
                 = _('Groups')
           - if dashboard_nav_link?(:activity)
             = nav_link(path: 'dashboard#activity') do

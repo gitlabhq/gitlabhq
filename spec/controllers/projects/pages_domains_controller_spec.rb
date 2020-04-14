@@ -181,6 +181,24 @@ describe Projects::PagesDomainsController do
     end
   end
 
+  describe 'POST retry_auto_ssl' do
+    before do
+      pages_domain.update!(auto_ssl_enabled: true, auto_ssl_failed: true)
+    end
+
+    let(:params) { request_params.merge(id: pages_domain.domain) }
+
+    it 'calls retry service and redirects' do
+      expect_next_instance_of(PagesDomains::RetryAcmeOrderService, pages_domain) do |service|
+        expect(service).to receive(:execute)
+      end
+
+      post :retry_auto_ssl, params: params
+
+      expect(response).to redirect_to project_pages_domain_path(project, pages_domain)
+    end
+  end
+
   describe 'DELETE destroy' do
     it "deletes the pages domain" do
       expect do

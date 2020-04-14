@@ -45,7 +45,7 @@ export default {
     if (this.lastOpenedFile && this.lastOpenedFile.type !== 'tree') {
       this.openPendingTab({
         file: this.lastOpenedFile,
-        keyPrefix: this.lastOpenedFile.changed ? stageKeys.unstaged : stageKeys.staged,
+        keyPrefix: this.lastOpenedFile.staged ? stageKeys.staged : stageKeys.unstaged,
       })
         .then(changeViewer => {
           if (changeViewer) {

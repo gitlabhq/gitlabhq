@@ -1,43 +1,59 @@
-# Best practices when writing end-to-end tests
+# End-to-end testing Best Practices
 
-## Avoid using a GUI when it's not required
+NOTE: **Note:**
+This is an tailored extension of the Best Practices [found in the testing guide](../best_practices.md).
 
-The majority of the end-to-end tests require some state to be built in the application for the tests to happen.
+## Prefer API over UI
 
-A good example is a user being logged in as a pre-condition for testing the feature.
+The end-to-end testing framework has the ability to fabricate its resources on a case-by-case basis.
+Resources should be fabricated via the API wherever possible.
 
-But if the login feature is already covered with end-to-end tests through the GUI, there is no reason to perform such an expensive task to test the functionality of creating a project, or importing a repo, even if these features depend on a user being logged in. Let's see an example to make things clear.
+We can save both time and money by fabricating resources that our test will need via the API.
 
-Let's say that, on average, the process to perform a successful login through the GUI takes 2 seconds.
+[Learn more](resources.md) about resources.
 
-Now, realize that almost all tests need the user to be logged in, and that we need every test to run in isolation, meaning that tests cannot interfere with each other. This would mean that for every test the user needs to log in, and "waste 2 seconds".
+## Avoid superfluous expectations
 
-Now, multiply the number of tests per 2 seconds, and as your test suite grows, the time to run it grows with it, and this is not sustainable.
+To keep tests lean, it is important that we only test what we need to test.
 
-An alternative to perform a login in a cheaper way would be having an endpoint (available only for testing) where we could pass the user's credentials as encrypted values as query strings, and then we would be redirected to the logged in home page if the credentials are valid. Let's say that, on average, this process takes only 200 milliseconds.
+Ensure that you do not add any `expect()` statements that are unrelated to what needs to be tested.
 
-You see the point right?
+For example:
 
-Performing a login through the GUI for every test would cost a lot in terms of tests' execution.
+```ruby
+#=> Good
+Flow::Login.sign_in
+Page::Main::Menu.perform do |menu|
+  expect(menu).to be_signed_in
+end
 
-And there is another reason.
+#=> Bad
+Flow::Login.sign_in(as: user)
+Page::Main::Menu.perform do |menu|
+  expect(menu).to be_signed_in
+  expect(page).to have_content(user.name) #=>  we already validated being signed in. redundant.
+  expect(menu).to have_element(:nav_bar) #=> likely unnecessary. already validated in lower-level. test doesn't call for validating this.
+end
 
-Let's say that you don't follow the above suggestion, and depend on the GUI for the creation of every application state in order to test a specific feature. In this case we could be talking about the **Issues** feature, that depends on a project to exist, and the user to be logged in.
+#=> Good
+issue = Resource::Issue.fabricate_via_api! do |issue|
+  issue.name = 'issue-name'
+end
 
-What would happen if there was a bug in the project creation page, where the 'Create' button is disabled, not allowing for the creation of a project through the GUI, but the API logic is still working?
+Project::Issues::Index.perform do |index|
+  expect(index).to have_issue(issue)
+end
 
-In this case, instead of having only the project creation test failing, we would have many tests that depend on a project to be failing too.
+#=> Bad
+issue = Resource::Issue.fabricate_via_api! do |issue|
+  issue.name = 'issue-name'
+end
 
-But, if we were following the best practices, only one test would be failing, and tests for other features that depend on a project to exist would continue to pass, since they could be creating the project behind the scenes interacting directly with the public APIs, ensuring a more reliable metric of test failure rate.
-
-Finally, interacting with the application only by its GUI generates a higher rate of test flakiness, and we want to avoid that at max.
-
-**The takeaways here are:**
-
-- Building state through the GUI is time consuming and it's not sustainable as the test suite grows.
-- When depending only on the GUI to create the application's state and tests fail due to front-end issues, we can't rely on the test failures rate, and we generate a higher rate of test flakiness.
-
-Now that we are aware of all of it, [let's go create some tests](quick_start_guide.md).
+Project::Issues::Index.perform do |index|
+  expect(index).to have_issue(issue)
+  expect(page).to have_content(issue.name) #=> page content check is redundant as the issue was already validated in the line above.
+end
+```
 
 ## Prefer to split tests across multiple files
 
@@ -54,17 +70,18 @@ In summary:
 - **Do**: Split tests across separate files, unless the tests share expensive setup.
 - **Don't**: Put new tests in an existing file without considering the impact on parallelization.
 
-## Limit the use of `before(:all)` and `after` hooks
+## Limit the use of the UI in `before(:context)` and `after` hooks
 
-Limit the use of `before(:all)` hook to perform setup tasks with only API calls, non UI operations
-or basic UI operations such as login.
+Limit the use of `before(:context)` hooks to perform setup tasks with only API calls,
+non-UI operations, or basic UI operations such as login.
 
-We use [`capybara-screenshot`](https://github.com/mattheworiordan/capybara-screenshot) library to automatically save screenshots on failures.
-This library [saves the screenshots in the RSpec's `after` hook](https://github.com/mattheworiordan/capybara-screenshot/blob/master/lib/capybara-screenshot/rspec.rb#L97).
-[If there is a failure in `before(:all)`, the `after` hook is not called](https://github.com/rspec/rspec-core/pull/2652/files#diff-5e04af96d5156e787f28d519a8c99615R148) and so the screenshots are not saved.
+We use [`capybara-screenshot`](https://github.com/mattheworiordan/capybara-screenshot) library to automatically save a screenshot on
+failure.
 
-Given this fact, we should limit the use of `before(:all)` to only those operations where a screenshot is not
-necessary in case of failure and QA logs would be enough for debugging.
+`capybara-screenshot` [saves the screenshot in the RSpec's `after` hook](https://github.com/mattheworiordan/capybara-screenshot/blob/master/lib/capybara-screenshot/rspec.rb#L97).
+[If there is a failure in `before(:context)`, the `after` hook is not called](https://github.com/rspec/rspec-core/pull/2652/files#diff-5e04af96d5156e787f28d519a8c99615R148) and so the screenshot is not saved.
+
+Given this fact, we should limit the use of `before(:context)` to only those operations where a screenshot is not needed.
 
 Similarly, the `after` hook should only be used for non-UI operations. Any UI operations in `after` hook in a test file
 would execute before the `after` hook that takes the screenshot. This would result in moving the UI status away from the
@@ -72,16 +89,11 @@ point of failure and so the screenshot would not be captured at the right moment
 
 ## Ensure tests do not leave the browser logged in
 
-All QA tests expect to be able to log in at the start of the test.
-
-That's not possible if a test leaves the browser logged in when it finishes. Normally this isn't a
-problem because [Capybara resets the session after each test](https://github.com/teamcapybara/capybara/blob/9ebc5033282d40c73b0286e60217515fd1bb0b5d/lib/capybara/rspec.rb#L18).
-But Capybara does that in an `after` block, so when a test logs in within an `after(:context)` block,
-the browser returns to a logged in state *after* Capybara had logged it out. And so the next test will fail.
+All tests expect to be able to log in at the start of the test.
 
 For an example see: <https://gitlab.com/gitlab-org/gitlab/issues/34736>
 
-Ideally, any actions performed in an `after(:context)` (or [`before(:context)`](#limit-the-use-of-beforeall-and-after-hooks)) block would be performed via the API. But if it's necessary to do so via the UI (e.g., if API functionality doesn't exist), make sure to log out at the end of the block.
+Ideally, any actions performed in an `after(:context)` (or [`before(:context)`](#limit-the-use-of-the-ui-in-beforecontext-and-after-hooks)) block would be performed via the API. But if it's necessary to do so via the UI (e.g., if API functionality doesn't exist), make sure to log out at the end of the block.
 
 ```ruby
 after(:all) do
@@ -100,3 +112,30 @@ We don't run tests that require Administrator access against our Production envi
 When you add a new test that requires Administrator access, apply the RSpec metadata `:requires_admin` so that the test will not be included in the test suites executed against Production and other environments on which we don't want to run those tests.
 
 Note: When running tests locally or configuring a pipeline, the environment variable `QA_CAN_TEST_ADMIN_FEATURES` can be set to `false` to skip tests that have the `:requires_admin` tag.
+
+## Prefer `Commit` resource over `ProjectPush`
+
+In line with [using the API](#prefer-api-over-ui), use a `Commit` resource whenever possible.
+
+`ProjectPush` uses raw shell commands via the Git Command Line Interface (CLI) whereas the `Commit` resource makes an HTTP request.
+
+```ruby
+# Using a commit resource
+Resource::Commit.fabricate_via_api! do |commit|
+  commit.commit_message = 'Initial commit'
+  commit.add_files([
+    {file_path: 'README.md', content: 'Hello, GitLab'}
+  ])
+end
+
+# Using a ProjectPush
+Resource::Repository::ProjectPush.fabricate! do |push|
+  push.commit_message = 'Initial commit'
+  push.file_name = 'README.md'
+  push.file_content = 'Hello, GitLab'
+end
+```
+
+NOTE: **Note:**
+A few exceptions for using a `ProjectPush` would be when your test calls for testing SSH integration or
+using the Git CLI.

@@ -120,7 +120,7 @@
 }
 
 @mixin btn-white {
-  @include btn-color($white, $border-color, $white-normal, $border-white-normal, $white-dark, $border-gray-dark, $gl-text-color);
+  @include btn-color($white, $border-color, $white-normal, $border-white-normal, $white-dark, $border-white-normal, $gl-text-color);
 }
 
 @mixin btn-with-margin {
@@ -365,7 +365,7 @@
   .active {
     box-shadow: $gl-btn-active-background;
 
-    border: 1px solid $border-gray-dark !important;
+    border: 1px solid $border-white-normal !important;
     background-color: $btn-active-gray-light !important;
   }
 }

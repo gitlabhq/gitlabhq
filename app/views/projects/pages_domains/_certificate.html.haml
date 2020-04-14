@@ -36,7 +36,7 @@
             = _('Certificate')
           .d-flex.justify-content-between.align-items-center.p-3
             %span
-              = @domain.subject || _('missing')
+              = @domain.pages_domain.subject || _('missing')
             = link_to _('Remove'),
               clean_certificate_project_pages_domain_path(@project, @domain),
               data: { confirm: _('Are you sure?') },

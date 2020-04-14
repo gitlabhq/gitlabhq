@@ -26,6 +26,12 @@ class Projects::PagesDomainsController < Projects::ApplicationController
     redirect_to project_pages_domain_path(@project, @domain)
   end
 
+  def retry_auto_ssl
+    PagesDomains::RetryAcmeOrderService.new(@domain.pages_domain).execute
+
+    redirect_to project_pages_domain_path(@project, @domain)
+  end
+
   def edit
     redirect_to project_pages_domain_path(@project, @domain)
   end
@@ -82,6 +88,6 @@ class Projects::PagesDomainsController < Projects::ApplicationController
   end
 
   def domain
-    @domain ||= @project.pages_domains.find_by_domain!(params[:id].to_s)
+    @domain ||= @project.pages_domains.find_by_domain!(params[:id].to_s).present(current_user: current_user)
   end
 end

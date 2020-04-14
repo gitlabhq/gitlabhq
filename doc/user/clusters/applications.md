@@ -43,6 +43,7 @@ The following applications can be installed:
 - [Knative](#knative)
 - [Crossplane](#crossplane)
 - [Elastic Stack](#elastic-stack)
+- [Fluentd](#fluentd)
 
 With the exception of Knative, the applications will be installed in a dedicated
 namespace called `gitlab-managed-apps`.
@@ -523,6 +524,28 @@ kubectl port-forward svc/kibana 5601:443
 
 Then, you can visit Kibana at `http://localhost:5601`.
 
+### Fluentd
+
+> Introduced in GitLab 12.10 for project- and group-level clusters.
+
+[Fluentd](https://www.fluentd.org/) is an open source data collector, which enables
+you to unify the data collection and consumption to better use and understand
+your data. Fluentd sends logs in syslog format.
+
+To enable Fluentd:
+
+1. Navigate to **{cloud-gear}** **Operations > Kubernetes** and click
+   **Applications**. You will be prompted to enter a host, port and protocol
+   where the WAF logs will be sent to via syslog.
+1. Provide the host domain name or URL in **SIEM URL or Host**.
+1. Provide the host port number in **SIEM Port**.
+1. Select a **SIEM Protocol**.
+1. Check **Send ModSecurity Logs**. If you do not select this checkbox, the **Install**
+   button is disabled.
+1. Click **Install**.
+
+![Fluentd input fields](img/fluentd_v12_10.png)
+
 ### Future apps
 
 Interested in contributing a new GitLab managed app? Visit the
@@ -552,6 +575,7 @@ Supported applications:
 - [JupyterHub](#install-jupyterhub-using-gitlab-cicd)
 - [Elastic Stack](#install-elastic-stack-using-gitlab-cicd)
 - [Crossplane](#install-crossplane-using-gitlab-cicd)
+- [Fluentd](#install-fluentd-using-gitlab-cicd)
 
 ### Usage
 
@@ -1035,6 +1059,30 @@ You can customize the installation of Crossplane by defining
 management project. Refer to the
 [chart](https://github.com/crossplane/crossplane/tree/master/cluster/charts/crossplane#configuration) for the
 available configuration options. Note that this link points to the docs for the current development release, which may differ from the version you have installed. You can check out a specific version in the branch/tag switcher.
+
+### Install Fluentd using GitLab CI/CD
+
+> [Introduced](https://gitlab.com/gitlab-org/cluster-integration/cluster-applications/-/merge_requests/76) in GitLab 12.10.
+
+To install Fluentd into the `gitlab-managed-apps` namespace of your cluster using GitLab CI/CD, define the following configuration in `.gitlab/managed-apps/config.yaml`:
+
+```yaml
+Fluentd:
+  installed: true
+```
+
+You can also review the default values set for this chart in the [values.yaml](https://github.com/helm/charts/blob/master/stable/fluentd/values.yaml) file.
+
+You can customize the installation of Fluentd by defining
+`.gitlab/managed-apps/fluentd/values.yaml` file in your cluster management
+project. Refer to the
+[configuration chart for the current development release of Fluentd](https://github.com/helm/charts/tree/master/stable/fluentd#configuration)
+for the available configuration options.
+
+NOTE: **Note:**
+The configuration chart link points to the current development release, which
+may differ from the version you have installed. To ensure compatibility, switch
+to the specific branch or tag you are using.
 
 ## Upgrading applications
 
