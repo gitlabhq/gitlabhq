@@ -499,6 +499,15 @@ entry.
 - Improvement in token reference.
 
 
+## 12.8.9 (2020-04-14)
+
+### Security (3 changes)
+
+- Refresh ProjectAuthorization during Group deletion.
+- Prevent filename bypass on artifact upload.
+- Update rack and related gems to 2.0.9 to fix security issue.
+
+
 ## 12.8.7 (2020-03-16)
 
 ### Fixed (1 change, 1 of them is from the community)
