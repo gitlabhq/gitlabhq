@@ -34,3 +34,11 @@ export const savedContentMeta = {
 };
 
 export const submitChangesError = 'Could not save changes';
+export const commitMultipleResponse = {
+  short_id: 'ed899a2f4b5',
+  web_url: '/commit/ed899a2f4b5',
+};
+export const createMergeRequestResponse = {
+  iid: '123',
+  web_url: '/merge_requests/123',
+};

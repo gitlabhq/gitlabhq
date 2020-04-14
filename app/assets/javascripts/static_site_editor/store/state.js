@@ -10,6 +10,8 @@ const createState = (initialState = {}) => ({
   content: '',
   title: '',
 
+  savedContentMeta: null,
+
   ...initialState,
 });
 

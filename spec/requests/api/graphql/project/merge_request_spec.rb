@@ -93,4 +93,41 @@ describe 'getting merge request information nested in a project' do
       expect(merge_request_graphql_data['pipelines']['edges'].size).to eq(1)
     end
   end
+
+  context 'when limiting the number of results' do
+    let(:merge_requests_graphql_data) { graphql_data['project']['mergeRequests']['edges'] }
+
+    let!(:merge_requests) do
+      [
+        create(:merge_request, source_project: project, source_branch: 'branch-1'),
+        create(:merge_request, source_project: project, source_branch: 'branch-2'),
+        create(:merge_request, source_project: project, source_branch: 'branch-3')
+      ]
+    end
+
+    let(:fields) do
+      <<~QUERY
+      edges {
+        node {
+          iid,
+          title
+        }
+      }
+      QUERY
+    end
+
+    let(:query) do
+      graphql_query_for(
+        'project',
+        { 'fullPath' => project.full_path },
+        "mergeRequests(first: 2) { #{fields} }"
+      )
+    end
+
+    it 'returns the correct number of results' do
+      post_graphql(query, current_user: current_user)
+
+      expect(merge_requests_graphql_data.size).to eq 2
+    end
+  end
 end

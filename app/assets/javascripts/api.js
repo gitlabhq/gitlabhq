@@ -188,6 +188,15 @@ const Api = {
     return axios.get(url, { params });
   },
 
+  createProjectMergeRequest(projectPath, options) {
+    const url = Api.buildUrl(Api.projectMergeRequestsPath).replace(
+      ':id',
+      encodeURIComponent(projectPath),
+    );
+
+    return axios.post(url, options);
+  },
+
   // Return Merge Request for project
   projectMergeRequest(projectPath, mergeRequestId, params = {}) {
     const url = Api.buildUrl(Api.projectMergeRequestPath)

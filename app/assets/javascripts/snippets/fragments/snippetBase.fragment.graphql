@@ -1,3 +1,5 @@
+#import '~/graphql_shared/fragments/blobviewer.fragment.graphql'
+
 fragment SnippetBase on Snippet {
   id
   title
@@ -9,6 +11,19 @@ fragment SnippetBase on Snippet {
   webUrl
   httpUrlToRepo
   sshUrlToRepo
+  blob {
+    binary
+    name
+    path
+    rawPath
+    size
+    simpleViewer {
+      ...BlobViewer
+    }
+    richViewer {
+      ...BlobViewer
+    }
+  }
   userPermissions {
     adminSnippet
     updateSnippet

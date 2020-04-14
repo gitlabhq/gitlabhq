@@ -12189,9 +12189,6 @@ msgstr ""
 msgid "Loading"
 msgstr ""
 
-msgid "Loading blob"
-msgstr ""
-
 msgid "Loading contribution stats for group members"
 msgstr ""
 
@@ -19368,6 +19365,15 @@ msgstr ""
 msgid "Static Application Security Testing (SAST)"
 msgstr ""
 
+msgid "StaticSiteEditor|Branch could not be created."
+msgstr ""
+
+msgid "StaticSiteEditor|Could not commit the content changes."
+msgstr ""
+
+msgid "StaticSiteEditor|Could not create merge request."
+msgstr ""
+
 msgid "StaticSiteEditor|Return to site"
 msgstr ""
 
@@ -19375,6 +19381,9 @@ msgid "StaticSiteEditor|Success!"
 msgstr ""
 
 msgid "StaticSiteEditor|Summary of changes"
+msgstr ""
+
+msgid "StaticSiteEditor|Update %{sourcePath} file"
 msgstr ""
 
 msgid "StaticSiteEditor|View merge request"

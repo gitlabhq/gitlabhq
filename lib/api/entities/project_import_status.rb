@@ -5,7 +5,7 @@ module API
     class ProjectImportStatus < ProjectIdentity
       expose :import_status
       expose :correlation_id do |project, _options|
-        project.import_state.correlation_id
+        project.import_state&.correlation_id
       end
 
       # TODO: Use `expose_nil` once we upgrade the grape-entity gem

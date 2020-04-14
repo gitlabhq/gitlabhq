@@ -651,10 +651,42 @@ describe('Api', () => {
 
     describe('when an error occurs while getting a raw file', () => {
       it('rejects the Promise', () => {
-        mock.onDelete(expectedUrl).replyOnce(500);
+        mock.onPost(expectedUrl).replyOnce(500);
 
         return Api.getRawFile(dummyProjectPath, dummyFilePath).catch(() => {
           expect(mock.history.get).toHaveLength(1);
+        });
+      });
+    });
+  });
+
+  describe('createProjectMergeRequest', () => {
+    const dummyProjectPath = 'gitlab-org/gitlab';
+    const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${encodeURIComponent(
+      dummyProjectPath,
+    )}/merge_requests`;
+    const options = {
+      source_branch: 'feature',
+      target_branch: 'master',
+      title: 'Add feature',
+    };
+
+    describe('when the merge request is successfully created', () => {
+      it('resolves the Promise', () => {
+        mock.onPost(expectedUrl, options).replyOnce(201);
+
+        return Api.createProjectMergeRequest(dummyProjectPath, options).then(() => {
+          expect(mock.history.post).toHaveLength(1);
+        });
+      });
+    });
+
+    describe('when an error occurs while getting a raw file', () => {
+      it('rejects the Promise', () => {
+        mock.onPost(expectedUrl).replyOnce(500);
+
+        return Api.createProjectMergeRequest(dummyProjectPath).catch(() => {
+          expect(mock.history.post).toHaveLength(1);
         });
       });
     });

@@ -468,12 +468,16 @@ config.
    Manual failover is possible by updating `praefect['virtual_storages']` and
    nominating a new primary node.
 
-   NOTE: **Note:**: Automatic failover is not yet supported for setups with
-   multiple Praefect nodes. There is currently no coordination between Praefect
-   nodes, which could result in two Praefect instances thinking two different
-   Gitaly nodes are the primary. Follow issue
-   [#2547](https://gitlab.com/gitlab-org/gitaly/-/issues/2547) for
-   updates.
+1. By default, Praefect will nominate a primary Gitaly node for each
+   shard and store the state of the primary in local memory. This state
+   does not persist across restarts and will cause a split brain
+   if multiple Praefect nodes are used for redundancy.
+
+   To avoid this limitation, enable the SQL election strategy:
+
+    ```ruby
+    praefect['failover_election_strategy'] = 'sql'
+    ```
 
 1. Save the changes to `/etc/gitlab/gitlab.rb` and [reconfigure
    Praefect](../restart_gitlab.md#omnibus-gitlab-reconfigure):
@@ -677,8 +681,18 @@ current primary node is found to be unhealthy.
   checks fail for the current primary backend Gitaly node, and new primary will
   be elected. **Do not use with multiple Praefect nodes!** Using with multiple
   Praefect nodes is likely to result in a split brain.
-- **PostgreSQL:** Coming soon. See isse
-  [#2547](https://gitlab.com/gitlab-org/gitaly/-/issues/2547) for updates.
+- **PostgreSQL:** Enabled by setting
+  `praefect['failover_election_strategy'] = sql`. This configuration
+  option will allow multiple Praefect nodes to coordinate via the
+  PostgreSQL database to elect a primary Gitaly node. This configuration
+  will cause Praefect nodes to elect a new primary, monitor its health,
+  and elect a new primary if the current one has not been reachable in
+  10 seconds by a majority of the Praefect nodes.
+
+NOTE: **Note:**: Praefect does not yet account for replication lag on
+the secondaries during the election process, so data loss can occur
+during a failover. Follow issue
+[#2642](https://gitlab.com/gitlab-org/gitaly/-/issues/2642) for updates.
 
 It is likely that we will implement support for Consul, and a cloud native
 strategy in the future.
