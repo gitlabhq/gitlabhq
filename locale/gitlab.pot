@@ -3418,6 +3418,9 @@ msgstr ""
 msgid "Cannot have multiple Jira imports running at the same time"
 msgstr ""
 
+msgid "Cannot import because issues are not available in this project."
+msgstr ""
+
 msgid "Cannot make epic confidential if it contains not-confidential issues"
 msgstr ""
 
@@ -12926,7 +12929,7 @@ msgstr ""
 msgid "Metrics|Prometheus Query Documentation"
 msgstr ""
 
-msgid "Metrics|Reload this page"
+msgid "Metrics|Refresh dashboard"
 msgstr ""
 
 msgid "Metrics|Show last"
@@ -21809,6 +21812,9 @@ msgid "Unable to find Jira project to import data from."
 msgstr ""
 
 msgid "Unable to generate new instance ID"
+msgstr ""
+
+msgid "Unable to load the diff"
 msgstr ""
 
 msgid "Unable to load the diff. %{button_try_again}"

@@ -94,10 +94,11 @@ Edit `/etc/fstab` on client as below to mount the remote shares automatically at
 Note that GitLab requires advisory file locking, which is only supported natively in
 NFS version 4. NFSv3 also supports locking as long as Linux Kernel 2.6.5+ is used.
 We recommend using version 4 and do not specifically test NFSv3.
+See [NFS documentation](nfs.md#nfs-client-mount-options) for guidance on mount options.
 
 ```text
 #/etc/fstab
-165.227.159.85:/home       /nfs/home      nfs4 defaults,soft,rsize=1048576,wsize=1048576,noatime,nofail,lookupcache=positive 0 2
+10.0.0.1:/nfs/home  /nfs/home  nfs4 defaults,hard,vers=4.1,rsize=1048576,wsize=1048576,noatime,nofail,lookupcache=positive 0 2
 ```
 
 Reboot the client and confirm that the mount point is mounted automatically.

@@ -38,6 +38,12 @@ describe JiraImport::StartImportService do
         it_behaves_like 'responds with error', 'Jira integration not configured.'
       end
 
+      context 'when issues feature are disabled' do
+        let_it_be(:project, reload: true) { create(:project, :issues_disabled) }
+
+        it_behaves_like 'responds with error', 'Cannot import because issues are not available in this project.'
+      end
+
       context 'when Jira service exists' do
         let!(:jira_service) { create(:jira_service, project: project, active: true) }
 

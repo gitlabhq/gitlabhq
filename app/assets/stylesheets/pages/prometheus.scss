@@ -84,13 +84,6 @@
   border-radius: $border-radius-default;
 }
 
-.prometheus-graph-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: $gl-padding-8;
-}
-
 .alert-current-setting {
   max-width: 240px;
 

@@ -5,6 +5,7 @@ require 'spec_helper'
 describe Projects::Import::JiraController do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
+  let_it_be(:jira_project_key) { 'Test' }
 
   context 'with anonymous user' do
     before do
@@ -21,7 +22,7 @@ describe Projects::Import::JiraController do
 
     context 'post import' do
       it 'redirects to issues page' do
-        post :import, params: { namespace_id: project.namespace, project_id: project, jira_project_key: 'Test' }
+        post :import, params: { namespace_id: project.namespace, project_id: project, jira_project_key: jira_project_key }
 
         expect(response).to redirect_to(new_user_session_path)
       end
@@ -49,7 +50,7 @@ describe Projects::Import::JiraController do
 
       context 'post import' do
         it 'redirects to issues page' do
-          post :import, params: { namespace_id: project.namespace, project_id: project, jira_project_key: 'Test' }
+          post :import, params: { namespace_id: project.namespace, project_id: project, jira_project_key: jira_project_key }
 
           expect(response).to redirect_to(project_issues_path(project))
         end
@@ -65,12 +66,64 @@ describe Projects::Import::JiraController do
       context 'when jira service is enabled for the project' do
         let_it_be(:jira_service) { create(:jira_service, project: project) }
 
+        context 'when user is developer' do
+          let_it_be(:dev) { create(:user) }
+
+          before do
+            sign_in(dev)
+            project.add_developer(dev)
+          end
+
+          context 'get show' do
+            before do
+              get :show, params: { namespace_id: project.namespace.to_param, project_id: project }
+            end
+
+            it 'does not query jira service' do
+              expect(project).not_to receive(:jira_service)
+            end
+
+            it 'renders show template' do
+              expect(response).to render_template(:show)
+              expect(assigns(:jira_projects)).not_to be_present
+            end
+          end
+
+          context 'post import' do
+            it 'returns 404' do
+              post :import, params: { namespace_id: project.namespace, project_id: project, jira_project_key: jira_project_key }
+
+              expect(response).to have_gitlab_http_status(:not_found)
+            end
+          end
+        end
+
+        context 'when issues disabled' do
+          let_it_be(:disabled_issues_project) { create(:project, :public, :issues_disabled) }
+
+          context 'get show' do
+            it 'returs 404' do
+              get :show, params: { namespace_id: project.namespace.to_param, project_id: disabled_issues_project }
+
+              expect(response).to have_gitlab_http_status(:not_found)
+            end
+          end
+
+          context 'post import' do
+            it 'returs 404' do
+              post :import, params: { namespace_id: disabled_issues_project.namespace, project_id: disabled_issues_project, jira_project_key: jira_project_key }
+
+              expect(response).to have_gitlab_http_status(:not_found)
+            end
+          end
+        end
+
         context 'when running jira import first time' do
           context 'get show' do
             before do
               allow(JIRA::Resource::Project).to receive(:all).and_return(jira_projects)
 
-              expect(project.import_state).to be_nil
+              expect(project.jira_imports).to be_empty
 
               get :show, params: { namespace_id: project.namespace.to_param, project_id: project }
             end
@@ -84,7 +137,7 @@ describe Projects::Import::JiraController do
               end
             end
 
-            context 'when everything is ok' do
+            context 'when projects retrieved from Jira' do
               let(:jira_projects) { [double(name: 'FOO project', key: 'FOO')] }
 
               it 'renders show template' do
@@ -107,14 +160,14 @@ describe Projects::Import::JiraController do
               it 'creates import state' do
                 expect(project.latest_jira_import).to be_nil
 
-                post :import, params: { namespace_id: project.namespace, project_id: project, jira_project_key: 'Test' }
+                post :import, params: { namespace_id: project.namespace, project_id: project, jira_project_key: jira_project_key }
 
                 project.reload
 
                 jira_import = project.latest_jira_import
                 expect(project.import_type).to eq 'jira'
                 expect(jira_import.status).to eq 'scheduled'
-                expect(jira_import.jira_project_key).to eq 'Test'
+                expect(jira_import.jira_project_key).to eq jira_project_key
                 expect(response).to redirect_to(project_import_jira_path(project))
               end
             end
@@ -145,7 +198,7 @@ describe Projects::Import::JiraController do
         end
 
         context 'when jira import ran before' do
-          let_it_be(:jira_import_state) { create(:jira_import_state, :finished, project: project, jira_project_key: 'Test') }
+          let_it_be(:jira_import_state) { create(:jira_import_state, :finished, project: project, jira_project_key: jira_project_key) }
 
           context 'get show' do
             it 'renders import status' do
@@ -164,7 +217,7 @@ describe Projects::Import::JiraController do
               project.reload
               expect(project.latest_jira_import.status).to eq 'scheduled'
               expect(project.jira_imports.size).to eq 2
-              expect(project.jira_imports.first.jira_project_key).to eq 'Test'
+              expect(project.jira_imports.first.jira_project_key).to eq jira_project_key
               expect(project.jira_imports.last.jira_project_key).to eq 'New Project'
               expect(response).to redirect_to(project_import_jira_path(project))
             end

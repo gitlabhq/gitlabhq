@@ -1,4 +1,3 @@
-import Vue from 'vue';
 import pick from 'lodash/pick';
 import * as types from './mutation_types';
 import { mapToDashboardViewModel, normalizeQueryResult } from './utils';
@@ -24,24 +23,6 @@ const findMetricInDashboard = (metricId, dashboard) => {
     });
   });
   return res;
-};
-
-/**
- * Set a new state for a metric.
- *
- * Initally metric data is not populated, so `Vue.set` is
- * used to add new properties to the metric.
- *
- * @param {Object} metric - Metric object as defined in the dashboard
- * @param {Object} state - New state
- * @param {Array|null} state.result - Array of results
- * @param {String} state.error - Error code from metricStates
- * @param {Boolean} state.loading - True if the metric is loading
- */
-const setMetricState = (metric, { result = null, loading = false, state = null }) => {
-  Vue.set(metric, 'result', result);
-  Vue.set(metric, 'loading', loading);
-  Vue.set(metric, 'state', state);
 };
 
 /**
@@ -116,39 +97,32 @@ export default {
    */
   [types.REQUEST_METRIC_RESULT](state, { metricId }) {
     const metric = findMetricInDashboard(metricId, state.dashboard);
-    setMetricState(metric, {
-      loading: true,
-      state: metricStates.LOADING,
-    });
+    metric.loading = true;
+    if (!metric.result) {
+      metric.state = metricStates.LOADING;
+    }
   },
   [types.RECEIVE_METRIC_RESULT_SUCCESS](state, { metricId, result }) {
-    if (!metricId) {
-      return;
-    }
-
+    const metric = findMetricInDashboard(metricId, state.dashboard);
+    metric.loading = false;
     state.showEmptyState = false;
 
-    const metric = findMetricInDashboard(metricId, state.dashboard);
     if (!result || result.length === 0) {
-      setMetricState(metric, {
-        state: metricStates.NO_DATA,
-      });
+      metric.state = metricStates.NO_DATA;
+      metric.result = null;
     } else {
       const normalizedResults = result.map(normalizeQueryResult);
-      setMetricState(metric, {
-        result: Object.freeze(normalizedResults),
-        state: metricStates.OK,
-      });
+
+      metric.state = metricStates.OK;
+      metric.result = Object.freeze(normalizedResults);
     }
   },
   [types.RECEIVE_METRIC_RESULT_FAILURE](state, { metricId, error }) {
-    if (!metricId) {
-      return;
-    }
     const metric = findMetricInDashboard(metricId, state.dashboard);
-    setMetricState(metric, {
-      state: emptyStateFromError(error),
-    });
+
+    metric.state = emptyStateFromError(error);
+    metric.loading = false;
+    metric.result = null;
   },
   [types.SET_INITIAL_STATE](state, initialState = {}) {
     Object.assign(state, pick(initialState, initialStateKeys));

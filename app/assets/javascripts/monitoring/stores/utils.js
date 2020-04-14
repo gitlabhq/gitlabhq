@@ -76,6 +76,12 @@ const mapToMetricsViewModel = metrics =>
     queryRange: query_range,
     prometheusEndpointPath: prometheus_endpoint_path,
     metricId: uniqMetricsId({ metric_id, id }),
+
+    // metric data
+    loading: false,
+    result: null,
+    state: null,
+
     ...metric,
   }));
 

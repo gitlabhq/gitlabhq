@@ -1,5 +1,4 @@
 <script>
-/* eslint-disable @gitlab/vue-require-i18n-strings */
 import { mapState, mapActions } from 'vuex';
 import { GlSkeletonLoading } from '@gitlab/ui';
 import DiffFileHeader from '~/diffs/components/diff_file_header.vue';
@@ -96,7 +95,7 @@ export default {
           <td class="old_line diff-line-num"></td>
           <td class="new_line diff-line-num"></td>
           <td v-if="error" class="js-error-lazy-load-diff diff-loading-error-block">
-            {{ error }} Unable to load the diff
+            {{ __('Unable to load the diff') }}
             <button
               class="btn-link btn-link-retry btn-no-padding js-toggle-lazy-diff-retry-button"
               @click="fetchDiff"

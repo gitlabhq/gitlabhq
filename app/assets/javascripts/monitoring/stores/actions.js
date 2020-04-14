@@ -128,7 +128,7 @@ export const receiveMetricsDashboardSuccess = ({ commit, dispatch }, { response 
   commit(types.RECEIVE_METRICS_DASHBOARD_SUCCESS, dashboard);
   commit(types.SET_ENDPOINTS, convertObjectPropsToCamelCase(metrics_data));
 
-  return dispatch('fetchPrometheusMetrics');
+  return dispatch('fetchDashboardData');
 };
 export const receiveMetricsDashboardFailure = ({ commit }, error) => {
   commit(types.RECEIVE_METRICS_DASHBOARD_FAILURE, error);
@@ -140,7 +140,7 @@ export const receiveMetricsDashboardFailure = ({ commit }, error) => {
  * Loads timeseries data: Prometheus data points and deployment data from the project
  * @param {Object} Vuex store
  */
-export const fetchPrometheusMetrics = ({ state, dispatch, getters }) => {
+export const fetchDashboardData = ({ state, dispatch, getters }) => {
   dispatch('fetchDeploymentsData');
 
   if (!state.timeRange) {

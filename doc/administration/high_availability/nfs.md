@@ -148,12 +148,15 @@ For supported database architecture, please see our documentation on
 
 ## NFS Client mount options
 
-Below is an example of an NFS mount point defined in `/etc/fstab` we use on
-GitLab.com:
+Here is an example snippet to add to `/etc/fstab`:
 
-```plaintext
-10.1.1.1:/var/opt/gitlab/git-data /var/opt/gitlab/git-data nfs4 defaults,soft,rsize=1048576,wsize=1048576,noatime,nofail,lookupcache=positive 0 2
-```
+   ```plaintext
+   10.1.0.1:/var/opt/gitlab/.ssh /var/opt/gitlab/.ssh nfs4 defaults,vers=4.1,hard,rsize=1048576,wsize=1048576,noatime,nofail,lookupcache=positive 0 2
+   10.1.0.1:/var/opt/gitlab/gitlab-rails/uploads /var/opt/gitlab/gitlab-rails/uploads nfs4 defaults,vers=4.1,hard,rsize=1048576,wsize=1048576,noatime,nofail,lookupcache=positive 0 2
+   10.1.0.1:/var/opt/gitlab/gitlab-rails/shared /var/opt/gitlab/gitlab-rails/shared nfs4 defaults,vers=4.1,hard,rsize=1048576,wsize=1048576,noatime,nofail,lookupcache=positive 0 2
+   10.1.0.1:/var/opt/gitlab/gitlab-ci/builds /var/opt/gitlab/gitlab-ci/builds nfs4 defaults,vers=4.1,hard,rsize=1048576,wsize=1048576,noatime,nofail,lookupcache=positive 0 2
+   10.1.0.1:/var/opt/gitlab/git-data /var/opt/gitlab/git-data nfs4 defaults,vers=4.1,hard,rsize=1048576,wsize=1048576,noatime,nofail,lookupcache=positive 0 2
+   ```
 
 Note there are several options that you should consider using:
 
@@ -162,6 +165,42 @@ Note there are several options that you should consider using:
 | `vers=4.1` |NFS v4.1 should be used instead of v4.0 because there is a Linux [NFS client bug in v4.0](https://gitlab.com/gitlab-org/gitaly/issues/1339) that can cause significant problems due to stale data.
 | `nofail` | Don't halt boot process waiting for this mount to become available
 | `lookupcache=positive` | Tells the NFS client to honor `positive` cache results but invalidates any `negative` cache results. Negative cache results cause problems with Git. Specifically, a `git push` can fail to register uniformly across all NFS clients. The negative cache causes the clients to 'remember' that the files did not exist previously.
+| `hard` | Instead of `soft`. [Further details](#soft-mount-option).
+
+### soft mount option
+
+We recommend that you use `hard` in your mount options, unless you have a specific
+reason to use `soft`.
+
+On GitLab.com, we use `soft` because there were times when we had NFS servers
+reboot and `soft` improved availability, but everyone's infrastructure is different.
+If your NFS is provided by on-premise storage arrays with redundant controllers,
+for example, you shouldn't need to worry about NFS server availability.
+
+The NFS man page states:
+
+> "soft" timeout can cause silent data corruption in certain cases
+
+Read the [Linux man page](https://linux.die.net/man/5/nfs) to understand the difference,
+and if you do use `soft`, ensure that you've taken steps to mitigate the risks.
+
+If you experience behaviour that might have been caused by
+writes to disk on the NFS server not occurring, such as commits going missing,
+use the `hard` option, because (from the man page):
+
+> use the soft option only when client responsiveness is more important than data integrity
+
+Other vendors make similar recommendations, including
+[SAP](http://wiki.scn.sap.com/wiki/x/PARnFQ) and NetApp's
+[knowledge base](https://kb.netapp.com/app/answers/answer_view/a_id/1004893/~/hard-mount-vs-soft-mount-),
+they highlight that if the NFS client driver caches data, `soft` means there is no certainty if
+writes by GitLab are actually on disk.
+
+Mount points set with the option `hard` may not perform as well, and if the
+NFS server goes down, `hard` will cause processes to hang when interacting with
+the mount point. Use `SIGKILL` (`kill -9`) to deal with hung processes.
+The `intr` option
+[stopped working in the 2.6 kernel](https://access.redhat.com/solutions/157873).
 
 ## A single NFS mount
 

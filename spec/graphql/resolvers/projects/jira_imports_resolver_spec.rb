@@ -18,22 +18,20 @@ describe Resolvers::Projects::JiraImportsResolver do
 
           it_behaves_like 'no jira import access'
         end
-
-        context 'when user developer' do
-          before do
-            project.add_developer(user)
-          end
-
-          it_behaves_like 'no jira import access'
-        end
       end
 
       context 'when user can read Jira import data' do
         before do
-          project.add_maintainer(user)
+          project.add_guest(user)
         end
 
         it_behaves_like 'no jira import data present'
+
+        it 'does not raise access error' do
+          expect do
+            resolve_imports
+          end.not_to raise_error
+        end
       end
     end
 
@@ -58,19 +56,11 @@ describe Resolvers::Projects::JiraImportsResolver do
 
           it_behaves_like 'no jira import access'
         end
-
-        context 'when user developer' do
-          before do
-            project.add_developer(user)
-          end
-
-          it_behaves_like 'no jira import access'
-        end
       end
 
       context 'when user can access Jira imports' do
         before do
-          project.add_maintainer(user)
+          project.add_guest(user)
         end
 
         it 'returns Jira imports sorted ascending by created_at time' do

@@ -3,14 +3,18 @@
 module Projects
   module Import
     class JiraController < Projects::ApplicationController
+      before_action :authenticate_user!
+      before_action :check_issues_available!
+      before_action :authorize_read_project!
       before_action :jira_import_enabled?
       before_action :jira_integration_configured?
+      before_action :authorize_admin_project!, only: [:import]
 
       def show
         @is_jira_configured = @project.jira_service.present?
         return if Feature.enabled?(:jira_issue_import_vue, @project)
 
-        unless @project.latest_jira_import&.in_progress?
+        if !@project.latest_jira_import&.in_progress? && current_user&.can?(:admin_project, @project)
           jira_client = @project.jira_service.client
           jira_projects = jira_client.Project.all
 

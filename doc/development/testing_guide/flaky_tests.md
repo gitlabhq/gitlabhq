@@ -40,8 +40,8 @@ Quarantined tests are run on the CI in dedicated jobs that are allowed to fail:
 
 ## Automatic retries and flaky tests detection
 
-On our CI, we use [rspec-retry] to automatically retry a failing example a few
-times (see [`spec/spec_helper.rb`] for the precise retries count).
+On our CI, we use [rspec-retry](https://github.com/NoRedInk/rspec-retry) to automatically retry a failing example a few
+times (see [`spec/spec_helper.rb`](https://gitlab.com/gitlab-org/gitlab/blob/master/spec/spec_helper.rb) for the precise retries count).
 
 We also use a home-made `RspecFlaky::Listener` listener which records flaky
 examples in a JSON report file on `master` (`retrieve-tests-metadata` and
@@ -51,9 +51,6 @@ This was originally implemented in: <https://gitlab.com/gitlab-org/gitlab-foss/-
 
 If you want to enable retries locally, you can use the `RETRIES` env variable.
 For instance `RETRIES=1 bin/rspec ...` would retry the failing examples once.
-
-[rspec-retry]: https://github.com/NoRedInk/rspec-retry
-[`spec/spec_helper.rb`]: https://gitlab.com/gitlab-org/gitlab/blob/master/spec/spec_helper.rb
 
 ## Problems we had in the past at GitLab
 

@@ -74,7 +74,7 @@ export default {
 
           <div class="table-section section-20 section-wrap">
             <div role="rowheader" class="table-mobile-header">{{ __('Name') }}</div>
-            <div class="table-mobile-content">{{ testCase.name }}</div>
+            <div class="table-mobile-content pr-md-1 text-truncate">{{ testCase.name }}</div>
           </div>
 
           <div class="table-section section-10 section-wrap">

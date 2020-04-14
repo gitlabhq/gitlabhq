@@ -19,12 +19,7 @@ import PanelType from 'ee_else_ce/monitoring/components/panel_type.vue';
 import { s__ } from '~/locale';
 import createFlash from '~/flash';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import {
-  mergeUrlParams,
-  redirectTo,
-  refreshCurrentPage,
-  updateHistory,
-} from '~/lib/utils/url_utility';
+import { mergeUrlParams, redirectTo, updateHistory } from '~/lib/utils/url_utility';
 import invalidUrl from '~/lib/utils/invalid_url';
 import Icon from '~/vue_shared/components/icon.vue';
 import DateTimePicker from '~/vue_shared/components/date_time_picker/date_time_picker.vue';
@@ -273,6 +268,7 @@ export default {
     ...mapActions('monitoringDashboard', [
       'setTimeRange',
       'fetchData',
+      'fetchDashboardData',
       'setGettingStartedEmptyState',
       'setInitialState',
       'setPanelGroupMetrics',
@@ -360,7 +356,7 @@ export default {
     },
 
     refreshDashboard() {
-      refreshCurrentPage();
+      this.fetchDashboardData();
     },
 
     onTimeRangeZoom({ start, end }) {
@@ -475,7 +471,7 @@ export default {
             ref="refreshDashboardBtn"
             v-gl-tooltip
             variant="default"
-            :title="s__('Metrics|Reload this page')"
+            :title="s__('Metrics|Refresh dashboard')"
             @click="refreshDashboard"
           >
             <icon name="retry" />

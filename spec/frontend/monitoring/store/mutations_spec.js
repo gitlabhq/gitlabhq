@@ -202,15 +202,12 @@ describe('Monitoring mutations', () => {
 
         mutations[types.REQUEST_METRIC_RESULT](stateCopy, {
           metricId,
-          result,
         });
 
         expect(stateCopy.showEmptyState).toBe(true);
         expect(getMetric()).toEqual(
           expect.objectContaining({
             loading: true,
-            result: null,
-            state: metricStates.LOADING,
           }),
         );
       });
@@ -232,7 +229,7 @@ describe('Monitoring mutations', () => {
       });
 
       it('adds results to the store', () => {
-        expect(getMetric().result).toBe(undefined);
+        expect(getMetric().result).toBe(null);
 
         mutations[types.RECEIVE_METRIC_RESULT_SUCCESS](stateCopy, {
           metricId,

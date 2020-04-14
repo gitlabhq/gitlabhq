@@ -4,6 +4,7 @@ import { pickBy } from 'lodash';
 import invalidUrl from '~/lib/utils/invalid_url';
 import {
   GlResizeObserverDirective,
+  GlLoadingIcon,
   GlDropdown,
   GlDropdownItem,
   GlModal,
@@ -37,6 +38,7 @@ export default {
     MonitorStackedColumnChart,
     MonitorEmptyChart,
     Icon,
+    GlLoadingIcon,
     GlTooltip,
     GlDropdown,
     GlDropdownItem,
@@ -104,12 +106,16 @@ export default {
       // This method is extended by ee functionality
       return false;
     },
-    graphDataHasMetrics() {
+    graphDataHasResult() {
       return (
         this.graphData.metrics &&
         this.graphData.metrics[0].result &&
         this.graphData.metrics[0].result.length > 0
       );
+    },
+    graphDataIsLoading() {
+      const { metrics = [] } = this.graphData;
+      return metrics.some(({ loading }) => loading);
     },
     logsPathWithTimeRange() {
       const timeRange = this.zoomedTimeRange || this.timeRange;
@@ -140,7 +146,7 @@ export default {
     },
     isContextualMenuShown() {
       return (
-        this.graphDataHasMetrics &&
+        this.graphDataHasResult &&
         !this.isPanelType('single-stat') &&
         !this.isPanelType('heatmap') &&
         !this.isPanelType('column') &&
@@ -193,7 +199,7 @@ export default {
 </script>
 <template>
   <div v-gl-resize-observer="onResize" class="prometheus-graph">
-    <div class="prometheus-graph-header">
+    <div class="d-flex align-items-center mr-3">
       <h5
         ref="graphTitle"
         class="prometheus-graph-title gl-font-size-large font-weight-bold text-truncate append-right-8"
@@ -203,23 +209,27 @@ export default {
       <gl-tooltip :target="() => $refs.graphTitle" :disabled="!showTitleTooltip">
         {{ title }}
       </gl-tooltip>
+      <alert-widget
+        v-if="isContextualMenuShown && alertWidgetAvailable"
+        class="mx-1"
+        :modal-id="`alert-modal-${index}`"
+        :alerts-endpoint="alertsEndpoint"
+        :relevant-queries="graphData.metrics"
+        :alerts-to-manage="getGraphAlerts(graphData.metrics)"
+        @setAlerts="setAlerts"
+      />
+      <div class="flex-grow-1"></div>
+      <div v-if="graphDataIsLoading" class="mx-1 mt-1">
+        <gl-loading-icon />
+      </div>
       <div
         v-if="isContextualMenuShown"
-        class="prometheus-graph-widgets js-graph-widgets flex-fill"
+        class="js-graph-widgets"
         data-qa-selector="prometheus_graph_widgets"
       >
         <div class="d-flex align-items-center">
-          <alert-widget
-            v-if="alertWidgetAvailable"
-            :modal-id="`alert-modal-${index}`"
-            :alerts-endpoint="alertsEndpoint"
-            :relevant-queries="graphData.metrics"
-            :alerts-to-manage="getGraphAlerts(graphData.metrics)"
-            @setAlerts="setAlerts"
-          />
           <gl-dropdown
             v-gl-tooltip
-            class="ml-auto mx-3"
             toggle-class="btn btn-transparent border-0"
             data-qa-selector="prometheus_widgets_dropdown"
             right
@@ -275,28 +285,28 @@ export default {
     </div>
 
     <monitor-single-stat-chart
-      v-if="isPanelType('single-stat') && graphDataHasMetrics"
+      v-if="isPanelType('single-stat') && graphDataHasResult"
       :graph-data="graphData"
     />
     <monitor-heatmap-chart
-      v-else-if="isPanelType('heatmap') && graphDataHasMetrics"
+      v-else-if="isPanelType('heatmap') && graphDataHasResult"
       :graph-data="graphData"
     />
     <monitor-bar-chart
-      v-else-if="isPanelType('bar') && graphDataHasMetrics"
+      v-else-if="isPanelType('bar') && graphDataHasResult"
       :graph-data="graphData"
     />
     <monitor-column-chart
-      v-else-if="isPanelType('column') && graphDataHasMetrics"
+      v-else-if="isPanelType('column') && graphDataHasResult"
       :graph-data="graphData"
     />
     <monitor-stacked-column-chart
-      v-else-if="isPanelType('stacked-column') && graphDataHasMetrics"
+      v-else-if="isPanelType('stacked-column') && graphDataHasResult"
       :graph-data="graphData"
     />
     <component
       :is="timeChartComponent"
-      v-else-if="graphDataHasMetrics"
+      v-else-if="graphDataHasResult"
       ref="timeChart"
       :graph-data="graphData"
       :deployment-data="deploymentData"

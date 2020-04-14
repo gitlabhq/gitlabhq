@@ -22,10 +22,10 @@ If you don't exactly understand what we mean by **not everything needs to happen
 - [2.](#2-test-skeleton) Creating the skeleton of the test file (`*_spec.rb`)
 - [3.](#3-test-cases-mvc) The [MVC](https://about.gitlab.com/handbook/values/#minimum-viable-change-mvc) of the test cases' logic
 - [4.](#4-extracting-duplicated-code) Extracting duplicated code into methods
-- [5.](#5-tests-pre-conditions-using-resources-and-page-objects) Tests' pre-conditions (`before :context` and `before`) using resources and [Page Objects]
+- [5.](#5-tests-pre-conditions-using-resources-and-page-objects) Tests' pre-conditions (`before :context` and `before`) using resources and [Page Objects](page_objects.md)
 - [6.](#6-optimization) Optimizing the test suite
 - [7.](#7-resources) Using and implementing resources
-- [8.](#8-page-objects) Moving element definitions and methods to [Page Objects]
+- [8.](#8-page-objects) Moving element definitions and methods to [Page Objects](page_objects.md)
 
 ### 0. Are end-to-end tests needed?
 
@@ -126,7 +126,7 @@ end
 
 > Notice that the test itself is simple. The most challenging part is the creation of the application state, which will be covered later.
 >
-> The exemplified test case's MVC is not enough for the change to be merged, but it helps to build up the test logic. The reason is that we do not want to use locators directly in the tests, and tests **must** use [Page Objects] before they can be merged. This way we better separate the responsibilities, where the Page Objects encapsulate elements and methods that allow us to interact with pages, while the spec files describe the test cases in more business-related language.
+> The exemplified test case's MVC is not enough for the change to be merged, but it helps to build up the test logic. The reason is that we do not want to use locators directly in the tests, and tests **must** use [Page Objects](page_objects.md) before they can be merged. This way we better separate the responsibilities, where the Page Objects encapsulate elements and methods that allow us to interact with pages, while the spec files describe the test cases in more business-related language.
 
 Below are the steps that the test covers:
 
@@ -294,7 +294,7 @@ In the `before` block we create all the application state needed for the tests t
 
 > A project is created in the background by creating the `issue` resource.
 >
-> When creating the [Resources], notice that when calling the `fabricate_via_api` method, we pass some attribute:values, like `title`, and `labels` for the `issue` resource; and `project` and `title` for the `label` resource.
+> When creating the [Resources](resources.md), notice that when calling the `fabricate_via_api` method, we pass some attribute:values, like `title`, and `labels` for the `issue` resource; and `project` and `title` for the `label` resource.
 >
 > What's important to understand here is that by creating the application state mostly using the public APIs we save a lot of time in the test suite setup stage.
 >
@@ -358,7 +358,7 @@ To address point 1, we changed the test implementation from two `it` blocks into
 
 **Note:** When writing this document, some code that is now merged to master was not implemented yet, but we left them here for the readers to understand the whole process of end-to-end test creation.
 
-You can think of [Resources] as anything that can be created on GitLab CE or EE, either through the GUI, the API, or the CLI.
+You can think of [Resources](resources.md) as anything that can be created on GitLab CE or EE, either through the GUI, the API, or the CLI.
 
 With that in mind, resources can be a project, an epic, an issue, a label, a commit, etc.
 
@@ -468,7 +468,7 @@ Page Objects are used in end-to-end tests for maintenance reasons, where a page'
 
 > Page Objects are auto-loaded in the [`qa/qa.rb`](https://gitlab.com/gitlab-org/gitlab/blob/master/qa/qa.rb) file and available in all the test files (`*_spec.rb`).
 
-Take a look at the [Page Objects] documentation.
+Take a look at the [Page Objects](page_objects.md) documentation.
 
 Now, let's go back to our example.
 
@@ -571,7 +571,7 @@ The `text_of_labels_block` method is a simple method that returns the `:labels_b
 
 #### Updates in the view (*.html.haml) and `dropdowns_helper.rb` files
 
-Now let's change the view and the `dropdowns_helper` files to add the selectors that relate to the [Page Objects].
+Now let's change the view and the `dropdowns_helper` files to add the selectors that relate to the [Page Objects](page_objects.md).
 
 In  [`app/views/shared/issuable/_sidebar.html.haml:105`](https://gitlab.com/gitlab-org/gitlab/blob/7ca12defc7a965987b162a6ebef302f95dc8867f/app/views/shared/issuable/_sidebar.html.haml#L105), add a `data: { qa_selector: 'edit_link_labels' }` data attribute.
 
@@ -619,6 +619,3 @@ This method receives an element (`name`) and the `keys` that it will send to tha
 As you might remember, in the Issue Page Object we call this method like this: `send_keys_to_element(:dropdown_input_field, [label, :enter])`.
 
 With that, you should be able to start writing end-to-end tests yourself. *Congratulations!*
-
-[Page Objects]: page_objects.md
-[Resources]: resources.md

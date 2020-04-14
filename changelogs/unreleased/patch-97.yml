@@ -1,0 +1,5 @@
+---
+title: Remove 'error' from diff note error message
+merge_request: 29281
+author:
+type: fixed

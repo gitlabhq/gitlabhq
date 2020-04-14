@@ -44,36 +44,36 @@ subgraph "CNG-mirror pipeline"
 
 ### Detailed explanation
 
-1. On every [pipeline][gitlab-pipeline] during the `test` stage, the
-   [`gitlab:assets:compile`][gitlab:assets:compile pull-cache] job is automatically started.
-   - Once it's done, it starts the [`review-build-cng`][review-build-cng]
-     manual job since the [`CNG-mirror`][cng-mirror] pipeline triggered in the
+1. On every [pipeline](https://gitlab.com/gitlab-org/gitlab/pipelines/125315730) during the `test` stage, the
+   [`gitlab:assets:compile`](https://gitlab.com/gitlab-org/gitlab/-/jobs/467724487) job is automatically started.
+   - Once it's done, it starts the [`review-build-cng`](https://gitlab.com/gitlab-org/gitlab/-/jobs/467724808)
+     manual job since the [`CNG-mirror`](https://gitlab.com/gitlab-org/build/CNG-mirror) pipeline triggered in the
      following step depends on it.
-1. The [`review-build-cng`][review-build-cng] job [triggers a pipeline][cng-mirror-pipeline]
-   in the [`CNG-mirror`][cng-mirror] project.
-   - The [`CNG-mirror`][cng-mirror-pipeline] pipeline creates the Docker images of
+1. The [`review-build-cng`](https://gitlab.com/gitlab-org/gitlab/-/jobs/467724808) job [triggers a pipeline](https://gitlab.com/gitlab-org/build/CNG-mirror/pipelines/44364657)
+   in the [`CNG-mirror`](https://gitlab.com/gitlab-org/build/CNG-mirror) project.
+   - The [`CNG-mirror`](https://gitlab.com/gitlab-org/build/CNG-mirror/pipelines/44364657) pipeline creates the Docker images of
      each component (e.g. `gitlab-rails-ee`, `gitlab-shell`, `gitaly` etc.)
-     based on the commit from the [GitLab pipeline][gitlab-pipeline] and stores
-     them in its [registry][cng-mirror-registry].
-   - We use the [`CNG-mirror`][cng-mirror] project so that the `CNG`, (**C**loud
+     based on the commit from the [GitLab pipeline](https://gitlab.com/gitlab-org/gitlab/pipelines/125315730) and stores
+     them in its [registry](https://gitlab.com/gitlab-org/build/CNG-mirror/container_registry).
+   - We use the [`CNG-mirror`](https://gitlab.com/gitlab-org/build/CNG-mirror) project so that the `CNG`, (**C**loud
      **N**ative **G**itLab), project's registry is not overloaded with a
      lot of transient Docker images.
    - Note that the official CNG images are built by the `cloud-native-image`
-     job, which runs only for tags, and triggers itself a [`CNG`][cng] pipeline.
-1. Once the `test` stage is done, the [`review-deploy`][review-deploy] job
-   deploys the Review App using [the official GitLab Helm chart][helm-chart] to
-   the [`review-apps-ce`][review-apps-ce] / [`review-apps-ee`][review-apps-ee]
+     job, which runs only for tags, and triggers itself a [`CNG`](https://gitlab.com/gitlab-org/build/CNG) pipeline.
+1. Once the `test` stage is done, the [`review-deploy`](https://gitlab.com/gitlab-org/gitlab/-/jobs/467724810) job
+   deploys the Review App using [the official GitLab Helm chart](https://gitlab.com/gitlab-org/charts/gitlab/) to
+   the [`review-apps-ce`](https://console.cloud.google.com/kubernetes/clusters/details/us-central1-a/review-apps-ce?project=gitlab-review-apps) / [`review-apps-ee`](https://console.cloud.google.com/kubernetes/clusters/details/us-central1-b/review-apps-ee?project=gitlab-review-apps)
    Kubernetes cluster on GCP.
    - The actual scripts used to deploy the Review App can be found at
-     [`scripts/review_apps/review-apps.sh`][review-apps.sh].
+     [`scripts/review_apps/review-apps.sh`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/scripts/review_apps/review-apps.sh).
    - These scripts are basically
-     [our official Auto DevOps scripts][Auto-DevOps.gitlab-ci.yml] where the
+     [our official Auto DevOps scripts](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml) where the
      default CNG images are overridden with the images built and stored in the
-     [`CNG-mirror` project's registry][cng-mirror-registry].
-   - Since we're using [the official GitLab Helm chart][helm-chart], this means
+     [`CNG-mirror` project's registry](https://gitlab.com/gitlab-org/build/CNG-mirror/container_registry).
+   - Since we're using [the official GitLab Helm chart](https://gitlab.com/gitlab-org/charts/gitlab/), this means
      you get a dedicated environment for your branch that's very close to what
      it would look in production.
-1. Once the [`review-deploy`][review-deploy] job succeeds, you should be able to
+1. Once the [`review-deploy`](https://gitlab.com/gitlab-org/gitlab/-/jobs/467724810) job succeeds, you should be able to
    use your Review App thanks to the direct link to it from the MR widget. To log
    into the Review App, see "Log into my Review App?" below.
 
@@ -95,7 +95,7 @@ subgraph "CNG-mirror pipeline"
   stop a Review App manually, and is also started by GitLab once a merge
   request's branch is deleted after being merged.
 - The Kubernetes cluster is connected to the `gitlab-{ce,ee}` projects using
-  [GitLab's Kubernetes integration][gitlab-k8s-integration]. This basically
+  [GitLab's Kubernetes integration](../../user/project/clusters/index.md). This basically
   allows to have a link to the Review App directly from the merge request
   widget.
 
@@ -119,7 +119,7 @@ that were not removed along with the Kubernetes resources.
 
 ## QA runs
 
-On every [pipeline][gitlab-pipeline] in the `qa` stage (which comes after the
+On every [pipeline](https://gitlab.com/gitlab-org/gitlab/pipelines/125315730) in the `qa` stage (which comes after the
 `review` stage), the `review-qa-smoke` job is automatically started and it runs
 the QA smoke suite.
 
@@ -127,7 +127,7 @@ You can also manually start the `review-qa-all`: it runs the full QA suite.
 
 ## Performance Metrics
 
-On every [pipeline][gitlab-pipeline] in the `qa` stage, the
+On every [pipeline](https://gitlab.com/gitlab-org/gitlab/pipelines/125315730) in the `qa` stage, the
 `review-performance` job is automatically started: this job does basic
 browser performance testing using a
 [Sitespeed.io Container](../../user/project/merge_requests/browser_performance_testing.md).
@@ -287,7 +287,7 @@ kubectl get cm --sort-by='{.metadata.creationTimestamp}' | grep 'review-' | grep
 
 ### Using K9s
 
-[K9s] is a powerful command line dashboard which allows you to filter by labels. This can help identify trends with apps exceeding the [review-app resource requests](https://gitlab.com/gitlab-org/gitlab/-/blob/master/scripts/review_apps/base-config.yaml). Kubernetes will schedule pods to nodes based on resource requests and allow for CPU usage up to the limits.
+[K9s](https://github.com/derailed/k9s) is a powerful command line dashboard which allows you to filter by labels. This can help identify trends with apps exceeding the [review-app resource requests](https://gitlab.com/gitlab-org/gitlab/-/blob/master/scripts/review_apps/base-config.yaml). Kubernetes will schedule pods to nodes based on resource requests and allow for CPU usage up to the limits.
 
 - In K9s you can sort or add filters by typing the `/` character
   - `-lrelease=<review-app-slug>` - filters down to all pods for a release. This aids in determining what is having issues in a single deployment
@@ -389,26 +389,8 @@ find a way to limit it to only us.**
 
 ### Helpful command line tools
 
-- [K9s] - enables CLI dashboard across pods and enabling filtering by labels
+- [K9s](https://github.com/derailed/k9s) - enables CLI dashboard across pods and enabling filtering by labels
 - [Stern](https://github.com/wercker/stern) - enables cross pod log tailing based on label/field selectors
-
-[charts-1068]: https://gitlab.com/gitlab-org/charts/gitlab/issues/1068
-[gitlab-pipeline]: https://gitlab.com/gitlab-org/gitlab/pipelines/125315730
-[gitlab:assets:compile pull-cache]: https://gitlab.com/gitlab-org/gitlab/-/jobs/467724487
-[review-build-cng]: https://gitlab.com/gitlab-org/gitlab/-/jobs/467724808
-[review-deploy]: https://gitlab.com/gitlab-org/gitlab/-/jobs/467724810
-[cng-mirror]: https://gitlab.com/gitlab-org/build/CNG-mirror
-[cng]: https://gitlab.com/gitlab-org/build/CNG
-[cng-mirror-pipeline]: https://gitlab.com/gitlab-org/build/CNG-mirror/pipelines/44364657
-[cng-mirror-registry]: https://gitlab.com/gitlab-org/build/CNG-mirror/container_registry
-[helm-chart]: https://gitlab.com/gitlab-org/charts/gitlab/
-[review-apps-ce]: https://console.cloud.google.com/kubernetes/clusters/details/us-central1-a/review-apps-ce?project=gitlab-review-apps
-[review-apps-ee]: https://console.cloud.google.com/kubernetes/clusters/details/us-central1-b/review-apps-ee?project=gitlab-review-apps
-[review-apps.sh]: https://gitlab.com/gitlab-org/gitlab/-/blob/master/scripts/review_apps/review-apps.sh
-[automated_cleanup.rb]: https://gitlab.com/gitlab-org/gitlab/-/blob/master/scripts/review_apps/automated_cleanup.rb
-[Auto-DevOps.gitlab-ci.yml]: https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml
-[gitlab-k8s-integration]: ../../user/project/clusters/index.md
-[K9s]: https://github.com/derailed/k9s
 
 ---
 

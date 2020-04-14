@@ -92,7 +92,7 @@ exports[`Dashboard template matches the default snapshot 1`] = `
       >
         <gl-deprecated-button-stub
           size="md"
-          title="Reload this page"
+          title="Refresh dashboard"
           variant="default"
         >
           <icon-stub

@@ -10,7 +10,10 @@ export const metricStates = {
   OK: 'OK',
 
   /**
-   * Metric data is being fetched
+   * Metric data is being fetched for the first time.
+   *
+   * Not used during data refresh, if data is available in
+   * the metric, the recommneded state is OK.
    */
   LOADING: 'LOADING',
 

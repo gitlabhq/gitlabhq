@@ -5,6 +5,7 @@ import {
   removeLeadingSlash,
   mapToDashboardViewModel,
 } from '~/monitoring/stores/utils';
+import { NOT_IN_DB_PREFIX } from '~/monitoring/constants';
 
 const projectPath = 'gitlab-org/gitlab-test';
 
@@ -256,6 +257,9 @@ describe('mapToDashboardViewModel', () => {
       expect(getMappedMetric(dashboard)).toEqual({
         label: expect.any(String),
         metricId: expect.any(String),
+        loading: false,
+        result: null,
+        state: null,
       });
     });
 
@@ -307,7 +311,7 @@ describe('mapToDashboardViewModel', () => {
 
 describe('uniqMetricsId', () => {
   [
-    { input: { id: 1 }, expected: 'NO_DB_1' },
+    { input: { id: 1 }, expected: `${NOT_IN_DB_PREFIX}_1` },
     { input: { metric_id: 2 }, expected: '2_undefined' },
     { input: { metric_id: 2, id: 21 }, expected: '2_21' },
     { input: { metric_id: 22, id: 1 }, expected: '22_1' },

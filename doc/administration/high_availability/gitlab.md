@@ -22,18 +22,10 @@ is recommended over [NFS](nfs.md) wherever possible for improved performance.
    yum install nfs-utils nfs-utils-lib
    ```
 
-1. Specify the necessary NFS shares. Mounts are specified in
-   `/etc/fstab`. The exact contents of `/etc/fstab` will depend on how you chose
-   to configure your NFS server. See [NFS documentation](nfs.md) for the various
-   options. Here is an example snippet to add to `/etc/fstab`:
-
-   ```plaintext
-   10.1.0.1:/var/opt/gitlab/.ssh /var/opt/gitlab/.ssh nfs4 defaults,soft,rsize=1048576,wsize=1048576,noatime,nofail,lookupcache=positive 0 2
-   10.1.0.1:/var/opt/gitlab/gitlab-rails/uploads /var/opt/gitlab/gitlab-rails/uploads nfs4 defaults,soft,rsize=1048576,wsize=1048576,noatime,nofail,lookupcache=positive 0 2
-   10.1.0.1:/var/opt/gitlab/gitlab-rails/shared /var/opt/gitlab/gitlab-rails/shared nfs4 defaults,soft,rsize=1048576,wsize=1048576,noatime,nofail,lookupcache=positive 0 2
-   10.1.0.1:/var/opt/gitlab/gitlab-ci/builds /var/opt/gitlab/gitlab-ci/builds nfs4 defaults,soft,rsize=1048576,wsize=1048576,noatime,nofail,lookupcache=positive 0 2
-   10.1.0.1:/var/opt/gitlab/git-data /var/opt/gitlab/git-data nfs4 defaults,soft,rsize=1048576,wsize=1048576,noatime,nofail,lookupcache=positive 0 2
-   ```
+1. Specify the necessary NFS exports in `/etc/fstab`.
+   The exact contents of `/etc/fstab` will depend on how you chose
+   to configure your NFS server. See [NFS documentation](nfs.md#nfs-client-mount-options)
+   for examples and the various options.
 
 1. Create the shared directories. These may be different depending on your NFS
    mount locations.

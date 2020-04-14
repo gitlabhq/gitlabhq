@@ -99,6 +99,12 @@ describe 'Starting a Jira Import' do
           it_behaves_like 'a mutation that returns errors in the response', errors: ['Jira integration not configured.']
         end
 
+        context 'when issues feature are disabled' do
+          let_it_be(:project, reload: true) { create(:project, :issues_disabled) }
+
+          it_behaves_like 'a mutation that returns errors in the response', errors: ['Cannot import because issues are not available in this project.']
+        end
+
         context 'when when project has Jira service' do
           let!(:service) { create(:jira_service, project: project) }
 

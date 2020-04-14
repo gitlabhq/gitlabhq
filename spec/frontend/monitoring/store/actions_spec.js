@@ -15,7 +15,7 @@ import {
   receiveMetricsDashboardSuccess,
   fetchDeploymentsData,
   fetchEnvironmentsData,
-  fetchPrometheusMetrics,
+  fetchDashboardData,
   fetchPrometheusMetric,
   setInitialState,
   filterEnvironments,
@@ -375,7 +375,7 @@ describe('Monitoring store actions', () => {
 
         metricsDashboardResponse.dashboard,
       );
-      expect(dispatch).toHaveBeenCalledWith('fetchPrometheusMetrics');
+      expect(dispatch).toHaveBeenCalledWith('fetchDashboardData');
     });
     it('sets the dashboards loaded from the repository', () => {
       const params = {};
@@ -395,7 +395,7 @@ describe('Monitoring store actions', () => {
       expect(commit).toHaveBeenCalledWith(types.SET_ALL_DASHBOARDS, dashboardGitResponse);
     });
   });
-  describe('fetchPrometheusMetrics', () => {
+  describe('fetchDashboardData', () => {
     let commit;
     let dispatch;
     let state;
@@ -413,7 +413,7 @@ describe('Monitoring store actions', () => {
       const getters = {
         metricsWithData: () => [],
       };
-      fetchPrometheusMetrics({ state, commit, dispatch, getters })
+      fetchDashboardData({ state, commit, dispatch, getters })
         .then(() => {
           expect(Tracking.event).toHaveBeenCalledWith(
             document.body.dataset.page,
@@ -442,7 +442,7 @@ describe('Monitoring store actions', () => {
         metricsWithData: () => [metric.id],
       };
 
-      fetchPrometheusMetrics({ state, commit, dispatch, getters })
+      fetchDashboardData({ state, commit, dispatch, getters })
         .then(() => {
           expect(dispatch).toHaveBeenCalledWith('fetchPrometheusMetric', {
             metric,
@@ -478,7 +478,7 @@ describe('Monitoring store actions', () => {
       dispatch.mockRejectedValueOnce(new Error('Error fetching this metric'));
       dispatch.mockResolvedValue();
 
-      fetchPrometheusMetrics({ state, commit, dispatch })
+      fetchDashboardData({ state, commit, dispatch })
         .then(() => {
           expect(dispatch).toHaveBeenCalledTimes(10); // one per metric plus 1 for deployments
           expect(dispatch).toHaveBeenCalledWith('fetchDeploymentsData');
