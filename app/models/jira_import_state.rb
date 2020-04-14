@@ -12,6 +12,8 @@ class JiraImportState < ApplicationRecord
   belongs_to :user
   belongs_to :label
 
+  scope :by_jira_project_key, -> (jira_project_key) { where(jira_project_key: jira_project_key) }
+
   validates :project, presence: true
   validates :jira_project_key, presence: true
   validates :jira_project_name, presence: true

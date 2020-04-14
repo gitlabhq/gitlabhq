@@ -65,7 +65,12 @@ describe Projects::ClustersController do
     describe 'security' do
       let(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
 
-      it { expect { go }.to be_allowed_for(:admin) }
+      it 'is allowed for admin when admin mode enabled', :enable_admin_mode do
+        expect { go }.to be_allowed_for(:admin)
+      end
+      it 'is disabled for admin when admin mode disabled' do
+        expect { go }.to be_denied_for(:admin)
+      end
       it { expect { go }.to be_allowed_for(:owner).of(project) }
       it { expect { go }.to be_allowed_for(:maintainer).of(project) }
       it { expect { go }.to be_denied_for(:developer).of(project) }
@@ -151,7 +156,12 @@ describe Projects::ClustersController do
     end
 
     describe 'security' do
-      it { expect { go }.to be_allowed_for(:admin) }
+      it 'is allowed for admin when admin mode enabled', :enable_admin_mode do
+        expect { go }.to be_allowed_for(:admin)
+      end
+      it 'is disabled for admin when admin mode disabled' do
+        expect { go }.to be_denied_for(:admin)
+      end
       it { expect { go }.to be_allowed_for(:owner).of(project) }
       it { expect { go }.to be_allowed_for(:maintainer).of(project) }
       it { expect { go }.to be_denied_for(:developer).of(project) }
@@ -240,7 +250,12 @@ describe Projects::ClustersController do
         allow(WaitForClusterCreationWorker).to receive(:perform_in).and_return(nil)
       end
 
-      it { expect { go }.to be_allowed_for(:admin) }
+      it 'is allowed for admin when admin mode enabled', :enable_admin_mode do
+        expect { go }.to be_allowed_for(:admin)
+      end
+      it 'is disabled for admin when admin mode disabled' do
+        expect { go }.to be_denied_for(:admin)
+      end
       it { expect { go }.to be_allowed_for(:owner).of(project) }
       it { expect { go }.to be_allowed_for(:maintainer).of(project) }
       it { expect { go }.to be_denied_for(:developer).of(project) }
@@ -346,7 +361,12 @@ describe Projects::ClustersController do
         stub_kubeclient_get_namespace('https://kubernetes.example.com', namespace: 'my-namespace')
       end
 
-      it { expect { go }.to be_allowed_for(:admin) }
+      it 'is allowed for admin when admin mode enabled', :enable_admin_mode do
+        expect { go }.to be_allowed_for(:admin)
+      end
+      it 'is disabled for admin when admin mode disabled' do
+        expect { go }.to be_denied_for(:admin)
+      end
       it { expect { go }.to be_allowed_for(:owner).of(project) }
       it { expect { go }.to be_allowed_for(:maintainer).of(project) }
       it { expect { go }.to be_denied_for(:developer).of(project) }
@@ -414,7 +434,12 @@ describe Projects::ClustersController do
         allow(WaitForClusterCreationWorker).to receive(:perform_in)
       end
 
-      it { expect { post_create_aws }.to be_allowed_for(:admin) }
+      it 'is allowed for admin when admin mode enabled', :enable_admin_mode do
+        expect { post_create_aws }.to be_allowed_for(:admin)
+      end
+      it 'is disabled for admin when admin mode disabled' do
+        expect { post_create_aws }.to be_denied_for(:admin)
+      end
       it { expect { post_create_aws }.to be_allowed_for(:owner).of(project) }
       it { expect { post_create_aws }.to be_allowed_for(:maintainer).of(project) }
       it { expect { post_create_aws }.to be_denied_for(:developer).of(project) }
@@ -469,7 +494,12 @@ describe Projects::ClustersController do
     end
 
     describe 'security' do
-      it { expect { go }.to be_allowed_for(:admin) }
+      it 'is allowed for admin when admin mode enabled', :enable_admin_mode do
+        expect { go }.to be_allowed_for(:admin)
+      end
+      it 'is disabled for admin when admin mode disabled' do
+        expect { go }.to be_denied_for(:admin)
+      end
       it { expect { go }.to be_allowed_for(:owner).of(project) }
       it { expect { go }.to be_allowed_for(:maintainer).of(project) }
       it { expect { go }.to be_denied_for(:developer).of(project) }
@@ -501,7 +531,12 @@ describe Projects::ClustersController do
     end
 
     describe 'security' do
-      it { expect { go }.to be_allowed_for(:admin) }
+      it 'is allowed for admin when admin mode enabled', :enable_admin_mode do
+        expect { go }.to be_allowed_for(:admin)
+      end
+      it 'is disabled for admin when admin mode disabled' do
+        expect { go }.to be_denied_for(:admin)
+      end
       it { expect { go }.to be_allowed_for(:owner).of(project) }
       it { expect { go }.to be_allowed_for(:maintainer).of(project) }
       it { expect { go }.to be_denied_for(:developer).of(project) }
@@ -541,7 +576,12 @@ describe Projects::ClustersController do
     end
 
     describe 'security' do
-      it { expect { go }.to be_allowed_for(:admin) }
+      it 'is allowed for admin when admin mode enabled', :enable_admin_mode do
+        expect { go }.to be_allowed_for(:admin)
+      end
+      it 'is disabled for admin when admin mode disabled' do
+        expect { go }.to be_denied_for(:admin)
+      end
       it { expect { go }.to be_allowed_for(:owner).of(project) }
       it { expect { go }.to be_allowed_for(:maintainer).of(project) }
       it { expect { go }.to be_denied_for(:developer).of(project) }
@@ -574,7 +614,12 @@ describe Projects::ClustersController do
     end
 
     describe 'security' do
-      it { expect { go }.to be_allowed_for(:admin) }
+      it 'is allowed for admin when admin mode enabled', :enable_admin_mode do
+        expect { go }.to be_allowed_for(:admin)
+      end
+      it 'is disabled for admin when admin mode disabled' do
+        expect { go }.to be_denied_for(:admin)
+      end
       it { expect { go }.to be_allowed_for(:owner).of(project) }
       it { expect { go }.to be_allowed_for(:maintainer).of(project) }
       it { expect { go }.to be_denied_for(:developer).of(project) }
@@ -677,7 +722,12 @@ describe Projects::ClustersController do
     describe 'security' do
       let_it_be(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
 
-      it { expect { go }.to be_allowed_for(:admin) }
+      it 'is allowed for admin when admin mode enabled', :enable_admin_mode do
+        expect { go }.to be_allowed_for(:admin)
+      end
+      it 'is disabled for admin when admin mode disabled' do
+        expect { go }.to be_denied_for(:admin)
+      end
       it { expect { go }.to be_allowed_for(:owner).of(project) }
       it { expect { go }.to be_allowed_for(:maintainer).of(project) }
       it { expect { go }.to be_denied_for(:developer).of(project) }
@@ -746,7 +796,12 @@ describe Projects::ClustersController do
     describe 'security' do
       let_it_be(:cluster) { create(:cluster, :provided_by_gcp, :production_environment, projects: [project]) }
 
-      it { expect { go }.to be_allowed_for(:admin) }
+      it 'is allowed for admin when admin mode enabled', :enable_admin_mode do
+        expect { go }.to be_allowed_for(:admin)
+      end
+      it 'is disabled for admin when admin mode disabled' do
+        expect { go }.to be_denied_for(:admin)
+      end
       it { expect { go }.to be_allowed_for(:owner).of(project) }
       it { expect { go }.to be_allowed_for(:maintainer).of(project) }
       it { expect { go }.to be_denied_for(:developer).of(project) }

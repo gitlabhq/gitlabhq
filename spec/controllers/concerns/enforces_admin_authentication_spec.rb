@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe EnforcesAdminAuthentication, :do_not_mock_admin_mode do
+describe EnforcesAdminAuthentication do
   include AdminModeHelper
 
   let(:user) { create(:user) }

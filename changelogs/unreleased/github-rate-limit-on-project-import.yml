@@ -1,0 +1,5 @@
+---
+title: Better error message when importing a Github project and Github API rate limit is exceeded
+merge_request: 28785
+author:
+type: fixed

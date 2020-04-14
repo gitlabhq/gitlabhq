@@ -9087,6 +9087,8 @@ CREATE INDEX index_deployments_on_environment_id_and_status ON public.deployment
 
 CREATE INDEX index_deployments_on_id_and_status ON public.deployments USING btree (id, status);
 
+CREATE INDEX index_deployments_on_id_where_cluster_id_present ON public.deployments USING btree (id) WHERE (cluster_id IS NOT NULL);
+
 CREATE INDEX index_deployments_on_project_id_and_id ON public.deployments USING btree (project_id, id DESC);
 
 CREATE UNIQUE INDEX index_deployments_on_project_id_and_iid ON public.deployments USING btree (project_id, iid);
@@ -13137,6 +13139,8 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200403184110
 20200403185127
 20200403185422
+20200406102111
+20200406102120
 20200406135648
 20200406165950
 20200406171857

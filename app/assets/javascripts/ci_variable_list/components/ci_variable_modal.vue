@@ -65,12 +65,6 @@ export default {
     modalActionText() {
       return this.variableBeingEdited ? __('Update variable') : __('Add variable');
     },
-    primaryAction() {
-      return {
-        text: this.modalActionText,
-        attributes: { variant: 'success', disabled: !this.canSubmit },
-      };
-    },
     maskedFeedback() {
       return __('This variable can not be masked');
     },
@@ -120,6 +114,8 @@ export default {
     ref="modal"
     :modal-id="$options.modalId"
     :title="modalActionText"
+    static
+    lazy
     @hidden="resetModalHandler"
   >
     <form>
@@ -127,7 +123,7 @@ export default {
         <gl-form-input
           id="ci-variable-key"
           v-model="variableData.key"
-          data-qa-selector="variable_key"
+          data-qa-selector="ci_variable_key_field"
         />
       </gl-form-group>
 
@@ -142,7 +138,7 @@ export default {
           v-model="variableData.secret_value"
           rows="3"
           max-rows="6"
-          data-qa-selector="variable_value"
+          data-qa-selector="ci_variable_value_field"
         />
       </gl-form-group>
 
@@ -189,7 +185,7 @@ export default {
         <gl-form-checkbox
           ref="masked-ci-variable"
           v-model="variableData.masked"
-          data-qa-selector="variable_masked"
+          data-qa-selector="ci_variable_masked_checkbox"
         >
           {{ __('Mask variable') }}
           <gl-link href="/help/ci/variables/README#masked-variables">
@@ -218,6 +214,7 @@ export default {
         ref="deleteCiVariable"
         category="secondary"
         variant="danger"
+        data-qa-selector="ci_variable_delete_button"
         @click="deleteVarAndClose"
         >{{ __('Delete variable') }}</gl-deprecated-button
       >
@@ -225,6 +222,7 @@ export default {
         ref="updateOrAddVariable"
         :disabled="!canSubmit"
         variant="success"
+        data-qa-selector="ci_variable_save_button"
         @click="updateOrAddVariable"
         >{{ modalActionText }}
       </gl-deprecated-button>

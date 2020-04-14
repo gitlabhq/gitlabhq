@@ -748,7 +748,7 @@ describe ApplicationController do
     end
   end
 
-  describe '#current_user_mode', :do_not_mock_admin_mode do
+  describe '#current_user_mode' do
     include_context 'custom session'
 
     controller(described_class) do

@@ -39,12 +39,24 @@ describe Projects::MirrorsController do
         expect(response).to have_gitlab_http_status(:not_found)
       end
 
-      it 'allows requests from an admin user' do
-        user.update!(admin: true)
-        sign_in(user)
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it 'allows requests from an admin user' do
+          user.update!(admin: true)
+          sign_in(user)
 
-        subject_action
-        expect(response).to redirect_to(project_settings_path)
+          subject_action
+          expect(response).to redirect_to(project_settings_path)
+        end
+      end
+
+      context 'when admin mode is disabled' do
+        it 'disallows requests from an admin user' do
+          user.update!(admin: true)
+          sign_in(user)
+
+          subject_action
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
       end
     end
   end

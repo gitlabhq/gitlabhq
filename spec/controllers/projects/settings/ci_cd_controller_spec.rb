@@ -245,11 +245,22 @@ describe Projects::Settings::CiCdController do
         context 'and user is an admin' do
           let(:user) { create(:admin)  }
 
-          it 'sets max_artifacts_size' do
-            subject
+          context 'with admin mode disabled' do
+            it 'does not set max_artifacts_size' do
+              subject
 
-            project.reload
-            expect(project.max_artifacts_size).to eq(10)
+              project.reload
+              expect(project.max_artifacts_size).to be_nil
+            end
+          end
+
+          context 'with admin mode enabled', :enable_admin_mode do
+            it 'sets max_artifacts_size' do
+              subject
+
+              project.reload
+              expect(project.max_artifacts_size).to eq(10)
+            end
           end
         end
       end

@@ -8670,6 +8670,9 @@ msgstr ""
 msgid "Failed to enqueue the rebase operation, possibly due to a long-lived transaction. Try again later."
 msgstr ""
 
+msgid "Failed to find import label for jira import."
+msgstr ""
+
 msgid "Failed to get ref."
 msgstr ""
 
@@ -9721,6 +9724,9 @@ msgid "Git strategy for pipelines"
 msgstr ""
 
 msgid "Git version"
+msgstr ""
+
+msgid "GitHub API rate limit exceeded. Try again after %{reset_time}"
 msgstr ""
 
 msgid "GitHub import"
@@ -12151,6 +12157,9 @@ msgid "Link copied"
 msgstr ""
 
 msgid "Link title"
+msgstr ""
+
+msgid "Link title is required"
 msgstr ""
 
 msgid "Linked emails (%{email_count})"
@@ -14996,7 +15005,7 @@ msgstr ""
 msgid "Pods in use"
 msgstr ""
 
-msgid "Point to any links you like: documentation, built binaries, or other related materials. These can be internal or external links from your GitLab instance."
+msgid "Point to any links you like: documentation, built binaries, or other related materials. These can be internal or external links from your GitLab instance. Duplicate URLs are not allowed."
 msgstr ""
 
 msgid "Preferences"
@@ -17197,6 +17206,18 @@ msgid "Require users to prove ownership of custom domains"
 msgstr ""
 
 msgid "Requirement"
+msgstr ""
+
+msgid "Requirement %{reference} has been added"
+msgstr ""
+
+msgid "Requirement %{reference} has been archived"
+msgstr ""
+
+msgid "Requirement %{reference} has been reopened"
+msgstr ""
+
+msgid "Requirement %{reference} has been updated"
 msgstr ""
 
 msgid "Requirement title cannot have more than %{limit} characters."
@@ -20697,6 +20718,9 @@ msgstr ""
 msgid "This Project is currently archived and read-only. Please unarchive the project first if you want to resume Pull mirroring"
 msgstr ""
 
+msgid "This URL is already used for another link; duplicate URLs are not allowed"
+msgstr ""
+
 msgid "This action can lead to data loss. To prevent accidental actions we ask you to confirm your intention."
 msgstr ""
 
@@ -21793,7 +21817,13 @@ msgstr ""
 msgid "URL"
 msgstr ""
 
+msgid "URL is required"
+msgstr ""
+
 msgid "URL must be a valid url (ex: https://gitlab.com)"
+msgstr ""
+
+msgid "URL must start with %{codeStart}http://%{codeEnd}, %{codeStart}https://%{codeEnd}, or %{codeStart}ftp://%{codeEnd}"
 msgstr ""
 
 msgid "URL of the external storage that will serve the repository static objects (e.g. archives, blobs, ...)."

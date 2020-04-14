@@ -232,3 +232,11 @@ export const truncateNamespace = (string = '') => {
 
   return namespace;
 };
+
+/**
+ * Tests that the input is a String and has at least
+ * one non-whitespace character
+ * @param {String} obj The object to test
+ * @returns {Boolean}
+ */
+export const hasContent = obj => isString(obj) && obj.trim() !== '';

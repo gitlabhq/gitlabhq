@@ -6,13 +6,14 @@ module Gitlab
       GITHUB_SAFE_REMAINING_REQUESTS = 100
       GITHUB_SAFE_SLEEP_TIME = 500
 
-      attr_reader :access_token, :host, :api_version
+      attr_reader :access_token, :host, :api_version, :wait_for_rate_limit_reset
 
-      def initialize(access_token, host: nil, api_version: 'v3')
+      def initialize(access_token, host: nil, api_version: 'v3', wait_for_rate_limit_reset: true)
         @access_token = access_token
         @host = host.to_s.sub(%r{/+\z}, '')
         @api_version = api_version
         @users = {}
+        @wait_for_rate_limit_reset = wait_for_rate_limit_reset
 
         if access_token
           ::Octokit.auto_paginate = false
@@ -120,7 +121,7 @@ module Gitlab
       end
 
       def request(method, *args, &block)
-        sleep rate_limit_sleep_time if rate_limit_exceed?
+        sleep rate_limit_sleep_time if wait_for_rate_limit_reset && rate_limit_exceed?
 
         data = api.__send__(method, *args) # rubocop:disable GitlabSecurity/PublicSend
         return data unless data.is_a?(Array)

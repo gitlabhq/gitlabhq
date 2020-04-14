@@ -14,7 +14,12 @@ module QA
           end
 
           def has_successful_build?
-            page.has_text?('Finished: SUCCESS')
+            # Retry on errors such as:
+            # Selenium::WebDriver::Error::JavascriptError:
+            #   javascript error: this.each is not a function
+            Support::Retrier.retry_on_exception(reload_page: page) do
+              page.has_text?('Finished: SUCCESS')
+            end
           end
 
           def no_failed_status_update?

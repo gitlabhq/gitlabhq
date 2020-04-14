@@ -224,4 +224,18 @@ describe('text_utility', () => {
       });
     });
   });
+
+  describe('hasContent', () => {
+    it.each`
+      txt                 | result
+      ${null}             | ${false}
+      ${undefined}        | ${false}
+      ${{ an: 'object' }} | ${false}
+      ${''}               | ${false}
+      ${' \t\r\n'}        | ${false}
+      ${'hello'}          | ${true}
+    `('returns $result for input $txt', ({ result, txt }) => {
+      expect(textUtils.hasContent(txt)).toEqual(result);
+    });
+  });
 });

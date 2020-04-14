@@ -5,14 +5,16 @@ import { release as originalRelease } from '../mock_data';
 import * as commonUtils from '~/lib/utils/common_utils';
 import { BACK_URL_PARAM } from '~/releases/constants';
 import AssetLinksForm from '~/releases/components/asset_links_form.vue';
+import { merge } from 'lodash';
 
 describe('Release edit component', () => {
   let wrapper;
   let release;
   let actions;
+  let getters;
   let state;
 
-  const factory = (featureFlags = {}) => {
+  const factory = ({ featureFlags = {}, store: storeUpdates = {} } = {}) => {
     state = {
       release,
       markdownDocsPath: 'path/to/markdown/docs',
@@ -26,15 +28,30 @@ describe('Release edit component', () => {
       addEmptyAssetLink: jest.fn(),
     };
 
-    const store = new Vuex.Store({
-      modules: {
-        detail: {
-          namespaced: true,
-          actions,
-          state,
+    getters = {
+      isValid: () => true,
+      validationErrors: () => ({
+        assets: {
+          links: [],
         },
-      },
-    });
+      }),
+    };
+
+    const store = new Vuex.Store(
+      merge(
+        {
+          modules: {
+            detail: {
+              namespaced: true,
+              actions,
+              state,
+              getters,
+            },
+          },
+        },
+        storeUpdates,
+      ),
+    );
 
     wrapper = mount(ReleaseEditApp, {
       store,
@@ -54,6 +71,8 @@ describe('Release edit component', () => {
     wrapper.destroy();
     wrapper = null;
   });
+
+  const findSubmitButton = () => wrapper.find('button[type=submit]');
 
   describe(`basic functionality tests: all tests unrelated to the "${BACK_URL_PARAM}" parameter`, () => {
     beforeEach(() => {
@@ -101,7 +120,7 @@ describe('Release edit component', () => {
     });
 
     it('renders the "Save changes" button as type="submit"', () => {
-      expect(wrapper.find('.js-submit-button').attributes('type')).toBe('submit');
+      expect(findSubmitButton().attributes('type')).toBe('submit');
     });
 
     it('calls updateRelease when the form is submitted', () => {
@@ -143,7 +162,7 @@ describe('Release edit component', () => {
 
     describe('when the release_asset_link_editing feature flag is disabled', () => {
       beforeEach(() => {
-        factory({ releaseAssetLinkEditing: false });
+        factory({ featureFlags: { releaseAssetLinkEditing: false } });
       });
 
       it('does not render the asset links portion of the form', () => {
@@ -153,11 +172,53 @@ describe('Release edit component', () => {
 
     describe('when the release_asset_link_editing feature flag is enabled', () => {
       beforeEach(() => {
-        factory({ releaseAssetLinkEditing: true });
+        factory({ featureFlags: { releaseAssetLinkEditing: true } });
       });
 
       it('renders the asset links portion of the form', () => {
         expect(findAssetLinksForm().exists()).toBe(true);
+      });
+    });
+  });
+
+  describe('validation', () => {
+    describe('when the form is valid', () => {
+      beforeEach(() => {
+        factory({
+          store: {
+            modules: {
+              detail: {
+                getters: {
+                  isValid: () => true,
+                },
+              },
+            },
+          },
+        });
+      });
+
+      it('renders the submit button as enabled', () => {
+        expect(findSubmitButton().attributes('disabled')).toBeUndefined();
+      });
+    });
+
+    describe('when the form is invalid', () => {
+      beforeEach(() => {
+        factory({
+          store: {
+            modules: {
+              detail: {
+                getters: {
+                  isValid: () => false,
+                },
+              },
+            },
+          },
+        });
+      });
+
+      it('renders the submit button as disabled', () => {
+        expect(findSubmitButton().attributes('disabled')).toBe('disabled');
       });
     });
   });

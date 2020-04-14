@@ -81,6 +81,28 @@ describe JiraImport::StartImportService do
             expect(jira_import.jira_project_key).to eq(fake_key)
             expect(jira_import.user).to eq(user)
           end
+
+          it 'creates jira import label' do
+            expect { subject }.to change { Label.count }.by(1)
+          end
+
+          it 'creates jira label title with correct number' do
+            jira_import = subject.payload[:import_data]
+
+            label_title = "jira-import::#{jira_import.jira_project_key}-1"
+            expect(jira_import.label.title).to eq(label_title)
+          end
+
+          context 'when multiple jira imports for same jira project' do
+            let!(:jira_imports) { create_list(:jira_import_state, 3, :finished, project: project, jira_project_key: fake_key)}
+
+            it 'creates jira label title with correct number' do
+              jira_import = subject.payload[:import_data]
+
+              label_title = "jira-import::#{jira_import.jira_project_key}-4"
+              expect(jira_import.label.title).to eq(label_title)
+            end
+          end
         end
       end
     end

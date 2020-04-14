@@ -163,7 +163,7 @@ describe Projects::DeployKeysController do
       end
     end
 
-    context 'with admin' do
+    context 'with admin', :enable_admin_mode do
       before do
         sign_in(admin)
       end
@@ -228,7 +228,7 @@ describe Projects::DeployKeysController do
       end
     end
 
-    context 'with admin' do
+    context 'with admin', :enable_admin_mode do
       before do
         sign_in(admin)
       end
@@ -284,7 +284,7 @@ describe Projects::DeployKeysController do
       end
     end
 
-    context 'with admin' do
+    context 'with admin', :enable_admin_mode do
       before do
         sign_in(admin)
       end
@@ -311,8 +311,16 @@ describe Projects::DeployKeysController do
       context 'public deploy key attached to project' do
         let(:extra_params) { deploy_key_params('updated title', '1') }
 
-        it 'updates the title of the deploy key' do
-          expect { subject }.to change { deploy_key.reload.title }.to('updated title')
+        context 'admin mode disabled' do
+          it 'does not update the title of the deploy key' do
+            expect { subject }.not_to change { deploy_key.reload.title }
+          end
+        end
+
+        context 'admin mode enabled', :enable_admin_mode do
+          it 'updates the title of the deploy key' do
+            expect { subject }.to change { deploy_key.reload.title }.to('updated title')
+          end
         end
 
         it 'updates can_push of deploy_keys_project' do

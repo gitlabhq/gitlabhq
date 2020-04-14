@@ -1,0 +1,5 @@
+---
+title: Fix failing ci variable e2e test
+merge_request: 25924
+author:
+type: fixed

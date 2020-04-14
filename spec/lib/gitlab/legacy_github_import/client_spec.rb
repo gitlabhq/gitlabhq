@@ -5,8 +5,9 @@ require 'spec_helper'
 describe Gitlab::LegacyGithubImport::Client do
   let(:token) { '123456' }
   let(:github_provider) { Settingslogic.new('app_id' => 'asd123', 'app_secret' => 'asd123', 'name' => 'github', 'args' => { 'client_options' => {} }) }
+  let(:wait_for_rate_limit_reset) { true }
 
-  subject(:client) { described_class.new(token) }
+  subject(:client) { described_class.new(token, wait_for_rate_limit_reset: wait_for_rate_limit_reset) }
 
   before do
     allow(Gitlab.config.omniauth).to receive(:providers).and_return([github_provider])
@@ -88,10 +89,23 @@ describe Gitlab::LegacyGithubImport::Client do
     end
   end
 
-  it 'does not raise error when rate limit is disabled' do
-    stub_request(:get, /api.github.com/)
-    allow(client.api).to receive(:rate_limit!).and_raise(Octokit::NotFound)
+  context 'github rate limit' do
+    it 'does not raise error when rate limit is disabled' do
+      stub_request(:get, /api.github.com/)
+      allow(client.api).to receive(:rate_limit!).and_raise(Octokit::NotFound)
 
-    expect { client.issues {} }.not_to raise_error
+      expect { client.repos }.not_to raise_error
+    end
+
+    context 'when wait for rate limit is disabled' do
+      let(:wait_for_rate_limit_reset) { false }
+
+      it 'raises the error limit error when requested' do
+        stub_request(:get, /api.github.com/)
+        allow(client.api).to receive(:repos).and_raise(Octokit::TooManyRequests)
+
+        expect { client.repos }.to raise_error(Octokit::TooManyRequests)
+      end
+    end
   end
 end

@@ -7,75 +7,47 @@ module QA
         class CiVariables < Page::Base
           include Common
 
-          view 'app/views/ci/variables/_variable_row.html.haml' do
-            element :variable_row, '.ci-variable-row-body' # rubocop:disable QA/ElementWithPattern
-            element :variable_key, '.qa-ci-variable-input-key' # rubocop:disable QA/ElementWithPattern
-            element :variable_value, '.qa-ci-variable-input-value' # rubocop:disable QA/ElementWithPattern
-            element :variable_masked
+          view 'app/assets/javascripts/ci_variable_list/components/ci_variable_modal.vue' do
+            element :ci_variable_key_field
+            element :ci_variable_value_field
+            element :ci_variable_masked_checkbox
+            element :ci_variable_save_button
+            element :ci_variable_delete_button
           end
 
-          view 'app/views/ci/variables/_index.html.haml' do
-            element :save_variables, '.js-ci-variables-save-button' # rubocop:disable QA/ElementWithPattern
-            element :reveal_values, '.js-secret-value-reveal-button' # rubocop:disable QA/ElementWithPattern
+          view 'app/assets/javascripts/ci_variable_list/components/ci_variable_table.vue' do
+            element :ci_variable_table_content
+            element :add_ci_variable_button
+            element :edit_ci_variable_button
+            element :reveal_ci_variable_value_button
           end
 
           def fill_variable(key, value, masked)
-            keys = all_elements(:ci_variable_input_key, minimum: 1)
-            index = keys.size - 1
-
-            # After we fill the key, JS would generate another field so
-            # we need to use the same index to find the corresponding one.
-            keys[index].set(key)
-            node = all_elements(:ci_variable_input_value, count: keys.size + 1)[index]
-
-            # Simply run `node.set(value)` is too slow for long text here,
-            # so we need to run JavaScript directly to set the value.
-            # The code was inspired from:
-            # https://github.com/teamcapybara/capybara/blob/679548cea10773d45e32808f4d964377cfe5e892/lib/capybara/selenium/node.rb#L217
-            execute_script("arguments[0].value = #{value.to_json}", node)
-
-            masked_node = all_elements(:variable_masked, count: keys.size + 1)[index]
-            toggle_masked(masked_node, masked)
+            fill_element :ci_variable_key_field, key
+            fill_element :ci_variable_value_field, value
+            click_ci_variable_save_button
           end
 
-          def save_variables
-            find('.js-ci-variables-save-button').click
+          def click_add_variable
+            click_element :add_ci_variable_button
           end
 
-          def reveal_variables
-            find('.js-secret-value-reveal-button').click
-          end
-
-          def variable_value(key)
-            within('.ci-variable-row-body', text: key) do
-              find('.qa-ci-variable-input-value').value
+          def click_edit_ci_variable
+            within_element(:ci_variable_table_content) do
+              click_element :edit_ci_variable_button
             end
           end
 
-          def remove_variable(location: :first)
-            within('.ci-variable-row-body', match: location) do
-              find('button.ci-variable-row-remove-button').click
-            end
-
-            save_variables
+          def click_ci_variable_save_button
+            click_element :ci_variable_save_button
           end
 
-          private
-
-          def toggle_masked(masked_node, masked)
-            wait_until(reload: false) do
-              masked_node.click
-
-              masked ? masked_enabled?(masked_node) : masked_disabled?(masked_node)
-            end
+          def click_reveal_ci_variable_value_button
+            click_element :reveal_ci_variable_value_button
           end
 
-          def masked_enabled?(masked_node)
-            masked_node[:class].include?('is-checked')
-          end
-
-          def masked_disabled?(masked_node)
-            !masked_enabled?(masked_node)
+          def click_ci_variable_delete_button
+            click_element :ci_variable_delete_button
           end
         end
       end

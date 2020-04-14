@@ -2,12 +2,20 @@
 
 module QA
   context 'Verify' do
-    describe 'Add or Remove CI variable via UI', :smoke, quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/issues/207915', type: :stale } do
+    describe 'Add or Remove CI variable via UI', :smoke do
       let!(:project) do
         Resource::Project.fabricate_via_api! do |project|
           project.name = 'project-with-ci-variables'
           project.description = 'project with CI variables'
         end
+      end
+
+      before(:all) do
+        Runtime::Feature.enable_and_verify('new_variables_ui')
+      end
+
+      after(:all) do
+        Runtime::Feature.remove('new_variables_ui')
       end
 
       before do
@@ -19,12 +27,12 @@ module QA
       it 'user adds a CI variable' do
         Page::Project::Settings::CICD.perform do |settings|
           settings.expand_ci_variables do |page|
-            expect(page).to have_field(with: 'VARIABLE_KEY')
-            expect(page).not_to have_field(with: 'some_CI_variable')
+            expect(page).to have_text('VARIABLE_KEY')
+            expect(page).not_to have_text('some_CI_variable')
 
-            page.reveal_variables
+            page.click_reveal_ci_variable_value_button
 
-            expect(page).to have_field(with: 'some_CI_variable')
+            expect(page).to have_text('some_CI_variable')
           end
         end
       end
@@ -32,9 +40,10 @@ module QA
       it 'user removes a CI variable' do
         Page::Project::Settings::CICD.perform do |settings|
           settings.expand_ci_variables do |page|
-            page.remove_variable
+            page.click_edit_ci_variable
+            page.click_ci_variable_delete_button
 
-            expect(page).not_to have_field(with: 'VARIABLE_KEY')
+            expect(page).not_to have_text('VARIABLE_KEY')
           end
         end
       end

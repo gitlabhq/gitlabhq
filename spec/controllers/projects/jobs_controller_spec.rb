@@ -391,10 +391,20 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
             sign_in(user)
           end
 
-          it 'settings_path is available' do
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(response).to match_response_schema('job/job_details')
-            expect(json_response['runners']['settings_path']).to match(/runners/)
+          context 'when admin mode is disabled' do
+            it 'settings_path is not available' do
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(response).to match_response_schema('job/job_details')
+              expect(json_response['runners']).not_to have_key('settings_path')
+            end
+          end
+
+          context 'when admin mode is enabled', :enable_admin_mode do
+            it 'settings_path is available' do
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(response).to match_response_schema('job/job_details')
+              expect(json_response['runners']['settings_path']).to match(/runners/)
+            end
           end
         end
       end

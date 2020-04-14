@@ -127,7 +127,12 @@ describe Projects::PipelineSchedulesController do
     describe 'security' do
       let(:schedule) { attributes_for(:ci_pipeline_schedule) }
 
-      it { expect { go }.to be_allowed_for(:admin) }
+      it 'is allowed for admin when admin mode enabled', :enable_admin_mode do
+        expect { go }.to be_allowed_for(:admin)
+      end
+      it 'is denied for admin when admin mode disabled' do
+        expect { go }.to be_denied_for(:admin)
+      end
       it { expect { go }.to be_allowed_for(:owner).of(project) }
       it { expect { go }.to be_allowed_for(:maintainer).of(project) }
       it { expect { go }.to be_allowed_for(:developer).of(project) }
@@ -279,7 +284,12 @@ describe Projects::PipelineSchedulesController do
     describe 'security' do
       let(:schedule) { { description: 'updated_desc' } }
 
-      it { expect { go }.to be_allowed_for(:admin) }
+      it 'is allowed for admin when admin mode enabled', :enable_admin_mode do
+        expect { go }.to be_allowed_for(:admin)
+      end
+      it 'is denied for admin when admin mode disabled' do
+        expect { go }.to be_denied_for(:admin)
+      end
       it { expect { go }.to be_allowed_for(:owner).of(project) }
       it { expect { go }.to be_allowed_for(:maintainer).of(project) }
       it { expect { go }.to be_allowed_for(:developer).of(project).own(pipeline_schedule) }
@@ -343,7 +353,12 @@ describe Projects::PipelineSchedulesController do
     end
 
     describe 'security' do
-      it { expect { go }.to be_allowed_for(:admin) }
+      it 'is allowed for admin when admin mode enabled', :enable_admin_mode do
+        expect { go }.to be_allowed_for(:admin)
+      end
+      it 'is denied for admin when admin mode disabled' do
+        expect { go }.to be_denied_for(:admin)
+      end
       it { expect { go }.to be_allowed_for(:owner).of(project) }
       it { expect { go }.to be_allowed_for(:maintainer).of(project) }
       it { expect { go }.to be_allowed_for(:developer).of(project).own(pipeline_schedule) }
@@ -361,7 +376,12 @@ describe Projects::PipelineSchedulesController do
 
   describe 'GET #take_ownership' do
     describe 'security' do
-      it { expect { go }.to be_allowed_for(:admin) }
+      it 'is allowed for admin when admin mode enabled', :enable_admin_mode do
+        expect { go }.to be_allowed_for(:admin)
+      end
+      it 'is denied for admin when admin mode disabled' do
+        expect { go }.to be_denied_for(:admin)
+      end
       it { expect { go }.to be_allowed_for(:owner).of(project) }
       it { expect { go }.to be_allowed_for(:maintainer).of(project) }
       it { expect { go }.to be_allowed_for(:developer).of(project).own(pipeline_schedule) }

@@ -362,7 +362,7 @@ describe ProjectsController do
   end
 
   describe 'GET edit' do
-    it 'allows an admin user to access the page' do
+    it 'allows an admin user to access the page', :enable_admin_mode do
       sign_in(create(:user, :admin))
 
       get :edit,
@@ -531,7 +531,7 @@ describe ProjectsController do
     end
   end
 
-  describe "#update" do
+  describe "#update", :enable_admin_mode do
     render_views
 
     let(:admin) { create(:admin) }
@@ -672,7 +672,7 @@ describe ProjectsController do
     end
   end
 
-  describe '#transfer' do
+  describe '#transfer', :enable_admin_mode do
     render_views
 
     let(:project) { create(:project, :repository) }
@@ -720,7 +720,7 @@ describe ProjectsController do
     end
   end
 
-  describe "#destroy" do
+  describe "#destroy", :enable_admin_mode do
     let(:admin) { create(:admin) }
 
     it "redirects to the dashboard", :sidekiq_might_not_need_inline do
@@ -1094,7 +1094,7 @@ describe ProjectsController do
       end
     end
 
-    context 'for a DELETE request' do
+    context 'for a DELETE request', :enable_admin_mode do
       before do
         sign_in(create(:admin))
       end

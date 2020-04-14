@@ -33,14 +33,32 @@ module JiraImport
     end
 
     def build_jira_import
+      label = create_import_label(project)
       project.jira_imports.build(
         user: user,
+        label: label,
         jira_project_key: jira_project_key,
         # we do not have the jira_project_name or jira_project_xid yet so just set a mock value,
         # we will once https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28190
         jira_project_name: jira_project_key,
         jira_project_xid: 0
       )
+    end
+
+    def create_import_label(project)
+      label = ::Labels::CreateService.new(build_label_attrs(project)).execute(project: project)
+      raise Projects::ImportService::Error, _('Failed to create import label for jira import.') if label.blank?
+
+      label
+    end
+
+    def build_label_attrs(project)
+      import_start_time = Time.zone.now
+      jira_imports_for_project = project.jira_imports.by_jira_project_key(jira_project_key).size + 1
+      title = "jira-import::#{jira_project_key}-#{jira_imports_for_project}"
+      description = "Label for issues that were imported from jira on #{import_start_time.strftime('%Y-%m-%d %H:%M:%S')}"
+      color = "#{Label.color_for(title)}"
+      { title: title, description: description, color: color }
     end
 
     def validate

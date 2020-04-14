@@ -1190,14 +1190,14 @@ class Project < ApplicationRecord
   end
 
   def external_issue_tracker
-    if has_external_issue_tracker.nil? # To populate existing projects
+    if has_external_issue_tracker.nil?
       cache_has_external_issue_tracker
     end
 
     if has_external_issue_tracker?
-      return @external_issue_tracker if defined?(@external_issue_tracker)
-
-      @external_issue_tracker = services.external_issue_trackers.first
+      strong_memoize(:external_issue_tracker) do
+        services.external_issue_trackers.first
+      end
     else
       nil
     end
@@ -1217,7 +1217,7 @@ class Project < ApplicationRecord
 
   def external_wiki
     if has_external_wiki.nil?
-      cache_has_external_wiki # Populate
+      cache_has_external_wiki
     end
 
     if has_external_wiki

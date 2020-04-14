@@ -26,7 +26,6 @@ export default {
     {
       key: 'value',
       label: s__('CiVariables|Value'),
-      tdClass: 'qa-ci-variable-input-value',
       customStyle: { width: '40%' },
     },
     {
@@ -89,6 +88,7 @@ export default {
       :fields="fields"
       :items="variables"
       tbody-tr-class="js-ci-variable-row"
+      data-qa-selector="ci_variable_table_content"
       sort-by="key"
       sort-direction="asc"
       stacked="lg"
@@ -150,6 +150,7 @@ export default {
         <gl-deprecated-button
           ref="edit-ci-variable"
           v-gl-modal-directive="$options.modalId"
+          data-qa-selector="edit_ci_variable_button"
           @click="editVariable(item)"
         >
           <gl-icon :size="$options.iconSize" name="pencil" />
@@ -168,7 +169,7 @@ export default {
       <gl-deprecated-button
         v-if="tableIsNotEmpty"
         ref="secret-value-reveal-button"
-        data-qa-selector="reveal_ci_variable_value"
+        data-qa-selector="reveal_ci_variable_value_button"
         class="append-right-8"
         @click="toggleValues(!valuesHidden)"
         >{{ valuesButtonText }}</gl-deprecated-button
@@ -176,7 +177,7 @@ export default {
       <gl-deprecated-button
         ref="add-ci-variable"
         v-gl-modal-directive="$options.modalId"
-        data-qa-selector="add_ci_variable"
+        data-qa-selector="add_ci_variable_button"
         variant="success"
         >{{ __('Add Variable') }}</gl-deprecated-button
       >

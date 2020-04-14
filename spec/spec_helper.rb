@@ -91,6 +91,10 @@ RSpec.configure do |config|
       match = location.match(%r{/spec/([^/]+)/})
       metadata[:type] = match[1].singularize.to_sym if match
     end
+
+    # Admin controller specs get auto admin mode enabled since they are
+    # protected by the 'EnforcesAdminAuthentication' concern
+    metadata[:enable_admin_mode] = true if location =~ %r{(ee)?/spec/controllers/admin/}
   end
 
   config.include LicenseHelpers
@@ -226,7 +230,6 @@ RSpec.configure do |config|
     #
     # context 'some test in mocked dir', :do_not_mock_admin_mode do ... end
     admin_mode_mock_dirs = %w(
-      ./ee/spec/controllers
       ./ee/spec/elastic_integration
       ./ee/spec/features
       ./ee/spec/finders
@@ -238,7 +241,6 @@ RSpec.configure do |config|
       ./ee/spec/services
       ./ee/spec/support/protected_tags
       ./ee/spec/support/shared_examples
-      ./spec/controllers
       ./spec/features
       ./spec/finders
       ./spec/frontend
@@ -270,7 +272,7 @@ RSpec.configure do |config|
     # context 'some test that requires admin mode', :enable_admin_mode do ... end
     #
     # See also spec/support/helpers/admin_mode_helpers.rb
-    if example.metadata[:enable_admin_mode]
+    if example.metadata[:enable_admin_mode] && !example.metadata[:do_not_mock_admin_mode]
       allow_any_instance_of(Gitlab::Auth::CurrentUserMode).to receive(:admin_mode?) do |current_user_mode|
         current_user_mode.send(:user)&.admin?
       end

@@ -586,12 +586,23 @@ describe Projects::IssuesController do
         expect(assigns(:issues)).to include request_forgery_timing_attack
       end
 
-      it 'lists confidential issues for admin' do
-        sign_in(admin)
-        get_issues
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it 'lists confidential issues for admin' do
+          sign_in(admin)
+          get_issues
 
-        expect(assigns(:issues)).to include unescaped_parameter_value
-        expect(assigns(:issues)).to include request_forgery_timing_attack
+          expect(assigns(:issues)).to include unescaped_parameter_value
+          expect(assigns(:issues)).to include request_forgery_timing_attack
+        end
+      end
+
+      context 'when admin mode is disabled' do
+        it 'does not list confidential issues for admin' do
+          sign_in(admin)
+          get_issues
+
+          expect(assigns(:issues)).to eq [issue]
+        end
       end
 
       def get_issues
@@ -648,11 +659,22 @@ describe Projects::IssuesController do
         expect(response).to have_gitlab_http_status http_status[:success]
       end
 
-      it "returns #{http_status[:success]} for admin" do
-        sign_in(admin)
-        go(id: unescaped_parameter_value.to_param)
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it "returns #{http_status[:success]} for admin" do
+          sign_in(admin)
+          go(id: unescaped_parameter_value.to_param)
 
-        expect(response).to have_gitlab_http_status http_status[:success]
+          expect(response).to have_gitlab_http_status http_status[:success]
+        end
+      end
+
+      context 'when admin mode is disabled' do
+        xit 'returns 404 for admin' do
+          sign_in(admin)
+          go(id: unescaped_parameter_value.to_param)
+
+          expect(response).to have_gitlab_http_status :not_found
+        end
       end
     end
 
