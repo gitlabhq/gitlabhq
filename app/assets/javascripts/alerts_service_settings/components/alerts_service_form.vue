@@ -6,7 +6,7 @@ import {
   GlModal,
   GlModalDirective,
 } from '@gitlab/ui';
-import _ from 'underscore';
+import { escape as esc } from 'lodash';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import ToggleButton from '~/vue_shared/components/toggle_button.vue';
 import axios from '~/lib/utils/axios_utils';
@@ -65,7 +65,7 @@ export default {
           'AlertService|%{linkStart}Learn more%{linkEnd} about configuring this endpoint to receive alerts.',
         ),
         {
-          linkStart: `<a href="${_.escape(
+          linkStart: `<a href="${esc(
             this.learnMoreUrl,
           )}" target="_blank" rel="noopener noreferrer">`,
           linkEnd: '</a>',

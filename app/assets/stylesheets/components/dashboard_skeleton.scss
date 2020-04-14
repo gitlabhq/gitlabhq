@@ -4,6 +4,8 @@
 }
 
 .dashboard-card {
+  @include gl-cursor-grab;
+
   &-header {
     &-warning {
       background-color: $orange-100;

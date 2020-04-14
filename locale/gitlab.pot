@@ -17184,6 +17184,12 @@ msgstr ""
 msgid "Requirements"
 msgstr ""
 
+msgid "Requirements allow you to create criteria to check your products against."
+msgstr ""
+
+msgid "Requirements can be based on users, stakeholders, system, software or anything else you find important to capture."
+msgstr ""
+
 msgid "Requires approval from %{names}."
 msgid_plural "Requires %{count} more approvals from %{names}."
 msgstr[0] ""

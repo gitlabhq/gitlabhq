@@ -533,6 +533,11 @@ The metrics include:
 - **Response Metrics:** latency, throughput, error rate
 - **System Metrics:** CPU utilization, memory utilization
 
+GitLab provides some initial alerts for you after you install Prometheus:
+
+- Ingress status code `500` > 0.1%
+- NGINX status code `500` > 0.1%
+
 To make use of Auto Monitoring:
 
 1. [Install and configure the requirements](index.md#requirements).

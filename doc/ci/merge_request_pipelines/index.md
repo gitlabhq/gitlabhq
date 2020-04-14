@@ -7,9 +7,8 @@ last_update: 2019-07-03
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/15310) in GitLab 11.6.
 
-In a [basic configuration](../pipelines/pipeline_architectures.md), GitLab runs a pipeline each time
-changes are pushed to a branch. The settings in the [`.gitlab-ci.yml`](../yaml/README.md)
-file, including `rules`, `only`, and `except`, determine which jobs are added to a pipeline.
+In a [basic configuration](../pipelines/pipeline_architectures.md#basic-pipelines), GitLab runs a pipeline each time
+changes are pushed to a branch.
 
 If you want the pipeline to run jobs **only** when merge requests are created or updated,
 you can use *pipelines for merge requests*.
@@ -28,7 +27,7 @@ A few notes:
 
 ## Configuring pipelines for merge requests
 
-To configure pipelines for merge requests, configure your CI yaml file.
+To configure pipelines for merge requests, configure your [CI/CD configuration file](../yaml/README.md).
 There are a few different ways to do this.
 
 ### Enable pipelines for merge requests for all jobs

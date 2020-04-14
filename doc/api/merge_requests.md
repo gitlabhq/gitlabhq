@@ -904,7 +904,7 @@ The new pipeline can be:
 
 - A detached merge request pipeline.
 - A [pipeline for merged results](../ci/merge_request_pipelines/pipelines_for_merged_results/index.md)
-  if the [project setting is enabled](../ci/merge_request_pipelines/pipelines_for_merged_results/index.md#enabling-pipelines-for-merged-results).
+  if the [project setting is enabled](../ci/merge_request_pipelines/pipelines_for_merged_results/index.md#enable-pipelines-for-merged-results).
 
 ```plaintext
 POST /projects/:id/merge_requests/:merge_request_iid/pipelines

@@ -7,7 +7,7 @@ type: index
 
 GitLab University is a great place to start when learning about version control with Git and GitLab, as well as other GitLab features.
 
-If you're looking for a GitLab subscription for _your university_, see our [Education](https://about.gitlab.com/solutions/education/) page.
+If you're looking for a GitLab subscription for _your university_, see our [GitLab for Education](https://about.gitlab.com/solutions/education/) page.
 
 CAUTION: **Caution:**
 Some of the content in GitLab University may be out of date and we plan to
