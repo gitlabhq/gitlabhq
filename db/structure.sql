@@ -399,7 +399,8 @@ CREATE TABLE public.application_settings (
     namespace_storage_size_limit bigint DEFAULT 0 NOT NULL,
     seat_link_enabled boolean DEFAULT true NOT NULL,
     container_expiration_policies_enable_historic_entries boolean DEFAULT false NOT NULL,
-    issues_create_limit integer DEFAULT 300 NOT NULL
+    issues_create_limit integer DEFAULT 300 NOT NULL,
+    push_rule_id bigint
 );
 
 CREATE SEQUENCE public.application_settings_id_seq
@@ -5025,7 +5026,8 @@ ALTER SEQUENCE public.project_repository_states_id_seq OWNED BY public.project_r
 CREATE TABLE public.project_settings (
     project_id integer NOT NULL,
     created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL
+    updated_at timestamp with time zone NOT NULL,
+    push_rule_id bigint
 );
 
 CREATE TABLE public.project_statistics (
@@ -7697,9 +7699,6 @@ ALTER TABLE ONLY public.ci_daily_report_results
 ALTER TABLE ONLY public.ci_group_variables
     ADD CONSTRAINT ci_group_variables_pkey PRIMARY KEY (id);
 
-ALTER TABLE public.ci_job_artifacts
-    ADD CONSTRAINT ci_job_artifacts_file_store_not_null CHECK ((file_store IS NOT NULL)) NOT VALID;
-
 ALTER TABLE ONLY public.ci_job_artifacts
     ADD CONSTRAINT ci_job_artifacts_pkey PRIMARY KEY (id);
 
@@ -8056,9 +8055,6 @@ ALTER TABLE ONLY public.ldap_group_links
 
 ALTER TABLE ONLY public.lfs_file_locks
     ADD CONSTRAINT lfs_file_locks_pkey PRIMARY KEY (id);
-
-ALTER TABLE public.lfs_objects
-    ADD CONSTRAINT lfs_objects_file_store_not_null CHECK ((file_store IS NOT NULL)) NOT VALID;
 
 ALTER TABLE ONLY public.lfs_objects
     ADD CONSTRAINT lfs_objects_pkey PRIMARY KEY (id);
@@ -8453,9 +8449,6 @@ ALTER TABLE ONLY public.u2f_registrations
 ALTER TABLE ONLY public.uploads
     ADD CONSTRAINT uploads_pkey PRIMARY KEY (id);
 
-ALTER TABLE public.uploads
-    ADD CONSTRAINT uploads_store_not_null CHECK ((store IS NOT NULL)) NOT VALID;
-
 ALTER TABLE ONLY public.user_agent_details
     ADD CONSTRAINT user_agent_details_pkey PRIMARY KEY (id);
 
@@ -8573,6 +8566,8 @@ CREATE UNIQUE INDEX design_management_designs_versions_uniqueness ON public.desi
 
 CREATE INDEX design_user_mentions_on_design_id_and_note_id_index ON public.design_user_mentions USING btree (design_id, note_id);
 
+CREATE INDEX dev_index_route_on_path_trigram ON public.routes USING gin (path public.gin_trgm_ops);
+
 CREATE UNIQUE INDEX epic_user_mentions_on_epic_id_and_note_id_index ON public.epic_user_mentions USING btree (epic_id, note_id);
 
 CREATE UNIQUE INDEX epic_user_mentions_on_epic_id_index ON public.epic_user_mentions USING btree (epic_id) WHERE (note_id IS NULL);
@@ -8584,6 +8579,8 @@ CREATE UNIQUE INDEX idx_deployment_merge_requests_unique_index ON public.deploym
 CREATE UNIQUE INDEX idx_environment_merge_requests_unique_index ON public.deployment_merge_requests USING btree (environment_id, merge_request_id);
 
 CREATE INDEX idx_geo_con_rep_updated_events_on_container_repository_id ON public.geo_container_repository_updated_events USING btree (container_repository_id);
+
+CREATE INDEX idx_issues_on_health_status_not_null ON public.issues USING btree (health_status) WHERE (health_status IS NOT NULL);
 
 CREATE INDEX idx_issues_on_project_id_and_created_at_and_id_and_state_id ON public.issues USING btree (project_id, created_at, id, state_id);
 
@@ -8676,6 +8673,8 @@ CREATE INDEX index_application_settings_on_custom_project_templates_group_id ON 
 CREATE INDEX index_application_settings_on_file_template_project_id ON public.application_settings USING btree (file_template_project_id);
 
 CREATE INDEX index_application_settings_on_instance_administrators_group_id ON public.application_settings USING btree (instance_administrators_group_id);
+
+CREATE UNIQUE INDEX index_application_settings_on_push_rule_id ON public.application_settings USING btree (push_rule_id);
 
 CREATE INDEX index_application_settings_on_usage_stats_set_by_user_id ON public.application_settings USING btree (usage_stats_set_by_user_id);
 
@@ -9891,6 +9890,8 @@ CREATE INDEX index_project_repositories_on_shard_id ON public.project_repositori
 
 CREATE UNIQUE INDEX index_project_repository_states_on_project_id ON public.project_repository_states USING btree (project_id);
 
+CREATE UNIQUE INDEX index_project_settings_on_push_rule_id ON public.project_settings USING btree (push_rule_id);
+
 CREATE INDEX index_project_statistics_on_namespace_id ON public.project_statistics USING btree (namespace_id);
 
 CREATE UNIQUE INDEX index_project_statistics_on_project_id ON public.project_statistics USING btree (project_id);
@@ -10116,6 +10117,8 @@ CREATE INDEX index_reviews_on_project_id ON public.reviews USING btree (project_
 CREATE UNIQUE INDEX index_routes_on_path ON public.routes USING btree (path);
 
 CREATE INDEX index_routes_on_path_text_pattern_ops ON public.routes USING btree (path varchar_pattern_ops);
+
+CREATE INDEX index_routes_on_path_trigram ON public.routes USING gin (path public.gin_trgm_ops);
 
 CREATE UNIQUE INDEX index_routes_on_source_type_and_source_id ON public.routes USING btree (source_type, source_id);
 
@@ -10636,6 +10639,9 @@ ALTER TABLE ONLY public.epics
 ALTER TABLE ONLY public.ci_pipelines
     ADD CONSTRAINT fk_3d34ab2e06 FOREIGN KEY (pipeline_schedule_id) REFERENCES public.ci_pipeline_schedules(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY public.project_settings
+    ADD CONSTRAINT fk_413a953e20 FOREIGN KEY (push_rule_id) REFERENCES public.push_rules(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY public.ci_pipeline_schedule_variables
     ADD CONSTRAINT fk_41c35fda51 FOREIGN KEY (pipeline_schedule_id) REFERENCES public.ci_pipeline_schedules(id) ON DELETE CASCADE;
 
@@ -10686,6 +10692,9 @@ ALTER TABLE ONLY public.merge_requests
 
 ALTER TABLE ONLY public.ci_builds
     ADD CONSTRAINT fk_6661f4f0e8 FOREIGN KEY (resource_group_id) REFERENCES public.ci_resource_groups(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY public.application_settings
+    ADD CONSTRAINT fk_693b8795e4 FOREIGN KEY (push_rule_id) REFERENCES public.push_rules(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY public.merge_requests
     ADD CONSTRAINT fk_6a5165a692 FOREIGN KEY (milestone_id) REFERENCES public.milestones(id) ON DELETE SET NULL;
@@ -13113,9 +13122,14 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200323134519
 20200324093258
 20200324115359
+20200325104755
+20200325104756
+20200325104833
+20200325104834
 20200325111432
 20200325152327
 20200325160952
+20200325162730
 20200325183636
 20200326114443
 20200326122700
@@ -13143,15 +13157,17 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200406102111
 20200406102120
 20200406135648
-20200406165950
-20200406171857
-20200406172135
 20200406192059
+20200406193427
 20200407094005
 20200407094923
 20200408110856
+20200408133211
 20200408153842
 20200408175424
 20200409211607
+20200415160722
+20200415161021
+20200415161206
 \.
 

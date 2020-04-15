@@ -127,4 +127,50 @@ describe Gitlab::CycleAnalytics::GroupStageSummary do
       end
     end
   end
+
+  describe '#deployment_frequency' do
+    let(:from) { 6.days.ago }
+    let(:to) { nil }
+
+    subject do
+      described_class.new(group, options: {
+        from: from,
+        to: to,
+        current_user: user
+      }).data.third
+    end
+
+    it 'includes the unit: `per day`' do
+      expect(subject[:unit]).to eq(_('per day'))
+    end
+
+    before do
+      Timecop.freeze(5.days.ago) do
+        create(:deployment, :success, project: project)
+      end
+    end
+
+    context 'when `to` is nil' do
+      it 'includes range until now' do
+        # 1 deployment over 7 days
+        expect(subject[:value]).to eq(0.1)
+      end
+    end
+
+    context 'when `to` is given' do
+      let(:from) { 10.days.ago }
+      let(:to) { 10.days.from_now }
+
+      before do
+        Timecop.freeze(5.days.from_now) do
+          create(:deployment, :success, project: project)
+        end
+      end
+
+      it 'returns deployment frequency within `from` and `to` range' do
+        # 2 deployments over 20 days
+        expect(subject[:value]).to eq(0.1)
+      end
+    end
+  end
 end

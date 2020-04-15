@@ -4,7 +4,7 @@ import {
   GlSprintf,
   GlLink,
   GlFormGroup,
-  GlNewButton,
+  GlButton,
   GlIcon,
   GlTooltipDirective,
   GlFormInput,
@@ -12,7 +12,7 @@ import {
 
 export default {
   name: 'AssetLinksForm',
-  components: { GlSprintf, GlLink, GlFormGroup, GlNewButton, GlIcon, GlFormInput },
+  components: { GlSprintf, GlLink, GlFormGroup, GlButton, GlIcon, GlFormInput },
   directives: { GlTooltip: GlTooltipDirective },
   computed: {
     ...mapState('detail', ['release', 'releaseAssetsDocsPath']),
@@ -170,7 +170,7 @@ export default {
       </gl-form-group>
 
       <div class="mb-5 mb-sm-3 mt-sm-4 col col-sm-auto">
-        <gl-new-button
+        <gl-button
           v-gl-tooltip
           class="remove-button w-100"
           :aria-label="__('Remove asset link')"
@@ -179,16 +179,16 @@ export default {
         >
           <gl-icon class="mr-1 mr-sm-0 mb-1" :size="16" name="remove" />
           <span class="d-inline d-sm-none">{{ __('Remove asset link') }}</span>
-        </gl-new-button>
+        </gl-button>
       </div>
     </div>
-    <gl-new-button
+    <gl-button
       ref="addAnotherLinkButton"
       variant="link"
       class="align-self-end mb-5 mb-sm-0"
       @click="onAddAnotherClicked"
     >
       {{ __('Add another link') }}
-    </gl-new-button>
+    </gl-button>
   </div>
 </template>

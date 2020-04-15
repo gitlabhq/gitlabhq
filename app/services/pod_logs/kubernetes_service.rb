@@ -21,6 +21,17 @@ module PodLogs
 
     private
 
+    def get_raw_pods(result)
+      result[:raw_pods] = cluster.kubeclient.get_pods(namespace: namespace).map do |pod|
+        {
+          name: pod.metadata.name,
+          container_names: pod.spec.containers.map(&:name)
+        }
+      end
+
+      success(result)
+    end
+
     def check_pod_name(result)
       # If pod_name is not received as parameter, get the pod logs of the first
       # pod of this namespace.
@@ -43,11 +54,11 @@ module PodLogs
     end
 
     def check_container_name(result)
-      pod_details = result[:raw_pods].find { |p| p.metadata.name == result[:pod_name] }
-      containers = pod_details.spec.containers.map(&:name)
+      pod_details = result[:raw_pods].find { |p| p[:name] == result[:pod_name] }
+      container_names = pod_details[:container_names]
 
       # select first container if not specified
-      result[:container_name] ||= containers.first
+      result[:container_name] ||= container_names.first
 
       unless result[:container_name]
         return error(_('No containers available'))
@@ -58,7 +69,7 @@ module PodLogs
           ' %{max_length} chars' % { max_length: K8S_NAME_MAX_LENGTH }))
       end
 
-      unless containers.include?(result[:container_name])
+      unless container_names.include?(result[:container_name])
         return error(_('Container does not exist'))
       end
 

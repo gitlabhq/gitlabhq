@@ -367,7 +367,7 @@ The following documentation relates to the DevOps **Secure** stage:
 | [Group Security Dashboard](user/application_security/security_dashboard/index.md#group-security-dashboard) **(ULTIMATE)**      | View vulnerabilities in all the projects in a group and its subgroups. |
 | [Instance Security Dashboard](user/application_security/security_dashboard/index.md#instance-security-dashboard) **(ULTIMATE)**      | View vulnerabilities in all the projects you're interested in. |
 | [License Compliance](user/compliance/license_compliance/index.md) **(ULTIMATE)**            | Search your project's dependencies for their licenses.                 |
-| [Pipeline Security Dashboard](user/application_security/security_dashboard/index.md#pipeline-security-dashboard) **(ULTIMATE)**    | View the security reports for your project's pipelines.               |
+| [Pipeline Security](user/application_security/security_dashboard/index.md#pipeline-security) **(ULTIMATE)**    | View the security reports for your project's pipelines.               |
 | [Project Security Dashboard](user/application_security/security_dashboard/index.md#project-security-dashboard) **(ULTIMATE)**    | View the latest security reports for your project.                     |
 | [Static Application Security Testing (SAST)](user/application_security/sast/index.md) **(ULTIMATE)**  | Analyze source code for known vulnerabilities.                         |
 

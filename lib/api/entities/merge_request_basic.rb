@@ -52,7 +52,7 @@ module API
       # information.
       expose :merge_status do |merge_request|
         merge_request.check_mergeability(async: true)
-        merge_request.merge_status
+        merge_request.public_merge_status
       end
       expose :diff_head_sha, as: :sha
       expose :merge_commit_sha

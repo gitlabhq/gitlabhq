@@ -102,6 +102,7 @@ When you create a project in GitLab, you'll have access to a large number of
 - [Code owners](code_owners.md): specify code owners for certain files **(STARTER)**
 - [License Compliance](../compliance/license_compliance/index.md): approve and blacklist licenses for projects. **(ULTIMATE)**
 - [Dependency List](../application_security/dependency_list/index.md): view project dependencies. **(ULTIMATE)**
+- [Requirements](requirements/index.md): Requirements allow you to create criteria to check your products against. **(ULTIMATE)**
 
 ### Project integrations
 

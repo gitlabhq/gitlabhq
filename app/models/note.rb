@@ -125,7 +125,7 @@ class Note < ApplicationRecord
   scope :inc_author, -> { includes(:author) }
   scope :inc_relations_for_view, -> do
     includes(:project, { author: :status }, :updated_by, :resolved_by, :award_emoji,
-             { system_note_metadata: :description_version }, :note_diff_file, :suggestions)
+             { system_note_metadata: :description_version }, :note_diff_file, :diff_note_positions, :suggestions)
   end
 
   scope :with_notes_filter, -> (notes_filter) do

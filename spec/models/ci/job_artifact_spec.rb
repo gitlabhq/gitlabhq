@@ -349,13 +349,16 @@ describe Ci::JobArtifact do
   end
 
   describe 'file is being stored' do
+    subject { create(:ci_job_artifact, :archive) }
+
     context 'when object has nil store' do
+      before do
+        subject.update_column(:file_store, nil)
+        subject.reload
+      end
+
       it 'is stored locally' do
-        subject = build(:ci_job_artifact, :archive, file_store: nil)
-
-        subject.save
-
-        expect(subject.file_store).to be(ObjectStorage::Store::LOCAL)
+        expect(subject.file_store).to be(nil)
         expect(subject.file).to be_file_storage
         expect(subject.file.object_store).to eq(ObjectStorage::Store::LOCAL)
       end
@@ -363,10 +366,6 @@ describe Ci::JobArtifact do
 
     context 'when existing object has local store' do
       it 'is stored locally' do
-        subject = build(:ci_job_artifact, :archive)
-
-        subject.save
-
         expect(subject.file_store).to be(ObjectStorage::Store::LOCAL)
         expect(subject.file).to be_file_storage
         expect(subject.file.object_store).to eq(ObjectStorage::Store::LOCAL)
@@ -380,10 +379,6 @@ describe Ci::JobArtifact do
 
       context 'when file is stored' do
         it 'is stored remotely' do
-          subject = build(:ci_job_artifact, :archive)
-
-          subject.save
-
           expect(subject.file_store).to eq(ObjectStorage::Store::REMOTE)
           expect(subject.file).not_to be_file_storage
           expect(subject.file.object_store).to eq(ObjectStorage::Store::REMOTE)

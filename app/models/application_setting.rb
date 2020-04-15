@@ -14,6 +14,7 @@ class ApplicationSetting < ApplicationRecord
   add_authentication_token_field :static_objects_external_storage_auth_token
 
   belongs_to :self_monitoring_project, class_name: "Project", foreign_key: 'instance_administration_project_id'
+  belongs_to :push_rule
   alias_attribute :self_monitoring_project_id, :instance_administration_project_id
 
   belongs_to :instance_administrators_group, class_name: "Group"

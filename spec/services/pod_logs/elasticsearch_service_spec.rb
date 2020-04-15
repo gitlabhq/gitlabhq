@@ -21,7 +21,62 @@ describe ::PodLogs::ElasticsearchService do
     ]
   end
 
+  let(:raw_pods) do
+    [
+      {
+        name: pod_name,
+        container_names: [container_name, "#{container_name}-1"]
+      }
+    ]
+  end
+
   subject { described_class.new(cluster, namespace, params: params) }
+
+  describe '#get_raw_pods' do
+    before do
+      create(:clusters_applications_elastic_stack, :installed, cluster: cluster)
+    end
+
+    it 'returns success with elasticsearch response' do
+      allow_any_instance_of(::Clusters::Applications::ElasticStack)
+        .to receive(:elasticsearch_client)
+        .and_return(Elasticsearch::Transport::Client.new)
+      allow_any_instance_of(::Gitlab::Elasticsearch::Logs::Pods)
+        .to receive(:pods)
+        .with(namespace)
+        .and_return(raw_pods)
+
+      result = subject.send(:get_raw_pods, {})
+
+      expect(result[:status]).to eq(:success)
+      expect(result[:raw_pods]).to eq(raw_pods)
+    end
+
+    it 'returns an error when ES is unreachable' do
+      allow_any_instance_of(::Clusters::Applications::ElasticStack)
+        .to receive(:elasticsearch_client)
+        .and_return(nil)
+
+      result = subject.send(:get_raw_pods, {})
+
+      expect(result[:status]).to eq(:error)
+      expect(result[:message]).to eq('Unable to connect to Elasticsearch')
+    end
+
+    it 'handles server errors from elasticsearch' do
+      allow_any_instance_of(::Clusters::Applications::ElasticStack)
+        .to receive(:elasticsearch_client)
+        .and_return(Elasticsearch::Transport::Client.new)
+      allow_any_instance_of(::Gitlab::Elasticsearch::Logs::Pods)
+        .to receive(:pods)
+        .and_raise(Elasticsearch::Transport::Transport::Errors::ServiceUnavailable.new)
+
+      result = subject.send(:get_raw_pods, {})
+
+      expect(result[:status]).to eq(:error)
+      expect(result[:message]).to eq('Elasticsearch returned status code: ServiceUnavailable')
+    end
+  end
 
   describe '#check_times' do
     context 'with start and end provided and valid' do
@@ -168,7 +223,7 @@ describe ::PodLogs::ElasticsearchService do
       allow_any_instance_of(::Clusters::Applications::ElasticStack)
         .to receive(:elasticsearch_client)
         .and_return(Elasticsearch::Transport::Client.new)
-      allow_any_instance_of(::Gitlab::Elasticsearch::Logs)
+      allow_any_instance_of(::Gitlab::Elasticsearch::Logs::Lines)
         .to receive(:pod_logs)
         .with(namespace, pod_name: pod_name, container_name: container_name, search: search, start_time: start_time, end_time: end_time, cursor: cursor)
         .and_return({ logs: expected_logs, cursor: expected_cursor })
@@ -195,7 +250,7 @@ describe ::PodLogs::ElasticsearchService do
       allow_any_instance_of(::Clusters::Applications::ElasticStack)
         .to receive(:elasticsearch_client)
         .and_return(Elasticsearch::Transport::Client.new)
-      allow_any_instance_of(::Gitlab::Elasticsearch::Logs)
+      allow_any_instance_of(::Gitlab::Elasticsearch::Logs::Lines)
         .to receive(:pod_logs)
         .and_raise(Elasticsearch::Transport::Transport::Errors::ServiceUnavailable.new)
 
@@ -209,9 +264,9 @@ describe ::PodLogs::ElasticsearchService do
       allow_any_instance_of(::Clusters::Applications::ElasticStack)
         .to receive(:elasticsearch_client)
         .and_return(Elasticsearch::Transport::Client.new)
-      allow_any_instance_of(::Gitlab::Elasticsearch::Logs)
+      allow_any_instance_of(::Gitlab::Elasticsearch::Logs::Lines)
         .to receive(:pod_logs)
-        .and_raise(::Gitlab::Elasticsearch::Logs::InvalidCursor.new)
+        .and_raise(::Gitlab::Elasticsearch::Logs::Lines::InvalidCursor.new)
 
       result = subject.send(:pod_logs, result_arg)
 

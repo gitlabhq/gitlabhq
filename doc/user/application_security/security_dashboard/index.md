@@ -34,13 +34,13 @@ To use the instance, group, project, or pipeline security dashboard:
 1. [GitLab Runner](https://docs.gitlab.com/runner/) 11.5 or newer must be used.
    If you're using the shared Runners on GitLab.com, this is already the case.
 
-## Pipeline Security Dashboard
+## Pipeline Security
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/13496) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.3.
 
-At the pipeline level, the Security Dashboard displays the vulnerabilities present in the branch of the project the pipeline was run against.
+At the pipeline level, the Security section displays the vulnerabilities present in the branch of the project the pipeline was run against.
 
-Visit the page for any pipeline which has run any of the [supported reports](#supported-reports). Click the **Security** tab to view the Security Dashboard.
+Visit the page for any pipeline which has run any of the [supported reports](#supported-reports). Click the **Security** tab to view the Security findings.
 
 ![Pipeline Security Dashboard](img/pipeline_security_dashboard_v12_6.png)
 

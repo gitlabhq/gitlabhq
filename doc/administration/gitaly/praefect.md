@@ -697,6 +697,31 @@ during a failover. Follow issue
 It is likely that we will implement support for Consul, and a cloud native
 strategy in the future.
 
+## Identifying Impact of a Primary Node Failure
+
+When a primary Gitaly node fails, there is a chance of dataloss. Dataloss can occur if there were outstanding replication jobs the secondaries did not manage to process before the failure. The Praefect `dataloss` subcommand helps identify these cases by counting the number of dead replication jobs for each repository within a given timeframe.
+
+```shell
+sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml dataloss -from <rfc3339-time> -to <rfc3339-time>
+```
+
+If the timeframe is not specified, dead replication jobs from the last six hours are counted:
+
+```shell
+sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml dataloss
+
+Failed replication jobs between [2020-01-02 00:00:00 +0000 UTC, 2020-01-02 06:00:00 +0000 UTC):
+example/repository-1: 1 jobs
+example/repository-2: 4 jobs
+example/repository-3: 2 jobs
+```
+
+To specify a timeframe in UTC, run:
+
+```shell
+sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml dataloss -from 2020-01-02T00:00:00+00:00 -to 2020-01-02T00:02:00+00:00
+```
+
 ## Backend Node Recovery
 
 When a Praefect backend node fails and is no longer able to

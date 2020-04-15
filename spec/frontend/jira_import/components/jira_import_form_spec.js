@@ -1,4 +1,4 @@
-import { GlAvatar, GlNewButton, GlFormSelect, GlLabel } from '@gitlab/ui';
+import { GlAvatar, GlButton, GlFormSelect, GlLabel } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import JiraImportForm from '~/jira_import/components/jira_import_form.vue';
 
@@ -44,7 +44,7 @@ describe('JiraImportForm', () => {
 
   it('shows a Next button', () => {
     const nextButton = wrapper
-      .findAll(GlNewButton)
+      .findAll(GlButton)
       .at(0)
       .text();
 
@@ -53,7 +53,7 @@ describe('JiraImportForm', () => {
 
   it('shows a Cancel button', () => {
     const cancelButton = wrapper
-      .findAll(GlNewButton)
+      .findAll(GlButton)
       .at(1)
       .text();
 

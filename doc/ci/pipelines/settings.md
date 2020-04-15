@@ -160,7 +160,7 @@ This also determines the visibility of these related features:
 
 - Job output logs
 - Job artifacts
-- The [pipeline security dashboard](../../user/application_security/security_dashboard/index.md#pipeline-security-dashboard) **(ULTIMATE)**
+- The [pipeline security dashboard](../../user/application_security/security_dashboard/index.md#pipeline-security) **(ULTIMATE)**
 
 If **Public pipelines** is enabled (default):
 

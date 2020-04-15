@@ -324,6 +324,9 @@ process:
 Additional [configuration](#using-private-maven-repos) may be needed for connecting to private Maven
 repositories.
 
+Exact name matches are required for [project policies](#project-policies-for-license-compliance)
+when running in an offline environment ([see related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/212388)).
+
 ## Project policies for License Compliance
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/5940) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.4.

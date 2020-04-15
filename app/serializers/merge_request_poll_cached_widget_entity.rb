@@ -6,7 +6,7 @@ class MergeRequestPollCachedWidgetEntity < IssuableEntity
   expose :merge_commit_sha
   expose :short_merge_commit_sha
   expose :merge_error
-  expose :merge_status
+  expose :public_merge_status, as: :merge_status
   expose :merge_user_id
   expose :source_branch
   expose :source_project_id

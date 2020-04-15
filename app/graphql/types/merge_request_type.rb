@@ -60,7 +60,7 @@ module Types
           description: 'Indicates if the source branch of the merge request will be deleted after merge'
     field :force_remove_source_branch, GraphQL::BOOLEAN_TYPE, method: :force_remove_source_branch?, null: true,
           description: 'Indicates if the project settings will lead to source branch deletion after merge'
-    field :merge_status, GraphQL::STRING_TYPE, null: true,
+    field :merge_status, GraphQL::STRING_TYPE, method: :public_merge_status, null: true,
           description: 'Status of the merge request'
     field :in_progress_merge_commit_sha, GraphQL::STRING_TYPE, null: true,
           description: 'Commit SHA of the merge request if merge is in progress'

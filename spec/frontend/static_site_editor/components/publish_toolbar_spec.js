@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlNewButton, GlLoadingIcon } from '@gitlab/ui';
+import { GlButton, GlLoadingIcon } from '@gitlab/ui';
 
 import PublishToolbar from '~/static_site_editor/components/publish_toolbar.vue';
 
@@ -18,7 +18,7 @@ describe('Static Site Editor Toolbar', () => {
   };
 
   const findReturnUrlLink = () => wrapper.find({ ref: 'returnUrlLink' });
-  const findSaveChangesButton = () => wrapper.find(GlNewButton);
+  const findSaveChangesButton = () => wrapper.find(GlButton);
   const findLoadingIndicator = () => wrapper.find(GlLoadingIcon);
 
   beforeEach(() => {

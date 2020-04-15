@@ -9,3 +9,5 @@ class ProjectSetting < ApplicationRecord
     where(primary_key => safe_find_or_create_by(attrs))
   end
 end
+
+ProjectSetting.prepend_if_ee('EE::ProjectSetting')

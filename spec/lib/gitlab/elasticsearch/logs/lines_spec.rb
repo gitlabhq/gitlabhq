@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Elasticsearch::Logs do
+describe Gitlab::Elasticsearch::Logs::Lines do
   let(:client) { Elasticsearch::Transport::Client }
 
   let(:es_message_1) { { timestamp: "2019-12-13T14:35:34.034Z", pod: "production-6866bc8974-m4sk4", message: "10.8.2.1 - - [25/Oct/2019:08:03:22 UTC] \"GET / HTTP/1.1\" 200 13" } }

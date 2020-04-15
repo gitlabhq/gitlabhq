@@ -1,6 +1,6 @@
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex';
-import { GlNewButton, GlFormInput, GlFormGroup } from '@gitlab/ui';
+import { GlButton, GlFormInput, GlFormGroup } from '@gitlab/ui';
 import { escape as esc } from 'lodash';
 import { __, sprintf } from '~/locale';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
@@ -15,7 +15,7 @@ export default {
   components: {
     GlFormInput,
     GlFormGroup,
-    GlNewButton,
+    GlButton,
     MarkdownField,
     AssetLinksForm,
   },
@@ -167,7 +167,7 @@ export default {
       <asset-links-form v-if="showAssetLinksForm" />
 
       <div class="d-flex pt-3">
-        <gl-new-button
+        <gl-button
           class="mr-auto js-no-auto-disable"
           category="primary"
           variant="success"
@@ -176,10 +176,10 @@ export default {
           :disabled="isSaveChangesDisabled"
         >
           {{ __('Save changes') }}
-        </gl-new-button>
-        <gl-new-button :href="cancelPath" class="js-cancel-button">
+        </gl-button>
+        <gl-button :href="cancelPath" class="js-cancel-button">
           {{ __('Cancel') }}
-        </gl-new-button>
+        </gl-button>
       </div>
     </form>
   </div>

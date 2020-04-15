@@ -42,6 +42,18 @@ describe Gitlab::ApplicationContext do
     end
   end
 
+  describe '.current_context_include?' do
+    it 'returns true if the key was present in the context' do
+      described_class.with_context(caller_id: "Hello") do
+        expect(described_class.current_context_include?(:caller_id)).to be(true)
+      end
+    end
+
+    it 'returns false if the key was not present in the current context' do
+      expect(described_class.current_context_include?(:caller_id)).to be(false)
+    end
+  end
+
   describe '#to_lazy_hash' do
     let(:user) { build(:user) }
     let(:project) { build(:project) }

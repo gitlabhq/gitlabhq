@@ -20,6 +20,14 @@ class DiscussionEntity < Grape::Entity
     discussion_path(discussion)
   end
 
+  expose :positions, if: -> (d, _) { display_merge_ref_discussions?(d) } do |discussion|
+    discussion.diff_note_positions.map(&:position)
+  end
+
+  expose :line_codes, if: -> (d, _) { display_merge_ref_discussions?(d) } do |discussion|
+    discussion.diff_note_positions.map(&:line_code)
+  end
+
   expose :individual_note?, as: :individual_note
   expose :resolvable do |discussion|
     discussion.resolvable?
@@ -58,5 +66,12 @@ class DiscussionEntity < Grape::Entity
 
   def current_user
     request.current_user
+  end
+
+  def display_merge_ref_discussions?(discussion)
+    return unless discussion.diff_discussion?
+    return if discussion.legacy_diff_discussion?
+
+    Feature.enabled?(:merge_ref_head_comments, discussion.project)
   end
 end

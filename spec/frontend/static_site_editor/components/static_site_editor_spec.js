@@ -8,6 +8,7 @@ import createState from '~/static_site_editor/store/state';
 import StaticSiteEditor from '~/static_site_editor/components/static_site_editor.vue';
 import EditArea from '~/static_site_editor/components/edit_area.vue';
 import EditHeader from '~/static_site_editor/components/edit_header.vue';
+import InvalidContentMessage from '~/static_site_editor/components/invalid_content_message.vue';
 import PublishToolbar from '~/static_site_editor/components/publish_toolbar.vue';
 
 import { sourceContent, sourceContentTitle } from '../mock_data';
@@ -29,7 +30,10 @@ describe('StaticSiteEditor', () => {
     submitChangesActionMock = jest.fn();
 
     store = new Vuex.Store({
-      state: createState(initialState),
+      state: createState({
+        isSupportedContent: true,
+        ...initialState,
+      }),
       getters: {
         contentChanged: () => false,
         ...getters,
@@ -62,6 +66,7 @@ describe('StaticSiteEditor', () => {
 
   const findEditArea = () => wrapper.find(EditArea);
   const findEditHeader = () => wrapper.find(EditHeader);
+  const findInvalidContentMessage = () => wrapper.find(InvalidContentMessage);
   const findPublishToolbar = () => wrapper.find(PublishToolbar);
   const findSkeletonLoader = () => wrapper.find(GlSkeletonLoader);
 
@@ -149,6 +154,13 @@ describe('StaticSiteEditor', () => {
     buildWrapper();
 
     expect(findPublishToolbar().props('savingChanges')).toBe(true);
+  });
+
+  it('displays invalid content message when content is not supported', () => {
+    buildStore({ initialState: { isSupportedContent: false } });
+    buildWrapper();
+
+    expect(findInvalidContentMessage().exists()).toBe(true);
   });
 
   it('dispatches load content action', () => {

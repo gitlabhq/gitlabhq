@@ -25,6 +25,10 @@ module Gitlab
       Labkit::Context.push(application_context.to_lazy_hash)
     end
 
+    def self.current_context_include?(attribute_name)
+      Labkit::Context.current.to_h.include?(Labkit::Context.log_key(attribute_name))
+    end
+
     def initialize(**args)
       unknown_attributes = args.keys - APPLICATION_ATTRIBUTES.map(&:name)
       raise ArgumentError, "#{unknown_attributes} are not known keys" if unknown_attributes.any?

@@ -1,14 +1,14 @@
 <script>
 import { isString } from 'lodash';
 
-import { GlLink, GlNewButton } from '@gitlab/ui';
+import { GlLink, GlButton } from '@gitlab/ui';
 
 const validateUrlAndLabel = value => isString(value.label) && isString(value.url);
 
 export default {
   components: {
     GlLink,
-    GlNewButton,
+    GlButton,
   },
   props: {
     branch: {
@@ -46,16 +46,12 @@ export default {
         }}
       </p>
       <div class="d-flex justify-content-end">
-        <gl-new-button ref="returnToSiteButton" :href="returnUrl">{{
+        <gl-button ref="returnToSiteButton" :href="returnUrl">{{
           s__('StaticSiteEditor|Return to site')
-        }}</gl-new-button>
-        <gl-new-button
-          ref="mergeRequestButton"
-          class="ml-2"
-          :href="mergeRequest.url"
-          variant="success"
-          >{{ s__('StaticSiteEditor|View merge request') }}</gl-new-button
-        >
+        }}</gl-button>
+        <gl-button ref="mergeRequestButton" class="ml-2" :href="mergeRequest.url" variant="success">
+          {{ s__('StaticSiteEditor|View merge request') }}
+        </gl-button>
       </div>
     </div>
 

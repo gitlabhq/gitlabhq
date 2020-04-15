@@ -130,4 +130,15 @@ describe 'getting merge request information nested in a project' do
       expect(merge_requests_graphql_data.size).to eq 2
     end
   end
+
+  context 'when merge request is cannot_be_merged_rechecking' do
+    before do
+      merge_request.update!(merge_status: 'cannot_be_merged_rechecking')
+    end
+
+    it 'returns checking' do
+      post_graphql(query, current_user: current_user)
+      expect(merge_request_graphql_data['mergeStatus']).to eq('checking')
+    end
+  end
 end

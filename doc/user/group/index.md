@@ -226,6 +226,24 @@ To change this setting for a specific group:
 
 To change this setting globally, see [Default project creation protection](../admin_area/settings/visibility_and_access_controls.md#default-project-creation-protection).
 
+## Viewing group details
+
+A group's **Details** page includes tabs for:
+
+- Subgroups and projects.
+- Shared projects.
+- Archived projects.
+
+As [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207164) in GitLab [Starter](https://about.gitlab.com/pricing/) 12.10 as a [beta feature](https://about.gitlab.com/handbook/product/#beta), it also shows the number of the following items created in the last 90 days: **(STARTER)**
+
+- Merge requests.
+- Issues.
+- Members.
+
+These Group Activity Analytics can be enabled with the `group_activity_analytics` [feature flag](../../development/feature_flags/development.md#enabling-a-feature-flag-in-development).
+
+![Recent Group Activity](img/group_activity_analytics_v12_10.png)
+
 ## Viewing group activity
 
 A group's **Activity** page displays the most recent actions taken in a group, including:

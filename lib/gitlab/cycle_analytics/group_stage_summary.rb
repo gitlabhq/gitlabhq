@@ -12,14 +12,42 @@ module Gitlab
       end
 
       def data
-        [serialize(Summary::Group::Issue.new(group: group, current_user: current_user, options: options)),
-         serialize(Summary::Group::Deploy.new(group: group, options: options))]
+        [issue_stats,
+         deploy_stats,
+         deployment_frequency_stats]
       end
 
       private
 
-      def serialize(summary_object)
-        AnalyticsSummarySerializer.new.represent(summary_object)
+      def issue_stats
+        serialize(
+          Summary::Group::Issue.new(
+            group: group, current_user: current_user, options: options)
+        )
+      end
+
+      def deployments_summary
+        @deployments_summary ||=
+          Summary::Group::Deploy.new(group: group, options: options)
+      end
+
+      def deploy_stats
+        serialize deployments_summary
+      end
+
+      def deployment_frequency_stats
+        serialize(
+          Summary::Group::DeploymentFrequency.new(
+            deployments: deployments_summary.value,
+            group: group,
+            options: options),
+          with_unit: true
+        )
+      end
+
+      def serialize(summary_object, with_unit: false)
+        AnalyticsSummarySerializer.new.represent(
+          summary_object, with_unit: with_unit)
       end
     end
   end

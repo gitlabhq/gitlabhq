@@ -1060,6 +1060,14 @@ describe API::MergeRequests do
       expect(json_response['user']['can_merge']).to be_falsy
     end
 
+    it 'returns `checking` as its merge_status instead of `cannot_be_merged_rechecking`' do
+      merge_request.update!(merge_status: 'cannot_be_merged_rechecking')
+
+      get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user)
+
+      expect(json_response['merge_status']).to eq 'checking'
+    end
+
     context 'when merge request is unchecked' do
       before do
         merge_request.mark_as_unchecked!

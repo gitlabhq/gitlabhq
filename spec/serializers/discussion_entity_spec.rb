@@ -73,9 +73,19 @@ describe DiscussionEntity do
         :diff_file,
         :truncated_diff_lines,
         :position,
+        :positions,
+        :line_codes,
         :line_code,
         :active
       )
+    end
+
+    context 'diff_head_compare feature is disabled' do
+      it 'does not expose positions and line_codes attributes' do
+        stub_feature_flags(merge_ref_head_comments: false)
+
+        expect(subject.keys).not_to include(:positions, :line_codes)
+      end
     end
   end
 end

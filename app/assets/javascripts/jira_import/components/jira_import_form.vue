@@ -1,11 +1,11 @@
 <script>
-import { GlAvatar, GlNewButton, GlFormGroup, GlFormSelect, GlLabel } from '@gitlab/ui';
+import { GlAvatar, GlButton, GlFormGroup, GlFormSelect, GlLabel } from '@gitlab/ui';
 
 export default {
   name: 'JiraImportForm',
   components: {
     GlAvatar,
-    GlNewButton,
+    GlButton,
     GlFormGroup,
     GlFormSelect,
     GlLabel,
@@ -86,8 +86,8 @@ export default {
       </gl-form-group>
 
       <div class="footer-block row-content-block d-flex justify-content-between">
-        <gl-new-button category="primary" variant="success">{{ __('Next') }}</gl-new-button>
-        <gl-new-button>{{ __('Cancel') }}</gl-new-button>
+        <gl-button category="primary" variant="success">{{ __('Next') }}</gl-button>
+        <gl-button>{{ __('Cancel') }}</gl-button>
       </div>
     </form>
   </div>

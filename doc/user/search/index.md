@@ -98,7 +98,9 @@ You can view recent searches by clicking on the little arrow-clock icon, which i
 
 ## Removing search filters
 
-Individual filters can be removed by clicking on the filter's (x) button or backspacing. The entire search filter can be cleared by clicking on the search box's (x) button.
+Individual filters can be removed by clicking on the filter's (x) button or backspacing. The entire search filter can be cleared by clicking on the search box's (x) button or via <kbd>⌘</kbd> (Mac) + <kbd>⌫</kbd>.
+
+To delete filter tokens one at a time, the <kbd>⌥</kbd> (Mac) / <kbd>Ctrl</kbd> + <kbd>⌫</kbd> keyboard combination can be used.
 
 ## Filtering with multiple filters of the same type
 

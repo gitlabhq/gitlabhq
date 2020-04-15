@@ -222,6 +222,7 @@ but commented out to help encourage others to add to it in the future. -->
 |issues_with_associated_zoom_link|counts||
 |issues_using_zoom_quick_actions|counts||
 |issues_with_embedded_grafana_charts_approx|counts||
+|issues_with_health_status|counts||
 |keys|counts||
 |label_lists|counts||
 |lfs_objects|counts||
