@@ -20,21 +20,12 @@ describe('Actions Registry Store', () => {
   );
 
   describe('receiveSettingsSuccess', () => {
-    it('calls SET_SETTINGS when data is present', () => {
+    it('calls SET_SETTINGS', () => {
       testAction(
         actions.receiveSettingsSuccess,
         'foo',
         {},
         [{ type: types.SET_SETTINGS, payload: 'foo' }],
-        [],
-      );
-    });
-    it('calls SET_IS_DISABLED when data is not present', () => {
-      testAction(
-        actions.receiveSettingsSuccess,
-        null,
-        {},
-        [{ type: types.SET_IS_DISABLED, payload: true }],
         [],
       );
     });

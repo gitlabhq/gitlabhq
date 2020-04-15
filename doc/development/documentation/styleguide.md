@@ -1349,10 +1349,8 @@ Replace `reconfigure` with `restart` where appropriate.
 In [step 2 of the installation guide](../../install/installation.md#2-ruby),
 we install Ruby from source. Whenever there is a new version that needs to
 be updated, remember to change it throughout the codeblock and also replace
-the sha256sum (it can be found in the [downloads page][ruby-dl] of the Ruby
+the sha256sum (it can be found in the [downloads page](https://www.ruby-lang.org/en/downloads/) of the Ruby
 website).
-
-[ruby-dl]: https://www.ruby-lang.org/en/downloads/ "Ruby download website"
 
 ### Configuration documentation for source and Omnibus installations
 
@@ -1380,7 +1378,7 @@ the style below as a guide:
    external_url "https://gitlab.example.com"
    ```
 
-1. Save the file and [reconfigure] GitLab for the changes to take effect.
+1. Save the file and [reconfigure](path/to/administration/restart_gitlab.md#omnibus-gitlab-reconfigure) GitLab for the changes to take effect.
 
 ---
 
@@ -1393,10 +1391,7 @@ the style below as a guide:
      host: "gitlab.example.com"
    ```
 
-1. Save the file and [restart] GitLab for the changes to take effect.
-
-[reconfigure]: path/to/administration/restart_gitlab.md#omnibus-gitlab-reconfigure
-[restart]: path/to/administration/restart_gitlab.md#installations-from-source
+1. Save the file and [restart](path/to/administration/restart_gitlab.md#installations-from-source) GitLab for the changes to take effect.
 ````
 
 In this case:

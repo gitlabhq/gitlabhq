@@ -56,7 +56,12 @@ module Groups
       end
 
       def tree_exporter
-        Gitlab::ImportExport::Group::TreeSaver.new(group: @group, current_user: @current_user, shared: @shared, params: @params)
+        Gitlab::ImportExport::Group::LegacyTreeSaver.new(
+          group: @group,
+          current_user: @current_user,
+          shared: @shared,
+          params: @params
+        )
       end
 
       def file_saver

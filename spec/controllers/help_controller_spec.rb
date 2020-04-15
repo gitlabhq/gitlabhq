@@ -79,6 +79,20 @@ describe HelpController do
         expect(assigns[:help_index]).to eq '[protocol-relative](//example.com)'
       end
     end
+
+    context 'restricted visibility set to public' do
+      before do
+        sign_out(user)
+
+        stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC])
+      end
+
+      it 'redirects to sign_in path' do
+        get :index
+
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
   end
 
   describe 'GET #show' do

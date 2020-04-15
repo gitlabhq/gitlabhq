@@ -19,3 +19,7 @@ export const getSettings = (state, getters) => ({
 });
 
 export const getIsEdited = state => !isEqual(state.original, state.settings);
+
+export const getIsDisabled = state => {
+  return !(state.original || state.enableHistoricEntries);
+};

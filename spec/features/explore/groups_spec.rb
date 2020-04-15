@@ -89,5 +89,17 @@ describe 'Explore Groups', :js do
     end
 
     it_behaves_like 'renders group in public groups area'
+
+    context 'when visibility is restricted to public' do
+      before do
+        stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC])
+      end
+
+      it 'redirects to the sign in page' do
+        visit explore_groups_path
+
+        expect(page).to have_current_path(new_user_session_path)
+      end
+    end
   end
 end

@@ -390,7 +390,7 @@ CAUTION: **Caution:**
 For performance reasons since
 [GitLab 11.8](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/23931)
 and **behind the `api_kaminari_count_with_limit`
-[feature flag](../development/feature_flags.md)**, if the number of resources is
+[feature flag](../development/feature_flags/index.md)**, if the number of resources is
 more than 10,000, the `X-Total` and `X-Total-Pages` headers as well as the
 `rel="last"` `Link` are not present in the response headers.
 

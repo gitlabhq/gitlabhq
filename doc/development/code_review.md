@@ -490,15 +490,11 @@ A good example of collaboration on an MR touching multiple parts of the codebase
 
 ### Credits
 
-Largely based on the [thoughtbot code review guide].
-
-[thoughtbot code review guide]: https://github.com/thoughtbot/guides/tree/master/code-review
+Largely based on the [thoughtbot code review guide](https://github.com/thoughtbot/guides/tree/master/code-review).
 
 ---
 
 [Return to Development documentation](README.md)
 
-[projects]: https://about.gitlab.com/handbook/engineering/projects/
-[build handbook]: https://about.gitlab.com/handbook/build/handbook/build#how-to-work-with-build
 [^1]: Please note that specs other than JavaScript specs are considered backend code.
 [^2]: We encourage you to seek guidance from a database maintainer if your merge request is potentially introducing expensive queries. It is most efficient to comment on the line of code in question with the SQL queries so they can give their advice.

@@ -91,7 +91,7 @@ For more details on group visibility, see [Public access](../../../public_access
 
 ## Restricted visibility levels
 
-To set the available visibility levels for new projects and snippets:
+To set the available visibility levels for projects, snippets, and selected pages:
 
 1. Check the desired visibility levels.
 1. Click **Save changes**.

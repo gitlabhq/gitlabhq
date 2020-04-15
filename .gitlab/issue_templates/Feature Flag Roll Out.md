@@ -37,7 +37,7 @@ If applicable, any groups/projects that are happy to have this feature turned on
 - [ ] Coordinate a time to enable the flag with `#production` and `#g_delivery` on slack.
 - [ ] Announce on the issue an estimated time this will be enabled on GitLab.com
 - [ ] Enable on GitLab.com by running chatops command in `#production`
-- [ ] Cross post chatops slack command to `#support_gitlab-com` and in your team channel
+- [ ] Cross post chatops slack command to `#support_gitlab-com` ([more guidance when this is necessary in the dev docs](https://docs.gitlab.com/ee/development/feature_flags/controls.html#where-to-run-commands)) and in your team channel
 - [ ] Announce on the issue that the flag has been enabled
 - [ ] Remove feature flag and add changelog entry
 - [ ] After the flag removal is deployed, [clean up the feature flag](https://docs.gitlab.com/ee/development/feature_flags/controls.html#cleaning-up) by running chatops command in `#production` channel

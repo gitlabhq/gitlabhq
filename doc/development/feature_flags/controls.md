@@ -29,6 +29,11 @@ Monitor stage, Health group.
 
 For all production environment Chatops commands, use the `#production` channel.
 
+As per the template, where a feature would have a (potentially) significant user
+impact and the feature is being enabled instance wide prior to release, please copy
+the Slack message and repost in the `#support_gitlab-com` channel for added visibility
+and awareness, preferably with a link to the issue, MR, or docs.
+
 Regardless of the channel in which the Chatops command is ran, any feature flag change that affects GitLab.com will automatically be logged in an issue.
 
 The issue is created in the [gl-infra/feature-flag-log](https://gitlab.com/gitlab-com/gl-infra/feature-flag-log/issues?scope=all&utf8=%E2%9C%93&state=closed) project, and it will at minimum log the Slack handle of person enabling a feature flag, the time, and the name of the flag being changed.

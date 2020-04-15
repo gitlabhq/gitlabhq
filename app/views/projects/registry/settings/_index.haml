@@ -1,4 +1,7 @@
 #js-registry-settings{ data: { project_id: @project.id,
     cadence_options: cadence_options.to_json,
     keep_n_options: keep_n_options.to_json,
-    older_than_options: older_than_options.to_json} }
+    older_than_options: older_than_options.to_json,
+    is_admin: current_user&.admin.to_s,
+    admin_settings_path: ci_cd_admin_application_settings_path(anchor: 'js-registry-settings'),
+    enable_historic_entries: Gitlab::CurrentSettings.try(:container_expiration_policies_enable_historic_entries).to_s} }

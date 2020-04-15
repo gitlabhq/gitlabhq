@@ -63,7 +63,7 @@ Complementary reads:
   styleguide if you are contributing to the [GraphQL API](../api/graphql/index.md)
 - [Sidekiq guidelines](sidekiq_style_guide.md) for working with Sidekiq workers
 - [Working with Gitaly](gitaly.md)
-- [Manage feature flags](feature_flags.md)
+- [Manage feature flags](feature_flags/index.md)
 - [Licensed feature availability](licensed_feature_availability.md)
 - [View sent emails or preview mailers](emails.md)
 - [Shell commands](shell_commands.md) in the GitLab codebase

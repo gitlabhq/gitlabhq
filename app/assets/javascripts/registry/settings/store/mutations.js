@@ -1,3 +1,4 @@
+import { parseBoolean } from '~/lib/utils/common_utils';
 import * as types from './mutation_types';
 
 export default {
@@ -8,19 +9,19 @@ export default {
       keepN: JSON.parse(initialState.keepNOptions),
       olderThan: JSON.parse(initialState.olderThanOptions),
     };
+    state.enableHistoricEntries = parseBoolean(initialState.enableHistoricEntries);
+    state.isAdmin = parseBoolean(initialState.isAdmin);
+    state.adminSettingsPath = initialState.adminSettingsPath;
   },
   [types.UPDATE_SETTINGS](state, data) {
     state.settings = { ...state.settings, ...data.settings };
   },
   [types.SET_SETTINGS](state, settings) {
-    state.settings = settings;
+    state.settings = settings ?? state.settings;
     state.original = Object.freeze(settings);
   },
-  [types.SET_IS_DISABLED](state, isDisabled) {
-    state.isDisabled = isDisabled;
-  },
   [types.RESET_SETTINGS](state) {
-    state.settings = { ...state.original };
+    state.settings = Object.assign({}, state.original);
   },
   [types.TOGGLE_LOADING](state) {
     state.isLoading = !state.isLoading;

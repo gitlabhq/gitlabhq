@@ -29,7 +29,7 @@ describe('Getters registry settings store', () => {
     });
   });
 
-  describe('getIsDisabled', () => {
+  describe('getIsEdited', () => {
     it('returns false when original is equal to settings', () => {
       const same = { foo: 'bar' };
       expect(getters.getIsEdited({ original: same, settings: same })).toBe(false);
@@ -40,5 +40,19 @@ describe('Getters registry settings store', () => {
         true,
       );
     });
+  });
+
+  describe('getIsDisabled', () => {
+    it.each`
+      original          | enableHistoricEntries | result
+      ${undefined}      | ${false}              | ${true}
+      ${{ foo: 'bar' }} | ${undefined}          | ${false}
+      ${{}}             | ${false}              | ${false}
+    `(
+      'returns $result when original is $original and enableHistoricEntries is $enableHistoricEntries',
+      ({ original, enableHistoricEntries, result }) => {
+        expect(getters.getIsDisabled({ original, enableHistoricEntries })).toBe(result);
+      },
+    );
   });
 });

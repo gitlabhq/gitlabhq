@@ -4,6 +4,7 @@ module API
   class Issues < Grape::API
     include PaginationParams
     helpers Helpers::IssuesHelpers
+    helpers Helpers::RateLimiter
     helpers ::Gitlab::IssuableMetadata
 
     before { authenticate_non_get! }
@@ -210,6 +211,8 @@ module API
       end
       post ':id/issues' do
         Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-foss/issues/42320')
+
+        check_rate_limit! :issues_create, [current_user, :issues_create]
 
         authorize! :create_issue, user_project
 

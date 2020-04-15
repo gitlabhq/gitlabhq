@@ -171,5 +171,17 @@ describe Explore::ProjectsController do
         get :index, params: { sort: sorting_param }
       end
     end
+
+    context 'restricted visibility level is public' do
+      before do
+        stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC])
+      end
+
+      it 'redirects to login page' do
+        get :index
+
+        expect(response).to redirect_to new_user_session_path
+      end
+    end
   end
 end

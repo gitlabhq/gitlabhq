@@ -1,5 +1,5 @@
-- pretty_name = defined?(@project) ? @project.full_name : 'namespace / path'
-- run_actions_text = "Perform common operations on GitLab project: #{pretty_name}"
+- pretty_name = @project&.full_name || _('<project name>')
+- run_actions_text = s_("ProjectService|Perform common operations on GitLab project: %{project_name}") % { project_name: pretty_name }
 
 .info-well
   .well-segment
@@ -31,8 +31,10 @@
             %p
               = _("Suggestions:")
               %code= 'gitlab'
-              %code= @project.path # Path contains no spaces, but dashes
-              %code= @project.full_path
+              %code= 'project'
+              - if @project
+                %code= @project.path # Path contains no spaces, but dashes
+                %code= @project.full_path
 
         .form-group
           = label_tag :url, 'URL', class: 'col-12 col-form-label label-bold'

@@ -1,0 +1,5 @@
+---
+title: Protect sidekiq admin UI with admin mode
+merge_request: 28164
+author: Diego Louzán
+type: fixed

@@ -74,7 +74,7 @@ module ServicesHelper
 
   def scoped_integration_path(integration)
     if @project.present?
-      project_settings_integration_path(@project, integration)
+      project_service_path(@project, integration)
     elsif @group.present?
       group_settings_integration_path(@group, integration)
     else

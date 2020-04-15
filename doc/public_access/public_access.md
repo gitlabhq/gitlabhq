@@ -69,6 +69,16 @@ you are privileged to.
 
 If the public level is restricted, user profiles are only visible to logged in users.
 
+## Visibility of pages
+
+By default, the following directories are visible to unauthenticated users:
+
+- Public access (`/public`).
+- Explore (`/explore`).
+- Help (`/help`).
+
+However, if the access level of the `/public` directory is restricted, these directories are visible only to logged in users.
+
 ## Restricting the use of public or internal projects
 
 You can restrict the use of visibility levels for users when they create a project or a

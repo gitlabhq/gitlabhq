@@ -3,7 +3,7 @@
 module Gitlab
   module ImportExport
     module Group
-      class TreeSaver
+      class LegacyTreeSaver
         attr_reader :full_path, :shared
 
         def initialize(group:, current_user:, shared:, params: {})
