@@ -133,4 +133,55 @@ describe Groups::DestroyService do
       end
     end
   end
+
+  describe 'authorization updates', :sidekiq_inline do
+    context 'shared groups' do
+      let!(:shared_group) { create(:group, :private) }
+      let!(:shared_group_child) { create(:group, :private, parent: shared_group) }
+
+      let!(:project) { create(:project, group: shared_group) }
+      let!(:project_child) { create(:project, group: shared_group_child) }
+
+      before do
+        create(:group_group_link, shared_group: shared_group, shared_with_group: group)
+        group.refresh_members_authorized_projects
+      end
+
+      it 'updates project authorization' do
+        expect(user.can?(:read_project, project)).to eq(true)
+        expect(user.can?(:read_project, project_child)).to eq(true)
+
+        destroy_group(group, user, false)
+
+        expect(user.can?(:read_project, project)).to eq(false)
+        expect(user.can?(:read_project, project_child)).to eq(false)
+      end
+    end
+
+    context 'shared groups in the same group hierarchy' do
+      let!(:subgroup) { create(:group, :private, parent: group) }
+      let!(:subgroup_user) { create(:user) }
+
+      before do
+        subgroup.add_user(subgroup_user, Gitlab::Access::MAINTAINER)
+
+        create(:group_group_link, shared_group: group, shared_with_group: subgroup)
+        subgroup.refresh_members_authorized_projects
+      end
+
+      context 'group is deleted' do
+        it 'updates project authorization' do
+          expect { destroy_group(group, user, false) }.to(
+            change { subgroup_user.can?(:read_project, project) }.from(true).to(false))
+        end
+      end
+
+      context 'subgroup is deleted' do
+        it 'updates project authorization' do
+          expect { destroy_group(subgroup, user, false) }.to(
+            change { subgroup_user.can?(:read_project, project) }.from(true).to(false))
+        end
+      end
+    end
+  end
 end
