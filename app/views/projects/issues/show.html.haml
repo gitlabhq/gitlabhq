@@ -87,8 +87,7 @@
       .col-md-12.col-lg-6.js-noteable-awards
         = render 'award_emoji/awards_block', awardable: @issue, inline: true
       .col-md-12.col-lg-6.new-branch-col
-        - if Feature.enabled?(:sort_discussions, @project)
-          #js-vue-sort-issue-discussions
+        #js-vue-sort-issue-discussions
         #js-vue-discussion-filter{ data: { default_filter: current_user&.notes_filter_for(@issue), notes_filters: UserPreference.notes_filters.to_json } }
         = render 'new_branch' if show_new_branch_button?
 

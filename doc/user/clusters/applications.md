@@ -298,6 +298,22 @@ Ingress with the recent changes.
 
 ![Disabling WAF](../../topics/web_application_firewall/img/guide_waf_ingress_save_changes_v12_10.png)
 
+##### Logging and blocking modes
+
+To help you tune your WAF rules, you can globally set your WAF to either
+**Logging** or **Blocking** mode:
+
+- **Logging mode** - Allows traffic matching the rule to pass, and logs the event.
+- **Blocking mode** - Prevents traffic matching the rule from passing, and logs the event.
+
+To change your WAF's mode:
+
+1. [Install ModSecurity](../../topics/web_application_firewall/quick_start_guide.md) if you have not already done so.
+1. Navigate to **{cloud-gear}** **Operations > Kubernetes**.
+1. In **Applications**, scroll to **Ingress**.
+1. Under **Global default**, select your desired mode.
+1. Click **Save changes**.
+
 ##### Viewing Web Application Firewall traffic
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/14707) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.9.

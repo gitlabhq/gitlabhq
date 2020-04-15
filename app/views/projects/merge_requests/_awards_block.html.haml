@@ -2,6 +2,5 @@
   = render 'award_emoji/awards_block', awardable: @merge_request, inline: true do
     - if mr_tabs_position_enabled?
       .ml-auto.mt-auto.mb-auto
-        - if Feature.enabled?(:sort_discussions, @merge_request.target_project)
-          #js-vue-sort-issue-discussions
+        #js-vue-sort-issue-discussions
         = render "projects/merge_requests/discussion_filter"

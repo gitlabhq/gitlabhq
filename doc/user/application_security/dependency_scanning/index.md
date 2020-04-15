@@ -46,7 +46,7 @@ this is enabled by default.
 
 CAUTION: **Caution:**
 If you use your own Runners, make sure that the Docker version you have installed
-is **not** `19.03.00`. See [troubleshooting information](#error-response-from-daemon-error-processing-tar-file-docker-tar-relocation-error) for details.
+is **not** `19.03.0`. See [troubleshooting information](#error-response-from-daemon-error-processing-tar-file-docker-tar-relocation-error) for details.
 
 Privileged mode is not necessary if you've [disabled Docker in Docker for Dependency Scanning](#disabling-docker-in-docker-for-dependency-scanning)
 
@@ -419,7 +419,7 @@ You can also [submit new vulnerabilities](https://gitlab.com/gitlab-org/security
 
 ### Error response from daemon: error processing tar file: docker-tar: relocation error
 
-This error occurs when the Docker version used to run the SAST job is `19.03.00`.
-You are advised to update to Docker `19.03.01` or greater. Older versions are not
+This error occurs when the Docker version used to run the SAST job is `19.03.0`.
+You are advised to update to Docker `19.03.1` or greater. Older versions are not
 affected. Read more in
 [this issue](https://gitlab.com/gitlab-org/gitlab/issues/13830#note_211354992 "Current SAST container fails").

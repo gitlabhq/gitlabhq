@@ -302,6 +302,14 @@ For Value Stream Analytics functionality introduced in GitLab 12.3 and later:
 - Features are available only on
   [Premium or Silver tiers](https://about.gitlab.com/pricing/) and above.
 
+## Troubleshooting
+
+If you see an error as listed in the following table, try the noted solution:
+
+| Error                                       | Solution                                                                                                                                                                                                                           |
+|---------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| There was an error fetching the top labels. | Manually enable tasks by type feature in the [rails console](../../administration/troubleshooting/navigating_gitlab_via_rails_console.md#starting-a-rails-console-session), specifically `Feature.enable(:tasks_by_type_chart)`. |
+
 ## More resources
 
 Learn more about Value Stream Analytics in the following resources:

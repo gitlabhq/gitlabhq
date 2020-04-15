@@ -239,7 +239,6 @@ tables:
     - repository_size_limit
     - require_two_factor_authentication
     - two_factor_grace_period
-    - plan_id
     - project_creation_level
   members:
     whitelist:

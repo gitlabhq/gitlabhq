@@ -2,6 +2,21 @@
 
 module Gitlab
   module ErrorTracking
+    # Exceptions in this group will receive custom Sentry fingerprinting
+    CUSTOM_FINGERPRINTING = %w[
+      Acme::Client::Error::BadNonce
+      Acme::Client::Error::NotFound
+      Acme::Client::Error::RateLimited
+      Acme::Client::Error::Timeout
+      Acme::Client::Error::UnsupportedOperation
+      ActiveRecord::ConnectionTimeoutError
+      ActiveRecord::QueryCanceled
+      Gitlab::RequestContext::RequestDeadlineExceeded
+      GRPC::DeadlineExceeded
+      JIRA::HTTPError
+      Rack::Timeout::RequestTimeoutException
+    ].freeze
+
     class << self
       def configure
         Raven.configure do |config|
@@ -14,8 +29,7 @@ module Gitlab
           # Sanitize authentication headers
           config.sanitize_http_headers = %w[Authorization Private-Token]
           config.tags = { program: Gitlab.process_name }
-          # Debugging for https://gitlab.com/gitlab-org/gitlab-foss/issues/57727
-          config.before_send = method(:add_context_from_exception_type)
+          config.before_send = method(:before_send)
         end
       end
 
@@ -92,6 +106,13 @@ module Gitlab
 
       private
 
+      def before_send(event, hint)
+        event = add_context_from_exception_type(event, hint)
+        event = custom_fingerprinting(event, hint)
+
+        event
+      end
+
       def process_exception(exception, sentry: false, logging: true, extra:)
         exception.try(:sentry_extra_data)&.tap do |data|
           extra = extra.merge(data) if data.is_a?(Hash)
@@ -142,6 +163,7 @@ module Gitlab
         }
       end
 
+      # Debugging for https://gitlab.com/gitlab-org/gitlab-foss/issues/57727
       def add_context_from_exception_type(event, hint)
         if ActiveModel::MissingAttributeError === hint[:exception]
           columns_hash = ActiveRecord::Base
@@ -153,6 +175,18 @@ module Gitlab
 
           event.extra.merge!(columns_hash)
         end
+
+        event
+      end
+
+      # Group common, mostly non-actionable exceptions by type and message,
+      # rather than cause
+      def custom_fingerprinting(event, hint)
+        ex = hint[:exception]
+
+        return event unless CUSTOM_FINGERPRINTING.include?(ex.class.name)
+
+        event.fingerprint = ['{{ default }}', ex.class.name, ex.message]
 
         event
       end

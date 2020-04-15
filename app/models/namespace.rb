@@ -11,6 +11,9 @@ class Namespace < ApplicationRecord
   include FeatureGate
   include FromUnion
   include Gitlab::Utils::StrongMemoize
+  include IgnorableColumns
+
+  ignore_column :plan_id, remove_with: '13.1', remove_after: '2020-06-22'
 
   # Prevent users from creating unreasonably deep level of nesting.
   # The number 20 was taken based on maximum nesting level of

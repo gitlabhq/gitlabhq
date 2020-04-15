@@ -240,10 +240,10 @@ should look similar to this:
 
 ```yaml
 build:
-  image: docker:19.03.1
+  image: docker:19.03.8
   stage: build
   services:
-    - docker:19.03.1-dind
+    - docker:19.03.8-dind
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker build -t $CI_REGISTRY/group/project/image:latest .
@@ -254,10 +254,10 @@ You can also make use of [other variables](../../../ci/variables/README.md) to a
 
 ```yaml
 build:
-  image: docker:19.03.1
+  image: docker:19.03.8
   stage: build
   services:
-    - docker:19.03.1-dind
+    - docker:19.03.8-dind
   variables:
     IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
   script:
@@ -280,9 +280,9 @@ when needed. Changes to `master` also get tagged as `latest` and deployed using
 an application-specific deploy script:
 
 ```yaml
-image: docker:19.03.1
+image: docker:19.03.8
 services:
-  - docker:19.03.1-dind
+  - docker:19.03.8-dind
 
 stages:
   - build
@@ -355,9 +355,9 @@ Below is an example of what your `.gitlab-ci.yml` should look like:
 
 ```yaml
  build:
-   image: $CI_REGISTRY/group/project/docker:19.03.1
+   image: $CI_REGISTRY/group/project/docker:19.03.8
    services:
-     - name: $CI_REGISTRY/group/project/docker:19.03.1-dind
+     - name: $CI_REGISTRY/group/project/docker:19.03.8-dind
        alias: docker
    stage: build
    script:
@@ -365,7 +365,7 @@ Below is an example of what your `.gitlab-ci.yml` should look like:
      - docker run my-docker-image /script/to/run/tests
 ```
 
-If you forget to set the service alias, the `docker:19.03.1` image won't find the
+If you forget to set the service alias, the `docker:19.03.8` image won't find the
 `dind` service, and an error like the following will be thrown:
 
 ```plaintext
@@ -435,10 +435,10 @@ stages:
   - clean
 
 build_image:
-  image: docker:19.03.1
+  image: docker:19.03.8
   stage: build
   services:
-    - docker:19.03.1-dind
+    - docker:19.03.8-dind
   variables:
     IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
   script:
@@ -451,10 +451,10 @@ build_image:
     - master
 
 delete_image:
-  image: docker:19.03.1
+  image: docker:19.03.8
   stage: clean
   services:
-    - docker:19.03.1-dind
+    - docker:19.03.8-dind
   variables:
     IMAGE_TAG: $CI_PROJECT_PATH:$CI_COMMIT_REF_SLUG
     REG_SHA256: ade837fc5224acd8c34732bf54a94f579b47851cc6a7fd5899a98386b782e228

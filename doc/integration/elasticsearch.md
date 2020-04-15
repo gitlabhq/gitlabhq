@@ -361,7 +361,7 @@ or creating [extra Sidekiq processes](../administration/operations/extra_sidekiq
 1. Enable replication and refreshing again after indexing (only if you previously disabled it):
 
    ```shell
-   curl --request PUT localhost:9200/gitlab-production/_settings --header 'Content-Type: application/json' ---data '{
+   curl --request PUT localhost:9200/gitlab-production/_settings --header 'Content-Type: application/json' --data '{
        "index" : {
            "number_of_replicas" : 1,
            "refresh_interval" : "1s"
@@ -373,7 +373,7 @@ or creating [extra Sidekiq processes](../administration/operations/extra_sidekiq
    For Elasticsearch 6.x, the index should be in read-only mode before proceeding with the force merge:
 
    ```shell
-   curl --request PUT localhost:9200/gitlab-production/_settings ---header 'Content-Type: application/json' --data '{
+   curl --request PUT localhost:9200/gitlab-production/_settings --header 'Content-Type: application/json' --data '{
      "settings": {
        "index.blocks.write": true
      } }'
@@ -388,7 +388,7 @@ or creating [extra Sidekiq processes](../administration/operations/extra_sidekiq
    After this, if your index is in read-only mode, switch back to read-write:
 
    ```shell
-   curl --request PUT localhost:9200/gitlab-production/_settings ---header 'Content-Type: application/json' --data '{
+   curl --request PUT localhost:9200/gitlab-production/_settings --header 'Content-Type: application/json' --data '{
      "settings": {
        "index.blocks.write": false
      } }'

@@ -31,10 +31,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:vue_issuable_sidebar, @project.group)
   end
 
-  before_action only: :show do
-    push_frontend_feature_flag(:sort_discussions, @project)
-  end
-
   around_action :allow_gitaly_ref_name_caching, only: [:index, :show, :discussions]
 
   def index

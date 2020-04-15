@@ -50,10 +50,6 @@ class Projects::IssuesController < Projects::ApplicationController
     push_frontend_feature_flag(:save_issuable_health_status, project.group, default_enabled: true)
   end
 
-  before_action only: :show do
-    push_frontend_feature_flag(:sort_discussions, @project)
-  end
-
   around_action :allow_gitaly_ref_name_caching, only: [:discussions]
 
   respond_to :html
