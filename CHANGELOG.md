@@ -2,6 +2,15 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 12.9.3 (2020-04-14)
+
+### Security (3 changes)
+
+- Refresh ProjectAuthorization during Group deletion.
+- Prevent filename bypass on artifact upload.
+- Update rack and related gems to 2.0.9 to fix security issue.
+
+
 ## 12.9.2 (2020-03-31)
 
 ### Fixed (5 changes)
@@ -497,6 +506,15 @@ entry.
 - Add confidential attribute to notes table.
 - Replace content_viewer_spec setTimeouts with semantic actions / events. (Oregand)
 - Improvement in token reference.
+
+
+## 12.8.9 (2020-04-14)
+
+### Security (3 changes)
+
+- Refresh ProjectAuthorization during Group deletion.
+- Prevent filename bypass on artifact upload.
+- Update rack and related gems to 2.0.9 to fix security issue.
 
 
 ## 12.8.7 (2020-03-16)
@@ -1087,6 +1105,15 @@ entry.
 - Track usage of merge request file header buttons. (Oregand)
 - Switch dropdown operators to lowercase.
 - Add clarifying content to account fields.
+
+
+## 12.7.9 (2020-04-14)
+
+### Security (3 changes)
+
+- Refresh ProjectAuthorization during Group deletion.
+- Prevent filename bypass on artifact upload.
+- Update rack and related gems to 2.0.9 to fix security issue.
 
 
 ## 12.7.5
