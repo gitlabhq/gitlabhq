@@ -87,6 +87,7 @@ module Gitlab
           allowed_paths = [
             ::FileUploader.root,
             Gitlab.config.uploads.storage_path,
+            JobArtifactUploader.workhorse_upload_path,
             File.join(Rails.root, 'public/uploads/tmp')
           ]
 
@@ -121,6 +122,8 @@ module Gitlab
         Handler.new(env, message).with_open_files do
           @app.call(env)
         end
+      rescue UploadedFile::InvalidPathError => e
+        [400, { 'Content-Type' => 'text/plain' }, e.message]
       end
     end
   end

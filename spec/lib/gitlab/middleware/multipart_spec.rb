@@ -5,9 +5,7 @@ require 'spec_helper'
 require 'tempfile'
 
 describe Gitlab::Middleware::Multipart do
-  let(:app) { double(:app) }
-  let(:middleware) { described_class.new(app) }
-  let(:original_filename) { 'filename' }
+  include_context 'multipart middleware context'
 
   shared_examples_for 'multipart upload files' do
     it 'opens top-level files' do
@@ -82,22 +80,23 @@ describe Gitlab::Middleware::Multipart do
   end
 
   it 'allows files in uploads/tmp directory' do
-    Dir.mktmpdir do |dir|
-      uploads_dir = File.join(dir, 'public/uploads/tmp')
-      FileUtils.mkdir_p(uploads_dir)
-
-      allow(Rails).to receive(:root).and_return(dir)
-      allow(Dir).to receive(:tmpdir).and_return(File.join(Dir.tmpdir, 'tmpsubdir'))
-
-      Tempfile.open('top-level', uploads_dir) do |tempfile|
-        env = post_env({ 'file' => tempfile.path }, { 'file.name' => original_filename, 'file.path' => tempfile.path }, Gitlab::Workhorse.secret, 'gitlab-workhorse')
-
-        expect(app).to receive(:call) do |env|
-          expect(get_params(env)['file']).to be_a(::UploadedFile)
-        end
-
-        middleware.call(env)
+    with_tmp_dir('public/uploads/tmp') do |dir, env|
+      expect(app).to receive(:call) do |env|
+        expect(get_params(env)['file']).to be_a(::UploadedFile)
       end
+
+      middleware.call(env)
+    end
+  end
+
+  it 'allows files in the job artifact upload path' do
+    with_tmp_dir('artifacts') do |dir, env|
+      expect(JobArtifactUploader).to receive(:workhorse_upload_path).and_return(File.join(dir, 'artifacts'))
+      expect(app).to receive(:call) do |env|
+        expect(get_params(env)['file']).to be_a(::UploadedFile)
+      end
+
+      middleware.call(env)
     end
   end
 
@@ -126,23 +125,5 @@ describe Gitlab::Middleware::Multipart do
 
       middleware.call(env)
     end
-  end
-
-  # Rails 5 doesn't combine the GET/POST parameters in
-  # ActionDispatch::HTTP::Parameters if action_dispatch.request.parameters is set:
-  # https://github.com/rails/rails/blob/aea6423f013ca48f7704c70deadf2cd6ac7d70a1/actionpack/lib/action_dispatch/http/parameters.rb#L41
-  def get_params(env)
-    req = ActionDispatch::Request.new(env)
-    req.GET.merge(req.POST)
-  end
-
-  def post_env(rewritten_fields, params, secret, issuer)
-    token = JWT.encode({ 'iss' => issuer, 'rewritten_fields' => rewritten_fields }, secret, 'HS256')
-    Rack::MockRequest.env_for(
-      '/',
-      method: 'post',
-      params: params,
-      described_class::RACK_ENV_KEY => token
-    )
   end
 end
