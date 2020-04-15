@@ -418,12 +418,23 @@ spec:
 
 ## Troubleshooting
 
-- Auto Build and Auto Test may fail in detecting your language/framework. There
-  may be no buildpack for your application, or your application may be missing the
-  key files the buildpack is looking for. For example, for Ruby applications, you must
-  have a `Gemfile` to be properly detected, even though it is possible to write a
-  Ruby app without a `Gemfile`. Try specifying a [custom
-  buildpack](customize.md#custom-buildpacks).
+- Auto Build and Auto Test may fail to detect your language or framework with the
+  following error:
+
+  ```plaintext
+  Step 5/11 : RUN /bin/herokuish buildpack build
+   ---> Running in eb468cd46085
+      -----> Unable to select a buildpack
+  The command '/bin/sh -c /bin/herokuish buildpack build' returned a non-zero code: 1
+  ```
+
+  The following are possible reasons:
+
+  - Your application may be missing the key files the buildpack is looking for. For
+    example, for Ruby applications you must have a `Gemfile` to be properly detected,
+    even though it is possible to write a Ruby app without a `Gemfile`.
+  - There may be no buildpack for your application. Try specifying a
+    [custom buildpack](customize.md#custom-buildpacks).
 - Auto Test may fail because of a mismatch between testing frameworks. In this
   case, you may need to customize your `.gitlab-ci.yml` with your test commands.
 - Auto Deploy will fail if GitLab can not create a Kubernetes namespace and

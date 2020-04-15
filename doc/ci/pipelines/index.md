@@ -22,10 +22,9 @@ Pipelines comprise:
 Jobs are executed by [Runners](../runners/README.md). Multiple jobs in the same stage are executed in parallel,
 if there are enough concurrent runners.
 
-If all the jobs in a stage:
+If *all* jobs in a stage succeed, the pipeline moves on to the next stage.
 
-- Succeed, the pipeline moves on to the next stage.
-- Fail, the next stage is not (usually) executed and the pipeline ends early.
+If *any* job in a stage fails, the next stage is not (usually) executed and the pipeline ends early.
 
 In general, pipelines are executed automatically and require no intervention once created. However, there are
 also times when you can manually interact with a pipeline.
@@ -46,6 +45,10 @@ you may need to enable pipeline triggering in your project's
 
 Pipelines can be configured in many different ways:
 
+- [Basic pipelines](pipeline_architectures.md#basic-pipelines) run everything in each stage concurrently,
+  followed by the next stage.
+- [Directed Acyclic Graph Pipeline (DAG) pipelines](../directed_acyclic_graph/index.md) are based on relationships
+  between jobs and can run more quickly than basic pipelines.
 - [Multi-project pipelines](../multi_project_pipelines.md) combine pipelines for different projects together.
 - [Parent-Child pipelines](../parent_child_pipelines.md) break down complex pipelines
   into one parent pipeline that can trigger multiple child sub-pipelines, which all

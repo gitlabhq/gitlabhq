@@ -1422,8 +1422,8 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
 
     describe 'artifacts' do
       let(:job) { create(:ci_build, :pending, user: user, project: project, pipeline: pipeline, runner_id: runner.id) }
-      let(:jwt_token) { JWT.encode({ 'iss' => 'gitlab-workhorse' }, Gitlab::Workhorse.secret, 'HS256') }
-      let(:headers) { { 'GitLab-Workhorse' => '1.0', Gitlab::Workhorse::INTERNAL_API_REQUEST_HEADER => jwt_token } }
+      let(:jwt) { JWT.encode({ 'iss' => 'gitlab-workhorse' }, Gitlab::Workhorse.secret, 'HS256') }
+      let(:headers) { { 'GitLab-Workhorse' => '1.0', Gitlab::Workhorse::INTERNAL_API_REQUEST_HEADER => jwt } }
       let(:headers_with_token) { headers.merge(API::Helpers::Runner::JOB_TOKEN_HEADER => job.token) }
       let(:file_upload) { fixture_file_upload('spec/fixtures/banana_sample.gif', 'image/gif') }
       let(:file_upload2) { fixture_file_upload('spec/fixtures/dk.png', 'image/gif') }
@@ -1703,12 +1703,12 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
             it 'fails to post artifacts without GitLab-Workhorse' do
               post api("/jobs/#{job.id}/artifacts"), params: { token: job.token }, headers: {}
 
-              expect(response).to have_gitlab_http_status(:forbidden)
+              expect(response).to have_gitlab_http_status(:bad_request)
             end
           end
 
           context 'Is missing GitLab Workhorse token headers' do
-            let(:jwt_token) { JWT.encode({ 'iss' => 'invalid-header' }, Gitlab::Workhorse.secret, 'HS256') }
+            let(:jwt) { JWT.encode({ 'iss' => 'invalid-header' }, Gitlab::Workhorse.secret, 'HS256') }
 
             it 'fails to post artifacts without GitLab-Workhorse' do
               expect(Gitlab::ErrorTracking).to receive(:track_exception).once
@@ -1722,15 +1722,14 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
           context 'when setting an expire date' do
             let(:default_artifacts_expire_in) {}
             let(:post_data) do
-              { 'file.path' => file_upload.path,
-                'file.name' => file_upload.original_filename,
-                'expire_in' => expire_in }
+              { file: file_upload,
+                expire_in: expire_in }
             end
 
             before do
               stub_application_setting(default_artifacts_expire_in: default_artifacts_expire_in)
 
-              post(api("/jobs/#{job.id}/artifacts"), params: post_data, headers: headers_with_token)
+              upload_artifacts(file_upload, headers_with_token, post_data)
             end
 
             context 'when an expire_in is given' do
@@ -1783,20 +1782,22 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
             let(:stored_artifacts_size) { job.reload.artifacts_size }
             let(:stored_artifacts_sha256) { job.reload.job_artifacts_archive.file_sha256 }
             let(:stored_metadata_sha256) { job.reload.job_artifacts_metadata.file_sha256 }
+            let(:file_keys) { post_data.keys }
+            let(:send_rewritten_field) { true }
 
             before do
-              post(api("/jobs/#{job.id}/artifacts"), params: post_data, headers: headers_with_token)
+              workhorse_finalize_with_multiple_files(
+                api("/jobs/#{job.id}/artifacts"),
+                method: :post,
+                file_keys: file_keys,
+                params: post_data,
+                headers: headers_with_token,
+                send_rewritten_field: send_rewritten_field
+              )
             end
 
             context 'when posts data accelerated by workhorse is correct' do
-              let(:post_data) do
-                { 'file.path' => artifacts.path,
-                  'file.name' => artifacts.original_filename,
-                  'file.sha256' => artifacts_sha256,
-                  'metadata.path' => metadata.path,
-                  'metadata.name' => metadata.original_filename,
-                  'metadata.sha256' => metadata_sha256 }
-              end
+              let(:post_data) { { file: artifacts, metadata: metadata } }
 
               it 'stores artifacts and artifacts metadata' do
                 expect(response).to have_gitlab_http_status(:created)
@@ -1808,9 +1809,30 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
               end
             end
 
+            context 'with a malicious file.path param' do
+              let(:post_data) { {} }
+              let(:tmp_file) { Tempfile.new('crafted.file.path') }
+              let(:url) { "/jobs/#{job.id}/artifacts?file.path=#{tmp_file.path}" }
+
+              it 'rejects the request' do
+                expect(response).to have_gitlab_http_status(:bad_request)
+                expect(stored_artifacts_size).to be_nil
+              end
+            end
+
+            context 'when workhorse header is missing' do
+              let(:post_data) { { file: artifacts, metadata: metadata } }
+              let(:send_rewritten_field) { false }
+
+              it 'rejects the request' do
+                expect(response).to have_gitlab_http_status(:bad_request)
+                expect(stored_artifacts_size).to be_nil
+              end
+            end
+
             context 'when there is no artifacts file in post data' do
               let(:post_data) do
-                { 'metadata' => metadata }
+                { metadata: metadata }
               end
 
               it 'is expected to respond with bad request' do
@@ -2053,7 +2075,8 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
             method: :post,
             file_key: :file,
             params: params.merge(file: file),
-            headers: headers
+            headers: headers,
+            send_rewritten_field: true
           )
         end
       end

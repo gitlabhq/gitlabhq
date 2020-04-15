@@ -20,6 +20,17 @@ describe WikiPage do
 
   subject { new_page }
 
+  def disable_front_matter
+    stub_feature_flags(Gitlab::WikiPages::FrontMatterParser::FEATURE_FLAG => false)
+  end
+
+  def enable_front_matter_for_project
+    stub_feature_flags(Gitlab::WikiPages::FrontMatterParser::FEATURE_FLAG => {
+      thing: project,
+      enabled: true
+    })
+  end
+
   describe '.group_by_directory' do
     context 'when there are no pages' do
       it 'returns an empty array' do
@@ -101,6 +112,119 @@ describe WikiPage do
     end
   end
 
+  describe '#front_matter' do
+    let_it_be(:project) { create(:project) }
+    let(:wiki_page) { create(:wiki_page, project: project, content: content) }
+
+    shared_examples 'a page without front-matter' do
+      it { expect(wiki_page).to have_attributes(front_matter: {}, content: content) }
+    end
+
+    shared_examples 'a page with front-matter' do
+      let(:front_matter) { { title: 'Foo', slugs: %w[slug_a slug_b] } }
+
+      it { expect(wiki_page.front_matter).to eq(front_matter) }
+    end
+
+    context 'the wiki page has front matter' do
+      let(:content) do
+        <<~MD
+        ---
+        title: Foo
+        slugs:
+          - slug_a
+          - slug_b
+        ---
+
+        My actual content
+        MD
+      end
+
+      it_behaves_like 'a page with front-matter'
+
+      it 'strips the front matter from the content' do
+        expect(wiki_page.content.strip).to eq('My actual content')
+      end
+
+      context 'the feature flag is off' do
+        before do
+          disable_front_matter
+        end
+
+        it_behaves_like 'a page without front-matter'
+
+        context 'but enabled for the project' do
+          before do
+            enable_front_matter_for_project
+          end
+
+          it_behaves_like 'a page with front-matter'
+        end
+      end
+    end
+
+    context 'the wiki page does not have front matter' do
+      let(:content) { 'My actual content' }
+
+      it_behaves_like 'a page without front-matter'
+    end
+
+    context 'the wiki page has fenced blocks, but nothing in them' do
+      let(:content) do
+        <<~MD
+        ---
+        ---
+
+        My actual content
+        MD
+      end
+
+      it_behaves_like 'a page without front-matter'
+    end
+
+    context 'the wiki page has invalid YAML type in fenced blocks' do
+      let(:content) do
+        <<~MD
+        ---
+        this isn't YAML
+        ---
+
+        My actual content
+        MD
+      end
+
+      it_behaves_like 'a page without front-matter'
+    end
+
+    context 'the wiki page has a disallowed class in fenced block' do
+      let(:content) do
+        <<~MD
+        ---
+        date: 2010-02-11 11:02:57
+        ---
+
+        My actual content
+        MD
+      end
+
+      it_behaves_like 'a page without front-matter'
+    end
+
+    context 'the wiki page has invalid YAML in fenced block' do
+      let(:content) do
+        <<~MD
+        ---
+        invalid-use-of-reserved-indicator: @text
+        ---
+
+        My actual content
+        MD
+      end
+
+      it_behaves_like 'a page without front-matter'
+    end
+  end
+
   describe '.unhyphenize' do
     it 'removes hyphens from a name' do
       name = 'a-name--with-hyphens'
@@ -155,8 +279,8 @@ describe WikiPage do
     end
 
     describe '#validate_path_limits' do
-      let(:max_title) { described_class::MAX_TITLE_BYTES }
-      let(:max_directory) { described_class::MAX_DIRECTORY_BYTES }
+      let(:max_title) { Gitlab::WikiPages::MAX_TITLE_BYTES }
+      let(:max_directory) { Gitlab::WikiPages::MAX_DIRECTORY_BYTES }
 
       where(:character) do
         ['a', 'ä', '🙈']
@@ -296,7 +420,7 @@ describe WikiPage do
         subject.update(content: "new content")
         page = wiki.find_page(title)
 
-        expect(page.content).to eq('new content')
+        expect([subject.content, page.content]).to all(eq('new content'))
       end
 
       it "returns true" do
@@ -333,7 +457,7 @@ describe WikiPage do
         subject.update(content: new_content)
         page = wiki.find_page('test page')
 
-        expect(page.content).to eq("new content")
+        expect([subject.content, page.content]).to all(eq("new content"))
       end
 
       it "updates the title of the page" do
@@ -342,7 +466,75 @@ describe WikiPage do
         subject.update(title: new_title)
         page = wiki.find_page(new_title)
 
-        expect(page.title).to eq(new_title)
+        expect([subject.title, page.title]).to all(eq(new_title))
+      end
+
+      describe 'updating front_matter' do
+        shared_examples 'able to update front-matter' do
+          it 'updates the wiki-page front-matter' do
+            title = subject.title
+            content = subject.content
+            subject.update(front_matter: { slugs: ['x'] })
+            page = wiki.find_page(title)
+
+            expect([subject, page]).to all(
+              have_attributes(
+                front_matter: include(slugs: include('x')),
+                content: content
+              ))
+          end
+        end
+
+        it_behaves_like 'able to update front-matter'
+
+        context 'the front matter is too long' do
+          let(:new_front_matter) do
+            {
+              title: generate(:wiki_page_title),
+              slugs: Array.new(51).map { FFaker::Lorem.characters(512) }
+            }
+          end
+
+          it 'raises an error' do
+            expect { subject.update(front_matter: new_front_matter) }.to raise_error(described_class::FrontMatterTooLong)
+          end
+        end
+
+        context 'the front-matter feature flag is not enabled' do
+          before do
+            disable_front_matter
+          end
+
+          it 'does not update the front-matter' do
+            content = subject.content
+            subject.update(front_matter: { slugs: ['x'] })
+
+            page = wiki.find_page(subject.title)
+
+            expect([subject, page]).to all(have_attributes(front_matter: be_empty, content: content))
+          end
+
+          context 'but it is enabled for the project' do
+            before do
+              enable_front_matter_for_project
+            end
+
+            it_behaves_like 'able to update front-matter'
+          end
+        end
+
+        it 'updates the wiki-page front-matter and content together' do
+          title = subject.title
+          content = 'totally new content'
+          subject.update(content: content, front_matter: { slugs: ['x'] })
+          page = wiki.find_page(title)
+
+          expect([subject, page]).to all(
+            have_attributes(
+              front_matter: include(slugs: include('x')),
+              content: content
+            ))
+        end
       end
 
       it "returns true" do

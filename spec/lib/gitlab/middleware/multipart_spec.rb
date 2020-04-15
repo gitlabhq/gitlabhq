@@ -89,6 +89,17 @@ describe Gitlab::Middleware::Multipart do
     end
   end
 
+  it 'allows files in the job artifact upload path' do
+    with_tmp_dir('artifacts') do |dir, env|
+      expect(JobArtifactUploader).to receive(:workhorse_upload_path).and_return(File.join(dir, 'artifacts'))
+      expect(app).to receive(:call) do |env|
+        expect(get_params(env)['file']).to be_a(::UploadedFile)
+      end
+
+      middleware.call(env)
+    end
+  end
+
   it 'allows symlinks for uploads dir' do
     Tempfile.open('two-levels') do |tempfile|
       symlinked_dir = '/some/dir/uploads'

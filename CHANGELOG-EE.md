@@ -1,5 +1,12 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 12.9.3 (2020-04-14)
+
+### Security (1 change)
+
+- Fix filename bypass when uploading NuGet packages.
+
+
 ## 12.9.2 (2020-03-31)
 
 ### Fixed (4 changes)
@@ -150,6 +157,13 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Rename close_{at,by} to dismissed_{at,by} in Vulnerabilities. !25609 (Michał Zając)
 - Style MR approval popover link to be consistent text size. !25657
 - Allow users to be marked as service users. !202680
+
+
+## 12.8.9 (2020-04-14)
+
+### Security (1 change)
+
+- Fix filename bypass when uploading NuGet packages.
 
 
 ## 12.8.7 (2020-03-16)
@@ -303,6 +317,13 @@ Please view this file on the master branch, on stable branches it's out of date.
 ### Other (1 change)
 
 - Prepare DB structure for GMA forking changes. !22002
+
+
+## 12.7.9 (2020-04-14)
+
+### Security (1 change)
+
+- Fix filename bypass when uploading NuGet packages.
 
 
 ## 12.7.5

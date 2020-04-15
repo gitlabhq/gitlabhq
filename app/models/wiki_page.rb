@@ -2,16 +2,18 @@
 
 # rubocop:disable Rails/ActiveRecordAliases
 class WikiPage
+  include Gitlab::Utils::StrongMemoize
+
   PageChangedError = Class.new(StandardError)
   PageRenameError = Class.new(StandardError)
-
-  MAX_TITLE_BYTES = 245
-  MAX_DIRECTORY_BYTES = 255
+  FrontMatterTooLong = Class.new(StandardError)
 
   include ActiveModel::Validations
   include ActiveModel::Conversion
   include StaticModel
   extend ActiveModel::Naming
+
+  delegate :content, :front_matter, to: :parsed_content
 
   def self.primary_key
     'slug'
@@ -114,8 +116,7 @@ class WikiPage
     @attributes[:title] = new_title
   end
 
-  # The raw content of this page.
-  def content
+  def raw_content
     @attributes[:content] ||= @page&.text_data
   end
 
@@ -238,7 +239,7 @@ class WikiPage
     save do
       wiki.update_page(
         @page,
-        content: content,
+        content: raw_content,
         format: format,
         message: attrs[:message],
         title: title
@@ -281,8 +282,10 @@ class WikiPage
   # Updates the current @attributes hash by merging a hash of params
   def update_attributes(attrs)
     attrs[:title] = process_title(attrs[:title]) if attrs[:title].present?
+    update_front_matter(attrs)
 
     attrs.slice!(:content, :format, :message, :title)
+    clear_memoization(:parsed_content) if attrs.has_key?(:content)
 
     @attributes.merge!(attrs)
   end
@@ -292,6 +295,28 @@ class WikiPage
   end
 
   private
+
+  def serialize_front_matter(hash)
+    return '' unless hash.present?
+
+    YAML.dump(hash.transform_keys(&:to_s)) + "---\n"
+  end
+
+  def update_front_matter(attrs)
+    return unless Gitlab::WikiPages::FrontMatterParser.enabled?(project)
+    return unless attrs.has_key?(:front_matter)
+
+    fm_yaml = serialize_front_matter(attrs[:front_matter])
+    raise FrontMatterTooLong if fm_yaml.size > Gitlab::WikiPages::FrontMatterParser::MAX_FRONT_MATTER_LENGTH
+
+    attrs[:content] = fm_yaml + (attrs[:content].presence || content)
+  end
+
+  def parsed_content
+    strong_memoize(:parsed_content) do
+      Gitlab::WikiPages::FrontMatterParser.new(raw_content, project).parse
+    end
+  end
 
   # Process and format the title based on the user input.
   def process_title(title)
@@ -339,14 +364,16 @@ class WikiPage
   def validate_path_limits
     *dirnames, title = @attributes[:title].split('/')
 
-    if title && title.bytesize > MAX_TITLE_BYTES
-      errors.add(:title, _("exceeds the limit of %{bytes} bytes") % { bytes: MAX_TITLE_BYTES })
+    if title && title.bytesize > Gitlab::WikiPages::MAX_TITLE_BYTES
+      errors.add(:title, _("exceeds the limit of %{bytes} bytes") % {
+        bytes: Gitlab::WikiPages::MAX_TITLE_BYTES
+      })
     end
 
-    invalid_dirnames = dirnames.select { |d| d.bytesize > MAX_DIRECTORY_BYTES }
+    invalid_dirnames = dirnames.select { |d| d.bytesize > Gitlab::WikiPages::MAX_DIRECTORY_BYTES }
     invalid_dirnames.each do |dirname|
       errors.add(:title, _('exceeds the limit of %{bytes} bytes for directory name "%{dirname}"') % {
-        bytes: MAX_DIRECTORY_BYTES,
+        bytes: Gitlab::WikiPages::MAX_DIRECTORY_BYTES,
         dirname: dirname
       })
     end

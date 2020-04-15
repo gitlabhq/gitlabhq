@@ -524,6 +524,12 @@ does not make any unsolicited requests including checking for updates.
 
 The DAST job can emit various reports.
 
+### List of URLs scanned
+
+When DAST completes scanning, the merge request page states the number of URLs that were scanned. Click **View details** to view the web console output which includes the list of scanned URLs.
+
+![DAST Widget](img/dast_urls_scanned_v12_10.png)
+
 ### JSON
 
 CAUTION: **Caution:**

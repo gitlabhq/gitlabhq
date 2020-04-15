@@ -58,7 +58,7 @@ under which this application will be deployed.
 1. On the project's landing page, click **Add Kubernetes cluster**
    (note that this option is also available when you navigate to **Operations > Kubernetes**).
 
-   ![Project landing page](../autodevops/img/guide_project_landing_page_v12_3.png)
+   ![Project landing page](../autodevops/img/guide_project_landing_page_v12_10.png)
 
 1. On the **Create new cluster on GKE** tab, click **Sign in with Google**.
 

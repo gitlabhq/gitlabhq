@@ -2,6 +2,7 @@ Akismet
 Alertmanager
 Algolia
 Ansible
+Anthos
 API
 approvers
 Artifactory
@@ -118,6 +119,8 @@ hardcode
 hardcoded
 hardcodes
 Helm
+Heroku
+Herokuish
 HipChat
 hostname
 hostnames
@@ -133,6 +136,7 @@ initializers
 interdependencies
 interdependency
 Irker
+Istio
 jasmine-jquery
 JavaScript
 Jaeger
@@ -180,6 +184,7 @@ misconfiguring
 mitigations
 mockup
 mockups
+ModSecurity
 nameserver
 nameservers
 namespace
@@ -326,6 +331,10 @@ unchecking
 unchecks
 uncomment
 uncommented
+unencode
+unencoded
+unencoder
+unencodes
 unencrypted
 Unicorn
 unindexed
