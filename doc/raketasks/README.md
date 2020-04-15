@@ -36,3 +36,4 @@ The following are available Rake tasks:
 | [Uploads sanitize](../administration/raketasks/uploads/sanitize.md)                        | Remove EXIF data from images uploaded to earlier versions of GitLab.                      |
 | [User management](user_management.md)                                                      | Perform user management tasks.                                                            |
 | [Webhooks administration](web_hooks.md)                                                    | Maintain project Webhooks.                                                                |
+| [X509 signatures](x509_signatures.md)                                                      | Update x509 commit signatures, useful if certificate store has changed.                   |

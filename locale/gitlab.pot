@@ -1289,6 +1289,9 @@ msgstr ""
 msgid "Added at"
 msgstr ""
 
+msgid "Added for this merge request"
+msgstr ""
+
 msgid "Added in this version"
 msgstr ""
 
@@ -1855,6 +1858,9 @@ msgstr ""
 msgid "An error occurred fetching the dropdown data."
 msgstr ""
 
+msgid "An error occurred fetching the project authors."
+msgstr ""
+
 msgid "An error occurred previewing the blob"
 msgstr ""
 
@@ -2171,6 +2177,9 @@ msgid "Anti-spam verification"
 msgstr ""
 
 msgid "Any"
+msgstr ""
+
+msgid "Any Author"
 msgstr ""
 
 msgid "Any Label"
@@ -14195,6 +14204,9 @@ msgstr ""
 msgid "OutdatedBrowser|You can provide feedback %{feedback_link_start}on this issue%{feedback_link_end} or via your usual support channels."
 msgstr ""
 
+msgid "Overridden"
+msgstr ""
+
 msgid "Overview"
 msgstr ""
 
@@ -17691,6 +17703,9 @@ msgstr ""
 msgid "Search branches and tags"
 msgstr ""
 
+msgid "Search by author"
+msgstr ""
+
 msgid "Search files"
 msgstr ""
 
@@ -17850,6 +17865,9 @@ msgid "SearchResults|wiki result"
 msgid_plural "SearchResults|wiki results"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Searching by both author and message is currently not supported."
+msgstr ""
 
 msgid "Seat Link"
 msgstr ""

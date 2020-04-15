@@ -53,8 +53,10 @@ also requires the GitLab Runner 11.5 or later. For earlier versions, use the
 
 This example shows how to run Code Quality on your code by using GitLab CI/CD and Docker.
 
-First, you need GitLab Runner with
-[docker-in-docker executor](../../../ci/docker/using_docker_build.md#use-docker-in-docker-workflow-with-docker-executor).
+First, you need GitLab Runner with:
+
+- The [docker-in-docker executor](../../../ci/docker/using_docker_build.md#use-docker-in-docker-workflow-with-docker-executor).
+- Enough disk space to handle generated Code Quality files. For example on the [GitLab project](https://gitlab.com/gitlab-org/gitlab) the files are approximately 7 GB.
 
 Once you set up the Runner, include the CodeQuality template in your CI config:
 

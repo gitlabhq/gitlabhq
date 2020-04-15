@@ -13,7 +13,8 @@
 
         %ul.breadcrumb.repo-breadcrumb
           = commits_breadcrumbs
-      .tree-controls.d-none.d-sm-none.d-md-block<
+      #js-author-dropdown{ data: { 'commits_path': project_commits_path(@project), 'project_id': @project.id } }
+      .tree-controls.d-none.d-sm-none.d-md-block
         - if @merge_request.present?
           .control
             = link_to _("View open merge request"), project_merge_request_path(@project, @merge_request), class: 'btn'

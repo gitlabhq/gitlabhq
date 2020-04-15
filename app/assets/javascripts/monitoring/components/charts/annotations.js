@@ -45,19 +45,16 @@ export const annotationsYAxis = {
  * Fetched list of annotations are parsed into a
  * format the eCharts accepts to draw markLines
  *
- * If Annotation is a single line, the `from` property
- * has a value and the `to` is null. Because annotations
- * only supports lines the from value does not exist yet.
+ * If Annotation is a single line, the `starting_at` property
+ * has a value and the `ending_at` is null. Because annotations
+ * only supports lines the `ending_at` value does not exist yet.
  *
  *
  * @param {Object} annotation object
  * @returns {Object} markLine object
  */
-export const parseAnnotations = ({
-  from: annotationFrom = '',
-  color = colorValues.primaryColor,
-}) => ({
-  xAxis: annotationFrom,
+export const parseAnnotations = ({ starting_at = '', color = colorValues.primaryColor }) => ({
+  xAxis: starting_at,
   lineStyle: {
     color,
   },
@@ -105,7 +102,7 @@ export const generateAnnotationsSeries = ({ deployments = [], annotations = [] }
   const annotationsData = annotations.map(annotation => {
     return {
       name: 'annotations',
-      value: [annotation.from, annotationsYAxisCoords.pos],
+      value: [annotation.starting_at, annotationsYAxisCoords.pos],
       // style options
       symbol: 'none',
       // metadata that are accessible in `formatTooltipText` method

@@ -147,7 +147,12 @@ released.
 #### TLS enabled
 
 NOTE: **Note**
-This requires GitLab Runner 11.11 or higher.
+Requires GitLab Runner 11.11 or later, but is not supported if GitLab
+Runner is installed using the [Helm
+chart](https://docs.gitlab.com/runner/install/kubernetes.html). See the
+[related
+issue](https://gitlab.com/gitlab-org/charts/gitlab-runner/issues/83) for
+details.
 
 The Docker daemon supports connection over TLS and it's done by default
 for Docker 19.03.8 or higher. This is the **suggested** way to use the

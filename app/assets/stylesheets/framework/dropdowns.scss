@@ -317,7 +317,10 @@
     }
   }
 
-  .dropdown-item {
+  // Temporary fix to ensure tick is aligned
+  // Follow up Issue to remove after the GlNewDropdownItem component is fixed
+  // > https://gitlab.com/gitlab-org/gitlab/-/issues/213948
+  li:not(.gl-new-dropdown-item) .dropdown-item {
     @include dropdown-link;
   }
 

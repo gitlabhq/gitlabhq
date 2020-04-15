@@ -21,7 +21,7 @@ describe Gitlab::ImportExport::JSON::NdjsonReader do
   describe '#exist?' do
     subject { ndjson_reader.exist? }
 
-    context 'given valid dir_path', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/213843' do
+    context 'given valid dir_path' do
       let(:dir_path) { fixture }
 
       it { is_expected.to be true }

@@ -4,8 +4,8 @@ query getAnnotations($projectPath: ID!) {
       annotations: nodes {
         id
         description
-        from
-        to
+        starting_at
+        ending_at
         panelId
       }
     }
