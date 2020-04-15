@@ -17958,6 +17958,9 @@ msgstr ""
 msgid "Security Reports|Create issue"
 msgstr ""
 
+msgid "Security Reports|Dismiss Selected"
+msgstr ""
+
 msgid "Security Reports|Dismiss vulnerability"
 msgstr ""
 
@@ -17970,6 +17973,9 @@ msgstr ""
 msgid "Security Reports|Either you don't have permission to view this dashboard or the dashboard has not been setup. Please check your permission settings with your administrator or check your dashboard configurations to proceed."
 msgstr ""
 
+msgid "Security Reports|False positive"
+msgstr ""
+
 msgid "Security Reports|Learn more about setting up your dashboard"
 msgstr ""
 
@@ -17980,6 +17986,9 @@ msgid "Security Reports|Oops, something doesn't seem right."
 msgstr ""
 
 msgid "Security Reports|Security reports can only be accessed by authorized users."
+msgstr ""
+
+msgid "Security Reports|Select a reason"
 msgstr ""
 
 msgid "Security Reports|There was an error adding the comment."
@@ -18009,10 +18018,16 @@ msgstr ""
 msgid "Security Reports|Undo dismiss"
 msgstr ""
 
+msgid "Security Reports|Won't fix / Accept risk"
+msgstr ""
+
 msgid "Security Reports|You do not have sufficient permissions to access this report"
 msgstr ""
 
 msgid "Security Reports|You must sign in as an authorized user to see this report"
+msgstr ""
+
+msgid "Security Reports|[No reason]"
 msgstr ""
 
 msgid "Security configuration help link"

@@ -80,6 +80,9 @@ module MigrationsHelpers
     allow(ActiveRecord::Base.connection)
       .to receive(:active?)
       .and_return(false)
+    allow(Gitlab::Runtime)
+      .to receive(:rake?)
+      .and_return(true)
 
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
   end

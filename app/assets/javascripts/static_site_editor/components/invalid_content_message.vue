@@ -1,9 +1,9 @@
 <script>
-import { GlNewButton } from '@gitlab/ui';
+import { GlButton } from '@gitlab/ui';
 
 export default {
   components: {
-    GlNewButton,
+    GlButton,
   },
 };
 </script>
@@ -19,10 +19,10 @@ export default {
       }}
     </p>
     <div>
-      <gl-new-button
+      <gl-button
         ref="documentationButton"
         href="https://gitlab.com/gitlab-org/project-templates/static-site-editor-middleman"
-        >{{ s__('StaticSiteEditor|View documentation') }}</gl-new-button
+        >{{ s__('StaticSiteEditor|View documentation') }}</gl-button
       >
     </div>
   </div>

@@ -43,7 +43,7 @@ module Gitlab
       end
 
       def uncached_application_settings
-        return fake_application_settings unless connect_to_db?
+        return fake_application_settings if Gitlab::Runtime.rake? && !connect_to_db?
 
         current_settings = ::ApplicationSetting.current
         # If there are pending migrations, it's possible there are columns that
