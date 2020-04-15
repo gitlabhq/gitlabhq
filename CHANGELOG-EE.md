@@ -1,5 +1,12 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 12.9.3 (2020-04-14)
+
+### Security (1 change)
+
+- Fix filename bypass when uploading NuGet packages.
+
+
 ## 12.9.2 (2020-03-31)
 
 ### Fixed (4 changes)
