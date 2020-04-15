@@ -5,14 +5,13 @@ require 'spec_helper'
 describe 'Set up Mattermost slash commands', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
-  let(:service) { project.create_mattermost_slash_commands_service }
   let(:mattermost_enabled) { true }
 
   before do
     stub_mattermost_setting(enabled: mattermost_enabled)
     project.add_maintainer(user)
     sign_in(user)
-    visit edit_project_service_path(project, service)
+    visit edit_project_service_path(project, :mattermost_slash_commands)
   end
 
   describe 'user visits the mattermost slash command config page' do
@@ -30,6 +29,7 @@ describe 'Set up Mattermost slash commands', :js do
       token = ('a'..'z').to_a.join
 
       fill_in 'service_token', with: token
+      find('input[name="service[active]"] + button').click
       click_on 'Save changes'
 
       expect(current_path).to eq(project_settings_integrations_path(project))
@@ -40,7 +40,6 @@ describe 'Set up Mattermost slash commands', :js do
       token = ('a'..'z').to_a.join
 
       fill_in 'service_token', with: token
-      check 'service_active'
       click_on 'Save changes'
 
       expect(current_path).to eq(project_settings_integrations_path(project))

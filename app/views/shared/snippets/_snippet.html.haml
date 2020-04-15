@@ -1,5 +1,6 @@
 - link_project = local_assigns.fetch(:link_project, false)
 - notes_count = @noteable_meta_data[snippet.id].user_notes_count
+- file_name = snippet_file_name(snippet)
 
 %li.snippet-row.py-3
   = image_tag avatar_icon_for_user(snippet.author), class: "avatar s40 d-none d-sm-block", alt: ''
@@ -7,10 +8,10 @@
   .title
     = link_to gitlab_snippet_path(snippet) do
       = snippet.title
-    - if snippet.file_name.present?
+    - if file_name.present?
       %span.snippet-filename.d-none.d-sm-inline-block.ml-2
         = sprite_icon('doc-code', size: 16, css_class: 'file-icon align-text-bottom')
-        = snippet.file_name
+        = file_name
 
     %ul.controls
       %li

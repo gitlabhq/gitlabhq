@@ -143,10 +143,21 @@ describe Notes::CreateService do
         end
 
         it 'note is associated with a note diff file' do
+          MergeRequests::MergeToRefService.new(merge_request.project, merge_request.author).execute(merge_request)
+
           note = described_class.new(project_with_repo, user, new_opts).execute
 
           expect(note).to be_persisted
           expect(note.note_diff_file).to be_present
+          expect(note.diff_note_positions).to be_present
+        end
+
+        it 'does not create diff positions merge_ref_head_comments is disabled' do
+          stub_feature_flags(merge_ref_head_comments: false)
+
+          expect(Discussions::CaptureDiffNotePositionService).not_to receive(:new)
+
+          described_class.new(project_with_repo, user, new_opts).execute
         end
       end
 
@@ -160,6 +171,8 @@ describe Notes::CreateService do
         end
 
         it 'note is not associated with a note diff file' do
+          expect(Discussions::CaptureDiffNotePositionService).not_to receive(:new)
+
           note = described_class.new(project_with_repo, user, new_opts).execute
 
           expect(note).to be_persisted

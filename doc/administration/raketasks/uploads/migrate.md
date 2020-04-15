@@ -111,24 +111,6 @@ sudo -u git -H bundle exec rake "gitlab:uploads:migrate[FileUploader, MergeReque
 sudo -u git -H bundle exec rake "gitlab:uploads:migrate[DesignManagement::DesignV432x230Uploader, DesignManagement::Action]"
 ```
 
-## Migrate legacy uploads out of deprecated paths
-
-> Introduced in GitLab 12.3.
-
-To migrate all uploads created by legacy uploaders, run:
-
-**Omnibus Installation**
-
-```shell
-gitlab-rake gitlab:uploads:legacy:migrate
-```
-
-**Source Installation**
-
-```shell
-bundle exec rake gitlab:uploads:legacy:migrate
-```
-
 ## Migrate from object storage to local storage
 
 If you need to disable Object Storage for any reason, first you need to migrate

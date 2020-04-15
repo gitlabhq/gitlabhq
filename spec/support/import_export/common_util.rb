@@ -38,15 +38,12 @@ module ImportExport
     end
 
     def setup_reader(reader)
-      case reader
-      when :legacy_reader
-        allow_any_instance_of(Gitlab::ImportExport::JSON::LegacyReader::File).to receive(:exist?).and_return(true)
-        allow_any_instance_of(Gitlab::ImportExport::JSON::NdjsonReader).to receive(:exist?).and_return(false)
-      when :ndjson_reader
+      if reader == :ndjson_reader && Feature.enabled?(:project_import_ndjson)
         allow_any_instance_of(Gitlab::ImportExport::JSON::LegacyReader::File).to receive(:exist?).and_return(false)
         allow_any_instance_of(Gitlab::ImportExport::JSON::NdjsonReader).to receive(:exist?).and_return(true)
       else
-        raise "invalid reader #{reader}. Supported readers: :legacy_reader, :ndjson_reader"
+        allow_any_instance_of(Gitlab::ImportExport::JSON::LegacyReader::File).to receive(:exist?).and_return(true)
+        allow_any_instance_of(Gitlab::ImportExport::JSON::NdjsonReader).to receive(:exist?).and_return(false)
       end
     end
 

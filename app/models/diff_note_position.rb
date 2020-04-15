@@ -28,9 +28,20 @@ class DiffNotePosition < ApplicationRecord
   end
 
   def position=(position)
+    assign_attributes(self.class.position_to_attrs(position))
+  end
+
+  def self.create_or_update_for(note, params)
+    attrs = position_to_attrs(params[:position])
+    attrs.merge!(params.slice(:diff_type, :line_code))
+    attrs[:note_id] = note.id
+
+    upsert(attrs, unique_by: [:note_id, :diff_type])
+  end
+
+  def self.position_to_attrs(position)
     position_attrs = position.to_h
     position_attrs[:diff_content_type] = position_attrs.delete(:position_type)
-
-    assign_attributes(position_attrs)
+    position_attrs
   end
 end

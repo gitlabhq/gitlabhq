@@ -25,7 +25,7 @@ describe Gitlab::ImportExport::Project::TreeRestorer, quarantine: { flaky: 'http
           @project = create(:project, :builds_enabled, :issues_disabled, name: 'project', path: 'project')
           @shared = @project.import_export_shared
 
-          allow(Feature).to receive(:enabled?).and_call_original
+          allow(Feature).to receive(:enabled?) { true }
           stub_feature_flags(project_import_ndjson: ndjson_enabled)
 
           setup_import_export_config('complex')
@@ -34,6 +34,7 @@ describe Gitlab::ImportExport::Project::TreeRestorer, quarantine: { flaky: 'http
           allow_any_instance_of(Repository).to receive(:fetch_source_branch!).and_return(true)
           allow_any_instance_of(Gitlab::Git::Repository).to receive(:branch_exists?).and_return(false)
 
+          expect(@shared).not_to receive(:error)
           expect_any_instance_of(Gitlab::Git::Repository).to receive(:create_branch).with('feature', 'DCBA')
           allow_any_instance_of(Gitlab::Git::Repository).to receive(:create_branch)
 

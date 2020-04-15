@@ -15,6 +15,9 @@ module Gitlab
 
               insert_panel_id(id, panel)
             end
+          rescue ActiveModel::UnknownAttributeError => error
+            remove_panel_ids!
+            Gitlab::ErrorTracking.log_exception(error)
           end
 
           private

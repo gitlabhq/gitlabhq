@@ -27,7 +27,7 @@ with `repo:status` access granted:
 1. Navigate to the project you want to configure.
 1. Navigate to the [Integrations page](overview.md#accessing-integrations)
 1. Click "GitHub".
-1. Select the "Active" checkbox.
+1. Ensure that the **Active** toggle is enabled.
 1. Paste the token you've generated on GitHub
 1. Enter the path to your project on GitHub, such as `https://github.com/username/repository`
 1. Optionally uncheck **Static status check names** checkbox to disable static status check names.

@@ -16,7 +16,9 @@ describe('NoteHeader component', () => {
   const findActionsWrapper = () => wrapper.find({ ref: 'discussionActions' });
   const findChevronIcon = () => wrapper.find({ ref: 'chevronIcon' });
   const findActionText = () => wrapper.find({ ref: 'actionText' });
+  const findTimestampLink = () => wrapper.find({ ref: 'noteTimestampLink' });
   const findTimestamp = () => wrapper.find({ ref: 'noteTimestamp' });
+  const findSpinner = () => wrapper.find({ ref: 'spinner' });
 
   const author = {
     avatar_url: null,
@@ -33,11 +35,7 @@ describe('NoteHeader component', () => {
       store: new Vuex.Store({
         actions,
       }),
-      propsData: {
-        ...props,
-        actionTextHtml: '',
-        noteId: '1394',
-      },
+      propsData: { ...props },
     });
   };
 
@@ -108,17 +106,18 @@ describe('NoteHeader component', () => {
     createComponent();
 
     expect(findActionText().exists()).toBe(false);
-    expect(findTimestamp().exists()).toBe(false);
+    expect(findTimestampLink().exists()).toBe(false);
   });
 
   describe('when createdAt is passed as a prop', () => {
     it('renders action text and a timestamp', () => {
       createComponent({
         createdAt: '2017-08-02T10:51:58.559Z',
+        noteId: 123,
       });
 
       expect(findActionText().exists()).toBe(true);
-      expect(findTimestamp().exists()).toBe(true);
+      expect(findTimestampLink().exists()).toBe(true);
     });
 
     it('renders correct actionText if passed', () => {
@@ -133,8 +132,9 @@ describe('NoteHeader component', () => {
     it('calls an action when timestamp is clicked', () => {
       createComponent({
         createdAt: '2017-08-02T10:51:58.559Z',
+        noteId: 123,
       });
-      findTimestamp().trigger('click');
+      findTimestampLink().trigger('click');
 
       expect(actions.setTargetNoteHash).toHaveBeenCalled();
     });
@@ -153,4 +153,30 @@ describe('NoteHeader component', () => {
       expect(wrapper.find(GitlabTeamMemberBadge).exists()).toBe(expected);
     },
   );
+
+  describe('loading spinner', () => {
+    it('shows spinner when showSpinner is true', () => {
+      createComponent();
+      expect(findSpinner().exists()).toBe(true);
+    });
+
+    it('does not show spinner when showSpinner is false', () => {
+      createComponent({ showSpinner: false });
+      expect(findSpinner().exists()).toBe(false);
+    });
+  });
+
+  describe('timestamp', () => {
+    it('shows timestamp as a link if a noteId was provided', () => {
+      createComponent({ createdAt: new Date().toISOString(), noteId: 123 });
+      expect(findTimestampLink().exists()).toBe(true);
+      expect(findTimestamp().exists()).toBe(false);
+    });
+
+    it('shows timestamp as plain text if a noteId was not provided', () => {
+      createComponent({ createdAt: new Date().toISOString() });
+      expect(findTimestampLink().exists()).toBe(false);
+      expect(findTimestamp().exists()).toBe(true);
+    });
+  });
 });

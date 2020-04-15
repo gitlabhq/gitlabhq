@@ -70,8 +70,7 @@ module Gitlab
           # Do not create relation if it is:
           #   - An unknown service
           #   - A legacy trigger
-          unknown_service? ||
-            (!Feature.enabled?(:use_legacy_pipeline_triggers, @importable) && legacy_trigger?)
+          unknown_service? || legacy_trigger?
         end
 
         def setup_models

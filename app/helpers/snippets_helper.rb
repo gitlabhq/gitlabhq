@@ -160,4 +160,14 @@ module SnippetsHelper
             title: 'Download',
             rel: 'noopener noreferrer')
   end
+
+  def snippet_file_name(snippet)
+    blob = if Feature.enabled?(:version_snippets, current_user) && !snippet.repository.empty?
+             snippet.blobs.first
+           else
+             snippet.blob
+           end
+
+    blob.name
+  end
 end

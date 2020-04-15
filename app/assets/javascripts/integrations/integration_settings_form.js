@@ -2,28 +2,33 @@ import $ from 'jquery';
 import axios from '../lib/utils/axios_utils';
 import flash from '../flash';
 import { __ } from '~/locale';
+import initForm from './edit';
+import eventHub from './edit/event_hub';
 
 export default class IntegrationSettingsForm {
   constructor(formSelector) {
     this.$form = $(formSelector);
+    this.formActive = false;
 
     // Form Metadata
     this.canTestService = this.$form.data('canTest');
     this.testEndPoint = this.$form.data('testUrl');
 
     // Form Child Elements
-    this.$serviceToggle = this.$form.find('#service_active');
     this.$submitBtn = this.$form.find('button[type="submit"]');
     this.$submitBtnLoader = this.$submitBtn.find('.js-btn-spinner');
     this.$submitBtnLabel = this.$submitBtn.find('.js-btn-label');
   }
 
   init() {
-    // Initialize View
-    this.toggleServiceState(this.$serviceToggle.is(':checked'));
+    // Init Vue component
+    initForm(document.querySelector('.js-vue-integration-settings'));
+    eventHub.$on('toggle', active => {
+      this.formActive = active;
+      this.handleServiceToggle();
+    });
 
     // Bind Event Listeners
-    this.$serviceToggle.on('change', e => this.handleServiceToggle(e));
     this.$submitBtn.on('click', e => this.handleSettingsSave(e));
   }
 
@@ -31,7 +36,7 @@ export default class IntegrationSettingsForm {
     // Check if Service is marked active, as if not marked active,
     // We can skip testing it and directly go ahead to allow form to
     // be submitted
-    if (!this.$serviceToggle.is(':checked')) {
+    if (!this.formActive) {
       return;
     }
 
@@ -47,16 +52,16 @@ export default class IntegrationSettingsForm {
     }
   }
 
-  handleServiceToggle(e) {
-    this.toggleServiceState($(e.currentTarget).is(':checked'));
+  handleServiceToggle() {
+    this.toggleServiceState();
   }
 
   /**
    * Change Form's validation enforcement based on service status (active/inactive)
    */
-  toggleServiceState(serviceActive) {
-    this.toggleSubmitBtnLabel(serviceActive);
-    if (serviceActive) {
+  toggleServiceState() {
+    this.toggleSubmitBtnLabel();
+    if (this.formActive) {
       this.$form.removeAttr('novalidate');
     } else if (!this.$form.attr('novalidate')) {
       this.$form.attr('novalidate', 'novalidate');
@@ -66,10 +71,10 @@ export default class IntegrationSettingsForm {
   /**
    * Toggle Submit button label based on Integration status and ability to test service
    */
-  toggleSubmitBtnLabel(serviceActive) {
+  toggleSubmitBtnLabel() {
     let btnLabel = __('Save changes');
 
-    if (serviceActive && this.canTestService) {
+    if (this.formActive && this.canTestService) {
       btnLabel = __('Test settings and save changes');
     }
 

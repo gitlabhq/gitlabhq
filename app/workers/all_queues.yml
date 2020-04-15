@@ -944,7 +944,7 @@
 - :name: background_migration
   :feature_category: :database
   :has_external_dependencies: 
-  :urgency: :low
+  :urgency: :throttled
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: 

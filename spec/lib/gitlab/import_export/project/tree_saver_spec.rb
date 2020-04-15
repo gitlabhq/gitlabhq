@@ -29,12 +29,11 @@ describe Gitlab::ImportExport::Project::TreeSaver do
 
       before_all do
         RSpec::Mocks.with_temporary_scope do
-          allow(Feature).to receive(:enabled?).and_call_original
+          allow(Feature).to receive(:enabled?) { true }
           stub_feature_flags(project_export_as_ndjson: ndjson_enabled)
 
           project.add_maintainer(user)
 
-          stub_feature_flags(project_export_as_ndjson: ndjson_enabled)
           project_tree_saver = described_class.new(project: project, current_user: user, shared: shared)
 
           project_tree_saver.save

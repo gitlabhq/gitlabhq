@@ -4,7 +4,7 @@ module PerformanceMonitoring
   class PrometheusPanel
     include ActiveModel::Model
 
-    attr_accessor :type, :title, :y_label, :weight, :metrics, :y_axis
+    attr_accessor :type, :title, :y_label, :weight, :metrics, :y_axis, :max_value
 
     validates :title, presence: true
     validates :metrics, presence: true

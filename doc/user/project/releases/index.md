@@ -309,12 +309,12 @@ Here is an example of a Release Evidence object:
 ### Enabling Release Evidence display **(CORE ONLY)**
 
 This feature comes with the `:release_evidence_collection` feature flag
-disabled by default in GitLab self-managed instances. To turn it on,
+enabled by default in GitLab self-managed instances. To turn it off,
 ask a GitLab administrator with Rails console access to run the following
 command:
 
 ```ruby
-Feature.enable(:release_evidence_collection)
+Feature.disable(:release_evidence_collection)
 ```
 
 NOTE: **Note:**

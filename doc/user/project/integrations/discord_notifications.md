@@ -21,7 +21,7 @@ With the webhook URL created in the Discord channel, you can set up the Discord 
 
 1. Navigate to the [Integrations page](overview.md#accessing-integrations) in your project's settings. That is, **Project > Settings > Integrations**.
 1. Select the **Discord Notifications** integration to configure it.
-1. Check the **Active** checkbox to turn on the service.
+1. Ensure that the **Active** toggle is enabled.
 1. Check the checkboxes corresponding to the GitLab events for which you want to send notifications to Discord.
 1. Paste the webhook URL that you copied from the create Discord webhook step.
 1. Configure the remaining options and click the **Save changes** button.

@@ -23,9 +23,9 @@ describe('IntegrationSettingsForm', () => {
       // Form Reference
       expect(integrationSettingsForm.$form).toBeDefined();
       expect(integrationSettingsForm.$form.prop('nodeName')).toEqual('FORM');
+      expect(integrationSettingsForm.formActive).toBeDefined();
 
       // Form Child Elements
-      expect(integrationSettingsForm.$serviceToggle).toBeDefined();
       expect(integrationSettingsForm.$submitBtn).toBeDefined();
       expect(integrationSettingsForm.$submitBtnLoader).toBeDefined();
       expect(integrationSettingsForm.$submitBtnLabel).toBeDefined();
@@ -45,13 +45,15 @@ describe('IntegrationSettingsForm', () => {
     });
 
     it('should remove `novalidate` attribute to form when called with `true`', () => {
-      integrationSettingsForm.toggleServiceState(true);
+      integrationSettingsForm.formActive = true;
+      integrationSettingsForm.toggleServiceState();
 
       expect(integrationSettingsForm.$form.attr('novalidate')).not.toBeDefined();
     });
 
     it('should set `novalidate` attribute to form when called with `false`', () => {
-      integrationSettingsForm.toggleServiceState(false);
+      integrationSettingsForm.formActive = false;
+      integrationSettingsForm.toggleServiceState();
 
       expect(integrationSettingsForm.$form.attr('novalidate')).toBeDefined();
     });
@@ -66,8 +68,9 @@ describe('IntegrationSettingsForm', () => {
 
     it('should set Save button label to "Test settings and save changes" when serviceActive & canTestService are `true`', () => {
       integrationSettingsForm.canTestService = true;
+      integrationSettingsForm.formActive = true;
 
-      integrationSettingsForm.toggleSubmitBtnLabel(true);
+      integrationSettingsForm.toggleSubmitBtnLabel();
 
       expect(integrationSettingsForm.$submitBtnLabel.text()).toEqual(
         'Test settings and save changes',
@@ -76,18 +79,22 @@ describe('IntegrationSettingsForm', () => {
 
     it('should set Save button label to "Save changes" when either serviceActive or canTestService (or both) is `false`', () => {
       integrationSettingsForm.canTestService = false;
+      integrationSettingsForm.formActive = false;
 
-      integrationSettingsForm.toggleSubmitBtnLabel(false);
+      integrationSettingsForm.toggleSubmitBtnLabel();
 
       expect(integrationSettingsForm.$submitBtnLabel.text()).toEqual('Save changes');
 
-      integrationSettingsForm.toggleSubmitBtnLabel(true);
+      integrationSettingsForm.formActive = true;
+
+      integrationSettingsForm.toggleSubmitBtnLabel();
 
       expect(integrationSettingsForm.$submitBtnLabel.text()).toEqual('Save changes');
 
       integrationSettingsForm.canTestService = true;
+      integrationSettingsForm.formActive = false;
 
-      integrationSettingsForm.toggleSubmitBtnLabel(false);
+      integrationSettingsForm.toggleSubmitBtnLabel();
 
       expect(integrationSettingsForm.$submitBtnLabel.text()).toEqual('Save changes');
     });

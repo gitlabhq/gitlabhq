@@ -8,11 +8,7 @@
       = markdown @service.help
 
 .service-settings
-  - if @service.show_active_box?
-    .form-group.row
-      = form.label :active, "Active", class: "col-form-label col-sm-2"
-      .col-sm-10
-        = form.check_box :active, checked: @service.active || @service.new_record?, disabled: disable_fields_service?(@service)
+  .js-vue-integration-settings{ data: { show_active: @service.show_active_box?.to_s, activated: (@service.active || @service.new_record?).to_s, disabled: disable_fields_service?(@service).to_s } }
 
   - if @service.configurable_events.present?
     .form-group.row

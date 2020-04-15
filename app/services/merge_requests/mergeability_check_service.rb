@@ -118,9 +118,16 @@ module MergeRequests
 
       if can_git_merge? && merge_to_ref
         merge_request.mark_as_mergeable
+        update_diff_discussion_positions!
       else
         merge_request.mark_as_unmergeable
       end
+    end
+
+    def update_diff_discussion_positions!
+      return if Feature.disabled?(:merge_ref_head_comments, merge_request.target_project)
+
+      Discussions::CaptureDiffNotePositionsService.new(merge_request).execute
     end
 
     def recheck!

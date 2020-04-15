@@ -4,6 +4,7 @@ class BackgroundMigrationWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
   feature_category :database
+  urgency :throttled
 
   # The minimum amount of time between processing two jobs of the same migration
   # class.

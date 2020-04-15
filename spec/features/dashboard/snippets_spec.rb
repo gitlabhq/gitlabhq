@@ -3,8 +3,10 @@
 require 'spec_helper'
 
 describe 'Dashboard snippets' do
+  let_it_be(:user) { create(:user) }
+
   context 'when the project has snippets' do
-    let(:project) { create(:project, :public) }
+    let(:project) { create(:project, :public, creator: user) }
     let!(:snippets) { create_list(:project_snippet, 2, :public, author: project.owner, project: project) }
 
     before do
@@ -22,7 +24,7 @@ describe 'Dashboard snippets' do
   end
 
   context 'when there are no project snippets', :js do
-    let(:project) { create(:project, :public) }
+    let(:project) { create(:project, :public, creator: user) }
 
     before do
       sign_in(project.owner)
@@ -47,9 +49,49 @@ describe 'Dashboard snippets' do
     end
   end
 
+  context 'rendering file names' do
+    let_it_be(:snippet) { create(:personal_snippet, :public, author: user, file_name: 'foo.txt') }
+    let_it_be(:versioned_snippet) { create(:personal_snippet, :repository, :public, author: user, file_name: 'bar.txt') }
+
+    before do
+      sign_in(user)
+    end
+
+    context 'when feature flag :version_snippets is disabled' do
+      before do
+        stub_feature_flags(version_snippets: false)
+
+        visit dashboard_snippets_path
+      end
+
+      it 'contains the snippet file names from the DB' do
+        aggregate_failures do
+          expect(page).to have_content 'foo.txt'
+          expect(page).to have_content('bar.txt')
+          expect(page).not_to have_content('.gitattributes')
+        end
+      end
+    end
+
+    context 'when feature flag :version_snippets is enabled' do
+      before do
+        stub_feature_flags(version_snippets: true)
+
+        visit dashboard_snippets_path
+      end
+
+      it 'contains both the versioned and non-versioned filenames' do
+        aggregate_failures do
+          expect(page).to have_content 'foo.txt'
+          expect(page).to have_content('.gitattributes')
+          expect(page).not_to have_content('bar.txt')
+        end
+      end
+    end
+  end
+
   context 'filtering by visibility' do
-    let(:user) { create(:user) }
-    let!(:snippets) do
+    let_it_be(:snippets) do
       [
         create(:personal_snippet, :public, author: user),
         create(:personal_snippet, :internal, author: user),
@@ -99,7 +141,7 @@ describe 'Dashboard snippets' do
   end
 
   context 'as an external user' do
-    let(:user) { create(:user, :external) }
+    let_it_be(:user) { create(:user, :external) }
 
     before do
       sign_in(user)

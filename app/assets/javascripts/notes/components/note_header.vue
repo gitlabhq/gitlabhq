@@ -39,13 +39,18 @@ export default {
       required: false,
       default: true,
     },
+    showSpinner: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   computed: {
     toggleChevronClass() {
       return this.expanded ? 'fa-chevron-up' : 'fa-chevron-down';
     },
     noteTimestampLink() {
-      return `#note_${this.noteId}`;
+      return this.noteId ? `#note_${this.noteId}` : undefined;
     },
     hasAuthor() {
       return this.author && Object.keys(this.author).length;
@@ -60,7 +65,9 @@ export default {
       this.$emit('toggleHandler');
     },
     updateTargetNoteHash() {
-      this.setTargetNoteHash(this.noteTimestampLink);
+      if (this.$store) {
+        this.setTargetNoteHash(this.noteTimestampLink);
+      }
     },
   },
 };
@@ -101,16 +108,20 @@ export default {
           <template v-if="actionText">{{ actionText }}</template>
         </span>
         <a
-          ref="noteTimestamp"
+          v-if="noteTimestampLink"
+          ref="noteTimestampLink"
           :href="noteTimestampLink"
           class="note-timestamp system-note-separator"
           @click="updateTargetNoteHash"
         >
           <time-ago-tooltip :time="createdAt" tooltip-placement="bottom" />
         </a>
+        <time-ago-tooltip v-else ref="noteTimestamp" :time="createdAt" tooltip-placement="bottom" />
       </template>
       <slot name="extra-controls"></slot>
       <i
+        v-if="showSpinner"
+        ref="spinner"
         class="fa fa-spinner fa-spin editing-spinner"
         :aria-label="__('Comment is being updated')"
         aria-hidden="true"

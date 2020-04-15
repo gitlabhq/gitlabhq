@@ -63,5 +63,24 @@ describe Gitlab::Metrics::Dashboard::Stages::PanelIdsInserter do
         )
       end
     end
+
+    context 'when dashboard panels has unknown schema attributes' do
+      before do
+        error = ActiveModel::UnknownAttributeError.new(double, 'unknown_panel_attribute')
+        allow(::PerformanceMonitoring::PrometheusPanel).to receive(:new).and_raise(error)
+      end
+
+      it 'no panel has assigned id' do
+        transform!
+
+        expect(fetch_panel_ids(dashboard)).to all be_nil
+      end
+
+      it 'logs the failure' do
+        expect(Gitlab::ErrorTracking).to receive(:log_exception)
+
+        transform!
+      end
+    end
   end
 end

@@ -83,6 +83,7 @@ class Note < ApplicationRecord
   has_many :events, as: :target, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
   has_one :system_note_metadata
   has_one :note_diff_file, inverse_of: :diff_note, foreign_key: :diff_note_id
+  has_many :diff_note_positions
 
   delegate :gfm_reference, :local_reference, to: :noteable
   delegate :name, to: :project, prefix: true

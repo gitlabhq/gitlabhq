@@ -103,7 +103,7 @@ in a new slash command.
 ### Step 4. Copy the Mattermost token into the Mattermost slash command service
 
 1. In GitLab, paste the Mattermost token you copied in the previous step and
-   check the **Active** checkbox.
+   ensure that the **Active** toggle is enabled.
 
    ![Mattermost copy token to GitLab](img/mattermost_gitlab_token.png)
 

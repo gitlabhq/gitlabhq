@@ -9,7 +9,7 @@ describe 'User activates issue tracker', :js do
   let(:url) { 'http://tracker.example.com' }
 
   def fill_form(disabled: false)
-    uncheck 'Active' if disabled
+    find('input[name="service[active]"] + button').click if disabled
 
     fill_in 'service_project_url', with: url
     fill_in 'service_issues_url', with: "#{url}/:id"

@@ -37,7 +37,7 @@ service in GitLab.
 1. Navigate to the project you want to configure for notifications.
 1. Navigate to the [Integrations page](overview.md#accessing-integrations)
 1. Click "HipChat".
-1. Select the "Active" checkbox.
+1. Ensure that the **Active** toggle is enabled.
 1. Insert the `token` field from the URL into the `Token` field on the Web page.
 1. Insert the `room` field from the URL into the `Room` field on the Web page.
 1. Save or optionally click "Test Settings".

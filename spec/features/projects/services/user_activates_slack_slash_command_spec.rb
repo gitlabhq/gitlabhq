@@ -5,12 +5,11 @@ require 'spec_helper'
 describe 'Slack slash commands' do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
-  let(:service) { project.create_slack_slash_commands_service }
 
   before do
     project.add_maintainer(user)
     sign_in(user)
-    visit edit_project_service_path(project, service)
+    visit edit_project_service_path(project, :slack_slash_commands)
   end
 
   it 'shows a token placeholder' do
@@ -23,17 +22,17 @@ describe 'Slack slash commands' do
     expect(page).to have_content('This service allows users to perform common')
   end
 
-  it 'redirects to the integrations page after saving but not activating' do
+  it 'redirects to the integrations page after saving but not activating', :js do
     fill_in 'service_token', with: 'token'
+    find('input[name="service[active]"] + button').click
     click_on 'Save'
 
     expect(current_path).to eq(project_settings_integrations_path(project))
     expect(page).to have_content('Slack slash commands settings saved, but not activated.')
   end
 
-  it 'redirects to the integrations page after activating' do
+  it 'redirects to the integrations page after activating', :js do
     fill_in 'service_token', with: 'token'
-    check 'service_active'
     click_on 'Save'
 
     expect(current_path).to eq(project_settings_integrations_path(project))

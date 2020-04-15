@@ -15,7 +15,8 @@ describe Gitlab::Metrics::Dashboard::Processor do
         Gitlab::Metrics::Dashboard::Stages::CustomMetricsDetailsInserter,
         Gitlab::Metrics::Dashboard::Stages::EndpointInserter,
         Gitlab::Metrics::Dashboard::Stages::Sorter,
-        Gitlab::Metrics::Dashboard::Stages::AlertsInserter
+        Gitlab::Metrics::Dashboard::Stages::AlertsInserter,
+        Gitlab::Metrics::Dashboard::Stages::PanelIdsInserter
       ]
     end
 
@@ -25,6 +26,12 @@ describe Gitlab::Metrics::Dashboard::Processor do
     it 'includes a path for the prometheus endpoint with each metric' do
       expect(all_metrics).to satisfy_all do |metric|
         metric[:prometheus_endpoint_path] == prometheus_path(metric[:query_range])
+      end
+    end
+
+    it 'includes an id for each dashboard panel' do
+      expect(all_panels).to satisfy_all do |panel|
+        panel[:id].present?
       end
     end
 
@@ -199,9 +206,11 @@ describe Gitlab::Metrics::Dashboard::Processor do
   private
 
   def all_metrics
-    dashboard[:panel_groups].flat_map do |group|
-      group[:panels].flat_map { |panel| panel[:metrics] }
-    end
+    all_panels.flat_map { |panel| panel[:metrics] }
+  end
+
+  def all_panels
+    dashboard[:panel_groups].flat_map { |group| group[:panels] }
   end
 
   def get_metric_details(metric)

@@ -73,7 +73,9 @@ module TestEnv
     'submodule_inside_folder'            => 'b491b92',
     'png-lfs'                            => 'fe42f41',
     'sha-starting-with-large-number'     => '8426165',
-    'invalid-utf8-diff-paths'            => '99e4853'
+    'invalid-utf8-diff-paths'            => '99e4853',
+    'compare-with-merge-head-source'     => 'b5f4399',
+    'compare-with-merge-head-target'     => '2f1e176'
   }.freeze
 
   # gitlab-test-fork is a fork of gitlab-fork, but we don't necessarily

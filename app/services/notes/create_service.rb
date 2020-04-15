@@ -65,6 +65,10 @@ module Notes
       if Feature.enabled?(:notes_create_service_tracking, project)
         Gitlab::Tracking.event('Notes::CreateService', 'execute', tracking_data_for(note))
       end
+
+      if Feature.enabled?(:merge_ref_head_comments, project) && note.for_merge_request? && note.diff_note? && note.start_of_discussion?
+        Discussions::CaptureDiffNotePositionService.new(note.noteable, note.diff_file&.paths).execute(note.discussion)
+      end
     end
 
     def do_commands(note, update_params, message, only_commands)

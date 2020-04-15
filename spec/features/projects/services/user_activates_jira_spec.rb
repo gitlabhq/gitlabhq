@@ -10,7 +10,7 @@ describe 'User activates Jira', :js do
   let(:test_url) { 'http://jira.example.com/rest/api/2/serverInfo' }
 
   def fill_form(disabled: false)
-    uncheck 'Active' if disabled
+    find('input[name="service[active]"] + button').click if disabled
 
     fill_in 'service_url', with: url
     fill_in 'service_username', with: 'username'
@@ -53,7 +53,6 @@ describe 'User activates Jira', :js do
       it 'shows errors when some required fields are not filled in' do
         click_link('Jira')
 
-        check 'Active'
         fill_in 'service_password', with: 'password'
         click_button('Test settings and save changes')
 

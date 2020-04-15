@@ -1,0 +1,6 @@
+---
+title: Fix dashboard processing error which prevented dashboards with unknown attributes
+  inside panels from being displayed
+merge_request: 29517
+author:
+type: fixed

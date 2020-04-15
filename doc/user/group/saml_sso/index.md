@@ -112,6 +112,32 @@ To access the Credentials inventory of a group, navigate to **{shield}** **Secur
 
 This feature is similar to the [Credentials inventory for self-managed instances](../../admin_area/credentials_inventory.md).
 
+##### Limiting lifetime of personal access tokens of users in Group-managed accounts **(ULTIMATE)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118893) in GitLab 12.10.
+
+Users in a group managed account can optionally specify an expiration date for
+[personal access tokens](../../profile/personal_access_tokens.md).
+This expiration date is not a requirement, and can be set to any arbitrary date.
+
+Since personal access tokens are the only token needed for programmatic access to GitLab, organizations with security requirements may want to enforce more protection to require regular rotation of these tokens.
+
+###### Setting a limit
+
+Only a GitLab administrator or an owner of a Group-managed account can set a limit. Leaving it empty means that the [instance level restrictions](../../admin_area/settings/account_and_limit_settings.md#limiting-lifetime-of-personal-access-tokens-ultimate-only) on the lifetime of personal access tokens will apply.
+
+To set a limit on how long personal access tokens are valid for users in a group managed account:
+
+1. Navigate to the **{settings}** **Settings > General** page in your group's sidebar.
+1. Expand the **Permissions, LFS, 2FA** section.
+1. Fill in the **Maximum allowable lifetime for personal access tokens (days)** field.
+1. Click **Save changes**.
+
+Once a lifetime for personal access tokens is set, GitLab will:
+
+- Apply the lifetime for new personal access tokens, and require users managed by the group to set an expiration date that is no later than the allowed lifetime.
+- After three hours, revoke old tokens with no expiration date or with a lifetime longer than the allowed lifetime. Three hours is given to allow administrators/group owner to change the allowed lifetime, or remove it, before revocation takes place.
+
 ##### Outer forks restriction for Group-managed accounts
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/34648) in GitLab 12.9.

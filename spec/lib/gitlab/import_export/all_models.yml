@@ -58,6 +58,7 @@ notes:
 - system_note_metadata
 - note_diff_file
 - suggestions
+- diff_note_positions
 - review
 label_links:
 - target
@@ -134,6 +135,7 @@ merge_requests:
 - pipelines_for_merge_request
 - merge_request_assignees
 - suggestions
+- diff_note_positions
 - unresolved_notes
 - assignees
 - reviews
@@ -516,6 +518,8 @@ resource_label_events:
 error_tracking_setting:
 - project
 suggestions:
+- note
+diff_note_positions:
 - note
 metrics_setting:
 - project

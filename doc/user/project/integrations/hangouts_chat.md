@@ -19,7 +19,7 @@ When you have the **Webhook URL** for your Hangouts Chat room webhook, you can s
 
 1. Navigate to the [Integrations page](overview.md#accessing-integrations) in your project's settings, i.e. **Project > Settings > Integrations**.
 1. Select the **Hangouts Chat** integration to configure it.
-1. Check the **Active** checkbox to turn on the service.
+1. Ensure that the **Active** toggle is enabled.
 1. Check the checkboxes corresponding to the GitLab events you want to receive.
 1. Paste the **Webhook URL** that you copied from the Hangouts Chat configuration step.
 1. Configure the remaining options and click `Save changes`.

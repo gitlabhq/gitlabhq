@@ -18,7 +18,7 @@ To set up the generic alerts integration:
 
 1. Navigate to **Settings > Integrations** in a project.
 1. Click on **Alerts endpoint**.
-1. Toggle the **Active**  alert setting. The `URL` and `Authorization Key` for the webhook configuration can be found there.
+1. Toggle the **Active** alert setting. The `URL` and `Authorization Key` for the webhook configuration can be found there.
 
 ## Customizing the payload
 

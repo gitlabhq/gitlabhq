@@ -8,6 +8,7 @@ panel_groups:
     type: "area-chart"
     y_label: "y_label"
     weight: 1
+    max_value: 1
     metrics:
     - id: metric_a1
       query_range: 'query'
