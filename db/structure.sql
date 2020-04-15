@@ -397,9 +397,9 @@ CREATE TABLE public.application_settings (
     email_restrictions text,
     npm_package_requests_forwarding boolean DEFAULT true NOT NULL,
     namespace_storage_size_limit bigint DEFAULT 0 NOT NULL,
-    issues_create_limit integer DEFAULT 300 NOT NULL,
     seat_link_enabled boolean DEFAULT true NOT NULL,
-    container_expiration_policies_enable_historic_entries boolean DEFAULT false NOT NULL
+    container_expiration_policies_enable_historic_entries boolean DEFAULT false NOT NULL,
+    issues_create_limit integer DEFAULT 300 NOT NULL
 );
 
 CREATE SEQUENCE public.application_settings_id_seq

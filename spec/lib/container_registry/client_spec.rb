@@ -6,6 +6,21 @@ describe ContainerRegistry::Client do
   let(:token) { '12345' }
   let(:options) { { token: token } }
   let(:client) { described_class.new("http://container-registry", options) }
+  let(:push_blob_headers) do
+    {
+        'Accept' => 'application/vnd.docker.distribution.manifest.v2+json, application/vnd.oci.image.manifest.v1+json',
+        'Authorization' => "bearer #{token}",
+        'Content-Type' => 'application/octet-stream',
+        'User-Agent' => "GitLab/#{Gitlab::VERSION}"
+    }
+  end
+  let(:headers_with_accept_types) do
+    {
+      'Accept' => 'application/vnd.docker.distribution.manifest.v2+json, application/vnd.oci.image.manifest.v1+json',
+      'Authorization' => "bearer #{token}",
+      'User-Agent' => "GitLab/#{Gitlab::VERSION}"
+    }
+  end
 
   shared_examples '#repository_manifest' do |manifest_type|
     let(:manifest) do
@@ -25,14 +40,15 @@ describe ContainerRegistry::Client do
             "size" => 2828661
           }
         ]
- }
+      }
     end
 
     it 'GET /v2/:name/manifests/mytag' do
       stub_request(:get, "http://container-registry/v2/group/test/manifests/mytag")
         .with(headers: {
-                'Accept' => described_class::ACCEPTED_TYPES.join(', '),
-                'Authorization' => "bearer #{token}"
+                'Accept' => 'application/vnd.docker.distribution.manifest.v2+json, application/vnd.oci.image.manifest.v1+json',
+                'Authorization' => "bearer #{token}",
+                'User-Agent' => "GitLab/#{Gitlab::VERSION}"
               })
         .to_return(status: 200, body: manifest.to_json, headers: { content_type: manifest_type })
 
@@ -44,12 +60,23 @@ describe ContainerRegistry::Client do
   it_behaves_like '#repository_manifest', described_class::OCI_MANIFEST_V1_TYPE
 
   describe '#blob' do
+    let(:blob_headers) do
+      {
+          'Accept' => 'application/octet-stream',
+          'Authorization' => "bearer #{token}",
+          'User-Agent' => "GitLab/#{Gitlab::VERSION}"
+      }
+    end
+
+    let(:redirect_header) do
+      {
+        'User-Agent' => "GitLab/#{Gitlab::VERSION}"
+      }
+    end
+
     it 'GET /v2/:name/blobs/:digest' do
       stub_request(:get, "http://container-registry/v2/group/test/blobs/sha256:0123456789012345")
-        .with(headers: {
-               'Accept' => 'application/octet-stream',
-               'Authorization' => "bearer #{token}"
-             })
+        .with(headers: blob_headers)
         .to_return(status: 200, body: "Blob")
 
       expect(client.blob('group/test', 'sha256:0123456789012345')).to eq('Blob')
@@ -57,15 +84,14 @@ describe ContainerRegistry::Client do
 
     it 'follows 307 redirect for GET /v2/:name/blobs/:digest' do
       stub_request(:get, "http://container-registry/v2/group/test/blobs/sha256:0123456789012345")
-        .with(headers: {
-               'Accept' => 'application/octet-stream',
-               'Authorization' => "bearer #{token}"
-             })
+        .with(headers: blob_headers)
         .to_return(status: 307, body: "", headers: { Location: 'http://redirected' })
       # We should probably use hash_excluding here, but that requires an update to WebMock:
       # https://github.com/bblimke/webmock/blob/master/lib/webmock/matchers/hash_excluding_matcher.rb
       stub_request(:get, "http://redirected/")
-        .with { |request| !request.headers.include?('Authorization') }
+        .with(headers: redirect_header) do |request|
+          !request.headers.include?('Authorization')
+        end
         .to_return(status: 200, body: "Successfully redirected")
 
       response = client.blob('group/test', 'sha256:0123456789012345')
@@ -76,10 +102,11 @@ describe ContainerRegistry::Client do
 
   def stub_upload(path, content, digest, status = 200)
     stub_request(:post, "http://container-registry/v2/#{path}/blobs/uploads/")
+      .with(headers: headers_with_accept_types)
       .to_return(status: status, body: "", headers: { 'location' => 'http://container-registry/next_upload?id=someid' })
 
     stub_request(:put, "http://container-registry/next_upload?digest=#{digest}&id=someid")
-      .with(body: content)
+      .with(body: content, headers: push_blob_headers)
       .to_return(status: status, body: "", headers: {})
   end
 
@@ -136,11 +163,20 @@ describe ContainerRegistry::Client do
   end
 
   describe '#put_tag' do
+    let(:manifest_headers) do
+      {
+          'Accept' => 'application/vnd.docker.distribution.manifest.v2+json, application/vnd.oci.image.manifest.v1+json',
+          'Authorization' => "bearer #{token}",
+          'Content-Type' => 'application/vnd.docker.distribution.manifest.v2+json',
+          'User-Agent' => "GitLab/#{Gitlab::VERSION}"
+      }
+    end
+
     subject { client.put_tag('path', 'tagA', { foo: :bar }) }
 
     it 'uploads the manifest and returns the digest' do
       stub_request(:put, "http://container-registry/v2/path/manifests/tagA")
-        .with(body: "{\n  \"foo\": \"bar\"\n}")
+        .with(body: "{\n  \"foo\": \"bar\"\n}", headers: manifest_headers)
         .to_return(status: 200, body: "", headers: { 'docker-content-digest' => 'sha256:123' })
 
       expect(subject).to eq 'sha256:123'
@@ -153,6 +189,7 @@ describe ContainerRegistry::Client do
     context 'when the tag exists' do
       before do
         stub_request(:delete, "http://container-registry/v2/group/test/tags/reference/a")
+          .with(headers: headers_with_accept_types)
           .to_return(status: 200, body: "")
       end
 
@@ -162,6 +199,7 @@ describe ContainerRegistry::Client do
     context 'when the tag does not exist' do
       before do
         stub_request(:delete, "http://container-registry/v2/group/test/tags/reference/a")
+          .with(headers: headers_with_accept_types)
           .to_return(status: 404, body: "")
       end
 
@@ -171,6 +209,7 @@ describe ContainerRegistry::Client do
     context 'when an error occurs' do
       before do
         stub_request(:delete, "http://container-registry/v2/group/test/tags/reference/a")
+          .with(headers: headers_with_accept_types)
           .to_return(status: 500, body: "")
       end
 

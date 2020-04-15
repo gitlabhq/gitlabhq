@@ -136,27 +136,17 @@ browser performance testing using a
 
 ### Node pools
 
-Both `review-apps-ce` and `review-apps-ee` clusters are currently set up with
-two node pools:
+The `review-apps-ee` and `review-apps-ce` clusters are currently set up with
+the following node pools:
 
-- a node pool of non-preemptible `n1-standard-2` (2 vCPU, 7.5 GB memory) nodes
-  dedicated to the `tiller` deployment (see below) with a single node.
-- a node pool of preemptible `n1-standard-2` (2 vCPU, 7.5 GB memory) nodes,
-  with a minimum of 1 node and a maximum of 250 nodes.
+- `review-apps-ee` of preemptible `e2-highcpu-16` (16 vCPU, 16 GB memory) nodes with autoscaling
+- `review-apps-ce` of preemptible `n1-standard-8` (8 vCPU, 16 GB memory) nodes with autoscaling
 
-### Helm/Tiller
+### Helm
 
-The Helm/Tiller version used is defined in the
-[`registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-charts-build-base` image](https://gitlab.com/gitlab-org/gitlab-build-images/blob/master/Dockerfile.gitlab-charts-build-base#L4)
+The Helm version used is defined in the
+[`registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-helm3-kubectl1.14` image](https://gitlab.com/gitlab-org/gitlab-build-images/-/blob/master/Dockerfile.gitlab-helm3-kubectl1.14#L7)
 used by the `review-deploy` and `review-stop` jobs.
-
-The `tiller` deployment (the Helm server) is deployed to a dedicated node pool
-that has the `app=helm` label and a specific
-[taint](https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/)
-to prevent other pods from being scheduled on this node pool.
-
-This is to ensure Tiller isn't affected by "noisy" neighbors that could put
-their node under pressure.
 
 ## How to
 
@@ -241,7 +231,7 @@ due to Helm or Kubernetes trying to recreate the components.
 
 **Where to look for further debugging:**
 
-Look at a recent `review-deploy` job log, and at the Tiller logs.
+Look at a recent `review-deploy` job log.
 
 **Useful commands:**
 

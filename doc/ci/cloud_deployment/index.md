@@ -39,7 +39,7 @@ Some credentials are required to be able to run `aws` commands:
    ```yml
    deploy:
      stage: deploy
-     image: registry.gitlab.com/gitlab-org/cloud-deploy:latest # see the note below
+     image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest # see the note below
      script:
        - aws s3 ...
        - aws create-deployment ...
@@ -47,7 +47,7 @@ Some credentials are required to be able to run `aws` commands:
 
    NOTE: **Note:**
    Please note that the image used in the example above
-   (`registry.gitlab.com/gitlab-org/cloud-deploy:latest`) is hosted on the [GitLab
+   (`registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest`) is hosted on the [GitLab
    Container Registry](../../user/packages/container_registry/index.md) and is
    ready to use. Alternatively, replace the image with another one hosted on [AWS ECR](#aws-ecr).
 
@@ -119,3 +119,15 @@ After you're all set up on AWS ECS, follow these steps:
    Finally, your AWS ECS service will be updated with the new revision of the
    task definition, making the cluster pull the newest version of your
    application.
+
+Alternatively, if you don't wish to use the `Deploy-ECS.gitlab-ci.yml` template
+to deploy to AWS ECS, you can always use our
+`aws-base` Docker image to run your own [AWS CLI commands for ECS](https://docs.aws.amazon.com/cli/latest/reference/ecs/index.html#cli-aws-ecs).
+
+```yaml
+deploy:
+  stage: deploy
+  image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest
+  script:
+    - aws ecs register-task-definition ...
+```

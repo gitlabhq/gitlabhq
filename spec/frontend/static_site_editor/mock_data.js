@@ -11,11 +11,11 @@ twitter_image: '/images/tweets/handbook-gitlab.png'
 - TOC
 {:toc .hidden-md .hidden-lg}
 `;
-
 export const sourceContentTitle = 'Handbook';
 
 export const username = 'gitlabuser';
 export const projectId = '123456';
+export const returnUrl = 'https://www.gitlab.com';
 export const sourcePath = 'foobar.md.html';
 
 export const savedContentMeta = {

@@ -10,3 +10,5 @@ export const SUBMIT_CHANGES_COMMIT_ERROR = s__(
 export const SUBMIT_CHANGES_MERGE_REQUEST_ERROR = s__(
   'StaticSiteEditor|Could not create merge request.',
 );
+
+export const DEFAULT_HEADING = s__('StaticSiteEditor|Static site editor');

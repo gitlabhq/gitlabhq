@@ -159,13 +159,13 @@ module ContainerRegistry
     end
 
     def faraday
-      @faraday ||= Faraday.new(@base_uri) do |conn|
+      @faraday ||= faraday_base do |conn|
         initialize_connection(conn, @options, &method(:accept_manifest))
       end
     end
 
     def faraday_blob
-      @faraday_blob ||= Faraday.new(@base_uri) do |conn|
+      @faraday_blob ||= faraday_base do |conn|
         initialize_connection(conn, @options)
       end
     end
@@ -173,10 +173,14 @@ module ContainerRegistry
     # Create a new request to make sure the Authorization header is not inserted
     # via the Faraday middleware
     def faraday_redirect
-      @faraday_redirect ||= Faraday.new(@base_uri) do |conn|
+      @faraday_redirect ||= faraday_base do |conn|
         conn.request :json
         conn.adapter :net_http
       end
+    end
+
+    def faraday_base(&block)
+      Faraday.new(@base_uri, headers: { user_agent: "GitLab/#{Gitlab::VERSION}" }, &block)
     end
 
     def delete_if_exists(path)

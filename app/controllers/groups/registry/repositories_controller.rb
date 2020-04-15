@@ -9,7 +9,7 @@ module Groups
         respond_to do |format|
           format.html
           format.json do
-            @images = group.container_repositories.with_api_entity_associations
+            @images = ContainerRepositoriesFinder.new(user: current_user, subject: group).execute.with_api_entity_associations
 
             track_event(:list_repositories)
 

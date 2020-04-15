@@ -280,6 +280,18 @@ describe API::Users, :do_not_mock_admin_mode do
         expect(json_response.first['id']).to eq(user_with_2fa.id)
       end
 
+      it "returns users without projects" do
+        user_without_projects = create(:user)
+        create(:project, namespace: user.namespace)
+        create(:project, namespace: admin.namespace)
+
+        get api('/users', admin), params: { without_projects: true }
+
+        expect(response).to match_response_schema('public_api/v4/user/admins')
+        expect(json_response.size).to eq(1)
+        expect(json_response.first['id']).to eq(user_without_projects.id)
+      end
+
       it 'returns 400 when provided incorrect sort params' do
         get api('/users', admin), params: { order_by: 'magic', sort: 'asc' }
 

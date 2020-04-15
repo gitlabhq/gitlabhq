@@ -1,4 +1,5 @@
 <script>
+import { __ } from '~/locale';
 import { roundOffFloat } from '~/lib/utils/common_utils';
 import tooltip from '~/vue_shared/directives/tooltip';
 
@@ -26,6 +27,11 @@ export default {
       type: String,
       required: false,
       default: 'neutral',
+    },
+    unavailableLabel: {
+      type: String,
+      required: false,
+      default: __('Not available'),
     },
     successCount: {
       type: Number,
@@ -103,7 +109,7 @@ export default {
 
 <template>
   <div :class="cssClass" class="stacked-progress-bar">
-    <span v-if="!totalCount" class="status-unavailable"> {{ __('Not available') }} </span>
+    <span v-if="!totalCount" class="status-unavailable">{{ unavailableLabel }}</span>
     <span
       v-if="successPercent"
       v-tooltip

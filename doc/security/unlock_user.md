@@ -16,7 +16,7 @@ To unlock a locked user:
    sudo gitlab-rails console -e production
 
    ## For installations from source
-   sudo -u git -H bundle exec rails console RAILS_ENV=production
+   sudo -u git -H bundle exec rails console -e production
    ```
 
 1. Find the user to unlock. You can search by email or ID.

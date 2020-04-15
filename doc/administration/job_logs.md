@@ -106,7 +106,7 @@ gitlab-rails console
 
 # Installation from source
 cd /home/git/gitlab
-sudo -u git -H bin/rails console RAILS_ENV=production
+sudo -u git -H bin/rails console -e production
 ```
 
 **To check if incremental logging (trace) is enabled:**

@@ -7,9 +7,10 @@ import createState from '~/static_site_editor/store/state';
 
 import StaticSiteEditor from '~/static_site_editor/components/static_site_editor.vue';
 import EditArea from '~/static_site_editor/components/edit_area.vue';
+import EditHeader from '~/static_site_editor/components/edit_header.vue';
 import PublishToolbar from '~/static_site_editor/components/publish_toolbar.vue';
 
-import { sourceContent } from '../mock_data';
+import { sourceContent, sourceContentTitle } from '../mock_data';
 
 const localVue = createLocalVue();
 
@@ -60,6 +61,7 @@ describe('StaticSiteEditor', () => {
   };
 
   const findEditArea = () => wrapper.find(EditArea);
+  const findEditHeader = () => wrapper.find(EditHeader);
   const findPublishToolbar = () => wrapper.find(PublishToolbar);
   const findSkeletonLoader = () => wrapper.find(GlSkeletonLoader);
 
@@ -77,21 +79,30 @@ describe('StaticSiteEditor', () => {
       expect(findEditArea().exists()).toBe(false);
     });
 
+    it('does not render edit header', () => {
+      expect(findEditHeader().exists()).toBe(false);
+    });
+
     it('does not render toolbar', () => {
       expect(findPublishToolbar().exists()).toBe(false);
     });
   });
 
   describe('when content is loaded', () => {
-    const content = 'edit area content';
+    const content = sourceContent;
+    const title = sourceContentTitle;
 
     beforeEach(() => {
-      buildContentLoadedStore({ initialState: { content } });
+      buildContentLoadedStore({ initialState: { content, title } });
       buildWrapper();
     });
 
     it('renders the edit area', () => {
       expect(findEditArea().exists()).toBe(true);
+    });
+
+    it('renders the edit header', () => {
+      expect(findEditHeader().exists()).toBe(true);
     });
 
     it('does not render skeleton loader', () => {
@@ -100,6 +111,10 @@ describe('StaticSiteEditor', () => {
 
     it('passes page content to edit area', () => {
       expect(findEditArea().props('value')).toBe(content);
+    });
+
+    it('passes page title to edit header', () => {
+      expect(findEditHeader().props('title')).toBe(title);
     });
 
     it('renders toolbar', () => {

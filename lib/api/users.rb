@@ -82,6 +82,7 @@ module API
         optional :blocked, type: Boolean, default: false, desc: 'Filters only blocked users'
         optional :created_after, type: DateTime, desc: 'Return users created after the specified time'
         optional :created_before, type: DateTime, desc: 'Return users created before the specified time'
+        optional :without_projects, type: Boolean, default: false, desc: 'Filters only users without projects'
         all_or_none_of :extern_uid, :provider
 
         use :sort_params
@@ -94,7 +95,7 @@ module API
         authenticated_as_admin! if params[:external].present? || (params[:extern_uid].present? && params[:provider].present?)
 
         unless current_user&.admin?
-          params.except!(:created_after, :created_before, :order_by, :sort, :two_factor)
+          params.except!(:created_after, :created_before, :order_by, :sort, :two_factor, :without_projects)
         end
 
         users = UsersFinder.new(current_user, params).execute

@@ -7,6 +7,13 @@ describe Groups::Registry::RepositoriesController do
   let_it_be(:guest) { create(:user) }
   let_it_be(:group, reload: true) { create(:group) }
 
+  subject do
+    get :index, params: {
+      group_id: group,
+      format: format
+    }
+  end
+
   before do
     stub_container_registry_config(enabled: true)
     group.add_owner(user)
@@ -15,51 +22,67 @@ describe Groups::Registry::RepositoriesController do
   end
 
   shared_examples 'renders a list of repositories' do
+    let_it_be(:repo) { create_project_with_repo(test_group) }
+
+    it 'returns a list of projects for json format' do
+      subject
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response).to be_kind_of(Array)
+      expect(json_response.first).to include(
+        'id' => repo.id,
+        'name' => repo.name
+      )
+    end
+  end
+
+  shared_examples 'renders correctly' do
     context 'when user has access to registry' do
-      it 'show index page' do
-        expect(Gitlab::Tracking).not_to receive(:event)
+      let_it_be(:test_group) { group }
 
-        get :index, params: {
-            group_id: group
-        }
+      context 'html format' do
+        let(:format) { :html }
 
-        expect(response).to have_gitlab_http_status(:ok)
+        it 'show index page' do
+          expect(Gitlab::Tracking).not_to receive(:event)
+
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
       end
 
-      it 'has the correct response schema' do
-        get :index, params: {
-          group_id: group,
-          format: :json
-        }
+      context 'json format' do
+        let(:format) { :json }
 
-        expect(response).to match_response_schema('registry/repositories')
-        expect(response).to include_pagination_headers
-      end
+        it 'has the correct response schema' do
+          subject
 
-      it 'returns a list of projects for json format' do
-        project = create(:project, group: group)
-        repo = create(:container_repository, project: project)
+          expect(response).to match_response_schema('registry/repositories')
+          expect(response).to include_pagination_headers
+        end
 
-        get :index, params: {
-          group_id: group,
-          format: :json
-        }
+        it_behaves_like 'renders a list of repositories'
 
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response).to be_kind_of(Array)
-        expect(json_response.first).to include(
-          'id' => repo.id,
-          'name' => repo.name
-        )
-      end
+        it_behaves_like 'a gitlab tracking event', described_class.name, 'list_repositories'
 
-      it 'tracks the event' do
-        expect(Gitlab::Tracking).to receive(:event).with(anything, 'list_repositories', {})
+        context 'with project in subgroup' do
+          let_it_be(:test_group) { create(:group, parent: group ) }
 
-        get :index, params: {
-          group_id: group,
-          format: :json
-        }
+          it_behaves_like 'renders a list of repositories'
+
+          context 'with project in subgroup and group' do
+            let_it_be(:repo_in_test_group) { create_project_with_repo(test_group) }
+            let_it_be(:repo_in_group) { create_project_with_repo(group) }
+
+            it 'returns all the projects' do
+              subject
+
+              expect(json_response).to be_kind_of(Array)
+              expect(json_response.length).to eq 2
+            end
+          end
+        end
       end
     end
 
@@ -69,20 +92,30 @@ describe Groups::Registry::RepositoriesController do
         sign_in(guest)
       end
 
-      it 'renders not found' do
-        get :index, params: {
-          group_id: group
-        }
-        expect(response).to have_gitlab_http_status(:not_found)
+      context 'json format' do
+        let(:format) { :json }
+
+        it_behaves_like 'returning response status', :not_found
+      end
+
+      context 'html format' do
+        let(:format) { :html }
+
+        it_behaves_like 'returning response status', :not_found
       end
     end
   end
 
   context 'GET #index' do
-    it_behaves_like 'renders a list of repositories'
+    it_behaves_like 'renders correctly'
   end
 
   context 'GET #show' do
-    it_behaves_like 'renders a list of repositories'
+    it_behaves_like 'renders correctly'
+  end
+
+  def create_project_with_repo(group)
+    project = create(:project, group: test_group)
+    create(:container_repository, project: project)
   end
 end

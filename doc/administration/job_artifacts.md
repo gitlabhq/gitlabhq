@@ -353,7 +353,7 @@ you can flip the feature flag from a Rails console.
 
    ```shell
    cd /home/git/gitlab
-   RAILS_ENV=production sudo -u git -H bundle exec rails console
+   sudo -u git -H bundle exec rails console -e production
    ```
 
 1. Flip the switch and disable it:

@@ -359,6 +359,7 @@ Represents an epic.
 | `group` | Group! | Group to which the epic belongs |
 | `hasChildren` | Boolean! | Indicates if the epic has children |
 | `hasIssues` | Boolean! | Indicates if the epic has direct issues |
+| `hasParent` | Boolean! | Indicates if the epic has a parent epic |
 | `healthStatus` | EpicHealthStatus | Current health status of the epic |
 | `id` | ID! | ID of the epic |
 | `iid` | ID! | Internal ID of the epic |

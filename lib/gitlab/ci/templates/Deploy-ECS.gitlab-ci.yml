@@ -9,7 +9,7 @@ include:
   - template: Jobs/Build.gitlab-ci.yml
 
 .deploy_to_ecs:
-  image: registry.gitlab.com/gitlab-org/cloud-deploy:latest
+  image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-ecs:latest
   script:
     - ecs update-task-definition
 

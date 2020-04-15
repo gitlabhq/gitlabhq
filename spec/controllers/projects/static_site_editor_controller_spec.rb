@@ -26,7 +26,21 @@ describe Projects::StaticSiteEditorController do
         end
       end
 
-      %w[guest developer maintainer].each do |role|
+      context 'as guest' do
+        let(:user) { create(:user) }
+
+        before do
+          project.add_guest(user)
+          sign_in(user)
+          get :show, params: default_params
+        end
+
+        it 'responds with 404 page' do
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      %w[developer maintainer].each do |role|
         context "as #{role}" do
           let(:user) { create(:user) }
 

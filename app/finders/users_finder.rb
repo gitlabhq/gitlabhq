@@ -14,6 +14,7 @@
 #     active: boolean
 #     blocked: boolean
 #     external: boolean
+#     without_projects: boolean
 #
 class UsersFinder
   include CreatedAtFilter
@@ -36,6 +37,7 @@ class UsersFinder
     users = by_external(users)
     users = by_2fa(users)
     users = by_created_at(users)
+    users = by_without_projects(users)
     users = by_custom_attributes(users)
 
     users
@@ -93,6 +95,12 @@ class UsersFinder
     else
       users
     end
+  end
+
+  def by_without_projects(users)
+    return users unless params[:without_projects]
+
+    users.without_projects
   end
 end
 

@@ -2160,6 +2160,11 @@ type Epic implements Noteable {
   hasIssues: Boolean!
 
   """
+  Indicates if the epic has a parent epic
+  """
+  hasParent: Boolean!
+
+  """
   Current health status of the epic
   """
   healthStatus: EpicHealthStatus

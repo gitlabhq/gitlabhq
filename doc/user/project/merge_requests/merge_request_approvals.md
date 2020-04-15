@@ -277,7 +277,7 @@ gitlab-rails console
 
 # Installation from source
 cd /home/git/gitlab
-sudo -u git -H bin/rails console RAILS_ENV=production
+sudo -u git -H bin/rails console -e production
 ```
 
 Then run `Feature.enable(:approval_rules)` to enable the updated interface.

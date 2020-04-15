@@ -6337,6 +6337,24 @@
               "deprecationReason": null
             },
             {
+              "name": "hasParent",
+              "description": "Indicates if the epic has a parent epic",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "healthStatus",
               "description": "Current health status of the epic",
               "args": [

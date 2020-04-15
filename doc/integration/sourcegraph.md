@@ -42,7 +42,7 @@ gitlab-rails console
 
 # Installation from source
 cd /home/git/gitlab
-sudo -u git -H bin/rails console RAILS_ENV=production
+sudo -u git -H bin/rails console -e production
 ```
 
 Then run the following command to enable the feature flag:

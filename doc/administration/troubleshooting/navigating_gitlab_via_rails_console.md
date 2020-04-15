@@ -30,7 +30,7 @@ sudo gitlab-rails console
 For source installations, you'll have to instead run:
 
 ```shell
-sudo -u git -H bundle exec rails console RAILS_ENV=production
+sudo -u git -H bundle exec rails console -e production
 ```
 
 Further code examples will all take place inside the Rails console and also

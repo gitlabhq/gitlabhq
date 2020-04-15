@@ -3,10 +3,10 @@ import StaticSiteEditor from './components/static_site_editor.vue';
 import createStore from './store';
 
 const initStaticSiteEditor = el => {
-  const { projectId, path: sourcePath } = el.dataset;
+  const { projectId, returnUrl, path: sourcePath } = el.dataset;
 
   const store = createStore({
-    initialState: { projectId, sourcePath, username: window.gon.current_username },
+    initialState: { projectId, returnUrl, sourcePath, username: window.gon.current_username },
   });
 
   return new Vue({

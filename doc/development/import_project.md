@@ -78,7 +78,7 @@ The last option is to import a project using a Rails console:
    gitlab-rails console
 
    # For installations from source
-   sudo -u git -H bundle exec rails console RAILS_ENV=production
+   sudo -u git -H bundle exec rails console -e production
    ```
 
 1. Create a project and run `Project::TreeRestorer`:

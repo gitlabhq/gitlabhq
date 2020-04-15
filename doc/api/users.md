@@ -75,6 +75,7 @@ GET /users
 | `order_by`   | string | no       | Return users ordered by `id`, `name`, `username`, `created_at`, or `updated_at` fields. Default is `id` |
 | `sort`       | string | no       | Return users sorted in `asc` or `desc` order. Default is `desc` |
 | `two_factor` | string | no       | Filter users by Two-factor authentication. Filter values are `enabled` or `disabled`. By default it returns all users |
+| `without_projects` | boolean | no | Filter users without projects. Default is `false` |
 
 ```json
 [
@@ -206,6 +207,8 @@ You can search users by creation date time range with:
 ```plaintext
 GET /users?created_before=2001-01-02T00:00:00.060Z&created_after=1999-01-02T00:00:00.060
 ```
+
+You can search for users without projects with: `/users?without_projects=true`
 
 You can filter by [custom attributes](custom_attributes.md) with:
 

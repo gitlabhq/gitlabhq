@@ -41,8 +41,8 @@ Access the database via one of these commands (they all get you to the same plac
 
 ```ruby
 gdk psql -d gitlabhq_development
-bundle exec rails dbconsole RAILS_ENV=development
-bundle exec rails db RAILS_ENV=development
+bundle exec rails dbconsole -e development
+bundle exec rails db -e development
 ```
 
 - `\q`: Quit/exit
