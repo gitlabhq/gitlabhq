@@ -1,5 +1,0 @@
----
-title: Fix invalid ancestor group milestones when moving projects
-merge_request: 27262
-author:
-type: fixed

@@ -16,6 +16,17 @@ describe 'User explores projects' do
 
       include_examples 'shows public projects'
     end
+
+    context 'when visibility is restricted to public' do
+      before do
+        stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC])
+        visit(explore_projects_path)
+      end
+
+      it 'redirects to login page' do
+        expect(page).to have_current_path(new_user_session_path)
+      end
+    end
   end
 
   context 'when signed in' do

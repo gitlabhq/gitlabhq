@@ -1,5 +1,0 @@
----
-title: Fix pagination in Merge Request GraphQL api
-merge_request: 28667
-author: briankabiro
-type: fixed

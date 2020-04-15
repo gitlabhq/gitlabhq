@@ -1,5 +1,0 @@
----
-title: Stringify Sidekiq job args in exception logs
-merge_request: 28996
-author:
-type: fixed

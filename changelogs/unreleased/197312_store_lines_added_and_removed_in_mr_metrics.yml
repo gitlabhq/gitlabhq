@@ -1,5 +1,0 @@
----
-title: Add added_lines and removed_lines columns to merge_request_metrics table
-merge_request: 28658
-author:
-type: added

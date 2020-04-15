@@ -1,5 +1,0 @@
----
-title: Revert LDAP readonly attributes feature
-merge_request: 28541
-author:
-type: removed

@@ -1,5 +1,0 @@
----
-title: Disallow distinct count for regular batch count
-merge_request: 28518
-author:
-type: performance

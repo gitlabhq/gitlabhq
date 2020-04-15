@@ -1,4 +1,3 @@
-constraint = lambda { |request| request.env['warden'].authenticate? && request.env['warden'].user.admin? }
-constraints constraint do
+constraints ::Constraints::AdminConstrainer.new do
   mount Sidekiq::Web, at: '/admin/sidekiq', as: :sidekiq
 end

@@ -1,5 +1,0 @@
----
-title: Validate uniqueness of project_id and type when a new project service is created
-merge_request: 26308
-author:
-type: fixed

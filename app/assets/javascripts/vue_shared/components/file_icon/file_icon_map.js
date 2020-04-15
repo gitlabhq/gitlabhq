@@ -202,7 +202,7 @@ const fileExtensionIcons = {
   flv: 'movie',
   vob: 'movie',
   ogv: 'movie',
-  ogg: 'movie',
+  ogg: 'music',
   gifv: 'movie',
   avi: 'movie',
   mov: 'movie',

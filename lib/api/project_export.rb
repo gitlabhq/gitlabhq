@@ -2,15 +2,8 @@
 
 module API
   class ProjectExport < Grape::API
-    helpers do
-      def throttled?(action)
-        rate_limiter.throttled?(action, scope: [current_user, action, user_project])
-      end
+    helpers Helpers::RateLimiter
 
-      def rate_limiter
-        ::Gitlab::ApplicationRateLimiter
-      end
-    end
     before do
       not_found! unless Gitlab::CurrentSettings.project_export_enabled?
       authorize_admin_project
@@ -32,9 +25,7 @@ module API
         detail 'This feature was introduced in GitLab 10.6.'
       end
       get ':id/export/download' do
-        if throttled?(:project_download_export)
-          render_api_error!({ error: 'This endpoint has been requested too many times. Try again later.' }, 429)
-        end
+        check_rate_limit! :project_download_export, [current_user, :project_download_export, user_project]
 
         if user_project.export_file_exists?
           present_carrierwave_file!(user_project.export_file)
@@ -54,9 +45,7 @@ module API
         end
       end
       post ':id/export' do
-        if throttled?(:project_export)
-          render_api_error!({ error: 'This endpoint has been requested too many times. Try again later.' }, 429)
-        end
+        check_rate_limit! :project_export, [current_user, :project_export, user_project]
 
         project_export_params = declared_params(include_missing: false)
         after_export_params = project_export_params.delete(:upload) || {}

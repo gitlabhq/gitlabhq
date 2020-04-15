@@ -1,6 +1,0 @@
----
-title: Use NOT VALID to enforce a NOT NULL constraint on file_store to ci_job_artifacts,
-  lfs_objects and uploads tables
-merge_request: 28946
-author:
-type: fixed

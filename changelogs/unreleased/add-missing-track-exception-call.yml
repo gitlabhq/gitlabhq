@@ -1,5 +1,0 @@
----
-title: Add missing track_exception() call to Ci::CreateJobArtifactsService
-merge_request: 27954
-author:
-type: other

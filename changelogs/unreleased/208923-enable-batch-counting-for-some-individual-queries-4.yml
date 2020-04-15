@@ -1,5 +1,0 @@
----
-title: Optimize projects_service_active queries performance in usage data
-merge_request: 27093
-author:
-type: performance

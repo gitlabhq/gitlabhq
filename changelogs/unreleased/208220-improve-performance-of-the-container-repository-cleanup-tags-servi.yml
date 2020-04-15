@@ -1,5 +1,0 @@
----
-title: Improve performance of the container repository cleanup tags service
-merge_request: 27441
-author:
-type: performance

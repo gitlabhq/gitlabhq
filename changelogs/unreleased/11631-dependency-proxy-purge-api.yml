@@ -1,5 +1,0 @@
----
-title: Add an endpoint to allow group admin users to purge the dependency proxy for a group
-merge_request: 27843
-author:
-type: added

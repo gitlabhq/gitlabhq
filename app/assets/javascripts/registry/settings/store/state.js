@@ -8,9 +8,17 @@ export default () => ({
    */
   isLoading: false,
   /*
-   * Boolean to determine if the user is allowed to interact with the form
+   * Boolean to determine if the user is an admin
    */
-  isDisabled: false,
+  isAdmin: false,
+  /*
+   * String containing the full path to the admin config page for CI/CD
+   */
+  adminSettingsPath: '',
+  /*
+   * Boolean to determine if project created before 12.8 can use this feature
+   */
+  enableHistoricEntries: false,
   /*
    * This contains the data shown and manipulated in the UI
    * Has the following structure:
@@ -24,9 +32,9 @@ export default () => ({
    */
   settings: {},
   /*
-   * Same structure as settings, above but Frozen object and used only in case the user clicks 'cancel'
+   * Same structure as settings, above but Frozen object and used only in case the user clicks 'cancel', initialized to null
    */
-  original: {},
+  original: null,
   /*
    * Contains the options used to populate the form selects
    */

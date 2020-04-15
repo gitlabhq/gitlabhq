@@ -1,4 +1,5 @@
-- run_actions_text = s_("ProjectService|Perform common operations on GitLab project: %{project_name}") % { project_name: @project.full_name }
+- pretty_name = @project&.full_name || _('<project name>')
+- run_actions_text = s_("ProjectService|Perform common operations on GitLab project: %{project_name}") % { project_name: pretty_name }
 
 %p= s_("ProjectService|To set up this service:")
 %ul.list-unstyled.indent-list
@@ -20,7 +21,7 @@
   .form-group
     = label_tag :display_name, _('Display name'), class: 'col-12 col-form-label label-bold'
     .col-12.input-group
-      = text_field_tag :display_name, "GitLab / #{@project.full_name}", class: 'form-control form-control-sm', readonly: 'readonly'
+      = text_field_tag :display_name, "GitLab / #{pretty_name}", class: 'form-control form-control-sm', readonly: 'readonly'
       .input-group-append
         = clipboard_button(target: '#display_name', class: 'input-group-text')
 
@@ -38,8 +39,9 @@
       %p
         = s_('MattermostService|Suggestions:')
         %code= 'gitlab'
-        %code= @project.path # Path contains no spaces, but dashes
-        %code= @project.full_path
+        - if @project
+          %code= @project.path # Path contains no spaces, but dashes
+          %code= @project.full_path
 
   .form-group
     = label_tag :request_url, s_('MattermostService|Request URL'), class: 'col-12 col-form-label label-bold'

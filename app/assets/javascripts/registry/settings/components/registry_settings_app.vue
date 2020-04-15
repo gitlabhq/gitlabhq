@@ -1,5 +1,5 @@
 <script>
-import { mapActions, mapState } from 'vuex';
+import { mapActions, mapGetters, mapState } from 'vuex';
 import { GlAlert, GlSprintf, GlLink } from '@gitlab/ui';
 import { s__ } from '~/locale';
 
@@ -15,8 +15,15 @@ export default {
     GlLink,
   },
   i18n: {
-    unavailableFeatureText: s__(
-      'ContainerRegistry|Currently, the Container Registry tag expiration feature is not available for projects created before GitLab version 12.8. For updates and more information, visit Issue %{linkStart}#196124%{linkEnd}',
+    unavailableFeatureTitle: s__(
+      `ContainerRegistry|Container Registry tag expiration and retention policy is disabled`,
+    ),
+    unavailableFeatureIntroText: s__(
+      `ContainerRegistry|The Container Registry tag expiration and retention policies for this project have not been enabled.`,
+    ),
+    unavailableUserFeatureText: s__(`ContainerRegistry|Please contact your administrator.`),
+    unavailableAdminFeatureText: s__(
+      `ContainerRegistry| Please visit the %{linkStart}administration settings%{linkEnd} to enable this feature.`,
     ),
     fetchSettingsErrorText: FETCH_SETTINGS_ERROR_MESSAGE,
   },
@@ -26,9 +33,18 @@ export default {
     };
   },
   computed: {
-    ...mapState(['isDisabled']),
+    ...mapState(['isAdmin', 'adminSettingsPath']),
+    ...mapGetters({ isDisabled: 'getIsDisabled' }),
     showSettingForm() {
       return !this.isDisabled && !this.fetchSettingsError;
+    },
+    showDisabledFormMessage() {
+      return this.isDisabled && !this.fetchSettingsError;
+    },
+    unavailableFeatureMessage() {
+      return this.isAdmin
+        ? this.$options.i18n.unavailableAdminFeatureText
+        : this.$options.i18n.unavailableUserFeatureText;
     },
   },
   mounted() {
@@ -59,16 +75,21 @@ export default {
     </ul>
     <settings-form v-if="showSettingForm" />
     <template v-else>
-      <gl-alert v-if="isDisabled" :dismissible="false">
-        <p>
-          <gl-sprintf :message="$options.i18n.unavailableFeatureText">
-            <template #link="{content}">
-              <gl-link href="https://gitlab.com/gitlab-org/gitlab/issues/196124" target="_blank">
-                {{ content }}
-              </gl-link>
-            </template>
-          </gl-sprintf>
-        </p>
+      <gl-alert
+        v-if="showDisabledFormMessage"
+        :dismissible="false"
+        :title="$options.i18n.unavailableFeatureTitle"
+        variant="tip"
+      >
+        {{ $options.i18n.unavailableFeatureIntroText }}
+
+        <gl-sprintf :message="unavailableFeatureMessage">
+          <template #link="{ content }">
+            <gl-link :href="adminSettingsPath" target="_blank">
+              {{ content }}
+            </gl-link>
+          </template>
+        </gl-sprintf>
       </gl-alert>
       <gl-alert v-else-if="fetchSettingsError" variant="warning" :dismissible="false">
         <gl-sprintf :message="$options.i18n.fetchSettingsErrorText" />

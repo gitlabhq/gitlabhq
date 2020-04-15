@@ -22,4 +22,18 @@ describe Explore::GroupsController do
 
     expect(assigns(:groups)).to contain_exactly(member_of_group, public_group)
   end
+
+  context 'restricted visibility level is public' do
+    before do
+      sign_out(user)
+
+      stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC])
+    end
+
+    it 'redirects to login page' do
+      get :index
+
+      expect(response).to redirect_to new_user_session_path
+    end
+  end
 end

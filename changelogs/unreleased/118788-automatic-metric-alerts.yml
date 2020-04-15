@@ -1,5 +1,0 @@
----
-title: Add Prometheus alerts automatically after Prometheus Service was created
-merge_request: 28503
-author:
-type: added

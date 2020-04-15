@@ -399,7 +399,8 @@ CREATE TABLE public.application_settings (
     namespace_storage_size_limit bigint DEFAULT 0 NOT NULL,
     seat_link_enabled boolean DEFAULT true NOT NULL,
     container_expiration_policies_enable_historic_entries boolean DEFAULT false NOT NULL,
-    issues_create_limit integer DEFAULT 300 NOT NULL
+    issues_create_limit integer DEFAULT 300 NOT NULL,
+    push_rule_id bigint
 );
 
 CREATE SEQUENCE public.application_settings_id_seq
@@ -5025,7 +5026,8 @@ ALTER SEQUENCE public.project_repository_states_id_seq OWNED BY public.project_r
 CREATE TABLE public.project_settings (
     project_id integer NOT NULL,
     created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL
+    updated_at timestamp with time zone NOT NULL,
+    push_rule_id bigint
 );
 
 CREATE TABLE public.project_statistics (
@@ -8677,6 +8679,8 @@ CREATE INDEX index_application_settings_on_file_template_project_id ON public.ap
 
 CREATE INDEX index_application_settings_on_instance_administrators_group_id ON public.application_settings USING btree (instance_administrators_group_id);
 
+CREATE UNIQUE INDEX index_application_settings_on_push_rule_id ON public.application_settings USING btree (push_rule_id);
+
 CREATE INDEX index_application_settings_on_usage_stats_set_by_user_id ON public.application_settings USING btree (usage_stats_set_by_user_id);
 
 CREATE INDEX index_applicationsettings_on_instance_administration_project_id ON public.application_settings USING btree (instance_administration_project_id);
@@ -9891,6 +9895,8 @@ CREATE INDEX index_project_repositories_on_shard_id ON public.project_repositori
 
 CREATE UNIQUE INDEX index_project_repository_states_on_project_id ON public.project_repository_states USING btree (project_id);
 
+CREATE UNIQUE INDEX index_project_settings_on_push_rule_id ON public.project_settings USING btree (push_rule_id);
+
 CREATE INDEX index_project_statistics_on_namespace_id ON public.project_statistics USING btree (namespace_id);
 
 CREATE UNIQUE INDEX index_project_statistics_on_project_id ON public.project_statistics USING btree (project_id);
@@ -10636,6 +10642,9 @@ ALTER TABLE ONLY public.epics
 ALTER TABLE ONLY public.ci_pipelines
     ADD CONSTRAINT fk_3d34ab2e06 FOREIGN KEY (pipeline_schedule_id) REFERENCES public.ci_pipeline_schedules(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY public.project_settings
+    ADD CONSTRAINT fk_413a953e20 FOREIGN KEY (push_rule_id) REFERENCES public.push_rules(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY public.ci_pipeline_schedule_variables
     ADD CONSTRAINT fk_41c35fda51 FOREIGN KEY (pipeline_schedule_id) REFERENCES public.ci_pipeline_schedules(id) ON DELETE CASCADE;
 
@@ -10686,6 +10695,9 @@ ALTER TABLE ONLY public.merge_requests
 
 ALTER TABLE ONLY public.ci_builds
     ADD CONSTRAINT fk_6661f4f0e8 FOREIGN KEY (resource_group_id) REFERENCES public.ci_resource_groups(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY public.application_settings
+    ADD CONSTRAINT fk_693b8795e4 FOREIGN KEY (push_rule_id) REFERENCES public.push_rules(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY public.merge_requests
     ADD CONSTRAINT fk_6a5165a692 FOREIGN KEY (milestone_id) REFERENCES public.milestones(id) ON DELETE SET NULL;
@@ -13113,9 +13125,14 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200323134519
 20200324093258
 20200324115359
+20200325104755
+20200325104756
+20200325104833
+20200325104834
 20200325111432
 20200325152327
 20200325160952
+20200325162730
 20200325183636
 20200326114443
 20200326122700

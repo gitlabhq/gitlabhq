@@ -1,5 +1,0 @@
----
-title: Add user_details.bio column and migrate data from users.bio
-merge_request: 27773
-author:
-type: changed

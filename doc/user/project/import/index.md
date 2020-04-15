@@ -15,6 +15,7 @@
 1. [By uploading a manifest file (AOSP)](manifest.md)
 1. [From Gemnasium](gemnasium.md)
 1. [From Phabricator](phabricator.md)
+1. [From Jira (issues only)](jira.md)
 
 In addition to the specific migration documentation above, you can import any
 Git repository via HTTP from the New Project page. Be aware that if the

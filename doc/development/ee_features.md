@@ -9,7 +9,8 @@
 
 ## Act as CE when unlicensed
 
-Since the implementation of [GitLab CE features to work with unlicensed EE instance][ee-as-ce]
+Since the implementation of
+[GitLab CE features to work with unlicensed EE instance](https://gitlab.com/gitlab-org/gitlab/issues/2500)
 GitLab Enterprise Edition should work like GitLab Community Edition
 when no license is active. So EE features always should be guarded by
 `project.feature_available?` or `group.feature_available?` (or
@@ -23,8 +24,6 @@ You can force GitLab to act as CE by either deleting the `ee/` directory or by
 setting the [`FOSS_ONLY` environment variable](https://gitlab.com/gitlab-org/gitlab/blob/master/config/helpers/is_ee_env.js)
 to something that evaluates as `true`. The same works for running tests
 (for example `FOSS_ONLY=1 yarn jest`).
-
-[ee-as-ce]: https://gitlab.com/gitlab-org/gitlab/issues/2500
 
 ## Separation of EE code
 
@@ -53,10 +52,8 @@ is applied not only to models. Here's a list of other examples:
 - `ee/app/views/foo/_bar.html.haml`
 
 This works because for every path that is present in CE's eager-load/auto-load
-paths, we add the same `ee/`-prepended path in [`config/application.rb`].
+paths, we add the same `ee/`-prepended path in [`config/application.rb`](https://gitlab.com/gitlab-org/gitlab/blob/925d3d4ebc7a2c72964ce97623ae41b8af12538d/config/application.rb#L42-52).
 This also applies to views.
-
-[`config/application.rb`]: https://gitlab.com/gitlab-org/gitlab/blob/925d3d4ebc7a2c72964ce97623ae41b8af12538d/config/application.rb#L42-52
 
 ### EE features based on CE features
 

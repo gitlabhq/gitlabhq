@@ -1,5 +1,0 @@
----
-title: Amend GraphQL merge requests resolver to check for project presence
-merge_request: 27783
-author:
-type: fixed

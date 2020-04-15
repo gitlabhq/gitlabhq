@@ -1,5 +1,0 @@
----
-title: Prevent wrong environment being used when processing Prometheus alert
-merge_request: 29119
-author:
-type: fixed

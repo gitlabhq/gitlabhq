@@ -1,6 +1,6 @@
 # File Storage in GitLab
 
-We use the [CarrierWave] gem to handle file upload, store and retrieval.
+We use the [CarrierWave](https://github.com/carrierwaveuploader/carrierwave) gem to handle file upload, store and retrieval.
 
 File uploads should be accelerated by workhorse, for details please refer to [uploads development documentation](uploads.md).
 
@@ -46,14 +46,14 @@ they are still not 100% standardized. You can see them below:
 CI Artifacts and LFS Objects behave differently in CE and EE. In CE they inherit the `GitlabUploader`
 while in EE they inherit the `ObjectStorage` and store files in and S3 API compatible object store.
 
-In the case of Issues/MR/Notes Markdown attachments, there is a different approach using the [Hashed Storage] layout,
+In the case of Issues/MR/Notes Markdown attachments, there is a different approach using the [Hashed Storage](../administration/repository_storage_types.md) layout,
 instead of basing the path into a mutable variable `:project_path_with_namespace`, it's possible to use the
 hash of the project ID instead, if project migrates to the new approach (introduced in 10.2).
 
-> Note: We provide an [all-in-one Rake task] to migrate all uploads to object
+> Note: We provide an [all-in-one Rake task](../administration/raketasks/uploads/migrate.md) to migrate all uploads to object
 > storage in one go. If a new Uploader class or model type is introduced, make
-> sure you add a Rake task invocation corresponding to it to the [category
-> list].
+> sure you add a Rake task invocation corresponding to it to the
+> [category list](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/tasks/gitlab/uploads/migrate.rake).
 
 ### Path segments
 
@@ -144,8 +144,3 @@ class Thing < ActiveRecord::Base
   ...
 end
 ```
-
-[CarrierWave]: https://github.com/carrierwaveuploader/carrierwave
-[Hashed Storage]: ../administration/repository_storage_types.md
-[all-in-one rake task]: ../administration/raketasks/uploads/migrate.md
-[category list]: https://gitlab.com/gitlab-org/gitlab/blob/master/lib/tasks/gitlab/uploads/migrate.rake

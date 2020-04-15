@@ -5,11 +5,7 @@ export const setInitialState = ({ commit }, data) => commit(types.SET_INITIAL_ST
 export const updateSettings = ({ commit }, data) => commit(types.UPDATE_SETTINGS, data);
 export const toggleLoading = ({ commit }) => commit(types.TOGGLE_LOADING);
 export const receiveSettingsSuccess = ({ commit }, data) => {
-  if (data) {
-    commit(types.SET_SETTINGS, data);
-  } else {
-    commit(types.SET_IS_DISABLED, true);
-  }
+  commit(types.SET_SETTINGS, data);
 };
 export const resetSettings = ({ commit }) => commit(types.RESET_SETTINGS);
 

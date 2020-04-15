@@ -1,5 +1,0 @@
----
-title: Add healthy column to clusters_applications_prometheus table
-merge_request: 26168
-author:
-type: added

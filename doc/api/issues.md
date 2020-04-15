@@ -740,6 +740,14 @@ the `weight` parameter:
 
 **Note**: The `closed_by` attribute was [introduced in GitLab 10.6](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17042). This value will only be present for issues which were closed after GitLab 10.6 and when the user account that closed the issue still exists.
 
+## Rate limits
+
+To help avoid abuse, users are limited to:
+
+| Request Type     | Limit                       |
+| ---------------- | --------------------------- |
+| Create           | 300 issues per minute       |
+
 ## Edit issue
 
 Updates an existing project issue. This call is also used to mark an issue as

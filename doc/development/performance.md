@@ -8,7 +8,7 @@ consistent performance of GitLab.
 The process of solving performance problems is roughly as follows:
 
 1. Make sure there's an issue open somewhere (for example, on the GitLab CE issue
-   tracker), and create one if there is not. See [#15607][#15607] for an example.
+   tracker), and create one if there is not. See [#15607](https://gitlab.com/gitlab-org/gitlab-foss/issues/15607) for an example.
 1. Measure the performance of the code in a production environment such as
    GitLab.com (see the [Tooling](#tooling) section below). Performance should be
    measured over a period of _at least_ 24 hours.
@@ -495,7 +495,7 @@ just memory but also unnecessary time spent in CPU and I/O for processing lines 
 
 ## Anti-Patterns
 
-This is a collection of [anti-patterns][anti-pattern] that should be avoided
+This is a collection of [anti-patterns](https://en.wikipedia.org/wiki/Anti-pattern) that should be avoided
 unless these changes have a measurable, significant, and positive impact on
 production environments.
 
@@ -539,6 +539,3 @@ Assuming you are working with ActiveRecord models, you might also find these lin
 
 You may find some useful examples in this snippet:
 <https://gitlab.com/gitlab-org/gitlab-foss/snippets/33946>
-
-[#15607]: https://gitlab.com/gitlab-org/gitlab-foss/issues/15607
-[anti-pattern]: https://en.wikipedia.org/wiki/Anti-pattern

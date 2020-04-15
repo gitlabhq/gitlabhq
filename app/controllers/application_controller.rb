@@ -496,6 +496,10 @@ class ApplicationController < ActionController::Base
     html_request? && !devise_controller?
   end
 
+  def public_visibility_restricted?
+    Gitlab::CurrentSettings.restricted_visibility_levels.include? Gitlab::VisibilityLevel::PUBLIC
+  end
+
   def set_usage_stats_consent_flag
     return unless current_user
     return if sessionless_user?

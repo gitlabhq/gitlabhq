@@ -1,5 +1,0 @@
----
-title: Optimize projects_mirrored_with_pipelines_enabled query performance in usage data
-merge_request: 27110
-author:
-type: performance

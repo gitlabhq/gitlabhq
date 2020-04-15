@@ -1,5 +1,0 @@
----
-title: Fix missing synthetic milestone change notes for disabled milestone change event tracking feature flag
-merge_request: 28440
-author:
-type: fixed

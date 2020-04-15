@@ -788,10 +788,16 @@ msgstr ""
 msgid "<code>\"johnsmith@example.com\": \"johnsmith@example.com\"</code> will add \"By <a href=\"#\">johnsmith@example.com</a>\" to all issues and comments originally created by johnsmith@example.com. By default, the email address or username is masked to ensure the user's privacy. Use this option if you want to show the full email address."
 msgstr ""
 
+msgid "<namespace / project>"
+msgstr ""
+
 msgid "<no name set>"
 msgstr ""
 
 msgid "<no scopes selected>"
+msgstr ""
+
+msgid "<project name>"
 msgstr ""
 
 msgid "<strong>%{group_name}</strong> group members"
@@ -5456,6 +5462,9 @@ msgstr ""
 msgid "Container repositories sync capacity"
 msgstr ""
 
+msgid "ContainerRegistry| Please visit the %{linkStart}administration settings%{linkEnd} to enable this feature."
+msgstr ""
+
 msgid "ContainerRegistry|%{imageName} tags"
 msgstr ""
 
@@ -5471,6 +5480,9 @@ msgstr ""
 msgid "ContainerRegistry|Container Registry"
 msgstr ""
 
+msgid "ContainerRegistry|Container Registry tag expiration and retention policy is disabled"
+msgstr ""
+
 msgid "ContainerRegistry|Copy build command"
 msgstr ""
 
@@ -5478,9 +5490,6 @@ msgid "ContainerRegistry|Copy login command"
 msgstr ""
 
 msgid "ContainerRegistry|Copy push command"
-msgstr ""
-
-msgid "ContainerRegistry|Currently, the Container Registry tag expiration feature is not available for projects created before GitLab version 12.8. For updates and more information, visit Issue %{linkStart}#196124%{linkEnd}"
 msgstr ""
 
 msgid "ContainerRegistry|Docker connection error"
@@ -5529,6 +5538,9 @@ msgid "ContainerRegistry|Missing or insufficient permission, delete button disab
 msgstr ""
 
 msgid "ContainerRegistry|Number of tags to retain:"
+msgstr ""
+
+msgid "ContainerRegistry|Please contact your administrator."
 msgstr ""
 
 msgid "ContainerRegistry|Push an image"
@@ -5585,6 +5597,9 @@ msgid "ContainerRegistry|Tag expiration policy is designed to:"
 msgstr ""
 
 msgid "ContainerRegistry|Tags deleted successfully"
+msgstr ""
+
+msgid "ContainerRegistry|The Container Registry tag expiration and retention policies for this project have not been enabled."
 msgstr ""
 
 msgid "ContainerRegistry|The last tag related to this image was recently removed. This empty image and any associated data will be automatically removed as part of the regular Garbage Collection process. If you have any questions, contact your administrator."

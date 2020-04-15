@@ -1,5 +1,0 @@
----
-title: Optimize usage ping queries by using batch counting
-merge_request: 27455
-author:
-type: performance

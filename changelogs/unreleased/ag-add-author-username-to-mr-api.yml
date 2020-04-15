@@ -1,5 +1,0 @@
----
-title: Accept `author_username` as a param in Merge Requests API
-merge_request: 28100
-author:
-type: changed

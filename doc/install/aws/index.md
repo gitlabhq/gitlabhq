@@ -205,7 +205,7 @@ On the EC2 dashboard, look for Load Balancer in the left navigation bar:
 1. Click **Configure Health Check** and set up a health check for your EC2 instances.
    1. For **Ping Protocol**, select HTTP.
    1. For **Ping Port**, enter 80.
-   1. For **Ping Path**, enter `/explore`. (We use `/explore` as it's a public endpoint that does
+   1. For **Ping Path**, enter `/users/sign_in`. (We use `/users/sign_in` as it's a public endpoint that does
    not require authorization.)
    1. Keep the default **Advanced Details** or adjust them according to your needs.
 1. Click **Add EC2 Instances** but, as we don't have any instances to add yet, come back

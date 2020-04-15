@@ -12,14 +12,19 @@ describe('Mutations Registry Store', () => {
 
   describe('SET_INITIAL_STATE', () => {
     it('should set the initial state', () => {
-      const expectedState = { ...mockState, projectId: 'foo', formOptions };
-      mutations[types.SET_INITIAL_STATE](mockState, {
+      const payload = {
         projectId: 'foo',
+        enableHistoricEntries: false,
+        adminSettingsPath: 'foo',
+        isAdmin: true,
+      };
+      const expectedState = { ...mockState, ...payload, formOptions };
+      mutations[types.SET_INITIAL_STATE](mockState, {
+        ...payload,
         ...stringifiedFormOptions,
       });
 
-      expect(mockState.projectId).toEqual(expectedState.projectId);
-      expect(mockState.formOptions).toEqual(expectedState.formOptions);
+      expect(mockState).toEqual(expectedState);
     });
   });
 
@@ -41,6 +46,13 @@ describe('Mutations Registry Store', () => {
       expect(mockState.settings).toEqual(expectedState.settings);
       expect(mockState.original).toEqual(expectedState.settings);
     });
+
+    it('should keep the default state when settings is not present', () => {
+      const originalSettings = { ...mockState.settings };
+      mutations[types.SET_SETTINGS](mockState);
+      expect(mockState.settings).toEqual(originalSettings);
+      expect(mockState.original).toEqual(undefined);
+    });
   });
 
   describe('RESET_SETTINGS', () => {
@@ -50,19 +62,19 @@ describe('Mutations Registry Store', () => {
       mutations[types.RESET_SETTINGS](mockState);
       expect(mockState.settings).toEqual(mockState.original);
     });
+
+    it('if original is undefined it should initialize to empty object', () => {
+      mockState.settings = { foo: 'bar' };
+      mockState.original = undefined;
+      mutations[types.RESET_SETTINGS](mockState);
+      expect(mockState.settings).toEqual({});
+    });
   });
 
   describe('TOGGLE_LOADING', () => {
     it('should toggle the loading', () => {
       mutations[types.TOGGLE_LOADING](mockState);
       expect(mockState.isLoading).toEqual(true);
-    });
-  });
-
-  describe('SET_IS_DISABLED', () => {
-    it('should set isDisabled', () => {
-      mutations[types.SET_IS_DISABLED](mockState, true);
-      expect(mockState.isDisabled).toEqual(true);
     });
   });
 });
