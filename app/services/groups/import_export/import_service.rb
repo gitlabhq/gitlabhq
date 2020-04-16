@@ -33,10 +33,12 @@ module Groups
       end
 
       def restorer
-        @restorer ||= Gitlab::ImportExport::Group::TreeRestorer.new(user: @current_user,
-                                                                  shared: @shared,
-                                                                  group: @group,
-                                                                  group_hash: nil)
+        @restorer ||= Gitlab::ImportExport::Group::LegacyTreeRestorer.new(
+          user: @current_user,
+          shared: @shared,
+          group: @group,
+          group_hash: nil
+        )
       end
 
       def remove_import_file

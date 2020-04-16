@@ -3,7 +3,7 @@
 module Gitlab
   module ImportExport
     module Group
-      class TreeRestorer
+      class LegacyTreeRestorer
         include Gitlab::Utils::StrongMemoize
 
         attr_reader :user

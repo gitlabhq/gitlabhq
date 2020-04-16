@@ -16,4 +16,7 @@ class ClusterApplicationEntity < Grape::Entity
   expose :available_domains, using: Serverless::DomainEntity, if: -> (e, _) { e.respond_to?(:available_domains) }
   expose :pages_domain, using: Serverless::DomainEntity, if: -> (e, _) { e.respond_to?(:pages_domain) }
   expose :modsecurity_mode, if: -> (e, _) { e.respond_to?(:modsecurity_mode) }
+  expose :host, if: -> (e, _) { e.respond_to?(:host) }
+  expose :port, if: -> (e, _) { e.respond_to?(:port) }
+  expose :protocol, if: -> (e, _) { e.respond_to?(:protocol) }
 end

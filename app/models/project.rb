@@ -591,7 +591,7 @@ class Project < ApplicationRecord
     #
     # query - The search query as a String.
     def search(query, include_namespace: false)
-      if include_namespace && Feature.enabled?(:project_search_by_full_path, default_enabled: true)
+      if include_namespace
         joins(:route).fuzzy_search(query, [Route.arel_table[:path], Route.arel_table[:name], :description])
       else
         fuzzy_search(query, [:path, :name, :description])

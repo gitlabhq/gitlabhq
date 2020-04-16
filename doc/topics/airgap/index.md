@@ -18,7 +18,7 @@ Follow these best practices to use GitLab's features in an offline environment:
 
 To use many GitLab features, including
 [security scans](../../user/application_security/index.md#working-in-an-offline-environment)
-and [Auto Devops](../autodevops/), the GitLab Runner must be able to fetch the
+and [Auto DevOps](../autodevops/), the GitLab Runner must be able to fetch the
 relevant Docker images.
 
 The process for making these images available without direct access to the public internet

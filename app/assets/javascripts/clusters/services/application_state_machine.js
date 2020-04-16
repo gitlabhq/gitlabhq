@@ -191,7 +191,8 @@ const applicationStateMachine = {
  * @param {*} event
  */
 const transitionApplicationState = (application, event) => {
-  const newState = applicationStateMachine[application.status].on[event];
+  const stateMachine = applicationStateMachine[application.status];
+  const newState = stateMachine !== undefined ? stateMachine.on[event] : false;
 
   return newState
     ? {

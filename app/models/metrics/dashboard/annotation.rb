@@ -15,6 +15,11 @@ module Metrics
       validate :single_ownership
       validate :orphaned_annotation
 
+      scope :after, ->(after) { where('starting_at >= ?', after) }
+      scope :before, ->(before) { where('starting_at <= ?', before) }
+
+      scope :for_dashboard, ->(dashboard_path) { where(dashboard_path: dashboard_path) }
+
       private
 
       def single_ownership

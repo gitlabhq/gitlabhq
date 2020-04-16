@@ -113,7 +113,7 @@ Stage labels respects the `devops::<stage_key>` naming convention.
 <https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/stages.yml>
 with `_` replaced with a space.
 
-For instance, the "Manage" stage is represented by the ~"devops::manage" label in
+For instance, the "Manage" stage is represented by the `~"devops::manage"` label in
 the `gitlab-org` group since its key under `stages` is `manage`.
 
 The current stage labels can be found by [searching the labels list for `devops::`](https://gitlab.com/groups/gitlab-org/-/labels?search=devops::).
@@ -156,10 +156,10 @@ As a team needs some way to collect the work their members are planning to be as
 Normally there is a 1:1 relationship between Stage labels and Group labels. In
 the spirit of "Everyone can contribute", any issue can be picked up by any group,
 depending on current priorities. When picking up an issue belonging to a different
-group, it should be relabelled. For example, if an issue labelled ~"devops::create"
-and ~"group::knowledge" is picked up by someone in the Access group of the Plan stage,
-the issue should be relabelled as ~"group::access" while keeping the original
-~"devops::create" unchanged.
+group, it should be relabelled. For example, if an issue labelled `~"devops::create"`
+and `~"group::knowledge"` is picked up by someone in the Access group of the Plan stage,
+the issue should be relabelled as `~"group::access"` while keeping the original
+`~"devops::create"` unchanged.
 
 We also use stage and group labels to help quantify our [throughput](https://about.gitlab.com/handbook/engineering/management/throughput/).
 Please read [Stage and Group labels in Throughput](https://about.gitlab.com/handbook/engineering/management/throughput/#stage-and-group-labels-in-throughput) for more information on how the labels are used in this context.

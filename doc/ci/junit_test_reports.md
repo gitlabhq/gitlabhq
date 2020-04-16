@@ -88,7 +88,7 @@ ruby:
   stage: test
   script:
     - bundle install
-    - rspec spec/lib/ --format RspecJunitFormatter --out rspec.xml
+    - bundle exec rspec --format progress --format RspecJunitFormatter --out rspec.xml
   artifacts:
     paths:
       - rspec.xml
