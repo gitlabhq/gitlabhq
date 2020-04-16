@@ -592,6 +592,7 @@ Supported applications:
 - [Elastic Stack](#install-elastic-stack-using-gitlab-cicd)
 - [Crossplane](#install-crossplane-using-gitlab-cicd)
 - [Fluentd](#install-fluentd-using-gitlab-cicd)
+- [Knative](#install-knative-using-gitlab-cicd)
 
 ### Usage
 
@@ -652,7 +653,7 @@ ingress:
 Ingress will then be installed into the `gitlab-managed-apps` namespace
 of your cluster.
 
-You can customize the installation of Ingress by defining
+You can customize the installation of Ingress by defining a
 `.gitlab/managed-apps/ingress/values.yaml` file in your cluster
 management project. Refer to the
 [chart](https://github.com/helm/charts/tree/master/stable/nginx-ingress)
@@ -689,7 +690,7 @@ certManager:
     installed: false
 ```
 
-You can customize the installation of cert-manager by defining
+You can customize the installation of cert-manager by defining a
 `.gitlab/managed-apps/cert-manager/values.yaml` file in your cluster
 management project. Refer to the
 [chart](https://hub.helm.sh/charts/jetstack/cert-manager) for the
@@ -1099,6 +1100,48 @@ NOTE: **Note:**
 The configuration chart link points to the current development release, which
 may differ from the version you have installed. To ensure compatibility, switch
 to the specific branch or tag you are using.
+
+### Install Knative using GitLab CI/CD
+
+To install Knative, define the `.gitlab/managed-apps/config.yaml` file
+with:
+
+```yaml
+knative:
+  installed: true
+```
+
+You can customize the installation of Knative by defining `.gitlab/managed-apps/knative/values.yaml`
+file in your cluster management project. Refer to the [chart](https://gitlab.com/gitlab-org/charts/knative)
+for the available configuration options.
+
+Here is an example configuration for Knative:
+
+```yaml
+domain: 'my.wildcard.A.record.dns'
+```
+
+If you plan to use GitLab Serverless capabilities, be sure to set an A record wildcard domain on your custom configuration.
+
+#### Knative Metrics
+
+GitLab provides [Invocation Metrics](../project/clusters/serverless/index.md#invocation-metrics) for your functions. To collect these metrics, you must have:
+
+1. Knative and Prometheus managed applications installed on your cluster.
+1. Manually applied the custom metrics on your cluster by running the following command:
+
+   ```bash
+   kubectl apply -f https://gitlab.com/gitlab-org/cluster-integration/cluster-applications/-/raw/02c8231e30ef5b6725e6ba368bc63863ceb3c07d/src/default-data/knative/istio-metrics.yaml
+   ```
+
+#### Uninstall Knative
+
+To uninstall Knative, you must first manually remove any custom metrics you have added
+by running the following command:
+
+```bash
+kubectl delete -f https://gitlab.com/gitlab-org/cluster-integration/cluster-applications/-/raw/02c8231e30ef5b6725e6ba368bc63863ceb3c07d/src/default-data/knative/istio-metrics.yaml
+```
 
 ## Upgrading applications
 

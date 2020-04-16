@@ -81,6 +81,14 @@ You can filter issues and merge requests by specific terms included in titles or
 
 ![filter issues by specific terms](img/issue_search_by_term.png)
 
+### Filtering by ID
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/39908) in GitLab 12.1.
+
+You can filter the **Issues** list to individual instances by their ID. For example, enter filter `#10` to return only issue 10. The same applies to the **Merge Requests** list. Enter filter `#30` to return only merge request 30.
+
+![filter issues by specific id](img/issue_search_by_id.png)
+
 ### Filtering merge requests by approvers **(STARTER)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/9468) in [GitLab Starter](https://about.gitlab.com/pricing/) 11.9.
