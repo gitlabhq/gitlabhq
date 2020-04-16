@@ -75,6 +75,30 @@ describe ChatNotificationService do
       end
     end
 
+    context 'with "channel" property' do
+      before do
+        allow(chat_service).to receive(:channel).and_return(channel)
+      end
+
+      context 'empty string' do
+        let(:channel) { '' }
+
+        it 'does not include the channel' do
+          expect(chat_service).to receive(:notify).with(any_args, hash_excluding(:channel)).and_return(true)
+          expect(chat_service.execute(data)).to be(true)
+        end
+      end
+
+      context 'empty spaces' do
+        let(:channel) { '  ' }
+
+        it 'does not include the channel' do
+          expect(chat_service).to receive(:notify).with(any_args, hash_excluding(:channel)).and_return(true)
+          expect(chat_service.execute(data)).to be(true)
+        end
+      end
+    end
+
     shared_examples 'with channel specified' do |channel, expected_channels|
       before do
         allow(chat_service).to receive(:push_channel).and_return(channel)

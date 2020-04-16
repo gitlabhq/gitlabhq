@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Projects > Files > User uploads files' do
+describe 'Projects > Show > User uploads files' do
   include DropzoneHelper
 
   let(:user) { create(:user) }
@@ -16,7 +16,7 @@ describe 'Projects > Files > User uploads files' do
 
   context 'when a user has write access' do
     before do
-      visit(project_tree_path(project))
+      visit(project_path(project))
     end
 
     include_examples 'it uploads and commit a new text file'
@@ -28,7 +28,7 @@ describe 'Projects > Files > User uploads files' do
     before do
       project2.add_reporter(user)
 
-      visit(project_tree_path(project2))
+      visit(project_path(project2))
     end
 
     include_examples 'it uploads and commit a new file to a forked project'
