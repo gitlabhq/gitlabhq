@@ -1,7 +1,7 @@
 import * as monitoringUtils from '~/monitoring/utils';
 import { queryToObject, mergeUrlParams, removeParams } from '~/lib/utils/url_utility';
+import { TEST_HOST } from 'jest/helpers/test_constants';
 import {
-  mockHost,
   mockProjectDir,
   graphDataPrometheusQuery,
   graphDataPrometheusQueryRange,
@@ -11,7 +11,7 @@ import {
 
 jest.mock('~/lib/utils/url_utility');
 
-const mockPath = `${mockHost}${mockProjectDir}/-/environments/29/metrics`;
+const mockPath = `${TEST_HOST}${mockProjectDir}/-/environments/29/metrics`;
 
 const generatedLink = 'http://chart.link.com';
 

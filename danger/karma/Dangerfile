@@ -4,6 +4,7 @@
 def get_karma_files(files)
   files.select do |file|
     file.start_with?('ee/spec/javascripts', 'spec/javascripts') &&
+    file.end_with?('_spec.js') &&
     !file.end_with?('browser_spec.js')
   end
 end

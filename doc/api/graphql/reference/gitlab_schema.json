@@ -28864,6 +28864,20 @@
               "deprecationReason": null
             },
             {
+              "name": "project",
+              "description": "The project on which the vulnerability was found",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Project",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "reportType",
               "description": "Type of the security report that found the vulnerability (SAST, DEPENDENCY_SCANNING, CONTAINER_SCANNING, DAST)",
               "args": [

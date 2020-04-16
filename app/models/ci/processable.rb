@@ -51,6 +51,12 @@ module Ci
     validates :type, presence: true
     validates :scheduling_type, presence: true, on: :create, if: :validate_scheduling_type?
 
+    delegate :merge_request?,
+      :merge_request_ref?,
+      :legacy_detached_merge_request_pipeline?,
+      :merge_train_pipeline?,
+      to: :pipeline
+
     def aggregated_needs_names
       read_attribute(:aggregated_needs_names)
     end

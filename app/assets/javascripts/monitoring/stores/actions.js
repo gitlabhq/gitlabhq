@@ -90,7 +90,7 @@ export const fetchData = ({ dispatch }) => {
    * ready after the BE piece is implemented.
    * https://gitlab.com/gitlab-org/gitlab/-/issues/211330
    */
-  if (isFeatureFlagEnabled('metrics_dashboard_annotations')) {
+  if (isFeatureFlagEnabled('metricsDashboardAnnotations')) {
     dispatch('fetchAnnotations');
   }
 };
@@ -283,8 +283,6 @@ export const receiveEnvironmentsDataFailure = ({ commit }) => {
 };
 
 export const fetchAnnotations = ({ state, dispatch }) => {
-  dispatch('requestAnnotations');
-
   return gqClient
     .mutate({
       mutation: getAnnotations,
@@ -309,9 +307,6 @@ export const fetchAnnotations = ({ state, dispatch }) => {
     });
 };
 
-// While this commit does not update the state it will
-// eventually be useful to show a loading state
-export const requestAnnotations = ({ commit }) => commit(types.REQUEST_ANNOTATIONS);
 export const receiveAnnotationsSuccess = ({ commit }, data) =>
   commit(types.RECEIVE_ANNOTATIONS_SUCCESS, data);
 export const receiveAnnotationsFailure = ({ commit }) => commit(types.RECEIVE_ANNOTATIONS_FAILURE);

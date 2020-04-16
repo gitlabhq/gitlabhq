@@ -37,8 +37,6 @@ describe Ci::Build do
   it { is_expected.to delegate_method(:merge_request_ref?).to(:pipeline) }
   it { is_expected.to delegate_method(:legacy_detached_merge_request_pipeline?).to(:pipeline) }
 
-  it { is_expected.to include_module(Ci::PipelineDelegator) }
-
   describe 'associations' do
     it 'has a bidirectional relationship with projects' do
       expect(described_class.reflect_on_association(:project).has_inverse?).to eq(:builds)
@@ -1818,64 +1816,65 @@ describe Ci::Build do
   end
 
   describe '#merge_request' do
-    def create_mr(build, pipeline, factory: :merge_request, created_at: Time.now)
-      create(factory, source_project: pipeline.project,
-                      target_project: pipeline.project,
-                      source_branch: build.ref,
-                      created_at: created_at)
+    subject { pipeline.builds.take.merge_request }
+
+    context 'on a branch pipeline' do
+      let!(:pipeline) { create(:ci_pipeline, :with_job, project: project, ref: 'fix') }
+
+      context 'with no merge request' do
+        it { is_expected.to be_nil }
+      end
+
+      context 'with an open merge request from the same ref name' do
+        let!(:merge_request) { create(:merge_request, source_project: project, source_branch: 'fix') }
+
+        # If no diff exists, the pipeline commit was not part of the merge
+        # request and may have simply incidentally used the same ref name.
+        context 'without a merge request diff containing the pipeline commit' do
+          it { is_expected.to be_nil }
+        end
+
+        # If the merge request was truly opened from the branch that the
+        # pipeline ran on, that head sha will be present in a diff.
+        context 'with a merge request diff containing the pipeline commit' do
+          let!(:mr_diff) { create(:merge_request_diff, merge_request: merge_request) }
+          let!(:mr_diff_commit) { create(:merge_request_diff_commit, sha: build.sha, merge_request_diff: mr_diff) }
+
+          it { is_expected.to eq(merge_request) }
+        end
+      end
+
+      context 'with multiple open merge requests' do
+        let!(:merge_request)  { create(:merge_request, source_project: project, source_branch: 'fix') }
+        let!(:mr_diff)        { create(:merge_request_diff, merge_request: merge_request) }
+        let!(:mr_diff_commit) { create(:merge_request_diff_commit, sha: build.sha, merge_request_diff: mr_diff) }
+
+        let!(:new_merge_request)  { create(:merge_request, source_project: project, source_branch: 'fix', target_branch: 'staging') }
+        let!(:new_mr_diff)        { create(:merge_request_diff, merge_request: new_merge_request) }
+        let!(:new_mr_diff_commit) { create(:merge_request_diff_commit, sha: build.sha, merge_request_diff: new_mr_diff) }
+
+        it 'returns the first merge request' do
+          expect(subject).to eq(merge_request)
+        end
+      end
     end
 
-    context 'when a MR has a reference to the pipeline' do
-      before do
-        @merge_request = create_mr(build, pipeline, factory: :merge_request)
+    context 'on a detached merged request pipeline' do
+      let(:pipeline) { create(:ci_pipeline, :detached_merge_request_pipeline, :with_job) }
 
-        commits = [double(id: pipeline.sha)]
-        allow(@merge_request).to receive(:commits).and_return(commits)
-        allow(MergeRequest).to receive_message_chain(:includes, :where, :reorder).and_return([@merge_request])
-      end
-
-      it 'returns the single associated MR' do
-        expect(build.merge_request.id).to eq(@merge_request.id)
-      end
+      it { is_expected.to eq(pipeline.merge_request) }
     end
 
-    context 'when there is not a MR referencing the pipeline' do
-      it 'returns nil' do
-        expect(build.merge_request).to be_nil
-      end
+    context 'on a legacy detached merged request pipeline' do
+      let(:pipeline) { create(:ci_pipeline, :legacy_detached_merge_request_pipeline, :with_job) }
+
+      it { is_expected.to eq(pipeline.merge_request) }
     end
 
-    context 'when more than one MR have a reference to the pipeline' do
-      before do
-        @merge_request = create_mr(build, pipeline, factory: :merge_request)
-        @merge_request.close!
-        @merge_request2 = create_mr(build, pipeline, factory: :merge_request)
+    context 'on a pipeline for merged results' do
+      let(:pipeline) { create(:ci_pipeline, :merged_result_pipeline, :with_job) }
 
-        commits = [double(id: pipeline.sha)]
-        allow(@merge_request).to receive(:commits).and_return(commits)
-        allow(@merge_request2).to receive(:commits).and_return(commits)
-        allow(MergeRequest).to receive_message_chain(:includes, :where, :reorder).and_return([@merge_request, @merge_request2])
-      end
-
-      it 'returns the first MR' do
-        expect(build.merge_request.id).to eq(@merge_request.id)
-      end
-    end
-
-    context 'when a Build is created after the MR' do
-      before do
-        @merge_request = create_mr(build, pipeline, factory: :merge_request_with_diffs)
-        pipeline2 = create(:ci_pipeline, project: project)
-        @build2 = create(:ci_build, pipeline: pipeline2)
-
-        allow(@merge_request).to receive(:commit_shas)
-          .and_return([pipeline.sha, pipeline2.sha])
-        allow(MergeRequest).to receive_message_chain(:includes, :where, :reorder).and_return([@merge_request])
-      end
-
-      it 'returns the current MR' do
-        expect(@build2.merge_request.id).to eq(@merge_request.id)
-      end
+      it { is_expected.to eq(pipeline.merge_request) }
     end
   end
 

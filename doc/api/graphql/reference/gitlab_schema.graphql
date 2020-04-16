@@ -9561,6 +9561,11 @@ type Vulnerability {
   location: JSON
 
   """
+  The project on which the vulnerability was found
+  """
+  project: Project
+
+  """
   Type of the security report that found the vulnerability (SAST, DEPENDENCY_SCANNING, CONTAINER_SCANNING, DAST)
   """
   reportType: VulnerabilityReportType

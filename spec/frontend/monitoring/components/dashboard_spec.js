@@ -1,4 +1,4 @@
-import { shallowMount, createLocalVue, mount } from '@vue/test-utils';
+import { shallowMount, mount } from '@vue/test-utils';
 import { GlDropdownItem, GlDeprecatedButton } from '@gitlab/ui';
 import VueDraggable from 'vuedraggable';
 import MockAdapter from 'axios-mock-adapter';
@@ -6,7 +6,6 @@ import axios from '~/lib/utils/axios_utils';
 import statusCodes from '~/lib/utils/http_status';
 import { metricStates } from '~/monitoring/constants';
 import Dashboard from '~/monitoring/components/dashboard.vue';
-import { getJSONFixture } from '../../../../spec/frontend/helpers/fixtures';
 
 import DateTimePicker from '~/vue_shared/components/date_time_picker/date_time_picker.vue';
 import DashboardsDropdown from '~/monitoring/components/dashboards_dropdown.vue';
@@ -14,21 +13,9 @@ import GroupEmptyState from '~/monitoring/components/group_empty_state.vue';
 import PanelType from 'ee_else_ce/monitoring/components/panel_type.vue';
 import { createStore } from '~/monitoring/stores';
 import * as types from '~/monitoring/stores/mutation_types';
-import { setupComponentStore, propsData } from '../init_utils';
-import {
-  metricsDashboardViewModel,
-  environmentData,
-  dashboardGitResponse,
-  mockedQueryResultFixture,
-} from '../mock_data';
-
-const localVue = createLocalVue();
-const expectedPanelCount = 4;
-
-const metricsDashboardFixture = getJSONFixture(
-  'metrics_dashboard/environment_metrics_dashboard.json',
-);
-const metricsDashboardPayload = metricsDashboardFixture.dashboard;
+import { setupStoreWithDashboard, setMetricResult, setupStoreWithData } from '../store_utils';
+import { environmentData, dashboardGitResponse, propsData } from '../mock_data';
+import { metricsDashboardViewModel, metricsDashboardPanelCount } from '../fixture_data';
 
 describe('Dashboard', () => {
   let store;
@@ -43,7 +30,6 @@ describe('Dashboard', () => {
 
   const createShallowWrapper = (props = {}, options = {}) => {
     wrapper = shallowMount(Dashboard, {
-      localVue,
       propsData: { ...propsData, ...props },
       methods: {
         fetchData: jest.fn(),
@@ -55,7 +41,6 @@ describe('Dashboard', () => {
 
   const createMountedWrapper = (props = {}, options = {}) => {
     wrapper = mount(Dashboard, {
-      localVue,
       propsData: { ...propsData, ...props },
       methods: {
         fetchData: jest.fn(),
@@ -144,7 +129,7 @@ describe('Dashboard', () => {
         { stubs: ['graph-group', 'panel-type'] },
       );
 
-      setupComponentStore(wrapper);
+      setupStoreWithData(wrapper.vm.$store);
 
       return wrapper.vm.$nextTick().then(() => {
         expect(wrapper.vm.showEmptyState).toEqual(false);
@@ -172,7 +157,7 @@ describe('Dashboard', () => {
     beforeEach(() => {
       createMountedWrapper({ hasMetrics: true }, { stubs: ['graph-group', 'panel-type'] });
 
-      setupComponentStore(wrapper);
+      setupStoreWithData(wrapper.vm.$store);
 
       return wrapper.vm.$nextTick();
     });
@@ -201,14 +186,7 @@ describe('Dashboard', () => {
   it('hides the environments dropdown list when there is no environments', () => {
     createMountedWrapper({ hasMetrics: true }, { stubs: ['graph-group', 'panel-type'] });
 
-    wrapper.vm.$store.commit(
-      `monitoringDashboard/${types.RECEIVE_METRICS_DASHBOARD_SUCCESS}`,
-      metricsDashboardPayload,
-    );
-    wrapper.vm.$store.commit(
-      `monitoringDashboard/${types.RECEIVE_METRIC_RESULT_SUCCESS}`,
-      mockedQueryResultFixture,
-    );
+    setupStoreWithDashboard(wrapper.vm.$store);
 
     return wrapper.vm.$nextTick().then(() => {
       expect(findAllEnvironmentsDropdownItems()).toHaveLength(0);
@@ -218,7 +196,7 @@ describe('Dashboard', () => {
   it('renders the datetimepicker dropdown', () => {
     createMountedWrapper({ hasMetrics: true }, { stubs: ['graph-group', 'panel-type'] });
 
-    setupComponentStore(wrapper);
+    setupStoreWithData(wrapper.vm.$store);
 
     return wrapper.vm.$nextTick().then(() => {
       expect(wrapper.find(DateTimePicker).exists()).toBe(true);
@@ -228,7 +206,7 @@ describe('Dashboard', () => {
   it('renders the refresh dashboard button', () => {
     createMountedWrapper({ hasMetrics: true }, { stubs: ['graph-group', 'panel-type'] });
 
-    setupComponentStore(wrapper);
+    setupStoreWithData(wrapper.vm.$store);
 
     return wrapper.vm.$nextTick().then(() => {
       const refreshBtn = wrapper.findAll({ ref: 'refreshDashboardBtn' });
@@ -241,7 +219,11 @@ describe('Dashboard', () => {
   describe('when one of the metrics is missing', () => {
     beforeEach(() => {
       createShallowWrapper({ hasMetrics: true });
-      setupComponentStore(wrapper);
+
+      const { $store } = wrapper.vm;
+
+      setupStoreWithDashboard($store);
+      setMetricResult({ $store, result: [], panel: 2 });
 
       return wrapper.vm.$nextTick();
     });
@@ -273,7 +255,7 @@ describe('Dashboard', () => {
         },
       );
 
-      setupComponentStore(wrapper);
+      setupStoreWithData(wrapper.vm.$store);
 
       return wrapper.vm.$nextTick();
     });
@@ -348,14 +330,14 @@ describe('Dashboard', () => {
     beforeEach(() => {
       createShallowWrapper({ hasMetrics: true });
 
-      setupComponentStore(wrapper);
+      setupStoreWithData(wrapper.vm.$store);
 
       return wrapper.vm.$nextTick();
     });
 
     it('wraps vuedraggable', () => {
       expect(findDraggablePanels().exists()).toBe(true);
-      expect(findDraggablePanels().length).toEqual(expectedPanelCount);
+      expect(findDraggablePanels().length).toEqual(metricsDashboardPanelCount);
     });
 
     it('is disabled by default', () => {
@@ -411,11 +393,11 @@ describe('Dashboard', () => {
         it('shows a remove button, which removes a panel', () => {
           expect(findFirstDraggableRemoveButton().isEmpty()).toBe(false);
 
-          expect(findDraggablePanels().length).toEqual(expectedPanelCount);
+          expect(findDraggablePanels().length).toEqual(metricsDashboardPanelCount);
           findFirstDraggableRemoveButton().trigger('click');
 
           return wrapper.vm.$nextTick(() => {
-            expect(findDraggablePanels().length).toEqual(expectedPanelCount - 1);
+            expect(findDraggablePanels().length).toEqual(metricsDashboardPanelCount - 1);
           });
         });
 
@@ -534,7 +516,7 @@ describe('Dashboard', () => {
     beforeEach(() => {
       createShallowWrapper({ hasMetrics: true, currentDashboard });
 
-      setupComponentStore(wrapper);
+      setupStoreWithData(wrapper.vm.$store);
 
       return wrapper.vm.$nextTick();
     });

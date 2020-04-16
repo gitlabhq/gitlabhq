@@ -1,0 +1,5 @@
+---
+title: Use Ci::Pipeline#all_merge_requests.first as Ci::Build#merge_request
+merge_request: 27968
+author:
+type: fixed

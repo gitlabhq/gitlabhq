@@ -31,11 +31,14 @@ import {
   deploymentData,
   environmentData,
   annotationsData,
-  metricsDashboardResponse,
-  metricsDashboardViewModel,
   dashboardGitResponse,
   mockDashboardsErrorResponse,
 } from '../mock_data';
+import {
+  metricsDashboardResponse,
+  metricsDashboardViewModel,
+  metricsDashboardPanelCount,
+} from '../fixture_data';
 
 jest.mock('~/flash');
 
@@ -257,10 +260,7 @@ describe('Monitoring store actions', () => {
         null,
         state,
         [],
-        [
-          { type: 'requestAnnotations' },
-          { type: 'receiveAnnotationsSuccess', payload: annotationsData },
-        ],
+        [{ type: 'receiveAnnotationsSuccess', payload: annotationsData }],
         () => {
           expect(mockMutate).toHaveBeenCalledWith(mutationVariables);
         },
@@ -285,7 +285,7 @@ describe('Monitoring store actions', () => {
         null,
         state,
         [],
-        [{ type: 'requestAnnotations' }, { type: 'receiveAnnotationsFailure' }],
+        [{ type: 'receiveAnnotationsFailure' }],
         () => {
           expect(mockMutate).toHaveBeenCalledWith(mutationVariables);
         },
@@ -553,7 +553,7 @@ describe('Monitoring store actions', () => {
 
       fetchDashboardData({ state, commit, dispatch })
         .then(() => {
-          expect(dispatch).toHaveBeenCalledTimes(10); // one per metric plus 1 for deployments
+          expect(dispatch).toHaveBeenCalledTimes(metricsDashboardPanelCount + 1); // plus 1 for deployments
           expect(dispatch).toHaveBeenCalledWith('fetchDeploymentsData');
           expect(dispatch).toHaveBeenCalledWith('fetchPrometheusMetric', {
             metric,
@@ -581,11 +581,13 @@ describe('Monitoring store actions', () => {
     let metric;
     let state;
     let data;
+    let prometheusEndpointPath;
 
     beforeEach(() => {
       state = storeState();
-      [metric] = metricsDashboardResponse.dashboard.panel_groups[0].panels[0].metrics;
-      metric = convertObjectPropsToCamelCase(metric, { deep: true });
+      [metric] = metricsDashboardViewModel.panelGroups[0].panels[0].metrics;
+
+      prometheusEndpointPath = metric.prometheusEndpointPath;
 
       data = {
         metricId: metric.metricId,
@@ -594,7 +596,7 @@ describe('Monitoring store actions', () => {
     });
 
     it('commits result', done => {
-      mock.onGet('http://test').reply(200, { data }); // One attempt
+      mock.onGet(prometheusEndpointPath).reply(200, { data }); // One attempt
 
       testAction(
         fetchPrometheusMetric,
@@ -631,7 +633,7 @@ describe('Monitoring store actions', () => {
       };
 
       it('uses calculated step', done => {
-        mock.onGet('http://test').reply(200, { data }); // One attempt
+        mock.onGet(prometheusEndpointPath).reply(200, { data }); // One attempt
 
         testAction(
           fetchPrometheusMetric,
@@ -673,7 +675,7 @@ describe('Monitoring store actions', () => {
       };
 
       it('uses metric step', done => {
-        mock.onGet('http://test').reply(200, { data }); // One attempt
+        mock.onGet(prometheusEndpointPath).reply(200, { data }); // One attempt
 
         testAction(
           fetchPrometheusMetric,
@@ -705,10 +707,10 @@ describe('Monitoring store actions', () => {
 
     it('commits result, when waiting for results', done => {
       // Mock multiple attempts while the cache is filling up
-      mock.onGet('http://test').replyOnce(statusCodes.NO_CONTENT);
-      mock.onGet('http://test').replyOnce(statusCodes.NO_CONTENT);
-      mock.onGet('http://test').replyOnce(statusCodes.NO_CONTENT);
-      mock.onGet('http://test').reply(200, { data }); // 4th attempt
+      mock.onGet(prometheusEndpointPath).replyOnce(statusCodes.NO_CONTENT);
+      mock.onGet(prometheusEndpointPath).replyOnce(statusCodes.NO_CONTENT);
+      mock.onGet(prometheusEndpointPath).replyOnce(statusCodes.NO_CONTENT);
+      mock.onGet(prometheusEndpointPath).reply(200, { data }); // 4th attempt
 
       testAction(
         fetchPrometheusMetric,
@@ -739,10 +741,10 @@ describe('Monitoring store actions', () => {
 
     it('commits failure, when waiting for results and getting a server error', done => {
       // Mock multiple attempts while the cache is filling up and fails
-      mock.onGet('http://test').replyOnce(statusCodes.NO_CONTENT);
-      mock.onGet('http://test').replyOnce(statusCodes.NO_CONTENT);
-      mock.onGet('http://test').replyOnce(statusCodes.NO_CONTENT);
-      mock.onGet('http://test').reply(500); // 4th attempt
+      mock.onGet(prometheusEndpointPath).replyOnce(statusCodes.NO_CONTENT);
+      mock.onGet(prometheusEndpointPath).replyOnce(statusCodes.NO_CONTENT);
+      mock.onGet(prometheusEndpointPath).replyOnce(statusCodes.NO_CONTENT);
+      mock.onGet(prometheusEndpointPath).reply(500); // 4th attempt
 
       const error = new Error('Request failed with status code 500');
 

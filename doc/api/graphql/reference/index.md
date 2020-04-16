@@ -1502,6 +1502,7 @@ Represents a vulnerability.
 | `description` | String | Description of the vulnerability |
 | `id` | ID! | GraphQL ID of the vulnerability |
 | `location` | JSON | The JSON location metadata for the vulnerability. Its format depends on the type of the security scan that found the vulnerability |
+| `project` | Project | The project on which the vulnerability was found |
 | `reportType` | VulnerabilityReportType | Type of the security report that found the vulnerability (SAST, DEPENDENCY_SCANNING, CONTAINER_SCANNING, DAST) |
 | `severity` | VulnerabilitySeverity | Severity of the vulnerability (INFO, UNKNOWN, LOW, MEDIUM, HIGH, CRITICAL) |
 | `state` | VulnerabilityState | State of the vulnerability (DETECTED, DISMISSED, RESOLVED, CONFIRMED) |
