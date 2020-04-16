@@ -6,6 +6,7 @@ import EditArea from './edit_area.vue';
 import EditHeader from './edit_header.vue';
 import Toolbar from './publish_toolbar.vue';
 import InvalidContentMessage from './invalid_content_message.vue';
+import SubmitChangesError from './submit_changes_error.vue';
 
 export default {
   components: {
@@ -14,6 +15,7 @@ export default {
     InvalidContentMessage,
     GlSkeletonLoader,
     Toolbar,
+    SubmitChangesError,
   },
   computed: {
     ...mapState([
@@ -24,6 +26,7 @@ export default {
       'isSupportedContent',
       'returnUrl',
       'title',
+      'submitChangesError',
     ]),
     ...mapGetters(['contentChanged']),
   },
@@ -33,7 +36,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['loadContent', 'setContent', 'submitChanges']),
+    ...mapActions(['loadContent', 'setContent', 'submitChanges', 'dismissSubmitChangesError']),
   },
 };
 </script>
@@ -51,6 +54,13 @@ export default {
         </gl-skeleton-loader>
       </div>
       <div v-if="isContentLoaded" class="d-flex flex-grow-1 flex-column">
+        <submit-changes-error
+          v-if="submitChangesError"
+          class="w-75 align-self-center"
+          :error="submitChangesError"
+          @retry="submitChanges"
+          @dismiss="dismissSubmitChangesError"
+        />
         <edit-header class="w-75 align-self-center py-2" :title="title" />
         <edit-area
           class="w-75 h-100 shadow-none align-self-center"

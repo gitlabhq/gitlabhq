@@ -22,12 +22,18 @@ RSpec.shared_examples 'diff discussions API' do |parent_type, noteable_type, id_
       expect(json_response['id']).to eq(diff_note.discussion_id)
       expect(json_response['notes'].first['body']).to eq(diff_note.note)
       expect(json_response['notes'].first['position']).to eq(diff_note.position.to_h.stringify_keys)
+      expect(json_response['notes'].first['line_range']).to eq(nil)
     end
   end
 
   describe "POST /#{parent_type}/:id/#{noteable_type}/:noteable_id/discussions" do
     it "creates a new diff note" do
-      position = diff_note.position.to_h
+      line_range = {
+        "start_line_code" => Gitlab::Git.diff_line_code(diff_note.position.file_path, 1, 1),
+        "end_line_code" => Gitlab::Git.diff_line_code(diff_note.position.file_path, 2, 2)
+      }
+
+      position = diff_note.position.to_h.merge({ line_range: line_range })
 
       post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/discussions", user),
         params: { body: 'hi!', position: position }

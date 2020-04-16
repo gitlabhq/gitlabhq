@@ -13,7 +13,5 @@
 
     %b.append-bottom-default
       = s_('PrometheusService|Manual configuration')
-
-    - unless service.editable?
-      .info-well
-        = s_('PrometheusService|To enable manual configuration, uninstall Prometheus from your clusters')
+    %p
+      = s_('PrometheusService|Select the Active checkbox to override the Auto Configuration with custom settings. If unchecked, Auto Configuration settings are used.')

@@ -40,4 +40,11 @@ describe DiffNotePosition, type: :model do
 
     expect { diff_note_position.save! }.to raise_error(ActiveRecord::RecordNotUnique)
   end
+
+  it 'accepts a line_range attribute' do
+    diff_note_position = build(:diff_note_position)
+
+    expect(diff_note_position).to respond_to(:line_range)
+    expect(diff_note_position).to respond_to(:line_range=)
+  end
 end

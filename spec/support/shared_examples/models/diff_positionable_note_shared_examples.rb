@@ -13,6 +13,7 @@ RSpec.shared_examples 'a valid diff positionable note' do |factory_on_commit|
         new_path: "files/ruby/popen.rb",
         old_line: nil,
         new_line: 14,
+        line_range: nil,
         diff_refs: diff_refs
       )
     end

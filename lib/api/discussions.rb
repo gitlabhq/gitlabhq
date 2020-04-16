@@ -74,6 +74,11 @@ module API
             optional :height, type: Integer, desc: 'Height of the image'
             optional :x, type: Integer, desc: 'X coordinate in the image'
             optional :y, type: Integer, desc: 'Y coordinate in the image'
+
+            optional :line_range, type: Hash, desc: 'Multi-line start and end' do
+              requires :start_line_code, type: String, desc: 'Start line code for multi-line note'
+              requires :end_line_code, type: String, desc: 'End line code for multi-line note'
+            end
           end
         end
         post ":id/#{noteables_path}/:noteable_id/discussions" do

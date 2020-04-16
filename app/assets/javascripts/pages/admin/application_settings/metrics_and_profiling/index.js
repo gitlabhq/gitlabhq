@@ -1,8 +1,3 @@
-import UsagePingPayload from './../usage_ping_payload';
+import setup from 'ee_else_ce/admin/application_settings/setup_metrics_and_profiling';
 
-document.addEventListener('DOMContentLoaded', () => {
-  new UsagePingPayload(
-    document.querySelector('.js-usage-ping-payload-trigger'),
-    document.querySelector('.js-usage-ping-payload'),
-  ).init();
-});
+document.addEventListener('DOMContentLoaded', setup);

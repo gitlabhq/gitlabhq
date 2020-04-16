@@ -424,6 +424,7 @@ export function getDiffPositionByLineCode(diffFiles, useSingleDiffStyle) {
         old_path: file.old_path,
         old_line: line.old_line,
         new_line: line.new_line,
+        line_range: null,
         line_code: line.line_code,
         position_type: 'text',
       };

@@ -2,7 +2,7 @@ import axios from '../../../lib/utils/axios_utils';
 import { __ } from '../../../locale';
 import flash from '../../../flash';
 
-export default class UsagePingPayload {
+export default class PayloadPreviewer {
   constructor(trigger, container) {
     this.trigger = trigger;
     this.container = container;
@@ -38,7 +38,7 @@ export default class UsagePingPayload {
       })
       .catch(() => {
         this.spinner.classList.remove('d-inline-flex');
-        flash(__('Error fetching usage ping data.'));
+        flash(__('Error fetching payload data.'));
       });
   }
 

@@ -34,9 +34,19 @@ FactoryBot.define do
       position_type { 'text' }
       old_line { 10 }
       new_line { 10 }
+      line_range { nil }
 
       trait :added do
         old_line { nil }
+      end
+
+      trait :multi_line do
+        line_range do
+          {
+            start_line_code: Gitlab::Git.diff_line_code(file, 10, 10),
+            end_line_code: Gitlab::Git.diff_line_code(file, 12, 13)
+          }
+        end
       end
     end
 

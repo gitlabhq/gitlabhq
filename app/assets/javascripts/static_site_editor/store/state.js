@@ -14,6 +14,7 @@ const createState = (initialState = {}) => ({
   content: '',
   title: '',
 
+  submitChangesError: '',
   savedContentMeta: null,
 
   ...initialState,

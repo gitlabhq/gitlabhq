@@ -60,7 +60,7 @@ export default {
       <ul>
         <li>
           {{ s__('StaticSiteEditor|You created a new branch:') }}
-          <gl-link ref="branchLink" :href="branch.url">{{ branch.label }}</gl-link>
+          <span ref="branchLink">{{ branch.label }}</span>
         </li>
         <li>
           {{ s__('StaticSiteEditor|You created a merge request:') }}

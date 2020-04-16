@@ -1,0 +1,5 @@
+---
+title: Allow to retry submitting changes when an error occurs
+merge_request: 29434
+author:
+type: changed

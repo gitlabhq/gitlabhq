@@ -11044,8 +11044,20 @@ ALTER TABLE ONLY public.issues
 ALTER TABLE ONLY public.geo_event_log
     ADD CONSTRAINT fk_geo_event_log_on_geo_event_id FOREIGN KEY (geo_event_id) REFERENCES public.geo_events(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY public.path_locks
+    ADD CONSTRAINT fk_path_locks_user_id FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY public.personal_access_tokens
     ADD CONSTRAINT fk_personal_access_tokens_user_id FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.protected_branch_merge_access_levels
+    ADD CONSTRAINT fk_protected_branch_merge_access_levels_user_id FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.protected_branch_push_access_levels
+    ADD CONSTRAINT fk_protected_branch_push_access_levels_user_id FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.protected_tag_create_access_levels
+    ADD CONSTRAINT fk_protected_tag_create_access_levels_user_id FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.approval_merge_request_rules
     ADD CONSTRAINT fk_rails_004ce82224 FOREIGN KEY (merge_request_id) REFERENCES public.merge_requests(id) ON DELETE CASCADE;
@@ -11190,9 +11202,6 @@ ALTER TABLE ONLY public.clusters_applications_runners
 
 ALTER TABLE ONLY public.service_desk_settings
     ADD CONSTRAINT fk_rails_223a296a85 FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY public.protected_tag_create_access_levels
-    ADD CONSTRAINT fk_rails_2349b78b91 FOREIGN KEY (user_id) REFERENCES public.users(id);
 
 ALTER TABLE ONLY public.group_custom_attributes
     ADD CONSTRAINT fk_rails_246e0db83a FOREIGN KEY (group_id) REFERENCES public.namespaces(id) ON DELETE CASCADE;
@@ -11440,9 +11449,6 @@ ALTER TABLE ONLY public.resource_weight_events
 ALTER TABLE ONLY public.approval_project_rules
     ADD CONSTRAINT fk_rails_5fb4dd100b FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY public.protected_branch_merge_access_levels
-    ADD CONSTRAINT fk_rails_5ffb4f3590 FOREIGN KEY (user_id) REFERENCES public.users(id);
-
 ALTER TABLE ONLY public.user_highest_roles
     ADD CONSTRAINT fk_rails_60f6c325a6 FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
@@ -11551,9 +11557,6 @@ ALTER TABLE ONLY public.geo_repositories_changed_events
 ALTER TABLE ONLY public.resource_label_events
     ADD CONSTRAINT fk_rails_75efb0a653 FOREIGN KEY (epic_id) REFERENCES public.epics(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY public.path_locks
-    ADD CONSTRAINT fk_rails_762cdcf942 FOREIGN KEY (user_id) REFERENCES public.users(id);
-
 ALTER TABLE ONLY public.x509_certificates
     ADD CONSTRAINT fk_rails_76479fb5b4 FOREIGN KEY (x509_issuer_id) REFERENCES public.x509_issuers(id) ON DELETE CASCADE;
 
@@ -11628,9 +11631,6 @@ ALTER TABLE ONLY public.vulnerability_feedback
 
 ALTER TABLE ONLY public.approval_merge_request_rules_approved_approvers
     ADD CONSTRAINT fk_rails_8dc94cff4d FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY public.protected_branch_push_access_levels
-    ADD CONSTRAINT fk_rails_8dcb712d65 FOREIGN KEY (user_id) REFERENCES public.users(id);
 
 ALTER TABLE ONLY public.design_user_mentions
     ADD CONSTRAINT fk_rails_8de8c6d632 FOREIGN KEY (note_id) REFERENCES public.notes(id) ON DELETE CASCADE;
@@ -11841,9 +11841,6 @@ ALTER TABLE ONLY public.resource_weight_events
 
 ALTER TABLE ONLY public.design_management_designs
     ADD CONSTRAINT fk_rails_bfe283ec3c FOREIGN KEY (issue_id) REFERENCES public.issues(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY public.u2f_registrations
-    ADD CONSTRAINT fk_rails_bfe6a84544 FOREIGN KEY (user_id) REFERENCES public.users(id);
 
 ALTER TABLE ONLY public.serverless_domain_cluster
     ADD CONSTRAINT fk_rails_c09009dee1 FOREIGN KEY (pages_domain_id) REFERENCES public.pages_domains(id) ON DELETE CASCADE;
@@ -12078,6 +12075,9 @@ ALTER TABLE ONLY public.timelogs
 
 ALTER TABLE ONLY public.timelogs
     ADD CONSTRAINT fk_timelogs_merge_requests_merge_request_id FOREIGN KEY (merge_request_id) REFERENCES public.merge_requests(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.u2f_registrations
+    ADD CONSTRAINT fk_u2f_registrations_user_id FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
 COPY "schema_migrations" (version) FROM STDIN;
 20171230123729
@@ -13161,9 +13161,19 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200406193427
 20200407094005
 20200407094923
+20200407171133
+20200407171417
 20200408110856
 20200408133211
 20200408153842
+20200408154331
+20200408154349
+20200408154411
+20200408154428
+20200408154455
+20200408154533
+20200408154604
+20200408154624
 20200408175424
 20200409211607
 20200415160722

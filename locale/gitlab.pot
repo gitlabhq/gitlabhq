@@ -8222,6 +8222,9 @@ msgstr ""
 msgid "Error fetching network graph."
 msgstr ""
 
+msgid "Error fetching payload data."
+msgstr ""
+
 msgid "Error fetching projects"
 msgstr ""
 
@@ -8229,9 +8232,6 @@ msgid "Error fetching refs"
 msgstr ""
 
 msgid "Error fetching the dependency list. Please check your network connection and try again."
-msgstr ""
-
-msgid "Error fetching usage ping data."
 msgstr ""
 
 msgid "Error loading branch data. Please try again."
@@ -16342,13 +16342,13 @@ msgstr ""
 msgid "PrometheusService|Prometheus is being automatically managed on your clusters"
 msgstr ""
 
+msgid "PrometheusService|Select the Active checkbox to override the Auto Configuration with custom settings. If unchecked, Auto Configuration settings are used."
+msgstr ""
+
 msgid "PrometheusService|These metrics will only be monitored after your first deployment to an environment"
 msgstr ""
 
 msgid "PrometheusService|Time-series monitoring service"
-msgstr ""
-
-msgid "PrometheusService|To enable manual configuration, uninstall Prometheus from your clusters"
 msgstr ""
 
 msgid "PrometheusService|To enable the installation of Prometheus on your clusters, deactivate the manual configuration below"
@@ -19496,6 +19496,9 @@ msgstr ""
 msgid "Static Application Security Testing (SAST)"
 msgstr ""
 
+msgid "StaticSiteEditor|An error occurred while submitting your changes."
+msgstr ""
+
 msgid "StaticSiteEditor|Branch could not be created."
 msgstr ""
 
@@ -21861,6 +21864,9 @@ msgstr ""
 msgid "Try all GitLab has to offer for 30 days."
 msgstr ""
 
+msgid "Try changing or removing filters."
+msgstr ""
+
 msgid "Try to fork again"
 msgstr ""
 
@@ -24114,6 +24120,9 @@ msgstr ""
 msgid "Your request for access has been queued for review."
 msgstr ""
 
+msgid "Your search didn't match any commits."
+msgstr ""
+
 msgid "Your subscription expired!"
 msgstr ""
 
@@ -24234,6 +24243,9 @@ msgid "ciReport|%{linkStartTag}Learn more about Dependency Scanning %{linkEndTag
 msgstr ""
 
 msgid "ciReport|%{linkStartTag}Learn more about SAST %{linkEndTag}"
+msgstr ""
+
+msgid "ciReport|%{linkStartTag}Learn more about Secret Scanning %{linkEndTag}"
 msgstr ""
 
 msgid "ciReport|%{linkStartTag}Learn more about codequality reports %{linkEndTag}"
@@ -24397,6 +24409,12 @@ msgid "ciReport|Resolve with merge request"
 msgstr ""
 
 msgid "ciReport|SAST"
+msgstr ""
+
+msgid "ciReport|Secret scanning"
+msgstr ""
+
+msgid "ciReport|Secret scanning detects secrets and credentials vulnerabilities in your source code."
 msgstr ""
 
 msgid "ciReport|Security scanning"

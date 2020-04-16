@@ -30,5 +30,11 @@ scope format: false do
 
     resources :protected_branches, only: [:index, :show, :create, :update, :destroy, :patch], constraints: { id: Gitlab::PathRegex.git_reference_regex }
     resources :protected_tags, only: [:index, :show, :create, :update, :destroy]
+
+    scope constraints: { id: /[^\0]+/ } do
+      scope controller: :static_site_editor do
+        get '/sse/*id', action: :show, as: :show_sse
+      end
+    end
   end
 end

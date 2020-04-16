@@ -1,0 +1,5 @@
+---
+title: Do not display branch link in saved changes message UI
+merge_request: 29611
+author:
+type: changed

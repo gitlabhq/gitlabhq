@@ -12,11 +12,10 @@
   .col-lg-9
     = form_for(@service, as: :service, url: scoped_integration_path(@service), method: :put, html: { class: 'gl-show-field-errors integration-settings-form js-integration-settings-form', data: { 'can-test' => @service.can_test?, 'test-url' => test_project_service_path(@project, @service) } }) do |form|
       = render 'shared/service_settings', form: form, service: @service
-      - if @service.editable?
-        .footer-block.row-content-block
-          = service_save_button(@service)
-          &nbsp;
-          = link_to _('Cancel'), project_settings_integrations_path(@project), class: 'btn btn-cancel'
+      .footer-block.row-content-block
+        = service_save_button(@service)
+        &nbsp;
+        = link_to _('Cancel'), project_settings_integrations_path(@project), class: 'btn btn-cancel'
 
 - if lookup_context.template_exists?('show', "projects/services/#{@service.to_param}", true)
   %hr

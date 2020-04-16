@@ -1,0 +1,5 @@
+---
+title: Adds Knative and Fluentd as CI/CD managed applications
+merge_request: 29637
+author:
+type: added

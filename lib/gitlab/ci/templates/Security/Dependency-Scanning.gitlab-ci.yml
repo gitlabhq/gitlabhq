@@ -57,6 +57,8 @@ dependency_scanning:
           PIP_EXTRA_INDEX_URL \
           PIP_REQUIREMENTS_FILE \
           MAVEN_CLI_OPTS \
+          GRADLE_CLI_OPTS \
+          SBT_CLI_OPTS \
           BUNDLER_AUDIT_UPDATE_DISABLED \
           BUNDLER_AUDIT_ADVISORY_DB_URL \
           BUNDLER_AUDIT_ADVISORY_DB_REF_NAME \

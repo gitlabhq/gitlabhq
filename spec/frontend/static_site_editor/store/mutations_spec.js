@@ -5,6 +5,7 @@ import {
   sourceContentTitle as title,
   sourceContent as content,
   savedContentMeta,
+  submitChangesError,
 } from '../mock_data';
 
 describe('Static Site Editor Store mutations', () => {
@@ -16,19 +17,21 @@ describe('Static Site Editor Store mutations', () => {
   });
 
   it.each`
-    mutation                         | stateProperty         | payload                 | expectedValue
-    ${types.LOAD_CONTENT}            | ${'isLoadingContent'} | ${undefined}            | ${true}
-    ${types.RECEIVE_CONTENT_SUCCESS} | ${'isLoadingContent'} | ${contentLoadedPayload} | ${false}
-    ${types.RECEIVE_CONTENT_SUCCESS} | ${'isContentLoaded'}  | ${contentLoadedPayload} | ${true}
-    ${types.RECEIVE_CONTENT_SUCCESS} | ${'title'}            | ${contentLoadedPayload} | ${title}
-    ${types.RECEIVE_CONTENT_SUCCESS} | ${'content'}          | ${contentLoadedPayload} | ${content}
-    ${types.RECEIVE_CONTENT_SUCCESS} | ${'originalContent'}  | ${contentLoadedPayload} | ${content}
-    ${types.RECEIVE_CONTENT_ERROR}   | ${'isLoadingContent'} | ${undefined}            | ${false}
-    ${types.SET_CONTENT}             | ${'content'}          | ${content}              | ${content}
-    ${types.SUBMIT_CHANGES}          | ${'isSavingChanges'}  | ${undefined}            | ${true}
-    ${types.SUBMIT_CHANGES_SUCCESS}  | ${'savedContentMeta'} | ${savedContentMeta}     | ${savedContentMeta}
-    ${types.SUBMIT_CHANGES_SUCCESS}  | ${'isSavingChanges'}  | ${savedContentMeta}     | ${false}
-    ${types.SUBMIT_CHANGES_ERROR}    | ${'isSavingChanges'}  | ${undefined}            | ${false}
+    mutation                              | stateProperty           | payload                 | expectedValue
+    ${types.LOAD_CONTENT}                 | ${'isLoadingContent'}   | ${undefined}            | ${true}
+    ${types.RECEIVE_CONTENT_SUCCESS}      | ${'isLoadingContent'}   | ${contentLoadedPayload} | ${false}
+    ${types.RECEIVE_CONTENT_SUCCESS}      | ${'isContentLoaded'}    | ${contentLoadedPayload} | ${true}
+    ${types.RECEIVE_CONTENT_SUCCESS}      | ${'title'}              | ${contentLoadedPayload} | ${title}
+    ${types.RECEIVE_CONTENT_SUCCESS}      | ${'content'}            | ${contentLoadedPayload} | ${content}
+    ${types.RECEIVE_CONTENT_SUCCESS}      | ${'originalContent'}    | ${contentLoadedPayload} | ${content}
+    ${types.RECEIVE_CONTENT_ERROR}        | ${'isLoadingContent'}   | ${undefined}            | ${false}
+    ${types.SET_CONTENT}                  | ${'content'}            | ${content}              | ${content}
+    ${types.SUBMIT_CHANGES}               | ${'isSavingChanges'}    | ${undefined}            | ${true}
+    ${types.SUBMIT_CHANGES_SUCCESS}       | ${'savedContentMeta'}   | ${savedContentMeta}     | ${savedContentMeta}
+    ${types.SUBMIT_CHANGES_SUCCESS}       | ${'isSavingChanges'}    | ${savedContentMeta}     | ${false}
+    ${types.SUBMIT_CHANGES_ERROR}         | ${'isSavingChanges'}    | ${undefined}            | ${false}
+    ${types.SUBMIT_CHANGES_ERROR}         | ${'submitChangesError'} | ${submitChangesError}   | ${submitChangesError}
+    ${types.DISMISS_SUBMIT_CHANGES_ERROR} | ${'submitChangesError'} | ${undefined}            | ${''}
   `(
     '$mutation sets $stateProperty to $expectedValue',
     ({ mutation, stateProperty, payload, expectedValue }) => {

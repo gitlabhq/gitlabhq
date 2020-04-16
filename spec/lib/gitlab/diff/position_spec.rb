@@ -28,6 +28,7 @@ describe Gitlab::Diff::Position do
       new_path: "files/ruby/popen.rb",
       old_line: nil,
       new_line: 14,
+      line_range: nil,
       base_sha: nil,
       head_sha: nil,
       start_sha: nil,

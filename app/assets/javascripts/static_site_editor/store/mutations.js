@@ -19,13 +19,18 @@ export default {
   },
   [types.SUBMIT_CHANGES](state) {
     state.isSavingChanges = true;
+    state.submitChangesError = '';
   },
   [types.SUBMIT_CHANGES_SUCCESS](state, meta) {
     state.savedContentMeta = meta;
     state.isSavingChanges = false;
     state.originalContent = state.content;
   },
-  [types.SUBMIT_CHANGES_ERROR](state) {
+  [types.SUBMIT_CHANGES_ERROR](state, error) {
+    state.submitChangesError = error;
     state.isSavingChanges = false;
+  },
+  [types.DISMISS_SUBMIT_CHANGES_ERROR](state) {
+    state.submitChangesError = '';
   },
 };

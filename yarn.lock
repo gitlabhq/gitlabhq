@@ -806,10 +806,10 @@
     vue-loader "^15.4.2"
     vue-runtime-helpers "^1.1.2"
 
-"@gitlab/visual-review-tools@1.5.1":
-  version "1.5.1"
-  resolved "https://registry.yarnpkg.com/@gitlab/visual-review-tools/-/visual-review-tools-1.5.1.tgz#2552927cd7a376f1f06ef3293a69fe2ffcdddb52"
-  integrity sha512-8d6xgK4TsLA5gucd78jzaMyginAMJ8cbu/6ghUGws84zzAEsyJsMTstyt/fA5l4toQXVxtOh90BvDzwxSjZ6hQ==
+"@gitlab/visual-review-tools@1.6.1":
+  version "1.6.1"
+  resolved "https://registry.yarnpkg.com/@gitlab/visual-review-tools/-/visual-review-tools-1.6.1.tgz#0d8f3ff9f51b05f7c80b9a107727703d48997e4e"
+  integrity sha512-vY8K1igwZFoEOmU0h4E7XTLlilsQ4ylPr27O01UsSe6ZTKi6oEMREsRAEpNIUgRlxUARCsf+Opp4pgSFzFkFcw==
 
 "@gitlab/vue-toasted@^1.3.0":
   version "1.3.0"
