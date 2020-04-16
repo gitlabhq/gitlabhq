@@ -1,5 +1,0 @@
----
-title: Fix incorrect regex used in FileUploader#extract_dynamic_path
-merge_request: 28683
-author:
-type: fixed

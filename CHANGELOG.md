@@ -2,6 +2,17 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 12.9.4 (2020-04-16)
+
+### Fixed (5 changes, 1 of them is from the community)
+
+- Fix not working File upload from Project overview page. !26828 (Gilang Gumilar)
+- Fix storage rollback regression caused by previous refactor. !28496
+- Fix incorrect regex used in FileUploader#extract_dynamic_path. !28683
+- Fully qualify id columns for keyset pagination (Projects API). !29026
+- Fix Slack notifications when upgrading from old GitLab versions. !29111
+
+
 ## 12.9.3 (2020-04-14)
 
 ### Security (3 changes)
