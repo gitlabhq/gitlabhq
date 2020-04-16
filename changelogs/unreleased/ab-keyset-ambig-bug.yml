@@ -1,5 +1,0 @@
----
-title: Fully qualify id columns for keyset pagination (Projects API)
-merge_request: 29026
-author:
-type: fixed

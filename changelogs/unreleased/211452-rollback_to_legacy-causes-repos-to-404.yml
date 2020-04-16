@@ -1,5 +1,0 @@
----
-title: Fix storage rollback regression caused by previous refactor
-merge_request: 28496
-author:
-type: fixed
