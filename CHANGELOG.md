@@ -4,6 +4,7 @@ entry.
 
 ## 12.9.4 (2020-04-16)
 
+- No changes.
 ### Fixed (5 changes, 1 of them is from the community)
 
 - Fix not working File upload from Project overview page. !26828 (Gilang Gumilar)
