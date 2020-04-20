@@ -2,7 +2,7 @@
 
 ##
 # We will disable `ref` and `sha` attributes in `Ci::Build` in the future
-# and remove this module in favor of Ci::PipelineDelegator.
+# and remove this module in favor of Ci::Processable.
 module Ci
   module HasRef
     extend ActiveSupport::Concern

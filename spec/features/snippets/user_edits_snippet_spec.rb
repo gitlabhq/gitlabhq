@@ -14,6 +14,7 @@ describe 'User edits snippet', :js do
 
   before do
     stub_feature_flags(snippets_vue: false)
+    stub_feature_flags(snippets_edit_vue: false)
     stub_feature_flags(version_snippets: version_snippet_enabled)
 
     sign_in(user)

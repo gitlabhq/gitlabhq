@@ -2,66 +2,13 @@ import Vue from 'vue';
 import { createLocalVue } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import Dashboard from '~/monitoring/components/dashboard.vue';
-import * as types from '~/monitoring/stores/mutation_types';
 import { createStore } from '~/monitoring/stores';
 import axios from '~/lib/utils/axios_utils';
-import {
-  metricsDashboardPayload,
-  mockedEmptyResult,
-  mockedQueryResultPayload,
-  mockedQueryResultPayloadCoresTotal,
-  mockApiEndpoint,
-  environmentData,
-} from '../mock_data';
+import { mockApiEndpoint, propsData } from '../mock_data';
+import { metricsDashboardPayload } from '../fixture_data';
+import { setupStoreWithData } from '../store_utils';
 
 const localVue = createLocalVue();
-const propsData = {
-  hasMetrics: false,
-  documentationPath: '/path/to/docs',
-  settingsPath: '/path/to/settings',
-  clustersPath: '/path/to/clusters',
-  tagsPath: '/path/to/tags',
-  projectPath: '/path/to/project',
-  defaultBranch: 'master',
-  metricsEndpoint: mockApiEndpoint,
-  deploymentsEndpoint: null,
-  emptyGettingStartedSvgPath: '/path/to/getting-started.svg',
-  emptyLoadingSvgPath: '/path/to/loading.svg',
-  emptyNoDataSvgPath: '/path/to/no-data.svg',
-  emptyNoDataSmallSvgPath: '/path/to/no-data-small.svg',
-  emptyUnableToConnectSvgPath: '/path/to/unable-to-connect.svg',
-  currentEnvironmentName: 'production',
-  customMetricsAvailable: false,
-  customMetricsPath: '',
-  validateQueryPath: '',
-};
-
-function setupComponentStore(component) {
-  // Load 2 panel groups
-  component.$store.commit(
-    `monitoringDashboard/${types.RECEIVE_METRICS_DASHBOARD_SUCCESS}`,
-    metricsDashboardPayload,
-  );
-
-  // Load 3 panels to the dashboard, one with an empty result
-  component.$store.commit(
-    `monitoringDashboard/${types.RECEIVE_METRIC_RESULT_SUCCESS}`,
-    mockedEmptyResult,
-  );
-  component.$store.commit(
-    `monitoringDashboard/${types.RECEIVE_METRIC_RESULT_SUCCESS}`,
-    mockedQueryResultPayload,
-  );
-  component.$store.commit(
-    `monitoringDashboard/${types.RECEIVE_METRIC_RESULT_SUCCESS}`,
-    mockedQueryResultPayloadCoresTotal,
-  );
-
-  component.$store.commit(
-    `monitoringDashboard/${types.RECEIVE_ENVIRONMENTS_DATA_SUCCESS}`,
-    environmentData,
-  );
-}
 
 describe('Dashboard', () => {
   let DashboardComponent;
@@ -109,7 +56,7 @@ describe('Dashboard', () => {
         store,
       });
 
-      setupComponentStore(component);
+      setupStoreWithData(component.$store);
 
       return Vue.nextTick().then(() => {
         [promPanel] = component.$el.querySelectorAll('.prometheus-panel');

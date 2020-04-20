@@ -21,6 +21,9 @@ resources :commit, only: [:show], constraints: { id: /\h{7,40}/ } do
   end
 end
 
+# NOTE: Add new routes to repository_scoped.rb instead (see
+# https://docs.gitlab.com/ee/development/routing.html#project-routes).
+#
 # Don't use format parameter as file extension (old 3.0.x behavior)
 # See http://guides.rubyonrails.org/routing.html#route-globbing-and-wildcard-segments
 scope format: false do

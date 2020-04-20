@@ -53,6 +53,10 @@ export default {
     text: s__('ProjectTemplates|Pages/Hexo'),
     icon: '.template-option .icon-hexo',
   },
+  sse_middleman: {
+    text: s__('ProjectTemplates|Static Site Editor/Middleman'),
+    icon: '.template-option .icon-sse_middleman',
+  },
   nfhugo: {
     text: s__('ProjectTemplates|Netlify/Hugo'),
     icon: '.template-option .icon-nfhugo',

@@ -136,6 +136,7 @@ RSpec.configure do |config|
   config.include ExpectRequestWithStatus, type: :request
   config.include IdempotentWorkerHelper, type: :worker
   config.include RailsHelpers
+  config.include SidekiqMiddleware
 
   if ENV['CI'] || ENV['RETRIES']
     # This includes the first try, i.e. tests will be run 4 times before failing.
@@ -297,6 +298,22 @@ RSpec.configure do |config|
     # Wrap each example in it's own context to make sure the contexts don't
     # leak
     Labkit::Context.with_context { example.run }
+  end
+
+  config.around do |example|
+    with_sidekiq_server_middleware do |chain|
+      Gitlab::SidekiqMiddleware.server_configurator(
+        metrics: false, # The metrics don't go anywhere in tests
+        arguments_logger: false, # We're not logging the regular messages for inline jobs
+        memory_killer: false, # This is not a thing we want to do inline in tests
+        # Don't enable this if the request store is active in the spec itself
+        # This needs to run within the `request_store` around block defined above
+        request_store: !RequestStore.active?
+      ).call(chain)
+      chain.add DisableQueryLimit
+
+      example.run
+    end
   end
 
   config.after do

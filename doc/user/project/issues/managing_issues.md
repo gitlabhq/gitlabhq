@@ -7,7 +7,7 @@ you can do with issues.
 
 ## Create a new Issue
 
-When you create a new issue, you'll be prompted to fill in the [data and fields of the issue](issue_data_and_actions.md#parts-of-an-issue), as illustrated below. If you know
+When you create a new issue, you'll be prompted to fill in the [data and fields of the issue](issue_data_and_actions.md), as illustrated below. If you know
 the values you want to assign to an issue, you can use the [Quick actions](../quick_actions.md)
 feature to input values, instead of selecting them from lists.
 

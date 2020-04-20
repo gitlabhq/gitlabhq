@@ -47,5 +47,16 @@
     .col-sm-10
       = f.text_field :tag_list, value: runner.tag_list.sort.join(', '), class: 'form-control'
       .form-text.text-muted= _('You can set up jobs to only use Runners with specific tags. Separate tags with commas.')
+  - if local_assigns[:in_gitlab_com_admin_context]
+    .form-group.row
+      = label_tag :public_projects_minutes_cost_factor, class: 'col-form-label col-sm-2' do
+        = _('Public projects Minutes cost factor')
+      .col-sm-10
+        = f.text_field :public_projects_minutes_cost_factor, class: 'form-control'
+    .form-group.row
+      = label_tag :private_projects_minutes_cost_factor, class: 'col-form-label col-sm-2' do
+        = _('Private projects Minutes cost factor')
+      .col-sm-10
+        = f.text_field :private_projects_minutes_cost_factor, class: 'form-control'
   .form-actions
     = f.submit _('Save changes'), class: 'btn btn-success'

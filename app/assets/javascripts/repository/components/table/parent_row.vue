@@ -28,7 +28,7 @@ export default {
       return splitArray.map(p => encodeURIComponent(p)).join('/');
     },
     parentRoute() {
-      return { path: `/-/tree/${escape(this.commitRef)}/${this.parentPath}` };
+      return { path: `/-/tree/${encodeURIComponent(this.commitRef)}/${this.parentPath}` };
     },
   },
   methods: {

@@ -13,9 +13,9 @@ class ResourceMilestoneEvent < ResourceEvent
   validate :exactly_one_issuable
 
   enum action: {
-         add: 1,
-         remove: 2
-       }
+    add: 1,
+    remove: 2
+  }
 
   # state is used for issue and merge request states.
   enum state: Issue.available_states.merge(MergeRequest.available_states)

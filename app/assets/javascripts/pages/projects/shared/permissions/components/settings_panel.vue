@@ -3,6 +3,7 @@ import { GlSprintf, GlLink } from '@gitlab/ui';
 
 import settingsMixin from 'ee_else_ce/pages/projects/shared/permissions/mixins/settings_pannel_mixin';
 import { s__ } from '~/locale';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import projectFeatureSetting from './project_feature_setting.vue';
 import projectFeatureToggle from '~/vue_shared/components/toggle_button.vue';
 import projectSettingRow from './project_setting_row.vue';
@@ -24,7 +25,7 @@ export default {
     GlSprintf,
     GlLink,
   },
-  mixins: [settingsMixin],
+  mixins: [settingsMixin, glFeatureFlagsMixin()],
 
   props: {
     currentSettings: {
@@ -116,6 +117,8 @@ export default {
     const defaults = {
       visibilityOptions,
       visibilityLevel: visibilityOptions.PUBLIC,
+      // TODO: Change all of these to use the visibilityOptions constants
+      // https://gitlab.com/gitlab-org/gitlab/-/issues/214667
       issuesAccessLevel: 20,
       repositoryAccessLevel: 20,
       forkingAccessLevel: 20,
@@ -124,11 +127,14 @@ export default {
       wikiAccessLevel: 20,
       snippetsAccessLevel: 20,
       pagesAccessLevel: 20,
+      metricsAccessLevel: visibilityOptions.PRIVATE,
       containerRegistryEnabled: true,
       lfsEnabled: true,
       requestAccessEnabled: true,
       highlightChangesClass: false,
       emailsDisabled: false,
+      featureAccessLevelEveryone,
+      featureAccessLevelMembers,
     };
 
     return { ...defaults, ...this.currentSettings };
@@ -188,6 +194,10 @@ export default {
       return s__(
         'ProjectSettings|View and edit files in this project. Non-project members will only have read access',
       );
+    },
+
+    metricsDashboardVisibilitySwitchingAvailable() {
+      return this.glFeatures.metricsDashboardVisibilitySwitchingAvailable;
     },
   },
 
@@ -461,6 +471,38 @@ export default {
           :options="pagesFeatureAccessLevelOptions"
           name="project[project_feature_attributes][pages_access_level]"
         />
+      </project-setting-row>
+      <project-setting-row
+        v-if="metricsDashboardVisibilitySwitchingAvailable"
+        ref="metrics-visibility-settings"
+        :label="__('Metrics Dashboard')"
+        :help-text="
+          s__(
+            'ProjectSettings|With Metrics Dashboard you can visualize this project performance metrics',
+          )
+        "
+      >
+        <div class="project-feature-controls">
+          <div class="select-wrapper">
+            <select
+              v-model="metricsAccessLevel"
+              name="project[project_feature_attributes][metrics_dashboard_access_level]"
+              class="form-control select-control"
+            >
+              <option
+                :value="visibilityOptions.PRIVATE"
+                :disabled="!visibilityAllowed(visibilityOptions.PRIVATE)"
+                >{{ featureAccessLevelMembers[1] }}</option
+              >
+              <option
+                :value="visibilityOptions.PUBLIC"
+                :disabled="!visibilityAllowed(visibilityOptions.PUBLIC)"
+                >{{ featureAccessLevelEveryone[1] }}</option
+              >
+            </select>
+            <i aria-hidden="true" data-hidden="true" class="fa fa-chevron-down"></i>
+          </div>
+        </div>
       </project-setting-row>
     </div>
     <project-setting-row v-if="canDisableEmails" ref="email-settings" class="mb-3">

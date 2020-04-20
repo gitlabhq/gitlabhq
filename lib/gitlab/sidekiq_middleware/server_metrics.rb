@@ -71,7 +71,7 @@ module Gitlab
       end
 
       def get_gitaly_time(job)
-        job.fetch(:gitaly_duration, 0) / 1000.0
+        job.fetch(:gitaly_duration_s, 0)
       end
     end
   end

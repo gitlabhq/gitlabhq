@@ -8,6 +8,7 @@ import FilteredSearchVisualTokens from '~/filtered_search/filtered_search_visual
 import FilteredSearchDropdownManager from '~/filtered_search/filtered_search_dropdown_manager';
 import FilteredSearchManager from '~/filtered_search/filtered_search_manager';
 import FilteredSearchSpecHelper from '../helpers/filtered_search_spec_helper';
+import { BACKSPACE_KEY_CODE, DELETE_KEY_CODE } from '~/lib/utils/keycodes';
 
 describe('Filtered Search Manager', function() {
   let input;
@@ -17,16 +18,35 @@ describe('Filtered Search Manager', function() {
   const placeholder = 'Search or filter results...';
 
   function dispatchBackspaceEvent(element, eventType) {
-    const backspaceKey = 8;
     const event = new Event(eventType);
-    event.keyCode = backspaceKey;
+    event.keyCode = BACKSPACE_KEY_CODE;
     element.dispatchEvent(event);
   }
 
   function dispatchDeleteEvent(element, eventType) {
-    const deleteKey = 46;
     const event = new Event(eventType);
-    event.keyCode = deleteKey;
+    event.keyCode = DELETE_KEY_CODE;
+    element.dispatchEvent(event);
+  }
+
+  function dispatchAltBackspaceEvent(element, eventType) {
+    const event = new Event(eventType);
+    event.altKey = true;
+    event.keyCode = BACKSPACE_KEY_CODE;
+    element.dispatchEvent(event);
+  }
+
+  function dispatchCtrlBackspaceEvent(element, eventType) {
+    const event = new Event(eventType);
+    event.ctrlKey = true;
+    event.keyCode = BACKSPACE_KEY_CODE;
+    element.dispatchEvent(event);
+  }
+
+  function dispatchMetaBackspaceEvent(element, eventType) {
+    const event = new Event(eventType);
+    event.metaKey = true;
+    event.keyCode = BACKSPACE_KEY_CODE;
     element.dispatchEvent(event);
   }
 
@@ -296,6 +316,80 @@ describe('Filtered Search Manager', function() {
       expect(FilteredSearchVisualTokens.removeLastTokenPartial).not.toHaveBeenCalled();
       expect(FilteredSearchVisualTokens.getLastTokenPartial).not.toHaveBeenCalled();
       expect(input.value).toEqual('t');
+    });
+  });
+
+  describe('checkForAltOrCtrlBackspace', () => {
+    beforeEach(() => {
+      initializeManager();
+      spyOn(FilteredSearchVisualTokens, 'removeLastTokenPartial').and.callThrough();
+    });
+
+    describe('tokens and no input', () => {
+      beforeEach(() => {
+        tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(
+          FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '=', '~bug'),
+        );
+      });
+
+      it('removes last token via alt-backspace', () => {
+        dispatchAltBackspaceEvent(input, 'keydown');
+
+        expect(FilteredSearchVisualTokens.removeLastTokenPartial).toHaveBeenCalled();
+      });
+
+      it('removes last token via ctrl-backspace', () => {
+        dispatchCtrlBackspaceEvent(input, 'keydown');
+
+        expect(FilteredSearchVisualTokens.removeLastTokenPartial).toHaveBeenCalled();
+      });
+    });
+
+    describe('tokens and input', () => {
+      beforeEach(() => {
+        tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(
+          FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '=', '~bug'),
+        );
+      });
+
+      it('does not remove token or change input via alt-backspace when there is existing input', () => {
+        input = manager.filteredSearchInput;
+        input.value = 'text';
+        dispatchAltBackspaceEvent(input, 'keydown');
+
+        expect(FilteredSearchVisualTokens.removeLastTokenPartial).not.toHaveBeenCalled();
+        expect(input.value).toEqual('text');
+      });
+
+      it('does not remove token or change input via ctrl-backspace when there is existing input', () => {
+        input = manager.filteredSearchInput;
+        input.value = 'text';
+        dispatchCtrlBackspaceEvent(input, 'keydown');
+
+        expect(FilteredSearchVisualTokens.removeLastTokenPartial).not.toHaveBeenCalled();
+        expect(input.value).toEqual('text');
+      });
+    });
+  });
+
+  describe('checkForMetaBackspace', () => {
+    beforeEach(() => {
+      initializeManager();
+    });
+
+    beforeEach(() => {
+      tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(
+        FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '=', '~bug'),
+      );
+    });
+
+    it('removes all tokens and input', () => {
+      spyOn(FilteredSearchManager.prototype, 'clearSearch').and.callThrough();
+      dispatchMetaBackspaceEvent(input, 'keydown');
+
+      expect(manager.clearSearch).toHaveBeenCalled();
+      expect(manager.filteredSearchInput.value).toEqual('');
+      expect(DropdownUtils.getSearchQuery()).toEqual('');
     });
   });
 

@@ -17,8 +17,6 @@ describe Ci::Bridge do
     { trigger: { project: 'my/project', branch: 'master' } }
   end
 
-  it { is_expected.to include_module(Ci::PipelineDelegator) }
-
   it 'has many sourced pipelines' do
     expect(bridge).to have_many(:sourced_pipelines)
   end

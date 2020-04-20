@@ -5,15 +5,15 @@ require 'spec_helper'
 describe Terraform::StateUploader do
   subject { terraform_state.file }
 
-  let(:terraform_state) { create(:terraform_state, file: fixture_file_upload('spec/fixtures/terraform/terraform.tfstate')) }
+  let(:terraform_state) { create(:terraform_state, :with_file) }
 
   before do
     stub_terraform_state_object_storage
   end
 
   describe '#filename' do
-    it 'contains the ID of the terraform state record' do
-      expect(subject.filename).to include(terraform_state.id.to_s)
+    it 'contains the UUID of the terraform state record' do
+      expect(subject.filename).to include(terraform_state.uuid)
     end
   end
 

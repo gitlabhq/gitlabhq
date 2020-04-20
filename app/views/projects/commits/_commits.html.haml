@@ -4,11 +4,12 @@
 
 - commits = @commits
 - hidden = @hidden_commit_count
+- commits_count = @commits.size
 
 - commits.chunk { |c| c.committed_date.in_time_zone.to_date }.each do |day, commits|
   %li.commit-header.js-commit-header{ data: { day: day } }
     %span.day= l(day, format: '%d %b, %Y')
-    %span.commits-count= n_("%d commit", "%d commits", commits.count) % commits.count
+    %span.commits-count= n_("%d commit", "%d commits", commits_count) % commits_count
 
   %li.commits-row{ data: { day: day } }
     %ul.content-list.commit-list.flex-list
@@ -17,3 +18,9 @@
 - if hidden > 0
   %li.alert.alert-warning
     = n_('%s additional commit has been omitted to prevent performance issues.', '%s additional commits have been omitted to prevent performance issues.', hidden) % number_with_delimiter(hidden)
+
+- if commits_count == 0
+  .mt-4.text-center
+    .bold
+      = _('Your search didn\'t match any commits.')
+    = _('Try changing or removing filters.')

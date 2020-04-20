@@ -53,6 +53,7 @@ class JiraImportState < ApplicationRecord
     before_transition any => :finished do |state, _|
       InternalId.flush_records!(project: state.project)
       state.project.update_project_counter_caches
+      state.store_issue_counts
     end
 
     after_transition any => :finished do |state, _|
@@ -79,5 +80,21 @@ class JiraImportState < ApplicationRecord
 
   def non_initial?
     !initial?
+  end
+
+  def store_issue_counts
+    import_label_id = Gitlab::JiraImport.get_import_label_id(project.id)
+
+    failed_to_import_count = Gitlab::JiraImport.issue_failures(project.id)
+    successfully_imported_count = project.issues.with_label_ids(import_label_id).count
+    total_issue_count = successfully_imported_count + failed_to_import_count
+
+    update(
+      {
+        failed_to_import_count: failed_to_import_count,
+        imported_issues_count: successfully_imported_count,
+        total_issue_count: total_issue_count
+      }
+    )
   end
 end

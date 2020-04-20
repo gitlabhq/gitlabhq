@@ -24,24 +24,6 @@ module Gitlab
           @rbac
         end
 
-        def service_account_resource
-          return unless rbac?
-
-          Gitlab::Kubernetes::ServiceAccount.new(service_account_name, namespace).generate
-        end
-
-        def cluster_role_binding_resource
-          return unless rbac?
-
-          subjects = [{ kind: 'ServiceAccount', name: service_account_name, namespace: namespace }]
-
-          Gitlab::Kubernetes::ClusterRoleBinding.new(
-            cluster_role_binding_name,
-            cluster_role_name,
-            subjects
-          ).generate
-        end
-
         private
 
         def init_helm_command
@@ -68,14 +50,6 @@ module Gitlab
           return [] unless rbac?
 
           ['--service-account', service_account_name]
-        end
-
-        def cluster_role_binding_name
-          Gitlab::Kubernetes::Helm::CLUSTER_ROLE_BINDING
-        end
-
-        def cluster_role_name
-          Gitlab::Kubernetes::Helm::CLUSTER_ROLE
         end
       end
     end

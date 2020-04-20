@@ -1,34 +1,23 @@
-import { shallowMount, createLocalVue, mount } from '@vue/test-utils';
-import { GlDropdownItem, GlDeprecatedButton } from '@gitlab/ui';
+import { shallowMount, mount } from '@vue/test-utils';
+import Tracking from '~/tracking';
+import { GlModal, GlDropdownItem, GlDeprecatedButton } from '@gitlab/ui';
 import VueDraggable from 'vuedraggable';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import statusCodes from '~/lib/utils/http_status';
 import { metricStates } from '~/monitoring/constants';
 import Dashboard from '~/monitoring/components/dashboard.vue';
-import { getJSONFixture } from '../../../../spec/frontend/helpers/fixtures';
 
 import DateTimePicker from '~/vue_shared/components/date_time_picker/date_time_picker.vue';
+import CustomMetricsFormFields from '~/custom_metrics/components/custom_metrics_form_fields.vue';
 import DashboardsDropdown from '~/monitoring/components/dashboards_dropdown.vue';
 import GroupEmptyState from '~/monitoring/components/group_empty_state.vue';
 import PanelType from 'ee_else_ce/monitoring/components/panel_type.vue';
 import { createStore } from '~/monitoring/stores';
 import * as types from '~/monitoring/stores/mutation_types';
-import { setupComponentStore, propsData } from '../init_utils';
-import {
-  metricsDashboardViewModel,
-  environmentData,
-  dashboardGitResponse,
-  mockedQueryResultFixture,
-} from '../mock_data';
-
-const localVue = createLocalVue();
-const expectedPanelCount = 4;
-
-const metricsDashboardFixture = getJSONFixture(
-  'metrics_dashboard/environment_metrics_dashboard.json',
-);
-const metricsDashboardPayload = metricsDashboardFixture.dashboard;
+import { setupStoreWithDashboard, setMetricResult, setupStoreWithData } from '../store_utils';
+import { environmentData, dashboardGitResponse, propsData } from '../mock_data';
+import { metricsDashboardViewModel, metricsDashboardPanelCount } from '../fixture_data';
 
 describe('Dashboard', () => {
   let store;
@@ -43,7 +32,6 @@ describe('Dashboard', () => {
 
   const createShallowWrapper = (props = {}, options = {}) => {
     wrapper = shallowMount(Dashboard, {
-      localVue,
       propsData: { ...propsData, ...props },
       methods: {
         fetchData: jest.fn(),
@@ -55,7 +43,6 @@ describe('Dashboard', () => {
 
   const createMountedWrapper = (props = {}, options = {}) => {
     wrapper = mount(Dashboard, {
-      localVue,
       propsData: { ...propsData, ...props },
       methods: {
         fetchData: jest.fn(),
@@ -144,7 +131,7 @@ describe('Dashboard', () => {
         { stubs: ['graph-group', 'panel-type'] },
       );
 
-      setupComponentStore(wrapper);
+      setupStoreWithData(wrapper.vm.$store);
 
       return wrapper.vm.$nextTick().then(() => {
         expect(wrapper.vm.showEmptyState).toEqual(false);
@@ -172,7 +159,7 @@ describe('Dashboard', () => {
     beforeEach(() => {
       createMountedWrapper({ hasMetrics: true }, { stubs: ['graph-group', 'panel-type'] });
 
-      setupComponentStore(wrapper);
+      setupStoreWithData(wrapper.vm.$store);
 
       return wrapper.vm.$nextTick();
     });
@@ -201,14 +188,7 @@ describe('Dashboard', () => {
   it('hides the environments dropdown list when there is no environments', () => {
     createMountedWrapper({ hasMetrics: true }, { stubs: ['graph-group', 'panel-type'] });
 
-    wrapper.vm.$store.commit(
-      `monitoringDashboard/${types.RECEIVE_METRICS_DASHBOARD_SUCCESS}`,
-      metricsDashboardPayload,
-    );
-    wrapper.vm.$store.commit(
-      `monitoringDashboard/${types.RECEIVE_METRIC_RESULT_SUCCESS}`,
-      mockedQueryResultFixture,
-    );
+    setupStoreWithDashboard(wrapper.vm.$store);
 
     return wrapper.vm.$nextTick().then(() => {
       expect(findAllEnvironmentsDropdownItems()).toHaveLength(0);
@@ -218,7 +198,7 @@ describe('Dashboard', () => {
   it('renders the datetimepicker dropdown', () => {
     createMountedWrapper({ hasMetrics: true }, { stubs: ['graph-group', 'panel-type'] });
 
-    setupComponentStore(wrapper);
+    setupStoreWithData(wrapper.vm.$store);
 
     return wrapper.vm.$nextTick().then(() => {
       expect(wrapper.find(DateTimePicker).exists()).toBe(true);
@@ -228,7 +208,7 @@ describe('Dashboard', () => {
   it('renders the refresh dashboard button', () => {
     createMountedWrapper({ hasMetrics: true }, { stubs: ['graph-group', 'panel-type'] });
 
-    setupComponentStore(wrapper);
+    setupStoreWithData(wrapper.vm.$store);
 
     return wrapper.vm.$nextTick().then(() => {
       const refreshBtn = wrapper.findAll({ ref: 'refreshDashboardBtn' });
@@ -241,7 +221,11 @@ describe('Dashboard', () => {
   describe('when one of the metrics is missing', () => {
     beforeEach(() => {
       createShallowWrapper({ hasMetrics: true });
-      setupComponentStore(wrapper);
+
+      const { $store } = wrapper.vm;
+
+      setupStoreWithDashboard($store);
+      setMetricResult({ $store, result: [], panel: 2 });
 
       return wrapper.vm.$nextTick();
     });
@@ -273,7 +257,7 @@ describe('Dashboard', () => {
         },
       );
 
-      setupComponentStore(wrapper);
+      setupStoreWithData(wrapper.vm.$store);
 
       return wrapper.vm.$nextTick();
     });
@@ -348,14 +332,14 @@ describe('Dashboard', () => {
     beforeEach(() => {
       createShallowWrapper({ hasMetrics: true });
 
-      setupComponentStore(wrapper);
+      setupStoreWithData(wrapper.vm.$store);
 
       return wrapper.vm.$nextTick();
     });
 
     it('wraps vuedraggable', () => {
       expect(findDraggablePanels().exists()).toBe(true);
-      expect(findDraggablePanels().length).toEqual(expectedPanelCount);
+      expect(findDraggablePanels().length).toEqual(metricsDashboardPanelCount);
     });
 
     it('is disabled by default', () => {
@@ -411,11 +395,11 @@ describe('Dashboard', () => {
         it('shows a remove button, which removes a panel', () => {
           expect(findFirstDraggableRemoveButton().isEmpty()).toBe(false);
 
-          expect(findDraggablePanels().length).toEqual(expectedPanelCount);
+          expect(findDraggablePanels().length).toEqual(metricsDashboardPanelCount);
           findFirstDraggableRemoveButton().trigger('click');
 
           return wrapper.vm.$nextTick(() => {
-            expect(findDraggablePanels().length).toEqual(expectedPanelCount - 1);
+            expect(findDraggablePanels().length).toEqual(metricsDashboardPanelCount - 1);
           });
         });
 
@@ -534,7 +518,7 @@ describe('Dashboard', () => {
     beforeEach(() => {
       createShallowWrapper({ hasMetrics: true, currentDashboard });
 
-      setupComponentStore(wrapper);
+      setupStoreWithData(wrapper.vm.$store);
 
       return wrapper.vm.$nextTick();
     });
@@ -561,6 +545,76 @@ describe('Dashboard', () => {
       return wrapper.vm.$nextTick(() => {
         expect(getClipboardTextAt(0)).not.toContain(`dashboard=`);
         expect(getClipboardTextAt(0)).toContain(`y_label=`);
+      });
+    });
+  });
+
+  describe('add custom metrics', () => {
+    const findAddMetricButton = () => wrapper.vm.$refs.addMetricBtn;
+    describe('when not available', () => {
+      beforeEach(() => {
+        createShallowWrapper({
+          hasMetrics: true,
+          customMetricsPath: '/endpoint',
+        });
+      });
+      it('does not render add button on the dashboard', () => {
+        expect(findAddMetricButton()).toBeUndefined();
+      });
+    });
+
+    describe('when available', () => {
+      let origPage;
+      beforeEach(done => {
+        jest.spyOn(Tracking, 'event').mockReturnValue();
+        createShallowWrapper({
+          hasMetrics: true,
+          customMetricsPath: '/endpoint',
+          customMetricsAvailable: true,
+        });
+        setupStoreWithData(wrapper.vm.$store);
+
+        origPage = document.body.dataset.page;
+        document.body.dataset.page = 'projects:environments:metrics';
+
+        wrapper.vm.$nextTick(done);
+      });
+      afterEach(() => {
+        document.body.dataset.page = origPage;
+      });
+
+      it('renders add button on the dashboard', () => {
+        expect(findAddMetricButton()).toBeDefined();
+      });
+
+      it('uses modal for custom metrics form', () => {
+        expect(wrapper.find(GlModal).exists()).toBe(true);
+        expect(wrapper.find(GlModal).attributes().modalid).toBe('add-metric');
+      });
+      it('adding new metric is tracked', done => {
+        const submitButton = wrapper.vm.$refs.submitCustomMetricsFormBtn;
+        wrapper.setData({
+          formIsValid: true,
+        });
+        wrapper.vm.$nextTick(() => {
+          submitButton.$el.click();
+          wrapper.vm.$nextTick(() => {
+            expect(Tracking.event).toHaveBeenCalledWith(
+              document.body.dataset.page,
+              'click_button',
+              {
+                label: 'add_new_metric',
+                property: 'modal',
+                value: undefined,
+              },
+            );
+            done();
+          });
+        });
+      });
+
+      it('renders custom metrics form fields', () => {
+        expect(wrapper.find(CustomMetricsFormFields).exists()).toBe(true);
       });
     });
   });

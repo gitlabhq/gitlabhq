@@ -737,3 +737,5 @@ module ProjectsHelper
       can?(current_user, :destroy_container_image, project)
   end
 end
+
+ProjectsHelper.prepend_if_ee('EE::ProjectsHelper')

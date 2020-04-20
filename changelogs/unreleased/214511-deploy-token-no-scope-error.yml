@@ -1,0 +1,5 @@
+---
+title: Fix Deploy Token creation when no scope selected
+merge_request: 29614
+author:
+type: fixed

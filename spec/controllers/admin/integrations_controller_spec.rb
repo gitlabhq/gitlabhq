@@ -49,11 +49,12 @@ describe Admin::IntegrationsController do
     end
 
     context 'invalid params' do
-      let(:url) { 'https://jira.localhost' }
+      let(:url) { 'invalid' }
 
-      it 'updates the integration' do
-        expect(response).to have_gitlab_http_status(:found)
-        expect(integration.reload.url).to eq(url)
+      it 'does not update the integration' do
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to render_template(:edit)
+        expect(integration.reload.url).not_to eq(url)
       end
     end
   end

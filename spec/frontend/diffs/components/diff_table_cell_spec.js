@@ -85,15 +85,18 @@ describe('DiffTableCell', () => {
 
   describe('comment button', () => {
     it.each`
-      showCommentButton | userData     | query                | expectation
-      ${true}           | ${TEST_USER} | ${'diff_head=false'} | ${true}
-      ${true}           | ${TEST_USER} | ${'diff_head=true'}  | ${false}
-      ${false}          | ${TEST_USER} | ${'bogus'}           | ${false}
-      ${true}           | ${null}      | ${''}                | ${false}
+      showCommentButton | userData     | query                | mergeRefHeadComments | expectation
+      ${true}           | ${TEST_USER} | ${'diff_head=false'} | ${false}             | ${true}
+      ${true}           | ${TEST_USER} | ${'diff_head=true'}  | ${true}              | ${true}
+      ${true}           | ${TEST_USER} | ${'diff_head=true'}  | ${false}             | ${false}
+      ${false}          | ${TEST_USER} | ${'diff_head=true'}  | ${true}              | ${false}
+      ${false}          | ${TEST_USER} | ${'bogus'}           | ${true}              | ${false}
+      ${true}           | ${null}      | ${''}                | ${true}              | ${false}
     `(
       'exists is $expectation - with showCommentButton ($showCommentButton) userData ($userData) query ($query)',
-      ({ showCommentButton, userData, query, expectation }) => {
+      ({ showCommentButton, userData, query, mergeRefHeadComments, expectation }) => {
         store.state.notes.userData = userData;
+        gon.features = { mergeRefHeadComments };
         setWindowLocation({ href: `${TEST_HOST}?${query}` });
         createComponent({ showCommentButton });
 

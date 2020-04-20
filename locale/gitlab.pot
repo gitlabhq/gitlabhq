@@ -3408,6 +3408,9 @@ msgstr ""
 msgid "Can't scan the code?"
 msgstr ""
 
+msgid "Can't update snippet: %{err}"
+msgstr ""
+
 msgid "Canary"
 msgstr ""
 
@@ -3574,6 +3577,9 @@ msgid "Changing a Release tag is only supported via Releases API. %{linkStart}Mo
 msgstr ""
 
 msgid "Changing group path can have unintended side effects."
+msgstr ""
+
+msgid "Charts"
 msgstr ""
 
 msgid "Charts can't be displayed as the request for data has timed out. %{documentationLink}"
@@ -5303,16 +5309,31 @@ msgstr ""
 msgid "Compliance framework (optional)"
 msgstr ""
 
+msgid "ComplianceFramework|GDPR"
+msgstr ""
+
 msgid "ComplianceFramework|GDPR - General Data Protection Regulation"
+msgstr ""
+
+msgid "ComplianceFramework|HIPAA"
 msgstr ""
 
 msgid "ComplianceFramework|HIPAA - Health Insurance Portability and Accountability Act"
 msgstr ""
 
+msgid "ComplianceFramework|PCI-DSS"
+msgstr ""
+
 msgid "ComplianceFramework|PCI-DSS - Payment Card Industry-Data Security Standard"
 msgstr ""
 
+msgid "ComplianceFramework|SOC 2"
+msgstr ""
+
 msgid "ComplianceFramework|SOC 2 - Service Organization Control 2"
+msgstr ""
+
+msgid "ComplianceFramework|SOX"
 msgstr ""
 
 msgid "ComplianceFramework|SOX - Sarbanes-Oxley"
@@ -5468,6 +5489,9 @@ msgstr ""
 msgid "ContainerRegistry|%{imageName} tags"
 msgstr ""
 
+msgid "ContainerRegistry|%{title} was successfully scheduled for deletion"
+msgstr ""
+
 msgid "ContainerRegistry|Automatically remove extra images that aren't designed to be kept."
 msgstr ""
 
@@ -5522,9 +5546,6 @@ msgstr ""
 msgid "ContainerRegistry|Image ID"
 msgstr ""
 
-msgid "ContainerRegistry|Image deleted successfully"
-msgstr ""
-
 msgid "ContainerRegistry|Keep and protect the images that matter most."
 msgstr ""
 
@@ -5563,9 +5584,6 @@ msgstr[1] ""
 msgid "ContainerRegistry|Retention policy has been Enabled"
 msgstr ""
 
-msgid "ContainerRegistry|Something went wrong while deleting the image."
-msgstr ""
-
 msgid "ContainerRegistry|Something went wrong while deleting the tag."
 msgstr ""
 
@@ -5575,10 +5593,13 @@ msgstr ""
 msgid "ContainerRegistry|Something went wrong while fetching the expiration policy."
 msgstr ""
 
-msgid "ContainerRegistry|Something went wrong while fetching the packages list."
+msgid "ContainerRegistry|Something went wrong while fetching the repository list."
 msgstr ""
 
 msgid "ContainerRegistry|Something went wrong while fetching the tags list."
+msgstr ""
+
+msgid "ContainerRegistry|Something went wrong while scheduling %{title} for deletion. Please try again."
 msgstr ""
 
 msgid "ContainerRegistry|Something went wrong while updating the expiration policy."
@@ -5620,10 +5641,16 @@ msgstr ""
 msgid "ContainerRegistry|There are no container images stored for this project"
 msgstr ""
 
+msgid "ContainerRegistry|There was an error during the deletion of this image repository, please try again."
+msgstr ""
+
 msgid "ContainerRegistry|This Registry contains deleted image tag data. Remember to run  %{docLinkStart}garbage collection%{docLinkEnd} to remove the stale data from storage."
 msgstr ""
 
 msgid "ContainerRegistry|This image has no active tags"
+msgstr ""
+
+msgid "ContainerRegistry|This image repository is scheduled for deletion"
 msgstr ""
 
 msgid "ContainerRegistry|We are having trouble connecting to Docker, which could be due to an issue with your project name or path. %{docLinkStart}More Information%{docLinkEnd}"
@@ -6061,6 +6088,9 @@ msgstr ""
 msgid "Create requirement"
 msgstr ""
 
+msgid "Create snippet"
+msgstr ""
+
 msgid "Create wildcard: %{searchTerm}"
 msgstr ""
 
@@ -6080,6 +6110,9 @@ msgid "CreateTokenToCloneLink|create a personal access token"
 msgstr ""
 
 msgid "Created"
+msgstr ""
+
+msgid "Created %{timestamp}"
 msgstr ""
 
 msgid "Created At"
@@ -6955,6 +6988,9 @@ msgid "Deployed to"
 msgstr ""
 
 msgid "Deploying to"
+msgstr ""
+
+msgid "Deployment Frequency"
 msgstr ""
 
 msgid "Deployment|API"
@@ -8216,6 +8252,9 @@ msgstr ""
 msgid "Error fetching network graph."
 msgstr ""
 
+msgid "Error fetching payload data."
+msgstr ""
+
 msgid "Error fetching projects"
 msgstr ""
 
@@ -8223,9 +8262,6 @@ msgid "Error fetching refs"
 msgstr ""
 
 msgid "Error fetching the dependency list. Please check your network connection and try again."
-msgstr ""
-
-msgid "Error fetching usage ping data."
 msgstr ""
 
 msgid "Error loading branch data. Please try again."
@@ -8367,6 +8403,9 @@ msgid "ErrorTracking|To enable project selection, enter a valid Auth Token"
 msgstr ""
 
 msgid "Errors"
+msgstr ""
+
+msgid "Errors:"
 msgstr ""
 
 msgid "Estimated"
@@ -11013,6 +11052,9 @@ msgstr ""
 msgid "Import repository"
 msgstr ""
 
+msgid "Import started by: %{importInitiator}"
+msgstr ""
+
 msgid "Import tasks"
 msgstr ""
 
@@ -11511,6 +11553,9 @@ msgid "Jira import is already running."
 msgstr ""
 
 msgid "Jira integration not configured."
+msgstr ""
+
+msgid "Jira project: %{importProject}"
 msgstr ""
 
 msgid "JiraService|Events for %{noteable_model_name} are disabled."
@@ -12698,6 +12743,9 @@ msgstr ""
 msgid "Merge Requests in Review"
 msgstr ""
 
+msgid "Merge automatically (%{strategy})"
+msgstr ""
+
 msgid "Merge commit message"
 msgstr ""
 
@@ -12851,6 +12899,12 @@ msgstr ""
 msgid "Merged branches are being deleted. This can take some time depending on the number of branches. Please refresh the page to see changes."
 msgstr ""
 
+msgid "Merged this merge request."
+msgstr ""
+
+msgid "Merges this merge request immediately."
+msgstr ""
+
 msgid "Merges this merge request when the pipeline succeeds."
 msgstr ""
 
@@ -12958,9 +13012,6 @@ msgid_plural "Metrics|Edit metrics"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Metrics|Environment"
-msgstr ""
-
 msgid "Metrics|For grouping similar metrics"
 msgstr ""
 
@@ -12992,9 +13043,6 @@ msgid "Metrics|Prometheus Query Documentation"
 msgstr ""
 
 msgid "Metrics|Refresh dashboard"
-msgstr ""
-
-msgid "Metrics|Show last"
 msgstr ""
 
 msgid "Metrics|There was an error creating the dashboard."
@@ -13073,6 +13121,9 @@ msgid "Metrics|e.g. req/sec"
 msgstr ""
 
 msgid "Microsoft Azure"
+msgstr ""
+
+msgid "Middleman project with Static Site Editor support"
 msgstr ""
 
 msgid "Migrated %{success_count}/%{total_count} files."
@@ -14350,6 +14401,9 @@ msgstr ""
 msgid "PackageRegistry|Learn how to %{noPackagesLinkStart}publish and share your packages%{noPackagesLinkEnd} with GitLab."
 msgstr ""
 
+msgid "PackageRegistry|Manually Published"
+msgstr ""
+
 msgid "PackageRegistry|Maven"
 msgstr ""
 
@@ -14408,6 +14462,9 @@ msgid "PackageRegistry|You may also need to setup authentication using an auth t
 msgstr ""
 
 msgid "PackageRegistry|npm"
+msgstr ""
+
+msgid "PackageRegistry|published by %{author}"
 msgstr ""
 
 msgid "PackageRegistry|yarn"
@@ -15001,6 +15058,9 @@ msgstr ""
 msgid "Please select"
 msgstr ""
 
+msgid "Please select a Jira project"
+msgstr ""
+
 msgid "Please select a country"
 msgstr ""
 
@@ -15218,6 +15278,9 @@ msgid "Private group(s)"
 msgstr ""
 
 msgid "Private profile"
+msgstr ""
+
+msgid "Private projects Minutes cost factor"
 msgstr ""
 
 msgid "Private projects can be created in your personal namespace with:"
@@ -16048,6 +16111,9 @@ msgstr ""
 msgid "ProjectSettings|With GitLab Pages you can host your static websites on GitLab"
 msgstr ""
 
+msgid "ProjectSettings|With Metrics Dashboard you can visualize this project performance metrics"
+msgstr ""
+
 msgid "ProjectTemplates|.NET Core"
 msgstr ""
 
@@ -16109,6 +16175,9 @@ msgid "ProjectTemplates|Serverless Framework/JS"
 msgstr ""
 
 msgid "ProjectTemplates|Spring"
+msgstr ""
+
+msgid "ProjectTemplates|Static Site Editor/Middleman"
 msgstr ""
 
 msgid "ProjectTemplates|iOS (Swift)"
@@ -16330,13 +16399,13 @@ msgstr ""
 msgid "PrometheusService|Prometheus is being automatically managed on your clusters"
 msgstr ""
 
+msgid "PrometheusService|Select the Active checkbox to override the Auto Configuration with custom settings. If unchecked, Auto Configuration settings are used."
+msgstr ""
+
 msgid "PrometheusService|These metrics will only be monitored after your first deployment to an environment"
 msgstr ""
 
 msgid "PrometheusService|Time-series monitoring service"
-msgstr ""
-
-msgid "PrometheusService|To enable manual configuration, uninstall Prometheus from your clusters"
 msgstr ""
 
 msgid "PrometheusService|To enable the installation of Prometheus on your clusters, deactivate the manual configuration below"
@@ -16544,6 +16613,9 @@ msgid "Public deploy keys (%{deploy_keys_count})"
 msgstr ""
 
 msgid "Public pipelines"
+msgstr ""
+
+msgid "Public projects Minutes cost factor"
 msgstr ""
 
 msgid "Pull"
@@ -17669,10 +17741,16 @@ msgstr ""
 msgid "Scheduled"
 msgstr ""
 
+msgid "Scheduled to merge this merge request (%{strategy})."
+msgstr ""
+
 msgid "Scheduled to merge this merge request when the pipeline succeeds."
 msgstr ""
 
 msgid "Schedules"
+msgstr ""
+
+msgid "Schedules to merge this merge request (%{strategy})."
 msgstr ""
 
 msgid "Scheduling"
@@ -17946,6 +18024,9 @@ msgstr ""
 msgid "Security Reports|Create issue"
 msgstr ""
 
+msgid "Security Reports|Dismiss Selected"
+msgstr ""
+
 msgid "Security Reports|Dismiss vulnerability"
 msgstr ""
 
@@ -17958,6 +18039,9 @@ msgstr ""
 msgid "Security Reports|Either you don't have permission to view this dashboard or the dashboard has not been setup. Please check your permission settings with your administrator or check your dashboard configurations to proceed."
 msgstr ""
 
+msgid "Security Reports|False positive"
+msgstr ""
+
 msgid "Security Reports|Learn more about setting up your dashboard"
 msgstr ""
 
@@ -17968,6 +18052,9 @@ msgid "Security Reports|Oops, something doesn't seem right."
 msgstr ""
 
 msgid "Security Reports|Security reports can only be accessed by authorized users."
+msgstr ""
+
+msgid "Security Reports|Select a reason"
 msgstr ""
 
 msgid "Security Reports|There was an error adding the comment."
@@ -17997,10 +18084,16 @@ msgstr ""
 msgid "Security Reports|Undo dismiss"
 msgstr ""
 
+msgid "Security Reports|Won't fix / Accept risk"
+msgstr ""
+
 msgid "Security Reports|You do not have sufficient permissions to access this report"
 msgstr ""
 
 msgid "Security Reports|You must sign in as an authorized user to see this report"
+msgstr ""
+
+msgid "Security Reports|[No reason]"
 msgstr ""
 
 msgid "Security configuration help link"
@@ -18048,10 +18141,19 @@ msgstr ""
 msgid "SecurityDashboard|Add projects"
 msgstr ""
 
+msgid "SecurityDashboard|Each vulnerability now has a unique page that can be directly linked to, shared, referenced, and tracked as the single source of truth. Vulnerability occurrences also persist across scanner runs, which improves tracking and visibility and reduces duplicates between scans."
+msgstr ""
+
 msgid "SecurityDashboard|Edit dashboard"
 msgstr ""
 
 msgid "SecurityDashboard|Hide dismissed"
+msgstr ""
+
+msgid "SecurityDashboard|Introducing standalone vulnerabilities"
+msgstr ""
+
+msgid "SecurityDashboard|Learn More"
 msgstr ""
 
 msgid "SecurityDashboard|Monitor vulnerabilities in your code"
@@ -18517,9 +18619,6 @@ msgid "Set up CI/CD"
 msgstr ""
 
 msgid "Set up Jira Integration"
-msgstr ""
-
-msgid "Set up Jira Integration illustration"
 msgstr ""
 
 msgid "Set up a %{type} Runner automatically"
@@ -19469,6 +19568,9 @@ msgstr ""
 msgid "Static Application Security Testing (SAST)"
 msgstr ""
 
+msgid "StaticSiteEditor|An error occurred while submitting your changes."
+msgstr ""
+
 msgid "StaticSiteEditor|Branch could not be created."
 msgstr ""
 
@@ -19476,6 +19578,9 @@ msgid "StaticSiteEditor|Could not commit the content changes."
 msgstr ""
 
 msgid "StaticSiteEditor|Could not create merge request."
+msgstr ""
+
+msgid "StaticSiteEditor|Incompatible file content"
 msgstr ""
 
 msgid "StaticSiteEditor|Return to site"
@@ -19490,7 +19595,13 @@ msgstr ""
 msgid "StaticSiteEditor|Summary of changes"
 msgstr ""
 
+msgid "StaticSiteEditor|The Static Site Editor is currently configured to only edit Markdown content on pages generated from Middleman. Visit the documentation to learn more about configuring your site to use the Static Site Editor."
+msgstr ""
+
 msgid "StaticSiteEditor|Update %{sourcePath} file"
+msgstr ""
+
+msgid "StaticSiteEditor|View documentation"
 msgstr ""
 
 msgid "StaticSiteEditor|View merge request"
@@ -20684,6 +20795,9 @@ msgstr ""
 msgid "There was an error getting the epic participants."
 msgstr ""
 
+msgid "There was an error importing the Jira project."
+msgstr ""
+
 msgid "There was an error loading users activity calendar."
 msgstr ""
 
@@ -20699,7 +20813,7 @@ msgstr ""
 msgid "There was an error resetting user pipeline minutes."
 msgstr ""
 
-msgid "There was an error saving this Geo Node"
+msgid "There was an error saving this Geo Node."
 msgstr ""
 
 msgid "There was an error saving your changes."
@@ -21137,7 +21251,10 @@ msgstr ""
 msgid "This user will be the author of all events in the activity feed that are the result of an update, like new branches being created or new commits being pushed to existing branches. Upon creation or when reassigning you can only assign yourself to be the mirror user."
 msgstr ""
 
-msgid "This variable can not be masked"
+msgid "This variable can not be masked."
+msgstr ""
+
+msgid "This variable does not match the expected pattern."
 msgstr ""
 
 msgid "This will help us personalize your onboarding experience."
@@ -21270,6 +21387,9 @@ msgid "Time from last commit to merge"
 msgstr ""
 
 msgid "Time in seconds GitLab will wait for a response from the external service. When the service does not respond in time, access will be denied."
+msgstr ""
+
+msgid "Time of import: %{importTime}"
 msgstr ""
 
 msgid "Time remaining"
@@ -21823,6 +21943,9 @@ msgid "Try again?"
 msgstr ""
 
 msgid "Try all GitLab has to offer for 30 days."
+msgstr ""
+
+msgid "Try changing or removing filters."
 msgstr ""
 
 msgid "Try to fork again"
@@ -22861,6 +22984,9 @@ msgstr ""
 msgid "View issue"
 msgstr ""
 
+msgid "View issues"
+msgstr ""
+
 msgid "View it on GitLab"
 msgstr ""
 
@@ -23691,6 +23817,9 @@ msgstr ""
 msgid "You could not create a new trigger."
 msgstr ""
 
+msgid "You didn't renew your %{strong}%{plan_name}%{strong_close} subscription for %{strong}%{namespace_name}%{strong_close} so it was downgraded to the free plan."
+msgstr ""
+
 msgid "You didn't renew your %{strong}%{plan_name}%{strong_close} subscription so it was downgraded to the GitLab Core Plan."
 msgstr ""
 
@@ -23922,6 +24051,9 @@ msgstr ""
 msgid "YouTube"
 msgstr ""
 
+msgid "Your %{strong}%{plan_name}%{strong_close} subscription for %{strong}%{namespace_name}%{strong_close} will expire on %{strong}%{expires_on}%{strong_close}. After that, you will not to be able to create issues or merge requests as well as many other features."
+msgstr ""
+
 msgid "Your %{strong}%{plan_name}%{strong_close} subscription will expire on %{strong}%{expires_on}%{strong_close}. After that, you will not to be able to create issues or merge requests as well as many other features."
 msgstr ""
 
@@ -24078,6 +24210,9 @@ msgstr ""
 msgid "Your request for access has been queued for review."
 msgstr ""
 
+msgid "Your search didn't match any commits."
+msgstr ""
+
 msgid "Your subscription expired!"
 msgstr ""
 
@@ -24198,6 +24333,9 @@ msgid "ciReport|%{linkStartTag}Learn more about Dependency Scanning %{linkEndTag
 msgstr ""
 
 msgid "ciReport|%{linkStartTag}Learn more about SAST %{linkEndTag}"
+msgstr ""
+
+msgid "ciReport|%{linkStartTag}Learn more about Secret Scanning %{linkEndTag}"
 msgstr ""
 
 msgid "ciReport|%{linkStartTag}Learn more about codequality reports %{linkEndTag}"
@@ -24361,6 +24499,12 @@ msgid "ciReport|Resolve with merge request"
 msgstr ""
 
 msgid "ciReport|SAST"
+msgstr ""
+
+msgid "ciReport|Secret scanning"
+msgstr ""
+
+msgid "ciReport|Secret scanning detects secrets and credentials vulnerabilities in your source code."
 msgstr ""
 
 msgid "ciReport|Security scanning"
@@ -25115,6 +25259,9 @@ msgid "pending comment"
 msgstr ""
 
 msgid "pending removal"
+msgstr ""
+
+msgid "per day"
 msgstr ""
 
 msgid "pipeline"

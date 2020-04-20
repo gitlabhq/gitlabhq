@@ -73,6 +73,11 @@ $item-weight-max-width: 48px;
     .issue-token-state-icon-closed {
       display: none;
     }
+
+    .sortable-link {
+      color: $gray-900;
+      font-weight: normal;
+    }
   }
 
   .item-path-id .path-id-text,
@@ -249,6 +254,12 @@ $item-weight-max-width: 48px;
   line-height: 0;
 }
 
+@include media-breakpoint-down(xs) {
+  .btn-sm.dropdown-toggle-split {
+    max-width: 40px;
+  }
+}
+
 @include media-breakpoint-up(sm) {
   .item-info-area {
     flex-basis: 100%;
@@ -296,10 +307,6 @@ $item-weight-max-width: 48px;
   .item-meta {
     .item-meta-child {
       flex-basis: unset;
-
-      ~ .item-assignees {
-        margin-left: $gl-padding-4;
-      }
     }
   }
 
@@ -353,7 +360,7 @@ $item-weight-max-width: 48px;
     }
 
     .item-title-wrapper {
-      max-width: calc(100% - 440px);
+      max-width: calc(100% - 500px);
     }
 
     .item-info-area {
@@ -407,7 +414,7 @@ $item-weight-max-width: 48px;
   }
 }
 
-@media only screen and (min-width: 1400px) {
+@media only screen and (min-width: 1500px) {
   .card-header,
   .item-body {
     .health-label-short {
@@ -419,7 +426,9 @@ $item-weight-max-width: 48px;
     }
   }
 
-  .item-body .item-title-wrapper {
-    max-width: calc(100% - 570px);
+  .item-body {
+    .item-title-wrapper {
+      max-width: calc(100% - 640px);
+    }
   }
 }

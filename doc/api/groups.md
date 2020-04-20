@@ -862,49 +862,71 @@ Lists LDAP group links.
 GET /groups/:id/ldap_group_links
 ```
 
-Parameters:
+| Attribute | Type           | Required | Description |
+| --------- | -------------- | -------- | ----------- |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) |
 
-- `id` (required) - The ID of a group
+### Add LDAP group link with CN or filter **(STARTER)**
 
-### Add LDAP group link **(STARTER)**
-
-Adds an LDAP group link.
+Adds an LDAP group link using a CN or filter. Adding a group link by filter is only supported in the Premium tier and above.
 
 ```plaintext
 POST /groups/:id/ldap_group_links
 ```
 
-Parameters:
+| Attribute | Type           | Required | Description |
+| --------- | -------------- | -------- | ----------- |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) |
+| `cn`      | string         | no       | The CN of an LDAP group |
+| `filter`  | string         | no       | The LDAP filter for the group |
+| `group_access` | integer   | yes      | Minimum access level for members of the LDAP group |
+| `provider` | string        | yes      | LDAP provider for the LDAP group link |
 
-- `id` (required) - The ID of a group
-- `cn` (required) - The CN of a LDAP group
-- `group_access` (required) - Minimum access level for members of the LDAP group
-- `provider` (required) - LDAP provider for the LDAP group
+NOTE: **Note:**
+To define the LDAP group link, provide either a `cn` or a `filter`, but not both.
 
 ### Delete LDAP group link **(STARTER)**
 
-Deletes an LDAP group link.
+Deletes an LDAP group link. Deprecated. Will be removed in a future release.
 
 ```plaintext
 DELETE /groups/:id/ldap_group_links/:cn
 ```
 
-Parameters:
+| Attribute | Type           | Required | Description |
+| --------- | -------------- | -------- | ----------- |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) |
+| `cn`      | string         | yes      | The CN of an LDAP group |
 
-- `id` (required) - The ID of a group
-- `cn` (required) - The CN of a LDAP group
-
-Deletes a LDAP group link for a specific LDAP provider
+Deletes an LDAP group link for a specific LDAP provider. Deprecated. Will be removed in a future release.
 
 ```plaintext
 DELETE /groups/:id/ldap_group_links/:provider/:cn
 ```
 
-Parameters:
+| Attribute | Type           | Required | Description |
+| --------- | -------------- | -------- | ----------- |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) |
+| `cn`      | string         | yes      | The CN of an LDAP group |
+| `provider` | string        | yes      | LDAP provider for the LDAP group link |
 
-- `id` (required) - The ID of a group
-- `cn` (required) - The CN of a LDAP group
-- `provider` (required) - Name of a LDAP provider
+### Delete LDAP group link with CN or filter **(STARTER)**
+
+Deletes an LDAP group link using a CN or filter. Deleting by filter is only supported in the Premium tier and above.
+
+```plaintext
+DELETE /groups/:id/ldap_group_links
+```
+
+| Attribute | Type           | Required | Description |
+| --------- | -------------- | -------- | ----------- |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) |
+| `cn`      | string         | no       | The CN of an LDAP group |
+| `filter`  | string         | no       | The LDAP filter for the group |
+| `provider` | string        | yes       | LDAP provider for the LDAP group link |
+
+NOTE: **Note:**
+To delete the LDAP group link, provide either a `cn` or a `filter`, but not both.
 
 ## Namespaces in groups
 

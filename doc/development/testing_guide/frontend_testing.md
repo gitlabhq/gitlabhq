@@ -206,12 +206,19 @@ Following you'll find some general common practices you will find as part of our
 
 When it comes to querying DOM elements in your tests, it is best to uniquely target the element, without adding additional attributes specifically for testing purposes. Sometimes this cannot be done feasibly. In these cases, adding test attributes to simplify the selectors might be the best option.
 
-Preferentially, in component testing with `@vue/test-utils`, you should query for child components using the component itself. Otherwise, try to use an existing attribute like `name` or a Vue `ref` (if using `@vue/test-utils`):
+Preferentially, in component testing with `@vue/test-utils`, you should query for child components using the component itself. This helps enforce that specific behavior can be covered by that component's individual unit tests. Otherwise, try to use:
+
+- A behavioral attribute like `name` (also verifies that `name` was setup properly)
+- A `data-testid` attribute ([recommended by maintainers of `@vue/test-utils`](https://github.com/vuejs/vue-test-utils/issues/1498#issuecomment-610133465))
+- a Vue `ref` (if using `@vue/test-utils`)
+
+Examples:
 
 ```javascript
 it('exists', () => {
     wrapper.find(FooComponent);
     wrapper.find('input[name=foo]');
+    wrapper.find('[data-testid="foo"]');
     wrapper.find({ ref: 'foo'});
     wrapper.find('.js-foo');
 });

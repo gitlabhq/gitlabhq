@@ -36,6 +36,8 @@ module Git
     # Update merge requests that may be affected by this push. A new branch
     # could cause the last commit of a merge request to change.
     def enqueue_update_mrs
+      return if params[:merge_request_branches]&.exclude?(branch_name)
+
       UpdateMergeRequestsWorker.perform_async(
         project.id,
         current_user.id,

@@ -1427,6 +1427,45 @@ describe Projects::IssuesController do
     end
   end
 
+  describe 'POST export_csv' do
+    let(:viewer) { user }
+    let(:issue) { create(:issue, project: project) }
+
+    before do
+      project.add_developer(user)
+    end
+
+    def request_csv
+      post :export_csv, params: { namespace_id: project.namespace.to_param, project_id: project.to_param }
+    end
+
+    context 'when logged in' do
+      before do
+        sign_in(viewer)
+      end
+
+      it 'allows CSV export' do
+        expect(ExportCsvWorker).to receive(:perform_async).with(viewer.id, project.id, anything)
+
+        request_csv
+
+        expect(response).to redirect_to(project_issues_path(project))
+        expect(response.flash[:notice]).to match(/\AYour CSV export has started/i)
+      end
+    end
+
+    context 'when not logged in' do
+      let(:project) { create(:project_empty_repo, :public) }
+
+      it 'redirects to the sign in page' do
+        request_csv
+
+        expect(ExportCsvWorker).not_to receive(:perform_async)
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+  end
+
   describe 'GET #discussions' do
     let!(:discussion) { create(:discussion_note_on_issue, noteable: issue, project: issue.project) }
 

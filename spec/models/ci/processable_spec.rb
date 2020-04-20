@@ -6,6 +6,18 @@ describe Ci::Processable do
   let_it_be(:project) { create(:project) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
 
+  let_it_be(:detached_merge_request_pipeline) do
+    create(:ci_pipeline, :detached_merge_request_pipeline, :with_job, project: project)
+  end
+
+  let_it_be(:legacy_detached_merge_request_pipeline) do
+    create(:ci_pipeline, :legacy_detached_merge_request_pipeline, :with_job, project: project)
+  end
+
+  let_it_be(:merged_result_pipeline) do
+    create(:ci_pipeline, :merged_result_pipeline, :with_job, project: project)
+  end
+
   describe '#aggregated_needs_names' do
     let(:with_aggregated_needs) { pipeline.processables.select_with_aggregated_needs(project) }
 
@@ -153,6 +165,72 @@ describe Ci::Processable do
       it 'returns all needs attributes' do
         expect(build.needs_attributes).to be_empty
       end
+    end
+  end
+
+  describe '#merge_request?' do
+    subject { pipeline.processables.first.merge_request? }
+
+    context 'in a detached merge request pipeline' do
+      let(:pipeline) { detached_merge_request_pipeline }
+
+      it { is_expected.to eq(pipeline.merge_request?) }
+    end
+
+    context 'in a legacy detached merge_request_pipeline' do
+      let(:pipeline) { legacy_detached_merge_request_pipeline }
+
+      it { is_expected.to eq(pipeline.merge_request?) }
+    end
+
+    context 'in a pipeline for merged results' do
+      let(:pipeline) { merged_result_pipeline }
+
+      it { is_expected.to eq(pipeline.merge_request?) }
+    end
+  end
+
+  describe '#merge_request_ref?' do
+    subject { pipeline.processables.first.merge_request_ref? }
+
+    context 'in a detached merge request pipeline' do
+      let(:pipeline) { detached_merge_request_pipeline }
+
+      it { is_expected.to eq(pipeline.merge_request_ref?) }
+    end
+
+    context 'in a legacy detached merge_request_pipeline' do
+      let(:pipeline) { legacy_detached_merge_request_pipeline }
+
+      it { is_expected.to eq(pipeline.merge_request_ref?) }
+    end
+
+    context 'in a pipeline for merged results' do
+      let(:pipeline) { merged_result_pipeline }
+
+      it { is_expected.to eq(pipeline.merge_request_ref?) }
+    end
+  end
+
+  describe '#legacy_detached_merge_request_pipeline?' do
+    subject { pipeline.processables.first.legacy_detached_merge_request_pipeline? }
+
+    context 'in a detached merge request pipeline' do
+      let(:pipeline) { detached_merge_request_pipeline }
+
+      it { is_expected.to eq(pipeline.legacy_detached_merge_request_pipeline?) }
+    end
+
+    context 'in a legacy detached merge_request_pipeline' do
+      let(:pipeline) { legacy_detached_merge_request_pipeline }
+
+      it { is_expected.to eq(pipeline.legacy_detached_merge_request_pipeline?) }
+    end
+
+    context 'in a pipeline for merged results' do
+      let(:pipeline) { merged_result_pipeline }
+
+      it { is_expected.to eq(pipeline.legacy_detached_merge_request_pipeline?) }
     end
   end
 end

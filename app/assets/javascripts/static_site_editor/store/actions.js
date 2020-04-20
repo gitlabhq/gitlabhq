@@ -26,9 +26,12 @@ export const submitChanges = ({ state: { projectId, content, sourcePath, usernam
   return submitContentChanges({ content, projectId, sourcePath, username })
     .then(data => commit(mutationTypes.SUBMIT_CHANGES_SUCCESS, data))
     .catch(error => {
-      commit(mutationTypes.SUBMIT_CHANGES_ERROR);
-      createFlash(error.message);
+      commit(mutationTypes.SUBMIT_CHANGES_ERROR, error.message);
     });
+};
+
+export const dismissSubmitChangesError = ({ commit }) => {
+  commit(mutationTypes.DISMISS_SUBMIT_CHANGES_ERROR);
 };
 
 export default () => {};

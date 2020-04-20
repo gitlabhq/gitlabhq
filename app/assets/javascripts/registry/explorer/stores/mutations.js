@@ -1,5 +1,6 @@
 import * as types from './mutation_types';
 import { parseIntPagination, normalizeHeaders } from '~/lib/utils/common_utils';
+import { IMAGE_DELETE_SCHEDULED_STATUS, IMAGE_FAILED_DELETED_STATUS } from '../constants';
 
 export default {
   [types.SET_INITIAL_STATE](state, config) {
@@ -12,7 +13,17 @@ export default {
   },
 
   [types.SET_IMAGES_LIST_SUCCESS](state, images) {
-    state.images = images;
+    state.images = images.map(i => ({
+      ...i,
+      status: undefined,
+      deleting: i.status === IMAGE_DELETE_SCHEDULED_STATUS,
+      failedDelete: i.status === IMAGE_FAILED_DELETED_STATUS,
+    }));
+  },
+
+  [types.UPDATE_IMAGE](state, image) {
+    const index = state.images.findIndex(i => i.id === image.id);
+    state.images.splice(index, 1, { ...image });
   },
 
   [types.SET_TAGS_LIST_SUCCESS](state, tags) {

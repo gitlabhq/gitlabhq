@@ -164,6 +164,14 @@ Resources:
 - [Elasticsearch mapping - avoiding type gotchas](https://www.elastic.co/guide/en/elasticsearch/guide/current/mapping.html#_avoiding_type_gotchas)
 - [Elasticsearch mapping types]( https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-types.html)
 
+#### Logging durations
+
+Similar to timezones, choosing the right time unit to log can impose avoidable overhead. So, whenever
+challenged to choose between seconds, milliseconds or any other unit, lean towards _seconds_ as float.
+
+In order to make it easier to track timings in the logs, make sure the log key has `_s` as
+suffix and `duration` within its name (e.g., `view_duration_s`).
+
 ## Multi-destination Logging
 
 GitLab is transitioning from unstructured/plaintext logs to structured/JSON logs. During this transition period some logs will be recorded in multiple formats through multi-destination logging.

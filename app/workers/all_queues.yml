@@ -709,7 +709,7 @@
   :urgency: :high
   :resource_boundary: :cpu
   :weight: 3
-  :idempotent: 
+  :idempotent: true
 - :name: pipeline_creation:create_pipeline
   :feature_category: :continuous_integration
   :has_external_dependencies: 
@@ -1044,6 +1044,13 @@
   :has_external_dependencies: 
   :urgency: :low
   :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: 
+- :name: export_csv
+  :feature_category: :issue_tracking
+  :has_external_dependencies: 
+  :urgency: :low
+  :resource_boundary: :cpu
   :weight: 1
   :idempotent: 
 - :name: file_hook

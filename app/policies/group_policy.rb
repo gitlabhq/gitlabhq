@@ -91,6 +91,7 @@ class GroupPolicy < BasePolicy
   end
 
   rule { reporter }.policy do
+    enable :reporter_access
     enable :read_container_image
     enable :download_wiki_code
     enable :admin_label

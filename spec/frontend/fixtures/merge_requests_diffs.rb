@@ -10,7 +10,6 @@ describe Projects::MergeRequests::DiffsController, '(JavaScript fixtures)', type
   let(:project) { create(:project, :repository, namespace: namespace, path: 'merge-requests-project') }
   let(:merge_request) { create(:merge_request, :with_diffs, source_project: project, target_project: project, description: '- [ ] Task List Item') }
   let(:path) { "files/ruby/popen.rb" }
-  let(:selected_commit) { merge_request.all_commits[0] }
   let(:position) do
     build(:text_diff_position, :added,
       file: path,
@@ -34,11 +33,11 @@ describe Projects::MergeRequests::DiffsController, '(JavaScript fixtures)', type
   end
 
   it 'merge_request_diffs/with_commit.json' do
-    # Create a user that matches the selected commit author
+    # Create a user that matches the project.commit author
     # This is so that the "author" information will be populated
-    create(:user, email: selected_commit.author_email, name: selected_commit.author_name)
+    create(:user, email: project.commit.author_email, name: project.commit.author_name)
 
-    render_merge_request(merge_request, commit_id: selected_commit.sha)
+    render_merge_request(merge_request, commit_id: project.commit.sha)
   end
 
   it 'merge_request_diffs/inline_changes_tab_with_comments.json' do

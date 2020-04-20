@@ -1,0 +1,287 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`vue_shared/components/awards_list default matches snapshot 1`] = `
+<div
+  class="awards js-awards-block"
+>
+  <button
+    class="btn award-control"
+    data-boundary="viewport"
+    data-original-title="Ada, Leonardo, and Marie"
+    data-testid="award-button"
+    title=""
+    type="button"
+  >
+    <span
+      data-testid="award-html"
+    >
+      
+    
+      <gl-emoji
+        data-fallback-src="/assets/emoji/thumbsup-59ec2457ab33e8897261d01a495f6cf5c668d0004807dc541c3b1be5294b1e61.png"
+        data-name="thumbsup"
+        data-unicode-version="6.0"
+        title="thumbs up sign"
+      >
+        
+      👍
+    
+      </gl-emoji>
+      
+  
+    </span>
+     
+    <span
+      class="award-control-text js-counter"
+    >
+      3
+    </span>
+  </button>
+  <button
+    class="btn award-control active"
+    data-boundary="viewport"
+    data-original-title="You, Ada, and Marie"
+    data-testid="award-button"
+    title=""
+    type="button"
+  >
+    <span
+      data-testid="award-html"
+    >
+      
+    
+      <gl-emoji
+        data-fallback-src="/assets/emoji/thumbsdown-5954334e2dae5357312b3d629f10a496c728029e02216f8c8b887f9b51561c61.png"
+        data-name="thumbsdown"
+        data-unicode-version="6.0"
+        title="thumbs down sign"
+      >
+        
+      👎
+    
+      </gl-emoji>
+      
+  
+    </span>
+     
+    <span
+      class="award-control-text js-counter"
+    >
+      3
+    </span>
+  </button>
+  <button
+    class="btn award-control"
+    data-boundary="viewport"
+    data-original-title="Ada and Jane"
+    data-testid="award-button"
+    title=""
+    type="button"
+  >
+    <span
+      data-testid="award-html"
+    >
+      
+    
+      <gl-emoji
+        data-fallback-src="/assets/emoji/smile-14905c372d5bf7719bd727c9efae31a03291acec79801652a23710c6848c5d14.png"
+        data-name="smile"
+        data-unicode-version="6.0"
+        title="smiling face with open mouth and smiling eyes"
+      >
+        
+      😄
+    
+      </gl-emoji>
+      
+  
+    </span>
+     
+    <span
+      class="award-control-text js-counter"
+    >
+      2
+    </span>
+  </button>
+  <button
+    class="btn award-control active"
+    data-boundary="viewport"
+    data-original-title="You, Ada, Jane, and Leonardo"
+    data-testid="award-button"
+    title=""
+    type="button"
+  >
+    <span
+      data-testid="award-html"
+    >
+      
+    
+      <gl-emoji
+        data-fallback-src="/assets/emoji/ok_hand-d63002dce3cc3655b67b8765b7c28d370edba0e3758b2329b60e0e61c4d8e78d.png"
+        data-name="ok_hand"
+        data-unicode-version="6.0"
+        title="ok hand sign"
+      >
+        
+      👌
+    
+      </gl-emoji>
+      
+  
+    </span>
+     
+    <span
+      class="award-control-text js-counter"
+    >
+      4
+    </span>
+  </button>
+  <button
+    class="btn award-control active"
+    data-boundary="viewport"
+    data-original-title="You"
+    data-testid="award-button"
+    title=""
+    type="button"
+  >
+    <span
+      data-testid="award-html"
+    >
+      
+    
+      <gl-emoji
+        data-fallback-src="/assets/emoji/cactus-2c5c4c35f26c7046fdc002b337e0d939729b33a26980e675950f9934c91e40fd.png"
+        data-name="cactus"
+        data-unicode-version="6.0"
+        title="cactus"
+      >
+        
+      🌵
+    
+      </gl-emoji>
+      
+  
+    </span>
+     
+    <span
+      class="award-control-text js-counter"
+    >
+      1
+    </span>
+  </button>
+  <button
+    class="btn award-control"
+    data-boundary="viewport"
+    data-original-title="Marie"
+    data-testid="award-button"
+    title=""
+    type="button"
+  >
+    <span
+      data-testid="award-html"
+    >
+      
+    
+      <gl-emoji
+        data-fallback-src="/assets/emoji/a-bddbb39e8a1d35d42b7c08e7d47f63988cb4d8614b79f74e70b9c67c221896cc.png"
+        data-name="a"
+        data-unicode-version="6.0"
+        title="negative squared latin capital letter a"
+      >
+        
+      🅰
+    
+      </gl-emoji>
+      
+  
+    </span>
+     
+    <span
+      class="award-control-text js-counter"
+    >
+      1
+    </span>
+  </button>
+  <button
+    class="btn award-control active"
+    data-boundary="viewport"
+    data-original-title="You"
+    data-testid="award-button"
+    title=""
+    type="button"
+  >
+    <span
+      data-testid="award-html"
+    >
+      
+    
+      <gl-emoji
+        data-fallback-src="/assets/emoji/b-722f9db9442e7c0fc0d0ac0f5291fbf47c6a0ac4d8abd42e97957da705fb82bf.png"
+        data-name="b"
+        data-unicode-version="6.0"
+        title="negative squared latin capital letter b"
+      >
+        
+      🅱
+    
+      </gl-emoji>
+      
+  
+    </span>
+     
+    <span
+      class="award-control-text js-counter"
+    >
+      1
+    </span>
+  </button>
+   
+  <div
+    class="award-menu-holder"
+  >
+    <button
+      aria-label="Add reaction"
+      class="award-control btn js-add-award js-test-add-button-class"
+      data-boundary="viewport"
+      data-original-title="Add reaction"
+      title=""
+      type="button"
+    >
+      <span
+        class="award-control-icon award-control-icon-neutral"
+      >
+        <gl-icon-stub
+          aria-hidden="true"
+          name="slight-smile"
+          size="16"
+        />
+      </span>
+       
+      <span
+        class="award-control-icon award-control-icon-positive"
+      >
+        <gl-icon-stub
+          aria-hidden="true"
+          name="smiley"
+          size="16"
+        />
+      </span>
+       
+      <span
+        class="award-control-icon award-control-icon-super-positive"
+      >
+        <gl-icon-stub
+          aria-hidden="true"
+          name="smiley"
+          size="16"
+        />
+      </span>
+       
+      <i
+        aria-hidden="true"
+        class="fa fa-spinner fa-spin award-control-icon award-control-icon-loading"
+      />
+    </button>
+  </div>
+</div>
+`;

@@ -242,7 +242,7 @@ For a demo of the Azure SAML setup including SCIM, see [SCIM Provisioning on Azu
 |--------------|----------------|
 | Identifier   | Identifier (Entity ID) |
 | Assertion consumer service URL | Reply URL (Assertion Consumer Service URL) |
-| Identity provider single sign on URL | Login URL |
+| Identity provider single sign on URL | Sign on URL |
 | Certificate fingerprint | Thumbprint |
 
 We recommend:

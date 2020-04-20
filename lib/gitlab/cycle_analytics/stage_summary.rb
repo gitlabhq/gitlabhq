@@ -14,6 +14,7 @@ module Gitlab
         summary = [issue_stats]
         summary << commit_stats if user_has_sufficient_access?
         summary << deploy_stats
+        summary << deployment_frequency_stats
       end
 
       private
@@ -26,16 +27,32 @@ module Gitlab
         serialize(Summary::Commit.new(project: @project, from: @from, to: @to))
       end
 
+      def deployments_summary
+        @deployments_summary ||=
+          Summary::Deploy.new(project: @project, from: @from, to: @to)
+      end
+
       def deploy_stats
-        serialize(Summary::Deploy.new(project: @project, from: @from, to: @to))
+        serialize deployments_summary
+      end
+
+      def deployment_frequency_stats
+        serialize(
+          Summary::DeploymentFrequency.new(
+            deployments: deployments_summary.value,
+            from: @from,
+            to: @to),
+          with_unit: true
+        )
       end
 
       def user_has_sufficient_access?
         @project.team.member?(@current_user, Gitlab::Access::REPORTER)
       end
 
-      def serialize(summary_object)
-        AnalyticsSummarySerializer.new.represent(summary_object)
+      def serialize(summary_object, with_unit: false)
+        AnalyticsSummarySerializer.new.represent(
+          summary_object, with_unit: with_unit)
       end
     end
   end

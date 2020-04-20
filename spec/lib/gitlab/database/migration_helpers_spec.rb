@@ -215,6 +215,7 @@ describe Gitlab::Database::MigrationHelpers do
       context 'ON DELETE statements' do
         context 'on_delete: :nullify' do
           it 'appends ON DELETE SET NULL statement' do
+            expect(model).to receive(:with_lock_retries).and_call_original
             expect(model).to receive(:disable_statement_timeout).and_call_original
             expect(model).to receive(:execute).with(/statement_timeout/)
             expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT/)
@@ -230,6 +231,7 @@ describe Gitlab::Database::MigrationHelpers do
 
         context 'on_delete: :cascade' do
           it 'appends ON DELETE CASCADE statement' do
+            expect(model).to receive(:with_lock_retries).and_call_original
             expect(model).to receive(:disable_statement_timeout).and_call_original
             expect(model).to receive(:execute).with(/statement_timeout/)
             expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT/)
@@ -245,6 +247,7 @@ describe Gitlab::Database::MigrationHelpers do
 
         context 'on_delete: nil' do
           it 'appends no ON DELETE statement' do
+            expect(model).to receive(:with_lock_retries).and_call_original
             expect(model).to receive(:disable_statement_timeout).and_call_original
             expect(model).to receive(:execute).with(/statement_timeout/)
             expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT/)
@@ -261,6 +264,7 @@ describe Gitlab::Database::MigrationHelpers do
 
       context 'when no custom key name is supplied' do
         it 'creates a concurrent foreign key and validates it' do
+          expect(model).to receive(:with_lock_retries).and_call_original
           expect(model).to receive(:disable_statement_timeout).and_call_original
           expect(model).to receive(:execute).with(/statement_timeout/)
           expect(model).to receive(:execute).ordered.with(/NOT VALID/)
@@ -287,6 +291,7 @@ describe Gitlab::Database::MigrationHelpers do
       context 'when a custom key name is supplied' do
         context 'for creating a new foreign key for a column that does not presently exist' do
           it 'creates a new foreign key' do
+            expect(model).to receive(:with_lock_retries).and_call_original
             expect(model).to receive(:disable_statement_timeout).and_call_original
             expect(model).to receive(:execute).with(/statement_timeout/)
             expect(model).to receive(:execute).ordered.with(/NOT VALID/)
@@ -314,6 +319,7 @@ describe Gitlab::Database::MigrationHelpers do
 
           context 'when the supplied key name is different from the existing foreign key name' do
             it 'creates a new foreign key' do
+              expect(model).to receive(:with_lock_retries).and_call_original
               expect(model).to receive(:disable_statement_timeout).and_call_original
               expect(model).to receive(:execute).with(/statement_timeout/)
               expect(model).to receive(:execute).ordered.with(/NOT VALID/)

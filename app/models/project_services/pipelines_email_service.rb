@@ -72,7 +72,7 @@ class PipelinesEmailService < Service
         name: 'notify_only_broken_pipelines' },
       { type: 'select',
         name: 'branches_to_be_notified',
-        choices: BRANCH_CHOICES }
+        choices: branch_choices }
     ]
   end
 

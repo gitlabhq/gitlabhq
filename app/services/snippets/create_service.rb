@@ -38,9 +38,7 @@ module Snippets
     private
 
     def save_and_commit
-      snippet_saved = @snippet.with_transaction_returning_status do
-        @snippet.save && @snippet.store_mentions!
-      end
+      snippet_saved = @snippet.save
 
       if snippet_saved && Feature.enabled?(:version_snippets, current_user)
         create_repository

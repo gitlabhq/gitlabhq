@@ -34,7 +34,10 @@ describe AnalyticsSummarySerializer do
   end
 
   context 'when representing with unit' do
-    let(:resource) { { title: 'frequency', value: 1.12, unit: 'per day' } }
+    let(:resource) do
+      Gitlab::CycleAnalytics::Summary::DeploymentFrequency
+        .new(deployments: 10, from: 1.day.ago)
+    end
 
     subject { described_class.new.represent(resource, with_unit: true) }
 

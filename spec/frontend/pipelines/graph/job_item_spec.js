@@ -47,7 +47,7 @@ describe('pipeline graph job item', () => {
 
         expect(link.attributes('title')).toEqual(`${mockJob.name} - ${mockJob.status.label}`);
 
-        expect(wrapper.find('.js-status-icon-success')).toBeDefined();
+        expect(wrapper.find('.ci-status-icon-success').exists()).toBe(true);
 
         expect(trimText(wrapper.find('.ci-status-text').text())).toBe(mockJob.name);
 
@@ -73,7 +73,7 @@ describe('pipeline graph job item', () => {
         },
       });
 
-      expect(wrapper.find('.js-status-icon-success')).toBeDefined();
+      expect(wrapper.find('.ci-status-icon-success').exists()).toBe(true);
       expect(wrapper.find('a').exists()).toBe(false);
 
       expect(trimText(wrapper.find('.ci-status-text').text())).toEqual(mockJob.name);
@@ -84,8 +84,8 @@ describe('pipeline graph job item', () => {
     it('it should render the action icon', () => {
       createWrapper({ job: mockJob });
 
-      expect(wrapper.find('a.ci-action-icon-container')).toBeDefined();
-      expect(wrapper.find('i.ci-action-icon-wrapper')).toBeDefined();
+      expect(wrapper.find('.ci-action-icon-container').exists()).toBe(true);
+      expect(wrapper.find('.ci-action-icon-wrapper').exists()).toBe(true);
     });
   });
 

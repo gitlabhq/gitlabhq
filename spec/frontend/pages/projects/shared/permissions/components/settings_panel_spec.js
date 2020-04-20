@@ -55,7 +55,12 @@ describe('Settings Panel', () => {
       currentSettings: { ...defaultProps.currentSettings, ...currentSettings },
     };
 
-    return mountFn(settingsPanel, { propsData });
+    return mountFn(settingsPanel, {
+      propsData,
+      provide: {
+        glFeatures: { metricsDashboardVisibilitySwitchingAvailable: true },
+      },
+    });
   };
 
   const overrideCurrentSettings = (currentSettingsProps, extraProps = {}) => {
@@ -469,6 +474,30 @@ describe('Settings Panel', () => {
       return wrapper.vm.$nextTick(() => {
         expect(wrapper.find({ ref: 'email-settings' }).exists()).toBe(false);
       });
+    });
+  });
+
+  describe('Metrics dashboard', () => {
+    it('should show the metrics dashboard access toggle', () => {
+      return wrapper.vm.$nextTick(() => {
+        expect(wrapper.find({ ref: 'metrics-visibility-settings' }).exists()).toBe(true);
+      });
+    });
+
+    it('should set the visibility level description based upon the selected visibility level', () => {
+      wrapper
+        .find('[name="project[project_feature_attributes][metrics_dashboard_access_level]"]')
+        .setValue(visibilityOptions.PUBLIC);
+
+      expect(wrapper.vm.metricsAccessLevel).toBe(visibilityOptions.PUBLIC);
+    });
+
+    it('should contain help text', () => {
+      wrapper = overrideCurrentSettings({ visibilityLevel: visibilityOptions.PRIVATE });
+
+      expect(wrapper.find({ ref: 'metrics-visibility-settings' }).props().helpText).toEqual(
+        'With Metrics Dashboard you can visualize this project performance metrics',
+      );
     });
   });
 });

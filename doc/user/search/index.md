@@ -81,6 +81,14 @@ You can filter issues and merge requests by specific terms included in titles or
 
 ![filter issues by specific terms](img/issue_search_by_term.png)
 
+### Filtering by ID
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/39908) in GitLab 12.1.
+
+You can filter the **Issues** list to individual instances by their ID. For example, enter filter `#10` to return only issue 10. The same applies to the **Merge Requests** list. Enter filter `#30` to return only merge request 30.
+
+![filter issues by specific id](img/issue_search_by_id.png)
+
 ### Filtering merge requests by approvers **(STARTER)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/9468) in [GitLab Starter](https://about.gitlab.com/pricing/) 11.9.
@@ -98,7 +106,9 @@ You can view recent searches by clicking on the little arrow-clock icon, which i
 
 ## Removing search filters
 
-Individual filters can be removed by clicking on the filter's (x) button or backspacing. The entire search filter can be cleared by clicking on the search box's (x) button.
+Individual filters can be removed by clicking on the filter's (x) button or backspacing. The entire search filter can be cleared by clicking on the search box's (x) button or via <kbd>⌘</kbd> (Mac) + <kbd>⌫</kbd>.
+
+To delete filter tokens one at a time, the <kbd>⌥</kbd> (Mac) / <kbd>Ctrl</kbd> + <kbd>⌫</kbd> keyboard combination can be used.
 
 ## Filtering with multiple filters of the same type
 

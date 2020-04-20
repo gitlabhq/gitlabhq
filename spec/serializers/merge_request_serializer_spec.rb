@@ -69,6 +69,22 @@ describe MergeRequestSerializer do
     end
   end
 
+  context 'poll cached widget merge request serialization' do
+    let(:serializer) { 'poll_cached_widget' }
+
+    it 'matches basic merge request json schema' do
+      expect(json_entity).to match_schema('entities/merge_request_poll_cached_widget')
+    end
+  end
+
+  context 'poll widget merge request serialization' do
+    let(:serializer) { 'poll_widget' }
+
+    it 'matches basic merge request json schema' do
+      expect(json_entity).to match_schema('entities/merge_request_poll_widget')
+    end
+  end
+
   context 'no serializer' do
     let(:serializer) { nil }
 

@@ -28,7 +28,8 @@ module Autocomplete
         .optionally_search(search, include_namespace: true)
         .excluding_project(project_id)
         .eager_load_namespace_and_owner
-        .sorted_by_name_asc_limited(LIMIT)
+        .sorted_by_stars_desc
+        .limit(LIMIT) # rubocop: disable CodeReuse/ActiveRecord
     end
   end
 end

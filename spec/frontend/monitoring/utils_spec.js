@@ -1,17 +1,17 @@
 import * as monitoringUtils from '~/monitoring/utils';
 import { queryToObject, mergeUrlParams, removeParams } from '~/lib/utils/url_utility';
+import { TEST_HOST } from 'jest/helpers/test_constants';
 import {
-  mockHost,
   mockProjectDir,
   graphDataPrometheusQuery,
-  graphDataPrometheusQueryRange,
   anomalyMockGraphData,
   barMockData,
 } from './mock_data';
+import { graphData } from './fixture_data';
 
 jest.mock('~/lib/utils/url_utility');
 
-const mockPath = `${mockHost}${mockProjectDir}/-/environments/29/metrics`;
+const mockPath = `${TEST_HOST}${mockProjectDir}/-/environments/29/metrics`;
 
 const generatedLink = 'http://chart.link.com';
 
@@ -101,10 +101,7 @@ describe('monitoring/utils', () => {
      * the validator will look for the `values` key instead of `value`
      */
     it('validates data with the query_range format', () => {
-      const validGraphData = monitoringUtils.graphDataValidatorForValues(
-        false,
-        graphDataPrometheusQueryRange,
-      );
+      const validGraphData = monitoringUtils.graphDataValidatorForValues(false, graphData);
 
       expect(validGraphData).toBe(true);
     });

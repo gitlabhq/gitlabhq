@@ -30,6 +30,11 @@ module Metrics
       def sequence
         [STAGES::EndpointInserter]
       end
+
+      override :identifiers
+      def identifiers
+        Digest::SHA256.hexdigest(params[:embed_json])
+      end
     end
   end
 end

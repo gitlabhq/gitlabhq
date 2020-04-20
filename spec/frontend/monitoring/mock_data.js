@@ -1,12 +1,46 @@
-import { mapToDashboardViewModel } from '~/monitoring/stores/utils';
-
 // This import path needs to be relative for now because this mock data is used in
 // Karma specs too, where the helpers/test_constants alias can not be resolved
 import { TEST_HOST } from '../helpers/test_constants';
 
-export const mockHost = 'http://test.host';
 export const mockProjectDir = '/frontend-fixtures/environments-project';
 export const mockApiEndpoint = `${TEST_HOST}/monitoring/mock`;
+
+export const propsData = {
+  hasMetrics: false,
+  documentationPath: '/path/to/docs',
+  settingsPath: '/path/to/settings',
+  clustersPath: '/path/to/clusters',
+  tagsPath: '/path/to/tags',
+  projectPath: '/path/to/project',
+  logsPath: '/path/to/logs',
+  defaultBranch: 'master',
+  metricsEndpoint: mockApiEndpoint,
+  deploymentsEndpoint: null,
+  emptyGettingStartedSvgPath: '/path/to/getting-started.svg',
+  emptyLoadingSvgPath: '/path/to/loading.svg',
+  emptyNoDataSvgPath: '/path/to/no-data.svg',
+  emptyNoDataSmallSvgPath: '/path/to/no-data-small.svg',
+  emptyUnableToConnectSvgPath: '/path/to/unable-to-connect.svg',
+  currentEnvironmentName: 'production',
+  customMetricsAvailable: false,
+  customMetricsPath: '',
+  validateQueryPath: '',
+};
+
+const customDashboardsData = new Array(30).fill(null).map((_, idx) => ({
+  default: false,
+  display_name: `Custom Dashboard ${idx}`,
+  can_edit: true,
+  system_dashboard: false,
+  project_blob_path: `${mockProjectDir}/blob/master/dashboards/.gitlab/dashboards/dashboard_${idx}.yml`,
+  path: `.gitlab/dashboards/dashboard_${idx}.yml`,
+}));
+
+export const mockDashboardsErrorResponse = {
+  all_dashboards: customDashboardsData,
+  message: "Each 'panel_group' must define an array :panels",
+  status: 'error',
+};
 
 export const anomalyDeploymentData = [
   {
@@ -213,129 +247,26 @@ export const deploymentData = [
 export const annotationsData = [
   {
     id: 'gid://gitlab/Metrics::Dashboard::Annotation/1',
-    starting_at: '2020-04-01T12:51:58.373Z',
-    ending_at: null,
+    startingAt: '2020-04-12 12:51:53 UTC',
+    endingAt: null,
     panelId: null,
     description: 'This is a test annotation',
   },
   {
     id: 'gid://gitlab/Metrics::Dashboard::Annotation/2',
     description: 'test annotation 2',
-    starting_at: '2020-04-02T12:51:58.373Z',
-    ending_at: null,
+    startingAt: '2020-04-13 12:51:53 UTC',
+    endingAt: null,
     panelId: null,
   },
   {
     id: 'gid://gitlab/Metrics::Dashboard::Annotation/3',
     description: 'test annotation 3',
-    starting_at: '2020-04-04T12:51:58.373Z',
-    ending_at: null,
+    startingAt: '2020-04-16 12:51:53 UTC',
+    endingAt: null,
     panelId: null,
   },
 ];
-
-export const metricsNewGroupsAPIResponse = [
-  {
-    group: 'System metrics (Kubernetes)',
-    priority: 5,
-    panels: [
-      {
-        title: 'Memory Usage (Pod average)',
-        type: 'area-chart',
-        y_label: 'Memory Used per Pod',
-        weight: 2,
-        metrics: [
-          {
-            id: 'system_metrics_kubernetes_container_memory_average',
-            query_range:
-              'avg(sum(container_memory_usage_bytes{container_name!="POD",pod_name=~"^%{ci_environment_slug}-([^c].*|c([^a]|a([^n]|n([^a]|a([^r]|r[^y])))).*|)-(.*)",namespace="%{kube_namespace}"}) by (job)) without (job) / count(avg(container_memory_usage_bytes{container_name!="POD",pod_name=~"^%{ci_environment_slug}-([^c].*|c([^a]|a([^n]|n([^a]|a([^r]|r[^y])))).*|)-(.*)",namespace="%{kube_namespace}"}) without (job)) /1024/1024',
-            label: 'Pod average',
-            unit: 'MB',
-            metric_id: 17,
-            prometheus_endpoint_path:
-              '/root/autodevops-deploy/environments/32/prometheus/api/v1/query_range?query=avg%28sum%28container_memory_usage_bytes%7Bcontainer_name%21%3D%22POD%22%2Cpod_name%3D~%22%5E%25%7Bci_environment_slug%7D-%28%5B%5Ec%5D.%2A%7Cc%28%5B%5Ea%5D%7Ca%28%5B%5En%5D%7Cn%28%5B%5Ea%5D%7Ca%28%5B%5Er%5D%7Cr%5B%5Ey%5D%29%29%29%29.%2A%7C%29-%28.%2A%29%22%2Cnamespace%3D%22%25%7Bkube_namespace%7D%22%7D%29+by+%28job%29%29+without+%28job%29+%2F+count%28avg%28container_memory_usage_bytes%7Bcontainer_name%21%3D%22POD%22%2Cpod_name%3D~%22%5E%25%7Bci_environment_slug%7D-%28%5B%5Ec%5D.%2A%7Cc%28%5B%5Ea%5D%7Ca%28%5B%5En%5D%7Cn%28%5B%5Ea%5D%7Ca%28%5B%5Er%5D%7Cr%5B%5Ey%5D%29%29%29%29.%2A%7C%29-%28.%2A%29%22%2Cnamespace%3D%22%25%7Bkube_namespace%7D%22%7D%29+without+%28job%29%29+%2F1024%2F1024',
-            appearance: {
-              line: {
-                width: 2,
-              },
-            },
-          },
-        ],
-      },
-    ],
-  },
-];
-
-const metricsResult = [
-  {
-    metric: {},
-    values: [
-      [1563272065.589, '10.396484375'],
-      [1563272125.589, '10.333984375'],
-      [1563272185.589, '10.333984375'],
-      [1563272245.589, '10.333984375'],
-      [1563272305.589, '10.333984375'],
-      [1563272365.589, '10.333984375'],
-      [1563272425.589, '10.38671875'],
-      [1563272485.589, '10.333984375'],
-      [1563272545.589, '10.333984375'],
-      [1563272605.589, '10.333984375'],
-      [1563272665.589, '10.333984375'],
-      [1563272725.589, '10.333984375'],
-      [1563272785.589, '10.396484375'],
-      [1563272845.589, '10.333984375'],
-      [1563272905.589, '10.333984375'],
-      [1563272965.589, '10.3984375'],
-      [1563273025.589, '10.337890625'],
-      [1563273085.589, '10.34765625'],
-      [1563273145.589, '10.337890625'],
-      [1563273205.589, '10.337890625'],
-      [1563273265.589, '10.337890625'],
-      [1563273325.589, '10.337890625'],
-      [1563273385.589, '10.337890625'],
-      [1563273445.589, '10.337890625'],
-      [1563273505.589, '10.337890625'],
-      [1563273565.589, '10.337890625'],
-      [1563273625.589, '10.337890625'],
-      [1563273685.589, '10.337890625'],
-      [1563273745.589, '10.337890625'],
-      [1563273805.589, '10.337890625'],
-      [1563273865.589, '10.390625'],
-      [1563273925.589, '10.390625'],
-    ],
-  },
-];
-
-export const mockedEmptyResult = {
-  metricId: '1_response_metrics_nginx_ingress_throughput_status_code',
-  result: [],
-};
-
-export const mockedEmptyThroughputResult = {
-  metricId: 'NO_DB_response_metrics_nginx_ingress_16_throughput_status_code',
-  result: [],
-};
-
-export const mockedQueryResultPayload = {
-  metricId: '12_system_metrics_kubernetes_container_memory_total',
-  result: metricsResult,
-};
-
-export const mockedQueryResultPayloadCoresTotal = {
-  metricId: '13_system_metrics_kubernetes_container_cores_total',
-  result: metricsResult,
-};
-
-export const mockedQueryResultFixture = {
-  // First metric in fixture `metrics_dashboard/environment_metrics_dashboard.json`
-  metricId: 'NO_DB_response_metrics_nginx_ingress_throughput_status_code',
-  result: metricsResult,
-};
-
-export const mockedQueryResultFixtureStatusCode = {
-  metricId: 'NO_DB_response_metrics_nginx_ingress_latency_pod_average',
-  result: metricsResult,
-};
 
 const extraEnvironmentData = new Array(15).fill(null).map((_, idx) => ({
   id: `gid://gitlab/Environments/${150 + idx}`,
@@ -384,158 +315,6 @@ export const environmentData = [
   },
 ].concat(extraEnvironmentData);
 
-export const metricsDashboardPayload = {
-  dashboard: 'Environment metrics',
-  priority: 1,
-  panel_groups: [
-    {
-      group: 'System metrics (Kubernetes)',
-      priority: 5,
-      panels: [
-        {
-          title: 'Memory Usage (Total)',
-          type: 'area-chart',
-          y_label: 'Total Memory Used',
-          weight: 4,
-          y_axis: {
-            format: 'megabytes',
-          },
-          metrics: [
-            {
-              id: 'system_metrics_kubernetes_container_memory_total',
-              query_range:
-                'avg(sum(container_memory_usage_bytes{container_name!="POD",pod_name=~"^%{ci_environment_slug}-(.*)",namespace="%{kube_namespace}"}) by (job)) without (job)  /1000/1000',
-              label: 'Total',
-              unit: 'MB',
-              metric_id: 12,
-              prometheus_endpoint_path: 'http://test',
-            },
-          ],
-        },
-        {
-          title: 'Core Usage (Total)',
-          type: 'area-chart',
-          y_label: 'Total Cores',
-          weight: 3,
-          metrics: [
-            {
-              id: 'system_metrics_kubernetes_container_cores_total',
-              query_range:
-                'avg(sum(rate(container_cpu_usage_seconds_total{container_name!="POD",pod_name=~"^%{ci_environment_slug}-(.*)",namespace="%{kube_namespace}"}[15m])) by (job)) without (job)',
-              label: 'Total',
-              unit: 'cores',
-              metric_id: 13,
-            },
-          ],
-        },
-        {
-          title: 'Memory Usage (Pod average)',
-          type: 'line-chart',
-          y_label: 'Memory Used per Pod',
-          weight: 2,
-          metrics: [
-            {
-              id: 'system_metrics_kubernetes_container_memory_average',
-              query_range:
-                'avg(sum(container_memory_usage_bytes{container_name!="POD",pod_name=~"^%{ci_environment_slug}-(.*)",namespace="%{kube_namespace}"}) by (job)) without (job) / count(avg(container_memory_usage_bytes{container_name!="POD",pod_name=~"^%{ci_environment_slug}-(.*)",namespace="%{kube_namespace}"}) without (job)) /1024/1024',
-              label: 'Pod average',
-              unit: 'MB',
-              metric_id: 14,
-            },
-          ],
-        },
-        {
-          title: 'memories',
-          type: 'area-chart',
-          y_label: 'memories',
-          metrics: [
-            {
-              id: 'metric_of_ages_1000',
-              label: 'memory_1000',
-              unit: 'count',
-              prometheus_endpoint_path: '/root',
-              metric_id: 20,
-            },
-            {
-              id: 'metric_of_ages_1001',
-              label: 'memory_1000',
-              unit: 'count',
-              prometheus_endpoint_path: '/root',
-              metric_id: 21,
-            },
-            {
-              id: 'metric_of_ages_1002',
-              label: 'memory_1000',
-              unit: 'count',
-              prometheus_endpoint_path: '/root',
-              metric_id: 22,
-            },
-            {
-              id: 'metric_of_ages_1003',
-              label: 'memory_1000',
-              unit: 'count',
-              prometheus_endpoint_path: '/root',
-              metric_id: 23,
-            },
-            {
-              id: 'metric_of_ages_1004',
-              label: 'memory_1004',
-              unit: 'count',
-              prometheus_endpoint_path: '/root',
-              metric_id: 24,
-            },
-          ],
-        },
-      ],
-    },
-    {
-      group: 'Response metrics (NGINX Ingress VTS)',
-      priority: 10,
-      panels: [
-        {
-          metrics: [
-            {
-              id: 'response_metrics_nginx_ingress_throughput_status_code',
-              label: 'Status Code',
-              metric_id: 1,
-              prometheus_endpoint_path:
-                '/root/autodevops-deploy/environments/32/prometheus/api/v1/query_range?query=sum%28rate%28nginx_upstream_responses_total%7Bupstream%3D~%22%25%7Bkube_namespace%7D-%25%7Bci_environment_slug%7D-.%2A%22%7D%5B2m%5D%29%29+by+%28status_code%29',
-              query_range:
-                'sum(rate(nginx_upstream_responses_total{upstream=~"%{kube_namespace}-%{ci_environment_slug}-.*"}[2m])) by (status_code)',
-              unit: 'req / sec',
-            },
-          ],
-          title: 'Throughput',
-          type: 'area-chart',
-          weight: 1,
-          y_label: 'Requests / Sec',
-        },
-      ],
-    },
-  ],
-};
-
-/**
- * Mock of response of metrics_dashboard.json
- */
-export const metricsDashboardResponse = {
-  all_dashboards: [],
-  dashboard: metricsDashboardPayload,
-  metrics_data: {},
-  status: 'success',
-};
-
-export const metricsDashboardViewModel = mapToDashboardViewModel(metricsDashboardPayload);
-
-const customDashboardsData = new Array(30).fill(null).map((_, idx) => ({
-  default: false,
-  display_name: `Custom Dashboard ${idx}`,
-  can_edit: true,
-  system_dashboard: false,
-  project_blob_path: `${mockProjectDir}/blob/master/dashboards/.gitlab/dashboards/dashboard_${idx}.yml`,
-  path: `.gitlab/dashboards/dashboard_${idx}.yml`,
-}));
-
 export const dashboardGitResponse = [
   {
     default: true,
@@ -548,11 +327,19 @@ export const dashboardGitResponse = [
   ...customDashboardsData,
 ];
 
-export const mockDashboardsErrorResponse = {
-  all_dashboards: customDashboardsData,
-  message: "Each 'panel_group' must define an array :panels",
-  status: 'error',
-};
+// Metrics mocks
+
+export const metricsResult = [
+  {
+    metric: {},
+    values: [
+      [1563272065.589, '10.396484375'],
+      [1563272125.589, '10.333984375'],
+      [1563272185.589, '10.333984375'],
+      [1563272245.589, '10.333984375'],
+    ],
+  },
+];
 
 export const graphDataPrometheusQuery = {
   title: 'Super Chart A2',
@@ -572,29 +359,6 @@ export const graphDataPrometheusQuery = {
         {
           metric: { job: 'prometheus' },
           value: ['2019-06-26T21:03:20.881Z', 91],
-        },
-      ],
-    },
-  ],
-};
-
-export const graphDataPrometheusQueryRange = {
-  title: 'Super Chart A1',
-  type: 'area-chart',
-  weight: 2,
-  metrics: [
-    {
-      metricId: '2_metric_a',
-      query_range:
-        'avg(sum(container_memory_usage_bytes{container_name!="POD",pod_name=~"^%{ci_environment_slug}-(.*)",namespace="%{kube_namespace}"}) by (job)) without (job)  /1024/1024/1024',
-      unit: 'MB',
-      label: 'Total Consumption',
-      prometheus_endpoint_path:
-        '/root/kubernetes-gke-project/environments/35/prometheus/api/v1/query?query=max%28go_memstats_alloc_bytes%7Bjob%3D%22prometheus%22%7D%29+by+%28job%29+%2F1024%2F1024',
-      result: [
-        {
-          metric: {},
-          values: [[1495700554.925, '8.0390625'], [1495700614.925, '8.0390625']],
         },
       ],
     },

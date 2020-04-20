@@ -20,13 +20,35 @@ describe ::PodLogs::KubernetesService do
   end
 
   let(:raw_pods) do
-    JSON.parse([
-      kube_pod(name: pod_name),
-      kube_pod(name: pod_name_2, container_name: container_name_2)
-    ].to_json, object_class: OpenStruct)
+    [
+      {
+        name: pod_name,
+        container_names: [container_name, "#{container_name}-1"]
+      },
+      {
+        name: pod_name_2,
+        container_names: [container_name_2, "#{container_name_2}-1"]
+      }
+    ]
   end
 
   subject { described_class.new(cluster, namespace, params: params) }
+
+  describe '#get_raw_pods' do
+    let(:service) { create(:cluster_platform_kubernetes, :configured) }
+
+    it 'returns success with passthrough k8s response' do
+      stub_kubeclient_pods(namespace)
+
+      result = subject.send(:get_raw_pods, {})
+
+      expect(result[:status]).to eq(:success)
+      expect(result[:raw_pods]).to eq([{
+        name: 'kube-pod',
+        container_names: %w(container-0 container-0-1)
+      }])
+    end
+  end
 
   describe '#pod_logs' do
     let(:result_arg) do
@@ -233,7 +255,7 @@ describe ::PodLogs::KubernetesService do
     end
 
     it 'returns error if container_name was not specified and there are no containers on the pod' do
-      raw_pods.first.spec.containers = []
+      raw_pods.first[:container_names] = []
 
       result = subject.send(:check_container_name,
         pod_name: pod_name,

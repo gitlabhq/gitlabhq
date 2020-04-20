@@ -366,9 +366,22 @@ class MergeRequestDiff < ApplicationRecord
   end
   # rubocop: enable CodeReuse/ServiceClass
 
-  def modified_paths
-    strong_memoize(:modified_paths) do
-      merge_request_diff_files.pluck(:new_path, :old_path).flatten.uniq
+  def modified_paths(fallback_on_overflow: false)
+    if fallback_on_overflow && overflow?
+      # This is an extremely slow means to find the modified paths for a given
+      #   MergeRequestDiff. This should be avoided, except where the limit of
+      #   1_000 (as of %12.10) entries returned by the default behavior is an
+      #   issue.
+      strong_memoize(:overflowed_modified_paths) do
+        project.repository.diff_stats(
+          base_commit_sha,
+          head_commit_sha
+        ).paths
+      end
+    else
+      strong_memoize(:modified_paths) do
+        merge_request_diff_files.pluck(:new_path, :old_path).flatten.uniq
+      end
     end
   end
 

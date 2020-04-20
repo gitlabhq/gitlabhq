@@ -35,6 +35,18 @@ module Clusters
             application.modsecurity_mode = params[:modsecurity_mode] || 0
           end
 
+          if application.has_attribute?(:host)
+            application.host = params[:host]
+          end
+
+          if application.has_attribute?(:protocol)
+            application.protocol = params[:protocol]
+          end
+
+          if application.has_attribute?(:port)
+            application.port = params[:port]
+          end
+
           if application.respond_to?(:oauth_application)
             application.oauth_application = create_oauth_application(application, request)
           end

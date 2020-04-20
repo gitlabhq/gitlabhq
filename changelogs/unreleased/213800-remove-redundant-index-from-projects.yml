@@ -1,0 +1,5 @@
+---
+title: Remove redundant index from projects table
+merge_request: 29507
+author:
+type: performance

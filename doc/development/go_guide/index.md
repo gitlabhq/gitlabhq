@@ -379,6 +379,24 @@ are:
 To reduce unnecessary differences between two distribution methods, Omnibus and
 CNG **should always use the same Go version**.
 
+## Secure Team standards and style guidelines
+
+The following are some style guidelines that are specific to the Secure Team.
+
+### Code style and format
+
+Use `goimports -local gitlab.com/gitlab-org` before committing.
+[goimports](https://godoc.org/golang.org/x/tools/cmd/goimports)
+is a tool that automatically formats Go source code using
+[Gofmt](https://golang.org/cmd/gofmt/), in addition to formatting import lines,
+adding missing ones and removing unreferenced ones.
+By using the `-local gitlab.com/gitlab-org` option, `goimports` will group locally referenced
+packages separately from external ones. See
+[the imports section](https://github.com/golang/go/wiki/CodeReviewComments#imports)
+of the Code Review Comments page on the Go wiki for more details.
+Most editors/IDEs will allow you to run commands before/after saving a file, you can set it
+up to run `goimports -local gitlab.com/gitlab-org` so that it's applied to every file when saving.
+
 ---
 
 [Return to Development documentation](../README.md).

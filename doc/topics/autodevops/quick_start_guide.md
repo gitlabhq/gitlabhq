@@ -64,8 +64,6 @@ to deploy this project to.
 1. On the **Add a Kubernetes cluster integration** page, click the **Create new cluster** tab,
    then click **Google GKE**.
 
-   ![Google sign in](img/guide_google_signin_v12_3.png)
-
 1. Connect with your Google account, and click **Allow** to allow access to your
    Google account. (This authorization request is only displayed the first time
    you connect GitLab with your Google account.)
@@ -86,7 +84,8 @@ to deploy this project to.
    - **Number of nodes**
    - **Machine type** - For more information about
      [machine types](https://cloud.google.com/compute/docs/machine-types), see Google's documentation.
-   - **Enable Cloud Run for Anthos** - Select this checkbox to use the Cloud Run,
+   - **Enable Cloud Run for Anthos** - Select this checkbox to use the
+     [Cloud Run](../../user/project/clusters/add_gke_clusters.md#cloud-run-for-anthos),
      Istio, and HTTP Load Balancing add-ons for this cluster.
    - **GitLab-managed cluster** - Select this checkbox to
      [allow GitLab to manage namespace and service accounts](../..//user/project/clusters/index.md#gitlab-managed-clusters) for this cluster.
@@ -184,7 +183,7 @@ The jobs are separated into stages:
     susceptible to vulnerabilities and is allowed to fail
     ([Auto Dependency Scanning](stages.md#auto-dependency-scanning-ultimate)) **(ULTIMATE)**
   - The `sast` job runs static analysis on the current code to check for potential
-    security issues and is allowed to fail([Auto SAST](stages.md#auto-sast-ultimate)) **(ULTIMATE)**
+    security issues and is allowed to fail ([Auto SAST](stages.md#auto-sast-ultimate)) **(ULTIMATE)**
   - The `license_management` job searches the application's dependencies to determine each of their
     licenses and is allowed to fail
     ([Auto License Compliance](stages.md#auto-license-compliance-ultimate)) **(ULTIMATE)**
@@ -211,15 +210,17 @@ you to common environment tasks:
 
 ![Environments](img/guide_environments_v12_3.png)
 
-- **{external-link}** **Open live environment** - Opens the URL of the application deployed in production
-- **{chart}** **Monitoring** - Opens the metrics page where Prometheus collects data
+- **Open live environment** (**{external-link}**) - Opens the URL of the application deployed in production
+- **Monitoring** (**{chart}**) - Opens the metrics page where Prometheus collects data
   about the Kubernetes cluster and how the application
   affects it in terms of memory usage, CPU usage, and latency
-- **{play}** **{angle-down}** **Deploy to** - Displays a list of environments you can deploy to
-- **{terminal}** **Terminal** - Opens a [web terminal](../../ci/environments.md#web-terminals)
+- **Deploy to** (**{play}** **{angle-down}**) - Displays a list of environments you can deploy to
+- **Terminal** (**{terminal}**) - Opens a [web terminal](../../ci/environments.md#web-terminals)
   session inside the container where the application is running
-- **{repeat}** **Re-deploy to environment**
-- **{stop}** **Stop environment**
+- **Re-deploy to environment** (**{repeat}**) - For more information, see
+  [Retrying and rolling back](../../ci/environments.md#retrying-and-rolling-back)
+- **Stop environment** (**{stop}**) - For more information, see
+  [Stopping an environment](../../ci/environments.md#stopping-an-environment)
 
 GitLab displays the [Deploy Board](../../user/project/deploy_boards.md) below the
 environment's information, with squares representing pods in your
@@ -279,13 +280,13 @@ To fix the broken test:
 1. Change line 7 to say `You're on Rails! Powered by GitLab Auto DevOps.`
 1. Click **Commit**.
 1. In the left-hand column, under **Unstaged changes**, click the checkmark icon
-   to stage the changes.
+   (**{stage-all}**) to stage the changes.
 1. Write a commit message, and click **Commit**.
 
 Return to the **Overview** page of your merge request, and you should not only
 see the test passing, but also the application deployed as a
 [review application](stages.md#auto-review-apps). You can visit it by clicking
-the **View app** button to see your changes deployed.
+the **View app** **{external-link}** button to see your changes deployed.
 
 ![Review app](img/guide_merge_request_review_app_v12_3.png)
 

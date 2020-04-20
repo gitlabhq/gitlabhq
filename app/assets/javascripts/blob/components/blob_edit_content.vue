@@ -1,5 +1,6 @@
 <script>
 import { initEditorLite } from '~/blob/utils';
+import { debounce } from 'lodash';
 
 export default {
   props: {
@@ -32,16 +33,14 @@ export default {
     });
   },
   methods: {
-    triggerFileChange() {
+    triggerFileChange: debounce(function debouncedFileChange() {
       this.$emit('input', this.editor.getValue());
-    },
+    }, 250),
   },
 };
 </script>
 <template>
   <div class="file-content code">
-    <pre id="editor" ref="editor" data-editor-loading @focusout="triggerFileChange">{{
-      value
-    }}</pre>
+    <pre id="editor" ref="editor" data-editor-loading @keyup="triggerFileChange">{{ value }}</pre>
   </div>
 </template>

@@ -23,22 +23,22 @@ see the [system hooks] documentation.
 
 ## Setup
 
-The file hooks must be placed directly into the `plugins` directory, subdirectories
+The file hooks must be placed directly into the `file_hooks` directory, subdirectories
 will be ignored. There is an
-[`example` directory inside `plugins`](https://gitlab.com/gitlab-org/gitlab/tree/master/plugins/examples)
+[`example` directory inside `file_hooks`](https://gitlab.com/gitlab-org/gitlab/tree/master/file_hooks/examples)
 where you can find some basic examples.
 
 Follow the steps below to set up a custom hook:
 
 1. On the GitLab server, navigate to the plugin directory.
    For an installation from source the path is usually
-   `/home/git/gitlab/plugins/`. For Omnibus installs the path is
-   usually `/opt/gitlab/embedded/service/gitlab-rails/plugins`.
+   `/home/git/gitlab/file_hooks/`. For Omnibus installs the path is
+   usually `/opt/gitlab/embedded/service/gitlab-rails/file_hooks`.
 
     For [highly available] configurations, your hook file should exist on each
     application server.
 
-1. Inside the `plugins` directory, create a file with a name of your choice,
+1. Inside the `file_hooks` directory, create a file with a name of your choice,
    without spaces or special characters.
 1. Make the hook file executable and make sure it's owned by the Git user.
 1. Write the code to make the file hook function as expected. That can be
@@ -106,9 +106,9 @@ bundle exec rake file_hooks:validate RAILS_ENV=production
 Example of output:
 
 ```plaintext
-Validating file hooks from /plugins directory
-* /home/git/gitlab/plugins/save_to_file.clj succeed (zero exit code)
-* /home/git/gitlab/plugins/save_to_file.rb failure (non-zero exit code)
+Validating file hooks from /file_hooks directory
+* /home/git/gitlab/file_hooks/save_to_file.clj succeed (zero exit code)
+* /home/git/gitlab/file_hooks/save_to_file.rb failure (non-zero exit code)
 ```
 
 [system hooks]: ../system_hooks/system_hooks.md

@@ -38,3 +38,4 @@ exclude_paths:
   - backups/
   - coverage-javascript/
   - plugins/
+  - file_hooks/

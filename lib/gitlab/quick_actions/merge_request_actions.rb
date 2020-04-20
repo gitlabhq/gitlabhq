@@ -8,14 +8,49 @@ module Gitlab
 
       included do
         # MergeRequest only quick actions definitions
-        desc _('Merge (when the pipeline succeeds)')
-        explanation _('Merges this merge request when the pipeline succeeds.')
-        execution_message _('Scheduled to merge this merge request when the pipeline succeeds.')
+        desc do
+          if Feature.enabled?(:merge_orchestration_service, quick_action_target.project, default_enabled: true)
+            if preferred_strategy = preferred_auto_merge_strategy(quick_action_target)
+              _("Merge automatically (%{strategy})") % { strategy: preferred_strategy.humanize }
+            else
+              _("Merge immediately")
+            end
+          else
+            _('Merge (when the pipeline succeeds)')
+          end
+        end
+        explanation do
+          if Feature.enabled?(:merge_orchestration_service, quick_action_target.project, default_enabled: true)
+            if preferred_strategy = preferred_auto_merge_strategy(quick_action_target)
+              _("Schedules to merge this merge request (%{strategy}).") % { strategy: preferred_strategy.humanize }
+            else
+              _('Merges this merge request immediately.')
+            end
+          else
+            _('Merges this merge request when the pipeline succeeds.')
+          end
+        end
+        execution_message do
+          if Feature.enabled?(:merge_orchestration_service, quick_action_target.project, default_enabled: true)
+            if preferred_strategy = preferred_auto_merge_strategy(quick_action_target)
+              _("Scheduled to merge this merge request (%{strategy}).") % { strategy: preferred_strategy.humanize }
+            else
+              _('Merged this merge request.')
+            end
+          else
+            _('Scheduled to merge this merge request when the pipeline succeeds.')
+          end
+        end
         types MergeRequest
         condition do
-          last_diff_sha = params && params[:merge_request_diff_head_sha]
-          quick_action_target.persisted? &&
-            quick_action_target.mergeable_with_quick_action?(current_user, autocomplete_precheck: !last_diff_sha, last_diff_sha: last_diff_sha)
+          if Feature.enabled?(:merge_orchestration_service, quick_action_target.project, default_enabled: true)
+            quick_action_target.persisted? &&
+              merge_orchestration_service.can_merge?(quick_action_target)
+          else
+            last_diff_sha = params && params[:merge_request_diff_head_sha]
+            quick_action_target.persisted? &&
+              quick_action_target.mergeable_with_quick_action?(current_user, autocomplete_precheck: !last_diff_sha, last_diff_sha: last_diff_sha)
+          end
         end
         command :merge do
           @updates[:merge] = params[:merge_request_diff_head_sha]
@@ -69,6 +104,14 @@ module Gitlab
         command :target_branch do |branch_name|
           @updates[:target_branch] = branch_name if project.repository.branch_exists?(branch_name)
         end
+      end
+
+      def merge_orchestration_service
+        @merge_orchestration_service ||= MergeRequests::MergeOrchestrationService.new(project, current_user)
+      end
+
+      def preferred_auto_merge_strategy(merge_request)
+        merge_orchestration_service.preferred_auto_merge_strategy(merge_request)
       end
     end
   end

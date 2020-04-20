@@ -118,7 +118,7 @@ not without its own challenges:
   instance of Docker engine so they won't conflict with each other. But this
   also means that jobs can be slower because there's no caching of layers.
 - By default, Docker 17.09 and higher uses `--storage-driver overlay2` which is
-  the recommended storage driver. See [Using the overlayfs driver](#using-the-overlayfs-driver)
+  the recommended storage driver. See [Using the overlayfs driver](#use-the-overlayfs-driver)
   for details.
 - Since the `docker:19.03.8-dind` container and the Runner container don't share their
   root filesystem, the job's working directory can be used as a mount point for
@@ -448,7 +448,7 @@ The steps in the `script` section for the `build` stage can be summed up to:
 1. The last two commands push the tagged Docker images to the container registry
    so that they may also be used as cache for subsequent builds.
 
-## Using the OverlayFS driver
+## Use the OverlayFS driver
 
 NOTE: **Note:**
 The shared Runners on GitLab.com use the `overlay2` driver by default.
@@ -480,18 +480,22 @@ which can be avoided if a different driver is used, for example `overlay2`.
    overlay
    ```
 
-### Use driver per project
+### Use the OverlayFS driver per project
 
-You can enable the driver for each project individually by editing the project's `.gitlab-ci.yml`:
+You can enable the driver for each project individually by using the `DOCKER_DRIVER`
+environment [variable](../yaml/README.md#variables) in `.gitlab-ci.yml`:
 
 ```yaml
 variables:
   DOCKER_DRIVER: overlay2
 ```
 
-### Use driver for every project
+### Use the OverlayFS driver for every project
 
-To enable the driver for every project, you can set the environment variable for every build by adding `environment` in the `[[runners]]` section of `config.toml`:
+If you use your own [GitLab Runners](https://docs.gitlab.com/runner/), you
+can enable the driver for every project by setting the `DOCKER_DRIVER`
+environment variable in the
+[`[[runners]]` section of `config.toml`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section):
 
 ```toml
 environment = ["DOCKER_DRIVER=overlay2"]
@@ -499,11 +503,9 @@ environment = ["DOCKER_DRIVER=overlay2"]
 
 If you're running multiple Runners you will have to modify all configuration files.
 
-> **Notes:**
->
-> - More information about the Runner configuration is available in the [Runner documentation](https://docs.gitlab.com/runner/configuration/).
-> - For more information about using OverlayFS with Docker, you can read
->   [Use the OverlayFS storage driver](https://docs.docker.com/engine/userguide/storagedriver/overlayfs-driver/).
+NOTE: **Note:**
+Read more about the [Runner configuration](https://docs.gitlab.com/runner/configuration/)
+and [using the OverlayFS storage driver](https://docs.docker.com/engine/userguide/storagedriver/overlayfs-driver/).
 
 ## Using the GitLab Container Registry
 

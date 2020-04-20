@@ -130,6 +130,7 @@ The following API resources are available outside of project and group contexts 
 | [License](license.md) **(CORE ONLY)**              | `/license`                                                              |
 | [Markdown](markdown.md)                            | `/markdown`                                                             |
 | [Merge requests](merge_requests.md)                | `/merge_requests` (also available for groups and projects)              |
+| [Metrics dashboard annotations](metrics_dashboard_annotations.md)    | `/environments/:id/metrics_dashboard/annotations`     |
 | [Namespaces](namespaces.md)                        | `/namespaces`                                                           |
 | [Notification settings](notification_settings.md)  | `/notification_settings` (also available for groups and projects)       |
 | [Pages domains](pages_domains.md)                  | `/pages/domains` (also available for projects)                          |

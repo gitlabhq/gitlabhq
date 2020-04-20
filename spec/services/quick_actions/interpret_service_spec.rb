@@ -492,7 +492,7 @@ describe QuickActions::InterpretService do
       end
     end
 
-    shared_examples 'merge command' do
+    shared_examples 'merge immediately command' do
       let(:project) { create(:project, :repository) }
 
       it 'runs merge command if content contains /merge' do
@@ -504,7 +504,18 @@ describe QuickActions::InterpretService do
       it 'returns them merge message' do
         _, _, message = service.execute(content, issuable)
 
-        expect(message).to eq('Scheduled to merge this merge request when the pipeline succeeds.')
+        expect(message).to eq('Merged this merge request.')
+      end
+    end
+
+    shared_examples 'merge automatically command' do
+      let(:project) { create(:project, :repository) }
+
+      it 'runs merge command if content contains /merge and returns merge message' do
+        _, updates, message = service.execute(content, issuable)
+
+        expect(updates).to eq(merge: merge_request.diff_head_sha)
+        expect(message).to eq('Scheduled to merge this merge request (Merge when pipeline succeeds).')
       end
     end
 
@@ -675,9 +686,21 @@ describe QuickActions::InterpretService do
     context 'merge command' do
       let(:service) { described_class.new(project, developer, { merge_request_diff_head_sha: merge_request.diff_head_sha }) }
 
-      it_behaves_like 'merge command' do
+      it_behaves_like 'merge immediately command' do
         let(:content) { '/merge' }
         let(:issuable) { merge_request }
+      end
+
+      context 'when the head pipeline of merge request is running' do
+        before do
+          create(:ci_pipeline, :detached_merge_request_pipeline, merge_request: merge_request)
+          merge_request.update_head_pipeline
+        end
+
+        it_behaves_like 'merge automatically command' do
+          let(:content) { '/merge' }
+          let(:issuable) { merge_request }
+        end
       end
 
       context 'can not be merged when logged user does not have permissions' do

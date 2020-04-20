@@ -10,17 +10,17 @@ import TimeSeriesChart from '~/monitoring/components/charts/time_series.vue';
 import AnomalyChart from '~/monitoring/components/charts/anomaly.vue';
 import {
   anomalyMockGraphData,
-  graphDataPrometheusQueryRange,
   mockLogsHref,
   mockLogsPath,
   mockNamespace,
   mockNamespacedData,
   mockTimeRange,
-} from 'jest/monitoring/mock_data';
+} from '../mock_data';
+
+import { graphData, graphDataEmpty } from '../fixture_data';
 import { createStore, monitoringDashboard } from '~/monitoring/stores';
 import { createStore as createEmbedGroupStore } from '~/monitoring/stores/embed_group';
 
-global.IS_EE = true;
 global.URL.createObjectURL = jest.fn();
 
 const mocks = {
@@ -39,10 +39,13 @@ describe('Panel Type component', () => {
 
   const findCopyLink = () => wrapper.find({ ref: 'copyChartLink' });
   const findTimeChart = () => wrapper.find({ ref: 'timeChart' });
+  const findTitle = () => wrapper.find({ ref: 'graphTitle' });
+  const findContextualMenu = () => wrapper.find({ ref: 'contextualMenu' });
 
   const createWrapper = props => {
     wrapper = shallowMount(PanelType, {
       propsData: {
+        graphData,
         ...props,
       },
       store,
@@ -64,14 +67,9 @@ describe('Panel Type component', () => {
   });
 
   describe('When no graphData is available', () => {
-    let glEmptyChart;
-    // Deep clone object before modifying
-    const graphDataNoResult = JSON.parse(JSON.stringify(graphDataPrometheusQueryRange));
-    graphDataNoResult.metrics[0].result = [];
-
     beforeEach(() => {
       createWrapper({
-        graphData: graphDataNoResult,
+        graphData: graphDataEmpty,
       });
     });
 
@@ -80,12 +78,8 @@ describe('Panel Type component', () => {
     });
 
     describe('Empty Chart component', () => {
-      beforeEach(() => {
-        glEmptyChart = wrapper.find(EmptyChart);
-      });
-
       it('renders the chart title', () => {
-        expect(wrapper.find({ ref: 'graphTitle' }).text()).toBe(graphDataNoResult.title);
+        expect(findTitle().text()).toBe(graphDataEmpty.title);
       });
 
       it('renders the no download csv link', () => {
@@ -93,26 +87,19 @@ describe('Panel Type component', () => {
       });
 
       it('does not contain graph widgets', () => {
-        expect(wrapper.find('.js-graph-widgets').exists()).toBe(false);
+        expect(findContextualMenu().exists()).toBe(false);
       });
 
       it('is a Vue instance', () => {
-        expect(glEmptyChart.isVueInstance()).toBe(true);
-      });
-
-      it('it receives a graph title', () => {
-        const props = glEmptyChart.props();
-
-        expect(props.graphTitle).toBe(wrapper.vm.graphData.title);
+        expect(wrapper.find(EmptyChart).exists()).toBe(true);
+        expect(wrapper.find(EmptyChart).isVueInstance()).toBe(true);
       });
     });
   });
 
   describe('when graph data is available', () => {
     beforeEach(() => {
-      createWrapper({
-        graphData: graphDataPrometheusQueryRange,
-      });
+      createWrapper();
     });
 
     afterEach(() => {
@@ -120,11 +107,11 @@ describe('Panel Type component', () => {
     });
 
     it('renders the chart title', () => {
-      expect(wrapper.find({ ref: 'graphTitle' }).text()).toBe(graphDataPrometheusQueryRange.title);
+      expect(findTitle().text()).toBe(graphData.title);
     });
 
     it('contains graph widgets', () => {
-      expect(wrapper.find('.js-graph-widgets').exists()).toBe(true);
+      expect(findContextualMenu().exists()).toBe(true);
       expect(wrapper.find({ ref: 'downloadCsvLink' }).exists()).toBe(true);
     });
 
@@ -177,11 +164,7 @@ describe('Panel Type component', () => {
     const findEditCustomMetricLink = () => wrapper.find({ ref: 'editMetricLink' });
 
     beforeEach(() => {
-      createWrapper({
-        graphData: {
-          ...graphDataPrometheusQueryRange,
-        },
-      });
+      createWrapper();
 
       return wrapper.vm.$nextTick();
     });
@@ -193,10 +176,10 @@ describe('Panel Type component', () => {
     it('is present when the panel contains an edit_path property', () => {
       wrapper.setProps({
         graphData: {
-          ...graphDataPrometheusQueryRange,
+          ...graphData,
           metrics: [
             {
-              ...graphDataPrometheusQueryRange.metrics[0],
+              ...graphData.metrics[0],
               edit_path: '/root/kubernetes-gke-project/prometheus/metrics/23/edit',
             },
           ],
@@ -205,23 +188,6 @@ describe('Panel Type component', () => {
 
       return wrapper.vm.$nextTick(() => {
         expect(findEditCustomMetricLink().exists()).toBe(true);
-      });
-    });
-
-    it('shows an "Edit metric" link for a panel with a single metric', () => {
-      wrapper.setProps({
-        graphData: {
-          ...graphDataPrometheusQueryRange,
-          metrics: [
-            {
-              ...graphDataPrometheusQueryRange.metrics[0],
-              edit_path: '/root/kubernetes-gke-project/prometheus/metrics/23/edit',
-            },
-          ],
-        },
-      });
-
-      return wrapper.vm.$nextTick(() => {
         expect(findEditCustomMetricLink().text()).toBe('Edit metric');
       });
     });
@@ -229,14 +195,14 @@ describe('Panel Type component', () => {
     it('shows an "Edit metrics" link for a panel with multiple metrics', () => {
       wrapper.setProps({
         graphData: {
-          ...graphDataPrometheusQueryRange,
+          ...graphData,
           metrics: [
             {
-              ...graphDataPrometheusQueryRange.metrics[0],
+              ...graphData.metrics[0],
               edit_path: '/root/kubernetes-gke-project/prometheus/metrics/23/edit',
             },
             {
-              ...graphDataPrometheusQueryRange.metrics[0],
+              ...graphData.metrics[0],
               edit_path: '/root/kubernetes-gke-project/prometheus/metrics/23/edit',
             },
           ],
@@ -253,9 +219,7 @@ describe('Panel Type component', () => {
     const findViewLogsLink = () => wrapper.find({ ref: 'viewLogsLink' });
 
     beforeEach(() => {
-      createWrapper({
-        graphData: graphDataPrometheusQueryRange,
-      });
+      createWrapper();
       return wrapper.vm.$nextTick();
     });
 
@@ -327,7 +291,6 @@ describe('Panel Type component', () => {
     beforeEach(() => {
       createWrapper({
         clipboardText,
-        graphData: graphDataPrometheusQueryRange,
       });
     });
 
@@ -353,11 +316,13 @@ describe('Panel Type component', () => {
 
   describe('when downloading metrics data as CSV', () => {
     beforeEach(() => {
-      graphDataPrometheusQueryRange.y_label = 'metric';
       wrapper = shallowMount(PanelType, {
         propsData: {
           clipboardText: exampleText,
-          graphData: graphDataPrometheusQueryRange,
+          graphData: {
+            y_label: 'metric',
+            ...graphData,
+          },
         },
         store,
       });
@@ -370,12 +335,12 @@ describe('Panel Type component', () => {
 
     describe('csvText', () => {
       it('converts metrics data from json to csv', () => {
-        const header = `timestamp,${graphDataPrometheusQueryRange.y_label}`;
-        const data = graphDataPrometheusQueryRange.metrics[0].result[0].values;
+        const header = `timestamp,${graphData.y_label}`;
+        const data = graphData.metrics[0].result[0].values;
         const firstRow = `${data[0][0]},${data[0][1]}`;
         const secondRow = `${data[1][0]},${data[1][1]}`;
 
-        expect(wrapper.vm.csvText).toBe(`${header}\r\n${firstRow}\r\n${secondRow}\r\n`);
+        expect(wrapper.vm.csvText).toMatch(`${header}\r\n${firstRow}\r\n${secondRow}\r\n`);
       });
     });
 
@@ -402,7 +367,7 @@ describe('Panel Type component', () => {
 
       wrapper = shallowMount(PanelType, {
         propsData: {
-          graphData: graphDataPrometheusQueryRange,
+          graphData,
           namespace: mockNamespace,
         },
         store,

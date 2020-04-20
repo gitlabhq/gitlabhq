@@ -78,9 +78,15 @@ To publish an Incident, you first need to create an issue in the Project you ena
 
 Once this issue is created, a background worker will publish the issue onto the status page using the credentials you provided during setup.
 
+NOTE: **Note:**
+Confidential issues are not published. If a published issue is made confidential it will be unpublished.
+
 ### Publishing updates
 
 To publish an update to the Incident, update the incident issue's description.
+
+CAUTION: **Caution:**
+When referenced issues are changed (e.g. title, confidentiality) the incident they were referenced in are not updated automatically.
 
 ### Adding comments
 

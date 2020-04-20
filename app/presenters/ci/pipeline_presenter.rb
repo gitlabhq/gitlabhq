@@ -36,16 +36,18 @@ module Ci
       end
     end
 
-    NAMES = {
-      merge_train: s_('Pipeline|Merge train pipeline'),
-      merged_result: s_('Pipeline|Merged result pipeline'),
-      detached: s_('Pipeline|Detached merge request pipeline')
-    }.freeze
+    def localized_names
+      {
+        merge_train: s_('Pipeline|Merge train pipeline'),
+        merged_result: s_('Pipeline|Merged result pipeline'),
+        detached: s_('Pipeline|Detached merge request pipeline')
+      }.freeze
+    end
 
     def name
       # Currently, `merge_request_event_type` is the only source to name pipelines
       # but this could be extended with the other types in the future.
-      NAMES.fetch(pipeline.merge_request_event_type, s_('Pipeline|Pipeline'))
+      localized_names.fetch(pipeline.merge_request_event_type, s_('Pipeline|Pipeline'))
     end
 
     def ref_text

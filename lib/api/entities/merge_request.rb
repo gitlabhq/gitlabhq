@@ -39,6 +39,16 @@ module API
 
       expose :diverged_commits_count, as: :diverged_commits_count, if: -> (_, options) { options[:include_diverged_commits_count] }
 
+      # We put this into an option because list of TODOs API will attach their
+      # targets with Entities::MergeRequest instead of
+      # Entities::MergeRequestBasic, but this attribute cannot be eagerly
+      # loaded in batch for now. The list of merge requests API will
+      # use Entities::MergeRequestBasic which does not support this, and
+      # we always enable this for the single merge request API. This way
+      # we avoid N+1 queries in the TODOs API and can still enable it for
+      # the single merge request API.
+      expose :first_contribution?, as: :first_contribution, if: -> (_, options) { options[:include_first_contribution] }
+
       def build_available?(options)
         options[:project]&.feature_available?(:builds, options[:current_user])
       end

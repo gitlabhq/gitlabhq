@@ -1,0 +1,9 @@
+-# haml-lint:disable NoPlainNodes
+%p{ style: 'font-size:18px; text-align:center;  line-height:30px;' }
+  Your CSV export of #{ pluralize(@written_count, 'issue') } from project
+  %a{ href: project_url(@project), style: "color:#3777b0; text-decoration:none; display:block;" }
+    = @project.full_name
+  has been added to this email as an attachment.
+  - if @truncated
+    %p
+      This attachment has been truncated to avoid exceeding a maximum allowed attachment size of 15MB. #{ @written_count } of #{ @issues_count } issues have been included. Consider re-exporting with a narrower selection of issues.

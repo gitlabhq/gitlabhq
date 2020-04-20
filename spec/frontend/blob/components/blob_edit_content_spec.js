@@ -80,7 +80,7 @@ describe('Blob Header Editing', () => {
         getValue: jest.fn().mockReturnValue(value),
       };
 
-      editorEl.trigger('focusout');
+      editorEl.trigger('keyup');
 
       return nextTick().then(() => {
         expect(wrapper.emitted().input[0]).toEqual([value]);

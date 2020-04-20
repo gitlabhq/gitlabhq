@@ -161,4 +161,20 @@ describe('applicationStateMachine', () => {
       });
     });
   });
+
+  describe('current state is undefined', () => {
+    it('returns the current state without having any effects', () => {
+      const currentAppState = {};
+      expect(transitionApplicationState(currentAppState, INSTALLABLE)).toEqual(currentAppState);
+    });
+  });
+
+  describe('with event is undefined', () => {
+    it('returns the current state without having any effects', () => {
+      const currentAppState = {
+        status: NO_STATUS,
+      };
+      expect(transitionApplicationState(currentAppState, undefined)).toEqual(currentAppState);
+    });
+  });
 });

@@ -8,8 +8,6 @@ describe 'Admin mode for workers', :do_not_mock_admin_mode, :request_store, :cle
   let(:user_to_delete) { create(:user) }
 
   before do
-    add_sidekiq_middleware
-
     sign_in(user)
   end
 
@@ -57,12 +55,6 @@ describe 'Admin mode for workers', :do_not_mock_admin_mode, :request_store, :cle
 
         expect(page).to have_title('Not Found')
       end
-    end
-  end
-
-  def add_sidekiq_middleware
-    Sidekiq::Testing.server_middleware do |chain|
-      chain.add Gitlab::SidekiqMiddleware::AdminMode::Server
     end
   end
 

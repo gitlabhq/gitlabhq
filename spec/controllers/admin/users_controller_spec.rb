@@ -340,6 +340,17 @@ describe Admin::UsersController do
     end
   end
 
+  describe "DELETE #remove_email" do
+    it 'deletes the email' do
+      email = create(:email, user: user)
+
+      delete :remove_email, params: { id: user.username, email_id: email.id }
+
+      expect(user.reload.emails).not_to include(email)
+      expect(flash[:notice]).to eq('Successfully removed email.')
+    end
+  end
+
   describe "POST impersonate" do
     context "when the user is blocked" do
       before do

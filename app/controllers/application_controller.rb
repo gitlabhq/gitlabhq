@@ -150,7 +150,7 @@ class ApplicationController < ActionController::Base
       payload[:username] = logged_user.try(:username)
     end
 
-    payload[:queue_duration] = request.env[::Gitlab::Middleware::RailsQueueDuration::GITLAB_RAILS_QUEUE_DURATION_KEY]
+    payload[:queue_duration_s] = request.env[::Gitlab::Middleware::RailsQueueDuration::GITLAB_RAILS_QUEUE_DURATION_KEY]
   end
 
   ##

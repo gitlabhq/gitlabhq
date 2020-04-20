@@ -308,6 +308,11 @@ Sg0KU1hNMGExaE9SVGR2V2pKQlBUMWNiaUo5DQo=',
 
 </details>
 
+You can view the exact JSON payload in the administration panel. To view the payload:
+
+1. Navigate to **Admin Area > Settings > Metrics and profiling** and expand **Seat Links**.
+1. Click **Preview payload**.
+
 #### Disable Seat Link
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/212375) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.10.

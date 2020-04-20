@@ -36,6 +36,10 @@ class ProjectsController < Projects::ApplicationController
 
   layout :determine_layout
 
+  before_action do
+    push_frontend_feature_flag(:metrics_dashboard_visibility_switching_available)
+  end
+
   def index
     redirect_to(current_user ? root_path : explore_root_path)
   end

@@ -25,6 +25,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:suggest_pipeline) if experiment_enabled?(:suggest_pipeline)
     push_frontend_feature_flag(:code_navigation, @project)
     push_frontend_feature_flag(:widget_visibility_polling, @project, default_enabled: true)
+    push_frontend_feature_flag(:merge_ref_head_comments, @project)
   end
 
   before_action do
@@ -339,11 +340,13 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def serialize_widget(merge_request)
-    serializer.represent(merge_request, serializer: 'widget')
+    cached_data = serializer.represent(merge_request, serializer: 'poll_cached_widget')
+    widget_data = serializer.represent(merge_request, serializer: 'poll_widget')
+    cached_data.merge!(widget_data)
   end
 
   def serializer
-    MergeRequestSerializer.new(current_user: current_user, project: merge_request.project)
+    @serializer ||= MergeRequestSerializer.new(current_user: current_user, project: merge_request.project)
   end
 
   def define_edit_vars

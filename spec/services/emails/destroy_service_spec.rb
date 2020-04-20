@@ -10,7 +10,10 @@ describe Emails::DestroyService do
 
   describe '#execute' do
     it 'removes an email' do
-      expect { service.execute(email) }.to change { user.emails.count }.by(-1)
+      response = service.execute(email)
+
+      expect(user.emails).not_to include(email)
+      expect(response).to be true
     end
   end
 end

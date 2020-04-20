@@ -127,6 +127,15 @@ This shortcut is available when viewing a [wiki page](project/wiki/index.md):
 | ----------------- | ----------- |
 | <kbd>e</kbd>      | Edit wiki page. |
 
+### Filtered Search
+
+These shortcuts are available when using a [filtered search input](search/index.md):
+
+| Keyboard Shortcut                                     | Description |
+| ----------------------------------------------------- | ----------- |
+| <kbd>⌘</kbd> (Mac) + <kbd>⌫</kbd>                     | Clear entire search filter. |
+| <kbd>⌥</kbd> (Mac) / <kbd>Ctrl</kbd> + <kbd>⌫</kbd>   | Clear one token at a time. |
+
 ## Epics **(ULTIMATE)**
 
 These shortcuts are available when viewing [Epics](group/epics/index.md):

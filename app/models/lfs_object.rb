@@ -17,8 +17,6 @@ class LfsObject < ApplicationRecord
 
   mount_uploader :file, LfsObjectUploader
 
-  before_save :set_file_store, if: ->(lfs_object) { lfs_object.file_store.nil? }
-
   after_save :update_file_store, if: :saved_change_to_file?
 
   def self.not_linked_to_project(project)
@@ -56,17 +54,6 @@ class LfsObject < ApplicationRecord
 
   def self.calculate_oid(path)
     self.hexdigest(path)
-  end
-
-  private
-
-  def set_file_store
-    self.file_store =
-      if LfsObjectUploader.object_store_enabled? && LfsObjectUploader.direct_upload_enabled?
-        LfsObjectUploader::Store::REMOTE
-      else
-        file.object_store
-      end
   end
 end
 

@@ -34,13 +34,13 @@ To use the instance, group, project, or pipeline security dashboard:
 1. [GitLab Runner](https://docs.gitlab.com/runner/) 11.5 or newer must be used.
    If you're using the shared Runners on GitLab.com, this is already the case.
 
-## Pipeline Security Dashboard
+## Pipeline Security
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/13496) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.3.
 
-At the pipeline level, the Security Dashboard displays the vulnerabilities present in the branch of the project the pipeline was run against.
+At the pipeline level, the Security section displays the vulnerabilities present in the branch of the project the pipeline was run against.
 
-Visit the page for any pipeline which has run any of the [supported reports](#supported-reports). Click the **Security** tab to view the Security Dashboard.
+Visit the page for any pipeline which has run any of the [supported reports](#supported-reports). Click the **Security** tab to view the Security findings.
 
 ![Pipeline Security Dashboard](img/pipeline_security_dashboard_v12_6.png)
 
@@ -53,6 +53,18 @@ for your project from the last successful pipeline. Use it to find and fix vulne
 [default branch](../../project/repository/branches/index.md#default-branch).
 
 ![Project Security Dashboard](img/project_security_dashboard_v12_3.png)
+
+### Export vulnerabilities
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/197494) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.10.
+
+You can export all your project's vulnerabilities as CSV by clicking on the export button located at top right of the Project Security Dashboard. This will initiate the process, and once complete, the CSV report will be downloaded. The report will contain all vulnerabilities in the project as filters won't apply.
+
+NOTE: **Note:**
+It may take several minutes for the download to start if your project consists
+of thousands of vulnerabilities. Do not close the page until the download finishes.
+
+![CSV Export Button](img/project_security_dashboard_export_csv_v12.10.png)
 
 ## Group Security Dashboard
 

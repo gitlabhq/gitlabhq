@@ -838,6 +838,13 @@ describe 'project routing' do
     end
   end
 
+  describe Projects::StaticSiteEditorController, 'routing' do
+    it 'routes to static_site_editor#show', :aggregate_failures do
+      expect(get('/gitlab/gitlabhq/-/sse/master/CONTRIBUTING.md')).to route_to('projects/static_site_editor#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/CONTRIBUTING.md')
+      expect(get('/gitlab/gitlabhq/-/sse/master/README')).to route_to('projects/static_site_editor#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/README')
+    end
+  end
+
   describe Projects::EnvironmentsController, 'routing' do
     describe 'legacy routing' do
       it_behaves_like 'redirecting a legacy project path', "/gitlab/gitlabhq/environments", "/gitlab/gitlabhq/-/environments"

@@ -17,32 +17,25 @@ sidebar. This information is sometimes referred to as a Software Bill of Materia
 
 ## Viewing dependencies
 
-![Dependency List](img/dependency_list_v12_4.png)
+![Dependency List](img/dependency_list_v12_10.png)
 
 Dependencies are displayed with the following information:
 
 | Field     | Description |
 | --------- | ----------- |
-| Status    | Displays whether or not the dependency has any known vulnerabilities |
-| Component | The dependency's name |
-| Version   | The exact locked version of the dependency your project uses |
+| Component | The dependency's name and version |
 | Packager  | The packager used to install the depedency |
 | Location  | A link to the packager-specific lockfile in your project that declared the dependency |
 | License   | Links to dependency's software licenses |
 
-Dependencies shown are initially sorted by their names. They can also be sorted
-by the packager they were installed by, or by the severity of their known
-vulnerabilities.
-
-There is a second list under the `Vulnerable components` tab displaying only
-those dependencies with known vulnerabilities. If there are none, this tab is
-disabled.
+Dependencies shown are initially sorted by the severity of their known vulnerabilities, if any. They
+can also be sorted by name or by the packager that installed them.
 
 ### Vulnerabilities
 
-If a dependency has known vulnerabilities, they can be viewed by clicking on the
-`Status` cell of that dependency. The severity and description of each
-vulnerability will then be displayed below it.
+If a dependency has known vulnerabilities, you can view them by clicking the arrow next to the
+dependency's name or the badge that indicates how many known vulnerabilities exist. For each
+vulnerability, its severity and description then appears below it.
 
 ## Licenses
 

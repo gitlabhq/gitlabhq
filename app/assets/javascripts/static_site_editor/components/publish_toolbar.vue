@@ -1,9 +1,9 @@
 <script>
-import { GlNewButton, GlLoadingIcon } from '@gitlab/ui';
+import { GlButton, GlLoadingIcon } from '@gitlab/ui';
 
 export default {
   components: {
-    GlNewButton,
+    GlButton,
     GlLoadingIcon,
   },
   props: {
@@ -29,16 +29,12 @@ export default {
   <div class="d-flex bg-light border-top justify-content-between align-items-center py-3 px-4">
     <gl-loading-icon :class="{ invisible: !savingChanges }" size="md" />
     <div>
-      <gl-new-button v-if="returnUrl" ref="returnUrlLink" :href="returnUrl">{{
+      <gl-button v-if="returnUrl" ref="returnUrlLink" :href="returnUrl">{{
         s__('StaticSiteEditor|Return to site')
-      }}</gl-new-button>
-      <gl-new-button
-        variant="success"
-        :disabled="!saveable || savingChanges"
-        @click="$emit('submit')"
-      >
+      }}</gl-button>
+      <gl-button variant="success" :disabled="!saveable || savingChanges" @click="$emit('submit')">
         {{ __('Submit Changes') }}
-      </gl-new-button>
+      </gl-button>
     </div>
   </div>
 </template>

@@ -546,9 +546,6 @@ Gitlab.ee do
   Settings.cron_jobs['elastic_index_bulk_cron_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['elastic_index_bulk_cron_worker']['cron'] ||= '*/1 * * * *'
   Settings.cron_jobs['elastic_index_bulk_cron_worker']['job_class'] ||= 'ElasticIndexBulkCronWorker'
-  Settings.cron_jobs['elastic_metrics_update_worker'] ||= Settingslogic.new({})
-  Settings.cron_jobs['elastic_metrics_update_worker']['cron'] ||= '*/1 * * * *'
-  Settings.cron_jobs['elastic_metrics_update_worker']['job_class'] ||= 'ElasticMetricsUpdateWorker'
   Settings.cron_jobs['sync_seat_link_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['sync_seat_link_worker']['cron'] ||= "#{rand(60)} 0 * * *"
   Settings.cron_jobs['sync_seat_link_worker']['job_class'] = 'SyncSeatLinkWorker'
@@ -725,6 +722,7 @@ Settings.monitoring['ip_whitelist'] ||= ['127.0.0.1/8']
 Settings.monitoring['unicorn_sampler_interval'] ||= 10
 Settings.monitoring['puma_sampler_interval'] ||= 5
 Settings.monitoring['ruby_sampler_interval'] ||= 60
+Settings.monitoring['global_search_sampler_interval'] ||= 60
 Settings.monitoring['sidekiq_exporter'] ||= Settingslogic.new({})
 Settings.monitoring.sidekiq_exporter['enabled'] ||= false
 Settings.monitoring.sidekiq_exporter['address'] ||= 'localhost'

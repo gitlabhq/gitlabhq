@@ -2414,7 +2414,8 @@ describe API::Projects do
         project_param = {
           container_expiration_policy_attributes: {
             cadence: '1month',
-            keep_n: 1
+            keep_n: 1,
+            name_regex_keep: 'foo.*'
           }
         }
 
@@ -2424,6 +2425,7 @@ describe API::Projects do
 
         expect(json_response['container_expiration_policy']['cadence']).to eq('1month')
         expect(json_response['container_expiration_policy']['keep_n']).to eq(1)
+        expect(json_response['container_expiration_policy']['name_regex_keep']).to eq('foo.*')
       end
     end
 

@@ -2,15 +2,6 @@
 
 module Groups
   class TransferService < Groups::BaseService
-    ERROR_MESSAGES = {
-      database_not_supported: s_('TransferGroup|Database is not supported.'),
-      namespace_with_same_path: s_('TransferGroup|The parent group already has a subgroup with the same path.'),
-      group_is_already_root: s_('TransferGroup|Group is already a root group.'),
-      same_parent_as_current: s_('TransferGroup|Group is already associated to the parent group.'),
-      invalid_policies: s_("TransferGroup|You don't have enough permissions."),
-      group_contains_images: s_('TransferGroup|Cannot update the path because there are projects under this group that contain Docker images in their Container Registry. Please remove the images from your projects first and try again.')
-    }.freeze
-
     TransferError = Class.new(StandardError)
 
     attr_reader :error, :new_parent_group
@@ -124,7 +115,18 @@ module Groups
     end
 
     def raise_transfer_error(message)
-      raise TransferError, ERROR_MESSAGES[message]
+      raise TransferError, localized_error_messages[message]
+    end
+
+    def localized_error_messages
+      {
+        database_not_supported: s_('TransferGroup|Database is not supported.'),
+        namespace_with_same_path: s_('TransferGroup|The parent group already has a subgroup with the same path.'),
+        group_is_already_root: s_('TransferGroup|Group is already a root group.'),
+        same_parent_as_current: s_('TransferGroup|Group is already associated to the parent group.'),
+        invalid_policies: s_("TransferGroup|You don't have enough permissions."),
+        group_contains_images: s_('TransferGroup|Cannot update the path because there are projects under this group that contain Docker images in their Container Registry. Please remove the images from your projects first and try again.')
+      }.freeze
     end
   end
 end

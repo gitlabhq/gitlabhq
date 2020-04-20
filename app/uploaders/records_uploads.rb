@@ -56,29 +56,8 @@ module RecordsUploads
         size: file.size,
         path: upload_path,
         model: model,
-        mount_point: mounted_as,
-        store: initial_store
+        mount_point: mounted_as
       )
-    end
-
-    def initial_store
-      if immediately_remote_stored?
-        ::ObjectStorage::Store::REMOTE
-      else
-        ::ObjectStorage::Store::LOCAL
-      end
-    end
-
-    def immediately_remote_stored?
-      object_storage_available? && direct_upload_enabled?
-    end
-
-    def object_storage_available?
-      self.class.ancestors.include?(ObjectStorage::Concern)
-    end
-
-    def direct_upload_enabled?
-      self.class.object_store_enabled? && self.class.direct_upload_enabled?
     end
 
     # Before removing an attachment, destroy any Upload records at the same path

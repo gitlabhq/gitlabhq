@@ -314,7 +314,7 @@ You can use it either for personal or business websites, such as portfolios, doc
 - Layer: Core Service (Processor)
 - GitLab.com: [Runner](../user/gitlab_com/index.md#shared-runners)
 
-GitLab Runner runs tests and sends the results to GitLab.
+GitLab Runner runs jobs and sends the results to GitLab.
 
 GitLab CI/CD is the open-source continuous integration service included with GitLab that coordinates the testing. The old name of this project was `GitLab CI Multi Runner` but please use `GitLab Runner` (without CI) from now on.
 

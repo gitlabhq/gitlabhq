@@ -363,15 +363,6 @@
       when: on_success
     - changes: [".gitlab/ci/rails.gitlab-ci.yml"]
 
-.rails:rules:master-refs-code-backstage-ee-only:
-  rules:
-    - <<: *if-not-ee
-      when: never
-    - <<: *if-master-refs
-      changes: *code-backstage-patterns
-      when: on_success
-    - changes: [".gitlab/ci/rails.gitlab-ci.yml"]
-
 .rails:rules:nightly-master-refs-code-backstage:
   rules:
     - <<: *if-nightly-master-schedule

@@ -5,7 +5,11 @@ require 'spec_helper'
 describe Terraform::State do
   subject { create(:terraform_state, :with_file) }
 
+  let(:terraform_state_file) { fixture_file('terraform/terraform.tfstate') }
+
   it { is_expected.to belong_to(:project) }
+
+  it { is_expected.to belong_to(:locked_by_user).class_name('User') }
 
   it { is_expected.to validate_presence_of(:project_id) }
 
@@ -13,16 +17,23 @@ describe Terraform::State do
     stub_terraform_state_object_storage(Terraform::StateUploader)
   end
 
-  describe '#file_store' do
-    context 'when no value is set' do
-      it 'returns the default store of the uploader' do
-        [ObjectStorage::Store::LOCAL, ObjectStorage::Store::REMOTE].each do |store|
-          expect(Terraform::StateUploader).to receive(:default_store).and_return(store)
-          expect(described_class.new.file_store).to eq(store)
-        end
+  describe '#file' do
+    context 'when a file exists' do
+      it 'does not use the default file' do
+        expect(subject.file.read).to eq(terraform_state_file)
       end
     end
 
+    context 'when no file exists' do
+      subject { create(:terraform_state) }
+
+      it 'creates a default file' do
+        expect(subject.file.read).to eq('{"version":1}')
+      end
+    end
+  end
+
+  describe '#file_store' do
     context 'when a value is set' do
       it 'returns the value' do
         [ObjectStorage::Store::LOCAL, ObjectStorage::Store::REMOTE].each do |store|

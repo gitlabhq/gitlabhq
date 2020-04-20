@@ -46,6 +46,27 @@ This only applies to commits that are in the most recent version of a merge
 request - if a commit was in a merge request, then rebased out of that merge
 request, they will not be linked.
 
+## `HEAD` comparison mode for Merge Requests
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/27008) in GitLab 12.10.
+
+Merge Requests, particularly the **Changes** tab, is where source code
+is reviewed and discussed. In circumstances where the target branch was
+merged into the source branch of the merge request, the changes in the
+source and target branch can be shown mixed together making it hard to
+understand which changes are being added and which already exist in the
+target branch.
+
+In GitLab 12.10, we added an **experimental** comparison mode, which
+shows a diff calculated by simulating how it would look like once merged - a more accurate
+representation of the changes rather than using the base of the two
+branches. The new mode is available from the comparison target drop down
+by selecting **master (HEAD)**. In the future it will
+[replace](https://gitlab.com/gitlab-org/gitlab/issues/198458) the
+current default comparison.
+
+![Merge request versions compare HEAD](img/versions_compare_head_v12_10.png)
+
 <!-- ## Troubleshooting
 
 Include any troubleshooting steps that you can foresee. If you know beforehand what issues

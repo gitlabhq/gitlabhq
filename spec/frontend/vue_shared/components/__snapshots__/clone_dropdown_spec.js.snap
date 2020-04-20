@@ -42,7 +42,7 @@ exports[`Clone Dropdown Button rendering matches the snapshot 1`] = `
           <b-input-group-append-stub
             tag="div"
           >
-            <gl-new-button-stub
+            <gl-button-stub
               category="tertiary"
               data-clipboard-text="ssh://foo.bar"
               icon=""
@@ -55,7 +55,7 @@ exports[`Clone Dropdown Button rendering matches the snapshot 1`] = `
                 size="16"
                 title="Copy URL"
               />
-            </gl-new-button-stub>
+            </gl-button-stub>
           </b-input-group-append-stub>
         </b-input-group-stub>
       </div>
@@ -92,7 +92,7 @@ exports[`Clone Dropdown Button rendering matches the snapshot 1`] = `
           <b-input-group-append-stub
             tag="div"
           >
-            <gl-new-button-stub
+            <gl-button-stub
               category="tertiary"
               data-clipboard-text="http://foo.bar"
               icon=""
@@ -105,7 +105,7 @@ exports[`Clone Dropdown Button rendering matches the snapshot 1`] = `
                 size="16"
                 title="Copy URL"
               />
-            </gl-new-button-stub>
+            </gl-button-stub>
           </b-input-group-append-stub>
         </b-input-group-stub>
       </div>

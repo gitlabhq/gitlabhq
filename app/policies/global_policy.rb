@@ -17,6 +17,8 @@ class GlobalPolicy < BasePolicy
 
   condition(:private_instance_statistics, score: 0) { Gitlab::CurrentSettings.instance_statistics_visibility_private? }
 
+  condition(:project_bot, scope: :user) { @user&.project_bot? }
+
   rule { admin | (~private_instance_statistics & ~anonymous) }
     .enable :read_instance_statistics
 
@@ -49,6 +51,11 @@ class GlobalPolicy < BasePolicy
     prevent :access_git
     prevent :receive_notifications
     prevent :use_slash_commands
+  end
+
+  rule { project_bot }.policy do
+    prevent :log_in
+    prevent :receive_notifications
   end
 
   rule { deactivated }.policy do

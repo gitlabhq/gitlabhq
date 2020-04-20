@@ -9,19 +9,6 @@ module PreferencesHelper
     ]
   end
 
-  # Maps `dashboard` values to more user-friendly option text
-  DASHBOARD_CHOICES = {
-    projects: _("Your Projects (default)"),
-    stars:    _("Starred Projects"),
-    project_activity: _("Your Projects' Activity"),
-    starred_project_activity: _("Starred Projects' Activity"),
-    groups: _("Your Groups"),
-    todos: _("Your To-Do List"),
-    issues: _("Assigned Issues"),
-    merge_requests: _("Assigned Merge Requests"),
-    operations: _("Operations Dashboard")
-  }.with_indifferent_access.freeze
-
   # Returns an Array usable by a select field for more user-friendly option text
   def dashboard_choices
     dashboards = User.dashboards.keys
@@ -31,8 +18,23 @@ module PreferencesHelper
 
     dashboards.map do |key|
       # Use `fetch` so `KeyError` gets raised when a key is missing
-      [DASHBOARD_CHOICES.fetch(key), key]
+      [localized_dashboard_choices.fetch(key), key]
     end
+  end
+
+  # Maps `dashboard` values to more user-friendly option text
+  def localized_dashboard_choices
+    {
+      projects: _("Your Projects (default)"),
+      stars:    _("Starred Projects"),
+      project_activity: _("Your Projects' Activity"),
+      starred_project_activity: _("Starred Projects' Activity"),
+      groups: _("Your Groups"),
+      todos: _("Your To-Do List"),
+      issues: _("Assigned Issues"),
+      merge_requests: _("Assigned Merge Requests"),
+      operations: _("Operations Dashboard")
+    }.with_indifferent_access.freeze
   end
 
   def project_view_choices
@@ -75,9 +77,9 @@ module PreferencesHelper
 
   # Ensure that anyone adding new options updates `DASHBOARD_CHOICES` too
   def validate_dashboard_choices!(user_dashboards)
-    if user_dashboards.size != DASHBOARD_CHOICES.size
+    if user_dashboards.size != localized_dashboard_choices.size
       raise "`User` defines #{user_dashboards.size} dashboard choices," \
-        " but `DASHBOARD_CHOICES` defined #{DASHBOARD_CHOICES.size}."
+        " but `localized_dashboard_choices` defined #{localized_dashboard_choices.size}."
     end
   end
 

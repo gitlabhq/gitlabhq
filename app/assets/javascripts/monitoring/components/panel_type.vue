@@ -4,6 +4,7 @@ import { pickBy } from 'lodash';
 import invalidUrl from '~/lib/utils/invalid_url';
 import {
   GlResizeObserverDirective,
+  GlIcon,
   GlLoadingIcon,
   GlDropdown,
   GlDropdownItem,
@@ -13,7 +14,6 @@ import {
   GlTooltipDirective,
 } from '@gitlab/ui';
 import { __, n__ } from '~/locale';
-import Icon from '~/vue_shared/components/icon.vue';
 import MonitorTimeSeriesChart from './charts/time_series.vue';
 import MonitorAnomalyChart from './charts/anomaly.vue';
 import MonitorSingleStatChart from './charts/single_stat.vue';
@@ -37,7 +37,7 @@ export default {
     MonitorHeatmapChart,
     MonitorStackedColumnChart,
     MonitorEmptyChart,
-    Icon,
+    GlIcon,
     GlLoadingIcon,
     GlTooltip,
     GlDropdown,
@@ -227,7 +227,7 @@ export default {
       </div>
       <div
         v-if="isContextualMenuShown"
-        class="js-graph-widgets"
+        ref="contextualMenu"
         data-qa-selector="prometheus_graph_widgets"
       >
         <div class="d-flex align-items-center">
@@ -240,7 +240,7 @@ export default {
             :title="__('More actions')"
           >
             <template slot="button-content">
-              <icon name="ellipsis_v" class="text-secondary" />
+              <gl-icon name="ellipsis_v" class="text-secondary" />
             </template>
             <gl-dropdown-item
               v-if="editCustomMetricLink"
@@ -319,6 +319,6 @@ export default {
       :group-id="groupId"
       @datazoom="onDatazoom"
     />
-    <monitor-empty-chart v-else :graph-title="title" v-bind="$attrs" v-on="$listeners" />
+    <monitor-empty-chart v-else v-bind="$attrs" v-on="$listeners" />
   </div>
 </template>

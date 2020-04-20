@@ -9,7 +9,8 @@ describe Gitlab::Diff::Formatters::TextFormatter do
       start_sha: 456,
       head_sha: 789,
       old_path: 'old_path.txt',
-      new_path: 'new_path.txt'
+      new_path: 'new_path.txt',
+      line_range: nil
     }
   end
 

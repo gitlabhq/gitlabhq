@@ -10,8 +10,7 @@ const DEFAULT_PROPS = {
     name: 'Administrator',
     location: 'Vienna',
     bio: null,
-    organization: null,
-    jobTitle: null,
+    workInformation: null,
     status: null,
   },
 };
@@ -59,8 +58,7 @@ describe('User Popover Component', () => {
               username: null,
               location: null,
               bio: null,
-              organization: null,
-              jobTitle: null,
+              workInformation: null,
               status: null,
             },
           },
@@ -93,7 +91,7 @@ describe('User Popover Component', () => {
     const findWorkInformation = () => wrapper.find({ ref: 'workInformation' });
     const findBio = () => wrapper.find({ ref: 'bio' });
 
-    it('should show only bio if organization and job title are not available', () => {
+    it('should show only bio if work information is not available', () => {
       const user = { ...DEFAULT_PROPS.user, bio: 'My super interesting bio' };
 
       createWrapper({ user });
@@ -102,27 +100,10 @@ describe('User Popover Component', () => {
       expect(findWorkInformation().exists()).toBe(false);
     });
 
-    it('should show only organization if job title is not available', () => {
-      const user = { ...DEFAULT_PROPS.user, organization: 'GitLab' };
-
-      createWrapper({ user });
-
-      expect(findWorkInformation().text()).toBe('GitLab');
-    });
-
-    it('should show only job title if organization is not available', () => {
-      const user = { ...DEFAULT_PROPS.user, jobTitle: 'Frontend Engineer' };
-
-      createWrapper({ user });
-
-      expect(findWorkInformation().text()).toBe('Frontend Engineer');
-    });
-
-    it('should show organization and job title if they are both available', () => {
+    it('should show work information when it is available', () => {
       const user = {
         ...DEFAULT_PROPS.user,
-        organization: 'GitLab',
-        jobTitle: 'Frontend Engineer',
+        workInformation: 'Frontend Engineer at GitLab',
       };
 
       createWrapper({ user });
@@ -130,17 +111,17 @@ describe('User Popover Component', () => {
       expect(findWorkInformation().text()).toBe('Frontend Engineer at GitLab');
     });
 
-    it('should display bio and job info in separate lines', () => {
+    it('should display bio and work information in separate lines', () => {
       const user = {
         ...DEFAULT_PROPS.user,
         bio: 'My super interesting bio',
-        organization: 'GitLab',
+        workInformation: 'Frontend Engineer at GitLab',
       };
 
       createWrapper({ user });
 
       expect(findBio().text()).toBe('My super interesting bio');
-      expect(findWorkInformation().text()).toBe('GitLab');
+      expect(findWorkInformation().text()).toBe('Frontend Engineer at GitLab');
     });
 
     it('should not encode special characters in bio', () => {
@@ -152,40 +133,6 @@ describe('User Popover Component', () => {
       createWrapper({ user });
 
       expect(findBio().text()).toBe('I like <html> & CSS');
-    });
-
-    it('should not encode special characters in organization', () => {
-      const user = {
-        ...DEFAULT_PROPS.user,
-        organization: 'Me & my <funky> Company',
-      };
-
-      createWrapper({ user });
-
-      expect(findWorkInformation().text()).toBe('Me & my <funky> Company');
-    });
-
-    it('should not encode special characters in job title', () => {
-      const user = {
-        ...DEFAULT_PROPS.user,
-        jobTitle: 'Manager & Team Lead',
-      };
-
-      createWrapper({ user });
-
-      expect(findWorkInformation().text()).toBe('Manager & Team Lead');
-    });
-
-    it('should not encode special characters when both job title and organization are set', () => {
-      const user = {
-        ...DEFAULT_PROPS.user,
-        jobTitle: 'Manager & Team Lead',
-        organization: 'Me & my <funky> Company',
-      };
-
-      createWrapper({ user });
-
-      expect(findWorkInformation().text()).toBe('Manager & Team Lead at Me & my <funky> Company');
     });
 
     it('shows icon for bio', () => {
@@ -201,10 +148,10 @@ describe('User Popover Component', () => {
       );
     });
 
-    it('shows icon for organization', () => {
+    it('shows icon for work information', () => {
       const user = {
         ...DEFAULT_PROPS.user,
-        organization: 'GitLab',
+        workInformation: 'GitLab',
       };
 
       createWrapper({ user });

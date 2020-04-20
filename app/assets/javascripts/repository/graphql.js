@@ -48,7 +48,7 @@ const defaultClient = createDefaultClient(
           case 'TreeEntry':
           case 'Submodule':
           case 'Blob':
-            return `${escape(obj.flatPath)}-${obj.id}`;
+            return `${encodeURIComponent(obj.flatPath)}-${obj.id}`;
           default:
             // If the type doesn't match any of the above we fallback
             // to using the default Apollo ID

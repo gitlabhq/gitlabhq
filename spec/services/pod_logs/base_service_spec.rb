@@ -13,10 +13,16 @@ describe ::PodLogs::BaseService do
   let(:container_name) { 'container-0' }
   let(:params) { {} }
   let(:raw_pods) do
-    JSON.parse([
-      kube_pod(name: pod_name),
-      kube_pod(name: pod_name_2)
-    ].to_json, object_class: OpenStruct)
+    [
+      {
+        name: pod_name,
+        container_names: %w(container-0-0 container-0-1)
+      },
+      {
+        name: pod_name_2,
+        container_names: %w(container-1-0 container-1-1)
+      }
+    ]
   end
 
   subject { described_class.new(cluster, namespace, params: params) }
@@ -96,19 +102,6 @@ describe ::PodLogs::BaseService do
         expect(result[:pod_name]).to eq(pod_name)
         expect(result[:container_name]).to eq(container_name)
       end
-    end
-  end
-
-  describe '#get_raw_pods' do
-    let(:service) { create(:cluster_platform_kubernetes, :configured) }
-
-    it 'returns success with passthrough k8s response' do
-      stub_kubeclient_pods(namespace)
-
-      result = subject.send(:get_raw_pods, {})
-
-      expect(result[:status]).to eq(:success)
-      expect(result[:raw_pods].first).to be_a(Kubeclient::Resource)
     end
   end
 

@@ -4,6 +4,8 @@ module Gitlab
   class SignedCommit
     include Gitlab::Utils::StrongMemoize
 
+    delegate :id, to: :@commit
+
     def initialize(commit)
       @commit = commit
 

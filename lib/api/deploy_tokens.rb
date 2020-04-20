@@ -8,7 +8,7 @@ module API
       def scope_params
         scopes = params.delete(:scopes)
 
-        result_hash = {}
+        result_hash = Hashie::Mash.new
         result_hash[:read_registry] = scopes.include?('read_registry')
         result_hash[:write_registry] = scopes.include?('write_registry')
         result_hash[:read_repository] = scopes.include?('read_repository')

@@ -23,7 +23,7 @@ module Repositories
 
     # POST /foo/bar.git/git-upload-pack (git pull)
     def git_upload_pack
-      enqueue_fetch_statistics_update
+      update_fetch_statistics
 
       render_ok
     end
@@ -76,12 +76,16 @@ module Repositories
       render plain: exception.message, status: :service_unavailable
     end
 
-    def enqueue_fetch_statistics_update
+    def update_fetch_statistics
+      return unless project
       return if Gitlab::Database.read_only?
       return unless repo_type.project?
-      return unless project&.daily_statistics_enabled?
 
-      ProjectDailyStatisticsWorker.perform_async(project.id) # rubocop:disable CodeReuse/Worker
+      if Feature.enabled?(:project_statistics_sync, project, default_enabled: true)
+        Projects::FetchStatisticsIncrementService.new(project).execute
+      else
+        ProjectDailyStatisticsWorker.perform_async(project.id) # rubocop:disable CodeReuse/Worker
+      end
     end
 
     def access

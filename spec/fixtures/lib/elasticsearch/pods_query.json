@@ -1,0 +1,28 @@
+{
+  "aggs": {
+    "pods": {
+      "aggs": {
+        "containers": {
+          "terms": {
+            "field": "kubernetes.container.name",
+            "size": 500
+          }
+        }
+      },
+      "terms": {
+        "field": "kubernetes.pod.name",
+        "size": 500
+      }
+    }
+  },
+  "query": {
+    "bool": {
+      "must": {
+        "match_phrase": {
+          "kubernetes.namespace": "autodevops-deploy-9-production"
+        }
+      }
+    }
+  },
+  "size": 0
+}

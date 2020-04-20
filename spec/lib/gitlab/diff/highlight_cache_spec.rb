@@ -113,7 +113,7 @@ describe Gitlab::Diff::HighlightCache, :clean_gitlab_redis_cache do
         allow(redis).to receive(:info).and_return({ "redis_version" => "3.0.0" })
 
         expect(described_class.gitlab_redis_diff_caching_memory_usage_bytes)
-          .not_to receive(:observe).and_call_original
+          .not_to receive(:observe)
 
         cache.send(:write_to_redis_hash, diff_hash)
       end
@@ -160,6 +160,56 @@ describe Gitlab::Diff::HighlightCache, :clean_gitlab_redis_cache do
       expect_any_instance_of(Redis).to receive(:del).with(cache_key)
 
       cache.clear
+    end
+  end
+
+  describe "GZip usage" do
+    let(:diff_file) do
+      diffs = merge_request.diffs
+      raw_diff = diffs.diffable.raw_diffs(diffs.diff_options.merge(paths: ['CHANGELOG'])).first
+      Gitlab::Diff::File.new(raw_diff,
+                             repository: diffs.project.repository,
+                             diff_refs: diffs.diff_refs,
+                             fallback_diff_refs: diffs.fallback_diff_refs)
+    end
+
+    context "feature flag :gzip_diff_cache disabled" do
+      before do
+        stub_feature_flags(gzip_diff_cache: true)
+      end
+
+      it "uses ActiveSupport::Gzip when reading from the cache" do
+        expect(ActiveSupport::Gzip).to receive(:decompress).at_least(:once).and_call_original
+
+        cache.write_if_empty
+        cache.decorate(diff_file)
+      end
+
+      it "uses ActiveSupport::Gzip to compress data when writing to cache" do
+        expect(ActiveSupport::Gzip).to receive(:compress).and_call_original
+
+        cache.send(:write_to_redis_hash, diff_hash)
+      end
+    end
+
+    context "feature flag :gzip_diff_cache disabled" do
+      before do
+        stub_feature_flags(gzip_diff_cache: false)
+      end
+
+      it "doesn't use ActiveSupport::Gzip when reading from the cache" do
+        expect(ActiveSupport::Gzip).not_to receive(:decompress)
+
+        cache.write_if_empty
+        cache.decorate(diff_file)
+      end
+
+      it "doesn't use ActiveSupport::Gzip to compress data when writing to cache" do
+        expect(ActiveSupport::Gzip).not_to receive(:compress)
+
+        expect { cache.send(:write_to_redis_hash, diff_hash) }
+          .to change { Gitlab::Redis::Cache.with { |r| r.hgetall(cache_key) } }
+      end
     end
   end
 

@@ -5,6 +5,7 @@ require 'spec_helper'
 shared_examples_for 'snippet editor' do
   before do
     stub_feature_flags(snippets_vue: false)
+    stub_feature_flags(snippets_edit_vue: false)
     stub_feature_flags(monaco_snippets: flag)
     sign_in(user)
     visit new_snippet_path

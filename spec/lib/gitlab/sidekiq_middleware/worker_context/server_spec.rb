@@ -41,18 +41,9 @@ describe Gitlab::SidekiqMiddleware::WorkerContext::Server do
   end
 
   around do |example|
-    Sidekiq::Testing.inline! { example.run }
-  end
-
-  before(:context) do
-    Sidekiq::Testing.server_middleware do |chain|
+    with_sidekiq_server_middleware do |chain|
       chain.add described_class
-    end
-  end
-
-  after(:context) do
-    Sidekiq::Testing.server_middleware do |chain|
-      chain.remove described_class
+      Sidekiq::Testing.inline! { example.run }
     end
   end
 

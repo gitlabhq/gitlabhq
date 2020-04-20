@@ -157,6 +157,26 @@ describe Users::BuildService do
         end
       end
 
+      context 'when user_type is provided' do
+        subject(:user) { service.execute }
+
+        context 'when project_bot' do
+          before do
+            params.merge!({ user_type: :project_bot })
+          end
+
+          it { expect(user.project_bot?).to be true}
+        end
+
+        context 'when not a project_bot' do
+          before do
+            params.merge!({ user_type: :alert_bot })
+          end
+
+          it { expect(user.user_type).to be nil }
+        end
+      end
+
       context 'with "user_default_external" application setting' do
         using RSpec::Parameterized::TableSyntax
 

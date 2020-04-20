@@ -1,5 +1,5 @@
 /* eslint-disable no-new */
-import _ from 'underscore';
+import { debounce } from 'lodash';
 import axios from './lib/utils/axios_utils';
 import Flash from './flash';
 import DropLab from './droplab/drop_lab';
@@ -55,7 +55,7 @@ export default class CreateMergeRequestDropdown {
     this.isCreatingMergeRequest = false;
     this.isGettingRef = false;
     this.mergeRequestCreated = false;
-    this.refDebounce = _.debounce((value, target) => this.getRef(value, target), 500);
+    this.refDebounce = debounce((value, target) => this.getRef(value, target), 500);
     this.refIsValid = true;
     this.refsPath = this.wrapperEl.dataset.refsPath;
     this.suggestedRef = this.refInput.value;

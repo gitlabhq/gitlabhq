@@ -186,7 +186,7 @@ module Gitlab
 
         return event unless CUSTOM_FINGERPRINTING.include?(ex.class.name)
 
-        event.fingerprint = ['{{ default }}', ex.class.name, ex.message]
+        event.fingerprint = [ex.class.name, ex.message]
 
         event
       end

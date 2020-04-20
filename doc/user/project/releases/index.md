@@ -64,9 +64,6 @@ A link is any URL which can point to whatever you like; documentation, built
 binaries, or other related materials. These can be both internal or external
 links from your GitLab instance.
 
-NOTE: **NOTE**
-You can manipulate links of each release entry with [Release Links API](../../../api/releases/links.md)
-
 #### Permanent links to Release assets
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/27300) in GitLab 12.9.
@@ -200,6 +197,14 @@ links. To change other release information, such as its tag, associated
 milestones, or release date, use the [Releases
 API](../../../api/releases/index.md#update-a-release). Editing this information
 through the **Edit Release** page is planned for a future version of GitLab.
+
+Please note that the ability to edit asset links is currently behind a feature
+flag which is disabled by default. For self-managed instances, it can be enabled
+through the Rails console by a GitLab administrator with the following command:
+
+```ruby
+Feature.enable(:release_asset_link_editing)
+```
 
 ## Notification for Releases
 

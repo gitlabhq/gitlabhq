@@ -27,6 +27,12 @@ that you [connect with GitLab via SSH](../../../ssh/README.md).
 
 ## Files
 
+Use a repository to store your files in GitLab. From [GitLab 12.10 onwards](https://gitlab.com/gitlab-org/gitlab/issues/33806),
+you'll see on the repository's file tree an icon next to the file name
+according to its extension:
+
+![Repository file icons](img/file_ext_icons_repo_v12_10.png)
+
 ### Create and edit files
 
 Host your codebase in GitLab repositories by pushing your files to GitLab.

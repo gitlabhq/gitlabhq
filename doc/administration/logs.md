@@ -30,17 +30,21 @@ Line breaks have been added to this example for legibility:
   "controller":"Projects::IssuesController",
   "action":"show",
   "status":200,
-  "duration":229.03,
-  "view":174.07,
-  "db":13.24,
   "time":"2017-08-08T20:15:54.821Z",
   "params":[{"key":"param_key","value":"param_value"}],
   "remote_ip":"18.245.0.1",
   "user_id":1,
   "username":"admin",
-  "gitaly_calls":76,
-  "gitaly_duration":7.41,
-  "queue_duration": 112.47
+  "queue_duration_s":0.0,
+  "gitaly_calls":16,
+  "gitaly_duration_s":0.16,
+  "redis_calls":115,
+  "redis_duration_s":0.13,
+  "correlation_id":"O1SdybnnIq7",
+  "cpu_s":17.50,
+  "db_duration_s":0.08,
+  "view_duration_s":2.39,
+  "duration_s":20.54
 }
 ```
 
@@ -48,12 +52,15 @@ This example was a GET request for a specific
 issue. Each line also contains performance data, with times in
 milliseconds:
 
-1. `duration`: total time taken to retrieve the request
-1. `queue_duration`: total time that the request was queued inside GitLab Workhorse
-1. `view`: total time taken inside the Rails views
-1. `db`: total time to retrieve data from the database
+1. `duration_s`: total time taken to retrieve the request
+1. `queue_duration_s`: total time that the request was queued inside GitLab Workhorse
+1. `view_duration_s`: total time taken inside the Rails views
+1. `db_duration_s`: total time to retrieve data from PostgreSQL
+1. `redis_duration_s`: total time to retrieve data from Redis
+1. `cpu_s`: total time spent on CPU
+1. `gitaly_duration_s`: total time taken by Gitaly calls
 1. `gitaly_calls`: total number of calls made to Gitaly
-1. `gitaly_duration`: total time taken by Gitaly calls
+1. `redis_calls`: total number of calls made to Redis
 
 User clone and fetch activity using HTTP transport appears in this log as `action: git_upload_pack`.
 
@@ -73,9 +80,6 @@ NOTE: **Note:** Starting with GitLab 12.5, if an error occurs, an
   "controller": "Admin::DashboardController",
   "action": "index",
   "status": 500,
-  "duration": 2584.11,
-  "view": 0,
-  "db": 9.21,
   "time": "2019-11-14T13:12:46.156Z",
   "params": [],
   "remote_ip": "127.0.0.1",
@@ -84,7 +88,16 @@ NOTE: **Note:** Starting with GitLab 12.5, if an error occurs, an
   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:70.0) Gecko/20100101 Firefox/70.0",
   "queue_duration": 274.35,
   "correlation_id": "KjDVUhNvvV3",
-  "cpu_s": 2.837645135999999,
+  "queue_duration_s":0.0,
+  "gitaly_calls":16,
+  "gitaly_duration_s":0.16,
+  "redis_calls":115,
+  "redis_duration_s":0.13,
+  "correlation_id":"O1SdybnnIq7",
+  "cpu_s":17.50,
+  "db_duration_s":0.08,
+  "view_duration_s":2.39,
+  "duration_s":20.54
   "exception.class": "NameError",
   "exception.message": "undefined local variable or method `adsf' for #<Admin::DashboardController:0x00007ff3c9648588>",
   "exception.backtrace": [

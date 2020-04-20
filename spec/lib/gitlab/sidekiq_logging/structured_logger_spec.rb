@@ -42,11 +42,10 @@ describe Gitlab::SidekiqLogging::StructuredLogger do
       start_payload.merge(
         'message' => 'TestWorker JID-da883554ee4fe414012f5f42: done: 0.0 sec',
         'job_status' => 'done',
-        'duration' => 0.0,
+        'duration_s' => 0.0,
         'completed_at' => timestamp.to_f,
-        'cpu_s' => 1.111112,
-        'db_duration' => 0,
-        'db_duration_s' => 0
+        'cpu_s' => 1.11,
+        'db_duration_s' => 0.0
       )
     end
     let(:exception_payload) do
@@ -160,11 +159,11 @@ describe Gitlab::SidekiqLogging::StructuredLogger do
       let(:timing_data) do
         {
           gitaly_calls: 10,
-          gitaly_duration: 10000,
+          gitaly_duration_s: 10000,
           rugged_calls: 1,
-          rugged_duration_ms: 5000,
+          rugged_duration_s: 5000,
           redis_calls: 3,
-          redis_duration_ms: 1234
+          redis_duration_s: 1234
         }
       end
 
@@ -193,12 +192,11 @@ describe Gitlab::SidekiqLogging::StructuredLogger do
       let(:expected_start_payload) { start_payload.except('args') }
 
       let(:expected_end_payload) do
-        end_payload.except('args').merge('cpu_s' => a_value > 0)
+        end_payload.except('args').merge('cpu_s' => a_value >= 0)
       end
 
       let(:expected_end_payload_with_db) do
         expected_end_payload.merge(
-          'db_duration' => a_value >= 100,
           'db_duration_s' => a_value >= 0.1
         )
       end
@@ -226,7 +224,7 @@ describe Gitlab::SidekiqLogging::StructuredLogger do
     let(:time) { { duration: 0.1231234, cputime: 1.2342345 } }
     let(:payload) { { 'class' => 'my-class', 'message' => 'my-message', 'job_status' => 'my-job-status' } }
     let(:current_utc_time) { Time.now.utc }
-    let(:payload_with_time_keys) { { 'class' => 'my-class', 'message' => 'my-message', 'job_status' => 'my-job-status', 'duration' => 0.123123, 'cpu_s' => 1.234235, 'completed_at' => current_utc_time.to_f } }
+    let(:payload_with_time_keys) { { 'class' => 'my-class', 'message' => 'my-message', 'job_status' => 'my-job-status', 'duration_s' => 0.12, 'cpu_s' => 1.23, 'completed_at' => current_utc_time.to_f } }
 
     subject { described_class.new }
 

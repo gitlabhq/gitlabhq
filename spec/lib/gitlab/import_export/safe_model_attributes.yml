@@ -595,6 +595,7 @@ ProjectFeature:
 - builds_access_level
 - repository_access_level
 - pages_access_level
+- metrics_dashboard_access_level
 - created_at
 - updated_at
 ProtectedBranch::MergeAccessLevel:
@@ -811,6 +812,7 @@ ContainerExpirationPolicy:
 - next_run_at
 - project_id
 - name_regex
+- name_regex_keep
 - cadence
 - older_than
 - keep_n

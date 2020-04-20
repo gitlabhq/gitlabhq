@@ -298,6 +298,18 @@ document.addEventListener('DOMContentLoaded', () => {
       if ($gutterIcon.hasClass('fa-angle-double-right')) {
         $sidebarGutterToggle.trigger('click');
       }
+
+      const sidebarGutterVueToggleEl = document.querySelector('.js-sidebar-vue-toggle');
+
+      // Sidebar has an icon which corresponds to collapsing the sidebar
+      // only then trigger the click.
+      if (sidebarGutterVueToggleEl) {
+        const collapseIcon = sidebarGutterVueToggleEl.querySelector('i.fa-angle-double-right');
+
+        if (collapseIcon) {
+          collapseIcon.click();
+        }
+      }
     }
   });
 

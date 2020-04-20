@@ -1,6 +1,7 @@
 import { mount } from '@vue/test-utils';
 import { setTestTimeout } from 'helpers/timeout';
 import { GlLink } from '@gitlab/ui';
+import { TEST_HOST } from 'jest/helpers/test_constants';
 import {
   GlAreaChart,
   GlLineChart,
@@ -12,22 +13,15 @@ import { shallowWrapperContainsSlotText } from 'helpers/vue_test_utils_helper';
 import { createStore } from '~/monitoring/stores';
 import TimeSeries from '~/monitoring/components/charts/time_series.vue';
 import * as types from '~/monitoring/stores/mutation_types';
+import { deploymentData, mockProjectDir, annotationsData } from '../../mock_data';
 import {
-  deploymentData,
-  mockedQueryResultFixture,
+  metricsDashboardPayload,
   metricsDashboardViewModel,
-  mockProjectDir,
-  mockHost,
-} from '../../mock_data';
+  metricResultStatus,
+} from '../../fixture_data';
 import * as iconUtils from '~/lib/utils/icon_utils';
-import { getJSONFixture } from '../../../helpers/fixtures';
 
 const mockSvgPathContent = 'mockSvgPathContent';
-
-const metricsDashboardFixture = getJSONFixture(
-  'metrics_dashboard/environment_metrics_dashboard.json',
-);
-const metricsDashboardPayload = metricsDashboardFixture.dashboard;
 
 jest.mock('lodash/throttle', () =>
   // this throttle mock executes immediately
@@ -51,7 +45,7 @@ describe('Time series component', () => {
         graphData: { ...graphData, type },
         deploymentData: store.state.monitoringDashboard.deploymentData,
         annotations: store.state.monitoringDashboard.annotations,
-        projectPath: `${mockHost}${mockProjectDir}`,
+        projectPath: `${TEST_HOST}${mockProjectDir}`,
       },
       store,
       stubs: {
@@ -74,7 +68,7 @@ describe('Time series component', () => {
 
       store.commit(
         `monitoringDashboard/${types.RECEIVE_METRIC_RESULT_SUCCESS}`,
-        mockedQueryResultFixture,
+        metricResultStatus,
       );
       // dashboard is a dynamically generated fixture and stored at environment_metrics_dashboard.json
       [mockGraphData] = store.state.monitoringDashboard.dashboard.panelGroups[1].panels;
@@ -284,6 +278,33 @@ describe('Time series component', () => {
           });
         });
 
+        describe('formatAnnotationsTooltipText', () => {
+          const annotationsMetadata = {
+            name: 'annotations',
+            xAxis: annotationsData[0].from,
+            yAxis: 0,
+            tooltipData: {
+              title: '2020/02/19 10:01:41',
+              content: annotationsData[0].description,
+            },
+          };
+
+          const mockMarkPoint = {
+            componentType: 'markPoint',
+            name: 'annotations',
+            value: undefined,
+            data: annotationsMetadata,
+          };
+
+          it('formats tooltip title and sets tooltip content', () => {
+            const formattedTooltipData = timeSeriesChart.vm.formatAnnotationsTooltipText(
+              mockMarkPoint,
+            );
+            expect(formattedTooltipData.title).toBe('19 Feb 2020, 10:01AM');
+            expect(formattedTooltipData.content).toBe(annotationsMetadata.tooltipData.content);
+          });
+        });
+
         describe('setSvg', () => {
           const mockSvgName = 'mockSvgName';
 
@@ -386,6 +407,8 @@ describe('Time series component', () => {
                   series: [
                     {
                       name: mockSeriesName,
+                      type: 'line',
+                      data: [],
                     },
                   ],
                 },
@@ -448,8 +471,8 @@ describe('Time series component', () => {
               deploymentFormatter = getChartOptions().yAxis[1].axisLabel.formatter;
             });
 
-            it('formats and rounds to 2 decimal places', () => {
-              expect(dataFormatter(0.88888)).toBe('0.89');
+            it('formats by default to precision notation', () => {
+              expect(dataFormatter(0.88888)).toBe('889m');
             });
 
             it('deployment formatter is set as is required to display a tooltip', () => {
@@ -606,7 +629,7 @@ describe('Time series component', () => {
         store = createStore();
         const graphData = cloneDeep(metricsDashboardViewModel.panelGroups[0].panels[3]);
         graphData.metrics.forEach(metric =>
-          Object.assign(metric, { result: mockedQueryResultFixture.result }),
+          Object.assign(metric, { result: metricResultStatus.result }),
         );
 
         timeSeriesChart = makeTimeSeriesChart(graphData, 'area-chart');

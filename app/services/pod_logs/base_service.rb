@@ -62,13 +62,11 @@ module PodLogs
     end
 
     def get_raw_pods(result)
-      result[:raw_pods] = cluster.kubeclient.get_pods(namespace: namespace)
-
-      success(result)
+      raise NotImplementedError
     end
 
     def get_pod_names(result)
-      result[:pods] = result[:raw_pods].map(&:metadata).map(&:name)
+      result[:pods] = result[:raw_pods].map { |p| p[:name] }
 
       success(result)
     end

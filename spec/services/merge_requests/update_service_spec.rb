@@ -208,7 +208,7 @@ describe MergeRequests::UpdateService, :mailer do
       end
     end
 
-    context 'merge' do
+    shared_examples_for 'correct merge behavior' do
       let(:opts) do
         {
           merge: merge_request.diff_head_sha
@@ -308,6 +308,18 @@ describe MergeRequests::UpdateService, :mailer do
         end
 
         it { expect(@merge_request.state).to eq('opened') }
+      end
+    end
+
+    describe 'merge' do
+      it_behaves_like 'correct merge behavior'
+
+      context 'when merge_orchestration_service feature flag is disabled' do
+        before do
+          stub_feature_flags(merge_orchestration_service: false)
+        end
+
+        it_behaves_like 'correct merge behavior'
       end
     end
 

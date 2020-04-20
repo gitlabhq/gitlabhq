@@ -418,4 +418,48 @@ describe PrometheusService, :use_clean_rails_memory_store_caching do
       end
     end
   end
+
+  describe '#editable?' do
+    it 'is editable' do
+      expect(service.editable?).to be(true)
+    end
+
+    context 'when cluster exists with prometheus installed' do
+      let(:cluster) { create(:cluster, projects: [project]) }
+
+      before do
+        service.update!(manual_configuration: false)
+
+        create(:clusters_applications_prometheus, :installed, cluster: cluster)
+      end
+
+      it 'remains editable' do
+        expect(service.editable?).to be(true)
+      end
+    end
+  end
+
+  describe '#fields' do
+    let(:expected_fields) do
+      [
+        {
+          type: 'checkbox',
+          name: 'manual_configuration',
+          title: s_('PrometheusService|Active'),
+          required: true
+        },
+        {
+          type: 'text',
+          name: 'api_url',
+          title: 'API URL',
+          placeholder: s_('PrometheusService|Prometheus API Base URL, like http://prometheus.example.com/'),
+          required: true
+        }
+      ]
+    end
+
+    it 'returns fields' do
+      expect(service.fields).to eq(expected_fields)
+    end
+  end
 end

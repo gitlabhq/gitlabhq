@@ -9,7 +9,7 @@ import {
   GlLoadingIcon,
   GlDropdown,
   GlDropdownItem,
-  GlNewButton,
+  GlButton,
 } from '@gitlab/ui';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
@@ -28,7 +28,7 @@ export default {
     GlDropdown,
     GlDropdownItem,
     TimeAgoTooltip,
-    GlNewButton,
+    GlButton,
   },
   apollo: {
     canCreateSnippet: {
@@ -186,7 +186,7 @@ export default {
     <div class="detail-page-header-actions">
       <div class="d-none d-sm-flex">
         <template v-for="(action, index) in personalSnippetActions">
-          <gl-new-button
+          <gl-button
             v-if="action.condition"
             :key="index"
             :disabled="action.disabled"
@@ -197,7 +197,7 @@ export default {
             @click="action.click ? action.click() : undefined"
           >
             {{ action.text }}
-          </gl-new-button>
+          </gl-button>
         </template>
       </div>
       <div class="d-block d-sm-none dropdown">
@@ -227,8 +227,8 @@ export default {
       </gl-sprintf>
 
       <template #modal-footer>
-        <gl-new-button @click="closeDeleteModal">{{ __('Cancel') }}</gl-new-button>
-        <gl-new-button
+        <gl-button @click="closeDeleteModal">{{ __('Cancel') }}</gl-button>
+        <gl-button
           variant="danger"
           category="primary"
           :disabled="isDeleting"
@@ -237,7 +237,7 @@ export default {
         >
           <gl-loading-icon v-if="isDeleting" inline />
           {{ __('Delete snippet') }}
-        </gl-new-button>
+        </gl-button>
       </template>
     </gl-modal>
   </div>

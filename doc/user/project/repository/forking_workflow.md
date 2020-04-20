@@ -34,6 +34,12 @@ CAUTION: **Caution:**
 In GitLab 12.6 and later, when project owners [reduce a project's visibility](../../../public_access/public_access.md#reducing-visibility),
 it **removes the relationship** between a project and all its forks.
 
+CAUTION: **Caution:**
+When a public project with the repository feature set to "Members
+only" is forked, the repository will be public in the fork. The owner
+of the fork will need to manually change the visibility. This is being
+fixed in [#36662](https://gitlab.com/gitlab-org/gitlab/-/issues/36662).
+
 ## Repository mirroring
 
 You can use [repository mirroring](repository_mirroring.md) to keep your fork synced with the original repository. You can also use `git remote add upstream` to achieve the same result.

@@ -32,6 +32,7 @@ module RuboCop
        project_authorizations
        projects
        project_ci_cd_settings
+       project_features
        push_event_payloads
        resource_label_events
        routes

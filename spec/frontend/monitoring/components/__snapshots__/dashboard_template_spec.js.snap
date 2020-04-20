@@ -6,101 +6,106 @@ exports[`Dashboard template matches the default snapshot 1`] = `
   data-qa-selector="prometheus_graphs"
 >
   <div
-    class="prometheus-graphs-header gl-p-3 pb-0 border-bottom bg-gray-light"
+    class="prometheus-graphs-header d-sm-flex flex-sm-wrap pt-2 pr-1 pb-0 pl-2 border-bottom bg-gray-light"
   >
     <div
-      class="row"
+      class="mb-2 pr-2 d-flex d-sm-block"
     >
-      <gl-form-group-stub
-        class="col-sm-12 col-md-6 col-lg-2"
-        label="Dashboard"
-        label-for="monitor-dashboards-dropdown"
-        label-size="sm"
+      <dashboards-dropdown-stub
+        class="flex-grow-1"
+        data-qa-selector="dashboards_filter_dropdown"
+        defaultbranch="master"
+        id="monitor-dashboards-dropdown"
+        selecteddashboard="[object Object]"
+        toggle-class="dropdown-menu-toggle"
+      />
+    </div>
+     
+    <div
+      class="mb-2 pr-2 d-flex d-sm-block"
+    >
+      <gl-dropdown-stub
+        class="flex-grow-1"
+        data-qa-selector="environments_dropdown"
+        id="monitor-environments-dropdown"
+        menu-class="monitor-environment-dropdown-menu"
+        text="production"
+        toggle-class="dropdown-menu-toggle"
       >
-        <dashboards-dropdown-stub
-          class="mb-0 d-flex"
-          data-qa-selector="dashboards_filter_dropdown"
-          defaultbranch="master"
-          id="monitor-dashboards-dropdown"
-          selecteddashboard="[object Object]"
-          toggle-class="dropdown-menu-toggle"
-        />
-      </gl-form-group-stub>
-       
-      <gl-form-group-stub
-        class="col-sm-6 col-md-6 col-lg-2"
-        label="Environment"
-        label-for="monitor-environments-dropdown"
-        label-size="sm"
-      >
-        <gl-dropdown-stub
-          class="mb-0 d-flex"
-          data-qa-selector="environments_dropdown"
-          id="monitor-environments-dropdown"
-          menu-class="monitor-environment-dropdown-menu"
-          text="production"
-          toggle-class="dropdown-menu-toggle"
+        <div
+          class="d-flex flex-column overflow-hidden"
         >
-          <div
-            class="d-flex flex-column overflow-hidden"
+          <gl-dropdown-header-stub
+            class="monitor-environment-dropdown-header text-center"
           >
-            <gl-dropdown-header-stub
-              class="monitor-environment-dropdown-header text-center"
-            >
-              Environment
-            </gl-dropdown-header-stub>
-             
-            <gl-dropdown-divider-stub />
-             
-            <gl-search-box-by-type-stub
-              class="m-2"
-              clearbuttontitle="Clear"
-              value=""
-            />
-             
-            <div
-              class="flex-fill overflow-auto"
-            />
-             
-            <div
-              class="text-secondary no-matches-message"
-            >
-              
-              No matching results
             
-            </div>
-          </div>
-        </gl-dropdown-stub>
-      </gl-form-group-stub>
-       
-      <gl-form-group-stub
-        class="col-sm-auto col-md-auto col-lg-auto"
-        data-qa-selector="show_last_dropdown"
-        label="Show last"
-        label-for="monitor-time-window-dropdown"
-        label-size="sm"
-      >
-        <date-time-picker-stub
-          customenabled="true"
-          options="[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object]"
-          value="[object Object]"
-        />
-      </gl-form-group-stub>
-       
-      <gl-form-group-stub
-        class="col-sm-2 col-md-2 col-lg-1 refresh-dashboard-button"
-      >
-        <gl-deprecated-button-stub
-          size="md"
-          title="Refresh dashboard"
-          variant="default"
-        >
-          <icon-stub
-            name="retry"
-            size="16"
+            Environment
+          
+          </gl-dropdown-header-stub>
+           
+          <gl-dropdown-divider-stub />
+           
+          <gl-search-box-by-type-stub
+            class="m-2"
+            clearbuttontitle="Clear"
+            value=""
           />
-        </gl-deprecated-button-stub>
-      </gl-form-group-stub>
+           
+          <div
+            class="flex-fill overflow-auto"
+          />
+           
+          <div
+            class="text-secondary no-matches-message"
+          >
+            
+            No matching results
+          
+          </div>
+        </div>
+      </gl-dropdown-stub>
+    </div>
+     
+    <div
+      class="mb-2 pr-2 d-flex d-sm-block"
+    >
+      <date-time-picker-stub
+        class="flex-grow-1 show-last-dropdown"
+        customenabled="true"
+        data-qa-selector="show_last_dropdown"
+        options="[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object]"
+        value="[object Object]"
+      />
+    </div>
+     
+    <div
+      class="mb-2 pr-2 d-flex d-sm-block"
+    >
+      <gl-deprecated-button-stub
+        class="flex-grow-1"
+        size="md"
+        title="Refresh dashboard"
+        variant="default"
+      >
+        <icon-stub
+          name="retry"
+          size="16"
+        />
+      </gl-deprecated-button-stub>
+    </div>
+     
+    <div
+      class="flex-grow-1"
+    />
+     
+    <div
+      class="d-sm-flex"
+    >
+      <!---->
+       
+      <!---->
+       
+      <!---->
        
       <!---->
     </div>

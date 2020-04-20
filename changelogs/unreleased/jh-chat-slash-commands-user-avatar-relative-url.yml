@@ -1,0 +1,5 @@
+---
+title: Fix Slack slash commands using relative URL
+merge_request: 29160
+author:
+type: fixed

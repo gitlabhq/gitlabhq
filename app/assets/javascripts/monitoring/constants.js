@@ -120,10 +120,26 @@ export const NOT_IN_DB_PREFIX = 'NO_DB';
 export const ENVIRONMENT_AVAILABLE_STATE = 'available';
 
 /**
- * Time series charts have different types of
- * tooltip based on the hovered data point.
+ * As of %12.10, the svg icon library does not have an annotation
+ * arrow icon yet. In order to deliver annotations feature, the icon
+ * is hard coded until the icon is added. The below issue is
+ * to track the icon.
+ *
+ * https://gitlab.com/gitlab-org/gitlab-svgs/-/issues/118
+ *
+ * Once the icon is merged this can be removed.
+ * https://gitlab.com/gitlab-org/gitlab/-/issues/214540
  */
-export const tooltipTypes = {
-  deployments: 'deployments',
-  annotations: 'annotations',
-};
+export const annotationsSymbolIcon = 'path://m5 229 5 8h-10z';
+
+/**
+ * As of %12.10, dashboard path is required to create annotation.
+ * The FE gets the dashboard name from the URL params. It is not
+ * ideal to store the path this way but there is no other way to
+ * get this path unless annotations fetch is delayed. This could
+ * potentially be removed and have the backend send this to the FE.
+ *
+ * This technical debt is being tracked here
+ * https://gitlab.com/gitlab-org/gitlab/-/issues/214671
+ */
+export const DEFAULT_DASHBOARD_PATH = 'config/prometheus/common_metrics.yml';

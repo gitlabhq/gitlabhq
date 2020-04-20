@@ -130,8 +130,10 @@ describe JiraImportState do
     context 'after transition to finished' do
       let!(:jira_import) { build(:jira_import_state, :started, jid: 'some-other-jid', project: project)}
 
+      subject { jira_import.finish }
+
       it 'triggers the import job' do
-        jira_import.finish
+        subject
 
         expect(jira_import.jid).to be_nil
       end
@@ -139,10 +141,24 @@ describe JiraImportState do
       it 'triggers the import job' do
         jira_import.update!(status: :scheduled)
 
-        jira_import.finish
+        subject
 
         expect(jira_import.status).to eq('scheduled')
         expect(jira_import.jid).to eq('some-other-jid')
+      end
+
+      it 'updates the record with imported issues counts' do
+        import_label = create(:label, project: project, title: 'jira-import')
+        create_list(:labeled_issue, 3, project: project, labels: [import_label])
+
+        expect(Gitlab::JiraImport).to receive(:get_import_label_id).and_return(import_label.id)
+        expect(Gitlab::JiraImport).to receive(:issue_failures).and_return(2)
+
+        subject
+
+        expect(jira_import.total_issue_count).to eq(5)
+        expect(jira_import.failed_to_import_count).to eq(2)
+        expect(jira_import.imported_issues_count).to eq(3)
       end
     end
   end

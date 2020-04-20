@@ -168,6 +168,27 @@ A Merge Train pipeline cannot be retried because the merge request is dropped fr
 
 In the case of pipeline failure, you should [re-enqueue](#add-a-merge-request-to-a-merge-train) the merge request to the merge train, which will then initiate a new pipeline.
 
+### Unable to add to merge train with message "The pipeline for this merge request failed."
+
+Sometimes the **Start/Add to Merge Train** button is not available and the merge request says,
+"The pipeline for this merge request failed. Please retry the job or push a new commit to fix the failure."
+
+This issue occurs when [**Pipelines must succeed**](../../../../user/project/merge_requests/merge_when_pipeline_succeeds.md#only-allow-merge-requests-to-be-merged-if-the-pipeline-succeeds)
+is enabled in **Settings > General > Merge requests**. This option requires that you
+run a new successful pipeline before you can re-add a merge request to a merge train.
+
+Merge trains ensure that each pipeline has succeeded before a merge happens, so
+you can clear the **Pipelines must succeed** check box and keep
+**Merge pipelines will try to validate the post-merge result prior to merging** (merge trains) enabled.
+
+If you want to keep the **Pipelines must succeed** option enabled along with Merge
+Trains, you can create a new pipeline for merged results when this error occurs by
+going to the **Pipelines** tab and clicking **Run pipeline**. Then click
+**Start/Add to merge train when pipeline succeeds**.
+
+See [the related issue](https://gitlab.com/gitlab-org/gitlab/issues/35135)
+for more information.
+
 ### Merge Trains feature flag **(PREMIUM ONLY)**
 
 To enable and disable the Merge Trains feature, use the `:disable_merge_trains` feature flag.

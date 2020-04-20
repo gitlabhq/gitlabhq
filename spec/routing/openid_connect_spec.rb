@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 # oauth_discovery_keys      GET /oauth/discovery/keys(.:format)             doorkeeper/openid_connect/discovery#keys
+# jwks                      GET /-/jwks(.:format)                           doorkeeper/openid_connect/discovery#keys
 # oauth_discovery_provider  GET /.well-known/openid-configuration(.:format) doorkeeper/openid_connect/discovery#provider
 # oauth_discovery_webfinger GET /.well-known/webfinger(.:format)            doorkeeper/openid_connect/discovery#webfinger
 describe Doorkeeper::OpenidConnect::DiscoveryController, 'routing' do
@@ -16,6 +17,10 @@ describe Doorkeeper::OpenidConnect::DiscoveryController, 'routing' do
 
   it "to #keys" do
     expect(get('/oauth/discovery/keys')).to route_to('doorkeeper/openid_connect/discovery#keys')
+  end
+
+  it "/-/jwks" do
+    expect(get('/-/jwks')).to route_to('doorkeeper/openid_connect/discovery#keys')
   end
 end
 

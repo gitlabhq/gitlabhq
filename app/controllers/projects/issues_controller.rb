@@ -11,7 +11,7 @@ class Projects::IssuesController < Projects::ApplicationController
   include RecordUserLastActivity
 
   def issue_except_actions
-    %i[index calendar new create bulk_update import_csv]
+    %i[index calendar new create bulk_update import_csv export_csv]
   end
 
   def set_issuables_index_only_actions
@@ -20,7 +20,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   prepend_before_action(only: [:index]) { authenticate_sessionless_user!(:rss) }
   prepend_before_action(only: [:calendar]) { authenticate_sessionless_user!(:ics) }
-  prepend_before_action :authenticate_user!, only: [:new]
+  prepend_before_action :authenticate_user!, only: [:new, :export_csv]
   # designs is only applicable to EE, but defining a prepend_before_action in EE code would overwrite this
   prepend_before_action :store_uri, only: [:new, :show, :designs]
 
@@ -187,6 +187,13 @@ class Projects::IssuesController < Projects::ApplicationController
     else
       render json: result[:message], status: :unprocessable_entity
     end
+  end
+
+  def export_csv
+    ExportCsvWorker.perform_async(current_user.id, project.id, finder_options.to_h) # rubocop:disable CodeReuse/Worker
+
+    index_path = project_issues_path(project)
+    redirect_to(index_path, notice: "Your CSV export has started. It will be emailed to #{current_user.notification_email} when complete.")
   end
 
   def import_csv

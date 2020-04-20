@@ -94,6 +94,10 @@ describe MergeRequestPollWidgetEntity do
   end
 
   describe 'auto merge' do
+    before do
+      project.add_maintainer(user)
+    end
+
     context 'when auto merge is enabled' do
       let(:resource) { create(:merge_request, :merge_when_pipeline_succeeds) }
 

@@ -11,7 +11,9 @@ describe ExpirePipelineCacheWorker do
 
   describe '#perform' do
     it 'executes the service' do
-      expect_any_instance_of(Ci::ExpirePipelineCacheService).to receive(:execute).with(pipeline).and_call_original
+      expect_next_instance_of(Ci::ExpirePipelineCacheService) do |instance|
+        expect(instance).to receive(:execute).with(pipeline).and_call_original
+      end
 
       subject.perform(pipeline.id)
     end
@@ -30,6 +32,10 @@ describe ExpirePipelineCacheWorker do
       expect_any_instance_of(Gitlab::EtagCaching::Store).not_to receive(:touch)
 
       subject.perform(pipeline.id)
+    end
+
+    it_behaves_like 'an idempotent worker' do
+      let(:job_args) { [pipeline.id] }
     end
   end
 end

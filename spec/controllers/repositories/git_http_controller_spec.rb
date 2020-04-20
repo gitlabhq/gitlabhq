@@ -95,7 +95,7 @@ describe Repositories::GitHttpController do
         allow(controller).to receive(:access_check).and_return(nil)
       end
 
-      after do
+      def send_request
         post :git_upload_pack, params: params
       end
 
@@ -106,16 +106,46 @@ describe Repositories::GitHttpController do
 
         it 'does not update project statistics' do
           expect(ProjectDailyStatisticsWorker).not_to receive(:perform_async)
+
+          send_request
         end
       end
 
       if expected
-        it 'updates project statistics' do
-          expect(ProjectDailyStatisticsWorker).to receive(:perform_async)
+        context 'when project_statistics_sync feature flag is disabled' do
+          before do
+            stub_feature_flags(project_statistics_sync: false)
+          end
+
+          it 'updates project statistics async' do
+            expect(ProjectDailyStatisticsWorker).to receive(:perform_async)
+
+            send_request
+          end
+        end
+
+        it 'updates project statistics sync' do
+          expect { send_request }.to change {
+            Projects::DailyStatisticsFinder.new(project).total_fetch_count
+          }.from(0).to(1)
         end
       else
+        context 'when project_statistics_sync feature flag is disabled' do
+          before do
+            stub_feature_flags(project_statistics_sync: false)
+          end
+
+          it 'does not update project statistics' do
+            expect(ProjectDailyStatisticsWorker).not_to receive(:perform_async)
+
+            send_request
+          end
+        end
+
         it 'does not update project statistics' do
-          expect(ProjectDailyStatisticsWorker).not_to receive(:perform_async)
+          expect { send_request }.not_to change {
+            Projects::DailyStatisticsFinder.new(project).total_fetch_count
+          }.from(0)
         end
       end
     end

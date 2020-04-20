@@ -124,24 +124,29 @@ describe('Static Site Editor Store actions', () => {
     });
 
     describe('on error', () => {
+      const error = new Error(submitChangesError);
       const expectedMutations = [
         { type: mutationTypes.SUBMIT_CHANGES },
-        { type: mutationTypes.SUBMIT_CHANGES_ERROR },
+        { type: mutationTypes.SUBMIT_CHANGES_ERROR, payload: error.message },
       ];
 
       beforeEach(() => {
-        submitContentChanges.mockRejectedValueOnce(new Error(submitChangesError));
+        submitContentChanges.mockRejectedValueOnce(error);
       });
 
       it('dispatches receiveContentError', () => {
         testAction(actions.submitChanges, null, state, expectedMutations);
       });
+    });
+  });
 
-      it('displays flash communicating error', () => {
-        return testAction(actions.submitChanges, null, state, expectedMutations).then(() => {
-          expect(createFlash).toHaveBeenCalledWith(submitChangesError);
-        });
-      });
+  describe('dismissSubmitChangesError', () => {
+    it('commits dismissSubmitChangesError', () => {
+      testAction(actions.dismissSubmitChangesError, null, state, [
+        {
+          type: mutationTypes.DISMISS_SUBMIT_CHANGES_ERROR,
+        },
+      ]);
     });
   });
 });

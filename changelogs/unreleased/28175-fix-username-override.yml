@@ -1,0 +1,5 @@
+---
+title: Prevent overriding the username when creating a Deploy Token via the API
+merge_request: 28175
+author: Ayoub Mrini
+type: fixed

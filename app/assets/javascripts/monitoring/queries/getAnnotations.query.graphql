@@ -1,12 +1,25 @@
-query getAnnotations($projectPath: ID!) {
-  environment(name: $environmentName) {
-    metricDashboard(id: $dashboardId) {
-      annotations: nodes {
+query getAnnotations(
+  $projectPath: ID!
+  $environmentName: String
+  $dashboardPath: String!
+  $startingFrom: Time!
+) {
+  project(fullPath: $projectPath) {
+    environments(name: $environmentName) {
+      nodes {
         id
-        description
-        starting_at
-        ending_at
-        panelId
+        name
+        metricsDashboard(path: $dashboardPath) {
+          annotations(from: $startingFrom) {
+            nodes {
+              id
+              description
+              startingAt
+              endingAt
+              panelId
+            }
+          }
+        }
       }
     }
   }

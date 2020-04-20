@@ -1,0 +1,6 @@
+---
+title: Add a database column to enable or disable group owners from changing the default
+  branch protection setting of a group
+merge_request: 29397
+author:
+type: added

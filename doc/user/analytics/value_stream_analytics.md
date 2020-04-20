@@ -280,6 +280,28 @@ administrator can open a Rails console and disable it with the following command
 Feature.disable(:cycle_analytics_scatterplot_median_enabled)
 ```
 
+## Type of work - Tasks by type chart
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32421) in GitLab 12.10.
+
+This chart shows a cumulative count of issues and merge requests per day.
+
+This chart uses the global page filters for displaying data based on the selected
+group, projects, and timeframe. The chart defaults to showing counts for issues but can be
+toggled to show data for merge requests and further refined for specific group-level labels.
+
+By default the top group-level labels (max. 10) are pre-selected, with the ability to
+select up to a total of 15 labels.
+
+### Disabling chart
+
+This chart is enabled by default. If you have a self-managed instance, an
+administrator can open a Rails console and disable it with the following command:
+
+```ruby
+Feature.disable(:tasks_by_type_chart)
+```
+
 ## Permissions
 
 The current permissions on the Project Value Stream Analytics dashboard are:

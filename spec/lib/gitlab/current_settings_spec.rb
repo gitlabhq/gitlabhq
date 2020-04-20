@@ -49,20 +49,16 @@ describe Gitlab::CurrentSettings do
       end
     end
 
-    context 'with DB unavailable' do
-      context 'and settings in cache' do
-        include_context 'with settings in cache'
-
-        it 'fetches the settings from cache without issuing any query' do
-          expect(ActiveRecord::QueryRecorder.new { described_class.current_application_settings }.count).to eq(0)
-        end
+    context 'in a Rake task with DB unavailable' do
+      before do
+        allow(Gitlab::Runtime).to receive(:rake?).and_return(true)
+        # For some reason, `allow(described_class).to receive(:connect_to_db?).and_return(false)` causes issues
+        # during the initialization phase of the test suite, so instead let's mock the internals of it
+        allow(ActiveRecord::Base.connection).to receive(:active?).and_return(false)
       end
 
       context 'and no settings in cache' do
         before do
-          # For some reason, `allow(described_class).to receive(:connect_to_db?).and_return(false)` causes issues
-          # during the initialization phase of the test suite, so instead let's mock the internals of it
-          allow(ActiveRecord::Base.connection).to receive(:active?).and_return(false)
           expect(ApplicationSetting).not_to receive(:current)
         end
 
@@ -183,17 +179,6 @@ describe Gitlab::CurrentSettings do
             expect(ApplicationSetting).to receive(:current).and_return(:current_settings)
 
             expect(described_class.current_application_settings).to eq(:current_settings)
-          end
-        end
-
-        context 'when the application_settings table does not exist' do
-          it 'returns a FakeApplicationSettings object' do
-            expect(Gitlab::Database)
-              .to receive(:cached_table_exists?)
-              .with('application_settings')
-              .and_return(false)
-
-            expect(described_class.current_application_settings).to be_a(Gitlab::FakeApplicationSettings)
           end
         end
       end

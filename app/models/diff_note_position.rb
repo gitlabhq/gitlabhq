@@ -2,6 +2,7 @@
 
 class DiffNotePosition < ApplicationRecord
   belongs_to :note
+  attr_accessor :line_range
 
   enum diff_content_type: {
     text: 0,
@@ -42,6 +43,7 @@ class DiffNotePosition < ApplicationRecord
   def self.position_to_attrs(position)
     position_attrs = position.to_h
     position_attrs[:diff_content_type] = position_attrs.delete(:position_type)
+    position_attrs.delete(:line_range)
     position_attrs
   end
 end

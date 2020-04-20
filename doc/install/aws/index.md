@@ -4,8 +4,6 @@ type: howto
 
 # Installing GitLab HA on Amazon Web Services (AWS)
 
-DANGER: **Danger:** This guide is under review and the steps below will be revised and updated in due time. For more detail, please see [this epic](https://gitlab.com/groups/gitlab-org/-/epics/912).
-
 This page offers a walkthrough of a common HA (Highly Available) configuration
 for GitLab on AWS. You should customize it to accommodate your needs.
 

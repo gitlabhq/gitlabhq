@@ -1,7 +1,7 @@
 import SnippetHeader from '~/snippets/components/snippet_header.vue';
 import DeleteSnippetMutation from '~/snippets/mutations/deleteSnippet.mutation.graphql';
 import { ApolloMutation } from 'vue-apollo';
-import { GlNewButton, GlModal } from '@gitlab/ui';
+import { GlButton, GlModal } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 
 describe('Snippet header component', () => {
@@ -89,7 +89,7 @@ describe('Snippet header component', () => {
         updateSnippet: false,
       },
     });
-    expect(wrapper.findAll(GlNewButton).length).toEqual(0);
+    expect(wrapper.findAll(GlButton).length).toEqual(0);
 
     createComponent({
       permissions: {
@@ -97,7 +97,7 @@ describe('Snippet header component', () => {
         updateSnippet: false,
       },
     });
-    expect(wrapper.findAll(GlNewButton).length).toEqual(1);
+    expect(wrapper.findAll(GlButton).length).toEqual(1);
 
     createComponent({
       permissions: {
@@ -105,7 +105,7 @@ describe('Snippet header component', () => {
         updateSnippet: true,
       },
     });
-    expect(wrapper.findAll(GlNewButton).length).toEqual(2);
+    expect(wrapper.findAll(GlButton).length).toEqual(2);
 
     createComponent({
       permissions: {
@@ -117,7 +117,7 @@ describe('Snippet header component', () => {
       canCreateSnippet: true,
     });
     return wrapper.vm.$nextTick().then(() => {
-      expect(wrapper.findAll(GlNewButton).length).toEqual(3);
+      expect(wrapper.findAll(GlButton).length).toEqual(3);
     });
   });
 

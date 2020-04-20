@@ -14,3 +14,8 @@ export const types = {
   fileType: 'file',
   allEnvironmentsType: '*',
 };
+
+// AWS TOKEN CONSTANTS
+export const AWS_ACCESS_KEY_ID = 'AWS_ACCESS_KEY_ID';
+export const AWS_DEFAULT_REGION = 'AWS_DEFAULT_REGION';
+export const AWS_SECRET_ACCESS_KEY = 'AWS_SECRET_ACCESS_KEY';

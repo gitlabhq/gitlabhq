@@ -1,11 +1,12 @@
 import VueRouter from 'vue-router';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
-import { GlPagination, GlSkeletonLoader, GlSprintf } from '@gitlab/ui';
+import { GlPagination, GlSkeletonLoader, GlSprintf, GlAlert } from '@gitlab/ui';
 import Tracking from '~/tracking';
 import component from '~/registry/explorer/pages/list.vue';
 import QuickstartDropdown from '~/registry/explorer/components/quickstart_dropdown.vue';
 import GroupEmptyState from '~/registry/explorer/components/group_empty_state.vue';
 import ProjectEmptyState from '~/registry/explorer/components/project_empty_state.vue';
+import ProjectPolicyAlert from '~/registry/explorer/components/project_policy_alert.vue';
 import store from '~/registry/explorer/stores/';
 import { SET_MAIN_LOADING } from '~/registry/explorer/stores/mutation_types/';
 import {
@@ -35,6 +36,8 @@ describe('List Page', () => {
   const findQuickStartDropdown = () => wrapper.find(QuickstartDropdown);
   const findProjectEmptyState = () => wrapper.find(ProjectEmptyState);
   const findGroupEmptyState = () => wrapper.find(GroupEmptyState);
+  const findProjectPolicyAlert = () => wrapper.find(ProjectPolicyAlert);
+  const findDeleteAlert = () => wrapper.find(GlAlert);
 
   beforeEach(() => {
     wrapper = shallowMount(component, {
@@ -55,6 +58,18 @@ describe('List Page', () => {
 
   afterEach(() => {
     wrapper.destroy();
+  });
+
+  describe('Expiration policy notification', () => {
+    it('shows up on project page', () => {
+      expect(findProjectPolicyAlert().exists()).toBe(true);
+    });
+    it('does show up on group page', () => {
+      store.dispatch('setInitialState', { isGroupPage: true });
+      return wrapper.vm.$nextTick().then(() => {
+        expect(findProjectPolicyAlert().exists()).toBe(false);
+      });
+    });
   });
 
   describe('connection error', () => {
@@ -179,32 +194,38 @@ describe('List Page', () => {
 
         it('should call deleteItem when confirming deletion', () => {
           dispatchSpy.mockResolvedValue();
-          const itemToDelete = wrapper.vm.images[0];
-          wrapper.setData({ itemToDelete });
+          findDeleteBtn().vm.$emit('click');
+          expect(wrapper.vm.itemToDelete).not.toEqual({});
           findDeleteModal().vm.$emit('ok');
           expect(store.dispatch).toHaveBeenCalledWith(
             'requestDeleteImage',
-            itemToDelete.destroy_path,
+            wrapper.vm.itemToDelete,
           );
         });
 
-        it('should show a success toast when delete request is successful', () => {
+        it('should show a success alert when delete request is successful', () => {
           dispatchSpy.mockResolvedValue();
+          findDeleteBtn().vm.$emit('click');
+          expect(wrapper.vm.itemToDelete).not.toEqual({});
           return wrapper.vm.handleDeleteImage().then(() => {
-            expect(wrapper.vm.$toast.show).toHaveBeenCalledWith(DELETE_IMAGE_SUCCESS_MESSAGE, {
-              type: 'success',
-            });
-            expect(wrapper.vm.itemToDelete).toEqual({});
+            const alert = findDeleteAlert();
+            expect(alert.exists()).toBe(true);
+            expect(alert.text().replace(/\s\s+/gm, ' ')).toBe(
+              DELETE_IMAGE_SUCCESS_MESSAGE.replace('%{title}', wrapper.vm.itemToDelete.path),
+            );
           });
         });
 
-        it('should show a error toast when delete request fails', () => {
+        it('should show an error alert when delete request fails', () => {
           dispatchSpy.mockRejectedValue();
+          findDeleteBtn().vm.$emit('click');
+          expect(wrapper.vm.itemToDelete).not.toEqual({});
           return wrapper.vm.handleDeleteImage().then(() => {
-            expect(wrapper.vm.$toast.show).toHaveBeenCalledWith(DELETE_IMAGE_ERROR_MESSAGE, {
-              type: 'error',
-            });
-            expect(wrapper.vm.itemToDelete).toEqual({});
+            const alert = findDeleteAlert();
+            expect(alert.exists()).toBe(true);
+            expect(alert.text().replace(/\s\s+/gm, ' ')).toBe(
+              DELETE_IMAGE_ERROR_MESSAGE.replace('%{title}', wrapper.vm.itemToDelete.path),
+            );
           });
         });
       });

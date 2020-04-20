@@ -8,11 +8,7 @@ module Projects
       def execute
         deploy_token = create_deploy_token_for(@project, params)
 
-        if deploy_token.persisted?
-          success(deploy_token: deploy_token, http_status: :created)
-        else
-          error(deploy_token.errors.full_messages.to_sentence, :bad_request)
-        end
+        create_deploy_token_payload_for(deploy_token)
       end
     end
   end

@@ -9,14 +9,14 @@ describe CreateCommitSignatureWorker do
   let(:gpg_commit) { instance_double(Gitlab::Gpg::Commit) }
   let(:x509_commit) { instance_double(Gitlab::X509::Commit) }
 
+  before do
+    allow(Project).to receive(:find_by).with(id: project.id).and_return(project)
+    allow(project).to receive(:commits_by).with(oids: commit_shas).and_return(commits)
+  end
+
+  subject { described_class.new.perform(commit_shas, project.id) }
+
   context 'when a signature is found' do
-    before do
-      allow(Project).to receive(:find_by).with(id: project.id).and_return(project)
-      allow(project).to receive(:commits_by).with(oids: commit_shas).and_return(commits)
-    end
-
-    subject { described_class.new.perform(commit_shas, project.id) }
-
     it 'calls Gitlab::Gpg::Commit#signature' do
       commits.each do |commit|
         allow(commit).to receive(:signature_type).and_return(:PGP)
@@ -67,9 +67,10 @@ describe CreateCommitSignatureWorker do
   end
 
   context 'handles when a string is passed in for the commit SHA' do
+    let(:commit_shas) { super().first }
+
     before do
-      allow(Project).to receive(:find_by).with(id: project.id).and_return(project)
-      allow(project).to receive(:commits_by).with(oids: Array(commit_shas.first)).and_return(commits)
+      allow(project).to receive(:commits_by).with(oids: [commit_shas]).and_return(commits)
       allow(commits.first).to receive(:signature_type).and_return(:PGP)
     end
 
@@ -78,35 +79,65 @@ describe CreateCommitSignatureWorker do
 
       expect(gpg_commit).to receive(:signature).once
 
-      described_class.new.perform(commit_shas.first, project.id)
+      subject
     end
   end
 
   context 'when Commit is not found' do
     let(:nonexisting_commit_sha) { '0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a34' }
+    let(:commit_shas) { [nonexisting_commit_sha] }
 
     it 'does not raise errors' do
-      expect { described_class.new.perform([nonexisting_commit_sha], project.id) }.not_to raise_error
+      expect { described_class.new.perform(commit_shas, project.id) }.not_to raise_error
     end
   end
 
   context 'when Project is not found' do
-    let(:nonexisting_project_id) { -1 }
+    let(:commits) { [] }
+    let(:project) { double(id: non_existing_record_id) }
 
     it 'does not raise errors' do
-      expect { described_class.new.perform(commit_shas, nonexisting_project_id) }.not_to raise_error
+      expect { subject }.not_to raise_error
     end
 
     it 'does not call Gitlab::Gpg::Commit#signature' do
       expect_any_instance_of(Gitlab::Gpg::Commit).not_to receive(:signature)
 
-      described_class.new.perform(commit_shas, nonexisting_project_id)
+      subject
     end
 
     it 'does not call Gitlab::X509::Commit#signature' do
       expect_any_instance_of(Gitlab::X509::Commit).not_to receive(:signature)
 
-      described_class.new.perform(commit_shas, nonexisting_project_id)
+      subject
+    end
+  end
+
+  context 'fetching signatures' do
+    before do
+      commits.each do |commit|
+        allow(commit).to receive(:signature_type).and_return(type)
+      end
+    end
+
+    context 'X509' do
+      let(:type) { :X509 }
+
+      it 'performs a single query for commit signatures' do
+        expect(X509CommitSignature).to receive(:by_commit_sha).with(commit_shas).once.and_return([])
+
+        subject
+      end
+    end
+
+    context 'PGP' do
+      let(:type) { :PGP }
+
+      it 'performs a single query for commit signatures' do
+        expect(GpgSignature).to receive(:by_commit_sha).with(commit_shas).once.and_return([])
+
+        subject
+      end
     end
   end
 end

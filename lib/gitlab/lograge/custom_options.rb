@@ -18,7 +18,7 @@ module Gitlab
           user_id: event.payload[:user_id],
           username: event.payload[:username],
           ua: event.payload[:ua],
-          queue_duration: event.payload[:queue_duration]
+          queue_duration_s: event.payload[:queue_duration_s]
         }
 
         ::Gitlab::InstrumentationHelper.add_instrumentation_data(payload)
@@ -28,7 +28,7 @@ module Gitlab
         payload[Labkit::Correlation::CorrelationId::LOG_KEY] = Labkit::Correlation::CorrelationId.current_id
 
         if cpu_s = Gitlab::Metrics::System.thread_cpu_duration(::Gitlab::RequestContext.instance.start_thread_cpu_time)
-          payload[:cpu_s] = cpu_s
+          payload[:cpu_s] = cpu_s.round(2)
         end
 
         # https://github.com/roidrage/lograge#logging-errors--exceptions

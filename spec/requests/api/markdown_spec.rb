@@ -3,8 +3,6 @@
 require "spec_helper"
 
 describe API::Markdown do
-  RSpec::Matchers.define_negated_matcher :exclude, :include
-
   describe "POST /markdown" do
     let(:user) {} # No-op. It gets overwritten in the contexts below.
 

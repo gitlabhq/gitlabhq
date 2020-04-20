@@ -91,7 +91,7 @@ module Gitlab
                 title:        "#{issue.title} · #{issue.to_reference}",
                 title_link:   resource_url,
                 author_name:  author.name,
-                author_icon:  author.avatar_url,
+                author_icon:  author.avatar_url(only_path: false),
                 fallback:     fallback_message,
                 pretext:      custom_pretext,
                 text:         text,

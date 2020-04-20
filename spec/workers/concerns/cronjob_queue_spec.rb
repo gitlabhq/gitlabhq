@@ -14,6 +14,10 @@ describe CronjobQueue do
     end
   end
 
+  before do
+    stub_const("DummyWorker", worker)
+  end
+
   it 'sets the queue name of a worker' do
     expect(worker.sidekiq_options['queue'].to_s).to eq('cronjob:dummy')
   end
@@ -28,5 +32,23 @@ describe CronjobQueue do
     expect(worker_context[:user]).to be_nil
     expect(worker_context[:root_namespace]).to be_nil
     expect(worker_context[:project]).to be_nil
+  end
+
+  it 'gets scheduled with caller_id set to Cronjob' do
+    worker.perform_async
+
+    job = worker.jobs.last
+
+    expect(job).to include('meta.caller_id' => 'Cronjob')
+  end
+
+  it 'does not set the caller_id if there was already one in the context' do
+    Gitlab::ApplicationContext.with_context(caller_id: 'already set') do
+      worker.perform_async
+    end
+
+    job = worker.jobs.last
+
+    expect(job).to include('meta.caller_id' => 'already set')
   end
 end

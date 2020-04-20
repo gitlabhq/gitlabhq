@@ -7,7 +7,7 @@ module Groups
       before_action :authorize_admin_group!
       before_action :authorize_update_max_artifacts_size!, only: [:update]
       before_action do
-        push_frontend_feature_flag(:new_variables_ui, @group)
+        push_frontend_feature_flag(:new_variables_ui, @group, default_enabled: true)
         push_frontend_feature_flag(:ajax_new_deploy_token, @group)
       end
       before_action :define_variables, only: [:show, :create_deploy_token]
@@ -43,7 +43,7 @@ module Groups
       end
 
       def create_deploy_token
-        result = Projects::DeployTokens::CreateService.new(@group, current_user, deploy_token_params).execute
+        result = Groups::DeployTokens::CreateService.new(@group, current_user, deploy_token_params).execute
         @new_deploy_token = result[:deploy_token]
 
         if result[:status] == :success

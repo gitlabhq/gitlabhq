@@ -139,5 +139,14 @@ FactoryBot.define do
         cluster factory: %i(cluster provided_by_gcp)
       end
     end
+
+    factory :clusters_applications_fluentd, class: 'Clusters::Applications::Fluentd' do
+      host { 'example.com' }
+      cluster factory: %i(cluster with_installed_helm provided_by_gcp)
+
+      trait :no_helm_installed do
+        cluster factory: %i(cluster provided_by_gcp)
+      end
+    end
   end
 end

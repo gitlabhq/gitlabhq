@@ -668,6 +668,7 @@ dependent on the `merge_status`. It'll return `false` unless `merge_status` is
   },
   "diverged_commits_count": 2,
   "rebase_in_progress": false,
+  "first_contribution": false,
   "task_completion_status":{
     "count":0,
     "completed_count":0

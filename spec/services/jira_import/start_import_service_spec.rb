@@ -5,8 +5,9 @@ require 'spec_helper'
 describe JiraImport::StartImportService do
   let_it_be(:user) { create(:user) }
   let_it_be(:project, reload: true) { create(:project) }
+  let(:key) { 'KEY' }
 
-  subject { described_class.new(user, project, '').execute }
+  subject { described_class.new(user, project, key).execute }
 
   context 'when feature flag disabled' do
     before do
@@ -23,6 +24,8 @@ describe JiraImport::StartImportService do
 
     context 'when user does not have permissions to run the import' do
       before do
+        create(:jira_service, project: project, active: true)
+
         project.add_developer(user)
       end
 
@@ -38,17 +41,19 @@ describe JiraImport::StartImportService do
         it_behaves_like 'responds with error', 'Jira integration not configured.'
       end
 
-      context 'when issues feature are disabled' do
-        let_it_be(:project, reload: true) { create(:project, :issues_disabled) }
-
-        it_behaves_like 'responds with error', 'Cannot import because issues are not available in this project.'
-      end
-
       context 'when Jira service exists' do
         let!(:jira_service) { create(:jira_service, project: project, active: true) }
 
         context 'when Jira project key is not provided' do
+          let(:key) { '' }
+
           it_behaves_like 'responds with error', 'Unable to find Jira project to import data from.'
+        end
+
+        context 'when issues feature are disabled' do
+          let_it_be(:project, reload: true) { create(:project, :issues_disabled) }
+
+          it_behaves_like 'responds with error', 'Cannot import because issues are not available in this project.'
         end
 
         context 'when correct data provided' do
@@ -62,15 +67,17 @@ describe JiraImport::StartImportService do
             it_behaves_like 'responds with error', 'Jira import is already running.'
           end
 
-          it 'returns success response' do
-            expect(subject).to be_a(ServiceResponse)
-            expect(subject).to be_success
-          end
+          context 'when everything is ok' do
+            it 'returns success response' do
+              expect(subject).to be_a(ServiceResponse)
+              expect(subject).to be_success
+            end
 
-          it 'schedules jira import' do
-            subject
+            it 'schedules jira import' do
+              subject
 
-            expect(project.latest_jira_import).to be_scheduled
+              expect(project.latest_jira_import).to be_scheduled
+            end
           end
 
           it 'creates jira import data' do

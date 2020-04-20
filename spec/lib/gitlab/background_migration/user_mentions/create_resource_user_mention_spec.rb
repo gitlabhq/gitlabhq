@@ -79,7 +79,7 @@ describe Gitlab::BackgroundMigration::UserMentions::CreateResourceUserMention, s
 
     context 'migrate commit mentions' do
       let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '', 'group/project') }
-      let(:commit) { Commit.new(RepoHelpers.sample_commit, project.becomes(Project)) }
+      let(:commit) { Commit.new(RepoHelpers.sample_commit, project) }
       let(:commit_user_mentions) { table(:commit_user_mentions) }
 
       let!(:note1) { notes.create!(commit_id: commit.id, noteable_type: 'Commit', project_id: project.id, author_id: author.id, note: description_mentions) }

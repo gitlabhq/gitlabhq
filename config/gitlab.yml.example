@@ -477,11 +477,6 @@ production: &base
     elastic_index_bulk_cron_worker:
       cron: "*/1 * * * *"
 
-    # Elasticsearch metrics
-    # NOTE: This will only take effect if Elasticsearch is enabled.
-    elastic_metrics_update_worker:
-      cron: "*/1 * * * *"
-
   registry:
     # enabled: true
     # host: registry.example.com

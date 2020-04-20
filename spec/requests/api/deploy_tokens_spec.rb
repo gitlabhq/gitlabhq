@@ -205,10 +205,11 @@ describe API::DeployTokens do
 
   context 'deploy token creation' do
     shared_examples 'creating a deploy token' do |entity, unauthenticated_response|
+      let(:expires_time) { 1.year.from_now }
       let(:params) do
         {
           name: 'Foo',
-          expires_at: 1.year.from_now,
+          expires_at: expires_time,
           scopes: [
             'read_repository'
           ],
@@ -240,6 +241,10 @@ describe API::DeployTokens do
 
           expect(response).to have_gitlab_http_status(:created)
           expect(response).to match_response_schema('public_api/v4/deploy_token')
+          expect(json_response['name']).to eq('Foo')
+          expect(json_response['scopes']).to eq(['read_repository'])
+          expect(json_response['username']).to eq('Bar')
+          expect(json_response['expires_at'].to_time.to_i).to eq(expires_time.to_i)
         end
 
         context 'with no optional params given' do

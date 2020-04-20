@@ -3,7 +3,7 @@ import {
   GlNewDropdown,
   GlNewDropdownHeader,
   GlFormInputGroup,
-  GlNewButton,
+  GlButton,
   GlIcon,
   GlTooltipDirective,
 } from '@gitlab/ui';
@@ -15,7 +15,7 @@ export default {
     GlNewDropdown,
     GlNewDropdownHeader,
     GlFormInputGroup,
-    GlNewButton,
+    GlButton,
     GlIcon,
   },
   directives: {
@@ -55,13 +55,13 @@ export default {
         <div class="mx-3">
           <gl-form-input-group :value="sshLink" readonly select-on-click>
             <template #append>
-              <gl-new-button
+              <gl-button
                 v-gl-tooltip.hover
                 :title="$options.copyURLTooltip"
                 :data-clipboard-text="sshLink"
               >
                 <gl-icon name="copy-to-clipboard" :title="$options.copyURLTooltip" />
-              </gl-new-button>
+              </gl-button>
             </template>
           </gl-form-input-group>
         </div>
@@ -73,13 +73,13 @@ export default {
         <div class="mx-3">
           <gl-form-input-group :value="httpLink" readonly select-on-click>
             <template #append>
-              <gl-new-button
+              <gl-button
                 v-gl-tooltip.hover
                 :title="$options.copyURLTooltip"
                 :data-clipboard-text="httpLink"
               >
                 <gl-icon name="copy-to-clipboard" :title="$options.copyURLTooltip" />
-              </gl-new-button>
+              </gl-button>
             </template>
           </gl-form-input-group>
         </div>

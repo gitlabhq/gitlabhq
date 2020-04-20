@@ -248,6 +248,10 @@ The data can be removed with the following command:
 sudo rm -rf /var/opt/gitlab/geo-postgresql
 ```
 
+If you have any `geo_secondary[]` configuration options enabled in your `gitlab.rb`
+file, these can be safely commented out or removed, and then [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure)
+for the changes to take effect.
+
 ## Promoting secondary Geo replica in multi-secondary configurations
 
 If you have more than one **secondary** node and you need to promote one of them, we suggest you follow

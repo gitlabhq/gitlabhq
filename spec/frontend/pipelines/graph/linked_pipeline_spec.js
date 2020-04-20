@@ -1,12 +1,17 @@
 import { mount } from '@vue/test-utils';
 import LinkedPipelineComponent from '~/pipelines/components/graph/linked_pipeline.vue';
+import CiStatus from '~/vue_shared/components/ci_icon.vue';
 
 import mockData from './linked_pipelines_mock_data';
 
 const mockPipeline = mockData.triggered[0];
 
+const validTriggeredPipelineId = mockPipeline.project.id;
+const invalidTriggeredPipelineId = mockPipeline.project.id + 5;
+
 describe('Linked pipeline', () => {
   let wrapper;
+  const findButton = () => wrapper.find('button');
 
   const createWrapper = propsData => {
     wrapper = mount(LinkedPipelineComponent, {
@@ -21,7 +26,7 @@ describe('Linked pipeline', () => {
   describe('rendered output', () => {
     const props = {
       pipeline: mockPipeline,
-      projectId: 20,
+      projectId: invalidTriggeredPipelineId,
       columnTitle: 'Downstream',
     };
 
@@ -44,14 +49,13 @@ describe('Linked pipeline', () => {
     });
 
     it('should render an svg within the status container', () => {
-      const pipelineStatusElement = wrapper.find('.js-linked-pipeline-status');
+      const pipelineStatusElement = wrapper.find(CiStatus);
 
       expect(pipelineStatusElement.find('svg').exists()).toBe(true);
     });
 
     it('should render the pipeline status icon svg', () => {
-      expect(wrapper.find('.js-ci-status-icon-running').exists()).toBe(true);
-      expect(wrapper.find('.js-ci-status-icon-running').html()).toContain('<svg');
+      expect(wrapper.find('.ci-status-icon-failed svg').exists()).toBe(true);
     });
 
     it('should have a ci-status child component', () => {
@@ -88,7 +92,7 @@ describe('Linked pipeline', () => {
   describe('parent/child', () => {
     const downstreamProps = {
       pipeline: mockPipeline,
-      projectId: 19,
+      projectId: validTriggeredPipelineId,
       columnTitle: 'Downstream',
     };
 
@@ -116,7 +120,7 @@ describe('Linked pipeline', () => {
   describe('when isLoading is true', () => {
     const props = {
       pipeline: { ...mockPipeline, isLoading: true },
-      projectId: 19,
+      projectId: invalidTriggeredPipelineId,
       columnTitle: 'Downstream',
     };
 
@@ -132,7 +136,7 @@ describe('Linked pipeline', () => {
   describe('on click', () => {
     const props = {
       pipeline: mockPipeline,
-      projectId: 19,
+      projectId: validTriggeredPipelineId,
       columnTitle: 'Downstream',
     };
 
@@ -142,18 +146,18 @@ describe('Linked pipeline', () => {
 
     it('emits `pipelineClicked` event', () => {
       jest.spyOn(wrapper.vm, '$emit');
-      wrapper.find('button').trigger('click');
+      findButton().trigger('click');
 
       expect(wrapper.emitted().pipelineClicked).toBeTruthy();
     });
 
     it('should emit `bv::hide::tooltip` to close the tooltip', () => {
       jest.spyOn(wrapper.vm.$root, '$emit');
-      wrapper.find('button').trigger('click');
+      findButton().trigger('click');
 
       expect(wrapper.vm.$root.$emit.mock.calls[0]).toEqual([
         'bv::hide::tooltip',
-        'js-linked-pipeline-132',
+        'js-linked-pipeline-34993051',
       ]);
     });
   });

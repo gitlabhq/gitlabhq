@@ -30,7 +30,6 @@ module Clusters
       enum modsecurity_mode: { logging: 0, blocking: 1 }
 
       FETCH_IP_ADDRESS_DELAY = 30.seconds
-      MODSEC_SIDECAR_INITIAL_DELAY_SECONDS = 10
 
       state_machine :status do
         after_transition any => [:installed] do |application|
@@ -108,11 +107,13 @@ module Clusters
                     "readOnly" => true
                   }
                 ],
-                "startupProbe" => {
+                "livenessProbe" => {
                   "exec" => {
-                    "command" => ["ls", "/var/log/modsec"]
-                  },
-                  "initialDelaySeconds" => MODSEC_SIDECAR_INITIAL_DELAY_SECONDS
+                    "command" => [
+                      "ls",
+                      "/var/log/modsec/audit.log"
+                    ]
+                  }
                 }
               }
             ],

@@ -38,21 +38,7 @@ describe Metrics::Dashboard::TransientEmbedService, :use_clean_rails_memory_stor
   end
 
   describe '#get_dashboard' do
-    let(:embed_json) do
-      {
-       panel_groups: [{
-         panels: [{
-           type: 'line-graph',
-           title: 'title',
-           y_label: 'y_label',
-           metrics: [{
-             query_range: 'up',
-             label: 'y_label'
-           }]
-         }]
-       }]
-      }.to_json
-    end
+    let(:embed_json) { get_embed_json }
     let(:service_params) { [project, user, { environment: environment, embedded: 'true', embed_json: embed_json }] }
     let(:service_call) { described_class.new(*service_params).get_dashboard }
 
@@ -67,6 +53,40 @@ describe Metrics::Dashboard::TransientEmbedService, :use_clean_rails_memory_stor
 
       described_class.new(*service_params).get_dashboard
       described_class.new(*service_params).get_dashboard
+    end
+
+    it 'caches unique requests separately' do
+      alt_embed_json = get_embed_json('area-chart')
+      alt_service_params = [project, user, { environment: environment, embedded: 'true', embed_json: alt_embed_json }]
+
+      embed = described_class.new(*service_params).get_dashboard
+      alt_embed = described_class.new(*alt_service_params).get_dashboard
+
+      expect(embed).not_to eq(alt_embed)
+      expect(get_type_for_embed(embed)).to eq('line-graph')
+      expect(get_type_for_embed(alt_embed)).to eq('area-chart')
+    end
+
+    private
+
+    def get_embed_json(type = 'line-graph')
+      {
+        panel_groups: [{
+         panels: [{
+           type: type,
+           title: 'title',
+           y_label: 'y_label',
+           metrics: [{
+             query_range: 'up',
+             label: 'y_label'
+           }]
+         }]
+        }]
+      }.to_json
+    end
+
+    def get_type_for_embed(embed)
+      embed[:dashboard][:panel_groups][0][:panels][0][:type]
     end
   end
 end

@@ -306,6 +306,65 @@ This makes use of [`Intl.DateTimeFormat`](https://developer.mozilla.org/en-US/do
 
 ## Best practices
 
+### Keep translations dynamic
+
+There are cases when it makes sense to keep translations together within an array or a hash.
+
+Examples:
+
+- Mappings for a dropdown list
+- Error messages
+
+To store these kinds of data, using a constant seems like the best choice, however this won't work for translations.
+
+Bad, avoid it:
+
+```ruby
+class MyPresenter
+  MY_LIST = {
+    key_1: _('item 1'),
+    key_2: _('item 2'),
+    key_3: _('item 3')
+  }
+end
+```
+
+The translation method (`_`) will be called when the class is loaded for the first time and translates the text to the default locale. Regardless of what's the user's locale, these values will not be translated again.
+
+Similar thing happens when using class methods with memoization.
+
+Bad, avoid it:
+
+```ruby
+class MyModel
+  def self.list
+    @list ||= {
+      key_1: _('item 1'),
+      key_2: _('item 2'),
+      key_3: _('item 3')
+    }
+  end
+end
+```
+
+This method will memoize the translations using the locale of the user, who first "called" this method.
+
+To avoid these problems, keep the translations dynamic.
+
+Good:
+
+```ruby
+class MyPresenter
+  def self.my_list
+    {
+      key_1: _('item 1'),
+      key_2: _('item 2'),
+      key_3: _('item 3')
+    }.freeze
+  end
+end
+```
+
 ### Splitting sentences
 
 Please never split a sentence as that would assume the sentence grammar and

@@ -24,8 +24,6 @@ describe X509CertificateRevokeService do
     end
 
     context 'for good certificates' do
-      RSpec::Matchers.define_negated_matcher :not_change, :change
-
       let(:x509_certificate) { create(:x509_certificate) }
 
       it 'do not update any commit signature' do

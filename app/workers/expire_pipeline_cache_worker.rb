@@ -1,12 +1,14 @@
 # frozen_string_literal: true
 
-class ExpirePipelineCacheWorker # rubocop:disable Scalability/IdempotentWorker
+class ExpirePipelineCacheWorker
   include ApplicationWorker
   include PipelineQueue
 
   queue_namespace :pipeline_cache
   urgency :high
   worker_resource_boundary :cpu
+
+  idempotent!
 
   # rubocop: disable CodeReuse/ActiveRecord
   def perform(pipeline_id)

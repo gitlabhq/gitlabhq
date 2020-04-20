@@ -8,7 +8,6 @@ import {
   GlDropdownItem,
   GlDropdownHeader,
   GlDropdownDivider,
-  GlFormGroup,
   GlModal,
   GlLoadingIcon,
   GlSearchBoxByType,
@@ -19,6 +18,7 @@ import PanelType from 'ee_else_ce/monitoring/components/panel_type.vue';
 import { s__ } from '~/locale';
 import createFlash from '~/flash';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import CustomMetricsFormFields from '~/custom_metrics/components/custom_metrics_form_fields.vue';
 import { mergeUrlParams, redirectTo, updateHistory } from '~/lib/utils/url_utility';
 import invalidUrl from '~/lib/utils/invalid_url';
 import Icon from '~/vue_shared/components/icon.vue';
@@ -46,8 +46,8 @@ export default {
     GlDropdownHeader,
     GlDropdownDivider,
     GlSearchBoxByType,
-    GlFormGroup,
     GlModal,
+    CustomMetricsFormFields,
 
     DateTimePicker,
     GraphGroup,
@@ -206,9 +206,6 @@ export default {
     };
   },
   computed: {
-    canAddMetrics() {
-      return this.customMetricsAvailable && this.customMetricsPath.length;
-    },
     ...mapState('monitoringDashboard', [
       'dashboard',
       'emptyState',
@@ -229,7 +226,11 @@ export default {
       return !this.showEmptyState && this.rearrangePanelsAvailable;
     },
     addingMetricsAvailable() {
-      return IS_EE && this.canAddMetrics && !this.showEmptyState;
+      return (
+        this.customMetricsAvailable &&
+        !this.showEmptyState &&
+        this.firstDashboard === this.selectedDashboard
+      );
     },
     hasHeaderButtons() {
       return (
@@ -378,177 +379,164 @@ export default {
     <div
       v-if="showHeader"
       ref="prometheusGraphsHeader"
-      class="prometheus-graphs-header gl-p-3 pb-0 border-bottom bg-gray-light"
+      class="prometheus-graphs-header d-sm-flex flex-sm-wrap pt-2 pr-1 pb-0 pl-2 border-bottom bg-gray-light"
     >
-      <div class="row">
-        <gl-form-group
-          :label="__('Dashboard')"
-          label-size="sm"
-          label-for="monitor-dashboards-dropdown"
-          class="col-sm-12 col-md-6 col-lg-2"
-        >
-          <dashboards-dropdown
-            id="monitor-dashboards-dropdown"
-            data-qa-selector="dashboards_filter_dropdown"
-            class="mb-0 d-flex"
-            toggle-class="dropdown-menu-toggle"
-            :default-branch="defaultBranch"
-            :selected-dashboard="selectedDashboard"
-            @selectDashboard="selectDashboard($event)"
-          />
-        </gl-form-group>
+      <div class="mb-2 pr-2 d-flex d-sm-block">
+        <dashboards-dropdown
+          id="monitor-dashboards-dropdown"
+          data-qa-selector="dashboards_filter_dropdown"
+          class="flex-grow-1"
+          toggle-class="dropdown-menu-toggle"
+          :default-branch="defaultBranch"
+          :selected-dashboard="selectedDashboard"
+          @selectDashboard="selectDashboard($event)"
+        />
+      </div>
 
-        <gl-form-group
-          :label="s__('Metrics|Environment')"
-          label-size="sm"
-          label-for="monitor-environments-dropdown"
-          class="col-sm-6 col-md-6 col-lg-2"
+      <div class="mb-2 pr-2 d-flex d-sm-block">
+        <gl-dropdown
+          id="monitor-environments-dropdown"
+          ref="monitorEnvironmentsDropdown"
+          class="flex-grow-1"
+          data-qa-selector="environments_dropdown"
+          toggle-class="dropdown-menu-toggle"
+          menu-class="monitor-environment-dropdown-menu"
+          :text="currentEnvironmentName"
         >
-          <gl-dropdown
-            id="monitor-environments-dropdown"
-            ref="monitorEnvironmentsDropdown"
-            data-qa-selector="environments_dropdown"
-            class="mb-0 d-flex"
-            toggle-class="dropdown-menu-toggle"
-            menu-class="monitor-environment-dropdown-menu"
-            :text="currentEnvironmentName"
-          >
-            <div class="d-flex flex-column overflow-hidden">
-              <gl-dropdown-header class="monitor-environment-dropdown-header text-center">{{
-                __('Environment')
-              }}</gl-dropdown-header>
-              <gl-dropdown-divider />
-              <gl-search-box-by-type
-                ref="monitorEnvironmentsDropdownSearch"
-                class="m-2"
-                @input="debouncedEnvironmentsSearch"
-              />
-              <gl-loading-icon
-                v-if="environmentsLoading"
-                ref="monitorEnvironmentsDropdownLoading"
-                :inline="true"
-              />
-              <div v-else class="flex-fill overflow-auto">
-                <gl-dropdown-item
-                  v-for="environment in filteredEnvironments"
-                  :key="environment.id"
-                  :active="environment.name === currentEnvironmentName"
-                  active-class="is-active"
-                  :href="environment.metrics_path"
-                  >{{ environment.name }}</gl-dropdown-item
-                >
-              </div>
-              <div
-                v-show="shouldShowEnvironmentsDropdownNoMatchedMsg"
-                ref="monitorEnvironmentsDropdownMsg"
-                class="text-secondary no-matches-message"
+          <div class="d-flex flex-column overflow-hidden">
+            <gl-dropdown-header class="monitor-environment-dropdown-header text-center">
+              {{ __('Environment') }}
+            </gl-dropdown-header>
+            <gl-dropdown-divider />
+            <gl-search-box-by-type
+              ref="monitorEnvironmentsDropdownSearch"
+              class="m-2"
+              @input="debouncedEnvironmentsSearch"
+            />
+            <gl-loading-icon
+              v-if="environmentsLoading"
+              ref="monitorEnvironmentsDropdownLoading"
+              :inline="true"
+            />
+            <div v-else class="flex-fill overflow-auto">
+              <gl-dropdown-item
+                v-for="environment in filteredEnvironments"
+                :key="environment.id"
+                :active="environment.name === currentEnvironmentName"
+                active-class="is-active"
+                :href="environment.metrics_path"
+                >{{ environment.name }}</gl-dropdown-item
               >
-                {{ __('No matching results') }}
-              </div>
             </div>
-          </gl-dropdown>
-        </gl-form-group>
-
-        <gl-form-group
-          :label="s__('Metrics|Show last')"
-          label-size="sm"
-          label-for="monitor-time-window-dropdown"
-          class="col-sm-auto col-md-auto col-lg-auto"
-          data-qa-selector="show_last_dropdown"
-        >
-          <date-time-picker
-            ref="dateTimePicker"
-            :value="selectedTimeRange"
-            :options="timeRanges"
-            @input="onDateTimePickerInput"
-            @invalid="onDateTimePickerInvalid"
-          />
-        </gl-form-group>
-
-        <gl-form-group class="col-sm-2 col-md-2 col-lg-1 refresh-dashboard-button">
-          <gl-deprecated-button
-            ref="refreshDashboardBtn"
-            v-gl-tooltip
-            variant="default"
-            :title="s__('Metrics|Refresh dashboard')"
-            @click="refreshDashboard"
-          >
-            <icon name="retry" />
-          </gl-deprecated-button>
-        </gl-form-group>
-
-        <gl-form-group
-          v-if="hasHeaderButtons"
-          label-for="prometheus-graphs-dropdown-buttons"
-          class="dropdown-buttons col-md d-md-flex col-lg d-lg-flex align-items-end"
-        >
-          <div id="prometheus-graphs-dropdown-buttons">
-            <gl-deprecated-button
-              v-if="showRearrangePanelsBtn"
-              :pressed="isRearrangingPanels"
-              variant="default"
-              class="mr-2 mt-1 js-rearrange-button"
-              @click="toggleRearrangingPanels"
-              >{{ __('Arrange charts') }}</gl-deprecated-button
+            <div
+              v-show="shouldShowEnvironmentsDropdownNoMatchedMsg"
+              ref="monitorEnvironmentsDropdownMsg"
+              class="text-secondary no-matches-message"
             >
-            <gl-deprecated-button
-              v-if="addingMetricsAvailable"
-              ref="addMetricBtn"
-              v-gl-modal="$options.addMetric.modalId"
-              variant="outline-success"
-              data-qa-selector="add_metric_button"
-              class="mr-2 mt-1"
-              >{{ $options.addMetric.title }}</gl-deprecated-button
-            >
-            <gl-modal
-              v-if="addingMetricsAvailable"
-              ref="addMetricModal"
-              :modal-id="$options.addMetric.modalId"
-              :title="$options.addMetric.title"
-            >
-              <form ref="customMetricsForm" :action="customMetricsPath" method="post">
-                <custom-metrics-form-fields
-                  :validate-query-path="validateQueryPath"
-                  form-operation="post"
-                  @formValidation="setFormValidity"
-                />
-              </form>
-              <div slot="modal-footer">
-                <gl-deprecated-button @click="hideAddMetricModal">{{
-                  __('Cancel')
-                }}</gl-deprecated-button>
-                <gl-deprecated-button
-                  ref="submitCustomMetricsFormBtn"
-                  v-track-event="getAddMetricTrackingOptions()"
-                  :disabled="!formIsValid"
-                  variant="success"
-                  @click="submitCustomMetricsForm"
-                  >{{ __('Save changes') }}</gl-deprecated-button
-                >
-              </div>
-            </gl-modal>
-
-            <gl-deprecated-button
-              v-if="selectedDashboard.can_edit"
-              class="mt-1 js-edit-link"
-              :href="selectedDashboard.project_blob_path"
-              data-qa-selector="edit_dashboard_button"
-              >{{ __('Edit dashboard') }}</gl-deprecated-button
-            >
-
-            <gl-deprecated-button
-              v-if="externalDashboardUrl.length"
-              class="mt-1 js-external-dashboard-link"
-              variant="primary"
-              :href="externalDashboardUrl"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {{ __('View full dashboard') }}
-              <icon name="external-link" />
-            </gl-deprecated-button>
+              {{ __('No matching results') }}
+            </div>
           </div>
-        </gl-form-group>
+        </gl-dropdown>
+      </div>
+
+      <div class="mb-2 pr-2 d-flex d-sm-block">
+        <date-time-picker
+          ref="dateTimePicker"
+          class="flex-grow-1 show-last-dropdown"
+          data-qa-selector="show_last_dropdown"
+          :value="selectedTimeRange"
+          :options="timeRanges"
+          @input="onDateTimePickerInput"
+          @invalid="onDateTimePickerInvalid"
+        />
+      </div>
+
+      <div class="mb-2 pr-2 d-flex d-sm-block">
+        <gl-deprecated-button
+          ref="refreshDashboardBtn"
+          v-gl-tooltip
+          class="flex-grow-1"
+          variant="default"
+          :title="s__('Metrics|Refresh dashboard')"
+          @click="refreshDashboard"
+        >
+          <icon name="retry" />
+        </gl-deprecated-button>
+      </div>
+
+      <div class="flex-grow-1"></div>
+
+      <div class="d-sm-flex">
+        <div v-if="showRearrangePanelsBtn" class="mb-2 mr-2 d-flex">
+          <gl-deprecated-button
+            :pressed="isRearrangingPanels"
+            variant="default"
+            class="flex-grow-1 js-rearrange-button"
+            @click="toggleRearrangingPanels"
+          >
+            {{ __('Arrange charts') }}
+          </gl-deprecated-button>
+        </div>
+        <div v-if="addingMetricsAvailable" class="mb-2 mr-2 d-flex d-sm-block">
+          <gl-deprecated-button
+            ref="addMetricBtn"
+            v-gl-modal="$options.addMetric.modalId"
+            variant="outline-success"
+            data-qa-selector="add_metric_button"
+            class="flex-grow-1"
+          >
+            {{ $options.addMetric.title }}
+          </gl-deprecated-button>
+          <gl-modal
+            ref="addMetricModal"
+            :modal-id="$options.addMetric.modalId"
+            :title="$options.addMetric.title"
+          >
+            <form ref="customMetricsForm" :action="customMetricsPath" method="post">
+              <custom-metrics-form-fields
+                :validate-query-path="validateQueryPath"
+                form-operation="post"
+                @formValidation="setFormValidity"
+              />
+            </form>
+            <div slot="modal-footer">
+              <gl-deprecated-button @click="hideAddMetricModal">
+                {{ __('Cancel') }}
+              </gl-deprecated-button>
+              <gl-deprecated-button
+                ref="submitCustomMetricsFormBtn"
+                v-track-event="getAddMetricTrackingOptions()"
+                :disabled="!formIsValid"
+                variant="success"
+                @click="submitCustomMetricsForm"
+              >
+                {{ __('Save changes') }}
+              </gl-deprecated-button>
+            </div>
+          </gl-modal>
+        </div>
+
+        <div v-if="selectedDashboard.can_edit" class="mb-2 mr-2 d-flex d-sm-block">
+          <gl-deprecated-button
+            class="flex-grow-1 js-edit-link"
+            :href="selectedDashboard.project_blob_path"
+            data-qa-selector="edit_dashboard_button"
+          >
+            {{ __('Edit dashboard') }}
+          </gl-deprecated-button>
+        </div>
+
+        <div v-if="externalDashboardUrl.length" class="mb-2 mr-2 d-flex d-sm-block">
+          <gl-deprecated-button
+            class="flex-grow-1 js-external-dashboard-link"
+            variant="primary"
+            :href="externalDashboardUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {{ __('View full dashboard') }} <icon name="external-link" />
+          </gl-deprecated-button>
+        </div>
       </div>
     </div>
 

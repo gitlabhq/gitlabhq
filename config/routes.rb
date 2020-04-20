@@ -53,6 +53,8 @@ Rails.application.routes.draw do
 
   Gitlab.ee do
     get '/autocomplete/project_groups' => 'autocomplete#project_groups'
+    get '/autocomplete/project_routes' => 'autocomplete#project_routes'
+    get '/autocomplete/namespace_routes' => 'autocomplete#namespace_routes'
   end
 
   # Sign up
@@ -157,6 +159,11 @@ Rails.application.routes.draw do
 
     # Spam reports
     resources :abuse_reports, only: [:new, :create]
+
+    # JWKS (JSON Web Key Set) endpoint
+    # Used by third parties to verify CI_JOB_JWT, placeholder route
+    # in case we decide to move away from doorkeeper-openid_connect
+    get 'jwks' => 'doorkeeper/openid_connect/discovery#keys'
   end
   # End of the /-/ scope.
 

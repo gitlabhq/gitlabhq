@@ -129,9 +129,9 @@ compile-assets pull-cache as-if-foss:
     - .default-retry
     - .default-cache
     - .default-before_script
-    - .use-pg10
+    - .use-pg11
   stage: fixtures
-  needs: ["setup-test-env pg10", "compile-assets pull-cache"]
+  needs: ["setup-test-env pg11", "compile-assets pull-cache"]
   script:
     - date
     - scripts/gitaly-test-spawn
@@ -289,7 +289,7 @@ webpack-dev-server:
     - .default-cache
     - .frontend:rules:default-frontend-jobs
   stage: test
-  needs: ["setup-test-env pg10", "compile-assets pull-cache"]
+  needs: ["setup-test-env pg11", "compile-assets pull-cache"]
   variables:
     WEBPACK_MEMORY_TEST: "true"
     WEBPACK_VENDOR_DLL: "true"

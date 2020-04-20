@@ -34,6 +34,10 @@ module Gitlab
       cache_class.increment(self.failed_issues_counter_cache_key(project_id))
     end
 
+    def self.issue_failures(project_id)
+      cache_class.read(self.failed_issues_counter_cache_key(project_id)).to_i
+    end
+
     def self.get_issues_next_start_at(project_id)
       cache_class.read(self.jira_issues_next_page_cache_key(project_id)).to_i
     end

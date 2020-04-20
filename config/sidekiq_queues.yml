@@ -44,6 +44,8 @@
   - 2
 - - chat_notification
   - 2
+- - ci_batch_reset_minutes
+  - 1
 - - container_repository
   - 1
 - - create_commit_signature

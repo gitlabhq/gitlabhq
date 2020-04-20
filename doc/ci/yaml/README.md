@@ -3056,6 +3056,9 @@ There can be multiple `resource_group`s defined per environment. A good use case
 is when deploying to physical devices. You may have more than one physical device, and each
 one can be deployed to, but there can be only one deployment per device at any given time.
 
+NOTE: **Note:**
+This key can only contain letters, digits, `-`, `_`, `/`, `$`, `{`, `}`, `.`, and spaces, but it cannot start or end with `/`.
+
 ### `include`
 
 > - Introduced in [GitLab Premium](https://about.gitlab.com/pricing/) 10.5.
@@ -3777,11 +3780,12 @@ script:
 You can set the number for attempts the running job will try to execute each
 of the following stages:
 
-| Variable                        | Description |
-|-------------------------------- |-------------|
-| **GET_SOURCES_ATTEMPTS**        | Number of attempts to fetch sources running a job |
-| **ARTIFACT_DOWNLOAD_ATTEMPTS**  | Number of attempts to download artifacts running a job |
-| **RESTORE_CACHE_ATTEMPTS**      | Number of attempts to restore the cache running a job |
+| Variable                          | Description                                                                                                                                                                                                                                                                                                        |
+|-----------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **GET_SOURCES_ATTEMPTS**          | Number of attempts to fetch sources running a job                                                                                                                                                                                                                                                                  |
+| **ARTIFACT_DOWNLOAD_ATTEMPTS**    | Number of attempts to download artifacts running a job                                                                                                                                                                                                                                                             |
+| **RESTORE_CACHE_ATTEMPTS**        | Number of attempts to restore the cache running a job                                                                                                                                                                                                                                                              |
+| **EXECUTOR_JOB_SECTION_ATTEMPTS** | [Since GitLab 12.10](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4450), the number of attempts to run a section in a job after a [`No Such Container`](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4450) error ([Docker executor](https://docs.gitlab.com/runner/executors/docker.html) only). |
 
 The default is one single attempt.
 

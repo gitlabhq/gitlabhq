@@ -1,0 +1,75 @@
+{
+  "took": 8540,
+  "timed_out": false,
+  "_shards": {
+    "total": 153,
+    "successful": 153,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": 62143,
+    "max_score": 0.0,
+    "hits": [
+
+    ]
+  },
+  "aggregations": {
+    "pods": {
+      "doc_count_error_upper_bound": 0,
+      "sum_other_doc_count": 0,
+      "buckets": [
+        {
+          "key": "runner-gitlab-runner-7bbfb5dcb5-p6smb",
+          "doc_count": 19795,
+          "containers": {
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+            "buckets": [
+              {
+                "key": "runner-gitlab-runner",
+                "doc_count": 19795
+              }
+            ]
+          }
+        },
+        {
+          "key": "elastic-stack-elasticsearch-master-1",
+          "doc_count": 13185,
+          "containers": {
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+            "buckets": [
+              {
+                "key": "elasticsearch",
+                "doc_count": 13158
+              },
+              {
+                "key": "chown",
+                "doc_count": 24
+              },
+              {
+                "key": "sysctl",
+                "doc_count": 3
+              }
+            ]
+          }
+        },
+        {
+          "key": "ingress-nginx-ingress-controller-76449bcc8d-8qgl6",
+          "doc_count": 3437,
+          "containers": {
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+            "buckets": [
+              {
+                "key": "nginx-ingress-controller",
+                "doc_count": 3437
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

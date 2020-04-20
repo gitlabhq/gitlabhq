@@ -216,6 +216,10 @@ For GitLab 12.1 and earlier, use `gitlab-rake gitlab:backup:create`.
 
 ### Backup filename
 
+CAUTION: **Warning:**
+If you use a custom backup filename, you will not be able to
+[limit the lifetime of the backups](#limit-backup-lifetime-for-local-files-prune-old-backups).
+
 By default a backup file is created according to the specification in [the Backup timestamp](#backup-timestamp) section above. You can however override the `[TIMESTAMP]` part of the filename by setting the `BACKUP` environment variable. For example:
 
 ```shell
@@ -585,9 +589,64 @@ For installations from source:
 
 ### Configuring cron to make daily backups
 
-NOTE: **Note:**
+CAUTION: **Warning:**
 The following cron jobs do not [backup your GitLab configuration files](#storing-configuration-files)
 or [SSH host keys](https://superuser.com/questions/532040/copy-ssh-keys-from-one-server-to-another-server/532079#532079).
+
+You can schedule a cron job that backs up your repositories and GitLab metadata.
+
+For Omnibus GitLab packages:
+
+1. Edit the crontab for the `root` user:
+
+   ```shell
+   sudo su -
+   crontab -e
+   ```
+
+1. There, add the following line to schedule the backup for everyday at 2 AM:
+
+   ```plaintext
+   0 2 * * * /opt/gitlab/bin/gitlab-backup create CRON=1
+   ```
+
+   NOTE: **Note**
+   For GitLab 12.1 and earlier, use `gitlab-rake gitlab:backup:create`.
+
+For installations from source:
+
+1. Edit the crontab for the `git` user:
+
+   ```shell
+   sudo -u git crontab -e
+   ```
+
+1. Add the following lines at the bottom:
+
+   ```plaintext
+   # Create a full backup of the GitLab repositories and SQL database every day at 2am
+   0 2 * * * cd /home/git/gitlab && PATH=/usr/local/bin:/usr/bin:/bin bundle exec rake gitlab:backup:create RAILS_ENV=production CRON=1
+   ```
+
+NOTE: **Note:**
+The `CRON=1` environment setting tells the backup script to suppress all progress output if there are no errors.
+This is recommended to reduce cron spam.
+
+### Limit backup lifetime for local files (prune old backups)
+
+CAUTION: **Warning:**
+This will not work if you have used a [custom filename](#backup-filename)
+for your backups.
+
+NOTE: **Note:**
+This configuration option only manages local files. GitLab does not automatically
+prune old files stored in a third-party [object storage](#uploading-backups-to-a-remote-cloud-storage)
+because the user may not have permission to list and delete files. It is
+recommended that you configure the appropriate retention policy for your object
+storage (for example, [AWS S3](https://docs.aws.amazon.com/AmazonS3/latest/user-guide/create-lifecycle.html)).
+
+You may want to set a limited lifetime for backups to prevent regular
+backups using all your disk space.
 
 For Omnibus GitLab packages:
 
@@ -598,37 +657,11 @@ For Omnibus GitLab packages:
    gitlab_rails['backup_keep_time'] = 604800
    ```
 
-1. [Reconfigure GitLab] for the changes to take effect.
-
-Note that the `backup_keep_time` configuration option only manages local
-files. GitLab does not automatically prune old files stored in a third-party
-object storage (e.g., AWS S3) because the user may not have permission to list
-and delete files. We recommend that you configure the appropriate retention
-policy for your object storage. For example, you can configure [the S3 backup
-policy as described here](https://stackoverflow.com/questions/37553070/gitlab-omnibus-delete-backup-from-amazon-s3).
-
-To schedule a cron job that backs up your repositories and GitLab metadata, use the root user:
-
-```shell
-sudo su -
-crontab -e
-```
-
-There, add the following line to schedule the backup for everyday at 2 AM:
-
-```plaintext
-0 2 * * * /opt/gitlab/bin/gitlab-backup create CRON=1
-```
-
-NOTE: **Note**
-For GitLab 12.1 and earlier, use `gitlab-rake gitlab:backup:create`.
-
-You may also want to set a limited lifetime for backups to prevent regular
-backups using all your disk space.
+1. [Reconfigure GitLab](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
 For installations from source:
 
-1. Edit `home/git/gitlab/config/gitlab.yml`:
+1. Edit `/home/git/gitlab/config/gitlab.yml`:
 
    ```yaml
    backup:
@@ -637,20 +670,6 @@ For installations from source:
    ```
 
 1. [Restart GitLab] for the changes to take effect.
-
-```shell
-sudo -u git crontab -e # Edit the crontab for the git user
-```
-
-Add the following lines at the bottom:
-
-```plaintext
-# Create a full backup of the GitLab repositories and SQL database every day at 4am
-0 4 * * * cd /home/git/gitlab && PATH=/usr/local/bin:/usr/bin:/bin bundle exec rake gitlab:backup:create RAILS_ENV=production CRON=1
-```
-
-The `CRON=1` environment setting tells the backup script to suppress all progress output if there are no errors.
-This is recommended to reduce cron spam.
 
 ## Restore
 

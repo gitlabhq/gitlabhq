@@ -56,7 +56,7 @@ class ResourceLabelEvent < ResourceEvent
   end
 
   def banzai_render_context(field)
-    super.merge(pipeline: 'label', only_path: true)
+    super.merge(pipeline: :label, only_path: true)
   end
 
   def refresh_invalid_reference

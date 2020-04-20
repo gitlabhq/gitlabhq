@@ -15,9 +15,9 @@ module Gitlab
           attributes = {
             time: datetime.utc.iso8601(3),
             severity: severity,
-            duration: time[:total],
-            db: time[:db],
-            view: time[:view]
+            duration_s: Gitlab::Utils.ms_to_round_sec(time[:total]),
+            db_duration_s: Gitlab::Utils.ms_to_round_sec(time[:db]),
+            view_duration_s: Gitlab::Utils.ms_to_round_sec(time[:view])
           }.merge!(data)
 
           ::Lograge.formatter.call(attributes) << "\n"

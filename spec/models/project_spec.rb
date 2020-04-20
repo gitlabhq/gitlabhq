@@ -1740,32 +1740,12 @@ describe Project do
       let_it_be(:group) { create(:group) }
       let_it_be(:project) { create(:project, group: group) }
 
-      context 'when feature is enabled' do
-        before do
-          stub_feature_flags(project_search_by_full_path: true)
-        end
-
-        it 'returns projects that match the group path' do
-          expect(described_class.search(group.path, include_namespace: true)).to eq([project])
-        end
-
-        it 'returns projects that match the full path' do
-          expect(described_class.search(project.full_path, include_namespace: true)).to eq([project])
-        end
+      it 'returns projects that match the group path' do
+        expect(described_class.search(group.path, include_namespace: true)).to eq([project])
       end
 
-      context 'when feature is disabled' do
-        before do
-          stub_feature_flags(project_search_by_full_path: false)
-        end
-
-        it 'returns no results when searching by group path' do
-          expect(described_class.search(group.path, include_namespace: true)).to be_empty
-        end
-
-        it 'returns no results when searching by full path' do
-          expect(described_class.search(project.full_path, include_namespace: true)).to be_empty
-        end
+      it 'returns projects that match the full path' do
+        expect(described_class.search(project.full_path, include_namespace: true)).to eq([project])
       end
     end
 
@@ -2662,18 +2642,6 @@ describe Project do
 
         it_behaves_like 'it always returns false'
       end
-    end
-  end
-
-  describe '#daily_statistics_enabled?' do
-    it { is_expected.to be_daily_statistics_enabled }
-
-    context 'when :project_daily_statistics is disabled for the project' do
-      before do
-        stub_feature_flags(project_daily_statistics: { thing: subject, enabled: false })
-      end
-
-      it { is_expected.not_to be_daily_statistics_enabled }
     end
   end
 

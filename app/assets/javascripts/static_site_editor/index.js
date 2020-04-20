@@ -3,10 +3,17 @@ import StaticSiteEditor from './components/static_site_editor.vue';
 import createStore from './store';
 
 const initStaticSiteEditor = el => {
-  const { projectId, returnUrl, path: sourcePath } = el.dataset;
+  const { projectId, path: sourcePath, returnUrl } = el.dataset;
+  const isSupportedContent = 'isSupportedContent' in el.dataset;
 
   const store = createStore({
-    initialState: { projectId, returnUrl, sourcePath, username: window.gon.current_username },
+    initialState: {
+      isSupportedContent,
+      projectId,
+      returnUrl,
+      sourcePath,
+      username: window.gon.current_username,
+    },
   });
 
   return new Vue({

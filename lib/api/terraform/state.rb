@@ -1,41 +1,117 @@
 # frozen_string_literal: true
 
+require_dependency 'api/validations/validators/limit'
+
 module API
   module Terraform
     class State < Grape::API
-      before { authenticate! }
-      before { authorize! :admin_terraform_state, user_project }
+      include ::Gitlab::Utils::StrongMemoize
+
+      default_format :json
+
+      before do
+        authenticate!
+        authorize! :admin_terraform_state, user_project
+      end
 
       params do
         requires :id, type: String, desc: 'The ID of a project'
       end
+
       resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-        params do
-          requires :name, type: String, desc: 'The name of a terraform state'
-        end
         namespace ':id/terraform/state/:name' do
+          params do
+            requires :name, type: String, desc: 'The name of a Terraform state'
+            optional :ID, type: String, limit: 255, desc: 'Terraform state lock ID'
+          end
+
+          helpers do
+            def remote_state_handler
+              ::Terraform::RemoteStateHandler.new(user_project, current_user, name: params[:name], lock_id: params[:ID])
+            end
+          end
+
           desc 'Get a terraform state by its name'
           route_setting :authentication, basic_auth_personal_access_token: true
           get do
-            status 501
-            content_type 'text/plain'
-            body 'not implemented'
+            remote_state_handler.find_with_lock do |state|
+              no_content! unless state.file.exists?
+
+              env['api.format'] = :binary # this bypasses json serialization
+              body state.file.read
+              status :ok
+            end
           end
 
           desc 'Add a new terraform state or update an existing one'
           route_setting :authentication, basic_auth_personal_access_token: true
           post do
-            status 501
-            content_type 'text/plain'
-            body 'not implemented'
+            data = request.body.string
+            no_content! if data.empty?
+
+            remote_state_handler.handle_with_lock do |state|
+              state.file = CarrierWaveStringFile.new(data)
+              state.save!
+              status :ok
+            end
           end
 
-          desc 'Delete a terraform state of certain name'
+          desc 'Delete a terraform state of a certain name'
           route_setting :authentication, basic_auth_personal_access_token: true
           delete do
-            status 501
-            content_type 'text/plain'
-            body 'not implemented'
+            remote_state_handler.handle_with_lock do |state|
+              state.destroy!
+              status :ok
+            end
+          end
+
+          desc 'Lock a terraform state of a certain name'
+          route_setting :authentication, basic_auth_personal_access_token: true
+          params do
+            requires :ID, type: String, limit: 255, desc: 'Terraform state lock ID'
+            requires :Operation, type: String, desc: 'Terraform operation'
+            requires :Info, type: String, desc: 'Terraform info'
+            requires :Who, type: String, desc: 'Terraform state lock owner'
+            requires :Version, type: String, desc: 'Terraform version'
+            requires :Created, type: String, desc: 'Terraform state lock timestamp'
+            requires :Path, type: String, desc: 'Terraform path'
+          end
+          post '/lock' do
+            status_code = :ok
+            lock_info = {
+              'Operation' => params[:Operation],
+              'Info' => params[:Info],
+              'Version' => params[:Version],
+              'Path' => params[:Path]
+            }
+
+            begin
+              remote_state_handler.lock!
+            rescue ::Terraform::RemoteStateHandler::StateLockedError
+              status_code = :conflict
+            end
+
+            remote_state_handler.find_with_lock do |state|
+              lock_info['ID'] = state.lock_xid
+              lock_info['Who'] = state.locked_by_user.username
+              lock_info['Created'] = state.locked_at
+
+              env['api.format'] = :binary # this bypasses json serialization
+              body lock_info.to_json
+              status status_code
+            end
+          end
+
+          desc 'Unlock a terraform state of a certain name'
+          route_setting :authentication, basic_auth_personal_access_token: true
+          params do
+            optional :ID, type: String, limit: 255, desc: 'Terraform state lock ID'
+          end
+          delete '/lock' do
+            remote_state_handler.unlock!
+            status :ok
+          rescue ::Terraform::RemoteStateHandler::StateLockedError
+            status :conflict
           end
         end
       end

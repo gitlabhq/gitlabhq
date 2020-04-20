@@ -171,6 +171,10 @@ Complementary reads:
 - [Testing standards and style guidelines](testing_guide/index.md)
 - [Frontend testing standards and style guidelines](testing_guide/frontend_testing.md)
 
+## Refactoring guides
+
+- [Refactoring guidelines](refactoring_guide/index.md)
+
 ## Documentation guides
 
 - [Writing documentation](documentation/index.md)

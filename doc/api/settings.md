@@ -68,7 +68,8 @@ Example response:
    "allow_local_requests_from_system_hooks": false,
    "asset_proxy_enabled": true,
    "asset_proxy_url": "https://assets.example.com",
-   "asset_proxy_whitelist": ["example.com", "*.example.com", "your-instance.com"]
+   "asset_proxy_whitelist": ["example.com", "*.example.com", "your-instance.com"],
+   "npm_package_requests_forwarding": true
 }
 ```
 
@@ -154,7 +155,8 @@ Example response:
   "geo_node_allowed_ips": "0.0.0.0/0, ::/0",
   "allow_local_requests_from_hooks_and_services": true,
   "allow_local_requests_from_web_hooks_and_services": true,
-  "allow_local_requests_from_system_hooks": false
+  "allow_local_requests_from_system_hooks": false,
+  "npm_package_requests_forwarding": true
 }
 ```
 
@@ -285,6 +287,7 @@ are listed in the descriptions of the relevant settings.
 | `mirror_capacity_threshold`              | integer          | no                                   | **(PREMIUM)** Minimum capacity to be available before scheduling more mirrors preemptively |
 | `mirror_max_capacity`                    | integer          | no                                   | **(PREMIUM)** Maximum number of mirrors that can be synchronizing at the same time. |
 | `mirror_max_delay`                       | integer          | no                                   | **(PREMIUM)** Maximum time (in minutes) between updates that a mirror can have when scheduled to synchronize. |
+| `npm_package_requests_forwarding`        | boolean          | no                                   | **(PREMIUM)** Use npmjs.org as a default remote repository when the package is not found in the GitLab NPM Registry  |
 | `outbound_local_requests_whitelist`      | array of strings | no                                   | Define a list of trusted domains or ip addresses to which local requests are allowed when local requests for hooks and services are disabled.
 | `pages_domain_verification_enabled`      | boolean          | no                                   | Require users to prove ownership of custom domains. Domain verification is an essential security measure for public GitLab sites. Users are required to demonstrate they control a domain before it is enabled. |
 | `password_authentication_enabled_for_git` | boolean         | no                                   | Enable authentication for Git over HTTP(S) via a GitLab account password. Default is `true`. |

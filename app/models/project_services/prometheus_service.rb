@@ -36,10 +36,6 @@ class PrometheusService < MonitoringService
     false
   end
 
-  def editable?
-    manual_configuration? || !prometheus_available?
-  end
-
   def title
     'Prometheus'
   end
@@ -53,8 +49,6 @@ class PrometheusService < MonitoringService
   end
 
   def fields
-    return [] unless editable?
-
     [
       {
         type: 'checkbox',

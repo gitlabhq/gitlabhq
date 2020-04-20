@@ -27,7 +27,7 @@ describe ProjectFeature do
   end
 
   describe '#feature_available?' do
-    let(:features) { %w(issues wiki builds merge_requests snippets repository pages) }
+    let(:features) { %w(issues wiki builds merge_requests snippets repository pages metrics_dashboard) }
 
     context 'when features are disabled' do
       it "returns false" do
@@ -123,7 +123,7 @@ describe ProjectFeature do
   end
 
   context 'public features' do
-    features = %w(issues wiki builds merge_requests snippets repository)
+    features = %w(issues wiki builds merge_requests snippets repository metrics_dashboard)
 
     features.each do |feature|
       it "does not allow public access level for #{feature}" do

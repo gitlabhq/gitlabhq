@@ -28,9 +28,27 @@ describe('Mutations Registry Explorer Store', () => {
 
   describe('SET_IMAGES_LIST_SUCCESS', () => {
     it('should set the images list', () => {
-      const images = [1, 2, 3];
-      const expectedState = { ...mockState, images };
+      const images = [{ name: 'foo' }, { name: 'bar' }];
+      const defaultStatus = { deleting: false, failedDelete: false };
+      const expectedState = {
+        ...mockState,
+        images: [{ name: 'foo', ...defaultStatus }, { name: 'bar', ...defaultStatus }],
+      };
       mutations[types.SET_IMAGES_LIST_SUCCESS](mockState, images);
+
+      expect(mockState).toEqual(expectedState);
+    });
+  });
+
+  describe('UPDATE_IMAGE', () => {
+    it('should update an image', () => {
+      mockState.images = [{ id: 1, name: 'foo' }, { id: 2, name: 'bar' }];
+      const payload = { id: 1, name: 'baz' };
+      const expectedState = {
+        ...mockState,
+        images: [payload, { id: 2, name: 'bar' }],
+      };
+      mutations[types.UPDATE_IMAGE](mockState, payload);
 
       expect(mockState).toEqual(expectedState);
     });

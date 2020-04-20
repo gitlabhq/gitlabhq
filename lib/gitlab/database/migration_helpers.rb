@@ -184,14 +184,16 @@ module Gitlab
           # short period of time. The key _is_ enforced for any newly created
           # data.
 
-          execute <<-EOF.strip_heredoc
-          ALTER TABLE #{source}
-          ADD CONSTRAINT #{options[:name]}
-          FOREIGN KEY (#{options[:column]})
-          REFERENCES #{target} (id)
-          #{on_delete_statement(options[:on_delete])}
-          NOT VALID;
-          EOF
+          with_lock_retries do
+            execute <<-EOF.strip_heredoc
+            ALTER TABLE #{source}
+            ADD CONSTRAINT #{options[:name]}
+            FOREIGN KEY (#{options[:column]})
+            REFERENCES #{target} (id)
+            #{on_delete_statement(options[:on_delete])}
+            NOT VALID;
+            EOF
+          end
         end
 
         # Validate the existing constraint. This can potentially take a very

@@ -72,6 +72,10 @@ class ProjectImportState < ApplicationRecord
     end
   end
 
+  def relation_hard_failures(limit:)
+    project.import_failures.hard_failures_by_correlation_id(correlation_id).limit(limit)
+  end
+
   def mark_as_failed(error_message)
     original_errors = errors.dup
     sanitized_message = Gitlab::UrlSanitizer.sanitize(error_message)

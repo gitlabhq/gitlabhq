@@ -19,6 +19,12 @@ describe MergeRequestPollCachedWidgetEntity do
     is_expected.to include(:target_branch_sha)
   end
 
+  it 'has public_merge_status as merge_status' do
+    expect(resource).to receive(:public_merge_status).and_return('checking')
+
+    expect(subject[:merge_status]).to eq 'checking'
+  end
+
   describe 'diverged_commits_count' do
     context 'when MR open and its diverging' do
       it 'returns diverged commits count' do

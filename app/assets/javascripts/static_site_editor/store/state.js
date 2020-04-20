@@ -6,6 +6,7 @@ const createState = (initialState = {}) => ({
 
   isLoadingContent: false,
   isSavingChanges: false,
+  isSupportedContent: false,
 
   isContentLoaded: false,
 
@@ -13,6 +14,7 @@ const createState = (initialState = {}) => ({
   content: '',
   title: '',
 
+  submitChangesError: '',
   savedContentMeta: null,
 
   ...initialState,

@@ -50,7 +50,6 @@ export default {
         :markdown-docs-path="markdownDocsPath"
       >
         <textarea
-          id="snippet-description"
           slot="textarea"
           class="note-textarea js-gfm-input js-autosize markdown-area
             qa-description-textarea"
@@ -59,6 +58,7 @@ export default {
           :value="value"
           :aria-label="__('Description')"
           :placeholder="__('Write a comment or drag your files here…')"
+          v-bind="$attrs"
           @input="$emit('input', $event.target.value)"
         >
         </textarea>

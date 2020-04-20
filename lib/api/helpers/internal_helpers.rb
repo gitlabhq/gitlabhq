@@ -3,7 +3,7 @@
 module API
   module Helpers
     module InternalHelpers
-      attr_reader :redirected_path, :container
+      attr_reader :redirected_path
 
       delegate :wiki?, to: :repo_type
 
@@ -11,15 +11,22 @@ module API
         @actor ||= Support::GitAccessActor.from_params(params)
       end
 
+      # rubocop:disable Gitlab/ModuleWithInstanceVariables
       def repo_type
-        set_project unless defined?(@repo_type) # rubocop:disable Gitlab/ModuleWithInstanceVariables
-        @repo_type # rubocop:disable Gitlab/ModuleWithInstanceVariables
+        parse_repo_path unless defined?(@repo_type)
+        @repo_type
       end
 
       def project
-        set_project unless defined?(@project) # rubocop:disable Gitlab/ModuleWithInstanceVariables
-        @project # rubocop:disable Gitlab/ModuleWithInstanceVariables
+        parse_repo_path unless defined?(@project)
+        @project
       end
+
+      def container
+        parse_repo_path unless defined?(@container)
+        @container
+      end
+      # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
       def access_checker_for(actor, protocol)
         access_checker_klass.new(actor.key_or_user, container, protocol,
@@ -79,7 +86,7 @@ module API
       end
 
       # rubocop:disable Gitlab/ModuleWithInstanceVariables
-      def set_project
+      def parse_repo_path
         @container, @project, @repo_type, @redirected_path =
           if params[:gl_repository]
             Gitlab::GlRepository.parse(params[:gl_repository])

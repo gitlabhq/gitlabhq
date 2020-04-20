@@ -26,7 +26,7 @@ module Types
     markdown_field :description_html, null: true
 
     field :tag_list, GraphQL::STRING_TYPE, null: true,
-          description: 'List of project tags'
+          description: 'List of project topics (not Git tags)'
 
     field :ssh_url_to_repo, GraphQL::STRING_TYPE, null: true,
           description: 'URL to connect to the project via SSH'

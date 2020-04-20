@@ -424,6 +424,7 @@ export function getDiffPositionByLineCode(diffFiles, useSingleDiffStyle) {
         old_path: file.old_path,
         old_line: line.old_line,
         new_line: line.new_line,
+        line_range: null,
         line_code: line.line_code,
         position_type: 'text',
       };
@@ -439,10 +440,13 @@ export function isDiscussionApplicableToLine({ discussion, diffPosition, latestD
   const { line_code, ...diffPositionCopy } = diffPosition;
 
   if (discussion.original_position && discussion.position) {
-    const originalRefs = discussion.original_position;
-    const refs = discussion.position;
+    const discussionPositions = [
+      discussion.original_position,
+      discussion.position,
+      ...(discussion.positions || []),
+    ];
 
-    return isEqual(refs, diffPositionCopy) || isEqual(originalRefs, diffPositionCopy);
+    return discussionPositions.some(position => isEqual(position, diffPositionCopy));
   }
 
   // eslint-disable-next-line

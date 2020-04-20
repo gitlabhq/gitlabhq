@@ -88,14 +88,12 @@ export const requestDeleteTags = ({ commit, dispatch, state }, { ids, params }) 
     });
 };
 
-export const requestDeleteImage = ({ commit, dispatch, state }, destroyPath) => {
+export const requestDeleteImage = ({ commit }, image) => {
   commit(types.SET_MAIN_LOADING, true);
-
   return axios
-    .delete(destroyPath)
+    .delete(image.destroy_path)
     .then(() => {
-      dispatch('setShowGarbageCollectionTip', true);
-      dispatch('requestImagesList', { pagination: state.pagination });
+      commit(types.UPDATE_IMAGE, { ...image, deleting: true });
     })
     .finally(() => {
       commit(types.SET_MAIN_LOADING, false);

@@ -8,17 +8,14 @@
 
 build-qa-image:
   extends:
-    - .review-docker
+    - .use-kaniko
+    - .default-retry
     - .review:rules:mr-and-schedule-auto
   stage: prepare
   script:
     - '[[ ! -d "ee/" ]] || export GITLAB_EDITION="ee"'
-    - export QA_MASTER_IMAGE="${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab/gitlab-${GITLAB_EDITION}-qa:master"
-    - export QA_IMAGE="${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab/gitlab-${GITLAB_EDITION}-qa:${CI_COMMIT_REF_SLUG}"
-    - echo "${CI_JOB_TOKEN}" | docker login --username gitlab-ci-token --password-stdin ${CI_REGISTRY}
-    - time docker pull "${QA_MASTER_IMAGE}"
-    - time docker build --cache-from "${QA_MASTER_IMAGE}" --tag ${QA_IMAGE} --file ./qa/Dockerfile ./
-    - time docker push ${QA_IMAGE}
+    - export QA_IMAGE="${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-${GITLAB_EDITION}-qa:${CI_COMMIT_REF_SLUG}"
+    - /kaniko/executor --context=${CI_PROJECT_DIR} --dockerfile=${CI_PROJECT_DIR}/qa/Dockerfile --destination=${QA_IMAGE} --cache=true
 
 .review-cleanup-base:
   extends:
@@ -183,7 +180,7 @@ review-stop:
     EE_LICENSE: "${REVIEW_APPS_EE_LICENSE}"
   before_script:
     - '[[ ! -d "ee/" ]] || export GITLAB_EDITION="ee"'
-    - export QA_IMAGE="${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab/gitlab-${GITLAB_EDITION}-qa:${CI_COMMIT_REF_SLUG}"
+    - export QA_IMAGE="${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-${GITLAB_EDITION}-qa:${CI_COMMIT_REF_SLUG}"
     - export CI_ENVIRONMENT_URL="$(cat environment_url.txt)"
     - echo "${CI_ENVIRONMENT_URL}"
     - echo "${QA_IMAGE}"

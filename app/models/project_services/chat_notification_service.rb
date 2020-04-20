@@ -59,11 +59,11 @@ class ChatNotificationService < Service
 
   def default_fields
     [
-      { type: 'text', name: 'webhook', placeholder: "e.g. #{webhook_placeholder}", required: true },
-      { type: 'text', name: 'username', placeholder: 'e.g. GitLab' },
-      { type: 'checkbox', name: 'notify_only_broken_pipelines' },
-      { type: 'select', name: 'branches_to_be_notified', choices: BRANCH_CHOICES }
-    ]
+      { type: 'text', name: 'webhook', placeholder: "e.g. #{webhook_placeholder}", required: true }.freeze,
+      { type: 'text', name: 'username', placeholder: 'e.g. GitLab' }.freeze,
+      { type: 'checkbox', name: 'notify_only_broken_pipelines' }.freeze,
+      { type: 'select', name: 'branches_to_be_notified', choices: branch_choices }.freeze
+    ].freeze
   end
 
   def execute(data)

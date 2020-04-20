@@ -43,6 +43,10 @@ if !Rails.env.test? && Gitlab::Metrics.prometheus_metrics_enabled?
     defined?(::Prometheus::Client.reinitialize_on_pid_change) && Prometheus::Client.reinitialize_on_pid_change
 
     Gitlab::Metrics::Samplers::RubySampler.initialize_instance(Settings.monitoring.ruby_sampler_interval).start
+
+    if Gitlab.ee? && Gitlab::Runtime.sidekiq?
+      Gitlab::Metrics::Samplers::GlobalSearchSampler.instance(Settings.monitoring.global_search_sampler_interval).start
+    end
   rescue IOError => e
     Gitlab::ErrorTracking.track_exception(e)
     Gitlab::Metrics.error_detected!

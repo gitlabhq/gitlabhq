@@ -19,6 +19,14 @@ describe Gitlab::Prometheus::Adapter do
       it 'return prometheus service as prometheus adapter' do
         expect(subject.prometheus_adapter).to eq(prometheus_service)
       end
+
+      context 'with cluster with prometheus available' do
+        let!(:prometheus) { create(:clusters_applications_prometheus, :installed, cluster: cluster) }
+
+        it 'returns prometheus service' do
+          expect(subject.prometheus_adapter).to eq(prometheus_service)
+        end
+      end
     end
 
     context "prometheus service can't execute queries" do
