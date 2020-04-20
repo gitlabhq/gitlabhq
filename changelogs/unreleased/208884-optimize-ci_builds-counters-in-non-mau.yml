@@ -1,0 +1,5 @@
+---
+title: Optimize ci builds non distinct counters in usage data
+merge_request: 28027
+author:
+type: performance

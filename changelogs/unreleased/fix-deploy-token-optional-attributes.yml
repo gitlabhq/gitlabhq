@@ -1,0 +1,5 @@
+---
+title: Fix optional params for deploy token API
+merge_request: 27961
+author: Nejc Habjan
+type: fixed

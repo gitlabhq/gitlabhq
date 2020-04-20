@@ -1,0 +1,5 @@
+---
+title: Use diff-stats for calculating raw diffs modified paths
+merge_request: 29134
+author:
+type: performance

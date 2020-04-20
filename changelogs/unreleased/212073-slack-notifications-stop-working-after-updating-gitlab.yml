@@ -1,0 +1,5 @@
+---
+title: Fix Slack notifications when upgrading from old GitLab versions
+merge_request: 29111
+author:
+type: fixed

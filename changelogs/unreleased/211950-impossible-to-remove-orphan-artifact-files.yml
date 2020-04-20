@@ -1,0 +1,5 @@
+---
+title: Fix invalid class option for ionice
+merge_request: 28023
+author:
+type: fixed

@@ -1,0 +1,5 @@
+---
+title: Allow querying of Jira imports and their status via GraphQL
+merge_request: 27587
+author:
+type: added

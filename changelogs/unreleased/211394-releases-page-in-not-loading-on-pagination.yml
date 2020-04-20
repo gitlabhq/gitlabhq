@@ -1,0 +1,5 @@
+---
+title: Filter out Releases with missing tags
+merge_request: 27716
+author:
+type: fixed

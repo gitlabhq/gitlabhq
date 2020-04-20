@@ -1,0 +1,5 @@
+---
+title: Update Auto DevOps docker version to 19.03.8
+merge_request: 29081
+author:
+type: changed

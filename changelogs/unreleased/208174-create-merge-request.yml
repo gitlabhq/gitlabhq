@@ -1,0 +1,5 @@
+---
+title: Start merge request for custom dashboard if new branch is provided
+merge_request: 27189
+author:
+type: added

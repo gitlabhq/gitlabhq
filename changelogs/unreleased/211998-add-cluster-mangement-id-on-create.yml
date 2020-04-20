@@ -1,0 +1,6 @@
+---
+title: Add management_project_id to group and project cluster creation, clarifies
+  docs.
+merge_request: 28289
+author:
+type: fixed

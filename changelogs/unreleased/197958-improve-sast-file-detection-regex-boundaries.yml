@@ -1,0 +1,5 @@
+---
+title: Improve SAST NO_DIND file detection with proper boundary conditions
+merge_request: 28036
+author:
+type: fixed

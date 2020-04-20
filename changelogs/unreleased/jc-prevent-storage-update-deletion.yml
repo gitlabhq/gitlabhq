@@ -1,0 +1,5 @@
+---
+title: Prevent ProjectUpdateRepositoryStorageWorker from moving to same filesystem
+merge_request: 28469
+author:
+type: fixed

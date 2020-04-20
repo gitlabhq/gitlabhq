@@ -1,0 +1,5 @@
+---
+title: "Add Swift Dockerfile to GitLab templates"
+merge_request: 28035
+author:
+type: added

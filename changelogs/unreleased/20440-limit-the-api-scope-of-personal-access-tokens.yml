@@ -1,0 +1,5 @@
+---
+title: Add read_api scope to personal access tokens for granting read only API access
+merge_request: 28944
+author:
+type: added

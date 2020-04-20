@@ -1,0 +1,5 @@
+---
+title: Introduce rate limit for creating issues via API
+merge_request: 28130
+author:
+type: performance

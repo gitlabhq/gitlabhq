@@ -1,0 +1,5 @@
+---
+title: Fix Gitlab::Auth to handle orphaned oauth tokens
+merge_request: 28159
+author:
+type: fixed

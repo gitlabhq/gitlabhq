@@ -1,0 +1,5 @@
+---
+title: Fix duplicate spec in template dropdown spec
+merge_request: 28858
+author: Rajendra Kadam
+type: added

@@ -1,0 +1,5 @@
+---
+title: Conditional mocking of admin mode in specs by directory
+merge_request: 28420
+author: Diego Louzán
+type: other
