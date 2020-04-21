@@ -1,5 +1,0 @@
----
-title: Add write_registry scope to deploy tokens for container registry push access
-merge_request: 28958
-author:
-type: added

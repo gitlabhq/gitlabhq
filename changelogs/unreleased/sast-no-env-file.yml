@@ -1,5 +1,0 @@
----
-title: "Run SAST using awk to pass env variables directly to docker without creating .env file"
-merge_request: 21174
-author: Florian Gaultier
-type: fixed

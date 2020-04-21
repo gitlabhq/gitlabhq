@@ -1,5 +1,0 @@
----
-title: Add a DB column to track external issue and epic ids when importing from external sources
-merge_request: 27522
-author:
-type: added

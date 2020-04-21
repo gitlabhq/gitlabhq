@@ -1,5 +1,0 @@
----
-title: Revert user bio back to non-italicized font to fix rendering of emojis
-merge_request: 27693
-author:
-type: fixed

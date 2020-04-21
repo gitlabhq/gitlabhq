@@ -1,5 +1,0 @@
----
-title: Fix 500 error on profile/chat_names for deleted projects
-merge_request: 24341
-author:
-type: fixed

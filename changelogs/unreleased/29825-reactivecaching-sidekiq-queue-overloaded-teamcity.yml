@@ -1,5 +1,0 @@
----
-title: Set commit status to failed if the TeamCity connection is refused
-merge_request: 27395
-author:
-type: fixed

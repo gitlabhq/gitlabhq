@@ -1,5 +1,0 @@
----
-title: Add missing ON DELETE FK constraints referencing users table
-merge_request: 28720
-author:
-type: fixed

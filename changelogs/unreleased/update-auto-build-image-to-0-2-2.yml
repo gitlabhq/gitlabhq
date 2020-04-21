@@ -1,5 +1,0 @@
----
-title: Update auto-build-image to v0.2.2 with fixes for docker caching
-merge_request: 29730
-author:
-type: fixed

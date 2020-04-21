@@ -1,5 +1,0 @@
----
-title: Ensure members are always added on Project Import when importing as admin
-merge_request: 29046
-author:
-type: fixed

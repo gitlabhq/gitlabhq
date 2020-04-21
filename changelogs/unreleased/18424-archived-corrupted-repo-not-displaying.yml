@@ -1,5 +1,0 @@
----
-title: Fix archived corrupted projects not displaying in admin
-merge_request: 25171
-author: erickcspice
-type: fixed

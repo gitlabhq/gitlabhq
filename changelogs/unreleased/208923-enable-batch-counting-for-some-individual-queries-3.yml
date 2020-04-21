@@ -1,5 +1,0 @@
----
-title: Optimize projects_reporting_ci_cd_back_to_github query performance for usage data
-merge_request: 27533
-author:
-type: performance

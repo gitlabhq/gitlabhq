@@ -1,5 +1,0 @@
----
-title: Fix race condition updating snippet without repository
-merge_request: 28851
-author:
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Fix redundant query execution when loading board issues
-merge_request: 27505
-author:
-type: performance

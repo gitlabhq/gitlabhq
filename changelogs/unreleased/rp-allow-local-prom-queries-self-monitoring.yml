@@ -1,5 +1,0 @@
----
-title: Allow self monitoring project to query internal Prometheus even when "Allow local requests in webhooks and services" setting is false
-merge_request: 27865
-author:
-type: fixed

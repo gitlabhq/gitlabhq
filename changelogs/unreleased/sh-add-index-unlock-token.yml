@@ -1,5 +1,0 @@
----
-title: Add index on users.unlock_token
-merge_request: 276298
-author:
-type: performance

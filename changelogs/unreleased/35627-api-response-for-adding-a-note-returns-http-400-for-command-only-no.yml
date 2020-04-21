@@ -1,5 +1,0 @@
----
-title: Return 202 for command only notes in REST API
-merge_request: 19624
-author:
-type: fixed

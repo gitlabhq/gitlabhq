@@ -1,5 +1,0 @@
----
-title: Refactor push rules and add push_rule_id columns in project settings and application settings
-merge_request: 28286
-author:
-type: added

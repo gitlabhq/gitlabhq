@@ -1,5 +1,0 @@
----
-title: Replace underscore with lodash for ./app/assets/javascripts/vue_shared
-merge_request: 25108
-author: Tobias Spagert
-type: other

@@ -1,5 +1,0 @@
----
-title: Gracefully handle missing latest CI pipeline
-merge_request: 28263
-author:
-type: fixed

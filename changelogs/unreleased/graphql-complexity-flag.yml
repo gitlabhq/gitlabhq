@@ -1,5 +1,0 @@
----
-title: Fix processing of GrapqhQL query complexity based on used resolvers.
-merge_request: 27652
-author:
-type: fixed

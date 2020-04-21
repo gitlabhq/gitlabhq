@@ -1,5 +1,0 @@
----
-title: Exclude 'trial_ends_on', 'shared_runners_minutes_limit' & 'extra_shared_runners_minutes_limit' from list of exported Group attributes
-merge_request: 29259
-author:
-type: fixed

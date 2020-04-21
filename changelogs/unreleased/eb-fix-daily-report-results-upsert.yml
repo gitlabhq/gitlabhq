@@ -1,6 +1,0 @@
----
-title: Fix daily report result to use average of coverage values if there are multiple builds for a given group
-  name
-merge_request: 28556
-author:
-type: fixed

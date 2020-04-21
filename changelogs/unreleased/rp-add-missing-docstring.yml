@@ -1,5 +1,0 @@
----
-title: Add missing docstring to Prometheus metric
-merge_request: 27868
-author:
-type: fixed

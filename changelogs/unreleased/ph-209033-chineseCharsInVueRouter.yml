@@ -1,5 +1,0 @@
----
-title: Fixes the repository Vue router not working with Chinese characters
-merge_request: 27494
-author:
-type: fixed

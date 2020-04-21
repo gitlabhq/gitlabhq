@@ -1,5 +1,0 @@
----
-title: Fix 500 error on create release API when providing an invalid tag_name
-merge_request: 28969
-author: Sashi Kumar
-type: fixed

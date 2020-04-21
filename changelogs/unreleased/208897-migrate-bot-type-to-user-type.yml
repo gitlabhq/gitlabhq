@@ -1,5 +1,0 @@
----
-title: Move bots functionality to user_type column
-merge_request: 26981
-author:
-type: performance

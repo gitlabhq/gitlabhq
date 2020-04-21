@@ -1,5 +1,0 @@
----
-title: Fix logic for ingress can_uninstall?
-merge_request: 27729
-author:
-type: fixed

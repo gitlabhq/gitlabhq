@@ -1,5 +1,48 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 12.10.0 (2020-04-22)
+
+### Fixed (6 changes, 1 of them is from the community)
+
+- Split CI minutes resets into different workers. !29017
+- Fix duplicated events on Value Stream Analytics stage form. !29030
+- Fix missing autocomplete results in the ElasticSearch admin UI. !29043 (mbergeron)
+- Support visual reviews on private and internal projects through PAT authentication. !29336
+- Nuget search: fix the prerelease filtering. !29482
+- Smartcard should be counted as 2fa. !29504
+
+### Changed (6 changes)
+
+- Default the :tasks_by_type_chart feature flag on. !28486
+- Remove Add Metric button from custom dashboards. !29036
+- Improve Geo Node save error messages. !29079
+- Cosmetic changes for Epic Health Status. !29234
+- Improve readability of Dependency List. !29593
+- Restrict prompt to check user account settings only to Gitlab.com. !29672
+
+### Added (15 changes)
+
+- Add LDAP user filter to group link API. !26202
+- Implement Shared Runner Minute Factors. !27792
+- Updates the package registry list UI which also includes adding pipeline information. !28426
+- Allow Admins to preview the payload for Seat Link requests. !28582
+- Add deployment frequency to Project level Value Stream Analytics summary. !28772
+- Add deployment frequency to Group Value Stream Analytics summary. !28776
+- Provide milestone burnup chart data for scope committed graph. !28899
+- Make Status Page MVC generally available. !28966
+- License Compliance - Add `order_by` filter. !28970
+- Add the selected compliance frameworks label to project home and listings. !29137
+- Generate smaller versions of Design Management design files. !29215
+- .com has a subscription expired banner. !29422
+- Allow changing item parent in epic tree via GraphQL. !29567
+- Add PyPI Packages Repository. !29702
+- Enable requirements for projects and basic actions (CRUD) for them.
+
+### Other (1 change)
+
+- Add health status counts to usage data. !28964
+
+
 ## 12.9.4 (2020-04-16)
 
 - No changes.

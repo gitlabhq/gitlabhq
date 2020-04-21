@@ -1,5 +1,0 @@
----
-title: Add DS_REMEDIATE env var to dependency scanning template
-merge_request: 27947
-author:
-type: added

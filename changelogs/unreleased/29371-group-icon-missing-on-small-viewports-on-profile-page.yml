@@ -1,5 +1,0 @@
----
-title: Fix missing group icons on profile page when screen < 576px
-merge_request: 28973
-author:
-type: fixed

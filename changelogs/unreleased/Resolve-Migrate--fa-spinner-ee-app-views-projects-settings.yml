@@ -1,5 +1,0 @@
----
-title: Migrate .fa-spinner to .spinner for ee/app/views/projects/settings
-merge_request: 25038
-author: nuwe1
-type: other

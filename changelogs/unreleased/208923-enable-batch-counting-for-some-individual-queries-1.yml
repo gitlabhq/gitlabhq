@@ -1,5 +1,0 @@
----
-title: Optimize projects_enforcing_code_owner_approval counter query performance for usage ping
-merge_request: 27526
-author:
-type: performance

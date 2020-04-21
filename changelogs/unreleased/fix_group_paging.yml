@@ -1,5 +1,0 @@
----
-title: Fix dropped filter when paging groups
-merge_request: 27737
-author: Lee Tickett
-type: fixed

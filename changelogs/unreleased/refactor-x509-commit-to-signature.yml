@@ -1,5 +1,0 @@
----
-title: Extract X509::Signature from X509::Commit
-merge_request: 27327
-author: Roger Meier
-type: changed
