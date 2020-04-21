@@ -1,7 +1,7 @@
 /* eslint-disable no-return-assign, consistent-return, class-methods-use-this */
 
 import $ from 'jquery';
-import { escape as esc, throttle } from 'lodash';
+import { escape, throttle } from 'lodash';
 import { s__, __ } from '~/locale';
 import { getIdenticonBackgroundClass, getIdenticonTitle } from '~/helpers/avatar_helper';
 import axios from './lib/utils/axios_utils';
@@ -448,7 +448,7 @@ export class SearchAutocomplete {
     const avatar = avatarUrl
       ? `<img class="search-item-avatar" src="${avatarUrl}" />`
       : `<div class="s16 avatar identicon ${getIdenticonBackgroundClass(id)}">${getIdenticonTitle(
-          esc(label),
+          escape(label),
         )}</div>`;
 
     return avatar;

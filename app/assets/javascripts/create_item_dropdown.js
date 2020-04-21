@@ -1,4 +1,4 @@
-import { escape as esc } from 'lodash';
+import { escape } from 'lodash';
 import '~/gl_dropdown';
 
 export default class CreateItemDropdown {
@@ -37,14 +37,14 @@ export default class CreateItemDropdown {
       },
       selectable: true,
       toggleLabel(selected) {
-        return selected && 'id' in selected ? esc(selected.title) : this.defaultToggleLabel;
+        return selected && 'id' in selected ? escape(selected.title) : this.defaultToggleLabel;
       },
       fieldName: this.fieldName,
       text(item) {
-        return esc(item.text);
+        return escape(item.text);
       },
       id(item) {
-        return esc(item.id);
+        return escape(item.id);
       },
       onFilter: this.toggleCreateNewButton.bind(this),
       clicked: options => {

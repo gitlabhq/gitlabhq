@@ -295,11 +295,11 @@ The following tables outline the details of expected properties.
 
 **Axis (`panels[].y_axis`) properties:**
 
-| Property    | Type   | Required                  | Description                                                          |
-| ----------- | ------ | ------------------------- | -------------------------------------------------------------------- |
-| `name`      | string | no, but highly encouraged | Y-Axis label for the panel, it will replace `y_label` if set.        |
-| `format`    | string | no, defaults to `number`  | Unit format used. See the [full list of units](prometheus_units.md). |
-| `precision` | number | no, defaults to `2`       | Number of decimals to display in the number.                         |
+| Property    | Type   | Required                      | Description                                                          |
+| ----------- | ------ | ----------------------------- | -------------------------------------------------------------------- |
+| `name`      | string | no, but highly encouraged     | Y-Axis label for the panel. Replaces `y_label` if set.               |
+| `format`    | string | no, defaults to `engineering` | Unit format used. See the [full list of units](prometheus_units.md). |
+| `precision` | number | no, defaults to `2`           | Number of decimal places to display in the number.                                          |                        |
 
 **Metrics (`metrics`) properties:**
 

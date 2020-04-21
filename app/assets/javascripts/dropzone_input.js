@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import Dropzone from 'dropzone';
-import { escape as esc } from 'lodash';
+import { escape } from 'lodash';
 import './behaviors/preview_markdown';
 import PasteMarkdownTable from './behaviors/markdown/paste_markdown_table';
 import csrf from './lib/utils/csrf';
@@ -233,7 +233,7 @@ export default function dropzoneInput(form, config = { parallelUploads: 2 }) {
   };
 
   addFileToForm = path => {
-    $(form).append(`<input type="hidden" name="files[]" value="${esc(path)}">`);
+    $(form).append(`<input type="hidden" name="files[]" value="${escape(path)}">`);
   };
 
   const showSpinner = () => $uploadingProgressContainer.removeClass('hide');

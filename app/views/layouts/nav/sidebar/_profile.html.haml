@@ -152,10 +152,6 @@
             = link_to audit_log_profile_path do
               %strong.fly-out-top-item-name
                 = _('Authentication Log')
-
-      - if Feature.enabled?(:user_usage_quota)
         = render_if_exists 'layouts/nav/sidebar/profile_usage_quotas_link'
-      - else
-        = render_if_exists 'layouts/nav/sidebar/profile_pipeline_quota_link'
 
     = render 'shared/sidebar_toggle_button'

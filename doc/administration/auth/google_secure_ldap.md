@@ -133,7 +133,7 @@ values obtained during the LDAP client configuration earlier:
    EOS
    ```
 
-1. Save the file and [reconfigure] GitLab for the changes to take effect.
+1. Save the file and [reconfigure](../restart_gitlab.md#omnibus-gitlab-reconfigure) GitLab for the changes to take effect.
 
 ---
 
@@ -204,10 +204,7 @@ values obtained during the LDAP client configuration earlier:
              -----END PRIVATE KEY-----
    ```
 
-1. Save the file and [restart] GitLab for the changes to take effect.
-
-[reconfigure]: ../restart_gitlab.md#omnibus-gitlab-reconfigure
-[restart]: ../restart_gitlab.md#installations-from-source
+1. Save the file and [restart](../restart_gitlab.md#installations-from-source) GitLab for the changes to take effect.
 
 <!-- ## Troubleshooting
 

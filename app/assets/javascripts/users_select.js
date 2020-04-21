@@ -3,7 +3,7 @@
 /* global emitSidebarEvent */
 
 import $ from 'jquery';
-import { escape as esc, template, uniqBy } from 'lodash';
+import { escape, template, uniqBy } from 'lodash';
 import axios from './lib/utils/axios_utils';
 import { s__, __, sprintf } from './locale';
 import ModalStore from './boards/stores/modal_store';
@@ -205,7 +205,7 @@ function UsersSelect(currentUser, els, options = {}) {
             username: data.assignee.username,
             avatar: data.assignee.avatar_url,
           };
-          tooltipTitle = esc(user.name);
+          tooltipTitle = escape(user.name);
         } else {
           user = {
             name: s__('UsersSelect|Unassigned'),
@@ -543,7 +543,7 @@ function UsersSelect(currentUser, els, options = {}) {
 
         let img = '';
         if (user.beforeDivider != null) {
-          `<li><a href='#' class='${selected === true ? 'is-active' : ''}'>${esc(
+          `<li><a href='#' class='${selected === true ? 'is-active' : ''}'>${escape(
             user.name,
           )}</a></li>`;
         } else {
@@ -672,10 +672,10 @@ UsersSelect.prototype.formatResult = function(user) {
       </div>
       <div class='user-info'>
         <div class='user-name dropdown-menu-user-full-name'>
-          ${esc(user.name)}
+          ${escape(user.name)}
         </div>
         <div class='user-username dropdown-menu-user-username text-secondary'>
-          ${!user.invite ? `@${esc(user.username)}` : ''}
+          ${!user.invite ? `@${escape(user.username)}` : ''}
         </div>
       </div>
     </div>
@@ -683,7 +683,7 @@ UsersSelect.prototype.formatResult = function(user) {
 };
 
 UsersSelect.prototype.formatSelection = function(user) {
-  return esc(user.name);
+  return escape(user.name);
 };
 
 UsersSelect.prototype.user = function(user_id, callback) {
@@ -746,7 +746,7 @@ UsersSelect.prototype.renderRow = function(issuableType, user, selected, usernam
         ${this.renderRowAvatar(issuableType, user, img)}
         <span class="d-flex flex-column overflow-hidden">
           <strong class="dropdown-menu-user-full-name">
-            ${esc(user.name)}
+            ${escape(user.name)}
           </strong>
           ${username ? `<span class="dropdown-menu-user-username">${username}</span>` : ''}
         </span>

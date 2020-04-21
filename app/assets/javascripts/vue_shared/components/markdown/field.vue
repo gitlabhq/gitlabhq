@@ -1,7 +1,7 @@
 <script>
 import $ from 'jquery';
 import '~/behaviors/markdown/render_gfm';
-import { unescape as unesc } from 'lodash';
+import { unescape } from 'lodash';
 import { __, sprintf } from '~/locale';
 import { stripHtml } from '~/lib/utils/text_utility';
 import Flash from '../../../flash';
@@ -115,7 +115,7 @@ export default {
           return text;
         }
 
-        return unesc(stripHtml(richText).replace(/\n/g, ''));
+        return unescape(stripHtml(richText).replace(/\n/g, ''));
       }
 
       return '';

@@ -554,7 +554,7 @@ This file lives in `/var/log/gitlab/gitlab-rails/repocheck.log` for
 Omnibus GitLab packages or in `/home/git/gitlab/log/repocheck.log` for
 installations from source.
 
-It logs information whenever a [repository check is run][repocheck] on a project.
+It logs information whenever a [repository check is run](repository_checks.md) on a project.
 
 ## `importer.log`
 
@@ -574,9 +574,9 @@ installations from source.
 
 This log records:
 
-- Information whenever [Rack Attack] registers an abusive request.
-- Requests over the [Rate Limit] on raw endpoints.
-- [Protected paths] abusive requests.
+- Information whenever [Rack Attack](../security/rack_attack.md) registers an abusive request.
+- Requests over the [Rate Limit](../user/admin_area/settings/rate_limits_on_raw_endpoints.md) on raw endpoints.
+- [Protected paths](../user/admin_area/settings/protected_paths.md) abusive requests.
 
 NOTE: **Note:**
 From [%12.1](https://gitlab.com/gitlab-org/gitlab-foss/issues/62756), user ID and username are also
@@ -754,8 +754,3 @@ Below is the default GitLab NGINX access log format:
 ```plaintext
 $remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent"
 ```
-
-[repocheck]: repository_checks.md
-[Rack Attack]: ../security/rack_attack.md
-[Rate Limit]: ../user/admin_area/settings/rate_limits_on_raw_endpoints.md
-[Protected paths]: ../user/admin_area/settings/protected_paths.md

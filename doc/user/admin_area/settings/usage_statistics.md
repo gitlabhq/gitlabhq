@@ -58,10 +58,10 @@ sequenceDiagram
 
 ## Usage Ping **(CORE ONLY)**
 
-> - [Introduced][ee-557] in GitLab Enterprise Edition 8.10.
-> - More statistics [were added][ee-735] in GitLab Enterprise Edition 8.12.
-> - [Moved to GitLab Core][ce-23361] in 9.1.
-> - More statistics [were added][ee-6602] in GitLab Ultimate 11.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/557) in GitLab Enterprise Edition 8.10.
+> - More statistics [were added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/735) in GitLab Enterprise Edition 8.12.
+> - [Moved to GitLab Core](https://gitlab.com/gitlab-org/gitlab-foss/issues/23361) in 9.1.
+> - More statistics [were added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6602) in GitLab Ultimate 11.2.
 
 GitLab sends a weekly payload containing usage data to GitLab Inc. The usage
 ping uses high-level data to help our product, support, and sales teams. It does
@@ -148,11 +148,6 @@ questions that you know someone might ask.
 Each scenario can be a third-level heading, e.g. `### Getting error message X`.
 If you have none to add when creating a doc, leave this section in place
 but commented out to help encourage others to add to it in the future. -->
-
-[ee-557]: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/557
-[ee-735]: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/735
-[ce-23361]: https://gitlab.com/gitlab-org/gitlab-foss/issues/23361
-[ee-6602]: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6602
 
 ## Usage Statistics Collected
 

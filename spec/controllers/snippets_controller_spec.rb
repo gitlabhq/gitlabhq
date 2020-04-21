@@ -318,7 +318,7 @@ describe SnippetsController do
             .to log_spam(title: 'Title', user: user, noteable_type: 'PersonalSnippet')
         end
 
-        it 'renders :new with recaptcha disabled' do
+        it 'renders :new with reCAPTCHA disabled' do
           stub_application_setting(recaptcha_enabled: false)
 
           create_snippet(visibility_level: Snippet::PUBLIC)
@@ -326,18 +326,18 @@ describe SnippetsController do
           expect(response).to render_template(:new)
         end
 
-        context 'recaptcha enabled' do
+        context 'reCAPTCHA enabled' do
           before do
             stub_application_setting(recaptcha_enabled: true)
           end
 
-          it 'renders :verify with recaptcha enabled' do
+          it 'renders :verify' do
             create_snippet(visibility_level: Snippet::PUBLIC)
 
             expect(response).to render_template(:verify)
           end
 
-          it 'renders snippet page when recaptcha verified' do
+          it 'renders snippet page' do
             spammy_title = 'Whatever'
 
             spam_logs = create_list(:spam_log, 2, user: user, title: spammy_title)
@@ -403,7 +403,7 @@ describe SnippetsController do
             .to log_spam(title: 'Foo', user: user, noteable_type: 'PersonalSnippet')
         end
 
-        it 'renders :edit with recaptcha disabled' do
+        it 'renders :edit with reCAPTCHA disabled' do
           stub_application_setting(recaptcha_enabled: false)
 
           update_snippet(title: 'Foo', visibility_level: Snippet::PUBLIC)
@@ -411,18 +411,18 @@ describe SnippetsController do
           expect(response).to render_template(:edit)
         end
 
-        context 'recaptcha enabled' do
+        context 'reCAPTCHA enabled' do
           before do
             stub_application_setting(recaptcha_enabled: true)
           end
 
-          it 'renders :verify with recaptcha enabled' do
+          it 'renders :verify' do
             update_snippet(title: 'Foo', visibility_level: Snippet::PUBLIC)
 
             expect(response).to render_template(:verify)
           end
 
-          it 'renders snippet page when recaptcha verified' do
+          it 'renders snippet page when reCAPTCHA verified' do
             spammy_title = 'Whatever'
 
             spam_logs = create_list(:spam_log, 2, user: user, title: spammy_title)
@@ -446,7 +446,7 @@ describe SnippetsController do
             .to log_spam(title: 'Foo', user: user, noteable_type: 'PersonalSnippet')
         end
 
-        it 'renders :edit with recaptcha disabled' do
+        it 'renders :edit with reCAPTCHA disabled' do
           stub_application_setting(recaptcha_enabled: false)
 
           update_snippet(title: 'Foo')
@@ -459,13 +459,13 @@ describe SnippetsController do
             stub_application_setting(recaptcha_enabled: true)
           end
 
-          it 'renders :verify with recaptcha enabled' do
+          it 'renders :verify' do
             update_snippet(title: 'Foo')
 
             expect(response).to render_template(:verify)
           end
 
-          it 'renders snippet page when recaptcha verified' do
+          it 'renders snippet page when reCAPTCHA verified' do
             spammy_title = 'Whatever'
 
             spam_logs = create_list(:spam_log, 2, user: user, title: spammy_title)

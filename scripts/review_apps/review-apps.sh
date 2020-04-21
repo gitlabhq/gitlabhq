@@ -95,37 +95,6 @@ function delete_failed_release() {
   fi
 }
 
-function helm2_deploy_exists() {
-  local namespace="${1}"
-  local release="${2}"
-  local deploy_exists
-
-  echoinfo "Checking if Helm 2 ${release} exists in the ${namespace} namespace..." true
-
-  kubectl get cm -l OWNER=TILLER -n ${namespace} | grep ${release} 2>&1
-  deploy_exists=$?
-
-  echoinfo "Helm 2 release for ${release} is ${deploy_exists}"
-  return $deploy_exists
-}
-
-function delete_helm2_release() {
-  local namespace="${KUBE_NAMESPACE}"
-  local release="${CI_ENVIRONMENT_SLUG}"
-
-  if [ -z "${release}" ]; then
-    echoerr "No release given, aborting the delete!"
-    return
-  fi
-
-  if ! helm2_deploy_exists "${namespace}" "${release}"; then
-    echoinfo "No Review App with ${release} is currently deployed by Helm 2."
-  else
-    echoinfo "Cleaning up ${release} installed by Helm 2"
-    kubectl_cleanup_release "${namespace}" "${release}"
-  fi
-}
-
 function get_pod() {
   local namespace="${KUBE_NAMESPACE}"
   local release="${CI_ENVIRONMENT_SLUG}"
@@ -290,7 +259,7 @@ HELM_CMD=$(cat << EOF
     --namespace="${namespace}" \
     --install \
     --wait \
-    --timeout 900s \
+    --timeout 15m \
     --set ci.branch="${CI_COMMIT_REF_NAME}" \
     --set ci.commit.sha="${CI_COMMIT_SHORT_SHA}" \
     --set ci.job.url="${CI_JOB_URL}" \

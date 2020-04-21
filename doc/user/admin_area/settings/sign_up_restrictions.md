@@ -50,14 +50,14 @@ the minimum number of characters a user must have in their password using the Gi
 
 ## Whitelist email domains
 
-> [Introduced][ce-598] in GitLab 7.11.0
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/598) in GitLab 7.11.0
 
 You can restrict users to only sign up using email addresses matching the given
 domains list.
 
 ## Blacklist email domains
 
-> [Introduced][ce-5259] in GitLab 8.10.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5259) in GitLab 8.10.
 
 With this feature enabled, you can block email addresses of a specific domain
 from creating an account on your GitLab server. This is particularly useful
@@ -94,6 +94,3 @@ questions that you know someone might ask.
 Each scenario can be a third-level heading, e.g. `### Getting error message X`.
 If you have none to add when creating a doc, leave this section in place
 but commented out to help encourage others to add to it in the future. -->
-
-[ce-5259]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5259
-[ce-598]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/598

@@ -2,6 +2,13 @@
 
 source scripts/utils.sh
 
+function setup_gcp_dependencies() {
+  apk add jq
+
+  gcloud auth activate-service-account --key-file="${REVIEW_APPS_GCP_CREDENTIALS}"
+  gcloud config set project "${REVIEW_APPS_GCP_PROJECT}"
+}
+
 # These scripts require the following environment variables:
 # - REVIEW_APPS_GCP_REGION - e.g `us-central1`
 # - KUBE_NAMESPACE - e.g `review-apps-ee`

@@ -1,5 +1,5 @@
 <script>
-import { escape as esc } from 'lodash';
+import { escape } from 'lodash';
 import helmInstallIllustration from '@gitlab/svgs/dist/illustrations/kubernetes-installation.svg';
 import { GlLoadingIcon } from '@gitlab/ui';
 import elasticsearchLogo from 'images/cluster_app_logos/elasticsearch.png';
@@ -138,7 +138,7 @@ export default {
     },
     ingressDescription() {
       return sprintf(
-        esc(
+        escape(
           s__(
             `ClusterIntegration|Installing Ingress may incur additional costs. Learn more about %{pricingLink}.`,
           ),
@@ -146,14 +146,14 @@ export default {
         {
           pricingLink: `<a href="https://cloud.google.com/compute/pricing#lb"
               target="_blank" rel="noopener noreferrer">
-              ${esc(s__('ClusterIntegration|pricing'))}</a>`,
+              ${escape(s__('ClusterIntegration|pricing'))}</a>`,
         },
         false,
       );
     },
     certManagerDescription() {
       return sprintf(
-        esc(
+        escape(
           s__(
             `ClusterIntegration|Cert-Manager is a native Kubernetes certificate management controller that helps with issuing certificates.
             Installing Cert-Manager on your cluster will issue a certificate by %{letsEncrypt} and ensure that certificates
@@ -163,14 +163,14 @@ export default {
         {
           letsEncrypt: `<a href="https://letsencrypt.org/"
               target="_blank" rel="noopener noreferrer">
-              ${esc(s__("ClusterIntegration|Let's Encrypt"))}</a>`,
+              ${escape(s__("ClusterIntegration|Let's Encrypt"))}</a>`,
         },
         false,
       );
     },
     crossplaneDescription() {
       return sprintf(
-        esc(
+        escape(
           s__(
             `ClusterIntegration|Crossplane enables declarative provisioning of managed services from your cloud of choice using %{kubectl} or %{gitlabIntegrationLink}.
 Crossplane runs inside your Kubernetes cluster and supports secure connectivity and secrets management between app containers and the cloud services they depend on.`,
@@ -179,7 +179,7 @@ Crossplane runs inside your Kubernetes cluster and supports secure connectivity 
         {
           gitlabIntegrationLink: `<a href="https://docs.gitlab.com/ee/user/clusters/applications.html#crossplane"
           target="_blank" rel="noopener noreferrer">
-          ${esc(s__('ClusterIntegration|Gitlab Integration'))}</a>`,
+          ${escape(s__('ClusterIntegration|Gitlab Integration'))}</a>`,
           kubectl: `<code>kubectl</code>`,
         },
         false,
@@ -188,7 +188,7 @@ Crossplane runs inside your Kubernetes cluster and supports secure connectivity 
 
     prometheusDescription() {
       return sprintf(
-        esc(
+        escape(
           s__(
             `ClusterIntegration|Prometheus is an open-source monitoring system
             with %{gitlabIntegrationLink} to monitor deployed applications.`,
@@ -197,7 +197,7 @@ Crossplane runs inside your Kubernetes cluster and supports secure connectivity 
         {
           gitlabIntegrationLink: `<a href="https://docs.gitlab.com/ce/user/project/integrations/prometheus.html"
               target="_blank" rel="noopener noreferrer">
-              ${esc(s__('ClusterIntegration|GitLab Integration'))}</a>`,
+              ${escape(s__('ClusterIntegration|GitLab Integration'))}</a>`,
         },
         false,
       );
@@ -223,11 +223,11 @@ Crossplane runs inside your Kubernetes cluster and supports secure connectivity 
     installedVia() {
       if (this.cloudRun) {
         return sprintf(
-          esc(s__(`ClusterIntegration|installed via %{installed_via}`)),
+          escape(s__(`ClusterIntegration|installed via %{installed_via}`)),
           {
             installed_via: `<a href="${
               this.cloudRunHelpPath
-            }" target="_blank" rel="noopener noreferrer">${esc(
+            }" target="_blank" rel="noopener noreferrer">${escape(
               s__('ClusterIntegration|Cloud Run'),
             )}</a>`,
           },

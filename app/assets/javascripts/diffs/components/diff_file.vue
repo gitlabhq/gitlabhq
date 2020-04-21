@@ -1,6 +1,6 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
-import { escape as esc } from 'lodash';
+import { escape } from 'lodash';
 import { GlLoadingIcon } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
 import createFlash from '~/flash';
@@ -46,7 +46,7 @@ export default {
       return sprintf(
         __('You can %{linkStart}view the blob%{linkEnd} instead.'),
         {
-          linkStart: `<a href="${esc(this.file.view_path)}">`,
+          linkStart: `<a href="${escape(this.file.view_path)}">`,
           linkEnd: '</a>',
         },
         false,

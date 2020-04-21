@@ -4,8 +4,8 @@ type: concepts, howto
 
 # Health Check **(CORE ONLY)**
 
-> - Liveness and readiness probes were [introduced][ce-10416] in GitLab 9.1.
-> - The `health_check` endpoint was [introduced][ce-3888] in GitLab 8.8 and was
+> - Liveness and readiness probes were [introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/10416) in GitLab 9.1.
+> - The `health_check` endpoint was [introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/3888) in GitLab 8.8 and was
 >   deprecated in GitLab 9.1.
 > - [Access token](#access-token-deprecated) has been deprecated in GitLab 9.4
 >   in favor of [IP whitelist](#ip-whitelist).
@@ -163,9 +163,3 @@ questions that you know someone might ask.
 Each scenario can be a third-level heading, e.g. `### Getting error message X`.
 If you have none to add when creating a doc, leave this section in place
 but commented out to help encourage others to add to it in the future. -->
-
-[ce-10416]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/10416
-[ce-3888]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/3888
-[pingdom]: https://www.pingdom.com
-[nagios-health]: https://nagios-plugins.org/doc/man/check_http.html
-[newrelic-health]: https://docs.newrelic.com/docs/alerts/alert-policies/downtime-alerts/availability-monitoring

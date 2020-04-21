@@ -3,7 +3,7 @@
 /* global ListMilestone */
 
 import $ from 'jquery';
-import { template, escape as esc } from 'lodash';
+import { template, escape } from 'lodash';
 import { __ } from '~/locale';
 import '~/gl_dropdown';
 import axios from './lib/utils/axios_utils';
@@ -106,12 +106,12 @@ export default class MilestoneSelect {
             if (showMenuAbove) {
               $dropdown.data('glDropdown').positionMenuAbove();
             }
-            $(`[data-milestone-id="${esc(selectedMilestone)}"] > a`).addClass('is-active');
+            $(`[data-milestone-id="${escape(selectedMilestone)}"] > a`).addClass('is-active');
           }),
         renderRow: milestone => `
-          <li data-milestone-id="${esc(milestone.name)}">
+          <li data-milestone-id="${escape(milestone.name)}">
             <a href='#' class='dropdown-menu-milestone-link'>
-              ${esc(milestone.title)}
+              ${escape(milestone.title)}
             </a>
           </li>
         `,
@@ -129,7 +129,7 @@ export default class MilestoneSelect {
         },
         defaultLabel,
         fieldName: $dropdown.data('fieldName'),
-        text: milestone => esc(milestone.title),
+        text: milestone => escape(milestone.title),
         id: milestone => {
           if (!useId && !$dropdown.is('.js-issuable-form-dropdown')) {
             return milestone.name;
@@ -148,7 +148,7 @@ export default class MilestoneSelect {
             selectedMilestone = $dropdown[0].dataset.selected || selectedMilestoneDefault;
           }
           $('a.is-active', $el).removeClass('is-active');
-          $(`[data-milestone-id="${esc(selectedMilestone)}"] > a`, $el).addClass('is-active');
+          $(`[data-milestone-id="${escape(selectedMilestone)}"] > a`, $el).addClass('is-active');
         },
         vue: $dropdown.hasClass('js-issue-board-sidebar'),
         clicked: clickEvent => {

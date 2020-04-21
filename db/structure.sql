@@ -2005,7 +2005,9 @@ CREATE TABLE public.deploy_tokens (
     username character varying,
     token_encrypted character varying(255),
     deploy_token_type smallint DEFAULT 2 NOT NULL,
-    write_registry boolean DEFAULT false NOT NULL
+    write_registry boolean DEFAULT false NOT NULL,
+    read_package_registry boolean DEFAULT false NOT NULL,
+    write_package_registry boolean DEFAULT false NOT NULL
 );
 
 CREATE SEQUENCE public.deploy_tokens_id_seq
@@ -13246,6 +13248,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200409211607
 20200410104828
 20200410232012
+20200411125656
 20200413072059
 20200413230056
 20200414144547

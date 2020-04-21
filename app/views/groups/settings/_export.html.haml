@@ -1,0 +1,28 @@
+- return unless Feature.enabled?(:group_import_export, @group, default_enabled: true)
+
+- group = local_assigns.fetch(:group)
+
+.sub-section
+  %h4= s_('GroupSettings|Export group')
+  %p= _('Export this group with all related data to a new GitLab instance. Once complete, you can import the data file from the "New Group" page.')
+
+  .bs-callout.bs-callout-info
+    %p.append-bottom-0
+      %p= _('The following items will be exported:')
+      %ul
+        - group_export_descriptions.each do |description|
+          %li= description
+      %p= _('The following items will NOT be exported:')
+      %ul
+        %li= _('Projects')
+        %li= _('Runner tokens')
+        %li= _('SAML discovery tokens')
+  %p= _('Once the exported file is ready you can download it from this page.')
+  - if group.export_file_exists?
+    = link_to _('Regenerate export'), export_group_path(group),
+        method: :post, class: 'btn btn-default', data: { qa_selector: 'regenerate_export_group_link' }
+    = link_to _('Download export'), download_export_group_path(group),
+        rel: 'nofollow', method: :get, class: 'btn btn-default', data: { qa_selector: 'download_export_link' }
+  - else
+    = link_to _('Export group'), export_group_path(group),
+        method: :post, class: 'btn btn-default', data: { qa_selector: 'export_group_link' }

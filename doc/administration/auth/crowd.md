@@ -66,13 +66,10 @@ Authenticate to GitLab using the Atlassian Crowd OmniAuth provider.
 1. Change `YOUR_APP_NAME` to the application name from Crowd applications page.
 1. Change `YOUR_APP_PASSWORD` to the application password you've set.
 1. Save the configuration file.
-1. [Reconfigure][] or [restart][] for the changes to take effect if you
+1. [Reconfigure](../restart_gitlab.md#omnibus-gitlab-reconfigure) or [restart](../restart_gitlab.md#installations-from-source) for the changes to take effect if you
    installed GitLab via Omnibus or from source respectively.
 
 On the sign in page there should now be a Crowd tab in the sign in form.
-
-[reconfigure]: ../restart_gitlab.md#omnibus-gitlab-reconfigure
-[restart]: ../restart_gitlab.md#installations-from-source
 
 ## Troubleshooting
 

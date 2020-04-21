@@ -752,7 +752,7 @@ describe Projects::IssuesController do
                 expect { update_issue }.not_to change { issue.reload.title }
               end
 
-              it 'rejects an issue recognized as a spam when recaptcha disabled' do
+              it 'rejects an issue recognized as a spam when reCAPTCHA disabled' do
                 stub_application_setting(recaptcha_enabled: false)
 
                 expect { update_issue }.not_to change { issue.reload.title }
@@ -811,7 +811,7 @@ describe Projects::IssuesController do
               expect(response).to have_gitlab_http_status(:ok)
             end
 
-            it 'accepts an issue after recaptcha is verified' do
+            it 'accepts an issue after reCAPTCHA is verified' do
               expect { update_verified_issue }.to change { issue.reload.title }.to(spammy_title)
             end
 
@@ -1017,7 +1017,7 @@ describe Projects::IssuesController do
               expect { post_new_issue(title: '') }.not_to change(Issue, :count)
             end
 
-            it 'does not create an issue when recaptcha is not enabled' do
+            it 'does not create an issue when reCAPTCHA is not enabled' do
               stub_application_setting(recaptcha_enabled: false)
 
               expect { post_spam_issue }.not_to change(Issue, :count)
@@ -1052,7 +1052,7 @@ describe Projects::IssuesController do
             expect(controller).to receive_messages(verify_recaptcha: true)
           end
 
-          it 'accepts an issue after recaptcha is verified' do
+          it 'accepts an issue after reCAPTCHA is verified' do
             expect { post_verified_issue }.to change(Issue, :count)
           end
 

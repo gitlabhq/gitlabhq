@@ -1,5 +1,5 @@
 <script>
-import { isEmpty, escape as esc } from 'lodash';
+import { isEmpty, escape } from 'lodash';
 import stageColumnMixin from '../../mixins/stage_column_mixin';
 import JobItem from './job_item.vue';
 import JobGroupDropdown from './job_group_dropdown.vue';
@@ -44,7 +44,7 @@ export default {
   },
   methods: {
     groupId(group) {
-      return `ci-badge-${esc(group.name)}`;
+      return `ci-badge-${escape(group.name)}`;
     },
     pipelineActionRequestComplete() {
       this.$emit('refreshPipelineGraph');

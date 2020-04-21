@@ -1,6 +1,6 @@
 <script>
 import { GlFormInput } from '@gitlab/ui';
-import { escape as esc } from 'lodash';
+import { escape } from 'lodash';
 import { mapState, mapActions } from 'vuex';
 import { sprintf, s__, __ } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
@@ -42,7 +42,7 @@ export default {
         : s__('ClusterIntegration|Authenticate with AWS');
     },
     accountAndExternalIdsHelpText() {
-      const escapedUrl = esc(this.accountAndExternalIdsHelpPath);
+      const escapedUrl = escape(this.accountAndExternalIdsHelpPath);
 
       return sprintf(
         s__(
@@ -59,7 +59,7 @@ export default {
       );
     },
     provisionRoleArnHelpText() {
-      const escapedUrl = esc(this.createRoleArnHelpPath);
+      const escapedUrl = escape(this.createRoleArnHelpPath);
 
       return sprintf(
         s__(

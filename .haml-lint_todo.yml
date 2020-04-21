@@ -360,7 +360,6 @@ linters:
       - "ee/app/views/notify/send_unsubscribed_notification.html.haml"
       - "ee/app/views/notify/unapproved_merge_request_email.html.haml"
       - "ee/app/views/oauth/geo_auth/error.html.haml"
-      - "ee/app/views/profiles/pipeline_quota/index.haml"
       - "ee/app/views/projects/commits/_mirror_status.html.haml"
       - "ee/app/views/projects/jobs/_shared_runner_limit_warning.html.haml"
       - "ee/app/views/projects/merge_requests/_approvals_count.html.haml"

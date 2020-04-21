@@ -3,7 +3,7 @@
 /* global ListLabel */
 
 import $ from 'jquery';
-import { isEqual, escape as esc, sortBy, template } from 'lodash';
+import { isEqual, escape, sortBy, template } from 'lodash';
 import { sprintf, s__, __ } from './locale';
 import axios from './lib/utils/axios_utils';
 import IssuableBulkUpdateActions from './issuable_bulk_update_actions';
@@ -269,7 +269,7 @@ export default class LabelsSelect {
           }
 
           linkEl.className = selectedClass.join(' ');
-          linkEl.innerHTML = `${colorEl} ${esc(label.title)}`;
+          linkEl.innerHTML = `${colorEl} ${escape(label.title)}`;
 
           const listItemEl = document.createElement('li');
           listItemEl.appendChild(linkEl);
@@ -557,7 +557,7 @@ export default class LabelsSelect {
       scopedLabelTemplate,
       tooltipTitleTemplate,
       isScopedLabel,
-      escapeStr: esc,
+      escapeStr: escape,
     });
   }
 

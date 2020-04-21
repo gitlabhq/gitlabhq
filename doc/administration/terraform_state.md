@@ -30,7 +30,7 @@ below.
    gitlab_rails['terraform_state_storage_path'] = "/mnt/storage/terraform_state"
    ```
 
-1. Save the file and [reconfigure GitLab][] for the changes to take effect.
+1. Save the file and [reconfigure GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
 **In installations from source:**
 
@@ -43,7 +43,7 @@ below.
      storage_path: /mnt/storage/terraform_state
    ```
 
-1. Save the file and [restart GitLab][] for the changes to take effect.
+1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
 
 ## Using object storage **(CORE ONLY)**
 
@@ -111,7 +111,7 @@ The connection settings match those provided by [Fog](https://github.com/fog), a
    }
    ```
 
-1. Save the file and [reconfigure GitLab][] for the changes to take effect.
+1. Save the file and [reconfigure GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
 **In installations from source:**
 
@@ -131,7 +131,4 @@ The connection settings match those provided by [Fog](https://github.com/fog), a
          region: eu-central-1
    ```
 
-1. Save the file and [restart GitLab][] for the changes to take effect.
-
-[reconfigure gitlab]: restart_gitlab.md#omnibus-gitlab-reconfigure "How to reconfigure Omnibus GitLab"
-[restart gitlab]: restart_gitlab.md#installations-from-source "How to restart GitLab"
+1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.

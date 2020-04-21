@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import { escape as esc } from 'lodash';
+import { escape } from 'lodash';
 import { __ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
 import Flash from '~/flash';
@@ -161,7 +161,7 @@ export default class SSHMirror {
     const $fingerprintsList = this.$hostKeysInformation.find('.js-fingerprints-list');
     let fingerprints = '';
     sshHostKeys.fingerprints.forEach(fingerprint => {
-      const escFingerprints = esc(fingerprint.fingerprint);
+      const escFingerprints = escape(fingerprint.fingerprint);
       fingerprints += `<code>${escFingerprints}</code>`;
     });
 

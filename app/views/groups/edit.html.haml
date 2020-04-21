@@ -45,11 +45,11 @@
 %section.settings.gs-advanced.no-animate#js-advanced-settings{ class: ('expanded' if expanded) }
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only{ role: 'button' }
-      = _('Path, transfer, remove')
+      = _('Advanced')
     %button.btn.js-settings-toggle{ type: 'button' }
       = expanded ? _('Collapse') : _('Expand')
     %p
-      = _('Perform advanced options such as changing path, transferring, or removing the group.')
+      = _('Perform advanced options such as changing path, transferring, exporting, or removing the group.')
   .settings-content
     = render 'groups/settings/advanced'
 

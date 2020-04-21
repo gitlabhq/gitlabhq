@@ -12,6 +12,16 @@ module ExportHelper
       _('Issue Boards')
     ]
   end
+
+  def group_export_descriptions
+    [
+      _('Milestones'),
+      _('Labels'),
+      _('Boards and Board Lists'),
+      _('Badges'),
+      _('Subgroups')
+    ]
+  end
 end
 
 ExportHelper.prepend_if_ee('EE::ExportHelper')

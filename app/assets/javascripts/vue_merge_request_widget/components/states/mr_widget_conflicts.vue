@@ -1,6 +1,6 @@
 <script>
 import $ from 'jquery';
-import { escape as esc } from 'lodash';
+import { escape } from 'lodash';
 import { s__, sprintf } from '~/locale';
 import { mouseenter, debouncedMouseleave, togglePopover } from '~/shared/popover';
 import StatusIcon from '../mr_widget_status_icon.vue';
@@ -50,7 +50,7 @@ export default {
           content: sprintf(
             s__('mrWidget|%{link_start}Learn more about resolving conflicts%{link_end}'),
             {
-              link_start: `<a href="${esc(
+              link_start: `<a href="${escape(
                 this.mr.conflictsDocsPath,
               )}" target="_blank" rel="noopener noreferrer">`,
               link_end: '</a>',

@@ -3087,6 +3087,9 @@ msgstr ""
 msgid "Boards"
 msgstr ""
 
+msgid "Boards and Board Lists"
+msgstr ""
+
 msgid "Boards|Collapse"
 msgstr ""
 
@@ -8645,10 +8648,16 @@ msgstr ""
 msgid "Export as CSV"
 msgstr ""
 
+msgid "Export group"
+msgstr ""
+
 msgid "Export issues"
 msgstr ""
 
 msgid "Export project"
+msgstr ""
+
+msgid "Export this group with all related data to a new GitLab instance. Once complete, you can import the data file from the \"New Group\" page."
 msgstr ""
 
 msgid "Export this project with all its related data in order to move your project to a new GitLab instance. Once the export is finished, you can import the file from the \"New Project\" page."
@@ -10512,6 +10521,9 @@ msgid "GroupSettings|Disable email notifications"
 msgstr ""
 
 msgid "GroupSettings|Disable group mentions"
+msgstr ""
+
+msgid "GroupSettings|Export group"
 msgstr ""
 
 msgid "GroupSettings|If the parent group's visibility is lower than the group current visibility, visibility levels for subgroups and projects will be changed to match the new parent group's visibility."
@@ -14111,6 +14123,9 @@ msgstr ""
 msgid "Once removed, the fork relationship cannot be restored and you will no longer be able to send merge requests to the source."
 msgstr ""
 
+msgid "Once the exported file is ready you can download it from this page."
+msgstr ""
+
 msgid "Once the exported file is ready, you will receive a notification email with a download link, or you can download it from this page."
 msgstr ""
 
@@ -14623,9 +14638,6 @@ msgstr ""
 msgid "Path"
 msgstr ""
 
-msgid "Path, transfer, remove"
-msgstr ""
-
 msgid "Path:"
 msgstr ""
 
@@ -14656,7 +14668,7 @@ msgstr ""
 msgid "Percentage"
 msgstr ""
 
-msgid "Perform advanced options such as changing path, transferring, or removing the group."
+msgid "Perform advanced options such as changing path, transferring, exporting, or removing the group."
 msgstr ""
 
 msgid "Perform common operations on GitLab project"
@@ -14735,9 +14747,6 @@ msgid "Pipeline Schedules"
 msgstr ""
 
 msgid "Pipeline minutes quota"
-msgstr ""
-
-msgid "Pipeline quota"
 msgstr ""
 
 msgid "Pipeline subscriptions"
@@ -16854,6 +16863,9 @@ msgid_plural "Refreshing in %d seconds to show the updated status..."
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Regenerate export"
+msgstr ""
+
 msgid "Regenerate instance ID"
 msgstr ""
 
@@ -17645,6 +17657,9 @@ msgstr ""
 msgid "Runner token"
 msgstr ""
 
+msgid "Runner tokens"
+msgstr ""
+
 msgid "Runner was not updated."
 msgstr ""
 
@@ -17697,6 +17712,9 @@ msgid "SAML SSO"
 msgstr ""
 
 msgid "SAML SSO for %{group_name}"
+msgstr ""
+
+msgid "SAML discovery tokens"
 msgstr ""
 
 msgid "SAML for %{group_name}"

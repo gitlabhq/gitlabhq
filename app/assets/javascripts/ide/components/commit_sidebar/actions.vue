@@ -1,5 +1,5 @@
 <script>
-import { escape as esc } from 'lodash';
+import { escape } from 'lodash';
 import { mapState, mapGetters, createNamespacedHelpers } from 'vuex';
 import { sprintf, s__ } from '~/locale';
 import consts from '../../stores/modules/commit/constants';
@@ -22,7 +22,7 @@ export default {
     commitToCurrentBranchText() {
       return sprintf(
         s__('IDE|Commit to %{branchName} branch'),
-        { branchName: `<strong class="monospace">${esc(this.currentBranchId)}</strong>` },
+        { branchName: `<strong class="monospace">${escape(this.currentBranchId)}</strong>` },
         false,
       );
     },

@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import { escape as esc } from 'lodash';
+import { escape } from 'lodash';
 import { __, sprintf } from './locale';
 import axios from './lib/utils/axios_utils';
 import flash from './flash';
@@ -73,9 +73,9 @@ class ImporterStatus {
         const connectingVerb = this.ciCdOnly ? __('connecting') : __('importing');
         job.find('.import-actions').html(
           sprintf(
-            esc(__('%{loadingIcon} Started')),
+            escape(__('%{loadingIcon} Started')),
             {
-              loadingIcon: `<i class="fa fa-spinner fa-spin" aria-label="${esc(
+              loadingIcon: `<i class="fa fa-spinner fa-spin" aria-label="${escape(
                 connectingVerb,
               )}"></i>`,
             },

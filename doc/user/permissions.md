@@ -42,7 +42,7 @@ NOTE: **Note:**
 In GitLab 11.0, the Master role was renamed to Maintainer.
 
 While Maintainer is the highest project-level role, some actions can only be performed by a personal namespace or group owner,
-or an instance admin, who receives all permissions.
+or an instance admin, who receives all permissions. For more information, see [projects members documentation](project/members/index.md).
 
 The following table depicts the various user permission levels in a project.
 

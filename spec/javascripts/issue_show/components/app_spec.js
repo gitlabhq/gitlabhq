@@ -316,7 +316,7 @@ describe('Issuable output', () => {
     });
   });
 
-  it('opens recaptcha modal if update rejected as spam', done => {
+  it('opens reCAPTCHA modal if update rejected as spam', done => {
     function mockScriptSrc() {
       const recaptchaChild = vm.$children.find(
         // eslint-disable-next-line no-underscore-dangle

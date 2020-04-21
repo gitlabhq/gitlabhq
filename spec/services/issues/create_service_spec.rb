@@ -386,7 +386,7 @@ describe Issues::CreateService do
         stub_feature_flags(allow_possible_spam: false)
       end
 
-      context 'when recaptcha was verified' do
+      context 'when reCAPTCHA was verified' do
         let(:log_user)  { user }
         let(:spam_logs) { create_list(:spam_log, 2, user: log_user, title: title) }
         let(:target_spam_log) { spam_logs.last }
@@ -423,7 +423,7 @@ describe Issues::CreateService do
         end
       end
 
-      context 'when recaptcha was not verified' do
+      context 'when reCAPTCHA was not verified' do
         before do
           expect_next_instance_of(Spam::SpamActionService) do |spam_service|
             expect(spam_service).to receive_messages(check_for_spam?: true)

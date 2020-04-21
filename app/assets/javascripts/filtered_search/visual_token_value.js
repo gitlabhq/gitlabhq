@@ -1,4 +1,4 @@
-import { escape as esc } from 'lodash';
+import { escape } from 'lodash';
 import { USER_TOKEN_TYPES } from 'ee_else_ce/filtered_search/constants';
 import FilteredSearchContainer from '~/filtered_search/container';
 import FilteredSearchVisualTokens from '~/filtered_search/filtered_search_visual_tokens';
@@ -48,7 +48,7 @@ export default class VisualTokenValue {
           tokenValueContainer.dataset.originalValue = tokenValue;
           tokenValueElement.innerHTML = `
           <img class="avatar s20" src="${user.avatar_url}" alt="">
-          ${esc(user.name)}
+          ${escape(user.name)}
         `;
           /* eslint-enable no-param-reassign */
         })

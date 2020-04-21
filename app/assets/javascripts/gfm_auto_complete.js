@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import '@gitlab/at.js';
-import { escape as esc, template } from 'lodash';
+import { escape, template } from 'lodash';
 import SidebarMediator from '~/sidebar/sidebar_mediator';
 import glRegexp from './lib/utils/regexp';
 import AjaxCache from './lib/utils/ajax_cache';
@@ -692,14 +692,14 @@ GfmAutoComplete.Emoji = {
 // Team Members
 GfmAutoComplete.Members = {
   templateFunction({ avatarTag, username, title, icon }) {
-    return `<li>${avatarTag} ${username} <small>${esc(title)}</small> ${icon}</li>`;
+    return `<li>${avatarTag} ${username} <small>${escape(title)}</small> ${icon}</li>`;
   },
 };
 GfmAutoComplete.Labels = {
   templateFunction(color, title) {
-    return `<li><span class="dropdown-label-box" style="background: ${esc(color)}"></span> ${esc(
-      title,
-    )}</li>`;
+    return `<li><span class="dropdown-label-box" style="background: ${escape(
+      color,
+    )}"></span> ${escape(title)}</li>`;
   },
 };
 // Issues, MergeRequests and Snippets
@@ -709,13 +709,13 @@ GfmAutoComplete.Issues = {
     return value.reference || '${atwho-at}${id}';
   },
   templateFunction({ id, title, reference }) {
-    return `<li><small>${reference || id}</small> ${esc(title)}</li>`;
+    return `<li><small>${reference || id}</small> ${escape(title)}</li>`;
   },
 };
 // Milestones
 GfmAutoComplete.Milestones = {
   templateFunction(title) {
-    return `<li>${esc(title)}</li>`;
+    return `<li>${escape(title)}</li>`;
   },
 };
 GfmAutoComplete.Loading = {

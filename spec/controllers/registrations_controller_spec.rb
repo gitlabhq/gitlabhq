@@ -139,7 +139,7 @@ describe RegistrationsController do
         expect(flash[:alert]).to eq(_('There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.'))
       end
 
-      it 'redirects to the dashboard when the recaptcha is solved' do
+      it 'redirects to the dashboard when the reCAPTCHA is solved' do
         post(:create, params: user_params)
 
         expect(flash[:notice]).to eq(I18n.t('devise.registrations.signed_up'))

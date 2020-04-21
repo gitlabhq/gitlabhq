@@ -1,6 +1,6 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
-import { escape as esc } from 'lodash';
+import { escape } from 'lodash';
 import { GlLoadingIcon } from '@gitlab/ui';
 import { sprintf, __ } from '../../../locale';
 import Icon from '../../../vue_shared/components/icon.vue';
@@ -35,7 +35,7 @@ export default {
       return sprintf(
         __('You can test your .gitlab-ci.yml in %{linkStart}CI Lint%{linkEnd}.'),
         {
-          linkStart: `<a href="${esc(this.currentProject.web_url)}/-/ci/lint">`,
+          linkStart: `<a href="${escape(this.currentProject.web_url)}/-/ci/lint">`,
           linkEnd: '</a>',
         },
         false,

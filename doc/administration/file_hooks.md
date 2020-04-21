@@ -14,12 +14,12 @@ ensure functionality is preserved across versions and covered by tests.
 NOTE: **Note:**
 File hooks must be configured on the filesystem of the GitLab server. Only GitLab
 server administrators will be able to complete these tasks. Explore
-[system hooks] or [webhooks] as an option if you do not have filesystem access.
+[system hooks](../system_hooks/system_hooks.md) or [webhooks](../user/project/integrations/webhooks.md) as an option if you do not have filesystem access.
 
 A file hook will run on each event so it's up to you to filter events or projects
 within a file hook code. You can have as many file hooks as you want. Each file hook will
 be triggered by GitLab asynchronously in case of an event. For a list of events
-see the [system hooks] documentation.
+see the [system hooks](../system_hooks/system_hooks.md) documentation.
 
 ## Setup
 
@@ -35,7 +35,7 @@ Follow the steps below to set up a custom hook:
    `/home/git/gitlab/file_hooks/`. For Omnibus installs the path is
    usually `/opt/gitlab/embedded/service/gitlab-rails/file_hooks`.
 
-    For [highly available] configurations, your hook file should exist on each
+    For [highly available](availability/index.md) configurations, your hook file should exist on each
     application server.
 
 1. Inside the `file_hooks` directory, create a file with a name of your choice,
@@ -46,7 +46,7 @@ Follow the steps below to set up a custom hook:
    language type. For example, if the script is in Ruby the shebang will
    probably be `#!/usr/bin/env ruby`.
 1. The data to the file hook will be provided as JSON on STDIN. It will be exactly
-   same as for [system hooks]
+   same as for [system hooks](../system_hooks/system_hooks.md).
 
 That's it! Assuming the file hook code is properly implemented, the hook will fire
 as appropriate. The file hooks file list is updated for each event, there is no
@@ -110,7 +110,3 @@ Validating file hooks from /file_hooks directory
 * /home/git/gitlab/file_hooks/save_to_file.clj succeed (zero exit code)
 * /home/git/gitlab/file_hooks/save_to_file.rb failure (non-zero exit code)
 ```
-
-[system hooks]: ../system_hooks/system_hooks.md
-[webhooks]: ../user/project/integrations/webhooks.md
-[highly available]: ./availability/index.md

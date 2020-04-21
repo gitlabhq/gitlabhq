@@ -85,7 +85,7 @@ describe Spam::SpamActionService do
       allow(Spam::SpamVerdictService).to receive(:new).and_return(fake_verdict_service)
     end
 
-    context 'when recaptcha was already verified' do
+    context 'when reCAPTCHA was already verified' do
       let(:recaptcha_verified) { true }
 
       it "doesn't check with the SpamVerdictService" do
@@ -102,7 +102,7 @@ describe Spam::SpamActionService do
       end
     end
 
-    context 'when recaptcha was not verified' do
+    context 'when reCAPTCHA was not verified' do
       let(:recaptcha_verified) { false }
 
       context 'when spammable attributes have not changed' do

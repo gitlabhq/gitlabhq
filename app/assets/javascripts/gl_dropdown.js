@@ -1,7 +1,7 @@
 /* eslint-disable max-classes-per-file, one-var, consistent-return */
 
 import $ from 'jquery';
-import { escape as esc } from 'lodash';
+import { escape } from 'lodash';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import axios from './lib/utils/axios_utils';
 import { visitUrl } from './lib/utils/url_utility';
@@ -610,7 +610,7 @@ class GitLabDropdown {
 
   // eslint-disable-next-line class-methods-use-this
   highlightTemplate(text, template) {
-    return `"<b>${esc(text)}</b>" ${template}`;
+    return `"<b>${escape(text)}</b>" ${template}`;
   }
 
   // eslint-disable-next-line class-methods-use-this

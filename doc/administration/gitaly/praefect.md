@@ -45,6 +45,7 @@ package (highly recommended), follow the steps below:
 1. [Configuring the Praefect database](#postgresql)
 1. [Configuring the Praefect proxy/router](#praefect)
 1. [Configuring each Gitaly node](#gitaly) (once for each Gitaly node)
+1. [Configure the load balancer](#load-balancer)
 1. [Updating the GitLab server configuration](#gitlab)
 1. [Configure Grafana](#grafana)
 
@@ -66,7 +67,7 @@ GitLab](https://about.gitlab.com/install/).
 
 You will need the IP/host address for each node.
 
-1. `LOADBALANCER_SERVER_ADDRESS`: the IP/hots address of the load balancer
+1. `LOAD_BALANCER_SERVER_ADDRESS`: the IP/hots address of the load balancer
 1. `POSTGRESQL_SERVER_ADDRESS`: the IP/host address of the PostgreSQL server
 1. `PRAEFECT_HOST`: the IP/host address of the Praefect server
 1. `GITALY_HOST`: the IP/host address of each Gitaly server
@@ -551,6 +552,24 @@ config.
    gitlab-ctl reconfigure
    ```
 
+### Load Balancer
+
+In a highly available Gitaly configuration, a load balancer is needed to route
+internal traffic from the GitLab application to the Praefect nodes. The
+specifics on which load balancer to use or the exact configuration is beyond the
+scope of the GitLab documentation.
+
+We hope that if you’re managing HA systems like GitLab, you have a load balancer
+of choice already. Some examples include [HAProxy](https://www.haproxy.org/)
+(open-source), [Google Internal Load Balancer](https://cloud.google.com/load-balancing/docs/internal/),
+[AWS Elastic Load Balancer](https://aws.amazon.com/elasticloadbalancing/), F5
+Big-IP LTM, and Citrix Net Scaler. This documentation will outline what ports
+and protocols you need configure.
+
+| LB Port | Backend Port | Protocol |
+|---------|--------------|----------|
+| 2305    | 2305         | TCP      |
+
 ### GitLab
 
 To complete this section you will need:
@@ -579,7 +598,8 @@ Particular attention should be shown to:
 
    You will need to replace:
 
-   - `PRAEFECT_HOST` with the IP address or hostname of the Praefect node
+   - `LOAD_BALANCER_SERVER_ADDRESS` with the IP address or hostname of the load
+     balancer.
    - `GITLAB_HOST` with the IP address or hostname of the GitLab server
    - `PRAEFECT_EXTERNAL_TOKEN` with the real secret
 
@@ -589,7 +609,7 @@ Particular attention should be shown to:
        "gitaly_address" => "tcp://GITLAB_HOST:8075"
      },
      "storage-1" => {
-       "gitaly_address" => "tcp://PRAEFECT_HOST:2305",
+       "gitaly_address" => "tcp://LOAD_BALANCER_SERVER_ADDRESS:2305",
        "gitaly_token" => 'PRAEFECT_EXTERNAL_TOKEN'
      }
    })

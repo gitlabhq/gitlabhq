@@ -19,49 +19,24 @@ build-qa-image:
     - export QA_IMAGE="${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-${GITLAB_EDITION}-qa:${CI_COMMIT_REF_SLUG}"
     - /kaniko/executor --context=${CI_PROJECT_DIR} --dockerfile=${CI_PROJECT_DIR}/qa/Dockerfile --destination=${QA_IMAGE} --cache=true
 
-.review-cleanup-base:
+review-cleanup:
   extends:
     - .default-retry
     - .review:rules:review-cleanup
+  image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-helm3-kubectl1.14
   stage: prepare
-  allow_failure: true
   environment:
     name: review/auto-cleanup
     action: stop
   before_script:
     - source scripts/utils.sh
+    - source scripts/review_apps/gcp_cleanup.sh
     - install_gitlab_gem
+    - setup_gcp_dependencies
   script:
     - ruby -rrubygems scripts/review_apps/automated_cleanup.rb
-
-review-cleanup:
-  extends:
-    - .review-cleanup-base
-  image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-charts-build-base
-
-review-cleanup-helm3:
-  extends:
-    - .review-cleanup-base
-  variables:
-    HELM_3: 1
-  image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-helm3-kubectl1.14
-
-review-gcp-cleanup:
-  extends:
-    - .review:rules:review-gcp-cleanup
-  stage: prepare
-  image: gcr.io/google.com/cloudsdktool/cloud-sdk:latest
-  allow_failure: true
-  environment:
-    name: review/auto-gcp-cleanup
-    action: stop
-  before_script:
-    - gcloud auth activate-service-account --key-file=$REVIEW_APPS_GCP_CREDENTIALS
-    - gcloud config set project $REVIEW_APPS_GCP_PROJECT
-    - apt-get install -y jq
-    - source scripts/review_apps/gcp_cleanup.sh
-  script:
     - gcp_cleanup
+  allow_failure: true
 
 review-build-cng:
   extends:
@@ -152,7 +127,6 @@ review-stop-failed-deployment:
   stage: prepare
   script:
     - delete_failed_release
-    - delete_helm2_release
 
 review-stop:
   extends:

@@ -50,7 +50,7 @@ In `config/gitlab.yml`:
 
 ## Storing LFS objects in remote object storage
 
-> [Introduced][ee-2760] in [GitLab Premium][eep] 10.0. Brought to GitLab Core in 10.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/2760) in [GitLab Premium](https://about.gitlab.com/pricing/) 10.0. Brought to GitLab Core in 10.7.
 
 It is possible to store LFS objects in remote object storage which allows you
 to offload local hard disk R/W operations, and free up disk space significantly.
@@ -177,7 +177,7 @@ On Omnibus installations, the settings are prefixed by `lfs_object_store_`:
    }
    ```
 
-1. Save the file and [reconfigure GitLab]s for the changes to take effect.
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 1. Migrate any existing local LFS objects to the object storage:
 
    ```shell
@@ -213,7 +213,7 @@ For source installations the settings are nested under `lfs:` and then
        path_style: true
    ```
 
-1. Save the file and [restart GitLab][] for the changes to take effect.
+1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
 1. Migrate any existing local LFS objects to the object storage:
 
    ```shell
@@ -268,8 +268,3 @@ See more information in [!19581](https://gitlab.com/gitlab-org/gitlab-foss/-/mer
 - Only compatible with the Git LFS client versions 1.1.0 and up, or 1.0.2.
 - The storage statistics currently count each LFS object multiple times for
   every project linking to it.
-
-[reconfigure gitlab]: ../restart_gitlab.md#omnibus-gitlab-reconfigure "How to reconfigure Omnibus GitLab"
-[restart gitlab]: ../restart_gitlab.md#installations-from-source "How to restart GitLab"
-[eep]: https://about.gitlab.com/pricing/ "GitLab Premium"
-[ee-2760]: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/2760

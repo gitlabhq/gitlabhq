@@ -1,5 +1,5 @@
 <script>
-import { escape as esc } from 'lodash';
+import { escape } from 'lodash';
 import { GlTooltip } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
@@ -62,7 +62,7 @@ export default {
         ? sprintf(
             __(`%{spanStart}in%{spanEnd} %{errorFn}`),
             {
-              errorFn: `<strong>${esc(this.errorFn)}</strong>`,
+              errorFn: `<strong>${escape(this.errorFn)}</strong>`,
               spanStart: `<span class="text-tertiary">`,
               spanEnd: `</span>`,
             },

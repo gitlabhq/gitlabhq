@@ -1,4 +1,4 @@
-import { escape as esc } from 'lodash';
+import { escape } from 'lodash';
 import VisualTokenValue from '~/filtered_search/visual_token_value';
 import AjaxCache from '~/lib/utils/ajax_cache';
 import UsersCache from '~/lib/utils/users_cache';
@@ -121,7 +121,7 @@ describe('Filtered Search Visual Tokens', () => {
           expect(tokenValueElement.innerText.trim()).toBe(dummyUser.name);
           tokenValueElement.querySelector('.avatar').remove();
 
-          expect(tokenValueElement.innerHTML.trim()).toBe(esc(dummyUser.name));
+          expect(tokenValueElement.innerHTML.trim()).toBe(escape(dummyUser.name));
         })
         .then(done)
         .catch(done.fail);

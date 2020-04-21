@@ -45,10 +45,7 @@ Configuring organizational units (**OU**s) is an important part of setting up Ac
 
 | GitLab **OU** Design           |  GitLab AD Structure             |
 | :----------------------------: | :------------------------------: |
-| ![GitLab OU Design][gitlab_ou] |  ![GitLab AD Structure][ldap_ou] |
-
-[gitlab_ou]: img/gitlab_ou.png
-[ldap_ou]: img/ldap_ou.gif
+| ![GitLab OU Design](img/gitlab_ou.png) |  ![GitLab AD Structure](img/ldap_ou.gif) |
 
 Using PowerShell you can output the **OU** structure as a table (_all names are examples only_):
 

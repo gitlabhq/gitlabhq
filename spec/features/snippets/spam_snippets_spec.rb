@@ -40,13 +40,13 @@ shared_examples_for 'snippet editor' do
     end
   end
 
-  shared_examples 'solve recaptcha' do
-    it 'creates a snippet after solving reCaptcha' do
+  shared_examples 'solve reCAPTCHA' do
+    it 'creates a snippet after solving reCAPTCHA' do
       click_button('Create snippet')
       wait_for_requests
 
-      # it is impossible to test recaptcha automatically and there is no possibility to fill in recaptcha
-      # recaptcha verification is skipped in test environment and it always returns true
+      # it is impossible to test reCAPTCHA automatically and there is no possibility to fill in recaptcha
+      # reCAPTCHA verification is skipped in test environment and it always returns true
       expect(page).not_to have_content('My Snippet Title')
       expect(page).to have_css('.recaptcha')
       click_button('Submit personal snippet')
@@ -82,7 +82,7 @@ shared_examples_for 'snippet editor' do
     end
 
     context 'when allow_possible_spam feature flag is true' do
-      it_behaves_like 'solve recaptcha'
+      it_behaves_like 'solve reCAPTCHA'
     end
   end
 

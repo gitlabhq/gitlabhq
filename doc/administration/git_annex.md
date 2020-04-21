@@ -5,8 +5,8 @@ disqus_identifier: 'https://docs.gitlab.com/ee/workflow/git_annex.html'
 # Git annex
 
 > **Warning:** GitLab has [completely
-removed][deprecate-annex-issue] in GitLab 9.0 (2017/03/22).
-Read through the [migration guide from git-annex to Git LFS][guide].
+removed](https://gitlab.com/gitlab-org/gitlab/issues/1648) in GitLab 9.0 (2017/03/22).
+Read through the [migration guide from git-annex to Git LFS](../topics/git/lfs/migrate_from_git_annex_to_git_lfs.md).
 
 The biggest limitation of Git, compared to some older centralized version
 control systems, has been the maximum size of the repositories.
@@ -24,7 +24,7 @@ only check in the final result. This results in using outdated files, not
 having a complete history and increases the risk of losing work.
 
 This problem is solved in GitLab Enterprise Edition by integrating the
-[git-annex] application.
+[git-annex](https://git-annex.branchable.com/) application.
 
 `git-annex` allows managing large binaries with Git without checking the
 contents into Git.
@@ -64,7 +64,7 @@ The Omnibus package will internally set the correct options in all locations.
    gitlab_shell['git_annex_enabled'] = true
    ```
 
-1. Save the file and [reconfigure GitLab][] for the changes to take effect.
+1. Save the file and [reconfigure GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
 ### Configuration for installations from source
 
@@ -86,7 +86,7 @@ one is located in `config.yml` of GitLab Shell.
    git_annex_enabled: true
    ```
 
-1. Save the files and [restart GitLab][] for the changes to take effect.
+1. Save the files and [restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
 
 ## Using GitLab git-annex
 
@@ -186,7 +186,7 @@ access files of projects you have access to (developer, maintainer, or owner rol
 
 ## How it works
 
-Internally GitLab uses [GitLab Shell] to handle SSH access and this was a great
+Internally GitLab uses [GitLab Shell](https://gitlab.com/gitlab-org/gitlab-shell) to handle SSH access and this was a great
 integration point for `git-annex`.
 There is a setting in GitLab Shell so you can disable GitLab Annex support
 if you want to.
@@ -196,7 +196,7 @@ if you want to.
 Differences in version of `git-annex` on the GitLab server and on local machines
 can cause `git-annex` to raise unpredicted warnings and errors.
 
-Consult the [Annex upgrade page][annex-upgrade] for more information about
+Consult the [Annex upgrade page](https://git-annex.branchable.com/upgrades/) for more information about
 the differences between versions. You can find out which version is installed
 on your server by navigating to <https://pkgs.org/download/git-annex> and
 searching for your distribution.
@@ -208,7 +208,7 @@ on how to go around the warnings.
 
 This warning can appear on the initial `git annex sync --content` and is caused
 by differences in `git-annex-shell`. You can read more about it
-[in this git-annex issue][issue].
+[in this git-annex issue](https://git-annex.branchable.com/forum/Error_from_git-annex-shell_on_creation_of_gcrypt_special_remote/).
 
 One important thing to note is that despite the warning, the `sync` succeeds
 and the files are pushed to the GitLab repository.
@@ -231,12 +231,3 @@ pull origin
 ok
 push origin
 ```
-
-[annex-upgrade]: https://git-annex.branchable.com/upgrades/
-[deprecate-annex-issue]: https://gitlab.com/gitlab-org/gitlab/issues/1648
-[git-annex]: https://git-annex.branchable.com/ "git-annex website"
-[gitlab shell]: https://gitlab.com/gitlab-org/gitlab-shell "GitLab Shell repository"
-[guide]: ../topics/git/lfs/migrate_from_git_annex_to_git_lfs.md
-[issue]: https://git-annex.branchable.com/forum/Error_from_git-annex-shell_on_creation_of_gcrypt_special_remote/ "git-annex issue"
-[reconfigure GitLab]: restart_gitlab.md#omnibus-gitlab-reconfigure
-[restart GitLab]: restart_gitlab.md#installations-from-source

@@ -8,6 +8,8 @@ FactoryBot.define do
     read_repository { true }
     read_registry { true }
     write_registry { false }
+    read_package_registry { false }
+    write_package_registry { false }
     revoked { false }
     expires_at { 5.days.from_now }
     deploy_token_type { DeployToken.deploy_token_types[:project_type] }
@@ -30,6 +32,12 @@ FactoryBot.define do
 
     trait :project do
       deploy_token_type { DeployToken.deploy_token_types[:project_type] }
+    end
+
+    trait :all_scopes do
+      write_registry { true}
+      read_package_registry { true }
+      write_package_registry { true }
     end
   end
 end

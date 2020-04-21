@@ -1,0 +1,5 @@
+---
+title: Add read/write_package_registry to deploy_tokens
+merge_request: 29383
+author:
+type: added

@@ -1,4 +1,4 @@
-import { escape as esc } from 'lodash';
+import { escape } from 'lodash';
 import axios from '../lib/utils/axios_utils';
 import { s__ } from '../locale';
 import Flash from '../flash';
@@ -10,7 +10,7 @@ function generateErrorBoxContent(errors) {
   const errorList = [].concat(errors).map(
     errorString => `
     <li>
-      ${esc(errorString)}
+      ${escape(errorString)}
     </li>
   `,
   );

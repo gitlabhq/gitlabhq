@@ -98,7 +98,7 @@ module Snippets
     end
 
     def snippet_files(snippet)
-      [{ previous_path: snippet.blobs.first&.path,
+      [{ previous_path: snippet.file_name_on_repo,
          file_path: params[:file_name],
          content: params[:content] }]
     end
