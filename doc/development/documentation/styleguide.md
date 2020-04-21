@@ -1416,38 +1416,8 @@ can facilitate this by making sure the troubleshooting content addresses:
 
 ## Feature flags
 
-Sometimes features are shipped with feature flags, either:
-
-- On by default, but providing the option to turn the feature off.
-- Off by default, but providing the option to turn the feature on.
-
-When documenting feature flags for a feature, include:
-
-- Why a feature flag is necessary. Some of the reasons are
-  [outlined in the handbook](https://about.gitlab.com/handbook/product/#alpha-beta-ga).
-- That administrative access is required to make a feature flag change.
-- What to ask for when requesting a change to a feature flag's state.
-
-NOTE: **Note:**
-The [Product Manager for the relevant group](https://about.gitlab.com/handbook/product/categories/#devops-stages)
-must review and approve the addition or removal of any mentions of using feature flags before the doc change is merged.
-
-The following is sample text for adding feature flag documentation for a feature that is
-off by default:
-
-````md
-### Enabling the feature
-
-This feature comes with the `:feature_flag` feature flag disabled by default. In some cases,
-this feature is incompatible with an old configuration. To turn on the feature,
-ask a GitLab administrator with Rails console access to run the following command:
-
-```ruby
-Feature.enable(:feature_flag)
-```
-````
-
-For guidance on developing with feature flags, see
+Learn how to [document features deployed behind flags](feature_flags.md).
+For guidance on developing GitLab with feature flags, see
 [Feature flags in development of GitLab](../feature_flags/index.md).
 
 ## API

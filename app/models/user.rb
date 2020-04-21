@@ -683,6 +683,10 @@ class User < ApplicationRecord
     without_ghosts.with_project_bots
   end
 
+  def human?
+    user_type.nil?
+  end
+
   #
   # Instance methods
   #
@@ -1700,16 +1704,6 @@ class User < ApplicationRecord
     callouts.any?
   end
 
-  def gitlab_employee?
-    strong_memoize(:gitlab_employee) do
-      if Feature.enabled?(:gitlab_employee_badge) && Gitlab.com?
-        Mail::Address.new(email).domain == "gitlab.com" && confirmed?
-      else
-        false
-      end
-    end
-  end
-
   # Load the current highest access by looking directly at the user's memberships
   def current_highest_access_level
     members.non_request.maximum(:access_level)
@@ -1717,10 +1711,6 @@ class User < ApplicationRecord
 
   def confirmation_required_on_sign_in?
     !confirmed? && !confirmation_period_valid?
-  end
-
-  def organization
-    gitlab_employee? ? 'GitLab' : super
   end
 
   protected

@@ -559,7 +559,9 @@
   rules:
     - <<: *if-dot-com-ee-schedule
       changes: *code-backstage-patterns
-      when: on_success
+    - changes:
+        - ".gitlab/ci/test-metadata.gitlab-ci.yml"
+        - "scripts/rspec_helpers.sh"
 
 ##############
 # YAML rules #

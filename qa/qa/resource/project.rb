@@ -7,11 +7,11 @@ module QA
     class Project < Base
       include Events::Project
       include Members
+      include Visibility
 
       attr_accessor :repository_storage # requires admin access
       attr_writer :initialize_with_readme
       attr_writer :auto_devops_enabled
-      attr_writer :visibility
 
       attribute :id
       attribute :name
@@ -19,6 +19,7 @@ module QA
       attribute :description
       attribute :standalone
       attribute :runners_token
+      attribute :visibility
 
       attribute :group do
         Group.fabricate!
@@ -50,7 +51,7 @@ module QA
         @description = 'My awesome project'
         @initialize_with_readme = false
         @auto_devops_enabled = false
-        @visibility = 'public'
+        @visibility = :public
       end
 
       def name=(raw_name)
@@ -81,6 +82,10 @@ module QA
 
       def api_get_path
         "/projects/#{CGI.escape(path_with_namespace)}"
+      end
+
+      def api_visibility_path
+        "/projects/#{id}"
       end
 
       def api_get_archive_path(type = 'tar.gz')

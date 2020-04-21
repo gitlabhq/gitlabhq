@@ -2,7 +2,7 @@
 
 While [Auto DevOps](index.md) provides great defaults to get you started, you can customize
 almost everything to fit your needs. Auto DevOps offers everything from custom
-[buildpacks](#custom-buildpacks), to [`Dockerfiles](#custom-dockerfile), and
+[buildpacks](#custom-buildpacks), to [Dockerfiles](#custom-dockerfile), and
 [Helm charts](#custom-helm-chart). You can even copy the complete
 [CI/CD configuration](#customizing-gitlab-ciyml) into your project to enable
 staging and canary deployments, and more.
@@ -318,7 +318,7 @@ applications.
 | `CANARY_REPLICAS`                       | Number of canary replicas to deploy for [Canary Deployments](../../user/project/canary_deployments.md). Defaults to 1. |
 | `HELM_RELEASE_NAME`                     | From GitLab 12.1, allows the `helm` release name to be overridden. Can be used to assign unique release names when deploying multiple projects to a single namespace. |
 | `HELM_UPGRADE_VALUES_FILE`              | From GitLab 12.6, allows the `helm upgrade` values file to be overridden. Defaults to `.gitlab/auto-deploy-values.yaml`. |
-| `HELM_UPGRADE_EXTRA_ARGS`               | From GitLab 11.11, allows extra arguments in `helm` commands when deploying the application. Note that using quotes won't prevent word splitting. **Tip:** you can use this variable to [customize the Auto Deploy Helm chart](#custom-helm-chart) by applying custom override values with `--values my-values.yaml`. |
+| `HELM_UPGRADE_EXTRA_ARGS`               | From GitLab 11.11, allows extra arguments in `helm` commands when deploying the application. Note that using quotes won't prevent word splitting. |
 | `INCREMENTAL_ROLLOUT_MODE`              | From GitLab 11.4, if present, can be used to enable an [incremental rollout](#incremental-rollout-to-production-premium) of your application for the production environment. Set to `manual` for manual deployment jobs or `timed` for automatic rollout deployments with a 5 minute delay each one. |
 | `K8S_SECRET_*`                          | From GitLab 11.7, any variable prefixed with [`K8S_SECRET_`](#application-secret-variables) will be made available by Auto DevOps as environment variables to the deployed application. |
 | `KUBE_INGRESS_BASE_DOMAIN`              | From GitLab 11.8, can be used to set a domain per cluster. See [cluster domains](../../user/project/clusters/index.md#base-domain) for more information. |
@@ -329,9 +329,9 @@ applications.
 | `STAGING_ENABLED`                       | From GitLab 10.8, used to define a [deploy policy for staging and production environments](#deploy-policy-for-staging-and-production-environments). |
 
 TIP: **Tip:**
-Set up the replica variables using a
-[project variable](../../ci/variables/README.md#gitlab-cicd-environment-variables)
-and scale your application by only redeploying it.
+After you set up your replica variables using a
+[project variable](../../ci/variables/README.md#gitlab-cicd-environment-variables),
+you can scale your application by redeploying it.
 
 CAUTION: **Caution:**
 You should *not* scale your application using Kubernetes directly. This can

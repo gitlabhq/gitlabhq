@@ -4458,45 +4458,6 @@ describe User, :do_not_mock_admin_mode do
     end
   end
 
-  describe '#gitlab_employee?' do
-    using RSpec::Parameterized::TableSyntax
-
-    subject { user.gitlab_employee? }
-
-    where(:email, :is_com, :expected_result) do
-      'test@gitlab.com'   | true  | true
-      'test@example.com'  | true  | false
-      'test@gitlab.com'   | false | false
-      'test@example.com'  | false | false
-    end
-
-    with_them do
-      let(:user) { build(:user, email: email) }
-
-      before do
-        allow(Gitlab).to receive(:com?).and_return(is_com)
-      end
-
-      it { is_expected.to be expected_result }
-    end
-
-    context 'when email is of Gitlab and is not confirmed' do
-      let(:user) { build(:user, email: 'test@gitlab.com', confirmed_at: nil) }
-
-      it { is_expected.to be false }
-    end
-
-    context 'when `:gitlab_employee_badge` feature flag is disabled' do
-      let(:user) { build(:user, email: 'test@gitlab.com') }
-
-      before do
-        stub_feature_flags(gitlab_employee_badge: false)
-      end
-
-      it { is_expected.to be false }
-    end
-  end
-
   describe '#current_highest_access_level' do
     let_it_be(:user) { create(:user) }
 
@@ -4514,27 +4475,6 @@ describe User, :do_not_mock_admin_mode do
 
         expect(user.current_highest_access_level).to eq(Gitlab::Access::REPORTER)
       end
-    end
-  end
-
-  describe '#organization' do
-    using RSpec::Parameterized::TableSyntax
-
-    let(:user) { build(:user, organization: 'ACME') }
-
-    subject { user.organization }
-
-    where(:gitlab_employee?, :expected_result) do
-      true  | 'GitLab'
-      false | 'ACME'
-    end
-
-    with_them do
-      before do
-        allow(user).to receive(:gitlab_employee?).and_return(gitlab_employee?)
-      end
-
-      it { is_expected.to eql(expected_result) }
     end
   end
 
@@ -4683,6 +4623,28 @@ describe User, :do_not_mock_admin_mode do
       end
 
       it_behaves_like 'does not require password to be present'
+    end
+  end
+
+  describe '#human?' do
+    subject { user.human? }
+
+    let_it_be(:user) { create(:user) }
+
+    context 'when user is a human' do
+      before do
+        user.update(user_type: nil)
+      end
+
+      it { is_expected.to be true }
+    end
+
+    context 'when user is not a human' do
+      before do
+        user.update(user_type: 'alert_bot')
+      end
+
+      it { is_expected.to be false }
     end
   end
 end

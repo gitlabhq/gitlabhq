@@ -15,9 +15,13 @@ function retrieve_tests_metadata() {
 function update_tests_metadata() {
   echo "{}" > "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}"
 
-  scripts/merge-reports "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}" knapsack/rspec*_pg9_*.json
+  scripts/merge-reports "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}" knapsack/rspec*.json
   if [[ -n "${TESTS_METADATA_S3_BUCKET}" ]]; then
-    scripts/sync-reports put "${TESTS_METADATA_S3_BUCKET}" "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}"
+    if [[ "$CI_PIPELINE_SOURCE" == "schedule" ]]; then
+      scripts/sync-reports put "${TESTS_METADATA_S3_BUCKET}" "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}"
+    else
+      echo "Not uplaoding report to S3 as the pipeline is not a scheduled one."
+    fi
   fi
 
   rm -f knapsack/rspec*.json
@@ -28,12 +32,20 @@ function update_tests_metadata() {
   scripts/flaky_examples/prune-old-flaky-examples "${FLAKY_RSPEC_SUITE_REPORT_PATH}"
 
   if [[ -n ${TESTS_METADATA_S3_BUCKET} ]]; then
-    scripts/sync-reports put "${TESTS_METADATA_S3_BUCKET}" "${FLAKY_RSPEC_SUITE_REPORT_PATH}"
+    if [[ "$CI_PIPELINE_SOURCE" == "schedule" ]]; then
+      scripts/sync-reports put "${TESTS_METADATA_S3_BUCKET}" "${FLAKY_RSPEC_SUITE_REPORT_PATH}"
+    else
+      echo "Not uploading report to S3 as the pipeline is not a scheduled one."
+    fi
   fi
 
   rm -f rspec_flaky/all_*.json rspec_flaky/new_*.json
 
-  scripts/insert-rspec-profiling-data
+  if [[ "$CI_PIPELINE_SOURCE" == "schedule" ]]; then
+    scripts/insert-rspec-profiling-data
+  else
+    echo "Not inserting profiling data as the pipeline is not a scheduled one."
+  fi
 }
 
 function rspec_simple_job() {
@@ -47,10 +59,10 @@ function rspec_simple_job() {
 }
 
 function rspec_paralellized_job() {
-  read -ra job_name <<< "$CI_JOB_NAME"
+  read -ra job_name <<< "${CI_JOB_NAME}"
   local test_tool="${job_name[0]}"
   local test_level="${job_name[1]}"
-  local database="${job_name[2]}"
+  local report_name=$(echo "${CI_JOB_NAME}" | sed -E 's|[/ ]|_|g') # e.g. 'rspec unit pg11 1/24' would become 'rspec_unit_pg11_1_24'
   local rspec_opts="${1}"
   local spec_folder_prefix=""
 
@@ -59,7 +71,7 @@ function rspec_paralellized_job() {
   fi
 
   export KNAPSACK_LOG_LEVEL="debug"
-  export KNAPSACK_REPORT_PATH="knapsack/${test_tool}_${test_level}_${database}_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json"
+  export KNAPSACK_REPORT_PATH="knapsack/${report_name}_report.json"
 
   cp "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}" "${KNAPSACK_REPORT_PATH}"
 
@@ -74,8 +86,8 @@ function rspec_paralellized_job() {
     export KNAPSACK_GENERATE_REPORT="true"
     export FLAKY_RSPEC_GENERATE_REPORT="true"
     export SUITE_FLAKY_RSPEC_REPORT_PATH="${FLAKY_RSPEC_SUITE_REPORT_PATH}"
-    export FLAKY_RSPEC_REPORT_PATH="rspec_flaky/all_${test_tool}_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json"
-    export NEW_FLAKY_RSPEC_REPORT_PATH="rspec_flaky/new_${test_tool}_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json"
+    export FLAKY_RSPEC_REPORT_PATH="rspec_flaky/all_${report_name}_report.json"
+    export NEW_FLAKY_RSPEC_REPORT_PATH="rspec_flaky/new_${report_name}_report.json"
 
     if [[ ! -f $FLAKY_RSPEC_REPORT_PATH ]]; then
       echo "{}" > "${FLAKY_RSPEC_REPORT_PATH}"
@@ -90,7 +102,7 @@ function rspec_paralellized_job() {
 
   mkdir -p tmp/memory_test
 
-  export MEMORY_TEST_PATH="tmp/memory_test/${test_tool}_${test_level}_${database}_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_memory.csv"
+  export MEMORY_TEST_PATH="tmp/memory_test/${report_name}_memory.csv"
 
   knapsack rspec "-Ispec --color --format documentation --format RspecJunitFormatter --out junit_rspec.xml ${rspec_opts}"
 

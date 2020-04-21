@@ -101,7 +101,7 @@
       - else
         = f.text_field :location, label: s_('Profiles|Location'), class: 'input-lg', placeholder: s_("Profiles|City, country")
       = f.text_field :job_title, class: 'input-md'
-      = f.text_field :organization, readonly: @user.gitlab_employee?, label: s_('Profiles|Organization'), class: 'input-md', help: s_("Profiles|Who you represent or work for")
+      = render 'shared/profiles/organization', { form: f, user: @user }
       = f.text_area :bio, label: s_('Profiles|Bio'), rows: 4, maxlength: 250, help: s_("Profiles|Tell us about yourself in fewer than 250 characters")
       %hr
       %h5= s_("Private profile")

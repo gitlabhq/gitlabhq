@@ -39,7 +39,6 @@ module QA
     autoload :MailHog, 'qa/runtime/mail_hog'
     autoload :IPAddress, 'qa/runtime/ip_address'
     autoload :Search, 'qa/runtime/search'
-    autoload :Project, 'qa/runtime/project'
     autoload :ApplicationSettings, 'qa/runtime/application_settings'
 
     module API
@@ -88,6 +87,7 @@ module QA
     autoload :Tag, 'qa/resource/tag'
     autoload :ProjectMember, 'qa/resource/project_member'
     autoload :UserGPG, 'qa/resource/user_gpg'
+    autoload :Visibility, 'qa/resource/visibility'
 
     module Events
       autoload :Base, 'qa/resource/events/base'

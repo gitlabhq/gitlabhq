@@ -64,7 +64,8 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [External Classification Policy Authorization](../user/admin_area/settings/external_authorization.md) **(PREMIUM ONLY)**
 - [Upload a license](../user/admin_area/license.md): Upload a license to unlock features that are in paid tiers of GitLab. **(STARTER ONLY)**
 - [Admin Area](../user/admin_area/index.md): for self-managed instance-wide configuration and maintenance.
-- [S/MIME Signing](smime_signing_email.md): how to sign all outgoing notification emails with S/MIME
+- [S/MIME Signing](smime_signing_email.md): how to sign all outgoing notification emails with S/MIME.
+- [Enabling and disabling features flags](feature_flags.md): how to enable and disable GitLab features deployed behind feature flags.
 
 #### Customizing GitLab's appearance
 

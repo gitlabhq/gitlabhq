@@ -14,12 +14,11 @@ license_scanning:
     name: "registry.gitlab.com/gitlab-org/security-products/license-management:$LICENSE_MANAGEMENT_VERSION"
     entrypoint: [""]
   variables:
+    LM_REPORT_FILE: gl-license-scanning-report.json
     SETUP_CMD: $LICENSE_MANAGEMENT_SETUP_CMD
   allow_failure: true
   script:
     - /run.sh analyze .
-  after_script:
-    - mv gl-license-management-report.json gl-license-scanning-report.json
   artifacts:
     reports:
       license_scanning: gl-license-scanning-report.json

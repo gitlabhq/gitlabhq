@@ -43,7 +43,7 @@ export default {
       update(data) {
         return this.snippet.project
           ? data.project.userPermissions.createSnippet
-          : data.currentUser.userPermissions.createSnippet;
+          : data.currentUser?.userPermissions.createSnippet;
       },
     },
   },
