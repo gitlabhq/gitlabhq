@@ -1,5 +1,0 @@
----
-title: Reduce number of SQL queries for service templates
-merge_request: 27396
-author:
-type: performance

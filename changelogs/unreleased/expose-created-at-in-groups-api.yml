@@ -1,5 +1,0 @@
----
-title: Expose created_at property in Groups API
-merge_request: 27824
-author:
-type: added

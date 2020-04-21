@@ -1,6 +1,0 @@
----
-title: >
-    #42671: Project and group storage statistics now support values up to 8 PiB (up from 4GiB)
-merge_request: 23131
-author: Matthias van de Meent
-type: fixed

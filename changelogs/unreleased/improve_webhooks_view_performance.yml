@@ -1,5 +1,0 @@
----
-title: Reduce SQL queries when rendering webhook settings
-merge_request: 27359
-author:
-type: performance

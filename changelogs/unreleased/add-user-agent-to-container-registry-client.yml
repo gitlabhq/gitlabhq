@@ -1,5 +1,0 @@
----
-title: Add Gitlab User-Agent to ContainerRegistry::Client
-merge_request: 29294
-author: Sashi Kumar
-type: other

@@ -1,5 +1,0 @@
----
-title: Add metrics dashboard annotation model, relation, policy, create and delete services. To provide interface for create and delete operations.
-merge_request: 27583
-author:
-type: added

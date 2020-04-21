@@ -1,5 +1,0 @@
----
-title: Deprecate 'token' attribute from Runners API
-merge_request: 29481
-author:
-type: deprecated

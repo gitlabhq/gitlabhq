@@ -1,5 +1,0 @@
----
-title: Fix name of approvals column in merge requests
-merge_request: 28274
-author: Steffen Köhler
-type: fixed

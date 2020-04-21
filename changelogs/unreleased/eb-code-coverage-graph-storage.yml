@@ -1,5 +1,0 @@
----
-title: Store daily code coverages into ci_daily_report_results table
-merge_request: 24695
-author:
-type: added

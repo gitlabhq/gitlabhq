@@ -1,6 +1,0 @@
----
-title: Update auto-deploy-image to v0.13.0 for deploy job, enabling more granular
-  control over service.enabled
-merge_request: 29524
-author:
-type: changed

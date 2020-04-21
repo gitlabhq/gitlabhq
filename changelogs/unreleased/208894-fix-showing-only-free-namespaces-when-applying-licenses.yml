@@ -1,5 +1,0 @@
----
-title: Fix managed_free_namespaces scope to only groups without a license or a free license
-merge_request: 27356
-author:
-type: fixed

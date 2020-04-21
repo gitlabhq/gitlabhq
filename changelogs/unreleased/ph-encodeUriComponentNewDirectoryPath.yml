@@ -1,5 +1,0 @@
----
-title: Fix new file not being created in non-ascii character folders
-merge_request: 26165
-author:
-type: fixed

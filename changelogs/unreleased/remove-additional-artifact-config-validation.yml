@@ -1,5 +1,0 @@
----
-title: Validate dependency on job generating a CI config when using dynamic child pipelines
-merge_request: 28901
-author:
-type: added

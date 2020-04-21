@@ -1,5 +1,0 @@
----
-title: Fix display of PyCharm generated Jupyter notebooks
-merge_request: 28810
-author: Jan Beckmann
-type: fixed

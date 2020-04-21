@@ -1,5 +1,0 @@
----
-title: Make Rails.cache and Gitlab::Redis::Cache share the same Redis connection pool
-merge_request: 28074
-author:
-type: performance
