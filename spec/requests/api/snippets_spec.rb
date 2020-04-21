@@ -90,7 +90,7 @@ describe API::Snippets do
 
   describe 'GET /snippets/:id/raw' do
     let_it_be(:author) { create(:user) }
-    let_it_be(:snippet) { create(:personal_snippet, :private, author: author) }
+    let_it_be(:snippet) { create(:personal_snippet, :repository, :private, author: author) }
 
     it 'requires authentication' do
       get api("/snippets/#{snippet.id}", nil)
@@ -103,7 +103,6 @@ describe API::Snippets do
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(response.content_type).to eq 'text/plain'
-      expect(response.body).to eq(snippet.content)
     end
 
     it 'forces attachment content disposition' do
@@ -134,6 +133,12 @@ describe API::Snippets do
 
       expect(response).to have_gitlab_http_status(:ok)
     end
+
+    it_behaves_like 'snippet blob content' do
+      let_it_be(:snippet_with_empty_repo) { create(:personal_snippet, :empty_repo, :private, author: author) }
+
+      subject { get api("/snippets/#{snippet.id}/raw", snippet.author) }
+    end
   end
 
   describe 'GET /snippets/:id' do
@@ -155,7 +160,7 @@ describe API::Snippets do
 
       expect(json_response['title']).to eq(private_snippet.title)
       expect(json_response['description']).to eq(private_snippet.description)
-      expect(json_response['file_name']).to eq(private_snippet.file_name)
+      expect(json_response['file_name']).to eq(private_snippet.file_name_on_repo)
       expect(json_response['visibility']).to eq(private_snippet.visibility)
       expect(json_response['ssh_url_to_repo']).to eq(private_snippet.ssh_url_to_repo)
       expect(json_response['http_url_to_repo']).to eq(private_snippet.http_url_to_repo)
@@ -420,6 +425,32 @@ describe API::Snippets do
         it 'creates a spam log' do
           expect { update_snippet(params: { title: 'Foo', visibility: 'public' }) }
             .to log_spam(title: 'Foo', user_id: user.id, noteable_type: 'PersonalSnippet')
+        end
+      end
+    end
+
+    context "when admin" do
+      let(:admin) { create(:admin) }
+      let(:token) { create(:personal_access_token, user: admin, scopes: [:sudo]) }
+
+      subject do
+        put api("/snippets/#{snippet.id}", admin, personal_access_token: token), params: { visibility: 'private', sudo: user.id }
+      end
+
+      context 'when sudo is defined' do
+        it 'returns 200 and updates snippet visibility' do
+          expect(snippet.visibility).not_to eq('private')
+
+          subject
+
+          expect(response).to have_gitlab_http_status(:success)
+          expect(json_response["visibility"]).to eq 'private'
+        end
+
+        it 'does not commit data' do
+          expect_any_instance_of(SnippetRepository).not_to receive(:multi_files_action)
+
+          subject
         end
       end
     end

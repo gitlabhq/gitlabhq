@@ -64,6 +64,12 @@
       padding: $gl-padding-8 $gl-padding-12;
     }
   }
+
+  .show-last-dropdown {
+    // same as in .dropdown-menu-toggle
+    // see app/assets/stylesheets/framework/dropdowns.scss
+    width: 160px;
+  }
 }
 
 .prometheus-panel {

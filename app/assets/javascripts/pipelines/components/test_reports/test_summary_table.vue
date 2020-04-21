@@ -1,13 +1,18 @@
 <script>
 import { mapGetters } from 'vuex';
 import { s__ } from '~/locale';
+import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import store from '~/pipelines/stores/test_reports';
 import SmartVirtualList from '~/vue_shared/components/smart_virtual_list.vue';
 
 export default {
   name: 'TestsSummaryTable',
   components: {
+    GlIcon,
     SmartVirtualList,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   store,
   props: {
@@ -75,7 +80,10 @@ export default {
           v-for="(testSuite, index) in getTestSuites"
           :key="index"
           role="row"
-          class="gl-responsive-table-row gl-responsive-table-row-clickable test-reports-summary-row rounded cursor-pointer js-suite-row"
+          class="gl-responsive-table-row test-reports-summary-row rounded js-suite-row"
+          :class="{
+            'gl-responsive-table-row-clickable cursor-pointer': !testSuite.suite_error,
+          }"
           @click="tableRowClick(testSuite)"
         >
           <div class="table-section section-25">
@@ -84,6 +92,14 @@ export default {
             </div>
             <div class="table-mobile-content underline cgray pl-3">
               {{ testSuite.name }}
+              <gl-icon
+                v-if="testSuite.suite_error"
+                ref="suiteErrorIcon"
+                v-gl-tooltip
+                name="error"
+                :title="testSuite.suite_error"
+                class="vertical-align-middle"
+              />
             </div>
           </div>
 

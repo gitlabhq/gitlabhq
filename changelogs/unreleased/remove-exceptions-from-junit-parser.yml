@@ -1,0 +1,5 @@
+---
+title: Render TestReport parsing errors back to pipeline test summary
+merge_request: 24188
+author:
+type: fixed

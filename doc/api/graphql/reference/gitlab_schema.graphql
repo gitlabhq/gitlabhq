@@ -246,6 +246,31 @@ type Board {
   id: ID!
 
   """
+  Lists of the project board
+  """
+  lists(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): BoardListConnection
+
+  """
   Name of the board
   """
   name: String
@@ -289,6 +314,96 @@ type BoardEdge {
   The item at the end of the edge.
   """
   node: Board
+}
+
+"""
+Represents a list for an issue board
+"""
+type BoardList {
+  """
+  Assignee in the list
+  """
+  assignee: User
+
+  """
+  Indicates if list is collapsed for this user
+  """
+  collapsed: Boolean
+
+  """
+  ID (global ID) of the list
+  """
+  id: ID!
+
+  """
+  Label of the list
+  """
+  label: Label
+
+  """
+  Type of the list
+  """
+  listType: String!
+
+  """
+  Maximum number of issues in the list
+  """
+  maxIssueCount: Int
+
+  """
+  Maximum weight of issues in the list
+  """
+  maxIssueWeight: Int
+
+  """
+  Milestone of the list
+  """
+  milestone: Milestone
+
+  """
+  Position of list within the board
+  """
+  position: Int
+
+  """
+  Title of the list
+  """
+  title: String!
+}
+
+"""
+The connection type for BoardList.
+"""
+type BoardListConnection {
+  """
+  A list of edges.
+  """
+  edges: [BoardListEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [BoardList]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+An edge in a connection.
+"""
+type BoardListEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: BoardList
 }
 
 type Commit {
@@ -3009,6 +3124,11 @@ input EpicTreeNodeFieldsInputType {
   id: ID!
 
   """
+  ID of the new parent epic
+  """
+  newParentId: ID
+
+  """
   The type of the switch, after or before allowed
   """
   relativePosition: MoveType!
@@ -5335,9 +5455,106 @@ type Metadata {
 
 type MetricsDashboard {
   """
+  Annotations added to the dashboard. Will always return `null` if `metrics_dashboard_annotations` feature flag is disabled
+  """
+  annotations(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Timestamp marking date and time from which annotations need to be fetched
+    """
+    from: Time!
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    Timestamp marking date and time to which annotations need to be fetched
+    """
+    to: Time
+  ): MetricsDashboardAnnotationConnection
+
+  """
   Path to a file with the dashboard definition
   """
   path: String
+}
+
+type MetricsDashboardAnnotation {
+  """
+  Description of the annotation
+  """
+  description: String
+
+  """
+  Timestamp marking end of annotated time span
+  """
+  endingAt: String
+
+  """
+  ID of the annotation
+  """
+  id: ID!
+
+  """
+  ID of a dashboard panel to which the annotation should be scoped
+  """
+  panelId: String
+
+  """
+  Timestamp marking start of annotated time span
+  """
+  startingAt: String
+}
+
+"""
+The connection type for MetricsDashboardAnnotation.
+"""
+type MetricsDashboardAnnotationConnection {
+  """
+  A list of edges.
+  """
+  edges: [MetricsDashboardAnnotationEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [MetricsDashboardAnnotation]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+An edge in a connection.
+"""
+type MetricsDashboardAnnotationEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: MetricsDashboardAnnotation
 }
 
 """
@@ -6740,7 +6957,7 @@ type Project {
   suggestionCommitMessage: String
 
   """
-  List of project tags
+  List of project topics (not Git tags)
   """
   tagList: String
 
@@ -9369,6 +9586,11 @@ type User {
   URL of the user's avatar
   """
   avatarUrl: String
+
+  """
+  ID of the user
+  """
+  id: ID!
 
   """
   Human-readable name of the user

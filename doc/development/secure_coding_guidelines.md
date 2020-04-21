@@ -112,7 +112,7 @@ In most cases the anchors `\A` for beginning of text and `\z` for end of text sh
 
 ### Description
 
-A [Server-side Request Forgery (SSRF)][1] is an attack in which an attacker
+A [Server-side Request Forgery (SSRF)](https://www.hackerone.com/blog-How-To-Server-Side-Request-Forgery-SSRF) is an attack in which an attacker
 is able coerce a application into making an outbound request to an unintended
 resource. This resource is usually internal. In GitLab, the connection most
 commonly uses HTTP, but an SSRF can be performed with any protocol, such as
@@ -121,8 +121,6 @@ Redis or SSH.
 With an SSRF attack, the UI may or may not show the response. The latter is
 called a Blind SSRF. While the impact is reduced, it can still be useful for
 attackers, especially for mapping internal network services as part of recon.
-
-[1]: https://www.hackerone.com/blog-How-To-Server-Side-Request-Forgery-SSRF
 
 ### Impact
 
@@ -155,7 +153,7 @@ The preferred SSRF mitigations within GitLab are:
 
 #### GitLab HTTP Library
 
-The [GitLab::HTTP][2] wrapper library has grown to include mitigations for all of the GitLab-known SSRF vectors. It is also configured to respect the
+The [GitLab::HTTP](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/http.rb) wrapper library has grown to include mitigations for all of the GitLab-known SSRF vectors. It is also configured to respect the
 `Outbound requests` options that allow instance administrators to block all internal connections, or limit the networks to which connections can be made.
 
 In some cases, it has been possible to configure GitLab::HTTP as the HTTP
@@ -163,8 +161,6 @@ connection library for 3rd-party gems. This is preferrable over re-implementing
 the mitigations for a new feature.
 
 - [More details](https://dev.gitlab.org/gitlab/gitlabhq/merge_requests/2530/diffs)
-
-[2]: https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/http.rb
 
 #### Feature-specific Mitigations
 
@@ -185,9 +181,7 @@ For situtions in which a whitelist or GitLab:HTTP cannot be used, it will be nec
 - For HTTP connections: Disable redirects or validate the redirect destination
 - To mitigate DNS rebinding attacks, validate and use the first IP address received
 
-See [url_blocker_spec.rb][3] for examples of SSRF payloads
-
-[3]: https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/lib/gitlab/url_blocker_spec.rb
+See [url_blocker_spec.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/lib/gitlab/url_blocker_spec.rb) for examples of SSRF payloads
 
 ## XSS guidelines
 

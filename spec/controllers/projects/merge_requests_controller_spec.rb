@@ -935,34 +935,6 @@ describe Projects::MergeRequestsController do
           }])
         end
       end
-
-      context 'when feature flag :ci_expose_arbitrary_artifacts_in_mr is disabled' do
-        let(:job_options) do
-          {
-            artifacts: {
-              paths: ['ci_artifacts.txt'],
-              expose_as: 'Exposed artifact'
-            }
-          }
-        end
-        let(:report) { double }
-
-        before do
-          stub_feature_flags(ci_expose_arbitrary_artifacts_in_mr: false)
-        end
-
-        it 'does not send polling interval' do
-          expect(Gitlab::PollingInterval).not_to receive(:set_header)
-
-          subject
-        end
-
-        it 'returns 204 HTTP status' do
-          subject
-
-          expect(response).to have_gitlab_http_status(:no_content)
-        end
-      end
     end
 
     context 'when pipeline does not have jobs with exposed artifacts' do
@@ -1114,6 +1086,150 @@ describe Projects::MergeRequestsController do
     end
   end
 
+  describe 'GET terraform_reports' do
+    let(:merge_request) do
+      create(:merge_request,
+        :with_merge_request_pipeline,
+        target_project: project,
+        source_project: project)
+    end
+
+    let(:pipeline) do
+      create(:ci_pipeline,
+        :success,
+        :with_terraform_reports,
+        project: merge_request.source_project,
+        ref: merge_request.source_branch,
+        sha: merge_request.diff_head_sha)
+    end
+
+    before do
+      allow_any_instance_of(MergeRequest)
+        .to receive(:find_terraform_reports)
+        .and_return(report)
+
+      allow_any_instance_of(MergeRequest)
+        .to receive(:actual_head_pipeline)
+        .and_return(pipeline)
+    end
+
+    subject do
+      get :terraform_reports, params: {
+        namespace_id: project.namespace.to_param,
+        project_id: project,
+        id: merge_request.iid
+      },
+      format: :json
+    end
+
+    describe 'permissions on a public project with private CI/CD' do
+      let(:project) { create :project, :repository, :public, :builds_private }
+      let(:report) { { status: :parsed, data: [] } }
+
+      context 'while signed out' do
+        before do
+          sign_out(user)
+        end
+
+        it 'responds with a 404' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:not_found)
+          expect(response.body).to be_blank
+        end
+      end
+
+      context 'while signed in as an unrelated user' do
+        before do
+          sign_in(create(:user))
+        end
+
+        it 'responds with a 404' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:not_found)
+          expect(response.body).to be_blank
+        end
+      end
+    end
+
+    context 'when pipeline has jobs with terraform reports' do
+      before do
+        allow_next_instance_of(MergeRequest) do |merge_request|
+          allow(merge_request).to receive(:has_terraform_reports?).and_return(true)
+        end
+      end
+
+      context 'when processing terraform reports is in progress' do
+        let(:report) { { status: :parsing } }
+
+        it 'sends polling interval' do
+          expect(Gitlab::PollingInterval).to receive(:set_header)
+
+          subject
+        end
+
+        it 'returns 204 HTTP status' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:no_content)
+        end
+      end
+
+      context 'when processing terraform reports is completed' do
+        let(:report) { { status: :parsed, data: pipeline.terraform_reports.plans } }
+
+        it 'returns terraform reports' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to match(
+            a_hash_including(
+              'tfplan.json' => hash_including(
+                'create' => 0,
+                'delete' => 0,
+                'update' => 1
+              )
+            )
+          )
+        end
+      end
+
+      context 'when user created corrupted terraform reports' do
+        let(:report) { { status: :error, status_reason: 'Failed to parse terraform reports' } }
+
+        it 'does not send polling interval' do
+          expect(Gitlab::PollingInterval).not_to receive(:set_header)
+
+          subject
+        end
+
+        it 'returns 400 HTTP status' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response).to eq({ 'status_reason' => 'Failed to parse terraform reports' })
+        end
+      end
+    end
+
+    context 'when pipeline does not have jobs with terraform reports' do
+      before do
+        allow_next_instance_of(MergeRequest) do |merge_request|
+          allow(merge_request).to receive(:has_terraform_reports?).and_return(false)
+        end
+      end
+
+      let(:report) { { status: :error } }
+
+      it 'returns error' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+    end
+  end
+
   describe 'GET test_reports' do
     let(:merge_request) do
       create(:merge_request,
@@ -1245,7 +1361,7 @@ describe Projects::MergeRequestsController do
     end
 
     it 'renders MergeRequest as JSON' do
-      expect(json_response.keys).to include('id', 'iid')
+      expect(json_response.keys).to include('id', 'iid', 'title', 'has_ci', 'merge_status', 'can_be_merged', 'current_user')
     end
   end
 
@@ -1279,7 +1395,7 @@ describe Projects::MergeRequestsController do
     it 'renders MergeRequest as JSON' do
       subject
 
-      expect(json_response.keys).to include('id', 'iid')
+      expect(json_response.keys).to include('id', 'iid', 'title', 'has_ci', 'merge_status', 'can_be_merged', 'current_user')
     end
   end
 

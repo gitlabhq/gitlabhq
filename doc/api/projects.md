@@ -912,7 +912,7 @@ the `approvals_before_merge` parameter:
 }
 ```
 
-**Note**: The `web_url` and `avatar_url` attributes on `namespace` were [introduced][ce-27427] in GitLab 11.11.
+**Note**: The `web_url` and `avatar_url` attributes on `namespace` were [introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/27427) in GitLab 11.11.
 
 If the project is a fork, and you provide a valid token to authenticate, the
 `forked_from_project` field will appear in the response.
@@ -2252,5 +2252,3 @@ GET /projects/:id/snapshot
 | --------- | ---- | -------- | ----------- |
 | `id`      | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `wiki`    | boolean | no | Whether to download the wiki, rather than project, repository |
-
-[ce-27427]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/27427

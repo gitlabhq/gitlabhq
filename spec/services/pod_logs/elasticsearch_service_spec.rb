@@ -225,7 +225,7 @@ describe ::PodLogs::ElasticsearchService do
         .and_return(Elasticsearch::Transport::Client.new)
       allow_any_instance_of(::Gitlab::Elasticsearch::Logs::Lines)
         .to receive(:pod_logs)
-        .with(namespace, pod_name: pod_name, container_name: container_name, search: search, start_time: start_time, end_time: end_time, cursor: cursor)
+        .with(namespace, pod_name: pod_name, container_name: container_name, search: search, start_time: start_time, end_time: end_time, cursor: cursor, filebeat7: true)
         .and_return({ logs: expected_logs, cursor: expected_cursor })
 
       result = subject.send(:pod_logs, result_arg)

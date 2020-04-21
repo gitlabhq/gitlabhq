@@ -2280,6 +2280,7 @@ describe Ci::Build do
           { key: 'CI_REGISTRY_USER', value: 'gitlab-ci-token', public: true, masked: false },
           { key: 'CI_REGISTRY_PASSWORD', value: 'my-token', public: false, masked: true },
           { key: 'CI_REPOSITORY_URL', value: build.repo_url, public: false, masked: false },
+          { key: 'CI_JOB_JWT', value: 'ci.job.jwt', public: false, masked: true },
           { key: 'CI_JOB_NAME', value: 'test', public: true, masked: false },
           { key: 'CI_JOB_STAGE', value: 'test', public: true, masked: false },
           { key: 'CI_NODE_TOTAL', value: '1', public: true, masked: false },
@@ -2332,11 +2333,22 @@ describe Ci::Build do
       end
 
       before do
+        allow(Gitlab::Ci::Jwt).to receive(:for_build).with(build).and_return('ci.job.jwt')
         build.set_token('my-token')
         build.yaml_variables = []
       end
 
       it { is_expected.to eq(predefined_variables) }
+
+      context 'when ci_job_jwt feature flag is disabled' do
+        before do
+          stub_feature_flags(ci_job_jwt: false)
+        end
+
+        it 'CI_JOB_JWT is not included' do
+          expect(subject.pluck(:key)).not_to include('CI_JOB_JWT')
+        end
+      end
 
       describe 'variables ordering' do
         context 'when variables hierarchy is stubbed' do
@@ -2344,11 +2356,13 @@ describe Ci::Build do
           let(:project_pre_var) { { key: 'project', value: 'value', public: true, masked: false } }
           let(:pipeline_pre_var) { { key: 'pipeline', value: 'value', public: true, masked: false } }
           let(:build_yaml_var) { { key: 'yaml', value: 'value', public: true, masked: false } }
+          let(:job_jwt_var) { { key: 'CI_JOB_JWT', value: 'ci.job.jwt', public: false, masked: true } }
 
           before do
             allow(build).to receive(:predefined_variables) { [build_pre_var] }
             allow(build).to receive(:yaml_variables) { [build_yaml_var] }
             allow(build).to receive(:persisted_variables) { [] }
+            allow(build).to receive(:job_jwt_variables) { [job_jwt_var] }
 
             allow_any_instance_of(Project)
               .to receive(:predefined_variables) { [project_pre_var] }
@@ -2361,7 +2375,8 @@ describe Ci::Build do
 
           it 'returns variables in order depending on resource hierarchy' do
             is_expected.to eq(
-              [build_pre_var,
+              [job_jwt_var,
+               build_pre_var,
                project_pre_var,
                pipeline_pre_var,
                build_yaml_var,
@@ -3797,8 +3812,13 @@ describe Ci::Build do
           create(:ci_job_artifact, :junit_with_corrupted_data, job: build, project: build.project)
         end
 
-        it 'raises an error' do
-          expect { subject }.to raise_error(Gitlab::Ci::Parsers::Test::Junit::JunitParserError)
+        it 'returns no test data and includes a suite_error message' do
+          expect { subject }.not_to raise_error
+
+          expect(test_reports.get_suite(build.name).total_count).to eq(0)
+          expect(test_reports.get_suite(build.name).success_count).to eq(0)
+          expect(test_reports.get_suite(build.name).failed_count).to eq(0)
+          expect(test_reports.get_suite(build.name).suite_error).to eq('JUnit XML parsing failed: 1:1: FATAL: Document is empty')
         end
       end
     end
@@ -3846,6 +3866,48 @@ describe Ci::Build do
 
         it 'raises an error' do
           expect { subject }.to raise_error(Gitlab::Ci::Parsers::Coverage::Cobertura::CoberturaParserError)
+        end
+      end
+    end
+  end
+
+  describe '#collect_terraform_reports!' do
+    let(:terraform_reports) { Gitlab::Ci::Reports::TerraformReports.new }
+
+    it 'returns an empty hash' do
+      expect(build.collect_terraform_reports!(terraform_reports).plans).to eq({})
+    end
+
+    context 'when build has a terraform report' do
+      context 'when there is a valid tfplan.json' do
+        before do
+          create(:ci_job_artifact, :terraform, job: build, project: build.project)
+        end
+
+        it 'parses blobs and add the results to the terraform report' do
+          expect { build.collect_terraform_reports!(terraform_reports) }.not_to raise_error
+
+          expect(terraform_reports.plans).to match(
+            a_hash_including(
+              'tfplan.json' => a_hash_including(
+                'create' => 0,
+                'update' => 1,
+                'delete' => 0
+              )
+            )
+          )
+        end
+      end
+
+      context 'when there is an invalid tfplan.json' do
+        before do
+          create(:ci_job_artifact, :terraform_with_corrupted_data, job: build, project: build.project)
+        end
+
+        it 'raises an error' do
+          expect { build.collect_terraform_reports!(terraform_reports) }.to raise_error(
+            Gitlab::Ci::Parsers::Terraform::Tfplan::TfplanParserError
+          )
         end
       end
     end

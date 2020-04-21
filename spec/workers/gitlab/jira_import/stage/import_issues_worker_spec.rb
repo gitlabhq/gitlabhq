@@ -16,7 +16,7 @@ describe Gitlab::JiraImport::Stage::ImportIssuesWorker do
         stub_feature_flags(jira_issue_import: false)
       end
 
-      it_behaves_like 'cannot do jira import'
+      it_behaves_like 'cannot do Jira import'
       it_behaves_like 'does not advance to next stage'
     end
 
@@ -28,7 +28,7 @@ describe Gitlab::JiraImport::Stage::ImportIssuesWorker do
       end
 
       context 'when import did not start' do
-        it_behaves_like 'cannot do jira import'
+        it_behaves_like 'cannot do Jira import'
         it_behaves_like 'does not advance to next stage'
       end
 

@@ -85,6 +85,7 @@ module API
         optional :keep_n, type: String, desc: 'Container expiration policy number of images to keep'
         optional :older_than, type: String, desc: 'Container expiration policy remove images older than value'
         optional :name_regex, type: String, desc: 'Container expiration policy regex for image removal'
+        optional :name_regex_keep, type: String, desc: 'Container expiration policy regex for image retention'
         optional :enabled, type: Boolean, desc: 'Flag indication if container expiration policy is enabled'
       end
 

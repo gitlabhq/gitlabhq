@@ -6,6 +6,8 @@
 class CreateMergeRequestContextCommitsAndDiffs < ActiveRecord::Migration[5.2]
   DOWNTIME = false
 
+  # rubocop:disable Migration/PreventStrings
+  # rubocop:disable Migration/AddLimitToTextColumns
   def change
     create_table :merge_request_context_commits do |t|
       t.references :merge_request, foreign_key: { on_delete: :cascade }
@@ -38,4 +40,6 @@ class CreateMergeRequestContextCommitsAndDiffs < ActiveRecord::Migration[5.2]
       t.index [:merge_request_context_commit_id, :sha], name: 'idx_mr_cc_diff_files_on_mr_cc_id_and_sha'
     end
   end
+  # rubocop:enable Migration/AddLimitToTextColumns
+  # rubocop:enable Migration/PreventStrings
 end

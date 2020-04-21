@@ -23,7 +23,7 @@ filebeat:
     output.elasticsearch:
       enabled: true
       hosts: ["http://elastic-stack-elasticsearch-client:9200"]
-    filebeat.prospectors:
+    filebeat.inputs:
     - type: log
       enabled: true
       paths:
@@ -86,6 +86,17 @@ elasticsearch-curator:
             timestring: '%Y.%m.%d'
             unit: days
             unit_count: 30
+        2:
+          action: delete_indices
+          description: >-
+            Indices created by filebeat 6.7.0 are incompatible with filebeat 7,
+            so they will be deleted.
+          options:
+            ignore_empty_list: True
+          filters:
+          - filtertype: pattern
+            kind: prefix
+            value: filebeat-6.7.0-
 
 elasticsearch-exporter:
   enabled: false

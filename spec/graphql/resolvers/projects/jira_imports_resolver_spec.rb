@@ -16,7 +16,7 @@ describe Resolvers::Projects::JiraImportsResolver do
         context 'when anonymous user' do
           let(:current_user) { nil }
 
-          it_behaves_like 'no jira import access'
+          it_behaves_like 'no Jira import access'
         end
       end
 
@@ -25,7 +25,7 @@ describe Resolvers::Projects::JiraImportsResolver do
           project.add_guest(user)
         end
 
-        it_behaves_like 'no jira import data present'
+        it_behaves_like 'no Jira import data present'
 
         it 'does not raise access error' do
           expect do
@@ -47,14 +47,14 @@ describe Resolvers::Projects::JiraImportsResolver do
           stub_feature_flags(jira_issue_import: false)
         end
 
-        it_behaves_like 'no jira import access'
+        it_behaves_like 'no Jira import access'
       end
 
       context 'when user cannot read Jira imports' do
         context 'when anonymous user' do
           let(:current_user) { nil }
 
-          it_behaves_like 'no jira import access'
+          it_behaves_like 'no Jira import access'
         end
       end
 

@@ -207,6 +207,12 @@ test:
   - bundle exec rake spec
 ```
 
+The image name must be in one of the following formats:
+
+- `image: <image-name>` (Same as using `<image-name>` with the `latest` tag)
+- `image: <image-name>:<tag>`
+- `image: <image-name>@<digest>`
+
 It is also possible to define different images and services per job:
 
 ```yaml

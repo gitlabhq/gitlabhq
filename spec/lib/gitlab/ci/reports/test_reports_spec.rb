@@ -141,6 +141,29 @@ describe Gitlab::Ci::Reports::TestReports do
     end
   end
 
+  describe '#suite_errors' do
+    subject { test_reports.suite_errors }
+
+    context 'when a suite has normal spec errors or failures' do
+      before do
+        test_reports.get_suite('junit').add_test_case(create_test_case_java_success)
+        test_reports.get_suite('junit').add_test_case(create_test_case_java_failed)
+        test_reports.get_suite('junit').add_test_case(create_test_case_java_error)
+      end
+
+      it { is_expected.to be_empty }
+    end
+
+    context 'when there is an error test case' do
+      before do
+        test_reports.get_suite('rspec').add_test_case(create_test_case_rspec_success)
+        test_reports.get_suite('junit').set_suite_error('Existential parsing error')
+      end
+
+      it { is_expected.to eq({ 'junit' => 'Existential parsing error' }) }
+    end
+  end
+
   Gitlab::Ci::Reports::TestCase::STATUS_TYPES.each do |status_type|
     describe "##{status_type}_count" do
       subject { test_reports.public_send("#{status_type}_count") }

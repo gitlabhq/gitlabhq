@@ -16,9 +16,6 @@ code_quality:
   needs: []
   allow_failure: true
   variables:
-    # emptying DOCKER_HOST so it can be detected properly on kubernetes executor
-    # with the script below
-    DOCKER_HOST: ""
     CODE_QUALITY_IMAGE: "registry.gitlab.com/gitlab-org/ci-cd/codequality:0.85.9"
   script:
     - |
@@ -82,11 +79,6 @@ eslint-sast:
   image:
     name: "$SAST_ANALYZER_IMAGE_PREFIX/eslint:$SAST_ANALYZER_IMAGE_TAG"
 
-kubesec-sast:
-  extends: .sast
-  image:
-    name: "$SAST_ANALYZER_IMAGE_PREFIX/kubesec:$SAST_ANALYZER_IMAGE_TAG"
-
 nodejs-scan-sast:
   extends: .sast
   image:
@@ -108,9 +100,6 @@ dependency_scanning:
   stage: test
   needs: []
   variables:
-    # emptying DOCKER_HOST so it can be detected properly on kubernetes executor
-    # with the script below
-    DOCKER_HOST: ""
     DS_EXCLUDED_PATHS: "qa/qa/ee/fixtures/secure_premade_reports,spec,ee/spec"  # GitLab-specific
   allow_failure: true
   script:

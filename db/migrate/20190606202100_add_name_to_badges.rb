@@ -6,6 +6,6 @@ class AddNameToBadges < ActiveRecord::Migration[5.0]
   DOWNTIME = false
 
   def change
-    add_column :badges, :name, :string, null: true, limit: 255
+    add_column :badges, :name, :string, null: true, limit: 255 # rubocop:disable Migration/PreventStrings
   end
 end

@@ -151,112 +151,333 @@ request, be sure to start the `dont-interrupt-me` job before pushing.
 
 ## PostgreSQL versions testing
 
-We follow [the PostgreSQL versions Omnibus support policy](https://gitlab.com/groups/gitlab-org/-/epics/2184#proposal):
+We follow the [PostgreSQL versions shipped with Omnibus GitLab](https://docs.gitlab.com/omnibus/package-information/postgresql_versions.html):
 
-|        | 12.10 (April 2020) | 13.0 (May 2020) | 13.1 (June 2020) | 13.2 (July 2020) | 13.3 (August 2020) | 13.4, 13.5   | 13.6 (November 2020) | 14.0 (May 2021?)     |
-| ------ | ------------------ | --------------- | ---------------- | ---------------- | ------------------ | ------------ | -------------------- | -------------------- |
-| PG9.6  | nightly            | -               | -                | -                | -                  | -            | -                    | -                    |
-| PG10   | `master`           | -               | -                | -                | -                  | -            | -                    | -                    |
-| PG11   | MRs/`master`       | MRs/`master`    | MRs/`master`     | MRs/`master`     | MRs/`master`       | MRs/`master` | nightly              | -                    |
-| PG12   | -                  | -               | -                | -                | `master`           | `master`     | MRs/`master`         | `master`             |
-| PG13   | -                  | -               | -                | -                | -                  | -            | -                    | MRs/`master`         |
+|        | 12.10 (April 2020) | 13.0 (May 2020) | 13.1 (June 2020) | 13.2 (July 2020) | 13.3 (August 2020) | 13.4, 13.5   | 13.6 (November 2020) | 14.0 (May 2021?) |
+| ------ | ------------------ | --------------- | ---------------- | ---------------- | ------------------ | ------------ | -------------------- | ---------------- |
+| PG9.6  | nightly            | -               | -                | -                | -                  | -            | -                    | -                |
+| PG10   | `master`           | -               | -                | -                | -                  | -            | -                    | -                |
+| PG11   | MRs/`master`       | MRs/`master`    | MRs/`master`     | MRs/`master`     | MRs/`master`       | MRs/`master` | nightly              | -                |
+| PG12   | -                  | -               | -                | -                | `master`           | `master`     | MRs/`master`         | `master`         |
+| PG13   | -                  | -               | -                | -                | -                  | -            | -                    | MRs/`master`     |
 
-## Directed acyclic graph
+## Pipeline types
 
-We're using the [`needs:`](../ci/yaml/README.md#needs) keyword to
-execute jobs out of order for the following jobs:
+Since we use the [`rules:`](../ci/yaml/README.md#rules) and [`needs:`](../ci/yaml/README.md#needs) keywords extensively,
+we have four main pipeline types which are described below. Note that an MR that includes multiple types of changes would
+have a pipelines that include jobs from multiple types (e.g. a combination of docs-only and code-only pipelines).
+
+### Docs-only MR pipeline
+
+Reference pipeline: <https://gitlab.com/gitlab-org/gitlab/pipelines/135236627>
+
+```mermaid
+graph LR
+  subgraph "No needed jobs";
+    1-1["danger-review (5.3 minutes)"];
+    click 1-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8100542&udv=0"
+    1-50["docs lint (6.75 minutes)"];
+    click 1-50 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8356757&udv=0"
+  end
+```
+
+### Code-only MR pipeline
+
+Reference pipeline: <https://gitlab.com/gitlab-org/gitlab/pipelines/136295694>
 
 ```mermaid
 graph RL;
-  A[setup-test-env];
-  B["gitlab:assets:compile pull-push-cache<br/>(canonical master only)"];
-  C["gitlab:assets:compile pull-cache<br/>(canonical default refs only)"];
-  D["cache gems<br/>(master and tags only)"];
-  E[review-build-cng];
-  F[build-qa-image];
-  G[review-deploy];
-  I["karma, jest"];
-  I2["karma-as-if-foss, jest-as-if-foss<br/>(EE default refs only)"];
-  J["compile-assets pull-push-cache<br/>(master only)"];
-  J2["compile-assets pull-push-cache as-if-foss<br/>(EE master only)"];
-  K[compile-assets pull-cache];
-  K2["compile-assets pull-cache as-if-foss<br/>(EE default refs only)"];
-  U[frontend-fixtures];
-  U2["frontend-fixtures-as-if-foss<br/>(EE default refs only)"];
-  V["webpack-dev-server, static-analysis"];
-  M[coverage];
-  O[coverage-frontend];
-  N["pages (master only)"];
-  Q[package-and-qa];
-  S["RSpec<br/>(e.g. rspec unit pg10)"]
-  T[retrieve-tests-metadata];
-  QA["qa:internal, qa:selectors"];
-  QA2["qa:internal-as-if-foss, qa:selectors-as-if-foss<br/>(EE default refs only)"];
-  X["docs lint, code_quality, sast, dependency_scanning, danger-review"];
+  classDef criticalPath fill:#f66;
 
-subgraph "`prepare` stage"
-    A
-    B
-    C
-    F
-    K
-    K2
-    J
-    J2
-    T
-    end
+  subgraph "No needed jobs";
+    1-1["danger-review (5.3 minutes)"];
+    click 1-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8100542&udv=0"
+    1-2["build-qa-image (4.4 minutes)"];
+    click 1-2 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914325&udv=0"
+    1-3["compile-assets pull-cache (9.06 minutes)"];
+    click 1-3 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914317&udv=0"
+    1-4["compile-assets pull-cache as-if-foss (8.35 minutes)"];
+    click 1-4 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8356616&udv=0"
+    1-5["gitlab:assets:compile pull-cache (22 minutes)"];
+    click 1-5 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914312&udv=0"
+    1-6["setup-test-env pg11 (9.6 minutes)"];
+    click 1-6 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914315&udv=0"
+    1-7["review-stop-failed-deployment"];
+    1-8["dependency_scanning"];
+    1-9["qa:internal, qa:internal-as-if-foss"];
+    1-11["qa:selectors, qa:selectors-as-if-foss"];
+    1-14["retrieve-tests-metadata (1.5 minutes)"];
+    click 1-14 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8356697&udv=0"
+    1-15["code_quality"];
+    1-16["brakeman-sast"];
+    1-17["eslint-sast"];
+    1-18["kubesec-sast"];
+    1-19["nodejs-scan-sast"];
+    1-20["secrets-sast"];
 
-subgraph "`fixture` stage"
-    U -.-> |needs and depends on| A;
-    U -.-> |needs and depends on| K;
-    U2 -.-> |needs and depends on| A;
-    U2 -.-> |needs and depends on| K2;
-    end
-
-subgraph "`test` stage"
-    D -.-> |needs| A;
-    I -.-> |needs and depends on| U;
-    I2 -.-> |needs and depends on| U2;
-    L -.-> |needs and depends on| A;
-    S -.-> |needs and depends on| A;
-    S -.-> |needs and depends on| K;
-    S -.-> |needs and depends on| T;
-    L["db:*, gitlab:setup, graphql-docs-verify, downtime_check"] -.-> |needs| A;
-    V -.-> |needs and depends on| K;
-    X -.-> |needs| T;
-    QA -.-> |needs| T;
-    QA2 -.-> |needs| T;
-    end
-
-subgraph "`post-test` stage"
-    M --> |happens after| S
-    O --> |needs `jest`| I
-    end
-
-subgraph "`review-prepare` stage"
-    E -.-> |needs| C;
-    end
-
-subgraph "`review` stage"
-    G -.-> |needs| E
-    end
-
-subgraph "`qa` stage"
-    Q -.-> |needs| C;
-    Q -.-> |needs| F;
-    QA1["review-qa-smoke, review-qa-all, review-performance, dast"] -.-> |needs| G;
-    end
-
-subgraph "`post-qa` stage"
-  PQA1["parallel-spec-reports"] -.-> |depends on `review-qa-all`| QA1;
+    class 1-3 criticalPath;
+    class 1-6 criticalPath;
   end
 
-subgraph "`pages` stage"
-    N -.-> |depends on| C;
-    N -.-> |depends on karma| I;
-    N -.-> |depends on| M;
-    N --> |happens after| PQA1
-    end
+  2_1-1["graphql-reference-verify (5 minutes)"];
+  click 2_1-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8356715&udv=0"
+  2_1-2["memory-static (4.75 minutes)"];
+  click 2_1-2 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8356721&udv=0"
+  2_1-3["run-dev-fixtures (5 minutes)"];
+  click 2_1-3 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8356729&udv=0"
+  2_1-4["run-dev-fixtures-ee (5 minutes)"];
+  click 2_1-4 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8356731&udv=0"
+
+  subgraph "Needs `setup-test-env`";
+    2_1-1 & 2_1-2 & 2_1-3 & 2_1-4 --> 1-6;
+  end
+
+  2_2-1["static-analysis (17 minutes)"];
+  click 2_2-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914471&udv=0"
+  2_2-2["frontend-fixtures (17.2 minutes)"];
+  class 2_2-2 criticalPath;
+  click 2_2-2 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=7910143&udv=0"
+  2_2-3["frontend-fixtures-as-if-foss (8.75 minutes)"];
+  click 2_2-3 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=7910154&udv=0"
+  2_2-4["memory-on-boot (7.19 minutes)"];
+  click 2_2-4 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8356727&udv=0"
+  2_2-5["webpack-dev-server (7.62 minutes)"];
+  click 2_2-5 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8404303&udv=0"
+
+  subgraph "Needs `setup-test-env` & `compile-assets`";
+    2_2-1 & 2_2-2 & 2_2-4 & 2_2-5 --> 1-6 & 1-3;
+    2_2-3 --> 1-6 & 1-4;
+  end
+
+  subgraph "Needs `build-qa-image` & `gitlab:assets:compile`";
+    2_3-1["package-and-qa (manual)"] --> 1-2 & 1-5;
+    click 2_3-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914305&udv=0"
+  end
+
+  subgraph "Needs `compile-assets`, `setup-test-env, & `retrieve-tests-metadata`";
+    2_4-1["rspec & db jobs (12-22 minutes)"] --> 1-3 & 1-6 & 1-14;
+    class 2_4-1 criticalPath;
+    click 2_4-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations"
+  end
+
+  3_1-1["jest (11.2 minutes)"];
+  class 3_1-1 criticalPath;
+  click 3_1-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914204&udv=0"
+  3_1-2["karma (9.18 minutes)"];
+  click 3_1-3 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914200&udv=0"
+  3_1-3["jest-as-if-foss (14.8 minutes)"];
+  click 3_1-3 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914205&udv=0"
+  3_1-4["karma-as-if-foss (8.25 minutes)"];
+  click 3_1-4 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914203&udv=0"
+
+  subgraph "Needs `frontend-fixtures`";
+    3_1-1 & 3_1-2 --> 2_2-2;
+    3_1-3 & 3_1-4 --> 2_2-3;
+  end
+
+  subgraph "Depends on `rspec` jobs";
+    3_2-1["rspec:coverage (7.67 minutes)"] -.->|"(don't use needs because of limitations)"| 2_4-1;
+    class 3_2-1 criticalPath;
+    click 3_2-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=7248745&udv=0"
+  end
+
+  subgraph "Needs `jest`";
+    4_1-1["coverage-frontend (5.39 minutes)"] --> 3_1-1;
+    class 4_1-1 criticalPath;
+    click 4_1-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=7910777&udv=0"
+  end
+```
+
+### Frontend-only MR pipeline
+
+Reference pipeline: <https://gitlab.com/gitlab-org/gitlab/pipelines/134661039>
+
+```mermaid
+graph RL;
+  classDef criticalPath fill:#f66;
+
+  subgraph "No needed jobs";
+    1-1["danger-review (5.3 minutes)"];
+    click 1-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8100542&udv=0"
+    1-2["build-qa-image (4.4 minutes)"];
+    click 1-2 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914325&udv=0"
+    1-3["compile-assets pull-cache (9.06 minutes)"];
+    click 1-3 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914317&udv=0"
+    1-4["compile-assets pull-cache as-if-foss (8.35 minutes)"];
+    click 1-4 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8356616&udv=0"
+    1-5["gitlab:assets:compile pull-cache (22 minutes)"];
+    click 1-5 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914312&udv=0"
+    1-6["setup-test-env pg11 (9.6 minutes)"];
+    click 1-6 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914315&udv=0"
+    1-7["review-stop-failed-deployment"];
+    1-8["dependency_scanning"];
+    1-9["qa:internal, qa:internal-as-if-foss"];
+    1-11["qa:selectors, qa:selectors-as-if-foss"];
+    1-14["retrieve-tests-metadata (1.5 minutes)"];
+    click 1-14 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8356697&udv=0"
+    1-15["code_quality"];
+    1-16["brakeman-sast"];
+    1-17["eslint-sast"];
+    1-18["kubesec-sast"];
+    1-19["nodejs-scan-sast"];
+    1-20["secrets-sast"];
+
+    class 1-3 criticalPath;
+    class 1-5 criticalPath;
+    class 1-6 criticalPath;
+  end
+
+  2_1-1["graphql-reference-verify (5 minutes)"];
+  click 2_1-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8356715&udv=0"
+  2_1-2["memory-static (4.75 minutes)"];
+  click 2_1-2 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8356721&udv=0"
+  2_1-3["run-dev-fixtures (5 minutes)"];
+  click 2_1-3 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8356729&udv=0"
+  2_1-4["run-dev-fixtures-ee (5 minutes)"];
+  click 2_1-4 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8356731&udv=0"
+
+  subgraph "Needs `setup-test-env`";
+    2_1-1 & 2_1-2 & 2_1-3 & 2_1-4 --> 1-6;
+  end
+
+  2_2-1["static-analysis (17 minutes)"];
+  click 2_2-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914471&udv=0"
+  2_2-2["frontend-fixtures (17.2 minutes)"];
+  class 2_2-2 criticalPath;
+  click 2_2-2 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=7910143&udv=0"
+  2_2-3["frontend-fixtures-as-if-foss (8.75 minutes)"];
+  click 2_2-3 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=7910154&udv=0"
+  2_2-4["memory-on-boot (7.19 minutes)"];
+  click 2_2-4 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8356727&udv=0"
+  2_2-5["webpack-dev-server (7.62 minutes)"];
+  click 2_2-5 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8404303&udv=0"
+
+  subgraph "Needs `setup-test-env` & `compile-assets`";
+    2_2-1 & 2_2-2 & 2_2-4 & 2_2-5 --> 1-6 & 1-3;
+    2_2-3 --> 1-6 & 1-4;
+  end
+
+  subgraph "Needs `build-qa-image` & `gitlab:assets:compile`";
+    2_3-1["package-and-qa (manual)"] --> 1-2 & 1-5;
+    click 2_3-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914305&udv=0"
+  end
+
+  subgraph "Needs `compile-assets`, `setup-test-env, & `retrieve-tests-metadata`";
+    2_4-1["rspec & db jobs (12-22 minutes)"] --> 1-3 & 1-6 & 1-14;
+    class 2_4-1 criticalPath;
+    click 2_4-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations"
+  end
+
+  subgraph "Needs `gitlab:assets:compile`";
+    2_5-1["review-build-cng (27.3 minutes)"] --> 1-5;
+    class 2_5-1 criticalPath;
+    click 2_5-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914314&udv=0"
+  end
+
+  3_1-1["jest (11.2 minutes)"];
+  class 3_1-1 criticalPath;
+  click 3_1-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914204&udv=0"
+  3_1-2["karma (9.18 minutes)"];
+  click 3_1-3 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914200&udv=0"
+  3_1-3["jest-as-if-foss (14.8 minutes)"];
+  click 3_1-3 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914205&udv=0"
+  3_1-4["karma-as-if-foss (8.25 minutes)"];
+  click 3_1-4 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914203&udv=0"
+
+  subgraph "Needs `frontend-fixtures`";
+    3_1-1 & 3_1-3 --> 2_2-2;
+    3_1-2 & 3_1-4 --> 2_2-3;
+  end
+
+  subgraph "Depends on `rspec` jobs";
+    3_2-1["rspec:coverage (7.67 minutes)"] -.->|"(don't use needs because of limitations)"| 2_4-1;
+    class 3_2-1 criticalPath;
+    click 3_2-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=7248745&udv=0"
+  end
+
+  subgraph "Needs `jest`";
+    4_1-1["coverage-frontend (5.39 minutes)"] --> 3_1-1;
+    class 4_1-1 criticalPath;
+    click 4_1-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=7910777&udv=0"
+  end
+
+  subgraph "Played by `review-build-cng`";
+    3_3-1["review-deploy (6 minutes)"] --> 2_5-1;
+    class 3_3-1 criticalPath;
+    click 3_3-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6721130&udv=0"
+  end
+
+  4_2-1["review-qa-smoke (7.29 minutes)"];
+  class 4_2-1 criticalPath;
+  click 4_2-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6729805&udv=0"
+  4_2-2["review-performance (3.83 minutes)"];
+  click 4_2-2 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8356817&udv=0"
+  4_2-3["dast (16.4 minutes)"];
+  click 4_2-3 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8356819&udv=0"
+
+  subgraph "Played by `review-deploy`";
+    4_2-1 & 4_2-2 & 4_2-3 -.->|"(don't use needs because of limitations)"| 3_3-1;
+  end
+```
+
+### QA-only MR pipeline
+
+Reference pipeline: <https://gitlab.com/gitlab-org/gitlab/pipelines/134645109>
+
+```mermaid
+graph RL;
+  classDef criticalPath fill:#f66;
+
+  subgraph "No needed jobs";
+    1-1["danger-review (5.3 minutes)"];
+    click 1-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8100542&udv=0"
+    1-2["build-qa-image (4.4 minutes)"];
+    click 1-2 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914325&udv=0"
+    1-3["compile-assets pull-cache (9.06 minutes)"];
+    click 1-3 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914317&udv=0"
+    1-4["compile-assets pull-cache as-if-foss (8.35 minutes)"];
+    click 1-4 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8356616&udv=0"
+    1-5["gitlab:assets:compile pull-cache (22 minutes)"];
+    click 1-5 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914312&udv=0"
+    1-6["setup-test-env pg11 (9.6 minutes)"];
+    click 1-6 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914315&udv=0"
+    1-7["review-stop-failed-deployment"];
+    1-8["dependency_scanning"];
+    1-9["qa:internal, qa:internal-as-if-foss"];
+    1-11["qa:selectors, qa:selectors-as-if-foss"];
+    1-14["retrieve-tests-metadata (1.5 minutes)"];
+    click 1-14 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8356697&udv=0"
+    1-15["code_quality"];
+    1-16["brakeman-sast"];
+    1-17["eslint-sast"];
+    1-18["kubesec-sast"];
+    1-19["nodejs-scan-sast"];
+    1-20["secrets-sast"];
+
+    class 1-3 criticalPath;
+    class 1-5 criticalPath;
+    class 1-6 criticalPath;
+  end
+
+  2_1-1["graphql-reference-verify (5 minutes)"];
+  click 2_1-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8356715&udv=0"
+
+  subgraph "Needs `setup-test-env`";
+    2_1-1 --> 1-6;
+  end
+
+  2_2-1["static-analysis (17 minutes)"];
+  click 2_2-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914471&udv=0"
+
+  subgraph "Needs `setup-test-env` & `compile-assets`";
+    2_2-1 --> 1-6 & 1-3;
+  end
+
+  subgraph "Needs `build-qa-image` & `gitlab:assets:compile`";
+    2_3-1["package-and-qa (108 minutes)"] --> 1-2 & 1-5;
+    class 2_3-1 criticalPath;
+    click 2_3-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914305&udv=0"
+  end
 ```
 
 ## Test jobs

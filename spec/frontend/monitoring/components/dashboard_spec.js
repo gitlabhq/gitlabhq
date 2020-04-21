@@ -1,16 +1,18 @@
 import { shallowMount, mount } from '@vue/test-utils';
-import { GlDropdownItem, GlDeprecatedButton } from '@gitlab/ui';
+import Tracking from '~/tracking';
+import { GlModal, GlDropdownItem, GlDeprecatedButton } from '@gitlab/ui';
 import VueDraggable from 'vuedraggable';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import statusCodes from '~/lib/utils/http_status';
 import { metricStates } from '~/monitoring/constants';
-import Dashboard from '~/monitoring/components/dashboard.vue';
+import Dashboard from '~/monitoring/components/dashboard_with_alerts.vue';
 
 import DateTimePicker from '~/vue_shared/components/date_time_picker/date_time_picker.vue';
+import CustomMetricsFormFields from '~/custom_metrics/components/custom_metrics_form_fields.vue';
 import DashboardsDropdown from '~/monitoring/components/dashboards_dropdown.vue';
 import GroupEmptyState from '~/monitoring/components/group_empty_state.vue';
-import PanelType from 'ee_else_ce/monitoring/components/panel_type.vue';
+import PanelType from '~/monitoring/components/panel_type_with_alerts.vue';
 import { createStore } from '~/monitoring/stores';
 import * as types from '~/monitoring/stores/mutation_types';
 import { setupStoreWithDashboard, setMetricResult, setupStoreWithData } from '../store_utils';
@@ -543,6 +545,76 @@ describe('Dashboard', () => {
       return wrapper.vm.$nextTick(() => {
         expect(getClipboardTextAt(0)).not.toContain(`dashboard=`);
         expect(getClipboardTextAt(0)).toContain(`y_label=`);
+      });
+    });
+  });
+
+  describe('add custom metrics', () => {
+    const findAddMetricButton = () => wrapper.vm.$refs.addMetricBtn;
+    describe('when not available', () => {
+      beforeEach(() => {
+        createShallowWrapper({
+          hasMetrics: true,
+          customMetricsPath: '/endpoint',
+        });
+      });
+      it('does not render add button on the dashboard', () => {
+        expect(findAddMetricButton()).toBeUndefined();
+      });
+    });
+
+    describe('when available', () => {
+      let origPage;
+      beforeEach(done => {
+        jest.spyOn(Tracking, 'event').mockReturnValue();
+        createShallowWrapper({
+          hasMetrics: true,
+          customMetricsPath: '/endpoint',
+          customMetricsAvailable: true,
+        });
+        setupStoreWithData(wrapper.vm.$store);
+
+        origPage = document.body.dataset.page;
+        document.body.dataset.page = 'projects:environments:metrics';
+
+        wrapper.vm.$nextTick(done);
+      });
+      afterEach(() => {
+        document.body.dataset.page = origPage;
+      });
+
+      it('renders add button on the dashboard', () => {
+        expect(findAddMetricButton()).toBeDefined();
+      });
+
+      it('uses modal for custom metrics form', () => {
+        expect(wrapper.find(GlModal).exists()).toBe(true);
+        expect(wrapper.find(GlModal).attributes().modalid).toBe('add-metric');
+      });
+      it('adding new metric is tracked', done => {
+        const submitButton = wrapper.vm.$refs.submitCustomMetricsFormBtn;
+        wrapper.setData({
+          formIsValid: true,
+        });
+        wrapper.vm.$nextTick(() => {
+          submitButton.$el.click();
+          wrapper.vm.$nextTick(() => {
+            expect(Tracking.event).toHaveBeenCalledWith(
+              document.body.dataset.page,
+              'click_button',
+              {
+                label: 'add_new_metric',
+                property: 'modal',
+                value: undefined,
+              },
+            );
+            done();
+          });
+        });
+      });
+
+      it('renders custom metrics form fields', () => {
+        expect(wrapper.find(CustomMetricsFormFields).exists()).toBe(true);
       });
     });
   });

@@ -532,7 +532,7 @@ Then install it on your cluster:
 helm install --name kibana stable/elastic-stack --values kibana.yml
 ```
 
-To access kibana, forward the port to your local machine:
+To access Kibana, forward the port to your local machine:
 
 ```shell
 kubectl port-forward svc/kibana 5601:443
@@ -556,8 +556,6 @@ To enable Fluentd:
 1. Provide the host domain name or URL in **SIEM Hostname**.
 1. Provide the host port number in **SIEM Port**.
 1. Select a **SIEM Protocol**.
-1. Check **Send ModSecurity Logs**. If you do not select this checkbox, the **Install**
-   button is disabled.
 1. Click **Save changes**.
 
 ![Fluentd input fields](img/fluentd_v12_10.png)
@@ -777,7 +775,7 @@ In order for GitLab Runner to function, you **must** specify the following:
 - `runnerRegistrationToken` - The registration token for adding new Runners to GitLab. This must be
   [retrieved from your GitLab instance](../../ci/runners/README.md).
 
-These values can be specifed using [CI variables](../../ci/variables/README.md):
+These values can be specified using [CI variables](../../ci/variables/README.md):
 
 - `GITLAB_RUNNER_GITLAB_URL` will be used for `gitlabUrl`.
 - `GITLAB_RUNNER_REGISTRATION_TOKEN` will be used for `runnerRegistrationToken`
@@ -916,7 +914,7 @@ when upgrading the Vault application.
 To optimally use Vault in a production environment, it's ideal to have a good understanding
 of the internals of Vault and how to configure it. This can be done by reading the
 [the Vault documentation](https://www.vaultproject.io/docs/internals/) as well as
-the Vault Helm chart [values.yaml file](https://github.com/hashicorp/vault-helm/blob/v0.3.3/values.yaml).
+the Vault Helm chart [`values.yaml` file](https://github.com/hashicorp/vault-helm/blob/v0.3.3/values.yaml).
 
 At a minimum you will likely set up:
 
@@ -1042,7 +1040,7 @@ elasticStack:
 
 Elastic Stack is installed into the `gitlab-managed-apps` namespace of your cluster.
 
-You can check the default [values.yaml](https://gitlab.com/gitlab-org/gitlab/-/blob/master/vendor/elastic_stack/values.yaml) we set for this chart.
+You can check the default [`values.yaml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/vendor/elastic_stack/values.yaml) we set for this chart.
 
 You can customize the installation of Elastic Stack by defining
 `.gitlab/managed-apps/elastic-stack/values.yaml` file in your cluster
@@ -1055,7 +1053,7 @@ In this alpha implementation of installing Elastic Stack through CI, reading the
 
 ### Install Crossplane using GitLab CI/CD
 
-> [Introduced](https://gitlab.com/gitlab-org/cluster-integration/cluster-applications/-/merge_requests/68) in GitLab 12.9.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/35675) in GitLab 12.9.
 
 Crossplane is installed using GitLab CI/CD by defining configuration in
 `.gitlab/managed-apps/config.yaml`.
@@ -1069,13 +1067,15 @@ Crossplane:
 
 Crossplane is installed into the `gitlab-managed-apps` namespace of your cluster.
 
-You can check the default [values.yaml](https://github.com/crossplane/crossplane/blob/master/cluster/charts/crossplane/values.yaml.tmpl) we set for this chart.
+You can check the default
+[`values.yaml`](https://github.com/crossplane/crossplane/blob/master/cluster/charts/crossplane/values.yaml.tmpl)
+we set for this chart.
 
 You can customize the installation of Crossplane by defining
 `.gitlab/managed-apps/crossplane/values.yaml` file in your cluster
 management project. Refer to the
 [chart](https://github.com/crossplane/crossplane/tree/master/cluster/charts/crossplane#configuration) for the
-available configuration options. Note that this link points to the docs for the current development release, which may differ from the version you have installed. You can check out a specific version in the branch/tag switcher.
+available configuration options. Note that this link points to the documentation for the current development release, which may differ from the version you have installed.
 
 ### Install Fluentd using GitLab CI/CD
 
@@ -1088,7 +1088,7 @@ Fluentd:
   installed: true
 ```
 
-You can also review the default values set for this chart in the [values.yaml](https://github.com/helm/charts/blob/master/stable/fluentd/values.yaml) file.
+You can also review the default values set for this chart in the [`values.yaml`](https://github.com/helm/charts/blob/master/stable/fluentd/values.yaml) file.
 
 You can customize the installation of Fluentd by defining
 `.gitlab/managed-apps/fluentd/values.yaml` file in your cluster management

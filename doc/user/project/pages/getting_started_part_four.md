@@ -37,8 +37,8 @@ anything for them to work.
 Explaining [every detail of GitLab CI/CD](../../../ci/yaml/README.md)
 and GitLab Runner is out of the scope of this guide, but we'll
 need to understand just a few things to be able to write our own
-`.gitlab-ci.yml` or tweak an existing one. It's an
-[Yaml](https://docs.ansible.com/ansible/latest/reference_appendices/YAMLSyntax.html) file,
+`.gitlab-ci.yml` or tweak an existing one. It's a
+[YAML](https://docs.ansible.com/ansible/latest/reference_appendices/YAMLSyntax.html) file,
 with its own syntax. You can always check your CI syntax with
 the [GitLab CI/CD Lint Tool](https://gitlab.com/ci/lint).
 
@@ -60,7 +60,7 @@ jekyll build
 
 ### Script
 
-To transpose this script to Yaml, it would be like this:
+To transpose this script to YAML, it would be like this:
 
 ```yaml
 script:

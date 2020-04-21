@@ -10,14 +10,6 @@ module QA
         end
       end
 
-      before(:all) do
-        Runtime::Feature.enable_and_verify('new_variables_ui')
-      end
-
-      after(:all) do
-        Runtime::Feature.remove('new_variables_ui')
-      end
-
       before do
         Flow::Login.sign_in
         add_ci_variable

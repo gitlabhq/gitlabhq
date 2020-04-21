@@ -18,7 +18,10 @@ class ScheduleBackfillPushRulesIdInProjects < ActiveRecord::Migration[6.0]
     # Update one record that is connected to the instance
     value_to_be_updated_to = ScheduleBackfillPushRulesIdInProjects::PushRules.find_by(is_sample: true)&.id
 
-    execute "UPDATE application_settings SET push_rule_id = #{value_to_be_updated_to}" if value_to_be_updated_to
+    if value_to_be_updated_to
+      execute "UPDATE application_settings SET push_rule_id = #{value_to_be_updated_to}
+        WHERE id IN (SELECT MAX(id) FROM application_settings);"
+    end
 
     ApplicationSetting.expire
 

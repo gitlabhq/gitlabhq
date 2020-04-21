@@ -19,6 +19,7 @@ module ServiceParams
     :color,
     :colorize_messages,
     :comment_on_event_enabled,
+    :comment_detail,
     :confidential_issues_events,
     :default_irc_uri,
     :description,

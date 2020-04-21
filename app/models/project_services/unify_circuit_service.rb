@@ -38,7 +38,7 @@ class UnifyCircuitService < ChatNotificationService
     [
       { type: 'text', name: 'webhook', placeholder: "e.g. https://circuit.com/rest/v2/webhooks/incoming/…", required: true },
       { type: 'checkbox', name: 'notify_only_broken_pipelines' },
-      { type: 'select', name: 'branches_to_be_notified', choices: BRANCH_CHOICES }
+      { type: 'select', name: 'branches_to_be_notified', choices: branch_choices }
     ]
   end
 

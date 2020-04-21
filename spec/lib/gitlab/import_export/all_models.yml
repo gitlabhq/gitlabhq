@@ -443,6 +443,7 @@ project:
 - vulnerability_scanners
 - operations_feature_flags
 - operations_feature_flags_client
+- operations_feature_flags_user_lists
 - prometheus_alerts
 - prometheus_alert_events
 - self_managed_prometheus_alert_events

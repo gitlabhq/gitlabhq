@@ -11,7 +11,7 @@ class AddMergeRequestExternalDiffs < ActiveRecord::Migration[5.0]
 
   def change
     # Allow the merge request diff to store details about an external file
-    add_column :merge_request_diffs, :external_diff, :string # rubocop:disable Migration/AddLimitToStringColumns
+    add_column :merge_request_diffs, :external_diff, :string # rubocop:disable Migration/PreventStrings
     add_column :merge_request_diffs, :external_diff_store, :integer
     add_column :merge_request_diffs, :stored_externally, :boolean
 

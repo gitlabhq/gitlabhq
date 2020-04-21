@@ -6,7 +6,7 @@ def match_mr1_note(content_regex)
   MergeRequest.find_by(title: 'MR1').notes.select { |n| n.note.match(/#{content_regex}/)}.first
 end
 
-describe Gitlab::ImportExport::Project::TreeRestorer, quarantine: { flaky: 'https://gitlab.com/gitlab-org/gitlab/-/issues/213793' } do
+describe Gitlab::ImportExport::Project::TreeRestorer do
   include ImportExport::CommonUtil
 
   let(:shared) { project.import_export_shared }

@@ -12,6 +12,10 @@ unless Gitlab::Runtime.sidekiq?
     config.lograge.logger = ActiveSupport::Logger.new(filename)
     config.lograge.before_format = lambda do |data, payload|
       data.delete(:error)
+      data[:db_duration_s] = Gitlab::Utils.ms_to_round_sec(data.delete(:db))
+      data[:view_duration_s] = Gitlab::Utils.ms_to_round_sec(data.delete(:view))
+      data[:duration_s] = Gitlab::Utils.ms_to_round_sec(data.delete(:duration))
+
       data
     end
 

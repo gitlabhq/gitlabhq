@@ -1,4 +1,4 @@
-import _ from 'underscore';
+import { debounce, throttle } from 'lodash';
 
 export const placeholderImage =
   'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
@@ -82,7 +82,7 @@ export default class LazyLoader {
   }
 
   startIntersectionObserver = () => {
-    this.throttledElementsInView = _.throttle(() => this.checkElementsInView(), 300);
+    this.throttledElementsInView = throttle(() => this.checkElementsInView(), 300);
     this.intersectionObserver = new IntersectionObserver(this.onIntersection, {
       rootMargin: `${SCROLL_THRESHOLD}px 0px`,
       thresholds: 0.1,
@@ -102,8 +102,8 @@ export default class LazyLoader {
   };
 
   startLegacyObserver() {
-    this.throttledScrollCheck = _.throttle(() => this.scrollCheck(), 300);
-    this.debouncedElementsInView = _.debounce(() => this.checkElementsInView(), 300);
+    this.throttledScrollCheck = throttle(() => this.scrollCheck(), 300);
+    this.debouncedElementsInView = debounce(() => this.checkElementsInView(), 300);
     window.addEventListener('scroll', this.throttledScrollCheck);
     window.addEventListener('resize', this.debouncedElementsInView);
   }

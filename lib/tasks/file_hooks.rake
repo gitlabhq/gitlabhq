@@ -1,7 +1,7 @@
 namespace :file_hooks do
-  desc 'Validate existing plugins'
+  desc 'Validate existing file hooks'
   task validate: :environment do
-    puts 'Validating file hooks from /plugins directory'
+    puts 'Validating file hooks from /file_hooks and /plugins directories'
 
     Gitlab::FileHook.files.each do |file|
       success, message = Gitlab::FileHook.execute(file, Gitlab::DataBuilder::Push::SAMPLE_DATA)

@@ -10,9 +10,26 @@ RSpec.shared_examples 'merge quick action' do
     it 'merges the MR', :sidekiq_might_not_need_inline do
       add_note("/merge")
 
-      expect(page).to have_content 'Scheduled to merge this merge request when the pipeline succeeds.'
+      expect(page).to have_content 'Merged this merge request.'
 
       expect(merge_request.reload).to be_merged
+    end
+
+    context 'when auto merge is avialable' do
+      before do
+        create(:ci_pipeline, :detached_merge_request_pipeline,
+          project: project, merge_request: merge_request)
+        merge_request.update_head_pipeline
+      end
+
+      it 'schedules to merge the MR' do
+        add_note("/merge")
+
+        expect(page).to have_content "Scheduled to merge this merge request (Merge when pipeline succeeds)."
+
+        expect(merge_request.reload).to be_auto_merge_enabled
+        expect(merge_request.reload).not_to be_merged
+      end
     end
   end
 

@@ -17,8 +17,9 @@ class Projects::ProjectMembersController < Projects::ApplicationController
     @group_links = @project.project_group_links
     @group_links = @group_links.search(params[:search]) if params[:search].present?
 
-    @project_members = MembersFinder.new(@project, current_user)
-      .execute(include_relations: requested_relations, params: params.merge(sort: @sort))
+    @project_members = MembersFinder
+      .new(@project, current_user, params: filter_params)
+      .execute(include_relations: requested_relations)
 
     @project_members = present_members(@project_members.page(params[:page]))
 
@@ -43,12 +44,17 @@ class Projects::ProjectMembersController < Projects::ApplicationController
       return render_404
     end
 
-    redirect_to(project_project_members_path(project),
-                notice: notice)
+    redirect_to(project_project_members_path(project), notice: notice)
   end
 
   # MembershipActions concern
   alias_method :membershipable, :project
+
+  private
+
+  def filter_params
+    params.permit(:search).merge(sort: @sort)
+  end
 end
 
 Projects::ProjectMembersController.prepend_if_ee('EE::Projects::ProjectMembersController')

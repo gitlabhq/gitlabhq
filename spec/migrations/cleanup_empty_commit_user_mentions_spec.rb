@@ -14,7 +14,7 @@ describe CleanupEmptyCommitUserMentions, :migration, :sidekiq do
   let(:project) { projects.create!(name: 'gitlab1', path: 'gitlab1', namespace_id: group.id, visibility_level: 0) }
 
   let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '', 'group/project') }
-  let(:commit) { Commit.new(RepoHelpers.sample_commit, project.becomes(Project)) }
+  let(:commit) { Commit.new(RepoHelpers.sample_commit, project) }
   let(:commit_user_mentions) { table(:commit_user_mentions) }
 
   let!(:resource1) { notes.create!(commit_id: commit.id, noteable_type: 'Commit', project_id: project.id, author_id: user.id, note: 'note1 for @root to check') }

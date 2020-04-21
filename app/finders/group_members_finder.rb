@@ -9,7 +9,6 @@ class GroupMembersFinder < UnionFinder
   #   search:     string
   #   created_after: datetime
   #   created_before: datetime
-
   attr_reader :params
 
   def initialize(group, user = nil, params: {})
@@ -22,7 +21,6 @@ class GroupMembersFinder < UnionFinder
   def execute(include_relations: [:inherited, :direct])
     group_members = group.members
     relations = []
-    @params = params
 
     return group_members if include_relations == [:direct]
 

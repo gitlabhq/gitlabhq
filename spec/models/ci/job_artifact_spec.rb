@@ -86,6 +86,22 @@ describe Ci::JobArtifact do
     end
   end
 
+  describe '.terraform_reports' do
+    context 'when there is a terraform report' do
+      it 'return the job artifact' do
+        artifact = create(:ci_job_artifact, :terraform)
+
+        expect(described_class.terraform_reports).to eq([artifact])
+      end
+    end
+
+    context 'when there are no terraform reports' do
+      it 'return the an empty array' do
+        expect(described_class.terraform_reports).to eq([])
+      end
+    end
+  end
+
   describe '.erasable' do
     subject { described_class.erasable }
 

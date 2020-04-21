@@ -10,7 +10,7 @@ class AddCanonicalEmails < ActiveRecord::Migration[6.0]
       create_table :user_canonical_emails do |t|
         t.timestamps_with_timezone
         t.references :user, index: false, null: false, foreign_key: { on_delete: :cascade }
-        t.string :canonical_email, null: false, index: true # rubocop:disable Migration/AddLimitToStringColumns
+        t.string :canonical_email, null: false, index: true # rubocop:disable Migration/PreventStrings
       end
     end
 

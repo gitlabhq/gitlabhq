@@ -30,7 +30,9 @@ module AutoMerge
     end
 
     def available_for?(merge_request)
-      merge_request.actual_head_pipeline&.active?
+      super do
+        merge_request.actual_head_pipeline&.active?
+      end
     end
   end
 end

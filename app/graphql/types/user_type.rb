@@ -10,6 +10,8 @@ module Types
 
     expose_permissions Types::PermissionTypes::User
 
+    field :id, GraphQL::ID_TYPE, null: false,
+          description: 'ID of the user'
     field :name, GraphQL::STRING_TYPE, null: false,
           description: 'Human-readable name of the user'
     field :username, GraphQL::STRING_TYPE, null: false,

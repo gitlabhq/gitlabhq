@@ -2,48 +2,44 @@
 
 # == Experimentation
 #
-# Utility module used for A/B testing experimental features. Define your experiments in the `EXPERIMENTS` constant.
-# The feature_toggle and environment keys are optional. If the feature_toggle is not set, a feature with the name of
-# the experiment will be checked, with a default value of true. The enabled_ratio is required and should be
-# the ratio for the number of users for which this experiment is enabled. For example: a ratio of 0.1 will
-# enable the experiment for 10% of the users (determined by the `experimentation_subject_index`).
+# Utility module for A/B testing experimental features. Define your experiments in the `EXPERIMENTS` constant.
+# Experiment options:
+# - environment (optional, defaults to enabled for development and GitLab.com)
+# - tracking_category (optional, used to set the category when tracking an experiment event)
+#
+# The experiment is controlled by a Feature Flag (https://docs.gitlab.com/ee/development/feature_flags/controls.html),
+# which is named "#{key}_experiment_percentage" and *must* be set with a percentage and not be used for other purposes.
+# To enable the experiment for 10% of the users (determined by the `experimentation_subject_index` value from a cookie):
+#
+# chatops: `/chatops run feature set key_experiment_percentage 10`
+# console: `Feature.get(:key_experiment_percentage).enable_percentage_of_time(10)`
+#
+# To disable the experiment:
+#
+# chatops: `/chatops run feature delete key_experiment_percentage`
+# console: `Feature.get(:key_experiment_percentage).remove`
 #
 module Gitlab
   module Experimentation
     EXPERIMENTS = {
       signup_flow: {
-        feature_toggle: :experimental_separate_sign_up_flow,
-        environment: ::Gitlab.dev_env_or_com?,
-        enabled_ratio: 1,
         tracking_category: 'Growth::Acquisition::Experiment::SignUpFlow'
       },
       paid_signup_flow: {
-        feature_toggle: :paid_signup_flow,
-        environment: ::Gitlab.dev_env_or_com?,
-        enabled_ratio: 1,
         tracking_category: 'Growth::Acquisition::Experiment::PaidSignUpFlow'
       },
       suggest_pipeline: {
-        feature_toggle: :suggest_pipeline,
-        environment: ::Gitlab.dev_env_or_com?,
-        enabled_ratio: 0.1,
         tracking_category: 'Growth::Expansion::Experiment::SuggestPipeline'
       },
       ci_notification_dot: {
-        feature_toggle: :ci_notification_dot,
-        environment: ::Gitlab.dev_env_or_com?,
-        enabled_ratio: 0.1,
         tracking_category: 'Growth::Expansion::Experiment::CiNotificationDot'
       },
       buy_ci_minutes_version_a: {
-        feature_toggle: :buy_ci_minutes_version_a,
-        environment: ::Gitlab.dev_env_or_com?,
-        enabled_ratio: 0.2,
         tracking_category: 'Growth::Expansion::Experiment::BuyCiMinutesVersionA'
       }
     }.freeze
 
-    # Controller concern that checks if an experimentation_subject_id cookie is present and sets it if absent.
+    # Controller concern that checks if an `experimentation_subject_id cookie` is present and sets it if absent.
     # Used for A/B testing of experimental features. Exposes the `experiment_enabled?(experiment_name)` method
     # to controllers and views. It returns true when the experiment is enabled and the user is selected as part
     # of the experimental group.
@@ -144,7 +140,7 @@ module Gitlab
         return false unless EXPERIMENTS.key?(experiment_key)
 
         experiment = experiment(experiment_key)
-        experiment.feature_toggle_enabled? && experiment.enabled_for_environment?
+        experiment.enabled? && experiment.enabled_for_environment?
       end
 
       def enabled_for_user?(experiment_key, experimentation_subject_index)
@@ -153,23 +149,28 @@ module Gitlab
       end
     end
 
-    Experiment = Struct.new(:key, :feature_toggle, :environment, :enabled_ratio, :tracking_category, keyword_init: true) do
-      def feature_toggle_enabled?
-        return Feature.enabled?(key, default_enabled: true) if feature_toggle.nil?
-
-        Feature.enabled?(feature_toggle)
+    Experiment = Struct.new(:key, :environment, :tracking_category, keyword_init: true) do
+      def enabled?
+        experiment_percentage.positive?
       end
 
       def enabled_for_environment?
-        return true if environment.nil?
+        return ::Gitlab.dev_env_or_com? if environment.nil?
 
         environment
       end
 
       def enabled_for_experimentation_subject?(experimentation_subject_index)
-        return false if enabled_ratio.nil? || experimentation_subject_index.blank?
+        return false if experimentation_subject_index.blank?
 
-        experimentation_subject_index <= enabled_ratio * 100
+        experimentation_subject_index <= experiment_percentage
+      end
+
+      private
+
+      # When a feature does not exist, the `percentage_of_time_value` method will return 0
+      def experiment_percentage
+        @experiment_percentage ||= Feature.get(:"#{key}_experiment_percentage").percentage_of_time_value
       end
     end
   end

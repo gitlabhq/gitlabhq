@@ -267,6 +267,7 @@ module API
           current_user: current_user,
           project: user_project,
           render_html: params[:render_html],
+          include_first_contribution: true,
           include_diverged_commits_count: params[:include_diverged_commits_count],
           include_rebase_in_progress: params[:include_rebase_in_progress]
       end

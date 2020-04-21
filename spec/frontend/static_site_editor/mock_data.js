@@ -21,10 +21,10 @@ export const sourcePath = 'foobar.md.html';
 export const savedContentMeta = {
   branch: {
     label: 'foobar',
-    url: 'foobar/-/tree/foorbar',
+    url: 'foobar/-/tree/foobar',
   },
   commit: {
-    label: 'c1461b08 ',
+    label: 'c1461b08',
     url: 'foobar/-/c1461b08',
   },
   mergeRequest: {

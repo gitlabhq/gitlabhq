@@ -45,6 +45,13 @@ export default {
       default: true,
     },
   },
+  data() {
+    return {
+      isUsernameLinkHovered: false,
+      emojiTitle: '',
+      authorStatusHasTooltip: false,
+    };
+  },
   computed: {
     toggleChevronClass() {
       return this.expanded ? 'fa-chevron-up' : 'fa-chevron-down';
@@ -58,6 +65,28 @@ export default {
     showGitlabTeamMemberBadge() {
       return this.author?.is_gitlab_employee;
     },
+    authorLinkClasses() {
+      return {
+        hover: this.isUsernameLinkHovered,
+        'text-underline': this.isUsernameLinkHovered,
+        'author-name-link': true,
+        'js-user-link': true,
+      };
+    },
+    authorStatus() {
+      return this.author.status_tooltip_html;
+    },
+    emojiElement() {
+      return this.$refs?.authorStatus?.querySelector('gl-emoji');
+    },
+  },
+  mounted() {
+    this.emojiTitle = this.emojiElement ? this.emojiElement.getAttribute('title') : '';
+
+    const authorStatusTitle = this.$refs?.authorStatus
+      ?.querySelector('.user-status-emoji')
+      ?.getAttribute('title');
+    this.authorStatusHasTooltip = authorStatusTitle && authorStatusTitle !== '';
   },
   methods: {
     ...mapActions(['setTargetNoteHash']),
@@ -68,6 +97,20 @@ export default {
       if (this.$store) {
         this.setTargetNoteHash(this.noteTimestampLink);
       }
+    },
+    removeEmojiTitle() {
+      this.emojiElement.removeAttribute('title');
+    },
+    addEmojiTitle() {
+      this.emojiElement.setAttribute('title', this.emojiTitle);
+    },
+    handleUsernameMouseEnter() {
+      this.$refs.authorNameLink.dispatchEvent(new Event('mouseenter'));
+      this.isUsernameLinkHovered = true;
+    },
+    handleUsernameMouseLeave() {
+      this.$refs.authorNameLink.dispatchEvent(new Event('mouseleave'));
+      this.isUsernameLinkHovered = false;
     },
   },
 };
@@ -87,18 +130,34 @@ export default {
     </div>
     <template v-if="hasAuthor">
       <a
-        v-once
+        ref="authorNameLink"
         :href="author.path"
-        class="js-user-link"
+        :class="authorLinkClasses"
         :data-user-id="author.id"
         :data-username="author.username"
       >
         <slot name="note-header-info"></slot>
         <span class="note-header-author-name bold">{{ author.name }}</span>
-        <span v-if="author.status_tooltip_html" v-html="author.status_tooltip_html"></span>
-        <span class="note-headline-light">@{{ author.username }}</span>
       </a>
-      <gitlab-team-member-badge v-if="showGitlabTeamMemberBadge" />
+      <span
+        v-if="authorStatus"
+        ref="authorStatus"
+        v-on="
+          authorStatusHasTooltip ? { mouseenter: removeEmojiTitle, mouseleave: addEmojiTitle } : {}
+        "
+        v-html="authorStatus"
+      ></span>
+      <span class="text-nowrap author-username">
+        <a
+          ref="authorUsernameLink"
+          class="author-username-link"
+          :href="author.path"
+          @mouseenter="handleUsernameMouseEnter"
+          @mouseleave="handleUsernameMouseLeave"
+          ><span class="note-headline-light">@{{ author.username }}</span>
+        </a>
+        <gitlab-team-member-badge v-if="showGitlabTeamMemberBadge" />
+      </span>
     </template>
     <span v-else>{{ __('A deleted user') }}</span>
     <span class="note-headline-light note-headline-meta">

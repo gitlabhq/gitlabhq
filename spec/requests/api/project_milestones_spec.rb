@@ -24,13 +24,13 @@ describe API::ProjectMilestones do
       project.add_reporter(reporter)
     end
 
-    it 'returns 404 response when the project does not exists' do
+    it 'returns 404 response when the project does not exist' do
       delete api("/projects/0/milestones/#{milestone.id}", user)
 
       expect(response).to have_gitlab_http_status(:not_found)
     end
 
-    it 'returns 404 response when the milestone does not exists' do
+    it 'returns 404 response when the milestone does not exist' do
       delete api("/projects/#{project.id}/milestones/0", user)
 
       expect(response).to have_gitlab_http_status(:not_found)
@@ -44,7 +44,7 @@ describe API::ProjectMilestones do
   end
 
   describe 'PUT /projects/:id/milestones/:milestone_id to test observer on close' do
-    it 'creates an activity event when an milestone is closed' do
+    it 'creates an activity event when a milestone is closed' do
       expect(Event).to receive(:create!)
 
       put api("/projects/#{project.id}/milestones/#{milestone.id}", user),
@@ -91,7 +91,7 @@ describe API::ProjectMilestones do
       end
     end
 
-    context 'when no such resources' do
+    context 'when no such resource' do
       before do
         group.add_developer(user)
       end

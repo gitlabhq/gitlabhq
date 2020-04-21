@@ -11,8 +11,8 @@ importance.
 
 ## Overview
 
-GitLab is built on top of [Ruby on Rails](https://rubyonrails.org/), and we're using [RSpec] for all
-the backend tests, with [Capybara] for end-to-end integration testing.
+GitLab is built on top of [Ruby on Rails](https://rubyonrails.org/), and we're using [RSpec](https://github.com/rspec/rspec-rails#feature-specs) for all
+the backend tests, with [Capybara](https://github.com/teamcapybara/capybara) for end-to-end integration testing.
 On the frontend side, we're using [Jest](https://jestjs.io/) and [Karma](http://karma-runner.github.io/)/[Jasmine](https://jasmine.github.io/) for JavaScript unit and
 integration testing.
 
@@ -58,14 +58,10 @@ Everything you should know about how to test Rake tasks.
 ## [End-to-end tests](end_to_end/index.md)
 
 Everything you should know about how to run end-to-end tests using
-[GitLab QA][gitlab-qa] testing framework.
+[GitLab QA](ttps://gitlab.com/gitlab-org/gitlab-qa) testing framework.
 
 ## [Migrations tests](testing_migrations_guide.md)
 
 Everything you should know about how to test migrations.
 
 [Return to Development documentation](../README.md)
-
-[RSpec]: https://github.com/rspec/rspec-rails#feature-specs
-[Capybara]: https://github.com/teamcapybara/capybara
-[gitlab-qa]: https://gitlab.com/gitlab-org/gitlab-qa

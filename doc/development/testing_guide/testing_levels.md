@@ -312,9 +312,7 @@ of a controller test. Testing a fat controller usually involves a lot of stubbin
 controller.instance_variable_set(:@user, user)
 ```
 
-and use methods which are deprecated in Rails 5 ([#23768]).
-
-[#23768]: https://gitlab.com/gitlab-org/gitlab/-/issues/16260
+and use methods which are deprecated in Rails 5 ([#23768](https://gitlab.com/gitlab-org/gitlab/-/issues/16260)).
 
 ### About Karma
 
@@ -356,7 +354,7 @@ possible).
 
 | Tests path | Testing engine | Notes |
 | ---------- | -------------- | ----- |
-| `spec/features/` | [Capybara] + [RSpec] | If your test has the `:js` metadata, the browser driver will be [Poltergeist], otherwise it's using [RackTest]. |
+| `spec/features/` | [Capybara](https://github.com/teamcapybara/capybara) + [RSpec](https://github.com/rspec/rspec-rails#feature-specs) | If your test has the `:js` metadata, the browser driver will be [Poltergeist](https://github.com/teamcapybara/capybara#poltergeist), otherwise it's using [RackTest](https://github.com/teamcapybara/capybara#racktest). |
 
 ### Frontend feature tests
 
@@ -460,9 +458,6 @@ The reasons why we should follow these best practices are as follows:
   of tests). This is slower than transactions, however, so we want to use
   truncation only when necessary.
 
-[Poltergeist]: https://github.com/teamcapybara/capybara#poltergeist
-[RackTest]: https://github.com/teamcapybara/capybara#racktest
-
 ## Black-box tests at the system level, aka end-to-end tests
 
 Formal definitions:
@@ -470,11 +465,11 @@ Formal definitions:
 - <https://en.wikipedia.org/wiki/System_testing>
 - <https://en.wikipedia.org/wiki/Black-box_testing>
 
-GitLab consists of [multiple pieces] such as [GitLab Shell], [GitLab Workhorse],
-[Gitaly], [GitLab Pages], [GitLab Runner], and GitLab Rails. All theses pieces
-are configured and packaged by [GitLab Omnibus].
+GitLab consists of [multiple pieces](../architecture.md#components) such as [GitLab Shell](https://gitlab.com/gitlab-org/gitlab-shell), [GitLab Workhorse](https://gitlab.com/gitlab-org/gitlab-workhorse),
+[Gitaly](https://gitlab.com/gitlab-org/gitaly), [GitLab Pages](https://gitlab.com/gitlab-org/gitlab-pages), [GitLab Runner](https://gitlab.com/gitlab-org/gitlab-runner), and GitLab Rails. All theses pieces
+are configured and packaged by [GitLab Omnibus](https://gitlab.com/gitlab-org/omnibus-gitlab).
 
-The QA framework and instance-level scenarios are [part of GitLab Rails] so that
+The QA framework and instance-level scenarios are [part of GitLab Rails](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/qa) so that
 they're always in-sync with the codebase (especially the views).
 
 Note that:
@@ -483,28 +478,17 @@ Note that:
 - data needed for the tests can only be created using the GUI or the API
 - expectations can only be made against the browser page and API responses
 
-Every new feature should come with a [test plan].
+Every new feature should come with a [test plan](https://gitlab.com/gitlab-org/gitlab/tree/master/.gitlab/issue_templates/Test%20plan.md).
 
 | Tests path | Testing engine | Notes |
 | ---------- | -------------- | ----- |
-| `qa/qa/specs/features/` | [Capybara] + [RSpec] + Custom QA framework | Tests should be placed under their corresponding [Product category] |
+| `qa/qa/specs/features/` | [Capybara](https://github.com/teamcapybara/capybara) + [RSpec](https://github.com/rspec/rspec-rails#feature-specs) + Custom QA framework | Tests should be placed under their corresponding [Product category](https://about.gitlab.com/handbook/product/categories/) |
 
 > See [end-to-end tests](end_to_end/index.md) for more information.
 
 Note that `qa/spec` contains unit tests of the QA framework itself, not to be
 confused with the application's [unit tests](#unit-tests) or
 [end-to-end tests](#black-box-tests-at-the-system-level-aka-end-to-end-tests).
-
-[multiple pieces]: ../architecture.md#components
-[GitLab Shell]: https://gitlab.com/gitlab-org/gitlab-shell
-[GitLab Workhorse]: https://gitlab.com/gitlab-org/gitlab-workhorse
-[Gitaly]: https://gitlab.com/gitlab-org/gitaly
-[GitLab Pages]: https://gitlab.com/gitlab-org/gitlab-pages
-[GitLab Runner]: https://gitlab.com/gitlab-org/gitlab-runner
-[GitLab Omnibus]: https://gitlab.com/gitlab-org/omnibus-gitlab
-[part of GitLab Rails]: https://gitlab.com/gitlab-org/gitlab-foss/tree/master/qa
-[test plan]: https://gitlab.com/gitlab-org/gitlab/tree/master/.gitlab/issue_templates/Test%20plan.md
-[Product category]: https://about.gitlab.com/handbook/product/categories/
 
 ### Smoke tests
 
@@ -517,14 +501,11 @@ These tests run against the UI and ensure that basic functionality is working.
 
 ### GitLab QA orchestrator
 
-[GitLab QA orchestrator] is a tool that allows to test that all these pieces
+[GitLab QA orchestrator](https://gitlab.com/gitlab-org/gitlab-qa) is a tool that allows to test that all these pieces
 integrate well together by building a Docker image for a given version of GitLab
 Rails and running end-to-end tests (i.e. using Capybara) against it.
 
-Learn more in the [GitLab QA orchestrator README][gitlab-qa-readme].
-
-[GitLab QA orchestrator]: https://gitlab.com/gitlab-org/gitlab-qa
-[gitlab-qa-readme]: https://gitlab.com/gitlab-org/gitlab-qa/tree/master/README.md
+Learn more in the [GitLab QA orchestrator README](https://gitlab.com/gitlab-org/gitlab-qa/tree/master/README.md).
 
 ## EE-specific tests
 
@@ -538,7 +519,9 @@ trade-off:
 - Unit tests are usually cheap, and you should consider them like the basement
   of your house: you need them to be confident that your code is behaving
   correctly. However if you run only unit tests without integration / system
-  tests, you might [miss] the [big] / [picture] !
+  tests, you might [miss](https://twitter.com/ThePracticalDev/status/850748070698651649) the
+  [big](https://twitter.com/timbray/status/822470746773409794) /
+  [picture](https://twitter.com/withzombies/status/829716565834752000) !
 - Integration tests are a bit more expensive, but don't abuse them. A system test
   is often better than an integration test that is stubbing a lot of internals.
 - System tests are expensive (compared to unit tests), even more if they require
@@ -546,8 +529,8 @@ trade-off:
   section.
 
 Another way to see it is to think about the "cost of tests", this is well
-explained [in this article][tests-cost] and the basic idea is that the cost of a
-test includes:
+explained [in this article](https://medium.com/table-xi/high-cost-tests-and-high-value-tests-a86e27a54df#.2ulyh3a4e)
+and the basic idea is that the cost of a test includes:
 
 - The time it takes to write the test
 - The time it takes to run the test every time the suite runs
@@ -561,13 +544,6 @@ There are cases where the behaviour you are testing is not worth the time spent
 running the full application, for example, if you are testing styling, animation,
 edge cases or small actions that don't involve the backend,
 you should write an integration test using Jasmine.
-
-[miss]: https://twitter.com/ThePracticalDev/status/850748070698651649
-[big]: https://twitter.com/timbray/status/822470746773409794
-[picture]: https://twitter.com/withzombies/status/829716565834752000
-[tests-cost]: https://medium.com/table-xi/high-cost-tests-and-high-value-tests-a86e27a54df#.2ulyh3a4e
-[RSpec]: https://github.com/rspec/rspec-rails#feature-specs
-[Capybara]: https://github.com/teamcapybara/capybara
 
 ---
 

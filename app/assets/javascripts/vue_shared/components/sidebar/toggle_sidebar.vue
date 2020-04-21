@@ -37,7 +37,7 @@ export default {
     :title="tooltipLabel"
     :class="cssClasses"
     type="button"
-    class="btn btn-blank gutter-toggle btn-sidebar-action"
+    class="btn btn-blank gutter-toggle btn-sidebar-action js-sidebar-vue-toggle"
     data-container="body"
     data-placement="left"
     data-boundary="viewport"

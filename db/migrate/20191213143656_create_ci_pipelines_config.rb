@@ -8,7 +8,7 @@ class CreateCiPipelinesConfig < ActiveRecord::Migration[5.2]
       t.references :pipeline,
                    primary_key: true,
                    foreign_key: { to_table: :ci_pipelines, on_delete: :cascade }
-      t.text :content, null: false
+      t.text :content, null: false # rubocop:disable Migration/AddLimitToTextColumns
     end
   end
 end

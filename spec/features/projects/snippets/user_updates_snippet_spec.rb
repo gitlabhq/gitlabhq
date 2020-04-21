@@ -11,6 +11,7 @@ describe 'Projects > Snippets > User updates a snippet', :js do
 
   before do
     stub_feature_flags(snippets_vue: false)
+    stub_feature_flags(snippets_edit_vue: false)
     stub_feature_flags(version_snippets: version_snippet_enabled)
 
     project.add_maintainer(user)
@@ -60,6 +61,7 @@ describe 'Projects > Snippets > User updates a snippet', :js do
       end
 
       fill_in('project_snippet_title', with: 'Snippet new title')
+      fill_in('project_snippet_file_name', with: 'new_file_name')
 
       click_button('Save')
     end

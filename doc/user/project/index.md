@@ -103,6 +103,7 @@ When you create a project in GitLab, you'll have access to a large number of
 - [License Compliance](../compliance/license_compliance/index.md): approve and blacklist licenses for projects. **(ULTIMATE)**
 - [Dependency List](../application_security/dependency_list/index.md): view project dependencies. **(ULTIMATE)**
 - [Requirements](requirements/index.md): Requirements allow you to create criteria to check your products against. **(ULTIMATE)**
+- [Static Site Editor](static_site_editor/index.md): quickly edit content on static websites without prior knowledge of the codebase or Git commands.
 
 ### Project integrations
 
@@ -170,6 +171,13 @@ Read through the documentation on [CI/CD for external repositories](../../ci/ci_
 ## Project members
 
 Learn how to [add members to your projects](members/index.md).
+
+## Project activity
+
+To view the activity of a project, navigate to **Project overview > Activity**.
+From there, you can click on the tabs to see **All** the activity, or see it
+filtered by **Push events**, **Merge events**, **Issue events**, **Comments**,
+**Team**, and **Wiki**.
 
 ### Leave a project
 

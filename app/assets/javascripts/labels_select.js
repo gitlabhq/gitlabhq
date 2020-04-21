@@ -3,7 +3,7 @@
 /* global ListLabel */
 
 import $ from 'jquery';
-import _ from 'underscore';
+import { isEqual, escape as esc, sortBy, template } from 'lodash';
 import { sprintf, s__, __ } from './locale';
 import axios from './lib/utils/axios_utils';
 import IssuableBulkUpdateActions from './issuable_bulk_update_actions';
@@ -76,7 +76,7 @@ export default class LabelsSelect {
           })
           .get();
 
-        if (_.isEqual(initialSelected, selected)) return;
+        if (isEqual(initialSelected, selected)) return;
         initialSelected = selected;
 
         const data = {};
@@ -101,7 +101,7 @@ export default class LabelsSelect {
             let labelCount = 0;
             if (data.labels.length && issueUpdateURL) {
               template = LabelsSelect.getLabelTemplate({
-                labels: _.sortBy(data.labels, 'title'),
+                labels: sortBy(data.labels, 'title'),
                 issueUpdateURL,
                 enableScopedLabels: scopedLabels,
                 scopedLabelsDocumentationLink,
@@ -269,7 +269,7 @@ export default class LabelsSelect {
           }
 
           linkEl.className = selectedClass.join(' ');
-          linkEl.innerHTML = `${colorEl} ${_.escape(label.title)}`;
+          linkEl.innerHTML = `${colorEl} ${esc(label.title)}`;
 
           const listItemEl = document.createElement('li');
           listItemEl.appendChild(linkEl);
@@ -436,7 +436,7 @@ export default class LabelsSelect {
                 if (isScopedLabel(label)) {
                   const prevIds = oldLabels.map(label => label.id);
                   const newIds = boardsStore.detail.issue.labels.map(label => label.id);
-                  const differentIds = _.difference(prevIds, newIds);
+                  const differentIds = prevIds.filter(x => !newIds.includes(x));
                   $dropdown.data('marked', newIds);
                   $dropdownMenu
                     .find(differentIds.map(id => `[data-label-id="${id}"]`).join(','))
@@ -483,7 +483,7 @@ export default class LabelsSelect {
       '<a href="<%- issueUpdateURL.slice(0, issueUpdateURL.lastIndexOf("/")) %>?label_name[]=<%- encodeURIComponent(label.title) %>" class="gl-link gl-label-link has-tooltip" <%= linkAttrs %> title="<%= tooltipTitleTemplate({ label, isScopedLabel, enableScopedLabels, escapeStr }) %>">';
     const spanOpenTag =
       '<span class="gl-label-text" style="background-color: <%= escapeStr(label.color) %>; color: <%= escapeStr(label.text_color) %>;">';
-    const labelTemplate = _.template(
+    const labelTemplate = template(
       [
         '<span class="gl-label">',
         linkOpenTag,
@@ -499,7 +499,7 @@ export default class LabelsSelect {
       return escapeStr(label.text_color === '#FFFFFF' ? label.color : label.text_color);
     };
 
-    const infoIconTemplate = _.template(
+    const infoIconTemplate = template(
       [
         '<a href="<%= scopedLabelsDocumentationLink %>" class="gl-link gl-label-icon" target="_blank" rel="noopener">',
         '<i class="fa fa-question-circle"></i>',
@@ -507,7 +507,7 @@ export default class LabelsSelect {
       ].join(''),
     );
 
-    const scopedLabelTemplate = _.template(
+    const scopedLabelTemplate = template(
       [
         '<span class="gl-label gl-label-scoped" style="color: <%= escapeStr(label.color) %>;">',
         linkOpenTag,
@@ -523,7 +523,7 @@ export default class LabelsSelect {
       ].join(''),
     );
 
-    const tooltipTitleTemplate = _.template(
+    const tooltipTitleTemplate = template(
       [
         '<% if (isScopedLabel(label) && enableScopedLabels) { %>',
         "<span class='font-weight-bold scoped-label-tooltip-title'>Scoped label</span>",
@@ -535,9 +535,9 @@ export default class LabelsSelect {
       ].join(''),
     );
 
-    const tpl = _.template(
+    const tpl = template(
       [
-        '<% _.each(labels, function(label){ %>',
+        '<% labels.forEach(function(label){ %>',
         '<% if (isScopedLabel(label) && enableScopedLabels) { %>',
         '<span class="d-inline-block position-relative scoped-label-wrapper">',
         '<%= scopedLabelTemplate({ label, issueUpdateURL, isScopedLabel, enableScopedLabels, rightLabelTextColor, infoIconTemplate, scopedLabelsDocumentationLink, tooltipTitleTemplate, escapeStr, linkAttrs: \'data-html="true"\' }) %>',
@@ -557,7 +557,7 @@ export default class LabelsSelect {
       scopedLabelTemplate,
       tooltipTitleTemplate,
       isScopedLabel,
-      escapeStr: _.escape,
+      escapeStr: esc,
     });
   }
 

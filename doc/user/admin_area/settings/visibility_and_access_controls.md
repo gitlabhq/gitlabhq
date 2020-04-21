@@ -62,6 +62,13 @@ To change this period:
 1. Select the desired option.
 1. Click **Save changes**.
 
+### Override default deletion adjourned period
+
+Alternatively, projects that are marked for removal can be deleted immediately. To do so:
+
+1. [Restore the project](../../project/settings/#restore-a-project-premium).
+1. Delete the project as described in the [Administering Projects page](../../admin_area/#administering-projects).
+
 ## Default project visibility
 
 To set the default visibility levels for new projects:

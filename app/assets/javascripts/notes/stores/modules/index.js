@@ -14,6 +14,7 @@ export default () => ({
 
     // View layer
     isToggleStateButtonLoading: false,
+    isToggleBlockedIssueWarning: false,
     isNotesFetched: false,
     isLoading: true,
     isLoadingDescriptionVersion: false,

@@ -10,7 +10,7 @@ class AddNameToGeoNodes < ActiveRecord::Migration[5.0]
   DOWNTIME = false
 
   def up
-    add_column :geo_nodes, :name, :string # rubocop:disable Migration/AddLimitToStringColumns
+    add_column :geo_nodes, :name, :string # rubocop:disable Migration/PreventStrings
 
     # url is also unique, and its type and size is identical to the name column,
     # so this is safe.

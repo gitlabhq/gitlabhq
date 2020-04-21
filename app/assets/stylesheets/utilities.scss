@@ -85,8 +85,14 @@
 .gl-bg-blue-50 { @include gl-bg-blue-50; }
 .gl-bg-red-100 { @include gl-bg-red-100; }
 .gl-bg-orange-100 { @include gl-bg-orange-100; }
+.gl-bg-gray-50 { @include gl-bg-gray-50; }
 .gl-bg-gray-100 { @include gl-bg-gray-100; }
 .gl-bg-green-100 { @include gl-bg-green-100;}
+.gl-bg-blue-500 { @include gl-bg-blue-500; }
+.gl-bg-green-500 { @include gl-bg-green-500; }
+.gl-bg-theme-indigo-500 { @include gl-bg-theme-indigo-500; }
+.gl-bg-red-500 { @include gl-bg-red-500; }
+.gl-bg-orange-500 { @include gl-bg-orange-500; }
 
 .gl-text-blue-500 { @include gl-text-blue-500; }
 .gl-text-gray-500 { @include gl-text-gray-500; }
@@ -102,8 +108,14 @@
 .gl-text-green-700 { @include gl-text-green-700; }
 
 .gl-align-items-center { @include gl-align-items-center; }
+
 .d-sm-table-column {
   @include media-breakpoint-up(sm) {
     display: table-column !important;
   }
 }
+
+.gl-white-space-normal { @include gl-white-space-normal; }
+.gl-word-break-all { @include gl-word-break-all; }
+.gl-line-height-inherit { line-height: inherit; }
+.gl-text-align-inherit { text-align: inherit; }

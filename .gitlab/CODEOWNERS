@@ -9,6 +9,9 @@
 # Technical writing team are the default reviewers for all markdown docs
 *.md @gl-docsteam
 /doc/ @gl-docsteam
+# Dev and Doc guidelines
+/doc/development/ @marcia
+/doc/development/documentation/ @mikelewis
 
 # Frontend maintainers should see everything in `app/assets/`
 *.scss @annabeldunstone @gitlab-org/maintainers/frontend

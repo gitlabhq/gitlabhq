@@ -28,7 +28,7 @@ Because Rubular doesn't understand `%{issue_ref}`, you can replace this by
    expression of your liking:
 
    ```ruby
-   gitlab_rails['gitlab_issue_closing_pattern'] = "\b((?:[Cc]los(?:e[sd]|ing)|\b[Ff]ix(?:e[sd]|ing)?) +(?:(?:issues? +)?%{issue_ref}(?:(?:, *| +and +)?))+)"
+   gitlab_rails['gitlab_issue_closing_pattern'] = "\b((?:[Cc]los(?:e[sd]?|ing)|\b[Ff]ix(?:e[sd]|ing)?|\b[Rr]esolv(?:e[sd]?|ing)|\b[Ii]mplement(?:s|ed|ing)?)(:?) +(?:(?:issues? +)?%{issue_ref}(?:(?: *,? +and +| *,? *)?)|([A-Z][A-Z0-9_]+-\d+))+)"
    ```
 
 1. [Reconfigure](restart_gitlab.md#omnibus-gitlab-reconfigure) GitLab for the changes to take effect.
@@ -39,7 +39,7 @@ Because Rubular doesn't understand `%{issue_ref}`, you can replace this by
 1. Change the value of `issue_closing_pattern`:
 
    ```yaml
-   issue_closing_pattern: "\b((?:[Cc]los(?:e[sd]|ing)|\b[Ff]ix(?:e[sd]|ing)?) +(?:(?:issues? +)?%{issue_ref}(?:(?:, *| +and +)?))+)"
+   issue_closing_pattern: "\b((?:[Cc]los(?:e[sd]?|ing)|\b[Ff]ix(?:e[sd]|ing)?|\b[Rr]esolv(?:e[sd]?|ing)|\b[Ii]mplement(?:s|ed|ing)?)(:?) +(?:(?:issues? +)?%{issue_ref}(?:(?: *,? +and +| *,? *)?)|([A-Z][A-Z0-9_]+-\d+))+)"
    ```
 
 1. [Restart](restart_gitlab.md#installations-from-source) GitLab for the changes to take effect.

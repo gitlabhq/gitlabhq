@@ -3,16 +3,17 @@
 module Gitlab
   module FileHook
     def self.any?
-      plugin_glob.any? { |entry| File.file?(entry) }
+      dir_glob.any? { |entry| File.file?(entry) }
     end
 
     def self.files
-      plugin_glob.select { |entry| File.file?(entry) }
+      dir_glob.select { |entry| File.file?(entry) }
     end
 
-    def self.plugin_glob
-      Dir.glob(Rails.root.join('plugins/*'))
+    def self.dir_glob
+      Dir.glob([Rails.root.join('file_hooks/*'), Rails.root.join('plugins/*')])
     end
+    private_class_method :dir_glob
 
     def self.execute_all_async(data)
       args = files.map { |file| [file, data] }

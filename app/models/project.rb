@@ -340,7 +340,7 @@ class Project < ApplicationRecord
     :pages_enabled?, :public_pages?, :private_pages?,
     :merge_requests_access_level, :forking_access_level, :issues_access_level,
     :wiki_access_level, :snippets_access_level, :builds_access_level,
-    :repository_access_level, :pages_access_level,
+    :repository_access_level, :pages_access_level, :metrics_dashboard_access_level,
     to: :project_feature, allow_nil: true
   delegate :scheduled?, :started?, :in_progress?, :failed?, :finished?,
     prefix: :import, to: :import_state, allow_nil: true
@@ -415,7 +415,6 @@ class Project < ApplicationRecord
   scope :sorted_by_activity, -> { reorder(Arel.sql("GREATEST(COALESCE(last_activity_at, '1970-01-01'), COALESCE(last_repository_updated_at, '1970-01-01')) DESC")) }
   scope :sorted_by_stars_desc, -> { reorder(self.arel_table['star_count'].desc) }
   scope :sorted_by_stars_asc, -> { reorder(self.arel_table['star_count'].asc) }
-  scope :sorted_by_name_asc_limited, ->(limit) { reorder(name: :asc).limit(limit) }
   # Sometimes queries (e.g. using CTEs) require explicit disambiguation with table name
   scope :projects_order_id_desc, -> { reorder(self.arel_table['id'].desc) }
 
@@ -774,10 +773,6 @@ class Project < ApplicationRecord
     { scope: :project, status: auto_devops&.enabled || Feature.enabled?(:force_autodevops_on_by_default, self) }
   end
 
-  def daily_statistics_enabled?
-    Feature.enabled?(:project_daily_statistics, self, default_enabled: true)
-  end
-
   def unlink_forks_upon_visibility_decrease_enabled?
     Feature.enabled?(:unlink_fork_network_upon_visibility_decrease, self, default_enabled: true)
   end
@@ -864,6 +859,16 @@ class Project < ApplicationRecord
 
   def jira_import_status
     latest_jira_import&.status || 'initial'
+  end
+
+  def validate_jira_import_settings!(user: nil)
+    raise Projects::ImportService::Error, _('Jira import feature is disabled.') unless jira_issues_import_feature_flag_enabled?
+    raise Projects::ImportService::Error, _('Jira integration not configured.') unless jira_service&.active?
+
+    return unless user
+
+    raise Projects::ImportService::Error, _('Cannot import because issues are not available in this project.') unless feature_available?(:issues, user)
+    raise Projects::ImportService::Error, _('You do not have permissions to run the import.') unless user.can?(:admin_project, self)
   end
 
   def human_import_status_name
@@ -1174,11 +1179,7 @@ class Project < ApplicationRecord
   end
 
   def issues_tracker
-    if external_issue_tracker
-      external_issue_tracker
-    else
-      default_issue_tracker
-    end
+    external_issue_tracker || default_issue_tracker
   end
 
   def external_issue_reference_pattern
@@ -1323,11 +1324,7 @@ class Project < ApplicationRecord
   # rubocop: enable CodeReuse/ServiceClass
 
   def owner
-    if group
-      group
-    else
-      namespace.try(:owner)
-    end
+    group || namespace.try(:owner)
   end
 
   def to_ability_name

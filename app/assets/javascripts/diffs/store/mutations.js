@@ -182,15 +182,18 @@ export default {
   [types.SET_LINE_DISCUSSIONS_FOR_FILE](state, { discussion, diffPositionByLineCode, hash }) {
     const { latestDiff } = state;
 
-    const discussionLineCode = discussion.line_code;
+    const discussionLineCodes = [discussion.line_code, ...(discussion.line_codes || [])];
     const fileHash = discussion.diff_file.file_hash;
     const lineCheck = line =>
-      line.line_code === discussionLineCode &&
-      isDiscussionApplicableToLine({
-        discussion,
-        diffPosition: diffPositionByLineCode[line.line_code],
-        latestDiff,
-      });
+      discussionLineCodes.some(
+        discussionLineCode =>
+          line.line_code === discussionLineCode &&
+          isDiscussionApplicableToLine({
+            discussion,
+            diffPosition: diffPositionByLineCode[line.line_code],
+            latestDiff,
+          }),
+      );
     const mapDiscussions = (line, extraCheck = () => true) => ({
       ...line,
       discussions: extraCheck()

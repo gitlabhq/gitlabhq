@@ -1,4 +1,6 @@
 import { mapToDashboardViewModel } from '~/monitoring/stores/utils';
+import { metricStates } from '~/monitoring/constants';
+
 import { metricsResult } from './mock_data';
 
 // Use globally available `getJSONFixture` so this file can be imported by both karma and jest specs
@@ -22,4 +24,26 @@ export const metricResultPods = {
 export const metricResultEmpty = {
   metricId: 'NO_DB_response_metrics_nginx_ingress_16_throughput_status_code',
   result: [],
+};
+
+// Graph data
+
+const firstPanel = metricsDashboardViewModel.panelGroups[0].panels[0];
+
+export const graphData = {
+  ...firstPanel,
+  metrics: firstPanel.metrics.map(metric => ({
+    ...metric,
+    result: metricsResult,
+    state: metricStates.OK,
+  })),
+};
+
+export const graphDataEmpty = {
+  ...firstPanel,
+  metrics: firstPanel.metrics.map(metric => ({
+    ...metric,
+    result: [],
+    state: metricStates.NO_DATA,
+  })),
 };

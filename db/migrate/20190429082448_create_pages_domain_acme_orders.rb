@@ -9,8 +9,9 @@ class CreatePagesDomainAcmeOrders < ActiveRecord::Migration[5.1]
   # Set this constant to true if this migration requires downtime.
   DOWNTIME = false
 
+  # rubocop:disable Migration/PreventStrings
+  # rubocop:disable Migration/AddLimitToTextColumns
   def change
-    # rubocop:disable Migration/AddLimitToStringColumns
     create_table :pages_domain_acme_orders do |t|
       t.references :pages_domain, null: false, index: true, foreign_key: { on_delete: :cascade }, type: :integer
 
@@ -25,6 +26,7 @@ class CreatePagesDomainAcmeOrders < ActiveRecord::Migration[5.1]
       t.text :encrypted_private_key, null: false
       t.text :encrypted_private_key_iv, null: false
     end
-    # rubocop:enable Migration/AddLimitToStringColumns
   end
+  # rubocop:enable Migration/AddLimitToTextColumns
+  # rubocop:enable Migration/PreventStrings
 end

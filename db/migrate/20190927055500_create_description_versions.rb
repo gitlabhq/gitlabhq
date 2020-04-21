@@ -11,7 +11,7 @@ class CreateDescriptionVersions < ActiveRecord::Migration[5.2]
       t.references :issue, index: false, foreign_key: { on_delete: :cascade }, type: :integer
       t.references :merge_request, index: false, foreign_key: { on_delete: :cascade }, type: :integer
       t.references :epic, index: false, foreign_key: { on_delete: :cascade }, type: :integer
-      t.text :description
+      t.text :description # rubocop:disable Migration/AddLimitToTextColumns
     end
 
     add_index :description_versions, :issue_id, where: 'issue_id IS NOT NULL'

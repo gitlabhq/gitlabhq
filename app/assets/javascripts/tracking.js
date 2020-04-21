@@ -1,4 +1,4 @@
-import _ from 'underscore';
+import { omitBy, isUndefined } from 'lodash';
 
 const DEFAULT_SNOWPLOW_OPTIONS = {
   namespace: 'gl',
@@ -29,7 +29,7 @@ const eventHandler = (e, func, opts = {}) => {
     context: el.dataset.trackContext,
   };
 
-  func(opts.category, action + (opts.suffix || ''), _.omit(data, _.isUndefined));
+  func(opts.category, action + (opts.suffix || ''), omitBy(data, isUndefined));
 };
 
 const eventHandlers = (category, func) => {

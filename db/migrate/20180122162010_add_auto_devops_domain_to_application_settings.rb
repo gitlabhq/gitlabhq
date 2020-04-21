@@ -7,7 +7,9 @@ class AddAutoDevopsDomainToApplicationSettings < ActiveRecord::Migration[4.2]
   # Set this constant to true if this migration requires downtime.
   DOWNTIME = false
 
+  # rubocop:disable Migration/PreventStrings
   def change
-    add_column :application_settings, :auto_devops_domain, :string # rubocop:disable Migration/AddLimitToStringColumns
+    add_column :application_settings, :auto_devops_domain, :string
   end
+  # rubocop:enable Migration/PreventStrings
 end

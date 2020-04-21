@@ -5,6 +5,7 @@ class CreateAnalyticsRepositoryFilesTable < ActiveRecord::Migration[5.2]
 
   DOWNTIME = false
 
+  # rubocop:disable Migration/PreventStrings
   def change
     create_table :analytics_repository_files do |t|
       t.references :project,
@@ -18,4 +19,5 @@ class CreateAnalyticsRepositoryFilesTable < ActiveRecord::Migration[5.2]
 
     add_index :analytics_repository_files, [:project_id, :file_path], unique: true
   end
+  # rubocop:enable Migration/PreventStrings
 end

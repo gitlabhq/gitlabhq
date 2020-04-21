@@ -4,6 +4,7 @@ import { GlSkeletonLoader } from '@gitlab/ui';
 
 import EditArea from './edit_area.vue';
 import EditHeader from './edit_header.vue';
+import SavedChangesMessage from './saved_changes_message.vue';
 import Toolbar from './publish_toolbar.vue';
 import InvalidContentMessage from './invalid_content_message.vue';
 import SubmitChangesError from './submit_changes_error.vue';
@@ -14,6 +15,7 @@ export default {
     EditHeader,
     InvalidContentMessage,
     GlSkeletonLoader,
+    SavedChangesMessage,
     Toolbar,
     SubmitChangesError,
   },
@@ -27,6 +29,7 @@ export default {
       'returnUrl',
       'title',
       'submitChangesError',
+      'savedContentMeta',
     ]),
     ...mapGetters(['contentChanged']),
   },
@@ -41,8 +44,18 @@ export default {
 };
 </script>
 <template>
-  <div class="d-flex justify-content-center h-100  pt-2">
-    <template v-if="isSupportedContent">
+  <div class="d-flex justify-content-center h-100 pt-2">
+    <!-- Success view -->
+    <saved-changes-message
+      v-if="savedContentMeta"
+      :branch="savedContentMeta.branch"
+      :commit="savedContentMeta.commit"
+      :merge-request="savedContentMeta.mergeRequest"
+      :return-url="returnUrl"
+    />
+
+    <!-- Main view -->
+    <template v-else-if="isSupportedContent">
       <div v-if="isLoadingContent" class="w-50 h-50">
         <gl-skeleton-loader :width="500" :height="102">
           <rect width="500" height="16" rx="4" />
@@ -75,6 +88,8 @@ export default {
         />
       </div>
     </template>
+
+    <!-- Error view -->
     <invalid-content-message v-else class="w-75" />
   </div>
 </template>

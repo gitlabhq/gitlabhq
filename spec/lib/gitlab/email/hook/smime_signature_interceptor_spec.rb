@@ -5,19 +5,24 @@ require 'spec_helper'
 describe Gitlab::Email::Hook::SmimeSignatureInterceptor do
   include SmimeHelper
 
-  # cert generation is an expensive operation and they are used read-only,
+  # certs generation is an expensive operation and they are used read-only,
   # so we share them as instance variables in all tests
   before :context do
     @root_ca = generate_root
-    @cert = generate_cert(root_ca: @root_ca)
+    @intermediate_ca = generate_intermediate(signer_ca: @root_ca)
+    @cert = generate_cert(signer_ca: @intermediate_ca)
   end
 
   let(:root_certificate) do
     Gitlab::Email::Smime::Certificate.new(@root_ca[:key], @root_ca[:cert])
   end
 
+  let(:intermediate_certificate) do
+    Gitlab::Email::Smime::Certificate.new(@intermediate_ca[:key], @intermediate_ca[:cert])
+  end
+
   let(:certificate) do
-    Gitlab::Email::Smime::Certificate.new(@cert[:key], @cert[:cert])
+    Gitlab::Email::Smime::Certificate.new(@cert[:key], @cert[:cert], [intermediate_certificate.cert])
   end
 
   let(:mail_body) { "signed hello with Unicode €áø and\r\n newlines\r\n" }
@@ -48,16 +53,18 @@ describe Gitlab::Email::Hook::SmimeSignatureInterceptor do
 
     # verify signature and obtain pkcs7 encoded content
     p7enc = Gitlab::Email::Smime::Signer.verify_signature(
-      cert: certificate.cert,
-      ca_cert: root_certificate.cert,
+      ca_certs: root_certificate.cert,
       signed_data: mail.encoded)
+
+    expect(p7enc).not_to be_nil
 
     # re-verify signature from a new Mail object content
     # See https://gitlab.com/gitlab-org/gitlab/issues/197386
-    Gitlab::Email::Smime::Signer.verify_signature(
-      cert: certificate.cert,
-      ca_cert: root_certificate.cert,
+    p7_re_enc = Gitlab::Email::Smime::Signer.verify_signature(
+      ca_certs: root_certificate.cert,
       signed_data: Mail.new(mail).encoded)
+
+    expect(p7_re_enc).not_to be_nil
 
     # envelope in a Mail object and obtain the body
     decoded_mail = Mail.new(p7enc.data)

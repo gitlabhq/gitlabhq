@@ -171,6 +171,10 @@ Complementary reads:
 - [Testing standards and style guidelines](testing_guide/index.md)
 - [Frontend testing standards and style guidelines](testing_guide/frontend_testing.md)
 
+## Refactoring guides
+
+- [Refactoring guidelines](refactoring_guide/index.md)
+
 ## Documentation guides
 
 - [Writing documentation](documentation/index.md)
@@ -186,8 +190,7 @@ Complementary reads:
 ## Telemetry guides
 
 - [Introduction](../telemetry/index.md)
-- [Frontend tracking guide](../telemetry/frontend.md)
-- [Backend tracking guide](../telemetry/backend.md)
+- [Snowplow tracking guide](../telemetry/snowplow.md)
 
 ## Experiment Guide
 

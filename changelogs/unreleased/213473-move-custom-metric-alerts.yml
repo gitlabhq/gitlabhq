@@ -1,0 +1,5 @@
+---
+title: Make setting alerts on the monitoring dashboard available to GitLab Core users
+merge_request: 29789
+author:
+type: changed

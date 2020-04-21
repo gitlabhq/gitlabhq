@@ -5,20 +5,24 @@ module SmimeHelper
   SHORT_EXPIRY = 30.minutes
 
   def generate_root
-    issue(signed_by: nil, expires_in: INFINITE_EXPIRY, certificate_authority: true)
+    issue(cn: 'RootCA', signed_by: nil, expires_in: INFINITE_EXPIRY, certificate_authority: true)
   end
 
-  def generate_cert(root_ca:, expires_in: SHORT_EXPIRY)
-    issue(signed_by: root_ca, expires_in: expires_in, certificate_authority: false)
+  def generate_intermediate(signer_ca:)
+    issue(cn: 'IntermediateCA', signed_by: signer_ca, expires_in: INFINITE_EXPIRY, certificate_authority: true)
+  end
+
+  def generate_cert(signer_ca:, expires_in: SHORT_EXPIRY)
+    issue(signed_by: signer_ca, expires_in: expires_in, certificate_authority: false)
   end
 
   # returns a hash { key:, cert: } containing a generated key, cert pair
-  def issue(email_address: 'test@example.com', signed_by:, expires_in:, certificate_authority:)
+  def issue(email_address: 'test@example.com', cn: nil, signed_by:, expires_in:, certificate_authority:)
     key = OpenSSL::PKey::RSA.new(4096)
     public_key = key.public_key
 
     subject = if certificate_authority
-                OpenSSL::X509::Name.parse("/CN=EU")
+                OpenSSL::X509::Name.parse("/CN=#{cn}")
               else
                 OpenSSL::X509::Name.parse("/CN=#{email_address}")
               end

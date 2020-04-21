@@ -23,21 +23,31 @@ RSpec.shared_examples 'update with repository actions' do
   context 'when the repository does not exist' do
     let(:snippet) { snippet_without_repo }
 
-    it 'creates the repository' do
-      update_snippet(snippet_id: snippet.id, params: { title: 'foo' })
+    context 'when update attributes does not include file_name or content' do
+      it 'does not create the repository' do
+        update_snippet(snippet_id: snippet.id, params: { title: 'foo' })
 
-      expect(snippet.repository).to exist
+        expect(snippet.repository).not_to exist
+      end
     end
 
-    it 'commits the file to the repository' do
-      content = 'New Content'
-      file_name = 'file_name.rb'
+    context 'when update attributes include file_name or content' do
+      it 'creates the repository' do
+        update_snippet(snippet_id: snippet.id, params: { title: 'foo', file_name: 'foo' })
 
-      update_snippet(snippet_id: snippet.id, params: { content: content, file_name: file_name })
+        expect(snippet.repository).to exist
+      end
 
-      blob = snippet.repository.blob_at('master', file_name)
-      expect(blob).not_to be_nil
-      expect(blob.data).to eq content
+      it 'commits the file to the repository' do
+        content = 'New Content'
+        file_name = 'file_name.rb'
+
+        update_snippet(snippet_id: snippet.id, params: { content: content, file_name: file_name })
+
+        blob = snippet.repository.blob_at('master', file_name)
+        expect(blob).not_to be_nil
+        expect(blob.data).to eq content
+      end
     end
   end
 end
@@ -46,5 +56,33 @@ RSpec.shared_examples 'snippet response without repository URLs' do
   it 'skip inclusion of repository URLs' do
     expect(json_response).not_to have_key('ssh_url_to_repo')
     expect(json_response).not_to have_key('http_url_to_repo')
+  end
+end
+
+RSpec.shared_examples 'snippet blob content' do
+  it 'returns content from repository' do
+    subject
+
+    expect(response.body).to eq(snippet.blobs.first.data)
+  end
+
+  context 'when feature flag :version_snippets is disabled' do
+    it 'returns content from database' do
+      stub_feature_flags(version_snippets: false)
+
+      subject
+
+      expect(response.body).to eq(snippet.content)
+    end
+  end
+
+  context 'when snippet repository is empty' do
+    let(:snippet) { snippet_with_empty_repo }
+
+    it 'returns content from database' do
+      subject
+
+      expect(response.body).to eq(snippet.content)
+    end
   end
 end

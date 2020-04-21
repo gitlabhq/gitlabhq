@@ -23,7 +23,11 @@ import {
   setGettingStartedEmptyState,
   duplicateSystemDashboard,
 } from '~/monitoring/stores/actions';
-import { gqClient, parseEnvironmentsResponse } from '~/monitoring/stores/utils';
+import {
+  gqClient,
+  parseEnvironmentsResponse,
+  parseAnnotationsResponse,
+} from '~/monitoring/stores/utils';
 import getEnvironments from '~/monitoring/queries/getEnvironments.query.graphql';
 import getAnnotations from '~/monitoring/queries/getAnnotations.query.graphql';
 import storeState from '~/monitoring/stores/state';
@@ -224,6 +228,10 @@ describe('Monitoring store actions', () => {
 
   describe('fetchAnnotations', () => {
     const { state } = store;
+    state.timeRange = {
+      start: '2020-04-15T12:54:32.137Z',
+      end: '2020-08-15T12:54:32.137Z',
+    };
     state.projectPath = 'gitlab-org/gitlab-test';
     state.currentEnvironmentName = 'production';
     state.currentDashboard = '.gitlab/dashboards/custom_dashboard.yml';
@@ -239,17 +247,25 @@ describe('Monitoring store actions', () => {
         variables: {
           projectPath: state.projectPath,
           environmentName: state.currentEnvironmentName,
-          dashboardId: state.currentDashboard,
+          dashboardPath: state.currentDashboard,
+          startingFrom: state.timeRange.start,
         },
       };
+      const parsedResponse = parseAnnotationsResponse(annotationsData);
 
       mockMutate.mockResolvedValue({
         data: {
           project: {
-            environment: {
-              metricDashboard: {
-                annotations: annotationsData,
-              },
+            environments: {
+              nodes: [
+                {
+                  metricsDashboard: {
+                    annotations: {
+                      nodes: parsedResponse,
+                    },
+                  },
+                },
+              ],
             },
           },
         },
@@ -260,7 +276,7 @@ describe('Monitoring store actions', () => {
         null,
         state,
         [],
-        [{ type: 'receiveAnnotationsSuccess', payload: annotationsData }],
+        [{ type: 'receiveAnnotationsSuccess', payload: parsedResponse }],
         () => {
           expect(mockMutate).toHaveBeenCalledWith(mutationVariables);
         },
@@ -274,7 +290,8 @@ describe('Monitoring store actions', () => {
         variables: {
           projectPath: state.projectPath,
           environmentName: state.currentEnvironmentName,
-          dashboardId: state.currentDashboard,
+          dashboardPath: state.currentDashboard,
+          startingFrom: state.timeRange.start,
         },
       };
 

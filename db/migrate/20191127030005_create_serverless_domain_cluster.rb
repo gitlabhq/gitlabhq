@@ -3,6 +3,7 @@
 class CreateServerlessDomainCluster < ActiveRecord::Migration[5.2]
   DOWNTIME = false
 
+  # rubocop:disable Migration/PreventStrings
   def change
     create_table :serverless_domain_cluster, id: false, primary_key: :uuid do |t|
       t.references :pages_domain, null: false, foreign_key: { on_delete: :cascade }
@@ -14,4 +15,5 @@ class CreateServerlessDomainCluster < ActiveRecord::Migration[5.2]
       t.string :uuid, null: false, limit: 14, primary_key: true
     end
   end
+  # rubocop:enable Migration/PreventStrings
 end

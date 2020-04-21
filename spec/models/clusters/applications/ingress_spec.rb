@@ -219,6 +219,12 @@ describe Clusters::Applications::Ingress do
 
         expect(subject.values).to include('extraContainers')
       end
+
+      it 'includes livenessProbe for modsecurity sidecar container' do
+        probe_config = YAML.safe_load(subject.values).dig('controller', 'extraContainers', 0, 'livenessProbe')
+
+        expect(probe_config).to eq('exec' => { 'command' => ['ls', '/var/log/modsec/audit.log'] })
+      end
     end
 
     context 'when modsecurity_enabled is disabled' do

@@ -26,7 +26,7 @@
   - if current_user_menu?(:settings)
     %li
       = link_to s_("CurrentUser|Settings"), profile_path, data: { qa_selector: 'settings_link' }
-  = render_if_exists 'layouts/header/buy_ci_minutes'
+  = render_if_exists 'layouts/header/buy_ci_minutes', project: @project, namespace: @group
 
   - if current_user_menu?(:help)
     %li.divider.d-md-none

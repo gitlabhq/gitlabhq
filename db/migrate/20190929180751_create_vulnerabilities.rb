@@ -8,6 +8,7 @@ class CreateVulnerabilities < ActiveRecord::Migration[5.2]
 
   DOWNTIME = false
 
+  # rubocop:disable Migration/AddLimitToTextColumns
   def change
     create_table :vulnerabilities do |t|
       t.bigint "milestone_id"
@@ -30,10 +31,11 @@ class CreateVulnerabilities < ActiveRecord::Migration[5.2]
       t.integer "confidence", limit: 2, null: false # auto-calculated as lowest-confidence finding, but overrideable
       t.boolean "severity_overridden", default: false
       t.boolean "confidence_overridden", default: false
-      t.string "title", limit: 255, null: false
+      t.string "title", limit: 255, null: false # rubocop:disable Migration/PreventStrings
       t.text "title_html", null: false
       t.text "description"
       t.text "description_html"
     end
   end
+  # rubocop:enable Migration/AddLimitToTextColumns
 end

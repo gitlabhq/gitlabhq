@@ -82,6 +82,6 @@ module SpammableActions
     return false if spammable.errors.count > 1 # re-render "new" template in case there are other errors
     return false unless Gitlab::Recaptcha.enabled?
 
-    spammable.spam
+    spammable.needs_recaptcha?
   end
 end

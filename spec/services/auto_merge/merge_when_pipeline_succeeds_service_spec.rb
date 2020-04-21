@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 describe AutoMerge::MergeWhenPipelineSucceedsService do
-  let(:user) { create(:user) }
-  let(:project) { create(:project, :repository) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :repository) }
 
   let(:mr_merge_if_green_enabled) do
     create(:merge_request, merge_when_pipeline_succeeds: true, merge_user: user,
@@ -18,6 +18,10 @@ describe AutoMerge::MergeWhenPipelineSucceedsService do
 
   let(:service) do
     described_class.new(project, user, commit_message: 'Awesome message')
+  end
+
+  before_all do
+    project.add_maintainer(user)
   end
 
   describe "#available_for?" do
@@ -34,8 +38,22 @@ describe AutoMerge::MergeWhenPipelineSucceedsService do
 
     it { is_expected.to be_truthy }
 
+    it 'memoizes the result' do
+      expect(mr_merge_if_green_enabled).to receive(:can_be_merged_by?).once.and_call_original
+
+      2.times { is_expected.to be_truthy }
+    end
+
     context 'when the head pipeline succeeded' do
       let(:pipeline_status) { :success }
+
+      it { is_expected.to be_falsy }
+    end
+
+    context 'when the user does not have permission to merge' do
+      before do
+        allow(mr_merge_if_green_enabled).to receive(:can_be_merged_by?) { false }
+      end
 
       it { is_expected.to be_falsy }
     end

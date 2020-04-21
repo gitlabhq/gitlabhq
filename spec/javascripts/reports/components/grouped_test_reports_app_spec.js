@@ -4,6 +4,7 @@ import axios from '~/lib/utils/axios_utils';
 import state from '~/reports/store/state';
 import component from '~/reports/components/grouped_test_reports_app.vue';
 import mountComponent from '../../helpers/vue_mount_component_helper';
+import { failedReport } from '../mock_data/mock_data';
 import newFailedTestReports from '../mock_data/new_failures_report.json';
 import newErrorsTestReports from '../mock_data/new_errors_report.json';
 import successTestReports from '../mock_data/no_failures_report.json';
@@ -196,6 +197,26 @@ describe('Grouped Test Reports App', () => {
         );
         done();
       }, 0);
+    });
+  });
+
+  describe('with a report that failed to load', () => {
+    beforeEach(() => {
+      mock.onGet('test_results.json').reply(200, failedReport, {});
+      vm = mountComponent(Component, {
+        endpoint: 'test_results.json',
+      });
+    });
+
+    it('renders an error status for the report', done => {
+      setTimeout(() => {
+        const { name } = failedReport.suites[0];
+
+        expect(vm.$el.querySelector('.report-block-list-issue').textContent).toContain(
+          `An error occurred while loading ${name} results`,
+        );
+        done();
+      });
     });
   });
 

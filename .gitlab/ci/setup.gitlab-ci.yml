@@ -7,7 +7,7 @@ cache gems:
     - .default-before_script
     - .setup:rules:cache-gems
   stage: test
-  needs: ["setup-test-env pg10"]
+  needs: ["setup-test-env pg11"]
   variables:
     SETUP_DB: "false"
   script:

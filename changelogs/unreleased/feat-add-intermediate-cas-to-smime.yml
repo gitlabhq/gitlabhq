@@ -1,0 +1,5 @@
+---
+title: Add intermediate CAs capability to S/MIME email signature
+merge_request: 29352
+author: Diego Louzán
+type: added

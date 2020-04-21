@@ -20,8 +20,10 @@ module Gitlab
           # Time in milliseconds since gitlab-workhorse started the request
           duration = Time.now.to_f * 1_000 - proxy_start.to_f / 1_000_000
           trans.set(:rails_queue_duration, duration)
-          metric_rails_queue_duration_seconds.observe(trans.labels, duration / 1_000)
-          env[GITLAB_RAILS_QUEUE_DURATION_KEY] = duration.round(2)
+
+          duration_s = Gitlab::Utils.ms_to_round_sec(duration)
+          metric_rails_queue_duration_seconds.observe(trans.labels, duration_s)
+          env[GITLAB_RAILS_QUEUE_DURATION_KEY] = duration_s
         end
 
         @app.call(env)

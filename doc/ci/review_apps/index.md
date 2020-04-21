@@ -278,7 +278,7 @@ can supply the ID by either:​​
 To enable visual reviews for private and internal projects, set the
 [`data-require-auth` variable](#configuring-visual-reviews) to `true`. When enabled,
 the user must enter a [personal access token](../../user/profile/personal_access_tokens.md)
-with `read_api` scope before submitting feedback.
+with `api` scope before submitting feedback.
 
 ### Using Visual Reviews
 

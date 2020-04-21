@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import { GlToast } from '@gitlab/ui';
-import Dashboard from 'ee_else_ce/monitoring/components/dashboard.vue';
+import Dashboard from '~/monitoring/components/dashboard_with_alerts.vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { getParameterValues } from '~/lib/utils/url_utility';
 import store from './stores';

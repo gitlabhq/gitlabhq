@@ -270,6 +270,35 @@ describe Snippets::UpdateService do
       end
     end
 
+    shared_examples 'committable attributes' do
+      context 'when file_name is updated' do
+        let(:options) { { file_name: 'snippet.rb' } }
+
+        it 'commits to repository' do
+          expect(service).to receive(:create_commit)
+          expect(subject).to be_success
+        end
+      end
+
+      context 'when content is updated' do
+        let(:options) { { content: 'puts "hello world"' } }
+
+        it 'commits to repository' do
+          expect(service).to receive(:create_commit)
+          expect(subject).to be_success
+        end
+      end
+
+      context 'when content or file_name is not updated' do
+        let(:options) { { title: 'Test snippet' } }
+
+        it 'does not perform any commit' do
+          expect(service).not_to receive(:create_commit)
+          expect(subject).to be_success
+        end
+      end
+    end
+
     context 'when Project Snippet' do
       let_it_be(:project) { create(:project) }
       let!(:snippet) { create(:project_snippet, :repository, author: user, project: project) }
@@ -283,6 +312,7 @@ describe Snippets::UpdateService do
       it_behaves_like 'snippet update data is tracked'
       it_behaves_like 'updates repository content'
       it_behaves_like 'commit operation fails'
+      it_behaves_like 'committable attributes'
 
       context 'when snippet does not have a repository' do
         let!(:snippet) { create(:project_snippet, author: user, project: project) }
@@ -301,6 +331,7 @@ describe Snippets::UpdateService do
       it_behaves_like 'snippet update data is tracked'
       it_behaves_like 'updates repository content'
       it_behaves_like 'commit operation fails'
+      it_behaves_like 'committable attributes'
 
       context 'when snippet does not have a repository' do
         let!(:snippet) { create(:personal_snippet, author: user, project: project) }

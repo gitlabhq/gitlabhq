@@ -1,7 +1,7 @@
 # Set up Postfix for incoming email
 
 This document will take you through the steps of setting up a basic Postfix mail
-server with IMAP authentication on Ubuntu, to be used with [incoming email].
+server with IMAP authentication on Ubuntu, to be used with [incoming email](incoming_email.md).
 
 The instructions make the assumption that you will be using the email address `incoming@gitlab.example.com`, that is, username `incoming` on host `gitlab.example.com`. Don't forget to change it to your actual host when executing the example code snippets.
 
@@ -333,10 +333,8 @@ Courier, which we will install later to add IMAP authentication, requires mailbo
 
 ## Done
 
-If all the tests were successful, Postfix is all set up and ready to receive email! Continue with the [incoming email] guide to configure GitLab.
+If all the tests were successful, Postfix is all set up and ready to receive email! Continue with the [incoming email](incoming_email.md) guide to configure GitLab.
 
 ---
 
 _This document was adapted from <https://help.ubuntu.com/community/PostfixBasicSetupHowto>, by contributors to the Ubuntu documentation wiki._
-
-[incoming email]: incoming_email.md

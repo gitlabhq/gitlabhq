@@ -50,27 +50,27 @@ module Gitlab
         message = base_message(payload)
 
         if job_exception
-          payload['message'] = "#{message}: fail: #{payload['duration']} sec"
+          payload['message'] = "#{message}: fail: #{payload['duration_s']} sec"
           payload['job_status'] = 'fail'
           payload['error_message'] = job_exception.message
           payload['error_class'] = job_exception.class.name
         else
-          payload['message'] = "#{message}: done: #{payload['duration']} sec"
+          payload['message'] = "#{message}: done: #{payload['duration_s']} sec"
           payload['job_status'] = 'done'
         end
 
-        payload['db_duration'] = ActiveRecord::LogSubscriber.runtime
-        payload['db_duration_s'] = payload['db_duration'] / 1000
+        db_duration = ActiveRecord::LogSubscriber.runtime
+        payload['db_duration_s'] = Gitlab::Utils.ms_to_round_sec(db_duration)
 
         payload
       end
 
       def add_time_keys!(time, payload)
-        payload['duration'] = time[:duration].round(6)
+        payload['duration_s'] = time[:duration].round(2)
 
         # ignore `cpu_s` if the platform does not support Process::CLOCK_THREAD_CPUTIME_ID (time[:cputime] == 0)
         # supported OS version can be found at: https://www.rubydoc.info/stdlib/core/2.1.6/Process:clock_gettime
-        payload['cpu_s'] = time[:cputime].round(6) if time[:cputime] > 0
+        payload['cpu_s'] = time[:cputime].round(2) if time[:cputime] > 0
         payload['completed_at'] = Time.now.utc.to_f
       end
 

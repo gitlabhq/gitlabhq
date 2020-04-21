@@ -3,7 +3,8 @@
 require 'spec_helper'
 
 describe Gitlab::SlashCommands::Presenters::IssueShow do
-  let(:project) { create(:project) }
+  let(:user) { create(:user, :with_avatar) }
+  let(:project) { create(:project, creator: user) }
   let(:issue) { create(:issue, project: project) }
   let(:attachment) { subject[:attachments].first }
 
@@ -15,6 +16,7 @@ describe Gitlab::SlashCommands::Presenters::IssueShow do
     expect(subject[:response_type]).to be(:in_channel)
     expect(subject).to have_key(:attachments)
     expect(attachment[:title]).to start_with(issue.title)
+    expect(attachment[:author_icon]).to eq(user.avatar_url(only_path: false))
   end
 
   context 'with upvotes' do

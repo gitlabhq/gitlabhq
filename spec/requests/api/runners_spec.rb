@@ -3,35 +3,34 @@
 require 'spec_helper'
 
 describe API::Runners do
-  let(:admin) { create(:user, :admin) }
-  let(:user) { create(:user) }
-  let(:user2) { create(:user) }
-  let(:group_guest) { create(:user) }
-  let(:group_reporter) { create(:user) }
-  let(:group_developer) { create(:user) }
-  let(:group_maintainer) { create(:user) }
+  let_it_be(:admin) { create(:user, :admin) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:user2) { create(:user) }
+  let_it_be(:group_guest) { create(:user) }
+  let_it_be(:group_reporter) { create(:user) }
+  let_it_be(:group_developer) { create(:user) }
+  let_it_be(:group_maintainer) { create(:user) }
 
-  let(:project) { create(:project, creator_id: user.id) }
-  let(:project2) { create(:project, creator_id: user.id) }
+  let_it_be(:project) { create(:project, creator_id: user.id) }
+  let_it_be(:project2) { create(:project, creator_id: user.id) }
 
-  let(:group) { create(:group).tap { |group| group.add_owner(user) } }
-  let(:subgroup) { create(:group, parent: group) }
+  let_it_be(:group) { create(:group).tap { |group| group.add_owner(user) } }
+  let_it_be(:subgroup) { create(:group, parent: group) }
 
-  let!(:shared_runner) { create(:ci_runner, :instance, description: 'Shared runner') }
-  let!(:project_runner) { create(:ci_runner, :project, description: 'Project runner', projects: [project]) }
-  let!(:two_projects_runner) { create(:ci_runner, :project, description: 'Two projects runner', projects: [project, project2]) }
-  let!(:group_runner_a) { create(:ci_runner, :group, description: 'Group runner A', groups: [group]) }
-  let!(:group_runner_b) { create(:ci_runner, :group, description: 'Group runner B', groups: [subgroup]) }
+  let_it_be(:shared_runner, reload: true) { create(:ci_runner, :instance, description: 'Shared runner') }
+  let_it_be(:project_runner, reload: true) { create(:ci_runner, :project, description: 'Project runner', projects: [project]) }
+  let_it_be(:two_projects_runner) { create(:ci_runner, :project, description: 'Two projects runner', projects: [project, project2]) }
+  let_it_be(:group_runner_a) { create(:ci_runner, :group, description: 'Group runner A', groups: [group]) }
+  let_it_be(:group_runner_b) { create(:ci_runner, :group, description: 'Group runner B', groups: [subgroup]) }
 
-  before do
-    # Set project access for users
-    create(:group_member, :guest, user: group_guest, group: group)
-    create(:group_member, :reporter, user: group_reporter, group: group)
-    create(:group_member, :developer, user: group_developer, group: group)
-    create(:group_member, :maintainer, user: group_maintainer, group: group)
-    create(:project_member, :maintainer, user: user, project: project)
-    create(:project_member, :maintainer, user: user, project: project2)
-    create(:project_member, :reporter, user: user2, project: project)
+  before_all do
+    group.add_guest(group_guest)
+    group.add_reporter(group_reporter)
+    group.add_developer(group_developer)
+    group.add_maintainer(group_maintainer)
+    project.add_maintainer(user)
+    project2.add_maintainer(user)
+    project.add_reporter(user2)
   end
 
   describe 'GET /runners' do
@@ -603,10 +602,10 @@ describe API::Runners do
 
   describe 'GET /runners/:id/jobs' do
     let_it_be(:job_1) { create(:ci_build) }
-    let!(:job_2) { create(:ci_build, :running, runner: shared_runner, project: project) }
-    let!(:job_3) { create(:ci_build, :failed, runner: shared_runner, project: project) }
-    let!(:job_4) { create(:ci_build, :running, runner: project_runner, project: project) }
-    let!(:job_5) { create(:ci_build, :failed, runner: project_runner, project: project) }
+    let_it_be(:job_2) { create(:ci_build, :running, runner: shared_runner, project: project) }
+    let_it_be(:job_3) { create(:ci_build, :failed, runner: shared_runner, project: project) }
+    let_it_be(:job_4) { create(:ci_build, :running, runner: project_runner, project: project) }
+    let_it_be(:job_5) { create(:ci_build, :failed, runner: project_runner, project: project) }
 
     context 'admin user' do
       context 'when runner exists' do
@@ -952,7 +951,7 @@ describe API::Runners do
 
   describe 'POST /projects/:id/runners' do
     context 'authorized user' do
-      let(:project_runner2) { create(:ci_runner, :project, projects: [project2]) }
+      let_it_be(:project_runner2) { create(:ci_runner, :project, projects: [project2]) }
 
       it 'enables specific runner' do
         expect do

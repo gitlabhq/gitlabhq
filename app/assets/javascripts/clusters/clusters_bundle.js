@@ -49,6 +49,7 @@ export default class Clusters {
       installElasticStackPath,
       installCrossplanePath,
       installPrometheusPath,
+      installFluentdPath,
       managePrometheusPath,
       clusterEnvironmentsPath,
       hasRbac,
@@ -102,6 +103,7 @@ export default class Clusters {
       updateKnativeEndpoint: updateKnativePath,
       installElasticStackEndpoint: installElasticStackPath,
       clusterEnvironmentsEndpoint: clusterEnvironmentsPath,
+      installFluentdEndpoint: installFluentdPath,
     });
 
     this.installApplication = this.installApplication.bind(this);
@@ -265,6 +267,7 @@ export default class Clusters {
     eventHub.$on('setIngressModSecurityEnabled', data => this.setIngressModSecurityEnabled(data));
     eventHub.$on('setIngressModSecurityMode', data => this.setIngressModSecurityMode(data));
     eventHub.$on('resetIngressModSecurityChanges', id => this.resetIngressModSecurityChanges(id));
+    eventHub.$on('setFluentdSettings', data => this.setFluentdSettings(data));
     // Add event listener to all the banner close buttons
     this.addBannerCloseHandler(this.unreachableContainer, 'unreachable');
     this.addBannerCloseHandler(this.authenticationFailureContainer, 'authentication_failure');
@@ -281,6 +284,7 @@ export default class Clusters {
     eventHub.$off('setIngressModSecurityEnabled');
     eventHub.$off('setIngressModSecurityMode');
     eventHub.$off('resetIngressModSecurityChanges');
+    eventHub.$off('setFluentdSettings');
   }
 
   initPolling(method, successCallback, errorCallback) {
@@ -504,6 +508,12 @@ export default class Clusters {
     this.service.installApplication(appId, params).catch(() => {
       this.store.notifyUpdateFailure(appId);
     });
+  }
+
+  setFluentdSettings({ id: appId, port, protocol, host }) {
+    this.store.updateAppProperty(appId, 'port', port);
+    this.store.updateAppProperty(appId, 'protocol', protocol);
+    this.store.updateAppProperty(appId, 'host', host);
   }
 
   toggleIngressDomainHelpText({ externalIp }, { externalIp: newExternalIp }) {

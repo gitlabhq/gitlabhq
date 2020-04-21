@@ -289,6 +289,7 @@ The following tables outline the details of expected properties.
 | `title` | string | yes | Heading for the panel. |
 | `y_label` | string | no, but highly encouraged | Y-Axis label for the panel. |
 | `y_axis` | string | no | Y-Axis configuration for the panel. |
+| `max_value` | number | no | Denominator value used for calculating [percentile based results](#percentile-based-results) |
 | `weight` | number | no, defaults to order in file | Order to appear within the grouping. Lower number means higher priority, which will be higher on the page. Numbers do not need to be consecutive. |
 | `metrics` | array | yes | The metrics which should be displayed in the panel. Any number of metrics can be displayed when `type` is `area-chart` or `line-chart`, whereas only 3 can be displayed when `type` is `anomaly-chart`. |
 
@@ -304,7 +305,7 @@ The following tables outline the details of expected properties.
 
 | Property | Type | Required | Description |
 | ------ | ------ | ------ | ------ |
-| `id` | string | no | Used for associating dashboard metrics with database records. Must be unique across dashboard configuration files. Required for [alerting](#setting-up-alerts-for-prometheus-metrics-ultimate) (support not yet enabled, see [relevant issue](https://gitlab.com/gitlab-org/gitlab-foss/issues/60319)). |
+| `id` | string | no | Used for associating dashboard metrics with database records. Must be unique across dashboard configuration files. Required for [alerting](#setting-up-alerts-for-prometheus-metrics) (support not yet enabled, see [relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/27980)). |
 | `unit` | string | yes | Defines the unit of the query's return data. |
 | `label` | string | no, but highly encouraged | Defines the legend-label for the query. Should be unique within the panel's metrics. Can contain time series labels as interpolated variables. |
 | `query` | string | yes if `query_range` is not defined | Defines the Prometheus query to be used to populate the chart/panel. If defined, the `query` endpoint of the [Prometheus API](https://prometheus.io/docs/prometheus/latest/querying/api/) will be utilized. |
@@ -627,7 +628,21 @@ The options are:
 - [View logs](#view-logs-ultimate)
 - [Download CSV](#downloading-data-as-csv)
 - [Copy link to chart](#embedding-gitlab-managed-kubernetes-metrics)
-- [Alerts](#setting-up-alerts-for-prometheus-metrics-ultimate)
+- [Alerts](#setting-up-alerts-for-prometheus-metrics)
+
+### Dashboard Annotations
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/211330) in GitLab 12.10 (enabled by feature flag `metrics_dashboard_annotations`).
+
+You can use **Metrics Dashboard Annotations** to mark any important events on
+every metrics dashboard by adding annotations to it. While viewing a dashboard,
+annotation entries assigned to the selected time range will be automatically
+fetched and displayed on every chart within that dashboard. On mouse hover, each
+annotation presents additional details, including the exact time of an event and
+its description.
+
+You can create annotations by making requests to the
+[Metrics dashboard annotations API](../../../api/metrics_dashboard_annotations.md)
 
 ### View Logs **(ULTIMATE)**
 
@@ -652,7 +667,7 @@ and end times to the URL, enabling you to share specific timeframes more easily.
 
 Data from Prometheus charts on the metrics dashboard can be downloaded as CSV.
 
-### Setting up alerts for Prometheus metrics **(ULTIMATE)**
+### Setting up alerts for Prometheus metrics
 
 #### Managed Prometheus instances
 
@@ -805,7 +820,7 @@ It is also possible to embed either the default dashboard metrics or individual 
 
 ### Embedding metrics based on alerts in incident issues
 
-For [GitLab-managed alerting rules](#setting-up-alerts-for-prometheus-metrics-ultimate), the issue will include an embedded chart for the query corresponding to the alert. The chart displays an hour of data surrounding the starting point of the incident, 30 minutes before and after.
+For [GitLab-managed alerting rules](#setting-up-alerts-for-prometheus-metrics), the issue will include an embedded chart for the query corresponding to the alert. The chart displays an hour of data surrounding the starting point of the incident, 30 minutes before and after.
 
 For [manually configured Prometheus instances](#manual-configuration-of-prometheus), a chart corresponding to the query can be included if these requirements are met:
 

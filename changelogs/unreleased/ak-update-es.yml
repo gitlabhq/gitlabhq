@@ -1,0 +1,5 @@
+---
+title: Update Elastic Stack chart to 2.0.0 to support kubernetes 1.16
+merge_request: 29601
+author:
+type: fixed

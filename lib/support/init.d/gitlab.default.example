@@ -6,7 +6,7 @@
 RAILS_ENV="production"
 
 # Uncomment the line below to enable the Unicorn web server instead of Puma.
-# USE_UNICORN=1
+# use_web_server="unicorn"
 
 # app_user defines the user that GitLab is run as.
 # The default is "git".

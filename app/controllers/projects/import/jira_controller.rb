@@ -11,11 +11,10 @@ module Projects
       before_action :authorize_admin_project!, only: [:import]
 
       def show
-        @is_jira_configured = @project.jira_service.present?
-        return if Feature.enabled?(:jira_issue_import_vue, @project)
+        jira_service = @project.jira_service
 
-        if !@project.latest_jira_import&.in_progress? && current_user&.can?(:admin_project, @project)
-          jira_client = @project.jira_service.client
+        if jira_service.present? && !@project.latest_jira_import&.in_progress? && current_user&.can?(:admin_project, @project)
+          jira_client = jira_service.client
           jira_projects = jira_client.Project.all
 
           if jira_projects.present?
@@ -25,7 +24,9 @@ module Projects
           end
         end
 
-        flash[:notice] = _("Import %{status}") % { status: @project.jira_import_status } unless @project.latest_jira_import&.initial?
+        unless Feature.enabled?(:jira_issue_import_vue, @project, default_enabled: true)
+          flash[:notice] = _("Import %{status}") % { status: @project.jira_import_status } unless @project.latest_jira_import&.initial?
+        end
       end
 
       def import
@@ -35,7 +36,7 @@ module Projects
           response = ::JiraImport::StartImportService.new(current_user, @project, jira_project_key).execute
           flash[:notice] = response.message if response.message.present?
         else
-          flash[:alert] = 'No jira project key has been provided.'
+          flash[:alert] = 'No Jira project key has been provided.'
         end
 
         redirect_to project_import_jira_path(@project)
@@ -50,7 +51,7 @@ module Projects
       end
 
       def jira_integration_configured?
-        return if Feature.enabled?(:jira_issue_import_vue, @project)
+        return if Feature.enabled?(:jira_issue_import_vue, @project, default_enabled: true)
         return if @project.jira_service
 
         flash[:notice] = _("Configure the Jira integration first on your project's %{strong_start} Settings > Integrations > Jira%{strong_end} page." %

@@ -249,6 +249,10 @@ export default {
     Object.assign(state, { isToggleStateButtonLoading: value });
   },
 
+  [types.TOGGLE_BLOCKED_ISSUE_WARNING](state, value) {
+    Object.assign(state, { isToggleBlockedIssueWarning: value });
+  },
+
   [types.SET_NOTES_FETCHED_STATE](state, value) {
     Object.assign(state, { isNotesFetched: value });
   },

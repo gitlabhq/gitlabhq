@@ -10,7 +10,8 @@ module Gitlab
       def self.parsers
         {
           junit: ::Gitlab::Ci::Parsers::Test::Junit,
-          cobertura: ::Gitlab::Ci::Parsers::Coverage::Cobertura
+          cobertura: ::Gitlab::Ci::Parsers::Coverage::Cobertura,
+          terraform: ::Gitlab::Ci::Parsers::Terraform::Tfplan
         }
       end
 

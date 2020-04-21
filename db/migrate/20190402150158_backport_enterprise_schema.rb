@@ -2,7 +2,8 @@
 
 # rubocop: disable Metrics/AbcSize
 # rubocop: disable Migration/Datetime
-# rubocop: disable Migration/AddLimitToStringColumns
+# rubocop: disable Migration/PreventStrings
+# rubocop: disable Migration/AddLimitToTextColumns
 class BackportEnterpriseSchema < ActiveRecord::Migration[5.0]
   include Gitlab::Database::MigrationHelpers
 
@@ -2188,4 +2189,5 @@ class BackportEnterpriseSchema < ActiveRecord::Migration[5.0]
 end
 # rubocop: enable Metrics/AbcSize
 # rubocop: enable Migration/Datetime
-# rubocop: enable Migration/AddLimitToStringColumns
+# rubocop: enable Migration/PreventStrings
+# rubocop: enable Migration/AddLimitToTextColumns

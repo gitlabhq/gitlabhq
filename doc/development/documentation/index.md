@@ -277,7 +277,7 @@ You can combine one or more of the following:
 
 ### GitLab `/help` tests
 
-Several [rspec tests](https://gitlab.com/gitlab-org/gitlab/blob/master/spec/features/help_pages_spec.rb)
+Several [RSpec tests](https://gitlab.com/gitlab-org/gitlab/blob/master/spec/features/help_pages_spec.rb)
 are run to ensure GitLab documentation renders and works correctly. In particular, that [main docs landing page](../../README.md) will work correctly from `/help`.
 For example, [GitLab.com's `/help`](https://gitlab.com/help).
 

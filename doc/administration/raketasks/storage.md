@@ -4,12 +4,12 @@ This is a collection of Rake tasks you can use to help you list and migrate
 existing projects and attachments associated with it from Legacy storage to
 the new Hashed storage type.
 
-You can read more about the storage types [here][storage-types].
+You can read more about the storage types [here](../repository_storage_types.md).
 
 ## Migrate existing projects to Hashed storage
 
 Before migrating your existing projects, you should
-[enable hashed storage][storage-migration] for the new projects as well.
+[enable hashed storage](../repository_storage_types.md#how-to-migrate-to-hashed-storage) for the new projects as well.
 
 This task will schedule all your existing projects and attachments associated with it to be migrated to the
 **Hashed** storage type:
@@ -56,7 +56,7 @@ If you need to rollback the storage migration for any reason, you can follow the
 NOTE: **Note:** Hashed Storage will be required in future version of GitLab.
 
 To prevent new projects from being created in the Hashed storage,
-you need to undo the [enable hashed storage][storage-migration] changes.
+you need to undo the [enable hashed storage](../repository_storage_types.md#how-to-migrate-to-hashed-storage) changes.
 
 This task will schedule all your existing projects and associated attachments to be rolled back to the
 Legacy storage type.
@@ -209,6 +209,3 @@ sudo gitlab-rake gitlab:storage:list_hashed_attachments
 ```shell
 sudo -u git -H bundle exec rake gitlab:storage:list_hashed_attachments RAILS_ENV=production
 ```
-
-[storage-types]: ../repository_storage_types.md
-[storage-migration]: ../repository_storage_types.md#how-to-migrate-to-hashed-storage

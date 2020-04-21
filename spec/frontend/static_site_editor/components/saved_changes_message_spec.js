@@ -1,22 +1,17 @@
 import { shallowMount } from '@vue/test-utils';
+
 import SavedChangesMessage from '~/static_site_editor/components/saved_changes_message.vue';
+
+import { returnUrl, savedContentMeta } from '../mock_data';
 
 describe('~/static_site_editor/components/saved_changes_message.vue', () => {
   let wrapper;
+  const { branch, commit, mergeRequest } = savedContentMeta;
   const props = {
-    branch: {
-      label: '123-the-branch',
-      url: 'https://gitlab.com/gitlab-org/gitlab/-/tree/123-the-branch',
-    },
-    commit: {
-      label: 'a123',
-      url: 'https://gitlab.com/gitlab-org/gitlab/-/commit/a123',
-    },
-    mergeRequest: {
-      label: '123',
-      url: 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123',
-    },
-    returnUrl: 'https://www.the-static-site.com/post',
+    branch,
+    commit,
+    mergeRequest,
+    returnUrl,
   };
   const findReturnToSiteButton = () => wrapper.find({ ref: 'returnToSiteButton' });
   const findMergeRequestButton = () => wrapper.find({ ref: 'mergeRequestButton' });

@@ -19,7 +19,7 @@ module Gitlab
 
       def cache_import_label(project)
         label = project.jira_imports.by_jira_project_key(jira_project_key).last.label
-        raise Projects::ImportService::Error, _('Failed to find import label for jira import.') unless label
+        raise Projects::ImportService::Error, _('Failed to find import label for Jira import.') unless label
 
         JiraImport.cache_import_label_id(project.id, label.id)
       end

@@ -62,19 +62,20 @@ describe Autocomplete::MoveToProjectFinder do
         expect(finder.execute.to_a).to eq([other_reporter_project])
       end
 
-      it 'returns a page of projects ordered by name' do
+      it 'returns a page of projects ordered by star count' do
         stub_const('Autocomplete::MoveToProjectFinder::LIMIT', 2)
 
-        projects = create_list(:project, 3) do |project|
-          project.add_developer(user)
-        end
+        projects = [
+          create(:project, namespace: user.namespace, star_count: 1),
+          create(:project, namespace: user.namespace, star_count: 5),
+          create(:project, namespace: user.namespace)
+        ]
 
         finder = described_class.new(user, project_id: project.id)
         page = finder.execute.to_a
 
-        expected_projects = projects.sort_by(&:name).first(2)
         expect(page.length).to eq(2)
-        expect(page).to eq(expected_projects)
+        expect(page).to eq([projects[1], projects[0]])
       end
     end
 

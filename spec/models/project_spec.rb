@@ -2645,18 +2645,6 @@ describe Project do
     end
   end
 
-  describe '#daily_statistics_enabled?' do
-    it { is_expected.to be_daily_statistics_enabled }
-
-    context 'when :project_daily_statistics is disabled for the project' do
-      before do
-        stub_feature_flags(project_daily_statistics: { thing: subject, enabled: false })
-      end
-
-      it { is_expected.not_to be_daily_statistics_enabled }
-    end
-  end
-
   describe '#change_head' do
     let(:project) { create(:project, :repository) }
 

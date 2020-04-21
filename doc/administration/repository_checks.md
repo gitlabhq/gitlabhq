@@ -1,8 +1,8 @@
 # Repository checks
 
-> [Introduced][ce-3232] in GitLab 8.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/3232) in GitLab 8.7.
 
-Git has a built-in mechanism, [`git fsck`][git-fsck], to verify the
+Git has a built-in mechanism, [`git fsck`](https://git-scm.com/docs/git-fsck), to verify the
 integrity of all data committed to a repository. GitLab administrators
 can trigger such a check for a project via the project page under the
 admin panel. The checks run asynchronously so it may take a few minutes
@@ -41,7 +41,3 @@ in `repocheck.log`:
 If the periodic repository check causes false alarms, you can clear all repository check states by
 navigating to **Admin Area > Settings > Repository**
 (`/admin/application_settings/repository`) and clicking **Clear all repository checks**.
-
----
-[ce-3232]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/3232 "Auto git fsck"
-[git-fsck]: https://git-scm.com/docs/git-fsck "git fsck documentation"

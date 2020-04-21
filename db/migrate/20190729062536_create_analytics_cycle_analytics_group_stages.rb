@@ -26,7 +26,7 @@ class CreateAnalyticsCycleAnalyticsGroupStages < ActiveRecord::Migration[5.2]
       })
       t.boolean :hidden, default: false, null: false
       t.boolean :custom, default: true, null: false
-      t.string :name, null: false, limit: 255
+      t.string :name, null: false, limit: 255 # rubocop:disable Migration/PreventStrings
     end
 
     add_index :analytics_cycle_analytics_group_stages, [:group_id, :name], unique: true, name: INDEX_PREFIX + 'on_group_id_and_name'

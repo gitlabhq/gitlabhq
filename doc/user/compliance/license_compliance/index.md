@@ -154,6 +154,10 @@ directory of your project.
 
 ### Overriding the template
 
+CAUTION: **Deprecation:**
+Beginning in GitLab 13.0, the use of [`only` and `except`](../../../ci/yaml/README.md#onlyexcept-basic)
+is no longer supported. When overriding the template, you must use [`rules`](../../../ci/yaml/README.md#rules) instead.
+
 If you want to override the job definition (for example, change properties like
 `variables` or `dependencies`), you need to declare a `license_scanning` job
 after the template inclusion and specify any additional keys under it. For example:
@@ -264,6 +268,12 @@ The [`pip.conf`](https://pip.pypa.io/en/stable/reference/pip/) allows you to spe
 trusted-host = pypi.example.com
 ```
 
+#### Using private Python repos
+
+If you have a private Python repository you can use the `PIP_INDEX_URL` [environment variable](#available-variables)
+to specify its location. It's also possible to provide a custom `pip.conf` for
+[additional configuration](#custom-root-certificates-for-python).
+
 ### Migration from `license_management` to `license_scanning`
 
 In GitLab 12.8 a new name for `license_management` job was introduced. This change was made to improve clarity around the purpose of the scan, which is to scan and collect the types of licenses present in a projects dependencies.
@@ -301,28 +311,65 @@ license_scanning:
 
 ## Running License Compliance in an offline environment
 
-License Compliance can be executed on an offline GitLab Ultimate installation by using the following
-process:
+For self-managed GitLab instances in an environment with limited, restricted, or intermittent access
+to external resources through the internet, some adjustments are required for the License Compliance job to
+successfully run.
 
-1. Host the License Compliance image
-   `registry.gitlab.com/gitlab-org/security-products/license-management:latest` in your local Docker
-   container registry.
-1. Add the following configuration to your `.gitlab-ci.yml` file. You must replace `image` to refer
-   to the License Compliance Docker image hosted on your local Docker container registry:
+### Requirements for offline License Compliance
 
-   ```yaml
-   include:
-     - template: License-Scanning.gitlab-ci.yml
+To use License Compliance in an offline environment, you need:
 
-   license_scanning:
-     image: registry.example.com/namespace/license-management:latest
-   ```
+- GitLab Runner with the [`docker` or `kubernetes` executor](#requirements).
+- Docker Container Registry with locally available copies of License Compliance [analyzer](https://gitlab.com/gitlab-org/security-products/analyzers) images.
 
-1. Ensure the package registry is reachable from within the GitLab environment and that the package
-   manager is configured to use your preferred package registry.
+NOTE: **Note:**
+GitLab Runner has a [default `pull policy` of `always`](https://docs.gitlab.com/runner/executors/docker.html#using-the-always-pull-policy),
+meaning the runner will try to pull Docker images from the GitLab container registry even if a local
+copy is available. GitLab Runner's [`pull_policy` can be set to `if-not-present`](https://docs.gitlab.com/runner/executors/docker.html#using-the-if-not-present-pull-policy)
+in an offline environment if you prefer using only locally available Docker images. However, we
+recommend leaving the pull policy set to `always`, as it better enables updated scanners to be used
+within your CI/CD pipelines.
 
-Additional [configuration](#using-private-maven-repos) may be needed for connecting to private Maven
-repositories.
+### Make GitLab License Compliance analyzer images available inside your Docker registry
+
+For License Compliance with all [supported languages and package managers](#supported-languages-and-package-managers),
+import the following default License Compliance analyzer images from `registry.gitlab.com` to your
+offline [local Docker container registry](../../packages/container_registry/index.md):
+
+```plaintext
+registry.gitlab.com/gitlab-org/security-products/license-management:latest
+```
+
+The process for importing Docker images into a local offline Docker registry depends on
+**your network security policy**. Please consult your IT staff to find an accepted and approved
+process by which external resources can be imported or temporarily accessed. Note that these scanners are [updated periodically](../../application_security/index.md#maintenance-and-update-of-the-vulnerabilities-database)
+with new definitions, so consider if you are able to make periodic updates yourself.
+
+For details on saving and transporting Docker images as a file, see Docker's documentation on
+[`docker save`](https://docs.docker.com/engine/reference/commandline/save/), [`docker load`](https://docs.docker.com/engine/reference/commandline/load/),
+[`docker export`](https://docs.docker.com/engine/reference/commandline/export/), and [`docker import`](https://docs.docker.com/engine/reference/commandline/import/).
+
+### Set License Compliance CI job variables to use local License Compliance analyzers
+
+Override License Compliance environment variables to use to your local container registry
+as the source for License Compliance analyzer images.
+
+For example, this assumes a local Docker registry repository of `localhost:5000/analyzers`:
+
+```yaml
+include:
+  - template: License-Scanning.gitlab-ci.yml
+
+license_scanning:
+  image:
+    name: localhost:5000/analyzers/license-management:latest
+```
+
+The License Compliance job should now use local copies of the License Compliance analyzers to scan
+your code and generate security reports, without requiring internet access.
+
+Additional configuration may be needed for connecting to [private Maven repositories](#using-private-maven-repos)
+and [private Python repositories](#using-private-python-repos).
 
 Exact name matches are required for [project policies](#project-policies-for-license-compliance)
 when running in an offline environment ([see related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/212388)).

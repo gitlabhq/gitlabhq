@@ -817,6 +817,14 @@ module Ci
       end
     end
 
+    def terraform_reports
+      ::Gitlab::Ci::Reports::TerraformReports.new.tap do |terraform_reports|
+        builds.latest.with_reports(::Ci::JobArtifact.terraform_reports).each do |build|
+          build.collect_terraform_reports!(terraform_reports)
+        end
+      end
+    end
+
     def has_exposed_artifacts?
       complete? && builds.latest.with_exposed_artifacts.exists?
     end

@@ -475,5 +475,45 @@ describe Ci::CreateCrossProjectPipelineService, '#execute' do
         expect(bridge.failure_reason).to eq 'insufficient_bridge_permissions'
       end
     end
+
+    context 'when there is no such branch in downstream project' do
+      let(:trigger) do
+        {
+          trigger: {
+            project: downstream_project.full_path,
+            branch: 'invalid_branch'
+          }
+        }
+      end
+
+      it 'does not create a pipeline and drops the bridge' do
+        service.execute(bridge)
+
+        expect(bridge.reload).to be_failed
+        expect(bridge.failure_reason).to eq('downstream_pipeline_creation_failed')
+      end
+    end
+
+    context 'when downstream pipeline has a branch rule and does not satisfy' do
+      before do
+        stub_ci_pipeline_yaml_file(config)
+      end
+
+      let(:config) do
+        <<-EOY
+          hello:
+            script: echo world
+            only:
+              - invalid_branch
+        EOY
+      end
+
+      it 'does not create a pipeline and drops the bridge' do
+        service.execute(bridge)
+
+        expect(bridge.reload).to be_failed
+        expect(bridge.failure_reason).to eq('downstream_pipeline_creation_failed')
+      end
+    end
   end
 end

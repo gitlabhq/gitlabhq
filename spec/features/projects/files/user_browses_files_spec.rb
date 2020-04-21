@@ -180,6 +180,20 @@ describe "User browses files" do
       expect(page).to have_content("VERSION")
         .and have_content(".gitignore")
         .and have_content("LICENSE")
+
+      click_link("files")
+
+      page.within('.repo-breadcrumb') do
+        expect(page).to have_link('files')
+      end
+
+      click_link("html")
+
+      page.within('.repo-breadcrumb') do
+        expect(page).to have_link('html')
+      end
+
+      expect(page).to have_link('500.html')
     end
   end
 
@@ -193,6 +207,20 @@ describe "User browses files" do
       expect(page).to have_content("VERSION")
         .and have_content(".gitignore")
         .and have_content("LICENSE")
+
+      click_link("files")
+
+      page.within('.repo-breadcrumb') do
+        expect(page).to have_link('files')
+      end
+
+      click_link("html")
+
+      page.within('.repo-breadcrumb') do
+        expect(page).to have_link('html')
+      end
+
+      expect(page).to have_link('500.html')
     end
   end
 

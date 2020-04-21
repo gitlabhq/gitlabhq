@@ -892,6 +892,7 @@ describe API::MergeRequests do
       expect(json_response['merge_error']).to eq(merge_request.merge_error)
       expect(json_response['user']['can_merge']).to be_truthy
       expect(json_response).not_to include('rebase_in_progress')
+      expect(json_response['first_contribution']).to be_falsy
       expect(json_response['has_conflicts']).to be_falsy
       expect(json_response['blocking_discussions_resolved']).to be_truthy
       expect(json_response['references']['short']).to eq("!#{merge_request.iid}")
@@ -913,6 +914,21 @@ describe API::MergeRequests do
       expect(response).to have_gitlab_http_status(:ok)
 
       expect(json_response).to include('rebase_in_progress')
+    end
+
+    context 'when author is not a member without any merged merge requests' do
+      let(:non_member) { create(:user) }
+
+      before do
+        merge_request.update(author: non_member)
+      end
+
+      it 'exposes first_contribution as true' do
+        get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['first_contribution']).to be_truthy
+      end
     end
 
     context 'merge_request_metrics' do

@@ -1,6 +1,6 @@
 # Pseudonymizer **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/5532) in [GitLab Ultimate][ee] 11.1.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/5532) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.1.
 
 As GitLab's database hosts sensitive information, using it unfiltered for analytics
 implies high security requirements. To help alleviate this constraint, the Pseudonymizer
@@ -101,5 +101,3 @@ This will produce some CSV files that might be very large, so make sure the
 
 After the pseudonymizer has run, the output CSV files should be uploaded to the
 configured object storage and deleted from the local disk.
-
-[ee]: https://about.gitlab.com/pricing/

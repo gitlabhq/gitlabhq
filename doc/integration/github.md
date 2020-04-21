@@ -138,11 +138,8 @@ You will also need to disable Git SSL verification on the server hosting GitLab.
 git config --global http.sslVerify false
 ```
 
-For the changes to take effect, [reconfigure GitLab] if you installed
-via Omnibus, or [restart GitLab] if you installed from source.
-
-[reconfigure GitLab]: ../administration/restart_gitlab.md#omnibus-gitlab-reconfigure
-[restart GitLab]: ../administration/restart_gitlab.md#installations-from-source
+For the changes to take effect, [reconfigure GitLab](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure) if you installed
+via Omnibus, or [restart GitLab](../administration/restart_gitlab.md#installations-from-source) if you installed from source.
 
 ## Troubleshooting
 

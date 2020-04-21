@@ -567,7 +567,7 @@ Set Hangouts Chat service for a project.
 PUT /projects/:id/services/hangouts-chat
 ```
 
->**Note:** Specific event parameters (for example, `push_events` flag) were [introduced in v10.4][11435]
+>**Note:** Specific event parameters (for example, `push_events` flag) were [introduced in v10.4](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/11435)
 
 Parameters:
 
@@ -1068,7 +1068,7 @@ Set Slack service for a project.
 PUT /projects/:id/services/slack
 ```
 
->**Note:** Specific event parameters (for example, `push_events` flag and `push_channel`) were [introduced in v10.4][11435]
+>**Note:** Specific event parameters (for example, `push_events` flag and `push_channel`) were [introduced in v10.4](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/11435)
 
 Parameters:
 
@@ -1177,7 +1177,7 @@ Set Mattermost service for a project.
 PUT /projects/:id/services/mattermost
 ```
 
->**Note:** Specific event parameters (for example, `push_events` flag and `push_channel`) were [introduced in v10.4][11435]
+>**Note:** Specific event parameters (for example, `push_events` flag and `push_channel`) were [introduced in v10.4](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/11435)
 
 Parameters:
 
@@ -1368,8 +1368,6 @@ Get MockCI service settings for a project.
 ```plaintext
 GET /projects/:id/services/mock-ci
 ```
-
-[11435]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/11435
 
 ## YouTrack
 

@@ -269,6 +269,13 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: 
+- :name: cronjob:x509_issuer_crl_check
+  :feature_category: :source_code_management
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
 - :name: deployment:deployments_finished
   :feature_category: :continuous_delivery
   :has_external_dependencies: 
@@ -709,7 +716,7 @@
   :urgency: :high
   :resource_boundary: :cpu
   :weight: 3
-  :idempotent: 
+  :idempotent: true
 - :name: pipeline_creation:create_pipeline
   :feature_category: :continuous_integration
   :has_external_dependencies: 
@@ -849,7 +856,7 @@
   :urgency: :high
   :resource_boundary: :unknown
   :weight: 5
-  :idempotent: 
+  :idempotent: true
 - :name: pipeline_processing:update_head_pipeline_for_merge_request
   :feature_category: :continuous_integration
   :has_external_dependencies: 
@@ -1044,6 +1051,13 @@
   :has_external_dependencies: 
   :urgency: :low
   :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: 
+- :name: export_csv
+  :feature_category: :issue_tracking
+  :has_external_dependencies: 
+  :urgency: :low
+  :resource_boundary: :cpu
   :weight: 1
   :idempotent: 
 - :name: file_hook

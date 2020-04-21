@@ -3,7 +3,7 @@
 /* global emitSidebarEvent */
 
 import $ from 'jquery';
-import _ from 'underscore';
+import { escape as esc, template, uniqBy } from 'lodash';
 import axios from './lib/utils/axios_utils';
 import { s__, __, sprintf } from './locale';
 import ModalStore from './boards/stores/modal_store';
@@ -81,7 +81,7 @@ function UsersSelect(currentUser, els, options = {}) {
       const userName = currentUserInfo.name;
       const userId = currentUserInfo.id || currentUser.id;
 
-      const inputHtmlString = _.template(`
+      const inputHtmlString = template(`
         <input type="hidden" name="<%- fieldName %>"
           data-meta="<%- userName %>"
           value="<%- userId %>" />
@@ -205,7 +205,7 @@ function UsersSelect(currentUser, els, options = {}) {
             username: data.assignee.username,
             avatar: data.assignee.avatar_url,
           };
-          tooltipTitle = _.escape(user.name);
+          tooltipTitle = esc(user.name);
         } else {
           user = {
             name: s__('UsersSelect|Unassigned'),
@@ -219,10 +219,10 @@ function UsersSelect(currentUser, els, options = {}) {
         return $collapsedSidebar.html(collapsedAssigneeTemplate(user));
       });
     };
-    collapsedAssigneeTemplate = _.template(
+    collapsedAssigneeTemplate = template(
       '<% if( avatar ) { %> <a class="author-link" href="/<%- username %>"> <img width="24" class="avatar avatar-inline s24" alt="" src="<%- avatar %>"> </a> <% } else { %> <i class="fa fa-user"></i> <% } %>',
     );
-    assigneeTemplate = _.template(
+    assigneeTemplate = template(
       `<% if (username) { %> <a class="author-link bold" href="/<%- username %>"> <% if( avatar ) { %> <img width="32" class="avatar avatar-inline s32" alt="" src="<%- avatar %>"> <% } %> <span class="author"><%- name %></span> <span class="username"> @<%- username %> </span> </a> <% } else { %> <span class="no-value assign-yourself">
       ${sprintf(s__('UsersSelect|No assignee - %{openingTag} assign yourself %{closingTag}'), {
         openingTag: '<a href="#" class="js-assign-yourself">',
@@ -248,7 +248,7 @@ function UsersSelect(currentUser, els, options = {}) {
 
           // Potential duplicate entries when dealing with issue board
           // because issue board is also managed by vue
-          const selectedUsers = _.uniq(selectedInputs, false, a => a.value)
+          const selectedUsers = uniqBy(selectedInputs, a => a.value)
             .filter(input => {
               const userId = parseInt(input.value, 10);
               const inUsersArray = users.find(u => u.id === userId);
@@ -543,7 +543,7 @@ function UsersSelect(currentUser, els, options = {}) {
 
         let img = '';
         if (user.beforeDivider != null) {
-          `<li><a href='#' class='${selected === true ? 'is-active' : ''}'>${_.escape(
+          `<li><a href='#' class='${selected === true ? 'is-active' : ''}'>${esc(
             user.name,
           )}</a></li>`;
         } else {
@@ -672,10 +672,10 @@ UsersSelect.prototype.formatResult = function(user) {
       </div>
       <div class='user-info'>
         <div class='user-name dropdown-menu-user-full-name'>
-          ${_.escape(user.name)}
+          ${esc(user.name)}
         </div>
         <div class='user-username dropdown-menu-user-username text-secondary'>
-          ${!user.invite ? `@${_.escape(user.username)}` : ''}
+          ${!user.invite ? `@${esc(user.username)}` : ''}
         </div>
       </div>
     </div>
@@ -683,7 +683,7 @@ UsersSelect.prototype.formatResult = function(user) {
 };
 
 UsersSelect.prototype.formatSelection = function(user) {
-  return _.escape(user.name);
+  return esc(user.name);
 };
 
 UsersSelect.prototype.user = function(user_id, callback) {
@@ -746,7 +746,7 @@ UsersSelect.prototype.renderRow = function(issuableType, user, selected, usernam
         ${this.renderRowAvatar(issuableType, user, img)}
         <span class="d-flex flex-column overflow-hidden">
           <strong class="dropdown-menu-user-full-name">
-            ${_.escape(user.name)}
+            ${esc(user.name)}
           </strong>
           ${username ? `<span class="dropdown-menu-user-username">${username}</span>` : ''}
         </span>

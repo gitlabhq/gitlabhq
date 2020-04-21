@@ -4,6 +4,8 @@ module Snippets
   class UpdateService < Snippets::BaseService
     include SpamCheckMethods
 
+    COMMITTABLE_ATTRIBUTES = %w(file_name content).freeze
+
     UpdateError = Class.new(StandardError)
     CreateRepositoryError = Class.new(StandardError)
 
@@ -36,6 +38,10 @@ module Snippets
 
     def save_and_commit(snippet)
       return false unless snippet.save
+
+      # If the updated attributes does not need to update
+      # the repository we can just return
+      return true unless committable_attributes?
 
       # In order to avoid non migrated snippets scenarios,
       # if the snippet does not have a repository we created it
@@ -103,6 +109,10 @@ module Snippets
     # data.
     def repository_empty?(snippet)
       snippet.repository._uncached_exists? && !snippet.repository._uncached_has_visible_content?
+    end
+
+    def committable_attributes?
+      (params.stringify_keys.keys & COMMITTABLE_ATTRIBUTES).present?
     end
   end
 end

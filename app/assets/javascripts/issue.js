@@ -12,6 +12,8 @@ export default class Issue {
   constructor() {
     if ($('a.btn-close').length) this.initIssueBtnEventListeners();
 
+    if ($('.js-close-blocked-issue-warning').length) this.initIssueWarningBtnEventListener();
+
     Issue.$btnNewBranch = $('#new-branch');
     Issue.createMrDropdownWrap = document.querySelector('.create-mr-dropdown-wrap');
 
@@ -89,7 +91,7 @@ export default class Issue {
 
     return $(document).on(
       'click',
-      '.js-issuable-actions a.btn-close, .js-issuable-actions a.btn-reopen',
+      '.js-issuable-actions a.btn-close, .js-issuable-actions a.btn-reopen, a.btn-close-anyway',
       e => {
         e.preventDefault();
         e.stopImmediatePropagation();
@@ -99,19 +101,30 @@ export default class Issue {
           Issue.submitNoteForm($button.closest('form'));
         }
 
-        this.disableCloseReopenButton($button);
+        const shouldDisplayBlockedWarning = $button.hasClass('btn-issue-blocked');
+        const warningBanner = $('.js-close-blocked-issue-warning');
+        if (shouldDisplayBlockedWarning) {
+          this.toggleWarningAndCloseButton();
+        } else {
+          this.disableCloseReopenButton($button);
 
-        const url = $button.attr('href');
-        return axios
-          .put(url)
-          .then(({ data }) => {
-            const isClosed = $button.hasClass('btn-close');
-            this.updateTopState(isClosed, data);
-          })
-          .catch(() => flash(issueFailMessage))
-          .then(() => {
-            this.disableCloseReopenButton($button, false);
-          });
+          const url = $button.attr('href');
+          return axios
+            .put(url)
+            .then(({ data }) => {
+              const isClosed = $button.is('.btn-close, .btn-close-anyway');
+              this.updateTopState(isClosed, data);
+              if ($button.hasClass('btn-close-anyway')) {
+                warningBanner.addClass('hidden');
+                if (this.closeReopenReportToggle)
+                  $('.js-issuable-close-dropdown').removeClass('hidden');
+              }
+            })
+            .catch(() => flash(issueFailMessage))
+            .then(() => {
+              this.disableCloseReopenButton($button, false);
+            });
+        }
       },
     );
   }
@@ -135,6 +148,23 @@ export default class Issue {
     if (this.closeReopenReportToggle) this.closeReopenReportToggle.updateButton(isClosed);
     this.closeButtons.toggleClass('hidden', isClosed);
     this.reopenButtons.toggleClass('hidden', !isClosed);
+  }
+
+  toggleWarningAndCloseButton() {
+    const warningBanner = $('.js-close-blocked-issue-warning');
+    warningBanner.toggleClass('hidden');
+    $('.btn-close').toggleClass('hidden');
+    if (this.closeReopenReportToggle) {
+      $('.js-issuable-close-dropdown').toggleClass('hidden');
+    }
+  }
+
+  initIssueWarningBtnEventListener() {
+    return $(document).on('click', '.js-close-blocked-issue-warning button.btn-secondary', e => {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      this.toggleWarningAndCloseButton();
+    });
   }
 
   static submitNoteForm(form) {

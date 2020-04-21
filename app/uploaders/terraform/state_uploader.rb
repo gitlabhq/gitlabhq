@@ -12,7 +12,7 @@ module Terraform
     encrypt(key: :key)
 
     def filename
-      "#{model.id}.tfstate"
+      "#{model.uuid}.tfstate"
     end
 
     def store_dir

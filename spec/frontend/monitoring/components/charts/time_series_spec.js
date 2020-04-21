@@ -11,9 +11,10 @@ import {
 import { cloneDeep } from 'lodash';
 import { shallowWrapperContainsSlotText } from 'helpers/vue_test_utils_helper';
 import { createStore } from '~/monitoring/stores';
+import { panelTypes } from '~/monitoring/constants';
 import TimeSeries from '~/monitoring/components/charts/time_series.vue';
 import * as types from '~/monitoring/stores/mutation_types';
-import { deploymentData, mockProjectDir } from '../../mock_data';
+import { deploymentData, mockProjectDir, annotationsData } from '../../mock_data';
 import {
   metricsDashboardPayload,
   metricsDashboardViewModel,
@@ -278,6 +279,33 @@ describe('Time series component', () => {
           });
         });
 
+        describe('formatAnnotationsTooltipText', () => {
+          const annotationsMetadata = {
+            name: 'annotations',
+            xAxis: annotationsData[0].from,
+            yAxis: 0,
+            tooltipData: {
+              title: '2020/02/19 10:01:41',
+              content: annotationsData[0].description,
+            },
+          };
+
+          const mockMarkPoint = {
+            componentType: 'markPoint',
+            name: 'annotations',
+            value: undefined,
+            data: annotationsMetadata,
+          };
+
+          it('formats tooltip title and sets tooltip content', () => {
+            const formattedTooltipData = timeSeriesChart.vm.formatAnnotationsTooltipText(
+              mockMarkPoint,
+            );
+            expect(formattedTooltipData.title).toBe('19 Feb 2020, 10:01AM');
+            expect(formattedTooltipData.content).toBe(annotationsMetadata.tooltipData.content);
+          });
+        });
+
         describe('setSvg', () => {
           const mockSvgName = 'mockSvgName';
 
@@ -380,6 +408,8 @@ describe('Time series component', () => {
                   series: [
                     {
                       name: mockSeriesName,
+                      type: 'line',
+                      data: [],
                     },
                   ],
                 },
@@ -442,8 +472,8 @@ describe('Time series component', () => {
               deploymentFormatter = getChartOptions().yAxis[1].axisLabel.formatter;
             });
 
-            it('formats and rounds to 2 decimal places', () => {
-              expect(dataFormatter(0.88888)).toBe('0.89');
+            it('formats by default to precision notation', () => {
+              expect(dataFormatter(0.88888)).toBe('889m');
             });
 
             it('deployment formatter is set as is required to display a tooltip', () => {
@@ -506,11 +536,11 @@ describe('Time series component', () => {
     describe('wrapped components', () => {
       const glChartComponents = [
         {
-          chartType: 'area-chart',
+          chartType: panelTypes.AREA_CHART,
           component: GlAreaChart,
         },
         {
-          chartType: 'line-chart',
+          chartType: panelTypes.LINE_CHART,
           component: GlLineChart,
         },
       ];

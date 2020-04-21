@@ -801,7 +801,7 @@ known tool is [`pngquant`](https://pngquant.org/), which is cross-platform and
 open source. Install it by visiting the official website and following the
 instructions for your OS.
 
-GitLab has a [raketask](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/tasks/pngquant.rake)
+GitLab has a [Rake task](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/tasks/pngquant.rake)
 that you can use to automate the process. In the root directory of your local
 copy of `https://gitlab.com/gitlab-org/gitlab`, run in a terminal:
 

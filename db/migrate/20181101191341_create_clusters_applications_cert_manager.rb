@@ -5,17 +5,17 @@ class CreateClustersApplicationsCertManager < ActiveRecord::Migration[4.2]
 
   DOWNTIME = false
 
+  # rubocop:disable Migration/PreventStrings
   def change
-    # rubocop:disable Migration/AddLimitToStringColumns
     create_table :clusters_applications_cert_managers do |t|
       t.references :cluster, null: false, index: false, foreign_key: { on_delete: :cascade }
       t.integer :status, null: false
       t.string :version, null: false
       t.string :email, null: false
       t.timestamps_with_timezone null: false
-      t.text :status_reason
+      t.text :status_reason # rubocop:disable Migration/AddLimitToTextColumns
       t.index :cluster_id, unique: true
     end
-    # rubocop:enable Migration/AddLimitToStringColumns
   end
+  # rubocop:enable Migration/PreventStrings
 end

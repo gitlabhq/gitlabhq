@@ -194,3 +194,5 @@ module Gitlab
     # rubocop: enable CodeReuse/ActiveRecord
   end
 end
+
+Gitlab::SearchResults.prepend_if_ee('EE::Gitlab::SearchResults')

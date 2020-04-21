@@ -20,6 +20,16 @@ Adjust your project's name, description, avatar, [default branch](../repository/
 
 The project description also partially supports [standard Markdown](../../markdown.md#standard-markdown-and-extensions-in-gitlab). You can use [emphasis](../../markdown.md#emphasis), [links](../../markdown.md#links), and [line-breaks](../../markdown.md#line-breaks) to add more context to the project description.
 
+#### Compliance framework **(ULTIMATE)**
+
+You can select a framework label to identify that your project has certain compliance requirements or needs additional oversight. Available labels include:
+
+- GDPR - General Data Protection Regulation
+- HIPAA - Health Insurance Portability and Accountability Act
+- PCI-DSS - Payment Card Industry-Data Security Standard
+- SOC 2 - Service Organization Control 2
+- SOX - Sarbanes-Oxley
+
 ### Sharing and permissions
 
 For your repository, you can set up features such as public access, repository features,

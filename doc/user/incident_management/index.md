@@ -45,7 +45,7 @@ The emails will be sent to [owners and maintainers](../permissions.md) of the pr
 
 Prometheus alerts can be set up in both:
 
-- [GitLab-managed Prometheus](../project/integrations/prometheus.md#setting-up-alerts-for-prometheus-metrics-ultimate) and
+- [GitLab-managed Prometheus](../project/integrations/prometheus.md#setting-up-alerts-for-prometheus-metrics) and
 - [Self-managed Prometheus](../project/integrations/prometheus.md#external-prometheus-instances) installations.
 
 ### Alert endpoint

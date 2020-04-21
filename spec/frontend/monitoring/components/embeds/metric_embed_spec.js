@@ -1,6 +1,6 @@
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import Vuex from 'vuex';
-import PanelType from 'ee_else_ce/monitoring/components/panel_type.vue';
+import PanelType from '~/monitoring/components/panel_type_with_alerts.vue';
 import { TEST_HOST } from 'helpers/test_constants';
 import MetricEmbed from '~/monitoring/components/embeds/metric_embed.vue';
 import { groups, initialState, metricsData, metricsWithData } from './mock_data';

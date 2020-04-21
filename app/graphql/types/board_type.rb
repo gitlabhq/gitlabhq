@@ -11,6 +11,13 @@ module Types
           description: 'ID (global ID) of the board'
     field :name, type: GraphQL::STRING_TYPE, null: true,
           description: 'Name of the board'
+
+    field :lists,
+          Types::BoardListType.connection_type,
+          null: true,
+          description: 'Lists of the project board',
+          resolver: Resolvers::BoardListsResolver,
+          extras: [:lookahead]
   end
 end
 

@@ -163,7 +163,7 @@ class MergeRequest < ApplicationRecord
   state_machine :merge_status, initial: :unchecked do
     event :mark_as_unchecked do
       transition [:can_be_merged, :checking, :unchecked] => :unchecked
-      transition [:cannot_be_merged, :cannot_be_merged_recheck] => :cannot_be_merged_recheck
+      transition [:cannot_be_merged, :cannot_be_merged_rechecking, :cannot_be_merged_recheck] => :cannot_be_merged_recheck
     end
 
     event :mark_as_checking do
@@ -200,7 +200,7 @@ class MergeRequest < ApplicationRecord
     # rubocop: enable CodeReuse/ServiceClass
 
     def check_state?(merge_status)
-      [:unchecked, :cannot_be_merged_recheck, :checking].include?(merge_status.to_sym)
+      [:unchecked, :cannot_be_merged_recheck, :checking, :cannot_be_merged_rechecking].include?(merge_status.to_sym)
     end
   end
 
@@ -577,13 +577,13 @@ class MergeRequest < ApplicationRecord
     merge_request_diff&.real_size || diff_stats&.real_size || diffs.real_size
   end
 
-  def modified_paths(past_merge_request_diff: nil)
+  def modified_paths(past_merge_request_diff: nil, fallback_on_overflow: false)
     if past_merge_request_diff
-      past_merge_request_diff.modified_paths
+      past_merge_request_diff.modified_paths(fallback_on_overflow: fallback_on_overflow)
     elsif compare
       diff_stats&.paths || compare.modified_paths
     else
-      merge_request_diff.modified_paths
+      merge_request_diff.modified_paths(fallback_on_overflow: fallback_on_overflow)
     end
   end
 
@@ -1325,6 +1325,10 @@ class MergeRequest < ApplicationRecord
     actual_head_pipeline&.has_reports?(Ci::JobArtifact.coverage_reports)
   end
 
+  def has_terraform_reports?
+    actual_head_pipeline&.has_reports?(Ci::JobArtifact.terraform_reports)
+  end
+
   # TODO: this method and compare_test_reports use the same
   # result type, which is handled by the controller's #reports_response.
   # we should minimize mistakes by isolating the common parts.
@@ -1337,9 +1341,15 @@ class MergeRequest < ApplicationRecord
     compare_reports(Ci::GenerateCoverageReportsService)
   end
 
-  def has_exposed_artifacts?
-    return false unless Feature.enabled?(:ci_expose_arbitrary_artifacts_in_mr, default_enabled: true)
+  def find_terraform_reports
+    unless has_terraform_reports?
+      return { status: :error, status_reason: 'This merge request does not have terraform reports' }
+    end
 
+    compare_reports(Ci::GenerateTerraformReportsService)
+  end
+
+  def has_exposed_artifacts?
     actual_head_pipeline&.has_exposed_artifacts?
   end
 

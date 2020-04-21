@@ -3,6 +3,7 @@
 class CreateServiceDeskSettings < ActiveRecord::Migration[5.2]
   DOWNTIME = false
 
+  # rubocop:disable Migration/PreventStrings
   def change
     create_table :service_desk_settings, id: false do |t|
       t.references :project,
@@ -15,4 +16,5 @@ class CreateServiceDeskSettings < ActiveRecord::Migration[5.2]
       t.string :issue_template_key, limit: 255
     end
   end
+  # rubocop:enable Migration/PreventStrings
 end

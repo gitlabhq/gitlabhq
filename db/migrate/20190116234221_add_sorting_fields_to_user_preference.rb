@@ -9,10 +9,12 @@ class AddSortingFieldsToUserPreference < ActiveRecord::Migration[5.0]
   # Set this constant to true if this migration requires downtime.
   DOWNTIME = false
 
+  # rubocop:disable Migration/PreventStrings
   def up
-    add_column :user_preferences, :issues_sort, :string # rubocop:disable Migration/AddLimitToStringColumns
-    add_column :user_preferences, :merge_requests_sort, :string # rubocop:disable Migration/AddLimitToStringColumns
+    add_column :user_preferences, :issues_sort, :string
+    add_column :user_preferences, :merge_requests_sort, :string
   end
+  # rubocop:enable Migration/PreventStrings
 
   def down
     remove_column :user_preferences, :issues_sort

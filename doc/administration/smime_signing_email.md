@@ -18,6 +18,9 @@ files must be provided:
   intervention.
 - Only RSA keys are supported.
 
+Optionally, you can also provide a bundle of CA certs (PEM-encoded) to be
+included on each signature. This will typically be an intermediate CA.
+
 NOTE: **Note:** Be mindful of the access levels for your private keys and visibility to
 third parties.
 
@@ -29,6 +32,8 @@ third parties.
    gitlab_rails['gitlab_email_smime_enabled'] = true
    gitlab_rails['gitlab_email_smime_key_file'] = '/etc/gitlab/ssl/gitlab_smime.key'
    gitlab_rails['gitlab_email_smime_cert_file'] = '/etc/gitlab/ssl/gitlab_smime.crt'
+   # Optional
+   gitlab_rails['gitlab_email_smime_ca_certs_file'] = '/etc/gitlab/ssl/gitlab_smime_cas.crt'
    ```
 
 1. Save the file and [reconfigure GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
@@ -49,6 +54,9 @@ NOTE: **Note:** The key needs to be readable by the GitLab system user (`git` by
      # S/MIME public certificate key in PEM format, will be attached to signed messages
      # Default is '.gitlab_smime_cert' relative to Rails.root (i.e. root of the GitLab app).
      cert_file: /etc/pki/smime/certs/gitlab.crt
+     # S/MIME extra CA public certificates in PEM format, will be attached to signed messages
+     # Optional
+     ca_certs_file: /etc/pki/smime/certs/gitlab_cas.crt
    ```
 
 1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.

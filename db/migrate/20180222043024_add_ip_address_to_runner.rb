@@ -4,6 +4,6 @@ class AddIpAddressToRunner < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def change
-    add_column :ci_runners, :ip_address, :string # rubocop:disable Migration/AddLimitToStringColumns
+    add_column :ci_runners, :ip_address, :string # rubocop:disable Migration/PreventStrings
   end
 end

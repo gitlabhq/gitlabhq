@@ -1,6 +1,6 @@
 # Repository Storage Types
 
-> [Introduced][ce-28283] in GitLab 10.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/28283) in GitLab 10.0.
 
 Two different storage layouts can be used
 to store the repositories on disk and their characteristics.
@@ -10,7 +10,7 @@ locations that can be:
 
 - Mounted to the local disk
 - Exposed as an NFS shared volume
-- Accessed via [Gitaly] on its own machine.
+- Accessed via [Gitaly](gitaly/index.md) on its own machine.
 
 In GitLab, this is configured in `/etc/gitlab/gitlab.rb` by the `git_data_dirs({})`
 configuration hash. The storage layouts discussed here will apply to any shard
@@ -162,7 +162,7 @@ either runs on the same machine as your repositories are located, or may login t
 to access data (for example, a remote backup solution).
 
 To schedule a complete rollout, see the
-[Rake task documentation for storage migration][rake/migrate-to-hashed] for instructions.
+[Rake task documentation for storage migration](raketasks/storage.md#migrate-existing-projects-to-hashed-storage) for instructions.
 
 If you do have any existing integration, you may want to do a small rollout first,
 to validate. You can do so by specifying a range with the operation.
@@ -174,7 +174,7 @@ an Omnibus GitLab installation:
 sudo gitlab-rake gitlab:storage:migrate_to_hashed ID_FROM=50 ID_TO=100
 ```
 
-Check the [documentation][rake/migrate-to-hashed] for additional information and instructions for
+Check the [documentation](raketasks/storage.md#migrate-existing-projects-to-hashed-storage) for additional information and instructions for
 source-based installation.
 
 #### Rollback
@@ -203,7 +203,7 @@ the remaining repositories from the special `@hashed/` folder manually.
 
 We are incrementally moving every storable object in GitLab to the Hashed
 Storage pattern. You can check the current coverage status below (and also see
-the [issue][ce-2821]).
+the [issue](https://gitlab.com/gitlab-com/infrastructure/issues/2821)).
 
 Note that things stored in an S3 compatible endpoint will not have the downsides
 mentioned earlier, if they are not prefixed with `#{namespace}/#{project_name}`,
@@ -246,8 +246,3 @@ storage pattern using 2 chars, 2 level folders, following Git's own implementati
 ```
 
 LFS objects are also [S3 compatible](lfs/index.md#storing-lfs-objects-in-remote-object-storage).
-
-[ce-2821]: https://gitlab.com/gitlab-com/infrastructure/issues/2821
-[ce-28283]: https://gitlab.com/gitlab-org/gitlab-foss/issues/28283
-[rake/migrate-to-hashed]: raketasks/storage.md#migrate-existing-projects-to-hashed-storage
-[gitaly]: gitaly/index.md

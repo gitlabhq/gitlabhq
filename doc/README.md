@@ -156,6 +156,7 @@ The following documentation relates to the DevOps **Create** stage:
 | [Search through GitLab](user/search/index.md)                                                                                                                                                    | Search for issues, merge requests, projects, groups, and todos.                                  |
 | [Snippets](user/snippets.md)                                                                                                                                                                     | Snippets allow you to create little bits of code.                                                |
 | [Web IDE](user/project/web_ide/index.md)                                                                                                                                                         | Edit files within GitLab's user interface.                                                       |
+| [Static Site Editor](user/project/static_site_editor/index.md)                                                                                                                                   | Edit content on static websites.                                                                 |
 | [Wikis](user/project/wiki/index.md)                                                                                                                                                              | Enhance your repository documentation with built-in wikis.                                       |
 
 <div align="right">

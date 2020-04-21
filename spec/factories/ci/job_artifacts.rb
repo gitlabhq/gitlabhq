@@ -149,6 +149,26 @@ FactoryBot.define do
       end
     end
 
+    trait :terraform do
+      file_type { :terraform }
+      file_format { :raw }
+
+      after(:build) do |artifact, evaluator|
+        artifact.file = fixture_file_upload(
+          Rails.root.join('spec/fixtures/terraform/tfplan.json'), 'application/json')
+      end
+    end
+
+    trait :terraform_with_corrupted_data do
+      file_type { :terraform }
+      file_format { :raw }
+
+      after(:build) do |artifact, evaluator|
+        artifact.file = fixture_file_upload(
+          Rails.root.join('spec/fixtures/terraform/tfplan_with_corrupted_data.json'), 'application/json')
+      end
+    end
+
     trait :coverage_gocov_xml do
       file_type { :cobertura }
       file_format { :gzip }

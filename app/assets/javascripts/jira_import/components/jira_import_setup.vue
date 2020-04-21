@@ -1,6 +1,11 @@
 <script>
+import { GlEmptyState } from '@gitlab/ui';
+
 export default {
   name: 'JiraImportSetup',
+  components: {
+    GlEmptyState,
+  },
   props: {
     illustration: {
       type: String,
@@ -11,15 +16,11 @@ export default {
 </script>
 
 <template>
-  <div class="empty-state">
-    <div class="svg-content">
-      <img :src="illustration" :alt="__('Set up Jira Integration illustration')" />
-    </div>
-    <div class="text-content d-flex flex-column align-items-center">
-      <p>{{ __('You will first need to set up Jira Integration to use this feature.') }}</p>
-      <a class="btn btn-success" href="../services/jira/edit">
-        {{ __('Set up Jira Integration') }}
-      </a>
-    </div>
-  </div>
+  <gl-empty-state
+    :svg-path="illustration"
+    title=""
+    :description="__('You will first need to set up Jira Integration to use this feature.')"
+    :primary-button-text="__('Set up Jira Integration')"
+    primary-button-link="../services/jira/edit"
+  />
 </template>

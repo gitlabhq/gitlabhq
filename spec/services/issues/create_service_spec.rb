@@ -368,6 +368,8 @@ describe Issues::CreateService do
     end
 
     context 'checking spam' do
+      include_context 'includes Spam constants'
+
       let(:title) { 'Legit issue' }
       let(:description) { 'please fix' }
       let(:opts) do
@@ -377,6 +379,8 @@ describe Issues::CreateService do
           request: double(:request, env: {})
         }
       end
+
+      subject { described_class.new(project, user, opts) }
 
       before do
         stub_feature_flags(allow_possible_spam: false)
@@ -391,7 +395,7 @@ describe Issues::CreateService do
           opts[:recaptcha_verified] = true
           opts[:spam_log_id] = target_spam_log.id
 
-          expect(Spam::AkismetService).not_to receive(:new)
+          expect(Spam::SpamVerdictService).not_to receive(:new)
         end
 
         it 'does not mark an issue as spam' do
@@ -402,7 +406,7 @@ describe Issues::CreateService do
           expect(issue).to be_valid
         end
 
-        it 'does not assign a spam_log to an issue' do
+        it 'does not assign a spam_log to the issue' do
           expect(issue.spam_log).to be_nil
         end
 
@@ -421,21 +425,50 @@ describe Issues::CreateService do
 
       context 'when recaptcha was not verified' do
         before do
-          expect_next_instance_of(Spam::SpamCheckService) do |spam_service|
+          expect_next_instance_of(Spam::SpamActionService) do |spam_service|
             expect(spam_service).to receive_messages(check_for_spam?: true)
           end
         end
 
-        context 'when akismet detects spam' do
+        context 'when SpamVerdictService requires reCAPTCHA' do
           before do
-            expect_next_instance_of(Spam::AkismetService) do |akismet_service|
-              expect(akismet_service).to receive_messages(spam?: true)
+            expect_next_instance_of(Spam::SpamVerdictService) do |verdict_service|
+              expect(verdict_service).to receive(:execute).and_return(REQUIRE_RECAPTCHA)
+            end
+          end
+
+          it 'marks the issue as spam' do
+            expect(issue).to be_spam
+          end
+
+          it 'marks the issue as needing reCAPTCHA' do
+            expect(issue.needs_recaptcha?).to be_truthy
+          end
+
+          it 'invalidates the issue' do
+            expect(issue).to be_invalid
+          end
+
+          it 'creates a new spam_log' do
+            expect { issue }
+                .to have_spam_log(title: title, description: description, user_id: user.id, noteable_type: 'Issue')
+          end
+        end
+
+        context 'when SpamVerdictService disallows creation' do
+          before do
+            expect_next_instance_of(Spam::SpamVerdictService) do |verdict_service|
+              expect(verdict_service).to receive(:execute).and_return(DISALLOW)
             end
           end
 
           context 'when allow_possible_spam feature flag is false' do
-            it 'marks the issue as spam' do
+            it 'does not mark the issue as spam' do
               expect(issue).to be_spam
+            end
+
+            it 'does not mark the issue as needing reCAPTCHA' do
+              expect(issue.needs_recaptcha?).to be_falsey
             end
 
             it 'invalidates the issue' do
@@ -457,7 +490,7 @@ describe Issues::CreateService do
               expect(issue).not_to be_spam
             end
 
-            it '​creates a valid issue' do
+            it 'creates a valid issue' do
               expect(issue).to be_valid
             end
 
@@ -468,10 +501,10 @@ describe Issues::CreateService do
           end
         end
 
-        context 'when akismet does not detect spam' do
+        context 'when the SpamVerdictService allows creation' do
           before do
-            expect_next_instance_of(Spam::AkismetService) do |akismet_service|
-              expect(akismet_service).to receive_messages(spam?: false)
+            expect_next_instance_of(Spam::SpamVerdictService) do |verdict_service|
+              expect(verdict_service).to receive(:execute).and_return(ALLOW)
             end
           end
 

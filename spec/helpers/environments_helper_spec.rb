@@ -37,8 +37,24 @@ describe EnvironmentsHelper do
         'environment-state' => environment.state,
         'custom-metrics-path' => project_prometheus_metrics_path(project),
         'validate-query-path' => validate_query_project_prometheus_metrics_path(project),
-        'custom-metrics-available' => 'true'
+        'custom-metrics-available' => 'true',
+        'alerts-endpoint' => project_prometheus_alerts_path(project, environment_id: environment.id, format: :json),
+        'prometheus-alerts-available' => 'true'
       )
+    end
+
+    context 'without read_prometheus_alerts permission' do
+      before do
+        allow(helper).to receive(:can?)
+          .with(user, :read_prometheus_alerts, project)
+          .and_return(false)
+      end
+
+      it 'returns false' do
+        expect(metrics_data).to include(
+          'prometheus-alerts-available' => 'false'
+        )
+      end
     end
 
     context 'with metrics_setting' do

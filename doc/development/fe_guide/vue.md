@@ -12,17 +12,17 @@ What is described in the following sections can be found in these examples:
 
 ## Vue architecture
 
-All new features built with Vue.js must follow a [Flux architecture][flux].
+All new features built with Vue.js must follow a [Flux architecture](https://facebook.github.io/flux/).
 The main goal we are trying to achieve is to have only one data flow and only one data entry.
 In order to achieve this goal we use [vuex](#vuex).
 
-You can also read about this architecture in vue docs about [state management][state-management]
-and about [one way data flow][one-way-data-flow].
+You can also read about this architecture in vue docs about [state management](https://vuejs.org/v2/guide/state-management.html#Simple-State-Management-from-Scratch)
+and about [one way data flow](https://vuejs.org/v2/guide/components.html#One-Way-Data-Flow).
 
 ### Components and Store
 
-In some features implemented with Vue.js, like the [issue board][issue-boards]
-or [environments table][environments-table]
+In some features implemented with Vue.js, like the [issue board](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/app/assets/javascripts/boards)
+or [environments table](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/app/assets/javascripts/environments)
 you can find a clear separation of concerns:
 
 ```plaintext
@@ -47,7 +47,7 @@ of the new feature should be.
 The Store and the Service should be imported and initialized in this file and
 provided as a prop to the main component.
 
-Be sure to read about [page-specific JavaScript][page_specific_javascript].
+Be sure to read about [page-specific JavaScript](./performance.md#page-specific-javascript).
 
 ### Bootstrapping Gotchas
 
@@ -162,7 +162,7 @@ For example, tables are used in a quite amount of places across GitLab, a table
 would be a good fit for a component. On the other hand, a table cell used only
 in one table would not be a good use of this pattern.
 
-You can read more about components in Vue.js site, [Component System][component-system]
+You can read more about components in Vue.js site, [Component System](https://vuejs.org/v2/guide/#Composing-with-Components).
 
 ### A folder for the Store
 
@@ -278,7 +278,7 @@ const vm = mountComponent(Component, data);
 ### Test the component's output
 
 The main return value of a Vue component is the rendered output. In order to test the component we
-need to test the rendered output. [Vue][vue-test] guide's to unit test show us exactly that:
+need to test the rendered output. [Vue](https://vuejs.org/v2/guide/unit-testing.html) guide's to unit test show us exactly that:
 
 ## Vue.js Expert Role
 
@@ -289,13 +289,3 @@ One should apply to be a Vue.js expert by opening an MR when the Merge Request's
 - Full understanding of testing a Vue and Vuex application
 - Vuex code follows the [documented pattern](vuex.md#actions-pattern-request-and-receive-namespaces)
 - Knowledge about the existing Vue and Vuex applications and existing reusable components
-
-[issue-boards]: https://gitlab.com/gitlab-org/gitlab-foss/tree/master/app/assets/javascripts/boards
-[environments-table]: https://gitlab.com/gitlab-org/gitlab-foss/tree/master/app/assets/javascripts/environments
-[page_specific_javascript]: ./performance.md#page-specific-javascript
-[component-system]: https://vuejs.org/v2/guide/#Composing-with-Components
-[state-management]: https://vuejs.org/v2/guide/state-management.html#Simple-State-Management-from-Scratch
-[one-way-data-flow]: https://vuejs.org/v2/guide/components.html#One-Way-Data-Flow
-[vue-test]: https://vuejs.org/v2/guide/unit-testing.html
-[flux]: https://facebook.github.io/flux/
-[axios]: https://github.com/axios/axios

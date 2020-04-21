@@ -36,13 +36,9 @@ Generally speaking, the frontend can track user actions and events, like:
 - Submitting forms.
 - Other typically interface-driven actions.
 
-See [Frontend tracking guide](frontend.md).
-
 ### Backend
 
 From the backend, the events that are tracked will likely consist of things like the creation or deletion of records and other events that might be triggered from layers that aren't necessarily only available in the interface.
-
-See [Backend tracking guide](backend.md).
 
 Also, see [Instrumenting Ruby code](../development/instrumentation.md) if you are instrumenting application performance metrics for Ruby code.
 

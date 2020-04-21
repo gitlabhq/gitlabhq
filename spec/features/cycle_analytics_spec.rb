@@ -30,6 +30,7 @@ describe 'Value Stream Analytics', :js do
         expect(new_issues_counter).to have_content('-')
         expect(commits_counter).to have_content('-')
         expect(deploys_counter).to have_content('-')
+        expect(deployment_frequency_counter).to have_content('-')
       end
 
       it 'shows active stage with empty message' do
@@ -53,6 +54,7 @@ describe 'Value Stream Analytics', :js do
         expect(new_issues_counter).to have_content('1')
         expect(commits_counter).to have_content('2')
         expect(deploys_counter).to have_content('1')
+        expect(deployment_frequency_counter).to have_content('0')
       end
 
       it 'shows data on each stage', :sidekiq_might_not_need_inline do
@@ -134,7 +136,15 @@ describe 'Value Stream Analytics', :js do
   end
 
   def deploys_counter
-    find(:xpath, "//p[contains(text(),'Deploy')]/preceding-sibling::h3")
+    find(:xpath, "//p[contains(text(),'Deploy')]/preceding-sibling::h3", match: :first)
+  end
+
+  def deployment_frequency_counter_selector
+    "//p[contains(text(),'Deployment Frequency')]/preceding-sibling::h3"
+  end
+
+  def deployment_frequency_counter
+    find(:xpath, deployment_frequency_counter_selector)
   end
 
   def expect_issue_to_be_present

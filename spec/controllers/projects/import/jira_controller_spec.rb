@@ -63,7 +63,7 @@ describe Projects::Import::JiraController do
         stub_feature_flags(jira_issue_import_vue: false)
       end
 
-      context 'when jira service is enabled for the project' do
+      context 'when Jira service is enabled for the project' do
         let_it_be(:jira_service) { create(:jira_service, project: project) }
 
         context 'when user is developer' do
@@ -79,7 +79,7 @@ describe Projects::Import::JiraController do
               get :show, params: { namespace_id: project.namespace.to_param, project_id: project }
             end
 
-            it 'does not query jira service' do
+            it 'does not query Jira service' do
               expect(project).not_to receive(:jira_service)
             end
 
@@ -118,7 +118,7 @@ describe Projects::Import::JiraController do
           end
         end
 
-        context 'when running jira import first time' do
+        context 'when running Jira import first time' do
           context 'get show' do
             before do
               allow(JIRA::Resource::Project).to receive(:all).and_return(jira_projects)
@@ -147,12 +147,12 @@ describe Projects::Import::JiraController do
           end
 
           context 'post import' do
-            context 'when jira project key is empty' do
+            context 'when Jira project key is empty' do
               it 'redirects back to show with an error' do
                 post :import, params: { namespace_id: project.namespace, project_id: project, jira_project_key: '' }
 
                 expect(response).to redirect_to(project_import_jira_path(project))
-                expect(flash[:alert]).to eq('No jira project key has been provided.')
+                expect(flash[:alert]).to eq('No Jira project key has been provided.')
               end
             end
 
@@ -197,7 +197,7 @@ describe Projects::Import::JiraController do
           end
         end
 
-        context 'when jira import ran before' do
+        context 'when Jira import ran before' do
           let_it_be(:jira_import_state) { create(:jira_import_state, :finished, project: project, jira_project_key: jira_project_key) }
 
           context 'get show' do

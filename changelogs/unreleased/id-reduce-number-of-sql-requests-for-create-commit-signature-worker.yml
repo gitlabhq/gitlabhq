@@ -1,0 +1,5 @@
+---
+title: Reduce SQL requests number for CreateCommitSignatureWorker
+merge_request: 29479
+author:
+type: performance

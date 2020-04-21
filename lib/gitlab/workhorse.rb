@@ -62,9 +62,6 @@ module Gitlab
       end
 
       def send_git_archive(repository, ref:, format:, append_sha:, path: nil)
-        path_enabled = Feature.enabled?(:git_archive_path, default_enabled: true)
-        path = nil unless path_enabled
-
         format ||= 'tar.gz'
         format = format.downcase
 
@@ -78,12 +75,7 @@ module Gitlab
 
         raise "Repository or ref not found" if metadata.empty?
 
-        params =
-          if path_enabled
-            send_git_archive_params(repository, metadata, path, archive_format(format))
-          else
-            metadata
-          end
+        params = send_git_archive_params(repository, metadata, path, archive_format(format))
 
         # If present, DisableCache must be a Boolean. Otherwise
         # workhorse ignores it.

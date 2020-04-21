@@ -3,6 +3,7 @@
 class AddStatusPageSettings < ActiveRecord::Migration[6.0]
   DOWNTIME = false
 
+  # rubocop:disable Migration/PreventStrings
   def change
     create_table :status_page_settings, id: false do |t|
       t.references :project, index: true, primary_key: true, foreign_key: { on_delete: :cascade }, unique: true, null: false
@@ -15,4 +16,5 @@ class AddStatusPageSettings < ActiveRecord::Migration[6.0]
       t.string :encrypted_aws_secret_key_iv, limit: 255, null: false
     end
   end
+  # rubocop:enable Migration/PreventStrings
 end

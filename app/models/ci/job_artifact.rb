@@ -13,6 +13,7 @@ module Ci
     TEST_REPORT_FILE_TYPES = %w[junit].freeze
     COVERAGE_REPORT_FILE_TYPES = %w[cobertura].freeze
     NON_ERASABLE_FILE_TYPES = %w[trace].freeze
+    TERRAFORM_REPORT_FILE_TYPES = %w[terraform].freeze
     DEFAULT_FILE_NAMES = {
       archive: nil,
       metadata: nil,
@@ -100,6 +101,10 @@ module Ci
 
     scope :coverage_reports, -> do
       with_file_types(COVERAGE_REPORT_FILE_TYPES)
+    end
+
+    scope :terraform_reports, -> do
+      with_file_types(TERRAFORM_REPORT_FILE_TYPES)
     end
 
     scope :erasable, -> do

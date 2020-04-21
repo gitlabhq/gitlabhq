@@ -3,6 +3,8 @@
 class CreateClusterProvidersAws < ActiveRecord::Migration[5.2]
   DOWNTIME = false
 
+  # rubocop:disable Migration/PreventStrings
+  # rubocop:disable Migration/AddLimitToTextColumns
   def change
     create_table :cluster_providers_aws do |t|
       t.references :cluster, null: false, type: :bigint, index: { unique: true }, foreign_key: { on_delete: :cascade }
@@ -30,4 +32,6 @@ class CreateClusterProvidersAws < ActiveRecord::Migration[5.2]
       t.index [:cluster_id, :status]
     end
   end
+  # rubocop:enable Migration/AddLimitToTextColumns
+  # rubocop:enable Migration/PreventStrings
 end

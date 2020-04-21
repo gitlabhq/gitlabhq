@@ -1,0 +1,22 @@
+-# haml-lint:disable NoPlainNodes
+- if current_user
+  .issues-export-modal.modal
+    .modal-dialog
+      .modal-content{ data: { qa_selector: 'export_issues_modal' } }
+        .modal-header
+          %h3
+            = _('Export issues')
+          .svg-content.import-export-svg-container
+            = image_tag 'illustrations/export-import.svg', alt: _('Import/Export illustration'), class: 'illustration'
+          %a.close{ href: '#', 'data-dismiss' => 'modal' }
+            = sprite_icon('close', size: 16, css_class: 'gl-icon')
+        .modal-body
+          .modal-subheader
+            = icon('check', { class: 'checkmark' })
+            %strong.prepend-left-10
+              - issues_count = issuables_count_for_state(:issues, params[:state])
+              = n_('%d issue selected', '%d issues selected', issues_count) % issues_count
+          .modal-text
+            = _('The CSV export will be created in the background. Once finished, it will be sent to <strong>%{email}</strong> in an attachment.').html_safe % { email: @current_user.notification_email }
+        .modal-footer
+          = link_to _('Export issues'), export_csv_project_issues_path(@project, request.query_parameters), method: :post, class: 'btn btn-success float-left', title: _('Export issues'), data: { track_label: "export_issues_csv", track_event: "click_button", track_value: "", qa_selector: "export_issues_button" }

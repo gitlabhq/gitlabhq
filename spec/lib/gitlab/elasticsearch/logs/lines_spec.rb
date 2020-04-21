@@ -29,6 +29,7 @@ describe Gitlab::Elasticsearch::Logs::Lines do
   let(:body_with_start_time) { JSON.parse(fixture_file('lib/elasticsearch/query_with_start_time.json')) }
   let(:body_with_end_time) { JSON.parse(fixture_file('lib/elasticsearch/query_with_end_time.json')) }
   let(:body_with_cursor) { JSON.parse(fixture_file('lib/elasticsearch/query_with_cursor.json')) }
+  let(:body_with_filebeat_6) { JSON.parse(fixture_file('lib/elasticsearch/query_with_filebeat_6.json')) }
 
   RSpec::Matchers.define :a_hash_equal_to_json do |expected|
     match do |actual|
@@ -83,6 +84,13 @@ describe Gitlab::Elasticsearch::Logs::Lines do
       expect(client).to receive(:search).with(body: a_hash_equal_to_json(body_with_cursor)).and_return(es_response)
 
       result = subject.pod_logs(namespace, pod_name: pod_name, cursor: cursor)
+      expect(result).to eq(logs: [es_message_4, es_message_3, es_message_2, es_message_1], cursor: cursor)
+    end
+
+    it 'can search on filebeat 6' do
+      expect(client).to receive(:search).with(body: a_hash_equal_to_json(body_with_filebeat_6)).and_return(es_response)
+
+      result = subject.pod_logs(namespace, pod_name: pod_name, filebeat7: false)
       expect(result).to eq(logs: [es_message_4, es_message_3, es_message_2, es_message_1], cursor: cursor)
     end
   end

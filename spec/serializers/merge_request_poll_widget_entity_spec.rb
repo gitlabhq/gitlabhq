@@ -71,6 +71,28 @@ describe MergeRequestPollWidgetEntity do
     end
   end
 
+  describe 'terraform_reports_path' do
+    context 'when merge request has terraform reports' do
+      before do
+        allow(resource).to receive(:has_terraform_reports?).and_return(true)
+      end
+
+      it 'set the path to poll data' do
+        expect(subject[:terraform_reports_path]).to be_present
+      end
+    end
+
+    context 'when merge request has no terraform reports' do
+      before do
+        allow(resource).to receive(:has_terraform_reports?).and_return(false)
+      end
+
+      it 'set the path to poll data' do
+        expect(subject[:terraform_reports_path]).to be_nil
+      end
+    end
+  end
+
   describe 'exposed_artifacts_path' do
     context 'when merge request has exposed artifacts' do
       before do
@@ -94,6 +116,10 @@ describe MergeRequestPollWidgetEntity do
   end
 
   describe 'auto merge' do
+    before do
+      project.add_maintainer(user)
+    end
+
     context 'when auto merge is enabled' do
       let(:resource) { create(:merge_request, :merge_when_pipeline_succeeds) }
 

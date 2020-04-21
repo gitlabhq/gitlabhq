@@ -322,6 +322,12 @@ class Snippet < ApplicationRecord
     ::Feature.enabled?(:version_snippets, user) && repository_exists?
   end
 
+  def file_name_on_repo
+    return if repository.empty?
+
+    repository.ls_files(repository.root_ref).first
+  end
+
   class << self
     # Searches for snippets with a matching title, description or file name.
     #

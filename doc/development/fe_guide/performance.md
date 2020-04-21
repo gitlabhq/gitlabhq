@@ -41,9 +41,9 @@ But in general it should be handled automatically through a `MutationObserver` i
 
 Only animate `opacity` & `transform` properties. Other properties (such as `top`, `left`, `margin`, and `padding`) all cause
 Layout to be recalculated, which is much more expensive. For details on this, see "Styles that Affect Layout" in
-[High Performance Animations][high-perf-animations].
+[High Performance Animations](https://www.html5rocks.com/en/tutorials/speed/high-performance-animations/).
 
-If you _do_ need to change layout (e.g. a sidebar that pushes main content over), prefer [FLIP][flip] to change expensive
+If you _do_ need to change layout (e.g. a sidebar that pushes main content over), prefer [FLIP](https://aerotwist.com/blog/flip-your-animations/) to change expensive
 properties once, and handle the actual animation with transforms.
 
 ## Reducing Asset Footprint
@@ -160,18 +160,13 @@ General tips:
 - If some functionality can reasonably be achieved without adding extra libraries, avoid them.
 - Use page-specific JavaScript as described above to load libraries that are only needed on certain pages.
 - Use code-splitting dynamic imports wherever possible to lazy-load code that is not needed initially.
-- [High Performance Animations][high-perf-animations]
+- [High Performance Animations](https://www.html5rocks.com/en/tutorials/speed/high-performance-animations/)
 
 ---
 
 ## Additional Resources
 
 - [WebPage Test](https://www.webpagetest.org) for testing site loading time and size.
-- [Google PageSpeed Insights][pagespeed-insights] grades web pages and provides feedback to improve the page.
+- [Google PageSpeed Insights](https://developers.google.com/speed/pagespeed/insights/) grades web pages and provides feedback to improve the page.
 - [Profiling with Chrome DevTools](https://developers.google.com/web/tools/chrome-devtools/)
-- [Browser Diet][browser-diet] is a community-built guide that catalogues practical tips for improving web page performance.
-
-[pagespeed-insights]: https://developers.google.com/speed/pagespeed/insights/
-[browser-diet]: https://browserdiet.com/
-[high-perf-animations]: https://www.html5rocks.com/en/tutorials/speed/high-performance-animations/
-[flip]: https://aerotwist.com/blog/flip-your-animations/
+- [Browser Diet](https://browserdiet.com/) is a community-built guide that catalogues practical tips for improving web page performance.

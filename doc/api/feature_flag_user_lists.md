@@ -1,0 +1,140 @@
+# Feature Flag User Lists API **(PREMIUM)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/205409) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.10.
+
+API for accessing GitLab Feature Flag User Lists.
+
+Users with Developer or higher [permissions](../user/permissions.md) can access the Feature Flag User Lists API.
+
+NOTE: **Note:**
+`GET` requests return twenty results at a time because the API results
+are [paginated](README.md#pagination). You can change this value.
+
+## List all feature flag user lists for a project
+
+Gets all feature flag user lists for the requested project.
+
+```plaintext
+GET /projects/:id/feature_flags_user_lists
+```
+
+| Attribute           | Type             | Required   | Description                                                                                                                 |
+| ------------------- | ---------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding).                                            |
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/feature_flags_user_lists
+```
+
+Example response:
+
+```json
+[
+   {
+      "name": "user_list",
+      "user_xids": "user1,user2",
+      "id": 1,
+      "iid": 1,
+      "project_id": 1,
+      "created_at": "2020-02-04T08:13:51.423Z",
+      "updated_at": "2020-02-04T08:13:51.423Z"
+   },
+   {
+      "name": "test_users",
+      "user_xids": "user3,user4,user5",
+      "id": 2,
+      "iid": 2,
+      "project_id": 1,
+      "created_at": "2020-02-04T08:13:10.507Z",
+      "updated_at": "2020-02-04T08:13:10.507Z"
+   }
+]
+```
+
+## Create a feature flag user list
+
+Creates a feature flag user list.
+
+```plaintext
+POST /projects/:id/feature_flags_user_lists
+```
+
+| Attribute           | Type             | Required   | Description                                                                            |
+| ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
+| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding).       |
+| `name`              | string           | yes        | The name of the feature flag. |
+| `user_xids`         | string           | yes        | A comma separated list of user ids. |
+
+```shell
+curl https://gitlab.example.com/api/v4/projects/1/feature_flags_user_lists \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
+     --header "Content-type: application/json" \
+     --data @- << EOF
+{
+    "name": "my_user_list",
+    "user_xids": "user1,user2,user3"
+}
+EOF
+```
+
+Example response:
+
+```json
+{
+   "name": "my_user_list",
+   "user_xids": "user1,user2,user3",
+   "id": 1,
+   "iid": 1,
+   "project_id": 1,
+   "created_at": "2020-02-04T08:32:27.288Z",
+   "updated_at": "2020-02-04T08:32:27.288Z"
+}
+```
+
+## Get a feature flag user list
+
+Gets a feature flag user list.
+
+```plaintext
+GET /projects/:id/feature_flags_user_lists/:iid
+```
+
+| Attribute           | Type             | Required   | Description                                                                            |
+| ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
+| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding).       |
+| `iid`               | integer/string   | yes        | The internal ID of the project's feature flag user list.                               |
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/feature_flags_user_lists/1
+```
+
+Example response:
+
+```json
+{
+   "name": "my_user_list",
+   "user_xids": "123,456",
+   "id": 1,
+   "iid": 1,
+   "project_id": 1,
+   "created_at": "2020-02-04T08:13:10.507Z",
+   "updated_at": "2020-02-04T08:13:10.507Z",
+}
+```
+
+## Delete feature flag user list
+
+Deletes a feature flag user list.
+
+```plaintext
+DELETE /projects/:id/feature_flags_user_lists/:iid
+```
+
+| Attribute           | Type             | Required   | Description                                                                            |
+| ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
+| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding).       |
+| `iid`               | integer/string   | yes        | The internal ID of the project's feature flag user list                                |
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" --request DELETE https://gitlab.example.com/api/v4/projects/1/feature_flags_user_lists/1
+```

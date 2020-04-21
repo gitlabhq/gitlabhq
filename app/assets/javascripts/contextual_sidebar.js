@@ -1,6 +1,6 @@
 import $ from 'jquery';
+import { debounce } from 'lodash';
 import Cookies from 'js-cookie';
-import _ from 'underscore';
 import { GlBreakpointInstance as bp, breakpoints } from '@gitlab/ui/dist/utils';
 import { parseBoolean } from '~/lib/utils/common_utils';
 
@@ -43,7 +43,7 @@ export default class ContextualSidebar {
       $(document).trigger('content.resize');
     });
 
-    $(window).on('resize', () => _.debounce(this.render(), 100));
+    $(window).on('resize', debounce(() => this.render(), 100));
   }
 
   // See documentation: https://design.gitlab.com/regions/navigation#contextual-navigation

@@ -1,0 +1,5 @@
+---
+title: Generate JWT and provide it to CI jobs for integration with other systems
+merge_request: 28063
+author:
+type: added

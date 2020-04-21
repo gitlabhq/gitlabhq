@@ -8,7 +8,7 @@ class CreateProjectAliases < ActiveRecord::Migration[5.1]
   def change
     create_table :project_aliases do |t|
       t.references :project, null: false, index: true, foreign_key: { on_delete: :cascade }, type: :integer
-      t.string :name, null: false, index: { unique: true } # rubocop:disable Migration/AddLimitToStringColumns
+      t.string :name, null: false, index: { unique: true } # rubocop:disable Migration/PreventStrings
 
       t.timestamps_with_timezone null: false
     end

@@ -50,13 +50,5 @@ describe API::ProjectStatistics do
       expect(response).to have_gitlab_http_status(:forbidden)
       expect(json_response['message']).to eq('403 Forbidden')
     end
-
-    it 'responds with 404 when daily_statistics_enabled? is false' do
-      stub_feature_flags(project_daily_statistics: { thing: public_project, enabled: false })
-
-      get api("/projects/#{public_project.id}/statistics", maintainer)
-
-      expect(response).to have_gitlab_http_status(:not_found)
-    end
   end
 end

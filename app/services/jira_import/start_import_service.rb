@@ -56,18 +56,18 @@ module JiraImport
       import_start_time = Time.zone.now
       jira_imports_for_project = project.jira_imports.by_jira_project_key(jira_project_key).size + 1
       title = "jira-import::#{jira_project_key}-#{jira_imports_for_project}"
-      description = "Label for issues that were imported from jira on #{import_start_time.strftime('%Y-%m-%d %H:%M:%S')}"
+      description = "Label for issues that were imported from Jira on #{import_start_time.strftime('%Y-%m-%d %H:%M:%S')}"
       color = "#{Label.color_for(title)}"
       { title: title, description: description, color: color }
     end
 
     def validate
-      return build_error_response(_('Jira import feature is disabled.')) unless project.jira_issues_import_feature_flag_enabled?
-      return build_error_response(_('You do not have permissions to run the import.')) unless user.can?(:admin_project, project)
-      return build_error_response(_('Cannot import because issues are not available in this project.')) unless project.feature_available?(:issues, user)
-      return build_error_response(_('Jira integration not configured.')) unless project.jira_service&.active?
+      project.validate_jira_import_settings!(user: user)
+
       return build_error_response(_('Unable to find Jira project to import data from.')) if jira_project_key.blank?
       return build_error_response(_('Jira import is already running.')) if import_in_progress?
+    rescue Projects::ImportService::Error => e
+      build_error_response(e.message)
     end
 
     def build_error_response(message)

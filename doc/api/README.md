@@ -58,7 +58,7 @@ Currently only API version v4 is available. Version v3 was removed in
 ## Basic usage
 
 API requests should be prefixed with `api` and the API version. The API version
-is defined in [`lib/api.rb`][lib-api-url]. For example, the root of the v4 API
+is defined in [`lib/api.rb`](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/lib/api/api.rb). For example, the root of the v4 API
 is at `/api/v4`.
 
 Example of a valid API request using cURL:
@@ -119,7 +119,7 @@ Read more about [GitLab as an OAuth2 provider](oauth2.md).
 
 ### Personal access tokens
 
-You can use a [personal access token][pat] to authenticate with the API by passing it in either the
+You can use a [personal access token](../user/profile/personal_access_tokens.md) to authenticate with the API by passing it in either the
 `private_token` parameter or the `Private-Token` header.
 
 Example of using the personal access token in a parameter:
@@ -140,7 +140,7 @@ You can also use personal access tokens with OAuth-compliant headers:
 curl --header "Authorization: Bearer <your_access_token>" https://gitlab.example.com/api/v4/projects
 ```
 
-Read more about [personal access tokens][pat].
+Read more about [personal access tokens](../user/profile/personal_access_tokens.md).
 
 ### Session cookie
 
@@ -163,9 +163,9 @@ to authenticate with the API:
 
 ### Impersonation tokens
 
-> [Introduced][ce-9099] in GitLab 9.0. Needs admin permissions.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/9099) in GitLab 9.0. Needs admin permissions.
 
-Impersonation tokens are a type of [personal access token][pat]
+Impersonation tokens are a type of [personal access token](../user/profile/personal_access_tokens.md)
 that can only be created by an admin for a specific user. They are a great fit
 if you want to build applications or scripts that authenticate with the API as a specific user.
 
@@ -642,9 +642,3 @@ For administrator documentation on rate limit settings, see
 [Rate limits](../security/rate_limits.md). To find the settings that are
 specifically used by GitLab.com, see
 [GitLab.com-specific rate limits](../user/gitlab_com/index.md#gitlabcom-specific-rate-limits).
-
-[lib-api-url]: https://gitlab.com/gitlab-org/gitlab-foss/tree/master/lib/api/api.rb
-[ce-3749]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/3749
-[ce-5951]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5951
-[ce-9099]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/9099
-[pat]: ../user/profile/personal_access_tokens.md

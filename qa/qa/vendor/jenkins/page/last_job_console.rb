@@ -9,6 +9,8 @@ module QA
         class LastJobConsole < Page::Base
           attr_accessor :job_name
 
+          CONSOLE_OUTPUT_SELECTOR = '.console-output'
+
           def path
             "/job/#{@job_name}/lastBuild/console"
           end
@@ -17,13 +19,23 @@ module QA
             # Retry on errors such as:
             # Selenium::WebDriver::Error::JavascriptError:
             #   javascript error: this.each is not a function
-            Support::Retrier.retry_on_exception(reload_page: page) do
-              page.has_text?('Finished: SUCCESS')
+            Support::Retrier.retry_on_exception(reload_page: page, sleep_interval: 1) do
+              has_console_output? && console_output.include?('Finished: SUCCESS')
             end
           end
 
           def no_failed_status_update?
-            page.has_no_text?('Failed to update Gitlab commit status')
+            !console_output.include?('Failed to update Gitlab commit status')
+          end
+
+          private
+
+          def has_console_output?
+            page.has_selector?(CONSOLE_OUTPUT_SELECTOR, wait: 1)
+          end
+
+          def console_output
+            page.find(CONSOLE_OUTPUT_SELECTOR).text
           end
         end
       end

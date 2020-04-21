@@ -7,6 +7,7 @@ module Gitlab
         attr_reader :name
         attr_reader :test_cases
         attr_reader :total_time
+        attr_reader :suite_error
 
         def initialize(name = nil)
           @name = name
@@ -25,12 +26,16 @@ module Gitlab
 
         # rubocop: disable CodeReuse/ActiveRecord
         def total_count
+          return 0 if suite_error
+
           test_cases.values.sum(&:count)
         end
         # rubocop: enable CodeReuse/ActiveRecord
 
         def total_status
-          if failed_count > 0 || error_count > 0
+          if suite_error
+            TestCase::STATUS_ERROR
+          elsif failed_count > 0 || error_count > 0
             TestCase::STATUS_FAILED
           else
             TestCase::STATUS_SUCCESS
@@ -49,12 +54,20 @@ module Gitlab
 
         TestCase::STATUS_TYPES.each do |status_type|
           define_method("#{status_type}") do
-            test_cases[status_type] || {}
+            return {} if suite_error || test_cases[status_type].nil?
+
+            test_cases[status_type]
           end
 
           define_method("#{status_type}_count") do
-            test_cases[status_type]&.length.to_i
+            return 0 if suite_error || test_cases[status_type].nil?
+
+            test_cases[status_type].length
           end
+        end
+
+        def set_suite_error(msg)
+          @suite_error = msg
         end
 
         private

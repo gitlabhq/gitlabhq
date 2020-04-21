@@ -191,11 +191,6 @@ Here's a list of what you can't do with subgroups:
   with `group`, but can be shared with `group/subgroup02` or
   `group/subgroup01/subgroup03`.
 
-[ce-2772]: https://gitlab.com/gitlab-org/gitlab-foss/issues/2772
-[permissions]: ../../permissions.md#group-members-permissions
-[reserved]: ../../reserved_names.md
-[issue]: https://gitlab.com/gitlab-org/gitlab-foss/issues/30472#note_27747600
-
 <!-- ## Troubleshooting
 
 Include any troubleshooting steps that you can foresee. If you know beforehand what issues

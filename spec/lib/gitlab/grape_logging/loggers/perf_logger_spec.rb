@@ -21,7 +21,7 @@ describe Gitlab::GrapeLogging::Loggers::PerfLogger do
         payload = subject.parameters(mock_request, nil)
 
         expect(payload[:redis_calls]).to eq(1)
-        expect(payload[:redis_duration_ms]).to be >= 0
+        expect(payload[:redis_duration_s]).to be >= 0
       end
     end
   end

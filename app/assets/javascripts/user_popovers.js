@@ -38,8 +38,7 @@ const populateUserInfo = user => {
           name: userData.name,
           location: userData.location,
           bio: userData.bio,
-          organization: userData.organization,
-          jobTitle: userData.job_title,
+          workInformation: userData.work_information,
           loaded: true,
         });
       }
@@ -71,7 +70,7 @@ export default (elements = document.querySelectorAll('.js-user-link')) => {
       const user = {
         location: null,
         bio: null,
-        organization: null,
+        workInformation: null,
         status: null,
         loaded: false,
       };

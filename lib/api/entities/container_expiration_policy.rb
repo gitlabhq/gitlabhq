@@ -8,6 +8,7 @@ module API
       expose :keep_n
       expose :older_than
       expose :name_regex
+      expose :name_regex_keep
       expose :next_run_at
     end
   end

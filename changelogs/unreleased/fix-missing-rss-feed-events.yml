@@ -1,0 +1,5 @@
+---
+title: Fix missing RSS feed events
+merge_request: 19524
+author:
+type: fixed

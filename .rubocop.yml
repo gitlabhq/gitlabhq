@@ -25,7 +25,14 @@ AllCops:
     - 'generator_templates/**/*'
     - 'builds/**/*'
     - 'plugins/**/*'
+    - 'file_hooks/**/*'
   CacheRootDirectory: tmp
+
+Cop/StaticTranslationDefinition:
+  Enabled: true
+  Exclude:
+    - 'spec/**/*'
+    - 'ee/spec/**/*'
 
 # This cop checks whether some constant value isn't a
 # mutable literal (e.g. array or hash).

@@ -130,13 +130,11 @@ module API
 
     TRIGGER_SERVICES.each do |service_slug, settings|
       helpers do
-        # rubocop: disable CodeReuse/ActiveRecord
         def slash_command_service(project, service_slug, params)
-          project.services.active.where(template: false).find do |service|
+          project.services.active.find do |service|
             service.try(:token) == params[:token] && service.to_param == service_slug.underscore
           end
         end
-        # rubocop: enable CodeReuse/ActiveRecord
       end
 
       params do

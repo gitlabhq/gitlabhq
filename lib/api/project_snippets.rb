@@ -11,6 +11,7 @@ module API
       requires :id, type: String, desc: 'The ID of a project'
     end
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+      helpers Helpers::SnippetsHelpers
       helpers do
         def check_snippets_enabled
           forbidden! unless user_project.feature_available?(:snippets, current_user)
@@ -155,7 +156,7 @@ module API
 
         env['api.format'] = :txt
         content_type 'text/plain'
-        present snippet.content
+        present content_for(snippet)
       end
       # rubocop: enable CodeReuse/ActiveRecord
 

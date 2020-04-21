@@ -28,11 +28,16 @@ describe Gitlab::SidekiqMiddleware do
   # 2) yielding exactly once
   describe '.server_configurator' do
     around do |example|
-      original = Sidekiq::Testing.server_middleware.dup
+      with_sidekiq_server_middleware do |chain|
+        described_class.server_configurator(
+          metrics: metrics,
+          arguments_logger: arguments_logger,
+          memory_killer: memory_killer,
+          request_store: request_store
+        ).call(chain)
 
-      example.run
-
-      Sidekiq::Testing.instance_variable_set :@server_chain, original
+        example.run
+      end
     end
 
     let(:middleware_expected_args) { [a_kind_of(worker_class), hash_including({ 'args' => job_args }), anything] }
@@ -54,21 +59,17 @@ describe Gitlab::SidekiqMiddleware do
     end
     let(:enabled_sidekiq_middlewares) { all_sidekiq_middlewares - disabled_sidekiq_middlewares }
 
-    before do
-      Sidekiq::Testing.server_middleware.clear
-      Sidekiq::Testing.server_middleware(&described_class.server_configurator(
-        metrics: metrics,
-        arguments_logger: arguments_logger,
-        memory_killer: memory_killer,
-        request_store: request_store
-      ))
+    shared_examples "a server middleware chain" do
+      it "passes through the right server middlewares" do
+        enabled_sidekiq_middlewares.each do |middleware|
+          expect_any_instance_of(middleware).to receive(:call).with(*middleware_expected_args).once.and_call_original
+        end
 
-      enabled_sidekiq_middlewares.each do |middleware|
-        expect_any_instance_of(middleware).to receive(:call).with(*middleware_expected_args).once.and_call_original
-      end
+        disabled_sidekiq_middlewares.each do |middleware|
+          expect_any_instance_of(middleware).not_to receive(:call)
+        end
 
-      disabled_sidekiq_middlewares.each do |middleware|
-        expect_any_instance_of(Gitlab::SidekiqMiddleware::ArgumentsLogger).not_to receive(:call)
+        worker_class.perform_async(*job_args)
       end
     end
 
@@ -86,9 +87,7 @@ describe Gitlab::SidekiqMiddleware do
         ]
       end
 
-      it "passes through server middlewares" do
-        worker_class.perform_async(*job_args)
-      end
+      it_behaves_like "a server middleware chain"
     end
 
     context "all optional middlewares on" do
@@ -98,9 +97,7 @@ describe Gitlab::SidekiqMiddleware do
       let(:request_store) { true }
       let(:disabled_sidekiq_middlewares) { [] }
 
-      it "passes through server middlewares" do
-        worker_class.perform_async(*job_args)
-      end
+      it_behaves_like "a server middleware chain"
 
       context "server metrics" do
         let(:gitaly_histogram) { double(:gitaly_histogram) }

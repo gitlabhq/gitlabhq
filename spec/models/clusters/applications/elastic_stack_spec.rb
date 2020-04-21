@@ -20,9 +20,10 @@ describe Clusters::Applications::ElasticStack do
     it 'is initialized with elastic stack arguments' do
       expect(subject.name).to eq('elastic-stack')
       expect(subject.chart).to eq('stable/elastic-stack')
-      expect(subject.version).to eq('1.9.0')
+      expect(subject.version).to eq('2.0.0')
       expect(subject).to be_rbac
       expect(subject.files).to eq(elastic_stack.files)
+      expect(subject.preinstall).to be_empty
     end
 
     context 'on a non rbac enabled cluster' do
@@ -33,11 +34,23 @@ describe Clusters::Applications::ElasticStack do
       it { is_expected.not_to be_rbac }
     end
 
+    context 'on versions older than 2' do
+      before do
+        elastic_stack.status = elastic_stack.status_states[:updating]
+        elastic_stack.version = "1.9.0"
+      end
+
+      it 'includes a preinstall script' do
+        expect(subject.preinstall).not_to be_empty
+        expect(subject.preinstall.first).to include("filebeat.enable")
+      end
+    end
+
     context 'application failed to install previously' do
       let(:elastic_stack) { create(:clusters_applications_elastic_stack, :errored, version: '0.0.1') }
 
       it 'is initialized with the locked version' do
-        expect(subject.version).to eq('1.9.0')
+        expect(subject.version).to eq('2.0.0')
       end
     end
   end

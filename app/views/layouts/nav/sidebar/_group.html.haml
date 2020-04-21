@@ -155,6 +155,11 @@
                 %span
                   = _('Projects')
 
+            = nav_link(controller: :repository) do
+              = link_to group_settings_repository_path(@group), title: _('Repository') do
+                %span
+                  = _('Repository')
+
             = nav_link(controller: :ci_cd) do
               = link_to group_settings_ci_cd_path(@group), title: _('CI / CD') do
                 %span

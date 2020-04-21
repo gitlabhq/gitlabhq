@@ -10,7 +10,7 @@ module Gitlab
 
         def import(project)
           JiraImport.cache_cleanup(project.id)
-          project.latest_jira_import&.finish!
+          project.latest_jira_import.finish!
         end
       end
     end

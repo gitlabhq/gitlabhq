@@ -156,7 +156,7 @@ describe Gitlab::ImportExport::RelationTreeRestorer do
     let(:reader) do
       Gitlab::ImportExport::Reader.new(
         shared: shared,
-        config: Gitlab::ImportExport::Config.new(config: Gitlab::ImportExport.group_config_file).to_h
+        config: Gitlab::ImportExport::Config.new(config: Gitlab::ImportExport.legacy_group_config_file).to_h
       )
     end
 

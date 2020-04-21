@@ -13,7 +13,7 @@ Based on your installation, choose a section below that fits your needs.
 
 ## Omnibus Packages
 
-- The [Omnibus update guide][omni-update]
+- The [Omnibus update guide](https://docs.gitlab.com/omnibus/update/README.html)
   contains the steps needed to update an Omnibus GitLab package.
 
 ## Installation from source
@@ -29,14 +29,14 @@ In the past we used separate documents for the upgrading instructions, but we
 have since switched to using a single document. The old upgrading guidelines
 can still be found in the Git repository:
 
-- [Old upgrading guidelines for Community Edition][old-ce-upgrade-docs]
-- [Old upgrading guidelines for Enterprise Edition][old-ee-upgrade-docs]
+- [Old upgrading guidelines for Community Edition](https://gitlab.com/gitlab-org/gitlab-foss/tree/11-8-stable/doc/update)
+- [Old upgrading guidelines for Enterprise Edition](https://gitlab.com/gitlab-org/gitlab/tree/11-8-stable-ee/doc/update)
 
 ## Installation using Docker
 
 GitLab provides official Docker images for both Community and Enterprise
 editions. They are based on the Omnibus package and instructions on how to
-update them are in [a separate document][omni-docker].
+update them are in [a separate document](https://docs.gitlab.com/omnibus/docker/README.html).
 
 ## Upgrading without downtime
 
@@ -106,7 +106,7 @@ meet the other online upgrade requirements mentioned above.
 
 ### Steps
 
-Steps to [upgrade without downtime][omni-zero-downtime].
+Steps to [upgrade without downtime](https://docs.gitlab.com/omnibus/update/README.html#zero-downtime-updates).
 
 ## Checking for background migrations before upgrading
 
@@ -163,8 +163,8 @@ of the `background_migration` queue, [check for background migrations before upg
 
 ## Upgrading between editions
 
-GitLab comes in two flavors: [Community Edition][ce] which is MIT licensed,
-and [Enterprise Edition][ee] which builds on top of the Community Edition and
+GitLab comes in two flavors: [Community Edition](https://about.gitlab.com/features/#community) which is MIT licensed,
+and [Enterprise Edition](https://about.gitlab.com/features/#enterprise) which builds on top of the Community Edition and
 includes extra features mainly aimed at organizations with more than 100 users.
 
 Below you can find some guides to help you change editions easily.
@@ -177,17 +177,17 @@ The following guides are for subscribers of the Enterprise Edition only.
 If you wish to upgrade your GitLab installation from Community to Enterprise
 Edition, follow the guides below based on the installation method:
 
-- [Source CE to EE update guides][source-ce-to-ee] - The steps are very similar
+- [Source CE to EE update guides](upgrading_from_ce_to_ee.md) - The steps are very similar
   to a version upgrade: stop the server, get the code, update config files for
   the new functionality, install libraries and do migrations, update the init
   script, start the application and check its status.
-- [Omnibus CE to EE][omni-ce-ee] - Follow this guide to update your Omnibus
+- [Omnibus CE to EE](https://docs.gitlab.com/omnibus/update/README.html#updating-community-edition-to-enterprise-edition) - Follow this guide to update your Omnibus
   GitLab Community Edition to the Enterprise Edition.
 
 ### Enterprise to Community Edition
 
 If you need to downgrade your Enterprise Edition installation back to Community
-Edition, you can follow [this guide][ee-ce] to make the process as smooth as
+Edition, you can follow [this guide](../downgrade_ee_to_ce/README.md) to make the process as smooth as
 possible.
 
 ## Version specific upgrading instructions
@@ -227,15 +227,3 @@ for more information.
 - [Restoring from backup after a failed upgrade](restore_after_failure.md)
 - [Upgrading PostgreSQL Using Slony](upgrading_postgresql_using_slony.md), for
   upgrading a PostgreSQL database with minimal downtime.
-
-[omnidocker]: https://docs.gitlab.com/omnibus/docker/README.html
-[old-ee-upgrade-docs]: https://gitlab.com/gitlab-org/gitlab/tree/11-8-stable-ee/doc/update
-[old-ce-upgrade-docs]: https://gitlab.com/gitlab-org/gitlab-foss/tree/11-8-stable/doc/update
-[source-ce-to-ee]: upgrading_from_ce_to_ee.md
-[ee-ce]: ../downgrade_ee_to_ce/README.md
-[ce]: https://about.gitlab.com/features/#community
-[ee]: https://about.gitlab.com/features/#enterprise
-[omni-ce-ee]: https://docs.gitlab.com/omnibus/update/README.html#updating-community-edition-to-enterprise-edition
-[omni-docker]: https://docs.gitlab.com/omnibus/docker/README.html
-[omni-update]: https://docs.gitlab.com/omnibus/update/README.html
-[omni-zero-downtime]: https://docs.gitlab.com/omnibus/update/README.html#zero-downtime-updates

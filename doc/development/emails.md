@@ -14,12 +14,10 @@ Please note that [S/MIME signed](../administration/smime_signing_email.md) email
 Rails provides a way to preview our mailer templates in HTML and plaintext using
 dummy data.
 
-The previews live in [`app/mailers/previews`][previews] and can be viewed at
+The previews live in [`app/mailers/previews`](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/app/mailers/previews) and can be viewed at
 [`/rails/mailers`](http://localhost:3000/rails/mailers).
 
 See the [Rails guides](https://guides.rubyonrails.org/action_mailer_basics.html#previewing-emails) for more information.
-
-[previews]: https://gitlab.com/gitlab-org/gitlab-foss/tree/master/app/mailers/previews
 
 ## Incoming email
 

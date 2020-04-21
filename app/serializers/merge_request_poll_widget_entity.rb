@@ -71,6 +71,12 @@ class MergeRequestPollWidgetEntity < Grape::Entity
     end
   end
 
+  expose :terraform_reports_path do |merge_request|
+    if merge_request.has_terraform_reports?
+      terraform_reports_project_merge_request_path(merge_request.project, merge_request, format: :json)
+    end
+  end
+
   expose :exposed_artifacts_path do |merge_request|
     if merge_request.has_exposed_artifacts?
       exposed_artifacts_project_merge_request_path(merge_request.project, merge_request, format: :json)

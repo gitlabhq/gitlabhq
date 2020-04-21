@@ -94,7 +94,7 @@ describe API::ProjectSnippets do
 
       expect(json_response['title']).to eq(snippet.title)
       expect(json_response['description']).to eq(snippet.description)
-      expect(json_response['file_name']).to eq(snippet.file_name)
+      expect(json_response['file_name']).to eq(snippet.file_name_on_repo)
       expect(json_response['ssh_url_to_repo']).to eq(snippet.ssh_url_to_repo)
       expect(json_response['http_url_to_repo']).to eq(snippet.http_url_to_repo)
     end
@@ -460,14 +460,13 @@ describe API::ProjectSnippets do
   end
 
   describe 'GET /projects/:project_id/snippets/:id/raw' do
-    let(:snippet) { create(:project_snippet, author: admin, project: project) }
+    let_it_be(:snippet) { create(:project_snippet, :repository, author: admin, project: project) }
 
     it 'returns raw text' do
       get api("/projects/#{snippet.project.id}/snippets/#{snippet.id}/raw", admin)
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(response.content_type).to eq 'text/plain'
-      expect(response.body).to eq(snippet.content)
     end
 
     it 'returns 404 for invalid snippet id' do
@@ -481,6 +480,12 @@ describe API::ProjectSnippets do
       it_behaves_like '403 response' do
         let(:request) { get api("/projects/#{project_no_snippets.id}/snippets/123/raw", admin) }
       end
+    end
+
+    it_behaves_like 'snippet blob content' do
+      let_it_be(:snippet_with_empty_repo) { create(:project_snippet, :empty_repo, author: admin, project: project) }
+
+      subject { get api("/projects/#{snippet.project.id}/snippets/#{snippet.id}/raw", snippet.author) }
     end
   end
 end

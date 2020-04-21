@@ -1,6 +1,6 @@
 <script>
 import { mapState, mapActions } from 'vuex';
-import PanelType from 'ee_else_ce/monitoring/components/panel_type.vue';
+import PanelType from '~/monitoring/components/panel_type_with_alerts.vue';
 import { convertToFixedRange } from '~/lib/utils/datetime_range';
 import { defaultTimeRange } from '~/vue_shared/constants';
 import { timeRangeFromUrl, removeTimeRangeParams } from '../../utils';

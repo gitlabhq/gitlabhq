@@ -9,7 +9,7 @@ class CreateChatopsTables < ActiveRecord::Migration[4.2]
     create_table :ci_pipeline_chat_data, id: :bigserial do |t|
       t.integer :pipeline_id, null: false
       t.references :chat_name, foreign_key: { on_delete: :cascade }, null: false
-      t.text :response_url, null: false
+      t.text :response_url, null: false # rubocop:disable Migration/AddLimitToTextColumns
 
       # A pipeline can only contain one row in this table, hence this index is
       # unique.

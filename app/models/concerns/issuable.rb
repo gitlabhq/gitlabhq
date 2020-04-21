@@ -116,6 +116,7 @@ module Issuable
     # rubocop:enable GitlabSecurity/SqlInjection
 
     scope :without_label, -> { joins("LEFT OUTER JOIN label_links ON label_links.target_type = '#{name}' AND label_links.target_id = #{table_name}.id").where(label_links: { id: nil }) }
+    scope :with_label_ids, ->(label_ids) { joins(:label_links).where(label_links: { label_id: label_ids }) }
     scope :any_label, -> { joins(:label_links).group(:id) }
     scope :join_project, -> { joins(:project) }
     scope :inc_notes_with_associations, -> { includes(notes: [:project, :author, :award_emoji]) }
@@ -131,8 +132,21 @@ module Issuable
 
     strip_attributes :title
 
-    def self.locking_enabled?
-      false
+    class << self
+      def labels_hash
+        issue_labels = Hash.new { |h, k| h[k] = [] }
+
+        relation = unscoped.where(id: self.select(:id)).eager_load(:labels)
+        relation.pluck(:id, 'labels.title').each do |issue_id, label|
+          issue_labels[issue_id] << label if label.present?
+        end
+
+        issue_labels
+      end
+
+      def locking_enabled?
+        false
+      end
     end
 
     # We want to use optimistic lock for cases when only title or description are involved
@@ -478,5 +492,4 @@ module Issuable
   end
 end
 
-Issuable.prepend_if_ee('EE::Issuable') # rubocop: disable Cop/InjectEnterpriseEditionModule
-Issuable::ClassMethods.prepend_if_ee('EE::Issuable::ClassMethods')
+Issuable.prepend_if_ee('EE::Issuable')

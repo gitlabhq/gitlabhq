@@ -1,4 +1,4 @@
-# Design Management
+# Design Management **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/660) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.2.
 

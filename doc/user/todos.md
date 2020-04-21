@@ -36,7 +36,9 @@ A To Do appears on your To-Do List when:
   - Issue
   - Merge Request
   - Epic **(ULTIMATE)**
-- You are `@mentioned` in a comment on a commit
+- You are `@mentioned` in a comment on a:
+  - Commit
+  - Design **(PREMIUM)**
 - A job in the CI pipeline running for your merge request failed, but this
   job is not allowed to fail
 - An open merge request becomes unmergeable due to conflict, and you are either:

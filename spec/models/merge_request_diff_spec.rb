@@ -566,6 +566,45 @@ describe MergeRequestDiff do
     it 'returns affected file paths' do
       expect(subject.modified_paths).to eq(%w{foo bar baz})
     end
+
+    context "when fallback_on_overflow is true" do
+      let(:merge_request) { create(:merge_request, source_branch: 'feature', target_branch: 'master') }
+      let(:diff) { merge_request.merge_request_diff }
+
+      # before do
+      #   # Temporarily unstub diff.modified_paths in favor of original code
+      #   #
+      #   allow(diff).to receive(:modified_paths).and_call_original
+      # end
+
+      context "when the merge_request_diff is overflowed" do
+        before do
+          expect(diff).to receive(:overflow?).and_return(true)
+        end
+
+        it "returns file paths via project.repository#diff_stats" do
+          expect(diff.project.repository).to receive(:diff_stats).and_call_original
+
+          expect(
+            diff.modified_paths(fallback_on_overflow: true)
+          ).to eq(diff.modified_paths)
+        end
+      end
+
+      context "when the merge_request_diff is not overflowed" do
+        before do
+          expect(subject).to receive(:overflow?).and_return(false)
+        end
+
+        it "returns expect file paths withoout called #modified_paths_for_overflowed_mr" do
+          expect(subject.project.repository).not_to receive(:diff_stats)
+
+          expect(
+            subject.modified_paths(fallback_on_overflow: true)
+          ).to eq(subject.modified_paths)
+        end
+      end
+    end
   end
 
   describe '#opening_external_diff' do

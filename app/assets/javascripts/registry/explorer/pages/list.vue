@@ -9,16 +9,28 @@ import {
   GlModal,
   GlSprintf,
   GlLink,
+  GlAlert,
   GlSkeletonLoader,
 } from '@gitlab/ui';
 import Tracking from '~/tracking';
-import { s__ } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import ProjectEmptyState from '../components/project_empty_state.vue';
 import GroupEmptyState from '../components/group_empty_state.vue';
 import ProjectPolicyAlert from '../components/project_policy_alert.vue';
 import QuickstartDropdown from '../components/quickstart_dropdown.vue';
-import { DELETE_IMAGE_SUCCESS_MESSAGE, DELETE_IMAGE_ERROR_MESSAGE } from '../constants';
+import {
+  DELETE_IMAGE_SUCCESS_MESSAGE,
+  DELETE_IMAGE_ERROR_MESSAGE,
+  ASYNC_DELETE_IMAGE_ERROR_MESSAGE,
+  CONTAINER_REGISTRY_TITLE,
+  CONNECTION_ERROR_TITLE,
+  CONNECTION_ERROR_MESSAGE,
+  LIST_INTRO_TEXT,
+  LIST_DELETE_BUTTON_DISABLED,
+  REMOVE_REPOSITORY_LABEL,
+  REMOVE_REPOSITORY_MODAL_TEXT,
+  ROW_SCHEDULED_FOR_DELETION,
+} from '../constants';
 
 export default {
   name: 'RegistryListApp',
@@ -35,6 +47,7 @@ export default {
     GlModal,
     GlSprintf,
     GlLink,
+    GlAlert,
     GlSkeletonLoader,
   },
   directives: {
@@ -47,25 +60,20 @@ export default {
     height: 40,
   },
   i18n: {
-    containerRegistryTitle: s__('ContainerRegistry|Container Registry'),
-    connectionErrorTitle: s__('ContainerRegistry|Docker connection error'),
-    connectionErrorMessage: s__(
-      `ContainerRegistry|We are having trouble connecting to Docker, which could be due to an issue with your project name or path. %{docLinkStart}More Information%{docLinkEnd}`,
-    ),
-    introText: s__(
-      `ContainerRegistry|With the Docker Container Registry integrated into GitLab, every project can have its own space to store its Docker images. %{docLinkStart}More Information%{docLinkEnd}`,
-    ),
-    deleteButtonDisabled: s__(
-      'ContainerRegistry|Missing or insufficient permission, delete button disabled',
-    ),
-    removeRepositoryLabel: s__('ContainerRegistry|Remove repository'),
-    removeRepositoryModalText: s__(
-      'ContainerRegistry|You are about to remove repository %{title}. Once you confirm, this repository will be permanently deleted.',
-    ),
+    containerRegistryTitle: CONTAINER_REGISTRY_TITLE,
+    connectionErrorTitle: CONNECTION_ERROR_TITLE,
+    connectionErrorMessage: CONNECTION_ERROR_MESSAGE,
+    introText: LIST_INTRO_TEXT,
+    deleteButtonDisabled: LIST_DELETE_BUTTON_DISABLED,
+    removeRepositoryLabel: REMOVE_REPOSITORY_LABEL,
+    removeRepositoryModalText: REMOVE_REPOSITORY_MODAL_TEXT,
+    rowScheduledForDeletion: ROW_SCHEDULED_FOR_DELETION,
+    asyncDeleteErrorMessage: ASYNC_DELETE_IMAGE_ERROR_MESSAGE,
   },
   data() {
     return {
       itemToDelete: {},
+      deleteAlertType: null,
     };
   },
   computed: {
@@ -86,35 +94,39 @@ export default {
     showQuickStartDropdown() {
       return Boolean(!this.isLoading && !this.config?.isGroupPage && this.images?.length);
     },
+    showDeleteAlert() {
+      return this.deleteAlertType && this.itemToDelete?.path;
+    },
+    deleteImageAlertMessage() {
+      return this.deleteAlertType === 'success'
+        ? DELETE_IMAGE_SUCCESS_MESSAGE
+        : DELETE_IMAGE_ERROR_MESSAGE;
+    },
   },
   methods: {
     ...mapActions(['requestImagesList', 'requestDeleteImage']),
     deleteImage(item) {
-      // This event is already tracked in the system and so the name must be kept to aggregate the data
       this.track('click_button');
       this.itemToDelete = item;
       this.$refs.deleteModal.show();
     },
     handleDeleteImage() {
       this.track('confirm_delete');
-      return this.requestDeleteImage(this.itemToDelete.destroy_path)
-        .then(() =>
-          this.$toast.show(DELETE_IMAGE_SUCCESS_MESSAGE, {
-            type: 'success',
-          }),
-        )
-        .catch(() =>
-          this.$toast.show(DELETE_IMAGE_ERROR_MESSAGE, {
-            type: 'error',
-          }),
-        )
-        .finally(() => {
-          this.itemToDelete = {};
+      return this.requestDeleteImage(this.itemToDelete)
+        .then(() => {
+          this.deleteAlertType = 'success';
+        })
+        .catch(() => {
+          this.deleteAlertType = 'danger';
         });
     },
     encodeListItem(item) {
       const params = JSON.stringify({ name: item.path, tags_path: item.tags_path, id: item.id });
       return window.btoa(params);
+    },
+    dismissDeleteAlert() {
+      this.deleteAlertType = null;
+      this.itemToDelete = {};
     },
   },
 };
@@ -122,7 +134,21 @@ export default {
 
 <template>
   <div class="w-100 slide-enter-from-element">
-    <project-policy-alert v-if="!config.isGroupPage" />
+    <gl-alert
+      v-if="showDeleteAlert"
+      :variant="deleteAlertType"
+      class="mt-2"
+      dismissible
+      @dismiss="dismissDeleteAlert"
+    >
+      <gl-sprintf :message="deleteImageAlertMessage">
+        <template #title>
+          {{ itemToDelete.path }}
+        </template>
+      </gl-sprintf>
+    </gl-alert>
+
+    <project-policy-alert v-if="!config.isGroupPage" class="mt-2" />
 
     <gl-empty-state
       v-if="config.characterError"
@@ -178,41 +204,57 @@ export default {
             v-for="(listItem, index) in images"
             :key="index"
             ref="rowItem"
-            :class="{ 'border-top': index === 0 }"
-            class="d-flex justify-content-between align-items-center py-2 border-bottom"
+            v-gl-tooltip="{
+              placement: 'left',
+              disabled: !listItem.deleting,
+              title: $options.i18n.rowScheduledForDeletion,
+            }"
           >
-            <div>
-              <router-link
-                ref="detailsLink"
-                :to="{ name: 'details', params: { id: encodeListItem(listItem) } }"
-              >
-                {{ listItem.path }}
-              </router-link>
-              <clipboard-button
-                v-if="listItem.location"
-                ref="clipboardButton"
-                :text="listItem.location"
-                :title="listItem.location"
-                css-class="btn-default btn-transparent btn-clipboard"
-              />
-            </div>
             <div
-              v-gl-tooltip="{ disabled: listItem.destroy_path }"
-              class="d-none d-sm-block"
-              :title="$options.i18n.deleteButtonDisabled"
+              class="d-flex justify-content-between align-items-center py-2 px-1 border-bottom"
+              :class="{ 'border-top': index === 0, 'disabled-content': listItem.deleting }"
             >
-              <gl-deprecated-button
-                ref="deleteImageButton"
-                v-gl-tooltip
-                :disabled="!listItem.destroy_path"
-                :title="$options.i18n.removeRepositoryLabel"
-                :aria-label="$options.i18n.removeRepositoryLabel"
-                class="btn-inverted"
-                variant="danger"
-                @click="deleteImage(listItem)"
+              <div class="d-felx align-items-center">
+                <router-link
+                  ref="detailsLink"
+                  :to="{ name: 'details', params: { id: encodeListItem(listItem) } }"
+                >
+                  {{ listItem.path }}
+                </router-link>
+                <clipboard-button
+                  v-if="listItem.location"
+                  ref="clipboardButton"
+                  :disabled="listItem.deleting"
+                  :text="listItem.location"
+                  :title="listItem.location"
+                  css-class="btn-default btn-transparent btn-clipboard"
+                />
+                <gl-icon
+                  v-if="listItem.failedDelete"
+                  v-gl-tooltip
+                  :title="$options.i18n.asyncDeleteErrorMessage"
+                  name="warning"
+                  class="text-warning align-middle"
+                />
+              </div>
+              <div
+                v-gl-tooltip="{ disabled: listItem.destroy_path }"
+                class="d-none d-sm-block"
+                :title="$options.i18n.deleteButtonDisabled"
               >
-                <gl-icon name="remove" />
-              </gl-deprecated-button>
+                <gl-deprecated-button
+                  ref="deleteImageButton"
+                  v-gl-tooltip
+                  :disabled="!listItem.destroy_path || listItem.deleting"
+                  :title="$options.i18n.removeRepositoryLabel"
+                  :aria-label="$options.i18n.removeRepositoryLabel"
+                  class="btn-inverted"
+                  variant="danger"
+                  @click="deleteImage(listItem)"
+                >
+                  <gl-icon name="remove" />
+                </gl-deprecated-button>
+              </div>
             </div>
           </div>
           <gl-pagination

@@ -29,7 +29,6 @@ sast:
   services:
     - docker:stable-dind
   script:
-    - export SAST_VERSION=${SP_VERSION:-$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')}
     - |
       if ! docker info &>/dev/null; then
         if [ -z "$DOCKER_HOST" -a "$KUBERNETES_PORT" ]; then
@@ -41,7 +40,7 @@ sast:
         $(awk 'BEGIN{for(v in ENVIRON) print v}' | grep -v -E '^(DOCKER_|CI|GITLAB_|FF_|HOME|PWD|OLDPWD|PATH|SHLVL|HOSTNAME)' | awk '{printf " -e %s", $0}') \
         --volume "$PWD:/code" \
         --volume /var/run/docker.sock:/var/run/docker.sock \
-        "registry.gitlab.com/gitlab-org/security-products/sast:$SAST_VERSION" /app/bin/run /code
+        "registry.gitlab.com/gitlab-org/security-products/sast:$SAST_ANALYZER_IMAGE_TAG" /app/bin/run /code
   except:
     variables:
       - $SAST_DISABLED

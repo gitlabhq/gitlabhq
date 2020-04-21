@@ -7,7 +7,7 @@ you can do with issues.
 
 ## Create a new Issue
 
-When you create a new issue, you'll be prompted to fill in the [data and fields of the issue](issue_data_and_actions.md#parts-of-an-issue), as illustrated below. If you know
+When you create a new issue, you'll be prompted to fill in the [data and fields of the issue](issue_data_and_actions.md), as illustrated below. If you know
 the values you want to assign to an issue, you can use the [Quick actions](../quick_actions.md)
 feature to input values, instead of selecting them from lists.
 
@@ -117,7 +117,10 @@ The "Move issue" button is at the bottom of the right-sidebar when viewing the i
 
 If you have advanced technical skills you can also bulk move all the issues from one project to another in the rails console. The below script will move all the issues from one project to another that are not in status **closed**.
 
-To access rails console run `sudo gitlab-rails console` on the GitLab server and run the below script. Please be sure to change **project**, **admin_user** and **target_project** to your values. We do also recommend [creating a backup](../../../raketasks/backup_restore.md#creating-a-backup-of-the-gitlab-system) before attempting any changes in the console.
+To access rails console run `sudo gitlab-rails console` on the GitLab server and run the below
+script. Please be sure to change **project**, **admin_user** and **target_project** to your values.
+We do also recommend [creating a backup](../../../raketasks/backup_restore.md#back-up-gitlab) before
+attempting any changes in the console.
 
 ```ruby
 project = Project.find_by_full_path('full path of the project where issues are moved from')
@@ -179,7 +182,7 @@ Closes #4, #6, and https://gitlab.com/<username>/<projectname>/issues/<xxx>
 When not specified, the default issue closing pattern as shown below will be used:
 
 ```shell
-((?:[Cc]los(?:e[sd]?|ing)|[Ff]ix(?:e[sd]|ing)?|[Rr]esolv(?:e[sd]?|ing)|[Ii]mplement(?:s|ed|ing)?)(:?) +(?:(?:issues? +)?%{issue_ref}(?:(?:, *| +and +)?)|([A-Z][A-Z0-9_]+-\d+))+)
+\b((?:[Cc]los(?:e[sd]?|ing)|\b[Ff]ix(?:e[sd]|ing)?|\b[Rr]esolv(?:e[sd]?|ing)|\b[Ii]mplement(?:s|ed|ing)?)(:?) +(?:(?:issues? +)?%{issue_ref}(?:(?: *,? +and +| *,? *)?)|([A-Z][A-Z0-9_]+-\d+))+)
 ```
 
 This translates to the following keywords:

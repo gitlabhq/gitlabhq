@@ -1,6 +1,6 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
-import { s__ } from '~/locale';
+import { sprintf, s__ } from '~/locale';
 import { componentNames } from './issue_body';
 import ReportSection from './report_section.vue';
 import SummaryRow from './summary_row.vue';
@@ -52,8 +52,17 @@ export default {
   methods: {
     ...mapActions(['setEndpoint', 'fetchReports']),
     reportText(report) {
-      const summary = report.summary || {};
-      return reportTextBuilder(report.name, summary);
+      const { name, summary } = report || {};
+
+      if (report.status === 'error') {
+        return sprintf(s__('Reports|An error occurred while loading %{name} results'), { name });
+      }
+
+      if (!report.name) {
+        return s__('Reports|An error occured while loading report');
+      }
+
+      return reportTextBuilder(name, summary);
     },
     getReportIcon(report) {
       return statusIcon(report.status);

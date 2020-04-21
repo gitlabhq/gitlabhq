@@ -3,6 +3,8 @@
 @import './ide_mixins';
 @import './ide_monaco_overrides';
 
+@import './themes/dark';
+
 $search-list-icon-width: 18px;
 $ide-activity-bar-width: 60px;
 $ide-context-header-padding: 10px;

@@ -15,6 +15,10 @@ class MergeRequestSerializer < BaseSerializer
         MergeRequestBasicEntity
       when 'noteable'
         MergeRequestNoteableEntity
+      when 'poll_cached_widget'
+        MergeRequestPollCachedWidgetEntity
+      when 'poll_widget'
+        MergeRequestPollWidgetEntity
       else
         # fallback to widget for old poll requests without `serializer` set
         MergeRequestWidgetEntity

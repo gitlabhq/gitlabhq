@@ -66,9 +66,9 @@ graphql-reference-verify:
     - .default-cache
     - .default-before_script
     - .docs:rules:graphql-reference-verify
-    - .use-pg10
+    - .use-pg11
   stage: test
-  needs: ["setup-test-env pg10"]
+  needs: ["setup-test-env pg11"]
   script:
     - bundle exec rake gitlab:graphql:check_docs
     - bundle exec rake gitlab:graphql:check_schema

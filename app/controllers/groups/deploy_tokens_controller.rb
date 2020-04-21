@@ -7,6 +7,6 @@ class Groups::DeployTokensController < Groups::ApplicationController
     @token = @group.deploy_tokens.find(params[:id])
     @token.revoke!
 
-    redirect_to group_settings_ci_cd_path(@group, anchor: 'js-deploy-tokens')
+    redirect_to group_settings_repository_path(@group, anchor: 'js-deploy-tokens')
   end
 end

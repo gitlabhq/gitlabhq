@@ -1,0 +1,5 @@
+---
+title: Add name_regex_keep to container_expiration_policies
+merge_request: 29618
+author:
+type: added

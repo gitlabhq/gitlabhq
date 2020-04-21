@@ -1,0 +1,20 @@
+panel_groups:
+  - group: 'Usage Variation'
+    panels:
+      - type: anomaly-chart
+        title: "Memory Usage Rate Anomalies"
+        y_label: "Memory Usage Rate"
+        metrics:
+          - id: container_memory_usage_bytes
+            query_range: avg(sum(rate(container_memory_usage_bytes[15m]))) /1024
+            label: "Memory Usage Rate"
+            unit: "kB"
+          - id: container_memory_usage_bytes_upper
+            query_range: 80000
+            label: "Memory Usage Rate Lower Limit"
+            unit: "kB"
+          - id: container_memory_usage_bytes_lower
+            query_range: 50000
+            label: "Memory Usage Rate Upper Limit"
+            unit: "kB"
+

@@ -3,6 +3,7 @@
 class AddSelfManagedPrometheusAlerts < ActiveRecord::Migration[5.2]
   DOWNTIME = false
 
+  # rubocop:disable Migration/PreventStrings
   def change
     create_table :self_managed_prometheus_alert_events do |t|
       t.references :project, index: false, foreign_key: { on_delete: :cascade }, null: false
@@ -17,4 +18,5 @@ class AddSelfManagedPrometheusAlerts < ActiveRecord::Migration[5.2]
       t.index [:project_id, :payload_key], unique: true, name: 'idx_project_id_payload_key_self_managed_prometheus_alert_events'
     end
   end
+  # rubocop:enable Migration/PreventStrings
 end

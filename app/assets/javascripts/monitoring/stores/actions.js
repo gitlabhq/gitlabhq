@@ -3,7 +3,12 @@ import * as types from './mutation_types';
 import axios from '~/lib/utils/axios_utils';
 import createFlash from '~/flash';
 import { convertToFixedRange } from '~/lib/utils/datetime_range';
-import { gqClient, parseEnvironmentsResponse, removeLeadingSlash } from './utils';
+import {
+  gqClient,
+  parseEnvironmentsResponse,
+  parseAnnotationsResponse,
+  removeLeadingSlash,
+} from './utils';
 import trackDashboardLoad from '../monitoring_tracking_helper';
 import getEnvironments from '../queries/getEnvironments.query.graphql';
 import getAnnotations from '../queries/getAnnotations.query.graphql';
@@ -15,7 +20,11 @@ import {
 } from '../../lib/utils/common_utils';
 import { s__, sprintf } from '../../locale';
 
-import { PROMETHEUS_TIMEOUT, ENVIRONMENT_AVAILABLE_STATE } from '../constants';
+import {
+  PROMETHEUS_TIMEOUT,
+  ENVIRONMENT_AVAILABLE_STATE,
+  DEFAULT_DASHBOARD_PATH,
+} from '../constants';
 
 function prometheusMetricQueryParams(timeRange) {
   const { start, end } = convertToFixedRange(timeRange);
@@ -283,16 +292,21 @@ export const receiveEnvironmentsDataFailure = ({ commit }) => {
 };
 
 export const fetchAnnotations = ({ state, dispatch }) => {
+  const { start } = convertToFixedRange(state.timeRange);
+  const dashboardPath =
+    state.currentDashboard === '' ? DEFAULT_DASHBOARD_PATH : state.currentDashboard;
   return gqClient
     .mutate({
       mutation: getAnnotations,
       variables: {
         projectPath: removeLeadingSlash(state.projectPath),
-        dashboardId: state.currentDashboard,
         environmentName: state.currentEnvironmentName,
+        dashboardPath,
+        startingFrom: start,
       },
     })
-    .then(resp => resp.data?.project?.environment?.metricDashboard?.annotations)
+    .then(resp => resp.data?.project?.environments?.nodes?.[0].metricsDashboard?.annotations.nodes)
+    .then(parseAnnotationsResponse)
     .then(annotations => {
       if (!annotations) {
         createFlash(s__('Metrics|There was an error fetching annotations. Please try again.'));

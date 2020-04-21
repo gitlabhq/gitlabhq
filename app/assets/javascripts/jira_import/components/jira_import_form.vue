@@ -12,6 +12,39 @@ export default {
   },
   currentUserAvatarUrl: gon.current_user_avatar_url,
   currentUsername: gon.current_username,
+  props: {
+    issuesPath: {
+      type: String,
+      required: true,
+    },
+    jiraProjects: {
+      type: Array,
+      required: true,
+    },
+  },
+  data() {
+    return {
+      selectedOption: null,
+      selectState: null,
+    };
+  },
+  methods: {
+    initiateJiraImport(event) {
+      event.preventDefault();
+      if (!this.selectedOption) {
+        this.showValidationError();
+      } else {
+        this.hideValidationError();
+        this.$emit('initiateJiraImport', this.selectedOption);
+      }
+    },
+    hideValidationError() {
+      this.selectState = null;
+    },
+    showValidationError() {
+      this.selectState = false;
+    },
+  },
 };
 </script>
 
@@ -19,14 +52,21 @@ export default {
   <div>
     <h3 class="page-title">{{ __('New Jira import') }}</h3>
     <hr />
-    <form>
+    <form @submit="initiateJiraImport">
       <gl-form-group
         class="row align-items-center"
+        :invalid-feedback="__('Please select a Jira project')"
         :label="__('Import from')"
         label-cols-sm="2"
         label-for="jira-project-select"
       >
-        <gl-form-select id="jira-project-select" class="mb-2" />
+        <gl-form-select
+          id="jira-project-select"
+          v-model="selectedOption"
+          class="mb-2"
+          :options="jiraProjects"
+          :state="selectState"
+        />
       </gl-form-group>
 
       <gl-form-group
@@ -86,8 +126,10 @@ export default {
       </gl-form-group>
 
       <div class="footer-block row-content-block d-flex justify-content-between">
-        <gl-button category="primary" variant="success">{{ __('Next') }}</gl-button>
-        <gl-button>{{ __('Cancel') }}</gl-button>
+        <gl-button type="submit" category="primary" variant="success" class="js-no-auto-disable">
+          {{ __('Next') }}
+        </gl-button>
+        <gl-button :href="issuesPath">{{ __('Cancel') }}</gl-button>
       </div>
     </form>
   </div>

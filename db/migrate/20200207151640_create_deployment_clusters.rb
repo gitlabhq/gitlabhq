@@ -3,6 +3,7 @@
 class CreateDeploymentClusters < ActiveRecord::Migration[6.0]
   DOWNTIME = false
 
+  # rubocop:disable Migration/PreventStrings
   def change
     create_table :deployment_clusters, id: false, force: :cascade do |t|
       t.references :deployment, foreign_key: { on_delete: :cascade }, primary_key: true, type: :integer, index: false, default: nil
@@ -13,4 +14,5 @@ class CreateDeploymentClusters < ActiveRecord::Migration[6.0]
       t.index [:cluster_id, :deployment_id], unique: true
     end
   end
+  # rubocop:enable Migration/PreventStrings
 end

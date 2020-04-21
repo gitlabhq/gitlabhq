@@ -66,17 +66,20 @@ class Explore::ProjectsController < Explore::ApplicationController
     @total_starred_projects_count = ProjectsFinder.new(params: { starred: true }, current_user: current_user).execute
   end
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def load_projects
     load_project_counts
 
-    projects = ProjectsFinder.new(current_user: current_user, params: params)
-                 .execute
-                 .includes(:route, :creator, :group, namespace: [:route, :owner])
-                 .page(params[:page])
-                 .without_count
+    projects = ProjectsFinder.new(current_user: current_user, params: params).execute
+
+    projects = preload_associations(projects)
+    projects = projects.page(params[:page]).without_count
 
     prepare_projects_for_rendering(projects)
+  end
+
+  # rubocop: disable CodeReuse/ActiveRecord
+  def preload_associations(projects)
+    projects.includes(:route, :creator, :group, namespace: [:route, :owner])
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
@@ -110,3 +113,5 @@ class Explore::ProjectsController < Explore::ApplicationController
     end
   end
 end
+
+Explore::ProjectsController.prepend_if_ee('EE::Explore::ProjectsController')

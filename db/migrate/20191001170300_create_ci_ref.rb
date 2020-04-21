@@ -3,6 +3,7 @@
 class CreateCiRef < ActiveRecord::Migration[5.2]
   DOWNTIME = false
 
+  # rubocop:disable Migration/PreventStrings
   def change
     create_table :ci_refs do |t|
       t.references :project, null: false, index: false, foreign_key: { on_delete: :cascade }, type: :integer
@@ -16,4 +17,5 @@ class CreateCiRef < ActiveRecord::Migration[5.2]
       t.index [:last_updated_by_pipeline_id]
     end
   end
+  # rubocop:enable Migration/PreventStrings
 end

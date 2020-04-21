@@ -99,7 +99,7 @@ export default {
   computed: {
     routerLinkTo() {
       return this.isFolder
-        ? { path: `/-/tree/${escape(this.ref)}/${escapeFileUrl(this.path)}` }
+        ? { path: `/-/tree/${escapeFileUrl(this.ref)}/${escapeFileUrl(this.path)}` }
         : null;
     },
     isFolder() {

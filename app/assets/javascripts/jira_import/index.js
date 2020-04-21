@@ -24,7 +24,10 @@ export default function mountJiraImportApp() {
     render(createComponent) {
       return createComponent(App, {
         props: {
+          inProgressIllustration: el.dataset.inProgressIllustration,
           isJiraConfigured: parseBoolean(el.dataset.isJiraConfigured),
+          issuesPath: el.dataset.issuesPath,
+          jiraProjects: el.dataset.jiraProjects ? JSON.parse(el.dataset.jiraProjects) : [],
           projectPath: el.dataset.projectPath,
           setupIllustration: el.dataset.setupIllustration,
         },

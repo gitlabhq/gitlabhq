@@ -5,7 +5,7 @@ require 'spec_helper'
 describe Gitlab::Utils do
   delegate :to_boolean, :boolean_to_yes_no, :slugify, :random_string, :which,
            :ensure_array_from_string, :to_exclusive_sentence, :bytes_to_megabytes,
-           :append_path, :check_path_traversal!, to: :described_class
+           :append_path, :check_path_traversal!, :ms_to_round_sec, to: :described_class
 
   describe '.check_path_traversal!' do
     it 'detects path traversal at the start of the string' do
@@ -51,6 +51,22 @@ describe Gitlab::Utils do
     }.each do |original, expected|
       it "slugifies #{original} to #{expected}" do
         expect(slugify(original)).to eq(expected)
+      end
+    end
+  end
+
+  describe '.ms_to_round_sec' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:original, :expected) do
+      1999.8999 | 2
+      12384     | 12.38
+      333       | 0.33
+    end
+
+    with_them do
+      it "returns rounded seconds" do
+        expect(ms_to_round_sec(original)).to eq(expected)
       end
     end
   end

@@ -77,7 +77,7 @@ If your test-suite is failing with Gitaly issues, as a first step, try running:
 rm -rf tmp/tests/gitaly
 ```
 
-During rspec tests, the Gitaly instance will write logs to `gitlab/log/gitaly-test.log`.
+During RSpec tests, the Gitaly instance will write logs to `gitlab/log/gitaly-test.log`.
 
 ## Legacy Rugged code
 

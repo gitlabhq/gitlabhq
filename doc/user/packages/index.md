@@ -16,6 +16,84 @@ The Packages feature allows GitLab to act as a repository for the following:
 | [NuGet Repository](nuget_repository/index.md) **(PREMIUM)**  | The GitLab NuGet Repository will enable every project in GitLab to have its own space to store [NuGet](https://www.nuget.org/) packages. | 12.8+ |
 | [PyPi Repository](pypi_repository/index.md) **(PREMIUM)**  | The GitLab PyPi Repository will enable every project in GitLab to have its own space to store [PyPi](https://pypi.org/) packages. | 12.10+ |
 
+## Enable the Package Registry for your project
+
+If you cannot find the **{package}** **Packages > List** entry under your
+project's sidebar, it is not enabled in your GitLab instance. Ask your
+administrator to enable GitLab Package Registry following the administration
+documentation.
+
+Once enabled for your GitLab instance, to enable Package Registry for your
+project:
+
+1. Go to your project's **Settings > General** page.
+1. Expand the **Visibility, project features, permissions** section and enable the
+**Packages** feature on your project.
+1. Press **Save changes** for the changes to take effect. You should now be able to
+see the **Packages > List** link in the sidebar.
+
+### View Packages for your project
+
+Navigating to your project's **{package}** **Packages > List** will show a list
+of all packages that have been added to your project.
+
+![Project Packages list](img/project_packages_list_v12_10.png)
+
+On this page, you can:
+
+- View all the packages that have been uploaded to the project.
+- Sort the packages list by created date, version or name.
+- Filter the list by package name.
+- Change tabs to display packages of a certain type.
+- Remove a package (if you have suitable [permissions](../permissions.md)).
+- Navigate to specific package detail page.
+
+### View Packages for your group
+
+You can view all packages belonging to a group by navigating to **{package}**
+**Packages > List** from the group sidebar.
+
+![Group Packages list](img/group_packages_list_v12_10.png)
+
+On this page, you can:
+
+- View all the packages that have been uploaded to each of the groups projects.
+- Sort the packages list by created date, version, name or project.
+- Filter the list by package name.
+- Change tabs to display packages of a certain type.
+- Navigate to specific package detail page.
+
+### View additional package information
+
+Additional package information can be viewed by browsing to the package details
+page from the either the project or group list.
+
+![Package detail](img/package_detail_v12_10.png)
+
+On this page you can:
+
+- See the extended package information, including metadata. This is unique to
+each package type and will display different information for different types.
+- View quick installation and registry setup instructions. These are a shortcut
+for users who have already set up the Package Registry and just want quick
+installation instructions.
+- View the package activity, including when and how a package was published.
+- View and download the contents of the package. Outside of installing a
+package via a manager, you can also download the files individually.
+- Delete the package (if you have suitable [permissions](../permissions.md)).
+
+### Build packages via GitLab CI/CD
+
+Some of the supported packages can be built via [GitLab CI/CD](./../../ci/README.md)
+using the `CI_JOB_TOKEN`. If a package is built this way, then extended activity
+information is displayed on the package details page:
+
+![Package CI/CD activity](img/package_activity_v12_10.png)
+
+You can view which pipeline published the package, as well as the commit and
+user who triggered it. To see if a package type supports being built via CI/CD,
+check the specific documentation for your package type.
+
 ## Suggested contributions
 
 Consider contributing to GitLab. This [development documentation](../../development/packages.md) will

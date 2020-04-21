@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import SingleStatChart from '~/monitoring/components/charts/single_stat.vue';
-import { graphDataPrometheusQuery } from '../../mock_data';
+import { singleStatMetricsResult } from '../../mock_data';
 
 describe('Single Stat Chart component', () => {
   let singleStatChart;
@@ -8,7 +8,7 @@ describe('Single Stat Chart component', () => {
   beforeEach(() => {
     singleStatChart = shallowMount(SingleStatChart, {
       propsData: {
-        graphData: graphDataPrometheusQuery,
+        graphData: singleStatMetricsResult,
       },
     });
   });
@@ -26,7 +26,7 @@ describe('Single Stat Chart component', () => {
       it('should change the value representation to a percentile one', () => {
         singleStatChart.setProps({
           graphData: {
-            ...graphDataPrometheusQuery,
+            ...singleStatMetricsResult,
             maxValue: 120,
           },
         });
@@ -37,7 +37,7 @@ describe('Single Stat Chart component', () => {
       it('should display NaN for non numeric maxValue values', () => {
         singleStatChart.setProps({
           graphData: {
-            ...graphDataPrometheusQuery,
+            ...singleStatMetricsResult,
             maxValue: 'not a number',
           },
         });
@@ -48,13 +48,13 @@ describe('Single Stat Chart component', () => {
       it('should display NaN for missing query values', () => {
         singleStatChart.setProps({
           graphData: {
-            ...graphDataPrometheusQuery,
+            ...singleStatMetricsResult,
             metrics: [
               {
-                ...graphDataPrometheusQuery.metrics[0],
+                ...singleStatMetricsResult.metrics[0],
                 result: [
                   {
-                    ...graphDataPrometheusQuery.metrics[0].result[0],
+                    ...singleStatMetricsResult.metrics[0].result[0],
                     value: [''],
                   },
                 ],

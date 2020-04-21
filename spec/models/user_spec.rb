@@ -4357,18 +4357,19 @@ describe User, :do_not_mock_admin_mode do
 
   describe 'internal methods' do
     let_it_be(:user) { create(:user) }
-    let!(:ghost) { described_class.ghost }
-    let!(:alert_bot) { described_class.alert_bot }
-    let!(:non_internal) { [user] }
-    let!(:internal) { [ghost, alert_bot] }
+    let_it_be(:ghost) { described_class.ghost }
+    let_it_be(:alert_bot) { described_class.alert_bot }
+    let_it_be(:project_bot) { create(:user, :project_bot) }
+    let_it_be(:non_internal) { [user, project_bot] }
+    let_it_be(:internal) { [ghost, alert_bot] }
 
     it 'returns internal users' do
-      expect(described_class.internal).to eq(internal)
+      expect(described_class.internal).to match_array(internal)
       expect(internal.all?(&:internal?)).to eq(true)
     end
 
     it 'returns non internal users' do
-      expect(described_class.non_internal).to eq(non_internal)
+      expect(described_class.non_internal).to match_array(non_internal)
       expect(non_internal.all?(&:internal?)).to eq(false)
     end
 
@@ -4420,9 +4421,12 @@ describe User, :do_not_mock_admin_mode do
     it 'returns corresponding users' do
       human = create(:user)
       bot = create(:user, :bot)
+      project_bot = create(:user, :project_bot)
 
       expect(described_class.humans).to match_array([human])
-      expect(described_class.bots).to match_array([bot])
+      expect(described_class.bots).to match_array([bot, project_bot])
+      expect(described_class.bots_without_project_bot).to match_array([bot])
+      expect(described_class.with_project_bots).to match_array([human, project_bot])
     end
   end
 
@@ -4653,6 +4657,32 @@ describe User, :do_not_mock_admin_mode do
       end
 
       it { is_expected.to be :locked }
+    end
+  end
+
+  describe '#password_required?' do
+    let_it_be(:user) { create(:user) }
+
+    shared_examples 'does not require password to be present' do
+      it { expect(user).not_to validate_presence_of(:password) }
+
+      it { expect(user).not_to validate_presence_of(:password_confirmation) }
+    end
+
+    context 'when user is an internal user' do
+      before do
+        user.update(user_type: 'alert_bot')
+      end
+
+      it_behaves_like 'does not require password to be present'
+    end
+
+    context 'when user is a project bot user' do
+      before do
+        user.update(user_type: 'project_bot')
+      end
+
+      it_behaves_like 'does not require password to be present'
     end
   end
 end

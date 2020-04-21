@@ -121,7 +121,7 @@ module Gitlab
     # Based on Jira's project key format
     # https://confluence.atlassian.com/adminjiraserver073/changing-the-project-key-format-861253229.html
     def jira_issue_key_regex
-      @jira_issue_key_regex ||= /[A-Z][A-Z_0-9]+-\d+\b/
+      @jira_issue_key_regex ||= /[A-Z][A-Z_0-9]+-\d+/
     end
 
     def jira_transition_id_regex

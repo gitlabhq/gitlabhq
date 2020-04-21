@@ -15,10 +15,10 @@ module Gitlab
               test_case = create_test_case(test_case, args)
               test_suite.add_test_case(test_case)
             end
-          rescue Nokogiri::XML::SyntaxError
-            raise JunitParserError, "XML parsing failed"
-          rescue
-            raise JunitParserError, "JUnit parsing failed"
+          rescue Nokogiri::XML::SyntaxError => e
+            test_suite.set_suite_error("JUnit XML parsing failed: #{e}")
+          rescue StandardError => e
+            test_suite.set_suite_error("JUnit data parsing failed: #{e}")
           end
 
           private

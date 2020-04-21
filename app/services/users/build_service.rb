@@ -81,7 +81,8 @@ module Users
         :private_profile,
         :organization,
         :location,
-        :public_email
+        :public_email,
+        :user_type
       ]
     end
 
@@ -95,7 +96,8 @@ module Users
         :first_name,
         :last_name,
         :password,
-        :username
+        :username,
+        :user_type
       ]
     end
 
@@ -127,6 +129,8 @@ module Users
         user_params[:external] = user_external?
       end
 
+      user_params.delete(:user_type) unless project_bot?(user_params[:user_type])
+
       user_params
     end
 
@@ -136,6 +140,10 @@ module Users
 
     def user_external?
       user_default_internal_regex_instance.match(params[:email]).nil?
+    end
+
+    def project_bot?(user_type)
+      user_type&.to_sym == :project_bot
     end
   end
 end

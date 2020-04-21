@@ -86,10 +86,8 @@ When using Pages under the general domain of a GitLab instance (`*.example.io`),
 you _cannot_ use HTTPS with sub-subdomains. That means that if your
 username/groupname contains a dot, for example `foo.bar`, the domain
 `https://foo.bar.example.io` will _not_ work. This is a limitation of the
-[HTTP Over TLS protocol][rfc]. HTTP pages will continue to work provided you
+[HTTP Over TLS protocol](https://tools.ietf.org/html/rfc2818#section-3.1). HTTP pages will continue to work provided you
 don't redirect HTTP to HTTPS.
-
-[rfc]: https://tools.ietf.org/html/rfc2818#section-3.1 "HTTP Over TLS RFC"
 
 GitLab Pages [does **not** support group websites for subgroups](../../group/subgroups/index.md#limitations).
 You can only create the highest-level group website.
@@ -169,12 +167,9 @@ pages:
   - pages
 ```
 
-See an example that has different files in the [`master` branch][jekyll-master]
-and the source files for Jekyll are in a [`pages` branch][jekyll-pages] which
+See an example that has different files in the [`master` branch](https://gitlab.com/pages/jekyll-branched/tree/master)
+and the source files for Jekyll are in a [`pages` branch](https://gitlab.com/pages/jekyll-branched/tree/pages) which
 also includes `.gitlab-ci.yml`.
-
-[jekyll-master]: https://gitlab.com/pages/jekyll-branched/tree/master
-[jekyll-pages]: https://gitlab.com/pages/jekyll-branched/tree/pages
 
 ### Serving compressed assets
 

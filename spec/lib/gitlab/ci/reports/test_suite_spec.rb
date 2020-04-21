@@ -114,6 +114,31 @@ describe Gitlab::Ci::Reports::TestSuite do
     end
   end
 
+  describe '#set_suite_error' do
+    let(:set_suite_error) { test_suite.set_suite_error('message') }
+
+    context 'when @suite_error is nil' do
+      it 'returns message' do
+        expect(set_suite_error).to eq('message')
+      end
+
+      it 'sets the new message' do
+        set_suite_error
+        expect(test_suite.suite_error).to eq('message')
+      end
+    end
+
+    context 'when a suite_error has already been set' do
+      before do
+        test_suite.set_suite_error('old message')
+      end
+
+      it 'overwrites the existing message' do
+        expect { set_suite_error }.to change(test_suite, :suite_error).from('old message').to('message')
+      end
+    end
+  end
+
   Gitlab::Ci::Reports::TestCase::STATUS_TYPES.each do |status_type|
     describe "##{status_type}" do
       subject { test_suite.public_send("#{status_type}") }

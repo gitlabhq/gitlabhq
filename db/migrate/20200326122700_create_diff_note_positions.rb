@@ -5,6 +5,8 @@ class CreateDiffNotePositions < ActiveRecord::Migration[6.0]
 
   DOWNTIME = false
 
+  # rubocop:disable Migration/AddLimitToTextColumns
+  # rubocop:disable Migration/PreventStrings
   def up
     with_lock_retries do
       create_table :diff_note_positions do |t|
@@ -24,6 +26,8 @@ class CreateDiffNotePositions < ActiveRecord::Migration[6.0]
       end
     end
   end
+  # rubocop:enable Migration/PreventStrings
+  # rubocop:enable Migration/AddLimitToTextColumns
 
   def down
     drop_table :diff_note_positions

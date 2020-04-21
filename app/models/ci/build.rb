@@ -525,6 +525,7 @@ module Ci
       strong_memoize(:variables) do
         Gitlab::Ci::Variables::Collection.new
           .concat(persisted_variables)
+          .concat(job_jwt_variables)
           .concat(scoped_variables)
           .concat(job_variables)
           .concat(environment_changed_page_variables)
@@ -877,6 +878,14 @@ module Ci
       coverage_report
     end
 
+    def collect_terraform_reports!(terraform_reports)
+      each_report(::Ci::JobArtifact::TERRAFORM_REPORT_FILE_TYPES) do |file_type, blob, report_artifact|
+        ::Gitlab::Ci::Parsers.fabricate!(file_type).parse!(blob, terraform_reports, artifact: report_artifact)
+      end
+
+      terraform_reports
+    end
+
     def report_artifacts
       job_artifacts.with_reports
     end
@@ -973,6 +982,15 @@ module Ci
 
     def has_expiring_artifacts?
       artifacts_expire_at.present? && artifacts_expire_at > Time.now
+    end
+
+    def job_jwt_variables
+      Gitlab::Ci::Variables::Collection.new.tap do |variables|
+        break variables unless Feature.enabled?(:ci_job_jwt, project, default_enabled: true)
+
+        jwt = Gitlab::Ci::Jwt.for_build(self)
+        variables.append(key: 'CI_JOB_JWT', value: jwt, public: false, masked: true)
+      end
     end
   end
 end

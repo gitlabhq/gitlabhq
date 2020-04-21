@@ -13,7 +13,7 @@ module Emails
         user.update_secondary_emails!
       end
 
-      result[:status] == 'success'
+      result[:status] == :success
     end
   end
 end

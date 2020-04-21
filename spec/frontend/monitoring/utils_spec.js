@@ -3,11 +3,11 @@ import { queryToObject, mergeUrlParams, removeParams } from '~/lib/utils/url_uti
 import { TEST_HOST } from 'jest/helpers/test_constants';
 import {
   mockProjectDir,
-  graphDataPrometheusQuery,
-  graphDataPrometheusQueryRange,
+  singleStatMetricsResult,
   anomalyMockGraphData,
   barMockData,
 } from './mock_data';
+import { graphData } from './fixture_data';
 
 jest.mock('~/lib/utils/url_utility');
 
@@ -89,7 +89,7 @@ describe('monitoring/utils', () => {
     it('validates data with the query format', () => {
       const validGraphData = monitoringUtils.graphDataValidatorForValues(
         true,
-        graphDataPrometheusQuery,
+        singleStatMetricsResult,
       );
 
       expect(validGraphData).toBe(true);
@@ -101,10 +101,7 @@ describe('monitoring/utils', () => {
      * the validator will look for the `values` key instead of `value`
      */
     it('validates data with the query_range format', () => {
-      const validGraphData = monitoringUtils.graphDataValidatorForValues(
-        false,
-        graphDataPrometheusQueryRange,
-      );
+      const validGraphData = monitoringUtils.graphDataValidatorForValues(false, graphData);
 
       expect(validGraphData).toBe(true);
     });
@@ -115,7 +112,7 @@ describe('monitoring/utils', () => {
     let threeMetrics;
     let fourMetrics;
     beforeEach(() => {
-      oneMetric = graphDataPrometheusQuery;
+      oneMetric = singleStatMetricsResult;
       threeMetrics = anomalyMockGraphData;
 
       const metrics = [...threeMetrics.metrics];

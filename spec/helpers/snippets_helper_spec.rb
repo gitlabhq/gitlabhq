@@ -151,35 +151,4 @@ describe SnippetsHelper do
       "<input type=\"text\" readonly=\"readonly\" class=\"js-snippet-url-area snippet-embed-input form-control\" data-url=\"#{url}\" value=\"<script src=&quot;#{url}.js&quot;></script>\" autocomplete=\"off\"></input>"
     end
   end
-
-  describe '#snippet_file_name' do
-    subject { helper.snippet_file_name(snippet) }
-
-    where(:snippet_type, :flag_enabled, :trait, :filename) do
-      [
-        [:personal_snippet, false, nil,         'foo.txt'],
-        [:personal_snippet, true,  nil,         'foo.txt'],
-        [:personal_snippet, false, :repository, 'foo.txt'],
-        [:personal_snippet, true,  :repository, '.gitattributes'],
-
-        [:project_snippet,  false, nil,         'foo.txt'],
-        [:project_snippet,  true,  nil,         'foo.txt'],
-        [:project_snippet,  false, :repository, 'foo.txt'],
-        [:project_snippet,  true,  :repository, '.gitattributes']
-      ]
-    end
-
-    with_them do
-      let(:snippet) { create(snippet_type, trait, file_name: 'foo.txt') }
-
-      before do
-        allow(helper).to receive(:current_user).and_return(snippet.author)
-        stub_feature_flags(version_snippets: flag_enabled)
-      end
-
-      it 'returns the correct filename' do
-        expect(subject).to eq filename
-      end
-    end
-  end
 end

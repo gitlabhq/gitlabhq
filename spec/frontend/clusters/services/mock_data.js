@@ -159,6 +159,7 @@ const APPLICATIONS_MOCK_STATE = {
   jupyter: { title: 'JupyterHub', status: 'installable', hostname: '' },
   knative: { title: 'Knative ', status: 'installable', hostname: '' },
   elastic_stack: { title: 'Elastic Stack', status: 'installable' },
+  fluentd: { title: 'Fluentd', status: 'installable' },
 };
 
 export { CLUSTERS_MOCK_DATA, DEFAULT_APPLICATION_STATE, APPLICATIONS_MOCK_STATE };

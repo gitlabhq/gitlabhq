@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 shared_examples_for 'snippet editor' do
+  include_context 'includes Spam constants'
+
   def description_field
     find('.js-description-input').find('input,textarea')
   end
@@ -10,6 +12,7 @@ shared_examples_for 'snippet editor' do
   before do
     stub_feature_flags(allow_possible_spam: false)
     stub_feature_flags(snippets_vue: false)
+    stub_feature_flags(snippets_edit_vue: false)
     stub_feature_flags(monaco_snippets: flag)
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
 
@@ -52,13 +55,30 @@ shared_examples_for 'snippet editor' do
     end
   end
 
-  context 'when identified as spam' do
+  shared_examples 'does not allow creation' do
+    it 'rejects creation of the snippet' do
+      click_button('Create snippet')
+      wait_for_requests
+
+      expect(page).to have_content('discarded')
+      expect(page).not_to have_content('My Snippet Title')
+      expect(page).not_to have_css('.recaptcha')
+    end
+  end
+
+  context 'when SpamVerdictService requires recaptcha' do
     before do
-      WebMock.stub_request(:any, /.*akismet.com.*/).to_return(body: "true", status: 200)
+      expect_next_instance_of(Spam::SpamVerdictService) do |verdict_service|
+        expect(verdict_service).to receive(:execute).and_return(REQUIRE_RECAPTCHA)
+      end
     end
 
     context 'when allow_possible_spam feature flag is false' do
-      it_behaves_like 'solve recaptcha'
+      before do
+        stub_application_setting(recaptcha_enabled: false)
+      end
+
+      it_behaves_like 'does not allow creation'
     end
 
     context 'when allow_possible_spam feature flag is true' do
@@ -66,9 +86,31 @@ shared_examples_for 'snippet editor' do
     end
   end
 
-  context 'when not identified as spam' do
+  context 'when SpamVerdictService disallows' do
     before do
-      WebMock.stub_request(:any, /.*akismet.com.*/).to_return(body: "false", status: 200)
+      expect_next_instance_of(Spam::SpamVerdictService) do |verdict_service|
+        expect(verdict_service).to receive(:execute).and_return(DISALLOW)
+      end
+    end
+
+    context 'when allow_possible_spam feature flag is false' do
+      before do
+        stub_application_setting(recaptcha_enabled: false)
+      end
+
+      it_behaves_like 'does not allow creation'
+    end
+
+    context 'when allow_possible_spam feature flag is true' do
+      it_behaves_like 'does not allow creation'
+    end
+  end
+
+  context 'when SpamVerdictService allows' do
+    before do
+      expect_next_instance_of(Spam::SpamVerdictService) do |verdict_service|
+        expect(verdict_service).to receive(:execute).and_return(ALLOW)
+      end
     end
 
     it 'creates a snippet' do

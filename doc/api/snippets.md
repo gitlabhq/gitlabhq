@@ -47,13 +47,13 @@ Example response:
             "username": "user0",
             "state": "active",
             "avatar_url": "https://www.gravatar.com/avatar/52e4ce24a915fb7e51e1ad3b57f4b00a?s=80&d=identicon",
-            "web_url": "http://localhost:3000/user0"
+            "web_url": "http://example.com/user0"
         },
         "updated_at": "2018-09-18T01:12:26.383Z",
         "created_at": "2018-09-18T01:12:26.383Z",
         "project_id": null,
-        "web_url": "http://localhost:3000/snippets/42",
-        "raw_url": "http://localhost:3000/snippets/42/raw"
+        "web_url": "http://example.com/snippets/42",
+        "raw_url": "http://example.com/snippets/42/raw"
     },
     {
         "id": 41,
@@ -67,13 +67,13 @@ Example response:
             "username": "user0",
             "state": "active",
             "avatar_url": "https://www.gravatar.com/avatar/52e4ce24a915fb7e51e1ad3b57f4b00a?s=80&d=identicon",
-            "web_url": "http://localhost:3000/user0"
+            "web_url": "http://example.com/user0"
         },
         "updated_at": "2018-09-18T01:12:26.360Z",
         "created_at": "2018-09-18T01:12:26.360Z",
-        "project_id": null,
-        "web_url": "http://localhost:3000/snippets/41",
-        "raw_url": "http://localhost:3000/snippets/41/raw"
+        "project_id": 1,
+        "web_url": "http://example.com/gitlab-org/gitlab-test/snippets/41",
+        "raw_url": "http://example.com/gitlab-org/gitlab-test/snippets/41/raw"
     }
 ]
 ```
@@ -118,7 +118,9 @@ Example response:
   "expires_at": null,
   "updated_at": "2012-06-28T10:52:04Z",
   "created_at": "2012-06-28T10:52:04Z",
+  "project_id": null,
   "web_url": "http://example.com/snippets/1",
+  "raw_url": "http://example.com/snippets/1/raw"
 }
 ```
 
@@ -199,7 +201,9 @@ Example response:
   "expires_at": null,
   "updated_at": "2012-06-28T10:52:04Z",
   "created_at": "2012-06-28T10:52:04Z",
+  "project_id": null,
   "web_url": "http://example.com/snippets/1",
+  "raw_url": "http://example.com/snippets/1/raw"
 }
 ```
 
@@ -255,7 +259,9 @@ Example response:
   "expires_at": null,
   "updated_at": "2012-06-28T10:52:04Z",
   "created_at": "2012-06-28T10:52:04Z",
+  "project_id": null,
   "web_url": "http://example.com/snippets/1",
+  "raw_url": "http://example.com/snippets/1/raw"
 }
 ```
 
@@ -318,15 +324,16 @@ Example response:
             "name": "Libby Rolfson",
             "state": "active",
             "username": "elton_wehner",
-            "web_url": "http://localhost:3000/elton_wehner"
+            "web_url": "http://example.com/elton_wehner"
         },
         "created_at": "2016-11-25T16:53:34.504Z",
         "file_name": "oconnerrice.rb",
         "id": 49,
-        "raw_url": "http://localhost:3000/snippets/49/raw",
         "title": "Ratione cupiditate et laborum temporibus.",
         "updated_at": "2016-11-25T16:53:34.504Z",
-        "web_url": "http://localhost:3000/snippets/49"
+        "project_id": null,
+        "web_url": "http://example.com/snippets/49",
+        "raw_url": "http://example.com/snippets/49/raw"
     },
     {
         "author": {
@@ -335,15 +342,16 @@ Example response:
             "name": "Llewellyn Flatley",
             "state": "active",
             "username": "adaline",
-            "web_url": "http://localhost:3000/adaline"
+            "web_url": "http://example.com/adaline"
         },
         "created_at": "2016-11-25T16:53:34.479Z",
         "file_name": "muellershields.rb",
         "id": 48,
-        "raw_url": "http://localhost:3000/snippets/48/raw",
         "title": "Minus similique nesciunt vel fugiat qui ullam sunt.",
         "updated_at": "2016-11-25T16:53:34.479Z",
-        "web_url": "http://localhost:3000/snippets/48",
+        "project_id": null,
+        "web_url": "http://example.com/snippets/48",
+        "raw_url": "http://example.com/snippets/49/raw",
         "visibility": "public"
     }
 ]

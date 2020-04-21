@@ -3,6 +3,7 @@
 class CreateOperationsScopesTable < ActiveRecord::Migration[6.0]
   DOWNTIME = false
 
+  # rubocop:disable Migration/PreventStrings
   def change
     create_table :operations_scopes do |t|
       t.references :strategy, null: false, index: false, foreign_key: { to_table: :operations_strategies, on_delete: :cascade }
@@ -11,4 +12,5 @@ class CreateOperationsScopesTable < ActiveRecord::Migration[6.0]
 
     add_index :operations_scopes, [:strategy_id, :environment_scope], unique: true
   end
+  # rubocop:enable Migration/PreventStrings
 end

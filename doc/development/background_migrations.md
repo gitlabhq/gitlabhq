@@ -157,7 +157,7 @@ roughly be as follows:
          enough times to be marked as dead.
    1. Remove the old column.
 
-This may also require a bump to the [import/export version][import-export], if
+This may also require a bump to the [import/export version](../user/project/settings/import_export.md), if
 importing a project from a prior version of GitLab requires the data to be in
 the new format.
 
@@ -283,7 +283,7 @@ end
 The final step runs for any un-migrated rows after all of the jobs have been
 processed. This is in case a Sidekiq process running the background migrations
 received SIGKILL, leading to the jobs being lost. (See
-[more reliable Sidekiq queue][reliable-sidekiq] for more information.)
+[more reliable Sidekiq queue](https://gitlab.com/gitlab-org/gitlab-foss/issues/36791) for more information.)
 
 If the application does not depend on the data being 100% migrated (for
 instance, the data is advisory, and not mission-critical), then this final step
@@ -312,7 +312,7 @@ to migrate you database down and up, which can result in other background
 migrations being called. That means that using `spy` test doubles with
 `have_received` is encouraged, instead of using regular test doubles, because
 your expectations defined in a `it` block can conflict with what is being
-called in RSpec hooks. See [issue #35351][issue-rspec-hooks]
+called in RSpec hooks. See [issue #35351](https://gitlab.com/gitlab-org/gitlab/issues/18839)
 for more details.
 
 ## Best practices
@@ -329,8 +329,3 @@ for more details.
 1. Make sure to discuss the numbers with a database specialist, the migration may add
    more pressure on DB than you expect (measure on staging,
    or ask someone to measure on production).
-
-[migrations-readme]: https://gitlab.com/gitlab-org/gitlab/blob/master/spec/migrations/README.md
-[issue-rspec-hooks]: https://gitlab.com/gitlab-org/gitlab/issues/18839
-[reliable-sidekiq]: https://gitlab.com/gitlab-org/gitlab-foss/issues/36791
-[import-export]: ../user/project/settings/import_export.md

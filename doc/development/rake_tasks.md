@@ -1,8 +1,10 @@
 # Rake tasks for developers
 
-## Set up db with developer seeds
+Rake tasks are available for developers and others contributing to GitLab.
 
-Note that if your db user does not have advanced privileges you must create the db manually before running this command.
+## Set up database with developer seeds
+
+Note that if your database user does not have advanced privileges, you must create the database manually before running this command.
 
 ```shell
 bundle exec rake setup
@@ -12,13 +14,15 @@ The `setup` task is an alias for `gitlab:setup`.
 This tasks calls `db:reset` to create the database, and calls `db:seed_fu` to seed the database.
 Note: `db:setup` calls `db:seed` but this does nothing.
 
-### Env variables
+### Environment variables
 
 **MASS_INSERT**: Create millions of users (2m), projects (5m) and its
 relations. It's highly recommended to run the seed with it to catch slow queries
 while developing. Expect the process to take up to 20 extra minutes.
 
-**LARGE_PROJECTS**: Create large projects (through import) from a predefined set of urls.
+See also [Mass inserting Rails models](mass_insert.md).
+
+**LARGE_PROJECTS**: Create large projects (through import) from a predefined set of URLs.
 
 ### Seeding issues for all or a given project
 
@@ -86,7 +90,7 @@ echo 'yes' | bundle exec rake setup
 
 To save you from answering `yes` manually.
 
-### Discard stdout
+### Discard `stdout`
 
 Since the script would print a lot of information, it could be slowing down
 your terminal, and it would generate more than 20G logs if you just redirect
@@ -97,8 +101,8 @@ it to a file. If we don't care about the output, we could just redirect it to
 echo 'yes' | bundle exec rake setup > /dev/null
 ```
 
-Note that since you can't see the questions from stdout, you might just want
-to `echo 'yes'` to keep it running. It would still print the errors on stderr
+Note that since you can't see the questions from `stdout`, you might just want
+to `echo 'yes'` to keep it running. It would still print the errors on `stderr`
 so no worries about missing errors.
 
 ### Extra Project seed options
@@ -113,33 +117,35 @@ There are a few environment flags you can pass to change how projects are seeded
 
 In order to run the test you can use the following commands:
 
-- `bin/rake spec` to run the rspec suite
+- `bin/rake spec` to run the RSpec suite
 - `bin/rake spec:unit` to run only the unit tests
 - `bin/rake spec:integration` to run only the integration tests
 - `bin/rake spec:system` to run only the system tests
 - `bin/rake karma` to run the Karma test suite
 
-Note: `bin/rake spec` takes significant time to pass.
-Instead of running full test suite locally you can save a lot of time by running
-a single test or directory related to your changes. After you submit merge request
+`bin/rake spec` takes significant time to pass.
+Instead of running the full test suite locally, you can save a lot of time by running
+a single test or directory related to your changes. After you submit a merge request,
 CI will run full test suite for you. Green CI status in the merge request means
 full test suite is passed.
 
-Note: You can't run `rspec .` since this will try to run all the `_spec.rb`
+You can't run `rspec .` since this will try to run all the `_spec.rb`
 files it can find, also the ones in `/tmp`
 
-Note: You can pass RSpec command line options to the `spec:unit`,
-`spec:integration`, and `spec:system` tasks, e.g. `bin/rake "spec:unit[--tag ~geo --dry-run]"`.
+You can pass RSpec command line options to the `spec:unit`,
+`spec:integration`, and `spec:system` tasks. For example, `bin/rake "spec:unit[--tag ~geo --dry-run]"`.
 
-To run a single test file you can use:
+For an RSpec test, to run a single test file you can run:
 
-- `bin/rspec spec/controllers/commit_controller_spec.rb` for a rspec test
+```shell
+bin/rspec spec/controllers/commit_controller_spec.rb
+```
 
 To run several tests inside one directory:
 
-- `bin/rspec spec/requests/api/` for the rspec tests if you want to test API only
+- `bin/rspec spec/requests/api/` for the RSpec tests if you want to test API only
 
-### Speed-up tests, Rake tasks, and migrations
+### Speed up tests, Rake tasks, and migrations
 
 [Spring](https://github.com/rails/spring) is a Rails application preloader. It
 speeds up development by keeping your application running in the background so
@@ -172,18 +178,16 @@ This will compile and minify all JavaScript and CSS assets and copy them along
 with all other frontend assets (images, fonts, etc) into `/public/assets` where
 they can be easily inspected.
 
-## Updating Emoji Aliases
+## Emoji tasks
 
-To update the Emoji aliases file (used for Emoji autocomplete) you must run the
+To update the Emoji aliases file (used for Emoji autocomplete), run the
 following:
 
 ```shell
 bundle exec rake gemojione:aliases
 ```
 
-## Updating Emoji Digests
-
-To update the Emoji digests file (used for Emoji autocomplete) you must run the
+To update the Emoji digests file (used for Emoji autocomplete), run the
 following:
 
 ```shell
@@ -193,9 +197,7 @@ bundle exec rake gemojione:digests
 This will update the file `fixtures/emojis/digests.json` based on the currently
 available Emoji.
 
-## Emoji Sprites
-
-Generating a sprite file containing all the Emoji can be done by running:
+To generate a sprite file containing all the Emoji, run:
 
 ```shell
 bundle exec rake gemojione:sprite
@@ -206,7 +208,7 @@ such changes, first generate the `emoji.png` spritesheet with the above Rake
 task, then check the dimensions of the new spritesheet and update the
 `SPRITESHEET_WIDTH` and `SPRITESHEET_HEIGHT` constants accordingly.
 
-## Updating project templates
+## Update project templates
 
 Starting a project from a template needs this project to be exported. On a
 up to date master branch run:
@@ -249,7 +251,7 @@ bundle exec rake db:obsolete_ignored_columns
 
 Feel free to remove their definitions from their `ignored_columns` definitions.
 
-## Update GraphQL Documentation and Schema definitions
+## Update GraphQL documentation and schema definitions
 
 To generate GraphQL documentation based on the GitLab schema, run:
 

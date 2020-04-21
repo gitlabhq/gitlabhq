@@ -24,7 +24,7 @@ Import your projects from Bitbucket Cloud to GitLab with minimal effort.
 
 ## Requirements
 
-The [Bitbucket Cloud integration][bb-import] must be first enabled in order to be
+The [Bitbucket Cloud integration](../../../integration/bitbucket.md) must be first enabled in order to be
 able to import your projects from Bitbucket Cloud. Ask your GitLab administrator
 to enable this if not already.
 
@@ -60,6 +60,3 @@ namespace that started the import process.
    each project will be imported.
 
    ![Import projects](img/bitbucket_import_select_project_v12_3.png)
-
-[bb-import]: ../../../integration/bitbucket.md
-[social sign-in]: ../../profile/account/social_sign_in.md

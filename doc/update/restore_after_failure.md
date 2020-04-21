@@ -12,7 +12,7 @@ First, roll back the code or package. For source installations this involves
 checking out the older version (branch or tag). For Omnibus installations this
 means installing the older .deb or .rpm package. Then, restore from a backup.
 Follow the instructions in the
-[Backup and Restore](../raketasks/backup_restore.md#restore)
+[Backup and Restore](../raketasks/backup_restore.md#restore-gitlab)
 documentation.
 
 ## Potential problems on the next upgrade

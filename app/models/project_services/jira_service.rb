@@ -25,6 +25,11 @@ class JiraService < IssueTrackerService
 
   before_update :reset_password
 
+  enum comment_detail: {
+    standard: 1,
+    all_details: 2
+  }
+
   alias_method :project_url, :url
 
   # When these are false GitLab does not create cross reference

@@ -1,0 +1,296 @@
+.ide.theme-dark {
+  $border-color: #1d1f21;
+  $highlight-accent: #fff;
+  $text-color: #ccc;
+  $background: #333;
+  $background-hover: #2d2d2d;
+  $highlight-background: #252526;
+  $link-color: #428fdc;
+  $footer-background: #060606;
+
+  $input-border: #868686;
+  $input-background: transparent;
+  $input-color: $highlight-accent;
+
+  $btn-default-background: transparent;
+  $btn-default-border: #bfbfbf;
+  $btn-default-hover-border: #d8d8d8;
+
+  $btn-primary-background: #1068bf;
+  $btn-primary-border: #428fdc;
+  $btn-primary-hover-border: #63a6e9;
+
+  $btn-success-background: #217645;
+  $btn-success-border: #108548;
+  $btn-success-hover-border: #2da160;
+
+  $btn-disabled-border: rgba(223, 223, 223, 0.24);
+  $btn-disabled-color: rgba(145, 145, 145, 0.48);
+
+  a {
+    color: $link-color;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4:not(.modal-title),
+  h5,
+  h6,
+  .md,
+  .md p,
+  .ide-view,
+  .context-header > a,
+  .ide-sidebar-link,
+  .multi-file-tab-close,
+  .ide-tree-header button,
+  .ide-status-bar,
+  input,
+  textarea,
+  .md-area.is-focused,
+  .ide-entry-dropdown-toggle,
+  .nav-links:not(.quick-links) li:not(.md-header-toolbar) a:hover {
+    color: $text-color;
+  }
+
+  .modal-body {
+    color: $gl-text-color;
+  }
+
+  .dropdown-menu-toggle svg,
+  .dropdown-menu-toggle svg:hover,
+  .ide-tree-header svg,
+  .file-row .file-row-icon svg,
+  .file-row:hover .file-row-icon svg {
+    fill: $text-color;
+  }
+
+  .multi-file-tab-close:hover {
+    background-color: $input-border;
+  }
+
+  .ide-review-sub-header:hover {
+    color: $input-border;
+  }
+
+  .text-secondary {
+    color: $text-color !important;
+  }
+
+  input[type='text']::placeholder,
+  textarea::placeholder {
+    color: $input-border;
+  }
+
+  .ide-staged-action-btn {
+    background-color: transparent;
+  }
+
+  .multi-file-commit-panel,
+  .multi-file-tabs,
+  .multi-file-tabs li,
+  .file-row:hover,
+  .file-row:focus,
+  .multi-file-commit-list-path:hover,
+  .multi-file-commit-list-path:focus,
+  .multi-file-commit-list-path.is-active,
+  .file-row.is-active,
+  .ide-commit-editor-header,
+  .ide-file-templates,
+  .ide-entry-dropdown-toggle,
+  .ide-staged-action-btn {
+    background-color: $background;
+  }
+
+  .ide-sidebar-link:hover {
+    background-color: $background-hover;
+  }
+
+  .common-note-form .md-area {
+    border-color: $input-border;
+  }
+
+  &,
+  .multi-file-commit-panel-inner-content,
+  .multi-file-commit-form,
+  .multi-file-tabs li.active,
+  .ide-sidebar-link.active,
+  .ide-sidebar-link.active::after,
+  .ide-right-sidebar .multi-file-commit-panel-inner,
+  .common-note-form .md-area,
+  .ide-commit-message-field {
+    background-color: $highlight-background;
+  }
+
+  .multi-file-commit-panel {
+    padding-right: 0;
+  }
+
+  .ide-mode-tabs,
+  .multi-file-commit-panel-inner,
+  .multi-file-commit-panel-inner-content,
+  .multi-file-commit-form,
+  .multi-file-edit-pane,
+  .ide-right-sidebar .ide-activity-bar,
+  .ide-sidebar-link.active,
+  .multi-file-tabs li.active,
+  .multi-file-tabs li,
+  .ide-status-bar,
+  .ide-commit-editor-header,
+  .ide-file-templates {
+    border-color: $border-color;
+  }
+
+  .multi-file-commit-form > .commit-form-compact,
+  .ide-tree-header,
+  .multi-file-commit-panel-header,
+  .multi-file-commit-form > form,
+  .multi-file-commit-form hr,
+  .ide-commit-list-container.is-first,
+  .multi-file-commit-form .nav-links:not(.quick-links) {
+    border-color: $background;
+  }
+
+  .multi-file-tabs li.active {
+    border-bottom-color: $highlight-background;
+  }
+
+  .multi-file-tabs,
+  .ide-commit-editor-header {
+    box-shadow: inset 0 -1px $border-color;
+  }
+
+  .ide-sidebar-link.active {
+    color: $highlight-accent;
+    box-shadow: inset 3px 0 $highlight-accent;
+
+    &.is-right {
+      box-shadow: inset -3px 0 $highlight-accent;
+    }
+  }
+
+  .nav-links li.active a {
+    border-color: $highlight-accent;
+    color: $text-color;
+  }
+
+  .avatar-container {
+    &,
+    .avatar {
+      color: $text-color;
+      background-color: $highlight-background;
+      border-color: $highlight-background;
+    }
+  }
+
+  .ide-status-bar {
+    background-color: $footer-background;
+  }
+
+  input[type='text'] {
+    border-color: $input-border;
+    background: $input-background;
+  }
+
+  input[type='text'],
+  textarea {
+    color: $input-color !important;
+  }
+
+  .ide-entry-dropdown-toggle:hover {
+    background: $gray-800;
+  }
+
+  .btn:hover {
+    border-width: 2px;
+    padding: 5px 9px;
+  }
+
+  .btn.btn-sm:hover {
+    padding: 3px 9px;
+  }
+
+  .btn.btn-block:hover {
+    padding: 5px 0;
+  }
+
+  .btn-inverted,
+  .btn-default,
+  .dropdown,
+  .dropdown-menu-toggle {
+    background-color: $input-background !important;
+    color: $input-color !important;
+    border-color: $btn-default-border;
+  }
+
+  .btn-inverted,
+  .btn-default {
+    &:hover,
+    &:focus {
+      border-color: $btn-default-hover-border !important;
+    }
+  }
+
+  .dropdown,
+  .dropdown-menu-toggle {
+    &:hover,
+    &:focus {
+      background-color: $gray-900 !important;
+      border-color: $gray-200 !important;
+    }
+  }
+
+  .btn-primary {
+    background-color: $btn-primary-background;
+    border-color: $btn-primary-border !important;
+
+    &:hover,
+    &:focus {
+      border-color: $btn-primary-hover-border !important;
+    }
+  }
+
+  .btn-success {
+    background-color: $btn-success-background;
+    border-color: $btn-success-border !important;
+
+    &:hover,
+    &:focus {
+      border-color: $btn-success-hover-border !important;
+    }
+  }
+
+  .btn[disabled] {
+    background: $btn-default-background !important;
+    border: 1px solid $btn-disabled-border !important;
+    color: $btn-disabled-color !important;
+  }
+
+  .md-previewer,
+  .ide-empty-state {
+    background-color: $border-color;
+  }
+
+  .ide-tree-header svg:focus,
+  .ide-tree-header svg:hover {
+    color: $blue-600;
+  }
+
+  .animation-container {
+    [class^='skeleton-line-'] {
+      background-color: $gray-800;
+
+      &::after {
+        background-image: linear-gradient(to right,
+        $gray-800 0%,
+        $gray-700 20%,
+        $gray-800 40%,
+        $gray-800 100%);
+      }
+    }
+  }
+}
+
+.navbar.theme-dark {
+  border-bottom-color: transparent;
+}

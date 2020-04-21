@@ -9,7 +9,9 @@ class AddLetsEncryptNotificationEmailToApplicationSettings < ActiveRecord::Migra
   # Set this constant to true if this migration requires downtime.
   DOWNTIME = false
 
+  # rubocop:disable Migration/PreventStrings
   def change
-    add_column :application_settings, :lets_encrypt_notification_email, :string # rubocop:disable Migration/AddLimitToStringColumns
+    add_column :application_settings, :lets_encrypt_notification_email, :string
   end
+  # rubocop:enable Migration/PreventStrings
 end

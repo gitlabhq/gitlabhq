@@ -28,12 +28,12 @@ gitlab.com ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAA
 
 ## Mail configuration
 
-GitLab.com sends emails from the `mg.gitlab.com` domain via [Mailgun] and has
+GitLab.com sends emails from the `mg.gitlab.com` domain via [Mailgun](https://www.mailgun.com/) and has
 its own dedicated IP address (`198.61.254.240`).
 
 ## Alternative SSH port
 
-GitLab.com can be reached via a [different SSH port][altssh] for `git+ssh`.
+GitLab.com can be reached via a [different SSH port](https://about.gitlab.com/blog/2016/02/18/gitlab-dot-com-now-supports-an-alternate-git-plus-ssh-port/) for `git+ssh`.
 
 | Setting     | Value               |
 | ---------   | ------------------- |
@@ -117,7 +117,7 @@ GitLab offers Linux and Windows shared runners hosted on GitLab.com for executin
 
 ### Linux Shared Runners
 
-Linux Shared Runners on GitLab.com run in [autoscale mode] and are powered by Google Cloud Platform.
+Linux Shared Runners on GitLab.com run in [autoscale mode](https://docs.gitlab.com/runner/configuration/autoscale.html) and are powered by Google Cloud Platform.
 Autoscaling means reduced waiting times to spin up CI/CD jobs, and isolated VMs for each project,
 thus maximizing security. They're free to use for public open source projects and limited
 to 2000 CI minutes per month per group for private projects. More minutes
@@ -133,16 +133,16 @@ The `gitlab-shared-runners-manager-X.gitlab.com` fleet of Runners are dedicated 
 
 Jobs handled by the shared Runners on GitLab.com (`shared-runners-manager-X.gitlab.com`),
 **will be timed out after 3 hours**, regardless of the timeout configured in a
-project. Check the issues [4010] and [4070] for the reference.
+project. Check the issues [4010](https://gitlab.com/gitlab-com/infrastructure/issues/4010) and [4070](https://gitlab.com/gitlab-com/infrastructure/issues/4070) for the reference.
 
 Below are the shared Runners settings.
 
 | Setting                               | GitLab.com                                        | Default    |
 | -----------                           | -----------------                                 | ---------- |
-| [GitLab Runner]                       | [Runner versions dashboard](https://dashboards.gitlab.com/d/000000159/ci?from=now-1h&to=now&refresh=5m&orgId=1&panelId=12&fullscreen&theme=light) | - |
+| [GitLab Runner](https://gitlab.com/gitlab-org/gitlab-runner) | [Runner versions dashboard](https://dashboards.gitlab.com/d/000000159/ci?from=now-1h&to=now&refresh=5m&orgId=1&panelId=12&fullscreen&theme=light) | - |
 | Executor                              | `docker+machine`                                  | -          |
 | Default Docker image                  | `ruby:2.5`                                        | -          |
-| `privileged` (run [Docker in Docker]) | `true`                                            | `false`    |
+| `privileged` (run [Docker in Docker](https://hub.docker.com/_/docker/)) | `true`          | `false`    |
 
 #### `config.toml`
 
@@ -432,7 +432,7 @@ of proposed changes can be found at
 
 ## Unicorn
 
-GitLab.com adjusts the memory limits for the [unicorn-worker-killer][unicorn-worker-killer] gem.
+GitLab.com adjusts the memory limits for the [unicorn-worker-killer](https://rubygems.org/gems/unicorn-worker-killer) gem.
 
 Base default:
 
@@ -600,13 +600,3 @@ Service discovery:
 High Performance TCP/HTTP Load Balancer:
 
 - [`gitlab-cookbooks` / `gitlab-haproxy` · GitLab](https://gitlab.com/gitlab-cookbooks/gitlab-haproxy)
-
-[autoscale mode]: https://docs.gitlab.com/runner/configuration/autoscale.html "How Autoscale works"
-[runners-post]: https://about.gitlab.com/blog/2016/04/05/shared-runners/ "Shared Runners on GitLab.com"
-[GitLab Runner]: https://gitlab.com/gitlab-org/gitlab-runner
-[altssh]: https://about.gitlab.com/blog/2016/02/18/gitlab-dot-com-now-supports-an-alternate-git-plus-ssh-port/ "GitLab.com now supports an alternate git+ssh port"
-[docker in docker]: https://hub.docker.com/_/docker/ "Docker in Docker at DockerHub"
-[mailgun]: https://www.mailgun.com/ "Mailgun website"
-[unicorn-worker-killer]: https://rubygems.org/gems/unicorn-worker-killer "unicorn-worker-killer"
-[4010]: https://gitlab.com/gitlab-com/infrastructure/issues/4010 "Find a good value for maximum timeout for Shared Runners"
-[4070]: https://gitlab.com/gitlab-com/infrastructure/issues/4070 "Configure per-runner timeout for shared-runners-manager-X on GitLab.com"

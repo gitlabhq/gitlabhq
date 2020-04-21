@@ -3,12 +3,6 @@ import chartEmptyStateIllustration from '@gitlab/svgs/dist/illustrations/chart-e
 import { chartHeight } from '../../constants';
 
 export default {
-  props: {
-    graphTitle: {
-      type: String,
-      required: true,
-    },
-  },
   data() {
     return {
       height: chartHeight,

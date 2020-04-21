@@ -28,6 +28,126 @@ by default. To enable it for existing projects, or if you want to disable it:
 
 You should then be able to see the **Packages** section on the left sidebar.
 
+## Getting started
+
+This section will cover creating a new example PyPi package to upload. This is a
+quickstart to test out the **GitLab PyPi Registry**. If you already understand how
+to build and publish your own packages, move on to the [next section](#adding-the-gitlab-pypi-repository-as-a-source).
+
+### Create a project
+
+Understanding how to create a full Python project is outside the scope of this
+guide, but you can create a small package to test out the registry. Start by
+creating a new directory called `MyPyPiPackage`:
+
+```shell
+mkdir MyPyPiPackage && cd MyPyPiPackage
+```
+
+After creating this, create another directory inside:
+
+```shell
+mkdir mypypipackage && cd mypypipackage
+```
+
+Create two new files inside this directory to set up the basic project:
+
+```shell
+touch __init__.py
+touch greet.py
+```
+
+Inside `greet.py`, add the following code:
+
+```python
+def SayHello():
+    print("Hello from MyPyPiPackage")
+    return
+```
+
+Inside the `__init__.py` file, add the following:
+
+```python
+from .greet import SayHello
+```
+
+Now that the basics of our project is completed, we can test that the code runs.
+Start the Python prompt inside your top `MyPyPiPackage` directory. Then run:
+
+```python
+>>> from mypypipackage import SayHello
+>>> SayHello()
+```
+
+You should see an output similar to the following:
+
+```plaintext
+Python 3.8.2 (v3.8.2:7b3ab5921f, Feb 24 2020, 17:52:18)
+[Clang 6.0 (clang-600.0.57)] on darwin
+Type "help", "copyright", "credits" or "license" for more information.
+>>> from mypypipackage import SayHello
+>>> SayHello()
+Hello from MyPyPiPackage
+```
+
+Once we've verified that the sample project is working as above, we can next
+work on creating a package.
+
+### Create a package
+
+Inside your `MyPyPiPackage` directory, we need to create a `setup.py` file. Run
+the following:
+
+```shell
+touch setup.py
+```
+
+This file contains all the information about our package. For more information
+about this file, see [creating setup.py](https://packaging.python.org/tutorials/packaging-projects/#creating-setup-py).
+For this guide, we don't need to extensively fill out this file, simply add the
+below to your `setup.py`:
+
+```python
+import setuptools
+
+setuptools.setup(
+    name="mypypipackage",
+    version="0.0.1",
+    author="Example Author",
+    author_email="author@example.com",
+    description="A small example package",
+    packages=setuptools.find_packages(),
+    classifiers=[
+        "Programming Language :: Python :: 3",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: OS Independent",
+    ],
+    python_requires='>=3.6',
+)
+```
+
+Save the file, then execute the setup like so:
+
+```shell
+python3 setup.py sdist bdist_wheel
+```
+
+If successful, you should be able to see the output in a newly created `dist`
+folder. Run:
+
+```shell
+ls dist
+```
+
+And confirm your output matches the below:
+
+```plaintext
+mypypipackage-0.0.1-py3-none-any.whl mypypipackage-0.0.1.tar.gz
+```
+
+Our package is now all set up and ready to be uploaded to the **GitLab PyPi
+Package Registry**. Before we do so, we next need to set up authentication.
+
 ## Adding the GitLab PyPi Repository as a source
 
 You will need the following:
@@ -39,6 +159,10 @@ You will need the following:
 Edit your `~/.pypirc` file and add the following:
 
 ```ini
+[distutils]
+index-servers =
+    gitlab
+
 [gitlab]
 repository = https://gitlab.com/api/v4/projects/<project_id>/packages/pypi
 username = __token__
@@ -52,13 +176,33 @@ When uploading packages, note that:
 - The maximum allowed size is 50 Megabytes.
 - If you upload the same package with the same version multiple times, each consecutive upload
   is saved as a separate file. When installing a package, GitLab will serve the most recent file.
-- When uploading packages to GitLab, they will not be displayed in the packages UI of your project
-  immediately. It can take up to 10 minutes to process a package.
 
 ### Upload packages with Twine
 
-This section assumes that your project is properly built and you already [created a PyPi package with setuptools](https://packaging.python.org/tutorials/packaging-projects/).
-Upload your package using the following command:
+If you were following the guide above, then the `MyPyPiPackage` package should
+be ready to be uploaded. Run the following command:
+
+```shell
+python3 -m twine upload --repository gitlab dist/*
+```
+
+If successful, you should see the following:
+
+```plaintext
+Uploading distributions to https://gitlab.com/api/v4/projects/<your_project_id>/packages/pypi
+Uploading mypypipackage-0.0.1-py3-none-any.whl
+100%|███████████████████████████████████████████████████████████████████████████████████████████| 4.58k/4.58k [00:00<00:00, 10.9kB/s]
+Uploading mypypipackage-0.0.1.tar.gz
+100%|███████████████████████████████████████████████████████████████████████████████████████████| 4.24k/4.24k [00:00<00:00, 11.0kB/s]
+```
+
+This indicates that the package was uploaded successfully. You can then navigate
+to your project's **Packages** page and see the uploaded packages.
+
+If you did not follow the guide above, the you'll need to ensure your package
+has been properly built and you [created a PyPi package with setuptools](https://packaging.python.org/tutorials/packaging-projects/).
+
+You can then upload your package using the following command:
 
 ```shell
 python -m twine upload --repository <source_name> dist/<package_file>
@@ -82,3 +226,20 @@ Where:
 - `<package_name>` is the package name.
 - `<personal_access_token>` is your personal access token.
 - `<project_id>` is your project id number.
+
+If you were following the guide above and want to test installing the
+`MyPyPiPackage` package, you can run the following:
+
+```shell
+pip install mypypipackage --no-deps --index-url https://__token__:<personal_access_token>@gitlab.com/api/v4/projects/<your_project_id>/packages/pypi/simple
+```
+
+This should result in the following:
+
+```plaintext
+Looking in indexes: https://__token__:****@gitlab.com/api/v4/projects/<your_project_id>/packages/pypi/simple
+Collecting mypypipackage
+  Downloading https://gitlab.com/api/v4/projects/<your_project_id>/packages/pypi/files/d53334205552a355fee8ca35a164512ef7334f33d309e60240d57073ee4386e6/mypypipackage-0.0.1-py3-none-any.whl (1.6 kB)
+Installing collected packages: mypypipackage
+Successfully installed mypypipackage-0.0.1
+```

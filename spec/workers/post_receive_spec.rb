@@ -352,6 +352,9 @@ describe PostReceive do
 
     it "enqueues a UpdateMergeRequestsWorker job" do
       allow(Project).to receive(:find_by).and_return(project)
+      expect_next_instance_of(MergeRequests::PushedBranchesService) do |service|
+        expect(service).to receive(:execute).and_return(%w(tést))
+      end
 
       expect(UpdateMergeRequestsWorker).to receive(:perform_async).with(project.id, project.owner.id, any_args)
 

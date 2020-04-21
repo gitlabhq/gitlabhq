@@ -172,7 +172,7 @@ class IssueTrackerService < Service
   end
 
   def one_issue_tracker
-    return if template?
+    return if template? || instance?
     return if project.blank?
 
     if project.services.external_issue_trackers.where.not(id: id).any?

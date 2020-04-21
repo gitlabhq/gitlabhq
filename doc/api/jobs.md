@@ -345,7 +345,7 @@ Example of response
 
 > **Notes**:
 >
-> - [Introduced][ce-2893] in GitLab 8.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/2893) in GitLab 8.5.
 > - The use of `CI_JOB_TOKEN` in the artifacts download API was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/2346)
 >   in [GitLab Premium](https://about.gitlab.com/pricing/) 9.5.
 
@@ -399,13 +399,11 @@ Possible response status codes:
 | 200       | Serves the artifacts file.      |
 | 404       | Build not found or no artifacts.|
 
-[ce-2893]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/2893
-
 ## Download the artifacts archive
 
 > **Notes**:
 >
-> - [Introduced][ce-5347] in GitLab 8.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5347) in GitLab 8.10.
 > - The use of `CI_JOB_TOKEN` in the artifacts download API was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/2346)
 >   in [GitLab Premium](https://about.gitlab.com/pricing/) 9.5.
 
@@ -465,8 +463,6 @@ Possible response status codes:
 |-----------|---------------------------------|
 | 200       | Serves the artifacts file.      |
 | 404       | Build not found or no artifacts.|
-
-[ce-5347]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5347
 
 ## Download a single artifact file by job ID
 

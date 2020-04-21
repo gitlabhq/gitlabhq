@@ -211,8 +211,8 @@ There are two different ways to add a new project to a group:
 
 ### Default project-creation level
 
-> - [Introduced][ee-2534] in [GitLab Premium][ee] 10.5.
-> - Brought to [GitLab Starter][ee] in 10.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/2534) in [GitLab Premium](https://about.gitlab.com/pricing/) 10.5.
+> - Brought to [GitLab Starter](https://about.gitlab.com/pricing/) in 10.7.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/25975) to [GitLab Core](https://about.gitlab.com/pricing/) in 11.10.
 
 By default, [Developers and Maintainers](../permissions.md#group-members-permissions) can create projects under a group.
@@ -226,7 +226,7 @@ To change this setting for a specific group:
 
 To change this setting globally, see [Default project creation protection](../admin_area/settings/visibility_and_access_controls.md#default-project-creation-protection).
 
-## Viewing group details
+## View group details
 
 A group's **Details** page includes tabs for:
 
@@ -234,7 +234,12 @@ A group's **Details** page includes tabs for:
 - Shared projects.
 - Archived projects.
 
-As [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207164) in GitLab [Starter](https://about.gitlab.com/pricing/) 12.10 as a [beta feature](https://about.gitlab.com/handbook/product/#beta), it also shows the number of the following items created in the last 90 days: **(STARTER)**
+### Group activity analytics overview
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207164) in GitLab [Starter](https://about.gitlab.com/pricing/) 12.10 as
+a [beta feature](https://about.gitlab.com/handbook/product/#beta)
+
+The group details view also shows the number of the following items created in the last 90 days: **(STARTER)**
 
 - Merge requests.
 - Issues.
@@ -244,16 +249,19 @@ These Group Activity Analytics can be enabled with the `group_activity_analytics
 
 ![Recent Group Activity](img/group_activity_analytics_v12_10.png)
 
-## Viewing group activity
+For details, see the section on how you can [View group activity](#view-group-activity).
+
+## View group activity
 
 A group's **Activity** page displays the most recent actions taken in a group, including:
 
-- **Push events**: Recent pushes to branches
-- **Merge events**: Recent merges
-- **Issue events**: Issues opened or closed
-- **Epic events**: Epics opened or closed
-- **Comments**: Comments opened or closed
-- **Team**: Team members who have joined or left the group
+- **Push events**: Recent pushes to branches.
+- **Merge events**: Recent merges.
+- **Issue events**: Issues opened or closed.
+- **Epic events**: Epics opened or closed.
+- **Comments**: Comments opened or closed.
+- **Team**: Team members who have joined or left the group.
+- **Wiki**: Wikis created, deleted, or updated.
 
 The entire activity feed is also available in Atom format by clicking the
 **RSS** icon.
@@ -300,7 +308,7 @@ See [the GitLab Enterprise Edition documentation](../../integration/ldap.md) for
 
 ## Epics **(ULTIMATE)**
 
-> Introduced in [GitLab Ultimate][ee] 10.2.
+> Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.2.
 
 Epics let you manage your portfolio of projects more efficiently and with less
 effort by tracking groups of issues that share a theme, across projects and
@@ -615,6 +623,3 @@ questions that you know someone might ask.
 Each scenario can be a third-level heading, e.g. `### Getting error message X`.
 If you have none to add when creating a doc, leave this section in place
 but commented out to help encourage others to add to it in the future. -->
-
-[ee]: https://about.gitlab.com/pricing/
-[ee-2534]: https://gitlab.com/gitlab-org/gitlab/issues/2534

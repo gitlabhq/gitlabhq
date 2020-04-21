@@ -22,3 +22,6 @@ export const status = {
   ERROR: 'ERROR',
   SUCCESS: 'SUCCESS',
 };
+
+export const ACCESSIBILITY_ISSUE_ERROR = 'error';
+export const ACCESSIBILITY_ISSUE_WARNING = 'warning';

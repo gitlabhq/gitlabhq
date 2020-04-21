@@ -216,10 +216,6 @@ module Gitlab
       SafeRequestStore[:gitaly_query_time] = duration
     end
 
-    def self.query_time_ms
-      (self.query_time * 1000).round(2)
-    end
-
     def self.current_transaction_labels
       Gitlab::Metrics::Transaction.current&.labels || {}
     end

@@ -215,6 +215,7 @@ describe Gitlab::Database::MigrationHelpers do
       context 'ON DELETE statements' do
         context 'on_delete: :nullify' do
           it 'appends ON DELETE SET NULL statement' do
+            expect(model).to receive(:with_lock_retries).and_call_original
             expect(model).to receive(:disable_statement_timeout).and_call_original
             expect(model).to receive(:execute).with(/statement_timeout/)
             expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT/)
@@ -230,6 +231,7 @@ describe Gitlab::Database::MigrationHelpers do
 
         context 'on_delete: :cascade' do
           it 'appends ON DELETE CASCADE statement' do
+            expect(model).to receive(:with_lock_retries).and_call_original
             expect(model).to receive(:disable_statement_timeout).and_call_original
             expect(model).to receive(:execute).with(/statement_timeout/)
             expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT/)
@@ -245,6 +247,7 @@ describe Gitlab::Database::MigrationHelpers do
 
         context 'on_delete: nil' do
           it 'appends no ON DELETE statement' do
+            expect(model).to receive(:with_lock_retries).and_call_original
             expect(model).to receive(:disable_statement_timeout).and_call_original
             expect(model).to receive(:execute).with(/statement_timeout/)
             expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT/)
@@ -261,6 +264,7 @@ describe Gitlab::Database::MigrationHelpers do
 
       context 'when no custom key name is supplied' do
         it 'creates a concurrent foreign key and validates it' do
+          expect(model).to receive(:with_lock_retries).and_call_original
           expect(model).to receive(:disable_statement_timeout).and_call_original
           expect(model).to receive(:execute).with(/statement_timeout/)
           expect(model).to receive(:execute).ordered.with(/NOT VALID/)
@@ -287,6 +291,7 @@ describe Gitlab::Database::MigrationHelpers do
       context 'when a custom key name is supplied' do
         context 'for creating a new foreign key for a column that does not presently exist' do
           it 'creates a new foreign key' do
+            expect(model).to receive(:with_lock_retries).and_call_original
             expect(model).to receive(:disable_statement_timeout).and_call_original
             expect(model).to receive(:execute).with(/statement_timeout/)
             expect(model).to receive(:execute).ordered.with(/NOT VALID/)
@@ -314,6 +319,7 @@ describe Gitlab::Database::MigrationHelpers do
 
           context 'when the supplied key name is different from the existing foreign key name' do
             it 'creates a new foreign key' do
+              expect(model).to receive(:with_lock_retries).and_call_original
               expect(model).to receive(:disable_statement_timeout).and_call_original
               expect(model).to receive(:execute).with(/statement_timeout/)
               expect(model).to receive(:execute).ordered.with(/NOT VALID/)
@@ -1359,6 +1365,22 @@ describe Gitlab::Database::MigrationHelpers do
         end
       end
 
+      it 'returns the final expected delay' do
+        Sidekiq::Testing.fake! do
+          final_delay = model.queue_background_migration_jobs_by_range_at_intervals(User, 'FooJob', 10.minutes, batch_size: 2)
+
+          expect(final_delay.to_f).to eq(20.minutes.to_f)
+        end
+      end
+
+      it 'returns zero when nothing gets queued' do
+        Sidekiq::Testing.fake! do
+          final_delay = model.queue_background_migration_jobs_by_range_at_intervals(User.none, 'FooJob', 10.minutes)
+
+          expect(final_delay).to eq(0)
+        end
+      end
+
       context 'with batch_size option' do
         it 'queues jobs correctly' do
           Sidekiq::Testing.fake! do
@@ -1383,12 +1405,25 @@ describe Gitlab::Database::MigrationHelpers do
         end
       end
 
-      context 'with other_arguments option' do
+      context 'with other_job_arguments option' do
         it 'queues jobs correctly' do
-          model.queue_background_migration_jobs_by_range_at_intervals(User, 'FooJob', 10.minutes, other_arguments: [1, 2])
+          Sidekiq::Testing.fake! do
+            model.queue_background_migration_jobs_by_range_at_intervals(User, 'FooJob', 10.minutes, other_job_arguments: [1, 2])
 
-          expect(BackgroundMigrationWorker.jobs[0]['args']).to eq(['FooJob', [id1, id3, 1, 2]])
-          expect(BackgroundMigrationWorker.jobs[0]['at']).to eq(10.minutes.from_now.to_f)
+            expect(BackgroundMigrationWorker.jobs[0]['args']).to eq(['FooJob', [id1, id3, 1, 2]])
+            expect(BackgroundMigrationWorker.jobs[0]['at']).to eq(10.minutes.from_now.to_f)
+          end
+        end
+      end
+
+      context 'with initial_delay option' do
+        it 'queues jobs correctly' do
+          Sidekiq::Testing.fake! do
+            model.queue_background_migration_jobs_by_range_at_intervals(User, 'FooJob', 10.minutes, other_job_arguments: [1, 2], initial_delay: 10.minutes)
+
+            expect(BackgroundMigrationWorker.jobs[0]['args']).to eq(['FooJob', [id1, id3, 1, 2]])
+            expect(BackgroundMigrationWorker.jobs[0]['at']).to eq(20.minutes.from_now.to_f)
+          end
         end
       end
     end

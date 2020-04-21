@@ -3,7 +3,10 @@
 require 'spec_helper'
 
 describe ProjectImportState, type: :model do
-  subject { create(:import_state) }
+  let_it_be(:correlation_id) { 'cid' }
+  let_it_be(:import_state, refind: true) { create(:import_state, correlation_id_value: correlation_id) }
+
+  subject { import_state }
 
   describe 'associations' do
     it { is_expected.to belong_to(:project) }
@@ -33,12 +36,24 @@ describe ProjectImportState, type: :model do
     end
 
     it 'records job and correlation IDs', :sidekiq_might_not_need_inline do
-      allow(Labkit::Correlation::CorrelationId).to receive(:current_or_new_id).and_return('abc')
+      allow(Labkit::Correlation::CorrelationId).to receive(:current_or_new_id).and_return(correlation_id)
 
       import_state.schedule
 
       expect(import_state.jid).to be_an_instance_of(String)
-      expect(import_state.correlation_id).to eq('abc')
+      expect(import_state.correlation_id).to eq(correlation_id)
+    end
+  end
+
+  describe '#relation_hard_failures' do
+    let_it_be(:failures) { create_list(:import_failure, 2, :hard_failure, project: import_state.project, correlation_id_value: correlation_id) }
+
+    it 'returns hard relation failures related to this import' do
+      expect(subject.relation_hard_failures(limit: 100)).to match_array(failures)
+    end
+
+    it 'limits returned collection to given maximum' do
+      expect(subject.relation_hard_failures(limit: 1).size).to eq(1)
     end
   end
 

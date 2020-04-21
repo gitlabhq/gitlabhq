@@ -44,7 +44,7 @@ class HangoutsChatService < ChatNotificationService
     [
       { type: 'text', name: 'webhook', placeholder: "e.g. #{webhook_placeholder}" },
       { type: 'checkbox', name: 'notify_only_broken_pipelines' },
-      { type: 'select', name: 'branches_to_be_notified', choices: BRANCH_CHOICES }
+      { type: 'select', name: 'branches_to_be_notified', choices: branch_choices }
     ]
   end
 

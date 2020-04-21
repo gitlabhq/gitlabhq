@@ -588,7 +588,8 @@ $note-form-margin-left: 72px;
   a {
     color: inherit;
 
-    &:hover {
+    &:hover,
+    &.hover {
       color: $blue-600;
     }
 
@@ -604,6 +605,21 @@ $note-form-margin-left: 72px;
 
   .author-link {
     color: $gl-text-color;
+  }
+
+  // Prevent flickering of link when hovering between `author-name-link` and `.author-username-link`
+  .author-name-link + .author-username .author-username-link {
+    position: relative;
+
+    &::before {
+      content: '';
+      position: absolute;
+      right: 100%;
+      width: 0.25rem;
+      height: 100%;
+      top: 0;
+      bottom: 0;
+    }
   }
 }
 

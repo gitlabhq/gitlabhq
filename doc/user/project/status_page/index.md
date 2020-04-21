@@ -39,7 +39,7 @@ To deploy the status page to AWS S3 you need to add the Status Page project & co
 
 1. Fork the [Status Page](https://gitlab.com/gitlab-org/status-page) project. This can also be done via [Repository Mirroring](https://gitlab.com/gitlab-org/status-page#repository-mirroring) which will ensure you get the up-to-date Status Page features.
 1. Add the following variables in **Settings > CI/CD > Variables**. (To get these variables from Amazon, use your Amazon Console):
-    - `S3_BUCKET_NAME` - name of the Amazon S3 bucket
+    - `S3_BUCKET_NAME` - name of the Amazon S3 bucket (If a bucket with the provided name doesn't exist, the first pipeline run will create one and configure it for [static website hosting](https://docs.aws.amazon.com/AmazonS3/latest/dev/HostingWebsiteOnS3Setup.html))
     - `AWS_DEFAULT_REGION` - the AWS region
     - `AWS_ACCESS_KEY_ID` - the AWS access key ID
     - `AWS_SECRET_ACCESS_KEY` - the AWS secret
@@ -78,9 +78,15 @@ To publish an Incident, you first need to create an issue in the Project you ena
 
 Once this issue is created, a background worker will publish the issue onto the status page using the credentials you provided during setup.
 
+NOTE: **Note:**
+Confidential issues are not published. If a published issue is made confidential it will be unpublished.
+
 ### Publishing updates
 
 To publish an update to the Incident, update the incident issue's description.
+
+CAUTION: **Caution:**
+When referenced issues are changed (e.g. title, confidentiality) the incident they were referenced in are not updated automatically.
 
 ### Adding comments
 

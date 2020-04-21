@@ -3,6 +3,7 @@
 class CreateAlertsServiceData < ActiveRecord::Migration[5.2]
   DOWNTIME = false
 
+  # rubocop:disable Migration/PreventStrings
   def change
     create_table :alerts_service_data do |t|
       t.references :service, type: :integer, index: true, null: false,
@@ -12,4 +13,5 @@ class CreateAlertsServiceData < ActiveRecord::Migration[5.2]
       t.string :encrypted_token_iv, limit: 255
     end
   end
+  # rubocop:enable Migration/PreventStrings
 end

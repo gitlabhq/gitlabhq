@@ -109,7 +109,7 @@ module Gitlab
             quick_action_target.labels.any? &&
             current_user.can?(:"admin_#{quick_action_target.to_ability_name}", parent)
         end
-        command :unlabel do |labels_param = nil|
+        command :unlabel, :remove_label do |labels_param = nil|
           if labels_param.present?
             labels = find_labels(labels_param)
             label_ids = labels.map(&:id)

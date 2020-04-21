@@ -6,6 +6,7 @@
 class CreateAwsRoles < ActiveRecord::Migration[5.2]
   DOWNTIME = false
 
+  # rubocop:disable Migration/PreventStrings
   def change
     create_table :aws_roles, id: false do |t|
       t.references :user, primary_key: true, default: nil, type: :integer, index: { unique: true }, foreign_key: { on_delete: :cascade }
@@ -18,4 +19,5 @@ class CreateAwsRoles < ActiveRecord::Migration[5.2]
       t.index :role_external_id, unique: true
     end
   end
+  # rubocop:enable Migration/PreventStrings
 end

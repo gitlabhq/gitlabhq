@@ -54,6 +54,7 @@ describe('annotations spec', () => {
           yAxisIndex: 1,
           data: expect.any(Array),
           markLine: expect.any(Object),
+          markPoint: expect.any(Object),
         }),
       );
 
@@ -61,11 +62,12 @@ describe('annotations spec', () => {
         expect(annotation).toEqual(expect.any(Object));
       });
 
-      expect(annotations.data).toHaveLength(annotationsData.length);
+      expect(annotations.data).toHaveLength(0);
       expect(annotations.markLine.data).toHaveLength(annotationsData.length);
+      expect(annotations.markPoint.data).toHaveLength(annotationsData.length);
     });
 
-    it('when deploments and annotations data is passed', () => {
+    it('when deployments and annotations data is passed', () => {
       const annotations = generateAnnotationsSeries({
         deployments: deploymentData,
         annotations: annotationsData,
@@ -77,6 +79,7 @@ describe('annotations spec', () => {
           yAxisIndex: 1,
           data: expect.any(Array),
           markLine: expect.any(Object),
+          markPoint: expect.any(Object),
         }),
       );
 
@@ -84,7 +87,9 @@ describe('annotations spec', () => {
         expect(annotation).toEqual(expect.any(Object));
       });
 
-      expect(annotations.data).toHaveLength(deploymentData.length + annotationsData.length);
+      expect(annotations.data).toHaveLength(deploymentData.length);
+      expect(annotations.markLine.data).toHaveLength(annotationsData.length);
+      expect(annotations.markPoint.data).toHaveLength(annotationsData.length);
     });
   });
 });

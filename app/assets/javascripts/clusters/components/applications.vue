@@ -14,6 +14,7 @@ import knativeLogo from 'images/cluster_app_logos/knative.png';
 import meltanoLogo from 'images/cluster_app_logos/meltano.png';
 import prometheusLogo from 'images/cluster_app_logos/prometheus.png';
 import elasticStackLogo from 'images/cluster_app_logos/elastic_stack.png';
+import fluentdLogo from 'images/cluster_app_logos/fluentd.png';
 import { s__, sprintf } from '../../locale';
 import applicationRow from './application_row.vue';
 import clipboardButton from '../../vue_shared/components/clipboard_button.vue';
@@ -22,6 +23,7 @@ import { CLUSTER_TYPE, PROVIDER_TYPE, APPLICATION_STATUS, INGRESS } from '../con
 import eventHub from '~/clusters/event_hub';
 import CrossplaneProviderStack from './crossplane_provider_stack.vue';
 import IngressModsecuritySettings from './ingress_modsecurity_settings.vue';
+import FluentdOutputSettings from './fluentd_output_settings.vue';
 
 export default {
   components: {
@@ -31,6 +33,7 @@ export default {
     KnativeDomainEditor,
     CrossplaneProviderStack,
     IngressModsecuritySettings,
+    FluentdOutputSettings,
   },
   props: {
     type: {
@@ -102,6 +105,7 @@ export default {
     meltanoLogo,
     prometheusLogo,
     elasticStackLogo,
+    fluentdLogo,
   }),
   computed: {
     isProjectCluster() {
@@ -668,6 +672,41 @@ Crossplane runs inside your Kubernetes cluster and supports secure connectivity 
               )
             }}
           </p>
+        </div>
+      </application-row>
+
+      <application-row
+        id="fluentd"
+        :logo-url="fluentdLogo"
+        :title="applications.fluentd.title"
+        :status="applications.fluentd.status"
+        :status-reason="applications.fluentd.statusReason"
+        :request-status="applications.fluentd.requestStatus"
+        :request-reason="applications.fluentd.requestReason"
+        :installed="applications.fluentd.installed"
+        :install-failed="applications.fluentd.installFailed"
+        :install-application-request-params="{
+          host: applications.fluentd.host,
+          port: applications.fluentd.port,
+          protocol: applications.fluentd.protocol,
+        }"
+        :uninstallable="applications.fluentd.uninstallable"
+        :uninstall-successful="applications.fluentd.uninstallSuccessful"
+        :uninstall-failed="applications.fluentd.uninstallFailed"
+        :disabled="!helmInstalled"
+        :updateable="false"
+        title-link="https://github.com/helm/charts/tree/master/stable/fluentd"
+      >
+        <div slot="description">
+          <p>
+            {{
+              s__(
+                `ClusterIntegration|Fluentd is an open source data collector, which lets you unify the data collection and consumption for a better use and understanding of data. Export Web Application Firewall logs to your favorite SIEM.`,
+              )
+            }}
+          </p>
+
+          <fluentd-output-settings :fluentd="applications.fluentd" />
         </div>
       </application-row>
     </div>

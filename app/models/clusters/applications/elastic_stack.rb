@@ -3,7 +3,7 @@
 module Clusters
   module Applications
     class ElasticStack < ApplicationRecord
-      VERSION = '1.9.0'
+      VERSION = '2.0.0'
 
       ELASTICSEARCH_PORT = 9200
 
@@ -28,6 +28,7 @@ module Clusters
           rbac: cluster.platform_kubernetes_rbac?,
           chart: chart,
           files: files,
+          preinstall: migrate_to_2_script,
           postinstall: post_install_script
         )
       end
@@ -69,6 +70,10 @@ module Clusters
         end
       end
 
+      def filebeat7?
+        Gem::Version.new(version) >= Gem::Version.new('2.0.0')
+      end
+
       private
 
       def post_install_script
@@ -85,6 +90,27 @@ module Clusters
 
       def kube_client
         cluster&.kubeclient&.core_client
+      end
+
+      def migrate_to_2_script
+        # Updating the chart to 2.0.0 includes an update of the filebeat chart from 1.7.0 to 3.1.1 https://github.com/helm/charts/pull/21640
+        # This includes the following commit that changes labels on the filebeat deployment https://github.com/helm/charts/commit/9b009170686c6f4b202c36ceb1da4bb9ba15ddd0
+        # Unfortunately those fields are immutable, and we can't use `helm upgrade` to change them. We first have to delete the associated filebeat resources
+        # The following pre-install command runs before updating to 2.0.0 and sets filebeat.enable=false so the filebeat deployment is deleted.
+        # Then the main install command re-creates them properly
+        if updating? && !filebeat7?
+          [
+            Gitlab::Kubernetes::Helm::InstallCommand.new(
+              name: 'elastic-stack',
+              version: version,
+              rbac: cluster.platform_kubernetes_rbac?,
+              chart: chart,
+              files: files
+            ).install_command + ' --set filebeat.enabled\\=false'
+          ]
+        else
+          []
+        end
       end
     end
   end

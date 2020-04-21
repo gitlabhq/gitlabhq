@@ -28,7 +28,7 @@
 %hr
 
 .append-bottom-20
-  = render 'shared/runners/form', runner: @runner, runner_form_url: admin_runner_path(@runner)
+  = render 'shared/runners/form', runner: @runner, runner_form_url: admin_runner_path(@runner), in_gitlab_com_admin_context: Gitlab.com?
 
 .row
   .col-md-6

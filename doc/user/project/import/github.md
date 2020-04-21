@@ -8,7 +8,7 @@ your self-managed GitLab instance.
 NOTE: **Note:**
 These instructions work for users on GitLab.com, but if you are an
 administrator of a self-managed GitLab instance or if you are importing from GitHub Enterprise,
-you must enable [GitHub integration][gh-import]. GitHub integration is the only method for
+you must enable [GitHub integration](../../../integration/github.md). GitHub integration is the only method for
 importing from GitHub Enterprise. If you are using GitLab.com, you can alternatively import
 GitHub repositories using a [personal access token](#using-a-github-token),
 but this method is not recommended because it cannot associate all user activity
@@ -81,7 +81,7 @@ the user account that is performing the import.
 
 NOTE: **Note:**
 If you are using a self-managed GitLab instance or if you are importing from GitHub Enterprise, this process requires that you have configured
-[GitHub integration][gh-import].
+[GitHub integration](../../../integration/github.md).
 
 1. From the top navigation bar, click **+** and select **New project**.
 1. Select the **Import project** tab and then select **GitHub**.
@@ -155,5 +155,3 @@ servers. For 4 servers with 8 cores this means you can import up to 32 objects (
 Reducing the time spent in cloning a repository can be done by increasing network throughput, CPU capacity, and disk
 performance (e.g., by using high performance SSDs) of the disks that store the Git repositories (for your GitLab instance).
 Increasing the number of Sidekiq workers will *not* reduce the time spent cloning repositories.
-
-[gh-import]: ../../../integration/github.md "GitHub integration"

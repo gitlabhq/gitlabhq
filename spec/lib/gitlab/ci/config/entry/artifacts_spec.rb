@@ -123,28 +123,6 @@ describe Gitlab::Ci::Config::Entry::Artifacts do
           end
         end
       end
-
-      context 'when feature flag :ci_expose_arbitrary_artifacts_in_mr is disabled' do
-        before do
-          stub_feature_flags(ci_expose_arbitrary_artifacts_in_mr: false)
-        end
-
-        context 'when syntax is correct' do
-          let(:config) { { expose_as: 'Test results', paths: ['test.txt'] } }
-
-          it 'is valid' do
-            expect(entry.errors).to be_empty
-          end
-        end
-
-        context 'when syntax for :expose_as is incorrect' do
-          let(:config) { { paths: %w[results.txt], expose_as: '' } }
-
-          it 'is valid' do
-            expect(entry.errors).to be_empty
-          end
-        end
-      end
     end
   end
 end

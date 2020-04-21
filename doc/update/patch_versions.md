@@ -12,7 +12,7 @@ You can select the tag in the version dropdown in the top left corner of GitLab 
 
 ### 0. Backup
 
-It's useful to make a backup just in case things go south. Depending on the installation method, backup commands vary, see the [backing up and restoring GitLab](../raketasks/backup_restore.md#creating-a-backup-of-the-gitlab-system) documentation.
+It's useful to make a backup just in case things go south. Depending on the installation method, backup commands vary. See the [backing up and restoring GitLab](../raketasks/backup_restore.md) documentation.
 
 ### 1. Stop server
 

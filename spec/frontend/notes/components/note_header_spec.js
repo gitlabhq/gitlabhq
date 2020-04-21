@@ -1,4 +1,5 @@
 import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import Vuex from 'vuex';
 import NoteHeader from '~/notes/components/note_header.vue';
 import GitlabTeamMemberBadge from '~/vue_shared/components/user_avatar/badges/gitlab_team_member_badge.vue';
@@ -177,6 +178,72 @@ describe('NoteHeader component', () => {
       createComponent({ createdAt: new Date().toISOString() });
       expect(findTimestampLink().exists()).toBe(false);
       expect(findTimestamp().exists()).toBe(true);
+    });
+  });
+
+  describe('author username link', () => {
+    it('proxies `mouseenter` event to author name link', () => {
+      createComponent({ author });
+
+      const dispatchEvent = jest.spyOn(wrapper.vm.$refs.authorNameLink, 'dispatchEvent');
+
+      wrapper.find({ ref: 'authorUsernameLink' }).trigger('mouseenter');
+
+      expect(dispatchEvent).toHaveBeenCalledWith(new Event('mouseenter'));
+    });
+
+    it('proxies `mouseleave` event to author name link', () => {
+      createComponent({ author });
+
+      const dispatchEvent = jest.spyOn(wrapper.vm.$refs.authorNameLink, 'dispatchEvent');
+
+      wrapper.find({ ref: 'authorUsernameLink' }).trigger('mouseleave');
+
+      expect(dispatchEvent).toHaveBeenCalledWith(new Event('mouseleave'));
+    });
+  });
+
+  describe('when author status tooltip is opened', () => {
+    it('removes `title` attribute from emoji to prevent duplicate tooltips', () => {
+      createComponent({
+        author: {
+          ...author,
+          status_tooltip_html:
+            '"<span class="user-status-emoji has-tooltip" title="foo bar" data-html="true" data-placement="top"><gl-emoji title="basketball and hoop" data-name="basketball" data-unicode-version="6.0">🏀</gl-emoji></span>"',
+        },
+      });
+
+      return nextTick().then(() => {
+        const authorStatus = wrapper.find({ ref: 'authorStatus' });
+        authorStatus.trigger('mouseenter');
+
+        expect(authorStatus.find('gl-emoji').attributes('title')).toBeUndefined();
+      });
+    });
+  });
+
+  describe('when author username link is hovered', () => {
+    it('toggles hover specific CSS classes on author name link', done => {
+      createComponent({ author });
+
+      const authorUsernameLink = wrapper.find({ ref: 'authorUsernameLink' });
+      const authorNameLink = wrapper.find({ ref: 'authorNameLink' });
+
+      authorUsernameLink.trigger('mouseenter');
+
+      nextTick(() => {
+        expect(authorNameLink.classes()).toContain('hover');
+        expect(authorNameLink.classes()).toContain('text-underline');
+
+        authorUsernameLink.trigger('mouseleave');
+
+        nextTick(() => {
+          expect(authorNameLink.classes()).not.toContain('hover');
+          expect(authorNameLink.classes()).not.toContain('text-underline');
+
+          done();
+        });
+      });
     });
   });
 });

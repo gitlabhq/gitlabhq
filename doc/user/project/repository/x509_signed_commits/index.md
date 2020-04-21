@@ -25,7 +25,7 @@ For a commit to be *verified* by GitLab:
   which is usually up to three years.
 - The signing time is equal or later then commit time.
 
-NOTE: **Note:** There is no certificate revocation list check in place at the moment.
+NOTE: **Note:** Certificate revocation lists are checked on a daily basis via background worker.
 
 ## Obtaining an x509 key pair
 

@@ -16,29 +16,41 @@ describe Gitlab::JiraImport::Stage::FinishImportWorker do
         stub_feature_flags(jira_issue_import: false)
       end
 
-      it_behaves_like 'cannot do jira import'
+      it_behaves_like 'cannot do Jira import'
     end
 
     context 'when feature flag enabled' do
-      let_it_be(:jira_import) { create(:jira_import_state, :scheduled, project: project) }
+      let_it_be(:jira_import, reload: true) { create(:jira_import_state, :scheduled, project: project) }
 
       before do
         stub_feature_flags(jira_issue_import: true)
       end
 
       context 'when import did not start' do
-        it_behaves_like 'cannot do jira import'
+        it_behaves_like 'cannot do Jira import'
       end
 
       context 'when import started' do
+        let_it_be(:import_label) { create(:label, project: project, title: 'jira-import') }
+        let_it_be(:imported_issues) { create_list(:labeled_issue, 3, project: project, labels: [import_label]) }
+
         before do
+          expect(Gitlab::JiraImport).to receive(:get_import_label_id).and_return(import_label.id)
+          expect(Gitlab::JiraImport).to receive(:issue_failures).and_return(2)
+
           jira_import.start!
+          worker.perform(project.id)
         end
 
         it 'changes import state to finished' do
-          worker.perform(project.id)
-
           expect(project.jira_import_status).to eq('finished')
+        end
+
+        it 'saves imported issues counts' do
+          latest_jira_import = project.latest_jira_import
+          expect(latest_jira_import.total_issue_count).to eq(5)
+          expect(latest_jira_import.failed_to_import_count).to eq(2)
+          expect(latest_jira_import.imported_issues_count).to eq(3)
         end
       end
     end

@@ -61,4 +61,56 @@ describe Gitlab::Kubernetes::Helm::BaseCommand do
 
     it { is_expected.to eq('install-test-class-name') }
   end
+
+  describe '#service_account_resource' do
+    let(:resource) do
+      Kubeclient::Resource.new(metadata: { name: 'tiller', namespace: 'gitlab-managed-apps' })
+    end
+
+    subject { base_command.service_account_resource }
+
+    context 'rbac is enabled' do
+      let(:rbac) { true }
+
+      it 'generates a Kubeclient resource for the tiller ServiceAccount' do
+        is_expected.to eq(resource)
+      end
+    end
+
+    context 'rbac is not enabled' do
+      let(:rbac) { false }
+
+      it 'generates nothing' do
+        is_expected.to be_nil
+      end
+    end
+  end
+
+  describe '#cluster_role_binding_resource' do
+    let(:resource) do
+      Kubeclient::Resource.new(
+        metadata: { name: 'tiller-admin' },
+        roleRef: { apiGroup: 'rbac.authorization.k8s.io', kind: 'ClusterRole', name: 'cluster-admin' },
+        subjects: [{ kind: 'ServiceAccount', name: 'tiller', namespace: 'gitlab-managed-apps' }]
+      )
+    end
+
+    subject { base_command.cluster_role_binding_resource }
+
+    context 'rbac is enabled' do
+      let(:rbac) { true }
+
+      it 'generates a Kubeclient resource for the ClusterRoleBinding for tiller' do
+        is_expected.to eq(resource)
+      end
+    end
+
+    context 'rbac is not enabled' do
+      let(:rbac) { false }
+
+      it 'generates nothing' do
+        is_expected.to be_nil
+      end
+    end
+  end
 end

@@ -1,6 +1,9 @@
-- if Feature.enabled?(:jira_issue_import_vue, @project)
+- if Feature.enabled?(:jira_issue_import_vue, @project, default_enabled: true)
   .js-jira-import-root{ data: { project_path: @project.full_path,
-    is_jira_configured: @is_jira_configured.to_s,
+    issues_path: project_issues_path(@project),
+    is_jira_configured: @project.jira_service.present?.to_s,
+    jira_projects: @jira_projects.to_json,
+    in_progress_illustration: image_path('illustrations/export-import.svg'),
     setup_illustration: image_path('illustrations/manual_action.svg') } }
 - else
   - title = _('Jira Issue Import')

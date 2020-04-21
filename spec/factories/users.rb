@@ -27,6 +27,10 @@ FactoryBot.define do
       user_type { :alert_bot }
     end
 
+    trait :project_bot do
+      user_type { :project_bot }
+    end
+
     trait :external do
       external { true }
     end
@@ -83,11 +87,16 @@ FactoryBot.define do
 
     transient do
       developer_projects { [] }
+      maintainer_projects { [] }
     end
 
     after(:create) do |user, evaluator|
       evaluator.developer_projects.each do |project|
         project.add_developer(user)
+      end
+
+      evaluator.maintainer_projects.each do |project|
+        project.add_maintainer(user)
       end
     end
 

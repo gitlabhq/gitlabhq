@@ -1,5 +1,6 @@
 <script>
 import { GlLoadingIcon } from '@gitlab/ui';
+import { escapeFileUrl } from '~/lib/utils/url_utility';
 
 export default {
   components: {
@@ -28,7 +29,7 @@ export default {
       return splitArray.map(p => encodeURIComponent(p)).join('/');
     },
     parentRoute() {
-      return { path: `/-/tree/${escape(this.commitRef)}/${this.parentPath}` };
+      return { path: `/-/tree/${escapeFileUrl(this.commitRef)}/${this.parentPath}` };
     },
   },
   methods: {

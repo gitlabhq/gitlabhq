@@ -18,9 +18,9 @@ module Gitlab
           return {} unless proxy_start && start_time
 
           # Time in milliseconds since gitlab-workhorse started the request
-          duration = (start_time.to_f * 1_000 - proxy_start.to_f / 1_000_000).round(2)
+          duration = start_time.to_f * 1_000 - proxy_start.to_f / 1_000_000
 
-          { 'queue_duration': duration }
+          { 'queue_duration_s': Gitlab::Utils.ms_to_round_sec(duration) }
         end
       end
     end

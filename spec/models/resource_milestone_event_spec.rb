@@ -52,4 +52,30 @@ describe ResourceMilestoneEvent, type: :model do
       end
     end
   end
+
+  shared_examples 'a milestone action queryable resource event' do |expected_results_for_actions|
+    [Issue, MergeRequest].each do |klass|
+      expected_results_for_actions.each do |action, expected_result|
+        it "is #{expected_result} for action #{action} on #{klass.name.underscore}" do
+          model = create(klass.name.underscore)
+          key = model.class.name.underscore
+          event = build(described_class.name.underscore.to_sym, key => model, action: action)
+
+          expect(event.send(query_method)).to eq(expected_result)
+        end
+      end
+    end
+  end
+
+  describe '#added?' do
+    it_behaves_like 'a milestone action queryable resource event', { add: true, remove: false } do
+      let(:query_method) { :add? }
+    end
+  end
+
+  describe '#removed?' do
+    it_behaves_like 'a milestone action queryable resource event', { add: false, remove: true } do
+      let(:query_method) { :remove? }
+    end
+  end
 end

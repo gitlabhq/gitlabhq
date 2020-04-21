@@ -53,7 +53,7 @@ Please check this [rules](https://github.com/vuejs/eslint-plugin-vue#bulb-rules)
 
 ## Naming
 
-1. **Extensions**: Use `.vue` extension for Vue components. Do not use `.js` as file extension ([#34371]).
+1. **Extensions**: Use `.vue` extension for Vue components. Do not use `.js` as file extension ([#34371](https://gitlab.com/gitlab-org/gitlab-foss/issues/34371)).
 1. **Reference Naming**: Use PascalCase for their instances:
 
    ```javascript
@@ -88,8 +88,6 @@ Please check this [rules](https://github.com/vuejs/eslint-plugin-vue#bulb-rules)
    // good
    <component my-prop="prop" />
    ```
-
-[#34371]: https://gitlab.com/gitlab-org/gitlab-foss/issues/34371
 
 ## Alignment
 

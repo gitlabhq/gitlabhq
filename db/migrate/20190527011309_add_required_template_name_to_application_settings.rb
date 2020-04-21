@@ -9,7 +9,9 @@ class AddRequiredTemplateNameToApplicationSettings < ActiveRecord::Migration[5.1
   # Set this constant to true if this migration requires downtime.
   DOWNTIME = false
 
+  # rubocop:disable Migration/PreventStrings
   def change
-    add_column :application_settings, :required_instance_ci_template, :string, null: true # rubocop:disable Migration/AddLimitToStringColumns
+    add_column :application_settings, :required_instance_ci_template, :string, null: true
   end
+  # rubocop:enable Migration/PreventStrings
 end

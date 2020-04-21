@@ -99,8 +99,12 @@ export default {
       return this.showCommentButton && this.hasDiscussions;
     },
     shouldRenderCommentButton() {
-      const isDiffHead = parseBoolean(getParameterByName('diff_head'));
-      return !isDiffHead && this.isLoggedIn && this.showCommentButton;
+      if (this.isLoggedIn && this.showCommentButton) {
+        const isDiffHead = parseBoolean(getParameterByName('diff_head'));
+        return !isDiffHead || gon.features?.mergeRefHeadComments;
+      }
+
+      return false;
     },
     isMatchLine() {
       return this.line.type === MATCH_LINE_TYPE;

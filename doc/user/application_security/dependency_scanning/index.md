@@ -115,6 +115,10 @@ configuration, the last mention of the variable will take precedence.
 
 ### Overriding the Dependency Scanning template
 
+CAUTION: **Deprecation:**
+Beginning in GitLab 13.0, the use of [`only` and `except`](../../../ci/yaml/README.md#onlyexcept-basic)
+is no longer supported. When overriding the template, you must use [`rules`](../../../ci/yaml/README.md#rules) instead.
+
 If you want to override the job definition (for example, change properties like
 `variables` or `dependencies`), you need to declare a `dependency_scanning` job
 after the template inclusion and specify any additional keys under it. For example:
@@ -175,6 +179,8 @@ The following variables are used for configuring specific analyzers (used for a 
 | `DS_PIP_DEPENDENCY_PATH`                | `gemnasium-python` |                              | Path to load Python pip dependencies from. ([Introduced](https://gitlab.com/gitlab-org/gitlab/issues/12412) in GitLab 12.2) |
 | `DS_PYTHON_VERSION`                     | `retire.js`        |                              | Version of Python. If set to 2, dependencies are installed using Python 2.7 instead of Python 3.6. ([Introduced](https://gitlab.com/gitlab-org/gitlab/issues/12296) in GitLab 12.1)|
 | `MAVEN_CLI_OPTS`                        | `gemnasium-maven`  | `"-DskipTests --batch-mode"` | List of command line arguments that will be passed to `maven` by the analyzer. See an example for [using private repos](../index.md#using-private-maven-repos). |
+| `GRADLE_CLI_OPTS`                        | `gemnasium-maven`  | | List of command line arguments that will be passed to `gradle` by the analyzer. |
+| `SBT_CLI_OPTS`                        | `gemnasium-maven`  | | List of command-line arguments that the analyzer will pass to `sbt`. |
 | `BUNDLER_AUDIT_UPDATE_DISABLED`         | `bundler-audit`    | `"false"`                      | Disable automatic updates for the `bundler-audit` analyzer. Useful if you're running Dependency Scanning in an offline, air-gapped environment.|
 | `BUNDLER_AUDIT_ADVISORY_DB_URL`         | `bundler-audit`    | `https://github.com/rubysec/ruby-advisory-db` | URL of the advisory database used by bundler-audit. |
 | `BUNDLER_AUDIT_ADVISORY_DB_REF_NAME`    | `bundler-audit`    | `master`                     | Git ref for the advisory database specified by `BUNDLER_AUDIT_ADVISORY_DB_URL`. |
@@ -414,6 +420,181 @@ Please check the [Release Process documentation](https://gitlab.com/gitlab-org/s
 You can search the [gemnasium-db](https://gitlab.com/gitlab-org/security-products/gemnasium-db) project
 to find a vulnerability in the Gemnasium database.
 You can also [submit new vulnerabilities](https://gitlab.com/gitlab-org/security-products/gemnasium-db/blob/master/CONTRIBUTING.md).
+
+## Running Dependency Scanning in an offline environment
+
+For self-managed GitLab instances in an environment with limited, restricted, or intermittent access
+to external resources through the internet, some adjustments are required for dependency scannings jobs to run successfully. For more information, see [Offline environments](../offline_deployments/index.md).
+
+### Requirements for offline Dependency Scanning
+
+Here are the requirements for using Dependency Scanning in an offline environment:
+
+- [Disable Docker-In-Docker](#disabling-docker-in-docker-for-dependency-scanning)
+- GitLab Runner with the [`docker` or `kubernetes` executor](#requirements).
+- Docker Container Registry with locally available copies of dependency scanning [analyzer](https://gitlab.com/gitlab-org/security-products/analyzers) images.
+- Host an offline Git copy of the [gemnasium-db advisory database](https://gitlab.com/gitlab-org/security-products/gemnasium-db/)
+- _Only if scanning Ruby projects_: Host an offline Git copy of the [advisory database](https://github.com/rubysec/ruby-advisory-db).
+- _Only if scanning npm/yarn projects_: Host an offline copy of the [retire.js](https://github.com/RetireJS/retire.js/) [node](https://github.com/RetireJS/retire.js/blob/master/repository/npmrepository.json) and [js](https://github.com/RetireJS/retire.js/blob/master/repository/jsrepository.json) advisory databases.
+
+NOTE: **Note:**
+GitLab Runner has a [default `pull policy` of `always`](https://docs.gitlab.com/runner/executors/docker.html#using-the-always-pull-policy),
+meaning the runner will try to pull Docker images from the GitLab container registry even if a local
+copy is available. GitLab Runner's [`pull_policy` can be set to `if-not-present`](https://docs.gitlab.com/runner/executors/docker.html#using-the-if-not-present-pull-policy)
+in an offline environment if you prefer using only locally available Docker images. However, we
+recommend keeping the pull policy setting to `always` as it will better enable updated scanners to
+be utilized within your CI/CD pipelines.
+
+### Make GitLab Dependency Scanning analyzer images available inside your Docker registry
+
+For Dependency Scanning, import docker images ([supported languages and frameworks](#supported-languages-and-package-managers))
+from `registry.gitlab.com` to your offline docker registry. The Dependency Scanning analyzer
+docker images are:
+
+```plaintext
+registry.gitlab.com/gitlab-org/security-products/analyzers/gemnasium:2
+registry.gitlab.com/gitlab-org/security-products/analyzers/gemnasium-maven:2
+registry.gitlab.com/gitlab-org/security-products/analyzers/gemnasium-python:2
+registry.gitlab.com/gitlab-org/security-products/analyzers/retire.js:2
+registry.gitlab.com/gitlab-org/security-products/analyzers/bundler-audit:2
+```
+
+The process for importing Docker images into a local offline Docker registry depends on
+**your network security policy**. Please consult your IT staff to find an accepted and approved
+process by which external resources can be imported or temporarily accessed. Note that these scanners are [updated periodically](../index.md#maintenance-and-update-of-the-vulnerabilities-database)
+with new definitions, so consider if you are able to make periodic updates yourself.
+
+For details on saving and transporting Docker images as a file, see Docker's documentation on
+[`docker save`](https://docs.docker.com/engine/reference/commandline/save/), [`docker load`](https://docs.docker.com/engine/reference/commandline/load/),
+[`docker export`](https://docs.docker.com/engine/reference/commandline/export/), and [`docker import`](https://docs.docker.com/engine/reference/commandline/import/).
+
+### Set Dependency Scanning CI config for "offline" use
+
+Below is a general `.gitlab-ci.yml` template to configure your environment for running Dependency
+Scanning offline:
+
+```yaml
+include:
+  - template: Dependency-Scanning.gitlab-ci.yml
+
+variables:
+  DS_DISABLE_DIND: "true"
+  DS_ANALYZER_IMAGE_PREFIX: "docker-registry.example.com/analyzers"
+```
+
+See explanations of the variables above in the [configuration section](#configuration).
+
+### Specific settings for languages and package managers
+
+For every language and package manager, add the following to the variables section of
+`.gitlab-ci.yml`:
+
+```yaml
+GEMNASIUM_DB_REMOTE_URL: "gitlab.example.com/gemnasium-db.git"
+```
+
+See the following sections for additional instructions on specific languages and package managers.
+
+#### JavaScript (npm and yarn) projects
+
+Add the following to the variables section of `.gitlab-ci.yml`:
+
+```yaml
+RETIREJS_JS_ADVISORY_DB: "example.com/jsrepository.json"
+RETIREJS_NODE_ADVISORY_DB: "example.com/npmrepository.json"
+```
+
+#### Ruby (gem) projects
+
+Add the following to the variables section of `.gitlab-ci.yml`:
+
+```yaml
+BUNDLER_AUDIT_ADVISORY_DB_REF_NAME: "master"
+BUNDLER_AUDIT_ADVISORY_DB_URL: "gitlab.example.com/ruby-advisory-db.git"
+```
+
+#### Java (Maven) projects
+
+When using self-signed certificates, add the following job section to the `.gitlab-ci.yml`:
+
+```yaml
+gemnasium-maven-dependency_scanning:
+  variables:
+    MAVEN_CLI_OPTS: "-Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -Dmaven.wagon.http.ssl.ignore.validity.dates=true"
+```
+
+#### Java (Gradle) projects
+
+When using self-signed certificates, add the following job section to the `.gitlab-ci.yml`:
+
+```yaml
+gemnasium-maven-dependency_scanning:
+  before_script:
+    - echo -n | openssl s_client -connect maven-repo.example.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > /tmp/internal.crt
+    - keytool -importcert -file /tmp/internal.crt -cacerts -storepass changeit -noprompt
+```
+
+This adds the self-signed certificates of your maven repository to the Java Key Store of the analyzer's docker image.
+
+#### Scala (sbt) projects
+
+When using self-signed certificates, add the following job section to the `.gitlab-ci.yml`:
+
+```yaml
+gemnasium-maven-dependency_scanning:
+  before_script:
+    - echo -n | openssl s_client -connect maven-repo.example.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > /tmp/internal.crt
+    - keytool -importcert -file /tmp/internal.crt -cacerts -storepass changeit -noprompt
+```
+
+This adds the self-signed certificates of your maven repository to the Java Key Store of the analyzer's docker image.
+
+#### Python (pip) and Python (Pipfile) projects
+
+Add the following `pip.conf` to your repository to define your index URL and trust its self-signed
+certificate:
+
+```toml
+[global]
+index-url = https://pypi.example.com
+trusted-host = pypi.example.com
+```
+
+Add the following job section to `.gitlab-ci.yml`:
+
+```yaml
+gemnasium-python-dependency_scanning:
+  before_script:
+    - mkdir ~/.config/pip
+    - cp pip.conf ~/.config/pip/pip.conf
+```
+
+#### Python (setuptools)
+
+When using self-signed certificates for your private PyPi repo no extra job configuration (aside
+from the template `.gitlab-ci.yml` above) is needed. However, you must update your `setup.py` to
+ensure that it can reach your private repo. Here is an example configuration:
+
+1. Update `setup.py` to create a `dependency_links` attribute pointing at your private repo for each
+   dependency in the `install_requires` list:
+
+    ```python
+    install_requires=['pyparsing>=2.0.3'],
+    dependency_links=['https://pypi.example.com/simple/pyparsing'],
+    ```
+
+1. Fetch the certificate from your repository URL and add it to the project:
+
+    ```bash
+    echo -n | openssl s_client -connect pypi.example.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > internal.crt
+    ```
+
+1. Point `setup.py` at the newly downloaded certificate:
+
+    ```python
+    import setuptools.ssl_support
+    setuptools.ssl_support.cert_paths = ['internal.crt']
+    ```
 
 ## Troubleshooting
 

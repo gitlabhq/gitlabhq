@@ -12,6 +12,7 @@ import RepoEditor from './repo_editor.vue';
 import RightPane from './panes/right.vue';
 import ErrorMessage from './error_message.vue';
 import CommitEditorHeader from './commit_sidebar/editor_header.vue';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   components: {
@@ -26,6 +27,7 @@ export default {
     GlDeprecatedButton,
     GlLoadingIcon,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     rightPaneComponent: {
       type: Vue.Component,
@@ -52,10 +54,17 @@ export default {
       'allBlobs',
       'emptyRepo',
       'currentTree',
+      'editorTheme',
     ]),
+    themeName() {
+      return this.glFeatures.webideDarkTheme && window.gon?.user_color_scheme;
+    },
   },
   mounted() {
     window.onbeforeunload = e => this.onBeforeUnload(e);
+
+    if (this.themeName)
+      document.querySelector('.navbar-gitlab').classList.add(`theme-${this.themeName}`);
   },
   methods: {
     ...mapActions(['toggleFileFinder', 'openNewEntryModal']),
@@ -77,7 +86,10 @@ export default {
 </script>
 
 <template>
-  <article class="ide position-relative d-flex flex-column align-items-stretch">
+  <article
+    class="ide position-relative d-flex flex-column align-items-stretch"
+    :class="{ [`theme-${themeName}`]: themeName }"
+  >
     <error-message v-if="errorMessage" :message="errorMessage" />
     <div class="ide-view flex-grow d-flex">
       <find-file

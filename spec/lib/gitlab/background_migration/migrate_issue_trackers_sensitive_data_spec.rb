@@ -90,7 +90,7 @@ describe Gitlab::BackgroundMigration::MigrateIssueTrackersSensitiveData, schema:
     end
   end
 
-  context 'with jira service' do
+  context 'with Jira service' do
     let!(:service) do
       services.create(id: 10, type: 'JiraService', title: nil, properties: jira_properties.to_json, category: 'issue_tracker')
     end
@@ -202,7 +202,7 @@ describe Gitlab::BackgroundMigration::MigrateIssueTrackersSensitiveData, schema:
     end
   end
 
-  context 'with jira service which has data fields record inconsistent with properties field' do
+  context 'with Jira service which has data fields record inconsistent with properties field' do
     let!(:service) do
       services.create(id: 16, type: 'CustomIssueTrackerService', description: 'Existing description', properties: jira_properties.to_json, category: 'issue_tracker').tap do |service|
         JiraTrackerData.create!(service_id: service.id, url: 'http://other_jira_url')
@@ -241,7 +241,7 @@ describe Gitlab::BackgroundMigration::MigrateIssueTrackersSensitiveData, schema:
     end
   end
 
-  context 'jira service with empty properties' do
+  context 'Jira service with empty properties' do
     let!(:service) do
       services.create(id: 18, type: 'JiraService', properties: '', category: 'issue_tracker')
     end
@@ -253,7 +253,7 @@ describe Gitlab::BackgroundMigration::MigrateIssueTrackersSensitiveData, schema:
     end
   end
 
-  context 'jira service with nil properties' do
+  context 'Jira service with nil properties' do
     let!(:service) do
       services.create(id: 18, type: 'JiraService', properties: nil, category: 'issue_tracker')
     end
@@ -265,7 +265,7 @@ describe Gitlab::BackgroundMigration::MigrateIssueTrackersSensitiveData, schema:
     end
   end
 
-  context 'jira service with invalid properties' do
+  context 'Jira service with invalid properties' do
     let!(:service) do
       services.create(id: 18, type: 'JiraService', properties: 'invalid data', category: 'issue_tracker')
     end
@@ -277,7 +277,7 @@ describe Gitlab::BackgroundMigration::MigrateIssueTrackersSensitiveData, schema:
     end
   end
 
-  context 'with jira service with invalid properties, valid jira service and valid bugzilla service' do
+  context 'with Jira service with invalid properties, valid Jira service and valid bugzilla service' do
     let!(:jira_service_invalid) do
       services.create(id: 19, title: 'invalid - title', description: 'invalid - description', type: 'JiraService', properties: 'invalid data', category: 'issue_tracker')
     end

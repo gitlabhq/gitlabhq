@@ -1,0 +1,5 @@
+---
+title: Prevent duplicate tooltips when hovering over status emoji in comments
+merge_request: 29356
+author:
+type: fixed

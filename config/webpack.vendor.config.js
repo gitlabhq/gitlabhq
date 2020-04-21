@@ -29,7 +29,6 @@ module.exports = {
       'core-js',
       'echarts',
       'lodash',
-      'underscore',
       'vuex',
       'pikaday',
       'vue/dist/vue.esm.js',

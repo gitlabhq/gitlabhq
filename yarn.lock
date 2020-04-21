@@ -766,10 +766,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/at.js/-/at.js-1.5.5.tgz#5f6bfe6baaef360daa9b038fa78798d7a6a916b4"
   integrity sha512-282Dn3SPVsUHVDhMsXgfnv+Rzog0uxecjttxGRQvxh25es1+xvkGQFsvJfkSKJ3X1kHVkSjKf+Tt5Rra+Jhp9g==
 
-"@gitlab/eslint-plugin@2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/eslint-plugin/-/eslint-plugin-2.0.0.tgz#4eedd16cf95cf82dc359c1b220d4f5a08361df9c"
-  integrity sha512-ctmsGnCuokhfh/5goLdz3NdBIUpwTMkx/17QxxutxkWW7yOGMPIY8Na+WhjnUSdst8Wjwzexc+snbh5NMs8H/A==
+"@gitlab/eslint-plugin@2.2.1":
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/@gitlab/eslint-plugin/-/eslint-plugin-2.2.1.tgz#7033030787981ded5ae24f4051109d069c98fcc0"
+  integrity sha512-OM0gU2wfUeFZU5MP4Qaj1QHeJwpi9Ps35dRo8V1BP1lFskn2nDl6dEINAgqpdpjRV33LJ5/TZLfcGIswad0UtQ==
   dependencies:
     babel-eslint "^10.0.3"
     eslint-config-airbnb-base "^14.0.0"
@@ -781,15 +781,15 @@
     eslint-plugin-vue "^6.2.1"
     vue-eslint-parser "^7.0.0"
 
-"@gitlab/svgs@1.119.0":
-  version "1.119.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.119.0.tgz#ff35c160b1e726f4f1702a4a152712fb669cde4e"
-  integrity sha512-bI+kewDLJy1N0//BpUPMx3h5AqG6lfIiV53lxQP9ttn8j/jhyxigZXq1wZ901PI4/ALv9IY1DOSSuLouK4sJsQ==
+"@gitlab/svgs@1.121.0":
+  version "1.121.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.121.0.tgz#77083a68f72e9aa0e294da7715f378eef13b839e"
+  integrity sha512-scz/6Y/eED7RMFLAlhT6PwXwe0Wj8ivnRsyulk9NXKoqUmAqZliNmBmzYsHy5bFf9NB6xVV/rOk1/92nbi/Yaw==
 
-"@gitlab/ui@12.0.0":
-  version "12.0.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-12.0.0.tgz#595ebaaf3d4213dcd5a9707384e1c98ea7ba41b6"
-  integrity sha512-5c2zRivIkPgTZi3+kfF8vbP2lTrwTSN1pBP1NaPe74sYw8yEe5ULCjAWKikh3ROUmsRs7+u5A/Wh3j1qaZ2/VA==
+"@gitlab/ui@12.2.0":
+  version "12.2.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-12.2.0.tgz#2dc6103ef4eeb016cdff8a885bee173ed3eab5f3"
+  integrity sha512-Qkyzrcu28gfJy635kqgfXzIKndOMT6touZ32FlXYowyrJOBQOxQt1q4/Z+S6nDWkC0tbBuOsbGiPx6F37MjWjQ==
   dependencies:
     "@babel/standalone" "^7.0.0"
     "@gitlab/vue-toasted" "^1.3.0"
@@ -11375,11 +11375,6 @@ underscore@1.6.0, underscore@~1.6.0:
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/underscore/-/underscore-1.6.0.tgz#8b38b10cacdef63337b8b24e4ff86d45aea529a8"
   integrity sha1-izixDKze9jM3uLJOT/htRa6lKag=
-
-underscore@^1.9.2:
-  version "1.9.2"
-  resolved "https://registry.yarnpkg.com/underscore/-/underscore-1.9.2.tgz#0c8d6f536d6f378a5af264a72f7bec50feb7cf2f"
-  integrity sha512-D39qtimx0c1fI3ya1Lnhk3E9nONswSKhnffBI0gME9C99fYOkNi04xs8K6pePLhvl1frbDemkaBQ5ikWllR2HQ==
 
 underscore@~1.8.3:
   version "1.8.3"

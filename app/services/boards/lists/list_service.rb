@@ -3,8 +3,10 @@
 module Boards
   module Lists
     class ListService < Boards::BaseService
-      def execute(board)
-        board.lists.create(list_type: :backlog) unless board.lists.backlog.exists?
+      def execute(board, create_default_lists: true)
+        if create_default_lists && !board.lists.backlog.exists?
+          board.lists.create(list_type: :backlog)
+        end
 
         board.lists.preload_associated_models
       end

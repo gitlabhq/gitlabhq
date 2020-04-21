@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import _ from 'underscore';
+import { debounce } from 'lodash';
 import axios from './lib/utils/axios_utils';
 
 /**
@@ -29,7 +29,7 @@ export default class FilterableList {
 
   initSearch() {
     // Wrap to prevent passing event arguments to .filterResults;
-    this.debounceFilter = _.debounce(this.onFilterInput.bind(this), 500);
+    this.debounceFilter = debounce(this.onFilterInput.bind(this), 500);
 
     this.unbindEvents();
     this.bindEvents();

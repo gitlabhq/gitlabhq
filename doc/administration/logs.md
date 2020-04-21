@@ -30,17 +30,21 @@ Line breaks have been added to this example for legibility:
   "controller":"Projects::IssuesController",
   "action":"show",
   "status":200,
-  "duration":229.03,
-  "view":174.07,
-  "db":13.24,
   "time":"2017-08-08T20:15:54.821Z",
   "params":[{"key":"param_key","value":"param_value"}],
   "remote_ip":"18.245.0.1",
   "user_id":1,
   "username":"admin",
-  "gitaly_calls":76,
-  "gitaly_duration":7.41,
-  "queue_duration": 112.47
+  "queue_duration_s":0.0,
+  "gitaly_calls":16,
+  "gitaly_duration_s":0.16,
+  "redis_calls":115,
+  "redis_duration_s":0.13,
+  "correlation_id":"O1SdybnnIq7",
+  "cpu_s":17.50,
+  "db_duration_s":0.08,
+  "view_duration_s":2.39,
+  "duration_s":20.54
 }
 ```
 
@@ -48,12 +52,15 @@ This example was a GET request for a specific
 issue. Each line also contains performance data, with times in
 milliseconds:
 
-1. `duration`: total time taken to retrieve the request
-1. `queue_duration`: total time that the request was queued inside GitLab Workhorse
-1. `view`: total time taken inside the Rails views
-1. `db`: total time to retrieve data from the database
+1. `duration_s`: total time taken to retrieve the request
+1. `queue_duration_s`: total time that the request was queued inside GitLab Workhorse
+1. `view_duration_s`: total time taken inside the Rails views
+1. `db_duration_s`: total time to retrieve data from PostgreSQL
+1. `redis_duration_s`: total time to retrieve data from Redis
+1. `cpu_s`: total time spent on CPU
+1. `gitaly_duration_s`: total time taken by Gitaly calls
 1. `gitaly_calls`: total number of calls made to Gitaly
-1. `gitaly_duration`: total time taken by Gitaly calls
+1. `redis_calls`: total number of calls made to Redis
 
 User clone and fetch activity using HTTP transport appears in this log as `action: git_upload_pack`.
 
@@ -73,9 +80,6 @@ NOTE: **Note:** Starting with GitLab 12.5, if an error occurs, an
   "controller": "Admin::DashboardController",
   "action": "index",
   "status": 500,
-  "duration": 2584.11,
-  "view": 0,
-  "db": 9.21,
   "time": "2019-11-14T13:12:46.156Z",
   "params": [],
   "remote_ip": "127.0.0.1",
@@ -84,7 +88,16 @@ NOTE: **Note:** Starting with GitLab 12.5, if an error occurs, an
   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:70.0) Gecko/20100101 Firefox/70.0",
   "queue_duration": 274.35,
   "correlation_id": "KjDVUhNvvV3",
-  "cpu_s": 2.837645135999999,
+  "queue_duration_s":0.0,
+  "gitaly_calls":16,
+  "gitaly_duration_s":0.16,
+  "redis_calls":115,
+  "redis_duration_s":0.13,
+  "correlation_id":"O1SdybnnIq7",
+  "cpu_s":17.50,
+  "db_duration_s":0.08,
+  "view_duration_s":2.39,
+  "duration_s":20.54
   "exception.class": "NameError",
   "exception.message": "undefined local variable or method `adsf' for #<Admin::DashboardController:0x00007ff3c9648588>",
   "exception.backtrace": [
@@ -417,15 +430,85 @@ you've configured this for Sidekiq as mentioned above.
 
 ## `gitlab-shell.log`
 
-This file lives in `/var/log/gitlab/gitaly/gitlab-shell.log` for
-Omnibus GitLab packages or in `/home/git/gitaly/gitlab-shell.log` for
-installations from source.
+GitLab Shell is used by GitLab for executing Git commands and provide SSH access to Git repositories.
 
-NOTE: **Note:**
+### For GitLab versions 12.10 and up
+
+For GitLab version 12.10 and later, there are 2 `gitlab-shell.log` files. Information containing `git-{upload-pack,receive-pack}` requests lives in `/var/log/gitlab/gitlab-shell/gitlab-shell.log`. Information about hooks to GitLab Shell from Gitaly lives in `/var/log/gitlab/gitaly/gitlab-shell.log`.
+
+Example log entries for `/var/log/gitlab/gitlab-shell/gitlab-shell.log`:
+
+```json
+{
+  "duration_ms": 74.104,
+  "level": "info",
+  "method": "POST",
+  "msg": "Finished HTTP request",
+  "time": "2020-04-17T20:28:46Z",
+  "url": "http://127.0.0.1:8080/api/v4/internal/allowed"
+}
+{
+  "command": "git-upload-pack",
+  "git_protocol": "",
+  "gl_project_path": "root/example",
+  "gl_repository": "project-1",
+  "level": "info",
+  "msg": "executing git command",
+  "time": "2020-04-17T20:28:46Z",
+  "user_id": "user-1",
+  "username": "root"
+}
+```
+
+Example log entries for `/var/log/gitlab/gitaly/gitlab-shell.log`:
+
+```json
+{
+  "method": "POST",
+  "url": "http://127.0.0.1:8080/api/v4/internal/allowed",
+  "duration": 0.058012959,
+  "gitaly_embedded": true,
+  "pid": 16636,
+  "level": "info",
+  "msg": "finished HTTP request",
+  "time": "2020-04-17T20:29:08+00:00"
+}
+{
+  "method": "POST",
+  "url": "http://127.0.0.1:8080/api/v4/internal/pre_receive",
+  "duration": 0.031022552,
+  "gitaly_embedded": true,
+  "pid": 16636,
+  "level": "info",
+  "msg": "finished HTTP request",
+  "time": "2020-04-17T20:29:08+00:00"
+}
+```
+
+### For GitLab versions 12.5 through 12.9
+
+For GitLab 12.5 to 12.9, this file lives in `/var/log/gitlab/gitaly/gitlab-shell.log` for Omnibus GitLab packages or in `/home/git/gitaly/gitlab-shell.log` for installations from source.
+
+Example log entries:
+
+```json
+{
+  "method": "POST",
+  "url": "http://127.0.0.1:8080/api/v4/internal/post_receive",
+  "duration": 0.031809164,
+  "gitaly_embedded": true,
+  "pid": 27056,
+  "level": "info",
+  "msg": "finished HTTP request",
+  "time": "2020-04-17T16:24:38+00:00"
+}
+```
+
+### For GitLab 12.5 and earlier
+
 For GitLab 12.5 and earlier, the file lives in `/var/log/gitlab/gitlab-shell/gitlab-shell.log`.
 
-GitLab Shell is used by GitLab for executing Git commands and provide
-SSH access to Git repositories. For example:
+Example log entries:
 
 ```plaintext
 I, [2015-02-13T06:17:00.671315 #9291]  INFO -- : Adding project root/example.git at </var/opt/gitlab/git-data/repositories/root/dcdcdcdcd.git>.

@@ -31,7 +31,32 @@ describe('options spec', () => {
       });
     });
 
-    it('formatter options', () => {
+    it('formatter options defaults to engineering notation', () => {
+      const options = getYAxisOptions();
+
+      expect(options.axisLabel.formatter).toEqual(expect.any(Function));
+      expect(options.axisLabel.formatter(3002.1)).toBe('3k');
+    });
+
+    it('formatter options allows for precision to be set explicitly', () => {
+      const options = getYAxisOptions({
+        precision: 4,
+      });
+
+      expect(options.axisLabel.formatter).toEqual(expect.any(Function));
+      expect(options.axisLabel.formatter(5002.1)).toBe('5.0021k');
+    });
+
+    it('formatter options allows for overrides in milliseconds', () => {
+      const options = getYAxisOptions({
+        format: SUPPORTED_FORMATS.milliseconds,
+      });
+
+      expect(options.axisLabel.formatter).toEqual(expect.any(Function));
+      expect(options.axisLabel.formatter(1.1234)).toBe('1.12ms');
+    });
+
+    it('formatter options allows for overrides in bytes', () => {
       const options = getYAxisOptions({
         format: SUPPORTED_FORMATS.bytes,
       });
@@ -46,7 +71,7 @@ describe('options spec', () => {
       const formatter = getTooltipFormatter();
 
       expect(formatter).toEqual(expect.any(Function));
-      expect(formatter(1)).toBe('1.000');
+      expect(formatter(0.11111)).toBe('111.1m');
     });
 
     it('defined format', () => {

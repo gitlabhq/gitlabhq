@@ -9,10 +9,12 @@ class AddSourcegraphConfigurationToApplicationSettings < ActiveRecord::Migration
   # Set this constant to true if this migration requires downtime.
   DOWNTIME = false
 
+  # rubocop:disable Migration/PreventStrings
   def up
     add_column(:application_settings, :sourcegraph_enabled, :boolean, default: false, null: false)
     add_column(:application_settings, :sourcegraph_url, :string, null: true, limit: 255)
   end
+  # rubocop:enable Migration/PreventStrings
 
   def down
     remove_column(:application_settings, :sourcegraph_enabled)

@@ -21,7 +21,7 @@
 # Jobs that only need to pull cache
 .default-cache:
   cache:
-    key: "debian-stretch-ruby-2.6.5-pg10-node-12.x"
+    key: "debian-stretch-ruby-2.6.5-pg11-node-12.x"
     paths:
       - .go/pkg/mod
       - vendor/ruby
@@ -97,6 +97,14 @@
     POSTGRES_HOST_AUTH_METHOD: trust
   cache:
     key: "debian-stretch-ruby-2.6.5-pg11-node-12.x"
+
+# Pin kaniko to v0.16.0 due to https://github.com/GoogleContainerTools/kaniko/issues/1162
+.use-kaniko:
+  image:
+    name: gcr.io/kaniko-project/executor:debug-v0.16.0
+    entrypoint: [""]
+  before_script:
+    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
 
 .as-if-foss:
   variables:

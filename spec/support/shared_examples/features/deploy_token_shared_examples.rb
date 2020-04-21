@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'a deploy token in ci/cd settings' do
+RSpec.shared_examples 'a deploy token in settings' do
   it 'view deploy tokens' do
     within('.deploy-tokens') do
       expect(page).to have_content(deploy_token.name)

@@ -254,8 +254,8 @@ documentation includes [a full list of their linters](https://github.com/sds/scs
 ### Fixing issues
 
 If you want to automate changing a large portion of the codebase to conform to
-the SCSS style guide, you can use [CSSComb][csscomb]. First install
-[Node][node] and [NPM][npm], then run `npm install csscomb -g` to install
+the SCSS style guide, you can use [CSSComb](https://github.com/csscomb/csscomb.js). First install
+[Node](https://github.com/nodejs/node) and [NPM](https://www.npmjs.com/), then run `npm install csscomb -g` to install
 CSSComb globally (system-wide). Run it in the GitLab directory with
 `csscomb app/assets/stylesheets` to automatically fix issues with CSS/SCSS.
 
@@ -279,7 +279,3 @@ Make sure a comment is added on the line above the `disable` rule, otherwise the
 linter will throw a warning. `DisableLinterReason` is enabled to make sure the
 style guide isn't being ignored, and to communicate to others why the style
 guide is ignored in this instance.
-
-[csscomb]: https://github.com/csscomb/csscomb.js
-[node]: https://github.com/nodejs/node
-[npm]: https://www.npmjs.com/

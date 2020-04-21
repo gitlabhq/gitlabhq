@@ -1,0 +1,5 @@
+---
+title: Add typed AWS environment variables for access keys & region
+merge_request: 29124
+author:
+type: added

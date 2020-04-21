@@ -305,20 +305,4 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
       is_expected.to eq(resource)
     end
   end
-
-  describe '#service_account_resource' do
-    subject { install_command.service_account_resource }
-
-    it 'returns nothing' do
-      is_expected.to be_nil
-    end
-  end
-
-  describe '#cluster_role_binding_resource' do
-    subject { install_command.cluster_role_binding_resource }
-
-    it 'returns nothing' do
-      is_expected.to be_nil
-    end
-  end
 end

@@ -17,6 +17,7 @@
   install_knative_path: clusterable.install_applications_cluster_path(@cluster, :knative),
   update_knative_path: clusterable.update_applications_cluster_path(@cluster, :knative),
   install_elastic_stack_path: clusterable.install_applications_cluster_path(@cluster, :elastic_stack),
+  install_fluentd_path: clusterable.install_applications_cluster_path(@cluster, :fluentd),
   cluster_environments_path: cluster_environments_path,
   toggle_status: @cluster.enabled? ? 'true': 'false',
   has_rbac: has_rbac_enabled?(@cluster) ? 'true': 'false',

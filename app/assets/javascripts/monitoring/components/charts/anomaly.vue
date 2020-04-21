@@ -3,7 +3,7 @@ import { flattenDeep, isNumber } from 'lodash';
 import { GlChartSeriesLabel } from '@gitlab/ui/dist/charts';
 import { roundOffFloat } from '~/lib/utils/common_utils';
 import { hexToRgb } from '~/lib/utils/color_utils';
-import { areaOpacityValues, symbolSizes, colorValues } from '../../constants';
+import { areaOpacityValues, symbolSizes, colorValues, panelTypes } from '../../constants';
 import { graphDataValidatorForAnomalyValues } from '../../utils';
 import MonitorTimeSeriesChart from './time_series.vue';
 
@@ -91,7 +91,7 @@ export default {
       ]);
       return {
         ...this.graphData,
-        type: 'line-chart',
+        type: panelTypes.LINE_CHART,
         metrics: [metricQuery],
       };
     },

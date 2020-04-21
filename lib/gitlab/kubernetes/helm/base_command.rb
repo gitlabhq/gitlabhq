@@ -25,11 +25,21 @@ module Gitlab
         end
 
         def service_account_resource
-          nil
+          return unless rbac?
+
+          Gitlab::Kubernetes::ServiceAccount.new(service_account_name, namespace).generate
         end
 
         def cluster_role_binding_resource
-          nil
+          return unless rbac?
+
+          subjects = [{ kind: 'ServiceAccount', name: service_account_name, namespace: namespace }]
+
+          Gitlab::Kubernetes::ClusterRoleBinding.new(
+            cluster_role_binding_name,
+            cluster_role_name,
+            subjects
+          ).generate
         end
 
         def file_names
@@ -60,6 +70,14 @@ module Gitlab
 
         def service_account_name
           Gitlab::Kubernetes::Helm::SERVICE_ACCOUNT
+        end
+
+        def cluster_role_binding_name
+          Gitlab::Kubernetes::Helm::CLUSTER_ROLE_BINDING
+        end
+
+        def cluster_role_name
+          Gitlab::Kubernetes::Helm::CLUSTER_ROLE
         end
       end
     end

@@ -20,24 +20,25 @@ Examples are available in several forms. As a collection of:
 
 The following table lists examples with step-by-step tutorials that are contained in this section.
 
-| Use case                    | Resource                                                                                                                   |
-|:----------------------------|:---------------------------------------------------------------------------------------------------------------------------|
-| Browser performance testing | [Browser Performance Testing with the Sitespeed.io container](../../user/project/merge_requests/browser_performance_testing.md). |
-| Clojure                     | [Test a Clojure application with GitLab CI/CD](test-clojure-application.md).                                               |
-| Deployment with Dpl         | [Using `dpl` as deployment tool](deployment/README.md).                                                                    |
-| Elixir                      | [Testing a Phoenix application with GitLab CI/CD](test_phoenix_app_with_gitlab_ci_cd/index.md).                            |
-| End-to-end testing          | [End-to-end testing with GitLab CI/CD and WebdriverIO](end_to_end_testing_webdriverio/index.md).                           |
-| Game development            | [DevOps and Game Dev with GitLab CI/CD](devops_and_game_dev_with_gitlab_ci_cd/index.md).                                   |
-| GitLab Pages                | See the [GitLab Pages](../../user/project/pages/index.md) documentation for a complete example of deploying a static site. |
-| Java with Spring Boot       | [Deploy a Spring Boot application to Cloud Foundry with GitLab CI/CD](deploy_spring_boot_to_cloud_foundry/index.md).       |
-| Java with Maven             | [How to deploy Maven projects to Artifactory with GitLab CI/CD](artifactory_and_gitlab/index.md).                          |
-| PHP with PHPunit, atoum     | [Testing PHP projects](php.md).                                                                                            |
-| PHP with NPM, SCP           | [Running Composer and NPM scripts with deployment via SCP in GitLab CI/CD](deployment/composer-npm-deploy.md).             |
-| PHP with Laravel, Envoy     | [Test and deploy Laravel applications with GitLab CI/CD and Envoy](laravel_with_gitlab_and_envoy/index.md).                |
-| Python on Heroku            | [Test and deploy a Python application with GitLab CI/CD](test-and-deploy-python-application-to-heroku.md).                 |
-| Ruby on Heroku              | [Test and deploy a Ruby application with GitLab CI/CD](test-and-deploy-ruby-application-to-heroku.md).                     |
-| Scala on Heroku             | [Test and deploy a Scala application to Heroku](test-scala-application.md).                                                |
-| Parallel testing Ruby & JS  | [GitLab CI/CD parallel jobs testing for Ruby & JavaScript projects](https://docs.knapsackpro.com/2019/how-to-run-parallel-jobs-for-rspec-tests-on-gitlab-ci-pipeline-and-speed-up-ruby-javascript-testing). |
+| Use case                      | Resource                                                                                                                   |
+|:------------------------------|:---------------------------------------------------------------------------------------------------------------------------|
+| Browser performance testing   | [Browser Performance Testing with the Sitespeed.io container](../../user/project/merge_requests/browser_performance_testing.md). |
+| Clojure                       | [Test a Clojure application with GitLab CI/CD](test-clojure-application.md).                                               |
+| Deployment with Dpl           | [Using `dpl` as deployment tool](deployment/README.md).                                                                    |
+| Elixir                        | [Testing a Phoenix application with GitLab CI/CD](test_phoenix_app_with_gitlab_ci_cd/index.md).                            |
+| End-to-end testing            | [End-to-end testing with GitLab CI/CD and WebdriverIO](end_to_end_testing_webdriverio/index.md).                           |
+| Game development              | [DevOps and Game Dev with GitLab CI/CD](devops_and_game_dev_with_gitlab_ci_cd/index.md).                                   |
+| GitLab Pages                  | See the [GitLab Pages](../../user/project/pages/index.md) documentation for a complete example of deploying a static site. |
+| Java with Spring Boot         | [Deploy a Spring Boot application to Cloud Foundry with GitLab CI/CD](deploy_spring_boot_to_cloud_foundry/index.md).       |
+| Java with Maven               | [How to deploy Maven projects to Artifactory with GitLab CI/CD](artifactory_and_gitlab/index.md).                          |
+| PHP with PHPunit, atoum       | [Testing PHP projects](php.md).                                                                                            |
+| PHP with NPM, SCP             | [Running Composer and NPM scripts with deployment via SCP in GitLab CI/CD](deployment/composer-npm-deploy.md).             |
+| PHP with Laravel, Envoy       | [Test and deploy Laravel applications with GitLab CI/CD and Envoy](laravel_with_gitlab_and_envoy/index.md).                |
+| Python on Heroku              | [Test and deploy a Python application with GitLab CI/CD](test-and-deploy-python-application-to-heroku.md).                 |
+| Ruby on Heroku                | [Test and deploy a Ruby application with GitLab CI/CD](test-and-deploy-ruby-application-to-heroku.md).                     |
+| Scala on Heroku               | [Test and deploy a Scala application to Heroku](test-scala-application.md).                                                |
+| Parallel testing Ruby & JS    | [GitLab CI/CD parallel jobs testing for Ruby & JavaScript projects](https://docs.knapsackpro.com/2019/how-to-run-parallel-jobs-for-rspec-tests-on-gitlab-ci-pipeline-and-speed-up-ruby-javascript-testing). |
+| Secrets management with Vault | [Authenticating and Reading Secrets With Hashicorp Vault](authenticating-with-hashicorp-vault/index.md).                    |
 
 ### Contributing examples
 

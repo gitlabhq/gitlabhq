@@ -25,7 +25,7 @@ module EnvironmentHelper
   def deployment_link(deployment, text: nil)
     return unless deployment
 
-    link_label = text ? text : "##{deployment.iid}"
+    link_label = text || "##{deployment.iid}"
 
     link_to link_label, deployment_path(deployment)
   end

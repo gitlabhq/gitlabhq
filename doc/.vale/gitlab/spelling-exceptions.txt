@@ -115,6 +115,7 @@ Google
 Gradle
 Grafana
 gravatar
+Gzip
 hardcode
 hardcoded
 hardcodes

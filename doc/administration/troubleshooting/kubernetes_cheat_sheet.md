@@ -240,10 +240,10 @@ to those documents for details.
   helm init --service-account tiller
   ```
 
-- Copy the file <https://gitlab.com/gitlab-org/charts/gitlab/raw/master/examples/values-minikube-minimum.yaml>
+- Copy the [Minikube minimum values YAML file](https://gitlab.com/gitlab-org/charts/gitlab/raw/master/examples/values-minikube-minimum.yaml)
   to your workstation.
 
-- Find the IP address in the output of `minikube ip` and update the yaml file with
+- Find the IP address in the output of `minikube ip` and update the YAML file with
   this IP address.
 
 - Install the GitLab Helm Chart:
@@ -254,7 +254,7 @@ to those documents for details.
   ```
 
   If you want to modify some GitLab settings, you can use the above-mentioned config
-  as a base and create your own yaml file.
+  as a base and create your own YAML file.
 
 - Monitor the installation progress via `helm status gitlab` and `minikube dashboard`.
   The installation could take up to 20-30 minutes depending on the amount of resources
@@ -263,7 +263,7 @@ to those documents for details.
 - When all the pods show either a `Running` or `Completed` status, get the GitLab password as
   described in [Initial login](https://docs.gitlab.com/charts/installation/deployment.html#initial-login),
   and log in to GitLab via the UI. It will be accessible via `https://gitlab.domain`
-  where `domain` is the value provided in the yaml file.
+  where `domain` is the value provided in the YAML file.
 
 <!-- ## Troubleshooting
 

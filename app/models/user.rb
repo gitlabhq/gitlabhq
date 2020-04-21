@@ -337,7 +337,8 @@ class User < ApplicationRecord
   scope :with_dashboard, -> (dashboard) { where(dashboard: dashboard) }
   scope :with_public_profile, -> { where(private_profile: false) }
   scope :bots, -> { where(user_type: UserTypeEnums.bots.values) }
-  scope :not_bots, -> { humans.or(where.not(user_type: UserTypeEnums.bots.values)) }
+  scope :bots_without_project_bot, -> { bots.where.not(user_type: UserTypeEnums.bots[:project_bot]) }
+  scope :with_project_bots, -> { humans.or(where.not(user_type: UserTypeEnums.bots.except(:project_bot).values)) }
   scope :humans, -> { where(user_type: nil) }
 
   scope :with_expiring_and_not_notified_personal_access_tokens, ->(at) do
@@ -657,8 +658,10 @@ class User < ApplicationRecord
     UserTypeEnums.bots.has_key?(user_type)
   end
 
+  # The explicit check for project_bot will be removed with Bot Categorization
+  # Ref: https://gitlab.com/gitlab-org/gitlab/-/issues/213945
   def internal?
-    ghost? || bot?
+    ghost? || (bot? && !project_bot?)
   end
 
   # We are transitioning from ghost boolean column to user_type
@@ -668,12 +671,16 @@ class User < ApplicationRecord
     ghost
   end
 
+  # The explicit check for project_bot will be removed with Bot Categorization
+  # Ref: https://gitlab.com/gitlab-org/gitlab/-/issues/213945
   def self.internal
-    where(ghost: true).or(bots)
+    where(ghost: true).or(bots_without_project_bot)
   end
 
+  # The explicit check for project_bot will be removed with Bot Categorization
+  # Ref: https://gitlab.com/gitlab-org/gitlab/-/issues/213945
   def self.non_internal
-    without_ghosts.not_bots
+    without_ghosts.with_project_bots
   end
 
   #
@@ -1720,7 +1727,7 @@ class User < ApplicationRecord
 
   # override, from Devise::Validatable
   def password_required?
-    return false if internal?
+    return false if internal? || project_bot?
 
     super
   end

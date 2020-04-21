@@ -15,9 +15,7 @@ module IntegrationsActions
   end
 
   def update
-    integration.attributes = service_params[:service]
-
-    saved = integration.save(context: :manual_change)
+    saved = integration.update(service_params[:service])
 
     respond_to do |format|
       format.html do

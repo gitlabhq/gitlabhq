@@ -14,7 +14,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   skip_before_action :merge_request, only: [:index, :bulk_update]
   before_action :whitelist_query_limiting, only: [:assign_related_issues, :update]
   before_action :authorize_update_issuable!, only: [:close, :edit, :update, :remove_wip, :sort]
-  before_action :authorize_read_actual_head_pipeline!, only: [:test_reports, :exposed_artifacts, :coverage_reports]
+  before_action :authorize_read_actual_head_pipeline!, only: [:test_reports, :exposed_artifacts, :coverage_reports, :terraform_reports]
   before_action :set_issuables_index, only: [:index]
   before_action :authenticate_user!, only: [:assign_related_issues]
   before_action :check_user_can_push_to_source_branch!, only: [:rebase]
@@ -25,6 +25,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:suggest_pipeline) if experiment_enabled?(:suggest_pipeline)
     push_frontend_feature_flag(:code_navigation, @project)
     push_frontend_feature_flag(:widget_visibility_polling, @project, default_enabled: true)
+    push_frontend_feature_flag(:merge_ref_head_comments, @project)
   end
 
   before_action do
@@ -140,6 +141,10 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     else
       head :no_content
     end
+  end
+
+  def terraform_reports
+    reports_response(@merge_request.find_terraform_reports)
   end
 
   def exposed_artifacts
@@ -339,11 +344,13 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def serialize_widget(merge_request)
-    serializer.represent(merge_request, serializer: 'widget')
+    cached_data = serializer.represent(merge_request, serializer: 'poll_cached_widget')
+    widget_data = serializer.represent(merge_request, serializer: 'poll_widget')
+    cached_data.merge!(widget_data)
   end
 
   def serializer
-    MergeRequestSerializer.new(current_user: current_user, project: merge_request.project)
+    @serializer ||= MergeRequestSerializer.new(current_user: current_user, project: merge_request.project)
   end
 
   def define_edit_vars

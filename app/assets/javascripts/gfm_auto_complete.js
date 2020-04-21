@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import '@gitlab/at.js';
-import _ from 'underscore';
+import { escape as esc, template } from 'lodash';
 import SidebarMediator from '~/sidebar/sidebar_mediator';
 import glRegexp from './lib/utils/regexp';
 import AjaxCache from './lib/utils/ajax_cache';
@@ -11,7 +11,7 @@ function sanitize(str) {
 }
 
 export function membersBeforeSave(members) {
-  return _.map(members, member => {
+  return members.map(member => {
     const GROUP_TYPE = 'Group';
 
     let title = '';
@@ -122,7 +122,7 @@ class GfmAutoComplete {
           cssClasses.push('has-warning');
         }
 
-        return _.template(tpl)({
+        return template(tpl)({
           ...value,
           className: cssClasses.join(' '),
         });
@@ -137,7 +137,7 @@ class GfmAutoComplete {
             tpl += '<%- referencePrefix %>';
           }
         }
-        return _.template(tpl)({ referencePrefix });
+        return template(tpl, { interpolate: /<%=([\s\S]+?)%>/g })({ referencePrefix });
       },
       suffix: '',
       callbacks: {
@@ -692,14 +692,14 @@ GfmAutoComplete.Emoji = {
 // Team Members
 GfmAutoComplete.Members = {
   templateFunction({ avatarTag, username, title, icon }) {
-    return `<li>${avatarTag} ${username} <small>${_.escape(title)}</small> ${icon}</li>`;
+    return `<li>${avatarTag} ${username} <small>${esc(title)}</small> ${icon}</li>`;
   },
 };
 GfmAutoComplete.Labels = {
   templateFunction(color, title) {
-    return `<li><span class="dropdown-label-box" style="background: ${_.escape(
-      color,
-    )}"></span> ${_.escape(title)}</li>`;
+    return `<li><span class="dropdown-label-box" style="background: ${esc(color)}"></span> ${esc(
+      title,
+    )}</li>`;
   },
 };
 // Issues, MergeRequests and Snippets
@@ -709,13 +709,13 @@ GfmAutoComplete.Issues = {
     return value.reference || '${atwho-at}${id}';
   },
   templateFunction({ id, title, reference }) {
-    return `<li><small>${reference || id}</small> ${_.escape(title)}</li>`;
+    return `<li><small>${reference || id}</small> ${esc(title)}</li>`;
   },
 };
 // Milestones
 GfmAutoComplete.Milestones = {
   templateFunction(title) {
-    return `<li>${_.escape(title)}</li>`;
+    return `<li>${esc(title)}</li>`;
   },
 };
 GfmAutoComplete.Loading = {

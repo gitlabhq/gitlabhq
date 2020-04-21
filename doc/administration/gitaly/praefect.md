@@ -1,34 +1,36 @@
 # Praefect: High Availability
 
-NOTE: **Note:** Praefect is an experimental service, and data loss is likely.
+NOTE: **Note:** Praefect is a
+[beta](https://about.gitlab.com/handbook/product/#alpha-beta-ga) component that
+allows Gitaly to be run in a highly available configuration. While unexpected
+data loss is not likely, Praefect is not yet ready for production environments.
 
 Praefect is an optional reverse-proxy for [Gitaly](../index.md) to manage a
-cluster of Gitaly nodes for high availability. Initially, high availability
-be implemented through asynchronous replication. If a Gitaly node becomes
-unavailable, it will be possible to fail over to a warm Gitaly replica.
+cluster of Gitaly nodes for high availability. High availability is currently
+implemented through asynchronous replication. If a Gitaly node becomes
+unavailable, Praefect will automatically route traffic to a warm Gitaly replica.
 
-The first minimal version will support:
+The current version supports:
 
 - Eventual consistency of the secondary replicas.
 - Automatic fail over from the primary to the secondary.
 - Reporting of possible data loss if replication queue is non empty.
 
 Follow the [HA Gitaly epic](https://gitlab.com/groups/gitlab-org/-/epics/1489)
-for updates and roadmap.
+for improvements including
+[strong consistency](https://gitlab.com/groups/gitlab-org/-/epics/1189) and
+[horizontally distributing reads](https://gitlab.com/groups/gitlab-org/-/epics/2013).
 
 ## Requirements for configuring Gitaly for High Availability
 
-NOTE: **Note:** this reference architecture is not highly available because
-Praefect is a single point of failure.
+A minimum highly available configuration requires:
 
-The minimal [alpha](https://about.gitlab.com/handbook/product/#alpha-beta-ga)
-reference architecture additionally requires:
-
-- 1 Praefect node
-- 1 PostgreSQL server (PostgreSQL 9.6 or newer)
+- 1 highly available load balancer
+- 1 highly available PostgreSQL server (PostgreSQL 9.6 or newer)
+- 2 Praefect nodes
 - 3 Gitaly nodes (1 primary, 2 secondary)
 
-![Alpha architecture diagram](img/praefect_architecture_v12_10.png)
+![Architecture diagram](img/praefect_architecture_v12_10.png)
 
 See the [design
 document](https://gitlab.com/gitlab-org/gitaly/-/blob/master/doc/design_ha.md)
@@ -64,6 +66,7 @@ GitLab](https://about.gitlab.com/install/).
 
 You will need the IP/host address for each node.
 
+1. `LOADBALANCER_SERVER_ADDRESS`: the IP/hots address of the load balancer
 1. `POSTGRESQL_SERVER_ADDRESS`: the IP/host address of the PostgreSQL server
 1. `PRAEFECT_HOST`: the IP/host address of the Praefect server
 1. `GITALY_HOST`: the IP/host address of each Gitaly server
@@ -98,8 +101,10 @@ We will note in the instructions below where these secrets are required.
 
 ### PostgreSQL
 
-NOTE: **Note:** don't reuse the GitLab application database for the Praefect
-database.
+NOTE: **Note:** do not store the GitLab application database and the Praefect
+database on the same PostgreSQL server if using
+[Geo](../geo/replication/index.md). The replication state is internal to each instance
+of GitLab and should not be replicated.
 
 To complete this section you will need:
 
@@ -245,9 +250,9 @@ application server, or a Gitaly node.
 1. Configure the **Praefect** cluster to connect to each Gitaly node in the
    cluster by editing `/etc/gitlab/gitlab.rb`.
 
-   In the example below we have configured one cluster named `praefect`. This
-   cluster has three Gitaly nodes `gitaly-1`, `gitaly-2`, and `gitaly-3`, which
-   will be replicas of each other.
+   In the example below we have configured one virtual storage (or shard) named
+   `storage-1`. This cluster has three Gitaly nodes `gitaly-1`, `gitaly-2`, and
+   `gitaly-3`, which will be replicas of each other.
 
    Replace `PRAEFECT_INTERNAL_TOKEN` with a strong secret, which will be used by
    Praefect when communicating with Gitaly nodes in the cluster. This token is
@@ -266,7 +271,7 @@ application server, or a Gitaly node.
    # Name of storage hash must match storage name in git_data_dirs on GitLab
    # server ('praefect') and in git_data_dirs on Gitaly nodes ('gitaly-1')
    praefect['virtual_storages'] = {
-     'praefect' => {
+     'storage-1' => {
        'gitaly-1' => {
          'address' => 'tcp://GITALY_HOST:8075',
          'token'   => 'PRAEFECT_INTERNAL_TOKEN',
@@ -284,6 +289,12 @@ application server, or a Gitaly node.
    }
    ```
 
+1. Enable the replication queue:
+
+    ```ruby
+    praefect['postgres_queue_enabled'] = true
+    ```
+
 1. Save the changes to `/etc/gitlab/gitlab.rb` and [reconfigure Praefect](../restart_gitlab.md#omnibus-gitlab-reconfigure):
 
    ```shell
@@ -299,6 +310,60 @@ application server, or a Gitaly node.
    If the check fails, make sure you have followed the steps correctly. If you
    edit `/etc/gitlab/gitlab.rb`, remember to run `sudo gitlab-ctl reconfigure`
    again before trying the `sql-ping` command.
+
+#### Automatic failover
+
+When automatic failover is enabled, Praefect will do automatic detection of the health of internal Gitaly nodes. If the
+primary has a certain amount of health checks fail, it will decide to promote one of the secondaries to be primary, and
+demote the primary to be a secondary.
+
+1. To enable automatic failover, edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   # failover_enabled turns on automatic failover
+   praefect['failover_enabled'] = true
+   praefect['virtual_storages'] = {
+     'storage-1' => {
+       'gitaly-1' => {
+         'address' => 'tcp://GITALY_HOST:8075',
+         'token'   => 'PRAEFECT_INTERNAL_TOKEN',
+         'primary' => true
+       },
+       'gitaly-2' => {
+         'address' => 'tcp://GITALY_HOST:8075',
+         'token'   => 'PRAEFECT_INTERNAL_TOKEN'
+       },
+       'gitaly-3' => {
+         'address' => 'tcp://GITALY_HOST:8075',
+         'token'   => 'PRAEFECT_INTERNAL_TOKEN'
+       }
+     }
+   }
+   ```
+
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+
+Below is the picture when Praefect starts up with the config.toml above:
+
+```mermaid
+graph TD
+  A[Praefect] -->|Mutator RPC| B(internal_storage_0)
+  B --> |Replication|C[internal_storage_1]
+```
+
+Let's say suddenly `internal_storage_0` goes down. Praefect will detect this and
+automatically switch over to `internal_storage_1`, and `internal_storage_0` will serve as a secondary:
+
+```mermaid
+graph TD
+  A[Praefect] -->|Mutator RPC| B(internal_storage_1)
+  B --> |Replication|C[internal_storage_0]
+```
+
+NOTE: **Note:**: Currently this feature is supported for setups that only have 1 Praefect instance. Praefect instances running,
+for example behind a load balancer, `failover_enabled` should be disabled. The reason is The reason is because there
+is no coordination that currently happens across different Praefect instances, so there could be a situation where
+two Praefect instances think two different Gitaly nodes are the primary.
 
 ### Gitaly
 
@@ -501,7 +566,7 @@ Particular attention should be shown to:
 - the storage name added to `git_data_dirs` in this section must match the
   storage name under `praefect['virtual_storages']` on the Praefect node. This
   was set in the [Praefect](#praefect) section of this guide. This document uses
-  `praefect` as the Praefect storage name.
+  `storage-1` as the Praefect storage name.
 
 1. SSH into the **GitLab** node and login as root:
 
@@ -523,7 +588,7 @@ Particular attention should be shown to:
      "default" => {
        "gitaly_address" => "tcp://GITLAB_HOST:8075"
      },
-     "praefect" => {
+     "storage-1" => {
        "gitaly_address" => "tcp://PRAEFECT_HOST:2305",
        "gitaly_token" => 'PRAEFECT_EXTERNAL_TOKEN'
      }

@@ -626,17 +626,6 @@ Style/TernaryParentheses:
     - 'spec/requests/api/pipeline_schedules_spec.rb'
     - 'spec/support/capybara.rb'
 
-# Offense count: 8
-# Cop supports --auto-correct.
-Style/UnneededCondition:
-  Exclude:
-    - 'app/helpers/button_helper.rb'
-    - 'app/helpers/environment_helper.rb'
-    - 'app/models/project.rb'
-    - 'app/services/issuable/clone/base_service.rb'
-    - 'lib/gitlab/email/message/repository_push.rb'
-    - 'spec/lib/rspec_flaky/flaky_example_spec.rb'
-
 # Offense count: 99
 # Cop supports --auto-correct.
 Style/UnneededInterpolation:

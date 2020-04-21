@@ -9,6 +9,6 @@ class AddDescriptionToServices < ActiveRecord::Migration[5.1]
   DOWNTIME = false
 
   def change
-    add_column :services, :description, :string, limit: 500
+    add_column :services, :description, :string, limit: 500 # rubocop:disable Migration/PreventStrings
   end
 end

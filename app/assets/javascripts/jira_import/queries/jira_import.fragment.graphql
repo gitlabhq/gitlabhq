@@ -1,0 +1,7 @@
+fragment JiraImport on JiraImport {
+  jiraProjectKey
+  scheduledAt
+  scheduledBy {
+    name
+  }
+}

@@ -100,7 +100,7 @@ def instrument_classes(instrumentation)
     instrumentation.instrument_instance_methods(Gitlab::Elastic::ProjectSearchResults)
     instrumentation.instrument_instance_methods(Gitlab::Elastic::Indexer)
     instrumentation.instrument_instance_methods(Gitlab::Elastic::SnippetSearchResults)
-    instrumentation.instrument_methods(Gitlab::Elastic::Helper)
+    instrumentation.instrument_instance_methods(Gitlab::Elastic::Helper)
 
     instrumentation.instrument_instance_methods(Elastic::ApplicationVersionedSearch)
     instrumentation.instrument_instance_methods(Elastic::ProjectsSearch)

@@ -1,6 +1,6 @@
 # Vuex
 
-When there's a clear benefit to separating state management from components (e.g. due to state complexity) we recommend using [Vuex][vuex-docs] over any other Flux pattern. Otherwise, feel free to manage state within the components.
+When there's a clear benefit to separating state management from components (e.g. due to state complexity) we recommend using [Vuex](https://vuex.vuejs.org) over any other Flux pattern. Otherwise, feel free to manage state within the components.
 
 Vuex should be strongly considered when:
 
@@ -9,7 +9,7 @@ Vuex should be strongly considered when:
 - There are complex interactions with Backend, e.g. multiple API calls
 - The app involves interacting with backend via both traditional REST API and GraphQL (especially when moving the REST API over to GraphQL is a pending backend task)
 
-_Note:_ All of the below is explained in more detail in the official [Vuex documentation][vuex-docs].
+_Note:_ All of the below is explained in more detail in the official [Vuex documentation](https://vuex.vuejs.org).
 
 ## Separation of concerns
 
@@ -476,8 +476,6 @@ To prevent this error from happening, you need to export an empty function as `d
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};
 ```
-
-[vuex-docs]: https://vuex.vuejs.org
 
 ### Two way data binding
 

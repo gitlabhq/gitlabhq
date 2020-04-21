@@ -1,6 +1,6 @@
 # Validate the `.gitlab-ci.yml` (API)
 
-> [Introduced][ce-5953] in GitLab 8.12.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5953) in GitLab 8.12.
 
 Checks if your `.gitlab-ci.yml` file is valid.
 
@@ -47,5 +47,3 @@ Example responses:
     "error": "content is missing"
   }
   ```
-
-[ce-5953]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5953

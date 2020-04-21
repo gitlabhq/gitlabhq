@@ -7,7 +7,7 @@ class AddExternalKeyToIssuesTable < ActiveRecord::Migration[6.0]
 
   def up
     with_lock_retries do
-      add_column :issues, :external_key, :string, limit: 255
+      add_column :issues, :external_key, :string, limit: 255 # rubocop:disable Migration/PreventStrings
     end
   end
 

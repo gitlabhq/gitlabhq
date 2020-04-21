@@ -1,6 +1,6 @@
 # Database Load Balancing **(PREMIUM ONLY)**
 
-> [Introduced][ee-1283] in [GitLab Premium][eep] 9.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1283) in [GitLab Premium](https://about.gitlab.com/pricing/) 9.0.
 
 Distribute read-only queries among multiple database servers.
 
@@ -11,7 +11,7 @@ multiple computing resources. Load balancing aims to optimize resource use,
 maximize throughput, minimize response time, and avoid overload of any single
 resource. Using multiple components with load balancing instead of a single
 component may increase reliability and availability through redundancy.
-[_Wikipedia article_][wikipedia]
+[_Wikipedia article_](https://en.wikipedia.org/wiki/Load_balancing_(computing))
 
 When database load balancing is enabled in GitLab, the load is balanced using
 a simple round-robin algorithm, without any external dependencies such as Redis.
@@ -27,8 +27,8 @@ sent to the primary (unless necessary), the primary (`db3`) hardly has any load.
 ## Requirements
 
 For load balancing to work you will need at least PostgreSQL 9.2 or newer,
-[**MySQL is not supported**][db-req]. You also need to make sure that you have
-at least 1 secondary in [hot standby][hot-standby] mode.
+[**MySQL is not supported**](../install/requirements.md#database). You also need to make sure that you have
+at least 1 secondary in [hot standby](https://www.postgresql.org/docs/9.6/hot-standby.html) mode.
 
 Load balancing also requires that the configured hosts **always** point to the
 primary, even after a database failover. Furthermore, the additional hosts to
@@ -78,7 +78,7 @@ the following. This will balance the load between `host1.example.com` and
    gitlab_rails['db_load_balancing'] = { 'hosts' => ['host1.example.com', 'host2.example.com'] }
    ```
 
-1. Save the file and [reconfigure GitLab][] for the changes to take effect.
+1. Save the file and [reconfigure GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
 ---
 
@@ -97,11 +97,11 @@ the following. This will balance the load between `host1.example.com` and
          - host2.example.com
    ```
 
-1. Save the file and [restart GitLab][] for the changes to take effect.
+1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
 
 ## Service Discovery
 
-> [Introduced][ee-5883] in [GitLab Premium][eep] 11.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/5883) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.0.
 
 Service discovery allows GitLab to automatically retrieve a list of secondary
 databases to use, instead of having to manually specify these in the
@@ -161,7 +161,7 @@ When the list of hosts is updated, it might take a while for the old connections
 to be terminated. The `disconnect_timeout` setting can be used to enforce an
 upper limit on the time it will take to terminate all old database connections.
 
-Some nameservers (like [Consul][consul-udp]) can return a truncated list of hosts when
+Some nameservers (like [Consul](https://www.consul.io/docs/agent/dns.html#udp-based-dns-queries)) can return a truncated list of hosts when
 queried over UDP. To overcome this issue, you can use TCP for querying by setting
 `use_tcp` to `true`.
 
@@ -239,7 +239,7 @@ For example:
 
 ## Handling Stale Reads
 
-> [Introduced][ee-3526] in [GitLab Premium][eep] 10.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3526) in [GitLab Premium](https://about.gitlab.com/pricing/) 10.3.
 
 To prevent reading from an outdated secondary the load balancer will check if it
 is in sync with the primary. If the data is determined to be recent enough the
@@ -270,14 +270,3 @@ production:
     max_replication_lag_time: 30
     replica_check_interval: 30
 ```
-
-[hot-standby]: https://www.postgresql.org/docs/9.6/hot-standby.html
-[ee-1283]: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1283
-[eep]: https://about.gitlab.com/pricing/
-[reconfigure gitlab]: restart_gitlab.md#omnibus-gitlab-reconfigure "How to reconfigure Omnibus GitLab"
-[restart gitlab]: restart_gitlab.md#installations-from-source "How to restart GitLab"
-[wikipedia]: https://en.wikipedia.org/wiki/Load_balancing_(computing)
-[db-req]: ../install/requirements.md#database
-[ee-3526]: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3526
-[ee-5883]: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/5883
-[consul-udp]: https://www.consul.io/docs/agent/dns.html#udp-based-dns-queries

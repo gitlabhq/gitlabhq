@@ -4,6 +4,7 @@ require 'spec_helper'
 
 describe Projects::IssuesController do
   include ProjectForksHelper
+  include_context 'includes Spam constants'
 
   let(:project) { create(:project) }
   let(:user)    { create(:user) }
@@ -419,11 +420,11 @@ describe Projects::IssuesController do
         expect(issue.reload.title).to eq('New title')
       end
 
-      context 'when Akismet is enabled and the issue is identified as spam' do
+      context 'when the SpamVerdictService disallows' do
         before do
           stub_application_setting(recaptcha_enabled: true)
-          expect_next_instance_of(Spam::AkismetService) do |akismet_service|
-            expect(akismet_service).to receive_messages(spam?: true)
+          expect_next_instance_of(Spam::SpamVerdictService) do |verdict_service|
+            expect(verdict_service).to receive(:execute).and_return(REQUIRE_RECAPTCHA)
           end
         end
 
@@ -716,16 +717,16 @@ describe Projects::IssuesController do
         end
       end
 
-      context 'Akismet is enabled' do
+      context 'Recaptcha is enabled' do
         before do
           project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
           stub_application_setting(recaptcha_enabled: true)
         end
 
-        context 'when an issue is not identified as spam' do
+        context 'when SpamVerdictService allows the issue' do
           before do
-            expect_next_instance_of(Spam::AkismetService) do |akismet_service|
-              expect(akismet_service).to receive_messages(spam?: false)
+            expect_next_instance_of(Spam::SpamVerdictService) do |verdict_service|
+              expect(verdict_service).to receive(:execute).and_return(ALLOW)
             end
           end
 
@@ -735,10 +736,10 @@ describe Projects::IssuesController do
         end
 
         context 'when an issue is identified as spam' do
-          context 'when captcha is not verified' do
+          context 'when recaptcha is not verified' do
             before do
-              expect_next_instance_of(Spam::AkismetService) do |akismet_service|
-                expect(akismet_service).to receive_messages(spam?: true)
+              expect_next_instance_of(Spam::SpamVerdictService) do |verdict_service|
+                expect(verdict_service).to receive(:execute).and_return(REQUIRE_RECAPTCHA)
               end
             end
 
@@ -796,7 +797,7 @@ describe Projects::IssuesController do
             end
           end
 
-          context 'when captcha is verified' do
+          context 'when recaptcha is verified' do
             let(:spammy_title) { 'Whatever' }
             let!(:spam_logs) { create_list(:spam_log, 2, user: user, title: spammy_title) }
 
@@ -967,17 +968,17 @@ describe Projects::IssuesController do
       end
     end
 
-    context 'Akismet is enabled' do
+    context 'Recaptcha is enabled' do
       before do
         stub_application_setting(recaptcha_enabled: true)
       end
 
-      context 'when an issue is not identified as spam' do
+      context 'when SpamVerdictService allows the issue' do
         before do
           stub_feature_flags(allow_possible_spam: false)
 
-          expect_next_instance_of(Spam::AkismetService) do |akismet_service|
-            expect(akismet_service).to receive_messages(spam?: false)
+          expect_next_instance_of(Spam::SpamVerdictService) do |verdict_service|
+            expect(verdict_service).to receive(:execute).and_return(ALLOW)
           end
         end
 
@@ -986,16 +987,16 @@ describe Projects::IssuesController do
         end
       end
 
-      context 'when an issue is identified as spam' do
+      context 'when SpamVerdictService requires recaptcha' do
         context 'when captcha is not verified' do
-          def post_spam_issue
-            post_new_issue(title: 'Spam Title', description: 'Spam lives here')
+          before do
+            expect_next_instance_of(Spam::SpamVerdictService) do |verdict_service|
+              expect(verdict_service).to receive(:execute).and_return(REQUIRE_RECAPTCHA)
+            end
           end
 
-          before do
-            expect_next_instance_of(Spam::AkismetService) do |akismet_service|
-              expect(akismet_service).to receive_messages(spam?: true)
-            end
+          def post_spam_issue
+            post_new_issue(title: 'Spam Title', description: 'Spam lives here')
           end
 
           context 'when allow_possible_spam feature flag is false' do
@@ -1039,11 +1040,12 @@ describe Projects::IssuesController do
           end
         end
 
-        context 'when captcha is verified' do
+        context 'when Recaptcha is verified' do
           let!(:spam_logs) { create_list(:spam_log, 2, user: user, title: 'Title') }
+          let!(:last_spam_log) { spam_logs.last }
 
           def post_verified_issue
-            post_new_issue({}, { spam_log_id: spam_logs.last.id, recaptcha_verification: true } )
+            post_new_issue({}, { spam_log_id: last_spam_log.id, recaptcha_verification: true } )
           end
 
           before do
@@ -1055,14 +1057,14 @@ describe Projects::IssuesController do
           end
 
           it 'marks spam log as recaptcha_verified' do
-            expect { post_verified_issue }.to change { SpamLog.last.recaptcha_verified }.from(false).to(true)
+            expect { post_verified_issue }.to change { last_spam_log.reload.recaptcha_verified }.from(false).to(true)
           end
 
           it 'does not mark spam log as recaptcha_verified when it does not belong to current_user' do
             spam_log = create(:spam_log)
 
             expect { post_new_issue({}, { spam_log_id: spam_log.id, recaptcha_verification: true } ) }
-              .not_to change { SpamLog.last.recaptcha_verified }
+              .not_to change { last_spam_log.recaptcha_verified }
           end
         end
       end
@@ -1424,6 +1426,45 @@ describe Projects::IssuesController do
       post :import_csv, params: { namespace_id: project.namespace.to_param,
                                   project_id: project.to_param,
                                   file: file }
+    end
+  end
+
+  describe 'POST export_csv' do
+    let(:viewer) { user }
+    let(:issue) { create(:issue, project: project) }
+
+    before do
+      project.add_developer(user)
+    end
+
+    def request_csv
+      post :export_csv, params: { namespace_id: project.namespace.to_param, project_id: project.to_param }
+    end
+
+    context 'when logged in' do
+      before do
+        sign_in(viewer)
+      end
+
+      it 'allows CSV export' do
+        expect(ExportCsvWorker).to receive(:perform_async).with(viewer.id, project.id, anything)
+
+        request_csv
+
+        expect(response).to redirect_to(project_issues_path(project))
+        expect(response.flash[:notice]).to match(/\AYour CSV export has started/i)
+      end
+    end
+
+    context 'when not logged in' do
+      let(:project) { create(:project_empty_repo, :public) }
+
+      it 'redirects to the sign in page' do
+        request_csv
+
+        expect(ExportCsvWorker).not_to receive(:perform_async)
+        expect(response).to redirect_to(new_user_session_path)
+      end
     end
   end
 

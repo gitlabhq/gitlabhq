@@ -18,7 +18,7 @@ describe 'Projects > Settings > CI / CD settings' do
       visit project_settings_ci_cd_path(project)
     end
 
-    it_behaves_like 'a deploy token in ci/cd settings' do
+    it_behaves_like 'a deploy token in settings' do
       let(:entity_type) { 'project' }
     end
   end

@@ -13,9 +13,13 @@ module Spammable
     has_one :user_agent_detail, as: :subject, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
     attr_accessor :spam
+    attr_accessor :needs_recaptcha
     attr_accessor :spam_log
-    alias_method :spam?, :spam
 
+    alias_method :spam?, :spam
+    alias_method :needs_recaptcha?, :needs_recaptcha
+
+    # if spam errors are added before validation, they will be wiped
     after_validation :invalidate_if_spam, on: [:create, :update]
 
     cattr_accessor :spammable_attrs, instance_accessor: false do
@@ -38,22 +42,33 @@ module Spammable
   end
 
   def needs_recaptcha!
+    self.needs_recaptcha = true
+  end
+
+  def spam!
+    self.spam = true
+  end
+
+  def clear_spam_flags!
+    self.spam = false
+    self.needs_recaptcha = false
+  end
+
+  def invalidate_if_spam
+    if needs_recaptcha? && Gitlab::Recaptcha.enabled?
+      recaptcha_error!
+    elsif needs_recaptcha? || spam?
+      unrecoverable_spam_error!
+    end
+  end
+
+  def recaptcha_error!
     self.errors.add(:base, "Your #{spammable_entity_type} has been recognized as spam. "\
-                  "Please, change the content or solve the reCAPTCHA to proceed.")
+                    "Please, change the content or solve the reCAPTCHA to proceed.")
   end
 
   def unrecoverable_spam_error!
     self.errors.add(:base, "Your #{spammable_entity_type} has been recognized as spam and has been discarded.")
-  end
-
-  def invalidate_if_spam
-    return unless spam?
-
-    if Gitlab::Recaptcha.enabled?
-      needs_recaptcha!
-    else
-      unrecoverable_spam_error!
-    end
   end
 
   def spammable_entity_type

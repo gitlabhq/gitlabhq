@@ -203,7 +203,7 @@ The best place to start is to determine if the issue is with creating an empty i
 If it is, check on the Elasticsearch side to determine if the `gitlab-production` (the
 name for the GitLab index) exists. If it exists, manually delete it on the Elasticsearch
 side and attempt to recreate it from the
-[`create_empty_index`](../../integration/elasticsearch.md#gitlab-elasticsearch-rake-tasks)
+[`recreate_index`](../../integration/elasticsearch.md#gitlab-elasticsearch-rake-tasks)
 Rake task.
 
 If you still encounter issues, try creating an index manually on the Elasticsearch

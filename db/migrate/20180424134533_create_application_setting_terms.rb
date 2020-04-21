@@ -3,6 +3,7 @@ class CreateApplicationSettingTerms < ActiveRecord::Migration[4.2]
 
   DOWNTIME = false
 
+  # rubocop:disable Migration/AddLimitToTextColumns
   def change
     create_table :application_setting_terms do |t|
       t.integer :cached_markdown_version
@@ -10,4 +11,5 @@ class CreateApplicationSettingTerms < ActiveRecord::Migration[4.2]
       t.text :terms_html
     end
   end
+  # rubocop:enable Migration/AddLimitToTextColumns
 end

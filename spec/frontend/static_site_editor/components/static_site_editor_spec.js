@@ -1,6 +1,5 @@
 import Vuex from 'vuex';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
-
 import { GlSkeletonLoader } from '@gitlab/ui';
 
 import createState from '~/static_site_editor/store/state';
@@ -11,8 +10,15 @@ import EditHeader from '~/static_site_editor/components/edit_header.vue';
 import InvalidContentMessage from '~/static_site_editor/components/invalid_content_message.vue';
 import PublishToolbar from '~/static_site_editor/components/publish_toolbar.vue';
 import SubmitChangesError from '~/static_site_editor/components/submit_changes_error.vue';
+import SavedChangesMessage from '~/static_site_editor/components/saved_changes_message.vue';
 
-import { sourceContent, sourceContentTitle, submitChangesError } from '../mock_data';
+import {
+  returnUrl,
+  sourceContent,
+  sourceContentTitle,
+  savedContentMeta,
+  submitChangesError,
+} from '../mock_data';
 
 const localVue = createLocalVue();
 
@@ -74,6 +80,7 @@ describe('StaticSiteEditor', () => {
   const findPublishToolbar = () => wrapper.find(PublishToolbar);
   const findSkeletonLoader = () => wrapper.find(GlSkeletonLoader);
   const findSubmitChangesError = () => wrapper.find(SubmitChangesError);
+  const findSavedChangesMessage = () => wrapper.find(SavedChangesMessage);
 
   beforeEach(() => {
     buildStore();
@@ -82,6 +89,17 @@ describe('StaticSiteEditor', () => {
 
   afterEach(() => {
     wrapper.destroy();
+  });
+
+  it('renders the saved changes message when changes are submitted successfully', () => {
+    buildStore({ initialState: { returnUrl, savedContentMeta } });
+    buildWrapper();
+
+    expect(findSavedChangesMessage().exists()).toBe(true);
+    expect(findSavedChangesMessage().props()).toEqual({
+      returnUrl,
+      ...savedContentMeta,
+    });
   });
 
   describe('when content is not loaded', () => {
@@ -95,6 +113,10 @@ describe('StaticSiteEditor', () => {
 
     it('does not render toolbar', () => {
       expect(findPublishToolbar().exists()).toBe(false);
+    });
+
+    it('does not render saved changes message', () => {
+      expect(findSavedChangesMessage().exists()).toBe(false);
     });
   });
 

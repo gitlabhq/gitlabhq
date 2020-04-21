@@ -29,6 +29,10 @@ export default class GLForm {
     if (this.autoComplete) {
       this.autoComplete.destroy();
     }
+    if (this.formDropzone) {
+      this.formDropzone.destroy();
+    }
+
     this.form.data('glForm', null);
   }
 
@@ -45,7 +49,7 @@ export default class GLForm {
       );
       this.autoComplete = new GfmAutoComplete(gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources);
       this.autoComplete.setup(this.form.find('.js-gfm-input'), this.enableGFM);
-      dropzoneInput(this.form, { parallelUploads: 1 });
+      this.formDropzone = dropzoneInput(this.form, { parallelUploads: 1 });
       autosize(this.textarea);
     }
     // form and textarea event listeners

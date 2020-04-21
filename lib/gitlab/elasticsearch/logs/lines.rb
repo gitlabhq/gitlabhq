@@ -13,7 +13,7 @@ module Gitlab
           @client = client
         end
 
-        def pod_logs(namespace, pod_name: nil, container_name: nil, search: nil, start_time: nil, end_time: nil, cursor: nil)
+        def pod_logs(namespace, pod_name: nil, container_name: nil, search: nil, start_time: nil, end_time: nil, cursor: nil, filebeat7: true)
           query = { bool: { must: [] } }.tap do |q|
             filter_pod_name(q, pod_name)
             filter_namespace(q, namespace)
@@ -22,7 +22,7 @@ module Gitlab
             filter_times(q, start_time, end_time)
           end
 
-          body = build_body(query, cursor)
+          body = build_body(query, cursor, filebeat7)
           response = @client.search body: body
 
           format_response(response)
@@ -30,13 +30,14 @@ module Gitlab
 
         private
 
-        def build_body(query, cursor = nil)
+        def build_body(query, cursor = nil, filebeat7 = true)
+          offset_field = filebeat7 ? "log.offset" : "offset"
           body = {
             query: query,
             # reverse order so we can query N-most recent records
             sort: [
               { "@timestamp": { order: :desc } },
-              { "offset": { order: :desc } }
+              { "#{offset_field}": { order: :desc } }
             ],
             # only return these fields in the response
             _source: ["@timestamp", "message", "kubernetes.pod.name"],

@@ -3,6 +3,7 @@
 class AddWikiSlug < ActiveRecord::Migration[6.0]
   DOWNTIME = false
 
+  # rubocop:disable Migration/PreventStrings
   def change
     create_table :wiki_page_meta, id: :serial do |t|
       t.references :project, index: true, foreign_key: { on_delete: :cascade }, null: false
@@ -19,4 +20,5 @@ class AddWikiSlug < ActiveRecord::Migration[6.0]
       t.index [:wiki_page_meta_id], name: 'one_canonical_wiki_page_slug_per_metadata', unique: true, where: "(canonical = true)"
     end
   end
+  # rubocop:enable Migration/PreventStrings
 end

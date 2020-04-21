@@ -21,19 +21,26 @@ class Groups::GroupMembersController < Groups::ApplicationController
 
   def index
     @sort = params[:sort].presence || sort_value_name
+
     @project = @group.projects.find(params[:project_id]) if params[:project_id]
-    @members = find_members
+
+    @members = GroupMembersFinder
+      .new(@group, current_user, params: filter_params)
+      .execute(include_relations: requested_relations)
 
     if can_manage_members
       @skip_groups = @group.related_group_ids
-      @invited_members = present_invited_members(@members)
+
+      @invited_members = @members.invite
+      @invited_members = @invited_members.search_invite_email(params[:search_invited]) if params[:search_invited].present?
+      @invited_members = present_invited_members(@invited_members)
     end
 
-    @members = @members.non_invite
-    @members = present_group_members(@members)
+    @members = present_group_members(@members.non_invite)
 
     @requesters = present_members(
-      AccessRequestsFinder.new(@group).execute(current_user))
+      AccessRequestsFinder.new(@group).execute(current_user)
+    )
 
     @group_member = @group.group_members.new
   end
@@ -43,30 +50,24 @@ class Groups::GroupMembersController < Groups::ApplicationController
 
   private
 
-  def present_invited_members(members)
-    invited_members = members.invite
-
-    if params[:search_invited].present?
-      invited_members = invited_members.search_invite_email(params[:search_invited])
-    end
-
-    present_members(invited_members
-          .page(params[:invited_members_page])
-          .per(MEMBER_PER_PAGE_LIMIT))
-  end
-
-  def find_members
-    filter_params = params.slice(:two_factor, :search).merge(sort: @sort)
-    GroupMembersFinder.new(@group, current_user, params: filter_params).execute(include_relations: requested_relations)
-  end
-
   def can_manage_members
     can?(current_user, :admin_group_member, @group)
   end
 
-  def present_group_members(original_members)
-    members = original_members.page(params[:page]).per(MEMBER_PER_PAGE_LIMIT)
-    present_members(members)
+  def present_invited_members(invited_members)
+    present_members(invited_members
+      .page(params[:invited_members_page])
+      .per(MEMBER_PER_PAGE_LIMIT))
+  end
+
+  def present_group_members(members)
+    present_members(members
+      .page(params[:page])
+      .per(MEMBER_PER_PAGE_LIMIT))
+  end
+
+  def filter_params
+    params.permit(:two_factor, :search).merge(sort: @sort)
   end
 end
 

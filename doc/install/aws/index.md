@@ -68,12 +68,12 @@ NOTE: **Note:** Please note that while we will be using EBS for storage, we do n
 To minimize the permissions of the user, we'll create a new [IAM](https://docs.aws.amazon.com/IAM/latest/UserGuide/introduction.html)
 role with limited access:
 
-1. Navigate to the IAM dashboard <https://console.aws.amazon.com/iam/home> and
+1. Navigate to the IAM dashboard <https://console.aws.amazon.com/iam/home>, click on **Roles** in the left menu, and
    click **Create role**.
 1. Create a new role by selecting **AWS service > EC2**, then click
    **Next: Permissions**.
-1. Choose **AmazonEC2FullAccess** and **AmazonS3FullAccess**, then click **Next: Review**.
-1. Give the role the name `GitLabAdmin` and click **Create role**.
+1. Choose **AmazonEC2FullAccess** and **AmazonS3FullAccess**, click **Tags** and add tags if needed.
+1. Click **Review**, give your role the name (we'll use `GitLabAdmin`), and click **Create role**.
 
 ## Configuring the network
 
@@ -94,6 +94,8 @@ We'll now create a VPC, a virtual networking environment that you'll control:
 
    ![Create VPC](img/create_vpc.png)
 
+1. Select the VPC, click **Actions**, click **Edit DNS resolution**, and enable DNS resolution. Hit **Save** when done.
+
 ### Subnets
 
 Now, let's create some subnets in different Availability Zones. Make sure
@@ -106,7 +108,7 @@ RDS instances as well:
 
 1. Select **Subnets** from the left menu.
 1. Click **Create subnet**. Give it a descriptive name tag based on the IP,
-   for example `gitlab-public-10.0.0.0`, select the VPC we created previously,
+   for example `gitlab-public-10.0.0.0`, select the VPC we created previously, select an availability zone (we'll use `us-west-2a`),
    and at the IPv4 CIDR block let's give it a 24 subnet `10.0.0.0/24`:
 
    ![Create subnet](img/create_subnet.png)
@@ -120,18 +122,8 @@ RDS instances as well:
    | `gitlab-public-10.0.2.0`  | public  | `us-west-2b`      | `10.0.2.0/24` |
    | `gitlab-private-10.0.3.0` | private | `us-west-2b`      | `10.0.3.0/24` |
 
-### Create NAT Gateways
-
-Instances deployed in our private subnets need to connect to the internet for updates, but should not be reachable from the public internet. To achieve this, we'll make use of [NAT Gateways](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html) deployed in each of our public subnets:
-
-1. Navigate to the VPC dashboard and click on **NAT Gateways** in the left menu bar.
-1. Click **Create NAT Gateway** and complete the following:
-   1. **Subnet**: Select `gitlab-public-10.0.0.0` from the dropdown.
-   1. **Elastic IP Allocation ID**: Enter an existing Elastic IP or click **Allocate Elastic IP address** to allocate a new IP to your NAT gateway.
-   1. Add tags if needed.
-   1. Click **Create NAT Gateway**.
-
-Create a second NAT gateway but this time place it in the second public subnet, `gitlab-public-10.0.2.0`.
+1. Once all the subnets are created, enable **Auto-assign IPv4** for the two public subnets:
+   1. Select each public subnet in turn, click **Actions**, and click **Modify auto-assign IP settings**. Enable the option and save.
 
 ### Internet Gateway
 
@@ -147,6 +139,19 @@ create a new one:
    ![Create gateway](img/create_gateway.png)
 
 1. Choose `gitlab-vpc` from the list and hit **Attach**.
+
+### Create NAT Gateways
+
+Instances deployed in our private subnets need to connect to the internet for updates, but should not be reachable from the public internet. To achieve this, we'll make use of [NAT Gateways](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html) deployed in each of our public subnets:
+
+1. Navigate to the VPC dashboard and click on **NAT Gateways** in the left menu bar.
+1. Click **Create NAT Gateway** and complete the following:
+   1. **Subnet**: Select `gitlab-public-10.0.0.0` from the dropdown.
+   1. **Elastic IP Allocation ID**: Enter an existing Elastic IP or click **Allocate Elastic IP address** to allocate a new IP to your NAT gateway.
+   1. Add tags if needed.
+   1. Click **Create NAT Gateway**.
+
+Create a second NAT gateway but this time place it in the second public subnet, `gitlab-public-10.0.2.0`.
 
 ### Route Tables
 
@@ -179,13 +184,13 @@ Next, we must associate the **public** subnets to the route table:
 
 We also need to create two private route tables so that instances in each private subnet can reach the internet via the NAT gateway in the corresponding public subnet in the same availability zone.
 
-1. Follow the same steps as above to create two private route tables. Name them `gitlab-public-a` and `gitlab-public-b` respectively.
+1. Follow the same steps as above to create two private route tables. Name them `gitlab-private-a` and `gitlab-private-b` respectively.
 1. Next, add a new route to each of the private route tables where the destination is `0.0.0.0/0` and the target is one of the NAT gateways we created earlier.
-   1. Add the NAT gateway we created in `gitlab-public-10.0.0.0` as the target for the new route in the `gitlab-public-a` route table.
-   1. Similarly, add the NAT gateway in `gitlab-public-10.0.2.0` as the target for the new route in the `gitlab-public-b`.
+   1. Add the NAT gateway we created in `gitlab-public-10.0.0.0` as the target for the new route in the `gitlab-private-a` route table.
+   1. Similarly, add the NAT gateway in `gitlab-public-10.0.2.0` as the target for the new route in the `gitlab-private-b`.
 1. Lastly, associate each private subnet with a private route table.
-   1. Associate `gitlab-private-10.0.1.0` with `gitlab-public-a`.
-   1. Associate `gitlab-private-10.0.3.0` with `gitlab-public-b`.
+   1. Associate `gitlab-private-10.0.1.0` with `gitlab-private-a`.
+   1. Associate `gitlab-private-10.0.3.0` with `gitlab-private-b`.
 
 ## Load Balancer
 
@@ -635,7 +640,7 @@ GitLab provides its own integrated monitoring solution based on Prometheus.
 For more information on how to set it up, visit the
 [GitLab Prometheus documentation](../../administration/monitoring/prometheus/index.md)
 
-GitLab also has various [health check endpoints](../..//user/admin_area/monitoring/health_check.md)
+GitLab also has various [health check endpoints](../../user/admin_area/monitoring/health_check.md)
 that you can ping and get reports.
 
 ## GitLab Runners
@@ -648,8 +653,8 @@ Read more on configuring an
 
 ## Backup and restore
 
-GitLab provides [a tool to backup](../../raketasks/backup_restore.md#creating-a-backup-of-the-gitlab-system)
-and restore its Git data, database, attachments, LFS objects, etc.
+GitLab provides [a tool to back up](../../raketasks/backup_restore.md#back-up-gitlab)
+and restore its Git data, database, attachments, LFS objects, and so on.
 
 Some important things to know:
 
@@ -675,7 +680,7 @@ For GitLab 12.1 and earlier, use `gitlab-rake gitlab:backup:create`.
 
 ### Restoring GitLab from a backup
 
-To restore GitLab, first review the [restore documentation](../../raketasks/backup_restore.md#restore),
+To restore GitLab, first review the [restore documentation](../../raketasks/backup_restore.md#restore-gitlab),
 and primarily the restore prerequisites. Then, follow the steps under the
 [Omnibus installations section](../../raketasks/backup_restore.md#restore-for-omnibus-gitlab-installations).
 

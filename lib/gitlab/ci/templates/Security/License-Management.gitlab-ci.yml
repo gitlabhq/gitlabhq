@@ -3,11 +3,12 @@
 
 variables:
   LICENSE_MANAGEMENT_SETUP_CMD: ''  # If needed, specify a command to setup your environment with a custom package manager.
+  LICENSE_MANAGEMENT_VERSION: 3
 
 license_management:
   stage: test
   image:
-    name: "registry.gitlab.com/gitlab-org/security-products/license-management:$CI_SERVER_VERSION_MAJOR-$CI_SERVER_VERSION_MINOR-stable"
+    name: "registry.gitlab.com/gitlab-org/security-products/license-management:$LICENSE_MANAGEMENT_VERSION"
     entrypoint: [""]
   variables:
     SETUP_CMD: $LICENSE_MANAGEMENT_SETUP_CMD

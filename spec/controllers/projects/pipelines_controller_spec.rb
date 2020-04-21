@@ -752,8 +752,6 @@ describe Projects::PipelinesController do
       end
 
       context 'when pipeline does not have a test report' do
-        let(:pipeline) { create(:ci_pipeline, project: project) }
-
         it 'renders an empty test report' do
           get_test_report_json
 
@@ -763,7 +761,11 @@ describe Projects::PipelinesController do
       end
 
       context 'when pipeline has a test report' do
-        let(:pipeline) { create(:ci_pipeline, :with_test_reports, project: project) }
+        before do
+          create(:ci_build, name: 'rspec', pipeline: pipeline).tap do |build|
+            create(:ci_job_artifact, :junit, job: build)
+          end
+        end
 
         it 'renders the test report' do
           get_test_report_json
@@ -773,19 +775,22 @@ describe Projects::PipelinesController do
         end
       end
 
-      context 'when pipeline has corrupt test reports' do
-        let(:pipeline) { create(:ci_pipeline, project: project) }
-
+      context 'when pipeline has a corrupt test report artifact' do
         before do
-          job = create(:ci_build, pipeline: pipeline)
-          create(:ci_job_artifact, :junit_with_corrupted_data, job: job, project: project)
+          create(:ci_build, name: 'rspec', pipeline: pipeline).tap do |build|
+            create(:ci_job_artifact, :junit_with_corrupted_data, job: build)
+          end
+
+          get_test_report_json
         end
 
         it 'renders the test reports' do
-          get_test_report_json
-
           expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response['status']).to eq('error_parsing_report')
+          expect(json_response['test_suites'].count).to eq(1)
+        end
+
+        it 'returns a suite_error on the suite with corrupted XML' do
+          expect(json_response['test_suites'].first['suite_error']).to eq('JUnit XML parsing failed: 1:1: FATAL: Document is empty')
         end
       end
 

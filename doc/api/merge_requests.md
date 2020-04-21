@@ -12,7 +12,7 @@ NOTE: **Note**
 
 ## List merge requests
 
-> [Introduced][ce-13060] in GitLab 9.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/13060) in GitLab 9.5.
 
 Get all merge requests the authenticated user has access to. By
 default it returns only merge requests created by the current user. To
@@ -53,11 +53,11 @@ Parameters:
 | `updated_before`                | datetime       | no       | Return merge requests updated on or before the given time                                                              |
 | `scope`                         | string         | no       | Return merge requests for the given scope: `created_by_me`, `assigned_to_me` or `all`. Defaults to `created_by_me`<br> For versions before 11.0, use the now deprecated `created-by-me` or `assigned-to-me` scopes instead. |
 | `author_id`                     | integer        | no       | Returns merge requests created by the given user `id`. Mutually exclusive with `author_username`. Combine with `scope=all` or `scope=assigned_to_me`
-| `author_username`               | string         | no       | Returns merge requests created by the given `username`. Mutually exclusive with `author_id`. _([Introduced][ce-13060] in GitLab 12.10)_             |           |
+| `author_username`               | string         | no       | Returns merge requests created by the given `username`. Mutually exclusive with `author_id`. _([Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/13060) in GitLab 12.10)_             |           |
 | `assignee_id`                   | integer        | no       | Returns merge requests assigned to the given user `id`. `None` returns unassigned merge requests. `Any` returns merge requests with an assignee. |
 | `approver_ids` **(STARTER)**    | integer array  | no       | Returns merge requests which have specified all the users with the given `id`s as individual approvers. `None` returns merge requests without approvers. `Any` returns merge requests with an approver. |
 | `approved_by_ids` **(STARTER)** | integer array  | no       | Returns merge requests which have been approved by all the users with the given `id`s (Max: 5). `None` returns merge requests with no approvals. `Any` returns merge requests with an approval. |
-| `my_reaction_emoji`             | string         | no       | Return merge requests reacted by the authenticated user by the given `emoji`. `None` returns issues not given a reaction. `Any` returns issues given at least one reaction. _([Introduced][ce-14016] in GitLab 10.0)_ |
+| `my_reaction_emoji`             | string         | no       | Return merge requests reacted by the authenticated user by the given `emoji`. `None` returns issues not given a reaction. `Any` returns issues given at least one reaction. _([Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/14016) in GitLab 10.0)_ |
 | `source_branch`                 | string         | no       | Return merge requests with the given source branch                                                                     |
 | `target_branch`                 | string         | no       | Return merge requests with the given target branch                                                                     |
 | `search`                        | string         | no       | Search merge requests against their `title` and `description`                                                          |
@@ -231,13 +231,13 @@ Parameters:
 | `created_before`                | datetime       | no       | Return merge requests created on or before the given time                                                                      |
 | `updated_after`                 | datetime       | no       | Return merge requests updated on or after the given time                                                                       |
 | `updated_before`                | datetime       | no       | Return merge requests updated on or before the given time                                                                      |
-| `scope`                         | string         | no       | Return merge requests for the given scope: `created_by_me`, `assigned_to_me` or `all`.<br> For versions before 11.0, use the now deprecated `created-by-me` or `assigned-to-me` scopes instead.<br> _([Introduced][ce-13060] in GitLab 9.5. [Changed to snake_case][ce-18935] in GitLab 11.0)_ |
-| `author_id`                     | integer        | no       | Returns merge requests created by the given user `id`. Mutually exclusive with `author_username`. _([Introduced][ce-13060] in GitLab 9.5)_
-| `author_username`               | string         | no       | Returns merge requests created by the given `username`. Mutually exclusive with `author_id`. _([Introduced][ce-13060] in GitLab 12.10)_             |     |
-| `assignee_id`                   | integer        | no       | Returns merge requests assigned to the given user `id`. `None` returns unassigned merge requests. `Any` returns merge requests with an assignee. _([Introduced][ce-13060] in GitLab 9.5)_ |
+| `scope`                         | string         | no       | Return merge requests for the given scope: `created_by_me`, `assigned_to_me` or `all`.<br> For versions before 11.0, use the now deprecated `created-by-me` or `assigned-to-me` scopes instead.<br> _([Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/13060) in GitLab 9.5. [Changed to snake_case](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18935) in GitLab 11.0)_ |
+| `author_id`                     | integer        | no       | Returns merge requests created by the given user `id`. Mutually exclusive with `author_username`. _([Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/13060) in GitLab 9.5)_
+| `author_username`               | string         | no       | Returns merge requests created by the given `username`. Mutually exclusive with `author_id`. _([Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/13060) in GitLab 12.10)_             |     |
+| `assignee_id`                   | integer        | no       | Returns merge requests assigned to the given user `id`. `None` returns unassigned merge requests. `Any` returns merge requests with an assignee. _([Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/13060) in GitLab 9.5)_ |
 | `approver_ids` **(STARTER)**    | integer array  | no       | Returns merge requests which have specified all the users with the given `id`s as individual approvers. `None` returns merge requests without approvers. `Any` returns merge requests with an approver. |
 | `approved_by_ids` **(STARTER)** | integer array  | no       | Returns merge requests which have been approved by all the users with the given `id`s (Max: 5). `None` returns merge requests with no approvals. `Any` returns merge requests with an approval. |
-| `my_reaction_emoji`             | string         | no       | Return merge requests reacted by the authenticated user by the given `emoji`. `None` returns issues not given a reaction. `Any` returns issues given at least one reaction. _([Introduced][ce-14016] in GitLab 10.0)_ |
+| `my_reaction_emoji`             | string         | no       | Return merge requests reacted by the authenticated user by the given `emoji`. `None` returns issues not given a reaction. `Any` returns issues given at least one reaction. _([Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/14016) in GitLab 10.0)_ |
 | `source_branch`                 | string         | no       | Return merge requests with the given source branch                                                                             |
 | `target_branch`                 | string         | no       | Return merge requests with the given target branch                                                                             |
 | `search`                        | string         | no       | Search merge requests against their `title` and `description`                                                                  |
@@ -395,12 +395,12 @@ Parameters:
 | `updated_after`                 | datetime       | no       | Return merge requests updated on or after the given time                                                                       |
 | `updated_before`                | datetime       | no       | Return merge requests updated on or before the given time                                                                      |
 | `scope`                         | string         | no       | Return merge requests for the given scope: `created_by_me`, `assigned_to_me` or `all`.<br>                                     |
-| `author_id`                     | integer        | no       | Returns merge requests created by the given user `id`. Mutually exclusive with `author_username`. _([Introduced][ce-13060] in GitLab 9.5)_
-| `author_username`               | string         | no       | Returns merge requests created by the given `username`. Mutually exclusive with `author_id`. _([Introduced][ce-13060] in GitLab 12.10)_             |                              |
-| `assignee_id`                   | integer        | no       | Returns merge requests assigned to the given user `id`. `None` returns unassigned merge requests. `Any` returns merge requests with an assignee. _([Introduced][ce-13060] in GitLab 9.5)_ |
+| `author_id`                     | integer        | no       | Returns merge requests created by the given user `id`. Mutually exclusive with `author_username`. _([Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/13060) in GitLab 9.5)_
+| `author_username`               | string         | no       | Returns merge requests created by the given `username`. Mutually exclusive with `author_id`. _([Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/13060) in GitLab 12.10)_             |                              |
+| `assignee_id`                   | integer        | no       | Returns merge requests assigned to the given user `id`. `None` returns unassigned merge requests. `Any` returns merge requests with an assignee. _([Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/13060) in GitLab 9.5)_ |
 | `approver_ids` **(STARTER)**    | integer array  | no       | Returns merge requests which have specified all the users with the given `id`s as individual approvers. `None` returns merge requests without approvers. `Any` returns merge requests with an approver. |
 | `approved_by_ids` **(STARTER)** | integer array  | no       | Returns merge requests which have been approved by all the users with the given `id`s (Max: 5). `None` returns merge requests with no approvals. `Any` returns merge requests with an approval. |
-| `my_reaction_emoji`             | string         | no       | Return merge requests reacted by the authenticated user by the given `emoji`. `None` returns issues not given a reaction. `Any` returns issues given at least one reaction. _([Introduced][ce-14016] in GitLab 10.0)_ |
+| `my_reaction_emoji`             | string         | no       | Return merge requests reacted by the authenticated user by the given `emoji`. `None` returns issues not given a reaction. `Any` returns issues given at least one reaction. _([Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/14016) in GitLab 10.0)_ |
 | `source_branch`                 | string         | no       | Return merge requests with the given source branch                                                                             |
 | `target_branch`                 | string         | no       | Return merge requests with the given target branch                                                                             |
 | `search`                        | string         | no       | Search merge requests against their `title` and `description` |
@@ -668,6 +668,7 @@ dependent on the `merge_status`. It'll return `false` unless `merge_status` is
   },
   "diverged_commits_count": 2,
   "rebase_in_progress": false,
+  "first_contribution": false,
   "task_completion_status":{
     "count":0,
     "completed_count":0
@@ -870,7 +871,7 @@ Parameters:
 
 ## List MR pipelines
 
-> [Introduced][ce-15454] in GitLab 10.5.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/15454) in GitLab 10.5.0.
 
 Get a list of merge request pipelines.
 
@@ -2433,11 +2434,6 @@ Example response:
   "total_time_spent": 3600
 }
 ```
-
-[ce-13060]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/13060
-[ce-14016]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/14016
-[ce-15454]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/15454
-[ce-18935]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18935
 
 ## Approvals **(STARTER)**
 

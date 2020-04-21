@@ -26,18 +26,11 @@ export default {
        * The TECHS code is the "G18", "G168", "H91", etc. from the code which is used for the documentation.
        * Here we simply split the string on `.` and get the code in the 5th position
        */
-      if (this.issue.code === undefined) {
-        return null;
-      }
-
-      return this.issue.code.split('.')[4] || null;
+      return this.issue.code?.split('.')[4];
     },
     learnMoreUrl() {
-      if (this.parsedTECHSCode === null) {
-        return 'https://www.w3.org/TR/WCAG20-TECHS/Overview.html';
-      }
-
-      return `https://www.w3.org/TR/WCAG20-TECHS/${this.parsedTECHSCode}.html`;
+      // eslint-disable-next-line @gitlab/require-i18n-strings
+      return `https://www.w3.org/TR/WCAG20-TECHS/${this.parsedTECHSCode || 'Overview'}.html`;
     },
   },
 };

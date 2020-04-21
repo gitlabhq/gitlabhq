@@ -13,16 +13,13 @@ class Projects::ForksController < Projects::ApplicationController
   before_action :authorize_fork_project!, only: [:new, :create]
   before_action :authorize_fork_namespace!, only: [:create]
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def index
     @total_forks_count    = project.forks.size
     @public_forks_count   = project.forks.public_only.size
     @private_forks_count  = @total_forks_count - project.forks.public_and_internal_only.size
     @internal_forks_count = @total_forks_count - @public_forks_count - @private_forks_count
 
-    @forks = ForkProjectsFinder.new(project, params: params.merge(search: params[:filter_projects]), current_user: current_user).execute
-    @forks = @forks.includes(:route, :creator, :group, namespace: [:route, :owner])
-                   .page(params[:page])
+    @forks = load_forks.page(params[:page])
 
     prepare_projects_for_rendering(@forks)
 
@@ -36,7 +33,6 @@ class Projects::ForksController < Projects::ApplicationController
       end
     end
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def new
     @namespaces = fork_service.valid_fork_targets - [project.namespace]
@@ -59,9 +55,18 @@ class Projects::ForksController < Projects::ApplicationController
       redirect_to project_path(@forked_project), notice: "The project '#{@forked_project.name}' was successfully forked."
     end
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   private
+
+  def load_forks
+    forks = ForkProjectsFinder.new(
+      project,
+      params: params.merge(search: params[:filter_projects]),
+      current_user: current_user
+    ).execute
+
+    forks.includes(:route, :creator, :group, namespace: [:route, :owner])
+  end
 
   def fork_service
     strong_memoize(:fork_service) do
@@ -83,3 +88,5 @@ class Projects::ForksController < Projects::ApplicationController
     Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-foss/issues/42335')
   end
 end
+
+Projects::ForksController.prepend_if_ee('EE::Projects::ForksController')

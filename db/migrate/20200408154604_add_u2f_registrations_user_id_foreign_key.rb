@@ -1,11 +1,14 @@
 # frozen_string_literal: true
 
 # rubocop: disable Migration/AddConcurrentForeignKey
+# rubocop: disable Migration/WithLockRetriesWithoutDdlTransaction
 class AddU2fRegistrationsUserIdForeignKey < ActiveRecord::Migration[6.0]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false
   CONSTRAINT_NAME = 'fk_u2f_registrations_user_id'
+
+  disable_ddl_transaction!
 
   def up
     with_lock_retries do

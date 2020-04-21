@@ -1,6 +1,6 @@
 build:
   stage: build
-  image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-build-image:v0.2.1"
+  image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-build-image:v0.2.2"
   variables:
     DOCKER_TLS_CERTDIR: ""
   services:

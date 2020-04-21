@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe 'shared/projects/_project.html.haml' do
-  let(:project) { create(:project) }
+  let_it_be(:project) { create(:project) }
 
   before do
     allow(view).to receive(:current_application_settings).and_return(Gitlab::CurrentSettings.current_application_settings)

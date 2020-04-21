@@ -49,6 +49,14 @@ module AutoMerge
       end
     end
 
+    def available_for?(merge_request)
+      strong_memoize("available_for_#{merge_request.id}") do
+        merge_request.can_be_merged_by?(current_user) &&
+          merge_request.mergeable_state?(skip_ci_check: true) &&
+          yield
+      end
+    end
+
     private
 
     def strategy

@@ -160,6 +160,49 @@ describe Git::ProcessRefChangesService do
     let(:ref_prefix) { 'refs/heads' }
 
     it_behaves_like 'service for processing ref changes', Git::BranchPushService
+
+    context 'when there are merge requests associated with branches' do
+      let(:tag_changes) do
+        [
+          { index: 0, oldrev: Gitlab::Git::BLANK_SHA, newrev: '789012', ref: "refs/tags/v10.0.0" }
+        ]
+      end
+      let(:branch_changes) do
+        [
+          { index: 0, oldrev: Gitlab::Git::BLANK_SHA, newrev: '789012', ref: "#{ref_prefix}/create1" },
+          { index: 1, oldrev: Gitlab::Git::BLANK_SHA, newrev: '789013', ref: "#{ref_prefix}/create2" },
+          { index: 2, oldrev: Gitlab::Git::BLANK_SHA, newrev: '789014', ref: "#{ref_prefix}/create3" }
+        ]
+      end
+      let(:git_changes) { double(branch_changes: branch_changes, tag_changes: tag_changes) }
+
+      it 'schedules job for existing merge requests' do
+        expect_next_instance_of(MergeRequests::PushedBranchesService) do |service|
+          expect(service).to receive(:execute).and_return(%w(create1 create2))
+        end
+
+        expect(UpdateMergeRequestsWorker).to receive(:perform_async)
+          .with(project.id, user.id, Gitlab::Git::BLANK_SHA, '789012', "#{ref_prefix}/create1").ordered
+        expect(UpdateMergeRequestsWorker).to receive(:perform_async)
+          .with(project.id, user.id, Gitlab::Git::BLANK_SHA, '789013', "#{ref_prefix}/create2").ordered
+        expect(UpdateMergeRequestsWorker).not_to receive(:perform_async)
+          .with(project.id, user.id, Gitlab::Git::BLANK_SHA, '789014', "#{ref_prefix}/create3").ordered
+
+        subject.execute
+      end
+
+      context 'refresh_only_existing_merge_requests_on_push disabled' do
+        before do
+          stub_feature_flags(refresh_only_existing_merge_requests_on_push: false)
+        end
+
+        it 'refreshes all merge requests' do
+          expect(UpdateMergeRequestsWorker).to receive(:perform_async).exactly(3).times
+
+          subject.execute
+        end
+      end
+    end
   end
 
   context 'tag changes' do

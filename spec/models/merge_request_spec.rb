@@ -1628,6 +1628,26 @@ describe MergeRequest do
     end
   end
 
+  describe '#has_terraform_reports?' do
+    let_it_be(:project) { create(:project, :repository) }
+
+    context 'when head pipeline has terraform reports' do
+      it 'returns true' do
+        merge_request = create(:merge_request, :with_terraform_reports, source_project: project)
+
+        expect(merge_request.has_terraform_reports?).to be_truthy
+      end
+    end
+
+    context 'when head pipeline does not have terraform reports' do
+      it 'returns false' do
+        merge_request = create(:merge_request, source_project: project)
+
+        expect(merge_request.has_terraform_reports?).to be_falsey
+      end
+    end
+  end
+
   describe '#calculate_reactive_cache' do
     let(:project) { create(:project, :repository) }
     let(:merge_request) { create(:merge_request, source_project: project) }
@@ -3332,7 +3352,7 @@ describe MergeRequest do
     describe 'check_state?' do
       it 'indicates whether MR is still checking for mergeability' do
         state_machine = described_class.state_machines[:merge_status]
-        check_states = [:unchecked, :cannot_be_merged_recheck, :checking]
+        check_states = [:unchecked, :cannot_be_merged_recheck, :cannot_be_merged_rechecking, :checking]
 
         check_states.each do |merge_status|
           expect(state_machine.check_state?(merge_status)).to be true

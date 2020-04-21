@@ -10,27 +10,25 @@
     .card
       .card-header
         {{ __('Recent Project Activity') }}
-      .content-block
-        .container-fluid
-          .row
-            .col-12.column{ "v-for" => "item in state.summary", ":class" => "summaryTableColumnClass" }
-              %h3.header {{ item.value }}
-              %p.text {{ item.title }}
-            .col-12.column{ ":class" => "summaryTableColumnClass" }
-              .dropdown.inline.js-ca-dropdown
-                %button.dropdown-menu-toggle{ "data-toggle" => "dropdown", :type => "button" }
-                  %span.dropdown-label {{ n__('Last %d day', 'Last %d days', 30) }}
-                  %i.fa.fa-chevron-down
-                %ul.dropdown-menu.dropdown-menu-right
-                  %li
-                    %a{ "href" => "#", "data-value" => "7" }
-                      {{ n__('Last %d day', 'Last %d days', 7) }}
-                  %li
-                    %a{ "href" => "#", "data-value" => "30" }
-                      {{ n__('Last %d day', 'Last %d days', 30) }}
-                  %li
-                    %a{ "href" => "#", "data-value" => "90" }
-                      {{ n__('Last %d day', 'Last %d days', 90) }}
+      .d-flex.justify-content-between
+        .flex-grow.text-center{ "v-for" => "item in state.summary" }
+          %h3.header {{ item.value }}
+          %p.text {{ item.title }}
+        .flex-grow.align-self-center.text-center
+          .dropdown.inline.js-ca-dropdown
+            %button.dropdown-menu-toggle{ "data-toggle" => "dropdown", :type => "button" }
+              %span.dropdown-label {{ n__('Last %d day', 'Last %d days', 30) }}
+              %i.fa.fa-chevron-down
+            %ul.dropdown-menu.dropdown-menu-right
+              %li
+                %a{ "href" => "#", "data-value" => "7" }
+                  {{ n__('Last %d day', 'Last %d days', 7) }}
+              %li
+                %a{ "href" => "#", "data-value" => "30" }
+                  {{ n__('Last %d day', 'Last %d days', 30) }}
+              %li
+                %a{ "href" => "#", "data-value" => "90" }
+                  {{ n__('Last %d day', 'Last %d days', 90) }}
     .stage-panel-container
       .card.stage-panel
         .card-header.border-bottom-0

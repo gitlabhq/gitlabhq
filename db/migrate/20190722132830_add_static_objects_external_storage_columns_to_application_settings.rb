@@ -7,8 +7,10 @@ class AddStaticObjectsExternalStorageColumnsToApplicationSettings < ActiveRecord
   # Set this constant to true if this migration requires downtime.
   DOWNTIME = false
 
+  # rubocop:disable Migration/PreventStrings
   def change
     add_column :application_settings, :static_objects_external_storage_url, :string, limit: 255
     add_column :application_settings, :static_objects_external_storage_auth_token, :string, limit: 255
   end
+  # rubocop:enable Migration/PreventStrings
 end

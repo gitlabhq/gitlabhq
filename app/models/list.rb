@@ -74,14 +74,18 @@ class List < ApplicationRecord
     label? ? label.name : list_type.humanize
   end
 
+  def collapsed?(user)
+    preferences = preferences_for(user)
+
+    preferences.collapsed?
+  end
+
   def as_json(options = {})
     super(options).tap do |json|
       json[:collapsed] = false
 
       if options.key?(:collapsed)
-        preferences = preferences_for(options[:current_user])
-
-        json[:collapsed] = preferences.collapsed?
+        json[:collapsed] = collapsed?(options[:current_user])
       end
 
       if options.key?(:label)

@@ -64,9 +64,6 @@ A link is any URL which can point to whatever you like; documentation, built
 binaries, or other related materials. These can be both internal or external
 links from your GitLab instance.
 
-NOTE: **NOTE**
-You can manipulate links of each release entry with [Release Links API](../../../api/releases/links.md)
-
 #### Permanent links to Release assets
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/27300) in GitLab 12.9.

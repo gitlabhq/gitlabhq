@@ -185,12 +185,27 @@ export const toggleResolveNote = ({ commit, dispatch }, { endpoint, isResolved, 
   });
 };
 
+export const toggleBlockedIssueWarning = ({ commit }, value) => {
+  commit(types.TOGGLE_BLOCKED_ISSUE_WARNING, value);
+  // Hides Close issue button at the top of issue page
+  const closeDropdown = document.querySelector('.js-issuable-close-dropdown');
+  if (closeDropdown) {
+    closeDropdown.classList.toggle('d-none');
+  } else {
+    const closeButton = document.querySelector(
+      '.detail-page-header-actions .btn-close.btn-grouped',
+    );
+    closeButton.classList.toggle('d-md-block');
+  }
+};
+
 export const closeIssue = ({ commit, dispatch, state }) => {
   dispatch('toggleStateButtonLoading', true);
   return axios.put(state.notesData.closePath).then(({ data }) => {
     commit(types.CLOSE_ISSUE);
     dispatch('emitStateChangedEvent', data);
     dispatch('toggleStateButtonLoading', false);
+    dispatch('toggleBlockedIssueWarning', false);
   });
 };
 

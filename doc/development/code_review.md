@@ -76,26 +76,31 @@ page, with these behaviors:
 
 As described in the section on the responsibility of the maintainer below, you
 are recommended to get your merge request approved and merged by maintainer(s)
- with [domain expertise](#domain-experts).
+with [domain expertise](#domain-experts).
 
-1. If your merge request includes backend changes [^1], it must be
+1. If your merge request includes backend changes (*1*), it must be
    **approved by a [backend maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_maintainers_backend)**.
-1. If your merge request includes database migrations or changes to expensive queries [^2], it must be
+1. If your merge request includes database migrations or changes to expensive queries (*2*), it must be
    **approved by a [database maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_maintainers_database)**.
    Read the [database review guidelines](database_review.md) for more details.
-1. If your merge request includes frontend changes [^1], it must be
+1. If your merge request includes frontend changes (*1*), it must be
    **approved by a [frontend maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_maintainers_frontend)**.
-1. If your merge request includes UX changes [^1], it must be
+1. If your merge request includes UX changes (*1*), it must be
    **approved by a [UX team member](https://about.gitlab.com/company/team/)**.
-1. If your merge request includes adding a new JavaScript library [^1], it must be
+1. If your merge request includes adding a new JavaScript library (*1*), it must be
    **approved by a [frontend lead](https://about.gitlab.com/company/team/)**.
-1. If your merge request includes adding a new UI/UX paradigm [^1], it must be
+1. If your merge request includes adding a new UI/UX paradigm (*1*), it must be
    **approved by a [UX lead](https://about.gitlab.com/company/team/)**.
 1. If your merge request includes a new dependency or a filesystem change, it must be
    **approved by a [Distribution team member](https://about.gitlab.com/company/team/)**. See how to work with the [Distribution team](https://about.gitlab.com/handbook/engineering/development/enablement/distribution/#how-to-work-with-distribution) for more details.
 1. If your merge request includes documentation changes, it must be **approved
    by a [Technical writer](https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers)**, based on
    the appropriate [product category](https://about.gitlab.com/handbook/product/categories/).
+
+- (*1*): Please note that specs other than JavaScript specs are considered backend code.
+- (*2*): We encourage you to seek guidance from a database maintainer if your merge
+  request is potentially introducing expensive queries. It is most efficient to comment
+  on the line of code in question with the SQL queries so they can give their advice.
 
 #### Security requirements
 
@@ -495,6 +500,3 @@ Largely based on the [thoughtbot code review guide](https://github.com/thoughtbo
 ---
 
 [Return to Development documentation](README.md)
-
-[^1]: Please note that specs other than JavaScript specs are considered backend code.
-[^2]: We encourage you to seek guidance from a database maintainer if your merge request is potentially introducing expensive queries. It is most efficient to comment on the line of code in question with the SQL queries so they can give their advice.

@@ -1,0 +1,5 @@
+---
+title: Define remove_label quick action as alias of unlabel
+merge_request: 24962
+author: Jacopo Beschi @jacopo-beschi
+type: added

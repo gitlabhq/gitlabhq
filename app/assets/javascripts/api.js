@@ -46,6 +46,7 @@ const Api = {
   mergeRequestsPipeline: '/api/:version/projects/:id/merge_requests/:merge_request_iid/pipelines',
   adminStatisticsPath: '/api/:version/application/statistics',
   pipelineSinglePath: '/api/:version/projects/:id/pipelines/:pipeline_id',
+  pipelinesPath: '/api/:version/projects/:id/pipelines/',
   environmentsPath: '/api/:version/projects/:id/environments',
   rawFilePath: '/api/:version/projects/:id/repository/files/:path/raw',
 
@@ -500,6 +501,15 @@ const Api = {
       .replace(':pipeline_id', encodeURIComponent(pipelineId));
 
     return axios.get(url);
+  },
+
+  // Return all pipelines for a project or filter by query params
+  pipelines(id, options = {}) {
+    const url = Api.buildUrl(this.pipelinesPath).replace(':id', encodeURIComponent(id));
+
+    return axios.get(url, {
+      params: options,
+    });
   },
 
   environments(id) {

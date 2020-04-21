@@ -1,54 +1,58 @@
-- content_for :page_specific_javascripts do
-  = page_specific_javascript_tag('lib/ace.js')
+- if Feature.disabled?(:monaco_snippets)
+  - content_for :page_specific_javascripts do
+    = page_specific_javascript_tag('lib/ace.js')
 
-.snippet-form-holder
-  = form_for @snippet, url: url,
-             html: { class: "snippet-form js-requires-input js-quick-submit common-note-form" },
-             data: { "snippet-type": @snippet.project_id ? 'project' : 'personal'} do |f|
-    = form_errors(@snippet)
+- if Feature.enabled?(:snippets_edit_vue)
+  #js-snippet-edit.snippet-form{ data: {'project_path': @snippet.project&.full_path, 'snippet-gid': @snippet.new_record? ? '' : @snippet.to_global_id, 'markdown-preview-path': preview_markdown_path(parent), 'markdown-docs-path': help_page_path('user/markdown'), 'visibility-help-link': help_page_path("public_access/public_access") } }
+- else
+  .snippet-form-holder
+    = form_for @snippet, url: url,
+           html: { class: "snippet-form js-requires-input js-quick-submit common-note-form" },
+           data: { "snippet-type": @snippet.project_id ? 'project' : 'personal'} do |f|
+      = form_errors(@snippet)
 
-    .form-group
-      = f.label :title, class: 'label-bold'
-      = f.text_field :title, class: 'form-control qa-snippet-title', required: true, autofocus: true
+      .form-group
+        = f.label :title, class: 'label-bold'
+        = f.text_field :title, class: 'form-control qa-snippet-title', required: true, autofocus: true
 
-    .form-group.js-description-input
-      - description_placeholder = s_('Snippets|Optionally add a description about what your snippet does or how to use it...')
-      - is_expanded = @snippet.description && !@snippet.description.empty?
-      = f.label :description, s_("Snippets|Description (optional)"), class: 'label-bold'
-      .js-collapsible-input
-        .js-collapsed{ class: ('d-none' if is_expanded) }
-          = text_field_tag nil, nil, class: 'form-control', placeholder: description_placeholder, data: { qa_selector: 'description_placeholder' }
-        .js-expanded{ class: ('d-none' if !is_expanded) }
-          = render layout: 'projects/md_preview', locals: { url: preview_markdown_path(@project), referenced_users: true } do
-            = render 'projects/zen', f: f, attr: :description, classes: 'note-textarea', placeholder: description_placeholder, qa_selector: 'description_field'
-            = render 'shared/notes/hints'
+      .form-group.js-description-input
+        - description_placeholder = s_('Snippets|Optionally add a description about what your snippet does or how to use it...')
+        - is_expanded = @snippet.description && !@snippet.description.empty?
+        = f.label :description, s_("Snippets|Description (optional)"), class: 'label-bold'
+        .js-collapsible-input
+          .js-collapsed{ class: ('d-none' if is_expanded) }
+            = text_field_tag nil, nil, class: 'form-control', placeholder: description_placeholder, data: { qa_selector: 'description_placeholder' }
+          .js-expanded{ class: ('d-none' if !is_expanded) }
+            = render layout: 'projects/md_preview', locals: { url: preview_markdown_path(@project), referenced_users: true } do
+              = render 'projects/zen', f: f, attr: :description, classes: 'note-textarea', placeholder: description_placeholder, qa_selector: 'description_field'
+              = render 'shared/notes/hints'
 
-    .form-group.file-editor
-      = f.label :file_name, s_('Snippets|File')
-      .file-holder.snippet
-        .js-file-title.file-title-flex-parent
-          = f.text_field :file_name, placeholder: s_("Snippets|Give your file a name to add code highlighting, e.g. example.rb for Ruby"), class: 'form-control js-snippet-file-name qa-snippet-file-name'
-        .file-content.code
-          %pre#editor{ data: { 'editor-loading': true } }= @snippet.content
-          = f.hidden_field :content, class: 'snippet-file-content'
+      .form-group.file-editor
+        = f.label :file_name, s_('Snippets|File')
+        .file-holder.snippet
+          .js-file-title.file-title-flex-parent
+            = f.text_field :file_name, placeholder: s_("Snippets|Give your file a name to add code highlighting, e.g. example.rb for Ruby"), class: 'form-control js-snippet-file-name qa-snippet-file-name'
+          .file-content.code
+            %pre#editor{ data: { 'editor-loading': true } }= @snippet.content
+            = f.hidden_field :content, class: 'snippet-file-content'
 
-    .form-group
-      .font-weight-bold
-        = _('Visibility level')
-        = link_to icon('question-circle'), help_page_path("public_access/public_access"), target: '_blank'
-      = render 'shared/visibility_level', f: f, visibility_level: @snippet.visibility_level, can_change_visibility_level: true, form_model: @snippet, with_label: false
+      .form-group
+        .font-weight-bold
+          = _('Visibility level')
+          = link_to icon('question-circle'), help_page_path("public_access/public_access"), target: '_blank'
+        = render 'shared/visibility_level', f: f, visibility_level: @snippet.visibility_level, can_change_visibility_level: true, form_model: @snippet, with_label: false
 
-    - if params[:files]
-      - params[:files].each_with_index do |file, index|
-        = hidden_field_tag "files[]", file, id: "files_#{index}"
+      - if params[:files]
+        - params[:files].each_with_index do |file, index|
+          = hidden_field_tag "files[]", file, id: "files_#{index}"
 
-    .form-actions
-      - if @snippet.new_record?
-        = f.submit 'Create snippet', class: "btn-success btn qa-create-snippet-button"
-      - else
-        = f.submit 'Save changes', class: "btn-success btn"
+      .form-actions
+        - if @snippet.new_record?
+          = f.submit 'Create snippet', class: "btn-success btn qa-create-snippet-button"
+        - else
+          = f.submit 'Save changes', class: "btn-success btn"
 
-      - if @snippet.project_id
-        = link_to "Cancel", project_snippets_path(@project), class: "btn btn-cancel"
-      - else
-        = link_to "Cancel", snippets_path(@project), class: "btn btn-cancel"
+        - if @snippet.project_id
+          = link_to "Cancel", project_snippets_path(@project), class: "btn btn-cancel"
+        - else
+          = link_to "Cancel", snippets_path(@project), class: "btn btn-cancel"

@@ -28,7 +28,7 @@ workflow:
     # For merge requests, create a pipeline.
     - if: '$CI_MERGE_REQUEST_IID'
     # For `master` branch, create a pipeline (this includes on schedules, pushes, merges, etc.).
-    - if: '$CI_COMMIT_BRANCH == "master"'
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
     # For tags, create a pipeline.
     - if: '$CI_COMMIT_TAG'
     # If `$GITLAB_INTERNAL` isn't set, don't create a pipeline.

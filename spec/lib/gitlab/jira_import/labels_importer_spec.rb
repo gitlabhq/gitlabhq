@@ -18,7 +18,7 @@ describe Gitlab::JiraImport::LabelsImporter do
       let_it_be(:no_label_jira_import) { create(:jira_import_state, label: nil, project: project) }
 
       it 'raises error' do
-        expect { subject }.to raise_error(Projects::ImportService::Error, 'Failed to find import label for jira import.')
+        expect { subject }.to raise_error(Projects::ImportService::Error, 'Failed to find import label for Jira import.')
       end
     end
 

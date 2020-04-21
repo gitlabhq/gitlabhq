@@ -39,7 +39,6 @@ exports[`Snippet Description Edit component rendering matches the snapshot 1`] =
           qa-description-textarea"
         data-supports-quick-actions="false"
         dir="auto"
-        id="snippet-description"
         placeholder="Write a comment or drag your files here…"
       />
     </markdown-field-stub>

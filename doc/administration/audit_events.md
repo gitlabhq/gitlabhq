@@ -1,6 +1,6 @@
 # Audit Events **(STARTER)**
 
-GitLab offers a way to view the changes made within the GitLab server for owners and administrators on a [paid plan][ee].
+GitLab offers a way to view the changes made within the GitLab server for owners and administrators on a [paid plan](https://about.gitlab.com/pricing/).
 
 GitLab system administrators can also take advantage of the logs located on the
 filesystem. See [the logs system documentation](logs.md) for more details.
@@ -31,7 +31,7 @@ There are two kinds of events logged:
 ### Group events **(STARTER)**
 
 NOTE: **Note:**
-You need Owner [permissions] to view the group Audit Events page.
+You need Owner [permissions](../user/permissions.md) to view the group Audit Events page.
 
 To view a group's audit events, navigate to **Group > Settings > Audit Events**.
 From there, you can see the following actions:
@@ -40,14 +40,14 @@ From there, you can see the following actions:
 - Group repository size limit changed
 - Group created or deleted
 - Group changed visibility
-- User was added to group and with which [permissions]
+- User was added to group and with which [permissions](../user/permissions.md)
 - User sign-in via [Group SAML](../user/group/saml_sso/index.md)
 - Permissions changes of a user assigned to a group
 - Removed user from group
 - Project added to group and with which visibility level
 - Project removed from group
 - [Project shared with group](../user/project/members/share_project_with_groups.md)
-  and with which [permissions]
+  and with which [permissions](../user/permissions.md)
 - Removal of a previously shared group with a project
 - LFS enabled or disabled
 - Shared runners minutes limit changed
@@ -61,7 +61,7 @@ Group events can also be accessed via the [Group Audit Events API](../api/audit_
 ### Project events **(STARTER)**
 
 NOTE: **Note:**
-You need Maintainer [permissions] or higher to view the project Audit Events page.
+You need Maintainer [permissions](../user/permissions.md) or higher to view the project Audit Events page.
 
 To view a project's audit events, navigate to **Project > Settings > Audit Events**.
 From there, you can see the following actions:
@@ -69,7 +69,7 @@ From there, you can see the following actions:
 - Added or removed deploy keys
 - Project created, deleted, renamed, moved(transferred), changed path
 - Project changed visibility level
-- User was added to project and with which [permissions]
+- User was added to project and with which [permissions](../user/permissions.md)
 - Permission changes of a user assigned to a project
 - User was removed from project
 - Project export was downloaded
@@ -86,7 +86,7 @@ From there, you can see the following actions:
 
 ### Instance events **(PREMIUM ONLY)**
 
-> [Introduced][ee-2336] in [GitLab Premium][ee] 9.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/2336) in [GitLab Premium](https://about.gitlab.com/pricing/) 9.3.
 
 Server-wide audit logging introduces the ability to observe user actions across
 the entire instance of your GitLab server, making it easy to understand who
@@ -157,7 +157,3 @@ the steps bellow.
    ```ruby
    Feature.enable(:repository_push_audit_event)
    ```
-
-[ee-2336]: https://gitlab.com/gitlab-org/gitlab/issues/2336
-[ee]: https://about.gitlab.com/pricing/
-[permissions]: ../user/permissions.md

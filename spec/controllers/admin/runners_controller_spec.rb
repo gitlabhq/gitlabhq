@@ -72,6 +72,30 @@ describe Admin::RunnersController do
 
       expect(response).to have_gitlab_http_status(:ok)
     end
+
+    describe 'Cost factors values' do
+      context 'when it is Gitlab.com' do
+        before do
+          expect(Gitlab).to receive(:com?).at_least(:once) { true }
+        end
+
+        it 'renders cost factors fields' do
+          get :show, params: { id: runner.id }
+
+          expect(response.body).to match /Private projects Minutes cost factor/
+          expect(response.body).to match /Public projects Minutes cost factor/
+        end
+      end
+
+      context 'when it is not Gitlab.com' do
+        it 'does not show cost factor fields' do
+          get :show, params: { id: runner.id }
+
+          expect(response.body).not_to match /Private projects Minutes cost factor/
+          expect(response.body).not_to match /Public projects Minutes cost factor/
+        end
+      end
+    end
   end
 
   describe '#update' do

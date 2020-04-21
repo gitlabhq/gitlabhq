@@ -37,10 +37,6 @@ module Gitlab
         ::RequestStore[REDIS_CALL_DETAILS] ||= []
       end
 
-      def self.query_time_ms
-        (self.query_time * 1000).round(2)
-      end
-
       def self.query_time
         ::RequestStore[REDIS_CALL_DURATION] || 0
       end

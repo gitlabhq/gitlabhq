@@ -53,7 +53,6 @@ export default {
     :primary-button-text="alertConfiguration.primaryButton"
     :primary-button-link="config.settingsPath"
     :title="alertConfiguration.title"
-    class="my-2"
   >
     <gl-sprintf :message="alertConfiguration.message">
       <template #days>

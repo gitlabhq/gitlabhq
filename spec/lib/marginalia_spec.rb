@@ -24,20 +24,6 @@ describe 'Marginalia spec' do
     end
   end
 
-  def add_sidekiq_middleware
-    # Reference: https://github.com/mperham/sidekiq/wiki/Testing#testing-server-middlewaresidekiq
-    # Sidekiq test harness fakes worker without its server middlewares, so include instrumentation to 'Sidekiq::Testing' server middleware.
-    Sidekiq::Testing.server_middleware do |chain|
-      chain.add Marginalia::SidekiqInstrumentation::Middleware
-    end
-  end
-
-  def remove_sidekiq_middleware
-    Sidekiq::Testing.server_middleware do |chain|
-      chain.remove Marginalia::SidekiqInstrumentation::Middleware
-    end
-  end
-
   def stub_feature(value)
     allow(Gitlab::Marginalia).to receive(:cached_feature_enabled?).and_return(value)
   end
@@ -88,20 +74,16 @@ describe 'Marginalia spec' do
   end
 
   describe 'for Sidekiq worker jobs' do
-    before(:all) do
-      add_sidekiq_middleware
-
-      # Because of faking, 'Sidekiq.server?' does not work so implicitly set application name which is done in config/initializers/0_marginalia.rb
-      Marginalia.application_name = "sidekiq"
+    around do |example|
+      with_sidekiq_server_middleware do |chain|
+        chain.add Marginalia::SidekiqInstrumentation::Middleware
+        Marginalia.application_name = "sidekiq"
+        example.run
+      end
     end
 
     after(:all) do
       MarginaliaTestJob.clear
-      remove_sidekiq_middleware
-    end
-
-    around do |example|
-      Sidekiq::Testing.fake! { example.run }
     end
 
     before do

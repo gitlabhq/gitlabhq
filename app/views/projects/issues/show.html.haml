@@ -10,6 +10,8 @@
 - can_report_spam = @issue.submittable_as_spam_by?(current_user)
 - can_create_issue = show_new_issue_link?(@project)
 
+= render_if_exists "projects/issues/alert_blocked", issue: @issue, current_user: current_user
+
 .detail-page-header
   .detail-page-header-body
     .issuable-status-box.status-box.status-box-issue-closed{ class: issue_status_visibility(@issue, status_box: :closed) }
@@ -50,7 +52,7 @@
               %li.divider
             %li= link_to 'New issue', new_project_issue_path(@project), id: 'new_issue_link'
 
-    = render 'shared/issuable/close_reopen_button', issuable: @issue, can_update: can_update_issue, can_reopen: can_reopen_issue
+    = render 'shared/issuable/close_reopen_button', issuable: @issue, can_update: can_update_issue, can_reopen: can_reopen_issue, warn_before_close: defined?(@issue.blocked?) && @issue.blocked?
 
     - if can_report_spam
       = link_to 'Submit as spam', mark_as_spam_project_issue_path(@project, @issue), method: :post, class: 'd-none d-sm-none d-md-block btn btn-grouped btn-spam', title: 'Submit as spam'

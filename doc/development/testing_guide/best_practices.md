@@ -17,7 +17,7 @@ our test design. We can find some helpful heuristics documented in the Handbook 
 
 ## Test speed
 
-GitLab has a massive test suite that, without [parallelization], can take hours
+GitLab has a massive test suite that, without [parallelization](ci.md#test-suite-parallelization-on-the-ci), can take hours
 to run. It's important that we make an effort to write tests that are accurate
 and effective _as well as_ fast.
 
@@ -30,11 +30,9 @@ Here are some things to keep in mind regarding test performance:
 - Don't mark a feature as requiring JavaScript (through `:js` in RSpec) unless it's _actually_ required for the test
   to be valid. Headless browser testing is slow!
 
-[parallelization]: ci.md#test-suite-parallelization-on-the-ci
-
 ## RSpec
 
-To run rspec tests:
+To run RSpec tests:
 
 ```shell
 # run all tests
@@ -493,7 +491,7 @@ range of inputs. By specifying the test case once, alongside a table of inputs
 and the expected output for each, your tests can be made easier to read and more
 compact.
 
-We use the [rspec-parameterized](https://github.com/tomykaira/rspec-parameterized)
+We use the [RSpec::Parameterized](https://github.com/tomykaira/rspec-parameterized)
 gem. A short example, using the table syntax and checking Ruby equality for a
 range of inputs, might look like this:
 
@@ -526,7 +524,7 @@ objects, FactoryBot-created objects etc. can lead to
 ### Prometheus tests
 
 Prometheus metrics may be preserved from one test run to another. To ensure that metrics are
-reset before each example, add the `:prometheus` tag to the Rspec test.
+reset before each example, add the `:prometheus` tag to the RSpec test.
 
 ### Matchers
 
@@ -651,7 +649,7 @@ end
 
 ### Factories
 
-GitLab uses [factory_bot] as a test fixture replacement.
+GitLab uses [factory_bot](https://github.com/thoughtbot/factory_bot) as a test fixture replacement.
 
 - Factory definitions live in `spec/factories/`, named using the pluralization
   of their corresponding model (`User` factories are defined in `users.rb`).
@@ -665,8 +663,6 @@ GitLab uses [factory_bot] as a test fixture replacement.
   required by the test.
 - Factories don't have to be limited to `ActiveRecord` objects.
   [See example](https://gitlab.com/gitlab-org/gitlab-foss/commit/0b8cefd3b2385a21cfed779bd659978c0402766d).
-
-[factory_bot]: https://github.com/thoughtbot/factory_bot
 
 ### Fixtures
 

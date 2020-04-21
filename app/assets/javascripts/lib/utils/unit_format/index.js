@@ -1,3 +1,4 @@
+import { engineeringNotation } from '@gitlab/ui/src/utils/number_utils';
 import { s__ } from '~/locale';
 
 import {
@@ -39,15 +40,18 @@ export const SUPPORTED_FORMATS = {
   gibibytes: 'gibibytes',
   tebibytes: 'tebibytes',
   pebibytes: 'pebibytes',
+
+  // Engineering Notation
+  engineering: 'engineering',
 };
 
 /**
  * Returns a function that formats number to different units
- * @param {String} format - Format to use, must be one of the SUPPORTED_FORMATS. Defaults to number.
+ * @param {String} format - Format to use, must be one of the SUPPORTED_FORMATS. Defaults to engineering notation.
  *
  *
  */
-export const getFormatter = (format = SUPPORTED_FORMATS.number) => {
+export const getFormatter = (format = SUPPORTED_FORMATS.engineering) => {
   // Number
 
   if (format === SUPPORTED_FORMATS.number) {
@@ -250,6 +254,17 @@ export const getFormatter = (format = SUPPORTED_FORMATS.number) => {
      * @param {Number} fractionDigits - number of precision decimals
      */
     return scaledBinaryFormatter('B', 5);
+  }
+
+  if (format === SUPPORTED_FORMATS.engineering) {
+    /**
+     * Formats via engineering notation
+     *
+     * @function
+     * @param {Number} value - Value to format
+     * @param {Number} fractionDigits - precision decimals - Defaults to 2
+     */
+    return engineeringNotation;
   }
 
   // Fail so client library addresses issue

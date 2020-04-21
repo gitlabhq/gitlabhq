@@ -34,6 +34,11 @@ describe('Actions Notes Store', () => {
     dispatch = jest.fn();
     state = {};
     axiosMock = new AxiosMockAdapter(axios);
+
+    // This is necessary as we query Close issue button at the top of issue page when clicking bottom button
+    setFixtures(
+      '<div class="detail-page-header-actions"><button class="btn-close btn-grouped"></button></div>',
+    );
   });
 
   afterEach(() => {
@@ -236,6 +241,30 @@ describe('Actions Notes Store', () => {
         'reopened',
         {},
         [{ type: 'REOPEN_ISSUE' }],
+        [],
+        done,
+      );
+    });
+  });
+
+  describe('toggleBlockedIssueWarning', () => {
+    it('should set issue warning as true', done => {
+      testAction(
+        actions.toggleBlockedIssueWarning,
+        true,
+        {},
+        [{ type: 'TOGGLE_BLOCKED_ISSUE_WARNING', payload: true }],
+        [],
+        done,
+      );
+    });
+
+    it('should set issue warning as false', done => {
+      testAction(
+        actions.toggleBlockedIssueWarning,
+        false,
+        {},
+        [{ type: 'TOGGLE_BLOCKED_ISSUE_WARNING', payload: false }],
         [],
         done,
       );

@@ -72,5 +72,3 @@ changes are added to the repository and branch you're merging into.
 ## Removing a fork relationship
 
 You can unlink your fork from its upstream project in the [advanced settings](../settings/index.md#removing-a-fork-relationship).
-
-[gitlab flow]: https://about.gitlab.com/blog/2014/09/29/gitlab-flow/ "GitLab Flow blog post"

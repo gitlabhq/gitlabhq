@@ -76,7 +76,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 
 ### Maintaining GitLab
 
-- [Raketasks](../raketasks/README.md): Perform various tasks for maintenance, backups, automatic webhooks setup, and more.
+- [Rake tasks](../raketasks/README.md): Perform various tasks for maintenance, backups, automatic webhooks setup, and more.
   - [Backup and restore](../raketasks/backup_restore.md): Backup and restore your GitLab instance.
 - [Operations](operations/index.md): Keeping GitLab up and running (clean up Redis sessions, moving repositories, Sidekiq MemoryKiller, Unicorn).
 - [Restart GitLab](restart_gitlab.md): Learn how to restart GitLab and its components.
@@ -98,7 +98,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 
 - [Mattermost](https://docs.gitlab.com/omnibus/gitlab-mattermost/): Integrate with [Mattermost](https://mattermost.com), an open source, private cloud workplace for web messaging.
 - [PlantUML](integration/plantuml.md): Create simple diagrams in AsciiDoc and Markdown documents
-  created in snippets, wikis, and repos.
+  created in snippets, wikis, and repositories.
 - [Web terminals](integration/terminal.md): Provide terminal access to your applications deployed to Kubernetes from within GitLab's CI/CD [environments](../ci/environments.md#web-terminals).
 
 ## User settings and permissions

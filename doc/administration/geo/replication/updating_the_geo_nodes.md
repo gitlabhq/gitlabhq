@@ -44,7 +44,7 @@ and all **secondary** nodes:
 Now that the update process is complete, you may want to check whether
 everything is working correctly:
 
-1. Run the Geo raketask on all nodes, everything should be green:
+1. Run the Geo Rake task on all nodes, everything should be green:
 
    ```shell
    sudo gitlab-rake gitlab:geo:check

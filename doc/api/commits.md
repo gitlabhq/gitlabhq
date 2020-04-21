@@ -65,7 +65,7 @@ Example response:
 
 ## Create a commit with multiple files and actions
 
-> [Introduced][ce-6096] in GitLab 8.13.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/6096) in GitLab 8.13.
 
 Create a commit by posting a JSON payload
 
@@ -245,7 +245,7 @@ Example response:
 
 ## Get references a commit is pushed to
 
-> [Introduced][ce-15026] in GitLab 10.6
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/15026) in GitLab 10.6
 
 Get all references (from branches or tags) a commit is pushed to.
 The pagination parameters `page` and `per_page` can be used to restrict the list of references.
@@ -280,7 +280,7 @@ Example response:
 
 ## Cherry pick a commit
 
-> [Introduced][ce-8047] in GitLab 8.15.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/8047) in GitLab 8.15.
 
 Cherry picks a commit to a given branch.
 
@@ -340,7 +340,7 @@ conflict.
 
 ## Revert a commit
 
-> [Introduced][ce-22919] in GitLab 11.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22919) in GitLab 11.5.
 
 Reverts a commit in a given branch.
 
@@ -653,7 +653,7 @@ Example response:
 
 ## List Merge Requests associated with a commit
 
-> [Introduced][ce-18004] in GitLab 10.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18004) in GitLab 10.7.
 
 Get a list of Merge Requests related to the specified commit.
 
@@ -785,9 +785,3 @@ Example response if commit is unsigned:
   "message": "404 GPG Signature Not Found"
 }
 ```
-
-[ce-6096]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/6096 "Multi-file commit"
-[ce-8047]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/8047
-[ce-15026]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/15026
-[ce-18004]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18004
-[ce-22919]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22919

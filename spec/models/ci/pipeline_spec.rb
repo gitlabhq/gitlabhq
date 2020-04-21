@@ -364,6 +364,16 @@ describe Ci::Pipeline, :mailer do
       end
     end
 
+    context 'when pipeline has a terraform report' do
+      it 'selects the pipeline' do
+        pipeline_with_report = create(:ci_pipeline, :with_terraform_reports)
+
+        expect(described_class.with_reports(Ci::JobArtifact.terraform_reports)).to eq(
+          [pipeline_with_report]
+        )
+      end
+    end
+
     context 'when pipeline does not have metrics reports' do
       subject { described_class.with_reports(Ci::JobArtifact.test_reports) }
 

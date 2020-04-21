@@ -54,6 +54,10 @@
             .metadata-info.prepend-top-8
               %span.user-access-role.d-block= Gitlab::Access.human_access(access)
 
+          - if !explore_projects_tab?
+            .metadata-info.prepend-top-8
+              = render_if_exists 'compliance_management/compliance_framework/compliance_framework_badge', project: project
+
         - if show_last_commit_as_description
           .description.d-none.d-sm-block.append-right-default
             = link_to_markdown(project.commit.title, project_commit_path(project, project.commit), class: "commit-row-message")

@@ -1,4 +1,4 @@
-import _ from 'underscore';
+import { escape as esc } from 'lodash';
 import { spriteIcon } from './lib/utils/common_utils';
 
 const FLASH_TYPES = {
@@ -39,14 +39,14 @@ const createAction = config => `
     class="flash-action"
     ${config.href ? '' : 'role="button"'}
   >
-    ${_.escape(config.title)}
+    ${esc(config.title)}
   </a>
 `;
 
 const createFlashEl = (message, type) => `
   <div class="flash-${type}">
     <div class="flash-text">
-      ${_.escape(message)}
+      ${esc(message)}
       <div class="close-icon-wrapper js-close-icon">
         ${spriteIcon('close', 'close-icon')}
       </div>

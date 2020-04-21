@@ -69,11 +69,23 @@ describe JiraService do
   end
 
   describe '.reference_pattern' do
-    it_behaves_like 'allows project key on reference pattern'
+    using RSpec::Parameterized::TableSyntax
 
-    it 'does not allow # on the code' do
-      expect(described_class.reference_pattern.match('#123')).to be_nil
-      expect(described_class.reference_pattern.match('1#23#12')).to be_nil
+    where(:key, :result) do
+      '#123'               | ''
+      '1#23#12'            | ''
+      'JIRA-1234A'         | 'JIRA-1234'
+      'JIRA-1234-some_tag' | 'JIRA-1234'
+      'JIRA-1234_some_tag' | 'JIRA-1234'
+      'EXT_EXT-1234'       | 'EXT_EXT-1234'
+      'EXT3_EXT-1234'      | 'EXT3_EXT-1234'
+      '3EXT_EXT-1234'      | ''
+    end
+
+    with_them do
+      specify do
+        expect(described_class.reference_pattern.match(key).to_s).to eq(result)
+      end
     end
   end
 

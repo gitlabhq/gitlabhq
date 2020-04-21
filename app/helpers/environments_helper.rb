@@ -46,7 +46,9 @@ module EnvironmentsHelper
       "environment-state" => "#{environment.state}",
       "custom-metrics-path" => project_prometheus_metrics_path(project),
       "validate-query-path" => validate_query_project_prometheus_metrics_path(project),
-      "custom-metrics-available" => "#{custom_metrics_available?(project)}"
+      "custom-metrics-available" => "#{custom_metrics_available?(project)}",
+      "alerts-endpoint" => project_prometheus_alerts_path(project, environment_id: environment.id, format: :json),
+      "prometheus-alerts-available" => "#{can?(current_user, :read_prometheus_alerts, project)}"
     }
   end
 

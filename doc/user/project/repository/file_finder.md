@@ -4,7 +4,7 @@ disqus_identifier: 'https://docs.gitlab.com/ee/workflow/file_finder.html'
 
 # File finder
 
-> [Introduced][gh-9889] in GitLab 8.4.
+> [Introduced](https://github.com/gitlabhq/gitlabhq/pull/9889) in GitLab 8.4.
 
 The file finder feature allows you to search for a file in a repository using the
 GitLab UI.
@@ -32,7 +32,7 @@ The File finder feature is powered by the [Fuzzy filter](https://github.com/jean
 It implements a fuzzy search with highlight, and tries to provide intuitive
 results by recognizing patterns that people use while searching.
 
-For example, consider the [GitLab CE repository][ce] and that we want to open
+For example, consider the [GitLab CE repository](https://gitlab.com/gitlab-org/gitlab-foss/tree/master) and that we want to open
 the `app/controllers/admin/deploy_keys_controller.rb` file.
 
 Using fuzzy search, we start by typing letters that get us closer to the file.
@@ -40,6 +40,3 @@ Using fuzzy search, we start by typing letters that get us closer to the file.
 **Tip:** To narrow down your search, include `/` in your search terms.
 
 ![Find file button](img/file_finder_find_file.png)
-
-[gh-9889]: https://github.com/gitlabhq/gitlabhq/pull/9889 "File finder pull request"
-[ce]: https://gitlab.com/gitlab-org/gitlab-foss/tree/master "GitLab CE repository"
