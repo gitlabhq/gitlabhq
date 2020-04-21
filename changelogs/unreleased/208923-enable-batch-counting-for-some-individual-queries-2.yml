@@ -1,5 +1,0 @@
----
-title: Optimize template_repositories query by using batch counting
-merge_request: 27352
-author:
-type: performance

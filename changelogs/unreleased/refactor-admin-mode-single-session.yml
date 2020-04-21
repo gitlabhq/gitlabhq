@@ -1,5 +1,0 @@
----
-title: Disable lookup of other ActiveSessions to determine admin mode status
-merge_request: 27318
-author: Diego Louzán
-type: changed

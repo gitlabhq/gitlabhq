@@ -1,5 +1,0 @@
----
-title: Fix audit event that weren't being created for failed LDAP log-in tries
-merge_request: 27608
-author:
-type: fixed

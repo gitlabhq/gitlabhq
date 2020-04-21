@@ -1,6 +1,0 @@
----
-title: 'Fix for issue 26426: Details of runners of nested groups of an owned group
-  are now available for users with enough permissions'
-merge_request: 24169
-author: nachootal@gmail.com
-type: changed

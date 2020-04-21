@@ -1,5 +1,0 @@
----
-title: Add last_activity_before and last_activity_after filter to /api/projects endpoint
-merge_request: 28221
-author: Roger Meier
-type: added

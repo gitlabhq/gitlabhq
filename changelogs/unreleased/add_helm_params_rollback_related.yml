@@ -1,5 +1,0 @@
----
-title: Add atomic and cleanup-on-fail parameters for Helm
-merge_request: 27721
-author:
-type: changed

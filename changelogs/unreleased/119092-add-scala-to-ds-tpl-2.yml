@@ -1,5 +1,0 @@
----
-title: Update detected languages for dependency scanning in no dind mode
-merge_request: 27723
-author:
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Detect skipped specs in JUnit reports and set TestCase status
-merge_request: 28053
-author:
-type: fixed

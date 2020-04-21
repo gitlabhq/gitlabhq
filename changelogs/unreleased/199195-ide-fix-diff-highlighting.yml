@@ -1,5 +1,0 @@
----
-title: Fix Web IDE not showing diff when opening commit tab
-merge_request: 29439
-author:
-type: fixed

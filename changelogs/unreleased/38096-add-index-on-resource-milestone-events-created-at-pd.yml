@@ -1,5 +1,0 @@
----
-title: Add index for created_at of resource_milestone_events
-merge_request: 28929
-author:
-type: performance

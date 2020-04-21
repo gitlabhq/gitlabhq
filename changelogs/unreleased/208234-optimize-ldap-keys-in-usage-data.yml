@@ -1,5 +1,0 @@
----
-title: Optimize ldap keys counters query performance in usage data
-merge_request: 27309
-author:
-type: performance

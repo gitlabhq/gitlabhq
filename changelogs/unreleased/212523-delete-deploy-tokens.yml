@@ -1,5 +1,0 @@
----
-title: Fix deploy token API to properly delete all associated deploy token records
-merge_request: 28156
-author:
-type: fixed

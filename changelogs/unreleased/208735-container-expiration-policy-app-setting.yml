@@ -1,6 +1,0 @@
----
-title: Add application setting to enable container expiration and retention policies
-  on pre 12.8 projects
-merge_request: 28479
-author:
-type: added

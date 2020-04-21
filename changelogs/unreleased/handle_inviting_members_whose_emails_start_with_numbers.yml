@@ -1,5 +1,0 @@
----
-title: Fix bug inviting members whose emails start with numbers
-merge_request: 27848
-author: Lee Tickett
-type: fixed

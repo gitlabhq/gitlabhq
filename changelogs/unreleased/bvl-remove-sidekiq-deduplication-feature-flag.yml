@@ -1,5 +1,0 @@
----
-title: Avoid scheduling duplicate sidekiq jobs
-merge_request: 29116
-author:
-type: performance

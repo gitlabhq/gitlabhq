@@ -1,5 +1,0 @@
----
-title: Added support for single-token deletion via option/ctrl-backspace or search-filter clearing via command-backspace in filtered search
-merge_request: 28295
-author: James Becker
-type: added

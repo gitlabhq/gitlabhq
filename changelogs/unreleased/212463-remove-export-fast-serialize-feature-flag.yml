@@ -1,5 +1,0 @@
----
-title: Remove feature flag 'export_fast_serialize' and 'export_fast_serialize_with_raw_json'
-merge_request: 28037
-author:
-type: performance

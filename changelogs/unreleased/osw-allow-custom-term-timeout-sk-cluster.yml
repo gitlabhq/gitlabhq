@@ -1,5 +1,0 @@
----
-title: Support custom graceful timeout for Sidekiq Cluster processes
-merge_request: 27710
-author:
-type: added

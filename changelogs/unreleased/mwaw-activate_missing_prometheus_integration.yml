@@ -1,6 +1,0 @@
----
-title: Migrate the database to activate projects prometheus service integration for
-  projects with prometheus installed on shared k8s cluster.
-merge_request: 24684
-author:
-type: fixed

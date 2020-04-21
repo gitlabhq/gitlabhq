@@ -1,5 +1,0 @@
----
-title: Normalize signature mime types when filtering attachments in emails
-merge_request: 28865
-author: Diego Louzán
-type: fixed

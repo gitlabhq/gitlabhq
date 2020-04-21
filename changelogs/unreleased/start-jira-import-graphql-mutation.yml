@@ -1,5 +1,0 @@
----
-title: Allow to start Jira import through graphql mutation
-merge_request: 27684
-author:
-type: added

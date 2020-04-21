@@ -1,5 +1,0 @@
----
-title: Refactor projects/:id/packages API to supply only necessary params to PackagesFinder
-merge_request: 29052
-author: Sashi Kumar
-type: other

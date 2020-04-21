@@ -1,5 +1,0 @@
----
-title: Remove unnecessary index index_ci_builds_on_name_for_security_reports_values
-merge_request: 28224
-author:
-type: performance

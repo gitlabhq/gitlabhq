@@ -1,5 +1,0 @@
----
-title: Don't send 'accept-encoding' in HttpIO requests
-merge_request: 28239
-author:
-type: fixed

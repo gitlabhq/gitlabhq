@@ -2,6 +2,448 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 12.10.0 (2020-04-22)
+
+### Removed (3 changes)
+
+- Revert LDAP readonly attributes feature. !28541
+- Remove deprecated /ci/lint page. !28562
+- Remove open in file view link from Web IDE. !28705
+
+### Fixed (118 changes, 26 of them are from the community)
+
+- Return 202 for command only notes in REST API. !19624
+- Run SAST using awk to pass env variables directly to docker without creating .env file. !21174 (Florian Gaultier)
+- #42671: Project and group storage statistics now support values up to 8 PiB (up from 4GiB)
+. !23131 (Matthias van de Meent)
+- Fix 500 error on profile/chat_names for deleted projects. !24341
+- Migrate the database to activate projects prometheus service integration for projects with prometheus installed on shared k8s cluster. !24684
+- Fix archived corrupted projects not displaying in admin. !25171 (erickcspice)
+- Fix some Web IDE bugs with empty projects. !25463
+- Fix failing ci variable e2e test. !25924
+- Fix new file not being created in non-ascii character folders. !26165
+- Validate uniqueness of project_id and type when a new project service is created. !26308
+- Fix assignee dropdown on new issue page. !26971
+- Resolve Unable to expand multiple downstream pipelines. !27029
+- Hide admin user actions for ghost and bot users. !27162
+- Fix invalid ancestor group milestones when moving projects. !27262
+- Fix right sidebar when scrollbars are always visible. !27314 (Shawn @CasualBot)
+- Fix OpenAPI file detector. !27321 (Roger Meier)
+- Fix managed_free_namespaces scope to only groups without a license or a free license. !27356
+- Set commit status to failed if the TeamCity connection is refused. !27395
+- Resolve Improve format support message in issue design. !27409
+- Add tooltips with full path to file headers on file tree. !27437
+- Scope WAF Statistics anomalies to environment.external_url. !27466
+- Show the proper information in snippet edit form. !27479
+- Fixes the repository Vue router not working with Chinese characters. !27494
+- Fix smartcard config initialization. !27560
+- Fix audit event that weren't being created for failed LDAP log-in tries. !27608
+- Fix filtered search tokenization. !27648
+- Fix processing of GrapqhQL query complexity based on used resolvers. !27652
+- Update board scopes when promoting a label. !27662
+- Reuse default generated snippet file name in repository. !27673
+- Revert user bio back to non-italicized font to fix rendering of emojis. !27693
+- Filter out Releases with missing tags. !27716
+- Update detected languages for dependency scanning in no dind mode. !27723
+- Fix logic for ingress can_uninstall?. !27729
+- Fix dropped filter when paging groups. !27737 (Lee Tickett)
+- Amend GraphQL merge requests resolver to check for project presence. !27783
+- Fix bug issue template handling of markdown. !27808 (Lee Tickett)
+- Update discord notifications to be a single embed and include log messages. !27812 (Sam Bingner)
+- Update detected languages for sast in no dind mode. !27831
+- Fix bug inviting members whose emails start with numbers. !27848 (Lee Tickett)
+- Allow self monitoring project to query internal Prometheus even when "Allow local requests in webhooks and services" setting is false. !27865
+- Add missing docstring to Prometheus metric. !27868
+- Resolve Snippet creation failure bug. !27891
+- Fix optional params for deploy token API. !27961 (Nejc Habjan)
+- Use Ci::Pipeline#all_merge_requests.first as Ci::Build#merge_request. !27968
+- Fix bug tracking snippet shard name. !27979
+- Add `discussion_locked` to Webhook. !28018
+- Fix invalid class option for ionice. !28023
+- Improve SAST NO_DIND file detection with proper boundary conditions. !28036
+- Detect skipped specs in JUnit reports and set TestCase status. !28053
+- Allow 0 for pages size limit setting in admin settings. !28086
+- Fix wrong colors displayed in charts. !28095
+- Fix incorrect content returned on empty dotfile. !28144
+- Include LDAP UID attribute in default attributes for all LDAP lookups. !28148
+- Fix deploy token API to properly delete all associated deploy token records. !28156
+- Fix Gitlab::Auth to handle orphaned oauth tokens. !28159
+- Protect sidekiq admin UI with admin mode. !28164 (Diego Louzán)
+- Prevent overriding the username when creating a Deploy Token via the API. !28175 (Ayoub Mrini)
+- Resolve Snippet actions with binary data. !28191
+- Make all HTTPS cookies set SameSite to none. !28205
+- Don't send 'accept-encoding' in HttpIO requests. !28239
+- Gracefully handle missing latest CI pipeline. !28263
+- Fix error removing secondary email. !28267 (Lee Tickett)
+- Fix name of approvals column in merge requests. !28274 (Steffen Köhler)
+- Add management_project_id to group and project cluster creation, clarifies docs. !28289
+- Check first if feature flag version_snippet is enabled. !28352
+- Fix single stat panel percentile format support. !28365
+- Use CTE optimization for searching board issues. !28430
+- Fix missing synthetic milestone change notes for disabled milestone change event tracking feature flag. !28440
+- Fix Releases page for Guest users of private projects. !28447
+- Prevent ProjectUpdateRepositoryStorageWorker from moving to same filesystem. !28469
+- Return error message for create_merge_request. !28482
+- Include MR times in Milestone time overview. !28519 (Bob van de Vijver)
+- Fix daily report result to use average of coverage values if there are multiple builds for a given group name. !28556
+- Token creation uses HTTP status CREATED. !28587
+- Allow award emoji same name & user duplicates when Importing. !28588
+- Fix pagination in Merge Request GraphQL api. !28667 (briankabiro)
+- Remove duplicate spec in web hook service spec. !28669 (Rajendra Kadam)
+- Fix GraphQL SnippetType repo urls. !28673
+- Add missing ON DELETE FK constraints referencing users table. !28720
+- Update duplicate specs in notification service spec. !28742 (Rajendra Kadam)
+- Fix styling of MR dropdown in Web IDE. !28746
+- Better error message when importing a Github project and Github API rate limit is exceeded. !28785
+- Prevent false positives in Ci::Pipeline#all_merge_requests. !28800
+- Enable toggle all discussions button for logged out users. !28809 (Diego Louzán)
+- Fix display of PyCharm generated Jupyter notebooks. !28810 (Jan Beckmann)
+- Resolve Snippet update error with version flag disabled. !28815
+- Show multimetric embeds on a single chart. !28841
+- Fix race condition updating snippet without repository. !28851
+- Normalize signature mime types when filtering attachments in emails. !28865 (Diego Louzán)
+- Add autostop check to folder table. !28937
+- Fix 500 error on create release API when providing an invalid tag_name. !28969 (Sashi Kumar)
+- Fix missing group icons on profile page when screen < 576px. !28973
+- Stringify Sidekiq job args in exception logs. !28996
+- Ensure members are always added on Project Import when importing as admin. !29046
+- Elasticsearch recommendation alert does not appears while screen is loaded. !29097
+- Prevent wrong environment being used when processing Prometheus alert. !29119
+- Fix Slack slash commands using relative URL. !29160
+- Exclude 'trial_ends_on', 'shared_runners_minutes_limit' & 'extra_shared_runners_minutes_limit' from list of exported Group attributes. !29259
+- Group level container registry show subgroups repos. !29263
+- Move prepend to last line in finders files. !29274 (Rajendra Kadam)
+- Remove 'error' from diff note error message. !29281
+- Migrate legacy uploads out of deprecated paths. !29295
+- Move prepend to last line in commit status presenter. !29328 (Rajendra Kadam)
+- Move prepend to last line in app serializers. !29332 (Rajendra Kadam)
+- Move prepend to last line in app workers and uploaders. !29379 (Rajendra Kadam)
+- fix: Publish toolbar dissappears when submitting empty content. !29410
+- Replace deprecated GlLoadingIcon sizes. !29417
+- fix display head and base in version dropdowns. !29433
+- Fix Web IDE not showing diff when opening commit tab. !29439
+- Use music icon for files with .ogg extension. !29514
+- Fix dashboard processing error which prevented dashboards with unknown attributes inside panels from being displayed. !29517
+- Fix Deploy Token creation when no scope selected. !29614
+- Update auto-build-image to v0.2.2 with fixes for docker caching. !29730
+- Fix resolve WIP clearing merge request area. !29757
+- Enable the Add metric button for CE users. !29769
+- Fix Error 500 when inviting user to a few projects. !29778
+- Fixed whitespace toggle not showing the correct diff.
+- Fixed upload file creating a file in the wrong directory.
+
+### Deprecated (1 change)
+
+- Deprecate 'token' attribute from Runners API. !29481
+
+### Changed (62 changes, 7 of them are from the community)
+
+- Only enable searching of projects by full path / name on certain dropdowns. !21910
+- Support wiki events in activity streams. !23869
+- Fix for issue 26426: Details of runners of nested groups of an owned group are now available for users with enough permissions. !24169 (nachootal@gmail.com)
+- Rename "Project Services" to "Integrations" in frontend and docs. !26244
+- Support multiple Evidences for a Release. !26509
+- Move some global routes to - scope. !27106
+- Only display mirrored URL to users who can manage Repository settings. !27166
+- Disable lookup of other ActiveSessions to determine admin mode status. !27318 (Diego Louzán)
+- Extract X509::Signature from X509::Commit. !27327 (Roger Meier)
+- Show user statistics in admin area also in CE, and use daily generated data for these statistics. !27345
+- Update aws-ecs image location in CI template. !27382
+- Update More Pages button on Wiki Page. !27499
+- Update ApplicationLimits to prefer defaults. !27574
+- Allow external diff files to be removed. !27602
+- Add atomic and cleanup-on-fail parameters for Helm. !27721
+- Change the url when the timeslider changes. !27726
+- Add user_details.bio column and migrate data from users.bio. !27773
+- WAF settings will be read-only if there is a new version of ingress available. !27845
+- Add an helper to check if a notification_event is enabled. !27880 (Jacopo Beschi @jacopo-beschi)
+- Ensure freshness of settings with snippet creation. !27897
+- Update copies in Admin Panel > Repository Storage section. !27986
+- Add event tracking to Container regstry quickstart. !27990
+- Render snippet repository blobs. !28085
+- Accept `author_username` as a param in Merge Requests API. !28100
+- Use rich icons for thw rows on the file tree. !28112
+- Renamed Contribution Charts as Repository Analytics. !28162
+- Move Alerting feature to Core. !28196
+- Add file-based pipeline conditions to default Auto DevOps CI template. !28242
+- Make pipeline info in chat notifications concise. !28284
+- Use different approval icon if current user approved. !28290 (Steffen Köhler)
+- Remove repeated examples in user model specs. !28450 (Rajendra Kadam)
+- Show only active environments in monitoring dropdown. !28456
+- Enable container expiration policies by default for new projects. !28480
+- Show snippet error update to the user. !28516
+- Move 'Additional Metrics' feature to GitLab Core. !28527
+- Add ability to search by environment state in environments GraphQL API. !28567
+- Add correlation_id to project_mirror_data, expose in /import API endpoints. !28662
+- Add status column to container_registry. !28682
+- Cleanup the descriptions of some fields of GraphQL ProjectType. !28735
+- Add Project template for Static Site Editor / Middleman. !28758
+- Remove duplicate show spec in admin routing. !28790 (Rajendra Kadam)
+- Add Fluentd model for cluster apps. !28846
+- Add grab cursor for operations dashboard cards. !28868
+- Update copy when snippet git feature disabled. !28913
+- Expose relations that failed to import in /import endpoints. !28915
+- Update informational text on Edit Release page. !28938
+- Add support for dot (.) in variables masking. !29022
+- Update Auto DevOps docker version to 19.03.8. !29081
+- Make search redaction more robust. !29166
+- Enable async delete in container repository list. !29175
+- Make manual prometheus configuration section always editable. !29209
+- Adjust label title applied to issues on import from Jira. !29246
+- Track statistics per project for jira imported issues. !29406
+- Display local timezone in log explorer. !29409
+- Allow to retry submitting changes when an error occurs. !29434
+- Define dashboard dropdowns layout in flex to improve support smaller screens. !29477
+- Update auto-deploy-image to v0.13.0 for deploy job, enabling more granular control over service.enabled. !29524
+- Do not display branch link in saved changes message UI. !29611
+- Redesign Jira issue import UI. !29671
+- Add support for /file_hooks directory. !29675
+- Sort the project dropdown by star count when moving issues. !29766
+- Increase the timing of polling for the merge request widget.
+
+### Performance (45 changes)
+
+- Limits issues displayed on milestones. !23102
+- Optimize suggestions counters. !26443
+- Prefetch DNS for asset host. !26868
+- Move bots functionality to user_type column. !26981
+- Optimize projects_service_active queries performance in usage data. !27093
+- Optimize projects_mirrored_with_pipelines_enabled query performance in usage data. !27110
+- Optimize ldap keys counters query performance in usage data. !27309
+- Enable Workhorse upload acceleration for Project Import uploads via UI. !27332
+- Cache ES enabled namespaces and projects. !27348
+- Optimize template_repositories query by using batch counting. !27352
+- Reduce SQL queries when rendering webhook settings. !27359
+- Reduce number of SQL queries for service templates. !27396
+- Improve Advanced global search performance by using routing. !27398
+- Improve performance of the container repository cleanup tags service. !27441
+- Optimize usage ping queries by using batch counting. !27455
+- Fix redundant query execution when loading board issues. !27505
+- Optimize projects_enforcing_code_owner_approval counter query performance for usage ping. !27526
+- Optimize projects_reporting_ci_cd_back_to_github query performance for usage data. !27533
+- Optimize service desk enabled projects counter. !27589
+- Improve pagination in discussions API. !27697
+- Improve API response for archived project searchs. !27717
+- Optimize ci builds counters in usage data. !27770
+- Enable streaming serializer feature flag by default. !27813
+- Harden jira usage data. !27973
+- Create merge request pipelines in background jobs. !28024
+- Optimize ci builds non distinct counters in usage data. !28027
+- Remove feature flag 'export_fast_serialize' and 'export_fast_serialize_with_raw_json'. !28037
+- Improve API response for descending internal project searches. !28038
+- Make Rails.cache and Gitlab::Redis::Cache share the same Redis connection pool. !28074
+- Introduce rate limit for creating issues via web UI. !28129
+- Introduce rate limit for creating issues via API. !28130
+- Remove unnecessary index index_ci_builds_on_name_for_security_reports_values. !28224
+- Disallow distinct count for regular batch count. !28518
+- Resolve an N+1 in merge request CI variables. !28688
+- Use faster streaming serializer for project exports. !28925
+- Add index for created_at of resource_milestone_events. !28929
+- Optimize issues with embedded grafana charts usage counter. !28936
+- Avoid scheduling duplicate sidekiq jobs. !29116
+- Optimize projects with repositories enabled usage data. !29117
+- Use diff-stats for calculating raw diffs modified paths. !29134
+- Optimize protected branches usage data. !29148
+- Refresh only existing MRs on push. !29420
+- Reduce SQL requests number for CreateCommitSignatureWorker. !29479
+- Remove redundant index from projects table. !29507
+- Add index on users.unlock_token. !276298
+
+### Added (140 changes, 33 of them are from the community)
+
+- New package list is enabled which includes filtering by type. !18860
+- Create a rake task to cleanup unused LFS files. !21747
+- Support Asciidoc docname attribute. !22313 (Jouke Witteveen)
+- Adds features to delete stopped environments. !22629
+- Highlight line which includes search term is code search results. !22914 (Alex Terekhov (terales))
+- Allow embedded metrics charts to be hidden. !23929
+- Add toggle all discussions button to MRs. !24670 (Martin Hobert & Diego Louzán)
+- Store daily code coverages into ci_daily_report_results table. !24695
+- Add cluster management project template. !25318
+- Add limit metric to lists. !25532
+- Add support for Okta as a SCIM provider. !25649
+- Add grape custom validator for git reference params. !26102 (Rajendra Kadam)
+- Add healthy column to clusters_applications_prometheus table. !26168
+- Add API endpoint to list runners for a group. !26328
+- Add unlock_membership_to_ldap boolean to Groups. !26474
+- Adds wiki metadata models. !26529
+- Create model to store Terraform state files. !26619
+- Improve logs dropdown with more clear labels. !26635
+- Add all pods view to logs explorer. !26883
+- Add first_contribution to single merge request API. !26926
+- Populate user_highest_roles table. !27127
+- Add option for switching between blocking and logging for WAF. !27133
+- Add bar chart support to monitoring dashboard. !27155
+- Start merge request for custom dashboard if new branch is provided. !27189
+- Update user's highest role to keep the users statistics up to date. !27231
+- Make "Value Stream" the default page that appears when clicking the project-level "Analytics" sidebar item. !27279 (Gilang Gumilar)
+- Add metric to derive new users count. !27351
+- Display cluster type in cluster info page. !27366
+- Improve logs filters on mobile, simplify kubernetes API logs filters. !27484
+- Adds branch information to the package details title section. !27488
+- Add forking_access_level to projects API. !27514 (Mathieu Parent)
+- Add a DB column to track external issue and epic ids when importing from external sources. !27522
+- Added Edit Title shared component. !27582
+- Add metrics dashboard annotation model, relation, policy, create and delete services. To provide interface for create and delete operations. !27583
+- Adds filter by name to the packages list. !27586
+- Allow querying of Jira imports and their status via GraphQL. !27587
+- Update Gitaly to 12.9.0-rc5. !27631
+- Add filtered search for elastic search in logs. !27654
+- Add cost factor fields to ci runners. !27666
+- Add auto_ssl_failed to pages_domains. !27671
+- Allow to start Jira import through graphql mutation. !27684
+- Add terraform report to merge request widget. !27700
+- Read metadata from Wiki front-matter. !27706
+- Support custom graceful timeout for Sidekiq Cluster processes. !27710
+- Show storage size on project page. !27724 (Roger Meier)
+- Upload a design by copy/pasting the file into the Design Tab. !27776
+- Update Active checkbox component to use toggle. !27778
+- Add namespace_storage_size_limit to application settings. !27786
+- Add issues to graphQL group endpoint. !27789
+- Enable container registry at the group level. !27814
+- Expose created_at property in Groups API. !27824
+- Add an endpoint to allow group admin users to purge the dependency proxy for a group. !27843
+- Filter health endpoint metrics. !27847
+- Add support for system note metadata in project Import/Export. !27853 (Melvin Vermeeren)
+- Add daily job to create users statistics. !27883
+- Add DS_REMEDIATE env var to dependency scanning template. !27947
+- Add Swift Dockerfile to GitLab templates. !28035
+- Generate JWT and provide it to CI jobs for integration with other systems. !28063
+- Update user's highest role to keep the users statistics up to date. !28087
+- Add jira_imports table to track current jira import progress as well as historical imports data. !28108
+- Add initial support for Cloud Native Buildpacks in Auto DevOps builds. !28165
+- Add app server type to usage ping. !28189
+- Add last_activity_before and last_activity_after filter to /api/projects endpoint. !28221 (Roger Meier)
+- Expose basic project services attributes through GraphQL. !28234
+- Add environment-state flag to metrics data. !28237
+- Allow defining of metric step in dashboard yml. !28247
+- Separate validators into own class files. !28266 (Rajendra Kadam)
+- Refactor push rules and add push_rule_id columns in project settings and application settings. !28286
+- Added support for single-token deletion via option/ctrl-backspace or search-filter clearing via command-backspace in filtered search. !28295 (James Becker)
+- Enable log explorer to use the full height of the screen. !28312
+- Automatically assign id to each panel within dashboard to support panel scoped annotations. !28341
+- Add Praefect rake task to print out replica checksums. !28369
+- Add rake task to update x509 signatures. !28406 (Roger Meier)
+- Add application setting to enable container expiration and retention policies on pre 12.8 projects. !28479
+- Add Prometheus alerts automatically after Prometheus Service was created. !28503
+- Add ability to filter commits by author. !28509
+- Add usage data metrics for instance level clusters and clusters with management projects. !28510
+- Add slash command support for merge train. !28532
+- Add metrics dashboard annotations to GraphQL API. !28550
+- Refactor duplicate specs in wiki page specs. !28551 (Rajendra Kadam)
+- Refactor duplicate member specs. !28574 (Rajendra Kadam)
+- Remove design management as a license feature. !28589
+- Add api endpoint to get x509 signature. !28590 (Roger Meier)
+- Refactored Snippet edit form to Vue. !28600
+- Add support for database-independent embedded metric charts. !28618
+- Fix issuable duplicate spec. !28632 (Rajendra Kadam)
+- Fix build duplicate spec. !28633 (Rajendra Kadam)
+- Remove duplicate specs in ability model. !28644 (Rajendra Kadam)
+- Remove duplicate specs in update service spec. !28650 (Rajendra Kadam)
+- Add added_lines and removed_lines columns to merge_request_metrics table. !28658
+- Remove duplicate specs in pipeline message spec. !28664 (Rajendra Kadam)
+- Implement Terraform State API with locking. !28692
+- Move export issues feature to core. !28703
+- Add status endpoint to Pages Internal API. !28743
+- Enable last user activity logging on the REST API. !28755
+- Refresh metrics dashboard data without reloading the page. !28756
+- Update duplicate specs in update large table spec. !28787 (Rajendra Kadam)
+- Fix duplicate spec in factory relation spec. !28794 (Rajendra Kadam)
+- Remove duplicate spec from changelog spec. !28801 (Rajendra Kadam)
+- Remove duplicate spec from closing issue spec. !28803 (Rajendra Kadam)
+- Allow Release links to be edited on the Edit Release page. !28816
+- Create operations_user_lists table. !28822
+- Added the clone button for Snippet view. !28840
+- Add Fluentd table for cluster apps. !28844
+- Fix duplicate spec from user helper spec. !28854 (Rajendra Kadam)
+- Add missing spec for gitlab schema. !28855 (Rajendra Kadam)
+- Fix duplciate spec in merge requests. !28856 (Rajendra Kadam)
+- Fix duplicate spec in environment finder. !28857 (Rajendra Kadam)
+- Fix duplicate spec in template dropdown spec. !28858 (Rajendra Kadam)
+- Fix duplicate spec in user post diff notes. !28859 (Rajendra Kadam)
+- Fix duplicate spec in filter issues. !28860 (Rajendra Kadam)
+- Remove `ci_dag_support` feature flag. !28863 (Lee Tickett)
+- Validate dependency on job generating a CI config when using dynamic child pipelines. !28901
+- Add read_api scope to personal access tokens for granting read only API access. !28944
+- Add a new default format(engineering notation) for yAxis labels in monitor charts. !28953
+- Add write_registry scope to deploy tokens for container registry push access. !28958
+- Add Nginx error percentage metric. !28983
+- Provide configuration options for Static Site Editor. !29058
+- Remove blobs_fetch_in_batches feature flag. !29069
+- API endpoint to create annotations for environments dashboard. !29089
+- Add graphQL interface to fetch metrics dashboard. !29112
+- Add typed AWS environment variables for access keys & region. !29124
+- Add line range to diff note position. !29135
+- Add push rules association for groups. !29144
+- Gather historical pod list from Elasticsearch. !29168
+- Save changes in Static Site Editor using REST GitLab API. !29286
+- Add temporary empty message when no result is found. !29306
+- Add API endpoint to get users without projects. !29347
+- Add status page url field to DB and setting model. !29357
+- Add metrics_dashboard_access_level to project features. !29371
+- Add a database column to enable or disable group owners from changing the default branch protection setting of a group. !29397
+- Allow sorting of issue and MR discussions. !29492
+- Update UI for project and group settings CI variables. !29584
+- Add GRADLE_CLI_OPTS and SBT_CLI_OPTS env vars to dependency scanning orchestrator. !29595
+- Add name_regex_keep to container_expiration_policies. !29618
+- Adds Knative and Fluentd as CI/CD managed applications. !29637
+- Add jira issues import feature.
+- Add wildcard case in documentation for artifacts. (Fábio Matavelli)
+- Add namespace storage size limit setting.
+- Add placeholders to broadcast message notifications.
+
+### Other (48 changes, 16 of them are from the community)
+
+- Convert schema to plain SQL using structure.sql. !22808
+- Provide link to a survey for Knative users. !23025
+- Complete the migration of Job Artifact to Security Scan. !24244
+- Migrate .fa-spinner to .spinner for app/views/shared/notes. !25028 (nuwe1)
+- Migrate .fa-spinner to .spinner for app/views/ci/variables. !25030 (nuwe1)
+- Migrate .fa-spinner to .spinner for ee/app/views/projects/settings. !25038 (nuwe1)
+- Migrate .fa-spinner to .spinner for app/views/projects/mirrors. !25041 (nuwe1)
+- Migrate .fa-spinner to .spinner for app/views/projects/network. !25050 (nuwe1)
+- Migrate .fa-spinner to .spinner for app/views/groups. !25053 (nuwe1)
+- Replace underscore with lodash for ./app/assets/javascripts/vue_shared. !25108 (Tobias Spagert)
+- Remove health_status column from epics. !26302
+- Show object access warning when disabling repo LFS. !26696
+- Update icons in Sentry Error Tracking list for ignored/resolved errors. !27125
+- Use Ruby 2.7 in specs to remove Ruby 2.1/2.2/2.3. !27269 (Takuya Noguchi)
+- Fill user_type for ghost users. !27387
+- Add Bitbucket Importer metrics. !27524
+- Consume remaining LinkLFsObjectsProjects jobs. !27558
+- Update GitLab Runner Helm Chart to 0.15.0. !27670
+- Log Redis call count and duration to log files. !27735
+- Use id instead of cve where possible when parsing remediations. !27815
+- Log member additions when importing Project/Group. !27930
+- Change project_export_worker urgency to throttled. !27941
+- Add missing track_exception() call to Ci::CreateJobArtifactsService. !27954
+- Add possibility to conigure additional rails hosts with env variable. !28133
+- Remove new issue tooltip. !28261 (Victor Wu)
+- Improve message when promoting project labels. !28265
+- Change the link to chart copy text. !28371
+- Conditional mocking of admin mode in specs by directory. !28420 (Diego Louzán)
+- Align color and font-weight styles of heading elements and their typography classes. !28422
+- Fix merge request thread’s icon buttons color. !28465
+- Updated spinner next to forking message. !28506 (Victor Wu)
+- Replaced old-style buttons with the new ones on Snippet view. !28614
+- Change redo for retry icon in metrics dashboard. !28670
+- Remove User's association max_access_level_membership. !28757
+- Reduce urgency of EmailsOnPushWorker. !28783
+- Use concern instead of service to update highest role. !28791
+- Normalize error message between Gitea and Fogbugz importers. !28802
+- Fix keyboard shortcut to navigate to your groups. !28873 (Victor Wu)
+- Fix keyboard shortcut to navigate to dashboard activity. !28985 (Victor Wu)
+- Remove unused index for vulnerability severity levels. !29023
+- Update query labels dynamically for embedded charts. !29034
+- Refactor projects/:id/packages API to supply only necessary params to PackagesFinder. !29052 (Sashi Kumar)
+- Implement showing CI bridge error messages. !29123
+- Update GitLab Shell to v12.1.0. !29167
+- Update GitLab Elasticsearch Indexer. !29256
+- Add Gitlab User-Agent to ContainerRegistry::Client. !29294 (Sashi Kumar)
+- Improve error message in DAST CI template. !29388
+- Remove store_mentions! in Snippets::CreateService. !29581 (Sashi Kumar)
+
+
 ## 12.9.4 (2020-04-16)
 
 - No changes.

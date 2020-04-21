@@ -1,5 +1,0 @@
----
-title: Update aws-ecs image location in CI template
-merge_request: 27382
-author:
-type: changed

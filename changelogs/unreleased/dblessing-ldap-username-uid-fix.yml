@@ -1,5 +1,0 @@
----
-title: Include LDAP UID attribute in default attributes for all LDAP lookups
-merge_request: 28148
-author:
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Make all HTTPS cookies set SameSite to none
-merge_request: 28205
-author:
-type: fixed

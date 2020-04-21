@@ -1,5 +1,0 @@
----
-title: Scope WAF Statistics anomalies to environment.external_url
-merge_request: 27466
-author:
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Refresh only existing MRs on push
-merge_request: 29420
-author:
-type: performance

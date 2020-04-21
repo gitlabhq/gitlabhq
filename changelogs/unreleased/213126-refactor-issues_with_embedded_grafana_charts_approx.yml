@@ -1,5 +1,0 @@
----
-title: Optimize issues with embedded grafana charts usage counter
-merge_request: 28936
-author:
-type: performance

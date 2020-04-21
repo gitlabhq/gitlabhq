@@ -1,5 +1,0 @@
----
-title: WAF settings will be read-only if there is a new version of ingress available
-merge_request: 27845
-author:
-type: changed

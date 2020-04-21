@@ -1,5 +1,0 @@
----
-title: Add jira_imports table to track current jira import progress as well as historical imports data
-merge_request: 28108
-author:
-type: added

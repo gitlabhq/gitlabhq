@@ -1,5 +1,0 @@
----
-title: Automatically assign id to each panel within dashboard to support panel scoped annotations
-merge_request: 28341
-author:
-type: added

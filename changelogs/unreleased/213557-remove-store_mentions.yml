@@ -1,5 +1,0 @@
----
-title: Remove store_mentions! in Snippets::CreateService
-merge_request: 29581
-author: Sashi Kumar
-type: other

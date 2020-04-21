@@ -1,5 +1,0 @@
----
-title: Add GRADLE_CLI_OPTS and SBT_CLI_OPTS env vars to dependency scanning orchestrator
-merge_request: 29595
-author:
-type: added
