@@ -352,14 +352,6 @@ The following table lists variables related to the database.
 | `POSTGRES_DB`                           | The PostgreSQL database name. Defaults to the value of [`$CI_ENVIRONMENT_SLUG`](../../ci/variables/README.md#predefined-environment-variables). Set it to use a custom database name. |
 | `POSTGRES_VERSION`                      | Tag for the [`postgres` Docker image](https://hub.docker.com/_/postgres) to use. Defaults to `9.6.2`. |
 
-### Security tools
-
-The following table lists variables related to security tools.
-
-| **Variable**                            | **Description**                    |
-|-----------------------------------------|------------------------------------|
-| `SAST_CONFIDENCE_LEVEL`                 | Minimum confidence level of security issues you want to be reported; `1` for Low, `2` for Medium, `3` for High. Defaults to `3`. |
-
 ### Disable jobs
 
 The following table lists variables used to disable jobs.

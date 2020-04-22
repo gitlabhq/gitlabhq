@@ -10544,6 +10544,10 @@ CREATE INDEX note_mentions_temp_index ON public.notes USING btree (id, noteable_
 
 CREATE UNIQUE INDEX one_canonical_wiki_page_slug_per_metadata ON public.wiki_page_slugs USING btree (wiki_page_meta_id) WHERE (canonical = true);
 
+CREATE INDEX packages_packages_verification_checksum_partial ON public.packages_package_files USING btree (verification_checksum) WHERE (verification_checksum IS NOT NULL);
+
+CREATE INDEX packages_packages_verification_failure_partial ON public.packages_package_files USING btree (verification_failure) WHERE (verification_failure IS NOT NULL);
+
 CREATE INDEX partial_index_ci_builds_on_scheduled_at_with_scheduled_jobs ON public.ci_builds USING btree (scheduled_at) WHERE ((scheduled_at IS NOT NULL) AND ((type)::text = 'Ci::Build'::text) AND ((status)::text = 'scheduled'::text));
 
 CREATE INDEX partial_index_deployments_for_legacy_successful_deployments ON public.deployments USING btree (id) WHERE ((finished_at IS NULL) AND (status = 2));
@@ -13065,6 +13069,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200217210353
 20200217223651
 20200217225719
+20200218113721
 20200219105209
 20200219133859
 20200219135440

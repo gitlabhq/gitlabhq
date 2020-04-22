@@ -1,47 +1,47 @@
 # Stages of Auto DevOps
 
-The following sections describe the stages of Auto DevOps. Read them carefully
-to understand how each one works.
+The following sections describe the stages of [Auto DevOps](index.md).
+Read them carefully to understand how each one works.
 
 ## Auto Build
 
 Auto Build creates a build of the application using an existing `Dockerfile` or
-Heroku buildpacks.
-
-Either way, the resulting Docker image is automatically pushed to the
-[Container Registry](../../user/packages/container_registry/index.md) and tagged with the commit SHA or tag.
+Heroku buildpacks. The resulting Docker image is pushed to the
+[Container Registry](../../user/packages/container_registry/index.md), and tagged
+with the commit SHA or tag.
 
 ### Auto Build using a Dockerfile
 
-If a project's repository contains a `Dockerfile` at its root, Auto Build will use
+If a project's repository contains a `Dockerfile` at its root, Auto Build uses
 `docker build` to create a Docker image.
 
-If you are also using Auto Review Apps and Auto Deploy and choose to provide
-your own `Dockerfile`, make sure you expose your application to port
-`5000` as this is the port assumed by the
-[default Helm chart](https://gitlab.com/gitlab-org/charts/auto-deploy-app). Alternatively you can override the default values by [customizing the Auto Deploy Helm chart](customize.md#custom-helm-chart)
+If you're also using Auto Review Apps and Auto Deploy, and you choose to provide
+your own `Dockerfile`, you must expose your application to port `5000`, as the
+[default Helm chart](https://gitlab.com/gitlab-org/charts/auto-deploy-app) assumes
+this port is available. You can override the default values by
+[customizing the Auto Deploy Helm chart](customize.md#custom-helm-chart).
 
 ### Auto Build using Heroku buildpacks
 
-Auto Build builds an application using a project's `Dockerfile` if present, or
-otherwise it will use [Herokuish](https://github.com/gliderlabs/herokuish)
+Auto Build builds an application using a project's `Dockerfile` if present. If no
+`Dockerfile` is present, it uses [Herokuish](https://github.com/gliderlabs/herokuish)
 and [Heroku buildpacks](https://devcenter.heroku.com/articles/buildpacks)
-to automatically detect and build the application into a Docker image.
+to detect and build the application into a Docker image.
 
-Each buildpack requires certain files to be in your project's repository for
-Auto Build to successfully build your application. For example, the following
-files are required at the root of your application's repository, depending on
-the language:
+Each buildpack requires your project's repository to contain certain files for
+Auto Build to build your application successfully. For example, your application's
+root directory must contain the appropriate file for your application's
+language:
 
-- A `Pipfile` or `requirements.txt` file for Python projects.
-- A `Gemfile` or `Gemfile.lock` file for Ruby projects.
+- For Python projects, a `Pipfile` or `requirements.txt` file.
+- For Ruby projects, a `Gemfile` or `Gemfile.lock` file.
 
 For the requirements of other languages and frameworks, read the
-[buildpacks docs](https://devcenter.heroku.com/articles/buildpacks#officially-supported-buildpacks).
+[Heroku buildpacks documentation](https://devcenter.heroku.com/articles/buildpacks#officially-supported-buildpacks).
 
 TIP: **Tip:**
 If Auto Build fails despite the project meeting the buildpack requirements, set
-a project variable `TRACE=true` to enable verbose logging, which may help to
+a project variable `TRACE=true` to enable verbose logging, which may help you
 troubleshoot.
 
 ### Auto Build using Cloud Native Buildpacks (beta)
@@ -73,12 +73,12 @@ yet part of the Cloud Native Buildpack specification. For more information, see
 
 ## Auto Test
 
-Auto Test automatically runs the appropriate tests for your application using
-[Herokuish](https://github.com/gliderlabs/herokuish) and [Heroku
-buildpacks](https://devcenter.heroku.com/articles/buildpacks) by analyzing
+Auto Test runs the appropriate tests for your application using
+[Herokuish](https://github.com/gliderlabs/herokuish) and
+[Heroku buildpacks](https://devcenter.heroku.com/articles/buildpacks) by analyzing
 your project to detect the language and framework. Several languages and
 frameworks are detected automatically, but if your language is not detected,
-you may succeed with a [custom buildpack](customize.md#custom-buildpacks). Check the
+create a [custom buildpack](customize.md#custom-buildpacks). Check the
 [currently supported languages](index.md#currently-supported-languages).
 
 Auto Test uses tests you already have in your application. If there are no
@@ -88,8 +88,8 @@ tests, it's up to you to add them.
 
 Auto Code Quality uses the
 [Code Quality image](https://gitlab.com/gitlab-org/ci-cd/codequality) to run
-static analysis and other code checks on the current code. The report is
-created, and is uploaded as an artifact which you can later download and check
+static analysis and other code checks on the current code. After creating the
+report, it's uploaded as an artifact which you can later download and check
 out.
 
 Any differences between the source and target branches are also
@@ -101,14 +101,16 @@ Any differences between the source and target branches are also
 
 Static Application Security Testing (SAST) uses the
 [SAST Docker image](https://gitlab.com/gitlab-org/security-products/sast) to run static
-analysis on the current code and checks for potential security issues. The
-Auto SAST stage will be skipped on licenses other than Ultimate and requires GitLab Runner 11.5 or above.
+analysis on the current code, and checks for potential security issues. The
+Auto SAST stage will be skipped on licenses other than
+[Ultimate](https://about.gitlab.com/pricing/), and requires GitLab Runner 11.5 or above.
 
-Once the report is created, it's uploaded as an artifact which you can later download and
-check out.
+After creating the report, it's uploaded as an artifact which you can later
+download and check out.
 
-Any security warnings are also shown in the merge request widget. Read more how
-[SAST works](../../user/application_security/sast/index.md).
+Any security warnings are also shown in the merge request widget. To learn more
+about [how SAST works](../../user/application_security/sast/index.md), see the
+documentation.
 
 ## Auto Dependency Scanning **(ULTIMATE)**
 
@@ -161,7 +163,7 @@ Any security warnings are also shown in the merge request widget. Read more how
 
 ## Auto Review Apps
 
-This is an optional step, since many projects do not have a Kubernetes cluster
+This is an optional step, since many projects don't have a Kubernetes cluster
 available. If the [requirements](index.md#requirements) are not met, the job will
 silently be skipped.
 
@@ -196,7 +198,7 @@ Your apps should *not* be manipulated outside of Helm (using Kubernetes directly
 This can cause confusion with Helm not detecting the change and subsequent
 deploys with Auto DevOps can undo your changes. Also, if you change something
 and want to undo it by deploying again, Helm may not detect that anything changed
-in the first place, and thus not realize that it needs to re-apply the old config.
+in the first place, and thus not realize that it needs to re-apply the old configuration.
 
 ## Auto DAST **(ULTIMATE)**
 
@@ -223,7 +225,8 @@ To use a custom target instead of the auto-deployed review apps,
 set a `DAST_WEBSITE` environment variable to the URL for DAST to scan.
 
 NOTE: **Note:**
-If [DAST Full Scan](../../user/application_security/dast/index.md#full-scan) is enabled, it is strongly advised **not**
+If [DAST Full Scan](../../user/application_security/dast/index.md#full-scan) is
+enabled, GitLab strongly advises **not**
 to set `DAST_WEBSITE` to any staging or production environment. DAST Full Scan
 actively attacks the target, which can take down the application and lead to
 data loss or corruption.
@@ -252,7 +255,7 @@ Any performance differences between the source and target branches are also
 
 ## Auto Deploy
 
-This is an optional step, since many projects do not have a Kubernetes cluster
+This is an optional step, since many projects don't have a Kubernetes cluster
 available. If the [requirements](index.md#requirements) are not met, the job will
 silently be skipped.
 
@@ -261,7 +264,7 @@ After a branch or merge request is merged into the project's default branch (usu
 the Kubernetes cluster, with a namespace based on the project name and unique
 project ID, for example `project-4321`.
 
-Auto Deploy doesn't include deployments to staging or canary by default, but the
+Auto Deploy does not include deployments to staging or canary by default, but the
 [Auto DevOps template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml) contains job definitions for these tasks if you want to
 enable them.
 
@@ -284,7 +287,7 @@ Your apps should *not* be manipulated outside of Helm (using Kubernetes directly
 This can cause confusion with Helm not detecting the change and subsequent
 deploys with Auto DevOps can undo your changes. Also, if you change something
 and want to undo it by deploying again, Helm may not detect that anything changed
-in the first place, and thus not realize that it needs to re-apply the old config.
+in the first place, and thus not realize that it needs to re-apply the old configuration.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/19507) in GitLab 11.0.
 
@@ -292,11 +295,11 @@ For internal and private projects a [GitLab Deploy Token](../../user/project/dep
 will be automatically created, when Auto DevOps is enabled and the Auto DevOps settings are saved. This Deploy Token
 can be used for permanent access to the registry. When the GitLab Deploy Token has been manually revoked, it won't be automatically created.
 
-If the GitLab Deploy Token cannot be found, `CI_REGISTRY_PASSWORD` is
+If the GitLab Deploy Token can't be found, `CI_REGISTRY_PASSWORD` is
 used. Note that `CI_REGISTRY_PASSWORD` is only valid during deployment.
 This means that Kubernetes will be able to successfully pull the
 container image during deployment but in cases where the image needs to
-be pulled again, e.g. after pod eviction, Kubernetes will fail to do so
+be pulled again, such as after pod eviction, Kubernetes will fail to do so
 as it will be attempting to fetch the image using
 `CI_REGISTRY_PASSWORD`.
 
@@ -310,7 +313,7 @@ The default value of `extensions/v1beta1` for the `deploymentApiVersion` setting
 deprecated, and is scheduled to be changed to a new default of `apps/v1` in
 [GitLab 13.0](https://gitlab.com/gitlab-org/charts/auto-deploy-app/issues/47).
 
-In Kubernetes 1.16 onwards, a number of [APIs were removed](https://kubernetes.io/blog/2019/07/18/api-deprecations-in-1-16/),
+In Kubernetes 1.16 and later, a number of [APIs were removed](https://kubernetes.io/blog/2019/07/18/api-deprecations-in-1-16/),
 including support for `Deployment` in the `extensions/v1beta1` version.
 
 To use Auto Deploy on a Kubernetes 1.16+ cluster, you must:
@@ -351,7 +354,7 @@ GitLab will deploy a second release with the application deployment as
 normal.
 
 Note that a post-install hook means that if any deploy succeeds,
-`DB_INITIALIZE` will not be processed thereafter.
+`DB_INITIALIZE` won't be processed thereafter.
 
 If present, `DB_MIGRATE` will be run as a shell command within an application pod as
 a Helm pre-upgrade hook.
@@ -362,21 +365,21 @@ For example, in a Rails application in an image built with
 - `DB_INITIALIZE` can be set to `RAILS_ENV=production /bin/herokuish procfile exec bin/rails db:setup`
 - `DB_MIGRATE` can be set to `RAILS_ENV=production /bin/herokuish procfile exec bin/rails db:migrate`
 
-Unless you have a `Dockerfile` in your repo, your image is built with
+Unless your repository contains a `Dockerfile`, your image is built with
 Herokuish, and you must prefix commands run in these images with `/bin/herokuish
 procfile exec` to replicate the environment where your application will run.
 
 ### Workers
 
 Some web applications need to run extra deployments for "worker processes". For
-example, it is common in a Rails application to have a separate worker process
+example, Rails applications commonly have a separate worker process
 to run background tasks like sending emails.
 
 The [default Helm chart](https://gitlab.com/gitlab-org/charts/auto-deploy-app)
 used in Auto Deploy [has support for running worker
 processes](https://gitlab.com/gitlab-org/charts/auto-deploy-app/-/merge_requests/9).
 
-In order to run a worker, you'll need to ensure that it is able to respond to
+In order to run a worker, you'll need to ensure the worker can respond to
 the standard health checks, which expect a successful HTTP response on port
 `5000`. For [Sidekiq](https://github.com/mperham/sidekiq), you could make use of
 the [`sidekiq_alive` gem](https://rubygems.org/gems/sidekiq_alive) to do this.
@@ -389,7 +392,7 @@ need to:
 - Set a CI variable `K8S_SECRET_REDIS_URL`, which the URL of this instance to
   ensure it's passed into your deployments.
 
-Once you have configured your worker to respond to health checks, run a Sidekiq
+After configuring your worker to respond to health checks, run a Sidekiq
 worker for your Rails application. You can enable workers by setting the
 following in the [`.gitlab/auto-deploy-values.yaml` file](customize.md#customize-values-for-helm-chart):
 
@@ -500,8 +503,8 @@ ingress:
 ### Running commands in the container
 
 Applications built with [Auto Build](#auto-build) using Herokuish, the default
-unless you have [a custom Dockerfile](#auto-build-using-a-dockerfile), may require
-commands to be wrapped as follows:
+unless your repository contains [a custom Dockerfile](#auto-build-using-a-dockerfile),
+may require commands to be wrapped as follows:
 
 ```shell
 /bin/herokuish procfile exec $COMMAND

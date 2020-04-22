@@ -1,4 +1,4 @@
-# Security Guidelines
+# Secure Coding Guidelines
 
 This document contains descriptions and guidelines for addressing security
 vulnerabilities commonly identified in the GitLab codebase. They are intended
@@ -74,7 +74,7 @@ text = "foo\nbar"
 p text.match /^bar$/
 ```
 
-The output of this example is `#<MatchData "bar">`, as Ruby treats the input `text` line by line. In order to match the whole __string__ the Regex anchors `\A` and `\z` should be used according to [Rubular](https://rubular.com/).
+The output of this example is `#<MatchData "bar">`, as Ruby treats the input `text` line by line. In order to match the whole __string__ the Regex anchors `\A` and `\z` should be used.
 
 #### Impact
 
@@ -104,9 +104,58 @@ Here `params[:ip]` should not contain anything else but numbers and dots. Howeve
 
 In most cases the anchors `\A` for beginning of text and `\z` for end of text should be used instead of `^` and `$`.
 
-### Further Links
+## Denial of Service (ReDoS)
+
+[ReDoS](https://owasp.org/www-community/attacks/Regular_expression_Denial_of_Service_-_ReDoS) is a possible attack if the attacker knows
+or controls the regular expression (regex) used, and is able to enter user input to match against the bad regular expression.
+
+### Impact
+
+The resource, for example Unicorn, Puma, or Sidekiq, can be made to hang as it takes a long time to evaulate the bad regex match.
+
+### Examples
+
+GitLab-specific examples can be found in the following merge requests:
+
+- [MR25314](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25314)
+- [MR25122](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25122#note_289087459)
+
+Consider the following example application, which defines a check using a regular expression. A user entering `user@aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa!.com` as the email on a form will hang the web server.
+
+```ruby
+class Email < ApplicationRecord
+  DOMAIN_MATCH = Regexp.new('([a-zA-Z0-9]+)+\.com')
+
+  validates :domain_matches
+  
+  private
+  
+  def domain_matches
+    errors.add(:email, 'does not match') if email =~ DOMAIN_MATCH
+  end
+```
+
+### Mitigation
+
+GitLab has `Gitlab::UntrustedRegexp` which internally uses the [`re2`](https://github.com/google/re2/wiki/Syntax) library.
+By utilizing `re2`, we get a strict limit on total execution time, and a smaller subset of available regex features.
+
+All user-provided regexes should use `Gitlab::UntrustedRegexp`.
+
+For other regexes, here are a few guidelines:
+
+- Remove unnecessary backtracking.
+- Avoid nested quantifiers if possible.
+- Try to be as precise as possible in your regex and avoid the `.` if something else can be used (e.g.: Use `_[^_]+_` instead of `_.*_` to match `_text here_`).
+
+An example can be found [in this commit](https://gitlab.com/gitlab-org/gitlab/commit/717824144f8181bef524592eab882dd7525a60ef).
+
+## Further Links
 
 - [Rubular](https://rubular.com/) is a nice online tool to fiddle with Ruby Regexps.
+- [Runaway Regular Expressions](https://www.regular-expressions.info/catastrophic.html)
+- [The impact of regular expression denial of service (ReDoS) in practice: an empirical study at the ecosystem scale](http://people.cs.vt.edu/~davisjam/downloads/publications/DavisCoghlanServantLee-EcosystemREDOS-ESECFSE18.pdf). This research paper discusses approaches to automatically detect ReDoS vulnerabilities.
+- [Freezing the web: A study of redos vulnerabilities in JavaScript-based web servers](https://www.usenix.org/system/files/conference/usenixsecurity18/sec18-staicu.pdf). Another research paper about detecting ReDoS vulnerabilities.
 
 ## Server Side Request Forgery (SSRF)
 

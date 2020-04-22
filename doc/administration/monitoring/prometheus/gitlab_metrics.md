@@ -155,6 +155,9 @@ configuration option in `gitlab.yml`. These metrics are served from the
 | `geo_repositories_retrying_verification_count` | Gauge   | 11.2  | Number of repositories verification failures that Geo is actively trying to correct on secondary  | url |
 | `geo_wikis_retrying_verification_count`        | Gauge   | 11.2  | Number of wikis verification failures that Geo is actively trying to correct on secondary | url |
 | `global_search_bulk_cron_queue_size`           | Gauge   | 12.10 | Number of database records waiting to be synchronized to Elasticsearch | |
+| `package_files_count`                          | Gauge   | 13.0  | Number of package files on primary | url |
+| `package_files_checksummed_count`              | Gauge   | 13.0  | Number of package files checksummed on primary | url |
+| `package_files_checksum_failed_count`          | Gauge   | 13.0  | Number of package files failed to calculate the checksum on primary
 
 ## Database load balancing metrics **(PREMIUM ONLY)**
 

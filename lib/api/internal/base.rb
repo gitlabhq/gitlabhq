@@ -30,10 +30,6 @@ module API
           project.http_url_to_repo
         end
 
-        def ee_post_receive_response_hook(response)
-          # Hook for EE to add messages
-        end
-
         def check_allowed(params)
           # This is a separate method so that EE can alter its behaviour more
           # easily.
@@ -215,8 +211,6 @@ module API
           status 200
 
           response = PostReceiveService.new(actor.user, repository, project, params).execute
-
-          ee_post_receive_response_hook(response)
 
           present response, with: Entities::InternalPostReceive::Response
         end

@@ -75,3 +75,5 @@ class PostReceiveService
     ::MergeRequests::GetUrlsService.new(project).execute(params[:changes])
   end
 end
+
+PostReceiveService.prepend_if_ee('EE::PostReceiveService')

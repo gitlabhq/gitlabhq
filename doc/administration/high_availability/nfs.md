@@ -73,7 +73,7 @@ To disable NFS server delegation, do the following:
 #### Important notes
 
 The kernel bug may be fixed in
-[more recent kernels with this commit](https://github.om/torvalds/linux/commit/95da1b3a5aded124dd1bda1e3cdb876184813140).
+[more recent kernels with this commit](https://github.com/torvalds/linux/commit/95da1b3a5aded124dd1bda1e3cdb876184813140).
 
 Red Hat Enterprise 7 [shipped a kernel update](https://access.redhat.com/errata/RHSA-2019:2029)
 on August 6, 2019 that may also have resolved this problem.

@@ -89,7 +89,7 @@ RSpec.shared_examples 'a blob replicator' do
   end
 
   describe '#model' do
-    let(:invoke_model) { replicator.send(:model) }
+    let(:invoke_model) { replicator.class.model }
 
     it 'is implemented' do
       expect do
