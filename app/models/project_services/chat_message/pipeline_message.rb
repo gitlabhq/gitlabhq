@@ -52,8 +52,6 @@ module ChatMessage
     def attachments
       return message if markdown
 
-      return [{ text: format(message), color: attachment_color }] unless fancy_notifications?
-
       [{
         fallback: format(message),
         color: attachment_color,
@@ -101,10 +99,6 @@ module ChatMessage
       end
 
       failed_jobs.uniq { |job| job[:name] }.reverse
-    end
-
-    def fancy_notifications?
-      Feature.enabled?(:fancy_pipeline_slack_notifications, default_enabled: true)
     end
 
     def failed_stages_field
@@ -166,42 +160,22 @@ module ChatMessage
     end
 
     def humanized_status
-      if fancy_notifications?
-        case status
-        when 'success'
-          detailed_status == "passed with warnings" ? s_("ChatMessage|has passed with warnings") : s_("ChatMessage|has passed")
-        when 'failed'
-          s_("ChatMessage|has failed")
-        else
-          status
-        end
+      case status
+      when 'success'
+        detailed_status == "passed with warnings" ? s_("ChatMessage|has passed with warnings") : s_("ChatMessage|has passed")
+      when 'failed'
+        s_("ChatMessage|has failed")
       else
-        case status
-        when 'success'
-          s_("ChatMessage|passed")
-        when 'failed'
-          s_("ChatMessage|failed")
-        else
-          status
-        end
+        status
       end
     end
 
     def attachment_color
-      if fancy_notifications?
-        case status
-        when 'success'
-          detailed_status == 'passed with warnings' ? 'warning' : 'good'
-        else
-          'danger'
-        end
+      case status
+      when 'success'
+        detailed_status == 'passed with warnings' ? 'warning' : 'good'
       else
-        case status
-        when 'success'
-          'good'
-        else
-          'danger'
-        end
+        'danger'
       end
     end
 
@@ -230,7 +204,7 @@ module ChatMessage
     end
 
     def pipeline_url
-      if fancy_notifications? && failed_jobs.any?
+      if failed_jobs.any?
         pipeline_failed_jobs_url
       else
         "#{project_url}/pipelines/#{pipeline_id}"

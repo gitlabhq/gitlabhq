@@ -608,6 +608,17 @@ Each scenario can be a third-level heading, e.g. `### Getting error message X`.
 If you have none to add when creating a doc, leave this section in place
 but commented out to help encourage others to add to it in the future. -->
 
+## Optimizing DAST
+
+By default, DAST will download all artifacts defined by previous jobs in the pipeline. If
+your DAST job does not rely on `environment_url.txt` to define the URL under test or any other files created
+in previous jobs, we recommend you don't download artifacts. To avoid downloading artifacts, add the following to your `gitlab-ci.yml` file:
+
+```json
+dast:
+   dependencies: []
+```
+
 ## Troubleshooting
 
 ### Running out of memory

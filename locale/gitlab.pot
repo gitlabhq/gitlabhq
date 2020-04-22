@@ -3639,9 +3639,6 @@ msgstr ""
 msgid "ChatMessage|and [%{count} more](%{pipeline_failed_jobs_url})"
 msgstr ""
 
-msgid "ChatMessage|failed"
-msgstr ""
-
 msgid "ChatMessage|has failed"
 msgstr ""
 
@@ -3655,9 +3652,6 @@ msgid "ChatMessage|in %{duration}"
 msgstr ""
 
 msgid "ChatMessage|in %{project_link}"
-msgstr ""
-
-msgid "ChatMessage|passed"
 msgstr ""
 
 msgid "Check again"
