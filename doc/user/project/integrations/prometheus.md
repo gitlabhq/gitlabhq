@@ -123,6 +123,24 @@ to integrate with.
 1. Provide the domain name or IP address of your server, for example `http://thanos.example.com/` or `http://192.0.2.1/`.
 1. Click **Save changes**.
 
+### Precedence with multiple Prometheus configurations
+
+Although you can enable both a [manual configuration](#manual-configuration-of-prometheus)
+and [auto configuration](#managed-prometheus-on-kubernetes) of Prometheus, only
+one of them will be used:
+
+- If you have enabled a
+  [Prometheus manual configuration](#manual-configuration-of-prometheus)
+  and a [managed Prometheus on Kubernetes](#managed-prometheus-on-kubernetes),
+  the manual configuration takes precedence and is used to run queries from
+  [dashboards](#defining-custom-dashboards-per-project) and [custom metrics](#adding-custom-metrics).
+- If you have managed Prometheus applications installed on Kubernetes clusters
+  at **different** levels (project, group, instance), the order of precedence is described in
+  [Cluster precedence](../../instance/clusters/index.md#cluster-precedence).
+- If you have managed Prometheus applications installed on multiple Kubernetes
+  clusters at the **same** level, the Prometheus application of a cluster with a
+  matching [environment scope](../../../ci/environments.md#scoping-environments-with-specs) is used.
+
 ## Monitoring CI/CD Environments
 
 Once configured, GitLab will attempt to retrieve performance metrics for any

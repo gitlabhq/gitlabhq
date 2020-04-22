@@ -511,7 +511,7 @@ then goes through a process of excluding tags from it until only the ones to be 
 
 To manage project expiration policy, navigate to **{settings}** **Settings > CI/CD > Container Registry tag expiration policy**.
 
-![Expiration Policy App](img/expiration-policy-app.png)
+![Expiration Policy App](img/expiration_policy_app_v13_0.png)
 
 The UI allows you to configure the following:
 

@@ -216,7 +216,12 @@ export default {
 
     if (entry.type === 'blob') {
       if (tempFile) {
+        // Since we only support one list of file changes, it's safe to just remove from both
+        // changed and staged. Otherwise, we'd need to somehow evaluate the difference between
+        // changed and HEAD.
+        // https://gitlab.com/gitlab-org/create-stage/-/issues/12669
         state.changedFiles = state.changedFiles.filter(f => f.path !== path);
+        state.stagedFiles = state.stagedFiles.filter(f => f.path !== path);
       } else {
         state.changedFiles = state.changedFiles.concat(entry);
       }

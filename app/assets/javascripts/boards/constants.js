@@ -8,6 +8,8 @@ export const ListType = {
   blank: 'blank',
 };
 
+export const inactiveListId = 0;
+
 export default {
   ListType,
 };

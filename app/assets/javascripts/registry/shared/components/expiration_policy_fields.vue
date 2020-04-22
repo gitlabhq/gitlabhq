@@ -182,7 +182,7 @@ export default {
           <gl-sprintf
             :message="
               s__(
-                'ContainerRegistry|Wildcards such as %{codeStart}.*-stable%{codeEnd} or %{codeStart}production/.*%{codeEnd} are supported.  To select all tags, use %{codeStart}.*%{codeEnd}',
+                'ContainerRegistry|Regular expressions such as %{codeStart}.*-test%{codeEnd} or %{codeStart}dev-.*%{codeEnd} are supported.  To select all tags, use %{codeStart}.*%{codeEnd}',
               )
             "
           >

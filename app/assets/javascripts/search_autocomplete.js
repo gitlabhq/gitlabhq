@@ -407,7 +407,7 @@ export class SearchAutocomplete {
   disableAutocomplete() {
     if (!this.searchInput.hasClass('js-autocomplete-disabled') && this.dropdown.hasClass('show')) {
       this.searchInput.addClass('js-autocomplete-disabled');
-      this.dropdown.dropdown('toggle');
+      this.dropdownToggle.dropdown('toggle');
       this.restoreMenu();
     }
   }

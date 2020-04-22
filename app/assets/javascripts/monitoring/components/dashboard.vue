@@ -14,7 +14,7 @@ import {
   GlModalDirective,
   GlTooltipDirective,
 } from '@gitlab/ui';
-import PanelType from './panel_type_with_alerts.vue';
+import DashboardPanel from './dashboard_panel.vue';
 import { s__ } from '~/locale';
 import createFlash from '~/flash';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -37,7 +37,7 @@ import { defaultTimeRange, timeRanges } from '~/vue_shared/constants';
 export default {
   components: {
     VueDraggable,
-    PanelType,
+    DashboardPanel,
     Icon,
     GlDeprecatedButton,
     GlDropdown,
@@ -558,7 +558,7 @@ export default {
         >
           <div
             v-for="(graphData, graphIndex) in groupData.panels"
-            :key="`panel-type-${graphIndex}`"
+            :key="`dashboard-panel-${graphIndex}`"
             class="col-12 col-lg-6 px-2 mb-2 draggable"
             :class="{ 'draggable-enabled': isRearrangingPanels }"
           >
@@ -573,7 +573,7 @@ export default {
                 </a>
               </div>
 
-              <panel-type
+              <dashboard-panel
                 :clipboard-text="generateLink(groupData.group, graphData.title, graphData.y_label)"
                 :graph-data="graphData"
                 :alerts-endpoint="alertsEndpoint"

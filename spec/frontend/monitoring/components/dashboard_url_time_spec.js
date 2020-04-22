@@ -27,7 +27,7 @@ describe('dashboard invalid url parameters', () => {
     wrapper = mount(Dashboard, {
       propsData: { ...propsData, ...props },
       store,
-      stubs: ['graph-group', 'panel-type'],
+      stubs: ['graph-group', 'dashboard-panel'],
       ...options,
     });
   };

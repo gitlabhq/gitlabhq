@@ -300,6 +300,9 @@ as even native users of English might misunderstand them.
   - Instead of "i.e.," use "that is."
   - Instead of "e.g.," use "for example," "such as," "for instance," or "like."
   - Instead of "etc.," either use "and so on" or consider editing it out, since it can be vague.
+- Avoid using the word *Currently* when talking about the product or its
+  features. The documentation describes the product as it is, and not as it
+  will be at some indeterminate point in the future.
 
 ### Contractions
 

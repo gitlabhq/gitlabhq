@@ -613,18 +613,6 @@ Style/StringLiteralsInInterpolation:
 Style/SymbolProc:
   Enabled: false
 
-# Offense count: 7
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, AllowSafeAssignment.
-# SupportedStyles: require_parentheses, require_no_parentheses, require_parentheses_when_complex
-Style/TernaryParentheses:
-  Exclude:
-    - 'app/finders/projects_finder.rb'
-    - 'app/helpers/namespaces_helper.rb'
-    - 'lib/gitlab/ci/build/artifacts/metadata/entry.rb'
-    - 'spec/requests/api/pipeline_schedules_spec.rb'
-    - 'spec/support/capybara.rb'
-
 # Offense count: 99
 # Cop supports --auto-correct.
 Style/UnneededInterpolation:

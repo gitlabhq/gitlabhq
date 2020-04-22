@@ -353,7 +353,7 @@ export default {
               v-if="isSettingsShown"
               ref="settingsBtn"
               :aria-label="__(`List settings`)"
-              class="no-drag rounded-right"
+              class="no-drag rounded-right js-board-settings-button"
               title="List settings"
               type="button"
               @click="openSidebarSettings"

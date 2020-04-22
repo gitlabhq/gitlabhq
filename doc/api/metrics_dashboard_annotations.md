@@ -18,6 +18,7 @@ Feature.enable(:metrics_dashboard_annotations)
 
 ```plaintext
 POST /environments/:id/metrics_dashboard/annotations/
+POST /clusters/:id/metrics_dashboard/annotations/
 ```
 
 Parameters:

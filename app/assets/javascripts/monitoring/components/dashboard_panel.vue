@@ -26,6 +26,7 @@ import MonitorBarChart from './charts/bar.vue';
 import MonitorStackedColumnChart from './charts/stacked_column.vue';
 
 import TrackEventDirective from '~/vue_shared/directives/track_event';
+import AlertWidget from './alert_widget.vue';
 import { timeRangeToUrl, downloadCSVOptions, generateLinkToChartOptions } from '../utils';
 
 const events = {
@@ -40,6 +41,7 @@ export default {
     MonitorColumnChart,
     MonitorBarChart,
     MonitorStackedColumnChart,
+    AlertWidget,
     GlIcon,
     GlLoadingIcon,
     GlTooltip,
@@ -78,11 +80,22 @@ export default {
       required: false,
       default: 'monitoringDashboard',
     },
+    alertsEndpoint: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    prometheusAlertsAvailable: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
       showTitleTooltip: false,
       zoomedTimeRange: null,
+      allAlerts: {},
     };
   },
   computed: {
@@ -104,13 +117,12 @@ export default {
       timeRange(state) {
         return state[this.namespace].timeRange;
       },
+      metricsSavedToDb(state, getters) {
+        return getters[`${this.namespace}/metricsSavedToDb`];
+      },
     }),
     title() {
       return this.graphData.title || '';
-    },
-    alertWidgetAvailable() {
-      // This method is extended by ee functionality
-      return false;
     },
     graphDataHasResult() {
       return (
@@ -165,6 +177,18 @@ export default {
     editCustomMetricLinkText() {
       return n__('Metrics|Edit metric', 'Metrics|Edit metrics', this.graphData.metrics.length);
     },
+    hasMetricsInDb() {
+      const { metrics = [] } = this.graphData;
+      return metrics.some(({ metricId }) => this.metricsSavedToDb.includes(metricId));
+    },
+    alertWidgetAvailable() {
+      return (
+        this.prometheusAlertsAvailable &&
+        this.alertsEndpoint &&
+        this.graphData &&
+        this.hasMetricsInDb
+      );
+    },
   },
   mounted() {
     this.refreshTitleTooltip();
@@ -199,6 +223,13 @@ export default {
     onDatazoom({ start, end }) {
       this.zoomedTimeRange = { start, end };
       this.$emit(events.timeRangeZoom, { start, end });
+    },
+    setAlerts(alertPath, alertAttributes) {
+      if (alertAttributes) {
+        this.$set(this.allAlerts, alertPath, alertAttributes);
+      } else {
+        this.$delete(this.allAlerts, alertPath);
+      }
     },
   },
   panelTypes,

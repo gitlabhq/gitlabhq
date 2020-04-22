@@ -1,0 +1,5 @@
+---
+title: Fix Web IDE handling of deleting newly added files
+merge_request: 29783
+author:
+type: fixed

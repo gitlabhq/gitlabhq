@@ -80,8 +80,8 @@ module NamespacesHelper
          visibility_level: n.visibility_level_value,
          visibility: n.visibility,
          name: n.name,
-         show_path: (type == 'group') ? group_path(n) : user_path(n),
-         edit_path: (type == 'group') ? edit_group_path(n) : nil
+         show_path: type == 'group' ? group_path(n) : user_path(n),
+         edit_path: type == 'group' ? edit_group_path(n) : nil
        }]
     end
 

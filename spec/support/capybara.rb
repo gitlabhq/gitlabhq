@@ -7,7 +7,7 @@ require 'capybara-screenshot/rspec'
 require 'selenium-webdriver'
 
 # Give CI some extra time
-timeout = (ENV['CI'] || ENV['CI_SERVER']) ? 60 : 30
+timeout = ENV['CI'] || ENV['CI_SERVER'] ? 60 : 30
 
 # Define an error class for JS console messages
 JSConsoleError = Class.new(StandardError)

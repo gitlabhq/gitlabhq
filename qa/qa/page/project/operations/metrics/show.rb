@@ -21,7 +21,7 @@ module QA
               element :duplicate_dashboard_filename_field
             end
 
-            view 'app/assets/javascripts/monitoring/components/panel_type.vue' do
+            view 'app/assets/javascripts/monitoring/components/dashboard_panel.vue' do
               element :prometheus_graph_widgets
               element :prometheus_widgets_dropdown
               element :alert_widget_menu_item
