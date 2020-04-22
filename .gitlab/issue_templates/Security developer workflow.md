@@ -36,7 +36,8 @@ After your merge request has been approved according to our [approval guidelines
 ## Documentation and final details
 
 - [ ] Ensure the [Links section](#links) is completed.
-- [ ] Find out the versions affected (the Git history of the files affected may help you with this) and add them to the [details section](#details)
+- [ ] Find out the [versions affected](https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/security/developer.md#versions-affected) and add them to the [details section](#details)
+  * The Git history of the files affected may help you associate the issue with a [release](https://about.gitlab.com/releases/)
 - [ ] Fill in any upgrade notes that users may need to take into account in the [details section](#details)
 - [ ] Add Yes/No and further details if needed to the migration and settings columns in the [details section](#details)
 - [ ] Add the nickname of the external user who found the issue (and/or HackerOne profile) to the Thanks row in the [details section](#details)

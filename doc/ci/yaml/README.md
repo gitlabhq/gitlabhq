@@ -90,41 +90,45 @@ A job is defined as a list of parameters that define the job's behavior.
 
 The following table lists available parameters for jobs:
 
-| Keyword                                            | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
-|:---------------------------------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [`script`](#script)                                | Shell script which is executed by Runner.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
-| [`image`](#image)                                  | Use docker images. Also available: `image:name` and `image:entrypoint`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-| [`services`](#services)                            | Use docker services images. Also available: `services:name`, `services:alias`, `services:entrypoint`, and `services:command`.                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
-| [`before_script`](#before_script-and-after_script) | Override a set of commands that are executed before job.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| [`after_script`](#before_script-and-after_script)  | Override a set of commands that are executed after job.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-| [`stages`](#stages)                                | Define stages in a pipeline.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-| [`stage`](#stage)                                  | Defines a job stage (default: `test`).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| [`only`](#onlyexcept-basic)                        | Limit when jobs are created. Also available: [`only:refs`, `only:kubernetes`, `only:variables`, and `only:changes`](#onlyexcept-advanced).                                                                                                                                                                                                                                                                                                                                                                                                                                              |
-| [`except`](#onlyexcept-basic)                      | Limit when jobs are not created. Also available: [`except:refs`, `except:kubernetes`, `except:variables`, and `except:changes`](#onlyexcept-advanced).                                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| [`rules`](#rules)                                  | List of conditions to evaluate and determine selected attributes of a job, and whether or not it is created. May not be used alongside `only`/`except`.                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| [`tags`](#tags)                                    | List of tags which are used to select Runner.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
-| [`allow_failure`](#allow_failure)                  | Allow job to fail. Failed job doesn't contribute to commit status.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| [`when`](#when)                                    | When to run job. Also available: `when:manual` and `when:delayed`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| [`environment`](#environment)                      | Name of an environment to which the job deploys. Also available: `environment:name`, `environment:url`, `environment:on_stop`, `environment:auto_stop_in` and `environment:action`.                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| [`cache`](#cache)                                  | List of files that should be cached between subsequent runs. Also available: `cache:paths`, `cache:key`, `cache:untracked`, and `cache:policy`.                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| Keyword                                            | Description                                                                                                                                                                         |
+|:---------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [`script`](#script)                                | Shell script which is executed by Runner.                                                                                                                                           |
+| [`image`](#image)                                  | Use docker images. Also available: `image:name` and `image:entrypoint`.                                                                                                             |
+| [`services`](#services)                            | Use docker services images. Also available: `services:name`, `services:alias`, `services:entrypoint`, and `services:command`.                                                       |
+| [`before_script`](#before_script-and-after_script) | Override a set of commands that are executed before job.                                                                                                                            |
+| [`after_script`](#before_script-and-after_script)  | Override a set of commands that are executed after job.                                                                                                                             |
+| [`stages`](#stages)                                | Define stages in a pipeline.                                                                                                                                                        |
+| [`stage`](#stage)                                  | Defines a job stage (default: `test`).                                                                                                                                              |
+| [`only`](#onlyexcept-basic)                        | Limit when jobs are created. Also available: [`only:refs`, `only:kubernetes`, `only:variables`, and `only:changes`](#onlyexcept-advanced).                                          |
+| [`except`](#onlyexcept-basic)                      | Limit when jobs are not created. Also available: [`except:refs`, `except:kubernetes`, `except:variables`, and `except:changes`](#onlyexcept-advanced).                              |
+| [`rules`](#rules)                                  | List of conditions to evaluate and determine selected attributes of a job, and whether or not it is created. May not be used alongside `only`/`except`.                             |
+| [`tags`](#tags)                                    | List of tags which are used to select Runner.                                                                                                                                       |
+| [`allow_failure`](#allow_failure)                  | Allow job to fail. Failed job doesn't contribute to commit status.                                                                                                                  |
+| [`when`](#when)                                    | When to run job. Also available: `when:manual` and `when:delayed`.                                                                                                                  |
+| [`environment`](#environment)                      | Name of an environment to which the job deploys. Also available: `environment:name`, `environment:url`, `environment:on_stop`, `environment:auto_stop_in` and `environment:action`. |
+| [`cache`](#cache)                                  | List of files that should be cached between subsequent runs. Also available: `cache:paths`, `cache:key`, `cache:untracked`, and `cache:policy`.                                     |
 | [`artifacts`](#artifacts)                          | List of files and directories to attach to a job on success. Also available: `artifacts:paths`, `artifacts:expose_as`, `artifacts:name`, `artifacts:untracked`, `artifacts:when`, `artifacts:expire_in`, `artifacts:reports`, `artifacts:reports:junit`, and `artifacts:reports:cobertura`.<br><br>In GitLab [Enterprise Edition](https://about.gitlab.com/pricing/), these are available: `artifacts:reports:codequality`, `artifacts:reports:sast`, `artifacts:reports:dependency_scanning`, `artifacts:reports:container_scanning`, `artifacts:reports:dast`, `artifacts:reports:license_management`, `artifacts:reports:performance` and `artifacts:reports:metrics`. |
-| [`dependencies`](#dependencies)                    | Restrict which artifacts are passed to a specific job by providing a list of jobs to fetch artifacts from.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-| [`coverage`](#coverage)                            | Code coverage settings for a given job.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-| [`retry`](#retry)                                  | When and how many times a job can be auto-retried in case of a failure.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-| [`timeout`](#timeout)                              | Define a custom job-level timeout that takes precedence over the project-wide setting.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| [`parallel`](#parallel)                            | How many instances of a job should be run in parallel.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| [`trigger`](#trigger)                      | Defines a downstream pipeline trigger.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| [`include`](#include)                              | Allows this job to include external YAML files. Also available: `include:local`, `include:file`, `include:template`, and `include:remote`.                                                                                                                                                                                                                                                                                                                                                                                                                                              |
-| [`extends`](#extends)                              | Configuration entries that this job is going to inherit from.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
-| [`pages`](#pages)                                  | Upload the result of a job to use with GitLab Pages.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
-| [`variables`](#variables)                          | Define job variables on a job level.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
-| [`interruptible`](#interruptible)                  | Defines if a job can be canceled when made redundant by a newer run.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
-| [`resource_group`](#resource_group)                | Limit job concurrency.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| [`dependencies`](#dependencies)                    | Restrict which artifacts are passed to a specific job by providing a list of jobs to fetch artifacts from.                                                                          |
+| [`coverage`](#coverage)                            | Code coverage settings for a given job.                                                                                                                                             |
+| [`retry`](#retry)                                  | When and how many times a job can be auto-retried in case of a failure.                                                                                                             |
+| [`timeout`](#timeout)                              | Define a custom job-level timeout that takes precedence over the project-wide setting.                                                                                              |
+| [`parallel`](#parallel)                            | How many instances of a job should be run in parallel.                                                                                                                              |
+| [`trigger`](#trigger)                              | Defines a downstream pipeline trigger.                                                                                                                                              |
+| [`include`](#include)                              | Allows this job to include external YAML files. Also available: `include:local`, `include:file`, `include:template`, and `include:remote`.                                          |
+| [`extends`](#extends)                              | Configuration entries that this job is going to inherit from.                                                                                                                       |
+| [`pages`](#pages)                                  | Upload the result of a job to use with GitLab Pages.                                                                                                                                |
+| [`variables`](#variables)                          | Define job variables on a job level.                                                                                                                                                |
+| [`interruptible`](#interruptible)                  | Defines if a job can be canceled when made redundant by a newer run.                                                                                                                |
+| [`resource_group`](#resource_group)                | Limit job concurrency.                                                                                                                                                              |
 
 NOTE: **Note:**
 Parameters `types` and `type` are [deprecated](#deprecated-parameters).
 
-## Setting default parameters
+## Global parameters
+
+Some parameters must be defined at a global level, affecting all jobs in the pipeline.
+
+### Global defaults
 
 Some parameters can be set globally as the default for all jobs using the
 `default:` keyword. Default parameters can then be overridden by job-specific
@@ -158,7 +162,7 @@ rspec 2.6:
   script: bundle exec rspec
 ```
 
-### `inherit`
+#### `inherit`
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/207484) in GitLab 12.9.
 
@@ -240,9 +244,486 @@ karma:
   script: karma
 ```
 
+### `stages`
+
+`stages` is used to define stages that can be used by jobs and is defined
+globally.
+
+The specification of `stages` allows for having flexible multi stage pipelines.
+The ordering of elements in `stages` defines the ordering of jobs' execution:
+
+1. Jobs of the same stage are run in parallel.
+1. Jobs of the next stage are run after the jobs from the previous stage
+   complete successfully.
+
+Let's consider the following example, which defines 3 stages:
+
+```yaml
+stages:
+  - build
+  - test
+  - deploy
+```
+
+1. First, all jobs of `build` are executed in parallel.
+1. If all jobs of `build` succeed, the `test` jobs are executed in parallel.
+1. If all jobs of `test` succeed, the `deploy` jobs are executed in parallel.
+1. If all jobs of `deploy` succeed, the commit is marked as `passed`.
+1. If any of the previous jobs fails, the commit is marked as `failed` and no
+   jobs of further stage are executed.
+
+There are also two edge cases worth mentioning:
+
+1. If no `stages` are defined in `.gitlab-ci.yml`, then the `build`,
+   `test` and `deploy` are allowed to be used as job's stage by default.
+1. If a job doesn't specify a `stage`, the job is assigned the `test` stage.
+
+### `workflow:rules`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/29654) in GitLab 12.5
+
+The top-level `workflow:` key applies to the entirety of a pipeline, and will
+determine whether or not a pipeline is created. It currently accepts a single
+`rules:` key that operates similarly to [`rules:` defined within jobs](#rules),
+enabling dynamic configuration of the pipeline.
+
+The configuration options currently available for `workflow:rules` are:​
+
+- [`if`](#rulesif): Define a rule.
+- [`when`](#when): May be set to `always` or `never` only. If not provided, the default value is `always`​.
+
+The list of `if` rules is evaluated until a single one is matched. If none
+match, the last `when` will be used:
+
+```yaml
+workflow:
+  rules:
+    - if: $CI_COMMIT_REF_NAME =~ /-wip$/
+      when: never
+    - if: $CI_COMMIT_TAG
+      when: never
+    - when: always
+```
+
+### `include`
+
+> - Introduced in [GitLab Premium](https://about.gitlab.com/pricing/) 10.5.
+> - Available for Starter, Premium and Ultimate since 10.6.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/21603) to GitLab Core in 11.4.
+
+Using the `include` keyword, you can allow the inclusion of external YAML files.
+`include` requires the external YAML file to have the extensions `.yml` or `.yaml`,
+otherwise the external file will not be included.
+
+The files defined in `include` are:
+
+- Deep merged with those in `.gitlab-ci.yml`.
+- Always evaluated first and merged with the content of `.gitlab-ci.yml`,
+  regardless of the position of the `include` keyword.
+
+TIP: **Tip:**
+Use merging to customize and override included CI/CD configurations with local
+definitions.
+
+NOTE: **Note:**
+Using YAML aliases across different YAML files sourced by `include` is not
+supported. You must only refer to aliases in the same file. Instead
+of using YAML anchors, you can use the [`extends` keyword](#extends).
+
+`include` supports four include methods:
+
+- [`local`](#includelocal)
+- [`file`](#includefile)
+- [`template`](#includetemplate)
+- [`remote`](#includeremote)
+
+See [usage examples](#include-examples).
+
+NOTE: **Note:**
+`.gitlab-ci.yml` configuration included by all methods is evaluated at pipeline creation.
+The configuration is a snapshot in time and persisted in the database. Any changes to
+referenced `.gitlab-ci.yml` configuration will not be reflected in GitLab until the next pipeline is created.
+
+#### `include:local`
+
+`include:local` includes a file from the same repository as `.gitlab-ci.yml`.
+It's referenced using full paths relative to the root directory (`/`).
+
+You can only use files that are currently tracked by Git on the same branch
+your configuration file is on. In other words, when using a `include:local`, make
+sure that both `.gitlab-ci.yml` and the local file are on the same branch.
+
+All [nested includes](#nested-includes) will be executed in the scope of the same project,
+so it is possible to use local, project, remote, or template includes.
+
+NOTE: **Note:**
+Including local files through Git submodules paths is not supported.
+
+Example:
+
+```yaml
+include:
+  - local: '/templates/.gitlab-ci-template.yml'
+```
+
+#### `include:file`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/53903) in GitLab 11.7.
+
+To include files from another private project under the same GitLab instance,
+use `include:file`. This file is referenced using full paths relative to the
+root directory (`/`). For example:
+
+```yaml
+include:
+  - project: 'my-group/my-project'
+    file: '/templates/.gitlab-ci-template.yml'
+```
+
+You can also specify `ref`, with the default being the `HEAD` of the project:
+
+```yaml
+include:
+  - project: 'my-group/my-project'
+    ref: master
+    file: '/templates/.gitlab-ci-template.yml'
+
+  - project: 'my-group/my-project'
+    ref: v1.0.0
+    file: '/templates/.gitlab-ci-template.yml'
+
+  - project: 'my-group/my-project'
+    ref: 787123b47f14b552955ca2786bc9542ae66fee5b # Git SHA
+    file: '/templates/.gitlab-ci-template.yml'
+```
+
+All [nested includes](#nested-includes) will be executed in the scope of the target project,
+so it is possible to use local (relative to target project), project, remote
+or template includes.
+
+#### `include:template`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/53445) in GitLab 11.7.
+
+`include:template` can be used to include `.gitlab-ci.yml` templates that are
+[shipped with GitLab](https://gitlab.com/gitlab-org/gitlab/tree/master/lib/gitlab/ci/templates).
+
+For example:
+
+```yaml
+# File sourced from GitLab's template collection
+include:
+  - template: Auto-DevOps.gitlab-ci.yml
+```
+
+Multiple `include:template` files:
+
+```yaml
+include:
+  - template: Android-Fastlane.gitlab-ci.yml
+  - template: Auto-DevOps.gitlab-ci.yml
+```
+
+All [nested includes](#nested-includes) will be executed only with the permission of the user,
+so it is possible to use project, remote or template includes.
+
+#### `include:remote`
+
+`include:remote` can be used to include a file from a different location,
+using HTTP/HTTPS, referenced by using the full URL. The remote file must be
+publicly accessible through a simple GET request as authentication schemas
+in the remote URL is not supported. For example:
+
+```yaml
+include:
+  - remote: 'https://gitlab.com/awesome-project/raw/master/.gitlab-ci-template.yml'
+```
+
+All nested includes will be executed without context as public user, so only another remote,
+or public project, or template is allowed.
+
+#### Nested includes
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/56836) in GitLab 11.9.
+
+Nested includes allow you to compose a set of includes.
+A total of 100 includes is allowed.
+Duplicate includes are considered a configuration error.
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/28212) in GitLab 12.4.
+
+A hard limit of 30 seconds was set for resolving all files.
+
+#### `include` examples
+
+Here are a few more `include` examples.
+
+##### Single string or array of multiple values
+
+You can include your extra YAML file(s) either as a single string or
+an array of multiple values. The following examples are all valid.
+
+Single string with the `include:local` method implied:
+
+```yaml
+include: '/templates/.after-script-template.yml'
+```
+
+Array with `include` method implied:
+
+```yaml
+include:
+  - 'https://gitlab.com/awesome-project/raw/master/.before-script-template.yml'
+  - '/templates/.after-script-template.yml'
+```
+
+Single string with `include` method specified explicitly:
+
+```yaml
+include:
+  remote: 'https://gitlab.com/awesome-project/raw/master/.before-script-template.yml'
+```
+
+Array with `include:remote` being the single item:
+
+```yaml
+include:
+  - remote: 'https://gitlab.com/awesome-project/raw/master/.before-script-template.yml'
+```
+
+Array with multiple `include` methods specified explicitly:
+
+```yaml
+include:
+  - remote: 'https://gitlab.com/awesome-project/raw/master/.before-script-template.yml'
+  - local: '/templates/.after-script-template.yml'
+  - template: Auto-DevOps.gitlab-ci.yml
+```
+
+Array mixed syntax:
+
+```yaml
+include:
+  - 'https://gitlab.com/awesome-project/raw/master/.before-script-template.yml'
+  - '/templates/.after-script-template.yml'
+  - template: Auto-DevOps.gitlab-ci.yml
+  - project: 'my-group/my-project'
+    ref: master
+    file: '/templates/.gitlab-ci-template.yml'
+```
+
+##### Re-using a `before_script` template
+
+In the following example, the content of `.before-script-template.yml` will be
+automatically fetched and evaluated along with the content of `.gitlab-ci.yml`.
+
+Content of `https://gitlab.com/awesome-project/raw/master/.before-script-template.yml`:
+
+```yaml
+before_script:
+  - apt-get update -qq && apt-get install -y -qq sqlite3 libsqlite3-dev nodejs
+  - gem install bundler --no-document
+  - bundle install --jobs $(nproc)  "${FLAGS[@]}"
+```
+
+Content of `.gitlab-ci.yml`:
+
+```yaml
+include: 'https://gitlab.com/awesome-project/raw/master/.before-script-template.yml'
+
+rspec:
+  script:
+    - bundle exec rspec
+```
+
+##### Overriding external template values
+
+The following example shows specific YAML-defined variables and details of the
+`production` job from an include file being customized in `.gitlab-ci.yml`.
+
+Content of `https://company.com/autodevops-template.yml`:
+
+```yaml
+variables:
+  POSTGRES_USER: user
+  POSTGRES_PASSWORD: testing_password
+  POSTGRES_DB: $CI_ENVIRONMENT_SLUG
+
+production:
+  stage: production
+  script:
+    - install_dependencies
+    - deploy
+  environment:
+    name: production
+    url: https://$CI_PROJECT_PATH_SLUG.$KUBE_INGRESS_BASE_DOMAIN
+  only:
+    - master
+```
+
+Content of `.gitlab-ci.yml`:
+
+```yaml
+include: 'https://company.com/autodevops-template.yml'
+
+image: alpine:latest
+
+variables:
+  POSTGRES_USER: root
+  POSTGRES_PASSWORD: secure_password
+
+stages:
+  - build
+  - test
+  - production
+
+production:
+  environment:
+    url: https://domain.com
+```
+
+In this case, the variables `POSTGRES_USER` and `POSTGRES_PASSWORD` along
+with the environment url of the `production` job defined in
+`autodevops-template.yml` have been overridden by new values defined in
+`.gitlab-ci.yml`.
+
+The merging lets you extend and override dictionary mappings, but
+you cannot add or modify items to an included array. For example, to add
+an additional item to the production job script, you must repeat the
+existing script items:
+
+Content of `https://company.com/autodevops-template.yml`:
+
+```yaml
+production:
+  stage: production
+  script:
+    - install_dependencies
+    - deploy
+```
+
+Content of `.gitlab-ci.yml`:
+
+```yaml
+include: 'https://company.com/autodevops-template.yml'
+
+stages:
+  - production
+
+production:
+  script:
+    - install_dependencies
+    - deploy
+    - notify_owner
+```
+
+In this case, if `install_dependencies` and `deploy` were not repeated in
+`.gitlab-ci.yml`, they would not be part of the script for the `production`
+job in the combined CI configuration.
+
+##### Using nested includes
+
+The examples below show how includes can be nested from different sources
+using a combination of different methods.
+
+In this example, `.gitlab-ci.yml` includes local the file `/.gitlab-ci/another-config.yml`:
+
+```yaml
+include:
+  - local: /.gitlab-ci/another-config.yml
+```
+
+The `/.gitlab-ci/another-config.yml` includes a template and the `/templates/docker-workflow.yml` file
+from another project:
+
+```yaml
+include:
+  - template: Bash.gitlab-ci.yml
+  - project: group/my-project
+    file: /templates/docker-workflow.yml
+```
+
+The `/templates/docker-workflow.yml` present in `group/my-project` includes two local files
+of the `group/my-project`:
+
+```yaml
+include:
+  - local: /templates/docker-build.yml
+  - local: /templates/docker-testing.yml
+```
+
+Our `/templates/docker-build.yml` present in `group/my-project` adds a `docker-build` job:
+
+```yaml
+docker-build:
+  script: docker build -t my-image .
+```
+
+Our second `/templates/docker-test.yml` present in `group/my-project` adds a `docker-test` job:
+
+```yaml
+docker-test:
+  script: docker run my-image /run/tests.sh
+```
+
 ## Parameter details
 
 The following are detailed explanations for parameters used to configure CI/CD pipelines.
+
+### `image`
+
+Used to specify [a Docker image](../docker/using_docker_images.md#what-is-an-image) to use for the job.
+
+For:
+
+- Simple definition examples, see [Define `image` and `services` from `.gitlab-ci.yml`](../docker/using_docker_images.md#define-image-and-services-from-gitlab-ciyml).
+- Detailed usage information, refer to [Docker integration](../docker/README.md) documentation.
+
+#### `image:name`
+
+An [extended docker configuration option](../docker/using_docker_images.md#extended-docker-configuration-options).
+
+For more information, see [Available settings for `image`](../docker/using_docker_images.md#available-settings-for-image).
+
+#### `image:entrypoint`
+
+An [extended docker configuration option](../docker/using_docker_images.md#extended-docker-configuration-options).
+
+For more information, see [Available settings for `image`](../docker/using_docker_images.md#available-settings-for-image).
+
+#### `services`
+
+Used to specify a [service Docker image](../docker/using_docker_images.md#what-is-a-service), linked to a base image specified in [`image`](#image).
+
+For:
+
+- Simple definition examples, see [Define `image` and `services` from `.gitlab-ci.yml`](../docker/using_docker_images.md#define-image-and-services-from-gitlab-ciyml).
+- Detailed usage information, refer to [Docker integration](../docker/README.md) documentation.
+- For example services, see [GitLab CI/CD Services](../services/README.md).
+
+##### `services:name`
+
+An [extended docker configuration option](../docker/using_docker_images.md#extended-docker-configuration-options).
+
+For more information, see [Available settings for `services`](../docker/using_docker_images.md#available-settings-for-services).
+
+##### `services:alias`
+
+An [extended docker configuration option](../docker/using_docker_images.md#extended-docker-configuration-options).
+
+For more information, see [Available settings for `services`](../docker/using_docker_images.md#available-settings-for-services).
+
+##### `services:entrypoint`
+
+An [extended docker configuration option](../docker/using_docker_images.md#extended-docker-configuration-options).
+
+For more information, see [Available settings for `services`](../docker/using_docker_images.md#available-settings-for-services).
+
+##### `services:command`
+
+An [extended docker configuration option](../docker/using_docker_images.md#extended-docker-configuration-options).
+
+For more information, see [Available settings for `services`](../docker/using_docker_images.md#available-settings-for-services).
 
 ### `script`
 
@@ -283,62 +764,7 @@ job:
     - if [ $exit_code -ne 0 ]; then echo "Previous command failed"; fi;
 ```
 
-### `image`
-
-Used to specify [a Docker image](../docker/using_docker_images.md#what-is-an-image) to use for the job.
-
-For:
-
-- Simple definition examples, see [Define `image` and `services` from `.gitlab-ci.yml`](../docker/using_docker_images.md#define-image-and-services-from-gitlab-ciyml).
-- Detailed usage information, refer to [Docker integration](../docker/README.md) documentation.
-
-#### `image:name`
-
-An [extended docker configuration option](../docker/using_docker_images.md#extended-docker-configuration-options).
-
-For more information, see [Available settings for `image`](../docker/using_docker_images.md#available-settings-for-image).
-
-#### `image:entrypoint`
-
-An [extended docker configuration option](../docker/using_docker_images.md#extended-docker-configuration-options).
-
-For more information, see [Available settings for `image`](../docker/using_docker_images.md#available-settings-for-image).
-
-### `services`
-
-Used to specify a [service Docker image](../docker/using_docker_images.md#what-is-a-service), linked to a base image specified in [`image`](#image).
-
-For:
-
-- Simple definition examples, see [Define `image` and `services` from `.gitlab-ci.yml`](../docker/using_docker_images.md#define-image-and-services-from-gitlab-ciyml).
-- Detailed usage information, refer to [Docker integration](../docker/README.md) documentation.
-- For example services, see [GitLab CI/CD Services](../services/README.md).
-
-#### `services:name`
-
-An [extended docker configuration option](../docker/using_docker_images.md#extended-docker-configuration-options).
-
-For more information, see [Available settings for `services`](../docker/using_docker_images.md#available-settings-for-services).
-
-#### `services:alias`
-
-An [extended docker configuration option](../docker/using_docker_images.md#extended-docker-configuration-options).
-
-For more information, see [Available settings for `services`](../docker/using_docker_images.md#available-settings-for-services).
-
-#### `services:entrypoint`
-
-An [extended docker configuration option](../docker/using_docker_images.md#extended-docker-configuration-options).
-
-For more information, see [Available settings for `services`](../docker/using_docker_images.md#available-settings-for-services).
-
-#### `services:command`
-
-An [extended docker configuration option](../docker/using_docker_images.md#extended-docker-configuration-options).
-
-For more information, see [Available settings for `services`](../docker/using_docker_images.md#available-settings-for-services).
-
-### `before_script` and `after_script`
+#### `before_script` and `after_script`
 
 > Introduced in GitLab 8.7 and requires GitLab Runner v1.2.
 
@@ -383,85 +809,6 @@ job:
 ```
 
 [YAML anchors for `before_script` and `after_script`](#yaml-anchors-for-before_script-and-after_script) are available.
-
-### `stages`
-
-`stages` is used to define stages that can be used by jobs and is defined
-globally.
-
-The specification of `stages` allows for having flexible multi stage pipelines.
-The ordering of elements in `stages` defines the ordering of jobs' execution:
-
-1. Jobs of the same stage are run in parallel.
-1. Jobs of the next stage are run after the jobs from the previous stage
-   complete successfully.
-
-Let's consider the following example, which defines 3 stages:
-
-```yaml
-stages:
-  - build
-  - test
-  - deploy
-```
-
-1. First, all jobs of `build` are executed in parallel.
-1. If all jobs of `build` succeed, the `test` jobs are executed in parallel.
-1. If all jobs of `test` succeed, the `deploy` jobs are executed in parallel.
-1. If all jobs of `deploy` succeed, the commit is marked as `passed`.
-1. If any of the previous jobs fails, the commit is marked as `failed` and no
-   jobs of further stage are executed.
-
-There are also two edge cases worth mentioning:
-
-1. If no `stages` are defined in `.gitlab-ci.yml`, then the `build`,
-   `test` and `deploy` are allowed to be used as job's stage by default.
-1. If a job doesn't specify a `stage`, the job is assigned the `test` stage.
-
-#### `.pre` and `.post`
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/31441) in GitLab 12.4.
-
-The following stages are available to every pipeline:
-
-- `.pre`, which is guaranteed to always be the first stage in a pipeline.
-- `.post`, which is guaranteed to always be the last stage in a pipeline.
-
-User-defined stages are executed after `.pre` and before `.post`.
-
-The order of `.pre` and `.post` cannot be changed, even if defined out of order in `.gitlab-ci.yml`.
-For example, the following are equivalent configuration:
-
-- Configured in order:
-
-  ```yml
-  stages:
-    - .pre
-    - a
-    - b
-    - .post
-  ```
-
-- Configured out of order:
-
-  ```yml
-  stages:
-    - a
-    - .pre
-    - b
-    - .post
-  ```
-
-- Not explicitly configured:
-
-  ```yml
-  stages:
-    - a
-    - b
-  ```
-
-NOTE: **Note:**
-A pipeline will not be created if it only contains jobs in `.pre` or `.post` stages.
 
 ### `stage`
 
@@ -510,6 +857,443 @@ Jobs will run on your own Runners in parallel only if:
 
 - Run on different Runners.
 - The Runner's `concurrent` setting has been changed.
+
+#### `.pre` and `.post`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/31441) in GitLab 12.4.
+
+The following stages are available to every pipeline:
+
+- `.pre`, which is guaranteed to always be the first stage in a pipeline.
+- `.post`, which is guaranteed to always be the last stage in a pipeline.
+
+User-defined stages are executed after `.pre` and before `.post`.
+
+The order of `.pre` and `.post` cannot be changed, even if defined out of order in `.gitlab-ci.yml`.
+For example, the following are equivalent configuration:
+
+- Configured in order:
+
+  ```yml
+  stages:
+    - .pre
+    - a
+    - b
+    - .post
+  ```
+
+- Configured out of order:
+
+  ```yml
+  stages:
+    - a
+    - .pre
+    - b
+    - .post
+  ```
+
+- Not explicitly configured:
+
+  ```yml
+  stages:
+    - a
+    - b
+  ```
+
+NOTE: **Note:**
+A pipeline will not be created if it only contains jobs in `.pre` or `.post` stages.
+
+### `extends`
+
+> Introduced in GitLab 11.3.
+
+`extends` defines entry names that a job that uses `extends` is going to
+inherit from.
+
+It is an alternative to using [YAML anchors](#anchors) and is a little
+more flexible and readable:
+
+```yaml
+.tests:
+  script: rake test
+  stage: test
+  only:
+    refs:
+      - branches
+
+rspec:
+  extends: .tests
+  script: rake rspec
+  only:
+    variables:
+      - $RSPEC
+```
+
+In the example above, the `rspec` job inherits from the `.tests` template job.
+GitLab will perform a reverse deep merge based on the keys. GitLab will:
+
+- Merge the `rspec` contents into `.tests` recursively.
+- Not merge the values of the keys.
+
+This results in the following `rspec` job:
+
+```yaml
+rspec:
+  script: rake rspec
+  stage: test
+  only:
+    refs:
+      - branches
+    variables:
+      - $RSPEC
+```
+
+NOTE: **Note:**
+Note that `script: rake test` has been overwritten by `script: rake rspec`.
+
+If you do want to include the `rake test`, see [`before_script` and `after_script`](#before_script-and-after_script).
+
+`.tests` in this example is a [hidden key](#hide-jobs), but it's
+possible to inherit from regular jobs as well.
+
+`extends` supports multi-level inheritance, however it is not recommended to
+use more than three levels. The maximum nesting level that is supported is 10.
+The following example has two levels of inheritance:
+
+```yaml
+.tests:
+  only:
+    - pushes
+
+.rspec:
+  extends: .tests
+  script: rake rspec
+
+rspec 1:
+  variables:
+    RSPEC_SUITE: '1'
+  extends: .rspec
+
+rspec 2:
+  variables:
+    RSPEC_SUITE: '2'
+  extends: .rspec
+
+spinach:
+  extends: .tests
+  script: rake spinach
+```
+
+In GitLab 12.0 and later, it's also possible to use multiple parents for
+`extends`. The algorithm used for merge is "closest scope wins", so
+keys from the last member will always shadow anything defined on other
+levels. For example:
+
+```yaml
+.only-important:
+  only:
+    - master
+    - stable
+  tags:
+    - production
+
+.in-docker:
+  tags:
+    - docker
+  image: alpine
+
+rspec:
+  extends:
+    - .only-important
+    - .in-docker
+  script:
+    - rake rspec
+```
+
+This results in the following `rspec` job:
+
+```yaml
+rspec:
+  only:
+    - master
+    - stable
+  tags:
+    - docker
+  image: alpine
+  script:
+    - rake rspec
+```
+
+#### Using `extends` and `include` together
+
+`extends` works across configuration files combined with `include`.
+
+For example, if you have a local `included.yml` file:
+
+```yaml
+.template:
+  script:
+    - echo Hello!
+```
+
+Then, in `.gitlab-ci.yml` you can use it like this:
+
+```yaml
+include: included.yml
+
+useTemplate:
+  image: alpine
+  extends: .template
+```
+
+This will run a job called `useTemplate` that runs `echo Hello!` as defined in
+the `.template` job, and uses the `alpine` Docker image as defined in the local job.
+
+### `rules`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/29011) in GitLab 12.3.
+
+`rules` allows for a list of individual rule objects to be evaluated
+*in order*, until one matches and dynamically provides attributes to the job.
+Note that `rules` cannot be used in combination with `only/except` since it is intended
+to replace that functionality. If you attempt to do this the linter will return a
+`key may not be used with rules` error.
+
+Available rule clauses include:
+
+- [`if`](#rulesif) (similar to [`only:variables`](#onlyvariablesexceptvariables))
+- [`changes`](#ruleschanges) (same as [`only:changes`](#onlychangesexceptchanges))
+- [`exists`](#rulesexists)
+
+For example, using `if`. This configuration specifies that `job` should be built
+and run for every pipeline on merge requests targeting `master`, regardless of
+the status of other builds:
+
+```yaml
+job:
+  script: "echo Hello, Rules!"
+  rules:
+    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"'
+      when: always
+    - if: '$VAR =~ /pattern/'
+      when: manual
+    - when: on_success
+```
+
+In this example, if the first rule:
+
+- Matches, the job will be given the `when:always` attribute.
+- Does not match, the second and third rules will be evaluated sequentially
+  until a match is found. That is, the job will be given either the:
+  - `when: manual` attribute if the second rule matches. **The stage will not complete until this manual job is triggered and completes successfully.**
+  - `when: on_success` attribute if the second rule does not match. The third
+    rule will always match when reached because it has no conditional clauses.
+
+#### `rules:if`
+
+`rules:if` differs slightly from `only:variables` by accepting only a single
+expression string, rather than an array of them. Any set of expressions to be
+evaluated should be conjoined into a single expression using `&&` or `||`, and use
+the [variable matching syntax](../variables/README.md#supported-syntax).
+
+For example:
+
+```yaml
+job:
+  script: "echo Hello, Rules!"
+  rules:
+    - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^feature/ && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"' # This rule will be evaluated
+      when: always
+    - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^feature/' # This rule will only be evaluated if the target branch is not "master"
+      when: manual
+    - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME' # If neither of the first two match but the simple presence does, we set to "on_success" by default
+```
+
+If none of the provided rules match, the job will be set to `when:never`, and
+not included in the pipeline. If `rules:when` is not included in the configuration
+at all, the behavior defaults to `job:when`, which continues to default to
+`on_success`.
+
+#### `rules:changes`
+
+`rules: changes` works exactly the same way as `only: changes` and `except: changes`,
+accepting an array of paths. Similarly, it will always return true if there is no
+Git push event. See [`only/except: changes`](#onlychangesexceptchanges) for more information.
+
+For example:
+
+```yaml
+docker build:
+  script: docker build -t my-image:$CI_COMMIT_REF_SLUG .
+  rules:
+    - changes: # Will include the job and set to when:manual if any of the follow paths match a modified file.
+      - Dockerfile
+      when: manual
+    - if: '$VAR == "string value"'
+      when: manual # Will include the job and set to when:manual if the expression evaluates to true, after the `changes:` rule fails to match.
+    - when: on_success # If neither of the first rules match, set to on_success
+```
+
+In this example, a job either set to:
+
+- Run manually if `Dockerfile` has changed OR `$VAR == "string value"`.
+- `when:on_success` by the last rule, where no earlier clauses evaluate to true.
+
+#### `rules:exists`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/16574) in GitLab 12.4.
+
+`exists` accepts an array of paths and will match if any of these paths exist
+as files in the repository.
+
+For example:
+
+```yaml
+job:
+  script: docker build -t my-image:$CI_COMMIT_REF_SLUG .
+  rules:
+    - exists:
+      - Dockerfile
+```
+
+You can also use glob patterns to match multiple files in any directory within
+the repository.
+
+For example:
+
+```yaml
+job:
+  script: bundle exec rspec
+  rules:
+    - exists:
+      - spec/**.rb
+```
+
+NOTE: **Note:**
+For performance reasons, using `exists` with patterns is limited to 10000
+checks. After the 10000th check, rules with patterned globs will always match.
+
+#### `rules:allow_failure`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/30235) in GitLab 12.8.
+
+You can use [`allow_failure: true`](#allow_failure) within `rules:` to allow a job to fail, or a manual job to
+wait for action, without stopping the pipeline itself. All jobs using `rules:` default to `allow_failure: false`
+if `allow_failure:` is not defined.
+
+```yaml
+job:
+  script: "echo Hello, Rules!"
+  rules:
+    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"'
+      when: manual
+      allow_failure: true
+```
+
+In this example, if the first rule matches, then the job will have `when: manual` and `allow_failure: true`.
+
+#### Exclude jobs with `rules:` from certain pipelines
+
+Jobs with `rules:` can cause two pipelines to be created unexpectedly:
+
+- One pipeline from pushing a commit to a branch.
+- A second ["detached" pipeline for a merge request](../merge_request_pipelines/index.md).
+
+`only` and `except` jobs do not trigger merge request pipelines by default, but this
+is not the case for jobs with `rules:`, which may be surprising if migrating from `only`
+and `except` to `rules:`.
+
+If you are using `rules:` and you see two pipelines for commits to branches that have
+a merge request, you have two options:
+
+- Individually exclude each job that uses `rules:` from merge request pipelines. The
+  example below will cause the job to **not** run in *pipelines for merge requests*,
+  but it **will** run in pipelines for *new tags and pipelines running on branch refs*:
+
+  ```yaml
+  job:
+    rules:
+      - if: $CI_MERGE_REQUEST_ID
+        when: never
+      - when: manual
+    script:
+      - echo hello
+  ```
+
+- Add a global [`workflow: rules`](#workflowrules) to allow pipelines in only certain
+  situations. The example below will only run pipelines for merge requests, new tags and
+  changes to master. It will **not** run any pipelines *on any branch except master*, but
+  it will run **detached merge request pipelines** for any merge request, targeting any branch:
+
+  ```yaml
+  workflow:
+    rules:
+      - if: $CI_MERGE_REQUEST_ID
+      - if: $CI_COMMIT_TAG
+      - if: $CI_COMMIT_BRANCH == "master"
+  ```
+
+#### Complex rule clauses
+
+To conjoin `if`, `changes`, and `exists` clauses with an AND, use them in the
+same rule.
+
+In the following example:
+
+- We run the job manually if `Dockerfile` or any file in `docker/scripts/`
+  has changed AND `$VAR == "string value"`.
+- Otherwise, the job will not be included in the pipeline.
+
+```yaml
+docker build:
+  script: docker build -t my-image:$CI_COMMIT_REF_SLUG .
+  rules:
+    - if: '$VAR == "string value"'
+      changes: # Will include the job and set to when:manual if any of the follow paths match a modified file.
+      - Dockerfile
+      - docker/scripts/*
+      when: manual
+  # - when: never would be redundant here, this is implied any time rules are listed.
+```
+
+The only clauses currently available are:
+
+- `if`
+- `changes`
+- `exists`
+
+Keywords such as `branches` or `refs` that are currently available for
+`only`/`except` are not yet available in `rules` as they are being individually
+considered for their usage and behavior in this context.
+
+#### Permitted attributes
+
+The only job attributes currently set by `rules` are:
+
+- `when`.
+- `start_in`, if `when` is set to `delayed`.
+- `allow_failure`.
+
+A job will be included in a pipeline if `when` is evaluated to any value
+except `never`.
+
+Delayed jobs require a `start_in` value, so rule objects do as well. For
+example:
+
+```yaml
+docker build:
+  script: docker build -t my-image:$CI_COMMIT_REF_SLUG .
+  rules:
+    - changes: # Will include the job and delay 3 hours when the Dockerfile has changed
+      - Dockerfile
+      when: delayed
+      start_in: '3 hours'
+    - when: on_success # Otherwise include the job and set to run normally
+```
+
+Additional job configuration may be added to rules in the future. If something
+useful isn't available, please
+[open an issue](https://gitlab.com/gitlab-org/gitlab/issues).
 
 ### `only`/`except` (basic)
 
@@ -643,7 +1427,7 @@ matching only a substring of the tag name or branch name.
 For example, `/^issue-.*$/` is equivalent to `/^issue-/`,
 while just `/issue/` would also match a branch called `severe-issues`.
 
-### Supported `only`/`except` regexp syntax
+#### Supported `only`/`except` regexp syntax
 
 CAUTION: **Warning:**
 This is a breaking change that was introduced with GitLab 11.9.4.
@@ -944,278 +1728,189 @@ This could result in some unexpected behavior, including:
 All files are considered to have "changed" when a scheduled pipeline
 runs.
 
-### `rules`
+### `needs`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/29011) in GitLab 12.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/47063) in GitLab 12.2.
+> - In GitLab 12.3, maximum number of jobs in `needs` array raised from five to 50.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/30631) in GitLab 12.8, `needs: []` lets jobs start immediately.
 
-`rules` allows for a list of individual rule objects to be evaluated
-*in order*, until one matches and dynamically provides attributes to the job.
-Note that `rules` cannot be used in combination with `only/except` since it is intended
-to replace that functionality. If you attempt to do this the linter will return a
-`key may not be used with rules` error.
+The `needs:` keyword enables executing jobs out-of-order, allowing you to implement
+a [directed acyclic graph](../directed_acyclic_graph/index.md) in your `.gitlab-ci.yml`.
 
-Available rule clauses include:
+This lets you run some jobs without waiting for other ones, disregarding stage ordering
+so you can have multiple stages running concurrently.
 
-- [`if`](#rulesif) (similar to [`only:variables`](#onlyvariablesexceptvariables))
-- [`changes`](#ruleschanges) (same as [`only:changes`](#onlychangesexceptchanges))
-- [`exists`](#rulesexists)
-
-For example, using `if`. This configuration specifies that `job` should be built
-and run for every pipeline on merge requests targeting `master`, regardless of
-the status of other builds:
+Let's consider the following example:
 
 ```yaml
-job:
-  script: "echo Hello, Rules!"
-  rules:
-    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"'
-      when: always
-    - if: '$VAR =~ /pattern/'
-      when: manual
-    - when: on_success
+linux:build:
+  stage: build
+
+mac:build:
+  stage: build
+
+lint:
+  stage: test
+  needs: []
+
+linux:rspec:
+  stage: test
+  needs: ["linux:build"]
+
+linux:rubocop:
+  stage: test
+  needs: ["linux:build"]
+
+mac:rspec:
+  stage: test
+  needs: ["mac:build"]
+
+mac:rubocop:
+  stage: test
+  needs: ["mac:build"]
+
+production:
+  stage: deploy
 ```
 
-In this example, if the first rule:
+This example creates four paths of execution:
 
-- Matches, the job will be given the `when:always` attribute.
-- Does not match, the second and third rules will be evaluated sequentially
-  until a match is found. That is, the job will be given either the:
-  - `when: manual` attribute if the second rule matches. **The stage will not complete until this manual job is triggered and completes successfully.**
-  - `when: on_success` attribute if the second rule does not match. The third
-    rule will always match when reached because it has no conditional clauses.
+- Linter: the `lint` job will run immediately without waiting for the `build` stage to complete because it has no needs (`needs: []`).
 
-#### `rules:if`
+- Linux path: the `linux:rspec` and `linux:rubocop` jobs will be run as soon
+  as the `linux:build` job finishes without waiting for `mac:build` to finish.
 
-`rules:if` differs slightly from `only:variables` by accepting only a single
-expression string, rather than an array of them. Any set of expressions to be
-evaluated should be conjoined into a single expression using `&&` or `||`, and use
-the [variable matching syntax](../variables/README.md#supported-syntax).
+- macOS path: the `mac:rspec` and `mac:rubocop` jobs will be run as soon
+  as the `mac:build` job finishes, without waiting for `linux:build` to finish.
 
-For example:
+- The `production` job will be executed as soon as all previous jobs
+  finish; in this case: `linux:build`, `linux:rspec`, `linux:rubocop`,
+  `mac:build`, `mac:rspec`, `mac:rubocop`.
 
-```yaml
-job:
-  script: "echo Hello, Rules!"
-  rules:
-    - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^feature/ && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"' # This rule will be evaluated
-      when: always
-    - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^feature/' # This rule will only be evaluated if the target branch is not "master"
-      when: manual
-    - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME' # If neither of the first two match but the simple presence does, we set to "on_success" by default
+#### Requirements and limitations
+
+- If `needs:` is set to point to a job that is not instantiated
+  because of `only/except` rules or otherwise does not exist, the
+  pipeline will be created with YAML error.
+- We are temporarily limiting the maximum number of jobs that a single job can
+  need in the `needs:` array:
+  - For GitLab.com, the limit is ten. For more information, see our
+    [infrastructure issue](https://gitlab.com/gitlab-com/gl-infra/infrastructure/issues/7541).
+  - For self-managed instances, the limit is:
+    - 10, if the `ci_dag_limit_needs` feature flag is enabled (default).
+    - 50, if the `ci_dag_limit_needs` feature flag is disabled.
+- If `needs:` refers to a job that is marked as `parallel:`.
+  the current job will depend on all parallel jobs created.
+- `needs:` is similar to `dependencies:` in that it needs to use jobs from prior stages,
+  meaning it is impossible to create circular dependencies. Depending on jobs in the
+  current stage is not possible either, but support [is planned](https://gitlab.com/gitlab-org/gitlab/issues/30632).
+- Related to the above, stages must be explicitly defined for all jobs
+  that have the keyword `needs:` or are referred to by one.
+
+##### Changing the `needs:` job limit
+
+The maximum number of jobs that can be defined within `needs:` defaults to 10, but
+can be changed to 50 via a feature flag. To change the limit to 50,
+[start a Rails console session](../../administration/troubleshooting/debug.md#starting-a-rails-console-session)
+and run:
+
+```ruby
+Feature::disable(:ci_dag_limit_needs)
 ```
 
-If none of the provided rules match, the job will be set to `when:never`, and
-not included in the pipeline. If `rules:when` is not included in the configuration
-at all, the behavior defaults to `job:when`, which continues to default to
-`on_success`.
+To set it back to 10, run the opposite command:
 
-#### `rules:changes`
-
-`rules: changes` works exactly the same way as `only: changes` and `except: changes`,
-accepting an array of paths. Similarly, it will always return true if there is no
-Git push event. See [`only/except: changes`](#onlychangesexceptchanges) for more information.
-
-For example:
-
-```yaml
-docker build:
-  script: docker build -t my-image:$CI_COMMIT_REF_SLUG .
-  rules:
-    - changes: # Will include the job and set to when:manual if any of the follow paths match a modified file.
-      - Dockerfile
-      when: manual
-    - if: '$VAR == "string value"'
-      when: manual # Will include the job and set to when:manual if the expression evaluates to true, after the `changes:` rule fails to match.
-    - when: on_success # If neither of the first rules match, set to on_success
+```ruby
+Feature::enable(:ci_dag_limit_needs)
 ```
 
-In this example, a job either set to:
+#### Artifact downloads with `needs`
 
-- Run manually if `Dockerfile` has changed OR `$VAR == "string value"`.
-- `when:on_success` by the last rule, where no earlier clauses evaluate to true.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/14311) in GitLab v12.6.
 
-#### `rules:exists`
+When using `needs`, artifact downloads are controlled with `artifacts: true` or `artifacts: false`.
+The `dependencies` keyword should not be used with `needs`, as this is deprecated since GitLab 12.6.
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/16574) in GitLab 12.4.
-
-`exists` accepts an array of paths and will match if any of these paths exist
-as files in the repository.
-
-For example:
+In the example below, the `rspec` job will download the `build_job` artifacts, while the
+`rubocop` job will not:
 
 ```yaml
-job:
-  script: docker build -t my-image:$CI_COMMIT_REF_SLUG .
-  rules:
-    - exists:
-      - Dockerfile
+build_job:
+  stage: build
+  artifacts:
+    paths:
+      - binaries/
+
+rspec:
+  stage: test
+  needs:
+    - job: build_job
+      artifacts: true
+
+rubocop:
+  stage: test
+  needs:
+    - job: build_job
+      artifacts: false
 ```
 
-You can also use glob patterns to match multiple files in any directory within
-the repository.
-
-For example:
+Additionally, in the three syntax examples below, the `rspec` job will download the artifacts
+from all three `build_jobs`, as `artifacts` is true for `build_job_1`, and will
+**default** to true for both `build_job_2` and `build_job_3`.
 
 ```yaml
-job:
-  script: bundle exec rspec
-  rules:
-    - exists:
-      - spec/**.rb
+rspec:
+  needs:
+    - job: build_job_1
+      artifacts: true
+    - job: build_job_2
+    - build_job_3
+```
+
+#### Cross project artifact downloads with `needs` **(PREMIUM)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/14311) in GitLab v12.7.
+
+`needs` can be used to download artifacts from up to five jobs in pipelines on
+[other refs in the same project](#artifact-downloads-between-pipelines-in-the-same-project),
+or pipelines in different projects:
+
+```yaml
+build_job:
+  stage: build
+  script:
+    - ls -lhR
+  needs:
+    - project: group/project-name
+      job: build-1
+      ref: master
+      artifacts: true
+```
+
+`build_job` will download the artifacts from the latest successful `build-1` job
+on the `master` branch in the `group/project-name` project.
+
+##### Artifact downloads between pipelines in the same project
+
+`needs` can be used to download artifacts from different pipelines in the current project
+by setting the `project` keyword as the current project's name, and specifying a ref.
+In the example below, `build_job` will download the artifacts for the latest successful
+`build-1` job with the `other-ref` ref:
+
+```yaml
+build_job:
+  stage: build
+  script:
+    - ls -lhR
+  needs:
+    - project: group/same-project-name
+      job: build-1
+      ref: other-ref
+      artifacts: true
 ```
 
 NOTE: **Note:**
-For performance reasons, using `exists` with patterns is limited to 10000
-checks. After the 10000th check, rules with patterned globs will always match.
-
-#### `rules:allow_failure`
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/30235) in GitLab 12.8.
-
-You can use [`allow_failure: true`](#allow_failure) within `rules:` to allow a job to fail, or a manual job to
-wait for action, without stopping the pipeline itself. All jobs using `rules:` default to `allow_failure: false`
-if `allow_failure:` is not defined.
-
-```yaml
-job:
-  script: "echo Hello, Rules!"
-  rules:
-    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"'
-      when: manual
-      allow_failure: true
-```
-
-In this example, if the first rule matches, then the job will have `when: manual` and `allow_failure: true`.
-
-#### Exclude jobs with `rules:` from certain pipelines
-
-Jobs with `rules:` can cause two pipelines to be created unexpectedly:
-
-- One pipeline from pushing a commit to a branch.
-- A second ["detached" pipeline for a merge request](../merge_request_pipelines/index.md).
-
-`only` and `except` jobs do not trigger merge request pipelines by default, but this
-is not the case for jobs with `rules:`, which may be surprising if migrating from `only`
-and `except` to `rules:`.
-
-If you are using `rules:` and you see two pipelines for commits to branches that have
-a merge request, you have two options:
-
-- Individually exclude each job that uses `rules:` from merge request pipelines. The
-  example below will cause the job to **not** run in *pipelines for merge requests*,
-  but it **will** run in pipelines for *new tags and pipelines running on branch refs*:
-
-  ```yaml
-  job:
-    rules:
-      - if: $CI_MERGE_REQUEST_ID
-        when: never
-      - when: manual
-    script:
-      - echo hello
-  ```
-
-- Add a global [`workflow: rules`](#workflowrules) to allow pipelines in only certain
-  situations. The example below will only run pipelines for merge requests, new tags and
-  changes to master. It will **not** run any pipelines *on any branch except master*, but
-  it will run **detached merge request pipelines** for any merge request, targeting any branch:
-
-  ```yaml
-  workflow:
-    rules:
-      - if: $CI_MERGE_REQUEST_ID
-      - if: $CI_COMMIT_TAG
-      - if: $CI_COMMIT_BRANCH == "master"
-  ```
-
-#### Complex rule clauses
-
-To conjoin `if`, `changes`, and `exists` clauses with an AND, use them in the
-same rule.
-
-In the following example:
-
-- We run the job manually if `Dockerfile` or any file in `docker/scripts/`
-  has changed AND `$VAR == "string value"`.
-- Otherwise, the job will not be included in the pipeline.
-
-```yaml
-docker build:
-  script: docker build -t my-image:$CI_COMMIT_REF_SLUG .
-  rules:
-    - if: '$VAR == "string value"'
-      changes: # Will include the job and set to when:manual if any of the follow paths match a modified file.
-      - Dockerfile
-      - docker/scripts/*
-      when: manual
-  # - when: never would be redundant here, this is implied any time rules are listed.
-```
-
-The only clauses currently available are:
-
-- `if`
-- `changes`
-- `exists`
-
-Keywords such as `branches` or `refs` that are currently available for
-`only`/`except` are not yet available in `rules` as they are being individually
-considered for their usage and behavior in this context.
-
-#### Permitted attributes
-
-The only job attributes currently set by `rules` are:
-
-- `when`.
-- `start_in`, if `when` is set to `delayed`.
-- `allow_failure`.
-
-A job will be included in a pipeline if `when` is evaluated to any value
-except `never`.
-
-Delayed jobs require a `start_in` value, so rule objects do as well. For
-example:
-
-```yaml
-docker build:
-  script: docker build -t my-image:$CI_COMMIT_REF_SLUG .
-  rules:
-    - changes: # Will include the job and delay 3 hours when the Dockerfile has changed
-      - Dockerfile
-      when: delayed
-      start_in: '3 hours'
-    - when: on_success # Otherwise include the job and set to run normally
-```
-
-Additional job configuration may be added to rules in the future. If something
-useful isn't available, please
-[open an issue](https://gitlab.com/gitlab-org/gitlab/issues).
-
-### `workflow:rules`
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/29654) in GitLab 12.5
-
-The top-level `workflow:` key applies to the entirety of a pipeline, and will
-determine whether or not a pipeline is created. It currently accepts a single
-`rules:` key that operates similarly to [`rules:` defined within jobs](#rules),
-enabling dynamic configuration of the pipeline.
-
-The configuration options currently available for `workflow:rules` are:​
-
-- [`if`](#rulesif): Define a rule.
-- [`when`](#when): May be set to `always` or `never` only. If not provided, the default value is `always`​.
-
-The list of `if` rules is evaluated until a single one is matched. If none
-match, the last `when` will be used:
-
-```yaml
-workflow:
-  rules:
-    - if: $CI_COMMIT_REF_NAME =~ /-wip$/
-      when: never
-    - if: $CI_COMMIT_TAG
-      when: never
-    - when: always
-```
+Downloading artifacts from jobs that are run in [`parallel:`](#parallel) is not supported.
 
 ### `tags`
 
@@ -2410,7 +3105,7 @@ as artifacts.
 The collected Metrics report will be uploaded to GitLab as an artifact and will
 be automatically shown in merge requests. It is not available for download through the web interface.
 
-### `dependencies`
+#### `dependencies`
 
 > Introduced in GitLab 8.6 and GitLab Runner v1.1.1.
 
@@ -2466,7 +3161,7 @@ deploy:
   script: make deploy
 ```
 
-#### When a dependent job will fail
+##### When a dependent job will fail
 
 > Introduced in GitLab 10.3.
 
@@ -2479,190 +3174,6 @@ NOTE: **Note:**
 You can ask your administrator to
 [flip this switch](../../administration/job_artifacts.md#validation-for-dependencies)
 and bring back the old behavior.
-
-### `needs`
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/47063) in GitLab 12.2.
-> - In GitLab 12.3, maximum number of jobs in `needs` array raised from five to 50.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/30631) in GitLab 12.8, `needs: []` lets jobs start immediately.
-
-The `needs:` keyword enables executing jobs out-of-order, allowing you to implement
-a [directed acyclic graph](../directed_acyclic_graph/index.md) in your `.gitlab-ci.yml`.
-
-This lets you run some jobs without waiting for other ones, disregarding stage ordering
-so you can have multiple stages running concurrently.
-
-Let's consider the following example:
-
-```yaml
-linux:build:
-  stage: build
-
-mac:build:
-  stage: build
-
-lint:
-  stage: test
-  needs: []
-
-linux:rspec:
-  stage: test
-  needs: ["linux:build"]
-
-linux:rubocop:
-  stage: test
-  needs: ["linux:build"]
-
-mac:rspec:
-  stage: test
-  needs: ["mac:build"]
-
-mac:rubocop:
-  stage: test
-  needs: ["mac:build"]
-
-production:
-  stage: deploy
-```
-
-This example creates four paths of execution:
-
-- Linter: the `lint` job will run immediately without waiting for the `build` stage to complete because it has no needs (`needs: []`).
-
-- Linux path: the `linux:rspec` and `linux:rubocop` jobs will be run as soon
-  as the `linux:build` job finishes without waiting for `mac:build` to finish.
-
-- macOS path: the `mac:rspec` and `mac:rubocop` jobs will be run as soon
-  as the `mac:build` job finishes, without waiting for `linux:build` to finish.
-
-- The `production` job will be executed as soon as all previous jobs
-  finish; in this case: `linux:build`, `linux:rspec`, `linux:rubocop`,
-  `mac:build`, `mac:rspec`, `mac:rubocop`.
-
-#### Requirements and limitations
-
-- If `needs:` is set to point to a job that is not instantiated
-  because of `only/except` rules or otherwise does not exist, the
-  pipeline will be created with YAML error.
-- We are temporarily limiting the maximum number of jobs that a single job can
-  need in the `needs:` array:
-  - For GitLab.com, the limit is ten. For more information, see our
-    [infrastructure issue](https://gitlab.com/gitlab-com/gl-infra/infrastructure/issues/7541).
-  - For self-managed instances, the limit is:
-    - 10, if the `ci_dag_limit_needs` feature flag is enabled (default).
-    - 50, if the `ci_dag_limit_needs` feature flag is disabled.
-- If `needs:` refers to a job that is marked as `parallel:`.
-  the current job will depend on all parallel jobs created.
-- `needs:` is similar to `dependencies:` in that it needs to use jobs from prior stages,
-  meaning it is impossible to create circular dependencies. Depending on jobs in the
-  current stage is not possible either, but support [is planned](https://gitlab.com/gitlab-org/gitlab/issues/30632).
-- Related to the above, stages must be explicitly defined for all jobs
-  that have the keyword `needs:` or are referred to by one.
-
-##### Changing the `needs:` job limit
-
-The maximum number of jobs that can be defined within `needs:` defaults to 10, but
-can be changed to 50 via a feature flag. To change the limit to 50,
-[start a Rails console session](../../administration/troubleshooting/debug.md#starting-a-rails-console-session)
-and run:
-
-```ruby
-Feature::disable(:ci_dag_limit_needs)
-```
-
-To set it back to 10, run the opposite command:
-
-```ruby
-Feature::enable(:ci_dag_limit_needs)
-```
-
-#### Artifact downloads with `needs`
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/14311) in GitLab v12.6.
-
-When using `needs`, artifact downloads are controlled with `artifacts: true` or `artifacts: false`.
-The `dependencies` keyword should not be used with `needs`, as this is deprecated since GitLab 12.6.
-
-In the example below, the `rspec` job will download the `build_job` artifacts, while the
-`rubocop` job will not:
-
-```yaml
-build_job:
-  stage: build
-  artifacts:
-    paths:
-      - binaries/
-
-rspec:
-  stage: test
-  needs:
-    - job: build_job
-      artifacts: true
-
-rubocop:
-  stage: test
-  needs:
-    - job: build_job
-      artifacts: false
-```
-
-Additionally, in the three syntax examples below, the `rspec` job will download the artifacts
-from all three `build_jobs`, as `artifacts` is true for `build_job_1`, and will
-**default** to true for both `build_job_2` and `build_job_3`.
-
-```yaml
-rspec:
-  needs:
-    - job: build_job_1
-      artifacts: true
-    - job: build_job_2
-    - build_job_3
-```
-
-#### Cross project artifact downloads with `needs` **(PREMIUM)**
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/14311) in GitLab v12.7.
-
-`needs` can be used to download artifacts from up to five jobs in pipelines on
-[other refs in the same project](#artifact-downloads-between-pipelines-in-the-same-project),
-or pipelines in different projects:
-
-```yaml
-build_job:
-  stage: build
-  script:
-    - ls -lhR
-  needs:
-    - project: group/project-name
-      job: build-1
-      ref: master
-      artifacts: true
-```
-
-`build_job` will download the artifacts from the latest successful `build-1` job
-on the `master` branch in the `group/project-name` project.
-
-##### Artifact downloads between pipelines in the same project
-
-`needs` can be used to download artifacts from different pipelines in the current project
-by setting the `project` keyword as the current project's name, and specifying a ref.
-In the example below, `build_job` will download the artifacts for the latest successful
-`build-1` job with the `other-ref` ref:
-
-```yaml
-build_job:
-  stage: build
-  script:
-    - ls -lhR
-  needs:
-    - project: group/same-project-name
-      job: build-1
-      ref: other-ref
-      artifacts: true
-```
-
-NOTE: **Note:**
-Downloading artifacts from jobs that are run in [`parallel:`](#parallel) is not supported.
 
 ### `coverage`
 
@@ -2971,6 +3482,15 @@ This can help keep your pipeline execution linear. In the example above, jobs fr
 subsequent stages will wait for the triggered pipeline to successfully complete before
 starting, at the cost of reduced parallelization.
 
+#### Trigger a pipeline by API call
+
+Triggers can be used to force a rebuild of a specific branch, tag or commit,
+with an API call when a pipeline gets created using a trigger token.
+
+Not to be confused with the [`trigger`](#trigger) parameter.
+
+[Read more in the triggers documentation.](../triggers/README.md)
+
 ### `interruptible`
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/23464) in GitLab 12.3.
@@ -3059,513 +3579,6 @@ one can be deployed to, but there can be only one deployment per device at any g
 NOTE: **Note:**
 This key can only contain letters, digits, `-`, `_`, `/`, `$`, `{`, `}`, `.`, and spaces, but it cannot start or end with `/`.
 
-### `include`
-
-> - Introduced in [GitLab Premium](https://about.gitlab.com/pricing/) 10.5.
-> - Available for Starter, Premium and Ultimate since 10.6.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/21603) to GitLab Core in 11.4.
-
-Using the `include` keyword, you can allow the inclusion of external YAML files.
-`include` requires the external YAML file to have the extensions `.yml` or `.yaml`,
-otherwise the external file will not be included.
-
-The files defined in `include` are:
-
-- Deep merged with those in `.gitlab-ci.yml`.
-- Always evaluated first and merged with the content of `.gitlab-ci.yml`,
-  regardless of the position of the `include` keyword.
-
-TIP: **Tip:**
-Use merging to customize and override included CI/CD configurations with local
-definitions.
-
-NOTE: **Note:**
-Using YAML aliases across different YAML files sourced by `include` is not
-supported. You must only refer to aliases in the same file. Instead
-of using YAML anchors, you can use the [`extends` keyword](#extends).
-
-`include` supports four include methods:
-
-- [`local`](#includelocal)
-- [`file`](#includefile)
-- [`template`](#includetemplate)
-- [`remote`](#includeremote)
-
-See [usage examples](#include-examples).
-
-NOTE: **Note:**
-`.gitlab-ci.yml` configuration included by all methods is evaluated at pipeline creation.
-The configuration is a snapshot in time and persisted in the database. Any changes to
-referenced `.gitlab-ci.yml` configuration will not be reflected in GitLab until the next pipeline is created.
-
-#### `include:local`
-
-`include:local` includes a file from the same repository as `.gitlab-ci.yml`.
-It's referenced using full paths relative to the root directory (`/`).
-
-You can only use files that are currently tracked by Git on the same branch
-your configuration file is on. In other words, when using a `include:local`, make
-sure that both `.gitlab-ci.yml` and the local file are on the same branch.
-
-All [nested includes](#nested-includes) will be executed in the scope of the same project,
-so it is possible to use local, project, remote, or template includes.
-
-NOTE: **Note:**
-Including local files through Git submodules paths is not supported.
-
-Example:
-
-```yaml
-include:
-  - local: '/templates/.gitlab-ci-template.yml'
-```
-
-#### `include:file`
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/53903) in GitLab 11.7.
-
-To include files from another private project under the same GitLab instance,
-use `include:file`. This file is referenced using full paths relative to the
-root directory (`/`). For example:
-
-```yaml
-include:
-  - project: 'my-group/my-project'
-    file: '/templates/.gitlab-ci-template.yml'
-```
-
-You can also specify `ref`, with the default being the `HEAD` of the project:
-
-```yaml
-include:
-  - project: 'my-group/my-project'
-    ref: master
-    file: '/templates/.gitlab-ci-template.yml'
-
-  - project: 'my-group/my-project'
-    ref: v1.0.0
-    file: '/templates/.gitlab-ci-template.yml'
-
-  - project: 'my-group/my-project'
-    ref: 787123b47f14b552955ca2786bc9542ae66fee5b # Git SHA
-    file: '/templates/.gitlab-ci-template.yml'
-```
-
-All [nested includes](#nested-includes) will be executed in the scope of the target project,
-so it is possible to use local (relative to target project), project, remote
-or template includes.
-
-#### `include:template`
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/53445) in GitLab 11.7.
-
-`include:template` can be used to include `.gitlab-ci.yml` templates that are
-[shipped with GitLab](https://gitlab.com/gitlab-org/gitlab/tree/master/lib/gitlab/ci/templates).
-
-For example:
-
-```yaml
-# File sourced from GitLab's template collection
-include:
-  - template: Auto-DevOps.gitlab-ci.yml
-```
-
-Multiple `include:template` files:
-
-```yaml
-include:
-  - template: Android-Fastlane.gitlab-ci.yml
-  - template: Auto-DevOps.gitlab-ci.yml
-```
-
-All [nested includes](#nested-includes) will be executed only with the permission of the user,
-so it is possible to use project, remote or template includes.
-
-#### `include:remote`
-
-`include:remote` can be used to include a file from a different location,
-using HTTP/HTTPS, referenced by using the full URL. The remote file must be
-publicly accessible through a simple GET request as authentication schemas
-in the remote URL is not supported. For example:
-
-```yaml
-include:
-  - remote: 'https://gitlab.com/awesome-project/raw/master/.gitlab-ci-template.yml'
-```
-
-All nested includes will be executed without context as public user, so only another remote,
-or public project, or template is allowed.
-
-#### Nested includes
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/56836) in GitLab 11.9.
-
-Nested includes allow you to compose a set of includes.
-A total of 100 includes is allowed.
-Duplicate includes are considered a configuration error.
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/28212) in GitLab 12.4.
-
-A hard limit of 30 seconds was set for resolving all files.
-
-#### `include` examples
-
-Here are a few more `include` examples.
-
-##### Single string or array of multiple values
-
-You can include your extra YAML file(s) either as a single string or
-an array of multiple values. The following examples are all valid.
-
-Single string with the `include:local` method implied:
-
-```yaml
-include: '/templates/.after-script-template.yml'
-```
-
-Array with `include` method implied:
-
-```yaml
-include:
-  - 'https://gitlab.com/awesome-project/raw/master/.before-script-template.yml'
-  - '/templates/.after-script-template.yml'
-```
-
-Single string with `include` method specified explicitly:
-
-```yaml
-include:
-  remote: 'https://gitlab.com/awesome-project/raw/master/.before-script-template.yml'
-```
-
-Array with `include:remote` being the single item:
-
-```yaml
-include:
-  - remote: 'https://gitlab.com/awesome-project/raw/master/.before-script-template.yml'
-```
-
-Array with multiple `include` methods specified explicitly:
-
-```yaml
-include:
-  - remote: 'https://gitlab.com/awesome-project/raw/master/.before-script-template.yml'
-  - local: '/templates/.after-script-template.yml'
-  - template: Auto-DevOps.gitlab-ci.yml
-```
-
-Array mixed syntax:
-
-```yaml
-include:
-  - 'https://gitlab.com/awesome-project/raw/master/.before-script-template.yml'
-  - '/templates/.after-script-template.yml'
-  - template: Auto-DevOps.gitlab-ci.yml
-  - project: 'my-group/my-project'
-    ref: master
-    file: '/templates/.gitlab-ci-template.yml'
-```
-
-##### Re-using a `before_script` template
-
-In the following example, the content of `.before-script-template.yml` will be
-automatically fetched and evaluated along with the content of `.gitlab-ci.yml`.
-
-Content of `https://gitlab.com/awesome-project/raw/master/.before-script-template.yml`:
-
-```yaml
-before_script:
-  - apt-get update -qq && apt-get install -y -qq sqlite3 libsqlite3-dev nodejs
-  - gem install bundler --no-document
-  - bundle install --jobs $(nproc)  "${FLAGS[@]}"
-```
-
-Content of `.gitlab-ci.yml`:
-
-```yaml
-include: 'https://gitlab.com/awesome-project/raw/master/.before-script-template.yml'
-
-rspec:
-  script:
-    - bundle exec rspec
-```
-
-##### Overriding external template values
-
-The following example shows specific YAML-defined variables and details of the
-`production` job from an include file being customized in `.gitlab-ci.yml`.
-
-Content of `https://company.com/autodevops-template.yml`:
-
-```yaml
-variables:
-  POSTGRES_USER: user
-  POSTGRES_PASSWORD: testing_password
-  POSTGRES_DB: $CI_ENVIRONMENT_SLUG
-
-production:
-  stage: production
-  script:
-    - install_dependencies
-    - deploy
-  environment:
-    name: production
-    url: https://$CI_PROJECT_PATH_SLUG.$KUBE_INGRESS_BASE_DOMAIN
-  only:
-    - master
-```
-
-Content of `.gitlab-ci.yml`:
-
-```yaml
-include: 'https://company.com/autodevops-template.yml'
-
-image: alpine:latest
-
-variables:
-  POSTGRES_USER: root
-  POSTGRES_PASSWORD: secure_password
-
-stages:
-  - build
-  - test
-  - production
-
-production:
-  environment:
-    url: https://domain.com
-```
-
-In this case, the variables `POSTGRES_USER` and `POSTGRES_PASSWORD` along
-with the environment url of the `production` job defined in
-`autodevops-template.yml` have been overridden by new values defined in
-`.gitlab-ci.yml`.
-
-The merging lets you extend and override dictionary mappings, but
-you cannot add or modify items to an included array. For example, to add
-an additional item to the production job script, you must repeat the
-existing script items:
-
-Content of `https://company.com/autodevops-template.yml`:
-
-```yaml
-production:
-  stage: production
-  script:
-    - install_dependencies
-    - deploy
-```
-
-Content of `.gitlab-ci.yml`:
-
-```yaml
-include: 'https://company.com/autodevops-template.yml'
-
-stages:
-  - production
-
-production:
-  script:
-    - install_dependencies
-    - deploy
-    - notify_owner
-```
-
-In this case, if `install_dependencies` and `deploy` were not repeated in
-`.gitlab-ci.yml`, they would not be part of the script for the `production`
-job in the combined CI configuration.
-
-##### Using nested includes
-
-The examples below show how includes can be nested from different sources
-using a combination of different methods.
-
-In this example, `.gitlab-ci.yml` includes local the file `/.gitlab-ci/another-config.yml`:
-
-```yaml
-include:
-  - local: /.gitlab-ci/another-config.yml
-```
-
-The `/.gitlab-ci/another-config.yml` includes a template and the `/templates/docker-workflow.yml` file
-from another project:
-
-```yaml
-include:
-  - template: Bash.gitlab-ci.yml
-  - project: group/my-project
-    file: /templates/docker-workflow.yml
-```
-
-The `/templates/docker-workflow.yml` present in `group/my-project` includes two local files
-of the `group/my-project`:
-
-```yaml
-include:
-  - local: /templates/docker-build.yml
-  - local: /templates/docker-testing.yml
-```
-
-Our `/templates/docker-build.yml` present in `group/my-project` adds a `docker-build` job:
-
-```yaml
-docker-build:
-  script: docker build -t my-image .
-```
-
-Our second `/templates/docker-test.yml` present in `group/my-project` adds a `docker-test` job:
-
-```yaml
-docker-test:
-  script: docker run my-image /run/tests.sh
-```
-
-### `extends`
-
-> Introduced in GitLab 11.3.
-
-`extends` defines entry names that a job that uses `extends` is going to
-inherit from.
-
-It is an alternative to using [YAML anchors](#anchors) and is a little
-more flexible and readable:
-
-```yaml
-.tests:
-  script: rake test
-  stage: test
-  only:
-    refs:
-      - branches
-
-rspec:
-  extends: .tests
-  script: rake rspec
-  only:
-    variables:
-      - $RSPEC
-```
-
-In the example above, the `rspec` job inherits from the `.tests` template job.
-GitLab will perform a reverse deep merge based on the keys. GitLab will:
-
-- Merge the `rspec` contents into `.tests` recursively.
-- Not merge the values of the keys.
-
-This results in the following `rspec` job:
-
-```yaml
-rspec:
-  script: rake rspec
-  stage: test
-  only:
-    refs:
-      - branches
-    variables:
-      - $RSPEC
-```
-
-NOTE: **Note:**
-Note that `script: rake test` has been overwritten by `script: rake rspec`.
-
-If you do want to include the `rake test`, see [`before_script` and `after_script`](#before_script-and-after_script).
-
-`.tests` in this example is a [hidden key](#hidden-keys-jobs), but it's
-possible to inherit from regular jobs as well.
-
-`extends` supports multi-level inheritance, however it is not recommended to
-use more than three levels. The maximum nesting level that is supported is 10.
-The following example has two levels of inheritance:
-
-```yaml
-.tests:
-  only:
-    - pushes
-
-.rspec:
-  extends: .tests
-  script: rake rspec
-
-rspec 1:
-  variables:
-    RSPEC_SUITE: '1'
-  extends: .rspec
-
-rspec 2:
-  variables:
-    RSPEC_SUITE: '2'
-  extends: .rspec
-
-spinach:
-  extends: .tests
-  script: rake spinach
-```
-
-In GitLab 12.0 and later, it's also possible to use multiple parents for
-`extends`. The algorithm used for merge is "closest scope wins", so
-keys from the last member will always shadow anything defined on other
-levels. For example:
-
-```yaml
-.only-important:
-  only:
-    - master
-    - stable
-  tags:
-    - production
-
-.in-docker:
-  tags:
-    - docker
-  image: alpine
-
-rspec:
-  extends:
-    - .only-important
-    - .in-docker
-  script:
-    - rake rspec
-```
-
-This results in the following `rspec` job:
-
-```yaml
-rspec:
-  only:
-    - master
-    - stable
-  tags:
-    - docker
-  image: alpine
-  script:
-    - rake rspec
-```
-
-### Using `extends` and `include` together
-
-`extends` works across configuration files combined with `include`.
-
-For example, if you have a local `included.yml` file:
-
-```yaml
-.template:
-  script:
-    - echo Hello!
-```
-
-Then, in `.gitlab-ci.yml` you can use it like this:
-
-```yaml
-include: included.yml
-
-useTemplate:
-  image: alpine
-  extends: .template
-```
-
-This will run a job called `useTemplate` that runs `echo Hello!` as defined in
-the `.template` job, and uses the `alpine` Docker image as defined in the local job.
-
 ### `pages`
 
 `pages` is a special job that is used to upload static content to GitLab that
@@ -3595,7 +3608,7 @@ pages:
 
 Read more on [GitLab Pages user documentation](../../user/project/pages/index.md).
 
-### `variables`
+## `variables`
 
 > Introduced in GitLab Runner v0.5.0.
 
@@ -3632,7 +3645,7 @@ which can be set in GitLab's UI.
 
 Learn more about [variables and their priority](../variables/README.md).
 
-#### Git strategy
+### Git strategy
 
 > - Introduced in GitLab 8.9 as an experimental feature.
 > - `GIT_STRATEGY=none` requires GitLab Runner v1.7+.
@@ -3679,7 +3692,7 @@ NOTE: **Note:** `GIT_STRATEGY` is not supported for
 but may be in the future. See the [support Git strategy with Kubernetes executor feature proposal](https://gitlab.com/gitlab-org/gitlab-runner/issues/3847)
 for updates.
 
-#### Git submodule strategy
+### Git submodule strategy
 
 > Requires GitLab Runner v1.10+.
 
@@ -3717,7 +3730,7 @@ Note that for this feature to work correctly, the submodules must be configured
 - a relative path to another repository on the same GitLab server. See the
   [Git submodules](../git_submodules.md) documentation.
 
-#### Git checkout
+### Git checkout
 
 > Introduced in GitLab Runner 9.3.
 
@@ -3746,7 +3759,7 @@ script:
   - git merge $CI_COMMIT_SHA
 ```
 
-#### Git clean flags
+### Git clean flags
 
 > Introduced in GitLab Runner 11.10
 
@@ -3773,7 +3786,7 @@ script:
   - ls -al cache/
 ```
 
-#### Job stages attempts
+### Job stages attempts
 
 > Introduced in GitLab, it requires GitLab Runner v1.9+.
 
@@ -3798,7 +3811,7 @@ variables:
 
 You can set them globally or per-job in the [`variables`](#variables) section.
 
-#### Shallow cloning
+### Shallow cloning
 
 > Introduced in GitLab 8.9 as an experimental feature.
 
@@ -3833,44 +3846,7 @@ variables:
 
 You can set it globally or per-job in the [`variables`](#variables) section.
 
-## Deprecated parameters
-
-The following parameters are deprecated.
-
-### Globally-defined `types`
-
-CAUTION: **Deprecated:**
-`types` is deprecated, and could be removed in a future release.
-Use [`stages`](#stages) instead.
-
-### Job-defined `type`
-
-CAUTION: **Deprecated:**
-`type` is deprecated, and could be removed in one of the future releases.
-Use [`stage`](#stage) instead.
-
-### Globally-defined `image`, `services`, `cache`, `before_script`, `after_script`
-
-Defining `image`, `services`, `cache`, `before_script`, and
-`after_script` globally is deprecated. Support could be removed
-from a future release.
-
-Use [`default:`](#setting-default-parameters) instead. For example:
-
-```yaml
-default:
-  image: ruby:2.5
-  services:
-    - docker:dind
-  cache:
-    paths: [vendor/]
-  before_script:
-    - bundle install --path vendor/
-  after_script:
-    - rm -rf tmp/
-```
-
-## Custom build directories
+### Custom build directories
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/1267) in GitLab Runner 11.10
 
@@ -3898,7 +3874,7 @@ The `GIT_CLONE_PATH` has to always be within `$CI_BUILDS_DIR`. The directory set
 is dependent on executor and configuration of [runners.builds_dir](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section)
 setting.
 
-### Handling concurrency
+#### Handling concurrency
 
 An executor using a concurrency greater than `1` might lead
 to failures because multiple jobs might be working on the same directory if the `builds_dir`
@@ -3936,7 +3912,7 @@ test:
     - pwd
 ```
 
-### Nested paths
+#### Nested paths
 
 The value of `GIT_CLONE_PATH` is expanded once and nesting variables
 within it is not supported.
@@ -3962,39 +3938,13 @@ of `.gitlab-ci.yml`.
 
 Read more about the various [YAML features](https://learnxinyminutes.com/docs/yaml/).
 
-### Hidden keys (jobs)
-
-> Introduced in GitLab 8.6 and GitLab Runner v1.1.1.
-
-If you want to temporarily 'disable' a job, rather than commenting out all the
-lines where the job is defined:
-
-```yaml
-#hidden_job:
-#  script:
-#    - run test
-```
-
-you can instead start its name with a dot (`.`) and it will not be processed by
-GitLab CI/CD. In the following example, `.hidden_job` will be ignored:
-
-```yaml
-.hidden_job:
-  script:
-    - run test
-```
-
-Use this feature to ignore jobs, or use the
-[special YAML features](#special-yaml-features) and transform the hidden keys
-into templates.
-
 ### Anchors
 
 > Introduced in GitLab 8.6 and GitLab Runner v1.1.1.
 
 YAML has a handy feature called 'anchors', which lets you easily duplicate
 content across your document. Anchors can be used to duplicate/inherit
-properties, and is a perfect example to be used with [hidden keys](#hidden-keys-jobs)
+properties, and is a perfect example to be used with [hidden keys](#hide-jobs)
 to provide templates for your jobs.
 
 The following example uses anchors and map merging. It will create two jobs,
@@ -4183,14 +4133,39 @@ job_no_git_strategy:
   script: echo $SAMPLE_VARIABLE
 ```
 
-## Triggers
+### Hide jobs
 
-Triggers can be used to force a rebuild of a specific branch, tag or commit,
-with an API call when a pipeline gets created using a trigger token.
+> Introduced in GitLab 8.6 and GitLab Runner v1.1.1.
 
-Not to be confused with [`trigger`](#trigger).
+If you want to temporarily 'disable' a job, rather than commenting out all the
+lines where the job is defined:
 
-[Read more in the triggers documentation.](../triggers/README.md)
+```yaml
+#hidden_job:
+#  script:
+#    - run test
+```
+
+you can instead start its name with a dot (`.`) and it will not be processed by
+GitLab CI/CD. In the following example, `.hidden_job` will be ignored:
+
+```yaml
+.hidden_job:
+  script:
+    - run test
+```
+
+Use this feature to ignore jobs, or use the
+[special YAML features](#special-yaml-features) and transform the hidden keys
+into templates.
+
+## Skip Pipeline
+
+If your commit message contains `[ci skip]` or `[skip ci]`, using any
+capitalization, the commit will be created but the pipeline will be skipped.
+
+Alternatively, one can pass the `ci.skip` [Git push option](../../user/project/push_options.md#push-options-for-gitlab-cicd)
+if using Git 2.10 or newer.
 
 ## Processing Git pushes
 
@@ -4201,13 +4176,42 @@ This limitation does not affect any of the updated Merge Request pipelines,
 all updated Merge Requests will have a pipeline created when using
 [pipelines for merge requests](../merge_request_pipelines/index.md).
 
-## Skipping jobs
+## Deprecated parameters
 
-If your commit message contains `[ci skip]` or `[skip ci]`, using any
-capitalization, the commit will be created but the pipeline will be skipped.
+The following parameters are deprecated.
 
-Alternatively, one can pass the `ci.skip` [Git push option](../../user/project/push_options.md#push-options-for-gitlab-cicd)
-if using Git 2.10 or newer.
+### Globally-defined `types`
+
+CAUTION: **Deprecated:**
+`types` is deprecated, and could be removed in a future release.
+Use [`stages`](#stages) instead.
+
+### Job-defined `type`
+
+CAUTION: **Deprecated:**
+`type` is deprecated, and could be removed in one of the future releases.
+Use [`stage`](#stage) instead.
+
+### Globally-defined `image`, `services`, `cache`, `before_script`, `after_script`
+
+Defining `image`, `services`, `cache`, `before_script`, and
+`after_script` globally is deprecated. Support could be removed
+from a future release.
+
+Use [`default:`](#global-defaults) instead. For example:
+
+```yaml
+default:
+  image: ruby:2.5
+  services:
+    - docker:dind
+  cache:
+    paths: [vendor/]
+  before_script:
+    - bundle install --path vendor/
+  after_script:
+    - rm -rf tmp/
+```
 
 <!-- ## Troubleshooting
 

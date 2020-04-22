@@ -116,13 +116,14 @@ License Compliance can be configured using environment variables.
 
 | Environment variable  | Required | Description |
 |-----------------------|----------|-------------|
-| `MAVEN_CLI_OPTS`       | no | Additional arguments for the mvn executable. If not supplied, defaults to `-DskipTests`. |
+| `ADDITIONAL_CA_CERT_BUNDLE` | no | Bundle of trusted CA certificates (currently supported in Python projects). |
+| `GRADLE_CLI_OPTS` | no | Additional arguments for the gradle executable. If not supplied, defaults to `--exclude-task=test`. |
 | `LICENSE_FINDER_CLI_OPTS` | no | Additional arguments for the `license_finder` executable. For example, if your project has both Golang and Ruby code stored in different directories and you want to only scan the Ruby code, you can update your `.gitlab-ci-yml` template to specify which project directories to scan, like `LICENSE_FINDER_CLI_OPTS: '--debug --aggregate-paths=. ruby'`. |
 | `LM_JAVA_VERSION`      | no | Version of Java. If set to `11`, Maven and Gradle use Java 11 instead of Java 8. |
 | `LM_PYTHON_VERSION`    | no | Version of Python. If set to `3`, dependencies are installed using Python 3 instead of Python 2.7. |
-| `SETUP_CMD`            | no | Custom setup for the dependency installation. (experimental) |
+| `MAVEN_CLI_OPTS`       | no | Additional arguments for the mvn executable. If not supplied, defaults to `-DskipTests`. |
 | `PIP_INDEX_URL` | no | Base URL of Python Package Index (default: `https://pypi.org/simple/`). |
-| `ADDITIONAL_CA_CERT_BUNDLE` | no | Bundle of trusted CA certificates (currently supported in Python projects). |
+| `SETUP_CMD`            | no | Custom setup for the dependency installation (experimental). |
 
 ### Installing custom dependencies
 

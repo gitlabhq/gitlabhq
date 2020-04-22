@@ -180,28 +180,50 @@ For most instances we recommend using: (CPU cores * 1.5) + 1 = Unicorn workers.
 For example a node with 4 cores would have 7 Unicorn workers.
 
 For all machines that have 2GB and up we recommend a minimum of three Unicorn workers.
-If you have a 1GB machine we recommend to configure only two Unicorn workers to prevent excessive swapping.
+If you have a 1GB machine we recommend to configure only two Unicorn workers to prevent excessive
+swapping.
 
-As long as you have enough available CPU and memory capacity, it's okay to increase the number of Unicorn workers and this will usually help to reduce the response time of the applications and increase the ability to handle parallel requests.
+As long as you have enough available CPU and memory capacity, it's okay to increase the number of
+Unicorn workers and this will usually help to reduce the response time of the applications and
+increase the ability to handle parallel requests.
 
-To change the Unicorn workers when you have the Omnibus package (which defaults to the recommendation above) please see [the Unicorn settings in the Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/settings/unicorn.html).
+To change the Unicorn workers when you have the Omnibus package (which defaults to the
+recommendation above) please see [the Unicorn settings in the Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/settings/unicorn.html).
 
-## Puma Workers
+## Puma settings
 
-For most instances we recommend using: max(CPU cores * 0.9, 2) = Puma workers.
-For example a node with 4 cores would have 3 Puma workers.
+The recommended settings for Puma are determined by the infrastructure on which it's running.
+Omnibus GitLab defaults to the recommended Puma settings. Regardless of installation method, you can
+tune the Puma settings.
 
-For all machines that have 4GB and up we recommend a minimum of three Puma workers.
-If you have a 2GB machine we recommend to configure only one Puma worker to prevent excessive swapping.
+If you're using Omnibus GitLab, see [Puma settings](https://docs.gitlab.com/omnibus/settings/puma.html)
+for instructions on changing the Puma settings.
 
-By default each Puma worker runs with 4 threads. We do not recommend setting more,
-due to how [Ruby MRI multi-threading](https://en.wikipedia.org/wiki/Global_interpreter_lock) works.
+### Puma workers
 
-For cases when you have to use [Legacy Rugged code](../development/gitaly.md#legacy-rugged-code) it is recommended to set number of threads to 1.
+The recommended number of workers is calculated as the highest of the following:
 
-As long as you have enough available CPU and memory capacity, it's okay to increase the number of Puma workers and this will usually help to reduce the response time of the applications and increase the ability to handle parallel requests.
+- `2`
+- Number of CPU cores - 1
 
-To change the Puma workers when you have the Omnibus package (which defaults to the recommendation above) please see [the Puma settings in the Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/settings/puma.html).
+For example a node with 4 cores should be configured with 3 Puma workers.
+
+You can increase the number of Puma workers, providing enough CPU and memory capacity is available.
+A higher number of Puma workers will usually help to reduce the response time of the application
+and increase the ability to handle parallel requests. You must perform testing to verify the
+optimal settings for your infrastructure.
+
+### Puma threads
+
+The recommended number of threads is dependent on several factors, including total memory, and use
+of [legacy Rugged code](../development/gitaly.md#legacy-rugged-code).
+
+- If the operating system has a maximum 2 GB of memory, the recommended number of threads is `1`.
+  A higher value will result in excess swapping, and decrease performance.
+- If legacy Rugged code is in use, the recommended number of threads is `1`.
+- In all other cases, the recommended number of threads is `4`. We do not recommend setting this
+higher, due to how [Ruby MRI multi-threading](https://en.wikipedia.org/wiki/Global_interpreter_lock)
+works.
 
 ## Redis and Sidekiq
 

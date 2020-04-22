@@ -130,6 +130,11 @@ spec:
 
 The annotations will be applied to the deployments, replica sets, and pods. By changing the number of replicas, like `kubectl scale --replicas=3 deploy APPLICATION_NAME -n ${KUBE_NAMESPACE}`, you can follow the instances' pods from the board.
 
+NOTE: **Note:**
+The YAML file is static. If you apply it using `kubectl apply`, you must
+manually provide the project and environment slugs, or create a script to
+replace the variables in the YAML before applying.
+
 ## Canary Deployments
 
 A popular CI strategy, where a small portion of the fleet is updated to the new

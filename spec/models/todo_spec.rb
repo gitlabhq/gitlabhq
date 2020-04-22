@@ -389,5 +389,17 @@ describe Todo do
 
       expect(described_class.update_state(:pending)).to be_empty
     end
+
+    it 'updates updated_at' do
+      create(:todo, :pending)
+
+      Timecop.freeze(1.day.from_now) do
+        expected_update_date = Time.now.utc
+
+        ids = described_class.update_state(:done)
+
+        expect(Todo.where(id: ids).map(&:updated_at)).to all(be_like_time(expected_update_date))
+      end
+    end
   end
 end

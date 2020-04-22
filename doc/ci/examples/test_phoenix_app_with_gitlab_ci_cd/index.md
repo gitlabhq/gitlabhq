@@ -375,7 +375,7 @@ see if our latest code is running without errors.
 When we finish this edition, GitLab will start another build and show a **build running** badge. It
 is expected, after all we just configured GitLab CI/CD to do this for every push! But you may think
 "Why run build and tests for simple things like editing README.md?" and it is a good question.
-For changes that don't affect your application, you can add the keyword [`[ci skip]`](../../yaml/README.md#skipping-jobs)
+For changes that don't affect your application, you can add the keyword [`[ci skip]`](../../yaml/README.md#skip-pipeline)
 to commit message and the build related to that commit will be skipped.
 
 In the end, we finally got our pretty green build succeeded badge! By outputting the result on the

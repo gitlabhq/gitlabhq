@@ -14,6 +14,12 @@ Most Rails applications requests normally include a proportion of I/O wait time.
 During I/O wait time MRI Ruby will release the GVL (Global VM Lock) to other threads.
 Multi-threaded Puma can therefore still serve more requests than a single process.
 
+## Configuring Puma to replace Unicorn
+
+If you are currently running Unicorn and would like to switch to Puma, server configuration
+will _not_ carry over automatically. For details on matching Unicorn configuration settings with
+the Puma equivalent, where applicable, see [Converting Unicorn settings to Puma](https://docs.gitlab.com/omnibus/settings/puma.html#converting-unicorn-settings-to-puma).
+
 ## Performance caveat when using Puma with Rugged
 
 For deployments where NFS is used to store Git repository, we allow GitLab to use

@@ -110,7 +110,7 @@ class Todo < ApplicationRecord
       base = where.not(state: new_state).except(:order)
       ids = base.pluck(:id)
 
-      base.update_all(state: new_state)
+      base.update_all(state: new_state, updated_at: Time.now)
 
       ids
     end
