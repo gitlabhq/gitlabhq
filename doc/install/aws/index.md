@@ -533,6 +533,22 @@ Since we're adding our SSL certificate at the load balancer, we do not need GitL
    sudo gitlab-ctl reconfigure
    ```
 
+#### Fast lookup of authorized SSH keys
+
+The public SSH keys for users allowed to access GitLab are stored in `/var/opt/gitlab/.ssh/authorized_keys`. Typically we'd use shared storage so that all the instances are able to access this file when a user performs a Git action over SSH. Since we do not have shared storage in our setup, we'll update our configuration to authorize SSH users via indexed lookup in the GitLab database.
+
+Follow the instructions at [Setting up fast lookup via GitLab Shell](../../administration/operations/fast_ssh_key_lookup.md#setting-up-fast-lookup-via-gitlab-shell) to switch from using the `authorized_keys` file to the database.
+
+If you do not configure fast lookup, Git actions over SSH will result in the following error:
+
+```shell
+Permission denied (publickey).
+fatal: Could not read from remote repository.
+
+Please make sure you have the correct access rights
+and the repository exists.
+```
+
 #### Configure host keys
 
 Ordinarily we would manually copy the contents (primary and public keys) of `/etc/ssh/` on the primary application server to `/etc/ssh` on all secondary servers. This prevents false man-in-the-middle-attack alerts when accessing servers in your High Availability cluster behind a load balancer.

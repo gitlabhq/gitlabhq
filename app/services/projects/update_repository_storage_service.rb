@@ -18,7 +18,7 @@ module Projects
 
       mark_old_paths_for_archive
 
-      project.update(repository_storage: new_repository_storage_key, repository_read_only: false)
+      project.update!(repository_storage: new_repository_storage_key, repository_read_only: false)
       project.leave_pool_repository
       project.track_project_repository
 
@@ -26,8 +26,8 @@ module Projects
 
       success
 
-    rescue Error, ArgumentError, Gitlab::Git::BaseError => e
-      project.update(repository_read_only: false)
+    rescue StandardError => e
+      project.update!(repository_read_only: false)
 
       Gitlab::ErrorTracking.track_exception(e, project_path: project.full_path)
 

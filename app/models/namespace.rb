@@ -346,6 +346,21 @@ class Namespace < ApplicationRecord
       .try(name)
   end
 
+  def actual_plan
+    Plan.default
+  end
+
+  def actual_limits
+    # We default to PlanLimits.new otherwise a lot of specs would fail
+    # On production each plan should already have associated limits record
+    # https://gitlab.com/gitlab-org/gitlab/issues/36037
+    actual_plan.limits || PlanLimits.new
+  end
+
+  def actual_plan_name
+    actual_plan.name
+  end
+
   private
 
   def all_projects_with_pages

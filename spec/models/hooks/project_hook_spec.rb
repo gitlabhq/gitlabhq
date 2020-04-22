@@ -11,6 +11,10 @@ describe ProjectHook do
     it { is_expected.to validate_presence_of(:project) }
   end
 
+  it_behaves_like 'includes Limitable concern' do
+    subject { build(:project_hook, project: create(:project)) }
+  end
+
   describe '.push_hooks' do
     it 'returns hooks for push events only' do
       hook = create(:project_hook, push_events: true)

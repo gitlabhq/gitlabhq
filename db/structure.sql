@@ -9872,7 +9872,7 @@ CREATE INDEX index_personal_access_tokens_on_user_id ON public.personal_access_t
 
 CREATE UNIQUE INDEX index_plan_limits_on_plan_id ON public.plan_limits USING btree (plan_id);
 
-CREATE INDEX index_plans_on_name ON public.plans USING btree (name);
+CREATE UNIQUE INDEX index_plans_on_name ON public.plans USING btree (name);
 
 CREATE UNIQUE INDEX index_pool_repositories_on_disk_path ON public.pool_repositories USING btree (disk_path);
 
@@ -10159,6 +10159,8 @@ CREATE INDEX index_resource_milestone_events_on_merge_request_id ON public.resou
 CREATE INDEX index_resource_milestone_events_on_milestone_id ON public.resource_milestone_events USING btree (milestone_id);
 
 CREATE INDEX index_resource_milestone_events_on_user_id ON public.resource_milestone_events USING btree (user_id);
+
+CREATE INDEX index_resource_weight_events_on_issue_id_and_created_at ON public.resource_weight_events USING btree (issue_id, created_at);
 
 CREATE INDEX index_resource_weight_events_on_issue_id_and_weight ON public.resource_weight_events USING btree (issue_id, weight);
 
@@ -13232,6 +13234,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200406102111
 20200406102120
 20200406135648
+20200406141452
 20200406192059
 20200406193427
 20200407094005
@@ -13262,6 +13265,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200413072059
 20200413230056
 20200414144547
+20200415153154
 20200415160722
 20200415161021
 20200415161206

@@ -17,7 +17,7 @@ module QA
         end
       end
 
-      context 'when using attachments in comments', :object_storage, quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/issues/205408', type: :bug } do
+      context 'when using attachments in comments', :object_storage do
         let(:gif_file_name) { 'banana_sample.gif' }
         let(:file_to_attach) do
           File.absolute_path(File.join('spec', 'fixtures', gif_file_name))

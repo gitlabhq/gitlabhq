@@ -12,6 +12,7 @@ describe Projects::UpdateRepositoryStorageService do
 
     before do
       allow(Time).to receive(:now).and_return(time)
+      allow(Gitlab.config.repositories.storages).to receive(:keys).and_return(%w[default test_second_storage])
     end
 
     context 'without wiki and design repository' do

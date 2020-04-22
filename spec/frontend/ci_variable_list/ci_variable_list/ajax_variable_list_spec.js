@@ -35,8 +35,8 @@ describe('AjaxFormVariableList', () => {
       maskableRegex: container.dataset.maskableRegex,
     });
 
-    spyOn(ajaxVariableList, 'updateRowsWithPersistedVariables').and.callThrough();
-    spyOn(ajaxVariableList.variableList, 'toggleEnableRow').and.callThrough();
+    jest.spyOn(ajaxVariableList, 'updateRowsWithPersistedVariables');
+    jest.spyOn(ajaxVariableList.variableList, 'toggleEnableRow');
   });
 
   afterEach(() => {
@@ -44,7 +44,7 @@ describe('AjaxFormVariableList', () => {
   });
 
   describe('onSaveClicked', () => {
-    it('shows loading spinner while waiting for the request', done => {
+    it('shows loading spinner while waiting for the request', () => {
       const loadingIcon = saveButton.querySelector('.js-ci-variables-save-loading-icon');
 
       mock.onPatch(VARIABLE_PATCH_ENDPOINT).reply(() => {
@@ -55,63 +55,47 @@ describe('AjaxFormVariableList', () => {
 
       expect(loadingIcon.classList.contains(HIDE_CLASS)).toEqual(true);
 
-      ajaxVariableList
-        .onSaveClicked()
-        .then(() => {
-          expect(loadingIcon.classList.contains(HIDE_CLASS)).toEqual(true);
-        })
-        .then(done)
-        .catch(done.fail);
+      return ajaxVariableList.onSaveClicked().then(() => {
+        expect(loadingIcon.classList.contains(HIDE_CLASS)).toEqual(true);
+      });
     });
 
-    it('calls `updateRowsWithPersistedVariables` with the persisted variables', done => {
+    it('calls `updateRowsWithPersistedVariables` with the persisted variables', () => {
       const variablesResponse = [{ id: 1, key: 'foo', value: 'bar' }];
       mock.onPatch(VARIABLE_PATCH_ENDPOINT).reply(200, {
         variables: variablesResponse,
       });
 
-      ajaxVariableList
-        .onSaveClicked()
-        .then(() => {
-          expect(ajaxVariableList.updateRowsWithPersistedVariables).toHaveBeenCalledWith(
-            variablesResponse,
-          );
-        })
-        .then(done)
-        .catch(done.fail);
+      return ajaxVariableList.onSaveClicked().then(() => {
+        expect(ajaxVariableList.updateRowsWithPersistedVariables).toHaveBeenCalledWith(
+          variablesResponse,
+        );
+      });
     });
 
-    it('hides any previous error box', done => {
+    it('hides any previous error box', () => {
       mock.onPatch(VARIABLE_PATCH_ENDPOINT).reply(200);
 
       expect(errorBox.classList.contains(HIDE_CLASS)).toEqual(true);
 
-      ajaxVariableList
-        .onSaveClicked()
-        .then(() => {
-          expect(errorBox.classList.contains(HIDE_CLASS)).toEqual(true);
-        })
-        .then(done)
-        .catch(done.fail);
+      return ajaxVariableList.onSaveClicked().then(() => {
+        expect(errorBox.classList.contains(HIDE_CLASS)).toEqual(true);
+      });
     });
 
-    it('disables remove buttons while waiting for the request', done => {
+    it('disables remove buttons while waiting for the request', () => {
       mock.onPatch(VARIABLE_PATCH_ENDPOINT).reply(() => {
         expect(ajaxVariableList.variableList.toggleEnableRow).toHaveBeenCalledWith(false);
 
         return [200, {}];
       });
 
-      ajaxVariableList
-        .onSaveClicked()
-        .then(() => {
-          expect(ajaxVariableList.variableList.toggleEnableRow).toHaveBeenCalledWith(true);
-        })
-        .then(done)
-        .catch(done.fail);
+      return ajaxVariableList.onSaveClicked().then(() => {
+        expect(ajaxVariableList.variableList.toggleEnableRow).toHaveBeenCalledWith(true);
+      });
     });
 
-    it('hides secret values', done => {
+    it('hides secret values', () => {
       mock.onPatch(VARIABLE_PATCH_ENDPOINT).reply(200, {});
 
       const row = container.querySelector('.js-row');
@@ -124,46 +108,34 @@ describe('AjaxFormVariableList', () => {
       expect(valuePlaceholder.classList.contains(HIDE_CLASS)).toBe(true);
       expect(valueInput.classList.contains(HIDE_CLASS)).toBe(false);
 
-      ajaxVariableList
-        .onSaveClicked()
-        .then(() => {
-          expect(valuePlaceholder.classList.contains(HIDE_CLASS)).toBe(false);
-          expect(valueInput.classList.contains(HIDE_CLASS)).toBe(true);
-        })
-        .then(done)
-        .catch(done.fail);
+      return ajaxVariableList.onSaveClicked().then(() => {
+        expect(valuePlaceholder.classList.contains(HIDE_CLASS)).toBe(false);
+        expect(valueInput.classList.contains(HIDE_CLASS)).toBe(true);
+      });
     });
 
-    it('shows error box with validation errors', done => {
+    it('shows error box with validation errors', () => {
       const validationError = 'some validation error';
       mock.onPatch(VARIABLE_PATCH_ENDPOINT).reply(400, [validationError]);
 
       expect(errorBox.classList.contains(HIDE_CLASS)).toEqual(true);
 
-      ajaxVariableList
-        .onSaveClicked()
-        .then(() => {
-          expect(errorBox.classList.contains(HIDE_CLASS)).toEqual(false);
-          expect(errorBox.textContent.trim().replace(/\n+\s+/m, ' ')).toEqual(
-            `Validation failed ${validationError}`,
-          );
-        })
-        .then(done)
-        .catch(done.fail);
+      return ajaxVariableList.onSaveClicked().then(() => {
+        expect(errorBox.classList.contains(HIDE_CLASS)).toEqual(false);
+        expect(errorBox.textContent.trim().replace(/\n+\s+/m, ' ')).toEqual(
+          `Validation failed ${validationError}`,
+        );
+      });
     });
 
-    it('shows flash message when request fails', done => {
+    it('shows flash message when request fails', () => {
       mock.onPatch(VARIABLE_PATCH_ENDPOINT).reply(500);
 
       expect(errorBox.classList.contains(HIDE_CLASS)).toEqual(true);
 
-      ajaxVariableList
-        .onSaveClicked()
-        .then(() => {
-          expect(errorBox.classList.contains(HIDE_CLASS)).toEqual(true);
-        })
-        .then(done)
-        .catch(done.fail);
+      return ajaxVariableList.onSaveClicked().then(() => {
+        expect(errorBox.classList.contains(HIDE_CLASS)).toEqual(true);
+      });
     });
   });
 

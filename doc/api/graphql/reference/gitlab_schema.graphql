@@ -341,6 +341,11 @@ type BoardList {
   label: Label
 
   """
+  The current limit metric for the list
+  """
+  limitMetric: ListLimitMetric
+
+  """
   Type of the list
   """
   listType: String!
@@ -4617,6 +4622,15 @@ type LabelEdge {
   The item at the end of the edge.
   """
   node: Label
+}
+
+"""
+List limit metric setting
+"""
+enum ListLimitMetric {
+  all_metrics
+  issue_count
+  issue_weights
 }
 
 """

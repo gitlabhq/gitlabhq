@@ -1,0 +1,5 @@
+---
+title: Add index to issue_id and created_at of resource_weight_events
+merge_request: 28930
+author:
+type: other

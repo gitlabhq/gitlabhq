@@ -1037,6 +1037,20 @@
               "deprecationReason": null
             },
             {
+              "name": "limitMetric",
+              "description": "The current limit metric for the list",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "ENUM",
+                "name": "ListLimitMetric",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "listType",
               "description": "Type of the list",
               "args": [
@@ -13169,6 +13183,35 @@
 
           ],
           "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "ListLimitMetric",
+          "description": "List limit metric setting",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "all_metrics",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "issue_count",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "issue_weights",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
           "possibleTypes": null
         },
         {

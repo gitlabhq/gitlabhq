@@ -27,23 +27,23 @@ describe 'get board lists' do
       board_parent_type,
       { 'fullPath' => board_parent.full_path },
       <<~BOARDS
-      boards(first: 1) {
-        edges {
-          node {
-            #{field_with_params('lists', list_params)} {
-              pageInfo {
-                startCursor
-                endCursor
-              }
-              edges {
-                node {
-                  #{all_graphql_fields_for('board_lists'.classify)}
+        boards(first: 1) {
+          edges {
+            node {
+              #{field_with_params('lists', list_params)} {
+                pageInfo {
+                  startCursor
+                  endCursor
+                }
+                edges {
+                  node {
+                    #{all_graphql_fields_for('board_lists'.classify)}
+                  }
                 }
               }
             }
           }
         }
-      }
     BOARDS
     )
   end

@@ -29,7 +29,7 @@ When applicable:
 - [ ] Link docs to and from the higher-level index page, plus other related docs where helpful.
 - [ ] Add [GitLab's version history note(s)](https://docs.gitlab.com/ee/development/documentation/styleguide.html#text-for-documentation-requiring-version-text).
 - [ ] Add the [product tier badge](https://docs.gitlab.com/ee/development/documentation/styleguide.html#product-badges).
-- [ ] Add/update the [feature flag section](https://docs.gitlab.com/ee/development/documentation/styleguide.html#feature-flags).
+- [ ] Add/update the [feature flag section](https://docs.gitlab.com/ee/development/documentation/feature_flags.html).
 - [ ] If you're changing document headings, search `doc/*`, `app/views/*`, and `ee/app/views/*` for old headings replacing with the new ones to [avoid broken anchors](https://docs.gitlab.com/ee/development/documentation/styleguide.html#anchor-links).
 
 ## Review checklist

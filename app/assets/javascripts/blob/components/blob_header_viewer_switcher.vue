@@ -45,7 +45,7 @@ export default {
 };
 </script>
 <template>
-  <gl-button-group class="js-blob-viewer-switcher ml-2">
+  <gl-button-group class="js-blob-viewer-switcher mx-2">
     <gl-deprecated-button
       v-gl-tooltip.hover
       :aria-label="$options.SIMPLE_BLOB_VIEWER_TITLE"

@@ -13,8 +13,9 @@ MARKDOWN
 CATEGORY_TABLE_HEADER = <<MARKDOWN
 
 To spread load more evenly across eligible reviewers, Danger has randomly picked
-a candidate for each review slot. Feel free to override this selection if you
-think someone else would be better-suited, or the chosen person is unavailable.
+a candidate for each review slot. Feel free to
+[override these selections](https://about.gitlab.com/handbook/engineering/projects/#gitlab)
+if you think someone else would be better-suited, or the chosen person is unavailable.
 
 To read more on how to use the reviewer roulette, please take a look at the
 [Engineering workflow](https://about.gitlab.com/handbook/engineering/workflow/#basics)

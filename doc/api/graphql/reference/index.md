@@ -89,6 +89,7 @@ Represents a list for an issue board
 | `collapsed` | Boolean | Indicates if list is collapsed for this user |
 | `id` | ID! | ID (global ID) of the list |
 | `label` | Label | Label of the list |
+| `limitMetric` | ListLimitMetric | The current limit metric for the list |
 | `listType` | String! | Type of the list |
 | `maxIssueCount` | Int | Maximum number of issues in the list |
 | `maxIssueWeight` | Int | Maximum weight of issues in the list |

@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import getSetTimeoutPromise from 'spec/helpers/set_timeout_promise_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import VariableList from '~/ci_variable_list/ci_variable_list';
 
 const HIDE_CLASS = 'hide';
@@ -127,86 +127,74 @@ describe('VariableList', () => {
       variableList.init();
     });
 
-    it('should not add another row when editing the last rows protected checkbox', done => {
+    it('should not add another row when editing the last rows protected checkbox', () => {
       const $row = $wrapper.find('.js-row:last-child');
       $row.find('.ci-variable-protected-item .js-project-feature-toggle').click();
 
-      getSetTimeoutPromise()
-        .then(() => {
-          expect($wrapper.find('.js-row').length).toBe(1);
-        })
-        .then(done)
-        .catch(done.fail);
+      return waitForPromises().then(() => {
+        expect($wrapper.find('.js-row').length).toBe(1);
+      });
     });
 
-    it('should not add another row when editing the last rows masked checkbox', done => {
+    it('should not add another row when editing the last rows masked checkbox', () => {
+      jest.spyOn(variableList, 'checkIfRowTouched');
       const $row = $wrapper.find('.js-row:last-child');
       $row.find('.ci-variable-masked-item .js-project-feature-toggle').click();
 
-      getSetTimeoutPromise()
-        .then(() => {
-          expect($wrapper.find('.js-row').length).toBe(1);
-        })
-        .then(done)
-        .catch(done.fail);
+      return waitForPromises().then(() => {
+        // This validates that we are checking after the event listener has run
+        expect(variableList.checkIfRowTouched).toHaveBeenCalled();
+        expect($wrapper.find('.js-row').length).toBe(1);
+      });
     });
 
     describe('validateMaskability', () => {
       let $row;
 
       const maskingErrorElement = '.js-row:last-child .masking-validation-error';
+      const clickToggle = () =>
+        $row.find('.ci-variable-masked-item .js-project-feature-toggle').click();
 
       beforeEach(() => {
         $row = $wrapper.find('.js-row:last-child');
-        $row.find('.ci-variable-masked-item .js-project-feature-toggle').click();
       });
 
       it('has a regex provided via a data attribute', () => {
+        clickToggle();
+
         expect($wrapper.attr('data-maskable-regex')).toBe('^[a-zA-Z0-9_+=/@:.-]{8,}$');
       });
 
-      it('allows values that are 8 characters long', done => {
+      it('allows values that are 8 characters long', () => {
         $row.find('.js-ci-variable-input-value').val('looooong');
 
-        getSetTimeoutPromise()
-          .then(() => {
-            expect($wrapper.find(maskingErrorElement)).toHaveClass('hide');
-          })
-          .then(done)
-          .catch(done.fail);
+        clickToggle();
+
+        expect($wrapper.find(maskingErrorElement)).toHaveClass('hide');
       });
 
-      it('rejects values that are shorter than 8 characters', done => {
+      it('rejects values that are shorter than 8 characters', () => {
         $row.find('.js-ci-variable-input-value').val('short');
 
-        getSetTimeoutPromise()
-          .then(() => {
-            expect($wrapper.find(maskingErrorElement)).toBeVisible();
-          })
-          .then(done)
-          .catch(done.fail);
+        clickToggle();
+
+        expect($wrapper.find(maskingErrorElement)).toBeVisible();
       });
 
-      it('allows values with base 64 characters', done => {
+      it('allows values with base 64 characters', () => {
         $row.find('.js-ci-variable-input-value').val('abcABC123_+=/-');
 
-        getSetTimeoutPromise()
-          .then(() => {
-            expect($wrapper.find(maskingErrorElement)).toHaveClass('hide');
-          })
-          .then(done)
-          .catch(done.fail);
+        clickToggle();
+
+        expect($wrapper.find(maskingErrorElement)).toHaveClass('hide');
       });
 
-      it('rejects values with other special characters', done => {
+      it('rejects values with other special characters', () => {
         $row.find('.js-ci-variable-input-value').val('1234567$');
 
-        getSetTimeoutPromise()
-          .then(() => {
-            expect($wrapper.find(maskingErrorElement)).toBeVisible();
-          })
-          .then(done)
-          .catch(done.fail);
+        clickToggle();
+
+        expect($wrapper.find(maskingErrorElement)).toBeVisible();
       });
     });
   });
