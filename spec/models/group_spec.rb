@@ -25,6 +25,11 @@ describe Group do
     it { is_expected.to have_many(:clusters).class_name('Clusters::Cluster') }
     it { is_expected.to have_many(:container_repositories) }
 
+    it_behaves_like 'model with wiki' do
+      let(:container) { create(:group, :nested, :wiki_repo) }
+      let(:container_without_wiki) { create(:group, :nested) }
+    end
+
     describe '#members & #requesters' do
       let(:requester) { create(:user) }
       let(:developer) { create(:user) }

@@ -1,5 +1,8 @@
 # Troubleshooting Elasticsearch
 
+To install and configure Elasticsearch, and for common and known issues,
+visit the [administrator documentation](../../integration/elasticsearch.md).
+
 Troubleshooting Elasticsearch requires:
 
 - Knowledge of common terms.

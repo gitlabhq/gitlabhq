@@ -142,7 +142,7 @@ data](https://gitlab.com/gitlab-org/gitlab/blob/19f74903240e209736c7668132e6a5a7
 for `Todo` _targets_ when returned in the Todos API.
 
 For more context and discussion about preloading see
-[this merge request](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/25711)
+[this merge request](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/25711)
 which introduced the scope.
 
 ### Verifying with tests

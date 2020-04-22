@@ -26,7 +26,7 @@ Improper permission handling can have significant impacts on the security of an 
 Some situations may reveal [sensitive data](https://gitlab.com/gitlab-com/gl-infra/production/issues/477) or allow a malicious actor to perform [harmful actions](https://gitlab.com/gitlab-org/gitlab/issues/8180).
 The overall impact depends heavily on what resources can be accessed or modified improperly.
 
-A common vulnerability when permission checks are missing is called [IDOR](https://www.owasp.org/index.php/Testing_for_Insecure_Direct_Object_References_(OTG-AUTHZ-004)) for Insecure Direct Object References.
+A common vulnerability when permission checks are missing is called [IDOR](https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/05-Authorization_Testing/04-Testing_for_Insecure_Direct_Object_References) for Insecure Direct Object References.
 
 ### When to Consider
 
@@ -49,8 +49,8 @@ Be careful to **also test [visibility levels](https://gitlab.com/gitlab-org/gitl
 Some example of well implemented access controls and tests:
 
 1. [example1](https://dev.gitlab.org/gitlab/gitlab-ee/merge_requests/710/diffs?diff_id=13750#af40ef0eaae3c1e018809e1d88086e32bccaca40_43_43)
-1. [example2](https://dev.gitlab.org/gitlab/gitlabhq/merge_requests/2511/diffs#ed3aaab1510f43b032ce345909a887e5b167e196_142_155)
-1. [example3](https://dev.gitlab.org/gitlab/gitlabhq/merge_requests/3170/diffs?diff_id=17494)
+1. [example2](https://dev.gitlab.org/gitlab/gitlabhq/-/merge_requests/2511/diffs#ed3aaab1510f43b032ce345909a887e5b167e196_142_155)
+1. [example3](https://dev.gitlab.org/gitlab/gitlabhq/-/merge_requests/3170/diffs?diff_id=17494)
 
 **NB:** any input from development team is welcome, e.g. about rubocop rules.
 
@@ -209,7 +209,7 @@ In some cases, it has been possible to configure GitLab::HTTP as the HTTP
 connection library for 3rd-party gems. This is preferrable over re-implementing
 the mitigations for a new feature.
 
-- [More details](https://dev.gitlab.org/gitlab/gitlabhq/merge_requests/2530/diffs)
+- [More details](https://dev.gitlab.org/gitlab/gitlabhq/-/merge_requests/2530/diffs)
 
 #### Feature-specific Mitigations
 
@@ -279,7 +279,7 @@ For any and all input fields, ensure to define expectations on the type/format o
   - Validate the input using a [whitelist approach](https://youtu.be/2VFavqfDS6w?t=7816) to only allow characters through which you are expecting to receive for the field.
     - Input which fails validation should be **rejected**, and not sanitized.
 
-Note that blacklists should be avoided, as it is near impossible to block all [variations of XSS](https://www.owasp.org/index.php/XSS_Filter_Evasion_Cheat_Sheet).
+Note that blacklists should be avoided, as it is near impossible to block all [variations of XSS](https://owasp.org/www-community/xss-filter-evasion-cheatsheet).
 
 #### Output encoding
 

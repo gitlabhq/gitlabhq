@@ -34,10 +34,21 @@ export default {
       required: false,
       default: '',
     },
+    defaultAwards: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   computed: {
+    groupedDefaultAwards() {
+      return this.defaultAwards.reduce((obj, key) => Object.assign(obj, { [key]: [] }), {});
+    },
     groupedAwards() {
-      const { thumbsup, thumbsdown, ...rest } = groupBy(this.awards, x => x.name);
+      const { thumbsup, thumbsdown, ...rest } = {
+        ...this.groupedDefaultAwards,
+        ...groupBy(this.awards, x => x.name),
+      };
 
       return [
         ...(thumbsup ? [this.createAwardList('thumbsup', thumbsup)] : []),
@@ -73,6 +84,10 @@ export default {
       };
     },
     getAwardListTitle(awardsList) {
+      if (!awardsList.length) {
+        return '';
+      }
+
       const hasReactionByCurrentUser = this.hasReactionByCurrentUser(awardsList);
       const TOOLTIP_NAME_COUNT = hasReactionByCurrentUser ? 9 : 10;
       let awardList = awardsList;

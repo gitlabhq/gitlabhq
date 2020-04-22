@@ -12,7 +12,7 @@ which is exposed as an API endpoint at `/api/graphql`.
 
 ## Deep Dive
 
-In March 2019, Nick Thomas hosted a [Deep Dive](https://gitlab.com/gitlab-org/create-stage/issues/1)
+In March 2019, Nick Thomas hosted a Deep Dive (GitLab team members only: `https://gitlab.com/gitlab-org/create-stage/issues/1`)
 on GitLab's [GraphQL API](../api/graphql/index.md) to share his domain specific knowledge
 with anyone who may work in this part of the code base in the future. You can find the
 [recording on YouTube](https://www.youtube.com/watch?v=-9L_1MWrjkg), and the slides on
@@ -102,7 +102,7 @@ be `id` fields.
 Further reading:
 
 - [GraphQL Best Practices Guide](https://graphql.org/learn/best-practices/#nullability)
-- [Using nullability in GraphQL](https://blog.apollographql.com/using-nullability-in-graphql-2254f84c4ed7)
+- [Using nullability in GraphQL](https://www.apollographql.com/blog/using-nullability-in-graphql-2254f84c4ed7)
 
 ### Exposing Global IDs
 

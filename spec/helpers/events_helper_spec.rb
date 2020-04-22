@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 describe EventsHelper do
+  include Gitlab::Routing
+
   describe '#event_commit_title' do
     let(:message) { 'foo & bar ' + 'A' * 70 + '\n' + 'B' * 80 }
 

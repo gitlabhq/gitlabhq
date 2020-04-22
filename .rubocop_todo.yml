@@ -475,7 +475,6 @@ Style/MixinUsage:
 Style/MultilineIfModifier:
   Exclude:
     - 'app/helpers/snippets_helper.rb'
-    - 'app/models/project_wiki.rb'
     - 'app/services/ci/process_pipeline_service.rb'
     - 'lib/api/commit_statuses.rb'
 

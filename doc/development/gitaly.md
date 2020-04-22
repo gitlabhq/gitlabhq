@@ -5,7 +5,7 @@ Workhorse and GitLab-Shell.
 
 ## Deep Dive
 
-In May 2019, Bob Van Landuyt hosted a [Deep Dive](https://gitlab.com/gitlab-org/create-stage/issues/1)
+In May 2019, Bob Van Landuyt hosted a Deep Dive (GitLab team members only: `https://gitlab.com/gitlab-org/create-stage/issues/1`)
 on GitLab's [Gitaly project](https://gitlab.com/gitlab-org/gitaly) and how to contribute to it as a
 Ruby developer, to share his domain specific knowledge with anyone who may work in this part of the
 code base in the future.

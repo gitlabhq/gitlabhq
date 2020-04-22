@@ -8,7 +8,7 @@ Currently we rely on different sources to present diffs, these include:
 
 ## Deep Dive
 
-In January 2019, Oswaldo Ferreira hosted a [Deep Dive](https://gitlab.com/gitlab-org/create-stage/issues/1) on GitLab's Diffs and Commenting on Diffs functionality to share his domain specific knowledge with anyone who may work in this part of the code base in the future. You can find the [recording on YouTube](https://www.youtube.com/watch?v=K6G3gMcFyek), and the slides on [Google Slides](https://docs.google.com/presentation/d/1bGutFH2AT3bxOPZuLMGl1ANWHqFnrxwQwjiwAZkF-TU/edit) and in [PDF](https://gitlab.com/gitlab-org/create-stage/uploads/b5ad2f336e0afcfe0f99db0af0ccc71a/). Everything covered in this deep dive was accurate as of GitLab 11.7, and while specific details may have changed since then, it should still serve as a good introduction.
+In January 2019, Oswaldo Ferreira hosted a Deep Dive (GitLab team members only: `https://gitlab.com/gitlab-org/create-stage/issues/1`) on GitLab's Diffs and Commenting on Diffs functionality to share his domain specific knowledge with anyone who may work in this part of the code base in the future. You can find the [recording on YouTube](https://www.youtube.com/watch?v=K6G3gMcFyek), and the slides on [Google Slides](https://docs.google.com/presentation/d/1bGutFH2AT3bxOPZuLMGl1ANWHqFnrxwQwjiwAZkF-TU/edit) and in [PDF](https://gitlab.com/gitlab-org/create-stage/uploads/b5ad2f336e0afcfe0f99db0af0ccc71a/). Everything covered in this deep dive was accurate as of GitLab 11.7, and while specific details may have changed since then, it should still serve as a good introduction.
 
 ## Architecture overview
 

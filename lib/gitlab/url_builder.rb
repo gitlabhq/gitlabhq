@@ -34,8 +34,8 @@ module Gitlab
           snippet_url(object, **options)
         when User
           instance.user_url(object, **options)
-        when ProjectWiki
-          instance.project_wiki_url(object.project, :home, **options)
+        when Wiki
+          wiki_url(object, **options)
         when WikiPage
           instance.project_wiki_url(object.wiki.project, object.slug, **options)
         else
@@ -68,6 +68,19 @@ module Gitlab
           instance.gitlab_raw_snippet_url(snippet, **options)
         else
           instance.gitlab_snippet_url(snippet, **options)
+        end
+      end
+
+      def wiki_url(object, **options)
+        case object.container
+        when Project
+          instance.project_wiki_url(object.container, Wiki::HOMEPAGE, **options)
+        when Group
+          # TODO: Use the new route for group wikis once we add it.
+          # https://gitlab.com/gitlab-org/gitlab/-/issues/211360
+          instance.group_canonical_url(object.container, **options) + "/-/wikis/#{Wiki::HOMEPAGE}"
+        else
+          raise NotImplementedError.new("No URL builder defined for #{object.inspect}")
         end
       end
     end

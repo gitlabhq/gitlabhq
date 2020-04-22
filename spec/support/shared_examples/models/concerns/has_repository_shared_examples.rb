@@ -5,6 +5,7 @@ RSpec.shared_examples 'model with repository' do
   let(:stubbed_container) { raise NotImplementedError }
   let(:expected_full_path) { raise NotImplementedError }
   let(:expected_web_url_path) { expected_full_path }
+  let(:expected_repo_url_path) { expected_full_path }
 
   describe '#commits_by' do
     let(:commits) { container.repository.commits('HEAD', limit: 3).commits }
@@ -53,19 +54,19 @@ RSpec.shared_examples 'model with repository' do
 
   describe '#url_to_repo' do
     it 'returns the SSH URL to the repository' do
-      expect(container.url_to_repo).to eq("#{Gitlab.config.gitlab_shell.ssh_path_prefix}#{expected_web_url_path}.git")
+      expect(container.url_to_repo).to eq(container.ssh_url_to_repo)
     end
   end
 
   describe '#ssh_url_to_repo' do
     it 'returns the SSH URL to the repository' do
-      expect(container.ssh_url_to_repo).to eq(container.url_to_repo)
+      expect(container.ssh_url_to_repo).to eq("#{Gitlab.config.gitlab_shell.ssh_path_prefix}#{expected_repo_url_path}.git")
     end
   end
 
   describe '#http_url_to_repo' do
     it 'returns the HTTP URL to the repository' do
-      expect(container.http_url_to_repo).to eq("#{Gitlab.config.gitlab.url}/#{expected_web_url_path}.git")
+      expect(container.http_url_to_repo).to eq("#{Gitlab.config.gitlab.url}/#{expected_repo_url_path}.git")
     end
   end
 
@@ -95,12 +96,8 @@ RSpec.shared_examples 'model with repository' do
     end
 
     context 'when the repo exists' do
-      it { expect(container.empty_repo?).to be(false) }
-
-      it 'returns true when repository is empty' do
-        allow(container.repository).to receive(:empty?).and_return(true)
-
-        expect(container.empty_repo?).to be(true)
+      it 'returns the empty state of the repository' do
+        expect(container.empty_repo?).to be(container.repository.empty?)
       end
     end
   end
@@ -146,15 +143,14 @@ RSpec.shared_examples 'model with repository' do
     end
 
     it 'picks storage from ApplicationSetting' do
-      expect_next_instance_of(ApplicationSetting) do |instance|
-        expect(instance).to receive(:pick_repository_storage).and_return('picked')
-      end
+      expect(Gitlab::CurrentSettings).to receive(:pick_repository_storage).and_return('picked')
 
       expect(subject).to eq('picked')
     end
 
     it 'picks from the latest available storage', :request_store do
       stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
+      Gitlab::CurrentSettings.expire_current_application_settings
       Gitlab::CurrentSettings.current_application_settings
 
       settings = ApplicationSetting.last

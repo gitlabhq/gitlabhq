@@ -67,6 +67,26 @@ current default comparison.
 
 ![Merge request versions compare HEAD](img/versions_compare_head_v12_10.png)
 
+### Enable or disable `HEAD` comparison mode **(CORE ONLY)**
+
+`HEAD` comparison mode is under development and not ready for production use. It is
+deployed behind a feature flag that is **disabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../../administration/troubleshooting/navigating_gitlab_via_rails_console.md#starting-a-rails-console-session)
+can enable it for your instance. You're welcome to test it, but use it at your
+own risk.
+
+To enable it:
+
+```ruby
+Feature.enable(:diff_compare_with_head)
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:diff_compare_with_head)
+```
+
 <!-- ## Troubleshooting
 
 Include any troubleshooting steps that you can foresee. If you know beforehand what issues

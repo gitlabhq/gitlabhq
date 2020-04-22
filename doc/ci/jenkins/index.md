@@ -113,7 +113,7 @@ There are some important differences in the way Runners work in comparison to ag
 
 If you are using `gitlab.com`, you can take advantage of our [shared Runner fleet](../../user/gitlab_com/index.md#shared-runners)
 to run jobs without provisioning your own Runners. We are investigating making them
-[available for self-managed instances](https://gitlab.com/gitlab-org/customers-gitlab-com/issues/414)
+[available for self-managed instances](https://gitlab.com/groups/gitlab-org/-/epics/835)
 as well.
 
 ## Groovy vs. YAML

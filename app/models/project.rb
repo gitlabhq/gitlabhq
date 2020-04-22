@@ -3,6 +3,7 @@
 require 'carrierwave/orm/activerecord'
 
 class Project < ApplicationRecord
+  extend ::Gitlab::Utils::Override
   include Gitlab::ConfigHelper
   include Gitlab::VisibilityLevel
   include AccessRequestable
@@ -18,6 +19,7 @@ class Project < ApplicationRecord
   include SelectForProjectAuthorization
   include Presentable
   include HasRepository
+  include HasWiki
   include Routable
   include GroupDescendant
   include Gitlab::SQL::Pattern
@@ -386,7 +388,6 @@ class Project < ApplicationRecord
   validate :check_repository_path_availability, on: :update, if: ->(project) { project.renamed? }
   validate :visibility_level_allowed_by_group, if: :should_validate_visibility_level?
   validate :visibility_level_allowed_as_fork, if: :should_validate_visibility_level?
-  validate :check_wiki_path_conflict
   validate :validate_pages_https_only, if: -> { changes.has_key?(:pages_https_only) }
   validates :repository_storage,
     presence: true,
@@ -1056,16 +1057,6 @@ class Project < ApplicationRecord
     self.errors.add(:visibility_level, _("%{level_name} is not allowed since the fork source project has lower visibility.") % { level_name: level_name })
   end
 
-  def check_wiki_path_conflict
-    return if path.blank?
-
-    path_to_check = path.ends_with?('.wiki') ? path.chomp('.wiki') : "#{path}.wiki"
-
-    if Project.where(namespace_id: namespace_id, path: path_to_check).exists?
-      errors.add(:name, _('has already been taken'))
-    end
-  end
-
   def pages_https_only
     return false unless Gitlab.config.pages.external_https
 
@@ -1557,10 +1548,6 @@ class Project < ApplicationRecord
     create_repository(force: true) unless repository_exists?
   end
 
-  def wiki_repository_exists?
-    wiki.repository_exists?
-  end
-
   # update visibility_level of forks
   def update_forks_visibility_level
     return if unlink_forks_upon_visibility_decrease_enabled?
@@ -1571,20 +1558,6 @@ class Project < ApplicationRecord
         forked_project.visibility_level = visibility_level
         forked_project.save!
       end
-    end
-  end
-
-  def create_wiki
-    ProjectWiki.new(self, self.owner).wiki
-    true
-  rescue ProjectWiki::CouldNotCreateWikiError
-    errors.add(:base, _('Failed create wiki'))
-    false
-  end
-
-  def wiki
-    strong_memoize(:wiki) do
-      ProjectWiki.new(self, self.owner)
     end
   end
 
@@ -2415,6 +2388,11 @@ class Project < ApplicationRecord
 
   def latest_jira_import
     jira_imports.last
+  end
+
+  override :after_wiki_activity
+  def after_wiki_activity
+    touch(:last_activity_at, :last_repository_updated_at)
   end
 
   private

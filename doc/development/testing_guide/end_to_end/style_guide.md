@@ -66,6 +66,7 @@ We follow a simple formula roughly based on hungarian notation.
   - `_placeholder`: a temporary element that appears while content is loading. For example, the elements that are displayed instead of discussions while the discussions are being fetched.
   - `_radio`
   - `_tab`
+  - `_menu_item`
 
 *Note: If none of the listed types are suitable, please open a merge request to add an appropriate type to the list.*
 

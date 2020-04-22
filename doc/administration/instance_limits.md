@@ -180,7 +180,7 @@ Plan.default.limits.update!(ci_pipeline_schedules: 100)
 
 ### Incident Management inbound alert limits
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14932) in GitLab 12.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17859) in GitLab 12.5.
 
 Limiting inbound alerts for an incident reduces the number of alerts (issues)
 that can be created within a period of time, which can help prevent overloading
@@ -192,7 +192,7 @@ alerts in the following ways:
 
 ### Prometheus Alert JSON payloads
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14929) in GitLab 12.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/19940) in GitLab 12.6.
 
 Prometheus alert payloads sent to the `notify.json` endpoint are limited to 1 MB in size.
 

@@ -3,9 +3,9 @@
 require "spec_helper"
 
 describe WikiPage do
-  let(:project) { create(:project, :wiki_repo) }
-  let(:user) { project.owner }
-  let(:wiki) { ProjectWiki.new(project, user) }
+  let_it_be(:user) { create(:user) }
+  let(:container) { create(:project, :wiki_repo) }
+  let(:wiki) { Wiki.for_container(container, user) }
 
   let(:new_page) do
     described_class.new(wiki).tap do |page|
@@ -24,9 +24,9 @@ describe WikiPage do
     stub_feature_flags(Gitlab::WikiPages::FrontMatterParser::FEATURE_FLAG => false)
   end
 
-  def enable_front_matter_for_project
+  def enable_front_matter_for(thing)
     stub_feature_flags(Gitlab::WikiPages::FrontMatterParser::FEATURE_FLAG => {
-      thing: project,
+      thing: thing,
       enabled: true
     })
   end
@@ -114,7 +114,8 @@ describe WikiPage do
 
   describe '#front_matter' do
     let_it_be(:project) { create(:project) }
-    let(:wiki_page) { create(:wiki_page, project: project, content: content) }
+    let(:container) { project }
+    let(:wiki_page) { create(:wiki_page, container: container, content: content) }
 
     shared_examples 'a page without front-matter' do
       it { expect(wiki_page).to have_attributes(front_matter: {}, content: content) }
@@ -153,12 +154,20 @@ describe WikiPage do
 
         it_behaves_like 'a page without front-matter'
 
-        context 'but enabled for the project' do
+        context 'but enabled for the container' do
           before do
-            enable_front_matter_for_project
+            enable_front_matter_for(container)
           end
 
-          it_behaves_like 'a page with front-matter'
+          context 'with a project container' do
+            it_behaves_like 'a page with front-matter'
+          end
+
+          context 'with a group container' do
+            let(:container) { create(:group) }
+
+            it_behaves_like 'a page with front-matter'
+          end
         end
       end
     end
@@ -514,12 +523,20 @@ describe WikiPage do
             expect([subject, page]).to all(have_attributes(front_matter: be_empty, content: content))
           end
 
-          context 'but it is enabled for the project' do
+          context 'but it is enabled for the container' do
             before do
-              enable_front_matter_for_project
+              enable_front_matter_for(container)
             end
 
-            it_behaves_like 'able to update front-matter'
+            context 'with a project container' do
+              it_behaves_like 'able to update front-matter'
+            end
+
+            context 'with a group container' do
+              let(:container) { create(:group) }
+
+              it_behaves_like 'able to update front-matter'
+            end
           end
         end
 
@@ -812,23 +829,32 @@ describe WikiPage do
       other_page = create(:wiki_page)
 
       expect(subject.slug).not_to eq(other_page.slug)
-      expect(subject.project).not_to eq(other_page.project)
+      expect(subject.container).not_to eq(other_page.container)
       expect(subject).not_to eq(other_page)
     end
 
-    it 'returns false for page with different slug on same project' do
-      other_page = create(:wiki_page, project: subject.project)
+    it 'returns false for page with different slug on same container' do
+      other_page = create(:wiki_page, container: subject.container)
 
       expect(subject.slug).not_to eq(other_page.slug)
-      expect(subject.project).to eq(other_page.project)
+      expect(subject.container).to eq(other_page.container)
       expect(subject).not_to eq(other_page)
     end
 
-    it 'returns false for page with the same slug on a different project' do
+    it 'returns false for page with the same slug on a different container of the same type' do
       other_page = create(:wiki_page, title: existing_page.slug)
 
       expect(subject.slug).to eq(other_page.slug)
-      expect(subject.project).not_to eq(other_page.project)
+      expect(subject.container).not_to eq(other_page.container)
+      expect(subject).not_to eq(other_page)
+    end
+
+    it 'returns false for page with the same slug on a different container type' do
+      group = create(:group, name: container.name)
+      other_page = create(:wiki_page, title: existing_page.slug, container: group)
+
+      expect(subject.slug).to eq(other_page.slug)
+      expect(subject.container).not_to eq(other_page.container)
       expect(subject).not_to eq(other_page)
     end
   end

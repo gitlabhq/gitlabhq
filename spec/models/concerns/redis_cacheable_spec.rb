@@ -31,7 +31,7 @@ describe RedisCacheable do
     subject { instance.cached_attribute(payload.each_key.first) }
 
     it 'gets the cache attribute' do
-      Gitlab::Redis::SharedState.with do |redis|
+      Gitlab::Redis::Cache.with do |redis|
         expect(redis).to receive(:get).with(cache_key)
           .and_return(payload.to_json)
       end
@@ -44,7 +44,7 @@ describe RedisCacheable do
     subject { instance.cache_attributes(payload) }
 
     it 'sets the cache attributes' do
-      Gitlab::Redis::SharedState.with do |redis|
+      Gitlab::Redis::Cache.with do |redis|
         expect(redis).to receive(:set).with(cache_key, payload.to_json, anything)
       end
 
@@ -52,7 +52,7 @@ describe RedisCacheable do
     end
   end
 
-  describe '#cached_attr_reader', :clean_gitlab_redis_shared_state do
+  describe '#cached_attr_reader', :clean_gitlab_redis_cache do
     subject { instance.name }
 
     before do

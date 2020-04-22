@@ -18,20 +18,29 @@ module API
           requires :description, type: String, desc: 'The description of the annotation'
         end
 
-        resource :environments do
-          post ':id/metrics_dashboard/annotations' do
-            environment = ::Environment.find(params[:id])
+        ANNOTATIONS_SOURCES = [
+          { class: ::Environment, resource: :environments, create_service_param_key: :environment },
+          { class: Clusters::Cluster, resource: :clusters, create_service_param_key: :cluster }
+        ].freeze
 
-            not_found! unless Feature.enabled?(:metrics_dashboard_annotations, environment.project)
+        ANNOTATIONS_SOURCES.each do |annotations_source|
+          resource annotations_source[:resource] do
+            post ':id/metrics_dashboard/annotations' do
+              annotations_source_object = annotations_source[:class].find(params[:id])
 
-            forbidden! unless can?(current_user, :create_metrics_dashboard_annotation, environment)
+              not_found! unless Feature.enabled?(:metrics_dashboard_annotations, annotations_source_object.project)
 
-            result = ::Metrics::Dashboard::Annotations::CreateService.new(current_user, declared(params).merge(environment: environment)).execute
+              forbidden! unless can?(current_user, :create_metrics_dashboard_annotation, annotations_source_object)
 
-            if result[:status] == :success
-              present result[:annotation], with: Entities::Metrics::Dashboard::Annotation
-            else
-              error!(result, 400)
+              create_service_params = declared(params).merge(annotations_source[:create_service_param_key] => annotations_source_object)
+
+              result = ::Metrics::Dashboard::Annotations::CreateService.new(current_user, create_service_params).execute
+
+              if result[:status] == :success
+                present result[:annotation], with: Entities::Metrics::Dashboard::Annotation
+              else
+                error!(result, 400)
+              end
             end
           end
         end

@@ -8,7 +8,8 @@ FactoryBot.define do
       title { generate(:wiki_page_title) }
       content { 'Content for wiki page' }
       format { 'markdown' }
-      project { create(:project) }
+      project { association(:project, :wiki_repo) }
+      container { project }
       attrs do
         {
           title: title,
@@ -19,7 +20,7 @@ FactoryBot.define do
     end
 
     page { OpenStruct.new(url_path: 'some-name') }
-    wiki { build(:project_wiki, project: project) }
+    wiki { association(:wiki, container: container) }
 
     initialize_with { new(wiki, page) }
 
@@ -32,8 +33,6 @@ FactoryBot.define do
     end
 
     trait :with_real_page do
-      project { create(:project, :repository) }
-
       page do
         wiki.create_page(title, content)
         page_title, page_dir = wiki.page_title_and_dir(title)
@@ -48,10 +47,10 @@ FactoryBot.define do
 
     trait :for_wiki_page do
       transient do
-        wiki_page { create(:wiki_page, project: project) }
+        wiki_page { create(:wiki_page, container: project) }
       end
 
-      project { @overrides[:wiki_page]&.project || create(:project) }
+      project { @overrides[:wiki_page]&.container || create(:project) }
       title { wiki_page.title }
 
       initialize_with do

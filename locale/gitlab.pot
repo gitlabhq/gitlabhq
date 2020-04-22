@@ -8723,9 +8723,6 @@ msgstr ""
 msgid "Failed Jobs"
 msgstr ""
 
-msgid "Failed create wiki"
-msgstr ""
-
 msgid "Failed to add a Zoom meeting"
 msgstr ""
 
@@ -8763,6 +8760,9 @@ msgid "Failed to create repository"
 msgstr ""
 
 msgid "Failed to create resources"
+msgstr ""
+
+msgid "Failed to create wiki"
 msgstr ""
 
 msgid "Failed to delete board. Please try again."

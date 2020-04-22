@@ -2,7 +2,7 @@
 
 ## Deep Dive
 
-In April 2019, Francisco Javier López hosted a [Deep Dive](https://gitlab.com/gitlab-org/create-stage/issues/1)
+In April 2019, Francisco Javier López hosted a Deep Dive (GitLab team members only: `https://gitlab.com/gitlab-org/create-stage/issues/1`)
 on GitLab's [Git LFS](../topics/git/lfs/index.md) implementation to share his domain
 specific knowledge with anyone who may work in this part of the code base in the future.
 You can find the [recording on YouTube](https://www.youtube.com/watch?v=Yyxwcksr0Qc),

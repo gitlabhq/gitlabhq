@@ -38,5 +38,6 @@ describe ProjectSnippet do
     let(:stubbed_container) { build_stubbed(:project_snippet) }
     let(:expected_full_path) { "#{container.project.full_path}/@snippets/#{container.id}" }
     let(:expected_web_url_path) { "#{container.project.full_path}/snippets/#{container.id}" }
+    let(:expected_repo_url_path) { expected_web_url_path }
   end
 end

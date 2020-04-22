@@ -23,11 +23,12 @@ describe Gitlab::UrlBuilder do
       :merge_request     | ->(merge_request) { "/#{merge_request.project.full_path}/-/merge_requests/#{merge_request.iid}" }
       :project_milestone | ->(milestone)     { "/#{milestone.project.full_path}/-/milestones/#{milestone.iid}" }
       :project_snippet   | ->(snippet)       { "/#{snippet.project.full_path}/snippets/#{snippet.id}" }
-      :project_wiki      | ->(wiki)          { "/#{wiki.project.full_path}/-/wikis/home" }
+      :project_wiki      | ->(wiki)          { "/#{wiki.container.full_path}/-/wikis/home" }
       :ci_build          | ->(build)         { "/#{build.project.full_path}/-/jobs/#{build.id}" }
 
       :group             | ->(group)         { "/groups/#{group.full_path}" }
       :group_milestone   | ->(milestone)     { "/groups/#{milestone.group.full_path}/-/milestones/#{milestone.iid}" }
+      :group_wiki        | ->(wiki)          { "/groups/#{wiki.container.full_path}/-/wikis/home" }
 
       :user              | ->(user)          { "/#{user.full_path}" }
       :personal_snippet  | ->(snippet)       { "/snippets/#{snippet.id}" }

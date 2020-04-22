@@ -129,7 +129,7 @@ class Blob < SimpleDelegator
 
   def external_storage_error?
     if external_storage == :lfs
-      !project&.lfs_enabled?
+      !repository.lfs_enabled?
     else
       false
     end

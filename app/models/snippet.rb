@@ -15,6 +15,7 @@ class Snippet < ApplicationRecord
   include FromUnion
   include IgnorableColumns
   include HasRepository
+  include AfterCommitQueue
   extend ::Gitlab::Utils::Override
 
   MAX_FILE_COUNT = 1

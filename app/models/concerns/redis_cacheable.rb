@@ -26,7 +26,7 @@ module RedisCacheable
   end
 
   def cache_attributes(values)
-    Gitlab::Redis::SharedState.with do |redis|
+    Gitlab::Redis::Cache.with do |redis|
       redis.set(cache_attribute_key, values.to_json, ex: CACHED_ATTRIBUTES_EXPIRY_TIME)
     end
 
@@ -41,7 +41,7 @@ module RedisCacheable
 
   def cached_attributes
     strong_memoize(:cached_attributes) do
-      Gitlab::Redis::SharedState.with do |redis|
+      Gitlab::Redis::Cache.with do |redis|
         data = redis.get(cache_attribute_key)
         JSON.parse(data, symbolize_names: true) if data
       end

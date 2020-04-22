@@ -26,7 +26,7 @@ class WikiPage
   def eql?(other)
     return false unless other.present? && other.is_a?(self.class)
 
-    slug == other.slug && wiki.project == other.wiki.project
+    slug == other.slug && wiki.container == other.wiki.container
   end
 
   alias_method :==, :eql?
@@ -66,9 +66,9 @@ class WikiPage
   validates :content, presence: true
   validate :validate_path_limits, if: :title_changed?
 
-  # The GitLab ProjectWiki instance.
+  # The GitLab Wiki instance.
   attr_reader :wiki
-  delegate :project, to: :wiki
+  delegate :container, to: :wiki
 
   # The raw Gitlab::Git::WikiPage instance.
   attr_reader :page
@@ -83,7 +83,7 @@ class WikiPage
 
   # Construct a new WikiPage
   #
-  # @param [ProjectWiki] wiki
+  # @param [Wiki] wiki
   # @param [Gitlab::Git::WikiPage] page
   def initialize(wiki, page = nil)
     @wiki       = wiki
@@ -195,7 +195,7 @@ class WikiPage
   #       :content - The raw markup content.
   #       :format  - Optional symbol representing the
   #                  content format. Can be any type
-  #                  listed in the ProjectWiki::MARKUPS
+  #                  listed in the Wiki::MARKUPS
   #                  Hash.
   #       :message - Optional commit message to set on
   #                  the new page.
@@ -215,7 +215,7 @@ class WikiPage
   # attrs - Hash of attributes to be updated on the page.
   #        :content         - The raw markup content to replace the existing.
   #        :format          - Optional symbol representing the content format.
-  #                           See ProjectWiki::MARKUPS Hash for available formats.
+  #                           See Wiki::MARKUPS Hash for available formats.
   #        :message         - Optional commit message to set on the new version.
   #        :last_commit_sha - Optional last commit sha to validate the page unchanged.
   #        :title           - The Title (optionally including dir) to replace existing title
@@ -261,6 +261,7 @@ class WikiPage
   # Relative path to the partial to be used when rendering collections
   # of this object.
   def to_partial_path
+    # TODO: Move into shared/ with https://gitlab.com/gitlab-org/gitlab/-/issues/196054
     'projects/wikis/wiki_page'
   end
 
@@ -303,7 +304,7 @@ class WikiPage
   end
 
   def update_front_matter(attrs)
-    return unless Gitlab::WikiPages::FrontMatterParser.enabled?(project)
+    return unless Gitlab::WikiPages::FrontMatterParser.enabled?(container)
     return unless attrs.has_key?(:front_matter)
 
     fm_yaml = serialize_front_matter(attrs[:front_matter])
@@ -314,7 +315,7 @@ class WikiPage
 
   def parsed_content
     strong_memoize(:parsed_content) do
-      Gitlab::WikiPages::FrontMatterParser.new(raw_content, project).parse
+      Gitlab::WikiPages::FrontMatterParser.new(raw_content, container).parse
     end
   end
 
