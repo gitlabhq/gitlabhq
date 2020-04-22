@@ -18,6 +18,10 @@ shared_context 'project service activation' do
     click_link(name)
   end
 
+  def click_active_toggle
+    find('input[name="service[active]"] + button').click
+  end
+
   def click_test_integration
     click_button('Test settings and save changes')
   end

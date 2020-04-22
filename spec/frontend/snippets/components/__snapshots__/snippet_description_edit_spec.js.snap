@@ -35,8 +35,8 @@ exports[`Snippet Description Edit component rendering matches the snapshot 1`] =
     >
       <textarea
         aria-label="Description"
-        class="note-textarea js-gfm-input js-autosize markdown-area
-          qa-description-textarea"
+        class="note-textarea js-gfm-input js-autosize markdown-area"
+        data-qa-selector="snippet_description_field"
         data-supports-quick-actions="false"
         dir="auto"
         placeholder="Write a comment or drag your files here…"

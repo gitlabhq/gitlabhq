@@ -137,7 +137,7 @@ describe 'Metrics rendering', :js, :use_clean_rails_memory_store_caching, :sidek
   end
 
   context 'transient metrics embeds' do
-    let(:metrics_url) { urls.metrics_project_environment_url(project, environment, embed_json: embed_json) }
+    let(:metrics_url) { urls.metrics_dashboard_project_environment_url(project, environment, embed_json: embed_json) }
     let(:title) { 'Important Metrics' }
     let(:embed_json) do
       {

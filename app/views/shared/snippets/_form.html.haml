@@ -24,7 +24,7 @@
             = text_field_tag nil, nil, class: 'form-control', placeholder: description_placeholder, data: { qa_selector: 'description_placeholder' }
           .js-expanded{ class: ('d-none' if !is_expanded) }
             = render layout: 'projects/md_preview', locals: { url: preview_markdown_path(@project), referenced_users: true } do
-              = render 'projects/zen', f: f, attr: :description, classes: 'note-textarea', placeholder: description_placeholder, qa_selector: 'description_field'
+              = render 'projects/zen', f: f, attr: :description, classes: 'note-textarea', placeholder: description_placeholder, qa_selector: 'snippet_description_field'
               = render 'shared/notes/hints'
 
       .form-group.file-editor

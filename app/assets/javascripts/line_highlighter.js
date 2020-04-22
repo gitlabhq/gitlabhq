@@ -54,6 +54,7 @@ LineHighlighter.prototype.bindEvents = function() {
 
   $fileHolder.on('click', 'a[data-line-number]', this.clickHandler);
   $fileHolder.on('highlight:line', this.highlightHash);
+  window.addEventListener('hashchange', e => this.highlightHash(e.target.location.hash));
 };
 
 LineHighlighter.prototype.highlightHash = function(newHash) {

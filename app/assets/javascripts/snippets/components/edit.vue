@@ -176,7 +176,13 @@ export default {
       class="loading-animation prepend-top-20 append-bottom-20"
     />
     <template v-else>
-      <title-field :id="titleFieldId" v-model="snippet.title" required :autofocus="true" />
+      <title-field
+        :id="titleFieldId"
+        v-model="snippet.title"
+        data-qa-selector="snippet_title"
+        required
+        :autofocus="true"
+      />
       <snippet-description-edit
         :id="descriptionFieldId"
         v-model="snippet.description"
@@ -201,6 +207,7 @@ export default {
             category="primary"
             variant="success"
             :disabled="updatePrevented"
+            data-qa-selector="create_snippet_button"
             @click="handleFormSubmit"
             >{{ saveButtonLabel }}</gl-button
           >

@@ -5,12 +5,20 @@ module QA
     module Dashboard
       module Snippet
         class New < Page::Base
+          view 'app/assets/javascripts/snippets/components/edit.vue' do
+            element :create_snippet_button
+          end
+
+          view 'app/assets/javascripts/snippets/components/snippet_description_edit.vue' do
+            element :snippet_description_field, required: true
+          end
+
           view 'app/views/shared/form_elements/_description.html.haml' do
             element :issuable_form_description
           end
 
           view 'app/views/shared/snippets/_form.html.haml' do
-            element :description_field
+            element :snippet_description_field
             element :description_placeholder
             element :snippet_title
             element :snippet_file_name
@@ -28,7 +36,7 @@ module QA
 
           def fill_description(description)
             click_element :description_placeholder
-            fill_element :description_field, description
+            fill_element :snippet_description_field, description
           end
 
           def set_visibility(visibility)
@@ -46,6 +54,7 @@ module QA
           end
 
           def click_create_snippet_button
+            wait_until(reload: false) { !find_element(:create_snippet_button).disabled? }
             click_element :create_snippet_button
           end
 

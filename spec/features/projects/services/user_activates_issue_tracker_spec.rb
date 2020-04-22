@@ -3,29 +3,17 @@
 require 'spec_helper'
 
 describe 'User activates issue tracker', :js do
-  let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  include_context 'project service activation'
 
   let(:url) { 'http://tracker.example.com' }
 
-  def fill_short_form(disabled: false)
-    find('input[name="service[active]"] + button').click if disabled
+  def fill_form(disable: false, skip_new_issue_url: false)
+    click_active_toggle if disable
 
     fill_in 'service_project_url', with: url
     fill_in 'service_issues_url', with: "#{url}/:id"
-  end
 
-  def fill_full_form(disabled: false)
-    fill_short_form(disabled: disabled)
-
-    fill_in 'service_new_issue_url', with: url
-  end
-
-  before do
-    project.add_maintainer(user)
-    sign_in(user)
-
-    visit project_settings_integrations_path(project)
+    fill_in 'service_new_issue_url', with: url unless skip_new_issue_url
   end
 
   shared_examples 'external issue tracker activation' do |tracker:, skip_new_issue_url: false|
@@ -34,16 +22,10 @@ describe 'User activates issue tracker', :js do
         before do
           stub_request(:head, url).to_return(headers: { 'Content-Type' => 'application/json' })
 
-          click_link(tracker)
+          visit_project_integration(tracker)
+          fill_form(skip_new_issue_url: skip_new_issue_url)
 
-          if skip_new_issue_url
-            fill_short_form
-          else
-            fill_full_form
-          end
-
-          click_button('Test settings and save changes')
-          wait_for_requests
+          click_test_integration
         end
 
         it 'activates the service' do
@@ -62,22 +44,10 @@ describe 'User activates issue tracker', :js do
         it 'activates the service' do
           stub_request(:head, url).to_raise(Gitlab::HTTP::Error)
 
-          click_link(tracker)
+          visit_project_integration(tracker)
+          fill_form(skip_new_issue_url: skip_new_issue_url)
 
-          if skip_new_issue_url
-            fill_short_form
-          else
-            fill_full_form
-          end
-
-          click_button('Test settings and save changes')
-          wait_for_requests
-
-          expect(find('.flash-container-page')).to have_content 'Test failed.'
-          expect(find('.flash-container-page')).to have_content 'Save anyway'
-
-          find('.flash-alert .flash-action').click
-          wait_for_requests
+          click_test_then_save_integration
 
           expect(page).to have_content("#{tracker} activated.")
           expect(current_path).to eq(project_settings_integrations_path(project))
@@ -87,13 +57,8 @@ describe 'User activates issue tracker', :js do
 
     describe 'user disables the service' do
       before do
-        click_link(tracker)
-
-        if skip_new_issue_url
-          fill_short_form(disabled: true)
-        else
-          fill_full_form(disabled: true)
-        end
+        visit_project_integration(tracker)
+        fill_form(disable: true, skip_new_issue_url: skip_new_issue_url)
 
         click_button('Save changes')
       end

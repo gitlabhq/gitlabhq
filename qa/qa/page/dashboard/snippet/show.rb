@@ -5,9 +5,13 @@ module QA
     module Dashboard
       module Snippet
         class Show < Page::Base
+          view 'app/assets/javascripts/snippets/components/snippet_description_edit.vue' do
+            element :snippet_description_field, required: true
+          end
+
           view 'app/views/shared/snippets/_header.html.haml' do
             element :snippet_title, required: true
-            element :snippet_description, required: true
+            element :snippet_description_field, required: true
             element :embed_type
             element :snippet_box
           end
@@ -25,7 +29,7 @@ module QA
           end
 
           def has_snippet_description?(snippet_description)
-            has_element? :snippet_description, text: snippet_description
+            has_element? :snippet_description_field, text: snippet_description
           end
 
           def has_embed_type?(embed_type)

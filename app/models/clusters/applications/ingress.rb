@@ -98,7 +98,7 @@ module Clusters
                 "args" => [
                   "/bin/sh",
                   "-c",
-                  "tail -f /var/log/modsec/audit.log"
+                  "tail -F /var/log/modsec/audit.log"
                 ],
                 "volumeMounts" => [
                   {

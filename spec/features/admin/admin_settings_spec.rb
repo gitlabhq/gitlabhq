@@ -382,6 +382,18 @@ describe 'Admin updates settings', :clean_gitlab_redis_shared_state, :do_not_moc
         expect(current_settings.allow_local_requests_from_system_hooks).to be false
         expect(current_settings.dns_rebinding_protection_enabled).to be false
       end
+
+      it 'Changes Issues rate limits settings' do
+        visit network_admin_application_settings_path
+
+        page.within('.as-issue-limits') do
+          fill_in 'Max requests per second per user', with: 0
+          click_button 'Save changes'
+        end
+
+        expect(page).to have_content "Application settings saved successfully"
+        expect(current_settings.issues_create_limit).to eq(0)
+      end
     end
 
     context 'Preferences page' do

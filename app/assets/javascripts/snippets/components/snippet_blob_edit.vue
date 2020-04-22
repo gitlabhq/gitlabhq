@@ -33,7 +33,11 @@ export default {
   <div class="form-group file-editor">
     <label>{{ s__('Snippets|File') }}</label>
     <div class="file-holder snippet">
-      <blob-header-edit :value="fileName" @input="$emit('name-change', $event)" />
+      <blob-header-edit
+        :value="fileName"
+        data-qa-selector="snippet_file_name"
+        @input="$emit('name-change', $event)"
+      />
       <gl-loading-icon
         v-if="isLoading"
         :label="__('Loading snippet')"

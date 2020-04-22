@@ -3,17 +3,21 @@
 require 'spec_helper'
 
 describe Gitlab::Metrics::Dashboard::Url do
+  include Gitlab::Routing.url_helpers
+
   describe '#metrics_regex' do
-    let(:url) do
-      Gitlab::Routing.url_helpers.metrics_namespace_project_environment_url(
+    let(:url_params) do
+      [
         'foo',
         'bar',
         1,
-        start: '2019-08-02T05:43:09.000Z',
-        dashboard: 'config/prometheus/common_metrics.yml',
-        group: 'awesome group',
-        anchor: 'title'
-      )
+        {
+          start: '2019-08-02T05:43:09.000Z',
+          dashboard: 'config/prometheus/common_metrics.yml',
+          group: 'awesome group',
+          anchor: 'title'
+        }
+      ]
     end
 
     let(:expected_params) do
@@ -29,12 +33,22 @@ describe Gitlab::Metrics::Dashboard::Url do
 
     subject { described_class.metrics_regex }
 
-    it_behaves_like 'regex which matches url when expected'
+    context 'for metrics route' do
+      let(:url) { metrics_namespace_project_environment_url(*url_params) }
+
+      it_behaves_like 'regex which matches url when expected'
+    end
+
+    context 'for metrics_dashboard route' do
+      let(:url) { metrics_dashboard_namespace_project_environment_url(*url_params) }
+
+      it_behaves_like 'regex which matches url when expected'
+    end
   end
 
   describe '#grafana_regex' do
     let(:url) do
-      Gitlab::Routing.url_helpers.namespace_project_grafana_api_metrics_dashboard_url(
+      namespace_project_grafana_api_metrics_dashboard_url(
         'foo',
         'bar',
         start: '2019-08-02T05:43:09.000Z',

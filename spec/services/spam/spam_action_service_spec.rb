@@ -121,7 +121,7 @@ describe Spam::SpamActionService do
           issue.description = 'SPAM!'
         end
 
-        context 'when disallowed by the spam action service' do
+        context 'when disallowed by the spam verdict service' do
           before do
             allow(fake_verdict_service).to receive(:execute).and_return(DISALLOW)
           end
@@ -151,7 +151,43 @@ describe Spam::SpamActionService do
           end
         end
 
-        context 'when spam action service allows creation' do
+        context 'when spam verdict service requires reCAPTCHA' do
+          before do
+            allow(fake_verdict_service).to receive(:execute).and_return(REQUIRE_RECAPTCHA)
+          end
+
+          context 'when allow_possible_spam feature flag is false' do
+            before do
+              stub_feature_flags(allow_possible_spam: false)
+            end
+
+            it_behaves_like 'only checks for spam if a request is provided'
+
+            it 'does not mark as spam' do
+              subject
+
+              expect(issue).not_to be_spam
+            end
+
+            it 'marks as needing reCAPTCHA' do
+              subject
+
+              expect(issue.needs_recaptcha?).to be_truthy
+            end
+          end
+
+          context 'when allow_possible_spam feature flag is true' do
+            it_behaves_like 'only checks for spam if a request is provided'
+
+            it 'does not mark as needing reCAPTCHA' do
+              subject
+
+              expect(issue.needs_recaptcha).to be_falsey
+            end
+          end
+        end
+
+        context 'when spam verdict service allows creation' do
           before do
             allow(fake_verdict_service).to receive(:execute).and_return(ALLOW)
           end

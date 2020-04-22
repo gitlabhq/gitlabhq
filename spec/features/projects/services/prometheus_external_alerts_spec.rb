@@ -3,18 +3,10 @@
 require 'spec_helper'
 
 describe 'Prometheus external alerts', :js do
-  let(:project) { create(:project) }
-  let(:user) { create(:user) }
+  include_context 'project service activation'
 
   let(:alerts_section_selector) { '.js-prometheus-alerts' }
   let(:alerts_section) { page.find(alerts_section_selector) }
-
-  before do
-    sign_in(user)
-    project.add_maintainer(user)
-
-    visit_edit_service
-  end
 
   context 'with manual configuration' do
     before do
@@ -22,7 +14,7 @@ describe 'Prometheus external alerts', :js do
     end
 
     it 'shows the Alerts section' do
-      visit_edit_service
+      visit_project_integration('Prometheus')
 
       expect(alerts_section).to have_content('Alerts')
       expect(alerts_section).to have_content('Receive alerts from manually configured Prometheus servers.')
@@ -33,16 +25,10 @@ describe 'Prometheus external alerts', :js do
 
   context 'with no configuration' do
     it 'does not show the Alerts section' do
+      visit_project_integration('Prometheus')
       wait_for_requests
 
       expect(page).not_to have_css(alerts_section_selector)
     end
-  end
-
-  private
-
-  def visit_edit_service
-    visit(project_settings_integrations_path(project))
-    click_link('Prometheus')
   end
 end

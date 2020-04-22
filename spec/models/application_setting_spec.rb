@@ -91,6 +91,10 @@ describe ApplicationSetting do
     it { is_expected.not_to allow_value(nil).for(:namespace_storage_size_limit) }
     it { is_expected.not_to allow_value(-1).for(:namespace_storage_size_limit) }
 
+    it { is_expected.to allow_value(300).for(:issues_create_limit) }
+    it { is_expected.not_to allow_value('three').for(:issues_create_limit) }
+    it { is_expected.not_to allow_value(nil).for(:issues_create_limit) }
+
     context 'grafana_url validations' do
       before do
         subject.instance_variable_set(:@parsed_grafana_url, nil)

@@ -49,9 +49,6 @@ module Spam
 
           break if target.allow_possible_spam?
 
-          # TODO: remove spam! declaration
-          # https://gitlab.com/gitlab-org/gitlab/-/issues/214738
-          target.spam!
           target.needs_recaptcha!
         when DISALLOW
           # TODO: remove `unless target.allow_possible_spam?` once this flag has been passed to `SpamVerdictService`

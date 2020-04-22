@@ -5,7 +5,7 @@ exports[`Blob Header Editing rendering matches the snapshot 1`] = `
   class="js-file-title file-title-flex-parent"
 >
   <gl-form-input-stub
-    class="form-control js-snippet-file-name qa-snippet-file-name"
+    class="form-control js-snippet-file-name"
     id="snippet_file_name"
     name="snippet_file_name"
     placeholder="Give your file a name to add code highlighting, e.g. example.rb for Ruby"

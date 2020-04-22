@@ -260,7 +260,7 @@ describe TodosFinder do
     it 'returns the expected types' do
       expected_result =
         if Gitlab.ee?
-          %w[Epic Issue MergeRequest]
+          %w[DesignManagement::Design Epic Issue MergeRequest]
         else
           %w[Issue MergeRequest]
         end

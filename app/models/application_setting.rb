@@ -345,6 +345,9 @@ class ApplicationSetting < ApplicationRecord
             presence: true,
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
+  validates :issues_create_limit,
+            numericality: { greater_than_or_equal_to: 0 }
+
   attr_encrypted :asset_proxy_secret_key,
                  mode: :per_attribute_iv,
                  key: Settings.attr_encrypted_db_key_base_truncated,

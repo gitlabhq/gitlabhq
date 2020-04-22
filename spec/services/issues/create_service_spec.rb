@@ -437,8 +437,8 @@ describe Issues::CreateService do
             end
           end
 
-          it 'marks the issue as spam' do
-            expect(issue).to be_spam
+          it 'does not mark the issue as spam' do
+            expect(issue).not_to be_spam
           end
 
           it 'marks the issue as needing reCAPTCHA' do
@@ -463,7 +463,7 @@ describe Issues::CreateService do
           end
 
           context 'when allow_possible_spam feature flag is false' do
-            it 'does not mark the issue as spam' do
+            it 'marks the issue as spam' do
               expect(issue).to be_spam
             end
 
@@ -488,6 +488,10 @@ describe Issues::CreateService do
 
             it 'does not mark the issue as spam' do
               expect(issue).not_to be_spam
+            end
+
+            it 'does not mark the issue as needing reCAPTCHA' do
+              expect(issue.needs_recaptcha?).to be_falsey
             end
 
             it 'creates a valid issue' do

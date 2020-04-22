@@ -69,7 +69,8 @@ Example response:
    "asset_proxy_enabled": true,
    "asset_proxy_url": "https://assets.example.com",
    "asset_proxy_whitelist": ["example.com", "*.example.com", "your-instance.com"],
-   "npm_package_requests_forwarding": true
+   "npm_package_requests_forwarding": true,
+   "issues_create_limit": 300
 }
 ```
 
@@ -156,7 +157,8 @@ Example response:
   "allow_local_requests_from_hooks_and_services": true,
   "allow_local_requests_from_web_hooks_and_services": true,
   "allow_local_requests_from_system_hooks": false,
-  "npm_package_requests_forwarding": true
+  "npm_package_requests_forwarding": true,
+  "issues_create_limit": 300
 }
 ```
 
@@ -362,3 +364,4 @@ are listed in the descriptions of the relevant settings.
 | `version_check_enabled`                  | boolean          | no                                   | Let GitLab inform you when an update is available. |
 | `web_ide_clientside_preview_enabled`     | boolean          | no                                   | Client side evaluation (allow live previews of JavaScript projects in the Web IDE using CodeSandbox client side evaluation). |
 | `snippet_size_limit`                     | integer          | no                                   | Max snippet content size in **bytes**. Default: 52428800 Bytes (50MB).|
+| `issues_create_limit`                    | integer          | no                                   | Max number of issue creation requests allowed per minute per user.|

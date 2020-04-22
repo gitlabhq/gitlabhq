@@ -67,6 +67,16 @@ describe('LineHighlighter', function() {
 
       expect(func).not.toThrow();
     });
+
+    it('handles hashchange event', () => {
+      const highlighter = new LineHighlighter();
+
+      spyOn(highlighter, 'highlightHash');
+
+      window.dispatchEvent(new Event('hashchange'), 'L15');
+
+      expect(highlighter.highlightHash).toHaveBeenCalled();
+    });
   });
 
   describe('clickHandler', function() {

@@ -19217,6 +19217,9 @@ msgstr ""
 msgid "Something went wrong while updating your list settings"
 msgstr ""
 
+msgid "Something went wrong with your automatic subscription renewal"
+msgstr ""
+
 msgid "Something went wrong, unable to add %{project} to dashboard"
 msgstr ""
 
@@ -23353,7 +23356,13 @@ msgstr ""
 msgid "We sent you an email with reset password instructions"
 msgstr ""
 
+msgid "We tried to automatically renew your %{strong}%{plan_name}%{strong_close} subscription for %{strong}%{namespace_name}%{strong_close} on %{expires_on} but something went wrong so your subscription was downgraded to the free plan. Don't worry, your data is safe. We suggest you check your payment method and get in touch with our support team (%{support_link}). They'll gladly help with your subscription renewal."
+msgstr ""
+
 msgid "We want to be sure it is you, please confirm you are not a robot."
+msgstr ""
+
+msgid "We will automatically renew your %{strong}%{plan_name}%{strong_close} subscription for %{strong}%{namespace_name}%{strong_close} on %{strong}%{expires_on}%{strong_close}. There's nothing that you need to do, we'll let you know when the renewal is complete. Need more seats, a higher plan or just want to review your payment method?"
 msgstr ""
 
 msgid "We've found no vulnerabilities"
@@ -24283,6 +24292,9 @@ msgid "Your subscription expired!"
 msgstr ""
 
 msgid "Your subscription has been downgraded"
+msgstr ""
+
+msgid "Your subscription will automatically renew in %{remaining_days}"
 msgstr ""
 
 msgid "Your subscription will expire in %{remaining_days}"

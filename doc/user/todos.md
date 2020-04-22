@@ -137,7 +137,7 @@ There are four kinds of filters you can use on your To-Do List.
 | Project | Filter by project |
 | Group   | Filter by group |
 | Author  | Filter by the author that triggered the To Do |
-| Type    | Filter by issue, merge request, or epic **(ULTIMATE)** |
+| Type    | Filter by issue, merge request, design, or epic **(ULTIMATE)** |
 | Action  | Filter by the action that triggered the To Do |
 
 You can also filter by more than one of these at the same time. The possible Actions are

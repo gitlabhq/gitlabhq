@@ -45,14 +45,6 @@ describe PagesDomainPresenter do
 
       it { is_expected.to eq(true) }
 
-      context 'when lets_encrypt_error feature flag is disabled' do
-        before do
-          stub_feature_flags(pages_letsencrypt_errors: false)
-        end
-
-        it { is_expected.to eq(false) }
-      end
-
       context "when Let's Encrypt integration is disabled" do
         before do
           allow(::Gitlab::LetsEncrypt).to receive(:enabled?).and_return false

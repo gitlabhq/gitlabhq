@@ -9832,7 +9832,9 @@ CREATE INDEX index_pages_domain_acme_orders_on_challenge_token ON public.pages_d
 
 CREATE INDEX index_pages_domain_acme_orders_on_pages_domain_id ON public.pages_domain_acme_orders USING btree (pages_domain_id);
 
-CREATE INDEX index_pages_domains_need_auto_ssl_renewal ON public.pages_domains USING btree (certificate_source, certificate_valid_not_after) WHERE (auto_ssl_enabled = true);
+CREATE INDEX index_pages_domains_need_auto_ssl_renewal_user_provided ON public.pages_domains USING btree (id) WHERE ((auto_ssl_enabled = true) AND (auto_ssl_failed = false) AND (certificate_source = 0));
+
+CREATE INDEX index_pages_domains_need_auto_ssl_renewal_valid_not_after ON public.pages_domains USING btree (certificate_valid_not_after) WHERE ((auto_ssl_enabled = true) AND (auto_ssl_failed = false));
 
 CREATE UNIQUE INDEX index_pages_domains_on_domain_and_wildcard ON public.pages_domains USING btree (domain, wildcard);
 
@@ -13221,9 +13223,12 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200402124802
 20200402135250
 20200402185044
+20200403132349
 20200403184110
 20200403185127
 20200403185422
+20200406095930
+20200406100909
 20200406102111
 20200406102120
 20200406135648

@@ -153,6 +153,7 @@ module API
         optional :snowplow_cookie_domain, type: String, desc: 'The Snowplow cookie domain'
         optional :snowplow_app_id, type: String, desc: 'The Snowplow site name / application id'
       end
+      optional :issues_create_limit, type: Integer, desc: "Maximum number of issue creation requests allowed per minute per user. Set to 0 for unlimited requests per minute."
 
       ApplicationSetting::SUPPORTED_KEY_TYPES.each do |type|
         optional :"#{type}_key_restriction",

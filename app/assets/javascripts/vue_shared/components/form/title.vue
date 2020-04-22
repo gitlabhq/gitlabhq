@@ -6,6 +6,7 @@ export default {
     GlFormInput,
     GlFormGroup,
   },
+  inheritAttrs: false,
 };
 </script>
 <template>

@@ -21,7 +21,7 @@ license_scanning:
     - /run.sh analyze .
   artifacts:
     reports:
-      license_scanning: gl-license-scanning-report.json
+      license_scanning: $LM_REPORT_FILE
   dependencies: []
   only:
     refs:
