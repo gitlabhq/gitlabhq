@@ -1,0 +1,5 @@
+---
+title: 'fix: use the source project to generate commit links for un-persisted merge requests'
+merge_request: 29243
+author: Chieh-Min Wang
+type: fixed

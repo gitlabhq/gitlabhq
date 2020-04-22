@@ -103,7 +103,7 @@ Our integrations add great value to GitLab. User questions often relate to integ
 
 ### Learn about the Support process
 
-Zendesk is our Support Centre and our main communication line with our Customers. We communicate with customers through several other channels too
+Zendesk is our Support Center and our main communication line with our Customers. We communicate with customers through several other channels too
 
 - Familiarize yourself with ZenDesk:
   - [UI Overview](https://support.zendesk.com/hc/en-us/articles/203661806-Introduction-to-the-Zendesk-agent-interface)

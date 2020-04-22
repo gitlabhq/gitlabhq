@@ -540,7 +540,7 @@ and the basic idea is that the cost of a test includes:
 
 ### Frontend-related tests
 
-There are cases where the behaviour you are testing is not worth the time spent
+There are cases where the behavior you are testing is not worth the time spent
 running the full application, for example, if you are testing styling, animation,
 edge cases or small actions that don't involve the backend,
 you should write an integration test using Jasmine.

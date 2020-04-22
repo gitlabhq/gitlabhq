@@ -139,7 +139,7 @@ During this phase, the idea is to collect as much information as possible about 
 - **Requests**: Which requests are needed to have a working MVC. Ideally, produce
   a list of all the requests needed for the MVC (including required actions). Further
   investigation could provide an example for each request with the request and the response bodies.
-- **Upload**: Carefully analyse how the upload process works. This will probably be the most
+- **Upload**: Carefully analyze how the upload process works. This will probably be the most
   complex request to implement. A detailed analysis is desired here as uploads can be
   encoded in different ways (body or multipart) and can even be in a totally different
   format (for example, a JSON structure where the package file is a Base64 value of

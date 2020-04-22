@@ -95,7 +95,7 @@ ensure these processes are close to 100% as possible during active use.
 Navigate to the **{admin}** **Admin Area >** **{location-dot}** **Geo** dashboard on the **secondary** node to
 review status. Replicated objects (shown in green) should be close to 100%,
 and there should be no failures (shown in red). If a large proportion of
-objects aren't yet replicated (shown in grey), consider giving the node more
+objects aren't yet replicated (shown in gray), consider giving the node more
 time to complete
 
 ![Replication status](img/replication-status.png)

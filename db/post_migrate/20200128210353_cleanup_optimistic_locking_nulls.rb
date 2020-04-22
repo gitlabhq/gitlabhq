@@ -31,7 +31,7 @@ class CleanupOptimisticLockingNulls < ActiveRecord::Migration[5.2]
         'CleanupOptimisticLockingNulls',
         2.minutes,
         batch_size: BATCH_SIZE,
-        other_job_arguments: [table]
+        other_arguments: [table]
       )
     end
   end

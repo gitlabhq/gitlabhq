@@ -8862,8 +8862,6 @@ CREATE INDEX index_ci_builds_on_commit_id_and_type_and_name_and_ref ON public.ci
 
 CREATE INDEX index_ci_builds_on_commit_id_and_type_and_ref ON public.ci_builds USING btree (commit_id, type, ref);
 
-CREATE INDEX index_ci_builds_on_lock_version ON public.ci_builds USING btree (lock_version) WHERE (lock_version IS NULL);
-
 CREATE INDEX index_ci_builds_on_name_and_security_type_eq_ci_build ON public.ci_builds USING btree (name, id) WHERE (((name)::text = ANY (ARRAY[('container_scanning'::character varying)::text, ('dast'::character varying)::text, ('dependency_scanning'::character varying)::text, ('license_management'::character varying)::text, ('sast'::character varying)::text, ('license_scanning'::character varying)::text])) AND ((type)::text = 'Ci::Build'::text));
 
 CREATE INDEX index_ci_builds_on_project_id_and_id ON public.ci_builds USING btree (project_id, id);
@@ -8940,8 +8938,6 @@ CREATE INDEX index_ci_pipelines_on_auto_canceled_by_id ON public.ci_pipelines US
 
 CREATE INDEX index_ci_pipelines_on_external_pull_request_id ON public.ci_pipelines USING btree (external_pull_request_id) WHERE (external_pull_request_id IS NOT NULL);
 
-CREATE INDEX index_ci_pipelines_on_lock_version ON public.ci_pipelines USING btree (lock_version) WHERE (lock_version IS NULL);
-
 CREATE INDEX index_ci_pipelines_on_merge_request_id ON public.ci_pipelines USING btree (merge_request_id) WHERE (merge_request_id IS NOT NULL);
 
 CREATE INDEX index_ci_pipelines_on_pipeline_schedule_id ON public.ci_pipelines USING btree (pipeline_schedule_id);
@@ -9009,8 +9005,6 @@ CREATE INDEX index_ci_sources_pipelines_on_source_project_id ON public.ci_source
 CREATE INDEX index_ci_sources_projects_on_pipeline_id ON public.ci_sources_projects USING btree (pipeline_id);
 
 CREATE UNIQUE INDEX index_ci_sources_projects_on_source_project_id_and_pipeline_id ON public.ci_sources_projects USING btree (source_project_id, pipeline_id);
-
-CREATE INDEX index_ci_stages_on_lock_version ON public.ci_stages USING btree (lock_version) WHERE (lock_version IS NULL);
 
 CREATE INDEX index_ci_stages_on_pipeline_id ON public.ci_stages USING btree (pipeline_id);
 
@@ -13070,7 +13064,6 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200214214934
 20200215222507
 20200215225103
-20200217210353
 20200217223651
 20200217225719
 20200218113721

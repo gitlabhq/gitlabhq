@@ -256,7 +256,7 @@ which `calculate_reactive_cache` can be called.
   end
   ```
 
-- The default behaviour can be overridden by defining a custom `reactive_cache_worker_finder`.
+- The default behavior can be overridden by defining a custom `reactive_cache_worker_finder`.
 
   ```ruby
   class Foo < ApplicationRecord

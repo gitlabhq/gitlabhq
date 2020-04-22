@@ -184,7 +184,7 @@ The NFS man page states:
 Read the [Linux man page](https://linux.die.net/man/5/nfs) to understand the difference,
 and if you do use `soft`, ensure that you've taken steps to mitigate the risks.
 
-If you experience behaviour that might have been caused by
+If you experience behavior that might have been caused by
 writes to disk on the NFS server not occurring, such as commits going missing,
 use the `hard` option, because (from the man page):
 

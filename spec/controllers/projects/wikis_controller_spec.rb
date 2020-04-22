@@ -200,7 +200,20 @@ describe Projects::WikisController do
 
         subject
 
-        expect(response).to redirect_to(project_wiki_path(project, project_wiki.list_pages.first))
+        expect(response).to redirect_to_wiki(project, project_wiki.list_pages.first)
+      end
+    end
+
+    context 'when the page has nil content' do
+      let(:page) { create(:wiki_page) }
+
+      it 'redirects to show' do
+        allow(page).to receive(:content).and_return(nil)
+        allow(controller).to receive(:find_page).and_return(page)
+
+        subject
+
+        expect(response).to redirect_to_wiki(project, page)
       end
     end
 
@@ -235,7 +248,7 @@ describe Projects::WikisController do
         allow(controller).to receive(:valid_encoding?).and_return(false)
 
         subject
-        expect(response).to redirect_to(project_wiki_path(project, project_wiki.list_pages.first))
+        expect(response).to redirect_to_wiki(project, project_wiki.list_pages.first)
       end
     end
 
@@ -264,5 +277,9 @@ describe Projects::WikisController do
   def destroy_page(title, dir = '')
     page = wiki.page(title: title, dir: dir)
     project_wiki.delete_page(page, "test commit")
+  end
+
+  def redirect_to_wiki(project, page)
+    redirect_to(controller.project_wiki_path(project, page))
   end
 end

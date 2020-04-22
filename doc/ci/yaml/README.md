@@ -2607,7 +2607,7 @@ rspec:
 
 > Introduced in GitLab 9.4.
 
-The default behaviour of a caching job is to download the files at the start of
+The default behavior of a caching job is to download the files at the start of
 execution, and to re-upload them at the end. This allows any changes made by the
 job to be persisted for future runs, and is known as the `pull-push` cache
 policy.
@@ -3198,7 +3198,7 @@ job1:
 ### `retry`
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/12909) in GitLab 9.5.
-> - [Behaviour expanded](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/21758) in GitLab 11.5 to control on which failures to retry.
+> - [Behavior expanded](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/21758) in GitLab 11.5 to control on which failures to retry.
 
 `retry` allows you to configure how many times a job is going to be retried in
 case of a failure.

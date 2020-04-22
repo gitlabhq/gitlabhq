@@ -246,7 +246,7 @@ is in sync with the primary. If the data is determined to be recent enough the
 secondary can be used, otherwise it will be ignored. To reduce the overhead of
 these checks we only perform these checks at certain intervals.
 
-There are three configuration options that influence this behaviour:
+There are three configuration options that influence this behavior:
 
 | Option                       | Description                                                                                                    | Default    |
 |------------------------------|----------------------------------------------------------------------------------------------------------------|------------|

@@ -215,6 +215,8 @@ module CommitsHelper
   def commit_path(project, commit, merge_request: nil)
     if merge_request&.persisted?
       diffs_project_merge_request_path(project, merge_request, commit_id: commit.id)
+    elsif merge_request
+      project_commit_path(merge_request&.source_project, commit)
     else
       project_commit_path(project, commit)
     end

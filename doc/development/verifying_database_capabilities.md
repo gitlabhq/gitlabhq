@@ -2,7 +2,7 @@
 
 Sometimes certain bits of code may only work on a certain database
 version. While we try to avoid such code as much as possible sometimes it is
-necessary to add database (version) specific behaviour.
+necessary to add database (version) specific behavior.
 
 To facilitate this we have the following methods that you can use:
 

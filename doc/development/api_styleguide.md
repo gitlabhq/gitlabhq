@@ -100,7 +100,7 @@ Model.create(foo: params[:foo])
 
 ## Using HTTP status helpers
 
-For non-200 HTTP responses, use the provided helpers in `lib/api/helpers.rb` to ensure correct behaviour (`not_found!`, `no_content!` etc.). These will `throw` inside Grape and abort the execution of your endpoint.
+For non-200 HTTP responses, use the provided helpers in `lib/api/helpers.rb` to ensure correct behavior (`not_found!`, `no_content!` etc.). These will `throw` inside Grape and abort the execution of your endpoint.
 
 For `DELETE` requests, you should also generally use the `destroy_conditionally!` helper which by default returns a `204 No Content` response on success, or a `412 Precondition Failed` response if the given `If-Unmodified-Since` header is out of range. This helper calls `#destroy` on the passed resource, but you can also implement a custom deletion method by passing a block.
 

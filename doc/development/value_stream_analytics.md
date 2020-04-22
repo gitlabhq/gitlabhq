@@ -185,7 +185,7 @@ Currently supported parents:
 
 The [original implementation](https://gitlab.com/gitlab-org/gitlab/issues/847) of value stream analytics defined 7 stages. These stages are always available for each parent, however altering these stages is not possible.
 ​
-To make things efficient and reduce the number of records created, the default stages are expressed as in-memory objects (not persisted). When the user creates a custom stage for the first time, all the stages will be persisted. This behaviour is implemented in the value stream analytics service objects.
+To make things efficient and reduce the number of records created, the default stages are expressed as in-memory objects (not persisted). When the user creates a custom stage for the first time, all the stages will be persisted. This behavior is implemented in the value stream analytics service objects.
 ​
 The reason for this was that we'd like to add the abilities to hide and order stages later on.
 

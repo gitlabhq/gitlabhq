@@ -14,11 +14,8 @@ const DEFAULT_SNOWPLOW_OPTIONS = {
   linkClickTracking: false,
 };
 
-const eventHandler = (e, func, opts = {}) => {
-  const el = e.target.closest('[data-track-event]');
-  const action = el && el.dataset.trackEvent;
-  if (!action) return;
-
+const createEventPayload = (el, { suffix = '' } = {}) => {
+  const action = el.dataset.trackEvent + (suffix || '');
   let value = el.dataset.trackValue || el.value || undefined;
   if (el.type === 'checkbox' && !el.checked) value = false;
 
@@ -29,7 +26,19 @@ const eventHandler = (e, func, opts = {}) => {
     context: el.dataset.trackContext,
   };
 
-  func(opts.category, action + (opts.suffix || ''), omitBy(data, isUndefined));
+  return {
+    action,
+    data: omitBy(data, isUndefined),
+  };
+};
+
+const eventHandler = (e, func, opts = {}) => {
+  const el = e.target.closest('[data-track-event]');
+
+  if (!el) return;
+
+  const { action, data } = createEventPayload(el, opts);
+  func(opts.category, action, data);
 };
 
 const eventHandlers = (category, func) => {
@@ -62,15 +71,28 @@ export default class Tracking {
     return window.snowplow('trackStructEvent', category, action, label, property, value, contexts);
   }
 
-  static bindDocument(category = document.body.dataset.page, documentOverride = null) {
-    const el = documentOverride || document;
-    if (!this.enabled() || el.trackingBound) return [];
+  static bindDocument(category = document.body.dataset.page, parent = document) {
+    if (!this.enabled() || parent.trackingBound) return [];
 
-    el.trackingBound = true;
+    // eslint-disable-next-line no-param-reassign
+    parent.trackingBound = true;
 
     const handlers = eventHandlers(category, (...args) => this.event(...args));
-    handlers.forEach(event => el.addEventListener(event.name, event.func));
+    handlers.forEach(event => parent.addEventListener(event.name, event.func));
     return handlers;
+  }
+
+  static trackLoadEvents(category = document.body.dataset.page, parent = document) {
+    if (!this.enabled()) return [];
+
+    const loadEvents = parent.querySelectorAll('[data-track-event="render"]');
+
+    loadEvents.forEach(element => {
+      const { action, data } = createEventPayload(element);
+      this.event(category, action, data);
+    });
+
+    return loadEvents;
   }
 
   static mixin(opts = {}) {
@@ -111,6 +133,7 @@ export function initUserTracking() {
   if (opts.linkClickTracking) window.snowplow('enableLinkClickTracking');
 
   Tracking.bindDocument();
+  Tracking.trackLoadEvents();
 
   document.dispatchEvent(new Event('SnowplowInitialized'));
 }

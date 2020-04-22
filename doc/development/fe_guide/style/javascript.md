@@ -192,7 +192,7 @@ if (isThingNull) {
 
 ## ESLint
 
-ESLint behaviour can be found in our [tooling guide](../tooling.md).
+ESLint behavior can be found in our [tooling guide](../tooling.md).
 
 ## IIFEs
 

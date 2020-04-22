@@ -109,7 +109,7 @@ In short:
 By collecting snapshots of process state at regular intervals, profiling allows
 you to see where time is spent in a process. The [StackProf](https://github.com/tmm1/stackprof)
 gem is included in GitLab's development environment, allowing you to investigate
-the behaviour of suspect code in detail.
+the behavior of suspect code in detail.
 
 It's important to note that profiling an application *alters its performance*,
 and will generally be done *in an unrepresentative environment*. In particular,

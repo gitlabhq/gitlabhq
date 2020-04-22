@@ -164,7 +164,7 @@ Suppose you have the labels `workflow::development`, `workflow::review`, and
 applied, and a developer wanted to advance the issue to `workflow::review`, they
 would simply apply that label, and the `workflow::development` label would
 automatically be removed. This behavior already exists when you move issues
-across label lists in an [issue board](issue_board.md#creating-workflows), but
+across label lists in an [issue board](issue_board.md#create-workflows), but
 now, team members who may not be working in an issue board directly would still
 be able to advance workflow states consistently in issues themselves.
 

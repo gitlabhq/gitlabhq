@@ -65,7 +65,7 @@ First, be aware of GitLab's [commitment to dogfooding](https://about.gitlab.com/
 The code we write for Danger is GitLab-specific, and it **may not** be most
 appropriate place to implement functionality that addresses a need we encounter.
 Our users, customers, and even our own satellite projects, such as [Gitaly](https://gitlab.com/gitlab-org/gitaly),
-often face similar challenges, after all. Think about how you could fulfil the
+often face similar challenges, after all. Think about how you could fulfill the
 same need while ensuring everyone can benefit from the work, and do that instead
 if you can.
 

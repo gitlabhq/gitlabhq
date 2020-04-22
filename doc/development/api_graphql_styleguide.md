@@ -110,7 +110,7 @@ When exposing an `ID` field on a type, we will by default try to
 expose a global ID by calling `to_global_id` on the resource being
 rendered.
 
-To override this behaviour, you can implement an `id` method on the
+To override this behavior, you can implement an `id` method on the
 type for which you are exposing an ID. Please make sure that when
 exposing a `GraphQL::ID_TYPE` using a custom method that it is
 globally unique.
@@ -598,7 +598,7 @@ ID. Otherwise use a [globally unique ID](#exposing-global-ids).
 
 We already have a `FullPathLoader` that can be included in other
 resolvers to quickly find Projects and Namespaces which will have a
-lot of dependant objects.
+lot of dependent objects.
 
 To limit the amount of queries performed, we can use `BatchLoader`.
 

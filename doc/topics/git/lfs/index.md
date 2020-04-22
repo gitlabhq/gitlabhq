@@ -217,7 +217,7 @@ If you push a LFS object to a project and you receive an error similar to:
 the LFS client is trying to reach GitLab through HTTPS. However, your GitLab
 instance is being served on HTTP.
 
-This behaviour is caused by Git LFS using HTTPS connections by default when a
+This behavior is caused by Git LFS using HTTPS connections by default when a
 `lfsurl` is not set in the Git config.
 
 To prevent this from happening, set the lfs url in project Git config:

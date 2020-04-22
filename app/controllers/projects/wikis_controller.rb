@@ -10,8 +10,9 @@ class Projects::WikisController < Projects::ApplicationController
   before_action :authorize_admin_wiki!, only: :destroy
   before_action :load_project_wiki
   before_action :load_page, only: [:show, :edit, :update, :history, :destroy]
-  before_action :valid_encoding?,
-    if: -> { %w[show edit update].include?(action_name) && load_page }
+  before_action only: [:show, :edit, :update] do
+    @valid_encoding = valid_encoding?
+  end
   before_action only: [:edit, :update], unless: :valid_encoding? do
     redirect_to(project_wiki_path(@project, @page))
   end
@@ -167,7 +168,11 @@ class Projects::WikisController < Projects::ApplicationController
   end
 
   def load_page
-    @page ||= @project_wiki.find_page(*page_params)
+    @page ||= find_page
+  end
+
+  def find_page
+    @project_wiki.find_page(*page_params)
   end
 
   def page_params
@@ -178,9 +183,11 @@ class Projects::WikisController < Projects::ApplicationController
   end
 
   def valid_encoding?
-    strong_memoize(:valid_encoding) do
-      @page.content.encoding == Encoding::UTF_8
-    end
+    page_encoding == Encoding::UTF_8
+  end
+
+  def page_encoding
+    strong_memoize(:page_encoding) { @page&.content&.encoding }
   end
 
   def set_encoding_error

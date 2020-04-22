@@ -24,7 +24,7 @@ The term `SHOULD` per the [RFC 2119](https://www.ietf.org/rfc/rfc2119.txt) means
 > carefully weighed before choosing a different course.
 
 Ideally, each of these tradeoffs should be documented
-in the separate issues, labelled accordingly and linked
+in the separate issues, labeled accordingly and linked
 to original issue and epic.
 
 ## Impact Analysis

@@ -337,7 +337,7 @@ Feature.enabled?(:ci_live_trace, project2) # => true
 
 The code exercised by a single GitLab test may access and modify many items of
 data. Without careful preparation before a test runs, and cleanup afterward,
-data can be changed by a test in such a way that it affects the behaviour of
+data can be changed by a test in such a way that it affects the behavior of
 following tests. This should be avoided at all costs! Fortunately, the existing
 test framework handles most cases already.
 

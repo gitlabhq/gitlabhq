@@ -1063,8 +1063,6 @@ into similar problems in the future (e.g. when new tables are created).
       # batch_size - The maximum number of rows per job
       # other_arguments - Other arguments to send to the job
       #
-      # *Returns the final migration delay*
-      #
       # Example:
       #
       #     class Route < ActiveRecord::Base
@@ -1081,7 +1079,7 @@ into similar problems in the future (e.g. when new tables are created).
       #         # do something
       #       end
       #     end
-      def queue_background_migration_jobs_by_range_at_intervals(model_class, job_class_name, delay_interval, batch_size: BACKGROUND_MIGRATION_BATCH_SIZE, other_job_arguments: [], initial_delay: 0)
+      def queue_background_migration_jobs_by_range_at_intervals(model_class, job_class_name, delay_interval, batch_size: BACKGROUND_MIGRATION_BATCH_SIZE, other_arguments: [])
         raise "#{model_class} does not have an ID to use for batch ranges" unless model_class.column_names.include?('id')
 
         # To not overload the worker too much we enforce a minimum interval both
@@ -1090,19 +1088,14 @@ into similar problems in the future (e.g. when new tables are created).
           delay_interval = BackgroundMigrationWorker.minimum_interval
         end
 
-        final_delay = 0
-
         model_class.each_batch(of: batch_size) do |relation, index|
           start_id, end_id = relation.pluck(Arel.sql('MIN(id), MAX(id)')).first
 
           # `BackgroundMigrationWorker.bulk_perform_in` schedules all jobs for
           # the same time, which is not helpful in most cases where we wish to
           # spread the work over time.
-          final_delay = initial_delay + delay_interval * index
-          migrate_in(final_delay, job_class_name, [start_id, end_id] + other_job_arguments)
+          migrate_in(delay_interval * index, job_class_name, [start_id, end_id] + other_arguments)
         end
-
-        final_delay
       end
 
       # Fetches indexes on a column by name for postgres.

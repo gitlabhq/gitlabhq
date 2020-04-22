@@ -27,7 +27,7 @@ need to be configured in a Bamboo build plan before GitLab can integrate.
 1. In the left pane, select a build stage. If you have multiple build stages
    you want to select the last stage that contains the Git checkout task.
 1. Select the 'Miscellaneous' tab.
-1. Under 'Pattern Match Labelling' put `${bamboo.repository.revision.number}`
+1. Under 'Pattern Match Labeling' put `${bamboo.repository.revision.number}`
    in the 'Labels' box.
 1. Save
 

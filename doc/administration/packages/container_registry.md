@@ -427,7 +427,7 @@ NOTE: **Note:**
 
 By default, users accessing a registry configured with a remote backend are redirected to the default backend for the storage driver. For example, registries can be configured using the `s3` storage driver, which redirects requests to a remote S3 bucket to alleviate load on the GitLab server.
 
-However, this behaviour is undesirable for registries used by internal hosts that usually can't access public servers. To disable redirects, set the `disable` flag to true as follows. This makes all traffic to always go through the Registry service. This results in improved security (less surface attack as the storage backend is not publicly accessible), but worse performance (all traffic is redirected via the service).
+However, this behavior is undesirable for registries used by internal hosts that usually can't access public servers. To disable redirects, set the `disable` flag to true as follows. This makes all traffic to always go through the Registry service. This results in improved security (less surface attack as the storage backend is not publicly accessible), but worse performance (all traffic is redirected via the service).
 
 **Omnibus GitLab installations**
 

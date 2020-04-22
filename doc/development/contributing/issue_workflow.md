@@ -36,7 +36,7 @@ project.
 
 To allow for asynchronous issue handling, we use [milestones](https://gitlab.com/groups/gitlab-org/-/milestones)
 and [labels](https://gitlab.com/gitlab-org/gitlab/-/labels). Leads and product managers handle most of the
-scheduling into milestones. Labelling is a task for everyone.
+scheduling into milestones. Labeling is a task for everyone.
 
 Most issues will have labels for at least one of the following:
 
@@ -156,9 +156,9 @@ As a team needs some way to collect the work their members are planning to be as
 Normally there is a 1:1 relationship between Stage labels and Group labels. In
 the spirit of "Everyone can contribute", any issue can be picked up by any group,
 depending on current priorities. When picking up an issue belonging to a different
-group, it should be relabelled. For example, if an issue labelled `~"devops::create"`
+group, it should be relabeled. For example, if an issue labeled `~"devops::create"`
 and `~"group::knowledge"` is picked up by someone in the Access group of the Plan stage,
-the issue should be relabelled as `~"group::access"` while keeping the original
+the issue should be relabeled as `~"group::access"` while keeping the original
 `~"devops::create"` unchanged.
 
 We also use stage and group labels to help quantify our [throughput](https://about.gitlab.com/handbook/engineering/management/throughput/).
@@ -347,7 +347,7 @@ there is the ~"stewardship" label.
 
 This label is to be used for issues in which the stewardship of GitLab
 is a topic of discussion. For instance if GitLab Inc. is planning to add
-features from GitLab EE to GitLab CE, related issues would be labelled with
+features from GitLab EE to GitLab CE, related issues would be labeled with
 ~"stewardship".
 
 A recent example of this was the issue for
@@ -461,7 +461,7 @@ fixing in the same MR, but not worth creating a follow-up issue for. Renaming a
 method that is used in many places to make its intent slightly clearer may be
 worth fixing, but it should not happen in the same MR, and is generally not
 worth the overhead of having an issue of its own. These issues would invariably
-be labelled `~P4 ~S4` if we were to create them.
+be labeled `~P4 ~S4` if we were to create them.
 
 More severe technical debt can have implications for development velocity. If
 it isn't addressed in a timely manner, the codebase becomes needlessly difficult

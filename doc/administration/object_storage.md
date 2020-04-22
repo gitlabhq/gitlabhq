@@ -98,9 +98,9 @@ object storage back end, like when Git clients request large files via LFS or wh
 downloading CI artifacts and logs.
 
 When the files are stored on local block storage or NFS, GitLab has to act as a proxy.
-This is not the default behaviour with object storage.
+This is not the default behavior with object storage.
 
-The `proxy_download` setting controls this behaviour: the default is generally `false`.
+The `proxy_download` setting controls this behavior: the default is generally `false`.
 Verify this in the documentation for each use case. Set it to `true` so that GitLab proxies
 the files.
 

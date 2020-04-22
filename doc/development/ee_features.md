@@ -111,7 +111,7 @@ There are a few gotchas with it:
   smaller methods. Or create a "hook" method that is empty in CE,
   and with the EE-specific implementation in EE.
 - when the original implementation contains a guard clause (e.g.
-  `return unless condition`), we cannot easily extend the behaviour by
+  `return unless condition`), we cannot easily extend the behavior by
   overriding the method, because we can't know when the overridden method
   (i.e. calling `super` in the overriding method) would want to stop early.
   In this case, we shouldn't just override it, but update the original method
@@ -131,7 +131,7 @@ There are a few gotchas with it:
   ```
 
   Instead of just overriding `Base#execute`, we should update it and extract
-  the behaviour into another method:
+  the behavior into another method:
 
   ```ruby
     class Base
@@ -613,9 +613,9 @@ module EE
 end
 ```
 
-#### EE-specific behaviour
+#### EE-specific behavior
 
-Sometimes we need EE-specific behaviour in some of the APIs. Normally we could
+Sometimes we need EE-specific behavior in some of the APIs. Normally we could
 use EE methods to override CE methods, however API routes are not methods and
 therefore can't be simply overridden. We need to extract them into a standalone
 method, or introduce some "hooks" where we could inject behavior in the CE

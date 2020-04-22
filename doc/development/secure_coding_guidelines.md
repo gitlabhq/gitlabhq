@@ -78,7 +78,7 @@ The output of this example is `#<MatchData "bar">`, as Ruby treats the input `te
 
 #### Impact
 
-This Ruby Regex speciality can have security impact, as often regular expressions are used for validations or to impose restrictions on user-input.
+This Ruby Regex specialty can have security impact, as often regular expressions are used for validations or to impose restrictions on user-input.
 
 #### Examples
 

@@ -9,13 +9,6 @@ module Gitlab
     module ControllerConcern
       extend ActiveSupport::Concern
 
-      included do
-        # Tracking events from the template is not ideal and we are moving this to the client in https://gitlab.com/gitlab-org/gitlab/-/issues/213712
-        # In the meantime, using this method from the view is frowned upon and this line will likely be removed
-        # in the near future
-        helper_method :track_event
-      end
-
       protected
 
       def track_event(action = action_name, **args)
