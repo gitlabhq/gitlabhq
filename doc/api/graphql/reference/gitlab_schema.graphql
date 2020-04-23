@@ -4399,6 +4399,16 @@ enum IssueSort {
   DUE_DATE_DESC
 
   """
+  Priority by ascending order
+  """
+  PRIORITY_ASC
+
+  """
+  Priority by descending order
+  """
+  PRIORITY_DESC
+
+  """
   Relative position by ascending order
   """
   RELATIVE_POSITION_ASC

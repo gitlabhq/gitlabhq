@@ -5,7 +5,7 @@ import { GlSkeletonLoader } from '@gitlab/ui';
 import EditArea from './edit_area.vue';
 import EditHeader from './edit_header.vue';
 import SavedChangesMessage from './saved_changes_message.vue';
-import Toolbar from './publish_toolbar.vue';
+import PublishToolbar from './publish_toolbar.vue';
 import InvalidContentMessage from './invalid_content_message.vue';
 import SubmitChangesError from './submit_changes_error.vue';
 
@@ -16,7 +16,7 @@ export default {
     InvalidContentMessage,
     GlSkeletonLoader,
     SavedChangesMessage,
-    Toolbar,
+    PublishToolbar,
     SubmitChangesError,
   },
   computed: {
@@ -80,7 +80,7 @@ export default {
           :value="content"
           @input="setContent"
         />
-        <toolbar
+        <publish-toolbar
           :return-url="returnUrl"
           :saveable="contentChanged"
           :saving-changes="isSavingChanges"

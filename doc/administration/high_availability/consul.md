@@ -4,7 +4,10 @@ type: reference
 
 # Working with the bundled Consul service **(PREMIUM ONLY)**
 
-As part of its High Availability stack, GitLab Premium includes a bundled version of [Consul](https://www.consul.io/) that can be managed through `/etc/gitlab/gitlab.rb`.
+As part of its High Availability stack, GitLab Premium includes a bundled version of [Consul](https://www.consul.io/) that can be managed through `/etc/gitlab/gitlab.rb`. Consul is a service networking solution. When it comes to [GitLab Architecture](../../development/architecture.md), Consul utilization is supported for configuring:
+
+1. [Monitoring in Scaled and Highly Available environments](monitoring_node.md)
+1. [PostgreSQL High Availability with Omnibus](database.md#high-availability-with-gitlab-omnibus-premium-only)
 
 A Consul cluster consists of multiple server agents, as well as client agents that run on other nodes which need to talk to the Consul cluster.
 

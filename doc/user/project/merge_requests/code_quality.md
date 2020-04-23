@@ -27,7 +27,19 @@ in the merge request widget area:
 
 ![Code Quality Widget](img/code_quality.png)
 
-For more information, see the Code Climate list of [Supported Languages for Maintainability](https://docs.codeclimate.com/docs/supported-languages-for-maintainability).
+Watch a quick walkthrough of Code Quality in action:
+
+<div class="video-fallback">
+  See the video: <a href="https://www.youtube.com/watch?v=B32LxtJKo9M">Video title</a>.
+</div>
+<figure class="video-container">
+  <iframe src="https://www.youtube.com/embed/B32LxtJKo9M" frameborder="0" allowfullscreen="true"> </iframe>
+</figure>
+
+NOTE: **Note:**
+For one customer, the auditor found that having Code Quality, SAST, and Container Scanning all automated in GitLab CI/CD was almost better than a manual review! [Read more](https://about.gitlab.com/customers/bi_worldwide/).
+
+See also the Code Climate list of [Supported Languages for Maintainability](https://docs.codeclimate.com/docs/supported-languages-for-maintainability).
 
 ## Use cases
 

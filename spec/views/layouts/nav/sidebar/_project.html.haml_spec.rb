@@ -136,27 +136,55 @@ describe 'layouts/nav/sidebar/_project' do
   end
 
   describe 'operations settings tab' do
-    before do
-      project.update!(archived: project_archived)
-    end
+    describe 'archive projects' do
+      before do
+        project.update!(archived: project_archived)
+      end
 
-    context 'when project is archived' do
-      let(:project_archived) { true }
+      context 'when project is archived' do
+        let(:project_archived) { true }
 
-      it 'does not show the operations settings tab' do
-        render
+        it 'does not show the operations settings tab' do
+          render
 
-        expect(rendered).not_to have_link('Operations', href: project_settings_operations_path(project))
+          expect(rendered).not_to have_link('Operations', href: project_settings_operations_path(project))
+        end
+      end
+
+      context 'when project is active' do
+        let(:project_archived) { false }
+
+        it 'shows the operations settings tab' do
+          render
+
+          expect(rendered).to have_link('Operations', href: project_settings_operations_path(project))
+        end
       end
     end
 
-    context 'when project is active' do
-      let(:project_archived) { false }
+    describe 'Alert Management' do
+      context 'when alert_management_minimal is enabled' do
+        before do
+          stub_feature_flags(alert_management_minimal: true)
+        end
 
-      it 'shows the operations settings tab' do
-        render
+        it 'shows the Alerts sidebar entry' do
+          render
 
-        expect(rendered).to have_link('Operations', href: project_settings_operations_path(project))
+          expect(rendered).to have_css('a[title="Alerts"]')
+        end
+      end
+
+      context 'when alert_management_minimal is disabled' do
+        before do
+          stub_feature_flags(alert_management_minimal: false)
+        end
+
+        it 'does not show the Alerts sidebar entry' do
+          render
+
+          expect(rendered).to have_no_css('a[title="Alerts"]')
+        end
       end
     end
   end

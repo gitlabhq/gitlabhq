@@ -45,8 +45,8 @@ describe 'getting an issue list for a project' do
   it 'includes discussion locked' do
     post_graphql(query, current_user: current_user)
 
-    expect(issues_data[0]['node']['discussionLocked']).to eq false
-    expect(issues_data[1]['node']['discussionLocked']).to eq true
+    expect(issues_data[0]['node']['discussionLocked']).to eq(false)
+    expect(issues_data[1]['node']['discussionLocked']).to eq(true)
   end
 
   context 'when limiting the number of results' do
@@ -79,7 +79,7 @@ describe 'getting an issue list for a project' do
 
       post_graphql(query)
 
-      expect(issues_data).to eq []
+      expect(issues_data).to eq([])
     end
   end
 
@@ -122,15 +122,15 @@ describe 'getting an issue list for a project' do
     let(:end_cursor) { graphql_data['project']['issues']['pageInfo']['endCursor'] }
 
     context 'when sorting by due date' do
-      let(:sort_project) { create(:project, :public) }
+      let_it_be(:sort_project) { create(:project, :public) }
 
-      let!(:due_issue1) { create(:issue, project: sort_project, due_date: 3.days.from_now) }
-      let!(:due_issue2) { create(:issue, project: sort_project, due_date: nil) }
-      let!(:due_issue3) { create(:issue, project: sort_project, due_date: 2.days.ago) }
-      let!(:due_issue4) { create(:issue, project: sort_project, due_date: nil) }
-      let!(:due_issue5) { create(:issue, project: sort_project, due_date: 1.day.ago) }
+      let_it_be(:due_issue1) { create(:issue, project: sort_project, due_date: 3.days.from_now) }
+      let_it_be(:due_issue2) { create(:issue, project: sort_project, due_date: nil) }
+      let_it_be(:due_issue3) { create(:issue, project: sort_project, due_date: 2.days.ago) }
+      let_it_be(:due_issue4) { create(:issue, project: sort_project, due_date: nil) }
+      let_it_be(:due_issue5) { create(:issue, project: sort_project, due_date: 1.day.ago) }
 
-      let(:params) { 'sort: DUE_DATE_ASC' }
+      let_it_be(:params) { 'sort: DUE_DATE_ASC' }
 
       def query(issue_params = params)
         graphql_query_for(
@@ -160,20 +160,20 @@ describe 'getting an issue list for a project' do
 
       context 'when ascending' do
         it 'sorts issues' do
-          expect(grab_iids).to eq [due_issue3.iid, due_issue5.iid, due_issue1.iid, due_issue4.iid, due_issue2.iid]
+          expect(grab_iids).to eq([due_issue3.iid, due_issue5.iid, due_issue1.iid, due_issue4.iid, due_issue2.iid])
         end
 
         context 'when paginating' do
           let(:params) { 'sort: DUE_DATE_ASC, first: 2' }
 
           it 'sorts issues' do
-            expect(grab_iids).to eq [due_issue3.iid, due_issue5.iid]
+            expect(grab_iids).to eq([due_issue3.iid, due_issue5.iid])
 
             cursored_query = query("sort: DUE_DATE_ASC, after: \"#{end_cursor}\"")
             post_graphql(cursored_query, current_user: current_user)
             response_data = JSON.parse(response.body)['data']['project']['issues']['edges']
 
-            expect(grab_iids(response_data)).to eq [due_issue1.iid, due_issue4.iid, due_issue2.iid]
+            expect(grab_iids(response_data)).to eq([due_issue1.iid, due_issue4.iid, due_issue2.iid])
           end
         end
       end
@@ -182,35 +182,35 @@ describe 'getting an issue list for a project' do
         let(:params) { 'sort: DUE_DATE_DESC' }
 
         it 'sorts issues' do
-          expect(grab_iids).to eq [due_issue1.iid, due_issue5.iid, due_issue3.iid, due_issue4.iid, due_issue2.iid]
+          expect(grab_iids).to eq([due_issue1.iid, due_issue5.iid, due_issue3.iid, due_issue4.iid, due_issue2.iid])
         end
 
         context 'when paginating' do
           let(:params) { 'sort: DUE_DATE_DESC, first: 2' }
 
           it 'sorts issues' do
-            expect(grab_iids).to eq [due_issue1.iid, due_issue5.iid]
+            expect(grab_iids).to eq([due_issue1.iid, due_issue5.iid])
 
             cursored_query = query("sort: DUE_DATE_DESC, after: \"#{end_cursor}\"")
             post_graphql(cursored_query, current_user: current_user)
             response_data = JSON.parse(response.body)['data']['project']['issues']['edges']
 
-            expect(grab_iids(response_data)).to eq [due_issue3.iid, due_issue4.iid, due_issue2.iid]
+            expect(grab_iids(response_data)).to eq([due_issue3.iid, due_issue4.iid, due_issue2.iid])
           end
         end
       end
     end
 
     context 'when sorting by relative position' do
-      let(:sort_project) { create(:project, :public) }
+      let_it_be(:sort_project) { create(:project, :public) }
 
-      let!(:relative_issue1) { create(:issue, project: sort_project, relative_position: 2000) }
-      let!(:relative_issue2) { create(:issue, project: sort_project, relative_position: nil) }
-      let!(:relative_issue3) { create(:issue, project: sort_project, relative_position: 1000) }
-      let!(:relative_issue4) { create(:issue, project: sort_project, relative_position: nil) }
-      let!(:relative_issue5) { create(:issue, project: sort_project, relative_position: 500) }
+      let_it_be(:relative_issue1) { create(:issue, project: sort_project, relative_position: 2000) }
+      let_it_be(:relative_issue2) { create(:issue, project: sort_project, relative_position: nil) }
+      let_it_be(:relative_issue3) { create(:issue, project: sort_project, relative_position: 1000) }
+      let_it_be(:relative_issue4) { create(:issue, project: sort_project, relative_position: nil) }
+      let_it_be(:relative_issue5) { create(:issue, project: sort_project, relative_position: 500) }
 
-      let(:params) { 'sort: RELATIVE_POSITION_ASC' }
+      let_it_be(:params) { 'sort: RELATIVE_POSITION_ASC' }
 
       def query(issue_params = params)
         graphql_query_for(
@@ -228,20 +228,91 @@ describe 'getting an issue list for a project' do
 
       context 'when ascending' do
         it 'sorts issues' do
-          expect(grab_iids).to eq [relative_issue5.iid, relative_issue3.iid, relative_issue1.iid, relative_issue4.iid, relative_issue2.iid]
+          expect(grab_iids).to eq([relative_issue5.iid, relative_issue3.iid, relative_issue1.iid, relative_issue4.iid, relative_issue2.iid])
         end
 
         context 'when paginating' do
           let(:params) { 'sort: RELATIVE_POSITION_ASC, first: 2' }
 
           it 'sorts issues' do
-            expect(grab_iids).to eq [relative_issue5.iid, relative_issue3.iid]
+            expect(grab_iids).to eq([relative_issue5.iid, relative_issue3.iid])
 
             cursored_query = query("sort: RELATIVE_POSITION_ASC, after: \"#{end_cursor}\"")
             post_graphql(cursored_query, current_user: current_user)
             response_data = JSON.parse(response.body)['data']['project']['issues']['edges']
 
-            expect(grab_iids(response_data)).to eq [relative_issue1.iid, relative_issue4.iid, relative_issue2.iid]
+            expect(grab_iids(response_data)).to eq([relative_issue1.iid, relative_issue4.iid, relative_issue2.iid])
+          end
+        end
+      end
+    end
+
+    context 'when sorting by priority' do
+      let_it_be(:sort_project) { create(:project, :public) }
+
+      let_it_be(:early_milestone) { create(:milestone, project: sort_project, due_date: 10.days.from_now) }
+      let_it_be(:late_milestone) { create(:milestone, project: sort_project, due_date: 30.days.from_now) }
+      let_it_be(:label_1) { create(:label, project: sort_project, priority: 1) }
+      let_it_be(:label_2) { create(:label, project: sort_project, priority: 5) }
+      let_it_be(:issue1) { create(:issue, project: sort_project, labels: [label_1], milestone: late_milestone) }
+      let_it_be(:issue2) { create(:issue, project: sort_project, labels: [label_2]) }
+      let_it_be(:issue3) { create(:issue, project: sort_project, milestone: early_milestone) }
+      let_it_be(:issue4) { create(:issue, project: sort_project) }
+
+      let_it_be(:params) { 'sort: PRIORITY_ASC' }
+
+      def query(issue_params = params)
+        graphql_query_for(
+          'project',
+          { 'fullPath' => sort_project.full_path },
+          "issues(#{issue_params}) { pageInfo { endCursor} edges { node { iid dueDate } } }"
+        )
+      end
+
+      before do
+        post_graphql(query, current_user: current_user)
+      end
+
+      it_behaves_like 'a working graphql query'
+
+      context 'when ascending' do
+        it 'sorts issues' do
+          expect(grab_iids).to eq([issue3.iid, issue1.iid, issue2.iid, issue4.iid])
+        end
+
+        context 'when paginating' do
+          let(:params) { 'sort: PRIORITY_ASC, first: 2' }
+
+          it 'sorts issues' do
+            expect(grab_iids).to eq([issue3.iid, issue1.iid])
+
+            cursored_query = query("sort: PRIORITY_ASC, after: \"#{end_cursor}\"")
+            post_graphql(cursored_query, current_user: current_user)
+            response_data = JSON.parse(response.body)['data']['project']['issues']['edges']
+
+            expect(grab_iids(response_data)).to eq([issue2.iid, issue4.iid])
+          end
+        end
+      end
+
+      context 'when descending' do
+        let(:params) { 'sort: PRIORITY_DESC' }
+
+        it 'sorts issues' do
+          expect(grab_iids).to eq([issue1.iid, issue3.iid, issue2.iid, issue4.iid])
+        end
+
+        context 'when paginating' do
+          let(:params) { 'sort: PRIORITY_DESC, first: 2' }
+
+          it 'sorts issues' do
+            expect(grab_iids).to eq([issue1.iid, issue3.iid])
+
+            cursored_query = query("sort: PRIORITY_DESC, after: \"#{end_cursor}\"")
+            post_graphql(cursored_query, current_user: current_user)
+            response_data = JSON.parse(response.body)['data']['project']['issues']['edges']
+
+            expect(grab_iids(response_data)).to eq([issue2.iid, issue4.iid])
           end
         end
       end

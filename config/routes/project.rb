@@ -316,7 +316,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
       # All new routes should go under /-/ scope.
       # Look for scope '-' at the top of the file.
-      # rubocop: disable Cop/PutProjectRoutesUnderScope
 
       #
       # Templates
@@ -332,8 +331,8 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           defaults: { format: 'json' },
           constraints: { template_type: %r{issue|merge_request}, format: 'json' }
 
-      resource :pages, only: [:show, :update, :destroy] do
-        resources :domains, except: :index, controller: 'pages_domains', constraints: { id: %r{[^/]+} } do
+      resource :pages, only: [:show, :update, :destroy] do # rubocop: disable Cop/PutProjectRoutesUnderScope
+        resources :domains, except: :index, controller: 'pages_domains', constraints: { id: %r{[^/]+} } do # rubocop: disable Cop/PutProjectRoutesUnderScope
           member do
             post :verify
             post :retry_auto_ssl
@@ -342,7 +341,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
       end
 
-      resources :snippets, concerns: :awardable, constraints: { id: /\d+/ } do
+      resources :snippets, concerns: :awardable, constraints: { id: /\d+/ } do # rubocop: disable Cop/PutProjectRoutesUnderScope
         member do
           get :raw
           post :mark_as_spam
@@ -350,14 +349,14 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       end
 
       namespace :prometheus do
-        resources :alerts, constraints: { id: /\d+/ }, only: [:index, :create, :show, :update, :destroy] do
+        resources :alerts, constraints: { id: /\d+/ }, only: [:index, :create, :show, :update, :destroy] do # rubocop: disable Cop/PutProjectRoutesUnderScope
           post :notify, on: :collection
           member do
             get :metrics_dashboard
           end
         end
 
-        resources :metrics, constraints: { id: %r{[^\/]+} }, only: [:index, :new, :create, :edit, :update, :destroy] do
+        resources :metrics, constraints: { id: %r{[^\/]+} }, only: [:index, :new, :create, :edit, :update, :destroy] do # rubocop: disable Cop/PutProjectRoutesUnderScope
           get :active_common, on: :collection
           post :validate_query, on: :collection
         end
@@ -378,28 +377,28 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
       draw :legacy_builds
 
-      resources :hooks, only: [:index, :create, :edit, :update, :destroy], constraints: { id: /\d+/ } do
+      resources :hooks, only: [:index, :create, :edit, :update, :destroy], constraints: { id: /\d+/ } do # rubocop: disable Cop/PutProjectRoutesUnderScope
         member do
           post :test
         end
 
-        resources :hook_logs, only: [:show] do
+        resources :hook_logs, only: [:show] do # rubocop: disable Cop/PutProjectRoutesUnderScope
           member do
             post :retry
           end
         end
       end
 
-      resources :container_registry, only: [:index, :destroy, :show],
+      resources :container_registry, only: [:index, :destroy, :show], # rubocop: disable Cop/PutProjectRoutesUnderScope
                                      controller: 'registry/repositories'
 
       namespace :registry do
-        resources :repository, only: [] do
+        resources :repository, only: [] do # rubocop: disable Cop/PutProjectRoutesUnderScope
           # We default to JSON format in the controller to avoid ambiguity.
           # `latest.json` could either be a request for a tag named `latest`
           # in JSON format, or a request for tag named `latest.json`.
           scope format: false do
-            resources :tags, only: [:index, :destroy],
+            resources :tags, only: [:index, :destroy], # rubocop: disable Cop/PutProjectRoutesUnderScope
                              constraints: { id: Gitlab::Regex.container_registry_tag_regex } do
               collection do
                 delete :bulk_destroy
@@ -415,7 +414,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         draw :issues
       end
 
-      resources :notes, only: [:create, :destroy, :update], concerns: :awardable, constraints: { id: /\d+/ } do
+      resources :notes, only: [:create, :destroy, :update], concerns: :awardable, constraints: { id: /\d+/ } do # rubocop: disable Cop/PutProjectRoutesUnderScope
         member do
           delete :delete_attachment
           post :resolve
@@ -425,16 +424,16 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
       get 'noteable/:target_type/:target_id/notes' => 'notes#index', as: 'noteable_notes'
 
-      resources :todos, only: [:create]
+      resources :todos, only: [:create] # rubocop: disable Cop/PutProjectRoutesUnderScope
 
-      resources :uploads, only: [:create] do
+      resources :uploads, only: [:create] do # rubocop: disable Cop/PutProjectRoutesUnderScope
         collection do
           get ":secret/:filename", action: :show, as: :show, constraints: { filename: %r{[^/]+} }, format: false, defaults: { format: nil }
           post :authorize
         end
       end
 
-      resources :runners, only: [:index, :edit, :update, :destroy, :show] do
+      resources :runners, only: [:index, :edit, :update, :destroy, :show] do # rubocop: disable Cop/PutProjectRoutesUnderScope
         member do
           post :resume
           post :pause
@@ -446,8 +445,8 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
       end
 
-      resources :runner_projects, only: [:create, :destroy]
-      resources :badges, only: [:index] do
+      resources :runner_projects, only: [:create, :destroy] # rubocop: disable Cop/PutProjectRoutesUnderScope
+      resources :badges, only: [:index] do # rubocop: disable Cop/PutProjectRoutesUnderScope
         collection do
           scope '*ref', constraints: { ref: Gitlab::PathRegex.git_reference_regex } do
             constraints format: /svg/ do
@@ -470,7 +469,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
       # All new routes should go under /-/ scope.
       # Look for scope '-' at the top of the file.
-      # rubocop: enable Cop/PutProjectRoutesUnderScope
 
       # Legacy routes.
       # Introduced in 12.0.

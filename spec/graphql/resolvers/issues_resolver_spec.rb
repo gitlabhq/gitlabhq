@@ -125,12 +125,12 @@ describe Resolvers::IssuesResolver do
         end
 
         context 'when sorting by due date' do
-          let(:project) { create(:project) }
+          let_it_be(:project) { create(:project) }
 
-          let!(:due_issue1) { create(:issue, project: project, due_date: 3.days.from_now) }
-          let!(:due_issue2) { create(:issue, project: project, due_date: nil) }
-          let!(:due_issue3) { create(:issue, project: project, due_date: 2.days.ago) }
-          let!(:due_issue4) { create(:issue, project: project, due_date: nil) }
+          let_it_be(:due_issue1) { create(:issue, project: project, due_date: 3.days.from_now) }
+          let_it_be(:due_issue2) { create(:issue, project: project, due_date: nil) }
+          let_it_be(:due_issue3) { create(:issue, project: project, due_date: 2.days.ago) }
+          let_it_be(:due_issue4) { create(:issue, project: project, due_date: nil) }
 
           it 'sorts issues ascending' do
             expect(resolve_issues(sort: :due_date_asc)).to eq [due_issue3, due_issue1, due_issue4, due_issue2]
@@ -142,15 +142,36 @@ describe Resolvers::IssuesResolver do
         end
 
         context 'when sorting by relative position' do
-          let(:project) { create(:project) }
+          let_it_be(:project) { create(:project) }
 
-          let!(:relative_issue1) { create(:issue, project: project, relative_position: 2000) }
-          let!(:relative_issue2) { create(:issue, project: project, relative_position: nil) }
-          let!(:relative_issue3) { create(:issue, project: project, relative_position: 1000) }
-          let!(:relative_issue4) { create(:issue, project: project, relative_position: nil) }
+          let_it_be(:relative_issue1) { create(:issue, project: project, relative_position: 2000) }
+          let_it_be(:relative_issue2) { create(:issue, project: project, relative_position: nil) }
+          let_it_be(:relative_issue3) { create(:issue, project: project, relative_position: 1000) }
+          let_it_be(:relative_issue4) { create(:issue, project: project, relative_position: nil) }
 
           it 'sorts issues ascending' do
             expect(resolve_issues(sort: :relative_position_asc)).to eq [relative_issue3, relative_issue1, relative_issue4, relative_issue2]
+          end
+        end
+
+        context 'when sorting by priority' do
+          let_it_be(:project) { create(:project) }
+
+          let_it_be(:early_milestone) { create(:milestone, project: project, due_date: 10.days.from_now) }
+          let_it_be(:late_milestone) { create(:milestone, project: project, due_date: 30.days.from_now) }
+          let_it_be(:label_1) { create(:label, project: project, priority: 1) }
+          let_it_be(:label_2) { create(:label, project: project, priority: 5) }
+          let_it_be(:issue1) { create(:issue, project: project, labels: [label_1], milestone: late_milestone) }
+          let_it_be(:issue2) { create(:issue, project: project, labels: [label_2]) }
+          let_it_be(:issue3) { create(:issue, project: project, milestone: early_milestone) }
+          let_it_be(:issue4) { create(:issue, project: project) }
+
+          it 'sorts issues ascending' do
+            expect(resolve_issues(sort: :priority_asc).items).to eq([issue3, issue1, issue2, issue4])
+          end
+
+          it 'sorts issues descending' do
+            expect(resolve_issues(sort: :priority_desc).items).to eq([issue1, issue3, issue2, issue4])
           end
         end
       end

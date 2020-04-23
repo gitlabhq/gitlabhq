@@ -12547,6 +12547,18 @@
               "deprecationReason": null
             },
             {
+              "name": "PRIORITY_ASC",
+              "description": "Priority by ascending order",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "PRIORITY_DESC",
+              "description": "Priority by descending order",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "DUE_DATE_ASC",
               "description": "Due date by ascending order",
               "isDeprecated": false,

@@ -9,6 +9,33 @@ in [GitLab Starter](https://about.gitlab.com/pricing/) 11.3.
 > - [Support for group namespaces](https://gitlab.com/gitlab-org/gitlab-foss/issues/53182) added in GitLab Starter 12.1.
 > - Code Owners for Merge Request approvals was [introduced](https://gitlab.com/gitlab-org/gitlab/issues/4418) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.9.
 
+## Introduction
+
+When contributing to a project, it can often be difficult
+to find out who should review or approve merge requests.
+Additionally, if you have a question over a specific file or
+code block, it may be difficult to know who to find the answer from.
+
+GitLab Code Owners is a feature to define who owns specific
+files or paths in a repository, allowing other users to understand
+who is responsible for each file or path.
+
+## Why is this useful?
+
+Code Owners allows for a version controlled single source of
+truth file outlining the exact GitLab users or groups that
+own certain files or paths in a repository. Code Owners can be
+utilized in the merge request approval process which can streamline
+the process of finding the right reviewers and approvers for a given
+merge request.
+
+In larger organizations or popular open source projects, Code Owners
+can also be useful to understand who to contact if you have
+a question that may not be related to code review or a merge request
+approval.
+
+## How to set up Code Owners
+
 You can use a `CODEOWNERS` file to specify users or
 [shared groups](members/share_project_with_groups.md)
 that are responsible for certain files in a repository.
@@ -41,7 +68,7 @@ The user that would show for `README.md` would be `@user2`.
 ## Approvals by Code Owners
 
 Once you've set Code Owners to a project, you can configure it to
-receive approvals:
+be used for merge request approvals:
 
 - As [merge request eligible approvers](merge_requests/merge_request_approvals.md#code-owners-as-eligible-approvers).
 - As required approvers for [protected branches](protected_branches.md#protected-branches-approval-by-code-owners-premium). **(PREMIUM)**

@@ -327,7 +327,6 @@ RSpec/LeakyConstantDeclaration:
   Enabled: true
   Exclude:
     - 'spec/**/*.rb'
-    - 'qa/spec/**/*.rb'
 
 RSpec/EmptyLineAfterHook:
   Enabled: false

@@ -267,7 +267,15 @@ class CommitStatus < ApplicationRecord
     end
   end
 
+  def recoverable?
+    failed? && !unrecoverable_failure?
+  end
+
   private
+
+  def unrecoverable_failure?
+    script_failure? || missing_dependency_failure? || archived_failure? || scheduler_failure? || data_integrity_failure?
+  end
 
   def schedule_stage_and_pipeline_update
     if Feature.enabled?(:ci_atomic_processing, project)

@@ -222,12 +222,14 @@
                   %span
                     = _('Metrics')
 
-            - if project_nav_tab?(:alert_management)
-              = nav_link(controller: :alert_management) do
-                = link_to project_alert_management_index_path(@project), title: _('Alerts'), class: 'shortcuts-tracking qa-operations-tracking-link' do
-                  %span
-                    = _('Alerts')
+            - if Feature.enabled?(:alert_management_minimal, @project)
+              - if project_nav_tab?(:alert_management)
+                = nav_link(controller: :alert_management) do
+                  = link_to project_alert_management_index_path(@project), title: _('Alerts'), class: 'shortcuts-tracking qa-operations-tracking-link' do
+                    %span
+                      = _('Alerts')
 
+            - if project_nav_tab? :environments
               = render_if_exists "layouts/nav/sidebar/tracing_link"
 
               = nav_link(controller: :environments, action: [:index, :folder, :show, :new, :edit, :create, :update, :stop, :terminal]) do

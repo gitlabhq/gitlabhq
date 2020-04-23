@@ -5643,6 +5643,25 @@ CREATE SEQUENCE public.resource_milestone_events_id_seq
 
 ALTER SEQUENCE public.resource_milestone_events_id_seq OWNED BY public.resource_milestone_events.id;
 
+CREATE TABLE public.resource_state_events (
+    id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    issue_id bigint,
+    merge_request_id bigint,
+    created_at timestamp with time zone NOT NULL,
+    state smallint NOT NULL,
+    CONSTRAINT resource_state_events_must_belong_to_issue_or_merge_request CHECK ((((issue_id <> NULL::bigint) AND (merge_request_id IS NULL)) OR ((merge_request_id <> NULL::bigint) AND (issue_id IS NULL))))
+);
+
+CREATE SEQUENCE public.resource_state_events_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.resource_state_events_id_seq OWNED BY public.resource_state_events.id;
+
 CREATE TABLE public.resource_weight_events (
     id bigint NOT NULL,
     user_id bigint NOT NULL,
@@ -7530,6 +7549,8 @@ ALTER TABLE ONLY public.resource_label_events ALTER COLUMN id SET DEFAULT nextva
 
 ALTER TABLE ONLY public.resource_milestone_events ALTER COLUMN id SET DEFAULT nextval('public.resource_milestone_events_id_seq'::regclass);
 
+ALTER TABLE ONLY public.resource_state_events ALTER COLUMN id SET DEFAULT nextval('public.resource_state_events_id_seq'::regclass);
+
 ALTER TABLE ONLY public.resource_weight_events ALTER COLUMN id SET DEFAULT nextval('public.resource_weight_events_id_seq'::regclass);
 
 ALTER TABLE ONLY public.reviews ALTER COLUMN id SET DEFAULT nextval('public.reviews_id_seq'::regclass);
@@ -8421,6 +8442,9 @@ ALTER TABLE ONLY public.resource_label_events
 
 ALTER TABLE ONLY public.resource_milestone_events
     ADD CONSTRAINT resource_milestone_events_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.resource_state_events
+    ADD CONSTRAINT resource_state_events_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY public.resource_weight_events
     ADD CONSTRAINT resource_weight_events_pkey PRIMARY KEY (id);
@@ -10197,6 +10221,12 @@ CREATE INDEX index_resource_milestone_events_on_milestone_id ON public.resource_
 
 CREATE INDEX index_resource_milestone_events_on_user_id ON public.resource_milestone_events USING btree (user_id);
 
+CREATE INDEX index_resource_state_events_on_issue_id_and_created_at ON public.resource_state_events USING btree (issue_id, created_at);
+
+CREATE INDEX index_resource_state_events_on_merge_request_id ON public.resource_state_events USING btree (merge_request_id);
+
+CREATE INDEX index_resource_state_events_on_user_id ON public.resource_state_events USING btree (user_id);
+
 CREATE INDEX index_resource_weight_events_on_issue_id_and_created_at ON public.resource_weight_events USING btree (issue_id, created_at);
 
 CREATE INDEX index_resource_weight_events_on_issue_id_and_weight ON public.resource_weight_events USING btree (issue_id, weight);
@@ -11329,6 +11359,9 @@ ALTER TABLE ONLY public.lfs_file_locks
 ALTER TABLE ONLY public.project_alerting_settings
     ADD CONSTRAINT fk_rails_27a84b407d FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY public.resource_state_events
+    ADD CONSTRAINT fk_rails_29af06892a FOREIGN KEY (issue_id) REFERENCES public.issues(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY public.reviews
     ADD CONSTRAINT fk_rails_29e6f859c4 FOREIGN KEY (author_id) REFERENCES public.users(id) ON DELETE SET NULL;
 
@@ -11346,6 +11379,9 @@ ALTER TABLE ONLY public.protected_branch_unprotect_access_levels
 
 ALTER TABLE ONLY public.saml_providers
     ADD CONSTRAINT fk_rails_306d459be7 FOREIGN KEY (group_id) REFERENCES public.namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.resource_state_events
+    ADD CONSTRAINT fk_rails_3112bba7dc FOREIGN KEY (merge_request_id) REFERENCES public.merge_requests(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.merge_request_diff_commits
     ADD CONSTRAINT fk_rails_316aaceda3 FOREIGN KEY (merge_request_diff_id) REFERENCES public.merge_request_diffs(id) ON DELETE CASCADE;
@@ -12147,6 +12183,9 @@ ALTER TABLE ONLY public.insights
 
 ALTER TABLE ONLY public.board_group_recent_visits
     ADD CONSTRAINT fk_rails_f410736518 FOREIGN KEY (group_id) REFERENCES public.namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.resource_state_events
+    ADD CONSTRAINT fk_rails_f5827a7ccd FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY public.design_user_mentions
     ADD CONSTRAINT fk_rails_f7075a53c1 FOREIGN KEY (design_id) REFERENCES public.design_management_designs(id) ON DELETE CASCADE;
@@ -13281,6 +13320,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200406100909
 20200406102111
 20200406102120
+20200406132529
 20200406135648
 20200406141452
 20200406192059
@@ -13326,5 +13366,9 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200416120354
 20200417044453
 20200421233150
+20200423075720
+20200423080334
+20200423080607
+20200423081409
 \.
 

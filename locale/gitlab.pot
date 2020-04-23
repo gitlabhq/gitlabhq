@@ -12521,6 +12521,9 @@ msgstr ""
 msgid "Manage your license"
 msgstr ""
 
+msgid "Managed Account"
+msgstr ""
+
 msgid "Manifest"
 msgstr ""
 
@@ -20981,6 +20984,9 @@ msgstr ""
 msgid "This application will be able to:"
 msgstr ""
 
+msgid "This attachment has been truncated to avoid exceeding the maximum allowed attachment size of 15MB. %{written_count} of %{issues_count} issues have been included. Consider re-exporting with a narrower selection of issues."
+msgstr ""
+
 msgid "This block is self-referential"
 msgstr ""
 
@@ -24136,6 +24142,15 @@ msgid "Your %{strong}%{plan_name}%{strong_close} subscription for %{strong}%{nam
 msgstr ""
 
 msgid "Your %{strong}%{plan_name}%{strong_close} subscription will expire on %{strong}%{expires_on}%{strong_close}. After that, you will not to be able to create issues or merge requests as well as many other features."
+msgstr ""
+
+msgid "Your CSV export has started. It will be emailed to %{email} when complete."
+msgstr ""
+
+msgid "Your CSV export of %{issues_count} from project %{project_link} has been added to this email as an attachment."
+msgstr ""
+
+msgid "Your CSV export of %{written_count} from project %{project_name} (%{project_url}) has been added to this email as an attachment."
 msgstr ""
 
 msgid "Your Commit Email will be used for web based operations, such as edits and merges."

@@ -245,7 +245,7 @@ This list of limitations only reflects the latest version of GitLab. If you are 
 
 - Pushing directly to a **secondary** node redirects (for HTTP) or proxies (for SSH) the request to the **primary** node instead of [handling it directly](https://gitlab.com/gitlab-org/gitlab/issues/1381), except when using Git over HTTP with credentials embedded within the URI. For example, `https://user:password@secondary.tld`.
 - Cloning, pulling, or pushing repositories that exist on the **primary** node but not on the **secondary** nodes where [selective synchronization](configuration.md#selective-synchronization) does not include the project is not supported over SSH [but support is planned](https://gitlab.com/groups/gitlab-org/-/epics/2562). HTTP(S) is supported.
-- The **primary** node has to be online for OAuth login to happen. Existing sessions and Git are not affected.
+- The **primary** node has to be online for OAuth login to happen. Existing sessions and Git are not affected. Support for the **secondary** node to use an OAuth provider independent from the primary is [being planned](https://gitlab.com/gitlab-org/gitlab/issues/208465).
 - The installation takes multiple manual steps that together can take about an hour depending on circumstances. We are working on improving this experience. See [Omnibus GitLab issue #2978](https://gitlab.com/gitlab-org/omnibus-gitlab/issues/2978) for details.
 - Real-time updates of issues/merge requests (for example, via long polling) doesn't work on the **secondary** node.
 - [Selective synchronization](configuration.md#selective-synchronization) applies only to files and repositories. Other datasets are replicated to the **secondary** node in full, making it inappropriate for use as an access control mechanism.

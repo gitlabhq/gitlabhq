@@ -264,30 +264,4 @@ describe Ci::BuildPresenter do
       expect(description).to eq('There has been an API failure, please try again')
     end
   end
-
-  describe '#recoverable?' do
-    let(:build) { create(:ci_build, :failed, :script_failure) }
-
-    context 'when is a script or missing dependency failure' do
-      let(:failure_reasons) { %w(script_failure missing_dependency_failure archived_failure scheduler_failure data_integrity_failure) }
-
-      it 'returns false' do
-        failure_reasons.each do |failure_reason|
-          build.update_attribute(:failure_reason, failure_reason)
-          expect(presenter.recoverable?).to be_falsy
-        end
-      end
-    end
-
-    context 'when is any other failure type' do
-      let(:failure_reasons) { %w(unknown_failure api_failure stuck_or_timeout_failure runner_system_failure) }
-
-      it 'returns true' do
-        failure_reasons.each do |failure_reason|
-          build.update_attribute(:failure_reason, failure_reason)
-          expect(presenter.recoverable?).to be_truthy
-        end
-      end
-    end
-  end
 end

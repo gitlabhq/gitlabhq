@@ -12,7 +12,7 @@ GitLab UI.
 You can find the **Find File** button when in the **Files** section of a
 project.
 
-![Find file button](img/file_finder_find_button.png)
+![Find file button](img/file_finder_find_button_v12_10.png)
 
 For those who prefer to keep their fingers on the keyboard, there is a
 [shortcut button](../../shortcuts.md) as well, which you can invoke from _anywhere_
@@ -32,11 +32,11 @@ The File finder feature is powered by the [Fuzzy filter](https://github.com/jean
 It implements a fuzzy search with highlight, and tries to provide intuitive
 results by recognizing patterns that people use while searching.
 
-For example, consider the [GitLab CE repository](https://gitlab.com/gitlab-org/gitlab-foss/tree/master) and that we want to open
+For example, consider the [GitLab FOSS repository](https://gitlab.com/gitlab-org/gitlab-foss/tree/master) and that we want to open
 the `app/controllers/admin/deploy_keys_controller.rb` file.
 
 Using fuzzy search, we start by typing letters that get us closer to the file.
 
 **Tip:** To narrow down your search, include `/` in your search terms.
 
-![Find file button](img/file_finder_find_file.png)
+![Find file button](img/file_finder_find_file_v12_10.png)
