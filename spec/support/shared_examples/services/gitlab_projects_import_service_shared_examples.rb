@@ -53,4 +53,56 @@ RSpec.shared_examples 'gitlab projects import validations' do
       end
     end
   end
+
+  context 'when measurable params are provided' do
+    let(:base_log_data) do
+      base_log_data = {
+        class: described_class.name,
+        current_user: namespace.owner.name,
+        project_full_path: "#{namespace.full_path}/#{path}"
+      }
+      base_log_data.merge!({ import_type: 'gitlab_project', file_path: import_params[:file].path }) if import_params[:file]
+
+      base_log_data
+    end
+
+    subject { described_class.new(namespace.owner, import_params) }
+
+    context 'when measurement is enabled' do
+      let(:logger) { double(:logger) }
+      let(:measurable_options) do
+        {
+          measurement_enabled: true,
+          measurement_logger: logger
+        }
+      end
+
+      before do
+        allow(logger).to receive(:info)
+      end
+
+      it 'measure service execution with Gitlab::Utils::Measuring' do
+        expect(Gitlab::Utils::Measuring).to receive(:execute_with).with(true, logger, base_log_data).and_call_original
+        expect_next_instance_of(Gitlab::Utils::Measuring) do |measuring|
+          expect(measuring).to receive(:with_measuring).and_call_original
+        end
+
+        subject.execute(measurable_options)
+      end
+    end
+    context 'when measurement is disabled' do
+      let(:measurable_options) do
+        {
+          measurement_enabled: false
+        }
+      end
+
+      it 'does not measure service execution' do
+        expect(Gitlab::Utils::Measuring).to receive(:execute_with).with(false, nil, base_log_data).and_call_original
+        expect(Gitlab::Utils::Measuring).not_to receive(:new)
+
+        subject.execute(measurable_options)
+      end
+    end
+  end
 end

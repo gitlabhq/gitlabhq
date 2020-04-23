@@ -408,12 +408,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
       end
 
-      # Unscoped route. It will be replaced with redirect to /-/issues/
-      # Issue https://gitlab.com/gitlab-org/gitlab/issues/118849
-      scope as: 'deprecated' do
-        draw :issues
-      end
-
       resources :notes, only: [:create, :destroy, :update], concerns: :awardable, constraints: { id: /\d+/ } do # rubocop: disable Cop/PutProjectRoutesUnderScope
         member do
           delete :delete_attachment
@@ -481,7 +475,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
                                             :cycle_analytics, :mattermost, :variables, :triggers,
                                             :environments, :protected_environments, :error_tracking, :alert_management,
                                             :serverless, :clusters, :audit_events, :wikis, :merge_requests,
-                                            :vulnerability_feedback, :security, :dependencies)
+                                            :vulnerability_feedback, :security, :dependencies, :issues)
     end
 
     # rubocop: disable Cop/PutProjectRoutesUnderScope

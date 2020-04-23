@@ -66,16 +66,6 @@ RSpec.shared_examples 'snippet blob content' do
     expect(response.body).to eq(snippet.blobs.first.data)
   end
 
-  context 'when feature flag :version_snippets is disabled' do
-    it 'returns content from database' do
-      stub_feature_flags(version_snippets: false)
-
-      subject
-
-      expect(response.body).to eq(snippet.content)
-    end
-  end
-
   context 'when snippet repository is empty' do
     let(:snippet) { snippet_with_empty_repo }
 

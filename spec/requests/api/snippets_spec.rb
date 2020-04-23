@@ -166,16 +166,6 @@ describe API::Snippets do
       expect(json_response['http_url_to_repo']).to eq(private_snippet.http_url_to_repo)
     end
 
-    context 'when feature flag :version_snippets is disabled' do
-      before do
-        stub_feature_flags(version_snippets: false)
-
-        get api("/snippets/#{private_snippet.id}", author)
-      end
-
-      it_behaves_like 'snippet response without repository URLs'
-    end
-
     it 'shows private snippets to an admin' do
       get api("/snippets/#{private_snippet.id}", admin)
 
@@ -244,18 +234,6 @@ describe API::Snippets do
         blob = snippet.repository.blob_at('master', params[:file_name])
 
         expect(blob.data).to eq params[:content]
-      end
-
-      context 'when feature flag :version_snippets is disabled' do
-        it 'does not create snippet repository' do
-          stub_feature_flags(version_snippets: false)
-
-          expect do
-            subject
-          end.to change { PersonalSnippet.count }.by(1)
-
-          expect(snippet.repository_exists?).to be_falsey
-        end
       end
     end
 

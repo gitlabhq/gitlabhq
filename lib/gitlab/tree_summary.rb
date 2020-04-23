@@ -6,6 +6,9 @@ module Gitlab
 
     include ::Gitlab::Utils::StrongMemoize
 
+    CACHE_EXPIRE_IN = 1.hour
+    MAX_OFFSET = 2**31
+
     attr_reader :commit, :project, :path, :offset, :limit
 
     attr_reader :resolved_commits
@@ -16,7 +19,7 @@ module Gitlab
       @project = project
 
       @path = params.fetch(:path, nil).presence
-      @offset = params.fetch(:offset, 0).to_i
+      @offset = [params.fetch(:offset, 0).to_i, MAX_OFFSET].min
       @limit = (params.fetch(:limit, 25) || 25).to_i
 
       # Ensure that if multiple tree entries share the same last commit, they share
@@ -41,6 +44,17 @@ module Gitlab
         .tap { |summary| fill_last_commits!(summary) }
 
       [summary, commits]
+    end
+
+    def fetch_logs
+      cache_key = ['projects', project.id, 'logs', commit.id, path, offset]
+      Rails.cache.fetch(cache_key, expires_in: CACHE_EXPIRE_IN) do
+        logs, _ = summarize
+
+        new_offset = next_offset if more?
+
+        [logs.as_json, new_offset]
+      end
     end
 
     # Does the tree contain more entries after the given offset + limit?

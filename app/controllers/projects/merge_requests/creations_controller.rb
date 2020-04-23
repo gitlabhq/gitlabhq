@@ -16,7 +16,6 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
   end
 
   def create
-    @target_branches ||= []
     @merge_request = ::MergeRequests::CreateService.new(project, current_user, merge_request_params).execute
 
     if @merge_request.valid?
@@ -97,13 +96,6 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
 
   def define_new_vars
     @noteable = @merge_request
-
-    @target_branches = if @merge_request.target_project
-                         @merge_request.target_project.repository.branch_names
-                       else
-                         []
-                       end
-
     @target_project = @merge_request.target_project
     @source_project = @merge_request.source_project
 

@@ -40,29 +40,25 @@ class Projects::RefsController < Projects::ApplicationController
   end
 
   def logs_tree
-    summary = ::Gitlab::TreeSummary.new(
-      @commit,
-      @project,
-      path: @path,
-      offset: params[:offset],
-      limit: 25
-    )
-
-    @logs, commits = summary.summarize
-    @more_log_url = more_url(summary.next_offset) if summary.more?
+    tree_summary = ::Gitlab::TreeSummary.new(
+      @commit, @project, path: @path, offset: params[:offset], limit: 25)
 
     respond_to do |format|
       format.html { render_404 }
       format.json do
-        response.headers["More-Logs-Url"] = @more_log_url if summary.more?
-        response.headers["More-Logs-Offset"] = summary.next_offset if summary.more?
-        render json: @logs
+        logs, next_offset = tree_summary.fetch_logs
+
+        response.headers["More-Logs-Offset"] = next_offset if next_offset
+
+        render json: logs
       end
 
-      # The commit titles must be rendered and redacted before being shown.
-      # Doing it here allows us to apply performance optimizations that avoid
-      # N+1 problems
+      # Deprecated due to https://gitlab.com/gitlab-org/gitlab/-/issues/36863
+      # Will be removed soon https://gitlab.com/gitlab-org/gitlab/-/merge_requests/29895
       format.js do
+        @logs, commits = tree_summary.summarize
+        @more_log_url = more_url(tree_summary.next_offset) if tree_summary.more?
+
         prerender_commit_full_titles!(commits)
       end
     end

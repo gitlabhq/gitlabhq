@@ -1,0 +1,5 @@
+---
+title: Redirect issues routes under /-/ scope
+merge_request: 28655
+author:
+type: changed

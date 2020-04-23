@@ -177,6 +177,10 @@ module IssuesHelper
     end
   end
 
+  def show_moved_service_desk_issue_warning?(issue)
+    false
+  end
+
   # Required for Banzai::Filter::IssueReferenceFilter
   module_function :url_for_issue
   module_function :url_for_internal_issue

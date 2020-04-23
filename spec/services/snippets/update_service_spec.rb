@@ -112,25 +112,16 @@ describe Snippets::UpdateService do
         expect(blob.data).to eq options[:content]
       end
 
-      context 'when the repository does not exist' do
-        it 'does not try to commit file' do
-          allow(snippet).to receive(:repository_exists?).and_return(false)
-
-          expect(service).not_to receive(:create_commit)
-
-          subject
-        end
-      end
-
-      context 'when feature flag is disabled' do
+      context 'when the repository creation fails' do
         before do
-          stub_feature_flags(version_snippets: false)
+          allow(snippet).to receive(:repository_exists?).and_return(false)
         end
 
-        it 'does not create repository' do
-          subject
+        it 'raise an error' do
+          response = subject
 
-          expect(snippet.repository).not_to exist
+          expect(response).to be_error
+          expect(response.payload[:snippet].errors[:repository].to_sentence).to eq 'Error updating the snippet'
         end
 
         it 'does not try to commit file' do

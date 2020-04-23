@@ -13,10 +13,9 @@ module API
       expose :raw_url do |snippet|
         Gitlab::UrlBuilder.build(snippet, raw: true)
       end
-      expose :ssh_url_to_repo, :http_url_to_repo, if: ->(snippet) { snippet.versioned_enabled_for?(options[:current_user]) }
+      expose :ssh_url_to_repo, :http_url_to_repo, if: ->(snippet) { snippet.repository_exists? }
       expose :file_name do |snippet|
-        (::Feature.enabled?(:version_snippets, options[:current_user]) && snippet.file_name_on_repo) ||
-          snippet.file_name
+        snippet.file_name_on_repo || snippet.file_name
       end
     end
   end

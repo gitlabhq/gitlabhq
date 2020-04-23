@@ -228,28 +228,6 @@ describe Snippets::CreateService do
           expect(snippet.repository_exists?).to be_falsey
         end
       end
-
-      context 'when feature flag :version_snippets is disabled' do
-        before do
-          stub_feature_flags(version_snippets: false)
-        end
-
-        it 'does not create snippet repository' do
-          expect do
-            subject
-          end.to change(Snippet, :count).by(1)
-
-          expect(snippet.repository_exists?).to be_falsey
-        end
-
-        it 'does not try to commit files' do
-          expect_next_instance_of(described_class) do |instance|
-            expect(instance).not_to receive(:create_commit)
-          end
-
-          subject
-        end
-      end
     end
 
     shared_examples 'after_save callback to store_mentions' do |mentionable_class|

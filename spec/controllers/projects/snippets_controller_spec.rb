@@ -346,20 +346,6 @@ describe Projects::SnippetsController do
 
       expect(assigns(:blob)).to eq(project_snippet.blobs.first)
     end
-
-    context 'when feature flag version_snippets is disabled' do
-      before do
-        stub_feature_flags(version_snippets: false)
-      end
-
-      it 'returns the snippet database content' do
-        subject
-
-        blob = assigns(:blob)
-
-        expect(blob.data).to eq(project_snippet.content)
-      end
-    end
   end
 
   %w[show raw].each do |action|

@@ -323,36 +323,12 @@ describe API::Internal::Base do
         end
       end
 
-      shared_examples 'snippets with disabled feature flag' do
-        context 'when feature flag :version_snippets is disabled' do
-          it 'returns 401' do
-            stub_feature_flags(version_snippets: false)
-
-            subject
-
-            expect(response).to have_gitlab_http_status(:unauthorized)
-          end
-        end
-      end
-
       shared_examples 'snippet success' do
         it 'responds with success' do
           subject
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response['status']).to be_truthy
-        end
-      end
-
-      shared_examples 'snippets with web protocol' do
-        it_behaves_like 'snippet success'
-
-        context 'with disabled version flag' do
-          before do
-            stub_feature_flags(version_snippets: false)
-          end
-
-          it_behaves_like 'snippet success'
         end
       end
 
@@ -367,12 +343,6 @@ describe API::Internal::Base do
           expect(json_response["gl_project_path"]).to eq(personal_snippet.repository.full_path)
           expect(json_response["gl_repository"]).to eq("snippet-#{personal_snippet.id}")
           expect(user.reload.last_activity_on).to be_nil
-        end
-
-        it_behaves_like 'snippets with disabled feature flag'
-
-        it_behaves_like 'snippets with web protocol' do
-          subject { push(key, personal_snippet, 'web', env: env.to_json, changes: snippet_changes) }
         end
 
         it_behaves_like 'sets hook env' do
@@ -392,12 +362,6 @@ describe API::Internal::Base do
           expect(json_response["gl_repository"]).to eq("snippet-#{personal_snippet.id}")
           expect(user.reload.last_activity_on).to eql(Date.today)
         end
-
-        it_behaves_like 'snippets with disabled feature flag'
-
-        it_behaves_like 'snippets with web protocol' do
-          subject { pull(key, personal_snippet, 'web') }
-        end
       end
 
       context 'git push with project snippet' do
@@ -411,12 +375,6 @@ describe API::Internal::Base do
           expect(json_response["gl_project_path"]).to eq(project_snippet.repository.full_path)
           expect(json_response["gl_repository"]).to eq("snippet-#{project_snippet.id}")
           expect(user.reload.last_activity_on).to be_nil
-        end
-
-        it_behaves_like 'snippets with disabled feature flag'
-
-        it_behaves_like 'snippets with web protocol' do
-          subject { push(key, project_snippet, 'web', env: env.to_json, changes: snippet_changes) }
         end
 
         it_behaves_like 'sets hook env' do
@@ -433,14 +391,6 @@ describe API::Internal::Base do
           expect(json_response["gl_project_path"]).to eq(project_snippet.repository.full_path)
           expect(json_response["gl_repository"]).to eq("snippet-#{project_snippet.id}")
           expect(user.reload.last_activity_on).to eql(Date.today)
-        end
-
-        it_behaves_like 'snippets with disabled feature flag' do
-          subject { pull(key, project_snippet) }
-        end
-
-        it_behaves_like 'snippets with web protocol' do
-          subject { pull(key, project_snippet, 'web') }
         end
       end
 

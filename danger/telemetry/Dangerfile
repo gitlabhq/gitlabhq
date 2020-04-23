@@ -11,22 +11,13 @@ MSG
 
 usage_data_changed_files = git.modified_files.grep(%r{usage_data})
 
-def has_label?(label)
-  gitlab.mr_labels.include?(label)
-end
-
-def labels_for_merge_request(labels)
-  labels_list = labels.map { |label| %Q{~"#{label}"} }.join(' ')
-  "/label #{labels_list}"
-end
-
 if usage_data_changed_files.any?
   warn format(TELEMETRY_CHANGED_FILES_MESSAGE)
 
   markdown(USAGE_DATA_FILES_MESSAGE + helper.markdown_list(usage_data_changed_files))
 
   telemetry_labels = ['telemetry']
-  telemetry_labels << 'telemetry::review pending' unless has_label?('telemetry::reviewed')
+  telemetry_labels << 'telemetry::review pending' unless helper.mr_has_labels?('telemetry::reviewed')
 
-  markdown(labels_for_merge_request(telemetry_labels))
+  markdown(helper.prepare_labels_for_mr(telemetry_labels))
 end

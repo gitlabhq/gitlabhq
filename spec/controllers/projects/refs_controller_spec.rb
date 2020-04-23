@@ -12,25 +12,27 @@ describe Projects::RefsController do
   end
 
   describe 'GET #logs_tree' do
+    let(:path) { 'foo/bar/baz.html' }
+
     def default_get(format = :html)
       get :logs_tree,
           params: {
             namespace_id: project.namespace.to_param,
             project_id: project,
             id: 'master',
-            path: 'foo/bar/baz.html'
+            path: path
           },
           format: format
     end
 
-    def xhr_get(format = :html)
+    def xhr_get(format = :html, params = {})
       get :logs_tree, params: {
         namespace_id: project.namespace.to_param,
         project_id: project,
         id: 'master',
-        path: 'foo/bar/baz.html',
+        path: path,
         format: format
-      }, xhr: true
+      }.merge(params), xhr: true
     end
 
     it 'never throws MissingTemplate' do
@@ -52,13 +54,27 @@ describe Projects::RefsController do
       expect(response).to be_successful
     end
 
-    it 'renders JSON' do
-      expect(::Gitlab::GitalyClient).to receive(:allow_ref_name_caching).and_call_original
+    context 'when json is requested' do
+      it 'renders JSON' do
+        expect(::Gitlab::GitalyClient).to receive(:allow_ref_name_caching).and_call_original
 
-      xhr_get(:json)
+        xhr_get(:json)
 
-      expect(response).to be_successful
-      expect(json_response).to be_kind_of(Array)
+        expect(response).to be_successful
+        expect(json_response).to be_kind_of(Array)
+      end
+
+      it 'caches tree summary data', :use_clean_rails_memory_store_caching do
+        expect_next_instance_of(::Gitlab::TreeSummary) do |instance|
+          expect(instance).to receive_messages(summarize: ['logs'], next_offset: 50, more?: true)
+        end
+
+        xhr_get(:json, offset: 25)
+
+        cache_key = "projects/#{project.id}/logs/#{project.commit.id}/#{path}/25"
+        expect(Rails.cache.fetch(cache_key)).to eq(['logs', 50])
+        expect(response.headers['More-Logs-Offset']).to eq(50)
+      end
     end
   end
 end

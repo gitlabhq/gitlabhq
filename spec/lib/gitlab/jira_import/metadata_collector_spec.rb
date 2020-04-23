@@ -51,7 +51,7 @@ describe Gitlab::JiraImport::MetadataCollector do
     subject { described_class.new(jira_issue).execute }
 
     context 'when all metadata fields are present' do
-      it 'skips writes all fields' do
+      it 'writes all fields' do
         expected_result = <<~MD
           ---
 
@@ -67,6 +67,102 @@ describe Gitlab::JiraImport::MetadataCollector do
         MD
 
         expect(subject.strip).to eq(expected_result.strip)
+      end
+    end
+
+    context 'when some fields are in incorrect format' do
+      let(:assignee) { nil }
+      let(:parent_field) { nil }
+      let(:fix_versions_field) { [] }
+      let(:priority_field) { nil }
+      let(:labels_field) { [] }
+      let(:environment_field) { nil }
+      let(:duedate_field) { nil }
+
+      context 'when fixVersions field is not an array' do
+        let(:fix_versions_field) { { 'title' => '1.0', 'name' => '1.1' } }
+
+        it 'skips these fields' do
+          expected_result = <<~MD
+            ---
+
+            **Issue metadata**
+
+            - Issue type: Task
+          MD
+
+          expect(subject.strip).to eq(expected_result.strip)
+        end
+      end
+
+      context 'when a fixVersions element is in incorrect format' do
+        let(:fix_versions_field) { [{ 'title' => '1.0' }, { 'name' => '1.1' }] }
+
+        it 'skips the element' do
+          expected_result = <<~MD
+            ---
+
+            **Issue metadata**
+
+            - Issue type: Task
+            - Fix versions: 1.1
+          MD
+
+          expect(subject.strip).to eq(expected_result.strip)
+        end
+      end
+
+      context 'when a labels field is not an array' do
+        let(:labels_field) { { 'first' => 'bug' } }
+
+        it 'skips the labels' do
+          expected_result = <<~MD
+            ---
+
+            **Issue metadata**
+
+            - Issue type: Task
+          MD
+
+          expect(subject.strip).to eq(expected_result.strip)
+        end
+      end
+
+      context 'when a parent field has incorrectly formatted summary' do
+        let(:parent_field) do
+          { 'key' => 'FOO-2', 'id' => '1050', 'other_field' => { 'summary' => 'parent issue FOO' } }
+        end
+
+        it 'skips the summary' do
+          expected_result = <<~MD
+            ---
+
+            **Issue metadata**
+
+            - Issue type: Task
+            - Parent issue: [FOO-2]
+          MD
+
+          expect(subject.strip).to eq(expected_result.strip)
+        end
+      end
+
+      context 'when a parent field is missing the key' do
+        let(:parent_field) do
+          { 'not_key' => 'FOO-2', 'id' => '1050', 'other_field' => { 'summary' => 'parent issue FOO' } }
+        end
+
+        it 'skips the field' do
+          expected_result = <<~MD
+            ---
+
+            **Issue metadata**
+
+            - Issue type: Task
+          MD
+
+          expect(subject.strip).to eq(expected_result.strip)
+        end
       end
     end
 

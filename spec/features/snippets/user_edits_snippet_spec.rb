@@ -10,12 +10,9 @@ describe 'User edits snippet', :js do
   let_it_be(:user) { create(:user) }
   let_it_be(:snippet, reload: true) { create(:personal_snippet, :repository, :public, file_name: file_name, content: content, author: user) }
 
-  let(:version_snippet_enabled) { true }
-
   before do
     stub_feature_flags(snippets_vue: false)
     stub_feature_flags(snippets_edit_vue: false)
-    stub_feature_flags(version_snippets: version_snippet_enabled)
 
     sign_in(user)
 
@@ -30,18 +27,6 @@ describe 'User edits snippet', :js do
       expect(page.find_field('personal_snippet_file_name').value).to eq blob.path
       expect(page.find('.file-content')).to have_content(blob.data.strip)
       expect(page.find('.snippet-file-content', visible: false).value).to eq blob.data
-    end
-  end
-
-  context 'when feature flag :version_snippets is disabled' do
-    let(:version_snippet_enabled) { false }
-
-    it 'displays the snippet file_name and content' do
-      aggregate_failures do
-        expect(page.find_field('personal_snippet_file_name').value).to eq file_name
-        expect(page.find('.file-content')).to have_content(content)
-        expect(page.find('.snippet-file-content', visible: false).value).to eq content
-      end
     end
   end
 

@@ -46,6 +46,7 @@ export default {
   },
   methods: {
     onSubmit() {
+      window.onbeforeunload = null;
       this.$refs.form.submit();
     },
   },

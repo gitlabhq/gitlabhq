@@ -1129,26 +1129,6 @@ class MergeRequest < ApplicationRecord
     end
   end
 
-  # Return array of possible target branches
-  # depends on target project of MR
-  def target_branches
-    if target_project.nil?
-      []
-    else
-      target_project.repository.branch_names
-    end
-  end
-
-  # Return array of possible source branches
-  # depends on source project of MR
-  def source_branches
-    if source_project.nil?
-      []
-    else
-      source_project.repository.branch_names
-    end
-  end
-
   def has_ci?
     return false if has_no_commits?
 

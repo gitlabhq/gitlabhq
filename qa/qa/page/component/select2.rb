@@ -36,7 +36,7 @@ module QA
         end
 
         def dropdown_open?
-          has_css?('.select2-input')
+          find('.select2-focusser').disabled?
         end
       end
     end

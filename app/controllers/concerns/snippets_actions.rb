@@ -53,10 +53,10 @@ module SnippetsActions
   def blob
     return unless snippet
 
-    @blob ||= if Feature.enabled?(:version_snippets, current_user) && !snippet.repository.empty?
-                snippet.blobs.first
-              else
+    @blob ||= if snippet.empty_repo?
                 snippet.blob
+              else
+                snippet.blobs.first
               end
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables

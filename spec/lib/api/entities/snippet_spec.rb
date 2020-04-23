@@ -26,14 +26,6 @@ describe ::API::Entities::Snippet do
         expect(subject[:file_name]).to eq snippet.blobs.first.path
       end
 
-      context 'when feature flag :version_snippets is disabled' do
-        it 'returns attribute from db' do
-          stub_feature_flags(version_snippets: false)
-
-          expect(subject[:file_name]).to eq snippet.file_name
-        end
-      end
-
       context 'when repository is empty' do
         it 'returns attribute from db' do
           allow(snippet.repository).to receive(:empty?).and_return(true)
@@ -48,14 +40,6 @@ describe ::API::Entities::Snippet do
         expect(subject[:ssh_url_to_repo]).to eq snippet.ssh_url_to_repo
       end
 
-      context 'when feature flag :version_snippets is disabled' do
-        it 'does not include attribute' do
-          stub_feature_flags(version_snippets: false)
-
-          expect(subject).not_to include(:ssh_url_to_repo)
-        end
-      end
-
       context 'when repository does not exist' do
         it 'does not include attribute' do
           allow(snippet).to receive(:repository_exists?).and_return(false)
@@ -68,14 +52,6 @@ describe ::API::Entities::Snippet do
     describe 'http_url_to_repo' do
       it 'returns attribute' do
         expect(subject[:http_url_to_repo]).to eq snippet.http_url_to_repo
-      end
-
-      context 'when feature flag :version_snippets is disabled' do
-        it 'does not include attribute' do
-          stub_feature_flags(version_snippets: false)
-
-          expect(subject).not_to include(:http_url_to_repo)
-        end
       end
 
       context 'when repository does not exist' do

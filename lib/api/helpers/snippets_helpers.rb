@@ -4,12 +4,12 @@ module API
   module Helpers
     module SnippetsHelpers
       def content_for(snippet)
-        if ::Feature.enabled?(:version_snippets, current_user) && !snippet.empty_repo?
+        if snippet.empty_repo?
+          snippet.content
+        else
           blob = snippet.blobs.first
           blob.load_all_data!
           blob.data
-        else
-          snippet.content
         end
       end
     end

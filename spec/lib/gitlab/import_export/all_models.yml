@@ -18,6 +18,7 @@ issues:
 - todos
 - user_agent_detail
 - moved_to
+- moved_from
 - duplicated_to
 - promoted_to_epic
 - events

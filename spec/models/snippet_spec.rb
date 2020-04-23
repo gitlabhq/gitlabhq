@@ -735,31 +735,19 @@ describe Snippet do
     end
   end
 
-  describe '#versioned_enabled_for?' do
-    let_it_be(:user) { create(:user) }
+  describe '#url_to_repo' do
+    subject { snippet.url_to_repo }
 
-    subject { snippet.versioned_enabled_for?(user) }
+    context 'with personal snippet' do
+      let(:snippet) { create(:personal_snippet) }
 
-    context 'with repository and version_snippets enabled' do
-      let!(:snippet) { create(:personal_snippet, :repository, author: user) }
-
-      it { is_expected.to be_truthy }
+      it { is_expected.to eq(Gitlab.config.gitlab_shell.ssh_path_prefix + "snippets/#{snippet.id}.git") }
     end
 
-    context 'without repository' do
-      let!(:snippet) { create(:personal_snippet, author: user) }
+    context 'with project snippet' do
+      let(:snippet) { create(:project_snippet) }
 
-      it { is_expected.to be_falsy }
-    end
-
-    context 'without version_snippets feature disabled' do
-      let!(:snippet) { create(:personal_snippet, :repository, author: user) }
-
-      before do
-        stub_feature_flags(version_snippets: false)
-      end
-
-      it { is_expected.to be_falsy }
+      it { is_expected.to eq(Gitlab.config.gitlab_shell.ssh_path_prefix + "#{snippet.project.full_path}/snippets/#{snippet.id}.git") }
     end
   end
 end

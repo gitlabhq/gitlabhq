@@ -99,16 +99,6 @@ describe API::ProjectSnippets do
       expect(json_response['http_url_to_repo']).to eq(snippet.http_url_to_repo)
     end
 
-    context 'when feature flag :version_snippets is disabled' do
-      before do
-        stub_feature_flags(version_snippets: false)
-
-        get api("/projects/#{project.id}/snippets/#{snippet.id}", user)
-      end
-
-      it_behaves_like 'snippet response without repository URLs'
-    end
-
     it 'returns 404 for invalid snippet id' do
       get api("/projects/#{project.id}/snippets/#{non_existing_record_id}", user)
 
@@ -149,18 +139,6 @@ describe API::ProjectSnippets do
         blob = snippet.repository.blob_at('master', params[:file_name])
 
         expect(blob.data).to eq params[:code]
-      end
-
-      context 'when feature flag :version_snippets is disabled' do
-        it 'does not create snippet repository' do
-          stub_feature_flags(version_snippets: false)
-
-          expect do
-            subject
-          end.to change { ProjectSnippet.count }.by(1)
-
-          expect(snippet.repository_exists?).to be_falsey
-        end
       end
     end
 

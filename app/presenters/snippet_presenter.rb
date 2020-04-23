@@ -12,11 +12,11 @@ class SnippetPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def ssh_url_to_repo
-    snippet.ssh_url_to_repo if snippet.versioned_enabled_for?(current_user)
+    snippet.ssh_url_to_repo if snippet.repository_exists?
   end
 
   def http_url_to_repo
-    snippet.http_url_to_repo if snippet.versioned_enabled_for?(current_user)
+    snippet.http_url_to_repo if snippet.repository_exists?
   end
 
   def can_read_snippet?
@@ -36,10 +36,10 @@ class SnippetPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def blob
-    if Feature.enabled?(:version_snippets, current_user) && !snippet.repository.empty?
-      snippet.blobs.first
-    else
+    if snippet.empty_repo?
       snippet.blob
+    else
+      snippet.blobs.first
     end
   end
 

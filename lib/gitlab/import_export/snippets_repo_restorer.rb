@@ -10,7 +10,6 @@ module Gitlab
       end
 
       def restore
-        return true unless Feature.enabled?(:version_snippets, @user)
         return true unless Dir.exist?(snippets_repo_bundle_path)
 
         @project.snippets.find_each.all? do |snippet|

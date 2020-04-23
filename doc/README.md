@@ -335,7 +335,7 @@ The following documentation relates to the DevOps **Monitor** stage:
 
 | Monitor Topics                                                                                  | Description                                                                                                                              |
 |:------------------------------------------------------------------------------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------|
-| [GitLab Performance Monitoring](administration/monitoring/performance/index.md) **(CORE ONLY)** | Use InfluxDB and Grafana to monitor the performance of your GitLab instance (will be eventually replaced by Prometheus).                 |
+| [GitLab Performance Monitoring](administration/monitoring/performance/index.md) **(CORE ONLY)** | Use Prometheus and Grafana to monitor the performance of your GitLab instance.                 |
 | [GitLab Prometheus](administration/monitoring/prometheus/index.md) **(CORE ONLY)**              | Configure the bundled Prometheus to collect various metrics from your GitLab instance.                                                   |
 | [Health check](user/admin_area/monitoring/health_check.md)                                      | GitLab provides liveness and readiness probes to indicate service health and reachability to required services.                          |
 | [Prometheus project integration](user/project/integrations/prometheus.md)                       | Configure the Prometheus integration per project and monitor your CI/CD environments.                                                    |

@@ -534,13 +534,17 @@ describe 'project routing' do
   #                            DELETE /:project_id/issues/:id(.:format)         issues#destroy
   describe Projects::IssuesController, 'routing' do
     it 'to #bulk_update' do
-      expect(post('/gitlab/gitlabhq/issues/bulk_update')).to route_to('projects/issues#bulk_update', namespace_id: 'gitlab', project_id: 'gitlabhq')
+      expect(post('/gitlab/gitlabhq/-/issues/bulk_update')).to route_to('projects/issues#bulk_update', namespace_id: 'gitlab', project_id: 'gitlabhq')
     end
 
     it_behaves_like 'RESTful project resources' do
       let(:controller) { 'issues' }
       let(:actions) { [:index, :create, :new, :edit, :show, :update] }
+      let(:controller_path) { '/-/issues' }
     end
+
+    it_behaves_like 'redirecting a legacy project path', "/gitlab/gitlabhq/issues", "/gitlab/gitlabhq/-/issues"
+    it_behaves_like 'redirecting a legacy project path', "/gitlab/gitlabhq/issues/1/edit", "/gitlab/gitlabhq/-/issues/1/edit"
   end
 
   # project_noteable_notes GET    /:project_id/noteable/:target_type/:target_id/notes notes#index

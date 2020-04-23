@@ -34,22 +34,26 @@ module Gitlab
       end
 
       def add_labels
-        return if fields['labels'].blank?
+        return if fields['labels'].blank? || !fields['labels'].is_a?(Array)
 
         metadata << "- Labels: #{fields['labels'].join(', ')}"
       end
 
       def add_parent
         parent_issue_key = fields.dig('parent', 'key')
+
         return if parent_issue_key.blank?
 
-        metadata << "- Parent issue: [#{parent_issue_key}] #{fields['parent']['fields']['summary']}"
+        parent_summary_key = fields.dig('parent', 'fields', 'summary')
+
+        metadata << "- Parent issue: [#{parent_issue_key}] #{parent_summary_key}".strip
       end
 
       def add_versions
-        return if fields['fixVersions'].blank?
+        return if fields['fixVersions'].blank? || !fields['fixVersions'].is_a?(Array)
 
-        metadata << "- Fix versions: #{fields['fixVersions'].map { |version| version['name'] }.join(', ')}"
+        versions = fields['fixVersions'].map { |version| version['name'] }.compact.join(', ')
+        metadata << "- Fix versions: #{versions}"
       end
 
       def fields

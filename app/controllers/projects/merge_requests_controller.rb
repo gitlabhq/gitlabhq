@@ -357,7 +357,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   def define_edit_vars
     @source_project = @merge_request.source_project
     @target_project = @merge_request.target_project
-    @target_branches = @merge_request.target_project.repository.branch_names
     @noteable = @merge_request
 
     # FIXME: We have to assign a presenter to another instance variable

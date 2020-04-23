@@ -86,20 +86,6 @@ describe SnippetsController do
 
         expect(assigns(:blob)).to eq(personal_snippet.blobs.first)
       end
-
-      context 'when feature flag version_snippets is disabled' do
-        before do
-          stub_feature_flags(version_snippets: false)
-        end
-
-        it 'returns the snippet database content' do
-          subject
-
-          blob = assigns(:blob)
-
-          expect(blob.data).to eq(personal_snippet.content)
-        end
-      end
     end
 
     context 'when the personal snippet is private' do
@@ -570,24 +556,6 @@ describe SnippetsController do
         subject
 
         expect(response.cache_control[:public]).to eq snippet.public?
-      end
-
-      context 'when feature flag version_snippets is disabled' do
-        before do
-          stub_feature_flags(version_snippets: false)
-        end
-
-        it_behaves_like '200 status'
-        it_behaves_like 'CRLF line ending'
-
-        it 'returns snippet database content' do
-          subject
-
-          expect(response.body).to eq snippet.content
-          expect(response.header['Content-Type']).to eq('text/plain; charset=utf-8')
-        end
-
-        it_behaves_like 'content disposition headers'
       end
 
       context 'when snippet repository is empty' do

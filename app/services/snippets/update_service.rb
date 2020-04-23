@@ -43,17 +43,8 @@ module Snippets
       # the repository we can just return
       return true unless committable_attributes?
 
-      # In order to avoid non migrated snippets scenarios,
-      # if the snippet does not have a repository we created it
-      # We don't need to check if the repository exists
-      # because `create_repository` already handles it
-      if Feature.enabled?(:version_snippets, current_user)
-        create_repository_for(snippet)
-      end
-
-      # If the snippet repository exists we commit always
-      # the changes
-      create_commit(snippet) if snippet.repository_exists?
+      create_repository_for(snippet)
+      create_commit(snippet)
 
       true
     rescue => e

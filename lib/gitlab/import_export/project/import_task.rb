@@ -32,7 +32,7 @@ module Gitlab
               # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/24475#note_283090635
               # For development setups, this code-path will be excluded from n+1 detection.
               ::Gitlab::GitalyClient.allow_n_plus_1_calls do
-                measurement_enabled? ? measurement.with_measuring { yield } : yield
+                yield
               end
             end
 
@@ -56,14 +56,10 @@ module Gitlab
           disable_upload_object_storage do
             service = Projects::GitlabProjectsImportService.new(
               current_user,
-              {
-                namespace_id: namespace.id,
-                path:         project_path,
-                file:         File.open(file_path)
-              }
+              import_params
             )
 
-            service.execute
+            service.execute(measurement_options)
           end
         end
 
@@ -97,6 +93,14 @@ module Gitlab
           logger.info "Importing GitLab export: #{file_path} into GitLab" \
             " #{full_path}" \
             " as #{current_user.name}"
+        end
+
+        def import_params
+          {
+            namespace_id: namespace.id,
+            path:         project_path,
+            file:         File.open(file_path)
+          }
         end
 
         def show_import_failures_count

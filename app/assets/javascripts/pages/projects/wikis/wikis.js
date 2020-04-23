@@ -44,6 +44,19 @@ export default class Wikis {
         linkExample.innerHTML = MARKDOWN_LINK_TEXT[e.target.value];
       });
     }
+
+    const wikiTextarea = document.querySelector('form.wiki-form #wiki_content');
+    const wikiForm = document.querySelector('form.wiki-form');
+
+    if (wikiTextarea) {
+      wikiTextarea.addEventListener('input', () => {
+        window.onbeforeunload = () => '';
+      });
+
+      wikiForm.addEventListener('submit', () => {
+        window.onbeforeunload = null;
+      });
+    }
   }
 
   handleWikiTitleChange(e) {

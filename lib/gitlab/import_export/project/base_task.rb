@@ -30,6 +30,13 @@ module Gitlab
           true
         end
 
+        def measurement_options
+          {
+            measurement_enabled: measurement_enabled?,
+            measurement_logger: logger
+          }
+        end
+
         def error(message)
           logger.error(message)
 

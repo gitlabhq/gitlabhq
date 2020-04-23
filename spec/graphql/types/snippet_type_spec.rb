@@ -35,14 +35,6 @@ describe GitlabSchema.types['Snippet'] do
         expect(response['sshUrlToRepo']).to eq(snippet.ssh_url_to_repo)
         expect(response['httpUrlToRepo']).to eq(snippet.http_url_to_repo)
       end
-
-      context 'when version_snippets feature is disabled' do
-        before do
-          stub_feature_flags(version_snippets: false)
-        end
-
-        it_behaves_like 'response without repository URLs'
-      end
     end
   end
 
