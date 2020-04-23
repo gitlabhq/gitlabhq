@@ -32,7 +32,7 @@ module Gitlab
           Sidekiq.logger.error(
             class: self.class.to_s,
             message: 'Cannot start sidekiq_exporter',
-            exception: e.message
+            'exception.message' => e.message
           )
 
           false

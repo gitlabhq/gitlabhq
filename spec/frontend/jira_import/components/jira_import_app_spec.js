@@ -26,6 +26,7 @@ const mountComponent = ({
         ['My Second Jira Project', 'MSJP'],
         ['Migrate to GitLab', 'MTG'],
       ],
+      jiraIntegrationPath: 'gitlab-org/gitlab-test/-/services/jira/edit',
       projectPath: 'gitlab-org/gitlab-test',
       setupIllustration: 'setup-illustration.svg',
     },

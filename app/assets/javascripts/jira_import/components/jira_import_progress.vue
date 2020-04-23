@@ -46,6 +46,9 @@ export default {
         importTime: formatDate(this.importTime),
       });
     },
+    issuesLink() {
+      return `${this.issuesPath}?search=${this.importProject}`;
+    },
   },
 };
 </script>
@@ -55,7 +58,7 @@ export default {
     :svg-path="illustration"
     :title="__('Import in progress')"
     :primary-button-text="__('View issues')"
-    :primary-button-link="issuesPath"
+    :primary-button-link="issuesLink"
   >
     <template #description>
       <p class="mb-0">{{ importInitiatorText }}</p>

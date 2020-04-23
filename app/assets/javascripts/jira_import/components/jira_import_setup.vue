@@ -11,6 +11,10 @@ export default {
       type: String,
       required: true,
     },
+    jiraIntegrationPath: {
+      type: String,
+      required: true,
+    },
   },
 };
 </script>
@@ -21,6 +25,6 @@ export default {
     title=""
     :description="__('You will first need to set up Jira Integration to use this feature.')"
     :primary-button-text="__('Set up Jira Integration')"
-    primary-button-link="../services/jira/edit"
+    :primary-button-link="jiraIntegrationPath"
   />
 </template>

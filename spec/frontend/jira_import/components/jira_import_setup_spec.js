@@ -2,6 +2,9 @@ import { GlEmptyState } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import JiraImportSetup from '~/jira_import/components/jira_import_setup.vue';
 
+const illustration = 'illustration.svg';
+const jiraIntegrationPath = 'gitlab-org/gitlab-test/-/services/jira/edit';
+
 describe('JiraImportSetup', () => {
   let wrapper;
 
@@ -10,7 +13,8 @@ describe('JiraImportSetup', () => {
   beforeEach(() => {
     wrapper = shallowMount(JiraImportSetup, {
       propsData: {
-        illustration: 'illustration.svg',
+        illustration,
+        jiraIntegrationPath,
       },
     });
   });
@@ -21,7 +25,7 @@ describe('JiraImportSetup', () => {
   });
 
   it('contains illustration', () => {
-    expect(getGlEmptyStateAttribute('svgpath')).toBe('illustration.svg');
+    expect(getGlEmptyStateAttribute('svgpath')).toBe(illustration);
   });
 
   it('contains a description', () => {
@@ -31,5 +35,9 @@ describe('JiraImportSetup', () => {
 
   it('contains button text', () => {
     expect(getGlEmptyStateAttribute('primarybuttontext')).toBe('Set up Jira Integration');
+  });
+
+  it('contains button link', () => {
+    expect(getGlEmptyStateAttribute('primarybuttonlink')).toBe(jiraIntegrationPath);
   });
 });

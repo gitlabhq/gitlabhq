@@ -328,6 +328,8 @@ describe API::Helpers do
 
       it 'returns a 401 response' do
         expect { authenticate! }.to raise_error /401/
+
+        expect(env[described_class::API_RESPONSE_STATUS_CODE]).to eq(401)
       end
     end
 
@@ -340,6 +342,8 @@ describe API::Helpers do
 
       it 'does not raise an error' do
         expect { authenticate! }.not_to raise_error
+
+        expect(env[described_class::API_RESPONSE_STATUS_CODE]).to be_nil
       end
     end
   end

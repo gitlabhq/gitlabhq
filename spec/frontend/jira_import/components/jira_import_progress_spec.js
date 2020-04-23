@@ -2,6 +2,10 @@ import { GlEmptyState } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 import JiraImportProgress from '~/jira_import/components/jira_import_progress.vue';
 
+const illustration = 'illustration.svg';
+const importProject = 'JIRAPROJECT';
+const issuesPath = 'gitlab-org/gitlab-test/-/issues';
+
 describe('JiraImportProgress', () => {
   let wrapper;
 
@@ -13,11 +17,11 @@ describe('JiraImportProgress', () => {
     const mountFunction = mountType === 'shallowMount' ? shallowMount : mount;
     return mountFunction(JiraImportProgress, {
       propsData: {
-        illustration: 'illustration.svg',
+        illustration,
         importInitiator: 'Jane Doe',
-        importProject: 'JIRAPROJECT',
+        importProject,
         importTime: '2020-04-08T12:17:25+00:00',
-        issuesPath: 'gitlab-org/gitlab-test/-/issues',
+        issuesPath,
       },
     });
   };
@@ -33,7 +37,7 @@ describe('JiraImportProgress', () => {
     });
 
     it('contains illustration', () => {
-      expect(getGlEmptyStateAttribute('svgpath')).toBe('illustration.svg');
+      expect(getGlEmptyStateAttribute('svgpath')).toBe(illustration);
     });
 
     it('contains a title', () => {
@@ -46,7 +50,8 @@ describe('JiraImportProgress', () => {
     });
 
     it('contains button url', () => {
-      expect(getGlEmptyStateAttribute('primarybuttonlink')).toBe('gitlab-org/gitlab-test/-/issues');
+      const expected = `${issuesPath}?search=${importProject}`;
+      expect(getGlEmptyStateAttribute('primarybuttonlink')).toBe(expected);
     });
   });
 

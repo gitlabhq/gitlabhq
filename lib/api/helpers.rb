@@ -11,6 +11,7 @@ module API
     SUDO_PARAM = :sudo
     API_USER_ENV = 'gitlab.api.user'
     API_EXCEPTION_ENV = 'gitlab.api.exception'
+    API_RESPONSE_STATUS_CODE = 'gitlab.api.response_status_code'
 
     def declared_params(options = {})
       options = { include_parent_namespaces: false }.merge(options)
@@ -416,6 +417,11 @@ module API
     end
 
     def render_api_error!(message, status)
+      # grape-logging doesn't pass the status code, so this is a
+      # workaround for getting that information in the loggers:
+      # https://github.com/aserafin/grape_logging/issues/71
+      env[API_RESPONSE_STATUS_CODE] = Rack::Utils.status_code(status)
+
       error!({ 'message' => message }, status, header)
     end
 

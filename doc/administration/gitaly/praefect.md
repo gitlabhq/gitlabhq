@@ -13,7 +13,7 @@ unavailable, Praefect will automatically route traffic to a warm Gitaly replica.
 The current version supports:
 
 - Eventual consistency of the secondary replicas.
-- Automatic fail over from the primary to the secondary.
+- Automatic failover from the primary to the secondary.
 - Reporting of possible data loss if replication queue is non empty.
 
 Follow the [HA Gitaly epic](https://gitlab.com/groups/gitlab-org/-/epics/1489)
@@ -266,7 +266,7 @@ application server, or a Gitaly node.
 
    NOTE: **Note:** The `gitaly-1` node is currently denoted the primary. This
    can be used to manually fail from one node to another. This will be removed
-   in the future to allow for automatic failover.
+   in the [future](https://gitlab.com/gitlab-org/gitaly/-/issues/2634).
 
    ```ruby
    # Name of storage hash must match storage name in git_data_dirs on GitLab
@@ -290,11 +290,36 @@ application server, or a Gitaly node.
    }
    ```
 
-1. Enable the replication queue:
+1. Enable the database replication queue:
 
-    ```ruby
-    praefect['postgres_queue_enabled'] = true
-    ```
+   ```ruby
+   praefect['postgres_queue_enabled'] = true
+   ```
+
+   In the next release, database replication queue will be enabled by default.
+   See [issue #2615](https://gitlab.com/gitlab-org/gitaly/-/issues/2615).
+
+1. Enable automatic failover by editing `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   praefect['failover_enabled'] = true
+   praefect['failover_election_strategy'] = 'sql'
+   ```
+
+   When automatic failover is enabled, Praefect checks the health of internal
+   Gitaly nodes. If the primary has a certain amount of health checks fail, it
+   will promote one of the secondaries to be primary, and demote the primary to
+   be a secondary.
+
+   NOTE: **Note:** Database leader election will be [enabled by default in the
+   future](https://gitlab.com/gitlab-org/gitaly/-/issues/2682).
+
+   Caution, **automatic failover** favors availability over consistency and will
+   cause data loss if changes have not been replicated to the newly elected
+   primary. In the next release, leader election will [prefer to promote up to
+   date replicas](https://gitlab.com/gitlab-org/gitaly/-/issues/2642), and it
+   will be an option to favor consistency by marking [out-of-date repositories
+   read-only](https://gitlab.com/gitlab-org/gitaly/-/issues/2630).
 
 1. Save the changes to `/etc/gitlab/gitlab.rb` and [reconfigure Praefect](../restart_gitlab.md#omnibus-gitlab-reconfigure):
 
@@ -311,60 +336,6 @@ application server, or a Gitaly node.
    If the check fails, make sure you have followed the steps correctly. If you
    edit `/etc/gitlab/gitlab.rb`, remember to run `sudo gitlab-ctl reconfigure`
    again before trying the `sql-ping` command.
-
-#### Automatic failover
-
-When automatic failover is enabled, Praefect will do automatic detection of the health of internal Gitaly nodes. If the
-primary has a certain amount of health checks fail, it will decide to promote one of the secondaries to be primary, and
-demote the primary to be a secondary.
-
-1. To enable automatic failover, edit `/etc/gitlab/gitlab.rb`:
-
-   ```ruby
-   # failover_enabled turns on automatic failover
-   praefect['failover_enabled'] = true
-   praefect['virtual_storages'] = {
-     'storage-1' => {
-       'gitaly-1' => {
-         'address' => 'tcp://GITALY_HOST:8075',
-         'token'   => 'PRAEFECT_INTERNAL_TOKEN',
-         'primary' => true
-       },
-       'gitaly-2' => {
-         'address' => 'tcp://GITALY_HOST:8075',
-         'token'   => 'PRAEFECT_INTERNAL_TOKEN'
-       },
-       'gitaly-3' => {
-         'address' => 'tcp://GITALY_HOST:8075',
-         'token'   => 'PRAEFECT_INTERNAL_TOKEN'
-       }
-     }
-   }
-   ```
-
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
-
-Below is the picture when Praefect starts up with the config.toml above:
-
-```mermaid
-graph TD
-  A[Praefect] -->|Mutator RPC| B(internal_storage_0)
-  B --> |Replication|C[internal_storage_1]
-```
-
-Let's say suddenly `internal_storage_0` goes down. Praefect will detect this and
-automatically switch over to `internal_storage_1`, and `internal_storage_0` will serve as a secondary:
-
-```mermaid
-graph TD
-  A[Praefect] -->|Mutator RPC| B(internal_storage_1)
-  B --> |Replication|C[internal_storage_0]
-```
-
-NOTE: **Note:**: Currently this feature is supported for setups that only have 1 Praefect instance. Praefect instances running,
-for example behind a load balancer, `failover_enabled` should be disabled. The reason is The reason is because there
-is no coordination that currently happens across different Praefect instances, so there could be a situation where
-two Praefect instances think two different Gitaly nodes are the primary.
 
 ### Gitaly
 
@@ -518,38 +489,6 @@ config.
 
    ```shell
    sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml dial-nodes
-   ```
-
-1. Enable automatic failover by editing `/etc/gitlab/gitlab.rb`:
-
-   ```ruby
-   praefect['failover_enabled'] = true
-   ```
-
-   When automatic failover is enabled, Praefect checks the health of internal
-   Gitaly nodes. If the primary has a certain amount of health checks fail, it
-   will promote one of the secondaries to be primary, and demote the primary to
-   be a secondary.
-
-   Manual failover is possible by updating `praefect['virtual_storages']` and
-   nominating a new primary node.
-
-1. By default, Praefect will nominate a primary Gitaly node for each
-   shard and store the state of the primary in local memory. This state
-   does not persist across restarts and will cause a split brain
-   if multiple Praefect nodes are used for redundancy.
-
-   To avoid this limitation, enable the SQL election strategy:
-
-    ```ruby
-    praefect['failover_election_strategy'] = 'sql'
-    ```
-
-1. Save the changes to `/etc/gitlab/gitlab.rb` and [reconfigure
-   Praefect](../restart_gitlab.md#omnibus-gitlab-reconfigure):
-
-   ```shell
-   gitlab-ctl reconfigure
    ```
 
 ### Load Balancer
@@ -756,6 +695,13 @@ Praefect regularly checks the health of each backend Gitaly node. This
 information can be used to automatically failover to a new primary node if the
 current primary node is found to be unhealthy.
 
+- **PostgreSQL (recommended):** Enabled by setting
+  `praefect['failover_election_strategy'] = sql`. This configuration
+  option will allow multiple Praefect nodes to coordinate via the
+  PostgreSQL database to elect a primary Gitaly node. This configuration
+  will cause Praefect nodes to elect a new primary, monitor its health,
+  and elect a new primary if the current one has not been reachable in
+  10 seconds by a majority of the Praefect nodes.
 - **Manual:** Automatic failover is disabled. The primary node can be
   reconfigured in `/etc/gitlab/gitlab.rb` on the Praefect node. Modify the
   `praefect['virtual_storages']` field by moving the `primary = true` to promote
@@ -766,13 +712,6 @@ current primary node is found to be unhealthy.
   checks fail for the current primary backend Gitaly node, and new primary will
   be elected. **Do not use with multiple Praefect nodes!** Using with multiple
   Praefect nodes is likely to result in a split brain.
-- **PostgreSQL:** Enabled by setting
-  `praefect['failover_election_strategy'] = sql`. This configuration
-  option will allow multiple Praefect nodes to coordinate via the
-  PostgreSQL database to elect a primary Gitaly node. This configuration
-  will cause Praefect nodes to elect a new primary, monitor its health,
-  and elect a new primary if the current one has not been reachable in
-  10 seconds by a majority of the Praefect nodes.
 
 NOTE: **Note:**: Praefect does not yet account for replication lag on
 the secondaries during the election process, so data loss can occur

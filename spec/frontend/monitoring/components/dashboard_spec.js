@@ -6,7 +6,7 @@ import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import statusCodes from '~/lib/utils/http_status';
 import { metricStates } from '~/monitoring/constants';
-import Dashboard from '~/monitoring/components/dashboard_with_alerts.vue';
+import Dashboard from '~/monitoring/components/dashboard.vue';
 
 import DateTimePicker from '~/vue_shared/components/date_time_picker/date_time_picker.vue';
 import CustomMetricsFormFields from '~/custom_metrics/components/custom_metrics_form_fields.vue';

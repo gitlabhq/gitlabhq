@@ -365,39 +365,15 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
       post 'alerts/notify', to: 'alerting/notifications#create'
 
-      resources :pipelines, only: [:index, :new, :create, :show, :destroy] do
-        collection do
-          resource :pipelines_settings, path: 'settings', only: [:show, :update]
-          get :charts
-          scope '(*ref)', constraints: { ref: Gitlab::PathRegex.git_reference_regex } do
-            get :latest, action: :show, defaults: { latest: true }
-          end
-        end
+      # Unscoped route. It will be replaced with redirect to /-/pipelines/
+      # Issue https://gitlab.com/gitlab-org/gitlab/issues/118849
+      draw :pipelines
 
-        member do
-          get :stage
-          get :stage_ajax
-          post :cancel
-          post :retry
-          get :builds
-          get :failures
-          get :status
-          get :test_report
-          get :test_reports_count
-        end
-
-        member do
-          resources :stages, only: [], param: :name do
-            post :play_manual
-          end
-        end
-      end
-
-      resources :pipeline_schedules, except: [:show] do
-        member do
-          post :play
-          post :take_ownership
-        end
+      # To ensure an old unscoped routing is used for the UI we need to
+      # add prefix 'as' to the scope routing and place it below original routing.
+      # Issue https://gitlab.com/gitlab-org/gitlab/issues/118849
+      scope '-', as: 'scoped' do
+        draw :pipelines
       end
 
       draw :legacy_builds

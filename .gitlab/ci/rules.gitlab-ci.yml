@@ -557,11 +557,13 @@
 
 .test-metadata:rules:update-tests-metadata:
   rules:
-    - <<: *if-dot-com-ee-schedule
-      changes: *code-backstage-patterns
+    - <<: *if-not-ee
+      when: never
     - changes:
         - ".gitlab/ci/test-metadata.gitlab-ci.yml"
         - "scripts/rspec_helpers.sh"
+    - <<: *if-dot-com-ee-schedule
+      changes: *code-backstage-patterns
 
 ##############
 # YAML rules #

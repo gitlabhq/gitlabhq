@@ -30,6 +30,10 @@ export default {
       type: String,
       required: true,
     },
+    jiraIntegrationPath: {
+      type: String,
+      required: true,
+    },
     jiraProjects: {
       type: Array,
       required: true,
@@ -133,7 +137,11 @@ export default {
       {{ errorMessage }}
     </gl-alert>
 
-    <jira-import-setup v-if="!isJiraConfigured" :illustration="setupIllustration" />
+    <jira-import-setup
+      v-if="!isJiraConfigured"
+      :illustration="setupIllustration"
+      :jira-integration-path="jiraIntegrationPath"
+    />
     <gl-loading-icon v-else-if="$apollo.loading" size="md" class="mt-3" />
     <jira-import-progress
       v-else-if="isImportInProgress"

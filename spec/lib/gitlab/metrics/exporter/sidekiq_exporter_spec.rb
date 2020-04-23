@@ -53,7 +53,7 @@ describe Gitlab::Metrics::Exporter::SidekiqExporter do
         .with(
           class: described_class.to_s,
           message: 'Cannot start sidekiq_exporter',
-          exception: anything)
+          'exception.message' => anything)
 
       exporter.start
     end
