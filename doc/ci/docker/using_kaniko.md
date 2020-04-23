@@ -89,6 +89,18 @@ store:
       -----END CERTIFICATE-----" >> /kaniko/ssl/certs/ca-certificates.crt
 ```
 
+## Video walkthrough of a working example
+
+The [Least Privilege Container Builds with Kaniko on GitLab](https://www.youtube.com/watch?v=d96ybcELpFs)
+video is a walkthrough of the [Kaniko Docker Build](https://gitlab.com/guided-explorations/containers/kaniko-docker-build)
+Guided Exploration project pipeline. It was tested on:
+
+- [GitLab.com Shared Runners](../../user/gitlab_com/index.md#shared-runners)
+- [The Kubernetes Runner executor](https://docs.gitlab.com/runner/executors/kubernetes.html)
+
+The example can be copied to your own group or instance for testing. More details
+on what other GitLab CI patterns are demonstrated are available at the project page.
+
 <!-- ## Troubleshooting
 
 Include any troubleshooting steps that you can foresee. If you know beforehand what issues

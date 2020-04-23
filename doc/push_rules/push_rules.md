@@ -90,8 +90,9 @@ GitLab uses [RE2 syntax](https://github.com/google/re2/wiki/Syntax) for regular 
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/385) in [GitLab Starter](https://about.gitlab.com/pricing/) 8.12.
 
-You can turn on a predefined blacklist of files which won't be allowed to be
-pushed to a repository.
+Secrets such as credential files, SSH private keys, and other files containing secrets should never be committed to source control.
+GitLab allows you to turn on a predefined blacklist of files which won't be allowed to be
+pushed to a repository, stopping those commits from reaching the remote repository.
 
 By selecting the checkbox *Prevent committing secrets to Git*, GitLab prevents
 pushes to the repository when a file matches a regular expression as read from

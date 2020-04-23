@@ -139,6 +139,36 @@ FactoryBot.define do
       end
     end
 
+    trait :accessibility do
+      file_type { :accessibility }
+      file_format { :raw }
+
+      after(:build) do |artifact, _evaluator|
+        artifact.file = fixture_file_upload(
+          Rails.root.join('spec/fixtures/accessibility/pa11y_with_errors.json'), 'application/json')
+      end
+    end
+
+    trait :accessibility_with_invalid_url do
+      file_type { :accessibility }
+      file_format { :raw }
+
+      after(:build) do |artifact, _evaluator|
+        artifact.file = fixture_file_upload(
+          Rails.root.join('spec/fixtures/accessibility/pa11y_with_invalid_url.json'), 'application/json')
+      end
+    end
+
+    trait :accessibility_without_errors do
+      file_type { :accessibility }
+      file_format { :raw }
+
+      after(:build) do |artifact, _evaluator|
+        artifact.file = fixture_file_upload(
+          Rails.root.join('spec/fixtures/accessibility/pa11y_without_errors.json'), 'application/json')
+      end
+    end
+
     trait :cobertura do
       file_type { :cobertura }
       file_format { :gzip }

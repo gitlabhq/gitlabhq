@@ -75,9 +75,9 @@ count as active users in the subscription period in which they were originally a
 - Members with Guest permissions on an Ultimate subscription.
 - GitLab-created service accounts: `Ghost User` and `Support Bot`.
 
-##### User Statistics
+##### Users statistics
 
-To view a breakdown of the users within your instance, including active, billable, and blocked, go to **Admin Area > Overview > Dashboard** and select **Users Statistics** in the **Users** section.
+To view a breakdown of the users within your instance, including active, billable, and blocked, go to **Admin Area > Overview > Dashboard** and select **Users statistics** in the **Users** section.
 For more details, see [Users statistics](../user/admin_area/index.md#users-statistics).
 
 NOTE: **Note:**

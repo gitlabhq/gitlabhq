@@ -18,6 +18,8 @@ You can configure your job to use JUnit test reports, and GitLab will display a
 report on the merge request so that it's easier and faster to identify the
 failure without having to check the entire log.
 
+If you don't use Merge Requests but still want to see the JUnit output without searching through job logs, the full [JUnit test reports](#viewing-junit-test-reports-on-gitlab) are available in the pipeline detail view.
+
 ## Use cases
 
 Consider the following workflow:
@@ -241,7 +243,7 @@ This feature comes with the `:junit_pipeline_view` feature flag disabled by defa
 feature is disabled due to some performance issues with very large data sets.
 When [the performance is improved](https://gitlab.com/groups/gitlab-org/-/epics/2854), the feature will be enabled by default.
 
-To enable this feature, ask a GitLab administrator with Rails console access to run the
+To enable this feature, ask a GitLab administrator with [Rails console access](../administration/feature_flags.md#how-to-enable-and-disable-features-behind-flags) to run the
 following command:
 
 ```ruby

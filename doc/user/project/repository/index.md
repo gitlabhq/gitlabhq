@@ -199,7 +199,7 @@ of commits to the fewest, and displayed on a nice graph:
 
 ## Repository graph
 
-The repository graph displays visually the Git flow strategy used in that repository:
+The repository graph displays the history of the repository network visually, including branches and merges. This can help you visualize the Git flow strategy used in the repository:
 
 ![repository Git flow](img/repo_graph.png)
 

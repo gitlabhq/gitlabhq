@@ -864,3 +864,10 @@ if [[ -d "/builds/gitlab-examples/ci-debug-trace/.git" ]]; then
 
 ...
 ```
+
+## Video walkthrough of a working example
+
+The [Managing the Complex Configuration Data Management Monster Using GitLab](https://www.youtube.com/watch?v=v4ZOJ96hAck) video is a walkthrough of the [Complex Config Data Monorepo](https://gitlab.com/guided-explorations/config-data-top-scope/config-data-subscope/config-data-monorepo) working example project. It explains how multiple levels of group CI/CD variables can be combined with environment-scoped project variables for complex configuration of application builds or deployments.
+
+The example can be copied to your own group or instance for testing. More details
+on what other GitLab CI patterns are demonstrated are available at the project page.

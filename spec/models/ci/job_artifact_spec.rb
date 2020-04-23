@@ -70,6 +70,22 @@ describe Ci::JobArtifact do
     end
   end
 
+  describe '.accessibility_reports' do
+    subject { described_class.accessibility_reports }
+
+    context 'when there is an accessibility report' do
+      let(:artifact) { create(:ci_job_artifact, :accessibility) }
+
+      it { is_expected.to eq([artifact]) }
+    end
+
+    context 'when there are no accessibility report' do
+      let(:artifact) { create(:ci_job_artifact, :archive) }
+
+      it { is_expected.to be_empty }
+    end
+  end
+
   describe '.coverage_reports' do
     subject { described_class.coverage_reports }
 

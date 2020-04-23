@@ -37,14 +37,17 @@ your app.
 For a complete overview of these methodologies and GitLab CI/CD,
 read the [Introduction to CI/CD with GitLab](introduction/index.md).
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For a video demonstration of GitLab CI/CD, see [Demo: CI/CD with GitLab](https://www.youtube.com/watch?v=1iXFbchozdY).
+<div class="video-fallback">
+  Video demonstration of GitLab CI/CD: <a href="https://www.youtube.com/watch?v=1iXFbchozdY">Demo: CI/CD with GitLab</a>.
+</div>
+<figure class="video-container">
+  <iframe src="https://www.youtube.com/embed/1iXFbchozdY" frameborder="0" allowfullscreen="true"> </iframe>
+</figure>
 
 ## Getting started
 
 GitLab CI/CD is configured by a file called `.gitlab-ci.yml` placed
-at the repository's root. The scripts set in this file are executed
-by the [GitLab Runner](https://docs.gitlab.com/runner/).
+at the repository's root. This file creates a [pipeline](pipelines/index.md), which runs for changes to the code in the repository. Pipelines consist of one or more stages that run in order and can each contain one or more jobs that run in parallel. These jobs (or scripts) get executed by the [GitLab Runner](https://docs.gitlab.com/runner/) agent.
 
 To get started with GitLab CI/CD, we recommend you read through
 the following documents:
@@ -74,25 +77,32 @@ for all the attributes you can set and use.
 NOTE: **Note:**
 GitLab CI/CD and [shared runners](runners/README.md#shared-specific-and-group-runners) are enabled in GitLab.com and available for all users, limited only to the [user's pipelines quota](../user/gitlab_com/index.md#shared-runners).
 
-## Configuration
+## Concepts
 
-GitLab CI/CD supports numerous configuration options:
+GitLab CI/CD uses a number of concepts to describe and run your build and deploy.
 
-| Configuration | Description  |
+| Concept | Description  |
 |:--------------|:-------------|
 | [Pipelines](pipelines/index.md) | Structure your CI/CD process through pipelines. |
 | [Environment variables](variables/README.md) | Reuse values based on a variable/value key pair. |
 | [Environments](environments.md) | Deploy your application to different environments (e.g., staging, production). |
 | [Job artifacts](pipelines/job_artifacts.md) | Output, use, and reuse job artifacts. |
 | [Cache dependencies](caching/index.md) | Cache your dependencies for a faster execution. |
+| [GitLab Runner](https://docs.gitlab.com/runner/) | Configure your own GitLab Runners to execute your scripts. |
+
+## Configuration
+
+GitLab CI/CD supports numerous configuration options:
+
+| Configuration | Description  |
+|:--------------|:-------------|
 | [Schedule pipelines](pipelines/schedules.md) | Schedule pipelines to run as often as you need. |
 | [Custom path for `.gitlab-ci.yml`](pipelines/settings.md#custom-ci-configuration-path) | Define a custom path for the CI/CD configuration file. |
 | [Git submodules for CI/CD](git_submodules.md) | Configure jobs for using Git submodules.|
 | [SSH keys for CI/CD](ssh_keys/README.md) | Using SSH keys in your CI pipelines. |
-| [Pipelines triggers](triggers/README.md) | Trigger pipelines through the API. |
+| [Pipeline triggers](triggers/README.md) | Trigger pipelines through the API. |
 | [Pipelines for Merge Requests](merge_request_pipelines/index.md) | Design a pipeline structure for running a pipeline in merge requests. |
 | [Integrate with Kubernetes clusters](../user/project/clusters/index.md) | Connect your project to Google Kubernetes Engine (GKE) or an existing Kubernetes cluster. |
-| [GitLab Runner](https://docs.gitlab.com/runner/) | Configure your own GitLab Runners to execute your scripts. |
 | [Optimize GitLab and Runner for large repositories](large_repositories/index.md) | Recommended strategies for handling large repos. |
 | [`.gitlab-ci.yml` full reference](yaml/README.md) | All the attributes you can use with GitLab CI/CD. |
 

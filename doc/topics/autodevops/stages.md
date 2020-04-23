@@ -16,10 +16,13 @@ If a project's repository contains a `Dockerfile` at its root, Auto Build uses
 `docker build` to create a Docker image.
 
 If you're also using Auto Review Apps and Auto Deploy, and you choose to provide
-your own `Dockerfile`, you must expose your application to port `5000`, as the
-[default Helm chart](https://gitlab.com/gitlab-org/charts/auto-deploy-app) assumes
-this port is available. You can override the default values by
-[customizing the Auto Deploy Helm chart](customize.md#custom-helm-chart).
+your own `Dockerfile`, you must either:
+
+- Expose your application to port `5000`, as the
+  [default Helm chart](https://gitlab.com/gitlab-org/charts/auto-deploy-app)
+  assumes this port is available.
+- Override the default values by
+  [customizing the Auto Deploy Helm chart](customize.md#custom-helm-chart).
 
 ### Auto Build using Heroku buildpacks
 
@@ -78,8 +81,8 @@ Auto Test runs the appropriate tests for your application using
 [Heroku buildpacks](https://devcenter.heroku.com/articles/buildpacks) by analyzing
 your project to detect the language and framework. Several languages and
 frameworks are detected automatically, but if your language is not detected,
-create a [custom buildpack](customize.md#custom-buildpacks). Check the
-[currently supported languages](index.md#currently-supported-languages).
+you may be able to create a [custom buildpack](customize.md#custom-buildpacks).
+Check the [currently supported languages](index.md#currently-supported-languages).
 
 Auto Test uses tests you already have in your application. If there are no
 tests, it's up to you to add them.

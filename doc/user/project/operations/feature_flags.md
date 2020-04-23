@@ -15,6 +15,13 @@ This helps reducing risk and allows you to easily manage which features to enabl
 GitLab offers a Feature Flags interface that allows you to create, toggle and
 remove feature flags.
 
+<div class="video-fallback">
+  <a href="https://www.youtube.com/watch?v=5tw2p6lwXxo">Watch</a> a use case between Feature Flags and Sentry Error Tracking
+</div>
+<figure class="video-container">
+  <iframe src="https://www.youtube.com/embed/5tw2p6lwXxo" frameborder="0" allowfullscreen="true"> </iframe>
+</figure>
+
 ## How it works
 
 Underneath, GitLab uses [unleash](https://github.com/Unleash/unleash), a feature

@@ -1,0 +1,12 @@
+{
+  "total": 1,
+  "passes": 0,
+  "errors": 0,
+  "results": {
+    "": [
+      {
+        "message": "Protocol error (Page.navigate): Cannot navigate to invalid URL"
+      }
+    ]
+  }
+}

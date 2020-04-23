@@ -12,6 +12,7 @@ module Ci
 
     TEST_REPORT_FILE_TYPES = %w[junit].freeze
     COVERAGE_REPORT_FILE_TYPES = %w[cobertura].freeze
+    ACCESSIBILITY_REPORT_FILE_TYPES = %w[accessibility].freeze
     NON_ERASABLE_FILE_TYPES = %w[trace].freeze
     TERRAFORM_REPORT_FILE_TYPES = %w[terraform].freeze
     DEFAULT_FILE_NAMES = {
@@ -21,6 +22,7 @@ module Ci
       metrics_referee: nil,
       network_referee: nil,
       junit: 'junit.xml',
+      accessibility: 'gl-accessibility.json',
       codequality: 'gl-code-quality-report.json',
       sast: 'gl-sast-report.json',
       dependency_scanning: 'gl-dependency-scanning-report.json',
@@ -54,6 +56,7 @@ module Ci
       # All these file formats use `raw` as we need to store them uncompressed
       # for Frontend to fetch the files and do analysis
       # When they will be only used by backend, they can be `gzipped`.
+      accessibility: :raw,
       codequality: :raw,
       sast: :raw,
       dependency_scanning: :raw,
@@ -99,6 +102,10 @@ module Ci
       with_file_types(TEST_REPORT_FILE_TYPES)
     end
 
+    scope :accessibility_reports, -> do
+      with_file_types(ACCESSIBILITY_REPORT_FILE_TYPES)
+    end
+
     scope :coverage_reports, -> do
       with_file_types(COVERAGE_REPORT_FILE_TYPES)
     end
@@ -138,7 +145,8 @@ module Ci
       lsif: 15, # LSIF data for code navigation
       dotenv: 16,
       cobertura: 17,
-      terraform: 18 # Transformed json
+      terraform: 18, # Transformed json
+      accessibility: 19
     }
 
     enum file_format: {
