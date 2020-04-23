@@ -13057,6 +13057,9 @@ msgid_plural "Metrics|Edit metrics"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Metrics|Expand panel"
+msgstr ""
+
 msgid "Metrics|For grouping similar metrics"
 msgstr ""
 

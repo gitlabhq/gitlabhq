@@ -8,7 +8,6 @@ export default {
     Icon,
   },
   props: {
-    // failed || success
     status: {
       type: String,
       required: true,
@@ -27,7 +26,7 @@ export default {
         return 'status_success_borderless';
       }
 
-      return 'status_created_borderless';
+      return 'dash';
     },
     isStatusFailed() {
       return this.status === STATUS_FAILED;

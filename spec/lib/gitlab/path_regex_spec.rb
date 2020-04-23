@@ -170,6 +170,11 @@ describe Gitlab::PathRegex do
       expect(described_class::TOP_LEVEL_ROUTES)
         .to contain_exactly(*top_level_words), failure_block
     end
+
+    # We ban new items in this list, see https://gitlab.com/gitlab-org/gitlab/-/issues/215362
+    it 'does not allow expansion' do
+      expect(described_class::TOP_LEVEL_ROUTES.size).to eq(41)
+    end
   end
 
   describe 'GROUP_ROUTES' do
@@ -184,6 +189,11 @@ describe Gitlab::PathRegex do
       expect(described_class::GROUP_ROUTES)
         .to contain_exactly(*paths_after_group_id), failure_block
     end
+
+    # We ban new items in this list, see https://gitlab.com/gitlab-org/gitlab/-/issues/215362
+    it 'does not allow expansion' do
+      expect(described_class::GROUP_ROUTES.size).to eq(1)
+    end
   end
 
   describe 'PROJECT_WILDCARD_ROUTES' do
@@ -194,6 +204,11 @@ describe Gitlab::PathRegex do
             .to be(true), failure_message('PROJECT_WILDCARD_ROUTES', 'rename_wildcard_paths', missing_words: path)
         end
       end
+    end
+
+    # We ban new items in this list, see https://gitlab.com/gitlab-org/gitlab/-/issues/215362
+    it 'does not allow expansion' do
+      expect(described_class::PROJECT_WILDCARD_ROUTES.size).to eq(21)
     end
   end
 

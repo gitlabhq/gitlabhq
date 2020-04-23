@@ -11,7 +11,7 @@ describe Groups::ImportExport::ExportService do
       let(:export_service) { described_class.new(group: group, user: user) }
 
       it 'enqueues an export job' do
-        expect(GroupExportWorker).to receive(:perform_async).with(user.id, group.id, {})
+        allow(GroupExportWorker).to receive(:perform_async).with(user.id, group.id, {})
 
         export_service.async_execute
       end
@@ -49,7 +49,17 @@ describe Groups::ImportExport::ExportService do
       FileUtils.rm_rf(archive_path)
     end
 
-    it 'saves the models' do
+    it 'saves the models using ndjson tree saver' do
+      stub_feature_flags(group_import_export_ndjson: true)
+
+      expect(Gitlab::ImportExport::Group::TreeSaver).to receive(:new).and_call_original
+
+      service.execute
+    end
+
+    it 'saves the models using legacy tree saver' do
+      stub_feature_flags(group_import_export_ndjson: false)
+
       expect(Gitlab::ImportExport::Group::LegacyTreeSaver).to receive(:new).and_call_original
 
       service.execute

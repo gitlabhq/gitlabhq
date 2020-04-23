@@ -91,6 +91,10 @@ module Gitlab
     def legacy_group_config_file
       Rails.root.join('lib/gitlab/import_export/group/legacy_import_export.yml')
     end
+
+    def group_config_file
+      Rails.root.join('lib/gitlab/import_export/group/import_export.yml')
+    end
   end
 end
 

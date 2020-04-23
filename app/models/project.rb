@@ -208,6 +208,7 @@ class Project < ApplicationRecord
   has_many :services
   has_many :events
   has_many :milestones
+  has_many :sprints
   has_many :notes
   has_many :snippets, class_name: 'ProjectSnippet'
   has_many :hooks, class_name: 'ProjectHook'

@@ -286,15 +286,24 @@ qa-frontend-node:latest:
 webpack-dev-server:
   extends:
     - .default-retry
-    - .default-cache
     - .frontend:rules:default-frontend-jobs
   stage: test
-  needs: ["setup-test-env pg11", "compile-assets pull-cache"]
+  needs: []
   variables:
     WEBPACK_MEMORY_TEST: "true"
     WEBPACK_VENDOR_DLL: "true"
+  cache:
+    key:
+      files:
+        - yarn.lock
+        - config/webpack.vendor.config.js
+      prefix: "v2"
+    paths:
+      - node_modules/
   script:
-    - yarn webpack-vendor
+    - source scripts/utils.sh
+    - retry yarn install --frozen-lockfile
+    - retry yarn webpack-vendor
     - node --expose-gc node_modules/.bin/webpack-dev-server --config config/webpack.config.js
   artifacts:
     name: webpack-dev-server

@@ -12,7 +12,7 @@ GitLab provides a lot of great reporting tools for [merge requests](../user/proj
 
 You can configure your job to use custom Metrics Reports, and GitLab will display a report on the merge request so that it's easier and faster to identify changes without having to check the entire log.
 
-![Metrics Reports](img/metrics_reports.png)
+![Metrics Reports](img/metrics_reports_v13_0.png)
 
 ## Use cases
 

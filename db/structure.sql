@@ -6071,6 +6071,33 @@ CREATE SEQUENCE public.spam_logs_id_seq
 
 ALTER SEQUENCE public.spam_logs_id_seq OWNED BY public.spam_logs.id;
 
+CREATE TABLE public.sprints (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    start_date date,
+    due_date date,
+    project_id bigint,
+    group_id bigint,
+    iid integer NOT NULL,
+    cached_markdown_version integer,
+    state smallint,
+    title text NOT NULL,
+    title_html text,
+    description text,
+    description_html text,
+    CONSTRAINT sprints_title CHECK ((char_length(title) <= 255))
+);
+
+CREATE SEQUENCE public.sprints_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.sprints_id_seq OWNED BY public.sprints.id;
+
 CREATE TABLE public.status_page_settings (
     project_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -7589,6 +7616,8 @@ ALTER TABLE ONLY public.software_licenses ALTER COLUMN id SET DEFAULT nextval('p
 
 ALTER TABLE ONLY public.spam_logs ALTER COLUMN id SET DEFAULT nextval('public.spam_logs_id_seq'::regclass);
 
+ALTER TABLE ONLY public.sprints ALTER COLUMN id SET DEFAULT nextval('public.sprints_id_seq'::regclass);
+
 ALTER TABLE ONLY public.status_page_settings ALTER COLUMN project_id SET DEFAULT nextval('public.status_page_settings_project_id_seq'::regclass);
 
 ALTER TABLE ONLY public.subscriptions ALTER COLUMN id SET DEFAULT nextval('public.subscriptions_id_seq'::regclass);
@@ -8514,6 +8543,9 @@ ALTER TABLE ONLY public.software_licenses
 
 ALTER TABLE ONLY public.spam_logs
     ADD CONSTRAINT spam_logs_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.sprints
+    ADD CONSTRAINT sprints_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY public.status_page_settings
     ADD CONSTRAINT status_page_settings_pkey PRIMARY KEY (project_id);
@@ -10327,6 +10359,22 @@ CREATE INDEX index_software_licenses_on_spdx_identifier ON public.software_licen
 
 CREATE UNIQUE INDEX index_software_licenses_on_unique_name ON public.software_licenses USING btree (name);
 
+CREATE INDEX index_sprints_on_description_trigram ON public.sprints USING gin (description public.gin_trgm_ops);
+
+CREATE INDEX index_sprints_on_due_date ON public.sprints USING btree (due_date);
+
+CREATE INDEX index_sprints_on_group_id ON public.sprints USING btree (group_id);
+
+CREATE UNIQUE INDEX index_sprints_on_group_id_and_title ON public.sprints USING btree (group_id, title) WHERE (group_id IS NOT NULL);
+
+CREATE UNIQUE INDEX index_sprints_on_project_id_and_iid ON public.sprints USING btree (project_id, iid);
+
+CREATE UNIQUE INDEX index_sprints_on_project_id_and_title ON public.sprints USING btree (project_id, title) WHERE (project_id IS NOT NULL);
+
+CREATE INDEX index_sprints_on_title ON public.sprints USING btree (title);
+
+CREATE INDEX index_sprints_on_title_trigram ON public.sprints USING gin (title public.gin_trgm_ops);
+
 CREATE INDEX index_status_page_settings_on_project_id ON public.status_page_settings USING btree (project_id);
 
 CREATE INDEX index_subscriptions_on_project_id ON public.subscriptions USING btree (project_id);
@@ -10894,6 +10942,9 @@ ALTER TABLE ONLY public.labels
 ALTER TABLE ONLY public.merge_request_metrics
     ADD CONSTRAINT fk_7f28d925f3 FOREIGN KEY (merged_by_id) REFERENCES public.users(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY public.sprints
+    ADD CONSTRAINT fk_80aa8a1f95 FOREIGN KEY (group_id) REFERENCES public.namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY public.import_export_uploads
     ADD CONSTRAINT fk_83319d9721 FOREIGN KEY (group_id) REFERENCES public.namespaces(id) ON DELETE CASCADE;
 
@@ -11133,6 +11184,9 @@ ALTER TABLE ONLY public.namespaces
 
 ALTER TABLE ONLY public.fork_networks
     ADD CONSTRAINT fk_e7b436b2b5 FOREIGN KEY (root_project_id) REFERENCES public.projects(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY public.sprints
+    ADD CONSTRAINT fk_e8206c9686 FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.application_settings
     ADD CONSTRAINT fk_e8a145f3a7 FOREIGN KEY (instance_administrators_group_id) REFERENCES public.namespaces(id) ON DELETE SET NULL;
@@ -13151,6 +13205,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200213204737
 20200213220159
 20200213220211
+20200213224220
 20200214025454
 20200214034836
 20200214085940
@@ -13365,6 +13420,9 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200416120128
 20200416120354
 20200417044453
+20200420172113
+20200420172752
+20200420172927
 20200421233150
 20200423075720
 20200423080334

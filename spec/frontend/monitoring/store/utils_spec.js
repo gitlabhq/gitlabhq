@@ -27,6 +27,7 @@ describe('mapToDashboardViewModel', () => {
           group: 'Group 1',
           panels: [
             {
+              id: 'ID_ABC',
               title: 'Title A',
               xLabel: '',
               xAxis: {
@@ -49,6 +50,7 @@ describe('mapToDashboardViewModel', () => {
           key: 'group-1-0',
           panels: [
             {
+              id: 'ID_ABC',
               title: 'Title A',
               type: 'chart-type',
               xLabel: '',
@@ -127,11 +129,13 @@ describe('mapToDashboardViewModel', () => {
 
     it('panel with x_label', () => {
       setupWithPanel({
+        id: 'ID_123',
         title: panelTitle,
         x_label: 'x label',
       });
 
       expect(getMappedPanel()).toEqual({
+        id: 'ID_123',
         title: panelTitle,
         xLabel: 'x label',
         xAxis: {
@@ -149,10 +153,12 @@ describe('mapToDashboardViewModel', () => {
 
     it('group y_axis defaults', () => {
       setupWithPanel({
+        id: 'ID_456',
         title: panelTitle,
       });
 
       expect(getMappedPanel()).toEqual({
+        id: 'ID_456',
         title: panelTitle,
         xLabel: '',
         y_label: '',

@@ -432,7 +432,7 @@ From your project's left sidebar, navigate to **CI/CD > Pipelines** and click on
 pipeline ID that has a `license_management` job to see the Licenses tab with the listed
 licenses (if any).
 
-![License Compliance Pipeline Tab](img/license_compliance_pipeline_tab_v12_3.png)
+![License Compliance Pipeline Tab](img/license_compliance_pipeline_tab_v13_0.png)
 
 <!-- ## Troubleshooting
 

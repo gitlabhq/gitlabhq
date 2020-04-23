@@ -260,6 +260,14 @@ module.exports = {
           chunks: 'initial',
           minChunks: autoEntriesCount * 0.9,
         }),
+        monaco: {
+          priority: 15,
+          name: 'monaco',
+          chunks: 'initial',
+          test: /[\\/]node_modules[\\/]monaco-editor[\\/]/,
+          minChunks: 2,
+          reuseExistingChunk: true,
+        },
         vendors: {
           priority: 10,
           chunks: 'async',

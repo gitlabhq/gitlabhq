@@ -52,11 +52,11 @@ describe('Dashboard Panel', () => {
   const exampleText = 'example_text';
 
   const findCopyLink = () => wrapper.find({ ref: 'copyChartLink' });
-  const findTimeChart = () => wrapper.find({ ref: 'timeChart' });
+  const findTimeChart = () => wrapper.find({ ref: 'timeSeriesChart' });
   const findTitle = () => wrapper.find({ ref: 'graphTitle' });
   const findContextualMenu = () => wrapper.find({ ref: 'contextualMenu' });
 
-  const createWrapper = props => {
+  const createWrapper = (props, options = {}) => {
     wrapper = shallowMount(DashboardPanel, {
       propsData: {
         graphData,
@@ -64,6 +64,7 @@ describe('Dashboard Panel', () => {
       },
       store,
       mocks,
+      ...options,
     });
   };
 
@@ -78,6 +79,22 @@ describe('Dashboard Panel', () => {
 
   afterEach(() => {
     axiosMock.reset();
+  });
+
+  describe('Renders slots', () => {
+    it('renders "topLeft" slot', () => {
+      createWrapper(
+        {},
+        {
+          slots: {
+            topLeft: `<div class="top-left-content">OK</div>`,
+          },
+        },
+      );
+
+      expect(wrapper.find('.top-left-content').exists()).toBe(true);
+      expect(wrapper.find('.top-left-content').text()).toBe('OK');
+    });
   });
 
   describe('When no graphData is available', () => {
@@ -111,7 +128,7 @@ describe('Dashboard Panel', () => {
     });
   });
 
-  describe('when graph data is available', () => {
+  describe('When graphData is available', () => {
     beforeEach(() => {
       createWrapper();
     });
@@ -182,10 +199,13 @@ describe('Dashboard Panel', () => {
         ${singleStatMetricsResult}                 | ${MonitorSingleStatChart}
         ${graphDataPrometheusQueryRangeMultiTrack} | ${MonitorHeatmapChart}
         ${barMockData}                             | ${MonitorBarChart}
-      `('type $data.type renders the expected component', ({ data, component }) => {
-        createWrapper({ graphData: data });
+      `('wrapps a $data.type component binding attributes', ({ data, component }) => {
+        const attrs = { attr1: 'attr1Value', attr2: 'attr2Value' };
+        createWrapper({ graphData: data }, { attrs });
+
         expect(wrapper.find(component).exists()).toBe(true);
         expect(wrapper.find(component).isVueInstance()).toBe(true);
+        expect(wrapper.find(component).attributes()).toMatchObject(attrs);
       });
     });
   });
@@ -433,6 +453,32 @@ describe('Dashboard Panel', () => {
     it('it renders a time series chart with no errors', () => {
       expect(wrapper.find(MonitorTimeSeriesChart).isVueInstance()).toBe(true);
       expect(wrapper.find(MonitorTimeSeriesChart).exists()).toBe(true);
+    });
+  });
+
+  describe('Expand to full screen', () => {
+    const findExpandBtn = () => wrapper.find({ ref: 'expandBtn' });
+
+    describe('when there is no @expand listener', () => {
+      it('does not show `View full screen` option', () => {
+        createWrapper();
+        expect(findExpandBtn().exists()).toBe(false);
+      });
+    });
+
+    describe('when there is an @expand listener', () => {
+      beforeEach(() => {
+        createWrapper({}, { listeners: { expand: () => {} } });
+      });
+
+      it('shows the `expand` option', () => {
+        expect(findExpandBtn().exists()).toBe(true);
+      });
+
+      it('emits the `expand` event', () => {
+        findExpandBtn().vm.$emit('click');
+        expect(wrapper.emitted('expand')).toHaveLength(1);
+      });
     });
   });
 

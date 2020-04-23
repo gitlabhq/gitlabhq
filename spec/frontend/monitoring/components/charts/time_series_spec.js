@@ -1,4 +1,4 @@
-import { mount } from '@vue/test-utils';
+import { mount, shallowMount } from '@vue/test-utils';
 import { setTestTimeout } from 'helpers/timeout';
 import { GlLink } from '@gitlab/ui';
 import { TEST_HOST } from 'jest/helpers/test_constants';
@@ -11,7 +11,7 @@ import {
 import { cloneDeep } from 'lodash';
 import { shallowWrapperContainsSlotText } from 'helpers/vue_test_utils_helper';
 import { createStore } from '~/monitoring/stores';
-import { panelTypes } from '~/monitoring/constants';
+import { panelTypes, chartHeight } from '~/monitoring/constants';
 import TimeSeries from '~/monitoring/components/charts/time_series.vue';
 import * as types from '~/monitoring/stores/mutation_types';
 import { deploymentData, mockProjectDir, annotationsData } from '../../mock_data';
@@ -40,10 +40,10 @@ describe('Time series component', () => {
   let mockGraphData;
   let store;
 
-  const makeTimeSeriesChart = (graphData, type) =>
-    mount(TimeSeries, {
+  const createWrapper = (graphData = mockGraphData, mountingMethod = shallowMount) =>
+    mountingMethod(TimeSeries, {
       propsData: {
-        graphData: { ...graphData, type },
+        graphData,
         deploymentData: store.state.monitoringDashboard.deploymentData,
         annotations: store.state.monitoringDashboard.annotations,
         projectPath: `${TEST_HOST}${mockProjectDir}`,
@@ -80,9 +80,9 @@ describe('Time series component', () => {
 
       const findChart = () => timeSeriesChart.find({ ref: 'chart' });
 
-      beforeEach(done => {
-        timeSeriesChart = makeTimeSeriesChart(mockGraphData, 'area-chart');
-        timeSeriesChart.vm.$nextTick(done);
+      beforeEach(() => {
+        timeSeriesChart = createWrapper(mockGraphData, mount);
+        return timeSeriesChart.vm.$nextTick();
       });
 
       it('allows user to override max value label text using prop', () => {
@@ -98,6 +98,21 @@ describe('Time series component', () => {
 
         return timeSeriesChart.vm.$nextTick().then(() => {
           expect(timeSeriesChart.props().legendAverageText).toBe('averageText');
+        });
+      });
+
+      it('chart sets a default height', () => {
+        const wrapper = createWrapper();
+        expect(wrapper.props('height')).toBe(chartHeight);
+      });
+
+      it('chart has a configurable height', () => {
+        const mockHeight = 599;
+        const wrapper = createWrapper();
+
+        wrapper.setProps({ height: mockHeight });
+        return wrapper.vm.$nextTick().then(() => {
+          expect(wrapper.props('height')).toBe(mockHeight);
         });
       });
 
@@ -126,7 +141,7 @@ describe('Time series component', () => {
               }),
             };
 
-            timeSeriesChart = makeTimeSeriesChart(mockGraphData);
+            timeSeriesChart = createWrapper(mockGraphData, mount);
             timeSeriesChart.vm.$nextTick(() => {
               findChart().vm.$emit('created', eChartMock);
               done();
@@ -551,7 +566,10 @@ describe('Time series component', () => {
           const findChartComponent = () => timeSeriesAreaChart.find(dynamicComponent.component);
 
           beforeEach(done => {
-            timeSeriesAreaChart = makeTimeSeriesChart(mockGraphData, dynamicComponent.chartType);
+            timeSeriesAreaChart = createWrapper(
+              { ...mockGraphData, type: dynamicComponent.chartType },
+              mount,
+            );
             timeSeriesAreaChart.vm.$nextTick(done);
           });
 
@@ -633,7 +651,7 @@ describe('Time series component', () => {
           Object.assign(metric, { result: metricResultStatus.result }),
         );
 
-        timeSeriesChart = makeTimeSeriesChart(graphData, 'area-chart');
+        timeSeriesChart = createWrapper({ ...graphData, type: 'area-chart' }, mount);
         timeSeriesChart.vm.$nextTick(done);
       });
 

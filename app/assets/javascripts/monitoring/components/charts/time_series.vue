@@ -64,10 +64,10 @@ export default {
       required: false,
       default: '',
     },
-    singleEmbed: {
-      type: Boolean,
+    height: {
+      type: Number,
       required: false,
-      default: false,
+      default: chartHeight,
     },
     thresholds: {
       type: Array,
@@ -100,7 +100,6 @@ export default {
         sha: '',
       },
       width: 0,
-      height: chartHeight,
       svgs: {},
       primaryColor: null,
       throttledDatazoom: null,

@@ -144,6 +144,7 @@ const mapYAxisToViewModel = ({
  * @returns {Object}
  */
 const mapPanelToViewModel = ({
+  id = null,
   title = '',
   type,
   x_axis = {},
@@ -162,6 +163,7 @@ const mapPanelToViewModel = ({
   const yAxis = mapYAxisToViewModel({ name: y_label, ...y_axis }); // eslint-disable-line babel/camelcase
 
   return {
+    id,
     title,
     type,
     xLabel: xAxis.name,

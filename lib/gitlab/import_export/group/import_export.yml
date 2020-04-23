@@ -1,0 +1,84 @@
+# Model relationships to be included in the group import/export
+#
+# This list _must_ only contain relationships that are available to both FOSS and
+# Enterprise editions. EE specific relationships must be defined in the `ee` section further
+# down below.
+tree:
+  group:
+    - :milestones
+    - :badges
+    - labels:
+      - :priorities
+    - boards:
+      - lists:
+        - label:
+          - :priorities
+        - :board
+    - members:
+      - :user
+
+included_attributes:
+  user:
+    - :id
+    - :email
+    - :username
+  author:
+    - :name
+
+excluded_attributes:
+  group:
+    - :owner_id
+    - :created_at
+    - :updated_at
+    - :runners_token
+    - :runners_token_encrypted
+    - :saml_discovery_token
+    - :visibility_level
+    - :trial_ends_on
+    - :shared_runners_minute_limit
+    - :extra_shared_runners_minutes_limit
+  epics:
+    - :state_id
+
+methods:
+  labels:
+    - :type
+  label:
+    - :type
+  badges:
+    - :type
+  notes:
+    - :type
+  events:
+    - :action
+  lists:
+    - :list_type
+  epics:
+    - :state
+
+preloads:
+
+# EE specific relationships and settings to include. All of this will be merged
+# into the previous structures if EE is used.
+ee:
+  tree:
+    group:
+      - epics:
+        - :parent
+        - :award_emoji
+        - events:
+          - :push_event_payload
+        - notes:
+          - :author
+          - :award_emoji
+          - events:
+            - :push_event_payload
+      - boards:
+        - :board_assignee
+        - :milestone
+        - labels:
+          - :priorities
+        - lists:
+          - milestone:
+            - events:
+              - :push_event_payload
