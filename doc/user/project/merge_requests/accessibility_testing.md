@@ -46,8 +46,11 @@ Pa11y against the webpages defined in `a11y_urls`, and builds an HTML report for
 
 The report for each URL is saved as an artifact that can be [viewed directly in your browser](../../../ci/pipelines/job_artifacts.md#browsing-artifacts).
 
-A single `accessibility.json` artifact is created and saved along with the individual HTML reports.
+A single `gl-accessibility.json` artifact is created and saved along with the individual HTML reports.
 It includes report data for all URLs scanned.
+
+NOTE: **Note:**
+For GitLab 12.10 and earlier, the [artifact generated is named `accessibility.json`](https://gitlab.com/gitlab-org/ci-cd/accessibility/-/merge_requests/9).
 
 NOTE: **Note:**
 For GitLab versions earlier than 12.9, you can use `include:remote` and use a

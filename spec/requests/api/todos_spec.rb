@@ -235,6 +235,7 @@ describe API::Todos do
       expect(json_response['state']).to eq('pending')
       expect(json_response['action_name']).to eq('marked')
       expect(json_response['created_at']).to be_present
+      expect(json_response['updated_at']).to be_present
     end
 
     it 'returns 304 there already exist a todo on that issuable' do

@@ -652,4 +652,16 @@ describe Gitlab::Git::Blob, :seed_helper do
       expect(described_class).to respond_to(:gitlab_blob_size)
     end
   end
+
+  describe '#lines' do
+    context 'when the encoding cannot be detected' do
+      it 'successfully splits the data' do
+        data = "test\nblob"
+        blob = Gitlab::Git::Blob.new(name: 'test', size: data.bytesize, data: data)
+        expect(blob).to receive(:ruby_encoding) { nil }
+
+        expect(blob.lines).to eq(data.split("\n"))
+      end
+    end
+  end
 end

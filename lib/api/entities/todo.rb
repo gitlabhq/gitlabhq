@@ -22,6 +22,7 @@ module API
       expose :body
       expose :state
       expose :created_at
+      expose :updated_at
 
       def todo_target_class(target_type)
         # false as second argument prevents looking up in module hierarchy

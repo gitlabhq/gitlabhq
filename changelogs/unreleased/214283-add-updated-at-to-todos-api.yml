@@ -1,0 +1,5 @@
+---
+title: Expose the updated_at attribute in the todos API
+merge_request: 30035
+author:
+type: changed
