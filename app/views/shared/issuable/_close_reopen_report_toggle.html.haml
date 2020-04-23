@@ -11,7 +11,7 @@
 
 .float-left.btn-group.prepend-left-10.issuable-close-dropdown.droplab-dropdown.js-issuable-close-dropdown
   = link_to "#{display_button_action} #{display_issuable_type}", close_reopen_issuable_path(issuable),
-            method: button_method, class: "#{button_class} btn-#{button_action} #{(add_blocked_class ? 'btn-issue-blocked' : '')}", title: "#{display_button_action} #{display_issuable_type}"
+            method: button_method, class: "#{button_class} btn-#{button_action} #{(add_blocked_class ? 'btn-issue-blocked' : '')}", title: "#{display_button_action} #{display_issuable_type}", data: { qa_selector: 'close_issue_button' }
 
   = button_tag type: 'button', class: "#{toggle_class} btn-#{button_action}-color",
                data: { 'dropdown-trigger' => '#issuable-close-menu' }, 'aria-label' => 'Toggle dropdown' do

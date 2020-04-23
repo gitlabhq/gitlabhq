@@ -221,10 +221,8 @@ GitlabSecurity/PublicSend:
 
 Gitlab/DuplicateSpecLocation:
   Exclude:
-    - ee/spec/helpers/auth_helper_spec.rb
     - ee/spec/lib/gitlab/gl_repository_spec.rb
     - ee/spec/services/merge_requests/refresh_service_spec.rb
-    - ee/spec/helpers/ee/auth_helper_spec.rb
     - ee/spec/services/ee/merge_requests/refresh_service_spec.rb
 
 Cop/InjectEnterpriseEditionModule:

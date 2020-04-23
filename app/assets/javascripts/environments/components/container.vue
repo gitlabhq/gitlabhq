@@ -1,6 +1,5 @@
 <script>
 import { GlLoadingIcon } from '@gitlab/ui';
-import containerMixin from 'ee_else_ce/environments/mixins/container_mixin';
 import TablePagination from '~/vue_shared/components/pagination/table_pagination.vue';
 import EnvironmentTable from '../components/environments_table.vue';
 
@@ -10,8 +9,12 @@ export default {
     TablePagination,
     GlLoadingIcon,
   },
-  mixins: [containerMixin],
   props: {
+    canaryDeploymentFeatureId: {
+      type: String,
+      required: false,
+      default: null,
+    },
     isLoading: {
       type: Boolean,
       required: true,
@@ -27,6 +30,31 @@ export default {
     canReadEnvironment: {
       type: Boolean,
       required: true,
+    },
+    deployBoardsHelpPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    helpCanaryDeploymentsPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    lockPromotionSvgPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    showCanaryDeploymentCallout: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    userCalloutsPath: {
+      type: String,
+      required: false,
+      default: '',
     },
   },
   methods: {

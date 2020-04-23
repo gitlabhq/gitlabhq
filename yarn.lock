@@ -5334,10 +5334,10 @@ graphlib@^2.1.7, graphlib@^2.1.8:
   dependencies:
     lodash "^4.17.15"
 
-graphql-tag@^2.10.0:
-  version "2.10.0"
-  resolved "https://registry.yarnpkg.com/graphql-tag/-/graphql-tag-2.10.0.tgz#87da024be863e357551b2b8700e496ee2d4353ae"
-  integrity sha512-9FD6cw976TLLf9WYIUPCaaTpniawIjHWZSwIRZSjrfufJamcXbVVYfN2TWvJYbw0Xf2JjYbl1/f2+wDnBVw3/w==
+graphql-tag@^2.10.1:
+  version "2.10.3"
+  resolved "https://registry.yarnpkg.com/graphql-tag/-/graphql-tag-2.10.3.tgz#ea1baba5eb8fc6339e4c4cf049dabe522b0edf03"
+  integrity sha512-4FOv3ZKfA4WdOKJeHdz6B3F/vxBLSgmBcGeAFPf4n1F64ltJUvOOerNj0rsJxONQGdhUMynQIvd6LzB+1J5oKA==
 
 graphql@^14.0.2:
   version "14.0.2"
@@ -10117,7 +10117,7 @@ send@0.17.1:
     range-parser "~1.2.1"
     statuses "~1.5.0"
 
-serialize-javascript@^2.1.2:
+serialize-javascript@^2.1.0, serialize-javascript@^2.1.2:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/serialize-javascript/-/serialize-javascript-2.1.2.tgz#ecec53b0e0317bdc95ef76ab7074b7384785fa61"
   integrity sha512-rs9OggEUF0V4jUSecXazOYsLfu7OGK2qIn3c7IPBiffz32XniEp/TX9Xmc9LQfK2nQ2QKHvZ2oygKUGU0lG4jQ==
@@ -11009,10 +11009,10 @@ throat@^4.0.0:
   resolved "https://registry.yarnpkg.com/throat/-/throat-4.1.0.tgz#89037cbc92c56ab18926e6ba4cbb200e15672a6a"
   integrity sha1-iQN8vJLFarGJJua6TLsgDhVnKmo=
 
-throttle-debounce@^2.0.0:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/throttle-debounce/-/throttle-debounce-2.0.1.tgz#7307ddd6cd9acadb349132fbf6c18d78c88a5e62"
-  integrity sha512-Sr6jZBlWShsAaSXKyNXyNicOrJW/KtkDqIEwHt4wYwWA2wa/q67Luhqoujg48V8hTk60wB56tYrJJn6jc2R7VA==
+throttle-debounce@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/throttle-debounce/-/throttle-debounce-2.1.0.tgz#257e648f0a56bd9e54fe0f132c4ab8611df4e1d5"
+  integrity sha512-AOvyNahXQuU7NN+VVvOOX+uW6FPaWdAOdRP5HfwYxAfCzXTFKRMoIMk+n+po318+ktcChx+F1Dd91G3YHeMKyg==
 
 through2@^2.0.0:
   version "2.0.5"
@@ -11725,13 +11725,14 @@ void-elements@^2.0.0:
   resolved "https://registry.yarnpkg.com/void-elements/-/void-elements-2.0.1.tgz#c066afb582bb1cb4128d60ea92392e94d5e9dbec"
   integrity sha1-wGavtYK7HLQSjWDqkjkulNXp2+w=
 
-vue-apollo@^3.0.0-beta.28:
-  version "3.0.0-beta.28"
-  resolved "https://registry.yarnpkg.com/vue-apollo/-/vue-apollo-3.0.0-beta.28.tgz#be6a3a1504be2096cbfb23996537e2fc95c8c239"
-  integrity sha512-ceCc1xTyxpNtiSeJMQgSkfgJue6pnv+TIvp75CwZlwMxRtNZjITj4MGvBWFwnoIEhVrUAw45ff/5udgJ8z9sdQ==
+vue-apollo@^3.0.3:
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/vue-apollo/-/vue-apollo-3.0.3.tgz#7f29558df76eec0f03251847eef153816a261827"
+  integrity sha512-WJaQ1v/i46/oIPlKv7J0Tx6tTlbuaeCdhrAbL06h+Zca2gzr5ywjUFpl8ijMTGJsQ+Ph/U4xEpBFBOMxQmL+7g==
   dependencies:
-    chalk "^2.4.1"
-    throttle-debounce "^2.0.0"
+    chalk "^2.4.2"
+    serialize-javascript "^2.1.0"
+    throttle-debounce "^2.1.0"
 
 vue-eslint-parser@^7.0.0:
   version "7.0.0"
