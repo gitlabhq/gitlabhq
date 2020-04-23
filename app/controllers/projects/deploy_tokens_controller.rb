@@ -7,6 +7,6 @@ class Projects::DeployTokensController < Projects::ApplicationController
     @token = @project.deploy_tokens.find(params[:id])
     @token.revoke!
 
-    redirect_to project_settings_ci_cd_path(project, anchor: 'js-deploy-tokens')
+    redirect_to project_settings_repository_path(project, anchor: 'js-deploy-tokens')
   end
 end

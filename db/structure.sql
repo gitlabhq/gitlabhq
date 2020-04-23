@@ -24,6 +24,40 @@ CREATE SEQUENCE public.abuse_reports_id_seq
 
 ALTER SEQUENCE public.abuse_reports_id_seq OWNED BY public.abuse_reports.id;
 
+CREATE TABLE public.alert_management_alerts (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    started_at timestamp with time zone NOT NULL,
+    ended_at timestamp with time zone,
+    events integer DEFAULT 1 NOT NULL,
+    iid integer NOT NULL,
+    severity smallint DEFAULT 0 NOT NULL,
+    status smallint DEFAULT 0 NOT NULL,
+    fingerprint bytea,
+    issue_id bigint,
+    project_id bigint NOT NULL,
+    title text NOT NULL,
+    description text,
+    service text,
+    monitoring_tool text,
+    hosts text[] DEFAULT '{}'::text[] NOT NULL,
+    payload jsonb DEFAULT '{}'::jsonb NOT NULL,
+    CONSTRAINT check_2df3e2fdc1 CHECK ((char_length(monitoring_tool) <= 100)),
+    CONSTRAINT check_5e9e57cadb CHECK ((char_length(description) <= 1000)),
+    CONSTRAINT check_bac14dddde CHECK ((char_length(service) <= 100)),
+    CONSTRAINT check_d1d1c2d14c CHECK ((char_length(title) <= 200))
+);
+
+CREATE SEQUENCE public.alert_management_alerts_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.alert_management_alerts_id_seq OWNED BY public.alert_management_alerts.id;
+
 CREATE TABLE public.alerts_service_data (
     id bigint NOT NULL,
     service_id integer NOT NULL,
@@ -5597,9 +5631,6 @@ CREATE TABLE public.resource_milestone_events (
     milestone_id bigint,
     action smallint NOT NULL,
     state smallint NOT NULL,
-    cached_markdown_version integer,
-    reference text,
-    reference_html text,
     created_at timestamp with time zone NOT NULL
 );
 
@@ -6661,10 +6692,11 @@ CREATE TABLE public.vulnerability_exports (
     finished_at timestamp with time zone,
     status character varying(255) NOT NULL,
     file character varying(255),
-    project_id bigint NOT NULL,
+    project_id bigint,
     author_id bigint NOT NULL,
     file_store integer,
-    format smallint DEFAULT 0 NOT NULL
+    format smallint DEFAULT 0 NOT NULL,
+    group_id integer
 );
 
 CREATE SEQUENCE public.vulnerability_exports_id_seq
@@ -7013,6 +7045,8 @@ CREATE SEQUENCE public.zoom_meetings_id_seq
 ALTER SEQUENCE public.zoom_meetings_id_seq OWNED BY public.zoom_meetings.id;
 
 ALTER TABLE ONLY public.abuse_reports ALTER COLUMN id SET DEFAULT nextval('public.abuse_reports_id_seq'::regclass);
+
+ALTER TABLE ONLY public.alert_management_alerts ALTER COLUMN id SET DEFAULT nextval('public.alert_management_alerts_id_seq'::regclass);
 
 ALTER TABLE ONLY public.alerts_service_data ALTER COLUMN id SET DEFAULT nextval('public.alerts_service_data_id_seq'::regclass);
 
@@ -7622,6 +7656,9 @@ ALTER TABLE ONLY public.zoom_meetings ALTER COLUMN id SET DEFAULT nextval('publi
 
 ALTER TABLE ONLY public.abuse_reports
     ADD CONSTRAINT abuse_reports_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.alert_management_alerts
+    ADD CONSTRAINT alert_management_alerts_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY public.alerts_service_data
     ADD CONSTRAINT alerts_service_data_pkey PRIMARY KEY (id);
@@ -8685,6 +8722,12 @@ CREATE UNIQUE INDEX idx_vulnerability_issue_links_on_vulnerability_id_and_issue_
 CREATE UNIQUE INDEX idx_vulnerability_issue_links_on_vulnerability_id_and_link_type ON public.vulnerability_issue_links USING btree (vulnerability_id, link_type) WHERE (link_type = 2);
 
 CREATE INDEX index_abuse_reports_on_user_id ON public.abuse_reports USING btree (user_id);
+
+CREATE INDEX index_alert_management_alerts_on_issue_id ON public.alert_management_alerts USING btree (issue_id);
+
+CREATE UNIQUE INDEX index_alert_management_alerts_on_project_id_and_fingerprint ON public.alert_management_alerts USING btree (project_id, fingerprint);
+
+CREATE UNIQUE INDEX index_alert_management_alerts_on_project_id_and_iid ON public.alert_management_alerts USING btree (project_id, iid);
 
 CREATE INDEX index_alerts_service_data_on_service_id ON public.alerts_service_data USING btree (service_id);
 
@@ -10442,7 +10485,9 @@ CREATE INDEX index_vulnerabilities_on_updated_by_id ON public.vulnerabilities US
 
 CREATE INDEX index_vulnerability_exports_on_author_id ON public.vulnerability_exports USING btree (author_id);
 
-CREATE UNIQUE INDEX index_vulnerability_exports_on_project_id_and_id ON public.vulnerability_exports USING btree (project_id, id);
+CREATE INDEX index_vulnerability_exports_on_group_id_not_null ON public.vulnerability_exports USING btree (group_id) WHERE (group_id IS NOT NULL);
+
+CREATE INDEX index_vulnerability_exports_on_project_id_not_null ON public.vulnerability_exports USING btree (project_id) WHERE (project_id IS NOT NULL);
 
 CREATE INDEX index_vulnerability_feedback_on_author_id ON public.vulnerability_feedback USING btree (author_id);
 
@@ -10638,6 +10683,9 @@ ALTER TABLE ONLY public.geo_container_repository_updated_events
 
 ALTER TABLE ONLY public.users_star_projects
     ADD CONSTRAINT fk_22cd27ddfc FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.alert_management_alerts
+    ADD CONSTRAINT fk_2358b75436 FOREIGN KEY (issue_id) REFERENCES public.issues(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY public.ci_stages
     ADD CONSTRAINT fk_2360681d1d FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
@@ -10894,6 +10942,9 @@ ALTER TABLE ONLY public.issues
 ALTER TABLE ONLY public.epics
     ADD CONSTRAINT fk_9d480c64b2 FOREIGN KEY (start_date_sourcing_epic_id) REFERENCES public.epics(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY public.alert_management_alerts
+    ADD CONSTRAINT fk_9e49e5c2b7 FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY public.ci_pipeline_schedules
     ADD CONSTRAINT fk_9ea99f58d2 FOREIGN KEY (owner_id) REFERENCES public.users(id) ON DELETE SET NULL;
 
@@ -10974,6 +11025,9 @@ ALTER TABLE ONLY public.design_management_versions
 
 ALTER TABLE ONLY public.geo_event_log
     ADD CONSTRAINT fk_c1f241c70d FOREIGN KEY (upload_deleted_event_id) REFERENCES public.geo_upload_deleted_events(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.vulnerability_exports
+    ADD CONSTRAINT fk_c3d3cb5d0f FOREIGN KEY (group_id) REFERENCES public.namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.geo_event_log
     ADD CONSTRAINT fk_c4b1c1f66e FOREIGN KEY (repository_deleted_event_id) REFERENCES public.geo_repository_deleted_events(id) ON DELETE CASCADE;
@@ -13212,6 +13266,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200331132103
 20200331195952
 20200331220930
+20200401091051
 20200401095430
 20200401211005
 20200402123926
@@ -13257,6 +13312,9 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200411125656
 20200413072059
 20200413230056
+20200414112444
+20200414114611
+20200414115801
 20200414144547
 20200415153154
 20200415160722
@@ -13266,5 +13324,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200416111111
 20200416120128
 20200416120354
+20200417044453
+20200421233150
 \.
 

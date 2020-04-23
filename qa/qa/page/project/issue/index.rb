@@ -9,6 +9,15 @@ module QA
             element :assignee_link
           end
 
+          view 'app/views/projects/issues/export_csv/_button.html.haml' do
+            element :export_as_csv_button
+          end
+
+          view 'app/views/projects/issues/export_csv/_modal.html.haml' do
+            element :export_issues_button
+            element :export_issues_modal
+          end
+
           view 'app/views/projects/issues/_issue.html.haml' do
             element :issue
             element :issue_link, 'link_to issue.title' # rubocop:disable QA/ElementWithPattern
@@ -32,6 +41,18 @@ module QA
 
           def click_closed_issues_link
             click_element :closed_issues_link
+          end
+
+          def click_export_as_csv_button
+            click_element(:export_as_csv_button)
+          end
+
+          def click_export_issues_button
+            click_element(:export_issues_button)
+          end
+
+          def export_issues_modal
+            find_element(:export_issues_modal)
           end
 
           def has_assignee_link_count?(count)

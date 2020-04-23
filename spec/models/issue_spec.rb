@@ -14,6 +14,7 @@ describe Issue do
     it { is_expected.to have_many(:assignees) }
     it { is_expected.to have_many(:user_mentions).class_name("IssueUserMention") }
     it { is_expected.to have_one(:sentry_issue) }
+    it { is_expected.to have_one(:alert_management_alert) }
   end
 
   describe 'modules' do

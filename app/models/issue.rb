@@ -48,6 +48,7 @@ class Issue < ApplicationRecord
   has_many :sent_notifications, as: :noteable
 
   has_one :sentry_issue
+  has_one :alert_management_alert, class_name: 'AlertManagement::Alert'
 
   accepts_nested_attributes_for :sentry_issue
 

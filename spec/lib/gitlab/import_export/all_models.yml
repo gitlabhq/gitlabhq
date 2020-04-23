@@ -39,6 +39,7 @@ issues:
 - related_vulnerabilities
 - user_mentions
 - system_note_metadata
+- alert_management_alert
 events:
 - author
 - project
@@ -481,6 +482,7 @@ project:
 - daily_report_results
 - jira_imports
 - compliance_framework_setting
+- alert_management_alerts
 award_emoji:
 - awardable
 - user

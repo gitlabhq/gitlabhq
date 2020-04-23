@@ -1,0 +1,5 @@
+---
+title: Fixed copy as GFM not copying upload links
+merge_request: 29683
+author:
+type: fixed

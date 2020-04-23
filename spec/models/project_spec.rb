@@ -110,6 +110,7 @@ describe Project do
     it { is_expected.to have_many(:source_pipelines) }
     it { is_expected.to have_many(:prometheus_alert_events) }
     it { is_expected.to have_many(:self_managed_prometheus_alert_events) }
+    it { is_expected.to have_many(:alert_management_alerts) }
     it { is_expected.to have_many(:jira_imports) }
 
     it_behaves_like 'model with repository' do

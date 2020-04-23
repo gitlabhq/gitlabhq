@@ -7,22 +7,6 @@ describe 'Projects > Settings > CI / CD settings' do
   let_it_be(:user) { create(:user) }
   let_it_be(:role) { :maintainer }
 
-  context 'Deploy tokens' do
-    let!(:deploy_token) { create(:deploy_token, projects: [project]) }
-
-    before do
-      project.add_role(user, role)
-      sign_in(user)
-      stub_container_registry_config(enabled: true)
-      stub_feature_flags(ajax_new_deploy_token: { enabled: false, thing: project })
-      visit project_settings_ci_cd_path(project)
-    end
-
-    it_behaves_like 'a deploy token in settings' do
-      let(:entity_type) { 'project' }
-    end
-  end
-
   context 'Deploy Keys', :js do
     let_it_be(:private_deploy_key) { create(:deploy_key, title: 'private_deploy_key', public: false) }
     let_it_be(:public_deploy_key) { create(:another_deploy_key, title: 'public_deploy_key', public: true) }

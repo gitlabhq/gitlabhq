@@ -142,6 +142,8 @@ FactoryBot.define do
 
     factory :clusters_applications_fluentd, class: 'Clusters::Applications::Fluentd' do
       host { 'example.com' }
+      waf_log_enabled { true }
+      cilium_log_enabled { true }
       cluster factory: %i(cluster with_installed_helm provided_by_gcp)
 
       trait :no_helm_installed do

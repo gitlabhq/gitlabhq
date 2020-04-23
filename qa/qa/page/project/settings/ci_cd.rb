@@ -13,18 +13,8 @@ module QA
             element :variables_settings_content
           end
 
-          view 'app/views/shared/deploy_tokens/_index.html.haml' do
-            element :deploy_tokens_settings
-          end
-
           view 'app/views/projects/deploy_keys/_index.html.haml' do
             element :deploy_keys_settings
-          end
-
-          def expand_deploy_tokens(&block)
-            expand_section(:deploy_tokens_settings) do
-              Settings::DeployTokens.perform(&block)
-            end
           end
 
           def expand_deploy_keys(&block)

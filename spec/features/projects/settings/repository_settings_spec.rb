@@ -25,6 +25,20 @@ describe 'Projects > Settings > Repository settings' do
   context 'for maintainer' do
     let(:role) { :maintainer }
 
+    context 'Deploy tokens' do
+      let!(:deploy_token) { create(:deploy_token, projects: [project]) }
+
+      before do
+        stub_container_registry_config(enabled: true)
+        stub_feature_flags(ajax_new_deploy_token: { enabled: false, thing: project })
+        visit project_settings_repository_path(project)
+      end
+
+      it_behaves_like 'a deploy token in settings' do
+        let(:entity_type) { 'project' }
+      end
+    end
+
     context 'remote mirror settings' do
       before do
         visit project_settings_repository_path(project)

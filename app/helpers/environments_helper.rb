@@ -2,7 +2,6 @@
 
 module EnvironmentsHelper
   include ActionView::Helpers::AssetUrlHelper
-  prepend_if_ee('::EE::EnvironmentsHelper') # rubocop: disable Cop/InjectEnterpriseEditionModule
 
   def environments_list_data
     {
@@ -65,3 +64,5 @@ module EnvironmentsHelper
     can?(current_user, :destroy_environment, environment)
   end
 end
+
+EnvironmentsHelper.prepend_if_ee('::EE::EnvironmentsHelper')

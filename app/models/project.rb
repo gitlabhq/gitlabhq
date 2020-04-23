@@ -257,6 +257,8 @@ class Project < ApplicationRecord
   has_many :prometheus_alert_events, inverse_of: :project
   has_many :self_managed_prometheus_alert_events, inverse_of: :project
 
+  has_many :alert_management_alerts, class_name: 'AlertManagement::Alert', inverse_of: :project
+
   # Container repositories need to remove data from the container registry,
   # which is not managed by the DB. Hence we're still using dependent: :destroy
   # here.
@@ -2368,7 +2370,7 @@ class Project < ApplicationRecord
   end
 
   def deploy_token_create_url(opts = {})
-    Gitlab::Routing.url_helpers.create_deploy_token_project_settings_ci_cd_path(self, opts)
+    Gitlab::Routing.url_helpers.create_deploy_token_project_settings_repository_path(self, opts)
   end
 
   def deploy_token_revoke_url_for(token)

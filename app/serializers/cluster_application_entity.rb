@@ -19,4 +19,6 @@ class ClusterApplicationEntity < Grape::Entity
   expose :host, if: -> (e, _) { e.respond_to?(:host) }
   expose :port, if: -> (e, _) { e.respond_to?(:port) }
   expose :protocol, if: -> (e, _) { e.respond_to?(:protocol) }
+  expose :waf_log_enabled, if: -> (e, _) { e.respond_to?(:waf_log_enabled) }
+  expose :cilium_log_enabled, if: -> (e, _) { e.respond_to?(:cilium_log_enabled) }
 end

@@ -2632,6 +2632,9 @@ msgstr ""
 msgid "At least one approval from a code owner is required to change files matching the respective CODEOWNER rules."
 msgstr ""
 
+msgid "At least one logging option is required to be enabled"
+msgstr ""
+
 msgid "At least one of group_id or project_id must be specified"
 msgstr ""
 

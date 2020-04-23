@@ -73,7 +73,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           resource :ci_cd, only: [:show, :update], controller: 'ci_cd' do
             post :reset_cache
             put :reset_registration_token
-            post :create_deploy_token, path: 'deploy_token/create'
+            post :create_deploy_token, path: 'deploy_token/create', to: 'repository#create_deploy_token'
           end
 
           resource :operations, only: [:show, :update] do
@@ -87,7 +87,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           resource :repository, only: [:show], controller: :repository do
             # TODO: Removed this "create_deploy_token" route after change was made in app/helpers/ci_variables_helper.rb:14
             # See MR comment for more detail: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/27059#note_311585356
-            post :create_deploy_token, path: 'deploy_token/create', to: 'ci_cd#create_deploy_token'
+            post :create_deploy_token, path: 'deploy_token/create'
             post :cleanup
           end
         end
