@@ -9,6 +9,7 @@ module PrometheusAdapter
     self.reactive_cache_lease_timeout = 30.seconds
     self.reactive_cache_refresh_interval = 30.seconds
     self.reactive_cache_lifetime = 1.minute
+    self.reactive_cache_work_type = :external_dependency
 
     def prometheus_client
       raise NotImplementedError

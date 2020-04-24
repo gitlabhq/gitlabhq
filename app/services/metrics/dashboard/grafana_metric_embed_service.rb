@@ -18,6 +18,7 @@ module Metrics
       self.reactive_cache_lease_timeout = 30.seconds
       self.reactive_cache_refresh_interval = 30.minutes
       self.reactive_cache_lifetime = 30.minutes
+      self.reactive_cache_work_type = :external_dependency
       self.reactive_cache_worker_finder = ->(_id, *args) { from_cache(*args) }
 
       class << self

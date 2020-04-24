@@ -786,10 +786,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.121.0.tgz#77083a68f72e9aa0e294da7715f378eef13b839e"
   integrity sha512-scz/6Y/eED7RMFLAlhT6PwXwe0Wj8ivnRsyulk9NXKoqUmAqZliNmBmzYsHy5bFf9NB6xVV/rOk1/92nbi/Yaw==
 
-"@gitlab/ui@12.2.0":
-  version "12.2.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-12.2.0.tgz#2dc6103ef4eeb016cdff8a885bee173ed3eab5f3"
-  integrity sha512-Qkyzrcu28gfJy635kqgfXzIKndOMT6touZ32FlXYowyrJOBQOxQt1q4/Z+S6nDWkC0tbBuOsbGiPx6F37MjWjQ==
+"@gitlab/ui@12.3.0":
+  version "12.3.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-12.3.0.tgz#9234205887675a6d13a51945ee62efc3c8b5e890"
+  integrity sha512-XrHC2pK7qlwy6K3OR/+iCP8TDewn3jaDIHCfHjt/KOwvD5LsEmam9RHjTiZ4epPZXLv4+JxCzbc4R+euEbIQ7g==
   dependencies:
     "@babel/standalone" "^7.0.0"
     "@gitlab/vue-toasted" "^1.3.0"
@@ -1036,10 +1036,10 @@
     "@sentry/types" "5.10.0"
     tslib "^1.9.3"
 
-"@sourcegraph/code-host-integration@0.0.36":
-  version "0.0.36"
-  resolved "https://registry.yarnpkg.com/@sourcegraph/code-host-integration/-/code-host-integration-0.0.36.tgz#2f4d287840ac2944c78ef92f10f0db0ef8a077fa"
-  integrity sha512-Hpj1xiVhPxMsjLNre9MrYYAM1SPOWPE9yG9SPtz4dqYzc6/ycaPGyr+ljcaWEclS9hZCvkk4+qVC5WONpYVjyA==
+"@sourcegraph/code-host-integration@0.0.37":
+  version "0.0.37"
+  resolved "https://registry.yarnpkg.com/@sourcegraph/code-host-integration/-/code-host-integration-0.0.37.tgz#87f9a602e2a60520b6038311a67face2ece86827"
+  integrity sha512-GQvNuPORLjsMhto57Ue1umeSV3cir+hMEaGxwCKmmq+cc9ZSZpuXa8RVBXuT5azN99K9/8zFps4woyPJ8wrjYA==
 
 "@types/anymatch@*":
   version "1.3.0"

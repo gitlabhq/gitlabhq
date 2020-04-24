@@ -223,6 +223,9 @@ This action does not delete blobs. In order to delete them and recycle disk spac
 
 Delete registry repository tags in bulk based on given criteria.
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an overview, see [Utilize the Container Registry API to delete all tags except *](https://youtu.be/Hi19bKe_xsg).
+
 ```plaintext
 DELETE /projects/:id/registry/repositories/:repository_id/tags
 ```

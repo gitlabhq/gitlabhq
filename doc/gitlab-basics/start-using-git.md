@@ -126,11 +126,11 @@ To start working locally on an existing remote repository, clone it with the com
 files to your local computer, automatically preserving the Git connection with the
 remote repository.
 
-You can either clone it via HTTPS or [SSH](../ssh/README.md). If you chose to clone
-it via HTTPS, you'll have to enter your credentials every time you pull and push.
+You can either clone it via [HTTPS](#clone-via-https) or [SSH](#clone-via-ssh). If you chose to
+clone it via HTTPS, you'll have to enter your credentials every time you pull and push.
 You can read more about credential storage in the
 [Git Credentials documentation](https://git-scm.com/book/en/v2/Git-Tools-Credential-Storage).
-With SSH, you enter your credentials only once.
+With [SSH](../ssh/README.md), you enter your credentials only once.
 
 You can find both paths (HTTPS and SSH) by navigating to your project's landing page
 and clicking **Clone**. GitLab will prompt you with both paths, from which you can copy
@@ -142,23 +142,37 @@ As an example, consider this repository path:
 - SSH: `git@gitlab.com:gitlab-org/gitlab.git`
 
 To get started, open a terminal window in the directory you wish to clone the
-repository files into, and run one of the following commands.
+repository files into, and run one of the `git clone` commands as described below.
 
-Clone via HTTPS:
+Both commands will download a copy of the files in a folder named after the project's
+name. You can then navigate to the new directory and start working on it locally.
+
+#### Clone via HTTPS
+
+To clone `https://gitlab.com/gitlab-org/gitlab.git` via HTTPS:
 
 ```shell
 git clone https://gitlab.com/gitlab-org/gitlab.git
 ```
 
-Clone via SSH:
+You'll have to add your password every time you clone through HTTPS. If you have 2FA enabled
+for your account, you'll have to use a [Personal Access Token](../user/profile/personal_access_tokens.md)
+with **read_repository** or **write_repository** permissions instead of your account's password.
+
+If you don't have 2FA enabled, use your account's password.
+
+TIP: **Troubleshooting:**
+On Windows, if you entered incorrect passwords multiple times and GitLab is responding `Access denied`,
+you may have to add your namespace (user name or group name) to clone through HTTPS:
+`git clone https://namespace@gitlab.com/gitlab-org/gitlab.git`.
+
+#### Clone via SSH
+
+To clone `git@gitlab.com:gitlab-org/gitlab.git` via SSH:
 
 ```shell
 git clone git@gitlab.com:gitlab-org/gitlab.git
 ```
-
-Both commands will download a copy of the files in a folder named after the project's
-name. You can then navigate to the directory and start working
-on it locally.
 
 ### Switch to the master branch
 

@@ -154,7 +154,7 @@ describe Metrics::Dashboard::GrafanaMetricEmbedService do
 
       context 'when value not present in cache' do
         it 'returns nil' do
-          expect(ReactiveCachingWorker)
+          expect(ExternalServiceReactiveCachingWorker)
             .to receive(:perform_async)
             .with(service.class, service.id, *cache_params)
 

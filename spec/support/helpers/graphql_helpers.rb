@@ -246,12 +246,19 @@ module GraphqlHelpers
 
   # Raises an error if no data is found
   def graphql_data
+    # Note that `json_response` is defined as `let(:json_response)` and
+    # therefore, in a spec with multiple queries, will only contain data
+    # from the _first_ query, not subsequent ones
     json_response['data'] || (raise NoData, graphql_errors)
   end
 
   def graphql_data_at(*path)
+    graphql_dig_at(graphql_data, *path)
+  end
+
+  def graphql_dig_at(data, *path)
     keys = path.map { |segment| GraphqlHelpers.fieldnamerize(segment) }
-    graphql_data.dig(*keys)
+    data.dig(*keys)
   end
 
   def graphql_errors

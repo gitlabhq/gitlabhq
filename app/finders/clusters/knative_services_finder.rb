@@ -11,6 +11,7 @@ module Clusters
     }.freeze
 
     self.reactive_cache_key = ->(finder) { finder.model_name }
+    self.reactive_cache_work_type = :external_dependency
     self.reactive_cache_worker_finder = ->(_id, *cache_args) { from_cache(*cache_args) }
 
     attr_reader :cluster, :environment

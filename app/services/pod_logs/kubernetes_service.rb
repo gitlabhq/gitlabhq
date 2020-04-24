@@ -17,6 +17,7 @@ module PodLogs
           :split_logs,
           :filter_return_keys
 
+    self.reactive_cache_work_type = :external_dependency
     self.reactive_cache_worker_finder = ->(id, _cache_key, namespace, params) { new(::Clusters::Cluster.find(id), namespace, params: params) }
 
     private

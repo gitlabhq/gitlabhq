@@ -189,6 +189,9 @@ Once you've set up your identity provider to work with GitLab, you'll need to co
 
 ![Group SAML Settings for GitLab.com](img/group_saml_settings.png)
 
+NOTE: **Note:**
+Please note that the certificate [fingerprint algorithm](#additional-setup-options) must be in SHA1. When configuring the identity provider, use a secure [signature algorithm](#additional-setup-options).
+
 ## User access and management
 
 Once Group SSO is configured and enabled, users can access the GitLab.com group through the identity provider's dashboard. If [SCIM](scim_setup.md) is configured, please see the [user access and linking setup section on the SCIM page](scim_setup.md#user-access-and-linking-setup).

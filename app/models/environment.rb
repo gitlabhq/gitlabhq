@@ -8,6 +8,7 @@ class Environment < ApplicationRecord
   self.reactive_cache_refresh_interval = 1.minute
   self.reactive_cache_lifetime = 55.seconds
   self.reactive_cache_hard_limit = 10.megabytes
+  self.reactive_cache_work_type = :external_dependency
 
   belongs_to :project, required: true
 
