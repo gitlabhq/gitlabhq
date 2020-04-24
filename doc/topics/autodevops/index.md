@@ -9,11 +9,18 @@ to simplify the setup and execution of a mature & modern software development li
 
 ## Overview
 
-With Auto DevOps, the software development process becomes easier to set up
-as every project can have a complete workflow from verification to monitoring
-with minimal configuration. Just push your code and GitLab takes
-care of everything else. This makes it easier to start new projects and brings
-consistency to how applications are set up throughout a company.
+You can spend a lot of effort to set up the workflow and processes required to
+build, deploy. and monitor your project. It gets worse when your company has
+hundreds, if not thousands, of projects to maintain. With new projects
+constantly starting up, the entire software development process becomes
+impossibly complex to manage.
+
+Auto DevOps provides you a seamless software development process by
+automatically detecting all dependencies and language technologies required to
+test, build, package, deploy, and monitor every project with minimal
+configuration. Automation enables consistency across your projects, seamless
+management of processes, and faster creation of new projects: push your code,
+and GitLab does the rest, improving your productivity and efficiency.
 
 For an introduction to Auto DevOps, watch [AutoDevOps in GitLab 11.0](https://youtu.be/0Tc0YYBxqi4).
 

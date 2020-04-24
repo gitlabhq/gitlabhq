@@ -118,8 +118,32 @@ It's encouraged to only have the `idempotent!` call in the top-most worker class
 the `perform` method is defined in another class or module.
 
 NOTE: **Note:**
-Note that a cop will fail if the worker class is not marked as idempotent.
-Consider skipping the cop if you're not confident your job can safely run multiple times.
+If the worker class is not marked as idempotent, a cop will fail.
+Consider skipping the cop if you're not confident your job can safely
+run multiple times.
+
+### Deduplication
+
+When a job for an idempotent worker is enqueued while another
+unstarted job is already in the queue, GitLab drops the second
+job. The work is skipped because the same work would be
+done by the job that was scheduled first; by the time the second
+job executed, the first job would do nothing.
+
+For example, `AuthorizedProjectsWorker` takes a user ID. When the
+worker runs, it recalculates a user's authorizations. GitLab schedules
+this job each time an action potentially changes a user's
+authorizations. If the same user is added to two projects at the
+same time, the second job can be skipped if the first job hasn't
+begun, because when the first job runs, it creates the
+authorizations for both projects.
+
+GitLab doesn't skip jobs scheduled in the future, as we assume that
+the state will have changed by the time the job is scheduled to
+execute.
+
+More [deduplication strategies have been suggested](https://gitlab.com/gitlab-com/gl-infra/scalability/issues/195). If you are implementing a worker that
+could benefit from a different strategy, please comment in the issue.
 
 ## Job urgency
 

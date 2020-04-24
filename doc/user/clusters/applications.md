@@ -314,6 +314,16 @@ To change your WAF's mode:
 1. Under **Global default**, select your desired mode.
 1. Click **Save changes**.
 
+##### WAF version updates
+
+Enabling, disabling, or changing the logging mode for **ModSecurity** is only allowed within same version of [Ingress](#ingress) due to limitations in [Helm](https://helm.sh/) which might be overcome in future releases.
+
+**ModSecurity** UI controls are disabled if the version deployed differs from the one available in GitLab, while actions at the [Ingress](#ingress) level, such as uninstalling, can still be performed:
+
+![WAF settings disabled](../../topics/web_application_firewall/img/guide_waf_ingress_disabled_settings_v12_10.png)
+
+Updating [Ingress](#ingress) to the most recent version enables you to take advantage of bug fixes, security fixes, and performance improvements. To update [Ingress application](#ingress), you must first uninstall it, and then re-install it as described in [Install ModSecurity](../../topics/web_application_firewall/quick_start_guide.md).
+
 ##### Viewing Web Application Firewall traffic
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/14707) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.9.
@@ -487,7 +497,11 @@ and you will have access to more advanced querying capabilities.
 
 Log data is automatically deleted after 30 days using [Curator](https://www.elastic.co/guide/en/elasticsearch/client/curator/5.5/about.html).
 
-To enable log shipping, install Elastic Stack into the cluster with the **Install** button.
+To enable log shipping:
+
+1. Navigate to **{cloud-gear}** **Operations > Kubernetes**.
+1. In **Kubernetes Cluster**, select a cluster.
+1. In the **Applications** section, find **Elastic Stack** and click **Install**.
 
 NOTE: **Note:**
 The [`stable/elastic-stack`](https://github.com/helm/charts/tree/master/stable/elastic-stack)
@@ -790,10 +804,12 @@ available configuration options.
 
 > [Introduced](https://gitlab.com/gitlab-org/cluster-integration/cluster-applications/-/merge_requests/22) in GitLab 12.8.
 
-[Cilium](https://cilium.io/) is a networking plugin for Kubernetes
-that you can use to implement support for
-[NetworkPolicy](https://kubernetes.io/docs/concepts/services-networking/network-policies/)
-resources. For more information on [Network Policies](../../topics/autodevops/stages.md#network-policy), see the documentation.
+[Cilium](https://cilium.io/) is a networking plugin for Kubernetes that you can use to implement
+support for [NetworkPolicy](https://kubernetes.io/docs/concepts/services-networking/network-policies/)
+resources. For more information, see [Network Policies](../../topics/autodevops/stages.md#network-policy).
+
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an overview, see the [Container Network Security Demo for GitLab 12.8](https://www.youtube.com/watch?v=pgUEdhdhoUI).
 
 Enable Cilium in the `.gitlab/managed-apps/config.yaml` file to install it:
 

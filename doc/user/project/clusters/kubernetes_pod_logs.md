@@ -4,7 +4,7 @@
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25455) to [GitLab Core](https://about.gitlab.com/pricing/) 12.9.
 
 GitLab makes it easy to view the logs of running pods in [connected Kubernetes clusters](index.md).
-By displaying the logs directly in GitLab, developers can avoid having to manage console tools or jump to a different interface.
+By displaying the logs directly in GitLab in the **Log Explorer**, developers can avoid having to manage console tools or jump to a different interface.
 
 NOTE: **Kubernetes + GitLab**
 Everything you need to build, test, deploy, and run your app at scale.
@@ -12,9 +12,13 @@ Everything you need to build, test, deploy, and run your app at scale.
 
 ## Overview
 
-[Kubernetes](https://kubernetes.io) logs can be viewed directly within GitLab.
+[Kubernetes](https://kubernetes.io) logs can be viewed directly within GitLab with
+the **Log Explorer**.
 
 ![Pod logs](img/kubernetes_pod_logs_v12_10.png)
+
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+To learn more, see [APM - Log Explorer](https://www.youtube.com/watch?v=hWclZHA7Dgw).
 
 ## Requirements
 
@@ -30,7 +34,8 @@ You can access them in two ways.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22011) in GitLab 12.5.
 
-Go to **{cloud-gear}** **Operations > Logs** on the sidebar menu.
+Go to **{cloud-gear}** **Operations > Pod logs** on the sidebar menu to display
+the **Log Explorer**.
 
 ![Sidebar menu](img/sidebar_menu_pod_logs_v12_10.png)
 
@@ -42,11 +47,11 @@ Logs can be displayed by clicking on a specific pod from [Deploy Boards](../depl
 1. On the **Environments** page, you should see the status of the environment's pods with [Deploy Boards](../deploy_boards.md).
 1. When mousing over the list of pods, a tooltip will appear with the exact pod name and status.
    ![Deploy Boards pod list](img/pod_logs_deploy_board.png)
-1. Click on the desired pod to bring up the logs view.
+1. Click on the desired pod to display the **Log Explorer**.
 
 ### Logs view
 
-The logs view lets you filter the logs by:
+The **Log Explorer** lets you filter the logs by:
 
 - Pods.
 - [From GitLab 12.4](https://gitlab.com/gitlab-org/gitlab/issues/5769), environments.
@@ -63,9 +68,10 @@ Support for historical data is coming [in a future release](https://gitlab.com/g
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/197879) in GitLab 12.8.
 
-When you enable [Elastic Stack](../../clusters/applications.md#elastic-stack) on your cluster, you can filter by date.
+When you enable [Elastic Stack](../../clusters/applications.md#elastic-stack) on your cluster,
+you can filter logs displayed in the **Log Explorer** by date.
 
-Click on **Show last** to see the available options.
+Click **Show last** in the **Log Explorer** to see the available options.
 
 ### Full text search
 

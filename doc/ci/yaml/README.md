@@ -311,9 +311,29 @@ workflow:
 > - Available for Starter, Premium and Ultimate since 10.6.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/21603) to GitLab Core in 11.4.
 
-Using the `include` keyword, you can allow the inclusion of external YAML files.
+Using the `include` keyword allows the inclusion of external YAML files. This helps
+to break down the CI/CD configuration into multiple files and increases readability for long configuration files.
+It is also possible to have template files stored in a central repository and projects include their
+configuration files. This helps avoid duplicated configuration, for example, global default variables for all projects.
+
 `include` requires the external YAML file to have the extensions `.yml` or `.yaml`,
 otherwise the external file will not be included.
+
+`include` supports the following inclusion methods:
+
+| Method                          | Description                                                       |
+|:--------------------------------|:------------------------------------------------------------------|
+| [`local`](#includelocal)        | Include a file from the local project repository.                 |
+| [`file`](#includefile)          | Include a file from a different project repository.               |
+| [`remote`](#includeremote)      | Include a file from a remote URL. Must be publicly accessible.    |
+| [`template`](#includetemplate)  | Include templates which are provided by GitLab.                   |
+
+See [usage examples](#include-examples).
+
+NOTE: **Note:**
+`.gitlab-ci.yml` configuration included by all methods is evaluated at pipeline creation.
+The configuration is a snapshot in time and persisted in the database. Any changes to
+referenced `.gitlab-ci.yml` configuration will not be reflected in GitLab until the next pipeline is created.
 
 The files defined in `include` are:
 
@@ -329,20 +349,6 @@ NOTE: **Note:**
 Using YAML aliases across different YAML files sourced by `include` is not
 supported. You must only refer to aliases in the same file. Instead
 of using YAML anchors, you can use the [`extends` keyword](#extends).
-
-`include` supports four include methods:
-
-- [`local`](#includelocal)
-- [`file`](#includefile)
-- [`template`](#includetemplate)
-- [`remote`](#includeremote)
-
-See [usage examples](#include-examples).
-
-NOTE: **Note:**
-`.gitlab-ci.yml` configuration included by all methods is evaluated at pipeline creation.
-The configuration is a snapshot in time and persisted in the database. Any changes to
-referenced `.gitlab-ci.yml` configuration will not be reflected in GitLab until the next pipeline is created.
 
 #### `include:local`
 
@@ -364,6 +370,15 @@ Example:
 ```yaml
 include:
   - local: '/templates/.gitlab-ci-template.yml'
+```
+
+TIP: **Tip:**
+Local includes can be used as a replacement for symbolic links which are not followed.
+
+This can be defined as a short local include:
+
+```yaml
+include: '.gitlab-ci-production.yml'
 ```
 
 #### `include:file`
@@ -401,6 +416,21 @@ All [nested includes](#nested-includes) will be executed in the scope of the tar
 so it is possible to use local (relative to target project), project, remote
 or template includes.
 
+#### `include:remote`
+
+`include:remote` can be used to include a file from a different location,
+using HTTP/HTTPS, referenced by using the full URL. The remote file must be
+publicly accessible through a simple GET request as authentication schemas
+in the remote URL are not supported. For example:
+
+```yaml
+include:
+  - remote: 'https://gitlab.com/awesome-project/raw/master/.gitlab-ci-template.yml'
+```
+
+All [nested includes](#nested-includes) will be executed without context as public user, so only another remote
+or public project, or template, is allowed.
+
 #### `include:template`
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/53445) in GitLab 11.7.
@@ -426,21 +456,6 @@ include:
 
 All [nested includes](#nested-includes) will be executed only with the permission of the user,
 so it is possible to use project, remote or template includes.
-
-#### `include:remote`
-
-`include:remote` can be used to include a file from a different location,
-using HTTP/HTTPS, referenced by using the full URL. The remote file must be
-publicly accessible through a simple GET request as authentication schemas
-in the remote URL is not supported. For example:
-
-```yaml
-include:
-  - remote: 'https://gitlab.com/awesome-project/raw/master/.gitlab-ci-template.yml'
-```
-
-All nested includes will be executed without context as public user, so only another remote,
-or public project, or template is allowed.
 
 #### Nested includes
 

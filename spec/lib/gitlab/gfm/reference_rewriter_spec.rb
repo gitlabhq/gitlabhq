@@ -147,6 +147,18 @@ describe Gitlab::Gfm::ReferenceRewriter do
       it { is_expected.to eq text }
     end
 
+    context 'when referring to a group' do
+      let(:text) { "group @#{group.full_path}" }
+
+      it { is_expected.to eq text }
+    end
+
+    context 'when referring to a user' do
+      let(:text) { "user @#{user.full_path}" }
+
+      it { is_expected.to eq text }
+    end
+
     context 'when referable has a nil reference' do
       before do
         create(:milestone, title: '9.0', project: old_project)

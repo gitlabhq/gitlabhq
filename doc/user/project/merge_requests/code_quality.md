@@ -49,7 +49,7 @@ For instance, consider the following workflow:
    feature in your app faster.
 1. With Code Quality reports, they analyze how their implementation is impacting
    the code quality.
-1. The metrics show that their code degrade the quality in 10 points.
+1. The metrics show that their code degrades the quality by 10 points.
 1. You ask a co-worker to help them with this modification.
 1. They both work on the changes until Code Quality report displays no
    degradations, only improvements.

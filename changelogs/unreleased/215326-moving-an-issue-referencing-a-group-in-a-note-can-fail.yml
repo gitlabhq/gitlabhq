@@ -1,0 +1,5 @@
+---
+title: Fix moving an issue when there is a group reference
+merge_request: 30185
+author:
+type: fixed

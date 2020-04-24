@@ -175,6 +175,9 @@ and expands the `environment:url` value with variables defined in the dotenv fil
 To use this feature, specify the
 [`artifacts:reports:dotenv`](yaml/README.md#artifactsreportsdotenv) keyword in `.gitlab-ci.yml`.
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an overview, see [Set dynamic URLs after a job finished](https://youtu.be/70jDXtOf4Ig).
+
 ##### Example of setting dynamic environment URLs
 
 The following example shows a Review App that creates a new environment

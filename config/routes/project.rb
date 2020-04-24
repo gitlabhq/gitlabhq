@@ -467,11 +467,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       # Legacy routes.
       # Introduced in 12.0.
       # Should be removed with https://gitlab.com/gitlab-org/gitlab/issues/28848.
-      Gitlab::Routing.redirect_legacy_paths(self, :settings, :branches, :tags,
-                                            :network, :graphs, :autocomplete_sources,
-                                            :project_members, :deploy_keys, :deploy_tokens,
-                                            :labels, :milestones, :services, :boards, :releases,
-                                            :forks, :group_links, :import, :avatar, :mirror,
+      Gitlab::Routing.redirect_legacy_paths(self, :mirror,
                                             :cycle_analytics, :mattermost, :variables, :triggers,
                                             :environments, :protected_environments, :error_tracking, :alert_management,
                                             :serverless, :clusters, :audit_events, :wikis, :merge_requests,
