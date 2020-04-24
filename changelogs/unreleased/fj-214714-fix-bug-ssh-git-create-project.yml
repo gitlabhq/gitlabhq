@@ -1,5 +1,0 @@
----
-title: Fix bug creating project from git ssh
-merge_request: 29771
-author:
-type: fixed
