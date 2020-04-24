@@ -63,6 +63,8 @@ module Projects
       end
 
       def define_variables
+        @deploy_keys = DeployKeysPresenter.new(@project, current_user: current_user)
+
         define_deploy_token_variables
         define_protected_refs
         remote_mirror

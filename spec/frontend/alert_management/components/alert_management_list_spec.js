@@ -1,28 +1,39 @@
-import { createLocalVue, mount } from '@vue/test-utils';
-import { GlEmptyState, GlTable, GlAlert } from '@gitlab/ui';
-import Vuex from 'vuex';
+import { mount } from '@vue/test-utils';
+import { GlEmptyState, GlTable, GlAlert, GlLoadingIcon } from '@gitlab/ui';
 import stubChildren from 'helpers/stub_children';
 import AlertManagementList from '~/alert_management/components/alert_management_list.vue';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
-
 describe('AlertManagementList', () => {
   let wrapper;
-  let store;
 
   const findAlertsTable = () => wrapper.find(GlTable);
   const findAlert = () => wrapper.find(GlAlert);
+  const findLoader = () => wrapper.find(GlLoadingIcon);
 
-  function mountComponent({ stubs = {}, alertManagementEnabled = false } = {}) {
+  function mountComponent({
+    stubs = {},
+    props = { alertManagementEnabled: false },
+    data = {},
+    loading = false,
+  } = {}) {
     wrapper = mount(AlertManagementList, {
-      localVue,
-      store,
       propsData: {
         indexPath: '/path',
         enableAlertManagementPath: '/link',
         emptyAlertSvgPath: 'illustration/path',
-        alertManagementEnabled,
+        ...props,
+      },
+      data() {
+        return data;
+      },
+      mocks: {
+        $apollo: {
+          queries: {
+            alerts: {
+              loading,
+            },
+          },
+        },
       },
       stubs: {
         ...stubChildren(AlertManagementList),
@@ -32,20 +43,12 @@ describe('AlertManagementList', () => {
   }
 
   beforeEach(() => {
-    store = new Vuex.Store({
-      modules: {
-        list: {
-          namespaced: true,
-        },
-      },
-    });
     mountComponent();
   });
 
   afterEach(() => {
     if (wrapper) {
       wrapper.destroy();
-      store = null;
     }
   });
 
@@ -56,18 +59,41 @@ describe('AlertManagementList', () => {
   });
 
   describe('Alerts table', () => {
-    it('shows empty list', () => {
-      store.state.list = {
-        alerts: [],
-        loading: false,
-      };
-
-      mountComponent({ alertManagementEnabled: true });
-
-      return wrapper.vm.$nextTick().then(() => {
-        expect(findAlertsTable().exists()).toBe(true);
-        expect(findAlert().text()).toContain('No alerts available to display');
+    it('loading state', () => {
+      mountComponent({
+        stubs: { GlTable },
+        props: { alertManagementEnabled: true },
+        data: { alerts: null },
+        loading: true,
       });
+      expect(findAlertsTable().exists()).toBe(true);
+      expect(findLoader().exists()).toBe(true);
+    });
+
+    it('error state', () => {
+      mountComponent({
+        stubs: { GlTable },
+        props: { alertManagementEnabled: true },
+        data: { alerts: null, errored: true },
+        loading: false,
+      });
+      expect(findAlertsTable().exists()).toBe(true);
+      expect(findAlertsTable().text()).toContain('No alerts to display');
+      expect(findLoader().exists()).toBe(false);
+      expect(findAlert().props().variant).toBe('danger');
+    });
+
+    it('empty state', () => {
+      mountComponent({
+        stubs: { GlTable },
+        props: { alertManagementEnabled: true },
+        data: { alerts: [], errored: false },
+        loading: false,
+      });
+      expect(findAlertsTable().exists()).toBe(true);
+      expect(findAlertsTable().text()).toContain('No alerts to display');
+      expect(findLoader().exists()).toBe(false);
+      expect(findAlert().props().variant).toBe('info');
     });
   });
 });

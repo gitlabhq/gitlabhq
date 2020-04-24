@@ -40,7 +40,7 @@ FactoryBot.define do
     end
 
     trait :ghost do
-      ghost { true }
+      user_type { :ghost }
       after(:build) { |user, _| user.block! }
     end
 

@@ -101,7 +101,7 @@ describe Gitlab::Ci::Reports::TestSuite do
     end
 
     context 'when test cases contain an attachment' do
-      let(:test_case_with_attachment) { build(:test_case, :with_attachment)}
+      let(:test_case_with_attachment) { build(:test_case, :failed_with_attachment)}
 
       before do
         test_suite.add_test_case(test_case_with_attachment)

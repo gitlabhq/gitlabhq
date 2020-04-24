@@ -440,7 +440,7 @@ module Ci
     end
 
     def legacy_stages
-      if Feature.enabled?(:ci_composite_status, default_enabled: false)
+      if Feature.enabled?(:ci_composite_status, project, default_enabled: false)
         legacy_stages_using_composite_status
       else
         legacy_stages_using_sql

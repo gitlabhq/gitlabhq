@@ -13,6 +13,7 @@
 -# reused in EE.
 = render "projects/settings/repository/protected_branches"
 = render "shared/deploy_tokens/index", group_or_project: @project, description: deploy_token_description
+= render @deploy_keys
 = render "projects/cleanup/show"
 
 = render_if_exists 'shared/promotions/promote_repository_features'

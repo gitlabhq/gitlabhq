@@ -9,7 +9,6 @@ import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link
 import CommitComponent from '~/vue_shared/components/commit.vue';
 import Icon from '~/vue_shared/components/icon.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
-import environmentItemMixin from 'ee_else_ce/environments/mixins/environment_item_mixin';
 import eventHub from '../event_hub';
 import ActionsComponent from './environment_actions.vue';
 import ExternalUrlComponent from './environment_external_url.vue';
@@ -44,7 +43,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [environmentItemMixin, timeagoMixin],
+  mixins: [timeagoMixin],
 
   props: {
     canReadEnvironment: {
@@ -65,6 +64,9 @@ export default {
   },
 
   computed: {
+    deployIconName() {
+      return this.model.isDeployBoardVisible ? 'chevron-down' : 'chevron-right';
+    },
     /**
      * Verifies if `last_deployment` key exists in the current Environment.
      * This key is required to render most of the html - this method works has
@@ -208,6 +210,10 @@ export default {
         ...action,
         name: action.name,
       }));
+    },
+
+    shouldRenderDeployBoard() {
+      return this.model.hasDeployBoard;
     },
 
     /**
@@ -501,6 +507,9 @@ export default {
   },
 
   methods: {
+    toggleDeployBoard() {
+      eventHub.$emit('toggleDeployBoard', this.model);
+    },
     onClickFolder() {
       eventHub.$emit('toggleFolder', this.model);
     },

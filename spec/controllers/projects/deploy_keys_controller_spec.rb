@@ -19,10 +19,10 @@ describe Projects::DeployKeysController do
     end
 
     context 'when html requested' do
-      it 'redirects to project ci / cd settings with the correct anchor' do
+      it 'redirects to project settings with the correct anchor' do
         get :index, params: params
 
-        expect(response).to redirect_to(project_settings_ci_cd_path(project, anchor: 'js-deploy-keys-settings'))
+        expect(response).to redirect_to(project_settings_repository_path(project, anchor: 'js-deploy-keys-settings'))
       end
     end
 
@@ -87,13 +87,13 @@ describe Projects::DeployKeysController do
     it 'creates a new deploy key for the project' do
       expect { post :create, params: create_params }.to change(project.deploy_keys, :count).by(1)
 
-      expect(response).to redirect_to(project_settings_ci_cd_path(project, anchor: 'js-deploy-keys-settings'))
+      expect(response).to redirect_to(project_settings_repository_path(project, anchor: 'js-deploy-keys-settings'))
     end
 
     it 'redirects to project settings with the correct anchor' do
       post :create, params: create_params
 
-      expect(response).to redirect_to(project_settings_ci_cd_path(project, anchor: 'js-deploy-keys-settings'))
+      expect(response).to redirect_to(project_settings_repository_path(project, anchor: 'js-deploy-keys-settings'))
     end
 
     context 'when the deploy key is invalid' do
@@ -153,7 +153,7 @@ describe Projects::DeployKeysController do
 
         expect(DeployKeysProject.where(project_id: project.id, deploy_key_id: deploy_key.id).count).to eq(1)
         expect(response).to have_gitlab_http_status(:found)
-        expect(response).to redirect_to(namespace_project_settings_ci_cd_path(anchor: 'js-deploy-keys-settings'))
+        expect(response).to redirect_to(namespace_project_settings_repository_path(anchor: 'js-deploy-keys-settings'))
       end
 
       it 'returns 404' do
@@ -175,7 +175,7 @@ describe Projects::DeployKeysController do
 
         expect(DeployKeysProject.where(project_id: project.id, deploy_key_id: deploy_key.id).count).to eq(1)
         expect(response).to have_gitlab_http_status(:found)
-        expect(response).to redirect_to(namespace_project_settings_ci_cd_path(anchor: 'js-deploy-keys-settings'))
+        expect(response).to redirect_to(namespace_project_settings_repository_path(anchor: 'js-deploy-keys-settings'))
       end
     end
   end
@@ -216,7 +216,7 @@ describe Projects::DeployKeysController do
         put :disable, params: { id: deploy_key.id, namespace_id: project.namespace, project_id: project }
 
         expect(response).to have_gitlab_http_status(:found)
-        expect(response).to redirect_to(namespace_project_settings_ci_cd_path(anchor: 'js-deploy-keys-settings'))
+        expect(response).to redirect_to(namespace_project_settings_repository_path(anchor: 'js-deploy-keys-settings'))
 
         expect { DeployKey.find(deploy_key.id) }.to raise_error(ActiveRecord::RecordNotFound)
       end
@@ -239,7 +239,7 @@ describe Projects::DeployKeysController do
         end.to change { DeployKey.count }.by(-1)
 
         expect(response).to have_gitlab_http_status(:found)
-        expect(response).to redirect_to(namespace_project_settings_ci_cd_path(anchor: 'js-deploy-keys-settings'))
+        expect(response).to redirect_to(namespace_project_settings_repository_path(anchor: 'js-deploy-keys-settings'))
 
         expect { DeployKey.find(deploy_key.id) }.to raise_error(ActiveRecord::RecordNotFound)
       end

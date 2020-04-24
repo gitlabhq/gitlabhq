@@ -9,7 +9,7 @@ describe 'admin/users/_user.html.haml' do
 
   context 'internal users' do
     context 'when showing a `Ghost User`' do
-      let(:user) { create(:user, ghost: true) }
+      let(:user) { create(:user, :ghost) }
 
       it 'does not render action buttons' do
         render

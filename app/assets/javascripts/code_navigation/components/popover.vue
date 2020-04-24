@@ -1,9 +1,9 @@
 <script>
-import { GlDeprecatedButton } from '@gitlab/ui';
+import { GlButton } from '@gitlab/ui';
 
 export default {
   components: {
-    GlDeprecatedButton,
+    GlButton,
   },
   props: {
     position: {
@@ -15,6 +15,10 @@ export default {
       required: true,
     },
     definitionPathPrefix: {
+      type: String,
+      required: true,
+    },
+    blobPath: {
       type: String,
       required: true,
     },
@@ -32,9 +36,18 @@ export default {
       };
     },
     definitionPath() {
-      return (
-        this.data.definition_path && `${this.definitionPathPrefix}/${this.data.definition_path}`
-      );
+      if (!this.data.definition_path) {
+        return null;
+      }
+
+      if (this.isDefinitionCurrentBlob) {
+        return `#${this.data.definition_path.split('#').pop()}`;
+      }
+
+      return `${this.definitionPathPrefix}/${this.data.definition_path}`;
+    },
+    isDefinitionCurrentBlob() {
+      return this.data.definition_path.indexOf(this.blobPath) === 0;
     },
   },
   watch: {
@@ -77,9 +90,15 @@ export default {
       </p>
     </div>
     <div v-if="definitionPath" class="popover-body">
-      <gl-deprecated-button :href="definitionPath" target="_blank" class="w-100" variant="default">
+      <gl-button
+        :href="definitionPath"
+        :target="isDefinitionCurrentBlob ? null : '_blank'"
+        class="w-100"
+        variant="default"
+        data-testid="go-to-definition-btn"
+      >
         {{ __('Go to definition') }}
-      </gl-deprecated-button>
+      </gl-button>
     </div>
   </div>
 </template>

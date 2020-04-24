@@ -127,7 +127,7 @@ describe Gitlab::Ci::Reports::TestReports do
 
     context 'when test suites contain an attachment' do
       let(:test_case_succes) { build(:test_case) }
-      let(:test_case_with_attachment) { build(:test_case, :with_attachment) }
+      let(:test_case_with_attachment) { build(:test_case, :failed_with_attachment) }
 
       before do
         test_reports.get_suite('rspec').add_test_case(test_case_succes)

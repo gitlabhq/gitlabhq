@@ -70,7 +70,11 @@ You can also optionally configure GitLab to use an [external PostgreSQL service]
 
 ### Up to 2,000 users
 
-NOTE: **Note:** The 2,000-user reference architecture documented below is
+For up to 2,000 users, defining the reference architecture is [being worked on](https://gitlab.com/gitlab-org/quality/performance/-/issues/223).
+
+### Up to 3,000 users
+
+NOTE: **Note:** The 3,000-user reference architecture documented below is
 designed to help your organization achieve a highly-available GitLab deployment.
 If you do not have the expertise or need to maintain a highly-available
 environment, you can have a simpler and less costly-to-operate environment by

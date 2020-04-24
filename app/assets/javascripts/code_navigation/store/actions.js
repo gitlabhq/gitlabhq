@@ -52,7 +52,8 @@ export default {
       return;
     }
 
-    const data = state.data[blobEl.dataset.path];
+    const blobPath = blobEl.dataset.path;
+    const data = state.data[blobPath];
 
     if (!data) return;
 
@@ -72,6 +73,6 @@ export default {
       setCurrentHoverElement(el);
     }
 
-    commit(types.SET_CURRENT_DEFINITION, { definition, position });
+    commit(types.SET_CURRENT_DEFINITION, { definition, position, blobPath });
   },
 };

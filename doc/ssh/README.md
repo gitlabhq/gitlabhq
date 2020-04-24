@@ -384,9 +384,7 @@ If you don't have a key pair, you might want to use a
 
 Project maintainers and owners can add a deploy key for a repository.
 
-1. Navigate to the project's **Settings** page, then:
-   - On GitLab 12.8 and earlier, click **Repository**.
-   - On GitLab 12.9 and later, click **CI / CD**.
+1. Navigate to the project's **Settings > Repository** page.
 1. Expand the **Deploy Keys** section.
 1. Specify a title for the new deploy key and paste a public SSH key.
 
@@ -432,9 +430,7 @@ your repository".
 Once a GitLab administrator adds the Global Deployment key, project maintainers
 and owners can add it by:
 
-1. Navigating the settings page:
-   - On GitLab 12.8 and earlier, the project's **Settings > Repository** page.
-   - On GitLab 12.9 and later, the project's **Settings > CI / CD** page.
+1. Navigate to the project's **Settings > Repository** page.
 1. Expanding the **Deploy Keys** section.
 1. Clicking **Enable** next to the appropriate key listed under
    **Public deploy keys available to any project**.

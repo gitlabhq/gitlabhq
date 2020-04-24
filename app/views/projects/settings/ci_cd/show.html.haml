@@ -51,8 +51,6 @@
   .settings-content
     = render 'ci/variables/index', save_endpoint: project_variables_path(@project)
 
-= render @deploy_keys
-
 %section.settings.no-animate#js-pipeline-triggers{ class: ('expanded' if expanded) }
   .settings-header
     %h4

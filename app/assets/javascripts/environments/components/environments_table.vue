@@ -4,7 +4,6 @@
  */
 import { GlLoadingIcon } from '@gitlab/ui';
 import { flow, reverse, sortBy } from 'lodash/fp';
-import environmentTableMixin from 'ee_else_ce/environments/mixins/environments_table_mixin';
 import { s__ } from '~/locale';
 import EnvironmentItem from './environment_item.vue';
 
@@ -16,7 +15,6 @@ export default {
     CanaryDeploymentCallout: () =>
       import('ee_component/environments/components/canary_deployment_callout.vue'),
   },
-  mixins: [environmentTableMixin],
   props: {
     environments: {
       type: Array,
@@ -32,6 +30,31 @@ export default {
       type: Boolean,
       required: false,
       default: false,
+    },
+    canaryDeploymentFeatureId: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    helpCanaryDeploymentsPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    lockPromotionSvgPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    showCanaryDeploymentCallout: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    userCalloutsPath: {
+      type: String,
+      required: false,
+      default: '',
     },
   },
   computed: {
@@ -79,8 +102,14 @@ export default {
     folderUrl(model) {
       return `${window.location.pathname}/folders/${model.folderName}`;
     },
+    shouldRenderDeployBoard(model) {
+      return model.hasDeployBoard && model.isDeployBoardVisible;
+    },
     shouldRenderFolderContent(env) {
       return env.isFolder && env.isOpen && env.children && env.children.length > 0;
+    },
+    shouldShowCanaryCallout(env) {
+      return env.showCanaryCallout && this.showCanaryDeploymentCallout;
     },
     sortEnvironments(environments) {
       /*

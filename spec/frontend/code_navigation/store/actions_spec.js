@@ -173,7 +173,11 @@ describe('Code navigation actions', () => {
         [
           {
             type: 'SET_CURRENT_DEFINITION',
-            payload: { definition: { hover: 'test' }, position: { height: 0, x: 0, y: 0 } },
+            payload: {
+              blobPath: 'index.js',
+              definition: { hover: 'test' },
+              position: { height: 0, x: 0, y: 0 },
+            },
           },
         ],
         [],
@@ -193,7 +197,11 @@ describe('Code navigation actions', () => {
         [
           {
             type: 'SET_CURRENT_DEFINITION',
-            payload: { definition: { hover: 'test' }, position: { height: 0, x: 0, y: 0 } },
+            payload: {
+              blobPath: 'index.js',
+              definition: { hover: 'test' },
+              position: { height: 0, x: 0, y: 0 },
+            },
           },
         ],
         [],
@@ -214,7 +222,11 @@ describe('Code navigation actions', () => {
         [
           {
             type: 'SET_CURRENT_DEFINITION',
-            payload: { definition: { hover: 'test' }, position: { height: 0, x: 0, y: 0 } },
+            payload: {
+              blobPath: 'index.js',
+              definition: { hover: 'test' },
+              position: { height: 0, x: 0, y: 0 },
+            },
           },
         ],
         [],

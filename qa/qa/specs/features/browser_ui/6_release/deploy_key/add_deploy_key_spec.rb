@@ -17,7 +17,7 @@ module QA
 
         expect(deploy_key.md5_fingerprint).to eq key.md5_fingerprint
 
-        Page::Project::Settings::CICD.perform do |setting|
+        Page::Project::Settings::Repository.perform do |setting|
           setting.expand_deploy_keys do |keys|
             expect(keys).to have_key(deploy_key_title, key.md5_fingerprint)
           end

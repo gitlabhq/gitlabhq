@@ -1683,6 +1683,45 @@ msgid_plural "Alerts"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "AlertManagement|Alert"
+msgstr ""
+
+msgid "AlertManagement|Authorize external service"
+msgstr ""
+
+msgid "AlertManagement|Display alerts from all your monitoring tools directly within GitLab. Streamline the investigation of your alerts and the escalation of alerts to incidents."
+msgstr ""
+
+msgid "AlertManagement|End Time"
+msgstr ""
+
+msgid "AlertManagement|Events"
+msgstr ""
+
+msgid "AlertManagement|More information"
+msgstr ""
+
+msgid "AlertManagement|No alerts available to display. If you think you're seeing this message in error, refresh the page."
+msgstr ""
+
+msgid "AlertManagement|No alerts to display."
+msgstr ""
+
+msgid "AlertManagement|Severity"
+msgstr ""
+
+msgid "AlertManagement|Start Time"
+msgstr ""
+
+msgid "AlertManagement|Status"
+msgstr ""
+
+msgid "AlertManagement|Surface alerts in GitLab"
+msgstr ""
+
+msgid "AlertManagement|There was an error displaying the alerts. Confirm your endpoint's configuration details to ensure alerts appear."
+msgstr ""
+
 msgid "AlertService|%{linkStart}Learn more%{linkEnd} about configuring this endpoint to receive alerts."
 msgstr ""
 
@@ -2728,9 +2767,6 @@ msgid "Authorize"
 msgstr ""
 
 msgid "Authorize %{link_to_client} to use your account?"
-msgstr ""
-
-msgid "Authorize external service"
 msgstr ""
 
 msgid "Authorized %{new_chat_name}"
@@ -7343,9 +7379,6 @@ msgstr ""
 msgid "Dismissed on pipeline %{pipelineLink} at %{projectLink}"
 msgstr ""
 
-msgid "Display alerts from all your monitoring tools directly within GitLab. Streamline the investigation of your alerts and the escalation of alerts to incidents."
-msgstr ""
-
 msgid "Display name"
 msgstr ""
 
@@ -7833,9 +7866,6 @@ msgid "Enabling this will only make licensed EE features available to projects i
 msgstr ""
 
 msgid "Encountered an error while rendering: %{err}"
-msgstr ""
-
-msgid "End Time"
 msgstr ""
 
 msgid "End date"
@@ -13664,12 +13694,6 @@ msgstr ""
 msgid "No activities found"
 msgstr ""
 
-msgid "No alerts available to display. If you think you're seeing this message in error, refresh the page."
-msgstr ""
-
-msgid "No alerts to display."
-msgstr ""
-
 msgid "No application_settings found"
 msgstr ""
 
@@ -18777,9 +18801,6 @@ msgstr ""
 msgid "Settings to prevent self-approval across all projects in the instance. Only an administrator can modify these settings."
 msgstr ""
 
-msgid "Severity"
-msgstr ""
-
 msgid "Severity: %{severity}"
 msgstr ""
 
@@ -19565,9 +19586,6 @@ msgstr ""
 msgid "Start GitLab Ultimate trial"
 msgstr ""
 
-msgid "Start Time"
-msgstr ""
-
 msgid "Start Web Terminal"
 msgstr ""
 
@@ -20079,9 +20097,6 @@ msgid "Support for custom certificates is disabled. Ask your system's administra
 msgstr ""
 
 msgid "Support page URL"
-msgstr ""
-
-msgid "Surface alerts in GitLab"
 msgstr ""
 
 msgid "Switch branch/tag"

@@ -8,7 +8,12 @@ export default {
     Popover,
   },
   computed: {
-    ...mapState(['currentDefinition', 'currentDefinitionPosition', 'definitionPathPrefix']),
+    ...mapState([
+      'currentDefinition',
+      'currentDefinitionPosition',
+      'currentBlobPath',
+      'definitionPathPrefix',
+    ]),
   },
   mounted() {
     this.body = document.body;
@@ -44,5 +49,6 @@ export default {
     :position="currentDefinitionPosition"
     :data="currentDefinition"
     :definition-path-prefix="definitionPathPrefix"
+    :blob-path="currentBlobPath"
   />
 </template>

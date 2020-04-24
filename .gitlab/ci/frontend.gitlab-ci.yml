@@ -241,7 +241,7 @@ jest-as-if-foss:
 coverage-frontend:
   extends:
     - .default-retry
-    - .frontend:rules:default-frontend-jobs-no-foss
+    - .frontend:rules:ee-mr-and-master-only
   needs: ["jest"]
   stage: post-test
   before_script:

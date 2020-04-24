@@ -1,0 +1,5 @@
+---
+title: Fix jump to definition linking to same file opening a new tab
+merge_request:
+author:
+type: changed

@@ -1,41 +1,49 @@
 <script>
-import { mapState } from 'vuex';
 import { GlEmptyState, GlButton, GlLoadingIcon, GlTable, GlAlert } from '@gitlab/ui';
-import { __ } from '~/locale';
+import { s__ } from '~/locale';
+import getAlerts from '../graphql/queries/getAlerts.query.graphql';
 
 const tdClass = 'table-col d-flex';
 
 export default {
+  i18n: {
+    noAlertsMsg: s__(
+      "AlertManagement|No alerts available to display. If you think you're seeing this message in error, refresh the page.",
+    ),
+    errorMsg: s__(
+      "AlertManagement|There was an error displaying the alerts. Confirm your endpoint's configuration details to ensure alerts appear.",
+    ),
+  },
   fields: [
     {
       key: 'severity',
-      label: __('Severity'),
+      label: s__('AlertManagement|Severity'),
       tdClass,
     },
     {
       key: 'start_time',
-      label: __('Start Time'),
+      label: s__('AlertManagement|Start Time'),
       tdClass,
     },
     {
       key: 'end_time',
-      label: __('End Time'),
+      label: s__('AlertManagement|End Time'),
       tdClass,
     },
     {
       key: 'alert',
-      label: __('Alert'),
+      label: s__('AlertManagement|Alert'),
       thClass: 'w-30p',
       tdClass,
     },
     {
       key: 'events',
-      label: __('Events'),
+      label: s__('AlertManagement|Events'),
       tdClass,
     },
     {
       key: 'status',
-      label: __('Status'),
+      label: s__('AlertManagement|Status'),
       tdClass,
     },
   ],
@@ -66,15 +74,36 @@ export default {
       required: true,
     },
   },
+  apollo: {
+    alerts: {
+      query: getAlerts,
+      variables() {
+        return {
+          projectPath: this.indexPath,
+        };
+      },
+      error() {
+        this.errored = true;
+      },
+    },
+  },
   data() {
     return {
+      alerts: null,
+      errored: false,
       isAlertDismissed: false,
+      isErrorAlertDismissed: false,
     };
   },
   computed: {
-    ...mapState('list', ['alerts', 'loading']),
     showNoAlertsMsg() {
-      return !this.alerts.length && !this.isAlertDismissed;
+      return !this.errored && !this.loading && !this.alerts?.length && !this.isAlertDismissed;
+    },
+    showErrorMsg() {
+      return this.errored && !this.isErrorAlertDismissed;
+    },
+    loading() {
+      return this.$apollo.queries.alerts.loading;
     },
   },
 };
@@ -84,46 +113,49 @@ export default {
   <div>
     <div v-if="alertManagementEnabled" class="alert-management-list">
       <gl-alert v-if="showNoAlertsMsg" @dismiss="isAlertDismissed = true">
-        {{
-          __(
-            `No alerts available to display. If you think you're seeing this message in error, refresh the page.`,
-          )
-        }}
+        {{ $options.i18n.noAlertsMsg }}
       </gl-alert>
-      <div v-if="loading" class="py-3">
-        <gl-loading-icon size="md" />
-      </div>
+      <gl-alert v-if="showErrorMsg" variant="danger" @dismiss="isErrorAlertDismissed = true">
+        {{ $options.i18n.errorMsg }}
+      </gl-alert>
 
       <gl-table
         class="mt-3"
         :items="alerts"
         :fields="$options.fields"
         :show-empty="true"
+        :busy="loading"
         fixed
         stacked="sm"
         tbody-tr-class="table-row mb-4"
       >
         <template #empty>
-          {{ __('No alerts to display.') }}
+          {{ s__('AlertManagement|No alerts to display.') }}
+        </template>
+        <template #table-busy>
+          <gl-loading-icon size="lg" color="dark" class="mt-3" />
         </template>
       </gl-table>
     </div>
     <template v-else>
-      <gl-empty-state :title="__('Surface alerts in GitLab')" :svg-path="emptyAlertSvgPath">
+      <gl-empty-state
+        :title="s__('AlertManagement|Surface alerts in GitLab')"
+        :svg-path="emptyAlertSvgPath"
+      >
         <template #description>
           <div class="d-block">
             <span>{{
-              __(
-                'Display alerts from all your monitoring tools directly within GitLab. Streamline the investigation of your alerts and the escalation of alerts to incidents.',
+              s__(
+                'AlertManagement|Display alerts from all your monitoring tools directly within GitLab. Streamline the investigation of your alerts and the escalation of alerts to incidents.',
               )
             }}</span>
             <a href="/help/user/project/operations/alert_management.html">
-              {{ __('More information') }}
+              {{ s__('AlertManagement|More information') }}
             </a>
           </div>
           <div class="d-block center pt-4">
             <gl-button category="primary" variant="success" :href="enableAlertManagementPath">
-              {{ __('Authorize external service') }}
+              {{ s__('AlertManagement|Authorize external service') }}
             </gl-button>
           </div>
         </template>

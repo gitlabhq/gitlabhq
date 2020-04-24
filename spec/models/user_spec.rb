@@ -813,7 +813,7 @@ describe User, :do_not_mock_admin_mode do
     describe '.active_without_ghosts' do
       let_it_be(:user1) { create(:user, :external) }
       let_it_be(:user2) { create(:user, state: 'blocked') }
-      let_it_be(:user3) { create(:user, ghost: true) }
+      let_it_be(:user3) { create(:user, :ghost) }
       let_it_be(:user4) { create(:user) }
 
       it 'returns all active users but ghost users' do
@@ -824,7 +824,7 @@ describe User, :do_not_mock_admin_mode do
     describe '.without_ghosts' do
       let_it_be(:user1) { create(:user, :external) }
       let_it_be(:user2) { create(:user, state: 'blocked') }
-      let_it_be(:user3) { create(:user, ghost: true) }
+      let_it_be(:user3) { create(:user, :ghost) }
 
       it 'returns users without ghosts users' do
         expect(described_class.without_ghosts).to match_array([user1, user2])
@@ -3275,7 +3275,6 @@ describe User, :do_not_mock_admin_mode do
       expect(ghost.namespace).not_to be_nil
       expect(ghost.namespace).to be_persisted
       expect(ghost.user_type).to eq 'ghost'
-      expect(ghost.ghost).to eq true
     end
 
     it "does not create a second ghost user if one is already present" do
@@ -4077,7 +4076,7 @@ describe User, :do_not_mock_admin_mode do
 
     context 'in single-user environment' do
       it 'requires user consent after one week' do
-        create(:user, ghost: true)
+        create(:user, :ghost)
 
         expect(user.requires_usage_stats_consent?).to be true
       end
@@ -4355,31 +4354,15 @@ describe User, :do_not_mock_admin_mode do
     end
   end
 
-  describe 'internal methods' do
-    let_it_be(:user) { create(:user) }
-    let_it_be(:ghost) { described_class.ghost }
-    let_it_be(:alert_bot) { described_class.alert_bot }
-    let_it_be(:project_bot) { create(:user, :project_bot) }
-    let_it_be(:non_internal) { [user, project_bot] }
-    let_it_be(:internal) { [ghost, alert_bot] }
+  describe '.active_without_ghosts' do
+    let_it_be(:user1) { create(:user, :external) }
+    let_it_be(:user2) { create(:user, state: 'blocked') }
+    let_it_be(:user3) { create(:user, :ghost) }
+    let_it_be(:user4) { create(:user, user_type: :support_bot) }
+    let_it_be(:user5) { create(:user, state: 'blocked', user_type: :support_bot) }
 
-    it 'returns internal users' do
-      expect(described_class.internal).to match_array(internal)
-      expect(internal.all?(&:internal?)).to eq(true)
-    end
-
-    it 'returns non internal users' do
-      expect(described_class.non_internal).to match_array(non_internal)
-      expect(non_internal.all?(&:internal?)).to eq(false)
-    end
-
-    describe '#bot?' do
-      it 'marks bot users' do
-        expect(user.bot?).to eq(false)
-        expect(ghost.bot?).to eq(false)
-
-        expect(alert_bot.bot?).to eq(true)
-      end
+    it 'returns all active users including active bots but ghost users' do
+      expect(described_class.active_without_ghosts).to match_array([user1, user4])
     end
   end
 
@@ -4414,19 +4397,6 @@ describe User, :do_not_mock_admin_mode do
       it 'returns false when ignore_dismissal_earlier_than is later than dismissed_at' do
         expect(user.dismissed_callout?(feature_name: feature_name, ignore_dismissal_earlier_than: 3.months.ago)).to eq false
       end
-    end
-  end
-
-  describe 'bots & humans' do
-    it 'returns corresponding users' do
-      human = create(:user)
-      bot = create(:user, :bot)
-      project_bot = create(:user, :project_bot)
-
-      expect(described_class.humans).to match_array([human])
-      expect(described_class.bots).to match_array([bot, project_bot])
-      expect(described_class.bots_without_project_bot).to match_array([bot])
-      expect(described_class.with_project_bots).to match_array([human, project_bot])
     end
   end
 
@@ -4503,7 +4473,7 @@ describe User, :do_not_mock_admin_mode do
         where(:attributes) do
           [
             { state: 'blocked' },
-            { ghost: true },
+            { user_type: :ghost },
             { user_type: :alert_bot }
           ]
         end
@@ -4546,7 +4516,7 @@ describe User, :do_not_mock_admin_mode do
 
     context 'when user is a ghost user' do
       before do
-        user.update(ghost: true)
+        user.update(user_type: :ghost)
       end
 
       it { is_expected.to be false }
@@ -4585,7 +4555,7 @@ describe User, :do_not_mock_admin_mode do
 
     context 'when user is an internal user' do
       before do
-        user.update(ghost: true)
+        user.update(user_type: :ghost)
       end
 
       it { is_expected.to be User::LOGIN_FORBIDDEN }
@@ -4623,28 +4593,6 @@ describe User, :do_not_mock_admin_mode do
       end
 
       it_behaves_like 'does not require password to be present'
-    end
-  end
-
-  describe '#human?' do
-    subject { user.human? }
-
-    let_it_be(:user) { create(:user) }
-
-    context 'when user is a human' do
-      before do
-        user.update(user_type: nil)
-      end
-
-      it { is_expected.to be true }
-    end
-
-    context 'when user is not a human' do
-      before do
-        user.update(user_type: 'alert_bot')
-      end
-
-      it { is_expected.to be false }
     end
   end
 end

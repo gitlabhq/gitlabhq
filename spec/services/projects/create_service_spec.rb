@@ -348,6 +348,7 @@ describe Projects::CreateService, '#execute' do
       project = create_project(user, opts)
 
       expect(project.services.count).to eq 1
+      expect(project.errors).to be_empty
     end
   end
 

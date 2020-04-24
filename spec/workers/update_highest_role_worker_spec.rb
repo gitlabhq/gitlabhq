@@ -18,7 +18,6 @@ describe UpdateHighestRoleWorker, :clean_gitlab_redis_shared_state do
       let(:active_attributes) do
         {
           state: 'active',
-          ghost: false,
           user_type: nil
         }
       end
@@ -54,7 +53,6 @@ describe UpdateHighestRoleWorker, :clean_gitlab_redis_shared_state do
         where(:additional_attributes) do
           [
             { state: 'blocked' },
-            { ghost: true },
             { user_type: :alert_bot }
           ]
         end

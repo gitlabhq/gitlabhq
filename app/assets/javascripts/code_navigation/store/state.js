@@ -4,4 +4,5 @@ export default () => ({
   data: null,
   currentDefinition: null,
   currentDefinitionPosition: null,
+  currentBlobPath: null,
 });

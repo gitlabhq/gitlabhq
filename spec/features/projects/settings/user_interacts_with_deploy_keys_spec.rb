@@ -20,7 +20,7 @@ describe "User interacts with deploy keys", :js do
         click_button("Enable")
 
         expect(page).not_to have_selector(".fa-spinner")
-        expect(current_path).to eq(project_settings_ci_cd_path(project))
+        expect(current_path).to eq(project_settings_repository_path(project))
 
         find(".js-deployKeys-tab-enabled_keys").click
 
@@ -96,7 +96,7 @@ describe "User interacts with deploy keys", :js do
 
       click_button("Add key")
 
-      expect(current_path).to eq(project_settings_ci_cd_path(project))
+      expect(current_path).to eq(project_settings_repository_path(project))
 
       page.within(".deploy-keys") do
         expect(page).to have_content(DEPLOY_KEY_TITLE)

@@ -30,7 +30,7 @@ in the merge request widget area:
 Watch a quick walkthrough of Code Quality in action:
 
 <div class="video-fallback">
-  See the video: <a href="https://www.youtube.com/watch?v=B32LxtJKo9M">Video title</a>.
+  See the video: <a href="https://www.youtube.com/watch?v=B32LxtJKo9M">Code Quality: Speed Run</a>.
 </div>
 <figure class="video-container">
   <iframe src="https://www.youtube.com/embed/B32LxtJKo9M" frameborder="0" allowfullscreen="true"> </iframe>

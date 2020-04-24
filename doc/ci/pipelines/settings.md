@@ -288,14 +288,6 @@ https://example.gitlab.com/<namespace>/<project>/badges/<branch>/coverage.svg?st
 
 [Environment variables](../variables/README.md#gitlab-cicd-environment-variables) can be set in an environment to be available to a runner.
 
-## Deploy Keys
-
-With Deploy Keys, GitLab allows you to import SSH public keys. You can then have
-read only or read/write access to your project from the machines the keys were generated from.
-
-SSH keys added to your project settings will be used for continuous integration,
-staging, or production servers.
-
 <!-- ## Troubleshooting
 
 Include any troubleshooting steps that you can foresee. If you know beforehand what issues

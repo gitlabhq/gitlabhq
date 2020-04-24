@@ -32,9 +32,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   GpgBadges.fetch();
 
-  if (gon.features?.codeNavigation) {
-    const el = document.getElementById('js-code-navigation');
-    const { codeNavigationPath, blobPath, definitionPathPrefix } = el.dataset;
+  const codeNavEl = document.getElementById('js-code-navigation');
+
+  if (gon.features?.codeNavigation && codeNavEl) {
+    const { codeNavigationPath, blobPath, definitionPathPrefix } = codeNavEl.dataset;
 
     // eslint-disable-next-line promise/catch-or-return
     import('~/code_navigation').then(m =>

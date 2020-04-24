@@ -24,6 +24,7 @@ class User < ApplicationRecord
   include HasUniqueInternalUsers
   include IgnorableColumns
   include UpdateHighestRole
+  include HasUserType
 
   DEFAULT_NOTIFICATION_LEVEL = :participating
 
@@ -64,9 +65,9 @@ class User < ApplicationRecord
 
   MINIMUM_INACTIVE_DAYS = 180
 
-  enum user_type: ::UserTypeEnums.types
-
   ignore_column :bot_type, remove_with: '12.11', remove_after: '2020-04-22'
+
+  ignore_column :ghost, remove_with: '13.2', remove_after: '2020-06-22'
 
   # Override Devise::Models::Trackable#update_tracked_fields!
   # to limit database writes to at most once every hour
@@ -321,32 +322,26 @@ class User < ApplicationRecord
   scope :admins, -> { where(admin: true) }
   scope :blocked, -> { with_states(:blocked, :ldap_blocked) }
   scope :external, -> { where(external: true) }
+  scope :confirmed, -> { where.not(confirmed_at: nil) }
   scope :active, -> { with_state(:active).non_internal }
   scope :active_without_ghosts, -> { with_state(:active).without_ghosts }
-  scope :without_ghosts, -> { where('ghost IS NOT TRUE') }
   scope :deactivated, -> { with_state(:deactivated).non_internal }
   scope :without_projects, -> { joins('LEFT JOIN project_authorizations ON users.id = project_authorizations.user_id').where(project_authorizations: { user_id: nil }) }
-  scope :order_recent_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('current_sign_in_at', 'DESC')) }
-  scope :order_oldest_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('current_sign_in_at', 'ASC')) }
-  scope :order_recent_last_activity, -> { reorder(Gitlab::Database.nulls_last_order('last_activity_on', 'DESC')) }
-  scope :order_oldest_last_activity, -> { reorder(Gitlab::Database.nulls_first_order('last_activity_on', 'ASC')) }
-  scope :confirmed, -> { where.not(confirmed_at: nil) }
   scope :by_username, -> (usernames) { iwhere(username: Array(usernames).map(&:to_s)) }
   scope :for_todos, -> (todos) { where(id: todos.select(:user_id)) }
   scope :with_emails, -> { preload(:emails) }
   scope :with_dashboard, -> (dashboard) { where(dashboard: dashboard) }
   scope :with_public_profile, -> { where(private_profile: false) }
-  scope :bots, -> { where(user_type: UserTypeEnums.bots.values) }
-  scope :bots_without_project_bot, -> { bots.where.not(user_type: UserTypeEnums.bots[:project_bot]) }
-  scope :with_project_bots, -> { humans.or(where.not(user_type: UserTypeEnums.bots.except(:project_bot).values)) }
-  scope :humans, -> { where(user_type: nil) }
-
   scope :with_expiring_and_not_notified_personal_access_tokens, ->(at) do
     where('EXISTS (?)',
           ::PersonalAccessToken
             .where('personal_access_tokens.user_id = users.id')
             .expiring_and_not_notified(at).select(1))
   end
+  scope :order_recent_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('current_sign_in_at', 'DESC')) }
+  scope :order_oldest_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('current_sign_in_at', 'ASC')) }
+  scope :order_recent_last_activity, -> { reorder(Gitlab::Database.nulls_last_order('last_activity_on', 'DESC')) }
+  scope :order_oldest_last_activity, -> { reorder(Gitlab::Database.nulls_first_order('last_activity_on', 'ASC')) }
 
   def active_for_authentication?
     super && can?(:log_in)
@@ -624,7 +619,7 @@ class User < ApplicationRecord
     # owns records previously belonging to deleted users.
     def ghost
       email = 'ghost%s@example.com'
-      unique_internal(where(ghost: true, user_type: :ghost), 'ghost', email) do |u|
+      unique_internal(where(user_type: :ghost), 'ghost', email) do |u|
         u.bio = _('This is a "Ghost User", created to hold all issues authored by users that have since been deleted. This user cannot be removed.')
         u.name = 'Ghost User'
       end
@@ -650,46 +645,13 @@ class User < ApplicationRecord
     end
   end
 
-  def full_path
-    username
-  end
-
-  def bot?
-    UserTypeEnums.bots.has_key?(user_type)
-  end
-
-  # The explicit check for project_bot will be removed with Bot Categorization
-  # Ref: https://gitlab.com/gitlab-org/gitlab/-/issues/213945
-  def internal?
-    ghost? || (bot? && !project_bot?)
-  end
-
-  # We are transitioning from ghost boolean column to user_type
-  # so we need to read from old column for now
-  # @see https://gitlab.com/gitlab-org/gitlab/-/issues/210025
-  def ghost?
-    ghost
-  end
-
-  # The explicit check for project_bot will be removed with Bot Categorization
-  # Ref: https://gitlab.com/gitlab-org/gitlab/-/issues/213945
-  def self.internal
-    where(ghost: true).or(bots_without_project_bot)
-  end
-
-  # The explicit check for project_bot will be removed with Bot Categorization
-  # Ref: https://gitlab.com/gitlab-org/gitlab/-/issues/213945
-  def self.non_internal
-    without_ghosts.with_project_bots
-  end
-
-  def human?
-    user_type.nil?
-  end
-
   #
   # Instance methods
   #
+
+  def full_path
+    username
+  end
 
   def to_param
     username
