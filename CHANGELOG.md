@@ -2,6 +2,25 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 12.10.1 (2020-04-24)
+
+### Fixed (5 changes)
+
+- Fix bug creating project from git ssh. !29771
+- Fix Web IDE handling of deleting newly added files. !29783
+- Fix null dereference in /import status REST endpoint. !29886
+- Fix Service Templates missing Active toggle. !29936
+- Fix 500 error on accessing restricted levels. !30313
+
+### Changed (1 change)
+
+- Move Group Deploy Tokens to new Group-scoped Repository settings. !29290
+
+### Other (1 change)
+
+- Migration of dismissals to vulnerabilities. !29711
+
+
 ## 12.10.0 (2020-04-22)
 
 ### Removed (3 changes)
