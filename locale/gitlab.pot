@@ -2420,9 +2420,6 @@ msgstr ""
 msgid "Are you sure that you want to unarchive this project?"
 msgstr ""
 
-msgid "Are you sure you want to cancel creating this comment?"
-msgstr ""
-
 msgid "Are you sure you want to cancel editing this comment?"
 msgstr ""
 
@@ -2454,6 +2451,9 @@ msgid "Are you sure you want to delete this pipeline? Doing so will expire all p
 msgstr ""
 
 msgid "Are you sure you want to deploy this environment?"
+msgstr ""
+
+msgid "Are you sure you want to discard this comment?"
 msgstr ""
 
 msgid "Are you sure you want to erase this build?"
@@ -7833,6 +7833,9 @@ msgid "Enabling this will only make licensed EE features available to projects i
 msgstr ""
 
 msgid "Encountered an error while rendering: %{err}"
+msgstr ""
+
+msgid "End Time"
 msgstr ""
 
 msgid "End date"
@@ -13661,6 +13664,12 @@ msgstr ""
 msgid "No activities found"
 msgstr ""
 
+msgid "No alerts available to display. If you think you're seeing this message in error, refresh the page."
+msgstr ""
+
+msgid "No alerts to display."
+msgstr ""
+
 msgid "No application_settings found"
 msgstr ""
 
@@ -18768,6 +18777,9 @@ msgstr ""
 msgid "Settings to prevent self-approval across all projects in the instance. Only an administrator can modify these settings."
 msgstr ""
 
+msgid "Severity"
+msgstr ""
+
 msgid "Severity: %{severity}"
 msgstr ""
 
@@ -19548,6 +19560,9 @@ msgid "Stars"
 msgstr ""
 
 msgid "Start GitLab Ultimate trial"
+msgstr ""
+
+msgid "Start Time"
 msgstr ""
 
 msgid "Start Web Terminal"
@@ -24250,6 +24265,9 @@ msgid "Your comment could not be submitted! Please check your network connection
 msgstr ""
 
 msgid "Your comment could not be updated! Please check your network connection and try again."
+msgstr ""
+
+msgid "Your comment will be discarded."
 msgstr ""
 
 msgid "Your custom stage '%{title}' was created"

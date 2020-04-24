@@ -51,15 +51,11 @@ module ServicesHelper
     end
   end
 
-  def service_save_button(service)
-    button_tag(class: 'btn btn-success', type: 'submit', disabled: service.deprecated?, data: { qa_selector: 'save_changes_button' }) do
+  def service_save_button
+    button_tag(class: 'btn btn-success', type: 'submit', data: { qa_selector: 'save_changes_button' }) do
       icon('spinner spin', class: 'hidden js-btn-spinner') +
         content_tag(:span, 'Save changes', class: 'js-btn-label')
     end
-  end
-
-  def disable_fields_service?(service)
-    !current_controller?("admin/services") && service.deprecated?
   end
 
   def scoped_integrations_path

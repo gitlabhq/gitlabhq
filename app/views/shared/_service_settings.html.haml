@@ -8,7 +8,7 @@
       = markdown @service.help
 
 .service-settings
-  .js-vue-integration-settings{ data: { show_active: @service.show_active_box?.to_s, activated: (@service.active || @service.new_record?).to_s, disabled: disable_fields_service?(@service).to_s } }
+  .js-vue-integration-settings{ data: { show_active: @service.show_active_box?.to_s, activated: (@service.active || @service.new_record?).to_s } }
 
   - if @service.configurable_events.present?
     .form-group.row

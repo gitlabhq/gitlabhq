@@ -2,8 +2,6 @@
 - add_to_breadcrumbs _('Integration Settings'), project_settings_integrations_path(@project)
 - page_title @service.title, _('Integrations')
 
-= render 'deprecated_message' if @service.deprecation_message
-
 = render 'form'
 - if @web_hook_logs
   = render partial: 'projects/hook_logs/index', locals: { hook: @service.service_hook, hook_logs: @web_hook_logs, project: @project }

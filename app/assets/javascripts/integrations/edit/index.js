@@ -7,10 +7,9 @@ export default el => {
     return null;
   }
 
-  const { showActive: showActiveStr, activated: activatedStr, disabled: disabledStr } = el.dataset;
+  const { showActive: showActiveStr, activated: activatedStr } = el.dataset;
   const showActive = parseBoolean(showActiveStr);
   const activated = parseBoolean(activatedStr);
-  const disabled = parseBoolean(disabledStr);
 
   if (!showActive) {
     return null;
@@ -22,7 +21,6 @@ export default el => {
       return createElement(ActiveToggle, {
         props: {
           initialActivated: activated,
-          disabled,
         },
       });
     },

@@ -35,7 +35,8 @@ RSpec.shared_context 'GroupPolicy context' do
       :change_visibility_level,
       :set_note_created_at,
       :create_subgroup,
-      :read_statistics
+      :read_statistics,
+      :update_default_branch_protection
     ].compact
   end
 

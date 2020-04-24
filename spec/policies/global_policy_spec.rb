@@ -80,6 +80,34 @@ describe GlobalPolicy do
     end
   end
 
+  describe 'create group' do
+    context 'when user has the ability to create group' do
+      let(:current_user) { create(:user, can_create_group: true) }
+
+      it { is_expected.to be_allowed(:create_group) }
+    end
+
+    context 'when user does not have the ability to create group' do
+      let(:current_user) { create(:user, can_create_group: false) }
+
+      it { is_expected.not_to be_allowed(:create_group) }
+    end
+  end
+
+  describe 'create group with default branch protection' do
+    context 'when user has the ability to create group' do
+      let(:current_user) { create(:user, can_create_group: true) }
+
+      it { is_expected.to be_allowed(:create_group_with_default_branch_protection) }
+    end
+
+    context 'when user does not have the ability to create group' do
+      let(:current_user) { create(:user, can_create_group: false) }
+
+      it { is_expected.not_to be_allowed(:create_group_with_default_branch_protection) }
+    end
+  end
+
   describe 'custom attributes' do
     context 'regular user' do
       it { is_expected.not_to be_allowed(:read_custom_attribute) }

@@ -7,7 +7,6 @@
 - choices = field[:choices]
 - default_choice = field[:default_choice]
 - help = field[:help]
-- disabled = disable_fields_service?(@service)
 
 .form-group.row
   - if type == "password" && value.present?
@@ -16,14 +15,14 @@
     = form.label name, title, class: "col-form-label col-sm-2"
   .col-sm-10
     - if type == 'text'
-      = form.text_field name, class: "form-control", placeholder: placeholder, required: required, disabled: disabled, data: { qa_selector: "#{name.downcase.gsub('\s', '')}_field" }
+      = form.text_field name, class: "form-control", placeholder: placeholder, required: required, data: { qa_selector: "#{name.downcase.gsub('\s', '')}_field" }
     - elsif type == 'textarea'
-      = form.text_area name, rows: 5, class: "form-control", placeholder: placeholder, required: required, disabled: disabled
+      = form.text_area name, rows: 5, class: "form-control", placeholder: placeholder, required: required
     - elsif type == 'checkbox'
-      = form.check_box name, disabled: disabled
+      = form.check_box name
     - elsif type == 'select'
-      = form.select name, options_for_select(choices, value ? value : default_choice), {}, { class: "form-control", disabled: disabled}
+      = form.select name, options_for_select(choices, value ? value : default_choice), {}, { class: "form-control"}
     - elsif type == 'password'
-      = form.password_field name, autocomplete: "new-password", placeholder: placeholder, class: "form-control", required: value.blank? && required, disabled: disabled, data: { qa_selector: "#{name.downcase.gsub('\s', '')}_field" }
+      = form.password_field name, autocomplete: "new-password", placeholder: placeholder, class: "form-control", required: value.blank? && required, data: { qa_selector: "#{name.downcase.gsub('\s', '')}_field" }
     - if help
       %span.form-text.text-muted= help

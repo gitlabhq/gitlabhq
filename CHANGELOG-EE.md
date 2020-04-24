@@ -1,5 +1,12 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 12.10.1 (2020-04-24)
+
+### Changed (1 change)
+
+- Move project deploy tokens section back to Repository settings. !29280
+
+
 ## 12.10.0 (2020-04-22)
 
 ### Fixed (6 changes, 1 of them is from the community)

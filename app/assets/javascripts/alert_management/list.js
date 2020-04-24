@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import store from './store';
 import AlertManagementList from './components/alert_management_list.vue';
 
 export default () => {
@@ -12,6 +13,7 @@ export default () => {
     components: {
       AlertManagementList,
     },
+    store,
     render(createElement) {
       return createElement('alert-management-list', {
         props: {

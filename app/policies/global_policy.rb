@@ -74,6 +74,10 @@ class GlobalPolicy < BasePolicy
     enable :create_group
   end
 
+  rule { can?(:create_group) }.policy do
+    enable :create_group_with_default_branch_protection
+  end
+
   rule { can_create_fork }.policy do
     enable :create_fork
   end

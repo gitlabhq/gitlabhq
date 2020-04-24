@@ -33,7 +33,7 @@
     = render_if_exists 'groups/settings/ip_restriction', f: f, group: @group
     = render_if_exists 'groups/settings/allowed_email_domain', f: f, group: @group
     = render 'groups/settings/lfs', f: f
-    = render 'shared/default_branch_protection', f: f, selected_level: @group.default_branch_protection
+    = render 'groups/settings/default_branch_protection', f: f, group: @group
     = render 'groups/settings/project_creation_level', f: f, group: @group
     = render 'groups/settings/subgroup_creation_level', f: f, group: @group
     = render 'groups/settings/two_factor_auth', f: f

@@ -642,6 +642,33 @@ describe API::Groups do
         expect(json_response['default_branch_protection']).to eq(::Gitlab::Access::MAINTAINER_PROJECT_ACCESS)
       end
 
+      context 'updating the `default_branch_protection` attribute' do
+        subject do
+          put api("/groups/#{group1.id}", user1), params: { default_branch_protection: ::Gitlab::Access::PROTECTION_NONE }
+        end
+
+        context 'for users who have the ability to update default_branch_protection' do
+          it 'updates the attribute' do
+            subject
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['default_branch_protection']).to eq(Gitlab::Access::PROTECTION_NONE)
+          end
+        end
+
+        context 'for users who does not have the ability to update default_branch_protection`' do
+          it 'does not update the attribute' do
+            allow(Ability).to receive(:allowed?).and_call_original
+            allow(Ability).to receive(:allowed?).with(user1, :update_default_branch_protection, group1) { false }
+
+            subject
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['default_branch_protection']).not_to eq(Gitlab::Access::PROTECTION_NONE)
+          end
+        end
+      end
+
       context 'malicious group name' do
         subject { put api("/groups/#{group1.id}", user1), params: { name: "<SCRIPT>alert('DOUBLE-ATTACK!')</SCRIPT>" } }
 
@@ -1109,6 +1136,33 @@ describe API::Groups do
         end
 
         it { expect { subject }.not_to change { Group.count } }
+      end
+
+      context 'when creating a group with `default_branch_protection` attribute' do
+        let(:params) { attributes_for_group_api default_branch_protection: Gitlab::Access::PROTECTION_NONE }
+
+        subject { post api("/groups", user3), params: params }
+
+        context 'for users who have the ability to create a group with `default_branch_protection`' do
+          it 'creates group with the specified branch protection level' do
+            subject
+
+            expect(response).to have_gitlab_http_status(:created)
+            expect(json_response['default_branch_protection']).to eq(Gitlab::Access::PROTECTION_NONE)
+          end
+        end
+
+        context 'for users who do not have the ability to create a group with `default_branch_protection`' do
+          it 'does not create the group with the specified branch protection level' do
+            allow(Ability).to receive(:allowed?).and_call_original
+            allow(Ability).to receive(:allowed?).with(user3, :create_group_with_default_branch_protection) { false }
+
+            subject
+
+            expect(response).to have_gitlab_http_status(:created)
+            expect(json_response['default_branch_protection']).not_to eq(Gitlab::Access::PROTECTION_NONE)
+          end
+        end
       end
 
       it "does not create group, duplicate" do

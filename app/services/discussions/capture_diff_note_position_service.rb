@@ -17,6 +17,7 @@ module Discussions
       return unless result
 
       position = result[:position]
+      return unless position
 
       # Currently position data is copied across all notes of a discussion
       # It makes sense to store a position only for the first note instead

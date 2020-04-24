@@ -38,6 +38,10 @@ module Groups
       # overridden in EE
     end
 
+    def remove_unallowed_params
+      params.delete(:default_branch_protection) unless can?(current_user, :create_group_with_default_branch_protection)
+    end
+
     def create_chat_team?
       Gitlab.config.mattermost.enabled && @chat_team && group.chat_team.nil?
     end

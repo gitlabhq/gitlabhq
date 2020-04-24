@@ -1060,6 +1060,13 @@
   :resource_boundary: :cpu
   :weight: 1
   :idempotent: 
+- :name: external_service_reactive_caching
+  :feature_category: :not_owned
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: 
 - :name: file_hook
   :feature_category: :integrations
   :has_external_dependencies: 

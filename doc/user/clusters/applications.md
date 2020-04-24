@@ -128,9 +128,9 @@ before deploying one.
 
 NOTE: **Note:**
 The [`runner/gitlab-runner`](https://gitlab.com/gitlab-org/charts/gitlab-runner)
-chart is used to install this application with a
-[`values.yaml`](https://gitlab.com/gitlab-org/gitlab/blob/master/vendor/runner/values.yaml)
-file. Customizing installation by modifying this file is not supported.
+chart is used to install this application, using
+[a preconfigured `values.yaml`](https://gitlab.com/gitlab-org/charts/gitlab-runner/-/blob/master/values.yaml)
+file. Customizing the installation by modifying this file is not supported.
 
 ### Ingress
 
