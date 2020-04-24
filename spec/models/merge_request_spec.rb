@@ -3332,7 +3332,7 @@ describe MergeRequest do
     describe 'check_state?' do
       it 'indicates whether MR is still checking for mergeability' do
         state_machine = described_class.state_machines[:merge_status]
-        check_states = [:unchecked, :cannot_be_merged_recheck, :checking]
+        check_states = [:unchecked, :cannot_be_merged_recheck, :cannot_be_merged_rechecking, :checking]
 
         check_states.each do |merge_status|
           expect(state_machine.check_state?(merge_status)).to be true

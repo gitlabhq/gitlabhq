@@ -1,0 +1,6 @@
+- breadcrumb_title _('Repository Settings')
+- page_title _('Repository')
+
+- deploy_token_description = s_('DeployTokens|Group deploy tokens allow read-only access to the repositories and registry images within the group.')
+
+= render "shared/deploy_tokens/index", group_or_project: @group, description: deploy_token_description

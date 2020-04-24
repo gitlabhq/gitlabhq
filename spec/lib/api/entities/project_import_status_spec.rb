@@ -8,6 +8,17 @@ describe API::Entities::ProjectImportStatus do
 
     let(:correlation_id) { 'cid' }
 
+    context 'when no import state exists' do
+      let(:entity) { described_class.new(build(:project)) }
+
+      it 'includes basic fields and no failures' do
+        expect(subject[:import_status]).to eq('none')
+        expect(subject[:correlation_id]).to be_nil
+        expect(subject[:import_error]).to be_nil
+        expect(subject[:failed_relations]).to eq([])
+      end
+    end
+
     context 'when import has not finished yet' do
       let(:project) { create(:project, :import_scheduled, import_correlation_id: correlation_id) }
       let(:entity) { described_class.new(project) }

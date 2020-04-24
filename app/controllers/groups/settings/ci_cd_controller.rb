@@ -8,9 +8,8 @@ module Groups
       before_action :authorize_update_max_artifacts_size!, only: [:update]
       before_action do
         push_frontend_feature_flag(:new_variables_ui, @group, default_enabled: true)
-        push_frontend_feature_flag(:ajax_new_deploy_token, @group)
       end
-      before_action :define_variables, only: [:show, :create_deploy_token]
+      before_action :define_variables, only: [:show]
 
       def show
       end
@@ -42,38 +41,10 @@ module Groups
         redirect_to group_settings_ci_cd_path
       end
 
-      def create_deploy_token
-        result = Groups::DeployTokens::CreateService.new(@group, current_user, deploy_token_params).execute
-        @new_deploy_token = result[:deploy_token]
-
-        if result[:status] == :success
-          respond_to do |format|
-            format.json do
-              # IMPORTANT: It's a security risk to expose the token value more than just once here!
-              json = API::Entities::DeployTokenWithToken.represent(@new_deploy_token).as_json
-              render json: json, status: result[:http_status]
-            end
-            format.html do
-              flash.now[:notice] = s_('DeployTokens|Your new group deploy token has been created.')
-              render :show
-            end
-          end
-        else
-          respond_to do |format|
-            format.json { render json: { message: result[:message] }, status: result[:http_status] }
-            format.html do
-              flash.now[:alert] = result[:message]
-              render :show
-            end
-          end
-        end
-      end
-
       private
 
       def define_variables
         define_ci_variables
-        define_deploy_token_variables
       end
 
       def define_ci_variables
@@ -81,12 +52,6 @@ module Groups
           .present(current_user: current_user)
         @variables = group.variables.order_key_asc
           .map { |variable| variable.present(current_user: current_user) }
-      end
-
-      def define_deploy_token_variables
-        @deploy_tokens = @group.deploy_tokens.active
-
-        @new_deploy_token = DeployToken.new
       end
 
       def authorize_admin_group!
@@ -111,10 +76,6 @@ module Groups
 
       def update_group_params
         params.require(:group).permit(:max_artifacts_size)
-      end
-
-      def deploy_token_params
-        params.require(:deploy_token).permit(:name, :expires_at, :read_repository, :read_registry, :write_registry, :username)
       end
     end
   end

@@ -3,7 +3,6 @@
 
 - expanded = expanded_by_default?
 - general_expanded = @group.errors.empty? ? expanded : true
-- deploy_token_description = s_('DeployTokens|Group deploy tokens allow read-only access to the repositories and registry images within the group.')
 
 -# Given we only have one field in this form which is also admin-only,
 -# we don't want to show an empty section to non-admin users,
@@ -24,8 +23,6 @@
     = render 'ci/variables/header', expanded: expanded
   .settings-content
     = render 'ci/variables/index', save_endpoint: group_variables_path
-
-= render "shared/deploy_tokens/index", group_or_project: @group, description: deploy_token_description
 
 %section.settings#runners-settings.no-animate{ class: ('expanded' if expanded) }
   .settings-header

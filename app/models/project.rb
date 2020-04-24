@@ -2402,7 +2402,7 @@ class Project < ApplicationRecord
   end
 
   def deploy_token_create_url(opts = {})
-    Gitlab::Routing.url_helpers.create_deploy_token_project_settings_ci_cd_path(self, opts)
+    Gitlab::Routing.url_helpers.create_deploy_token_project_settings_repository_path(self, opts)
   end
 
   def deploy_token_revoke_url_for(token)

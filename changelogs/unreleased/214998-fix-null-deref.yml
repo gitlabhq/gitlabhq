@@ -1,0 +1,5 @@
+---
+title: Fix null dereference in /import status REST endpoint
+merge_request: 29886
+author:
+type: fixed

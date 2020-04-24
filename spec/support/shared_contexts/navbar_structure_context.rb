@@ -111,6 +111,7 @@ RSpec.shared_context 'group navbar structure' do
       nav_sub_items: [
         _('General'),
         _('Projects'),
+        _('Repository'),
         _('CI / CD'),
         _('Integrations'),
         _('Webhooks'),

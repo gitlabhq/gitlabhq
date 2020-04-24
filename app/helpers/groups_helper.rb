@@ -15,6 +15,7 @@ module GroupsHelper
       groups#projects
       groups#edit
       badges#index
+      repository#show
       ci_cd#show
       integrations#index
       integrations#edit

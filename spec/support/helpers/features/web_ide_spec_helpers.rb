@@ -32,6 +32,10 @@ module WebIdeSpecHelpers
     page.find('.ide-tree-actions')
   end
 
+  def ide_tab_selector(mode)
+    ".js-ide-#{mode}-mode"
+  end
+
   def ide_file_row_open?(row)
     row.matches_css?('.is-open')
   end
@@ -106,14 +110,14 @@ module WebIdeSpecHelpers
     evaluate_script("monaco.editor.getModel('#{uri}').getValue()")
   end
 
-  def ide_commit
-    ide_switch_mode('commit')
-
-    commit_to_current_branch
+  def ide_commit_tab_selector
+    ide_tab_selector('commit')
   end
 
-  def ide_switch_mode(mode)
-    find(".js-ide-#{mode}-mode").click
+  def ide_commit
+    find(ide_commit_tab_selector).click
+
+    commit_to_current_branch
   end
 
   private

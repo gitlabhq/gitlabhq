@@ -766,29 +766,98 @@ describe API::Internal::Base do
     end
 
     context 'project does not exist' do
-      it 'returns a 200 response with status: false' do
-        project.destroy
+      context 'git pull' do
+        it 'returns a 200 response with status: false' do
+          project.destroy
 
-        pull(key, project)
+          pull(key, project)
 
-        expect(response).to have_gitlab_http_status(:not_found)
-        expect(json_response["status"]).to be_falsey
+          expect(response).to have_gitlab_http_status(:not_found)
+          expect(json_response["status"]).to be_falsey
+        end
+
+        it 'returns a 200 response when using a project path that does not exist' do
+          post(
+            api("/internal/allowed"),
+            params: {
+              key_id: key.id,
+              project: 'project/does-not-exist.git',
+              action: 'git-upload-pack',
+              secret_token: secret_token,
+              protocol: 'ssh'
+            }
+          )
+
+          expect(response).to have_gitlab_http_status(:not_found)
+          expect(json_response["status"]).to be_falsey
+        end
       end
 
-      it 'returns a 200 response when using a project path that does not exist' do
-        post(
-          api("/internal/allowed"),
-          params: {
-            key_id: key.id,
-            project: 'project/does-not-exist.git',
-            action: 'git-upload-pack',
-            secret_token: secret_token,
-            protocol: 'ssh'
-          }
-        )
+      context 'git push' do
+        before do
+          stub_const('Gitlab::QueryLimiting::Transaction::THRESHOLD', 120)
+        end
 
-        expect(response).to have_gitlab_http_status(:not_found)
-        expect(json_response["status"]).to be_falsey
+        subject { push_with_path(key, full_path: path, changes: '_any') }
+
+        context 'from a user/group namespace' do
+          let!(:path) { "#{user.namespace.path}/notexist.git" }
+
+          it 'creates the project' do
+            expect do
+              subject
+            end.to change { Project.count }.by(1)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['status']).to be_truthy
+          end
+        end
+
+        context 'from the personal snippet path' do
+          let!(:path) { 'snippets/notexist.git' }
+
+          it 'does not create snippet' do
+            expect do
+              subject
+            end.not_to change { Snippet.count }
+
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
+        end
+
+        context 'from a project path' do
+          context 'from an non existent project path' do
+            let!(:path) { "#{user.namespace.path}/notexist/snippets/notexist.git" }
+
+            it 'does not create project' do
+              expect do
+                subject
+              end.not_to change { Project.count }
+
+              expect(response).to have_gitlab_http_status(:not_found)
+            end
+
+            it 'does not create snippet' do
+              expect do
+                subject
+              end.not_to change { Snippet.count }
+
+              expect(response).to have_gitlab_http_status(:not_found)
+            end
+          end
+
+          context 'from an existent project path' do
+            let!(:path) { "#{project.full_path}/notexist/snippets/notexist.git" }
+
+            it 'does not create snippet' do
+              expect do
+                subject
+              end.not_to change { Snippet.count }
+
+              expect(response).to have_gitlab_http_status(:not_found)
+            end
+          end
+        end
       end
     end
 
@@ -1062,18 +1131,27 @@ describe API::Internal::Base do
   end
 
   def push(key, container, protocol = 'ssh', env: nil, changes: nil)
+    push_with_path(key,
+                   full_path: full_path_for(container),
+                   gl_repository: gl_repository_for(container),
+                   protocol: protocol,
+                   env: env,
+                   changes: changes)
+  end
+
+  def push_with_path(key, full_path:, gl_repository: nil, protocol: 'ssh', env: nil, changes: nil)
     changes ||= 'd14d6c0abdd253381df51a723d58691b2ee1ab08 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/master'
 
     params = {
       changes: changes,
       key_id: key.id,
-      project: full_path_for(container),
-      gl_repository: gl_repository_for(container),
+      project: full_path,
       action: 'git-receive-pack',
       secret_token: secret_token,
       protocol: protocol,
       env: env
     }
+    params[:gl_repository] = gl_repository if gl_repository
 
     post(
       api("/internal/allowed"),

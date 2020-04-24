@@ -70,6 +70,7 @@ The following table depicts the various user permission levels in a project.
 | Create confidential issue                         | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
 | View confidential issues                          | (*2*)   | ✓          | ✓           | ✓        | ✓      |
 | View [Releases](project/releases/index.md)        | ✓ (*6*) | ✓          | ✓           | ✓        | ✓      |
+| View requirements **(ULTIMATE)**                  | ✓       | ✓          | ✓           | ✓        | ✓      |
 | Assign issues                                     |         | ✓          | ✓           | ✓        | ✓      |
 | Label issues                                      |         | ✓          | ✓           | ✓        | ✓      |
 | Set issue weight                                  |         | ✓          | ✓           | ✓        | ✓      |
@@ -85,8 +86,8 @@ The following table depicts the various user permission levels in a project.
 | View project statistics                           |         | ✓          | ✓           | ✓        | ✓      |
 | View Error Tracking list                          |         | ✓          | ✓           | ✓        | ✓      |
 | Create new merge request                          |         | ✓          | ✓           | ✓        | ✓      |
-| View requirements **(ULTIMATE)**                  |         | ✓          | ✓           | ✓        | ✓      |
 | View metrics dashboard annotations                |         | ✓          | ✓           | ✓        | ✓      |
+| Create/edit requirements **(ULTIMATE)**           |         | ✓          | ✓           | ✓        | ✓      |
 | Pull [packages](packages/index.md)                |         | ✓          | ✓           | ✓        | ✓      |
 | Publish [packages](packages/index.md)             |         |            | ✓           | ✓        | ✓      |
 | Pull from [Conan repository](packages/conan_repository/index.md), [Maven repository](packages/maven_repository/index.md), or [NPM registry](packages/npm_registry/index.md) **(PREMIUM)** |         | ✓          | ✓           | ✓        | ✓      |
@@ -122,7 +123,6 @@ The following table depicts the various user permission levels in a project.
 | Create and edit wiki pages                        |         |            | ✓           | ✓        | ✓      |
 | Rewrite/remove Git tags                           |         |            | ✓           | ✓        | ✓      |
 | Manage Feature Flags **(PREMIUM)**                |         |            | ✓           | ✓        | ✓      |
-| Manage requirements **(ULTIMATE)**                |         |            | ✓           | ✓        | ✓      |
 | Create/edit/delete metrics dashboard annotations  |         |            | ✓           | ✓        | ✓      |
 | Use environment terminals                         |         |            |             | ✓        | ✓      |
 | Run Web IDE's Interactive Web Terminals **(ULTIMATE ONLY)** |     |      |             | ✓        | ✓      |

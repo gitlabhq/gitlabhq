@@ -52,7 +52,7 @@ module ExploreHelper
   end
 
   def public_visibility_restricted?
-    Gitlab::CurrentSettings.restricted_visibility_levels.include? Gitlab::VisibilityLevel::PUBLIC
+    Gitlab::CurrentSettings.restricted_visibility_levels&.include? Gitlab::VisibilityLevel::PUBLIC
   end
 
   private

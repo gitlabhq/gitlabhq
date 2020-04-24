@@ -1,0 +1,5 @@
+---
+title: Fix 500 error on accessing restricted levels
+merge_request: 30313
+author:
+type: fixed

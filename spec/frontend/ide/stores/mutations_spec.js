@@ -273,7 +273,7 @@ describe('Multi-file store mutations', () => {
       expect(localState.changedFiles).toEqual([]);
     });
 
-    it('removes tempFile from changedFiles when deleted', () => {
+    it('removes tempFile from changedFiles and stagedFiles when deleted', () => {
       localState.entries.filePath = {
         path: 'filePath',
         deleted: false,
@@ -282,10 +282,12 @@ describe('Multi-file store mutations', () => {
       };
 
       localState.changedFiles.push({ ...localState.entries.filePath });
+      localState.stagedFiles.push({ ...localState.entries.filePath });
 
       mutations.DELETE_ENTRY(localState, 'filePath');
 
       expect(localState.changedFiles).toEqual([]);
+      expect(localState.stagedFiles).toEqual([]);
     });
 
     it('bursts unused seal', () => {

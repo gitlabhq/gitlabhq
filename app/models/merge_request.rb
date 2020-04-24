@@ -163,7 +163,7 @@ class MergeRequest < ApplicationRecord
   state_machine :merge_status, initial: :unchecked do
     event :mark_as_unchecked do
       transition [:can_be_merged, :checking, :unchecked] => :unchecked
-      transition [:cannot_be_merged, :cannot_be_merged_recheck] => :cannot_be_merged_recheck
+      transition [:cannot_be_merged, :cannot_be_merged_rechecking, :cannot_be_merged_recheck] => :cannot_be_merged_recheck
     end
 
     event :mark_as_checking do
@@ -200,7 +200,7 @@ class MergeRequest < ApplicationRecord
     # rubocop: enable CodeReuse/ServiceClass
 
     def check_state?(merge_status)
-      [:unchecked, :cannot_be_merged_recheck, :checking].include?(merge_status.to_sym)
+      [:unchecked, :cannot_be_merged_recheck, :checking, :cannot_be_merged_rechecking].include?(merge_status.to_sym)
     end
   end
 

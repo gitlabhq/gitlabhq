@@ -37,19 +37,6 @@ describe 'Group CI/CD settings' do
     end
   end
 
-  context 'Deploy tokens' do
-    let!(:deploy_token) { create(:deploy_token, :group, groups: [group]) }
-
-    before do
-      stub_container_registry_config(enabled: true)
-      visit group_settings_ci_cd_path(group)
-    end
-
-    it_behaves_like 'a deploy token in ci/cd settings' do
-      let(:entity_type) { 'group' }
-    end
-  end
-
   describe 'Auto DevOps form' do
     before do
       stub_application_setting(auto_devops_enabled: true)
