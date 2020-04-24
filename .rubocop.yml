@@ -200,6 +200,11 @@ Gitlab/ConstGetInheritFalse:
   Exclude:
     - 'qa/bin/*'
 
+Gitlab/ChangeTimezone:
+  Enabled: true
+  Exclude:
+    - config/initializers/time_zone.rb
+
 Gitlab/HTTParty:
   Enabled: true
   Exclude:

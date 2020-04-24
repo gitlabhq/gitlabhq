@@ -3,6 +3,7 @@
 class Admin::SessionsController < ApplicationController
   include Authenticates2FAForAdminMode
   include InternalRedirect
+  include RendersLdapServers
 
   before_action :user_is_admin!
 

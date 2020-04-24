@@ -44,19 +44,6 @@ Rails.application.routes.draw do
 
   use_doorkeeper_openid_connect
 
-  # Autocomplete
-  get '/autocomplete/users' => 'autocomplete#users'
-  get '/autocomplete/users/:id' => 'autocomplete#user'
-  get '/autocomplete/projects' => 'autocomplete#projects'
-  get '/autocomplete/award_emojis' => 'autocomplete#award_emojis'
-  get '/autocomplete/merge_request_target_branches' => 'autocomplete#merge_request_target_branches'
-
-  Gitlab.ee do
-    get '/autocomplete/project_groups' => 'autocomplete#project_groups'
-    get '/autocomplete/project_routes' => 'autocomplete#project_routes'
-    get '/autocomplete/namespace_routes' => 'autocomplete#namespace_routes'
-  end
-
   # Sign up
   get 'users/sign_up/welcome' => 'registrations#welcome'
   patch 'users/sign_up/update_registration' => 'registrations#update_registration'
@@ -75,6 +62,19 @@ Rails.application.routes.draw do
   # Begin of the /-/ scope.
   # Use this scope for all new global routes.
   scope path: '-' do
+    # Autocomplete
+    get '/autocomplete/users' => 'autocomplete#users'
+    get '/autocomplete/users/:id' => 'autocomplete#user'
+    get '/autocomplete/projects' => 'autocomplete#projects'
+    get '/autocomplete/award_emojis' => 'autocomplete#award_emojis'
+    get '/autocomplete/merge_request_target_branches' => 'autocomplete#merge_request_target_branches'
+
+    Gitlab.ee do
+      get '/autocomplete/project_groups' => 'autocomplete#project_groups'
+      get '/autocomplete/project_routes' => 'autocomplete#project_routes'
+      get '/autocomplete/namespace_routes' => 'autocomplete#namespace_routes'
+    end
+
     # '/-/health' implemented by BasicHealthCheck middleware
     get 'liveness' => 'health#liveness'
     get 'readiness' => 'health#readiness'
@@ -199,6 +199,19 @@ Rails.application.routes.draw do
   # Deprecated routes.
   # Will be removed as part of https://gitlab.com/gitlab-org/gitlab/-/issues/210024
   scope as: :deprecated do
+    # Autocomplete
+    get '/autocomplete/users' => 'autocomplete#users'
+    get '/autocomplete/users/:id' => 'autocomplete#user'
+    get '/autocomplete/projects' => 'autocomplete#projects'
+    get '/autocomplete/award_emojis' => 'autocomplete#award_emojis'
+    get '/autocomplete/merge_request_target_branches' => 'autocomplete#merge_request_target_branches'
+
+    Gitlab.ee do
+      get '/autocomplete/project_groups' => 'autocomplete#project_groups'
+      get '/autocomplete/project_routes' => 'autocomplete#project_routes'
+      get '/autocomplete/namespace_routes' => 'autocomplete#namespace_routes'
+    end
+
     resources :invites, only: [:show], constraints: { id: /[A-Za-z0-9_-]+/ } do
       member do
         post :accept

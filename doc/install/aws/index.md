@@ -203,7 +203,7 @@ On the EC2 dashboard, look for Load Balancer in the left navigation bar:
    1. In the **Select Subnets** section, select both public subnets from the list.
 1. Click **Assign Security Groups** and select **Create a new security group**, give it a name
    (we'll use `gitlab-loadbalancer-sec-group`) and description, and allow both HTTP and HTTPS traffic
-   from anywhere (`0.0.0.0/0, ::/0`).
+   from anywhere (`0.0.0.0/0, ::/0`). Also allow SSH traffic from a single IP address or an IP address range in CIDR notation.
 1. Click **Configure Security Settings** and select an SSL/TLS certificate from ACM or upload a certificate to IAM.
 1. Click **Configure Health Check** and set up a health check for your EC2 instances.
    1. For **Ping Protocol**, select HTTP.
@@ -397,7 +397,7 @@ From the EC2 dashboard:
 1. Select an instance type based on your workload. Consult the [hardware requirements](../../install/requirements.md#hardware-requirements) to choose one that fits your needs (at least `c5.xlarge`, which is sufficient to accommodate 100 users).
 1. Click **Configure Instance Details**:
    1. In the **Network** dropdown, select `gitlab-vpc`, the VPC we created earlier.
-   1. In the **Subnet** dropdown, `select gitlab-private-10.0.1.0` from the list of subnets we created earlier.
+   1. In the **Subnet** dropdown, select `gitlab-private-10.0.1.0` from the list of subnets we created earlier.
    1. Double check that **Auto-assign Public IP** is set to `Use subnet setting (Disable)`.
    1. Click **Add Storage**.
    1. The root volume is 8GiB by default and should be enough given that we won’t store any data there.
@@ -409,6 +409,22 @@ From the EC2 dashboard:
 ### Add custom configuration
 
 Connect to your GitLab instance via **Bastion Host A** using [SSH Agent Forwarding](#use-ssh-agent-forwarding). Once connected, add the following custom configuration:
+
+#### Disable Let's Encrypt
+
+Since we're adding our SSL certificate at the load balancer, we do not need GitLab's built-in support for Let's Encrypt. Let's Encrypt [is enabled by default](https://docs.gitlab.com/omnibus/settings/ssl.html#lets-encrypt-integration) when using an `https` domain since GitLab 10.7, so we need to explicitly disable it:
+
+1. Open `/etc/gitlab/gitlab.rb` and disable it:
+
+   ```ruby
+   letsencrypt['enable'] = false
+   ```
+
+1. Save the file and reconfigure for the changes to take effect:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
 
 #### Install the `pg_trgm` extension for PostgreSQL
 
@@ -482,7 +498,7 @@ gitlab=# \q
 
 #### Set up Gitaly
 
-CAUTION: **Caution:** In this architecture, having a single Gitaly server creates a single point of failure. This limitation will be removed once [Gitaly HA](https://gitlab.com/groups/gitlab-org/-/epics/842) is released.
+CAUTION: **Caution:** In this architecture, having a single Gitaly server creates a single point of failure. This limitation will be removed once [Gitaly HA](https://gitlab.com/groups/gitlab-org/-/epics/1489) is released.
 
 Gitaly is a service that provides high-level RPC access to Git repositories.
 It should be enabled and configured on a separate EC2 instance in one of the
@@ -504,6 +520,7 @@ Let's create an EC2 instance where we'll install Gitaly:
 1. Click on **Configure Security Group** and let's **Create a new security group**.
    1. Give your security group a name and description. We'll use `gitlab-gitaly-sec-group` for both.
    1. Create a **Custom TCP** rule and add port `8075` to the **Port Range**. For the **Source**, select the `gitlab-loadbalancer-sec-group`.
+   1. Also add an inbound rule for SSH from the `bastion-sec-group` so that we can connect using [SSH Agent Forwarding](#use-ssh-agent-forwarding) from the Bastion hosts.
 1. Click **Review and launch** followed by **Launch** if you're happy with your settings.
 1. Finally, acknowledge that you have access to the selected private key file or create a new one. Click **Launch Instances**.
 
@@ -516,22 +533,6 @@ Now that we have our EC2 instance ready, follow the [documentation to install Gi
 As we are terminating SSL at our [load balancer](#load-balancer), follow the steps at [Supporting proxied SSL](https://docs.gitlab.com/omnibus/settings/nginx.html#supporting-proxied-ssl) to configure this in `/etc/gitlab/gitlab.rb`.
 
 Remember to run `sudo gitlab-ctl reconfigure` after saving the changes to the `gitlab.rb` file.
-
-#### Disable Let's Encrypt
-
-Since we're adding our SSL certificate at the load balancer, we do not need GitLab's built-in support for Let's Encrypt. Let's Encrypt [is enabled by default](https://docs.gitlab.com/omnibus/settings/ssl.html#lets-encrypt-integration) when using an `https` domain since GitLab 10.7, so we need to explicitly disable it:
-
-1. Open `/etc/gitlab/gitlab.rb` and disable it:
-
-   ```ruby
-   letsencrypt['enable'] = false
-   ```
-
-1. Save the file and reconfigure for the changes to take effect:
-
-   ```shell
-   sudo gitlab-ctl reconfigure
-   ```
 
 #### Fast lookup of authorized SSH keys
 
@@ -558,18 +559,18 @@ We'll automate this by creating static host keys as part of our custom AMI. As t
 On your GitLab instance run the following:
 
 ```shell
-mkdir /etc/ssh_static
-cp -R /etc/ssh/* /etc/ssh_static
+sudo mkdir /etc/ssh_static
+sudo cp -R /etc/ssh/* /etc/ssh_static
 ```
 
 In `/etc/ssh/sshd_config` update the following:
 
 ```bash
-  # HostKeys for protocol version 2
-  HostKey /etc/ssh_static/ssh_host_rsa_key
-  HostKey /etc/ssh_static/ssh_host_dsa_key
-  HostKey /etc/ssh_static/ssh_host_ecdsa_key
-  HosstKey /etc/ssh_static/ssh_host_ed25519_key
+# HostKeys for protocol version 2
+HostKey /etc/ssh_static/ssh_host_rsa_key
+HostKey /etc/ssh_static/ssh_host_dsa_key
+HostKey /etc/ssh_static/ssh_host_ecdsa_key
+HostKey /etc/ssh_static/ssh_host_ed25519_key
 ```
 
 #### Amazon S3 object storage
@@ -625,7 +626,7 @@ From the EC2 dashboard:
 1. Select the `gitlab-vpc` from the **Network** dropdown.
 1. Add both the private [subnets we created earlier](#subnets).
 1. Expand the **Advanced Details** section and check the **Receive traffic from one or more load balancers** option.
-1. From the **Classic Load Balancers** dropdown, Select the load balancer we created earlier.
+1. From the **Classic Load Balancers** dropdown, select the load balancer we created earlier.
 1. For **Health Check Type**, select **ELB**.
 1. We'll leave our **Health Check Grace Period** as the default `300` seconds. Click **Configure scaling policies**.
 1. Check **Use scaling policies to adjust the capacity of this group**.

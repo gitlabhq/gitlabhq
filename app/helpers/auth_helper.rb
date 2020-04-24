@@ -145,6 +145,10 @@ module AuthHelper
     IdentityProviderPolicy.new(current_user, provider).can?(:link)
   end
 
+  def allow_admin_mode_password_authentication_for_web?
+    current_user.allow_password_authentication_for_web? && !current_user.password_automatically_set?
+  end
+
   extend self
 end
 

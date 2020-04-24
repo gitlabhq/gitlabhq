@@ -5,6 +5,7 @@ require 'spec_helper'
 describe 'Admin Mode Login', :clean_gitlab_redis_shared_state, :do_not_mock_admin_mode do
   include TermsHelper
   include UserLoginHelper
+  include LdapHelpers
 
   describe 'with two-factor authentication', :js do
     def enter_code(code)
@@ -177,6 +178,82 @@ describe 'Admin Mode Login', :clean_gitlab_redis_shared_state, :do_not_mock_admi
 
         def enable_admin_mode_using_saml!
           gitlab_enable_admin_mode_sign_in_via('saml', user, 'my-uid', mock_saml_response)
+        end
+      end
+
+      context 'when logging in via ldap' do
+        let(:uid) { 'my-uid' }
+        let(:provider_label) { 'Main LDAP' }
+        let(:provider_name) { 'main' }
+        let(:provider) { "ldap#{provider_name}" }
+        let(:ldap_server_config) do
+          {
+            'label' => provider_label,
+            'provider_name' => provider,
+            'attributes' => {},
+            'encryption' => 'plain',
+            'uid' => 'uid',
+            'base' => 'dc=example,dc=com'
+          }
+        end
+        let(:user) { create(:omniauth_user, :admin, :two_factor, extern_uid: uid, provider: provider) }
+
+        before do
+          setup_ldap(provider, user, uid, ldap_server_config)
+        end
+
+        context 'when two factor authentication is required' do
+          it 'shows 2FA prompt after ldap login' do
+            sign_in_using_ldap!(user, provider_label)
+
+            expect(page).to have_content('Two-Factor Authentication')
+
+            enter_code(user.current_otp)
+            enable_admin_mode_using_ldap!(user)
+
+            expect(page).to have_content('Two-Factor Authentication')
+
+            # Cannot reuse the TOTP
+            Timecop.travel(30.seconds.from_now) do
+              enter_code(user.current_otp)
+
+              expect(current_path).to eq admin_root_path
+              expect(page).to have_content('Admin mode enabled')
+            end
+          end
+        end
+
+        def setup_ldap(provider, user, uid, ldap_server_config)
+          stub_ldap_setting(enabled: true)
+
+          allow(::Gitlab::Auth::Ldap::Config).to receive_messages(enabled: true, servers: [ldap_server_config])
+          allow(Gitlab::Auth::OAuth::Provider).to receive_messages(providers: [provider.to_sym])
+
+          Ldap::OmniauthCallbacksController.define_providers!
+          Rails.application.reload_routes!
+
+          mock_auth_hash(provider, uid, user.email)
+          allow(Gitlab::Auth::Ldap::Access).to receive(:allowed?).with(user).and_return(true)
+
+          allow_any_instance_of(ActionDispatch::Routing::RoutesProxy)
+            .to receive(:"user_#{provider}_omniauth_callback_path")
+            .and_return("/users/auth/#{provider}/callback")
+        end
+
+        def sign_in_using_ldap!(user, provider_label)
+          visit new_user_session_path
+          click_link provider_label
+          fill_in 'username', with: user.username
+          fill_in 'password', with: user.password
+          click_button 'Sign in'
+        end
+
+        def enable_admin_mode_using_ldap!(user)
+          visit new_admin_session_path
+          click_link provider_label
+          fill_in 'username', with: user.username
+          fill_in 'password', with: user.password
+          click_button 'Enter Admin Mode'
         end
       end
     end

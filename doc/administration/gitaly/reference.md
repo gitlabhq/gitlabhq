@@ -258,7 +258,7 @@ You can adjust the `concurrency` of each RPC endpoint.
 | ---- | ---- | -------- | ----------- |
 | `concurrency` | array | yes | An array of RPC endpoints. |
 | `rpc` | string | no | The name of the RPC endpoint (`/gitaly.RepositoryService/GarbageCollect`). |
-| `max_per_repo` | integer | no | Concurrency per RPC per repo. |
+| `max_per_repo` | integer | no | Concurrency per RPC per repository. |
 
 Example:
 

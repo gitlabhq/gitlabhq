@@ -41,10 +41,10 @@ describe SessionsController do
         stub_ldap_setting(enabled: true)
       end
 
-      it 'assigns ldap_servers' do
+      it 'ldap_servers available in helper' do
         get(:new)
 
-        expect(assigns[:ldap_servers].first.to_h).to include('label' => 'ldap', 'provider_name' => 'ldapmain')
+        expect(subject.ldap_servers.first.to_h).to include('label' => 'ldap', 'provider_name' => 'ldapmain')
       end
 
       context 'with sign_in disabled' do
@@ -52,10 +52,10 @@ describe SessionsController do
           stub_ldap_setting(prevent_ldap_sign_in: true)
         end
 
-        it 'assigns no ldap_servers' do
+        it 'no ldap_servers available in helper' do
           get(:new)
 
-          expect(assigns[:ldap_servers]).to eq []
+          expect(subject.ldap_servers).to eq []
         end
       end
     end

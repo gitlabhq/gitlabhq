@@ -840,7 +840,7 @@ two checks. The result of both of these checks is cached.
     see if we can access filesystem underneath the Gitaly server
     directly. If so, use the Rugged patch.
 
-To see if GitLab Rails can access the repo filesystem directly, we use
+To see if GitLab Rails can access the repository filesystem directly, we use
 the following heuristic:
 
 - Gitaly ensures that the filesystem has a metadata file in its root

@@ -90,8 +90,11 @@ describe ApplicationHelper do
   end
 
   describe 'time_ago_with_tooltip' do
+    around do |example|
+      Time.use_zone('UTC') { example.run }
+    end
+
     def element(*arguments)
-      Time.zone = 'UTC'
       @time = Time.zone.parse('2015-07-02 08:23')
       element = helper.time_ago_with_tooltip(@time, *arguments)
 

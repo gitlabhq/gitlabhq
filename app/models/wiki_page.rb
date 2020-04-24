@@ -95,29 +95,29 @@ class WikiPage
 
   # The escaped URL path of this page.
   def slug
-    @attributes[:slug].presence || wiki.wiki.preview_slug(title, format)
+    attributes[:slug].presence || wiki.wiki.preview_slug(title, format)
   end
 
   alias_method :to_param, :slug
 
   def human_title
-    return 'Home' if title == 'home'
+    return 'Home' if title == Wiki::HOMEPAGE
 
     title
   end
 
   # The formatted title of this page.
   def title
-    @attributes[:title] || ''
+    attributes[:title] || ''
   end
 
   # Sets the title of this page.
   def title=(new_title)
-    @attributes[:title] = new_title
+    attributes[:title] = new_title
   end
 
   def raw_content
-    @attributes[:content] ||= @page&.text_data
+    attributes[:content] ||= page&.text_data
   end
 
   # The hierarchy of the directory this page is contained in.
@@ -127,7 +127,7 @@ class WikiPage
 
   # The markup format for the page.
   def format
-    @attributes[:format] || :markdown
+    attributes[:format] || :markdown
   end
 
   # The commit message for this page version.
@@ -151,13 +151,13 @@ class WikiPage
   def versions(options = {})
     return [] unless persisted?
 
-    wiki.wiki.page_versions(@page.path, options)
+    wiki.wiki.page_versions(page.path, options)
   end
 
   def count_versions
     return [] unless persisted?
 
-    wiki.wiki.count_page_versions(@page.path)
+    wiki.wiki.count_page_versions(page.path)
   end
 
   def last_version
@@ -173,7 +173,7 @@ class WikiPage
   def historical?
     return false unless last_commit_sha && version
 
-    @page.historical? && last_commit_sha != version.sha
+    page.historical? && last_commit_sha != version.sha
   end
 
   # Returns boolean True or False if this instance
@@ -185,7 +185,7 @@ class WikiPage
   # Returns boolean True or False if this instance
   # has been fully created on disk or not.
   def persisted?
-    @page.present?
+    page.present?
   end
 
   # Creates a new Wiki Page.
@@ -232,13 +232,13 @@ class WikiPage
     update_attributes(attrs)
 
     if title.present? && title_changed? && wiki.find_page(title).present?
-      @attributes[:title] = @page.title
+      attributes[:title] = page.title
       raise PageRenameError
     end
 
     save do
       wiki.update_page(
-        @page,
+        page,
         content: raw_content,
         format: format,
         message: attrs[:message],
@@ -251,7 +251,7 @@ class WikiPage
   #
   # Returns boolean True or False.
   def delete
-    if wiki.delete_page(@page)
+    if wiki.delete_page(page)
       true
     else
       false
@@ -271,7 +271,7 @@ class WikiPage
 
   def title_changed?
     if persisted?
-      old_title, old_dir = wiki.page_title_and_dir(self.class.unhyphenize(@page.url_path))
+      old_title, old_dir = wiki.page_title_and_dir(self.class.unhyphenize(page.url_path))
       new_title, new_dir = wiki.page_title_and_dir(self.class.unhyphenize(title))
 
       new_title != old_title || (title.include?('/') && new_dir != old_dir)
@@ -288,7 +288,7 @@ class WikiPage
     attrs.slice!(:content, :format, :message, :title)
     clear_memoization(:parsed_content) if attrs.has_key?(:content)
 
-    @attributes.merge!(attrs)
+    attributes.merge!(attrs)
   end
 
   def to_ability_name
@@ -326,7 +326,7 @@ class WikiPage
     title = deep_title_squish(title)
     current_dirname = File.dirname(title)
 
-    if @page.present?
+    if persisted?
       return title[1..-1] if current_dirname == '/'
       return File.join([directory.presence, title].compact) if current_dirname == '.'
     end
@@ -363,9 +363,11 @@ class WikiPage
   end
 
   def validate_path_limits
-    *dirnames, title = @attributes[:title].split('/')
+    return unless title.present?
 
-    if title && title.bytesize > Gitlab::WikiPages::MAX_TITLE_BYTES
+    *dirnames, filename = title.split('/')
+
+    if filename && filename.bytesize > Gitlab::WikiPages::MAX_TITLE_BYTES
       errors.add(:title, _("exceeds the limit of %{bytes} bytes") % {
         bytes: Gitlab::WikiPages::MAX_TITLE_BYTES
       })

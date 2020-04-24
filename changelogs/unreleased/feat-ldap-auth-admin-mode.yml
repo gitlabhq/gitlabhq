@@ -1,0 +1,5 @@
+---
+title: LDAP authentication support for admin mode
+merge_request: 28572
+author: Diego Louzán
+type: added

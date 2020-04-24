@@ -12,8 +12,8 @@ POST /import/github
 |------------|---------|----------|---------------------|
 | `personal_access_token`       | string | yes      | GitHub personal access token |
 | `repo_id`   | integer | yes      | GitHub repository ID     |
-| `new_name`   | string | no      | New repo name     |
-| `target_namespace`   | string | yes      | Namespace to import repo into     |
+| `new_name`   | string | no      | New repository name     |
+| `target_namespace`   | string | yes      | Namespace to import repository into     |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --data "personal_access_token=abc123&repo_id=12345&target_namespace=root" https://gitlab.example.com/api/v4/import/github

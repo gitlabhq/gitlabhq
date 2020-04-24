@@ -1,4 +1,6 @@
 - server = local_assigns.fetch(:server)
+- hide_remember_me = local_assigns.fetch(:hide_remember_me, false)
+- submit_message = local_assigns.fetch(:submit_message, _('Sign in'))
 
 = form_tag(omniauth_callback_path(:user, server['provider_name']), id: 'new_ldap_user', class: "gl-show-field-errors") do
   .form-group
@@ -7,9 +9,11 @@
   .form-group
     = label_tag :password
     = password_field_tag :password, nil, { class: "form-control bottom", title: "This field is required.", data: { qa_selector: 'password_field' }, required: true }
-  - if devise_mapping.rememberable?
+  - if !hide_remember_me && devise_mapping.rememberable?
     .remember-me
       %label{ for: "remember_me" }
         = check_box_tag :remember_me, '1', false, id: 'remember_me'
         %span Remember me
-  = submit_tag "Sign in", class: "btn-success btn", data: { qa_selector: 'sign_in_button' }
+
+  .submit-container.move-submit-down
+    = submit_tag submit_message, class: "btn-success btn", data: { qa_selector: 'sign_in_button' }

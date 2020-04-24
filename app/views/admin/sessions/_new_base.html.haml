@@ -1,4 +1,4 @@
-= form_tag(admin_session_path, method: :post, html: { class: 'new_user gl-show-field-errors', 'aria-live': 'assertive'}) do
+= form_tag(admin_session_path, method: :post, class: 'new_user gl-show-field-errors', 'aria-live': 'assertive') do
   .form-group
     = label_tag :user_password, _('Password'), class: 'label-bold'
     = password_field_tag 'user[password]', nil, class: 'form-control', required: true, title: _('This field is required.'), data: { qa_selector: 'password_field' }

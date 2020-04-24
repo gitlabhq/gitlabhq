@@ -4,7 +4,7 @@
 
 When [PlantUML](https://plantuml.com) integration is enabled and configured in
 GitLab we are able to create simple diagrams in AsciiDoc and Markdown documents
-created in snippets, wikis, and repos.
+created in snippets, wikis, and repositories.
 
 ## PlantUML Server
 
@@ -118,7 +118,7 @@ that, login with an Admin account and do following:
 ## Creating Diagrams
 
 With PlantUML integration enabled and configured, we can start adding diagrams to
-our AsciiDoc snippets, wikis and repos using delimited blocks:
+our AsciiDoc snippets, wikis, and repositories using delimited blocks:
 
 - **Markdown**
 

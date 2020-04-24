@@ -77,6 +77,9 @@ Once set, Code Owners are displayed in merge requests widgets:
 
 ![MR widget - Code Owners](img/code_owners_mr_widget_v12_4.png)
 
+NOTE: **Note**:
+  While the`CODEOWNERS` file can be used in addition to Merge Request [Approval Rules](merge_requests/merge_request_approvals.md#approval-rules) it can also be used as the sole driver of a Merge Request approval (without using  [Approval Rules](merge_requests/merge_request_approvals.md#approval-rules)) by simply creating the file in one of the three locations specified above, configuring the Code Owners to be required approvers for [protected branches](protected_branches.md#protected-branches-approval-by-code-owners-premium) and then using [the syntax of Code Owners files](code_owners.md#the-syntax-of-code-owners-files) to specify the actual owners and granular permissions.
+
 ## The syntax of Code Owners files
 
 Files can be specified using the same kind of patterns you would use
@@ -96,13 +99,16 @@ escaped using `\#` to address files for which the name starts with a
 Example `CODEOWNERS` file:
 
 ```plaintext
-# This is an example code owners file, lines starting with a `#` will
-# be ignored.
+# This is an example of a code owners file
+# lines starting with a `#` will be ignored.
 
 # app/ @commented-rule
 
 # We can specify a default match using wildcards:
 * @default-codeowner
+
+# We can also specify "multiple tab or space" separated codeowners:
+* @multiple @code @owners
 
 # Rules defined later in the file take precedence over the rules
 # defined before.
@@ -113,6 +119,8 @@ Example `CODEOWNERS` file:
 \#file_with_pound.rb @owner-file-with-pound
 
 # Multiple codeowners can be specified, separated by spaces or tabs
+# In the following case the CODEOWNERS file from the root of the repo
+# has 3 code owners (@multiple @code @owners)
 CODEOWNERS @multiple @code @owners
 
 # Both usernames or email addresses can be used to match

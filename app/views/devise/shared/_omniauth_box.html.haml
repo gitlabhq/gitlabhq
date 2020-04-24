@@ -1,3 +1,5 @@
+- hide_remember_me = local_assigns.fetch(:hide_remember_me, false)
+
 .omniauth-container.prepend-top-15
   %label.label-bold.d-block
     Sign in with
@@ -10,7 +12,7 @@
           = provider_image_tag(provider)
         %span
           = label_for_provider(provider)
-  - unless defined?(hide_remember_me) && hide_remember_me
+  - unless hide_remember_me
     %fieldset.remember-me
       %label
         = check_box_tag :remember_me, nil, false, class: 'remember-me-checkbox'
