@@ -123,7 +123,7 @@ describe Banzai::Filter::UserReferenceFilter do
 
   it 'includes default classes' do
     doc = reference_filter("Hey #{reference}")
-    expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-project_member'
+    expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-project_member js-user-link'
   end
 
   context 'when a project is not specified' do

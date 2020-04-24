@@ -106,7 +106,7 @@ module Banzai
       end
 
       def link_class
-        reference_class(:project_member, tooltip: false)
+        [reference_class(:project_member, tooltip: false), "js-user-link"].join(" ")
       end
 
       def link_to_all(link_content: nil)
