@@ -83,6 +83,9 @@ Or:
 1. Click the notification dropdown, marked with a bell icon.
 1. Select the desired [notification level](#notification-levels).
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For a demonstration of how to be notified when a new release is available, see [Notification for releases](https://www.youtube.com/watch?v=qyeNkGgqmH4).
+
 #### Group notifications
 
 You can select a notification level and email address for each group.

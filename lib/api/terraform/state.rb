@@ -46,7 +46,7 @@ module API
           desc 'Add a new terraform state or update an existing one'
           route_setting :authentication, basic_auth_personal_access_token: true
           post do
-            data = request.body.string
+            data = request.body.read
             no_content! if data.empty?
 
             remote_state_handler.handle_with_lock do |state|
