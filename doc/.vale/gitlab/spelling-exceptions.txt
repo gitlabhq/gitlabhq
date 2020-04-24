@@ -209,7 +209,6 @@ Piwik
 PgBouncer
 plaintext
 PostgreSQL
-precompile
 preconfigure
 preconfigured
 preconfigures

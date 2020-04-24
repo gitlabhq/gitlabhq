@@ -286,12 +286,7 @@ RSpec.configure do |config|
   end
 
   config.around(:example, :request_store) do |example|
-    RequestStore.begin!
-
-    example.run
-
-    RequestStore.end!
-    RequestStore.clear!
+    Gitlab::WithRequestStore.with_request_store { example.run }
   end
 
   config.around do |example|
@@ -305,12 +300,10 @@ RSpec.configure do |config|
       Gitlab::SidekiqMiddleware.server_configurator(
         metrics: false, # The metrics don't go anywhere in tests
         arguments_logger: false, # We're not logging the regular messages for inline jobs
-        memory_killer: false, # This is not a thing we want to do inline in tests
-        # Don't enable this if the request store is active in the spec itself
-        # This needs to run within the `request_store` around block defined above
-        request_store: !RequestStore.active?
+        memory_killer: false # This is not a thing we want to do inline in tests
       ).call(chain)
       chain.add DisableQueryLimit
+      chain.insert_after ::Gitlab::SidekiqMiddleware::RequestStoreMiddleware, IsolatedRequestStore
 
       example.run
     end

@@ -1,0 +1,5 @@
+---
+title: Fixed enabled merge button incorrectly showing to users who can't merge
+merge_request:
+author:
+type: fixed

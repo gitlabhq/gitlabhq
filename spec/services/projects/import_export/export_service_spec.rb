@@ -177,5 +177,56 @@ describe Projects::ImportExport::ExportService do
         expect { service.execute }.to raise_error(Gitlab::ImportExport::Error).with_message(expected_message)
       end
     end
+
+    context 'when measurable params are provided' do
+      let(:base_log_data) do
+        {
+          class: described_class.name,
+          current_user: user.name,
+          project_full_path: project.full_path,
+          file_path: shared.export_path
+        }
+      end
+
+      subject(:service) { described_class.new(project, user) }
+
+      context 'when measurement is enabled' do
+        let(:logger) { double(:logger) }
+        let(:measurable_options) do
+          {
+            measurement_enabled: true,
+            measurement_logger: logger
+          }
+        end
+
+        before do
+          allow(logger).to receive(:info)
+        end
+
+        it 'measure service execution with Gitlab::Utils::Measuring' do
+          expect(Gitlab::Utils::Measuring).to receive(:execute_with).with(true, logger, base_log_data).and_call_original
+          expect_next_instance_of(Gitlab::Utils::Measuring) do |measuring|
+            expect(measuring).to receive(:with_measuring).and_call_original
+          end
+
+          service.execute(after_export_strategy, measurable_options)
+        end
+      end
+
+      context 'when measurement is disabled' do
+        let(:measurable_options) do
+          {
+            measurement_enabled: false
+          }
+        end
+
+        it 'does not measure service execution' do
+          expect(Gitlab::Utils::Measuring).to receive(:execute_with).with(false, nil, base_log_data).and_call_original
+          expect(Gitlab::Utils::Measuring).not_to receive(:new)
+
+          service.execute(after_export_strategy, measurable_options)
+        end
+      end
+    end
   end
 end

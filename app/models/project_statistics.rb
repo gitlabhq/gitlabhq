@@ -21,6 +21,9 @@ class ProjectStatistics < ApplicationRecord
 
   scope :for_project_ids, ->(project_ids) { where(project_id: project_ids) }
 
+  scope :for_namespaces, -> (namespaces) { where(namespace: namespaces) }
+  scope :with_any_ci_minutes_used, -> { where.not(shared_runners_seconds: 0) }
+
   def total_repository_size
     repository_size + lfs_objects_size
   end

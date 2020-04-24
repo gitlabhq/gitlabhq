@@ -33,7 +33,6 @@ enable_json_logs = Gitlab.config.sidekiq.log_format == 'json'
 enable_sidekiq_memory_killer = ENV['SIDEKIQ_MEMORY_KILLER_MAX_RSS'].to_i.nonzero?
 use_sidekiq_daemon_memory_killer = ENV["SIDEKIQ_DAEMON_MEMORY_KILLER"].to_i.nonzero?
 use_sidekiq_legacy_memory_killer = !use_sidekiq_daemon_memory_killer
-use_request_store = ENV.fetch('SIDEKIQ_REQUEST_STORE', 1).to_i.nonzero?
 
 Sidekiq.configure_server do |config|
   if enable_json_logs
@@ -50,8 +49,7 @@ Sidekiq.configure_server do |config|
   config.server_middleware(&Gitlab::SidekiqMiddleware.server_configurator({
     metrics: Settings.monitoring.sidekiq_exporter,
     arguments_logger: ENV['SIDEKIQ_LOG_ARGUMENTS'] && !enable_json_logs,
-    memory_killer: enable_sidekiq_memory_killer && use_sidekiq_legacy_memory_killer,
-    request_store: use_request_store
+    memory_killer: enable_sidekiq_memory_killer && use_sidekiq_legacy_memory_killer
   }))
 
   config.client_middleware(&Gitlab::SidekiqMiddleware.client_configurator)

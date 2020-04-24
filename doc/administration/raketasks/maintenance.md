@@ -1,11 +1,8 @@
-# Maintenance Rake tasks
+# Maintenance Rake Tasks
 
-GitLab provides Rake tasks for general maintenance.
+## Gather information about GitLab and the system it runs on
 
-## Gather GitLab and system information
-
-This command gathers information about your GitLab installation and the system it runs on.
-These may be useful when asking for help or reporting issues.
+This command gathers information about your GitLab installation and the System it runs on. These may be useful when asking for help or reporting issues.
 
 **Omnibus Installation**
 
@@ -53,23 +50,20 @@ Git:              /usr/bin/git
 
 ## Check GitLab configuration
 
-The `gitlab:check` Rake task runs the following Rake tasks:
+Runs the following Rake tasks:
 
 - `gitlab:gitlab_shell:check`
 - `gitlab:gitaly:check`
 - `gitlab:sidekiq:check`
 - `gitlab:app:check`
 
-It will check that each component was set up according to the installation guide and suggest fixes
-for issues found. This command must be run from your application server and will not work correctly on
-component servers like [Gitaly](../gitaly/index.md#running-gitaly-on-its-own-server).
+It will check that each component was set up according to the installation guide and suggest fixes for issues found.
+This command must be run from your app server and will not work correctly on component servers like [Gitaly](../gitaly/index.md#running-gitaly-on-its-own-server).
 
-You may also have a look at our troubleshooting guides for:
+You may also have a look at our Troubleshooting Guides:
 
-- [GitLab](../index.md#troubleshooting)
-- [Omnibus GitLab](https://docs.gitlab.com/omnibus/README.html#troubleshooting)
-
-To run `gitlab:check`, run:
+- [Troubleshooting Guide (GitLab)](../index.md#troubleshooting)
+- [Troubleshooting Guide (Omnibus GitLab)](https://docs.gitlab.com/omnibus/README.html#troubleshooting)
 
 **Omnibus Installation**
 
@@ -83,8 +77,7 @@ sudo gitlab-rake gitlab:check
 bundle exec rake gitlab:check RAILS_ENV=production
 ```
 
-NOTE: **Note:**
-Use `SANITIZE=true` for `gitlab:check` if you want to omit project names from the output.
+NOTE: Use `SANITIZE=true` for `gitlab:check` if you want to omit project names from the output.
 
 Example output:
 
@@ -133,7 +126,7 @@ Checking GitLab ... Finished
 
 ## Rebuild authorized_keys file
 
-In some case it is necessary to rebuild the `authorized_keys` file. To do this, run:
+In some case it is necessary to rebuild the `authorized_keys` file.
 
 **Omnibus Installation**
 
@@ -148,8 +141,6 @@ cd /home/git/gitlab
 sudo -u git -H bundle exec rake gitlab:shell:setup RAILS_ENV=production
 ```
 
-Example output:
-
 ```plaintext
 This will rebuild an authorized_keys file.
 You will lose any data stored in authorized_keys file.
@@ -158,8 +149,8 @@ Do you want to continue (yes/no)? yes
 
 ## Clear Redis cache
 
-If for some reason the dashboard displays the wrong information, you might want to
-clear Redis' cache. To do this, run:
+If for some reason the dashboard shows wrong information you might want to
+clear Redis' cache.
 
 **Omnibus Installation**
 
@@ -179,7 +170,7 @@ sudo -u git -H bundle exec rake cache:clear RAILS_ENV=production
 Sometimes during version upgrades you might end up with some wrong CSS or
 missing some icons. In that case, try to precompile the assets again.
 
-This only applies to source installations and does NOT apply to
+Note that this only applies to source installations and does NOT apply to
 Omnibus packages.
 
 **Source Installation**
@@ -201,8 +192,6 @@ have been corrupted, you should reinstall the omnibus package.
 GitLab provides a Rake task that lets you track deployments in GitLab
 Performance Monitoring. This Rake task simply stores the current GitLab version
 in the GitLab Performance Monitoring database.
-
-To run `gitlab:track_deployment`:
 
 **Omnibus Installation**
 

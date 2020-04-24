@@ -10,8 +10,13 @@ module Projects
 
         @shared = project.import_export_shared
 
-        save_all!
-        execute_after_export_action(after_export_strategy)
+        measurement_enabled = !!options[:measurement_enabled]
+        measurement_logger = options[:measurement_logger]
+
+        ::Gitlab::Utils::Measuring.execute_with(measurement_enabled, measurement_logger, base_log_data) do
+          save_all!
+          execute_after_export_action(after_export_strategy)
+        end
       ensure
         cleanup
       end
@@ -19,6 +24,15 @@ module Projects
       private
 
       attr_accessor :shared
+
+      def base_log_data
+        {
+          class: self.class.name,
+          current_user: current_user.name,
+          project_full_path: project.full_path,
+          file_path: shared.export_path
+        }
+      end
 
       def execute_after_export_action(after_export_strategy)
         return unless after_export_strategy

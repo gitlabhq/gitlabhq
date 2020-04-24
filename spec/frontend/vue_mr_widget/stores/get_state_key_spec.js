@@ -35,10 +35,12 @@ describe('getStateKey', () => {
 
     expect(bound()).toEqual('autoMergeEnabled');
 
+    context.canMerge = true;
     context.isSHAMismatch = true;
 
     expect(bound()).toEqual('shaMismatch');
 
+    context.canMerge = false;
     context.isPipelineBlocked = true;
 
     expect(bound()).toEqual('pipelineBlocked');
@@ -100,4 +102,26 @@ describe('getStateKey', () => {
 
     expect(bound()).toEqual('rebase');
   });
+
+  it.each`
+    canMerge | isSHAMismatch | stateKey
+    ${true}  | ${true}       | ${'shaMismatch'}
+    ${false} | ${true}       | ${'notAllowedToMerge'}
+    ${false} | ${false}      | ${'notAllowedToMerge'}
+  `(
+    'returns $stateKey when canMerge is $canMerge and isSHAMismatch is $isSHAMismatch',
+    ({ canMerge, isSHAMismatch, stateKey }) => {
+      const bound = getStateKey.bind(
+        {
+          canMerge,
+          isSHAMismatch,
+        },
+        {
+          commits_count: 2,
+        },
+      );
+
+      expect(bound()).toEqual(stateKey);
+    },
+  );
 });

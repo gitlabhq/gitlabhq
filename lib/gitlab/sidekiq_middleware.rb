@@ -7,13 +7,13 @@ module Gitlab
     # The result of this method should be passed to
     # Sidekiq's `config.server_middleware` method
     # eg: `config.server_middleware(&Gitlab::SidekiqMiddleware.server_configurator)`
-    def self.server_configurator(metrics: true, arguments_logger: true, memory_killer: true, request_store: true)
+    def self.server_configurator(metrics: true, arguments_logger: true, memory_killer: true)
       lambda do |chain|
         chain.add ::Gitlab::SidekiqMiddleware::Monitor
         chain.add ::Gitlab::SidekiqMiddleware::ServerMetrics if metrics
         chain.add ::Gitlab::SidekiqMiddleware::ArgumentsLogger if arguments_logger
         chain.add ::Gitlab::SidekiqMiddleware::MemoryKiller if memory_killer
-        chain.add ::Gitlab::SidekiqMiddleware::RequestStoreMiddleware if request_store
+        chain.add ::Gitlab::SidekiqMiddleware::RequestStoreMiddleware
         chain.add ::Gitlab::SidekiqMiddleware::BatchLoader
         chain.add ::Labkit::Middleware::Sidekiq::Server
         chain.add ::Gitlab::SidekiqMiddleware::InstrumentationLogger

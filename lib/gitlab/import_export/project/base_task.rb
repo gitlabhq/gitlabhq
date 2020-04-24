@@ -12,29 +12,24 @@ module Gitlab
           @namespace    = Namespace.find_by_full_path(opts.fetch(:namespace_path))
           @current_user = User.find_by_username(opts.fetch(:username))
           @measurement_enabled = opts.fetch(:measurement_enabled)
-          @measurement = Gitlab::Utils::Measuring.new(logger: logger) if @measurement_enabled
           @logger = logger
         end
 
         private
 
-        attr_reader :measurement, :project, :namespace, :current_user, :file_path, :project_path, :logger
+        attr_reader :project, :namespace, :current_user, :file_path, :project_path, :logger, :measurement_enabled
 
-        def measurement_enabled?
-          @measurement_enabled
+        def measurement_options
+          {
+            measurement_enabled: measurement_enabled,
+            measurement_logger: logger
+          }
         end
 
         def success(message)
           logger.info(message)
 
           true
-        end
-
-        def measurement_options
-          {
-            measurement_enabled: measurement_enabled?,
-            measurement_logger: logger
-          }
         end
 
         def error(message)

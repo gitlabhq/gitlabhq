@@ -157,7 +157,7 @@ module Gitlab
         return unless job[:stage]
 
         unless job[:stage].is_a?(String) && job[:stage].in?(@stages)
-          raise ValidationError, "#{name} job: stage parameter should be #{@stages.join(", ")}"
+          raise ValidationError, "#{name} job: chosen stage does not exist; available stages are #{@stages.join(", ")}"
         end
       end
 

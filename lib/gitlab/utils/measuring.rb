@@ -23,10 +23,11 @@ module Gitlab
       end
 
       def with_measuring
-        result = with_gc_stats do
+        result = nil
+        with_gc_stats do
           with_count_queries do
             with_measure_time do
-              yield
+              result = yield
             end
           end
         end
@@ -56,31 +57,27 @@ module Gitlab
         ActiveSupport::Notifications.subscribed(counter_f, "sql.active_record", &block)
       end
 
-      def log_info(details)
-        details = base_log_data.merge(details)
-        details = details.to_yaml if ActiveSupport::Logger.logger_outputs_to?(logger, STDOUT)
-        logger.info(details)
-      end
-
       def with_gc_stats
         GC.start # perform a full mark-and-sweep
         stats_before = GC.stat
-        result = yield
+        yield
         stats_after = GC.stat
         @gc_stats = stats_after.map do |key, after_value|
           before_value = stats_before[key]
           [key, before: before_value, after: after_value, diff: after_value - before_value]
         end.to_h
-        result
       end
 
       def with_measure_time
-        result = nil
         @time_to_finish = Benchmark.realtime do
-          result = yield
+          yield
         end
+      end
 
-        result
+      def log_info(details)
+        details = base_log_data.merge(details)
+        details = details.to_yaml if ActiveSupport::Logger.logger_outputs_to?(logger, STDOUT)
+        logger.info(details)
       end
 
       def duration_in_numbers(duration_in_seconds)

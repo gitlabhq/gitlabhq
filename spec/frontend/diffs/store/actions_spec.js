@@ -43,6 +43,7 @@ import {
   setFileCollapsed,
   setExpandedDiffLines,
   setSuggestPopoverDismissed,
+  changeCurrentCommit,
 } from '~/diffs/store/actions';
 import eventHub from '~/notes/event_hub';
 import * as types from '~/diffs/store/mutation_types';
@@ -1346,5 +1347,63 @@ describe('DiffsStoreActions', () => {
         },
       );
     });
+  });
+
+  describe('changeCurrentCommit', () => {
+    it('commits the new commit information and re-requests the diff metadata for the commit', () => {
+      return testAction(
+        changeCurrentCommit,
+        { commitId: 'NEW' },
+        {
+          commit: {
+            id: 'OLD',
+          },
+          endpoint: 'URL/OLD',
+          endpointBatch: 'URL/OLD',
+          endpointMetadata: 'URL/OLD',
+        },
+        [
+          { type: types.SET_DIFF_FILES, payload: [] },
+          {
+            type: types.SET_BASE_CONFIG,
+            payload: {
+              commit: {
+                id: 'OLD', // Not a typo: the action fired next will overwrite all of the `commit` in state
+              },
+              endpoint: 'URL/NEW',
+              endpointBatch: 'URL/NEW',
+              endpointMetadata: 'URL/NEW',
+            },
+          },
+        ],
+        [{ type: 'fetchDiffFilesMeta' }],
+      );
+    });
+
+    it.each`
+      commitId     | commit           | msg
+      ${undefined} | ${{ id: 'OLD' }} | ${'`commitId` is a required argument'}
+      ${'NEW'}     | ${null}          | ${'`state` must already contain a valid `commit`'}
+      ${undefined} | ${null}          | ${'`commitId` is a required argument'}
+    `(
+      'returns a rejected promise with the error message $msg given `{ "commitId": $commitId, "state.commit": $commit }`',
+      ({ commitId, commit, msg }) => {
+        const err = new Error(msg);
+        const actionReturn = testAction(
+          changeCurrentCommit,
+          { commitId },
+          {
+            endpoint: 'URL/OLD',
+            endpointBatch: 'URL/OLD',
+            endpointMetadata: 'URL/OLD',
+            commit,
+          },
+          [],
+          [],
+        );
+
+        return expect(actionReturn).rejects.toStrictEqual(err);
+      },
+    );
   });
 });

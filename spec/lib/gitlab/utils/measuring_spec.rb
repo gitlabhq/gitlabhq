@@ -3,7 +3,7 @@
 require 'fast_spec_helper'
 
 describe Gitlab::Utils::Measuring do
-  describe '#execute_with' do
+  describe '.execute_with' do
     let(:measurement_logger) { double(:logger) }
     let(:base_log_data) do
       {

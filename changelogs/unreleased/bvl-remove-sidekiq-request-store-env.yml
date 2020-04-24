@@ -1,0 +1,5 @@
+---
+title: Remove the SIDEKIQ_REQUEST_STORE configuration
+merge_request: 29955
+author:
+type: other

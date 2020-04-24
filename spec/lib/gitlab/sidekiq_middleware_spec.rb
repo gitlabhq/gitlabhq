@@ -32,8 +32,7 @@ describe Gitlab::SidekiqMiddleware do
         described_class.server_configurator(
           metrics: metrics,
           arguments_logger: arguments_logger,
-          memory_killer: memory_killer,
-          request_store: request_store
+          memory_killer: memory_killer
         ).call(chain)
 
         example.run
@@ -77,13 +76,11 @@ describe Gitlab::SidekiqMiddleware do
       let(:metrics) { false }
       let(:arguments_logger) { false }
       let(:memory_killer) { false }
-      let(:request_store) { false }
       let(:disabled_sidekiq_middlewares) do
         [
           Gitlab::SidekiqMiddleware::ServerMetrics,
           Gitlab::SidekiqMiddleware::ArgumentsLogger,
-          Gitlab::SidekiqMiddleware::MemoryKiller,
-          Gitlab::SidekiqMiddleware::RequestStoreMiddleware
+          Gitlab::SidekiqMiddleware::MemoryKiller
         ]
       end
 
@@ -94,7 +91,6 @@ describe Gitlab::SidekiqMiddleware do
       let(:metrics) { true }
       let(:arguments_logger) { true }
       let(:memory_killer) { true }
-      let(:request_store) { true }
       let(:disabled_sidekiq_middlewares) { [] }
 
       it_behaves_like "a server middleware chain"

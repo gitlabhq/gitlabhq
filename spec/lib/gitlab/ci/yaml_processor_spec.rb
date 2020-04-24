@@ -2264,14 +2264,14 @@ module Gitlab
           config = YAML.dump({ rspec: { script: "test", type: "acceptance" } })
           expect do
             Gitlab::Ci::YamlProcessor.new(config)
-          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "rspec job: stage parameter should be .pre, build, test, deploy, .post")
+          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "rspec job: chosen stage does not exist; available stages are .pre, build, test, deploy, .post")
         end
 
         it "returns errors if job stage is not a defined stage" do
           config = YAML.dump({ types: %w(build test), rspec: { script: "test", type: "acceptance" } })
           expect do
             Gitlab::Ci::YamlProcessor.new(config)
-          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "rspec job: stage parameter should be .pre, build, test, .post")
+          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "rspec job: chosen stage does not exist; available stages are .pre, build, test, .post")
         end
 
         it "returns errors if stages is not an array" do

@@ -24,6 +24,7 @@ sast:
       - $GITLAB_FEATURES =~ /\bsast\b/
   image: docker:stable
   variables:
+    SEARCH_MAX_DEPTH: 4
     DOCKER_DRIVER: overlay2
     DOCKER_TLS_CERTDIR: ""
   services:

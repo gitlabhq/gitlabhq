@@ -236,7 +236,7 @@ To apply labels across multiple epics:
 NOTE: **Note:**
 To delete an epic, you need to be an [Owner](../../permissions.md#group-members-permissions) of a group/subgroup.
 
-When inside a single epic view, click the **Delete** button to delete the epic.
+When editing the description of an epic, click the **Delete** button to delete the epic.
 A modal will pop-up to confirm your action.
 
 Deleting an epic releases all existing issues from their associated epic in the

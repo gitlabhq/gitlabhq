@@ -27,18 +27,29 @@ module Groups
       private
 
       def import_file
-        @import_file ||= Gitlab::ImportExport::FileImporter.import(importable: @group,
-                                                                   archive_file: nil,
-                                                                   shared: @shared)
+        @import_file ||= Gitlab::ImportExport::FileImporter.import(
+          importable: @group,
+          archive_file: nil,
+          shared: @shared
+        )
       end
 
       def restorer
-        @restorer ||= Gitlab::ImportExport::Group::LegacyTreeRestorer.new(
-          user: @current_user,
-          shared: @shared,
-          group: @group,
-          group_hash: nil
-        )
+        @restorer ||=
+          if ::Feature.enabled?(:group_import_export_ndjson, @group&.parent)
+            Gitlab::ImportExport::Group::TreeRestorer.new(
+              user: @current_user,
+              shared: @shared,
+              group: @group
+            )
+          else
+            Gitlab::ImportExport::Group::LegacyTreeRestorer.new(
+              user: @current_user,
+              shared: @shared,
+              group: @group,
+              group_hash: nil
+            )
+          end
       end
 
       def remove_import_file

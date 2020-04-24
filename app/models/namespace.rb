@@ -135,11 +135,6 @@ class Namespace < ApplicationRecord
       name = host.delete_suffix(gitlab_host)
       Namespace.where(parent_id: nil).by_path(name)
     end
-
-    # overridden in ee
-    def reset_ci_minutes!(namespace_id)
-      false
-    end
   end
 
   def default_branch_protection

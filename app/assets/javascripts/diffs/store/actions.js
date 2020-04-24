@@ -642,5 +642,28 @@ export const setSuggestPopoverDismissed = ({ commit, state }) =>
       createFlash(s__('MergeRequest|Error dismissing suggestion popover. Please try again.'));
     });
 
+export function changeCurrentCommit({ dispatch, commit, state }, { commitId }) {
+  /* eslint-disable @gitlab/require-i18n-strings */
+  if (!commitId) {
+    return Promise.reject(new Error('`commitId` is a required argument'));
+  } else if (!state.commit) {
+    return Promise.reject(new Error('`state` must already contain a valid `commit`'));
+  }
+  /* eslint-enable @gitlab/require-i18n-strings */
+
+  // this is less than ideal, see: https://gitlab.com/gitlab-org/gitlab/-/issues/215421
+  const commitRE = new RegExp(state.commit.id, 'g');
+
+  commit(types.SET_DIFF_FILES, []);
+  commit(types.SET_BASE_CONFIG, {
+    ...state,
+    endpoint: state.endpoint.replace(commitRE, commitId),
+    endpointBatch: state.endpointBatch.replace(commitRE, commitId),
+    endpointMetadata: state.endpointMetadata.replace(commitRE, commitId),
+  });
+
+  return dispatch('fetchDiffFilesMeta');
+}
+
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};

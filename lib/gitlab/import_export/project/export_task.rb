@@ -16,7 +16,7 @@ module Gitlab
 
           with_export do
             ::Projects::ImportExport::ExportService.new(project, current_user)
-              .execute(Gitlab::ImportExport::AfterExportStrategies::MoveFileStrategy.new(archive_path: file_path))
+              .execute(Gitlab::ImportExport::AfterExportStrategies::MoveFileStrategy.new(archive_path: file_path), measurement_options)
           end
 
           success('Done!')
@@ -33,7 +33,7 @@ module Gitlab
         def with_export
           with_request_store do
             ::Gitlab::GitalyClient.allow_n_plus_1_calls do
-              measurement_enabled? ? measurement.with_measuring { yield } : yield
+              yield
             end
           end
         end
