@@ -8,12 +8,51 @@ describe GroupImportWorker do
 
   subject { described_class.new }
 
+  before do
+    allow_next_instance_of(described_class) do |job|
+      allow(job).to receive(:jid).and_return(SecureRandom.hex(8))
+    end
+  end
+
   describe '#perform' do
     context 'when it succeeds' do
-      it 'calls the ImportService' do
-        expect_any_instance_of(::Groups::ImportExport::ImportService).to receive(:execute)
+      before do
+        expect_next_instance_of(::Groups::ImportExport::ImportService) do |service|
+          expect(service).to receive(:execute)
+        end
+      end
 
+      it 'calls the ImportService' do
         subject.perform(user.id, group.id)
+      end
+
+      context 'import state' do
+        it 'creates group import' do
+          expect(group.import_state).to be_nil
+
+          subject.perform(user.id, group.id)
+          import_state = group.reload.import_state
+
+          expect(import_state).to be_instance_of(GroupImportState)
+          expect(import_state.status_name).to eq(:finished)
+          expect(import_state.jid).not_to be_empty
+        end
+
+        it 'sets the group import status to started' do
+          expect_next_instance_of(GroupImportState) do |import|
+            expect(import).to receive(:start!).and_call_original
+          end
+
+          subject.perform(user.id, group.id)
+        end
+
+        it 'sets the group import status to finished' do
+          expect_next_instance_of(GroupImportState) do |import|
+            expect(import).to receive(:finish!).and_call_original
+          end
+
+          subject.perform(user.id, group.id)
+        end
       end
     end
 
@@ -23,6 +62,22 @@ describe GroupImportWorker do
 
         expect { subject.perform(non_existing_record_id, group.id) }.to raise_exception(ActiveRecord::RecordNotFound)
         expect { subject.perform(user.id, non_existing_record_id) }.to raise_exception(ActiveRecord::RecordNotFound)
+      end
+
+      context 'import state' do
+        before do
+          expect_next_instance_of(::Groups::ImportExport::ImportService) do |service|
+            expect(service).to receive(:execute).and_raise(Gitlab::ImportExport::Error)
+          end
+        end
+
+        it 'sets the group import status to failed' do
+          expect_next_instance_of(GroupImportState) do |import|
+            expect(import).to receive(:fail_op).and_call_original
+          end
+
+          expect { subject.perform(user.id, group.id) }.to raise_exception(Gitlab::ImportExport::Error)
+        end
       end
     end
   end

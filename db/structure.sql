@@ -3078,6 +3078,26 @@ CREATE SEQUENCE public.group_group_links_id_seq
 
 ALTER SEQUENCE public.group_group_links_id_seq OWNED BY public.group_group_links.id;
 
+CREATE TABLE public.group_import_states (
+    group_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    status smallint DEFAULT 0 NOT NULL,
+    jid text NOT NULL,
+    last_error text,
+    CONSTRAINT check_87b58f6b30 CHECK ((char_length(last_error) <= 255)),
+    CONSTRAINT check_96558fff96 CHECK ((char_length(jid) <= 100))
+);
+
+CREATE SEQUENCE public.group_import_states_group_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.group_import_states_group_id_seq OWNED BY public.group_import_states.group_id;
+
 CREATE TABLE public.historical_data (
     id integer NOT NULL,
     date date NOT NULL,
@@ -7354,6 +7374,8 @@ ALTER TABLE ONLY public.group_deploy_tokens ALTER COLUMN id SET DEFAULT nextval(
 
 ALTER TABLE ONLY public.group_group_links ALTER COLUMN id SET DEFAULT nextval('public.group_group_links_id_seq'::regclass);
 
+ALTER TABLE ONLY public.group_import_states ALTER COLUMN group_id SET DEFAULT nextval('public.group_import_states_group_id_seq'::regclass);
+
 ALTER TABLE ONLY public.historical_data ALTER COLUMN id SET DEFAULT nextval('public.historical_data_id_seq'::regclass);
 
 ALTER TABLE ONLY public.identities ALTER COLUMN id SET DEFAULT nextval('public.identities_id_seq'::regclass);
@@ -8114,6 +8136,9 @@ ALTER TABLE ONLY public.group_deploy_tokens
 
 ALTER TABLE ONLY public.group_group_links
     ADD CONSTRAINT group_group_links_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.group_import_states
+    ADD CONSTRAINT group_import_states_pkey PRIMARY KEY (group_id);
 
 ALTER TABLE ONLY public.historical_data
     ADD CONSTRAINT historical_data_pkey PRIMARY KEY (id);
@@ -9492,6 +9517,8 @@ CREATE UNIQUE INDEX index_group_deploy_tokens_on_group_and_deploy_token_ids ON p
 CREATE UNIQUE INDEX index_group_group_links_on_shared_group_and_shared_with_group ON public.group_group_links USING btree (shared_group_id, shared_with_group_id);
 
 CREATE INDEX index_group_group_links_on_shared_with_group_id ON public.group_group_links USING btree (shared_with_group_id);
+
+CREATE INDEX index_group_import_states_on_group_id ON public.group_import_states USING btree (group_id);
 
 CREATE INDEX index_identities_on_saml_provider_id ON public.identities USING btree (saml_provider_id) WHERE (saml_provider_id IS NOT NULL);
 
@@ -11439,6 +11466,9 @@ ALTER TABLE ONLY public.resource_state_events
 
 ALTER TABLE ONLY public.merge_request_diff_commits
     ADD CONSTRAINT fk_rails_316aaceda3 FOREIGN KEY (merge_request_diff_id) REFERENCES public.merge_request_diffs(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.group_import_states
+    ADD CONSTRAINT fk_rails_31c3e0503a FOREIGN KEY (group_id) REFERENCES public.namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.zoom_meetings
     ADD CONSTRAINT fk_rails_3263f29616 FOREIGN KEY (issue_id) REFERENCES public.issues(id) ON DELETE CASCADE;
@@ -13421,6 +13451,8 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200416120128
 20200416120354
 20200417044453
+20200420104303
+20200420104323
 20200420162730
 20200420172113
 20200420172752
