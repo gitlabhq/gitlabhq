@@ -19766,6 +19766,12 @@ msgstr ""
 msgid "StatusPage|Status page"
 msgstr ""
 
+msgid "StatusPage|Status page URL"
+msgstr ""
+
+msgid "StatusPage|Status page frontend documentation"
+msgstr ""
+
 msgid "StatusPage|To publish incidents to an external status page, GitLab will store a JSON file in your Amazon S3 account in a location accessible to your external status page service. Make sure to also set up %{docsLink}"
 msgstr ""
 

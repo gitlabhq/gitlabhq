@@ -4,22 +4,21 @@
 
 - commits = @commits
 - hidden = @hidden_commit_count
-- commits_count = @commits.size
 
-- commits.chunk { |c| c.committed_date.in_time_zone.to_date }.each do |day, commits|
+- commits.chunk { |c| c.committed_date.in_time_zone.to_date }.each do |day, daily_commits|
   %li.commit-header.js-commit-header{ data: { day: day } }
     %span.day= l(day, format: '%d %b, %Y')
-    %span.commits-count= n_("%d commit", "%d commits", commits_count) % commits_count
+    %span.commits-count= n_("%d commit", "%d commits", daily_commits.size) % daily_commits.size
 
   %li.commits-row{ data: { day: day } }
     %ul.content-list.commit-list.flex-list
-      = render partial: 'projects/commits/commit', collection: commits, locals: { project: project, ref: ref, merge_request: merge_request }
+      = render partial: 'projects/commits/commit', collection: daily_commits, locals: { project: project, ref: ref, merge_request: merge_request }
 
 - if hidden > 0
   %li.alert.alert-warning
     = n_('%s additional commit has been omitted to prevent performance issues.', '%s additional commits have been omitted to prevent performance issues.', hidden) % number_with_delimiter(hidden)
 
-- if commits_count == 0
+- if commits.size == 0
   .mt-4.text-center
     .bold
       = _('Your search didn\'t match any commits.')
