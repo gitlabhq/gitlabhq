@@ -1,0 +1,5 @@
+---
+title: Fix second 500 error with NULL restricted visibility levels
+merge_request: 30414
+author:
+type: fixed

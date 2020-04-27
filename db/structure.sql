@@ -3433,7 +3433,8 @@ CREATE TABLE public.jira_imports (
     status smallint DEFAULT 0 NOT NULL,
     jid character varying(255),
     jira_project_key character varying(255) NOT NULL,
-    jira_project_name character varying(255) NOT NULL
+    jira_project_name character varying(255) NOT NULL,
+    scheduled_at timestamp with time zone
 );
 
 CREATE SEQUENCE public.jira_imports_id_seq
@@ -13521,6 +13522,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200423080334
 20200423080607
 20200423081409
+20200423101529
 20200424050250
 20200427064130
 \.

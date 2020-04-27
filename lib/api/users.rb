@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class Users < Grape::API
+  class Users < Grape::API::Instance
     include PaginationParams
     include APIGuard
     include Helpers::CustomAttributes

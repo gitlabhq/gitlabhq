@@ -360,4 +360,4 @@ end
    project. See [this example](https://gitlab.com/gitlab-cookbooks/gitlab_fluentd/-/merge_requests/51/diffs).
 
 1. Be sure to update the [GitLab CE/EE documentation](../administration/logs.md) and the [GitLab.com
-   runbooks](https://gitlab.com/gitlab-com/runbooks/blob/master/howto/logging.md).
+   runbooks](https://gitlab.com/gitlab-com/runbooks/blob/master/docs/logging/README.md).

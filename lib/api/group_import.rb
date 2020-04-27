@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class GroupImport < Grape::API
+  class GroupImport < Grape::API::Instance
     MAXIMUM_FILE_SIZE = 50.megabytes.freeze
 
     helpers do

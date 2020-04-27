@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class ProtectedBranches < Grape::API
+  class ProtectedBranches < Grape::API::Instance
     include PaginationParams
 
     BRANCH_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(name: API::NO_SLASH_URL_PART_REGEX)

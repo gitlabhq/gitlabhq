@@ -1,6 +1,3 @@
-import DirtySubmitForm from '~/dirty_submit/dirty_submit_form';
-import setTimeoutPromiseHelper from '../helpers/set_timeout_promise_helper';
-
 function isCheckableType(type) {
   return /^(radio|checkbox)$/.test(type);
 }
@@ -22,8 +19,6 @@ export function setInputValue(element, value) {
       bubbles: true,
     }),
   );
-
-  return setTimeoutPromiseHelper(DirtySubmitForm.THROTTLE_DURATION);
 }
 
 export function getInputValue(input) {

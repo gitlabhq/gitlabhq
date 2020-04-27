@@ -3,25 +3,24 @@
 require 'spec_helper'
 
 describe Gitlab::Kubernetes::Helm::InitCommand do
+  subject(:init_command) { described_class.new(name: application.name, files: files, rbac: rbac) }
+
   let(:application) { create(:clusters_applications_helm) }
   let(:rbac) { false }
   let(:files) { {} }
-  let(:init_command) { described_class.new(name: application.name, files: files, rbac: rbac) }
 
-  let(:commands) do
-    <<~EOS
-    helm init --tiller-tls --tiller-tls-verify --tls-ca-cert /data/helm/helm/config/ca.pem --tiller-tls-cert /data/helm/helm/config/cert.pem --tiller-tls-key /data/helm/helm/config/key.pem
-    EOS
+  it_behaves_like 'helm command generator' do
+    let(:commands) do
+      <<~EOS
+      helm init --tiller-tls --tiller-tls-verify --tls-ca-cert /data/helm/helm/config/ca.pem --tiller-tls-cert /data/helm/helm/config/cert.pem --tiller-tls-key /data/helm/helm/config/key.pem
+      EOS
+    end
   end
-
-  subject { init_command }
-
-  it_behaves_like 'helm commands'
 
   context 'on a rbac-enabled cluster' do
     let(:rbac) { true }
 
-    it_behaves_like 'helm commands' do
+    it_behaves_like 'helm command generator' do
       let(:commands) do
         <<~EOS
         helm init --tiller-tls --tiller-tls-verify --tls-ca-cert /data/helm/helm/config/ca.pem --tiller-tls-cert /data/helm/helm/config/cert.pem --tiller-tls-key /data/helm/helm/config/key.pem --service-account tiller
@@ -30,57 +29,7 @@ describe Gitlab::Kubernetes::Helm::InitCommand do
     end
   end
 
-  describe '#rbac?' do
-    subject { init_command.rbac? }
-
-    context 'rbac is enabled' do
-      let(:rbac) { true }
-
-      it { is_expected.to be_truthy }
-    end
-
-    context 'rbac is not enabled' do
-      let(:rbac) { false }
-
-      it { is_expected.to be_falsey }
-    end
-  end
-
-  describe '#config_map_resource' do
-    let(:metadata) do
-      {
-        name: 'values-content-configuration-helm',
-        namespace: 'gitlab-managed-apps',
-        labels: { name: 'values-content-configuration-helm' }
-      }
-    end
-
-    let(:resource) { ::Kubeclient::Resource.new(metadata: metadata, data: files) }
-
-    subject { init_command.config_map_resource }
-
-    it 'returns a KubeClient resource with config map content for the application' do
-      is_expected.to eq(resource)
-    end
-  end
-
-  describe '#pod_resource' do
-    subject { init_command.pod_resource }
-
-    context 'rbac is enabled' do
-      let(:rbac) { true }
-
-      it 'generates a pod that uses the tiller serviceAccountName' do
-        expect(subject.spec.serviceAccountName).to eq('tiller')
-      end
-    end
-
-    context 'rbac is not enabled' do
-      let(:rbac) { false }
-
-      it 'generates a pod that uses the default serviceAccountName' do
-        expect(subject.spec.serviceAcccountName).to be_nil
-      end
-    end
+  it_behaves_like 'helm command' do
+    let(:command) { init_command }
   end
 end

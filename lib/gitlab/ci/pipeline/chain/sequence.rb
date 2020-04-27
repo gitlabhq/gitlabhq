@@ -10,6 +10,7 @@ module Gitlab
             @command = command
             @sequence = sequence
             @completed = []
+            @start = Time.now
           end
 
           def build!
@@ -24,6 +25,8 @@ module Gitlab
 
             @pipeline.tap do
               yield @pipeline, self if block_given?
+
+              @command.observe_creation_duration(Time.now - @start)
             end
           end
 

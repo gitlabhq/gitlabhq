@@ -98,6 +98,14 @@ For instance:
 Model.create(foo: params[:foo])
 ```
 
+## Array types
+
+With Grape v1.3+, Array types must be defined with a `coerce_with`
+block, or parameters will fail to validate when passed a string from an
+API request. See the [Grape upgrading
+documentation](https://github.com/ruby-grape/grape/blob/master/UPGRADING.md#ensure-that-array-types-have-explicit-coercions)
+for more details.
+
 ## Using HTTP status helpers
 
 For non-200 HTTP responses, use the provided helpers in `lib/api/helpers.rb` to ensure correct behavior (`not_found!`, `no_content!` etc.). These will `throw` inside Grape and abort the execution of your endpoint.

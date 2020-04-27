@@ -491,6 +491,7 @@ For every language and package manager, add the following to the variables secti
 
 ```yaml
 GEMNASIUM_DB_REMOTE_URL: "gitlab.example.com/gemnasium-db.git"
+GIT_SSL_NO_VERIFY: "true"
 ```
 
 See the following sections for additional instructions on specific languages and package managers.
@@ -520,7 +521,7 @@ When using self-signed certificates, add the following job section to the `.gitl
 ```yaml
 gemnasium-maven-dependency_scanning:
   variables:
-    MAVEN_CLI_OPTS: "-Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -Dmaven.wagon.http.ssl.ignore.validity.dates=true"
+    MAVEN_CLI_OPTS: "-s settings.xml -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -Dmaven.wagon.http.ssl.ignore.validity.dates=true"
 ```
 
 #### Java (Gradle) projects

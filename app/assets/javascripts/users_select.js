@@ -4,15 +4,10 @@
 
 import $ from 'jquery';
 import { escape, template, uniqBy } from 'lodash';
-import axios from '../lib/utils/axios_utils';
-import { s__, __, sprintf } from '../locale';
-import ModalStore from '../boards/stores/modal_store';
-import { parseBoolean } from '../lib/utils/common_utils';
-import {
-  AJAX_USERS_SELECT_OPTIONS_MAP,
-  AJAX_USERS_SELECT_PARAMS_MAP,
-} from 'ee_else_ce/users_select/constants';
-import { getAjaxUsersSelectOptions, getAjaxUsersSelectParams } from './utils';
+import axios from './lib/utils/axios_utils';
+import { s__, __, sprintf } from './locale';
+import ModalStore from './boards/stores/modal_store';
+import { parseBoolean } from './lib/utils/common_utils';
 
 // TODO: remove eventHub hack after code splitting refactor
 window.emitSidebarEvent = window.emitSidebarEvent || $.noop;
@@ -563,8 +558,13 @@ function UsersSelect(currentUser, els, options = {}) {
   import(/* webpackChunkName: 'select2' */ 'select2/select2')
     .then(() => {
       $('.ajax-users-select').each((i, select) => {
-        const options = getAjaxUsersSelectOptions($(select), AJAX_USERS_SELECT_OPTIONS_MAP);
+        const options = {};
         options.skipLdap = $(select).hasClass('skip_ldap');
+        options.projectId = $(select).data('projectId');
+        options.groupId = $(select).data('groupId');
+        options.showCurrentUser = $(select).data('currentUser');
+        options.authorId = $(select).data('authorId');
+        options.skipUsers = $(select).data('skipUsers');
         const showNullUser = $(select).data('nullUser');
         const showAnyUser = $(select).data('anyUser');
         const showEmailUser = $(select).data('emailUser');
@@ -705,7 +705,14 @@ UsersSelect.prototype.users = function(query, options, callback) {
   const params = {
     search: query,
     active: true,
-    ...getAjaxUsersSelectParams(options, AJAX_USERS_SELECT_PARAMS_MAP),
+    project_id: options.projectId || null,
+    group_id: options.groupId || null,
+    skip_ldap: options.skipLdap || null,
+    todo_filter: options.todoFilter || null,
+    todo_state_filter: options.todoStateFilter || null,
+    current_user: options.showCurrentUser || null,
+    author_id: options.authorId || null,
+    skip_users: options.skipUsers || null,
   };
 
   if (options.issuableType === 'merge_request') {

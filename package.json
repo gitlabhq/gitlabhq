@@ -4,7 +4,7 @@
     "check-dependencies": "scripts/frontend/check_dependencies.sh",
     "block-dependencies": "node scripts/frontend/block_dependencies.js",
     "clean": "rm -rf public/assets tmp/cache/*-loader",
-    "dev-server": "NODE_OPTIONS=\"--max-old-space-size=3584\" nodemon -w 'config/webpack.config.js' --exec 'webpack-dev-server --config config/webpack.config.js'",
+    "dev-server": "NODE_OPTIONS=\"--max-old-space-size=3584\" node scripts/frontend/webpack_dev_server.js",
     "eslint": "eslint --cache --max-warnings 0 --report-unused-disable-directives --ext .js,.vue .",
     "eslint-fix": "eslint --cache --max-warnings 0 --report-unused-disable-directives --ext .js,.vue --fix .",
     "eslint-report": "eslint --max-warnings 0 --ext .js,.vue --format html --output-file ./eslint-report.html --no-inline-config .",

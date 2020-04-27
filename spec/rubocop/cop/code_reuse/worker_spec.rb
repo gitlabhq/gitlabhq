@@ -31,7 +31,7 @@ describe RuboCop::Cop::CodeReuse::Worker do
       .and_return(true)
 
     expect_offense(<<~SOURCE)
-      class Foo < Grape::API
+      class Foo < Grape::API::Instance
         resource :projects do
           get '/' do
             FooWorker.perform_async

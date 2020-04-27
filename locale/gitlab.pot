@@ -1716,9 +1716,6 @@ msgstr ""
 msgid "AlertManagement|Status"
 msgstr ""
 
-msgid "AlertManagement|Surface alerts in GitLab"
-msgstr ""
-
 msgid "AlertManagement|There was an error displaying the alerts. Confirm your endpoint's configuration details to ensure alerts appear."
 msgstr ""
 
@@ -9521,10 +9518,10 @@ msgstr ""
 msgid "GeoNodes|Checksummed"
 msgstr ""
 
-msgid "GeoNodes|Container repositories"
+msgid "GeoNodes|Consult Geo troubleshooting information"
 msgstr ""
 
-msgid "GeoNodes|Data is out of date from %{timeago}"
+msgid "GeoNodes|Container repositories"
 msgstr ""
 
 msgid "GeoNodes|Data replication lag"
@@ -9566,6 +9563,9 @@ msgstr ""
 msgid "GeoNodes|Last event ID seen from primary"
 msgstr ""
 
+msgid "GeoNodes|Learn more about Geo node statuses"
+msgstr ""
+
 msgid "GeoNodes|Loading nodes"
 msgstr ""
 
@@ -9579,6 +9579,9 @@ msgid "GeoNodes|Node URL"
 msgstr ""
 
 msgid "GeoNodes|Node was successfully removed."
+msgstr ""
+
+msgid "GeoNodes|Node's status was updated %{timeAgo}."
 msgstr ""
 
 msgid "GeoNodes|Not checksummed"
@@ -9639,6 +9642,9 @@ msgid "GeoNodes|Unused slots"
 msgstr ""
 
 msgid "GeoNodes|Unverified"
+msgstr ""
+
+msgid "GeoNodes|Updated %{timeAgo}"
 msgstr ""
 
 msgid "GeoNodes|Used slots"
@@ -20127,6 +20133,9 @@ msgid "Support for custom certificates is disabled. Ask your system's administra
 msgstr ""
 
 msgid "Support page URL"
+msgstr ""
+
+msgid "Surface alerts in GitLab"
 msgstr ""
 
 msgid "Switch branch/tag"

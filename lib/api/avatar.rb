@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class Avatar < Grape::API
+  class Avatar < Grape::API::Instance
     resource :avatar do
       desc 'Return avatar url for a user' do
         success Entities::Avatar

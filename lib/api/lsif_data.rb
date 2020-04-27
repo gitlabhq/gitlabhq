@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class LsifData < Grape::API
+  class LsifData < Grape::API::Instance
     MAX_FILE_SIZE = 10.megabytes
 
     before do

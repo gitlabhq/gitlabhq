@@ -417,7 +417,7 @@ The response header includes a link to the next page. For example:
 ```http
 HTTP/1.1 200 OK
 ...
-Link: <https://gitlab.example.com/api/v4/projects?pagination=keyset&per_page=50&order_by=id&sort=asc&id_after=42>; rel="next"
+Links: <https://gitlab.example.com/api/v4/projects?pagination=keyset&per_page=50&order_by=id&sort=asc&id_after=42>; rel="next"
 Status: 200 OK
 ...
 ```
@@ -425,7 +425,7 @@ Status: 200 OK
 The link to the next page contains an additional filter `id_after=42` which excludes records we have retrieved already.
 Note the type of filter depends on the `order_by` option used and we may have more than one additional filter.
 
-When the end of the collection has been reached and there are no additional records to retrieve, the `Link` header is absent and the resulting array is empty.
+When the end of the collection has been reached and there are no additional records to retrieve, the `Links` header is absent and the resulting array is empty.
 
 We recommend using only the given link to retrieve the next page instead of building your own URL. Apart from the headers shown,
 we don't expose additional pagination headers.

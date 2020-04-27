@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class Templates < Grape::API
+  class Templates < Grape::API::Instance
     include PaginationParams
 
     GLOBAL_TEMPLATE_TYPES = {

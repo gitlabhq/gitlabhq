@@ -86,6 +86,7 @@ Copy-and-pasting has some limitations:
 
 - You can paste only one image at a time. When copy/pasting multiple files, only the first one will be uploaded.
 - All images will be converted to `png` format under the hood, so when you want to copy/paste `gif` file, it will result in broken animation.
+- If you are pasting a screenshot from the clipboard, it will be renamed to `design_<timestamp>.png`
 - Copy/pasting designs is not supported on Internet Explorer.
 
 Designs with the same filename as an existing uploaded design will create a new version

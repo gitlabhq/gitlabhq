@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class Triggers < Grape::API
+  class Triggers < Grape::API::Instance
     include PaginationParams
 
     HTTP_GITLAB_EVENT_HEADER = "HTTP_#{WebHookService::GITLAB_EVENT_HEADER}".underscore.upcase

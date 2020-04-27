@@ -230,7 +230,7 @@ analyzers/gemnasium-python:
 license-management:
   extends: .download_images
   variables:
-    SECURE_BINARIES_ANALYZER_VERSION: "${CI_SERVER_VERSION_MAJOR}-${CI_SERVER_VERSION_MINOR}-stable"
+    SECURE_BINARIES_ANALYZER_VERSION: "3"
     # TODO: license-management is > 1GB, disabling for now
     SECURE_BINARIES_SAVE_ARTIFACTS: "false"
   only:

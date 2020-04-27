@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class GroupExport < Grape::API
+  class GroupExport < Grape::API::Instance
     before do
       not_found! unless Feature.enabled?(:group_import_export, user_group, default_enabled: true)
 

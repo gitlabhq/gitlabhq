@@ -211,6 +211,13 @@ Gitlab/HTTParty:
     - 'spec/**/*'
     - 'ee/spec/**/*'
 
+Gitlab/Json:
+  Enabled: false
+  Exclude:
+    - 'db/**/*'
+    - 'qa/**/*'
+    - 'scripts/**/*'
+
 GitlabSecurity/PublicSend:
   Enabled: true
   Exclude:
@@ -276,6 +283,18 @@ Gitlab/Union:
   Exclude:
     - 'spec/**/*'
     - 'ee/spec/**/*'
+
+API/GrapeAPIInstance:
+  Enabled: true
+  Include:
+    - 'lib/**/api/**/*.rb'
+    - 'ee/**/api/**/*.rb'
+
+API/GrapeArrayMissingCoerce:
+  Enabled: true
+  Include:
+    - 'lib/**/api/**/*.rb'
+    - 'ee/**/api/**/*.rb'
 
 Cop/SidekiqOptionsQueue:
   Enabled: true

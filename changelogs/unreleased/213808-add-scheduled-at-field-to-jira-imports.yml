@@ -1,0 +1,5 @@
+---
+title: Add scheduled_at field to jira_imports table
+merge_request: 30284
+author:
+type: added

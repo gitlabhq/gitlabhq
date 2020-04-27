@@ -1040,5 +1040,66 @@ describe('boardsStore', () => {
         });
       });
     });
+
+    describe('updateIssue', () => {
+      let issue;
+      let patchSpy;
+
+      beforeEach(() => {
+        issue = new ListIssue({
+          title: 'Testing',
+          id: 1,
+          iid: 1,
+          confidential: false,
+          labels: [
+            {
+              id: 1,
+              title: 'test',
+              color: 'red',
+              description: 'testing',
+            },
+          ],
+          assignees: [
+            {
+              id: 1,
+              name: 'name',
+              username: 'username',
+              avatar_url: 'http://avatar_url',
+            },
+          ],
+          real_path: 'path/to/issue',
+        });
+
+        patchSpy = jest.fn().mockReturnValue([200, { labels: [] }]);
+        axiosMock.onPatch(`path/to/issue.json`).reply(({ data }) => patchSpy(JSON.parse(data)));
+      });
+
+      it('passes assignee ids when there are assignees', () => {
+        boardsStore.updateIssue(issue);
+        return boardsStore.updateIssue(issue).then(() => {
+          expect(patchSpy).toHaveBeenCalledWith({
+            issue: {
+              milestone_id: null,
+              assignee_ids: [1],
+              label_ids: [1],
+            },
+          });
+        });
+      });
+
+      it('passes assignee ids of [0] when there are no assignees', () => {
+        issue.removeAllAssignees();
+
+        return boardsStore.updateIssue(issue).then(() => {
+          expect(patchSpy).toHaveBeenCalledWith({
+            issue: {
+              milestone_id: null,
+              assignee_ids: [0],
+              label_ids: [1],
+            },
+          });
+        });
+      });
+    });
   });
 });

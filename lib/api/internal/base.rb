@@ -3,7 +3,7 @@
 module API
   # Internal access API
   module Internal
-    class Base < Grape::API
+    class Base < Grape::API::Instance
       before { authenticate_by_gitlab_shell_token! }
 
       before do

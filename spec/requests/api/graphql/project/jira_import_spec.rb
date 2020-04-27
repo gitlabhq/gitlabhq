@@ -18,6 +18,7 @@ describe 'query Jira import data' do
           jiraImports {
             nodes {
               jiraProjectKey
+              createdAt
               scheduledAt
               scheduledBy {
                 username

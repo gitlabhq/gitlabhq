@@ -6,7 +6,11 @@ import { sortBy } from 'lodash';
 import Vue from 'vue';
 import Cookies from 'js-cookie';
 import BoardsStoreEE from 'ee_else_ce/boards/stores/boards_store_ee';
-import { getUrlParamsArray, parseBoolean } from '~/lib/utils/common_utils';
+import {
+  getUrlParamsArray,
+  parseBoolean,
+  convertObjectPropsToCamelCase,
+} from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
@@ -631,6 +635,28 @@ const boardsStore = {
     if (obj.assignees) {
       issue.assignees = obj.assignees.map(a => new ListAssignee(a));
     }
+  },
+  updateIssue(issue) {
+    const data = {
+      issue: {
+        milestone_id: issue.milestone ? issue.milestone.id : null,
+        due_date: issue.dueDate,
+        assignee_ids: issue.assignees.length > 0 ? issue.assignees.map(({ id }) => id) : [0],
+        label_ids: issue.labels.length > 0 ? issue.labels.map(({ id }) => id) : [''],
+      },
+    };
+
+    return axios.patch(`${issue.path}.json`, data).then(({ data: body = {} } = {}) => {
+      /**
+       * Since post implementation of Scoped labels, server can reject
+       * same key-ed labels. To keep the UI and server Model consistent,
+       * we're just assigning labels that server echo's back to us when we
+       * PATCH the said object.
+       */
+      if (body) {
+        issue.labels = convertObjectPropsToCamelCase(body.labels, { deep: true });
+      }
+    });
   },
 };
 

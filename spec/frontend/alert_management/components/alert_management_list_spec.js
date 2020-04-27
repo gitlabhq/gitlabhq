@@ -12,7 +12,10 @@ describe('AlertManagementList', () => {
 
   function mountComponent({
     stubs = {},
-    props = { alertManagementEnabled: false },
+    props = {
+      alertManagementEnabled: false,
+      userCanEnableAlertManagement: false,
+    },
     data = {},
     loading = false,
   } = {}) {
@@ -62,7 +65,7 @@ describe('AlertManagementList', () => {
     it('loading state', () => {
       mountComponent({
         stubs: { GlTable },
-        props: { alertManagementEnabled: true },
+        props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
         data: { alerts: null },
         loading: true,
       });
@@ -73,7 +76,7 @@ describe('AlertManagementList', () => {
     it('error state', () => {
       mountComponent({
         stubs: { GlTable },
-        props: { alertManagementEnabled: true },
+        props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
         data: { alerts: null, errored: true },
         loading: false,
       });
@@ -86,7 +89,7 @@ describe('AlertManagementList', () => {
     it('empty state', () => {
       mountComponent({
         stubs: { GlTable },
-        props: { alertManagementEnabled: true },
+        props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
         data: { alerts: [], errored: false },
         loading: false,
       });

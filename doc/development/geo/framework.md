@@ -270,7 +270,7 @@ For example, to add support for files referenced by a `Widget` model with a
    ```ruby
    # frozen_string_literal: true
 
-   class CreateWidgetRegistry < ActiveRecord::Migration[5.2]
+   class CreateWidgetRegistry < ActiveRecord::Migration[6.0]
      DOWNTIME = false
 
      def change
@@ -334,7 +334,7 @@ For example, to add support for files referenced by a `Widget` model with a
    end
    ```
 
-1. Create `ee/spec/models/geo/widget_registry.rb`:
+1. Create `ee/spec/models/geo/widget_registry_spec.rb`:
 
    ```ruby
    # frozen_string_literal: true

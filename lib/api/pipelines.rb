@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class Pipelines < Grape::API
+  class Pipelines < Grape::API::Instance
     include PaginationParams
 
     before { authenticate_non_get! }

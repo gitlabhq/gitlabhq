@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class Markdown < Grape::API
+  class Markdown < Grape::API::Instance
     params do
       requires :text, type: String, desc: "The markdown text to render"
       optional :gfm, type: Boolean, desc: "Render text using GitLab Flavored Markdown"

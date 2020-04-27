@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class JobArtifacts < Grape::API
+  class JobArtifacts < Grape::API::Instance
     before { authenticate_non_get! }
 
     # EE::API::JobArtifacts would override the following helpers

@@ -3,7 +3,7 @@
 require 'mime/types'
 
 module API
-  class Repositories < Grape::API
+  class Repositories < Grape::API::Instance
     include PaginationParams
 
     before { authorize! :download_code, user_project }
@@ -139,7 +139,7 @@ module API
         success Entities::Commit
       end
       params do
-        requires :refs, type: Array[String]
+        requires :refs, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce
       end
       get ':id/repository/merge_base' do
         refs = params[:refs]

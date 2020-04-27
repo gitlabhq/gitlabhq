@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class Files < Grape::API
+  class Files < Grape::API::Instance
     include APIGuard
 
     FILE_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(file_path: API::NO_SLASH_URL_PART_REGEX)

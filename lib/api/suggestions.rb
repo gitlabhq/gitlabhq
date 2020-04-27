@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class Suggestions < Grape::API
+  class Suggestions < Grape::API::Instance
     before { authenticate! }
 
     resource :suggestions do
