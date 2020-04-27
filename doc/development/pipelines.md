@@ -489,6 +489,71 @@ for more information.
 
 Consult the [Review Apps](testing_guide/review_apps.md) dedicated page for more information.
 
+## Pre-clone step
+
+The `gitlab-org/gitlab` project on GitLab.com uses a [pre-clone step](https://gitlab.com/gitlab-org/gitlab/issues/39134)
+to seed the project with a recent archive of the repository. This is done for
+several reasons:
+
+- It speeds up builds because a 800 MB download only takes seconds, as opposed to a full Git clone.
+- It significantly reduces load on the file server, as smaller deltas mean less time spent in `git pack-objects`.
+
+The pre-clone step works by using the `CI_PRE_CLONE_SCRIPT` variable
+[defined by GitLab.com shared runners](../user/gitlab_com/index.md#pre-clone-script).
+
+The `CI_PRE_CLONE_SCRIPT` is currently defined as a project CI/CD
+variable:
+
+```shell
+echo "Downloading archived master..."
+wget -O /tmp/gitlab.tar.gz https://storage.googleapis.com/gitlab-ci-git-repo-cache/project-278964/gitlab-master.tar.gz
+
+if [ ! -f /tmp/gitlab.tar.gz ]; then
+    echo "Repository cache not available, cloning a new directory..."
+    exit
+fi
+
+rm -rf $CI_PROJECT_DIR
+echo "Extracting tarball into $CI_PROJECT_DIR..."
+mkdir -p $CI_PROJECT_DIR
+cd $CI_PROJECT_DIR
+tar xzf /tmp/gitlab.tar.gz
+rm -f /tmp/gitlab.tar.gz
+chmod a+w $CI_PROJECT_DIR
+```
+
+The first step of the script downloads `gitlab-master.tar.gz` from
+Google Cloud Storage. There is a [GitLab CI job named `cache-repo`](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab/ci/cache-repo.gitlab-ci.yml#L5)
+that is responsible for keeping that archive up-to-date. Every two hours
+on a scheduled pipeline, it does the following:
+
+1. Creates a fresh clone of the `gitlab-org/gitlab` repository on GitLab.com.
+1. Saves the data as a `.tar.gz`.
+1. Uploads it into the Google Cloud Storage bucket.
+
+When a CI job runs with this configuration, you'll see something like
+this:
+
+```shell
+$ eval "$CI_PRE_CLONE_SCRIPT"
+Downloading archived master...
+Extracting tarball into /builds/group/project...
+Fetching changes...
+Reinitialized existing Git repository in /builds/group/project/.git/
+```
+
+Note that the `Reinitialized existing Git repository` message shows that
+the pre-clone step worked. The runner runs `git init`, which
+overwrites the Git configuration with the appropriate settings to fetch
+from the GitLab repository.
+
+`CI_REPO_CACHE_CREDENTIALS` contains the Google Cloud service account
+JSON for uploading to the `gitlab-ci-git-repo-cache` bucket. These
+credentials are stored in the 1Password GitLab.com Production vault.
+
+Note that this bucket should be located in the same continent as the
+runner, or [network egress charges will apply](https://cloud.google.com/storage/pricing).
+
 ---
 
 [Return to Development documentation](README.md)

@@ -11,12 +11,13 @@ disqus_identifier: 'https://docs.gitlab.com/ee/administration/custom_hooks.html'
 > - Server hooks must be configured on the filesystem of the GitLab server. Only GitLab server administrators will be able to complete these tasks. Please explore [webhooks](../user/project/integrations/webhooks.md) and [GitLab CI/CD](../ci/README.md) as an option if you do not have filesystem access. For a user-configurable Git hook interface, see [Push Rules](../push_rules/push_rules.md), available in GitLab Starter **(STARTER)**.
 > - Server hooks won't be replicated to secondary nodes if you use [GitLab Geo](geo/replication/index.md).
 
-Git natively supports hooks that are executed on different actions.
-Examples of server-side Git hooks include pre-receive, post-receive, and update.
-See [Git SCM Server-Side Hooks](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks#Server-Side-Hooks) for more information about each hook type.
+Git natively supports hooks that are executed on different actions. These hooks run
+on the server and can be used to enforce specific commit policies or perform other
+tasks based on the state of the repository.
 
-As of GitLab Shell version 2.2.0 (which requires GitLab 7.5+), GitLab
-administrators can add custom Git hooks to any GitLab project.
+Examples of server-side Git hooks include `pre-receive`, `post-receive`, and `update`.
+See [Git SCM Server-Side Hooks](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks#Server-Side-Hooks)
+for more information about each hook type.
 
 ## Create a server hook for a repository
 

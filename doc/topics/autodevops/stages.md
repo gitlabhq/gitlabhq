@@ -93,10 +93,8 @@ Auto Code Quality uses the
 [Code Quality image](https://gitlab.com/gitlab-org/ci-cd/codequality) to run
 static analysis and other code checks on the current code. After creating the
 report, it's uploaded as an artifact which you can later download and check
-out.
-
-Any differences between the source and target branches are also
-[shown in the merge request widget](../../user/project/merge_requests/code_quality.md).
+out. The merge request widget also displays any
+[differences between the source and target branches](../../user/project/merge_requests/code_quality.md).
 
 ## Auto SAST **(ULTIMATE)**
 
@@ -106,14 +104,15 @@ Static Application Security Testing (SAST) uses the
 [SAST Docker image](https://gitlab.com/gitlab-org/security-products/sast) to run static
 analysis on the current code, and checks for potential security issues. The
 Auto SAST stage will be skipped on licenses other than
-[Ultimate](https://about.gitlab.com/pricing/), and requires GitLab Runner 11.5 or above.
+[Ultimate](https://about.gitlab.com/pricing/), and requires
+[GitLab Runner](https://docs.gitlab.com/runner/) 11.5 or above.
 
 After creating the report, it's uploaded as an artifact which you can later
-download and check out.
+download and check out. The merge request widget also displays any security
+warnings.
 
-Any security warnings are also shown in the merge request widget. To learn more
-about [how SAST works](../../user/application_security/sast/index.md), see the
-documentation.
+To learn more about [how SAST works](../../user/application_security/sast/index.md),
+see the documentation.
 
 ## Auto Dependency Scanning **(ULTIMATE)**
 
@@ -121,16 +120,17 @@ documentation.
 
 Dependency Scanning uses the
 [Dependency Scanning Docker image](https://gitlab.com/gitlab-org/security-products/dependency-scanning)
-to run analysis on the project dependencies and checks for potential security issues.
-The Auto Dependency Scanning stage will be skipped on licenses other than Ultimate
-and requires GitLab Runner 11.5 or above.
+to run analysis on the project dependencies and check for potential security issues.
+The Auto Dependency Scanning stage is skipped on licenses other than
+[Ultimate](https://about.gitlab.com/pricing/) and requires
+[GitLab Runner](https://docs.gitlab.com/runner/) 11.5 or above.
 
-Once the
-report is created, it's uploaded as an artifact which you can later download and
-check out.
+After creating the report, it's uploaded as an artifact which you can later download and
+check out. The merge request widget displays any security warnings detected,
 
-Any security warnings are also shown in the merge request widget. Read more about
-[Dependency Scanning](../../user/application_security/dependency_scanning/index.md).
+To learn more about
+[Dependency Scanning](../../user/application_security/dependency_scanning/index.md),
+see the documentation.
 
 ## Auto License Compliance **(ULTIMATE)**
 
@@ -139,60 +139,58 @@ Any security warnings are also shown in the merge request widget. Read more abou
 License Compliance uses the
 [License Compliance Docker image](https://gitlab.com/gitlab-org/security-products/license-management)
 to search the project dependencies for their license. The Auto License Compliance stage
-will be skipped on licenses other than Ultimate.
+is skipped on licenses other than [Ultimate](https://about.gitlab.com/pricing/).
 
-Once the
-report is created, it's uploaded as an artifact which you can later download and
-check out.
+After creating the report, it's uploaded as an artifact which you can later download and
+check out. The merge request displays any detected licenses.
 
-Any licenses are also shown in the merge request widget. Read more how
-[License Compliance works](../../user/compliance/license_compliance/index.md).
+To learn more about
+[License Compliance](../../user/compliance/license_compliance/index.md), see the
+documentation.
 
 ## Auto Container Scanning **(ULTIMATE)**
 
 > Introduced in GitLab 10.4.
 
-Vulnerability Static Analysis for containers uses
-[Clair](https://github.com/quay/clair) to run static analysis on a
-Docker image and checks for potential security issues. The Auto Container Scanning stage
-will be skipped on licenses other than Ultimate.
+Vulnerability Static Analysis for containers runs static analysis on a Docker
+images with [Clair](https://github.com/quay/clair) to check for potential security
+issues. The Auto Container Scanning stage is skipped on licenses other than
+[Ultimate](https://about.gitlab.com/pricing/).
 
-Once the report is
-created, it's uploaded as an artifact which you can later download and
-check out.
+After creating the report, it's uploaded as an artifact which you can later download and
+check out. The merge request displays any detected security issues.
 
-Any security warnings are also shown in the merge request widget. Read more how
-[Container Scanning works](../../user/application_security/container_scanning/index.md).
+To learn more about
+[Container Scanning](../../user/application_security/container_scanning/index.md),
+see the documentation.
 
 ## Auto Review Apps
 
 This is an optional step, since many projects don't have a Kubernetes cluster
-available. If the [requirements](index.md#requirements) are not met, the job will
-silently be skipped.
+available. If the [requirements](index.md#requirements) are not met, the job is
+silently skipped.
 
 [Review Apps](../../ci/review_apps/index.md) are temporary application environments based on the
 branch's code so developers, designers, QA, product managers, and other
 reviewers can actually see and interact with code changes as part of the review
 process. Auto Review Apps create a Review App for each branch.
 
-Auto Review Apps will deploy your app to your Kubernetes cluster only. When no cluster
-is available, no deployment will occur.
+Auto Review Apps deploy your app to your Kubernetes cluster only. If no cluster
+is available, no deployment occurs.
 
-The Review App will have a unique URL based on the project ID, the branch or tag
-name, and a unique number, combined with the Auto DevOps base domain. For
-example, `13083-review-project-branch-123456.example.com`. A link to the Review App shows
-up in the merge request widget for easy discovery. When the branch or tag is deleted,
-for example after the merge request is merged, the Review App will automatically
-be deleted.
+The Review App has a unique URL based on a combination of the project ID, the branch
+or tag name, a unique number, and the Auto DevOps base domain, such as
+`13083-review-project-branch-123456.example.com`. The merge request widget displays
+a link to the Review App for easy discovery. When the branch or tag is deleted,
+such as after merging a merge request, the Review App is also deleted.
 
 Review apps are deployed using the
 [auto-deploy-app](https://gitlab.com/gitlab-org/charts/auto-deploy-app) chart with
-Helm, which can be [customized](customize.md#custom-helm-chart). The app will be deployed into the [Kubernetes
-namespace](../../user/project/clusters/index.md#deployment-variables)
+Helm, which you can [customize](customize.md#custom-helm-chart). The app deploys
+into the [Kubernetes namespace](../../user/project/clusters/index.md#deployment-variables)
 for the environment.
 
-Since GitLab 11.4, a [local
-Tiller](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22036) is
+Since GitLab 11.4, [local Tiller](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22036) is
 used. Previous versions of GitLab had a Tiller installed in the project
 namespace.
 
@@ -207,47 +205,56 @@ in the first place, and thus not realize that it needs to re-apply the old confi
 
 > Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.4.
 
-Dynamic Application Security Testing (DAST) uses the
-popular open source tool [OWASP ZAProxy](https://github.com/zaproxy/zaproxy)
-to perform an analysis on the current code and checks for potential security
-issues. The Auto DAST stage will be skipped on licenses other than Ultimate.
+Dynamic Application Security Testing (DAST) uses the popular open source tool
+[OWASP ZAProxy](https://github.com/zaproxy/zaproxy) to analyze the current code
+and check for potential security issues. The Auto DAST stage is skipped on
+licenses other than [Ultimate](https://about.gitlab.com/pricing/).
 
-Once the DAST scan is complete, any security warnings are shown
+- On your default branch, DAST scans an app deployed specifically for that purpose
+  unless you [override the target branch](#overriding-the-dast-target).
+  The app is deleted after DAST has run.
+- On feature branches, DAST scans the [review app](#auto-review-apps).
+
+After the DAST scan completes, any security warnings are displayed
 on the [Security Dashboard](../../user/application_security/security_dashboard/index.md)
-and the Merge Request Widget. Read how
-[DAST works](../../user/application_security/dast/index.md).
+and the merge request widget.
 
-On your default branch, DAST scans an app deployed specifically for that purpose.
-The app is deleted after DAST has run.
-
-On feature branches, DAST scans the [review app](#auto-review-apps).
+To learn more about
+[Dynamic Application Security Testing](../../user/application_security/dast/index.md),
+see the documentation.
 
 ### Overriding the DAST target
 
 To use a custom target instead of the auto-deployed review apps,
 set a `DAST_WEBSITE` environment variable to the URL for DAST to scan.
 
-NOTE: **Note:**
+DANGER: **Danger:**
 If [DAST Full Scan](../../user/application_security/dast/index.md#full-scan) is
 enabled, GitLab strongly advises **not**
 to set `DAST_WEBSITE` to any staging or production environment. DAST Full Scan
-actively attacks the target, which can take down the application and lead to
+actively attacks the target, which can take down your application and lead to
 data loss or corruption.
 
 ### Disabling Auto DAST
 
-DAST can be disabled:
+You can disable DAST:
 
 - On all branches by setting the `DAST_DISABLED` environment variable to `"true"`.
-- Only on the default branch by setting the `DAST_DISABLED_FOR_DEFAULT_BRANCH` environment variable to `"true"`.
+- Only on the default branch by setting the `DAST_DISABLED_FOR_DEFAULT_BRANCH`
+  environment variable to `"true"`.
 
 ## Auto Browser Performance Testing **(PREMIUM)**
 
 > Introduced in [GitLab Premium](https://about.gitlab.com/pricing/) 10.4.
 
-Auto Browser Performance Testing utilizes the [Sitespeed.io container](https://hub.docker.com/r/sitespeedio/sitespeed.io/) to measure the performance of a web page. A JSON report is created and uploaded as an artifact, which includes the overall performance score for each page. By default, the root page of Review and Production environments will be tested. If you would like to add additional URL's to test, simply add the paths to a file named `.gitlab-urls.txt` in the root directory, one per line. For example:
+Auto Browser Performance Testing measures the performance of a web page with the
+[Sitespeed.io container](https://hub.docker.com/r/sitespeedio/sitespeed.io/),
+creates a JSON report including the overall performance score for each page, and
+uploads the report as an artifact. By default, it tests the root page of your Review and
+Production environments. If you want to test additional URLs, add the paths to a
+file named `.gitlab-urls.txt` in the root directory, one file per line:
 
-```text
+```plaintext
 /
 /features
 /direction
@@ -259,29 +266,30 @@ Any performance differences between the source and target branches are also
 ## Auto Deploy
 
 This is an optional step, since many projects don't have a Kubernetes cluster
-available. If the [requirements](index.md#requirements) are not met, the job will
-silently be skipped.
+available. If the [requirements](index.md#requirements) are not met, the job is skipped.
 
 After a branch or merge request is merged into the project's default branch (usually
 `master`), Auto Deploy deploys the application to a `production` environment in
 the Kubernetes cluster, with a namespace based on the project name and unique
-project ID, for example `project-4321`.
+project ID, such as `project-4321`.
 
-Auto Deploy does not include deployments to staging or canary by default, but the
-[Auto DevOps template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml) contains job definitions for these tasks if you want to
-enable them.
+Auto Deploy does not include deployments to staging or canary environments by
+default, but the
+[Auto DevOps template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml)
+contains job definitions for these tasks if you want to enable them.
 
-You can make use of [environment variables](customize.md#environment-variables) to automatically
-scale your pod replicas and to apply custom arguments to the Auto DevOps `helm upgrade` commands. This is an easy way to [customize the Auto Deploy Helm chart](customize.md#custom-helm-chart).
+You can use [environment variables](customize.md#environment-variables) to automatically
+scale your pod replicas, and to apply custom arguments to the Auto DevOps `helm upgrade`
+commands. This is an easy way to
+[customize the Auto Deploy Helm chart](customize.md#custom-helm-chart).
 
-Apps are deployed using the
-[auto-deploy-app](https://gitlab.com/gitlab-org/charts/auto-deploy-app) chart with
-Helm. The app will be deployed into the [Kubernetes
-namespace](../../user/project/clusters/index.md#deployment-variables)
+The [auto-deploy-app](https://gitlab.com/gitlab-org/charts/auto-deploy-app) chart with
+Helm deploys the application into the
+[Kubernetes namespace](../../user/project/clusters/index.md#deployment-variables)
 for the environment.
 
-Since GitLab 11.4, a [local
-Tiller](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22036) is
+Since GitLab 11.4, a
+[local Tiller](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22036) is
 used. Previous versions of GitLab had a Tiller installed in the project
 namespace.
 
@@ -292,19 +300,24 @@ deploys with Auto DevOps can undo your changes. Also, if you change something
 and want to undo it by deploying again, Helm may not detect that anything changed
 in the first place, and thus not realize that it needs to re-apply the old configuration.
 
+### GitLab deploy tokens
+
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/19507) in GitLab 11.0.
 
-For internal and private projects a [GitLab Deploy Token](../../user/project/deploy_tokens/index.md#gitlab-deploy-token)
-will be automatically created, when Auto DevOps is enabled and the Auto DevOps settings are saved. This Deploy Token
-can be used for permanent access to the registry. When the GitLab Deploy Token has been manually revoked, it won't be automatically created.
+[GitLab Deploy Tokens](../../user/project/deploy_tokens/index.md#gitlab-deploy-token)
+are created for internal and private projects when Auto DevOps is enabled, and the
+Auto DevOps settings are saved. You can use a Deploy Token for permanent access to
+the registry. After you manually revoke the GitLab Deploy Token, it won't be
+automatically created.
 
 If the GitLab Deploy Token can't be found, `CI_REGISTRY_PASSWORD` is
-used. Note that `CI_REGISTRY_PASSWORD` is only valid during deployment.
-This means that Kubernetes will be able to successfully pull the
-container image during deployment but in cases where the image needs to
+used.
+
+NOTE: **Note:**
+`CI_REGISTRY_PASSWORD` is only valid during deployment. Kubernetes will be able
+to successfully pull the container image during deployment, but if the image must
 be pulled again, such as after pod eviction, Kubernetes will fail to do so
-as it will be attempting to fetch the image using
-`CI_REGISTRY_PASSWORD`.
+as it attempts to fetch the image using `CI_REGISTRY_PASSWORD`.
 
 ### Kubernetes 1.16+
 
@@ -316,10 +329,12 @@ The default value of `extensions/v1beta1` for the `deploymentApiVersion` setting
 deprecated, and is scheduled to be changed to a new default of `apps/v1` in
 [GitLab 13.0](https://gitlab.com/gitlab-org/charts/auto-deploy-app/issues/47).
 
-In Kubernetes 1.16 and later, a number of [APIs were removed](https://kubernetes.io/blog/2019/07/18/api-deprecations-in-1-16/),
+In Kubernetes 1.16 and later, a number of
+[APIs were removed](https://kubernetes.io/blog/2019/07/18/api-deprecations-in-1-16/),
 including support for `Deployment` in the `extensions/v1beta1` version.
 
-To use Auto Deploy on a Kubernetes 1.16+ cluster, you must:
+To use Auto Deploy on a Kubernetes 1.16+ cluster, you must opt-in to using a
+version of the PostgreSQL chart that supports Kubernetes 1.16 and higher:
 
 1. Set the following in the [`.gitlab/auto-deploy-values.yaml` file](customize.md#customize-values-for-helm-chart):
 
@@ -332,34 +347,30 @@ To use Auto Deploy on a Kubernetes 1.16+ cluster, you must:
    - `AUTO_DEVOPS_POSTGRES_CHANNEL` variable to `2`.
    - `POSTGRES_VERSION` variable to `9.6.16` or higher.
 
-   This will opt-in to using a version of the PostgreSQL chart that supports Kubernetes
-   1.16 and higher.
-
-DANGER: **Danger:** Opting into `AUTO_DEVOPS_POSTGRES_CHANNEL` version
-`2` will delete the version `1` PostgreSQL database. Please follow the
-guide on [upgrading PostgreSQL](upgrading_postgresql.md) to backup and
-restore your database before opting into version `2`.
+DANGER: **Danger:** Opting into `AUTO_DEVOPS_POSTGRES_CHANNEL` version `2` deletes
+the version `1` PostgreSQL database. Follow the
+[guide to upgrading PostgreSQL](upgrading_postgresql.md) to back up and restore
+your database before opting into version `2`.
 
 ### Migrations
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/21955) in GitLab 11.4
 
-Database initialization and migrations for PostgreSQL can be configured to run
+You can configure database initialization and migrations for PostgreSQL to run
 within the application pod by setting the project variables `DB_INITIALIZE` and
 `DB_MIGRATE` respectively.
 
-If present, `DB_INITIALIZE` will be run as a shell command within an
-application pod as a Helm post-install hook. As some applications will
-not run without a successful database initialization step, GitLab will
-deploy the first release without the application deployment and only the
-database initialization step. After the database initialization completes,
-GitLab will deploy a second release with the application deployment as
-normal.
+If present, `DB_INITIALIZE` is run as a shell command within an application pod
+as a Helm post-install hook. As some applications can't run without a successful
+database initialization step, GitLab deploys the first release without the
+application deployment, and only the database initialization step. After the database
+initialization completes, GitLab deploys a second release with the application
+deployment as normal.
 
 Note that a post-install hook means that if any deploy succeeds,
 `DB_INITIALIZE` won't be processed thereafter.
 
-If present, `DB_MIGRATE` will be run as a shell command within an application pod as
+If present, `DB_MIGRATE` is run as a shell command within an application pod as
 a Helm pre-upgrade hook.
 
 For example, in a Rails application in an image built with
@@ -369,31 +380,32 @@ For example, in a Rails application in an image built with
 - `DB_MIGRATE` can be set to `RAILS_ENV=production /bin/herokuish procfile exec bin/rails db:migrate`
 
 Unless your repository contains a `Dockerfile`, your image is built with
-Herokuish, and you must prefix commands run in these images with `/bin/herokuish
-procfile exec` to replicate the environment where your application will run.
+Herokuish, and you must prefix commands run in these images with
+`/bin/herokuish procfile exec` to replicate the environment where your application
+will run.
 
 ### Workers
 
-Some web applications need to run extra deployments for "worker processes". For
-example, Rails applications commonly have a separate worker process
+Some web applications must run extra deployments for "worker processes". For
+example, Rails applications commonly use separate worker processes
 to run background tasks like sending emails.
 
 The [default Helm chart](https://gitlab.com/gitlab-org/charts/auto-deploy-app)
-used in Auto Deploy [has support for running worker
-processes](https://gitlab.com/gitlab-org/charts/auto-deploy-app/-/merge_requests/9).
+used in Auto Deploy
+[has support for running worker processes](https://gitlab.com/gitlab-org/charts/auto-deploy-app/-/merge_requests/9).
 
-In order to run a worker, you'll need to ensure the worker can respond to
+To run a worker, you must ensure the worker can respond to
 the standard health checks, which expect a successful HTTP response on port
-`5000`. For [Sidekiq](https://github.com/mperham/sidekiq), you could make use of
-the [`sidekiq_alive` gem](https://rubygems.org/gems/sidekiq_alive) to do this.
+`5000`. For [Sidekiq](https://github.com/mperham/sidekiq), you can use
+the [`sidekiq_alive` gem](https://rubygems.org/gems/sidekiq_alive).
 
-In order to work with Sidekiq, you'll also need to ensure your deployments have
-access to a Redis instance. Auto DevOps won't deploy this for you so you'll
-need to:
+To work with Sidekiq, you must also ensure your deployments have
+access to a Redis instance. Auto DevOps won't deploy this instance for you, so
+you must:
 
 - Maintain your own Redis instance.
-- Set a CI variable `K8S_SECRET_REDIS_URL`, which the URL of this instance to
-  ensure it's passed into your deployments.
+- Set a CI variable `K8S_SECRET_REDIS_URL`, which is the URL of this instance,
+  to ensure it's passed into your deployments.
 
 After configuring your worker to respond to health checks, run a Sidekiq
 worker for your Rails application. You can enable workers by setting the

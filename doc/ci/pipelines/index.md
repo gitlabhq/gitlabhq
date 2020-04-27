@@ -367,10 +367,14 @@ evaluates the job names: `\d+[\s:\/\\]+\d+\s*`.
 When running manual jobs you can supply additional job specific variables.
 
 You can do this from the job page of the manual job you want to run with
-additional variables.
+additional variables. To access this page, click on the **name** of the manual job in
+the pipeline view, *not* the play (**{play}**) button.
 
-This is useful when you want to alter the execution of a job by using
-environment variables.
+This is useful when you want to alter the execution of a job that uses
+[custom environment variables](../variables/README.md#custom-environment-variables).
+Adding a variable name (key) and value here will override the value defined in
+[the UI or `.gitlab-ci.yml`](../variables/README.md#creating-a-custom-environment-variable),
+for a single run of the manual job.
 
 ![Manual job variables](img/manual_job_variables.png)
 

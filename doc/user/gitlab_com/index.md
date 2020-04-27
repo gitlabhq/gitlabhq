@@ -144,6 +144,26 @@ Below are the shared Runners settings.
 | Default Docker image                  | `ruby:2.5`                                        | -          |
 | `privileged` (run [Docker in Docker](https://hub.docker.com/_/docker/)) | `true`          | `false`    |
 
+#### Pre-clone script
+
+Linux Shared Runners on GitLab.com provide a way to run commands in a CI
+job before the Runner attempts to run `git init` and `git fetch` to
+download a GitLab repository. The
+[pre_clone_script](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section)
+can be used for:
+
+- Seeding the build directory with repository data
+- Sending a request to a server
+- Downloading assets from a CDN
+- Any other commands that must run before the `git init`
+
+To use this feature, define a [CI/CD variable](../../ci/variables/README.md#via-the-ui) called
+`CI_PRE_CLONE_SCRIPT` that contains a bash script.
+
+[This example](../../development/pipelines.md#pre-clone-step)
+demonstrates how you might use a pre-clone step to seed the build
+directory.
+
 #### `config.toml`
 
 The full contents of our `config.toml` are:
@@ -164,6 +184,7 @@ sentry_dsn = "X"
   request_concurrency = X
   url = "https://gitlab.com/"
   token = "SHARED_RUNNER_TOKEN"
+  pre_clone_script = "eval \"$CI_PRE_CLONE_SCRIPT\""
   executor = "docker+machine"
   environment = [
     "DOCKER_DRIVER=overlay2",
