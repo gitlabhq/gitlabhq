@@ -1,0 +1,5 @@
+---
+title: Set NULL `lock_version` values to 0 for CI objects
+merge_request: 30305
+author:
+type: fixed

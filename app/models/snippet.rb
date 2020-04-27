@@ -102,6 +102,10 @@ class Snippet < ApplicationRecord
     where(project_id: nil)
   end
 
+  def self.only_project_snippets
+    where.not(project_id: nil)
+  end
+
   def self.only_include_projects_visible_to(current_user = nil)
     levels = Gitlab::VisibilityLevel.levels_for_user(current_user)
 

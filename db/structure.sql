@@ -10723,6 +10723,12 @@ CREATE INDEX tmp_build_stage_position_index ON public.ci_builds USING btree (sta
 
 CREATE INDEX tmp_idx_on_user_id_where_bio_is_filled ON public.users USING btree (id) WHERE ((COALESCE(bio, ''::character varying))::text IS DISTINCT FROM ''::text);
 
+CREATE INDEX tmp_index_ci_builds_lock_version ON public.ci_builds USING btree (id) WHERE (lock_version IS NULL);
+
+CREATE INDEX tmp_index_ci_pipelines_lock_version ON public.ci_pipelines USING btree (id) WHERE (lock_version IS NULL);
+
+CREATE INDEX tmp_index_ci_stages_lock_version ON public.ci_stages USING btree (id) WHERE (lock_version IS NULL);
+
 CREATE UNIQUE INDEX users_security_dashboard_projects_unique_index ON public.users_security_dashboard_projects USING btree (project_id, user_id);
 
 CREATE UNIQUE INDEX vulnerability_feedback_unique_idx ON public.vulnerability_feedback USING btree (project_id, category, feedback_type, project_fingerprint);
@@ -13257,6 +13263,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200214214934
 20200215222507
 20200215225103
+20200217210353
 20200217223651
 20200217225719
 20200218113721
@@ -13484,5 +13491,6 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200423080607
 20200423081409
 20200424050250
+20200427064130
 \.
 
