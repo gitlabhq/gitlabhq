@@ -51,6 +51,9 @@ However, DAST can be [configured](#full-scan)
 to also perform a so-called "active scan". That is, attack your application and produce a more extensive security report.
 It can be very useful combined with [Review Apps](../../../ci/review_apps/index.md).
 
+NOTE: **Note:**
+A pipeline may consist of multiple jobs, including SAST and DAST scanning. If any job fails to finish for any reason, the security dashboard will not show DAST scanner output. For example, if the DAST job finishes but the SAST job fails, the security dashboard will not show DAST results. The analyzer will output an [exit code](../../../development/integrations/secure.md#exit-code) on failure.
+
 ## Use cases
 
 It helps you automatically find security vulnerabilities in your running web
