@@ -130,6 +130,7 @@ module Gitlab
       encrypted_key
       hook
       import_url
+      elasticsearch_url
       otp_attempt
       sentry_dsn
       trace
