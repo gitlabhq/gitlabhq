@@ -401,7 +401,7 @@ describe API::Search do
       context 'for wiki_blobs scope' do
         before do
           wiki = create(:project_wiki, project: project)
-          create(:wiki_page, wiki: wiki, attrs: { title: 'home', content: "Awesome page" })
+          create(:wiki_page, wiki: wiki, title: 'home', content: "Awesome page")
 
           get api("/projects/#{project.id}/search", user), params: { scope: 'wiki_blobs', search: 'awesome' }
         end

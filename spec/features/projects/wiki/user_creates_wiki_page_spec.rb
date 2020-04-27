@@ -195,7 +195,7 @@ describe "User creates wiki page" do
 
   context "when wiki is not empty", :js do
     before do
-      create(:wiki_page, wiki: wiki, attrs: { title: 'home', content: 'Home page' })
+      create(:wiki_page, wiki: wiki, title: 'home', content: 'Home page')
 
       visit(project_wikis_path(project))
     end
@@ -304,8 +304,8 @@ describe "User creates wiki page" do
   describe 'sidebar feature' do
     context 'when there are some existing pages' do
       before do
-        create(:wiki_page, wiki: wiki, attrs: { title: 'home', content: 'home' })
-        create(:wiki_page, wiki: wiki, attrs: { title: 'another', content: 'another' })
+        create(:wiki_page, wiki: wiki, title: 'home', content: 'home')
+        create(:wiki_page, wiki: wiki, title: 'another', content: 'another')
       end
 
       it 'renders a default sidebar when there is no customized sidebar' do
@@ -316,7 +316,7 @@ describe "User creates wiki page" do
 
       context 'when there is a customized sidebar' do
         before do
-          create(:wiki_page, wiki: wiki, attrs: { title: '_sidebar', content: 'My customized sidebar' })
+          create(:wiki_page, wiki: wiki, title: '_sidebar', content: 'My customized sidebar')
         end
 
         it 'renders my customized sidebar instead of the default one' do
@@ -330,8 +330,8 @@ describe "User creates wiki page" do
 
     context 'when there are more than 15 existing pages' do
       before do
-        create(:wiki_page, wiki: wiki, attrs: { title: 'home', content: 'home' })
-        (1..14).each { |i| create(:wiki_page, wiki: wiki, attrs: { title: "page-#{i}", content: "page #{i}" }) }
+        create(:wiki_page, wiki: wiki, title: 'home', content: 'home')
+        (1..14).each { |i| create(:wiki_page, wiki: wiki, title: "page-#{i}", content: "page #{i}") }
       end
 
       it 'renders a default sidebar when there is no customized sidebar' do

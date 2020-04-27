@@ -17,7 +17,7 @@ module BlobHelper
                            options[:link_opts])
   end
 
-  def ide_edit_path(project = @project, ref = @ref, path = @path, options = {})
+  def ide_edit_path(project = @project, ref = @ref, path = @path)
     project_path =
       if !current_user || can?(current_user, :push_code, project)
         project.full_path
@@ -52,28 +52,25 @@ module BlobHelper
     edit_button_tag(blob,
                     common_classes,
                     _('Edit'),
-                    Feature.enabled?(:web_ide_default) ? ide_edit_path(project, ref, path, options) : edit_blob_path(project, ref, path, options),
+                    Feature.enabled?(:web_ide_default) ? ide_edit_path(project, ref, path) : edit_blob_path(project, ref, path, options),
                     project,
                     ref)
   end
 
-  def ide_edit_button(project = @project, ref = @ref, path = @path, options = {})
+  def ide_edit_button(project = @project, ref = @ref, path = @path, blob:)
     return if Feature.enabled?(:web_ide_default)
-    return unless blob = readable_blob(options, path, project, ref)
+    return unless blob
 
     edit_button_tag(blob,
                     'btn btn-inverted btn-primary ide-edit-button ml-2',
                     _('Web IDE'),
-                    ide_edit_path(project, ref, path, options),
+                    ide_edit_path(project, ref, path),
                     project,
                     ref)
   end
 
-  def modify_file_button(project = @project, ref = @ref, path = @path, label:, action:, btn_class:, modal_type:)
+  def modify_file_button(project = @project, ref = @ref, path = @path, blob:, label:, action:, btn_class:, modal_type:)
     return unless current_user
-
-    blob = project.repository.blob_at(ref, path) rescue nil
-
     return unless blob
 
     common_classes = "btn btn-#{btn_class}"
@@ -89,11 +86,12 @@ module BlobHelper
     end
   end
 
-  def replace_blob_link(project = @project, ref = @ref, path = @path)
+  def replace_blob_link(project = @project, ref = @ref, path = @path, blob:)
     modify_file_button(
       project,
       ref,
       path,
+      blob: blob,
       label:      _("Replace"),
       action:     "replace",
       btn_class:  "default",
@@ -101,11 +99,12 @@ module BlobHelper
     )
   end
 
-  def delete_blob_link(project = @project, ref = @ref, path = @path)
+  def delete_blob_link(project = @project, ref = @ref, path = @path, blob:)
     modify_file_button(
       project,
       ref,
       path,
+      blob: blob,
       label:      _("Delete"),
       action:     "delete",
       btn_class:  "default",

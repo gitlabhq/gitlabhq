@@ -6,17 +6,8 @@ describe WikiPage do
   let_it_be(:user) { create(:user) }
   let(:container) { create(:project, :wiki_repo) }
   let(:wiki) { Wiki.for_container(container, user) }
-
-  let(:new_page) do
-    described_class.new(wiki).tap do |page|
-      page.attributes = { title: 'test page', content: 'test content' }
-    end
-  end
-
-  let(:existing_page) do
-    create_page('test page', 'test content')
-    wiki.find_page('test page')
-  end
+  let(:new_page) { build(:wiki_page, wiki: wiki, title: 'test page', content: 'test content') }
+  let(:existing_page) { create(:wiki_page, wiki: wiki, title: 'test page', content: 'test content', message: 'test commit') }
 
   subject { new_page }
 
@@ -41,13 +32,13 @@ describe WikiPage do
 
     context 'when there are pages' do
       before do
-        create_page('dir_1/dir_1_1/page_3', 'content')
-        create_page('page_1', 'content')
-        create_page('dir_1/page_2', 'content')
-        create_page('dir_2', 'page with dir name')
-        create_page('dir_2/page_5', 'content')
-        create_page('page_6', 'content')
-        create_page('dir_2/page_4', 'content')
+        wiki.create_page('dir_1/dir_1_1/page_3', 'content')
+        wiki.create_page('page_1', 'content')
+        wiki.create_page('dir_1/page_2', 'content')
+        wiki.create_page('dir_2', 'page with dir name')
+        wiki.create_page('dir_2/page_5', 'content')
+        wiki.create_page('page_6', 'content')
+        wiki.create_page('dir_2/page_4', 'content')
       end
 
       let(:page_1) { wiki.find_page('page_1') }
@@ -353,7 +344,7 @@ describe WikiPage do
       context 'with an existing page title exceeding the limit' do
         subject do
           title = 'a' * (max_title + 1)
-          create_page(title, 'content')
+          wiki.create_page(title, 'content')
           wiki.find_page(title)
         end
 
@@ -397,6 +388,20 @@ describe WikiPage do
 
         expect(wiki.find_page("Index").message).to eq 'Custom Commit Message'
       end
+
+      it 'if the title is preceded by a / it is removed' do
+        subject.create(attributes.merge(title: '/New Page'))
+
+        expect(wiki.find_page('New Page')).not_to be_nil
+      end
+    end
+
+    context "with invalid attributes" do
+      it 'does not create the page' do
+        subject.create(title: '')
+
+        expect(wiki.find_page('New Page')).to be_nil
+      end
     end
   end
 
@@ -419,14 +424,11 @@ describe WikiPage do
       end
     end
 
-    describe "#update" do
-      subject do
-        create_page(title, "content")
-        wiki.find_page(title)
-      end
+    describe '#update' do
+      subject { create(:wiki_page, wiki: wiki, title: title) }
 
-      it "updates the content of the page" do
-        subject.update(content: "new content")
+      it 'updates the content of the page' do
+        subject.update(content: 'new content')
         page = wiki.find_page(title)
 
         expect([subject.content, page.content]).to all(eq('new content'))
@@ -434,24 +436,6 @@ describe WikiPage do
 
       it "returns true" do
         expect(subject.update(content: "more content")).to be_truthy
-      end
-    end
-  end
-
-  describe '#create' do
-    context 'with valid attributes' do
-      it 'raises an error if a page with the same path already exists' do
-        create_page('New Page', 'content')
-        create_page('foo/bar', 'content')
-
-        expect { create_page('New Page', 'other content') }.to raise_error Gitlab::Git::Wiki::DuplicatePageError
-        expect { create_page('foo/bar', 'other content') }.to raise_error Gitlab::Git::Wiki::DuplicatePageError
-      end
-
-      it 'if the title is preceded by a / it is removed' do
-        create_page('/New Page', 'content')
-
-        expect(wiki.find_page('New Page')).not_to be_nil
       end
     end
   end
@@ -573,7 +557,7 @@ describe WikiPage do
 
     context 'when renaming a page' do
       it 'raises an error if the page already exists' do
-        create_page('Existing Page', 'content')
+        wiki.create_page('Existing Page', 'content')
 
         expect { subject.update(title: 'Existing Page', content: 'new_content') }.to raise_error(WikiPage::PageRenameError)
         expect(subject.title).to eq 'test page'
@@ -595,7 +579,7 @@ describe WikiPage do
 
     context 'when moving a page' do
       it 'raises an error if the page already exists' do
-        create_page('foo/Existing Page', 'content')
+        wiki.create_page('foo/Existing Page', 'content')
 
         expect { subject.update(title: 'foo/Existing Page', content: 'new_content') }.to raise_error(WikiPage::PageRenameError)
         expect(subject.title).to eq 'test page'
@@ -615,10 +599,7 @@ describe WikiPage do
       end
 
       context 'in subdir' do
-        subject do
-          create_page('foo/Existing Page', 'content')
-          wiki.find_page('foo/Existing Page')
-        end
+        subject { create(:wiki_page, wiki: wiki, title: 'foo/Existing Page') }
 
         it 'moves the page to the root folder if the title is preceded by /' do
           expect(subject.slug).to eq 'foo/Existing-Page'
@@ -656,7 +637,7 @@ describe WikiPage do
     end
   end
 
-  describe "#destroy" do
+  describe "#delete" do
     subject { existing_page }
 
     it "deletes the page" do
@@ -688,10 +669,7 @@ describe WikiPage do
     using RSpec::Parameterized::TableSyntax
 
     let(:untitled_page) { described_class.new(wiki) }
-    let(:directory_page) do
-      create_page('parent directory/child page', 'test content')
-      wiki.find_page('parent directory/child page')
-    end
+    let(:directory_page) { create(:wiki_page, title: 'parent directory/child page') }
 
     where(:page, :title, :changed) do
       :untitled_page  | nil                             | false
@@ -754,10 +732,7 @@ describe WikiPage do
     end
 
     context 'when the page is inside an actual directory' do
-      subject do
-        create_page('dir_1/dir_1_1/file', 'content')
-        wiki.find_page('dir_1/dir_1_1/file')
-      end
+      subject { create(:wiki_page, title: 'dir_1/dir_1_1/file') }
 
       it 'returns the full directory hierarchy' do
         expect(subject.directory).to eq('dir_1/dir_1_1')
@@ -801,6 +776,16 @@ describe WikiPage do
       expect(old_page).to receive(:version) { nil }
 
       expect(old_page.historical?).to be_falsy
+    end
+  end
+
+  describe '#persisted?' do
+    it 'returns true for a persisted page' do
+      expect(existing_page).to be_persisted
+    end
+
+    it 'returns false for an unpersisted page' do
+      expect(new_page).not_to be_persisted
     end
   end
 
@@ -885,18 +870,6 @@ describe WikiPage do
   end
 
   private
-
-  def remove_temp_repo(path)
-    FileUtils.rm_rf path
-  end
-
-  def commit_details
-    Gitlab::Git::Wiki::CommitDetails.new(user.id, user.username, user.name, user.email, "test commit")
-  end
-
-  def create_page(name, content)
-    wiki.wiki.write_page(name, :markdown, content, commit_details)
-  end
 
   def get_slugs(page_or_dir)
     if page_or_dir.is_a? WikiPage

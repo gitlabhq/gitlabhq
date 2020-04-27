@@ -57,7 +57,7 @@ describe Banzai::Pipeline::WikiPipeline do
     let(:namespace) { create(:namespace, name: "wiki_link_ns") }
     let(:project)   { create(:project, :public, name: "wiki_link_project", namespace: namespace) }
     let(:project_wiki) { ProjectWiki.new(project, double(:user)) }
-    let(:page) { build(:wiki_page, wiki: project_wiki, page: OpenStruct.new(url_path: 'nested/twice/start-page')) }
+    let(:page) { build(:wiki_page, wiki: project_wiki, title: 'nested/twice/start-page') }
 
     { 'when GitLab is hosted at a root URL' => '',
       'when GitLab is hosted at a relative URL' => '/nested/relative/gitlab' }.each do |test_name, relative_url_root|
@@ -264,7 +264,7 @@ describe Banzai::Pipeline::WikiPipeline do
     let_it_be(:namespace) { create(:namespace, name: "wiki_link_ns") }
     let_it_be(:project)   { create(:project, :public, name: "wiki_link_project", namespace: namespace) }
     let_it_be(:project_wiki) { ProjectWiki.new(project, double(:user)) }
-    let_it_be(:page) { build(:wiki_page, wiki: project_wiki, page: OpenStruct.new(url_path: 'nested/twice/start-page')) }
+    let_it_be(:page) { build(:wiki_page, wiki: project_wiki, title: 'nested/twice/start-page') }
 
     it 'generates video html structure' do
       markdown = "![video_file](video_file_name.mp4)"

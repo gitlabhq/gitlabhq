@@ -84,7 +84,7 @@ describe SearchController do
       with_them do
         it do
           project_wiki = create(:project_wiki, project: project, user: user)
-          create(:wiki_page, wiki: project_wiki, attrs: { title: 'merge', content: 'merge' })
+          create(:wiki_page, wiki: project_wiki, title: 'merge', content: 'merge')
 
           expect(subject).to render_template("search/results/#{partial}")
         end

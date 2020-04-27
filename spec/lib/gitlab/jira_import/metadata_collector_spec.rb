@@ -9,7 +9,6 @@ describe Gitlab::JiraImport::MetadataCollector do
     let(:description) { 'basic description' }
     let(:created_at) { '2020-01-01 20:00:00' }
     let(:updated_at) { '2020-01-10 20:00:00' }
-    let(:assignee) { double(displayName: 'Solver') }
     let(:jira_status) { 'new' }
 
     let(:parent_field) do
@@ -18,7 +17,6 @@ describe Gitlab::JiraImport::MetadataCollector do
     let(:issue_type_field) { { 'name' => 'Task' } }
     let(:fix_versions_field) { [{ 'name' => '1.0' }, { 'name' => '1.1' }] }
     let(:priority_field) { { 'name' => 'Medium' } }
-    let(:labels_field) { %w(bug backend) }
     let(:environment_field) { 'staging' }
     let(:duedate_field) { '2020-03-01' }
 
@@ -28,7 +26,6 @@ describe Gitlab::JiraImport::MetadataCollector do
         'issuetype' => issue_type_field,
         'fixVersions' => fix_versions_field,
         'priority' => priority_field,
-        'labels' => labels_field,
         'environment' => environment_field,
         'duedate' => duedate_field
       }
@@ -41,8 +38,6 @@ describe Gitlab::JiraImport::MetadataCollector do
         description: description,
         created: created_at,
         updated: updated_at,
-        assignee: assignee,
-        reporter: double(displayName: 'Reporter'),
         status: double(statusCategory: { 'key' => jira_status }),
         fields: fields
       )
@@ -59,7 +54,6 @@ describe Gitlab::JiraImport::MetadataCollector do
 
           - Issue type: Task
           - Priority: Medium
-          - Labels: bug, backend
           - Environment: staging
           - Due date: 2020-03-01
           - Parent issue: [FOO-2] parent issue FOO
@@ -71,11 +65,9 @@ describe Gitlab::JiraImport::MetadataCollector do
     end
 
     context 'when some fields are in incorrect format' do
-      let(:assignee) { nil }
       let(:parent_field) { nil }
       let(:fix_versions_field) { [] }
       let(:priority_field) { nil }
-      let(:labels_field) { [] }
       let(:environment_field) { nil }
       let(:duedate_field) { nil }
 
@@ -106,22 +98,6 @@ describe Gitlab::JiraImport::MetadataCollector do
 
             - Issue type: Task
             - Fix versions: 1.1
-          MD
-
-          expect(subject.strip).to eq(expected_result.strip)
-        end
-      end
-
-      context 'when a labels field is not an array' do
-        let(:labels_field) { { 'first' => 'bug' } }
-
-        it 'skips the labels' do
-          expected_result = <<~MD
-            ---
-
-            **Issue metadata**
-
-            - Issue type: Task
           MD
 
           expect(subject.strip).to eq(expected_result.strip)
@@ -167,10 +143,8 @@ describe Gitlab::JiraImport::MetadataCollector do
     end
 
     context 'when some metadata fields are missing' do
-      let(:assignee) { nil }
       let(:parent_field) { nil }
       let(:fix_versions_field) { [] }
-      let(:labels_field) { [] }
       let(:environment_field) { nil }
 
       it 'skips the missing fields' do
@@ -189,12 +163,10 @@ describe Gitlab::JiraImport::MetadataCollector do
     end
 
     context 'when all metadata fields are missing' do
-      let(:assignee) { nil }
       let(:parent_field) { nil }
       let(:issue_type_field) { nil }
       let(:fix_versions_field) { [] }
       let(:priority_field) { nil }
-      let(:labels_field) { [] }
       let(:environment_field) { nil }
       let(:duedate_field) { nil }
 

@@ -18,6 +18,8 @@ describe MergeRequest do
     it { is_expected.to have_many(:assignees).through(:merge_request_assignees) }
     it { is_expected.to have_many(:merge_request_diffs) }
     it { is_expected.to have_many(:user_mentions).class_name("MergeRequestUserMention") }
+    it { is_expected.to belong_to(:milestone) }
+    it { is_expected.to belong_to(:sprint) }
 
     context 'for forks' do
       let!(:project) { create(:project) }

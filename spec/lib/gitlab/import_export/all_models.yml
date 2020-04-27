@@ -6,6 +6,7 @@ issues:
 - assignees
 - updated_by
 - milestone
+- sprint
 - notes
 - resource_label_events
 - resource_weight_events
@@ -113,6 +114,7 @@ merge_requests:
 - assignee
 - updated_by
 - milestone
+- sprint
 - notes
 - resource_label_events
 - resource_milestone_events

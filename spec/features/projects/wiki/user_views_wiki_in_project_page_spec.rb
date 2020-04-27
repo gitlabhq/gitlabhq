@@ -21,7 +21,7 @@ describe 'Projects > Wiki > User views wiki in project page' do
 
     context 'when wiki homepage contains a link' do
       before do
-        create(:wiki_page, wiki: project.wiki, attrs: { title: 'home', content: '[some link](other-page)' })
+        create(:wiki_page, wiki: project.wiki, title: 'home', content: '[some link](other-page)')
       end
 
       it 'displays the correct URL for the link' do

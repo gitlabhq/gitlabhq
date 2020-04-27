@@ -25,8 +25,8 @@ describe API::Wikis do
   shared_examples_for 'returns list of wiki pages' do
     context 'when wiki has pages' do
       let!(:pages) do
-        [create(:wiki_page, wiki: project_wiki, attrs: { title: 'page1', content: 'content of page1' }),
-         create(:wiki_page, wiki: project_wiki, attrs: { title: 'page2.with.dot', content: 'content of page2' })]
+        [create(:wiki_page, wiki: project_wiki, title: 'page1', content: 'content of page1'),
+         create(:wiki_page, wiki: project_wiki, title: 'page2.with.dot', content: 'content of page2')]
       end
 
       it 'returns the list of wiki pages without content' do

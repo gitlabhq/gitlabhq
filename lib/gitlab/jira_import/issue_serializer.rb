@@ -21,7 +21,8 @@ module Gitlab
           state_id: map_status(jira_issue.status.statusCategory),
           updated_at: jira_issue.updated,
           created_at: jira_issue.created,
-          author_id: project.creator_id # TODO: map actual author: https://gitlab.com/gitlab-org/gitlab/-/issues/210580
+          author_id: project.creator_id, # TODO: map actual author: https://gitlab.com/gitlab-org/gitlab/-/issues/210580
+          label_ids: label_ids
         }
       end
 
@@ -48,6 +49,15 @@ module Gitlab
         else
           Issuable::STATE_ID_MAP[:opened]
         end
+      end
+
+      # We already create labels in Gitlab::JiraImport::LabelsImporter stage but
+      # there is a possibility it may fail or
+      # new labels were created on the Jira in the meantime
+      def label_ids
+        return if jira_issue.fields['labels'].blank?
+
+        Gitlab::JiraImport::HandleLabelsService.new(project, jira_issue.fields['labels']).execute
       end
     end
   end

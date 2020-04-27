@@ -19,6 +19,10 @@
             %li
               .monospace
                 = File.basename(file)
+              - if File.dirname(file).ends_with?('plugins')
+                .text-warning
+                  = _('Plugins directory is deprecated and will be removed in 14.0. Please move this file into /file_hooks directory.')
+
     - else
       .card.bg-light.text-center
         .nothing-here-block= _('No file hooks found.')

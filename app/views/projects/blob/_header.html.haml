@@ -4,13 +4,13 @@
 
   .file-actions<
     = render 'projects/blob/viewer_switcher', blob: blob unless blame
-    = edit_blob_button
-    = ide_edit_button
+    = edit_blob_button(@project, @ref, @path, blob: blob)
+    = ide_edit_button(@project, @ref, @path, blob: blob)
     .btn-group.ml-2{ role: "group" }>
       = render_if_exists 'projects/blob/header_file_locks_link'
       - if current_user
-        = replace_blob_link
-        = delete_blob_link
+        = replace_blob_link(@project, @ref, @path, blob: blob)
+        = delete_blob_link(@project, @ref, @path, blob: blob)
     .btn-group.ml-2{ role: "group" }
       = copy_blob_source_button(blob) unless blame
       = open_raw_blob_button(blob)

@@ -490,7 +490,7 @@ describe Event do
 
     context 'for a wiki page event' do
       let(:wiki_page) do
-        create(:wiki_page, :with_real_page, project: project)
+        create(:wiki_page, project: project)
       end
 
       subject(:event) { create(:wiki_page_event, project: project, wiki_page: wiki_page) }

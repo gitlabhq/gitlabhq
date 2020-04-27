@@ -4,7 +4,11 @@ require 'spec_helper'
 
 describe Gitlab::JiraImport::IssueSerializer do
   describe '#execute' do
-    let_it_be(:project) { create(:project) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, group: group) }
+    let_it_be(:project_label) { create(:label, project: project, title: 'bug') }
+    let_it_be(:other_project_label) { create(:label, project: project, title: 'feature') }
+    let_it_be(:group_label) { create(:group_label, group: group, title: 'dev') }
 
     let(:iid) { 5 }
     let(:key) { 'PROJECT-5' }
@@ -19,11 +23,13 @@ describe Gitlab::JiraImport::IssueSerializer do
       { 'key' => 'FOO-2', 'id' => '1050', 'fields' => { 'summary' => 'parent issue FOO' } }
     end
     let(:priority_field) { { 'name' => 'Medium' } }
+    let(:labels_field) { %w(bug dev backend frontend) }
 
     let(:fields) do
       {
         'parent' => parent_field,
-        'priority' => priority_field
+        'priority' => priority_field,
+        'labels' => labels_field
       }
     end
 
@@ -73,8 +79,32 @@ describe Gitlab::JiraImport::IssueSerializer do
           state_id: 1,
           updated_at: updated_at,
           created_at: created_at,
-          author_id: project.creator_id
+          author_id: project.creator_id,
+          label_ids: [project_label.id, group_label.id] + Label.reorder(id: :asc).last(2).pluck(:id)
         )
+      end
+
+      it 'creates a hash for valid issue' do
+        expect(Issue.new(subject)).to be_valid
+      end
+
+      it 'creates all missing labels (on project level)' do
+        expect { subject }.to change { Label.count }.from(3).to(5)
+
+        expect(Label.find_by(title: 'frontend').project).to eq(project)
+        expect(Label.find_by(title: 'backend').project).to eq(project)
+      end
+
+      context 'when there are no new labels' do
+        let(:labels_field) { %w(bug dev) }
+
+        it 'assigns the labels to the Issue hash' do
+          expect(subject[:label_ids]).to match_array([project_label.id, group_label.id])
+        end
+
+        it 'does not create new labels' do
+          expect { subject }.not_to change { Label.count }.from(3)
+        end
       end
     end
 

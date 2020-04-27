@@ -13,7 +13,6 @@ module Gitlab
       def execute
         add_field(%w(issuetype name), 'Issue type')
         add_field(%w(priority name), 'Priority')
-        add_labels
         add_field('environment', 'Environment')
         add_field('duedate', 'Due date')
         add_parent
@@ -31,12 +30,6 @@ module Gitlab
         return if value.blank?
 
         metadata << "- #{field_label}: #{value}"
-      end
-
-      def add_labels
-        return if fields['labels'].blank? || !fields['labels'].is_a?(Array)
-
-        metadata << "- Labels: #{fields['labels'].join(', ')}"
       end
 
       def add_parent

@@ -5,6 +5,10 @@ require 'spec_helper'
 describe Gitlab::RequestContext, :request_store do
   subject { described_class.instance }
 
+  before do
+    allow(subject).to receive(:enabled?).and_return(true)
+  end
+
   it { is_expected.to have_attributes(client_ip: nil, start_thread_cpu_time: nil, request_start_time: nil) }
 
   describe '#request_deadline' do

@@ -3,18 +3,23 @@
 require 'spec_helper'
 
 describe Gitlab::JiraImport::LabelsImporter do
-  let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project) }
+  let_it_be(:user)         { create(:user) }
+  let_it_be(:group)        { create(:group) }
+  let_it_be(:project)      { create(:project, group: group) }
   let_it_be(:jira_service) { create(:jira_service, project: project) }
 
   subject { described_class.new(project).execute }
 
   before do
     stub_feature_flags(jira_issue_import: true)
+    stub_const('Gitlab::JiraImport::LabelsImporter::MAX_LABELS', 2)
+
+    WebMock.stub_request(:get, 'https://jira.example.com/rest/api/2/serverInfo')
+      .to_return(body: { url: 'http://url' }.to_json )
   end
 
   describe '#execute', :clean_gitlab_redis_cache do
-    context 'when label is missing from jira import' do
+    context 'when jira import label is missing from jira import' do
       let_it_be(:no_label_jira_import) { create(:jira_import_state, label: nil, project: project) }
 
       it 'raises error' do
@@ -22,16 +27,71 @@ describe Gitlab::JiraImport::LabelsImporter do
       end
     end
 
-    context 'when label exists' do
-      let_it_be(:label) { create(:label) }
+    context 'when jira import label exists' do
+      let_it_be(:label)                  { create(:label) }
       let_it_be(:jira_import_with_label) { create(:jira_import_state, label: label, project: project) }
+      let_it_be(:issue_label)            { create(:label, project: project, title: 'bug') }
 
-      it 'caches import label' do
-        expect(Gitlab::Cache::Import::Caching.read(Gitlab::JiraImport.import_label_cache_key(project.id))).to be nil
+      let(:jira_labels_1) { { "maxResults" => 2, "startAt" => 0, "total" => 3, "isLast" => false, "values" => %w(backend bug) } }
+      let(:jira_labels_2) { { "maxResults" => 2, "startAt" => 2, "total" => 3, "isLast" => true, "values" => %w(feature) } }
 
-        subject
+      before do
+        WebMock.stub_request(:get, 'https://jira.example.com/rest/api/2/label?maxResults=2&startAt=0')
+          .to_return(body: jira_labels_1.to_json )
+        WebMock.stub_request(:get, 'https://jira.example.com/rest/api/2/label?maxResults=2&startAt=2')
+          .to_return(body: jira_labels_2.to_json )
+      end
 
-        expect(Gitlab::JiraImport.get_import_label_id(project.id).to_i).to eq(label.id)
+      context 'when labels are returned from jira' do
+        it 'caches import label' do
+          expect(Gitlab::Cache::Import::Caching.read(Gitlab::JiraImport.import_label_cache_key(project.id))).to be nil
+
+          subject
+
+          expect(Gitlab::JiraImport.get_import_label_id(project.id).to_i).to eq(label.id)
+        end
+
+        it 'calls Gitlab::JiraImport::HandleLabelsService' do
+          expect(Gitlab::JiraImport::HandleLabelsService).to receive(:new).with(project, %w(backend bug)).and_return(double(execute: [1, 2]))
+          expect(Gitlab::JiraImport::HandleLabelsService).to receive(:new).with(project, %w(feature)).and_return(double(execute: [3]))
+
+          subject
+        end
+      end
+
+      context 'when there are no labels to be handled' do
+        shared_examples 'no labels handling' do
+          it 'does not call Gitlab::JiraImport::HandleLabelsService' do
+            expect(Gitlab::JiraImport::HandleLabelsService).not_to receive(:new)
+
+            subject
+          end
+        end
+
+        let(:jira_labels) { { "maxResults" => 2, "startAt" => 0, "total" => 3, "values" => [] } }
+
+        before do
+          WebMock.stub_request(:get, 'https://jira.example.com/rest/api/2/label?maxResults=2&startAt=0')
+            .to_return(body: jira_labels.to_json )
+        end
+
+        context 'when the labels field is empty' do
+          let(:jira_labels) { { "maxResults" => 2, "startAt" => 0, "isLast" => true, "total" => 3, "values" => [] } }
+
+          it_behaves_like 'no labels handling'
+        end
+
+        context 'when the labels field is missing' do
+          let(:jira_labels) { { "maxResults" => 2, "startAt" => 0, "isLast" => true, "total" => 3 } }
+
+          it_behaves_like 'no labels handling'
+        end
+
+        context 'when the isLast argument is missing' do
+          let(:jira_labels) { { "maxResults" => 2, "startAt" => 0, "total" => 3, "values" => %w(bug dev) } }
+
+          it_behaves_like 'no labels handling'
+        end
       end
     end
   end

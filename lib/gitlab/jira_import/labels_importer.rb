@@ -5,6 +5,8 @@ module Gitlab
     class LabelsImporter < BaseImporter
       attr_reader :job_waiter
 
+      MAX_LABELS = 500
+
       def initialize(project)
         super
         @job_waiter = JobWaiter.new
@@ -25,8 +27,28 @@ module Gitlab
       end
 
       def import_jira_labels
-        # todo: import jira labels, see https://gitlab.com/gitlab-org/gitlab/-/issues/212651
+        start_at = 0
+        loop do
+          break if process_jira_page(start_at)
+
+          start_at += MAX_LABELS
+        end
+
         job_waiter
+      end
+
+      def process_jira_page(start_at)
+        request = "/rest/api/2/label?maxResults=#{MAX_LABELS}&startAt=#{start_at}"
+        response = JSON.parse(client.get(request))
+
+        return true if response['values'].blank?
+        return true unless response.key?('isLast')
+
+        Gitlab::JiraImport::HandleLabelsService.new(project, response['values']).execute
+
+        response['isLast']
+      rescue => e
+        Gitlab::ErrorTracking.track_exception(e, project_id: project.id, request: request)
       end
     end
   end
