@@ -11,7 +11,7 @@ RSpec.describe 'Dashboard Help' do
     it 'renders correctly markdown' do
       visit help_page_path("administration/raketasks/maintenance")
 
-      expect(page).to have_content('Gather information about GitLab and the system it runs on')
+      expect(page).to have_content('Gather GitLab and system information')
 
       node = find('.documentation h2 a#user-content-check-gitlab-configuration')
       expect(node[:href]).to eq '#check-gitlab-configuration'

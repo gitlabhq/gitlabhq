@@ -1,4 +1,6 @@
-# LDAP Rake Tasks
+# LDAP Rake tasks
+
+The following are LDAP-related Rake tasks.
 
 ## Check
 
@@ -26,7 +28,7 @@ limit by passing a number to the check task:
 rake gitlab:ldap:check[50]
 ```
 
-## Run a Group Sync
+## Run a group sync
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/14735) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.2.
 

@@ -1,9 +1,11 @@
 # Geo Rake Tasks **(PREMIUM ONLY)**
 
+The following Rake tasks are for [Geo installations](../geo/replication/index.md).
+
 ## Git housekeeping
 
 There are few tasks you can run to schedule a Git housekeeping to start at the
-next repository sync in a **Secondary node**:
+next repository sync in a **secondary** node:
 
 ### Incremental Repack
 

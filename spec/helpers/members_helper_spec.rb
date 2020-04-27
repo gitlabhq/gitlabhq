@@ -22,6 +22,17 @@ describe MembersHelper do
     it { expect(remove_member_message(group_member_invite)).to eq "Are you sure you want to revoke the invitation for #{group_member_invite.invite_email} to join the #{group.name} group?" }
     it { expect(remove_member_message(group_member_request)).to eq "Are you sure you want to deny #{requester.name}'s request to join the #{group.name} group?" }
     it { expect(remove_member_message(group_member_request, user: requester)).to eq "Are you sure you want to withdraw your access request for the #{group.name} group?" }
+
+    context 'an accepted user invitation with no user associated' do
+      before do
+        group_member_invite.update(invite_email: "#{SecureRandom.hex}@example.com", invite_token: nil, user_id: nil)
+      end
+
+      it 'logs an exception and shows orphaned status' do
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(anything, hash_including(:member_id, :invite_email, :invite_accepted_at))
+        expect(remove_member_message(group_member_invite)).to eq "Are you sure you want to remove this orphaned member from the #{group.name} group and any subresources?"
+      end
+    end
   end
 
   describe '#remove_member_title' do
