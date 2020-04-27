@@ -1,0 +1,5 @@
+---
+title: Ensure MR diff exists before codeowner check
+merge_request:
+author:
+type: security
