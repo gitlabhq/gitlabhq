@@ -43,11 +43,13 @@ module Gitlab
             raise "unexpected field: #{field.inspect}" unless parsed_field.count == 1
 
             key, value = parsed_field.first
-            if value.nil?
-              value = open_file(@request.params, key)
+            if value.nil? # we have a top level param, eg. field = 'foo' and not 'foo[bar]'
+              raise "invalid field: #{field.inspect}" if field != key
+
+              value = open_file(@request.params, key, tmp_path.presence)
               @open_files << value
             else
-              value = decorate_params_value(value, @request.params[key])
+              value = decorate_params_value(value, @request.params[key], tmp_path.presence)
             end
 
             update_param(key, value)
@@ -59,7 +61,7 @@ module Gitlab
         end
 
         # This function calls itself recursively
-        def decorate_params_value(path_hash, value_hash)
+        def decorate_params_value(path_hash, value_hash, path_override = nil)
           unless path_hash.is_a?(Hash) && path_hash.count == 1
             raise "invalid path: #{path_hash.inspect}"
           end
@@ -72,19 +74,19 @@ module Gitlab
 
           case path_value
           when nil
-            value_hash[path_key] = open_file(value_hash.dig(path_key), '')
+            value_hash[path_key] = open_file(value_hash.dig(path_key), '', path_override)
             @open_files << value_hash[path_key]
             value_hash
           when Hash
-            decorate_params_value(path_value, value_hash[path_key])
+            decorate_params_value(path_value, value_hash[path_key], path_override)
             value_hash
           else
             raise "unexpected path value: #{path_value.inspect}"
           end
         end
 
-        def open_file(params, key)
-          ::UploadedFile.from_params(params, key, allowed_paths)
+        def open_file(params, key, path_override = nil)
+          ::UploadedFile.from_params(params, key, allowed_paths, path_override)
         end
 
         # update_params ensures that both rails controllers and rack middleware can find
