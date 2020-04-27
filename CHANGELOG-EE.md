@@ -2,6 +2,8 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 ## 12.9.4 (2020-04-16)
 
+- No changes.
+- No changes.
 ### Fixed (2 changes)
 
 - Update index_options to fix advanced search queries. !28712
