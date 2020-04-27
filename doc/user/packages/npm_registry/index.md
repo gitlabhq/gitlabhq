@@ -363,6 +363,14 @@ You do not need a token to run `npm install` unless your project is private (the
 NPM_TOKEN=<your_token> npm install
 ```
 
+### `npm install` returns `npm ERR! 403 Forbidden`
+
+- Check that your token is not expired and has appropriate permissions.
+- Check if you have attempted to publish a package with a name that already exists within a given scope.
+- Ensure the scoped packages URL includes a trailing slash:
+  - Correct: `//gitlab.com/api/v4/packages/npm/`
+  - Incorrect: `//gitlab.com/api/v4/packages/npm`
+
 ## NPM dependencies metadata
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/11867) in GitLab Premium 12.6.

@@ -75,6 +75,7 @@ export default {
         <template #actions>
           <clone-dropdown-button
             v-if="canBeCloned"
+            class="mr-2"
             :ssh-link="snippet.sshUrlToRepo"
             :http-link="snippet.httpUrlToRepo"
           />

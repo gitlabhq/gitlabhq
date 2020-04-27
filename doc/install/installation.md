@@ -142,21 +142,31 @@ Starting with GitLab 12.0, Git is required to be compiled with `libpcre2`.
 Find out if that's the case:
 
 ```shell
-ldd /usr/local/bin/git | grep pcre2
+ldd $(which git) | grep pcre2
 ```
 
-The output should be similar to:
+The output should contain `libpcre2-8.so.0`.
 
-```plaintext
-libpcre2-8.so.0 => /usr/lib/libpcre2-8.so.0 (0x00007f08461c3000)
-```
-
-Is the system packaged Git too old, or not compiled with pcre2? Remove it and compile from source:
+Is the system packaged Git too old, or not compiled with pcre2?
+Remove it:
 
 ```shell
-# Remove packaged Git
 sudo apt-get remove git-core
+```
 
+On Ubuntu, install Git from [its official PPA](https://git-scm.com/download/linux):
+
+```shell
+# run as root!
+add-apt-repository ppa:git-core/ppa
+apt update
+apt install git
+# repeat libpcre2 check as above
+```
+
+On Debian, use the following compilation instructions:
+
+```shell
 # Install dependencies
 sudo apt-get install -y libcurl4-openssl-dev libexpat1-dev gettext libz-dev libssl-dev build-essential
 
@@ -180,7 +190,7 @@ make prefix=/usr/local all
 # Install into /usr/local/bin
 sudo make prefix=/usr/local install
 
-# When editing config/gitlab.yml (Step 5), change the git -> bin_path to /usr/local/bin/git
+# When editing config/gitlab.yml later, change the git -> bin_path to /usr/local/bin/git
 ```
 
 For the [Custom Favicon](../user/admin_area/appearance.md#favicon) to work, GraphicsMagick

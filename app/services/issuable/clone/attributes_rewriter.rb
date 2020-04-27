@@ -67,20 +67,28 @@ module Issuable
       end
 
       def copy_resource_milestone_events
-        entity_key = new_entity.class.name.underscore.foreign_key
+        return unless milestone_events_supported?
 
         copy_events(ResourceMilestoneEvent.table_name, original_entity.resource_milestone_events) do |event|
-          matching_destination_milestone = matching_milestone(event.milestone.title)
+          if event.remove?
+            event_attributes_with_milestone(event, nil)
+          else
+            matching_destination_milestone = matching_milestone(event.milestone_title)
 
-          if matching_destination_milestone.present?
-            event.attributes
-              .except('id')
-              .merge(entity_key => new_entity.id,
-                     'milestone_id' => matching_destination_milestone.id,
-                     'action' => ResourceMilestoneEvent.actions[event.action],
-                     'state' => ResourceMilestoneEvent.states[event.state])
+            event_attributes_with_milestone(event, matching_destination_milestone) if matching_destination_milestone.present?
           end
         end
+      end
+
+      def event_attributes_with_milestone(event, milestone)
+        entity_key = new_entity.class.name.underscore.foreign_key
+
+        event.attributes
+          .except('id')
+          .merge(entity_key => new_entity.id,
+                 'milestone_id' => milestone&.id,
+                 'action' => ResourceMilestoneEvent.actions[event.action],
+                 'state' => ResourceMilestoneEvent.states[event.state])
       end
 
       def copy_events(table_name, events_to_copy)
@@ -95,6 +103,11 @@ module Issuable
 
       def entity_key
         new_entity.class.name.parameterize('_').foreign_key
+      end
+
+      def milestone_events_supported?
+        original_entity.respond_to?(:resource_milestone_events) &&
+          new_entity.respond_to?(:resource_milestone_events)
       end
     end
   end

@@ -11,6 +11,7 @@ Updating Geo nodes involves performing:
 Depending on which version of Geo you are updating to/from, there may be
 different steps.
 
+- [Updating to GitLab 12.9](version_specific_updates.md#updating-to-gitlab-129)
 - [Updating to GitLab 12.7](version_specific_updates.md#updating-to-gitlab-127)
 - [Updating to GitLab 12.2](version_specific_updates.md#updating-to-gitlab-122)
 - [Updating to GitLab 12.1](version_specific_updates.md#updating-to-gitlab-121)

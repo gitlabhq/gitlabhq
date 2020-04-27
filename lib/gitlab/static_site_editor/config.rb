@@ -22,7 +22,7 @@ module Gitlab
           project: project.path,
           namespace: project.namespace.path,
           return_url: return_url,
-          is_supported_content: supported_content?
+          is_supported_content: supported_content?.to_s
         }
       end
 

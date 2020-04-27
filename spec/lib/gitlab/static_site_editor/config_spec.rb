@@ -24,38 +24,38 @@ describe Gitlab::StaticSiteEditor::Config do
         project: 'project',
         project_id: project.id,
         return_url: 'http://example.com',
-        is_supported_content: true
+        is_supported_content: 'true'
       )
     end
 
     context 'when branch is not master' do
       let(:ref) { 'my-branch' }
 
-      it { is_expected.to include(is_supported_content: false) }
+      it { is_expected.to include(is_supported_content: 'false') }
     end
 
     context 'when file does not have a markdown extension' do
       let(:file_path) { 'README.txt' }
 
-      it { is_expected.to include(is_supported_content: false) }
+      it { is_expected.to include(is_supported_content: 'false') }
     end
 
     context 'when file does not have an extension' do
       let(:file_path) { 'README' }
 
-      it { is_expected.to include(is_supported_content: false) }
+      it { is_expected.to include(is_supported_content: 'false') }
     end
 
     context 'when file does not exist' do
       let(:file_path) { 'UNKNOWN.md' }
 
-      it { is_expected.to include(is_supported_content: false) }
+      it { is_expected.to include(is_supported_content: 'false') }
     end
 
     context 'when repository is empty' do
       let(:project) { create(:project_empty_repo) }
 
-      it { is_expected.to include(is_supported_content: false) }
+      it { is_expected.to include(is_supported_content: 'false') }
     end
   end
 end

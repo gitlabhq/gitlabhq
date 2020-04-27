@@ -25,4 +25,8 @@ class ResourceMilestoneEvent < ResourceEvent
   def self.issuable_attrs
     %i(issue merge_request).freeze
   end
+
+  def milestone_title
+    milestone&.title
+  end
 end

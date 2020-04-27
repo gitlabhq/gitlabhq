@@ -4415,6 +4415,21 @@ CREATE SEQUENCE public.operations_strategies_id_seq
 
 ALTER SEQUENCE public.operations_strategies_id_seq OWNED BY public.operations_strategies.id;
 
+CREATE TABLE public.operations_strategies_user_lists (
+    id bigint NOT NULL,
+    strategy_id bigint NOT NULL,
+    user_list_id bigint NOT NULL
+);
+
+CREATE SEQUENCE public.operations_strategies_user_lists_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.operations_strategies_user_lists_id_seq OWNED BY public.operations_strategies_user_lists.id;
+
 CREATE TABLE public.operations_user_lists (
     id bigint NOT NULL,
     project_id bigint NOT NULL,
@@ -7489,6 +7504,8 @@ ALTER TABLE ONLY public.operations_scopes ALTER COLUMN id SET DEFAULT nextval('p
 
 ALTER TABLE ONLY public.operations_strategies ALTER COLUMN id SET DEFAULT nextval('public.operations_strategies_id_seq'::regclass);
 
+ALTER TABLE ONLY public.operations_strategies_user_lists ALTER COLUMN id SET DEFAULT nextval('public.operations_strategies_user_lists_id_seq'::regclass);
+
 ALTER TABLE ONLY public.operations_user_lists ALTER COLUMN id SET DEFAULT nextval('public.operations_user_lists_id_seq'::regclass);
 
 ALTER TABLE ONLY public.packages_build_infos ALTER COLUMN id SET DEFAULT nextval('public.packages_build_infos_id_seq'::regclass);
@@ -8313,6 +8330,9 @@ ALTER TABLE ONLY public.operations_scopes
 
 ALTER TABLE ONLY public.operations_strategies
     ADD CONSTRAINT operations_strategies_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.operations_strategies_user_lists
+    ADD CONSTRAINT operations_strategies_user_lists_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY public.operations_user_lists
     ADD CONSTRAINT operations_user_lists_pkey PRIMARY KEY (id);
@@ -9923,9 +9943,13 @@ CREATE UNIQUE INDEX index_operations_scopes_on_strategy_id_and_environment_scope
 
 CREATE INDEX index_operations_strategies_on_feature_flag_id ON public.operations_strategies USING btree (feature_flag_id);
 
+CREATE INDEX index_operations_strategies_user_lists_on_user_list_id ON public.operations_strategies_user_lists USING btree (user_list_id);
+
 CREATE UNIQUE INDEX index_operations_user_lists_on_project_id_and_iid ON public.operations_user_lists USING btree (project_id, iid);
 
 CREATE UNIQUE INDEX index_operations_user_lists_on_project_id_and_name ON public.operations_user_lists USING btree (project_id, name);
+
+CREATE UNIQUE INDEX index_ops_strategies_user_lists_on_strategy_id_and_user_list_id ON public.operations_strategies_user_lists USING btree (strategy_id, user_list_id);
 
 CREATE UNIQUE INDEX index_packages_build_infos_on_package_id ON public.packages_build_infos USING btree (package_id);
 
@@ -11584,6 +11608,9 @@ ALTER TABLE ONLY public.ci_resources
 ALTER TABLE ONLY public.clusters_applications_fluentd
     ADD CONSTRAINT fk_rails_4319b1dcd2 FOREIGN KEY (cluster_id) REFERENCES public.clusters(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY public.operations_strategies_user_lists
+    ADD CONSTRAINT fk_rails_43241e8d29 FOREIGN KEY (strategy_id) REFERENCES public.operations_strategies(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY public.lfs_file_locks
     ADD CONSTRAINT fk_rails_43df7a0412 FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
 
@@ -12156,6 +12183,9 @@ ALTER TABLE ONLY public.ci_daily_report_results
 
 ALTER TABLE ONLY public.issues_self_managed_prometheus_alert_events
     ADD CONSTRAINT fk_rails_cc5d88bbb0 FOREIGN KEY (issue_id) REFERENCES public.issues(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.operations_strategies_user_lists
+    ADD CONSTRAINT fk_rails_ccb7e4bc0b FOREIGN KEY (user_list_id) REFERENCES public.operations_user_lists(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.issue_tracker_data
     ADD CONSTRAINT fk_rails_ccc0840427 FOREIGN KEY (service_id) REFERENCES public.services(id) ON DELETE CASCADE;
@@ -13486,6 +13516,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200420172927
 20200420201933
 20200421233150
+20200422213749
 20200423075720
 20200423080334
 20200423080607

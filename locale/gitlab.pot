@@ -2994,9 +2994,6 @@ msgstr ""
 msgid "BambooService|You must set up automatic revision labeling and a repository trigger in Bamboo."
 msgstr ""
 
-msgid "Batch operations"
-msgstr ""
-
 msgid "BatchComments|Delete all pending comments"
 msgstr ""
 
@@ -9215,7 +9212,10 @@ msgstr ""
 msgid "Filter by milestone name"
 msgstr ""
 
-msgid "Filter by name..."
+msgid "Filter by name"
+msgstr ""
+
+msgid "Filter by status"
 msgstr ""
 
 msgid "Filter by two-factor authentication"
@@ -11206,6 +11206,9 @@ msgid "In order to personalize your experience with GitLab<br>we would like to k
 msgstr ""
 
 msgid "In order to tailor your experience with GitLab we<br>would like to know a bit more about you."
+msgstr ""
+
+msgid "In progress"
 msgstr ""
 
 msgid "In the next step, you'll be able to select the projects you want to import."
@@ -17590,6 +17593,9 @@ msgid "Resume replication"
 msgstr ""
 
 msgid "Resync"
+msgstr ""
+
+msgid "Resync all"
 msgstr ""
 
 msgid "Resync all %{replicableType}"

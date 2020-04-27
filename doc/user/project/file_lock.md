@@ -4,7 +4,8 @@
 
 Working with multiple people on the same file can be a risk. Conflicts when merging a non-text file are hard to overcome and will require a lot of manual work to resolve. File Locking helps you avoid these merge conflicts and better manage your binary files.
 
-With File Locaking, you can lock any file or directory, make your changes, and then unlock it so another member of the team can edit it.
+With File Locking, you can lock any file or directory, make your changes, and
+then unlock it so another member of the team can edit it.
 
 ## Overview
 

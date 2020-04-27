@@ -89,7 +89,7 @@ describe Issuable::Clone::AttributesRewriter do
 
         create_event(milestone1_project1)
         create_event(milestone2_project1)
-        create_event(milestone1_project1, 'remove')
+        create_event(nil, 'remove')
         create_event(milestone3_project1)
       end
 
@@ -101,7 +101,7 @@ describe Issuable::Clone::AttributesRewriter do
 
         expect_milestone_event(new_issue_milestone_events.first, milestone: milestone1_project2, action: 'add', state: 'opened')
         expect_milestone_event(new_issue_milestone_events.second, milestone: milestone2_project2, action: 'add', state: 'opened')
-        expect_milestone_event(new_issue_milestone_events.third, milestone: milestone1_project2, action: 'remove', state: 'opened')
+        expect_milestone_event(new_issue_milestone_events.third, milestone: nil, action: 'remove', state: 'opened')
       end
 
       def create_event(milestone, action = 'add')
@@ -109,7 +109,7 @@ describe Issuable::Clone::AttributesRewriter do
       end
 
       def expect_milestone_event(event, expected_attrs)
-        expect(event.milestone_id).to eq(expected_attrs[:milestone].id)
+        expect(event.milestone_id).to eq(expected_attrs[:milestone]&.id)
         expect(event.action).to eq(expected_attrs[:action])
         expect(event.state).to eq(expected_attrs[:state])
       end

@@ -1,14 +1,14 @@
 import Vue from 'vue';
+import { parseBoolean } from '~/lib/utils/common_utils';
 import StaticSiteEditor from './components/static_site_editor.vue';
 import createStore from './store';
 
 const initStaticSiteEditor = el => {
-  const { projectId, path: sourcePath, returnUrl } = el.dataset;
-  const isSupportedContent = 'isSupportedContent' in el.dataset;
+  const { isSupportedContent, projectId, path: sourcePath, returnUrl } = el.dataset;
 
   const store = createStore({
     initialState: {
-      isSupportedContent,
+      isSupportedContent: parseBoolean(isSupportedContent),
       projectId,
       returnUrl,
       sourcePath,
