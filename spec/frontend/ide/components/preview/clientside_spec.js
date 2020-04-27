@@ -70,14 +70,6 @@ describe('IDE clientside preview', () => {
     });
   };
 
-  beforeAll(() => {
-    jest.useFakeTimers();
-  });
-
-  afterAll(() => {
-    jest.useRealTimers();
-  });
-
   afterEach(() => {
     wrapper.destroy();
   });

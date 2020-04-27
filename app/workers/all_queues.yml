@@ -1234,7 +1234,7 @@
   :urgency: :high
   :resource_boundary: :unknown
   :weight: 3
-  :idempotent: 
+  :idempotent: true
 - :name: project_cache
   :feature_category: :source_code_management
   :has_external_dependencies: 

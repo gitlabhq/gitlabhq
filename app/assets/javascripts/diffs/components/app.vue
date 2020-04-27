@@ -7,6 +7,7 @@ import createFlash from '~/flash';
 import PanelResizer from '~/vue_shared/components/panel_resizer.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { isSingleViewStyle } from '~/helpers/diffs_helper';
+import { updateHistory } from '~/lib/utils/url_utility';
 import eventHub from '../../notes/event_hub';
 import CompareVersions from './compare_versions.vue';
 import DiffFile from './diff_file.vue';
@@ -140,6 +141,20 @@ export default {
     },
   },
   watch: {
+    commit(newCommit, oldCommit) {
+      const commitChangedAfterRender = newCommit && !this.isLoading;
+      const commitIsDifferent = oldCommit && newCommit.id !== oldCommit.id;
+      const url = window?.location ? String(window.location) : '';
+
+      if (commitChangedAfterRender && commitIsDifferent) {
+        updateHistory({
+          title: document.title,
+          url: url.replace(oldCommit.id, newCommit.id),
+        });
+        this.refetchDiffData();
+        this.adjustView();
+      }
+    },
     diffViewType() {
       if (this.needsReload() || this.needsFirstLoad()) {
         this.refetchDiffData();

@@ -2939,6 +2939,10 @@ job:
     expire_in: 1 week
 ```
 
+NOTE: **Note:**
+For artifacts created in [GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/16267)
+and later, the latest artifact for a ref is always kept, regardless of the expiry time.
+
 #### `artifacts:reports`
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/20390) in GitLab 11.2. Requires GitLab Runner 11.2 and above.

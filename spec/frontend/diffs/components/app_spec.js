@@ -14,10 +14,13 @@ import TreeList from '~/diffs/components/tree_list.vue';
 import { INLINE_DIFF_VIEW_TYPE, PARALLEL_DIFF_VIEW_TYPE } from '~/diffs/constants';
 import createDiffsStore from '../create_diffs_store';
 import axios from '~/lib/utils/axios_utils';
+import * as urlUtils from '~/lib/utils/url_utility';
 import diffsMockData from '../mock_data/merge_request_diffs';
 
 const mergeRequestDiff = { version_index: 1 };
 const TEST_ENDPOINT = `${TEST_HOST}/diff/endpoint`;
+const COMMIT_URL = '[BASE URL]/OLD';
+const UPDATED_COMMIT_URL = '[BASE URL]/NEW';
 
 describe('diffs/components/app', () => {
   const oldMrTabs = window.mrTabs;
@@ -600,6 +603,70 @@ describe('diffs/components/app', () => {
         .then(done)
         .catch(done.fail);
     });
+  });
+
+  describe('commit watcher', () => {
+    const spy = () => {
+      jest.spyOn(wrapper.vm, 'refetchDiffData').mockImplementation(() => {});
+      jest.spyOn(wrapper.vm, 'adjustView').mockImplementation(() => {});
+    };
+    let location;
+
+    beforeAll(() => {
+      location = window.location;
+      delete window.location;
+      window.location = COMMIT_URL;
+      document.title = 'My Title';
+    });
+
+    beforeEach(() => {
+      jest.spyOn(urlUtils, 'updateHistory');
+    });
+
+    afterAll(() => {
+      window.location = location;
+    });
+
+    it('when the commit changes and the app is not loading it should update the history, refetch the diff data, and update the view', () => {
+      createComponent({}, ({ state }) => {
+        state.diffs.commit = { ...state.diffs.commit, id: 'OLD' };
+      });
+      spy();
+
+      store.state.diffs.commit = { id: 'NEW' };
+
+      return wrapper.vm.$nextTick().then(() => {
+        expect(urlUtils.updateHistory).toHaveBeenCalledWith({
+          title: document.title,
+          url: UPDATED_COMMIT_URL,
+        });
+        expect(wrapper.vm.refetchDiffData).toHaveBeenCalled();
+        expect(wrapper.vm.adjustView).toHaveBeenCalled();
+      });
+    });
+
+    it.each`
+      isLoading | oldSha   | newSha
+      ${true}   | ${'OLD'} | ${'NEW'}
+      ${false}  | ${'NEW'} | ${'NEW'}
+    `(
+      'given `{ "isLoading": $isLoading, "oldSha": "$oldSha", "newSha": "$newSha" }`, nothing should happen',
+      ({ isLoading, oldSha, newSha }) => {
+        createComponent({}, ({ state }) => {
+          state.diffs.isLoading = isLoading;
+          state.diffs.commit = { ...state.diffs.commit, id: oldSha };
+        });
+        spy();
+
+        store.state.diffs.commit = { id: newSha };
+
+        return wrapper.vm.$nextTick().then(() => {
+          expect(urlUtils.updateHistory).not.toHaveBeenCalled();
+          expect(wrapper.vm.refetchDiffData).not.toHaveBeenCalled();
+          expect(wrapper.vm.adjustView).not.toHaveBeenCalled();
+        });
+      },
+    );
   });
 
   describe('diffs', () => {

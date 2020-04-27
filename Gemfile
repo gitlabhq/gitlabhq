@@ -166,7 +166,7 @@ gem 'diff_match_patch', '~> 0.1.0'
 gem 'rack', '~> 2.0.9'
 
 group :unicorn do
-  gem 'unicorn', '~> 5.4.1'
+  gem 'unicorn', '~> 5.5'
   gem 'unicorn-worker-killer', '~> 0.4.4'
 end
 

@@ -1079,7 +1079,8 @@ CREATE TABLE public.ci_job_artifacts (
     file_store integer,
     file_sha256 bytea,
     file_format smallint,
-    file_location smallint
+    file_location smallint,
+    locked boolean
 );
 
 CREATE SEQUENCE public.ci_job_artifacts_id_seq
@@ -13509,6 +13510,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200416120128
 20200416120354
 20200417044453
+20200417145946
 20200420104303
 20200420104323
 20200420162730

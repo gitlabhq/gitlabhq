@@ -836,6 +836,9 @@ msgstr ""
 msgid "A basic page and serverless function that uses AWS Lambda, AWS API Gateway, and GitLab Pages"
 msgstr ""
 
+msgid "A complete DevOps platform"
+msgstr ""
+
 msgid "A default branch cannot be chosen for an empty project."
 msgstr ""
 
@@ -12542,9 +12545,6 @@ msgstr ""
 msgid "Manage"
 msgstr ""
 
-msgid "Manage Git repositories with fine-grained access controls that keep your code secure. Perform code reviews and enhance collaboration with merge requests. Each project can also have an issue tracker and a wiki."
-msgstr ""
-
 msgid "Manage Web IDE features"
 msgstr ""
 
@@ -14282,9 +14282,6 @@ msgid "Open raw"
 msgstr ""
 
 msgid "Open sidebar"
-msgstr ""
-
-msgid "Open source software to collaborate on code"
 msgstr ""
 
 msgid "Open: %{openIssuesCount}"

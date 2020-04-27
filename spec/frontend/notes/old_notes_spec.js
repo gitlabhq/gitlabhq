@@ -33,7 +33,6 @@ gl.utils.disableButtonIfEmptyField = () => {};
 // eslint-disable-next-line jest/no-disabled-tests
 describe.skip('Old Notes (~/notes.js)', () => {
   beforeEach(() => {
-    jest.useFakeTimers();
     loadFixtures(fixture);
 
     // Re-declare this here so that test_setup.js#beforeEach() doesn't

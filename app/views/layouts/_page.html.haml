@@ -5,7 +5,7 @@
     .mobile-overlay
     .alert-wrapper
       = render 'shared/outdated_browser'
-      - if Feature.enabled?(:subscribable_banner_license)
+      - if Feature.enabled?(:subscribable_banner_license, default_enabled: true)
         = render_if_exists "layouts/header/ee_subscribable_banner"
       = render "layouts/broadcast"
       = render "layouts/header/read_only_banner"

@@ -3,8 +3,6 @@ import { assignIn } from 'lodash';
 import waitForPromises from 'helpers/wait_for_promises';
 import SmartInterval from '~/smart_interval';
 
-jest.useFakeTimers();
-
 let interval;
 
 describe('SmartInterval', () => {

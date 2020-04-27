@@ -28,7 +28,7 @@ module Ci
     private
 
     def destroy_batch
-      artifacts = Ci::JobArtifact.expired(BATCH_SIZE).to_a
+      artifacts = Ci::JobArtifact.expired(BATCH_SIZE).unlocked.to_a
 
       return false if artifacts.empty?
 

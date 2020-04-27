@@ -62,9 +62,6 @@ describe('Monitoring store actions', () => {
   beforeEach(() => {
     mock = new MockAdapter(axios);
 
-    // Mock `backOff` function to remove exponential algorithm delay.
-    jest.useFakeTimers();
-
     jest.spyOn(commonUtils, 'backOff').mockImplementation(callback => {
       const q = new Promise((resolve, reject) => {
         const stop = arg => (arg instanceof Error ? reject(arg) : resolve(arg));

@@ -10,7 +10,7 @@
 *.md @gl-docsteam
 /doc/ @gl-docsteam
 # Dev and Doc guidelines
-/doc/development/ @marcia
+/doc/development/ @marcia @mjang1
 /doc/development/documentation/ @mikelewis
 
 # Frontend maintainers should see everything in `app/assets/`

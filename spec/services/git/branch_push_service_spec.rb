@@ -291,7 +291,7 @@ describe Git::BranchPushService, services: true do
       execute_service(project, user, oldrev: oldrev, newrev: newrev, ref: ref)
     end
 
-    it "defaults to the pushing user if the commit's author is not known", :sidekiq_might_not_need_inline do
+    it "defaults to the pushing user if the commit's author is not known", :sidekiq_inline, :use_clean_rails_redis_caching do
       allow(commit).to receive_messages(
         author_name: 'unknown name',
         author_email: 'unknown@email.com'
@@ -336,7 +336,7 @@ describe Git::BranchPushService, services: true do
     end
 
     context "while saving the 'first_mentioned_in_commit_at' metric for an issue" do
-      it 'sets the metric for referenced issues', :sidekiq_might_not_need_inline do
+      it 'sets the metric for referenced issues', :sidekiq_inline, :use_clean_rails_redis_caching do
         execute_service(project, user, oldrev: oldrev, newrev: newrev, ref: ref)
 
         expect(issue.reload.metrics.first_mentioned_in_commit_at).to be_like_time(commit_time)
@@ -397,7 +397,7 @@ describe Git::BranchPushService, services: true do
         allow(project).to receive(:default_branch).and_return('not-master')
       end
 
-      it "creates cross-reference notes", :sidekiq_might_not_need_inline do
+      it "creates cross-reference notes", :sidekiq_inline, :use_clean_rails_redis_caching do
         expect(SystemNoteService).to receive(:cross_reference).with(issue, closing_commit, commit_author)
         execute_service(project, user, oldrev: oldrev, newrev: newrev, ref: ref)
       end
@@ -438,7 +438,7 @@ describe Git::BranchPushService, services: true do
       context "mentioning an issue" do
         let(:message) { "this is some work.\n\nrelated to JIRA-1" }
 
-        it "initiates one api call to jira server to mention the issue", :sidekiq_might_not_need_inline do
+        it "initiates one api call to jira server to mention the issue", :sidekiq_inline, :use_clean_rails_redis_caching do
           execute_service(project, user, oldrev: oldrev, newrev: newrev, ref: ref)
 
           expect(WebMock).to have_requested(:post, jira_api_comment_url('JIRA-1')).with(

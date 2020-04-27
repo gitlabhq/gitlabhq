@@ -272,8 +272,6 @@ describe('Actions Notes Store', () => {
   });
 
   describe('poll', () => {
-    jest.useFakeTimers();
-
     beforeEach(done => {
       jest.spyOn(axios, 'get');
 
