@@ -42,13 +42,14 @@ class UploadedFile
     @remote_id = remote_id
   end
 
-  def self.from_params(params, field, upload_paths)
-    path = params["#{field}.path"]
+  def self.from_params(params, field, upload_paths, path_override = nil)
+    path = path_override || params["#{field}.path"]
     remote_id = params["#{field}.remote_id"]
     return if path.blank? && remote_id.blank?
 
-    file_path = nil
-    if path.present?
+    if remote_id.present? # don't use file_path if remote_id is set
+      file_path = nil
+    elsif path.present?
       file_path = File.realpath(path)
 
       paths = Array(upload_paths) << Dir.tmpdir

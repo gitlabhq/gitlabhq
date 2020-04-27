@@ -4,7 +4,7 @@ require 'spec_helper'
 
 describe UploadedFile do
   let(:temp_dir) { Dir.tmpdir }
-  let(:temp_file) { Tempfile.new("test", temp_dir) }
+  let(:temp_file) { Tempfile.new(%w[test test], temp_dir) }
 
   before do
     FileUtils.touch(temp_file)
@@ -16,13 +16,14 @@ describe UploadedFile do
 
   describe ".from_params" do
     let(:upload_path) { nil }
+    let(:file_path_override) { nil }
 
     after do
       FileUtils.rm_r(upload_path) if upload_path
     end
 
     subject do
-      described_class.from_params(params, :file, upload_path)
+      described_class.from_params(params, :file, upload_path, file_path_override)
     end
 
     context 'when valid file is specified' do
@@ -31,9 +32,7 @@ describe UploadedFile do
           { 'file.path' => temp_file.path }
         end
 
-        it "succeeds" do
-          is_expected.not_to be_nil
-        end
+        it { is_expected.not_to be_nil }
 
         it "generates filename from path" do
           expect(subject.original_filename).to eq(::File.basename(temp_file.path))
@@ -41,33 +40,153 @@ describe UploadedFile do
       end
 
       context 'all parameters are specified' do
-        let(:params) do
-          { 'file.path' => temp_file.path,
-            'file.name' => 'dir/my file&.txt',
-            'file.type' => 'my/type',
-            'file.sha256' => 'sha256',
-            'file.remote_id' => 'remote_id' }
+        RSpec.shared_context 'filepath override' do
+          let(:temp_file_override) { Tempfile.new(%w[override override], temp_dir) }
+          let(:file_path_override) { temp_file_override.path }
+
+          before do
+            FileUtils.touch(temp_file_override)
+          end
+
+          after do
+            FileUtils.rm_f(temp_file_override)
+          end
         end
 
-        it "succeeds" do
-          is_expected.not_to be_nil
+        RSpec.shared_examples 'using the file path' do |filename:, content_type:, sha256:, path_suffix:|
+          it 'sets properly the attributes' do
+            expect(subject.original_filename).to eq(filename)
+            expect(subject.content_type).to eq(content_type)
+            expect(subject.sha256).to eq(sha256)
+            expect(subject.remote_id).to be_nil
+            expect(subject.path).to end_with(path_suffix)
+          end
+
+          it 'handles a blank path' do
+            params['file.path'] = ''
+
+            # Not a real file, so can't determine size itself
+            params['file.size'] = 1.byte
+
+            expect { described_class.from_params(params, :file, upload_path) }
+              .not_to raise_error
+          end
         end
 
-        it "generates filename from path" do
-          expect(subject.original_filename).to eq('my_file_.txt')
-          expect(subject.content_type).to eq('my/type')
-          expect(subject.sha256).to eq('sha256')
-          expect(subject.remote_id).to eq('remote_id')
+        RSpec.shared_examples 'using the remote id' do |filename:, content_type:, sha256:, size:, remote_id:|
+          it 'sets properly the attributes' do
+            expect(subject.original_filename).to eq(filename)
+            expect(subject.content_type).to eq('application/octet-stream')
+            expect(subject.sha256).to eq('sha256')
+            expect(subject.path).to be_nil
+            expect(subject.size).to eq(123456)
+            expect(subject.remote_id).to eq('1234567890')
+          end
         end
 
-        it 'handles a blank path' do
-          params['file.path'] = ''
+        context 'with a filepath' do
+          let(:params) do
+            { 'file.path' => temp_file.path,
+              'file.name' => 'dir/my file&.txt',
+              'file.type' => 'my/type',
+              'file.sha256' => 'sha256' }
+          end
 
-          # Not a real file, so can't determine size itself
-          params['file.size'] = 1.byte
+          it { is_expected.not_to be_nil }
 
-          expect { described_class.from_params(params, :file, upload_path) }
-            .not_to raise_error
+          it_behaves_like 'using the file path',
+                          filename: 'my_file_.txt',
+                          content_type: 'my/type',
+                          sha256: 'sha256',
+                          path_suffix: 'test'
+        end
+
+        context 'with a filepath override' do
+          include_context 'filepath override'
+
+          let(:params) do
+            { 'file.path' => temp_file.path,
+              'file.name' => 'dir/my file&.txt',
+              'file.type' => 'my/type',
+              'file.sha256' => 'sha256' }
+          end
+
+          it { is_expected.not_to be_nil }
+
+          it_behaves_like 'using the file path',
+                          filename: 'my_file_.txt',
+                          content_type: 'my/type',
+                          sha256: 'sha256',
+                          path_suffix: 'override'
+        end
+
+        context 'with a remote id' do
+          let(:params) do
+            {
+              'file.name' => 'dir/my file&.txt',
+              'file.sha256' => 'sha256',
+              'file.remote_url' => 'http://localhost/file',
+              'file.remote_id' => '1234567890',
+              'file.etag' => 'etag1234567890',
+              'file.size' => '123456'
+            }
+          end
+
+          it { is_expected.not_to be_nil }
+
+          it_behaves_like 'using the remote id',
+                          filename: 'my_file_.txt',
+                          content_type: 'application/octet-stream',
+                          sha256: 'sha256',
+                          size: 123456,
+                          remote_id: '1234567890'
+        end
+
+        context 'with a path and a remote id' do
+          let(:params) do
+            {
+              'file.path' => temp_file.path,
+              'file.name' => 'dir/my file&.txt',
+              'file.sha256' => 'sha256',
+              'file.remote_url' => 'http://localhost/file',
+              'file.remote_id' => '1234567890',
+              'file.etag' => 'etag1234567890',
+              'file.size' => '123456'
+            }
+          end
+
+          it { is_expected.not_to be_nil }
+
+          it_behaves_like 'using the remote id',
+                          filename: 'my_file_.txt',
+                          content_type: 'application/octet-stream',
+                          sha256: 'sha256',
+                          size: 123456,
+                          remote_id: '1234567890'
+        end
+
+        context 'with a path override and a remote id' do
+          include_context 'filepath override'
+
+          let(:params) do
+            {
+              'file.name' => 'dir/my file&.txt',
+              'file.sha256' => 'sha256',
+              'file.remote_url' => 'http://localhost/file',
+              'file.remote_id' => '1234567890',
+              'file.etag' => 'etag1234567890',
+              'file.size' => '123456'
+            }
+          end
+
+          it { is_expected.not_to be_nil }
+
+          it_behaves_like 'using the remote id',
+                          filename: 'my_file_.txt',
+                          content_type: 'application/octet-stream',
+                          sha256: 'sha256',
+                          size: 123456,
+                          remote_id: '1234567890'
         end
       end
     end
