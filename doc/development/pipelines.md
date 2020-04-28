@@ -19,6 +19,9 @@ The current stages are:
   <https://gitlab.com/gitlab-org/gitlab-foss>.
 - `prepare`: This stage includes jobs that prepare artifacts that are needed by
   jobs in subsequent stages.
+- `build-images`: This stage includes jobs that prepare docker images
+  that are needed by jobs in subsequent stages or downstream pipelines.
+- `fixtures`: This stage includes jobs that prepare fixtures needed by frontend tests.
 - `test`: This stage includes most of the tests, DB/migration jobs, and static analysis jobs.
 - `post-test`: This stage includes jobs that build reports or gather data from
   the `test` stage's jobs (e.g. coverage, Knapsack metadata etc.).
@@ -30,7 +33,6 @@ The current stages are:
   that is deployed in the previous stage.
 - `post-qa`: This stage includes jobs that build reports or gather data from
   the `qa` stage's jobs (e.g. Review App performance report).
-- `notification`: This stage includes jobs that sends notifications about pipeline status.
 - `pages`: This stage includes a job that deploys the various reports as
   GitLab Pages (e.g. <https://gitlab-org.gitlab.io/gitlab/coverage-ruby/>,
   <https://gitlab-org.gitlab.io/gitlab/coverage-javascript/>,
@@ -74,6 +76,7 @@ that are scoped to a single [configuration parameter](../ci/yaml/README.md#confi
 | `.use-pg9-ee` | Same as `.use-pg9` but also use the `docker.elastic.co/elasticsearch/elasticsearch:6.4.2` services. |
 | `.use-pg10-ee` | Same as `.use-pg10` but also use the `docker.elastic.co/elasticsearch/elasticsearch:6.4.2` services. |
 | `.use-pg11-ee` | Same as `.use-pg11` but also use the `docker.elastic.co/elasticsearch/elasticsearch:6.4.2` services. |
+| `.use-kaniko` | Allows a job to use the `kaniko` tool to build Docker images. |
 | `.as-if-foss` | Simulate the FOSS project by setting the `FOSS_ONLY='1'` environment variable. |
 
 ## `workflow:rules`
@@ -255,14 +258,21 @@ graph RL;
   2_2-5["webpack-dev-server (7.62 minutes)"];
   click 2_2-5 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8404303&udv=0"
 
+  2_3-1["build-assets-image"];
+  class 2_3-1 criticalPath;
+
   subgraph "Needs `setup-test-env` & `compile-assets`";
     2_2-1 & 2_2-2 & 2_2-4 & 2_2-5 --> 1-6 & 1-3;
     2_2-3 --> 1-6 & 1-4;
   end
 
-  subgraph "Needs `build-qa-image` & `gitlab:assets:compile`";
-    2_3-1["package-and-qa (manual)"] --> 1-2 & 1-5;
-    click 2_3-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914305&udv=0"
+  subgraph "Needs `gitlab:assets:compile`";
+    2_3-1 --> 1-5
+  end
+
+  subgraph "Needs `build-qa-image` & `build-assets-image`";
+    2_4-1["package-and-qa (manual)"] --> 1-2 & 2_3-1;
+    click 2_4-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914305&udv=0"
   end
 
   subgraph "Needs `compile-assets`, `setup-test-env, & `retrieve-tests-metadata`";
@@ -363,26 +373,33 @@ graph RL;
   2_2-5["webpack-dev-server (7.62 minutes)"];
   click 2_2-5 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8404303&udv=0"
 
+  2_3-1["build-assets-image"];
+  class 2_3-1 criticalPath;
+
   subgraph "Needs `setup-test-env` & `compile-assets`";
     2_2-1 & 2_2-2 & 2_2-4 & 2_2-5 --> 1-6 & 1-3;
     2_2-3 --> 1-6 & 1-4;
   end
 
-  subgraph "Needs `build-qa-image` & `gitlab:assets:compile`";
-    2_3-1["package-and-qa (manual)"] --> 1-2 & 1-5;
-    click 2_3-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914305&udv=0"
+  subgraph "Needs `gitlab:assets:compile`";
+    2_3-1 --> 1-5
+  end
+  
+  subgraph "Needs `build-qa-image` & `build-assets-image`";
+    2_4-1["package-and-qa (manual)"] --> 1-2 & 2_3-1;
+    click 2_4-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914305&udv=0"
   end
 
   subgraph "Needs `compile-assets`, `setup-test-env, & `retrieve-tests-metadata`";
-    2_4-1["rspec & db jobs (12-22 minutes)"] --> 1-3 & 1-6 & 1-14;
-    class 2_4-1 criticalPath;
-    click 2_4-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations"
+    2_5-1["rspec & db jobs (12-22 minutes)"] --> 1-3 & 1-6 & 1-14;
+    class 2_5-1 criticalPath;
+    click 2_5-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations"
   end
 
-  subgraph "Needs `gitlab:assets:compile`";
-    2_5-1["review-build-cng (27.3 minutes)"] --> 1-5;
-    class 2_5-1 criticalPath;
-    click 2_5-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914314&udv=0"
+  subgraph "Needs `build-assets-image`";
+    2_6-1["review-build-cng (27.3 minutes)"] --> 2_3-1;
+    class 2_6-1 criticalPath;
+    click 2_6-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914314&udv=0"
   end
 
   3_1-1["jest (11.2 minutes)"];
@@ -401,7 +418,7 @@ graph RL;
   end
 
   subgraph "Depends on `rspec` jobs";
-    3_2-1["rspec:coverage (7.67 minutes)"] -.->|"(don't use needs because of limitations)"| 2_4-1;
+    3_2-1["rspec:coverage (7.67 minutes)"] -.->|"(don't use needs because of limitations)"| 2_5-1;
     class 3_2-1 criticalPath;
     click 3_2-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=7248745&udv=0"
   end
@@ -413,7 +430,7 @@ graph RL;
   end
 
   subgraph "Played by `review-build-cng`";
-    3_3-1["review-deploy (6 minutes)"] --> 2_5-1;
+    3_3-1["review-deploy (6 minutes)"] --> 2_6-1;
     class 3_3-1 criticalPath;
     click 3_3-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6721130&udv=0"
   end
@@ -484,10 +501,15 @@ graph RL;
     2_2-1 --> 1-6 & 1-3;
   end
 
-  subgraph "Needs `build-qa-image` & `gitlab:assets:compile`";
-    2_3-1["package-and-qa (108 minutes)"] --> 1-2 & 1-5;
+  subgraph "Needs `gitlab:assets:compile`";
+    2_3-1["build-assets-image (2 minutes)"] --> 1-5
     class 2_3-1 criticalPath;
-    click 2_3-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914305&udv=0"
+  end
+
+  subgraph "Needs `build-qa-image` & `build-assets-image`";
+    2_4-1["package-and-qa (108 minutes)"] --> 1-2 & 2_3-1;
+    class 2_4-1 criticalPath;
+    click 2_4-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914305&udv=0"
   end
 ```
 

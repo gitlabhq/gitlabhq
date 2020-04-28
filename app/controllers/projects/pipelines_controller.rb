@@ -70,6 +70,8 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def show
+    Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab/-/issues/26657')
+
     respond_to do |format|
       format.html
       format.json do

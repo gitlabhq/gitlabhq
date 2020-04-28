@@ -196,6 +196,9 @@ To change this setting for a specific group:
 
 To change this setting globally, see [Default branch protection](../admin_area/settings/visibility_and_access_controls.md#default-branch-protection).
 
+NOTE: **Note:**
+In [GitLab Premium or higher](https://about.gitlab.com/pricing/), GitLab administrators can choose to [disable group owners from updating the default branch protection](../admin_area/settings/visibility_and_access_controls.md#disable-group-owners-from-updating-default-branch-protection-premium-only).
+
 ## Add projects to a group
 
 There are two different ways to add a new project to a group:

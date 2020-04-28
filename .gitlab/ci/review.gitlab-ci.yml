@@ -3,7 +3,8 @@ build-qa-image:
     - .use-kaniko
     - .default-retry
     - .review:rules:mr-and-schedule-auto
-  stage: prepare
+  stage: build-images
+  needs: []
   script:
     - '[[ -d "ee/" ]] || export GITLAB_EDITION="ce"'
     - export QA_IMAGE="${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-${GITLAB_EDITION:-ee}-qa:${CI_COMMIT_REF_SLUG}"

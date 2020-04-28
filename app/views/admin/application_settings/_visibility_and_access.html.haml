@@ -3,6 +3,7 @@
 
   %fieldset
     = render 'shared/default_branch_protection', f: f, selected_level: @application_setting.default_branch_protection
+    = render_if_exists 'admin/application_settings/group_owners_can_manage_default_branch_protection_setting', form: f
 
     .form-group
       = f.label s_('ProjectCreationLevel|Default project creation protection'), class: 'label-bold'

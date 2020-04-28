@@ -314,6 +314,10 @@ module Gitlab
         @rich_viewer = rich_viewer_class&.new(self)
       end
 
+      def alternate_viewer
+        alternate_viewer_class&.new(self)
+      end
+
       def rendered_as_text?(ignore_errors: true)
         simple_viewer.is_a?(DiffViewer::Text) && (ignore_errors || simple_viewer.render_error.nil?)
       end
@@ -419,6 +423,17 @@ module Gitlab
         return if collapsed?
         return unless diffable?
         return unless modified_file?
+
+        find_renderable_viewer_class(classes)
+      end
+
+      def alternate_viewer_class
+        return unless viewer.class == DiffViewer::Renamed
+
+        find_renderable_viewer_class(RICH_VIEWERS) || (DiffViewer::Text if text?)
+      end
+
+      def find_renderable_viewer_class(classes)
         return if different_type? || external_storage_error?
 
         verify_binary = !stored_externally?

@@ -393,16 +393,18 @@ module Ci
       false
     end
 
-    ##
-    # TODO We do not completely switch to persisted stages because of
-    # race conditions with setting statuses gitlab-foss#23257.
-    #
     def ordered_stages
-      return legacy_stages unless complete?
-
-      if Feature.enabled?('ci_pipeline_persisted_stages', default_enabled: true)
+      if Feature.enabled?(:ci_atomic_processing, project, default_enabled: false)
+        # The `Ci::Stage` contains all up-to date data
+        # as atomic processing updates all data in-bulk
+        stages
+      elsif Feature.enabled?(:ci_pipeline_persisted_stages, default_enabled: true) && complete?
+        # The `Ci::Stage` contains up-to date data only for `completed` pipelines
+        # this is due to asynchronous processing of pipeline, and stages possibly
+        # not updated inline with processing of pipeline
         stages
       else
+        # In other cases, we need to calculate stages dynamically
         legacy_stages
       end
     end

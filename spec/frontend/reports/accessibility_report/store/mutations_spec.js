@@ -10,6 +10,20 @@ describe('Accessibility Reports mutations', () => {
     localState = localStore.state;
   });
 
+  describe('SET_ENDPOINTS', () => {
+    it('sets base and head endpoints to give values', () => {
+      const baseEndpoint = 'base_endpoint.json';
+      const headEndpoint = 'head_endpoint.json';
+      mutations.SET_ENDPOINTS(localState, {
+        baseEndpoint,
+        headEndpoint,
+      });
+
+      expect(localState.baseEndpoint).toEqual(baseEndpoint);
+      expect(localState.headEndpoint).toEqual(headEndpoint);
+    });
+  });
+
   describe('REQUEST_REPORT', () => {
     it('sets isLoading to true', () => {
       mutations.REQUEST_REPORT(localState);

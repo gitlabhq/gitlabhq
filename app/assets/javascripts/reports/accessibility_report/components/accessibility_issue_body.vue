@@ -45,10 +45,19 @@ export default {
       >
         {{ s__('AccessibilityReport|New') }}
       </div>
-      {{ issue.name }}
-      <gl-link ref="accessibility-issue-learn-more" :href="learnMoreUrl" target="_blank">{{
-        s__('AccessibilityReport|Learn More')
-      }}</gl-link>
+      <div>
+        {{
+          sprintf(
+            s__(
+              'AccessibilityReport|The accessibility scanning found an error of the following type: %{code}',
+            ),
+            { code: issue.code },
+          )
+        }}
+        <gl-link ref="accessibility-issue-learn-more" :href="learnMoreUrl" target="_blank">{{
+          s__('AccessibilityReport|Learn More')
+        }}</gl-link>
+      </div>
       {{ sprintf(s__('AccessibilityReport|Message: %{message}'), { message: issue.message }) }}
     </div>
   </div>

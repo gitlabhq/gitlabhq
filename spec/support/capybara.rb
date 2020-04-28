@@ -95,10 +95,21 @@ RSpec.configure do |config|
   config.include CapybaraHelpers, type: :feature
 
   config.before(:context, :js) do
+    # This prevents Selenium from creating thousands of connections while waiting for
+    # an element to appear
+    webmock_enable_with_http_connect_on_start!
+
     next if $capybara_server_already_started
 
     TestEnv.eager_load_driver_server
     $capybara_server_already_started = true
+  end
+
+  config.after(:context, :js) do
+    # WebMock doesn't stub connections, so we need to restore the original behavior
+    # to prevent many specs from failing:
+    # https://github.com/bblimke/webmock/blob/master/README.md#connecting-on-nethttpstart
+    webmock_enable!
   end
 
   config.before(:example, :js) do

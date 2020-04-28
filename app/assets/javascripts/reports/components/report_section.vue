@@ -167,7 +167,7 @@ export default {
     <div class="media">
       <status-icon :status="statusIconName" :size="24" class="align-self-center" />
       <div class="media-body d-flex flex-align-self-center align-items-center">
-        <div class="js-code-text code-text">
+        <div data-testid="report-section-code-text" class="js-code-text code-text">
           <div>
             {{ headerText }}
             <slot :name="slotName"></slot>

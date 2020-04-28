@@ -18,8 +18,6 @@ module Gitlab
     end
 
     module AuthFinders
-      prepend_if_ee('::EE::Gitlab::Auth::AuthFinders') # rubocop: disable Cop/InjectEnterpriseEditionModule
-
       include Gitlab::Utils::StrongMemoize
       include ActionController::HttpAuthentication::Basic
 
@@ -249,3 +247,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Auth::AuthFinders.prepend_if_ee('::EE::Gitlab::Auth::AuthFinders')

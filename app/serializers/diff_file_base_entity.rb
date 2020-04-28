@@ -88,6 +88,7 @@ class DiffFileBaseEntity < Grape::Entity
   expose :b_mode
 
   expose :viewer, using: DiffViewerEntity
+  expose :alternate_viewer, using: DiffViewerEntity
 
   expose :old_size do |diff_file|
     diff_file.old_blob&.raw_size

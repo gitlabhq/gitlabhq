@@ -19,32 +19,32 @@ describe 'Pipeline', :js do
   shared_context 'pipeline builds' do
     let!(:build_passed) do
       create(:ci_build, :success,
-             pipeline: pipeline, stage: 'build', name: 'build')
+             pipeline: pipeline, stage: 'build', stage_idx: 0, name: 'build')
     end
 
     let!(:build_failed) do
       create(:ci_build, :failed,
-             pipeline: pipeline, stage: 'test', name: 'test')
+             pipeline: pipeline, stage: 'test', stage_idx: 1, name: 'test')
     end
 
     let!(:build_preparing) do
       create(:ci_build, :preparing,
-             pipeline: pipeline, stage: 'deploy', name: 'prepare')
+             pipeline: pipeline, stage: 'deploy', stage_idx: 2, name: 'prepare')
     end
 
     let!(:build_running) do
       create(:ci_build, :running,
-             pipeline: pipeline, stage: 'deploy', name: 'deploy')
+             pipeline: pipeline, stage: 'deploy', stage_idx: 3, name: 'deploy')
     end
 
     let!(:build_manual) do
       create(:ci_build, :manual,
-             pipeline: pipeline, stage: 'deploy', name: 'manual-build')
+             pipeline: pipeline, stage: 'deploy', stage_idx: 3, name: 'manual-build')
     end
 
     let!(:build_scheduled) do
       create(:ci_build, :scheduled,
-             pipeline: pipeline, stage: 'deploy', name: 'delayed-job')
+             pipeline: pipeline, stage: 'deploy', stage_idx: 3, name: 'delayed-job')
     end
 
     let!(:build_external) do
@@ -307,9 +307,12 @@ describe 'Pipeline', :js do
 
     context 'when the pipeline has manual stage' do
       before do
-        create(:ci_build, :manual, pipeline: pipeline, stage: 'publish', name: 'CentOS')
-        create(:ci_build, :manual, pipeline: pipeline, stage: 'publish', name: 'Debian')
-        create(:ci_build, :manual, pipeline: pipeline, stage: 'publish', name: 'OpenSUDE')
+        create(:ci_build, :manual, pipeline: pipeline, stage_idx: 10, stage: 'publish', name: 'CentOS')
+        create(:ci_build, :manual, pipeline: pipeline, stage_idx: 10, stage: 'publish', name: 'Debian')
+        create(:ci_build, :manual, pipeline: pipeline, stage_idx: 10, stage: 'publish', name: 'OpenSUDE')
+
+        # force to update stages statuses
+        Ci::ProcessPipelineService.new(pipeline).execute
 
         visit_pipeline
       end

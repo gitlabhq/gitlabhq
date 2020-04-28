@@ -1,6 +1,10 @@
 import * as types from './mutation_types';
 
 export default {
+  [types.SET_ENDPOINTS](state, { baseEndpoint, headEndpoint }) {
+    state.baseEndpoint = baseEndpoint;
+    state.headEndpoint = headEndpoint;
+  },
   [types.REQUEST_REPORT](state) {
     state.isLoading = true;
   },

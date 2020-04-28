@@ -39,6 +39,8 @@ import SourceBranchRemovalStatus from './components/source_branch_removal_status
 import TerraformPlan from './components/mr_widget_terraform_plan.vue';
 import GroupedTestReportsApp from '../reports/components/grouped_test_reports_app.vue';
 import { setFaviconOverlay } from '../lib/utils/common_utils';
+import GroupedAccessibilityReportsApp from '../reports/accessibility_report/grouped_accessibility_reports_app.vue';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   el: '#js-vue-mr-widget',
@@ -76,7 +78,9 @@ export default {
     SourceBranchRemovalStatus,
     GroupedTestReportsApp,
     TerraformPlan,
+    GroupedAccessibilityReportsApp,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     mrData: {
       type: Object,
@@ -137,6 +141,13 @@ export default {
       return sprintf(s__('mrWidget|Merge failed: %{mergeError}. Please try again.'), {
         mergeError,
       });
+    },
+    shouldShowAccessibilityReport() {
+      return (
+        this.accessibilility?.base_path &&
+        this.accessibilility?.head_path &&
+        this.glFeatures.accessibilityMergeRequestWidget
+      );
     },
   },
   watch: {
@@ -379,6 +390,12 @@ export default {
       />
 
       <terraform-plan v-if="mr.terraformReportsPath" :endpoint="mr.terraformReportsPath" />
+
+      <grouped-accessibility-reports-app
+        v-if="shouldShowAccessibilityReport"
+        :base-endpoint="mr.accessibility.base_path"
+        :head-endpoint="mr.accessibility.head_path"
+      />
 
       <div class="mr-widget-section">
         <component :is="componentName" :mr="mr" :service="service" />

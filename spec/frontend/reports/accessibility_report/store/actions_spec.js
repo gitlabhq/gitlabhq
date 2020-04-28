@@ -16,6 +16,22 @@ describe('Accessibility Reports actions', () => {
     localState = localStore.state;
   });
 
+  describe('setEndpoints', () => {
+    it('should commit SET_ENDPOINTS mutation', done => {
+      const baseEndpoint = 'base_endpoint.json';
+      const headEndpoint = 'head_endpoint.json';
+
+      testAction(
+        actions.setEndpoints,
+        { baseEndpoint, headEndpoint },
+        localState,
+        [{ type: types.SET_ENDPOINTS, payload: { baseEndpoint, headEndpoint } }],
+        [],
+        done,
+      );
+    });
+  });
+
   describe('fetchReport', () => {
     let mock;
 

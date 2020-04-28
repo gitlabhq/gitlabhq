@@ -954,7 +954,10 @@ describe Ci::Pipeline, :mailer do
 
       context 'when using legacy stages' do
         before do
-          stub_feature_flags(ci_pipeline_persisted_stages: false)
+          stub_feature_flags(
+            ci_pipeline_persisted_stages: false,
+            ci_atomic_processing: false
+          )
         end
 
         it 'returns legacy stages in valid order' do
@@ -962,9 +965,40 @@ describe Ci::Pipeline, :mailer do
         end
       end
 
+      context 'when using atomic processing' do
+        before do
+          stub_feature_flags(
+            ci_atomic_processing: true
+          )
+        end
+
+        context 'when pipelines is not complete' do
+          it 'returns stages in valid order' do
+            expect(subject).to all(be_a Ci::Stage)
+            expect(subject.map(&:name))
+              .to eq %w[sanity build test deploy cleanup]
+          end
+        end
+
+        context 'when pipeline is complete' do
+          before do
+            pipeline.succeed!
+          end
+
+          it 'returns stages in valid order' do
+            expect(subject).to all(be_a Ci::Stage)
+            expect(subject.map(&:name))
+              .to eq %w[sanity build test deploy cleanup]
+          end
+        end
+      end
+
       context 'when using persisted stages' do
         before do
-          stub_feature_flags(ci_pipeline_persisted_stages: true)
+          stub_feature_flags(
+            ci_pipeline_persisted_stages: true,
+            ci_atomic_processing: false
+          )
         end
 
         context 'when pipelines is not complete' do

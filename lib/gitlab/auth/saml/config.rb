@@ -4,8 +4,6 @@ module Gitlab
   module Auth
     module Saml
       class Config
-        prepend_if_ee('::EE::Gitlab::Auth::Saml::Config') # rubocop: disable Cop/InjectEnterpriseEditionModule
-
         class << self
           def options
             Gitlab::Auth::OAuth::Provider.config_for('saml')
@@ -31,3 +29,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Auth::Saml::Config.prepend_if_ee('::EE::Gitlab::Auth::Saml::Config')

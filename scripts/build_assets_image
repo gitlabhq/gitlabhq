@@ -1,5 +1,3 @@
-#!/bin/bash
-
 # Exit early if we don't want to build the image
 if [[ "${BUILD_ASSETS_IMAGE}" != "true" ]]
 then
@@ -19,15 +17,19 @@ ASSETS_IMAGE_PATH=${CI_REGISTRY}/${CI_PROJECT_PATH}/${ASSETS_IMAGE_NAME}
 mkdir -p assets_container.build/public
 cp -r public/assets assets_container.build/public/
 cp Dockerfile.assets assets_container.build/
-docker build -t ${ASSETS_IMAGE_PATH}:${CI_COMMIT_REF_SLUG} -f assets_container.build/Dockerfile.assets assets_container.build/
-docker tag ${ASSETS_IMAGE_PATH}:${CI_COMMIT_REF_SLUG} ${ASSETS_IMAGE_PATH}:${CI_COMMIT_SHA}
-docker login -u gitlab-ci-token -p ${CI_JOB_TOKEN} ${CI_REGISTRY}
-docker push ${ASSETS_IMAGE_PATH}:${CI_COMMIT_REF_SLUG}
-docker push ${ASSETS_IMAGE_PATH}:${CI_COMMIT_SHA}
+
+COMMIT_REF_SLUG_DESTINATION=${ASSETS_IMAGE_PATH}:${CI_COMMIT_REF_SLUG}
+COMMIT_SHA_DESTINATION=${ASSETS_IMAGE_PATH}:${CI_COMMIT_SHA}
+COMMIT_REF_NAME_DESTINATION=${ASSETS_IMAGE_PATH}:${CI_COMMIT_REF_NAME}
+
+DESTINATIONS="--destination=$COMMIT_REF_SLUG_DESTINATION --destination=$COMMIT_SHA_DESTINATION"
 
 # Also tag the image with GitLab version, if running on a tag pipeline, so
 # other projects can simply use that instead of computing the slug.
 if [ -n "$CI_COMMIT_TAG" ]; then
-    docker tag ${ASSETS_IMAGE_PATH}:${CI_COMMIT_REF_SLUG} ${ASSETS_IMAGE_PATH}:${CI_COMMIT_REF_NAME}
-    docker push ${ASSETS_IMAGE_PATH}:${CI_COMMIT_REF_NAME}
+  DESTINATIONS="$DESTINATIONS --destination=$COMMIT_REF_NAME_DESTINATION"
 fi
+
+echo "building assets image for destinations: $DESTINATIONS"
+
+/kaniko/executor --context=assets_container.build --dockerfile=assets_container.build/Dockerfile.assets $DESTINATIONS

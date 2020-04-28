@@ -5,8 +5,6 @@ module Gitlab
   module Auth
     module Ldap
       class Config
-        prepend_if_ee('::EE::Gitlab::Auth::Ldap::Config') # rubocop: disable Cop/InjectEnterpriseEditionModule
-
         NET_LDAP_ENCRYPTION_METHOD = {
           simple_tls: :simple_tls,
           start_tls:  :start_tls,
@@ -288,3 +286,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Auth::Ldap::Config.prepend_if_ee('::EE::Gitlab::Auth::Ldap::Config')

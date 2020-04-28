@@ -1,6 +1,7 @@
 stages:
   - sync
   - prepare
+  - build-images
   - fixtures
   - test
   - post-test

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Environment > Pod Logs', :js do
+describe 'Environment > Pod Logs', :js, :kubeclient do
   include KubernetesHelpers
 
   let(:pod_names) { %w(kube-pod) }
