@@ -104,6 +104,151 @@ type AdminSidekiqQueuesDeleteJobsPayload {
 }
 
 """
+Describes an alert from the project's Alert Management
+"""
+type AlertManagementAlert {
+  """
+  Timestamp the alert ended
+  """
+  endedAt: Time
+
+  """
+  Number of events of this alert
+  """
+  eventCount: Int
+
+  """
+  Internal ID of the alert
+  """
+  iid: ID!
+
+  """
+  Monitoring tool the alert came from
+  """
+  monitoringTool: String
+
+  """
+  Service the alert came from
+  """
+  service: String
+
+  """
+  Severity of the alert
+  """
+  severity: AlertManagementSeverity
+
+  """
+  Timestamp the alert was raised
+  """
+  startedAt: Time
+
+  """
+  Status of the alert
+  """
+  status: AlertManagementStatus
+
+  """
+  Title of the alert
+  """
+  title: String
+}
+
+"""
+The connection type for AlertManagementAlert.
+"""
+type AlertManagementAlertConnection {
+  """
+  A list of edges.
+  """
+  edges: [AlertManagementAlertEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [AlertManagementAlert]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+An edge in a connection.
+"""
+type AlertManagementAlertEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: AlertManagementAlert
+}
+
+"""
+Alert severity values
+"""
+enum AlertManagementSeverity {
+  """
+  Critical severity
+  """
+  CRITICAL
+
+  """
+  High severity
+  """
+  HIGH
+
+  """
+  Info severity
+  """
+  INFO
+
+  """
+  Low severity
+  """
+  LOW
+
+  """
+  Medium severity
+  """
+  MEDIUM
+
+  """
+  Unknown severity
+  """
+  UNKNOWN
+}
+
+"""
+Alert status values
+"""
+enum AlertManagementStatus {
+  """
+  Acknowledged status
+  """
+  ACKNOWLEDGED
+
+  """
+  Ignored status
+  """
+  IGNORED
+
+  """
+  Resolved status
+  """
+  RESOLVED
+
+  """
+  Triggered status
+  """
+  TRIGGERED
+}
+
+"""
 An emoji awarded by a user.
 """
 type AwardEmoji {
@@ -6293,6 +6438,46 @@ enum PipelineStatusEnum {
 }
 
 type Project {
+  """
+  A single Alert Management alert of the project
+  """
+  alertManagementAlert(
+    """
+    IID of the alert. For example, "1"
+    """
+    iid: String
+  ): AlertManagementAlert
+
+  """
+  Alert Management alerts of the project
+  """
+  alertManagementAlerts(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    IID of the alert. For example, "1"
+    """
+    iid: String
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): AlertManagementAlertConnection
+
   """
   Indicates the archived status of the project
   """

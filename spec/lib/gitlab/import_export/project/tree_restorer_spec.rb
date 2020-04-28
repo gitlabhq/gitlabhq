@@ -44,10 +44,6 @@ describe Gitlab::ImportExport::Project::TreeRestorer do
         end
       end
 
-      after(:context) do
-        cleanup_artifacts_from_extract_archive('complex')
-      end
-
       context 'JSON' do
         it 'restores models based on JSON' do
           expect(@restored_project_json).to be_truthy
@@ -536,10 +532,6 @@ describe Gitlab::ImportExport::Project::TreeRestorer do
           expect(restored_project_json).to eq(true)
         end
 
-        after do
-          cleanup_artifacts_from_extract_archive('light')
-        end
-
         it 'issue system note metadata restored successfully' do
           note_content = 'created merge request !1 to address this issue'
           note = project.issues.first.notes.select { |n| n.note.match(/#{note_content}/)}.first
@@ -586,10 +578,6 @@ describe Gitlab::ImportExport::Project::TreeRestorer do
           expect(restored_project_json).to eq(true)
         end
 
-        after do
-          cleanup_artifacts_from_extract_archive('multi_pipeline_ref_one_external_pr')
-        end
-
         it_behaves_like 'restores project successfully',
           issues: 0,
           labels: 0,
@@ -620,10 +608,6 @@ describe Gitlab::ImportExport::Project::TreeRestorer do
             .and_raise(exception)
         end
 
-        after do
-          cleanup_artifacts_from_extract_archive('light')
-        end
-
         it 'report post import error' do
           expect(restored_project_json).to eq(false)
           expect(shared.errors).to include('post_import_error')
@@ -644,10 +628,6 @@ describe Gitlab::ImportExport::Project::TreeRestorer do
             .to receive(:merge_requests)
             .and_call_original
           expect(restored_project_json).to eq(true)
-        end
-
-        after do
-          cleanup_artifacts_from_extract_archive('light')
         end
 
         it_behaves_like 'restores project successfully',
@@ -676,10 +656,6 @@ describe Gitlab::ImportExport::Project::TreeRestorer do
         before do
           setup_import_export_config('light')
           setup_reader(reader)
-        end
-
-        after do
-          cleanup_artifacts_from_extract_archive('light')
         end
 
         it 'handles string versions of visibility_level' do
@@ -747,10 +723,6 @@ describe Gitlab::ImportExport::Project::TreeRestorer do
           expect(restored_project_json).to eq(true)
         end
 
-        after do
-          cleanup_artifacts_from_extract_archive('group')
-        end
-
         it_behaves_like 'restores project successfully',
           issues: 3,
           labels: 2,
@@ -782,10 +754,6 @@ describe Gitlab::ImportExport::Project::TreeRestorer do
         before do
           setup_import_export_config('light')
           setup_reader(reader)
-        end
-
-        after do
-          cleanup_artifacts_from_extract_archive('light')
         end
 
         it 'does not import any templated services' do
@@ -835,10 +803,6 @@ describe Gitlab::ImportExport::Project::TreeRestorer do
           setup_reader(reader)
         end
 
-        after do
-          cleanup_artifacts_from_extract_archive('milestone-iid')
-        end
-
         it 'preserves the project milestone IID' do
           expect_any_instance_of(Gitlab::ImportExport::Shared).not_to receive(:error)
 
@@ -853,10 +817,6 @@ describe Gitlab::ImportExport::Project::TreeRestorer do
         before do
           setup_import_export_config('light')
           setup_reader(reader)
-        end
-
-        after do
-          cleanup_artifacts_from_extract_archive('light')
         end
 
         it 'converts empty external classification authorization labels to nil' do
@@ -1002,10 +962,6 @@ describe Gitlab::ImportExport::Project::TreeRestorer do
         setup_reader(reader)
 
         subject
-      end
-
-      after do
-        cleanup_artifacts_from_extract_archive('with_invalid_records')
       end
 
       context 'when failures occur because a relation fails to be processed' do

@@ -916,6 +916,181 @@ describe API::Groups do
     end
   end
 
+  describe "GET /groups/:id/projects/shared" do
+    let!(:project4) do
+      create(:project, namespace: group2, path: 'test_project', visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+    end
+    let(:path) { "/groups/#{group1.id}/projects/shared" }
+
+    before do
+      create(:project_group_link, project: project2, group: group1)
+      create(:project_group_link, project: project4, group: group1)
+    end
+
+    context 'when authenticated as user' do
+      it 'returns the shared projects in the group' do
+        get api(path, user1)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response.length).to eq(2)
+        project_ids = json_response.map { |project| project['id'] }
+        expect(project_ids).to match_array([project2.id, project4.id])
+        expect(json_response.first['visibility']).to be_present
+      end
+
+      it 'returns shared projects with min access level or higher' do
+        user = create(:user)
+
+        project2.add_guest(user)
+        project4.add_reporter(user)
+
+        get api(path, user), params: { min_access_level: Gitlab::Access::REPORTER }
+
+        expect(json_response).to be_an(Array)
+        expect(json_response.length).to eq(1)
+        expect(json_response.first['id']).to eq(project4.id)
+      end
+
+      it 'returns the shared projects of the group with simple representation' do
+        get api(path, user1), params: { simple: true }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response.length).to eq(2)
+        project_ids = json_response.map { |project| project['id'] }
+        expect(project_ids).to match_array([project2.id, project4.id])
+        expect(json_response.first['visibility']).not_to be_present
+      end
+
+      it 'filters the shared projects in the group based on visibility' do
+        internal_project = create(:project, :internal, namespace: create(:group))
+
+        create(:project_group_link, project: internal_project, group: group1)
+
+        get api(path, user1), params: { visibility: 'internal' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an(Array)
+        expect(json_response.length).to eq(1)
+        expect(json_response.first['id']).to eq(internal_project.id)
+      end
+
+      it 'filters the shared projects in the group based on search params' do
+        get api(path, user1), params: { search: 'test_project' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an(Array)
+        expect(json_response.length).to eq(1)
+        expect(json_response.first['id']).to eq(project4.id)
+      end
+
+      it 'does not return the projects owned by the group' do
+        get api(path, user1)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an(Array)
+        project_ids = json_response.map { |project| project['id'] }
+
+        expect(project_ids).not_to include(project1.id)
+      end
+
+      it 'returns 404 for a non-existing group' do
+        get api("/groups/0000/projects/shared", user1)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      it 'does not return a group not attached to the user' do
+        group = create(:group, :private)
+
+        get api("/groups/#{group.id}/projects/shared", user1)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      it 'only returns shared projects to which user has access' do
+        project4.add_developer(user3)
+
+        get api(path, user3)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response.length).to eq(1)
+        expect(json_response.first['id']).to eq(project4.id)
+      end
+
+      it 'only returns the projects starred by user' do
+        user1.starred_projects = [project2]
+
+        get api(path, user1), params: { starred: true }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.length).to eq(1)
+        expect(json_response.first['id']).to eq(project2.id)
+      end
+    end
+
+    context "when authenticated as admin" do
+      subject { get api(path, admin) }
+
+      it "returns shared projects of an existing group" do
+        subject
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response.length).to eq(2)
+        project_ids = json_response.map { |project| project['id'] }
+        expect(project_ids).to match_array([project2.id, project4.id])
+      end
+
+      context 'for a non-existent group' do
+        let(:path) { "/groups/000/projects/shared" }
+
+        it 'returns 404 for a non-existent group' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      it 'avoids N+1 queries' do
+        control_count = ActiveRecord::QueryRecorder.new do
+          subject
+        end.count
+
+        create(:project_group_link, project: create(:project), group: group1)
+
+        expect do
+          subject
+        end.not_to exceed_query_limit(control_count)
+      end
+    end
+
+    context 'when using group path in URL' do
+      let(:path) { "/groups/#{group1.path}/projects/shared" }
+
+      it 'returns the right details' do
+        get api(path, admin)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response.length).to eq(2)
+        project_ids = json_response.map { |project| project['id'] }
+        expect(project_ids).to match_array([project2.id, project4.id])
+      end
+
+      it 'returns 404 for a non-existent group' do
+        get api('/groups/unknown/projects/shared', admin)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
+
   describe 'GET /groups/:id/subgroups' do
     let!(:subgroup1) { create(:group, parent: group1) }
     let!(:subgroup2) { create(:group, :private, parent: group1) }

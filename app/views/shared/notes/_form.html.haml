@@ -5,7 +5,7 @@
 - else
   - preview_url = preview_markdown_path(@project)
 
-= form_for form_resources, url: new_form_url, remote: true, html: { :'data-type' => 'json', multipart: true, id: nil, class: "new-note js-new-note-form js-quick-submit common-note-form", "data-noteable-iid" => @note.noteable.try(:iid), }, authenticity_token: true do |f|
+= form_for form_resources, url: new_form_url, remote: true, html: { :'data-type' => 'json', multipart: true, id: nil, class: "new-note js-new-note-form js-quick-submit common-note-form discussion-reply-holder", "data-noteable-iid" => @note.noteable.try(:iid), }, authenticity_token: true do |f|
   = hidden_field_tag :view, diff_view
   = hidden_field_tag :line_type
   = hidden_field_tag :merge_request_diff_head_sha, @note.noteable.try(:diff_head_sha)
@@ -24,7 +24,7 @@
   -# DiffNote
   = f.hidden_field :position
 
-  .discussion-form-container
+  .discussion-form-container.discussion-with-resolve-btn.flex-column.p-0
     = render layout: 'projects/md_preview', locals: { url: preview_url, referenced_users: true } do
       = render 'projects/zen', f: f,
         attr: :note,

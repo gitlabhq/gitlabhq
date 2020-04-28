@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe API::ProjectTemplates do
-  let_it_be(:public_project) { create(:project, :public) }
+  let_it_be(:public_project) { create(:project, :public, path: 'path.with.dot') }
   let_it_be(:private_project) { create(:project, :private) }
   let_it_be(:developer) { create(:user) }
 
@@ -12,6 +12,12 @@ describe API::ProjectTemplates do
   end
 
   describe 'GET /projects/:id/templates/:type' do
+    it 'accepts project paths with dots' do
+      get api("/projects/#{public_project.namespace.path}%2F#{public_project.path}/templates/dockerfiles")
+
+      expect(response).to have_gitlab_http_status(:ok)
+    end
+
     it 'returns dockerfiles' do
       get api("/projects/#{public_project.id}/templates/dockerfiles")
 

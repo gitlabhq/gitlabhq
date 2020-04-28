@@ -964,11 +964,11 @@ export default class Notes {
 
     form
       .prepend(
-        `<div class="avatar-note-form-holder"><div class="content"><a href="${escape(
+        `<a href="${escape(
           gon.current_username,
         )}" class="user-avatar-link d-none d-sm-block"><img class="avatar s40" src="${encodeURI(
-          gon.current_user_avatar_url,
-        )}" alt="${escape(gon.current_user_fullname)}" /></a></div></div>`,
+          gon.current_user_avatar_url || gon.default_avatar_url,
+        )}" alt="${escape(gon.current_user_fullname)}" /></a>`,
       )
       .append('</div>')
       .find('.js-close-discussion-note-form')

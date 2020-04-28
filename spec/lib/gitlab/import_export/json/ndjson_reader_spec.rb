@@ -10,14 +10,6 @@ describe Gitlab::ImportExport::JSON::NdjsonReader do
   let(:ndjson_reader) { described_class.new(dir_path) }
   let(:importable_path) { 'project' }
 
-  before :all do
-    extract_archive('spec/fixtures/lib/gitlab/import_export/light', 'tree.tar.gz')
-  end
-
-  after :all do
-    cleanup_artifacts_from_extract_archive('light')
-  end
-
   describe '#exist?' do
     subject { ndjson_reader.exist? }
 

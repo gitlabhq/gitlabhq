@@ -116,4 +116,14 @@ describe AlertManagement::Alert do
       end
     end
   end
+
+  describe '.for_iid' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:alert_1) { create(:alert_management_alert, project: project) }
+    let_it_be(:alert_2) { create(:alert_management_alert, project: project) }
+
+    subject { AlertManagement::Alert.for_iid(alert_1.iid) }
+
+    it { is_expected.to match_array(alert_1) }
+  end
 end

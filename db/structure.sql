@@ -171,7 +171,10 @@ CREATE TABLE public.appearances (
     message_background_color text,
     message_font_color text,
     favicon character varying,
-    email_header_and_footer_enabled boolean DEFAULT false NOT NULL
+    email_header_and_footer_enabled boolean DEFAULT false NOT NULL,
+    profile_image_guidelines text,
+    profile_image_guidelines_html text,
+    CONSTRAINT appearances_profile_image_guidelines CHECK ((char_length(profile_image_guidelines) <= 4096))
 );
 
 CREATE SEQUENCE public.appearances_id_seq
@@ -6138,6 +6141,22 @@ CREATE SEQUENCE public.sprints_id_seq
 
 ALTER SEQUENCE public.sprints_id_seq OWNED BY public.sprints.id;
 
+CREATE TABLE public.status_page_published_incidents (
+    id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL
+);
+
+CREATE SEQUENCE public.status_page_published_incidents_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.status_page_published_incidents_id_seq OWNED BY public.status_page_published_incidents.id;
+
 CREATE TABLE public.status_page_settings (
     project_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -7662,6 +7681,8 @@ ALTER TABLE ONLY public.spam_logs ALTER COLUMN id SET DEFAULT nextval('public.sp
 
 ALTER TABLE ONLY public.sprints ALTER COLUMN id SET DEFAULT nextval('public.sprints_id_seq'::regclass);
 
+ALTER TABLE ONLY public.status_page_published_incidents ALTER COLUMN id SET DEFAULT nextval('public.status_page_published_incidents_id_seq'::regclass);
+
 ALTER TABLE ONLY public.status_page_settings ALTER COLUMN project_id SET DEFAULT nextval('public.status_page_settings_project_id_seq'::regclass);
 
 ALTER TABLE ONLY public.subscriptions ALTER COLUMN id SET DEFAULT nextval('public.subscriptions_id_seq'::regclass);
@@ -8596,6 +8617,9 @@ ALTER TABLE ONLY public.spam_logs
 
 ALTER TABLE ONLY public.sprints
     ADD CONSTRAINT sprints_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.status_page_published_incidents
+    ADD CONSTRAINT status_page_published_incidents_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY public.status_page_settings
     ADD CONSTRAINT status_page_settings_pkey PRIMARY KEY (project_id);
@@ -10439,6 +10463,8 @@ CREATE INDEX index_sprints_on_title ON public.sprints USING btree (title);
 
 CREATE INDEX index_sprints_on_title_trigram ON public.sprints USING gin (title public.gin_trgm_ops);
 
+CREATE UNIQUE INDEX index_status_page_published_incidents_on_issue_id ON public.status_page_published_incidents USING btree (issue_id);
+
 CREATE INDEX index_status_page_settings_on_project_id ON public.status_page_settings USING btree (project_id);
 
 CREATE INDEX index_subscriptions_on_project_id ON public.subscriptions USING btree (project_id);
@@ -11749,6 +11775,9 @@ ALTER TABLE ONLY public.dependency_proxy_group_settings
 
 ALTER TABLE ONLY public.group_deploy_tokens
     ADD CONSTRAINT fk_rails_61a572b41a FOREIGN KEY (group_id) REFERENCES public.namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.status_page_published_incidents
+    ADD CONSTRAINT fk_rails_61e5493940 FOREIGN KEY (issue_id) REFERENCES public.issues(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.deployment_clusters
     ADD CONSTRAINT fk_rails_6359a164df FOREIGN KEY (deployment_id) REFERENCES public.deployments(id) ON DELETE CASCADE;
@@ -13508,11 +13537,13 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200415161021
 20200415161206
 20200415192656
+20200416005331
 20200416111111
 20200416120128
 20200416120354
 20200417044453
 20200417145946
+20200420092011
 20200420104303
 20200420104323
 20200420162730

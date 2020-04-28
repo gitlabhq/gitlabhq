@@ -1,0 +1,2 @@
+{"id":1,"title":null,"project_id":8,"description":123,"due_date":null,"created_at":"NOT A DATE","updated_at":"NOT A DATE","state":"active","iid":1,"group_id":null}
+{"id":42,"title":"A valid milestone","project_id":8,"description":"Project-level milestone","due_date":null,"created_at":"2016-06-14T15:02:04.415Z","updated_at":"2016-06-14T15:02:04.415Z","state":"active","iid":1,"group_id":null}

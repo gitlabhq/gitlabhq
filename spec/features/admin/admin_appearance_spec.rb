@@ -12,6 +12,7 @@ describe 'Admin Appearance' do
     fill_in 'appearance_title', with: 'MyCompany'
     fill_in 'appearance_description', with: 'dev server'
     fill_in 'appearance_new_project_guidelines', with: 'Custom project guidelines'
+    fill_in 'appearance_profile_image_guidelines', with: 'Custom profile image guidelines'
     click_button 'Update appearance settings'
 
     expect(current_path).to eq admin_appearances_path
@@ -20,6 +21,7 @@ describe 'Admin Appearance' do
     expect(page).to have_field('appearance_title', with: 'MyCompany')
     expect(page).to have_field('appearance_description', with: 'dev server')
     expect(page).to have_field('appearance_new_project_guidelines', with: 'Custom project guidelines')
+    expect(page).to have_field('appearance_profile_image_guidelines', with: 'Custom profile image guidelines')
     expect(page).to have_content 'Last edit'
   end
 
@@ -84,6 +86,22 @@ describe 'Admin Appearance' do
     visit new_project_path
 
     expect_custom_new_project_appearance(appearance)
+  end
+
+  context 'Profile page with custom profile image guidelines' do
+    before do
+      sign_in(create(:admin))
+      visit admin_appearances_path
+      fill_in 'appearance_profile_image_guidelines', with: 'Custom profile image guidelines, please :smile:!'
+      click_button 'Update appearance settings'
+    end
+
+    it 'renders guidelines when set' do
+      sign_in create(:user)
+      visit profile_path
+
+      expect(page).to have_content 'Custom profile image guidelines, please 😄!'
+    end
   end
 
   it 'Appearance logo' do

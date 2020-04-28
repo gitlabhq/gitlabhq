@@ -126,14 +126,6 @@ describe Gitlab::ImportExport::RelationTreeRestorer do
         let(:path) { 'spec/fixtures/lib/gitlab/import_export/complex/tree' }
         let(:relation_reader) { Gitlab::ImportExport::JSON::NdjsonReader.new(path) }
 
-        before :all do
-          extract_archive('spec/fixtures/lib/gitlab/import_export/complex', 'tree.tar.gz')
-        end
-
-        after :all do
-          cleanup_artifacts_from_extract_archive('complex')
-        end
-
         it_behaves_like 'import project successfully'
       end
     end

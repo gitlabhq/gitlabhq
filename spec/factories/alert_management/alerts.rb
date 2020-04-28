@@ -16,19 +16,32 @@ FactoryBot.define do
     end
 
     trait :with_service do
-      service { FFaker::App.name }
+      service { FFaker::Product.product_name }
     end
 
     trait :with_monitoring_tool do
-      monitoring_tool { FFaker::App.name }
+      monitoring_tool { FFaker::AWS.product_description }
     end
 
     trait :with_host do
-      hosts { FFaker::Internet.public_ip_v4_address }
+      hosts { FFaker::Internet.ip_v4_address }
+    end
+
+    trait :with_ended_at do
+      ended_at { Time.current }
     end
 
     trait :resolved do
       status { :resolved }
+    end
+
+    trait :all_fields do
+      with_issue
+      with_fingerprint
+      with_service
+      with_monitoring_tool
+      with_host
+      with_ended_at
     end
   end
 end

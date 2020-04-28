@@ -12,7 +12,7 @@ module API
       requires :id, type: String, desc: 'The ID of a project'
       requires :type, type: String, values: TEMPLATE_TYPES, desc: 'The type (dockerfiles|gitignores|gitlab_ci_ymls|licenses) of the template'
     end
-    resource :projects do
+    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Get a list of templates available to this project' do
         detail 'This endpoint was introduced in GitLab 11.4'
       end

@@ -43,6 +43,8 @@ module AlertManagement
       ignored: 3
     }
 
+    scope :for_iid, -> (iid) { where(iid: iid) }
+
     def fingerprint=(value)
       if value.blank?
         super(nil)

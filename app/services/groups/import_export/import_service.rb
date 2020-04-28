@@ -36,7 +36,7 @@ module Groups
 
       def restorer
         @restorer ||=
-          if ::Feature.enabled?(:group_import_export_ndjson, @group&.parent)
+          if ndjson?
             Gitlab::ImportExport::Group::TreeRestorer.new(
               user: @current_user,
               shared: @shared,
@@ -50,6 +50,11 @@ module Groups
               group_hash: nil
             )
           end
+      end
+
+      def ndjson?
+        ::Feature.enabled?(:group_import_export_ndjson, @group&.parent) &&
+          File.exist?(File.join(@shared.export_path, 'tree/groups/_all.ndjson'))
       end
 
       def remove_import_file

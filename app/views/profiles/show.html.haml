@@ -20,6 +20,9 @@
             = s_("Profiles|You can upload your avatar here or change it at %{gravatar_link}").html_safe % { gravatar_link: gravatar_link }
           - else
             = s_("Profiles|You can upload your avatar here")
+        - if current_appearance&.profile_image_guidelines?
+          .md
+            = brand_profile_image_guidelines
     .col-lg-8
       .clearfix.avatar-image.append-bottom-default
         = link_to avatar_icon_for_user(@user, 400), target: '_blank', rel: 'noopener noreferrer' do

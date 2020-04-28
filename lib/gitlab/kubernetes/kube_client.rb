@@ -19,7 +19,8 @@ module Gitlab
         apps: { group: 'apis/apps', version: 'v1' },
         extensions: { group: 'apis/extensions', version: 'v1beta1' },
         istio: { group: 'apis/networking.istio.io', version: 'v1alpha3' },
-        knative: { group: 'apis/serving.knative.dev', version: 'v1alpha1' }
+        knative: { group: 'apis/serving.knative.dev', version: 'v1alpha1' },
+        networking: { group: 'apis/networking.k8s.io', version: 'v1' }
       }.freeze
 
       SUPPORTED_API_GROUPS.each do |name, params|
@@ -87,6 +88,14 @@ module Gitlab
         :get_gateway,
         :update_gateway,
         to: :istio_client
+
+      # NetworkPolicy methods delegate to the apis/networking.k8s.io api
+      # group client
+      delegate :create_network_policy,
+        :get_network_policies,
+        :update_network_policy,
+        :delete_network_policy,
+        to: :networking_client
 
       attr_reader :api_prefix, :kubeclient_options
 
