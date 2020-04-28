@@ -95,6 +95,8 @@ module API
         use :issues_params
         optional :scope, type: String, values: %w[created-by-me assigned-to-me created_by_me assigned_to_me all], default: 'created_by_me',
                          desc: 'Return issues for the given scope: `created_by_me`, `assigned_to_me` or `all`'
+        optional :non_archived, type: Boolean, default: true,
+                                desc: 'Return issues from non archived projects'
       end
       get do
         authenticate! unless params[:scope] == 'all'

@@ -503,11 +503,16 @@ describe('DiffsStoreUtils', () => {
       },
     };
 
+    // When multi line comments are fully implemented `line_code` will be
+    // included in all requests. Until then we need to ensure the logic does
+    // not change when it is included only in the "comparison" argument.
+    const lineRange = { start_line_code: 'abc_1_1', end_line_code: 'abc_1_2' };
+
     it('returns true when the discussion is up to date', () => {
       expect(
         utils.isDiscussionApplicableToLine({
           discussion: discussions.upToDateDiscussion1,
-          diffPosition,
+          diffPosition: { ...diffPosition, line_range: lineRange },
           latestDiff: true,
         }),
       ).toBe(true);
@@ -517,7 +522,7 @@ describe('DiffsStoreUtils', () => {
       expect(
         utils.isDiscussionApplicableToLine({
           discussion: discussions.outDatedDiscussion1,
-          diffPosition,
+          diffPosition: { ...diffPosition, line_range: lineRange },
           latestDiff: true,
         }),
       ).toBe(false);
@@ -534,6 +539,7 @@ describe('DiffsStoreUtils', () => {
           diffPosition: {
             ...diffPosition,
             lineCode: 'ABC_1',
+            line_range: lineRange,
           },
           latestDiff: true,
         }),
@@ -551,6 +557,7 @@ describe('DiffsStoreUtils', () => {
           diffPosition: {
             ...diffPosition,
             line_code: 'ABC_1',
+            line_range: lineRange,
           },
           latestDiff: true,
         }),
@@ -568,6 +575,7 @@ describe('DiffsStoreUtils', () => {
           diffPosition: {
             ...diffPosition,
             lineCode: 'ABC_1',
+            line_range: lineRange,
           },
           latestDiff: false,
         }),

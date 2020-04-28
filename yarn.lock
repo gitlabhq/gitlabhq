@@ -1041,6 +1041,21 @@
   resolved "https://registry.yarnpkg.com/@sourcegraph/code-host-integration/-/code-host-integration-0.0.37.tgz#87f9a602e2a60520b6038311a67face2ece86827"
   integrity sha512-GQvNuPORLjsMhto57Ue1umeSV3cir+hMEaGxwCKmmq+cc9ZSZpuXa8RVBXuT5azN99K9/8zFps4woyPJ8wrjYA==
 
+"@toast-ui/editor@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@toast-ui/editor/-/editor-2.0.1.tgz#749e5be1f02f42ded51488d1575ab1c19ca59952"
+  integrity sha512-TC481O/zP37boY6H6oVN6KLVMY7yrU8zQu+3xqZ71V3Sr6D2XyaGb2Xub9XqTdqzBmzsf7y4Gi+EXO0IQ3rGVA==
+  dependencies:
+    "@types/codemirror" "0.0.71"
+    codemirror "^5.48.4"
+
+"@toast-ui/vue-editor@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@toast-ui/vue-editor/-/vue-editor-2.0.1.tgz#c9c8c8da4c0a67b9fbc4240464388c67d72a0c22"
+  integrity sha512-sGsApl0n+GVAZbmPA+tTrq9rmmyh2mRgCgg2/mu1/lN7S4vPv/nQH8KXxLG9Y6hG2+kgelqz6wvbOCdzlM/HmQ==
+  dependencies:
+    "@toast-ui/editor" "^2.0.1"
+
 "@types/anymatch@*":
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/@types/anymatch/-/anymatch-1.3.0.tgz#d1d55958d1fccc5527d4aba29fc9c4b942f563ff"
@@ -1078,6 +1093,18 @@
   integrity sha512-XYVgHF2sQ0YblLRMLNPB3CkFMewzFmlDsH/TneZFHUXDlABQgh88uOxuez7ZcXxayLFrqLwtDH1t+FmlFwNZxw==
   dependencies:
     "@babel/types" "^7.3.0"
+
+"@types/codemirror@0.0.71":
+  version "0.0.71"
+  resolved "https://registry.yarnpkg.com/@types/codemirror/-/codemirror-0.0.71.tgz#861f1bcb3100c0a064567c5400f2981cf4ae8ca7"
+  integrity sha512-b2oEEnno1LIGKMR7uBEsr40al1UijF1HEpRn0+Yf1xOLl24iQgB7DBpZVMM7y54G5wCNoclDrRO65E6KHPNO2w==
+  dependencies:
+    "@types/tern" "*"
+
+"@types/estree@*":
+  version "0.0.44"
+  resolved "https://registry.yarnpkg.com/@types/estree/-/estree-0.0.44.tgz#980cc5a29a3ef3bea6ff1f7d021047d7ea575e21"
+  integrity sha512-iaIVzr+w2ZJ5HkidlZ3EJM8VTZb2MJLCjw3V+505yVts0gRC4UMvjw0d1HPtGqI/HQC/KdsYtayfzl+AXY2R8g==
 
 "@types/events@*":
   version "1.2.0"
@@ -1137,6 +1164,13 @@
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/@types/tapable/-/tapable-1.0.4.tgz#b4ffc7dc97b498c969b360a41eee247f82616370"
   integrity sha512-78AdXtlhpCHT0K3EytMpn4JNxaf5tbqbLcbIRoQIHzpTIyjpxLQKRoxU55ujBXAtg3Nl2h/XWvfDa9dsMOd0pQ==
+
+"@types/tern@*":
+  version "0.23.3"
+  resolved "https://registry.yarnpkg.com/@types/tern/-/tern-0.23.3.tgz#4b54538f04a88c9ff79de1f6f94f575a7f339460"
+  integrity sha512-imDtS4TAoTcXk0g7u4kkWqedB3E4qpjXzCpD2LU5M5NAXHzCDsypyvXSaG7mM8DKYkCRa7tFp4tS/lp/Wo7Q3w==
+  dependencies:
+    "@types/estree" "*"
 
 "@types/uglify-js@*":
   version "3.0.4"
@@ -2763,6 +2797,11 @@ code-point-at@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/code-point-at/-/code-point-at-1.1.0.tgz#0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77"
   integrity sha1-DQcLTQQ6W+ozovGkDi7bPZpMz3c=
+
+codemirror@^5.48.4:
+  version "5.53.2"
+  resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.53.2.tgz#9799121cf8c50809cca487304e9de3a74d33f428"
+  integrity sha512-wvSQKS4E+P8Fxn/AQ+tQtJnF1qH5UOlxtugFLpubEZ5jcdH2iXTVinb+Xc/4QjshuOxRm4fUsU2QPF1JJKiyXA==
 
 codesandbox-api@0.0.23:
   version "0.0.23"

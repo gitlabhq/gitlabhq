@@ -91,6 +91,8 @@ class IssuableBaseService < BaseService
     elsif params[label_key]
       params[label_id_key] = labels_service.find_or_create_by_titles(label_key, find_only: find_only).map(&:id)
     end
+
+    params.delete(label_key) if params[label_key].nil?
   end
 
   def filter_labels_in_param(key)

@@ -86,14 +86,6 @@ describe Gitlab::Danger::Changelog do
     end
   end
 
-  describe '#presented_no_changelog_labels' do
-    subject { changelog.presented_no_changelog_labels }
-
-    it 'returns the labels formatted' do
-      is_expected.to eq('~backstage, ~ci-build, ~meta')
-    end
-  end
-
   describe '#ee_changelog?' do
     subject { changelog.ee_changelog? }
 

@@ -19,7 +19,6 @@ class DropForkedProjectLinksFk < ActiveRecord::Migration[6.0]
     unless foreign_key_exists?(:forked_project_links, :projects, column: :forked_to_project_id)
       # rubocop: disable Migration/WithLockRetriesWithoutDdlTransaction
       with_lock_retries do
-        # rubocop: disable Migration/AddConcurrentForeignKey
         add_foreign_key :forked_project_links, :projects, column: :forked_to_project_id, on_delete: :cascade, validate: false
       end
       # rubocop: enable Migration/WithLockRetriesWithoutDdlTransaction

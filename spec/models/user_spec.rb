@@ -538,18 +538,6 @@ describe User, :do_not_mock_admin_mode do
             expect(user).to be_valid
           end
 
-          context 'when feature flag is turned off' do
-            before do
-              stub_feature_flags(email_restrictions: false)
-            end
-
-            it 'does accept the email address' do
-              user = build(:user, email: 'info+1@test.com')
-
-              expect(user).to be_valid
-            end
-          end
-
           context 'when created_by_id is set' do
             it 'does accept the email address' do
               user = build(:user, email: 'info+1@test.com', created_by_id: 1)

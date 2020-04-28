@@ -129,16 +129,6 @@ describe API::Search do
 
         it_behaves_like 'response is correct', schema: 'public_api/v4/snippets'
       end
-
-      context 'for snippet_blobs scope' do
-        before do
-          create(:snippet, :public, title: 'awesome snippet', content: 'snippet content')
-
-          get api('/search', user), params: { scope: 'snippet_blobs', search: 'content' }
-        end
-
-        it_behaves_like 'response is correct', schema: 'public_api/v4/snippets'
-      end
     end
   end
 

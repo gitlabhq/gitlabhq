@@ -1041,6 +1041,66 @@ describe('boardsStore', () => {
       });
     });
 
+    describe('addListIssue', () => {
+      let list;
+      const issue1 = new ListIssue({
+        title: 'Testing',
+        id: 2,
+        iid: 2,
+        confidential: false,
+        labels: [
+          {
+            color: '#ff0000',
+            description: 'testing;',
+            id: 5000,
+            priority: undefined,
+            textColor: 'white',
+            title: 'Test',
+          },
+        ],
+        assignees: [],
+      });
+      const issue2 = new ListIssue({
+        title: 'Testing',
+        id: 1,
+        iid: 1,
+        confidential: false,
+        labels: [
+          {
+            id: 1,
+            title: 'test',
+            color: 'red',
+            description: 'testing',
+          },
+        ],
+        assignees: [
+          {
+            id: 1,
+            name: 'name',
+            username: 'username',
+            avatar_url: 'http://avatar_url',
+          },
+        ],
+        real_path: 'path/to/issue',
+      });
+
+      beforeEach(() => {
+        list = new List(listObj);
+        list.addIssue(issue1);
+        setupDefaultResponses();
+      });
+
+      it('adds issues that are not already on the list', () => {
+        expect(list.findIssue(issue2.id)).toBe(undefined);
+        expect(list.issues).toEqual([issue1]);
+
+        boardsStore.addListIssue(list, issue2);
+        expect(list.findIssue(issue2.id)).toBe(issue2);
+        expect(list.issues.length).toBe(2);
+        expect(list.issues).toEqual([issue1, issue2]);
+      });
+    });
+
     describe('updateIssue', () => {
       let issue;
       let patchSpy;

@@ -64,7 +64,7 @@ class AddNotValidForeignKeyToEmailsUser < ActiveRecord::Migration[5.2]
 
   def up
     # safe to use: it requires short lock on the table since we don't validate the foreign key
-    add_foreign_key :emails, :users, on_delete: :cascade, validate: false # rubocop:disable Migration/AddConcurrentForeignKey
+    add_foreign_key :emails, :users, on_delete: :cascade, validate: false
   end
 
   def down

@@ -164,48 +164,7 @@ class List {
   }
 
   addIssue(issue, listFrom, newIndex) {
-    let moveBeforeId = null;
-    let moveAfterId = null;
-
-    if (!this.findIssue(issue.id)) {
-      if (newIndex !== undefined) {
-        this.issues.splice(newIndex, 0, issue);
-
-        if (this.issues[newIndex - 1]) {
-          moveBeforeId = this.issues[newIndex - 1].id;
-        }
-
-        if (this.issues[newIndex + 1]) {
-          moveAfterId = this.issues[newIndex + 1].id;
-        }
-      } else {
-        this.issues.push(issue);
-      }
-
-      if (this.label) {
-        issue.addLabel(this.label);
-      }
-
-      if (this.assignee) {
-        if (listFrom && listFrom.type === 'assignee') {
-          issue.removeAssignee(listFrom.assignee);
-        }
-        issue.addAssignee(this.assignee);
-      }
-
-      if (IS_EE && this.milestone) {
-        if (listFrom && listFrom.type === 'milestone') {
-          issue.removeMilestone(listFrom.milestone);
-        }
-        issue.addMilestone(this.milestone);
-      }
-
-      if (listFrom) {
-        this.issuesSize += 1;
-
-        this.updateIssueLabel(issue, listFrom, moveBeforeId, moveAfterId);
-      }
-    }
+    boardsStore.addListIssue(this, issue, listFrom, newIndex);
   }
 
   moveIssue(issue, oldIndex, newIndex, moveBeforeId, moveAfterId) {

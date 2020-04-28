@@ -125,6 +125,50 @@ const boardsStore = {
       path: '',
     });
   },
+  addListIssue(list, issue, listFrom, newIndex) {
+    let moveBeforeId = null;
+    let moveAfterId = null;
+
+    if (!list.findIssue(issue.id)) {
+      if (newIndex !== undefined) {
+        list.issues.splice(newIndex, 0, issue);
+
+        if (list.issues[newIndex - 1]) {
+          moveBeforeId = list.issues[newIndex - 1].id;
+        }
+
+        if (list.issues[newIndex + 1]) {
+          moveAfterId = list.issues[newIndex + 1].id;
+        }
+      } else {
+        list.issues.push(issue);
+      }
+
+      if (list.label) {
+        issue.addLabel(list.label);
+      }
+
+      if (list.assignee) {
+        if (listFrom && listFrom.type === 'assignee') {
+          issue.removeAssignee(listFrom.assignee);
+        }
+        issue.addAssignee(list.assignee);
+      }
+
+      if (IS_EE && list.milestone) {
+        if (listFrom && listFrom.type === 'milestone') {
+          issue.removeMilestone(listFrom.milestone);
+        }
+        issue.addMilestone(list.milestone);
+      }
+
+      if (listFrom) {
+        list.issuesSize += 1;
+
+        list.updateIssueLabel(issue, listFrom, moveBeforeId, moveAfterId);
+      }
+    }
+  },
   welcomeIsHidden() {
     return parseBoolean(Cookies.get('issue_board_welcome_hidden'));
   },

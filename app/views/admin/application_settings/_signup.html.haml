@@ -49,20 +49,19 @@
       = f.label :domain_blacklist, 'Blacklisted domains for sign-ups', class: 'label-bold'
       = f.text_area :domain_blacklist_raw, placeholder: 'domain.com', class: 'form-control', rows: 8
       .form-text.text-muted Users with e-mail addresses that match these domain(s) will NOT be able to sign-up. Wildcards allowed. Use separate lines for multiple entries. Ex: domain.com, *.domain.com
-    - if Feature.enabled?(:email_restrictions)
-      .form-group
-        = f.label :email_restrictions_enabled, _('Email restrictions'), class: 'label-bold'
-        .form-check
-          = f.check_box :email_restrictions_enabled, class: 'form-check-input'
-          = f.label :email_restrictions_enabled, class: 'form-check-label' do
-            = _('Enable email restrictions for sign ups')
-      .form-group
-        = f.label :email_restrictions, _('Email restrictions for sign-ups'), class: 'label-bold'
-        = f.text_area :email_restrictions, class: 'form-control', rows: 4
-        .form-text.text-muted
-        - supported_syntax_link_url = 'https://github.com/google/re2/wiki/Syntax'
-        - supported_syntax_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: supported_syntax_link_url }
-        = _('Restricts sign-ups for email addresses that match the given regex. See the %{supported_syntax_link_start}supported syntax%{supported_syntax_link_end} for more information.').html_safe % { supported_syntax_link_start: supported_syntax_link_start, supported_syntax_link_end: '</a>'.html_safe }
+    .form-group
+      = f.label :email_restrictions_enabled, _('Email restrictions'), class: 'label-bold'
+      .form-check
+        = f.check_box :email_restrictions_enabled, class: 'form-check-input'
+        = f.label :email_restrictions_enabled, class: 'form-check-label' do
+          = _('Enable email restrictions for sign ups')
+    .form-group
+      = f.label :email_restrictions, _('Email restrictions for sign-ups'), class: 'label-bold'
+      = f.text_area :email_restrictions, class: 'form-control', rows: 4
+      .form-text.text-muted
+      - supported_syntax_link_url = 'https://github.com/google/re2/wiki/Syntax'
+      - supported_syntax_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: supported_syntax_link_url }
+      = _('Restricts sign-ups for email addresses that match the given regex. See the %{supported_syntax_link_start}supported syntax%{supported_syntax_link_end} for more information.').html_safe % { supported_syntax_link_start: supported_syntax_link_start, supported_syntax_link_end: '</a>'.html_safe }
 
     .form-group
       = f.label :after_sign_up_text, class: 'label-bold'

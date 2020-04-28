@@ -117,7 +117,7 @@ Once synchronized, changing the field mapped to `id` and `externalId` will likel
 
 ### Okta configuration steps
 
-The SAML application that was created during [Single sign-on](index.md) setup for [Okta](The SAML application that was created during [Single sign-on](index.md) setup for [Okta](https://developer.okta.com/docs/guides/saml-application-setup/overview/) now needs to be set up for SCIM.
+The SAML application that was created during [Single sign-on](index.md#okta-setup-notes) setup for [Okta](https://developer.okta.com/docs/guides/saml-application-setup/overview/) now needs to be set up for SCIM.
 
 1. Sign in to Okta.
 1. If you see an **Admin** button in the top right, click the button. This will
@@ -138,6 +138,10 @@ The SAML application that was created during [Single sign-on](index.md) setup fo
     - For **API Token** enter the SCIM token obtained from the GitLab SCIM configuration page
 1. Click 'Test API Credentials' to verify configuration.
 1. Click **Save** to apply the settings.
+1. After saving the API integration details, new settings tabs will appear on the left. Choose **To App**.
+1. Click **Edit**.
+1. Check the box to **Enable** for both **Create Users** and **Deactivate Users**.
+1. Click **Save**.
 1. Assign users in the **Assignments** tab. Assigned users will be created and
    managed in your GitLab group.
 

@@ -1,6 +1,4 @@
 import $ from 'jquery';
-import MockAdapter from 'axios-mock-adapter';
-import getSetTimeoutPromise from 'spec/helpers/set_timeout_promise_helper';
 import axios from '~/lib/utils/axios_utils';
 import { getSelector, dismiss, inserted } from '~/feature_highlight/feature_highlight_helper';
 import { togglePopover } from '~/shared/popover';
@@ -17,34 +15,23 @@ describe('feature highlight helper', () => {
   });
 
   describe('dismiss', () => {
-    let mock;
     const context = {
       hide: () => {},
       attr: () => '/-/callouts/dismiss',
     };
 
     beforeEach(() => {
-      mock = new MockAdapter(axios);
-
-      spyOn(togglePopover, 'call').and.callFake(() => {});
-      spyOn(context, 'hide').and.callFake(() => {});
+      jest.spyOn(axios, 'post').mockResolvedValue();
+      jest.spyOn(togglePopover, 'call').mockImplementation(() => {});
+      jest.spyOn(context, 'hide').mockImplementation(() => {});
       dismiss.call(context);
     });
 
-    afterEach(() => {
-      mock.restore();
-    });
-
-    it('calls persistent dismissal endpoint', done => {
-      const spy = jasmine.createSpy('dismiss-endpoint-hit');
-      mock.onPost('/-/callouts/dismiss').reply(spy);
-
-      getSetTimeoutPromise()
-        .then(() => {
-          expect(spy).toHaveBeenCalled();
-        })
-        .then(done)
-        .catch(done.fail);
+    it('calls persistent dismissal endpoint', () => {
+      expect(axios.post).toHaveBeenCalledWith(
+        '/-/callouts/dismiss',
+        expect.objectContaining({ feature_name: undefined }),
+      );
     });
 
     it('calls hide popover', () => {
@@ -65,7 +52,7 @@ describe('feature highlight helper', () => {
         },
       };
 
-      spyOn($.fn, 'on').and.callFake(event => {
+      jest.spyOn($.fn, 'on').mockImplementation(event => {
         expect(event).toEqual('click');
         done();
       });

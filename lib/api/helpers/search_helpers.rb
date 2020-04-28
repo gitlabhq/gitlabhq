@@ -5,7 +5,7 @@ module API
     module SearchHelpers
       def self.global_search_scopes
         # This is a separate method so that EE can redefine it.
-        %w(projects issues merge_requests milestones snippet_titles snippet_blobs users)
+        %w(projects issues merge_requests milestones snippet_titles users)
       end
 
       def self.group_search_scopes

@@ -110,6 +110,31 @@ describe Issues::CreateService do
         end
       end
 
+      context 'when labels is nil' do
+        let(:opts) do
+          { title: 'Title',
+            description: 'Description',
+            labels: nil }
+        end
+
+        it 'does not assign label' do
+          expect(issue.labels).to be_empty
+        end
+      end
+
+      context 'when labels is nil and label_ids is present' do
+        let(:opts) do
+          { title: 'Title',
+            description: 'Description',
+            labels: nil,
+            label_ids: labels.map(&:id) }
+        end
+
+        it 'assigns group labels' do
+          expect(issue.labels).to match_array labels
+        end
+      end
+
       context 'when milestone belongs to different project' do
         let(:milestone) { create(:milestone) }
 

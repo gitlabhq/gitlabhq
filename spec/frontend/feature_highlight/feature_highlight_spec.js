@@ -4,6 +4,8 @@ import * as featureHighlight from '~/feature_highlight/feature_highlight';
 import * as popover from '~/shared/popover';
 import axios from '~/lib/utils/axios_utils';
 
+jest.mock('~/shared/popover');
+
 describe('feature highlight', () => {
   beforeEach(() => {
     setFixtures(`
@@ -28,7 +30,7 @@ describe('feature highlight', () => {
     beforeEach(() => {
       mock = new MockAdapter(axios);
       mock.onGet('/test').reply(200);
-      spyOn(window, 'addEventListener');
+      jest.spyOn(window, 'addEventListener').mockImplementation(() => {});
       featureHighlight.setupFeatureHighlightPopover('test', 0);
     });
 
@@ -44,50 +46,27 @@ describe('feature highlight', () => {
     });
 
     it('setup mouseenter', () => {
-      const toggleSpy = spyOn(popover.togglePopover, 'call');
       $(selector).trigger('mouseenter');
 
-      expect(toggleSpy).toHaveBeenCalledWith(jasmine.any(Object), true);
+      expect(popover.mouseenter).toHaveBeenCalledWith(expect.any(Object));
     });
 
-    it('setup debounced mouseleave', done => {
-      const toggleSpy = spyOn(popover.togglePopover, 'call');
+    it('setup debounced mouseleave', () => {
       $(selector).trigger('mouseleave');
 
-      // Even though we've set the debounce to 0ms, setTimeout is needed for the debounce
-      setTimeout(() => {
-        expect(toggleSpy).toHaveBeenCalledWith(jasmine.any(Object), false);
-        done();
-      }, 0);
+      expect(popover.debouncedMouseleave).toHaveBeenCalled();
     });
 
     it('setup show.bs.popover', () => {
       $(selector).trigger('show.bs.popover');
 
-      expect(window.addEventListener).toHaveBeenCalledWith('scroll', jasmine.any(Function), {
+      expect(window.addEventListener).toHaveBeenCalledWith('scroll', expect.any(Function), {
         once: true,
       });
     });
 
     it('removes disabled attribute', () => {
       expect($('.js-feature-highlight').is(':disabled')).toEqual(false);
-    });
-
-    it('displays popover', () => {
-      expect(document.querySelector(selector).getAttribute('aria-describedby')).toBeFalsy();
-      $(selector).trigger('mouseenter');
-
-      expect(document.querySelector(selector).getAttribute('aria-describedby')).toBeTruthy();
-    });
-
-    it('toggles when clicked', () => {
-      $(selector).trigger('mouseenter');
-      const popoverId = $(selector).attr('aria-describedby');
-      const toggleSpy = spyOn(popover.togglePopover, 'call');
-
-      $(`#${popoverId} .dismiss-feature-highlight`).click();
-
-      expect(toggleSpy).toHaveBeenCalled();
     });
   });
 

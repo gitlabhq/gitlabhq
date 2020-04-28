@@ -33,5 +33,11 @@ describe RuboCop::Cop::Migration::AddConcurrentForeignKey do
         expect(cop.offenses.map(&:line)).to eq([1])
       end
     end
+
+    it 'does not register an offense when a `NOT VALID` foreign key is added' do
+      inspect_source('def up; add_foreign_key(:projects, :users, column: :user_id, validate: false); end')
+
+      expect(cop.offenses).to be_empty
+    end
   end
 end

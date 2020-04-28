@@ -399,9 +399,28 @@ describe Gitlab::Danger::Helper do
     end
   end
 
+  describe '#labels_list' do
+    let(:labels) { ['telemetry', 'telemetry::reviewed'] }
+
+    it 'composes the labels string' do
+      expect(helper.labels_list(labels)).to eq('~"telemetry", ~"telemetry::reviewed"')
+    end
+
+    context 'when passing a separator' do
+      it 'composes the labels string with the given separator' do
+        expect(helper.labels_list(labels, sep: ' ')).to eq('~"telemetry" ~"telemetry::reviewed"')
+      end
+    end
+
+    it 'returns empty string for empty array' do
+      expect(helper.labels_list([])).to eq('')
+    end
+  end
+
   describe '#prepare_labels_for_mr' do
     it 'composes the labels string' do
       mr_labels = ['telemetry', 'telemetry::reviewed']
+
       expect(helper.prepare_labels_for_mr(mr_labels)).to eq('/label ~"telemetry" ~"telemetry::reviewed"')
     end
 

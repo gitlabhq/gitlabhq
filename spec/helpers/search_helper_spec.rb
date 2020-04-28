@@ -112,7 +112,6 @@ describe SearchHelper do
       'milestones'     | 'milestone'
       'notes'          | 'comment'
       'projects'       | 'project'
-      'snippet_blobs'  | 'snippet result'
       'snippet_titles' | 'snippet'
       'users'          | 'user'
       'wiki_blobs'     | 'wiki result'

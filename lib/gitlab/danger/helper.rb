@@ -198,11 +198,14 @@ module Gitlab
         (labels & gitlab_helper.mr_labels) == labels
       end
 
+      def labels_list(labels, sep: ', ')
+        labels.map { |label| %Q{~"#{label}"} }.join(sep)
+      end
+
       def prepare_labels_for_mr(labels)
         return '' unless labels.any?
 
-        labels_list = labels.map { |label| %Q{~"#{label}"} }.join(' ')
-        "/label #{labels_list}"
+        "/label #{labels_list(labels, sep: ' ')}"
       end
 
       private

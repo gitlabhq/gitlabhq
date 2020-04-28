@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop: disable Migration/AddConcurrentForeignKey
 # rubocop: disable Migration/WithLockRetriesWithoutDdlTransaction
 class AddProtectedBranchPushAccessLevelsUserIdForeignKey < ActiveRecord::Migration[6.0]
   include Gitlab::Database::MigrationHelpers

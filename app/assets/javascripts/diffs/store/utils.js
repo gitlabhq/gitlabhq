@@ -437,7 +437,11 @@ export function getDiffPositionByLineCode(diffFiles, useSingleDiffStyle) {
 // This method will check whether the discussion is still applicable
 // to the diff line in question regarding different versions of the MR
 export function isDiscussionApplicableToLine({ discussion, diffPosition, latestDiff }) {
-  const { line_code, ...diffPositionCopy } = diffPosition;
+  const { line_code, ...dp } = diffPosition;
+  // Removing `line_range` from diffPosition because the backend does not
+  // yet consistently return this property. This check can be removed,
+  // once this is addressed. see https://gitlab.com/gitlab-org/gitlab/-/issues/213010
+  const { line_range: dpNotUsed, ...diffPositionCopy } = dp;
 
   if (discussion.original_position && discussion.position) {
     const discussionPositions = [
@@ -446,7 +450,14 @@ export function isDiscussionApplicableToLine({ discussion, diffPosition, latestD
       ...(discussion.positions || []),
     ];
 
-    return discussionPositions.some(position => isEqual(position, diffPositionCopy));
+    const removeLineRange = position => {
+      const { line_range: pNotUsed, ...positionNoLineRange } = position;
+      return positionNoLineRange;
+    };
+
+    return discussionPositions
+      .map(removeLineRange)
+      .some(position => isEqual(position, diffPositionCopy));
   }
 
   // eslint-disable-next-line

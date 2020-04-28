@@ -1786,7 +1786,6 @@ class User < ApplicationRecord
   end
 
   def check_email_restrictions
-    return unless Feature.enabled?(:email_restrictions)
     return unless Gitlab::CurrentSettings.email_restrictions_enabled?
 
     restrictions = Gitlab::CurrentSettings.email_restrictions

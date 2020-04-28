@@ -3700,41 +3700,41 @@ describe MergeRequest do
   describe '#recent_visible_deployments' do
     let(:merge_request) { create(:merge_request) }
 
-    let(:environment) do
-      create(:environment, project: merge_request.target_project)
-    end
-
     it 'returns visible deployments' do
+      envs = create_list(:environment, 3, project: merge_request.target_project)
+
       created = create(
         :deployment,
         :created,
         project: merge_request.target_project,
-        environment: environment
+        environment: envs[0]
       )
 
       success = create(
         :deployment,
         :success,
         project: merge_request.target_project,
-        environment: environment
+        environment: envs[1]
       )
 
       failed = create(
         :deployment,
         :failed,
         project: merge_request.target_project,
-        environment: environment
+        environment: envs[2]
       )
 
-      merge_request.deployment_merge_requests.create!(deployment: created)
-      merge_request.deployment_merge_requests.create!(deployment: success)
-      merge_request.deployment_merge_requests.create!(deployment: failed)
+      merge_request_relation = MergeRequest.where(id: merge_request.id)
+      created.link_merge_requests(merge_request_relation)
+      success.link_merge_requests(merge_request_relation)
+      failed.link_merge_requests(merge_request_relation)
 
       expect(merge_request.recent_visible_deployments).to eq([failed, success])
     end
 
     it 'only returns a limited number of deployments' do
       20.times do
+        environment = create(:environment, project: merge_request.target_project)
         deploy = create(
           :deployment,
           :success,
@@ -3742,7 +3742,7 @@ describe MergeRequest do
           environment: environment
         )
 
-        merge_request.deployment_merge_requests.create!(deployment: deploy)
+        deploy.link_merge_requests(MergeRequest.where(id: merge_request.id))
       end
 
       expect(merge_request.recent_visible_deployments.count).to eq(10)

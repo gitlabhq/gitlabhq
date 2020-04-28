@@ -18104,11 +18104,6 @@ msgid_plural "SearchResults|snippets"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "SearchResults|snippet result"
-msgid_plural "SearchResults|snippet results"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "SearchResults|user"
 msgid_plural "SearchResults|users"
 msgstr[0] ""
@@ -21463,10 +21458,10 @@ msgstr ""
 msgid "ThreatMonitoring|Application firewall not detected"
 msgstr ""
 
-msgid "ThreatMonitoring|Container Network Policy"
+msgid "ThreatMonitoring|Container Network Policies are not installed or have been disabled. To view this data, ensure your Network Policies are installed and enabled for your cluster."
 msgstr ""
 
-msgid "ThreatMonitoring|Container NetworkPolicies are not installed or has been disabled. To view this data, ensure you NetworkPolicies are installed and enabled for your cluster."
+msgid "ThreatMonitoring|Container Network Policy"
 msgstr ""
 
 msgid "ThreatMonitoring|Container NetworkPolicies not detected"
@@ -21499,7 +21494,7 @@ msgstr ""
 msgid "ThreatMonitoring|Something went wrong, unable to fetch statistics"
 msgstr ""
 
-msgid "ThreatMonitoring|The firewall is not installed or has been disabled. To view this data, ensure you firewall is installed and enabled for your cluster."
+msgid "ThreatMonitoring|The firewall is not installed or has been disabled. To view this data, ensure the web application firewall is installed and enabled for your cluster."
 msgstr ""
 
 msgid "ThreatMonitoring|The graph below is an overview of traffic coming to your application as tracked by the Web Application Firewall (WAF). View the docs for instructions on how to access the WAF logs to see what type of malicious traffic is trying to access your app. The docs link is also accessible by clicking the \"?\" icon next to the title below."
@@ -21755,7 +21750,7 @@ msgstr ""
 msgid "Title:"
 msgstr ""
 
-msgid "Titles and Filenames"
+msgid "Titles and Descriptions"
 msgstr ""
 
 msgid "To"

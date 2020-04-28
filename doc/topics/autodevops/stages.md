@@ -562,7 +562,7 @@ To use Auto Monitoring:
 
 1. [Install and configure the requirements](index.md#requirements).
 1. [Enable Auto DevOps](index.md#enablingdisabling-auto-devops), if you haven't done already.
-1. Navigate to your project's **{rocket}** **CI/CD > Pipelines** and click **Run pipeline**.
+1. Navigate to your project's **{rocket}** **CI/CD > Pipelines** and click **Run Pipeline**.
 1. After the pipeline finishes successfully, open the
    [monitoring dashboard for a deployed environment](../../ci/environments.md#monitoring-environments)
    to view the metrics of your deployed application. To view the metrics of the
