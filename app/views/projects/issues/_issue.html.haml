@@ -6,12 +6,13 @@
         = check_box_tag dom_id(issue, "selected"), nil, false, 'data-id' => issue.id, class: "selected-issuable"
     .issuable-info-container
       .issuable-main-info
-        .issue-title.title
+        .issue-title.title.d-flex.align-items-center
           %span.issue-title-text.js-onboarding-issue-item{ dir: "auto" }
             - if issue.confidential?
               %span.has-tooltip{ title: _('Confidential') }
                 = confidential_icon(issue)
             = link_to issue.title, issue_path(issue)
+          = render_if_exists 'projects/issues/subepic_flag', issue: issue
           - if issue.tasks?
             %span.task-status.d-none.d-sm-inline-block
               &nbsp;

@@ -10,6 +10,8 @@ module QA
           merge_request.fork_branch = 'feature-branch'
         end
 
+        merge_request.project.api_put(auto_devops_enabled: false)
+
         Page::Main::Menu.perform(&:sign_out)
         Page::Main::Login.perform(&:sign_in_using_credentials)
 

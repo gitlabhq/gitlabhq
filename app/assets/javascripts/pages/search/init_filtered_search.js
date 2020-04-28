@@ -1,4 +1,4 @@
-import FilteredSearchManager from '~/filtered_search/filtered_search_manager';
+import FilteredSearchManager from 'ee_else_ce/filtered_search/filtered_search_manager';
 
 export default ({
   page,

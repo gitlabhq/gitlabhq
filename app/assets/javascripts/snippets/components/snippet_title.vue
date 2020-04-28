@@ -20,7 +20,11 @@ export default {
     <h2 class="snippet-title prepend-top-0 mb-3" data-qa-selector="snippet_title">
       {{ snippet.title }}
     </h2>
-    <div v-if="snippet.description" class="description" data-qa-selector="snippet_description">
+    <div
+      v-if="snippet.description"
+      class="description"
+      data-qa-selector="snippet_description_field"
+    >
       <div class="md js-snippet-description" v-html="snippet.descriptionHtml"></div>
     </div>
 

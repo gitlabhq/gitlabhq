@@ -21203,6 +21203,9 @@ msgstr ""
 msgid "This issue is currently blocked by the following issues: %{issues}."
 msgstr ""
 
+msgid "This issue is in a child epic of the filtered epic"
+msgstr ""
+
 msgid "This issue is locked."
 msgstr ""
 

@@ -9247,6 +9247,8 @@ CREATE INDEX index_container_repositories_on_project_id ON public.container_repo
 
 CREATE UNIQUE INDEX index_container_repositories_on_project_id_and_name ON public.container_repositories USING btree (project_id, name);
 
+CREATE INDEX index_container_repository_on_name_trigram ON public.container_repositories USING gin (name public.gin_trgm_ops);
+
 CREATE UNIQUE INDEX index_daily_report_results_unique_columns ON public.ci_daily_report_results USING btree (project_id, ref_path, param_type, date, title);
 
 CREATE INDEX index_dependency_proxy_blobs_on_group_id_and_file_name ON public.dependency_proxy_blobs USING btree (group_id, file_name);
@@ -13518,6 +13520,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200420172752
 20200420172927
 20200420201933
+20200421092907
 20200421233150
 20200422213749
 20200423075720

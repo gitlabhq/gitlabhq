@@ -1,6 +1,6 @@
 import IssuableFilteredSearchTokenKeys from 'ee_else_ce/filtered_search/issuable_filtered_search_token_keys';
 import FilteredSearchContainer from '../filtered_search/container';
-import FilteredSearchManager from '../filtered_search/filtered_search_manager';
+import FilteredSearchManager from 'ee_else_ce/filtered_search/filtered_search_manager';
 import boardsStore from './stores/boards_store';
 
 export default class FilteredSearchBoards extends FilteredSearchManager {

@@ -710,13 +710,17 @@ export default class FilteredSearchManager {
     }
   }
 
-  search(state = null) {
-    const paths = [];
+  getSearchTokens() {
     const searchQuery = DropdownUtils.getSearchQuery();
     this.saveCurrentSearchQuery();
 
     const tokenKeys = this.filteredSearchTokenKeys.getKeys();
-    const { tokens, searchToken } = this.tokenizer.processTokens(searchQuery, tokenKeys);
+    return this.tokenizer.processTokens(searchQuery, tokenKeys);
+  }
+
+  search(state = null) {
+    const paths = [];
+    const { tokens, searchToken } = this.getSearchTokens();
     const currentState = state || getParameterByName('state') || 'opened';
     paths.push(`state=${currentState}`);
 

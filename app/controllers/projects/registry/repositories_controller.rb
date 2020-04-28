@@ -10,7 +10,8 @@ module Projects
         respond_to do |format|
           format.html
           format.json do
-            @images = project.container_repositories
+            @images = ContainerRepositoriesFinder.new(user: current_user, subject: project, params: params.slice(:name))
+                                                 .execute
 
             track_event(:list_repositories)
 

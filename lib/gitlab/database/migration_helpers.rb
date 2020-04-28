@@ -378,7 +378,7 @@ module Gitlab
       # make things _more_ complex).
       #
       # `batch_column_name` option is for tables without primary key, in this
-      # case an other unique integer column can be used. Example: :user_id
+      # case another unique integer column can be used. Example: :user_id
       #
       # rubocop: disable Metrics/AbcSize
       def update_column_in_batches(table, column, value, batch_size: nil, batch_column_name: :id)
@@ -519,14 +519,20 @@ module Gitlab
       # new - The new column name.
       # type - The type of the new column. If no type is given the old column's
       #        type is used.
-      def rename_column_concurrently(table, old, new, type: nil)
+      # batch_column_name - option is for tables without primary key, in this
+      #        case another unique integer column can be used. Example: :user_id
+      def rename_column_concurrently(table, old, new, type: nil, batch_column_name: :id)
+        unless column_exists?(table, batch_column_name)
+          raise "Column #{batch_column_name} does not exist on #{table}"
+        end
+
         if transaction_open?
           raise 'rename_column_concurrently can not be run inside a transaction'
         end
 
         check_trigger_permissions!(table)
 
-        create_column_from(table, old, new, type: type)
+        create_column_from(table, old, new, type: type, batch_column_name: batch_column_name)
 
         install_rename_triggers(table, old, new)
       end
@@ -626,14 +632,20 @@ module Gitlab
       # new - The new column name.
       # type - The type of the old column. If no type is given the new column's
       #        type is used.
-      def undo_cleanup_concurrent_column_rename(table, old, new, type: nil)
+      # batch_column_name - option is for tables without primary key, in this
+      #        case another unique integer column can be used. Example: :user_id
+      def undo_cleanup_concurrent_column_rename(table, old, new, type: nil, batch_column_name: :id)
+        unless column_exists?(table, batch_column_name)
+          raise "Column #{batch_column_name} does not exist on #{table}"
+        end
+
         if transaction_open?
           raise 'undo_cleanup_concurrent_column_rename can not be run inside a transaction'
         end
 
         check_trigger_permissions!(table)
 
-        create_column_from(table, new, old, type: type)
+        create_column_from(table, new, old, type: type, batch_column_name: batch_column_name)
 
         install_rename_triggers(table, old, new)
       end
@@ -1090,7 +1102,7 @@ into similar problems in the future (e.g. when new tables are created).
           delay_interval = BackgroundMigrationWorker.minimum_interval
         end
 
-        final_delay = nil
+        final_delay = 0
 
         model_class.each_batch(of: batch_size) do |relation, index|
           start_id, end_id = relation.pluck(Arel.sql('MIN(id), MAX(id)')).first
@@ -1355,7 +1367,7 @@ into similar problems in the future (e.g. when new tables are created).
         "ON DELETE #{on_delete.upcase}"
       end
 
-      def create_column_from(table, old, new, type: nil)
+      def create_column_from(table, old, new, type: nil, batch_column_name: :id)
         old_col = column_for(table, old)
         new_type = type || old_col.type
 
@@ -1369,7 +1381,7 @@ into similar problems in the future (e.g. when new tables are created).
         # necessary since we copy over old values further down.
         change_column_default(table, new, old_col.default) unless old_col.default.nil?
 
-        update_column_in_batches(table, new, Arel::Table.new(table)[old])
+        update_column_in_batches(table, new, Arel::Table.new(table)[old], batch_column_name: batch_column_name)
 
         change_column_null(table, new, false) unless old_col.null
 

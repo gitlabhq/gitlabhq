@@ -470,18 +470,57 @@ Valid values are: `Ignore`, `Unknown`, `Experimental`, `Low`, `Medium`, `High`, 
 ### Remediations
 
 The `remediations` field of the report is an array of remediation objects.
-Each remediation describes a patch that can be applied to automatically fix
+Each remediation describes a patch that can be applied to
+[automatically fix](../../user/application_security/#solutions-for-vulnerabilities-auto-remediation)
 a set of vulnerabilities.
+
+Here is an example of a report that contains remediations.
+
+```json
+{
+    "vulnerabilities": [
+        {
+            "category": "dependency_scanning",
+            "name": "Regular Expression Denial of Service",
+            "id": "123e4567-e89b-12d3-a456-426655440000",
+            "solution": "Upgrade to new versions.",
+            "scanner": {
+                "id": "gemnasium",
+                "name": "Gemnasium"
+            },
+            "identifiers": [
+                {
+                  "type": "gemnasium",
+                  "name": "Gemnasium-642735a5-1425-428d-8d4e-3c854885a3c9",
+                  "value": "642735a5-1425-428d-8d4e-3c854885a3c9"
+                }
+            ]
+        }
+    ],
+    "remediations": [
+        {
+            "fixes": [
+                {
+                    "id": "123e4567-e89b-12d3-a456-426655440000"
+                }
+            ],
+            "summary": "Upgrade to new version",
+            "diff": "ZGlmZiAtLWdpdCBhL3lhcm4ubG9jayBiL3lhcm4ubG9jawppbmRleCAwZWNjOTJmLi43ZmE0NTU0IDEwMDY0NAotLS0gYS95Y=="
+        }
+    ]
+}
+```
 
 #### Summary
 
-The `summary` field is an overview of how the vulnerabilities can be fixed.
+The `summary` field is an overview of how the vulnerabilities can be fixed. This field is required.
 
 #### Fixed vulnerabilities
 
 The `fixes` field is an array of objects that reference the vulnerabilities fixed by the
-remediation. `fixes[].id` contains a fixed vulnerability's unique identifier.
+remediation. `fixes[].id` contains a fixed vulnerability's [unique identifier](#id). This field is required.
 
 #### Diff
 
-The `diff` field is a base64-encoded remediation code diff, compatible with [`git apply`](https://git-scm.com/docs/git-format-patch#_discussion).
+The `diff` field is a base64-encoded remediation code diff, compatible with
+[`git apply`](https://git-scm.com/docs/git-format-patch#_discussion). This field is required.

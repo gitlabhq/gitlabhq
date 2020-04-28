@@ -309,4 +309,14 @@ describe ContainerRepository do
       it { is_expected.to eq([]) }
     end
   end
+
+  describe '.search_by_name' do
+    let!(:another_repository) do
+      create(:container_repository, name: 'my_foo_bar', project: project)
+    end
+
+    subject { described_class.search_by_name('my_image') }
+
+    it { is_expected.to contain_exactly(repository) }
+  end
 end
