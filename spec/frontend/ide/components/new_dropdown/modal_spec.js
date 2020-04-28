@@ -1,7 +1,10 @@
 import Vue from 'vue';
-import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
+import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
 import { createStore } from '~/ide/stores';
 import modal from '~/ide/components/new_dropdown/modal.vue';
+import createFlash from '~/flash';
+
+jest.mock('~/flash');
 
 describe('new file modal component', () => {
   const Component = Vue.extend(modal);
@@ -11,47 +14,45 @@ describe('new file modal component', () => {
     vm.$destroy();
   });
 
-  ['tree', 'blob'].forEach(type => {
-    describe(type, () => {
-      beforeEach(() => {
-        const store = createStore();
-        store.state.entryModal = {
-          type,
+  describe.each(['tree', 'blob'])('%s', type => {
+    beforeEach(() => {
+      const store = createStore();
+      store.state.entryModal = {
+        type,
+        path: '',
+        entry: {
           path: '',
-          entry: {
-            path: '',
-          },
-        };
+        },
+      };
 
-        vm = createComponentWithStore(Component, store).$mount();
+      vm = createComponentWithStore(Component, store).$mount();
 
-        vm.name = 'testing';
-      });
+      vm.name = 'testing';
+    });
 
-      it(`sets modal title as ${type}`, () => {
-        const title = type === 'tree' ? 'directory' : 'file';
+    it(`sets modal title as ${type}`, () => {
+      const title = type === 'tree' ? 'directory' : 'file';
 
-        expect(vm.$el.querySelector('.modal-title').textContent.trim()).toBe(`Create new ${title}`);
-      });
+      expect(vm.$el.querySelector('.modal-title').textContent.trim()).toBe(`Create new ${title}`);
+    });
 
-      it(`sets button label as ${type}`, () => {
-        const title = type === 'tree' ? 'directory' : 'file';
+    it(`sets button label as ${type}`, () => {
+      const title = type === 'tree' ? 'directory' : 'file';
 
-        expect(vm.$el.querySelector('.btn-success').textContent.trim()).toBe(`Create ${title}`);
-      });
+      expect(vm.$el.querySelector('.btn-success').textContent.trim()).toBe(`Create ${title}`);
+    });
 
-      it(`sets form label as ${type}`, () => {
-        expect(vm.$el.querySelector('.label-bold').textContent.trim()).toBe('Name');
-      });
+    it(`sets form label as ${type}`, () => {
+      expect(vm.$el.querySelector('.label-bold').textContent.trim()).toBe('Name');
+    });
 
-      it(`${type === 'tree' ? 'does not show' : 'shows'} file templates`, () => {
-        const templateFilesEl = vm.$el.querySelector('.file-templates');
-        if (type === 'tree') {
-          expect(templateFilesEl).toBeNull();
-        } else {
-          expect(templateFilesEl instanceof Element).toBeTruthy();
-        }
-      });
+    it(`${type === 'tree' ? 'does not show' : 'shows'} file templates`, () => {
+      const templateFilesEl = vm.$el.querySelector('.file-templates');
+      if (type === 'tree') {
+        expect(templateFilesEl).toBeNull();
+      } else {
+        expect(templateFilesEl instanceof Element).toBeTruthy();
+      }
     });
   });
 
@@ -131,16 +132,15 @@ describe('new file modal component', () => {
       };
 
       vm = createComponentWithStore(Component, store).$mount();
-      const flashSpy = spyOnDependency(modal, 'flash');
 
-      expect(flashSpy).not.toHaveBeenCalled();
+      expect(createFlash).not.toHaveBeenCalled();
 
       vm.submitForm();
 
-      expect(flashSpy).toHaveBeenCalledWith(
+      expect(createFlash).toHaveBeenCalledWith(
         'The name "test-path/test" is already taken in this directory.',
         'alert',
-        jasmine.anything(),
+        expect.anything(),
         null,
         false,
         true,

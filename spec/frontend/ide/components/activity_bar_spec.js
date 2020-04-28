@@ -26,7 +26,7 @@ describe('IDE activity bar', () => {
 
   describe('updateActivityBarView', () => {
     beforeEach(() => {
-      spyOn(vm, 'updateActivityBarView');
+      jest.spyOn(vm, 'updateActivityBarView').mockImplementation(() => {});
 
       vm.$mount();
     });

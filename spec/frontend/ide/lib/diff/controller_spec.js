@@ -75,7 +75,7 @@ describe('Multi-file editor library dirty diff controller', () => {
 
   describe('attachModel', () => {
     it('adds change event callback', () => {
-      spyOn(model, 'onChange');
+      jest.spyOn(model, 'onChange').mockImplementation(() => {});
 
       controller.attachModel(model);
 
@@ -83,7 +83,7 @@ describe('Multi-file editor library dirty diff controller', () => {
     });
 
     it('adds dispose event callback', () => {
-      spyOn(model, 'onDispose');
+      jest.spyOn(model, 'onDispose').mockImplementation(() => {});
 
       controller.attachModel(model);
 
@@ -91,7 +91,7 @@ describe('Multi-file editor library dirty diff controller', () => {
     });
 
     it('calls throttledComputeDiff on change', () => {
-      spyOn(controller, 'throttledComputeDiff');
+      jest.spyOn(controller, 'throttledComputeDiff').mockImplementation(() => {});
 
       controller.attachModel(model);
 
@@ -109,7 +109,7 @@ describe('Multi-file editor library dirty diff controller', () => {
 
   describe('computeDiff', () => {
     it('posts to worker', () => {
-      spyOn(controller.dirtyDiffWorker, 'postMessage');
+      jest.spyOn(controller.dirtyDiffWorker, 'postMessage').mockImplementation(() => {});
 
       controller.computeDiff(model);
 
@@ -123,7 +123,7 @@ describe('Multi-file editor library dirty diff controller', () => {
 
   describe('reDecorate', () => {
     it('calls computeDiff when no decorations are cached', () => {
-      spyOn(controller, 'computeDiff');
+      jest.spyOn(controller, 'computeDiff').mockImplementation(() => {});
 
       controller.reDecorate(model);
 
@@ -131,7 +131,7 @@ describe('Multi-file editor library dirty diff controller', () => {
     });
 
     it('calls decorate when decorations are cached', () => {
-      spyOn(controller.decorationsController, 'decorate');
+      jest.spyOn(controller.decorationsController, 'decorate').mockImplementation(() => {});
 
       controller.decorationsController.decorations.set(model.url, 'test');
 
@@ -143,19 +143,19 @@ describe('Multi-file editor library dirty diff controller', () => {
 
   describe('decorate', () => {
     it('adds decorations into decorations controller', () => {
-      spyOn(controller.decorationsController, 'addDecorations');
+      jest.spyOn(controller.decorationsController, 'addDecorations').mockImplementation(() => {});
 
       controller.decorate({ data: { changes: [], path: model.path } });
 
       expect(controller.decorationsController.addDecorations).toHaveBeenCalledWith(
         model,
         'dirtyDiff',
-        jasmine.anything(),
+        expect.anything(),
       );
     });
 
     it('adds decorations into editor', () => {
-      const spy = spyOn(controller.decorationsController.editor.instance, 'deltaDecorations');
+      const spy = jest.spyOn(controller.decorationsController.editor.instance, 'deltaDecorations');
 
       controller.decorate({
         data: { changes: computeDiff('123', '1234'), path: model.path },
@@ -178,7 +178,7 @@ describe('Multi-file editor library dirty diff controller', () => {
 
   describe('dispose', () => {
     it('calls disposable dispose', () => {
-      spyOn(controller.disposable, 'dispose').and.callThrough();
+      jest.spyOn(controller.disposable, 'dispose');
 
       controller.dispose();
 
@@ -186,7 +186,7 @@ describe('Multi-file editor library dirty diff controller', () => {
     });
 
     it('terminates worker', () => {
-      spyOn(controller.dirtyDiffWorker, 'terminate').and.callThrough();
+      jest.spyOn(controller.dirtyDiffWorker, 'terminate');
 
       controller.dispose();
 
@@ -194,13 +194,13 @@ describe('Multi-file editor library dirty diff controller', () => {
     });
 
     it('removes worker event listener', () => {
-      spyOn(controller.dirtyDiffWorker, 'removeEventListener').and.callThrough();
+      jest.spyOn(controller.dirtyDiffWorker, 'removeEventListener');
 
       controller.dispose();
 
       expect(controller.dirtyDiffWorker.removeEventListener).toHaveBeenCalledWith(
         'message',
-        jasmine.anything(),
+        expect.anything(),
       );
     });
 

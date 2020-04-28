@@ -35,7 +35,7 @@ describe('IDE tree list', () => {
     beforeEach(() => {
       bootstrapWithTree();
 
-      spyOn(vm, 'updateViewer').and.callThrough();
+      jest.spyOn(vm, 'updateViewer');
 
       vm.$mount();
     });
@@ -64,7 +64,7 @@ describe('IDE tree list', () => {
     beforeEach(() => {
       bootstrapWithTree(emptyBranchTree);
 
-      spyOn(vm, 'updateViewer').and.callThrough();
+      jest.spyOn(vm, 'updateViewer');
 
       vm.$mount();
     });

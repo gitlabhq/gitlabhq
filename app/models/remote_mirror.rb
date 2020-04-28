@@ -106,7 +106,23 @@ class RemoteMirror < ApplicationRecord
     update_status == 'started'
   end
 
-  def update_repository(options)
+  def update_repository
+    Gitlab::Git::RemoteMirror.new(
+      project.repository.raw,
+      remote_name,
+      **options_for_update
+    ).update
+  end
+
+  def options_for_update
+    options = {
+      keep_divergent_refs: keep_divergent_refs?
+    }
+
+    if only_protected_branches?
+      options[:only_branches_matching] = project.protected_branches.pluck(:name)
+    end
+
     if ssh_mirror_url?
       if ssh_key_auth? && ssh_private_key.present?
         options[:ssh_key] = ssh_private_key
@@ -117,13 +133,7 @@ class RemoteMirror < ApplicationRecord
       end
     end
 
-    options[:keep_divergent_refs] = keep_divergent_refs?
-
-    Gitlab::Git::RemoteMirror.new(
-      project.repository.raw,
-      remote_name,
-      **options
-    ).update
+    options
   end
 
   def sync?

@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
+import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
 import store from '~/ide/stores';
 import newDropdown from '~/ide/components/new_dropdown/index.vue';
 import { resetStore } from '../../helpers';
@@ -23,7 +23,7 @@ describe('new dropdown component', () => {
       tree: [],
     };
 
-    spyOn(vm, 'openNewEntryModal');
+    jest.spyOn(vm, 'openNewEntryModal').mockImplementation(() => {});
 
     vm.$mount();
   });
@@ -58,11 +58,11 @@ describe('new dropdown component', () => {
 
   describe('isOpen', () => {
     it('scrolls dropdown into view', done => {
-      spyOn(vm.$refs.dropdownMenu, 'scrollIntoView');
+      jest.spyOn(vm.$refs.dropdownMenu, 'scrollIntoView').mockImplementation(() => {});
 
       vm.isOpen = true;
 
-      setTimeout(() => {
+      setImmediate(() => {
         expect(vm.$refs.dropdownMenu.scrollIntoView).toHaveBeenCalledWith({
           block: 'nearest',
         });
@@ -74,7 +74,7 @@ describe('new dropdown component', () => {
 
   describe('delete entry', () => {
     it('calls delete action', () => {
-      spyOn(vm, 'deleteEntry');
+      jest.spyOn(vm, 'deleteEntry').mockImplementation(() => {});
 
       vm.$el.querySelectorAll('.dropdown-menu button')[4].click();
 

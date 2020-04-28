@@ -17,7 +17,7 @@ describe('RepoTab', () => {
   }
 
   beforeEach(() => {
-    spyOn(router, 'push');
+    jest.spyOn(router, 'push').mockImplementation(() => {});
   });
 
   afterEach(() => {
@@ -47,7 +47,7 @@ describe('RepoTab', () => {
       },
     });
 
-    spyOn(vm, 'openPendingTab');
+    jest.spyOn(vm, 'openPendingTab').mockImplementation(() => {});
 
     vm.$el.click();
 
@@ -63,7 +63,7 @@ describe('RepoTab', () => {
       tab: file(),
     });
 
-    spyOn(vm, 'clickFile');
+    jest.spyOn(vm, 'clickFile').mockImplementation(() => {});
 
     vm.$el.click();
 
@@ -75,7 +75,7 @@ describe('RepoTab', () => {
       tab: file(),
     });
 
-    spyOn(vm, 'closeFile');
+    jest.spyOn(vm, 'closeFile').mockImplementation(() => {});
 
     vm.$el.querySelector('.multi-file-tab-close').click();
 

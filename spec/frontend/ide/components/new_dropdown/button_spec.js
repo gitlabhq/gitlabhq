@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import mountComponent from 'helpers/vue_mount_component_helper';
 import Button from '~/ide/components/new_dropdown/button.vue';
 
 describe('IDE new entry dropdown button component', () => {
@@ -16,7 +16,7 @@ describe('IDE new entry dropdown button component', () => {
       icon: 'doc-new',
     });
 
-    spyOn(vm, '$emit');
+    jest.spyOn(vm, '$emit').mockImplementation(() => {});
   });
 
   afterEach(() => {

@@ -21041,6 +21041,9 @@ msgstr ""
 msgid "They can be managed using the %{link}."
 msgstr ""
 
+msgid "Third Party Advisory Link"
+msgstr ""
+
 msgid "Third party offers"
 msgstr ""
 

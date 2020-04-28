@@ -60,7 +60,7 @@ describe('Multi-file editor library decorations controller', () => {
     });
 
     it('calls decorate method', () => {
-      spyOn(controller, 'decorate');
+      jest.spyOn(controller, 'decorate').mockImplementation(() => {});
 
       controller.addDecorations(model, 'key', [{ decoration: 'decorationValue' }]);
 
@@ -70,7 +70,7 @@ describe('Multi-file editor library decorations controller', () => {
 
   describe('decorate', () => {
     it('sets decorations on editor instance', () => {
-      spyOn(controller.editor.instance, 'deltaDecorations');
+      jest.spyOn(controller.editor.instance, 'deltaDecorations').mockImplementation(() => {});
 
       controller.decorate(model);
 
@@ -78,7 +78,7 @@ describe('Multi-file editor library decorations controller', () => {
     });
 
     it('caches decorations', () => {
-      spyOn(controller.editor.instance, 'deltaDecorations').and.returnValue([]);
+      jest.spyOn(controller.editor.instance, 'deltaDecorations').mockReturnValue([]);
 
       controller.decorate(model);
 
@@ -86,7 +86,7 @@ describe('Multi-file editor library decorations controller', () => {
     });
 
     it('caches decorations by model URL', () => {
-      spyOn(controller.editor.instance, 'deltaDecorations').and.returnValue([]);
+      jest.spyOn(controller.editor.instance, 'deltaDecorations').mockReturnValue([]);
 
       controller.decorate(model);
 

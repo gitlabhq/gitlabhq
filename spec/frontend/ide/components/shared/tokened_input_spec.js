@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import mountComponent from 'helpers/vue_mount_component_helper';
 import TokenedInput from '~/ide/components/shared/tokened_input.vue';
 
 const TEST_PLACEHOLDER = 'Searching in test';
@@ -36,7 +36,7 @@ describe('IDE shared/TokenedInput', () => {
       value: TEST_VALUE,
     });
 
-    spyOn(vm, '$emit');
+    jest.spyOn(vm, '$emit').mockImplementation(() => {});
   });
 
   afterEach(() => {
@@ -72,7 +72,7 @@ describe('IDE shared/TokenedInput', () => {
   });
 
   it('when input triggers backspace event, it calls "onBackspace"', () => {
-    spyOn(vm, 'onBackspace');
+    jest.spyOn(vm, 'onBackspace').mockImplementation(() => {});
 
     vm.$refs.input.dispatchEvent(createBackspaceEvent());
     vm.$refs.input.dispatchEvent(createBackspaceEvent());

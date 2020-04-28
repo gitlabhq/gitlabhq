@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import canaryCalloutMixin from 'ee_else_ce/environments/mixins/canary_callout_mixin';
+import canaryCalloutMixin from './mixins/canary_callout_mixin';
 import environmentsComponent from './components/environments_app.vue';
 import { parseBoolean } from '../lib/utils/common_utils';
 import Translate from '../vue_shared/translate';

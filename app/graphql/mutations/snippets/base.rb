@@ -15,6 +15,8 @@ module Mutations
       end
 
       def authorized_resource?(snippet)
+        return false if snippet.nil?
+
         Ability.allowed?(context[:current_user], ability_for(snippet), snippet)
       end
 

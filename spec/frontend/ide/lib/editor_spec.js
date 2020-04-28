@@ -1,11 +1,20 @@
 import { editor as monacoEditor } from 'monaco-editor';
 import Editor from '~/ide/lib/editor';
+import { defaultEditorOptions } from '~/ide/lib/editor_options';
 import { file } from '../helpers';
 
 describe('Multi-file editor library', () => {
   let instance;
   let el;
   let holder;
+
+  const setNodeOffsetWidth = val => {
+    Object.defineProperty(instance.instance.getDomNode(), 'offsetWidth', {
+      get() {
+        return val;
+      },
+    });
+  };
 
   beforeEach(() => {
     el = document.createElement('div');
@@ -18,7 +27,9 @@ describe('Multi-file editor library', () => {
   });
 
   afterEach(() => {
+    instance.modelManager.dispose();
     instance.dispose();
+    Editor.editorInstance = null;
 
     el.remove();
   });
@@ -33,7 +44,7 @@ describe('Multi-file editor library', () => {
 
   describe('createInstance', () => {
     it('creates editor instance', () => {
-      spyOn(monacoEditor, 'create').and.callThrough();
+      jest.spyOn(monacoEditor, 'create');
 
       instance.createInstance(holder);
 
@@ -55,33 +66,25 @@ describe('Multi-file editor library', () => {
 
   describe('createDiffInstance', () => {
     it('creates editor instance', () => {
-      spyOn(monacoEditor, 'createDiffEditor').and.callThrough();
+      jest.spyOn(monacoEditor, 'createDiffEditor');
 
       instance.createDiffInstance(holder);
 
       expect(monacoEditor.createDiffEditor).toHaveBeenCalledWith(holder, {
-        model: null,
-        contextmenu: true,
-        minimap: {
-          enabled: false,
-        },
-        readOnly: true,
-        scrollBeyondLastLine: false,
-        renderWhitespace: 'none',
+        ...defaultEditorOptions,
         quickSuggestions: false,
         occurrencesHighlight: false,
-        wordWrap: 'on',
-        renderSideBySide: true,
+        renderSideBySide: false,
+        readOnly: true,
         renderLineHighlight: 'all',
         hideCursorInOverviewRuler: false,
-        theme: 'vs white',
       });
     });
   });
 
   describe('createModel', () => {
     it('calls model manager addModel', () => {
-      spyOn(instance.modelManager, 'addModel');
+      jest.spyOn(instance.modelManager, 'addModel').mockImplementation(() => {});
 
       instance.createModel('FILE');
 
@@ -105,7 +108,7 @@ describe('Multi-file editor library', () => {
     });
 
     it('attaches the model to the current instance', () => {
-      spyOn(instance.instance, 'setModel');
+      jest.spyOn(instance.instance, 'setModel').mockImplementation(() => {});
 
       instance.attachModel(model);
 
@@ -113,8 +116,8 @@ describe('Multi-file editor library', () => {
     });
 
     it('sets original & modified when diff editor', () => {
-      spyOn(instance.instance, 'getEditorType').and.returnValue('vs.editor.IDiffEditor');
-      spyOn(instance.instance, 'setModel');
+      jest.spyOn(instance.instance, 'getEditorType').mockReturnValue('vs.editor.IDiffEditor');
+      jest.spyOn(instance.instance, 'setModel').mockImplementation(() => {});
 
       instance.attachModel(model);
 
@@ -125,7 +128,7 @@ describe('Multi-file editor library', () => {
     });
 
     it('attaches the model to the dirty diff controller', () => {
-      spyOn(instance.dirtyDiffController, 'attachModel');
+      jest.spyOn(instance.dirtyDiffController, 'attachModel').mockImplementation(() => {});
 
       instance.attachModel(model);
 
@@ -133,7 +136,7 @@ describe('Multi-file editor library', () => {
     });
 
     it('re-decorates with the dirty diff controller', () => {
-      spyOn(instance.dirtyDiffController, 'reDecorate');
+      jest.spyOn(instance.dirtyDiffController, 'reDecorate').mockImplementation(() => {});
 
       instance.attachModel(model);
 
@@ -155,7 +158,7 @@ describe('Multi-file editor library', () => {
     });
 
     it('sets original & modified', () => {
-      spyOn(instance.instance, 'setModel');
+      jest.spyOn(instance.instance, 'setModel').mockImplementation(() => {});
 
       instance.attachMergeRequestModel(model);
 
@@ -170,7 +173,7 @@ describe('Multi-file editor library', () => {
     it('resets the editor model', () => {
       instance.createInstance(document.createElement('div'));
 
-      spyOn(instance.instance, 'setModel');
+      jest.spyOn(instance.instance, 'setModel').mockImplementation(() => {});
 
       instance.clearEditor();
 
@@ -180,7 +183,7 @@ describe('Multi-file editor library', () => {
 
   describe('dispose', () => {
     it('calls disposble dispose method', () => {
-      spyOn(instance.disposable, 'dispose').and.callThrough();
+      jest.spyOn(instance.disposable, 'dispose');
 
       instance.dispose();
 
@@ -198,7 +201,7 @@ describe('Multi-file editor library', () => {
     });
 
     it('does not dispose modelManager', () => {
-      spyOn(instance.modelManager, 'dispose');
+      jest.spyOn(instance.modelManager, 'dispose').mockImplementation(() => {});
 
       instance.dispose();
 
@@ -206,7 +209,7 @@ describe('Multi-file editor library', () => {
     });
 
     it('does not dispose decorationsController', () => {
-      spyOn(instance.decorationsController, 'dispose');
+      jest.spyOn(instance.decorationsController, 'dispose').mockImplementation(() => {});
 
       instance.dispose();
 
@@ -219,7 +222,7 @@ describe('Multi-file editor library', () => {
       it('does not update options', () => {
         instance.createInstance(holder);
 
-        spyOn(instance.instance, 'updateOptions');
+        jest.spyOn(instance.instance, 'updateOptions').mockImplementation(() => {});
 
         instance.updateDiffView();
 
@@ -231,11 +234,11 @@ describe('Multi-file editor library', () => {
       beforeEach(() => {
         instance.createDiffInstance(holder);
 
-        spyOn(instance.instance, 'updateOptions').and.callThrough();
+        jest.spyOn(instance.instance, 'updateOptions');
       });
 
       it('sets renderSideBySide to false if el is less than 700 pixels', () => {
-        spyOnProperty(instance.instance.getDomNode(), 'offsetWidth').and.returnValue(600);
+        setNodeOffsetWidth(600);
 
         expect(instance.instance.updateOptions).not.toHaveBeenCalledWith({
           renderSideBySide: false,
@@ -243,7 +246,7 @@ describe('Multi-file editor library', () => {
       });
 
       it('sets renderSideBySide to false if el is more than 700 pixels', () => {
-        spyOnProperty(instance.instance.getDomNode(), 'offsetWidth').and.returnValue(800);
+        setNodeOffsetWidth(800);
 
         expect(instance.instance.updateOptions).not.toHaveBeenCalledWith({
           renderSideBySide: true,
@@ -269,7 +272,7 @@ describe('Multi-file editor library', () => {
   it('sets quickSuggestions to false when language is markdown', () => {
     instance.createInstance(holder);
 
-    spyOn(instance.instance, 'updateOptions').and.callThrough();
+    jest.spyOn(instance.instance, 'updateOptions');
 
     const model = instance.createModel({
       ...file(),

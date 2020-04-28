@@ -6,9 +6,10 @@ describe 'Destroying a Snippet' do
   include GraphqlHelpers
 
   let(:current_user) { snippet.author }
+  let(:snippet_gid) { snippet.to_global_id.to_s }
   let(:mutation) do
     variables = {
-      id: snippet.to_global_id.to_s
+      id: snippet_gid
     }
 
     graphql_mutation(:destroy_snippet, variables)
@@ -49,9 +50,11 @@ describe 'Destroying a Snippet' do
   end
 
   describe 'PersonalSnippet' do
-    it_behaves_like 'graphql delete actions' do
-      let_it_be(:snippet) { create(:personal_snippet) }
-    end
+    let_it_be(:snippet) { create(:personal_snippet) }
+
+    it_behaves_like 'graphql delete actions'
+
+    it_behaves_like 'when the snippet is not found'
   end
 
   describe 'ProjectSnippet' do
@@ -85,5 +88,7 @@ describe 'Destroying a Snippet' do
         end
       end
     end
+
+    it_behaves_like 'when the snippet is not found'
   end
 end

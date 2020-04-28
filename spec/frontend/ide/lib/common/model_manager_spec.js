@@ -28,7 +28,7 @@ describe('Multi-file editor library model manager', () => {
     });
 
     it('adds model into disposable', () => {
-      spyOn(instance.disposable, 'add').and.callThrough();
+      jest.spyOn(instance.disposable, 'add');
 
       instance.addModel(file());
 
@@ -36,7 +36,7 @@ describe('Multi-file editor library model manager', () => {
     });
 
     it('returns cached model', () => {
-      spyOn(instance.models, 'get').and.callThrough();
+      jest.spyOn(instance.models, 'get');
 
       instance.addModel(file());
       instance.addModel(file());
@@ -46,13 +46,13 @@ describe('Multi-file editor library model manager', () => {
 
     it('adds eventHub listener', () => {
       const f = file();
-      spyOn(eventHub, '$on').and.callThrough();
+      jest.spyOn(eventHub, '$on');
 
       instance.addModel(f);
 
       expect(eventHub.$on).toHaveBeenCalledWith(
         `editor.update.model.dispose.${f.key}`,
-        jasmine.anything(),
+        expect.anything(),
       );
     });
   });
@@ -95,13 +95,13 @@ describe('Multi-file editor library model manager', () => {
     });
 
     it('removes eventHub listener', () => {
-      spyOn(eventHub, '$off').and.callThrough();
+      jest.spyOn(eventHub, '$off');
 
       instance.removeCachedModel(f);
 
       expect(eventHub.$off).toHaveBeenCalledWith(
         `editor.update.model.dispose.${f.key}`,
-        jasmine.anything(),
+        expect.anything(),
       );
     });
   });
@@ -116,7 +116,7 @@ describe('Multi-file editor library model manager', () => {
     });
 
     it('calls disposable dispose', () => {
-      spyOn(instance.disposable, 'dispose').and.callThrough();
+      jest.spyOn(instance.disposable, 'dispose');
 
       instance.dispose();
 

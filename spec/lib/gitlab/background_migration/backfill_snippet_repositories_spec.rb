@@ -2,13 +2,30 @@
 
 require 'spec_helper'
 
-describe Gitlab::BackgroundMigration::BackfillSnippetRepositories, :migration, schema: 2020_02_26_162723 do
+describe Gitlab::BackgroundMigration::BackfillSnippetRepositories, :migration, schema: 2020_04_20_094444 do
   let(:gitlab_shell) { Gitlab::Shell.new }
   let(:users) { table(:users) }
   let(:snippets) { table(:snippets) }
   let(:snippet_repositories) { table(:snippet_repositories) }
 
-  let(:user) { users.create(id: 1, email: 'user@example.com', projects_limit: 10, username: 'test', name: 'Test') }
+  let(:user_state) { 'active' }
+  let(:ghost) { false }
+  let(:user_type) { nil }
+
+  let!(:user) do
+    users.create(id: 1,
+                 email: 'user@example.com',
+                 projects_limit: 10,
+                 username: 'test',
+                 name: 'Test',
+                 state: user_state,
+                 ghost: ghost,
+                 last_activity_on: 1.minute.ago,
+                 user_type: user_type,
+                 confirmed_at: 1.day.ago)
+  end
+
+  let!(:admin) { users.create(id: 2, email: 'admin@example.com', projects_limit: 10, username: 'admin', name: 'Admin', admin: true, state: 'active') }
   let!(:snippet_with_repo) { snippets.create(id: 1, type: 'PersonalSnippet', author_id: user.id, file_name: file_name, content: content) }
   let!(:snippet_with_empty_repo) { snippets.create(id: 2, type: 'PersonalSnippet', author_id: user.id, file_name: file_name, content: content) }
   let!(:snippet_without_repo) { snippets.create(id: 3, type: 'PersonalSnippet', author_id: user.id, file_name: file_name, content: content) }
@@ -54,14 +71,51 @@ describe Gitlab::BackgroundMigration::BackfillSnippetRepositories, :migration, s
     end
 
     shared_examples 'commits the file to the repository' do
-      it do
-        subject
+      context 'when author can update snippet and use git' do
+        it 'creates the repository and commit the file' do
+          subject
 
-        blob = blob_at(snippet, file_name)
+          blob = blob_at(snippet, file_name)
+          last_commit = raw_repository(snippet).commit
 
-        aggregate_failures do
-          expect(blob).to be
-          expect(blob.data).to eq content
+          aggregate_failures do
+            expect(blob).to be
+            expect(blob.data).to eq content
+            expect(last_commit.author_name).to eq user.name
+            expect(last_commit.author_email).to eq user.email
+          end
+        end
+      end
+
+      context 'when author cannot update snippet or use git' do
+        shared_examples 'admin user commits files' do
+          it do
+            subject
+
+            last_commit = raw_repository(snippet).commit
+
+            expect(last_commit.author_name).to eq admin.name
+            expect(last_commit.author_email).to eq admin.email
+          end
+        end
+
+        context 'when user is blocked' do
+          let(:user_state) { 'blocked' }
+
+          it_behaves_like 'admin user commits files'
+        end
+
+        context 'when user is deactivated' do
+          let(:user_state) { 'deactivated' }
+
+          it_behaves_like 'admin user commits files'
+        end
+
+        context 'when user is a ghost' do
+          let(:ghost) { true }
+          let(:user_type) { 'ghost' }
+
+          it_behaves_like 'admin user commits files'
         end
       end
     end

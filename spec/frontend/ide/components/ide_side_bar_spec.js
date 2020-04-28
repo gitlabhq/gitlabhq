@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
+import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
 import store from '~/ide/stores';
 import ideSidebar from '~/ide/components/ide_side_bar.vue';
 import { leftSidebarViews } from '~/ide/constants';

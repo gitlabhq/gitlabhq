@@ -138,6 +138,7 @@ initializer
 initializers
 interdependencies
 interdependency
+interruptible
 Irker
 Istio
 jasmine-jquery
@@ -294,6 +295,7 @@ Splunk
 SSH
 storable
 strace
+subpath
 subfolder
 subfolders
 sublicense
@@ -309,6 +311,8 @@ subqueried
 subqueries
 subquery
 subquerying
+substring
+substrings
 syslog
 Tiller
 todos
@@ -363,6 +367,7 @@ unreferenced
 unresolve
 unresolved
 unresolving
+unschedule
 unstage
 unstaged
 unstages

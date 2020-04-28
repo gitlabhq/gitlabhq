@@ -143,22 +143,54 @@ describe RemoteMirror, :mailer do
   end
 
   describe '#update_repository' do
-    let(:git_remote_mirror) { spy }
+    it 'performs update including options' do
+      git_remote_mirror = stub_const('Gitlab::Git::RemoteMirror', spy)
+      mirror = build(:remote_mirror)
 
-    before do
-      stub_const('Gitlab::Git::RemoteMirror', git_remote_mirror)
-    end
-
-    it 'includes the `keep_divergent_refs` setting' do
-      mirror = build_stubbed(:remote_mirror, keep_divergent_refs: true)
-
-      mirror.update_repository({})
+      expect(mirror).to receive(:options_for_update).and_return(options: true)
+      mirror.update_repository
 
       expect(git_remote_mirror).to have_received(:new).with(
-        anything,
+        mirror.project.repository.raw,
         mirror.remote_name,
-        hash_including(keep_divergent_refs: true)
+        options: true
       )
+      expect(git_remote_mirror).to have_received(:update)
+    end
+  end
+
+  describe '#options_for_update' do
+    it 'includes the `keep_divergent_refs` option' do
+      mirror = build_stubbed(:remote_mirror, keep_divergent_refs: true)
+
+      options = mirror.options_for_update
+
+      expect(options).to include(keep_divergent_refs: true)
+    end
+
+    it 'includes the `only_branches_matching` option' do
+      branch = create(:protected_branch)
+      mirror = build_stubbed(:remote_mirror, project: branch.project, only_protected_branches: true)
+
+      options = mirror.options_for_update
+
+      expect(options).to include(only_branches_matching: [branch.name])
+    end
+
+    it 'includes the `ssh_key` option' do
+      mirror = build(:remote_mirror, :ssh, ssh_private_key: 'private-key')
+
+      options = mirror.options_for_update
+
+      expect(options).to include(ssh_key: 'private-key')
+    end
+
+    it 'includes the `known_hosts` option' do
+      mirror = build(:remote_mirror, :ssh, ssh_known_hosts: 'known-hosts')
+
+      options = mirror.options_for_update
+
+      expect(options).to include(known_hosts: 'known-hosts')
     end
   end
 

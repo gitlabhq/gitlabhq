@@ -44,16 +44,19 @@ module Gitlab
         create_commit(snippet)
       end
 
+      # Removing the db record
       def destroy_snippet_repository(snippet)
-        # Removing the db record
-        snippet.snippet_repository&.destroy
+        snippet.snippet_repository&.delete
       rescue => e
         logger.error(message: "Snippet Migration: error destroying snippet repository. Reason: #{e.message}", snippet: snippet.id)
       end
 
+      # Removing the repository in disk
       def delete_repository(snippet)
-        # Removing the repository in disk
-        snippet.repository.remove if snippet.repository_exists?
+        return unless snippet.repository_exists?
+
+        snippet.repository.remove
+        snippet.repository.expire_exists_cache
       rescue => e
         logger.error(message: "Snippet Migration: error deleting repository. Reason: #{e.message}", snippet: snippet.id)
       end
@@ -82,7 +85,24 @@ module Gitlab
       end
 
       def create_commit(snippet)
-        snippet.snippet_repository.multi_files_action(snippet.author, snippet_action(snippet), commit_attrs)
+        snippet.snippet_repository.multi_files_action(commit_author(snippet), snippet_action(snippet), commit_attrs)
+      end
+
+      # If the user is not allowed to access git or update the snippet
+      # because it is blocked, internal, ghost, ... we cannot commit
+      # files because these users are not allowed to, but we need to
+      # migrate their snippets as well.
+      # In this scenario an admin user will be the one that will commit the files.
+      def commit_author(snippet)
+        if Gitlab::UserAccessSnippet.new(snippet.author, snippet: snippet).can_do_action?(:update_snippet)
+          snippet.author
+        else
+          admin_user
+        end
+      end
+
+      def admin_user
+        @admin_user ||= User.admins.active.first
       end
     end
   end

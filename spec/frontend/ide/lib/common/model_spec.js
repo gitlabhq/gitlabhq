@@ -6,7 +6,7 @@ describe('Multi-file editor library model', () => {
   let model;
 
   beforeEach(() => {
-    spyOn(eventHub, '$on').and.callThrough();
+    jest.spyOn(eventHub, '$on');
 
     const f = file('path');
     f.mrChange = { diff: 'ABC' };
@@ -44,7 +44,7 @@ describe('Multi-file editor library model', () => {
   it('adds eventHub listener', () => {
     expect(eventHub.$on).toHaveBeenCalledWith(
       `editor.update.model.dispose.${model.file.key}`,
-      jasmine.anything(),
+      expect.anything(),
     );
   });
 
@@ -82,13 +82,13 @@ describe('Multi-file editor library model', () => {
 
   describe('onChange', () => {
     it('calls callback on change', done => {
-      const spy = jasmine.createSpy();
+      const spy = jest.fn();
       model.onChange(spy);
 
       model.getModel().setValue('123');
 
-      setTimeout(() => {
-        expect(spy).toHaveBeenCalledWith(model, jasmine.anything());
+      setImmediate(() => {
+        expect(spy).toHaveBeenCalledWith(model, expect.anything());
         done();
       });
     });
@@ -96,7 +96,7 @@ describe('Multi-file editor library model', () => {
 
   describe('dispose', () => {
     it('calls disposable dispose', () => {
-      spyOn(model.disposable, 'dispose').and.callThrough();
+      jest.spyOn(model.disposable, 'dispose');
 
       model.dispose();
 
@@ -114,18 +114,18 @@ describe('Multi-file editor library model', () => {
     });
 
     it('removes eventHub listener', () => {
-      spyOn(eventHub, '$off').and.callThrough();
+      jest.spyOn(eventHub, '$off');
 
       model.dispose();
 
       expect(eventHub.$off).toHaveBeenCalledWith(
         `editor.update.model.dispose.${model.file.key}`,
-        jasmine.anything(),
+        expect.anything(),
       );
     });
 
     it('calls onDispose callback', () => {
-      const disposeSpy = jasmine.createSpy();
+      const disposeSpy = jest.fn();
 
       model.onDispose(disposeSpy);
 

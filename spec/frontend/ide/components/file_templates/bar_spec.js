@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
+import { mountComponentWithStore } from 'helpers/vue_mount_component_helper';
 import { createStore } from '~/ide/stores';
 import Bar from '~/ide/components/file_templates/bar.vue';
 import { resetStore, file } from '../../helpers';
@@ -35,7 +35,7 @@ describe('IDE file templates bar component', () => {
     });
 
     it('calls setSelectedTemplateType when clicking item', () => {
-      spyOn(vm, 'setSelectedTemplateType').and.stub();
+      jest.spyOn(vm, 'setSelectedTemplateType').mockImplementation();
 
       vm.$el.querySelector('.dropdown-content button').click();
 
@@ -66,7 +66,7 @@ describe('IDE file templates bar component', () => {
     });
 
     it('calls fetchTemplate on click', () => {
-      spyOn(vm, 'fetchTemplate').and.stub();
+      jest.spyOn(vm, 'fetchTemplate').mockImplementation();
 
       vm.$el
         .querySelectorAll('.dropdown-content')[1]
@@ -90,7 +90,7 @@ describe('IDE file templates bar component', () => {
   });
 
   it('calls undoFileTemplate when clicking undo button', () => {
-    spyOn(vm, 'undoFileTemplate').and.stub();
+    jest.spyOn(vm, 'undoFileTemplate').mockImplementation();
 
     vm.$el.querySelector('.btn-default').click();
 
@@ -100,7 +100,7 @@ describe('IDE file templates bar component', () => {
   it('calls setSelectedTemplateType if activeFile name matches a template', done => {
     const fileName = '.gitlab-ci.yml';
 
-    spyOn(vm, 'setSelectedTemplateType');
+    jest.spyOn(vm, 'setSelectedTemplateType').mockImplementation(() => {});
     vm.$store.state.openFiles[0].name = fileName;
 
     vm.setInitialType();
