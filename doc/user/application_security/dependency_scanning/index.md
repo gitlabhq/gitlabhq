@@ -91,7 +91,7 @@ The included template will create a `dependency_scanning` job in your CI/CD
 pipeline and scan your project's source code for possible vulnerabilities.
 
 The results will be saved as a
-[Dependency Scanning report artifact](../../../ci/yaml/README.md#artifactsreportsdependency_scanning-ultimate)
+[Dependency Scanning report artifact](../../../ci/pipelines/job_artifacts.md#artifactsreportsdependency_scanning-ultimate)
 that you can later download and analyze. Due to implementation limitations, we
 always take the latest Dependency Scanning artifact available.
 

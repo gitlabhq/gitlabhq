@@ -118,7 +118,7 @@ The included template will create a `sast` job in your CI/CD pipeline and scan
 your project's source code for possible vulnerabilities.
 
 The results will be saved as a
-[SAST report artifact](../../../ci/yaml/README.md#artifactsreportssast-ultimate)
+[SAST report artifact](../../../ci/pipelines/job_artifacts.md#artifactsreportssast-ultimate)
 that you can later download and analyze. Due to implementation limitations, we
 always take the latest SAST artifact available. Behind the scenes, the
 [GitLab SAST Docker image](https://gitlab.com/gitlab-org/security-products/sast)

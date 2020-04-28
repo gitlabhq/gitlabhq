@@ -55,6 +55,7 @@ CentOS
 Chatops
 Citrix
 Cloudwatch
+Cobertura
 Cognito
 colocated
 colocating
@@ -85,6 +86,7 @@ discoverability
 Disqus
 Dockerfile
 Dockerfiles
+dotenv
 downvoted
 downvotes
 Dpl

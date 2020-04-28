@@ -209,7 +209,8 @@ module Gitlab
     end
 
     def self.query_time
-      SafeRequestStore[:gitaly_query_time] ||= 0
+      query_time = SafeRequestStore[:gitaly_query_time] ||= 0
+      query_time.round(Gitlab::InstrumentationHelper::DURATION_PRECISION)
     end
 
     def self.query_time=(duration)

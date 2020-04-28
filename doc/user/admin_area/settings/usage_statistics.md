@@ -185,6 +185,7 @@ but commented out to help encourage others to add to it in the future. -->
 |auto_devops_disabled|counts||
 |deploy_keys|counts||
 |deployments|counts||
+|dast_jobs|counts||
 |successful_deployments|counts||
 |failed_deployments|counts||
 |environments|counts||

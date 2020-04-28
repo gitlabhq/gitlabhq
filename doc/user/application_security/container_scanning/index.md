@@ -103,7 +103,7 @@ The included template will:
    and scan it for possible vulnerabilities.
 
 The results will be saved as a
-[Container Scanning report artifact](../../../ci/yaml/README.md#artifactsreportscontainer_scanning-ultimate)
+[Container Scanning report artifact](../../../ci/pipelines/job_artifacts.md#artifactsreportscontainer_scanning-ultimate)
 that you can later download and analyze.
 Due to implementation limitations, we always take the latest Container Scanning
 artifact available. Behind the scenes, the

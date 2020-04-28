@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class Version < Grape::API::Instance
+  class Version < Grape::API
     helpers ::API::Helpers::GraphqlHelpers
     include APIGuard
 

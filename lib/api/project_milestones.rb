@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class ProjectMilestones < Grape::API::Instance
+  class ProjectMilestones < Grape::API
     include PaginationParams
     include MilestoneResponses
 

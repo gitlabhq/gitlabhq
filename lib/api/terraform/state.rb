@@ -4,7 +4,7 @@ require_dependency 'api/validations/validators/limit'
 
 module API
   module Terraform
-    class State < Grape::API::Instance
+    class State < Grape::API
       include ::Gitlab::Utils::StrongMemoize
 
       default_format :json

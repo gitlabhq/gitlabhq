@@ -24,7 +24,7 @@ module API
         optional :milestone, type: String, desc: 'Return merge requests for a specific milestone'
         optional :labels,
                  type: Array[String],
-                 coerce_with: Validations::Types::CommaSeparatedToArray.coerce,
+                 coerce_with: Validations::Types::LabelsList.coerce,
                  desc: 'Comma-separated list of label names'
         optional :with_labels_details, type: Boolean, desc: 'Return titles of labels and other details', default: false
         optional :created_after, type: DateTime, desc: 'Return merge requests created after the specified time'

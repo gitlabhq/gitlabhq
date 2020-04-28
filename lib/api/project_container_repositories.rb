@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class ProjectContainerRepositories < Grape::API::Instance
+  class ProjectContainerRepositories < Grape::API
     include PaginationParams
 
     REPOSITORY_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(

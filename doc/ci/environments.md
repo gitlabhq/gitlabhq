@@ -173,7 +173,7 @@ GitLab supports [dotenv](https://github.com/bkeepers/dotenv) file as the format,
 and expands the `environment:url` value with variables defined in the dotenv file.
 
 To use this feature, specify the
-[`artifacts:reports:dotenv`](yaml/README.md#artifactsreportsdotenv) keyword in `.gitlab-ci.yml`.
+[`artifacts:reports:dotenv`](pipelines/job_artifacts.md#artifactsreportsdotenv) keyword in `.gitlab-ci.yml`.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview, see [Set dynamic URLs after a job finished](https://youtu.be/70jDXtOf4Ig).

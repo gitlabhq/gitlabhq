@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class Todos < Grape::API::Instance
+  class Todos < Grape::API
     include PaginationParams
 
     before { authenticate! }

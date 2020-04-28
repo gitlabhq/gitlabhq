@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class GroupContainerRepositories < Grape::API::Instance
+  class GroupContainerRepositories < Grape::API
     include PaginationParams
 
     before { authorize_read_group_container_images! }

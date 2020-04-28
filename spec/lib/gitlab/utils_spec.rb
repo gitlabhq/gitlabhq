@@ -59,9 +59,10 @@ describe Gitlab::Utils do
     using RSpec::Parameterized::TableSyntax
 
     where(:original, :expected) do
-      1999.8999 | 2
-      12384     | 12.38
-      333       | 0.33
+      1999.8999     | 1.9999
+      12384         | 12.384
+      333           | 0.333
+      1333.33333333 | 1.333333
     end
 
     with_them do

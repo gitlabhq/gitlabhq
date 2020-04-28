@@ -3,7 +3,7 @@
 require 'mime/types'
 
 module API
-  class CommitStatuses < Grape::API::Instance
+  class CommitStatuses < Grape::API
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end

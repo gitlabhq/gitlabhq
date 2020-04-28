@@ -2,7 +2,7 @@
 
 module API
   # Deployments RESTful API endpoints
-  class Deployments < Grape::API::Instance
+  class Deployments < Grape::API
     include PaginationParams
 
     before { authenticate! }

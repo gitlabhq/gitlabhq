@@ -182,6 +182,8 @@ Subscription charges are calculated based on the total number of users in a grou
 
 ## View your subscription
 
+### View your GitLab.com subscription
+
 To see the status of your GitLab.com subscription, log into GitLab.com and go to the **Billing** section of the relevant namespace:
 
 - For individuals:
@@ -200,6 +202,13 @@ The following table describes details of your subscription for groups:
 | Seats owed | If your maximum seats used exceeds the seats in your subscription, you'll owe an additional fee for the users you've added. |
 | Subscription start date | Date your subscription started. If this is for a Free plan, is the date you transitioned off your group's paid plan. |
 | Subscription end date | Date your current subscription will end. Does not apply to Free plans. |
+
+### View your self-managed subscription
+
+To view the status of your self-managed subscription, log into the self-managed instance and go to the **License** page.
+
+  1. Go to **{admin}** **Admin Area**.
+  1. From the left-hand menu, select **License**.
 
 ## Renew your subscription
 

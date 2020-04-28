@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class Wikis < Grape::API::Instance
+  class Wikis < Grape::API
     helpers do
       def commit_params(attrs)
         # In order to avoid service disruption this can work with an old workhorse without the acceleration
@@ -117,7 +117,7 @@ module API
         success Entities::WikiAttachment
       end
       params do
-        requires :file, types: [Rack::Multipart::UploadedFile, ::API::Validations::Types::WorkhorseFile], desc: 'The attachment file to be uploaded'
+        requires :file, types: [::API::Validations::Types::SafeFile, ::API::Validations::Types::WorkhorseFile], desc: 'The attachment file to be uploaded'
         optional :branch, type: String, desc: 'The name of the branch'
       end
       post ":id/wikis/attachments" do

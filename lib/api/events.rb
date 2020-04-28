@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class Events < Grape::API::Instance
+  class Events < Grape::API
     include PaginationParams
     include APIGuard
     helpers ::API::Helpers::EventsHelpers

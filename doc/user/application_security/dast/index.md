@@ -101,7 +101,7 @@ The included template will create a `dast` job in your CI/CD pipeline and scan
 your project's source code for possible vulnerabilities.
 
 The results will be saved as a
-[DAST report artifact](../../../ci/yaml/README.md#artifactsreportsdast-ultimate)
+[DAST report artifact](../../../ci/pipelines/job_artifacts.md#artifactsreportsdast-ultimate)
 that you can later download and analyze. Due to implementation limitations we
 always take the latest DAST artifact available. Behind the scenes, the
 [GitLab DAST Docker image](https://gitlab.com/gitlab-org/security-products/dast)
@@ -147,7 +147,7 @@ variables:
 ```
 
 The results will be saved as a
-[DAST report artifact](../../../ci/yaml/README.md#artifactsreportsdast-ultimate)
+[DAST report artifact](../../../ci/pipelines/job_artifacts.md#artifactsreportsdast-ultimate)
 that you can later download and analyze.
 Due to implementation limitations, we always take the latest DAST artifact available.
 

@@ -3,7 +3,7 @@
 module API
   module Metrics
     module Dashboard
-      class Annotations < Grape::API::Instance
+      class Annotations < Grape::API
         desc 'Create a new monitoring dashboard annotation' do
           success Entities::Metrics::Dashboard::Annotation
         end

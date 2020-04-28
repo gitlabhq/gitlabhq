@@ -112,7 +112,7 @@ so you're advised to migrate to the `license_scanning` job and used the new
 `License-Scanning.gitlab-ci.yml` template.
 
 The results will be saved as a
-[License Compliance report artifact](../../../ci/yaml/README.md#artifactsreportslicense_scanning-ultimate)
+[License Compliance report artifact](../../../ci/pipelines/job_artifacts.md#artifactsreportslicense_scanning-ultimate)
 that you can later download and analyze. Due to implementation limitations, we
 always take the latest License Compliance artifact available. Behind the scenes, the
 [GitLab License Compliance Docker image](https://gitlab.com/gitlab-org/security-products/license-management)

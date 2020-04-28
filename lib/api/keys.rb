@@ -2,7 +2,7 @@
 
 module API
   # Keys API
-  class Keys < Grape::API::Instance
+  class Keys < Grape::API
     before { authenticate! }
 
     resource :keys do

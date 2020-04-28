@@ -2,7 +2,7 @@
 
 module API
   # MergeRequestDiff API
-  class MergeRequestDiffs < Grape::API::Instance
+  class MergeRequestDiffs < Grape::API
     include PaginationParams
 
     before { authenticate! }

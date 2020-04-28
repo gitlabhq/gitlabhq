@@ -42,7 +42,7 @@ For instance, consider the following workflow:
 ## How it works
 
 First of all, you need to define a job in your `.gitlab-ci.yml` file that generates the
-[Performance report artifact](../../../ci/yaml/README.md#artifactsreportsperformance-premium).
+[Performance report artifact](../../../ci/pipelines/job_artifacts.md#artifactsreportsperformance-premium).
 For more information on how the Performance job should look like, check the
 example on [Configuring Browser Performance Testing](#configuring-browser-performance-testing).
 
@@ -100,7 +100,7 @@ It also requires GitLab Runner 11.5 or later. For earlier versions, use the
 The above example will create a `performance` job in your CI/CD pipeline and will run
 sitespeed.io against the webpage you defined in `URL` to gather key metrics.
 The [GitLab plugin for sitespeed.io](https://gitlab.com/gitlab-org/gl-performance)
-is downloaded in order to save the report as a [Performance report artifact](../../../ci/yaml/README.md#artifactsreportsperformance-premium)
+is downloaded in order to save the report as a [Performance report artifact](../../../ci/pipelines/job_artifacts.md#artifactsreportsperformance-premium)
 that you can later download and analyze. Due to implementation limitations we always
 take the latest Performance artifact available.
 

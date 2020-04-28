@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class Runner < Grape::API::Instance
+  class Runner < Grape::API
     helpers ::API::Helpers::Runner
 
     resource :runners do
@@ -18,7 +18,7 @@ module API
         optional :access_level, type: String, values: Ci::Runner.access_levels.keys,
                                 desc: 'The access_level of the runner'
         optional :run_untagged, type: Boolean, desc: 'Should Runner handle untagged jobs'
-        optional :tag_list, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: %q(List of Runner's tags)
+        optional :tag_list, type: Array[String], desc: %q(List of Runner's tags)
         optional :maximum_timeout, type: Integer, desc: 'Maximum timeout set when this Runner will handle the job'
       end
       post '/' do

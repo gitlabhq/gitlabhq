@@ -53,7 +53,7 @@ so the [`allow_failure`](../../ci/yaml/README.md#allow_failure) parameter should
 ### Artifacts
 
 Scanning jobs must declare a report that corresponds to the type of scanning they perform,
-using the [`artifacts:reports`](../../ci/yaml/README.md#artifactsreports) keyword.
+using the [`artifacts:reports`](../../ci/pipelines/job_artifacts.md#artifactsreports) keyword.
 Valid reports are: `dependency_scanning`, `container_scanning`, `dast`, and `sast`.
 
 For example, here is the definition of a SAST job that generates a file named `gl-sast-report.json`,
@@ -178,7 +178,7 @@ It is recommended to name the output file after the type of scanning, and to use
 Since all Secure reports are JSON files, it is recommended to use `.json` as a file extension.
 For instance, a suggested file name for a Dependency Scanning report is `gl-dependency-scanning.json`.
 
-The [`artifacts:reports`](../../ci/yaml/README.md#artifactsreports) keyword
+The [`artifacts:reports`](../../ci/pipelines/job_artifacts.md#artifactsreports) keyword
 of the job definition must be consistent with the file path where the Security report is written.
 For instance, if a Dependency Scanning analyzer writes its report to the CI project directory,
 and if this report file name is `depscan.json`,

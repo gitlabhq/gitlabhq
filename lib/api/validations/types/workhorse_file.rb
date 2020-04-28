@@ -3,14 +3,15 @@
 module API
   module Validations
     module Types
-      class WorkhorseFile
-        def self.parse(value)
-          raise "#{value.class} is not an UploadedFile type" unless parsed?(value)
-
-          value
+      class WorkhorseFile < Virtus::Attribute
+        def coerce(input)
+          # Processing of multipart file objects
+          # is already taken care of by Gitlab::Middleware::Multipart.
+          # Nothing to do here.
+          input
         end
 
-        def self.parsed?(value)
+        def value_coerced?(value)
           value.is_a?(::UploadedFile)
         end
       end

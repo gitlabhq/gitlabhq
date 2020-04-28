@@ -123,7 +123,7 @@ module Gitlab
     end
 
     def ms_to_round_sec(ms)
-      (ms.to_f / 1000).round(2)
+      (ms.to_f / 1000).round(6)
     end
 
     # Used in EE

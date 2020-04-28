@@ -68,7 +68,7 @@ and complete an intgration with the Secure stage.
 1. Ensure your pipeline jobs create a report artifact that GitLab can process
    to successfully display your own product's results with the rest of GitLab.
    - See detailed [technical directions](secure.md) for this step.
-   - Read more about [job report artifacts](../../ci/yaml/README.md#artifactsreports).
+   - Read more about [job report artifacts](../../ci/pipelines/job_artifacts.md#artifactsreports).
    - Read about [job artifacts](../../user/project/pipelines/job_artifacts.md).
    - Your report artifact must be in one of our currently supported formats.
      For more information, see the [documentation on reports](secure.md#report).

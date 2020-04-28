@@ -79,7 +79,7 @@ include:
 
 The above example will create a `code_quality` job in your CI/CD pipeline which
 will scan your source code for code quality issues. The report will be saved as a
-[Code Quality report artifact](../../../ci/yaml/README.md#artifactsreportscodequality-starter)
+[Code Quality report artifact](../../../ci/pipelines/job_artifacts.md#artifactsreportscodequality-starter)
 that you can later download and analyze. Due to implementation limitations we always
 take the latest Code Quality artifact available.
 
@@ -239,7 +239,7 @@ do this:
 
 1. Define a job in your `.gitlab-ci.yml` file that generates the
    [Code Quality report
-   artifact](../../../ci/yaml/README.md#artifactsreportscodequality-starter).
+   artifact](../../../ci/pipelines/job_artifacts.md#artifactsreportscodequality-starter).
 1. Configure your tool to generate the Code Quality report artifact as a JSON
    file that implements subset of the [Code Climate
    spec](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#data-types).

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class ImportGithub < Grape::API::Instance
+  class ImportGithub < Grape::API
     rescue_from Octokit::Unauthorized, with: :provider_unauthorized
 
     helpers do

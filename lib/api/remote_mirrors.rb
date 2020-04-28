@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class RemoteMirrors < Grape::API::Instance
+  class RemoteMirrors < Grape::API
     include PaginationParams
 
     before do

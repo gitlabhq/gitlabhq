@@ -66,11 +66,11 @@ module Gitlab
       end
 
       def add_time_keys!(time, payload)
-        payload['duration_s'] = time[:duration].round(2)
+        payload['duration_s'] = time[:duration].round(Gitlab::InstrumentationHelper::DURATION_PRECISION)
 
         # ignore `cpu_s` if the platform does not support Process::CLOCK_THREAD_CPUTIME_ID (time[:cputime] == 0)
         # supported OS version can be found at: https://www.rubydoc.info/stdlib/core/2.1.6/Process:clock_gettime
-        payload['cpu_s'] = time[:cputime].round(2) if time[:cputime] > 0
+        payload['cpu_s'] = time[:cputime].round(Gitlab::InstrumentationHelper::DURATION_PRECISION) if time[:cputime] > 0
         payload['completed_at'] = Time.now.utc.to_f
       end
 
