@@ -32,18 +32,18 @@ update-tests-metadata:
     - .test-metadata:rules:update-tests-metadata
   stage: post-test
   dependencies:
-    - setup-test-env pg11
-    - rspec migration pg11
-    - rspec unit pg11
-    - rspec integration pg11
-    - rspec system pg11
-    - rspec-ee migration pg11
-    - rspec-ee unit pg11
-    - rspec-ee integration pg11
-    - rspec-ee system pg11
-    - rspec-ee unit pg11 geo
-    - rspec-ee integration pg11 geo
-    - rspec-ee system pg11 geo
+    - setup-test-env pg9
+    - rspec migration pg9
+    - rspec unit pg9
+    - rspec integration pg9
+    - rspec system pg9
+    - rspec-ee migration pg9
+    - rspec-ee unit pg9
+    - rspec-ee integration pg9
+    - rspec-ee system pg9
+    - rspec-ee unit pg9 geo
+    - rspec-ee integration pg9 geo
+    - rspec-ee system pg9 geo
   cache:
     policy: push
   script:

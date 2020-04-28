@@ -129,9 +129,9 @@ compile-assets pull-cache as-if-foss:
     - .default-retry
     - .default-cache
     - .default-before_script
-    - .use-pg11
+    - .use-pg9
   stage: fixtures
-  needs: ["setup-test-env pg11", "compile-assets pull-cache"]
+  needs: ["setup-test-env pg9", "compile-assets pull-cache"]
   script:
     - date
     - scripts/gitaly-test-spawn

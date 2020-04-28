@@ -25,14 +25,21 @@ Server-side Git hooks are typically placed in the repository's `hooks`
 subdirectory. In GitLab, hook directories are symlinked to the GitLab Shell
 `hooks` directory for ease of maintenance between GitLab Shell upgrades.
 Server hooks are implemented differently, but the behavior is exactly the same
-once the hook is created. Follow the steps below to set up a server hook for a
+once the hook is created.
+
+NOTE: **Note:**
+If you are not using [hashed storage](repository_storage_types.md#hashed-storage), the project's
+repository directory might not exactly match the instructions below. In that case,
+for an installation from source the path is usually `/home/git/repositories/<group>/<project>.git`.
+For Omnibus installs the path is usually `/var/opt/gitlab/git-data/repositories/<group>/<project>.git`.
+
+Follow the steps below to set up a server hook for a
 repository:
 
-1. Pick a project that needs a server hook.
-1. On the GitLab server, navigate to the project's repository directory.
-   For an installation from source the path is usually
-   `/home/git/repositories/<group>/<project>.git`. For Omnibus installs the path is
-   usually `/var/opt/gitlab/git-data/repositories/<group>/<project>.git`.
+1. Find that project's path on the GitLab server, by navigating to the
+   **Admin area > Projects**. From there, select the project for which you
+   would like to add a hook. You can find the path to the project's repository
+   under **Gitaly relative path** on that page.
 1. Create a new directory in this location called `custom_hooks`.
 1. Inside the new `custom_hooks` directory, create a file with a name matching
    the hook type. For a pre-receive hook the file name should be `pre-receive`
@@ -43,8 +50,7 @@ repository:
    type. For example, if the script is in Ruby the shebang will probably be
    `#!/usr/bin/env ruby`.
 
-That's it! Assuming the hook code is properly implemented the hook will fire
-as appropriate.
+Assuming the hook code is properly implemented the hook will run as appropriate.
 
 ## Set a global server hook for all repositories
 

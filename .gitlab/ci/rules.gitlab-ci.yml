@@ -16,6 +16,15 @@
 .if-master-refs: &if-master-refs
   if: '$CI_COMMIT_REF_NAME == "master"'
 
+.if-master-push: &if-master-push
+  if: '$CI_COMMIT_BRANCH == "master" && $CI_PIPELINE_SOURCE == "push"'
+
+.if-master-schedule-2-hourly: &if-master-schedule-2-hourly
+  if: '$CI_COMMIT_BRANCH == "master" && $CI_PIPELINE_SOURCE == "schedule" && $FREQUENCY == "2-hourly"'
+
+.if-master-schedule-nightly: &if-master-schedule-nightly
+  if: '$CI_COMMIT_BRANCH == "master" && $CI_PIPELINE_SOURCE == "schedule" && $FREQUENCY == "nightly"'
+
 .if-auto-deploy-branches: &if-auto-deploy-branches
   if: '$CI_COMMIT_BRANCH =~ /^\d+-\d+-auto-deploy-\d+$/'
 
@@ -24,9 +33,6 @@
 
 .if-merge-request: &if-merge-request
   if: '$CI_MERGE_REQUEST_IID'
-
-.if-nightly-master-schedule: &if-nightly-master-schedule
-  if: '$NIGHTLY && $CI_COMMIT_REF_NAME == "master" && $CI_PIPELINE_SOURCE == "schedule"'
 
 .if-dot-com-gitlab-org-schedule: &if-dot-com-gitlab-org-schedule
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_PIPELINE_SOURCE == "schedule"'
@@ -360,36 +366,33 @@
   rules:
     - <<: *if-default-refs
       changes: *code-backstage-patterns
-      when: on_success
 
 .rails:rules:default-refs-code-backstage-qa:
   rules:
     - <<: *if-default-refs
       changes: *code-backstage-qa-patterns
-      when: on_success
 
-.rails:rules:master-refs-code-backstage:
+.rails:rules:master-push--master-schedule-2-hourly--code-backstage:
   rules:
-    - <<: *if-master-refs
+    - <<: *if-master-push
       changes: *code-backstage-patterns
-      when: on_success
-    - changes: [".gitlab/ci/rails.gitlab-ci.yml"]
+    - <<: *if-master-schedule-2-hourly
+    - <<: *if-merge-request
+      changes: [".gitlab/ci/rails.gitlab-ci.yml"]
 
-.rails:rules:nightly-master-refs-code-backstage:
+.rails:rules:master-schedule-nightly--code-backstage:
   rules:
-    - <<: *if-nightly-master-schedule
-      changes: *code-backstage-patterns
-      when: on_success
-    - changes: [".gitlab/ci/rails.gitlab-ci.yml"]
+    - <<: *if-master-schedule-nightly
+    - <<: *if-merge-request
+      changes: [".gitlab/ci/rails.gitlab-ci.yml"]
 
-.rails:rules:nightly-master-refs-code-backstage-ee-only:
+.rails:rules:master-schedule-nightly--code-backstage-ee-only:
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-nightly-master-schedule
-      changes: *code-backstage-patterns
-      when: on_success
-    - changes: [".gitlab/ci/rails.gitlab-ci.yml"]
+    - <<: *if-master-schedule-nightly
+    - <<: *if-merge-request
+      changes: [".gitlab/ci/rails.gitlab-ci.yml"]
 
 .rails:rules:ee-only:
   rules:
@@ -397,7 +400,6 @@
       when: never
     - <<: *if-default-refs
       changes: *code-backstage-patterns
-      when: on_success
 
 .rails:rules:ee-mr-and-master-only:
   rules:
@@ -412,7 +414,6 @@
   rules:
     - <<: *if-merge-request
       changes: *code-backstage-patterns
-      when: on_success
 
 ##################
 # Releases rules #

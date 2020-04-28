@@ -57,6 +57,18 @@ describe('PasteMarkdownTable', () => {
 
       expect(new PasteMarkdownTable(data).isTable()).toBe(false);
     });
+
+    it('returns false when the table copy comes from a diff', () => {
+      data.types = ['text/html', 'text/plain'];
+      data.getData = jest.fn().mockImplementation(mimeType => {
+        if (mimeType === 'text/html') {
+          return '<table class="diff-wrap-lines"><tr><td>First</td><td>Second</td></tr></table>';
+        }
+        return 'First\tSecond';
+      });
+
+      expect(new PasteMarkdownTable(data).isTable()).toBe(false);
+    });
   });
 
   describe('convertToTableMarkdown', () => {

@@ -8,7 +8,7 @@
 memory-static:
   extends: .only-code-memory-job-base
   stage: test
-  needs: ["setup-test-env pg11"]
+  needs: ["setup-test-env pg9"]
   variables:
     SETUP_DB: "false"
   script:
@@ -36,9 +36,9 @@ memory-static:
 memory-on-boot:
   extends:
     - .only-code-memory-job-base
-    - .use-pg11
+    - .use-pg9
   stage: test
-  needs: ["setup-test-env pg11", "compile-assets pull-cache"]
+  needs: ["setup-test-env pg9", "compile-assets pull-cache"]
   variables:
     NODE_ENV: "production"
     RAILS_ENV: "production"

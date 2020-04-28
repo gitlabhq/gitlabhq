@@ -2,8 +2,6 @@
 
 module Gitlab
   class TreeSummary
-    prepend_if_ee('::EE::Gitlab::TreeSummary') # rubocop: disable Cop/InjectEnterpriseEditionModule
-
     include ::Gitlab::Utils::StrongMemoize
 
     CACHE_EXPIRE_IN = 1.hour
@@ -135,3 +133,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::TreeSummary.prepend_if_ee('::EE::Gitlab::TreeSummary')

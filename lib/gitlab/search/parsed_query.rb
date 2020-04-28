@@ -3,8 +3,6 @@
 module Gitlab
   module Search
     class ParsedQuery
-      prepend_if_ee('EE::Gitlab::Search::ParsedQuery') # rubocop: disable Cop/InjectEnterpriseEditionModule
-
       attr_reader :term, :filters
 
       def initialize(term, filters)
@@ -25,3 +23,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Search::ParsedQuery.prepend_if_ee('EE::Gitlab::Search::ParsedQuery')

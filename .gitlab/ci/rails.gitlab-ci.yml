@@ -1,5 +1,5 @@
 .rails:needs:setup-and-assets:
-  needs: ["setup-test-env pg11", "compile-assets pull-cache"]
+  needs: ["setup-test-env pg9", "compile-assets pull-cache"]
 
 .rails-job-base:
   extends:
@@ -7,8 +7,8 @@
     - .default-cache
     - .default-before_script
 
-####################
-# EE and FOSS jobs #
+#######################################################
+# EE/FOSS: default refs (MRs, master, schedules) jobs #
 .base-setup-test-env:
   extends:
     - .rails-job-base
@@ -28,19 +28,19 @@
 setup-test-env pg11:
   extends:
     - .base-setup-test-env
-    - .rails:rules:default-refs-code-backstage-qa
+    - .rails:rules:master-push--master-schedule-2-hourly--code-backstage
     - .use-pg11
 
 setup-test-env pg10:
   extends:
     - .base-setup-test-env
-    - .rails:rules:master-refs-code-backstage
+    - .rails:rules:master-schedule-nightly--code-backstage
     - .use-pg10
 
 setup-test-env pg9:
   extends:
     - .base-setup-test-env
-    - .rails:rules:nightly-master-refs-code-backstage
+    - .rails:rules:default-refs-code-backstage-qa
     - .use-pg9
 
 static-analysis:
@@ -55,7 +55,7 @@ static-analysis:
   script:
     - scripts/static-analysis
   cache:
-    key: "ruby-2.6.5-pg11-rubocop"
+    key: "ruby-2.6.5-pg9-rubocop"
     paths:
       - vendor/ruby
       - tmp/rubocop_cache
@@ -75,7 +75,7 @@ downtime_check:
 .rspec-base:
   extends: .rails-job-base
   stage: test
-  needs: ["setup-test-env pg11", "retrieve-tests-metadata", "compile-assets pull-cache"]
+  needs: ["setup-test-env pg9", "retrieve-tests-metadata", "compile-assets pull-cache"]
   script:
     - source scripts/rspec_helpers.sh
     - rspec_paralellized_job "--tag ~quarantine --tag ~geo --tag ~level:migration"
@@ -93,37 +93,37 @@ downtime_check:
     reports:
       junit: junit_rspec.xml
 
-.rspec-base-pg11:
+.rspec-base-pg9:
   extends:
     - .rspec-base
     - .rails:rules:ee-and-foss
-    - .use-pg11
+    - .use-pg9
 
 .rspec-base-migration:
   script:
     - source scripts/rspec_helpers.sh
     - rspec_paralellized_job "--tag ~quarantine --tag ~geo --tag level:migration"
 
-rspec migration pg11:
+rspec migration pg9:
   extends:
-    - .rspec-base-pg11
+    - .rspec-base-pg9
     - .rspec-base-migration
   parallel: 5
 
-rspec unit pg11:
-  extends: .rspec-base-pg11
+rspec unit pg9:
+  extends: .rspec-base-pg9
   parallel: 20
 
-rspec integration pg11:
-  extends: .rspec-base-pg11
+rspec integration pg9:
+  extends: .rspec-base-pg9
   parallel: 8
 
-rspec system pg11:
-  extends: .rspec-base-pg11
+rspec system pg9:
+  extends: .rspec-base-pg9
   parallel: 24
 
 rspec fast_spec_helper:
-  extends: .rspec-base-pg11
+  extends: .rspec-base-pg9
   script:
     - bin/rspec spec/fast_spec_helper.rb
 
@@ -131,9 +131,9 @@ rspec fast_spec_helper:
   extends:
     - .rails-job-base
     - .rails:rules:ee-and-foss
-    - .use-pg11
+    - .use-pg9
   stage: test
-  needs: ["setup-test-env pg11"]
+  needs: ["setup-test-env pg9"]
 
 db:migrate:reset:
   extends: .db-job-base
@@ -202,18 +202,18 @@ rspec:coverage:
   # We cannot use needs since it would mean needing 84 jobs (since most are parallelized)
   # so we use `dependencies` here.
   dependencies:
-    - setup-test-env pg11
-    - rspec migration pg11
-    - rspec unit pg11
-    - rspec integration pg11
-    - rspec system pg11
-    - rspec-ee migration pg11
-    - rspec-ee unit pg11
-    - rspec-ee integration pg11
-    - rspec-ee system pg11
-    - rspec-ee unit pg11 geo
-    - rspec-ee integration pg11 geo
-    - rspec-ee system pg11 geo
+    - setup-test-env pg9
+    - rspec migration pg9
+    - rspec unit pg9
+    - rspec integration pg9
+    - rspec system pg9
+    - rspec-ee migration pg9
+    - rspec-ee unit pg9
+    - rspec-ee integration pg9
+    - rspec-ee system pg9
+    - rspec-ee unit pg9 geo
+    - rspec-ee integration pg9 geo
+    - rspec-ee system pg9 geo
     - memory-static
     - memory-on-boot
   variables:
@@ -231,15 +231,166 @@ rspec:coverage:
       - coverage/index.html
       - coverage/assets/
       - tmp/memory_test/
-# EE and FOSS jobs #
-####################
+# EE/FOSS: default refs (MRs, master, schedules) jobs #
+#######################################################
 
-####################
-# master-only jobs #
+##################################################
+# EE: default refs (MRs, master, schedules) jobs #
+.rspec-base-ee:
+  extends:
+    - .rspec-base
+    - .rails:rules:ee-only
+
+.rspec-base-pg9-as-if-foss:
+  extends:
+    - .rspec-base-ee
+    - .as-if-foss
+    - .use-pg9
+  needs: ["setup-test-env pg9", "retrieve-tests-metadata", "compile-assets pull-cache as-if-foss"]
+
+.rspec-ee-base-pg9:
+  extends:
+    - .rspec-base-ee
+    - .use-pg9-ee
+
+rspec migration pg9-as-if-foss:
+  extends:
+    - .rspec-base-pg9-as-if-foss
+    - .rspec-base-migration
+  parallel: 5
+
+rspec unit pg9-as-if-foss:
+  extends: .rspec-base-pg9-as-if-foss
+  parallel: 20
+
+rspec integration pg9-as-if-foss:
+  extends: .rspec-base-pg9-as-if-foss
+  parallel: 8
+
+rspec system pg9-as-if-foss:
+  extends: .rspec-base-pg9-as-if-foss
+  parallel: 24
+
+rspec-ee migration pg9:
+  extends:
+    - .rspec-ee-base-pg9
+    - .rspec-base-migration
+  parallel: 2
+
+rspec-ee unit pg9:
+  extends: .rspec-ee-base-pg9
+  parallel: 10
+
+rspec-ee integration pg9:
+  extends: .rspec-ee-base-pg9
+  parallel: 4
+
+rspec-ee system pg9:
+  extends: .rspec-ee-base-pg9
+  parallel: 6
+
+.rspec-ee-base-geo:
+  extends: .rspec-base-ee
+  script:
+    - source scripts/rspec_helpers.sh
+    - scripts/prepare_postgres_fdw.sh
+    - rspec_paralellized_job "--tag ~quarantine --tag geo"
+
+.rspec-ee-base-geo-pg9:
+  extends:
+    - .rspec-ee-base-geo
+    - .use-pg9-ee
+
+rspec-ee unit pg9 geo:
+  extends: .rspec-ee-base-geo-pg9
+  parallel: 2
+
+rspec-ee integration pg9 geo:
+  extends: .rspec-ee-base-geo-pg9
+
+rspec-ee system pg9 geo:
+  extends: .rspec-ee-base-geo-pg9
+
+db:rollback geo:
+  extends:
+    - db:rollback
+    - .rails:rules:ee-only
+  script:
+    - bundle exec rake geo:db:migrate VERSION=20170627195211
+    - bundle exec rake geo:db:migrate
+# EE: default refs (MRs, master, schedules) jobs #
+##################################################
+
+####################################################################
+# EE/FOSS: master non-scheduled and master 2-hourly scheduled jobs #
+.rspec-base-pg11:
+  extends:
+    - .rspec-base
+    - .rails:rules:master-push--master-schedule-2-hourly--code-backstage
+    - .use-pg11
+  needs: ["setup-test-env pg11", "retrieve-tests-metadata", "compile-assets pull-cache"]
+
+rspec migration pg11:
+  extends:
+    - .rspec-base-pg11
+    - .rspec-base-migration
+  parallel: 5
+
+rspec unit pg11:
+  extends: .rspec-base-pg11
+  parallel: 20
+
+rspec integration pg11:
+  extends: .rspec-base-pg11
+  parallel: 8
+
+rspec system pg11:
+  extends: .rspec-base-pg11
+  parallel: 24
+# EE/FOSS: master non-scheduled and master 2-hourly scheduled jobs #
+####################################################################
+
+###############################################################
+# EE: master non-scheduled and master 2-hourly scheduled jobs #
+.rspec-ee-base-pg11:
+  extends:
+    - .rspec-base-ee
+    - .use-pg11-ee
+  needs: ["setup-test-env pg11", "retrieve-tests-metadata", "compile-assets pull-cache"]
+
+rspec-ee migration pg11:
+  extends:
+    - .rspec-ee-base-pg11
+    - .rspec-base-migration
+    - .rails:rules:master-push--master-schedule-2-hourly--code-backstage
+  parallel: 2
+
+rspec-ee unit pg11:
+  extends:
+    - .rspec-ee-base-pg11
+    - .rails:rules:master-push--master-schedule-2-hourly--code-backstage
+  parallel: 10
+
+rspec-ee integration pg11:
+  extends:
+    - .rspec-ee-base-pg11
+    - .rails:rules:master-push--master-schedule-2-hourly--code-backstage
+  parallel: 4
+
+rspec-ee system pg11:
+  extends:
+    - .rspec-ee-base-pg11
+    - .rails:rules:master-push--master-schedule-2-hourly--code-backstage
+  parallel: 6
+# EE: master non-scheduled and master 2-hourly scheduled jobs #
+###############################################################
+
+##########################################
+# EE/FOSS: master nightly scheduled jobs #
 .rspec-base-pg10:
   extends:
     - .rspec-base
-    - .rails:rules:master-refs-code-backstage
+    - .rails:rules:master-schedule-nightly--code-backstage
     - .use-pg10
   needs: ["setup-test-env pg10", "retrieve-tests-metadata", "compile-assets pull-cache"]
 
@@ -260,177 +411,26 @@ rspec integration pg10:
 rspec system pg10:
   extends: .rspec-base-pg10
   parallel: 24
-# master-only jobs #
-####################
+# EE/FOSS: master nightly scheduled jobs #
+##########################################
 
-######################
-# nightly-only jobs #
-.rspec-base-pg9:
+##############################
+# EE: nightly scheduled jobs #
+.rspec-ee-base-geo-pg10:
   extends:
-    - .rspec-base
-    - .rails:rules:nightly-master-refs-code-backstage
-    - .use-pg9
-  needs: ["setup-test-env pg9", "retrieve-tests-metadata", "compile-assets pull-cache"]
-
-rspec migration pg9:
-  extends:
-    - .rspec-base-pg9
-    - .rspec-base-migration
-  parallel: 5
-
-rspec unit pg9:
-  extends: .rspec-base-pg9
-  parallel: 20
-
-rspec integration pg9:
-  extends: .rspec-base-pg9
-  parallel: 8
-
-rspec system pg9:
-  extends: .rspec-base-pg9
-  parallel: 24
-# nightly-only jobs #
-#####################
-
-#######################
-# EE master-only jobs #
-.rspec-ee-base-pg10:
-  extends:
-    - .rspec-base-ee
+    - .rspec-ee-base-geo
     - .use-pg10-ee
+    - .rails:rules:master-schedule-nightly--code-backstage-ee-only
   needs: ["setup-test-env pg10", "retrieve-tests-metadata", "compile-assets pull-cache"]
 
-rspec-ee migration pg10:
-  extends:
-    - .rspec-ee-base-pg10
-    - .rspec-base-migration
-    - .rails:rules:master-refs-code-backstage
+rspec-ee unit pg10 geo:
+  extends: .rspec-ee-base-geo-pg10
   parallel: 2
 
-rspec-ee unit pg10:
-  extends:
-    - .rspec-ee-base-pg10
-    - .rails:rules:master-refs-code-backstage
-  parallel: 10
+rspec-ee integration pg10 geo:
+  extends: .rspec-ee-base-geo-pg10
 
-rspec-ee integration pg10:
-  extends:
-    - .rspec-ee-base-pg10
-    - .rails:rules:master-refs-code-backstage
-  parallel: 4
-
-rspec-ee system pg10:
-  extends:
-    - .rspec-ee-base-pg10
-    - .rails:rules:master-refs-code-backstage
-  parallel: 6
-# EE master-only jobs #
-#######################
-
-################
-# EE-only jobs #
-.rspec-base-ee:
-  extends:
-    - .rspec-base
-    - .rails:rules:ee-only
-
-.rspec-base-pg11-as-if-foss:
-  extends:
-    - .rspec-base-ee
-    - .as-if-foss
-    - .use-pg11
-  needs: ["setup-test-env pg11", "retrieve-tests-metadata", "compile-assets pull-cache as-if-foss"]
-
-.rspec-ee-base-pg11:
-  extends:
-    - .rspec-base-ee
-    - .use-pg11-ee
-
-rspec migration pg11-as-if-foss:
-  extends:
-    - .rspec-base-pg11-as-if-foss
-    - .rspec-base-migration
-  parallel: 5
-
-rspec unit pg11-as-if-foss:
-  extends: .rspec-base-pg11-as-if-foss
-  parallel: 20
-
-rspec integration pg11-as-if-foss:
-  extends: .rspec-base-pg11-as-if-foss
-  parallel: 8
-
-rspec system pg11-as-if-foss:
-  extends: .rspec-base-pg11-as-if-foss
-  parallel: 24
-
-rspec-ee migration pg11:
-  extends:
-    - .rspec-ee-base-pg11
-    - .rspec-base-migration
-  parallel: 2
-
-rspec-ee unit pg11:
-  extends: .rspec-ee-base-pg11
-  parallel: 10
-
-rspec-ee integration pg11:
-  extends: .rspec-ee-base-pg11
-  parallel: 4
-
-rspec-ee system pg11:
-  extends: .rspec-ee-base-pg11
-  parallel: 6
-
-.rspec-ee-base-geo:
-  extends: .rspec-base-ee
-  script:
-    - source scripts/rspec_helpers.sh
-    - scripts/prepare_postgres_fdw.sh
-    - rspec_paralellized_job "--tag ~quarantine --tag geo"
-
-.rspec-ee-base-geo-pg11:
-  extends:
-    - .rspec-ee-base-geo
-    - .use-pg11-ee
-
-rspec-ee unit pg11 geo:
-  extends: .rspec-ee-base-geo-pg11
-  parallel: 2
-
-rspec-ee integration pg11 geo:
-  extends: .rspec-ee-base-geo-pg11
-
-rspec-ee system pg11 geo:
-  extends: .rspec-ee-base-geo-pg11
-
-db:rollback geo:
-  extends:
-    - db:rollback
-    - .rails:rules:ee-only
-  script:
-    - bundle exec rake geo:db:migrate VERSION=20170627195211
-    - bundle exec rake geo:db:migrate
-# EE-only jobs #
-################
-
-########################
-# EE nightly-only jobs #
-.rspec-ee-base-geo-pg9:
-  extends:
-    - .rspec-ee-base-geo
-    - .use-pg9-ee
-    - .rails:rules:nightly-master-refs-code-backstage-ee-only
-  needs: ["setup-test-env pg9", "retrieve-tests-metadata", "compile-assets pull-cache"]
-
-rspec-ee unit pg9 geo:
-  extends: .rspec-ee-base-geo-pg9
-  parallel: 2
-
-rspec-ee integration pg9 geo:
-  extends: .rspec-ee-base-geo-pg9
-
-rspec-ee system pg9 geo:
-  extends: .rspec-ee-base-geo-pg9
-# EE nightly-only jobs #
-########################
+rspec-ee system pg10 geo:
+  extends: .rspec-ee-base-geo-pg10
+# EE: nightly scheduled jobs #
+##############################

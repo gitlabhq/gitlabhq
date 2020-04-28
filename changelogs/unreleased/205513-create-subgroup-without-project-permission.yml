@@ -1,0 +1,5 @@
+---
+title: Always display new subgroup button when permission is granted
+merge_request: 28309
+author: Mattias Michaux
+type: fixed

@@ -152,6 +152,14 @@ class Environment < ApplicationRecord
                .preload(:user, :metadata, :deployment)
     end
 
+    def count_by_state
+      environments_count_by_state = group(:state).count
+
+      valid_states.each_with_object({}) do |state, count_hash|
+        count_hash[state] = environments_count_by_state[state.to_s] || 0
+      end
+    end
+
     private
 
     def cte_for_deployments_with_stop_action

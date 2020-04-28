@@ -3,9 +3,9 @@
     - .default-retry
     - .default-cache
     - .default-before_script
-    - .use-pg11
+    - .use-pg9
   stage: test
-  needs: ["setup-test-env pg11"]
+  needs: ["setup-test-env pg9"]
   variables:
     FIXTURE_PATH: "db/fixtures/development"
     SEED_CYCLE_ANALYTICS: "true"
@@ -26,7 +26,7 @@ run-dev-fixtures-ee:
   extends:
     - .run-dev-fixtures
     - .dev-fixtures:rules:ee-only
-    - .use-pg11-ee
+    - .use-pg9-ee
   script:
     - scripts/gitaly-test-spawn
     - cp ee/db/fixtures/development/* $FIXTURE_PATH

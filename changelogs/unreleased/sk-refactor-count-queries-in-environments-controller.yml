@@ -1,0 +1,5 @@
+---
+title: Refactor count queries to single query on Projects::EnvironmentsController
+merge_request: 30073
+author: Sashi Kumar
+type: other

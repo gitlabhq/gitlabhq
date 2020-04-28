@@ -27,12 +27,13 @@ class Projects::EnvironmentsController < Projects::ApplicationController
       format.html
       format.json do
         Gitlab::PollingInterval.set_header(response, interval: 3_000)
+        environments_count_by_state = project.environments.count_by_state
 
         render json: {
           environments: serialize_environments(request, response, params[:nested]),
           review_app: serialize_review_app,
-          available_count: project.environments.available.count,
-          stopped_count: project.environments.stopped.count
+          available_count: environments_count_by_state[:available],
+          stopped_count: environments_count_by_state[:stopped]
         }
       end
     end

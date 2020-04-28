@@ -1,0 +1,5 @@
+---
+title: Move prepend to last line in lib/gitlab files
+merge_request: 29938
+author: Rajendra
+type: fixed

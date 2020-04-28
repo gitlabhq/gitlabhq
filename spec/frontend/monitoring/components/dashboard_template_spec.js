@@ -18,21 +18,11 @@ describe('Dashboard template', () => {
   });
 
   afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-      wrapper = null;
-    }
     mock.restore();
   });
 
   it('matches the default snapshot', () => {
-    wrapper = shallowMount(Dashboard, {
-      propsData: { ...propsData },
-      methods: {
-        fetchData: jest.fn(),
-      },
-      store,
-    });
+    wrapper = shallowMount(Dashboard, { propsData: { ...propsData }, store });
 
     expect(wrapper.element).toMatchSnapshot();
   });

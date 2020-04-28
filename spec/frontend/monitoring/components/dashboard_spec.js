@@ -11,6 +11,7 @@ import Dashboard from '~/monitoring/components/dashboard.vue';
 import DateTimePicker from '~/vue_shared/components/date_time_picker/date_time_picker.vue';
 import CustomMetricsFormFields from '~/custom_metrics/components/custom_metrics_form_fields.vue';
 import DashboardsDropdown from '~/monitoring/components/dashboards_dropdown.vue';
+import EmptyState from '~/monitoring/components/empty_state.vue';
 import GroupEmptyState from '~/monitoring/components/group_empty_state.vue';
 import DashboardPanel from '~/monitoring/components/dashboard_panel.vue';
 import { createStore } from '~/monitoring/stores';
@@ -33,9 +34,6 @@ describe('Dashboard', () => {
   const createShallowWrapper = (props = {}, options = {}) => {
     wrapper = shallowMount(Dashboard, {
       propsData: { ...propsData, ...props },
-      methods: {
-        fetchData: jest.fn(),
-      },
       store,
       ...options,
     });
@@ -44,9 +42,6 @@ describe('Dashboard', () => {
   const createMountedWrapper = (props = {}, options = {}) => {
     wrapper = mount(Dashboard, {
       propsData: { ...propsData, ...props },
-      methods: {
-        fetchData: jest.fn(),
-      },
       store,
       stubs: ['graph-group', 'dashboard-panel'],
       ...options,
@@ -56,14 +51,14 @@ describe('Dashboard', () => {
   beforeEach(() => {
     store = createStore();
     mock = new MockAdapter(axios);
+    jest.spyOn(store, 'dispatch').mockResolvedValue();
   });
 
   afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-      wrapper = null;
-    }
     mock.restore();
+    if (store.dispatch.mockReset) {
+      store.dispatch.mockReset();
+    }
   });
 
   describe('no metrics are available yet', () => {
@@ -104,9 +99,7 @@ describe('Dashboard', () => {
 
   describe('request information to the server', () => {
     it('calls to set time range and fetch data', () => {
-      jest.spyOn(store, 'dispatch');
-
-      createShallowWrapper({ hasMetrics: true }, { methods: {} });
+      createShallowWrapper({ hasMetrics: true });
 
       return wrapper.vm.$nextTick().then(() => {
         expect(store.dispatch).toHaveBeenCalledWith(
@@ -119,10 +112,13 @@ describe('Dashboard', () => {
     });
 
     it('shows up a loading state', () => {
-      createShallowWrapper({ hasMetrics: true }, { methods: {} });
+      store.state.monitoringDashboard.emptyState = 'loading';
+
+      createShallowWrapper({ hasMetrics: true });
 
       return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.vm.emptyState).toEqual('loading');
+        expect(wrapper.find(EmptyState).exists()).toBe(true);
+        expect(wrapper.find(EmptyState).props('selectedState')).toBe('loading');
       });
     });
 
@@ -254,6 +250,10 @@ describe('Dashboard', () => {
       return wrapper.vm.$nextTick();
     });
 
+    afterEach(() => {
+      wrapper.destroy();
+    });
+
     it('renders a search input', () => {
       expect(wrapper.find({ ref: 'monitorEnvironmentsDropdownSearch' }).exists()).toBe(true);
     });
@@ -322,8 +322,10 @@ describe('Dashboard', () => {
     const findRearrangeButton = () => wrapper.find('.js-rearrange-button');
 
     beforeEach(() => {
-      createShallowWrapper({ hasMetrics: true });
+      // call original dispatch
+      store.dispatch.mockRestore();
 
+      createShallowWrapper({ hasMetrics: true });
       setupStoreWithData(wrapper.vm.$store);
 
       return wrapper.vm.$nextTick();
