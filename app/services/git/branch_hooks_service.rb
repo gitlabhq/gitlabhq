@@ -112,7 +112,7 @@ module Git
     end
 
     def enqueue_update_signatures
-      unsigned = unsigned_x509_shas(commits) & unsigned_gpg_shas(commits)
+      unsigned = unsigned_x509_shas(limited_commits) & unsigned_gpg_shas(limited_commits)
       return if unsigned.empty?
 
       signable = Gitlab::Git::Commit.shas_with_signatures(project.repository, unsigned)

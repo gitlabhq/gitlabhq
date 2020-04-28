@@ -575,6 +575,7 @@ const fileNameIcons = {
   '.prettierrc.json': 'prettier',
   '.prettierrc.yaml': 'prettier',
   '.prettierrc.yml': 'prettier',
+  '.prettierignore': 'prettier',
   'nodemon.json': 'nodemon',
   '.sonarrc': 'sonar',
   browserslist: 'browserlist',

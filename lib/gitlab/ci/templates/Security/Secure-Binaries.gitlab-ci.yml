@@ -44,9 +44,8 @@ variables:
     - mkdir -p output/$(dirname ${CI_JOB_NAME})
     - |
       if [ "$SECURE_BINARIES_SAVE_ARTIFACTS" = "true" ]; then
-        docker save ${SECURE_BINARIES_IMAGE} -o output/${CI_JOB_NAME}_${SECURE_BINARIES_ANALYZER_VERSION}.tar
-        gzip output/${CI_JOB_NAME}_${SECURE_BINARIES_ANALYZER_VERSION}.tar
-        sha256sum output/${CI_JOB_NAME}_${SECURE_BINARIES_ANALYZER_VERSION}.tar.gz > output/${CI_JOB_NAME}_${SECURE_BINARIES_ANALYZER_VERSION}.tag.gz.sha256sum
+        docker save ${SECURE_BINARIES_IMAGE} | gzip > output/${CI_JOB_NAME}_${SECURE_BINARIES_ANALYZER_VERSION}.tar.gz
+        sha256sum output/${CI_JOB_NAME}_${SECURE_BINARIES_ANALYZER_VERSION}.tar.gz > output/${CI_JOB_NAME}_${SECURE_BINARIES_ANALYZER_VERSION}.tar.gz.sha256sum
       fi
     - |
       if [ "$SECURE_BINARIES_PUSH_IMAGES" = "true" ]; then
@@ -86,9 +85,6 @@ analyzers/gosec:
 
 analyzers/spotbugs:
   extends: .download_images
-  variables:
-    # TODO: Spotbugs is > 1GB, disabling for now
-    SECURE_BINARIES_SAVE_ARTIFACTS: "false"
   only:
     variables:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
@@ -231,8 +227,6 @@ license-management:
   extends: .download_images
   variables:
     SECURE_BINARIES_ANALYZER_VERSION: "3"
-    # TODO: license-management is > 1GB, disabling for now
-    SECURE_BINARIES_SAVE_ARTIFACTS: "false"
   only:
     variables:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
