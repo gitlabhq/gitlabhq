@@ -1,0 +1,16 @@
+---
+# Warns against using common shorthand for terms.
+# For substitutions flagged as errors, see Substitutions.yml
+#
+# For a list of all options, see https://errata-ai.github.io/vale/styles/
+extends: substitution
+message: 'If possible, use "%s" instead of "%s".'
+link: https://about.gitlab.com/handbook/communication/#top-misused-terms
+level: warning
+ignorecase: true
+swap:
+  admin: administrator
+  config: configuration
+  distro: distribution
+  info: information
+  repo: repository

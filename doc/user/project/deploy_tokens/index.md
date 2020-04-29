@@ -3,6 +3,7 @@
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17894) in GitLab 10.7.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/issues/199370) from **Settings > Repository** in GitLab 12.9.
 > - [Added `write_registry` scope](https://gitlab.com/gitlab-org/gitlab/-/issues/22743) in GitLab 12.10.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/29280) from **Settings > CI / CD** in GitLab 12.10.1.
 
 Deploy tokens allow you to download (`git clone`) or push and pull the container registry images of a project without having a user and a password.
 
@@ -16,7 +17,7 @@ You can create as many deploy tokens as you like from the settings of your proje
 
 1. Log in to your GitLab account.
 1. Go to the project (or group) you want to create Deploy Tokens for.
-1. Go to **{settings}** **Settings** > **CI / CD**.
+1. Go to **{settings}** **Settings** > **Repository**.
 1. Click on "Expand" on **Deploy Tokens** section.
 1. Choose a name, expiry date (optional), and username (optional) for the token.
 1. Choose the [desired scopes](#limiting-scopes-of-a-deploy-token).

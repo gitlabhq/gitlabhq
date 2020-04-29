@@ -18,10 +18,14 @@ module QA
           end
         end
 
-        def search_and_select(item_text)
+        def search_item(item_text)
           find('.select2-input').set(item_text)
 
           wait_for_search_to_complete
+        end
+
+        def search_and_select(item_text)
+          search_item(item_text)
 
           select_item(item_text)
         end

@@ -1,6 +1,7 @@
 require_relative 'qa/tools/revoke_all_personal_access_tokens'
 require_relative 'qa/tools/delete_subgroups'
 require_relative 'qa/tools/generate_perf_testdata'
+require_relative 'qa/tools/delete_test_ssh_keys'
 
 desc "Revokes all personal access tokens"
 task :revoke_personal_access_tokens do
@@ -39,3 +40,8 @@ end
 
 desc "Generate data and run load tests"
 task generate_data_and_run_load_test: [:generate_perf_testdata, :run_artillery_load_tests]
+
+desc "Deletes test ssh keys for a provided user"
+task :delete_test_ssh_keys do
+  QA::Tools::DeleteTestSSHKeys.new.run
+end
