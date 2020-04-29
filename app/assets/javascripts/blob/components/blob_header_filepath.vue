@@ -28,12 +28,12 @@ export default {
   <div class="file-header-content d-flex align-items-center lh-100">
     <slot name="filepathPrepend"></slot>
 
-    <file-icon :file-name="blob.path" :size="18" aria-hidden="true" css-classes="mr-2" />
-    <strong
-      v-if="blob.name"
-      class="file-title-name qa-file-title-name mr-1 js-blob-header-filepath"
-      >{{ blob.name }}</strong
-    >
+    <template v-if="blob.path">
+      <file-icon :file-name="blob.path" :size="18" aria-hidden="true" css-classes="mr-2" />
+      <strong class="file-title-name qa-file-title-name mr-1 js-blob-header-filepath">{{
+        blob.path
+      }}</strong>
+    </template>
 
     <small class="mr-2">{{ blobSize }}</small>
 

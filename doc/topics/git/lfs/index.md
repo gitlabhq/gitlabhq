@@ -2,7 +2,7 @@
 disqus_identifier: 'https://docs.gitlab.com/ee/workflow/lfs/lfs/index.html'
 ---
 
-# Git LFS
+# Git Large File Storage (LFS)
 
 Managing large files such as audio, video and graphics files has always been one
 of the shortcomings of Git. The general recommendation is to not have Git repositories

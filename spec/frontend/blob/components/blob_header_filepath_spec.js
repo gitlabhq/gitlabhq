@@ -38,12 +38,12 @@ describe('Blob Header Filepath', () => {
           .find('.js-blob-header-filepath')
           .text()
           .trim(),
-      ).toBe(MockBlob.name);
+      ).toBe(MockBlob.path);
     });
 
     it('does not fail if the name is empty', () => {
-      const emptyName = '';
-      createComponent({ name: emptyName });
+      const emptyPath = '';
+      createComponent({ path: emptyPath });
       expect(wrapper.find('.js-blob-header-filepath').exists()).toBe(false);
     });
 
@@ -84,7 +84,7 @@ describe('Blob Header Filepath', () => {
   describe('functionality', () => {
     it('sets gfm value correctly on the clipboard-button', () => {
       createComponent();
-      expect(wrapper.vm.gfmCopyText).toBe('`dummy.md`');
+      expect(wrapper.vm.gfmCopyText).toBe(`\`${MockBlob.path}\``);
     });
   });
 });
