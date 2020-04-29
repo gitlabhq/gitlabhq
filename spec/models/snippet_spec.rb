@@ -180,22 +180,6 @@ describe Snippet do
     end
   end
 
-  describe '.search_code' do
-    let(:snippet) { create(:snippet, content: 'class Foo; end') }
-
-    it 'returns snippets with matching content' do
-      expect(described_class.search_code(snippet.content)).to eq([snippet])
-    end
-
-    it 'returns snippets with partially matching content' do
-      expect(described_class.search_code('class')).to eq([snippet])
-    end
-
-    it 'returns snippets with matching content regardless of the casing' do
-      expect(described_class.search_code('FOO')).to eq([snippet])
-    end
-  end
-
   describe 'when default snippet visibility set to internal' do
     using RSpec::Parameterized::TableSyntax
 

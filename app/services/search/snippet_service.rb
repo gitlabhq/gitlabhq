@@ -7,7 +7,7 @@ module Search
     end
 
     def scope
-      @scope ||= %w[snippet_titles].delete(params[:scope]) { 'snippet_blobs' }
+      @scope ||= 'snippet_titles'
     end
   end
 end

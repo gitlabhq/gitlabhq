@@ -1,10 +1,9 @@
-/* eslint-disable no-underscore-dangle, class-methods-use-this, consistent-return, no-shadow */
+/* eslint-disable no-underscore-dangle, class-methods-use-this, consistent-return */
 
 import ListIssue from 'ee_else_ce/boards/models/issue';
 import { __ } from '~/locale';
 import ListLabel from './label';
 import ListAssignee from './assignee';
-import { urlParamsToObject } from '~/lib/utils/common_utils';
 import flash from '~/flash';
 import boardsStore from '../stores/boards_store';
 import ListMilestone from './milestone';
@@ -113,34 +112,7 @@ class List {
   }
 
   getIssues(emptyIssues = true) {
-    const data = {
-      ...urlParamsToObject(boardsStore.filter.path),
-      page: this.page,
-    };
-
-    if (this.label && data.label_name) {
-      data.label_name = data.label_name.filter(label => label !== this.label.title);
-    }
-
-    if (emptyIssues) {
-      this.loading = true;
-    }
-
-    return boardsStore
-      .getIssuesForList(this.id, data)
-      .then(res => res.data)
-      .then(data => {
-        this.loading = false;
-        this.issuesSize = data.size;
-
-        if (emptyIssues) {
-          this.issues = [];
-        }
-
-        this.createIssues(data.issues);
-
-        return data;
-      });
+    return boardsStore.getListIssues(this, emptyIssues);
   }
 
   newIssue(issue) {

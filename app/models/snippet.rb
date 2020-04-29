@@ -341,17 +341,6 @@ class Snippet < ApplicationRecord
       fuzzy_search(query, [:title, :description, :file_name])
     end
 
-    # Searches for snippets with matching content.
-    #
-    # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
-    #
-    # query - The search query as a String.
-    #
-    # Returns an ActiveRecord::Relation.
-    def search_code(query)
-      fuzzy_search(query, [:content])
-    end
-
     def parent_class
       ::Project
     end

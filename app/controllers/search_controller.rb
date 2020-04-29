@@ -5,7 +5,6 @@ class SearchController < ApplicationController
   include SearchHelper
   include RendersCommits
 
-  before_action :override_snippet_scope, only: :show
   around_action :allow_gitaly_ref_name_caching
 
   skip_before_action :authenticate_user!
@@ -103,15 +102,5 @@ class SearchController < ApplicationController
     return if params[:nav_source] != 'navbar'
 
     Gitlab::UsageDataCounters::SearchCounter.increment_navbar_searches_count
-  end
-
-  # Disallow web snippet_blobs search as we migrate snippet
-  # from database-backed storage to git repository-based,
-  # and searching across multiple git repositories is not feasible.
-  #
-  # TODO: after 13.0 refactor this into Search::SnippetService
-  # See https://gitlab.com/gitlab-org/gitlab/issues/208882
-  def override_snippet_scope
-    params[:scope] = 'snippet_titles' if params[:snippets] == 'true'
   end
 end

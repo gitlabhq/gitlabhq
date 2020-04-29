@@ -7,6 +7,7 @@ import Vue from 'vue';
 import Cookies from 'js-cookie';
 import BoardsStoreEE from 'ee_else_ce/boards/stores/boards_store_ee';
 import {
+  urlParamsToObject,
   getUrlParamsArray,
   parseBoolean,
   convertObjectPropsToCamelCase,
@@ -532,6 +533,36 @@ const boardsStore = {
         list.label = data.label;
 
         return list.getIssues();
+      });
+  },
+
+  getListIssues(list, emptyIssues = true) {
+    const data = {
+      ...urlParamsToObject(this.filter.path),
+      page: list.page,
+    };
+
+    if (list.label && data.label_name) {
+      data.label_name = data.label_name.filter(label => label !== list.label.title);
+    }
+
+    if (emptyIssues) {
+      list.loading = true;
+    }
+
+    return this.getIssuesForList(list.id, data)
+      .then(res => res.data)
+      .then(data => {
+        list.loading = false;
+        list.issuesSize = data.size;
+
+        if (emptyIssues) {
+          list.issues = [];
+        }
+
+        list.createIssues(data.issues);
+
+        return data;
       });
   },
 

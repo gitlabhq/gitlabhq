@@ -214,6 +214,22 @@ describe('boardsStore', () => {
     });
   });
 
+  describe('getListIssues', () => {
+    let list;
+
+    beforeEach(() => {
+      list = new List(listObj);
+      setupDefaultResponses();
+    });
+
+    it('makes a request to get issues', () => {
+      const expectedResponse = expect.objectContaining({ issues: [createTestIssue()] });
+      expect(list.issues).toEqual([]);
+
+      return expect(boardsStore.getListIssues(list, true)).resolves.toEqual(expectedResponse);
+    });
+  });
+
   describe('getIssuesForList', () => {
     const id = 'TOO-MUCH';
     const url = `${endpoints.listsEndpoint}/${id}/issues?id=${id}`;

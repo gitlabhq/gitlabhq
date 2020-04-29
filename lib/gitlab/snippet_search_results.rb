@@ -12,33 +12,15 @@ module Gitlab
     end
 
     def objects(scope, page = nil)
-      case scope
-      when 'snippet_titles'
-        paginated_objects(snippet_titles, page)
-      when 'snippet_blobs'
-        paginated_objects(snippet_blobs, page)
-      else
-        super(scope, nil, false)
-      end
+      paginated_objects(snippet_titles, page)
     end
 
     def formatted_count(scope)
-      case scope
-      when 'snippet_titles'
-        formatted_limited_count(limited_snippet_titles_count)
-      when 'snippet_blobs'
-        formatted_limited_count(limited_snippet_blobs_count)
-      else
-        super
-      end
+      formatted_limited_count(limited_snippet_titles_count)
     end
 
     def limited_snippet_titles_count
       @limited_snippet_titles_count ||= limited_count(snippet_titles)
-    end
-
-    def limited_snippet_blobs_count
-      @limited_snippet_blobs_count ||= limited_count(snippet_blobs)
     end
 
     private
@@ -54,14 +36,6 @@ module Gitlab
 
     def snippet_titles
       snippets.search(query)
-    end
-
-    def snippet_blobs
-      snippets.search_code(query)
-    end
-
-    def default_scope
-      'snippet_blobs'
     end
 
     def paginated_objects(relation, page)
