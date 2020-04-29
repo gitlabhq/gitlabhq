@@ -419,7 +419,7 @@ DAST can be [configured](#customizing-the-dast-settings) using environment varia
 | `DAST_TARGET_AVAILABILITY_TIMEOUT` | no | Time limit in seconds to wait for target availability. Scan is attempted nevertheless if it runs out. Integer. Defaults to `60`. |
 | `DAST_FULL_SCAN_ENABLED` | no | Switches the tool to execute [ZAP Full Scan](https://github.com/zaproxy/zaproxy/wiki/ZAP-Full-Scan) instead of [ZAP Baseline Scan](https://github.com/zaproxy/zaproxy/wiki/ZAP-Baseline-Scan). Boolean. `true`, `True`, or `1` are considered as true value, otherwise false. Defaults to `false`. |
 | `DAST_FULL_SCAN_DOMAIN_VALIDATION_REQUIRED` | no | Requires [domain validation](#domain-validation) when running DAST full scans. Boolean. `true`, `True`, or `1` are considered as true value, otherwise false. Defaults to `false`. Not supported for API scans. |
-| `DAST_AUTO_UPDATE_ADDONS` | no | Set to `false` to pin the versions of ZAProxy add-ons to those provided with the DAST image. Defaults to `true`. |
+| `DAST_AUTO_UPDATE_ADDONS` | no | By default the versions of ZAP add-ons are pinned to those provided with the DAST image. Set to `true` to allow ZAP to download the latest versions. |
 | `DAST_API_HOST_OVERRIDE` | no | Used to override domains defined in API specification files. |
 | `DAST_EXCLUDE_RULES` | no | Set to a comma-separated list of Vulnerability Rule IDs to exclude them from scans. Rule IDs are numbers and can be found from the DAST log or on the [ZAP project](https://github.com/zaproxy/zaproxy/blob/master/docs/scanners.md). For example, `HTTP Parameter Override` has a rule ID of `10026`. |
 | `DAST_REQUEST_HEADERS` | no | Set to a comma-separated list of request header names and values. For example, `Cache-control: no-cache,User-Agent: DAST/1.0` |

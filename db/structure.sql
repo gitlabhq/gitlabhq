@@ -10927,9 +10927,6 @@ ALTER TABLE ONLY public.epics
 ALTER TABLE ONLY public.ci_pipelines
     ADD CONSTRAINT fk_3d34ab2e06 FOREIGN KEY (pipeline_schedule_id) REFERENCES public.ci_pipeline_schedules(id) ON DELETE SET NULL;
 
-ALTER TABLE ONLY public.project_settings
-    ADD CONSTRAINT fk_413a953e20 FOREIGN KEY (push_rule_id) REFERENCES public.push_rules(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY public.ci_pipeline_schedule_variables
     ADD CONSTRAINT fk_41c35fda51 FOREIGN KEY (pipeline_schedule_id) REFERENCES public.ci_pipeline_schedules(id) ON DELETE CASCADE;
 
@@ -11352,6 +11349,9 @@ ALTER TABLE ONLY public.path_locks
 
 ALTER TABLE ONLY public.personal_access_tokens
     ADD CONSTRAINT fk_personal_access_tokens_user_id FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.project_settings
+    ADD CONSTRAINT fk_project_settings_push_rule_id FOREIGN KEY (push_rule_id) REFERENCES public.push_rules(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY public.protected_branch_merge_access_levels
     ADD CONSTRAINT fk_protected_branch_merge_access_levels_user_id FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
@@ -13543,6 +13543,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200416120128
 20200416120354
 20200417044453
+20200417075843
 20200417145946
 20200420092011
 20200420094444

@@ -6,6 +6,9 @@ class Projects::AlertManagementController < Projects::ApplicationController
   def index
   end
 
+  def details
+  end
+
   private
 
   def ensure_feature_enabled

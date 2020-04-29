@@ -277,7 +277,9 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           end
         end
 
-        resources :alert_management, only: [:index], controller: :alert_management
+        resources :alert_management, only: [:index] do
+          get 'details', on: :member
+        end
 
         namespace :error_tracking do
           resources :projects, only: :index
