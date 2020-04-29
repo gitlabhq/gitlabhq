@@ -15,14 +15,15 @@ import { __ } from '../locale';
 export default function setupVueRepositoryList() {
   const el = document.getElementById('js-tree-list');
   const { dataset } = el;
-  const { projectPath, projectShortPath, ref, fullName } = dataset;
-  const router = createRouter(projectPath, ref);
+  const { projectPath, projectShortPath, ref, escapedRef, fullName } = dataset;
+  const router = createRouter(projectPath, escapedRef);
 
   apolloProvider.clients.defaultClient.cache.writeData({
     data: {
       projectPath,
       projectShortPath,
       ref,
+      escapedRef,
       vueFileListLfsBadge: gon.features?.vueFileListLfsBadge || false,
       commits: [],
     },

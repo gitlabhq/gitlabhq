@@ -1,6 +1,6 @@
 import Vue from 'vue';
 
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import mountComponent from 'helpers/vue_mount_component_helper';
 import groupsComponent from '~/groups/components/groups.vue';
 import groupFolderComponent from '~/groups/components/group_folder.vue';
 import groupItemComponent from '~/groups/components/group_item.vue';
@@ -21,15 +21,13 @@ const createComponent = (searchEmpty = false) => {
 describe('GroupsComponent', () => {
   let vm;
 
-  beforeEach(done => {
+  beforeEach(() => {
     Vue.component('group-folder', groupFolderComponent);
     Vue.component('group-item', groupItemComponent);
 
     vm = createComponent();
 
-    Vue.nextTick(() => {
-      done();
-    });
+    return vm.$nextTick();
   });
 
   afterEach(() => {
@@ -39,37 +37,35 @@ describe('GroupsComponent', () => {
   describe('methods', () => {
     describe('change', () => {
       it('should emit `fetchPage` event when page is changed via pagination', () => {
-        spyOn(eventHub, '$emit').and.stub();
+        jest.spyOn(eventHub, '$emit').mockImplementation();
 
         vm.change(2);
 
         expect(eventHub.$emit).toHaveBeenCalledWith(
           'fetchPage',
           2,
-          jasmine.any(Object),
-          jasmine.any(Object),
-          jasmine.any(Object),
+          expect.any(Object),
+          expect.any(Object),
+          expect.any(Object),
         );
       });
     });
   });
 
   describe('template', () => {
-    it('should render component template correctly', done => {
-      Vue.nextTick(() => {
+    it('should render component template correctly', () => {
+      return vm.$nextTick().then(() => {
         expect(vm.$el.querySelector('.groups-list-tree-container')).toBeDefined();
         expect(vm.$el.querySelector('.group-list-tree')).toBeDefined();
         expect(vm.$el.querySelector('.gl-pagination')).toBeDefined();
         expect(vm.$el.querySelectorAll('.has-no-search-results').length).toBe(0);
-        done();
       });
     });
 
-    it('should render empty search message when `searchEmpty` is `true`', done => {
+    it('should render empty search message when `searchEmpty` is `true`', () => {
       vm.searchEmpty = true;
-      Vue.nextTick(() => {
+      return vm.$nextTick().then(() => {
         expect(vm.$el.querySelector('.has-no-search-results')).toBeDefined();
-        done();
       });
     });
   });

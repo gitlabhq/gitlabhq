@@ -1,8 +1,9 @@
 import Vue from 'vue';
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import mountComponent from 'helpers/vue_mount_component_helper';
 import groupItemComponent from '~/groups/components/group_item.vue';
 import groupFolderComponent from '~/groups/components/group_folder.vue';
 import eventHub from '~/groups/event_hub';
+import * as urlUtilities from '~/lib/utils/url_utility';
 import { mockParentGroupItem, mockChildren } from '../mock_data';
 
 const createComponent = (group = mockParentGroupItem, parentGroup = mockChildren[0]) => {
@@ -17,14 +18,12 @@ const createComponent = (group = mockParentGroupItem, parentGroup = mockChildren
 describe('GroupItemComponent', () => {
   let vm;
 
-  beforeEach(done => {
+  beforeEach(() => {
     Vue.component('group-folder', groupFolderComponent);
 
     vm = createComponent();
 
-    Vue.nextTick(() => {
-      done();
-    });
+    return Vue.nextTick();
   });
 
   afterEach(() => {
@@ -130,26 +129,24 @@ describe('GroupItemComponent', () => {
       });
 
       it('should emit `toggleChildren` event when expand is clicked on a group and it has children present', () => {
-        spyOn(eventHub, '$emit');
+        jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
 
         vm.onClickRowGroup(event);
 
         expect(eventHub.$emit).toHaveBeenCalledWith('toggleChildren', vm.group);
       });
 
-      it('should navigate page to group homepage if group does not have any children present', done => {
+      it('should navigate page to group homepage if group does not have any children present', () => {
+        jest.spyOn(urlUtilities, 'visitUrl').mockImplementation();
         const group = Object.assign({}, mockParentGroupItem);
         group.childrenCount = 0;
         const newVm = createComponent(group);
-        const visitUrl = spyOnDependency(groupItemComponent, 'visitUrl').and.stub();
-        spyOn(eventHub, '$emit');
+        jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
 
         newVm.onClickRowGroup(event);
-        setTimeout(() => {
-          expect(eventHub.$emit).not.toHaveBeenCalled();
-          expect(visitUrl).toHaveBeenCalledWith(newVm.group.relativePath);
-          done();
-        }, 0);
+
+        expect(eventHub.$emit).not.toHaveBeenCalled();
+        expect(urlUtilities.visitUrl).toHaveBeenCalledWith(newVm.group.relativePath);
       });
     });
   });
@@ -167,7 +164,7 @@ describe('GroupItemComponent', () => {
         const badgeEl = vm.$el.querySelector('.badge-warning');
 
         expect(badgeEl).toBeDefined();
-        expect(badgeEl).toContainText('pending removal');
+        expect(badgeEl.innerHTML).toContain('pending removal');
       });
     });
 
@@ -180,7 +177,7 @@ describe('GroupItemComponent', () => {
       it('does not render the group pending removal badge', () => {
         const groupTextContainer = vm.$el.querySelector('.group-text-container');
 
-        expect(groupTextContainer).not.toContainText('pending removal');
+        expect(groupTextContainer).not.toContain('pending removal');
       });
     });
 

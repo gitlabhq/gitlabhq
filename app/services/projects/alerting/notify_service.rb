@@ -10,7 +10,10 @@ module Projects
         return forbidden unless alerts_service_activated?
         return unauthorized unless valid_token?(token)
 
-        process_incident_issues if process_issues?
+        alert = create_alert
+        return bad_request unless alert.persisted?
+
+        process_incident_issues(alert) if process_issues?
         send_alert_email if send_email?
 
         ServiceResponse.success
@@ -22,13 +25,21 @@ module Projects
 
       delegate :alerts_service, :alerts_service_activated?, to: :project
 
+      def am_alert_params
+        Gitlab::AlertManagement::AlertParams.from_generic_alert(project: project, payload: params.to_h)
+      end
+
+      def create_alert
+        AlertManagement::Alert.create(am_alert_params)
+      end
+
       def send_email?
         incident_management_setting.send_email?
       end
 
-      def process_incident_issues
+      def process_incident_issues(alert)
         IncidentManagement::ProcessAlertWorker
-          .perform_async(project.id, parsed_payload)
+          .perform_async(project.id, parsed_payload, alert.id)
       end
 
       def send_alert_email

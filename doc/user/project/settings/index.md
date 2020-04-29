@@ -257,7 +257,7 @@ To do so:
 1. Confirm the action by typing the project's path as instructed.
 
 NOTE: **Note:**
-Only project maintainers have the [permissions](../../permissions.md#project-members-permissions)
+Only project owners have the [permissions](../../permissions.md#project-members-permissions)
 to remove a fork relationship.
 
 ## Operations settings

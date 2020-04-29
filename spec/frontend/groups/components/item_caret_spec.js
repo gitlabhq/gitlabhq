@@ -1,6 +1,6 @@
 import Vue from 'vue';
 
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import mountComponent from 'helpers/vue_mount_component_helper';
 import itemCaretComponent from '~/groups/components/item_caret.vue';
 
 const createComponent = (isGroupOpen = false) => {
@@ -12,27 +12,27 @@ const createComponent = (isGroupOpen = false) => {
 };
 
 describe('ItemCaretComponent', () => {
+  let vm;
+
+  afterEach(() => {
+    vm.$destroy();
+  });
+
   describe('template', () => {
     it('should render component template correctly', () => {
-      const vm = createComponent();
-
+      vm = createComponent();
       expect(vm.$el.classList.contains('folder-caret')).toBeTruthy();
       expect(vm.$el.querySelectorAll('svg').length).toBe(1);
-      vm.$destroy();
     });
 
     it('should render caret down icon if `isGroupOpen` prop is `true`', () => {
-      const vm = createComponent(true);
-
+      vm = createComponent(true);
       expect(vm.$el.querySelector('svg use').getAttribute('xlink:href')).toContain('angle-down');
-      vm.$destroy();
     });
 
     it('should render caret right icon if `isGroupOpen` prop is `false`', () => {
-      const vm = createComponent();
-
+      vm = createComponent();
       expect(vm.$el.querySelector('svg use').getAttribute('xlink:href')).toContain('angle-right');
-      vm.$destroy();
     });
   });
 });

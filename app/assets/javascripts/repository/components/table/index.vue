@@ -81,7 +81,7 @@ export default {
         <tbody>
           <parent-row
             v-show="showParentRow"
-            :commit-ref="ref"
+            :commit-ref="escapedRef"
             :path="path"
             :loading-path="loadingPath"
           />

@@ -312,8 +312,8 @@ GET /projects?custom_attributes[key]=value&custom_attributes[other_key]=other_va
 
 ### Pagination limits
 
-From GitLab 12.10, [offset-based pagination](README.md#offset-based-pagination) will be
-[limited to 10,000 records](https://gitlab.com/gitlab-org/gitlab/issues/34565).
+From GitLab 13.0, [offset-based pagination](README.md#offset-based-pagination) will be
+[limited to 50,000 records](https://gitlab.com/gitlab-org/gitlab/issues/34565).
 [Keyset pagination](README.md#keyset-based-pagination) will be required to retrieve projects
 beyond this limit.
 

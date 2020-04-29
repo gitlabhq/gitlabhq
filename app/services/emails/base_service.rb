@@ -11,3 +11,5 @@ module Emails
     end
   end
 end
+
+Emails::BaseService.prepend_if_ee('::EE::Emails::BaseService')

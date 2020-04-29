@@ -12,7 +12,7 @@ export default function createRouter(base, baseRef) {
     base: joinPaths(gon.relative_url_root || '', base),
     routes: [
       {
-        path: `(/-)?/tree/(${encodeURIComponent(baseRef).replace(/%2F/g, '/')}|${baseRef})/:path*`,
+        path: `(/-)?/tree/${baseRef}/:path*`,
         name: 'treePath',
         component: TreePage,
         props: route => ({

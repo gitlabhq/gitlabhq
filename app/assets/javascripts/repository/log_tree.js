@@ -23,13 +23,13 @@ export function fetchLogsTree(client, path, offset, resolver = null) {
   if (fetchpromise) return fetchpromise;
 
   const { projectPath } = client.readQuery({ query: getProjectPath });
-  const { ref } = client.readQuery({ query: getRef });
+  const { escapedRef } = client.readQuery({ query: getRef });
 
   fetchpromise = axios
     .get(
-      `${gon.relative_url_root}/${projectPath}/-/refs/${encodeURIComponent(
-        ref,
-      )}/logs_tree/${encodeURIComponent(path.replace(/^\//, ''))}`,
+      `${gon.relative_url_root}/${projectPath}/-/refs/${escapedRef}/logs_tree/${encodeURIComponent(
+        path.replace(/^\//, ''),
+      )}`,
       {
         params: { format: 'json', offset },
       },

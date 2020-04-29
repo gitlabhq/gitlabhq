@@ -28,12 +28,12 @@ describe('ProjectsStore', () => {
   describe('setGroups', () => {
     it('should set groups to state', () => {
       const store = new GroupsStore();
-      spyOn(store, 'formatGroupItem').and.callThrough();
+      jest.spyOn(store, 'formatGroupItem');
 
       store.setGroups(mockGroups);
 
       expect(store.state.groups.length).toBe(mockGroups.length);
-      expect(store.formatGroupItem).toHaveBeenCalledWith(jasmine.any(Object));
+      expect(store.formatGroupItem).toHaveBeenCalledWith(expect.any(Object));
       expect(Object.keys(store.state.groups[0]).indexOf('fullName')).toBeGreaterThan(-1);
     });
   });
@@ -41,12 +41,12 @@ describe('ProjectsStore', () => {
   describe('setSearchedGroups', () => {
     it('should set searched groups to state', () => {
       const store = new GroupsStore();
-      spyOn(store, 'formatGroupItem').and.callThrough();
+      jest.spyOn(store, 'formatGroupItem');
 
       store.setSearchedGroups(mockSearchedGroups);
 
       expect(store.state.groups.length).toBe(mockSearchedGroups.length);
-      expect(store.formatGroupItem).toHaveBeenCalledWith(jasmine.any(Object));
+      expect(store.formatGroupItem).toHaveBeenCalledWith(expect.any(Object));
       expect(Object.keys(store.state.groups[0]).indexOf('fullName')).toBeGreaterThan(-1);
       expect(Object.keys(store.state.groups[0].children[0]).indexOf('fullName')).toBeGreaterThan(
         -1,
@@ -57,11 +57,11 @@ describe('ProjectsStore', () => {
   describe('setGroupChildren', () => {
     it('should set children to group item in state', () => {
       const store = new GroupsStore();
-      spyOn(store, 'formatGroupItem').and.callThrough();
+      jest.spyOn(store, 'formatGroupItem');
 
       store.setGroupChildren(mockParentGroupItem, mockRawChildren);
 
-      expect(store.formatGroupItem).toHaveBeenCalledWith(jasmine.any(Object));
+      expect(store.formatGroupItem).toHaveBeenCalledWith(expect.any(Object));
       expect(mockParentGroupItem.children.length).toBe(1);
       expect(Object.keys(mockParentGroupItem.children[0]).indexOf('fullName')).toBeGreaterThan(-1);
       expect(mockParentGroupItem.isOpen).toBeTruthy();

@@ -1,13 +1,16 @@
 import '~/flash';
 import $ from 'jquery';
 import Vue from 'vue';
-
+import AxiosMockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
+import waitForPromises from 'helpers/wait_for_promises';
 import appComponent from '~/groups/components/app.vue';
 import groupFolderComponent from '~/groups/components/group_folder.vue';
 import groupItemComponent from '~/groups/components/group_item.vue';
 import eventHub from '~/groups/event_hub';
 import GroupsStore from '~/groups/store/groups_store';
 import GroupsService from '~/groups/service/groups_service';
+import * as urlUtilities from '~/lib/utils/url_utility';
 
 import {
   mockEndpoint,
@@ -36,31 +39,20 @@ const createComponent = (hideProjects = false) => {
   });
 };
 
-const returnServicePromise = (data, failed) =>
-  new Promise((resolve, reject) => {
-    if (failed) {
-      reject(data);
-    } else {
-      resolve({
-        json() {
-          return data;
-        },
-      });
-    }
-  });
-
 describe('AppComponent', () => {
   let vm;
+  let mock;
+  let getGroupsSpy;
 
-  beforeEach(done => {
+  beforeEach(() => {
+    mock = new AxiosMockAdapter(axios);
+    mock.onGet('/dashboard/groups.json').reply(200, mockGroups);
     Vue.component('group-folder', groupFolderComponent);
     Vue.component('group-item', groupItemComponent);
 
     vm = createComponent();
-
-    Vue.nextTick(() => {
-      done();
-    });
+    getGroupsSpy = jest.spyOn(vm.service, 'getGroups');
+    return vm.$nextTick();
   });
 
   describe('computed', () => {
@@ -74,7 +66,7 @@ describe('AppComponent', () => {
 
     describe('groups', () => {
       it('should return list of groups from store', () => {
-        spyOn(vm.store, 'getGroups');
+        jest.spyOn(vm.store, 'getGroups').mockImplementation(() => {});
 
         const { groups } = vm;
 
@@ -85,7 +77,7 @@ describe('AppComponent', () => {
 
     describe('pageInfo', () => {
       it('should return pagination info from store', () => {
-        spyOn(vm.store, 'getPaginationInfo');
+        jest.spyOn(vm.store, 'getPaginationInfo').mockImplementation(() => {});
 
         const { pageInfo } = vm;
 
@@ -105,73 +97,68 @@ describe('AppComponent', () => {
     });
 
     describe('fetchGroups', () => {
-      it('should call `getGroups` with all the params provided', done => {
-        spyOn(vm.service, 'getGroups').and.returnValue(returnServicePromise(mockGroups));
-
-        vm.fetchGroups({
-          parentId: 1,
-          page: 2,
-          filterGroupsBy: 'git',
-          sortBy: 'created_desc',
-          archived: true,
-        });
-        setTimeout(() => {
-          expect(vm.service.getGroups).toHaveBeenCalledWith(1, 2, 'git', 'created_desc', true);
-          done();
-        }, 0);
+      it('should call `getGroups` with all the params provided', () => {
+        return vm
+          .fetchGroups({
+            parentId: 1,
+            page: 2,
+            filterGroupsBy: 'git',
+            sortBy: 'created_desc',
+            archived: true,
+          })
+          .then(() => {
+            expect(getGroupsSpy).toHaveBeenCalledWith(1, 2, 'git', 'created_desc', true);
+          });
       });
 
-      it('should set headers to store for building pagination info when called with `updatePagination`', done => {
-        spyOn(vm.service, 'getGroups').and.returnValue(
-          returnServicePromise({ headers: mockRawPageInfo }),
-        );
-        spyOn(vm, 'updatePagination');
+      it('should set headers to store for building pagination info when called with `updatePagination`', () => {
+        mock.onGet('/dashboard/groups.json').reply(200, { headers: mockRawPageInfo });
 
-        vm.fetchGroups({ updatePagination: true });
-        setTimeout(() => {
-          expect(vm.service.getGroups).toHaveBeenCalled();
+        jest.spyOn(vm, 'updatePagination').mockImplementation(() => {});
+
+        return vm.fetchGroups({ updatePagination: true }).then(() => {
+          expect(getGroupsSpy).toHaveBeenCalled();
           expect(vm.updatePagination).toHaveBeenCalled();
-          done();
-        }, 0);
+        });
       });
 
-      it('should show flash error when request fails', done => {
-        spyOn(vm.service, 'getGroups').and.returnValue(returnServicePromise(null, true));
-        spyOn($, 'scrollTo');
-        spyOn(window, 'Flash');
+      it('should show flash error when request fails', () => {
+        mock.onGet('/dashboard/groups.json').reply(400);
 
-        vm.fetchGroups({});
-        setTimeout(() => {
+        jest.spyOn($, 'scrollTo').mockImplementation(() => {});
+        jest.spyOn(window, 'Flash').mockImplementation(() => {});
+
+        return vm.fetchGroups({}).then(() => {
           expect(vm.isLoading).toBe(false);
           expect($.scrollTo).toHaveBeenCalledWith(0);
           expect(window.Flash).toHaveBeenCalledWith('An error occurred. Please try again.');
-          done();
-        }, 0);
+        });
       });
     });
 
     describe('fetchAllGroups', () => {
-      it('should fetch default set of groups', done => {
-        spyOn(vm, 'fetchGroups').and.returnValue(returnServicePromise(mockGroups));
-        spyOn(vm, 'updatePagination').and.callThrough();
-        spyOn(vm, 'updateGroups').and.callThrough();
-
-        vm.fetchAllGroups();
-
-        expect(vm.isLoading).toBe(true);
-        expect(vm.fetchGroups).toHaveBeenCalled();
-        setTimeout(() => {
-          expect(vm.isLoading).toBe(false);
-          expect(vm.updateGroups).toHaveBeenCalled();
-          done();
-        }, 0);
+      beforeEach(() => {
+        jest.spyOn(vm, 'fetchGroups');
+        jest.spyOn(vm, 'updateGroups');
       });
 
-      it('should fetch matching set of groups when app is loaded with search query', done => {
-        spyOn(vm, 'fetchGroups').and.returnValue(returnServicePromise(mockSearchedGroups));
-        spyOn(vm, 'updateGroups').and.callThrough();
+      it('should fetch default set of groups', () => {
+        jest.spyOn(vm, 'updatePagination');
 
-        vm.fetchAllGroups();
+        const fetchPromise = vm.fetchAllGroups();
+
+        expect(vm.isLoading).toBe(true);
+
+        return fetchPromise.then(() => {
+          expect(vm.isLoading).toBe(false);
+          expect(vm.updateGroups).toHaveBeenCalled();
+        });
+      });
+
+      it('should fetch matching set of groups when app is loaded with search query', () => {
+        mock.onGet('/dashboard/groups.json').reply(200, mockSearchedGroups);
+
+        const fetchPromise = vm.fetchAllGroups();
 
         expect(vm.fetchGroups).toHaveBeenCalledWith({
           page: null,
@@ -180,22 +167,24 @@ describe('AppComponent', () => {
           updatePagination: true,
           archived: null,
         });
-        setTimeout(() => {
+        return fetchPromise.then(() => {
           expect(vm.updateGroups).toHaveBeenCalled();
-          done();
-        }, 0);
+        });
       });
     });
 
     describe('fetchPage', () => {
-      it('should fetch groups for provided page details and update window state', done => {
-        spyOn(vm, 'fetchGroups').and.returnValue(returnServicePromise(mockGroups));
-        spyOn(vm, 'updateGroups').and.callThrough();
-        const mergeUrlParams = spyOnDependency(appComponent, 'mergeUrlParams').and.callThrough();
-        spyOn(window.history, 'replaceState');
-        spyOn($, 'scrollTo');
+      beforeEach(() => {
+        jest.spyOn(vm, 'fetchGroups');
+        jest.spyOn(vm, 'updateGroups');
+      });
 
-        vm.fetchPage(2, null, null, true);
+      it('should fetch groups for provided page details and update window state', () => {
+        jest.spyOn(urlUtilities, 'mergeUrlParams');
+        jest.spyOn(window.history, 'replaceState').mockImplementation(() => {});
+        jest.spyOn($, 'scrollTo').mockImplementation(() => {});
+
+        const fetchPagePromise = vm.fetchPage(2, null, null, true);
 
         expect(vm.isLoading).toBe(true);
         expect(vm.fetchGroups).toHaveBeenCalledWith({
@@ -205,21 +194,21 @@ describe('AppComponent', () => {
           updatePagination: true,
           archived: true,
         });
-        setTimeout(() => {
+
+        return fetchPagePromise.then(() => {
           expect(vm.isLoading).toBe(false);
           expect($.scrollTo).toHaveBeenCalledWith(0);
-          expect(mergeUrlParams).toHaveBeenCalledWith({ page: 2 }, jasmine.any(String));
+          expect(urlUtilities.mergeUrlParams).toHaveBeenCalledWith({ page: 2 }, expect.any(String));
           expect(window.history.replaceState).toHaveBeenCalledWith(
             {
-              page: jasmine.any(String),
+              page: expect.any(String),
             },
-            jasmine.any(String),
-            jasmine.any(String),
+            expect.any(String),
+            expect.any(String),
           );
 
           expect(vm.updateGroups).toHaveBeenCalled();
-          done();
-        }, 0);
+        });
       });
     });
 
@@ -232,9 +221,10 @@ describe('AppComponent', () => {
         groupItem.isChildrenLoading = false;
       });
 
-      it('should fetch children of given group and expand it if group is collapsed and children are not loaded', done => {
-        spyOn(vm, 'fetchGroups').and.returnValue(returnServicePromise(mockRawChildren));
-        spyOn(vm.store, 'setGroupChildren');
+      it('should fetch children of given group and expand it if group is collapsed and children are not loaded', () => {
+        mock.onGet('/dashboard/groups.json').reply(200, mockRawChildren);
+        jest.spyOn(vm, 'fetchGroups');
+        jest.spyOn(vm.store, 'setGroupChildren').mockImplementation(() => {});
 
         vm.toggleChildren(groupItem);
 
@@ -242,14 +232,13 @@ describe('AppComponent', () => {
         expect(vm.fetchGroups).toHaveBeenCalledWith({
           parentId: groupItem.id,
         });
-        setTimeout(() => {
+        return waitForPromises().then(() => {
           expect(vm.store.setGroupChildren).toHaveBeenCalled();
-          done();
-        }, 0);
+        });
       });
 
       it('should skip network request while expanding group if children are already loaded', () => {
-        spyOn(vm, 'fetchGroups');
+        jest.spyOn(vm, 'fetchGroups');
         groupItem.children = mockRawChildren;
 
         vm.toggleChildren(groupItem);
@@ -259,7 +248,7 @@ describe('AppComponent', () => {
       });
 
       it('should collapse group if it is already expanded', () => {
-        spyOn(vm, 'fetchGroups');
+        jest.spyOn(vm, 'fetchGroups');
         groupItem.isOpen = true;
 
         vm.toggleChildren(groupItem);
@@ -268,16 +257,15 @@ describe('AppComponent', () => {
         expect(groupItem.isOpen).toBe(false);
       });
 
-      it('should set `isChildrenLoading` back to `false` if load request fails', done => {
-        spyOn(vm, 'fetchGroups').and.returnValue(returnServicePromise({}, true));
+      it('should set `isChildrenLoading` back to `false` if load request fails', () => {
+        mock.onGet('/dashboard/groups.json').reply(400);
 
         vm.toggleChildren(groupItem);
 
         expect(groupItem.isChildrenLoading).toBe(true);
-        setTimeout(() => {
+        return waitForPromises().then(() => {
           expect(groupItem.isChildrenLoading).toBe(false);
-          done();
-        }, 0);
+        });
       });
     });
 
@@ -332,70 +320,63 @@ describe('AppComponent', () => {
         vm.targetParentGroup = groupItem;
       });
 
-      it('hides modal confirmation leave group and remove group item from tree', done => {
+      it('hides modal confirmation leave group and remove group item from tree', () => {
         const notice = `You left the "${childGroupItem.fullName}" group.`;
-        spyOn(vm.service, 'leaveGroup').and.returnValue(Promise.resolve({ data: { notice } }));
-        spyOn(vm.store, 'removeGroup').and.callThrough();
-        spyOn(window, 'Flash');
-        spyOn($, 'scrollTo');
+        jest.spyOn(vm.service, 'leaveGroup').mockResolvedValue({ data: { notice } });
+        jest.spyOn(vm.store, 'removeGroup');
+        jest.spyOn(window, 'Flash').mockImplementation(() => {});
+        jest.spyOn($, 'scrollTo').mockImplementation(() => {});
 
         vm.leaveGroup();
 
         expect(vm.showModal).toBe(false);
         expect(vm.targetGroup.isBeingRemoved).toBe(true);
         expect(vm.service.leaveGroup).toHaveBeenCalledWith(vm.targetGroup.leavePath);
-        setTimeout(() => {
+        return waitForPromises().then(() => {
           expect($.scrollTo).toHaveBeenCalledWith(0);
           expect(vm.store.removeGroup).toHaveBeenCalledWith(vm.targetGroup, vm.targetParentGroup);
           expect(window.Flash).toHaveBeenCalledWith(notice, 'notice');
-          done();
-        }, 0);
+        });
       });
 
-      it('should show error flash message if request failed to leave group', done => {
+      it('should show error flash message if request failed to leave group', () => {
         const message = 'An error occurred. Please try again.';
-        spyOn(vm.service, 'leaveGroup').and.returnValue(
-          returnServicePromise({ status: 500 }, true),
-        );
-        spyOn(vm.store, 'removeGroup').and.callThrough();
-        spyOn(window, 'Flash');
+        jest.spyOn(vm.service, 'leaveGroup').mockRejectedValue({ status: 500 });
+        jest.spyOn(vm.store, 'removeGroup');
+        jest.spyOn(window, 'Flash').mockImplementation(() => {});
 
         vm.leaveGroup();
 
         expect(vm.targetGroup.isBeingRemoved).toBe(true);
         expect(vm.service.leaveGroup).toHaveBeenCalledWith(childGroupItem.leavePath);
-        setTimeout(() => {
+        return waitForPromises().then(() => {
           expect(vm.store.removeGroup).not.toHaveBeenCalled();
           expect(window.Flash).toHaveBeenCalledWith(message);
           expect(vm.targetGroup.isBeingRemoved).toBe(false);
-          done();
-        }, 0);
+        });
       });
 
-      it('should show appropriate error flash message if request forbids to leave group', done => {
+      it('should show appropriate error flash message if request forbids to leave group', () => {
         const message = 'Failed to leave the group. Please make sure you are not the only owner.';
-        spyOn(vm.service, 'leaveGroup').and.returnValue(
-          returnServicePromise({ status: 403 }, true),
-        );
-        spyOn(vm.store, 'removeGroup').and.callThrough();
-        spyOn(window, 'Flash');
+        jest.spyOn(vm.service, 'leaveGroup').mockRejectedValue({ status: 403 });
+        jest.spyOn(vm.store, 'removeGroup');
+        jest.spyOn(window, 'Flash').mockImplementation(() => {});
 
         vm.leaveGroup(childGroupItem, groupItem);
 
         expect(vm.targetGroup.isBeingRemoved).toBe(true);
         expect(vm.service.leaveGroup).toHaveBeenCalledWith(childGroupItem.leavePath);
-        setTimeout(() => {
+        return waitForPromises().then(() => {
           expect(vm.store.removeGroup).not.toHaveBeenCalled();
           expect(window.Flash).toHaveBeenCalledWith(message);
           expect(vm.targetGroup.isBeingRemoved).toBe(false);
-          done();
-        }, 0);
+        });
       });
     });
 
     describe('updatePagination', () => {
       it('should set pagination info to store from provided headers', () => {
-        spyOn(vm.store, 'setPaginationInfo');
+        jest.spyOn(vm.store, 'setPaginationInfo').mockImplementation(() => {});
 
         vm.updatePagination(mockRawPageInfo);
 
@@ -405,7 +386,7 @@ describe('AppComponent', () => {
 
     describe('updateGroups', () => {
       it('should call setGroups on store if method was called directly', () => {
-        spyOn(vm.store, 'setGroups');
+        jest.spyOn(vm.store, 'setGroups').mockImplementation(() => {});
 
         vm.updateGroups(mockGroups);
 
@@ -413,7 +394,7 @@ describe('AppComponent', () => {
       });
 
       it('should call setSearchedGroups on store if method was called with fromSearch param', () => {
-        spyOn(vm.store, 'setSearchedGroups');
+        jest.spyOn(vm.store, 'setSearchedGroups').mockImplementation(() => {});
 
         vm.updateGroups(mockGroups, true);
 
@@ -433,59 +414,55 @@ describe('AppComponent', () => {
   });
 
   describe('created', () => {
-    it('should bind event listeners on eventHub', done => {
-      spyOn(eventHub, '$on');
+    it('should bind event listeners on eventHub', () => {
+      jest.spyOn(eventHub, '$on').mockImplementation(() => {});
 
       const newVm = createComponent();
       newVm.$mount();
 
-      Vue.nextTick(() => {
-        expect(eventHub.$on).toHaveBeenCalledWith('fetchPage', jasmine.any(Function));
-        expect(eventHub.$on).toHaveBeenCalledWith('toggleChildren', jasmine.any(Function));
-        expect(eventHub.$on).toHaveBeenCalledWith('showLeaveGroupModal', jasmine.any(Function));
-        expect(eventHub.$on).toHaveBeenCalledWith('updatePagination', jasmine.any(Function));
-        expect(eventHub.$on).toHaveBeenCalledWith('updateGroups', jasmine.any(Function));
+      return vm.$nextTick().then(() => {
+        expect(eventHub.$on).toHaveBeenCalledWith('fetchPage', expect.any(Function));
+        expect(eventHub.$on).toHaveBeenCalledWith('toggleChildren', expect.any(Function));
+        expect(eventHub.$on).toHaveBeenCalledWith('showLeaveGroupModal', expect.any(Function));
+        expect(eventHub.$on).toHaveBeenCalledWith('updatePagination', expect.any(Function));
+        expect(eventHub.$on).toHaveBeenCalledWith('updateGroups', expect.any(Function));
         newVm.$destroy();
-        done();
       });
     });
 
-    it('should initialize `searchEmptyMessage` prop with correct string when `hideProjects` is `false`', done => {
+    it('should initialize `searchEmptyMessage` prop with correct string when `hideProjects` is `false`', () => {
       const newVm = createComponent();
       newVm.$mount();
-      Vue.nextTick(() => {
+      return vm.$nextTick().then(() => {
         expect(newVm.searchEmptyMessage).toBe('No groups or projects matched your search');
         newVm.$destroy();
-        done();
       });
     });
 
-    it('should initialize `searchEmptyMessage` prop with correct string when `hideProjects` is `true`', done => {
+    it('should initialize `searchEmptyMessage` prop with correct string when `hideProjects` is `true`', () => {
       const newVm = createComponent(true);
       newVm.$mount();
-      Vue.nextTick(() => {
+      return vm.$nextTick().then(() => {
         expect(newVm.searchEmptyMessage).toBe('No groups matched your search');
         newVm.$destroy();
-        done();
       });
     });
   });
 
   describe('beforeDestroy', () => {
-    it('should unbind event listeners on eventHub', done => {
-      spyOn(eventHub, '$off');
+    it('should unbind event listeners on eventHub', () => {
+      jest.spyOn(eventHub, '$off').mockImplementation(() => {});
 
       const newVm = createComponent();
       newVm.$mount();
       newVm.$destroy();
 
-      Vue.nextTick(() => {
-        expect(eventHub.$off).toHaveBeenCalledWith('fetchPage', jasmine.any(Function));
-        expect(eventHub.$off).toHaveBeenCalledWith('toggleChildren', jasmine.any(Function));
-        expect(eventHub.$off).toHaveBeenCalledWith('showLeaveGroupModal', jasmine.any(Function));
-        expect(eventHub.$off).toHaveBeenCalledWith('updatePagination', jasmine.any(Function));
-        expect(eventHub.$off).toHaveBeenCalledWith('updateGroups', jasmine.any(Function));
-        done();
+      return vm.$nextTick().then(() => {
+        expect(eventHub.$off).toHaveBeenCalledWith('fetchPage', expect.any(Function));
+        expect(eventHub.$off).toHaveBeenCalledWith('toggleChildren', expect.any(Function));
+        expect(eventHub.$off).toHaveBeenCalledWith('showLeaveGroupModal', expect.any(Function));
+        expect(eventHub.$off).toHaveBeenCalledWith('updatePagination', expect.any(Function));
+        expect(eventHub.$off).toHaveBeenCalledWith('updateGroups', expect.any(Function));
       });
     });
   });
@@ -499,34 +476,31 @@ describe('AppComponent', () => {
       vm.$destroy();
     });
 
-    it('should render loading icon', done => {
+    it('should render loading icon', () => {
       vm.isLoading = true;
-      Vue.nextTick(() => {
+      return vm.$nextTick().then(() => {
         expect(vm.$el.querySelector('.loading-animation')).toBeDefined();
         expect(vm.$el.querySelector('span').getAttribute('aria-label')).toBe('Loading groups');
-        done();
       });
     });
 
-    it('should render groups tree', done => {
+    it('should render groups tree', () => {
       vm.store.state.groups = [mockParentGroupItem];
       vm.isLoading = false;
-      Vue.nextTick(() => {
+      return vm.$nextTick().then(() => {
         expect(vm.$el.querySelector('.groups-list-tree-container')).toBeDefined();
-        done();
       });
     });
 
-    it('renders modal confirmation dialog', done => {
+    it('renders modal confirmation dialog', () => {
       vm.groupLeaveConfirmationMessage = 'Are you sure you want to leave the "foo" group?';
       vm.showModal = true;
-      Vue.nextTick(() => {
+      return vm.$nextTick().then(() => {
         const modalDialogEl = vm.$el.querySelector('.modal');
 
         expect(modalDialogEl).not.toBe(null);
         expect(modalDialogEl.querySelector('.modal-title').innerText.trim()).toBe('Are you sure?');
         expect(modalDialogEl.querySelector('.btn.btn-warning').innerText.trim()).toBe('Leave');
-        done();
       });
     });
   });

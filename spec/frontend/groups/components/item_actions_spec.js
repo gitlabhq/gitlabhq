@@ -1,6 +1,6 @@
 import Vue from 'vue';
 
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import mountComponent from 'helpers/vue_mount_component_helper';
 import itemActionsComponent from '~/groups/components/item_actions.vue';
 import eventHub from '~/groups/event_hub';
 import { mockParentGroupItem, mockChildren } from '../mock_data';
@@ -28,7 +28,7 @@ describe('ItemActionsComponent', () => {
   describe('methods', () => {
     describe('onLeaveGroup', () => {
       it('emits `showLeaveGroupModal` event with `group` and `parentGroup` props', () => {
-        spyOn(eventHub, '$emit');
+        jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
         vm.onLeaveGroup();
 
         expect(eventHub.$emit).toHaveBeenCalledWith(

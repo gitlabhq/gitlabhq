@@ -108,14 +108,14 @@ export default {
             return acc.concat({
               name,
               path,
-              to: `/-/tree/${joinPaths(escapeFileUrl(this.ref), path)}`,
+              to: `/-/tree/${joinPaths(this.escapedRef, path)}`,
             });
           },
           [
             {
               name: this.projectShortPath,
               path: '/',
-              to: `/-/tree/${escapeFileUrl(this.ref)}/`,
+              to: `/-/tree/${this.escapedRef}/`,
             },
           ],
         );

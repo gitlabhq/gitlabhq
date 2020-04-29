@@ -1,6 +1,6 @@
 import Vue from 'vue';
 
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import mountComponent from 'helpers/vue_mount_component_helper';
 import itemStatsValueComponent from '~/groups/components/item_stats_value.vue';
 
 const createComponent = ({ title, cssClass, iconName, tooltipPlacement, value }) => {
@@ -56,6 +56,10 @@ describe('ItemStatsValueComponent', () => {
       });
     });
 
+    afterEach(() => {
+      vm.$destroy();
+    });
+
     it('renders component element correctly', () => {
       expect(vm.$el.classList.contains('number-subgroups')).toBeTruthy();
       expect(vm.$el.querySelectorAll('svg').length).toBeGreaterThan(0);
@@ -73,10 +77,6 @@ describe('ItemStatsValueComponent', () => {
 
     it('renders value count correctly', () => {
       expect(vm.$el.querySelector('.stat-value').innerText.trim()).toContain('10');
-    });
-
-    afterEach(() => {
-      vm.$destroy();
     });
   });
 });

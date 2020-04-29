@@ -289,3 +289,16 @@ One should apply to be a Vue.js expert by opening an MR when the Merge Request's
 - Full understanding of testing a Vue and Vuex application
 - Vuex code follows the [documented pattern](vuex.md#actions-pattern-request-and-receive-namespaces)
 - Knowledge about the existing Vue and Vuex applications and existing reusable components
+
+## Vue 2 -> Vue 3 Migration
+
+> This section is added temporarily to support the efforts to migrate the codebase from Vue 2.x to Vue 3.x
+
+Currently, we recommend to minimize adding certain features to the codebase to prevent increasing the tech debt for the eventual migration:
+
+- filters;
+- event buses;
+- functional templated
+- `slot` attributes
+
+You can find more details on [Migration to Vue 3](vue3_migration.md)

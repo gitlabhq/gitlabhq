@@ -12,7 +12,7 @@ describe('GroupsService', () => {
 
   describe('getGroups', () => {
     it('should return promise for `GET` request on provided endpoint', () => {
-      spyOn(axios, 'get').and.stub();
+      jest.spyOn(axios, 'get').mockResolvedValue();
       const params = {
         page: 2,
         filter: 'git',
@@ -32,7 +32,7 @@ describe('GroupsService', () => {
 
   describe('leaveGroup', () => {
     it('should return promise for `DELETE` request on provided endpoint', () => {
-      spyOn(axios, 'delete').and.stub();
+      jest.spyOn(axios, 'delete').mockResolvedValue();
 
       service.leaveGroup(mockParentGroupItem.leavePath);
 

@@ -962,6 +962,21 @@ Represents a milestone.
 | `readNote` | Boolean! | Indicates the user can perform `read_note` on this resource |
 | `resolveNote` | Boolean! | Indicates the user can perform `resolve_note` on this resource |
 
+## PackageFileRegistry
+
+Represents the sync and verification state of a package file
+
+| Name  | Type  | Description |
+| ---   |  ---- | ----------  |
+| `createdAt` | Time | Timestamp when the PackageFileRegistry was created |
+| `id` | ID! | ID of the PackageFileRegistry |
+| `lastSyncFailure` | String | Error message during sync of the PackageFileRegistry |
+| `lastSyncedAt` | Time | Timestamp of the most recent successful sync of the PackageFileRegistry |
+| `packageFileId` | ID! | ID of the PackageFile |
+| `retryAt` | Time | Timestamp after which the PackageFileRegistry should be resynced |
+| `retryCount` | Int | Number of consecutive failed sync attempts of the PackageFileRegistry |
+| `state` | RegistryState | Sync state of the PackageFileRegistry |
+
 ## PageInfo
 
 Information about pagination in a connection.

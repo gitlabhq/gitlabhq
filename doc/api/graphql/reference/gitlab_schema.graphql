@@ -3451,6 +3451,36 @@ type GeoNode {
   name: String
 
   """
+  Package file registries of the GeoNode. Available only when feature flag `geo_self_service_framework` is enabled
+  """
+  packageFileRegistries(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Filters registries by their ID
+    """
+    ids: [ID!]
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): PackageFileRegistryConnection
+
+  """
   Indicates whether this Geo node is the primary
   """
   primary: Boolean
@@ -6330,6 +6360,86 @@ interface Noteable {
 }
 
 """
+Represents the sync and verification state of a package file
+"""
+type PackageFileRegistry {
+  """
+  Timestamp when the PackageFileRegistry was created
+  """
+  createdAt: Time
+
+  """
+  ID of the PackageFileRegistry
+  """
+  id: ID!
+
+  """
+  Error message during sync of the PackageFileRegistry
+  """
+  lastSyncFailure: String
+
+  """
+  Timestamp of the most recent successful sync of the PackageFileRegistry
+  """
+  lastSyncedAt: Time
+
+  """
+  ID of the PackageFile
+  """
+  packageFileId: ID!
+
+  """
+  Timestamp after which the PackageFileRegistry should be resynced
+  """
+  retryAt: Time
+
+  """
+  Number of consecutive failed sync attempts of the PackageFileRegistry
+  """
+  retryCount: Int
+
+  """
+  Sync state of the PackageFileRegistry
+  """
+  state: RegistryState
+}
+
+"""
+The connection type for PackageFileRegistry.
+"""
+type PackageFileRegistryConnection {
+  """
+  A list of edges.
+  """
+  edges: [PackageFileRegistryEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [PackageFileRegistry]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+An edge in a connection.
+"""
+type PackageFileRegistryEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: PackageFileRegistry
+}
+
+"""
 Information about pagination in a connection.
 """
 type PageInfo {
@@ -7803,6 +7913,31 @@ type Query {
     """
     state: [VulnerabilityState!]
   ): VulnerabilityConnection
+}
+
+"""
+State of a Geo registry.
+"""
+enum RegistryState {
+  """
+  Registry that failed to sync
+  """
+  FAILED
+
+  """
+  Registry waiting to be synced
+  """
+  PENDING
+
+  """
+  Registry currently syncing
+  """
+  STARTED
+
+  """
+  Registry that is synced
+  """
+  SYNCED
 }
 
 """

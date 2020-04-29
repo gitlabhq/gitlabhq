@@ -26,7 +26,7 @@ function factory(propsData = {}) {
     },
   });
 
-  vm.setData({ ref: 'master' });
+  vm.setData({ escapedRef: 'master' });
 }
 
 describe('Repository table row component', () => {

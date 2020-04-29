@@ -18,15 +18,13 @@ const createComponent = (groups = mockGroups, parentGroup = mockParentGroupItem)
 describe('GroupFolderComponent', () => {
   let vm;
 
-  beforeEach(done => {
+  beforeEach(() => {
     Vue.component('group-item', groupItemComponent);
 
     vm = createComponent();
     vm.$mount();
 
-    Vue.nextTick(() => {
-      done();
-    });
+    return Vue.nextTick();
   });
 
   afterEach(() => {

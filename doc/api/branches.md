@@ -41,6 +41,7 @@ Example response:
     "developers_can_push": false,
     "developers_can_merge": false,
     "can_push": true,
+    "web_url": "http://gitlab.example.com/my-group/my-project/-/tree/master",
     "commit": {
       "author_email": "john@example.com",
       "author_name": "John Smith",
@@ -96,6 +97,7 @@ Example response:
   "developers_can_push": false,
   "developers_can_merge": false,
   "can_push": true,
+  "web_url": "http://gitlab.example.com/my-group/my-project/-/tree/master",
   "commit": {
     "author_email": "john@example.com",
     "author_name": "John Smith",
@@ -171,7 +173,8 @@ Example response:
   "default": false,
   "developers_can_push": false,
   "developers_can_merge": false,
-  "can_push": true
+  "can_push": true,
+  "web_url": "http://gitlab.example.com/my-group/my-project/-/tree/newbranch"
 }
 ```
 

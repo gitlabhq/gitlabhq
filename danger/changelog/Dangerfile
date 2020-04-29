@@ -17,6 +17,7 @@ If you want to create a changelog entry for GitLab EE, run the following instead
 bin/changelog --ee -m %<mr_iid>s "%<mr_title>s"
 ```
 
+If this merge request [doesn't need a CHANGELOG entry](https://docs.gitlab.com/ee/development/changelog.html#what-warrants-a-changelog-entry), feel free to ignore this message.
 MSG
 
 def check_changelog_yaml(path)
@@ -65,6 +66,6 @@ if changelog_found
   check_changelog_yaml(changelog_found)
   check_changelog_path(changelog_found)
 elsif changelog.needed?
-  message "**[CHANGELOG missing](https://docs.gitlab.com/ee/development/changelog.html)**: If this merge request [doesn't need a CHANGELOG entry](https://docs.gitlab.com/ee/development/changelog.html#what-warrants-a-changelog-entry), feel free to ignore this message.\n\n" +
+  message "**[CHANGELOG missing](https://docs.gitlab.com/ee/development/changelog.html)**:\n\n" +
           format(CREATE_CHANGELOG_MESSAGE, mr_iid: gitlab.mr_json["iid"], mr_title: sanitized_mr_title)
 end
