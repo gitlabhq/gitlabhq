@@ -689,6 +689,8 @@ Crossplane runs inside your Kubernetes cluster and supports secure connectivity 
           host: applications.fluentd.host,
           port: applications.fluentd.port,
           protocol: applications.fluentd.protocol,
+          waf_log_enabled: applications.fluentd.wafLogEnabled,
+          cilium_log_enabled: applications.fluentd.ciliumLogEnabled,
         }"
         :uninstallable="applications.fluentd.uninstallable"
         :uninstall-successful="applications.fluentd.uninstallSuccessful"
@@ -701,12 +703,20 @@ Crossplane runs inside your Kubernetes cluster and supports secure connectivity 
           <p>
             {{
               s__(
-                `ClusterIntegration|Fluentd is an open source data collector, which lets you unify the data collection and consumption for a better use and understanding of data. Export Web Application Firewall logs to your favorite SIEM.`,
+                `ClusterIntegration|Fluentd is an open source data collector, which lets you unify the data collection and consumption for a better use and understanding of data. It requires at least one of the following logs to be successfully installed.`,
               )
             }}
           </p>
 
-          <fluentd-output-settings :fluentd="applications.fluentd" />
+          <fluentd-output-settings
+            :port="applications.fluentd.port"
+            :protocol="applications.fluentd.protocol"
+            :host="applications.fluentd.host"
+            :waf-log-enabled="applications.fluentd.wafLogEnabled"
+            :cilium-log-enabled="applications.fluentd.ciliumLogEnabled"
+            :status="applications.fluentd.status"
+            :update-failed="applications.fluentd.updateFailed"
+          />
         </div>
       </application-row>
     </div>

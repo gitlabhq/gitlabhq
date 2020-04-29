@@ -4542,7 +4542,7 @@ msgstr ""
 msgid "ClusterIntegration|Fluentd"
 msgstr ""
 
-msgid "ClusterIntegration|Fluentd is an open source data collector, which lets you unify the data collection and consumption for a better use and understanding of data. Export Web Application Firewall logs to your favorite SIEM."
+msgid "ClusterIntegration|Fluentd is an open source data collector, which lets you unify the data collection and consumption for a better use and understanding of data. It requires at least one of the following logs to be successfully installed."
 msgstr ""
 
 msgid "ClusterIntegration|GitLab Integration"
@@ -4954,6 +4954,12 @@ msgid "ClusterIntegration|Select zone"
 msgstr ""
 
 msgid "ClusterIntegration|Select zone to choose machine type"
+msgstr ""
+
+msgid "ClusterIntegration|Send Cilium Logs"
+msgstr ""
+
+msgid "ClusterIntegration|Send ModSecurity Logs"
 msgstr ""
 
 msgid "ClusterIntegration|Service Token"
@@ -12056,6 +12062,9 @@ msgid "Latest pipeline for the most recent commit on this branch"
 msgstr ""
 
 msgid "Lead"
+msgstr ""
+
+msgid "Lead Time"
 msgstr ""
 
 msgid "Learn GitLab"

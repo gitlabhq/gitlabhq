@@ -58,6 +58,11 @@ describe Projects::StaticSiteEditorController do
             expect(assigns(:config)).to be_a(Gitlab::StaticSiteEditor::Config)
           end
 
+          it 'correctly assigns ref and path' do
+            expect(assigns(:ref)).to eq('master')
+            expect(assigns(:path)).to eq('README.md')
+          end
+
           context 'when combination of ref and file path is incorrect' do
             let(:default_params) { super().merge(id: 'unknown') }
 

@@ -127,6 +127,7 @@ describe('Clusters Store', () => {
             statusReason: null,
             requestReason: null,
             port: null,
+            ciliumLogEnabled: null,
             host: null,
             protocol: null,
             installed: false,
@@ -136,6 +137,7 @@ describe('Clusters Store', () => {
             uninstallSuccessful: false,
             uninstallFailed: false,
             validationError: null,
+            wafLogEnabled: null,
           },
           jupyter: {
             title: 'JupyterHub',

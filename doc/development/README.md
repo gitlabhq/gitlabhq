@@ -117,7 +117,7 @@ Complementary reads:
 ### Tooling
 
 - [Understanding EXPLAIN plans](understanding_explain_plans.md)
-- [explain.depesz.com](https://explain.depesz.com/) for visualising the output
+- [explain.depesz.com](https://explain.depesz.com/) for visualizing the output
   of `EXPLAIN`
 - [pgFormatter](http://sqlformat.darold.net/) a PostgreSQL SQL syntax beautifier
 

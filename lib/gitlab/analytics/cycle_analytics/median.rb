@@ -18,6 +18,10 @@ module Gitlab
           result['median'] ? result['median'].to_i : nil
         end
 
+        def days
+          seconds ? seconds.fdiv(1.day) : nil
+        end
+
         private
 
         attr_reader :stage

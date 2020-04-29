@@ -36,12 +36,12 @@ The following resources will help you get started with Git:
 
 ### Concepts
 
-The following are resources about version control concepts:
+The following are resources on version control concepts:
 
 - [Git concepts](../../university/training/user_training.md#git-concepts)
 - [Why Git is Worth the Learning Curve](https://about.gitlab.com/blog/2017/05/17/learning-curve-is-the-biggest-challenge-developers-face-with-git/)
 - [The future of SaaS hosted Git repository pricing](https://about.gitlab.com/blog/2016/05/11/git-repository-pricing/)
-- [Git website topic about version control](https://git-scm.com/book/en/v2/Getting-Started-About-Version-Control)
+- [Git website on version control](https://git-scm.com/book/en/v2/Getting-Started-About-Version-Control)
 - [GitLab University presentation about Version Control](https://docs.google.com/presentation/d/16sX7hUrCZyOFbpvnrAFrg6tVO5_yT98IgdAqOmXwBho/edit?usp=sharing)
 
 ## Git tips
@@ -79,7 +79,7 @@ The following are advanced topics for those who want to get the most out of Git:
 [Gitignore templates](../../api/templates/gitignores.md) API allow for
 Git-related queries from GitLab.
 
-## Git LFS
+## Git Large File Storage (LFS)
 
 The following relate to Git Large File Storage:
 

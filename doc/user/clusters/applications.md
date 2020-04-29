@@ -570,9 +570,10 @@ To enable Fluentd:
 1. Provide the host domain name or URL in **SIEM Hostname**.
 1. Provide the host port number in **SIEM Port**.
 1. Select a **SIEM Protocol**.
+1. Select at least one of the available logs (such as WAF or Cilium).
 1. Click **Save changes**.
 
-![Fluentd input fields](img/fluentd_v12_10.png)
+![Fluentd input fields](img/fluentd_v13_0.png)
 
 ### Future apps
 

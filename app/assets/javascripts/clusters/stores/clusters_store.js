@@ -110,6 +110,8 @@ export default class ClusterStore {
           host: null,
           port: null,
           protocol: null,
+          wafLogEnabled: null,
+          ciliumLogEnabled: null,
           isEditingSettings: false,
         },
       },
@@ -267,6 +269,8 @@ export default class ClusterStore {
           this.state.applications.fluentd.port = serverAppEntry.port;
           this.state.applications.fluentd.host = serverAppEntry.host;
           this.state.applications.fluentd.protocol = serverAppEntry.protocol;
+          this.state.applications.fluentd.wafLogEnabled = serverAppEntry.waf_log_enabled;
+          this.state.applications.fluentd.ciliumLogEnabled = serverAppEntry.cilium_log_enabled;
         }
       }
     });

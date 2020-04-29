@@ -1,14 +1,8 @@
-<!-- The first three sections: "Problem to solve", "Intended users" and "Proposal", are strongly recommended, while the rest of the sections can be filled out during the problem validation or breakdown phase. However, keep in mind that providing complete and relevant information early helps our product team validate the problem and start working on a solution. -->
+<!-- The first four sections: "Problem to solve", "Intended users", "User experience goal", and "Proposal", are strongly recommended, while the rest of the sections can be filled out during the problem validation or breakdown phase. However, keep in mind that providing complete and relevant information early helps our product team validate the problem and start working on a solution. -->
 
 ### Problem to solve
 
 <!-- What problem do we solve? Try to define the who/what/why of the opportunity as a user story. For example, "As a (who), I want (what), so I can (why/value)." -->
-
-### User experience goal
-
-<!-- What is the single user experience workflow this problem addresses? 
-For example, "The user should be able to use the UI/API/.gitlab-ci.yml with GitLab to <perform a specific task>"
-https://about.gitlab.com/handbook/engineering/ux/ux-research-training/user-story-mapping/ --> 
 
 ### Intended users
 
@@ -16,25 +10,36 @@ https://about.gitlab.com/handbook/engineering/ux/ux-research-training/user-story
 
 Personas are described at https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/
 
-* [Rachel (Release Manager)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#rachel-release-manager)
+* [Cameron (Compliance Manager)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#cameron-compliance-manager)
 * [Parker (Product Manager)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#parker-product-manager)
 * [Delaney (Development Team Lead)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#delaney-development-team-lead)
-* [Sasha (Software Developer)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#sasha-software-developer)
 * [Presley (Product Designer)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#presley-product-designer)
+* [Sasha (Software Developer)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#sasha-software-developer)
 * [Devon (DevOps Engineer)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#devon-devops-engineer)
 * [Sidney (Systems Administrator)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#sidney-systems-administrator)
 * [Sam (Security Analyst)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#sam-security-analyst)
-* [Dana (Data Analyst)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#dana-data-analyst)
+* [Rachel (Release Manager)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#rachel-release-manager) 
+* [Alex (Security Operations Engineer)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#alex-security-operations-engineer)
 * [Simone (Software Engineer in Test)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#simone-software-engineer-in-test)
-* [Allison (Application Ops)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#allison-application-ops) -->
+* [Allison (Application Ops)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#allison-application-ops) 
+* [Priyanka (Platform Engineer)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#priyanka-platform-engineer)
+* [Dana (Data Analyst)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#dana-data-analyst)
+-->
 
-### Further details
+### User experience goal
 
-<!-- Include use cases, benefits, goals, or any other details that will help us understand the problem better. -->
+<!-- What is the single user experience workflow this problem addresses? 
+For example, "The user should be able to use the UI/API/.gitlab-ci.yml with GitLab to <perform a specific task>"
+https://about.gitlab.com/handbook/engineering/ux/ux-research-training/user-story-mapping/ --> 
+
 
 ### Proposal
 
 <!-- How are we going to solve the problem? Try to include the user journey! https://about.gitlab.com/handbook/journeys/#user-journey -->
+
+### Further details
+
+<!-- Include use cases, benefits, goals, or any other details that will help us understand the problem better. -->
 
 ### Permissions and Security
 

@@ -14,6 +14,7 @@ import {
   INGRESS_DOMAIN_SUFFIX,
   CROSSPLANE,
   KNATIVE,
+  FLUENTD,
 } from './constants';
 import ClustersService from './services/clusters_service';
 import ClustersStore from './stores/clusters_store';
@@ -510,10 +511,10 @@ export default class Clusters {
     });
   }
 
-  setFluentdSettings({ id: appId, port, protocol, host }) {
-    this.store.updateAppProperty(appId, 'port', port);
-    this.store.updateAppProperty(appId, 'protocol', protocol);
-    this.store.updateAppProperty(appId, 'host', host);
+  setFluentdSettings(settings = {}) {
+    Object.entries(settings).forEach(([key, value]) => {
+      this.store.updateAppProperty(FLUENTD, key, value);
+    });
   }
 
   toggleIngressDomainHelpText({ externalIp }, { externalIp: newExternalIp }) {
