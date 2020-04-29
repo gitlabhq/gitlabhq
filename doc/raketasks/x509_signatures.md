@@ -1,4 +1,4 @@
-# X509 signatures
+# X509 signatures **(CORE ONLY)**
 
 When [signing commits with x509](../user/project/repository/x509_signed_commits/index.md),
 the trust anchor might change and the signatures stored within the database must be updated.

@@ -312,7 +312,7 @@ things to check to debug the situation.
   interval](ldap-ee.md#adjusting-ldap-group-sync-schedule) for the group to
   sync. To speed up the process, either go to the GitLab group **Settings ->
   Members** and press **Sync now** (sync one group) or [run the group sync Rake
-  task](../raketasks/ldap.md#run-a-group-sync) (sync all groups).
+  task](../raketasks/ldap.md#run-a-group-sync-starter-only) (sync all groups).
 
 If all of the above looks good, jump in to a little more advanced debugging in
 the rails console.
@@ -352,7 +352,7 @@ GitLab syncs the `admin_group`.
 
 NOTE: **NOTE:**
 To sync all groups manually when debugging is unnecessary, [use the Rake
-task](../raketasks/ldap.md#run-a-group-sync) instead.
+task](../raketasks/ldap.md#run-a-group-sync-starter-only) instead.
 
 The output from a manual [group sync](ldap-ee.md#group-sync) can show you what happens
 when GitLab syncs its LDAP group memberships against LDAP.

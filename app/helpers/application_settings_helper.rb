@@ -311,7 +311,8 @@ module ApplicationSettingsHelper
       :snippet_size_limit,
       :email_restrictions_enabled,
       :email_restrictions,
-      :issues_create_limit
+      :issues_create_limit,
+      :raw_blob_request_limit
     ]
   end
 

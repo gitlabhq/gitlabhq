@@ -1,4 +1,4 @@
-# GitHub import
+# GitHub import **(CORE ONLY)**
 
 > [Introduced]( https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/10308) in GitLab 9.1.
 

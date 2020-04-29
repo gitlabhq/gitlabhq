@@ -180,7 +180,7 @@ instance-level scenarios](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/
 
 Continued reading:
 
-- [Quick Start Guide](quick_start_guide.md)
+- [Beginner's Guide](beginners_guide.md)
 - [Style Guide](style_guide.md)
 - [Best Practices](best_practices.md)
 - [Testing with feature flags](feature_flags.md)

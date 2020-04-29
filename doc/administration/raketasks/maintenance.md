@@ -1,4 +1,4 @@
-# Maintenance Rake tasks
+# Maintenance Rake tasks **(CORE ONLY)**
 
 GitLab provides Rake tasks for general maintenance.
 

@@ -1,4 +1,4 @@
-# Clean up
+# Clean up **(CORE ONLY)**
 
 GitLab provides Rake tasks for cleaning up GitLab instances.
 
@@ -7,9 +7,11 @@ GitLab provides Rake tasks for cleaning up GitLab instances.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/36628) in GitLab 12.10.
 
 DANGER: **Danger:**
-Do not run this within 12 hours of a GitLab upgrade. This is to ensure that all background migrations have finished, which otherwise may lead to data loss.
+Do not run this within 12 hours of a GitLab upgrade. This is to ensure that all background migrations
+have finished, which otherwise may lead to data loss.
 
-When you remove LFS files from a repository's history, they become orphaned and continue to consume disk space. With this Rake task, you can remove invalid references from the database, which
+When you remove LFS files from a repository's history, they become orphaned and continue to consume
+disk space. With this Rake task, you can remove invalid references from the database, which
 will allow garbage collection of LFS files.
 
 For example:

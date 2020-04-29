@@ -1,4 +1,4 @@
-# Namespaces
+# Namespaces **(CORE ONLY)**
 
 This Rake task enables [namespaces](../user/group/index.md#namespaces) for projects.
 

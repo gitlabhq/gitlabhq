@@ -1221,7 +1221,7 @@ a helpful link back to how the feature was developed.
   to the following should be added immediately below the heading as a blockquote:
   - `> Introduced in GitLab 11.3.`.
 
-- Whenever possible, version text should have a link to the issue, merge request, or epic that introduced the feature.
+- Whenever possible, version text should have a link to the _completed_ issue, merge request, or epic that introduced the feature.
   An issue is preferred over a merge request, and a merge request is preferred over an epic. For example:
   - `> [Introduced](<link-to-issue>) in GitLab 11.3.`.
 

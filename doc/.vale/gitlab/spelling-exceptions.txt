@@ -237,6 +237,7 @@ Qualys
 Rackspace
 Raketask
 Raketasks
+reachability
 rebase
 rebased
 rebases
@@ -372,6 +373,7 @@ unstage
 unstaged
 unstages
 unstaging
+untarred
 untracked
 untrusted
 unverified

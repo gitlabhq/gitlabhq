@@ -7,5 +7,7 @@ module Types
 
     value 'PRIORITY_ASC', 'Priority by ascending order', value: :priority_asc
     value 'PRIORITY_DESC', 'Priority by descending order', value: :priority_desc
+    value 'LABEL_PRIORITY_ASC', 'Label priority by ascending order', value: :label_priority_asc
+    value 'LABEL_PRIORITY_DESC', 'Label priority by descending order', value: :label_priority_desc
   end
 end

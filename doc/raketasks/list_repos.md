@@ -1,4 +1,4 @@
-# Listing repository directories
+# Listing repository directories **(CORE ONLY)**
 
 You can print a list of all Git repositories on disk managed by GitLab.
 

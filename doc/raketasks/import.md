@@ -1,4 +1,4 @@
-# Import bare repositories
+# Import bare repositories **(CORE ONLY)**
 
 Rake tasks are available to import bare repositories into a GitLab instance.
 

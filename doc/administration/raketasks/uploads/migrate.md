@@ -1,4 +1,4 @@
-# Uploads migrate Rake tasks
+# Uploads migrate Rake tasks **(CORE ONLY)**
 
 `gitlab:uploads:migrate` migrates uploads between different storage types.
 

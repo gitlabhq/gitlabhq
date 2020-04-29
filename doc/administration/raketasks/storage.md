@@ -1,4 +1,4 @@
-# Repository storage Rake tasks
+# Repository storage Rake tasks **(CORE ONLY)**
 
 This is a collection of Rake tasks you can use to help you list and migrate
 existing projects and attachments associated with it from Legacy storage to

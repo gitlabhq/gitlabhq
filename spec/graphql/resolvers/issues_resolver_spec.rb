@@ -126,7 +126,6 @@ describe Resolvers::IssuesResolver do
 
         context 'when sorting by due date' do
           let_it_be(:project) { create(:project) }
-
           let_it_be(:due_issue1) { create(:issue, project: project, due_date: 3.days.from_now) }
           let_it_be(:due_issue2) { create(:issue, project: project, due_date: nil) }
           let_it_be(:due_issue3) { create(:issue, project: project, due_date: 2.days.ago) }
@@ -143,7 +142,6 @@ describe Resolvers::IssuesResolver do
 
         context 'when sorting by relative position' do
           let_it_be(:project) { create(:project) }
-
           let_it_be(:relative_issue1) { create(:issue, project: project, relative_position: 2000) }
           let_it_be(:relative_issue2) { create(:issue, project: project, relative_position: nil) }
           let_it_be(:relative_issue3) { create(:issue, project: project, relative_position: 1000) }
@@ -156,22 +154,40 @@ describe Resolvers::IssuesResolver do
 
         context 'when sorting by priority' do
           let_it_be(:project) { create(:project) }
-
           let_it_be(:early_milestone) { create(:milestone, project: project, due_date: 10.days.from_now) }
           let_it_be(:late_milestone) { create(:milestone, project: project, due_date: 30.days.from_now) }
-          let_it_be(:label_1) { create(:label, project: project, priority: 1) }
-          let_it_be(:label_2) { create(:label, project: project, priority: 5) }
-          let_it_be(:issue1) { create(:issue, project: project, labels: [label_1], milestone: late_milestone) }
-          let_it_be(:issue2) { create(:issue, project: project, labels: [label_2]) }
-          let_it_be(:issue3) { create(:issue, project: project, milestone: early_milestone) }
-          let_it_be(:issue4) { create(:issue, project: project) }
+          let_it_be(:priority_label1) { create(:label, project: project, priority: 1) }
+          let_it_be(:priority_label2) { create(:label, project: project, priority: 5) }
+          let_it_be(:priority_issue1) { create(:issue, project: project, labels: [priority_label1], milestone: late_milestone) }
+          let_it_be(:priority_issue2) { create(:issue, project: project, labels: [priority_label2]) }
+          let_it_be(:priority_issue3) { create(:issue, project: project, milestone: early_milestone) }
+          let_it_be(:priority_issue4) { create(:issue, project: project) }
 
           it 'sorts issues ascending' do
-            expect(resolve_issues(sort: :priority_asc).items).to eq([issue3, issue1, issue2, issue4])
+            expect(resolve_issues(sort: :priority_asc).items).to eq([priority_issue3, priority_issue1, priority_issue2, priority_issue4])
           end
 
           it 'sorts issues descending' do
-            expect(resolve_issues(sort: :priority_desc).items).to eq([issue1, issue3, issue2, issue4])
+            expect(resolve_issues(sort: :priority_desc).items).to eq([priority_issue1, priority_issue3, priority_issue2, priority_issue4])
+          end
+        end
+
+        context 'when sorting by label priority' do
+          let_it_be(:project) { create(:project) }
+          let_it_be(:label1) { create(:label, project: project, priority: 1) }
+          let_it_be(:label2) { create(:label, project: project, priority: 5) }
+          let_it_be(:label3) { create(:label, project: project, priority: 10) }
+          let_it_be(:label_issue1) { create(:issue, project: project, labels: [label1]) }
+          let_it_be(:label_issue2) { create(:issue, project: project, labels: [label2]) }
+          let_it_be(:label_issue3) { create(:issue, project: project, labels: [label1, label3]) }
+          let_it_be(:label_issue4) { create(:issue, project: project) }
+
+          it 'sorts issues ascending' do
+            expect(resolve_issues(sort: :label_priority_asc).items).to eq([label_issue3, label_issue1, label_issue2, label_issue4])
+          end
+
+          it 'sorts issues descending' do
+            expect(resolve_issues(sort: :label_priority_desc).items).to eq([label_issue2, label_issue3, label_issue1, label_issue4])
           end
         end
       end

@@ -1,4 +1,4 @@
-# Backing up and restoring GitLab
+# Backing up and restoring GitLab **(CORE ONLY)**
 
 GitLab provides Rake tasks for backing up and restoring GitLab instances.
 
@@ -687,7 +687,7 @@ before restoring the backup.
 You need to have a working GitLab installation before you can perform
 a restore. This is mainly because the system user performing the
 restore actions (`git`) is usually not allowed to create or delete
-the SQL database it needs to import data into ('gitlabhq_production').
+the SQL database it needs to import data into (`gitlabhq_production`).
 All existing data will be either erased (SQL) or moved to a separate
 directory (repositories, uploads).
 
@@ -713,7 +713,7 @@ more of the following options:
   Read what the [backup timestamp is about](#backup-timestamp).
 - `force=yes` - Does not ask if the authorized_keys file should get regenerated and assumes 'yes' for warning that database tables will be removed, enabling the "Write to authorized_keys file" setting, and updating LDAP providers.
 
-If you are restoring into directories that are mountpoints you will need to make
+If you are restoring into directories that are mount points, you will need to make
 sure these directories are empty before attempting a restore. Otherwise GitLab
 will attempt to move these directories before restoring the new data and this
 would cause an error.

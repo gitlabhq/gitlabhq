@@ -252,12 +252,12 @@ describe 'getting an issue list for a project' do
 
       let_it_be(:early_milestone) { create(:milestone, project: sort_project, due_date: 10.days.from_now) }
       let_it_be(:late_milestone) { create(:milestone, project: sort_project, due_date: 30.days.from_now) }
-      let_it_be(:label_1) { create(:label, project: sort_project, priority: 1) }
-      let_it_be(:label_2) { create(:label, project: sort_project, priority: 5) }
-      let_it_be(:issue1) { create(:issue, project: sort_project, labels: [label_1], milestone: late_milestone) }
-      let_it_be(:issue2) { create(:issue, project: sort_project, labels: [label_2]) }
-      let_it_be(:issue3) { create(:issue, project: sort_project, milestone: early_milestone) }
-      let_it_be(:issue4) { create(:issue, project: sort_project) }
+      let_it_be(:priority_label1) { create(:label, project: sort_project, priority: 1) }
+      let_it_be(:priority_label2) { create(:label, project: sort_project, priority: 5) }
+      let_it_be(:priority_issue1) { create(:issue, project: sort_project, labels: [priority_label1], milestone: late_milestone) }
+      let_it_be(:priority_issue2) { create(:issue, project: sort_project, labels: [priority_label2]) }
+      let_it_be(:priority_issue3) { create(:issue, project: sort_project, milestone: early_milestone) }
+      let_it_be(:priority_issue4) { create(:issue, project: sort_project) }
 
       let_it_be(:params) { 'sort: PRIORITY_ASC' }
 
@@ -277,20 +277,20 @@ describe 'getting an issue list for a project' do
 
       context 'when ascending' do
         it 'sorts issues' do
-          expect(grab_iids).to eq([issue3.iid, issue1.iid, issue2.iid, issue4.iid])
+          expect(grab_iids).to eq([priority_issue3.iid, priority_issue1.iid, priority_issue2.iid, priority_issue4.iid])
         end
 
         context 'when paginating' do
           let(:params) { 'sort: PRIORITY_ASC, first: 2' }
 
           it 'sorts issues' do
-            expect(grab_iids).to eq([issue3.iid, issue1.iid])
+            expect(grab_iids).to eq([priority_issue3.iid, priority_issue1.iid])
 
             cursored_query = query("sort: PRIORITY_ASC, after: \"#{end_cursor}\"")
             post_graphql(cursored_query, current_user: current_user)
             response_data = JSON.parse(response.body)['data']['project']['issues']['edges']
 
-            expect(grab_iids(response_data)).to eq([issue2.iid, issue4.iid])
+            expect(grab_iids(response_data)).to eq([priority_issue2.iid, priority_issue4.iid])
           end
         end
       end
@@ -299,20 +299,90 @@ describe 'getting an issue list for a project' do
         let(:params) { 'sort: PRIORITY_DESC' }
 
         it 'sorts issues' do
-          expect(grab_iids).to eq([issue1.iid, issue3.iid, issue2.iid, issue4.iid])
+          expect(grab_iids).to eq([priority_issue1.iid, priority_issue3.iid, priority_issue2.iid, priority_issue4.iid])
         end
 
         context 'when paginating' do
           let(:params) { 'sort: PRIORITY_DESC, first: 2' }
 
           it 'sorts issues' do
-            expect(grab_iids).to eq([issue1.iid, issue3.iid])
+            expect(grab_iids).to eq([priority_issue1.iid, priority_issue3.iid])
 
             cursored_query = query("sort: PRIORITY_DESC, after: \"#{end_cursor}\"")
             post_graphql(cursored_query, current_user: current_user)
             response_data = JSON.parse(response.body)['data']['project']['issues']['edges']
 
-            expect(grab_iids(response_data)).to eq([issue2.iid, issue4.iid])
+            expect(grab_iids(response_data)).to eq([priority_issue2.iid, priority_issue4.iid])
+          end
+        end
+      end
+    end
+
+    context 'when sorting by label priority' do
+      let_it_be(:sort_project) { create(:project, :public) }
+
+      let_it_be(:label1) { create(:label, project: sort_project, priority: 1) }
+      let_it_be(:label2) { create(:label, project: sort_project, priority: 5) }
+      let_it_be(:label3) { create(:label, project: sort_project, priority: 10) }
+      let_it_be(:label_issue1) { create(:issue, project: sort_project, labels: [label1]) }
+      let_it_be(:label_issue2) { create(:issue, project: sort_project, labels: [label2]) }
+      let_it_be(:label_issue3) { create(:issue, project: sort_project, labels: [label1, label3]) }
+      let_it_be(:label_issue4) { create(:issue, project: sort_project) }
+
+      let_it_be(:params) { 'sort: LABEL_PRIORITY_ASC' }
+
+      def query(issue_params = params)
+        graphql_query_for(
+          'project',
+          { 'fullPath' => sort_project.full_path },
+          "issues(#{issue_params}) { pageInfo { endCursor} edges { node { iid dueDate } } }"
+        )
+      end
+
+      before do
+        post_graphql(query, current_user: current_user)
+      end
+
+      it_behaves_like 'a working graphql query'
+
+      context 'when ascending' do
+        it 'sorts issues' do
+          expect(grab_iids).to eq [label_issue3.iid, label_issue1.iid, label_issue2.iid, label_issue4.iid]
+        end
+
+        context 'when paginating' do
+          let(:params) { 'sort: LABEL_PRIORITY_ASC, first: 2' }
+
+          it 'sorts issues' do
+            expect(grab_iids).to eq [label_issue3.iid, label_issue1.iid]
+
+            cursored_query = query("sort: LABEL_PRIORITY_ASC, after: \"#{end_cursor}\"")
+            post_graphql(cursored_query, current_user: current_user)
+            response_data = JSON.parse(response.body)['data']['project']['issues']['edges']
+
+            expect(grab_iids(response_data)).to eq [label_issue2.iid, label_issue4.iid]
+          end
+        end
+      end
+
+      context 'when descending' do
+        let(:params) { 'sort: LABEL_PRIORITY_DESC' }
+
+        it 'sorts issues' do
+          expect(grab_iids).to eq [label_issue2.iid, label_issue3.iid, label_issue1.iid, label_issue4.iid]
+        end
+
+        context 'when paginating' do
+          let(:params) { 'sort: LABEL_PRIORITY_DESC, first: 2' }
+
+          it 'sorts issues' do
+            expect(grab_iids).to eq [label_issue2.iid, label_issue3.iid]
+
+            cursored_query = query("sort: LABEL_PRIORITY_DESC, after: \"#{end_cursor}\"")
+            post_graphql(cursored_query, current_user: current_user)
+            response_data = JSON.parse(response.body)['data']['project']['issues']['edges']
+
+            expect(grab_iids(response_data)).to eq [label_issue1.iid, label_issue4.iid]
           end
         end
       end

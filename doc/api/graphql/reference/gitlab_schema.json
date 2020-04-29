@@ -13028,6 +13028,18 @@
               "deprecationReason": null
             },
             {
+              "name": "LABEL_PRIORITY_ASC",
+              "description": "Label priority by ascending order",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "LABEL_PRIORITY_DESC",
+              "description": "Label priority by descending order",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "DUE_DATE_ASC",
               "description": "Due date by ascending order",
               "isDeprecated": false,

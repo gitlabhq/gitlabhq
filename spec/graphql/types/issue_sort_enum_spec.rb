@@ -8,6 +8,8 @@ describe GitlabSchema.types['IssueSort'] do
   it_behaves_like 'common sort values'
 
   it 'exposes all the existing issue sort values' do
-    expect(described_class.values.keys).to include(*%w[DUE_DATE_ASC DUE_DATE_DESC RELATIVE_POSITION_ASC])
+    expect(described_class.values.keys).to include(
+      *%w[DUE_DATE_ASC DUE_DATE_DESC RELATIVE_POSITION_ASC LABEL_PRIORITY_ASC LABEL_PRIORITY_DESC]
+    )
   end
 end

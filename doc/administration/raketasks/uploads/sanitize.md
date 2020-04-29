@@ -1,4 +1,4 @@
-# Uploads sanitize Rake tasks
+# Uploads sanitize Rake tasks **(CORE ONLY)**
 
 Since GitLab 11.9, EXIF data is automatically stripped from JPG or TIFF image uploads.
 

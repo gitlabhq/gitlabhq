@@ -89,7 +89,8 @@ describe API::Settings, 'Settings' do
             push_event_hooks_limit: 2,
             push_event_activities_limit: 2,
             snippet_size_limit: 5,
-            issues_create_limit: 300
+            issues_create_limit: 300,
+            raw_blob_request_limit: 300
           }
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -127,6 +128,7 @@ describe API::Settings, 'Settings' do
         expect(json_response['push_event_activities_limit']).to eq(2)
         expect(json_response['snippet_size_limit']).to eq(5)
         expect(json_response['issues_create_limit']).to eq(300)
+        expect(json_response['raw_blob_request_limit']).to eq(300)
       end
     end
 

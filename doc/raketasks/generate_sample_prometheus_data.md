@@ -1,4 +1,4 @@
-# Generate sample Prometheus data
+# Generate sample Prometheus data **(CORE ONLY)**
 
 This command will run Prometheus queries for each of the metrics of a specific environment
 for a series of time intervals to now:

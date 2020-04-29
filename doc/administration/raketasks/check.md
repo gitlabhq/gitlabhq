@@ -1,4 +1,4 @@
-# Integrity check Rake task
+# Integrity check Rake task **(CORE ONLY)**
 
 GitLab provides Rake tasks to check the integrity of various components.
 

@@ -1,0 +1,5 @@
+---
+title: Add raw_blob_request_limit to Application Settings API
+merge_request: 30211
+author:
+type: added

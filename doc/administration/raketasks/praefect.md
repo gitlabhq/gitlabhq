@@ -1,4 +1,4 @@
-# Praefect Rake Tasks
+# Praefect Rake Tasks **(CORE ONLY)**
 
 > [Introduced]( https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28369) in GitLab 12.10.
 

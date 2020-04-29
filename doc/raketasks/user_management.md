@@ -1,4 +1,4 @@
-# User management
+# User management **(CORE ONLY)**
 
 GitLab provides Rake tasks for user management.
 
