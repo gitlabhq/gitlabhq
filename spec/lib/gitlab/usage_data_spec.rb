@@ -7,6 +7,8 @@ describe Gitlab::UsageData, :aggregate_failures do
 
   before do
     allow(ActiveRecord::Base.connection).to receive(:transaction_open?).and_return(false)
+
+    stub_object_store_settings
   end
 
   shared_examples "usage data execution" do
@@ -80,6 +82,16 @@ describe Gitlab::UsageData, :aggregate_failures do
         expect(count_data[:grafana_integrated_projects]).to eq(2)
         expect(count_data[:clusters_applications_jupyter]).to eq(1)
         expect(count_data[:clusters_management_project]).to eq(1)
+      end
+
+      it 'gathers object store usage correctly' do
+        expect(subject[:object_store]).to eq(
+          { artifacts: { enabled: true, object_store: { enabled: true, direct_upload: true, background_upload: false, provider: "AWS" } },
+           external_diffs: { enabled: false },
+           lfs: { enabled: true, object_store: { enabled: false, direct_upload: true, background_upload: false, provider: "AWS" } },
+           uploads: { enabled: nil, object_store: { enabled: false, direct_upload: true, background_upload: false, provider: "AWS" } },
+           packages: { enabled: true, object_store: { enabled: false, direct_upload: false, background_upload: true, provider: "AWS" } } }
+        )
       end
 
       it 'works when queries time out' do
@@ -220,6 +232,66 @@ describe Gitlab::UsageData, :aggregate_failures do
             expect(Gitlab::ErrorTracking).to receive(:track_exception).with(exception)
             expect(subject).to eq('unknown_app_server_type')
           end
+        end
+      end
+
+      describe '#object_store_config' do
+        let(:component) { 'lfs' }
+
+        subject { described_class.object_store_config(component) }
+
+        context 'when object_store is not configured' do
+          it 'returns component enable status only' do
+            allow(Settings).to receive(:[]).with(component).and_return({ 'enabled' => false })
+
+            expect(subject).to eq({ enabled: false })
+          end
+        end
+
+        context 'when object_store is configured' do
+          it 'returns filtered object store config' do
+            allow(Settings).to receive(:[]).with(component)
+              .and_return(
+                { 'enabled' => true,
+                  'object_store' =>
+                  { 'enabled' => true,
+                    'remote_directory' => component,
+                    'direct_upload' => true,
+                    'connection' =>
+                  { 'provider' => 'AWS', 'aws_access_key_id' => 'minio', 'aws_secret_access_key' => 'gdk-minio', 'region' => 'gdk', 'endpoint' => 'http://127.0.0.1:9000', 'path_style' => true },
+                    'background_upload' => false,
+                    'proxy_download' => false } })
+
+            expect(subject).to eq(
+              { enabled: true, object_store: { enabled: true, direct_upload: true, background_upload: false, provider: "AWS" } })
+          end
+        end
+
+        context 'when retrieve component setting meets exception' do
+          it 'returns -1 for component enable status' do
+            allow(Settings).to receive(:[]).with(component).and_raise(StandardError)
+
+            expect(subject).to eq({ enabled: -1 })
+          end
+        end
+      end
+
+      describe '#object_store_usage_data' do
+        subject { described_class.object_store_usage_data }
+
+        it 'fetches object store config of five components' do
+          %w(artifacts external_diffs lfs uploads packages).each do |component|
+            expect(described_class).to receive(:object_store_config).with(component).and_return("#{component}_object_store_config")
+          end
+
+          expect(subject).to eq(
+            object_store: {
+              artifacts: 'artifacts_object_store_config',
+              external_diffs: 'external_diffs_object_store_config',
+              lfs: 'lfs_object_store_config',
+              uploads: 'uploads_object_store_config',
+              packages: 'packages_object_store_config'
+            })
         end
       end
 

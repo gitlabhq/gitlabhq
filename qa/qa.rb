@@ -75,7 +75,6 @@ module QA
     autoload :CiVariable, 'qa/resource/ci_variable'
     autoload :Runner, 'qa/resource/runner'
     autoload :PersonalAccessToken, 'qa/resource/personal_access_token'
-    autoload :KubernetesCluster, 'qa/resource/kubernetes_cluster'
     autoload :User, 'qa/resource/user'
     autoload :ProjectMilestone, 'qa/resource/project_milestone'
     autoload :Members, 'qa/resource/members'
@@ -88,6 +87,11 @@ module QA
     autoload :ProjectMember, 'qa/resource/project_member'
     autoload :UserGPG, 'qa/resource/user_gpg'
     autoload :Visibility, 'qa/resource/visibility'
+
+    module KubernetesCluster
+      autoload :Base, 'qa/resource/kubernetes_cluster/base'
+      autoload :ProjectCluster, 'qa/resource/kubernetes_cluster/project_cluster'
+    end
 
     module Events
       autoload :Base, 'qa/resource/events/base'

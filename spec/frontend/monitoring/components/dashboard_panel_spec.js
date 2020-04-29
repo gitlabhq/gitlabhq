@@ -56,7 +56,7 @@ describe('Dashboard Panel', () => {
   const findTitle = () => wrapper.find({ ref: 'graphTitle' });
   const findContextualMenu = () => wrapper.find({ ref: 'contextualMenu' });
 
-  const createWrapper = (props, options = {}) => {
+  const createWrapper = (props, options) => {
     wrapper = shallowMount(DashboardPanel, {
       propsData: {
         graphData,
@@ -108,23 +108,50 @@ describe('Dashboard Panel', () => {
       wrapper.destroy();
     });
 
-    describe('Empty Chart component', () => {
-      it('renders the chart title', () => {
-        expect(findTitle().text()).toBe(graphDataEmpty.title);
-      });
+    it('renders the chart title', () => {
+      expect(findTitle().text()).toBe(graphDataEmpty.title);
+    });
 
-      it('renders the no download csv link', () => {
-        expect(wrapper.find({ ref: 'downloadCsvLink' }).exists()).toBe(false);
-      });
+    it('renders no download csv link', () => {
+      expect(wrapper.find({ ref: 'downloadCsvLink' }).exists()).toBe(false);
+    });
 
-      it('does not contain graph widgets', () => {
-        expect(findContextualMenu().exists()).toBe(false);
-      });
+    it('does not contain graph widgets', () => {
+      expect(findContextualMenu().exists()).toBe(false);
+    });
 
-      it('is a Vue instance', () => {
-        expect(wrapper.find(MonitorEmptyChart).exists()).toBe(true);
-        expect(wrapper.find(MonitorEmptyChart).isVueInstance()).toBe(true);
+    it('The Empty Chart component is rendered and is a Vue instance', () => {
+      expect(wrapper.find(MonitorEmptyChart).exists()).toBe(true);
+      expect(wrapper.find(MonitorEmptyChart).isVueInstance()).toBe(true);
+    });
+  });
+
+  describe('When graphData is null', () => {
+    beforeEach(() => {
+      createWrapper({
+        graphData: null,
       });
+    });
+
+    afterEach(() => {
+      wrapper.destroy();
+    });
+
+    it('renders no chart title', () => {
+      expect(findTitle().text()).toBe('');
+    });
+
+    it('renders no download csv link', () => {
+      expect(wrapper.find({ ref: 'downloadCsvLink' }).exists()).toBe(false);
+    });
+
+    it('does not contain graph widgets', () => {
+      expect(findContextualMenu().exists()).toBe(false);
+    });
+
+    it('The Empty Chart component is rendered and is a Vue instance', () => {
+      expect(wrapper.find(MonitorEmptyChart).exists()).toBe(true);
+      expect(wrapper.find(MonitorEmptyChart).isVueInstance()).toBe(true);
     });
   });
 

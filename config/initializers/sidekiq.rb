@@ -75,7 +75,7 @@ Sidekiq.configure_server do |config|
 
   # Sidekiq-cron: load recurring jobs from gitlab.yml
   # UGLY Hack to get nested hash from settingslogic
-  cron_jobs = JSON.parse(Gitlab.config.cron_jobs.to_json)
+  cron_jobs = Gitlab::Json.parse(Gitlab.config.cron_jobs.to_json)
   # UGLY hack: Settingslogic doesn't allow 'class' key
   cron_jobs_required_keys = %w(job_class cron)
   cron_jobs.each do |k, v|

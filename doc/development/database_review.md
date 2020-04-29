@@ -74,12 +74,12 @@ the following preparations into account.
 
 #### Preparation when adding migrations
 
-- Ensure `db/structure.sql` is updated.
+- Ensure `db/structure.sql` is updated as [documented](migration_style_guide.md#schema-changes).
 - Make migrations reversible by using the `change` method or include a `down` method when using `up`.
   - Include either a rollback procedure or describe how to rollback changes.
-- Add the output of both migrating and rolling back for all migrations into the MR description
-  - Ensure the down method reverts the changes in `db/structure.sql`
-  - Update the migration output whenever you modify the migrations during the review process
+- Add the output of both migrating and rolling back for all migrations into the MR description.
+  - Ensure the down method reverts the changes in `db/structure.sql`.
+  - Update the migration output whenever you modify the migrations during the review process.
 - Add tests for the migration in `spec/migrations` if necessary. See [Testing Rails migrations at GitLab](testing_guide/testing_migrations_guide.md) for more details.
 - When [high-traffic](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/migration_helpers.rb#L12) tables are involved in the migration, use the [`with_lock_retries`](migration_style_guide.md#retry-mechanism-when-acquiring-database-locks) helper method. Review the relevant [examples in our documentation](migration_style_guide.md#examples) for use cases and solutions.
 - Ensure RuboCop checks are not disabled unless there's a valid reason to.

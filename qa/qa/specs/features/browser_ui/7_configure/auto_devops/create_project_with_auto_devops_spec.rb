@@ -35,7 +35,7 @@ module QA
           end
 
           # Connect K8s cluster
-          Resource::KubernetesCluster.fabricate! do |k8s_cluster|
+          Resource::KubernetesCluster::ProjectCluster.fabricate! do |k8s_cluster|
             k8s_cluster.project = project
             k8s_cluster.cluster = cluster
             k8s_cluster.install_helm_tiller = true

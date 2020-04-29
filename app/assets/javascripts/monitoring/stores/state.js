@@ -17,6 +17,21 @@ export default () => ({
   dashboard: {
     panelGroups: [],
   },
+  /**
+   * Panel that is currently "zoomed" in as
+   * a single panel in view.
+   */
+  expandedPanel: {
+    /**
+     * {?String} Panel's group name.
+     */
+    group: null,
+    /**
+     * {?Object} Panel content from `dashboard`
+     * null when no panel is expanded.
+     */
+    panel: null,
+  },
   allDashboards: [],
 
   // Other project data

@@ -59,7 +59,8 @@ export default {
     },
     graphData: {
       type: Object,
-      required: true,
+      required: false,
+      default: null,
     },
     groupId: {
       type: String,
@@ -114,17 +115,13 @@ export default {
       },
     }),
     title() {
-      return this.graphData.title || '';
+      return this.graphData?.title || '';
     },
     graphDataHasResult() {
-      return (
-        this.graphData.metrics &&
-        this.graphData.metrics[0].result &&
-        this.graphData.metrics[0].result.length > 0
-      );
+      return this.graphData?.metrics?.[0]?.result?.length > 0;
     },
     graphDataIsLoading() {
-      const { metrics = [] } = this.graphData;
+      const metrics = this.graphData?.metrics || [];
       return metrics.some(({ loading }) => loading);
     },
     logsPathWithTimeRange() {
@@ -136,7 +133,7 @@ export default {
       return null;
     },
     csvText() {
-      const chartData = this.graphData.metrics[0].result[0].values;
+      const chartData = this.graphData?.metrics[0].result[0].values || [];
       const yLabel = this.graphData.y_label;
       const header = `timestamp,${yLabel}\r\n`; // eslint-disable-line @gitlab/require-i18n-strings
       return chartData.reduce((csv, data) => {
@@ -230,7 +227,7 @@ export default {
       return Object.values(this.getGraphAlerts(queries));
     },
     isPanelType(type) {
-      return this.graphData.type && this.graphData.type === type;
+      return this.graphData?.type === type;
     },
     showToast() {
       this.$toast.show(__('Link copied'));

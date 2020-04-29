@@ -13129,6 +13129,9 @@ msgstr ""
 msgid "Metrics|For grouping similar metrics"
 msgstr ""
 
+msgid "Metrics|Go back"
+msgstr ""
+
 msgid "Metrics|Invalid time range, please verify."
 msgstr ""
 

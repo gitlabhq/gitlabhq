@@ -5,6 +5,8 @@ require 'spec_helper'
 describe Gitlab::JiraImport::ImportIssueWorker do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
+  let_it_be(:jira_issue_label_1) { create(:label, project: project) }
+  let_it_be(:jira_issue_label_2) { create(:label, project: project) }
   let(:some_key) { 'some-key' }
 
   describe 'modules' do
@@ -17,7 +19,10 @@ describe Gitlab::JiraImport::ImportIssueWorker do
   subject { described_class.new }
 
   describe '#perform', :clean_gitlab_redis_cache do
-    let(:issue_attrs) { build(:issue, project_id: project.id).as_json.compact }
+    let(:issue_attrs) do
+      build(:issue, project_id: project.id, title: 'jira issue')
+        .as_json.merge('label_ids' => [jira_issue_label_1.id, jira_issue_label_2.id]).compact
+    end
 
     context 'when any exception raised while inserting to DB' do
       before do
@@ -47,13 +52,21 @@ describe Gitlab::JiraImport::ImportIssueWorker do
       context 'when import label exists' do
         before do
           Gitlab::JiraImport.cache_import_label_id(project.id, label.id)
+
+          subject.perform(project.id, 123, issue_attrs, some_key)
         end
 
         it 'does not record import failure' do
-          subject.perform(project.id, 123, issue_attrs, some_key)
-
           expect(label.issues.count).to eq(1)
           expect(Gitlab::Cache::Import::Caching.read(Gitlab::JiraImport.failed_issues_counter_cache_key(project.id)).to_i).to eq(0)
+        end
+
+        it 'creates an issue with the correct attributes' do
+          issue = Issue.last
+
+          expect(issue.title).to eq('jira issue')
+          expect(issue.project).to eq(project)
+          expect(issue.labels).to match_array([label, jira_issue_label_1, jira_issue_label_2])
         end
       end
     end

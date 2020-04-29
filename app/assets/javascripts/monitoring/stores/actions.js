@@ -89,6 +89,17 @@ export const setShowErrorBanner = ({ commit }, enabled) => {
   commit(types.SET_SHOW_ERROR_BANNER, enabled);
 };
 
+export const setExpandedPanel = ({ commit }, { group, panel }) => {
+  commit(types.SET_EXPANDED_PANEL, { group, panel });
+};
+
+export const clearExpandedPanel = ({ commit }) => {
+  commit(types.SET_EXPANDED_PANEL, {
+    group: null,
+    panel: null,
+  });
+};
+
 // All Data
 
 export const fetchData = ({ dispatch }) => {

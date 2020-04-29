@@ -342,4 +342,26 @@ describe('Monitoring mutations', () => {
       expect(stateCopy.allDashboards).toEqual(dashboardGitResponse);
     });
   });
+
+  describe('SET_EXPANDED_PANEL', () => {
+    it('no expanded panel is set initally', () => {
+      expect(stateCopy.expandedPanel.panel).toEqual(null);
+      expect(stateCopy.expandedPanel.group).toEqual(null);
+    });
+
+    it('sets a panel id as the expanded panel', () => {
+      const group = 'group_1';
+      const panel = { title: 'A Panel' };
+      mutations[types.SET_EXPANDED_PANEL](stateCopy, { group, panel });
+
+      expect(stateCopy.expandedPanel).toEqual({ group, panel });
+    });
+
+    it('clears panel as the expanded panel', () => {
+      mutations[types.SET_EXPANDED_PANEL](stateCopy, { group: null, panel: null });
+
+      expect(stateCopy.expandedPanel.group).toEqual(null);
+      expect(stateCopy.expandedPanel.panel).toEqual(null);
+    });
+  });
 });

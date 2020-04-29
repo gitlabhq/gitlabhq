@@ -212,6 +212,97 @@ describe('Dashboard', () => {
     });
   });
 
+  describe('single panel expands to "full screen" mode', () => {
+    const findExpandedPanel = () => wrapper.find({ ref: 'expandedPanel' });
+
+    describe('when the panel is not expanded', () => {
+      beforeEach(() => {
+        createShallowWrapper({ hasMetrics: true });
+        setupStoreWithData(wrapper.vm.$store);
+        return wrapper.vm.$nextTick();
+      });
+
+      it('expanded panel is not visible', () => {
+        expect(findExpandedPanel().isVisible()).toBe(false);
+      });
+
+      it('can set a panel as expanded', () => {
+        const panel = wrapper.findAll(DashboardPanel).at(1);
+
+        jest.spyOn(store, 'dispatch');
+
+        panel.vm.$emit('expand');
+
+        const groupData = metricsDashboardViewModel.panelGroups[0];
+
+        expect(store.dispatch).toHaveBeenCalledWith('monitoringDashboard/setExpandedPanel', {
+          group: groupData.group,
+          panel: expect.objectContaining({
+            id: groupData.panels[0].id,
+          }),
+        });
+      });
+    });
+
+    describe('when the panel is expanded', () => {
+      let group;
+      let panel;
+
+      const MockPanel = {
+        template: `<div><slot name="topLeft"/></div>`,
+      };
+
+      beforeEach(() => {
+        createShallowWrapper({ hasMetrics: true }, { stubs: { DashboardPanel: MockPanel } });
+        setupStoreWithData(wrapper.vm.$store);
+
+        const { panelGroups } = wrapper.vm.$store.state.monitoringDashboard.dashboard;
+
+        group = panelGroups[0].group;
+        [panel] = panelGroups[0].panels;
+
+        wrapper.vm.$store.commit(`monitoringDashboard/${types.SET_EXPANDED_PANEL}`, {
+          group,
+          panel,
+        });
+        return wrapper.vm.$nextTick();
+      });
+
+      it('displays a single panel and others are hidden', () => {
+        const panels = wrapper.findAll(MockPanel);
+        const visiblePanels = panels.filter(w => w.isVisible());
+
+        expect(findExpandedPanel().isVisible()).toBe(true);
+        // v-show for hiding panels is more performant than v-if
+        // check for panels to be hidden.
+        expect(panels.length).toBe(metricsDashboardPanelCount + 1);
+        expect(visiblePanels.length).toBe(1);
+      });
+
+      it('sets a link to the expanded panel', () => {
+        const searchQuery =
+          '?group=System%20metrics%20(Kubernetes)&title=Memory%20Usage%20(Total)&y_label=Total%20Memory%20Used%20(GB)';
+
+        expect(findExpandedPanel().attributes('clipboard-text')).toEqual(
+          expect.stringContaining(searchQuery),
+        );
+      });
+
+      it('restores full dashboard by clicking `back`', () => {
+        const backBtn = wrapper.find({ ref: 'goBackBtn' });
+        expect(backBtn.exists()).toBe(true);
+
+        jest.spyOn(store, 'dispatch');
+        backBtn.vm.$emit('click');
+
+        expect(store.dispatch).toHaveBeenCalledWith(
+          'monitoringDashboard/clearExpandedPanel',
+          undefined,
+        );
+      });
+    });
+  });
+
   describe('when one of the metrics is missing', () => {
     beforeEach(() => {
       createShallowWrapper({ hasMetrics: true });
@@ -499,11 +590,12 @@ describe('Dashboard', () => {
 
   describe('Clipboard text in panels', () => {
     const currentDashboard = 'TEST_DASHBOARD';
+    const panelIndex = 1; // skip expanded panel
 
-    const getClipboardTextAt = i =>
+    const getClipboardTextFirstPanel = () =>
       wrapper
         .findAll(DashboardPanel)
-        .at(i)
+        .at(panelIndex)
         .props('clipboardText');
 
     beforeEach(() => {
@@ -515,18 +607,18 @@ describe('Dashboard', () => {
     });
 
     it('contains a link to the dashboard', () => {
-      expect(getClipboardTextAt(0)).toContain(`dashboard=${currentDashboard}`);
-      expect(getClipboardTextAt(0)).toContain(`group=`);
-      expect(getClipboardTextAt(0)).toContain(`title=`);
-      expect(getClipboardTextAt(0)).toContain(`y_label=`);
+      expect(getClipboardTextFirstPanel()).toContain(`dashboard=${currentDashboard}`);
+      expect(getClipboardTextFirstPanel()).toContain(`group=`);
+      expect(getClipboardTextFirstPanel()).toContain(`title=`);
+      expect(getClipboardTextFirstPanel()).toContain(`y_label=`);
     });
 
     it('strips the undefined parameter', () => {
       wrapper.setProps({ currentDashboard: undefined });
 
       return wrapper.vm.$nextTick(() => {
-        expect(getClipboardTextAt(0)).not.toContain(`dashboard=`);
-        expect(getClipboardTextAt(0)).toContain(`y_label=`);
+        expect(getClipboardTextFirstPanel()).not.toContain(`dashboard=`);
+        expect(getClipboardTextFirstPanel()).toContain(`y_label=`);
       });
     });
 
@@ -534,8 +626,8 @@ describe('Dashboard', () => {
       wrapper.setProps({ currentDashboard: null });
 
       return wrapper.vm.$nextTick(() => {
-        expect(getClipboardTextAt(0)).not.toContain(`dashboard=`);
-        expect(getClipboardTextAt(0)).toContain(`y_label=`);
+        expect(getClipboardTextFirstPanel()).not.toContain(`dashboard=`);
+        expect(getClipboardTextFirstPanel()).toContain(`y_label=`);
       });
     });
   });

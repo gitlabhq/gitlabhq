@@ -143,6 +143,7 @@ db:migrate:reset:
 db:check-schema:
   extends: .db-job-base
   script:
+    - scripts/regenerate-schema
     - source scripts/schema_changed.sh
 
 db:migrate-from-v11.11.0:
