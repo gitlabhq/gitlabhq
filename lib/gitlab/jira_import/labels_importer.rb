@@ -39,7 +39,7 @@ module Gitlab
 
       def process_jira_page(start_at)
         request = "/rest/api/2/label?maxResults=#{MAX_LABELS}&startAt=#{start_at}"
-        response = JSON.parse(client.get(request))
+        response = client.get(request)
 
         return true if response['values'].blank?
         return true unless response.key?('isLast')

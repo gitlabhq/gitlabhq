@@ -589,7 +589,8 @@ module ProjectsHelper
       pagesAccessLevel: feature.pages_access_level,
       containerRegistryEnabled: !!project.container_registry_enabled,
       lfsEnabled: !!project.lfs_enabled,
-      emailsDisabled: project.emails_disabled?
+      emailsDisabled: project.emails_disabled?,
+      metricsDashboardAccessLevel: feature.metrics_dashboard_access_level
     }
   end
 

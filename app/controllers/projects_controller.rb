@@ -403,6 +403,7 @@ class ProjectsController < Projects::ApplicationController
         snippets_access_level
         wiki_access_level
         pages_access_level
+        metrics_dashboard_access_level
       ]
     ]
   end

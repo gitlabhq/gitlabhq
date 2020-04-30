@@ -1,0 +1,5 @@
+#import "./board_list_shared.fragment.graphql"
+
+fragment BoardListFragment on BoardList {
+  ...BoardListShared
+}

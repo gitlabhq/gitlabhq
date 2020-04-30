@@ -29,6 +29,7 @@ describe ProjectPolicy do
       admin_issue admin_label admin_list read_commit_status read_build
       read_container_image read_pipeline read_environment read_deployment
       read_merge_request download_wiki_code read_sentry_issue read_metrics_dashboard_annotation
+      metrics_dashboard
     ]
   end
 
@@ -483,6 +484,192 @@ describe ProjectPolicy do
       let(:current_user) { nil }
 
       it { is_expected.to be_disallowed(:read_prometheus_alerts) }
+    end
+  end
+
+  describe 'metrics_dashboard feature' do
+    subject { described_class.new(current_user, project) }
+
+    context 'public project' do
+      let(:project) { create(:project, :public) }
+
+      context 'feature private' do
+        context 'with reporter' do
+          let(:current_user) { reporter }
+
+          it { is_expected.to be_allowed(:metrics_dashboard) }
+          it { is_expected.to be_allowed(:read_prometheus) }
+          it { is_expected.to be_allowed(:read_deployment) }
+        end
+
+        context 'with guest' do
+          let(:current_user) { guest }
+
+          it { is_expected.to be_disallowed(:metrics_dashboard) }
+        end
+
+        context 'with anonymous' do
+          let(:current_user) { nil }
+
+          it { is_expected.to be_disallowed(:metrics_dashboard) }
+        end
+      end
+
+      context 'feature enabled' do
+        before do
+          project.project_feature.update(metrics_dashboard_access_level: ProjectFeature::ENABLED)
+        end
+
+        context 'with reporter' do
+          let(:current_user) { reporter }
+
+          it { is_expected.to be_allowed(:metrics_dashboard) }
+          it { is_expected.to be_allowed(:read_prometheus) }
+          it { is_expected.to be_allowed(:read_deployment) }
+        end
+
+        context 'with guest' do
+          let(:current_user) { guest }
+
+          it { is_expected.to be_allowed(:metrics_dashboard) }
+          it { is_expected.to be_allowed(:read_prometheus) }
+          it { is_expected.to be_allowed(:read_deployment) }
+        end
+
+        context 'with anonymous' do
+          let(:current_user) { nil }
+
+          it { is_expected.to be_allowed(:metrics_dashboard) }
+          it { is_expected.to be_allowed(:read_prometheus) }
+          it { is_expected.to be_allowed(:read_deployment) }
+        end
+      end
+    end
+
+    context 'internal project' do
+      let(:project) { create(:project, :internal) }
+
+      context 'feature private' do
+        context 'with reporter' do
+          let(:current_user) { reporter }
+
+          it { is_expected.to be_allowed(:metrics_dashboard) }
+          it { is_expected.to be_allowed(:read_prometheus) }
+          it { is_expected.to be_allowed(:read_deployment) }
+        end
+
+        context 'with guest' do
+          let(:current_user) { guest }
+
+          it { is_expected.to be_disallowed(:metrics_dashboard) }
+        end
+
+        context 'with anonymous' do
+          let(:current_user) { nil }
+
+          it { is_expected.to be_disallowed(:metrics_dashboard)}
+        end
+      end
+
+      context 'feature enabled' do
+        before do
+          project.project_feature.update(metrics_dashboard_access_level: ProjectFeature::ENABLED)
+        end
+
+        context 'with reporter' do
+          let(:current_user) { reporter }
+
+          it { is_expected.to be_allowed(:metrics_dashboard) }
+          it { is_expected.to be_allowed(:read_prometheus) }
+          it { is_expected.to be_allowed(:read_deployment) }
+        end
+
+        context 'with guest' do
+          let(:current_user) { guest }
+
+          it { is_expected.to be_allowed(:metrics_dashboard) }
+          it { is_expected.to be_allowed(:read_prometheus) }
+          it { is_expected.to be_allowed(:read_deployment) }
+        end
+
+        context 'with anonymous' do
+          let(:current_user) { nil }
+
+          it { is_expected.to be_disallowed(:metrics_dashboard) }
+        end
+      end
+    end
+
+    context 'private project' do
+      let(:project) { create(:project, :private) }
+
+      context 'feature private' do
+        context 'with reporter' do
+          let(:current_user) { reporter }
+
+          it { is_expected.to be_allowed(:metrics_dashboard) }
+          it { is_expected.to be_allowed(:read_prometheus) }
+          it { is_expected.to be_allowed(:read_deployment) }
+        end
+
+        context 'with guest' do
+          let(:current_user) { guest }
+
+          it { is_expected.to be_disallowed(:metrics_dashboard) }
+        end
+
+        context 'with anonymous' do
+          let(:current_user) { nil }
+
+          it { is_expected.to be_disallowed(:metrics_dashboard) }
+        end
+      end
+
+      context 'feature enabled' do
+        context 'with reporter' do
+          let(:current_user) { reporter }
+
+          it { is_expected.to be_allowed(:metrics_dashboard) }
+          it { is_expected.to be_allowed(:read_prometheus) }
+          it { is_expected.to be_allowed(:read_deployment) }
+        end
+
+        context 'with guest' do
+          let(:current_user) { guest }
+
+          it { is_expected.to be_disallowed(:metrics_dashboard) }
+        end
+
+        context 'with anonymous' do
+          let(:current_user) { nil }
+
+          it { is_expected.to be_disallowed(:metrics_dashboard) }
+        end
+      end
+    end
+
+    context 'feature disabled' do
+      before do
+        project.project_feature.update(metrics_dashboard_access_level: ProjectFeature::DISABLED)
+      end
+
+      context 'with reporter' do
+        let(:current_user) { reporter }
+
+        it { is_expected.to be_disallowed(:metrics_dashboard) }
+      end
+
+      context 'with guest' do
+        let(:current_user) { guest }
+
+        it { is_expected.to be_disallowed(:metrics_dashboard) }
+      end
+
+      context 'with anonymous' do
+        let(:current_user) { nil }
+
+        it { is_expected.to be_disallowed(:metrics_dashboard) }
+      end
     end
   end
 end

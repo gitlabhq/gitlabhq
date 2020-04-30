@@ -16,10 +16,13 @@ import {
   getBoardsModalData,
 } from 'ee_else_ce/boards/ee_functions';
 
+import VueApollo from 'vue-apollo';
+import createDefaultClient from '~/lib/graphql';
 import Flash from '~/flash';
 import { __ } from '~/locale';
 import './models/label';
 import './models/assignee';
+import { BoardType } from './constants';
 
 import FilteredSearchBoards from '~/boards/filtered_search_boards';
 import eventHub from '~/boards/eventhub';
@@ -37,7 +40,16 @@ import {
   convertObjectPropsToCamelCase,
   parseBoolean,
 } from '~/lib/utils/common_utils';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import mountMultipleBoardsSwitcher from './mount_multiple_boards_switcher';
+import projectBoardQuery from './queries/project_board.query.graphql';
+import groupQuery from './queries/group_board.query.graphql';
+
+Vue.use(VueApollo);
+
+const apolloProvider = new VueApollo({
+  defaultClient: createDefaultClient(),
+});
 
 let issueBoardsApp;
 
@@ -79,18 +91,22 @@ export default () => {
         import('ee_component/boards/components/board_settings_sidebar.vue'),
     },
     store,
-    data: {
-      state: boardsStore.state,
-      loading: true,
-      boardsEndpoint: $boardApp.dataset.boardsEndpoint,
-      recentBoardsEndpoint: $boardApp.dataset.recentBoardsEndpoint,
-      listsEndpoint: $boardApp.dataset.listsEndpoint,
-      boardId: $boardApp.dataset.boardId,
-      disabled: parseBoolean($boardApp.dataset.disabled),
-      issueLinkBase: $boardApp.dataset.issueLinkBase,
-      rootPath: $boardApp.dataset.rootPath,
-      bulkUpdatePath: $boardApp.dataset.bulkUpdatePath,
-      detailIssue: boardsStore.detail,
+    apolloProvider,
+    data() {
+      return {
+        state: boardsStore.state,
+        loading: 0,
+        boardsEndpoint: $boardApp.dataset.boardsEndpoint,
+        recentBoardsEndpoint: $boardApp.dataset.recentBoardsEndpoint,
+        listsEndpoint: $boardApp.dataset.listsEndpoint,
+        boardId: $boardApp.dataset.boardId,
+        disabled: parseBoolean($boardApp.dataset.disabled),
+        issueLinkBase: $boardApp.dataset.issueLinkBase,
+        rootPath: $boardApp.dataset.rootPath,
+        bulkUpdatePath: $boardApp.dataset.bulkUpdatePath,
+        detailIssue: boardsStore.detail,
+        parent: $boardApp.dataset.parent,
+      };
     },
     computed: {
       detailIssueVisible() {
@@ -124,31 +140,56 @@ export default () => {
       this.filterManager.setup();
 
       boardsStore.disabled = this.disabled;
-      boardsStore
-        .all()
-        .then(res => res.data)
-        .then(lists => {
-          lists.forEach(listObj => {
-            let { position } = listObj;
-            if (listObj.list_type === 'closed') {
-              position = Infinity;
-            } else if (listObj.list_type === 'backlog') {
-              position = -1;
+
+      if (gon.features.graphqlBoardLists) {
+        this.$apollo.addSmartQuery('lists', {
+          query() {
+            return this.parent === BoardType.group ? groupQuery : projectBoardQuery;
+          },
+          variables() {
+            return {
+              fullPath: this.state.endpoints.fullPath,
+              boardId: `gid://gitlab/Board/${this.boardId}`,
+            };
+          },
+          update(data) {
+            return this.getNodes(data);
+          },
+          result({ data, error }) {
+            if (error) {
+              throw error;
             }
 
-            boardsStore.addList({
-              ...listObj,
-              position,
-            });
-          });
+            const lists = this.getNodes(data);
 
-          boardsStore.addBlankState();
-          setPromotionState(boardsStore);
-          this.loading = false;
-        })
-        .catch(() => {
-          Flash(__('An error occurred while fetching the board lists. Please try again.'));
+            lists.forEach(list =>
+              boardsStore.addList({
+                ...list,
+                id: getIdFromGraphQLId(list.id),
+              }),
+            );
+
+            boardsStore.addBlankState();
+            setPromotionState(boardsStore);
+          },
+          error() {
+            Flash(__('An error occurred while fetching the board lists. Please try again.'));
+          },
         });
+      } else {
+        boardsStore
+          .all()
+          .then(res => res.data)
+          .then(lists => {
+            lists.forEach(list => boardsStore.addList(list));
+            boardsStore.addBlankState();
+            setPromotionState(boardsStore);
+            this.loading = false;
+          })
+          .catch(() => {
+            Flash(__('An error occurred while fetching the board lists. Please try again.'));
+          });
+      }
     },
     methods: {
       updateTokens() {
@@ -232,6 +273,9 @@ export default () => {
               Flash(__('An error occurred when toggling the notification subscription'));
             });
         }
+      },
+      getNodes(data) {
+        return data[this.parent]?.board?.lists.nodes;
       },
     },
   });

@@ -205,7 +205,7 @@ if [route maps](#route-maps) are configured in the project.
 
 ![review button](img/review_button.png)
 
-The provided script should be added to the `<head>` of you application and
+The provided script should be added to the `<head>` of your application and
 consists of some project and merge request specific values. Here's what it
 looks like:
 

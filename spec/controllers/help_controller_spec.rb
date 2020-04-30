@@ -99,6 +99,7 @@ describe HelpController do
     context 'for Markdown formats' do
       context 'when requested file exists' do
         before do
+          expect(File).to receive(:read).and_return(fixture_file('blockquote_fence_after.md'))
           get :show, params: { path: 'ssh/README' }, format: :md
         end
 
@@ -108,7 +109,7 @@ describe HelpController do
 
         it 'renders HTML' do
           expect(response).to render_template('show.html.haml')
-          expect(response.content_type).to eq 'text/html'
+          expect(response.media_type).to eq 'text/html'
         end
       end
 
@@ -129,7 +130,7 @@ describe HelpController do
               },
               format: :png
           expect(response).to be_successful
-          expect(response.content_type).to eq 'image/png'
+          expect(response.media_type).to eq 'image/png'
           expect(response.headers['Content-Disposition']).to match(/^inline;/)
         end
       end
@@ -168,6 +169,6 @@ describe HelpController do
   end
 
   def stub_readme(content)
-    allow(File).to receive(:read).and_return(content)
+    expect(File).to receive(:read).and_return(content)
   end
 end

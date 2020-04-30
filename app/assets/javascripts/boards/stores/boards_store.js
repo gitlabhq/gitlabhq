@@ -80,7 +80,15 @@ const boardsStore = {
     this.state.currentPage = page;
   },
   addList(listObj) {
-    const list = new List(listObj);
+    const listType = listObj.listType || listObj.list_type;
+    let { position } = listObj;
+    if (listType === ListType.closed) {
+      position = Infinity;
+    } else if (listType === ListType.backlog) {
+      position = -1;
+    }
+
+    const list = new List({ ...listObj, position });
     this.state.lists = sortBy([...this.state.lists, list], 'position');
     return list;
   },

@@ -133,6 +133,17 @@ export default class EnvironmentsStore {
   }
 
   /**
+   * Toggles deploy board visibility for the provided environment ID.
+   * Currently only works on EE.
+   *
+   * @param  {Object} environment
+   * @return {Array}
+   */
+  toggleDeployBoard() {
+    return this.state.environments;
+  }
+
+  /**
    * Toggles folder open property for the given folder.
    *
    * @param  {Object} folder

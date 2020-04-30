@@ -15,7 +15,7 @@ class ListIssue {
     this.labels = [];
     this.assignees = [];
     this.selected = false;
-    this.position = obj.relative_position || Infinity;
+    this.position = obj.position || obj.relative_position || Infinity;
     this.isFetching = {
       subscriptions: true,
     };

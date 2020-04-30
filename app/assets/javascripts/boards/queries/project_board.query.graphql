@@ -1,0 +1,13 @@
+#import "ee_else_ce/boards/queries/board_list.fragment.graphql"
+
+query ProjectBoard($fullPath: ID!, $boardId: ID!) {
+  project(fullPath: $fullPath) {
+    board(id: $boardId) {
+      lists {
+        nodes {
+          ...BoardListFragment
+        }
+      }
+    }
+  }
+}

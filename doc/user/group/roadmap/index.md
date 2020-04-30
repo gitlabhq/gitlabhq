@@ -23,7 +23,7 @@ You can click the chevron **{chevron-down}** next to the epic title to expand an
 
 On top of the milestone bars, you can see their title. When you hover a milestone bar or title, a popover appears with its title, start date and due date.
 
-![roadmap view](img/roadmap_view_v12_10.png)
+![roadmap view](img/roadmap_view_v13_0.png)
 
 A dropdown menu allows you to show only open or closed epics. By default, all epics are shown.
 

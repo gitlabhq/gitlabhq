@@ -10,7 +10,9 @@ describe Gitlab::JiraImport::LabelsImporter do
   let_it_be(:project) { create(:project, group: group) }
   let_it_be(:jira_service) { create(:jira_service, project: project) }
 
-  subject { described_class.new(project).execute }
+  let(:importer) { described_class.new(project) }
+
+  subject { importer.execute }
 
   before do
     stub_feature_flags(jira_issue_import: true)
@@ -38,14 +40,13 @@ describe Gitlab::JiraImport::LabelsImporter do
       let(:jira_labels_1) { { "maxResults" => 2, "startAt" => 0, "total" => 3, "isLast" => false, "values" => %w(backend bug) } }
       let(:jira_labels_2) { { "maxResults" => 2, "startAt" => 2, "total" => 3, "isLast" => true, "values" => %w(feature) } }
 
-      before do
-        WebMock.stub_request(:get, 'https://jira.example.com/rest/api/2/label?maxResults=2&startAt=0')
-          .to_return(body: jira_labels_1.to_json )
-        WebMock.stub_request(:get, 'https://jira.example.com/rest/api/2/label?maxResults=2&startAt=2')
-          .to_return(body: jira_labels_2.to_json )
-      end
-
       context 'when labels are returned from jira' do
+        before do
+          client = double
+          expect(importer).to receive(:client).twice.and_return(client)
+          allow(client).to receive(:get).twice.and_return(jira_labels_1, jira_labels_2)
+        end
+
         it 'caches import label' do
           expect(Gitlab::Cache::Import::Caching.read(Gitlab::JiraImport.import_label_cache_key(project.id))).to be nil
 
@@ -74,8 +75,9 @@ describe Gitlab::JiraImport::LabelsImporter do
         let(:jira_labels) { { "maxResults" => 2, "startAt" => 0, "total" => 3, "values" => [] } }
 
         before do
-          WebMock.stub_request(:get, 'https://jira.example.com/rest/api/2/label?maxResults=2&startAt=0')
-            .to_return(body: jira_labels.to_json )
+          client = double
+          expect(importer).to receive(:client).and_return(client)
+          allow(client).to receive(:get).and_return(jira_labels)
         end
 
         context 'when the labels field is empty' do

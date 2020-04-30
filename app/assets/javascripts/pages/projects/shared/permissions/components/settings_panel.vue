@@ -12,6 +12,7 @@ import {
   visibilityLevelDescriptions,
   featureAccessLevelMembers,
   featureAccessLevelEveryone,
+  featureAccessLevel,
 } from '../constants';
 import { toggleHiddenClassBySelector } from '../external';
 
@@ -127,7 +128,7 @@ export default {
       wikiAccessLevel: 20,
       snippetsAccessLevel: 20,
       pagesAccessLevel: 20,
-      metricsAccessLevel: visibilityOptions.PRIVATE,
+      metricsDashboardAccessLevel: featureAccessLevel.PROJECT_MEMBERS,
       containerRegistryEnabled: true,
       lfsEnabled: true,
       requestAccessEnabled: true,
@@ -174,6 +175,10 @@ export default {
       return options;
     },
 
+    metricsOptionsDropdownEnabled() {
+      return this.featureAccessLevelOptions.length < 2;
+    },
+
     repositoryEnabled() {
       return this.repositoryAccessLevel > 0;
     },
@@ -211,6 +216,7 @@ export default {
         this.buildsAccessLevel = Math.min(10, this.buildsAccessLevel);
         this.wikiAccessLevel = Math.min(10, this.wikiAccessLevel);
         this.snippetsAccessLevel = Math.min(10, this.snippetsAccessLevel);
+        this.metricsDashboardAccessLevel = Math.min(10, this.metricsDashboardAccessLevel);
         if (this.pagesAccessLevel === 20) {
           // When from Internal->Private narrow access for only members
           this.pagesAccessLevel = 10;
@@ -225,6 +231,7 @@ export default {
         if (this.wikiAccessLevel > 0) this.wikiAccessLevel = 20;
         if (this.snippetsAccessLevel > 0) this.snippetsAccessLevel = 20;
         if (this.pagesAccessLevel === 10) this.pagesAccessLevel = 20;
+        if (this.metricsDashboardAccessLevel === 10) this.metricsDashboardAccessLevel = 20;
         this.highlightChanges();
       }
     },
@@ -485,17 +492,18 @@ export default {
         <div class="project-feature-controls">
           <div class="select-wrapper">
             <select
-              v-model="metricsAccessLevel"
+              v-model="metricsDashboardAccessLevel"
+              :disabled="metricsOptionsDropdownEnabled"
               name="project[project_feature_attributes][metrics_dashboard_access_level]"
-              class="form-control select-control"
+              class="form-control project-repo-select select-control"
             >
               <option
-                :value="visibilityOptions.PRIVATE"
-                :disabled="!visibilityAllowed(visibilityOptions.PRIVATE)"
+                :value="featureAccessLevelMembers[0]"
+                :disabled="!visibilityAllowed(visibilityOptions.INTERNAL)"
                 >{{ featureAccessLevelMembers[1] }}</option
               >
               <option
-                :value="visibilityOptions.PUBLIC"
+                :value="featureAccessLevelEveryone[0]"
                 :disabled="!visibilityAllowed(visibilityOptions.PUBLIC)"
                 >{{ featureAccessLevelEveryone[1] }}</option
               >

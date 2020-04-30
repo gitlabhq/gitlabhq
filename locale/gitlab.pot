@@ -5992,7 +5992,7 @@ msgstr ""
 msgid "Could not delete chat nickname %{chat_name}."
 msgstr ""
 
-msgid "Could not find design"
+msgid "Could not find design."
 msgstr ""
 
 msgid "Could not remove the trigger."
@@ -13760,6 +13760,9 @@ msgstr ""
 msgid "No changes between %{ref_start}%{source_branch}%{ref_end} and %{ref_start}%{target_branch}%{ref_end}"
 msgstr ""
 
+msgid "No child epics match applied filters"
+msgstr ""
+
 msgid "No connection could be made to a Gitaly Server, please check your logs!"
 msgstr ""
 
@@ -17455,7 +17458,7 @@ msgstr ""
 msgid "Requested %{time_ago}"
 msgstr ""
 
-msgid "Requested design version does not exist"
+msgid "Requested design version does not exist."
 msgstr ""
 
 msgid "Requested states are invalid"
@@ -19181,6 +19184,9 @@ msgstr ""
 msgid "Snowplow"
 msgstr ""
 
+msgid "Some child epics may be hidden due to applied filters"
+msgstr ""
+
 msgid "Some email servers do not support overriding the email sender name. Enable this option to include the name of the author of the issue, merge request or comment in the email body instead."
 msgstr ""
 
@@ -20652,6 +20658,9 @@ msgid "The license was removed. GitLab now no longer has a valid license."
 msgstr ""
 
 msgid "The license was successfully uploaded and is now active. You can see the details below."
+msgstr ""
+
+msgid "The license was successfully uploaded and will be active from %{starts_at}. You can see the details below."
 msgstr ""
 
 msgid "The maximum file size allowed is %{size}."

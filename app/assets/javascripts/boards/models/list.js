@@ -39,8 +39,8 @@ class List {
     this.id = obj.id;
     this._uid = this.guid();
     this.position = obj.position;
-    this.title = obj.list_type === 'backlog' ? __('Open') : obj.title;
-    this.type = obj.list_type;
+    this.title = (obj.list_type || obj.listType) === 'backlog' ? __('Open') : obj.title;
+    this.type = obj.list_type || obj.listType;
 
     const typeInfo = this.getTypeInfo(this.type);
     this.preset = Boolean(typeInfo.isPreset);
@@ -51,14 +51,12 @@ class List {
     this.loadingMore = false;
     this.issues = obj.issues || [];
     this.issuesSize = obj.issuesSize ? obj.issuesSize : 0;
-    this.maxIssueCount = Object.hasOwnProperty.call(obj, 'max_issue_count')
-      ? obj.max_issue_count
-      : 0;
+    this.maxIssueCount = obj.maxIssueCount || obj.max_issue_count || 0;
 
     if (obj.label) {
       this.label = new ListLabel(obj.label);
-    } else if (obj.user) {
-      this.assignee = new ListAssignee(obj.user);
+    } else if (obj.user || obj.assignee) {
+      this.assignee = new ListAssignee(obj.user || obj.assignee);
       this.title = this.assignee.name;
     } else if (IS_EE && obj.milestone) {
       this.milestone = new ListMilestone(obj.milestone);

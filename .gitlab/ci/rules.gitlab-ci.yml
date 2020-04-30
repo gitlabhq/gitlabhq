@@ -84,7 +84,6 @@
   - "{,ee/}rubocop/**/*"
   - "{,ee/}spec/**/*"
   - "doc/README.md"  # Some RSpec test rely on this file
-  - "doc/administration/raketasks/maintenance.md"  # Some RSpec test rely on this file
 
 .code-patterns: &code-patterns
   - "{package.json,yarn.lock}"
@@ -128,7 +127,6 @@
   - "{,ee/}rubocop/**/*"
   - "{,ee/}spec/**/*"
   - "doc/README.md"  # Some RSpec test rely on this file
-  - "doc/administration/raketasks/maintenance.md"  # Some RSpec test rely on this file
 
 .code-qa-patterns: &code-qa-patterns
   - "{package.json,yarn.lock}"
@@ -171,7 +169,6 @@
   - "{,ee/}rubocop/**/*"
   - "{,ee/}spec/**/*"
   - "doc/README.md"  # Some RSpec test rely on this file
-  - "doc/administration/raketasks/maintenance.md"  # Some RSpec test rely on this file
   # QA changes
   - ".dockerignore"
   - "qa/**/*"

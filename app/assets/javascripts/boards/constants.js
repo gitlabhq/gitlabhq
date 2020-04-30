@@ -1,3 +1,8 @@
+export const BoardType = {
+  project: 'project',
+  group: 'group',
+};
+
 export const ListType = {
   assignee: 'assignee',
   milestone: 'milestone',
@@ -11,5 +16,6 @@ export const ListType = {
 export const inactiveListId = 0;
 
 export default {
+  BoardType,
   ListType,
 };

@@ -9,9 +9,9 @@ const markdownPreviewPath = `${TEST_HOST}/preview`;
 const markdownDocsPath = `${TEST_HOST}/docs`;
 
 function assertMarkdownTabs(isWrite, writeLink, previewLink, wrapper) {
-  expect(writeLink.element.parentNode.classList.contains('active')).toEqual(isWrite);
-  expect(previewLink.element.parentNode.classList.contains('active')).toEqual(!isWrite);
-  expect(wrapper.find('.md-preview-holder').element.style.display).toEqual(isWrite ? 'none' : '');
+  expect(writeLink.element.parentNode.classList.contains('active')).toBe(isWrite);
+  expect(previewLink.element.parentNode.classList.contains('active')).toBe(!isWrite);
+  expect(wrapper.find('.md-preview-holder').element.style.display).toBe(isWrite ? 'none' : '');
 }
 
 function createComponent() {
@@ -67,6 +67,10 @@ describe('Markdown field component', () => {
     let previewLink;
     let writeLink;
 
+    afterEach(() => {
+      wrapper.destroy();
+    });
+
     it('renders textarea inside backdrop', () => {
       wrapper = createComponent();
       expect(wrapper.find('.zen-backdrop textarea').element).not.toBeNull();
@@ -92,32 +96,24 @@ describe('Markdown field component', () => {
         previewLink = getPreviewLink(wrapper);
         previewLink.trigger('click');
 
-        wrapper.vm.$nextTick(() => {
+        return wrapper.vm.$nextTick(() => {
           expect(wrapper.find('.md-preview-holder').element.textContent.trim()).toContain(
             'Loading…',
           );
         });
       });
 
-      it('renders markdown preview', () => {
+      it('renders markdown preview and GFM', () => {
         wrapper = createComponent();
-        previewLink = getPreviewLink(wrapper);
-        previewLink.trigger('click');
+        const renderGFMSpy = jest.spyOn($.fn, 'renderGFM');
 
-        setTimeout(() => {
-          expect(wrapper.find('.md-preview-holder').element.innerHTML).toContain(previewHTML);
-        });
-      });
-
-      it('renders GFM with jQuery', () => {
-        wrapper = createComponent();
         previewLink = getPreviewLink(wrapper);
-        jest.spyOn($.fn, 'renderGFM');
 
         previewLink.trigger('click');
 
         return axios.waitFor(markdownPreviewPath).then(() => {
           expect(wrapper.find('.md-preview-holder').element.innerHTML).toContain(previewHTML);
+          expect(renderGFMSpy).toHaveBeenCalled();
         });
       });
 
@@ -176,7 +172,7 @@ describe('Markdown field component', () => {
         const markdownButton = getMarkdownButton(wrapper);
         markdownButton.trigger('click');
 
-        wrapper.vm.$nextTick(() => {
+        return wrapper.vm.$nextTick(() => {
           expect(textarea.value).toContain('**testing**');
         });
       });
@@ -188,7 +184,7 @@ describe('Markdown field component', () => {
         const markdownButton = getAllMarkdownButtons(wrapper).wrappers[5];
         markdownButton.trigger('click');
 
-        wrapper.vm.$nextTick(() => {
+        return wrapper.vm.$nextTick(() => {
           expect(textarea.value).toContain('*  testing');
         });
       });
@@ -200,7 +196,7 @@ describe('Markdown field component', () => {
         const markdownButton = getAllMarkdownButtons(wrapper).wrappers[5];
         markdownButton.trigger('click');
 
-        wrapper.vm.$nextTick(() => {
+        return wrapper.vm.$nextTick(() => {
           expect(textarea.value).toContain('* testing\n* 123');
         });
       });

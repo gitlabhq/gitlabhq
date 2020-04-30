@@ -61,6 +61,7 @@ Use the switches to enable or disable the following features:
 | **Wiki**                          | ✓                         | Enables a separate system for [documentation](../wiki/)                                                                                                                                        |
 | **Snippets**                      | ✓                         | Enables [sharing of code and text](../../snippets.md)                                                                                                                                          |
 | **Pages**                         | ✓                         | Allows you to [publish static websites](../pages/)                                                                                                                                             |
+| **Metrics Dashboard**             | ✓                         | Control access to [metrics dashboard](../integrations/prometheus.md)
 
 Some features depend on others:
 
@@ -80,12 +81,14 @@ Some features depend on others:
 
 - If you disable **Repository** functionality, GitLab also disables the following
   features for your project:
-
   - **Merge Requests**
   - **Pipelines**
   - **Container Registry**
   - **Git Large File Storage**
   - **Packages**
+
+- Metrics dashboard access requires reading both project environments and deployments.
+  Users with access to the metrics dashboard can also access environments and deployments.
 
 #### Disabling email notifications
 

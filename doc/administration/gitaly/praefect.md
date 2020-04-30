@@ -5,10 +5,30 @@ NOTE: **Note:** Praefect is a
 allows Gitaly to be run in a highly available configuration. While unexpected
 data loss is not likely, Praefect is not yet ready for production environments.
 
-Praefect is an optional reverse-proxy for [Gitaly](../index.md) to manage a
-cluster of Gitaly nodes for high availability. High availability is currently
-implemented through asynchronous replication. If a Gitaly node becomes
-unavailable, Praefect will automatically route traffic to a warm Gitaly replica.
+[Gitaly](index.md) is the service that provides storage for Git repositories in
+the GitLab application. Praefect is an optional reverse proxy for Gitaly to
+manage multiple Gitaly nodes for high availability.
+
+High availability is currently implemented through **asynchronous replication**.
+If a Gitaly node becomes unavailable, Praefect will automatically route traffic
+to a warm Gitaly replica.
+
+- **Recovery Point Objective (RPO):** Less than 1 minute.
+
+  Writes are replicated asynchronously. Any writes that have not been replicated
+  to the newly promoted primary are lost.
+
+  [Strong Consistency](https://gitlab.com/groups/gitlab-org/-/epics/1189) is
+  planned to improve this to "no loss".
+
+- **Recovery Time Objective (RTO):** Less than 10 seconds.
+
+  Outages are detected by a health checks run by each Praefect node every
+  second. Failover requires ten consecutive failed health checks on each
+  Praefect node.
+
+  [Faster outage detection](https://gitlab.com/gitlab-org/gitaly/-/issues/2608)
+  is planned to improve this to less than 1 second.
 
 The current version supports:
 
@@ -18,7 +38,6 @@ The current version supports:
 
 Follow the [HA Gitaly epic](https://gitlab.com/groups/gitlab-org/-/epics/1489)
 for improvements including
-[strong consistency](https://gitlab.com/groups/gitlab-org/-/epics/1189) and
 [horizontally distributing reads](https://gitlab.com/groups/gitlab-org/-/epics/2013).
 
 ## Requirements for configuring Gitaly for High Availability
@@ -348,7 +367,7 @@ To complete this section you will need:
   These should be dedicated nodes, do not run other services on these nodes.
 
 Every Gitaly server assigned to the Praefect cluster needs to be configured. The
-configuration is the same as a normal [standalone Gitaly server](../index.md),
+configuration is the same as a normal [standalone Gitaly server](index.md),
 except:
 
 - the storage names are exposed to Praefect, not GitLab
@@ -428,7 +447,7 @@ documentation](index.md#3-gitaly-server-configuration).
 1. Configure the GitLab Shell `secret_token`, and `internal_api_url` which are
    needed for `git push` operations.
 
-   If you have already configured [Gitaly on its own server](../index.md)
+   If you have already configured [Gitaly on its own server](index.md)
 
    ```ruby
    gitlab_shell['secret_token'] = 'GITLAB_SHELL_SECRET_TOKEN'

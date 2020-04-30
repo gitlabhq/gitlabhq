@@ -42,7 +42,7 @@ module Metrics
       def allowed?
         return false unless params[:environment]
 
-        Ability.allowed?(current_user, :read_environment, project)
+        project&.feature_available?(:metrics_dashboard, current_user)
       end
 
       # Returns a new dashboard Hash, supplemented with DB info
