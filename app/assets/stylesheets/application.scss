@@ -37,4 +37,12 @@
 @import "application_ee";
 
 // CSS util classes
+/**
+  These are deprecated in favor of the Gitlab UI utilities imported below.
+  Please check https://unpkg.com/browse/@gitlab/ui/src/scss/utilities.scss
+  to see the available utility classes.
+**/
 @import "utilities";
+
+// Gitlab UI util classes
+@import "@gitlab/ui/src/scss/utilities";

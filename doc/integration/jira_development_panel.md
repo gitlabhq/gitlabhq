@@ -164,7 +164,7 @@ Click the links to see your GitLab repository data.
 
 ## Limitations
 
-- This integration is currently not supported on GitLab instances under a [relative url](https://docs.gitlab.com/omnibus/settings/configuration.html#configuring-a-relative-url-for-gitlab) (for example, `http://example.com/gitlab`).
+- This integration is currently not supported on GitLab instances under a [relative URL](https://docs.gitlab.com/omnibus/settings/configuration.html#configuring-a-relative-url-for-gitlab) (for example, `http://example.com/gitlab`).
 
 ## Changelog
 

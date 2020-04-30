@@ -1,0 +1,35 @@
+config:
+  build:
+    stage: build
+    script: exit 0
+
+  test:
+    stage: test
+    when: on_failure
+    script: exit 0
+    needs: [build]
+
+init:
+  expect:
+    pipeline: pending
+    stages:
+      build: pending
+      test: created
+    jobs:
+      build: pending
+      test: created
+
+transitions:
+  - event: success
+    jobs: [build]
+    expect:
+      pipeline: success
+      stages:
+        build: success
+        test: skipped
+      jobs:
+        build: success
+        test: skipped
+
+# TODO: Should we run `test`?
+# Further discussions: https://gitlab.com/gitlab-org/gitlab/-/issues/213080

@@ -150,7 +150,7 @@ endpoints:
 Running the following `curl` command should trigger your function.
 
 NOTE: **Note:**
-  Your url should be the one retrieved from the GitLab deploy stage log.
+Your URL should be the one retrieved from the GitLab deploy stage log.
 
 ```shell
 curl https://u768nzby1j.execute-api.us-east-1.amazonaws.com/production/hello

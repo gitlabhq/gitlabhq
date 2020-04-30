@@ -102,9 +102,6 @@ export default {
     orderedLabels() {
       return sortBy(this.issue.labels.filter(this.isNonListLabel), 'title');
     },
-    helpLink() {
-      return boardsStore.scopedLabels.helpLink;
-    },
   },
   methods: {
     isIndexLessThanlimit(index) {
@@ -181,7 +178,6 @@ export default {
           :description="label.description"
           size="sm"
           :scoped="showScopedLabel(label)"
-          :scoped-labels-documentation-link="helpLink"
           @click="filterByLabel(label)"
         />
       </template>

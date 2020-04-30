@@ -1,0 +1,5 @@
+---
+title: Use Jira import owner as the issue author when importing issues from Jira
+merge_request: 30504
+author:
+type: fixed

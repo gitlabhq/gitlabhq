@@ -28,7 +28,6 @@ const boardsStore = {
     limitToHours: false,
   },
   scopedLabels: {
-    helpLink: '',
     enabled: false,
   },
   filter: {

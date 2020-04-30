@@ -8,12 +8,12 @@
 - if status.has_details?
   = link_to status.details_path, class: 'mini-pipeline-graph-dropdown-item d-flex', data: { toggle: 'tooltip', title: tooltip, container: 'body' } do
     %span{ class: klass }= sprite_icon(status.icon)
-    %span.ci-build-text.text-truncate.mw-70p.gl-pl-1= subject.name
+    %span.ci-build-text.text-truncate.mw-70p.gl-pl-1-deprecated-no-really-do-not-use-me= subject.name
 
 - else
   .menu-item.mini-pipeline-graph-dropdown-item.d-flex{ data: { toggle: 'tooltip', title: tooltip, container: 'body' } }
     %span{ class: klass }= sprite_icon(status.icon)
-    %span.ci-build-text.text-truncate.mw-70p.gl-pl-1= subject.name
+    %span.ci-build-text.text-truncate.mw-70p.gl-pl-1-deprecated-no-really-do-not-use-me= subject.name
 
 - if status.has_action?
   = link_to status.action_path, class: "ci-action-icon-container ci-action-icon-wrapper js-ci-action-icon", method: status.action_method, data: { toggle: 'tooltip', title: status.action_title, container: 'body' } do

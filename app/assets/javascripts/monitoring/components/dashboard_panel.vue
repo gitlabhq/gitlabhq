@@ -268,7 +268,7 @@ export default {
       <slot name="topLeft"></slot>
       <h5
         ref="graphTitle"
-        class="prometheus-graph-title gl-font-size-large font-weight-bold text-truncate append-right-8"
+        class="prometheus-graph-title gl-font-lg font-weight-bold text-truncate append-right-8"
       >
         {{ title }}
       </h5>

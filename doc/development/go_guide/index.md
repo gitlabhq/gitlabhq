@@ -374,13 +374,13 @@ Once you've picked a new Go version to use, the steps to update Omnibus and CNG
 are:
 
 - [Create a merge request in the CNG project](https://gitlab.com/gitlab-org/build/CNG/edit/master/ci_files/variables.yml?branch_name=update-go-version),
-   updating the `GO_VERSION` in `ci_files/variables.yml`.
+  updating the `GO_VERSION` in `ci_files/variables.yml`.
 - Create a merge request in the [`gitlab-omnibus-builder` project](https://gitlab.com/gitlab-org/gitlab-omnibus-builder),
-   updating every file in the `docker/` directory so the `GO_VERSION` is set
-   appropriately. [Here's an example](https://gitlab.com/gitlab-org/gitlab-omnibus-builder/-/merge_requests/125/diffs).
+  updating every file in the `docker/` directory so the `GO_VERSION` is set
+  appropriately. [Here's an example](https://gitlab.com/gitlab-org/gitlab-omnibus-builder/-/merge_requests/125/diffs).
 - Tag a new release of `gitlab-omnibus-builder` containing the change.
-- [Create a merge request in the `gitlab-omnibus` project](https://gitlab.com/gitlab-org/omnibus-gitlab/edit/master/.gitlab-ci.yml?branch_name=update-gitlab-omnibus-builder-version),
-   updating the `BUILDER_IMAGE_REVISION` to match the newly-created tag.
+- [Create a merge request in the `omnibus-gitlab` project](https://gitlab.com/gitlab-org/omnibus-gitlab/edit/master/.gitlab-ci.yml?branch_name=update-gitlab-omnibus-builder-version),
+  updating the `BUILDER_IMAGE_REVISION` to match the newly-created tag.
 
 To reduce unnecessary differences between two distribution methods, Omnibus and
 CNG **should always use the same Go version**.

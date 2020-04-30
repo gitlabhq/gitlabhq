@@ -3357,6 +3357,9 @@ msgstr ""
 msgid "Buy GitLab Enterprise Edition"
 msgstr ""
 
+msgid "Buy more Pipeline minutes"
+msgstr ""
+
 msgid "By %{user_name}"
 msgstr ""
 
@@ -4150,9 +4153,6 @@ msgid "Clears weight."
 msgstr ""
 
 msgid "Click any <strong>project name</strong> in the project list below to navigate to the project milestone."
-msgstr ""
-
-msgid "Click here"
 msgstr ""
 
 msgid "Click the <strong>Download</strong> button and wait for downloading to complete."
@@ -14923,15 +14923,6 @@ msgstr ""
 msgid "Pipelines settings for '%{project_name}' were successfully updated."
 msgstr ""
 
-msgid "Pipelines| to purchase more minutes."
-msgstr ""
-
-msgid "Pipelines|%{namespace_name} has exceeded its pipeline minutes quota."
-msgstr ""
-
-msgid "Pipelines|%{namespace_name} has less than %{notification_level}%% of CI minutes available."
-msgstr ""
-
 msgid "Pipelines|API"
 msgstr ""
 
@@ -14953,10 +14944,13 @@ msgstr ""
 msgid "Pipelines|Get started with Pipelines"
 msgstr ""
 
-msgid "Pipelines|Loading Pipelines"
+msgid "Pipelines|Group %{namespace_name} has %{percentage}%% or less Shared Runner Pipeline minutes remaining.  Once it runs out, no new jobs or pipelines in its projects will run."
 msgstr ""
 
-msgid "Pipelines|Pipelines will not run anymore on shared Runners."
+msgid "Pipelines|Group %{namespace_name} has exceeded its pipeline minutes quota. Unless you buy additional pipeline minutes, no new jobs or pipelines in its projects will run."
+msgstr ""
+
+msgid "Pipelines|Loading Pipelines"
 msgstr ""
 
 msgid "Pipelines|Project cache successfully reset."
@@ -24094,6 +24088,9 @@ msgid "You have been unsubscribed from this thread."
 msgstr ""
 
 msgid "You have declined the invitation to join %{label}."
+msgstr ""
+
+msgid "You have imported from this project %{numberOfPreviousImportsForProject} times before. Each new import will create duplicate issues."
 msgstr ""
 
 msgid "You have no permissions"

@@ -8,7 +8,7 @@ const jiraIntegrationPath = 'gitlab-org/gitlab-test/-/services/jira/edit';
 describe('JiraImportSetup', () => {
   let wrapper;
 
-  const getGlEmptyStateAttribute = attribute => wrapper.find(GlEmptyState).attributes(attribute);
+  const getGlEmptyStateProp = attribute => wrapper.find(GlEmptyState).props(attribute);
 
   beforeEach(() => {
     wrapper = shallowMount(JiraImportSetup, {
@@ -25,19 +25,19 @@ describe('JiraImportSetup', () => {
   });
 
   it('contains illustration', () => {
-    expect(getGlEmptyStateAttribute('svgpath')).toBe(illustration);
+    expect(getGlEmptyStateProp('svgPath')).toBe(illustration);
   });
 
   it('contains a description', () => {
     const description = 'You will first need to set up Jira Integration to use this feature.';
-    expect(getGlEmptyStateAttribute('description')).toBe(description);
+    expect(getGlEmptyStateProp('description')).toBe(description);
   });
 
   it('contains button text', () => {
-    expect(getGlEmptyStateAttribute('primarybuttontext')).toBe('Set up Jira Integration');
+    expect(getGlEmptyStateProp('primaryButtonText')).toBe('Set up Jira Integration');
   });
 
   it('contains button link', () => {
-    expect(getGlEmptyStateAttribute('primarybuttonlink')).toBe(jiraIntegrationPath);
+    expect(getGlEmptyStateProp('primaryButtonLink')).toBe(jiraIntegrationPath);
   });
 });

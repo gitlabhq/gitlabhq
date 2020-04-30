@@ -58,11 +58,6 @@ export default {
       required: false,
       default: false,
     },
-    scopedLabelsDocumentationLink: {
-      type: String,
-      required: false,
-      default: '#',
-    },
   },
   data() {
     return {
@@ -208,7 +203,6 @@ export default {
           :can-admin-board="canAdminBoard"
           :milestone-path="milestonePath"
           :labels-path="labelsPath"
-          :scoped-labels-documentation-link="scopedLabelsDocumentationLink"
           :enable-scoped-labels="enableScopedLabels"
           :project-id="projectId"
           :group-id="groupId"

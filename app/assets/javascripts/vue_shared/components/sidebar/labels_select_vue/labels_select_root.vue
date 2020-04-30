@@ -67,11 +67,6 @@ export default {
       required: false,
       default: '',
     },
-    scopedLabelsDocumentationPath: {
-      type: String,
-      required: false,
-      default: '',
-    },
     labelsListTitle: {
       type: String,
       required: false,
@@ -113,7 +108,6 @@ export default {
       labelsFetchPath: this.labelsFetchPath,
       labelsManagePath: this.labelsManagePath,
       labelsFilterBasePath: this.labelsFilterBasePath,
-      scopedLabelsDocumentationPath: this.scopedLabelsDocumentationPath,
       labelsListTitle: this.labelsListTitle,
       labelsCreateTitle: this.labelsCreateTitle,
       footerCreateLabelTitle: this.footerCreateLabelTitle,

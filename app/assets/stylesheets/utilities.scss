@@ -1,3 +1,10 @@
+/**
+  Please note: These are deprecated in favor of the Gitlab UI utility classes.
+  Check https://unpkg.com/browse/@gitlab/ui/src/scss/utilities.scss
+  to see the available utility classes. If you cannot find the class you need,
+  consider adding it to Gitlab UI before adding it here.
+**/
+
 @each $variant, $range in $color-ranges {
   @each $suffix, $color in $range {
     #{'.bg-#{$variant}-#{$suffix}'} {
@@ -82,6 +89,14 @@
   width: px-to-rem(16px);
 }
 
+.gl-shim-pb-3 {
+  padding-bottom: 8px;
+}
+
+.gl-shim-pt-5 {
+  padding-top: 16px;
+}
+
 .gl-text-purple { color: $purple; }
 .gl-text-gray-800 { color: $gray-800; }
 .gl-bg-purple-light { background-color: $purple-light; }
@@ -124,5 +139,5 @@
 
 .gl-white-space-normal { @include gl-white-space-normal; }
 .gl-word-break-all { @include gl-word-break-all; }
-.gl-line-height-inherit { line-height: inherit; }
-.gl-text-align-inherit { text-align: inherit; }
+.gl-reset-line-height { @include gl-reset-line-height; }
+.gl-reset-text-align { @include gl-reset-text-align; }

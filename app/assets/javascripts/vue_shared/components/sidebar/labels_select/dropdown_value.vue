@@ -20,11 +20,6 @@ export default {
       required: false,
       default: false,
     },
-    scopedLabelsDocumentationLink: {
-      type: String,
-      required: false,
-      default: '#',
-    },
   },
   computed: {
     isEmpty() {
@@ -64,7 +59,6 @@ export default {
         :title="label.title"
         :description="label.description"
         :scoped="showScopedLabels(label)"
-        :scoped-labels-documentation-link="scopedLabelsDocumentationLink"
       />
     </template>
   </div>

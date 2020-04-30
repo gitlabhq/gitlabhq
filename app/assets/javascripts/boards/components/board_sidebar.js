@@ -70,9 +70,6 @@ export default Vue.extend({
     selectedLabels() {
       return this.hasLabels ? this.issue.labels.map(l => l.title).join(',') : '';
     },
-    helpLink() {
-      return boardsStore.scopedLabels.helpLink;
-    },
   },
   watch: {
     detail: {

@@ -9,12 +9,7 @@ export default {
     GlLabel,
   },
   computed: {
-    ...mapState([
-      'selectedLabels',
-      'allowScopedLabels',
-      'labelsFilterBasePath',
-      'scopedLabelsDocumentationPath',
-    ]),
+    ...mapState(['selectedLabels', 'allowScopedLabels', 'labelsFilterBasePath']),
   },
   methods: {
     labelFilterUrl(label) {
@@ -45,7 +40,6 @@ export default {
         :background-color="label.color"
         :target="labelFilterUrl(label)"
         :scoped="scopedLabel(label)"
-        :scoped-labels-documentation-link="scopedLabelsDocumentationPath"
         tooltip-placement="top"
       />
     </template>

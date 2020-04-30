@@ -9,7 +9,7 @@ const issuesPath = 'gitlab-org/gitlab-test/-/issues';
 describe('JiraImportProgress', () => {
   let wrapper;
 
-  const getGlEmptyStateAttribute = attribute => wrapper.find(GlEmptyState).attributes(attribute);
+  const getGlEmptyStateProp = attribute => wrapper.find(GlEmptyState).props(attribute);
 
   const getParagraphText = () => wrapper.find('p').text();
 
@@ -37,21 +37,21 @@ describe('JiraImportProgress', () => {
     });
 
     it('contains illustration', () => {
-      expect(getGlEmptyStateAttribute('svgpath')).toBe(illustration);
+      expect(getGlEmptyStateProp('svgPath')).toBe(illustration);
     });
 
     it('contains a title', () => {
       const title = 'Import in progress';
-      expect(getGlEmptyStateAttribute('title')).toBe(title);
+      expect(getGlEmptyStateProp('title')).toBe(title);
     });
 
     it('contains button text', () => {
-      expect(getGlEmptyStateAttribute('primarybuttontext')).toBe('View issues');
+      expect(getGlEmptyStateProp('primaryButtonText')).toBe('View issues');
     });
 
     it('contains button url', () => {
       const expected = `${issuesPath}?search=${importProject}`;
-      expect(getGlEmptyStateAttribute('primarybuttonlink')).toBe(expected);
+      expect(getGlEmptyStateProp('primaryButtonLink')).toBe(expected);
     });
   });
 

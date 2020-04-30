@@ -103,7 +103,7 @@ Access the default page for admin area settings by navigating to
 | Option | Description |
 | ------ | ----------- |
 | [Email](email.md) | Various email settings. |
-| [Help page](../../../customization/help_message.md) | Help page text and support page url. |
+| [Help page](../../../customization/help_message.md) | Help page text and support page URL. |
 | [Pages](../../../administration/pages/index.md#custom-domain-verification) | Size and domain settings for static websites |
 | [Real-time features](../../../administration/polling.md) | Change this value to influence how frequently the GitLab UI polls for updates. |
 | [Gitaly timeouts](gitaly_timeouts.md) | Configure Gitaly timeouts. |

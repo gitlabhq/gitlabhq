@@ -113,9 +113,6 @@ export default Vue.extend({
       // eslint-disable-next-line @gitlab/require-i18n-strings
       return `boards.${this.boardId}.${this.list.type}.${this.list.id}`;
     },
-    helpLink() {
-      return boardsStore.scopedLabels.helpLink;
-    },
   },
   watch: {
     filter: {

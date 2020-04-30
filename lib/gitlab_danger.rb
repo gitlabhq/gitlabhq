@@ -12,6 +12,7 @@ class GitlabDanger
     database
     commit_messages
     telemetry
+    utility_css
   ].freeze
 
   CI_ONLY_RULES ||= %w[

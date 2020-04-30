@@ -1,0 +1,51 @@
+# frozen_string_literal: true
+
+common = 'app/assets/stylesheets/framework/common.scss'
+utilities = 'app/assets/stylesheets/utilities.scss'
+
+def get_css_files(files, common_filepath, utilities_filepath)
+  files.select do |file|
+    file.include?(common_filepath) ||
+    file.include?(utilities_filepath)
+  end
+end
+
+changed_util_files = get_css_files(helper.all_changed_files.to_a, common, utilities)
+
+unless changed_util_files.empty?
+
+  markdown(<<~MARKDOWN)
+  ## Changes to utility SCSS files
+  MARKDOWN
+
+  if changed_util_files.include?(common)
+
+    markdown(<<~MARKDOWN)
+    ### Addition to `#{common}`
+
+    You have added a new rule to `#{common}`. Are you sure you need this rule?
+
+    If it is a component class shared across items, could it be added to the component as a utility class or to the component's stylesheet? If not, you can ignore this warning.
+
+    If it is a new utility class, is there another class that shares the same values in either this file or in `#{utilities}`? If not, please add it to `#{utilities}`, following the [Gitlab UI naming style](https://unpkg.com/browse/@gitlab/ui/src/scss/utilities.scss).
+
+    MARKDOWN
+
+  end
+
+  if changed_util_files.include?(utilities)
+    markdown(<<~MARKDOWN)
+    ### Addition to `#{utilities}`
+
+    You have added a new rule to `#{utilities}`. Are you sure you need this rule?
+
+    If it is a component class shared across items, could it be added to the component as a utility class or to the component's stylesheet? If not, consider adding it to `#{common}`
+
+    If it is a new utility class, is there another class that shares the same values in either this file or in `#{utilities}`? If not, please be sure this addition follows the [Gitlab UI naming style](https://unpkg.com/browse/@gitlab/ui/src/scss/utilities.scss) so it may be removed when these rules are included. See [Include gitlab-ui utility-class library](https://gitlab.com/gitlab-org/gitlab/issues/36857) for more about this project.
+
+    MARKDOWN
+  end
+
+  warn "This merge request adds a new rule to #{common} or #{utilities}."
+
+end

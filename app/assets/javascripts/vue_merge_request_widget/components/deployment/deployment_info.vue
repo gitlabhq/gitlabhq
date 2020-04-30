@@ -75,7 +75,7 @@ export default {
           :href="deployment.url"
           target="_blank"
           rel="noopener noreferrer nofollow"
-          class="js-deploy-meta gl-font-size-12"
+          class="js-deploy-meta gl-font-sm"
         >
           {{ deployment.name }}
         </gl-link>

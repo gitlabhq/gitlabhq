@@ -129,7 +129,7 @@ Here is a configuration example with Rackspace Cloud Files.
 NOTE: **Note:**
 Regardless of whether the container has public access enabled or disabled, Fog will
 use the TempURL method to grant access to LFS objects. If you see errors in logs referencing
-instantiating storage with a temp-url-key, ensure that you have set the key properly
+instantiating storage with a `temp-url-key`, ensure that you have set the key properly
 on the Rackspace API and in `gitlab.rb`. You can verify the value of the key Rackspace
 has set by sending a GET request with token header to the service access endpoint URL
 and comparing the output of the returned headers.

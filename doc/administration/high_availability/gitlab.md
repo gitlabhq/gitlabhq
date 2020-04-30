@@ -79,8 +79,8 @@ is recommended over [NFS](nfs.md) wherever possible for improved performance.
 
    NOTE: **Note:** To maintain uniformity of links across HA clusters, the `external_url`
    on the first application server as well as the additional application
-   servers should point to the external url that users will use to access GitLab.
-   In a typical HA setup, this will be the url of the load balancer which will
+   servers should point to the external URL that users will use to access GitLab.
+   In a typical HA setup, this will be the URL of the load balancer which will
    route traffic to all GitLab application servers in the HA cluster.
 
    NOTE: **Note:** When you specify `https` in the `external_url`, as in the example

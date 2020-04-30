@@ -12,8 +12,10 @@ import initReadMore from '~/read_more';
 import leaveByUrl from '~/namespaces/leave_by_url';
 import Star from '../../../star';
 import notificationsDropdown from '../../../notifications_dropdown';
+import initVueAlerts from '../../../vue_alerts';
 
 document.addEventListener('DOMContentLoaded', () => {
+  initVueAlerts();
   initReadMore();
   new Star(); // eslint-disable-line no-new
   notificationsDropdown();

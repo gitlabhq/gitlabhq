@@ -1,0 +1,63 @@
+config:
+  build_1:
+    stage: build
+    script: exit 0
+
+  build_2:
+    stage: build
+    script: exit 1
+
+  test:
+    stage: test
+    script: exit 0
+
+  deploy:
+    stage: deploy
+    script: exit 0
+    when: always
+    needs: [build_1, test]
+
+init:
+  expect:
+    pipeline: pending
+    stages:
+      build: pending
+      test: created
+      deploy: created
+    jobs:
+      build_1: pending
+      build_2: pending
+      test: created
+      deploy: created
+
+transitions:
+  - event: success
+    jobs: [build_1]
+    expect:
+      pipeline: running
+      stages:
+        build: running
+        test: created
+        deploy: created
+      jobs:
+        build_1: success
+        build_2: pending
+        test: created
+        deploy: created
+
+  - event: drop
+    jobs: [build_2]
+    expect:
+      pipeline: running
+      stages:
+        build: failed
+        test: skipped
+        deploy: pending
+      jobs:
+        build_1: success
+        build_2: failed
+        test: skipped
+        deploy: pending
+
+# TODO: what's the actual expected behavior here?
+# Further discussions: https://gitlab.com/gitlab-org/gitlab/-/issues/213080

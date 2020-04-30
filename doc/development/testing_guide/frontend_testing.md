@@ -638,7 +638,7 @@ Karma allows something similar, but it's way more costly.
 
 Running Karma with `yarn run karma-start` will compile the JavaScript
 assets and run a server at `http://localhost:9876/` where it will automatically
-run the tests on any browser which connects to it. You can enter that url on
+run the tests on any browser which connects to it. You can enter that URL on
 multiple browsers at once to have it run the tests on each in parallel.
 
 While Karma is running, any changes you make will instantly trigger a recompile

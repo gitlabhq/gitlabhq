@@ -38,7 +38,7 @@ In [GitLab Premium or higher](https://about.gitlab.com/pricing/), GitLab adminis
 
 To do this:
 
-1. Uncheck the **Allow owners to manage default branch protection in groups** checkbox.
+1. Uncheck the **Allow owners to manage default branch protection per group** checkbox.
 
 NOTE: **Note:**
 GitLab administrators can still update the default branch protection of a group.

@@ -11,7 +11,6 @@ export default () => ({
   namespace: '',
   labelsFetchPath: '',
   labelsFilterBasePath: '',
-  scopedLabelsDocumentationPath: '#',
 
   // UI Flags
   allowLabelCreate: false,

@@ -1,0 +1,58 @@
+config:
+  test:
+    stage: test
+    when: manual
+    allow_failure: true
+    script: exit 1
+
+  deploy:
+    stage: deploy
+    script: exit 0
+    needs: [test]
+
+init:
+  expect:
+    pipeline: created
+    stages:
+      test: skipped
+      deploy: created
+    jobs:
+      test: manual
+      deploy: created
+
+transitions:
+  - event: enqueue
+    jobs: [test]
+    expect:
+      pipeline: pending
+      stages:
+        test: running
+        deploy: created
+      jobs:
+        test: pending
+        deploy: created
+
+  - event: run
+    jobs: [test]
+    expect:
+      pipeline: running
+      stages:
+        test: running
+        deploy: created
+      jobs:
+        test: running
+        deploy: created
+
+  - event: drop
+    jobs: [test]
+    expect:
+      pipeline: running
+      stages:
+        test: success
+        deploy: pending
+      jobs:
+        test: failed
+        deploy: pending
+
+# TOOD: should we run deploy?
+# Further discussions: https://gitlab.com/gitlab-org/gitlab/-/issues/213080

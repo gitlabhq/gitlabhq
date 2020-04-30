@@ -209,6 +209,31 @@ Leading indicators may be health check failures leading to restarts or majority 
 The [Review Apps Overview dashboard](https://app.google.stackdriver.com/dashboards/6798952013815386466?project=gitlab-review-apps&timeDomain=1d)
 aids in identifying load spikes on the cluster, and if nodes are problematic or the entire cluster is trending towards unhealthy.
 
+### Release failed with `ImagePullBackOff`
+
+**Potential cause:**
+
+If you see an `ImagePullBackoff` status, check for a missing Docker image.
+
+**Where to look for further debugging:**
+
+To check that the Docker images were created, run the following Docker command:
+
+```shell
+`DOCKER_CLI_EXPERIMENTAL=enabled docker manifest repository:tag`
+```
+
+The output of this command indicates if the Docker image exists. For example:
+
+```shell
+DOCKER_CLI_EXPERIMENTAL=enabled docker manifest inspect registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-rails-ee:39467-allow-a-release-s-associated-milestones-to-be-edited-thro
+```
+
+If the Docker image does not exist:
+
+- Verify the `image.repository` and `image.tag` options in the `helm upgrade --install` command match the repository names used by CNG-mirror pipeline.
+- Look further in the corresponding downstream CNG-mirror pipeline in `review-build-cng` job.
+
 ### Node count is always increasing (i.e. never stabilizing or decreasing)
 
 **Potential cause:**

@@ -86,11 +86,6 @@ export default {
       required: false,
       default: false,
     },
-    scopedLabelsDocumentationLink: {
-      type: String,
-      required: false,
-      default: '#',
-    },
   },
   data() {
     return {
@@ -348,7 +343,6 @@ export default {
         :scoped-issue-board-feature-enabled="scopedIssueBoardFeatureEnabled"
         :weights="weights"
         :enable-scoped-labels="enabledScopedLabels"
-        :scoped-labels-documentation-link="scopedLabelsDocumentationLink"
       />
     </span>
   </div>

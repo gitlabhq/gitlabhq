@@ -9,7 +9,7 @@ class ProjectExportWorker # rubocop:disable Scalability/IdempotentWorker
   worker_resource_boundary :memory
   urgency :throttled
 
-  def perform(current_user_id, project_id, after_export_strategy = {}, params = {})
+  def perform(current_user_id, project_id, after_export_strategy = {}, params = {}, options = {})
     current_user = User.find(current_user_id)
     project = Project.find(project_id)
     export_job = project.export_jobs.safe_find_or_create_by(jid: self.jid)
@@ -17,7 +17,7 @@ class ProjectExportWorker # rubocop:disable Scalability/IdempotentWorker
 
     export_job&.start
 
-    ::Projects::ImportExport::ExportService.new(project, current_user, params).execute(after_export)
+    ::Projects::ImportExport::ExportService.new(project, current_user, params).execute(after_export, options)
 
     export_job&.finish
   rescue ActiveRecord::RecordNotFound, Gitlab::ImportExport::AfterExportStrategyBuilder::StrategyNotFoundError => e

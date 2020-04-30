@@ -3,11 +3,12 @@
 module Gitlab
   module JiraImport
     class IssueSerializer
-      attr_reader :jira_issue, :project, :params, :formatter
+      attr_reader :jira_issue, :project, :import_owner_id, :params, :formatter
 
-      def initialize(project, jira_issue, params = {})
+      def initialize(project, jira_issue, import_owner_id, params = {})
         @jira_issue = jira_issue
         @project = project
+        @import_owner_id = import_owner_id
         @params = params
         @formatter = Gitlab::ImportFormatter.new
       end
@@ -71,7 +72,7 @@ module Gitlab
       end
 
       def reporter
-        map_user_id(jira_issue&.reporter&.emailAddress) || project.creator_id
+        map_user_id(jira_issue&.reporter&.emailAddress) || import_owner_id
       end
 
       def assignees

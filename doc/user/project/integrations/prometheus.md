@@ -93,7 +93,7 @@ Integration with Prometheus requires the following:
 
 #### Getting started
 
-Installing and configuring Prometheus to monitor applications is fairly straight forward.
+Installing and configuring Prometheus to monitor applications is fairly straightforward.
 
 1. [Install Prometheus](https://prometheus.io/docs/prometheus/latest/installation/)
 1. Set up one of the [supported monitoring targets](prometheus_library/index.md)
@@ -146,7 +146,7 @@ one of them will be used:
 Once configured, GitLab will attempt to retrieve performance metrics for any
 environment which has had a successful deployment.
 
-GitLab will automatically scan the Prometheus server for metrics from known servers like Kubernetes and NGINX, and attempt to identify individual environment. The supported metrics and scan process is detailed in our [Prometheus Metrics Library documentation](prometheus_library/index.md).
+GitLab will automatically scan the Prometheus server for metrics from known servers like Kubernetes and NGINX, and attempt to identify individual environments. The supported metrics and scan process is detailed in our [Prometheus Metrics Library documentation](prometheus_library/index.md).
 
 You can view the performance dashboard for an environment by [clicking on the monitoring button](../../../ci/environments.md#monitoring-environments).
 
@@ -170,7 +170,7 @@ A few fields are required:
 - **Y-axis label**: Y axis title to display on the dashboard.
 - **Unit label**: Query units, for example `req / sec`. Shown next to the value.
 
-Multiple metrics can be displayed on the same chart if the fields **Name**, **Type**, and **Y-axis label** match between metrics. For example, a metric with **Name** `Requests Rate`, **Type** `Business`, and **Y-axis label** `rec / sec` would display on the same chart as a second metric with the same values. A **Legend label** is suggested if this feature used.
+Multiple metrics can be displayed on the same chart if the fields **Name**, **Type**, and **Y-axis label** match between metrics. For example, a metric with **Name** `Requests Rate`, **Type** `Business`, and **Y-axis label** `rec / sec` would display on the same chart as a second metric with the same values. A **Legend label** is suggested if this feature is used.
 
 #### Query Variables
 
@@ -279,7 +279,7 @@ If you select another branch, this branch should be merged to your **default** b
 
 Dashboards have several components:
 
-- Panel groups, which comprise of panels.
+- Panel groups, which consist of panels.
 - Panels, which support one or more metrics.
 
 The following tables outline the details of expected properties.
@@ -633,7 +633,7 @@ Note the following properties:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/34779) in GitLab 12.5.
 
 When viewing a custom dashboard of a project, you can view the original
-`.yml` file by clicking on **Edit dashboard** button.
+`.yml` file by clicking on the **Edit dashboard** button.
 
 ### Chart Context Menu
 
@@ -733,7 +733,7 @@ In order for GitLab to associate your alerts with an [environment](../../../ci/e
 >- [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/4925) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.11.
 >- [From GitLab Ultimate 12.5](https://gitlab.com/gitlab-org/gitlab/issues/13401), when GitLab receives a recovery alert, it will automatically close the associated issue.
 
-Alerts can be used to trigger actions, like open an issue automatically (enabled by default since `12.1`). To configure the actions:
+Alerts can be used to trigger actions, like opening an issue automatically (enabled by default since `12.1`). To configure the actions:
 
 1. Navigate to your project's **Settings > Operations > Incidents**.
 1. Enable the option to create issues.
@@ -752,7 +752,7 @@ Once enabled, an issue will be opened automatically when an alert is triggered w
   - Optional list of attached annotations extracted from `annotations/*`
 - Alert [GFM](../../markdown.md): GitLab Flavored Markdown from `annotations/gitlab_incident_markdown`
 
-When GitLab receives a **Recovery Alert**, it will automatically close the associated issue. This action will be recorded as a system message on the issue indicated that it was closed automatically by the GitLab Alert bot.
+When GitLab receives a **Recovery Alert**, it will automatically close the associated issue. This action will be recorded as a system message on the issue indicating that it was closed automatically by the GitLab Alert bot.
 
 To further customize the issue, you can add labels, mentions, or any other supported [quick action](../quick_actions.md) in the selected issue template, which will apply to all incidents. To limit quick actions or other information to only specific types of alerts, use the `annotations/gitlab_incident_markdown` field.
 
@@ -925,7 +925,7 @@ Prerequisites for embedding from a Grafana instance:
 1. In the upper-left corner of the page, select a specific value for each variable required for the queries in the chart.
    ![Select Query Variables](img/select_query_variables_v12_5.png)
 1. In Grafana, click on a panel's title, then click **Share** to open the panel's sharing dialog to the **Link** tab. If you click the _dashboard's_ share panel instead, GitLab will attempt to embed the first supported panel on the dashboard (if available).
-1. If your Prometheus queries use Grafana's custom template variables, ensure that "Template variables" option is toggled to **On**. Of Grafana global template variables, only `$__interval`, `$__from`, and `$__to` are currently supported. Toggle **On** the "Current time range" option to specify the time range of the chart. Otherwise, the default range will be the last 8 hours.
+1. If your Prometheus queries use Grafana's custom template variables, ensure that the "Template variables" option is toggled to **On**. Of Grafana global template variables, only `$__interval`, `$__from`, and `$__to` are currently supported. Toggle **On** the "Current time range" option to specify the time range of the chart. Otherwise, the default range will be the last 8 hours.
    ![Grafana Sharing Dialog](img/grafana_sharing_dialog_v12_5.png)
 1. Click **Copy** to copy the URL to the clipboard.
 1. In GitLab, paste the URL into a Markdown field and save. The chart will take a few moments to render.

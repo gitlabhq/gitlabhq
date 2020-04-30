@@ -240,7 +240,7 @@ export default {
         class="d-flex-center text-truncate"
       >
         <gl-icon name="warning" :size="16" class="flex-shrink-0" />
-        <span class="text-truncate gl-pl-1">
+        <span class="text-truncate gl-pl-1-deprecated-no-really-do-not-use-me">
           <gl-sprintf
             :message="
               hasMultipleAlerts ? multipleAlertsSummary.message : singleAlertSummary.message

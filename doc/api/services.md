@@ -189,9 +189,9 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `new_issue_url` | string | true |  New Issue url |
-| `issues_url` | string | true | Issue url |
-| `project_url` | string | true | Project url |
+| `new_issue_url` | string | true |  New Issue URL |
+| `issues_url` | string | true | Issue URL |
+| `project_url` | string | true | Project URL |
 | `description` | string | false | Description |
 | `title` | string | false | Title |
 | `push_events` | boolean | false | Enable notifications for push events |
@@ -347,11 +347,11 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `new_issue_url` | string | true |  New Issue url
-| `issues_url` | string | true | Issue url
-| `project_url` | string | true | Project url
-| `description` | string | false | Description
-| `title` | string | false | Title
+| `new_issue_url` | string | true |  New Issue URL |
+| `issues_url` | string | true | Issue URL |
+| `project_url` | string | true | Project URL |
+| `description` | string | false | Description |
+| `title` | string | false | Title |
 | `push_events` | boolean | false | Enable notifications for push events |
 
 ### Delete Custom Issue Tracker service
@@ -1034,9 +1034,9 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `new_issue_url` | string | true | New Issue url |
-| `project_url` | string | true | Project url |
-| `issues_url` | string | true | Issue url |
+| `new_issue_url` | string | true | New Issue URL |
+| `project_url` | string | true | Project URL |
+| `issues_url` | string | true | Issue URL |
 | `description` | string | false | Description |
 | `push_events` | boolean | false | Enable notifications for push events |
 
@@ -1385,8 +1385,8 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `issues_url` | string | true | Issue url |
-| `project_url` | string | true | Project url |
+| `issues_url` | string | true | Issue URL |
+| `project_url` | string | true | Project URL |
 | `description` | string | false | Description |
 | `push_events` | boolean | false | Enable notifications for push events |
 
