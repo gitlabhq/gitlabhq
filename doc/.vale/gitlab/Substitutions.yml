@@ -10,6 +10,7 @@ level: error
 ignorecase: true
 swap:
   GitLabber: GitLab team member
+  gitlab omnibus: Omnibus GitLab
   param: parameter
   params: parameters
   postgres: PostgreSQL

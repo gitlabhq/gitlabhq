@@ -55,7 +55,7 @@ Before beginning, you should already have a working GitLab instance. [Learn how
 to install GitLab](https://about.gitlab.com/install/).
 
 Provision a PostgreSQL server (PostgreSQL 9.6 or newer). Configuration through
-the GitLab Omnibus distribution is not yet supported. Follow this
+the Omnibus GitLab distribution is not yet supported. Follow this
 [issue](https://gitlab.com/gitlab-org/gitaly/issues/2476) for updates.
 
 Prepare all your new nodes by [installing
@@ -114,7 +114,7 @@ To complete this section you will need:
   - An SQL user with permissions to create databases
 
 During this section, we will configure the PostgreSQL server, from the Praefect
-node, using `psql` which is installed by GitLab Omnibus.
+node, using `psql` which is installed by Omnibus GitLab.
 
 1. SSH into the **Praefect** node and login as root:
 

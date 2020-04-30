@@ -15,7 +15,7 @@ To see all available time zones, run `bundle exec rake time:zones:all`.
 For Omnibus installations, run `gitlab-rake time:zones:all`.
 
 NOTE: **Note:**
-Currently, this Rake task does not list timezones in TZInfo format required by GitLab Omnibus during a reconfigure: [#58672](https://gitlab.com/gitlab-org/gitlab-foss/issues/58672).
+Currently, this Rake task does not list timezones in TZInfo format required by Omnibus GitLab during a reconfigure: [#58672](https://gitlab.com/gitlab-org/gitlab-foss/issues/58672).
 
 ## Changing time zone in Omnibus installations
 

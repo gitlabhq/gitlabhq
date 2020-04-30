@@ -8,9 +8,9 @@ type: reference
 
 You can configure a Prometheus node to monitor GitLab.
 
-## Standalone Monitoring node using GitLab Omnibus
+## Standalone Monitoring node using Omnibus GitLab
 
-The GitLab Omnibus package can be used to configure a standalone Monitoring node running [Prometheus](../monitoring/prometheus/index.md) and [Grafana](../monitoring/performance/grafana_configuration.md).
+The Omnibus GitLab package can be used to configure a standalone Monitoring node running [Prometheus](../monitoring/prometheus/index.md) and [Grafana](../monitoring/performance/grafana_configuration.md).
 The monitoring node is not highly available. See [Scaling and High Availability](../scaling/index.md)
 for an overview of GitLab scaling and high availability options.
 

@@ -49,7 +49,7 @@ To disable Prometheus and all of its exporters, as well as any added in the futu
 ### Changing the port and address Prometheus listens on
 
 NOTE: **Note:**
-The following change was added in [GitLab Omnibus 8.17](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/1261). Although possible,
+The following change was added in [Omnibus GitLab 8.17](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/1261). Although possible,
 it's not recommended to change the port Prometheus listens
 on, as this might affect or conflict with other services running on the GitLab
 server. Proceed at your own risk.
@@ -80,7 +80,7 @@ To change the address/port that Prometheus listens on:
 
 ### Adding custom scrape configs
 
-You can configure additional scrape targets for the GitLab Omnibus-bundled
+You can configure additional scrape targets for the Omnibus GitLab-bundled
 Prometheus by editing `prometheus['scrape_configs']` in `/etc/gitlab/gitlab.rb`
 using the [Prometheus scrape target configuration](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#%3Cscrape_config%3E)
 syntax.

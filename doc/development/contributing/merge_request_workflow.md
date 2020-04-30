@@ -17,7 +17,7 @@ wireframes of the proposed feature if it will also change the UI.
 Merge requests should be submitted to the appropriate project at GitLab.com, for example
 [GitLab](https://gitlab.com/gitlab-org/gitlab/-/merge_requests),
 [GitLab Runner](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests),
-[GitLab Omnibus](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests), etc.
+[Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests), etc.
 
 If you are new to GitLab development (or web development in general), see the
 [I want to contribute!](index.md#i-want-to-contribute) section to get started with

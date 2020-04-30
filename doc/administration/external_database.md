@@ -5,7 +5,7 @@ managed service for PostgreSQL. For example, AWS offers a managed Relational
 Database Service (RDS) that runs PostgreSQL.
 
 Alternatively, you may opt to manage your own PostgreSQL instance or cluster
-separate from the GitLab Omnibus package.
+separate from the Omnibus GitLab package.
 
 If you use a cloud-managed service, or provide your own PostgreSQL instance:
 

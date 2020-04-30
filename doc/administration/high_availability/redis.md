@@ -33,12 +33,12 @@ This section is relevant for [Scalable and Highly Available Setups](../scaling/i
 
 If you want to use your own deployed Redis instance(s),
 see [Provide your own Redis instance](#provide-your-own-redis-instance-core-only)
-for more details. However, you can use the GitLab Omnibus package to easily
+for more details. However, you can use the Omnibus GitLab package to easily
 deploy the bundled Redis.
 
-### Standalone Redis using GitLab Omnibus **(CORE ONLY)**
+### Standalone Redis using Omnibus GitLab **(CORE ONLY)**
 
-The GitLab Omnibus package can be used to configure a standalone Redis server.
+The Omnibus GitLab package can be used to configure a standalone Redis server.
 In this configuration Redis is not highly available, and represents a single
 point of failure. However, in a scaled environment the objective is to allow
 the environment to handle more users or to increase throughput. Redis itself
@@ -91,7 +91,7 @@ needed.
 Continue configuration of other components by going back to the
 [Scaling](../scaling/index.md#components-provided-by-omnibus-gitlab) page.
 
-### High Availability with GitLab Omnibus **(PREMIUM ONLY)**
+### High Availability with Omnibus GitLab **(PREMIUM ONLY)**
 
 > Experimental Redis Sentinel support was [introduced in GitLab 8.11](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/1877).
 Starting with 8.14, Redis Sentinel is no longer experimental.

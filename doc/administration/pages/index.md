@@ -352,7 +352,7 @@ This usually results in this error:
 For installation from source this can be fixed by installing the custom Certificate
 Authority (CA) in the system certificate store.
 
-For Omnibus, normally this would be fixed by [installing a custom CA in GitLab Omnibus](https://docs.gitlab.com/omnibus/settings/ssl.html#install-custom-public-certificates)
+For Omnibus, normally this would be fixed by [installing a custom CA in Omnibus GitLab](https://docs.gitlab.com/omnibus/settings/ssl.html#install-custom-public-certificates)
 but a [bug](https://gitlab.com/gitlab-org/gitlab/issues/25411) is currently preventing
 that method from working. Use the following workaround:
 
@@ -363,14 +363,14 @@ that method from working. Use the following workaround:
    echo -n | openssl s_client -connect gitlab-domain-example.com:443  | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee --append /opt/gitlab/embedded/ssl/certs/cacert.pem
    ```
 
-1. [Restart](../restart_gitlab.md) the GitLab Pages Daemon. For GitLab Omnibus instances:
+1. [Restart](../restart_gitlab.md) the GitLab Pages Daemon. For Omnibus GitLab instances:
 
    ```shell
    sudo gitlab-ctl restart gitlab-pages
    ```
 
 CAUTION: **Caution:**
-Some GitLab Omnibus upgrades will revert this workaround and you'll need to apply it again.
+Some Omnibus GitLab upgrades will revert this workaround and you'll need to apply it again.
 
 ## Activate verbose logging for daemon
 

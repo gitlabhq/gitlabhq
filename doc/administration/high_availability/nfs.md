@@ -271,7 +271,7 @@ following are the 4 locations need to be shared:
 
 Other GitLab directories should not be shared between nodes. They contain
 node-specific files and GitLab code that does not need to be shared. To ship
-logs to a central location consider using remote syslog. GitLab Omnibus packages
+logs to a central location consider using remote syslog. Omnibus GitLab packages
 provide configuration for [UDP log shipping](https://docs.gitlab.com/omnibus/settings/logs.html#udp-log-shipping-gitlab-enterprise-edition-only).
 
 Having multiple NFS mounts will require manually making sure the data directories

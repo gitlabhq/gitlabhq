@@ -15,7 +15,7 @@ services.
 
 ## Installation
 
-[GitLab Omnibus can help you install Grafana (recommended)](https://docs.gitlab.com/omnibus/settings/grafana.html)
+[Omnibus GitLab can help you install Grafana (recommended)](https://docs.gitlab.com/omnibus/settings/grafana.html)
 or Grafana supplies package repositories (Yum/Apt) for easy installation.
 See [Grafana installation documentation](https://grafana.com/docs/grafana/latest/installation/)
 for detailed steps.

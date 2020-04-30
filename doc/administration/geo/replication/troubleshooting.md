@@ -854,7 +854,7 @@ Make sure you follow the [Geo database replication](database.md) instructions fo
 
 ### Geo database version (...) does not match latest migration (...)
 
-If you are using GitLab Omnibus installation, something might have failed during upgrade. You can:
+If you are using Omnibus GitLab installation, something might have failed during upgrade. You can:
 
 - Run `sudo gitlab-ctl reconfigure`.
 - Manually trigger the database migration by running: `sudo gitlab-rake geo:db:migrate` as root on the **secondary** node.
