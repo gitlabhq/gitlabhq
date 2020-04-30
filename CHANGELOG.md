@@ -2,6 +2,21 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 12.9.5 (2020-04-30)
+
+### Security (9 changes)
+
+- Ensure MR diff exists before codeowner check.
+- Apply CODEOWNERS validations to web requests.
+- Prevent unauthorized access to default branch.
+- Do not return private project ID without permission.
+- Fix doorkeeper CVE-2020-10187.
+- Prevent ES credentials leak.
+- Change GitHub service integration token input to password.
+- Return only safe urls for mirrors.
+- Validate workhorse 'rewritten_fields' and properly use them during multipart uploads.
+
+
 ## 12.9.4 (2020-04-16)
 
 - No changes.

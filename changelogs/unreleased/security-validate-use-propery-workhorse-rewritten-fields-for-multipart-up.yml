@@ -1,6 +1,0 @@
----
-title: Validate workhorse 'rewritten_fields' and properly use them during multipart
-  uploads
-merge_request:
-author:
-type: security
