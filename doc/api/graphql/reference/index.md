@@ -1071,7 +1071,7 @@ Information about pagination in a connection.
 | `tagList` | String | List of project topics (not Git tags) |
 | `userPermissions` | ProjectPermissions! | Permissions for the current user on the resource |
 | `visibility` | String | Visibility of the project |
-| `vulnerabilitySeveritiesCount` | VulnerabilitySeveritiesCount | Counts for each severity of vulnerability of the project. Available only when feature flag `first_class_vulnerabilities` is enabled |
+| `vulnerabilitySeveritiesCount` | VulnerabilitySeveritiesCount | Counts for each severity of vulnerability of the project |
 | `webUrl` | String | Web URL of the project |
 | `wikiEnabled` | Boolean | Indicates if Wikis are enabled for the current user |
 

@@ -82,10 +82,22 @@ describe Gitlab::ExclusiveLeaseHelpers, :clean_gitlab_redis_shared_state do
       end
 
       context 'when sleep second is specified' do
-        let(:options) { { retries: 0, sleep_sec: 0.05.seconds } }
+        let(:options) { { retries: 1, sleep_sec: 0.05.seconds } }
 
         it 'receives the specified argument' do
-          expect(class_instance).to receive(:sleep).with(0.05.seconds).once
+          expect(class_instance).to receive(:sleep).with(0.05.seconds).twice
+
+          expect { subject }.to raise_error('Failed to obtain a lock')
+        end
+      end
+
+      context 'when sleep second is specified as a lambda' do
+        let(:options) { { retries: 2, sleep_sec: ->(num) { 0.1 + num } } }
+
+        it 'receives the specified argument' do
+          expect(class_instance).to receive(:sleep).with(1.1.seconds).once
+          expect(class_instance).to receive(:sleep).with(2.1.seconds).once
+          expect(class_instance).to receive(:sleep).with(3.1.seconds).once
 
           expect { subject }.to raise_error('Failed to obtain a lock')
         end

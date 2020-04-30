@@ -16,11 +16,15 @@ module Gitlab
 
       lease = Gitlab::ExclusiveLease.new(key, timeout: ttl)
       retried = false
+      max_attempts = 1 + retries
 
       until uuid = lease.try_obtain
         # Keep trying until we obtain the lease. To prevent hammering Redis too
         # much we'll wait for a bit.
-        sleep(sleep_sec)
+        attempt_number = max_attempts - retries
+        delay = sleep_sec.respond_to?(:call) ? sleep_sec.call(attempt_number) : sleep_sec
+
+        sleep(delay)
         (retries -= 1) < 0 ? break : retried ||= true
       end
 

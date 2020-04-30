@@ -96,7 +96,8 @@ module Gitlab
       class << self
         def configuration_toml(gitaly_dir, storage_paths)
           nodes = [{ storage: 'default', address: "unix:#{gitaly_dir}/gitaly.socket", primary: true, token: 'secret' }]
-          config = { socket_path: "#{gitaly_dir}/praefect.socket", virtual_storage_name: 'default', token: 'secret', node: nodes }
+          storages = [{ name: 'default', node: nodes }]
+          config = { socket_path: "#{gitaly_dir}/praefect.socket", virtual_storage: storages }
           config[:token] = 'secret' if Rails.env.test?
 
           TomlRB.dump(config)

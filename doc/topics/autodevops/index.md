@@ -381,11 +381,10 @@ other environments.
 ## Currently supported languages
 
 Note that not all buildpacks support Auto Test yet, as it's a relatively new
-enhancement. All of Heroku's [officially supported
-languages](https://devcenter.heroku.com/articles/heroku-ci#supported-languages)
-support buildpacks, and some third-party buildpacks as well (such as Go, Node, Java, PHP,
-Python, Ruby, Gradle, Scala, and Elixir) all support Auto Test, but notably the
-multi-buildpack does not.
+enhancement. All of Heroku's
+[officially supported languages](https://devcenter.heroku.com/articles/heroku-ci#supported-languages)
+support Auto Test. The languages supported by Heroku's Herokuish buildpacks all
+support Auto Test, but notably the multi-buildpack does not.
 
 As of GitLab 10.0, the supported buildpacks are:
 
@@ -438,28 +437,36 @@ spec:
 
 ## Troubleshooting
 
-- Auto Build and Auto Test may fail to detect your language or framework with the
-  following error:
+### Unable to select a buildpack
 
-  ```plaintext
-  Step 5/11 : RUN /bin/herokuish buildpack build
-   ---> Running in eb468cd46085
-      -----> Unable to select a buildpack
-  The command '/bin/sh -c /bin/herokuish buildpack build' returned a non-zero code: 1
-  ```
+Auto Build and Auto Test may fail to detect your language or framework with the
+following error:
 
-  The following are possible reasons:
+```plaintext
+Step 5/11 : RUN /bin/herokuish buildpack build
+ ---> Running in eb468cd46085
+    -----> Unable to select a buildpack
+The command '/bin/sh -c /bin/herokuish buildpack build' returned a non-zero code: 1
+```
 
-  - Your application may be missing the key files the buildpack is looking for. For
-    example, for Ruby applications you must have a `Gemfile` to be properly detected,
-    even though it's possible to write a Ruby app without a `Gemfile`.
-  - There may be no buildpack for your application. Try specifying a
-    [custom buildpack](customize.md#custom-buildpacks).
-- Auto Test may fail because of a mismatch between testing frameworks. In this
-  case, you may need to customize your `.gitlab-ci.yml` with your test commands.
-- Auto Deploy will fail if GitLab can't create a Kubernetes namespace and
-  service account for your project. For help debugging this issue, see
-  [Troubleshooting failed deployment jobs](../../user/project/clusters/index.md#troubleshooting).
+The following are possible reasons:
+
+- Your application may be missing the key files the buildpack is looking for.
+  Ruby applications require a `Gemfile` to be properly detected,
+  even though it's possible to write a Ruby app without a `Gemfile`.
+- No buildpack may exist for your application. Try specifying a
+  [custom buildpack](customize.md#custom-buildpacks).
+
+### Mismatch between testing frameworks
+
+Auto Test may fail because of a mismatch between testing frameworks. In this
+case, you may need to customize your `.gitlab-ci.yml` with your test commands.
+
+### Failure to create a Kubernetes namespace
+
+Auto Deploy will fail if GitLab can't create a Kubernetes namespace and
+service account for your project. For help debugging this issue, see
+[Troubleshooting failed deployment jobs](../../user/project/clusters/index.md#troubleshooting).
 
 ## Development guides
 

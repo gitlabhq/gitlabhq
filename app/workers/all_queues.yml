@@ -1294,7 +1294,7 @@
 - :name: reactive_caching
   :feature_category: :not_owned
   :has_external_dependencies: 
-  :urgency: :high
+  :urgency: :low
   :resource_boundary: :cpu
   :weight: 1
   :idempotent: 

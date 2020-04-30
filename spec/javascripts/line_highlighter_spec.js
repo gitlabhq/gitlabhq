@@ -1,4 +1,4 @@
-/* eslint-disable no-else-return, dot-notation, no-return-assign, no-new, no-underscore-dangle */
+/* eslint-disable dot-notation, no-return-assign, no-new, no-underscore-dangle */
 
 import $ from 'jquery';
 import LineHighlighter from '~/line_highlighter';
@@ -8,10 +8,9 @@ describe('LineHighlighter', function() {
   const clickLine = function(number, eventData = {}) {
     if ($.isEmptyObject(eventData)) {
       return $(`#L${number}`).click();
-    } else {
-      const e = $.Event('click', eventData);
-      return $(`#L${number}`).trigger(e);
     }
+    const e = $.Event('click', eventData);
+    return $(`#L${number}`).trigger(e);
   };
   beforeEach(function() {
     loadFixtures('static/line_highlighter.html');

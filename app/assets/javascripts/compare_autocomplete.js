@@ -1,4 +1,4 @@
-/* eslint-disable func-names, no-else-return */
+/* eslint-disable func-names */
 
 import $ from 'jquery';
 import { __ } from './locale';
@@ -52,9 +52,8 @@ export default function initCompareAutocomplete(limitTo = null, clickHandler = (
           return $('<li />')
             .addClass('dropdown-header')
             .text(ref.header);
-        } else {
-          return $('<li />').append(link);
         }
+        return $('<li />').append(link);
       },
       id(obj, $el) {
         return $el.attr('data-ref');

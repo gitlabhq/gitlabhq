@@ -22,17 +22,17 @@ rules:
     - allow:
         - __
         - _links
-  # Disabled for now, to make the airbnb-base 12.1.0 -> 13.1.0 update smoother
-  no-else-return:
-    - error
-    - allowElseIf: true
   import/no-unresolved:
     - error
     - ignore:
         # https://gitlab.com/gitlab-org/gitlab/issues/38226
         - '^ee_component/'
-  import/no-useless-path-segments: off
   import/order: off
+  # Disabled for now, to make the airbnb-base 12.1.0 -> 13.1.0 update smoother
+  no-else-return:
+    - error
+    - allowElseIf: true
+  import/no-useless-path-segments: off
   lines-between-class-members: off
   # Disabled for now, to make the plugin-vue 4.5 -> 5.0 update smoother
   vue/no-confusing-v-for-v-if: error

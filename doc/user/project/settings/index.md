@@ -67,7 +67,7 @@ Some features depend on others:
 - If you disable the **Issues** option, GitLab also removes the following
   features:
   - **Issue Boards**
-  - [**Service Desk**](#service-desk-premium) **(PREMIUM)**
+  - [**Service Desk**](#service-desk-starter) **(STARTER)**
 
   NOTE: **Note:**
   When the **Issues** option is disabled, you can still access **Milestones**
@@ -106,7 +106,7 @@ Set up your project's merge request settings:
 
 ![project's merge request settings](img/merge_requests_settings.png)
 
-### Service Desk **(PREMIUM)**
+### Service Desk **(STARTER)**
 
 Enable [Service Desk](../service_desk.md) for your project to offer customer support.
 

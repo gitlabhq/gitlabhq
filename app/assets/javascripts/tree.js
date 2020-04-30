@@ -1,4 +1,4 @@
-/* eslint-disable func-names, consistent-return, one-var, no-else-return, class-methods-use-this */
+/* eslint-disable func-names, consistent-return, one-var, class-methods-use-this */
 
 import $ from 'jquery';
 import { visitUrl } from './lib/utils/url_utility';
@@ -15,9 +15,8 @@ export default class TreeView {
         if (e.metaKey || e.which === 2) {
           e.preventDefault();
           return window.open(path, '_blank');
-        } else {
-          return visitUrl(path);
         }
+        return visitUrl(path);
       }
     });
     // Show the "Loading commit data" for only the first element

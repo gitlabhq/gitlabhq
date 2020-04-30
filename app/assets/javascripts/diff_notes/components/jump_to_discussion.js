@@ -1,4 +1,4 @@
-/* eslint-disable func-names, no-else-return, guard-for-in, no-restricted-syntax, no-lonely-if, no-continue */
+/* eslint-disable func-names, guard-for-in, no-restricted-syntax, no-lonely-if, no-continue */
 /* global CommentsStore */
 
 import $ from 'jquery';
@@ -25,9 +25,8 @@ const JumpToDiscussion = Vue.extend({
     buttonText() {
       if (this.discussionId) {
         return __('Jump to next unresolved thread');
-      } else {
-        return __('Jump to first unresolved thread');
       }
+      return __('Jump to first unresolved thread');
     },
     allResolved() {
       return this.unresolvedDiscussionCount === 0;
@@ -36,12 +35,10 @@ const JumpToDiscussion = Vue.extend({
       if (this.discussionId) {
         if (this.unresolvedDiscussionCount > 1) {
           return true;
-        } else {
-          return this.discussionId !== this.lastResolvedId;
         }
-      } else {
-        return this.unresolvedDiscussionCount >= 1;
+        return this.discussionId !== this.lastResolvedId;
       }
+      return this.unresolvedDiscussionCount >= 1;
     },
     lastResolvedId() {
       let lastId;

@@ -1,4 +1,3 @@
-/* eslint-disable no-else-return, no-lonely-if */
 /* global CommentsStore */
 
 import $ from 'jquery';
@@ -22,27 +21,19 @@ const CommentAndResolveBtn = Vue.extend({
     showButton() {
       if (this.discussion) {
         return this.discussion.isResolvable();
-      } else {
-        return false;
       }
+      return false;
     },
     isDiscussionResolved() {
       return this.discussion.isResolved();
     },
     buttonText() {
-      if (this.isDiscussionResolved) {
-        if (this.textareaIsEmpty) {
-          return __('Unresolve thread');
-        } else {
-          return __('Comment & unresolve thread');
-        }
-      } else {
-        if (this.textareaIsEmpty) {
-          return __('Resolve thread');
-        } else {
-          return __('Comment & resolve thread');
-        }
+      if (this.textareaIsEmpty) {
+        return this.isDiscussionResolved ? __('Unresolve thread') : __('Resolve thread');
       }
+      return this.isDiscussionResolved
+        ? __('Comment & unresolve thread')
+        : __('Comment & resolve thread');
     },
   },
   created() {

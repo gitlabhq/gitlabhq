@@ -1,4 +1,4 @@
-/* eslint-disable one-var, no-else-return, no-self-compare, consistent-return, no-param-reassign, no-shadow */
+/* eslint-disable one-var, no-self-compare, consistent-return, no-param-reassign, no-shadow */
 /* global Issuable */
 /* global ListMilestone */
 
@@ -123,9 +123,8 @@ export default class MilestoneSelect {
         toggleLabel: (selected, el) => {
           if (selected && 'id' in selected && $(el).hasClass('is-active')) {
             return selected.title;
-          } else {
-            return defaultLabel;
           }
+          return defaultLabel;
         },
         defaultLabel,
         fieldName: $dropdown.data('fieldName'),
@@ -133,9 +132,8 @@ export default class MilestoneSelect {
         id: milestone => {
           if (!useId && !$dropdown.is('.js-issuable-form-dropdown')) {
             return milestone.name;
-          } else {
-            return milestone.id;
           }
+          return milestone.id;
         },
         hidden: () => {
           $selectBox.hide();
@@ -244,13 +242,12 @@ export default class MilestoneSelect {
                     )
                     .find('span')
                     .text(data.milestone.title);
-                } else {
-                  $value.html(milestoneLinkNoneTemplate);
-                  return $sidebarCollapsedValue
-                    .attr('data-original-title', __('Milestone'))
-                    .find('span')
-                    .text(__('None'));
                 }
+                $value.html(milestoneLinkNoneTemplate);
+                return $sidebarCollapsedValue
+                  .attr('data-original-title', __('Milestone'))
+                  .find('span')
+                  .text(__('None'));
               })
               .catch(() => {
                 // eslint-disable-next-line no-jquery/no-fade

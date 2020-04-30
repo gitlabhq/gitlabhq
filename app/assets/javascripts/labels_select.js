@@ -1,4 +1,4 @@
-/* eslint-disable no-useless-return, func-names, no-underscore-dangle, no-new, consistent-return, no-shadow, no-param-reassign, no-lonely-if, no-else-return, dot-notation, no-empty */
+/* eslint-disable no-useless-return, func-names, no-underscore-dangle, no-new, consistent-return, no-shadow, no-param-reassign, no-lonely-if, dot-notation, no-empty */
 /* global Issuable */
 /* global ListLabel */
 
@@ -311,9 +311,8 @@ export default class LabelsSelect {
               firstLabel: selectedLabels[0],
               labelCount: selectedLabels.length - 1,
             });
-          } else {
-            return defaultLabel;
           }
+          return defaultLabel;
         },
         fieldName: $dropdown.data('fieldName'),
         id(label) {
@@ -325,9 +324,8 @@ export default class LabelsSelect {
 
           if ($dropdown.hasClass('js-filter-submit') && label.isAny == null) {
             return label.title;
-          } else {
-            return label.id;
           }
+          return label.id;
         },
         hidden() {
           const page = $('body').attr('data-page');

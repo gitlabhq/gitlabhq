@@ -50,7 +50,7 @@ GitLab is the first single application for software development, security,
 and operations that enables [Concurrent DevOps](https://about.gitlab.com/concurrent-devops/),
 making the software lifecycle faster and radically improving the speed of business.
 
-GitLab provides solutions for [all the stages of the DevOps lifecycle](https://about.gitlab.com/stages-devops-lifecycle/):
+GitLab provides solutions for [each of the stages of the DevOps lifecycle](https://about.gitlab.com/stages-devops-lifecycle/):
 
 ![DevOps Stages](img/devops-stages.png)
 
@@ -65,7 +65,7 @@ The following sections provide links to documentation for each DevOps stage:
 |:------------------------|:------------------------------------------------------------|
 | [Manage](#manage)       | Statistics and analytics features.                          |
 | [Plan](#plan)           | Project planning and management features.                   |
-| [Create](#create)       | Source code and data creation and management features.      |
+| [Create](#create)       | Source code, data creation, and management features.        |
 | [Verify](#verify)       | Testing, code quality, and continuous integration features. |
 | [Package](#package)     | Docker container registry.                                  |
 | [Release](#release)     | Application release and delivery features.                  |
@@ -285,7 +285,7 @@ The following documentation relates to the DevOps **Release** stage:
 | [Canary Deployments](user/project/canary_deployments.md) **(PREMIUM)**                                                              | Employ a popular CI strategy where a small portion of the fleet is updated to the new version first.                                  |
 | [Deploy Boards](user/project/deploy_boards.md) **(PREMIUM)**                                                                        | View the current health and status of each CI environment running on Kubernetes, displaying the status of the pods in the deployment. |
 | [Environments and deployments](ci/environments.md)                                                                                  | With environments, you can control the continuous deployment of your software within GitLab.                                          |
-| [Environment-specific variables](ci/variables/README.md#limiting-environment-scopes-of-environment-variables) | Limit scope of variables to specific environments.                                                                                    |
+| [Environment-specific variables](ci/variables/README.md#limiting-environment-scopes-of-environment-variables) | Limit the scope of variables to specific environments.                                                                                    |
 | [GitLab CI/CD](ci/README.md)                                                                                                        | Explore the features and capabilities of Continuous Deployment and Delivery with GitLab.                                              |
 | [GitLab Pages](user/project/pages/index.md)                                                                                         | Build, test, and deploy a static site directly from GitLab.                                                                           |
 | [Protected Runners](ci/runners/README.md#protected-runners)                                                                         | Select Runners to only pick jobs for protected branches and tags.                                                                     |
@@ -300,7 +300,7 @@ The following documentation relates to the DevOps **Release** stage:
 ### Configure
 
 Automate your entire workflow from build to deploy and monitoring with GitLab
-Auto DevOps. Best practice templates get you started with minimal to zero
+Auto DevOps. Best practice templates help get you started with minimal to zero
 configuration. Then customize everything from buildpacks to CI/CD.
 
 The following documentation relates to the DevOps **Configure** stage:

@@ -1,4 +1,4 @@
-/* eslint-disable func-names, prefer-rest-params, consistent-return, no-shadow, no-else-return, no-self-compare, no-unused-expressions, yoda, prefer-spread, babel/camelcase, no-param-reassign */
+/* eslint-disable func-names, prefer-rest-params, consistent-return, no-shadow, no-self-compare, no-unused-expressions, yoda, prefer-spread, babel/camelcase, no-param-reassign */
 /* global Issuable */
 /* global emitSidebarEvent */
 
@@ -148,12 +148,11 @@ function UsersSelect(currentUser, els, options = {}) {
           name: selectedUser.name,
           length: otherSelected.length,
         });
-      } else {
-        return sprintf(s__('UsersSelect|%{name} + %{length} more'), {
-          name: firstUser.name,
-          length: selectedUsers.length - 1,
-        });
       }
+      return sprintf(s__('UsersSelect|%{name} + %{length} more'), {
+        name: firstUser.name,
+        length: selectedUsers.length - 1,
+      });
     };
 
     $('.assign-to-me-link').on('click', e => {
@@ -375,13 +374,11 @@ function UsersSelect(currentUser, els, options = {}) {
           $dropdown.find('.dropdown-toggle-text').removeClass('is-default');
           if (selected.text) {
             return selected.text;
-          } else {
-            return selected.name;
           }
-        } else {
-          $dropdown.find('.dropdown-toggle-text').addClass('is-default');
-          return defaultLabel;
+          return selected.name;
         }
+        $dropdown.find('.dropdown-toggle-text').addClass('is-default');
+        return defaultLabel;
       },
       defaultLabel,
       hidden() {
