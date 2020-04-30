@@ -30,7 +30,7 @@ workflow:
     # merge requests used for this merge a branch release-tools/X into a stable
     # branch. For these merge requests we don't want to run any pipelines, as
     # they serve no purpose and will run anyway when the changes are merged.
-    - if: '$CI_COMMIT_BRANCH =~ /^release-tools\/\d+\.\d+\.\d+-rc\d+$/ && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^[\d-]+-stable(-ee)?$/ && $CI_PROJECT_PATH == "gitlab-org/gitlab"'
+    - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^release-tools\/\d+\.\d+\.\d+-rc\d+$/ && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^[\d-]+-stable(-ee)?$/ && $CI_PROJECT_PATH == "gitlab-org/gitlab"'
       when: never
     # For merge requests, create a pipeline.
     - if: '$CI_MERGE_REQUEST_IID'

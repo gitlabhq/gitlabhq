@@ -76,7 +76,7 @@ class SentNotification < ApplicationRecord
 
   def position=(new_position)
     if new_position.is_a?(String)
-      new_position = JSON.parse(new_position) rescue nil
+      new_position = Gitlab::Json.parse(new_position) rescue nil
     end
 
     if new_position.is_a?(Hash)

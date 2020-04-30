@@ -9,7 +9,7 @@ RSpec.describe Oauth::TokenInfoController do
         get :show
 
         expect(response).to have_gitlab_http_status(:unauthorized)
-        expect(JSON.parse(response.body)).to include('error' => 'invalid_request')
+        expect(Gitlab::Json.parse(response.body)).to include('error' => 'invalid_request')
       end
     end
 
@@ -23,7 +23,7 @@ RSpec.describe Oauth::TokenInfoController do
         get :show, params: { access_token: access_token.token }
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(JSON.parse(response.body)).to eq(
+        expect(Gitlab::Json.parse(response.body)).to eq(
           'scope'              => %w[api],
           'scopes'             => %w[api],
           'created_at'         => access_token.created_at.to_i,
@@ -40,7 +40,7 @@ RSpec.describe Oauth::TokenInfoController do
         get :show, params: { access_token: 'unknown_token' }
 
         expect(response).to have_gitlab_http_status(:unauthorized)
-        expect(JSON.parse(response.body)).to include('error' => 'invalid_request')
+        expect(Gitlab::Json.parse(response.body)).to include('error' => 'invalid_request')
       end
     end
 
@@ -53,7 +53,7 @@ RSpec.describe Oauth::TokenInfoController do
         get :show, params: { access_token: access_token.token }
 
         expect(response).to have_gitlab_http_status(:unauthorized)
-        expect(JSON.parse(response.body)).to include('error' => 'invalid_request')
+        expect(Gitlab::Json.parse(response.body)).to include('error' => 'invalid_request')
       end
     end
 
@@ -64,7 +64,7 @@ RSpec.describe Oauth::TokenInfoController do
         get :show, params: { access_token: access_token.token }
 
         expect(response).to have_gitlab_http_status(:unauthorized)
-        expect(JSON.parse(response.body)).to include('error' => 'invalid_request')
+        expect(Gitlab::Json.parse(response.body)).to include('error' => 'invalid_request')
       end
     end
   end

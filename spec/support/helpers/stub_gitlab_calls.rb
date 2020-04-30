@@ -86,7 +86,7 @@ module StubGitlabCalls
   def stub_container_registry_tag_manifest_content
     fixture_path = 'spec/fixtures/container_registry/tag_manifest.json'
 
-    JSON.parse(File.read(Rails.root + fixture_path))
+    Gitlab::Json.parse(File.read(Rails.root + fixture_path))
   end
 
   def stub_container_registry_blob_content
@@ -113,12 +113,12 @@ module StubGitlabCalls
 
   def stub_project_8
     data = File.read(Rails.root.join('spec/support/gitlab_stubs/project_8.json'))
-    allow_any_instance_of(Network).to receive(:project).and_return(JSON.parse(data))
+    allow_any_instance_of(Network).to receive(:project).and_return(Gitlab::Json.parse(data))
   end
 
   def stub_project_8_hooks
     data = File.read(Rails.root.join('spec/support/gitlab_stubs/project_8_hooks.json'))
-    allow_any_instance_of(Network).to receive(:project_hooks).and_return(JSON.parse(data))
+    allow_any_instance_of(Network).to receive(:project_hooks).and_return(Gitlab::Json.parse(data))
   end
 
   def stub_projects
@@ -143,7 +143,7 @@ module StubGitlabCalls
 
   def project_hash_array
     f = File.read(Rails.root.join('spec/support/gitlab_stubs/projects.json'))
-    JSON.parse f
+    Gitlab::Json.parse(f)
   end
 end
 

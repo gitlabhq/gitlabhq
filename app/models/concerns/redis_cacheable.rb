@@ -43,7 +43,7 @@ module RedisCacheable
     strong_memoize(:cached_attributes) do
       Gitlab::Redis::Cache.with do |redis|
         data = redis.get(cache_attribute_key)
-        JSON.parse(data, symbolize_names: true) if data
+        Gitlab::Json.parse(data, symbolize_names: true) if data
       end
     end
   end

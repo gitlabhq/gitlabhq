@@ -32,7 +32,7 @@ describe TodosHelper do
         { 'id' => projects.first.id, 'text' => projects.first.full_name }
       ]
 
-      expect(JSON.parse(helper.todo_projects_options)).to match_array(expected_results)
+      expect(Gitlab::Json.parse(helper.todo_projects_options)).to match_array(expected_results)
     end
   end
 end

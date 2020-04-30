@@ -217,7 +217,7 @@ describe Metrics::Dashboard::DatasourceNameParser do
   include GrafanaApiHelpers
 
   let(:grafana_url) { valid_grafana_dashboard_link('https://gitlab.grafana.net') }
-  let(:grafana_dashboard) { JSON.parse(fixture_file('grafana/dashboard_response.json'), symbolize_names: true) }
+  let(:grafana_dashboard) { Gitlab::Json.parse(fixture_file('grafana/dashboard_response.json'), symbolize_names: true) }
 
   subject { described_class.new(grafana_url, grafana_dashboard).parse }
 

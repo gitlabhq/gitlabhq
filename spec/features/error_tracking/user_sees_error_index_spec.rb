@@ -6,7 +6,7 @@ describe 'View error index page', :js, :use_clean_rails_memory_store_caching, :s
   include_context 'sentry error tracking context feature'
 
   let_it_be(:issues_response_body) { fixture_file('sentry/issues_sample_response.json') }
-  let_it_be(:issues_response) { JSON.parse(issues_response_body) }
+  let_it_be(:issues_response) { Gitlab::Json.parse(issues_response_body) }
   let(:issues_api_url) { "#{sentry_api_urls.issues_url}?limit=20&query=is:unresolved" }
 
   before do

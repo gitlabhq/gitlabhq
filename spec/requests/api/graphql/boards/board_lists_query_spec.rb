@@ -132,6 +132,6 @@ describe 'get board lists' do
   end
 
   def grab_list_data(response_body)
-    JSON.parse(response_body)['data'][board_parent_type]['boards']['edges'][0]['node']['lists']['edges']
+    Gitlab::Json.parse(response_body)['data'][board_parent_type]['boards']['edges'][0]['node']['lists']['edges']
   end
 end

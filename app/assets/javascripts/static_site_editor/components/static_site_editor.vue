@@ -48,6 +48,7 @@ export default {
     <!-- Success view -->
     <saved-changes-message
       v-if="savedContentMeta"
+      class="w-75"
       :branch="savedContentMeta.branch"
       :commit="savedContentMeta.commit"
       :merge-request="savedContentMeta.mergeRequest"

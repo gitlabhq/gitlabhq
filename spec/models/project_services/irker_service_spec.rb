@@ -65,7 +65,7 @@ describe IrkerService do
 
       conn = @irker_server.accept
       conn.each_line do |line|
-        msg = JSON.parse(line.chomp("\n"))
+        msg = Gitlab::Json.parse(line.chomp("\n"))
         expect(msg.keys).to match_array(%w(to privmsg))
         expect(msg['to']).to match_array(["irc://chat.freenode.net/#commits",
                                           "irc://test.net/#test"])

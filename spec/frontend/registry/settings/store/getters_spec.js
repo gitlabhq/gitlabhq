@@ -4,9 +4,12 @@ import { formOptions } from '../../shared/mock_data';
 
 describe('Getters registry settings store', () => {
   const settings = {
+    enabled: true,
     cadence: 'foo',
     keep_n: 'bar',
     older_than: 'baz',
+    name_regex: 'name-foo',
+    name_regex_keep: 'name-keep-bar',
   };
 
   describe.each`
@@ -26,6 +29,17 @@ describe('Getters registry settings store', () => {
     it(`${getter} calls findDefaultOption when ${variable} does not exists in settings`, () => {
       getters[getter]({ settings: {}, formOptions });
       expect(utils.findDefaultOption).toHaveBeenCalledWith(formOptions[formOption]);
+    });
+  });
+
+  describe('getSettings', () => {
+    it('returns the content of settings', () => {
+      const computedGetters = {
+        getCadence: settings.cadence,
+        getOlderThan: settings.older_than,
+        getKeepN: settings.keep_n,
+      };
+      expect(getters.getSettings({ settings }, computedGetters)).toEqual(settings);
     });
   });
 

@@ -13,6 +13,7 @@ import submitContentChanges from '~/static_site_editor/services/submit_content_c
 import {
   username,
   projectId,
+  commitBranchResponse,
   commitMultipleResponse,
   createMergeRequestResponse,
   sourcePath,
@@ -26,7 +27,7 @@ describe('submitContentChanges', () => {
   const branch = 'branch-name';
 
   beforeEach(() => {
-    jest.spyOn(Api, 'createBranch').mockResolvedValue();
+    jest.spyOn(Api, 'createBranch').mockResolvedValue({ data: commitBranchResponse });
     jest.spyOn(Api, 'commitMultiple').mockResolvedValue({ data: commitMultipleResponse });
     jest
       .spyOn(Api, 'createProjectMergeRequest')

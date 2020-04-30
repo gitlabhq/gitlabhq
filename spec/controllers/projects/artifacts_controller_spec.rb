@@ -334,7 +334,7 @@ describe Projects::ArtifactsController do
         def params
           @params ||= begin
             base64_params = send_data.sub(/\Aartifacts\-entry:/, '')
-            JSON.parse(Base64.urlsafe_decode64(base64_params))
+            Gitlab::Json.parse(Base64.urlsafe_decode64(base64_params))
           end
         end
       end

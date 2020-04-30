@@ -69,7 +69,7 @@ module Projects
         # application/vnd.git-lfs+json
         # (https://github.com/git-lfs/git-lfs/blob/master/docs/api/batch.md#requests),
         # HTTParty does not know this is actually JSON.
-        data = JSON.parse(response.body)
+        data = Gitlab::Json.parse(response.body)
 
         raise DownloadLinksError, "LFS Batch API did return any objects" unless data.is_a?(Hash) && data.key?('objects')
 

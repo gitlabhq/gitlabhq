@@ -44,8 +44,8 @@ module ConfigurationHelper
     import_export_config = config_hash(config)
     excluded_attributes = import_export_config[:excluded_attributes][relation_name.to_sym]
     included_attributes = import_export_config[:included_attributes][relation_name.to_sym]
-    attributes = attributes - JSON.parse(excluded_attributes.to_json) if excluded_attributes
-    attributes = attributes & JSON.parse(included_attributes.to_json) if included_attributes
+    attributes = attributes - Gitlab::Json.parse(excluded_attributes.to_json) if excluded_attributes
+    attributes = attributes & Gitlab::Json.parse(included_attributes.to_json) if included_attributes
 
     attributes
   end

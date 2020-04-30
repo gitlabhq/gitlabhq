@@ -2351,7 +2351,7 @@ describe Ci::Pipeline, :mailer do
 
         def have_requested_pipeline_hook(status)
           have_requested(:post, stubbed_hostname(hook.url)).with do |req|
-            json_body = JSON.parse(req.body)
+            json_body = Gitlab::Json.parse(req.body)
             json_body['object_attributes']['status'] == status &&
               json_body['builds'].length == 2
           end

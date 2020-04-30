@@ -171,7 +171,7 @@ describe 'getting an issue list for a project' do
 
             cursored_query = query("sort: DUE_DATE_ASC, after: \"#{end_cursor}\"")
             post_graphql(cursored_query, current_user: current_user)
-            response_data = JSON.parse(response.body)['data']['project']['issues']['edges']
+            response_data = Gitlab::Json.parse(response.body)['data']['project']['issues']['edges']
 
             expect(grab_iids(response_data)).to eq([due_issue1.iid, due_issue4.iid, due_issue2.iid])
           end
@@ -193,7 +193,7 @@ describe 'getting an issue list for a project' do
 
             cursored_query = query("sort: DUE_DATE_DESC, after: \"#{end_cursor}\"")
             post_graphql(cursored_query, current_user: current_user)
-            response_data = JSON.parse(response.body)['data']['project']['issues']['edges']
+            response_data = Gitlab::Json.parse(response.body)['data']['project']['issues']['edges']
 
             expect(grab_iids(response_data)).to eq([due_issue3.iid, due_issue4.iid, due_issue2.iid])
           end
@@ -239,7 +239,7 @@ describe 'getting an issue list for a project' do
 
             cursored_query = query("sort: RELATIVE_POSITION_ASC, after: \"#{end_cursor}\"")
             post_graphql(cursored_query, current_user: current_user)
-            response_data = JSON.parse(response.body)['data']['project']['issues']['edges']
+            response_data = Gitlab::Json.parse(response.body)['data']['project']['issues']['edges']
 
             expect(grab_iids(response_data)).to eq([relative_issue1.iid, relative_issue4.iid, relative_issue2.iid])
           end
@@ -288,7 +288,7 @@ describe 'getting an issue list for a project' do
 
             cursored_query = query("sort: PRIORITY_ASC, after: \"#{end_cursor}\"")
             post_graphql(cursored_query, current_user: current_user)
-            response_data = JSON.parse(response.body)['data']['project']['issues']['edges']
+            response_data = Gitlab::Json.parse(response.body)['data']['project']['issues']['edges']
 
             expect(grab_iids(response_data)).to eq([priority_issue2.iid, priority_issue4.iid])
           end
@@ -310,7 +310,7 @@ describe 'getting an issue list for a project' do
 
             cursored_query = query("sort: PRIORITY_DESC, after: \"#{end_cursor}\"")
             post_graphql(cursored_query, current_user: current_user)
-            response_data = JSON.parse(response.body)['data']['project']['issues']['edges']
+            response_data = Gitlab::Json.parse(response.body)['data']['project']['issues']['edges']
 
             expect(grab_iids(response_data)).to eq([priority_issue2.iid, priority_issue4.iid])
           end

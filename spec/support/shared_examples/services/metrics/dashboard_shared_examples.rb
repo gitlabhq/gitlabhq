@@ -23,7 +23,7 @@ RSpec.shared_examples 'valid dashboard service response for schema' do
 end
 
 RSpec.shared_examples 'valid dashboard service response' do
-  let(:dashboard_schema) { JSON.parse(fixture_file('lib/gitlab/metrics/dashboard/schemas/dashboard.json')) }
+  let(:dashboard_schema) { Gitlab::Json.parse(fixture_file('lib/gitlab/metrics/dashboard/schemas/dashboard.json')) }
 
   it_behaves_like 'valid dashboard service response for schema'
 end
@@ -38,7 +38,7 @@ RSpec.shared_examples 'caches the unprocessed dashboard for subsequent calls' do
 end
 
 RSpec.shared_examples 'valid embedded dashboard service response' do
-  let(:dashboard_schema) { JSON.parse(fixture_file('lib/gitlab/metrics/dashboard/schemas/embedded_dashboard.json')) }
+  let(:dashboard_schema) { Gitlab::Json.parse(fixture_file('lib/gitlab/metrics/dashboard/schemas/embedded_dashboard.json')) }
 
   it_behaves_like 'valid dashboard service response for schema'
 end

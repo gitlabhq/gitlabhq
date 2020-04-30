@@ -5606,9 +5606,6 @@ msgstr ""
 msgid "ContainerRegistry|Docker tag expiration policy is %{toggleStatus}"
 msgstr ""
 
-msgid "ContainerRegistry|Docker tags with names matching this regex pattern will expire:"
-msgstr ""
-
 msgid "ContainerRegistry|Edit Settings"
 msgstr ""
 
@@ -5654,7 +5651,10 @@ msgstr ""
 msgid "ContainerRegistry|Quick Start"
 msgstr ""
 
-msgid "ContainerRegistry|Regular expressions such as %{codeStart}.*-test%{codeEnd} or %{codeStart}dev-.*%{codeEnd} are supported.  To select all tags, use %{codeStart}.*%{codeEnd}"
+msgid "ContainerRegistry|Regular expressions such as %{codeStart}.*-test%{codeEnd} or %{codeStart}dev-.*%{codeEnd} are supported"
+msgstr ""
+
+msgid "ContainerRegistry|Regular expressions such as %{codeStart}.*-test%{codeEnd} or %{codeStart}dev-.*%{codeEnd} are supported. To select all tags, use %{codeStart}.*%{codeEnd}"
 msgstr ""
 
 msgid "ContainerRegistry|Remove repository"
@@ -5705,6 +5705,12 @@ msgid "ContainerRegistry|Tag expiration policy is designed to:"
 msgstr ""
 
 msgid "ContainerRegistry|Tags deleted successfully"
+msgstr ""
+
+msgid "ContainerRegistry|Tags with names matching this regex pattern will %{italicStart}be preserved:%{italicEnd}"
+msgstr ""
+
+msgid "ContainerRegistry|Tags with names matching this regex pattern will %{italicStart}expire:%{italicEnd}"
 msgstr ""
 
 msgid "ContainerRegistry|The Container Registry tag expiration and retention policies for this project have not been enabled."

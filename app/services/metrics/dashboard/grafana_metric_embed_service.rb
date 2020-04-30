@@ -113,7 +113,7 @@ module Metrics
       end
 
       def parse_json(json)
-        JSON.parse(json, symbolize_names: true)
+        Gitlab::Json.parse(json, symbolize_names: true)
       rescue JSON::ParserError
         raise DashboardProcessingError.new('Grafana response contains invalid json')
       end

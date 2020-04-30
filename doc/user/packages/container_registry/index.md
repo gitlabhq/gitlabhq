@@ -503,7 +503,7 @@ then goes through a process of excluding tags from it until only the ones to be 
 1. Evaluates the `name_regex`, excluding non-matching names from the list.
 1. Excludes any tags that do not have a manifest (not part of the options).
 1. Orders the remaining tags by `created_date`.
-1. Excludes from the list the N tags based on the `keep_n` value (Expiration latest).
+1. Excludes from the list the N tags based on the `keep_n` value (Number of tags to retain).
 1. Excludes from the list the tags older than the `older_than` value (Expiration interval).
 1. Finally, the remaining tags in the list are deleted from the Container Registry.
 
@@ -518,7 +518,7 @@ The UI allows you to configure the following:
 - **Expiration policy:** enable or disable the expiration policy.
 - **Expiration interval:** how long tags are exempt from being deleted.
 - **Expiration schedule:** how often the cron job checking the tags should run.
-- **Expiration latest:** how many tags to _always_ keep for each image.
+- **Number of tags to retain:** how many tags to _always_ keep for each image.
 - **Docker tags with names matching this regex pattern will expire:** the regex used to determine what tags should be expired. To qualify all tags for expiration, use the default value of `.*`.
 
 ### Managing project expiration policy through the API

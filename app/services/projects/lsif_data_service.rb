@@ -42,7 +42,7 @@ module Projects
 
         file.open do |stream|
           Zlib::GzipReader.wrap(stream) do |gz_stream|
-            data = JSON.parse(gz_stream.read)
+            data = Gitlab::Json.parse(gz_stream.read)
           end
         end
 

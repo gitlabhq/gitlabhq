@@ -117,15 +117,31 @@ exports[`Expiration Policy Form renders 1`] = `
   <gl-form-group-stub
     id="expiration-policy-name-matching-group"
     invalid-feedback="The value of this input should be less than 255 characters"
-    label="Docker tags with names matching this regex pattern will expire:"
     label-align="right"
     label-cols="3"
     label-for="expiration-policy-name-matching"
   >
+     
     <gl-form-textarea-stub
       disabled="true"
       id="expiration-policy-name-matching"
       placeholder=".*"
+      trim=""
+      value=""
+    />
+  </gl-form-group-stub>
+  <gl-form-group-stub
+    id="expiration-policy-keep-name-group"
+    invalid-feedback="The value of this input should be less than 255 characters"
+    label-align="right"
+    label-cols="3"
+    label-for="expiration-policy-keep-name"
+  >
+     
+    <gl-form-textarea-stub
+      disabled="true"
+      id="expiration-policy-keep-name"
+      placeholder=""
       trim=""
       value=""
     />

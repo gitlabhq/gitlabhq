@@ -38,7 +38,7 @@ describe Projects::Environments::PrometheusApiController do
       context 'with success result' do
         let(:service_result) { { status: :success, body: prometheus_body } }
         let(:prometheus_body) { '{"status":"success"}' }
-        let(:prometheus_json_body) { JSON.parse(prometheus_body) }
+        let(:prometheus_json_body) { Gitlab::Json.parse(prometheus_body) }
 
         it 'returns prometheus response' do
           get :proxy, params: environment_params

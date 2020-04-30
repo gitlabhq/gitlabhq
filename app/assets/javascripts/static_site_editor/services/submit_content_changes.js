@@ -56,8 +56,8 @@ const submitContentChanges = ({ username, projectId, sourcePath, content }) => {
   const meta = {};
 
   return createBranch(projectId, branch)
-    .then(() => {
-      Object.assign(meta, { branch: { label: branch } });
+    .then(({ data: { web_url: url } }) => {
+      Object.assign(meta, { branch: { label: branch, url } });
 
       return commitContent(projectId, mergeRequestTitle, branch, sourcePath, content);
     })
@@ -67,7 +67,7 @@ const submitContentChanges = ({ username, projectId, sourcePath, content }) => {
       return createMergeRequest(projectId, mergeRequestTitle, branch);
     })
     .then(({ data: { iid: label, web_url: url } }) => {
-      Object.assign(meta, { mergeRequest: { label, url } });
+      Object.assign(meta, { mergeRequest: { label: label.toString(), url } });
 
       return meta;
     });

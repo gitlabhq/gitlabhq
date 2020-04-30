@@ -23,7 +23,7 @@ module Metrics
 
       override :get_raw_dashboard
       def get_raw_dashboard
-        JSON.parse(params[:embed_json])
+        Gitlab::Json.parse(params[:embed_json])
       rescue JSON::ParserError => e
         invalid_embed_json!(e.message)
       end

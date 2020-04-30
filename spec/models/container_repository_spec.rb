@@ -19,7 +19,7 @@ describe ContainerRepository do
       .with(headers: { 'Accept' => ContainerRegistry::Client::ACCEPTED_TYPES.join(', ') })
       .to_return(
         status: 200,
-        body: JSON.dump(tags: ['test_tag']),
+        body: Gitlab::Json.dump(tags: ['test_tag']),
         headers: { 'Content-Type' => 'application/json' })
   end
 

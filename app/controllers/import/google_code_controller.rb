@@ -15,7 +15,7 @@ class Import::GoogleCodeController < Import::BaseController
     end
 
     begin
-      dump = JSON.parse(dump_file.read)
+      dump = Gitlab::Json.parse(dump_file.read)
     rescue
       return redirect_back_or_default(options: { alert: _("The uploaded file is not a valid Google Takeout archive.") })
     end
@@ -42,7 +42,7 @@ class Import::GoogleCodeController < Import::BaseController
     user_map_json = "{}" if user_map_json.blank?
 
     begin
-      user_map = JSON.parse(user_map_json)
+      user_map = Gitlab::Json.parse(user_map_json)
     rescue
       flash.now[:alert] = _("The entered user map is not a valid JSON user map.")
 

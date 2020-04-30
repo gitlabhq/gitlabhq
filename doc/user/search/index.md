@@ -41,7 +41,10 @@ groups:
    - [Label](../project/labels.md)
    - My-reaction
    - Confidential
-   - Epic ([Introduced](https://gitlab.com/gitlab-org/gitlab/issues/195704) in GitLab 12.9)
+   - Epic ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/195704) in GitLab 12.9),
+     including [child epic](../group/epics/index.md#multi-level-child-epics-ultimate)
+     ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9029) in
+     [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.0)
    - Search for this text
 1. Select or type the operator to use for filtering the attribute. The following operators are
    available:

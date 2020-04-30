@@ -16,6 +16,7 @@ export const getSettings = (state, getters) => ({
   older_than: getters.getOlderThan,
   keep_n: getters.getKeepN,
   name_regex: state.settings.name_regex,
+  name_regex_keep: state.settings.name_regex_keep,
 });
 
 export const getIsEdited = state => !isEqual(state.original, state.settings);

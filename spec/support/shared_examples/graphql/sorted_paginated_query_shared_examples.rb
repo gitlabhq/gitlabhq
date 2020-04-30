@@ -82,7 +82,7 @@ RSpec.shared_examples 'sorted paginated query' do
 
           cursored_query = pagination_query("sort: #{sort_param}, after: \"#{end_cursor}\"", page_info)
           post_graphql(cursored_query, current_user: current_user)
-          response_data = graphql_dig_at(JSON.parse(response.body), :data, *data_path, :edges)
+          response_data = graphql_dig_at(Gitlab::Json.parse(response.body), :data, *data_path, :edges)
 
           expect(pagination_results_data(response_data)).to eq expected_results.drop(first_param)
         end

@@ -42,7 +42,7 @@ The importer will create any new namespaces (groups) if they don't exist or in
 the case the namespace is taken, the repository will be imported under the user's
 namespace that started the import process.
 
-## Importing your Bitbucket repositories
+## Import your Bitbucket repositories
 
 1. Sign in to GitLab and go to your dashboard.
 1. Click on **New project**.
@@ -60,3 +60,12 @@ namespace that started the import process.
    each project will be imported.
 
    ![Import projects](img/bitbucket_import_select_project_v12_3.png)
+
+## Troubleshooting
+
+If you have more than one Bitbucket account, be sure to sign in to the correct account.
+If you've accidentally started the import process with the wrong account, follow these steps:
+
+1. Revoke GitLab access to your Bitbucket account, essentially reversing the process in the following procedure: [Import your Bitbucket repositories](#import-your-bitbucket-repositories).
+
+1. Sign out of the Bitbucket account. Follow the procedure linked from the previous step.
