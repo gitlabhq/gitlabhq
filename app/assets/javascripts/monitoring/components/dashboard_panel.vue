@@ -82,6 +82,11 @@ export default {
       required: false,
       default: false,
     },
+    settingsPath: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {
@@ -196,6 +201,9 @@ export default {
       return Boolean(this.graphDataHasResult && !this.basicChartComponent);
     },
     editCustomMetricLink() {
+      if (this.graphData.metrics.length > 1) {
+        return this.settingsPath;
+      }
       return this.graphData?.metrics[0].edit_path;
     },
     editCustomMetricLinkText() {

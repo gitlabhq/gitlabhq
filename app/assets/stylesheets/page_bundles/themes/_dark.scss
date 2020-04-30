@@ -27,6 +27,9 @@
   $btn-disabled-border: rgba(223, 223, 223, 0.24);
   $btn-disabled-color: rgba(145, 145, 145, 0.48);
 
+  $diff-insert: rgba(155, 185, 85, 0.2);
+  $diff-remove: rgba(255, 0, 0, 0.2);
+
   a {
     color: $link-color;
   }
@@ -37,6 +40,8 @@
   h4:not(.modal-title),
   h5,
   h6,
+  code,
+  .md table:not(.code),
   .md,
   .md p,
   .ide-view,
@@ -86,6 +91,7 @@
     background-color: transparent;
   }
 
+  code,
   .multi-file-commit-panel,
   .multi-file-tabs,
   .multi-file-tabs li,
@@ -102,6 +108,10 @@
     background-color: $background;
   }
 
+  pre code {
+    background-color: inherit;
+  }
+
   .ide-sidebar-link:hover {
     background-color: $background-hover;
   }
@@ -111,6 +121,7 @@
   }
 
   &,
+  .md table:not(.code) tr th,
   .multi-file-commit-panel-inner-content,
   .multi-file-commit-form,
   .multi-file-tabs li.active,
@@ -141,6 +152,12 @@
     border-color: $border-color;
   }
 
+  .md h1,
+  .md h2,
+  .md blockquote,
+  pre,
+  .md table:not(.code) tbody td,
+  .md table:not(.code) tr th,
   .multi-file-commit-form > .commit-form-compact,
   .ide-tree-header,
   .multi-file-commit-panel-header,
@@ -267,6 +284,7 @@
   }
 
   .md-previewer,
+  .md table:not(.code) tbody,
   .ide-empty-state {
     background-color: $border-color;
   }
@@ -288,6 +306,14 @@
         $gray-800 100%);
       }
     }
+  }
+
+  .idiff.addition {
+    background-color: $diff-insert;
+  }
+
+  .idiff.deletion {
+    background-color: $diff-remove;
   }
 }
 

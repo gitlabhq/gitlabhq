@@ -552,6 +552,7 @@ export default {
       <dashboard-panel
         v-show="expandedPanel.panel"
         ref="expandedPanel"
+        :settings-path="settingsPath"
         :clipboard-text="generatePanelLink(expandedPanel.group, expandedPanel.panel)"
         :graph-data="expandedPanel.panel"
         :alerts-endpoint="alertsEndpoint"
@@ -610,6 +611,7 @@ export default {
                 </div>
 
                 <dashboard-panel
+                  :settings-path="settingsPath"
                   :clipboard-text="generatePanelLink(groupData.group, graphData)"
                   :graph-data="graphData"
                   :alerts-endpoint="alertsEndpoint"

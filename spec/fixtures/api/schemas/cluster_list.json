@@ -1,0 +1,14 @@
+{
+  "clusters": {
+    "type": "array",
+    "items": {
+      "cluster_type": "string",
+      "enabled": "boolean",
+      "environment_scope": "string",
+      "name": "string",
+      "path": "string",
+      "status": "string"
+    }
+  },
+  "has_ancestor_clusters": { "type": ["boolean", "false"] }
+}

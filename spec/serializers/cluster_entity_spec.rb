@@ -7,7 +7,7 @@ describe ClusterEntity do
     subject { described_class.new(cluster).as_json }
 
     context 'when provider type is gcp' do
-      let(:cluster) { create(:cluster, provider_type: :gcp, provider_gcp: provider) }
+      let(:cluster) { create(:cluster, :instance, provider_type: :gcp, provider_gcp: provider) }
 
       context 'when status is creating' do
         let(:provider) { create(:cluster_provider_gcp, :creating) }
@@ -29,7 +29,7 @@ describe ClusterEntity do
     end
 
     context 'when provider type is user' do
-      let(:cluster) { create(:cluster, provider_type: :user) }
+      let(:cluster) { create(:cluster, :instance, provider_type: :user) }
 
       it 'has corresponded data' do
         expect(subject[:status]).to eq(:created)
@@ -38,7 +38,7 @@ describe ClusterEntity do
     end
 
     context 'when no application has been installed' do
-      let(:cluster) { create(:cluster) }
+      let(:cluster) { create(:cluster, :instance) }
 
       subject { described_class.new(cluster).as_json[:applications]}
 

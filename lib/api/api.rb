@@ -97,6 +97,15 @@ module API
       handle_api_exception(exception)
     end
 
+    # This is a specific exception raised by `rack-timeout` gem when Puma
+    # requests surpass its timeout. Given it inherits from Exception, we
+    # should rescue it separately. For more info, see:
+    # - https://github.com/sharpstone/rack-timeout/blob/master/doc/exceptions.md
+    # - https://github.com/ruby-grape/grape#exception-handling
+    rescue_from Rack::Timeout::RequestTimeoutException do |exception|
+      handle_api_exception(exception)
+    end
+
     format :json
     content_type :txt, "text/plain"
 

@@ -1704,7 +1704,16 @@ msgstr ""
 msgid "AlertManagement|End time"
 msgstr ""
 
+msgid "AlertManagement|End time:"
+msgstr ""
+
 msgid "AlertManagement|Events"
+msgstr ""
+
+msgid "AlertManagement|Events:"
+msgstr ""
+
+msgid "AlertManagement|Full Alert Details"
 msgstr ""
 
 msgid "AlertManagement|More information"
@@ -1716,10 +1725,16 @@ msgstr ""
 msgid "AlertManagement|No alerts to display."
 msgstr ""
 
+msgid "AlertManagement|Overview"
+msgstr ""
+
 msgid "AlertManagement|Severity"
 msgstr ""
 
 msgid "AlertManagement|Start time"
+msgstr ""
+
+msgid "AlertManagement|Start time:"
 msgstr ""
 
 msgid "AlertManagement|Status"
