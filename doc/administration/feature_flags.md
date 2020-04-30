@@ -29,13 +29,9 @@ them. It can be done by GitLab administrators with access to GitLab Rails
 console.
 
 If you used a certain feature and identified a bug, a misbehavior, or an
-error, it's very important that you **[provide feedback]** to GitLab as soon
+error, it's very important that you [**provide feedback**](https://gitlab.com/gitlab-org/gitlab/issues/new?issue[title]=Docs%20-%20feature%20flag%20feedback%3A%20Feature%20Name&issue[description]=Describe%20the%20problem%20you%27ve%20encountered.%0A%0A%3C!--%20Don%27t%20edit%20below%20this%20line%20--%3E%0A%0A%2Flabel%20~%22docs%5C-comments%22%20) to GitLab as soon
 as possible so we can improve or fix it while behind a flag. When you upgrade
 GitLab to an earlier version, the feature flag status may change.
-
-[provide feedback]: https://gitlab.com/gitlab-org/gitlab/issues/new?issue[title]=Docs%20-%20feature%20flag%20feedback%3A%20Feature%20Name&issue[description]=Describe%20the%20problem%20you%27ve%20encountered.%0A%0A%3C!--%20Don%27t%20edit%20below%20this%20line%20--%3E%0A%0A%2Flabel%20~%22docs%5C-comments%22%20
-
-<!-- Note: the link identifier above was used to facilitate review and update. -->
 
 NOTE: **Note:**
 Mind that features deployed behind feature flags may not be ready for

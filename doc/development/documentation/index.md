@@ -171,8 +171,8 @@ Before getting started, make sure you read the introductory section
 [documentation workflow](workflow.md).
 
 - Use the current [merge request description template](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab/merge_request_templates/Documentation.md)
-- Label the MR `Documentation`
-- Assign the correct milestone (see note below)
+- Label the MR `Documentation` (can only be done by people with `developer` access, for example, GitLab team members)
+- Assign the correct milestone per note below (can only be done by people with `developer` access, for example, GitLab team members)
 
 Documentation will be merged if it is an improvement on existing content,
 represents a good-faith effort to follow the template and style standards,

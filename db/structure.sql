@@ -4141,7 +4141,6 @@ CREATE TABLE public.namespaces (
     require_two_factor_authentication boolean DEFAULT false NOT NULL,
     two_factor_grace_period integer DEFAULT 48 NOT NULL,
     cached_markdown_version integer,
-    plan_id integer,
     project_creation_level integer,
     runners_token character varying,
     trial_ends_on timestamp with time zone,
@@ -9950,8 +9949,6 @@ CREATE INDEX index_namespaces_on_path ON public.namespaces USING btree (path);
 
 CREATE INDEX index_namespaces_on_path_trigram ON public.namespaces USING gin (path public.gin_trgm_ops);
 
-CREATE INDEX index_namespaces_on_plan_id ON public.namespaces USING btree (plan_id);
-
 CREATE UNIQUE INDEX index_namespaces_on_push_rule_id ON public.namespaces USING btree (push_rule_id);
 
 CREATE INDEX index_namespaces_on_require_two_factor_authentication ON public.namespaces USING btree (require_two_factor_authentication);
@@ -11394,9 +11391,6 @@ ALTER TABLE ONLY public.system_note_metadata
 
 ALTER TABLE ONLY public.merge_requests
     ADD CONSTRAINT fk_fd82eae0b9 FOREIGN KEY (head_pipeline_id) REFERENCES public.ci_pipelines(id) ON DELETE SET NULL;
-
-ALTER TABLE ONLY public.namespaces
-    ADD CONSTRAINT fk_fdd12e5b80 FOREIGN KEY (plan_id) REFERENCES public.plans(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY public.project_import_data
     ADD CONSTRAINT fk_ffb9ee3a10 FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
@@ -13629,6 +13623,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200423081441
 20200423081519
 20200423101529
+20200424043515
 20200424050250
 20200424101920
 20200427064130

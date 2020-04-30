@@ -3553,7 +3553,7 @@ type GrafanaIntegration {
   enabled: Boolean!
 
   """
-  Url for the Grafana host for the Grafana integration
+  URL for the Grafana host for the Grafana integration
   """
   grafanaUrl: String!
 

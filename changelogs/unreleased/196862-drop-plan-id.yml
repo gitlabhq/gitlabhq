@@ -1,0 +1,5 @@
+---
+title: Remove namespaces.plan_id column
+merge_request: 30351
+author:
+type: other

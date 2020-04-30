@@ -10207,7 +10207,7 @@
             },
             {
               "name": "grafanaUrl",
-              "description": "Url for the Grafana host for the Grafana integration",
+              "description": "URL for the Grafana host for the Grafana integration",
               "args": [
 
               ],

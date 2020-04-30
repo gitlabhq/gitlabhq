@@ -2924,6 +2924,8 @@ Possible values for `when` are:
 - `scheduler_failure`: Retry if the scheduler failed to assign the job to a runner.
 - `data_integrity_failure`: Retry if there was a structural integrity problem detected.
 
+You can specify the number of [retry attempts for certain stages of job execution](#job-stages-attempts) using variables.
+
 ### `timeout`
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/14887) in GitLab 12.3.

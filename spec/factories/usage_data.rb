@@ -12,6 +12,11 @@ FactoryBot.define do
       create(:jira_service, :jira_cloud_service, project: projects[2])
       create(:jira_service, :without_properties_callback, project: projects[3],
              properties: { url: 'https://mysite.atlassian.net' })
+      jira_label = create(:label, project: projects[0])
+      create(:jira_import_state, :finished, project: projects[0], label: jira_label, failed_to_import_count: 2, imported_issues_count: 7, total_issue_count: 9)
+      create(:jira_import_state, :finished, project: projects[1], label: jira_label, imported_issues_count: 3, total_issue_count: 3)
+      create(:jira_import_state, :finished, project: projects[1], label: jira_label, imported_issues_count: 3)
+      create(:jira_import_state, :scheduled, project: projects[1], label: jira_label)
       create(:prometheus_service, project: projects[1])
       create(:service, project: projects[0], type: 'SlackSlashCommandsService', active: true)
       create(:service, project: projects[1], type: 'SlackService', active: true)

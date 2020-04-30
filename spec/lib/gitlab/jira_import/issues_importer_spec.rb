@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 describe Gitlab::JiraImport::IssuesImporter do
+  include JiraServiceHelper
+
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
   let_it_be(:jira_import) { create(:jira_import_state, project: project) }
@@ -12,6 +14,7 @@ describe Gitlab::JiraImport::IssuesImporter do
 
   before do
     stub_feature_flags(jira_issue_import: true)
+    stub_jira_service_test
   end
 
   describe '#imported_items_cache_key' do

@@ -497,6 +497,12 @@ to start again from scratch, there are a few steps that can help you:
    gitlab-ctl start
    ```
 
+1. Refresh Foreign Data Wrapper tables
+
+   ```sh
+   gitlab-rake geo:db:refresh_foreign_tables
+   ```
+
 ## Fixing errors during a failover or when promoting a secondary to a primary node
 
 The following are possible errors that might be encountered during failover or

@@ -828,23 +828,31 @@ Reference tags can use letters and other characters. Avoid using lowercase `w` o
 (`_`) in footnote tag names until [this bug](https://gitlab.com/gitlab-org/gitlab/issues/24423) is
 resolved.
 
-```markdown
-A footnote reference tag looks like this: [^1]
+<!--
+Do not edit the following codeblock. It uses HTML to skip the Vale ReferenceLinks test.
+-->
+
+<pre class="highlight"><code>A footnote reference tag looks like this: [^1]
 
 This reference tag is a mix of letters and numbers. [^footnote-42]
 
-[^1]: This is the text inside a footnote.
+&#91;^1]: This is the text inside a footnote.
 
-[^footnote-42]: This is another footnote.
-```
+&#91;^footnote-42]: This is another footnote.
+</code></pre>
 
 A footnote reference tag looks like this:[^1]
 
 This reference tag is a mix of letters and numbers.[^footnote-42]
 
-[^1]: This is the text inside a footnote.
+<!--
+Do not delete the single space before the [^1] and [^footnotes] references below.
+These are used to force the Vale ReferenceLinks check to skip these examples.
+-->
 
-[^footnote-42]: This is another footnote.
+ [^1]: This is the text inside a footnote.
+
+ [^footnote-42]: This is another footnote.
 
 ### Headers
 
@@ -928,8 +936,11 @@ ___
 
 Examples:
 
-```markdown
-Inline-style (hover to see title text):
+<!--
+Do not edit the following codeblock. It uses HTML to skip the Vale ReferenceLinks test.
+-->
+
+<pre class="highlight"><code>Inline-style (hover to see title text):
 
 ![alt text](img/markdown_logo.png "Title Text")
 
@@ -937,12 +948,12 @@ Reference-style (hover to see title text):
 
 ![alt text1][logo]
 
-[logo]: img/markdown_logo.png "Title Text"
-```
+&#91;logo]: img/markdown_logo.png "Title Text"
+</code></pre>
 
 <!--
-DO NOT change the name of markdown_logo.png. This is used for a test
-in spec/controllers/help_controller_spec.rb.
+DO NOT change the name of markdown_logo.png. This is used for a test in
+spec/controllers/help_controller_spec.rb.
 -->
 
 Inline-style (hover to see title text):
@@ -951,9 +962,12 @@ Inline-style (hover to see title text):
 
 Reference-style (hover to see title text):
 
-![alt text][logo]
+<!--
+The example below uses an in-line link to pass the Vale ReferenceLinks test.
+Do not change to a reference style link.
+-->
 
-[logo]: img/markdown_logo.png "Title Text"
+![alt text](img/markdown_logo.png "Title Text")
 
 #### Videos
 
@@ -1036,7 +1050,10 @@ are separated into their own lines:
 </dl>
 ```
 
-<!-- Note: The example below uses HTML to force correct rendering on docs.gitlab.com, Markdown will be fine in GitLab -->
+<!--
+Note: The example below uses HTML to force correct rendering on docs.gitlab.com,
+Markdown will be fine in GitLab.
+-->
 
 <dl>
   <dt>Markdown in HTML</dt>
@@ -1102,7 +1119,10 @@ PASTE LOGS HERE
 </details>
 ````
 
-<!-- Note: The example below uses HTML to force correct rendering on docs.gitlab.com, Markdown will be fine in GitLab -->
+<!--
+The example below uses HTML to force correct rendering on docs.gitlab.com, Markdown
+will work correctly in GitLab.
+-->
 
 <details>
 <summary>Click this to collapse/fold.</summary>
@@ -1167,8 +1187,11 @@ A new line due to the previous backslash.
 
 There are two ways to create links, inline-style and reference-style:
 
-```markdown
-- This is an [inline-style link](https://www.google.com)
+<!--
+Do not edit the following codeblock. It uses HTML to skip the Vale ReferenceLinks test.
+-->
+
+<pre class="highlight"><code>- This is an [inline-style link](https://www.google.com)
 - This is a [link to a repository file in the same directory](index.md)
 - This is a [relative link to a readme one directory higher](../README.md)
 - This is a [link that also has title text](https://www.google.com "This link takes you to Google!")
@@ -1186,10 +1209,10 @@ Using references:
 
 Some text to show that the reference links can follow later.
 
-[arbitrary case-insensitive reference text]: https://www.mozilla.org/en-US/
-[1]: https://slashdot.org
-[link text itself]: https://www.reddit.com
-```
+&#91;arbitrary case-insensitive reference text]: https://www.mozilla.org/en-US/
+&#91;1]: https://slashdot.org
+&#91;link text itself]: https://www.reddit.com
+</code></pre>
 
 - This is an [inline-style link](https://www.google.com)
 - This is a [link to a repository file in the same directory](index.md)
@@ -1203,15 +1226,16 @@ Using header ID anchors:
 
 Using references:
 
-- This is a [reference-style link, see below][Arbitrary case-insensitive reference text]
-- You can [use numbers for reference-style link definitions, see below][1]
-- Or leave it empty and use the [link text itself][], see below.
+<!--
+The example below uses in-line links to pass the Vale ReferenceLinks test.
+Do not change to reference style links.
+-->
+
+- This is a [reference-style link, see below](https://www.mozilla.org/en-US/)
+- You can [use numbers for reference-style link definitions, see below](https://slashdot.org)
+- Or leave it empty and use the [link text itself](https://www.reddit.com), see below.
 
 Some text to show that the reference links can follow later.
-
-[arbitrary case-insensitive reference text]: https://www.mozilla.org/en-US/
-[1]: https://slashdot.org
-[link text itself]: https://www.reddit.com
 
 NOTE: **Note:** Relative links do not allow the referencing of project files in a wiki
 page, or a wiki page in a project file. The reason for this is that a wiki is always
@@ -1261,8 +1285,11 @@ Examples:
 4. And another item.
 ```
 
-<!-- The "2." and "4." in the example above are changed to "1." below, to match the style standards on docs.gitlab.com -->
-<!-- See https://docs.gitlab.com/ee/development/documentation/styleguide.html#lists -->
+<!--
+The "2." and "4." in the example above are changed to "1." below, to match the style
+standards on docs.gitlab.com.
+See https://docs.gitlab.com/ee/development/documentation/styleguide.html#lists
+-->
 
 1. First ordered list item
 1. Another item
@@ -1292,8 +1319,11 @@ They can even:
 + pluses
 ```
 
-<!-- The "*" and "+" in the example above are changed to "-" below, to match the style standards on docs.gitlab.com -->
-<!-- See https://docs.gitlab.com/ee/development/documentation/styleguide.html#lists -->
+<!--
+The "*" and "+" in the example above are changed to "-" below, to match the style
+standards on docs.gitlab.com.
+See https://docs.gitlab.com/ee/development/documentation/styleguide.html#lists
+-->
 
 Unordered lists can:
 

@@ -3,6 +3,7 @@
 class JiraImportState < ApplicationRecord
   include AfterCommitQueue
   include ImportState::SidekiqJobTracker
+  include UsageStatistics
 
   self.table_name = 'jira_imports'
 
@@ -96,5 +97,9 @@ class JiraImportState < ApplicationRecord
         total_issue_count: total_issue_count
       }
     )
+  end
+
+  def self.finished_imports_count
+    finished.sum(:imported_issues_count)
   end
 end

@@ -286,7 +286,7 @@ module Gitlab
         results[:projects_slack_notifications_active] = results[:projects_slack_active]
         results[:projects_slack_slash_active] = results[:projects_slack_slash_commands_active]
 
-        results.merge(jira_usage)
+        results.merge(jira_usage).merge(jira_import_usage)
       end
 
       def jira_usage
@@ -319,6 +319,16 @@ module Gitlab
         { projects_jira_server_active: -1, projects_jira_cloud_active: -1, projects_jira_active: -1 }
       end
       # rubocop: enable CodeReuse/ActiveRecord
+
+      def jira_import_usage
+        finished_jira_imports = JiraImportState.finished
+
+        {
+          jira_imports_total_imported_count: count(finished_jira_imports),
+          jira_imports_projects_count: distinct_count(finished_jira_imports, :project_id),
+          jira_imports_total_imported_issues_count: alt_usage_data { JiraImportState.finished_imports_count }
+        }
+      end
 
       def user_preferences_usage
         {} # augmented in EE

@@ -1,0 +1,10 @@
+# Checks for the presence of reference-style links that must be inline.
+#
+# For a list of all options, see https://errata-ai.github.io/vale/styles/
+extends: existence
+message: 'Link "%s" must be inline.'
+link: https://docs.gitlab.com/ee/development/documentation/styleguide.html#basic-link-criteria
+level: error
+scope: raw
+raw:
+  - '\n\[.*\]: .*'

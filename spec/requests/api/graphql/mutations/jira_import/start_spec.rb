@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 describe 'Starting a Jira Import' do
+  include JiraServiceHelper
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }
@@ -104,6 +105,8 @@ describe 'Starting a Jira Import' do
 
           before do
             project.reload
+
+            stub_jira_service_test
           end
 
           context 'when issues feature are disabled' do

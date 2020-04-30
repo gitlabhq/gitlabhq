@@ -3,9 +3,11 @@
 require 'spec_helper'
 
 describe Gitlab::JiraImport::LabelsImporter do
-  let_it_be(:user)         { create(:user) }
-  let_it_be(:group)        { create(:group) }
-  let_it_be(:project)      { create(:project, group: group) }
+  include JiraServiceHelper
+
+  let_it_be(:user) { create(:user) }
+  let_it_be(:group) { create(:group) }
+  let_it_be(:project) { create(:project, group: group) }
   let_it_be(:jira_service) { create(:jira_service, project: project) }
 
   subject { described_class.new(project).execute }
@@ -13,13 +15,14 @@ describe Gitlab::JiraImport::LabelsImporter do
   before do
     stub_feature_flags(jira_issue_import: true)
     stub_const('Gitlab::JiraImport::LabelsImporter::MAX_LABELS', 2)
-
-    WebMock.stub_request(:get, 'https://jira.example.com/rest/api/2/serverInfo')
-      .to_return(body: { url: 'http://url' }.to_json )
   end
 
   describe '#execute', :clean_gitlab_redis_cache do
-    context 'when jira import label is missing from jira import' do
+    before do
+      stub_jira_service_test
+    end
+
+    context 'when label is missing from jira import' do
       let_it_be(:no_label_jira_import) { create(:jira_import_state, label: nil, project: project) }
 
       it 'raises error' do

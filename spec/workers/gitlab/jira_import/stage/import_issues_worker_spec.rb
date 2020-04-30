@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 describe Gitlab::JiraImport::Stage::ImportIssuesWorker do
+  include JiraServiceHelper
+
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, import_type: 'jira') }
 
@@ -25,6 +27,7 @@ describe Gitlab::JiraImport::Stage::ImportIssuesWorker do
 
       before do
         stub_feature_flags(jira_issue_import: true)
+        stub_jira_service_test
       end
 
       context 'when import did not start' do

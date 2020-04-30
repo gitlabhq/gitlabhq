@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 describe Gitlab::JiraImport::Stage::ImportLabelsWorker do
+  include JiraServiceHelper
+
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, import_type: 'jira') }
 
@@ -36,6 +38,8 @@ describe Gitlab::JiraImport::Stage::ImportLabelsWorker do
         let!(:jira_service) { create(:jira_service, project: project) }
 
         before do
+          stub_jira_service_test
+
           jira_import.start!
 
           WebMock.stub_request(:get, 'https://jira.example.com/rest/api/2/label?maxResults=500&startAt=0')

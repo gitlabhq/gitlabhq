@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 describe Projects::Import::JiraController do
+  include JiraServiceHelper
+
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
   let_it_be(:jira_project_key) { 'Test' }
@@ -61,6 +63,7 @@ describe Projects::Import::JiraController do
       before do
         stub_feature_flags(jira_issue_import: true)
         stub_feature_flags(jira_issue_import_vue: false)
+        stub_jira_service_test
       end
 
       context 'when Jira service is enabled for the project' do
