@@ -1010,6 +1010,19 @@ entry.
 - Improvement in token reference.
 
 
+## 12.8.10 (2020-04-30)
+
+### Security (7 changes)
+
+- Ensure MR diff exists before codeowner check.
+- Prevent unauthorized access to default branch.
+- Do not return private project ID without permission.
+- Fix doorkeeper CVE-2020-10187.
+- Prevent ES credentials leak.
+- Return only safe urls for mirrors.
+- Validate workhorse 'rewritten_fields' and properly use them during multipart uploads.
+
+
 ## 12.8.9 (2020-04-14)
 
 ### Security (3 changes)
