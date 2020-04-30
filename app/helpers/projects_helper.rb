@@ -624,6 +624,7 @@ module ProjectsHelper
 
   def find_file_path
     return unless @project && !@project.empty_repo?
+    return unless can?(current_user, :download_code, @project)
 
     ref = @ref || @project.repository.root_ref
 

@@ -2,7 +2,7 @@
 
 class RemoteMirrorEntity < Grape::Entity
   expose :id
-  expose :url
+  expose :safe_url, as: :url
   expose :enabled
 
   expose :auth_method
