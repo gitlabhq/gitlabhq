@@ -1,17 +1,18 @@
 import { mount } from '@vue/test-utils';
 import { GlEmptyState, GlTable, GlAlert, GlLoadingIcon } from '@gitlab/ui';
-import stubChildren from 'helpers/stub_children';
 import AlertManagementList from '~/alert_management/components/alert_management_list.vue';
+
+import mockAlerts from '../mocks/alerts.json';
 
 describe('AlertManagementList', () => {
   let wrapper;
 
   const findAlertsTable = () => wrapper.find(GlTable);
+  const findAlerts = () => wrapper.findAll('table tbody tr');
   const findAlert = () => wrapper.find(GlAlert);
   const findLoader = () => wrapper.find(GlLoadingIcon);
 
   function mountComponent({
-    stubs = {},
     props = {
       alertManagementEnabled: false,
       userCanEnableAlertManagement: false,
@@ -21,7 +22,7 @@ describe('AlertManagementList', () => {
   } = {}) {
     wrapper = mount(AlertManagementList, {
       propsData: {
-        indexPath: '/path',
+        projectPath: 'gitlab-org/gitlab',
         enableAlertManagementPath: '/link',
         emptyAlertSvgPath: 'illustration/path',
         ...props,
@@ -37,10 +38,6 @@ describe('AlertManagementList', () => {
             },
           },
         },
-      },
-      stubs: {
-        ...stubChildren(AlertManagementList),
-        ...stubs,
       },
     });
   }
@@ -64,7 +61,6 @@ describe('AlertManagementList', () => {
   describe('Alerts table', () => {
     it('loading state', () => {
       mountComponent({
-        stubs: { GlTable },
         props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
         data: { alerts: null },
         loading: true,
@@ -75,7 +71,6 @@ describe('AlertManagementList', () => {
 
     it('error state', () => {
       mountComponent({
-        stubs: { GlTable },
         props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
         data: { alerts: null, errored: true },
         loading: false,
@@ -88,7 +83,6 @@ describe('AlertManagementList', () => {
 
     it('empty state', () => {
       mountComponent({
-        stubs: { GlTable },
         props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
         data: { alerts: [], errored: false },
         loading: false,
@@ -97,6 +91,17 @@ describe('AlertManagementList', () => {
       expect(findAlertsTable().text()).toContain('No alerts to display');
       expect(findLoader().exists()).toBe(false);
       expect(findAlert().props().variant).toBe('info');
+    });
+
+    it('has data state', () => {
+      mountComponent({
+        props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
+        data: { alerts: mockAlerts, errored: false },
+        loading: false,
+      });
+      expect(findLoader().exists()).toBe(false);
+      expect(findAlertsTable().exists()).toBe(true);
+      expect(findAlerts()).toHaveLength(mockAlerts.length);
     });
   });
 });

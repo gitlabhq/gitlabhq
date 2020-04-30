@@ -47,7 +47,7 @@ https://about.gitlab.com/handbook/engineering/ux/ux-research-training/user-story
 
 ### Documentation
 
-<!-- See the Feature Change Documentation Workflow https://docs.gitlab.com/ee/development/documentation/feature-change-workflow.html
+<!-- See the Feature Change Documentation Workflow https://docs.gitlab.com/ee/development/documentation/workflow.html#for-a-product-change
 
 * Add all known Documentation Requirements in this section. See https://docs.gitlab.com/ee/development/documentation/feature-change-workflow.html#documentation-requirements
 * If this feature requires changing permissions, update the permissions document. See https://docs.gitlab.com/ee/user/permissions.html -->

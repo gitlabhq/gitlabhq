@@ -383,6 +383,11 @@ export default {
 
     file.renderingLines = !file.renderingLines;
   },
+  [types.SET_DIFF_FILE_VIEWER](state, { filePath, viewer }) {
+    const file = findDiffFile(state.diffFiles, filePath, 'file_path');
+
+    file.viewer = viewer;
+  },
   [types.SET_SHOW_SUGGEST_POPOVER](state) {
     state.showSuggestPopover = false;
   },

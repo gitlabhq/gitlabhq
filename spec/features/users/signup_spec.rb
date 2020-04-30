@@ -470,8 +470,8 @@ end
 
 describe 'With experimental flow' do
   before do
-    stub_experiment(signup_flow: true, paid_signup_flow: false)
-    stub_experiment_for_user(signup_flow: true, paid_signup_flow: false)
+    stub_experiment(signup_flow: true)
+    stub_experiment_for_user(signup_flow: true)
   end
 
   it_behaves_like 'Signup'

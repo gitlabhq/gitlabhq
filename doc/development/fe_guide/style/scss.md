@@ -77,6 +77,24 @@ CSS classes should use the `lowercase-hyphenated` format rather than
 }
 ```
 
+Class names should be used instead of tag name selectors.
+Using tag name selectors are discouraged in CSS because
+they can affect unintended elements in the hierarchy.
+Also, since they are not meaningful names, they do not
+add meaning to the code.
+
+```scss
+// Bad
+ul {
+  color: #fff;
+}
+
+// Good
+.class-name {
+  color: #fff;
+}
+```
+
 ### Formatting
 
 You should always use a space before a brace, braces should be on the same

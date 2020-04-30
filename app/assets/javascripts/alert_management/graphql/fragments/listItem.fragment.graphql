@@ -1,9 +1,9 @@
-fragment AlertListItem on Alert {
+fragment AlertListItem on AlertManagementAlert {
   iid
   title
   severity
   status
-  started_at
-  ended_at
-  event_count
+  startedAt
+  endedAt
+  eventCount
 }

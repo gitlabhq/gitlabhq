@@ -1701,7 +1701,7 @@ msgstr ""
 msgid "AlertManagement|Display alerts from all your monitoring tools directly within GitLab. Streamline the investigation of your alerts and the escalation of alerts to incidents."
 msgstr ""
 
-msgid "AlertManagement|End Time"
+msgid "AlertManagement|End time"
 msgstr ""
 
 msgid "AlertManagement|Events"
@@ -1719,10 +1719,13 @@ msgstr ""
 msgid "AlertManagement|Severity"
 msgstr ""
 
-msgid "AlertManagement|Start Time"
+msgid "AlertManagement|Start time"
 msgstr ""
 
 msgid "AlertManagement|Status"
+msgstr ""
+
+msgid "AlertManagement|Surface alerts in GitLab"
 msgstr ""
 
 msgid "AlertManagement|There was an error displaying the alerts. Confirm your endpoint's configuration details to ensure alerts appear."
@@ -20172,9 +20175,6 @@ msgid "Support for custom certificates is disabled. Ask your system's administra
 msgstr ""
 
 msgid "Support page URL"
-msgstr ""
-
-msgid "Surface alerts in GitLab"
 msgstr ""
 
 msgid "Switch branch/tag"

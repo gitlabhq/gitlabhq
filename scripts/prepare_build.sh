@@ -33,6 +33,9 @@ if [ -f config/database_geo.yml ]; then
   sed -i 's/username: git/username: postgres/g' config/database_geo.yml
 fi
 
+cp config/cable.yml.example config/cable.yml
+sed -i 's|url:.*$|url: redis://redis:6379|g' config/cable.yml
+
 cp config/resque.yml.example config/resque.yml
 sed -i 's|url:.*$|url: redis://redis:6379|g' config/resque.yml
 

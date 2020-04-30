@@ -1,0 +1,29 @@
+[
+    {
+      "iid": "1527542",
+      "title": "SyntaxError: Invalid or unexpected token",
+      "severity": "Critical",
+      "eventCount": 7,
+      "startedAt": "2020-04-17T23:18:14.996Z",
+      "endedAt": "2020-04-17T23:18:14.996Z",
+      "status": "triggered"
+    },
+    {
+      "iid": "1527542",
+      "title": "Some otherr alert Some otherr alert Some otherr alert Some otherr alert Some otherr alert Some otherr alert",
+      "severity": "Medium",
+      "eventCount": 1,
+      "startedAt": "2020-04-17T23:18:14.996Z",
+      "endedAt": "2020-04-17T23:18:14.996Z",
+      "status": "acknowledged"
+    },
+    {
+      "iid": "1527542",
+      "title": "SyntaxError: Invalid or unexpected token",
+      "severity": "Low",
+      "eventCount": 4,
+      "startedAt": "2020-04-17T23:18:14.996Z",
+      "endedAt": "2020-04-17T23:18:14.996Z",
+      "status": "resolved"
+    }
+  ]

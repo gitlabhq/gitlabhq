@@ -1,9 +1,8 @@
 <script>
 import { GlEmptyState, GlDeprecatedButton, GlLoadingIcon, GlTable, GlAlert } from '@gitlab/ui';
 import { s__ } from '~/locale';
+import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import getAlerts from '../graphql/queries/getAlerts.query.graphql';
-
-const tdClass = 'table-col d-flex';
 
 export default {
   i18n: {
@@ -18,33 +17,29 @@ export default {
     {
       key: 'severity',
       label: s__('AlertManagement|Severity'),
-      tdClass,
     },
     {
-      key: 'start_time',
-      label: s__('AlertManagement|Start Time'),
-      tdClass,
+      key: 'startedAt',
+      label: s__('AlertManagement|Start time'),
     },
     {
-      key: 'end_time',
-      label: s__('AlertManagement|End Time'),
-      tdClass,
+      key: 'endedAt',
+      label: s__('AlertManagement|End time'),
     },
     {
-      key: 'alert',
+      key: 'title',
       label: s__('AlertManagement|Alert'),
       thClass: 'w-30p',
-      tdClass,
     },
     {
-      key: 'events',
+      key: 'eventCount',
       label: s__('AlertManagement|Events'),
-      tdClass,
+      thClass: 'text-right event-count',
+      tdClass: 'text-right event-count',
     },
     {
       key: 'status',
       label: s__('AlertManagement|Status'),
-      tdClass,
     },
   ],
   components: {
@@ -53,9 +48,10 @@ export default {
     GlTable,
     GlAlert,
     GlDeprecatedButton,
+    TimeAgo,
   },
   props: {
-    indexPath: {
+    projectPath: {
       type: String,
       required: true,
     },
@@ -81,8 +77,11 @@ export default {
       query: getAlerts,
       variables() {
         return {
-          projectPath: this.indexPath,
+          projectPath: this.projectPath,
         };
+      },
+      update(data) {
+        return data.project.alertManagementAlerts.nodes;
       },
       error() {
         this.errored = true;
@@ -128,18 +127,34 @@ export default {
         :show-empty="true"
         :busy="loading"
         fixed
-        stacked="sm"
-        tbody-tr-class="table-row mb-4"
+        stacked="md"
       >
+        <template #cell(startedAt)="{ item }">
+          <time-ago :time="item.startedAt" />
+        </template>
+
+        <template #cell(endedAt)="{ item }">
+          <time-ago :time="item.endedAt" />
+        </template>
+
+        <template #cell(title)="{ item }">
+          <div class="gl-max-w-full text-truncate">{{ item.title }}</div>
+        </template>
+
         <template #empty>
           {{ s__('AlertManagement|No alerts to display.') }}
         </template>
+
         <template #table-busy>
           <gl-loading-icon size="lg" color="dark" class="mt-3" />
         </template>
       </gl-table>
     </div>
-    <gl-empty-state v-else :title="__('Surface alerts in GitLab')" :svg-path="emptyAlertSvgPath">
+    <gl-empty-state
+      v-else
+      :title="__('AlertManagement|Surface alerts in GitLab')"
+      :svg-path="emptyAlertSvgPath"
+    >
       <template #description>
         <div class="d-block">
           <span>{{

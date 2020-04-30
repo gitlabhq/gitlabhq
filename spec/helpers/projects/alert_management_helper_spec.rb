@@ -11,10 +11,7 @@ describe Projects::AlertManagementHelper do
   describe '#alert_management_data' do
     let(:user_can_enable_alert_management) { false }
     let(:setting_path) { project_settings_operations_path(project) }
-
-    let(:index_path) do
-      project_alert_management_index_path(project, format: :json)
-    end
+    let(:project_path) { project.full_path }
 
     before do
       allow(helper)
@@ -26,9 +23,9 @@ describe Projects::AlertManagementHelper do
     context 'without alert_managements_setting' do
       it 'returns frontend configuration' do
         expect(alert_management_data(current_user, project)).to eq(
-          'index-path' => index_path,
+          'project-path' => project_path,
           'enable-alert-management-path' => setting_path,
-          "empty-alert-svg-path" => "/images/illustrations/alert-management-empty-state.svg",
+          'empty-alert-svg-path' => '/images/illustrations/alert-management-empty-state.svg',
           'user-can-enable-alert-management' => 'false',
           'alert-management-enabled' => 'true'
         )

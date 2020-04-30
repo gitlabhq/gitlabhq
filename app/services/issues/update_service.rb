@@ -21,6 +21,10 @@ module Issues
       spam_check(issue, current_user) unless skip_spam_check
     end
 
+    def after_update(issue)
+      IssuesChannel.broadcast_to(issue, event: 'updated') if Feature.enabled?(:broadcast_issue_updates, issue.project)
+    end
+
     def handle_changes(issue, options)
       old_associations = options.fetch(:old_associations, {})
       old_labels = old_associations.fetch(:labels, [])

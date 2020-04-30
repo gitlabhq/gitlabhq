@@ -1,12 +1,16 @@
-// these styles need to be deleted once GlTable component looks in GitLab same as in @gitlab/ui
 .alert-management-list {
+  // these styles need to be deleted once GlTable component looks in GitLab same as in @gitlab/ui
   table {
     color: $gray-700;
 
     tr {
       td,
       th {
-        @include gl-p-4;
+        @include gl-p-5;
+
+        &.event-count {
+          @include gl-pr-9;
+        }
       }
 
       th {
@@ -18,8 +22,10 @@
         border-color: $gray-100;
       }
 
-      td {
-        @include gl-border-0;
+      &:last-child {
+        td {
+          @include gl-border-0;
+        }
       }
     }
   }

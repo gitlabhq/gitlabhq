@@ -842,5 +842,33 @@ describe Issues::UpdateService, :mailer do
       let(:open_issuable) { issue }
       let(:closed_issuable) { create(:closed_issue, project: project) }
     end
+
+    context 'real-time updates' do
+      let(:update_params) { { assignee_ids: [user2.id] } }
+
+      context 'when broadcast_issue_updates is enabled' do
+        before do
+          stub_feature_flags(broadcast_issue_updates: true)
+        end
+
+        it 'broadcasts to the issues channel' do
+          expect(IssuesChannel).to receive(:broadcast_to).with(issue, event: 'updated')
+
+          update_issue(update_params)
+        end
+      end
+
+      context 'when broadcast_issue_updates is disabled' do
+        before do
+          stub_feature_flags(broadcast_issue_updates: false)
+        end
+
+        it 'does not broadcast to the issues channel' do
+          expect(IssuesChannel).not_to receive(:broadcast_to)
+
+          update_issue(update_params)
+        end
+      end
+    end
   end
 end

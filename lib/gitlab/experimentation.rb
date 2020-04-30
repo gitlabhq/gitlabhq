@@ -25,9 +25,6 @@ module Gitlab
       signup_flow: {
         tracking_category: 'Growth::Acquisition::Experiment::SignUpFlow'
       },
-      paid_signup_flow: {
-        tracking_category: 'Growth::Acquisition::Experiment::PaidSignUpFlow'
-      },
       suggest_pipeline: {
         tracking_category: 'Growth::Expansion::Experiment::SuggestPipeline'
       },

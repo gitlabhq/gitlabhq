@@ -224,6 +224,7 @@ class ProjectPolicy < BasePolicy
     enable :read_build
     enable :read_container_image
     enable :read_pipeline
+    enable :read_pipeline_schedule
     enable :read_environment
     enable :read_deployment
     enable :read_merge_request
@@ -281,7 +282,6 @@ class ProjectPolicy < BasePolicy
     enable :update_commit_status
     enable :create_build
     enable :update_build
-    enable :read_pipeline_schedule
     enable :create_merge_request_from
     enable :create_wiki
     enable :push_code
@@ -422,6 +422,7 @@ class ProjectPolicy < BasePolicy
     prevent :fork_project
     prevent :read_commit_status
     prevent :read_pipeline
+    prevent :read_pipeline_schedule
     prevent(*create_read_update_admin_destroy(:release))
   end
 
@@ -448,6 +449,7 @@ class ProjectPolicy < BasePolicy
     enable :read_merge_request
     enable :read_note
     enable :read_pipeline
+    enable :read_pipeline_schedule
     enable :read_commit_status
     enable :read_container_image
     enable :download_code
@@ -466,6 +468,7 @@ class ProjectPolicy < BasePolicy
 
   rule { public_builds & can?(:guest_access) }.policy do
     enable :read_pipeline
+    enable :read_pipeline_schedule
   end
 
   # These rules are included to allow maintainers of projects to push to certain

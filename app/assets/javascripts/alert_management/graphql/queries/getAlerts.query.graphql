@@ -1,11 +1,11 @@
 #import "../fragments/listItem.fragment.graphql"
 
-query getAlerts(
-  $projectPath: ID!
-) {
+query getAlerts($projectPath: ID!) {
   project(fullPath: $projectPath) {
-    alerts {
-     ...AlertListItem
+    alertManagementAlerts {
+      nodes {
+        ...AlertListItem
+      }
     }
   }
 }
