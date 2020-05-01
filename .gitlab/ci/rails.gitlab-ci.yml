@@ -55,7 +55,7 @@ static-analysis:
   script:
     - scripts/static-analysis
   cache:
-    key: "ruby-2.6.5-pg9-rubocop"
+    key: "ruby-2.6.6-pg9-rubocop"
     paths:
       - vendor/ruby
       - tmp/rubocop_cache
