@@ -3,7 +3,6 @@ import { GlSprintf, GlLink } from '@gitlab/ui';
 
 import settingsMixin from 'ee_else_ce/pages/projects/shared/permissions/mixins/settings_pannel_mixin';
 import { s__ } from '~/locale';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import projectFeatureSetting from './project_feature_setting.vue';
 import projectFeatureToggle from '~/vue_shared/components/toggle_button.vue';
 import projectSettingRow from './project_setting_row.vue';
@@ -26,7 +25,7 @@ export default {
     GlSprintf,
     GlLink,
   },
-  mixins: [settingsMixin, glFeatureFlagsMixin()],
+  mixins: [settingsMixin],
 
   props: {
     currentSettings: {
@@ -199,10 +198,6 @@ export default {
       return s__(
         'ProjectSettings|View and edit files in this project. Non-project members will only have read access',
       );
-    },
-
-    metricsDashboardVisibilitySwitchingAvailable() {
-      return this.glFeatures.metricsDashboardVisibilitySwitchingAvailable;
     },
   },
 
@@ -480,7 +475,6 @@ export default {
         />
       </project-setting-row>
       <project-setting-row
-        v-if="metricsDashboardVisibilitySwitchingAvailable"
         ref="metrics-visibility-settings"
         :label="__('Metrics Dashboard')"
         :help-text="

@@ -57,9 +57,6 @@ describe('Settings Panel', () => {
 
     return mountFn(settingsPanel, {
       propsData,
-      provide: {
-        glFeatures: { metricsDashboardVisibilitySwitchingAvailable: true },
-      },
     });
   };
 
