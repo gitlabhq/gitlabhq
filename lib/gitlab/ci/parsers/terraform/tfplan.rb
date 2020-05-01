@@ -8,7 +8,7 @@ module Gitlab
           TfplanParserError = Class.new(Gitlab::Ci::Parsers::ParserError)
 
           def parse!(json_data, terraform_reports, artifact:)
-            tfplan = JSON.parse(json_data).tap do |parsed_data|
+            tfplan = Gitlab::Json.parse(json_data).tap do |parsed_data|
               parsed_data['job_path'] = Gitlab::Routing.url_helpers.project_job_path(
                 artifact.job.project, artifact.job
               )

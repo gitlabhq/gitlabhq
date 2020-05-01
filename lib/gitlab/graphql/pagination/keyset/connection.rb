@@ -128,7 +128,7 @@ module Gitlab
           end
 
           def ordering_from_encoded_json(cursor)
-            JSON.parse(decode(cursor))
+            Gitlab::Json.parse(decode(cursor))
           rescue JSON::ParserError
             raise Gitlab::Graphql::Errors::ArgumentError, "Please provide a valid cursor"
           end

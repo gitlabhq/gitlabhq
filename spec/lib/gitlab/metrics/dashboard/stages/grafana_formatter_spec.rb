@@ -9,9 +9,9 @@ describe Gitlab::Metrics::Dashboard::Stages::GrafanaFormatter do
   let_it_be(:project) { create(:project, namespace: namespace, name: 'bar') }
 
   describe '#transform!' do
-    let(:grafana_dashboard) { JSON.parse(fixture_file('grafana/simplified_dashboard_response.json'), symbolize_names: true) }
-    let(:datasource) { JSON.parse(fixture_file('grafana/datasource_response.json'), symbolize_names: true) }
-    let(:expected_dashboard) { JSON.parse(fixture_file('grafana/expected_grafana_embed.json'), symbolize_names: true) }
+    let(:grafana_dashboard) { Gitlab::Json.parse(fixture_file('grafana/simplified_dashboard_response.json'), symbolize_names: true) }
+    let(:datasource) { Gitlab::Json.parse(fixture_file('grafana/datasource_response.json'), symbolize_names: true) }
+    let(:expected_dashboard) { Gitlab::Json.parse(fixture_file('grafana/expected_grafana_embed.json'), symbolize_names: true) }
 
     subject(:dashboard) { described_class.new(project, {}, params).transform! }
 

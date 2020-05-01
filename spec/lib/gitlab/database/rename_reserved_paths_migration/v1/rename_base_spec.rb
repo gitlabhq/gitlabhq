@@ -242,7 +242,7 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameBase, :delete
       old_path, new_path = [nil, nil]
       Gitlab::Redis::SharedState.with do |redis|
         rename_info = redis.lpop(key)
-        old_path, new_path = JSON.parse(rename_info)
+        old_path, new_path = Gitlab::Json.parse(rename_info)
       end
 
       expect(old_path).to eq('path/to/namespace')
@@ -278,7 +278,7 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameBase, :delete
       end
 
       expect(rename_count).to eq(1)
-      expect(JSON.parse(stored_renames.first)).to eq(%w(old_path new_path))
+      expect(Gitlab::Json.parse(stored_renames.first)).to eq(%w(old_path new_path))
     end
   end
 end

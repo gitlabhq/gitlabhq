@@ -79,7 +79,7 @@ module Gitlab
         data = { 'jira_tracker_data' => [], 'issue_tracker_data' => [] }
         select_all(query).each do |service|
           begin
-            properties = JSON.parse(service['properties'])
+            properties = Gitlab::Json.parse(service['properties'])
           rescue JSON::ParserError
             logger.warn(
               message: 'Properties data not parsed - invalid json',

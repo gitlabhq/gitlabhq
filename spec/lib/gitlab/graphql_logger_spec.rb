@@ -28,7 +28,7 @@ describe Gitlab::GraphqlLogger do
 
       output = subject.format_message('INFO', now, 'test', analyzer_memo)
 
-      data = JSON.parse(output)
+      data = Gitlab::Json.parse(output)
       expect(data['severity']).to eq('INFO')
       expect(data['time']).to eq(now.utc.iso8601(3))
       expect(data['complexity']).to eq(181)

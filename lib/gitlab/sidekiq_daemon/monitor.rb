@@ -134,7 +134,7 @@ module Gitlab
       end
 
       def safe_parse(message)
-        JSON.parse(message)
+        Gitlab::Json.parse(message)
       rescue JSON::ParserError
       end
 

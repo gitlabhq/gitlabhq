@@ -16,7 +16,7 @@ module Gitlab
     def get
       Gitlab::Redis::SharedState.with do |redis|
         data = redis.get(redis_shared_state_key)
-        JSON.parse(data, symbolize_names: true) if data
+        Gitlab::Json.parse(data, symbolize_names: true) if data
       end
     end
 

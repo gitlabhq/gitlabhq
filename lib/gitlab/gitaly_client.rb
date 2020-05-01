@@ -130,7 +130,7 @@ module Gitlab
     end
 
     def self.address_metadata(storage)
-      Base64.strict_encode64(JSON.dump(storage => connection_data(storage)))
+      Base64.strict_encode64(Gitlab::Json.dump(storage => connection_data(storage)))
     end
 
     def self.connection_data(storage)
@@ -458,7 +458,7 @@ module Gitlab
 
     def self.filesystem_id_from_disk(storage)
       metadata_file = File.read(storage_metadata_file_path(storage))
-      metadata_hash = JSON.parse(metadata_file)
+      metadata_hash = Gitlab::Json.parse(metadata_file)
       metadata_hash['gitaly_filesystem_id']
     rescue Errno::ENOENT, Errno::EACCES, JSON::ParserError
       nil

@@ -26,7 +26,7 @@ describe Gitlab::ImportExport::LfsSaver do
       let(:lfs_json_file) { File.join(shared.export_path, Gitlab::ImportExport.lfs_objects_filename) }
 
       def lfs_json
-        JSON.parse(IO.read(lfs_json_file))
+        Gitlab::Json.parse(IO.read(lfs_json_file))
       end
 
       before do

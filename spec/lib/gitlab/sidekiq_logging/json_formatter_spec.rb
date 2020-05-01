@@ -9,7 +9,7 @@ describe Gitlab::SidekiqLogging::JSONFormatter do
   let(:timestamp_iso8601) { now.iso8601(3) }
 
   describe 'with a Hash' do
-    subject { JSON.parse(described_class.new.call('INFO', now, 'my program', hash_input)) }
+    subject { Gitlab::Json.parse(described_class.new.call('INFO', now, 'my program', hash_input)) }
 
     let(:hash_input) do
       {
@@ -63,7 +63,7 @@ describe Gitlab::SidekiqLogging::JSONFormatter do
     it 'accepts strings with no changes' do
       result = subject.call('DEBUG', now, 'my string', message)
 
-      data = JSON.parse(result)
+      data = Gitlab::Json.parse(result)
       expected_output = {
         severity: 'DEBUG',
         time: timestamp_iso8601,

@@ -8,7 +8,7 @@ describe Sentry::Client::Repo do
   let(:sentry_url) { 'https://sentrytest.gitlab.com/api/0/projects/sentry-org/sentry-project' }
   let(:token) { 'test-token' }
   let(:client) { Sentry::Client.new(sentry_url, token) }
-  let(:repos_sample_response) { JSON.parse(fixture_file('sentry/repos_sample_response.json')) }
+  let(:repos_sample_response) { Gitlab::Json.parse(fixture_file('sentry/repos_sample_response.json')) }
 
   describe '#repos' do
     let(:organization_slug) { 'gitlab' }

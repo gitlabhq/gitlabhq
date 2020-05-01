@@ -39,7 +39,7 @@ module Gitlab
       end
 
       def json
-        @json ||= JSON.parse(plain_text) rescue nil
+        @json ||= Gitlab::Json.parse(plain_text) rescue nil
       end
     end
   end

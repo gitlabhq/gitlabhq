@@ -11,7 +11,7 @@ class GlobalMilestone
 
   delegate :title, :state, :due_date, :start_date, :participants, :project,
            :group, :expires_at, :closed?, :iid, :group_milestone?, :safe_title,
-           :milestoneish_id, :resource_parent, :releases, to: :milestone
+           :timebox_id, :milestoneish_id, :resource_parent, :releases, to: :milestone
 
   def to_hash
     {

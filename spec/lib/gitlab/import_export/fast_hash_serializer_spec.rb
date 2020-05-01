@@ -8,7 +8,7 @@ describe Gitlab::ImportExport::FastHashSerializer do
   # Wrapping the result into JSON generating/parsing is for making
   # the testing more convenient. Doing this, we can check that
   # all items are properly serialized while traversing the simple hash.
-  subject { JSON.parse(JSON.generate(described_class.new(project, tree).execute)) }
+  subject { Gitlab::Json.parse(Gitlab::Json.generate(described_class.new(project, tree).execute)) }
 
   let!(:project) { setup_project }
   let(:user) { create(:user) }

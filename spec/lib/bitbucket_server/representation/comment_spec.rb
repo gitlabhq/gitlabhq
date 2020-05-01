@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe BitbucketServer::Representation::Comment do
-  let(:activities) { JSON.parse(fixture_file('importers/bitbucket_server/activities.json'))['values'] }
+  let(:activities) { Gitlab::Json.parse(fixture_file('importers/bitbucket_server/activities.json'))['values'] }
   let(:comment) { activities.first }
 
   subject { described_class.new(comment) }

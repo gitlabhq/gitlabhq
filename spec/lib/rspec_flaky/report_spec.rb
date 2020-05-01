@@ -31,7 +31,7 @@ describe RspecFlaky::Report, :aggregate_failures do
   describe '.load' do
     let!(:report_file) do
       Tempfile.new(%w[rspec_flaky_report .json]).tap do |f|
-        f.write(JSON.pretty_generate(suite_flaky_example_report))
+        f.write(Gitlab::Json.pretty_generate(suite_flaky_example_report))
         f.rewind
       end
     end
@@ -48,7 +48,7 @@ describe RspecFlaky::Report, :aggregate_failures do
 
   describe '.load_json' do
     let(:report_json) do
-      JSON.pretty_generate(suite_flaky_example_report)
+      Gitlab::Json.pretty_generate(suite_flaky_example_report)
     end
 
     it 'loads the report file' do
@@ -103,7 +103,7 @@ describe RspecFlaky::Report, :aggregate_failures do
 
         expect(File.exist?(report_file_path)).to be(true)
         expect(File.read(report_file_path))
-          .to eq(JSON.pretty_generate(report.flaky_examples.to_h))
+          .to eq(Gitlab::Json.pretty_generate(report.flaky_examples.to_h))
       end
     end
   end

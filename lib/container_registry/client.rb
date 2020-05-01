@@ -83,7 +83,7 @@ module ContainerRegistry
       image = {
         config: {}
       }
-      image, image_digest = upload_raw_blob(path, JSON.pretty_generate(image))
+      image, image_digest = upload_raw_blob(path, Gitlab::Json.pretty_generate(image))
       return unless image
 
       {
@@ -109,7 +109,7 @@ module ContainerRegistry
     def put_tag(name, reference, manifest)
       response = faraday.put("/v2/#{name}/manifests/#{reference}") do |req|
         req.headers['Content-Type'] = DOCKER_DISTRIBUTION_MANIFEST_V2_TYPE
-        req.body = JSON.pretty_generate(manifest)
+        req.body = Gitlab::Json.pretty_generate(manifest)
       end
 
       response.headers['docker-content-digest'] if response.success?

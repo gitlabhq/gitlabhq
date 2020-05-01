@@ -90,7 +90,7 @@ module Gitlab
           decoded_state = Base64.urlsafe_decode64(state)
           return unless decoded_state.present?
 
-          JSON.parse(decoded_state)
+          Gitlab::Json.parse(decoded_state)
         end
       end
     end

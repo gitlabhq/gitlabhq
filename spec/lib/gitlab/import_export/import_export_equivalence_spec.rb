@@ -46,8 +46,8 @@ describe Gitlab::ImportExport do
         export_path: test_tmp_path)
     ).to be true
 
-    imported_json = JSON.parse(File.read("#{test_fixture_path}/project.json"))
-    exported_json = JSON.parse(File.read("#{test_tmp_path}/project.json"))
+    imported_json = Gitlab::Json.parse(File.read("#{test_fixture_path}/project.json"))
+    exported_json = Gitlab::Json.parse(File.read("#{test_tmp_path}/project.json"))
 
     assert_relations_match(imported_json, exported_json)
   end

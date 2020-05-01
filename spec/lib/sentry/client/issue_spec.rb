@@ -23,7 +23,7 @@ describe Sentry::Client::Issue do
 
     let(:issues_sample_response) do
       Gitlab::Utils.deep_indifferent_access(
-        JSON.parse(fixture_file('sentry/issues_sample_response.json'))
+        Gitlab::Json.parse(fixture_file('sentry/issues_sample_response.json'))
       )
     end
 
@@ -201,7 +201,7 @@ describe Sentry::Client::Issue do
   describe '#issue_details' do
     let(:issue_sample_response) do
       Gitlab::Utils.deep_indifferent_access(
-        JSON.parse(fixture_file('sentry/issue_sample_response.json'))
+        Gitlab::Json.parse(fixture_file('sentry/issue_sample_response.json'))
       )
     end
 

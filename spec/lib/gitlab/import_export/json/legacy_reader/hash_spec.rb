@@ -9,8 +9,8 @@ describe Gitlab::ImportExport::JSON::LegacyReader::Hash do
 
     # the hash is modified by the `LegacyReader`
     # we need to deep-dup it
-    let(:json_data) { JSON.parse(File.read(path)) }
-    let(:data) { JSON.parse(File.read(path)) }
+    let(:json_data) { Gitlab::Json.parse(File.read(path)) }
+    let(:data) { Gitlab::Json.parse(File.read(path)) }
   end
 
   describe '#exist?' do

@@ -3,39 +3,12 @@
 require 'spec_helper'
 
 describe Sprint do
-  let!(:project) { create(:project) }
-  let!(:group) { create(:group) }
-
-  describe 'modules' do
-    context 'with a project' do
-      it_behaves_like 'AtomicInternalId' do
-        let(:internal_id_attribute) { :iid }
-        let(:instance) { build(:sprint, project: build(:project), group: nil) }
-        let(:scope) { :project }
-        let(:scope_attrs) { { project: instance.project } }
-        let(:usage) {:sprints }
-      end
-    end
-
-    context 'with a group' do
-      it_behaves_like 'AtomicInternalId' do
-        let(:internal_id_attribute) { :iid }
-        let(:instance) { build(:sprint, project: nil, group: build(:group)) }
-        let(:scope) { :group }
-        let(:scope_attrs) { { namespace: instance.group } }
-        let(:usage) {:sprints }
-      end
-    end
-  end
-
-  describe "Associations" do
-    it { is_expected.to belong_to(:project) }
-    it { is_expected.to belong_to(:group) }
-    it { is_expected.to have_many(:issues) }
-    it { is_expected.to have_many(:merge_requests) }
-  end
+  it_behaves_like 'a timebox', :sprint
 
   describe "#iid" do
+    let!(:project) { create(:project) }
+    let!(:group) { create(:group) }
+
     it "is properly scoped on project and group" do
       sprint1 = create(:sprint, project: project)
       sprint2 = create(:sprint, project: project)

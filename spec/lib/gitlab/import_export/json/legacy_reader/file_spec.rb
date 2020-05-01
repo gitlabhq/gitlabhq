@@ -7,7 +7,7 @@ describe Gitlab::ImportExport::JSON::LegacyReader::File do
   it_behaves_like 'import/export json legacy reader' do
     let(:valid_path) { 'spec/fixtures/lib/gitlab/import_export/light/project.json' }
     let(:data) { valid_path }
-    let(:json_data) { JSON.parse(File.read(valid_path)) }
+    let(:json_data) { Gitlab::Json.parse(File.read(valid_path)) }
   end
 
   describe '#exist?' do

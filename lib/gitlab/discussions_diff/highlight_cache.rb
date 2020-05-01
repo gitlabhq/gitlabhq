@@ -42,7 +42,7 @@ module Gitlab
           content.map! do |lines|
             next unless lines
 
-            JSON.parse(lines).map! do |line|
+            Gitlab::Json.parse(lines).map! do |line|
               Gitlab::Diff::Line.safe_init_from_hash(line)
             end
           end

@@ -19,7 +19,7 @@ module RspecFlaky
     end
 
     def self.load_json(json)
-      new(RspecFlaky::FlakyExamplesCollection.new(JSON.parse(json)))
+      new(RspecFlaky::FlakyExamplesCollection.new(Gitlab::Json.parse(json)))
     end
 
     def initialize(flaky_examples)
@@ -40,7 +40,7 @@ module RspecFlaky
       report_path_dir = File.dirname(file_path)
       FileUtils.mkdir_p(report_path_dir) unless Dir.exist?(report_path_dir)
 
-      File.write(file_path, JSON.pretty_generate(flaky_examples.to_h))
+      File.write(file_path, Gitlab::Json.pretty_generate(flaky_examples.to_h))
     end
 
     def prune_outdated(days: OUTDATED_DAYS_THRESHOLD)

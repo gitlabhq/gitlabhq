@@ -14,3 +14,4 @@ This is a partial list of the [RSpec metadata](https://relishapp.com/rspec/rspec
 | `:reliable`       | The test has been [promoted to a reliable test](https://about.gitlab.com/handbook/engineering/quality/guidelines/reliable-tests/#promoting-an-existing-test-to-reliable) meaning it passes consistently in all pipelines, including merge requests. |
 | `:requires_admin` | The test requires an admin account. Tests with the tag are excluded when run against Canary and Production environments. |
 | `:runner`         | The test depends on and will set up a GitLab Runner instance, typically to run a pipeline. |
+| `:skip_live_env`  | The test will be excluded when run against live deployed environments such as Staging, Canary, and Production. |

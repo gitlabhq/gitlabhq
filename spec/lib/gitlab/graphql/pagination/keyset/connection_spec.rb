@@ -18,7 +18,7 @@ describe Gitlab::Graphql::Pagination::Keyset::Connection do
   end
 
   def decoded_cursor(cursor)
-    JSON.parse(Base64Bp.urlsafe_decode64(cursor))
+    Gitlab::Json.parse(Base64Bp.urlsafe_decode64(cursor))
   end
 
   describe '#cursor_for' do

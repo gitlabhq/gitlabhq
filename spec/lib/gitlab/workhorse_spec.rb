@@ -9,7 +9,7 @@ describe Gitlab::Workhorse do
   def decode_workhorse_header(array)
     key, value = array
     command, encoded_params = value.split(":")
-    params = JSON.parse(Base64.urlsafe_decode64(encoded_params))
+    params = Gitlab::Json.parse(Base64.urlsafe_decode64(encoded_params))
 
     [key, command, params]
   end

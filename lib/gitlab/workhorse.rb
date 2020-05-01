@@ -205,7 +205,7 @@ module Gitlab
       # This is the outermost encoding of a senddata: header. It is safe for
       # inclusion in HTTP response headers
       def encode(hash)
-        Base64.urlsafe_encode64(JSON.dump(hash))
+        Base64.urlsafe_encode64(Gitlab::Json.dump(hash))
       end
 
       # This is for encoding individual fields inside the senddata JSON that
