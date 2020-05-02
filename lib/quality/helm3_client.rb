@@ -65,7 +65,7 @@ module Quality
         %(--output json),
         *args
       ]
-      releases = Gitlab::Json.parse(run_command(command))
+      releases = JSON.parse(run_command(command))
 
       releases.map do |release|
         Release.new(*release.values_at(*RELEASE_JSON_ATTRIBUTES))
