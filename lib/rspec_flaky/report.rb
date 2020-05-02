@@ -19,7 +19,7 @@ module RspecFlaky
     end
 
     def self.load_json(json)
-      new(RspecFlaky::FlakyExamplesCollection.new(Gitlab::Json.parse(json)))
+      new(RspecFlaky::FlakyExamplesCollection.new(JSON.parse(json)))
     end
 
     def initialize(flaky_examples)
