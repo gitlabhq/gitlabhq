@@ -105,4 +105,17 @@ describe Gitlab::Runtime do
 
     it_behaves_like "valid runtime", :rails_runner, 1
   end
+
+  context "action_cable" do
+    before do
+      stub_const('ACTION_CABLE_SERVER', true)
+      stub_const('::Puma', Module.new)
+
+      allow(Gitlab::Application).to receive_message_chain(:config, :action_cable, :worker_pool_size).and_return(8)
+    end
+
+    it "reports its maximum concurrency based on ActionCable's worker pool size" do
+      expect(subject.max_threads).to eq(9)
+    end
+  end
 end

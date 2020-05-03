@@ -69,13 +69,14 @@ module API
             }
 
             # Custom option for git-receive-pack command
+            if Feature.enabled?(:gitaly_upload_pack_filter, project, default_enabled: true)
+              payload[:git_config_options] << "uploadpack.allowFilter=true" << "uploadpack.allowAnySHA1InWant=true"
+            end
+
             receive_max_input_size = Gitlab::CurrentSettings.receive_max_input_size.to_i
+
             if receive_max_input_size > 0
               payload[:git_config_options] << "receive.maxInputSize=#{receive_max_input_size.megabytes}"
-
-              if Feature.enabled?(:gitaly_upload_pack_filter, project, default_enabled: true)
-                payload[:git_config_options] << "uploadpack.allowFilter=true" << "uploadpack.allowAnySHA1InWant=true"
-              end
             end
 
             response_with_status(**payload)

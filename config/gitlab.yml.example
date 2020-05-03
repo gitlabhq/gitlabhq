@@ -1065,6 +1065,11 @@ production: &base
     #   host: localhost
     #   port: 3808
 
+  ## ActionCable settings
+  action_cable:
+    # Number of threads used to process ActionCable connection callbacks and channel actions
+    # worker_pool_size: 4
+
   ## Monitoring
   # Built in monitoring settings
   monitoring:

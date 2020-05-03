@@ -441,7 +441,37 @@ describe API::Internal::Base do
             allow(Gitlab::CurrentSettings).to receive(:receive_max_input_size) { 1 }
           end
 
-          it 'returns custom git config' do
+          it 'returns maxInputSize and partial clone git config' do
+            push(key, project)
+
+            expect(json_response["git_config_options"]).to be_present
+            expect(json_response["git_config_options"]).to include("receive.maxInputSize=1048576")
+            expect(json_response["git_config_options"]).to include("uploadpack.allowFilter=true")
+            expect(json_response["git_config_options"]).to include("uploadpack.allowAnySHA1InWant=true")
+          end
+
+          context 'when gitaly_upload_pack_filter feature flag is disabled' do
+            before do
+              stub_feature_flags(gitaly_upload_pack_filter: { enabled: false, thing: project })
+            end
+
+            it 'returns only maxInputSize and not partial clone git config' do
+              push(key, project)
+
+              expect(json_response["git_config_options"]).to be_present
+              expect(json_response["git_config_options"]).to include("receive.maxInputSize=1048576")
+              expect(json_response["git_config_options"]).not_to include("uploadpack.allowFilter=true")
+              expect(json_response["git_config_options"]).not_to include("uploadpack.allowAnySHA1InWant=true")
+            end
+          end
+        end
+
+        context 'when receive_max_input_size is empty' do
+          before do
+            allow(Gitlab::CurrentSettings).to receive(:receive_max_input_size) { nil }
+          end
+
+          it 'returns partial clone git config' do
             push(key, project)
 
             expect(json_response["git_config_options"]).to be_present
@@ -454,23 +484,11 @@ describe API::Internal::Base do
               stub_feature_flags(gitaly_upload_pack_filter: { enabled: false, thing: project })
             end
 
-            it 'does not include allowFilter and allowAnySha1InWant in the git config options' do
+            it 'returns an empty git config' do
               push(key, project)
 
-              expect(json_response["git_config_options"]).to be_present
-              expect(json_response["git_config_options"]).not_to include("uploadpack.allowFilter=true")
-              expect(json_response["git_config_options"]).not_to include("uploadpack.allowAnySHA1InWant=true")
+              expect(json_response["git_config_options"]).to be_empty
             end
-          end
-        end
-
-        context 'when receive_max_input_size is empty' do
-          it 'returns an empty git config' do
-            allow(Gitlab::CurrentSettings).to receive(:receive_max_input_size) { nil }
-
-            push(key, project)
-
-            expect(json_response["git_config_options"]).to be_empty
           end
         end
       end

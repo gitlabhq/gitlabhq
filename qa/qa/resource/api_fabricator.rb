@@ -14,6 +14,7 @@ module QA
       ResourceQueryError = Class.new(RuntimeError)
       ResourceUpdateFailedError = Class.new(RuntimeError)
       ResourceURLMissingError = Class.new(RuntimeError)
+      InternalServerError = Class.new(RuntimeError)
 
       attr_reader :api_resource, :api_response
       attr_writer :api_client
@@ -85,7 +86,9 @@ module QA
         url = Runtime::API::Request.new(api_client, get_path).url
         response = get(url)
 
-        unless response.code == HTTP_STATUS_OK
+        if response.code == HTTP_STATUS_SERVER_ERROR
+          raise InternalServerError, "Failed to GET #{url} - (#{response.code}): `#{response}`."
+        elsif response.code != HTTP_STATUS_OK
           raise ResourceNotFoundError, "Resource at #{url} could not be found (#{response.code}): `#{response}`."
         end
 
