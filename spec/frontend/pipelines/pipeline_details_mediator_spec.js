@@ -1,6 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import PipelineMediator from '~/pipelines/pipeline_details_mediator';
+import waitForPromises from 'helpers/wait_for_promises';
 
 describe('PipelineMdediator', () => {
   let mediator;
@@ -23,14 +24,13 @@ describe('PipelineMdediator', () => {
   });
 
   describe('request and store data', () => {
-    it('should store received data', done => {
+    it('should store received data', () => {
       mock.onGet('foo.json').reply(200, { id: '121123' });
       mediator.fetchPipeline();
 
-      setTimeout(() => {
+      return waitForPromises().then(() => {
         expect(mediator.store.state.pipeline).toEqual({ id: '121123' });
-        done();
-      }, 0);
+      });
     });
   });
 });

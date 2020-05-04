@@ -31,6 +31,10 @@ FactoryBot.define do
       user_type { :project_bot }
     end
 
+    trait :migration_bot do
+      user_type { :migration_bot }
+    end
+
     trait :external do
       external { true }
     end

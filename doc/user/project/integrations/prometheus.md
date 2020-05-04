@@ -931,6 +931,14 @@ Prerequisites for embedding from a Grafana instance:
 1. In GitLab, paste the URL into a Markdown field and save. The chart will take a few moments to render.
    ![GitLab Rendered Grafana Panel](img/rendered_grafana_embed_v12_5.png)
 
+## Metrics dashboard visibility
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/201924) in GitLab 13.0.
+
+You can set the visibility of the metrics dashboard to **Only Project Members**
+or **Everyone With Access**. When set to **Everyone with Access**, the metrics
+dashboard, and all of the custom dashboard, YAML files, are visible to authenticated and non-authenticated users.
+
 ## Troubleshooting
 
 When troubleshooting issues with a managed Prometheus app, it is often useful to

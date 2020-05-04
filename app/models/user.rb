@@ -636,6 +636,16 @@ class User < ApplicationRecord
       end
     end
 
+    def migration_bot
+      email_pattern = "noreply+gitlab-migration-bot%s@#{Settings.gitlab.host}"
+
+      unique_internal(where(user_type: :migration_bot), 'migration-bot', email_pattern) do |u|
+        u.bio = 'The GitLab migration bot'
+        u.name = 'GitLab Migration Bot'
+        u.confirmed_at = Time.zone.now
+      end
+    end
+
     # Return true if there is only single non-internal user in the deployment,
     # ghost user is ignored.
     def single_user?

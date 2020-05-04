@@ -14,7 +14,7 @@
 
       .col.form-group
         = f.label :expires_at, s_('Profiles|Expires at'), class: 'label-bold'
-        = f.date_field :expires_at, class: "form-control input-lg qa-key-expiry-field", min: Date.tomorrow
+        = f.date_field :expires_at, class: "form-control input-lg", min: Date.tomorrow, data: { qa_selector: 'key_expiry_date_field' }
 
     .js-add-ssh-key-validation-warning.hide
       .bs-callout.bs-callout-warning{ role: 'alert', aria_live: 'assertive' }

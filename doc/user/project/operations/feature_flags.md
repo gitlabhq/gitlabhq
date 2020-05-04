@@ -43,10 +43,10 @@ To add a new feature flag:
 1. Click on the **New Feature Flag** button.
 1. Give it a name.
 
-    NOTE: **Note:**
-    A name can contain only lowercase letters, digits, underscores (`_`)
-    and dashes (`-`), must start with a letter, and cannot end with a dash (`-`)
-    or an underscore (`_`).
+   NOTE: **Note:**
+   A name can contain only lowercase letters, digits, underscores (`_`)
+   and dashes (`-`), must start with a letter, and cannot end with a dash (`-`)
+   or an underscore (`_`).
 
 1. Give it a description (optional, 255 characters max).
 1. Define environment [specs](#define-environment-specs). If you want the flag on by default, enable the catch-all [wildcard spec (`*`)](#define-environment-specs)
@@ -90,6 +90,41 @@ To define specs for each environment:
 NOTE: **NOTE**
 We'd highly recommend you to use the [Environment](../../../ci/environments.md)
 feature in order to quickly assess which flag is enabled per environment.
+
+## Feature flag behavior change in 13.0
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35555) in GitLab 13.0.
+
+Starting in GitLab 13.0, you can apply a feature flag strategy across multiple environment specs,
+without defining the strategy multiple times.
+
+This feature is under development and not ready for production use. It is
+deployed behind a feature flag that is **disabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
+can enable it for your instance.
+
+To enable it:
+
+```ruby
+Feature.enable(:feature_flags_new_version)
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:feature_flags_new_version)
+```
+
+### Applying a strategy to environments
+
+After a strategy is defined, it applies to **All Environments** by default. To
+make a strategy apply to a specific environment spec:
+
+1. Click the **Add Environment** button.
+1. Create a new
+   [spec](../../../ci/environments.md#scoping-environments-with-specs).
+
+To apply the strategy to multiple environment specs, repeat these steps.
 
 ## Feature Flag strategies
 
@@ -155,12 +190,12 @@ To get the access credentials that your application will need to talk to GitLab:
 
 1. Navigate to your project's **Operations > Feature Flags**.
 1. Click on the **Configure** button to see the values:
-    - **API URL**: URL where the client (application) connects to get a list of feature flags.
-    - **Instance ID**: Unique token that authorizes the retrieval of the feature flags.
-    - **Application name**: The name of the running environment. For instance,
-       if the application runs for production server, application name would be
-      `production` or similar. This value is used for
-      [the environment spec evaluation](#define-environment-specs).
+   - **API URL**: URL where the client (application) connects to get a list of feature flags.
+   - **Instance ID**: Unique token that authorizes the retrieval of the feature flags.
+   - **Application name**: The name of the running environment. For instance,
+     if the application runs for a production server, application name would be
+     `production` or similar. This value is used for
+     [the environment spec evaluation](#define-environment-specs).
 
 NOTE: **Note:**
 The meaning of these fields might change over time. For example, we are not sure

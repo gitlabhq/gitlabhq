@@ -12,7 +12,7 @@ module QA
           resource.title = key_title
         end
 
-        expect(page).to have_content("Title: #{key_title}")
+        expect(page).to have_content(key.title)
         expect(page).to have_content(key.md5_fingerprint)
 
         Page::Main::Menu.perform(&:click_settings_link)

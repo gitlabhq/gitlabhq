@@ -4584,4 +4584,20 @@ describe User, :do_not_mock_admin_mode do
       it_behaves_like 'does not require password to be present'
     end
   end
+
+  describe '#migration_bot' do
+    it 'creates the user if it does not exist' do
+      expect do
+        described_class.migration_bot
+      end.to change { User.where(user_type: :migration_bot).count }.by(1)
+    end
+
+    it 'does not create a new user if it already exists' do
+      described_class.migration_bot
+
+      expect do
+        described_class.migration_bot
+      end.not_to change { User.count }
+    end
+  end
 end

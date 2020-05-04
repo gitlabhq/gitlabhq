@@ -366,7 +366,7 @@ will also see ready-to-use DevOps Runbooks built with Nurtch's [Rubix library](h
 
 More information on
 creating executable runbooks can be found in [our Runbooks
-documentation](../project/clusters/runbooks/index.md#executable-runbooks). Note that
+documentation](../project/clusters/runbooks/index.md#configure-an-executable-runbook-with-gitlab). Note that
 Ingress must be installed and have an IP address assigned before
 JupyterHub can be installed.
 

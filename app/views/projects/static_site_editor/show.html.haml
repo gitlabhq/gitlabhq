@@ -1,1 +1,4 @@
-#static-site-editor{ data: @config.payload }
+-# TODO: Remove after base URL is included in the model !30735
+- data = @config.payload.merge({ base_url: namespace_project_show_sse_path })
+
+#static-site-editor{ data: data }

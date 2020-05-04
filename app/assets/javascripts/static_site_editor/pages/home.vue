@@ -2,12 +2,12 @@
 import { mapState, mapGetters, mapActions } from 'vuex';
 import { GlSkeletonLoader } from '@gitlab/ui';
 
-import EditArea from './edit_area.vue';
-import EditHeader from './edit_header.vue';
-import SavedChangesMessage from './saved_changes_message.vue';
-import PublishToolbar from './publish_toolbar.vue';
-import InvalidContentMessage from './invalid_content_message.vue';
-import SubmitChangesError from './submit_changes_error.vue';
+import EditArea from '../components/edit_area.vue';
+import EditHeader from '../components/edit_header.vue';
+import SavedChangesMessage from '../components/saved_changes_message.vue';
+import PublishToolbar from '../components/publish_toolbar.vue';
+import InvalidContentMessage from '../components/invalid_content_message.vue';
+import SubmitChangesError from '../components/submit_changes_error.vue';
 
 export default {
   components: {

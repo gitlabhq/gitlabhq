@@ -6,6 +6,7 @@ describe GlobalPolicy do
   include TermsHelper
 
   let_it_be(:project_bot) { create(:user, :project_bot) }
+  let_it_be(:migration_bot) { create(:user, :migration_bot) }
   let(:current_user) { create(:user) }
   let(:user) { create(:user) }
 
@@ -155,6 +156,12 @@ describe GlobalPolicy do
       it { is_expected.to be_allowed(:access_api) }
     end
 
+    context 'migration bot' do
+      let(:current_user) { migration_bot }
+
+      it { is_expected.not_to be_allowed(:access_api) }
+    end
+
     context 'when terms are enforced' do
       before do
         enforce_terms
@@ -244,6 +251,12 @@ describe GlobalPolicy do
 
       it { is_expected.not_to be_allowed(:receive_notifications) }
     end
+
+    context 'migration bot' do
+      let(:current_user) { migration_bot }
+
+      it { is_expected.not_to be_allowed(:receive_notifications) }
+    end
   end
 
   describe 'git access' do
@@ -259,6 +272,12 @@ describe GlobalPolicy do
 
     describe 'anonymous' do
       let(:current_user) { nil }
+
+      it { is_expected.to be_allowed(:access_git) }
+    end
+
+    context 'migration bot' do
+      let(:current_user) { migration_bot }
 
       it { is_expected.to be_allowed(:access_git) }
     end
@@ -414,6 +433,12 @@ describe GlobalPolicy do
 
       it { is_expected.to be_allowed(:use_slash_commands) }
     end
+
+    context 'migration bot' do
+      let(:current_user) { migration_bot }
+
+      it { is_expected.not_to be_allowed(:use_slash_commands) }
+    end
   end
 
   describe 'create_snippet' do
@@ -437,6 +462,12 @@ describe GlobalPolicy do
   describe 'log in' do
     context 'project bot' do
       let(:current_user) { project_bot }
+
+      it { is_expected.not_to be_allowed(:log_in) }
+    end
+
+    context 'migration bot' do
+      let(:current_user) { migration_bot }
 
       it { is_expected.not_to be_allowed(:log_in) }
     end

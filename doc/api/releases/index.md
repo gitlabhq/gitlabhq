@@ -286,7 +286,6 @@ Example response:
    ],
    "commit_path":"/root/awesome-app/commit/588440f66559714280628a4f9799f0c4eb880a4a",
    "tag_path":"/root/awesome-app/-/tags/v0.11.1",
-   "evidence_sha":"760d6cdfb0879c3ffedec13af470e0f71cf52c6cde4d",
    "assets":{
       "count":5,
       "sources":[
@@ -314,9 +313,15 @@ Example response:
             "url":"https://gitlab.example.com/root/awesome-app/-/tags/v0.11.1/binaries/linux-amd64",
             "external":true
          }
-      ],
-      "evidence_url":"https://gitlab.example.com/root/awesome-app/-/releases/v0.1/evidence.json"
+      ]
    },
+   "evidences":[
+     {
+       sha: "760d6cdfb0879c3ffedec13af470e0f71cf52c6cde4d",
+       filepath: "https://gitlab.example.com/root/awesome-app/-/releases/v0.1/evidence.json",
+       collected_at: "2019-07-16T14:00:12.256Z"
+     }
+  ]
 }
 ```
 

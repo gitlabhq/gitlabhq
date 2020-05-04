@@ -4,7 +4,7 @@ import { GlSkeletonLoader } from '@gitlab/ui';
 
 import createState from '~/static_site_editor/store/state';
 
-import StaticSiteEditor from '~/static_site_editor/components/static_site_editor.vue';
+import Home from '~/static_site_editor/pages/home.vue';
 import EditArea from '~/static_site_editor/components/edit_area.vue';
 import EditHeader from '~/static_site_editor/components/edit_header.vue';
 import InvalidContentMessage from '~/static_site_editor/components/invalid_content_message.vue';
@@ -24,7 +24,7 @@ const localVue = createLocalVue();
 
 localVue.use(Vuex);
 
-describe('StaticSiteEditor', () => {
+describe('static_site_editor/pages/home', () => {
   let wrapper;
   let store;
   let loadContentActionMock;
@@ -68,7 +68,7 @@ describe('StaticSiteEditor', () => {
   };
 
   const buildWrapper = () => {
-    wrapper = shallowMount(StaticSiteEditor, {
+    wrapper = shallowMount(Home, {
       localVue,
       store,
     });
