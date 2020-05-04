@@ -2,6 +2,22 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 12.10.3 (2020-05-04)
+
+### Fixed (6 changes)
+
+- Fix errors creating project with active Prometheus service template. !30340
+- Fix incorrect commits number in commits list. !30412
+- Fix second 500 error with NULL restricted visibility levels. !30414
+- Add LFS badge feature flag to RefsController#logs_tree. !30442
+- Disable schema dumping after migrations in production. !30812
+- Fixes branch name not getting escaped correctly on frontend.
+
+### Changed (1 change)
+
+- Handle possible RSA key exceptions when generating CI_JOB_JWT. !30702
+
+
 ## 12.10.2 (2020-04-30)
 
 ### Security (8 changes)

@@ -1,5 +1,0 @@
----
-title: Fixes branch name not getting escaped correctly on frontend
-merge_request:
-author:
-type: fixed
