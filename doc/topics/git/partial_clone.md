@@ -9,6 +9,23 @@ is a performance optimization that "allows Git to function without having a
 complete copy of the repository. The goal of this work is to allow Git better
 handle extremely large repositories."
 
+## Enabling partial clone
+
+> [Introduced](https://gitlab.com/gitlab-org/gitaly/issues/1553) in GitLab 12.4.
+
+To enable partial clone, use the [feature flags API](../../api/features.md).
+For example:
+
+```shell
+curl --data "value=true" --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/features/gitaly_upload_pack_filter
+```
+
+Alternatively, flip the switch and enable the feature flag:
+
+```ruby
+Feature.enable(:gitaly_upload_pack_filter)
+```
+
 ## Filter by file size
 
 > [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/2553) in GitLab 12.10.
