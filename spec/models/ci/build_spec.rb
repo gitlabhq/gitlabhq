@@ -2350,6 +2350,16 @@ describe Ci::Build do
         end
       end
 
+      context 'when CI_JOB_JWT generation fails' do
+        it 'CI_JOB_JWT is not included' do
+          expect(Gitlab::Ci::Jwt).to receive(:for_build).and_raise(OpenSSL::PKey::RSAError, 'Neither PUB key nor PRIV key: not enough data')
+          expect(Gitlab::ErrorTracking).to receive(:track_exception)
+
+          expect { subject }.not_to raise_error
+          expect(subject.pluck(:key)).not_to include('CI_JOB_JWT')
+        end
+      end
+
       describe 'variables ordering' do
         context 'when variables hierarchy is stubbed' do
           let(:build_pre_var) { { key: 'build', value: 'value', public: true, masked: false } }

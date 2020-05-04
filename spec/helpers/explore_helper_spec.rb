@@ -19,23 +19,10 @@ describe ExploreHelper do
   end
 
   describe '#public_visibility_restricted?' do
-    using RSpec::Parameterized::TableSyntax
+    it 'delegates to Gitlab::VisibilityLevel' do
+      expect(Gitlab::VisibilityLevel).to receive(:public_visibility_restricted?).and_call_original
 
-    where(:visibility_levels, :expected_status) do
-      nil | nil
-      [Gitlab::VisibilityLevel::PRIVATE] | false
-      [Gitlab::VisibilityLevel::PRIVATE, Gitlab::VisibilityLevel::INTERNAL] | false
-      [Gitlab::VisibilityLevel::PUBLIC] | true
-    end
-
-    with_them do
-      before do
-        stub_application_setting(restricted_visibility_levels: visibility_levels)
-      end
-
-      it 'returns the expected status' do
-        expect(helper.public_visibility_restricted?).to eq(expected_status)
-      end
+      helper.public_visibility_restricted?
     end
   end
 end

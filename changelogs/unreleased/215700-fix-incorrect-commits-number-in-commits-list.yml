@@ -1,0 +1,5 @@
+---
+title: Fix incorrect commits number in commits list
+merge_request: 30412
+author:
+type: fixed

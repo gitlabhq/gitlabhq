@@ -1,0 +1,5 @@
+---
+title: Handle possible RSA key exceptions when generating CI_JOB_JWT
+merge_request: 30702
+author:
+type: changed

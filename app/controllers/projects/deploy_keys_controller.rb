@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Projects::DeployKeysController < Projects::ApplicationController
+  include RepositorySettingsRedirect
   respond_to :html
 
   # Authorize
@@ -11,7 +12,7 @@ class Projects::DeployKeysController < Projects::ApplicationController
 
   def index
     respond_to do |format|
-      format.html { redirect_to_ci_cd_settings }
+      format.html { redirect_to_repository }
       format.json do
         render json: Projects::Settings::DeployKeysPresenter.new(@project, current_user: current_user).as_json
       end
@@ -19,7 +20,7 @@ class Projects::DeployKeysController < Projects::ApplicationController
   end
 
   def new
-    redirect_to_ci_cd_settings
+    redirect_to_repository
   end
 
   def create
@@ -29,7 +30,7 @@ class Projects::DeployKeysController < Projects::ApplicationController
       flash[:alert] = @key.errors.full_messages.join(', ').html_safe
     end
 
-    redirect_to_ci_cd_settings
+    redirect_to_repository
   end
 
   def edit
@@ -38,7 +39,7 @@ class Projects::DeployKeysController < Projects::ApplicationController
   def update
     if deploy_key.update(update_params)
       flash[:notice] = _('Deploy key was successfully updated.')
-      redirect_to_ci_cd_settings
+      redirect_to_repository
     else
       render 'edit'
     end
@@ -50,7 +51,7 @@ class Projects::DeployKeysController < Projects::ApplicationController
     return render_404 unless key
 
     respond_to do |format|
-      format.html { redirect_to_ci_cd_settings }
+      format.html { redirect_to_repository }
       format.json { head :ok }
     end
   end
@@ -61,7 +62,7 @@ class Projects::DeployKeysController < Projects::ApplicationController
     return render_404 unless deploy_key_project
 
     respond_to do |format|
-      format.html { redirect_to_ci_cd_settings }
+      format.html { redirect_to_repository }
       format.json { head :ok }
     end
   end
@@ -97,7 +98,9 @@ class Projects::DeployKeysController < Projects::ApplicationController
     end
   end
 
-  def redirect_to_ci_cd_settings
-    redirect_to project_settings_ci_cd_path(@project, anchor: 'js-deploy-keys-settings')
+  private
+
+  def redirect_to_repository
+    redirect_to_repository_settings(@project, anchor: 'js-deploy-keys-settings')
   end
 end

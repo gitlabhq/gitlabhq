@@ -53,7 +53,7 @@ describe('fetchLogsTree', () => {
     client = {
       readQuery: () => ({
         projectPath: 'gitlab-org/gitlab-foss',
-        ref: 'master',
+        escapedRef: 'master',
         commits: [],
       }),
       writeQuery: jest.fn(),
@@ -86,16 +86,18 @@ describe('fetchLogsTree', () => {
 
   it('calls entry resolver', () =>
     fetchLogsTree(client, '', '0', resolver).then(() => {
-      expect(resolver.resolve).toHaveBeenCalledWith({
-        __typename: 'LogTreeCommit',
-        commitPath: 'https://test.com',
-        committedDate: '2019-01-01',
-        fileName: 'index.js',
-        filePath: '/index.js',
-        message: 'testing message',
-        sha: '123',
-        type: 'blob',
-      });
+      expect(resolver.resolve).toHaveBeenCalledWith(
+        expect.objectContaining({
+          __typename: 'LogTreeCommit',
+          commitPath: 'https://test.com',
+          committedDate: '2019-01-01',
+          fileName: 'index.js',
+          filePath: '/index.js',
+          message: 'testing message',
+          sha: '123',
+          type: 'blob',
+        }),
+      );
     }));
 
   it('writes query to client', () =>
@@ -104,7 +106,7 @@ describe('fetchLogsTree', () => {
         query: expect.anything(),
         data: {
           commits: [
-            {
+            expect.objectContaining({
               __typename: 'LogTreeCommit',
               commitPath: 'https://test.com',
               committedDate: '2019-01-01',
@@ -113,7 +115,7 @@ describe('fetchLogsTree', () => {
               message: 'testing message',
               sha: '123',
               type: 'blob',
-            },
+            }),
           ],
         },
       });

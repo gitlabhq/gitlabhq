@@ -3,7 +3,6 @@ import SecretValues from '~/behaviors/secret_values';
 import AjaxVariableList from '~/ci_variable_list/ajax_variable_list';
 import registrySettingsApp from '~/registry/settings/registry_settings_bundle';
 import initVariableList from '~/ci_variable_list';
-import initDeployKeys from '~/deploy_keys';
 
 document.addEventListener('DOMContentLoaded', () => {
   // Initialize expandable settings panels
@@ -41,5 +40,4 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   registrySettingsApp();
-  initDeployKeys();
 });

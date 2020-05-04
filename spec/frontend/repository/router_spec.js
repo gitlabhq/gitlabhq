@@ -4,13 +4,12 @@ import createRouter from '~/repository/router';
 
 describe('Repository router spec', () => {
   it.each`
-    path                                     | branch              | component    | componentName
-    ${'/'}                                   | ${'master'}         | ${IndexPage} | ${'IndexPage'}
-    ${'/tree/master'}                        | ${'master'}         | ${TreePage}  | ${'TreePage'}
-    ${'/-/tree/master'}                      | ${'master'}         | ${TreePage}  | ${'TreePage'}
-    ${'/-/tree/master/app/assets'}           | ${'master'}         | ${TreePage}  | ${'TreePage'}
-    ${'/-/tree/feature/test-%23/app/assets'} | ${'feature/test-#'} | ${TreePage}  | ${'TreePage'}
-    ${'/-/tree/123/app/assets'}              | ${'master'}         | ${null}      | ${'null'}
+    path                           | branch      | component    | componentName
+    ${'/'}                         | ${'master'} | ${IndexPage} | ${'IndexPage'}
+    ${'/tree/master'}              | ${'master'} | ${TreePage}  | ${'TreePage'}
+    ${'/-/tree/master'}            | ${'master'} | ${TreePage}  | ${'TreePage'}
+    ${'/-/tree/master/app/assets'} | ${'master'} | ${TreePage}  | ${'TreePage'}
+    ${'/-/tree/123/app/assets'}    | ${'master'} | ${null}      | ${'null'}
   `('sets component as $componentName for path "$path"', ({ path, component, branch }) => {
     const router = createRouter('', branch);
 

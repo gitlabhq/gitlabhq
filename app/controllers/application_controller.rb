@@ -497,7 +497,7 @@ class ApplicationController < ActionController::Base
   end
 
   def public_visibility_restricted?
-    Gitlab::CurrentSettings.restricted_visibility_levels.include? Gitlab::VisibilityLevel::PUBLIC
+    Gitlab::VisibilityLevel.public_visibility_restricted?
   end
 
   def set_usage_stats_consent_flag
