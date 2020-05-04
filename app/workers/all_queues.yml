@@ -297,13 +297,6 @@
   :resource_boundary: :cpu
   :weight: 3
   :idempotent: 
-- :name: gcp_cluster:cluster_configure
-  :feature_category: :kubernetes_management
-  :has_external_dependencies: 
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: 
 - :name: gcp_cluster:cluster_configure_istio
   :feature_category: :kubernetes_management
   :has_external_dependencies: true
@@ -319,13 +312,6 @@
   :weight: 1
   :idempotent: 
 - :name: gcp_cluster:cluster_patch_app
-  :feature_category: :kubernetes_management
-  :has_external_dependencies: true
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: 
-- :name: gcp_cluster:cluster_project_configure
   :feature_category: :kubernetes_management
   :has_external_dependencies: true
   :urgency: :low
