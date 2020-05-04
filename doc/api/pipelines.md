@@ -225,7 +225,7 @@ Response:
 }
 ```
 
-## Cancel a pipelines jobs
+## Cancel a pipeline's jobs
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5837) in GitLab 8.11
 

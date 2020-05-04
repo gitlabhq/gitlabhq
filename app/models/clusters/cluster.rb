@@ -35,6 +35,7 @@ module Clusters
     has_many :projects, through: :cluster_projects, class_name: '::Project'
     has_one :cluster_project, -> { order(id: :desc) }, class_name: 'Clusters::Project'
     has_many :deployment_clusters
+    has_many :deployments, inverse_of: :cluster
 
     has_many :cluster_groups, class_name: 'Clusters::Group'
     has_many :groups, through: :cluster_groups, class_name: '::Group'

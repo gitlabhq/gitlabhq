@@ -273,7 +273,24 @@ module Gitlab
       end
 
       def ingress_modsecurity_usage
-        ::Clusters::Applications::IngressModsecurityUsageService.new.execute
+        ##
+        # This method measures usage of the Modsecurity Web Application Firewall across the entire
+        # instance's deployed environments.
+        #
+        # NOTE: this service is an approximation as it does not yet take into account if environment
+        # is enabled and only measures applications installed using GitLab Managed Apps (disregards
+        # CI-based managed apps).
+        #
+        # More details: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28331#note_318621786
+        ##
+
+        column = ::Deployment.arel_table[:environment_id]
+        {
+          ingress_modsecurity_logging: distinct_count(successful_deployments_with_cluster(::Clusters::Applications::Ingress.modsecurity_enabled.logging), column),
+          ingress_modsecurity_blocking: distinct_count(successful_deployments_with_cluster(::Clusters::Applications::Ingress.modsecurity_enabled.blocking), column),
+          ingress_modsecurity_disabled: distinct_count(successful_deployments_with_cluster(::Clusters::Applications::Ingress.modsecurity_disabled), column),
+          ingress_modsecurity_not_installed: distinct_count(successful_deployments_with_cluster(::Clusters::Applications::Ingress.modsecurity_not_installed), column)
+        }
       end
 
       # rubocop: disable CodeReuse/ActiveRecord
@@ -317,6 +334,13 @@ module Gitlab
         results
       rescue ActiveRecord::StatementInvalid
         { projects_jira_server_active: -1, projects_jira_cloud_active: -1, projects_jira_active: -1 }
+      end
+
+      def successful_deployments_with_cluster(scope)
+        scope
+          .joins(cluster: :deployments)
+          .merge(Clusters::Cluster.enabled)
+          .merge(Deployment.success)
       end
       # rubocop: enable CodeReuse/ActiveRecord
 

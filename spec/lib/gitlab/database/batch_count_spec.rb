@@ -35,6 +35,10 @@ describe Gitlab::Database::BatchCount do
       expect(described_class.batch_count(model, "#{model.table_name}.id")).to eq(5)
     end
 
+    it 'counts with Arel column' do
+      expect(described_class.batch_count(model, model.arel_table[:id])).to eq(5)
+    end
+
     it 'counts table with batch_size 50K' do
       expect(described_class.batch_count(model, batch_size: 50_000)).to eq(5)
     end
@@ -96,6 +100,10 @@ describe Gitlab::Database::BatchCount do
 
     it 'counts with table.column field' do
       expect(described_class.batch_distinct_count(model, "#{model.table_name}.#{column}")).to eq(2)
+    end
+
+    it 'counts with Arel column' do
+      expect(described_class.batch_distinct_count(model, model.arel_table[column])).to eq(2)
     end
 
     it 'counts with :column field with batch_size of 50K' do

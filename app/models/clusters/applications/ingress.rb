@@ -17,6 +17,7 @@ module Clusters
       include ::Clusters::Concerns::ApplicationVersion
       include ::Clusters::Concerns::ApplicationData
       include AfterCommitQueue
+      include UsageStatistics
 
       default_value_for :ingress_type, :nginx
       default_value_for :modsecurity_enabled, true
@@ -28,6 +29,10 @@ module Clusters
       }
 
       enum modsecurity_mode: { logging: 0, blocking: 1 }
+
+      scope :modsecurity_not_installed, -> { where(modsecurity_enabled: nil) }
+      scope :modsecurity_enabled, -> { where(modsecurity_enabled: true) }
+      scope :modsecurity_disabled, -> { where(modsecurity_enabled: false) }
 
       FETCH_IP_ADDRESS_DELAY = 30.seconds
 

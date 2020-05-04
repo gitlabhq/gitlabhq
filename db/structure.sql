@@ -9289,6 +9289,8 @@ CREATE UNIQUE INDEX index_clusters_applications_helm_on_cluster_id ON public.clu
 
 CREATE UNIQUE INDEX index_clusters_applications_ingress_on_cluster_id ON public.clusters_applications_ingress USING btree (cluster_id);
 
+CREATE INDEX index_clusters_applications_ingress_on_modsecurity ON public.clusters_applications_ingress USING btree (modsecurity_enabled, modsecurity_mode, cluster_id);
+
 CREATE UNIQUE INDEX index_clusters_applications_jupyter_on_cluster_id ON public.clusters_applications_jupyter USING btree (cluster_id);
 
 CREATE INDEX index_clusters_applications_jupyter_on_oauth_application_id ON public.clusters_applications_jupyter USING btree (oauth_application_id);
@@ -9420,6 +9422,8 @@ CREATE UNIQUE INDEX index_emails_on_confirmation_token ON public.emails USING bt
 CREATE UNIQUE INDEX index_emails_on_email ON public.emails USING btree (email);
 
 CREATE INDEX index_emails_on_user_id ON public.emails USING btree (user_id);
+
+CREATE INDEX index_enabled_clusters_on_id ON public.clusters USING btree (id) WHERE (enabled = true);
 
 CREATE INDEX index_environments_on_auto_stop_at ON public.environments USING btree (auto_stop_at) WHERE (auto_stop_at IS NOT NULL);
 
@@ -10524,6 +10528,8 @@ CREATE INDEX index_status_page_settings_on_project_id ON public.status_page_sett
 CREATE INDEX index_subscriptions_on_project_id ON public.subscriptions USING btree (project_id);
 
 CREATE UNIQUE INDEX index_subscriptions_on_subscribable_and_user_id_and_project_id ON public.subscriptions USING btree (subscribable_id, subscribable_type, user_id, project_id);
+
+CREATE INDEX index_successful_deployments_on_cluster_id_and_environment_id ON public.deployments USING btree (cluster_id, environment_id) WHERE (status = 2);
 
 CREATE UNIQUE INDEX index_suggestions_on_note_id_and_relative_order ON public.suggestions USING btree (note_id, relative_order);
 
@@ -13542,6 +13548,8 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200401095430
 20200401211005
 20200402001106
+20200402115013
+20200402115623
 20200402123926
 20200402124802
 20200402135250
@@ -13607,6 +13615,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200420104303
 20200420104323
 20200420115948
+20200420141733
 20200420162730
 20200420172113
 20200420172752

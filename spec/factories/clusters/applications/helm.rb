@@ -77,6 +77,24 @@ FactoryBot.define do
       trait :no_helm_installed do
         cluster factory: %i(cluster provided_by_gcp)
       end
+
+      trait :modsecurity_blocking do
+        modsecurity_enabled { true }
+        modsecurity_mode { :blocking }
+      end
+
+      trait :modsecurity_logging do
+        modsecurity_enabled { true }
+        modsecurity_mode { :logging }
+      end
+
+      trait :modsecurity_disabled do
+        modsecurity_enabled { false }
+      end
+
+      trait :modsecurity_not_installed do
+        modsecurity_enabled { nil }
+      end
     end
 
     factory :clusters_applications_cert_manager, class: 'Clusters::Applications::CertManager' do
