@@ -6,6 +6,7 @@ describe Project do
   include ProjectForksHelper
   include GitHelpers
   include ExternalAuthorizationServiceHelpers
+  using RSpec::Parameterized::TableSyntax
 
   it_behaves_like 'having unique enum values'
 
@@ -6054,6 +6055,28 @@ describe Project do
             end
           end
         end
+      end
+    end
+  end
+
+  describe '#design_management_enabled?' do
+    let(:project) { build(:project) }
+
+    where(:lfs_enabled, :hashed_storage_enabled, :expectation) do
+      false | false | false
+      true  | false | false
+      false | true  | false
+      true  | true  | true
+    end
+
+    with_them do
+      before do
+        expect(project).to receive(:lfs_enabled?).and_return(lfs_enabled)
+        allow(project).to receive(:hashed_storage?).with(:repository).and_return(hashed_storage_enabled)
+      end
+
+      it do
+        expect(project.design_management_enabled?).to be(expectation)
       end
     end
   end

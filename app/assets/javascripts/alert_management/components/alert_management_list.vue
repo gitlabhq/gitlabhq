@@ -1,5 +1,13 @@
 <script>
-import { GlEmptyState, GlDeprecatedButton, GlLoadingIcon, GlTable, GlAlert } from '@gitlab/ui';
+import {
+  GlEmptyState,
+  GlDeprecatedButton,
+  GlLoadingIcon,
+  GlTable,
+  GlAlert,
+  GlNewDropdown,
+  GlNewDropdownItem,
+} from '@gitlab/ui';
 import { s__ } from '~/locale';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import getAlerts from '../graphql/queries/getAlerts.query.graphql';
@@ -42,6 +50,11 @@ export default {
       label: s__('AlertManagement|Status'),
     },
   ],
+  statuses: {
+    triggered: s__('AlertManagement|Triggered'),
+    acknowledged: s__('AlertManagement|Acknowledged'),
+    resolved: s__('AlertManagement|Resolved'),
+  },
   components: {
     GlEmptyState,
     GlLoadingIcon,
@@ -49,6 +62,8 @@ export default {
     GlAlert,
     GlDeprecatedButton,
     TimeAgo,
+    GlNewDropdown,
+    GlNewDropdownItem,
   },
   props: {
     projectPath: {
@@ -139,6 +154,13 @@ export default {
 
         <template #cell(title)="{ item }">
           <div class="gl-max-w-full text-truncate">{{ item.title }}</div>
+        </template>
+        <template #cell(status)="{ item }">
+          <gl-new-dropdown class="w-100" :text="item.status">
+            <gl-new-dropdown-item v-for="(label, field) in $options.statuses" :key="field">
+              {{ label }}
+            </gl-new-dropdown-item>
+          </gl-new-dropdown>
         </template>
 
         <template #empty>

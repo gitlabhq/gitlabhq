@@ -751,6 +751,14 @@ describe Note do
     end
   end
 
+  describe '#for_design' do
+    it 'is true when the noteable is a design' do
+      note = build(:note, noteable: build(:design))
+
+      expect(note).to be_for_design
+    end
+  end
+
   describe '#to_ability_name' do
     it 'returns note' do
       expect(build(:note).to_ability_name).to eq('note')

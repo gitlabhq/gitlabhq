@@ -15,8 +15,20 @@ describe Issue do
     it { is_expected.to belong_to(:closed_by).class_name('User') }
     it { is_expected.to have_many(:assignees) }
     it { is_expected.to have_many(:user_mentions).class_name("IssueUserMention") }
+    it { is_expected.to have_many(:designs) }
+    it { is_expected.to have_many(:design_versions) }
     it { is_expected.to have_one(:sentry_issue) }
     it { is_expected.to have_one(:alert_management_alert) }
+
+    describe 'versions.most_recent' do
+      it 'returns the most recent version' do
+        issue = create(:issue)
+        create_list(:design_version, 2, issue: issue)
+        last_version = create(:design_version, issue: issue)
+
+        expect(issue.design_versions.most_recent).to eq(last_version)
+      end
+    end
   end
 
   describe 'modules' do
@@ -968,6 +980,50 @@ describe Issue do
       allow(issue).to receive(:previous_changes).and_return({ 'updated_at' => [Time.new(2013, 02, 06), Time.new(2013, 03, 06)] })
 
       expect(issue.previous_updated_at).to eq(Time.new(2013, 02, 06))
+    end
+  end
+
+  describe '#design_collection' do
+    it 'returns a design collection' do
+      issue = build(:issue)
+      collection = issue.design_collection
+
+      expect(collection).to be_a(DesignManagement::DesignCollection)
+      expect(collection.issue).to eq(issue)
+    end
+  end
+
+  describe 'current designs' do
+    let(:issue) { create(:issue) }
+
+    subject { issue.designs.current }
+
+    context 'an issue has no designs' do
+      it { is_expected.to be_empty }
+    end
+
+    context 'an issue only has current designs' do
+      let!(:design_a) { create(:design, :with_file, issue: issue) }
+      let!(:design_b) { create(:design, :with_file, issue: issue) }
+      let!(:design_c) { create(:design, :with_file, issue: issue) }
+
+      it { is_expected.to include(design_a, design_b, design_c) }
+    end
+
+    context 'an issue only has deleted designs' do
+      let!(:design_a) { create(:design, :with_file, issue: issue, deleted: true) }
+      let!(:design_b) { create(:design, :with_file, issue: issue, deleted: true) }
+      let!(:design_c) { create(:design, :with_file, issue: issue, deleted: true) }
+
+      it { is_expected.to be_empty }
+    end
+
+    context 'an issue has a mixture of current and deleted designs' do
+      let!(:design_a) { create(:design, :with_file, issue: issue) }
+      let!(:design_b) { create(:design, :with_file, issue: issue, deleted: true) }
+      let!(:design_c) { create(:design, :with_file, issue: issue) }
+
+      it { is_expected.to contain_exactly(design_a, design_c) }
     end
   end
 end

@@ -279,6 +279,10 @@ class Note < ApplicationRecord
     !for_personal_snippet?
   end
 
+  def for_design?
+    noteable_type == DesignManagement::Design.name
+  end
+
   def for_issuable?
     for_issue? || for_merge_request?
   end

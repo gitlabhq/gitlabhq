@@ -215,6 +215,7 @@ class Project < ApplicationRecord
   has_many :protected_branches
   has_many :protected_tags
   has_many :repository_languages, -> { order "share DESC" }
+  has_many :designs, inverse_of: :project, class_name: 'DesignManagement::Design'
 
   has_many :project_authorizations
   has_many :authorized_users, through: :project_authorizations, source: :user, class_name: 'User'
@@ -791,12 +792,23 @@ class Project < ApplicationRecord
     Feature.enabled?(:jira_issue_import, self, default_enabled: true)
   end
 
+  # LFS and hashed repository storage are required for using Design Management.
+  def design_management_enabled?
+    lfs_enabled? && hashed_storage?(:repository)
+  end
+
   def team
     @team ||= ProjectTeam.new(self)
   end
 
   def repository
     @repository ||= Repository.new(full_path, self, shard: repository_storage, disk_path: disk_path)
+  end
+
+  def design_repository
+    strong_memoize(:design_repository) do
+      DesignManagement::Repository.new(self)
+    end
   end
 
   def cleanup

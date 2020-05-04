@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { GlEmptyState, GlTable, GlAlert, GlLoadingIcon } from '@gitlab/ui';
+import { GlEmptyState, GlTable, GlAlert, GlLoadingIcon, GlNewDropdown } from '@gitlab/ui';
 import AlertManagementList from '~/alert_management/components/alert_management_list.vue';
 
 import mockAlerts from '../mocks/alerts.json';
@@ -11,6 +11,7 @@ describe('AlertManagementList', () => {
   const findAlerts = () => wrapper.findAll('table tbody tr');
   const findAlert = () => wrapper.find(GlAlert);
   const findLoader = () => wrapper.find(GlLoadingIcon);
+  const findStatusDropdown = () => wrapper.find(GlNewDropdown);
 
   function mountComponent({
     props = {
@@ -102,6 +103,15 @@ describe('AlertManagementList', () => {
       expect(findLoader().exists()).toBe(false);
       expect(findAlertsTable().exists()).toBe(true);
       expect(findAlerts()).toHaveLength(mockAlerts.length);
+    });
+
+    it('displays status dropdown', () => {
+      mountComponent({
+        props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
+        data: { alerts: mockAlerts, errored: false },
+        loading: false,
+      });
+      expect(findStatusDropdown().exists()).toBe(true);
     });
   });
 });

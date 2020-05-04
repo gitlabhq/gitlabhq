@@ -1695,6 +1695,9 @@ msgstr[1] ""
 msgid "Alert Details"
 msgstr ""
 
+msgid "AlertManagement|Acknowledged"
+msgstr ""
+
 msgid "AlertManagement|Alert"
 msgstr ""
 
@@ -1731,6 +1734,9 @@ msgstr ""
 msgid "AlertManagement|Overview"
 msgstr ""
 
+msgid "AlertManagement|Resolved"
+msgstr ""
+
 msgid "AlertManagement|Severity"
 msgstr ""
 
@@ -1747,6 +1753,9 @@ msgid "AlertManagement|Surface alerts in GitLab"
 msgstr ""
 
 msgid "AlertManagement|There was an error displaying the alerts. Confirm your endpoint's configuration details to ensure alerts appear."
+msgstr ""
+
+msgid "AlertManagement|Triggered"
 msgstr ""
 
 msgid "AlertService|%{linkStart}Learn more%{linkEnd} about configuring this endpoint to receive alerts."

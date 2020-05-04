@@ -57,6 +57,10 @@ module Gitlab
         self == SNIPPET
       end
 
+      def design?
+        self == DESIGN
+      end
+
       def path_suffix
         suffix ? ".#{suffix}" : ''
       end
@@ -87,5 +91,3 @@ module Gitlab
     end
   end
 end
-
-Gitlab::GlRepository::RepoType.prepend_if_ee('EE::Gitlab::GlRepository::RepoType')

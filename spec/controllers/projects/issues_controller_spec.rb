@@ -243,6 +243,91 @@ describe Projects::IssuesController do
     end
   end
 
+  describe '#related_branches' do
+    subject { get :related_branches, params: params, format: :json }
+
+    before do
+      sign_in(user)
+      project.add_developer(developer)
+    end
+
+    let(:developer) { user }
+    let(:params) do
+      {
+        namespace_id: project.namespace,
+        project_id: project,
+        id: issue.iid
+      }
+    end
+
+    context 'the current user cannot download code' do
+      it 'prevents access' do
+        allow(controller).to receive(:can?).with(any_args).and_return(true)
+        allow(controller).to receive(:can?).with(user, :download_code, project).and_return(false)
+
+        subject
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'there are no related branches' do
+      it 'assigns empty arrays', :aggregate_failures do
+        subject
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(assigns(:related_branches)).to be_empty
+        expect(response).to render_template('projects/issues/_related_branches')
+        expect(json_response).to eq('html' => '')
+      end
+    end
+
+    context 'there are related branches' do
+      let(:missing_branch) { "#{issue.to_branch_name}-missing" }
+      let(:unreadable_branch) { "#{issue.to_branch_name}-unreadable" }
+      let(:pipeline) { build(:ci_pipeline, :success, project: project) }
+      let(:master_branch) { 'master' }
+
+      let(:related_branches) do
+        [
+          branch_info(issue.to_branch_name, pipeline.detailed_status(user)),
+          branch_info(missing_branch, nil),
+          branch_info(unreadable_branch, nil)
+        ]
+      end
+
+      def branch_info(name, status)
+        {
+          name: name,
+          link: controller.project_compare_path(project, from: master_branch, to: name),
+          pipeline_status: status
+        }
+      end
+
+      before do
+        allow(controller).to receive(:find_routable!)
+          .with(Project, project.full_path, any_args).and_return(project)
+        allow(project).to receive(:default_branch).and_return(master_branch)
+        allow_next_instance_of(Issues::RelatedBranchesService) do |service|
+          allow(service).to receive(:execute).and_return(related_branches)
+        end
+      end
+
+      it 'finds and assigns the appropriate branch information', :aggregate_failures do
+        subject
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(assigns(:related_branches)).to contain_exactly(
+          branch_info(issue.to_branch_name, an_instance_of(Gitlab::Ci::Status::Success)),
+          branch_info(missing_branch, be_nil),
+          branch_info(unreadable_branch, be_nil)
+        )
+        expect(response).to render_template('projects/issues/_related_branches')
+        expect(json_response).to match('html' => String)
+      end
+    end
+  end
+
   # This spec runs as a request-style spec in order to invoke the
   # Rails router. A controller-style spec matches the wrong route, and
   # session['user_return_to'] becomes incorrect.

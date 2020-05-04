@@ -287,6 +287,24 @@ describe DiffNote do
         reply_diff_note.reload.diff_file
       end
     end
+
+    context 'when noteable is a Design' do
+      it 'does not return a diff file' do
+        diff_note = create(:diff_note_on_design)
+
+        expect(diff_note.diff_file).to be_nil
+      end
+    end
+  end
+
+  describe '#latest_diff_file' do
+    context 'when noteable is a Design' do
+      it 'does not return a diff file' do
+        diff_note = create(:diff_note_on_design)
+
+        expect(diff_note.latest_diff_file).to be_nil
+      end
+    end
   end
 
   describe "#diff_line" do
