@@ -1,0 +1,5 @@
+---
+title: Add LFS badge feature flag to RefsController#logs_tree
+merge_request: 30442
+author:
+type: fixed

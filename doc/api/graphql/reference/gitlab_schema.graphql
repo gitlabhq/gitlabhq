@@ -10092,6 +10092,11 @@ type User {
   ): SnippetConnection
 
   """
+  State of the issue
+  """
+  state: String!
+
+  """
   Todos of the user
   """
   todos(

@@ -1,5 +1,6 @@
 import { shallowMount, mount } from '@vue/test-utils';
 import Tracking from '~/tracking';
+import { ESC_KEY, ESC_KEY_IE11 } from '~/lib/utils/keys';
 import { GlModal, GlDropdownItem, GlDeprecatedButton } from '@gitlab/ui';
 import VueDraggable from 'vuedraggable';
 import MockAdapter from 'axios-mock-adapter';
@@ -248,6 +249,8 @@ describe('Dashboard', () => {
       let group;
       let panel;
 
+      const mockKeyup = key => window.dispatchEvent(new KeyboardEvent('keyup', { key }));
+
       const MockPanel = {
         template: `<div><slot name="topLeft"/></div>`,
       };
@@ -265,6 +268,9 @@ describe('Dashboard', () => {
           group,
           panel,
         });
+
+        jest.spyOn(store, 'dispatch');
+
         return wrapper.vm.$nextTick();
       });
 
@@ -289,14 +295,27 @@ describe('Dashboard', () => {
       });
 
       it('restores full dashboard by clicking `back`', () => {
-        const backBtn = wrapper.find({ ref: 'goBackBtn' });
-        expect(backBtn.exists()).toBe(true);
-
-        jest.spyOn(store, 'dispatch');
-        backBtn.vm.$emit('click');
+        wrapper.find({ ref: 'goBackBtn' }).vm.$emit('click');
 
         expect(store.dispatch).toHaveBeenCalledWith(
           'monitoringDashboard/clearExpandedPanel',
+          undefined,
+        );
+      });
+
+      it('restores dashboard from full screen by typing the Escape key', () => {
+        mockKeyup(ESC_KEY);
+        expect(store.dispatch).toHaveBeenCalledWith(
+          `monitoringDashboard/clearExpandedPanel`,
+          undefined,
+        );
+      });
+
+      it('restores dashboard from full screen by typing the Escape key on IE11', () => {
+        mockKeyup(ESC_KEY_IE11);
+
+        expect(store.dispatch).toHaveBeenCalledWith(
+          `monitoringDashboard/clearExpandedPanel`,
           undefined,
         );
       });

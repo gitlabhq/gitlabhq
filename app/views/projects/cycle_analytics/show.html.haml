@@ -5,6 +5,9 @@
     %banner{ "v-if" => "!isOverviewDialogDismissed",
       "documentation-link": help_page_path('user/analytics/value_stream_analytics.md'),
       "v-on:dismiss-overview-dialog" => "dismissOverviewDialog()" }
+  .mb-3
+    %h3
+      = _("Value Stream Analytics")
   %gl-loading-icon{ "v-show" => "isLoading", "size" => "lg" }
   .wrapper{ "v-show" => "!isLoading && !hasError" }
     .card

@@ -985,6 +985,11 @@
     consola "^2.10.1"
     node-fetch "^2.6.0"
 
+"@rails/actioncable@^6.0.2-2":
+  version "6.0.2-2"
+  resolved "https://registry.yarnpkg.com/@rails/actioncable/-/actioncable-6.0.2-2.tgz#237907f8111707950381387c273b19ac25958408"
+  integrity sha512-0sKStf8hnberH1TKup10PJ92JT2dVqf3gf+OT4lJ7DiYSBEuDcvICHxWsyML2oWTpjUhC4kLvUJ3pXL2JJrJuQ==
+
 "@sentry/browser@^5.10.2":
   version "5.10.2"
   resolved "https://registry.yarnpkg.com/@sentry/browser/-/browser-5.10.2.tgz#0bbb05505c58ea998c833cffec3f922fe4b4fa58"

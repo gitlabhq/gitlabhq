@@ -184,6 +184,9 @@ This can help to quickly understand the control flow.
 // bad
 if (isThingNull) return '';
 
+if (isThingNull)
+  return '';
+
 // good
 if (isThingNull) {
   return '';

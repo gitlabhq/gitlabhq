@@ -1,0 +1,6 @@
+---
+title: When viewing a single panel, return to a full dashboard by pressing the Escape
+  key
+merge_request: 30126
+author:
+type: added

@@ -19,6 +19,7 @@ import {
 import DashboardPanel from './dashboard_panel.vue';
 import { s__ } from '~/locale';
 import createFlash from '~/flash';
+import { ESC_KEY, ESC_KEY_IE11 } from '~/lib/utils/keys';
 import CustomMetricsFormFields from '~/custom_metrics/components/custom_metrics_form_fields.vue';
 import { mergeUrlParams, redirectTo, updateHistory } from '~/lib/utils/url_utility';
 import invalidUrl from '~/lib/utils/invalid_url';
@@ -248,6 +249,10 @@ export default {
       logsPath: this.logsPath,
       currentEnvironmentName: this.currentEnvironmentName,
     });
+    window.addEventListener('keyup', this.onKeyup);
+  },
+  destroyed() {
+    window.removeEventListener('keyup', this.onKeyup);
   },
   mounted() {
     if (!this.hasMetrics) {
@@ -371,13 +376,19 @@ export default {
     onGoBack() {
       this.clearExpandedPanel();
     },
+    onKeyup(event) {
+      const { key } = event;
+      if (key === ESC_KEY || key === ESC_KEY_IE11) {
+        this.clearExpandedPanel();
+      }
+    },
   },
   addMetric: {
     title: s__('Metrics|Add metric'),
     modalId: 'add-metric',
   },
   i18n: {
-    goBackLabel: s__('Metrics|Go back'),
+    goBackLabel: s__('Metrics|Go back (Esc)'),
   },
 };
 </script>

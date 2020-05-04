@@ -1,0 +1,15 @@
+#import "~/graphql_shared/fragments/author.fragment.graphql"
+
+query getProjectIssue($iid: String!, $fullPath: ID!) {
+  project(fullPath: $fullPath) {
+    issue(iid: $iid) {
+      assignees {
+        nodes {
+          ...Author
+          id
+          state
+        }
+      }
+    }
+  }
+}

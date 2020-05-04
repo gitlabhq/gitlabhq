@@ -608,7 +608,7 @@ installations from source.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/19186) in GitLab 12.6.
 
-This file lives in `/var/log/gitlab/mail_room/mail_room_json.log` for
+This file lives in `/var/log/gitlab/mailroom/mail_room_json.log` for
 Omnibus GitLab packages or in `/home/git/gitlab/log/mail_room_json.log` for
 installations from source.
 
@@ -648,7 +648,7 @@ It's stored at:
 - `/var/log/gitlab/gitlab-rails/database_load_balancing.log` for Omnibus GitLab packages.
 - `/home/git/gitlab/log/database_load_balancing.log` for installations from source.
 
-## `elasticsearch.log`
+## `elasticsearch.log` **(STARTER ONLY)**
 
 > Introduced in GitLab 12.6.
 
@@ -718,7 +718,7 @@ Each line contains a JSON line that can be ingested by Elasticsearch. For exampl
 }
 ```
 
-## `geo.log`
+## `geo.log` **(PREMIUM ONLY)**
 
 > Introduced in 9.5.
 

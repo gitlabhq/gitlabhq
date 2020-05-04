@@ -30222,6 +30222,24 @@
               "deprecationReason": null
             },
             {
+              "name": "state",
+              "description": "State of the issue",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "todos",
               "description": "Todos of the user",
               "args": [

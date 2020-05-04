@@ -75,15 +75,14 @@ describe('DiscussionCounter component', () => {
     });
 
     it.each`
-      title                | resolved | isActive | icon                     | groupLength
-      ${'not allResolved'} | ${false} | ${false} | ${'check-circle'}        | ${3}
-      ${'allResolved'}     | ${true}  | ${true}  | ${'check-circle-filled'} | ${1}
-    `('renders correctly if $title', ({ resolved, isActive, icon, groupLength }) => {
+      title                | resolved | isActive | groupLength
+      ${'not allResolved'} | ${false} | ${false} | ${3}
+      ${'allResolved'}     | ${true}  | ${true}  | ${1}
+    `('renders correctly if $title', ({ resolved, isActive, groupLength }) => {
       updateStore({ resolvable: true, resolved });
       wrapper = shallowMount(DiscussionCounter, { store, localVue });
 
       expect(wrapper.find(`.is-active`).exists()).toBe(isActive);
-      expect(wrapper.find({ name: icon }).exists()).toBe(true);
       expect(wrapper.findAll('[role="group"').length).toBe(groupLength);
     });
   });

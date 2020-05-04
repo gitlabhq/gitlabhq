@@ -908,11 +908,10 @@ $note-form-margin-left: 72px;
   border-right: 0;
 
   .line-resolve-btn {
-    margin-right: 5px;
     color: $gray-700;
 
     svg {
-      vertical-align: middle;
+      vertical-align: text-top;
     }
   }
 

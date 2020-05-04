@@ -89,6 +89,10 @@ export default class SidebarStore {
     this.assignees = [];
   }
 
+  setAssigneesFromRealtime(data) {
+    this.assignees = data;
+  }
+
   setAutocompleteProjects(projects) {
     this.autocompleteProjects = projects;
   }
