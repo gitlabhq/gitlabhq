@@ -54,17 +54,5 @@ describe ProjectCiCdSetting do
 
       expect(project.reload.ci_cd_settings.default_git_depth).to eq(0)
     end
-
-    context 'when feature flag :ci_set_project_default_git_depth is disabled' do
-      let(:project) { create(:project) }
-
-      before do
-        stub_feature_flags(ci_set_project_default_git_depth: { enabled: false } )
-      end
-
-      it 'does not set default value for new records' do
-        expect(project.ci_cd_settings.default_git_depth).to eq(nil)
-      end
-    end
   end
 end

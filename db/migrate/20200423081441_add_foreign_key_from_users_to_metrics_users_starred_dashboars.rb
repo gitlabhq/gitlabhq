@@ -11,7 +11,7 @@ class AddForeignKeyFromUsersToMetricsUsersStarredDashboars < ActiveRecord::Migra
   end
 
   def down
-    with_lock_retries do # rubocop:disable Migration/WithLockRetriesWithoutDdlTransaction
+    with_lock_retries do
       remove_foreign_key_if_exists :metrics_users_starred_dashboards, column: :user_id
     end
   end

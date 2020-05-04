@@ -28,7 +28,6 @@ function importMermaidModule() {
 
       if (
         window.gon?.user_color_scheme === 'dark' &&
-        window.gon?.features?.webideDarkTheme &&
         // if on the Web IDE page
         document.querySelector('.ide')
       ) {

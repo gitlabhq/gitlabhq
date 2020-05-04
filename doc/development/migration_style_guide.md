@@ -327,6 +327,34 @@ def down
 end
 ```
 
+**Usage with `disable_ddl_transaction!`**
+
+Generally the `with_lock_retries` helper should work with `disabled_ddl_transaction!`. A custom RuboCop rule ensures that only allowed methods can be placed within the lock retries block.
+
+```ruby
+disable_ddl_transaction!
+
+def up
+  with_lock_retries do
+    add_column :users, :name, :text
+  end
+
+  add_text_limit :users, :name, 255 # Includes constraint validation (full table scan)
+end
+```
+
+The RuboCop rule generally allows standard Rails migration methods, listed below. This example will cause a rubocop offense:
+
+```ruby
+disabled_ddl_transaction!
+
+def up
+  with_lock_retries do
+    add_concurrent_index :users, :name
+  end
+end
+```
+
 ### When to use the helper method
 
 The `with_lock_retries` helper method can be used when you normally use
@@ -349,8 +377,6 @@ Example changes:
 - `add_column` / `remove_column`
 - `change_column_default`
 - `create_table` / `drop_table`
-
-**Note:** `with_lock_retries` method **cannot** be used with `disable_ddl_transaction!`.
 
 **Note:** `with_lock_retries` method **cannot** be used within the `change` method, you must manually define the `up` and `down` methods to make the migration reversible.
 

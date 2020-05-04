@@ -8,14 +8,14 @@ class DropNamespacesPlanId < ActiveRecord::Migration[6.0]
   disable_ddl_transaction!
 
   def up
-    with_lock_retries do # rubocop: disable Migration/WithLockRetriesWithoutDdlTransaction
+    with_lock_retries do
       remove_column :namespaces, :plan_id
     end
   end
 
   def down
     unless column_exists?(:namespaces, :plan_id)
-      with_lock_retries do # rubocop: disable Migration/WithLockRetriesWithoutDdlTransaction
+      with_lock_retries do
         add_column :namespaces, :plan_id, :integer
       end
     end

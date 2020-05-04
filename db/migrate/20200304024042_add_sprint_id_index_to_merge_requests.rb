@@ -13,7 +13,7 @@ class AddSprintIdIndexToMergeRequests < ActiveRecord::Migration[6.0]
   end
 
   def down
-    with_lock_retries do # rubocop:disable Migration/WithLockRetriesWithoutDdlTransaction
+    with_lock_retries do
       remove_foreign_key :merge_requests, column: :sprint_id
     end
     remove_concurrent_index :merge_requests, :sprint_id

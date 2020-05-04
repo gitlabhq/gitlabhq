@@ -12,7 +12,7 @@ class AddSprintsForeignKeyToGroups < ActiveRecord::Migration[6.0]
   end
 
   def down
-    with_lock_retries do # rubocop:disable Migration/WithLockRetriesWithoutDdlTransaction
+    with_lock_retries do
       remove_foreign_key :sprints, column: :group_id
     end
   end

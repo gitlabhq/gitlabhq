@@ -114,19 +114,6 @@ describe Gitlab::Ci::Config::Entry::Trigger do
             .to match /config contains unknown keys: branch/
         end
       end
-
-      context 'when feature flag is off' do
-        before do
-          stub_feature_flags(ci_parent_child_pipeline: false)
-        end
-
-        let(:config) { { include: 'path/to/config.yml' } }
-
-        it 'is returns an error if include is used' do
-          expect(subject.errors.first)
-            .to match /config must specify project/
-        end
-      end
     end
 
     context 'when config contains unknown keys' do

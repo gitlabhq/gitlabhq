@@ -36,7 +36,7 @@
 /ee/app/finders/ @gitlab-org/maintainers/database
 
 # Feature specific owners
-/ee/lib/gitlab/code_owners/ @reprazent
+/ee/lib/gitlab/code_owners/ @reprazent @kerrizor
 /ee/lib/ee/gitlab/auth/ldap/ @dblessing @mkozono
 /lib/gitlab/auth/ldap/ @dblessing @mkozono
 /lib/gitlab/ci/templates/ @nolith @zj

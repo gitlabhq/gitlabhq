@@ -85,8 +85,6 @@ module Ci
       # to make sure that this is properly handled by runner.
       Result.new(nil, false)
     rescue => ex
-      raise ex unless Feature.enabled?(:ci_doom_build, default_enabled: true)
-
       scheduler_failure!(build)
       track_exception_for_build(ex, build)
 

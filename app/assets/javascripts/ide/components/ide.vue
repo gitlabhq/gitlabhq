@@ -57,7 +57,7 @@ export default {
       'editorTheme',
     ]),
     themeName() {
-      return this.glFeatures.webideDarkTheme && window.gon?.user_color_scheme;
+      return window.gon?.user_color_scheme;
     },
   },
   mounted() {

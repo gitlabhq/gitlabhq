@@ -2,7 +2,7 @@
 
 # frozen_string_literal: true
 
-require 'net/http'
+require 'open3'
 require 'uri'
 
 class SchemaRegenerator
@@ -56,35 +56,15 @@ class SchemaRegenerator
   # Get clean schema from remote servers
   #
   # This script might run in CI, using a shallow clone, so to checkout
-  # the file, download it from the server.
+  # the file, fetch the target branch from the server.
   def remote_checkout_clean_schema
     return false unless project_url
+    return false unless target_project_url
 
-    uri = URI.join("#{project_url}/", 'raw/', "#{merge_base}/", FILENAME)
+    run %Q[git remote add target_project #{target_project_url}.git]
+    run %Q[git fetch target_project #{target_branch}:#{target_branch}]
 
-    download_schema(uri)
-  end
-
-  ##
-  # Download the schema from the given +uri+.
-  def download_schema(uri)
-    puts "Downloading #{uri}..."
-
-    Net::HTTP.start(uri.host, uri.port, use_ssl: true) do |http|
-      request = Net::HTTP::Get.new(uri.request_uri)
-      http.read_timeout = 500
-      http.request(request) do |response|
-        raise("Failed to download file: #{response.code} #{response.message}") if response.code.to_i != 200
-
-        File.open(FILENAME, 'w') do |io|
-          response.read_body do |chunk|
-            io.write(chunk)
-          end
-        end
-      end
-    end
-
-    true
+    local_checkout_clean_schema
   end
 
   ##
@@ -150,15 +130,17 @@ class SchemaRegenerator
   # When the command failed an exception is raised.
   def run(cmd)
     puts "\e[32m$ #{cmd}\e[37m"
-    ret = system(cmd)
-    puts "\e[0m"
-    raise("Command failed") unless ret
+    stdout_str, stderr_str, status = Open3.capture3(cmd)
+    puts "#{stdout_str}#{stderr_str}\e[0m"
+    raise("Command failed: #{stderr_str}") unless status.success?
+
+    stdout_str
   end
 
   ##
   # Return the base commit between source and target branch.
   def merge_base
-    @merge_base ||= `git merge-base #{target_branch} #{source_ref}`.chomp
+    @merge_base ||= run("git merge-base #{target_branch} #{source_ref}").chomp
   end
 
   ##
@@ -179,9 +161,15 @@ class SchemaRegenerator
   end
 
   ##
-  # Return the project URL from CI environment variable.
+  # Return the source project URL from CI environment variable.
   def project_url
     ENV['CI_PROJECT_URL']
+  end
+
+  ##
+  # Return the target project URL from CI environment variable.
+  def target_project_url
+    ENV['CI_MERGE_REQUEST_PROJECT_URL']
   end
 
   ##
