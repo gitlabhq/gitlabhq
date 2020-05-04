@@ -1,5 +1,20 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 12.10.3 (2020-05-04)
+
+### Fixed (1 change)
+
+- Fixes file row commits not showing for certain projects.
+
+### Changed (1 change)
+
+- Move deploy keys section back to repository settings. !29184
+
+### Added (1 change)
+
+- Enable expiring subscription banner. !30304
+
+
 ## 12.10.2 (2020-04-30)
 
 ### Security (3 changes)
