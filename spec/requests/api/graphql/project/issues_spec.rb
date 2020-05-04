@@ -358,7 +358,7 @@ describe 'getting an issue list for a project' do
 
             cursored_query = query("sort: LABEL_PRIORITY_ASC, after: \"#{end_cursor}\"")
             post_graphql(cursored_query, current_user: current_user)
-            response_data = JSON.parse(response.body)['data']['project']['issues']['edges']
+            response_data = Gitlab::Json.parse(response.body)['data']['project']['issues']['edges']
 
             expect(grab_iids(response_data)).to eq [label_issue2.iid, label_issue4.iid]
           end
@@ -380,7 +380,7 @@ describe 'getting an issue list for a project' do
 
             cursored_query = query("sort: LABEL_PRIORITY_DESC, after: \"#{end_cursor}\"")
             post_graphql(cursored_query, current_user: current_user)
-            response_data = JSON.parse(response.body)['data']['project']['issues']['edges']
+            response_data = Gitlab::Json.parse(response.body)['data']['project']['issues']['edges']
 
             expect(grab_iids(response_data)).to eq [label_issue1.iid, label_issue4.iid]
           end

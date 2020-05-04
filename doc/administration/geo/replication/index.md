@@ -2,7 +2,7 @@
 
 > - Introduced in GitLab Enterprise Edition 8.9.
 > - Using Geo in combination with
->   [High Availability](../../availability/index.md)
+>   [High Availability](../../reference_architectures/index.md)
 >   is considered **Generally Available** (GA) in
 >   [GitLab Premium](https://about.gitlab.com/pricing/) 10.4.
 

@@ -107,7 +107,7 @@ When visiting one of these views, you can now hover over a code reference to see
 
 ## Sourcegraph for GitLab.com
 
-Sourcegraph powered code intelligence is avaialable for all public projects on GitLab.com.
+Sourcegraph powered code intelligence is available for all public projects on GitLab.com.
 
 Support for private projects is currently not available for GitLab.com;
 follow the epic [&2201](https://gitlab.com/groups/gitlab-org/-/epics/2201)

@@ -95,7 +95,7 @@ This is the recommended minimum hardware for a handful of example GitLab user ba
 - 4 cores supports up to 500 users
 - 8 cores supports up to 1,000 users
 - 32 cores supports up to 5,000 users
-- More users? Run it high-availability on [multiple application servers](https://about.gitlab.com/solutions/high-availability/)
+- More users? Consult the [reference architectures page](../administration/reference_architectures/index.md)
 
 ### Memory
 
@@ -112,7 +112,7 @@ errors during usage.
 - 16GB RAM supports up to 500 users
 - 32GB RAM supports up to 1,000 users
 - 128GB RAM supports up to 5,000 users
-- More users? Run it high-availability on [multiple application servers](https://about.gitlab.com/solutions/high-availability/)
+- More users? Consult the [reference architectures page](../administration/reference_architectures/index.md)
 
 We recommend having at least [2GB of swap on your server](https://askubuntu.com/a/505344/310789), even if you currently have
 enough available RAM. Having swap will help reduce the chance of errors occurring

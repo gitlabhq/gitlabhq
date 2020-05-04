@@ -460,12 +460,12 @@ documentation](index.md#3-gitaly-server-configuration).
 
 1. Configure the storage location for Git data by setting `git_data_dirs` in
    `/etc/gitlab/gitlab.rb`. Each Gitaly node should have a unique storage name
-   (eg `gitaly-1`).
+   (such as `gitaly-1`).
 
    Instead of configuring `git_data_dirs` uniquely for each Gitaly node, it is
    often easier to have include the configuration for all Gitaly nodes on every
    Gitaly node. This is supported because the Praefect `virtual_storages`
-   configuration maps each storage name (eg `gitaly-1`) to a specific node, and
+   configuration maps each storage name (such as `gitaly-1`) to a specific node, and
    requests are routed accordingly. This means every Gitaly node in your fleet
    can share the same configuration.
 
@@ -573,7 +573,7 @@ Particular attention should be shown to:
    })
    ```
 
-1. Allow Gitaly to listen on a tcp port by editing
+1. Allow Gitaly to listen on a TCP port by editing
    `/etc/gitlab/gitlab.rb`
 
    ```ruby
@@ -742,13 +742,13 @@ strategy in the future.
 
 ## Identifying Impact of a Primary Node Failure
 
-When a primary Gitaly node fails, there is a chance of dataloss. Dataloss can occur if there were outstanding replication jobs the secondaries did not manage to process before the failure. The Praefect `dataloss` subcommand helps identify these cases by counting the number of dead replication jobs for each repository within a given timeframe.
+When a primary Gitaly node fails, there is a chance of data loss. Data loss can occur if there were outstanding replication jobs the secondaries did not manage to process before the failure. The Praefect `dataloss` sub-command helps identify these cases by counting the number of dead replication jobs for each repository within a given time frame.
 
 ```shell
 sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml dataloss -from <rfc3339-time> -to <rfc3339-time>
 ```
 
-If the timeframe is not specified, dead replication jobs from the last six hours are counted:
+If the time frame is not specified, dead replication jobs from the last six hours are counted:
 
 ```shell
 sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml dataloss
@@ -759,7 +759,7 @@ example/repository-2: 4 jobs
 example/repository-3: 2 jobs
 ```
 
-To specify a timeframe in UTC, run:
+To specify a time frame in UTC, run:
 
 ```shell
 sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml dataloss -from 2020-01-02T00:00:00+00:00 -to 2020-01-02T00:02:00+00:00
@@ -779,7 +779,7 @@ When a Praefect backend node fails and is no longer able to
 replicate changes, the backend node will start to drift from the primary. If
 that node eventually recovers, it will need to be reconciled with the current
 primary. The primary node is considered the single source of truth for the
-state of a shard. The Praefect `reconcile` subcommand allows for the manual
+state of a shard. The Praefect `reconcile` sub-command allows for the manual
 reconciliation between a backend node and the current primary.
 
 Run the following command on the Praefect server after all placeholders

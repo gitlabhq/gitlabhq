@@ -267,7 +267,7 @@ to your review app.
 ​After determining the ID for the merge request to link to a visual review app, you
 can supply the ID by either:​​
 
-- Hardcoding it in the script tag via the data attribute `data-merge-request-id` of the app.
+- Hard-coding it in the script tag via the data attribute `data-merge-request-id` of the app.
 - Dynamically adding the `data-merge-request-id` value during the build of the app.
 - Supplying it manually through the visual review form in the app.
 

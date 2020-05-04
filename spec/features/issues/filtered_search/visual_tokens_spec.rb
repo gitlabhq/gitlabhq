@@ -113,7 +113,7 @@ describe 'Visual tokens', :js do
   describe 'add new token after editing existing token' do
     before do
       input_filtered_search('author:=@root assignee:=none', submit: false)
-      first('.tokens-container .filtered-search-token').double_click
+      first('.tokens-container .filtered-search-token').click
       filtered_search.send_keys(' ')
     end
 

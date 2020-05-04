@@ -428,7 +428,7 @@ installations from source.
 This file contains logging information about jobs before they are start
 being processed by Sidekiq, for example before being enqueued.
 
-This logfile follows the same structure as
+This log file follows the same structure as
 [`sidekiq.log`](#sidekiqlog), so it will be structured as JSON if
 you've configured this for Sidekiq as mentioned above.
 
@@ -523,7 +523,7 @@ User clone/fetch activity using SSH transport appears in this log as `executing 
 
 ## Gitaly Logs
 
-This file lives in `/var/log/gitlab/gitaly/current` and is produced by [runit](http://smarden.org/runit/). `runit` is packaged with Omnibus and a brief explanation of its purpose is available [in the omnibus documentation](https://docs.gitlab.com/omnibus/architecture/#runit). [Log files are rotated](http://smarden.org/runit/svlogd.8.html), renamed in unix timestamp format and `gzip`-compressed (e.g. `@1584057562.s`).
+This file lives in `/var/log/gitlab/gitaly/current` and is produced by [runit](http://smarden.org/runit/). `runit` is packaged with Omnibus and a brief explanation of its purpose is available [in the omnibus documentation](https://docs.gitlab.com/omnibus/architecture/#runit). [Log files are rotated](http://smarden.org/runit/svlogd.8.html), renamed in Unix timestamp format and `gzip`-compressed (e.g. `@1584057562.s`).
 
 ### `grpc.log`
 
@@ -761,7 +761,7 @@ For Omnibus installations, NGINX logs reside in:
 - `/var/log/gitlab/nginx/gitlab_pages_access.log` contains a log of requests made to Pages static sites.
 - `/var/log/gitlab/nginx/gitlab_pages_error.log` contains a log of NGINX errors for Pages static sites.
 - `/var/log/gitlab/nginx/gitlab_registry_access.log` contains a log of requests made to the Container Registry.
-- `/var/log/gitlab/nginx/gitlab_registry_error.log` contains a log of NGINX errors for the Container Regsitry.
+- `/var/log/gitlab/nginx/gitlab_registry_error.log` contains a log of NGINX errors for the Container Registry.
 - `/var/log/gitlab/nginx/gitlab_mattermost_access.log` contains a log of requests made to Mattermost.
 - `/var/log/gitlab/nginx/gitlab_mattermost_error.log` contains a log of NGINX errors for Mattermost.
 

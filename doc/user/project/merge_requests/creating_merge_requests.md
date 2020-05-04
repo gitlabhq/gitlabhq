@@ -171,7 +171,7 @@ When the changes are merged, your changes are added to the upstream repository a
 the branch as per specification. After your work is merged, if you don't intend to
 make any other contributions to the upstream project, you can unlink your
 fork from its upstream project in the **Settings > Advanced Settings** section by
-[removing the forking relashionship](../settings/index.md#removing-a-fork-relationship).
+[removing the forking relationship](../settings/index.md#removing-a-fork-relationship).
 
 For further details, [see the forking workflow documentation](../repository/forking_workflow.md).
 

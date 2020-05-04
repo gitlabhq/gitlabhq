@@ -141,7 +141,9 @@ db:migrate:reset:
     - bundle exec rake db:migrate:reset
 
 db:check-schema:
-  extends: .db-job-base
+  extends:
+    - .db-job-base
+    - .rails:rules:ee-mr-and-master-only
   script:
     - scripts/regenerate-schema
     - source scripts/schema_changed.sh

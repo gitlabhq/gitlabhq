@@ -11,7 +11,7 @@ should consider using Gitaly on a separate node.
 See the [Gitaly HA Epic](https://gitlab.com/groups/gitlab-org/-/epics/289) to
 track plans and progress toward high availability support.
 
-This document is relevant for [Scalable and Highly Available Setups](../scaling/index.md).
+This document is relevant for [scalable and highly available setups](../reference_architectures/index.md).
 
 ## Running Gitaly on its own server
 
@@ -19,7 +19,7 @@ See [Running Gitaly on its own server](../gitaly/index.md#running-gitaly-on-its-
 in Gitaly documentation.
 
 Continue configuration of other components by going back to the
-[Scaling](../scaling/index.md#components-provided-by-omnibus-gitlab) page.
+[reference architecture](../reference_architectures/index.md#configure-gitlab-to-scale) page.
 
 ## Enable Monitoring
 

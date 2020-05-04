@@ -14,15 +14,15 @@ and cost of hosting.
 There are many ways you can install GitLab depending on your platform:
 
 1. **Omnibus GitLab**: The official deb/rpm packages that contain a bundle of GitLab
-   and the various components it depends on like PostgreSQL, Redis, Sidekiq, etc.
+   and the various components it depends on, like PostgreSQL, Redis, Sidekiq, etc.
 1. **GitLab Helm chart**: The cloud native Helm chart for installing GitLab and all
    its components on Kubernetes.
 1. **Docker**: The Omnibus GitLab packages dockerized.
 1. **Source**: Install GitLab and all its components from scratch.
 
 TIP: **If in doubt, choose Omnibus:**
-The Omnibus GitLab packages are mature, scalable, support
-[high availability](../administration/availability/index.md) and are used
+The Omnibus GitLab packages are mature,
+[scalable](../administration/reference_architectures/index.md) and are used
 today on GitLab.com. The Helm charts are recommended for those who are familiar
 with Kubernetes.
 
@@ -36,7 +36,7 @@ The Omnibus GitLab package uses our official deb/rpm repositories. This is
 recommended for most users.
 
 If you need additional flexibility and resilience, we recommend deploying
-GitLab as described in our [High Availability documentation](../administration/availability/index.md).
+GitLab as described in our [reference architecture documentation](../administration/reference_architectures/index.md).
 
 [**> Install GitLab using the Omnibus GitLab package.**](https://about.gitlab.com/install/)
 
@@ -67,7 +67,7 @@ GitLab maintains a set of official Docker images based on the Omnibus GitLab pac
 ## Installing GitLab from source
 
 If the Omnibus GitLab package is not available in your distribution, you can
-install GitLab from source: Useful for unsupported systems like *BSD. For an
+install GitLab from source: Useful for unsupported systems like \*BSD. For an
 overview of the directory structure, read the [structure documentation](structure.md).
 
 [**> Install GitLab from source.**](installation.md)

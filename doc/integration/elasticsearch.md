@@ -624,7 +624,7 @@ Here are some common pitfalls and how to overcome them:
    Gitlab::Elastic::Indexer::Error: time="2020-01-23T09:13:00Z" level=fatal msg="health check timeout: no Elasticsearch node available"
    ```
 
-   You probably have not used either `http://` or `https://` as part of your value in the **"URL"** field of the Elasticseach Integration Menu. Please make sure you are using either `http://` or `https://` in this field as the [Elasticsearch client for Go](https://github.com/olivere/elastic) that we are using [needs the prefix for the URL to be accepted as valid](https://github.com/olivere/elastic/commit/a80af35aa41856dc2c986204e2b64eab81ccac3a).
+   You probably have not used either `http://` or `https://` as part of your value in the **"URL"** field of the Elasticsearch Integration Menu. Please make sure you are using either `http://` or `https://` in this field as the [Elasticsearch client for Go](https://github.com/olivere/elastic) that we are using [needs the prefix for the URL to be accepted as valid](https://github.com/olivere/elastic/commit/a80af35aa41856dc2c986204e2b64eab81ccac3a).
    Once you have corrected the formatting of the URL, delete the index (via the [dedicated Rake task](#gitlab-elasticsearch-rake-tasks)) and [reindex the content of your instance](#adding-gitlabs-data-to-the-elasticsearch-index).
 
 ### Low level troubleshooting

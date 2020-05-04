@@ -17,12 +17,14 @@ module Types
       field :collapsed, GraphQL::BOOLEAN_TYPE,
             description: 'Shows whether the blob should be displayed collapsed',
             method: :collapsed?,
-            null: false
+            null: false,
+            resolve: -> (viewer, _args, _ctx) { !!viewer&.collapsed? }
 
       field :too_large, GraphQL::BOOLEAN_TYPE,
             description: 'Shows whether the blob too large to be displayed',
             method: :too_large?,
-            null: false
+            null: false,
+            resolve: -> (viewer, _args, _ctx) { !!viewer&.too_large? }
 
       field :render_error, GraphQL::STRING_TYPE,
             description: 'Error rendering the blob content',

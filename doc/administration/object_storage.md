@@ -37,7 +37,7 @@ For configuring GitLab to use Object Storage refer to the following guides:
 
 ### Other alternatives to filesystem storage
 
-If you're working to [scale out](scaling/index.md) your GitLab implementation,
+If you're working to [scale out](reference_architectures/index.md) your GitLab implementation,
 or add [fault tolerance and redundancy](high_availability/README.md) you may be
 looking at removing dependencies on block or network filesystems.
 See the following guides and
@@ -77,7 +77,7 @@ with the Fog library that GitLab uses. Symptoms include:
 
 ### GitLab Pages requires NFS
 
-If you're working to add more GitLab servers for [scaling or fault tolerance](scaling/index.md)
+If you're working to add more GitLab servers for [scaling or fault tolerance](reference_architectures/index.md)
 and one of your requirements is [GitLab Pages](../user/project/pages/index.md) this currently requires
 NFS. There is [work in progress](https://gitlab.com/gitlab-org/gitlab-pages/issues/196)
 to remove this dependency. In the future, GitLab Pages may use

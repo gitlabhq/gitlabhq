@@ -143,7 +143,7 @@ To configure the connection to the external read-replica database and enable Log
 database to keep track of replication status and automatically recover from
 potential replication issues. Omnibus automatically configures a tracking database
 when `roles ['geo_secondary_role']` is set. For high availability,
-refer to [Geo High Availability](../../availability/index.md).
+refer to [Geo High Availability](../../reference_architectures/index.md).
 If you want to run this database external to Omnibus, please follow the instructions below.
 
 The tracking database requires an [FDW](https://www.postgresql.org/docs/9.6/postgres-fdw.html)

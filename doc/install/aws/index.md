@@ -739,7 +739,7 @@ Have a read through these other resources and feel free to
 [open an issue](https://gitlab.com/gitlab-org/gitlab/issues/new)
 to request additional material:
 
-- [Scaling GitLab](../../administration/scaling/index.md):
+- [Scaling GitLab](../../administration/reference_architectures/index.md):
   GitLab supports several different types of clustering and high-availability.
 - [Geo replication](../../administration/geo/replication/index.md):
   Geo is the solution for widely distributed development teams.

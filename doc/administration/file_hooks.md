@@ -35,7 +35,7 @@ Follow the steps below to set up a custom hook:
    `/home/git/gitlab/file_hooks/`. For Omnibus installs the path is
    usually `/opt/gitlab/embedded/service/gitlab-rails/file_hooks`.
 
-    For [highly available](availability/index.md) configurations, your hook file should exist on each
+    For [highly available](reference_architectures/index.md) configurations, your hook file should exist on each
     application server.
 
 1. Inside the `file_hooks` directory, create a file with a name of your choice,

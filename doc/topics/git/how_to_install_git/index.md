@@ -39,7 +39,7 @@ it by running in your terminal:
 xcode-select --install
 ```
 
-Click **Install** to download and install it. Alternativelly, you can install
+Click **Install** to download and install it. Alternatively, you can install
 the entire [XCode](https://developer.apple.com/xcode/) package through the
 macOS App Store.
 

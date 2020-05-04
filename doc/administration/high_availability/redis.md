@@ -27,7 +27,7 @@ These will be necessary when configuring the GitLab application servers later.
 
 ## Redis in a Scaled and Highly Available Environment
 
-This section is relevant for [Scalable and Highly Available Setups](../scaling/index.md).
+This section is relevant for [scalable and highly available setups](../reference_architectures/index.md).
 
 ### Provide your own Redis instance **(CORE ONLY)**
 
@@ -43,8 +43,8 @@ In this configuration Redis is not highly available, and represents a single
 point of failure. However, in a scaled environment the objective is to allow
 the environment to handle more users or to increase throughput. Redis itself
 is generally stable and can handle many requests so it is an acceptable
-trade off to have only a single instance. See [High Availability](../availability/index.md)
-for an overview of GitLab scaling and high availability options.
+trade off to have only a single instance. See the [reference architectures](../reference_architectures/index.md)
+page for an overview of GitLab scaling and high availability options.
 
 The steps below are the minimum necessary to configure a Redis server with
 Omnibus:
@@ -89,7 +89,7 @@ Advanced configuration options are supported and can be added if
 needed.
 
 Continue configuration of other components by going back to the
-[Scaling](../scaling/index.md#components-provided-by-omnibus-gitlab) page.
+[reference architectures](../reference_architectures/index.md#configure-gitlab-to-scale) page.
 
 ### High Availability with Omnibus GitLab **(PREMIUM ONLY)**
 

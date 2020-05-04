@@ -34,7 +34,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [Install](../install/README.md): Requirements, directory structures, and installation methods.
   - [Database load balancing](database_load_balancing.md): Distribute database queries among multiple database servers. **(STARTER ONLY)**
   - [Omnibus support for log forwarding](https://docs.gitlab.com/omnibus/settings/logs.html#udp-log-shipping-gitlab-enterprise-edition-only) **(STARTER ONLY)**
-- [High Availability](availability/index.md): Configure multiple servers for scaling or high availability.
+- [High Availability](reference_architectures/index.md): Configure multiple servers for scaling or high availability.
   - [Installing GitLab HA on Amazon Web Services (AWS)](../install/aws/index.md): Set up GitLab High Availability on Amazon AWS.
 - [Geo](geo/replication/index.md): Replicate your GitLab instance to other geographic locations as a read-only fully operational version. **(PREMIUM ONLY)**
 - [Disaster Recovery](geo/disaster_recovery/index.md): Quickly fail-over to a different site with minimal effort in a disaster situation. **(PREMIUM ONLY)**

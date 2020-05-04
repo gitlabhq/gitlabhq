@@ -72,7 +72,7 @@ and they will assist you with any issues you are having.
   This is the principle of Kubernetes, read [Twelve-factor app](https://12factor.net/)
   for details.
 
-- How to get cronjobs configured on a cluster
+- How to get cron jobs configured on a cluster
 
   ```shell
   kubectl get cronjobs
@@ -206,7 +206,7 @@ all Kubernetes resources and dependent charts:
   helm get manifest <release name>
   ```
 
-## Installation of minimal GitLab config via Minukube on macOS
+## Installation of minimal GitLab config via Minikube on macOS
 
 This section is based on [Developing for Kubernetes with Minikube](https://docs.gitlab.com/charts/development/minikube/index.html)
 and [Helm](https://docs.gitlab.com/charts/installation/tools.html#helm). Refer

@@ -47,12 +47,12 @@ It is possible to use cloud hosted services for PostgreSQL and Redis, but this i
 ## Prerequisites: Two working GitLab HA clusters
 
 One cluster will serve as the **primary** node. Use the
-[GitLab HA documentation](../../availability/index.md) to set this up. If
+[GitLab HA documentation](../../reference_architectures/index.md) to set this up. If
 you already have a working GitLab instance that is in-use, it can be used as a
 **primary**.
 
 The second cluster will serve as the **secondary** node. Again, use the
-[GitLab HA documentation](../../availability/index.md) to set this up.
+[GitLab HA documentation](../../reference_architectures/index.md) to set this up.
 It's a good idea to log in and test it, however, note that its data will be
 wiped out as part of the process of replicating from the **primary**.
 
@@ -371,7 +371,7 @@ more information.
 
 The minimal reference architecture diagram above shows all application services
 running together on the same machines. However, for high availability we
-[strongly recommend running all services separately](../../availability/index.md).
+[strongly recommend running all services separately](../../reference_architectures/index.md).
 
 For example, a Sidekiq server could be configured similarly to the frontend
 application servers above, with some changes to run only the `sidekiq` service:

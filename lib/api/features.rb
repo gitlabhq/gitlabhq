@@ -16,6 +16,15 @@ module API
         end
       end
 
+      def gate_key(params)
+        case params[:key]
+        when 'percentage_of_actors'
+          :percentage_of_actors
+        else
+          :percentage_of_time
+        end
+      end
+
       def gate_targets(params)
         Feature::Target.new(params).targets
       end
@@ -40,15 +49,22 @@ module API
       end
       params do
         requires :value, type: String, desc: '`true` or `false` to enable/disable, an integer for percentage of time'
+        optional :key, type: String, desc: '`percentage_of_actors` or the default `percentage_of_time`'
         optional :feature_group, type: String, desc: 'A Feature group name'
         optional :user, type: String, desc: 'A GitLab username'
         optional :group, type: String, desc: "A GitLab group's path, such as 'gitlab-org'"
         optional :project, type: String, desc: 'A projects path, like gitlab-org/gitlab-ce'
+
+        mutually_exclusive :key, :feature_group
+        mutually_exclusive :key, :user
+        mutually_exclusive :key, :group
+        mutually_exclusive :key, :project
       end
       post ':name' do
         feature = Feature.get(params[:name])
         targets = gate_targets(params)
         value = gate_value(params)
+        key = gate_key(params)
 
         case value
         when true
@@ -64,7 +80,11 @@ module API
             feature.disable
           end
         else
-          feature.enable_percentage_of_time(value)
+          if key == :percentage_of_actors
+            feature.enable_percentage_of_actors(value)
+          else
+            feature.enable_percentage_of_time(value)
+          end
         end
 
         present feature, with: Entities::Feature, current_user: current_user

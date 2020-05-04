@@ -159,7 +159,7 @@ During this phase, the idea is to collect as much information as possible about 
 
 The analysis usually takes a full milestone to complete, though it's not impossible to start the implementation in the same milestone.
 
-In particular, the upload request can have some [requirements in the GitLab Workhorse project](#file-uploads). This project has a different release cycle than the rails backend. It's **strongly** recommended that you open an issue there as soon as the upload request analysis is done. This way GitLab Worhorse is already ready when the upload request is implemented on the rails backend.
+In particular, the upload request can have some [requirements in the GitLab Workhorse project](#file-uploads). This project has a different release cycle than the rails backend. It's **strongly** recommended that you open an issue there as soon as the upload request analysis is done. This way GitLab Workhorse is already ready when the upload request is implemented on the rails backend.
 
 ### Implementation
 

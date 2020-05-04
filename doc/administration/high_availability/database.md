@@ -24,7 +24,7 @@ If you use a cloud-managed service, or provide your own PostgreSQL:
 
 ## PostgreSQL in a Scaled and Highly Available Environment
 
-This section is relevant for [Scalable and Highly Available Setups](../scaling/index.md).
+This section is relevant for [Scalable and Highly Available Setups](../reference_architectures/index.md).
 
 ### Provide your own PostgreSQL instance **(CORE ONLY)**
 

@@ -490,6 +490,9 @@ Settings.cron_jobs['container_expiration_policy_worker']['job_class'] = 'Contain
 Settings.cron_jobs['x509_issuer_crl_check_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['x509_issuer_crl_check_worker']['cron'] ||= '30 1 * * *'
 Settings.cron_jobs['x509_issuer_crl_check_worker']['job_class'] = 'X509IssuerCrlCheckWorker'
+Settings.cron_jobs['users_create_statistics_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['users_create_statistics_worker']['cron'] ||= '2 15 * * *'
+Settings.cron_jobs['users_create_statistics_worker']['job_class'] = 'Users::CreateStatisticsWorker'
 
 Gitlab.ee do
   Settings.cron_jobs['adjourned_group_deletion_worker'] ||= Settingslogic.new({})
@@ -552,9 +555,6 @@ Gitlab.ee do
   Settings.cron_jobs['sync_seat_link_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['sync_seat_link_worker']['cron'] ||= "#{rand(60)} 0 * * *"
   Settings.cron_jobs['sync_seat_link_worker']['job_class'] = 'SyncSeatLinkWorker'
-  Settings.cron_jobs['users_create_statistics_worker'] ||= Settingslogic.new({})
-  Settings.cron_jobs['users_create_statistics_worker']['cron'] ||= '2 15 * * *'
-  Settings.cron_jobs['users_create_statistics_worker']['job_class'] = 'Users::CreateStatisticsWorker'
 end
 
 #

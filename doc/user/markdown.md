@@ -105,7 +105,7 @@ changing how standard Markdown is used:
 
 | Standard Markdown                     | Extended Markdown in GitLab |
 | ------------------------------------- | ------------------------- |
-| [blockquotes](#blockquotes)           | [multiline blockquotes](#multiline-blockquote) |
+| [blockquotes](#blockquotes)           | [multi-line blockquotes](#multiline-blockquote) |
 | [code blocks](#code-spans-and-blocks) | [colored code and syntax highlighting](#colored-code-and-syntax-highlighting) |
 | [emphasis](#emphasis)                 | [multiple underscores in words](#multiple-underscores-in-words-and-mid-word-emphasis)
 | [headers](#headers)                   | [linkable Header IDs](#header-ids-and-links) |
@@ -353,7 +353,7 @@ However, the wrapping tags can't be mixed:
 - [- deletion -}
 ```
 
-If your diff includes words in `` `code` `` font, make sure to escape each bactick `` ` `` with a
+If your diff includes words in `` `code` `` font, make sure to escape each backtick `` ` `` with a
 backslash `\`, otherwise the diff highlight won't render correctly:
 
 ```markdown
@@ -396,8 +396,8 @@ a^2+b^2=c^2
 
 _Be advised that KaTeX only supports a [subset](https://katex.org/docs/supported.html) of LaTeX._
 
-NOTE: **Note:** This also works for the asciidoctor `:stem: latexmath`. For details see
-the [asciidoctor user manual](https://asciidoctor.org/docs/user-manual/#activating-stem-support).
+NOTE: **Note:** This also works for the Asciidoctor `:stem: latexmath`. For details see
+the [Asciidoctor user manual](https://asciidoctor.org/docs/user-manual/#activating-stem-support).
 
 ### Special GitLab references
 
@@ -608,7 +608,7 @@ Quote break.
 
 > If this is not rendered correctly, [view it in GitLab itself](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md#multiline-blockquote).
 
-GFM extends the standard Markdown standard by also supporting multiline blockquotes
+GFM extends the standard Markdown standard by also supporting multi-line blockquotes
 fenced by `>>>`:
 
 ```markdown
@@ -1216,7 +1216,7 @@ Some text to show that the reference links can follow later.
 
 - This is an [inline-style link](https://www.google.com)
 - This is a [link to a repository file in the same directory](index.md)
-- This is a [relative link to a readme one directory higher](../README.md)
+- This is a [relative link to a README one directory higher](../README.md)
 - This is a [link that also has title text](https://www.google.com "This link takes you to Google!")
 
 Using header ID anchors:
@@ -1244,7 +1244,7 @@ will point the link to `wikis/style` only when the link is inside of a wiki Mark
 
 #### URL auto-linking
 
-GFM will autolink almost any URL you put into your text:
+GFM will auto-link almost any URL you put into your text:
 
 ```markdown
 - https://www.google.com

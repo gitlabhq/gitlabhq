@@ -198,7 +198,7 @@ describe API::Features do
         end
       end
 
-      it 'creates a feature with the given percentage if passed an integer' do
+      it 'creates a feature with the given percentage of time if passed an integer' do
         post api("/features/#{feature_name}", admin), params: { value: '50' }
 
         expect(response).to have_gitlab_http_status(:created)
@@ -208,6 +208,19 @@ describe API::Features do
           'gates' => [
             { 'key' => 'boolean', 'value' => false },
             { 'key' => 'percentage_of_time', 'value' => 50 }
+          ])
+      end
+
+      it 'creates a feature with the given percentage of actors if passed an integer' do
+        post api("/features/#{feature_name}", admin), params: { value: '50', key: 'percentage_of_actors' }
+
+        expect(response).to have_gitlab_http_status(:created)
+        expect(json_response).to eq(
+          'name' => 'my_feature',
+          'state' => 'conditional',
+          'gates' => [
+            { 'key' => 'boolean', 'value' => false },
+            { 'key' => 'percentage_of_actors', 'value' => 50 }
           ])
       end
     end
@@ -298,7 +311,7 @@ describe API::Features do
         end
       end
 
-      context 'with a pre-existing percentage value' do
+      context 'with a pre-existing percentage of time value' do
         before do
           feature.enable_percentage_of_time(50)
         end
@@ -313,6 +326,25 @@ describe API::Features do
             'gates' => [
               { 'key' => 'boolean', 'value' => false },
               { 'key' => 'percentage_of_time', 'value' => 30 }
+            ])
+        end
+      end
+
+      context 'with a pre-existing percentage of actors value' do
+        before do
+          feature.enable_percentage_of_actors(42)
+        end
+
+        it 'updates the percentage of actors if passed an integer' do
+          post api("/features/#{feature_name}", admin), params: { value: '74', key: 'percentage_of_actors' }
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response).to eq(
+            'name' => 'my_feature',
+            'state' => 'conditional',
+            'gates' => [
+              { 'key' => 'boolean', 'value' => false },
+              { 'key' => 'percentage_of_actors', 'value' => 74 }
             ])
         end
       end

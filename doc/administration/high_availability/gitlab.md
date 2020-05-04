@@ -2,7 +2,9 @@
 type: reference
 ---
 
-# Configuring GitLab for Scaling and High Availability
+# Configuring GitLab application (Rails)
+
+This section describes how to configure the GitLab application (Rails) component.
 
 NOTE: **Note:** There is some additional configuration near the bottom for
 additional GitLab application servers. It's important to read and understand
