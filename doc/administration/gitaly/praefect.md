@@ -765,6 +765,14 @@ To specify a timeframe in UTC, run:
 sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml dataloss -from 2020-01-02T00:00:00+00:00 -to 2020-01-02T00:02:00+00:00
 ```
 
+### Checking repository checksums
+
+To check a project's checksums across all nodes, the Praefect replicas Rake task can be used:
+
+```shell
+sudo gitlab-rake "gitlab:praefect:replicas[project_id]"
+```
+
 ## Backend Node Recovery
 
 When a Praefect backend node fails and is no longer able to

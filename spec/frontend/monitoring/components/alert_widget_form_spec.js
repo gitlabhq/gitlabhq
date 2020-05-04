@@ -127,6 +127,38 @@ describe('AlertWidgetForm', () => {
     expect(wrapper.vm.selectedAlert).toEqual(propsWithAlertData.alertsToManage[alertPath]);
   });
 
+  it('sets selectedAlert to the first relevantQueries if there is only one option on modal show', () => {
+    createComponent({
+      ...propsWithAlertData,
+      configuredAlert: '',
+    });
+
+    modal().vm.$emit('shown');
+
+    expect(wrapper.vm.selectedAlert).toEqual(propsWithAlertData.alertsToManage[alertPath]);
+  });
+
+  it('does not set selectedAlert to the first relevantQueries if there is more than one option on modal show', () => {
+    createComponent({
+      relevantQueries: [
+        {
+          metricId: '8',
+          alertPath: 'alert',
+          label: 'alert-label',
+        },
+        {
+          metricId: '9',
+          alertPath: 'alert',
+          label: 'alert-label',
+        },
+      ],
+    });
+
+    modal().vm.$emit('shown');
+
+    expect(wrapper.vm.selectedAlert).toEqual({});
+  });
+
   describe('with existing alert', () => {
     beforeEach(() => {
       createComponent(propsWithAlertData);

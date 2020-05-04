@@ -119,7 +119,7 @@ describe API::ProjectSnippets do
         title: 'Test Title',
         file_name: 'test.rb',
         description: 'test description',
-        code: 'puts "hello world"',
+        content: 'puts "hello world"',
         visibility: 'public'
       }
     end
@@ -138,7 +138,7 @@ describe API::ProjectSnippets do
 
         blob = snippet.repository.blob_at('master', params[:file_name])
 
-        expect(blob.data).to eq params[:code]
+        expect(blob.data).to eq params[:content]
       end
     end
 
@@ -180,7 +180,7 @@ describe API::ProjectSnippets do
 
         expect(response).to have_gitlab_http_status(:created)
         snippet = ProjectSnippet.find(json_response['id'])
-        expect(snippet.content).to eq(params[:code])
+        expect(snippet.content).to eq(params[:content])
         expect(snippet.description).to eq(params[:description])
         expect(snippet.title).to eq(params[:title])
         expect(snippet.file_name).to eq(params[:file_name])
@@ -197,7 +197,7 @@ describe API::ProjectSnippets do
 
       expect(response).to have_gitlab_http_status(:created)
       snippet = ProjectSnippet.find(json_response['id'])
-      expect(snippet.content).to eq(params[:code])
+      expect(snippet.content).to eq(params[:content])
       expect(snippet.description).to eq(params[:description])
       expect(snippet.title).to eq(params[:title])
       expect(snippet.file_name).to eq(params[:file_name])
@@ -208,29 +208,6 @@ describe API::ProjectSnippets do
       subject { post api("/projects/#{project.id}/snippets/", admin), params: params }
     end
 
-    it 'creates a new snippet with content parameter' do
-      params[:content] = params.delete(:code)
-
-      post api("/projects/#{project.id}/snippets/", admin), params: params
-
-      expect(response).to have_gitlab_http_status(:created)
-      snippet = ProjectSnippet.find(json_response['id'])
-      expect(snippet.content).to eq(params[:content])
-      expect(snippet.description).to eq(params[:description])
-      expect(snippet.title).to eq(params[:title])
-      expect(snippet.file_name).to eq(params[:file_name])
-      expect(snippet.visibility_level).to eq(Snippet::PUBLIC)
-    end
-
-    it 'returns 400 when both code and content parameters specified' do
-      params[:content] = params[:code]
-
-      post api("/projects/#{project.id}/snippets/", admin), params: params
-
-      expect(response).to have_gitlab_http_status(:bad_request)
-      expect(json_response['error']).to eq('code, content are mutually exclusive')
-    end
-
     it 'returns 400 for missing parameters' do
       params.delete(:title)
 
@@ -239,8 +216,8 @@ describe API::ProjectSnippets do
       expect(response).to have_gitlab_http_status(:bad_request)
     end
 
-    it 'returns 400 for empty code field' do
-      params[:code] = ''
+    it 'returns 400 for empty content field' do
+      params[:content] = ''
 
       post api("/projects/#{project.id}/snippets/", admin), params: params
 
@@ -298,7 +275,7 @@ describe API::ProjectSnippets do
       new_content = 'New content'
       new_description = 'New description'
 
-      update_snippet(params: { code: new_content, description: new_description, visibility: 'private' })
+      update_snippet(params: { content: new_content, description: new_description, visibility: 'private' })
 
       expect(response).to have_gitlab_http_status(:ok)
       snippet.reload
@@ -319,13 +296,6 @@ describe API::ProjectSnippets do
       expect(snippet.description).to eq(new_description)
     end
 
-    it 'returns 400 when both code and content parameters specified' do
-      update_snippet(params: { code: 'some content', content: 'other content' })
-
-      expect(response).to have_gitlab_http_status(:bad_request)
-      expect(json_response['error']).to eq('code, content are mutually exclusive')
-    end
-
     it 'returns 404 for invalid snippet id' do
       update_snippet(snippet_id: non_existing_record_id, params: { title: 'foo' })
 
@@ -339,10 +309,8 @@ describe API::ProjectSnippets do
       expect(response).to have_gitlab_http_status(:bad_request)
     end
 
-    it 'returns 400 for empty code field' do
-      new_content = ''
-
-      update_snippet(params: { code: new_content })
+    it 'returns 400 for empty content field' do
+      update_snippet(params: { content: '' })
 
       expect(response).to have_gitlab_http_status(:bad_request)
     end

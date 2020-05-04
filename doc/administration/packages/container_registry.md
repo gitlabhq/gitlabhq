@@ -18,12 +18,17 @@ You can read more about the Docker Registry at
 
 **Omnibus GitLab installations**
 
-If you are using the Omnibus GitLab built in [Let's Encrypt integration](https://docs.gitlab.com/omnibus/settings/ssl.html#lets-encrypt-integration), as of GitLab 12.5, the Container Registry will be automatically enabled on port 5050 of the default domain.
+If you are using the Omnibus GitLab built-in [Let's Encrypt integration](https://docs.gitlab.com/omnibus/settings/ssl.html#lets-encrypt-integration), as of GitLab 12.5, the Container Registry will be automatically enabled on port 5050 of the default domain.
 
-If you would like to use a separate domain, all you have to do is configure the domain name under which the Container
-Registry will listen to. Read
-[#container-registry-domain-configuration](#container-registry-domain-configuration)
-and pick one of the two options that fits your case.
+If you are not using GitLab 12.5 or later, or do not use GitLab's built-in Let's Encrypt
+integration, the GitLab Container Registry must be enabled and
+[configured to use an external domain](#container-registry-domain-configuration).
+
+To enable the GitLab Container Registry on your *existing* GitLab domain, refer to the section on
+[configuring Container Registry to use an existing domain](#configure-container-registry-under-an-existing-gitlab-domain).
+
+To use a *separate* domain with your Container Registry, refer to the section on
+[configuring Container Registry under its own domain](#configure-container-registry-under-its-own-domain).
 
 NOTE: **Note:**
 The container registry works under HTTPS by default. Using HTTP is possible
@@ -650,7 +655,7 @@ notifications:
 
 NOTE: **Note:**
 The garbage collection tools are only available when you've installed GitLab
-via an Omnibus package or the cloud native chart.
+via an Omnibus package or the [cloud native chart](https://docs.gitlab.com/charts/charts/registry/#garbage-collection).
 
 DANGER: **Danger:**
 By running the built-in garbage collection command, it will cause downtime to

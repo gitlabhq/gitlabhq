@@ -177,6 +177,13 @@ export default {
         prometheus_metric_id: this.prometheusMetricId,
       });
     },
+    handleShown() {
+      if (this.configuredAlert) {
+        this.selectQuery(this.configuredAlert);
+      } else if (this.relevantQueries.length === 1) {
+        this.selectQuery(this.relevantQueries[0].metricId);
+      }
+    },
     resetAlertData() {
       this.operator = null;
       this.threshold = null;
@@ -212,7 +219,7 @@ export default {
     :ok-disabled="formDisabled"
     @ok="handleSubmit"
     @hidden="handleHidden"
-    @shown="selectQuery(configuredAlert)"
+    @shown="handleShown"
   >
     <div v-if="errorMessage" class="alert-modal-message danger_message">{{ errorMessage }}</div>
     <div class="alert-form">

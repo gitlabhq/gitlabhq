@@ -1,0 +1,5 @@
+---
+title: Remove deprecated Snippet `code` attribute from Project Snippets API
+merge_request: 30739
+author:
+type: other

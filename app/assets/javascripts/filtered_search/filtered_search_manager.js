@@ -31,6 +31,7 @@ export default class FilteredSearchManager {
     isGroupDecendent = false,
     filteredSearchTokenKeys = IssuableFilteredSearchTokenKeys,
     stateFiltersSelector = '.issues-state-filters',
+    placeholder = __('Search or filter results...'),
   }) {
     this.isGroup = isGroup;
     this.isGroupAncestor = isGroupAncestor;
@@ -45,6 +46,7 @@ export default class FilteredSearchManager {
     this.tokensContainer = this.container.querySelector('.tokens-container');
     this.filteredSearchTokenKeys = filteredSearchTokenKeys;
     this.stateFiltersSelector = stateFiltersSelector;
+    this.placeholder = placeholder;
 
     const { multipleAssignees } = this.filteredSearchInput.dataset;
     if (multipleAssignees && this.filteredSearchTokenKeys.enableMultipleAssignees) {
@@ -395,11 +397,10 @@ export default class FilteredSearchManager {
 
   handleInputPlaceholder() {
     const query = DropdownUtils.getSearchQuery();
-    const placeholder = __('Search or filter results...');
     const currentPlaceholder = this.filteredSearchInput.placeholder;
 
-    if (query.length === 0 && currentPlaceholder !== placeholder) {
-      this.filteredSearchInput.placeholder = placeholder;
+    if (query.length === 0 && currentPlaceholder !== this.placeholder) {
+      this.filteredSearchInput.placeholder = this.placeholder;
     } else if (query.length > 0 && currentPlaceholder !== '') {
       this.filteredSearchInput.placeholder = '';
     }

@@ -38,7 +38,7 @@ about your Ingress traffic:
 
 If a significant percentage of traffic is anomalous, you should
 investigate it for potential threats by
-[examining the application logs](../../clusters/applications.md#web-application-firewall-modsecurity).
+[examining the Web Application Firewall logs](../../clusters/applications.md#web-application-firewall-modsecurity).
 
 ## Container Network Policy
 

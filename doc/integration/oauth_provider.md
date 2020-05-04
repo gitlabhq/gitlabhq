@@ -5,6 +5,8 @@ to sign in to other services.
 
 If you want to use:
 
+- The [OAuth2](https://oauth.net/2/) protocol to access GitLab resources on user's behalf,
+  see [OAuth2 provider](../api/oauth2.md)
 - Other OAuth authentication service providers to sign in to
   GitLab, see the [OAuth2 client documentation](omniauth.md).
 - The related API, see [Applications API](../api/applications.md).

@@ -35,7 +35,7 @@ To use GitLab Status Page you first need to set up your account details for your
 
 ### Status Page project
 
-To deploy the status page to AWS S3 you need to add the Status Page project & configure the necessary CI variables.
+To deploy the Status Page to AWS S3 you need to add the Status Page project & configure the necessary CI variables.
 
 1. Fork the [Status Page](https://gitlab.com/gitlab-org/status-page) project. This can also be done via [Repository Mirroring](https://gitlab.com/gitlab-org/status-page#repository-mirroring) which will ensure you get the up-to-date Status Page features.
 1. Add the following variables in **Settings > CI/CD > Variables**. (To get these variables from Amazon, use your Amazon Console):
@@ -43,7 +43,7 @@ To deploy the status page to AWS S3 you need to add the Status Page project & co
     - `AWS_DEFAULT_REGION` - the AWS region
     - `AWS_ACCESS_KEY_ID` - the AWS access key ID
     - `AWS_SECRET_ACCESS_KEY` - the AWS secret
-1. Run the pipeline to deploy the status page to S3.
+1. Run the pipeline to deploy the Status Page to S3.
 
 ### Syncing incidents to the Status Page
 
@@ -55,7 +55,7 @@ Once the CI/CD variables are set, you'll need to set up the Project you want to 
 
 ## Status Page UI
 
-The Status page landing page shows you an overview of the recent incidents. Clicking on an incident will take you to the incident's detail page.
+The Status Page landing page shows you an overview of the recent incidents. Clicking on an incident will take you to the incident's detail page.
 
 ![Status Page landing page](../img/status_page_incidents_v12_10.png)
 
@@ -76,7 +76,7 @@ The incident detail page shows detailed information about a particular incident.
 
 To publish an Incident, you first need to create an issue in the Project you enabled the Status Page settings in.
 
-Once this issue is created, a background worker will publish the issue onto the status page using the credentials you provided during setup.
+Once this issue is created, a background worker will publish the issue onto the Status Page using the credentials you provided during setup.
 
 NOTE: **Note:**
 Confidential issues are not published. If a published issue is made confidential it will be unpublished.
@@ -99,4 +99,4 @@ Anyone with access to view the Issue can add an Emoji Award to a comment, so you
 
 ### Changing the Incident status
 
-To change the incident status from `open` to `closed`, close the incident issue within GitLab. This will then be updated shortly on the Status page website.
+To change the incident status from `open` to `closed`, close the incident issue within GitLab. This will then be updated shortly on the Status Page website.

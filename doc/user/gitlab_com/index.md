@@ -89,7 +89,7 @@ or over the size limit, you can [reduce your repository size with Git](../projec
 | Repository size including LFS | 10G         | Unlimited     |
 
 NOTE: **Note:**
-A single `git push` is limited to 5GB. LFS is not affected by this limit.
+`git push` and GitLab project imports are limited to 5GB per request. Git LFS and imports other than a file upload are not affected by this limit.
 
 ## IP range
 

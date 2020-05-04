@@ -207,11 +207,11 @@ module SearchHelper
     end
   end
 
-  def search_filter_input_options(type)
+  def search_filter_input_options(type, placeholder = _('Search or filter results...'))
     opts =
       {
         id: "filtered-search-#{type}",
-        placeholder: _('Search or filter results...'),
+        placeholder: placeholder,
         data: {
           'username-params' => UserSerializer.new.represent(@users)
         },

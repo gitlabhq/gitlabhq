@@ -1,0 +1,5 @@
+---
+title: Select the first option if there is only one metric option on alerts dropdown.
+merge_request: 29857
+author: Gilang Gumilar
+type: added

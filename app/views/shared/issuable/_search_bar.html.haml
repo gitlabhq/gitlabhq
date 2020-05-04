@@ -1,6 +1,7 @@
 - type = local_assigns.fetch(:type)
 - board = local_assigns.fetch(:board, nil)
 - show_sorting_dropdown = local_assigns.fetch(:show_sorting_dropdown, true)
+- placeholder = local_assigns[:placeholder] || _('Search or filter results...')
 - is_not_boards_modal_or_productivity_analytics = type != :boards_modal && type != :productivity_analytics
 - block_css_class = is_not_boards_modal_or_productivity_analytics ? 'row-content-block second-block' : ''
 - user_can_admin_list = board && can?(current_user, :admin_list, board.resource_parent)
@@ -29,7 +30,7 @@
               .scroll-container
                 %ul.tokens-container.list-unstyled
                   %li.input-token
-                    %input.form-control.filtered-search{ search_filter_input_options(type) }
+                    %input.form-control.filtered-search{ search_filter_input_options(type, placeholder) }
               #js-dropdown-hint.filtered-search-input-dropdown-menu.dropdown-menu.hint-dropdown
                 %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
                   %li.filter-dropdown-item{ data: {hint: "#{'{{hint}}'}", tag: "#{'{{tag}}'}", action: "#{'{{hint === \'search\' ? \'submit\' : \'\' }}'}" } }
