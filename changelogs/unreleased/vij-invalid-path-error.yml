@@ -1,0 +1,5 @@
+---
+title: Handle Snippet file name errors in backfill
+merge_request: 30981
+author:
+type: fixed

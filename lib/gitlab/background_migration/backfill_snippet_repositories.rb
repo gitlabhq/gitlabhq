@@ -15,12 +15,15 @@ module Gitlab
           next if repository_present?(snippet)
 
           retry_index = 0
+          @invalid_path_error = false
 
           begin
             create_repository_and_files(snippet)
 
             logger.info(message: 'Snippet Migration: repository created and migrated', snippet: snippet.id)
           rescue => e
+            set_file_path_error(e)
+
             retry_index += 1
 
             retry if retry_index < MAX_RETRIES
@@ -73,7 +76,10 @@ module Gitlab
       end
 
       def filename(snippet)
-        snippet.file_name.presence || empty_file_name
+        file_name = snippet.file_name
+        file_name = file_name.parameterize if @invalid_path_error
+
+        file_name.presence || empty_file_name
       end
 
       def empty_file_name
@@ -103,6 +109,15 @@ module Gitlab
 
       def admin_user
         @admin_user ||= User.admins.active.first
+      end
+
+      # We sometimes receive invalid path errors from Gitaly if the Snippet filename
+      # cannot be parsed into a valid git path.
+      # In this situation, we need to parameterize the file name of the Snippet so that
+      # the migration can succeed, to achieve that, we'll identify in migration retries
+      # that the path is invalid
+      def set_file_path_error(error)
+        @invalid_path_error = error.message.downcase.start_with?('invalid path', 'path cannot include directory traversal')
       end
     end
   end

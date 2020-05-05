@@ -74,7 +74,7 @@ You can also configure specific aspects of your pipelines through the GitLab UI.
 
 - [Pipeline settings](settings.md) for each project.
 - [Pipeline schedules](schedules.md).
-- [Custom CI/CD variables](../variables/README.md#creating-a-custom-environment-variable).
+- [Custom CI/CD variables](../variables/README.md#custom-environment-variables).
 
 ### View pipelines
 
@@ -373,7 +373,7 @@ the pipeline view, *not* the play (**{play}**) button.
 This is useful when you want to alter the execution of a job that uses
 [custom environment variables](../variables/README.md#custom-environment-variables).
 Adding a variable name (key) and value here will override the value defined in
-[the UI or `.gitlab-ci.yml`](../variables/README.md#creating-a-custom-environment-variable),
+[the UI or `.gitlab-ci.yml`](../variables/README.md#custom-environment-variables),
 for a single run of the manual job.
 
 ![Manual job variables](img/manual_job_variables.png)

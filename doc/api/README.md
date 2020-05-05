@@ -454,6 +454,12 @@ The resulting cURL call for a project with id `5` and a group id of `17` is then
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/share/17
 ```
 
+NOTE: **Note:**
+Path parameters that are required to be URL-encoded must be followed. If not,
+it will not match an API endpoint and respond with a 404. If there's something
+in front of the API (for example, Apache), ensure that it won't decode the URL-encoded
+path parameters.
+
 ## Namespaced path encoding
 
 If using namespaced API calls, make sure that the `NAMESPACE/PROJECT_PATH` is
@@ -470,15 +476,16 @@ A project's **path** is not necessarily the same as its **name**. A
 project's path can be found in the project's URL or in the project's settings
 under **General > Advanced > Change path**.
 
-## Branches and tags name encoding
+## File path, branches, and tags name encoding
 
-If your branch or tag contains a `/`, make sure the branch/tag name is
-URL-encoded.
+If a file path, branch or tag contains a `/`, make sure it is URL-encoded.
 
 For example, `/` is represented by `%2F`:
 
 ```plaintext
+GET /api/v4/projects/1/repository/files/src%2FREADME.md?ref=master
 GET /api/v4/projects/1/branches/my%2Fbranch/commits
+GET /api/v4/projects/1/repository/tags/my%2Ftag
 ```
 
 ## Encoding API parameters of `array` and `hash` types

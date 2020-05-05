@@ -25,7 +25,7 @@ Access the default page for admin area settings by navigating to
 | [Terms of Service and Privacy Policy](terms.md) | Include a Terms of Service agreement and Privacy Policy that all users must accept. |
 | [External Authentication](external_authorization.md#configuration) | External Classification Policy Authorization |
 | [Web terminal](../../../administration/integration/terminal.md#limiting-websocket-connection-time) | Set max session time for web terminal. |
-| [Web IDE](../../project/web_ide/index.md#enabling-client-side-evaluation) | Manage Web IDE Features. |
+| [Web IDE](../../project/web_ide/index.md#enabling-live-preview) | Manage Web IDE Features. |
 
 ## Integrations
 

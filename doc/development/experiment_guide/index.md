@@ -56,7 +56,7 @@ The author then adds a comment to this piece of code and adds a link to the issu
 
 - Track necessary events. See the [telemetry guide](../../telemetry/index.md) for details.
 - After the merge request is merged, use [`chatops`](../../ci/chatops/README.md) in the
-[appropriate channel](../feature_flags/controls.md#where-to-run-commands) to start the experiment for 10% of the users.
+[appropriate channel](../feature_flags/controls.md#communicate-the-change) to start the experiment for 10% of the users.
 The feature flag should have the name of the experiment with the `_experiment_percentage` suffix appended.
 For visibility, please also share any commands run against production in the `#s_growth` channel:
 

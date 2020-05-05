@@ -15,7 +15,11 @@ All administrators at the time of creation of the project and group will be adde
 as maintainers of the group and project, and as an admin, you'll be able to add new
 members to the group in order to give them maintainer access to the project.
 
-This project will be used for self monitoring your GitLab instance.
+This project is used to self monitor your GitLab instance. Metrics are not yet
+fully integrated, and the dashboard does not aggregate any data on Omnibus installations. GitLab plans
+to provide integrated self-monitoring metrics in a future release. You can
+currently use the project to configure your own [custom metrics](../../../user/project/integrations/prometheus.md#adding-custom-metrics) using
+metrics exposed by the [GitLab exporter](../prometheus/gitlab_metrics.md#metrics-available).
 
 ## Creating the self monitoring project
 

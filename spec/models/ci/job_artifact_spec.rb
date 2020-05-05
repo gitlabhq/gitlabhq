@@ -19,24 +19,8 @@ describe Ci::JobArtifact do
 
   it_behaves_like 'having unique enum values'
 
-  context 'with update_project_statistics_after_commit enabled' do
-    before do
-      stub_feature_flags(update_project_statistics_after_commit: true)
-    end
-
-    it_behaves_like 'UpdateProjectStatistics' do
-      subject { build(:ci_job_artifact, :archive, size: 107464) }
-    end
-  end
-
-  context 'with update_project_statistics_after_commit disabled' do
-    before do
-      stub_feature_flags(update_project_statistics_after_commit: false)
-    end
-
-    it_behaves_like 'UpdateProjectStatistics' do
-      subject { build(:ci_job_artifact, :archive, size: 107464) }
-    end
+  it_behaves_like 'UpdateProjectStatistics' do
+    subject { build(:ci_job_artifact, :archive, size: 107464) }
   end
 
   describe '.with_reports' do

@@ -348,7 +348,7 @@ used by Auto DevOps currently defines 3 environment names:
 Those environments are tied to jobs using [Auto Deploy](stages.md#auto-deploy), so
 except for the environment scope, they must have a different deployment domain.
 You must define a separate `KUBE_INGRESS_BASE_DOMAIN` variable for each of the above
-[based on the environment](../../ci/variables/README.md#limiting-environment-scopes-of-environment-variables).
+[based on the environment](../../ci/variables/README.md#limit-the-environment-scopes-of-environment-variables).
 
 The following table is an example of how to configure the three different clusters:
 

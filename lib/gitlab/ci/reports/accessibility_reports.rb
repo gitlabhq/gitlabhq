@@ -4,20 +4,37 @@ module Gitlab
   module Ci
     module Reports
       class AccessibilityReports
-        attr_accessor :total, :passes, :errors
-        attr_reader :urls
+        attr_reader :urls, :error_message
 
         def initialize
           @urls = {}
-          @total = 0
-          @passes = 0
-          @errors = 0
+          @error_message = nil
         end
 
         def add_url(url, data)
-          return if url.empty?
+          if url.empty?
+            set_error_message("Empty URL detected in gl-accessibility.json")
+          else
+            urls[url] = data
+          end
+        end
 
-          urls[url] = data
+        def scans_count
+          @urls.size
+        end
+
+        def passes_count
+          @urls.count { |url, errors| errors.empty? }
+        end
+
+        # rubocop: disable CodeReuse/ActiveRecord
+        def errors_count
+          @urls.sum { |url, errors| errors.size }
+        end
+        # rubocop: enable CodeReuse/ActiveRecord
+
+        def set_error_message(error)
+          @error_message = error
         end
       end
     end

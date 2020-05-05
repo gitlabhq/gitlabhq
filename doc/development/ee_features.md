@@ -3,7 +3,8 @@
 - **Write the code and the tests.**: As with any code, EE features should have
   good test coverage to prevent regressions.
 - **Write documentation.**: Add documentation to the `doc/` directory. Describe
-  the feature and include screenshots, if applicable.
+  the feature and include screenshots, if applicable. Indicate [what editions](documentation/styleguide.md#product-badges)
+  the feature applies to.
 - **Submit a MR to the `www-gitlab-com` project.**: Add the new feature to the
   [EE features list](https://about.gitlab.com/features/).
 

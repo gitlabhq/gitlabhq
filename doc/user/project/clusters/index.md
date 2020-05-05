@@ -182,7 +182,7 @@ you can either:
 
 When adding more than one Kubernetes cluster to your project, you need to differentiate
 them with an environment scope. The environment scope associates clusters with [environments](../../../ci/environments.md) similar to how the
-[environment-specific variables](../../../ci/variables/README.md#limiting-environment-scopes-of-environment-variables) work.
+[environment-specific variables](../../../ci/variables/README.md#limit-the-environment-scopes-of-environment-variables) work.
 
 The default environment scope is `*`, which means all jobs, regardless of their
 environment, will use that cluster. Each scope can only be used by a single
@@ -262,7 +262,7 @@ A Kubernetes cluster can be the destination for a deployment job. If
   the cluster from your jobs using tools such as `kubectl` or `helm`.
 - You don't use GitLab's cluster integration you can still deploy to your
   cluster. However, you will need configure Kubernetes tools yourself
-  using [environment variables](../../../ci/variables/README.md#creating-a-custom-environment-variable)
+  using [environment variables](../../../ci/variables/README.md#custom-environment-variables)
   before you can interact with the cluster from your jobs.
 
 ### Deployment variables

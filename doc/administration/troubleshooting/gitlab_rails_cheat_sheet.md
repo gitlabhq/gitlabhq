@@ -214,6 +214,20 @@ p.each do |project|
 end
 ```
 
+### Bulk update to disable the Slack Notification service
+
+To disable notifications for all projects that have Slack service enabled, do:
+
+```ruby
+# Grab all projects that have the Slack notifications enabled
+p = Project.find_by_sql("SELECT p.id FROM projects p LEFT JOIN services s ON p.id = s.project_id WHERE s.type = 'SlackService' AND s.active = true")
+
+# Disable the service on each of the projects that were found.
+p.each do |project|
+  project.slack_service.update_attribute(:active, false)
+end
+```
+
 ## Wikis
 
 ### Recreate

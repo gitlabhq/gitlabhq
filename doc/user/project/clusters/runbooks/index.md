@@ -134,7 +134,7 @@ the components outlined above and the pre-loaded demo runbook.
    1. Navigate to **{settings}** **Settings >> CI/CD >> Variables** to create
       the variables in your project.
 
-     ![GitLab variables](img/gitlab-variables.png)
+      ![GitLab variables](img/gitlab-variables.png)
 
    1. Click **Save variables**.
 

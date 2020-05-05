@@ -145,7 +145,7 @@ at GitLab so far:
   fork. That way the danger comments will be made from CI using that
   API token instead.
   Making the variable
-  [masked](../ci/variables/README.md#masked-variables) will make sure
+  [masked](../ci/variables/README.md#mask-a-custom-variable) will make sure
   it doesn't show up in the job logs. The variable cannot be
-  [protected](../ci/variables/README.md#protected-environment-variables),
+  [protected](../ci/variables/README.md#protect-a-custom-variable),
   as it needs to be present for all feature branches.

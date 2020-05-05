@@ -11018,13 +11018,10 @@ msgstr ""
 msgid "ID:"
 msgstr ""
 
-msgid "IDE|Allow live previews of JavaScript projects in the Web IDE using CodeSandbox client side evaluation."
+msgid "IDE|Allow live previews of JavaScript projects in the Web IDE using CodeSandbox Live Preview."
 msgstr ""
 
 msgid "IDE|Back"
-msgstr ""
-
-msgid "IDE|Client side evaluation"
 msgstr ""
 
 msgid "IDE|Commit"

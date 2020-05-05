@@ -313,7 +313,7 @@ describe('DiffsStoreActions', () => {
 
     describe('fetchDiffFilesMeta', () => {
       it('should fetch diff meta information', done => {
-        const endpointMetadata = '/fetch/diffs_meta?';
+        const endpointMetadata = '/fetch/diffs_meta';
         const mock = new MockAdapter(axios);
         const data = { diff_files: [] };
         const res = { data };

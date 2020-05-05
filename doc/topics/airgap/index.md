@@ -76,7 +76,7 @@ The next step is to tell the offline instance to use these resources instead of 
 and so on.
 
 You can set these variables in the project's `.gitlab-ci.yml` files by using the bundle directly, or
-in the GitLab UI at the project or group level. See the [GitLab CI/CD environment variables page](../../ci/variables/README.md#creating-a-custom-environment-variable)
+in the GitLab UI at the project or group level. See the [GitLab CI/CD environment variables page](../../ci/variables/README.md#custom-environment-variables)
 for more information.
 
 #### Variables

@@ -91,34 +91,73 @@ describe('URL utility', () => {
   });
 
   describe('mergeUrlParams', () => {
+    const { mergeUrlParams } = urlUtils;
+
     it('adds w', () => {
-      expect(urlUtils.mergeUrlParams({ w: 1 }, '#frag')).toBe('?w=1#frag');
-      expect(urlUtils.mergeUrlParams({ w: 1 }, '/path#frag')).toBe('/path?w=1#frag');
-      expect(urlUtils.mergeUrlParams({ w: 1 }, 'https://host/path')).toBe('https://host/path?w=1');
-      expect(urlUtils.mergeUrlParams({ w: 1 }, 'https://host/path#frag')).toBe(
-        'https://host/path?w=1#frag',
-      );
-
-      expect(urlUtils.mergeUrlParams({ w: 1 }, 'https://h/p?k1=v1#frag')).toBe(
-        'https://h/p?k1=v1&w=1#frag',
-      );
-    });
-
-    it('updates w', () => {
-      expect(urlUtils.mergeUrlParams({ w: 1 }, '?k1=v1&w=0#frag')).toBe('?k1=v1&w=1#frag');
+      expect(mergeUrlParams({ w: 1 }, '#frag')).toBe('?w=1#frag');
+      expect(mergeUrlParams({ w: 1 }, '')).toBe('?w=1');
+      expect(mergeUrlParams({ w: 1 }, '/path#frag')).toBe('/path?w=1#frag');
+      expect(mergeUrlParams({ w: 1 }, 'https://host/path')).toBe('https://host/path?w=1');
+      expect(mergeUrlParams({ w: 1 }, 'https://host/path#frag')).toBe('https://host/path?w=1#frag');
+      expect(mergeUrlParams({ w: 1 }, 'https://h/p?k1=v1#frag')).toBe('https://h/p?k1=v1&w=1#frag');
+      expect(mergeUrlParams({ w: 'null' }, '')).toBe('?w=null');
     });
 
     it('adds multiple params', () => {
-      expect(urlUtils.mergeUrlParams({ a: 1, b: 2, c: 3 }, '#frag')).toBe('?a=1&b=2&c=3#frag');
+      expect(mergeUrlParams({ a: 1, b: 2, c: 3 }, '#frag')).toBe('?a=1&b=2&c=3#frag');
     });
 
-    it('adds and updates encoded params', () => {
-      expect(urlUtils.mergeUrlParams({ a: '&', q: '?' }, '?a=%23#frag')).toBe('?a=%26&q=%3F#frag');
+    it('updates w', () => {
+      expect(mergeUrlParams({ w: 2 }, '/path?w=1#frag')).toBe('/path?w=2#frag');
+      expect(mergeUrlParams({ w: 2 }, 'https://host/path?w=1')).toBe('https://host/path?w=2');
+    });
+
+    it('removes null w', () => {
+      expect(mergeUrlParams({ w: null }, '?w=1#frag')).toBe('#frag');
+      expect(mergeUrlParams({ w: null }, '/path?w=1#frag')).toBe('/path#frag');
+      expect(mergeUrlParams({ w: null }, 'https://host/path?w=1')).toBe('https://host/path');
+      expect(mergeUrlParams({ w: null }, 'https://host/path?w=1#frag')).toBe(
+        'https://host/path#frag',
+      );
+      expect(mergeUrlParams({ w: null }, 'https://h/p?k1=v1&w=1#frag')).toBe(
+        'https://h/p?k1=v1#frag',
+      );
+    });
+
+    it('adds and updates encoded param values', () => {
+      expect(mergeUrlParams({ foo: '&', q: '?' }, '?foo=%23#frag')).toBe('?foo=%26&q=%3F#frag');
+      expect(mergeUrlParams({ foo: 'a value' }, '')).toBe('?foo=a%20value');
+      expect(mergeUrlParams({ foo: 'a value' }, '?foo=1')).toBe('?foo=a%20value');
+    });
+
+    it('adds and updates encoded param names', () => {
+      expect(mergeUrlParams({ 'a name': 1 }, '')).toBe('?a%20name=1');
+      expect(mergeUrlParams({ 'a name': 2 }, '?a%20name=1')).toBe('?a%20name=2');
+      expect(mergeUrlParams({ 'a name': null }, '?a%20name=1')).toBe('');
     });
 
     it('treats "+" as "%20"', () => {
-      expect(urlUtils.mergeUrlParams({ ref: 'bogus' }, '?a=lorem+ipsum&ref=charlie')).toBe(
+      expect(mergeUrlParams({ ref: 'bogus' }, '?a=lorem+ipsum&ref=charlie')).toBe(
         '?a=lorem%20ipsum&ref=bogus',
+      );
+    });
+
+    it('treats question marks and slashes as part of the query', () => {
+      expect(mergeUrlParams({ ending: '!' }, '?ending=?&foo=bar')).toBe('?ending=!&foo=bar');
+      expect(mergeUrlParams({ ending: '!' }, 'https://host/path?ending=?&foo=bar')).toBe(
+        'https://host/path?ending=!&foo=bar',
+      );
+      expect(mergeUrlParams({ ending: '?' }, '?ending=!&foo=bar')).toBe('?ending=%3F&foo=bar');
+      expect(mergeUrlParams({ ending: '?' }, 'https://host/path?ending=!&foo=bar')).toBe(
+        'https://host/path?ending=%3F&foo=bar',
+      );
+      expect(mergeUrlParams({ ending: '!', op: '+' }, '?ending=?&op=/')).toBe('?ending=!&op=%2B');
+      expect(mergeUrlParams({ ending: '!', op: '+' }, 'https://host/path?ending=?&op=/')).toBe(
+        'https://host/path?ending=!&op=%2B',
+      );
+      expect(mergeUrlParams({ op: '+' }, '?op=/&foo=bar')).toBe('?op=%2B&foo=bar');
+      expect(mergeUrlParams({ op: '+' }, 'https://host/path?op=/&foo=bar')).toBe(
+        'https://host/path?op=%2B&foo=bar',
       );
     });
   });

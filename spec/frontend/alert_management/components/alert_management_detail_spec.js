@@ -30,5 +30,9 @@ describe('AlertDetails', () => {
     it('renders alert details', () => {
       expect(wrapper.find('[data-testid="startTimeItem"]').exists()).toBe(true);
     });
+
+    it('renders a status dropdown', () => {
+      expect(wrapper.find('[data-testid="statusDropdownItem"]').exists()).toBe(true);
+    });
   });
 });

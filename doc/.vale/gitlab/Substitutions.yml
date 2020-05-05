@@ -19,4 +19,5 @@ swap:
   rspec: RSpec
   self hosted: self-managed
   self-hosted: self-managed
+  x509: X.509
   yaml: YAML

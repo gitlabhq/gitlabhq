@@ -2,17 +2,17 @@
 type: concepts, howto
 ---
 
-# Signing commits with x509
+# Signing commits with X.509
 
-[x509](https://en.wikipedia.org/wiki/X.509) is a standard format for public key
+[X.509](https://en.wikipedia.org/wiki/X.509) is a standard format for public key
 certificates issued by a public or private Public Key Infrastructure (PKI).
-Personal x509 certificates are used for authentication or signing purposes
+Personal X.509 certificates are used for authentication or signing purposes
 such as SMIME, but Git also supports signing of commits and tags
-with x509 certificates in a similar way as with [GPG](../gpg_signed_commits/index.md).
-The main difference is the trust anchor which is the PKI for x509 certificates
+with X.509 certificates in a similar way as with [GPG](../gpg_signed_commits/index.md).
+The main difference is the trust anchor which is the PKI for X.509 certificates
 instead of a web of trust with GPG.
 
-## How GitLab handles x509
+## How GitLab handles X.509
 
 GitLab uses its own certificate store and therefore defines the trust chain.
 
@@ -27,7 +27,7 @@ For a commit to be *verified* by GitLab:
 
 NOTE: **Note:** Certificate revocation lists are checked on a daily basis via background worker.
 
-## Obtaining an x509 key pair
+## Obtaining an X.509 key pair
 
 If your organization has Public Key Infrastructure (PKI), that PKI will provide
 an S/MIME key.
@@ -37,9 +37,9 @@ own self-signed one, or purchase one. MozillaZine keeps a nice collection
 of [S/MIME-capable signing authorities](http://kb.mozillazine.org/Getting_an_SMIME_certificate)
 and some of them generate keys for free.
 
-## Associating your x509 certificate with Git
+## Associating your X.509 certificate with Git
 
-To take advantage of X509 signing, you will need Git 2.19.0 or later. You can
+To take advantage of X.509 signing, you will need Git 2.19.0 or later. You can
 check your Git version with:
 
 ```sh
@@ -64,7 +64,7 @@ Install [smimesign](https://github.com/github/smimesign) by downloading the
 installer or via `brew install smimesign` on MacOS.
 
 Get the ID of your certificate with `smimesign --list-keys` and set your
-signingkey `git config --global user.signingkey ID`, then configure x509:
+signingkey `git config --global user.signingkey ID`, then configure X.509:
 
 ```sh
 git config --global gpg.x509.program smimesign
@@ -73,7 +73,7 @@ git config --global gpg.format x509
 
 ## Signing commits
 
-After you have [associated your x509 certificate with Git](#associating-your-x509-certificate-with-git) you
+After you have [associated your X.509 certificate with Git](#associating-your-x509-certificate-with-git) you
 can start signing your commits:
 
 1. Commit like you used to, the only difference is the addition of the `-S` flag:

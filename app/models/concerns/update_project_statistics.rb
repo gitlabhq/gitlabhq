@@ -68,21 +68,11 @@ module UpdateProjectStatistics
 
     def schedule_update_project_statistic(delta)
       return if delta.zero?
-
-      if Feature.enabled?(:update_project_statistics_after_commit, default_enabled: true)
-        # Update ProjectStatistics after the transaction
-        run_after_commit do
-          ProjectStatistics.increment_statistic(
-            project_id, self.class.project_statistics_name, delta)
-        end
-      else
-        # Use legacy-way to update within transaction
-        ProjectStatistics.increment_statistic(
-          project_id, self.class.project_statistics_name, delta)
-      end
+      return if project.nil?
 
       run_after_commit do
-        next if project.nil?
+        ProjectStatistics.increment_statistic(
+          project_id, self.class.project_statistics_name, delta)
 
         Namespaces::ScheduleAggregationWorker.perform_async(
           project.namespace_id)

@@ -177,6 +177,48 @@ describe Gitlab::BackgroundMigration::BackfillSnippetRepositories, :migration, s
         end
       end
     end
+
+    context 'with invalid file names' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:invalid_file_name, :converted_file_name) do
+        'filename.js // with comment'       | 'filename-js-with-comment'
+        '.git/hooks/pre-commit'             | 'git-hooks-pre-commit'
+        'https://gitlab.com'                | 'https-gitlab-com'
+        'html://web.title%mp4/mpg/mpeg.net' | 'html-web-title-mp4-mpg-mpeg-net'
+        '../../etc/passwd'                  | 'etc-passwd'
+        '.'                                 | 'snippetfile1.txt'
+      end
+
+      with_them do
+        let!(:snippet_with_invalid_path) { snippets.create(id: 4, type: 'PersonalSnippet', author_id: user.id, file_name: invalid_file_name, content: content) }
+        let!(:snippet_with_valid_path) { snippets.create(id: 5, type: 'PersonalSnippet', author_id: user.id, file_name: file_name, content: content) }
+        let(:ids) { [4, 5] }
+
+        after do
+          raw_repository(snippet_with_invalid_path).remove
+          raw_repository(snippet_with_valid_path).remove
+        end
+
+        it 'checks for file path errors when errors are raised' do
+          expect(service).to receive(:set_file_path_error).once.and_call_original
+
+          subject
+        end
+
+        it 'converts invalid filenames' do
+          subject
+
+          expect(blob_at(snippet_with_invalid_path, converted_file_name)).to be
+        end
+
+        it 'does not convert valid filenames on subsequent migrations' do
+          subject
+
+          expect(blob_at(snippet_with_valid_path, file_name)).to be
+        end
+      end
+    end
   end
 
   def blob_at(snippet, path)

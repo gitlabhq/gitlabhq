@@ -63,15 +63,22 @@ export function getParameterValues(sParam, url = window.location) {
   }, []);
 }
 
-// @param {Object} params - url keys and value to merge
-// @param {String} url
+/**
+ * Merges a URL to a set of params replacing value for
+ * those already present.
+ *
+ * Also removes `null` param values from the resulting URL.
+ *
+ * @param {Object} params - url keys and value to merge
+ * @param {String} url
+ */
 export function mergeUrlParams(params, url) {
   const re = /^([^?#]*)(\?[^#]*)?(.*)/;
   const merged = {};
-  const urlparts = url.match(re);
+  const [, fullpath, query, fragment] = url.match(re);
 
-  if (urlparts[2]) {
-    urlparts[2]
+  if (query) {
+    query
       .substr(1)
       .split('&')
       .forEach(part => {
@@ -84,11 +91,15 @@ export function mergeUrlParams(params, url) {
 
   Object.assign(merged, params);
 
-  const query = Object.keys(merged)
+  const newQuery = Object.keys(merged)
+    .filter(key => merged[key] !== null)
     .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(merged[key])}`)
     .join('&');
 
-  return `${urlparts[1]}?${query}${urlparts[3]}`;
+  if (newQuery) {
+    return `${fullpath}?${newQuery}${fragment}`;
+  }
+  return `${fullpath}${fragment}`;
 }
 
 /**

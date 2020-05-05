@@ -9,7 +9,8 @@ module Gitlab
         {
           junit: ::Gitlab::Ci::Parsers::Test::Junit,
           cobertura: ::Gitlab::Ci::Parsers::Coverage::Cobertura,
-          terraform: ::Gitlab::Ci::Parsers::Terraform::Tfplan
+          terraform: ::Gitlab::Ci::Parsers::Terraform::Tfplan,
+          accessibility: ::Gitlab::Ci::Parsers::Accessibility::Pa11y
         }
       end
 

@@ -937,7 +937,7 @@ Prerequisites for embedding from a Grafana instance:
 
 You can set the visibility of the metrics dashboard to **Only Project Members**
 or **Everyone With Access**. When set to **Everyone with Access**, the metrics
-dashboard, and all of the custom dashboard, YAML files, are visible to authenticated and non-authenticated users.
+dashboard is visible to authenticated and non-authenticated users.
 
 ## Troubleshooting
 

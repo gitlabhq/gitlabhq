@@ -364,7 +364,7 @@ are listed in the descriptions of the relevant settings.
 | `user_oauth_applications`                | boolean          | no                                   | Allow users to register any application to use GitLab as an OAuth provider. |
 | `user_show_add_ssh_key_message`          | boolean          | no                                   | When set to `false` disable the "You won't be able to pull or push project code via SSH" warning shown to users with no uploaded SSH key. |
 | `version_check_enabled`                  | boolean          | no                                   | Let GitLab inform you when an update is available. |
-| `web_ide_clientside_preview_enabled`     | boolean          | no                                   | Client side evaluation (allow live previews of JavaScript projects in the Web IDE using CodeSandbox client side evaluation). |
+| `web_ide_clientside_preview_enabled`     | boolean          | no                                   | Live Preview (allow live previews of JavaScript projects in the Web IDE using CodeSandbox Live Preview). |
 | `snippet_size_limit`                     | integer          | no                                   | Max snippet content size in **bytes**. Default: 52428800 Bytes (50MB).|
 | `issues_create_limit`                    | integer          | no                                   | Max number of issue creation requests per minute per user. Default: 300. To disable throttling set to 0.|
 | `raw_blob_request_limit`                 | integer          | no                                   | Max number of requests per minute for each raw path. Default: 300. To disable throttling set to 0.|

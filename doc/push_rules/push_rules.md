@@ -43,11 +43,18 @@ you want the branches to start with a certain name because you have different
 GitLab CI/CD jobs (`feature`, `hotfix`, `docker`, `android`, etc.) that rely on the
 branch name.
 
-Your developers however, don't always remember that policy, so they push
-various branches and CI pipelines do not work as expected. By restricting the
-branch names globally in Push Rules, you can now sleep without the anxiety
-of your developers' mistakes. Every branch that doesn't match your push rule
-will get rejected.
+Your developers, however, don't always remember that policy, so they might push to
+various branches, and CI pipelines might not work as expected. By restricting the
+branch names globally in Push Rules, such mistakes are prevented.
+Any branch name that doesn't match your push rule will get rejected.
+
+Note that the name of your default branch is always allowed, regardless of the branch naming
+regular expression (regex) specified. GitLab is configured this way
+because merges typically have the default branch as their target.
+If you have other target branches, include them in your regex. (See [Enabling push rules](#enabling-push-rules)).
+
+The default branch also defaults to being a [protected branch](../user/project/protected_branches.md),
+which already limits users from pushing directly.
 
 ### Custom Push Rules **(CORE ONLY)**
 

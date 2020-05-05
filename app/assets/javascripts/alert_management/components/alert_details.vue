@@ -1,13 +1,20 @@
 <script>
-import { GlTabs, GlTab } from '@gitlab/ui';
+import { GlNewDropdown, GlNewDropdownItem, GlTabs, GlTab } from '@gitlab/ui';
 import { s__ } from '~/locale';
 
 export default {
+  statuses: {
+    triggered: s__('AlertManagement|Triggered'),
+    acknowledged: s__('AlertManagement|Acknowledged'),
+    resolved: s__('AlertManagement|Resolved'),
+  },
   i18n: {
     fullAlertDetailsTitle: s__('AlertManagement|Full Alert Details'),
     overviewTitle: s__('AlertManagement|Overview'),
   },
   components: {
+    GlNewDropdown,
+    GlNewDropdownItem,
     GlTab,
     GlTabs,
   },
@@ -15,7 +22,18 @@ export default {
 </script>
 <template>
   <div>
-    <div class="d-flex justify-content-between">
+    <div class="d-flex justify-content-between border-bottom pb-2 pt-1">
+      <gl-new-dropdown class="align-self-center" right>
+        <gl-new-dropdown-item
+          v-for="(label, field) in $options.statuses"
+          :key="field"
+          data-testid="statusDropdownItem"
+          class="align-middle"
+          >{{ label }}
+        </gl-new-dropdown-item>
+      </gl-new-dropdown>
+    </div>
+    <div class="d-flex">
       <gl-tabs>
         <gl-tab data-testid="overviewTab" :title="$options.i18n.overviewTitle">
           <ul class="pl-3">

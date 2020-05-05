@@ -233,6 +233,7 @@ but commented out to help encourage others to add to it in the future. -->
 |protected_branches|counts||
 |releases|counts||
 |remote_mirrors|counts||
+|requirements_created|counts||
 |snippets|counts||
 |suggestions|counts||
 |todos|counts||

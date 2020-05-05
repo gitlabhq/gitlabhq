@@ -29,7 +29,7 @@ variables:
 NOTE: **Note:**
 The `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD` and `POSTGRES_HOST_AUTH_METHOD`
 variables can't be set in the GitLab UI. To set them, assign them to a variable
-[in the UI](../variables/README.md#via-the-ui), and then assign that
+[in the UI](../variables/README.md#create-a-custom-variable-in-the-ui), and then assign that
 variable to the `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD` and `POSTGRES_HOST_AUTH_METHOD`
 variables in your `.gitlab-ci.yml`.
 

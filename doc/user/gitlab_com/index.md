@@ -157,7 +157,7 @@ can be used for:
 - Downloading assets from a CDN
 - Any other commands that must run before the `git init`
 
-To use this feature, define a [CI/CD variable](../../ci/variables/README.md#via-the-ui) called
+To use this feature, define a [CI/CD variable](../../ci/variables/README.md#create-a-custom-variable-in-the-ui) called
 `CI_PRE_CLONE_SCRIPT` that contains a bash script.
 
 [This example](../../development/pipelines.md#pre-clone-step)

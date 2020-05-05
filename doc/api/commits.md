@@ -755,7 +755,7 @@ Example response if commit is GPG signed:
 }
 ```
 
-Example response if commit is x509 signed:
+Example response if commit is X.509 signed:
 
 ```json
 {

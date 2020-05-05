@@ -486,8 +486,7 @@ module Ci
     end
 
     def requires_resource?
-      Feature.enabled?(:ci_resource_group, project, default_enabled: true) &&
-        self.resource_group_id.present?
+      self.resource_group_id.present?
     end
 
     def has_environment?

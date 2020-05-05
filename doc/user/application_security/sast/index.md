@@ -354,7 +354,7 @@ Some analyzers can be customized with environment variables.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18193) in GitLab Ultimate 12.5.
 
 In addition to the aforementioned SAST configuration variables,
-all [custom environment variables](../../../ci/variables/README.md#creating-a-custom-environment-variable) are propagated
+all [custom environment variables](../../../ci/variables/README.md#custom-environment-variables) are propagated
 to the underlying SAST analyzer images if
 [the SAST vendored template](#configuration) is used.
 
