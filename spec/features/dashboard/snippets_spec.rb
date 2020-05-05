@@ -35,7 +35,7 @@ describe 'Dashboard snippets' do
       element = page.find('.row.empty-state')
 
       expect(element).to have_content("Code snippets")
-      expect(element.find('.svg-content img')['src']).to have_content('illustrations/snippets_empty')
+      expect(element.find('.svg-content img.js-lazy-loaded')['src']).to have_content('illustrations/snippets_empty')
     end
 
     it 'shows new snippet button in main content area' do

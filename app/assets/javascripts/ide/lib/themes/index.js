@@ -1,6 +1,7 @@
 import white from './white';
 import dark from './dark';
 import monokai from './monokai';
+import solarizedLight from './solarized_light';
 import solarizedDark from './solarized_dark';
 
 export const themes = [
@@ -11,6 +12,10 @@ export const themes = [
   {
     name: 'dark',
     data: dark,
+  },
+  {
+    name: 'solarized-light',
+    data: solarizedLight,
   },
   {
     name: 'solarized-dark',

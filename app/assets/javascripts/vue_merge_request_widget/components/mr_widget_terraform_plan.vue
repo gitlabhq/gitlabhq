@@ -5,7 +5,6 @@ import axios from '~/lib/utils/axios_utils';
 import CiIcon from '../../vue_shared/components/ci_icon.vue';
 import flash from '~/flash';
 import Poll from '~/lib/utils/poll';
-import Visibility from 'visibilityjs';
 
 export default {
   name: 'MRWidgetTerraformPlan',
@@ -68,7 +67,11 @@ export default {
         method: 'fetchPlans',
         successCallback: ({ data }) => {
           this.plans = data;
-          this.loading = false;
+
+          if (Object.keys(this.plan).length) {
+            this.loading = false;
+            poll.stop();
+          }
         },
         errorCallback: () => {
           this.plans = {};
@@ -77,17 +80,7 @@ export default {
         },
       });
 
-      if (!Visibility.hidden()) {
-        poll.makeRequest();
-      }
-
-      Visibility.change(() => {
-        if (!Visibility.hidden()) {
-          poll.restart();
-        } else {
-          poll.stop();
-        }
-      });
+      poll.makeRequest();
     },
   },
 };

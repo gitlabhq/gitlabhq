@@ -9778,13 +9778,16 @@ msgstr ""
 msgid "Geo|All"
 msgstr ""
 
+msgid "Geo|All %{replicable_type}"
+msgstr ""
+
 msgid "Geo|All projects"
 msgstr ""
 
-msgid "Geo|All projects are being scheduled for re-sync"
+msgid "Geo|All projects are being scheduled for resync"
 msgstr ""
 
-msgid "Geo|All projects are being scheduled for re-verify"
+msgid "Geo|All projects are being scheduled for reverify"
 msgstr ""
 
 msgid "Geo|Could not remove tracking entry for an existing project."
@@ -25607,6 +25610,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "project avatar"
+msgstr ""
+
+msgid "projects"
 msgstr ""
 
 msgid "push to your repository, create pipelines, create issues or add comments. To reduce storage capacity, delete unused repositories, artifacts, wikis, issues, and pipelines."
