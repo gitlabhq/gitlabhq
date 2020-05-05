@@ -6129,6 +6129,9 @@ msgstr ""
 msgid "Create a new branch"
 msgstr ""
 
+msgid "Create a new deploy key for this project"
+msgstr ""
+
 msgid "Create a new file as there are no files yet. Afterwards, you'll be able to commit your changes."
 msgstr ""
 
@@ -6981,6 +6984,9 @@ msgid "Deploy Keys"
 msgstr ""
 
 msgid "Deploy key was successfully updated."
+msgstr ""
+
+msgid "Deploy keys allow read-only or read-write (if enabled) access to your repository. Deploy keys can be used for CI, staging or production servers. You can create a deploy key or add an existing one."
 msgstr ""
 
 msgid "Deploy progress not found. To see pods, ensure your environment matches %{linkStart}deploy board criteria%{linkEnd}."
@@ -12487,9 +12493,6 @@ msgstr ""
 msgid "Live preview"
 msgstr ""
 
-msgid "Load more vulnerabilities"
-msgstr ""
-
 msgid "Loading"
 msgstr ""
 
@@ -13975,15 +13978,6 @@ msgstr ""
 msgid "No thanks, don't show this again"
 msgstr ""
 
-msgid "No vulnerabilities found for this group"
-msgstr ""
-
-msgid "No vulnerabilities found for this pipeline"
-msgstr ""
-
-msgid "No vulnerabilities found for this project"
-msgstr ""
-
 msgid "No vulnerabilities present"
 msgstr ""
 
@@ -14799,6 +14793,9 @@ msgstr ""
 msgid "Past due"
 msgstr ""
 
+msgid "Paste a machine public key here. Read more about how to generate it"
+msgstr ""
+
 msgid "Paste a machine public key here. Read more about how to generate it %{link_start}here%{link_end}"
 msgstr ""
 
@@ -14932,6 +14929,9 @@ msgid "Pipeline triggers"
 msgstr ""
 
 msgid "Pipeline: %{status}"
+msgstr ""
+
+msgid "PipelineCharts|CI / CD Analytics"
 msgstr ""
 
 msgid "PipelineCharts|Failed:"
@@ -18248,99 +18248,6 @@ msgstr ""
 msgid "Security Dashboard"
 msgstr ""
 
-msgid "Security Dashboard|Error fetching the vulnerability counts. Please check your network connection and try again."
-msgstr ""
-
-msgid "Security Dashboard|Error fetching the vulnerability list. Please check your network connection and try again."
-msgstr ""
-
-msgid "Security Dashboard|Issue Created"
-msgstr ""
-
-msgid "Security Reports|Comment added to '%{vulnerabilityName}'"
-msgstr ""
-
-msgid "Security Reports|Comment deleted on '%{vulnerabilityName}'"
-msgstr ""
-
-msgid "Security Reports|Comment edited on '%{vulnerabilityName}'"
-msgstr ""
-
-msgid "Security Reports|Create issue"
-msgstr ""
-
-msgid "Security Reports|Dismiss Selected"
-msgstr ""
-
-msgid "Security Reports|Dismiss vulnerability"
-msgstr ""
-
-msgid "Security Reports|Dismissed '%{vulnerabilityName}'"
-msgstr ""
-
-msgid "Security Reports|Dismissed '%{vulnerabilityName}'. Turn off the hide dismissed toggle to view."
-msgstr ""
-
-msgid "Security Reports|Either you don't have permission to view this dashboard or the dashboard has not been setup. Please check your permission settings with your administrator or check your dashboard configurations to proceed."
-msgstr ""
-
-msgid "Security Reports|False positive"
-msgstr ""
-
-msgid "Security Reports|Learn more about setting up your dashboard"
-msgstr ""
-
-msgid "Security Reports|More info"
-msgstr ""
-
-msgid "Security Reports|Oops, something doesn't seem right."
-msgstr ""
-
-msgid "Security Reports|Security reports can only be accessed by authorized users."
-msgstr ""
-
-msgid "Security Reports|Select a reason"
-msgstr ""
-
-msgid "Security Reports|There was an error adding the comment."
-msgstr ""
-
-msgid "Security Reports|There was an error creating the issue."
-msgstr ""
-
-msgid "Security Reports|There was an error creating the merge request."
-msgstr ""
-
-msgid "Security Reports|There was an error deleting the comment."
-msgstr ""
-
-msgid "Security Reports|There was an error dismissing the vulnerabilities."
-msgstr ""
-
-msgid "Security Reports|There was an error dismissing the vulnerability."
-msgstr ""
-
-msgid "Security Reports|There was an error reverting the dismissal."
-msgstr ""
-
-msgid "Security Reports|There was an error reverting this dismissal."
-msgstr ""
-
-msgid "Security Reports|Undo dismiss"
-msgstr ""
-
-msgid "Security Reports|Won't fix / Accept risk"
-msgstr ""
-
-msgid "Security Reports|You do not have sufficient permissions to access this report"
-msgstr ""
-
-msgid "Security Reports|You must sign in as an authorized user to see this report"
-msgstr ""
-
-msgid "Security Reports|[No reason]"
-msgstr ""
-
 msgid "Security configuration help link"
 msgstr ""
 
@@ -18371,85 +18278,202 @@ msgstr ""
 msgid "SecurityConfiguration|Status"
 msgstr ""
 
-msgid "SecurityDashboard|%{firstProject} and %{secondProject}"
+msgid "SecurityReports|%{firstProject} and %{secondProject}"
 msgstr ""
 
-msgid "SecurityDashboard|%{firstProject}, %{secondProject}, and %{rest}"
+msgid "SecurityReports|%{firstProject}, %{secondProject}, and %{rest}"
 msgstr ""
 
-msgid "SecurityDashboard|Add a project to your dashboard"
+msgid "SecurityReports|Add a project to your dashboard"
 msgstr ""
 
-msgid "SecurityDashboard|Add or remove projects from your dashboard"
+msgid "SecurityReports|Add or remove projects from your dashboard"
 msgstr ""
 
-msgid "SecurityDashboard|Add projects"
+msgid "SecurityReports|Add projects"
 msgstr ""
 
-msgid "SecurityDashboard|Each vulnerability now has a unique page that can be directly linked to, shared, referenced, and tracked as the single source of truth. Vulnerability occurrences also persist across scanner runs, which improves tracking and visibility and reduces duplicates between scans."
+msgid "SecurityReports|Comment added to '%{vulnerabilityName}'"
 msgstr ""
 
-msgid "SecurityDashboard|Edit dashboard"
+msgid "SecurityReports|Comment deleted on '%{vulnerabilityName}'"
 msgstr ""
 
-msgid "SecurityDashboard|Hide dismissed"
+msgid "SecurityReports|Comment edited on '%{vulnerabilityName}'"
 msgstr ""
 
-msgid "SecurityDashboard|Introducing standalone vulnerabilities"
+msgid "SecurityReports|Create issue"
 msgstr ""
 
-msgid "SecurityDashboard|Learn More"
+msgid "SecurityReports|Dismiss Selected"
 msgstr ""
 
-msgid "SecurityDashboard|Monitor vulnerabilities in your code"
+msgid "SecurityReports|Dismiss vulnerability"
 msgstr ""
 
-msgid "SecurityDashboard|More information"
+msgid "SecurityReports|Dismissed '%{vulnerabilityName}'"
 msgstr ""
 
-msgid "SecurityDashboard|No vulnerabilities found for dashboard"
+msgid "SecurityReports|Dismissed '%{vulnerabilityName}'. Turn off the hide dismissed toggle to view."
 msgstr ""
 
-msgid "SecurityDashboard|Pipeline %{pipelineLink} triggered %{timeago} by %{user}"
+msgid "SecurityReports|Each vulnerability now has a unique page that can be directly linked to, shared, referenced, and tracked as the single source of truth. Vulnerability occurrences also persist across scanner runs, which improves tracking and visibility and reduces duplicates between scans."
 msgstr ""
 
-msgid "SecurityDashboard|Project"
+msgid "SecurityReports|Edit dashboard"
 msgstr ""
 
-msgid "SecurityDashboard|Projects added"
+msgid "SecurityReports|Either you don't have permission to view this dashboard or the dashboard has not been setup. Please check your permission settings with your administrator or check your dashboard configurations to proceed."
 msgstr ""
 
-msgid "SecurityDashboard|Remove project from dashboard"
+msgid "SecurityReports|Error fetching the vulnerability counts. Please check your network connection and try again."
 msgstr ""
 
-msgid "SecurityDashboard|Report type"
+msgid "SecurityReports|Error fetching the vulnerability list. Please check your network connection and try again."
 msgstr ""
 
-msgid "SecurityDashboard|Return to dashboard"
+msgid "SecurityReports|False positive"
 msgstr ""
 
-msgid "SecurityDashboard|Security Dashboard"
+msgid "SecurityReports|Hide dismissed"
 msgstr ""
 
-msgid "SecurityDashboard|Select a project to add by using the project search field above."
+msgid "SecurityReports|Introducing standalone vulnerabilities"
 msgstr ""
 
-msgid "SecurityDashboard|Severity"
+msgid "SecurityReports|Issue Created"
 msgstr ""
 
-msgid "SecurityDashboard|Status"
+msgid "SecurityReports|Learn More"
 msgstr ""
 
-msgid "SecurityDashboard|The security dashboard displays the latest security findings for projects you wish to monitor. Select \"Edit dashboard\" to add and remove projects."
+msgid "SecurityReports|Learn more about setting up your dashboard"
 msgstr ""
 
-msgid "SecurityDashboard|The security dashboard displays the latest security report. Use it to find and fix vulnerabilities."
+msgid "SecurityReports|Load more vulnerabilities"
 msgstr ""
 
-msgid "SecurityDashboard|There was an error while generating the report."
+msgid "SecurityReports|Monitor vulnerabilities in your code"
 msgstr ""
 
-msgid "SecurityDashboard|Unable to add %{invalidProjects}"
+msgid "SecurityReports|More info"
+msgstr ""
+
+msgid "SecurityReports|More information"
+msgstr ""
+
+msgid "SecurityReports|No vulnerabilities found for dashboard"
+msgstr ""
+
+msgid "SecurityReports|No vulnerabilities found for this group"
+msgstr ""
+
+msgid "SecurityReports|No vulnerabilities found for this pipeline"
+msgstr ""
+
+msgid "SecurityReports|No vulnerabilities found for this project"
+msgstr ""
+
+msgid "SecurityReports|Oops, something doesn't seem right."
+msgstr ""
+
+msgid "SecurityReports|Pipeline %{pipelineLink} triggered %{timeago} by %{user}"
+msgstr ""
+
+msgid "SecurityReports|Project"
+msgstr ""
+
+msgid "SecurityReports|Projects added"
+msgstr ""
+
+msgid "SecurityReports|Remove project from dashboard"
+msgstr ""
+
+msgid "SecurityReports|Report type"
+msgstr ""
+
+msgid "SecurityReports|Return to dashboard"
+msgstr ""
+
+msgid "SecurityReports|Security Dashboard"
+msgstr ""
+
+msgid "SecurityReports|Security reports can only be accessed by authorized users."
+msgstr ""
+
+msgid "SecurityReports|Select a project to add by using the project search field above."
+msgstr ""
+
+msgid "SecurityReports|Select a reason"
+msgstr ""
+
+msgid "SecurityReports|Severity"
+msgstr ""
+
+msgid "SecurityReports|Status"
+msgstr ""
+
+msgid "SecurityReports|The security dashboard displays the latest security findings for projects you wish to monitor. Select \"Edit dashboard\" to add and remove projects."
+msgstr ""
+
+msgid "SecurityReports|The security dashboard displays the latest security report. Use it to find and fix vulnerabilities."
+msgstr ""
+
+msgid "SecurityReports|There was an error adding the comment."
+msgstr ""
+
+msgid "SecurityReports|There was an error creating the issue."
+msgstr ""
+
+msgid "SecurityReports|There was an error creating the merge request."
+msgstr ""
+
+msgid "SecurityReports|There was an error deleting the comment."
+msgstr ""
+
+msgid "SecurityReports|There was an error dismissing the vulnerabilities."
+msgstr ""
+
+msgid "SecurityReports|There was an error dismissing the vulnerability."
+msgstr ""
+
+msgid "SecurityReports|There was an error reverting the dismissal."
+msgstr ""
+
+msgid "SecurityReports|There was an error reverting this dismissal."
+msgstr ""
+
+msgid "SecurityReports|There was an error while generating the report."
+msgstr ""
+
+msgid "SecurityReports|Unable to add %{invalidProjects}"
+msgstr ""
+
+msgid "SecurityReports|Undo dismiss"
+msgstr ""
+
+msgid "SecurityReports|While it's rare to have no vulnerabilities for your group, it can happen. In any event, we ask that you double check your settings to make sure you've set up your dashboard correctly."
+msgstr ""
+
+msgid "SecurityReports|While it's rare to have no vulnerabilities for your pipeline, it can happen. In any event, we ask that you double check your settings to make sure all security scanning jobs have passed successfully."
+msgstr ""
+
+msgid "SecurityReports|While it's rare to have no vulnerabilities for your project, it can happen. In any event, we ask that you double check your settings to make sure you've set up your dashboard correctly."
+msgstr ""
+
+msgid "SecurityReports|While it's rare to have no vulnerabilities, it can happen. In any event, we ask that you please double check your settings to make sure you've set up your dashboard correctly."
+msgstr ""
+
+msgid "SecurityReports|Won't fix / Accept risk"
+msgstr ""
+
+msgid "SecurityReports|You do not have sufficient permissions to access this report"
+msgstr ""
+
+msgid "SecurityReports|You must sign in as an authorized user to see this report"
+msgstr ""
+
+msgid "SecurityReports|[No reason]"
 msgstr ""
 
 msgid "See GitLab's %{password_policy_guidelines}"
@@ -23694,15 +23718,6 @@ msgid "When using the <code>http://</code> or <code>https://</code> protocols, p
 msgstr ""
 
 msgid "When:"
-msgstr ""
-
-msgid "While it's rare to have no vulnerabilities for your group, it can happen. In any event, we ask that you double check your settings to make sure you've set up your dashboard correctly."
-msgstr ""
-
-msgid "While it's rare to have no vulnerabilities for your pipeline, it can happen. In any event, we ask that you double check your settings to make sure all security scanning jobs have passed successfully."
-msgstr ""
-
-msgid "While it's rare to have no vulnerabilities for your project, it can happen. In any event, we ask that you double check your settings to make sure you've set up your dashboard correctly."
 msgstr ""
 
 msgid "While it's rare to have no vulnerabilities, it can happen. In any event, we ask that you please double check your settings to make sure you've set up your dashboard correctly."

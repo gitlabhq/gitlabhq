@@ -14,13 +14,13 @@ describe "User views milestone" do
   end
 
   it "avoids N+1 database queries" do
-    ISSUE_PARAMS = { project: project, assignees: [user], author: user, milestone: milestone, labels: labels }.freeze
+    issue_params = { project: project, assignees: [user], author: user, milestone: milestone, labels: labels }.freeze
 
-    create(:labeled_issue, ISSUE_PARAMS)
+    create(:labeled_issue, issue_params)
 
     control = ActiveRecord::QueryRecorder.new { visit_milestone }
 
-    create(:labeled_issue, ISSUE_PARAMS)
+    create(:labeled_issue, issue_params)
 
     expect { visit_milestone }.not_to exceed_query_limit(control)
   end

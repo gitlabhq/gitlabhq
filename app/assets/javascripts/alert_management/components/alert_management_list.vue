@@ -5,6 +5,7 @@ import {
   GlLoadingIcon,
   GlTable,
   GlAlert,
+  GlIcon,
   GlNewDropdown,
   GlNewDropdownItem,
 } from '@gitlab/ui';
@@ -64,6 +65,7 @@ export default {
     TimeAgo,
     GlNewDropdown,
     GlNewDropdownItem,
+    GlIcon,
   },
   props: {
     projectPath: {
@@ -144,6 +146,18 @@ export default {
         fixed
         stacked="md"
       >
+        <template #cell(severity)="{ item }">
+          <div class="d-inline-flex align-items-center justify-content-between">
+            <gl-icon
+              class="mr-2"
+              :size="12"
+              :name="`severity-${item.severity.toLowerCase()}`"
+              :class="`icon-${item.severity.toLowerCase()}`"
+            />
+            {{ item.severity }}
+          </div>
+        </template>
+
         <template #cell(startedAt)="{ item }">
           <time-ago :time="item.startedAt" />
         </template>

@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { GlEmptyState, GlTable, GlAlert, GlLoadingIcon, GlNewDropdown } from '@gitlab/ui';
+import { GlEmptyState, GlTable, GlAlert, GlLoadingIcon, GlNewDropdown, GlIcon } from '@gitlab/ui';
 import AlertManagementList from '~/alert_management/components/alert_management_list.vue';
 
 import mockAlerts from '../mocks/alerts.json';
@@ -112,6 +112,23 @@ describe('AlertManagementList', () => {
         loading: false,
       });
       expect(findStatusDropdown().exists()).toBe(true);
+    });
+
+    it('shows correct severity icons', () => {
+      mountComponent({
+        props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
+        data: { alerts: mockAlerts, errored: false },
+        loading: false,
+      });
+
+      return wrapper.vm.$nextTick().then(() => {
+        expect(wrapper.find(GlTable).exists()).toBe(true);
+        expect(
+          findAlertsTable()
+            .find(GlIcon)
+            .classes('icon-critical'),
+        ).toBe(true);
+      });
     });
   });
 });

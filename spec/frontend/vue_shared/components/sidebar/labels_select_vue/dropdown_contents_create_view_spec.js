@@ -1,7 +1,7 @@
 import Vuex from 'vuex';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 
-import { GlDeprecatedButton, GlIcon, GlFormInput, GlLink, GlLoadingIcon } from '@gitlab/ui';
+import { GlButton, GlFormInput, GlLink, GlLoadingIcon } from '@gitlab/ui';
 import DropdownContentsCreateView from '~/vue_shared/components/sidebar/labels_select_vue/dropdown_contents_create_view.vue';
 
 import labelSelectModule from '~/vue_shared/components/sidebar/labels_select_vue/store';
@@ -127,12 +127,12 @@ describe('DropdownContentsCreateView', () => {
     it('renders dropdown back button element', () => {
       const backBtnEl = wrapper
         .find('.dropdown-title')
-        .findAll(GlDeprecatedButton)
+        .findAll(GlButton)
         .at(0);
 
       expect(backBtnEl.exists()).toBe(true);
       expect(backBtnEl.attributes('aria-label')).toBe('Go back');
-      expect(backBtnEl.find(GlIcon).props('name')).toBe('arrow-left');
+      expect(backBtnEl.props('icon')).toBe('arrow-left');
     });
 
     it('renders dropdown title element', () => {
@@ -145,12 +145,12 @@ describe('DropdownContentsCreateView', () => {
     it('renders dropdown close button element', () => {
       const closeBtnEl = wrapper
         .find('.dropdown-title')
-        .findAll(GlDeprecatedButton)
+        .findAll(GlButton)
         .at(1);
 
       expect(closeBtnEl.exists()).toBe(true);
       expect(closeBtnEl.attributes('aria-label')).toBe('Close');
-      expect(closeBtnEl.find(GlIcon).props('name')).toBe('close');
+      expect(closeBtnEl.props('icon')).toBe('close');
     });
 
     it('renders label title input element', () => {
@@ -192,7 +192,7 @@ describe('DropdownContentsCreateView', () => {
     it('renders create button element', () => {
       const createBtnEl = wrapper
         .find('.dropdown-actions')
-        .findAll(GlDeprecatedButton)
+        .findAll(GlButton)
         .at(0);
 
       expect(createBtnEl.exists()).toBe(true);
@@ -213,7 +213,7 @@ describe('DropdownContentsCreateView', () => {
     it('renders cancel button element', () => {
       const cancelBtnEl = wrapper
         .find('.dropdown-actions')
-        .findAll(GlDeprecatedButton)
+        .findAll(GlButton)
         .at(1);
 
       expect(cancelBtnEl.exists()).toBe(true);

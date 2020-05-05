@@ -4097,9 +4097,14 @@ type Group {
     before: String
 
     """
-    List time logs within a time range where the logged date is before end_date parameter.
+    List time logs within a date range where the logged date is equal to or before endDate
     """
-    endDate: Time!
+    endDate: Time
+
+    """
+    List time-logs within a time range where the logged time is equal to or before endTime
+    """
+    endTime: Time
 
     """
     Returns the first _n_ elements from the list.
@@ -4112,9 +4117,14 @@ type Group {
     last: Int
 
     """
-    List time logs within a time range where the logged date is after start_date parameter.
+    List time logs within a date range where the logged date is equal to or after startDate
     """
-    startDate: Time!
+    startDate: Time
+
+    """
+    List time-logs within a time range where the logged time is equal to or after startTime
+    """
+    startTime: Time
   ): TimelogConnection!
 
   """

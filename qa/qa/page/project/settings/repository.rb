@@ -19,7 +19,7 @@ module QA
             element :deploy_tokens_settings
           end
 
-          view 'app/views/projects/deploy_keys/_index.html.haml' do
+          view 'app/views/shared/deploy_keys/_index.html.haml' do
             element :deploy_keys_settings
           end
 

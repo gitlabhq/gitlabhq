@@ -6,8 +6,7 @@ build-qa-image:
   stage: build-images
   needs: []
   script:
-    - '[[ -d "ee/" ]] || export GITLAB_EDITION="ce"'
-    - export QA_IMAGE="${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-${GITLAB_EDITION:-ee}-qa:${CI_COMMIT_REF_SLUG}"
+    - export QA_IMAGE="${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-ee-qa:${CI_COMMIT_REF_SLUG}"
     - /kaniko/executor --context=${CI_PROJECT_DIR} --dockerfile=${CI_PROJECT_DIR}/qa/Dockerfile --destination=${QA_IMAGE} --cache=true
 
 review-cleanup:
@@ -71,7 +70,6 @@ review-deploy:
   resource_group: "review/${CI_COMMIT_REF_NAME}"
   allow_failure: true
   before_script:
-    - '[[ -d "ee/" ]] || export GITLAB_EDITION="ce"'
     - export GITLAB_SHELL_VERSION=$(<GITLAB_SHELL_VERSION)
     - export GITALY_VERSION=$(<GITALY_SERVER_VERSION)
     - export GITLAB_WORKHORSE_VERSION=$(<GITLAB_WORKHORSE_VERSION)
@@ -148,8 +146,7 @@ review-stop:
     GITHUB_ACCESS_TOKEN: "${REVIEW_APPS_QA_GITHUB_ACCESS_TOKEN}"
     EE_LICENSE: "${REVIEW_APPS_EE_LICENSE}"
   before_script:
-    - '[[ -d "ee/" ]] || export GITLAB_EDITION="ce"'
-    - export QA_IMAGE="${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-${GITLAB_EDITION:-ee}-qa:${CI_COMMIT_REF_SLUG}"
+    - export QA_IMAGE="${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-ee-qa:${CI_COMMIT_REF_SLUG}"
     - export CI_ENVIRONMENT_URL="$(cat environment_url.txt)"
     - echo "${CI_ENVIRONMENT_URL}"
     - echo "${QA_IMAGE}"

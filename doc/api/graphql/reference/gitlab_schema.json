@@ -11530,29 +11530,41 @@
               "args": [
                 {
                   "name": "startDate",
-                  "description": "List time logs within a time range where the logged date is after start_date parameter.",
+                  "description": "List time logs within a date range where the logged date is equal to or after startDate",
                   "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "Time",
-                      "ofType": null
-                    }
+                    "kind": "SCALAR",
+                    "name": "Time",
+                    "ofType": null
                   },
                   "defaultValue": null
                 },
                 {
                   "name": "endDate",
-                  "description": "List time logs within a time range where the logged date is before end_date parameter.",
+                  "description": "List time logs within a date range where the logged date is equal to or before endDate",
                   "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "Time",
-                      "ofType": null
-                    }
+                    "kind": "SCALAR",
+                    "name": "Time",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "startTime",
+                  "description": "List time-logs within a time range where the logged time is equal to or after startTime",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Time",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "endTime",
+                  "description": "List time-logs within a time range where the logged time is equal to or before endTime",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Time",
+                    "ofType": null
                   },
                   "defaultValue": null
                 },

@@ -1,13 +1,13 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex';
-import { GlLoadingIcon, GlDeprecatedButton, GlIcon, GlSearchBoxByType, GlLink } from '@gitlab/ui';
+import { GlLoadingIcon, GlButton, GlIcon, GlSearchBoxByType, GlLink } from '@gitlab/ui';
 
 import { UP_KEY_CODE, DOWN_KEY_CODE, ENTER_KEY_CODE, ESC_KEY_CODE } from '~/lib/utils/keycodes';
 
 export default {
   components: {
     GlLoadingIcon,
-    GlDeprecatedButton,
+    GlButton,
     GlIcon,
     GlSearchBoxByType,
     GlLink,
@@ -20,6 +20,8 @@ export default {
   },
   computed: {
     ...mapState([
+      'allowLabelCreate',
+      'allowMultiselect',
       'labelsManagePath',
       'labels',
       'labelsFetchInProgress',
@@ -27,7 +29,7 @@ export default {
       'footerCreateLabelTitle',
       'footerManageLabelTitle',
     ]),
-    ...mapGetters(['selectedLabelsList']),
+    ...mapGetters(['selectedLabelsList', 'isDropdownVariantSidebar']),
     visibleLabels() {
       if (this.searchKey) {
         return this.labels.filter(label =>
@@ -56,6 +58,7 @@ export default {
       'toggleDropdownContentsCreateView',
       'fetchLabels',
       'updateSelectedLabels',
+      'toggleDropdownContents',
     ]),
     getDropdownLabelBoxStyle(label) {
       return {
@@ -111,6 +114,7 @@ export default {
     },
     handleLabelClick(label) {
       this.updateSelectedLabels([label]);
+      if (!this.allowMultiselect) this.toggleDropdownContents();
     },
   },
 };
@@ -123,17 +127,16 @@ export default {
       class="labels-fetch-loading position-absolute d-flex align-items-center w-100 h-100"
       size="md"
     />
-    <div class="dropdown-title d-flex align-items-center pt-0 pb-2">
+    <div v-if="isDropdownVariantSidebar" class="dropdown-title d-flex align-items-center pt-0 pb-2">
       <span class="flex-grow-1">{{ labelsListTitle }}</span>
-      <gl-deprecated-button
+      <gl-button
         :aria-label="__('Close')"
         variant="link"
-        size="sm"
+        size="small"
         class="dropdown-header-button p-0"
+        icon="close"
         @click="toggleDropdownContents"
-      >
-        <gl-icon name="close" />
-      </gl-deprecated-button>
+      />
     </div>
     <div class="dropdown-input">
       <gl-search-box-by-type v-model="searchKey" :autofocus="true" />
@@ -157,14 +160,13 @@ export default {
         </li>
       </ul>
     </div>
-    <div class="dropdown-footer">
+    <div v-if="isDropdownVariantSidebar" class="dropdown-footer">
       <ul class="list-unstyled">
-        <li>
-          <gl-deprecated-button
-            variant="link"
+        <li v-if="allowLabelCreate">
+          <gl-link
             class="d-flex w-100 flex-row text-break-word label-item"
             @click="toggleDropdownContentsCreateView"
-            >{{ footerCreateLabelTitle }}</gl-deprecated-button
+            >{{ footerCreateLabelTitle }}</gl-link
           >
         </li>
         <li>

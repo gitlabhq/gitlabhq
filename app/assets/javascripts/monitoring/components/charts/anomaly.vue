@@ -209,7 +209,7 @@ export default {
     :series-config="metricSeriesConfig"
   >
     <slot></slot>
-    <template v-slot:tooltipContent="slotProps">
+    <template #tooltip-content="slotProps">
       <div
         v-for="(content, seriesIndex) in slotProps.tooltip.content"
         :key="seriesIndex"

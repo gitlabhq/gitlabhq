@@ -75,7 +75,7 @@ describe('awsServicesFacade', () => {
     });
 
     it('return list of regions where each item has a name and value', () => {
-      expect(fetchRoles()).resolves.toEqual(rolesOutput);
+      return expect(fetchRoles()).resolves.toEqual(rolesOutput);
     });
   });
 
@@ -91,7 +91,7 @@ describe('awsServicesFacade', () => {
     });
 
     it('return list of roles where each item has a name and value', () => {
-      expect(fetchRegions()).resolves.toEqual(regionsOutput);
+      return expect(fetchRegions()).resolves.toEqual(regionsOutput);
     });
   });
 
@@ -112,7 +112,7 @@ describe('awsServicesFacade', () => {
     });
 
     it('return list of key pairs where each item has a name and value', () => {
-      expect(fetchKeyPairs({ region })).resolves.toEqual(keyPairsOutput);
+      return expect(fetchKeyPairs({ region })).resolves.toEqual(keyPairsOutput);
     });
   });
 
@@ -133,7 +133,7 @@ describe('awsServicesFacade', () => {
     });
 
     it('return list of vpcs where each item has a name and value', () => {
-      expect(fetchVpcs({ region })).resolves.toEqual(vpcsOutput);
+      return expect(fetchVpcs({ region })).resolves.toEqual(vpcsOutput);
     });
   });
 
@@ -151,7 +151,7 @@ describe('awsServicesFacade', () => {
     });
 
     it('uses name tag value as the vpc name', () => {
-      expect(fetchVpcs({ region })).resolves.toEqual(vpcsOutput);
+      return expect(fetchVpcs({ region })).resolves.toEqual(vpcsOutput);
     });
   });
 
@@ -167,7 +167,7 @@ describe('awsServicesFacade', () => {
     });
 
     it('return list of subnets where each item has a name and value', () => {
-      expect(fetchSubnets({ region, vpc })).resolves.toEqual(subnetsOutput);
+      return expect(fetchSubnets({ region, vpc })).resolves.toEqual(subnetsOutput);
     });
   });
 
@@ -189,7 +189,7 @@ describe('awsServicesFacade', () => {
     });
 
     it('return list of security groups where each item has a name and value', () => {
-      expect(fetchSecurityGroups({ region, vpc })).resolves.toEqual(securityGroupsOutput);
+      return expect(fetchSecurityGroups({ region, vpc })).resolves.toEqual(securityGroupsOutput);
     });
   });
 });

@@ -143,7 +143,7 @@ describe('Release detail actions', () => {
         { type: types.RECEIVE_UPDATE_RELEASE_SUCCESS },
       ]));
 
-    describe('when the releaseShowPage feature flag is enabled', () => {
+    it('redirects to the releases page if releaseShowPage feature flag is enabled', () => {
       const rootState = { featureFlags: { releaseShowPage: true } };
       const updatedState = merge({}, state, {
         releasesPagePath: 'path/to/releases/page',

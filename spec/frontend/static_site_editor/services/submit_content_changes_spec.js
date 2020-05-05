@@ -48,7 +48,7 @@ describe('submitContentChanges', () => {
   it('notifies error when branch could not be created', () => {
     Api.createBranch.mockRejectedValueOnce();
 
-    expect(submitContentChanges({ username, projectId })).rejects.toThrow(
+    return expect(submitContentChanges({ username, projectId })).rejects.toThrow(
       SUBMIT_CHANGES_BRANCH_ERROR,
     );
   });
@@ -72,7 +72,7 @@ describe('submitContentChanges', () => {
   it('notifies error when content could not be committed', () => {
     Api.commitMultiple.mockRejectedValueOnce();
 
-    expect(submitContentChanges({ username, projectId })).rejects.toThrow(
+    return expect(submitContentChanges({ username, projectId })).rejects.toThrow(
       SUBMIT_CHANGES_COMMIT_ERROR,
     );
   });
@@ -93,7 +93,7 @@ describe('submitContentChanges', () => {
   it('notifies error when merge request could not be created', () => {
     Api.createProjectMergeRequest.mockRejectedValueOnce();
 
-    expect(submitContentChanges({ username, projectId })).rejects.toThrow(
+    return expect(submitContentChanges({ username, projectId })).rejects.toThrow(
       SUBMIT_CHANGES_MERGE_REQUEST_ERROR,
     );
   });

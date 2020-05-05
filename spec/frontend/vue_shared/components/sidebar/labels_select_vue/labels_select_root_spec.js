@@ -89,6 +89,19 @@ describe('LabelsSelectRoot', () => {
       expect(wrapper.attributes('class')).toContain('labels-select-wrapper position-relative');
     });
 
+    it('renders component root element with CSS class `is-standalone` when `state.variant` is "standalone"', () => {
+      const wrapperStandalone = createComponent({
+        ...mockConfig,
+        variant: 'standalone',
+      });
+
+      return wrapperStandalone.vm.$nextTick(() => {
+        expect(wrapperStandalone.classes()).toContain('is-standalone');
+
+        wrapperStandalone.destroy();
+      });
+    });
+
     it('renders `dropdown-value-collapsed` component when `allowLabelCreate` prop is `true`', () => {
       expect(wrapper.find(DropdownValueCollapsed).exists()).toBe(true);
     });
@@ -101,13 +114,16 @@ describe('LabelsSelectRoot', () => {
       const wrapperDropdownValue = createComponent(mockConfig, {
         default: 'None',
       });
+      wrapperDropdownValue.vm.$store.state.showDropdownButton = false;
 
-      const valueComp = wrapperDropdownValue.find(DropdownValue);
+      return wrapperDropdownValue.vm.$nextTick(() => {
+        const valueComp = wrapperDropdownValue.find(DropdownValue);
 
-      expect(valueComp.exists()).toBe(true);
-      expect(valueComp.text()).toBe('None');
+        expect(valueComp.exists()).toBe(true);
+        expect(valueComp.text()).toBe('None');
 
-      wrapperDropdownValue.destroy();
+        wrapperDropdownValue.destroy();
+      });
     });
 
     it('renders `dropdown-button` component when `showDropdownButton` prop is `true`', () => {

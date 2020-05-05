@@ -16,8 +16,8 @@ class Timelog < ApplicationRecord
     )
   end
 
-  scope :between_dates, -> (start_date, end_date) do
-    where('spent_at BETWEEN ? AND ?', start_date, end_date)
+  scope :between_times, -> (start_time, end_time) do
+    where('spent_at BETWEEN ? AND ?', start_time, end_time)
   end
 
   def issuable

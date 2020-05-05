@@ -1,21 +1,35 @@
 <script>
-import { mapGetters } from 'vuex';
-import { GlDeprecatedButton, GlIcon } from '@gitlab/ui';
+import { mapActions, mapGetters } from 'vuex';
+import { GlButton, GlIcon } from '@gitlab/ui';
 
 export default {
   components: {
-    GlDeprecatedButton,
+    GlButton,
     GlIcon,
   },
   computed: {
-    ...mapGetters(['dropdownButtonText']),
+    ...mapGetters(['dropdownButtonText', 'isDropdownVariantStandalone']),
+  },
+  methods: {
+    ...mapActions(['toggleDropdownContents']),
+    handleButtonClick(e) {
+      if (this.isDropdownVariantStandalone) {
+        this.toggleDropdownContents();
+        e.stopPropagation();
+      }
+    },
   },
 };
 </script>
 
 <template>
-  <gl-deprecated-button class="labels-select-dropdown-button w-100 text-left">
-    <span class="dropdown-toggle-text">{{ dropdownButtonText }}</span>
+  <gl-button
+    class="labels-select-dropdown-button js-dropdown-button w-100 text-left"
+    @click="handleButtonClick"
+  >
+    <span class="dropdown-toggle-text" :class="{ 'flex-fill': isDropdownVariantStandalone }">{{
+      dropdownButtonText
+    }}</span>
     <gl-icon name="chevron-down" class="pull-right" />
-  </gl-deprecated-button>
+  </gl-button>
 </template>

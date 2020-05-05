@@ -60,11 +60,11 @@ module Projects
       end
 
       def to_partial_path
-        'projects/deploy_keys/index'
+        '../../shared/deploy_keys/index'
       end
 
       def form_partial_path
-        'projects/deploy_keys/form'
+        'shared/deploy_keys/project_group_form'
       end
 
       private

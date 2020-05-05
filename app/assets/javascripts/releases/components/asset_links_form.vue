@@ -162,7 +162,7 @@ export default {
           :state="isNameValid(link)"
           @change="onLinkTitleInput(link.id, $event)"
         />
-        <template v-slot:invalid-feedback>
+        <template #invalid-feedback>
           <span v-if="hasEmptyName(link)" class="invalid-feedback d-inline">
             {{ __('Link title is required') }}
           </span>

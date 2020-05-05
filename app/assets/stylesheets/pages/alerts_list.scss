@@ -1,4 +1,28 @@
 .alert-management-list {
+  .icon-critical {
+    color: $red-800;
+  }
+
+  .icon-high {
+    color: $red-600;
+  }
+
+  .icon-medium {
+    color: $orange-400;
+  }
+
+  .icon-low {
+    color: $orange-300;
+  }
+
+  .icon-info {
+    color: $blue-400;
+  }
+
+  .icon-unknown {
+    color: $gray-400;
+  }
+
   // these styles need to be deleted once GlTable component looks in GitLab same as in @gitlab/ui
   table {
     color: $gray-700;

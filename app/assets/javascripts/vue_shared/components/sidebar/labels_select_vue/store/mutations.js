@@ -1,4 +1,5 @@
 import * as types from './mutation_types';
+import { DropdownVariant } from '../constants';
 
 export default {
   [types.SET_INITIAL_STATE](state, props) {
@@ -10,7 +11,7 @@ export default {
   },
 
   [types.TOGGLE_DROPDOWN_CONTENTS](state) {
-    if (!state.dropdownOnly) {
+    if (state.variant === DropdownVariant.Sidebar) {
       state.showDropdownButton = !state.showDropdownButton;
     }
     state.showDropdownContents = !state.showDropdownContents;
@@ -68,7 +69,16 @@ export default {
           set: !label.set,
         });
       } else {
-        allLabels.push(label);
+        // In case multiselect is not allowed
+        // we unselect any existing selected label
+        const unchangedLabel = state.allowMultiselect
+          ? label
+          : {
+              ...label,
+              touched: true,
+              set: false,
+            };
+        allLabels.push(unchangedLabel);
       }
       return allLabels;
     }, []);

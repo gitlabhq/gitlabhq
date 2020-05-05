@@ -57,7 +57,7 @@
           %nav.stage-nav
             %ul
               %stage-nav-item{ "v-for" => "stage in state.stages", ":key" => '`ca-stage-title-${stage.title}`', '@select' => 'selectStage(stage)', ":title" => "stage.title", ":is-user-allowed" => "stage.isUserAllowed", ":value" => "stage.value", ":is-active" => "stage.active" }
-          .section.stage-events
+          .section.stage-events.overflow-auto
             %gl-loading-icon{ "v-show" => "isLoadingStage", "size" => "lg" }
             %template{ "v-if" => "currentStage && !currentStage.isUserAllowed" }
               = render partial: "no_access"

@@ -1,5 +1,9 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 12.10.4 (2020-05-05)
+
+- No changes.
+
 ## 12.10.2 (2020-04-30)
 
 ### Security (3 changes)
@@ -58,6 +62,10 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 - Add health status counts to usage data. !28964
 
+
+## 12.9.6 (2020-05-05)
+
+- No changes.
 
 ## 12.9.5 (2020-04-30)
 

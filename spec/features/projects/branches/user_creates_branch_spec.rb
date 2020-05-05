@@ -16,18 +16,18 @@ describe "User creates branch", :js do
   end
 
   it "creates new branch" do
-    BRANCH_NAME = "deploy_keys".freeze
+    branch_name = "deploy_keys".freeze
 
-    create_branch(BRANCH_NAME)
+    create_branch(branch_name)
 
-    expect(page).to have_content(BRANCH_NAME)
+    expect(page).to have_content(branch_name)
   end
 
   context "when branch name is invalid" do
     it "does not create new branch" do
-      INVALID_BRANCH_NAME = "1.0 stable".freeze
+      invalid_branch_name = "1.0 stable".freeze
 
-      fill_in("branch_name", with: INVALID_BRANCH_NAME)
+      fill_in("branch_name", with: invalid_branch_name)
       page.find("body").click # defocus the branch_name input
 
       select_branch("master")

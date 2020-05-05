@@ -88,18 +88,18 @@ describe "User interacts with deploy keys", :js do
     end
 
     it "adds new key" do
-      DEPLOY_KEY_TITLE = attributes_for(:key)[:title]
-      DEPLOY_KEY_BODY  = attributes_for(:key)[:key]
+      deploy_key_title = attributes_for(:key)[:title]
+      deploy_key_body  = attributes_for(:key)[:key]
 
-      fill_in("deploy_key_title", with: DEPLOY_KEY_TITLE)
-      fill_in("deploy_key_key",   with: DEPLOY_KEY_BODY)
+      fill_in("deploy_key_title", with: deploy_key_title)
+      fill_in("deploy_key_key",   with: deploy_key_body)
 
       click_button("Add key")
 
       expect(current_path).to eq(project_settings_repository_path(project))
 
       page.within(".deploy-keys") do
-        expect(page).to have_content(DEPLOY_KEY_TITLE)
+        expect(page).to have_content(deploy_key_title)
       end
     end
   end

@@ -113,6 +113,9 @@ export default {
 </script>
 <template>
   <div>
+    <div class="mb-3">
+      <h3>{{ s__('PipelineCharts|CI / CD Analytics') }}</h3>
+    </div>
     <h4 class="my-4">{{ s__('PipelineCharts|Overall statistics') }}</h4>
     <div class="row">
       <div class="col-md-6">

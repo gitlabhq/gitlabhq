@@ -8,12 +8,13 @@ describe('Mock auto-injection', () => {
       failMock = jest.spyOn(global, 'fail').mockImplementation();
     });
 
-    it('~/lib/utils/axios_utils', done => {
-      expect(axios.get('http://gitlab.com')).rejects.toThrow('Unexpected unmocked request');
-      setImmediate(() => {
-        expect(failMock).toHaveBeenCalledTimes(1);
-        done();
-      });
+    it('~/lib/utils/axios_utils', () => {
+      return Promise.all([
+        expect(axios.get('http://gitlab.com')).rejects.toThrow('Unexpected unmocked request'),
+        setImmediate(() => {
+          expect(failMock).toHaveBeenCalledTimes(1);
+        }),
+      ]);
     });
 
     it('jQuery.ajax()', () => {

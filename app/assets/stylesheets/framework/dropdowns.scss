@@ -1032,6 +1032,16 @@ header.header-content .dropdown-menu.frequent-items-dropdown-menu {
 }
 
 .labels-select-wrapper {
+  &.is-standalone {
+    .labels-select-dropdown-contents {
+      max-height: 350px;
+
+      .dropdown-content {
+        height: 250px;
+      }
+    }
+  }
+
   .labels-select-dropdown-contents {
     min-height: $dropdown-min-height;
     max-height: 330px;

@@ -83,7 +83,7 @@ export default {
       :source-branch-link="branchLink"
       :troubleshooting-docs-path="mr.troubleshootingDocsPath"
     />
-    <template v-slot:footer>
+    <template #footer>
       <div v-if="mr.exposedArtifactsPath" class="js-exposed-artifacts">
         <artifacts-app :endpoint="mr.exposedArtifactsPath" />
       </div>

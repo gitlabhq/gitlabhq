@@ -5,7 +5,7 @@ require 'spec_helper'
 describe Gitlab::Application do # rubocop:disable RSpec/FilePath
   using RSpec::Parameterized::TableSyntax
 
-  FILTERED_PARAM = ActiveSupport::ParameterFilter::FILTERED
+  filtered_param = ActiveSupport::ParameterFilter::FILTERED
 
   context 'when parameters are logged' do
     describe 'rails does not leak confidential parameters' do
@@ -19,11 +19,11 @@ describe Gitlab::Application do # rubocop:disable RSpec/FilePath
       where(:input_url, :output_query) do
         '/'                                      | {}
         '/?safe=1'                               | { 'safe' => '1' }
-        '/?private_token=secret'                 | { 'private_token' => FILTERED_PARAM }
-        '/?mixed=1&private_token=secret'         | { 'mixed' => '1', 'private_token' => FILTERED_PARAM }
-        '/?note=secret&noteable=1&prefix_note=2' | { 'note' => FILTERED_PARAM, 'noteable' => '1', 'prefix_note' => '2' }
-        '/?note[note]=secret&target_type=1'      | { 'note' => FILTERED_PARAM, 'target_type' => '1' }
-        '/?safe[note]=secret&target_type=1'      | { 'safe' => { 'note' => FILTERED_PARAM }, 'target_type' => '1' }
+        '/?private_token=secret'                 | { 'private_token' => filtered_param }
+        '/?mixed=1&private_token=secret'         | { 'mixed' => '1', 'private_token' => filtered_param }
+        '/?note=secret&noteable=1&prefix_note=2' | { 'note' => filtered_param, 'noteable' => '1', 'prefix_note' => '2' }
+        '/?note[note]=secret&target_type=1'      | { 'note' => filtered_param, 'target_type' => '1' }
+        '/?safe[note]=secret&target_type=1'      | { 'safe' => { 'note' => filtered_param }, 'target_type' => '1' }
       end
 
       with_them do

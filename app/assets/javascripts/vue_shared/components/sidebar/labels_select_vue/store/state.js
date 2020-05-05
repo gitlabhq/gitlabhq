@@ -13,10 +13,11 @@ export default () => ({
   labelsFilterBasePath: '',
 
   // UI Flags
+  variant: '',
   allowLabelCreate: false,
   allowLabelEdit: false,
   allowScopedLabels: false,
-  dropdownOnly: false,
+  allowMultiselect: false,
   showDropdownButton: false,
   showDropdownContents: false,
   showDropdownContentsCreateView: false,

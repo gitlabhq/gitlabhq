@@ -1,7 +1,7 @@
 <script>
 import $ from 'jquery';
 import Vue from 'vue';
-import Vuex, { mapState, mapActions } from 'vuex';
+import Vuex, { mapState, mapActions, mapGetters } from 'vuex';
 import { __ } from '~/locale';
 
 import DropdownValueCollapsed from '~/vue_shared/components/sidebar/labels_select/dropdown_value_collapsed.vue';
@@ -12,6 +12,8 @@ import DropdownTitle from './dropdown_title.vue';
 import DropdownValue from './dropdown_value.vue';
 import DropdownButton from './dropdown_button.vue';
 import DropdownContents from './dropdown_contents.vue';
+
+import { DropdownVariant } from './constants';
 
 Vue.use(Vuex);
 
@@ -33,14 +35,19 @@ export default {
       type: Boolean,
       required: true,
     },
+    allowMultiselect: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     allowScopedLabels: {
       type: Boolean,
       required: true,
     },
-    dropdownOnly: {
-      type: Boolean,
+    variant: {
+      type: String,
       required: false,
-      default: false,
+      default: DropdownVariant.Sidebar,
     },
     selectedLabels: {
       type: Array,
@@ -90,6 +97,10 @@ export default {
   },
   computed: {
     ...mapState(['showDropdownButton', 'showDropdownContents']),
+    ...mapGetters(['isDropdownVariantSidebar', 'isDropdownVariantStandalone']),
+    dropdownButtonVisible() {
+      return this.isDropdownVariantSidebar ? this.showDropdownButton : true;
+    },
   },
   watch: {
     selectedLabels(selectedLabels) {
@@ -100,9 +111,10 @@ export default {
   },
   mounted() {
     this.setInitialState({
-      dropdownOnly: this.dropdownOnly,
+      variant: this.variant,
       allowLabelEdit: this.allowLabelEdit,
       allowLabelCreate: this.allowLabelCreate,
+      allowMultiselect: this.allowMultiselect,
       allowScopedLabels: this.allowScopedLabels,
       selectedLabels: this.selectedLabels,
       labelsFetchPath: this.labelsFetchPath,
@@ -148,13 +160,20 @@ export default {
       // as the dropdown wrapper is not using `GlDropdown` as
       // it will also require us to use `BDropdownForm`
       // which is yet to be implemented in GitLab UI.
+      const hasExceptionClass = [
+        'js-dropdown-button',
+        'js-btn-cancel-create',
+        'js-sidebar-dropdown-toggle',
+      ].some(className => target?.classList.contains(className));
+
+      const hadExceptionParent = ['.js-btn-back', '.js-labels-list'].some(
+        className => $(target).parents(className).length,
+      );
+
       if (
-        this.showDropdownButton &&
         this.showDropdownContents &&
-        !$(target).parents('.js-btn-back').length &&
-        !$(target).parents('.js-labels-list').length &&
-        !target?.classList.contains('js-btn-cancel-create') &&
-        !target?.classList.contains('js-sidebar-dropdown-toggle') &&
+        !hadExceptionParent &&
+        !hasExceptionClass &&
         !this.$refs.dropdownButtonCollapsed?.$el.contains(target) &&
         !this.$refs.dropdownContents?.$el.contains(target)
       ) {
@@ -175,10 +194,12 @@ export default {
 </script>
 
 <template>
-  <div class="labels-select-wrapper position-relative">
-    <div v-if="!dropdownOnly">
+  <div
+    class="labels-select-wrapper position-relative"
+    :class="{ 'is-standalone': isDropdownVariantStandalone }"
+  >
+    <template v-if="isDropdownVariantSidebar">
       <dropdown-value-collapsed
-        v-if="allowLabelCreate"
         ref="dropdownButtonCollapsed"
         :labels="selectedLabels"
         @onValueClick="handleCollapsedValueClick"
@@ -190,8 +211,18 @@ export default {
       <dropdown-value v-show="!showDropdownButton">
         <slot></slot>
       </dropdown-value>
-      <dropdown-button v-show="showDropdownButton" />
-      <dropdown-contents v-if="showDropdownButton && showDropdownContents" ref="dropdownContents" />
-    </div>
+      <dropdown-button v-show="dropdownButtonVisible" />
+      <dropdown-contents
+        v-if="dropdownButtonVisible && showDropdownContents"
+        ref="dropdownContents"
+      />
+    </template>
+    <template v-if="isDropdownVariantStandalone">
+      <dropdown-button v-show="dropdownButtonVisible" />
+      <dropdown-contents
+        v-if="dropdownButtonVisible && showDropdownContents"
+        ref="dropdownContents"
+      />
+    </template>
   </div>
 </template>

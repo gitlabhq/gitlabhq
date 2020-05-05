@@ -76,8 +76,9 @@
   min-height: 0; // firefox fix
 }
 
-// Apply theme related overrides only to the white theme
-.theme-white .blob-editor-container {
+// Apply theme related overrides only to the white theme and none theme
+.theme-white .blob-editor-container,
+.theme-none .blob-editor-container {
   .monaco-diff-editor {
     .editor.modified {
       box-shadow: none;
@@ -139,7 +140,8 @@
   }
 }
 
-.theme-white .multi-file-editor-holder {
+.theme-white .multi-file-editor-holder,
+.theme-none .multi-file-editor-holder {
   &.is-readonly,
   .editor.original {
     .monaco-editor,
