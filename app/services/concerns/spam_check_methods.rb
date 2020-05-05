@@ -30,7 +30,7 @@ module SpamCheckMethods
       api: @api,
       recaptcha_verified: @recaptcha_verified,
       spam_log_id: @spam_log_id,
-      user_id: user.id)
+      user: user)
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
 end

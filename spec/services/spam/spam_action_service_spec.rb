@@ -78,7 +78,7 @@ describe Spam::SpamActionService do
 
     subject do
       described_service = described_class.new(spammable: issue, request: request)
-      described_service.execute(user_id: user.id, api: nil, recaptcha_verified: recaptcha_verified, spam_log_id: existing_spam_log.id)
+      described_service.execute(user: user, api: nil, recaptcha_verified: recaptcha_verified, spam_log_id: existing_spam_log.id)
     end
 
     before do

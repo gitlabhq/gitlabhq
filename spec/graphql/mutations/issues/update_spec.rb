@@ -16,6 +16,8 @@ describe Mutations::Issues::Update do
   let(:mutation) { described_class.new(object: nil, context: { current_user: user }, field: nil) }
   let(:mutated_issue) { subject[:issue] }
 
+  specify { expect(described_class).to require_graphql_authorizations(:update_issue) }
+
   describe '#resolve' do
     let(:mutation_params) do
       {

@@ -22,11 +22,11 @@ module Spam
       end
     end
 
-    def execute(api: false, recaptcha_verified:, spam_log_id:, user_id:)
+    def execute(api: false, recaptcha_verified:, spam_log_id:, user:)
       if recaptcha_verified
         # If it's a request which is already verified through reCAPTCHA,
         # update the spam log accordingly.
-        SpamLog.verify_recaptcha!(user_id: user_id, id: spam_log_id)
+        SpamLog.verify_recaptcha!(user_id: user.id, id: spam_log_id)
       else
         return unless request
         return unless check_for_spam?

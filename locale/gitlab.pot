@@ -2759,6 +2759,27 @@ msgstr ""
 msgid "AuditEvents|Target"
 msgstr ""
 
+msgid "AuditLogs|(removed)"
+msgstr ""
+
+msgid "AuditLogs|Action"
+msgstr ""
+
+msgid "AuditLogs|Author"
+msgstr ""
+
+msgid "AuditLogs|Date"
+msgstr ""
+
+msgid "AuditLogs|IP Address"
+msgstr ""
+
+msgid "AuditLogs|Object"
+msgstr ""
+
+msgid "AuditLogs|Target"
+msgstr ""
+
 msgid "Aug"
 msgstr ""
 
