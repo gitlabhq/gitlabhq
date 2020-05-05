@@ -1,5 +1,9 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 12.10.4 (2020-05-05)
+
+- No changes.
+
 ## 12.10.3 (2020-05-04)
 
 ### Fixed (1 change)
