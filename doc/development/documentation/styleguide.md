@@ -565,6 +565,44 @@ to mix types, that is also possible, as long as you don't mix items at the same 
 - Unordered list item three.
 ```
 
+## Tables
+
+Tables should be used to describe complex information in a straightforward
+manner. Note that in many cases, an unordered list is sufficient to describe a
+list of items with a single, simple description per item. But, if you have data
+that is best described by a matrix, tables are the best choice for use.
+
+### Creation guidelines
+
+Due to accessibility and scanability requirements, tables should not have any
+empty cells. If there is no otherwise meaningful value for a cell, consider entering
+*N/A* (for 'not applicable') or *none*.
+
+To help tables be easier to maintain, consider adding additional spaces to the
+column widths to make them consistent. For example:
+
+```markdown
+| App name | Description          | Requirements   |
+|:---------|:---------------------|:---------------|
+| App 1    | Description text 1.  | Requirements 1 |
+| App 2    | Description text 2.  | None           |
+```
+
+Consider installing a plugin or extension in your editor for formatting tables:
+
+- [Markdown Table Prettifier](https://marketplace.visualstudio.com/items?itemName=darkriszty.markdown-table-prettify) for Visual Studio Code
+- [Markdown Table Formatter](https://packagecontrol.io/packages/Markdown%20Table%20Formatter) for Sublime Text
+- [Markdown Table Formatter](https://atom.io/packages/markdown-table-formatter) for Atom
+
+### Feature tables
+
+When creating tables of lists of features (such as whether or not features are
+available to certain roles on the [Permissions](../../user/permissions.md#project-members-permissions)
+page), use the following phrases (based on the SVG icons):
+
+- *No*: **{dotted-circle}** No
+- *Yes*: **{check-circle}** Yes
+
 ## Quotes
 
 Valid for Markdown content only, not for frontmatter entries:

@@ -337,6 +337,10 @@ module Gitlab
         REGISTRY_SCOPES
       end
 
+      def resource_bot_scopes
+        Gitlab::Auth::API_SCOPES + Gitlab::Auth::REPOSITORY_SCOPES + Gitlab::Auth.registry_scopes - [:read_user]
+      end
+
       private
 
       def non_admin_available_scopes

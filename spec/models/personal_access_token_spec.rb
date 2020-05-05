@@ -179,4 +179,27 @@ describe PersonalAccessToken do
       end
     end
   end
+
+  describe '.simple_sorts' do
+    it 'includes overriden keys' do
+      expect(described_class.simple_sorts.keys).to include(*%w(expires_at_asc expires_at_desc))
+    end
+  end
+
+  describe 'ordering by expires_at' do
+    let_it_be(:earlier_token) { create(:personal_access_token, expires_at: 2.days.ago) }
+    let_it_be(:later_token) { create(:personal_access_token, expires_at: 1.day.ago) }
+
+    describe '.order_expires_at_asc' do
+      it 'returns ordered list in asc order of expiry date' do
+        expect(described_class.order_expires_at_asc).to match [earlier_token, later_token]
+      end
+    end
+
+    describe '.order_expires_at_desc' do
+      it 'returns ordered list in desc order of expiry date' do
+        expect(described_class.order_expires_at_desc).to match [later_token, earlier_token]
+      end
+    end
+  end
 end

@@ -6,7 +6,7 @@ describe Milestone do
   it_behaves_like 'a timebox', :milestone
 
   describe 'MilestoneStruct#serializable_hash' do
-    let(:predefined_milestone) { described_class::MilestoneStruct.new('Test Milestone', '#test', 1) }
+    let(:predefined_milestone) { described_class::TimeboxStruct.new('Test Milestone', '#test', 1) }
 
     it 'presents the predefined milestone as a hash' do
       expect(predefined_milestone.serializable_hash).to eq(

@@ -6072,6 +6072,9 @@ msgstr ""
 msgid "Could not revoke personal access token %{personal_access_token_name}."
 msgstr ""
 
+msgid "Could not revoke project access token %{project_access_token_name}."
+msgstr ""
+
 msgid "Could not save group ID"
 msgstr ""
 
@@ -6618,6 +6621,9 @@ msgid "CycleAnalytics|project dropdown filter"
 msgstr ""
 
 msgid "CycleAnalytics|stage dropdown"
+msgstr ""
+
+msgid "DAG"
 msgstr ""
 
 msgid "DNS"
@@ -17796,6 +17802,9 @@ msgstr ""
 msgid "Revoked personal access token %{personal_access_token_name}!"
 msgstr ""
 
+msgid "Revoked project access token %{project_access_token_name}!"
+msgstr ""
+
 msgid "RightSidebar|adding a"
 msgstr ""
 
@@ -24519,6 +24528,9 @@ msgid "Your new SCIM token"
 msgstr ""
 
 msgid "Your new personal access token has been created."
+msgstr ""
+
+msgid "Your new project access token has been created."
 msgstr ""
 
 msgid "Your password isn't required to view this page. If a password or any other personal details are requested, please contact your administrator to report abuse."

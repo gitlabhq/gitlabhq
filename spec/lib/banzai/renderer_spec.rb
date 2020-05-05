@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 describe Banzai::Renderer do
+  let(:renderer) { described_class }
+
   def fake_object(fresh:)
     object = double('object')
 
@@ -40,8 +42,6 @@ describe Banzai::Renderer do
   end
 
   describe '#render_field' do
-    let(:renderer) { described_class }
-
     context 'without cache' do
       let(:commit) { fake_cacheless_object }
 
@@ -79,6 +79,59 @@ describe Banzai::Renderer do
           expect(object).to receive(:refresh_markdown_cache!).never
 
           is_expected.to eq('field_html')
+        end
+      end
+    end
+  end
+
+  describe '#post_process' do
+    let(:context_options) { {} }
+    let(:html) { 'Consequatur aperiam et nesciunt modi aut assumenda quo id. '}
+    let(:post_processed_html) { double(html_safe: 'safe doc') }
+    let(:doc) { double(to_html: post_processed_html) }
+
+    subject { renderer.post_process(html, context_options) }
+
+    context 'when xhtml' do
+      let(:context_options) { { xhtml: ' ' } }
+
+      context 'without :post_process_pipeline key' do
+        it 'uses PostProcessPipeline' do
+          expect(::Banzai::Pipeline::PostProcessPipeline).to receive(:to_document).and_return(doc)
+
+          subject
+        end
+      end
+
+      context 'with :post_process_pipeline key' do
+        let(:context_options) { { post_process_pipeline: Object, xhtml: ' ' } }
+
+        it 'uses passed post process pipeline' do
+          expect(Object).to receive(:to_document).and_return(doc)
+
+          subject
+        end
+      end
+    end
+
+    context 'when not xhtml' do
+      context 'without :post_process_pipeline key' do
+        it 'uses PostProcessPipeline' do
+          expect(::Banzai::Pipeline::PostProcessPipeline).to receive(:to_html)
+            .with(html, { only_path: true, disable_asset_proxy: true })
+            .and_return(post_processed_html)
+
+          subject
+        end
+      end
+
+      context 'with :post_process_pipeline key' do
+        let(:context_options) { { post_process_pipeline: Object } }
+
+        it 'uses passed post process pipeline' do
+          expect(Object).to receive(:to_html).and_return(post_processed_html)
+
+          subject
         end
       end
     end

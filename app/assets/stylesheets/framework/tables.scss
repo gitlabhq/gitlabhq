@@ -4,6 +4,17 @@
 }
 
 table {
+  /*
+  * TODO
+  * This is a temporary workaround until we fix the neutral
+  * color palette in https://gitlab.com/gitlab-org/gitlab/-/issues/213570
+  *
+  * Remove this code as soon as this happens
+  */
+  &.gl-table {
+    @include gl-text-gray-700;
+  }
+
   &.table {
     margin-bottom: $gl-padding;
 
@@ -32,8 +43,7 @@ table {
       }
 
       th {
-        background-color: $gray-light;
-        font-weight: $gl-font-weight-normal;
+        @include gl-bg-gray-100;
         border-bottom: 0;
 
         &.wide {

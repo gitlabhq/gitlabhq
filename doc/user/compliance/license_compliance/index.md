@@ -30,12 +30,20 @@ will be displayed in the merge request area. That is the case when you add the
 Consecutive merge requests will have something to compare to and the license
 compliance report will be shown properly.
 
-![License Compliance Widget](img/license_compliance.png)
+![License Compliance Widget](img/license_compliance_v13_0.png)
 
 If you are a project or group Maintainer, you can click on a license to be given
 the choice to allow it or deny it.
 
-![License approval decision](img/license_compliance_decision.png)
+![License approval decision](img/license_compliance_decision_v13_0.png)
+
+When GitLab detects a **Denied** license, you can view it in the [license list](#license-list).
+
+![License List](img/license_list_v13_0.png)
+
+You can view and modify existing policies from the [policies](#policies) tab.
+
+![Edit Policy](img/policies_maintainer_edit_v13_0.png)
 
 ## Use cases
 
@@ -402,7 +410,7 @@ To allow or deny a license:
    **License Compliance** section.
 1. Click the **Add a license** button.
 
-   ![License Compliance Add License](img/license_compliance_add_license_v12_3.png)
+   ![License Compliance Add License](img/license_compliance_add_license_v13_0.png)
 
 1. In the **License name** dropdown, either:
    - Select one of the available licenses. You can search for licenses in the field
@@ -416,13 +424,13 @@ To modify an existing license:
 
 1. In the **License Compliance** list, click the **Allow/Deny** dropdown to change it to the desired status.
 
-   ![License Compliance Settings](img/license_compliance_settings_v12_3.png)
+   ![License Compliance Settings](img/license_compliance_settings_v13_0.png)
 
 Searching for Licenses:
 
 1. Use the **Search** box to search for a specific license.
 
-   ![License Compliance Search](img/license_compliance_search_v12_3.png)
+   ![License Compliance Search](img/license_compliance_search_v13_0.png)
 
 ## License Compliance report under pipelines
 
@@ -465,8 +473,9 @@ in your project's sidebar, and you'll see the licenses displayed, where:
 
 - **Name:** The name of the license.
 - **Component:** The components which have this license.
+- **Policy Violation:** The license has a [license policy](#policies) marked as **Deny**.
 
-![License List](img/license_list_v12_6.png)
+![License List](img/license_list_v13_0.png)
 
 ## Policies
 
@@ -477,9 +486,9 @@ and the associated classifications for each.
 
 Policies can be configured by maintainers of the project.
 
-![Edit Policy](img/policies_maintainer_edit_v12_9.png)
-![Add Policy](img/policies_maintainer_add_v12_9.png)
+![Edit Policy](img/policies_maintainer_edit_v13_0.png)
+![Add Policy](img/policies_maintainer_add_v13_0.png)
 
 Developers of the project can view the policies configured in a project.
 
-![View Policies](img/policies_v12_9.png)
+![View Policies](img/policies_v13_0.png)

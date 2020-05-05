@@ -379,7 +379,8 @@ Widgets should now be replicated by Geo!
 1. Update `GET /geo_nodes/status` example response in `doc/api/geo_nodes.md` with new fields.
 1. Update `ee/spec/models/geo_node_status_spec.rb` and `ee/spec/factories/geo_node_statuses.rb` with new fields.
 
-To do: Add verification on secondaries.
+To do: Add verification on secondaries. This should be done as part of
+[Geo: Self Service Framework - First Implementation for Package File verification](https://gitlab.com/groups/gitlab-org/-/epics/1817)
 
 Widgets should now be verified by Geo!
 
@@ -505,7 +506,8 @@ via the GraphQL API!
 
 #### Admin UI
 
-To do.
+To do: This should be done as part of
+[Geo: Implement frontend for Self-Service Framework replicables](https://gitlab.com/groups/gitlab-org/-/epics/2525)
 
 Widget sync and verification data (aggregate and individual) should now be
 available in the Admin UI!

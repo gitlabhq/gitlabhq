@@ -328,7 +328,8 @@ export default {
             <button
               class="btn note-edit-cancel js-close-discussion-note-form"
               type="button"
-              @click="cancelHandler()"
+              data-testid="cancelBatchCommentsEnabled"
+              @click="cancelHandler(true)"
             >
               {{ __('Cancel') }}
             </button>
@@ -353,7 +354,8 @@ export default {
           <button
             class="btn btn-cancel note-edit-cancel js-close-discussion-note-form"
             type="button"
-            @click="cancelHandler()"
+            data-testid="cancel"
+            @click="cancelHandler(true)"
           >
             {{ __('Cancel') }}
           </button>

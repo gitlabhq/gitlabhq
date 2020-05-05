@@ -1,27 +1,12 @@
 # frozen_string_literal: true
 
 class Milestone < ApplicationRecord
-  # Represents a "No Milestone" state used for filtering Issues and Merge
-  # Requests that have no milestone assigned.
-  MilestoneStruct = Struct.new(:title, :name, :id) do
-    # Ensure these models match the interface required for exporting
-    def serializable_hash(_opts = {})
-      { title: title, name: name, id: id }
-    end
-  end
-
-  None = MilestoneStruct.new('No Milestone', 'No Milestone', 0)
-  Any = MilestoneStruct.new('Any Milestone', '', -1)
-  Upcoming = MilestoneStruct.new('Upcoming', '#upcoming', -2)
-  Started = MilestoneStruct.new('Started', '#started', -3)
-
   include Sortable
   include Referable
   include Timebox
   include Milestoneish
   include FromUnion
   include Importable
-  include Gitlab::SQL::Pattern
 
   prepend_if_ee('::EE::Milestone') # rubocop: disable Cop/InjectEnterpriseEditionModule
 
@@ -52,50 +37,6 @@ class Milestone < ApplicationRecord
     state :closed
 
     state :active
-  end
-
-  class << self
-    # Searches for milestones with a matching title or description.
-    #
-    # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
-    #
-    # query - The search query as a String
-    #
-    # Returns an ActiveRecord::Relation.
-    def search(query)
-      fuzzy_search(query, [:title, :description])
-    end
-
-    # Searches for milestones with a matching title.
-    #
-    # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
-    #
-    # query - The search query as a String
-    #
-    # Returns an ActiveRecord::Relation.
-    def search_title(query)
-      fuzzy_search(query, [:title])
-    end
-
-    def filter_by_state(milestones, state)
-      case state
-      when 'closed' then milestones.closed
-      when 'all' then milestones
-      else milestones.active
-      end
-    end
-
-    def count_by_state
-      reorder(nil).group(:state).count
-    end
-
-    def predefined_id?(id)
-      [Any.id, None.id, Upcoming.id, Started.id].include?(id)
-    end
-
-    def predefined?(milestone)
-      predefined_id?(milestone&.id)
-    end
   end
 
   def self.reference_prefix

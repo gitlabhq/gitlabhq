@@ -4793,7 +4793,8 @@ CREATE TABLE public.plan_limits (
     project_hooks integer DEFAULT 100 NOT NULL,
     group_hooks integer DEFAULT 50 NOT NULL,
     ci_project_subscriptions integer DEFAULT 2 NOT NULL,
-    ci_pipeline_schedules integer DEFAULT 10 NOT NULL
+    ci_pipeline_schedules integer DEFAULT 10 NOT NULL,
+    offset_pagination_limit integer DEFAULT 50000 NOT NULL
 );
 
 CREATE SEQUENCE public.plan_limits_id_seq
@@ -13603,6 +13604,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200415161021
 20200415161206
 20200415192656
+20200415203024
 20200416005331
 20200416111111
 20200416120128

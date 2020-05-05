@@ -161,18 +161,18 @@ describe('issue_note_form component', () => {
 
     describe('actions', () => {
       it('should be possible to cancel', () => {
-        // TODO: do not spy on vm
-        jest.spyOn(wrapper.vm, 'cancelHandler');
+        const cancelHandler = jest.fn();
         wrapper.setProps({
           ...props,
           isEditing: true,
         });
+        wrapper.setMethods({ cancelHandler });
 
         return wrapper.vm.$nextTick().then(() => {
-          const cancelButton = wrapper.find('.note-edit-cancel');
+          const cancelButton = wrapper.find('[data-testid="cancel"]');
           cancelButton.trigger('click');
 
-          expect(wrapper.vm.cancelHandler).toHaveBeenCalled();
+          expect(cancelHandler).toHaveBeenCalledWith(true);
         });
       });
 

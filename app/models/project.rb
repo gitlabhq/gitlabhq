@@ -1519,6 +1519,10 @@ class Project < ApplicationRecord
     end
   end
 
+  def bots
+    users.project_bot
+  end
+
   # Filters `users` to return only authorized users of the project
   def members_among(users)
     if users.is_a?(ActiveRecord::Relation) && !users.loaded?

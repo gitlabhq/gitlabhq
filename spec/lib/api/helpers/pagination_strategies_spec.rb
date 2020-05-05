@@ -6,7 +6,7 @@ describe API::Helpers::PaginationStrategies do
   subject { Class.new.include(described_class).new }
 
   let(:expected_result) { double("result") }
-  let(:relation) { double("relation") }
+  let(:relation) { double("relation", klass: "SomeClass") }
   let(:params) { {} }
 
   before do
@@ -17,18 +17,18 @@ describe API::Helpers::PaginationStrategies do
     let(:paginator) { double("paginator", paginate: expected_result, finalize: nil) }
 
     before do
-      allow(subject).to receive(:paginator).with(relation).and_return(paginator)
+      allow(subject).to receive(:paginator).with(relation, nil).and_return(paginator)
     end
 
     it 'yields paginated relation' do
-      expect { |b| subject.paginate_with_strategies(relation, &b) }.to yield_with_args(expected_result)
+      expect { |b| subject.paginate_with_strategies(relation, nil, &b) }.to yield_with_args(expected_result)
     end
 
     it 'calls #finalize with first value returned from block' do
       return_value = double
       expect(paginator).to receive(:finalize).with(return_value)
 
-      subject.paginate_with_strategies(relation) do |records|
+      subject.paginate_with_strategies(relation, nil) do |records|
         some_options = {}
         [return_value, some_options]
       end
@@ -37,7 +37,7 @@ describe API::Helpers::PaginationStrategies do
     it 'returns whatever the block returns' do
       return_value = [double, double]
 
-      result = subject.paginate_with_strategies(relation) do |records|
+      result = subject.paginate_with_strategies(relation, nil) do |records|
         return_value
       end
 
@@ -47,16 +47,77 @@ describe API::Helpers::PaginationStrategies do
 
   describe '#paginator' do
     context 'offset pagination' do
+      let(:plan_limits) { Plan.default.actual_limits }
+      let(:offset_limit) { plan_limits.offset_pagination_limit }
       let(:paginator) { double("paginator") }
 
       before do
         allow(subject).to receive(:keyset_pagination_enabled?).and_return(false)
       end
 
-      it 'delegates to OffsetPagination' do
-        expect(Gitlab::Pagination::OffsetPagination).to receive(:new).with(subject).and_return(paginator)
+      context 'when keyset pagination is available for the relation' do
+        before do
+          allow(Gitlab::Pagination::Keyset).to receive(:available_for_type?).and_return(true)
+        end
 
-        expect(subject.paginator(relation)).to eq(paginator)
+        context 'when a request scope is given' do
+          let(:params) { { per_page: 100, page: offset_limit / 100 + 1 } }
+          let(:request_scope) { double("scope", actual_limits: plan_limits) }
+
+          context 'when the scope limit is exceeded' do
+            it 'renders a 405 error' do
+              expect(subject).to receive(:error!).with(/maximum allowed offset/, 405)
+
+              subject.paginator(relation, request_scope)
+            end
+          end
+
+          context 'when the scope limit is not exceeded' do
+            let(:params) { { per_page: 100, page: offset_limit / 100 } }
+
+            it 'delegates to OffsetPagination' do
+              expect(Gitlab::Pagination::OffsetPagination).to receive(:new).with(subject).and_return(paginator)
+
+              expect(subject.paginator(relation, request_scope)).to eq(paginator)
+            end
+          end
+        end
+
+        context 'when a request scope is not given' do
+          context 'when the default limits are exceeded' do
+            let(:params) { { per_page: 100, page: offset_limit / 100 + 1 } }
+
+            it 'renders a 405 error' do
+              expect(subject).to receive(:error!).with(/maximum allowed offset/, 405)
+
+              subject.paginator(relation)
+            end
+          end
+
+          context 'when the default limits are not exceeded' do
+            let(:params) { { per_page: 100, page: offset_limit / 100 } }
+
+            it 'delegates to OffsetPagination' do
+              expect(Gitlab::Pagination::OffsetPagination).to receive(:new).with(subject).and_return(paginator)
+
+              expect(subject.paginator(relation)).to eq(paginator)
+            end
+          end
+        end
+      end
+
+      context 'when keyset pagination is not available for the relation' do
+        let(:params) { { per_page: 100, page: offset_limit / 100 + 1 } }
+
+        before do
+          allow(Gitlab::Pagination::Keyset).to receive(:available_for_type?).and_return(false)
+        end
+
+        it 'delegates to OffsetPagination' do
+          expect(Gitlab::Pagination::OffsetPagination).to receive(:new).with(subject).and_return(paginator)
+
+          expect(subject.paginator(relation)).to eq(paginator)
+        end
       end
     end
 

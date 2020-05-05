@@ -249,3 +249,30 @@ following command:
 ```ruby
 Feature.enable(:junit_pipeline_view)
 ```
+
+## Viewing JUnit screenshots on GitLab
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/202114) in GitLab 13.0.
+
+If JUnit XML files contain an `attachment` tag, GitLab parses the attachment.
+
+Upload your screenshots as [artifacts](pipelines/job_artifacts.md#artifactsreportsjunit) to GitLab. The `attachment` tag **must** contain the absolute path to the screenshots you uploaded.
+
+```xml
+<testcase time="1.00" name="Test">
+  <system-out>[[ATTACHMENT|/absolute/path/to/some/file]]</system-out>
+</testcase>
+```
+
+When [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/6061) is complete, the attached file will be visible on the pipeline details page.
+
+### Enabling the feature
+
+This feature comes with the `:junit_pipeline_screenshots_view` feature flag disabled by default.
+
+To enable this feature, ask a GitLab administrator with [Rails console access](../administration/feature_flags.md#how-to-enable-and-disable-features-behind-flags) to run the
+following command:
+
+```ruby
+Feature.enable(:junit_pipeline_screenshots_view)
+```

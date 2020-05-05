@@ -99,6 +99,29 @@ header. Such emails don't create comments on issues or merge requests.
 Sentry payloads sent to GitLab have a 1 MB maximum limit, both for security reasons
 and to limit memory consumption.
 
+## Max offset allowed via REST API for offset-based pagination
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34565) in GitLab 13.0.
+
+When using offset-based pagination in the REST API, there is a limit to the maximum
+requested offset into the set of results. This limit is only applied to endpoints that
+support keyset-based pagination. More information about pagination options can be
+found in the [API docs section on pagination](../api/README.md#pagination).
+
+To set this limit on a self-managed installation, run the following in the
+[GitLab Rails console](troubleshooting/debug.md#starting-a-rails-console-session):
+
+```ruby
+# If limits don't exist for the default plan, you can create one with:
+# Plan.default.create_limits!
+
+Plan.default.limits.update!(offset_pagination_limit: 10000)
+```
+
+- **Default offset pagination limit:** 50000
+
+NOTE: **Note:** Set the limit to `0` to disable it.
+
 ## CI/CD limits
 
 ### Number of jobs in active pipelines

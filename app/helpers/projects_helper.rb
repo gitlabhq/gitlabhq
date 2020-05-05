@@ -740,6 +740,12 @@ module ProjectsHelper
     Gitlab.config.registry.enabled &&
       can?(current_user, :destroy_container_image, project)
   end
+
+  def project_access_token_available?(project)
+    return false if ::Gitlab.com?
+
+    ::Feature.enabled?(:resource_access_token, project)
+  end
 end
 
 ProjectsHelper.prepend_if_ee('EE::ProjectsHelper')

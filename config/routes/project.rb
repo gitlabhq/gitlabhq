@@ -90,6 +90,12 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
             post :create_deploy_token, path: 'deploy_token/create'
             post :cleanup
           end
+
+          resources :access_tokens, only: [:index, :create] do
+            member do
+              put :revoke
+            end
+          end
         end
 
         resources :autocomplete_sources, only: [] do

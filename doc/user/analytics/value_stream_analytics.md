@@ -1,3 +1,10 @@
+---
+stage: Manage
+group: Analytics
+To determine the technical writer assigned to the Stage/Group associated with this page, see:
+  https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Value Stream Analytics
 
 > - Introduced as Cycle Analytics prior to GitLab 12.3 at the project level.

@@ -327,9 +327,10 @@ describe 'Pipeline', :js do
         visit_pipeline
       end
 
-      it 'shows Pipeline, Jobs and Failed Jobs tabs with link' do
+      it 'shows Pipeline, Jobs, DAG and Failed Jobs tabs with link' do
         expect(page).to have_link('Pipeline')
         expect(page).to have_link('Jobs')
+        expect(page).to have_link('DAG')
         expect(page).to have_link('Failed Jobs')
       end
 
@@ -614,6 +615,20 @@ describe 'Pipeline', :js do
         end
       end
     end
+
+    context 'when FF dag_pipeline_tab is disabled' do
+      before do
+        stub_feature_flags(dag_pipeline_tab: false)
+        visit_pipeline
+      end
+
+      it 'does not show DAG link' do
+        expect(page).to have_link('Pipeline')
+        expect(page).to have_link('Jobs')
+        expect(page).not_to have_link('DAG')
+        expect(page).to have_link('Failed Jobs')
+      end
+    end
   end
 
   context 'when user does not have access to read jobs' do
@@ -865,9 +880,10 @@ describe 'Pipeline', :js do
     end
 
     context 'page tabs' do
-      it 'shows Pipeline and Jobs tabs with link' do
+      it 'shows Pipeline, Jobs and DAG tabs with link' do
         expect(page).to have_link('Pipeline')
         expect(page).to have_link('Jobs')
+        expect(page).to have_link('DAG')
       end
 
       it 'shows counter in Jobs tab' do
@@ -1053,6 +1069,37 @@ describe 'Pipeline', :js do
         expect(current_path).to eq(pipeline_path(pipeline))
         expect(page).not_to have_content('Failed Jobs')
         expect(page).to have_selector('.pipeline-visualization')
+      end
+    end
+  end
+
+  describe 'GET /:project/pipelines/:id/dag' do
+    include_context 'pipeline builds'
+
+    let(:project) { create(:project, :repository) }
+    let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master', sha: project.commit.id) }
+
+    before do
+      visit dag_project_pipeline_path(project, pipeline)
+    end
+
+    it 'shows DAG tab pane as active' do
+      expect(page).to have_css('#js-tab-dag.active', visible: false)
+    end
+
+    context 'page tabs' do
+      it 'shows Pipeline, Jobs and DAG tabs with link' do
+        expect(page).to have_link('Pipeline')
+        expect(page).to have_link('Jobs')
+        expect(page).to have_link('DAG')
+      end
+
+      it 'shows counter in Jobs tab' do
+        expect(page.find('.js-builds-counter').text).to eq(pipeline.total_size.to_s)
+      end
+
+      it 'shows DAG tab as active' do
+        expect(page).to have_css('li.js-dag-tab-link .active')
       end
     end
   end

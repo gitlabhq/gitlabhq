@@ -89,7 +89,7 @@ downtime_check:
       - rspec_profiling/
       - tmp/capybara/
       - tmp/memory_test/
-      - junit_rspec.xml
+      - log/*.log
     reports:
       junit: junit_rspec.xml
 

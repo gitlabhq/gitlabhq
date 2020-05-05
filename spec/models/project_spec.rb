@@ -6081,6 +6081,23 @@ describe Project do
     end
   end
 
+  describe '#bots' do
+    subject { project.bots }
+
+    let_it_be(:project) { create(:project) }
+    let_it_be(:project_bot) { create(:user, :project_bot) }
+    let_it_be(:user) { create(:user) }
+
+    before_all do
+      [project_bot, user].each do |member|
+        project.add_maintainer(member)
+      end
+    end
+
+    it { is_expected.to contain_exactly(project_bot) }
+    it { is_expected.not_to include(user) }
+  end
+
   def finish_job(export_job)
     export_job.start
     export_job.finish

@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-describe Resources::CreateAccessTokenService do
-  subject { described_class.new(resource_type, resource, user, params).execute }
+describe ResourceAccessTokens::CreateService do
+  subject { described_class.new(user, resource, params).execute }
 
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :private) }
@@ -12,7 +12,7 @@ describe Resources::CreateAccessTokenService do
   describe '#execute' do
     # Created shared_examples as it will easy to include specs for group bots in https://gitlab.com/gitlab-org/gitlab/-/issues/214046
     shared_examples 'fails when user does not have the permission to create a Resource Bot' do
-      before do
+      before_all do
         resource.add_developer(user)
       end
 
@@ -56,7 +56,7 @@ describe Resources::CreateAccessTokenService do
         end
 
         context 'when user provides value' do
-          let(:params) { { name: 'Random bot' } }
+          let_it_be(:params) { { name: 'Random bot' } }
 
           it 'overrides the default value' do
             response = subject
@@ -83,12 +83,12 @@ describe Resources::CreateAccessTokenService do
             response = subject
             access_token = response.payload[:access_token]
 
-            expect(access_token.scopes).to eq(Gitlab::Auth::API_SCOPES + Gitlab::Auth::REPOSITORY_SCOPES + Gitlab::Auth.registry_scopes - [:read_user])
+            expect(access_token.scopes).to eq(Gitlab::Auth.resource_bot_scopes)
           end
         end
 
         context 'when user provides scope explicitly' do
-          let(:params) { { scopes: Gitlab::Auth::REPOSITORY_SCOPES } }
+          let_it_be(:params) { { scopes: Gitlab::Auth::REPOSITORY_SCOPES } }
 
           it 'overrides the default value' do
             response = subject
@@ -109,7 +109,7 @@ describe Resources::CreateAccessTokenService do
           end
 
           context 'when user provides value' do
-            let(:params) { { expires_at: Date.today + 1.month } }
+            let_it_be(:params) { { expires_at: Date.today + 1.month } }
 
             it 'overrides the default value' do
               response = subject
@@ -120,7 +120,7 @@ describe Resources::CreateAccessTokenService do
           end
 
           context 'when invalid scope is passed' do
-            let(:params) { { scopes: [:invalid_scope] } }
+            let_it_be(:params) { { scopes: [:invalid_scope] } }
 
             it 'returns error' do
               response = subject
@@ -145,14 +145,14 @@ describe Resources::CreateAccessTokenService do
     end
 
     context 'when resource is a project' do
-      let(:resource_type) { 'project' }
-      let(:resource) { project }
+      let_it_be(:resource_type) { 'project' }
+      let_it_be(:resource) { project }
 
       it_behaves_like 'fails when user does not have the permission to create a Resource Bot'
       it_behaves_like 'fails when flag is disabled'
 
       context 'user with valid permission' do
-        before do
+        before_all do
           resource.add_maintainer(user)
         end
 

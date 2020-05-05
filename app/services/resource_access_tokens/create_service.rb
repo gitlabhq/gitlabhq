@@ -1,13 +1,11 @@
 # frozen_string_literal: true
 
-module Resources
-  class CreateAccessTokenService < BaseService
-    attr_accessor :resource_type, :resource
-
-    def initialize(resource_type, resource, user, params = {})
-      @resource_type =  resource_type
+module ResourceAccessTokens
+  class CreateService < BaseService
+    def initialize(current_user, resource, params = {})
+      @resource_type = resource.class.name.downcase
       @resource = resource
-      @current_user = user
+      @current_user = current_user
       @params = params.dup
     end
 
@@ -32,6 +30,8 @@ module Resources
     end
 
     private
+
+    attr_reader :resource_type, :resource
 
     def feature_enabled?
       ::Feature.enabled?(:resource_access_token, resource)
@@ -85,7 +85,7 @@ module Resources
 
     def personal_access_token_params
       {
-        name: "#{resource_type}_bot",
+        name: params[:name] || "#{resource_type}_bot",
         impersonation: false,
         scopes: params[:scopes] || default_scopes,
         expires_at: params[:expires_at] || nil
@@ -93,7 +93,7 @@ module Resources
     end
 
     def default_scopes
-      Gitlab::Auth::API_SCOPES + Gitlab::Auth::REPOSITORY_SCOPES + Gitlab::Auth.registry_scopes - [:read_user]
+      Gitlab::Auth.resource_bot_scopes
     end
 
     def provision_access(resource, user)

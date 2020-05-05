@@ -13,6 +13,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   before_action do
     push_frontend_feature_flag(:junit_pipeline_view)
     push_frontend_feature_flag(:filter_pipelines_search)
+    push_frontend_feature_flag(:dag_pipeline_tab)
   end
   before_action :ensure_pipeline, only: [:show]
 
@@ -91,6 +92,10 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def builds
+    render_show
+  end
+
+  def dag
     render_show
   end
 

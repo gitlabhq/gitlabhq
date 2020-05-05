@@ -349,7 +349,7 @@ class Namespace < ApplicationRecord
     # We default to PlanLimits.new otherwise a lot of specs would fail
     # On production each plan should already have associated limits record
     # https://gitlab.com/gitlab-org/gitlab/issues/36037
-    actual_plan.limits || PlanLimits.new
+    actual_plan.actual_limits
   end
 
   def actual_plan_name

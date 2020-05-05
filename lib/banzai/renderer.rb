@@ -138,15 +138,18 @@ module Banzai
     #
     # html     - String to process
     # context  - Hash of options to customize output
-    #            :pipeline  - Symbol pipeline type
+    #            :pipeline  - Symbol pipeline type - for context transform only, defaults to :full
     #            :project   - Project
     #            :user      - User object
+    #            :post_process_pipeline - pipeline to use for post_processing - defaults to PostProcessPipeline
     #
     # Returns an HTML-safe String
     def self.post_process(html, context)
       context = Pipeline[context[:pipeline]].transform_context(context)
 
-      pipeline = Pipeline[:post_process]
+      # Use a passed class for the pipeline or default to PostProcessPipeline
+      pipeline = context.delete(:post_process_pipeline) || ::Banzai::Pipeline::PostProcessPipeline
+
       if context[:xhtml]
         pipeline.to_document(html, context).to_html(save_with: Nokogiri::XML::Node::SaveOptions::AS_XHTML)
       else
