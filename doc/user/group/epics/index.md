@@ -203,7 +203,9 @@ have a [start or due date](#start-date-and-due-date), a
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/9367) in GitLab 12.5.
 
-New issues and child epics are added to the top of their respective lists in the **Epics and Issues** tab. You can reorder the list of issues and the list of child epics. Issues and child epics cannot be intermingled.
+New issues and child epics are added to the top of their respective lists in the **Epics and Issues**
+tab. You can reorder the list of issues and the list of child epics. Issues and child epics cannot
+be intermingled.
 
 To reorder issues assigned to an epic:
 
@@ -214,6 +216,24 @@ To reorder child epics assigned to an epic:
 
 1. Go to the **Epics and Issues** tab.
 1. Drag and drop epics into the desired order.
+
+## Moving issues and child epics between epics
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33039) in GitLab 13.0.
+
+New issues and child epics are added to the top of their respective lists in the **Epics and Issues**
+tab. You can move issues and child epics from one epic to another. Issues and child epics cannot
+be intermingled.
+
+To move an issue to another epic:
+
+1. Go to the **Epics and Issues** tab.
+1. Drag and drop issues into the desired parent epic.
+
+To move child epics to another epic:
+
+1. Go to the **Epics and Issues** tab.
+1. Drag and drop epics into the desired parent epic.
 
 ## Updating epics
 

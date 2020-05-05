@@ -519,13 +519,10 @@ For details on saving and transporting Docker images as a file, see Docker's doc
      image: registry.example.com/namespace/dast:latest
      script:
         - export DAST_WEBSITE=${DAST_WEBSITE:-$(cat environment_url.txt)}
-        - /analyze -t $DAST_WEBSITE --auto-update-addons false -z"-silent"
+        - /analyze -t $DAST_WEBSITE --auto-update-addons false
    ```
 
 The option `--auto-update-addons false` instructs ZAP not to update add-ons.
-
-The option `-z` passes the quoted `-silent` parameter to ZAP. The `-silent` parameter ensures ZAP
-does not make any unsolicited requests including checking for updates.
 
 ## Reports
 

@@ -3361,7 +3361,7 @@ input EpicTreeNodeFieldsInputType {
   """
   The id of the epic_issue or issue that the actual epic or issue is switched with
   """
-  adjacentReferenceId: ID!
+  adjacentReferenceId: ID
 
   """
   The id of the epic_issue or epic that is being moved
@@ -3376,7 +3376,7 @@ input EpicTreeNodeFieldsInputType {
   """
   The type of the switch, after or before allowed
   """
-  relativePosition: MoveType!
+  relativePosition: MoveType
 }
 
 """

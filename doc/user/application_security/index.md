@@ -209,7 +209,7 @@ Any code changes cause the approvals required to reset.
 
 An approval is required when a security report:
 
-- Contains a new vulnerability of `high`, `critical`, or `unknown` severity.
+- Contains a new vulnerability of `high`, `critical`, or `unknown` severity, regardless of dismissal.
 - Is not generated during pipeline execution.
 
 An approval is optional when a security report:
