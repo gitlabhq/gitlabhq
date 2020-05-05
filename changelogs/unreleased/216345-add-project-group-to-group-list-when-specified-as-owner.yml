@@ -1,5 +1,0 @@
----
-title: Add a Project's group to list of groups when parsing for codeowner entries
-merge_request: 30934
-author:
-type: fixed
