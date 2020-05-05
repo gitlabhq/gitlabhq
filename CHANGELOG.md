@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 12.10.4 (2020-05-05)
+
+### Fixed (1 change)
+
+- Add a Project's group to list of groups when parsing for codeowner entries. !30934
+
+
 ## 12.10.2 (2020-04-30)
 
 ### Security (8 changes)
