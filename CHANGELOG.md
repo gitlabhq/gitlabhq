@@ -484,6 +484,13 @@ entry.
 - Remove store_mentions! in Snippets::CreateService. !29581 (Sashi Kumar)
 
 
+## 12.9.6 (2020-05-05)
+
+### Fixed (1 change)
+
+- Add a Project's group to list of groups when parsing for codeowner entries. !30934
+
+
 ## 12.9.5 (2020-04-30)
 
 ### Security (9 changes)
