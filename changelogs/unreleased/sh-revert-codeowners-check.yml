@@ -1,5 +1,0 @@
----
-title: Revert CODEOWNERS validation of Web requests in diff check
-merge_request: 30936
-author:
-type: fixed

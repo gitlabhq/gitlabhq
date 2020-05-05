@@ -190,6 +190,23 @@ describe Resolvers::IssuesResolver do
             expect(resolve_issues(sort: :label_priority_desc).items).to eq([label_issue2, label_issue3, label_issue1, label_issue4])
           end
         end
+
+        context 'when sorting by milestone due date' do
+          let_it_be(:project) { create(:project) }
+          let_it_be(:early_milestone) { create(:milestone, project: project, due_date: 10.days.from_now) }
+          let_it_be(:late_milestone) { create(:milestone, project: project, due_date: 30.days.from_now) }
+          let_it_be(:milestone_issue1) { create(:issue, project: project) }
+          let_it_be(:milestone_issue2) { create(:issue, project: project, milestone: early_milestone) }
+          let_it_be(:milestone_issue3) { create(:issue, project: project, milestone: late_milestone) }
+
+          it 'sorts issues ascending' do
+            expect(resolve_issues(sort: :milestone_due_asc).items).to eq([milestone_issue2, milestone_issue3, milestone_issue1])
+          end
+
+          it 'sorts issues descending' do
+            expect(resolve_issues(sort: :milestone_due_desc).items).to eq([milestone_issue3, milestone_issue2, milestone_issue1])
+          end
+        end
       end
 
       it 'returns issues user can see' do

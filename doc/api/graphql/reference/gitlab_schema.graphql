@@ -4678,6 +4678,16 @@ enum IssueSort {
   LABEL_PRIORITY_DESC
 
   """
+  Milestone due date by ascending order
+  """
+  MILESTONE_DUE_ASC
+
+  """
+  Milestone due date by descending order
+  """
+  MILESTONE_DUE_DESC
+
+  """
   Priority by ascending order
   """
   PRIORITY_ASC

@@ -6183,9 +6183,9 @@ ALTER SEQUENCE public.sprints_id_seq OWNED BY public.sprints.id;
 
 CREATE TABLE public.status_page_published_incidents (
     id bigint NOT NULL,
-    issue_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL
+    updated_at timestamp with time zone NOT NULL,
+    issue_id bigint NOT NULL
 );
 
 CREATE SEQUENCE public.status_page_published_incidents_id_seq

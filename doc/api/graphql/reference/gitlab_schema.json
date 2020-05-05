@@ -13273,6 +13273,18 @@
               "deprecationReason": null
             },
             {
+              "name": "MILESTONE_DUE_ASC",
+              "description": "Milestone due date by ascending order",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "MILESTONE_DUE_DESC",
+              "description": "Milestone due date by descending order",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "DUE_DATE_ASC",
               "description": "Due date by ascending order",
               "isDeprecated": false,

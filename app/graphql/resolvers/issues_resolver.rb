@@ -52,7 +52,9 @@ module Resolvers
 
     type Types::IssueType, null: true
 
-    NON_STABLE_CURSOR_SORTS = %i[priority_asc priority_desc label_priority_asc label_priority_desc].freeze
+    NON_STABLE_CURSOR_SORTS = %i[priority_asc priority_desc
+                                 label_priority_asc label_priority_desc
+                                 milestone_due_asc milestone_due_desc].freeze
 
     def resolve(**args)
       # The project could have been loaded in batch by `BatchLoader`.
