@@ -28,7 +28,6 @@ describe Gitlab::UrlBuilder do
 
       :group             | ->(group)         { "/groups/#{group.full_path}" }
       :group_milestone   | ->(milestone)     { "/groups/#{milestone.group.full_path}/-/milestones/#{milestone.iid}" }
-      :group_wiki        | ->(wiki)          { "/groups/#{wiki.container.full_path}/-/wikis/home" }
 
       :user              | ->(user)          { "/#{user.full_path}" }
       :personal_snippet  | ->(snippet)       { "/snippets/#{snippet.id}" }

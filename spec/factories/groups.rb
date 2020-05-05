@@ -51,11 +51,5 @@ FactoryBot.define do
     trait :owner_subgroup_creation_only do
       subgroup_creation_level { ::Gitlab::Access::OWNER_SUBGROUP_ACCESS}
     end
-
-    trait :wiki_repo do
-      after(:create) do |group|
-        raise 'Failed to create wiki repository!' unless group.create_wiki
-      end
-    end
   end
 end

@@ -191,7 +191,10 @@ describe('Actions RegistryExplorer Store', () => {
         {
           tagsPagination: {},
         },
-        [{ type: types.SET_MAIN_LOADING, payload: true }],
+        [
+          { type: types.SET_MAIN_LOADING, payload: true },
+          { type: types.SET_MAIN_LOADING, payload: false },
+        ],
         [
           {
             type: 'setShowGarbageCollectionTip',
@@ -220,8 +223,7 @@ describe('Actions RegistryExplorer Store', () => {
           { type: types.SET_MAIN_LOADING, payload: false },
         ],
         [],
-        done,
-      );
+      ).catch(() => done());
     });
   });
 
@@ -241,7 +243,10 @@ describe('Actions RegistryExplorer Store', () => {
         {
           tagsPagination: {},
         },
-        [{ type: types.SET_MAIN_LOADING, payload: true }],
+        [
+          { type: types.SET_MAIN_LOADING, payload: true },
+          { type: types.SET_MAIN_LOADING, payload: false },
+        ],
         [
           {
             type: 'setShowGarbageCollectionTip',
@@ -273,8 +278,7 @@ describe('Actions RegistryExplorer Store', () => {
           { type: types.SET_MAIN_LOADING, payload: false },
         ],
         [],
-        done,
-      );
+      ).catch(() => done());
     });
   });
 
@@ -311,9 +315,7 @@ describe('Actions RegistryExplorer Store', () => {
           { type: types.SET_MAIN_LOADING, payload: false },
         ],
         [],
-      ).catch(() => {
-        done();
-      });
+      ).catch(() => done());
     });
   });
 });

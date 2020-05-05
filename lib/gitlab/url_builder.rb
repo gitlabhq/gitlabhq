@@ -72,13 +72,8 @@ module Gitlab
       end
 
       def wiki_url(object, **options)
-        case object.container
-        when Project
+        if object.container.is_a?(Project)
           instance.project_wiki_url(object.container, Wiki::HOMEPAGE, **options)
-        when Group
-          # TODO: Use the new route for group wikis once we add it.
-          # https://gitlab.com/gitlab-org/gitlab/-/issues/211360
-          instance.group_canonical_url(object.container, **options) + "/-/wikis/#{Wiki::HOMEPAGE}"
         else
           raise NotImplementedError.new("No URL builder defined for #{object.inspect}")
         end

@@ -5,9 +5,10 @@ require 'spec_helper'
 describe Gitlab::StaticSiteEditor::Config do
   subject(:config) { described_class.new(repository, ref, file_path, return_url) }
 
-  let(:project) { create(:project, :public, :repository, name: 'project', namespace: namespace) }
-  let(:namespace) { create(:namespace, name: 'namespace') }
-  let(:repository) { project.repository }
+  let_it_be(:namespace) { create(:namespace, name: 'namespace') }
+  let_it_be(:project) { create(:project, :public, :repository, name: 'project', namespace: namespace) }
+  let_it_be(:repository) { project.repository }
+
   let(:ref) { 'master' }
   let(:file_path) { 'README.md' }
   let(:return_url) { 'http://example.com' }
@@ -24,8 +25,15 @@ describe Gitlab::StaticSiteEditor::Config do
         project: 'project',
         project_id: project.id,
         return_url: 'http://example.com',
-        is_supported_content: 'true'
+        is_supported_content: 'true',
+        base_url: '/namespace/project/-/sse/master%2FREADME.md'
       )
+    end
+
+    context 'when file path is nested' do
+      let(:file_path) { 'lib/README.md' }
+
+      it { is_expected.to include(base_url: '/namespace/project/-/sse/master%2Flib%2FREADME.md') }
     end
 
     context 'when branch is not master' do
@@ -53,7 +61,7 @@ describe Gitlab::StaticSiteEditor::Config do
     end
 
     context 'when repository is empty' do
-      let(:project) { create(:project_empty_repo) }
+      let(:repository) { create(:project_empty_repo).repository }
 
       it { is_expected.to include(is_supported_content: 'false') }
     end

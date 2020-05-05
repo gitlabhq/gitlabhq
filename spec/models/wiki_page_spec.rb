@@ -150,15 +150,7 @@ describe WikiPage do
             enable_front_matter_for(container)
           end
 
-          context 'with a project container' do
-            it_behaves_like 'a page with front-matter'
-          end
-
-          context 'with a group container' do
-            let(:container) { create(:group) }
-
-            it_behaves_like 'a page with front-matter'
-          end
+          it_behaves_like 'a page with front-matter'
         end
       end
     end
@@ -512,15 +504,7 @@ describe WikiPage do
               enable_front_matter_for(container)
             end
 
-            context 'with a project container' do
-              it_behaves_like 'able to update front-matter'
-            end
-
-            context 'with a group container' do
-              let(:container) { create(:group) }
-
-              it_behaves_like 'able to update front-matter'
-            end
+            it_behaves_like 'able to update front-matter'
           end
         end
 
@@ -826,17 +810,8 @@ describe WikiPage do
       expect(subject).not_to eq(other_page)
     end
 
-    it 'returns false for page with the same slug on a different container of the same type' do
+    it 'returns false for page with the same slug on a different container' do
       other_page = create(:wiki_page, title: existing_page.slug)
-
-      expect(subject.slug).to eq(other_page.slug)
-      expect(subject.container).not_to eq(other_page.container)
-      expect(subject).not_to eq(other_page)
-    end
-
-    it 'returns false for page with the same slug on a different container type' do
-      group = create(:group, name: container.name)
-      other_page = create(:wiki_page, title: existing_page.slug, container: group)
 
       expect(subject.slug).to eq(other_page.slug)
       expect(subject.container).not_to eq(other_page.container)

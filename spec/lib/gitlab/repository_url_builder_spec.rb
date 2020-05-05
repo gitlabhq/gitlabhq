@@ -10,7 +10,6 @@ describe Gitlab::RepositoryUrlBuilder do
       :project          | ->(project) { project.full_path }
       :project_snippet  | ->(snippet) { "#{snippet.project.full_path}/snippets/#{snippet.id}" }
       :project_wiki     | ->(wiki)    { "#{wiki.container.full_path}.wiki" }
-      :group_wiki       | ->(wiki)    { "#{wiki.container.full_path}.wiki" }
 
       :personal_snippet | ->(snippet) { "snippets/#{snippet.id}" }
     end

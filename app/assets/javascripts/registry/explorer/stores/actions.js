@@ -66,7 +66,7 @@ export const requestDeleteTag = ({ commit, dispatch, state }, { tag, params }) =
       dispatch('setShowGarbageCollectionTip', true);
       return dispatch('requestTagsList', { pagination: state.tagsPagination, params });
     })
-    .catch(() => {
+    .finally(() => {
       commit(types.SET_MAIN_LOADING, false);
     });
 };
@@ -83,7 +83,7 @@ export const requestDeleteTags = ({ commit, dispatch, state }, { ids, params }) 
       dispatch('setShowGarbageCollectionTip', true);
       return dispatch('requestTagsList', { pagination: state.tagsPagination, params });
     })
-    .catch(() => {
+    .finally(() => {
       commit(types.SET_MAIN_LOADING, false);
     });
 };

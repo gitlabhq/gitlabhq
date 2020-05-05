@@ -5713,6 +5713,9 @@ msgstr ""
 msgid "ContainerRegistry|Regular expressions such as %{codeStart}.*-test%{codeEnd} or %{codeStart}dev-.*%{codeEnd} are supported. To select all tags, use %{codeStart}.*%{codeEnd}"
 msgstr ""
 
+msgid "ContainerRegistry|Remember to run %{docLinkStart}garbage collection%{docLinkEnd} to remove the stale data from storage."
+msgstr ""
+
 msgid "ContainerRegistry|Remove repository"
 msgstr ""
 
@@ -5727,12 +5730,6 @@ msgstr[1] ""
 msgid "ContainerRegistry|Retention policy has been Enabled"
 msgstr ""
 
-msgid "ContainerRegistry|Something went wrong while deleting the tag."
-msgstr ""
-
-msgid "ContainerRegistry|Something went wrong while deleting the tags."
-msgstr ""
-
 msgid "ContainerRegistry|Something went wrong while fetching the expiration policy."
 msgstr ""
 
@@ -5740,6 +5737,12 @@ msgid "ContainerRegistry|Something went wrong while fetching the repository list
 msgstr ""
 
 msgid "ContainerRegistry|Something went wrong while fetching the tags list."
+msgstr ""
+
+msgid "ContainerRegistry|Something went wrong while marking the tag for deletion."
+msgstr ""
+
+msgid "ContainerRegistry|Something went wrong while marking the tags for deletion."
 msgstr ""
 
 msgid "ContainerRegistry|Something went wrong while scheduling %{title} for deletion. Please try again."
@@ -5751,16 +5754,16 @@ msgstr ""
 msgid "ContainerRegistry|Tag"
 msgstr ""
 
-msgid "ContainerRegistry|Tag deleted successfully"
-msgstr ""
-
 msgid "ContainerRegistry|Tag expiration policy"
 msgstr ""
 
 msgid "ContainerRegistry|Tag expiration policy is designed to:"
 msgstr ""
 
-msgid "ContainerRegistry|Tags deleted successfully"
+msgid "ContainerRegistry|Tag successfully marked for deletion."
+msgstr ""
+
+msgid "ContainerRegistry|Tags successfully marked for deletion."
 msgstr ""
 
 msgid "ContainerRegistry|Tags with names matching this regex pattern will %{italicStart}be preserved:%{italicEnd}"
@@ -5791,9 +5794,6 @@ msgid "ContainerRegistry|There are no container images stored for this project"
 msgstr ""
 
 msgid "ContainerRegistry|There was an error during the deletion of this image repository, please try again."
-msgstr ""
-
-msgid "ContainerRegistry|This Registry contains deleted image tag data. Remember to run  %{docLinkStart}garbage collection%{docLinkEnd} to remove the stale data from storage."
 msgstr ""
 
 msgid "ContainerRegistry|This image has no active tags"

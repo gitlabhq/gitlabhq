@@ -145,7 +145,6 @@ db:check-schema:
     - .db-job-base
     - .rails:rules:ee-mr-and-master-only
   script:
-    - scripts/regenerate-schema
     - source scripts/schema_changed.sh
 
 db:migrate-from-v11.11.0:

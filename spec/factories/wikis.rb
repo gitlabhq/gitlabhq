@@ -17,9 +17,5 @@ FactoryBot.define do
 
       container { project }
     end
-
-    factory :group_wiki do
-      container { association(:group, :wiki_repo) }
-    end
   end
 end

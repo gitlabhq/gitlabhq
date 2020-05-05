@@ -1,15 +1,16 @@
 import { mount } from '@vue/test-utils';
-import { GlTable, GlPagination, GlSkeletonLoader } from '@gitlab/ui';
+import { GlTable, GlPagination, GlSkeletonLoader, GlAlert, GlLink } from '@gitlab/ui';
 import Tracking from '~/tracking';
 import stubChildren from 'helpers/stub_children';
 import component from '~/registry/explorer/pages/details.vue';
-import store from '~/registry/explorer/stores/';
-import { SET_MAIN_LOADING } from '~/registry/explorer/stores/mutation_types/';
+import { createStore } from '~/registry/explorer/stores/';
+import { SET_MAIN_LOADING, SET_INITIAL_STATE } from '~/registry/explorer/stores/mutation_types/';
 import {
   DELETE_TAG_SUCCESS_MESSAGE,
   DELETE_TAG_ERROR_MESSAGE,
   DELETE_TAGS_SUCCESS_MESSAGE,
   DELETE_TAGS_ERROR_MESSAGE,
+  ADMIN_GARBAGE_COLLECTION_TIP,
 } from '~/registry/explorer/constants';
 import { tagsListResponse } from '../mock_data';
 import { GlModal } from '../stubs';
@@ -18,6 +19,7 @@ import { $toast } from '../../shared/mocks';
 describe('Details Page', () => {
   let wrapper;
   let dispatchSpy;
+  let store;
 
   const findDeleteModal = () => wrapper.find(GlModal);
   const findPagination = () => wrapper.find(GlPagination);
@@ -30,6 +32,7 @@ describe('Details Page', () => {
   const findAllCheckboxes = () => wrapper.findAll('.js-row-checkbox');
   const findCheckedCheckboxes = () => findAllCheckboxes().filter(c => c.attributes('checked'));
   const findFirsTagColumn = () => wrapper.find('.js-tag-column');
+  const findAlert = () => wrapper.find(GlAlert);
 
   const routeId = window.btoa(JSON.stringify({ name: 'foo', tags_path: 'bar' }));
 
@@ -55,6 +58,7 @@ describe('Details Page', () => {
   };
 
   beforeEach(() => {
+    store = createStore();
     dispatchSpy = jest.spyOn(store, 'dispatch');
     store.dispatch('receiveTagsListSuccess', tagsListResponse);
     jest.spyOn(Tracking, 'event');
@@ -62,6 +66,7 @@ describe('Details Page', () => {
 
   afterEach(() => {
     wrapper.destroy();
+    wrapper = null;
   });
 
   describe('when isLoading is true', () => {
@@ -328,24 +333,8 @@ describe('Details Page', () => {
           });
           // itemsToBeDeleted is not represented in the DOM, is used as parking variable between selected and deleted items
           expect(wrapper.vm.itemsToBeDeleted).toEqual([]);
+          expect(wrapper.vm.selectedItems).toEqual([]);
           expect(findCheckedCheckboxes()).toHaveLength(0);
-        });
-
-        it('show success toast on successful delete', () => {
-          return wrapper.vm.handleSingleDelete(0).then(() => {
-            expect(wrapper.vm.$toast.show).toHaveBeenCalledWith(DELETE_TAG_SUCCESS_MESSAGE, {
-              type: 'success',
-            });
-          });
-        });
-
-        it('show error toast on erred delete', () => {
-          dispatchSpy.mockRejectedValue();
-          return wrapper.vm.handleSingleDelete(0).then(() => {
-            expect(wrapper.vm.$toast.show).toHaveBeenCalledWith(DELETE_TAG_ERROR_MESSAGE, {
-              type: 'error',
-            });
-          });
         });
       });
 
@@ -365,23 +354,6 @@ describe('Details Page', () => {
           expect(wrapper.vm.itemsToBeDeleted).toEqual([]);
           expect(findCheckedCheckboxes()).toHaveLength(0);
         });
-
-        it('show success toast on successful delete', () => {
-          return wrapper.vm.handleMultipleDelete(0).then(() => {
-            expect(wrapper.vm.$toast.show).toHaveBeenCalledWith(DELETE_TAGS_SUCCESS_MESSAGE, {
-              type: 'success',
-            });
-          });
-        });
-
-        it('show error toast on erred delete', () => {
-          dispatchSpy.mockRejectedValue();
-          return wrapper.vm.handleMultipleDelete(0).then(() => {
-            expect(wrapper.vm.$toast.show).toHaveBeenCalledWith(DELETE_TAGS_ERROR_MESSAGE, {
-              type: 'error',
-            });
-          });
-        });
       });
     });
 
@@ -394,5 +366,109 @@ describe('Details Page', () => {
         });
       });
     });
+  });
+
+  describe('Delete alert', () => {
+    const config = {
+      garbageCollectionHelpPagePath: 'foo',
+    };
+
+    describe('when the user is an admin', () => {
+      beforeEach(() => {
+        store.commit(SET_INITIAL_STATE, { ...config, isAdmin: true });
+      });
+
+      afterEach(() => {
+        store.commit(SET_INITIAL_STATE, config);
+      });
+
+      describe.each`
+        deleteType                | successTitle                   | errorTitle
+        ${'handleSingleDelete'}   | ${DELETE_TAG_SUCCESS_MESSAGE}  | ${DELETE_TAG_ERROR_MESSAGE}
+        ${'handleMultipleDelete'} | ${DELETE_TAGS_SUCCESS_MESSAGE} | ${DELETE_TAGS_ERROR_MESSAGE}
+      `('behaves correctly on $deleteType', ({ deleteType, successTitle, errorTitle }) => {
+        describe('when delete is successful', () => {
+          beforeEach(() => {
+            dispatchSpy.mockResolvedValue();
+            mountComponent();
+            return wrapper.vm[deleteType]('foo');
+          });
+
+          it('alert exists', () => {
+            expect(findAlert().exists()).toBe(true);
+          });
+
+          it('alert body contains admin tip', () => {
+            expect(
+              findAlert()
+                .text()
+                .replace(/\s\s+/gm, ' '),
+            ).toBe(ADMIN_GARBAGE_COLLECTION_TIP.replace(/%{\w+}/gm, ''));
+          });
+
+          it('alert body contains link', () => {
+            const alertLink = findAlert().find(GlLink);
+            expect(alertLink.exists()).toBe(true);
+            expect(alertLink.attributes('href')).toBe(config.garbageCollectionHelpPagePath);
+          });
+
+          it('alert title is appropriate', () => {
+            expect(findAlert().attributes('title')).toBe(successTitle);
+          });
+        });
+
+        describe('when delete is not successful', () => {
+          beforeEach(() => {
+            mountComponent();
+            dispatchSpy.mockRejectedValue();
+            return wrapper.vm[deleteType]('foo');
+          });
+
+          it('alert exist and text is appropriate', () => {
+            expect(findAlert().exists()).toBe(true);
+            expect(findAlert().text()).toBe(errorTitle);
+          });
+        });
+      });
+    });
+
+    describe.each`
+      deleteType                | successTitle                   | errorTitle
+      ${'handleSingleDelete'}   | ${DELETE_TAG_SUCCESS_MESSAGE}  | ${DELETE_TAG_ERROR_MESSAGE}
+      ${'handleMultipleDelete'} | ${DELETE_TAGS_SUCCESS_MESSAGE} | ${DELETE_TAGS_ERROR_MESSAGE}
+    `(
+      'when the user is not an admin alert behaves correctly on $deleteType',
+      ({ deleteType, successTitle, errorTitle }) => {
+        beforeEach(() => {
+          store.commit('SET_INITIAL_STATE', { ...config });
+        });
+
+        describe('when delete is successful', () => {
+          beforeEach(() => {
+            dispatchSpy.mockResolvedValue();
+            mountComponent();
+            return wrapper.vm[deleteType]('foo');
+          });
+
+          it('alert exist and text is appropriate', () => {
+            expect(findAlert().exists()).toBe(true);
+            expect(findAlert().text()).toBe(successTitle);
+          });
+        });
+
+        describe('when delete is not successful', () => {
+          beforeEach(() => {
+            mountComponent();
+            dispatchSpy.mockRejectedValue();
+            return wrapper.vm[deleteType]('foo');
+          });
+
+          it('alert exist and text is appropriate', () => {
+            expect(findAlert().exists()).toBe(true);
+            expect(findAlert().text()).toBe(errorTitle);
+          });
+        });
+      },
+    );
   });
 });

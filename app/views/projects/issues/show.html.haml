@@ -86,9 +86,9 @@
 
   .content-block.emoji-block.emoji-block-sticky
     .row
-      .col-md-12.col-lg-6.js-noteable-awards
+      .col-md-12.col-lg-4.js-noteable-awards
         = render 'award_emoji/awards_block', awardable: @issue, inline: true
-      .col-md-12.col-lg-6.new-branch-col
+      .col-md-12.col-lg-8.new-branch-col
         #js-vue-sort-issue-discussions
         #js-vue-discussion-filter{ data: { default_filter: current_user&.notes_filter_for(@issue), notes_filters: UserPreference.notes_filters.to_json } }
         = render 'new_branch' if show_new_branch_button?
