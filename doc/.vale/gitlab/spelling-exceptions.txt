@@ -201,6 +201,7 @@ namespaced
 namespaces
 Nanoc
 NGINX
+npm
 Nurtch
 OAuth
 Okta
@@ -214,6 +215,8 @@ Packagist
 parallelization
 parallelizations
 performant
+Pipfile
+Pipfiles
 Piwik
 PgBouncer
 plaintext
@@ -259,6 +262,7 @@ reindexed
 reindexes
 reindexing
 relicensing
+remediations
 Repmgr
 Repmgrd
 requeue
@@ -286,6 +290,7 @@ runtime
 runtimes
 Salesforce
 SAML
+sbt
 Sendmail
 Sentry
 serverless
@@ -301,6 +306,7 @@ Slack
 Slony
 SMTP
 Sourcegraph
+spidering
 Splunk
 SSH
 storable

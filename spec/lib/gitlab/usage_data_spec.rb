@@ -116,12 +116,20 @@ describe Gitlab::UsageData, :aggregate_failures do
       subject { described_class.usage_data_counters }
 
       it { is_expected.to all(respond_to :totals) }
+      it { is_expected.to all(respond_to :fallback_totals) }
 
       describe 'the results of calling #totals on all objects in the array' do
         subject { described_class.usage_data_counters.map(&:totals) }
 
         it { is_expected.to all(be_a Hash) }
         it { is_expected.to all(have_attributes(keys: all(be_a Symbol), values: all(be_a Integer))) }
+      end
+
+      describe 'the results of calling #fallback_totals on all objects in the array' do
+        subject { described_class.usage_data_counters.map(&:fallback_totals) }
+
+        it { is_expected.to all(be_a Hash) }
+        it { is_expected.to all(have_attributes(keys: all(be_a Symbol), values: all(eq(-1)))) }
       end
 
       it 'does not have any conflicts' do
@@ -574,6 +582,30 @@ describe Gitlab::UsageData, :aggregate_failures do
 
     it 'returns the value when given' do
       expect(described_class.alt_usage_data(1)).to eq 1
+    end
+  end
+
+  describe '#redis_usage_data' do
+    context 'with block given' do
+      it 'returns the fallback when it gets an error' do
+        expect(described_class.redis_usage_data { raise ::Redis::CommandError } ).to eq(-1)
+      end
+
+      it 'returns the evaluated block when given' do
+        expect(described_class.redis_usage_data { 1 }).to eq(1)
+      end
+    end
+
+    context 'with counter given' do
+      it 'returns the falback values for all counter keys when it gets an error' do
+        allow(::Gitlab::UsageDataCounters::WikiPageCounter).to receive(:totals).and_raise(::Redis::CommandError)
+        expect(described_class.redis_usage_data(::Gitlab::UsageDataCounters::WikiPageCounter)).to eql(::Gitlab::UsageDataCounters::WikiPageCounter.fallback_totals)
+      end
+
+      it 'returns the totals when couter is given' do
+        allow(::Gitlab::UsageDataCounters::WikiPageCounter).to receive(:totals).and_return({ wiki_pages_create: 2 })
+        expect(described_class.redis_usage_data(::Gitlab::UsageDataCounters::WikiPageCounter)).to eql({ wiki_pages_create: 2 })
+      end
     end
   end
 end

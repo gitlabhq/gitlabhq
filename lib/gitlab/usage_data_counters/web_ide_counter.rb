@@ -4,54 +4,44 @@ module Gitlab
   module UsageDataCounters
     class WebIdeCounter
       extend RedisCounter
-
-      COMMITS_COUNT_KEY = 'WEB_IDE_COMMITS_COUNT'
-      MERGE_REQUEST_COUNT_KEY = 'WEB_IDE_MERGE_REQUESTS_COUNT'
-      VIEWS_COUNT_KEY = 'WEB_IDE_VIEWS_COUNT'
-      PREVIEW_COUNT_KEY = 'WEB_IDE_PREVIEWS_COUNT'
+      KNOWN_EVENTS = %i[commits views merge_requests previews].freeze
+      PREFIX = 'web_ide'
 
       class << self
         def increment_commits_count
-          increment(COMMITS_COUNT_KEY)
-        end
-
-        def total_commits_count
-          total_count(COMMITS_COUNT_KEY)
+          increment(redis_key('commits'))
         end
 
         def increment_merge_requests_count
-          increment(MERGE_REQUEST_COUNT_KEY)
-        end
-
-        def total_merge_requests_count
-          total_count(MERGE_REQUEST_COUNT_KEY)
+          increment(redis_key('merge_requests'))
         end
 
         def increment_views_count
-          increment(VIEWS_COUNT_KEY)
-        end
-
-        def total_views_count
-          total_count(VIEWS_COUNT_KEY)
+          increment(redis_key('views'))
         end
 
         def increment_previews_count
           return unless Gitlab::CurrentSettings.web_ide_clientside_preview_enabled?
 
-          increment(PREVIEW_COUNT_KEY)
-        end
-
-        def total_previews_count
-          total_count(PREVIEW_COUNT_KEY)
+          increment(redis_key('previews'))
         end
 
         def totals
-          {
-            web_ide_commits: total_commits_count,
-            web_ide_views: total_views_count,
-            web_ide_merge_requests: total_merge_requests_count,
-            web_ide_previews: total_previews_count
-          }
+          KNOWN_EVENTS.map { |event| [counter_key(event), total_count(redis_key(event))] }.to_h
+        end
+
+        def fallback_totals
+          KNOWN_EVENTS.map { |event| [counter_key(event), -1] }.to_h
+        end
+
+        private
+
+        def redis_key(event)
+          "#{PREFIX}_#{event}_count".upcase
+        end
+
+        def counter_key(event)
+          "#{PREFIX}_#{event}".to_sym
         end
       end
     end

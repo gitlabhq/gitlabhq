@@ -42,7 +42,7 @@ describe Projects::UsagePingController do
         it 'increments the counter' do
           expect do
             subject
-          end.to change { Gitlab::UsageDataCounters::WebIdeCounter.total_previews_count }.by(1)
+          end.to change { Gitlab::UsageDataCounters::WebIdeCounter.total_count('WEB_IDE_PREVIEWS_COUNT') }.by(1)
         end
       end
     end
