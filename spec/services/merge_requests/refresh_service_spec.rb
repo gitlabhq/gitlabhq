@@ -209,19 +209,6 @@ describe MergeRequests::RefreshService do
           end
         end
 
-        context 'when ci_use_merge_request_ref feature flag is false' do
-          before do
-            stub_feature_flags(ci_use_merge_request_ref: false)
-          end
-
-          it 'create legacy detached merge request pipeline for non-fork merge request' do
-            subject
-
-            expect(@merge_request.pipelines_for_merge_request.first)
-              .to be_legacy_detached_merge_request_pipeline
-          end
-        end
-
         context "when branch pipeline was created before a detaced merge request pipeline has been created" do
           before do
             create(:ci_pipeline, project: @merge_request.source_project,

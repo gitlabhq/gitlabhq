@@ -27,7 +27,7 @@ module Ci
     def git_depth
       if git_depth_variable
         git_depth_variable[:value]
-      elsif Feature.enabled?(:ci_project_git_depth, default_enabled: true)
+      else
         project.ci_default_git_depth
       end.to_i
     end

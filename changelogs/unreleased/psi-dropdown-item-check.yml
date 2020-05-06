@@ -1,0 +1,5 @@
+---
+title: Fix checkmark position on dropdowns
+merge_request: 30685
+author:
+type: fixed

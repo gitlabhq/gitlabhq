@@ -93,7 +93,6 @@ canceled.
 Can be caused by some disabled feature flags. Please make sure that
 the following feature flags are enabled on your GitLab instance:
 
-- `:ci_use_merge_request_ref`
 - `:merge_ref_auto_sync`
 
 To check and set these feature flag values, please ask an administrator to:
@@ -107,14 +106,12 @@ To check and set these feature flag values, please ask an administrator to:
 1. Check if the flags are enabled or not:
 
    ```ruby
-   Feature.enabled?(:ci_use_merge_request_ref)
    Feature.enabled?(:merge_ref_auto_sync)
    ```
 
 1. If needed, enable the feature flags:
 
    ```ruby
-   Feature.enable(:ci_use_merge_request_ref)
    Feature.enable(:merge_ref_auto_sync)
    ```
 
