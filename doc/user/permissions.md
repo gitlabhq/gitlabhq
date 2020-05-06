@@ -150,6 +150,7 @@ The following table depicts the various user permission levels in a project.
 | Manage [push rules](../push_rules/push_rules.md)  |         |            |             | ✓        | ✓      |
 | Switch visibility level                           |         |            |             |          | ✓      |
 | Transfer project to another namespace             |         |            |             |          | ✓      |
+| Remove fork relationship                          |         |            |             |          | ✓      |
 | Remove project                                    |         |            |             |          | ✓      |
 | Delete issues                                     |         |            |             |          | ✓      |
 | Disable notification emails                       |         |            |             |          | ✓      |

@@ -296,7 +296,7 @@ describe User, :do_not_mock_admin_mode do
       subject { build(:user) }
     end
 
-    it_behaves_like 'an object with email-formated attributes', :public_email, :notification_email do
+    it_behaves_like 'an object with RFC3696 compliant email-formated attributes', :public_email, :notification_email do
       subject { build(:user).tap { |user| user.emails << build(:email, email: email_value) } }
     end
 
@@ -916,7 +916,6 @@ describe User, :do_not_mock_admin_mode do
             user.tap { |u| u.update!(email: new_email) }.reload
           end.to change(user, :unconfirmed_email).to(new_email)
         end
-
         it 'does not change :notification_email' do
           expect do
             user.tap { |u| u.update!(email: new_email) }.reload

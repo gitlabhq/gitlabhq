@@ -4,7 +4,7 @@ require 'spec_helper'
 
 describe Email do
   describe 'validations' do
-    it_behaves_like 'an object with email-formated attributes', :email do
+    it_behaves_like 'an object with RFC3696 compliant email-formated attributes', :email do
       subject { build(:email) }
     end
   end

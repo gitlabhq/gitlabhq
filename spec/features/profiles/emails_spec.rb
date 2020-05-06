@@ -31,6 +31,15 @@ describe 'Profile > Emails' do
       expect(email).to be_nil
       expect(page).to have_content('Email has already been taken')
     end
+
+    it 'does not add an invalid email' do
+      fill_in('Email', with: 'test.@example.com')
+      click_button('Add email address')
+
+      email = user.emails.find_by(email: email)
+      expect(email).to be_nil
+      expect(page).to have_content('Email is invalid')
+    end
   end
 
   it 'User removes email' do

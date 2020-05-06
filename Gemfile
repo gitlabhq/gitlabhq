@@ -495,3 +495,6 @@ gem 'mail', '= 2.7.1'
 
 # File encryption
 gem 'lockbox', '~> 0.3.3'
+
+# Email validation
+gem 'valid_email', '~> 0.1'

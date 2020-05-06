@@ -1,7 +1,3 @@
-- if Feature.disabled?(:monaco_snippets)
-  - content_for :page_specific_javascripts do
-    = page_specific_javascript_tag('lib/ace.js')
-
 - if Feature.enabled?(:snippets_edit_vue)
   #js-snippet-edit.snippet-form{ data: {'project_path': @snippet.project&.full_path, 'snippet-gid': @snippet.new_record? ? '' : @snippet.to_global_id, 'markdown-preview-path': preview_markdown_path(parent), 'markdown-docs-path': help_page_path('user/markdown'), 'visibility-help-link': help_page_path("public_access/public_access") } }
 - else

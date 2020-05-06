@@ -137,7 +137,7 @@ export default {
     },
 
     isDropdownOpen() {
-      return this.$el.classList.contains('open');
+      return this.$el.classList.contains('show');
     },
 
     pipelineActionRequestComplete() {

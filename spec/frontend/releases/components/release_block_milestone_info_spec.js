@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { GlProgressBar, GlLink, GlBadge, GlDeprecatedButton } from '@gitlab/ui';
+import { GlProgressBar, GlLink, GlBadge, GlButton } from '@gitlab/ui';
 import { trimText } from 'helpers/text_helper';
 import ReleaseBlockMilestoneInfo from '~/releases/components/release_block_milestone_info.vue';
 import { milestones as originalMilestones } from '../mock_data';
@@ -106,7 +106,7 @@ describe('Release block milestone info', () => {
 
     const clickShowMoreFewerButton = () => {
       milestoneListContainer()
-        .find(GlDeprecatedButton)
+        .find(GlButton)
         .trigger('click');
 
       return wrapper.vm.$nextTick();

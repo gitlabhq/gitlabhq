@@ -6,7 +6,6 @@ shared_examples_for 'snippet editor' do
   before do
     stub_feature_flags(snippets_vue: false)
     stub_feature_flags(snippets_edit_vue: false)
-    stub_feature_flags(monaco_snippets: flag)
     sign_in(user)
     visit new_snippet_path
   end
@@ -23,7 +22,7 @@ shared_examples_for 'snippet editor' do
     fill_in 'personal_snippet_description', with: 'My Snippet **Description**'
 
     page.within('.file-editor') do
-      el = flag == true ? find('.inputarea') : find('.ace_text-input', visible: false)
+      el = find('.inputarea')
       el.send_keys 'Hello World!'
     end
   end
@@ -136,7 +135,7 @@ shared_examples_for 'snippet editor' do
     fill_in 'personal_snippet_title', with: 'My Snippet Title'
     page.within('.file-editor') do
       find(:xpath, "//input[@id='personal_snippet_file_name']").set 'snippet+file+name'
-      el = flag == true ? find('.inputarea') : find('.ace_text-input', visible: false)
+      el = find('.inputarea')
       el.send_keys 'Hello World!'
     end
 
@@ -154,15 +153,5 @@ describe 'User creates snippet', :js do
 
   let_it_be(:user) { create(:user) }
 
-  context 'when using Monaco' do
-    it_behaves_like "snippet editor" do
-      let(:flag) { true }
-    end
-  end
-
-  context 'when using ACE' do
-    it_behaves_like "snippet editor" do
-      let(:flag) { false }
-    end
-  end
+  it_behaves_like "snippet editor"
 end

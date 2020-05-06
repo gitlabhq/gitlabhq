@@ -405,8 +405,6 @@ merge request with new or changed docs is submitted, are:
     - [`internal_anchors`](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab/ci/docs.gitlab-ci.yml#L69)
       checks that all internal anchors (ex: `[link](../index.md#internal_anchor)`)
       are valid.
-- If any code or the `doc/README.md` file is changed, a full pipeline will run, which
-  runs tests for [`/help`](#gitlab-help-tests).
 
 ### Running tests
 
