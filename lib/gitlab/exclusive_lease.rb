@@ -12,6 +12,9 @@ module Gitlab
   # ExclusiveLease.
   #
   class ExclusiveLease
+    PREFIX = 'gitlab:exclusive_lease'
+    NoKey = Class.new(ArgumentError)
+
     LUA_CANCEL_SCRIPT = <<~EOS.freeze
       local key, uuid = KEYS[1], ARGV[1]
       if redis.call("get", key) == uuid then
@@ -34,13 +37,21 @@ module Gitlab
     end
 
     def self.cancel(key, uuid)
+      return unless key.present?
+
       Gitlab::Redis::SharedState.with do |redis|
-        redis.eval(LUA_CANCEL_SCRIPT, keys: [redis_shared_state_key(key)], argv: [uuid])
+        redis.eval(LUA_CANCEL_SCRIPT, keys: [ensure_prefixed_key(key)], argv: [uuid])
       end
     end
 
     def self.redis_shared_state_key(key)
-      "gitlab:exclusive_lease:#{key}"
+      "#{PREFIX}:#{key}"
+    end
+
+    def self.ensure_prefixed_key(key)
+      raise NoKey unless key.present?
+
+      key.start_with?(PREFIX) ? key : redis_shared_state_key(key)
     end
 
     # Removes any existing exclusive_lease from redis
@@ -93,6 +104,11 @@ module Gitlab
 
         ttl if ttl.positive?
       end
+    end
+
+    # Gives up this lease, allowing it to be obtained by others.
+    def cancel
+      self.class.cancel(@redis_shared_state_key, @uuid)
     end
   end
 end

@@ -557,12 +557,7 @@ For details on saving and transporting Docker images as a file, see Docker's doc
 
    dast:
      image: registry.example.com/namespace/dast:latest
-     script:
-        - export DAST_WEBSITE=${DAST_WEBSITE:-$(cat environment_url.txt)}
-        - /analyze -t $DAST_WEBSITE --auto-update-addons false
    ```
-
-The option `--auto-update-addons false` instructs ZAP not to update add-ons.
 
 ## Reports
 

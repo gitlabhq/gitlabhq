@@ -2,59 +2,78 @@
 
 require_relative '../../qa'
 
-# This script deletes all test ssh keys (with titles including 'key for ssh tests' or 'key for audit event test') of a user specified by ENV['GITLAB_USERNAME']
-# Required environment variables: GITLAB_QA_ACCESS_TOKEN, GITLAB_ADDRESS and GITLAB_USERNAME
+# This script deletes all selected test ssh keys for a specific user
+# Keys can be selected by a string matching part of the key's title and by created date
+#   - Specify `title_portion` to delete only keys that include the string provided
+#   - Specify `delete_before` to delete only keys that were created before the given date
+#
+# If `dry_run` is true the script will list the keys by title and indicate whether each will be deleted
+#
+# Required environment variables: GITLAB_QA_ACCESS_TOKEN and GITLAB_ADDRESS
+#   - GITLAB_QA_ACCESS_TOKEN should have API access and belong to the user whose keys will be deleted
 
 module QA
   module Tools
     class DeleteTestSSHKeys
       include Support::Api
 
-      def initialize
+      ITEMS_PER_PAGE = '100'
+
+      def initialize(title_portion: 'E2E test key:', delete_before: Date.today.to_s, dry_run: false)
         raise ArgumentError, "Please provide GITLAB_ADDRESS" unless ENV['GITLAB_ADDRESS']
         raise ArgumentError, "Please provide GITLAB_QA_ACCESS_TOKEN" unless ENV['GITLAB_QA_ACCESS_TOKEN']
-        raise ArgumentError, "Please provide GITLAB_USERNAME" unless ENV['GITLAB_USERNAME']
 
         @api_client = Runtime::API::Client.new(ENV['GITLAB_ADDRESS'], personal_access_token: ENV['GITLAB_QA_ACCESS_TOKEN'])
-        @username = ENV['GITLAB_USERNAME']
+        @title_portion = title_portion
+        @delete_before = Date.parse(delete_before)
+        @dry_run = dry_run
       end
 
       def run
         STDOUT.puts 'Running...'
 
-        user_id = fetch_user_id
-        test_ssh_key_ids = fetch_test_ssh_key_ids(user_id)
+        keys_head_response = head Runtime::API::Request.new(@api_client, "/user/keys", per_page: ITEMS_PER_PAGE).url
+        total_pages = keys_head_response.headers[:x_total_pages]
+
+        test_ssh_key_ids = fetch_test_ssh_key_ids(total_pages)
         STDOUT.puts "Number of test ssh keys to be deleted: #{test_ssh_key_ids.length}"
 
-        delete_ssh_keys(user_id, test_ssh_key_ids) unless test_ssh_key_ids.empty?
+        return if dry_run?
+
+        delete_ssh_keys(test_ssh_key_ids) unless test_ssh_key_ids.empty?
         STDOUT.puts "\nDone"
       end
 
       private
 
-      def fetch_user_id
-        get_user_response = get Runtime::API::Request.new(@api_client, "/users?username=#{@username}").url
-        user = JSON.parse(get_user_response.body).first
-        raise "Unexpected user found. Expected #{@username}, found #{user['username']}" unless user['username'] == @username
+      attr_reader :dry_run
+      alias_method :dry_run?, :dry_run
 
-        user["id"]
-      end
-
-      def delete_ssh_keys(user_id, ssh_key_ids)
+      def delete_ssh_keys(ssh_key_ids)
         STDOUT.puts "Deleting #{ssh_key_ids.length} ssh keys..."
         ssh_key_ids.each do |key_id|
-          delete_response = delete Runtime::API::Request.new(@api_client, "/users/#{user_id}/keys/#{key_id}").url
+          delete_response = delete Runtime::API::Request.new(@api_client, "/user/keys/#{key_id}").url
           dot_or_f = delete_response.code == 204 ? "\e[32m.\e[0m" : "\e[31mF\e[0m"
           print dot_or_f
         end
       end
 
-      def fetch_test_ssh_key_ids(user_id)
-        get_keys_response = get Runtime::API::Request.new(@api_client, "/users/#{user_id}/keys").url
-        JSON.parse(get_keys_response.body)
-          .select { |key| (key["title"].include?('key for ssh tests') || key["title"].include?('key for audit event test')) }
-          .map { |key| key['id'] }
-          .uniq
+      def fetch_test_ssh_key_ids(pages)
+        key_ids = []
+
+        pages.to_i.times do |page_no|
+          get_keys_response = get Runtime::API::Request.new(@api_client, "/user/keys", page: (page_no + 1).to_s, per_page: ITEMS_PER_PAGE).url
+          keys = JSON.parse(get_keys_response.body).select do |key|
+            to_delete = key['title'].include?(@title_portion) && Date.parse(key['created_at']) < @delete_before
+
+            puts "Key title: #{key['title']}\tcreated_at: #{key['created_at']}\tdelete? #{to_delete}" if dry_run?
+
+            to_delete
+          end
+          key_ids.concat(keys.map { |key| key['id'] })
+        end
+
+        key_ids.uniq
       end
     end
   end

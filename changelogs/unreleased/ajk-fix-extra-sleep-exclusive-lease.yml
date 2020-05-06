@@ -1,0 +1,5 @@
+---
+title: Remove extra sleep when obtaining exclusive lease
+merge_request: 30654
+author:
+type: fixed

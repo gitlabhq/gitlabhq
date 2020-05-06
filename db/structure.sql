@@ -5171,6 +5171,27 @@ CREATE SEQUENCE public.project_repository_states_id_seq
 
 ALTER SEQUENCE public.project_repository_states_id_seq OWNED BY public.project_repository_states.id;
 
+CREATE TABLE public.project_repository_storage_moves (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    project_id bigint NOT NULL,
+    state smallint DEFAULT 1 NOT NULL,
+    source_storage_name text NOT NULL,
+    destination_storage_name text NOT NULL,
+    CONSTRAINT project_repository_storage_moves_destination_storage_name CHECK ((char_length(destination_storage_name) <= 255)),
+    CONSTRAINT project_repository_storage_moves_source_storage_name CHECK ((char_length(source_storage_name) <= 255))
+);
+
+CREATE SEQUENCE public.project_repository_storage_moves_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.project_repository_storage_moves_id_seq OWNED BY public.project_repository_storage_moves.id;
+
 CREATE TABLE public.project_settings (
     project_id integer NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -7640,6 +7661,8 @@ ALTER TABLE ONLY public.project_repositories ALTER COLUMN id SET DEFAULT nextval
 
 ALTER TABLE ONLY public.project_repository_states ALTER COLUMN id SET DEFAULT nextval('public.project_repository_states_id_seq'::regclass);
 
+ALTER TABLE ONLY public.project_repository_storage_moves ALTER COLUMN id SET DEFAULT nextval('public.project_repository_storage_moves_id_seq'::regclass);
+
 ALTER TABLE ONLY public.project_statistics ALTER COLUMN id SET DEFAULT nextval('public.project_statistics_id_seq'::regclass);
 
 ALTER TABLE ONLY public.project_tracing_settings ALTER COLUMN id SET DEFAULT nextval('public.project_tracing_settings_id_seq'::regclass);
@@ -8524,6 +8547,9 @@ ALTER TABLE ONLY public.project_repositories
 
 ALTER TABLE ONLY public.project_repository_states
     ADD CONSTRAINT project_repository_states_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.project_repository_storage_moves
+    ADD CONSTRAINT project_repository_storage_moves_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY public.project_settings
     ADD CONSTRAINT project_settings_pkey PRIMARY KEY (project_id);
@@ -10188,6 +10214,8 @@ CREATE INDEX index_project_repositories_on_shard_id ON public.project_repositori
 
 CREATE UNIQUE INDEX index_project_repository_states_on_project_id ON public.project_repository_states USING btree (project_id);
 
+CREATE INDEX index_project_repository_storage_moves_on_project_id ON public.project_repository_storage_moves USING btree (project_id);
+
 CREATE UNIQUE INDEX index_project_settings_on_push_rule_id ON public.project_settings USING btree (push_rule_id);
 
 CREATE INDEX index_project_statistics_on_namespace_id ON public.project_statistics USING btree (namespace_id);
@@ -11773,6 +11801,9 @@ ALTER TABLE ONLY public.merge_request_diff_files
 
 ALTER TABLE ONLY public.status_page_settings
     ADD CONSTRAINT fk_rails_506e5ba391 FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.project_repository_storage_moves
+    ADD CONSTRAINT fk_rails_5106dbd44a FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.x509_commit_signatures
     ADD CONSTRAINT fk_rails_53fe41188f FOREIGN KEY (x509_certificate_id) REFERENCES public.x509_certificates(id) ON DELETE CASCADE;
@@ -13575,6 +13606,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200407171133
 20200407171417
 20200407182205
+20200407222647
 20200408110856
 20200408133211
 20200408153842
@@ -13638,5 +13670,6 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200424050250
 20200424101920
 20200427064130
+20200429015603
 \.
 

@@ -48,6 +48,10 @@ Prometheus alerts can be set up in both:
 - [GitLab-managed Prometheus](../project/integrations/prometheus.md#setting-up-alerts-for-prometheus-metrics) and
 - [Self-managed Prometheus](../project/integrations/prometheus.md#external-prometheus-instances) installations.
 
+#### Alert Bot user
+
+Behind the scenes, Prometheus alerts are created by the special Alert Bot user creating issues. This user cannot be removed but does not count toward the license limit count.
+
 ### Alert endpoint
 
 GitLab can accept alerts from any source via a generic webhook receiver. When

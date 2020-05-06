@@ -47,9 +47,9 @@ RSpec.shared_examples 'moves repository to another storage' do |repository_type|
 
       old_repository_path = repository.full_path
 
-      result = subject.execute('test_second_storage')
+      result = subject.execute
 
-      expect(result[:status]).to eq(:success)
+      expect(result).to be_success
       expect(project).not_to be_repository_read_only
       expect(project.repository_storage).to eq('test_second_storage')
       expect(gitlab_shell.repository_exists?('default', old_project_repository_path)).to be(false)
@@ -62,7 +62,7 @@ RSpec.shared_examples 'moves repository to another storage' do |repository_type|
       end
 
       it 'does not enqueue a GC run' do
-        expect { subject.execute('test_second_storage') }
+        expect { subject.execute }
           .not_to change(GitGarbageCollectWorker.jobs, :count)
       end
     end
@@ -75,23 +75,25 @@ RSpec.shared_examples 'moves repository to another storage' do |repository_type|
       it 'does not enqueue a GC run if housekeeping is disabled' do
         stub_application_setting(housekeeping_enabled: false)
 
-        expect { subject.execute('test_second_storage') }
+        expect { subject.execute }
           .not_to change(GitGarbageCollectWorker.jobs, :count)
       end
 
       it 'enqueues a GC run' do
-        expect { subject.execute('test_second_storage') }
+        expect { subject.execute }
           .to change(GitGarbageCollectWorker.jobs, :count).by(1)
       end
     end
   end
 
   context 'when the filesystems are the same' do
-    it 'bails out and does nothing' do
-      result = subject.execute(project.repository_storage)
+    let(:destination) { project.repository_storage }
 
-      expect(result[:status]).to eq(:error)
-      expect(result[:message]).to match(/SameFilesystemError/)
+    it 'bails out and does nothing' do
+      result = subject.execute
+
+      expect(result).to be_error
+      expect(result.message).to match(/SameFilesystemError/)
     end
   end
 
@@ -114,9 +116,9 @@ RSpec.shared_examples 'moves repository to another storage' do |repository_type|
 
       expect(GitlabShellWorker).not_to receive(:perform_async)
 
-      result = subject.execute('test_second_storage')
+      result = subject.execute
 
-      expect(result[:status]).to eq(:error)
+      expect(result).to be_error
       expect(project).not_to be_repository_read_only
       expect(project.repository_storage).to eq('default')
     end
@@ -142,9 +144,9 @@ RSpec.shared_examples 'moves repository to another storage' do |repository_type|
 
       expect(GitlabShellWorker).not_to receive(:perform_async)
 
-      result = subject.execute('test_second_storage')
+      result = subject.execute
 
-      expect(result[:status]).to eq(:error)
+      expect(result).to be_error
       expect(project).not_to be_repository_read_only
       expect(project.repository_storage).to eq('default')
     end

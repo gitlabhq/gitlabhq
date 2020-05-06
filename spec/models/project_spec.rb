@@ -115,6 +115,7 @@ describe Project do
     it { is_expected.to have_many(:alert_management_alerts) }
     it { is_expected.to have_many(:jira_imports) }
     it { is_expected.to have_many(:metrics_users_starred_dashboards).inverse_of(:project) }
+    it { is_expected.to have_many(:repository_storage_moves) }
 
     it_behaves_like 'model with repository' do
       let_it_be(:container) { create(:project, :repository, path: 'somewhere') }
@@ -2837,12 +2838,16 @@ describe Project do
     end
 
     it 'schedules the transfer of the repository to the new storage and locks the project' do
-      expect(ProjectUpdateRepositoryStorageWorker).to receive(:perform_async).with(project.id, 'test_second_storage')
+      expect(ProjectUpdateRepositoryStorageWorker).to receive(:perform_async).with(project.id, 'test_second_storage', repository_storage_move_id: anything)
 
       project.change_repository_storage('test_second_storage')
       project.save!
 
       expect(project).to be_repository_read_only
+      expect(project.repository_storage_moves.last).to have_attributes(
+        source_storage_name: "default",
+        destination_storage_name: "test_second_storage"
+      )
     end
 
     it "doesn't schedule the transfer if the repository is already read-only" do

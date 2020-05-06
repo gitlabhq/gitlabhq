@@ -489,6 +489,7 @@ project:
 - compliance_framework_setting
 - metrics_users_starred_dashboards
 - alert_management_alerts
+- repository_storage_moves
 award_emoji:
 - awardable
 - user
