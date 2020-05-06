@@ -141,7 +141,7 @@ class MergeRequestDiff < ApplicationRecord
   after_create :save_git_content, unless: :importing?
   after_create_commit :set_as_latest_diff, unless: :importing?
 
-  after_save :update_external_diff_store, if: -> { !importing? && saved_change_to_external_diff? }
+  after_save :update_external_diff_store
 
   def self.find_by_diff_refs(diff_refs)
     find_by(start_commit_sha: diff_refs.start_sha, head_commit_sha: diff_refs.head_sha, base_commit_sha: diff_refs.base_sha)
@@ -401,8 +401,10 @@ class MergeRequestDiff < ApplicationRecord
   end
 
   def update_external_diff_store
-    update_column(:external_diff_store, external_diff.object_store) if
-      has_attribute?(:external_diff_store)
+    return unless has_attribute?(:external_diff_store)
+    return unless saved_change_to_external_diff? || saved_change_to_stored_externally?
+
+    update_column(:external_diff_store, external_diff.object_store)
   end
 
   def saved_change_to_external_diff?

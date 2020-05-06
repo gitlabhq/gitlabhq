@@ -1,5 +1,5 @@
-- user = signature.commit.committer
 - user_email = signature.x509_certificate.email
+- user = signature.user
 
 - if user
   = link_to user_path(user), class: 'gpg-popover-user-link' do

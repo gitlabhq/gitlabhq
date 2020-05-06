@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 describe MergeRequestDiff do
+  using RSpec::Parameterized::TableSyntax
+
   include RepoHelpers
 
   let(:diff_with_commits) { create(:merge_request).merge_request_diff }
@@ -125,18 +127,71 @@ describe MergeRequestDiff do
     end
   end
 
+  describe '#update_external_diff_store' do
+    let_it_be(:merge_request) { create(:merge_request) }
+
+    let(:diff) { merge_request.merge_request_diff }
+    let(:store) { diff.external_diff.object_store }
+
+    where(:change_stored_externally, :change_external_diff) do
+      false | false
+      false | true
+      true  | false
+      true  | true
+    end
+
+    with_them do
+      it do
+        diff.stored_externally = true if change_stored_externally
+        diff.external_diff = "new-filename" if change_external_diff
+
+        update_store = receive(:update_column).with(:external_diff_store, store)
+
+        if change_stored_externally || change_external_diff
+          expect(diff).to update_store
+        else
+          expect(diff).not_to update_store
+        end
+
+        diff.save!
+      end
+    end
+  end
+
   describe '#migrate_files_to_external_storage!' do
+    let(:uploader) { ExternalDiffUploader }
+    let(:file_store) { uploader::Store::LOCAL }
+    let(:remote_store) { uploader::Store::REMOTE }
     let(:diff) { create(:merge_request).merge_request_diff }
 
-    it 'converts from in-database to external storage' do
+    it 'converts from in-database to external file storage' do
       expect(diff).not_to be_stored_externally
 
       stub_external_diffs_setting(enabled: true)
-      expect(diff).to receive(:save!)
+
+      expect(diff).to receive(:save!).and_call_original
 
       diff.migrate_files_to_external_storage!
 
       expect(diff).to be_stored_externally
+      expect(diff.external_diff_store).to eq(file_store)
+    end
+
+    it 'converts from in-database to external object storage' do
+      expect(diff).not_to be_stored_externally
+
+      stub_external_diffs_setting(enabled: true)
+
+      # Without direct_upload: true, the files would be saved to disk, and a
+      # background job would be enqueued to move the file to object storage
+      stub_external_diffs_object_storage(uploader, direct_upload: true)
+
+      expect(diff).to receive(:save!).and_call_original
+
+      diff.migrate_files_to_external_storage!
+
+      expect(diff).to be_stored_externally
+      expect(diff.external_diff_store).to eq(remote_store)
     end
 
     it 'does nothing with an external diff' do

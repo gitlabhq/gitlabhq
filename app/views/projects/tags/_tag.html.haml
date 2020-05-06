@@ -30,6 +30,9 @@
           = markdown_field(release, :description)
 
   .row-fixed-content.controls.flex-row
+    - if tag.has_signature?
+      = render partial: 'projects/commit/signature', object: tag.signature
+
     = render 'projects/buttons/download', project: @project, ref: tag.name, pipeline: @tags_pipelines[tag.name]
 
     - if can?(current_user, :admin_tag, @project)

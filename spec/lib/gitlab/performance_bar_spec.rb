@@ -38,7 +38,7 @@ describe Gitlab::PerformanceBar do
     end
   end
 
-  it { expect(described_class.l1_cache_backend).to eq(Gitlab::ThreadMemoryCache.cache_backend) }
+  it { expect(described_class.l1_cache_backend).to eq(Gitlab::ProcessMemoryCache.cache_backend) }
   it { expect(described_class.l2_cache_backend).to eq(Rails.cache) }
 
   describe '.enabled_for_user?' do

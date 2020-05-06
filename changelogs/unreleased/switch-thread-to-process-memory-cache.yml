@@ -1,0 +1,5 @@
+---
+title: Use process-wide cache for application settings and performance bar
+merge_request: 31135
+author:
+type: performance

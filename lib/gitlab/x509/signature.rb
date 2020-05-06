@@ -22,6 +22,10 @@ module Gitlab
         X509Certificate.safe_create!(certificate_attributes) unless verified_signature.nil?
       end
 
+      def user
+        User.find_by_any_email(@email)
+      end
+
       def verified_signature
         strong_memoize(:verified_signature) { verified_signature? }
       end

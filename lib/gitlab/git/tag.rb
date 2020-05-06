@@ -66,6 +66,27 @@ module Gitlab
         @raw_tag.tagger
       end
 
+      def has_signature?
+        signature_type != :NONE
+      end
+
+      def signature_type
+        @raw_tag.signature_type || :NONE
+      end
+
+      def signature
+        return unless has_signature?
+
+        case signature_type
+        when :PGP
+          nil # not implemented, see https://gitlab.com/gitlab-org/gitlab/issues/19260
+        when :X509
+          X509::Tag.new(@raw_tag).signature
+        else
+          nil
+        end
+      end
+
       private
 
       def message_from_gitaly_tag

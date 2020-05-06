@@ -229,4 +229,164 @@ describe Gitlab::X509::Signature do
       end
     end
   end
+
+  describe '#user' do
+    signature = described_class.new(
+      X509Helpers::User1.signed_tag_signature,
+      X509Helpers::User1.signed_tag_base_data,
+      X509Helpers::User1.certificate_email,
+      X509Helpers::User1.signed_commit_time
+    )
+
+    context 'if email is assigned to a user' do
+      let!(:user) { create(:user, email: X509Helpers::User1.certificate_email) }
+
+      it 'returns user' do
+        expect(signature.user).to eq(user)
+      end
+    end
+
+    it 'if email is not assigned to a user, return nil' do
+      expect(signature.user).to be_nil
+    end
+  end
+
+  context 'tag signature' do
+    let(:certificate_attributes) do
+      {
+        subject_key_identifier: X509Helpers::User1.tag_certificate_subject_key_identifier,
+        subject: X509Helpers::User1.certificate_subject,
+        email: X509Helpers::User1.certificate_email,
+        serial_number: X509Helpers::User1.tag_certificate_serial
+      }
+    end
+
+    let(:issuer_attributes) do
+      {
+        subject_key_identifier: X509Helpers::User1.tag_issuer_subject_key_identifier,
+        subject: X509Helpers::User1.tag_certificate_issuer,
+        crl_url: X509Helpers::User1.tag_certificate_crl
+      }
+    end
+
+    context 'verified signature' do
+      context 'with trusted certificate store' do
+        before do
+          store = OpenSSL::X509::Store.new
+          certificate = OpenSSL::X509::Certificate.new X509Helpers::User1.trust_cert
+          store.add_cert(certificate)
+          allow(OpenSSL::X509::Store).to receive(:new).and_return(store)
+        end
+
+        it 'returns a verified signature if email does match' do
+          signature = described_class.new(
+            X509Helpers::User1.signed_tag_signature,
+            X509Helpers::User1.signed_tag_base_data,
+            X509Helpers::User1.certificate_email,
+            X509Helpers::User1.signed_commit_time
+          )
+
+          expect(signature.x509_certificate).to have_attributes(certificate_attributes)
+          expect(signature.x509_certificate.x509_issuer).to have_attributes(issuer_attributes)
+          expect(signature.verified_signature).to be_truthy
+          expect(signature.verification_status).to eq(:verified)
+        end
+
+        it 'returns an unverified signature if email does not match' do
+          signature = described_class.new(
+            X509Helpers::User1.signed_tag_signature,
+            X509Helpers::User1.signed_tag_base_data,
+            "gitlab@example.com",
+            X509Helpers::User1.signed_commit_time
+          )
+
+          expect(signature.x509_certificate).to have_attributes(certificate_attributes)
+          expect(signature.x509_certificate.x509_issuer).to have_attributes(issuer_attributes)
+          expect(signature.verified_signature).to be_truthy
+          expect(signature.verification_status).to eq(:unverified)
+        end
+
+        it 'returns an unverified signature if email does match and time is wrong' do
+          signature = described_class.new(
+            X509Helpers::User1.signed_tag_signature,
+            X509Helpers::User1.signed_tag_base_data,
+            X509Helpers::User1.certificate_email,
+            Time.new(2020, 2, 22)
+          )
+
+          expect(signature.x509_certificate).to have_attributes(certificate_attributes)
+          expect(signature.x509_certificate.x509_issuer).to have_attributes(issuer_attributes)
+          expect(signature.verified_signature).to be_falsey
+          expect(signature.verification_status).to eq(:unverified)
+        end
+
+        it 'returns an unverified signature if certificate is revoked' do
+          signature = described_class.new(
+            X509Helpers::User1.signed_tag_signature,
+            X509Helpers::User1.signed_tag_base_data,
+            X509Helpers::User1.certificate_email,
+            X509Helpers::User1.signed_commit_time
+          )
+
+          expect(signature.verification_status).to eq(:verified)
+
+          signature.x509_certificate.revoked!
+
+          expect(signature.verification_status).to eq(:unverified)
+        end
+      end
+
+      context 'without trusted certificate within store' do
+        before do
+          store = OpenSSL::X509::Store.new
+          allow(OpenSSL::X509::Store).to receive(:new)
+              .and_return(
+                store
+              )
+        end
+
+        it 'returns an unverified signature' do
+          signature = described_class.new(
+            X509Helpers::User1.signed_tag_signature,
+            X509Helpers::User1.signed_tag_base_data,
+            X509Helpers::User1.certificate_email,
+            X509Helpers::User1.signed_commit_time
+          )
+
+          expect(signature.x509_certificate).to have_attributes(certificate_attributes)
+          expect(signature.x509_certificate.x509_issuer).to have_attributes(issuer_attributes)
+          expect(signature.verified_signature).to be_falsey
+          expect(signature.verification_status).to eq(:unverified)
+        end
+      end
+    end
+
+    context 'invalid signature' do
+      it 'returns nil' do
+        signature = described_class.new(
+          X509Helpers::User1.signed_tag_signature.tr('A', 'B'),
+          X509Helpers::User1.signed_tag_base_data,
+          X509Helpers::User1.certificate_email,
+          X509Helpers::User1.signed_commit_time
+        )
+        expect(signature.x509_certificate).to be_nil
+        expect(signature.verified_signature).to be_falsey
+        expect(signature.verification_status).to eq(:unverified)
+      end
+    end
+
+    context 'invalid message' do
+      it 'returns nil' do
+        signature = described_class.new(
+          X509Helpers::User1.signed_tag_signature,
+          'x',
+          X509Helpers::User1.certificate_email,
+          X509Helpers::User1.signed_commit_time
+        )
+        expect(signature.x509_certificate).to be_nil
+        expect(signature.verified_signature).to be_falsey
+        expect(signature.verification_status).to eq(:unverified)
+      end
+    end
+  end
 end

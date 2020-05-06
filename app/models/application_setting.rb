@@ -421,7 +421,7 @@ class ApplicationSetting < ApplicationRecord
   # can cause a significant amount of load on Redis, let's cache it in
   # memory.
   def self.cache_backend
-    Gitlab::ThreadMemoryCache.cache_backend
+    Gitlab::ProcessMemoryCache.cache_backend
   end
 
   def recaptcha_or_login_protection_enabled

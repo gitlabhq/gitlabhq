@@ -2,7 +2,7 @@
 type: concepts, howto
 ---
 
-# Signing commits with X.509
+# Signing commits and tags with X.509
 
 [X.509](https://en.wikipedia.org/wiki/X.509) is a standard format for public key
 certificates issued by a public or private Public Key Infrastructure (PKI).
@@ -16,7 +16,7 @@ instead of a web of trust with GPG.
 
 GitLab uses its own certificate store and therefore defines the trust chain.
 
-For a commit to be *verified* by GitLab:
+For a commit or tag to be *verified* by GitLab:
 
 - The signing certificate email must match a verified email address used by the committer in GitLab.
 - The Certificate Authority has to be trusted by the GitLab instance, see also
@@ -26,6 +26,11 @@ For a commit to be *verified* by GitLab:
 - The signing time is equal or later then commit time.
 
 NOTE: **Note:** Certificate revocation lists are checked on a daily basis via background worker.
+
+NOTE: **Note:** Self signed certificates without `authorityKeyIdentifier`,
+`subjectKeyIdentifier`, and `crlDistributionPoints` are not supported. We
+recommend using certificates from a PKI that are in line with
+[RFC 5280](https://tools.ietf.org/html/rfc5280).
 
 ## Obtaining an X.509 key pair
 
@@ -97,4 +102,32 @@ To verify that a commit is signed, you can use the `--show-signature` flag:
 
 ```sh
 git log --show-signature
+```
+
+## Signing tags
+
+After you have [associated your X.509 certificate with Git](#associating-your-x509-certificate-with-git) you
+can start signing your tags:
+
+1. Tag like you used to, the only difference is the addition of the `-s` flag:
+
+   ```sh
+   git tag -s v1.1.1 -m "My signed tag"
+   ```
+
+1. Push to GitLab and check that your tags [are verified](#verifying-tags).
+
+If you don't want to type the `-s` flag every time you tag, you can tell Git
+to sign your tags automatically:
+
+```sh
+git config --global tag.gpgsign true
+```
+
+## Verifying tags
+
+To verify that a tag is signed, you can use the `--verify` flag:
+
+```sh
+git tag --verify v1.1.1
 ```

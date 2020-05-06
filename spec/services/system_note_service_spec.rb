@@ -462,7 +462,8 @@ describe SystemNoteService do
     describe "existing reference" do
       before do
         allow(JIRA::Resource::Remotelink).to receive(:all).and_return([])
-        message = "[#{author.name}|http://localhost/#{author.username}] mentioned this issue in [a commit of #{project.full_path}|http://localhost/#{project.full_path}/-/commit/#{commit.id}]:\n'#{commit.title.chomp}'"
+        message = double('message')
+        allow(message).to receive(:include?) { true }
         allow_next_instance_of(JIRA::Resource::Issue) do |instance|
           allow(instance).to receive(:comments).and_return([OpenStruct.new(body: message)])
         end

@@ -117,7 +117,7 @@ module Gitlab
       # the migration can succeed, to achieve that, we'll identify in migration retries
       # that the path is invalid
       def set_file_path_error(error)
-        @invalid_path_error = error.message.downcase.start_with?('invalid path', 'path cannot include directory traversal')
+        @invalid_path_error = error.is_a?(SnippetRepository::InvalidPathError)
       end
     end
   end

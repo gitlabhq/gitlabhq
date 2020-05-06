@@ -3410,12 +3410,6 @@ msgstr ""
 msgid "Business metrics (Custom)"
 msgstr ""
 
-msgid "Buy EE"
-msgstr ""
-
-msgid "Buy GitLab Enterprise Edition"
-msgstr ""
-
 msgid "Buy more Pipeline minutes"
 msgstr ""
 
@@ -5593,16 +5587,7 @@ msgstr ""
 msgid "Connection timed out"
 msgstr ""
 
-msgid "Contact an owner of group %{namespace_name} to upgrade the plan."
-msgstr ""
-
-msgid "Contact owner %{link_start}%{owner_name}%{link_end} to upgrade the plan."
-msgstr ""
-
 msgid "Contact sales to upgrade"
-msgstr ""
-
-msgid "Contact your Administrator to upgrade your license."
 msgstr ""
 
 msgid "Container Registry"
@@ -8572,9 +8557,6 @@ msgstr ""
 msgid "Estimated"
 msgstr ""
 
-msgid "Event Actions"
-msgstr ""
-
 msgid "EventFilterBy|Filter by all"
 msgstr ""
 
@@ -9793,10 +9775,7 @@ msgstr ""
 msgid "Geo|Adjust your filters/search criteria above. If you believe this may be an error, please refer to the %{linkStart}Geo Troubleshooting%{linkEnd} documentation for more information."
 msgstr ""
 
-msgid "Geo|All"
-msgstr ""
-
-msgid "Geo|All %{replicable_type}"
+msgid "Geo|All %{replicable_name}"
 msgstr ""
 
 msgid "Geo|All projects"
@@ -11306,9 +11285,6 @@ msgstr ""
 msgid "Improve Merge Requests and customer support with GitLab Enterprise Edition."
 msgstr ""
 
-msgid "Improve issues management with Issue weight and GitLab Enterprise Edition."
-msgstr ""
-
 msgid "Improve search with Advanced Global Search and GitLab Enterprise Edition."
 msgstr ""
 
@@ -11411,6 +11387,12 @@ msgstr ""
 msgid "Insights"
 msgstr ""
 
+msgid "Insights|Some items are not visible beacuse the project was filtered out in the insights.yml file (see the projects.only config for more information)."
+msgstr ""
+
+msgid "Insights|This project is filtered out in the insights.yml file (see the projects.only config for more information)."
+msgstr ""
+
 msgid "Install"
 msgstr ""
 
@@ -11459,6 +11441,30 @@ msgid "Integrations"
 msgstr ""
 
 msgid "Integrations allow you to integrate GitLab with other applications"
+msgstr ""
+
+msgid "Integrations|All details"
+msgstr ""
+
+msgid "Integrations|Comment detail:"
+msgstr ""
+
+msgid "Integrations|Comment settings:"
+msgstr ""
+
+msgid "Integrations|Enable comments"
+msgstr ""
+
+msgid "Integrations|Includes Standard plus entire commit message, commit hash, and issue IDs"
+msgstr ""
+
+msgid "Integrations|Includes commit title and branch"
+msgstr ""
+
+msgid "Integrations|Standard"
+msgstr ""
+
+msgid "Integrations|When a Jira issue is mentioned in a commit or merge request a remote link and comment (if enabled) will be created."
 msgstr ""
 
 msgid "Interested parties can even contribute by pushing commits if they want to."
@@ -11762,6 +11768,12 @@ msgid "Jira integration not configured."
 msgstr ""
 
 msgid "Jira project: %{importProject}"
+msgstr ""
+
+msgid "JiraService| on branch %{branch_link}"
+msgstr ""
+
+msgid "JiraService|%{user_link} mentioned this issue in %{entity_link} of %{project_link}%{branch}:{quote}%{entity_message}{quote}"
 msgstr ""
 
 msgid "JiraService|Events for %{noteable_model_name} are disabled."
@@ -12189,6 +12201,9 @@ msgstr ""
 msgid "Learn more about Web Terminal"
 msgstr ""
 
+msgid "Learn more about X.509 signed commits"
+msgstr ""
+
 msgid "Learn more about adding certificates to your project by following the %{docs_link_start}documentation on GitLab Pages%{docs_link_end}."
 msgstr ""
 
@@ -12208,9 +12223,6 @@ msgid "Learn more about signing commits"
 msgstr ""
 
 msgid "Learn more about the dependency list"
-msgstr ""
-
-msgid "Learn more about x509 signed commits"
 msgstr ""
 
 msgid "Learn more in the"
@@ -16671,10 +16683,28 @@ msgstr ""
 msgid "Promoted issue to an epic."
 msgstr ""
 
+msgid "Promotions|Buy EE"
+msgstr ""
+
+msgid "Promotions|Buy GitLab Enterprise Edition"
+msgstr ""
+
+msgid "Promotions|Contact an owner of group %{namespace_name} to upgrade the plan."
+msgstr ""
+
+msgid "Promotions|Contact owner %{link_start}%{owner_name}%{link_end} to upgrade the plan."
+msgstr ""
+
+msgid "Promotions|Contact your Administrator to upgrade your license."
+msgstr ""
+
 msgid "Promotions|Don't show me this again"
 msgstr ""
 
 msgid "Promotions|Epics let you manage your portfolio of projects more efficiently and with less effort by tracking groups of issues that share a theme, across projects and milestones."
+msgstr ""
+
+msgid "Promotions|Improve issues management with Issue weight and GitLab Enterprise Edition."
 msgstr ""
 
 msgid "Promotions|Learn more"
@@ -16683,10 +16713,19 @@ msgstr ""
 msgid "Promotions|See the other features in the %{subscription_link_start}bronze plan%{subscription_link_end}"
 msgstr ""
 
+msgid "Promotions|Start GitLab Ultimate trial"
+msgstr ""
+
 msgid "Promotions|This feature is locked."
 msgstr ""
 
 msgid "Promotions|Upgrade plan"
+msgstr ""
+
+msgid "Promotions|Upgrade your plan"
+msgstr ""
+
+msgid "Promotions|Weight"
 msgstr ""
 
 msgid "Promotions|Weighting your issue"
@@ -19774,9 +19813,6 @@ msgstr ""
 msgid "Stars"
 msgstr ""
 
-msgid "Start GitLab Ultimate trial"
-msgstr ""
-
 msgid "Start Web Terminal"
 msgstr ""
 
@@ -22641,9 +22677,6 @@ msgid "Updating"
 msgstr ""
 
 msgid "Upgrade plan to unlock Canary Deployments feature"
-msgstr ""
-
-msgid "Upgrade your plan"
 msgstr ""
 
 msgid "Upgrade your plan to activate Advanced Global Search."

@@ -9,7 +9,6 @@ describe('ActiveToggle', () => {
 
   const defaultProps = {
     initialActivated: true,
-    disabled: false,
   };
 
   const createComponent = props => {
