@@ -280,6 +280,40 @@ const vm = mountComponent(Component, data);
 The main return value of a Vue component is the rendered output. In order to test the component we
 need to test the rendered output. [Vue](https://vuejs.org/v2/guide/unit-testing.html) guide's to unit test show us exactly that:
 
+### Events
+
+We should test for events emitted in response to an action within our component, this is useful to verify the correct events are being fired with the correct arguments.
+
+For any DOM events we should use [`trigger`](https://vue-test-utils.vuejs.org/api/wrapper/#trigger) to fire out event.
+
+```javascript
+// Assuming SomeButton renders: <button>Some button</button>
+wrapper = mount(SomeButton);
+
+...
+it('should fire the click event', () => {
+  const btn = wrapper.find('button')
+
+  btn.trigger('click');
+  ...
+})
+```
+
+When we need to fire a Vue event, we should use [`emit`](https://vuejs.org/v2/guide/components-custom-events.html) to fire our event.
+
+```javascript
+wrapper = shallowMount(DropdownItem);
+
+...
+
+it('should fire the itemClicked event', () => {
+  DropdownItem.vm.$emit('itemClicked');
+  ...
+})
+```
+
+We should verify an event has been fired by asserting against the result of the [`emitted()`](https://vue-test-utils.vuejs.org/api/wrapper/#emitted) method
+
 ## Vue.js Expert Role
 
 One should apply to be a Vue.js expert by opening an MR when the Merge Request's they create and review show:

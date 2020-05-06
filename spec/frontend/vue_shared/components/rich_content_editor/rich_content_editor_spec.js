@@ -50,6 +50,10 @@ describe('Rich Content Editor', () => {
     it('has the correct initial edit type', () => {
       expect(findEditor().props().initialEditType).toBe('wysiwyg');
     });
+
+    it('has the correct height', () => {
+      expect(findEditor().props().height).toBe('100%');
+    });
   });
 
   describe('when content is changed', () => {

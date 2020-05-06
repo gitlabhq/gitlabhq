@@ -10,6 +10,10 @@ class Projects::StaticSiteEditorController < Projects::ApplicationController
   before_action :assign_ref_and_path, only: [:show]
   before_action :authorize_edit_tree!, only: [:show]
 
+  before_action do
+    push_frontend_feature_flag(:rich_content_editor)
+  end
+
   def show
     @config = Gitlab::StaticSiteEditor::Config.new(@repository, @ref, @path, params[:return_url])
   end

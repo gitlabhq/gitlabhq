@@ -50,7 +50,7 @@ describe Groups::ImportExport::ExportService do
     end
 
     it 'saves the models using ndjson tree saver' do
-      stub_feature_flags(group_import_export_ndjson: true)
+      stub_feature_flags(group_export_ndjson: true)
 
       expect(Gitlab::ImportExport::Group::TreeSaver).to receive(:new).and_call_original
 
@@ -58,7 +58,7 @@ describe Groups::ImportExport::ExportService do
     end
 
     it 'saves the models using legacy tree saver' do
-      stub_feature_flags(group_import_export_ndjson: false)
+      stub_feature_flags(group_export_ndjson: false)
 
       expect(Gitlab::ImportExport::Group::LegacyTreeSaver).to receive(:new).and_call_original
 

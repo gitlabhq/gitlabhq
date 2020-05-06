@@ -320,6 +320,12 @@ FactoryBot.define do
       end
     end
 
+    trait :accessibility_reports do
+      after(:build) do |build|
+        build.job_artifacts << create(:ci_job_artifact, :accessibility, job: build)
+      end
+    end
+
     trait :coverage_reports do
       after(:build) do |build|
         build.job_artifacts << create(:ci_job_artifact, :cobertura, job: build)

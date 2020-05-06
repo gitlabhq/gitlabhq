@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Ci
-  class DailyReportResultsWorker
+  class DailyBuildGroupReportResultsWorker
     include ApplicationWorker
     include PipelineBackgroundQueue
 
@@ -9,7 +9,7 @@ module Ci
 
     def perform(pipeline_id)
       Ci::Pipeline.find_by_id(pipeline_id).try do |pipeline|
-        Ci::DailyReportResultService.new.execute(pipeline)
+        Ci::DailyBuildGroupReportResultService.new.execute(pipeline)
       end
     end
   end

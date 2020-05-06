@@ -217,7 +217,7 @@ ci_pipelines:
 - vulnerability_findings
 - pipeline_config
 - security_scans
-- daily_report_results
+- daily_build_group_report_results
 pipeline_variables:
 - pipeline
 stages:
@@ -484,7 +484,7 @@ project:
 - status_page_setting
 - requirements
 - export_jobs
-- daily_report_results
+- daily_build_group_report_results
 - jira_imports
 - compliance_framework_setting
 - metrics_users_starred_dashboards

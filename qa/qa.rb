@@ -72,6 +72,7 @@ module QA
     autoload :DeployKey, 'qa/resource/deploy_key'
     autoload :DeployToken, 'qa/resource/deploy_token'
     autoload :ProtectedBranch, 'qa/resource/protected_branch'
+    autoload :Pipeline, 'qa/resource/pipeline'
     autoload :CiVariable, 'qa/resource/ci_variable'
     autoload :Runner, 'qa/resource/runner'
     autoload :PersonalAccessToken, 'qa/resource/personal_access_token'

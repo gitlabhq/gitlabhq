@@ -5,7 +5,7 @@ describe('Issue description template component', () => {
   let vm;
   let formState;
 
-  beforeEach(done => {
+  beforeEach(() => {
     const Component = Vue.extend(descriptionTemplate);
     formState = {
       description: 'test',
@@ -19,8 +19,6 @@ describe('Issue description template component', () => {
         projectNamespace: '/',
       },
     }).$mount();
-
-    Vue.nextTick(done);
   });
 
   it('renders templates as JSON array in data attribute', () => {

@@ -3834,6 +3834,61 @@ describe Ci::Build do
     end
   end
 
+  describe '#collect_accessibility_reports!' do
+    subject { build.collect_accessibility_reports!(accessibility_report) }
+
+    let(:accessibility_report) { Gitlab::Ci::Reports::AccessibilityReports.new }
+
+    it { expect(accessibility_report.urls).to eq({}) }
+
+    context 'when build has an accessibility report' do
+      context 'when there is an accessibility report with errors' do
+        before do
+          create(:ci_job_artifact, :accessibility, job: build, project: build.project)
+        end
+
+        it 'parses blobs and add the results to the accessibility report' do
+          expect { subject }.not_to raise_error
+
+          expect(accessibility_report.urls.keys).to match_array(['https://about.gitlab.com/'])
+          expect(accessibility_report.errors_count).to eq(10)
+          expect(accessibility_report.scans_count).to eq(1)
+          expect(accessibility_report.passes_count).to eq(0)
+        end
+      end
+
+      context 'when there is an accessibility report without errors' do
+        before do
+          create(:ci_job_artifact, :accessibility_without_errors, job: build, project: build.project)
+        end
+
+        it 'parses blobs and add the results to the accessibility report' do
+          expect { subject }.not_to raise_error
+
+          expect(accessibility_report.urls.keys).to match_array(['https://pa11y.org/'])
+          expect(accessibility_report.errors_count).to eq(0)
+          expect(accessibility_report.scans_count).to eq(1)
+          expect(accessibility_report.passes_count).to eq(1)
+        end
+      end
+
+      context 'when there is an accessibility report with an invalid url' do
+        before do
+          create(:ci_job_artifact, :accessibility_with_invalid_url, job: build, project: build.project)
+        end
+
+        it 'parses blobs and add the results to the accessibility report' do
+          expect { subject }.not_to raise_error
+
+          expect(accessibility_report.urls).to be_empty
+          expect(accessibility_report.errors_count).to eq(0)
+          expect(accessibility_report.scans_count).to eq(0)
+          expect(accessibility_report.passes_count).to eq(0)
+        end
+      end
+    end
+  end
+
   describe '#collect_coverage_reports!' do
     subject { build.collect_coverage_reports!(coverage_report) }
 

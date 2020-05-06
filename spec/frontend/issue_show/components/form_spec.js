@@ -1,7 +1,10 @@
 import Vue from 'vue';
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import mountComponent from 'helpers/vue_mount_component_helper';
 import formComponent from '~/issue_show/components/form.vue';
+import Autosave from '~/autosave';
 import eventHub from '~/issue_show/event_hub';
+
+jest.mock('~/autosave');
 
 describe('Inline edit form component', () => {
   let vm;
@@ -65,18 +68,16 @@ describe('Inline edit form component', () => {
   });
 
   describe('autosave', () => {
-    let autosaveObj;
-    let autosave;
+    let spy;
 
     beforeEach(() => {
-      autosaveObj = { reset: jasmine.createSpy() };
-      autosave = spyOnDependency(formComponent, 'Autosave').and.returnValue(autosaveObj);
+      spy = jest.spyOn(Autosave.prototype, 'reset');
     });
 
     it('initialized Autosave on mount', () => {
       createComponent();
 
-      expect(autosave).toHaveBeenCalledTimes(2);
+      expect(Autosave).toHaveBeenCalledTimes(2);
     });
 
     it('calls reset on autosave when eventHub emits appropriate events', () => {
@@ -84,15 +85,15 @@ describe('Inline edit form component', () => {
 
       eventHub.$emit('close.form');
 
-      expect(autosaveObj.reset).toHaveBeenCalledTimes(2);
+      expect(spy).toHaveBeenCalledTimes(2);
 
       eventHub.$emit('delete.issuable');
 
-      expect(autosaveObj.reset).toHaveBeenCalledTimes(4);
+      expect(spy).toHaveBeenCalledTimes(4);
 
       eventHub.$emit('update.issuable');
 
-      expect(autosaveObj.reset).toHaveBeenCalledTimes(6);
+      expect(spy).toHaveBeenCalledTimes(6);
     });
   });
 });

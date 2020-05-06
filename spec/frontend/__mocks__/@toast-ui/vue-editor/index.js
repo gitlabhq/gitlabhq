@@ -10,6 +10,9 @@ export const Editor = {
     initialEditType: {
       type: String,
     },
+    height: {
+      type: String,
+    },
   },
   render(h) {
     return h('div');

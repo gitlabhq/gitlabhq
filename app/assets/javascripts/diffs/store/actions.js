@@ -665,5 +665,25 @@ export function changeCurrentCommit({ dispatch, commit, state }, { commitId }) {
   return dispatch('fetchDiffFilesMeta');
 }
 
+export function moveToNeighboringCommit({ dispatch, state }, { direction }) {
+  const previousCommitId = state.commit?.prev_commit_id;
+  const nextCommitId = state.commit?.next_commit_id;
+  const canMove = {
+    next: !state.isLoading && nextCommitId,
+    previous: !state.isLoading && previousCommitId,
+  };
+  let commitId;
+
+  if (direction === 'next' && canMove.next) {
+    commitId = nextCommitId;
+  } else if (direction === 'previous' && canMove.previous) {
+    commitId = previousCommitId;
+  }
+
+  if (commitId) {
+    dispatch('changeCurrentCommit', { commitId });
+  }
+}
+
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};

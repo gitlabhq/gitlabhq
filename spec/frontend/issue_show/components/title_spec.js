@@ -5,8 +5,9 @@ import eventHub from '~/issue_show/event_hub';
 
 describe('Title component', () => {
   let vm;
-
   beforeEach(() => {
+    setFixtures(`<title />`);
+
     const Component = Vue.extend(titleComponent);
     const store = new Store({
       titleHtml: '',
@@ -28,51 +29,39 @@ describe('Title component', () => {
     expect(vm.$el.querySelector('.title').innerHTML.trim()).toBe('Testing <img>');
   });
 
-  it('updates page title when changing titleHtml', done => {
-    spyOn(vm, 'setPageTitle');
+  it('updates page title when changing titleHtml', () => {
+    const spy = jest.spyOn(vm, 'setPageTitle');
     vm.titleHtml = 'test';
 
-    Vue.nextTick(() => {
-      expect(vm.setPageTitle).toHaveBeenCalled();
-
-      done();
+    return vm.$nextTick().then(() => {
+      expect(spy).toHaveBeenCalled();
     });
   });
 
-  it('animates title changes', done => {
+  it('animates title changes', () => {
     vm.titleHtml = 'test';
-
-    Vue.nextTick(() => {
-      expect(
-        vm.$el.querySelector('.title').classList.contains('issue-realtime-pre-pulse'),
-      ).toBeTruthy();
-
-      setTimeout(() => {
-        expect(
-          vm.$el.querySelector('.title').classList.contains('issue-realtime-trigger-pulse'),
-        ).toBeTruthy();
-
-        done();
+    return vm
+      .$nextTick()
+      .then(() => {
+        expect(vm.$el.querySelector('.title').classList).toContain('issue-realtime-pre-pulse');
+        jest.runAllTimers();
+        return vm.$nextTick();
+      })
+      .then(() => {
+        expect(vm.$el.querySelector('.title').classList).toContain('issue-realtime-trigger-pulse');
       });
-    });
   });
 
-  it('updates page title after changing title', done => {
+  it('updates page title after changing title', () => {
     vm.titleHtml = 'changed';
     vm.titleText = 'changed';
 
-    Vue.nextTick(() => {
+    return vm.$nextTick().then(() => {
       expect(document.querySelector('title').textContent.trim()).toContain('changed');
-
-      done();
     });
   });
 
   describe('inline edit button', () => {
-    beforeEach(() => {
-      spyOn(eventHub, '$emit');
-    });
-
     it('should not show by default', () => {
       expect(vm.$el.querySelector('.btn-edit')).toBeNull();
     });
@@ -92,6 +81,7 @@ describe('Title component', () => {
     });
 
     it('should trigger open.form event when clicked', () => {
+      jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
       vm.showInlineEditButton = true;
       vm.canUpdate = true;
 
