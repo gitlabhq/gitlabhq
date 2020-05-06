@@ -62,11 +62,20 @@ This solution is appropriate for many teams that have a single server at their d
 
 You can also optionally configure GitLab to use an [external PostgreSQL service](../external_database.md) or an [external object storage service](../high_availability/object_storage.md) for added performance and reliability at a relatively low complexity cost.
 
-<!--
 ## Up to 2,000 users
 
-For up to 2,000 users, defining the reference architecture is [being worked on](https://gitlab.com/gitlab-org/quality/performance/-/issues/223).
--->
+> - **Supported users (approximate):** 2,000
+> - **High Availability:** False
+> - **Test RPS rates:** API: 40 RPS, Web: 4 RPS, Git: 4 RPS
+
+| Service                                                      | Nodes | Configuration ([8](#footnotes)) | GCP type      | AWS type ([9](#footnotes)) |
+|--------------------------------------------------------------|-------|---------------------------------|---------------|----------------------------|
+| GitLab Rails, Sidekiq, Consul ([1](#footnotes))              | 2     | 8 vCPU, 7.2GB Memory            | n1-highcpu-8  | c5.2xlarge                 |
+| PostgreSQL                                                   | 1     | 2 vCPU, 7.5GB Memory            | n1-standard-2 | m5.large                   |
+| Gitaly ([2](#footnotes)) ([5](#footnotes)) ([7](#footnotes)) | X     | 4 vCPU, 15GB Memory             | n1-standard-4 | m5.xlarge                  |
+| Cloud Object Storage ([4](#footnotes))                       | -     | -                               | -             | -                          |
+| NFS Server ([5](#footnotes)) ([7](#footnotes))               | 1     | 4 vCPU, 3.6GB Memory            | n1-highcpu-4  | c5.xlarge                  |
+| External load balancing node ([6](#footnotes))               | 1     | 2 vCPU, 1.8GB Memory            | n1-highcpu-2  | c5.large                   |
 
 ## Up to 3,000 users
 
@@ -79,7 +88,8 @@ server, a PostgreSQL server and a Redis server. A reference architecture with
 this alternative in mind is [being worked on](https://gitlab.com/gitlab-org/quality/performance/-/issues/223).
 
 > - **Supported users (approximate):** 3,000
-> - **Test RPS rates:** API: 40 RPS, Web: 4 RPS, Git: 4 RPS
+> - **High Availability:** True
+> - **Test RPS rates:** API: 60 RPS, Web: 6 RPS, Git: 6 RPS
 
 | Service                                                      | Nodes | Configuration ([8](#footnotes)) | GCP type      | AWS type ([9](#footnotes)) |
 |--------------------------------------------------------------|-------|---------------------------------|---------------|----------------------------|
@@ -99,6 +109,7 @@ this alternative in mind is [being worked on](https://gitlab.com/gitlab-org/qual
 ## Up to 5,000 users
 
 > - **Supported users (approximate):** 5,000
+> - **High Availability:** True
 > - **Test RPS rates:** API: 100 RPS, Web: 10 RPS, Git: 10 RPS
 
 | Service                                                      | Nodes | Configuration ([8](#footnotes)) | GCP type      | AWS type ([9](#footnotes)) |
@@ -119,6 +130,7 @@ this alternative in mind is [being worked on](https://gitlab.com/gitlab-org/qual
 ## Up to 10,000 users
 
 > - **Supported users (approximate):** 10,000
+> - **High Availability:** True
 > - **Test RPS rates:** API: 200 RPS, Web: 20 RPS, Git: 20 RPS
 
 | Service                                                      | Nodes | GCP Configuration ([8](#footnotes)) | GCP type       | AWS type ([9](#footnotes)) |
@@ -142,6 +154,7 @@ this alternative in mind is [being worked on](https://gitlab.com/gitlab-org/qual
 ## Up to 25,000 users
 
 > - **Supported users (approximate):** 25,000
+> - **High Availability:** True
 > - **Test RPS rates:** API: 500 RPS, Web: 50 RPS, Git: 50 RPS
 
 | Service                                                      | Nodes | Configuration ([8](#footnotes)) | GCP type       | AWS type ([9](#footnotes)) |
@@ -165,6 +178,7 @@ this alternative in mind is [being worked on](https://gitlab.com/gitlab-org/qual
 ## Up to 50,000 users
 
 > - **Supported users (approximate):** 50,000
+> - **High Availability:** True
 > - **Test RPS rates:** API: 1000 RPS, Web: 100 RPS, Git: 100 RPS
 
 | Service                                                      | Nodes | Configuration ([8](#footnotes)) | GCP type       | AWS type ([9](#footnotes)) |
@@ -288,7 +302,10 @@ column.
 ## Footnotes
 
 1. In our architectures we run each GitLab Rails node using the Puma webserver
-   and have its number of workers set to 90% of available CPUs along with four threads.
+   and have its number of workers set to 90% of available CPUs along with four threads. For
+   nodes that are running Rails with other components the worker value should be reduced
+   accordingly where we've found 50% achieves a good balance but this is dependent
+   on workload.
 
 1. Gitaly node requirements are dependent on customer data, specifically the number of
    projects and their sizes. We recommend two nodes as an absolute minimum for HA environments

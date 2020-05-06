@@ -11,13 +11,18 @@ describe GitlabSchema.types['AlertManagementAlert'] do
     expected_fields = %i[
       iid
       title
+      description
       severity
       status
       service
       monitoring_tool
+      hosts
       started_at
       ended_at
       event_count
+      details
+      created_at
+      updated_at
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)

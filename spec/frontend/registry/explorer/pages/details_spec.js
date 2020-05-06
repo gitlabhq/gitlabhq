@@ -4,7 +4,12 @@ import Tracking from '~/tracking';
 import stubChildren from 'helpers/stub_children';
 import component from '~/registry/explorer/pages/details.vue';
 import { createStore } from '~/registry/explorer/stores/';
-import { SET_MAIN_LOADING, SET_INITIAL_STATE } from '~/registry/explorer/stores/mutation_types/';
+import {
+  SET_MAIN_LOADING,
+  SET_INITIAL_STATE,
+  SET_TAGS_LIST_SUCCESS,
+  SET_TAGS_PAGINATION,
+} from '~/registry/explorer/stores/mutation_types/';
 import {
   DELETE_TAG_SUCCESS_MESSAGE,
   DELETE_TAG_ERROR_MESSAGE,
@@ -60,7 +65,9 @@ describe('Details Page', () => {
   beforeEach(() => {
     store = createStore();
     dispatchSpy = jest.spyOn(store, 'dispatch');
-    store.dispatch('receiveTagsListSuccess', tagsListResponse);
+    dispatchSpy.mockResolvedValue();
+    store.commit(SET_TAGS_LIST_SUCCESS, tagsListResponse.data);
+    store.commit(SET_TAGS_PAGINATION, tagsListResponse.headers);
     jest.spyOn(Tracking, 'event');
   });
 

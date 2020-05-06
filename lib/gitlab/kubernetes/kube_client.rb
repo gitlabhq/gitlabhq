@@ -57,9 +57,7 @@ module Gitlab
 
       # RBAC methods delegates to the apis/rbac.authorization.k8s.io api
       # group client
-      delegate :create_cluster_role_binding,
-        :get_cluster_role_binding,
-        :update_cluster_role_binding,
+      delegate :update_cluster_role_binding,
         to: :rbac_client
 
       # RBAC methods delegates to the apis/rbac.authorization.k8s.io api
@@ -71,9 +69,7 @@ module Gitlab
 
       # RBAC methods delegates to the apis/rbac.authorization.k8s.io api
       # group client
-      delegate :create_role_binding,
-        :get_role_binding,
-        :update_role_binding,
+      delegate :update_role_binding,
         to: :rbac_client
 
       # non-entity methods that can only work with the core client
@@ -134,19 +130,11 @@ module Gitlab
       end
 
       def create_or_update_cluster_role_binding(resource)
-        if cluster_role_binding_exists?(resource)
-          update_cluster_role_binding(resource)
-        else
-          create_cluster_role_binding(resource)
-        end
+        update_cluster_role_binding(resource)
       end
 
       def create_or_update_role_binding(resource)
-        if role_binding_exists?(resource)
-          update_role_binding(resource)
-        else
-          create_role_binding(resource)
-        end
+        update_role_binding(resource)
       end
 
       def create_or_update_service_account(resource)
@@ -171,18 +159,6 @@ module Gitlab
         return if Gitlab::CurrentSettings.allow_local_requests_from_web_hooks_and_services?
 
         Gitlab::UrlBlocker.validate!(api_prefix, allow_local_network: false)
-      end
-
-      def cluster_role_binding_exists?(resource)
-        get_cluster_role_binding(resource.metadata.name)
-      rescue ::Kubeclient::ResourceNotFoundError
-        false
-      end
-
-      def role_binding_exists?(resource)
-        get_role_binding(resource.metadata.name, resource.metadata.namespace)
-      rescue ::Kubeclient::ResourceNotFoundError
-        false
       end
 
       def service_account_exists?(resource)

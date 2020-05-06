@@ -53,6 +53,12 @@ module AlertManagement
       end
     end
 
+    def details
+      details_payload = payload.except(*attributes.keys)
+
+      Gitlab::Utils::InlineHash.merge_keys(details_payload)
+    end
+
     private
 
     def hosts_length

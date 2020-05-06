@@ -1697,13 +1697,16 @@ msgid_plural "Alerts"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Alert Details"
-msgstr ""
-
 msgid "AlertManagement|Acknowledged"
 msgstr ""
 
 msgid "AlertManagement|Alert"
+msgstr ""
+
+msgid "AlertManagement|Alert detail"
+msgstr ""
+
+msgid "AlertManagement|Alerts"
 msgstr ""
 
 msgid "AlertManagement|Authorize external service"
@@ -19262,6 +19265,9 @@ msgid "Smartcard authentication failed: client certificate header is missing."
 msgstr ""
 
 msgid "Snippets"
+msgstr ""
+
+msgid "Snippets with non-text files can only be edited via Git."
 msgstr ""
 
 msgid "SnippetsEmptyState|Code snippets"

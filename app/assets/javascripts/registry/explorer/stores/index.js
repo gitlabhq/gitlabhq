@@ -15,4 +15,5 @@ export const createStore = () =>
     mutations,
   });
 
+// Deprecated and to be removed
 export default createStore();

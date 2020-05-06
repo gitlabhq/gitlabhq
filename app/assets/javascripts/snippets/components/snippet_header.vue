@@ -10,6 +10,7 @@ import {
   GlDropdown,
   GlDropdownItem,
   GlButton,
+  GlTooltipDirective,
 } from '@gitlab/ui';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
@@ -29,6 +30,9 @@ export default {
     GlDropdownItem,
     TimeAgoTooltip,
     GlButton,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   apollo: {
     canCreateSnippet: {
@@ -67,6 +71,10 @@ export default {
           condition: this.snippet.userPermissions.updateSnippet,
           text: __('Edit'),
           href: this.editLink,
+          disabled: this.snippet.blob.binary,
+          title: this.snippet.blob.binary
+            ? __('Snippets with non-text files can only be edited via Git.')
+            : undefined,
         },
         {
           condition: this.snippet.userPermissions.adminSnippet,
@@ -186,18 +194,24 @@ export default {
     <div class="detail-page-header-actions">
       <div class="d-none d-sm-flex">
         <template v-for="(action, index) in personalSnippetActions">
-          <gl-button
+          <div
             v-if="action.condition"
             :key="index"
-            :disabled="action.disabled"
-            :variant="action.variant"
-            :category="action.category"
-            :class="action.cssClass"
-            :href="action.href"
-            @click="action.click ? action.click() : undefined"
+            v-gl-tooltip
+            :title="action.title"
+            class="d-inline-block"
           >
-            {{ action.text }}
-          </gl-button>
+            <gl-button
+              :disabled="action.disabled"
+              :variant="action.variant"
+              :category="action.category"
+              :class="action.cssClass"
+              :href="action.href"
+              @click="action.click ? action.click() : undefined"
+            >
+              {{ action.text }}
+            </gl-button>
+          </div>
         </template>
       </div>
       <div class="d-block d-sm-none dropdown">
@@ -205,6 +219,8 @@ export default {
           <gl-dropdown-item
             v-for="(action, index) in personalSnippetActions"
             :key="index"
+            :disabled="action.disabled"
+            :title="action.title"
             :href="action.href"
             @click="action.click ? action.click() : undefined"
             >{{ action.text }}</gl-dropdown-item

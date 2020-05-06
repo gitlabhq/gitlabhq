@@ -103,8 +103,16 @@ export default {
         : DELETE_IMAGE_ERROR_MESSAGE;
     },
   },
+  mounted() {
+    this.loadImageList(this.$route.name);
+  },
   methods: {
     ...mapActions(['requestImagesList', 'requestDeleteImage']),
+    loadImageList(fromName) {
+      if (!fromName || !this.images?.length) {
+        this.requestImagesList();
+      }
+    },
     deleteImage(item) {
       this.track('click_button');
       this.itemToDelete = item;

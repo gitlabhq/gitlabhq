@@ -234,8 +234,6 @@ describe Gitlab::Kubernetes::KubeClient do
       :create_role,
       :get_role,
       :update_role,
-      :create_cluster_role_binding,
-      :get_cluster_role_binding,
       :update_cluster_role_binding
     ].each do |method|
       describe "##{method}" do
@@ -354,6 +352,16 @@ describe Gitlab::Kubernetes::KubeClient do
     end
   end
 
+  shared_examples 'create_or_update method using put' do
+    let(:update_method) { "update_#{resource_type}" }
+
+    it 'calls the update method' do
+      expect(client).to receive(update_method).with(resource)
+
+      subject
+    end
+  end
+
   shared_examples 'create_or_update method' do
     let(:get_method) { "get_#{resource_type}" }
     let(:update_method) { "update_#{resource_type}" }
@@ -393,7 +401,7 @@ describe Gitlab::Kubernetes::KubeClient do
 
     subject { client.create_or_update_cluster_role_binding(resource) }
 
-    it_behaves_like 'create_or_update method'
+    it_behaves_like 'create_or_update method using put'
   end
 
   describe '#create_or_update_role_binding' do
@@ -405,7 +413,7 @@ describe Gitlab::Kubernetes::KubeClient do
 
     subject { client.create_or_update_role_binding(resource) }
 
-    it_behaves_like 'create_or_update method'
+    it_behaves_like 'create_or_update method using put'
   end
 
   describe '#create_or_update_service_account' do

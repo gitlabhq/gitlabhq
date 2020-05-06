@@ -240,6 +240,7 @@ class ProjectPolicy < BasePolicy
     enable :read_prometheus
     enable :read_metrics_dashboard_annotation
     enable :read_alert_management_alerts
+    enable :update_alert_management_alerts
     enable :metrics_dashboard
   end
 

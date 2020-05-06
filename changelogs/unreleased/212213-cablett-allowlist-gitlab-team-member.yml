@@ -1,0 +1,5 @@
+---
+title: Skip spam check for GitLab team members on gitlab.com
+merge_request: 31052
+author:
+type: added

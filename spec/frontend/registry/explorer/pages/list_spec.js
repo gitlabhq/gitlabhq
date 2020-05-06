@@ -1,5 +1,4 @@
-import VueRouter from 'vue-router';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import { GlPagination, GlSkeletonLoader, GlSprintf, GlAlert } from '@gitlab/ui';
 import Tracking from '~/tracking';
 import component from '~/registry/explorer/pages/list.vue';
@@ -7,22 +6,25 @@ import QuickstartDropdown from '~/registry/explorer/components/quickstart_dropdo
 import GroupEmptyState from '~/registry/explorer/components/group_empty_state.vue';
 import ProjectEmptyState from '~/registry/explorer/components/project_empty_state.vue';
 import ProjectPolicyAlert from '~/registry/explorer/components/project_policy_alert.vue';
-import store from '~/registry/explorer/stores/';
-import { SET_MAIN_LOADING } from '~/registry/explorer/stores/mutation_types/';
+import { createStore } from '~/registry/explorer/stores/';
+import {
+  SET_MAIN_LOADING,
+  SET_IMAGES_LIST_SUCCESS,
+  SET_PAGINATION,
+  SET_INITIAL_STATE,
+} from '~/registry/explorer/stores/mutation_types/';
 import {
   DELETE_IMAGE_SUCCESS_MESSAGE,
   DELETE_IMAGE_ERROR_MESSAGE,
 } from '~/registry/explorer/constants';
 import { imagesListResponse } from '../mock_data';
-import { GlModal, GlEmptyState } from '../stubs';
+import { GlModal, GlEmptyState, RouterLink } from '../stubs';
 import { $toast } from '../../shared/mocks';
-
-const localVue = createLocalVue();
-localVue.use(VueRouter);
 
 describe('List Page', () => {
   let wrapper;
   let dispatchSpy;
+  let store;
 
   const findDeleteBtn = () => wrapper.find({ ref: 'deleteImageButton' });
   const findDeleteModal = () => wrapper.find(GlModal);
@@ -39,21 +41,31 @@ describe('List Page', () => {
   const findProjectPolicyAlert = () => wrapper.find(ProjectPolicyAlert);
   const findDeleteAlert = () => wrapper.find(GlAlert);
 
-  beforeEach(() => {
+  const mountComponent = ({ mocks } = {}) => {
     wrapper = shallowMount(component, {
-      localVue,
       store,
       stubs: {
         GlModal,
         GlEmptyState,
         GlSprintf,
+        RouterLink,
       },
       mocks: {
         $toast,
+        $route: {
+          name: 'foo',
+        },
+        ...mocks,
       },
     });
+  };
+
+  beforeEach(() => {
+    store = createStore();
     dispatchSpy = jest.spyOn(store, 'dispatch');
-    store.dispatch('receiveImagesListSuccess', imagesListResponse);
+    dispatchSpy.mockResolvedValue();
+    store.commit(SET_IMAGES_LIST_SUCCESS, imagesListResponse.data);
+    store.commit(SET_PAGINATION, imagesListResponse.headers);
   });
 
   afterEach(() => {
@@ -61,15 +73,36 @@ describe('List Page', () => {
   });
 
   describe('Expiration policy notification', () => {
+    beforeEach(() => {
+      mountComponent();
+    });
     it('shows up on project page', () => {
       expect(findProjectPolicyAlert().exists()).toBe(true);
     });
     it('does show up on group page', () => {
-      store.dispatch('setInitialState', { isGroupPage: true });
+      store.commit(SET_INITIAL_STATE, { isGroupPage: true });
       return wrapper.vm.$nextTick().then(() => {
         expect(findProjectPolicyAlert().exists()).toBe(false);
       });
     });
+  });
+
+  describe('API calls', () => {
+    it.each`
+      imageList                  | name         | called
+      ${[]}                      | ${'foo'}     | ${['requestImagesList']}
+      ${imagesListResponse.data} | ${undefined} | ${['requestImagesList']}
+      ${imagesListResponse.data} | ${'foo'}     | ${undefined}
+    `(
+      'with images equal $imageList and name $name dispatch calls $called',
+      ({ imageList, name, called }) => {
+        store.commit(SET_IMAGES_LIST_SUCCESS, imageList);
+        dispatchSpy.mockClear();
+        mountComponent({ mocks: { $route: { name } } });
+
+        expect(dispatchSpy.mock.calls[0]).toEqual(called);
+      },
+    );
   });
 
   describe('connection error', () => {
@@ -79,12 +112,13 @@ describe('List Page', () => {
       helpPagePath: 'bar',
     };
 
-    beforeAll(() => {
-      store.dispatch('setInitialState', config);
+    beforeEach(() => {
+      store.commit(SET_INITIAL_STATE, config);
+      mountComponent();
     });
 
-    afterAll(() => {
-      store.dispatch('setInitialState', {});
+    afterEach(() => {
+      store.commit(SET_INITIAL_STATE, {});
     });
 
     it('should show an empty state', () => {
@@ -106,9 +140,12 @@ describe('List Page', () => {
   });
 
   describe('isLoading is true', () => {
-    beforeAll(() => store.commit(SET_MAIN_LOADING, true));
+    beforeEach(() => {
+      store.commit(SET_MAIN_LOADING, true);
+      mountComponent();
+    });
 
-    afterAll(() => store.commit(SET_MAIN_LOADING, false));
+    afterEach(() => store.commit(SET_MAIN_LOADING, false));
 
     it('shows the skeleton loader', () => {
       expect(findSkeletonLoader().exists()).toBe(true);
@@ -125,7 +162,8 @@ describe('List Page', () => {
 
   describe('list is empty', () => {
     beforeEach(() => {
-      store.dispatch('receiveImagesListSuccess', { data: [] });
+      store.commit(SET_IMAGES_LIST_SUCCESS, []);
+      mountComponent();
     });
 
     it('quick start is not visible', () => {
@@ -137,12 +175,13 @@ describe('List Page', () => {
     });
 
     describe('is group page is true', () => {
-      beforeAll(() => {
-        store.dispatch('setInitialState', { isGroupPage: true });
+      beforeEach(() => {
+        store.commit(SET_INITIAL_STATE, { isGroupPage: true });
+        mountComponent();
       });
 
-      afterAll(() => {
-        store.dispatch('setInitialState', { isGroupPage: undefined });
+      afterEach(() => {
+        store.commit(SET_INITIAL_STATE, { isGroupPage: undefined });
       });
 
       it('group empty state is visible', () => {
@@ -156,6 +195,10 @@ describe('List Page', () => {
   });
 
   describe('list is not empty', () => {
+    beforeEach(() => {
+      mountComponent();
+    });
+
     it('quick start is visible', () => {
       expect(findQuickStartDropdown().exists()).toBe(true);
     });

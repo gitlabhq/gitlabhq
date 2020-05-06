@@ -9,7 +9,6 @@
     top: 0;
     font-size: 12px;
     border-top-right-radius: $border-radius-default;
-    margin-left: -$gl-padding;
 
     .controllers {
       @include build-controllers(15px, center, false, 0, inline, 0);

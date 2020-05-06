@@ -18,6 +18,11 @@ module Types
             null: true,
             description: 'Title of the alert'
 
+      field :description,
+            GraphQL::STRING_TYPE,
+            null: true,
+            description: 'Description of the alert'
+
       field :severity,
             AlertManagement::SeverityEnum,
             null: true,
@@ -38,6 +43,11 @@ module Types
             null: true,
             description: 'Monitoring tool the alert came from'
 
+      field :hosts,
+            [GraphQL::STRING_TYPE],
+            null: true,
+            description: 'List of hosts the alert came from'
+
       field :started_at,
             Types::TimeType,
             null: true,
@@ -53,6 +63,21 @@ module Types
             null: true,
             description: 'Number of events of this alert',
             method: :events
+
+      field :details,
+            GraphQL::Types::JSON,
+            null: true,
+            description: 'Alert details'
+
+      field :created_at,
+            Types::TimeType,
+            null: true,
+            description: 'Timestamp the alert was created'
+
+      field :updated_at,
+            Types::TimeType,
+            null: true,
+            description: 'Timestamp the alert was last updated'
     end
   end
 end

@@ -63,17 +63,52 @@ Here's a list of the AWS services we will use, with links to pricing information
 
 NOTE: **Note:** Please note that while we will be using EBS for storage, we do not recommend using EFS as it may negatively impact GitLab's performance. You can review the [relevant documentation](../../administration/high_availability/nfs.md#avoid-using-awss-elastic-file-system-efs) for more details.
 
-## Creating an IAM EC2 instance role and profile
+## Create an IAM EC2 instance role and profile
 
-To minimize the permissions of the user, we'll create a new [IAM](https://docs.aws.amazon.com/IAM/latest/UserGuide/introduction.html)
-role with limited access:
+As we'll be using [Amazon S3 object storage](#amazon-s3-object-storage), our EC2 instances need to have read, write, and list permissions for our S3 buckets. To avoid embedding AWS keys in our GitLab config, we'll make use of an [IAM Role](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html) to allow our GitLab instance with this access. We'll need to create an IAM policy to attach to our IAM role:
 
-1. Navigate to the IAM dashboard <https://console.aws.amazon.com/iam/home>, click on **Roles** in the left menu, and
+### Create an IAM Policy
+
+1. Navigate to the IAM dashboard and click on **Policies** in the left menu.
+1. Click **Create policy**, select the `JSON` tab, and add a policy. We want to [follow security best practices and grant _least privilege_](https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html#grant-least-privilege), giving our role only the permissions needed to perform the required actions.
+   1. Assuming you prefix the S3 bucket names with `gl-` as shown in the diagram, add the following policy:
+
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:AbortMultipartUpload",
+                "s3::CompleteMultipartUpload",
+                "s3:ListBucket",
+                "s3:PutObject",
+                "s3:GetObject",
+                "s3:DeleteObject",
+                "s3:PutObjectAcl"
+            ],
+            "Resource": [
+                "arn:aws:s3:::gl-*/*"
+            ]
+        }
+    ]
+}
+```
+
+1. Click **Review policy**, give your policy a name (we'll use `gl-s3-policy`), and click **Create policy**.
+
+### Create an IAM Role
+
+1. Still on the IAM dashboard, click on **Roles** in the left menu, and
    click **Create role**.
 1. Create a new role by selecting **AWS service > EC2**, then click
    **Next: Permissions**.
-1. Choose **AmazonEC2FullAccess** and **AmazonS3FullAccess**, click **Tags** and add tags if needed.
-1. Click **Review**, give your role the name (we'll use `GitLabAdmin`), and click **Create role**.
+1. In the policy filter, search for the `gl-s3-policy` we created above, select it, and click **Tags**.
+1. Add tags if needed and click **Review**.
+1. Give the role a name (we'll use `GitLabS3Access`) and click **Create Role**.
+
+We'll use this role when we [create a launch configuration](#create-a-launch-configuration) later on.
 
 ## Configuring the network
 
@@ -575,7 +610,10 @@ HostKey /etc/ssh_static/ssh_host_ed25519_key
 
 #### Amazon S3 object storage
 
-Since we're not using NFS for shared storage, we will use [Amazon S3](https://aws.amazon.com/s3/) buckets to store backups, artifacts, LFS objects, uploads, merge request diffs, container registry images, and more. Our [documentation includes configuration instructions](../../administration/object_storage.md) for each of these, and other information about using object storage with GitLab.
+Since we're not using NFS for shared storage, we will use [Amazon S3](https://aws.amazon.com/s3/) buckets to store backups, artifacts, LFS objects, uploads, merge request diffs, container registry images, and more. Our documentation includes [instructions on how to configure object storage](../../administration/object_storage.md) for each of these data types, and other information about using object storage with GitLab.
+
+NOTE: **Note:**
+Since we are using the [AWS IAM profile](#create-an-iam-role) we created earlier, be sure to omit the AWS access key and secret access key/value pairs when configuring object storage. Instead, use `'use_iam_profile' => true` in your configuration as shown in the object storage documentation linked above.
 
 Remember to run `sudo gitlab-ctl reconfigure` after saving the changes to the `gitlab.rb` file.
 
@@ -611,7 +649,7 @@ From the EC2 dashboard:
 1. Select an instance type best suited for your needs (at least a `c5.xlarge`) and click **Configure details**.
 1. Enter a name for your launch configuration (we'll use `gitlab-ha-launch-config`).
 1. **Do not** check **Request Spot Instance**.
-1. From the **IAM Role** dropdown, pick the `GitLabAdmin` instance role we [created earlier](#creating-an-iam-ec2-instance-role-and-profile).
+1. From the **IAM Role** dropdown, pick the `GitLabAdmin` instance role we [created earlier](#create-an-iam-ec2-instance-role-and-profile).
 1. Leave the rest as defaults and click **Add Storage**.
 1. The root volume is 8GiB by default and should be enough given that we won’t store any data there. Click **Configure Security Group**.
 1. Check **Select and existing security group** and select the `gitlab-loadbalancer-sec-group` we created earlier.

@@ -201,28 +201,8 @@ module KubernetesHelpers
       .to_return(kube_response({}))
   end
 
-  def stub_kubeclient_get_cluster_role_binding_error(api_url, name, status: 404)
-    WebMock.stub_request(:get, api_url + "/apis/rbac.authorization.k8s.io/v1/clusterrolebindings/#{name}")
-      .to_return(status: [status, "Internal Server Error"])
-  end
-
-  def stub_kubeclient_create_cluster_role_binding(api_url)
-    WebMock.stub_request(:post, api_url + '/apis/rbac.authorization.k8s.io/v1/clusterrolebindings')
-      .to_return(kube_response({}))
-  end
-
-  def stub_kubeclient_get_role_binding(api_url, name, namespace: 'default')
-    WebMock.stub_request(:get, api_url + "/apis/rbac.authorization.k8s.io/v1/namespaces/#{namespace}/rolebindings/#{name}")
-      .to_return(kube_response({}))
-  end
-
-  def stub_kubeclient_get_role_binding_error(api_url, name, namespace: 'default', status: 404)
-    WebMock.stub_request(:get, api_url + "/apis/rbac.authorization.k8s.io/v1/namespaces/#{namespace}/rolebindings/#{name}")
-      .to_return(status: [status, "Internal Server Error"])
-  end
-
-  def stub_kubeclient_create_role_binding(api_url, namespace: 'default')
-    WebMock.stub_request(:post, api_url + "/apis/rbac.authorization.k8s.io/v1/namespaces/#{namespace}/rolebindings")
+  def stub_kubeclient_put_cluster_role_binding(api_url, name)
+    WebMock.stub_request(:put, api_url + "/apis/rbac.authorization.k8s.io/v1/clusterrolebindings/#{name}")
       .to_return(kube_response({}))
   end
 

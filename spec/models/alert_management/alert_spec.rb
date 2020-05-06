@@ -126,4 +126,30 @@ describe AlertManagement::Alert do
 
     it { is_expected.to match_array(alert_1) }
   end
+
+  describe '.details' do
+    let(:payload) do
+      {
+        'title' => 'Details title',
+        'custom' => {
+          'alert' => {
+            'fields' => %w[one two]
+          }
+        },
+        'yet' => {
+          'another' => 'field'
+        }
+      }
+    end
+    let(:alert) { build(:alert_management_alert, title: 'Details title', payload: payload) }
+
+    subject { alert.details }
+
+    it 'renders the payload as inline hash' do
+      is_expected.to eq(
+        'custom.alert.fields' => %w[one two],
+        'yet.another' => 'field'
+      )
+    end
+  end
 end

@@ -54,14 +54,6 @@ describe Gitlab::SidekiqConfig::CliMethods do
         end
       end
 
-      context 'when the file contains an array of strings' do
-        before do
-          stub_contents(['queue_a'], ['queue_b'])
-        end
-
-        include_examples 'valid file contents'
-      end
-
       context 'when the file contains an array of hashes' do
         before do
           stub_contents([{ name: 'queue_a' }], [{ name: 'queue_b' }])

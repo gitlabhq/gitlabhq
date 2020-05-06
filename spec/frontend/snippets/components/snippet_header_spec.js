@@ -7,26 +7,27 @@ import { shallowMount } from '@vue/test-utils';
 describe('Snippet header component', () => {
   let wrapper;
   const snippet = {
-    snippet: {
-      id: 'gid://gitlab/PersonalSnippet/50',
-      title: 'The property of Thor',
-      visibilityLevel: 'private',
-      webUrl: 'http://personal.dev.null/42',
-      userPermissions: {
-        adminSnippet: true,
-        updateSnippet: true,
-        reportSnippet: false,
-      },
-      project: null,
-      author: {
-        name: 'Thor Odinson',
-      },
+    id: 'gid://gitlab/PersonalSnippet/50',
+    title: 'The property of Thor',
+    visibilityLevel: 'private',
+    webUrl: 'http://personal.dev.null/42',
+    userPermissions: {
+      adminSnippet: true,
+      updateSnippet: true,
+      reportSnippet: false,
+    },
+    project: null,
+    author: {
+      name: 'Thor Odinson',
+    },
+    blob: {
+      binary: false,
     },
   };
   const mutationVariables = {
     mutation: DeleteSnippetMutation,
     variables: {
-      id: snippet.snippet.id,
+      id: snippet.id,
     },
   };
   const errorMsg = 'Foo bar';
@@ -46,10 +47,12 @@ describe('Snippet header component', () => {
     loading = false,
     permissions = {},
     mutationRes = mutationTypes.RESOLVE,
+    snippetProps = {},
   } = {}) {
-    const defaultProps = Object.assign({}, snippet);
+    // const defaultProps = Object.assign({}, snippet, snippetProps);
+    const defaultProps = Object.assign(snippet, snippetProps);
     if (permissions) {
-      Object.assign(defaultProps.snippet.userPermissions, {
+      Object.assign(defaultProps.userPermissions, {
         ...permissions,
       });
     }
@@ -65,7 +68,9 @@ describe('Snippet header component', () => {
     wrapper = shallowMount(SnippetHeader, {
       mocks: { $apollo },
       propsData: {
-        ...defaultProps,
+        snippet: {
+          ...defaultProps,
+        },
       },
       stubs: {
         ApolloMutation,
@@ -124,6 +129,17 @@ describe('Snippet header component', () => {
   it('renders modal for deletion of a snippet', () => {
     createComponent();
     expect(wrapper.find(GlModal).exists()).toBe(true);
+  });
+
+  it('renders Edit button as disabled for binary snippets', () => {
+    createComponent({
+      snippetProps: {
+        blob: {
+          binary: true,
+        },
+      },
+    });
+    expect(wrapper.find('[href*="edit"]').props('disabled')).toBe(true);
   });
 
   describe('Delete mutation', () => {

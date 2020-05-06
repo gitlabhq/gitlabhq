@@ -83,8 +83,7 @@ describe Clusters::Kubernetes::CreateOrUpdateServiceAccountService do
       before do
         cluster.platform_kubernetes.rbac!
 
-        stub_kubeclient_get_cluster_role_binding_error(api_url, cluster_role_binding_name)
-        stub_kubeclient_create_cluster_role_binding(api_url)
+        stub_kubeclient_put_cluster_role_binding(api_url, cluster_role_binding_name)
       end
 
       it_behaves_like 'creates service account and token'
@@ -92,9 +91,8 @@ describe Clusters::Kubernetes::CreateOrUpdateServiceAccountService do
       it 'creates a cluster role binding with cluster-admin access' do
         subject
 
-        expect(WebMock).to have_requested(:post, api_url + "/apis/rbac.authorization.k8s.io/v1/clusterrolebindings").with(
+        expect(WebMock).to have_requested(:put, api_url + "/apis/rbac.authorization.k8s.io/v1/clusterrolebindings/gitlab-admin").with(
           body: hash_including(
-            kind: 'ClusterRoleBinding',
             metadata: { name: 'gitlab-admin' },
             roleRef: {
               apiGroup: 'rbac.authorization.k8s.io',
@@ -143,8 +141,7 @@ describe Clusters::Kubernetes::CreateOrUpdateServiceAccountService do
       before do
         cluster.platform_kubernetes.rbac!
 
-        stub_kubeclient_get_role_binding_error(api_url, role_binding_name, namespace: namespace)
-        stub_kubeclient_create_role_binding(api_url, namespace: namespace)
+        stub_kubeclient_put_role_binding(api_url, role_binding_name, namespace: namespace)
         stub_kubeclient_put_role(api_url, Clusters::Kubernetes::GITLAB_KNATIVE_SERVING_ROLE_NAME, namespace: namespace)
         stub_kubeclient_put_role_binding(api_url, Clusters::Kubernetes::GITLAB_KNATIVE_SERVING_ROLE_BINDING_NAME, namespace: namespace)
         stub_kubeclient_put_role(api_url, Clusters::Kubernetes::GITLAB_CROSSPLANE_DATABASE_ROLE_NAME, namespace: namespace)
@@ -166,9 +163,8 @@ describe Clusters::Kubernetes::CreateOrUpdateServiceAccountService do
       it 'creates a namespaced role binding with edit access' do
         subject
 
-        expect(WebMock).to have_requested(:post, api_url + "/apis/rbac.authorization.k8s.io/v1/namespaces/#{namespace}/rolebindings").with(
+        expect(WebMock).to have_requested(:put, api_url + "/apis/rbac.authorization.k8s.io/v1/namespaces/#{namespace}/rolebindings/#{role_binding_name}").with(
           body: hash_including(
-            kind: 'RoleBinding',
             metadata: { name: "gitlab-#{namespace}", namespace: "#{namespace}" },
             roleRef: {
               apiGroup: 'rbac.authorization.k8s.io',

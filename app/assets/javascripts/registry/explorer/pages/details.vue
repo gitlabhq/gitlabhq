@@ -157,6 +157,9 @@ export default {
       return config;
     },
   },
+  mounted() {
+    this.requestTagsList({ params: this.$route.params.id });
+  },
   methods: {
     ...mapActions(['requestTagsList', 'requestDeleteTag', 'requestDeleteTags']),
     setModalDescription(itemIndex = -1) {
