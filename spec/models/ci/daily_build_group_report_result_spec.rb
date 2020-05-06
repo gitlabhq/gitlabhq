@@ -2,14 +2,14 @@
 
 require 'spec_helper'
 
-describe Ci::DailyReportResult do
+describe Ci::DailyBuildGroupReportResult do
   describe '.upsert_reports' do
     let!(:rspec_coverage) do
       create(
-        :ci_daily_report_result,
-        title: 'rspec',
+        :ci_daily_build_group_report_result,
+        group_name: 'rspec',
         date: '2020-03-09',
-        value: 71.2
+        data: { coverage: 71.2 }
       )
     end
     let!(:new_pipeline) { create(:ci_pipeline) }
@@ -19,20 +19,18 @@ describe Ci::DailyReportResult do
         {
           project_id: rspec_coverage.project_id,
           ref_path: rspec_coverage.ref_path,
-          param_type: described_class.param_types[rspec_coverage.param_type],
           last_pipeline_id: new_pipeline.id,
           date: rspec_coverage.date,
-          title: 'rspec',
-          value: 81.0
+          group_name: 'rspec',
+          data: { 'coverage' => 81.0 }
         },
         {
           project_id: rspec_coverage.project_id,
           ref_path: rspec_coverage.ref_path,
-          param_type: described_class.param_types[rspec_coverage.param_type],
           last_pipeline_id: new_pipeline.id,
           date: rspec_coverage.date,
-          title: 'karma',
-          value: 87.0
+          group_name: 'karma',
+          data: { 'coverage' => 87.0 }
         }
       ])
 
@@ -40,16 +38,15 @@ describe Ci::DailyReportResult do
 
       expect(rspec_coverage).to have_attributes(
         last_pipeline_id: new_pipeline.id,
-        value: 81.0
+        data: { 'coverage' => 81.0 }
       )
 
-      expect(described_class.find_by_title('karma')).to have_attributes(
+      expect(described_class.find_by_group_name('karma')).to have_attributes(
         project_id: rspec_coverage.project_id,
         ref_path: rspec_coverage.ref_path,
-        param_type: rspec_coverage.param_type,
         last_pipeline_id: new_pipeline.id,
         date: rspec_coverage.date,
-        value: 87.0
+        data: { 'coverage' => 87.0 }
       )
     end
 

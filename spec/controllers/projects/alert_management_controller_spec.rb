@@ -40,9 +40,9 @@ describe Projects::AlertManagementController do
   end
 
   describe 'GET #details' do
-    context 'when alert_management_minimal is enabled' do
+    context 'when alert_management_detail is enabled' do
       before do
-        stub_feature_flags(alert_management_minimal: true)
+        stub_feature_flags(alert_management_detail: true)
       end
 
       it 'shows the page' do
@@ -52,9 +52,9 @@ describe Projects::AlertManagementController do
       end
     end
 
-    context 'when alert_management_minimal is disabled' do
+    context 'when alert_management_detail is disabled' do
       before do
-        stub_feature_flags(alert_management_minimal: false)
+        stub_feature_flags(alert_management_detail: false)
       end
 
       it 'shows 404' do
@@ -62,6 +62,14 @@ describe Projects::AlertManagementController do
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
+    end
+  end
+
+  describe 'set_alert_id' do
+    it 'sets alert id from the route' do
+      get :details, params: { namespace_id: project.namespace, project_id: project, id: id }
+
+      expect(assigns(:alert_id)).to eq(id.to_s)
     end
   end
 end

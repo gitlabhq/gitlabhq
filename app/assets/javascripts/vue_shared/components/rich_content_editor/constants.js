@@ -23,3 +23,5 @@ export const EDITOR_OPTIONS = {
 export const EDITOR_TYPES = {
   wysiwyg: 'wysiwyg',
 };
+
+export const EDITOR_HEIGHT = '100%';

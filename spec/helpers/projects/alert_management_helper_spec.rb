@@ -7,11 +7,11 @@ describe Projects::AlertManagementHelper do
 
   let_it_be(:project, reload: true) { create(:project) }
   let_it_be(:current_user) { create(:user) }
+  let_it_be(:project_path) { project.full_path }
 
   describe '#alert_management_data' do
     let(:user_can_enable_alert_management) { false }
     let(:setting_path) { project_settings_operations_path(project) }
-    let(:project_path) { project.full_path }
 
     before do
       allow(helper)
@@ -21,7 +21,7 @@ describe Projects::AlertManagementHelper do
     end
 
     context 'without alert_managements_setting' do
-      it 'returns frontend configuration' do
+      it 'returns index page configuration' do
         expect(alert_management_data(current_user, project)).to eq(
           'project-path' => project_path,
           'enable-alert-management-path' => setting_path,
@@ -30,6 +30,17 @@ describe Projects::AlertManagementHelper do
           'alert-management-enabled' => 'true'
         )
       end
+    end
+  end
+
+  describe '#alert_management_detail_data' do
+    let(:alert_id) { 1 }
+
+    it 'returns detail page configuration' do
+      expect(alert_management_detail_data(project_path, alert_id)).to eq(
+        'alert-id' => alert_id,
+        'project-path' => project_path
+      )
     end
   end
 end

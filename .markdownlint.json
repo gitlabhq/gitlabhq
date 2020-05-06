@@ -116,6 +116,7 @@
       "SMTP",
       "SSH",
       "Tiller",
+      "TOML",
       "Trello",
       "Trello Power-Ups",
       "TypeScript",
@@ -125,6 +126,7 @@
       "Unicorn",
       "unicorn-worker-killer",
       "WebdriverIO",
+      "YAML",
       "YouTrack"
     ],
     "code_blocks": false

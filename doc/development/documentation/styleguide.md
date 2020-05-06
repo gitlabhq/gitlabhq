@@ -1008,7 +1008,7 @@ of language classes available.
 | `ruby`                  | Alias: `rb`.                                                                 |
 | `shell`                 | Aliases: `bash` or `sh`.                                                     |
 | `sql`                   |                                                                              |
-| `toml`                  | Runner configuration examples, and other toml formatted configuration files. |
+| `toml`                  | Runner configuration examples, and other TOML-formatted configuration files. |
 | `typescript`            | Alias: `ts`.                                                                 |
 | `xml`                   |                                                                              |
 | `yaml`                  | Alias: `yml`.                                                                |

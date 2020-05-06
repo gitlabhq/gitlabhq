@@ -1163,8 +1163,8 @@ describe Ci::Pipeline, :mailer do
         context "from #{status}" do
           let(:from_status) { status }
 
-          it 'schedules pipeline success worker' do
-            expect(Ci::DailyReportResultsWorker).to receive(:perform_in).with(10.minutes, pipeline.id)
+          it 'schedules daily build group report results worker' do
+            expect(Ci::DailyBuildGroupReportResultsWorker).to receive(:perform_in).with(10.minutes, pipeline.id)
 
             pipeline.succeed
           end

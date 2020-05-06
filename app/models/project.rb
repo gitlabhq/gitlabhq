@@ -322,7 +322,7 @@ class Project < ApplicationRecord
   has_many :import_failures, inverse_of: :project
   has_many :jira_imports, -> { order 'jira_imports.created_at' }, class_name: 'JiraImportState', inverse_of: :project
 
-  has_many :daily_report_results, class_name: 'Ci::DailyReportResult'
+  has_many :daily_build_group_report_results, class_name: 'Ci::DailyBuildGroupReportResult'
 
   has_many :repository_storage_moves, class_name: 'ProjectRepositoryStorageMove'
 

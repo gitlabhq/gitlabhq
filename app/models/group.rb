@@ -478,16 +478,6 @@ class Group < Namespace
     false
   end
 
-  def wiki_access_level
-    # TODO: Remove this method once we implement group-level features.
-    # https://gitlab.com/gitlab-org/gitlab/-/issues/208412
-    if Feature.enabled?(:group_wiki, self)
-      ProjectFeature::ENABLED
-    else
-      ProjectFeature::DISABLED
-    end
-  end
-
   private
 
   def update_two_factor_requirement

@@ -124,6 +124,7 @@ describe ProjectPolicy do
 
   it_behaves_like 'model with wiki policies' do
     let(:container) { project }
+    let_it_be(:user) { owner }
 
     def set_access_level(access_level)
       project.project_feature.update_attribute(:wiki_access_level, access_level)

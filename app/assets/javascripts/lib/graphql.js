@@ -33,6 +33,7 @@ export default (resolvers = {}, config = {}) => {
   };
 
   return new ApolloClient({
+    typeDefs: config.typeDefs,
     link: ApolloLink.split(
       operation => operation.getContext().hasUpload || operation.getContext().isSingleRequest,
       createUploadLink(httpOptions),

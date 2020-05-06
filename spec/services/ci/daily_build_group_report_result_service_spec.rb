@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ci::DailyReportResultService, '#execute' do
+describe Ci::DailyBuildGroupReportResultService, '#execute' do
   let!(:pipeline) { create(:ci_pipeline, created_at: '2020-02-06 00:01:10') }
   let!(:rspec_job) { create(:ci_build, pipeline: pipeline, name: '3/3 rspec', coverage: 80) }
   let!(:karma_job) { create(:ci_build, pipeline: pipeline, name: '2/2 karma', coverage: 90) }
@@ -11,31 +11,29 @@ describe Ci::DailyReportResultService, '#execute' do
   it 'creates daily code coverage record for each job in the pipeline that has coverage value' do
     described_class.new.execute(pipeline)
 
-    Ci::DailyReportResult.find_by(title: 'rspec').tap do |coverage|
+    Ci::DailyBuildGroupReportResult.find_by(group_name: 'rspec').tap do |coverage|
       expect(coverage).to have_attributes(
         project_id: pipeline.project.id,
         last_pipeline_id: pipeline.id,
         ref_path: pipeline.source_ref_path,
-        param_type: 'coverage',
-        title: rspec_job.group_name,
-        value: rspec_job.coverage,
+        group_name: rspec_job.group_name,
+        data: { 'coverage' => rspec_job.coverage },
         date: pipeline.created_at.to_date
       )
     end
 
-    Ci::DailyReportResult.find_by(title: 'karma').tap do |coverage|
+    Ci::DailyBuildGroupReportResult.find_by(group_name: 'karma').tap do |coverage|
       expect(coverage).to have_attributes(
         project_id: pipeline.project.id,
         last_pipeline_id: pipeline.id,
         ref_path: pipeline.source_ref_path,
-        param_type: 'coverage',
-        title: karma_job.group_name,
-        value: karma_job.coverage,
+        group_name: karma_job.group_name,
+        data: { 'coverage' => karma_job.coverage },
         date: pipeline.created_at.to_date
       )
     end
 
-    expect(Ci::DailyReportResult.find_by(title: 'extra')).to be_nil
+    expect(Ci::DailyBuildGroupReportResult.find_by(group_name: 'extra')).to be_nil
   end
 
   context 'when there are multiple builds with the same group name that report coverage' do
@@ -45,14 +43,13 @@ describe Ci::DailyReportResultService, '#execute' do
     it 'creates daily code coverage record with the average as the value' do
       described_class.new.execute(pipeline)
 
-      Ci::DailyReportResult.find_by(title: 'test').tap do |coverage|
+      Ci::DailyBuildGroupReportResult.find_by(group_name: 'test').tap do |coverage|
         expect(coverage).to have_attributes(
           project_id: pipeline.project.id,
           last_pipeline_id: pipeline.id,
           ref_path: pipeline.source_ref_path,
-          param_type: 'coverage',
-          title: test_job_2.group_name,
-          value: 75,
+          group_name: test_job_2.group_name,
+          data: { 'coverage' => 75.0 },
           date: pipeline.created_at.to_date
         )
       end
@@ -77,8 +74,8 @@ describe Ci::DailyReportResultService, '#execute' do
     end
 
     it "updates the existing record's coverage value and last_pipeline_id" do
-      rspec_coverage = Ci::DailyReportResult.find_by(title: 'rspec')
-      karma_coverage = Ci::DailyReportResult.find_by(title: 'karma')
+      rspec_coverage = Ci::DailyBuildGroupReportResult.find_by(group_name: 'rspec')
+      karma_coverage = Ci::DailyBuildGroupReportResult.find_by(group_name: 'karma')
 
       # Bump up the coverage values
       described_class.new.execute(new_pipeline)
@@ -88,12 +85,12 @@ describe Ci::DailyReportResultService, '#execute' do
 
       expect(rspec_coverage).to have_attributes(
         last_pipeline_id: new_pipeline.id,
-        value: new_rspec_job.coverage
+        data: { 'coverage' => new_rspec_job.coverage }
       )
 
       expect(karma_coverage).to have_attributes(
         last_pipeline_id: new_pipeline.id,
-        value: new_karma_job.coverage
+        data: { 'coverage' => new_karma_job.coverage }
       )
     end
   end
@@ -117,8 +114,8 @@ describe Ci::DailyReportResultService, '#execute' do
     end
 
     it 'updates the existing daily code coverage records' do
-      rspec_coverage = Ci::DailyReportResult.find_by(title: 'rspec')
-      karma_coverage = Ci::DailyReportResult.find_by(title: 'karma')
+      rspec_coverage = Ci::DailyBuildGroupReportResult.find_by(group_name: 'rspec')
+      karma_coverage = Ci::DailyBuildGroupReportResult.find_by(group_name: 'karma')
 
       # Run another one but for the older pipeline.
       # This simulates the scenario wherein the success worker
@@ -135,12 +132,12 @@ describe Ci::DailyReportResultService, '#execute' do
 
       expect(rspec_coverage).to have_attributes(
         last_pipeline_id: pipeline.id,
-        value: rspec_job.coverage
+        data: { 'coverage' => rspec_job.coverage }
       )
 
       expect(karma_coverage).to have_attributes(
         last_pipeline_id: pipeline.id,
-        value: karma_job.coverage
+        data: { 'coverage' => karma_job.coverage }
       )
     end
   end

@@ -100,6 +100,7 @@
     "lodash": "^4.17.15",
     "marked": "^0.3.12",
     "mermaid": "^8.4.8",
+    "mitt": "^1.2.0",
     "monaco-editor": "^0.18.1",
     "monaco-editor-webpack-plugin": "^1.7.0",
     "mousetrap": "^1.4.6",

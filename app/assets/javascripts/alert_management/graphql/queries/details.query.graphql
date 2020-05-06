@@ -1,0 +1,17 @@
+query alertDetails($fullPath: ID!, $alertId: String) {
+    project(fullPath: $fullPath) {
+        alertManagementAlerts(iid: $alertId) {
+          nodes {
+            iid
+            endedAt
+            eventCount
+            monitoringTool
+            service
+            severity
+            startedAt
+            status
+            title
+          }
+        }
+    }
+}

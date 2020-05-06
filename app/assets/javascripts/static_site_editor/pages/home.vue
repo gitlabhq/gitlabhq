@@ -2,6 +2,8 @@
 import { mapState, mapGetters, mapActions } from 'vuex';
 import { GlSkeletonLoader } from '@gitlab/ui';
 
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import RichContentEditor from '~/vue_shared/components/rich_content_editor/rich_content_editor.vue';
 import EditArea from '../components/edit_area.vue';
 import EditHeader from '../components/edit_header.vue';
 import SavedChangesMessage from '../components/saved_changes_message.vue';
@@ -11,6 +13,7 @@ import SubmitChangesError from '../components/submit_changes_error.vue';
 
 export default {
   components: {
+    RichContentEditor,
     EditArea,
     EditHeader,
     InvalidContentMessage,
@@ -19,6 +22,7 @@ export default {
     PublishToolbar,
     SubmitChangesError,
   },
+  mixins: [glFeatureFlagsMixin()],
   computed: {
     ...mapState([
       'content',
@@ -76,7 +80,14 @@ export default {
           @dismiss="dismissSubmitChangesError"
         />
         <edit-header class="w-75 align-self-center py-2" :title="title" />
+        <rich-content-editor
+          v-if="glFeatures.richContentEditor"
+          class="w-75 gl-align-self-center"
+          :value="content"
+          @input="setContent"
+        />
         <edit-area
+          v-else
           class="w-75 h-100 shadow-none align-self-center"
           :value="content"
           @input="setContent"

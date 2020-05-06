@@ -1,9 +1,8 @@
-/* eslint-disable no-unused-vars */
 import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
-import setTimeoutPromise from 'spec/helpers/set_timeout_promise_helper';
-import GLDropdown from '~/gl_dropdown';
+import { TEST_HOST } from 'helpers/test_constants';
 import axios from '~/lib/utils/axios_utils';
+import { visitUrl } from '~/lib/utils/url_utility';
 import '~/behaviors/markdown/render_gfm';
 import issuableApp from '~/issue_show/components/app.vue';
 import eventHub from '~/issue_show/event_hub';
@@ -13,6 +12,9 @@ function formatText(text) {
   return text.trim().replace(/\s\s+/g, ' ');
 }
 
+jest.mock('~/lib/utils/url_utility');
+jest.mock('~/issue_show/event_hub');
+
 const REALTIME_REQUEST_STACK = [initialRequest, secondRequest];
 
 describe('Issuable output', () => {
@@ -20,9 +22,10 @@ describe('Issuable output', () => {
   let realtimeRequestCount = 0;
   let vm;
 
-  beforeEach(done => {
+  beforeEach(() => {
     setFixtures(`
       <div>
+        <title>Title</title>
         <div class="detail-page-description content-block">
         <details open>
           <summary>One</summary>
@@ -35,7 +38,6 @@ describe('Issuable output', () => {
         <span id="task_status"></span>
       </div>
     `);
-    spyOn(eventHub, '$emit');
 
     const IssuableDescriptionComponent = Vue.extend(issuableApp);
 
@@ -53,7 +55,7 @@ describe('Issuable output', () => {
         canUpdate: true,
         canDestroy: true,
         endpoint: '/gitlab-org/gitlab-shell/-/issues/9/realtime_changes',
-        updateEndpoint: gl.TEST_HOST,
+        updateEndpoint: TEST_HOST,
         issuableRef: '#1',
         initialTitleHtml: '',
         initialTitleText: '',
@@ -67,8 +69,6 @@ describe('Issuable output', () => {
         issuableTemplateNamesPath: '/issuable-templates-path',
       },
     }).$mount();
-
-    setTimeout(done);
   });
 
   afterEach(() => {
@@ -79,9 +79,10 @@ describe('Issuable output', () => {
     vm.$destroy();
   });
 
-  it('should render a title/description/edited and update title/description/edited on update', done => {
+  it('should render a title/description/edited and update title/description/edited on update', () => {
     let editedText;
-    Vue.nextTick()
+    return axios
+      .waitForAll()
       .then(() => {
         editedText = vm.$el.querySelector('.edited-text');
       })
@@ -100,8 +101,8 @@ describe('Issuable output', () => {
       })
       .then(() => {
         vm.poll.makeRequest();
+        return axios.waitForAll();
       })
-      .then(() => new Promise(resolve => setTimeout(resolve)))
       .then(() => {
         expect(document.querySelector('title').innerText).toContain('2 (#1)');
         expect(vm.$el.querySelector('.title').innerHTML).toContain('<p>2</p>');
@@ -115,236 +116,56 @@ describe('Issuable output', () => {
         expect(editedText.querySelector('.author-link').href).toMatch(/\/other_user$/);
         expect(editedText.querySelector('time')).toBeTruthy();
         expect(vm.state.lock_version).toEqual(2);
-      })
-      .then(done)
-      .catch(done.fail);
+      });
   });
 
-  it('shows actions if permissions are correct', done => {
+  it('shows actions if permissions are correct', () => {
     vm.showForm = true;
 
-    Vue.nextTick(() => {
+    return vm.$nextTick().then(() => {
       expect(vm.$el.querySelector('.btn')).not.toBeNull();
-
-      done();
     });
   });
 
-  it('does not show actions if permissions are incorrect', done => {
+  it('does not show actions if permissions are incorrect', () => {
     vm.showForm = true;
     vm.canUpdate = false;
 
-    Vue.nextTick(() => {
+    return vm.$nextTick().then(() => {
       expect(vm.$el.querySelector('.btn')).toBeNull();
-
-      done();
     });
   });
 
-  it('does not update formState if form is already open', done => {
+  it('does not update formState if form is already open', () => {
     vm.updateAndShowForm();
 
     vm.state.titleText = 'testing 123';
 
     vm.updateAndShowForm();
 
-    Vue.nextTick(() => {
+    return vm.$nextTick().then(() => {
       expect(vm.store.formState.title).not.toBe('testing 123');
-
-      done();
     });
   });
 
-  describe('updateIssuable', () => {
-    it('fetches new data after update', done => {
-      spyOn(vm, 'updateStoreState').and.callThrough();
-      spyOn(vm.service, 'getData').and.callThrough();
-      spyOn(vm.service, 'updateIssuable').and.returnValue(
-        Promise.resolve({
-          data: { web_url: window.location.pathname },
-        }),
-      );
-
-      vm.updateIssuable()
-        .then(() => {
-          expect(vm.updateStoreState).toHaveBeenCalled();
-          expect(vm.service.getData).toHaveBeenCalled();
-        })
-        .then(done)
-        .catch(done.fail);
-    });
-
-    it('correctly updates issuable data', done => {
-      spyOn(vm.service, 'updateIssuable').and.returnValue(
-        Promise.resolve({
-          data: { web_url: window.location.pathname },
-        }),
-      );
-
-      vm.updateIssuable()
-        .then(() => {
-          expect(vm.service.updateIssuable).toHaveBeenCalledWith(vm.formState);
-          expect(eventHub.$emit).toHaveBeenCalledWith('close.form');
-        })
-        .then(done)
-        .catch(done.fail);
-    });
-
-    it('does not redirect if issue has not moved', done => {
-      const visitUrl = spyOnDependency(issuableApp, 'visitUrl');
-      spyOn(vm.service, 'updateIssuable').and.returnValue(
-        Promise.resolve({
-          data: {
-            web_url: window.location.pathname,
-            confidential: vm.isConfidential,
-          },
-        }),
-      );
-
-      vm.updateIssuable();
-
-      setTimeout(() => {
-        expect(visitUrl).not.toHaveBeenCalled();
-        done();
-      });
-    });
-
-    it('redirects if returned web_url has changed', done => {
-      const visitUrl = spyOnDependency(issuableApp, 'visitUrl');
-      spyOn(vm.service, 'updateIssuable').and.returnValue(
-        Promise.resolve({
-          data: {
-            web_url: '/testing-issue-move',
-            confidential: vm.isConfidential,
-          },
-        }),
-      );
-
-      vm.updateIssuable();
-
-      setTimeout(() => {
-        expect(visitUrl).toHaveBeenCalledWith('/testing-issue-move');
-        done();
-      });
-    });
-
-    describe('shows dialog when issue has unsaved changed', () => {
-      it('confirms on title change', done => {
-        vm.showForm = true;
-        vm.state.titleText = 'title has changed';
-        const e = { returnValue: null };
-        vm.handleBeforeUnloadEvent(e);
-        Vue.nextTick(() => {
-          expect(e.returnValue).not.toBeNull();
-
-          done();
-        });
-      });
-
-      it('confirms on description change', done => {
-        vm.showForm = true;
-        vm.state.descriptionText = 'description has changed';
-        const e = { returnValue: null };
-        vm.handleBeforeUnloadEvent(e);
-        Vue.nextTick(() => {
-          expect(e.returnValue).not.toBeNull();
-
-          done();
-        });
-      });
-
-      it('does nothing when nothing has changed', done => {
-        const e = { returnValue: null };
-        vm.handleBeforeUnloadEvent(e);
-        Vue.nextTick(() => {
-          expect(e.returnValue).toBeNull();
-
-          done();
-        });
-      });
-    });
-
-    describe('error when updating', () => {
-      it('closes form on error', done => {
-        spyOn(vm.service, 'updateIssuable').and.callFake(() => Promise.reject());
-        vm.updateIssuable();
-
-        setTimeout(() => {
-          expect(eventHub.$emit).not.toHaveBeenCalledWith('close.form');
-          expect(document.querySelector('.flash-container .flash-text').innerText.trim()).toBe(
-            `Error updating issue`,
-          );
-
-          done();
-        });
-      });
-
-      it('returns the correct error message for issuableType', done => {
-        spyOn(vm.service, 'updateIssuable').and.callFake(() => Promise.reject());
-        vm.issuableType = 'merge request';
-
-        Vue.nextTick(() => {
-          vm.updateIssuable();
-
-          setTimeout(() => {
-            expect(eventHub.$emit).not.toHaveBeenCalledWith('close.form');
-            expect(document.querySelector('.flash-container .flash-text').innerText.trim()).toBe(
-              `Error updating merge request`,
-            );
-
-            done();
-          });
-        });
-      });
-
-      it('shows error message from backend if exists', done => {
-        const msg = 'Custom error message from backend';
-        spyOn(vm.service, 'updateIssuable').and.callFake(
-          // eslint-disable-next-line prefer-promise-reject-errors
-          () => Promise.reject({ response: { data: { errors: [msg] } } }),
-        );
-
-        vm.updateIssuable();
-        setTimeout(() => {
-          expect(document.querySelector('.flash-container .flash-text').innerText.trim()).toBe(
-            `${vm.defaultErrorMessage}. ${msg}`,
-          );
-
-          done();
-        });
-      });
-    });
-  });
-
-  it('opens reCAPTCHA modal if update rejected as spam', done => {
-    function mockScriptSrc() {
-      const recaptchaChild = vm.$children.find(
-        // eslint-disable-next-line no-underscore-dangle
-        child => child.$options._componentTag === 'recaptcha-modal',
-      );
-
-      recaptchaChild.scriptSrc = '//scriptsrc';
-    }
-
+  it('opens reCAPTCHA modal if update rejected as spam', () => {
     let modal;
-    const promise = new Promise(resolve => {
-      resolve({
-        data: {
-          recaptcha_html: '<div class="g-recaptcha">recaptcha_html</div>',
-        },
-      });
-    });
 
-    spyOn(vm.service, 'updateIssuable').and.returnValue(promise);
+    jest.spyOn(vm.service, 'updateIssuable').mockResolvedValue({
+      data: {
+        recaptcha_html: '<div class="g-recaptcha">recaptcha_html</div>',
+      },
+    });
 
     vm.canUpdate = true;
     vm.showForm = true;
 
-    vm.$nextTick()
-      .then(() => mockScriptSrc())
-      .then(() => vm.updateIssuable())
-      .then(promise)
-      .then(() => setTimeoutPromise())
+    return vm
+      .$nextTick()
+      .then(() => {
+        vm.$refs.recaptchaModal.scriptSrc = '//scriptsrc';
+        return vm.updateIssuable();
+      })
       .then(() => {
         modal = vm.$el.querySelector('.js-recaptcha-modal');
 
@@ -352,75 +173,182 @@ describe('Issuable output', () => {
         expect(modal.querySelector('.g-recaptcha').textContent).toEqual('recaptcha_html');
         expect(document.body.querySelector('.js-recaptcha-script').src).toMatch('//scriptsrc');
       })
-      .then(() => modal.querySelector('.close').click())
-      .then(() => vm.$nextTick())
+      .then(() => {
+        modal.querySelector('.close').click();
+        return vm.$nextTick();
+      })
       .then(() => {
         expect(modal.style.display).toEqual('none');
         expect(document.body.querySelector('.js-recaptcha-script')).toBeNull();
-      })
-      .then(done)
-      .catch(done.fail);
+      });
+  });
+
+  describe('updateIssuable', () => {
+    it('fetches new data after update', () => {
+      const updateStoreSpy = jest.spyOn(vm, 'updateStoreState');
+      const getDataSpy = jest.spyOn(vm.service, 'getData');
+      jest.spyOn(vm.service, 'updateIssuable').mockResolvedValue({
+        data: { web_url: window.location.pathname },
+      });
+
+      return vm.updateIssuable().then(() => {
+        expect(updateStoreSpy).toHaveBeenCalled();
+        expect(getDataSpy).toHaveBeenCalled();
+      });
+    });
+
+    it('correctly updates issuable data', () => {
+      const spy = jest.spyOn(vm.service, 'updateIssuable').mockResolvedValue({
+        data: { web_url: window.location.pathname },
+      });
+
+      return vm.updateIssuable().then(() => {
+        expect(spy).toHaveBeenCalledWith(vm.formState);
+        expect(eventHub.$emit).toHaveBeenCalledWith('close.form');
+      });
+    });
+
+    it('does not redirect if issue has not moved', () => {
+      jest.spyOn(vm.service, 'updateIssuable').mockResolvedValue({
+        data: {
+          web_url: window.location.pathname,
+          confidential: vm.isConfidential,
+        },
+      });
+
+      return vm.updateIssuable().then(() => {
+        expect(visitUrl).not.toHaveBeenCalled();
+      });
+    });
+
+    it('redirects if returned web_url has changed', () => {
+      jest.spyOn(vm.service, 'updateIssuable').mockResolvedValue({
+        data: {
+          web_url: '/testing-issue-move',
+          confidential: vm.isConfidential,
+        },
+      });
+
+      vm.updateIssuable();
+
+      return vm.updateIssuable().then(() => {
+        expect(visitUrl).toHaveBeenCalledWith('/testing-issue-move');
+      });
+    });
+
+    describe('shows dialog when issue has unsaved changed', () => {
+      it('confirms on title change', () => {
+        vm.showForm = true;
+        vm.state.titleText = 'title has changed';
+        const e = { returnValue: null };
+        vm.handleBeforeUnloadEvent(e);
+        return vm.$nextTick().then(() => {
+          expect(e.returnValue).not.toBeNull();
+        });
+      });
+
+      it('confirms on description change', () => {
+        vm.showForm = true;
+        vm.state.descriptionText = 'description has changed';
+        const e = { returnValue: null };
+        vm.handleBeforeUnloadEvent(e);
+        return vm.$nextTick().then(() => {
+          expect(e.returnValue).not.toBeNull();
+        });
+      });
+
+      it('does nothing when nothing has changed', () => {
+        const e = { returnValue: null };
+        vm.handleBeforeUnloadEvent(e);
+        return vm.$nextTick().then(() => {
+          expect(e.returnValue).toBeNull();
+        });
+      });
+    });
+
+    describe('error when updating', () => {
+      it('closes form on error', () => {
+        jest.spyOn(vm.service, 'updateIssuable').mockRejectedValue();
+        return vm.updateIssuable().then(() => {
+          expect(eventHub.$emit).not.toHaveBeenCalledWith('close.form');
+          expect(document.querySelector('.flash-container .flash-text').innerText.trim()).toBe(
+            `Error updating issue`,
+          );
+        });
+      });
+
+      it('returns the correct error message for issuableType', () => {
+        jest.spyOn(vm.service, 'updateIssuable').mockRejectedValue();
+        vm.issuableType = 'merge request';
+
+        return vm
+          .$nextTick()
+          .then(vm.updateIssuable)
+          .then(() => {
+            expect(eventHub.$emit).not.toHaveBeenCalledWith('close.form');
+            expect(document.querySelector('.flash-container .flash-text').innerText.trim()).toBe(
+              `Error updating merge request`,
+            );
+          });
+      });
+
+      it('shows error message from backend if exists', () => {
+        const msg = 'Custom error message from backend';
+        jest
+          .spyOn(vm.service, 'updateIssuable')
+          .mockRejectedValue({ response: { data: { errors: [msg] } } });
+
+        return vm.updateIssuable().then(() => {
+          expect(document.querySelector('.flash-container .flash-text').innerText.trim()).toBe(
+            `${vm.defaultErrorMessage}. ${msg}`,
+          );
+        });
+      });
+    });
   });
 
   describe('deleteIssuable', () => {
-    it('changes URL when deleted', done => {
-      const visitUrl = spyOnDependency(issuableApp, 'visitUrl');
-      spyOn(vm.service, 'deleteIssuable').and.returnValue(
-        Promise.resolve({
-          data: {
-            web_url: '/test',
-          },
-        }),
-      );
+    it('changes URL when deleted', () => {
+      jest.spyOn(vm.service, 'deleteIssuable').mockResolvedValue({
+        data: {
+          web_url: '/test',
+        },
+      });
 
-      vm.deleteIssuable();
-
-      setTimeout(() => {
+      return vm.deleteIssuable().then(() => {
         expect(visitUrl).toHaveBeenCalledWith('/test');
-
-        done();
       });
     });
 
-    it('stops polling when deleting', done => {
-      spyOnDependency(issuableApp, 'visitUrl');
-      spyOn(vm.poll, 'stop').and.callThrough();
-      spyOn(vm.service, 'deleteIssuable').and.returnValue(
-        Promise.resolve({
-          data: {
-            web_url: '/test',
-          },
-        }),
-      );
+    it('stops polling when deleting', () => {
+      const spy = jest.spyOn(vm.poll, 'stop');
+      jest.spyOn(vm.service, 'deleteIssuable').mockResolvedValue({
+        data: {
+          web_url: '/test',
+        },
+      });
 
-      vm.deleteIssuable();
-
-      setTimeout(() => {
-        expect(vm.poll.stop).toHaveBeenCalledWith();
-
-        done();
+      return vm.deleteIssuable().then(() => {
+        expect(spy).toHaveBeenCalledWith();
       });
     });
 
-    it('closes form on error', done => {
-      spyOn(vm.service, 'deleteIssuable').and.returnValue(Promise.reject());
+    it('closes form on error', () => {
+      jest.spyOn(vm.service, 'deleteIssuable').mockRejectedValue();
 
-      vm.deleteIssuable();
-
-      setTimeout(() => {
+      return vm.deleteIssuable().then(() => {
         expect(eventHub.$emit).not.toHaveBeenCalledWith('close.form');
         expect(document.querySelector('.flash-container .flash-text').innerText.trim()).toBe(
           'Error deleting issue',
         );
-
-        done();
       });
     });
   });
 
   describe('updateAndShowForm', () => {
-    it('shows locked warning if form is open & data is different', done => {
-      vm.$nextTick()
+    it('shows locked warning if form is open & data is different', () => {
+      return vm
+        .$nextTick()
         .then(() => {
           vm.updateAndShowForm();
 
@@ -436,44 +364,38 @@ describe('Issuable output', () => {
           expect(vm.formState.lockedWarningVisible).toEqual(true);
           expect(vm.formState.lock_version).toEqual(1);
           expect(vm.$el.querySelector('.alert')).not.toBeNull();
-        })
-        .then(done)
-        .catch(done.fail);
+        });
     });
   });
 
   describe('requestTemplatesAndShowForm', () => {
+    let formSpy;
+
     beforeEach(() => {
-      spyOn(vm, 'updateAndShowForm');
+      formSpy = jest.spyOn(vm, 'updateAndShowForm');
     });
 
-    it('shows the form if template names request is successful', done => {
+    it('shows the form if template names request is successful', () => {
       const mockData = [{ name: 'Bug' }];
       mock.onGet('/issuable-templates-path').reply(() => Promise.resolve([200, mockData]));
 
-      vm.requestTemplatesAndShowForm()
-        .then(() => {
-          expect(vm.updateAndShowForm).toHaveBeenCalledWith(mockData);
-        })
-        .then(done)
-        .catch(done.fail);
+      return vm.requestTemplatesAndShowForm().then(() => {
+        expect(formSpy).toHaveBeenCalledWith(mockData);
+      });
     });
 
-    it('shows the form if template names request failed', done => {
+    it('shows the form if template names request failed', () => {
       mock
         .onGet('/issuable-templates-path')
         .reply(() => Promise.reject(new Error('something went wrong')));
 
-      vm.requestTemplatesAndShowForm()
-        .then(() => {
-          expect(document.querySelector('.flash-container .flash-text').textContent).toContain(
-            'Error updating issue',
-          );
+      return vm.requestTemplatesAndShowForm().then(() => {
+        expect(document.querySelector('.flash-container .flash-text').textContent).toContain(
+          'Error updating issue',
+        );
 
-          expect(vm.updateAndShowForm).toHaveBeenCalledWith();
-        })
-        .then(done)
-        .catch(done.fail);
+        expect(formSpy).toHaveBeenCalledWith();
+      });
     });
   });
 
@@ -490,32 +412,26 @@ describe('Issuable output', () => {
   });
 
   describe('updateStoreState', () => {
-    it('should make a request and update the state of the store', done => {
+    it('should make a request and update the state of the store', () => {
       const data = { foo: 1 };
-      spyOn(vm.store, 'updateState');
-      spyOn(vm.service, 'getData').and.returnValue(Promise.resolve({ data }));
+      const getDataSpy = jest.spyOn(vm.service, 'getData').mockResolvedValue({ data });
+      const updateStateSpy = jest.spyOn(vm.store, 'updateState').mockImplementation(jest.fn);
 
-      vm.updateStoreState()
-        .then(() => {
-          expect(vm.service.getData).toHaveBeenCalled();
-          expect(vm.store.updateState).toHaveBeenCalledWith(data);
-        })
-        .then(done)
-        .catch(done.fail);
+      return vm.updateStoreState().then(() => {
+        expect(getDataSpy).toHaveBeenCalled();
+        expect(updateStateSpy).toHaveBeenCalledWith(data);
+      });
     });
 
-    it('should show error message if store update fails', done => {
-      spyOn(vm.service, 'getData').and.returnValue(Promise.reject());
+    it('should show error message if store update fails', () => {
+      jest.spyOn(vm.service, 'getData').mockRejectedValue();
       vm.issuableType = 'merge request';
 
-      vm.updateStoreState()
-        .then(() => {
-          expect(document.querySelector('.flash-container .flash-text').innerText.trim()).toBe(
-            `Error updating ${vm.issuableType}`,
-          );
-        })
-        .then(done)
-        .catch(done.fail);
+      return vm.updateStoreState().then(() => {
+        expect(document.querySelector('.flash-container .flash-text').innerText.trim()).toBe(
+          `Error updating ${vm.issuableType}`,
+        );
+      });
     });
   });
 

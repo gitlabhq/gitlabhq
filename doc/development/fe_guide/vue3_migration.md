@@ -12,11 +12,11 @@ Filters [are removed](https://github.com/vuejs/rfcs/blob/master/active-rfcs/0015
 
 Component's computed properties / methods or external helpers.
 
-## Event bus
+## Event hub
 
 **Why?**
 
-`$on` and `$off` methods [are removed](https://github.com/vuejs/rfcs/blob/master/active-rfcs/0020-events-api-change.md) from the Vue instance, so in Vue 3 it can't be used to create an event bus.
+`$on` and `$off` methods [are removed](https://github.com/vuejs/rfcs/blob/master/active-rfcs/0020-events-api-change.md) from the Vue instance, so in Vue 3 it can't be used to create an event hub.
 
 **What to use instead**
 
@@ -42,6 +42,21 @@ function onFoo() {}
 emitter.on('foo', onFoo)   // listen
 emitter.off('foo', onFoo)  // unlisten
 ```
+
+**Event hub factory**
+
+To make it easier for you to migrate existing event hubs to the new recommended approach, or simply
+to create new ones, we have created a factory that you can use to instantiate a new mitt-based
+event hub.
+
+```javascript
+import createEventHub from '~/helpers/event_hub_factory';
+
+export default createEventHub();
+```
+
+Event hubs created with the factory expose the same methods as Vue 2 event hubs (`$on`, `$off` and
+`$emit`), making them backward compatible with our previous approach.
 
 ## <template functional>
 

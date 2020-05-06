@@ -100,6 +100,10 @@ module QA
         "#{api_get_path}/runners"
       end
 
+      def api_pipelines_path
+        "#{api_get_path}/pipelines"
+      end
+
       def api_put_path
         "/projects/#{id}"
       end
@@ -159,6 +163,10 @@ module QA
       def runners(tag_list: nil)
         response = get Runtime::API::Request.new(api_client, "#{api_runners_path}?tag_list=#{tag_list.compact.join(',')}").url
         parse_body(response)
+      end
+
+      def pipelines
+        parse_body(get(Runtime::API::Request.new(api_client, api_pipelines_path).url))
       end
 
       def share_with_group(invitee, access_level = Resource::Members::AccessLevel::DEVELOPER)

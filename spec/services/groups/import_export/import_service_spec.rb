@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe Groups::ImportExport::ImportService do
-  context 'with group_import_export_ndjson feature flag disabled' do
+  context 'with group_import_ndjson feature flag disabled' do
     let(:user) { create(:admin) }
     let(:group) { create(:group) }
     let(:import_logger) { instance_double(Gitlab::Import::Logger) }
@@ -11,7 +11,7 @@ describe Groups::ImportExport::ImportService do
     subject(:service) { described_class.new(group: group, user: user) }
 
     before do
-      stub_feature_flags(group_import_export_ndjson: false)
+      stub_feature_flags(group_import_ndjson: false)
 
       ImportExportUpload.create(group: group, import_file: import_file)
 
@@ -39,9 +39,9 @@ describe Groups::ImportExport::ImportService do
     end
   end
 
-  context 'with group_import_export_ndjson feature flag enabled' do
+  context 'with group_import_ndjson feature flag enabled' do
     before do
-      stub_feature_flags(group_import_export_ndjson: true)
+      stub_feature_flags(group_import_ndjson: true)
     end
 
     context 'when importing a ndjson export' do

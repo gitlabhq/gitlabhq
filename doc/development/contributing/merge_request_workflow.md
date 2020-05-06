@@ -244,7 +244,7 @@ request:
 1. The [CI environment preparation](https://gitlab.com/gitlab-org/gitlab/blob/master/scripts/prepare_build.sh).
 1. The [Omnibus package creator](https://gitlab.com/gitlab-org/omnibus-gitlab).
 
-### Incremental improvements
+## Incremental improvements
 
 We allow engineering time to fix small problems (with or without an
 issue) that are incremental improvements, such as:

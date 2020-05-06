@@ -1,8 +1,12 @@
 import $ from 'jquery';
 import Vue from 'vue';
 import '~/behaviors/markdown/render_gfm';
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import mountComponent from 'helpers/vue_mount_component_helper';
+import { TEST_HOST } from 'helpers/test_constants';
 import Description from '~/issue_show/components/description.vue';
+import TaskList from '~/task_list';
+
+jest.mock('~/task_list');
 
 describe('Description component', () => {
   let vm;
@@ -13,7 +17,7 @@ describe('Description component', () => {
     descriptionText: 'test',
     updatedAt: new Date().toString(),
     taskStatus: '',
-    updateUrl: gl.TEST_HOST,
+    updateUrl: TEST_HOST,
   };
 
   beforeEach(() => {
@@ -39,25 +43,26 @@ describe('Description component', () => {
     $('.issuable-meta .flash-container').remove();
   });
 
-  it('animates description changes', done => {
+  it('animates description changes', () => {
     vm.descriptionHtml = 'changed';
 
-    Vue.nextTick(() => {
-      expect(
-        vm.$el.querySelector('.md').classList.contains('issue-realtime-pre-pulse'),
-      ).toBeTruthy();
-
-      setTimeout(() => {
+    return vm
+      .$nextTick()
+      .then(() => {
+        expect(
+          vm.$el.querySelector('.md').classList.contains('issue-realtime-pre-pulse'),
+        ).toBeTruthy();
+        jest.runAllTimers();
+        return vm.$nextTick();
+      })
+      .then(() => {
         expect(
           vm.$el.querySelector('.md').classList.contains('issue-realtime-trigger-pulse'),
         ).toBeTruthy();
-
-        done();
       });
-    });
   });
 
-  it('opens reCAPTCHA dialog if update rejected as spam', done => {
+  it('opens reCAPTCHA dialog if update rejected as spam', () => {
     let modal;
     const recaptchaChild = vm.$children.find(
       // eslint-disable-next-line no-underscore-dangle
@@ -70,7 +75,8 @@ describe('Description component', () => {
       recaptcha_html: '<div class="g-recaptcha">recaptcha_html</div>',
     });
 
-    vm.$nextTick()
+    return vm
+      .$nextTick()
       .then(() => {
         modal = vm.$el.querySelector('.js-recaptcha-modal');
 
@@ -83,128 +89,105 @@ describe('Description component', () => {
       .then(() => {
         expect(modal.style.display).toEqual('none');
         expect(document.body.querySelector('.js-recaptcha-script')).toBeNull();
-      })
-      .then(done)
-      .catch(done.fail);
+      });
+  });
+
+  it('applies syntax highlighting and math when description changed', () => {
+    const vmSpy = jest.spyOn(vm, 'renderGFM');
+    const prototypeSpy = jest.spyOn($.prototype, 'renderGFM');
+    vm.descriptionHtml = 'changed';
+
+    return vm.$nextTick().then(() => {
+      expect(vm.$refs['gfm-content']).toBeDefined();
+      expect(vmSpy).toHaveBeenCalled();
+      expect(prototypeSpy).toHaveBeenCalled();
+      expect($.prototype.renderGFM).toHaveBeenCalled();
+    });
+  });
+
+  it('sets data-update-url', () => {
+    expect(vm.$el.querySelector('textarea').dataset.updateUrl).toEqual(TEST_HOST);
   });
 
   describe('TaskList', () => {
-    let TaskList;
-
     beforeEach(() => {
       vm.$destroy();
+      TaskList.mockClear();
       vm = mountComponent(
         DescriptionComponent,
         Object.assign({}, props, {
           issuableType: 'issuableType',
         }),
       );
-      TaskList = spyOnDependency(Description, 'TaskList');
     });
 
-    it('re-inits the TaskList when description changed', done => {
+    it('re-inits the TaskList when description changed', () => {
       vm.descriptionHtml = 'changed';
 
-      setTimeout(() => {
-        expect(TaskList).toHaveBeenCalled();
-        done();
-      });
+      expect(TaskList).toHaveBeenCalled();
     });
 
-    it('does not re-init the TaskList when canUpdate is false', done => {
+    it('does not re-init the TaskList when canUpdate is false', () => {
       vm.canUpdate = false;
       vm.descriptionHtml = 'changed';
 
-      setTimeout(() => {
-        expect(TaskList).not.toHaveBeenCalled();
-        done();
-      });
+      expect(TaskList).toHaveBeenCalledTimes(1);
     });
 
-    it('calls with issuableType dataType', done => {
+    it('calls with issuableType dataType', () => {
       vm.descriptionHtml = 'changed';
 
-      setTimeout(() => {
-        expect(TaskList).toHaveBeenCalledWith({
-          dataType: 'issuableType',
-          fieldName: 'description',
-          selector: '.detail-page-description',
-          onSuccess: jasmine.any(Function),
-          onError: jasmine.any(Function),
-          lockVersion: 0,
-        });
-
-        done();
+      expect(TaskList).toHaveBeenCalledWith({
+        dataType: 'issuableType',
+        fieldName: 'description',
+        selector: '.detail-page-description',
+        onSuccess: expect.any(Function),
+        onError: expect.any(Function),
+        lockVersion: 0,
       });
     });
   });
 
   describe('taskStatus', () => {
-    it('adds full taskStatus', done => {
+    it('adds full taskStatus', () => {
       vm.taskStatus = '1 of 1';
 
-      setTimeout(() => {
+      return vm.$nextTick().then(() => {
         expect(document.querySelector('.issuable-meta #task_status').textContent.trim()).toBe(
           '1 of 1',
         );
-
-        done();
       });
     });
 
-    it('adds short taskStatus', done => {
+    it('adds short taskStatus', () => {
       vm.taskStatus = '1 of 1';
 
-      setTimeout(() => {
+      return vm.$nextTick().then(() => {
         expect(document.querySelector('.issuable-meta #task_status_short').textContent.trim()).toBe(
           '1/1 task',
         );
-
-        done();
       });
     });
 
-    it('clears task status text when no tasks are present', done => {
+    it('clears task status text when no tasks are present', () => {
       vm.taskStatus = '0 of 0';
 
-      setTimeout(() => {
+      return vm.$nextTick().then(() => {
         expect(document.querySelector('.issuable-meta #task_status').textContent.trim()).toBe('');
-
-        done();
       });
     });
-  });
-
-  it('applies syntax highlighting and math when description changed', done => {
-    spyOn(vm, 'renderGFM').and.callThrough();
-    spyOn($.prototype, 'renderGFM').and.callThrough();
-    vm.descriptionHtml = 'changed';
-
-    Vue.nextTick(() => {
-      setTimeout(() => {
-        expect(vm.$refs['gfm-content']).toBeDefined();
-        expect(vm.renderGFM).toHaveBeenCalled();
-        expect($.prototype.renderGFM).toHaveBeenCalled();
-
-        done();
-      });
-    });
-  });
-
-  it('sets data-update-url', () => {
-    expect(vm.$el.querySelector('textarea').dataset.updateUrl).toEqual(gl.TEST_HOST);
   });
 
   describe('taskListUpdateError', () => {
     it('should create flash notification and emit an event to parent', () => {
       const msg =
         'Someone edited this issue at the same time you did. The description has been updated and you will need to make your changes again.';
-      spyOn(vm, '$emit');
+      const spy = jest.spyOn(vm, '$emit');
 
       vm.taskListUpdateError();
 
       expect(document.querySelector('.flash-container .flash-text').innerText.trim()).toBe(msg);
-      expect(vm.$emit).toHaveBeenCalledWith('taskListUpdateFailed');
+      expect(spy).toHaveBeenCalledWith('taskListUpdateFailed');
     });
   });
 });

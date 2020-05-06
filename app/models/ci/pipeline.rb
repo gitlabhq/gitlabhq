@@ -82,7 +82,7 @@ module Ci
 
     has_one :pipeline_config, class_name: 'Ci::PipelineConfig', inverse_of: :pipeline
 
-    has_many :daily_report_results, class_name: 'Ci::DailyReportResult', foreign_key: :last_pipeline_id
+    has_many :daily_build_group_report_results, class_name: 'Ci::DailyBuildGroupReportResult', foreign_key: :last_pipeline_id
 
     accepts_nested_attributes_for :variables, reject_if: :persisted?
 
@@ -194,7 +194,7 @@ module Ci
         # We wait a little bit to ensure that all BuildFinishedWorkers finish first
         # because this is where some metrics like code coverage is parsed and stored
         # in CI build records which the daily build metrics worker relies on.
-        pipeline.run_after_commit { Ci::DailyReportResultsWorker.perform_in(10.minutes, pipeline.id) }
+        pipeline.run_after_commit { Ci::DailyBuildGroupReportResultsWorker.perform_in(10.minutes, pipeline.id) }
       end
 
       after_transition do |pipeline, transition|
