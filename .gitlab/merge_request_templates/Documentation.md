@@ -16,12 +16,13 @@
 ## Author's checklist (required)
 
 - [ ] Follow the [Documentation Guidelines](https://docs.gitlab.com/ee/development/documentation/) and [Style Guide](https://docs.gitlab.com/ee/development/documentation/styleguide.html).
-- [ ] Apply the ~documentation label, plus:
-  - The corresponding DevOps stage and group label, if applicable.
-  - ~"development guidelines" when changing docs under `doc/development/*`, `CONTRIBUTING.md`, or `README.md`.
-  - ~"development guidelines" and ~"Documentation guidelines" when changing docs under `development/documentation/*`.
-  - ~"development guidelines" and ~"Description templates (.gitlab/\*)" when creating/updating issue and MR description templates.
-- [ ] Assign the [designated Technical Writer](https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments).
+- If you have `developer` access or higher (for example, GitLab team members or [Core Team](https://about.gitlab.com/community/core-team/) members)
+  - [ ] Apply the ~documentation label, plus:
+    - The corresponding DevOps stage and group label, if applicable.
+    - ~"development guidelines" when changing docs under `doc/development/*`, `CONTRIBUTING.md`, or `README.md`.
+    - ~"development guidelines" and ~"Documentation guidelines" when changing docs under `development/documentation/*`.
+    - ~"development guidelines" and ~"Description templates (.gitlab/\*)" when creating/updating issue and MR description templates.
+  - [ ] Assign the [designated Technical Writer](https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments).
 
 When applicable:
 

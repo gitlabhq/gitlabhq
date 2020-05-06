@@ -212,11 +212,13 @@ Gitlab/HTTParty:
     - 'ee/spec/**/*'
 
 Gitlab/Json:
-  Enabled: false
+  Enabled: true
   Exclude:
     - 'db/**/*'
     - 'qa/**/*'
     - 'scripts/**/*'
+    - 'lib/rspec_flaky/**/*'
+    - 'lib/quality/**/*'
 
 GitlabSecurity/PublicSend:
   Enabled: true

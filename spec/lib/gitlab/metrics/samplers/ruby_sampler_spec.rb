@@ -19,19 +19,20 @@ describe Gitlab::Metrics::Samplers::RubySampler do
   end
 
   describe '#sample' do
-    it 'adds a metric containing the process resident memory bytes' do
-      expect(Gitlab::Metrics::System).to receive(:memory_usage).and_return(9000)
-
-      expect(sampler.metrics[:process_resident_memory_bytes]).to receive(:set).with({}, 9000)
+    it 'samples various statistics' do
+      expect(Gitlab::Metrics::System).to receive(:cpu_time)
+      expect(Gitlab::Metrics::System).to receive(:file_descriptor_count)
+      expect(Gitlab::Metrics::System).to receive(:memory_usage)
+      expect(Gitlab::Metrics::System).to receive(:max_open_file_descriptors)
+      expect(sampler).to receive(:sample_gc)
 
       sampler.sample
     end
 
-    it 'adds a metric containing the process unique and proportional memory bytes' do
-      expect(Gitlab::Metrics::System).to receive(:memory_usage_uss_pss).and_return(uss: 9000, pss: 10_000)
+    it 'adds a metric containing the process resident memory bytes' do
+      expect(Gitlab::Metrics::System).to receive(:memory_usage).and_return(9000)
 
-      expect(sampler.metrics[:process_unique_memory_bytes]).to receive(:set).with({}, 9000)
-      expect(sampler.metrics[:process_proportional_memory_bytes]).to receive(:set).with({}, 10_000)
+      expect(sampler.metrics[:process_resident_memory_bytes]).to receive(:set).with({}, 9000)
 
       sampler.sample
     end

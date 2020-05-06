@@ -11,8 +11,9 @@ describe Gitlab::GitAccessSnippet do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:snippet) { create(:project_snippet, :public, :repository, project: project) }
-  let(:repository) { snippet.repository }
+  let_it_be(:migration_bot) { User.migration_bot }
 
+  let(:repository) { snippet.repository }
   let(:actor) { user }
   let(:protocol) { 'ssh' }
   let(:changes) { Gitlab::GitAccess::ANY }
@@ -27,7 +28,19 @@ describe Gitlab::GitAccessSnippet do
     let(:actor) { build(:deploy_key) }
 
     it 'does not allow push and pull access' do
+      expect { push_access_check }.to raise_forbidden(described_class::ERROR_MESSAGES[:authentication_mechanism])
       expect { pull_access_check }.to raise_forbidden(described_class::ERROR_MESSAGES[:authentication_mechanism])
+    end
+  end
+
+  shared_examples 'actor is migration bot' do
+    context 'when user is the migration bot' do
+      let(:user) { migration_bot }
+
+      it 'can perform git operations' do
+        expect { push_access_check }.not_to raise_error
+        expect { pull_access_check }.not_to raise_error
+      end
     end
   end
 
@@ -77,6 +90,12 @@ describe Gitlab::GitAccessSnippet do
       expect { push_access_check }.not_to raise_error
       expect { pull_access_check }.not_to raise_error
     end
+
+    it_behaves_like 'actor is migration bot' do
+      before do
+        expect(migration_bot.required_terms_not_accepted?).to be_truthy
+      end
+    end
   end
 
   context 'project snippet accessibility', :aggregate_failures do
@@ -107,6 +126,7 @@ describe Gitlab::GitAccessSnippet do
 
     context 'when project is public' do
       it_behaves_like 'checks accessibility'
+      it_behaves_like 'actor is migration bot'
     end
 
     context 'when project is public but snippet feature is private' do
@@ -117,6 +137,7 @@ describe Gitlab::GitAccessSnippet do
       end
 
       it_behaves_like 'checks accessibility'
+      it_behaves_like 'actor is migration bot'
     end
 
     context 'when project is not accessible' do
@@ -127,11 +148,58 @@ describe Gitlab::GitAccessSnippet do
           let(:membership) { membership }
 
           it 'respects accessibility' do
-            expect { push_access_check }.to raise_error(described_class::NotFoundError)
-            expect { pull_access_check }.to raise_error(described_class::NotFoundError)
+            expect { push_access_check }.to raise_snippet_not_found
+            expect { pull_access_check }.to raise_snippet_not_found
           end
         end
       end
+
+      it_behaves_like 'actor is migration bot'
+    end
+
+    context 'when project is archived' do
+      let(:project) { create(:project, :public, :archived) }
+
+      [:anonymous, :non_member].each do |membership|
+        context membership.to_s do
+          let(:membership) { membership }
+
+          it 'cannot perform git operations' do
+            expect { push_access_check }.to raise_error(described_class::ForbiddenError)
+            expect { pull_access_check }.to raise_error(described_class::ForbiddenError)
+          end
+        end
+      end
+
+      [:guest, :reporter, :maintainer, :author, :admin].each do |membership|
+        context membership.to_s do
+          let(:membership) { membership }
+
+          it 'cannot perform git pushes' do
+            expect { push_access_check }.to raise_error(described_class::ForbiddenError)
+            expect { pull_access_check }.not_to raise_error
+          end
+        end
+      end
+
+      it_behaves_like 'actor is migration bot'
+    end
+
+    context 'when snippet feature is disabled' do
+      let(:project) { create(:project, :public, :snippets_disabled) }
+
+      [:anonymous, :non_member, :author, :admin].each do |membership|
+        context membership.to_s do
+          let(:membership) { membership }
+
+          it 'cannot perform git operations' do
+            expect { push_access_check }.to raise_error(described_class::ForbiddenError)
+            expect { pull_access_check }.to raise_error(described_class::ForbiddenError)
+          end
+        end
+      end
+
+      it_behaves_like 'actor is migration bot'
     end
   end
 
@@ -159,6 +227,8 @@ describe Gitlab::GitAccessSnippet do
           expect { pull_access_check }.to raise_error(error_class)
         end
       end
+
+      it_behaves_like 'actor is migration bot'
     end
   end
 
@@ -166,12 +236,22 @@ describe Gitlab::GitAccessSnippet do
     let(:user) { snippet.author }
     let!(:primary_node) { FactoryBot.create(:geo_node, :primary) }
 
-    # Without override, push access would return Gitlab::GitAccessResult::CustomAction
-    it 'skips geo for snippet' do
+    before do
       allow(::Gitlab::Database).to receive(:read_only?).and_return(true)
       allow(::Gitlab::Geo).to receive(:secondary_with_primary?).and_return(true)
+    end
 
+    # Without override, push access would return Gitlab::GitAccessResult::CustomAction
+    it 'skips geo for snippet' do
       expect { push_access_check }.to raise_forbidden(/You can't push code to a read-only GitLab instance/)
+    end
+
+    context 'when user is migration bot' do
+      let(:user) { migration_bot }
+
+      it 'skips geo for snippet' do
+        expect { push_access_check }.to raise_forbidden(/You can't push code to a read-only GitLab instance/)
+      end
     end
   end
 
@@ -179,23 +259,33 @@ describe Gitlab::GitAccessSnippet do
     let(:changes) { "2d1db523e11e777e49377cfb22d368deec3f0793 ddd0f15ae83993f5cb66a927a28673882e99100b master" }
     let(:user) { snippet.author }
 
-    it 'does not raise error if SnippetCheck does not raise error' do
-      expect_next_instance_of(Gitlab::Checks::SnippetCheck) do |check|
-        expect(check).to receive(:validate!).and_call_original
-      end
-      expect_next_instance_of(Gitlab::Checks::PushFileCountCheck) do |check|
-        expect(check).to receive(:validate!)
+    shared_examples 'snippet checks' do
+      it 'does not raise error if SnippetCheck does not raise error' do
+        expect_next_instance_of(Gitlab::Checks::SnippetCheck) do |check|
+          expect(check).to receive(:validate!).and_call_original
+        end
+        expect_next_instance_of(Gitlab::Checks::PushFileCountCheck) do |check|
+          expect(check).to receive(:validate!)
+        end
+
+        expect { push_access_check }.not_to raise_error
       end
 
-      expect { push_access_check }.not_to raise_error
+      it 'raises error if SnippetCheck raises error' do
+        expect_next_instance_of(Gitlab::Checks::SnippetCheck) do |check|
+          allow(check).to receive(:validate!).and_raise(Gitlab::GitAccess::ForbiddenError, 'foo')
+        end
+
+        expect { push_access_check }.to raise_forbidden('foo')
+      end
     end
 
-    it 'raises error if SnippetCheck raises error' do
-      expect_next_instance_of(Gitlab::Checks::SnippetCheck) do |check|
-        allow(check).to receive(:validate!).and_raise(Gitlab::GitAccess::ForbiddenError, 'foo')
-      end
+    it_behaves_like 'snippet checks'
 
-      expect { push_access_check }.to raise_forbidden('foo')
+    context 'when user is migration bot' do
+      let(:user) { migration_bot }
+
+      it_behaves_like 'snippet checks'
     end
   end
 
@@ -260,6 +350,14 @@ describe Gitlab::GitAccessSnippet do
       it_behaves_like 'a push to repository already over the limit'
       it_behaves_like 'a push to repository below the limit'
       it_behaves_like 'a push to repository to make it over the limit'
+
+      context 'when user is migration bot' do
+        let(:actor) { migration_bot }
+
+        it_behaves_like 'a push to repository already over the limit'
+        it_behaves_like 'a push to repository below the limit'
+        it_behaves_like 'a push to repository to make it over the limit'
+      end
     end
 
     context 'when GIT_OBJECT_DIRECTORY_RELATIVE env var is not set' do
@@ -274,6 +372,14 @@ describe Gitlab::GitAccessSnippet do
       it_behaves_like 'a push to repository already over the limit'
       it_behaves_like 'a push to repository below the limit'
       it_behaves_like 'a push to repository to make it over the limit'
+
+      context 'when user is migration bot' do
+        let(:actor) { migration_bot }
+
+        it_behaves_like 'a push to repository already over the limit'
+        it_behaves_like 'a push to repository below the limit'
+        it_behaves_like 'a push to repository to make it over the limit'
+      end
     end
   end
 

@@ -523,14 +523,15 @@ To use DAST in an offline environment, you need:
 
 NOTE: **Note:**
 GitLab Runner has a [default `pull policy` of `always`](https://docs.gitlab.com/runner/executors/docker.html#using-the-always-pull-policy),
-meaning the runner may try to pull remote images even if a local copy is available. Set GitLab
-Runner's [`pull_policy` to `if-not-present`](https://docs.gitlab.com/runner/executors/docker.html#using-the-if-not-present-pull-policy)
-in an offline environment if you prefer using only locally available Docker images.
+meaning the Runner tries to pull Docker images from the GitLab container registry even if a local
+copy is available. GitLab Runner's [`pull_policy` can be set to `if-not-present`](https://docs.gitlab.com/runner/executors/docker.html#using-the-if-not-present-pull-policy)
+in an offline environment if you prefer using only locally available Docker images. However, we
+recommend keeping the pull policy setting to `always` if not in an offline environment, as this
+enables the use of updated scanners in your CI/CD pipelines.
 
 ### Make GitLab DAST analyzer images available inside your Docker registry
 
-For DAST, import the following default DAST analyzer image from `registry.gitlab.com` to your local "offline"
-registry:
+For DAST, import the following default DAST analyzer image from `registry.gitlab.com` to your [local Docker container registry](../../packages/container_registry/index.md):
 
 - `registry.gitlab.com/gitlab-org/security-products/dast:latest`
 
@@ -548,16 +549,18 @@ For details on saving and transporting Docker images as a file, see Docker's doc
 
 ### Set DAST CI job variables to use local DAST analyzers
 
-1. Add the following configuration to your `.gitlab-ci.yml` file. You must replace `image` to refer
-   to the DAST Docker image hosted on your local Docker container registry:
+Add the following configuration to your `.gitlab-ci.yml` file. You must replace `image` to refer to
+the DAST Docker image hosted on your local Docker container registry:
 
-   ```yaml
-   include:
-     - template: DAST.gitlab-ci.yml
+```yaml
+include:
+  - template: DAST.gitlab-ci.yml
+dast:
+  image: registry.example.com/namespace/dast:latest
+```
 
-   dast:
-     image: registry.example.com/namespace/dast:latest
-   ```
+The DAST job should now use local copies of the DAST analyzers to scan your code and generate
+security reports without requiring internet access.
 
 ## Reports
 

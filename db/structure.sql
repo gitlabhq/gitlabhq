@@ -1120,7 +1120,7 @@ CREATE TABLE public.ci_job_artifacts (
     updated_at timestamp with time zone NOT NULL,
     expire_at timestamp with time zone,
     file character varying,
-    file_store integer,
+    file_store integer DEFAULT 1,
     file_sha256 bytea,
     file_format smallint,
     file_location smallint,
@@ -3644,7 +3644,7 @@ CREATE TABLE public.lfs_objects (
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
     file character varying,
-    file_store integer
+    file_store integer DEFAULT 1
 );
 
 CREATE SEQUENCE public.lfs_objects_id_seq
@@ -6487,7 +6487,7 @@ CREATE TABLE public.uploads (
     model_type character varying,
     uploader character varying NOT NULL,
     created_at timestamp without time zone NOT NULL,
-    store integer,
+    store integer DEFAULT 1,
     mount_point character varying,
     secret character varying
 );
@@ -13706,5 +13706,8 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200424101920
 20200427064130
 20200429015603
+20200429181335
+20200429181955
+20200429182245
 \.
 

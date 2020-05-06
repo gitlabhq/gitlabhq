@@ -61,6 +61,13 @@ module Gitlab
       end
     end
 
+    override :can_read_project?
+    def can_read_project?
+      return true if user&.migration_bot?
+
+      super
+    end
+
     override :check_download_access!
     def check_download_access!
       passed = guest_can_download_code? || user_can_download_code?

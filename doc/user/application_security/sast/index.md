@@ -527,17 +527,17 @@ To use SAST in an offline environment, you need:
 
 NOTE: **Note:**
 GitLab Runner has a [default `pull policy` of `always`](https://docs.gitlab.com/runner/executors/docker.html#using-the-always-pull-policy),
-meaning the runner will try to pull Docker images from the GitLab container registry even if a local
+meaning the Runner tries to pull Docker images from the GitLab container registry even if a local
 copy is available. GitLab Runner's [`pull_policy` can be set to `if-not-present`](https://docs.gitlab.com/runner/executors/docker.html#using-the-if-not-present-pull-policy)
 in an offline environment if you prefer using only locally available Docker images. However, we
-recommend keeping the pull policy setting to `always` as it will better enable updated scanners to
-be utilized within your CI/CD pipelines.
+recommend keeping the pull policy setting to `always` if not in an offline environment, as this
+enables the use of updated scanners in your CI/CD pipelines.
 
 ### Make GitLab SAST analyzer images available inside your Docker registry
 
 For SAST with all [supported languages and frameworks](#supported-languages-and-frameworks),
-import the following default SAST analyzer images from `registry.gitlab.com` to your local "offline"
-registry:
+import the following default SAST analyzer images from `registry.gitlab.com` into your
+[local Docker container registry](../../packages/container_registry/index.md):
 
 ```plaintext
 registry.gitlab.com/gitlab-org/security-products/analyzers/bandit:2
@@ -568,10 +568,8 @@ For details on saving and transporting Docker images as a file, see Docker's doc
 
 ### Set SAST CI job variables to use local SAST analyzers
 
-[Override SAST environment variables](#customizing-the-sast-settings) to use to your [local container registry](./analyzers.md#using-a-custom-docker-mirror)
-as the source for SAST analyzer images.
-
-For example, assuming a local Docker registry repository of `localhost:5000/analyzers`:
+Add the following configuration to your `.gitlab-ci.yml` file. You must replace
+`SAST_ANALYZER_IMAGE_PREFIX` to refer to your local Docker container registry:
 
   ```yaml
 include:

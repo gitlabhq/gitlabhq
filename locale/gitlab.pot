@@ -1356,7 +1356,7 @@ msgstr ""
 msgid "Adds an issue to an epic."
 msgstr ""
 
-msgid "Adjust your filters/search criteria above."
+msgid "Adjust your filters/search criteria above. If you believe this may be an error, please refer to the %{linkStart}Geo Troubleshooting%{linkEnd} documentation for more information."
 msgstr ""
 
 msgid "Admin Area"
@@ -9790,6 +9790,9 @@ msgstr ""
 msgid "Geo|%{name} is scheduled for re-verify"
 msgstr ""
 
+msgid "Geo|Adjust your filters/search criteria above. If you believe this may be an error, please refer to the %{linkStart}Geo Troubleshooting%{linkEnd} documentation for more information."
+msgstr ""
+
 msgid "Geo|All"
 msgstr ""
 
@@ -9911,6 +9914,9 @@ msgid "Geo|The database is currently %{db_lag} behind the primary node."
 msgstr ""
 
 msgid "Geo|The node is currently %{minutes_behind} behind the primary node."
+msgstr ""
+
+msgid "Geo|There are no %{replicable_type} to show"
 msgstr ""
 
 msgid "Geo|Tracking database entry will be removed. Are you sure?"
@@ -11130,9 +11136,6 @@ msgid "If this was a mistake you can leave the %{source_type}."
 msgstr ""
 
 msgid "If using GitHub, you’ll see pipeline statuses on GitHub for your commits and pull requests. %{more_info_link}"
-msgstr ""
-
-msgid "If you believe this may be an error, please refer to the %{linkStart}Geo Troubleshooting%{linkEnd} documentation for more information."
 msgstr ""
 
 msgid "If you lose your recovery codes you can generate new ones, invalidating all previous codes."
@@ -13796,9 +13799,6 @@ msgid "No %{header} for this request."
 msgstr ""
 
 msgid "No %{providerTitle} repositories found"
-msgstr ""
-
-msgid "No %{replicableType} match this filter"
 msgstr ""
 
 msgid "No Epic"
@@ -20962,6 +20962,9 @@ msgstr ""
 msgid "The vulnerability is no longer detected. Verify the vulnerability has been remediated before changing its status."
 msgstr ""
 
+msgid "There are no %{replicableType} to show"
+msgstr ""
+
 msgid "There are no GPG keys associated with this account."
 msgstr ""
 
@@ -25819,6 +25822,9 @@ msgid "updated %{timeAgo}"
 msgstr ""
 
 msgid "updated %{time_ago}"
+msgstr ""
+
+msgid "uploads"
 msgstr ""
 
 msgid "user avatar"

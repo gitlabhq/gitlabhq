@@ -7,6 +7,8 @@ describe Gitlab::UserAccessSnippet do
 
   let_it_be(:project) { create(:project, :private) }
   let_it_be(:snippet) { create(:project_snippet, :private, project: project) }
+  let_it_be(:migration_bot) { User.migration_bot }
+
   let(:user) { create(:user) }
 
   describe '#can_do_action?' do
@@ -34,6 +36,14 @@ describe Gitlab::UserAccessSnippet do
 
       it 'disallows access' do
         expect(access.can_do_action?(:ability)).to eq(false)
+      end
+    end
+
+    context 'when user is migration bot' do
+      let(:user) { migration_bot }
+
+      it 'allows access' do
+        expect(access.can_do_action?(:ability)).to eq(true)
       end
     end
   end
@@ -65,12 +75,30 @@ describe Gitlab::UserAccessSnippet do
       end
     end
 
+    context 'when user is migration bot' do
+      let(:user) { migration_bot }
+
+      it 'allows access' do
+        allow(Ability).to receive(:allowed?).and_return(false)
+
+        expect(access.can_push_to_branch?('random_branch')).to eq(true)
+      end
+    end
+
     context 'when snippet is nil' do
       let(:user) { create_user_from_membership(project, :admin) }
       let(:snippet) { nil }
 
       it 'disallows access' do
         expect(access.can_push_to_branch?('random_branch')).to eq(false)
+      end
+
+      context 'when user is migration bot' do
+        let(:user) { migration_bot }
+
+        it 'disallows access' do
+          expect(access.can_push_to_branch?('random_branch')).to eq(false)
+        end
       end
     end
   end
@@ -79,17 +107,41 @@ describe Gitlab::UserAccessSnippet do
     it 'returns false' do
       expect(access.can_create_tag?('random_tag')).to be_falsey
     end
+
+    context 'when user is migration bot' do
+      let(:user) { migration_bot }
+
+      it 'returns false' do
+        expect(access.can_create_tag?('random_tag')).to be_falsey
+      end
+    end
   end
 
   describe '#can_delete_branch?' do
     it 'returns false' do
       expect(access.can_delete_branch?('random_branch')).to be_falsey
     end
+
+    context 'when user is migration bot' do
+      let(:user) { migration_bot }
+
+      it 'returns false' do
+        expect(access.can_delete_branch?('random_branch')).to be_falsey
+      end
+    end
   end
 
   describe '#can_merge_to_branch?' do
     it 'returns false' do
       expect(access.can_merge_to_branch?('random_branch')).to be_falsey
+    end
+
+    context 'when user is migration bot' do
+      let(:user) { migration_bot }
+
+      it 'returns false' do
+        expect(access.can_merge_to_branch?('random_branch')).to be_falsey
+      end
     end
   end
 end

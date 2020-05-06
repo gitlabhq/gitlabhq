@@ -30,7 +30,7 @@
 
   .form-group.row
     .col-sm-12
-      = text_area_tag :user_map, JSON.pretty_generate(@user_map), class: 'form-control', rows: 15
+      = text_area_tag :user_map, Gitlab::Json.pretty_generate(@user_map), class: 'form-control', rows: 15
 
   .form-actions
     = submit_tag _('Continue to the next step'), class: "btn btn-success"

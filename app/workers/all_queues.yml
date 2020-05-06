@@ -849,7 +849,7 @@
   :urgency: :high
   :resource_boundary: :cpu
   :weight: 5
-  :idempotent: 
+  :idempotent: true
 - :name: repository_check:repository_check_batch
   :feature_category: :source_code_management
   :has_external_dependencies: 

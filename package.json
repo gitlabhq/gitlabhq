@@ -44,7 +44,7 @@
     "@gitlab/visual-review-tools": "1.6.1",
     "@rails/actioncable": "^6.0.2-2",
     "@sentry/browser": "^5.10.2",
-    "@sourcegraph/code-host-integration": "0.0.37",
+    "@sourcegraph/code-host-integration": "0.0.46",
     "@toast-ui/editor": "^2.0.1",
     "@toast-ui/vue-editor": "^2.0.1",
     "apollo-cache-inmemory": "^1.6.3",

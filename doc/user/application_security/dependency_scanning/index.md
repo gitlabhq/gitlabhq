@@ -420,32 +420,33 @@ You can also [submit new vulnerabilities](https://gitlab.com/gitlab-org/security
 ## Running Dependency Scanning in an offline environment
 
 For self-managed GitLab instances in an environment with limited, restricted, or intermittent access
-to external resources through the internet, some adjustments are required for dependency scanning jobs to run successfully. For more information, see [Offline environments](../offline_deployments/index.md).
+to external resources through the internet, some adjustments are required for Dependency Scanning
+jobs to run successfully. For more information, see [Offline environments](../offline_deployments/index.md).
 
 ### Requirements for offline Dependency Scanning
 
-The requirements for using Dependency Scanning in an offline environment are:
+Here are the requirements for using Dependency Scanning in an offline environment:
 
 - [Disable Docker-In-Docker](#disabling-docker-in-docker-for-dependency-scanning).
 - GitLab Runner with the [`docker` or `kubernetes` executor](#requirements).
-- Docker Container Registry with locally available copies of dependency scanning [analyzer](https://gitlab.com/gitlab-org/security-products/analyzers) images.
+- Docker Container Registry with locally available copies of Dependency Scanning [analyzer](https://gitlab.com/gitlab-org/security-products/analyzers) images.
 - Host an offline Git copy of the [gemnasium-db advisory database](https://gitlab.com/gitlab-org/security-products/gemnasium-db/)
 - _Only if scanning Ruby projects_: Host an offline Git copy of the [advisory database](https://github.com/rubysec/ruby-advisory-db).
 - _Only if scanning npm/yarn projects_: Host an offline copy of the [retire.js](https://github.com/RetireJS/retire.js/) [node](https://github.com/RetireJS/retire.js/blob/master/repository/npmrepository.json) and [js](https://github.com/RetireJS/retire.js/blob/master/repository/jsrepository.json) advisory databases.
 
 NOTE: **Note:**
 GitLab Runner has a [default `pull policy` of `always`](https://docs.gitlab.com/runner/executors/docker.html#using-the-always-pull-policy),
-meaning the runner will try to pull Docker images from the GitLab container registry even if a local
+meaning the Runner tries to pull Docker images from the GitLab container registry even if a local
 copy is available. GitLab Runner's [`pull_policy` can be set to `if-not-present`](https://docs.gitlab.com/runner/executors/docker.html#using-the-if-not-present-pull-policy)
-in an offline environment, if you prefer using only locally available Docker images. However, we
-recommend keeping the pull policy setting to `always` as it will better enable updated scanners to
-be utilized within your CI/CD pipelines.
+in an offline environment if you prefer using only locally available Docker images. However, we
+recommend keeping the pull policy setting to `always` if not in an offline environment, as this
+enables the use of updated scanners in your CI/CD pipelines.
 
 ### Make GitLab Dependency Scanning analyzer images available inside your Docker registry
 
-For Dependency Scanning, import Docker images ([supported languages and frameworks](#supported-languages-and-package-managers))
-from `registry.gitlab.com` to your offline Docker registry. The Dependency Scanning analyzer
-Docker images are:
+For Dependency Scanning with all [supported languages and frameworks](#supported-languages-and-package-managers),
+import the following default Dependency Scanning analyzer images from `registry.gitlab.com` into
+your [local Docker container registry](../../packages/container_registry/index.md):
 
 ```plaintext
 registry.gitlab.com/gitlab-org/security-products/analyzers/gemnasium:2
@@ -465,10 +466,10 @@ For details on saving and transporting Docker images as a file, see Docker's doc
 [`docker save`](https://docs.docker.com/engine/reference/commandline/save/), [`docker load`](https://docs.docker.com/engine/reference/commandline/load/),
 [`docker export`](https://docs.docker.com/engine/reference/commandline/export/), and [`docker import`](https://docs.docker.com/engine/reference/commandline/import/).
 
-### Set Dependency Scanning CI config for "offline" use
+### Set Dependency Scanning CI job variables to use local Dependency Scanning analyzers
 
-Below is a general `.gitlab-ci.yml` template to configure your environment for running
-Dependency Scanning offline:
+Add the following configuration to your `.gitlab-ci.yml` file. You must replace
+`DS_ANALYZER_IMAGE_PREFIX` to refer to your local Docker container registry:
 
 ```yaml
 include:

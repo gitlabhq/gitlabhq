@@ -25,7 +25,7 @@ describe Gitlab::BackgroundMigration::BackfillSnippetRepositories, :migration, s
                  confirmed_at: 1.day.ago)
   end
 
-  let!(:admin) { users.create(id: 2, email: 'admin@example.com', projects_limit: 10, username: 'admin', name: 'Admin', admin: true, state: 'active') }
+  let(:migration_bot) { User.migration_bot }
   let!(:snippet_with_repo) { snippets.create(id: 1, type: 'PersonalSnippet', author_id: user.id, file_name: file_name, content: content) }
   let!(:snippet_with_empty_repo) { snippets.create(id: 2, type: 'PersonalSnippet', author_id: user.id, file_name: file_name, content: content) }
   let!(:snippet_without_repo) { snippets.create(id: 3, type: 'PersonalSnippet', author_id: user.id, file_name: file_name, content: content) }
@@ -88,34 +88,34 @@ describe Gitlab::BackgroundMigration::BackfillSnippetRepositories, :migration, s
       end
 
       context 'when author cannot update snippet or use git' do
-        shared_examples 'admin user commits files' do
+        shared_examples 'migration_bot user commits files' do
           it do
             subject
 
             last_commit = raw_repository(snippet).commit
 
-            expect(last_commit.author_name).to eq admin.name
-            expect(last_commit.author_email).to eq admin.email
+            expect(last_commit.author_name).to eq migration_bot.name
+            expect(last_commit.author_email).to eq migration_bot.email
           end
         end
 
         context 'when user is blocked' do
           let(:user_state) { 'blocked' }
 
-          it_behaves_like 'admin user commits files'
+          it_behaves_like 'migration_bot user commits files'
         end
 
         context 'when user is deactivated' do
           let(:user_state) { 'deactivated' }
 
-          it_behaves_like 'admin user commits files'
+          it_behaves_like 'migration_bot user commits files'
         end
 
         context 'when user is a ghost' do
           let(:ghost) { true }
           let(:user_type) { 'ghost' }
 
-          it_behaves_like 'admin user commits files'
+          it_behaves_like 'migration_bot user commits files'
         end
       end
     end
