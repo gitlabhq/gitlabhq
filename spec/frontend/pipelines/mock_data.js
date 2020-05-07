@@ -421,3 +421,62 @@ export const stageReply = {
   path: '/twitter/flight/pipelines/13#deploy',
   dropdown_path: '/twitter/flight/pipelines/13/stage.json?stage=deploy',
 };
+
+export const users = [
+  {
+    id: 1,
+    name: 'Administrator',
+    username: 'root',
+    state: 'active',
+    avatar_url:
+      'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon',
+    web_url: 'http://192.168.1.22:3000/root',
+  },
+  {
+    id: 10,
+    name: 'Angel Spinka',
+    username: 'shalonda',
+    state: 'active',
+    avatar_url:
+      'https://www.gravatar.com/avatar/709df1b65ad06764ee2b0edf1b49fc27?s=80\u0026d=identicon',
+    web_url: 'http://192.168.1.22:3000/shalonda',
+  },
+  {
+    id: 11,
+    name: 'Art Davis',
+    username: 'deja.green',
+    state: 'active',
+    avatar_url:
+      'https://www.gravatar.com/avatar/bb56834c061522760e7a6dd7d431a306?s=80\u0026d=identicon',
+    web_url: 'http://192.168.1.22:3000/deja.green',
+  },
+  {
+    id: 32,
+    name: 'Arnold Mante',
+    username: 'reported_user_10',
+    state: 'active',
+    avatar_url:
+      'https://www.gravatar.com/avatar/ab558033a82466d7905179e837d7723a?s=80\u0026d=identicon',
+    web_url: 'http://192.168.1.22:3000/reported_user_10',
+  },
+  {
+    id: 38,
+    name: 'Cher Wintheiser',
+    username: 'reported_user_16',
+    state: 'active',
+    avatar_url:
+      'https://www.gravatar.com/avatar/2640356e8b5bc4314133090994ed162b?s=80\u0026d=identicon',
+    web_url: 'http://192.168.1.22:3000/reported_user_16',
+  },
+  {
+    id: 39,
+    name: 'Bethel Wolf',
+    username: 'reported_user_17',
+    state: 'active',
+    avatar_url:
+      'https://www.gravatar.com/avatar/4b948694fadba4b01e4acfc06b065e8e?s=80\u0026d=identicon',
+    web_url: 'http://192.168.1.22:3000/reported_user_17',
+  },
+];
+
+export const mockSearch = { type: 'username', value: { data: 'root', operator: '=' } };

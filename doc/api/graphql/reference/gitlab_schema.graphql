@@ -7266,6 +7266,41 @@ type Project {
   publicJobs: Boolean
 
   """
+  A single release of the project. Available only when feature flag `graphql_release_data` is enabled
+  """
+  release(
+    """
+    The name of the tag associated to the release
+    """
+    tagName: String!
+  ): Release
+
+  """
+  Releases of the project. Available only when feature flag `graphql_release_data` is enabled
+  """
+  releases(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): ReleaseConnection
+
+  """
   Indicates if `Delete source branch` option should be enabled by default for all new merge requests of the project
   """
   removeSourceBranchAfterMerge: Boolean
@@ -8030,6 +8065,118 @@ enum RegistryState {
   Registry that is synced
   """
   SYNCED
+}
+
+type Release {
+  """
+  User that created the release
+  """
+  author: User
+
+  """
+  The commit associated with the release
+  """
+  commit: Commit
+
+  """
+  Timestamp of when the release was created
+  """
+  createdAt: Time
+
+  """
+  Description (also known as "release notes") of the release
+  """
+  description: String
+
+  """
+  The GitLab Flavored Markdown rendering of `description`
+  """
+  descriptionHtml: String
+
+  """
+  SHA of the release's evidence
+  """
+  evidenceSha: String
+
+  """
+  Milestones associated to the release
+  """
+  milestones(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): MilestoneConnection
+
+  """
+  Name of the release
+  """
+  name: String
+
+  """
+  Timestamp of when the release was released
+  """
+  releasedAt: Time
+
+  """
+  Name of the tag associated with the release
+  """
+  tagName: String!
+
+  """
+  Relative web path to the tag associated with the release
+  """
+  tagPath: String
+}
+
+"""
+The connection type for Release.
+"""
+type ReleaseConnection {
+  """
+  A list of edges.
+  """
+  edges: [ReleaseEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [Release]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+An edge in a connection.
+"""
+type ReleaseEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: Release
 }
 
 """

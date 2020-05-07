@@ -51,6 +51,7 @@ document.addEventListener(
             hasGitlabCi: parseBoolean(this.dataset.hasGitlabCi),
             ciLintPath: this.dataset.ciLintPath,
             resetCachePath: this.dataset.resetCachePath,
+            projectId: this.dataset.projectId,
           },
         });
       },

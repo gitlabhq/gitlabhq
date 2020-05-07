@@ -3,6 +3,7 @@
 = render_if_exists "shared/shared_runners_minutes_limit_flash_message"
 
 #pipelines-list-vue{ data: { endpoint: project_pipelines_path(@project, format: :json),
+  project_id: @project.id,
   "help-page-path" => help_page_path('ci/quick_start/README'),
   "help-auto-devops-path" => help_page_path('topics/autodevops/index.md'),
   "empty-state-svg-path" => image_path('illustrations/pipelines_empty.svg'),

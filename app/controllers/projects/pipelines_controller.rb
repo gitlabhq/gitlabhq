@@ -24,9 +24,8 @@ class Projects::PipelinesController < Projects::ApplicationController
   POLLING_INTERVAL = 10_000
 
   def index
-    @scope = params[:scope]
     @pipelines = Ci::PipelinesFinder
-      .new(project, current_user, scope: @scope)
+      .new(project, current_user, index_params)
       .execute
       .page(params[:page])
       .per(30)
@@ -256,7 +255,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def limited_pipelines_count(project, scope = nil)
-    finder = Ci::PipelinesFinder.new(project, current_user, scope: scope)
+    finder = Ci::PipelinesFinder.new(project, current_user, index_params.merge(scope: scope))
 
     view_context.limited_counter_with_delimiter(finder.execute)
   end
@@ -267,6 +266,10 @@ class Projects::PipelinesController < Projects::ApplicationController
         reports.with_attachment! if params[:scope] == 'with_attachment'
       end
     end
+  end
+
+  def index_params
+    params.permit(:scope, :username)
   end
 end
 

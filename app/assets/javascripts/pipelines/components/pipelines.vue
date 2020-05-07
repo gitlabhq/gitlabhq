@@ -9,14 +9,18 @@ import NavigationTabs from '../../vue_shared/components/navigation_tabs.vue';
 import NavigationControls from './nav_controls.vue';
 import { getParameterByName } from '../../lib/utils/common_utils';
 import CIPaginationMixin from '../../vue_shared/mixins/ci_pagination_api_mixin';
+import PipelinesFilteredSearch from './pipelines_filtered_search.vue';
+import { ANY_TRIGGER_AUTHOR } from '../constants';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   components: {
     TablePagination,
     NavigationTabs,
     NavigationControls,
+    PipelinesFilteredSearch,
   },
-  mixins: [pipelinesMixin, CIPaginationMixin],
+  mixins: [pipelinesMixin, CIPaginationMixin, glFeatureFlagsMixin()],
   props: {
     store: {
       type: Object,
@@ -77,6 +81,10 @@ export default {
       type: String,
       required: false,
       default: null,
+    },
+    projectId: {
+      type: String,
+      required: true,
     },
   },
   data() {
@@ -209,6 +217,9 @@ export default {
         },
       ];
     },
+    canFilterPipelines() {
+      return this.glFeatures.filterPipelinesSearch;
+    },
   },
   created() {
     this.service = new PipelinesService(this.endpoint);
@@ -238,6 +249,19 @@ export default {
           createFlash(s__('Pipelines|Something went wrong while cleaning runners cache.'));
         });
     },
+    filterPipelines(filters) {
+      filters.forEach(filter => {
+        this.requestData[filter.type] = filter.value.data;
+      });
+
+      // set query params back to default if filtering by Any author
+      // or input is cleared on submit
+      if (this.requestData.username === ANY_TRIGGER_AUTHOR || filters.length === 0) {
+        this.requestData = { page: this.page, scope: this.scope };
+      }
+
+      this.updateContent(this.requestData);
+    },
   },
 };
 </script>
@@ -266,6 +290,13 @@ export default {
         @resetRunnersCache="handleResetRunnersCache"
       />
     </div>
+
+    <pipelines-filtered-search
+      v-if="canFilterPipelines"
+      :pipelines="state.pipelines"
+      :project-id="projectId"
+      @filterPipelines="filterPipelines"
+    />
 
     <div class="content-list pipelines">
       <gl-loading-icon

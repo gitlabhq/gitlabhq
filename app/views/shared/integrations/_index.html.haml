@@ -3,7 +3,7 @@
     %col
     %col
     %col.d-none.d-sm-table-column
-    %col{ width: 120 }
+    %col{ width: 130 }
   %thead{ role: 'rowgroup' }
     %tr{ role: 'row' }
       %th{ role: 'columnheader', scope: 'col', 'aria-colindex': 1 }
@@ -13,13 +13,14 @@
 
   %tbody{ role: 'rowgroup' }
     - integrations.each do |integration|
+      - activated_label = (integration.activated? ? s_("ProjectService|%{service_title}: status on") : s_("ProjectService|%{service_title}: status off")) % { service_title: integration.title }
       %tr{ role: 'row' }
-        %td{ role: 'cell', 'aria-colindex': 1 }
+        %td{ role: 'cell', 'aria-colindex': 1, 'aria-label': activated_label }
           = boolean_to_icon integration.activated?
         %td{ role: 'cell', 'aria-colindex': 2 }
-          = link_to scoped_edit_integration_path(integration) do
+          = link_to scoped_edit_integration_path(integration), { data: { qa_selector: "#{integration.to_param}_link" } } do
             %strong= integration.title
-        %td.d-none.d-sm-block{ role: 'cell', 'aria-colindex': 3 }
+        %td.d-none.d-sm-table-cell{ role: 'cell', 'aria-colindex': 3 }
           = integration.description
         %td{ role: 'cell', 'aria-colindex': 4 }
           - if integration.updated_at.present?

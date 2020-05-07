@@ -12,7 +12,7 @@ describe Gitlab::Ci::Reports::AccessibilityReports do
         "type": "error",
         "typeCode": 1,
         "message": "Anchor element found with a valid href attribute, but no link content has been supplied.",
-        "context": "<a href=\"/customers/worldline\">\n<svg viewBox=\"0 0 509 89\" xmln...</a>",
+        "context": %{<a href="/customers/worldline"><svg viewBox="0 0 509 89" xmln...</a>},
         "selector": "html > body > div:nth-child(9) > div:nth-child(2) > a:nth-child(17)",
         "runner": "htmlcs",
         "runnerExtras": {}
@@ -22,7 +22,7 @@ describe Gitlab::Ci::Reports::AccessibilityReports do
         "type": "error",
         "typeCode": 1,
         "message": "Anchor element found with a valid href attribute, but no link content has been supplied.",
-        "context": "<a href=\"/customers/equinix\">\n<svg xmlns=\"http://www.w3.org/...</a>",
+        "context": %{<a href="/customers/equinix"><svg xmlns="http://www.w3.org/...</a>},
         "selector": "html > body > div:nth-child(9) > div:nth-child(2) > a:nth-child(18)",
         "runner": "htmlcs",
         "runnerExtras": {}
@@ -196,6 +196,36 @@ describe Gitlab::Ci::Reports::AccessibilityReports do
 
       it 'overwrites the existing message' do
         expect { set_accessibility_error }.to change(accessibility_report, :error_message).from('old error').to('error')
+      end
+    end
+  end
+
+  describe '#all_errors' do
+    subject { accessibility_report.all_errors }
+
+    context 'when data has errors' do
+      before do
+        accessibility_report.add_url(url, data)
+      end
+
+      it 'returns all errors' do
+        expect(subject.size).to eq(2)
+      end
+    end
+
+    context 'when data has no errors' do
+      before do
+        accessibility_report.add_url(url, [])
+      end
+
+      it 'returns an empty array' do
+        expect(subject).to eq([])
+      end
+    end
+
+    context 'when accessibility report has no data' do
+      it 'returns an empty array' do
+        expect(subject).to eq([])
       end
     end
   end

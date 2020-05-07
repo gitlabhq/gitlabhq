@@ -454,6 +454,7 @@ DAST can be [configured](#customizing-the-dast-settings) using environment varia
 | `DAST_API_HOST_OVERRIDE` | no | Used to override domains defined in API specification files. |
 | `DAST_EXCLUDE_RULES` | no | Set to a comma-separated list of Vulnerability Rule IDs to exclude them from scans. Rule IDs are numbers and can be found from the DAST log or on the [ZAP project](https://github.com/zaproxy/zaproxy/blob/master/docs/scanners.md). For example, `HTTP Parameter Override` has a rule ID of `10026`. |
 | `DAST_REQUEST_HEADERS` | no | Set to a comma-separated list of request header names and values. For example, `Cache-control: no-cache,User-Agent: DAST/1.0` |
+| `DAST_ZAP_USE_AJAX_SPIDER` | no | Use the AJAX spider in addition to the traditional spider, useful for crawling sites that require JavaScript. Boolean. `true`, `True`, or `1` are considered as true value, otherwise false. Defaults to `false`. |
 
 ### DAST command-line options
 
@@ -471,7 +472,7 @@ dast:
 ```
 
 You must then overwrite the `script` command to pass in the appropriate argument.
-For example, AJAX spidering can be enabled by using `-j`, as shown in the following configuration:
+For example, debug messages can be enabled by using `-d`, as shown in the following configuration:
 
 ```yaml
 include:
@@ -480,7 +481,7 @@ include:
 dast:
   script:
     - export DAST_WEBSITE=${DAST_WEBSITE:-$(cat environment_url.txt)}
-    - /analyze -j -t $DAST_WEBSITE
+    - /analyze -d -t $DAST_WEBSITE
 ```
 
 ### Custom ZAProxy configuration

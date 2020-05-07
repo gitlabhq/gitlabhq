@@ -18,7 +18,7 @@
   %p
     = s_('AdminSettings|Integrations configured here will automatically apply to all projects on this instance.')
     = link_to _('Learn more'), '#'
-  = render 'shared/integrations/integrations', integrations: @integrations
+  = render 'shared/integrations/index', integrations: @integrations
 
 - else
   = render_if_exists 'admin/application_settings/elasticsearch_form'

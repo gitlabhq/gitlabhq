@@ -415,9 +415,9 @@ with a Gitaly instance that listens for secure connections you will need to use 
 scheme in the `gitaly_address` of the corresponding storage entry in the GitLab configuration.
 
 You will need to bring your own certificates as this isn't provided automatically.
-The certificate to be used needs to be installed on all Gitaly nodes, and the
-certificate (or CA of certificate) on all
-client nodes that communicate with it following the procedure described in
+The certificate, or its certificate authority, must be installed on all Gitaly
+nodes (including the Gitaly node using the certificate) and on all client nodes
+that communicate with it following the procedure described in
 [GitLab custom certificate configuration](https://docs.gitlab.com/omnibus/settings/ssl.html#install-custom-public-certificates).
 
 NOTE: **Note**
