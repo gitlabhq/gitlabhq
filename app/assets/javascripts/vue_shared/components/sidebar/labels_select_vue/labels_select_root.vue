@@ -164,7 +164,11 @@ export default {
         'js-dropdown-button',
         'js-btn-cancel-create',
         'js-sidebar-dropdown-toggle',
-      ].some(className => target?.classList.contains(className));
+      ].some(
+        className =>
+          target?.classList.contains(className) ||
+          target?.parentElement.classList.contains(className),
+      );
 
       const hadExceptionParent = ['.js-btn-back', '.js-labels-list'].some(
         className => $(target).parents(className).length,

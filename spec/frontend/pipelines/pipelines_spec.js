@@ -601,7 +601,7 @@ describe('Pipelines', () => {
 
   describe('updates results when a staged is clicked', () => {
     beforeEach(() => {
-      const copyPipeline = Object.assign({}, pipelineWithStages);
+      const copyPipeline = { ...pipelineWithStages };
       copyPipeline.id += 1;
       mock
         .onGet('twitter/flight/pipelines.json')

@@ -75,9 +75,7 @@ export default class ImageDiff {
     if (this.renderCommentBadge) {
       imageDiffHelper.addImageCommentBadge(this.imageFrameEl, options);
     } else {
-      const numberBadgeOptions = Object.assign({}, options, {
-        badgeText: index + 1,
-      });
+      const numberBadgeOptions = { ...options, badgeText: index + 1 };
 
       imageDiffHelper.addImageBadge(this.imageFrameEl, numberBadgeOptions);
     }

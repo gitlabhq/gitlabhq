@@ -17,7 +17,7 @@ describe('Snippet header component', () => {
   };
 
   function createComponent({ props = snippet } = {}) {
-    const defaultProps = Object.assign({}, props);
+    const defaultProps = { ...props };
 
     wrapper = shallowMount(SnippetTitle, {
       propsData: {

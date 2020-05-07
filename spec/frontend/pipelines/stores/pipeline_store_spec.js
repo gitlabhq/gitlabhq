@@ -7,14 +7,12 @@ describe('EE Pipeline store', () => {
 
   beforeEach(() => {
     store = new PipelineStore();
-    data = Object.assign({}, LinkedPipelines);
+    data = { ...LinkedPipelines };
+
+    store.storePipeline(data);
   });
 
   describe('storePipeline', () => {
-    beforeAll(() => {
-      store.storePipeline(data);
-    });
-
     describe('triggered_by', () => {
       it('sets triggered_by as an array', () => {
         expect(store.state.pipeline.triggered_by.length).toEqual(1);
@@ -50,10 +48,6 @@ describe('EE Pipeline store', () => {
   });
 
   describe('resetTriggeredByPipeline', () => {
-    beforeEach(() => {
-      store.storePipeline(data);
-    });
-
     it('closes the pipeline & nested ones', () => {
       store.state.pipeline.triggered_by[0].isExpanded = true;
       store.state.pipeline.triggered_by[0].triggered_by[0].isExpanded = true;
@@ -66,10 +60,6 @@ describe('EE Pipeline store', () => {
   });
 
   describe('openTriggeredByPipeline', () => {
-    beforeEach(() => {
-      store.storePipeline(data);
-    });
-
     it('opens the given pipeline', () => {
       store.openTriggeredByPipeline(store.state.pipeline, store.state.pipeline.triggered_by[0]);
 
@@ -78,10 +68,6 @@ describe('EE Pipeline store', () => {
   });
 
   describe('closeTriggeredByPipeline', () => {
-    beforeEach(() => {
-      store.storePipeline(data);
-    });
-
     it('closes the given pipeline', () => {
       // open it first
       store.openTriggeredByPipeline(store.state.pipeline, store.state.pipeline.triggered_by[0]);
@@ -93,15 +79,11 @@ describe('EE Pipeline store', () => {
   });
 
   describe('resetTriggeredPipelines', () => {
-    beforeEach(() => {
-      store.storePipeline(data);
-    });
-
     it('closes the pipeline & nested ones', () => {
       store.state.pipeline.triggered[0].isExpanded = true;
       store.state.pipeline.triggered[0].triggered[0].isExpanded = true;
 
-      store.resetTriggeredPipeline(store.state.pipeline, store.state.pipeline.triggered[0]);
+      store.resetTriggeredPipelines(store.state.pipeline, store.state.pipeline.triggered[0]);
 
       expect(store.state.pipeline.triggered[0].isExpanded).toEqual(false);
       expect(store.state.pipeline.triggered[0].triggered[0].isExpanded).toEqual(false);
@@ -109,10 +91,6 @@ describe('EE Pipeline store', () => {
   });
 
   describe('openTriggeredPipeline', () => {
-    beforeEach(() => {
-      store.storePipeline(data);
-    });
-
     it('opens the given pipeline', () => {
       store.openTriggeredPipeline(store.state.pipeline, store.state.pipeline.triggered[0]);
 
@@ -121,10 +99,6 @@ describe('EE Pipeline store', () => {
   });
 
   describe('closeTriggeredPipeline', () => {
-    beforeEach(() => {
-      store.storePipeline(data);
-    });
-
     it('closes the given pipeline', () => {
       // open it first
       store.openTriggeredPipeline(store.state.pipeline, store.state.pipeline.triggered[0]);
@@ -136,12 +110,8 @@ describe('EE Pipeline store', () => {
   });
 
   describe('toggleLoading', () => {
-    beforeEach(() => {
-      store.storePipeline(data);
-    });
-
     it('toggles the isLoading property for the given pipeline', () => {
-      store.togglePipeline(store.state.pipeline.triggered[0]);
+      store.toggleLoading(store.state.pipeline.triggered[0]);
 
       expect(store.state.pipeline.triggered[0].isLoading).toEqual(true);
     });

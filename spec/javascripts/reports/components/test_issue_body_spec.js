@@ -40,7 +40,7 @@ describe('Test Issue body', () => {
     beforeEach(() => {
       vm = mountComponentWithStore(Component, {
         store,
-        props: Object.assign({}, commonProps, { isNew: true }),
+        props: { ...commonProps, isNew: true },
       });
     });
 

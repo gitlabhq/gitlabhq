@@ -31,7 +31,7 @@ module AlertManagement
     end
 
     def authorized?
-      Ability.allowed?(current_user, :read_alert_management_alerts, project)
+      Ability.allowed?(current_user, :read_alert_management_alert, project)
     end
   end
 end

@@ -9,7 +9,7 @@ describe Mutations::AlertManagement::UpdateAlertStatus do
   let(:new_status) { 'acknowledged' }
   let(:args) { { status: new_status, project_path: project.full_path, iid: alert.iid } }
 
-  specify { expect(described_class).to require_graphql_authorizations(:update_alert_management_alerts) }
+  specify { expect(described_class).to require_graphql_authorizations(:update_alert_management_alert) }
 
   describe '#resolve' do
     subject(:resolve) { mutation_for(project, current_user).resolve(args) }

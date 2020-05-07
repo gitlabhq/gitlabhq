@@ -20,7 +20,7 @@ describe('Sidebar details block', () => {
 
   describe('when there is no retry path retry', () => {
     it('should not render a retry button', () => {
-      const copy = Object.assign({}, job);
+      const copy = { ...job };
       delete copy.retry_path;
 
       store.dispatch('receiveJobSuccess', copy);
@@ -43,10 +43,7 @@ describe('Sidebar details block', () => {
 
   describe('with terminal path', () => {
     it('renders terminal link', () => {
-      store.dispatch(
-        'receiveJobSuccess',
-        Object.assign({}, job, { terminal_path: 'job/43123/terminal' }),
-      );
+      store.dispatch('receiveJobSuccess', { ...job, terminal_path: 'job/43123/terminal' });
       vm = mountComponentWithStore(SidebarComponent, {
         store,
       });

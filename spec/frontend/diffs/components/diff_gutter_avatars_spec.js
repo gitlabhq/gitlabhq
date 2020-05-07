@@ -2,7 +2,7 @@ import { shallowMount } from '@vue/test-utils';
 import DiffGutterAvatars from '~/diffs/components/diff_gutter_avatars.vue';
 import discussionsMockData from '../mock_data/diff_discussions';
 
-const getDiscussionsMockData = () => [Object.assign({}, discussionsMockData)];
+const getDiscussionsMockData = () => [{ ...discussionsMockData }];
 
 describe('DiffGutterAvatars', () => {
   let wrapper;

@@ -23,7 +23,7 @@ describe('ItemStatsComponent', () => {
     describe('visibilityIcon', () => {
       it('should return icon class based on `item.visibility` value', () => {
         Object.keys(VISIBILITY_TYPE_ICON).forEach(visibility => {
-          const item = Object.assign({}, mockParentGroupItem, { visibility });
+          const item = { ...mockParentGroupItem, visibility };
           const vm = createComponent(item);
 
           expect(vm.visibilityIcon).toBe(VISIBILITY_TYPE_ICON[visibility]);
@@ -35,10 +35,7 @@ describe('ItemStatsComponent', () => {
     describe('visibilityTooltip', () => {
       it('should return tooltip string for Group based on `item.visibility` value', () => {
         Object.keys(GROUP_VISIBILITY_TYPE).forEach(visibility => {
-          const item = Object.assign({}, mockParentGroupItem, {
-            visibility,
-            type: ITEM_TYPE.GROUP,
-          });
+          const item = { ...mockParentGroupItem, visibility, type: ITEM_TYPE.GROUP };
           const vm = createComponent(item);
 
           expect(vm.visibilityTooltip).toBe(GROUP_VISIBILITY_TYPE[visibility]);
@@ -48,10 +45,7 @@ describe('ItemStatsComponent', () => {
 
       it('should return tooltip string for Project based on `item.visibility` value', () => {
         Object.keys(PROJECT_VISIBILITY_TYPE).forEach(visibility => {
-          const item = Object.assign({}, mockParentGroupItem, {
-            visibility,
-            type: ITEM_TYPE.PROJECT,
-          });
+          const item = { ...mockParentGroupItem, visibility, type: ITEM_TYPE.PROJECT };
           const vm = createComponent(item);
 
           expect(vm.visibilityTooltip).toBe(PROJECT_VISIBILITY_TYPE[visibility]);
@@ -65,13 +59,13 @@ describe('ItemStatsComponent', () => {
         let item;
         let vm;
 
-        item = Object.assign({}, mockParentGroupItem, { type: ITEM_TYPE.PROJECT });
+        item = { ...mockParentGroupItem, type: ITEM_TYPE.PROJECT };
         vm = createComponent(item);
 
         expect(vm.isProject).toBeTruthy();
         vm.$destroy();
 
-        item = Object.assign({}, mockParentGroupItem, { type: ITEM_TYPE.GROUP });
+        item = { ...mockParentGroupItem, type: ITEM_TYPE.GROUP };
         vm = createComponent(item);
 
         expect(vm.isProject).toBeFalsy();
@@ -84,13 +78,13 @@ describe('ItemStatsComponent', () => {
         let item;
         let vm;
 
-        item = Object.assign({}, mockParentGroupItem, { type: ITEM_TYPE.GROUP });
+        item = { ...mockParentGroupItem, type: ITEM_TYPE.GROUP };
         vm = createComponent(item);
 
         expect(vm.isGroup).toBeTruthy();
         vm.$destroy();
 
-        item = Object.assign({}, mockParentGroupItem, { type: ITEM_TYPE.PROJECT });
+        item = { ...mockParentGroupItem, type: ITEM_TYPE.PROJECT };
         vm = createComponent(item);
 
         expect(vm.isGroup).toBeFalsy();
@@ -109,10 +103,7 @@ describe('ItemStatsComponent', () => {
     });
 
     it('renders start count and last updated information for project item correctly', () => {
-      const item = Object.assign({}, mockParentGroupItem, {
-        type: ITEM_TYPE.PROJECT,
-        starCount: 4,
-      });
+      const item = { ...mockParentGroupItem, type: ITEM_TYPE.PROJECT, starCount: 4 };
       const vm = createComponent(item);
 
       const projectStarIconEl = vm.$el.querySelector('.project-stars');

@@ -1,3 +1,9 @@
+---
+stage: Monitor
+group: Health
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Generic alerts integration
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/13203) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.4.

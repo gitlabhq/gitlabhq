@@ -321,6 +321,9 @@ msgstr ""
 msgid "%{firstLabel} +%{labelCount} more"
 msgstr ""
 
+msgid "%{firstMilestoneName} + %{numberOfOtherMilestones} more"
+msgstr ""
+
 msgid "%{global_id} is not a valid id for %{expected_type}."
 msgstr ""
 
@@ -2141,6 +2144,9 @@ msgstr ""
 msgid "An error occurred while loading merge requests."
 msgstr ""
 
+msgid "An error occurred while loading milestones"
+msgstr ""
+
 msgid "An error occurred while loading terraform report"
 msgstr ""
 
@@ -2214,6 +2220,9 @@ msgid "An error occurred while saving the approval settings"
 msgstr ""
 
 msgid "An error occurred while saving the template. Please check if the template exists."
+msgstr ""
+
+msgid "An error occurred while searching for milestones"
 msgstr ""
 
 msgid "An error occurred while subscribing to notifications."
@@ -5710,7 +5719,7 @@ msgstr ""
 msgid "ContainerRegistry|Quick Start"
 msgstr ""
 
-msgid "ContainerRegistry|Regular expressions such as %{codeStart}.*-test%{codeEnd} or %{codeStart}dev-.*%{codeEnd} are supported"
+msgid "ContainerRegistry|Regular expressions such as %{codeStart}.*-master%{codeEnd} or %{codeStart}release-.*%{codeEnd} are supported"
 msgstr ""
 
 msgid "ContainerRegistry|Regular expressions such as %{codeStart}.*-test%{codeEnd} or %{codeStart}dev-.*%{codeEnd} are supported. To select all tags, use %{codeStart}.*%{codeEnd}"
@@ -6211,6 +6220,9 @@ msgid "Create merge request and branch"
 msgstr ""
 
 msgid "Create milestone"
+msgstr ""
+
+msgid "Create new"
 msgstr ""
 
 msgid "Create new board"
@@ -6889,11 +6901,6 @@ msgid_plural "Dependencies|%d additional vulnerabilities not shown"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Dependencies|%d vulnerability"
-msgid_plural "Dependencies|%d vulnerabilities"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "Dependencies|%d vulnerability detected"
 msgid_plural "Dependencies|%d vulnerabilities detected"
 msgstr[0] ""
@@ -6929,12 +6936,6 @@ msgstr ""
 msgid "Dependencies|Packager"
 msgstr ""
 
-msgid "Dependencies|Safe"
-msgstr ""
-
-msgid "Dependencies|Status"
-msgstr ""
-
 msgid "Dependencies|The %{codeStartTag}dependency_scanning%{codeEndTag} job has failed and cannot generate the list. Please ensure the job is running properly and run the pipeline again."
 msgstr ""
 
@@ -6942,9 +6943,6 @@ msgid "Dependencies|Toggle vulnerability list"
 msgstr ""
 
 msgid "Dependencies|Unsupported file(s) detected"
-msgstr ""
-
-msgid "Dependencies|Version"
 msgstr ""
 
 msgid "Dependencies|Vulnerable components"
@@ -12739,6 +12737,9 @@ msgstr ""
 msgid "Manage labels"
 msgstr ""
 
+msgid "Manage milestones"
+msgstr ""
+
 msgid "Manage project labels"
 msgstr ""
 
@@ -14003,6 +14004,9 @@ msgid "No merge requests found"
 msgstr ""
 
 msgid "No messages were logged"
+msgstr ""
+
+msgid "No milestone"
 msgstr ""
 
 msgid "No milestones to show"
@@ -18169,6 +18173,9 @@ msgid "Search"
 msgstr ""
 
 msgid "Search Button"
+msgstr ""
+
+msgid "Search Milestones"
 msgstr ""
 
 msgid "Search an environment spec"

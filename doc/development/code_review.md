@@ -468,13 +468,13 @@ When a merge request author has been blocked for longer than
 the `Review-response` SLO, they are free to remind the reviewer through Slack or assign
 another reviewer.
 
-#### Customer critical merge requests
+### Customer critical merge requests
 
 A merge request may benefit from being considered a customer critical priority because there is a significant benefit to the business in doing so.
 
 Properties of customer critical merge requests:
 
-- The [Senior Director of Development](https://about.gitlab.com/job-families/engineering/engineering-management/#senior-director-engineering) [@clefelhocz1](https://gitlab.com/clefelhocz1) is the DRI for deciding if a merge request will be customer critical.
+- The [Senior Director of Development](https://about.gitlab.com/job-families/engineering/engineering-management/#senior-director-engineering) ([@clefelhocz1](https://gitlab.com/clefelhocz1)) is the DRI for deciding if a merge request will be customer critical.
 - The DRI will assign the `customer-critical-merge-request` label to the merge request.
 - It is required that the reviewer(s) and maintainer(s) involved with a customer critical merge request are engaged as soon as this decision is made.
 - It is required to prioritize work for those involved on a customer critical merge request so that they have the time available necessary to focus on it.

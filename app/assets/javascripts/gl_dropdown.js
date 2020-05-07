@@ -595,13 +595,14 @@ class GitLabDropdown {
 
     return renderItem({
       instance: this,
-      options: Object.assign({}, this.options, {
+      options: {
+        ...this.options,
         icon: this.icon,
         highlight: this.highlight,
         highlightText: text => this.highlightTextMatches(text, this.filterInput.val()),
         highlightTemplate: this.highlightTemplate.bind(this),
         parent,
-      }),
+      },
       data,
       group,
       index,

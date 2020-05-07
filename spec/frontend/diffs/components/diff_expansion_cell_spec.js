@@ -81,7 +81,7 @@ describe('DiffExpansionCell', () => {
       isTop: false,
       isBottom: false,
     };
-    const props = Object.assign({}, defaults, options);
+    const props = { ...defaults, ...options };
 
     vm = createComponentWithStore(cmp, store, props).$mount();
   };

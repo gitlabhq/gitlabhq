@@ -2,7 +2,7 @@ import DropLab from './droplab/drop_lab';
 import ISetter from './droplab/plugins/input_setter';
 
 // Todo: Remove this when fixing issue in input_setter plugin
-const InputSetter = Object.assign({}, ISetter);
+const InputSetter = { ...ISetter };
 
 class CommentTypeToggle {
   constructor(opts = {}) {

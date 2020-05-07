@@ -46,7 +46,7 @@ describe('ItemActionsComponent', () => {
     });
 
     it('should render Edit Group button with correct attribute values', () => {
-      const group = Object.assign({}, mockParentGroupItem);
+      const group = { ...mockParentGroupItem };
       group.canEdit = true;
       const newVm = createComponent(group);
 
@@ -64,7 +64,7 @@ describe('ItemActionsComponent', () => {
     });
 
     it('should render Leave Group button with correct attribute values', () => {
-      const group = Object.assign({}, mockParentGroupItem);
+      const group = { ...mockParentGroupItem };
       group.canLeave = true;
       const newVm = createComponent(group);
 

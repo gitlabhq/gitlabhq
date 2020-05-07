@@ -505,6 +505,7 @@ then goes through a process of excluding tags from it until only the ones to be 
 1. Orders the remaining tags by `created_date`.
 1. Excludes from the list the N tags based on the `keep_n` value (Number of tags to retain).
 1. Excludes from the list the tags older than the `older_than` value (Expiration interval).
+1. Excludes from the list any tags matching the `name_regex_keep` value (Images to preserve).
 1. Finally, the remaining tags in the list are deleted from the Container Registry.
 
 ### Managing project expiration policy through the UI
@@ -520,6 +521,7 @@ The UI allows you to configure the following:
 - **Expiration schedule:** how often the cron job checking the tags should run.
 - **Number of tags to retain:** how many tags to _always_ keep for each image.
 - **Docker tags with names matching this regex pattern will expire:** the regex used to determine what tags should be expired. To qualify all tags for expiration, use the default value of `.*`.
+- **Docker tags with names matching this regex pattern will be preserved:** the regex used to determine what tags should be preserved. To preserve all tags, use the default value of `.*`.
 
 ### Managing project expiration policy through the API
 
@@ -527,16 +529,10 @@ You can set, update, and disable the expiration policies using the GitLab API.
 
 Examples:
 
-- Select all tags, keep at least 1 tag per image, expire any tag older than 14 days, run once a month, and the policy is enabled:
+- Select all tags, keep at least 1 tag per image, expire any tag older than 14 days, run once a month, preserve any images with the name `master` and the policy is enabled:
 
   ```shell
-  curl --request PUT --header 'Content-Type: application/json;charset=UTF-8' --header "PRIVATE-TOKEN: <your_access_token>" --data-binary '{"container_expiration_policy_attributes":{"cadence":"1month","enabled":true,"keep_n":1,"older_than":"14d","name_regex":".*"}}' 'https://gitlab.example.com/api/v4/projects/2'
-  ```
-
-- Select only tags with a name that contains `stable`, keep at least 50 tag per image, expire any tag older than 7 days, run every day, and the policy is enabled:
-
-  ```shell
-  curl --request PUT --header 'Content-Type: application/json;charset=UTF-8' --header "PRIVATE-TOKEN: <your_access_token>" --data-binary '{"container_expiration_policy_attributes":{"cadence":"1day","enabled":true,"keep_n":50"older_than":"7d","name_regex":"*stable"}}' 'https://gitlab.example.com/api/v4/projects/2'
+  curl --request PUT --header 'Content-Type: application/json;charset=UTF-8' --header "PRIVATE-TOKEN: <your_access_token>" --data-binary '{"container_expiration_policy_attributes":{"cadence":"1month","enabled":true,"keep_n":1,"older_than":"14d","name_regex":"","name_regex_delete":".*","name_regex_keep":".*-master"}}' 'https://gitlab.example.com/api/v4/projects/2'
   ```
 
 See the API documentation for further details: [Edit project](../../../api/projects.md#edit-project).

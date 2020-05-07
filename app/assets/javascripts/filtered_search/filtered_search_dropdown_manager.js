@@ -120,7 +120,7 @@ export default class FilteredSearchDropdownManager {
         filter: key,
       };
       const extraArguments = mappingKey.extraArguments || {};
-      const glArguments = Object.assign({}, defaultArguments, extraArguments);
+      const glArguments = { ...defaultArguments, ...extraArguments };
 
       // Passing glArguments to `new glClass(<arguments>)`
       mappingKey.reference = new (Function.prototype.bind.apply(glClass, [null, glArguments]))();

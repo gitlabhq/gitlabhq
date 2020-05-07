@@ -13,7 +13,7 @@ describe('MrWidgetPipelineContainer', () => {
   const factory = (props = {}) => {
     wrapper = mount(MrWidgetPipelineContainer, {
       propsData: {
-        mr: Object.assign({}, mockStore),
+        mr: { ...mockStore },
         ...props,
       },
     });

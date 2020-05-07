@@ -58,13 +58,14 @@ export default class EnvironmentsStore {
       let filtered = {};
 
       if (env.size > 1) {
-        filtered = Object.assign({}, env, {
+        filtered = {
+          ...env,
           isFolder: true,
           isLoadingFolderContent: oldEnvironmentState.isLoading || false,
           folderName: env.name,
           isOpen: oldEnvironmentState.isOpen || false,
           children: oldEnvironmentState.children || [],
-        });
+        };
       }
 
       if (env.latest) {
@@ -166,7 +167,7 @@ export default class EnvironmentsStore {
       let updated = env;
 
       if (env.latest) {
-        updated = Object.assign({}, env, env.latest);
+        updated = { ...env, ...env.latest };
         delete updated.latest;
       } else {
         updated = env;
@@ -192,7 +193,7 @@ export default class EnvironmentsStore {
     const { environments } = this.state;
 
     const updatedEnvironments = environments.map(env => {
-      const updateEnv = Object.assign({}, env);
+      const updateEnv = { ...env };
       if (env.id === environment.id) {
         updateEnv[prop] = newValue;
       }

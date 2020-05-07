@@ -1,0 +1,13 @@
+.selected-item::before {
+  content: '\f00c';
+  color: $green-500;
+  position: absolute;
+  left: 16px;
+  top: 16px;
+  transform: translateY(-50%);
+  font: 14px FontAwesome;
+}
+
+.dropdown-item-space {
+  padding: 8px 12px;
+}

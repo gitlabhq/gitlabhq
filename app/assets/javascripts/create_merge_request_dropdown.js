@@ -13,7 +13,7 @@ import {
 import confidentialMergeRequestState from './confidential_merge_request/state';
 
 // Todo: Remove this when fixing issue in input_setter plugin
-const InputSetter = Object.assign({}, ISetter);
+const InputSetter = { ...ISetter };
 
 const CREATE_MERGE_REQUEST = 'create-mr';
 const CREATE_BRANCH = 'create-branch';

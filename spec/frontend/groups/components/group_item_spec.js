@@ -52,7 +52,7 @@ describe('GroupItemComponent', () => {
     describe('hasChildren', () => {
       it('should return boolean value representing if group has any children present', () => {
         let newVm;
-        const group = Object.assign({}, mockParentGroupItem);
+        const group = { ...mockParentGroupItem };
 
         group.childrenCount = 5;
         newVm = createComponent(group);
@@ -71,7 +71,7 @@ describe('GroupItemComponent', () => {
     describe('hasAvatar', () => {
       it('should return boolean value representing if group has any avatar present', () => {
         let newVm;
-        const group = Object.assign({}, mockParentGroupItem);
+        const group = { ...mockParentGroupItem };
 
         group.avatarUrl = null;
         newVm = createComponent(group);
@@ -90,7 +90,7 @@ describe('GroupItemComponent', () => {
     describe('isGroup', () => {
       it('should return boolean value representing if group item is of type `group` or not', () => {
         let newVm;
-        const group = Object.assign({}, mockParentGroupItem);
+        const group = { ...mockParentGroupItem };
 
         group.type = 'group';
         newVm = createComponent(group);
@@ -138,7 +138,7 @@ describe('GroupItemComponent', () => {
 
       it('should navigate page to group homepage if group does not have any children present', () => {
         jest.spyOn(urlUtilities, 'visitUrl').mockImplementation();
-        const group = Object.assign({}, mockParentGroupItem);
+        const group = { ...mockParentGroupItem };
         group.childrenCount = 0;
         const newVm = createComponent(group);
         jest.spyOn(eventHub, '$emit').mockImplementation(() => {});

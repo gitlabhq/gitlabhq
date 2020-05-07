@@ -15,7 +15,7 @@ describe('IDE review mode', () => {
     store = createStore();
     store.state.currentProjectId = 'abcproject';
     store.state.currentBranchId = 'master';
-    store.state.projects.abcproject = Object.assign({}, projectData);
+    store.state.projects.abcproject = { ...projectData };
     Vue.set(store.state.trees, 'abcproject/master', {
       tree: [file('fileName')],
       loading: false,

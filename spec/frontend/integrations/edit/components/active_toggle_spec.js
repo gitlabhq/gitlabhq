@@ -13,7 +13,7 @@ describe('ActiveToggle', () => {
 
   const createComponent = props => {
     wrapper = mount(ActiveToggle, {
-      propsData: Object.assign({}, defaultProps, props),
+      propsData: { ...defaultProps, ...props },
     });
   };
 

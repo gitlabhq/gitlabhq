@@ -113,12 +113,7 @@ describe('Description component', () => {
     beforeEach(() => {
       vm.$destroy();
       TaskList.mockClear();
-      vm = mountComponent(
-        DescriptionComponent,
-        Object.assign({}, props, {
-          issuableType: 'issuableType',
-        }),
-      );
+      vm = mountComponent(DescriptionComponent, { ...props, issuableType: 'issuableType' });
     });
 
     it('re-inits the TaskList when description changed', () => {

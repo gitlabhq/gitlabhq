@@ -25,13 +25,13 @@ export default {
   <div class="ide-nav-form p-0">
     <tabs v-if="showMergeRequests" stop-propagation>
       <tab active>
-        <template slot="title">
+        <template #title>
           {{ __('Branches') }}
         </template>
         <branches-search-list />
       </tab>
       <tab>
-        <template slot="title">
+        <template #title>
           {{ __('Merge Requests') }}
         </template>
         <merge-request-search-list />

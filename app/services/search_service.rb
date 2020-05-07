@@ -6,6 +6,9 @@ class SearchService
   SEARCH_TERM_LIMIT = 64
   SEARCH_CHAR_LIMIT = 4096
 
+  DEFAULT_PER_PAGE = Gitlab::SearchResults::DEFAULT_PER_PAGE
+  MAX_PER_PAGE = 200
+
   def initialize(current_user, params = {})
     @current_user = current_user
     @params = params.dup
@@ -60,10 +63,18 @@ class SearchService
   end
 
   def search_objects
-    @search_objects ||= redact_unauthorized_results(search_results.objects(scope, params[:page]))
+    @search_objects ||= redact_unauthorized_results(search_results.objects(scope, page: params[:page], per_page: per_page))
   end
 
   private
+
+  def per_page
+    per_page_param = params[:per_page].to_i
+
+    return DEFAULT_PER_PAGE unless per_page_param.positive?
+
+    [MAX_PER_PAGE, per_page_param].min
+  end
 
   def visible_result?(object)
     return true unless object.respond_to?(:to_ability_name) && DeclarativePolicy.has_policy?(object)
@@ -75,13 +86,13 @@ class SearchService
     results = results_collection.to_a
     permitted_results = results.select { |object| visible_result?(object) }
 
-    filtered_results = (results - permitted_results).each_with_object({}) do |object, memo|
+    redacted_results = (results - permitted_results).each_with_object({}) do |object, memo|
       memo[object.id] = { ability: :"read_#{object.to_ability_name}", id: object.id, class_name: object.class.name }
     end
 
-    log_redacted_search_results(filtered_results.values) if filtered_results.any?
+    log_redacted_search_results(redacted_results.values) if redacted_results.any?
 
-    return results_collection.id_not_in(filtered_results.keys) if results_collection.is_a?(ActiveRecord::Relation)
+    return results_collection.id_not_in(redacted_results.keys) if results_collection.is_a?(ActiveRecord::Relation)
 
     Kaminari.paginate_array(
       permitted_results,

@@ -1,0 +1,4 @@
+---
+title: Changed test success calculation to exclude skipped tests
+merge_request: 31154
+type: changed

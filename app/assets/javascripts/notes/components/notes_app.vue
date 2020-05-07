@@ -230,10 +230,11 @@ export default {
       const defaultConfig = { path: this.getNotesDataByProp('discussionsPath') };
 
       if (doesHashExistInUrl(constants.NOTE_UNDERSCORE)) {
-        return Object.assign({}, defaultConfig, {
+        return {
+          ...defaultConfig,
           filter: constants.DISCUSSION_FILTERS_DEFAULT_VALUE,
           persistFilter: false,
-        });
+        };
       }
       return defaultConfig;
     },

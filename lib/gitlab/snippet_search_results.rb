@@ -11,8 +11,8 @@ module Gitlab
       @query = query
     end
 
-    def objects(scope, page = nil)
-      paginated_objects(snippet_titles, page)
+    def objects(scope, page: nil, per_page: DEFAULT_PER_PAGE)
+      paginated_objects(snippet_titles, page, per_page)
     end
 
     def formatted_count(scope)
@@ -38,7 +38,7 @@ module Gitlab
       snippets.search(query)
     end
 
-    def paginated_objects(relation, page)
+    def paginated_objects(relation, page, per_page)
       relation.page(page).per(per_page)
     end
 

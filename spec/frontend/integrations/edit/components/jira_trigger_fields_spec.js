@@ -13,7 +13,7 @@ describe('JiraTriggerFields', () => {
 
   const createComponent = props => {
     wrapper = mount(JiraTriggerFields, {
-      propsData: Object.assign({}, defaultProps, props),
+      propsData: { ...defaultProps, ...props },
     });
   };
 

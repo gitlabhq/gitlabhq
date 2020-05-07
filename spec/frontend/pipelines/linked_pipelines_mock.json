@@ -1766,7 +1766,8 @@
         "name": "GitLab Docs",
         "full_path": "/gitlab-com/gitlab-docs",
         "full_name": "GitLab.com / GitLab Docs"
-      }
+      },
+      "triggered": [{}]
     },
     {
       "id": 34993052,

@@ -798,7 +798,9 @@ GET /projects/:id
     "enabled": false,
     "keep_n": null,
     "older_than": null,
-    "name_regex": null,
+    "name_regex": null, // to be deprecated in GitLab 13.0 in favor of `name_regex_delete`
+    "name_regex_delete": null,
+    "name_regex_keep": null,
     "next_run_at": "2020-01-07T21:42:58.658Z"
   },
   "created_at": "2013-09-30T13:46:02Z",
@@ -1033,7 +1035,7 @@ POST /projects
 | `emails_disabled` | boolean | no | Disable email notifications |
 | `resolve_outdated_diff_discussions` | boolean | no | Automatically resolve merge request diffs discussions on lines changed with a push |
 | `container_registry_enabled` | boolean | no | Enable container registry for this project |
-| `container_expiration_policy_attributes` | hash | no | Update the container expiration policy for this project. Accepts: `cadence` (string), `keep_n` (string), `older_than` (string), `name_regex` (string), `enabled` (boolean) |
+| `container_expiration_policy_attributes` | hash | no | Update the image expiration policy for this project. Accepts: `cadence` (string), `keep_n` (string), `older_than` (string), `name_regex` (string), `name_regex_delete` (string), `name_regex_keep` (string), `enabled` (boolean) |
 | `shared_runners_enabled` | boolean | no | Enable shared runners for this project |
 | `visibility` | string | no | See [project visibility level](#project-visibility-level) |
 | `import_url` | string | no | URL to import repository from |
@@ -1170,7 +1172,7 @@ PUT /projects/:id
 | `emails_disabled` | boolean | no | Disable email notifications |
 | `resolve_outdated_diff_discussions` | boolean | no | Automatically resolve merge request diffs discussions on lines changed with a push |
 | `container_registry_enabled` | boolean | no | Enable container registry for this project |
-| `container_expiration_policy_attributes` | hash | no | Update the container expiration policy for this project. Accepts: `cadence` (string), `keep_n` (string), `older_than` (string), `name_regex` (string), `enabled` (boolean) |
+| `container_expiration_policy_attributes` | hash | no | Update the image expiration policy for this project. Accepts: `cadence` (string), `keep_n` (string), `older_than` (string), `name_regex` (string), `name_regex_delete` (string), `name_regex_keep` (string), `enabled` (boolean) |
 | `shared_runners_enabled` | boolean | no | Enable shared runners for this project |
 | `visibility` | string | no | See [project visibility level](#project-visibility-level) |
 | `import_url` | string | no | URL to import repository from |

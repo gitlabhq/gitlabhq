@@ -193,7 +193,7 @@ describe.skip('Old Notes (~/notes.js)', () => {
       $('.js-comment-button').click();
 
       const $targetNote = $notesContainer.find(`#note_${noteEntity.id}`);
-      const updatedNote = Object.assign({}, noteEntity);
+      const updatedNote = { ...noteEntity };
       updatedNote.note = 'bar';
       notes.updateNote(updatedNote, $targetNote);
 

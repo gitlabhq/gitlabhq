@@ -4,12 +4,7 @@ export function setPositionDataAttribute(el, options) {
   const { x, y, width, height } = options;
   const { position } = el.dataset;
 
-  const positionObject = Object.assign({}, JSON.parse(position), {
-    x,
-    y,
-    width,
-    height,
-  });
+  const positionObject = { ...JSON.parse(position), x, y, width, height };
 
   el.setAttribute('data-position', JSON.stringify(positionObject));
 }

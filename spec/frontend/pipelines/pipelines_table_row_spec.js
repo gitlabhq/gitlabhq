@@ -169,7 +169,7 @@ describe('Pipelines Table Row', () => {
     };
 
     beforeEach(() => {
-      const withActions = Object.assign({}, pipeline);
+      const withActions = { ...pipeline };
       withActions.details.scheduled_actions = [scheduledJobAction];
       withActions.flags.cancelable = true;
       withActions.flags.retryable = true;

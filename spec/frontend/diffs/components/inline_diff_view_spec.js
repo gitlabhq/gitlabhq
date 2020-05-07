@@ -8,8 +8,8 @@ import discussionsMockData from '../mock_data/diff_discussions';
 
 describe('InlineDiffView', () => {
   let component;
-  const getDiffFileMock = () => Object.assign({}, diffFileMockData);
-  const getDiscussionsMockData = () => [Object.assign({}, discussionsMockData)];
+  const getDiffFileMock = () => ({ ...diffFileMockData });
+  const getDiscussionsMockData = () => [{ ...discussionsMockData }];
   const notesLength = getDiscussionsMockData()[0].notes.length;
 
   beforeEach(done => {

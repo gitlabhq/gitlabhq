@@ -2,7 +2,7 @@ import { visitUrl } from '../lib/utils/url_utility';
 import DropLab from '../droplab/drop_lab';
 import ISetter from '../droplab/plugins/input_setter';
 
-const InputSetter = Object.assign({}, ISetter);
+const InputSetter = { ...ISetter };
 
 const NEW_PROJECT = 'new-project';
 const NEW_SUBGROUP = 'new-subgroup';

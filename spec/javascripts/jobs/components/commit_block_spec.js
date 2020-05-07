@@ -66,7 +66,7 @@ describe('Commit block', () => {
 
   describe('without merge request', () => {
     it('does not render merge request', () => {
-      const copyProps = Object.assign({}, props);
+      const copyProps = { ...props };
       delete copyProps.mergeRequest;
 
       vm = mountComponent(Component, {

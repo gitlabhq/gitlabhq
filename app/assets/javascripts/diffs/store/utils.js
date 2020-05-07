@@ -233,7 +233,7 @@ export function trimFirstCharOfLineContent(line = {}) {
   // eslint-disable-next-line no-param-reassign
   delete line.text;
 
-  const parsedLine = Object.assign({}, line);
+  const parsedLine = { ...line };
 
   if (line.rich_text) {
     const firstChar = parsedLine.rich_text.charAt(0);

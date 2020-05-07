@@ -16,7 +16,7 @@ describe('ParallelDiffExpansionRow', () => {
       isTop: false,
       isBottom: false,
     };
-    const props = Object.assign({}, defaults, options);
+    const props = { ...defaults, ...options };
 
     return createComponentWithStore(cmp, createStore(), props).$mount();
   };

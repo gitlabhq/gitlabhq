@@ -21,7 +21,7 @@ describe 'Global search' do
 
   describe 'I search through the issues and I see pagination' do
     before do
-      allow_next_instance_of(Gitlab::SearchResults) do |instance|
+      allow_next_instance_of(SearchService) do |instance|
         allow(instance).to receive(:per_page).and_return(1)
       end
       create_list(:issue, 2, project: project, title: 'initial')

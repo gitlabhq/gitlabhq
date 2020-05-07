@@ -7,7 +7,7 @@ import diffFileMockData from '../mock_data/diff_file';
 
 describe('ParallelDiffView', () => {
   let component;
-  const getDiffFileMock = () => Object.assign({}, diffFileMockData);
+  const getDiffFileMock = () => ({ ...diffFileMockData });
 
   beforeEach(() => {
     const diffFile = getDiffFileMock();

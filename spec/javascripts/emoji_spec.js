@@ -69,7 +69,7 @@ const defaults = {
 };
 
 function testGlEmojiElement(element, name, unicodeVersion, unicodeMoji, options = {}) {
-  const opts = Object.assign({}, defaults, options);
+  const opts = { ...defaults, ...options };
   expect(element.tagName.toLowerCase()).toBe('gl-emoji');
   expect(element.dataset.name).toBe(name);
   expect(element.dataset.fallbackSrc.length).toBeGreaterThan(0);
@@ -383,9 +383,7 @@ describe('gl_emoji', () => {
 
     it('bomb(6.0) with 6.0 support', () => {
       const emojiKey = 'bomb';
-      const unicodeSupportMap = Object.assign({}, emptySupportMap, {
-        '6.0': true,
-      });
+      const unicodeSupportMap = { ...emptySupportMap, '6.0': true };
       const isSupported = isEmojiUnicodeSupported(
         unicodeSupportMap,
         emojiFixtureMap[emojiKey].moji,
@@ -409,9 +407,7 @@ describe('gl_emoji', () => {
 
     it('bomb(6.0) without 6.0 but with 9.0 support', () => {
       const emojiKey = 'bomb';
-      const unicodeSupportMap = Object.assign({}, emptySupportMap, {
-        '9.0': true,
-      });
+      const unicodeSupportMap = { ...emptySupportMap, '9.0': true };
       const isSupported = isEmojiUnicodeSupported(
         unicodeSupportMap,
         emojiFixtureMap[emojiKey].moji,
@@ -423,7 +419,8 @@ describe('gl_emoji', () => {
 
     it('construction_worker_tone5(8.0) without skin tone modifier support', () => {
       const emojiKey = 'construction_worker_tone5';
-      const unicodeSupportMap = Object.assign({}, emptySupportMap, {
+      const unicodeSupportMap = {
+        ...emptySupportMap,
         skinToneModifier: false,
         '9.0': true,
         '8.0': true,
@@ -437,7 +434,7 @@ describe('gl_emoji', () => {
         3.2: true,
         '3.0': true,
         1.1: true,
-      });
+      };
       const isSupported = isEmojiUnicodeSupported(
         unicodeSupportMap,
         emojiFixtureMap[emojiKey].moji,
@@ -449,13 +446,14 @@ describe('gl_emoji', () => {
 
     it('use native keycap on >=57 chrome', () => {
       const emojiKey = 'five';
-      const unicodeSupportMap = Object.assign({}, emptySupportMap, {
+      const unicodeSupportMap = {
+        ...emptySupportMap,
         '3.0': true,
         meta: {
           isChrome: true,
           chromeVersion: 57,
         },
-      });
+      };
       const isSupported = isEmojiUnicodeSupported(
         unicodeSupportMap,
         emojiFixtureMap[emojiKey].moji,
@@ -467,13 +465,14 @@ describe('gl_emoji', () => {
 
     it('fallback keycap on <57 chrome', () => {
       const emojiKey = 'five';
-      const unicodeSupportMap = Object.assign({}, emptySupportMap, {
+      const unicodeSupportMap = {
+        ...emptySupportMap,
         '3.0': true,
         meta: {
           isChrome: true,
           chromeVersion: 50,
         },
-      });
+      };
       const isSupported = isEmojiUnicodeSupported(
         unicodeSupportMap,
         emojiFixtureMap[emojiKey].moji,

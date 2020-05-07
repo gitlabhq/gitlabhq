@@ -18,7 +18,12 @@ export const fetchRelease = ({ dispatch, state }) => {
 
   return api
     .release(state.projectId, state.tagName)
-    .then(({ data: release }) => {
+    .then(({ data }) => {
+      const release = {
+        ...data,
+        milestones: data.milestones || [],
+      };
+
       dispatch('receiveReleaseSuccess', convertObjectPropsToCamelCase(release, { deep: true }));
     })
     .catch(error => {
@@ -28,6 +33,8 @@ export const fetchRelease = ({ dispatch, state }) => {
 
 export const updateReleaseTitle = ({ commit }, title) => commit(types.UPDATE_RELEASE_TITLE, title);
 export const updateReleaseNotes = ({ commit }, notes) => commit(types.UPDATE_RELEASE_NOTES, notes);
+export const updateReleaseMilestones = ({ commit }, milestones) =>
+  commit(types.UPDATE_RELEASE_MILESTONES, milestones);
 
 export const requestUpdateRelease = ({ commit }) => commit(types.REQUEST_UPDATE_RELEASE);
 export const receiveUpdateReleaseSuccess = ({ commit, state, rootState }) => {
@@ -45,12 +52,14 @@ export const updateRelease = ({ dispatch, state, getters }) => {
   dispatch('requestUpdateRelease');
 
   const { release } = state;
+  const milestones = release.milestones ? release.milestones.map(milestone => milestone.title) : [];
 
   return (
     api
       .updateRelease(state.projectId, state.tagName, {
         name: release.name,
         description: release.description,
+        milestones,
       })
 
       /**

@@ -9,7 +9,7 @@ describe('DiffLineNoteForm', () => {
   let wrapper;
   let diffFile;
   let diffLines;
-  const getDiffFileMock = () => Object.assign({}, diffFileMockData);
+  const getDiffFileMock = () => ({ ...diffFileMockData });
 
   beforeEach(() => {
     diffFile = getDiffFileMock();

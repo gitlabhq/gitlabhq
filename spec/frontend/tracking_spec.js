@@ -46,10 +46,11 @@ describe('Tracking', () => {
       expect(snowplowSpy).not.toHaveBeenCalledWith('enableFormTracking');
       expect(snowplowSpy).not.toHaveBeenCalledWith('enableLinkClickTracking');
 
-      window.snowplowOptions = Object.assign({}, window.snowplowOptions, {
+      window.snowplowOptions = {
+        ...window.snowplowOptions,
         formTracking: true,
         linkClickTracking: true,
-      });
+      };
 
       initUserTracking();
       expect(snowplowSpy).toHaveBeenCalledWith('enableFormTracking');

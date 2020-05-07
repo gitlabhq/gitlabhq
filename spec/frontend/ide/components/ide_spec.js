@@ -10,7 +10,7 @@ function bootstrap(projData) {
 
   store.state.currentProjectId = 'abcproject';
   store.state.currentBranchId = 'master';
-  store.state.projects.abcproject = Object.assign({}, projData);
+  store.state.projects.abcproject = { ...projData };
   Vue.set(store.state.trees, 'abcproject/master', {
     tree: [],
     loading: false,
@@ -27,7 +27,7 @@ describe('ide component, empty repo', () => {
   let vm;
 
   beforeEach(() => {
-    const emptyProjData = Object.assign({}, projectData, { empty_repo: true, branches: {} });
+    const emptyProjData = { ...projectData, empty_repo: true, branches: {} };
     vm = bootstrap(emptyProjData);
     vm.$mount();
   });

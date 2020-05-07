@@ -13,7 +13,7 @@ describe('Blob Header Default Actions', () => {
     const method = shouldMount ? mount : shallowMount;
     wrapper = method.call(this, BlobHeader, {
       propsData: {
-        blob: Object.assign({}, Blob, blobProps),
+        blob: { ...Blob, ...blobProps },
         ...propsData,
       },
       ...options,

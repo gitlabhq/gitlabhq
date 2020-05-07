@@ -13,14 +13,11 @@ Terminal.applyAddon(webLinks);
 
 export default class GLTerminal {
   constructor(element, options = {}) {
-    this.options = Object.assign(
-      {},
-      {
-        cursorBlink: true,
-        screenKeys: true,
-      },
-      options,
-    );
+    this.options = {
+      cursorBlink: true,
+      screenKeys: true,
+      ...options,
+    };
 
     this.container = element;
     this.onDispose = [];

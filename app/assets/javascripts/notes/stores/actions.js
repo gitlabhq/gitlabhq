@@ -248,7 +248,7 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
   const hasQuickActions = utils.hasQuickActions(placeholderText);
   const replyId = noteData.data.in_reply_to_discussion_id;
   let methodToDispatch;
-  const postData = Object.assign({}, noteData);
+  const postData = { ...noteData };
   if (postData.isDraft === true) {
     methodToDispatch = replyId
       ? 'batchComments/addDraftToDiscussion'
