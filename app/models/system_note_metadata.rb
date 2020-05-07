@@ -15,6 +15,7 @@ class SystemNoteMetadata < ApplicationRecord
 
   ICON_TYPES = %w[
     commit description merge confidential visible label assignee cross_reference
+    designs_added designs_modified designs_removed designs_discussion_added
     title time_tracking branch milestone discussion task moved
     opened closed merged duplicate locked unlocked outdated
     tag due_date pinned_embed cherry_pick health_status

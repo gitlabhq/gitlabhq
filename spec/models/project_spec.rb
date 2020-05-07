@@ -1780,6 +1780,7 @@ describe Project do
     let(:project) { create(:project, :repository) }
     let(:repo)    { double(:repo, exists?: true) }
     let(:wiki)    { double(:wiki, exists?: true) }
+    let(:design)  { double(:design, exists?: true) }
 
     it 'expires the caches of the repository and wiki' do
       # In EE, there are design repositories as well
@@ -1793,8 +1794,13 @@ describe Project do
         .with('foo.wiki', project, shard: project.repository_storage, repo_type: Gitlab::GlRepository::WIKI)
         .and_return(wiki)
 
+      allow(Repository).to receive(:new)
+        .with('foo.design', project, shard: project.repository_storage, repo_type: Gitlab::GlRepository::DESIGN)
+        .and_return(design)
+
       expect(repo).to receive(:before_delete)
       expect(wiki).to receive(:before_delete)
+      expect(design).to receive(:before_delete)
 
       project.expire_caches_before_rename('foo')
     end

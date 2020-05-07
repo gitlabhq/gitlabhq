@@ -83,6 +83,24 @@ shared_examples 'a resource event for issues' do
       expect(events).to be_empty
     end
   end
+
+  describe '.by_issue_ids_and_created_at_earlier_or_equal_to' do
+    let_it_be(:event1) { create(described_class.name.underscore.to_sym, issue: issue1, created_at: '2020-03-10') }
+    let_it_be(:event2) { create(described_class.name.underscore.to_sym, issue: issue2, created_at: '2020-03-10') }
+    let_it_be(:event3) { create(described_class.name.underscore.to_sym, issue: issue1, created_at: '2020-03-12') }
+
+    it 'returns the expected records for an issue with events' do
+      events = described_class.by_issue_ids_and_created_at_earlier_or_equal_to([issue1.id, issue2.id], '2020-03-11 23:59:59')
+
+      expect(events).to contain_exactly(event1, event2)
+    end
+
+    it 'returns the expected records for an issue with no events' do
+      events = described_class.by_issue_ids_and_created_at_earlier_or_equal_to(issue3, '2020-03-12')
+
+      expect(events).to be_empty
+    end
+  end
 end
 
 shared_examples 'a resource event for merge requests' do

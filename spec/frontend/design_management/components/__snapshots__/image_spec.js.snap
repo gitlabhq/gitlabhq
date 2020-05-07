@@ -1,0 +1,68 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Design management large image component renders image 1`] = `
+<div
+  class="m-auto js-design-image"
+>
+  <!---->
+   
+  <img
+    alt="test"
+    class="mh-100 img-fluid"
+    src="test.jpg"
+  />
+</div>
+`;
+
+exports[`Design management large image component renders loading state 1`] = `
+<div
+  class="m-auto js-design-image"
+  isloading="true"
+>
+  <!---->
+   
+  <img
+    alt=""
+    class="mh-100 img-fluid"
+    src=""
+  />
+</div>
+`;
+
+exports[`Design management large image component renders media broken icon on error 1`] = `
+<gl-icon-stub
+  class="text-secondary-100"
+  name="media-broken"
+  size="48"
+/>
+`;
+
+exports[`Design management large image component sets correct classes and styles if imageStyle is set 1`] = `
+<div
+  class="m-auto js-design-image"
+>
+  <!---->
+   
+  <img
+    alt="test"
+    class="mh-100"
+    src="test.jpg"
+    style="width: 100px; height: 100px;"
+  />
+</div>
+`;
+
+exports[`Design management large image component zoom sets image style when zoomed 1`] = `
+<div
+  class="m-auto js-design-image"
+>
+  <!---->
+   
+  <img
+    alt="test"
+    class="mh-100"
+    src="test.jpg"
+    style="width: 200px; height: 200px;"
+  />
+</div>
+`;

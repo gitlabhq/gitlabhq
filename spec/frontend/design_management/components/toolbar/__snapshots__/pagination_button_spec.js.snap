@@ -1,0 +1,28 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Design management pagination button component disables button when no design is passed 1`] = `
+<router-link-stub
+  aria-label="Test title"
+  class="btn btn-default disabled"
+  disabled="true"
+  to="[object Object]"
+>
+  <icon-stub
+    name="angle-right"
+    size="16"
+  />
+</router-link-stub>
+`;
+
+exports[`Design management pagination button component renders router-link 1`] = `
+<router-link-stub
+  aria-label="Test title"
+  class="btn btn-default"
+  to="[object Object]"
+>
+  <icon-stub
+    name="angle-right"
+    size="16"
+  />
+</router-link-stub>
+`;

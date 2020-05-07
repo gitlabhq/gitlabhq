@@ -61,11 +61,13 @@ describe Todo do
   describe '#done' do
     it 'changes state to done' do
       todo = create(:todo, state: :pending)
+
       expect { todo.done }.to change(todo, :state).from('pending').to('done')
     end
 
     it 'does not raise error when is already done' do
       todo = create(:todo, state: :done)
+
       expect { todo.done }.not_to raise_error
     end
   end
@@ -73,12 +75,28 @@ describe Todo do
   describe '#for_commit?' do
     it 'returns true when target is a commit' do
       subject.target_type = 'Commit'
+
       expect(subject.for_commit?).to eq true
     end
 
     it 'returns false when target is an issuable' do
       subject.target_type = 'Issue'
+
       expect(subject.for_commit?).to eq false
+    end
+  end
+
+  describe '#for_design?' do
+    it 'returns true when target is a Design' do
+      subject.target_type = 'DesignManagement::Design'
+
+      expect(subject.for_design?).to eq(true)
+    end
+
+    it 'returns false when target is not a Design' do
+      subject.target_type = 'Issue'
+
+      expect(subject.for_design?).to eq(false)
     end
   end
 
@@ -108,6 +126,7 @@ describe Todo do
     it 'returns the issuable for issuables' do
       subject.target_id = issue.id
       subject.target_type = issue.class.name
+
       expect(subject.target).to eq issue
     end
   end
@@ -126,6 +145,7 @@ describe Todo do
 
     it 'returns full reference for issuables' do
       subject.target = issue
+
       expect(subject.target_reference).to eq issue.to_reference(full: false)
     end
   end

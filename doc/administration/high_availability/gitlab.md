@@ -133,6 +133,9 @@ need some extra configuration.
 
 1. Run `sudo gitlab-ctl reconfigure` to compile the configuration.
 
+NOTE: **Note:** You will need to restart the GitLab applications nodes after an update has occurred and database
+migrations performed.
+
 ## Enable Monitoring
 
 > [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/issues/3786) in GitLab 12.0.

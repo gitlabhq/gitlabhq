@@ -1,0 +1,10 @@
+#import "../fragments/designNote.fragment.graphql"
+
+mutation createNote($input: CreateNoteInput!) {
+  createNote(input: $input) {
+    note {
+      ...DesignNote
+    }
+    errors
+  }
+}

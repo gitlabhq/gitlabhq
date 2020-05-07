@@ -195,11 +195,13 @@ describe Event do
     let(:confidential_issue) { create(:issue, :confidential, project: project, author: author, assignees: [assignee]) }
     let(:project_snippet) { create(:project_snippet, :public, project: project, author: author) }
     let(:personal_snippet) { create(:personal_snippet, :public, author: author) }
+    let(:design) { create(:design, issue: issue, project: project) }
     let(:note_on_commit) { create(:note_on_commit, project: project) }
     let(:note_on_issue) { create(:note_on_issue, noteable: issue, project: project) }
     let(:note_on_confidential_issue) { create(:note_on_issue, noteable: confidential_issue, project: project) }
     let(:note_on_project_snippet) { create(:note_on_project_snippet, author: author, noteable: project_snippet, project: project) }
     let(:note_on_personal_snippet) { create(:note_on_personal_snippet, author: author, noteable: personal_snippet, project: nil) }
+    let(:note_on_design) { create(:note_on_design, author: author, noteable: design, project: project) }
     let(:milestone_on_project) { create(:milestone, project: project) }
     let(:event) do
       described_class.new(project: project,
@@ -450,6 +452,32 @@ describe Event do
           let(:visibility) { visible_to_none_except(:admin) }
         end
         include_examples 'visible to author', true
+      end
+    end
+
+    context 'design event' do
+      include DesignManagementTestHelpers
+
+      let(:target) { note_on_design }
+
+      before do
+        enable_design_management
+      end
+
+      include_examples 'visibility examples' do
+        let(:visibility) { visible_to_all }
+      end
+
+      include_examples 'visible to assignee and author', true
+
+      context 'the event refers to a design on a confidential issue' do
+        let(:design) { create(:design, issue: confidential_issue, project: project) }
+
+        include_examples 'visibility examples' do
+          let(:visibility) { visible_to_none_except(:member, :admin) }
+        end
+
+        include_examples 'visible to assignee and author', true
       end
     end
   end

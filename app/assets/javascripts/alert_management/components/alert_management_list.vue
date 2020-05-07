@@ -199,7 +199,7 @@ export default {
     </div>
     <gl-empty-state
       v-else
-      :title="__('AlertManagement|Surface alerts in GitLab')"
+      :title="s__('AlertManagement|Surface alerts in GitLab')"
       :svg-path="emptyAlertSvgPath"
     >
       <template #description>

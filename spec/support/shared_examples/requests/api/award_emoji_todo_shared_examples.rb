@@ -25,7 +25,7 @@ RSpec.shared_examples 'creating award emojis marks Todos as done' do
     let(:awardable) { create(type) }
     let!(:todo) { create(:todo, target: awardable, project: project, user: user) }
 
-    it do
+    specify do
       subject
 
       expect(todo.reload.done?).to eq(expectation)

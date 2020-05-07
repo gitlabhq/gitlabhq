@@ -94,6 +94,9 @@ you want using steps 1 and 2 from the GitLab downloads page.
 
 1. Run `gitlab-ctl reconfigure`.
 
+NOTE: **Note:** You will need to restart the Sidekiq nodes after an update has occurred and database
+migrations performed.
+
 ## Example configuration
 
 Here's what the ending `/etc/gitlab/gitlab.rb` would look like:

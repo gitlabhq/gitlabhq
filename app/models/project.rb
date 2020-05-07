@@ -1438,6 +1438,7 @@ class Project < ApplicationRecord
   def expire_caches_before_rename(old_path)
     repo = Repository.new(old_path, self, shard: repository_storage)
     wiki = Repository.new("#{old_path}.wiki", self, shard: repository_storage, repo_type: Gitlab::GlRepository::WIKI)
+    design = Repository.new("#{old_path}#{Gitlab::GlRepository::DESIGN.path_suffix}", self, shard: repository_storage, repo_type: Gitlab::GlRepository::DESIGN)
 
     if repo.exists?
       repo.before_delete
@@ -1445,6 +1446,10 @@ class Project < ApplicationRecord
 
     if wiki.exists?
       wiki.before_delete
+    end
+
+    if design.exists?
+      design.before_delete
     end
   end
 

@@ -183,6 +183,10 @@ class Todo < ApplicationRecord
     target_type == "Commit"
   end
 
+  def for_design?
+    target_type == DesignManagement::Design.name
+  end
+
   # override to return commits, which are not active record
   def target
     if for_commit?

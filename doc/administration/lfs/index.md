@@ -141,18 +141,23 @@ There are two ways to manually do the same thing as automatic uploading (describ
 **Option 1: Rake task**
 
 ```shell
-rake gitlab:lfs:migrate
+gitlab-rake gitlab:lfs:migrate
 ```
 
-**Option 2: rails console**
+**Option 2: Rails console**
+
+Log into the Rails console:
 
 ```shell
-$ sudo gitlab-rails console            # Login to rails console
+sudo gitlab-rails console
+```
 
-> # Upload LFS files manually
-> LfsObject.where(file_store: [nil, 1]).find_each do |lfs_object|
->   lfs_object.file.migrate!(ObjectStorage::Store::REMOTE) if lfs_object.file.file.exists?
-> end
+Upload LFS files manually
+
+```ruby
+LfsObject.where(file_store: [nil, 1]).find_each do |lfs_object|
+  lfs_object.file.migrate!(ObjectStorage::Store::REMOTE) if lfs_object.file.file.exists?
+end
 ```
 
 ### S3 for Omnibus installations
@@ -244,19 +249,29 @@ If LFS integration is configured with Google Cloud Storage and background upload
 Sidekiq workers may encounter this error. This is because the uploading timed out with very large files.
 LFS files up to 6Gb can be uploaded without any extra steps, otherwise you need to use the following workaround.
 
+Log into Rails console:
+
 ```shell
-$ sudo gitlab-rails console            # Login to rails console
+sudo gitlab-rails console
+```
 
-> # Set up timeouts. 20 minutes is enough to upload 30GB LFS files.
-> # These settings are only in effect for the same session, i.e. they are not effective for sidekiq workers.
-> ::Google::Apis::ClientOptions.default.open_timeout_sec = 1200
-> ::Google::Apis::ClientOptions.default.read_timeout_sec = 1200
-> ::Google::Apis::ClientOptions.default.send_timeout_sec = 1200
+Set up timeouts:
 
-> # Upload LFS files manually. This process does not use sidekiq at all.
-> LfsObject.where(file_store: [nil, 1]).find_each do |lfs_object|
->   lfs_object.file.migrate!(ObjectStorage::Store::REMOTE) if lfs_object.file.file.exists?
-> end
+- These settings are only in effect for the same session. For example, they are not effective for Sidekiq workers.
+- 20 minutes (1200 sec) is enough to upload 30GB LFS files:
+
+```ruby
+::Google::Apis::ClientOptions.default.open_timeout_sec = 1200
+::Google::Apis::ClientOptions.default.read_timeout_sec = 1200
+::Google::Apis::ClientOptions.default.send_timeout_sec = 1200
+```
+
+Upload LFS files manually (this process does not use Sidekiq at all):
+
+```ruby
+LfsObject.where(file_store: [nil, 1]).find_each do |lfs_object|
+  lfs_object.file.migrate!(ObjectStorage::Store::REMOTE) if lfs_object.file.file.exists?
+end
 ```
 
 See more information in [!19581](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/19581)
