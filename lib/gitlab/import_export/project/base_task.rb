@@ -26,6 +26,22 @@ module Gitlab
           }
         end
 
+        def disable_upload_object_storage
+          overwrite_uploads_setting('enabled', false) do
+            yield
+          end
+        end
+
+        def overwrite_uploads_setting(key, value)
+          old_value = Settings.uploads.object_store[key]
+          Settings.uploads.object_store[key] = value
+
+          yield
+
+        ensure
+          Settings.uploads.object_store[key] = old_value
+        end
+
         def success(message)
           logger.info(message)
 

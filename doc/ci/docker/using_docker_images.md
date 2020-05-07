@@ -26,7 +26,20 @@ test them on a dedicated CI server.
 To use GitLab Runner with Docker you need to [register a new Runner](https://docs.gitlab.com/runner/register/)
 to use the `docker` executor.
 
-A one-line example can be seen below:
+An example can be seen below. First we set up a temporary template to supply the services:
+
+```shell
+cat > /tmp/test-config.template.toml << EOF
+[[runners]]
+[runners.docker]
+[[runners.docker.services]]
+name = "postgres:latest"
+[[runners.docker.services]]
+name = "mysql:latest"
+EOF
+```
+
+Then we register the runner using the template that was just created:
 
 ```shell
 sudo gitlab-runner register \
@@ -34,9 +47,8 @@ sudo gitlab-runner register \
   --registration-token "PROJECT_REGISTRATION_TOKEN" \
   --description "docker-ruby:2.6" \
   --executor "docker" \
-  --docker-image ruby:2.6 \
-  --docker-services postgres:latest \
-  --docker-services mysql:latest
+  --template-config /tmp/test-config.template.toml \
+  --docker-image ruby:2.6
 ```
 
 The registered runner will use the `ruby:2.6` Docker image and will run two

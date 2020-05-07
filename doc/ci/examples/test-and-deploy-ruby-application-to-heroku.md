@@ -64,7 +64,19 @@ You can do this through the [Heroku Dashboard](https://dashboard.heroku.com/).
 First install [Docker Engine](https://docs.docker.com/installation/).
 
 To build this project you also need to have [GitLab Runner](https://docs.gitlab.com/runner/).
-You can use public runners available on `gitlab.com` or register your own:
+You can use public runners available on `gitlab.com` or register your own. Start by
+creating a template configuration file in order to pass complex configuration:
+
+```shell
+cat > /tmp/test-config.template.toml << EOF
+[[runners]]
+[runners.docker]
+[[runners.docker.services]]
+name = "mysql:latest"
+EOF
+```
+
+Finally, register the runner, passing the newly-created template configuration file:
 
 ```shell
 gitlab-runner register \
@@ -73,8 +85,8 @@ gitlab-runner register \
   --registration-token "PROJECT_REGISTRATION_TOKEN" \
   --description "ruby:2.6" \
   --executor "docker" \
-  --docker-image ruby:2.6 \
-  --docker-services latest
+  --template-config /tmp/test-config.template.toml \
+  --docker-image ruby:2.6
 ```
 
 With the command above, you create a Runner that uses the [`ruby:2.6`](https://hub.docker.com/_/ruby) image and uses a [PostgreSQL](https://hub.docker.com/_/postgres) database.

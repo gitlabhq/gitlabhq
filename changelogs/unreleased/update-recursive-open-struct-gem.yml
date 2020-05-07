@@ -1,0 +1,5 @@
+---
+title: Update recursive-open-struct to 1.1.1 to make it compatible with ruby 2.7
+merge_request: 31047
+author:
+type: fixed

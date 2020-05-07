@@ -2240,7 +2240,12 @@ globally and all jobs will use that definition.
 Use the `paths` directive to choose which files or directories will be cached. Paths
 are relative to the project directory (`$CI_PROJECT_DIR`) and can't directly link outside it.
 Wildcards can be used that follow the [glob](https://en.wikipedia.org/wiki/Glob_(programming))
-patterns and [`filepath.Match`](https://golang.org/pkg/path/filepath/#Match).
+patterns and:
+
+- In [GitLab Runner 13.0](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/2620) and later,
+[`doublestar.Glob`](https://pkg.go.dev/github.com/bmatcuk/doublestar@v1.2.2?tab=doc#Match).
+- In GitLab Runner 12.10 and earlier,
+[`filepath.Match`](https://pkg.go.dev/path/filepath/#Match).
 
 Cache all files in `binaries` that end in `.apk` and the `.config` file:
 

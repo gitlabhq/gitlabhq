@@ -95,11 +95,11 @@ There are two ways to define the URL to be scanned by DAST:
    persist its domain in an `environment_url.txt` file, and DAST
    automatically parses that file to find its scan target.
    You can see an [example](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/Deploy.gitlab-ci.yml)
-   of this in our Auto DevOps CI YML.
+   of this in our Auto DevOps CI YAML.
 
 If both values are set, the `DAST_WEBSITE` value takes precedence.
 
-The included template creates a `dast` job in your CI/CD pipeline and scan
+The included template creates a `dast` job in your CI/CD pipeline and scans
 your project's source code for possible vulnerabilities.
 
 The results are saved as a
@@ -133,7 +133,7 @@ stages:
 ```
 
 Be aware that if your pipeline is configured to deploy to the same webserver in
-each run, running a pipeline while another is still running, could cause a race condition
+each run, running a pipeline while another is still running could cause a race condition
 where one pipeline overwrites the code from another pipeline. The site to be scanned
 should be excluded from changes for the duration of a DAST scan.
 The only changes to the site should be from the DAST scanner. Be aware that any
@@ -583,9 +583,10 @@ The DAST tool always emits a JSON report file called `gl-dast-report.json` and
 sample reports can be found in the
 [DAST repository](https://gitlab.com/gitlab-org/security-products/dast/-/tree/master/test/end-to-end/expect).
 
-There are two formats of data in the JSON report that are used side by side: the
-proprietary ZAP format which will be eventually deprecated, and a "common" format
-which will be the default in the future.
+There are two formats of data in the JSON report that are used side by side:
+
+- The proprietary ZAP format that will be eventually deprecated.
+- A common format that will be the default in the future.
 
 ### Other formats
 

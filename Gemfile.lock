@@ -857,7 +857,7 @@ GEM
     re2 (1.2.0)
     recaptcha (4.13.1)
       json
-    recursive-open-struct (1.1.0)
+    recursive-open-struct (1.1.1)
     redis (4.1.3)
     redis-actionpack (5.2.0)
       actionpack (>= 5, < 7)

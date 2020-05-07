@@ -311,7 +311,6 @@ Slack
 Slony
 SMTP
 Sobelow
-Sourcegraph
 spidering
 Splunk
 SpotBugs
