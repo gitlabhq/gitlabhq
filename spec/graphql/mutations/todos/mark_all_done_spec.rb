@@ -17,6 +17,8 @@ describe Mutations::Todos::MarkAllDone do
 
   let_it_be(:user3) { create(:user) }
 
+  specify { expect(described_class).to require_graphql_authorizations(:update_user) }
+
   describe '#resolve' do
     it 'marks all pending todos as done' do
       updated_todo_ids = mutation_for(current_user).resolve.dig(:updated_ids)

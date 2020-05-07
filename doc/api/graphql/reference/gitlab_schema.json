@@ -26985,7 +26985,7 @@
             },
             {
               "name": "id",
-              "description": "Id of the snippet",
+              "description": "ID of the snippet",
               "args": [
 
               ],
@@ -28412,7 +28412,7 @@
             },
             {
               "name": "id",
-              "description": "Id of the todo",
+              "description": "ID of the todo",
               "args": [
 
               ],

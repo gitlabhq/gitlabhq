@@ -1365,7 +1365,7 @@ Represents a snippet entry
 | `descriptionHtml` | String | The GitLab Flavored Markdown rendering of `description` |
 | `fileName` | String | File Name of the snippet |
 | `httpUrlToRepo` | String | HTTP URL to the snippet repository |
-| `id` | ID! | Id of the snippet |
+| `id` | ID! | ID of the snippet |
 | `project` | Project | The project the snippet is associated with |
 | `rawUrl` | String! | Raw URL of the snippet |
 | `sshUrlToRepo` | String | SSH URL to the snippet repository |
@@ -1460,7 +1460,7 @@ Representing a todo entry
 | `body` | String! | Body of the todo |
 | `createdAt` | Time! | Timestamp this todo was created |
 | `group` | Group | Group this todo is associated with |
-| `id` | ID! | Id of the todo |
+| `id` | ID! | ID of the todo |
 | `project` | Project | The project this todo is associated with |
 | `state` | TodoStateEnum! | State of the todo |
 | `targetType` | TodoTargetEnum! | Target type of the todo |

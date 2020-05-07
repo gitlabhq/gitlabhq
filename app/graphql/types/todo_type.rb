@@ -10,7 +10,7 @@ module Types
     authorize :read_todo
 
     field :id, GraphQL::ID_TYPE,
-          description: 'Id of the todo',
+          description: 'ID of the todo',
           null: false
 
     field :project, Types::ProjectType,

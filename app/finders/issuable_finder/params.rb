@@ -132,6 +132,8 @@ class IssuableFinder
 
     def project
       strong_memoize(:project) do
+        next nil unless params[:project_id].present?
+
         project = Project.find(params[:project_id])
         project = nil unless Ability.allowed?(current_user, :"read_#{klass.to_ability_name}", project)
 

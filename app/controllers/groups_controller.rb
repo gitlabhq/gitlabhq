@@ -31,6 +31,10 @@ class GroupsController < Groups::ApplicationController
     push_frontend_feature_flag(:vue_issuables_list, @group)
   end
 
+  before_action do
+    set_not_query_feature_flag(@group)
+  end
+
   before_action :export_rate_limit, only: [:export, :download_export]
 
   skip_cross_project_access_check :index, :new, :create, :edit, :update,

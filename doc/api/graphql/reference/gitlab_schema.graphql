@@ -9017,7 +9017,7 @@ type Snippet implements Noteable {
   httpUrlToRepo: String
 
   """
-  Id of the snippet
+  ID of the snippet
   """
   id: ID!
 
@@ -9463,7 +9463,7 @@ type Todo {
   group: Group
 
   """
-  Id of the todo
+  ID of the todo
   """
   id: ID!
 

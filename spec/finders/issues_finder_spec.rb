@@ -132,26 +132,6 @@ describe IssuesFinder do
         end
       end
 
-      context 'filtering by NOT group_id' do
-        let(:params) { { not: { group_id: group.id } } }
-
-        context 'when include_subgroup param not set' do
-          it 'returns all other group issues' do
-            expect(issues).to contain_exactly(issue2, issue3, issue4)
-          end
-        end
-
-        context 'when include_subgroup param is true', :nested_groups do
-          before do
-            params[:include_subgroups] = true
-          end
-
-          it 'returns all other group and subgroup issues' do
-            expect(issues).to contain_exactly(issue2, issue3)
-          end
-        end
-      end
-
       context 'filtering by author ID' do
         let(:params) { { author_id: user2.id } }
 
@@ -292,12 +272,12 @@ describe IssuesFinder do
         context 'using NOT' do
           let(:params) { { not: { milestone_title: Milestone::Upcoming.name } } }
 
-          it 'returns issues not in upcoming milestones for each project or group' do
-            target_issues = @created_issues.reject do |issue|
-              issue.milestone&.due_date && issue.milestone.due_date > Date.current
-            end + @created_issues.select { |issue| issue.milestone&.title == '8.9' }
+          it 'returns issues not in upcoming milestones for each project or group, but must have a due date' do
+            target_issues = @created_issues.select do |issue|
+              issue.milestone&.due_date && issue.milestone.due_date <= Date.current
+            end
 
-            expect(issues).to contain_exactly(issue1, issue2, issue3, issue4, *target_issues)
+            expect(issues).to contain_exactly(*target_issues)
           end
         end
       end
@@ -343,9 +323,9 @@ describe IssuesFinder do
           let(:params) { { not: { milestone_title: Milestone::Started.name } } }
 
           it 'returns issues not in the started milestones for each project' do
-            target_issues = Issue.where.not(milestone: Milestone.started)
+            target_issues = Issue.where(milestone: Milestone.not_started)
 
-            expect(issues).to contain_exactly(issue2, issue3, issue4, *target_issues)
+            expect(issues).to contain_exactly(*target_issues)
           end
         end
       end
@@ -452,14 +432,6 @@ describe IssuesFinder do
         it 'returns issues with title and description match for search term' do
           expect(issues).to contain_exactly(issue1, issue2)
         end
-
-        context 'using NOT' do
-          let(:params) { { not: { search: 'git' } } }
-
-          it 'returns issues with no title and description match for search term' do
-            expect(issues).to contain_exactly(issue3, issue4)
-          end
-        end
       end
 
       context 'filtering by issue term in title' do
@@ -467,14 +439,6 @@ describe IssuesFinder do
 
         it 'returns issues with title match for search term' do
           expect(issues).to contain_exactly(issue1)
-        end
-
-        context 'using NOT' do
-          let(:params) { { not: { search: 'git', in: 'title' } } }
-
-          it 'returns issues with no title match for search term' do
-            expect(issues).to contain_exactly(issue2, issue3, issue4)
-          end
         end
       end
 

@@ -4,3 +4,8 @@ export const DROPDOWN_TYPE = {
   hint: 'hint',
   operator: 'operator',
 };
+
+export const FILTER_TYPE = {
+  none: 'none',
+  any: 'any',
+};

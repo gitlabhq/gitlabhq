@@ -19,6 +19,12 @@ class Milestone < ApplicationRecord
   has_many :events, as: :target, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
   scope :started, -> { active.where('milestones.start_date <= CURRENT_DATE') }
+  scope :not_started, -> { active.where('milestones.start_date > CURRENT_DATE') }
+  scope :not_upcoming, -> do
+    active
+        .where('milestones.due_date <= CURRENT_DATE')
+        .order(:project_id, :group_id, :due_date)
+  end
 
   scope :order_by_name_asc, -> { order(Arel::Nodes::Ascending.new(arel_table[:title].lower)) }
   scope :reorder_by_due_date_asc, -> { reorder(Gitlab::Database.nulls_last_order('due_date', 'ASC')) }

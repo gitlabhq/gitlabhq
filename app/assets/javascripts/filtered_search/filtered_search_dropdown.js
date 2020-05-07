@@ -1,6 +1,7 @@
 import DropdownUtils from './dropdown_utils';
 import FilteredSearchDropdownManager from './filtered_search_dropdown_manager';
 import FilteredSearchVisualTokens from './filtered_search_visual_tokens';
+import { FILTER_TYPE } from './constants';
 
 const DATA_DROPDOWN_TRIGGER = 'data-dropdown-trigger';
 
@@ -74,6 +75,9 @@ export default class FilteredSearchDropdown {
 
   renderContent(forceShowList = false) {
     const currentHook = this.getCurrentHook();
+
+    FilteredSearchDropdown.hideDropdownItemsforNotOperator(currentHook);
+
     if (forceShowList && currentHook && currentHook.list.hidden) {
       currentHook.list.show();
     }
@@ -136,6 +140,43 @@ export default class FilteredSearchDropdown {
         return updated;
       });
       hook.list.render(results);
+    }
+  }
+
+  /**
+   * Hide None & Any options from the current dropdown.
+   * Hiding happens only for NOT operator.
+   */
+  static hideDropdownItemsforNotOperator(currentHook) {
+    const lastOperator = FilteredSearchVisualTokens.getLastTokenOperator();
+
+    if (lastOperator === '!=') {
+      const { list: dropdownEl } = currentHook.list;
+
+      let shouldHideDivider = true;
+
+      // Iterate over all the static dropdown values,
+      // then hide `None` and `Any` items.
+      Array.from(dropdownEl.querySelectorAll('li[data-value]')).forEach(itemEl => {
+        const {
+          dataset: { value },
+        } = itemEl;
+
+        if (value.toLowerCase() === FILTER_TYPE.none || value.toLowerCase() === FILTER_TYPE.any) {
+          itemEl.classList.add('hidden');
+        } else {
+          // If we encountered any element other than None/Any, then
+          // we shouldn't hide the divider
+          shouldHideDivider = false;
+        }
+      });
+
+      if (shouldHideDivider) {
+        const divider = dropdownEl.querySelector('li.divider');
+        if (divider) {
+          divider.classList.add('hidden');
+        }
+      }
     }
   }
 }
