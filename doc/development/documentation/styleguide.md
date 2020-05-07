@@ -1641,7 +1641,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "title=
 ```
 
 The above example is run by and administrator and will add an SSH public key
-titled `ssh-key` to user's account which has an id of 25.
+titled `ssh-key` to user's account which has an ID of 25.
 
 #### Escape special characters
 

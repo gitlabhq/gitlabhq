@@ -158,13 +158,13 @@ Returns a `201` status code if successful.
 
 Fields that can be updated are:
 
-| SCIM/IdP field | GitLab field |
-|:----------|:--------|
-| id/externalId  | extern_uid |
-| name.formatted  | name |
-| emails\[type eq "work"\].value  | email |
-| active | Identity removal if `active = false` |
-| userName | username |
+| SCIM/IdP field                   | GitLab field                           |
+|:---------------------------------|:---------------------------------------|
+| `id/externalId`                  | `extern_uid`                           |
+| `name.formatted`                 | `name`                                 |
+| `emails\[type eq "work"\].value` | `email`                                |
+| `active`                         | Identity removal if `active` = `false` |
+| `userName`                       | `username`                             |
 
 ```text
 PATCH /api/scim/v2/groups/:group_path/Users/:id

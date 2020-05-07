@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe Types::Projects::ServiceType do
-  it { expect(described_class).to have_graphql_fields(:type, :active) }
+  specify { expect(described_class).to have_graphql_fields(:type, :active) }
 
   describe ".resolve_type" do
     it 'resolves the corresponding type for objects' do

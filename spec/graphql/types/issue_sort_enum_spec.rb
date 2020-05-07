@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe GitlabSchema.types['IssueSort'] do
-  it { expect(described_class.graphql_name).to eq('IssueSort') }
+  specify { expect(described_class.graphql_name).to eq('IssueSort') }
 
   it_behaves_like 'common sort values'
 

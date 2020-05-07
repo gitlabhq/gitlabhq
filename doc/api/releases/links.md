@@ -55,7 +55,7 @@ GET /projects/:id/releases/:tag_name/assets/links/:link_id
 | ------------- | -------------- | -------- | --------------------------------------- |
 | `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](../README.md#namespaced-path-encoding). |
 | `tag_name`    | string         | yes      | The tag associated with the Release. |
-| `link_id`    | integer         | yes      | The id of the link. |
+| `link_id`    | integer         | yes      | The ID of the link. |
 
 Example request:
 
@@ -122,7 +122,7 @@ PUT /projects/:id/releases/:tag_name/assets/links/:link_id
 | ------------- | -------------- | -------- | --------------------------------------- |
 | `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](../README.md#namespaced-path-encoding). |
 | `tag_name`    | string         | yes      | The tag associated with the Release. |
-| `link_id`    | integer         | yes      | The id of the link. |
+| `link_id`    | integer         | yes      | The ID of the link. |
 | `name`        | string         | no | The name of the link. |
 | `url`        | string         | no | The URL of the link. |
 
@@ -158,7 +158,7 @@ DELETE /projects/:id/releases/:tag_name/assets/links/:link_id
 | ------------- | -------------- | -------- | --------------------------------------- |
 | `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](../README.md#namespaced-path-encoding). |
 | `tag_name`    | string         | yes      | The tag associated with the Release. |
-| `link_id`    | integer         | yes      | The id of the link. |
+| `link_id`    | integer         | yes      | The ID of the link. |
 
 Example request:
 

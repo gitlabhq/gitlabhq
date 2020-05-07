@@ -93,7 +93,7 @@ Parameters:
 
 | Attribute | Type    | Required | Description                                         |
 |:----------|:--------|:---------|:----------------------------------------------------|
-| `id`      | integer | yes      | The id of the application (not the application_id). |
+| `id`      | integer | yes      | The ID of the application (not the application_id). |
 
 Example request:
 

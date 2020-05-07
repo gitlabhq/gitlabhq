@@ -13,6 +13,8 @@ import { s__ } from '~/locale';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import getAlerts from '../graphql/queries/getAlerts.query.graphql';
 
+const tdClass = 'table-col d-flex d-md-table-cell align-items-center';
+
 export default {
   i18n: {
     noAlertsMsg: s__(
@@ -26,29 +28,34 @@ export default {
     {
       key: 'severity',
       label: s__('AlertManagement|Severity'),
+      tdClass: `${tdClass} rounded-top text-capitalize`,
     },
     {
       key: 'startedAt',
       label: s__('AlertManagement|Start time'),
+      tdClass,
     },
     {
       key: 'endedAt',
       label: s__('AlertManagement|End time'),
+      tdClass,
     },
     {
       key: 'title',
       label: s__('AlertManagement|Alert'),
       thClass: 'w-30p',
+      tdClass,
     },
     {
       key: 'eventCount',
       label: s__('AlertManagement|Events'),
       thClass: 'text-right event-count',
-      tdClass: 'text-right event-count',
+      tdClass: `${tdClass} text-md-right event-count`,
     },
     {
       key: 'status',
       label: s__('AlertManagement|Status'),
+      tdClass: `${tdClass} rounded-bottom text-capitalize`,
     },
   ],
   statuses: {
@@ -137,8 +144,11 @@ export default {
         {{ $options.i18n.errorMsg }}
       </gl-alert>
 
+      <h4 class="d-block d-md-none my-3">
+        {{ s__('AlertManagement|Alerts') }}
+      </h4>
       <gl-table
-        class="mt-3"
+        class="alert-management-table mt-3"
         :items="alerts"
         :fields="$options.fields"
         :show-empty="true"
@@ -169,6 +179,7 @@ export default {
         <template #cell(title)="{ item }">
           <div class="gl-max-w-full text-truncate">{{ item.title }}</div>
         </template>
+
         <template #cell(status)="{ item }">
           <gl-new-dropdown class="w-100" :text="item.status">
             <gl-new-dropdown-item v-for="(label, field) in $options.statuses" :key="field">

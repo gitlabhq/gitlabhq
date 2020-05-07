@@ -106,7 +106,6 @@ function deferredInitialisation() {
   initLogoAnimation();
   initUsagePingConsent();
   initUserPopovers();
-  initUserTracking();
   initBroadcastNotifications();
 
   const recoverySettingsCallout = document.querySelector('.js-recovery-settings-callout');
@@ -187,6 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (document.querySelector('#js-peek')) initPerformanceBar({ container: '#js-peek' });
 
+  initUserTracking();
   initLayoutNav();
 
   // Set the default path for all cookies to GitLab's root directory

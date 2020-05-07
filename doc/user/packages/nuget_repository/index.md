@@ -201,7 +201,7 @@ nuget install <package_id> -OutputDirectory <output_directory> \
 
 Where:
 
-- `<package_id>` is the package id.
+- `<package_id>` is the package ID.
 - `<output_directory>` is the output directory, where the package will be installed.
 - `<package_version>` (Optional) is the package version.
 - `<source_name>` (Optional) is the source name.
@@ -222,5 +222,5 @@ dotnet add package <package_id> \
 
 Where:
 
-- `<package_id>` is the package id.
+- `<package_id>` is the package ID.
 - `<package_version>` (Optional) is the package version.

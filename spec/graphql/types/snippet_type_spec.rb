@@ -17,7 +17,7 @@ describe GitlabSchema.types['Snippet'] do
   end
 
   describe 'authorizations' do
-    it { expect(described_class).to require_graphql_authorizations(:read_snippet) }
+    specify { expect(described_class).to require_graphql_authorizations(:read_snippet) }
   end
 
   shared_examples 'response without repository URLs' do

@@ -3,11 +3,11 @@
 require 'spec_helper'
 
 describe GitlabSchema.types['Project'] do
-  it { expect(described_class).to expose_permissions_using(Types::PermissionTypes::Project) }
+  specify { expect(described_class).to expose_permissions_using(Types::PermissionTypes::Project) }
 
-  it { expect(described_class.graphql_name).to eq('Project') }
+  specify { expect(described_class.graphql_name).to eq('Project') }
 
-  it { expect(described_class).to require_graphql_authorizations(:read_project) }
+  specify { expect(described_class).to require_graphql_authorizations(:read_project) }
 
   it 'has the expected fields' do
     expected_fields = %w[

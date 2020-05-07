@@ -7,8 +7,9 @@ describe 'getting Alert Management Alerts' do
   let_it_be(:payload) { { 'custom' => { 'alert' => 'payload' } } }
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:alert_1) { create(:alert_management_alert, :all_fields, project: project) }
-  let_it_be(:alert_2) { create(:alert_management_alert, :all_fields, project: project, payload: payload) }
+  let_it_be(:alert_1) { create(:alert_management_alert, :all_fields, project: project, severity: :low) }
+  let_it_be(:alert_2) { create(:alert_management_alert, :all_fields, project: project, severity: :critical, payload: payload) }
+  let_it_be(:other_project_alert) { create(:alert_management_alert, :all_fields) }
 
   let(:fields) do
     <<~QUERY
@@ -84,6 +85,33 @@ describe 'getting Alert Management Alerts' do
 
         it { expect(alerts.size).to eq(1) }
         it { expect(first_alert['iid']).to eq(alert_1.iid.to_s) }
+      end
+
+      context 'sorting data given' do
+        let(:query) do
+          graphql_query_for(
+            'project',
+            { 'fullPath' => project.full_path },
+            query_graphql_field('alertManagementAlerts', params, fields)
+          )
+        end
+
+        let(:params) { 'sort: SEVERITY_DESC' }
+        let(:iids) { alerts.map { |a| a['iid'] } }
+
+        it_behaves_like 'a working graphql query'
+
+        it 'sorts in the correct order' do
+          expect(iids).to eq [alert_1.iid.to_s, alert_2.iid.to_s]
+        end
+
+        context 'ascending order' do
+          let(:params) { 'sort: SEVERITY_ASC' }
+
+          it 'sorts in the correct order' do
+            expect(iids).to eq [alert_2.iid.to_s, alert_1.iid.to_s]
+          end
+        end
       end
     end
   end

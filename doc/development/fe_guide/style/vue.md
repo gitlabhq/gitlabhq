@@ -325,7 +325,7 @@ When using `v-for` you need to provide a *unique* `:key` attribute for each item
    </div>
    ```
 
-1. When the elements being iterated don't have a unique id, you can use the array index as the `:key` attribute
+1. When the elements being iterated don't have a unique ID, you can use the array index as the `:key` attribute
 
    ```html
    <div

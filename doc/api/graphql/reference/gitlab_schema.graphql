@@ -249,6 +249,101 @@ type AlertManagementAlertEdge {
 }
 
 """
+Values for sorting alerts
+"""
+enum AlertManagementAlertSort {
+  """
+  Created time by ascending order
+  """
+  CREATED_TIME_ASC
+
+  """
+  Created time by ascending order
+  """
+  CREATED_TIME_DESC
+
+  """
+  End time by ascending order
+  """
+  END_TIME_ASC
+
+  """
+  End time by descending order
+  """
+  END_TIME_DESC
+
+  """
+  Events count by ascending order
+  """
+  EVENTS_COUNT_ASC
+
+  """
+  Events count by descending order
+  """
+  EVENTS_COUNT_DESC
+
+  """
+  Severity by ascending order
+  """
+  SEVERITY_ASC
+
+  """
+  Severity by descending order
+  """
+  SEVERITY_DESC
+
+  """
+  Start time by ascending order
+  """
+  START_TIME_ASC
+
+  """
+  Start time by descending order
+  """
+  START_TIME_DESC
+
+  """
+  Status by ascending order
+  """
+  STATUS_ASC
+
+  """
+  Status by descending order
+  """
+  STATUS_DESC
+
+  """
+  Created time by ascending order
+  """
+  UPDATED_TIME_ASC
+
+  """
+  Created time by ascending order
+  """
+  UPDATED_TIME_DESC
+
+  """
+  Created at ascending order
+  """
+  created_asc
+
+  """
+  Created at descending order
+  """
+  created_desc
+
+  """
+  Updated at ascending order
+  """
+  updated_asc
+
+  """
+  Updated at descending order
+  """
+  updated_desc
+}
+
+"""
 Alert severity values
 """
 enum AlertManagementSeverity {
@@ -6705,6 +6800,11 @@ type Project {
     IID of the alert. For example, "1"
     """
     iid: String
+
+    """
+    Sort alerts by this criteria
+    """
+    sort: AlertManagementAlertSort
   ): AlertManagementAlert
 
   """
@@ -6735,6 +6835,11 @@ type Project {
     Returns the last _n_ elements from the list.
     """
     last: Int
+
+    """
+    Sort alerts by this criteria
+    """
+    sort: AlertManagementAlertSort
   ): AlertManagementAlertConnection
 
   """

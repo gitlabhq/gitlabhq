@@ -6,6 +6,10 @@ module Resolvers
               required: false,
               description: 'IID of the alert. For example, "1"'
 
+    argument :sort, Types::AlertManagement::AlertSortEnum,
+              description: 'Sort alerts by this criteria',
+              required: false
+
     type Types::AlertManagement::AlertType, null: true
 
     def resolve(**args)

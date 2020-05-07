@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe GitlabSchema.types['BoardList'] do
-  it { expect(described_class.graphql_name).to eq('BoardList') }
+  specify { expect(described_class.graphql_name).to eq('BoardList') }
 
   it 'has specific fields' do
     expected_fields = %w[id list_type position label]

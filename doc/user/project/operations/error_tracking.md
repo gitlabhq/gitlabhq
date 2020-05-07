@@ -53,7 +53,7 @@ From error list, users can navigate to the error details page by clicking the ti
 This page has:
 
 - A link to the Sentry issue.
-- A link to the GitLab commit if the Sentry [release id/version](https://docs.sentry.io/workflow/releases/?platform=javascript#configure-sdk) on the Sentry Issue's first release matches a commit SHA in your GitLab hosted project.
+- A link to the GitLab commit if the Sentry [release ID/version](https://docs.sentry.io/workflow/releases/?platform=javascript#configure-sdk) on the Sentry Issue's first release matches a commit SHA in your GitLab hosted project.
 - Other details about the issue, including a full stack trace.
 - In [GitLab 12.7 and newer](https://gitlab.com/gitlab-org/gitlab/issues/36246), language and urgency are displayed.
 

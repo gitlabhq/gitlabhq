@@ -54,7 +54,7 @@ GET /projects/:id/pipeline_schedules/:pipeline_schedule_id
 | Attribute    | Type    | required | Description              |
 |--------------|---------|----------|--------------------------|
 | `id`         | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user      |
-| `pipeline_schedule_id` | integer | yes      | The pipeline schedule id           |
+| `pipeline_schedule_id` | integer | yes      | The pipeline schedule ID           |
 
 ```shell
 curl --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules/13"
@@ -150,7 +150,7 @@ PUT /projects/:id/pipeline_schedules/:pipeline_schedule_id
 | Attribute     | Type    | required | Description              |
 |---------------|---------|----------|--------------------------|
 | `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user      |
-| `pipeline_schedule_id`  | integer | yes      | The pipeline schedule id           |
+| `pipeline_schedule_id`  | integer | yes      | The pipeline schedule ID           |
 | `description` | string  | no      | The description of pipeline schedule         |
 | `ref` | string  | no      | The branch/tag name will be triggered         |
 | `cron` | string  | no      | The cron (e.g. `0 1 * * *`) ([Cron syntax](https://en.wikipedia.org/wiki/Cron))       |
@@ -200,7 +200,7 @@ POST /projects/:id/pipeline_schedules/:pipeline_schedule_id/take_ownership
 | Attribute     | Type    | required | Description              |
 |---------------|---------|----------|--------------------------|
 | `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user      |
-| `pipeline_schedule_id`  | integer | yes      | The pipeline schedule id           |
+| `pipeline_schedule_id`  | integer | yes      | The pipeline schedule ID           |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: hf2CvZXB9w8Uc5pZKpSB" "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules/13/take_ownership"
@@ -245,7 +245,7 @@ DELETE /projects/:id/pipeline_schedules/:pipeline_schedule_id
 | Attribute      | Type    | required | Description              |
 |----------------|---------|----------|--------------------------|
 | `id`           | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user      |
-| `pipeline_schedule_id`   | integer | yes      | The pipeline schedule id           |
+| `pipeline_schedule_id`   | integer | yes      | The pipeline schedule ID           |
 
 ```shell
 curl --request DELETE --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules/13"
@@ -293,7 +293,7 @@ POST /projects/:id/pipeline_schedules/:pipeline_schedule_id/play
 | Attribute              | Type           | required   | Description                                                                                                     |
 | ----------------       | ---------      | ---------- | --------------------------                                                                                      |
 | `id`                   | integer/string | yes        | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
-| `pipeline_schedule_id` | integer        | yes        | The pipeline schedule id                                                                                        |
+| `pipeline_schedule_id` | integer        | yes        | The pipeline schedule ID                                                                                        |
 
 Example request:
 
@@ -324,7 +324,7 @@ POST /projects/:id/pipeline_schedules/:pipeline_schedule_id/variables
 | Attribute              | Type           | required | Description              |
 |------------------------|----------------|----------|--------------------------|
 | `id`                   | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user      |
-| `pipeline_schedule_id` | integer        | yes      | The pipeline schedule id |
+| `pipeline_schedule_id` | integer        | yes      | The pipeline schedule ID |
 | `key`                  | string         | yes      | The `key` of a variable; must have no more than 255 characters; only `A-Z`, `a-z`, `0-9`, and `_` are allowed |
 | `value`                | string         | yes      | The `value` of a variable |
 | `variable_type`        | string         | no       | The type of a variable. Available types are: `env_var` (default) and `file` |
@@ -352,7 +352,7 @@ PUT /projects/:id/pipeline_schedules/:pipeline_schedule_id/variables/:key
 | Attribute              | Type           | required | Description              |
 |------------------------|----------------|----------|--------------------------|
 | `id`                   | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user      |
-| `pipeline_schedule_id` | integer        | yes      | The pipeline schedule id |
+| `pipeline_schedule_id` | integer        | yes      | The pipeline schedule ID |
 | `key`                  | string         | yes      | The `key` of a variable   |
 | `value`                | string         | yes      | The `value` of a variable |
 | `variable_type`        | string         | no       | The type of a variable. Available types are: `env_var` (default) and `file` |
@@ -380,7 +380,7 @@ DELETE /projects/:id/pipeline_schedules/:pipeline_schedule_id/variables/:key
 | Attribute              | Type           | required | Description              |
 |------------------------|----------------|----------|--------------------------|
 | `id`                   | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user      |
-| `pipeline_schedule_id` | integer        | yes      | The pipeline schedule id |
+| `pipeline_schedule_id` | integer        | yes      | The pipeline schedule ID |
 | `key`                  | string         | yes      | The `key` of a variable |
 
 ```shell

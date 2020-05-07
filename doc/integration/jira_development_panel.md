@@ -62,7 +62,7 @@ There are no special requirements if you are using GitLab.com.
 
    - Check `api` in the Scopes section.
 
-1. Click `Save application`. You will see the generated 'Application Id' and 'Secret' values.
+1. Click `Save application`. You will see the generated 'Application ID' and 'Secret' values.
    Copy these values that you will use on the Jira configuration side.
 
 ## Jira Configuration

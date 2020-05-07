@@ -104,11 +104,29 @@ Omnibus GitLab or install it from source:
 ### 2. Authentication
 
 Gitaly and GitLab use two shared secrets for authentication, one to authenticate gRPC requests
-to Gitaly, and a second for authentication callbacks from Gitaly to the GitLab internal API.
+to Gitaly, and a second for authentication callbacks from GitLab-Shell to the GitLab internal API.
 
 **For Omnibus GitLab**
 
-There are two ways to configure the required tokens:
+To configure the Gitaly token:
+
+1. On the client server, edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_rails['gitaly_token'] = 'abc123secret'
+   ```
+
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+
+1. On the Gitaly server, edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitaly['auth_token'] = 'abc123secret'
+   ```
+
+1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+
+There are two ways to configure the GitLab-Shell token:
 
 1. Copy `/etc/gitlab/gitlab-secrets.json` from the client server to same path on the Gitaly server.
 1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
@@ -118,7 +136,6 @@ There are two ways to configure the required tokens:
 1. On the client server, edit `/etc/gitlab/gitlab.rb`:
 
    ```ruby
-   gitlab_rails['gitaly_token'] = 'abc123secret'
    gitlab_shell['secret_token'] = 'shellsecret'
    ```
 
@@ -127,7 +144,6 @@ There are two ways to configure the required tokens:
 1. On the Gitaly server, edit `/etc/gitlab/gitlab.rb`:
 
    ```ruby
-   gitaly['auth_token'] = 'abc123secret'
    gitlab_shell['secret_token'] = 'shellsecret'
    ```
 

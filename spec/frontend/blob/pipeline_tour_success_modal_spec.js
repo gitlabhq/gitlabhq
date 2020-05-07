@@ -12,8 +12,8 @@ describe('PipelineTourSuccessModal', () => {
 
   beforeEach(() => {
     document.body.dataset.page = 'projects:blob:show';
-
     trackingSpy = mockTracking('_category_', undefined, jest.spyOn);
+
     wrapper = shallowMount(pipelineTourSuccess, {
       propsData: modalProps,
       stubs: {

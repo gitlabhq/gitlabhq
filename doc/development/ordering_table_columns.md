@@ -77,64 +77,64 @@ always be at the end of a table.
 Let's use the `events` table as an example, which currently has the following
 layout:
 
-| Column      | Type                        | Size     |
-|:------------|:----------------------------|:---------|
-| id          | integer                     | 4 bytes  |
-| target_type | character varying           | variable |
-| target_id   | integer                     | 4 bytes  |
-| title       | character varying           | variable |
-| data        | text                        | variable |
-| project_id  | integer                     | 4 bytes  |
-| created_at  | timestamp without time zone | 8 bytes  |
-| updated_at  | timestamp without time zone | 8 bytes  |
-| action      | integer                     | 4 bytes  |
-| author_id   | integer                     | 4 bytes  |
+| Column        | Type                        | Size     |
+|:--------------|:----------------------------|:---------|
+| `id`          | integer                     | 4 bytes  |
+| `target_type` | character varying           | variable |
+| `target_id`   | integer                     | 4 bytes  |
+| `title`       | character varying           | variable |
+| `data`        | text                        | variable |
+| `project_id`  | integer                     | 4 bytes  |
+| `created_at`  | timestamp without time zone | 8 bytes  |
+| `updated_at`  | timestamp without time zone | 8 bytes  |
+| `action`      | integer                     | 4 bytes  |
+| `author_id`   | integer                     | 4 bytes  |
 
 After adding padding to align the columns this would translate to columns being
 divided into fixed size chunks as follows:
 
-| Chunk Size | Columns           |
-|:-----------|:------------------|
-| 8 bytes    | id                |
-| variable   | target_type       |
-| 8 bytes    | target_id         |
-| variable   | title             |
-| variable   | data              |
-| 8 bytes    | project_id        |
-| 8 bytes    | created_at        |
-| 8 bytes    | updated_at        |
-| 8 bytes    | action, author_id |
+| Chunk Size | Columns               |
+|:-----------|:----------------------|
+| 8 bytes    | `id`                  |
+| variable   | `target_type`         |
+| 8 bytes    | `target_id`           |
+| variable   | `title`               |
+| variable   | `data`                |
+| 8 bytes    | `project_id`          |
+| 8 bytes    | `created_at`          |
+| 8 bytes    | `updated_at`          |
+| 8 bytes    | `action`, `author_id` |
 
 This means that excluding the variable sized data and tuple header, we need at
 least 8 * 6 = 48 bytes per row.
 
 We can optimise this by using the following column order instead:
 
-| Column      | Type                        | Size     |
-|:------------|:----------------------------|:---------|
-| created_at  | timestamp without time zone | 8 bytes  |
-| updated_at  | timestamp without time zone | 8 bytes  |
-| id          | integer                     | 4 bytes  |
-| target_id   | integer                     | 4 bytes  |
-| project_id  | integer                     | 4 bytes  |
-| action      | integer                     | 4 bytes  |
-| author_id   | integer                     | 4 bytes  |
-| target_type | character varying           | variable |
-| title       | character varying           | variable |
-| data        | text                        | variable |
+| Column        | Type                        | Size     |
+|:--------------|:----------------------------|:---------|
+| `created_at`  | timestamp without time zone | 8 bytes  |
+| `updated_at`  | timestamp without time zone | 8 bytes  |
+| `id`          | integer                     | 4 bytes  |
+| `target_id`   | integer                     | 4 bytes  |
+| `project_id`  | integer                     | 4 bytes  |
+| `action`      | integer                     | 4 bytes  |
+| `author_id`   | integer                     | 4 bytes  |
+| `target_type` | character varying           | variable |
+| `title`       | character varying           | variable |
+| `data`        | text                        | variable |
 
 This would produce the following chunks:
 
-| Chunk Size | Columns            |
-|:-----------|:-------------------|
-| 8 bytes    | created_at         |
-| 8 bytes    | updated_at         |
-| 8 bytes    | id, target_id      |
-| 8 bytes    | project_id, action |
-| 8 bytes    | author_id          |
-| variable   | target_type        |
-| variable   | title              |
-| variable   | data               |
+| Chunk Size | Columns                |
+|:-----------|:-----------------------|
+| 8 bytes    | `created_at`           |
+| 8 bytes    | `updated_at`           |
+| 8 bytes    | `id`, `target_id`      |
+| 8 bytes    | `project_id`, `action` |
+| 8 bytes    | `author_id`            |
+| variable   | `target_type`          |
+| variable   | `title`                |
+| variable   | `data`                 |
 
 Here we only need 40 bytes per row excluding the variable sized data and 24-byte
 tuple header. 8 bytes being saved may not sound like much, but for tables as

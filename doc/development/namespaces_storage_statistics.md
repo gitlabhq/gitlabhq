@@ -111,11 +111,11 @@ Directly relate the root namespace to its child namespaces, so
 whenever a namespace is created without a parent, this one is tagged
 with the root namespace ID:
 
-| id | root_id | parent_id
-|:---|:--------|:----------
-| 1  | 1       | NULL
-| 2  | 1       | 1
-| 3  | 1       | 2
+| ID | root ID | parent ID |
+|:---|:--------|:----------|
+| 1  | 1       | NULL      |
+| 2  | 1       | 1         |
+| 3  | 1       | 2         |
 
 To aggregate the statistics inside a namespace we'd execute something like:
 

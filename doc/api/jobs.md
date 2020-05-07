@@ -543,8 +543,8 @@ GET /projects/:id/jobs/:job_id/trace
 
 | Attribute | Type           | Required | Description                                                                                                      |
 |-----------|----------------|----------|------------------------------------------------------------------------------------------------------------------|
-| id        | integer/string | yes      | ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
-| job_id    | integer        | yes      | ID of a job.                                                                                                 |
+| `id`      | integer/string | yes      | ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
+| `job_id`  | integer        | yes      | ID of a job.                                                                                                 |
 
 ```shell
 curl --location --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/jobs/8/trace"

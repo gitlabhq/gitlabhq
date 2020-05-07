@@ -154,7 +154,7 @@ also edit it:
 git lfs unlock images/banner.png
 ```
 
-You can also unlock by id:
+You can also unlock by ID:
 
 ```shell
 git lfs unlock --id=123

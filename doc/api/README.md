@@ -446,9 +446,9 @@ For example:
 DELETE /projects/:id/share/:group_id
 ```
 
-The `:id` path parameter needs to be replaced with the project id, and the `:group_id` needs to be replaced with the id of the group. The colons `:` should not be included.
+The `:id` path parameter needs to be replaced with the project ID, and the `:group_id` needs to be replaced with the ID of the group. The colons `:` should not be included.
 
-The resulting cURL call for a project with id `5` and a group id of `17` is then:
+The resulting cURL call for a project with ID `5` and a group ID of `17` is then:
 
 ```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/share/17

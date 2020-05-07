@@ -273,7 +273,7 @@ func main() {
 
 Here's an example of how to integrate the feature flags in a Ruby application.
 
-The Unleash client is given a user id for use with a **Percent rollout (logged in users)** rollout strategy or a list of **Target Users**.
+The Unleash client is given a user ID for use with a **Percent rollout (logged in users)** rollout strategy or a list of **Target Users**.
 
 ```ruby
 #!/usr/bin/env ruby

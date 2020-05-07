@@ -282,7 +282,8 @@ Commonly, `<condition>` references the job arguments, which depend on the type o
 
 For example, `repository_import` has `project_id` as the job argument, while `update_merge_requests` has `project_id, user_id, oldrev, newrev, ref`.
 
-NOTE: **Note:** Arguments need to be referenced by their sequence id using `job.args[<id>]` because `job.args` is a list of all arguments provided to the Sidekiq job.
+NOTE: **Note:**
+Arguments need to be referenced by their sequence ID using `job.args[<id>]` because `job.args` is a list of all arguments provided to the Sidekiq job.
 
 Here are some examples:
 

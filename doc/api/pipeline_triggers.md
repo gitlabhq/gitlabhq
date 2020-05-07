@@ -43,7 +43,7 @@ GET /projects/:id/triggers/:trigger_id
 | Attribute    | Type    | required | Description              |
 |--------------|---------|----------|--------------------------|
 | `id`         | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user      |
-| `trigger_id` | integer | yes      | The trigger id           |
+| `trigger_id` | integer | yes      | The trigger ID           |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/triggers/5"
@@ -101,7 +101,7 @@ PUT /projects/:id/triggers/:trigger_id
 | Attribute     | Type    | required | Description              |
 |---------------|---------|----------|--------------------------|
 | `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user      |
-| `trigger_id`  | integer | yes      | The trigger id           |
+| `trigger_id`  | integer | yes      | The trigger ID           |
 | `description` | string  | no       | The trigger name         |
 
 ```shell
@@ -131,7 +131,7 @@ DELETE /projects/:id/triggers/:trigger_id
 | Attribute      | Type    | required | Description              |
 |----------------|---------|----------|--------------------------|
 | `id`           | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user      |
-| `trigger_id`   | integer | yes      | The trigger id           |
+| `trigger_id`   | integer | yes      | The trigger ID           |
 
 ```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/triggers/5"

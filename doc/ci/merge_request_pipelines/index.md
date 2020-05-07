@@ -13,17 +13,27 @@ changes are pushed to a branch.
 If you want the pipeline to run jobs **only** when merge requests are created or updated,
 you can use *pipelines for merge requests*.
 
-In the UI, these pipelines are labeled as `detached`.
+In the UI, these pipelines are labeled as `detached`. Otherwise, these pipelines appear the same
+as other pipelines.
+
+Any user who has developer [permissions](../../user/permissions.md)
+can run a pipeline for merge requests.
 
 ![Merge request page](img/merge_request.png)
 
-A few notes:
+NOTE: **Note**:
+If you use this feature with [merge when pipeline succeeds](../../user/project/merge_requests/merge_when_pipeline_succeeds.md),
+pipelines for merge requests take precedence over the other regular pipelines.
 
-- Pipelines for merge requests are incompatible with
-  [CI/CD for external repositories](../ci_cd_for_external_repos/index.md).
-- [Since GitLab 11.10](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/25504), pipelines for merge requests require GitLab Runner 11.9.
-- If you use this feature with [merge when pipeline succeeds](../../user/project/merge_requests/merge_when_pipeline_succeeds.md),
-  pipelines for merge requests take precedence over the other regular pipelines.
+## Prerequisites
+
+To enable pipelines for merge requests:
+
+- You must have maintainer [permissions](../../user/permissions.md).
+- Your repository must be a GitLab repository, not an
+  [external repository](../ci_cd_for_external_repos/index.md).
+- [In GitLab 11.10 and later](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/25504),
+  you must be using GitLab Runner 11.9.
 
 ## Configuring pipelines for merge requests
 

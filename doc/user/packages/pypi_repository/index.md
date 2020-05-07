@@ -225,7 +225,7 @@ Where:
 
 - `<package_name>` is the package name.
 - `<personal_access_token>` is a personal access token with the `read_api` scope.
-- `<project_id>` is the project id number.
+- `<project_id>` is the project ID.
 
 If you were following the guide above and want to test installing the
 `MyPyPiPackage` package, you can run the following:

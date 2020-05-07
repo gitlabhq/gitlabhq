@@ -972,7 +972,7 @@ POST /projects/:id/merge_requests
 | `assignee_id`              | integer | no       | Assignee user ID                                                                |
 | `assignee_ids`             | integer array | no | The ID of the user(s) to assign the MR to. Set to `0` or provide an empty value to unassign all assignees.  |
 | `description`              | string  | no       | Description of MR. Limited to 1,048,576 characters. |
-| `target_project_id`        | integer | no       | The target project (numeric id)                                                 |
+| `target_project_id`        | integer | no       | The target project (numeric ID)                                                 |
 | `labels`                   | string  | no       | Labels for MR as a comma-separated list                                         |
 | `milestone_id`             | integer | no       | The global ID of a milestone                                                           |
 | `remove_source_branch`     | boolean | no       | Flag indicating if a merge request should remove the source branch when merging |

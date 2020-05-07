@@ -53,4 +53,25 @@
       }
     }
   }
+
+  @include media-breakpoint-down(sm) {
+    .alert-management-table {
+      .table-col {
+        min-height: 68px;
+
+        &:last-child {
+          background-color: $gray-normal;
+
+          &::before {
+            content: none !important;
+          }
+
+          div {
+            width: 100% !important;
+            padding: 0 !important;
+          }
+        }
+      }
+    }
+  }
 }

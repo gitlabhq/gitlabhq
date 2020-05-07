@@ -462,7 +462,7 @@ the report JSON unless stated otherwise. Presence of optional fields depends on 
 | `vulnerabilities[].confidence`          | How reliable the vulnerability's assessment is. Possible values: `Ignore`, `Unknown`, `Experimental`, `Low`, `Medium`, `High`, `Confirmed`. |
 | `vulnerabilities[].solution`            | Explanation of how to fix the vulnerability. Optional. |
 | `vulnerabilities[].scanner`             | A node that describes the analyzer used to find this vulnerability. |
-| `vulnerabilities[].scanner.id`          | Id of the scanner as a snake_case string. |
+| `vulnerabilities[].scanner.id`          | ID of the scanner as a snake_case string. |
 | `vulnerabilities[].scanner.name`        | Name of the scanner, for display purposes. |
 | `vulnerabilities[].location`            | A node that tells where the vulnerability is located. |
 | `vulnerabilities[].location.file`       | Path to the file where the vulnerability is located. Optional. |

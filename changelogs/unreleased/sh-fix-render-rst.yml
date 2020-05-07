@@ -1,0 +1,5 @@
+---
+title: Fix RST rendering hanging on large files
+merge_request: 31287
+author:
+type: fixed
