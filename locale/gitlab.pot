@@ -11521,6 +11521,12 @@ msgstr ""
 msgid "Invalid URL"
 msgstr ""
 
+msgid "Invalid container_name"
+msgstr ""
+
+msgid "Invalid cursor parameter"
+msgstr ""
+
 msgid "Invalid cursor value provided"
 msgstr ""
 
@@ -11557,10 +11563,16 @@ msgstr ""
 msgid "Invalid pin code"
 msgstr ""
 
+msgid "Invalid pod_name"
+msgstr ""
+
 msgid "Invalid query"
 msgstr ""
 
 msgid "Invalid repository path"
+msgstr ""
+
+msgid "Invalid search parameter"
 msgstr ""
 
 msgid "Invalid server response"
@@ -24979,6 +24991,9 @@ msgstr ""
 msgid "connecting"
 msgstr ""
 
+msgid "container_name can contain only lowercase letters, digits, '-', and '.' and must start and end with an alphanumeric character"
+msgstr ""
+
 msgid "container_name cannot be larger than %{max_length} chars"
 msgstr ""
 
@@ -25684,6 +25699,9 @@ msgid "per day"
 msgstr ""
 
 msgid "pipeline"
+msgstr ""
+
+msgid "pod_name can contain only lowercase letters, digits, '-', and '.' and must start and end with an alphanumeric character"
 msgstr ""
 
 msgid "pod_name cannot be larger than %{max_length} chars"

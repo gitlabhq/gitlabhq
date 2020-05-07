@@ -321,7 +321,7 @@ One should apply to be a Vue.js expert by opening an MR when the Merge Request's
 - Deep understanding of Vue and Vuex reactivity
 - Vue and Vuex code are structured according to both official and our guidelines
 - Full understanding of testing a Vue and Vuex application
-- Vuex code follows the [documented pattern](vuex.md#actions-pattern-request-and-receive-namespaces)
+- Vuex code follows the [documented pattern](vuex.md#naming-pattern-request-and-receive-namespaces)
 - Knowledge about the existing Vue and Vuex applications and existing reusable components
 
 ## Vue 2 -> Vue 3 Migration

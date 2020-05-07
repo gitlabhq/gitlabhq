@@ -2,7 +2,7 @@ build-qa-image:
   extends:
     - .use-kaniko
     - .default-retry
-    - .review:rules:mr-and-schedule-auto
+    - .review:rules:build-qa-image
   stage: build-images
   needs: []
   script:
@@ -26,12 +26,11 @@ review-cleanup:
   script:
     - ruby -rrubygems scripts/review_apps/automated_cleanup.rb
     - gcp_cleanup
-  allow_failure: true
 
 review-build-cng:
   extends:
     - .default-retry
-    - .review:rules:mr-and-schedule-auto-if-frontend-manual-otherwise
+    - .review:rules:review-build-cng
   image: ruby:2.6-alpine
   stage: review-prepare
   before_script:
@@ -68,7 +67,6 @@ review-deploy:
   stage: review
   dependencies: []
   resource_group: "review/${CI_COMMIT_REF_NAME}"
-  allow_failure: true
   before_script:
     - export GITLAB_SHELL_VERSION=$(<GITLAB_SHELL_VERSION)
     - export GITALY_VERSION=$(<GITALY_SERVER_VERSION)
@@ -111,7 +109,7 @@ review-deploy:
 review-stop-failed-deployment:
   extends:
     - .review-stop-base
-    - .review:rules:mr-only-auto
+    - .review:rules:review-stop-failed-deployment
   stage: prepare
   script:
     - delete_failed_release
@@ -121,7 +119,6 @@ review-stop:
     - .review-stop-base
     - .review:rules:mr-only-manual
   stage: review
-  allow_failure: true
   script:
     - delete_release
 
@@ -134,7 +131,6 @@ review-stop:
   # This is needed so that manual jobs with needs don't block the pipeline.
   # See https://gitlab.com/gitlab-org/gitlab/-/issues/199979.
   dependencies: ["review-deploy"]
-  allow_failure: true
   variables:
     QA_ARTIFACTS_DIR: "${CI_PROJECT_DIR}/qa"
     QA_CAN_TEST_GIT_PROTOCOL_V2: "false"
@@ -162,7 +158,7 @@ review-stop:
 review-qa-smoke:
   extends:
     - .review-qa-base
-    - .review:rules:mr-only-auto-if-frontend-manual-otherwise
+    - .review:rules:review-qa-smoke
   script:
     - gitlab-qa Test::Instance::Smoke "${QA_IMAGE}" "${CI_ENVIRONMENT_URL}"
 
@@ -187,7 +183,6 @@ review-performance:
   # This is needed so that manual jobs with needs don't block the pipeline.
   # See https://gitlab.com/gitlab-org/gitlab/-/issues/199979.
   dependencies: ["review-deploy"]
-  allow_failure: true
   before_script:
     - export CI_ENVIRONMENT_URL="$(cat environment_url.txt)"
     - echo "${CI_ENVIRONMENT_URL}"
@@ -210,7 +205,6 @@ parallel-spec-reports:
   image: ruby:2.6-alpine
   stage: post-qa
   dependencies: ["review-qa-all"]
-  allow_failure: true
   variables:
     NEW_PARALLEL_SPECS_REPORT: qa/report-new.html
     BASE_ARTIFACT_URL: "${CI_PROJECT_URL}/-/jobs/${CI_JOB_ID}/artifacts/file/qa/"

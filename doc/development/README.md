@@ -218,6 +218,7 @@ Complementary reads:
 
 - [Defining relations between files using projections](projections.md)
 - [Reference processing](./reference_processing.md)
+- [Compatibility with multiple versions of the application running at the same time](multi_version_compatibility.md)
 
 ## Other GitLab Development Kit (GDK) guides
 

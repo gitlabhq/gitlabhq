@@ -29,3 +29,5 @@ module Resolvers
     end
   end
 end
+
+Resolvers::NamespaceProjectsResolver.prepend_if_ee('::EE::Resolvers::NamespaceProjectsResolver')

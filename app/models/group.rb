@@ -509,8 +509,6 @@ class Group < Namespace
   end
 
   def max_member_access_for_user_from_shared_groups(user)
-    return unless Feature.enabled?(:share_group_with_group, default_enabled: true)
-
     group_group_link_table = GroupGroupLink.arel_table
     group_member_table = GroupMember.arel_table
 

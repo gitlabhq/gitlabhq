@@ -26,7 +26,6 @@ dont-interrupt-me:
   stage: sync
   image: alpine:edge
   interruptible: false
-  allow_failure: true
   variables:
     GIT_STRATEGY: none
   script:

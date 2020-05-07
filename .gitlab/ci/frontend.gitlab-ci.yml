@@ -288,9 +288,10 @@ qa-frontend-node:10:
   image: node:dubnium
 
 qa-frontend-node:latest:
-  extends: .qa-frontend-node
+  extends:
+    - .qa-frontend-node
+    - .frontend:rules:qa-frontend-node-latest
   image: node:latest
-  allow_failure: true
 
 webpack-dev-server:
   extends:

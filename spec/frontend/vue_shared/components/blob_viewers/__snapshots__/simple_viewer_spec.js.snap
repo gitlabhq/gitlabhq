@@ -2,7 +2,8 @@
 
 exports[`Blob Simple Viewer component rendering matches the snapshot 1`] = `
 <div
-  class="file-content code js-syntax-highlight qa-file-content"
+  class="file-content code js-syntax-highlight"
+  data-qa-selector="file_content"
 >
   <div
     class="line-numbers"

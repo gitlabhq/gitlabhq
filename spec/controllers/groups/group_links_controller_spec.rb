@@ -99,18 +99,6 @@ describe Groups::GroupLinksController do
           expect(flash[:alert]).to eq('error')
         end
       end
-
-      context 'when feature flag is disabled' do
-        before do
-          stub_feature_flags(share_group_with_group: false)
-        end
-
-        it 'renders 404' do
-          subject
-
-          expect(response).to have_gitlab_http_status(:not_found)
-        end
-      end
     end
 
     context 'when user does not have access to the group' do
@@ -184,18 +172,6 @@ describe Groups::GroupLinksController do
         expect(response).to have_gitlab_http_status(:not_found)
       end
     end
-
-    context 'when feature flag is disabled' do
-      before do
-        stub_feature_flags(share_group_with_group: false)
-      end
-
-      it 'renders 404' do
-        subject
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-    end
   end
 
   describe '#destroy' do
@@ -225,18 +201,6 @@ describe Groups::GroupLinksController do
     end
 
     context 'when user does not have admin access to the shared group' do
-      it 'renders 404' do
-        subject
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-    end
-
-    context 'when feature flag is disabled' do
-      before do
-        stub_feature_flags(share_group_with_group: false)
-      end
-
       it 'renders 404' do
         subject
 

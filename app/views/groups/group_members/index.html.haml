@@ -9,20 +9,16 @@
     = _("Group members")
   %hr
   - if can_manage_members
-    - if Feature.enabled?(:share_group_with_group, default_enabled: true)
-      %ul.nav-links.nav.nav-tabs.gitlab-tabs{ role: 'tablist' }
+    %ul.nav-links.nav.nav-tabs.gitlab-tabs{ role: 'tablist' }
+      %li.nav-tab{ role: 'presentation' }
+        %a.nav-link.active{ href: '#invite-member-pane', id: 'invite-member-tab', data: { toggle: 'tab' }, role: 'tab' }= _("Invite member")
         %li.nav-tab{ role: 'presentation' }
-          %a.nav-link.active{ href: '#invite-member-pane', id: 'invite-member-tab', data: { toggle: 'tab' }, role: 'tab' }= _("Invite member")
-          %li.nav-tab{ role: 'presentation' }
-            %a.nav-link{ href: '#invite-group-pane', id: 'invite-group-tab', data: { toggle: 'tab', qa_selector: 'invite_group_tab' }, role: 'tab' }= _("Invite group")
-      .tab-content.gitlab-tab-content
-        .tab-pane.active{ id: 'invite-member-pane', role: 'tabpanel' }
-          = render_invite_member_for_group(@group, @group_member.access_level)
-        - if Feature.enabled?(:share_group_with_group, default_enabled: true)
-          .tab-pane{ id: 'invite-group-pane', role: 'tabpanel' }
-            = render 'shared/members/invite_group', submit_url: group_group_links_path(@group), access_levels: GroupMember.access_level_roles, default_access_level: @group_member.access_level, group_link_field: 'shared_with_group_id', group_access_field: 'shared_group_access'
-    - else
-      = render_invite_member_for_group(@group, @group_member.access_level)
+          %a.nav-link{ href: '#invite-group-pane', id: 'invite-group-tab', data: { toggle: 'tab', qa_selector: 'invite_group_tab' }, role: 'tab' }= _("Invite group")
+    .tab-content.gitlab-tab-content
+      .tab-pane.active{ id: 'invite-member-pane', role: 'tabpanel' }
+        = render_invite_member_for_group(@group, @group_member.access_level)
+      .tab-pane{ id: 'invite-group-pane', role: 'tabpanel' }
+        = render 'shared/members/invite_group', submit_url: group_group_links_path(@group), access_levels: GroupMember.access_level_roles, default_access_level: @group_member.access_level, group_link_field: 'shared_with_group_id', group_access_field: 'shared_group_access'
 
     = render 'shared/members/requests', membership_source: @group, requesters: @requesters
 

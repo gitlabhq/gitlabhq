@@ -20,7 +20,6 @@ class GitlabDanger
     changelog
     specs
     roulette
-    gitlab_ui_wg
     ce_ee_vue_templates
   ].freeze
 

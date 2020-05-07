@@ -531,9 +531,10 @@ describe Gitlab::UsageData, :aggregate_failures do
         end
 
         it 'returns the fallback value when counting fails' do
+          stub_const("Gitlab::UsageData::FALLBACK", 15)
           allow(relation).to receive(:count).and_raise(ActiveRecord::StatementInvalid.new(''))
 
-          expect(described_class.count(relation, fallback: 15, batch: false)).to eq(15)
+          expect(described_class.count(relation, batch: false)).to eq(15)
         end
       end
 
@@ -547,9 +548,10 @@ describe Gitlab::UsageData, :aggregate_failures do
         end
 
         it 'returns the fallback value when counting fails' do
+          stub_const("Gitlab::UsageData::FALLBACK", 15)
           allow(relation).to receive(:distinct_count_by).and_raise(ActiveRecord::StatementInvalid.new(''))
 
-          expect(described_class.distinct_count(relation, fallback: 15, batch: false)).to eq(15)
+          expect(described_class.distinct_count(relation, batch: false)).to eq(15)
         end
       end
     end

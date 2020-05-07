@@ -3,7 +3,6 @@ cloud-native-image:
   image: ruby:2.6-alpine
   dependencies: []
   stage: post-test
-  allow_failure: true
   variables:
     GIT_DEPTH: "1"
   script:

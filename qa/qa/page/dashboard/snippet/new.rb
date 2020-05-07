@@ -10,7 +10,16 @@ module QA
           end
 
           view 'app/assets/javascripts/snippets/components/snippet_description_edit.vue' do
-            element :snippet_description_field, required: true
+            element :snippet_description_field
+            element :description_placeholder, required: true
+          end
+
+          view 'app/assets/javascripts/snippets/components/snippet_title.vue' do
+            element :snippet_title, required: true
+          end
+
+          view 'app/assets/javascripts/snippets/components/snippet_blob_edit.vue' do
+            element :snippet_file_name
           end
 
           view 'app/views/shared/form_elements/_description.html.haml' do
