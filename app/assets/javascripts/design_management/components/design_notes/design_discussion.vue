@@ -103,7 +103,13 @@ export default {
       class="design-discussion bordered-box position-relative"
       data-qa-selector="design_discussion_content"
     >
-      <design-note v-for="note in discussion.notes" :key="note.id" :note="note" />
+      <design-note
+        v-for="note in discussion.notes"
+        :key="note.id"
+        :note="note"
+        :markdown-preview-path="markdownPreviewPath"
+        @error="$emit('updateNoteError', $event)"
+      />
       <div class="reply-wrapper">
         <reply-placeholder
           v-if="!isFormRendered"

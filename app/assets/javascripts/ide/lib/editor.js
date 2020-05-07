@@ -7,8 +7,10 @@ import Disposable from './common/disposable';
 import ModelManager from './common/model_manager';
 import editorOptions, { defaultEditorOptions } from './editor_options';
 import { themes } from './themes';
+import languages from './languages';
 import keymap from './keymap.json';
 import { clearDomElement } from '~/editor/utils';
+import { registerLanguages } from '../utils';
 
 function setupThemes() {
   themes.forEach(theme => {
@@ -37,6 +39,7 @@ export default class Editor {
     };
 
     setupThemes();
+    registerLanguages(...languages);
 
     this.debouncedUpdate = debounce(() => {
       this.updateDimensions();

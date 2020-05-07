@@ -94,7 +94,7 @@
   }
 
   .ide-pipeline svg {
-    --svg-status-bg: transparent;
+    --svg-status-bg: $background;
   }
 
   .multi-file-tab-close:hover {

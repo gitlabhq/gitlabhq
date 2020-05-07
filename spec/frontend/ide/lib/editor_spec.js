@@ -1,4 +1,4 @@
-import { editor as monacoEditor } from 'monaco-editor';
+import { editor as monacoEditor, languages as monacoLanguages } from 'monaco-editor';
 import Editor from '~/ide/lib/editor';
 import { defaultEditorOptions } from '~/ide/lib/editor_options';
 import { file } from '../helpers';
@@ -178,6 +178,18 @@ describe('Multi-file editor library', () => {
       instance.clearEditor();
 
       expect(instance.instance.setModel).toHaveBeenCalledWith(null);
+    });
+  });
+
+  describe('languages', () => {
+    it('registers custom languages defined with Monaco', () => {
+      expect(monacoLanguages.getLanguages()).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            id: 'vue',
+          }),
+        ]),
+      );
     });
   });
 

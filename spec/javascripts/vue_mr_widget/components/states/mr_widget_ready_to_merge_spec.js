@@ -18,6 +18,7 @@ const createTestMr = customConfig => {
     isPipelineFailed: false,
     isPipelinePassing: false,
     isMergeAllowed: true,
+    isApproved: true,
     onlyAllowMergeIfPipelineSucceeds: false,
     ffOnlyEnabled: false,
     hasCI: false,

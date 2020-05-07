@@ -7,47 +7,37 @@ module Gitlab
     # This module relies on the /proc filesystem being available. If /proc is
     # not available the methods of this module will be stubbed.
     module System
-      if File.exist?('/proc')
-        # Returns the current process' memory usage in bytes.
-        def self.memory_usage
-          mem   = 0
-          match = File.read('/proc/self/status').match(/VmRSS:\s+(\d+)/)
+      PROC_STATUS_PATH = '/proc/self/status'
+      PROC_SMAPS_ROLLUP_PATH = '/proc/self/smaps_rollup'
+      PROC_LIMITS_PATH = '/proc/self/limits'
+      PROC_FD_GLOB = '/proc/self/fd/*'
 
-          if match && match[1]
-            mem = match[1].to_f * 1024
-          end
+      PRIVATE_PAGES_PATTERN = /^(Private_Clean|Private_Dirty|Private_Hugetlb):\s+(?<value>\d+)/.freeze
+      PSS_PATTERN = /^Pss:\s+(?<value>\d+)/.freeze
+      RSS_PATTERN = /VmRSS:\s+(?<value>\d+)/.freeze
+      MAX_OPEN_FILES_PATTERN = /Max open files\s*(?<value>\d+)/.freeze
 
-          mem
-        end
+      # Returns the current process' RSS (resident set size) in bytes.
+      def self.memory_usage
+        sum_matches(PROC_STATUS_PATH, rss: RSS_PATTERN)[:rss].kilobytes
+      end
 
-        def self.file_descriptor_count
-          Dir.glob('/proc/self/fd/*').length
-        end
+      # Returns the current process' USS/PSS (unique/proportional set size) in bytes.
+      def self.memory_usage_uss_pss
+        sum_matches(PROC_SMAPS_ROLLUP_PATH, uss: PRIVATE_PAGES_PATTERN, pss: PSS_PATTERN)
+          .transform_values(&:kilobytes)
+      end
 
-        def self.max_open_file_descriptors
-          match = File.read('/proc/self/limits').match(/Max open files\s*(\d+)/)
+      def self.file_descriptor_count
+        Dir.glob(PROC_FD_GLOB).length
+      end
 
-          return unless match && match[1]
-
-          match[1].to_i
-        end
-      else
-        def self.memory_usage
-          0.0
-        end
-
-        def self.file_descriptor_count
-          0
-        end
-
-        def self.max_open_file_descriptors
-          0
-        end
+      def self.max_open_file_descriptors
+        sum_matches(PROC_LIMITS_PATH, max_fds: MAX_OPEN_FILES_PATTERN)[:max_fds]
       end
 
       def self.cpu_time
-        Process
-          .clock_gettime(Process::CLOCK_PROCESS_CPUTIME_ID, :float_second)
+        Process.clock_gettime(Process::CLOCK_PROCESS_CPUTIME_ID, :float_second)
       end
 
       # Returns the current real time in a given precision.
@@ -77,6 +67,27 @@ module Gitlab
         return unless start_time && end_time
 
         end_time - start_time
+      end
+
+      # Given a path to a file in /proc and a hash of (metric, pattern) pairs,
+      # sums up all values found for those patterns under the respective metric.
+      def self.sum_matches(proc_file, **patterns)
+        results = patterns.transform_values { 0 }
+
+        begin
+          File.foreach(proc_file) do |line|
+            patterns.each do |metric, pattern|
+              match = line.match(pattern)
+              value = match&.named_captures&.fetch('value', 0)
+              results[metric] += value.to_i
+            end
+          end
+        rescue Errno::ENOENT
+          # This means the procfile we're reading from did not exist;
+          # this is safe to ignore, since we initialize each metric to 0
+        end
+
+        results
       end
     end
   end

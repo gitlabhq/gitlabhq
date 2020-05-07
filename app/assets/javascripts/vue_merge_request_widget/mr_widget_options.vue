@@ -104,8 +104,11 @@ export default {
     shouldRenderMergeHelp() {
       return stateMaps.statesToShowHelpWidget.indexOf(this.mr.state) > -1;
     },
+    hasPipelineMustSucceedConflict() {
+      return !this.mr.hasCI && this.mr.onlyAllowMergeIfPipelineSucceeds;
+    },
     shouldRenderPipelines() {
-      return this.mr.hasCI;
+      return this.mr.hasCI || this.hasPipelineMustSucceedConflict;
     },
     shouldSuggestPipelines() {
       return gon.features?.suggestPipeline && !this.mr.hasCI && this.mr.mergeRequestAddCiConfigPath;
@@ -432,7 +435,9 @@ export default {
           <source-branch-removal-status v-if="shouldRenderSourceBranchRemovalStatus" />
         </div>
       </div>
-      <div v-if="shouldRenderMergeHelp" class="mr-widget-footer"><mr-widget-merge-help /></div>
+      <div v-if="shouldRenderMergeHelp" class="mr-widget-footer">
+        <mr-widget-merge-help />
+      </div>
     </div>
     <mr-widget-pipeline-container
       v-if="shouldRenderMergedPipeline"

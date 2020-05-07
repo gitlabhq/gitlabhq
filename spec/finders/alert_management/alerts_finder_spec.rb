@@ -5,8 +5,8 @@ require 'spec_helper'
 describe AlertManagement::AlertsFinder, '#execute' do
   let_it_be(:current_user) { create(:user) }
   let_it_be(:project) { create(:project) }
-  let_it_be(:alert_1) { create(:alert_management_alert, project: project, ended_at: 1.year.ago, events: 2, severity: :high, status: :resolved) }
-  let_it_be(:alert_2) { create(:alert_management_alert, project: project, events: 1, severity: :critical, status: :ignored) }
+  let_it_be(:alert_1) { create(:alert_management_alert, :resolved, project: project, ended_at: 1.year.ago, events: 2, severity: :high) }
+  let_it_be(:alert_2) { create(:alert_management_alert, :ignored, project: project, events: 1, severity: :critical) }
   let_it_be(:alert_3) { create(:alert_management_alert) }
   let(:params) { {} }
 
@@ -155,10 +155,10 @@ describe AlertManagement::AlertsFinder, '#execute' do
       end
 
       context 'when sorting by status' do
-        let_it_be(:alert_triggered) { create(:alert_management_alert, project: project, status: :triggered) }
-        let_it_be(:alert_acknowledged) { create(:alert_management_alert, project: project, status: :acknowledged) }
-        let_it_be(:alert_resolved) { create(:alert_management_alert, project: project, status: :resolved) }
-        let_it_be(:alert_ignored) { create(:alert_management_alert, project: project, status: :ignored) }
+        let_it_be(:alert_triggered) { create(:alert_management_alert, project: project) }
+        let_it_be(:alert_acknowledged) { create(:alert_management_alert, :acknowledged, project: project) }
+        let_it_be(:alert_resolved) { create(:alert_management_alert, :resolved, project: project) }
+        let_it_be(:alert_ignored) { create(:alert_management_alert, :ignored, project: project) }
 
         context 'sorts alerts ascending' do
           let(:params) { { sort: 'status_asc' } }

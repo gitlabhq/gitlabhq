@@ -1712,6 +1712,9 @@ msgstr ""
 msgid "AlertManagement|Alerts"
 msgstr ""
 
+msgid "AlertManagement|All alerts"
+msgstr ""
+
 msgid "AlertManagement|Authorize external service"
 msgstr ""
 
@@ -1740,6 +1743,9 @@ msgid "AlertManagement|No alerts available to display. If you think you're seein
 msgstr ""
 
 msgid "AlertManagement|No alerts to display."
+msgstr ""
+
+msgid "AlertManagement|Open"
 msgstr ""
 
 msgid "AlertManagement|Overview"
@@ -7214,13 +7220,25 @@ msgstr ""
 msgid "DesignManagement|Adding a design with the same filename replaces the file in a new version."
 msgstr ""
 
+msgid "DesignManagement|Are you sure you want to cancel changes to this comment?"
+msgstr ""
+
 msgid "DesignManagement|Are you sure you want to cancel creating this comment?"
 msgstr ""
 
 msgid "DesignManagement|Are you sure you want to delete the selected designs?"
 msgstr ""
 
+msgid "DesignManagement|Cancel changes"
+msgstr ""
+
 msgid "DesignManagement|Cancel comment confirmation"
+msgstr ""
+
+msgid "DesignManagement|Cancel comment update confirmation"
+msgstr ""
+
+msgid "DesignManagement|Comment"
 msgstr ""
 
 msgid "DesignManagement|Could not add a new comment. Please try again."
@@ -7230,6 +7248,9 @@ msgid "DesignManagement|Could not create new discussion. Please try again."
 msgstr ""
 
 msgid "DesignManagement|Could not update discussion. Please try again."
+msgstr ""
+
+msgid "DesignManagement|Could not update note. Please try again."
 msgstr ""
 
 msgid "DesignManagement|Delete"
@@ -7259,10 +7280,16 @@ msgstr ""
 msgid "DesignManagement|Go to previous design"
 msgstr ""
 
+msgid "DesignManagement|Keep changes"
+msgstr ""
+
 msgid "DesignManagement|Keep comment"
 msgstr ""
 
 msgid "DesignManagement|Requested design version does not exist. Showing latest version instead"
+msgstr ""
+
+msgid "DesignManagement|Save comment"
 msgstr ""
 
 msgid "DesignManagement|Select all"
@@ -13081,6 +13108,9 @@ msgstr ""
 msgid "MergeRequests|Add a reply"
 msgstr ""
 
+msgid "MergeRequests|An error occurred while checking whether another squash is in progress."
+msgstr ""
+
 msgid "MergeRequests|An error occurred while saving the draft comment."
 msgstr ""
 
@@ -13294,6 +13324,9 @@ msgid "Metrics|Legend label (optional)"
 msgstr ""
 
 msgid "Metrics|Link contains an invalid time window, please verify the link to see the requested time range."
+msgstr ""
+
+msgid "Metrics|Link contains invalid chart information, please verify the link to see the expanded panel."
 msgstr ""
 
 msgid "Metrics|Max"
@@ -15078,6 +15111,9 @@ msgstr ""
 msgid "Pipelines for merge requests are configured. A detached pipeline runs in the context of the merge request, and not against the merged result. Learn more in the documentation for Pipelines for Merged Results."
 msgstr ""
 
+msgid "Pipelines must succeed for merge requests to be eligible to merge. Please enable pipelines for this project to continue. For more information, see the %{linkStart}documentation.%{linkEnd}"
+msgstr ""
+
 msgid "Pipelines settings for '%{project_name}' were successfully updated."
 msgstr ""
 
@@ -15141,7 +15177,7 @@ msgstr ""
 msgid "Pipeline|Commit"
 msgstr ""
 
-msgid "Pipeline|Could not retrieve the pipeline status. For troubleshooting steps, read the %{linkStart}documentation.%{linkEnd}"
+msgid "Pipeline|Could not retrieve the pipeline status. For troubleshooting steps, read the %{linkStart}documentation%{linkEnd}."
 msgstr ""
 
 msgid "Pipeline|Coverage"
@@ -15166,6 +15202,9 @@ msgid "Pipeline|Merge train pipeline"
 msgstr ""
 
 msgid "Pipeline|Merged result pipeline"
+msgstr ""
+
+msgid "Pipeline|No pipeline has been run for this commit."
 msgstr ""
 
 msgid "Pipeline|Pipeline"

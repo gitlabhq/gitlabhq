@@ -20,7 +20,7 @@ describe Mutations::AlertManagement::UpdateAlertStatus do
       end
 
       it 'changes the status' do
-        expect { resolve }.to change { alert.reload.status }.from(alert.status).to(new_status)
+        expect { resolve }.to change { alert.reload.acknowledged? }.to(true)
       end
 
       it 'returns the alert with no errors' do

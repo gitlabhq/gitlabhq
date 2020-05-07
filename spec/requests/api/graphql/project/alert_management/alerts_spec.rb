@@ -7,7 +7,7 @@ describe 'getting Alert Management Alerts' do
   let_it_be(:payload) { { 'custom' => { 'alert' => 'payload' } } }
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:alert_1) { create(:alert_management_alert, :all_fields, project: project, severity: :low) }
+  let_it_be(:alert_1) { create(:alert_management_alert, :all_fields, :resolved, project: project, severity: :low) }
   let_it_be(:alert_2) { create(:alert_management_alert, :all_fields, project: project, severity: :critical, payload: payload) }
   let_it_be(:other_project_alert) { create(:alert_management_alert, :all_fields) }
 
@@ -49,26 +49,33 @@ describe 'getting Alert Management Alerts' do
       end
 
       let(:first_alert) { alerts.first }
+      let(:second_alert) { alerts.second }
 
       it_behaves_like 'a working graphql query'
 
       it { expect(alerts.size).to eq(2) }
-      it 'returns the correct properties of the alert' do
+
+      it 'returns the correct properties of the alerts' do
         expect(first_alert).to include(
           'iid' => alert_2.iid.to_s,
           'title' => alert_2.title,
           'description' => alert_2.description,
           'severity' => alert_2.severity.upcase,
-          'status' => alert_2.status.upcase,
+          'status' => 'TRIGGERED',
           'monitoringTool' => alert_2.monitoring_tool,
           'service' => alert_2.service,
           'hosts' => alert_2.hosts,
           'eventCount' => alert_2.events,
           'startedAt' => alert_2.started_at.strftime('%Y-%m-%dT%H:%M:%SZ'),
-          'endedAt' => alert_2.ended_at.strftime('%Y-%m-%dT%H:%M:%SZ'),
+          'endedAt' => nil,
           'details' => { 'custom.alert' => 'payload' },
           'createdAt' => alert_2.created_at.strftime('%Y-%m-%dT%H:%M:%SZ'),
           'updatedAt' => alert_2.updated_at.strftime('%Y-%m-%dT%H:%M:%SZ')
+        )
+
+        expect(second_alert).to include(
+          'status' => 'RESOLVED',
+          'endedAt' => alert_1.ended_at.strftime('%Y-%m-%dT%H:%M:%SZ')
         )
       end
 

@@ -1,6 +1,15 @@
 import { mount } from '@vue/test-utils';
 import DesignReplyForm from '~/design_management/components/design_notes/design_reply_form.vue';
 
+const showModal = jest.fn();
+
+const GlModal = {
+  template: '<div><slot name="modal-title"></slot><slot></slot><slot name="modal-ok"></slot></div>',
+  methods: {
+    show: showModal,
+  },
+};
+
 describe('Design reply form component', () => {
   let wrapper;
 
@@ -16,6 +25,7 @@ describe('Design reply form component', () => {
         isSaving: false,
         ...props,
       },
+      stubs: { GlModal },
     });
   }
 
@@ -27,6 +37,18 @@ describe('Design reply form component', () => {
     createComponent();
 
     expect(findTextarea().element).toEqual(document.activeElement);
+  });
+
+  it('renders button text as "Comment" when creating a comment', () => {
+    createComponent();
+
+    expect(findSubmitButton().html()).toMatchSnapshot();
+  });
+
+  it('renders button text as "Save comment" when creating a comment', () => {
+    createComponent({ isNewComment: false });
+
+    expect(findSubmitButton().html()).toMatchSnapshot();
   });
 
   describe('when form has no text', () => {
@@ -120,16 +142,34 @@ describe('Design reply form component', () => {
       });
     });
 
-    it('opens confirmation modal on pressing Escape button', () => {
+    it('emits cancelForm event on Escape key if text was not changed', () => {
       findTextarea().trigger('keyup.esc');
 
-      expect(findModal().exists()).toBe(true);
+      expect(wrapper.emitted('cancelForm')).toBeTruthy();
     });
 
-    it('opens confirmation modal on Cancel button click', () => {
-      findCancelButton().vm.$emit('click');
+    it('opens confirmation modal on Escape key when text has changed', () => {
+      wrapper.setProps({ value: 'test2' });
 
-      expect(findModal().exists()).toBe(true);
+      return wrapper.vm.$nextTick().then(() => {
+        findTextarea().trigger('keyup.esc');
+        expect(showModal).toHaveBeenCalled();
+      });
+    });
+
+    it('emits cancelForm event on Cancel button click if text was not changed', () => {
+      findCancelButton().trigger('click');
+
+      expect(wrapper.emitted('cancelForm')).toBeTruthy();
+    });
+
+    it('opens confirmation modal on Cancel button click when text has changed', () => {
+      wrapper.setProps({ value: 'test2' });
+
+      return wrapper.vm.$nextTick().then(() => {
+        findCancelButton().trigger('click');
+        expect(showModal).toHaveBeenCalled();
+      });
     });
 
     it('emits cancelForm event on modal Ok button click', () => {

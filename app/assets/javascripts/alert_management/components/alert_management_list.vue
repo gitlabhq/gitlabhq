@@ -8,10 +8,15 @@ import {
   GlIcon,
   GlNewDropdown,
   GlNewDropdownItem,
+  GlTabs,
+  GlTab,
+  GlBadge,
 } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import getAlerts from '../graphql/queries/getAlerts.query.graphql';
+import { ALERTS_STATUS, ALERTS_STATUS_TABS } from '../constants';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 const tdClass = 'table-col d-flex d-md-table-cell align-items-center';
 
@@ -59,10 +64,11 @@ export default {
     },
   ],
   statuses: {
-    triggered: s__('AlertManagement|Triggered'),
-    acknowledged: s__('AlertManagement|Acknowledged'),
-    resolved: s__('AlertManagement|Resolved'),
+    [ALERTS_STATUS.TRIGGERED]: s__('AlertManagement|Triggered'),
+    [ALERTS_STATUS.ACKNOWLEDGED]: s__('AlertManagement|Acknowledged'),
+    [ALERTS_STATUS.RESOLVED]: s__('AlertManagement|Resolved'),
   },
+  statusTabs: ALERTS_STATUS_TABS,
   components: {
     GlEmptyState,
     GlLoadingIcon,
@@ -73,7 +79,11 @@ export default {
     GlNewDropdown,
     GlNewDropdownItem,
     GlIcon,
+    GlTabs,
+    GlTab,
+    GlBadge,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     projectPath: {
       type: String,
@@ -102,6 +112,7 @@ export default {
       variables() {
         return {
           projectPath: this.projectPath,
+          status: this.statusFilter,
         };
       },
       update(data) {
@@ -118,6 +129,7 @@ export default {
       errored: false,
       isAlertDismissed: false,
       isErrorAlertDismissed: false,
+      statusFilter: this.$options.statusTabs[0].status,
     };
   },
   computed: {
@@ -129,6 +141,11 @@ export default {
     },
     loading() {
       return this.$apollo.queries.alerts.loading;
+    },
+  },
+  methods: {
+    filterALertsByStatus(tabIndex) {
+      this.statusFilter = this.$options.statusTabs[tabIndex].status;
     },
   },
 };
@@ -143,6 +160,17 @@ export default {
       <gl-alert v-if="showErrorMsg" variant="danger" @dismiss="isErrorAlertDismissed = true">
         {{ $options.i18n.errorMsg }}
       </gl-alert>
+
+      <gl-tabs v-if="glFeatures.alertListStatusFilteringEnabled" @input="filterALertsByStatus">
+        <gl-tab v-for="tab in $options.statusTabs" :key="tab.status">
+          <template slot="title">
+            <span>{{ tab.title }}</span>
+            <gl-badge v-if="alerts" size="sm" class="gl-tab-counter-badge">
+              {{ alerts.length }}
+            </gl-badge>
+          </template>
+        </gl-tab>
+      </gl-tabs>
 
       <h4 class="d-block d-md-none my-3">
         {{ s__('AlertManagement|Alerts') }}

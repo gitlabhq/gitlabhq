@@ -175,6 +175,10 @@ class Namespace < ApplicationRecord
     kind == 'user'
   end
 
+  def group?
+    type == 'Group'
+  end
+
   def find_fork_of(project)
     return unless project.fork_network
 

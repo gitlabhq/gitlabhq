@@ -12,6 +12,8 @@ export const UPDATE_IMAGE_DIFF_NOTE_ERROR = s__(
   'DesignManagement|Could not update discussion. Please try again.',
 );
 
+export const UPDATE_NOTE_ERROR = s__('DesignManagement|Could not update note. Please try again.');
+
 export const UPLOAD_DESIGN_ERROR = s__(
   'DesignManagement|Error uploading a new design. Please try again.',
 );

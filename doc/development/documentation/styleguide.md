@@ -248,12 +248,6 @@ GitLab documentation should be clear and easy to understand.
 - Be clear, concise, and stick to the goal of the documentation.
 - Write in US English with US grammar.
 - Use inclusive language.
-- Avoid jargon.
-- Avoid uncommon words.
-- Don't write in the first person singular.
-  - Instead of "I" or "me," use "we," "you," "us," or "one."
-  - When possible, stay user focused by writing in the second person ("you" or the imperative).
-- Don't overuse "that". In many cases, you can remove "that" from a sentence and improve readability.
 
 ### Point of view
 
@@ -287,24 +281,51 @@ because it’s friendly and easy to understand.
     Some features are also objects. For example, "GitLab's Merge Requests support X" and
     "Create a new merge request for Z."
 
+### Language to avoid
+
+When creating documentation, limit or avoid the use of the following verb
+tenses, words, and phrases:
+
+- Avoid jargon.
+- Avoid uncommon words.
+- Don't write in the first person singular.
+  - Instead of "I" or "me," use "we," "you," "us," or "one."
+  - When possible, stay user focused by writing in the second person ("you" or
+    the imperative).
+- Don't overuse "that". In many cases, you can remove "that" from a sentence
+  and improve readability.
 - Avoid use of the future tense:
-  - Instead of "after you execute this command, GitLab will display the result", use "after you execute this command, GitLab displays the result".
-  - Only use the future tense to convey when the action or result will actually occur at a future time.
-- Do not use slashes to clump different words together or as a replacement for the word "or":
-  - Instead of "and/or," consider using "or," or use another sensible construction.
-  - Other examples include "clone/fetch," author/assignee," and "namespace/repository name." Break apart any such instances in an appropriate way.
-  - Exceptions to this rule include commonly accepted technical terms such as CI/CD, TCP/IP, and so on.
-- Do not use "may" and "might" interchangeably:
-  - Use "might" to indicate the probability of something occurring. "If you skip this step, the import process might fail."
-  - Use "may" to indicate giving permission for someone to do something, or consider using "can" instead. "You may select either option on this screen." Or, "you can select either option on this screen."
+  - Instead of "after you execute this command, GitLab will display the
+    result", use "after you execute this command, GitLab displays the result".
+  - Only use the future tense to convey when the action or result will actually
+    occur at a future time.
+- Don't use slashes to clump different words together or as a replacement for
+  the word "or":
+  - Instead of "and/or," consider using "or," or use another sensible
+    construction.
+  - Other examples include "clone/fetch," author/assignee," and
+    "namespace/repository name." Break apart any such instances in an
+    appropriate way.
+  - Exceptions to this rule include commonly accepted technical terms, such as
+    CI/CD and TCP/IP.
 - We discourage use of Latin abbreviations, such as "e.g.," "i.e.," or "etc.,"
-as even native users of English might misunderstand them.
+  as even native users of English might misunderstand them.
   - Instead of "i.e.," use "that is."
   - Instead of "e.g.," use "for example," "such as," "for instance," or "like."
-  - Instead of "etc.," either use "and so on" or consider editing it out, since it can be vague.
-- Avoid using the word *Currently* when talking about the product or its
+  - Instead of "etc.," either use "and so on" or consider editing it out, since
+    it can be vague.
+- Avoid using the word *currently* when talking about the product or its
   features. The documentation describes the product as it is, and not as it
   will be at some indeterminate point in the future.
+
+### Word usage clarifications
+
+- Don't use "may" and "might" interchangeably:
+  - Use "might" to indicate the probability of something occurring. "If you
+    skip this step, the import process might fail."
+  - Use "may" to indicate giving permission for someone to do something, or
+    consider using "can" instead. "You may select either option on this
+    screen." Or, "You can select either option on this screen."
 
 ### Contractions
 

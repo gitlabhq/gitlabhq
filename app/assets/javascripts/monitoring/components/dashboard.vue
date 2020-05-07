@@ -1,5 +1,5 @@
 <script>
-import { debounce, pickBy } from 'lodash';
+import { debounce } from 'lodash';
 import { mapActions, mapState, mapGetters } from 'vuex';
 import VueDraggable from 'vuedraggable';
 import {
@@ -32,7 +32,13 @@ import GroupEmptyState from './group_empty_state.vue';
 import DashboardsDropdown from './dashboards_dropdown.vue';
 
 import TrackEventDirective from '~/vue_shared/directives/track_event';
-import { getAddMetricTrackingOptions, timeRangeToUrl, timeRangeFromUrl } from '../utils';
+import {
+  getAddMetricTrackingOptions,
+  timeRangeToUrl,
+  timeRangeFromUrl,
+  panelToUrl,
+  expandedPanelPayloadFromUrl,
+} from '../utils';
 import { metricStates } from '../constants';
 import { defaultTimeRange, timeRanges } from '~/vue_shared/constants';
 
@@ -238,6 +244,23 @@ export default {
       return !this.environmentsLoading && this.filteredEnvironments.length === 0;
     },
   },
+  watch: {
+    dashboard(newDashboard) {
+      try {
+        const expandedPanel = expandedPanelPayloadFromUrl(newDashboard);
+        if (expandedPanel) {
+          this.setExpandedPanel(expandedPanel);
+        }
+      } catch {
+        createFlash(
+          s__(
+            'Metrics|Link contains invalid chart information, please verify the link to see the expanded panel.',
+          ),
+        );
+      }
+    },
+  },
+
   created() {
     this.setInitialState({
       metricsEndpoint: this.metricsEndpoint,
@@ -299,15 +322,9 @@ export default {
       // As a fallback, switch to default time range instead
       this.selectedTimeRange = defaultTimeRange;
     },
-
-    generatePanelLink(group, graphData) {
-      if (!group || !graphData) {
-        return null;
-      }
-      const dashboard = this.currentDashboard || this.firstDashboard.path;
-      const { y_label, title } = graphData;
-      const params = pickBy({ dashboard, group, title, y_label }, value => value != null);
-      return mergeUrlParams(params, window.location.href);
+    generatePanelUrl(groupKey, panel) {
+      const dashboardPath = this.currentDashboard || this.firstDashboard.path;
+      return panelToUrl(dashboardPath, groupKey, panel);
     },
     hideAddMetricModal() {
       this.$refs.addMetricModal.hide();
@@ -564,7 +581,7 @@ export default {
         v-show="expandedPanel.panel"
         ref="expandedPanel"
         :settings-path="settingsPath"
-        :clipboard-text="generatePanelLink(expandedPanel.group, expandedPanel.panel)"
+        :clipboard-text="generatePanelUrl(expandedPanel.group, expandedPanel.panel)"
         :graph-data="expandedPanel.panel"
         :alerts-endpoint="alertsEndpoint"
         :height="600"
@@ -623,7 +640,7 @@ export default {
 
                 <dashboard-panel
                   :settings-path="settingsPath"
-                  :clipboard-text="generatePanelLink(groupData.group, graphData)"
+                  :clipboard-text="generatePanelUrl(groupData.group, graphData)"
                   :graph-data="graphData"
                   :alerts-endpoint="alertsEndpoint"
                   :prometheus-alerts-available="prometheusAlertsAvailable"

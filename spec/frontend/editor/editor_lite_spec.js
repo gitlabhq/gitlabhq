@@ -1,4 +1,4 @@
-import { editor as monacoEditor, Uri } from 'monaco-editor';
+import { editor as monacoEditor, languages as monacoLanguages, Uri } from 'monaco-editor';
 import Editor from '~/editor/editor_lite';
 import { DEFAULT_THEME, themes } from '~/ide/lib/themes';
 
@@ -41,13 +41,13 @@ describe('Base editor', () => {
     let dispose;
 
     beforeEach(() => {
-      setModel = jasmine.createSpy();
-      dispose = jasmine.createSpy();
-      modelSpy = spyOn(monacoEditor, 'createModel').and.returnValue(fakeModel);
-      instanceSpy = spyOn(monacoEditor, 'create').and.returnValue({
+      setModel = jest.fn();
+      dispose = jest.fn();
+      modelSpy = jest.spyOn(monacoEditor, 'createModel').mockImplementation(() => fakeModel);
+      instanceSpy = jest.spyOn(monacoEditor, 'create').mockImplementation(() => ({
         setModel,
         dispose,
-      });
+      }));
     });
 
     it('does nothing if no dom element is supplied', () => {
@@ -73,7 +73,7 @@ describe('Base editor', () => {
       editor.createInstance({ el: editorEl });
 
       expect(editor.editorEl).not.toBe(null);
-      expect(instanceSpy).toHaveBeenCalledWith(editorEl, jasmine.anything());
+      expect(instanceSpy).toHaveBeenCalledWith(editorEl, expect.anything());
     });
   });
 
@@ -91,6 +91,11 @@ describe('Base editor', () => {
     });
 
     it('is capable of changing the language of the model', () => {
+      // ignore warnings and errors Monaco posts during setup
+      // (due to being called from Jest/Node.js environment)
+      jest.spyOn(console, 'warn').mockImplementation(() => {});
+      jest.spyOn(console, 'error').mockImplementation(() => {});
+
       const blobRenamedPath = 'test.js';
 
       expect(editor.model.getLanguageIdentifier().language).toEqual('markdown');
@@ -101,12 +106,24 @@ describe('Base editor', () => {
 
     it('falls back to plaintext if there is no language associated with an extension', () => {
       const blobRenamedPath = 'test.myext';
-      const spy = spyOn(console, 'error');
+      const spy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
       editor.updateModelLanguage(blobRenamedPath);
 
       expect(spy).not.toHaveBeenCalled();
       expect(editor.model.getLanguageIdentifier().language).toEqual('plaintext');
+    });
+  });
+
+  describe('languages', () => {
+    it('registers custom languages defined with Monaco', () => {
+      expect(monacoLanguages.getLanguages()).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            id: 'vue',
+          }),
+        ]),
+      );
     });
   });
 
@@ -116,8 +133,8 @@ describe('Base editor', () => {
     let defaultScheme;
 
     beforeEach(() => {
-      themeDefineSpy = spyOn(monacoEditor, 'defineTheme');
-      themeSetSpy = spyOn(monacoEditor, 'setTheme');
+      themeDefineSpy = jest.spyOn(monacoEditor, 'defineTheme').mockImplementation(() => {});
+      themeSetSpy = jest.spyOn(monacoEditor, 'setTheme').mockImplementation(() => {});
       defaultScheme = window.gon.user_color_scheme;
     });
 

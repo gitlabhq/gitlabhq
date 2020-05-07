@@ -122,6 +122,19 @@ describe('MRWidgetPipeline', () => {
       );
     });
 
+    it('should render CI error when no CI is provided and pipeline must succeed is turned on', () => {
+      vm = mountComponent(Component, {
+        pipeline: {},
+        hasCi: false,
+        pipelineMustSucceed: true,
+        troubleshootingDocsPath: 'help',
+      });
+
+      expect(vm.$el.querySelector('.media-body').textContent.trim()).toContain(
+        'No pipeline has been run for this commit.',
+      );
+    });
+
     describe('with a pipeline', () => {
       beforeEach(() => {
         vm = mountComponent(Component, {

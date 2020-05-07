@@ -74,4 +74,14 @@
       }
     }
   }
+
+  .gl-tab-nav-item {
+    color: $gl-gray-600;
+
+    > .gl-tab-counter-badge {
+      color: inherit;
+      @include gl-font-sm;
+      background-color: $white-normal;
+    }
+  }
 }

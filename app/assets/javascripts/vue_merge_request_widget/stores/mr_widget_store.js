@@ -161,6 +161,7 @@ export default class MergeRequestStore {
     // Paths are set on the first load of the page and not auto-refreshed
     this.squashBeforeMergeHelpPath = data.squash_before_merge_help_path;
     this.troubleshootingDocsPath = data.troubleshooting_docs_path;
+    this.pipelineMustSucceedDocsPath = data.pipeline_must_succeed_docs_path;
     this.mergeRequestBasicPath = data.merge_request_basic_path;
     this.mergeRequestWidgetPath = data.merge_request_widget_path;
     this.mergeRequestCachedWidgetPath = data.merge_request_cached_widget_path;

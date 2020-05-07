@@ -102,6 +102,13 @@ export const clearExpandedPanel = ({ commit }) => {
 
 // All Data
 
+/**
+ * Fetch all dashboard data.
+ *
+ * @param {Object} store
+ * @returns A promise that resolves when the dashboard
+ * skeleton has been loaded.
+ */
 export const fetchData = ({ dispatch }) => {
   dispatch('fetchEnvironmentsData');
   dispatch('fetchDashboard');

@@ -11,7 +11,7 @@ describe AlertManagement::UpdateAlertStatusService do
     let(:new_status) { 'acknowledged' }
 
     it 'updates the status' do
-      expect { execute }.to change { alert.status }.to(new_status)
+      expect { execute }.to change { alert.acknowledged? }.to(true)
     end
 
     context 'with unknown status' do

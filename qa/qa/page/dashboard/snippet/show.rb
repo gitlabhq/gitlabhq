@@ -5,8 +5,8 @@ module QA
     module Dashboard
       module Snippet
         class Show < Page::Base
-          view 'app/assets/javascripts/snippets/components/snippet_description_edit.vue' do
-            element :snippet_description_field, required: true
+          view 'app/assets/javascripts/snippets/components/snippet_description_view.vue' do
+            element :snippet_description_field
           end
 
           view 'app/assets/javascripts/snippets/components/snippet_title.vue' do

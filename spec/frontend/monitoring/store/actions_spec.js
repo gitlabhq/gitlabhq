@@ -11,6 +11,7 @@ import { ENVIRONMENT_AVAILABLE_STATE } from '~/monitoring/constants';
 import store from '~/monitoring/stores';
 import * as types from '~/monitoring/stores/mutation_types';
 import {
+  fetchData,
   fetchDashboard,
   receiveMetricsDashboardSuccess,
   fetchDeploymentsData,
@@ -84,6 +85,41 @@ describe('Monitoring store actions', () => {
 
     commonUtils.backOff.mockReset();
     createFlash.mockReset();
+  });
+
+  describe('fetchData', () => {
+    it('dispatches fetchEnvironmentsData and fetchEnvironmentsData', () => {
+      const { state } = store;
+
+      return testAction(
+        fetchData,
+        null,
+        state,
+        [],
+        [{ type: 'fetchEnvironmentsData' }, { type: 'fetchDashboard' }],
+      );
+    });
+
+    it('dispatches when feature metricsDashboardAnnotations is on', () => {
+      const origGon = window.gon;
+      window.gon = { features: { metricsDashboardAnnotations: true } };
+
+      const { state } = store;
+
+      return testAction(
+        fetchData,
+        null,
+        state,
+        [],
+        [
+          { type: 'fetchEnvironmentsData' },
+          { type: 'fetchDashboard' },
+          { type: 'fetchAnnotations' },
+        ],
+      ).then(() => {
+        window.gon = origGon;
+      });
+    });
   });
 
   describe('fetchDeploymentsData', () => {

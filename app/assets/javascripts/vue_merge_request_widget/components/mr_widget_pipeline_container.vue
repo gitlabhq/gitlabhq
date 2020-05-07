@@ -79,6 +79,7 @@ export default {
       :pipeline-coverage-delta="mr.pipelineCoverageDelta"
       :ci-status="mr.ciStatus"
       :has-ci="mr.hasCI"
+      :pipeline-must-succeed="mr.onlyAllowMergeIfPipelineSucceeds"
       :source-branch="branch"
       :source-branch-link="branchLink"
       :troubleshooting-docs-path="mr.troubleshootingDocsPath"

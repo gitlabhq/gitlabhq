@@ -18,35 +18,35 @@
   :weight: 3
   :idempotent: 
 - :name: chaos:chaos_cpu_spin
-  :feature_category: :chaos_engineering
+  :feature_category: :not_owned
   :has_external_dependencies: 
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 2
   :idempotent: 
 - :name: chaos:chaos_db_spin
-  :feature_category: :chaos_engineering
+  :feature_category: :not_owned
   :has_external_dependencies: 
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 2
   :idempotent: 
 - :name: chaos:chaos_kill
-  :feature_category: :chaos_engineering
+  :feature_category: :not_owned
   :has_external_dependencies: 
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 2
   :idempotent: 
 - :name: chaos:chaos_leak_mem
-  :feature_category: :chaos_engineering
+  :feature_category: :not_owned
   :has_external_dependencies: 
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 2
   :idempotent: 
 - :name: chaos:chaos_sleep
-  :feature_category: :chaos_engineering
+  :feature_category: :not_owned
   :has_external_dependencies: 
   :urgency: :low
   :resource_boundary: :unknown

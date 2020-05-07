@@ -214,7 +214,7 @@ const onError = (data, message) => {
   throw new Error(data.errors);
 };
 
-const hasErrors = ({ errors = [] }) => errors?.length;
+export const hasErrors = ({ errors = [] }) => errors?.length;
 
 /**
  * Updates a store after design deletion

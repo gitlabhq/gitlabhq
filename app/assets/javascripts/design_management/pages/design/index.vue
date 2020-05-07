@@ -32,6 +32,7 @@ import {
   UPDATE_IMAGE_DIFF_NOTE_ERROR,
   DESIGN_NOT_FOUND_ERROR,
   DESIGN_VERSION_NOT_EXIST_ERROR,
+  UPDATE_NOTE_ERROR,
   designDeletionError,
 } from '../../utils/error_messages';
 import { DESIGNS_ROUTE_NAME } from '../../router/constants';
@@ -231,6 +232,9 @@ export default {
     onCreateImageDiffNoteError(e) {
       this.onError(ADD_IMAGE_DIFF_NOTE_ERROR, e);
     },
+    onUpdateNoteError(e) {
+      this.onError(UPDATE_NOTE_ERROR, e);
+    },
     onDesignDiscussionError(e) {
       this.onError(ADD_DISCUSSION_COMMENT_ERROR, e);
     },
@@ -329,6 +333,7 @@ export default {
             :discussion-index="index + 1"
             :markdown-preview-path="markdownPreviewPath"
             @error="onDesignDiscussionError"
+            @updateNoteError="onUpdateNoteError"
           />
           <apollo-mutation
             v-if="annotationCoordinates"
@@ -345,7 +350,7 @@ export default {
               v-model="comment"
               :is-saving="loading"
               :markdown-preview-path="markdownPreviewPath"
-              @submitForm="mutate()"
+              @submitForm="mutate"
               @cancelForm="closeCommentForm"
             />
           </apollo-mutation>

@@ -1,6 +1,7 @@
 import { commitItemIconMap } from '~/ide/constants';
-import { getCommitIconMap, isTextFile } from '~/ide/utils';
+import { getCommitIconMap, isTextFile, registerLanguages } from '~/ide/utils';
 import { decorateData } from '~/ide/stores/utils';
+import { languages } from 'monaco-editor';
 
 describe('WebIDE utils', () => {
   describe('isTextFile', () => {
@@ -100,6 +101,80 @@ describe('WebIDE utils', () => {
       entry.prevPath = 'foo/bar';
       entry.tempFile = true;
       expect(getCommitIconMap(entry)).toEqual(commitItemIconMap.modified);
+    });
+  });
+
+  describe('registerLanguages', () => {
+    let langs;
+
+    beforeEach(() => {
+      langs = [
+        {
+          id: 'html',
+          extensions: ['.html'],
+          conf: { comments: { blockComment: ['<!--', '-->'] } },
+          language: { tokenizer: {} },
+        },
+        {
+          id: 'css',
+          extensions: ['.css'],
+          conf: { comments: { blockComment: ['/*', '*/'] } },
+          language: { tokenizer: {} },
+        },
+        {
+          id: 'js',
+          extensions: ['.js'],
+          conf: { comments: { blockComment: ['/*', '*/'] } },
+          language: { tokenizer: {} },
+        },
+      ];
+
+      jest.spyOn(languages, 'register').mockImplementation(() => {});
+      jest.spyOn(languages, 'setMonarchTokensProvider').mockImplementation(() => {});
+      jest.spyOn(languages, 'setLanguageConfiguration').mockImplementation(() => {});
+    });
+
+    it('registers all the passed languages with Monaco', () => {
+      registerLanguages(...langs);
+
+      expect(languages.register.mock.calls).toEqual([
+        [
+          {
+            conf: { comments: { blockComment: ['/*', '*/'] } },
+            extensions: ['.css'],
+            id: 'css',
+            language: { tokenizer: {} },
+          },
+        ],
+        [
+          {
+            conf: { comments: { blockComment: ['/*', '*/'] } },
+            extensions: ['.js'],
+            id: 'js',
+            language: { tokenizer: {} },
+          },
+        ],
+        [
+          {
+            conf: { comments: { blockComment: ['<!--', '-->'] } },
+            extensions: ['.html'],
+            id: 'html',
+            language: { tokenizer: {} },
+          },
+        ],
+      ]);
+
+      expect(languages.setMonarchTokensProvider.mock.calls).toEqual([
+        ['css', { tokenizer: {} }],
+        ['js', { tokenizer: {} }],
+        ['html', { tokenizer: {} }],
+      ]);
+
+      expect(languages.setLanguageConfiguration.mock.calls).toEqual([
+        ['css', { comments: { blockComment: ['/*', '*/'] } }],
+        ['js', { comments: { blockComment: ['/*', '*/'] } }],
+        ['html', { comments: { blockComment: ['<!--', '-->'] } }],
+      ]);
     });
   });
 });

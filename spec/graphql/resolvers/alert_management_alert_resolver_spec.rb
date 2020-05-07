@@ -7,8 +7,8 @@ describe Resolvers::AlertManagementAlertResolver do
 
   let_it_be(:current_user) { create(:user) }
   let_it_be(:project) { create(:project) }
-  let_it_be(:alert_1) { create(:alert_management_alert, project: project, ended_at: 1.year.ago, events: 2, severity: :high, status: :resolved) }
-  let_it_be(:alert_2) { create(:alert_management_alert, project: project, events: 1, severity: :critical, status: :ignored) }
+  let_it_be(:alert_1) { create(:alert_management_alert, :resolved, project: project, ended_at: 1.year.ago, events: 2, severity: :high) }
+  let_it_be(:alert_2) { create(:alert_management_alert, :ignored, project: project, events: 1, severity: :critical) }
   let_it_be(:alert_other_proj) { create(:alert_management_alert) }
 
   let(:args) { {} }
