@@ -438,7 +438,12 @@ CREATE TABLE public.application_settings (
     container_expiration_policies_enable_historic_entries boolean DEFAULT false NOT NULL,
     issues_create_limit integer DEFAULT 300 NOT NULL,
     push_rule_id bigint,
-    group_owners_can_manage_default_branch_protection boolean DEFAULT true NOT NULL
+    group_owners_can_manage_default_branch_protection boolean DEFAULT true NOT NULL,
+    container_registry_vendor text DEFAULT ''::text NOT NULL,
+    container_registry_version text DEFAULT ''::text NOT NULL,
+    container_registry_features text[] DEFAULT '{}'::text[] NOT NULL,
+    CONSTRAINT check_d03919528d CHECK ((char_length(container_registry_vendor) <= 255)),
+    CONSTRAINT check_e5aba18f02 CHECK ((char_length(container_registry_version) <= 255))
 );
 
 CREATE SEQUENCE public.application_settings_id_seq
@@ -4617,6 +4622,12 @@ CREATE SEQUENCE public.packages_maven_metadata_id_seq
 
 ALTER SEQUENCE public.packages_maven_metadata_id_seq OWNED BY public.packages_maven_metadata.id;
 
+CREATE TABLE public.packages_nuget_dependency_link_metadata (
+    dependency_link_id bigint NOT NULL,
+    target_framework text NOT NULL,
+    CONSTRAINT packages_nuget_dependency_link_metadata_target_framework_constr CHECK ((char_length(target_framework) <= 255))
+);
+
 CREATE TABLE public.packages_package_files (
     id bigint NOT NULL,
     package_id bigint NOT NULL,
@@ -8476,6 +8487,9 @@ ALTER TABLE ONLY public.packages_dependency_links
 ALTER TABLE ONLY public.packages_maven_metadata
     ADD CONSTRAINT packages_maven_metadata_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY public.packages_nuget_dependency_link_metadata
+    ADD CONSTRAINT packages_nuget_dependency_link_metadata_pkey PRIMARY KEY (dependency_link_id);
+
 ALTER TABLE ONLY public.packages_package_files
     ADD CONSTRAINT packages_package_files_pkey PRIMARY KEY (id);
 
@@ -10103,6 +10117,8 @@ CREATE UNIQUE INDEX index_packages_dependencies_on_name_and_version_pattern ON p
 CREATE INDEX index_packages_dependency_links_on_dependency_id ON public.packages_dependency_links USING btree (dependency_id);
 
 CREATE INDEX index_packages_maven_metadata_on_package_id_and_path ON public.packages_maven_metadata USING btree (package_id, path);
+
+CREATE INDEX index_packages_nuget_dl_metadata_on_dependency_link_id ON public.packages_nuget_dependency_link_metadata USING btree (dependency_link_id);
 
 CREATE INDEX index_packages_package_files_on_package_id_and_file_name ON public.packages_package_files USING btree (package_id, file_name);
 
@@ -12302,6 +12318,9 @@ ALTER TABLE ONLY public.user_canonical_emails
 ALTER TABLE ONLY public.project_repositories
     ADD CONSTRAINT fk_rails_c3258dc63b FOREIGN KEY (shard_id) REFERENCES public.shards(id) ON DELETE RESTRICT;
 
+ALTER TABLE ONLY public.packages_nuget_dependency_link_metadata
+    ADD CONSTRAINT fk_rails_c3313ee2e4 FOREIGN KEY (dependency_link_id) REFERENCES public.packages_dependency_links(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY public.merge_request_user_mentions
     ADD CONSTRAINT fk_rails_c440b9ea31 FOREIGN KEY (note_id) REFERENCES public.notes(id) ON DELETE CASCADE;
 
@@ -13702,11 +13721,16 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200424043515
 20200424050250
 20200424101920
+20200424135319
 20200427064130
 20200429015603
 20200429181335
 20200429181955
 20200429182245
+20200505164958
+20200505171834
+20200505172405
 20200506125731
+20200507221434
 \.
 
