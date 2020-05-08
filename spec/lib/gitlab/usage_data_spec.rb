@@ -151,6 +151,14 @@ describe Gitlab::UsageData, :aggregate_failures do
       end
     end
 
+    describe '.recording_ce_finished_at' do
+      subject { described_class.recording_ce_finish_data }
+
+      it 'gathers time ce recording finishes at' do
+        expect(subject[:recording_ce_finished_at]).to be_a(Time)
+      end
+    end
+
     context 'when not relying on database records' do
       describe '#features_usage_data_ce' do
         subject { described_class.features_usage_data_ce }

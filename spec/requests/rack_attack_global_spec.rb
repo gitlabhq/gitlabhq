@@ -262,20 +262,6 @@ describe 'Rack Attack global throttles' do
 
           expect_rejection { post protected_path_that_does_not_require_authentication, params: post_params }
         end
-
-        context 'when Omnibus throttle should be used' do
-          before do
-            allow(Gitlab::Throttle)
-              .to receive(:should_use_omnibus_protected_paths?).and_return(true)
-          end
-
-          it 'allows requests over the rate limit' do
-            (1 + requests_per_period).times do
-              post protected_path_that_does_not_require_authentication, params: post_params
-              expect(response).to have_gitlab_http_status(:ok)
-            end
-          end
-        end
       end
     end
 
@@ -311,28 +297,6 @@ describe 'Rack Attack global throttles' do
 
         it_behaves_like 'rate-limited token-authenticated requests'
       end
-
-      context 'when Omnibus throttle should be used' do
-        let(:request_args) { [api(api_partial_url, personal_access_token: token)] }
-        let(:other_user_request_args) { [api(api_partial_url, personal_access_token: other_user_token)] }
-
-        before do
-          settings_to_set[:"#{throttle_setting_prefix}_requests_per_period"] = requests_per_period
-          settings_to_set[:"#{throttle_setting_prefix}_period_in_seconds"] = period_in_seconds
-          settings_to_set[:"#{throttle_setting_prefix}_enabled"] = true
-          stub_application_setting(settings_to_set)
-
-          allow(Gitlab::Throttle)
-            .to receive(:should_use_omnibus_protected_paths?).and_return(true)
-        end
-
-        it 'allows requests over the rate limit' do
-          (1 + requests_per_period).times do
-            post(*request_args)
-            expect(response).not_to have_gitlab_http_status(:too_many_requests)
-          end
-        end
-      end
     end
 
     describe 'web requests authenticated with regular login' do
@@ -352,27 +316,6 @@ describe 'Rack Attack global throttles' do
       end
 
       it_behaves_like 'rate-limited web authenticated requests'
-
-      context 'when Omnibus throttle should be used' do
-        before do
-          settings_to_set[:"#{throttle_setting_prefix}_requests_per_period"] = requests_per_period
-          settings_to_set[:"#{throttle_setting_prefix}_period_in_seconds"] = period_in_seconds
-          settings_to_set[:"#{throttle_setting_prefix}_enabled"] = true
-          stub_application_setting(settings_to_set)
-
-          allow(Gitlab::Throttle)
-            .to receive(:should_use_omnibus_protected_paths?).and_return(true)
-
-          login_as(user)
-        end
-
-        it 'allows requests over the rate limit' do
-          (1 + requests_per_period).times do
-            post url_that_requires_authentication
-            expect(response).not_to have_gitlab_http_status(:too_many_requests)
-          end
-        end
-      end
     end
   end
 end

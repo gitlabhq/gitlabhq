@@ -5,7 +5,7 @@ module Clusters
     class Knative < ApplicationRecord
       VERSION = '0.9.0'
       REPOSITORY = 'https://charts.gitlab.io'
-      METRICS_CONFIG = 'https://gitlab.com/gitlab-org/charts/knative/-/blob/v0.9.0/vendor/istio-metrics.yml'
+      METRICS_CONFIG = 'https://gitlab.com/gitlab-org/charts/knative/-/raw/v0.9.0/vendor/istio-metrics.yml'
       FETCH_IP_ADDRESS_DELAY = 30.seconds
       API_GROUPS_PATH = 'config/knative/api_groups.yml'
 

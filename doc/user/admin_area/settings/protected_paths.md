@@ -54,24 +54,3 @@ customized on **Admin > Network > Protected Paths**, along with these options:
 ![protected-paths](img/protected_paths.png)
 
 Requests over the rate limit are logged into `auth.log`.
-
-## Migrate settings from GitLab 12.3 and earlier
-
-Omnibus GitLab protected paths throttle is deprecated and is scheduled for removal in
-GitLab 13.0. Please see the [GitLab issue](https://gitlab.com/gitlab-org/gitlab/issues/29952) and the [Omnibus GitLab issue](https://gitlab.com/gitlab-org/omnibus-gitlab/issues/4688) for more information.
-
-NOTE: **Note:** If Omnibus settings are present, applications settings will be automatically ignored to avoid generating multiple requests blocks.
-
-To migrate from Omnibus GitLab 12.3 and earlier settings:
-
-1. Customize and enable your protected paths settings by following [Configure using GitLab UI](#configure-using-gitlab-ui) section.
-
-1. SSH into your frontend nodes and add to `/etc/gitlab/gitlab.rb`:
-
-   ```ruby
-   gitlab_rails['rack_attack_admin_area_protected_paths_enabled'] = true
-   ```
-
-1. [Reconfigure GitLab](../../../administration/restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
-
-That's it. Protected paths throttle are now managed by GitLab admin settings.

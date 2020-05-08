@@ -1,0 +1,5 @@
+---
+title: Fix Istio broken Istio metrics installation
+merge_request: 31382
+author:
+type: fixed

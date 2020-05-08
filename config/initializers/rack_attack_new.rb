@@ -8,15 +8,7 @@ module Gitlab::Throttle
 
   # Returns true if we should use the Admin Area protected paths throttle
   def self.protected_paths_enabled?
-    return false if should_use_omnibus_protected_paths?
-
     self.settings.throttle_protected_paths_enabled?
-  end
-
-  # To be removed in 13.0: https://gitlab.com/gitlab-org/gitlab/issues/29952
-  def self.should_use_omnibus_protected_paths?
-    !Settings.rack_attack.admin_area_protected_paths_enabled &&
-      self.omnibus_protected_paths_present?
   end
 
   def self.omnibus_protected_paths_present?

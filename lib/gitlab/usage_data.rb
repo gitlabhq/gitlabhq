@@ -35,6 +35,7 @@ module Gitlab
           .merge(components_usage_data)
           .merge(cycle_analytics_usage_data)
           .merge(object_store_usage_data)
+          .merge(recording_ce_finish_data)
       end
 
       def to_json(force_refresh: false)
@@ -43,13 +44,19 @@ module Gitlab
 
       def license_usage_data
         {
+          recorded_at: Time.now, # should be calculated very first
           uuid: alt_usage_data { Gitlab::CurrentSettings.uuid },
           hostname: alt_usage_data { Gitlab.config.gitlab.host },
           version: alt_usage_data { Gitlab::VERSION },
           installation_type: alt_usage_data { installation_type },
           active_user_count: count(User.active),
-          recorded_at: Time.now,
           edition: 'CE'
+        }
+      end
+
+      def recording_ce_finish_data
+        {
+          recording_ce_finished_at: Time.now
         }
       end
 

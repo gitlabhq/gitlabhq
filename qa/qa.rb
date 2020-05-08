@@ -417,6 +417,10 @@ module QA
       module WebIDE
         autoload :Alert, 'qa/page/component/web_ide/alert'
       end
+
+      module Project
+        autoload :Templates, 'qa/page/component/project/templates'
+      end
     end
   end
 
