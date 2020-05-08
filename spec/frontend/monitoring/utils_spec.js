@@ -274,9 +274,10 @@ describe('monitoring/utils', () => {
     const [panelGroup] = metricsDashboardViewModel.panelGroups;
     const [panel] = panelGroup.panels;
 
+    const getUrlParams = url => urlUtils.queryToObject(url.split('?')[1]);
+
     it('returns URL for a panel when query parameters are given', () => {
-      const [, query] = panelToUrl(dashboard, panelGroup.group, panel).split('?');
-      const params = urlUtils.queryToObject(query);
+      const params = getUrlParams(panelToUrl(dashboard, panelGroup.group, panel));
 
       expect(params).toEqual({
         dashboard,
@@ -286,12 +287,14 @@ describe('monitoring/utils', () => {
       });
     });
 
-    it('returns `null` if group is missing', () => {
-      expect(panelToUrl(dashboard, null, panel)).toBe(null);
+    it('returns a dashboard only URL if group is missing', () => {
+      const params = getUrlParams(panelToUrl(dashboard, null, panel));
+      expect(params).toEqual({ dashboard: 'metrics.yml' });
     });
 
-    it('returns `null` if panel is missing', () => {
-      expect(panelToUrl(dashboard, panelGroup.group, null)).toBe(null);
+    it('returns a dashboard only URL if panel is missing', () => {
+      const params = getUrlParams(panelToUrl(dashboard, panelGroup.group, null));
+      expect(params).toEqual({ dashboard: 'metrics.yml' });
     });
   });
 

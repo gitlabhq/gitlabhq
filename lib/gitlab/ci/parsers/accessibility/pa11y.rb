@@ -6,7 +6,7 @@ module Gitlab
       module Accessibility
         class Pa11y
           def parse!(json_data, accessibility_report)
-            root = Gitlab::Json.parse(json_data)
+            root = Gitlab::Json.parse(json_data).with_indifferent_access
 
             parse_all(root, accessibility_report)
           rescue JSON::ParserError => e

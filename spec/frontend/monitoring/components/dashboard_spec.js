@@ -234,6 +234,90 @@ describe('Dashboard', () => {
     });
   });
 
+  describe('when the panel is expanded', () => {
+    let group;
+    let panel;
+
+    const expandPanel = (mockGroup, mockPanel) => {
+      store.commit(`monitoringDashboard/${types.SET_EXPANDED_PANEL}`, {
+        group: mockGroup,
+        panel: mockPanel,
+      });
+    };
+
+    beforeEach(() => {
+      setupStoreWithData(store);
+
+      const { panelGroups } = store.state.monitoringDashboard.dashboard;
+      group = panelGroups[0].group;
+      [panel] = panelGroups[0].panels;
+
+      jest.spyOn(window.history, 'pushState').mockImplementation();
+    });
+
+    afterEach(() => {
+      window.history.pushState.mockRestore();
+    });
+
+    it('URL is updated with panel parameters', () => {
+      createMountedWrapper({ hasMetrics: true });
+      expandPanel(group, panel);
+
+      const expectedSearch = objectToQuery({
+        group,
+        title: panel.title,
+        y_label: panel.y_label,
+      });
+
+      return wrapper.vm.$nextTick(() => {
+        expect(window.history.pushState).toHaveBeenCalledTimes(1);
+        expect(window.history.pushState).toHaveBeenCalledWith(
+          expect.anything(), // state
+          expect.any(String), // document title
+          expect.stringContaining(`?${expectedSearch}`),
+        );
+      });
+    });
+
+    it('URL is updated with panel parameters and custom dashboard', () => {
+      const dashboard = 'dashboard.yml';
+
+      createMountedWrapper({ hasMetrics: true, currentDashboard: dashboard });
+      expandPanel(group, panel);
+
+      const expectedSearch = objectToQuery({
+        dashboard,
+        group,
+        title: panel.title,
+        y_label: panel.y_label,
+      });
+
+      return wrapper.vm.$nextTick(() => {
+        expect(window.history.pushState).toHaveBeenCalledTimes(1);
+        expect(window.history.pushState).toHaveBeenCalledWith(
+          expect.anything(), // state
+          expect.any(String), // document title
+          expect.stringContaining(`?${expectedSearch}`),
+        );
+      });
+    });
+
+    it('URL is updated with no parameters', () => {
+      expandPanel(group, panel);
+      createMountedWrapper({ hasMetrics: true });
+      expandPanel(null, null);
+
+      return wrapper.vm.$nextTick(() => {
+        expect(window.history.pushState).toHaveBeenCalledTimes(1);
+        expect(window.history.pushState).toHaveBeenCalledWith(
+          expect.anything(), // state
+          expect.any(String), // document title
+          expect.not.stringContaining('?'), // no params
+        );
+      });
+    });
+  });
+
   describe('when all requests have been commited by the store', () => {
     beforeEach(() => {
       createMountedWrapper({ hasMetrics: true });

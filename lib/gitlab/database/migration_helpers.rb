@@ -265,12 +265,19 @@ module Gitlab
       # or `RESET ALL` is executed
       def disable_statement_timeout
         if block_given?
-          begin
-            execute('SET statement_timeout TO 0')
-
+          if statement_timeout_disabled?
+            # Don't do anything if the statement_timeout is already disabled
+            # Allows for nested calls of disable_statement_timeout without
+            # resetting the timeout too early (before the outer call ends)
             yield
-          ensure
-            execute('RESET ALL')
+          else
+            begin
+              execute('SET statement_timeout TO 0')
+
+              yield
+            ensure
+              execute('RESET ALL')
+            end
           end
         else
           unless transaction_open?
@@ -495,7 +502,7 @@ module Gitlab
               update_column_in_batches(table, column, default_after_type_cast, &block)
             end
 
-            change_column_null(table, column, false) unless allow_null
+            add_not_null_constraint(table, column) unless allow_null
           # We want to rescue _all_ exceptions here, even those that don't inherit
           # from StandardError.
           rescue Exception => error # rubocop: disable all
@@ -1334,10 +1341,71 @@ into similar problems in the future (e.g. when new tables are created).
         check_constraint_exists?(table, text_limit_name(table, column, name: constraint_name))
       end
 
+      # Migration Helpers for managing not null constraints
+      def add_not_null_constraint(table, column, constraint_name: nil, validate: true)
+        if column_is_nullable?(table, column)
+          add_check_constraint(
+            table,
+            "#{column} IS NOT NULL",
+            not_null_constraint_name(table, column, name: constraint_name),
+            validate: validate
+          )
+        else
+          warning_message = <<~MESSAGE
+            NOT NULL check constraint was not created:
+            column #{table}.#{column} is already defined as `NOT NULL`
+          MESSAGE
+
+          Rails.logger.warn warning_message
+        end
+      end
+
+      def validate_not_null_constraint(table, column, constraint_name: nil)
+        validate_check_constraint(
+          table,
+          not_null_constraint_name(table, column, name: constraint_name)
+        )
+      end
+
+      def remove_not_null_constraint(table, column, constraint_name: nil)
+        remove_check_constraint(
+          table,
+          not_null_constraint_name(table, column, name: constraint_name)
+        )
+      end
+
+      def check_not_null_constraint_exists?(table, column, constraint_name: nil)
+        check_constraint_exists?(
+          table,
+          not_null_constraint_name(table, column, name: constraint_name)
+        )
+      end
+
       private
+
+      def statement_timeout_disabled?
+        # This is a string of the form "100ms" or "0" when disabled
+        connection.select_value('SHOW statement_timeout') == "0"
+      end
+
+      def column_is_nullable?(table, column)
+        # Check if table.column has not been defined with NOT NULL
+        check_sql = <<~SQL
+          SELECT c.is_nullable
+          FROM information_schema.columns c
+          WHERE c.table_name = '#{table}'
+          AND c.column_name = '#{column}'
+        SQL
+
+        connection.select_value(check_sql) == 'YES'
+      end
 
       def text_limit_name(table, column, name: nil)
         name.presence || check_constraint_name(table, column, 'max_length')
+      end
+
+      def not_null_constraint_name(table, column, name: nil)
+        name.presence || check_constraint_name(table, column, 'not_null')
       end
 
       def missing_schema_object_message(table, type, name)
@@ -1383,7 +1451,7 @@ into similar problems in the future (e.g. when new tables are created).
 
         update_column_in_batches(table, new, Arel::Table.new(table)[old], batch_column_name: batch_column_name)
 
-        change_column_null(table, new, false) unless old_col.null
+        add_not_null_constraint(table, new) unless old_col.null
 
         copy_indexes(table, old, new)
         copy_foreign_keys(table, old, new)

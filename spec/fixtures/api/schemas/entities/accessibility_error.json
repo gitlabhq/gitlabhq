@@ -1,0 +1,40 @@
+{
+  "type": "object",
+  "required": [
+    "code",
+    "type",
+    "type_code",
+    "message",
+    "context",
+    "selector",
+    "runner",
+    "runner_extras"
+  ],
+  "properties": {
+    "code": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string"
+    },
+    "type_code": {
+      "type": "integer"
+    },
+    "message": {
+      "type": "string"
+    },
+    "context": {
+      "type": "string"
+    },
+    "selector": {
+      "type": "string"
+    },
+    "runner": {
+      "type": "string"
+    },
+    "runner_extras": {
+      "type": ["object", "null"]
+    }
+  },
+  "additionalProperties": false
+}

@@ -171,8 +171,39 @@ Adding or removing a NOT NULL clause (or another constraint) can typically be
 done without requiring downtime. However, this does require that any application
 changes are deployed _first_. Thus, changing the constraints of a column should
 happen in a post-deployment migration.
-NOTE: Avoid using `change_column` as it produces inefficient query because it re-defines
-the whole column type. For example, to add a NOT NULL constraint, prefer `change_column_null`
+
+NOTE: Avoid using `change_column` as it produces an inefficient query because it re-defines
+the whole column type.
+
+To add a NOT NULL constraint, use the `add_not_null_constraint` migration helper:
+
+```ruby
+# A post-deployment migration in db/post_migrate
+class AddNotNull < ActiveRecord::Migration[4.2]
+  include Gitlab::Database::MigrationHelpers
+
+  disable_ddl_transaction!
+
+  def up
+    add_not_null_constraint :users, :username
+  end
+
+  def down
+    remove_not_null_constraint :users, :username
+  end
+end
+```
+
+If the column to be updated requires cleaning first (e.g. there are `NULL` values), you should:
+
+1. Add the `NOT NULL` constraint with `validate: false`
+
+   `add_not_null_constraint :users, :username, validate: false`
+
+1. Clean up the data with a data migration
+1. Validate the `NOT NULL` constraint with a followup migration
+
+   `validate_not_null_constraint :users, :username`
 
 ## Changing Column Types
 

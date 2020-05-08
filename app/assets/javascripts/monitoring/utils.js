@@ -1,4 +1,3 @@
-import { pickBy } from 'lodash';
 import { queryToObject, mergeUrlParams, removeParams } from '~/lib/utils/url_utility';
 import {
   timeRangeParamNames,
@@ -174,25 +173,30 @@ export const expandedPanelPayloadFromUrl = (dashboard, search = window.location.
  * Convert panel information to a URL for the user to
  * bookmark or share highlighting a specific panel.
  *
- * @param {String} dashboardPath - Dashboard path used as identifier
- * @param {String} group - Group Identifier
+ * If no group/panel is set, the dashboard URL is returned.
+ *
+ * @param {?String} dashboard - Dashboard path, used as identifier for a dashboard
+ * @param {?String} group - Group Identifier
  * @param {?Object} panel - Panel object from the dashboard
  * @param {?String} url - Base URL including current search params
  * @returns Dashboard URL which expands a panel (chart)
  */
-export const panelToUrl = (dashboardPath, group, panel, url = window.location.href) => {
-  if (!group || !panel) {
-    return null;
+export const panelToUrl = (dashboard = null, group, panel, url = window.location.href) => {
+  const params = {
+    dashboard,
+  };
+
+  if (group && panel) {
+    params.group = group;
+    params.title = panel.title;
+    params.y_label = panel.y_label;
+  } else {
+    // Remove existing parameters if any
+    params.group = null;
+    params.title = null;
+    params.y_label = null;
   }
-  const params = pickBy(
-    {
-      dashboard: dashboardPath,
-      group,
-      title: panel.title,
-      y_label: panel.y_label,
-    },
-    value => value != null,
-  );
+
   return mergeUrlParams(params, url);
 };
 

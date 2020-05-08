@@ -719,6 +719,28 @@ describe Ci::Pipeline, :mailer do
           )
       end
     end
+
+    describe 'variable CI_KUBERNETES_ACTIVE' do
+      context 'when pipeline.has_kubernetes_active? is true' do
+        before do
+          allow(pipeline).to receive(:has_kubernetes_active?).and_return(true)
+        end
+
+        it "is incldued with value 'true'" do
+          expect(subject.to_hash).to include('CI_KUBERNETES_ACTIVE' => 'true')
+        end
+      end
+
+      context 'when pipeline.has_kubernetes_active? is false' do
+        before do
+          allow(pipeline).to receive(:has_kubernetes_active?).and_return(false)
+        end
+
+        it 'is not included' do
+          expect(subject.to_hash).not_to have_key('CI_KUBERNETES_ACTIVE')
+        end
+      end
+    end
   end
 
   describe '#protected_ref?' do

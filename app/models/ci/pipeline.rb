@@ -683,6 +683,8 @@ module Ci
           variables.concat(merge_request.predefined_variables)
         end
 
+        variables.append(key: 'CI_KUBERNETES_ACTIVE', value: 'true') if has_kubernetes_active?
+
         if external_pull_request_event? && external_pull_request
           variables.concat(external_pull_request.predefined_variables)
         end
