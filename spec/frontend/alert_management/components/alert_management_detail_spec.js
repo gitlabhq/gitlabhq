@@ -3,15 +3,20 @@ import AlertDetails from '~/alert_management/components/alert_details.vue';
 
 describe('AlertDetails', () => {
   let wrapper;
+  const newIssuePath = 'root/alerts/-/issues/new';
 
-  function mountComponent(alert = {}) {
+  function mountComponent(alert = {}, createIssueFromAlertEnabled = false) {
     wrapper = shallowMount(AlertDetails, {
       propsData: {
         alertId: 'alertId',
         projectPath: 'projectPath',
+        newIssuePath,
       },
       data() {
         return { alert };
+      },
+      provide: {
+        glFeatures: { createIssueFromAlertEnabled },
       },
     });
   }
@@ -21,6 +26,8 @@ describe('AlertDetails', () => {
       wrapper.destroy();
     }
   });
+
+  const findCreatedIssueBtn = () => wrapper.find('[data-testid="createIssueBtn"]');
 
   describe('Alert details', () => {
     describe('when alert is null', () => {
@@ -59,6 +66,23 @@ describe('AlertDetails', () => {
 
     it('renders a status dropdown containing three items', () => {
       expect(wrapper.findAll('[data-testid="statusDropdownItem"]').length).toBe(3);
+    });
+
+    describe('Create issue from alert', () => {
+      describe('createIssueFromAlertEnabled feature flag enabled', () => {
+        it('should display a button that links to new issue page', () => {
+          mountComponent({}, true);
+          expect(findCreatedIssueBtn().exists()).toBe(true);
+          expect(findCreatedIssueBtn().attributes('href')).toBe(newIssuePath);
+        });
+      });
+
+      describe('createIssueFromAlertEnabled feature flag disabled', () => {
+        it('should display a button that links to a new issue page', () => {
+          mountComponent({}, false);
+          expect(findCreatedIssueBtn().exists()).toBe(false);
+        });
+      });
     });
   });
 });

@@ -257,6 +257,9 @@ Set other user attributes and claims according to the [assertions table](#assert
 
 ### Okta setup notes
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For a demo of the Okta SAML setup including SCIM, see [Demo: Okta Group SAML & SCIM setup](https://youtu.be/0ES9HsZq0AQ).
+
 | GitLab Setting | Okta Field |
 |--------------|----------------|
 | Identifier | Audience URI |

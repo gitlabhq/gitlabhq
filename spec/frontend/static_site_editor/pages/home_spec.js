@@ -66,7 +66,7 @@ describe('static_site_editor/pages/home', () => {
     });
   };
 
-  const buildWrapper = (data = { isSupportedContent: true }) => {
+  const buildWrapper = (data = { appData: { isSupportedContent: true } }) => {
     wrapper = shallowMount(Home, {
       localVue,
       store,
@@ -196,7 +196,7 @@ describe('static_site_editor/pages/home', () => {
   });
 
   it('displays invalid content message when content is not supported', () => {
-    buildWrapper({ isSupportedContent: false });
+    buildWrapper({ appData: { isSupportedContent: false } });
 
     expect(findInvalidContentMessage().exists()).toBe(true);
   });

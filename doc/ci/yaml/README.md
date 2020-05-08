@@ -1101,9 +1101,9 @@ useful is not available, please
 ### `only`/`except` (basic)
 
 NOTE: **Note:**
-The [`rules`](#rules) syntax is now the preferred method of setting job policies.
-`only` and `except` are [candidates for deprecation](https://gitlab.com/gitlab-org/gitlab/issues/27449),
-and may be removed in the future.
+The [`rules`](#rules) syntax is an improved, more powerful solution for defining
+when jobs should run or not. Consider using `rules` instead of `only/except` to get
+the most out of your pipelines.
 
 `only` and `except` are two parameters that set a job policy to limit when
 jobs are created:

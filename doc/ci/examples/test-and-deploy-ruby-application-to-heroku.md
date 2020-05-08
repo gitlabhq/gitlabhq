@@ -72,7 +72,7 @@ cat > /tmp/test-config.template.toml << EOF
 [[runners]]
 [runners.docker]
 [[runners.docker.services]]
-name = "mysql:latest"
+name = "postgres:latest"
 EOF
 ```
 

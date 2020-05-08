@@ -25,6 +25,7 @@ module QA
               element :prometheus_graph_widgets
               element :prometheus_widgets_dropdown
               element :alert_widget_menu_item
+              element :generate_chart_link_menu_item
             end
 
             def wait_for_metrics
@@ -70,6 +71,11 @@ module QA
               within_element :show_last_dropdown do
                 click_on range
               end
+            end
+
+            def copy_link_to_first_chart
+              all_elements(:prometheus_widgets_dropdown, minimum: 1).first.click
+              find_element(:generate_chart_link_menu_item)['data-clipboard-text']
             end
 
             private

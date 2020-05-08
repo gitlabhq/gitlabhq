@@ -1724,6 +1724,9 @@ msgstr ""
 msgid "AlertManagement|Authorize external service"
 msgstr ""
 
+msgid "AlertManagement|Create issue"
+msgstr ""
+
 msgid "AlertManagement|Display alerts from all your monitoring tools directly within GitLab. Streamline the investigation of your alerts and the escalation of alerts to incidents."
 msgstr ""
 

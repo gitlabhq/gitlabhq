@@ -7,7 +7,7 @@ Vue.use(VueApollo);
 
 export default selector => {
   const domEl = document.querySelector(selector);
-  const { alertId, projectPath } = domEl.dataset;
+  const { alertId, projectPath, newIssuePath } = domEl.dataset;
 
   const apolloProvider = new VueApollo({
     defaultClient: createDefaultClient(),
@@ -25,6 +25,7 @@ export default selector => {
         props: {
           alertId,
           projectPath,
+          newIssuePath,
         },
       });
     },

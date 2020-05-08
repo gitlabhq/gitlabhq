@@ -12,6 +12,11 @@ import InvalidContentMessage from '../components/invalid_content_message.vue';
 import SubmitChangesError from '../components/submit_changes_error.vue';
 
 import appDataQuery from '../graphql/queries/app_data.query.graphql';
+import sourceContentQuery from '../graphql/queries/source_content.query.graphql';
+
+import createFlash from '~/flash';
+
+import { LOAD_CONTENT_ERROR } from '../constants';
 
 export default {
   components: {
@@ -26,8 +31,30 @@ export default {
   },
   mixins: [glFeatureFlagsMixin()],
   apollo: {
-    isSupportedContent: {
+    appData: {
       query: appDataQuery,
+    },
+    sourceContent: {
+      query: sourceContentQuery,
+      update: ({
+        project: {
+          file: { title, content },
+        },
+      }) => {
+        return { title, content };
+      },
+      variables() {
+        return {
+          project: this.appData.project,
+          sourcePath: this.appData.sourcePath,
+        };
+      },
+      skip() {
+        return !this.appData.isSupportedContent;
+      },
+      error() {
+        createFlash(LOAD_CONTENT_ERROR);
+      },
     },
   },
   computed: {
@@ -44,7 +71,7 @@ export default {
     ...mapGetters(['contentChanged']),
   },
   mounted() {
-    if (this.isSupportedContent) {
+    if (this.appData.isSupportedContent) {
       this.loadContent();
     }
   },
@@ -66,7 +93,7 @@ export default {
     />
 
     <!-- Main view -->
-    <template v-else-if="isSupportedContent">
+    <template v-else-if="appData.isSupportedContent">
       <div v-if="isLoadingContent" class="w-50 h-50">
         <gl-skeleton-loader :width="500" :height="102">
           <rect width="500" height="16" rx="4" />

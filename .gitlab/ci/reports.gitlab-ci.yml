@@ -43,7 +43,6 @@ code_quality:
   extends:
     - .default-retry
     - .reports:rules:sast
-    - .use-docker-in-docker
   stage: test
   # `needs: []` starts the job immediately in the pipeline
   # https://docs.gitlab.com/ee/ci/yaml/README.html#needs
@@ -55,10 +54,6 @@ code_quality:
       sast: gl-sast-report.json
     expire_in: 1 week  # GitLab-specific
   variables:
-    # emptying DOCKER_HOST so it can be detected properly on kubernetes executor
-    # with the script below
-    DOCKER_HOST: ""
-    DOCKER_DRIVER: overlay2
     DOCKER_TLS_CERTDIR: ""
     SAST_ANALYZER_IMAGE_PREFIX: "registry.gitlab.com/gitlab-org/security-products/analyzers"
     SAST_ANALYZER_IMAGE_TAG: 2

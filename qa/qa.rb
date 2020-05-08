@@ -263,6 +263,8 @@ module QA
         autoload :Members, 'qa/page/project/settings/members'
         autoload :MirroringRepositories, 'qa/page/project/settings/mirroring_repositories'
         autoload :VisibilityFeaturesPermissions, 'qa/page/project/settings/visibility_features_permissions'
+        autoload :Operations, 'qa/page/project/settings/operations'
+        autoload :Incidents, 'qa/page/project/settings/incidents'
       end
 
       module SubMenus
