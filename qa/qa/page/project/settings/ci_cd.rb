@@ -11,6 +11,13 @@ module QA
             element :autodevops_settings_content
             element :runners_settings_content
             element :variables_settings_content
+            element :general_pipelines_settings_content
+          end
+
+          def expand_general_pipelines(&block)
+            expand_section(:general_pipelines_settings_content) do
+              Settings::GeneralPipelines.perform(&block)
+            end
           end
 
           def expand_runners_settings(&block)

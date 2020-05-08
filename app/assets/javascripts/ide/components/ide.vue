@@ -3,6 +3,7 @@ import Vue from 'vue';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { GlDeprecatedButton, GlLoadingIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
+import { modalTypes } from '../constants';
 import FindFile from '~/vue_shared/components/file_finder/index.vue';
 import NewModal from './new_dropdown/modal.vue';
 import IdeSidebar from './ide_side_bar.vue';
@@ -67,7 +68,7 @@ export default {
       document.querySelector('.navbar-gitlab').classList.add(`theme-${this.themeName}`);
   },
   methods: {
-    ...mapActions(['toggleFileFinder', 'openNewEntryModal']),
+    ...mapActions(['toggleFileFinder']),
     onBeforeUnload(e = {}) {
       const returnValue = __('Are you sure you want to lose unsaved changes?');
 
@@ -80,6 +81,9 @@ export default {
     },
     openFile(file) {
       this.$router.push(`/project${file.url}`);
+    },
+    createNewFile() {
+      this.$refs.newModal.open(modalTypes.blob);
     },
   },
 };
@@ -137,7 +141,7 @@ export default {
                       variant="success"
                       :title="__('New file')"
                       :aria-label="__('New file')"
-                      @click="openNewEntryModal({ type: 'blob' })"
+                      @click="createNewFile()"
                     >
                       {{ __('New file') }}
                     </gl-deprecated-button>
@@ -159,6 +163,6 @@ export default {
       <component :is="rightPaneComponent" v-if="currentProjectId" />
     </div>
     <ide-status-bar />
-    <new-modal />
+    <new-modal ref="newModal" />
   </article>
 </template>

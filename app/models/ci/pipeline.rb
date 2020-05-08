@@ -115,8 +115,11 @@ module Ci
 
     state_machine :status, initial: :created do
       event :enqueue do
-        transition [:created, :waiting_for_resource, :preparing, :skipped, :scheduled] => :pending
+        transition [:created, :manual, :waiting_for_resource, :preparing, :skipped, :scheduled] => :pending
         transition [:success, :failed, :canceled] => :running
+
+        # this is needed to ensure tests to be covered
+        transition [:running] => :running
       end
 
       event :request_resource do

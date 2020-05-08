@@ -198,3 +198,21 @@ export const OPERATORS = {
   equalTo: '==',
   lessThan: '<',
 };
+
+/**
+ * Dashboard yml files support custom user-defined variables that
+ * are rendered as input elements in the monitoring dashboard.
+ * These values can be edited by the user and are passed on to the
+ * the backend and eventually to Prometheus API proxy.
+ *
+ * As of 13.0, the supported types are:
+ * simple custom -> dropdown elements
+ * advanced custom -> dropdown elements
+ * text -> text input elements
+ *
+ * Custom variables have a simple and a advanced variant.
+ */
+export const VARIABLE_TYPES = {
+  custom: 'custom',
+  text: 'text',
+};

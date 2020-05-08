@@ -35,7 +35,7 @@ describe('Grouped Test Reports App', () => {
     });
 
     it('renders success summary text', done => {
-      setTimeout(() => {
+      setImmediate(() => {
         expect(vm.$el.querySelector('.gl-spinner')).toBeNull();
         expect(vm.$el.querySelector('.js-code-text').textContent.trim()).toEqual(
           'Test summary contained no changed test results out of 11 total tests',
@@ -49,7 +49,7 @@ describe('Grouped Test Reports App', () => {
           'java ant found no changed test results out of 3 total tests',
         );
         done();
-      }, 0);
+      });
     });
   });
 
@@ -62,14 +62,14 @@ describe('Grouped Test Reports App', () => {
     });
 
     it('renders success summary text', done => {
-      setTimeout(() => {
+      setImmediate(() => {
         expect(vm.$el.querySelector('.gl-spinner')).not.toBeNull();
         expect(vm.$el.querySelector('.js-code-text').textContent.trim()).toEqual(
           'Test summary results are being parsed',
         );
 
         done();
-      }, 0);
+      });
     });
   });
 
@@ -82,7 +82,7 @@ describe('Grouped Test Reports App', () => {
     });
 
     it('renders failed summary text + new badge', done => {
-      setTimeout(() => {
+      setImmediate(() => {
         expect(vm.$el.querySelector('.gl-spinner')).toBeNull();
         expect(vm.$el.querySelector('.js-code-text').textContent.trim()).toEqual(
           'Test summary contained 2 failed out of 11 total tests',
@@ -95,7 +95,7 @@ describe('Grouped Test Reports App', () => {
           'java ant found no changed test results out of 3 total tests',
         );
         done();
-      }, 0);
+      });
     });
   });
 
@@ -108,7 +108,7 @@ describe('Grouped Test Reports App', () => {
     });
 
     it('renders error summary text + new badge', done => {
-      setTimeout(() => {
+      setImmediate(() => {
         expect(vm.$el.querySelector('.gl-spinner')).toBeNull();
         expect(vm.$el.querySelector('.js-code-text').textContent.trim()).toEqual(
           'Test summary contained 2 errors out of 11 total tests',
@@ -121,7 +121,7 @@ describe('Grouped Test Reports App', () => {
           'rspec:pg found no changed test results out of 8 total tests',
         );
         done();
-      }, 0);
+      });
     });
   });
 
@@ -134,7 +134,7 @@ describe('Grouped Test Reports App', () => {
     });
 
     it('renders summary text', done => {
-      setTimeout(() => {
+      setImmediate(() => {
         expect(vm.$el.querySelector('.gl-spinner')).toBeNull();
         expect(vm.$el.querySelector('.js-code-text').textContent.trim()).toEqual(
           'Test summary contained 2 failed and 2 fixed test results out of 11 total tests',
@@ -147,7 +147,7 @@ describe('Grouped Test Reports App', () => {
         expect(vm.$el.textContent).toContain('New');
         expect(vm.$el.textContent).toContain(' java ant found 1 failed out of 3 total tests');
         done();
-      }, 0);
+      });
     });
   });
 
@@ -160,7 +160,7 @@ describe('Grouped Test Reports App', () => {
     });
 
     it('renders summary text', done => {
-      setTimeout(() => {
+      setImmediate(() => {
         expect(vm.$el.querySelector('.gl-spinner')).toBeNull();
         expect(vm.$el.querySelector('.js-code-text').textContent.trim()).toEqual(
           'Test summary contained 4 fixed test results out of 11 total tests',
@@ -170,11 +170,11 @@ describe('Grouped Test Reports App', () => {
           'rspec:pg found 4 fixed test results out of 8 total tests',
         );
         done();
-      }, 0);
+      });
     });
 
     it('renders resolved failures', done => {
-      setTimeout(() => {
+      setImmediate(() => {
         expect(vm.$el.querySelector('.report-block-container').textContent).toContain(
           resolvedFailures.suites[0].resolved_failures[0].name,
         );
@@ -183,11 +183,11 @@ describe('Grouped Test Reports App', () => {
           resolvedFailures.suites[0].resolved_failures[1].name,
         );
         done();
-      }, 0);
+      });
     });
 
     it('renders resolved errors', done => {
-      setTimeout(() => {
+      setImmediate(() => {
         expect(vm.$el.querySelector('.report-block-container').textContent).toContain(
           resolvedFailures.suites[0].resolved_errors[0].name,
         );
@@ -196,7 +196,7 @@ describe('Grouped Test Reports App', () => {
           resolvedFailures.suites[0].resolved_errors[1].name,
         );
         done();
-      }, 0);
+      });
     });
   });
 
@@ -209,7 +209,7 @@ describe('Grouped Test Reports App', () => {
     });
 
     it('renders an error status for the report', done => {
-      setTimeout(() => {
+      setImmediate(() => {
         const { name } = failedReport.suites[0];
 
         expect(vm.$el.querySelector('.report-block-list-issue').textContent).toContain(
@@ -229,12 +229,12 @@ describe('Grouped Test Reports App', () => {
     });
 
     it('renders loading summary text with loading icon', done => {
-      setTimeout(() => {
+      setImmediate(() => {
         expect(vm.$el.querySelector('.js-code-text').textContent.trim()).toEqual(
           'Test summary failed loading results',
         );
         done();
-      }, 0);
+      });
     });
   });
 
@@ -252,9 +252,9 @@ describe('Grouped Test Reports App', () => {
         'Test summary results are being parsed',
       );
 
-      setTimeout(() => {
+      setImmediate(() => {
         done();
-      }, 0);
+      });
     });
   });
 });

@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
+import { mountComponentWithStore } from 'helpers/vue_mount_component_helper';
 import component from '~/reports/components/modal_open_name.vue';
 
 Vue.use(Vuex);
@@ -38,7 +38,7 @@ describe('Modal open name', () => {
   });
 
   it('calls openModal actions when button is clicked', () => {
-    spyOn(vm, 'openModal');
+    jest.spyOn(vm, 'openModal').mockImplementation(() => {});
 
     vm.$el.click();
 

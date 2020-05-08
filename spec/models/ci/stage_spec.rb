@@ -3,7 +3,8 @@
 require 'spec_helper'
 
 describe Ci::Stage, :models do
-  let(:stage) { create(:ci_stage_entity) }
+  let_it_be(:pipeline) { create(:ci_empty_pipeline) }
+  let(:stage) { create(:ci_stage_entity, pipeline: pipeline, project: pipeline.project) }
 
   it_behaves_like 'having unique enum values'
 
@@ -51,6 +52,29 @@ describe Ci::Stage, :models do
       it 'sets the default value' do
         expect(described_class.find(stage.id).status)
           .to eq 'created'
+      end
+    end
+  end
+
+  describe '#set_status' do
+    where(:from_status, :to_status) do
+      from_status_names = described_class.state_machines[:status].states.map(&:name)
+      to_status_names = from_status_names - [:created] # we never want to transition into created
+
+      from_status_names.product(to_status_names)
+    end
+
+    with_them do
+      it do
+        stage.status = from_status.to_s
+
+        if from_status != to_status
+          expect(stage.set_status(to_status.to_s))
+            .to eq(true)
+        else
+          expect(stage.set_status(to_status.to_s))
+            .to eq(false), "loopback transitions are not allowed"
+        end
       end
     end
   end

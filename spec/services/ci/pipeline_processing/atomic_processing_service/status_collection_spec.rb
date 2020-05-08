@@ -18,7 +18,7 @@ describe Ci::PipelineProcessing::AtomicProcessingService::StatusCollection do
     it 'does update existing status of processable' do
       collection.set_processable_status(test_a.id, 'success', 100)
 
-      expect(collection.status_for_names(['test-a'])).to eq('success')
+      expect(collection.status_for_names(['test-a'], dag: false)).to eq('success')
     end
 
     it 'ignores a missing processable' do
@@ -33,15 +33,18 @@ describe Ci::PipelineProcessing::AtomicProcessingService::StatusCollection do
   end
 
   describe '#status_for_names' do
-    where(:names, :status) do
-      %w[build-a]         | 'success'
-      %w[build-a build-b] | 'failed'
-      %w[build-a test-a]  | 'running'
+    where(:names, :status, :dag) do
+      %w[build-a]         | 'success' | false
+      %w[build-a build-b] | 'failed'  | false
+      %w[build-a test-a]  | 'running' | false
+      %w[build-a]         | 'success' | true
+      %w[build-a build-b] | 'failed'  | true
+      %w[build-a test-a]  | 'pending' | true
     end
 
     with_them do
       it 'returns composite status of given names' do
-        expect(collection.status_for_names(names)).to eq(status)
+        expect(collection.status_for_names(names, dag: dag)).to eq(status)
       end
     end
   end

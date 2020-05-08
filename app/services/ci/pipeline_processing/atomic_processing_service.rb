@@ -95,7 +95,7 @@ module Ci
       def processable_status(processable)
         if processable.scheduling_type_dag?
           # Processable uses DAG, get status of all dependent needs
-          @collection.status_for_names(processable.aggregated_needs_names.to_a)
+          @collection.status_for_names(processable.aggregated_needs_names.to_a, dag: true)
         else
           # Processable uses Stages, get status of prior stage
           @collection.status_for_prior_stage_position(processable.stage_idx.to_i)

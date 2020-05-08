@@ -23,9 +23,9 @@ describe('new dropdown component', () => {
       tree: [],
     };
 
-    jest.spyOn(vm, 'openNewEntryModal').mockImplementation(() => {});
-
     vm.$mount();
+
+    jest.spyOn(vm.$refs.newModal, 'open').mockImplementation(() => {});
   });
 
   afterEach(() => {
@@ -43,16 +43,16 @@ describe('new dropdown component', () => {
   });
 
   describe('createNewItem', () => {
-    it('sets modalType to blob when new file is clicked', () => {
+    it('opens modal for a blob when new file is clicked', () => {
       vm.$el.querySelectorAll('.dropdown-menu button')[0].click();
 
-      expect(vm.openNewEntryModal).toHaveBeenCalledWith({ type: 'blob', path: '' });
+      expect(vm.$refs.newModal.open).toHaveBeenCalledWith('blob', '');
     });
 
-    it('sets modalType to tree when new directory is clicked', () => {
+    it('opens modal for a tree when new directory is clicked', () => {
       vm.$el.querySelectorAll('.dropdown-menu button')[2].click();
 
-      expect(vm.openNewEntryModal).toHaveBeenCalledWith({ type: 'tree', path: '' });
+      expect(vm.$refs.newModal.open).toHaveBeenCalledWith('tree', '');
     });
   });
 

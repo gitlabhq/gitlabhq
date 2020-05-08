@@ -32,14 +32,14 @@ module Ci
 
         # This methods gets composite status of all processables
         def status_of_all
-          status_for_array(all_statuses)
+          status_for_array(all_statuses, dag: false)
         end
 
         # This methods gets composite status for processables with given names
-        def status_for_names(names)
+        def status_for_names(names, dag:)
           name_statuses = all_statuses_by_name.slice(*names)
 
-          status_for_array(name_statuses.values)
+          status_for_array(name_statuses.values, dag: dag)
         end
 
         # This methods gets composite status for processables before given stage
@@ -48,7 +48,7 @@ module Ci
             stage_statuses = all_statuses_grouped_by_stage_position
               .select { |stage_position, _| stage_position < position }
 
-            status_for_array(stage_statuses.values.flatten)
+            status_for_array(stage_statuses.values.flatten, dag: false)
           end
         end
 
@@ -65,7 +65,7 @@ module Ci
           strong_memoize("status_for_stage_position_#{current_position}") do
             stage_statuses = all_statuses_grouped_by_stage_position[current_position].to_a
 
-            status_for_array(stage_statuses.flatten)
+            status_for_array(stage_statuses.flatten, dag: false)
           end
         end
 
@@ -76,7 +76,14 @@ module Ci
 
         private
 
-        def status_for_array(statuses)
+        def status_for_array(statuses, dag:)
+          # TODO: This is hack to support
+          # the same exact behaviour for Atomic and Legacy processing
+          # that DAG is blocked from executing if dependent is not "complete"
+          if dag && statuses.any? { |status| HasStatus::COMPLETED_STATUSES.exclude?(status[:status]) }
+            return 'pending'
+          end
+
           result = Gitlab::Ci::Status::Composite
             .new(statuses)
             .status

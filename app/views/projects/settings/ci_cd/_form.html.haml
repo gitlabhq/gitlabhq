@@ -103,7 +103,7 @@
           .input-group
             %span.input-group-prepend
               .input-group-text /
-            = f.text_field :build_coverage_regex, class: 'form-control', placeholder: 'Regular expression'
+            = f.text_field :build_coverage_regex, class: 'form-control', placeholder: 'Regular expression', data: { qa_selector: 'build_coverage_regex_field' }
             %span.input-group-append
               .input-group-text /
           %p.form-text.text-muted
@@ -143,7 +143,7 @@
                 go test -cover (Go)
                 %code coverage: \d+.\d+% of statements
 
-        = f.submit _('Save changes'), class: "btn btn-success"
+        = f.submit _('Save changes'), class: "btn btn-success", data: { qa_selector: 'save_general_pipelines_changes_button' }
 
 %hr
 

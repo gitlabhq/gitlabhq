@@ -252,6 +252,7 @@ module QA
         autoload :Main, 'qa/page/project/settings/main'
         autoload :Repository, 'qa/page/project/settings/repository'
         autoload :CICD, 'qa/page/project/settings/ci_cd'
+        autoload :GeneralPipelines, 'qa/page/project/settings/general_pipelines'
         autoload :AutoDevops, 'qa/page/project/settings/auto_devops'
         autoload :DeployKeys, 'qa/page/project/settings/deploy_keys'
         autoload :DeployTokens, 'qa/page/project/settings/deploy_tokens'

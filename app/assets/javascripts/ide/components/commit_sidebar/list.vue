@@ -1,9 +1,8 @@
 <script>
-import $ from 'jquery';
 import { mapActions } from 'vuex';
 import { __, sprintf } from '~/locale';
+import { GlModal } from '@gitlab/ui';
 import Icon from '~/vue_shared/components/icon.vue';
-import DeprecatedModal2 from '~/vue_shared/components/deprecated_modal_2.vue';
 import tooltip from '~/vue_shared/directives/tooltip';
 import ListItem from './list_item.vue';
 
@@ -11,7 +10,7 @@ export default {
   components: {
     Icon,
     ListItem,
-    GlModal: DeprecatedModal2,
+    GlModal,
   },
   directives: {
     tooltip,
@@ -58,7 +57,7 @@ export default {
   methods: {
     ...mapActions(['stageAllChanges', 'unstageAllChanges', 'discardAllChanges']),
     openDiscardModal() {
-      $('#discard-all-changes').modal('show');
+      this.$refs.discardAllModal.show();
     },
     unstageAndDiscardAllChanges() {
       this.unstageAllChanges();
@@ -114,11 +113,12 @@ export default {
     </p>
     <gl-modal
       v-if="!stagedList"
-      id="discard-all-changes"
-      :footer-primary-button-text="__('Discard all changes')"
-      :header-title-text="__('Discard all changes?')"
-      footer-primary-button-variant="danger"
-      @submit="unstageAndDiscardAllChanges"
+      ref="discardAllModal"
+      ok-variant="danger"
+      modal-id="discard-all-changes"
+      :ok-title="__('Discard all changes')"
+      :title="__('Discard all changes?')"
+      @ok="unstageAndDiscardAllChanges"
     >
       {{ $options.discardModalText }}
     </gl-modal>

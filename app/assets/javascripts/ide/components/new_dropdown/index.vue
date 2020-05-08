@@ -4,12 +4,14 @@ import icon from '~/vue_shared/components/icon.vue';
 import upload from './upload.vue';
 import ItemButton from './button.vue';
 import { modalTypes } from '../../constants';
+import NewModal from '../new_dropdown/modal.vue';
 
 export default {
   components: {
     icon,
     upload,
     ItemButton,
+    NewModal,
   },
   props: {
     type: {
@@ -37,9 +39,9 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['createTempEntry', 'openNewEntryModal', 'deleteEntry']),
+    ...mapActions(['createTempEntry', 'deleteEntry']),
     createNewItem(type) {
-      this.openNewEntryModal({ type, path: this.path });
+      this.$refs.newModal.open(type, this.path);
       this.$emit('toggle', false);
     },
     openDropdown() {
@@ -109,5 +111,6 @@ export default {
         </li>
       </ul>
     </div>
+    <new-modal ref="newModal" />
   </div>
 </template>

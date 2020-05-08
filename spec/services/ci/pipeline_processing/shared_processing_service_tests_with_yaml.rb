@@ -18,36 +18,40 @@ shared_context 'Pipeline Processing Service Tests With Yaml' do
       project.add_developer(user)
     end
 
-    it 'follows transitions', :sidekiq_inline do
+    it 'follows transitions' do
       expect(pipeline).to be_persisted
-      check_expectation(test_file.dig('init', 'expect'))
+      Sidekiq::Worker.drain_all # ensure that all async jobs are executed
+      check_expectation(test_file.dig('init', 'expect'), "init")
 
-      test_file['transitions'].each do |transition|
+      test_file['transitions'].each_with_index do |transition, idx|
         event_on_jobs(transition['event'], transition['jobs'])
-        check_expectation(transition['expect'])
+        Sidekiq::Worker.drain_all # ensure that all async jobs are executed
+        check_expectation(transition['expect'], "transition:#{idx}")
       end
     end
 
     private
 
-    def check_expectation(expectation)
-      expectation.each do |key, value|
-        case key
-        when 'pipeline'
-          expect(pipeline.reload.status).to eq(value)
-        when 'stages'
-          expect(pipeline.stages.pluck(:name, :status).to_h).to eq(value)
-        when 'jobs'
-          expect(pipeline.builds.latest.pluck(:name, :status).to_h).to eq(value)
-        end
-      end
+    def check_expectation(expectation, message)
+      expect(current_state.deep_stringify_keys).to eq(expectation), message
+    end
+
+    def current_state
+      # reload pipeline and all relations
+      pipeline.reload
+
+      {
+        pipeline: pipeline.status,
+        stages: pipeline.ordered_stages.pluck(:name, :status).to_h,
+        jobs: pipeline.statuses.latest.pluck(:name, :status).to_h
+      }
     end
 
     def event_on_jobs(event, job_names)
-      builds = pipeline.builds.latest.where(name: job_names).to_a
-      expect(builds.count).to eq(job_names.count) # ensure that we have the same counts
+      statuses = pipeline.statuses.latest.by_name(job_names).to_a
+      expect(statuses.count).to eq(job_names.count) # ensure that we have the same counts
 
-      builds.each { |build| build.public_send("#{event}!") }
+      statuses.each { |status| status.public_send("#{event}!") }
     end
   end
 end

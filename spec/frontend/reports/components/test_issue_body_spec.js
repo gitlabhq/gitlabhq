@@ -26,7 +26,7 @@ describe('Test Issue body', () => {
         props: commonProps,
       });
 
-      spyOn(vm, 'openModal');
+      jest.spyOn(vm, 'openModal').mockImplementation(() => {});
 
       vm.$el.querySelector('button').click();
 
