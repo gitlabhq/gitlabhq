@@ -7,7 +7,7 @@ module Projects::AlertManagementHelper
       'enable-alert-management-path' => edit_project_service_path(project, AlertsService),
       'empty-alert-svg-path' => image_path('illustrations/alert-management-empty-state.svg'),
       'user-can-enable-alert-management' => can?(current_user, :admin_project, project).to_s,
-      'alert-management-enabled' => Feature.enabled?(:alert_management_minimal, project).to_s
+      'alert-management-enabled' => (!!project.alerts_service_activated?).to_s
     }
   end
 

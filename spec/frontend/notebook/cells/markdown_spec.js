@@ -24,7 +24,7 @@ describe('Markdown component', () => {
     });
     vm.$mount();
 
-    setTimeout(() => {
+    setImmediate(() => {
       done();
     });
   });

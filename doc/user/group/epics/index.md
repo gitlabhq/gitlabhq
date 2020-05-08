@@ -58,7 +58,7 @@ An epic's page contains the following tabs:
   - Hover over the total counts to see a breakdown of open and closed items.
 - **Roadmap**: a roadmap view of child epics which have start and due dates.
 
-![epic view](img/epic_view_v12.3.png)
+![epic view](img/epic_view_v13.0.png)
 
 ## Adding an issue to an epic
 
@@ -75,6 +75,7 @@ the issue is automatically unlinked from its current parent.
 
 To add an issue to an epic:
 
+1. Click the **Add** dropdown button.
 1. Click **Add an issue**.
 1. Identify the issue to be added, using either of the following methods:
    - Paste the link of the issue.
@@ -91,7 +92,7 @@ Creating an issue from an epic enables you to maintain focus on the broader cont
 
 To create an issue from an epic:
 
-1. On the epic's page, under **Epics and Issues**, click the arrow next to **Add an issue** and select **Create new issue**.
+1. On the epic's page, under **Epics and Issues**, click the **Add** dropdown button and select **Create new issue**.
 1. Under **Title**, enter the title for the new issue.
 1. From the **Project** dropdown, select the project in which the issue should be created.
 1. Click **Create issue**.
@@ -128,6 +129,7 @@ the maximum depth being 5.
 
 To add a child epic to an epic:
 
+1. Click the **Add** dropdown button.
 1. Click **Add an epic**.
 1. Identify the epic to be added, using either of the following methods:
    - Paste the link of the epic.

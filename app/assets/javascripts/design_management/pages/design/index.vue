@@ -35,6 +35,7 @@ import {
   UPDATE_NOTE_ERROR,
   designDeletionError,
 } from '../../utils/error_messages';
+import { trackDesignDetailView } from '../../utils/tracking';
 import { DESIGNS_ROUTE_NAME } from '../../router/constants';
 
 export default {
@@ -257,8 +258,21 @@ export default {
         query: this.$route.query,
       });
     },
+    trackEvent() {
+      trackDesignDetailView(
+        'issue-design-collection',
+        this.$route.query.version || this.latestVersionId,
+        this.isLatestVersion,
+      );
+    },
+  },
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      vm.trackEvent();
+    });
   },
   beforeRouteUpdate(to, from, next) {
+    this.trackEvent();
     this.closeCommentForm();
     next();
   },

@@ -13,6 +13,8 @@ describe Projects::AlertManagementHelper do
     let(:user_can_enable_alert_management) { true }
     let(:setting_path) { edit_project_service_path(project, AlertsService) }
 
+    subject(:data) { helper.alert_management_data(current_user, project) }
+
     before do
       allow(helper)
         .to receive(:can?)
@@ -27,8 +29,30 @@ describe Projects::AlertManagementHelper do
           'enable-alert-management-path' => setting_path,
           'empty-alert-svg-path' => match_asset_path('/assets/illustrations/alert-management-empty-state.svg'),
           'user-can-enable-alert-management' => 'true',
-          'alert-management-enabled' => 'true'
+          'alert-management-enabled' => 'false'
         )
+      end
+    end
+
+    context 'with alerts service' do
+      let_it_be(:alerts_service) { create(:alerts_service, project: project) }
+
+      context 'when alerts service is active' do
+        it 'enables alert management' do
+          expect(data).to include(
+            'alert-management-enabled' => 'true'
+          )
+        end
+      end
+
+      context 'when alerts service is inactive' do
+        it 'disables alert management' do
+          alerts_service.update(active: false)
+
+          expect(data).to include(
+            'alert-management-enabled' => 'false'
+          )
+        end
       end
     end
 

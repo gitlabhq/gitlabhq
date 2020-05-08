@@ -25,7 +25,7 @@ describe('Code component', () => {
     beforeEach(done => {
       vm = setupComponent(json.cells[0]);
 
-      setTimeout(() => {
+      setImmediate(() => {
         done();
       });
     });
@@ -39,7 +39,7 @@ describe('Code component', () => {
     beforeEach(done => {
       vm = setupComponent(json.cells[2]);
 
-      setTimeout(() => {
+      setImmediate(() => {
         done();
       });
     });
@@ -60,7 +60,7 @@ describe('Code component', () => {
 
       vm = setupComponent(cell);
 
-      setTimeout(() => {
+      setImmediate(() => {
         done();
       });
     });

@@ -140,7 +140,7 @@ The only changes to the site should be from the DAST scanner. Be aware that any
 changes that users, scheduled tasks, database changes, code changes, other pipelines, or other scanners make to
 the site during a scan could lead to inaccurate results.
 
-### Authenticated scan
+### Authentication
 
 It's also possible to authenticate the user before performing the DAST checks:
 

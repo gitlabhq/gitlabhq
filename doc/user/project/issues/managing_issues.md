@@ -92,9 +92,17 @@ field values using query string parameters in a URL. This is useful for embeddin
 a URL in an external HTML page, and also certain scenarios where you want the user to
 create an issue with certain fields prefilled.
 
-The title, description, and description template fields can be prefilled using
-this method. You cannot pre-fill both the description and description template fields
-in the same URL (since a description template also populates the description field).
+The title, description, description template, and confidential fields can be prefilled
+using this method. You cannot pre-fill both the description and description template
+fields in the same URL (since a description template also populates the description
+field).
+
+| Field                | URL Parameter Name    | Notes                                                 |
+|----------------------|-----------------------|-------------------------------------------------------|
+| title                | `issue[title]`        |                                                       |
+| description          | `issue[description]`  |                                                       |
+| description template | `issuable_template`   |                                                       |
+| confidential         | `issue[confidential]` | Parameter value must be `true` to set to confidential |
 
 Follow these examples to form your new issue URL with prefilled fields.
 
@@ -102,6 +110,8 @@ Follow these examples to form your new issue URL with prefilled fields.
   and a pre-filled description, the URL would be `https://gitlab.com/gitlab-org/gitlab-foss/issues/new?issue[title]=Validate%20new%20concept&issue[description]=Research%20idea`
 - For a new issue in the GitLab Community Edition project with a pre-filled title
   and a pre-filled description template, the URL would be `https://gitlab.com/gitlab-org/gitlab-foss/issues/new?issue[title]=Validate%20new%20concept&issuable_template=Research%20proposal`
+- For a new issue in the GitLab Community Edition project with a pre-filled title,
+  a pre-filled description, and the confidential flag set, the URL would be `https://gitlab.com/gitlab-org/gitlab-foss/issues/new?issue[title]=Validate%20new%20concept&issue[description]=Research%20idea&issue[confidential]=true`
 
 ## Moving Issues
 

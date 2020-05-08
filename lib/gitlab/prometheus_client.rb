@@ -163,7 +163,7 @@ module Gitlab
     end
 
     def parse_json(response_body)
-      Gitlab::Json.parse(response_body)
+      Gitlab::Json.parse(response_body, legacy_mode: true)
     rescue JSON::ParserError
       raise PrometheusClient::Error, 'Parsing response failed'
     end

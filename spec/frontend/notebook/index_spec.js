@@ -22,7 +22,7 @@ describe('Notebook component', () => {
       });
       vm.$mount();
 
-      setTimeout(() => {
+      setImmediate(() => {
         done();
       });
     });
@@ -42,7 +42,7 @@ describe('Notebook component', () => {
       });
       vm.$mount();
 
-      setTimeout(() => {
+      setImmediate(() => {
         done();
       });
     });
@@ -74,7 +74,7 @@ describe('Notebook component', () => {
       });
       vm.$mount();
 
-      setTimeout(() => {
+      setImmediate(() => {
         done();
       });
     });

@@ -16,7 +16,7 @@ describe('Prompt component', () => {
       });
       vm.$mount();
 
-      setTimeout(() => {
+      setImmediate(() => {
         done();
       });
     });
@@ -40,7 +40,7 @@ describe('Prompt component', () => {
       });
       vm.$mount();
 
-      setTimeout(() => {
+      setImmediate(() => {
         done();
       });
     });

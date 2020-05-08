@@ -25,7 +25,7 @@ describe('Output component', () => {
     beforeEach(done => {
       createComponent(json.cells[2].outputs[0]);
 
-      setTimeout(() => {
+      setImmediate(() => {
         done();
       });
     });
@@ -43,7 +43,7 @@ describe('Output component', () => {
     beforeEach(done => {
       createComponent(json.cells[3].outputs[0]);
 
-      setTimeout(() => {
+      setImmediate(() => {
         done();
       });
     });
@@ -73,7 +73,7 @@ describe('Output component', () => {
     beforeEach(done => {
       createComponent(json.cells[5].outputs[0]);
 
-      setTimeout(() => {
+      setImmediate(() => {
         done();
       });
     });
@@ -87,7 +87,7 @@ describe('Output component', () => {
     beforeEach(done => {
       createComponent(json.cells[6].outputs[0]);
 
-      setTimeout(() => {
+      setImmediate(() => {
         done();
       });
     });
@@ -104,7 +104,7 @@ describe('Output component', () => {
     it("renders as plain text when doesn't recognise other types", done => {
       createComponent(json.cells[7].outputs[0]);
 
-      setTimeout(() => {
+      setImmediate(() => {
         expect(vm.$el.querySelector('pre')).not.toBeNull();
         expect(vm.$el.textContent.trim()).toContain('testing');
 
