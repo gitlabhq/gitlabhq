@@ -1,15 +1,16 @@
 <script>
+import { mapState } from 'vuex';
 import { __ } from '~/locale';
 import Flash from '~/flash';
 import tooltip from '~/vue_shared/directives/tooltip';
 import Icon from '~/vue_shared/components/icon.vue';
 import eventHub from '~/sidebar/event_hub';
-import editForm from './edit_form.vue';
+import EditForm from './edit_form.vue';
 import recaptchaModalImplementor from '~/vue_shared/mixins/recaptcha_modal_implementor';
 
 export default {
   components: {
-    editForm,
+    EditForm,
     Icon,
   },
   directives: {
@@ -17,10 +18,6 @@ export default {
   },
   mixins: [recaptchaModalImplementor],
   props: {
-    isConfidential: {
-      required: true,
-      type: Boolean,
-    },
     isEditable: {
       required: true,
       type: Boolean,
@@ -36,11 +33,12 @@ export default {
     };
   },
   computed: {
+    ...mapState({ confidential: ({ noteableData }) => noteableData.confidential }),
     confidentialityIcon() {
-      return this.isConfidential ? 'eye-slash' : 'eye';
+      return this.confidential ? 'eye-slash' : 'eye';
     },
     tooltipLabel() {
-      return this.isConfidential ? __('Confidential') : __('Not confidential');
+      return this.confidential ? __('Confidential') : __('Not confidential');
     },
   },
   created() {
@@ -95,17 +93,16 @@ export default {
         data-track-label="right_sidebar"
         data-track-property="confidentiality"
         @click.prevent="toggleForm"
+        >{{ __('Edit') }}</a
       >
-        {{ __('Edit') }}
-      </a>
     </div>
     <div class="value sidebar-item-value hide-collapsed">
-      <editForm
+      <edit-form
         v-if="edit"
-        :is-confidential="isConfidential"
+        :is-confidential="confidential"
         :update-confidential-attribute="updateConfidentialAttribute"
       />
-      <div v-if="!isConfidential" class="no-value sidebar-item-value">
+      <div v-if="!confidential" class="no-value sidebar-item-value">
         <icon :size="16" name="eye" aria-hidden="true" class="sidebar-item-icon inline" />
         {{ __('Not confidential') }}
       </div>

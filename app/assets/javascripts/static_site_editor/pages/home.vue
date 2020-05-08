@@ -11,6 +11,8 @@ import PublishToolbar from '../components/publish_toolbar.vue';
 import InvalidContentMessage from '../components/invalid_content_message.vue';
 import SubmitChangesError from '../components/submit_changes_error.vue';
 
+import appDataQuery from '../graphql/queries/app_data.query.graphql';
+
 export default {
   components: {
     RichContentEditor,
@@ -23,13 +25,17 @@ export default {
     SubmitChangesError,
   },
   mixins: [glFeatureFlagsMixin()],
+  apollo: {
+    isSupportedContent: {
+      query: appDataQuery,
+    },
+  },
   computed: {
     ...mapState([
       'content',
       'isLoadingContent',
       'isSavingChanges',
       'isContentLoaded',
-      'isSupportedContent',
       'returnUrl',
       'title',
       'submitChangesError',

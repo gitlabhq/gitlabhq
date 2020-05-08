@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import mountComponent from 'helpers/vue_mount_component_helper';
 import JobContainerItem from '~/jobs/components/job_container_item.vue';
 import job from '../mock_data';
 
@@ -18,7 +18,7 @@ describe('JobContainerItem', () => {
     });
 
     it('displays the job name', () => {
-      expect(vm.$el).toContainText(job.name);
+      expect(vm.$el.innerText).toContain(job.name);
     });
 
     it('displays a link to the job', () => {
@@ -75,9 +75,11 @@ describe('JobContainerItem', () => {
   describe('for delayed job', () => {
     beforeEach(() => {
       const remainingMilliseconds = 1337000;
-      spyOn(Date, 'now').and.callFake(
-        () => new Date(delayedJobFixture.scheduled_at).getTime() - remainingMilliseconds,
-      );
+      jest
+        .spyOn(Date, 'now')
+        .mockImplementation(
+          () => new Date(delayedJobFixture.scheduled_at).getTime() - remainingMilliseconds,
+        );
     });
 
     it('displays remaining time in tooltip', done => {

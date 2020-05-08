@@ -24,12 +24,7 @@ exports[`Clone Dropdown Button rendering matches the snapshot 1`] = `
         <b-input-group-stub
           tag="div"
         >
-          <b-input-group-prepend-stub
-            tag="div"
-          >
-             
-            <!---->
-          </b-input-group-prepend-stub>
+          <!---->
            
           <b-form-input-stub
             class="gl-form-input"
@@ -69,12 +64,7 @@ exports[`Clone Dropdown Button rendering matches the snapshot 1`] = `
         <b-input-group-stub
           tag="div"
         >
-          <b-input-group-prepend-stub
-            tag="div"
-          >
-             
-            <!---->
-          </b-input-group-prepend-stub>
+          <!---->
            
           <b-form-input-stub
             class="gl-form-input"

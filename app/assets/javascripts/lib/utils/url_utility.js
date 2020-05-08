@@ -270,8 +270,10 @@ export function getWebSocketUrl(path) {
 export function queryToObject(query) {
   const removeQuestionMarkFromQuery = String(query).startsWith('?') ? query.slice(1) : query;
   return removeQuestionMarkFromQuery.split('&').reduce((accumulator, curr) => {
-    const p = curr.split('=');
-    accumulator[decodeURIComponent(p[0])] = decodeURIComponent(p[1]);
+    const [key, value] = curr.split('=');
+    if (value !== undefined) {
+      accumulator[decodeURIComponent(key)] = decodeURIComponent(value);
+    }
     return accumulator;
   }, {});
 }

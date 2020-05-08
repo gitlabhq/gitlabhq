@@ -1,0 +1,5 @@
+---
+title: Wrap wiki blob search result in its own object
+merge_request: 31155
+author:
+type: fixed

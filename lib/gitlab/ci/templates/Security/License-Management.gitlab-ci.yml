@@ -3,6 +3,7 @@
 
 license_management:
   stage: test
+  image: alpine:latest
   allow_failure: false
   script:
     - |

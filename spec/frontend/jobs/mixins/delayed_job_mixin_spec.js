@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import mountComponent from 'helpers/vue_mount_component_helper';
 import delayedJobMixin from '~/jobs/mixins/delayed_job_mixin';
 
 describe('DelayedJobMixin', () => {
@@ -12,18 +12,16 @@ describe('DelayedJobMixin', () => {
         required: true,
       },
     },
-    template: '<div>{{ remainingTime }}</div>',
+    render(createElement) {
+      return createElement('div', this.remainingTime);
+    },
   });
 
   let vm;
 
-  beforeEach(() => {
-    jasmine.clock().install();
-  });
-
   afterEach(() => {
     vm.$destroy();
-    jasmine.clock().uninstall();
+    jest.clearAllTimers();
   });
 
   describe('if job is empty object', () => {
@@ -38,13 +36,9 @@ describe('DelayedJobMixin', () => {
     });
 
     describe('after mounting', () => {
-      beforeEach(done => {
-        Vue.nextTick()
-          .then(done)
-          .catch(done.fail);
-      });
+      beforeEach(() => vm.$nextTick());
 
-      it('doe not update remaining time', () => {
+      it('does not update remaining time', () => {
         expect(vm.$el.innerText).toBe('00:00:00');
       });
     });
@@ -54,39 +48,31 @@ describe('DelayedJobMixin', () => {
     let remainingTimeInMilliseconds = 42000;
 
     beforeEach(() => {
-      spyOn(Date, 'now').and.callFake(
-        () => new Date(delayedJobFixture.scheduled_at).getTime() - remainingTimeInMilliseconds,
-      );
+      jest
+        .spyOn(Date, 'now')
+        .mockImplementation(
+          () => new Date(delayedJobFixture.scheduled_at).getTime() - remainingTimeInMilliseconds,
+        );
+
       vm = mountComponent(dummyComponent, {
         job: delayedJobFixture,
       });
     });
 
-    it('sets remaining time to 00:00:00', () => {
-      expect(vm.$el.innerText).toBe('00:00:00');
-    });
-
     describe('after mounting', () => {
-      beforeEach(done => {
-        Vue.nextTick()
-          .then(done)
-          .catch(done.fail);
-      });
+      beforeEach(() => vm.$nextTick());
 
       it('sets remaining time', () => {
         expect(vm.$el.innerText).toBe('00:00:42');
       });
 
-      it('updates remaining time', done => {
+      it('updates remaining time', () => {
         remainingTimeInMilliseconds = 41000;
-        jasmine.clock().tick(1000);
+        jest.advanceTimersByTime(1000);
 
-        Vue.nextTick()
-          .then(() => {
-            expect(vm.$el.innerText).toBe('00:00:41');
-          })
-          .then(done)
-          .catch(done.fail);
+        return vm.$nextTick().then(() => {
+          expect(vm.$el.innerText).toBe('00:00:41');
+        });
       });
     });
   });

@@ -18,7 +18,7 @@ module Gitlab
       when 'blobs'
         paginated_blobs(blobs(limit: limit_up_to_page(page, per_page)), page, per_page)
       when 'wiki_blobs'
-        paginated_blobs(wiki_blobs(limit: limit_up_to_page(page, per_page)), page, per_page)
+        paginated_wiki_blobs(wiki_blobs(limit: limit_up_to_page(page, per_page)), page, per_page)
       when 'commits'
         Kaminari.paginate_array(commits).page(page).per(per_page)
       when 'users'
@@ -92,6 +92,13 @@ module Gitlab
       Gitlab::Search::FoundBlob.preload_blobs(results)
 
       results
+    end
+
+    def paginated_wiki_blobs(blobs, page, per_page)
+      blob_array = paginated_blobs(blobs, page, per_page)
+      blob_array.map! do |blob|
+        Gitlab::Search::FoundWikiPage.new(blob)
+      end
     end
 
     def limit_up_to_page(page, per_page)

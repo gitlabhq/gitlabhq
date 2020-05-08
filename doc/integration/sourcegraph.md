@@ -117,7 +117,7 @@ for updates.
 
 ### Sourcegraph isn't working
 
-If you enabled Sourcegraph for your project but still it doesn't looklike it's working, it might be because Sourcegraph has not indexed theproject yet. You can check for Sourcegraph's availability of your project by visiting `https://sourcegraph.com/gitlab.com/<project-path>`replacing `<project-path>` with the path to your GitLab project.
+If you enabled Sourcegraph for your project but still it doesn't look like it's working, it might be because Sourcegraph has not indexed the project yet. You can check for Sourcegraph's availability of your project by visiting `https://sourcegraph.com/gitlab.com/<project-path>`replacing `<project-path>` with the path to your GitLab project.
 
 ## Sourcegraph and Privacy
 

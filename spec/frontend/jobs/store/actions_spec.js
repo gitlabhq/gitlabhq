@@ -1,6 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
-import testAction from 'spec/helpers/vuex_action_helper';
-import { TEST_HOST } from 'spec/test_constants';
+import testAction from 'helpers/vuex_action_helper';
+import { TEST_HOST } from '../../helpers/test_constants';
 import axios from '~/lib/utils/axios_utils';
 import {
   setJobEndpoint,
@@ -315,26 +315,26 @@ describe('Job State actions', () => {
     let commit;
 
     beforeEach(() => {
-      jasmine.clock().install();
-
-      dispatch = jasmine.createSpy();
-      commit = jasmine.createSpy();
+      dispatch = jest.fn();
+      commit = jest.fn();
 
       startPollingTrace({ dispatch, commit });
     });
 
     afterEach(() => {
-      jasmine.clock().uninstall();
+      jest.clearAllTimers();
     });
 
     it('should save the timeout id but not call fetchTrace', () => {
-      expect(commit).toHaveBeenCalledWith(types.SET_TRACE_TIMEOUT, 1);
+      expect(commit).toHaveBeenCalledWith(types.SET_TRACE_TIMEOUT, expect.any(Number));
+      expect(commit.mock.calls[0][1]).toBeGreaterThan(0);
+
       expect(dispatch).not.toHaveBeenCalledWith('fetchTrace');
     });
 
     describe('after timeout has passed', () => {
       beforeEach(() => {
-        jasmine.clock().tick(4000);
+        jest.advanceTimersByTime(4000);
       });
 
       it('should clear the timeout id and fetchTrace', () => {
@@ -351,7 +351,7 @@ describe('Job State actions', () => {
       // Can't use spyOn(window, 'clearTimeout') because this caused unrelated specs to timeout
       // https://gitlab.com/gitlab-org/gitlab/-/merge_requests/23838#note_280277727
       origTimeout = window.clearTimeout;
-      window.clearTimeout = jasmine.createSpy();
+      window.clearTimeout = jest.fn();
     });
 
     afterEach(() => {

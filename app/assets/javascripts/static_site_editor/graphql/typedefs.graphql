@@ -1,6 +1,6 @@
 extend type Query {
   isSupportedContent: Boolean!
-  projectId: String!
+  project: String!
   returnUrl: String
   sourcePath: String!
   username: String!

@@ -162,6 +162,9 @@ This also determines the visibility of these related features:
 - Job artifacts
 - The [pipeline security dashboard](../../user/application_security/security_dashboard/index.md#pipeline-security) **(ULTIMATE)**
 
+NOTE: **Note:**
+Currently, job logs and artifacts are [not yet visible for guest users and non-project members](https://gitlab.com/gitlab-org/gitlab/-/issues/25649).
+
 If **Public pipelines** is enabled (default):
 
 - For **public** projects, anyone can view the pipelines and related features.

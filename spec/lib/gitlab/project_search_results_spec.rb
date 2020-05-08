@@ -225,6 +225,22 @@ describe Gitlab::ProjectSearchResults do
     end
 
     it_behaves_like 'blob search pagination', 'wiki_blobs'
+
+    context 'return type' do
+      let(:blobs) { [Gitlab::Search::FoundBlob.new(project: project)] }
+      let(:results) { described_class.new(user, project, "Files", per_page: 20) }
+
+      before do
+        allow(results).to receive(:wiki_blobs).and_return(blobs)
+      end
+
+      it 'returns list of FoundWikiPage type object' do
+        objects = results.objects('wiki_blobs')
+
+        expect(objects).to be_present
+        expect(objects).to all(be_a(Gitlab::Search::FoundWikiPage))
+      end
+    end
   end
 
   it 'does not list issues on private projects' do

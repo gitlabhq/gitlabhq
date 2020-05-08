@@ -6,7 +6,14 @@ import createRouter from './router';
 import createApolloProvider from './graphql';
 
 const initStaticSiteEditor = el => {
-  const { isSupportedContent, projectId, path: sourcePath, baseUrl } = el.dataset;
+  const {
+    isSupportedContent,
+    projectId,
+    path: sourcePath,
+    baseUrl,
+    namespace,
+    project,
+  } = el.dataset;
   const { current_username: username } = window.gon;
   const returnUrl = el.dataset.returnUrl || null;
 
@@ -22,7 +29,7 @@ const initStaticSiteEditor = el => {
   const router = createRouter(baseUrl);
   const apolloProvider = createApolloProvider({
     isSupportedContent: parseBoolean(isSupportedContent),
-    projectId,
+    project: `${namespace}/${project}`,
     returnUrl,
     sourcePath,
     username,
