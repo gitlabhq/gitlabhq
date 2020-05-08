@@ -169,6 +169,43 @@ describe('monitoring/utils', () => {
     });
   });
 
+  describe('promCustomVariablesFromUrl', () => {
+    const { promCustomVariablesFromUrl } = monitoringUtils;
+
+    beforeEach(() => {
+      jest.spyOn(urlUtils, 'queryToObject');
+    });
+
+    afterEach(() => {
+      urlUtils.queryToObject.mockRestore();
+    });
+
+    it('returns an object with only the custom variables', () => {
+      urlUtils.queryToObject.mockReturnValueOnce({
+        dashboard: '.gitlab/dashboards/custom_dashboard.yml',
+        y_label: 'memory usage',
+        group: 'kubernetes',
+        title: 'Kubernetes memory total',
+        start: '2020-05-06',
+        end: '2020-05-07',
+        duration_seconds: '86400',
+        direction: 'left',
+        anchor: 'top',
+        pod: 'POD',
+      });
+
+      expect(promCustomVariablesFromUrl()).toEqual(expect.objectContaining({ pod: 'POD' }));
+    });
+
+    it('returns an empty object when no custom variables are present', () => {
+      urlUtils.queryToObject.mockReturnValueOnce({
+        dashboard: '.gitlab/dashboards/custom_dashboard.yml',
+      });
+
+      expect(promCustomVariablesFromUrl()).toStrictEqual({});
+    });
+  });
+
   describe('removeTimeRangeParams', () => {
     const { removeTimeRangeParams } = monitoringUtils;
 

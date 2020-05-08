@@ -1,0 +1,5 @@
+---
+title: In metrics dashboard use custom variables from URL in queries
+merge_request: 30560
+author:
+type: added

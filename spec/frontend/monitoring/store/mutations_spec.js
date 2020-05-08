@@ -364,4 +364,18 @@ describe('Monitoring mutations', () => {
       expect(stateCopy.expandedPanel.panel).toEqual(null);
     });
   });
+
+  describe('SET_PROM_QUERY_VARIABLES', () => {
+    it('stores an empty variables array when no custom variables are given', () => {
+      mutations[types.SET_PROM_QUERY_VARIABLES](stateCopy, {});
+
+      expect(stateCopy.promVariables).toEqual([]);
+    });
+
+    it('stores variables in the key key_value format in the array', () => {
+      mutations[types.SET_PROM_QUERY_VARIABLES](stateCopy, { pod: 'POD', stage: 'main ops' });
+
+      expect(stateCopy.promVariables).toEqual(['pod', 'POD', 'stage', 'main%20ops']);
+    });
+  });
 });

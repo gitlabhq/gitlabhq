@@ -6,7 +6,9 @@ import Mock from './mock_data';
 import query from '~/issuable_sidebar/queries/issue_sidebar.query.graphql';
 
 jest.mock('@rails/actioncable', () => {
-  const mockConsumer = { subscriptions: { create: jest.fn() } };
+  const mockConsumer = {
+    subscriptions: { create: jest.fn().mockReturnValue({ unsubscribe: jest.fn() }) },
+  };
   return {
     createConsumer: jest.fn().mockReturnValue(mockConsumer),
   };

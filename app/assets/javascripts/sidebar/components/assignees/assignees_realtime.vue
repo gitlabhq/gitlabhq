@@ -4,6 +4,7 @@ import query from '~/issuable_sidebar/queries/issue_sidebar.query.graphql';
 import actionCable from '~/actioncable_consumer';
 
 export default {
+  subscription: null,
   name: 'AssigneesRealtime',
   props: {
     mediator: {
@@ -36,6 +37,9 @@ export default {
   mounted() {
     this.initActionCablePolling();
   },
+  beforeDestroy() {
+    this.$options.subscription.unsubscribe();
+  },
   methods: {
     received(data) {
       if (data.event === 'updated') {
@@ -43,7 +47,7 @@ export default {
       }
     },
     initActionCablePolling() {
-      actionCable.subscriptions.create(
+      this.$options.subscription = actionCable.subscriptions.create(
         {
           channel: 'IssuesChannel',
           project_path: this.projectPath,

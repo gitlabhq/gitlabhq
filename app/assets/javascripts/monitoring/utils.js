@@ -1,9 +1,17 @@
+import { omit } from 'lodash';
 import { queryToObject, mergeUrlParams, removeParams } from '~/lib/utils/url_utility';
 import {
   timeRangeParamNames,
   timeRangeFromParams,
   timeRangeToParams,
 } from '~/lib/utils/datetime_range';
+
+/**
+ * List of non time range url parameters
+ * This will be removed once we add support for free text variables
+ * via the dashboard yaml files in https://gitlab.com/gitlab-org/gitlab/-/issues/215689
+ */
+export const dashboardParams = ['dashboard', 'group', 'title', 'y_label'];
 
 /**
  * This method is used to validate if the graph data format for a chart component
@@ -111,6 +119,21 @@ export const graphDataValidatorForAnomalyValues = graphData => {
 export const timeRangeFromUrl = (search = window.location.search) => {
   const params = queryToObject(search);
   return timeRangeFromParams(params);
+};
+
+/**
+ * Returns an array with user defined variables from the URL
+ *
+ * @returns {Array} The custom variables defined by the
+ * user in the URL
+ * @param {String} New URL
+ */
+
+export const promCustomVariablesFromUrl = (search = window.location.search) => {
+  const params = queryToObject(search);
+  const paramsToRemove = timeRangeParamNames.concat(dashboardParams);
+
+  return omit(params, paramsToRemove);
 };
 
 /**

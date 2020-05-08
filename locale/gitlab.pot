@@ -9146,7 +9146,13 @@ msgstr ""
 msgid "FeatureFlags|Feature flags allow you to configure your code into different flavors by dynamically toggling certain functionality."
 msgstr ""
 
+msgid "FeatureFlags|Flag becomes read only soon"
+msgstr ""
+
 msgid "FeatureFlags|Get started with feature flags"
+msgstr ""
+
+msgid "FeatureFlags|GitLab is moving to a new way of managing feature flags, and in 13.4, this feature flag will become read-only. Please create a new feature flag."
 msgstr ""
 
 msgid "FeatureFlags|ID"
@@ -12794,6 +12800,9 @@ msgstr ""
 msgid "Mark comment as resolved"
 msgstr ""
 
+msgid "Mark this comment as private"
+msgstr ""
+
 msgid "Mark this issue as a duplicate of another issue"
 msgstr ""
 
@@ -15584,6 +15593,9 @@ msgid "Private - Project access must be granted explicitly to each user. If this
 msgstr ""
 
 msgid "Private - The group and its projects can only be viewed by members."
+msgstr ""
+
+msgid "Private comments are accessible by internal staff only"
 msgstr ""
 
 msgid "Private group(s)"

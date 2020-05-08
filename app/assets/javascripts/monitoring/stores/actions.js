@@ -80,6 +80,10 @@ export const setTimeRange = ({ commit }, timeRange) => {
   commit(types.SET_TIME_RANGE, timeRange);
 };
 
+export const setVariables = ({ commit }, variables) => {
+  commit(types.SET_PROM_QUERY_VARIABLES, variables);
+};
+
 export const filterEnvironments = ({ commit, dispatch }, searchTerm) => {
   commit(types.SET_ENVIRONMENTS_FILTER, searchTerm);
   dispatch('fetchEnvironmentsData');
@@ -218,10 +222,14 @@ export const fetchDashboardData = ({ state, dispatch, getters }) => {
  *
  * @param {metric} metric
  */
-export const fetchPrometheusMetric = ({ commit }, { metric, defaultQueryParams }) => {
+export const fetchPrometheusMetric = ({ commit, state }, { metric, defaultQueryParams }) => {
   const queryParams = { ...defaultQueryParams };
   if (metric.step) {
     queryParams.step = metric.step;
+  }
+
+  if (state.promVariables.length > 0) {
+    queryParams.variables = state.promVariables;
   }
 
   commit(types.REQUEST_METRIC_RESULT, { metricId: metric.metricId });

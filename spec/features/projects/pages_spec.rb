@@ -158,6 +158,17 @@ shared_examples 'pages settings editing' do
           expect(page).to have_content('my.test.domain.com')
         end
 
+        it 'shows validation error if domain is duplicated' do
+          project.pages_domains.create!(domain: 'my.test.domain.com')
+
+          visit new_project_pages_domain_path(project)
+
+          fill_in 'Domain', with: 'my.test.domain.com'
+          click_button 'Create New Domain'
+
+          expect(page).to have_content('Domain has already been taken')
+        end
+
         describe 'with dns verification enabled' do
           before do
             stub_application_setting(pages_domain_verification_enabled: true)
