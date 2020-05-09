@@ -196,8 +196,8 @@ information like the file `name`, `side`, `sha1`, etc.
 
 If there is specific data necessary to be stored for only one package system support,
 consider creating a separate metadata model. See `packages_maven_metadata` table
-and `Packages::MavenMetadatum` model as an example for package specific data, and `packages_conan_file_metadata` table
-and `Packages::ConanFileMetadatum` model as an example for package file specific data.
+and `Packages::Maven::Metadatum` model as an example for package specific data, and `packages_conan_file_metadata` table
+and `Packages::Conan::FileMetadatum` model as an example for package file specific data.
 
 If there is package specific behavior for a given package manager, add those methods to the metadata models and
 delegate from the package model.

@@ -31,9 +31,6 @@ by [installing GitLab](../../install/README.md) on a single machine to minimize 
 If your organization has more than 2,000 users, the recommendation is to scale GitLab's components to multiple
 machine nodes. The machine nodes are grouped by component(s). The addition of these
 nodes increases the performance and scalability of to your GitLab instance.
-As long as there is at least one of each component online and capable of handling
-the instance's usage load, your team's productivity will not be interrupted.
-Scaling GitLab in this manner also enables you to perform [zero-downtime updates](https://docs.gitlab.com/omnibus/update/#zero-downtime-updates).
 
 When scaling GitLab, there are several factors to consider:
 
@@ -60,13 +57,14 @@ The following reference architectures are available:
 - [Up to 25,000 users](25k_users.md)
 - [Up to 50,000 users](50k_users.md)
 
-## Availability complexity
+## Availability components
 
-GitLab comes with the following availability complexity for your use, listed from
+GitLab comes with the following availability components for your use, listed from
 least to most complex:
 
 1. [Automated backups](#automated-backups-core-only)
-1. [Traffic Load Balancer](#Traffic-load-balancer-starter-only)
+1. [Traffic load balancer](#traffic-load-balancer-starter-only)
+1. [Zero downtime updates](#zero-downtime-updates-starter-only)
 1. [Automated database failover](#automated-database-failover-premium-only)
 1. [Instance level replication with GitLab Geo](#instance-level-replication-with-gitlab-geo-premium-only)
 
@@ -108,6 +106,16 @@ to the default installation:
 - Increase the number of users.
 - Enable zero-downtime upgrades.
 - Increase availability.
+
+### Zero downtime updates **(STARTER ONLY)**
+
+> - Level of complexity: **Medium**
+> - Required domain knowledge: PostgreSQL, HAProxy, shared storage, distributed systems
+> - Supported tiers: [GitLab Starter, Premium, and Ultimate](https://about.gitlab.com/pricing/)
+
+GitLab supports [zero-downtime updates](https://docs.gitlab.com/omnibus/update/#zero-downtime-updates).
+Although you can perform zero-downtime updates with a single GitLab node, the recommendation is to separate GitLab into several application nodes.
+As long as at least one of each component is online and capable of handling the instance's usage load, your team's productivity will not be interrupted during the update.
 
 ### Automated database failover **(PREMIUM ONLY)**
 

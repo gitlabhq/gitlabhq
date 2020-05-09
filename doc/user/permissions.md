@@ -148,6 +148,7 @@ The following table depicts the various user permission levels in a project.
 | Delete wiki pages                                 |         |            |             | ✓        | ✓      |
 | View project Audit Events                         |         |            |             | ✓        | ✓      |
 | Manage [push rules](../push_rules/push_rules.md)  |         |            |             | ✓        | ✓      |
+| Manage [project access tokens](./project/settings/project_access_tokens.md) **(CORE ONLY)** |         |            |             | ✓        | ✓      |
 | Switch visibility level                           |         |            |             |          | ✓      |
 | Transfer project to another namespace             |         |            |             |          | ✓      |
 | Remove fork relationship                          |         |            |             |          | ✓      |

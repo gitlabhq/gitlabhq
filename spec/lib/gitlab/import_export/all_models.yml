@@ -490,6 +490,7 @@ project:
 - metrics_users_starred_dashboards
 - alert_management_alerts
 - repository_storage_moves
+- freeze_periods
 award_emoji:
 - awardable
 - user

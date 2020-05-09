@@ -227,6 +227,8 @@ If your `.gitlab-ci.yml` extends these Auto DevOps templates and override the `o
 `except` keywords, you must migrate your templates to use the
 [`rules`](../../ci/yaml/README.md#rules) syntax after the
 base template is migrated to use the `rules` syntax.
+For users who cannot migrate just yet, you can alternatively pin your templates to
+the [GitLab 12.10 based templates](https://gitlab.com/gitlab-org/auto-devops-v12-10).
 
 ## PostgreSQL database support
 

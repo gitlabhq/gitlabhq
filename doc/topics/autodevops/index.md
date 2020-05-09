@@ -462,6 +462,22 @@ The following are possible reasons:
 Auto Test may fail because of a mismatch between testing frameworks. In this
 case, you may need to customize your `.gitlab-ci.yml` with your test commands.
 
+### Pipeline that extends Auto DevOps with only / except fails
+
+If your pipeline fails with the following message:
+
+```plaintext
+Found errors in your .gitlab-ci.yml:
+
+  jobs:test config key may not be used with `rules`: only
+```
+
+This error appears when the included job’s rules configuration has been overridden with the `only` or `except` syntax.
+To fix this issue, you must either:
+
+- Transition your `only/except` syntax to rules.
+- (Temporarily) Pin your templates to the [GitLab 12.10 based templates](https://gitlab.com/gitlab-org/auto-devops-v12-10).
+
 ### Failure to create a Kubernetes namespace
 
 Auto Deploy will fail if GitLab can't create a Kubernetes namespace and

@@ -29,7 +29,7 @@ module Gitlab
       return if Gitlab::Metrics::System.real_time < request_deadline
 
       raise RequestDeadlineExceeded,
-            "Request takes longer than #{max_request_duration_seconds}"
+            "Request takes longer than #{max_request_duration_seconds} seconds"
     end
 
     private

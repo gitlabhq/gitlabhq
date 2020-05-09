@@ -53,8 +53,6 @@ describe 'gitlab:gitaly namespace rake task' do
     end
 
     describe 'gmake/make' do
-      let(:command_preamble) { %w[/usr/bin/env -u RUBYOPT -u BUNDLE_GEMFILE] }
-
       before do
         stub_env('CI', false)
         FileUtils.mkdir_p(clone_path)
@@ -69,7 +67,7 @@ describe 'gitlab:gitaly namespace rake task' do
 
         it 'calls gmake in the gitaly directory' do
           expect(Gitlab::Popen).to receive(:popen).with(%w[which gmake]).and_return(['/usr/bin/gmake', 0])
-          expect(main_object).to receive(:run_command!).with(command_preamble + %w[gmake]).and_return(true)
+          expect(Gitlab::Popen).to receive(:popen).with(%w[gmake], nil, { "BUNDLE_GEMFILE" => nil, "RUBYOPT" => nil }).and_return(true)
 
           subject
         end
@@ -82,7 +80,7 @@ describe 'gitlab:gitaly namespace rake task' do
         end
 
         it 'calls make in the gitaly directory' do
-          expect(main_object).to receive(:run_command!).with(command_preamble + %w[make]).and_return(true)
+          expect(Gitlab::Popen).to receive(:popen).with(%w[make], nil, { "BUNDLE_GEMFILE" => nil, "RUBYOPT" => nil }).and_return(true)
 
           subject
         end
@@ -99,7 +97,7 @@ describe 'gitlab:gitaly namespace rake task' do
           end
 
           it 'calls make in the gitaly directory with --no-deployment flag for bundle' do
-            expect(main_object).to receive(:run_command!).with(command_preamble + command).and_return(true)
+            expect(Gitlab::Popen).to receive(:popen).with(command, nil, { "BUNDLE_GEMFILE" => nil, "RUBYOPT" => nil }).and_return(true)
 
             subject
           end

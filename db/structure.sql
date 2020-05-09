@@ -1069,6 +1069,25 @@ CREATE SEQUENCE public.ci_daily_report_results_id_seq
 
 ALTER SEQUENCE public.ci_daily_report_results_id_seq OWNED BY public.ci_daily_report_results.id;
 
+CREATE TABLE public.ci_freeze_periods (
+    id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    freeze_start character varying(998) NOT NULL,
+    freeze_end character varying(998) NOT NULL,
+    cron_timezone character varying(255) NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL
+);
+
+CREATE SEQUENCE public.ci_freeze_periods_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.ci_freeze_periods_id_seq OWNED BY public.ci_freeze_periods.id;
+
 CREATE TABLE public.ci_group_variables (
     id integer NOT NULL,
     key character varying NOT NULL,
@@ -7319,6 +7338,8 @@ ALTER TABLE ONLY public.ci_daily_build_group_report_results ALTER COLUMN id SET 
 
 ALTER TABLE ONLY public.ci_daily_report_results ALTER COLUMN id SET DEFAULT nextval('public.ci_daily_report_results_id_seq'::regclass);
 
+ALTER TABLE ONLY public.ci_freeze_periods ALTER COLUMN id SET DEFAULT nextval('public.ci_freeze_periods_id_seq'::regclass);
+
 ALTER TABLE ONLY public.ci_group_variables ALTER COLUMN id SET DEFAULT nextval('public.ci_group_variables_id_seq'::regclass);
 
 ALTER TABLE ONLY public.ci_instance_variables ALTER COLUMN id SET DEFAULT nextval('public.ci_instance_variables_id_seq'::regclass);
@@ -7991,6 +8012,9 @@ ALTER TABLE ONLY public.ci_daily_build_group_report_results
 
 ALTER TABLE ONLY public.ci_daily_report_results
     ADD CONSTRAINT ci_daily_report_results_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.ci_freeze_periods
+    ADD CONSTRAINT ci_freeze_periods_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY public.ci_group_variables
     ADD CONSTRAINT ci_group_variables_pkey PRIMARY KEY (id);
@@ -9189,6 +9213,8 @@ CREATE UNIQUE INDEX index_ci_builds_runner_session_on_build_id ON public.ci_buil
 CREATE INDEX index_ci_daily_build_group_report_results_on_last_pipeline_id ON public.ci_daily_build_group_report_results USING btree (last_pipeline_id);
 
 CREATE INDEX index_ci_daily_report_results_on_last_pipeline_id ON public.ci_daily_report_results USING btree (last_pipeline_id);
+
+CREATE INDEX index_ci_freeze_periods_on_project_id ON public.ci_freeze_periods USING btree (project_id);
 
 CREATE UNIQUE INDEX index_ci_group_variables_on_group_id_and_key ON public.ci_group_variables USING btree (group_id, key);
 
@@ -11670,6 +11696,9 @@ ALTER TABLE ONLY public.geo_repository_updated_events
 ALTER TABLE ONLY public.protected_branch_unprotect_access_levels
     ADD CONSTRAINT fk_rails_2d2aba21ef FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY public.ci_freeze_periods
+    ADD CONSTRAINT fk_rails_2e02bbd1a6 FOREIGN KEY (project_id) REFERENCES public.projects(id);
+
 ALTER TABLE ONLY public.saml_providers
     ADD CONSTRAINT fk_rails_306d459be7 FOREIGN KEY (group_id) REFERENCES public.namespaces(id) ON DELETE CASCADE;
 
@@ -13659,6 +13688,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200407182205
 20200407222647
 20200408110856
+20200408125046
 20200408133211
 20200408153842
 20200408154331
