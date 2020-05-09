@@ -111,12 +111,16 @@ module Gitlab
       end
 
       def overwrite_project
-        return unless can?(current_user, :admin_namespace, project.namespace)
+        return true unless overwrite_project?
 
-        if overwrite_project?
-          ::Projects::OverwriteProjectService.new(project, current_user)
-                                             .execute(project_to_overwrite)
+        unless can?(current_user, :admin_namespace, project.namespace)
+          message = "User #{current_user&.username} (#{current_user&.id}) cannot overwrite a project in #{project.namespace.path}"
+          @shared.error(::Projects::ImportService::PermissionError.new(message))
+          return false
         end
+
+        ::Projects::OverwriteProjectService.new(project, current_user)
+                                            .execute(project_to_overwrite)
 
         true
       end
