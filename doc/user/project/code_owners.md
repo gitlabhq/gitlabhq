@@ -115,7 +115,7 @@ Example `CODEOWNERS` file:
 # This will match all files for which the file name ends in `.rb`
 *.rb @ruby-owner
 
-# Files with a `#` can still be accesssed by escaping the pound sign
+# Files with a `#` can still be accessed by escaping the pound sign
 \#file_with_pound.rb @owner-file-with-pound
 
 # Multiple codeowners can be specified, separated by spaces or tabs

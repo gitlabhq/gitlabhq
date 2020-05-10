@@ -42,6 +42,9 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab
 }
 ```
 
+NOTE: **Note:**
+The upload request will be sent with `Content-Type: application/gzip` header. Ensure that your pre-signed URL includes this as part of the signature.
+
 ## Export status
 
 Get the status of export.

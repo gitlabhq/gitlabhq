@@ -52,7 +52,10 @@ module Gitlab
         end
 
         def headers
-          { 'Content-Length' => export_size.to_s }
+          {
+            'Content-Type' => 'application/gzip',
+            'Content-Length' => export_size.to_s
+          }
         end
 
         def export_size
