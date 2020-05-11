@@ -23,6 +23,20 @@ module Gitlab
 
         alias_method :has_next_page, :next_page?
         alias_method :has_previous_page, :previous_page?
+
+        private
+
+        def load_nodes
+          @nodes ||= begin
+            # As the pagination happens externally we just grab all the nodes
+            limited_nodes = items
+
+            limited_nodes = limited_nodes.first(first) if first
+            limited_nodes = limited_nodes.last(last) if last
+
+            limited_nodes
+          end
+        end
       end
     end
   end

@@ -85,6 +85,8 @@ module Gitlab
 
           yield line.strip
         end
+      # Catch invalid byte sequences
+      rescue ArgumentError
       end
 
       private

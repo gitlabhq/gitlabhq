@@ -3,10 +3,7 @@ import Vue from 'vue';
 import mountComponent from 'helpers/vue_mount_component_helper';
 import dropdownButtonComponent from '~/vue_shared/components/sidebar/labels_select/dropdown_button.vue';
 
-import {
-  mockConfig,
-  mockLabels,
-} from '../../../../../javascripts/vue_shared/components/sidebar/labels_select/mock_data';
+import { mockConfig, mockLabels } from './mock_data';
 
 const componentConfig = {
   ...mockConfig,

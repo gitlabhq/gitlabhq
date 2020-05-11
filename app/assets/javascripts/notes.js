@@ -1396,7 +1396,7 @@ export default class Notes {
   }
 
   /**
-   * Check if note does not exists on page
+   * Check if note does not exist on page
    */
   static isNewNote(noteEntity, noteIds) {
     return $.inArray(noteEntity.id, noteIds) === -1;

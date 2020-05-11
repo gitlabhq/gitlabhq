@@ -75,6 +75,14 @@ describe Gitlab::Git::AttributesParser, :seed_helper do
         expect(subject.attributes('test.foo')).to eq({})
       end
     end
+
+    context 'when attributes data has binary data' do
+      let(:data) { "\xFF\xFE*\u0000.\u0000c\u0000s".b }
+
+      it 'returns an empty Hash' do
+        expect(subject.attributes('test.foo')).to eq({})
+      end
+    end
   end
 
   describe '#patterns' do

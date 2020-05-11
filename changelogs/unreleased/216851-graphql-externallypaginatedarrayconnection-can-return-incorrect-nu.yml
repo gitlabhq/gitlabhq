@@ -1,0 +1,5 @@
+---
+title: Fix incorrect number of errors returned when querying sentry errors
+merge_request: 31252
+author:
+type: fixed

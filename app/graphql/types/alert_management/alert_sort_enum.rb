@@ -11,9 +11,9 @@ module Types
       value 'END_TIME_ASC', 'End time by ascending order', value: :end_time_asc
       value 'END_TIME_DESC', 'End time by descending order', value: :end_time_desc
       value 'CREATED_TIME_ASC', 'Created time by ascending order', value: :created_at_asc
-      value 'CREATED_TIME_DESC', 'Created time by ascending order', value: :created_at_desc
-      value 'UPDATED_TIME_ASC', 'Created time by ascending order', value: :updated_at_desc
-      value 'UPDATED_TIME_DESC', 'Created time by ascending order', value: :updated_at_desc
+      value 'CREATED_TIME_DESC', 'Created time by descending order', value: :created_at_desc
+      value 'UPDATED_TIME_ASC', 'Created time by ascending order', value: :updated_at_asc
+      value 'UPDATED_TIME_DESC', 'Created time by descending order', value: :updated_at_desc
       value 'EVENTS_COUNT_ASC', 'Events count by ascending order', value: :events_count_asc
       value 'EVENTS_COUNT_DESC', 'Events count by descending order', value: :events_count_desc
       value 'SEVERITY_ASC', 'Severity by ascending order', value: :severity_asc

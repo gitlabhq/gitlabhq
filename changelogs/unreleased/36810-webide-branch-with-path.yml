@@ -1,0 +1,5 @@
+---
+title: In WebIDE get files with relative path instead of web_url
+merge_request: 31478
+author:
+type: fixed

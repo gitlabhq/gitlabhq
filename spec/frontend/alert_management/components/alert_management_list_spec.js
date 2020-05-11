@@ -9,6 +9,7 @@ import {
   GlIcon,
   GlTab,
 } from '@gitlab/ui';
+import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import AlertManagementList from '~/alert_management/components/alert_management_list.vue';
 import { ALERTS_STATUS_TABS } from '../../../../app/assets/javascripts/alert_management/constants';
 
@@ -24,6 +25,7 @@ describe('AlertManagementList', () => {
   const findStatusDropdown = () => wrapper.find(GlNewDropdown);
   const findStatusFilterTabs = () => wrapper.findAll(GlTab);
   const findNumberOfAlertsBadge = () => wrapper.findAll(GlBadge);
+  const findDateFields = () => wrapper.findAll(TimeAgo);
 
   function mountComponent({
     props = {
@@ -196,6 +198,46 @@ describe('AlertManagementList', () => {
             .find(GlIcon)
             .classes('icon-critical'),
         ).toBe(true);
+      });
+    });
+
+    describe('handle date fields', () => {
+      it('should display time ago dates when values provided', () => {
+        mountComponent({
+          props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
+          data: {
+            alerts: [
+              {
+                iid: 1,
+                startedAt: '2020-03-17T23:18:14.996Z',
+                endedAt: '2020-04-17T23:18:14.996Z',
+                severity: 'high',
+              },
+            ],
+            errored: false,
+          },
+          loading: false,
+        });
+        expect(findDateFields().length).toBe(2);
+      });
+
+      it('should not display time ago dates when values not provided', () => {
+        mountComponent({
+          props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
+          data: {
+            alerts: [
+              {
+                iid: 1,
+                startedAt: null,
+                endedAt: null,
+                severity: 'high',
+              },
+            ],
+            errored: false,
+          },
+          loading: false,
+        });
+        expect(findDateFields().exists()).toBe(false);
       });
     });
   });

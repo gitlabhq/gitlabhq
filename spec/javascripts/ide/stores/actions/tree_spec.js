@@ -30,6 +30,7 @@ describe('Multi-file store tree actions', () => {
     store.state.currentBranchId = 'master';
     store.state.projects.abcproject = {
       web_url: '',
+      path_with_namespace: 'foo/abcproject',
     };
   });
 
@@ -57,7 +58,7 @@ describe('Multi-file store tree actions', () => {
         store
           .dispatch('getFiles', basicCallParameters)
           .then(() => {
-            expect(service.getFiles).toHaveBeenCalledWith('', '12345678');
+            expect(service.getFiles).toHaveBeenCalledWith('foo/abcproject', '12345678');
 
             done();
           })

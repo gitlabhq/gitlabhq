@@ -23340,7 +23340,7 @@ msgstr ""
 msgid "Value Stream Analytics gives an overview of how much time it takes to go from idea to production in your project."
 msgstr ""
 
-msgid "Var"
+msgid "Variable"
 msgstr ""
 
 msgid "Variable will be masked in job logs."

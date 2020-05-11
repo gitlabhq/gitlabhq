@@ -47,7 +47,7 @@ describe('CI variable list mutations', () => {
   describe('CLEAR_MODAL', () => {
     it('should clear modal state ', () => {
       const modalState = {
-        variable_type: 'Var',
+        variable_type: 'Variable',
         key: '',
         secret_value: '',
         protected: false,

@@ -18,9 +18,6 @@ spent in each stage defined in the process.
 
 For information on how to contribute to the development of Value Stream Analytics, see our [contributor documentation](../../development/value_stream_analytics.md).
 
-NOTE: **Note:**
-Use the `cycle_analytics` feature flag to enable at the group level.
-
 Value Stream Analytics is useful in order to quickly determine the velocity of a given
 project. It points to bottlenecks in the development process, enabling management
 to uncover, triage, and identify the root cause of slowdowns in the software development life cycle.
@@ -33,7 +30,7 @@ calculates a separate median for each stage.
 Value Stream Analytics is available:
 
 - From GitLab 12.9, at the group level via **Group > Analytics > Value Stream**. **(PREMIUM)**
-- At the project level via **Project > Value Stream Analytics**.
+- At the project level via **Project > Analytics > Value Stream**.
 
 There are seven stages that are tracked as part of the Value Stream Analytics calculations.
 
@@ -300,15 +297,6 @@ toggled to show data for merge requests and further refined for specific group-l
 By default the top group-level labels (max. 10) are pre-selected, with the ability to
 select up to a total of 15 labels.
 
-### Disabling chart
-
-This chart is enabled by default. If you have a self-managed instance, an
-administrator can open a Rails console and disable it with the following command:
-
-```ruby
-Feature.disable(:tasks_by_type_chart)
-```
-
 ## Permissions
 
 The current permissions on the Project Value Stream Analytics dashboard are:
@@ -330,14 +318,6 @@ For Value Stream Analytics functionality introduced in GitLab 12.3 and later:
 - Users must have Reporter access or above.
 - Features are available only on
   [Premium or Silver tiers](https://about.gitlab.com/pricing/) and above.
-
-## Troubleshooting
-
-If you see an error as listed in the following table, try the noted solution:
-
-| Error                                       | Solution                                                                                                                                                                                                                           |
-|---------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| There was an error fetching the top labels. | Manually enable tasks by type feature in the [rails console](../../administration/troubleshooting/navigating_gitlab_via_rails_console.md#starting-a-rails-console-session), specifically `Feature.enable(:tasks_by_type_chart)`. |
 
 ## More resources
 
