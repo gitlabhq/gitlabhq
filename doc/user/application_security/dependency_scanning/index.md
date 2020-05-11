@@ -24,7 +24,7 @@ GitLab checks the Dependency Scanning report, compares the found vulnerabilities
 between the source and target branches, and shows the information on the
 merge request.
 
-![Dependency Scanning Widget](img/dependency_scanning.png)
+![Dependency Scanning Widget](img/dependency_scanning_v13_0.png)
 
 The results are sorted by the severity of the vulnerability:
 

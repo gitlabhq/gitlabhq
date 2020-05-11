@@ -356,7 +356,7 @@ export default {
         </span>
       </template>
       <template #cell(created_at)="{value}">
-        <span ref="rowTime">
+        <span ref="rowTime" v-gl-tooltip :title="tooltipTitle(value)">
           {{ timeFormatted(value) }}
         </span>
       </template>

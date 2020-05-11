@@ -22,7 +22,7 @@ GitLab checks the Container Scanning report, compares the found vulnerabilities
 between the source and target branches, and shows the information right on the
 merge request.
 
-![Container Scanning Widget](img/container_scanning_v12_9.png)
+![Container Scanning Widget](img/container_scanning_v13_0.png)
 
 ## Contribute your scanner
 

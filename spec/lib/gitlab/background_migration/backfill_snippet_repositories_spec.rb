@@ -70,6 +70,17 @@ describe Gitlab::BackgroundMigration::BackfillSnippetRepositories, :migration, s
       end
     end
 
+    shared_examples 'migration_bot user commits files' do
+      it do
+        subject
+
+        last_commit = raw_repository(snippet).commit
+
+        expect(last_commit.author_name).to eq migration_bot.name
+        expect(last_commit.author_email).to eq migration_bot.email
+      end
+    end
+
     shared_examples 'commits the file to the repository' do
       context 'when author can update snippet and use git' do
         it 'creates the repository and commit the file' do
@@ -88,17 +99,6 @@ describe Gitlab::BackgroundMigration::BackfillSnippetRepositories, :migration, s
       end
 
       context 'when author cannot update snippet or use git' do
-        shared_examples 'migration_bot user commits files' do
-          it do
-            subject
-
-            last_commit = raw_repository(snippet).commit
-
-            expect(last_commit.author_name).to eq migration_bot.name
-            expect(last_commit.author_email).to eq migration_bot.email
-          end
-        end
-
         context 'when user is blocked' do
           let(:user_state) { 'blocked' }
 
@@ -218,6 +218,19 @@ describe Gitlab::BackgroundMigration::BackfillSnippetRepositories, :migration, s
           expect(blob_at(snippet_with_valid_path, file_name)).to be
         end
       end
+    end
+
+    context 'when snippet content size is higher than the existing limit' do
+      let(:limit) { 15 }
+      let(:content) { 'a' * (limit + 1) }
+      let(:snippet) { snippet_without_repo }
+      let(:ids) { [snippet.id, snippet.id] }
+
+      before do
+        allow(Gitlab::CurrentSettings).to receive(:snippet_size_limit).and_return(limit)
+      end
+
+      it_behaves_like 'migration_bot user commits files'
     end
   end
 

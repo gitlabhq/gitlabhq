@@ -1,0 +1,5 @@
+---
+title: Enable ref name caching for merge request diffs
+merge_request: 31530
+author:
+type: performance

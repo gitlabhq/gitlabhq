@@ -128,5 +128,12 @@ module Gitlab
     def check_custom_action(cmd)
       nil
     end
+
+    override :check_size_limit?
+    def check_size_limit?
+      return false if user&.migration_bot?
+
+      super
+    end
   end
 end

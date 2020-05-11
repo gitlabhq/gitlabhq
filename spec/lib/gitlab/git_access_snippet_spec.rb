@@ -298,6 +298,16 @@ describe Gitlab::GitAccessSnippet do
     let(:ref) { "refs/heads/snippet/edit-file" }
     let(:changes) { "#{oldrev} #{newrev} #{ref}" }
 
+    shared_examples 'migration bot does not err' do
+      let(:actor) { migration_bot }
+
+      it 'does not err' do
+        expect(snippet.repository_size_checker).not_to receive(:above_size_limit?)
+
+        expect { push_access_check }.not_to raise_error
+      end
+    end
+
     shared_examples_for 'a push to repository already over the limit' do
       it 'errs' do
         expect(snippet.repository_size_checker).to receive(:above_size_limit?).and_return(true)
@@ -306,6 +316,8 @@ describe Gitlab::GitAccessSnippet do
           push_access_check
         end.to raise_error(described_class::ForbiddenError, /Your push has been rejected/)
       end
+
+      it_behaves_like 'migration bot does not err'
     end
 
     shared_examples_for 'a push to repository below the limit' do
@@ -318,6 +330,8 @@ describe Gitlab::GitAccessSnippet do
 
         expect { push_access_check }.not_to raise_error
       end
+
+      it_behaves_like 'migration bot does not err'
     end
 
     shared_examples_for 'a push to repository to make it over the limit' do
@@ -332,6 +346,8 @@ describe Gitlab::GitAccessSnippet do
           push_access_check
         end.to raise_error(described_class::ForbiddenError, /Your push to this repository would cause it to exceed the size limit/)
       end
+
+      it_behaves_like 'migration bot does not err'
     end
 
     context 'when GIT_OBJECT_DIRECTORY_RELATIVE env var is set' do
@@ -350,14 +366,6 @@ describe Gitlab::GitAccessSnippet do
       it_behaves_like 'a push to repository already over the limit'
       it_behaves_like 'a push to repository below the limit'
       it_behaves_like 'a push to repository to make it over the limit'
-
-      context 'when user is migration bot' do
-        let(:actor) { migration_bot }
-
-        it_behaves_like 'a push to repository already over the limit'
-        it_behaves_like 'a push to repository below the limit'
-        it_behaves_like 'a push to repository to make it over the limit'
-      end
     end
 
     context 'when GIT_OBJECT_DIRECTORY_RELATIVE env var is not set' do
@@ -372,14 +380,6 @@ describe Gitlab::GitAccessSnippet do
       it_behaves_like 'a push to repository already over the limit'
       it_behaves_like 'a push to repository below the limit'
       it_behaves_like 'a push to repository to make it over the limit'
-
-      context 'when user is migration bot' do
-        let(:actor) { migration_bot }
-
-        it_behaves_like 'a push to repository already over the limit'
-        it_behaves_like 'a push to repository below the limit'
-        it_behaves_like 'a push to repository to make it over the limit'
-      end
     end
   end
 

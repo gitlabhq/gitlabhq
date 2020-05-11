@@ -142,10 +142,6 @@ describe('Details Page', () => {
     });
 
     describe('row checkbox', () => {
-      beforeEach(() => {
-        mountComponent();
-      });
-
       it('if selected adds item to selectedItems', () => {
         findFirstRowItem('rowCheckbox').vm.$emit('change');
         return wrapper.vm.$nextTick().then(() => {
@@ -275,6 +271,21 @@ describe('Details Page', () => {
         it('does not has class w-25', () => {
           expect(findFirsTagColumn().classes()).not.toContain('w-25');
         });
+      });
+    });
+
+    describe('last updated cell', () => {
+      let timeCell;
+
+      beforeEach(() => {
+        timeCell = findFirstRowItem('rowTime');
+      });
+
+      it('displays the time in string format', () => {
+        expect(timeCell.text()).toBe('2 years ago');
+      });
+      it('has a tooltip timestamp', () => {
+        expect(timeCell.attributes('title')).toBe('Sep 19, 2017 1:45pm GMT+0000');
       });
     });
   });

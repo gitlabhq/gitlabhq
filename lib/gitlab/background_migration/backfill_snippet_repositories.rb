@@ -100,6 +100,8 @@ module Gitlab
       # migrate their snippets as well.
       # In this scenario the migration bot user will be the one that will commit the files.
       def commit_author(snippet)
+        return migration_bot_user if snippet_content_size_over_limit?(snippet)
+
         if Gitlab::UserAccessSnippet.new(snippet.author, snippet: snippet).can_do_action?(:update_snippet)
           snippet.author
         else
@@ -118,6 +120,10 @@ module Gitlab
       # that the path is invalid
       def set_file_path_error(error)
         @invalid_path_error = error.is_a?(SnippetRepository::InvalidPathError)
+      end
+
+      def snippet_content_size_over_limit?(snippet)
+        snippet.content.size > Gitlab::CurrentSettings.snippet_size_limit
       end
     end
   end

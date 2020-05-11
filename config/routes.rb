@@ -129,6 +129,9 @@ Rails.application.routes.draw do
       scope '/push_from_secondary/:geo_node_id' do
         draw :git_http
       end
+
+      # Used for survey responses
+      resources :survey_responses, only: :index
     end
 
     if ENV['GITLAB_CHAOS_SECRET'] || Rails.env.development? || Rails.env.test?

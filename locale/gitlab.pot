@@ -2488,6 +2488,9 @@ msgstr ""
 msgid "Approved the current merge request."
 msgstr ""
 
+msgid "Approved-By"
+msgstr ""
+
 msgid "Approver"
 msgstr ""
 
@@ -14797,6 +14800,9 @@ msgstr ""
 msgid "Packages"
 msgstr ""
 
+msgid "Packages & Registries"
+msgstr ""
+
 msgid "Page not found"
 msgstr ""
 
@@ -20429,6 +20435,9 @@ msgstr ""
 msgid "Support page URL"
 msgstr ""
 
+msgid "Survey Response"
+msgstr ""
+
 msgid "Switch branch/tag"
 msgstr ""
 
@@ -20708,6 +20717,9 @@ msgid "Tests"
 msgstr ""
 
 msgid "Thank you for signing up for your free trial! You will get additional instructions in your inbox shortly."
+msgstr ""
+
+msgid "Thank you for your feedback!"
 msgstr ""
 
 msgid "Thank you for your report. A GitLab administrator will look into it shortly."
@@ -23910,9 +23922,6 @@ msgstr ""
 msgid "WikiClone|Install Gollum"
 msgstr ""
 
-msgid "WikiClone|It is recommended to install %{markdown} so that GFM features render locally:"
-msgstr ""
-
 msgid "WikiClone|Start Gollum and edit locally"
 msgstr ""
 
@@ -24693,6 +24702,9 @@ msgstr ""
 msgid "Your request for access has been queued for review."
 msgstr ""
 
+msgid "Your response has been recorded."
+msgstr ""
+
 msgid "Your search didn't match any commits."
 msgstr ""
 
@@ -24951,6 +24963,9 @@ msgstr ""
 msgid "ciReport|Failed to load %{reportName} report"
 msgstr ""
 
+msgid "ciReport|Fixed"
+msgstr ""
+
 msgid "ciReport|Fixed:"
 msgstr ""
 
@@ -24967,6 +24982,9 @@ msgid "ciReport|Loading %{reportName} report"
 msgstr ""
 
 msgid "ciReport|Manage licenses"
+msgstr ""
+
+msgid "ciReport|New"
 msgstr ""
 
 msgid "ciReport|No changes to code quality"
