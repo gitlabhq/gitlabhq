@@ -7,7 +7,7 @@ describe 'getting Alert Management Alerts' do
   let_it_be(:payload) { { 'custom' => { 'alert' => 'payload' } } }
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:alert_1) { create(:alert_management_alert, :all_fields, :resolved, project: project, severity: :low) }
+  let_it_be(:alert_1) { create(:alert_management_alert, :all_fields, :resolved, project: project, issue: nil, severity: :low) }
   let_it_be(:alert_2) { create(:alert_management_alert, :all_fields, project: project, severity: :critical, payload: payload) }
   let_it_be(:other_project_alert) { create(:alert_management_alert, :all_fields) }
 
@@ -58,6 +58,7 @@ describe 'getting Alert Management Alerts' do
       it 'returns the correct properties of the alerts' do
         expect(first_alert).to include(
           'iid' => alert_2.iid.to_s,
+          'issueIid' => alert_2.issue_iid.to_s,
           'title' => alert_2.title,
           'description' => alert_2.description,
           'severity' => alert_2.severity.upcase,
@@ -74,6 +75,8 @@ describe 'getting Alert Management Alerts' do
         )
 
         expect(second_alert).to include(
+          'iid' => alert_1.iid.to_s,
+          'issueIid' => nil,
           'status' => 'RESOLVED',
           'endedAt' => alert_1.ended_at.strftime('%Y-%m-%dT%H:%M:%SZ')
         )

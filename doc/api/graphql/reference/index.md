@@ -59,6 +59,7 @@ Describes an alert from the project's Alert Management
 | `eventCount` | Int | Number of events of this alert |
 | `hosts` | String! => Array | List of hosts the alert came from |
 | `iid` | ID! | Internal ID of the alert |
+| `issueIid` | ID | Internal ID of the GitLab issue attached to the alert |
 | `monitoringTool` | String | Monitoring tool the alert came from |
 | `service` | String | Service the alert came from |
 | `severity` | AlertManagementSeverity | Severity of the alert |

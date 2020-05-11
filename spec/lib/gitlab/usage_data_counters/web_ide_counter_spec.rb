@@ -26,6 +26,10 @@ describe Gitlab::UsageDataCounters::WebIdeCounter, :clean_gitlab_redis_shared_st
     it_behaves_like 'counter examples', 'views'
   end
 
+  describe 'terminals counter' do
+    it_behaves_like 'counter examples', 'terminals'
+  end
+
   describe 'previews counter' do
     let(:setting_enabled) { true }
 
@@ -56,6 +60,7 @@ describe Gitlab::UsageDataCounters::WebIdeCounter, :clean_gitlab_redis_shared_st
     merge_requests = 3
     views = 2
     previews = 4
+    terminals = 1
 
     before do
       stub_application_setting(web_ide_clientside_preview_enabled: true)
@@ -64,6 +69,7 @@ describe Gitlab::UsageDataCounters::WebIdeCounter, :clean_gitlab_redis_shared_st
       merge_requests.times { described_class.increment_merge_requests_count }
       views.times { described_class.increment_views_count }
       previews.times { described_class.increment_previews_count }
+      terminals.times { described_class.increment_terminals_count }
     end
 
     it 'can report all totals' do
@@ -71,7 +77,8 @@ describe Gitlab::UsageDataCounters::WebIdeCounter, :clean_gitlab_redis_shared_st
         web_ide_commits: commits,
         web_ide_views: views,
         web_ide_merge_requests: merge_requests,
-        web_ide_previews: previews
+        web_ide_previews: previews,
+        web_ide_terminals: terminals
       )
     end
   end

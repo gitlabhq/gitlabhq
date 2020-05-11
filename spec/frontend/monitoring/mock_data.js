@@ -34,6 +34,7 @@ const customDashboardsData = new Array(30).fill(null).map((_, idx) => ({
   system_dashboard: false,
   project_blob_path: `${mockProjectDir}/blob/master/dashboards/.gitlab/dashboards/dashboard_${idx}.yml`,
   path: `.gitlab/dashboards/dashboard_${idx}.yml`,
+  starred: false,
 }));
 
 export const mockDashboardsErrorResponse = {
@@ -323,6 +324,16 @@ export const dashboardGitResponse = [
     system_dashboard: true,
     project_blob_path: null,
     path: 'config/prometheus/common_metrics.yml',
+    starred: false,
+  },
+  {
+    default: false,
+    display_name: 'dashboard.yml',
+    can_edit: true,
+    system_dashboard: false,
+    project_blob_path: `${mockProjectDir}/-/blob/master/.gitlab/dashboards/dashboard.yml`,
+    path: '.gitlab/dashboards/dashboard.yml',
+    starred: true,
   },
   ...customDashboardsData,
 ];

@@ -178,6 +178,11 @@ type AlertManagementAlert {
   iid: ID!
 
   """
+  Internal ID of the GitLab issue attached to the alert
+  """
+  issueIid: ID
+
+  """
   Monitoring tool the alert came from
   """
   monitoringTool: String

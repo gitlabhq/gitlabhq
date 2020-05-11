@@ -438,7 +438,8 @@ don't forget to add `stage: dast` when you override the template job definition.
 DAST can be [configured](#customizing-the-dast-settings) using environment variables.
 
 | Environment variable        | Required   | Description                                                                    |
-|-----------------------------| ----------|--------------------------------------------------------------------------------|
+|-----------------------------| -----------|--------------------------------------------------------------------------------|
+| `SECURE_ANALYZERS_PREFIX`   | no         | Set the Docker registry base address from which to download the analyzer.            |
 | `DAST_WEBSITE`  | no| The URL of the website to scan. `DAST_API_SPECIFICATION` must be specified if this is omitted. |
 | `DAST_API_SPECIFICATION`  | no | The API specification to import. `DAST_WEBSITE` must be specified if this is omitted. |
 | `DAST_AUTH_URL` | no | The authentication URL of the website to scan. Not supported for API scans. |
@@ -562,6 +563,8 @@ dast:
 
 The DAST job should now use local copies of the DAST analyzers to scan your code and generate
 security reports without requiring internet access.
+
+Alternatively, you can use the variable `SECURE_ANALYZERS_PREFIX` to override the base registry address of the `dast` image.
 
 ## Reports
 

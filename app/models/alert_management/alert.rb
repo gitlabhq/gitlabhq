@@ -92,6 +92,8 @@ module AlertManagement
       end
     end
 
+    delegate :iid, to: :issue, prefix: true, allow_nil: true
+
     scope :for_iid, -> (iid) { where(iid: iid) }
     scope :for_status, -> (status) { where(status: status) }
     scope :for_fingerprint, -> (project, fingerprint) { where(project: project, fingerprint: fingerprint) }

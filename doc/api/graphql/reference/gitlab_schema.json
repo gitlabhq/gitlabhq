@@ -505,6 +505,20 @@
               "deprecationReason": null
             },
             {
+              "name": "issueIid",
+              "description": "Internal ID of the GitLab issue attached to the alert",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "monitoringTool",
               "description": "Monitoring tool the alert came from",
               "args": [
