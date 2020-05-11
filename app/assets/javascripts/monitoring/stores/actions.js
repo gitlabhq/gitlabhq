@@ -222,14 +222,17 @@ export const fetchDashboardData = ({ state, dispatch, getters }) => {
  *
  * @param {metric} metric
  */
-export const fetchPrometheusMetric = ({ commit, state }, { metric, defaultQueryParams }) => {
+export const fetchPrometheusMetric = (
+  { commit, state, getters },
+  { metric, defaultQueryParams },
+) => {
   const queryParams = { ...defaultQueryParams };
   if (metric.step) {
     queryParams.step = metric.step;
   }
 
-  if (state.promVariables.length > 0) {
-    queryParams.variables = state.promVariables;
+  if (Object.keys(state.promVariables).length > 0) {
+    queryParams.variables = getters.getCustomVariablesArray;
   }
 
   commit(types.REQUEST_METRIC_RESULT, { metricId: metric.metricId });
@@ -388,6 +391,12 @@ export const duplicateSystemDashboard = ({ state }, payload) => {
         throw s__('Metrics|There was an error creating the dashboard.');
       }
     });
+};
+
+// Variables manipulation
+
+export const setVariableData = ({ commit }, updatedVariable) => {
+  commit(types.UPDATE_VARIABLE_DATA, updatedVariable);
 };
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests

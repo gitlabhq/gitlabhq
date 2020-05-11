@@ -6,6 +6,11 @@ module Resolvers
               required: false,
               description: 'IID of the alert. For example, "1"'
 
+    argument :statuses, [Types::AlertManagement::StatusEnum],
+              as: :status,
+              required: false,
+              description: 'Alerts with the specified statues. For example, [TRIGGERED]'
+
     argument :sort, Types::AlertManagement::AlertSortEnum,
               description: 'Sort alerts by this criteria',
               required: false

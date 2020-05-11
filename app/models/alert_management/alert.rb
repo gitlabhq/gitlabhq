@@ -93,6 +93,7 @@ module AlertManagement
     end
 
     scope :for_iid, -> (iid) { where(iid: iid) }
+    scope :for_status, -> (status) { where(status: status) }
     scope :for_fingerprint, -> (project, fingerprint) { where(project: project, fingerprint: fingerprint) }
 
     scope :order_start_time,    -> (sort_order) { order(started_at: sort_order) }

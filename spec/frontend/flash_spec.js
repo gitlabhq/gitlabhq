@@ -38,9 +38,7 @@ describe('Flash', () => {
     it('sets transition style', () => {
       hideFlash(el);
 
-      expect(el.style['transition-property']).toBe('opacity');
-
-      expect(el.style['transition-duration']).toBe('0.15s');
+      expect(el.style.transition).toBe('opacity 0.15s');
     });
 
     it('sets opacity style', () => {
@@ -53,8 +51,7 @@ describe('Flash', () => {
       hideFlash(el, false);
 
       expect(el.style.opacity).toBe('');
-
-      expect(el.style.transition).toBe('');
+      expect(el.style.transition).toBeFalsy();
     });
 
     it('removes element after transitionend', () => {
@@ -67,7 +64,7 @@ describe('Flash', () => {
     });
 
     it('calls event listener callback once', () => {
-      spyOn(el, 'remove').and.callThrough();
+      jest.spyOn(el, 'remove');
       document.body.appendChild(el);
 
       hideFlash(el);
@@ -75,7 +72,7 @@ describe('Flash', () => {
       el.dispatchEvent(new Event('transitionend'));
       el.dispatchEvent(new Event('transitionend'));
 
-      expect(el.remove.calls.count()).toBe(1);
+      expect(el.remove.mock.calls.length).toBe(1);
     });
   });
 
@@ -195,7 +192,7 @@ describe('Flash', () => {
         it('calls actionConfig clickHandler on click', () => {
           const actionConfig = {
             title: 'test',
-            clickHandler: jasmine.createSpy('actionConfig'),
+            clickHandler: jest.fn(),
           };
 
           flash('test', 'alert', document, actionConfig);
@@ -226,7 +223,7 @@ describe('Flash', () => {
 
       flashEl.querySelector('.js-close-icon').click();
 
-      setTimeout(() => {
+      setImmediate(() => {
         expect(document.querySelector('.flash')).toBeNull();
 
         done();

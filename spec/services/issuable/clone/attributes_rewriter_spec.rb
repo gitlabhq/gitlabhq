@@ -114,5 +114,27 @@ describe Issuable::Clone::AttributesRewriter do
         expect(event.state).to eq(expected_attrs[:state])
       end
     end
+
+    context 'with existing state events' do
+      let!(:event1) { create(:resource_state_event, issue: original_issue, state: 'opened') }
+      let!(:event2) { create(:resource_state_event, issue: original_issue, state: 'closed') }
+      let!(:event3) { create(:resource_state_event, issue: original_issue, state: 'reopened') }
+
+      it 'copies existing state events as expected' do
+        subject.execute
+
+        state_events = new_issue.reload.resource_state_events
+        expect(state_events.size).to eq(3)
+
+        expect_state_event(state_events.first, issue: new_issue, state: 'opened')
+        expect_state_event(state_events.second, issue: new_issue, state: 'closed')
+        expect_state_event(state_events.third, issue: new_issue, state: 'reopened')
+      end
+
+      def expect_state_event(event, expected_attrs)
+        expect(event.issue_id).to eq(expected_attrs[:issue]&.id)
+        expect(event.state).to eq(expected_attrs[:state])
+      end
+    end
   end
 end

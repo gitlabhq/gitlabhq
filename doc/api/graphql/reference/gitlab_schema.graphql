@@ -6883,6 +6883,11 @@ type Project {
     Sort alerts by this criteria
     """
     sort: AlertManagementAlertSort
+
+    """
+    Alerts with the specified statues. For example, [TRIGGERED]
+    """
+    statuses: [AlertManagementStatus!]
   ): AlertManagementAlert
 
   """
@@ -6918,6 +6923,11 @@ type Project {
     Sort alerts by this criteria
     """
     sort: AlertManagementAlertSort
+
+    """
+    Alerts with the specified statues. For example, [TRIGGERED]
+    """
+    statuses: [AlertManagementStatus!]
   ): AlertManagementAlertConnection
 
   """

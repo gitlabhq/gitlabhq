@@ -18,7 +18,12 @@ import GroupEmptyState from '~/monitoring/components/group_empty_state.vue';
 import DashboardPanel from '~/monitoring/components/dashboard_panel.vue';
 import { createStore } from '~/monitoring/stores';
 import * as types from '~/monitoring/stores/mutation_types';
-import { setupStoreWithDashboard, setMetricResult, setupStoreWithData } from '../store_utils';
+import {
+  setupStoreWithDashboard,
+  setMetricResult,
+  setupStoreWithData,
+  setupStoreWithVariable,
+} from '../store_utils';
 import { environmentData, dashboardGitResponse, propsData } from '../mock_data';
 import { metricsDashboardViewModel, metricsDashboardPanelCount } from '../fixture_data';
 import createFlash from '~/flash';
@@ -378,6 +383,20 @@ describe('Dashboard', () => {
 
       expect(refreshBtn).toHaveLength(1);
       expect(refreshBtn.is(GlDeprecatedButton)).toBe(true);
+    });
+  });
+
+  describe('variables section', () => {
+    beforeEach(() => {
+      createShallowWrapper({ hasMetrics: true });
+      setupStoreWithData(wrapper.vm.$store);
+      setupStoreWithVariable(wrapper.vm.$store);
+
+      return wrapper.vm.$nextTick();
+    });
+
+    it('shows the variables section', () => {
+      expect(wrapper.vm.shouldShowVariablesSection).toBe(true);
     });
   });
 

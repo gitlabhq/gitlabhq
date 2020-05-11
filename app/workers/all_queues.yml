@@ -1150,7 +1150,7 @@
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
-  :idempotent: 
+  :idempotent: true
 - :name: migrate_external_diffs
   :feature_category: :source_code_management
   :has_external_dependencies: 

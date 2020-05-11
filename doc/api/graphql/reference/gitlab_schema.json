@@ -20591,6 +20591,24 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "statuses",
+                  "description": "Alerts with the specified statues. For example, [TRIGGERED]",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "AlertManagementStatus",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "sort",
                   "description": "Sort alerts by this criteria",
                   "type": {
@@ -20620,6 +20638,24 @@
                     "kind": "SCALAR",
                     "name": "String",
                     "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "statuses",
+                  "description": "Alerts with the specified statues. For example, [TRIGGERED]",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "AlertManagementStatus",
+                        "ofType": null
+                      }
+                    }
                   },
                   "defaultValue": null
                 },

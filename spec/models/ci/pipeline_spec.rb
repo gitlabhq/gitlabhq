@@ -749,7 +749,7 @@ describe Ci::Pipeline, :mailer do
           allow(pipeline).to receive(:has_kubernetes_active?).and_return(true)
         end
 
-        it "is incldued with value 'true'" do
+        it "is included with value 'true'" do
           expect(subject.to_hash).to include('CI_KUBERNETES_ACTIVE' => 'true')
         end
       end

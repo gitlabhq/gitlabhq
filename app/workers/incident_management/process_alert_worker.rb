@@ -35,7 +35,7 @@ module IncidentManagement
 
       return if alert.update(issue_id: issue_id)
 
-      Gitlab::GitLogger.warn(
+      Gitlab::AppLogger.warn(
         message: 'Cannot link an Issue with Alert',
         issue_id: issue_id,
         alert_id: alert_id,

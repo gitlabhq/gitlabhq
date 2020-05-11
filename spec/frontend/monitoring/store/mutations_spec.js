@@ -369,13 +369,25 @@ describe('Monitoring mutations', () => {
     it('stores an empty variables array when no custom variables are given', () => {
       mutations[types.SET_PROM_QUERY_VARIABLES](stateCopy, {});
 
-      expect(stateCopy.promVariables).toEqual([]);
+      expect(stateCopy.promVariables).toEqual({});
     });
 
     it('stores variables in the key key_value format in the array', () => {
       mutations[types.SET_PROM_QUERY_VARIABLES](stateCopy, { pod: 'POD', stage: 'main ops' });
 
-      expect(stateCopy.promVariables).toEqual(['pod', 'POD', 'stage', 'main%20ops']);
+      expect(stateCopy.promVariables).toEqual({ pod: 'POD', stage: 'main ops' });
+    });
+  });
+
+  describe('UPDATE_VARIABLE_DATA', () => {
+    beforeEach(() => {
+      mutations[types.SET_PROM_QUERY_VARIABLES](stateCopy, { pod: 'POD' });
+    });
+
+    it('sets a new value for an existing key', () => {
+      mutations[types.UPDATE_VARIABLE_DATA](stateCopy, { pod: 'new pod' });
+
+      expect(stateCopy.promVariables).toEqual({ pod: 'new pod' });
     });
   });
 });

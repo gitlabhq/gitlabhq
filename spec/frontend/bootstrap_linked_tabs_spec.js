@@ -9,7 +9,7 @@ describe('Linked Tabs', () => {
 
   describe('when is initialized', () => {
     beforeEach(() => {
-      spyOn(window.history, 'replaceState').and.callFake(function() {});
+      jest.spyOn(window.history, 'replaceState').mockImplementation(() => {});
     });
 
     it('should activate the tab correspondent to the given action', () => {
@@ -37,7 +37,7 @@ describe('Linked Tabs', () => {
 
   describe('on click', () => {
     it('should change the url according to the clicked tab', () => {
-      const historySpy = spyOn(window.history, 'replaceState').and.callFake(() => {});
+      const historySpy = jest.spyOn(window.history, 'replaceState').mockImplementation(() => {});
 
       const linkedTabs = new LinkedTabs({
         action: 'show',

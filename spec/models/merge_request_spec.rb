@@ -20,6 +20,8 @@ describe MergeRequest do
     it { is_expected.to have_many(:user_mentions).class_name("MergeRequestUserMention") }
     it { is_expected.to belong_to(:milestone) }
     it { is_expected.to belong_to(:sprint) }
+    it { is_expected.to have_many(:resource_milestone_events) }
+    it { is_expected.to have_many(:resource_state_events) }
 
     context 'for forks' do
       let!(:project) { create(:project) }
@@ -178,6 +180,8 @@ describe MergeRequest do
     it { is_expected.to include_module(Referable) }
     it { is_expected.to include_module(Sortable) }
     it { is_expected.to include_module(Taskable) }
+    it { is_expected.to include_module(MilestoneEventable) }
+    it { is_expected.to include_module(StateEventable) }
 
     it_behaves_like 'AtomicInternalId' do
       let(:internal_id_attribute) { :iid }

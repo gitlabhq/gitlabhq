@@ -1,5 +1,3 @@
-/* eslint-disable jasmine/no-unsafe-spy */
-
 import CloseReopenReportToggle from '~/close_reopen_report_toggle';
 import DropLab from '~/droplab/drop_lab';
 
@@ -10,7 +8,7 @@ describe('CloseReopenReportToggle', () => {
     const button = {};
     let commentTypeToggle;
 
-    beforeEach(function() {
+    beforeEach(() => {
       commentTypeToggle = new CloseReopenReportToggle({
         dropdownTrigger,
         dropdownList,
@@ -18,22 +16,24 @@ describe('CloseReopenReportToggle', () => {
       });
     });
 
-    it('sets .dropdownTrigger', function() {
+    it('sets .dropdownTrigger', () => {
       expect(commentTypeToggle.dropdownTrigger).toBe(dropdownTrigger);
     });
 
-    it('sets .dropdownList', function() {
+    it('sets .dropdownList', () => {
       expect(commentTypeToggle.dropdownList).toBe(dropdownList);
     });
 
-    it('sets .button', function() {
+    it('sets .button', () => {
       expect(commentTypeToggle.button).toBe(button);
     });
   });
 
   describe('initDroplab', () => {
     let closeReopenReportToggle;
-    const dropdownList = jasmine.createSpyObj('dropdownList', ['querySelector']);
+    const dropdownList = {
+      querySelector: jest.fn(),
+    };
     const dropdownTrigger = {};
     const button = {};
     const reopenItem = {};
@@ -41,8 +41,8 @@ describe('CloseReopenReportToggle', () => {
     const config = {};
 
     beforeEach(() => {
-      spyOn(DropLab.prototype, 'init');
-      dropdownList.querySelector.and.returnValues(reopenItem, closeItem);
+      jest.spyOn(DropLab.prototype, 'init').mockImplementation(() => {});
+      dropdownList.querySelector.mockReturnValueOnce(reopenItem).mockReturnValueOnce(closeItem);
 
       closeReopenReportToggle = new CloseReopenReportToggle({
         dropdownTrigger,
@@ -50,7 +50,7 @@ describe('CloseReopenReportToggle', () => {
         button,
       });
 
-      spyOn(closeReopenReportToggle, 'setConfig').and.returnValue(config);
+      jest.spyOn(closeReopenReportToggle, 'setConfig').mockReturnValue(config);
 
       closeReopenReportToggle.initDroplab();
     });
@@ -63,7 +63,7 @@ describe('CloseReopenReportToggle', () => {
     });
 
     it('sets .droplab', () => {
-      expect(closeReopenReportToggle.droplab).toEqual(jasmine.any(Object));
+      expect(closeReopenReportToggle.droplab).toEqual(expect.any(Object));
     });
 
     it('calls .setConfig', () => {
@@ -74,7 +74,7 @@ describe('CloseReopenReportToggle', () => {
       expect(DropLab.prototype.init).toHaveBeenCalledWith(
         dropdownTrigger,
         dropdownList,
-        jasmine.any(Array),
+        expect.any(Array),
         config,
       );
     });
@@ -84,7 +84,9 @@ describe('CloseReopenReportToggle', () => {
     let closeReopenReportToggle;
     const dropdownList = {};
     const dropdownTrigger = {};
-    const button = jasmine.createSpyObj('button', ['blur']);
+    const button = {
+      blur: jest.fn(),
+    };
     const isClosed = true;
 
     beforeEach(() => {
@@ -94,7 +96,7 @@ describe('CloseReopenReportToggle', () => {
         button,
       });
 
-      spyOn(closeReopenReportToggle, 'toggleButtonType');
+      jest.spyOn(closeReopenReportToggle, 'toggleButtonType').mockImplementation(() => {});
 
       closeReopenReportToggle.updateButton(isClosed);
     });
@@ -114,10 +116,18 @@ describe('CloseReopenReportToggle', () => {
     const dropdownTrigger = {};
     const button = {};
     const isClosed = true;
-    const showItem = jasmine.createSpyObj('showItem', ['click']);
+    const showItem = {
+      click: jest.fn(),
+    };
     const hideItem = {};
-    showItem.classList = jasmine.createSpyObj('classList', ['add', 'remove']);
-    hideItem.classList = jasmine.createSpyObj('classList', ['add', 'remove']);
+    showItem.classList = {
+      add: jest.fn(),
+      remove: jest.fn(),
+    };
+    hideItem.classList = {
+      add: jest.fn(),
+      remove: jest.fn(),
+    };
 
     beforeEach(() => {
       closeReopenReportToggle = new CloseReopenReportToggle({
@@ -126,7 +136,7 @@ describe('CloseReopenReportToggle', () => {
         button,
       });
 
-      spyOn(closeReopenReportToggle, 'getButtonTypes').and.returnValue([showItem, hideItem]);
+      jest.spyOn(closeReopenReportToggle, 'getButtonTypes').mockReturnValue([showItem, hideItem]);
 
       closeReopenReportToggle.toggleButtonType(isClosed);
     });
@@ -182,8 +192,14 @@ describe('CloseReopenReportToggle', () => {
   describe('setDisable', () => {
     let closeReopenReportToggle;
     const dropdownList = {};
-    const dropdownTrigger = jasmine.createSpyObj('button', ['setAttribute', 'removeAttribute']);
-    const button = jasmine.createSpyObj('button', ['setAttribute', 'removeAttribute']);
+    const dropdownTrigger = {
+      setAttribute: jest.fn(),
+      removeAttribute: jest.fn(),
+    };
+    const button = {
+      setAttribute: jest.fn(),
+      removeAttribute: jest.fn(),
+    };
 
     beforeEach(() => {
       closeReopenReportToggle = new CloseReopenReportToggle({

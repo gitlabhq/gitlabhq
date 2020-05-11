@@ -37,6 +37,37 @@ describe AlertManagement::AlertsFinder, '#execute' do
       end
     end
 
+    context 'status given' do
+      let(:params) { { status: AlertManagement::Alert::STATUSES[:resolved] } }
+
+      it { is_expected.to match_array(alert_1) }
+
+      context 'with an array of statuses' do
+        let(:alert_3) { create(:alert_management_alert) }
+        let(:params) { { status: [AlertManagement::Alert::STATUSES[:resolved]] } }
+
+        it { is_expected.to match_array(alert_1) }
+      end
+
+      context 'with no alerts of status' do
+        let(:params) { { status: AlertManagement::Alert::STATUSES[:acknowledged] } }
+
+        it { is_expected.to be_empty }
+      end
+
+      context 'with an empty status array' do
+        let(:params) { { status: [] } }
+
+        it { is_expected.to match_array([alert_1, alert_2]) }
+      end
+
+      context 'with an nil status' do
+        let(:params) { { status: nil } }
+
+        it { is_expected.to match_array([alert_1, alert_2]) }
+      end
+    end
+
     describe 'sorting' do
       context 'when sorting by created' do
         context 'sorts alerts ascending' do

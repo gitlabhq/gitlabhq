@@ -13,6 +13,14 @@
   .form-group {
     margin-bottom: map-get($spacing-scale, 3);
   }
+
+  .variables-section {
+    input {
+      @include media-breakpoint-up(sm) {
+        width: 160px;
+      }
+    }
+  }
 }
 
 .draggable {

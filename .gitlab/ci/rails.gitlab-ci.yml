@@ -194,7 +194,7 @@ gitlab:setup:
     when: on_failure
     expire_in: 1d
     paths:
-      - log/development.log
+      - log/*.log
 
 rspec:coverage:
   extends:

@@ -11,7 +11,7 @@ describe('Ajax Loading Spinner', () => {
   });
 
   it('change current icon with spinner icon and disable link while waiting ajax response', done => {
-    spyOn($, 'ajax').and.callFake(req => {
+    jest.spyOn($, 'ajax').mockImplementation(req => {
       const xhr = new XMLHttpRequest();
       const ajaxLoadingSpinner = document.querySelector('.js-ajax-loading-spinner');
       const icon = ajaxLoadingSpinner.querySelector('i');
@@ -34,7 +34,7 @@ describe('Ajax Loading Spinner', () => {
   });
 
   it('use original icon again and enabled the link after complete the ajax request', done => {
-    spyOn($, 'ajax').and.callFake(req => {
+    jest.spyOn($, 'ajax').mockImplementation(req => {
       const xhr = new XMLHttpRequest();
       const ajaxLoadingSpinner = document.querySelector('.js-ajax-loading-spinner');
 

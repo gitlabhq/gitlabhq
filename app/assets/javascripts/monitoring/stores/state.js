@@ -33,7 +33,7 @@ export default () => ({
     panel: null,
   },
   allDashboards: [],
-  promVariables: [],
+  promVariables: {},
 
   // Other project data
   annotations: [],

@@ -518,8 +518,10 @@ describe('Dashboard Panel', () => {
       });
 
       it('emits the `expand` event', () => {
-        findExpandBtn().vm.$emit('click');
+        const preventDefault = jest.fn();
+        findExpandBtn().vm.$emit('click', { preventDefault });
         expect(wrapper.emitted('expand')).toHaveLength(1);
+        expect(preventDefault).toHaveBeenCalled();
       });
     });
   });

@@ -32,6 +32,12 @@ describe Resolvers::AlertManagementAlertResolver do
       it { is_expected.to contain_exactly(alert_1) }
     end
 
+    context 'finding by status' do
+      let(:args) { { status: [Types::AlertManagement::StatusEnum.values['IGNORED'].value] } }
+
+      it { is_expected.to contain_exactly(alert_2) }
+    end
+
     describe 'sorting' do
       # Other sorting examples in spec/finders/alert_management/alerts_finder_spec.rb
       context 'when sorting by events count' do

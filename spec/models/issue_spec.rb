@@ -19,6 +19,8 @@ describe Issue do
     it { is_expected.to have_many(:design_versions) }
     it { is_expected.to have_one(:sentry_issue) }
     it { is_expected.to have_one(:alert_management_alert) }
+    it { is_expected.to have_many(:resource_milestone_events) }
+    it { is_expected.to have_many(:resource_state_events) }
 
     describe 'versions.most_recent' do
       it 'returns the most recent version' do
@@ -38,6 +40,8 @@ describe Issue do
     it { is_expected.to include_module(Referable) }
     it { is_expected.to include_module(Sortable) }
     it { is_expected.to include_module(Taskable) }
+    it { is_expected.to include_module(MilestoneEventable) }
+    it { is_expected.to include_module(StateEventable) }
 
     it_behaves_like 'AtomicInternalId' do
       let(:internal_id_attribute) { :iid }

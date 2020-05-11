@@ -50,10 +50,10 @@ describe('Issuable', () => {
     });
 
     it('should send request to reset email token', done => {
-      spyOn(axios, 'put').and.callThrough();
+      jest.spyOn(axios, 'put');
       document.querySelector('.incoming-email-token-reset').click();
 
-      setTimeout(() => {
+      setImmediate(() => {
         expect(axios.put).toHaveBeenCalledWith('foo');
         expect($('#issuable_email').val()).toBe('testing123');
 

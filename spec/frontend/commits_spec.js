@@ -15,7 +15,7 @@ describe('Commits List', () => {
       </form>
       <ol id="commits-list"></ol>
       `);
-    spyOn(Pager, 'init').and.stub();
+    jest.spyOn(Pager, 'init').mockImplementation(() => {});
     commitsList = new CommitsList(25);
   });
 
@@ -56,14 +56,14 @@ describe('Commits List', () => {
     beforeEach(() => {
       commitsList.searchField.val('');
 
-      spyOn(window.history, 'replaceState').and.stub();
+      jest.spyOn(window.history, 'replaceState').mockImplementation(() => {});
       mock = new MockAdapter(axios);
 
       mock.onGet('/h5bp/html5-boilerplate/commits/master').reply(200, {
         html: '<li>Result</li>',
       });
 
-      ajaxSpy = spyOn(axios, 'get').and.callThrough();
+      ajaxSpy = jest.spyOn(axios, 'get');
     });
 
     afterEach(() => {

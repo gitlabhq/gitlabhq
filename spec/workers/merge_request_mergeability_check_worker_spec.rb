@@ -25,5 +25,16 @@ describe MergeRequestMergeabilityCheckWorker do
         subject.perform(merge_request.id)
       end
     end
+
+    it_behaves_like 'an idempotent worker' do
+      let(:merge_request) { create(:merge_request) }
+      let(:job_args) { [merge_request.id] }
+
+      it 'is mergeable' do
+        subject
+
+        expect(merge_request).to be_mergeable
+      end
+    end
   end
 end

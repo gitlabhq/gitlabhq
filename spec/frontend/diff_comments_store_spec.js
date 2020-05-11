@@ -1,4 +1,3 @@
-/* eslint-disable jasmine/no-global-setup, dot-notation, jasmine/no-expect-in-setup-teardown */
 /* global CommentsStore */
 
 import '~/diff_notes/models/discussion';
@@ -34,7 +33,7 @@ describe('New discussion', () => {
     createDiscussion();
     createDiscussion(2);
 
-    const discussion = CommentsStore.state['a'];
+    const discussion = CommentsStore.state.a;
 
     expect(Object.keys(discussion.notes).length).toBe(2);
   });
@@ -71,7 +70,7 @@ describe('Delete discussion', () => {
     createDiscussion(2);
 
     expect(Object.keys(CommentsStore.state).length).toBe(1);
-    expect(Object.keys(CommentsStore.state['a'].notes).length).toBe(2);
+    expect(Object.keys(CommentsStore.state.a.notes).length).toBe(2);
 
     CommentsStore.delete('a', 1);
     CommentsStore.delete('a', 2);
@@ -102,27 +101,27 @@ describe('Discussion resolved', () => {
   });
 
   it('is resolved with single note', () => {
-    const discussion = CommentsStore.state['a'];
+    const discussion = CommentsStore.state.a;
 
     expect(discussion.isResolved()).toBe(true);
   });
 
   it('is unresolved with 2 notes', () => {
-    const discussion = CommentsStore.state['a'];
+    const discussion = CommentsStore.state.a;
     createDiscussion(2, false);
 
     expect(discussion.isResolved()).toBe(false);
   });
 
   it('is resolved with 2 notes', () => {
-    const discussion = CommentsStore.state['a'];
+    const discussion = CommentsStore.state.a;
     createDiscussion(2);
 
     expect(discussion.isResolved()).toBe(true);
   });
 
   it('resolve all notes', () => {
-    const discussion = CommentsStore.state['a'];
+    const discussion = CommentsStore.state.a;
     createDiscussion(2, false);
 
     discussion.resolveAllNotes();
@@ -131,7 +130,7 @@ describe('Discussion resolved', () => {
   });
 
   it('unresolve all notes', () => {
-    const discussion = CommentsStore.state['a'];
+    const discussion = CommentsStore.state.a;
     createDiscussion(2);
 
     discussion.unResolveAllNotes();
