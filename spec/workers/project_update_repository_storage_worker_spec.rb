@@ -40,7 +40,7 @@ describe ProjectUpdateRepositoryStorageWorker do
         expect(service).to receive(:execute)
 
         expect do
-          subject.perform(nil, nil, repository_storage_move_id: repository_storage_move.id)
+          subject.perform(nil, nil, repository_storage_move.id)
         end.not_to change(ProjectRepositoryStorageMove, :count)
       end
     end

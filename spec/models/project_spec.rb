@@ -2844,7 +2844,7 @@ describe Project do
     end
 
     it 'schedules the transfer of the repository to the new storage and locks the project' do
-      expect(ProjectUpdateRepositoryStorageWorker).to receive(:perform_async).with(project.id, 'test_second_storage', repository_storage_move_id: anything)
+      expect(ProjectUpdateRepositoryStorageWorker).to receive(:perform_async).with(project.id, 'test_second_storage', anything)
 
       project.change_repository_storage('test_second_storage')
       project.save!

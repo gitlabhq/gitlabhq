@@ -394,6 +394,31 @@ spotbugs-sast:
     - if: $CI_MERGE_REQUEST_ID
 ```
 
+If your override is aimed at limiting jobs to only run on branches, not tags,
+it would look similar to:
+
+```yaml
+include:
+  - template: SAST.gitlab-ci.yml
+
+# Ensure that the scanning is not executed on tags
+spotbugs-sast:
+  except:
+    - tags
+```
+
+To transition to the new `rules` syntax, the override would be rewritten as:
+
+```yaml
+include:
+  - template: SAST.gitlab-ci.yml
+
+# Ensure that the scanning is not executed on tags
+spotbugs-sast:
+  rules:
+    - if: $CI_COMMIT_TAG == null
+```
+
 [Learn more on the usage of `rules`](../../ci/yaml/README.md#rules).
 
 #### Pin your templates to the deprecated versions

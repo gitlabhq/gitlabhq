@@ -39,8 +39,9 @@ class ProjectRepositoryStorageMove < ApplicationRecord
     after_transition initial: :scheduled do |storage_move, _|
       storage_move.run_after_commit do
         ProjectUpdateRepositoryStorageWorker.perform_async(
-          storage_move.project_id, storage_move.destination_storage_name,
-          repository_storage_move_id: storage_move.id
+          storage_move.project_id,
+          storage_move.destination_storage_name,
+          storage_move.id
         )
       end
     end

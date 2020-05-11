@@ -56,7 +56,10 @@ There are no special requirements if you are using GitLab.com.
    this would be `https://gitlab.com/login/oauth/callback`.
 
    NOTE: **Note**:
-   If using a GitLab version earlier than 11.3 the `Redirect URI` value should be `https://<your-gitlab-instance-domain>/-/jira/login/oauth/callback`.
+   If using a GitLab version earlier than 11.3, the `Redirect URI` must be
+   `https://<your-gitlab-instance-domain>/-/jira/login/oauth/callback`. If you want Jira
+   to have access to all projects, GitLab recommends an administrator creates the
+   Application.
 
    ![GitLab Application setup](img/jira_dev_panel_gl_setup_1.png)
 
