@@ -10,8 +10,7 @@ export const groupedSummaryText = state => {
     return s__('Reports|Accessibility scanning failed loading results');
   }
 
-  const numberOfResults =
-    (state.report?.summary?.errors || 0) + (state.report?.summary?.warnings || 0);
+  const numberOfResults = state.report?.summary?.errored || 0;
   if (numberOfResults === 0) {
     return s__('Reports|Accessibility scanning detected no issues for the source branch only');
   }

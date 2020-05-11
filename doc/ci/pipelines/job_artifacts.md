@@ -135,11 +135,11 @@ third party ports for other languages like JavaScript, Python, Ruby, and so on.
 
 #### `artifacts:reports:terraform`
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/207527) in GitLab 12.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207528) in GitLab 13.0.
 > - Requires [GitLab Runner](https://docs.gitlab.com/runner/) 11.5 and above.
 
-The `terraform` report collects Terraform `tfplan.json` files. The collected Terraform
-plan reports will be uploaded to GitLab as artifacts and will be automatically shown
+The `terraform` report obtains a Terraform `tfplan.json` file. The collected Terraform
+plan report will be uploaded to GitLab as an artifact and will be automatically shown
 in merge requests.
 
 #### `artifacts:reports:codequality` **(STARTER)**

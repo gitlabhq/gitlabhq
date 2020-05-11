@@ -82,7 +82,7 @@ describe 'Getting Metrics Dashboard Annotations' do
                                               "description" => annotation.description,
                                               "id" => annotation.to_global_id.to_s,
                                               "panelId" => annotation.panel_xid,
-                                              "startingAt" => annotation.starting_at.to_s,
+                                              "startingAt" => annotation.starting_at.iso8601,
                                               "endingAt" => nil
                                             }]
       end

@@ -1,0 +1,6 @@
+---
+title: Use gsub instead of the Liquid gem for variable substitution in the Prometheus
+  proxy API
+merge_request: 31482
+author:
+type: changed

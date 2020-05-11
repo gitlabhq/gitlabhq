@@ -602,7 +602,6 @@ GEM
       xml-simple
     licensee (8.9.2)
       rugged (~> 0.24)
-    liquid (4.0.3)
     listen (3.1.5)
       rb-fsevent (~> 0.9, >= 0.9.4)
       rb-inotify (~> 0.9, >= 0.9.7)
@@ -1289,7 +1288,6 @@ DEPENDENCIES
   letter_opener_web (~> 1.3.4)
   license_finder (~> 5.4)
   licensee (~> 8.9)
-  liquid (~> 4.0)
   lockbox (~> 0.3.3)
   lograge (~> 0.5)
   loofah (~> 2.2)

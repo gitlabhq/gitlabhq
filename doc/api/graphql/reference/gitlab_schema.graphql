@@ -6076,7 +6076,7 @@ type MetricsDashboardAnnotation {
   """
   Timestamp marking end of annotated time span
   """
-  endingAt: String
+  endingAt: Time
 
   """
   ID of the annotation
@@ -6091,7 +6091,7 @@ type MetricsDashboardAnnotation {
   """
   Timestamp marking start of annotated time span
   """
-  startingAt: String
+  startingAt: Time
 }
 
 """

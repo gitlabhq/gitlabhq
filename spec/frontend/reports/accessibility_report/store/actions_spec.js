@@ -5,7 +5,7 @@ import * as types from '~/reports/accessibility_report/store/mutation_types';
 import createStore from '~/reports/accessibility_report/store';
 import { TEST_HOST } from 'spec/test_constants';
 import testAction from 'helpers/vuex_action_helper';
-import { baseReport, headReport, comparedReportResult } from '../mock_data';
+import { mockReport } from '../mock_data';
 
 describe('Accessibility Reports actions', () => {
   let localState;
@@ -18,14 +18,13 @@ describe('Accessibility Reports actions', () => {
 
   describe('setEndpoints', () => {
     it('should commit SET_ENDPOINTS mutation', done => {
-      const baseEndpoint = 'base_endpoint.json';
-      const headEndpoint = 'head_endpoint.json';
+      const endpoint = 'endpoint.json';
 
       testAction(
-        actions.setEndpoints,
-        { baseEndpoint, headEndpoint },
+        actions.setEndpoint,
+        endpoint,
         localState,
-        [{ type: types.SET_ENDPOINTS, payload: { baseEndpoint, headEndpoint } }],
+        [{ type: types.SET_ENDPOINT, payload: endpoint }],
         [],
         done,
       );
@@ -36,37 +35,14 @@ describe('Accessibility Reports actions', () => {
     let mock;
 
     beforeEach(() => {
-      localState.baseEndpoint = `${TEST_HOST}/endpoint.json`;
-      localState.headEndpoint = `${TEST_HOST}/endpoint.json`;
+      localState.endpoint = `${TEST_HOST}/endpoint.json`;
       mock = new MockAdapter(axios);
     });
 
     afterEach(() => {
       mock.restore();
-    });
-
-    describe('when no endpoints are given', () => {
-      beforeEach(() => {
-        localState.baseEndpoint = null;
-        localState.headEndpoint = null;
-      });
-
-      it('should commit REQUEST_REPORT and RECEIVE_REPORT_ERROR mutations', done => {
-        testAction(
-          actions.fetchReport,
-          null,
-          localState,
-          [
-            { type: types.REQUEST_REPORT },
-            {
-              type: types.RECEIVE_REPORT_ERROR,
-              payload: 'Accessibility report artifact not found',
-            },
-          ],
-          [],
-          done,
-        );
-      });
+      actions.stopPolling();
+      actions.clearEtagPoll();
     });
 
     describe('success', () => {
@@ -81,7 +57,7 @@ describe('Accessibility Reports actions', () => {
           [{ type: types.REQUEST_REPORT }],
           [
             {
-              payload: [{ ...data, isHead: false }, { ...data, isHead: true }],
+              payload: { status: 200, data },
               type: 'receiveReportSuccess',
             },
           ],
@@ -98,14 +74,8 @@ describe('Accessibility Reports actions', () => {
           actions.fetchReport,
           null,
           localState,
-          [
-            { type: types.REQUEST_REPORT },
-            {
-              type: types.RECEIVE_REPORT_ERROR,
-              payload: 'Failed to retrieve accessibility report',
-            },
-          ],
-          [],
+          [{ type: types.REQUEST_REPORT }],
+          [{ type: 'receiveReportError' }],
           done,
         );
       });
@@ -113,13 +83,37 @@ describe('Accessibility Reports actions', () => {
   });
 
   describe('receiveReportSuccess', () => {
-    it('should commit RECEIVE_REPORT_SUCCESS mutation', done => {
+    it('should commit RECEIVE_REPORT_SUCCESS mutation with 200', done => {
       testAction(
         actions.receiveReportSuccess,
-        [{ ...baseReport, isHead: false }, { ...headReport, isHead: true }],
+        { status: 200, data: mockReport },
         localState,
-        [{ type: types.RECEIVE_REPORT_SUCCESS, payload: comparedReportResult }],
+        [{ type: types.RECEIVE_REPORT_SUCCESS, payload: mockReport }],
+        [{ type: 'stopPolling' }],
+        done,
+      );
+    });
+
+    it('should not commit RECEIVE_REPORTS_SUCCESS mutation with 204', done => {
+      testAction(
+        actions.receiveReportSuccess,
+        { status: 204, data: mockReport },
+        localState,
         [],
+        [],
+        done,
+      );
+    });
+  });
+
+  describe('receiveReportError', () => {
+    it('should commit RECEIVE_REPORT_ERROR mutation', done => {
+      testAction(
+        actions.receiveReportError,
+        null,
+        localState,
+        [{ type: types.RECEIVE_REPORT_ERROR }],
+        [{ type: 'stopPolling' }],
         done,
       );
     });

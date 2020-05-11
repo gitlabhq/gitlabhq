@@ -103,7 +103,7 @@ export default class MergeRequestStore {
     this.ciStatusFaviconPath = pipelineStatus ? pipelineStatus.favicon : null;
     this.terraformReportsPath = data.terraform_reports_path;
     this.testResultsPath = data.test_reports_path;
-    this.accessibility = data.accessibility || {};
+    this.accessibilityReportPath = data.accessibility_report_path;
     this.exposedArtifactsPath = data.exposed_artifacts_path;
     this.cancelAutoMergePath = data.cancel_auto_merge_path;
     this.canCancelAutomaticMerge = Boolean(data.cancel_auto_merge_path);

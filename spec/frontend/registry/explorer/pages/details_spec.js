@@ -37,6 +37,7 @@ describe('Details Page', () => {
   const findAllCheckboxes = () => wrapper.findAll('.js-row-checkbox');
   const findCheckedCheckboxes = () => findAllCheckboxes().filter(c => c.attributes('checked'));
   const findFirsTagColumn = () => wrapper.find('.js-tag-column');
+  const findFirstTagNameText = () => wrapper.find('[data-testid="rowNameText"]');
   const findAlert = () => wrapper.find(GlAlert);
 
   const routeId = window.btoa(JSON.stringify({ name: 'foo', tags_path: 'bar' }));
@@ -248,14 +249,23 @@ describe('Details Page', () => {
       });
     });
 
-    describe('tag cell', () => {
+    describe('name cell', () => {
+      it('tag column has a tooltip with the tag name', () => {
+        mountComponent();
+        expect(findFirstTagNameText().attributes('title')).toBe(tagsListResponse.data[0].name);
+      });
+
       describe('on desktop viewport', () => {
         beforeEach(() => {
           mountComponent();
         });
 
-        it('has class w-25', () => {
+        it('table header has class w-25', () => {
           expect(findFirsTagColumn().classes()).toContain('w-25');
+        });
+
+        it('tag column has the mw-m class', () => {
+          expect(findFirstRowItem('rowName').classes()).toContain('mw-m');
         });
       });
 
@@ -268,8 +278,12 @@ describe('Details Page', () => {
           });
         });
 
-        it('does not has class w-25', () => {
+        it('table header does not have class w-25', () => {
           expect(findFirsTagColumn().classes()).not.toContain('w-25');
+        });
+
+        it('tag column has the gl-justify-content-end class', () => {
+          expect(findFirstRowItem('rowName').classes()).toContain('gl-justify-content-end');
         });
       });
     });

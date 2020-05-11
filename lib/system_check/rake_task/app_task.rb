@@ -31,7 +31,9 @@ module SystemCheck
           SystemCheck::App::GitVersionCheck,
           SystemCheck::App::GitUserDefaultSSHConfigCheck,
           SystemCheck::App::ActiveUsersCheck,
-          SystemCheck::App::AuthorizedKeysPermissionCheck
+          SystemCheck::App::AuthorizedKeysPermissionCheck,
+          SystemCheck::App::HashedStorageEnabledCheck,
+          SystemCheck::App::HashedStorageAllProjectsCheck
         ]
       end
     end

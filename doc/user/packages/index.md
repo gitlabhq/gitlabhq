@@ -18,7 +18,7 @@ The Packages feature allows GitLab to act as a repository for the following:
 
 ## Enable the Package Registry for your project
 
-If you cannot find the **{package}** **Packages > List** entry under your
+If you cannot find the **{package}** **Packages & Registries > Package Registry** entry under your
 project's sidebar, it is not enabled in your GitLab instance. Ask your
 administrator to enable GitLab Package Registry following the [administration
 documentation](../../administration/packages/index.md).
@@ -30,14 +30,14 @@ project:
 1. Expand the **Visibility, project features, permissions** section and enable the
 **Packages** feature on your project.
 1. Press **Save changes** for the changes to take effect. You should now be able to
-see the **Packages > List** link in the sidebar.
+see the **Packages & Registries > Package Registry** link in the sidebar.
 
 ### View Packages for your project
 
-Navigating to your project's **{package}** **Packages > List** will show a list
+Navigating to your project's **{package}** **Packages & Registries > Package Registry** will show a list
 of all packages that have been added to your project.
 
-![Project Packages list](img/project_packages_list_v12_10.png)
+![Project Packages list](img/project_packages_list_v13_0.png)
 
 On this page, you can:
 
@@ -51,9 +51,9 @@ On this page, you can:
 ### View Packages for your group
 
 You can view all packages belonging to a group by navigating to **{package}**
-**Packages > List** from the group sidebar.
+**Packages & Registries > Package Registry** from the group sidebar.
 
-![Group Packages list](img/group_packages_list_v12_10.png)
+![Group Packages list](img/group_packages_list_v13_0.png)
 
 On this page, you can:
 
@@ -68,7 +68,7 @@ On this page, you can:
 Additional package information can be viewed by browsing to the package details
 page from the either the project or group list.
 
-![Package detail](img/package_detail_v12_10.png)
+![Package detail](img/package_detail_v13_0.png)
 
 On this page you can:
 

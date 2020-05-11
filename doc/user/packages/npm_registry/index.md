@@ -23,7 +23,7 @@ by default. To enable it for existing projects, or if you want to disable it:
 1. Find the Packages feature and enable or disable it.
 1. Click on **Save changes** for the changes to take effect.
 
-You should then be able to see the **Packages** section on the left sidebar.
+You should then be able to see the **Packages & Registries** section on the left sidebar.
 
 Before proceeding to authenticating with the GitLab NPM Registry, you should
 get familiar with the package naming convention.
@@ -195,7 +195,7 @@ you can upload an NPM package to your project:
 npm publish
 ```
 
-You can then navigate to your project's **Packages** page and see the uploaded
+You can then navigate to your project's **Packages & Registries** page and see the uploaded
 packages or even delete them.
 
 If you attempt to publish a package with a name that already exists within

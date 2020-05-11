@@ -1,9 +1,8 @@
 import * as types from './mutation_types';
 
 export default {
-  [types.SET_ENDPOINTS](state, { baseEndpoint, headEndpoint }) {
-    state.baseEndpoint = baseEndpoint;
-    state.headEndpoint = headEndpoint;
+  [types.SET_ENDPOINT](state, endpoint) {
+    state.endpoint = endpoint;
   },
   [types.REQUEST_REPORT](state) {
     state.isLoading = true;
@@ -13,10 +12,9 @@ export default {
     state.isLoading = false;
     state.report = report;
   },
-  [types.RECEIVE_REPORT_ERROR](state, message) {
+  [types.RECEIVE_REPORT_ERROR](state) {
     state.isLoading = false;
     state.hasError = true;
-    state.errorMessage = message;
     state.report = {};
   },
 };

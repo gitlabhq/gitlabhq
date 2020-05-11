@@ -1,6 +1,5 @@
 export default (initialState = {}) => ({
-  baseEndpoint: initialState.baseEndpoint || '',
-  headEndpoint: initialState.headEndpoint || '',
+  endpoint: initialState.endpoint || '',
 
   isLoading: initialState.isLoading || false,
   hasError: initialState.hasError || false,
@@ -11,9 +10,8 @@ export default (initialState = {}) => ({
    *   status: {String},
    *   summary: {
    *     total: {Number},
-   *     notes: {Number},
-   *     warnings: {Number},
-   *     errors: {Number},
+   *     resolved: {Number},
+   *     errored: {Number},
    *   },
    *   existing_errors: {Array.<Object>},
    *   existing_notes: {Array.<Object>},

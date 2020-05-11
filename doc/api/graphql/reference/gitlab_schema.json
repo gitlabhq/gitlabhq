@@ -17041,7 +17041,7 @@
               ],
               "type": {
                 "kind": "SCALAR",
-                "name": "String",
+                "name": "Time",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -17087,7 +17087,7 @@
               ],
               "type": {
                 "kind": "SCALAR",
-                "name": "String",
+                "name": "Time",
                 "ofType": null
               },
               "isDeprecated": false,
