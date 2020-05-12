@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Member < ApplicationRecord
+  include EachBatch
   include AfterCommitQueue
   include Sortable
   include Importable

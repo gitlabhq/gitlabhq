@@ -34,4 +34,62 @@ describe DiffFileBaseEntity do
       expect(entity[:new_size]).to eq(132)
     end
   end
+
+  context 'edit_path' do
+    let(:diff_file) { merge_request.diffs.diff_files.to_a.last }
+    let(:options) { { request: EntityRequest.new(current_user: create(:user)), merge_request: merge_request } }
+    let(:params) { {} }
+
+    before do
+      stub_feature_flags(web_ide_default: false)
+    end
+
+    shared_examples 'a diff file edit path to the source branch' do
+      it do
+        expect(entity[:edit_path]).to eq(Gitlab::Routing.url_helpers.project_edit_blob_path(project, File.join(merge_request.source_branch, diff_file.new_path), params))
+      end
+    end
+
+    context 'open' do
+      let(:merge_request) { create(:merge_request, source_project: project, target_branch: 'master', source_branch: 'feature') }
+      let(:params) { { from_merge_request_iid: merge_request.iid } }
+
+      it_behaves_like 'a diff file edit path to the source branch'
+
+      context 'removed source branch' do
+        before do
+          allow(merge_request).to receive(:source_branch_exists?).and_return(false)
+        end
+
+        it do
+          expect(entity[:edit_path]).to eq(nil)
+        end
+      end
+    end
+
+    context 'closed' do
+      let(:merge_request) { create(:merge_request, source_project: project, state: :closed, target_branch: 'master', source_branch: 'feature') }
+      let(:params) { { from_merge_request_iid: merge_request.iid } }
+
+      it_behaves_like 'a diff file edit path to the source branch'
+
+      context 'removed source branch' do
+        before do
+          allow(merge_request).to receive(:source_branch_exists?).and_return(false)
+        end
+
+        it do
+          expect(entity[:edit_path]).to eq(nil)
+        end
+      end
+    end
+
+    context 'merged' do
+      let(:merge_request) { create(:merge_request, source_project: project, state: :merged) }
+
+      it do
+        expect(entity[:edit_path]).to eq(Gitlab::Routing.url_helpers.project_edit_blob_path(project, File.join(merge_request.target_branch, diff_file.new_path), {}))
+      end
+    end
+  end
 end

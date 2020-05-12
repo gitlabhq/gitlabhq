@@ -15,8 +15,7 @@
     },
     "required": [
       "id", "name", "username", "state",
-      "web_url", "access_level", "expires_at"
-    ],
-    "additionalProperties": false
+      "web_url", "access_level", "expires_at", "avatar_url"
+    ]
   }
 }

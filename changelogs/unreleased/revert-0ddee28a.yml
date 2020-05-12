@@ -1,0 +1,5 @@
+---
+title: Move Auto DevOps Test.gitlab-ci.yml template to rules syntax instead of only/except
+merge_request: 30876
+author:
+type: changed

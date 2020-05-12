@@ -1,40 +1,6 @@
 .ide.theme-dark {
-  $border-color: #1d1f21;
-  $highlight-accent: #fff;
-  $text-color: #ccc;
-  $background: #333;
-  $background-hover: #2d2d2d;
-  $highlight-background: #252526;
-  $link-color: #428fdc;
-  $footer-background: #060606;
-
-  $input-border: #868686;
-  $input-background: transparent;
-  $input-color: $highlight-accent;
-
-  $btn-default-background: transparent;
-  $btn-default-border: #bfbfbf;
-  $btn-default-hover-border: #d8d8d8;
-
-  $btn-primary-background: #1068bf;
-  $btn-primary-border: #428fdc;
-  $btn-primary-hover-border: #63a6e9;
-
-  $btn-success-background: #217645;
-  $btn-success-border: #108548;
-  $btn-success-hover-border: #2da160;
-
-  $btn-disabled-border: rgba(223, 223, 223, 0.24);
-  $btn-disabled-color: rgba(145, 145, 145, 0.48);
-
-  $dropdown-background: #404040;
-  $dropdown-hover-background: #525252;
-
-  $diff-insert: rgba(155, 185, 85, 0.2);
-  $diff-remove: rgba(255, 0, 0, 0.2);
-
   a:not(.btn) {
-    color: $link-color;
+    color: var(--ide-link-color);
   }
 
   h1,
@@ -72,12 +38,12 @@
   .ide-navigator-btn,
   .ide-pipeline .top-bar,
   .ide-pipeline .top-bar .controllers .controllers-buttons {
-    color: $text-color;
+    color: var(--ide-text-color);
   }
 
   .drag-handle:hover,
   .card-header .badge.badge-pill {
-    background-color: $dropdown-hover-background;
+    background-color: var(--ide-dropdown-hover-background);
   }
 
   .dropdown-menu-toggle svg,
@@ -86,38 +52,34 @@
   .file-row .file-row-icon svg,
   .file-row:hover .file-row-icon svg,
   .controllers-buttons svg {
-    fill: $text-color;
+    fill: var(--ide-text-color);
   }
 
   .ide-pipeline svg {
-    --svg-status-bg: $background;
+    --svg-status-bg: var(--ide-background);
   }
 
   .multi-file-tab-close:hover {
-    background-color: $input-border;
+    background-color: var(--ide-input-border);
   }
 
   .ide-review-sub-header:hover {
-    color: $input-border;
+    color: var(--ide-input-border);
   }
 
   .text-secondary {
-    color: $text-color !important;
+    color: var(--ide-text-color) !important;
   }
 
   input[type='search']::placeholder,
   input[type='text']::placeholder,
   textarea::placeholder,
   .dropdown-input .fa {
-    color: $input-border;
+    color: var(--ide-input-border);
   }
 
   .ide-nav-form .input-icon {
-    fill: $input-border;
-  }
-
-  .ide-staged-action-btn {
-    background-color: transparent;
+    fill: var(--ide-input-border);
   }
 
   code,
@@ -139,32 +101,28 @@
   .bs-callout,
   .ide-pipeline .top-bar,
   .ide-terminal .top-bar {
-    background-color: $background;
-  }
-
-  pre code {
-    background-color: inherit;
+    background-color: var(--ide-background);
   }
 
   .bs-callout {
-    border-color: $dropdown-background;
+    border-color: var(--ide-dropdown-background);
 
     code {
-      background-color: $dropdown-background;
+      background-color: var(--ide-dropdown-background);
     }
   }
 
   .nav-links:not(.quick-links) li:not(.md-header-toolbar) a:hover {
-    border-color: $dropdown-hover-background;
+    border-color: var(--ide-dropdown-hover-background);
   }
 
   .ide-sidebar-link:hover,
   .multi-file-tabs li {
-    background-color: $background-hover;
+    background-color: var(--ide-background-hover);
   }
 
   .common-note-form .md-area {
-    border-color: $input-border;
+    border-color: var(--ide-input-border);
   }
 
   &,
@@ -180,7 +138,7 @@
   .card,
   .multi-file-commit-panel-success-message,
   .ide-preview-header {
-    background-color: $highlight-background;
+    background-color: var(--ide-highlight-background);
   }
 
   .multi-file-commit-panel {
@@ -204,7 +162,7 @@
   .ide-job-item:not(:last-child),
   .ide-terminal .top-bar,
   .ide-pipeline .top-bar {
-    border-color: $border-color;
+    border-color: var(--ide-border-color);
   }
 
   .md h1,
@@ -222,58 +180,58 @@
   .multi-file-commit-form .nav-links:not(.quick-links),
   .ide-pipeline-list .nav-links:not(.quick-links),
   .ide-preview-header {
-    border-color: $background;
+    border-color: var(--ide-background);
   }
 
   .multi-file-tabs li.active {
-    border-bottom-color: $highlight-background;
+    border-bottom-color: var(--ide-highlight-background);
   }
 
   .multi-file-tabs,
   .ide-commit-editor-header {
-    box-shadow: inset 0 -1px $border-color;
+    box-shadow: inset 0 -1px var(--ide-border-color);
   }
 
   .ide-sidebar-link.active {
-    color: $highlight-accent;
-    box-shadow: inset 3px 0 $highlight-accent;
+    color: var(--ide-highlight-accent);
+    box-shadow: inset 3px 0 var(--ide-highlight-accent);
 
     &.is-right {
-      box-shadow: inset -3px 0 $highlight-accent;
+      box-shadow: inset -3px 0 var(--ide-highlight-accent);
     }
   }
 
   .nav-links li.active a,
   .nav-links li a.active {
-    border-color: $highlight-accent;
-    color: $text-color;
+    border-color: var(--ide-highlight-accent);
+    color: var(--ide-text-color);
   }
 
   .avatar-container {
     &,
     .avatar {
-      color: $text-color;
-      background-color: $highlight-background;
-      border-color: $highlight-background;
+      color: var(--ide-text-color);
+      background-color: var(--ide-highlight-background);
+      border-color: var(--ide-highlight-background);
     }
   }
 
   .ide-status-bar {
-    background-color: $footer-background;
+    background-color: var(--ide-footer-background);
   }
 
   input[type='text'],
   input[type='search'],
   .filtered-search-box {
-    border-color: $input-border;
-    background: $input-background !important;
+    border-color: var(--ide-input-border);
+    background: var(--ide-input-background) !important;
   }
 
   input[type='text'],
   input[type='search'],
   .filtered-search-box,
   textarea {
-    color: $input-color !important;
+    color: var(--ide-input-color) !important;
   }
 
   .filtered-search-box input[type='search'] {
@@ -282,46 +240,49 @@
 
   .filtered-search-token .value-container,
   .filtered-search-term .value-container {
-    background-color: $dropdown-hover-background;
-
-    color: $text-color;
+    background-color: var(--ide-dropdown-hover-background);
+    color: var(--ide-text-color);
 
     &:hover {
-      background-color: $input-border;
+      background-color: var(--ide-input-border);
     }
   }
 
   .ide-entry-dropdown-toggle:hover {
-    background: $gray-800;
+    background: var(--ide-file-row-btn-hover-background);
+  }
+
+  @function calc-btn-hover-padding($original-padding, $original-border: 1px) {
+    @return calc(#{$original-padding + $original-border} - var(--ide-btn-hover-border-width));
   }
 
   .btn:not(.btn-link):not([disabled]):hover {
-    border-width: 2px;
-    padding: 5px 9px;
+    border-width: var(--ide-btn-hover-border-width);
+    padding: calc-btn-hover-padding(6px) calc-btn-hover-padding(10px);
   }
 
   .btn:not([disabled]).btn-sm:hover {
-    padding: 3px 9px;
+    padding: calc-btn-hover-padding(4px) calc-btn-hover-padding(10px);
   }
 
   .btn:not([disabled]).btn-block:hover {
-    padding: 5px 0;
+    padding: calc-btn-hover-padding(6px) 0;
   }
 
   .btn-inverted,
   .btn-default,
   .dropdown,
   .dropdown-menu-toggle {
-    background-color: $input-background !important;
-    color: $input-color !important;
-    border-color: $btn-default-border;
+    background-color: var(--ide-input-background) !important;
+    color: var(--ide-input-color) !important;
+    border-color: var(--ide-btn-default-border);
   }
 
   .btn-inverted,
   .btn-default {
     &:hover,
     &:focus {
-      border-color: $btn-default-hover-border !important;
+      border-color: var(--ide-btn-default-hover-border) !important;
     }
   }
 
@@ -329,35 +290,35 @@
   .dropdown-menu-toggle {
     &:hover,
     &:focus {
-      background-color: $gray-900 !important;
-      border-color: $gray-200 !important;
+      background-color: var(--ide-dropdown-btn-hover-background) !important;
+      border-color: var(--ide-dropdown-btn-hover-border) !important;
     }
   }
 
   .dropdown-menu {
-    color: $text-color;
-    border-color: $background;
-    background-color: $dropdown-background;
+    color: var(--ide-text-color);
+    border-color: var(--ide-background);
+    background-color: var(--ide-dropdown-background);
 
     .divider,
     .nav-links:not(.quick-links) {
-      background-color: $dropdown-hover-background;
-      border-color: $dropdown-hover-background;
+      background-color: var(--ide-dropdown-hover-background);
+      border-color: var(--ide-dropdown-hover-background);
     }
 
     .nav-links li a.active {
-      border-color: $highlight-accent;
+      border-color: var(--ide-highlight-accent);
     }
 
     .ide-nav-form .nav-links li a:not(.active) {
-      background-color: $dropdown-background;
+      background-color: var(--ide-dropdown-background);
     }
 
     .nav-links:not(.quick-links) li:not(.md-header-toolbar) a {
-      color: $text-color;
+      color: var(--ide-text-color);
 
       &.active {
-        color: $text-color;
+        color: var(--ide-text-color);
       }
     }
 
@@ -366,73 +327,75 @@
     li button:not(.disable-hover):hover,
     li button:not(.disable-hover):focus,
     li button.is-focused {
-      background-color: $dropdown-hover-background;
-      color: $text-color;
+      background-color: var(--ide-dropdown-hover-background);
+      color: var(--ide-text-color);
     }
   }
 
   .dropdown-title,
   .dropdown-input {
-    border-color: $dropdown-hover-background !important;
+    border-color: var(--ide-dropdown-hover-background) !important;
   }
 
-  .btn-primary {
-    background-color: $btn-primary-background;
-    border-color: $btn-primary-border !important;
+  .btn-primary,
+  .btn-info {
+    background-color: var(--ide-btn-primary-background);
+    border-color: var(--ide-btn-primary-border) !important;
 
     &:hover,
     &:focus {
-      border-color: $btn-primary-hover-border !important;
+      border-color: var(--ide-btn-primary-hover-border) !important;
     }
   }
 
   .btn-success {
-    background-color: $btn-success-background;
-    border-color: $btn-success-border !important;
+    background-color: var(--ide-btn-success-background);
+    border-color: var(--ide-btn-success-border) !important;
 
     &:hover,
     &:focus {
-      border-color: $btn-success-hover-border !important;
+      border-color: var(--ide-btn-success-hover-border) !important;
     }
   }
 
   .btn[disabled] {
-    background: $btn-default-background !important;
-    border: 1px solid $btn-disabled-border !important;
-    color: $btn-disabled-color !important;
+    background: var(--ide-btn-default-background) !important;
+    border: 1px solid var(--ide-btn-disabled-border) !important;
+    color: var(--ide-btn-disabled-color) !important;
   }
 
   .md-previewer,
+  pre code,
   .md table:not(.code) tbody,
   .ide-empty-state {
-    background-color: $border-color;
+    background-color: var(--ide-border-color);
   }
 
   .ide-tree-header svg:focus,
   .ide-tree-header svg:hover {
-    color: $blue-600;
+    color: var(--ide-link-color);
   }
 
   .animation-container {
     [class^='skeleton-line-'] {
-      background-color: $gray-800;
+      background-color: var(--ide-animation-gradient-1);
 
       &::after {
         background-image: linear-gradient(to right,
-        $gray-800 0%,
-        $gray-700 20%,
-        $gray-800 40%,
-        $gray-800 100%);
+        var(--ide-animation-gradient-1) 0%,
+        var(--ide-animation-gradient-2) 20%,
+        var(--ide-animation-gradient-1) 40%,
+        var(--ide-animation-gradient-1) 100%);
       }
     }
   }
 
   .idiff.addition {
-    background-color: $diff-insert;
+    background-color: var(--ide-diff-insert);
   }
 
   .idiff.deletion {
-    background-color: $diff-remove;
+    background-color: var(--ide-diff-remove);
   }
 }
 

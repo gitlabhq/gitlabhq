@@ -825,7 +825,7 @@ describe Projects::IssuesController do
           update_issue(issue_params: { assignee_ids: [assignee.id] })
 
           expect(json_response['assignees'].first.keys)
-            .to match_array(%w(id name username avatar_url state web_url))
+            .to include(*%w(id name username avatar_url state web_url))
         end
       end
 
@@ -1408,6 +1408,7 @@ describe Projects::IssuesController do
     it 'render merge request as json' do
       create_merge_request
 
+      expect(response).to have_gitlab_http_status(:ok)
       expect(response).to match_response_schema('merge_request')
     end
 

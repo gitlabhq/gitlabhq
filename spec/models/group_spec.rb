@@ -659,6 +659,42 @@ describe Group do
     end
   end
 
+  describe '#members_from_self_and_ancestors_with_effective_access_level' do
+    let!(:group_parent) { create(:group, :private) }
+    let!(:group) { create(:group, :private, parent: group_parent) }
+    let!(:group_child) { create(:group, :private, parent: group) }
+
+    let!(:user) { create(:user) }
+
+    let(:parent_group_access_level) { Gitlab::Access::REPORTER }
+    let(:group_access_level) { Gitlab::Access::DEVELOPER }
+    let(:child_group_access_level) { Gitlab::Access::MAINTAINER }
+
+    before do
+      create(:group_member, user: user, group: group_parent, access_level: parent_group_access_level)
+      create(:group_member, user: user, group: group, access_level: group_access_level)
+      create(:group_member, user: user, group: group_child, access_level: child_group_access_level)
+    end
+
+    it 'returns effective access level for user' do
+      expect(group_parent.members_from_self_and_ancestors_with_effective_access_level.as_json).to(
+        contain_exactly(
+          hash_including('user_id' => user.id, 'access_level' => parent_group_access_level)
+        )
+      )
+      expect(group.members_from_self_and_ancestors_with_effective_access_level.as_json).to(
+        contain_exactly(
+          hash_including('user_id' => user.id, 'access_level' => group_access_level)
+        )
+      )
+      expect(group_child.members_from_self_and_ancestors_with_effective_access_level.as_json).to(
+        contain_exactly(
+          hash_including('user_id' => user.id, 'access_level' => child_group_access_level)
+        )
+      )
+    end
+  end
+
   describe '#direct_and_indirect_members' do
     let!(:group) { create(:group, :nested) }
     let!(:sub_group) { create(:group, parent: group) }

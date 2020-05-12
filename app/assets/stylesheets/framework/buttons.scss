@@ -507,6 +507,10 @@
   opacity: 1 !important;
   cursor: default !important;
 
+  &.cursor-not-allowed {
+    cursor: not-allowed !important;
+  }
+
   i {
     color: $gl-text-color-disabled !important;
   }

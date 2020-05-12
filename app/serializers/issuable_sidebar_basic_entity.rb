@@ -21,7 +21,7 @@ class IssuableSidebarBasicEntity < Grape::Entity
   expose :labels, using: LabelEntity
 
   expose :current_user, if: lambda { |_issuable| current_user } do
-    expose :current_user, merge: true, using: API::Entities::UserBasic
+    expose :current_user, merge: true, using: ::API::Entities::UserBasic
 
     expose :todo, using: IssuableSidebarTodoEntity do |issuable|
       current_user.pending_todo_for(issuable)

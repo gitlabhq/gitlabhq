@@ -1806,7 +1806,7 @@ describe API::Projects do
         first_user = json_response.first
         expect(first_user['username']).to eq(user.username)
         expect(first_user['name']).to eq(user.name)
-        expect(first_user.keys).to contain_exactly(*%w[name username id state avatar_url web_url])
+        expect(first_user.keys).to include(*%w[name username id state avatar_url web_url])
       end
     end
 

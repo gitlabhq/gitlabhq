@@ -1,0 +1,5 @@
+---
+title: Fix GitLab CI/CD Scala template
+merge_request: 30667
+author:
+type: fixed

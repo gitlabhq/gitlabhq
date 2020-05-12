@@ -29,8 +29,15 @@
               "web_url": { "type": "uri" },
               "status_tooltip_html": { "type": ["string", "null"] },
               "path": { "type": "string" }
-            },
-            "additionalProperties": false
+            }, 
+            "required": [
+              "id",
+              "state",
+              "avatar_url",
+              "path",
+              "name",
+              "username"
+            ]
           },
           "created_at": { "type": "date" },
           "updated_at": { "type": "date" },

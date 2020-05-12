@@ -3,6 +3,7 @@ require 'ffaker'
 
 FactoryBot.define do
   factory :alert_management_alert, class: 'AlertManagement::Alert' do
+    triggered
     project
     title { FFaker::Lorem.sentence }
     started_at { Time.current }
@@ -33,6 +34,11 @@ FactoryBot.define do
 
     trait :without_ended_at do
       ended_at { nil }
+    end
+
+    trait :triggered do
+      status { AlertManagement::Alert::STATUSES[:triggered] }
+      without_ended_at
     end
 
     trait :acknowledged do

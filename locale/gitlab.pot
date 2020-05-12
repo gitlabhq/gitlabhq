@@ -1721,6 +1721,9 @@ msgstr ""
 msgid "AlertManagement|Create issue"
 msgstr ""
 
+msgid "AlertManagement|Critical"
+msgstr ""
+
 msgid "AlertManagement|Display alerts from all your monitoring tools directly within GitLab. Streamline the investigation of your alerts and the escalation of alerts to incidents."
 msgstr ""
 
@@ -1737,6 +1740,18 @@ msgid "AlertManagement|Events:"
 msgstr ""
 
 msgid "AlertManagement|Full Alert Details"
+msgstr ""
+
+msgid "AlertManagement|High"
+msgstr ""
+
+msgid "AlertManagement|Info"
+msgstr ""
+
+msgid "AlertManagement|Low"
+msgstr ""
+
+msgid "AlertManagement|Medium"
 msgstr ""
 
 msgid "AlertManagement|More information"
@@ -1776,6 +1791,9 @@ msgid "AlertManagement|There was an error displaying the alerts. Confirm your en
 msgstr ""
 
 msgid "AlertManagement|Triggered"
+msgstr ""
+
+msgid "AlertManagement|Unknown"
 msgstr ""
 
 msgid "AlertService|%{linkStart}Learn more%{linkEnd} about configuring this endpoint to receive alerts."
@@ -3543,6 +3561,9 @@ msgid "Can be manually deployed to"
 msgstr ""
 
 msgid "Can override approvers and approvals required per merge request"
+msgstr ""
+
+msgid "Can't edit as source branch was deleted"
 msgstr ""
 
 msgid "Can't find HEAD commit for this branch"
@@ -11613,6 +11634,9 @@ msgid "Invalid server response"
 msgstr ""
 
 msgid "Invalid start or end time format"
+msgstr ""
+
+msgid "Invalid status"
 msgstr ""
 
 msgid "Invalid two-factor code."

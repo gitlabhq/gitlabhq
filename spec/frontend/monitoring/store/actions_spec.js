@@ -97,7 +97,11 @@ describe('Monitoring store actions', () => {
         null,
         state,
         [],
-        [{ type: 'fetchEnvironmentsData' }, { type: 'fetchDashboard' }],
+        [
+          { type: 'fetchEnvironmentsData' },
+          { type: 'fetchDashboard' },
+          { type: 'fetchAnnotations' },
+        ],
       );
     });
 

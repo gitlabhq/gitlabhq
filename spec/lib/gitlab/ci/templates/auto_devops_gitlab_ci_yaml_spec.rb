@@ -40,11 +40,7 @@ describe 'Auto-DevOps.gitlab-ci.yml' do
     end
 
     context 'when the project has an active cluster' do
-      let(:cluster) { create(:cluster, :project, :provided_by_gcp, projects: [project]) }
-
-      before do
-        allow(cluster).to receive(:active?).and_return(true)
-      end
+      let!(:cluster) { create(:cluster, :project, :provided_by_gcp, projects: [project]) }
 
       describe 'deployment-related builds' do
         context 'on default branch' do

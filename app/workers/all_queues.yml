@@ -3,6 +3,13 @@
 #
 # Do not edit it manually!
 ---
+- :name: authorized_project_update:authorized_project_update_project_create
+  :feature_category: :authentication_and_authorization
+  :has_external_dependencies: 
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
 - :name: auto_devops:auto_devops_disable
   :feature_category: :auto_devops
   :has_external_dependencies: 

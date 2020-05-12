@@ -6027,7 +6027,7 @@ type Metadata {
 
 type MetricsDashboard {
   """
-  Annotations added to the dashboard. Will always return `null` if `metrics_dashboard_annotations` feature flag is disabled
+  Annotations added to the dashboard
   """
   annotations(
     """
@@ -8504,7 +8504,7 @@ input RemoveProjectFromSecurityDashboardInput {
   """
   ID of the project to remove from the Instance Security Dashboard
   """
-  projectId: ID!
+  id: ID!
 }
 
 """

@@ -85,6 +85,10 @@ $item-weight-max-width: 48px;
     white-space: nowrap;
   }
 
+  .health-label-short {
+    display: none;
+  }
+
   @include media-breakpoint-down(lg) {
     .issue-count-badge {
       padding: 0;
@@ -96,7 +100,6 @@ $item-weight-max-width: 48px;
 .item-body,
 .card-header {
   .health-label-short {
-    display: initial;
     max-width: 0;
   }
 
@@ -128,6 +131,12 @@ $item-weight-max-width: 48px;
   .bullet-separator {
     font-size: 9px;
     color: $gray-400;
+  }
+}
+
+.card-header {
+  .health-label-short {
+    display: initial;
   }
 }
 
@@ -265,7 +274,6 @@ $item-weight-max-width: 48px;
     max-width: 90%;
   }
 
-  .item-body,
   .card-header {
     .health-label-short {
       max-width: 30px;
@@ -306,7 +314,6 @@ $item-weight-max-width: 48px;
     }
   }
 
-  .item-body,
   .card-header {
     .health-label-short {
       max-width: 60px;
@@ -326,7 +333,6 @@ $item-weight-max-width: 48px;
     }
   }
 
-  .item-body,
   .card-header {
     .health-label-short {
       max-width: 100px;
@@ -362,10 +368,6 @@ $item-weight-max-width: 48px;
     .item-info-area {
       flex-basis: auto;
     }
-  }
-
-  .health-label-short {
-    display: initial;
   }
 
   .health-label-long {
@@ -411,8 +413,7 @@ $item-weight-max-width: 48px;
 }
 
 @media only screen and (min-width: 1500px) {
-  .card-header,
-  .item-body {
+  .card-header {
     .health-label-short {
       display: none;
     }

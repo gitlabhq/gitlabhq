@@ -5,14 +5,17 @@ module AlertManagement
     include Gitlab::Utils::StrongMemoize
 
     # @param alert [AlertManagement::Alert]
+    # @param user [User]
     # @param status [Integer] Must match a value from AlertManagement::Alert::STATUSES
-    def initialize(alert, status)
+    def initialize(alert, user, status)
       @alert = alert
+      @user = user
       @status = status
     end
 
     def execute
-      return error('Invalid status') unless status_key
+      return error_no_permissions unless allowed?
+      return error_invalid_status unless status_key
 
       if alert.update(status_event: status_event)
         success
@@ -23,7 +26,13 @@ module AlertManagement
 
     private
 
-    attr_reader :alert, :status
+    attr_reader :alert, :user, :status
+
+    delegate :project, to: :alert
+
+    def allowed?
+      user.can?(:update_alert_management_alert, project)
+    end
 
     def status_key
       strong_memoize(:status_key) do
@@ -37,6 +46,14 @@ module AlertManagement
 
     def success
       ServiceResponse.success(payload: { alert: alert })
+    end
+
+    def error_no_permissions
+      error(_('You have no permissions'))
+    end
+
+    def error_invalid_status
+      error(_('Invalid status'))
     end
 
     def error(message)

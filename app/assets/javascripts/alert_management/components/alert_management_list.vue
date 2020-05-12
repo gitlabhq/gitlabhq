@@ -15,7 +15,7 @@ import {
 import { s__ } from '~/locale';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import getAlerts from '../graphql/queries/getAlerts.query.graphql';
-import { ALERTS_STATUS, ALERTS_STATUS_TABS } from '../constants';
+import { ALERTS_STATUS, ALERTS_STATUS_TABS, ALERTS_SEVERITY_LABELS } from '../constants';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 const tdClass = 'table-col d-flex d-md-table-cell align-items-center';
@@ -68,6 +68,7 @@ export default {
     [ALERTS_STATUS.ACKNOWLEDGED]: s__('AlertManagement|Acknowledged'),
     [ALERTS_STATUS.RESOLVED]: s__('AlertManagement|Resolved'),
   },
+  severityLabels: ALERTS_SEVERITY_LABELS,
   statusTabs: ALERTS_STATUS_TABS,
   components: {
     GlEmptyState,
@@ -185,14 +186,17 @@ export default {
         stacked="md"
       >
         <template #cell(severity)="{ item }">
-          <div class="d-inline-flex align-items-center justify-content-between">
+          <div
+            class="d-inline-flex align-items-center justify-content-between"
+            data-testid="severityField"
+          >
             <gl-icon
               class="mr-2"
               :size="12"
               :name="`severity-${item.severity.toLowerCase()}`"
               :class="`icon-${item.severity.toLowerCase()}`"
             />
-            {{ item.severity }}
+            {{ $options.severityLabels[item.severity] }}
           </div>
         </template>
 

@@ -16917,7 +16917,7 @@
           "fields": [
             {
               "name": "annotations",
-              "description": "Annotations added to the dashboard. Will always return `null` if `metrics_dashboard_annotations` feature flag is disabled",
+              "description": "Annotations added to the dashboard",
               "args": [
                 {
                   "name": "from",
@@ -24943,7 +24943,7 @@
           "fields": null,
           "inputFields": [
             {
-              "name": "projectId",
+              "name": "id",
               "description": "ID of the project to remove from the Instance Security Dashboard",
               "type": {
                 "kind": "NON_NULL",

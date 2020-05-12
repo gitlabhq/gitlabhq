@@ -5,3 +5,5 @@ class MergeRequestAssigneeEntity < ::API::Entities::UserBasic
     options[:merge_request]&.can_be_merged_by?(assignee)
   end
 end
+
+MergeRequestAssigneeEntity.prepend_if_ee('EE::MergeRequestAssigneeEntity')

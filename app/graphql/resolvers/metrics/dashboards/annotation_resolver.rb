@@ -18,7 +18,6 @@ module Resolvers
 
         def resolve(**args)
           return [] unless dashboard
-          return [] unless Feature.enabled?(:metrics_dashboard_annotations, dashboard.environment&.project)
 
           ::Metrics::Dashboards::AnnotationsFinder.new(dashboard: dashboard, params: args).execute
         end

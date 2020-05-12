@@ -1,5 +1,14 @@
 import { s__ } from '~/locale';
 
+export const ALERTS_SEVERITY_LABELS = {
+  CRITICAL: s__('AlertManagement|Critical'),
+  HIGH: s__('AlertManagement|High'),
+  MEDIUM: s__('AlertManagement|Medium'),
+  LOW: s__('AlertManagement|Low'),
+  INFO: s__('AlertManagement|Info'),
+  UNKNOWN: s__('AlertManagement|Unknown'),
+};
+
 export const ALERTS_STATUS = {
   OPEN: 'open',
   TRIGGERED: 'triggered',

@@ -35,10 +35,10 @@ module MetricsDashboard
   private
 
   def all_dashboards
-    dashboards = dashboard_finder.find_all_paths(project_for_dashboard)
-    dashboards.map do |dashboard|
-      amend_dashboard(dashboard)
-    end
+    dashboard_finder
+      .find_all_paths(project_for_dashboard)
+      .map(&method(:amend_dashboard))
+      .sort_by { |dashboard| [dashboard[:starred] ? 0 : 1, dashboard[:display_name].downcase] }
   end
 
   def amend_dashboard(dashboard)
@@ -46,6 +46,8 @@ module MetricsDashboard
 
     dashboard[:can_edit] = project_dashboard ? can_edit?(dashboard) : false
     dashboard[:project_blob_path] = project_dashboard ? dashboard_project_blob_path(dashboard) : nil
+    dashboard[:starred] = starred_dashboards.include?(dashboard[:path])
+    dashboard[:user_starred_path] = nil # placeholder attribute until API endpoint will be merged https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31316
 
     dashboard
   end
@@ -71,6 +73,20 @@ module MetricsDashboard
 
   def dashboard_finder
     ::Gitlab::Metrics::Dashboard::Finder
+  end
+
+  def starred_dashboards
+    @starred_dashboards ||= begin
+      if project_for_dashboard.present?
+        ::Metrics::UsersStarredDashboardsFinder
+          .new(user: current_user, project: project_for_dashboard)
+          .execute
+          .map(&:dashboard_path)
+          .to_set
+      else
+        Set.new
+      end
+    end
   end
 
   # Project is not defined for group and admin level clusters.

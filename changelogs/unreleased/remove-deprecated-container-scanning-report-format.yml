@@ -1,0 +1,5 @@
+---
+title: Remove deprecated container scanning report parser
+merge_request: 31294
+author:
+type: removed

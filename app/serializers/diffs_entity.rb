@@ -11,6 +11,10 @@ class DiffsEntity < Grape::Entity
     merge_request&.source_branch
   end
 
+  expose :source_branch_exists do |diffs|
+    merge_request&.source_branch_exists?
+  end
+
   expose :target_branch_name do |diffs|
     merge_request&.target_branch
   end

@@ -13,11 +13,7 @@ import trackDashboardLoad from '../monitoring_tracking_helper';
 import getEnvironments from '../queries/getEnvironments.query.graphql';
 import getAnnotations from '../queries/getAnnotations.query.graphql';
 import statusCodes from '../../lib/utils/http_status';
-import {
-  backOff,
-  convertObjectPropsToCamelCase,
-  isFeatureFlagEnabled,
-} from '../../lib/utils/common_utils';
+import { backOff, convertObjectPropsToCamelCase } from '../../lib/utils/common_utils';
 import { s__, sprintf } from '../../locale';
 
 import {
@@ -116,14 +112,7 @@ export const clearExpandedPanel = ({ commit }) => {
 export const fetchData = ({ dispatch }) => {
   dispatch('fetchEnvironmentsData');
   dispatch('fetchDashboard');
-  /**
-   * Annotations data is not yet fetched. This will be
-   * ready after the BE piece is implemented.
-   * https://gitlab.com/gitlab-org/gitlab/-/issues/211330
-   */
-  if (isFeatureFlagEnabled('metricsDashboardAnnotations')) {
-    dispatch('fetchAnnotations');
-  }
+  dispatch('fetchAnnotations');
 };
 
 // Metrics dashboard

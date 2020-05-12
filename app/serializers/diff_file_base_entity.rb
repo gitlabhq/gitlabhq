@@ -22,16 +22,16 @@ class DiffFileBaseEntity < Grape::Entity
   expose :edit_path, if: -> (_, options) { options[:merge_request] } do |diff_file|
     merge_request = options[:merge_request]
 
-    options = merge_request.persisted? ? { from_merge_request_iid: merge_request.iid } : {}
+    next unless merge_request.merged? || merge_request.source_branch_exists?
 
-    next unless merge_request.source_project
+    target_project, target_branch = edit_project_branch_options(merge_request)
 
     if Feature.enabled?(:web_ide_default)
-      ide_edit_path(merge_request.source_project, merge_request.source_branch, diff_file.new_path)
+      ide_edit_path(target_project, target_branch, diff_file.new_path)
     else
-      project_edit_blob_path(merge_request.source_project,
-        tree_join(merge_request.source_branch, diff_file.new_path),
-        options)
+      options = merge_request.persisted? && merge_request.source_branch_exists? && !merge_request.merged? ? { from_merge_request_iid: merge_request.iid } : {}
+
+      project_edit_blob_path(target_project, tree_join(target_branch, diff_file.new_path), options)
     end
   end
 
@@ -61,7 +61,7 @@ class DiffFileBaseEntity < Grape::Entity
     next unless diff_file.blob
 
     if merge_request&.source_project && current_user
-      can_modify_blob?(diff_file.blob, merge_request.source_project, merge_request.source_branch)
+      can_modify_blob?(diff_file.blob, merge_request.source_project, merge_request.source_branch_exists? ? merge_request.source_branch : merge_request.target_branch)
     else
       false
     end
@@ -112,5 +112,13 @@ class DiffFileBaseEntity < Grape::Entity
 
   def current_user
     request.current_user
+  end
+
+  def edit_project_branch_options(merge_request)
+    if merge_request.source_branch_exists? && !merge_request.merged?
+      [merge_request.source_project, merge_request.source_branch]
+    else
+      [merge_request.target_project, merge_request.target_branch]
+    end
   end
 end

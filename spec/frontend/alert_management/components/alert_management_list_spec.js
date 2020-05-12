@@ -26,6 +26,7 @@ describe('AlertManagementList', () => {
   const findStatusFilterTabs = () => wrapper.findAll(GlTab);
   const findNumberOfAlertsBadge = () => wrapper.findAll(GlBadge);
   const findDateFields = () => wrapper.findAll(TimeAgo);
+  const findSeverityFields = () => wrapper.findAll('[data-testid="severityField"]');
 
   function mountComponent({
     props = {
@@ -199,6 +200,20 @@ describe('AlertManagementList', () => {
             .classes('icon-critical'),
         ).toBe(true);
       });
+    });
+
+    it('Internationalizes severity text', () => {
+      mountComponent({
+        props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
+        data: { alerts: mockAlerts, errored: false },
+        loading: false,
+      });
+
+      expect(
+        findSeverityFields()
+          .at(0)
+          .text(),
+      ).toBe('Critical');
     });
 
     describe('handle date fields', () => {

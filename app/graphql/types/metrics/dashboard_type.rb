@@ -11,8 +11,7 @@ module Types
             description: 'Path to a file with the dashboard definition'
 
       field :annotations, Types::Metrics::Dashboards::AnnotationType.connection_type, null: true,
-            description: 'Annotations added to the dashboard. Will always return `null` ' \
-              'if `metrics_dashboard_annotations` feature flag is disabled',
+            description: 'Annotations added to the dashboard',
             resolver: Resolvers::Metrics::Dashboards::AnnotationResolver
     end
     # rubocop: enable Graphql/AuthorizeTypes

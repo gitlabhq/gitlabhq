@@ -1,5 +1,12 @@
 <script>
-import { GlNewDropdown, GlNewDropdownItem, GlTabs, GlTab, GlButton } from '@gitlab/ui';
+import {
+  GlLoadingIcon,
+  GlNewDropdown,
+  GlNewDropdownItem,
+  GlTabs,
+  GlTab,
+  GlButton,
+} from '@gitlab/ui';
 import { s__ } from '~/locale';
 import query from '../graphql/queries/details.query.graphql';
 import { fetchPolicies } from '~/lib/graphql';
@@ -16,6 +23,7 @@ export default {
     overviewTitle: s__('AlertManagement|Overview'),
   },
   components: {
+    GlLoadingIcon,
     GlNewDropdown,
     GlNewDropdownItem,
     GlTab,
@@ -55,10 +63,16 @@ export default {
   data() {
     return { alert: null };
   },
+  computed: {
+    loading() {
+      return this.$apollo.queries.alert.loading;
+    },
+  },
 };
 </script>
 <template>
   <div>
+    <div v-if="loading"><gl-loading-icon size="lg" class="mt-3" /></div>
     <div
       v-if="alert"
       class="gl-display-flex justify-content-end gl-border-b-1 gl-border-b-gray-200 gl-border-b-solid gl-p-4"
@@ -73,7 +87,7 @@ export default {
         {{ s__('AlertManagement|Create issue') }}
       </gl-button>
     </div>
-    <div class="gl-display-flex justify-content-end">
+    <div v-if="alert" class="gl-display-flex justify-content-end">
       <gl-new-dropdown right>
         <gl-new-dropdown-item
           v-for="(label, field) in $options.statuses"

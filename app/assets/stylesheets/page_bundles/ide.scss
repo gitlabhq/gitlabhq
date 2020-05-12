@@ -2,8 +2,9 @@
 @import 'framework/mixins';
 @import './ide_mixins';
 @import './ide_monaco_overrides';
+@import './ide_theme_overrides';
 
-@import './themes/dark';
+@import './ide_themes/dark';
 
 $search-list-icon-width: 18px;
 $ide-activity-bar-width: 60px;
