@@ -139,9 +139,12 @@ MySQL/MariaDB are advised to [migrate to PostgreSQL](../update/mysql_to_postgres
 
 ### PostgreSQL Requirements
 
-As of GitLab 10.0, PostgreSQL 9.6 or newer is required, and earlier versions are
-not supported. We highly recommend users to use PostgreSQL 9.6 as this
-is the PostgreSQL version used for development and testing.
+We highly recommend users to use the minimum PostgreSQL versions specified below as these are the versions used for development and testing.
+
+GitLab version | Minimum PostgreSQL version
+-|-
+10.0 | 9.6
+12.10 | 11
 
 Users using PostgreSQL must ensure the `pg_trgm` extension is loaded into every
 GitLab database. This extension can be enabled (using a PostgreSQL super user)

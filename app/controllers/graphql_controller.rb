@@ -3,7 +3,12 @@
 class GraphqlController < ApplicationController
   # Unauthenticated users have access to the API for public data
   skip_before_action :authenticate_user!
-  skip_around_action :set_session_storage
+
+  # If a user is using their session to access GraphQL, we need to have session
+  # storage, since the admin-mode check is session wide.
+  # We can't enable this for anonymous users because that would cause users using
+  # enforced SSO from using an auth token to access the API.
+  skip_around_action :set_session_storage, unless: :current_user
 
   # Allow missing CSRF tokens, this would mean that if a CSRF is invalid or missing,
   # the user won't be authenticated but can proceed as an anonymous user.

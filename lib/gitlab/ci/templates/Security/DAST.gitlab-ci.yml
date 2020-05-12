@@ -30,13 +30,15 @@ dast:
   artifacts:
     reports:
       dast: gl-dast-report.json
-  only:
-    refs:
-      - branches
-    variables:
-      - $GITLAB_FEATURES =~ /\bdast\b/
-  except:
-    variables:
-      - $DAST_DISABLED
-      - $DAST_DISABLED_FOR_DEFAULT_BRANCH && $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
-      - $CI_DEFAULT_BRANCH != $CI_COMMIT_REF_NAME && $REVIEW_DISABLED && $DAST_WEBSITE == null && $DAST_API_SPECIFICATION == null
+  rules:
+    - if: $DAST_DISABLED
+      when: never
+    - if: $DAST_DISABLED_FOR_DEFAULT_BRANCH &&
+          $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
+      when: never
+    - if: $CI_DEFAULT_BRANCH != $CI_COMMIT_REF_NAME &&
+          $REVIEW_DISABLED && $DAST_WEBSITE == null &&
+          $DAST_API_SPECIFICATION == null
+      when: never
+    - if: $CI_COMMIT_BRANCH &&
+          $GITLAB_FEATURES =~ /\bdast\b/

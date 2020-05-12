@@ -10,7 +10,8 @@ module ExclusiveLeaseHelpers
       try_obtain: uuid,
       exists?: true,
       renew: renew,
-      cancel: nil
+      cancel: nil,
+      ttl: timeout
     )
 
     allow(Gitlab::ExclusiveLease)

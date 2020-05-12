@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 describe GraphqlController do
+  include GraphqlHelpers
+
   before do
     stub_feature_flags(graphql: true)
   end
@@ -61,6 +63,54 @@ describe GraphqlController do
         post :execute
 
         expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
+  end
+
+  describe 'Admin Mode' do
+    let(:admin) { create(:admin) }
+    let(:project) { create(:project) }
+    let(:graphql_query) { graphql_query_for('project', { 'fullPath' => project.full_path }, %w(id name)) }
+
+    before do
+      sign_in(admin)
+    end
+
+    context 'when admin mode enabled' do
+      before do
+        Gitlab::Session.with_session(controller.session) do
+          controller.current_user_mode.request_admin_mode!
+          controller.current_user_mode.enable_admin_mode!(password: admin.password)
+        end
+      end
+
+      it 'can query project data' do
+        post :execute, params: { query: graphql_query }
+
+        expect(controller.current_user_mode.admin_mode?).to be(true)
+        expect(json_response['data']['project']['name']).to eq(project.name)
+      end
+    end
+
+    context 'when admin mode disabled' do
+      it 'cannot query project data' do
+        post :execute, params: { query: graphql_query }
+
+        expect(controller.current_user_mode.admin_mode?).to be(false)
+        expect(json_response['data']['project']).to be_nil
+      end
+
+      context 'when admin is member of the project' do
+        before do
+          project.add_developer(admin)
+        end
+
+        it 'can query project data' do
+          post :execute, params: { query: graphql_query }
+
+          expect(controller.current_user_mode.admin_mode?).to be(false)
+          expect(json_response['data']['project']['name']).to eq(project.name)
+        end
       end
     end
   end

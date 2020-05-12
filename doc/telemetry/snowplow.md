@@ -153,11 +153,16 @@ describe('my component', () => {
   let trackingSpy;
 
   beforeEach(() => {
-    const vm = mountComponent(MyComponent);
     trackingSpy = mockTracking('_category_', vm.$el, spyOn);
   });
 
+  const triggerEvent = () => {
+    // action which should trigger a event
+  };
+
   it('tracks an event when toggled', () => {
+    expect(trackingSpy).not.toHaveBeenCalled();
+
     triggerEvent('a.toggle');
 
     expect(trackingSpy).toHaveBeenCalledWith('_category_', 'click_edit_button', {

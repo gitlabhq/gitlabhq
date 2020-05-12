@@ -1,0 +1,5 @@
+---
+title: Migrate Dependency-Scanning CI template to rules syntax
+merge_request: 30907
+author:
+type: changed

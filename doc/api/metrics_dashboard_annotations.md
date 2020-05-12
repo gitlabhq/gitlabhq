@@ -4,16 +4,6 @@
 
 Metrics dashboard annotations allow you to indicate events on your graphs at a single point in time or over a timespan.
 
-## Enable the metrics dashboard annotations API
-
-The `:metrics_dashboard_annotations` feature flag is disabled by default.
-To turn on this API, ask a GitLab administrator with Rails console
-access to run the following command:
-
-```ruby
-Feature.enable(:metrics_dashboard_annotations)
-```
-
 ## Create a new annotation
 
 ```plaintext

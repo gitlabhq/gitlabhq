@@ -9,10 +9,8 @@ Values for the project visibility level are:
 
 - `private`:
   Project access must be granted explicitly for each user.
-
 - `internal`:
   The project can be cloned by any logged in user.
-
 - `public`:
   The project can be accessed without any authentication.
 
@@ -22,11 +20,9 @@ There are currently three options for `merge_method` to choose from:
 
 - `merge`:
   A merge commit is created for every merge, and merging is allowed as long as there are no conflicts.
-
 - `rebase_merge`:
   A merge commit is created for every merge, but merging is only allowed if fast-forward merge is possible.
   This way you could make sure that if this merge request would build, after merging to target branch it would also build.
-
 - `ff`:
   No merge commits are created and all merges are fast-forwarded, which means that merging is only allowed if the branch could be fast-forwarded.
 

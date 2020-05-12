@@ -27,11 +27,8 @@ license_scanning:
     reports:
       license_scanning: $LM_REPORT_FILE
   dependencies: []
-  only:
-    refs:
-      - branches
-    variables:
-      - $GITLAB_FEATURES =~ /\blicense_scanning\b/
-  except:
-    variables:
-      - $LICENSE_MANAGEMENT_DISABLED
+  rules:
+    - if: $LICENSE_MANAGEMENT_DISABLED
+      when: never
+    - if: $CI_COMMIT_BRANCH &&
+          $GITLAB_FEATURES =~ /\blicense_scanning\b/

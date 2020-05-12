@@ -1,0 +1,5 @@
+---
+title: Fix admin mode access on GraphiQL controller
+merge_request: 29845
+author: Diego Louzán
+type: fixed

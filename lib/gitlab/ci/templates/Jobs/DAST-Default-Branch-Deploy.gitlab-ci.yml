@@ -18,17 +18,16 @@ dast_environment_deploy:
     on_stop: stop_dast_environment
   artifacts:
     paths: [environment_url.txt]
-  only:
-    refs:
-      - branches
-    variables:
-      - $GITLAB_FEATURES =~ /\bdast\b/
-    kubernetes: active
-  except:
-    variables:
-      - $CI_DEFAULT_BRANCH != $CI_COMMIT_REF_NAME
-      - $DAST_DISABLED || $DAST_DISABLED_FOR_DEFAULT_BRANCH
-      - $DAST_WEBSITE  # we don't need to create a review app if a URL is already given
+  rules:
+    - if: $CI_DEFAULT_BRANCH != $CI_COMMIT_REF_NAME
+      when: never
+    - if: $DAST_DISABLED || $DAST_DISABLED_FOR_DEFAULT_BRANCH
+      when: never
+    - if: $DAST_WEBSITE # we don't need to create a review app if a URL is already given
+      when: never
+    - if: $CI_COMMIT_BRANCH &&
+          $CI_KUBERNETES_ACTIVE &&
+          $GITLAB_FEATURES =~ /\bdast\b/
 
 stop_dast_environment:
   extends: .dast-auto-deploy
@@ -42,14 +41,13 @@ stop_dast_environment:
     name: dast-default
     action: stop
   needs: ["dast"]
-  only:
-    refs:
-      - branches
-    variables:
-      - $GITLAB_FEATURES =~ /\bdast\b/
-    kubernetes: active
-  except:
-    variables:
-      - $CI_DEFAULT_BRANCH != $CI_COMMIT_REF_NAME
-      - $DAST_DISABLED || $DAST_DISABLED_FOR_DEFAULT_BRANCH
-      - $DAST_WEBSITE
+  rules:
+    - if: $CI_DEFAULT_BRANCH != $CI_COMMIT_REF_NAME
+      when: never
+    - if: $DAST_DISABLED || $DAST_DISABLED_FOR_DEFAULT_BRANCH
+      when: never
+    - if: $DAST_WEBSITE # we don't need to create a review app if a URL is already given
+      when: never
+    - if: $CI_COMMIT_BRANCH &&
+          $CI_KUBERNETES_ACTIVE &&
+          $GITLAB_FEATURES =~ /\bdast\b/

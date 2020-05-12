@@ -29,11 +29,8 @@ container_scanning:
     reports:
       container_scanning: gl-container-scanning-report.json
   dependencies: []
-  only:
-    refs:
-      - branches
-    variables:
-      - $GITLAB_FEATURES =~ /\bcontainer_scanning\b/
-  except:
-    variables:
-      - $CONTAINER_SCANNING_DISABLED
+  rules:
+    - if: $CONTAINER_SCANNING_DISABLED
+      when: never
+    - if: $CI_COMMIT_BRANCH &&
+          $GITLAB_FEATURES =~ /\bcontainer_scanning\b/
