@@ -259,8 +259,10 @@ export default {
       });
     },
     trackEvent() {
+      // TODO: This needs to be made aware of referers, or if it's rendered in a different context than a Issue
       trackDesignDetailView(
         'issue-design-collection',
+        'issue',
         this.$route.query.version || this.latestVersionId,
         this.isLatestVersion,
       );

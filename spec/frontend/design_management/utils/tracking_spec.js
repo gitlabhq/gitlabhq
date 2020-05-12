@@ -22,8 +22,9 @@ describe('Tracking Events', () => {
           label: eventName,
           value: {
             'internal-object-refrerer': '',
-            'version-number': 1,
-            'current-version': false,
+            'design-collection-owner': '',
+            'design-version-number': 1,
+            'design-is-current-version': false,
           },
         }),
       );
@@ -32,7 +33,7 @@ describe('Tracking Events', () => {
     it('trackDesignDetailView allows to customize the value payload', () => {
       const trackingSpy = getTrackingSpy(eventKey);
 
-      trackDesignDetailView('from-a-test', 100, true);
+      trackDesignDetailView('from-a-test', 'test', 100, true);
 
       expect(trackingSpy).toHaveBeenCalledWith(
         eventKey,
@@ -41,8 +42,9 @@ describe('Tracking Events', () => {
           label: eventName,
           value: {
             'internal-object-refrerer': 'from-a-test',
-            'version-number': 100,
-            'current-version': true,
+            'design-collection-owner': 'test',
+            'design-version-number': 100,
+            'design-is-current-version': true,
           },
         }),
       );

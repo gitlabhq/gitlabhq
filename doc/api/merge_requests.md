@@ -1130,6 +1130,8 @@ PUT /projects/:id/merge_requests/:merge_request_iid
 | `assignee_ids`             | integer array | no | The ID of the user(s) to assign the MR to. Set to `0` or provide an empty value to unassign all assignees.  |
 | `milestone_id`             | integer | no       | The global ID of a milestone to assign the merge request to. Set to `0` or provide an empty value to unassign a milestone.|
 | `labels`                   | string  | no       | Comma-separated label names for a merge request. Set to an empty string to unassign all labels.                    |
+| `add_labels`               | string  | no       | Comma-separated label names to add to a merge request.                          |
+| `remove_labels`            | string  | no       | Comma-separated label names to remove from a merge request.                     |
 | `description`              | string  | no       | Description of MR. Limited to 1,048,576 characters. |
 | `state_event`              | string  | no       | New state (close/reopen)                                                        |
 | `remove_source_branch`     | boolean | no       | Flag indicating if a merge request should remove the source branch when merging |

@@ -1,0 +1,6 @@
+---
+title: Add migration to import changes to the system dashboard Prometheus queries
+  into DB
+merge_request: 31618
+author:
+type: changed

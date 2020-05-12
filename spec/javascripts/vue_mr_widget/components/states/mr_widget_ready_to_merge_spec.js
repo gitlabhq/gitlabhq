@@ -920,8 +920,8 @@ describe('ReadyToMerge', () => {
     });
   });
 
-  describe('Commit message area', () => {
-    describe('when using merge commits', () => {
+  describe('Merge request project settings', () => {
+    describe('when the merge commit merge method is enabled', () => {
       beforeEach(() => {
         vm = createComponent({
           mr: { ffOnlyEnabled: false },
@@ -937,7 +937,7 @@ describe('ReadyToMerge', () => {
       });
     });
 
-    describe('when fast-forward merge is enabled', () => {
+    describe('when the fast-forward merge method is enabled', () => {
       beforeEach(() => {
         vm = createComponent({
           mr: { ffOnlyEnabled: true },

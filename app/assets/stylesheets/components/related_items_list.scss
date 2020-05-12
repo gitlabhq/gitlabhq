@@ -69,11 +69,6 @@ $item-weight-max-width: 48px;
       font-weight: $gl-font-weight-bold;
     }
 
-    .issue-token-state-icon-open,
-    .issue-token-state-icon-closed {
-      display: none;
-    }
-
     .sortable-link {
       color: $gray-900;
       font-weight: normal;
@@ -92,7 +87,8 @@ $item-weight-max-width: 48px;
 
   @include media-breakpoint-down(lg) {
     .issue-count-badge {
-      padding-left: 0;
+      padding: 0;
+      padding-right: 8px;
     }
   }
 }

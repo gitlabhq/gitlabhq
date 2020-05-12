@@ -30,11 +30,9 @@ performance:
     paths:
       - performance.json
       - sitespeed-results/
-  only:
-    refs:
-      - branches
-      - tags
-    kubernetes: active
-  except:
-    variables:
-      - $PERFORMANCE_DISABLED
+  rules:
+    - if: '$CI_KUBERNETES_ACTIVE == null || $CI_KUBERNETES_ACTIVE == ""'
+      when: never
+    - if: '$PERFORMANCE_DISABLED'
+      when: never
+    - if: '$CI_COMMIT_TAG || $CI_COMMIT_BRANCH'

@@ -1,6 +1,6 @@
 <script>
 import { mapState, mapActions } from 'vuex';
-import { GlTable, GlLoadingIcon, GlBadge } from '@gitlab/ui';
+import { GlTable, GlLink, GlLoadingIcon, GlBadge } from '@gitlab/ui';
 import tooltip from '~/vue_shared/directives/tooltip';
 import { CLUSTER_TYPES, STATUSES } from '../constants';
 import { __, sprintf } from '~/locale';
@@ -8,54 +8,58 @@ import { __, sprintf } from '~/locale';
 export default {
   components: {
     GlTable,
+    GlLink,
     GlLoadingIcon,
     GlBadge,
   },
   directives: {
     tooltip,
   },
-  fields: [
-    {
-      key: 'name',
-      label: __('Kubernetes cluster'),
-    },
-    {
-      key: 'environmentScope',
-      label: __('Environment scope'),
-    },
-    {
-      key: 'size',
-      label: __('Size'),
-    },
-    {
-      key: 'cpu',
-      label: __('Total cores (vCPUs)'),
-    },
-    {
-      key: 'memory',
-      label: __('Total memory (GB)'),
-    },
-    {
-      key: 'clusterType',
-      label: __('Cluster level'),
-      formatter: value => CLUSTER_TYPES[value],
-    },
-  ],
   computed: {
     ...mapState(['clusters', 'loading']),
+    fields() {
+      return [
+        {
+          key: 'name',
+          label: __('Kubernetes cluster'),
+        },
+        {
+          key: 'environment_scope',
+          label: __('Environment scope'),
+        },
+        // Wait for backend to send these fields
+        // {
+        //  key: 'size',
+        //  label: __('Size'),
+        // },
+        // {
+        //  key: 'cpu',
+        //  label: __('Total cores (vCPUs)'),
+        // },
+        // {
+        //  key: 'memory',
+        //  label: __('Total memory (GB)'),
+        // },
+        {
+          key: 'cluster_type',
+          label: __('Cluster level'),
+          formatter: value => CLUSTER_TYPES[value],
+        },
+      ];
+    },
   },
   mounted() {
-    // TODO - uncomment this once integrated with BE
-    // this.fetchClusters();
+    this.fetchClusters();
   },
   methods: {
     ...mapActions(['fetchClusters']),
     statusClass(status) {
-      return STATUSES[status].className;
+      const iconClass = STATUSES[status] || STATUSES.default;
+      return iconClass.className;
     },
     statusTitle(status) {
-      const { title } = STATUSES[status];
-      return sprintf(__('Status: %{title}'), { title }, false);
+      const iconTitle = STATUSES[status] || STATUSES.default;
+      return sprintf(__('Status: %{title}'), { title: iconTitle.title }, false);
     },
   },
 };
@@ -63,17 +67,13 @@ export default {
 
 <template>
   <gl-loading-icon v-if="loading" size="md" class="mt-3" />
-  <gl-table
-    v-else
-    :items="clusters"
-    :fields="$options.fields"
-    stacked="md"
-    variant="light"
-    class="qa-clusters-table"
-  >
+  <gl-table v-else :items="clusters" :fields="fields" stacked="md" class="qa-clusters-table">
     <template #cell(name)="{ item }">
       <div class="d-flex flex-row-reverse flex-md-row js-status">
-        {{ item.name }}
+        <gl-link data-qa-selector="cluster" :data-qa-cluster-name="item.name" :href="item.path">
+          {{ item.name }}
+        </gl-link>
+
         <gl-loading-icon
           v-if="item.status === 'deleting'"
           v-tooltip
@@ -84,13 +84,13 @@ export default {
         <div
           v-else
           v-tooltip
-          class="cluster-status-indicator rounded-circle align-self-center gl-w-8 gl-h-8 mr-2 ml-md-2"
+          class="cluster-status-indicator rounded-circle align-self-center gl-w-4 gl-h-4 mr-2 ml-md-2"
           :class="statusClass(item.status)"
           :title="statusTitle(item.status)"
         ></div>
       </div>
     </template>
-    <template #cell(clusterType)="{value}">
+    <template #cell(cluster_type)="{value}">
       <gl-badge variant="light">
         {{ value }}
       </gl-badge>

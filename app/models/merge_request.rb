@@ -1317,6 +1317,14 @@ class MergeRequest < ApplicationRecord
     actual_head_pipeline&.has_reports?(Ci::JobArtifact.terraform_reports)
   end
 
+  def compare_accessibility_reports
+    unless has_accessibility_reports?
+      return { status: :error, status_reason: _('This merge request does not have accessibility reports') }
+    end
+
+    compare_reports(Ci::CompareAccessibilityReportsService)
+  end
+
   # TODO: this method and compare_test_reports use the same
   # result type, which is handled by the controller's #reports_response.
   # we should minimize mistakes by isolating the common parts.

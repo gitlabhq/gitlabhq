@@ -2308,6 +2308,33 @@ describe API::MergeRequests do
       end
     end
 
+    context 'with labels' do
+      include_context 'with labels'
+
+      let(:api_base) { api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user) }
+
+      it 'when adding labels, keeps existing labels and adds new' do
+        put api_base, params: { add_labels: '1, 2' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['labels']).to contain_exactly(label.title, label2.title, '1', '2')
+      end
+
+      it 'when removing labels, only removes those specified' do
+        put api_base, params: { remove_labels: "#{label.title}" }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['labels']).to eq([label2.title])
+      end
+
+      it 'when removing all labels, keeps no labels' do
+        put api_base, params: { remove_labels: "#{label.title}, #{label2.title}" }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['labels']).to be_empty
+      end
+    end
+
     it 'does not update state when title is empty' do
       put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user), params: { state_event: 'close', title: nil }
 

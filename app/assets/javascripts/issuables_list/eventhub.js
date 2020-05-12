@@ -1,5 +1,3 @@
-import Vue from 'vue';
+import createEventHub from '~/helpers/event_hub_factory';
 
-const issueablesEventBus = new Vue();
-
-export default issueablesEventBus;
+export default createEventHub();

@@ -19,7 +19,7 @@
           = link_to _('More information'), help_page_path('user/group/clusters/index', anchor: 'cluster-precedence')
 
     - if Feature.enabled?(:clusters_list_redesign)
-      #js-clusters-list-app{ data: { endpoint: 'todo/add/endpoint' } }
+      #js-clusters-list-app{ data: { endpoint: clusterable.index_path(format: :json) } }
     - else
       .clusters-table.js-clusters-list
         .gl-responsive-table-row.table-row-header{ role: "row" }
