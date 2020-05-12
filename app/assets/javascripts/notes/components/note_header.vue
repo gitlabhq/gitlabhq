@@ -170,17 +170,17 @@ export default {
       </span>
     </template>
     <span v-else>{{ __('A deleted user') }}</span>
-    <span class="note-headline-light note-headline-meta d-inline-flex align-items-center">
+    <span class="note-headline-light note-headline-meta d-sm-inline-flex align-items-center">
       <span class="system-note-message"> <slot></slot> </span>
       <template v-if="createdAt">
-        <span ref="actionText" class="system-note-separator">
+        <span ref="actionText" class="system-note-separator ml-1">
           <template v-if="actionText">{{ actionText }}</template>
         </span>
         <a
           v-if="noteTimestampLink"
           ref="noteTimestampLink"
           :href="noteTimestampLink"
-          class="note-timestamp system-note-separator"
+          class="note-timestamp system-note-separator mr-1"
           @click="updateTargetNoteHash"
         >
           <time-ago-tooltip :time="createdAt" tooltip-placement="bottom" />
@@ -194,7 +194,7 @@ export default {
         name="eye-slash"
         :size="14"
         :title="__('Private comments are accessible by internal staff only')"
-        class="ml-1 gl-text-gray-800"
+        class="mx-1 gl-text-gray-800"
       />
       <slot name="extra-controls"></slot>
       <i

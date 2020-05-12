@@ -545,7 +545,7 @@ GEM
       opentracing (~> 0.3)
       thrift
     jaro_winkler (1.5.4)
-    jira-ruby (1.7.1)
+    jira-ruby (2.0.0)
       activesupport
       atlassian-jwt
       multipart-post
@@ -1278,7 +1278,7 @@ DEPENDENCIES
   icalendar
   influxdb (~> 0.2)
   invisible_captcha (~> 0.12.1)
-  jira-ruby (~> 1.7)
+  jira-ruby (~> 2.0.0)
   js_regex (~> 3.1)
   json-schema (~> 2.8.0)
   jwt (~> 2.1.0)

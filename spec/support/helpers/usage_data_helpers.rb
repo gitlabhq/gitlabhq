@@ -19,6 +19,9 @@ module UsageDataHelpers
       cycle_analytics_views
       productivity_analytics_views
       source_code_pushes
+      design_management_designs_create
+      design_management_designs_update
+      design_management_designs_delete
     ).freeze
 
   COUNTS_KEYS = %i(

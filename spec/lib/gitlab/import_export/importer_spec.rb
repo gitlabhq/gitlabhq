@@ -51,7 +51,8 @@ describe Gitlab::ImportExport::Importer do
         Gitlab::ImportExport::UploadsRestorer,
         Gitlab::ImportExport::LfsRestorer,
         Gitlab::ImportExport::StatisticsRestorer,
-        Gitlab::ImportExport::SnippetsRepoRestorer
+        Gitlab::ImportExport::SnippetsRepoRestorer,
+        Gitlab::ImportExport::DesignRepoRestorer
       ].each do |restorer|
         it "calls the #{restorer}" do
           fake_restorer = double(restorer.to_s)

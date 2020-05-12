@@ -712,6 +712,29 @@ describe Notify do
       end
     end
 
+    describe 'for design notes' do
+      let_it_be(:design) { create(:design, :with_file) }
+      let_it_be(:recipient) { create(:user) }
+      let_it_be(:note) do
+        create(:diff_note_on_design,
+           noteable: design,
+           note: "Hello #{recipient.to_reference}")
+      end
+
+      let(:header_name) { 'X-Gitlab-DesignManagement-Design-ID' }
+      let(:refer_to_design) do
+        have_attributes(subject: a_string_including(design.filename))
+      end
+
+      subject { described_class.note_design_email(recipient.id, note.id) }
+
+      it { is_expected.to have_header(header_name, design.id.to_s) }
+
+      it { is_expected.to have_body_text(design.filename) }
+
+      it { is_expected.to refer_to_design }
+    end
+
     describe 'project was moved' do
       let(:recipient) { user }
 

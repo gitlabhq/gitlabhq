@@ -16804,10 +16804,16 @@ msgstr ""
 msgid "Promotions|This feature is locked."
 msgstr ""
 
+msgid "Promotions|Track activity with Contribution Analytics."
+msgstr ""
+
 msgid "Promotions|Upgrade plan"
 msgstr ""
 
 msgid "Promotions|Upgrade your plan"
+msgstr ""
+
+msgid "Promotions|Upgrade your plan to activate Contribution Analytics."
 msgstr ""
 
 msgid "Promotions|Weight"
@@ -16817,6 +16823,9 @@ msgid "Promotions|Weighting your issue"
 msgstr ""
 
 msgid "Promotions|When you have a lot of issues, it can be hard to get an overview. By adding a weight to your issues, you can get a better idea of the effort, cost, required time, or value of each, and so better manage them."
+msgstr ""
+
+msgid "Promotions|With Contribution Analytics you can have an overview for the activity of issues, merge requests, and push events of your organization and its members."
 msgstr ""
 
 msgid "Prompt users to upload SSH keys"
@@ -22284,9 +22293,6 @@ msgstr ""
 msgid "Tracing"
 msgstr ""
 
-msgid "Track activity with Contribution Analytics."
-msgstr ""
-
 msgid "Track groups of issues that share a theme, across projects and milestones"
 msgstr ""
 
@@ -22789,9 +22795,6 @@ msgid "Upgrade your plan to activate Advanced Global Search."
 msgstr ""
 
 msgid "Upgrade your plan to activate Audit Events."
-msgstr ""
-
-msgid "Upgrade your plan to activate Contribution Analytics."
 msgstr ""
 
 msgid "Upgrade your plan to activate Group Webhooks."
@@ -24037,9 +24040,6 @@ msgid "Wiki|Wiki Pages"
 msgstr ""
 
 msgid "Will deploy to"
-msgstr ""
-
-msgid "With contribution analytics you can have an overview for the activity of issues, merge requests and push events of your organization and its members."
 msgstr ""
 
 msgid "Withdraw Access Request"

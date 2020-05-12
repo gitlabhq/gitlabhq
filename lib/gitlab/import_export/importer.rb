@@ -34,7 +34,7 @@ module Gitlab
       attr_accessor :archive_file, :current_user, :project, :shared
 
       def restorers
-        [repo_restorer, wiki_restorer, project_tree, avatar_restorer,
+        [repo_restorer, wiki_restorer, project_tree, avatar_restorer, design_repo_restorer,
          uploads_restorer, lfs_restorer, statistics_restorer, snippets_repo_restorer]
       end
 
@@ -71,6 +71,12 @@ module Gitlab
                                                wiki_enabled: project.wiki_enabled?)
       end
 
+      def design_repo_restorer
+        Gitlab::ImportExport::DesignRepoRestorer.new(path_to_bundle: design_repo_path,
+                                                     shared: shared,
+                                                     project: project)
+      end
+
       def uploads_restorer
         Gitlab::ImportExport::UploadsRestorer.new(project: project, shared: shared)
       end
@@ -99,6 +105,10 @@ module Gitlab
 
       def wiki_repo_path
         File.join(shared.export_path, Gitlab::ImportExport.wiki_repo_bundle_filename)
+      end
+
+      def design_repo_path
+        File.join(shared.export_path, Gitlab::ImportExport.design_repo_bundle_filename)
       end
 
       def remove_import_file
@@ -141,5 +151,3 @@ module Gitlab
     end
   end
 end
-
-Gitlab::ImportExport::Importer.prepend_if_ee('EE::Gitlab::ImportExport::Importer')

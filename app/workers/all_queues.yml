@@ -1011,6 +1011,13 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: 
+- :name: design_management_new_version
+  :feature_category: :design_management
+  :has_external_dependencies: 
+  :urgency: :low
+  :resource_boundary: :memory
+  :weight: 1
+  :idempotent: 
 - :name: detect_repository_languages
   :feature_category: :source_code_management
   :has_external_dependencies: 

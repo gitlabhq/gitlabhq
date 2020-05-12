@@ -264,7 +264,7 @@ export default {
         >
           <slot slot="note-header-info" name="note-header-info"></slot>
           <span v-if="commit" v-html="actionText"></span>
-          <span v-else class="d-none d-sm-inline mr-1">&middot;</span>
+          <span v-else class="d-none d-sm-inline">&middot;</span>
         </note-header>
         <note-actions
           :author-id="author.id"
