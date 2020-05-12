@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Confidential Issue Sidebar Block renders for isConfidential = false and isEditable = false 1`] = `
+exports[`Confidential Issue Sidebar Block renders for confidential = false and isEditable = false 1`] = `
 <div
   class="block issuable-sidebar-item confidentiality"
 >
@@ -52,7 +52,7 @@ exports[`Confidential Issue Sidebar Block renders for isConfidential = false and
 </div>
 `;
 
-exports[`Confidential Issue Sidebar Block renders for isConfidential = false and isEditable = true 1`] = `
+exports[`Confidential Issue Sidebar Block renders for confidential = false and isEditable = true 1`] = `
 <div
   class="block issuable-sidebar-item confidentiality"
 >
@@ -84,9 +84,7 @@ exports[`Confidential Issue Sidebar Block renders for isConfidential = false and
       data-track-property="confidentiality"
       href="#"
     >
-      
       Edit
-    
     </a>
   </div>
    
@@ -114,7 +112,7 @@ exports[`Confidential Issue Sidebar Block renders for isConfidential = false and
 </div>
 `;
 
-exports[`Confidential Issue Sidebar Block renders for isConfidential = true and isEditable = false 1`] = `
+exports[`Confidential Issue Sidebar Block renders for confidential = true and isEditable = false 1`] = `
 <div
   class="block issuable-sidebar-item confidentiality"
 >
@@ -166,7 +164,7 @@ exports[`Confidential Issue Sidebar Block renders for isConfidential = true and 
 </div>
 `;
 
-exports[`Confidential Issue Sidebar Block renders for isConfidential = true and isEditable = true 1`] = `
+exports[`Confidential Issue Sidebar Block renders for confidential = true and isEditable = true 1`] = `
 <div
   class="block issuable-sidebar-item confidentiality"
 >
@@ -198,9 +196,7 @@ exports[`Confidential Issue Sidebar Block renders for isConfidential = true and 
       data-track-property="confidentiality"
       href="#"
     >
-      
       Edit
-    
     </a>
   </div>
    

@@ -1,12 +1,12 @@
-# Running multiple Sidekiq processes **(CORE ONLY)**
-
-NOTE: **Note:**
-The information in this page applies only to Omnibus GitLab.
+# Run multiple Sidekiq processes **(CORE ONLY)**
 
 GitLab allows you to start multiple Sidekiq processes.
 These processes can be used to consume a dedicated set
 of queues. This can be used to ensure certain queues always have dedicated
 workers, no matter the number of jobs that need to be processed.
+
+NOTE: **Note:**
+The information in this page applies only to Omnibus GitLab.
 
 ## Available Sidekiq queues
 
@@ -18,7 +18,11 @@ For a list of the existing Sidekiq queues, check the following files:
 Each entry in the above files represents a queue on which Sidekiq processes
 can be started.
 
-## Starting multiple processes
+## Start multiple processes
+
+> - [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/4006) in GitLab 12.10, starting multiple processes with Sidekiq cluster.
+> - [Sidekiq cluster moved](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/181) to GitLab [Core](https://about.gitlab.com/pricing/#self-managed) in GitLab 12.10.
+> - [Sidekiq cluster became default](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/4140) in GitLab 13.0.
 
 To start multiple processes:
 
@@ -68,7 +72,7 @@ To start multiple processes:
    automatically pick up jobs in queues created in the future.
 
    If `sidekiq-cluster` is running on more than one node, you can also use
-   [`--negate`](#negating-settings) and list all the queues that are already being
+   [`--negate`](#negate-settings) and list all the queues that are already being
    processed.
 
 1. Save the file and reconfigure GitLab for the changes to take effect:
@@ -77,17 +81,17 @@ To start multiple processes:
    sudo gitlab-ctl reconfigure
    ```
 
-Once the extra Sidekiq processes are added, you can visit the
-**Admin Area > Monitoring > Background Jobs** (`/admin/background_jobs`) in GitLab.
+After the extra Sidekiq processes are added, navigate to
+**{admin}** **Admin Area > Monitoring > Background Jobs** (`/admin/background_jobs`) in GitLab.
 
 ![Multiple Sidekiq processes](img/sidekiq-cluster.png)
 
-## Negating settings
+## Negate settings
 
 To have the additional Sidekiq processes work on every queue **except** the ones
 you list:
 
-1. After you follow the steps for [starting extra processes](#starting-multiple-processes),
+1. After you follow the steps for [starting extra processes](#start-multiple-processes),
    edit `/etc/gitlab/gitlab.rb` and add:
 
    ```ruby
@@ -193,10 +197,7 @@ sidekiq['queue_groups'] = [
 ]
 ```
 
-### Migrating to Sidekiq-cluster
-
-> - [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/4006) in GitLab 12.10.
-> - [Moved](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/181) to GitLab [Core](https://about.gitlab.com/pricing/#self-managed) in GitLab 12.10.
+### Disable Sidekiq cluster
 
 CAUTION: **Warning:**
 Sidekiq cluster is [scheduled](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/240)
@@ -234,7 +235,7 @@ setting `sidekiq['cluster'] = true`.
 When using this feature, the service called `sidekiq` will now be
 running `sidekiq-cluster`.
 
-The [concurrency](#managing-concurrency) and other options configured
+The [concurrency](#manage-concurrency) and other options configured
 for Sidekiq will be respected.
 
 By default, logs for `sidekiq-cluster` go to `/var/log/gitlab/sidekiq`
@@ -282,7 +283,7 @@ number of threads that equals the number of queues, plus one spare thread.
 For example, a process that handles the `process_commit` and `post_receive`
 queues will use three threads in total.
 
-## Managing concurrency
+## Manage concurrency
 
 When setting the maximum concurrency, keep in mind this normally should
 not exceed the number of CPU cores available. The values in the examples
@@ -293,28 +294,9 @@ latency and potentially cause client timeouts. See the [Sidekiq documentation
 about Redis](https://github.com/mperham/sidekiq/wiki/Using-Redis) for more
 details.
 
-### When running a single Sidekiq process
-
-CAUTION: **Warning:**
-Running Sidekiq directly is scheduled to be removed in GitLab
-[14.0](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/240).
-
-1. Edit `/etc/gitlab/gitlab.rb` and add:
-
-   ```ruby
-   sidekiq['cluster'] = false
-   sidekiq['concurrency'] = 25
-   ```
-
-1. Save the file and reconfigure GitLab for the changes to take effect:
-
-   ```shell
-   sudo gitlab-ctl reconfigure
-   ```
-
-This will set the concurrency (number of threads) for the Sidekiq process.
-
 ### When running Sidekiq cluster (default)
+
+Running Sidekiq cluster is the default in GitLab 13.0 and later.
 
 1. Edit `/etc/gitlab/gitlab.rb` and add:
 
@@ -345,7 +327,30 @@ regardless of the number of queues.
 When `min_concurrency` is greater than `max_concurrency`, it is treated as
 being equal to `max_concurrency`.
 
-## Modifying the check interval
+### When running a single Sidekiq process
+
+Running a single Sidekiq process is the default in GitLab 12.10 and earlier.
+
+CAUTION: **Warning:**
+Running Sidekiq directly is scheduled to be removed in GitLab
+[14.0](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/240).
+
+1. Edit `/etc/gitlab/gitlab.rb` and add:
+
+   ```ruby
+   sidekiq['cluster'] = false
+   sidekiq['concurrency'] = 25
+   ```
+
+1. Save the file and reconfigure GitLab for the changes to take effect:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+This will set the concurrency (number of threads) for the Sidekiq process.
+
+## Modify the check interval
 
 To modify the check interval for the additional Sidekiq processes:
 
@@ -359,7 +364,7 @@ To modify the check interval for the additional Sidekiq processes:
 
 This tells the additional processes how often to check for enqueued jobs.
 
-## Troubleshooting using the CLI
+## Troubleshoot using the CLI
 
 CAUTION: **Warning:**
 It's recommended to use `/etc/gitlab/gitlab.rb` to configure the Sidekiq processes.
@@ -407,7 +412,7 @@ you'd use the following:
 /opt/gitlab/embedded/service/gitlab-rails/bin/sidekiq-cluster process_commit,post_receive gitlab_shell
 ```
 
-### Monitoring the `sidekiq-cluster` command
+### Monitor the `sidekiq-cluster` command
 
 The `sidekiq-cluster` command will not terminate once it has started the desired
 amount of Sidekiq processes. Instead, the process will continue running and
@@ -420,7 +425,7 @@ processes will terminate themselves after a few seconds. This ensures you don't
 end up with zombie Sidekiq processes.
 
 All of this makes monitoring the processes fairly easy. Simply hook up
-`sidekiq-cluster` to your supervisor of choice (e.g. runit) and you're good to
+`sidekiq-cluster` to your supervisor of choice (for example, runit) and you're good to
 go.
 
 If a child process died the `sidekiq-cluster` command will signal all remaining

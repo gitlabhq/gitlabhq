@@ -9,19 +9,39 @@ import { historyPushState, buildUrlWithCurrentLocation } from '../../lib/utils/c
 export default {
   methods: {
     onChangeTab(scope) {
-      this.updateContent({ scope, page: '1' });
+      let params = {
+        scope,
+        page: '1',
+      };
+
+      params = this.onChangeWithFilter(params);
+
+      this.updateContent(params);
     },
 
     onChangePage(page) {
       /* URLS parameters are strings, we need to parse to match types */
-      const params = {
+      let params = {
         page: Number(page).toString(),
       };
 
       if (this.scope) {
         params.scope = this.scope;
       }
+
+      params = this.onChangeWithFilter(params);
+
       this.updateContent(params);
+    },
+
+    onChangeWithFilter(params) {
+      const { username } = this.requestData;
+
+      if (username) {
+        return { ...params, username };
+      }
+
+      return params;
     },
 
     updateInternalState(parameters) {

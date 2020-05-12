@@ -30,7 +30,9 @@ export default {
     });
   },
   showBlobInteractionZones({ state }, path) {
-    Object.values(state.data[path]).forEach(d => addInteractionClass(path, d));
+    if (state.data && state.data[path]) {
+      Object.values(state.data[path]).forEach(d => addInteractionClass(path, d));
+    }
   },
   showDefinition({ commit, state }, { target: el }) {
     let definition;

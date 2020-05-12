@@ -20,7 +20,7 @@ describe('Mutations TestReports Store', () => {
 
   describe('set endpoint', () => {
     it('should set endpoint', () => {
-      const expectedState = Object.assign({}, mockState, { endpoint: 'foo' });
+      const expectedState = { ...mockState, endpoint: 'foo' };
       mutations[types.SET_ENDPOINT](mockState, 'foo');
 
       expect(mockState.endpoint).toEqual(expectedState.endpoint);
@@ -47,14 +47,14 @@ describe('Mutations TestReports Store', () => {
 
   describe('toggle loading', () => {
     it('should set to true', () => {
-      const expectedState = Object.assign({}, mockState, { isLoading: true });
+      const expectedState = { ...mockState, isLoading: true };
       mutations[types.TOGGLE_LOADING](mockState);
 
       expect(mockState.isLoading).toEqual(expectedState.isLoading);
     });
 
     it('should toggle back to false', () => {
-      const expectedState = Object.assign({}, mockState, { isLoading: false });
+      const expectedState = { ...mockState, isLoading: false };
       mockState.isLoading = true;
 
       mutations[types.TOGGLE_LOADING](mockState);

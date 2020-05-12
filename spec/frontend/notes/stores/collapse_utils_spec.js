@@ -18,9 +18,7 @@ describe('Collapse utils', () => {
   });
 
   it('returns false when a system note is not a description type', () => {
-    expect(isDescriptionSystemNote(Object.assign({}, mockSystemNote, { note: 'foo' }))).toEqual(
-      false,
-    );
+    expect(isDescriptionSystemNote({ ...mockSystemNote, note: 'foo' })).toEqual(false);
   });
 
   it('gets the time difference between two notes', () => {

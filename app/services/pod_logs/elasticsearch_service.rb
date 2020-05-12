@@ -53,11 +53,15 @@ module PodLogs
     def check_search(result)
       result[:search] = params['search'] if params.key?('search')
 
+      return error(_('Invalid search parameter')) if result[:search] && !result[:search].is_a?(String)
+
       success(result)
     end
 
     def check_cursor(result)
       result[:cursor] = params['cursor'] if params.key?('cursor')
+
+      return error(_('Invalid cursor parameter')) if result[:cursor] && !result[:cursor].is_a?(String)
 
       success(result)
     end

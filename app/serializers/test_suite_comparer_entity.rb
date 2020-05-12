@@ -46,8 +46,6 @@ class TestSuiteComparerEntity < Grape::Entity
   private
 
   def max_tests(*used)
-    return Integer::MAX unless Feature.enabled?(:ci_limit_test_reports_size, default_enabled: true)
-
     [DEFAULT_MAX_TESTS - used.map(&:count).sum, DEFAULT_MIN_TESTS].max
   end
   # rubocop: enable CodeReuse/ActiveRecord

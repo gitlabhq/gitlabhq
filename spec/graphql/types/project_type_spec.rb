@@ -3,11 +3,11 @@
 require 'spec_helper'
 
 describe GitlabSchema.types['Project'] do
-  it { expect(described_class).to expose_permissions_using(Types::PermissionTypes::Project) }
+  specify { expect(described_class).to expose_permissions_using(Types::PermissionTypes::Project) }
 
-  it { expect(described_class.graphql_name).to eq('Project') }
+  specify { expect(described_class.graphql_name).to eq('Project') }
 
-  it { expect(described_class).to require_graphql_authorizations(:read_project) }
+  specify { expect(described_class).to require_graphql_authorizations(:read_project) }
 
   it 'has the expected fields' do
     expected_fields = %w[
@@ -24,7 +24,7 @@ describe GitlabSchema.types['Project'] do
       namespace group statistics repository merge_requests merge_request issues
       issue pipelines removeSourceBranchAfterMerge sentryDetailedError snippets
       grafanaIntegration autocloseReferencedIssues suggestion_commit_message environments
-      boards jira_import_status jira_imports services
+      boards jira_import_status jira_imports services releases release
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)
@@ -95,5 +95,19 @@ describe GitlabSchema.types['Project'] do
     subject { described_class.fields['services'] }
 
     it { is_expected.to have_graphql_type(Types::Projects::ServiceType.connection_type) }
+  end
+
+  describe 'releases field' do
+    subject { described_class.fields['release'] }
+
+    it { is_expected.to have_graphql_type(Types::ReleaseType) }
+    it { is_expected.to have_graphql_resolver(Resolvers::ReleaseResolver) }
+  end
+
+  describe 'release field' do
+    subject { described_class.fields['releases'] }
+
+    it { is_expected.to have_graphql_type(Types::ReleaseType.connection_type) }
+    it { is_expected.to have_graphql_resolver(Resolvers::ReleasesResolver) }
   end
 end

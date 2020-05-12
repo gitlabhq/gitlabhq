@@ -73,6 +73,12 @@ function rspec_paralellized_job() {
   export KNAPSACK_LOG_LEVEL="debug"
   export KNAPSACK_REPORT_PATH="knapsack/${report_name}_report.json"
 
+  # There's a bug where artifacts are sometimes not downloaded. Since specs can run without the Knapsack report, we can
+  # handle the missing artifact gracefully here. See https://gitlab.com/gitlab-org/gitlab/-/issues/212349.
+  if [[ ! -f "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}" ]]; then
+    echo "{}" > "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}"
+  fi
+
   cp "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}" "${KNAPSACK_REPORT_PATH}"
 
   if [[ -z "${KNAPSACK_TEST_FILE_PATTERN}" ]]; then

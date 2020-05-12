@@ -4,10 +4,11 @@
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25455) to [GitLab Core](https://about.gitlab.com/pricing/) 12.9.
 
 GitLab makes it easy to view the logs of running pods in [connected Kubernetes clusters](index.md).
-By displaying the logs directly in GitLab in the **Log Explorer**, developers can avoid having to manage console tools or jump to a different interface.
+By displaying the logs directly in GitLab in the **Log Explorer**, developers can avoid
+managing console tools or jumping to a different interface.
 
 NOTE: **Kubernetes + GitLab**
-Everything you need to build, test, deploy, and run your app at scale.
+Everything you need to build, test, deploy, and run your application at scale.
 [Learn more](https://about.gitlab.com/solutions/kubernetes/).
 
 ## Overview
@@ -22,7 +23,8 @@ To learn more, see [APM - Log Explorer](https://www.youtube.com/watch?v=hWclZHA7
 
 ## Requirements
 
-[Deploying to a Kubernetes environment](../deploy_boards.md#enabling-deploy-boards) is required in order to be able to use Logs.
+[Deploying to a Kubernetes environment](../deploy_boards.md#enabling-deploy-boards)
+is required to use Logs.
 
 ## Usage
 
@@ -43,9 +45,12 @@ the **Log Explorer**.
 
 Logs can be displayed by clicking on a specific pod from [Deploy Boards](../deploy_boards.md):
 
-1. Go to **{cloud-gear}** **Operations > Environments** and find the environment which contains the desired pod, like `production`.
-1. On the **Environments** page, you should see the status of the environment's pods with [Deploy Boards](../deploy_boards.md).
-1. When mousing over the list of pods, a tooltip will appear with the exact pod name and status.
+1. Go to **{cloud-gear}** **Operations > Environments** and find the environment
+   which contains the desired pod, like `production`.
+1. On the **Environments** page, you should see the status of the environment's
+   pods with [Deploy Boards](../deploy_boards.md).
+1. When mousing over the list of pods, a tooltip will appear with the exact pod name
+   and status.
    ![Deploy Boards pod list](img/pod_logs_deploy_board.png)
 1. Click on the desired pod to display the **Log Explorer**.
 
@@ -55,21 +60,25 @@ The **Log Explorer** lets you filter the logs by:
 
 - Pods.
 - [From GitLab 12.4](https://gitlab.com/gitlab-org/gitlab/issues/5769), environments.
-- [From GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21656), [full text search](#full-text-search).
+- [From GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21656),
+  [full text search](#full-text-search).
 - [From GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/issues/197879), dates.
 
-Loading more than 500 log lines is possible from [GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/-/issues/198050) onwards.
+Loading more than 500 log lines is possible from
+[GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/-/issues/198050) onward.
 
-Support for pods with multiple containers is coming [in a future release](https://gitlab.com/gitlab-org/gitlab/issues/13404).
+Support for pods with multiple containers is coming
+[in a future release](https://gitlab.com/gitlab-org/gitlab/issues/13404).
 
-Support for historical data is coming [in a future release](https://gitlab.com/gitlab-org/gitlab/issues/196191).
+Support for historical data is coming
+[in a future release](https://gitlab.com/gitlab-org/gitlab/issues/196191).
 
 ### Filter by date
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/197879) in GitLab 12.8.
 
-When you enable [Elastic Stack](../../clusters/applications.md#elastic-stack) on your cluster,
-you can filter logs displayed in the **Log Explorer** by date.
+When you enable [Elastic Stack](../../clusters/applications.md#elastic-stack)
+on your cluster, you can filter logs displayed in the **Log Explorer** by date.
 
 Click **Show last** in the **Log Explorer** to see the available options.
 
@@ -80,7 +89,8 @@ Click **Show last** in the **Log Explorer** to see the available options.
 When you enable [Elastic Stack](../../clusters/applications.md#elastic-stack) on your cluster,
 you can search the content of your logs through a search bar.
 
-The search is passed on to Elasticsearch using the [simple_query_string](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-simple-query-string-query.html)
+The search is passed on to Elasticsearch using the
+[simple_query_string](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-simple-query-string-query.html)
 Elasticsearch function, which supports the following operators:
 
 | Operator                   | Description                                                |

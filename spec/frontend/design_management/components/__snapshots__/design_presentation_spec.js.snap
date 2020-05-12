@@ -1,0 +1,104 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Design management design presentation component currentCommentForm is equal to current annotation position when isAnnotating is true 1`] = `
+<div
+  class="h-100 w-100 p-3 overflow-auto position-relative"
+>
+  <div
+    class="h-100 w-100 d-flex align-items-center position-relative"
+  >
+    <design-image-stub
+      image="test.jpg"
+      name="test"
+      scale="1"
+    />
+     
+    <design-overlay-stub
+      currentcommentform="[object Object]"
+      dimensions="[object Object]"
+      notes=""
+      position="[object Object]"
+    />
+  </div>
+</div>
+`;
+
+exports[`Design management design presentation component currentCommentForm is null when isAnnotating is false 1`] = `
+<div
+  class="h-100 w-100 p-3 overflow-auto position-relative"
+>
+  <div
+    class="h-100 w-100 d-flex align-items-center position-relative"
+  >
+    <design-image-stub
+      image="test.jpg"
+      name="test"
+      scale="1"
+    />
+     
+    <design-overlay-stub
+      dimensions="[object Object]"
+      notes=""
+      position="[object Object]"
+    />
+  </div>
+</div>
+`;
+
+exports[`Design management design presentation component currentCommentForm is null when isAnnotating is true but annotation position is falsey 1`] = `
+<div
+  class="h-100 w-100 p-3 overflow-auto position-relative"
+>
+  <div
+    class="h-100 w-100 d-flex align-items-center position-relative"
+  >
+    <design-image-stub
+      image="test.jpg"
+      name="test"
+      scale="1"
+    />
+     
+    <design-overlay-stub
+      dimensions="[object Object]"
+      notes=""
+      position="[object Object]"
+    />
+  </div>
+</div>
+`;
+
+exports[`Design management design presentation component renders empty state when no image provided 1`] = `
+<div
+  class="h-100 w-100 p-3 overflow-auto position-relative"
+>
+  <div
+    class="h-100 w-100 d-flex align-items-center position-relative"
+  >
+    <!---->
+     
+    <!---->
+  </div>
+</div>
+`;
+
+exports[`Design management design presentation component renders image and overlay when image provided 1`] = `
+<div
+  class="h-100 w-100 p-3 overflow-auto position-relative"
+>
+  <div
+    class="h-100 w-100 d-flex align-items-center position-relative"
+  >
+    <design-image-stub
+      image="test.jpg"
+      name="test"
+      scale="1"
+    />
+     
+    <design-overlay-stub
+      dimensions="[object Object]"
+      notes=""
+      position="[object Object]"
+    />
+  </div>
+</div>
+`;

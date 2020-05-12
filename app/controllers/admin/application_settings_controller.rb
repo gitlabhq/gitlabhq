@@ -5,7 +5,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
 
   # NOTE: Use @application_setting in this controller when you need to access
   # application_settings after it has been modified. This is because the
-  # ApplicationSetting model uses Gitlab::ThreadMemoryCache for caching and the
+  # ApplicationSetting model uses Gitlab::ProcessMemoryCache for caching and the
   # cache might be stale immediately after an update.
   # https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/30233
   before_action :set_application_setting, except: :integrations

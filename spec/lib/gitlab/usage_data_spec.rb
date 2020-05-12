@@ -151,6 +151,14 @@ describe Gitlab::UsageData, :aggregate_failures do
       end
     end
 
+    describe '.recording_ce_finished_at' do
+      subject { described_class.recording_ce_finish_data }
+
+      it 'gathers time ce recording finishes at' do
+        expect(subject[:recording_ce_finished_at]).to be_a(Time)
+      end
+    end
+
     context 'when not relying on database records' do
       describe '#features_usage_data_ce' do
         subject { described_class.features_usage_data_ce }
@@ -531,9 +539,10 @@ describe Gitlab::UsageData, :aggregate_failures do
         end
 
         it 'returns the fallback value when counting fails' do
+          stub_const("Gitlab::UsageData::FALLBACK", 15)
           allow(relation).to receive(:count).and_raise(ActiveRecord::StatementInvalid.new(''))
 
-          expect(described_class.count(relation, fallback: 15, batch: false)).to eq(15)
+          expect(described_class.count(relation, batch: false)).to eq(15)
         end
       end
 
@@ -547,9 +556,10 @@ describe Gitlab::UsageData, :aggregate_failures do
         end
 
         it 'returns the fallback value when counting fails' do
+          stub_const("Gitlab::UsageData::FALLBACK", 15)
           allow(relation).to receive(:distinct_count_by).and_raise(ActiveRecord::StatementInvalid.new(''))
 
-          expect(described_class.distinct_count(relation, fallback: 15, batch: false)).to eq(15)
+          expect(described_class.distinct_count(relation, batch: false)).to eq(15)
         end
       end
     end

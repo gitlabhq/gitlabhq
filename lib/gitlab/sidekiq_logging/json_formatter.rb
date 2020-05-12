@@ -19,6 +19,7 @@ module Gitlab
           output[:message] = data
         when Hash
           convert_to_iso8601!(data)
+          convert_retry_to_integer!(data)
           stringify_args!(data)
           output.merge!(data)
         end
@@ -39,6 +40,20 @@ module Gitlab
         return timestamp unless timestamp.is_a?(Numeric)
 
         Time.at(timestamp).utc.iso8601(3)
+      end
+
+      def convert_retry_to_integer!(payload)
+        payload['retry'] =
+          case payload['retry']
+          when Integer
+            payload['retry']
+          when false, nil
+            0
+          when true
+            Sidekiq::JobRetry::DEFAULT_MAX_RETRY_ATTEMPTS
+          else
+            -1
+          end
       end
 
       def stringify_args!(payload)

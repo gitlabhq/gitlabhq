@@ -13,7 +13,7 @@ const localVue = createLocalVue();
 describe('DiffDiscussions', () => {
   let store;
   let wrapper;
-  const getDiscussionsMockData = () => [Object.assign({}, discussionsMockData)];
+  const getDiscussionsMockData = () => [{ ...discussionsMockData }];
 
   const createComponent = props => {
     store = createStore();

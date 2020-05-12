@@ -31,8 +31,23 @@ FactoryBot.define do
       ended_at { Time.current }
     end
 
+    trait :without_ended_at do
+      ended_at { nil }
+    end
+
+    trait :acknowledged do
+      status { AlertManagement::Alert::STATUSES[:acknowledged] }
+      without_ended_at
+    end
+
     trait :resolved do
-      status { :resolved }
+      status { AlertManagement::Alert::STATUSES[:resolved] }
+      with_ended_at
+    end
+
+    trait :ignored do
+      status { AlertManagement::Alert::STATUSES[:ignored] }
+      without_ended_at
     end
 
     trait :all_fields do
@@ -41,7 +56,6 @@ FactoryBot.define do
       with_service
       with_monitoring_tool
       with_host
-      with_ended_at
     end
   end
 end

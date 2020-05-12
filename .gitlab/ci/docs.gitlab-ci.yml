@@ -2,7 +2,6 @@
   extends:
     - .default-retry
     - .docs:rules:review-docs
-  allow_failure: true
   image: ruby:2.6-alpine
   stage: review
   dependencies: []

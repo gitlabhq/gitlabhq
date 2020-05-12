@@ -27,7 +27,7 @@ transitions:
     expect:
       pipeline: pending
       stages:
-        test: running
+        test: pending
         deploy: created
       jobs:
         test: pending

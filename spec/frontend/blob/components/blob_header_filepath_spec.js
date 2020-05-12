@@ -15,7 +15,7 @@ describe('Blob Header Filepath', () => {
   function createComponent(blobProps = {}, options = {}) {
     wrapper = shallowMount(BlobHeaderFilepath, {
       propsData: {
-        blob: Object.assign({}, MockBlob, blobProps),
+        blob: { ...MockBlob, ...blobProps },
       },
       ...options,
     });

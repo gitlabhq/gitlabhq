@@ -10,6 +10,6 @@ describe GitlabSchema.types['Note'] do
     expect(described_class).to have_graphql_fields(*expected_fields)
   end
 
-  it { expect(described_class).to expose_permissions_using(Types::PermissionTypes::Note) }
-  it { expect(described_class).to require_graphql_authorizations(:read_note) }
+  specify { expect(described_class).to expose_permissions_using(Types::PermissionTypes::Note) }
+  specify { expect(described_class).to require_graphql_authorizations(:read_note) }
 end

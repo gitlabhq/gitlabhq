@@ -84,7 +84,7 @@ export default {
     events.forEach(item => {
       if (!item) return;
 
-      const eventItem = Object.assign({}, DEFAULT_EVENT_OBJECTS[stage.slug], item);
+      const eventItem = { ...DEFAULT_EVENT_OBJECTS[stage.slug], ...item };
 
       eventItem.totalTime = eventItem.total_time;
 

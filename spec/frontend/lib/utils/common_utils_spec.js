@@ -503,7 +503,7 @@ describe('common_utils', () => {
 
     beforeEach(() => {
       window.gon = window.gon || {};
-      beforeGon = Object.assign({}, window.gon);
+      beforeGon = { ...window.gon };
       window.gon.sprite_icons = 'icons.svg';
     });
 

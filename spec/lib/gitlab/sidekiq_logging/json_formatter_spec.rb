@@ -34,7 +34,8 @@ describe Gitlab::SidekiqLogging::JSONFormatter do
           'started_at' => timestamp_iso8601,
           'retried_at' => timestamp_iso8601,
           'failed_at' => timestamp_iso8601,
-          'completed_at' => timestamp_iso8601
+          'completed_at' => timestamp_iso8601,
+          'retry' => 0
         }
       )
 
@@ -56,6 +57,26 @@ describe Gitlab::SidekiqLogging::JSONFormatter do
       hash_input['args'] = [1, "test", 2, { 'test' => 1 }]
 
       expect(subject['args']).to eq(["1", "test", "2", %({"test"=>1})])
+    end
+
+    context 'when the job has a non-integer value for retry' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:retry_in_job, :retry_in_logs) do
+        3        | 3
+        true     | 25
+        false    | 0
+        nil      | 0
+        'string' | -1
+      end
+
+      with_them do
+        it 'logs as the correct integer' do
+          hash_input['retry'] = retry_in_job
+
+          expect(subject['retry']).to eq(retry_in_logs)
+        end
+      end
     end
   end
 

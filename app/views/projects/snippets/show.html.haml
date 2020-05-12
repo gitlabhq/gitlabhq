@@ -3,7 +3,7 @@
 - breadcrumb_title @snippet.to_reference
 - page_title "#{@snippet.title} (#{@snippet.to_reference})", _("Snippets")
 
-- if Feature.enabled?(:snippets_vue)
+- if Feature.enabled?(:snippets_vue, default_enabled: true)
   #js-snippet-view{ data: {'qa-selector': 'snippet_view', 'snippet-gid': @snippet.to_global_id} }
 - else
   = render 'shared/snippets/header'

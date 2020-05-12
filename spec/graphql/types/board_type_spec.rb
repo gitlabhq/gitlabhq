@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 describe GitlabSchema.types['Board'] do
-  it { expect(described_class.graphql_name).to eq('Board') }
+  specify { expect(described_class.graphql_name).to eq('Board') }
 
-  it { expect(described_class).to require_graphql_authorizations(:read_board) }
+  specify { expect(described_class).to require_graphql_authorizations(:read_board) }
 
   it 'has specific fields' do
     expected_fields = %w[id name]

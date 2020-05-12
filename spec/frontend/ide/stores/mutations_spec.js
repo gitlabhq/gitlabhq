@@ -339,23 +339,6 @@ describe('Multi-file store mutations', () => {
     });
   });
 
-  describe('OPEN_NEW_ENTRY_MODAL', () => {
-    it('sets entryModal', () => {
-      localState.entries.testPath = file();
-
-      mutations.OPEN_NEW_ENTRY_MODAL(localState, {
-        type: 'test',
-        path: 'testPath',
-      });
-
-      expect(localState.entryModal).toEqual({
-        type: 'test',
-        path: 'testPath',
-        entry: localState.entries.testPath,
-      });
-    });
-  });
-
   describe('RENAME_ENTRY', () => {
     beforeEach(() => {
       localState.trees = {

@@ -8,7 +8,7 @@ class RegistrationsController < Devise::RegistrationsController
 
   layout :choose_layout
 
-  skip_before_action :required_signup_info, only: [:welcome, :update_registration]
+  skip_before_action :required_signup_info, :check_two_factor_requirement, only: [:welcome, :update_registration]
   prepend_before_action :check_captcha, only: :create
   before_action :whitelist_query_limiting, only: [:destroy]
   before_action :ensure_terms_accepted,

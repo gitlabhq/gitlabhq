@@ -61,7 +61,7 @@ describe('Merge Request Collapsible Extension', () => {
 
   describe('while loading', () => {
     beforeEach(() => {
-      mountComponent(Object.assign({}, data, { isLoading: true }));
+      mountComponent({ ...data, isLoading: true });
     });
 
     it('renders the buttons disabled', () => {
@@ -86,7 +86,7 @@ describe('Merge Request Collapsible Extension', () => {
 
   describe('with error', () => {
     beforeEach(() => {
-      mountComponent(Object.assign({}, data, { hasError: true }));
+      mountComponent({ ...data, hasError: true });
     });
 
     it('does not render the buttons', () => {

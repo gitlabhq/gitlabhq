@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class Groups::GroupLinksController < Groups::ApplicationController
-  before_action :check_feature_flag!
   before_action :authorize_admin_group!
   before_action :group_link, only: [:update, :destroy]
 
@@ -50,9 +49,5 @@ class Groups::GroupLinksController < Groups::ApplicationController
 
   def group_link_params
     params.require(:group_link).permit(:group_access, :expires_at)
-  end
-
-  def check_feature_flag!
-    render_404 unless Feature.enabled?(:share_group_with_group, default_enabled: true)
   end
 end

@@ -4,6 +4,21 @@ module AlertManagement
   class Alert < ApplicationRecord
     include AtomicInternalId
     include ShaAttribute
+    include Sortable
+
+    STATUSES = {
+      triggered: 0,
+      acknowledged: 1,
+      resolved: 2,
+      ignored: 3
+    }.freeze
+
+    STATUS_EVENTS = {
+      triggered: :trigger,
+      acknowledged: :acknowledge,
+      resolved: :resolve,
+      ignored: :ignore
+    }.freeze
 
     belongs_to :project
     belongs_to :issue, optional: true
@@ -36,20 +51,70 @@ module AlertManagement
       unknown: 5
     }
 
-    enum status: {
-      triggered: 0,
-      acknowledged: 1,
-      resolved: 2,
-      ignored: 3
-    }
+    state_machine :status, initial: :triggered do
+      state :triggered, value: STATUSES[:triggered]
+
+      state :acknowledged, value: STATUSES[:acknowledged]
+
+      state :resolved, value: STATUSES[:resolved] do
+        validates :ended_at, presence: true
+      end
+
+      state :ignored, value: STATUSES[:ignored]
+
+      state :triggered, :acknowledged, :ignored do
+        validates :ended_at, absence: true
+      end
+
+      event :trigger do
+        transition any => :triggered
+      end
+
+      event :acknowledge do
+        transition any => :acknowledged
+      end
+
+      event :resolve do
+        transition any => :resolved
+      end
+
+      event :ignore do
+        transition any => :ignored
+      end
+
+      before_transition to: [:triggered, :acknowledged, :ignored] do |alert, _transition|
+        alert.ended_at = nil
+      end
+
+      before_transition to: :resolved do |alert, transition|
+        ended_at = transition.args.first
+        alert.ended_at = ended_at || Time.current
+      end
+    end
 
     scope :for_iid, -> (iid) { where(iid: iid) }
+    scope :for_fingerprint, -> (project, fingerprint) { where(project: project, fingerprint: fingerprint) }
 
-    def fingerprint=(value)
-      if value.blank?
-        super(nil)
+    scope :order_start_time,    -> (sort_order) { order(started_at: sort_order) }
+    scope :order_end_time,      -> (sort_order) { order(ended_at: sort_order) }
+    scope :order_events_count,  -> (sort_order) { order(events: sort_order) }
+    scope :order_severity,      -> (sort_order) { order(severity: sort_order) }
+    scope :order_status,        -> (sort_order) { order(status: sort_order) }
+
+    def self.sort_by_attribute(method)
+      case method.to_s
+      when 'start_time_asc'     then order_start_time(:asc)
+      when 'start_time_desc'    then order_start_time(:desc)
+      when 'end_time_asc'       then order_end_time(:asc)
+      when 'end_time_desc'      then order_end_time(:desc)
+      when 'events_count_asc'   then order_events_count(:asc)
+      when 'events_count_desc'  then order_events_count(:desc)
+      when 'severity_asc'       then order_severity(:asc)
+      when 'severity_desc'      then order_severity(:desc)
+      when 'status_asc'         then order_status(:asc)
+      when 'status_desc'        then order_status(:desc)
       else
-        super(Digest::SHA1.hexdigest(value.to_s))
+        order_by(method)
       end
     end
 

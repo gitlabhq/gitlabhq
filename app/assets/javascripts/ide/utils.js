@@ -68,3 +68,13 @@ export const createPathWithExt = p => {
 
   return `${p.substring(1, p.lastIndexOf('.') + 1 || p.length)}${ext || '.js'}`;
 };
+
+export function registerLanguages(def, ...defs) {
+  if (defs.length) defs.forEach(lang => registerLanguages(lang));
+
+  const languageId = def.id;
+
+  languages.register(def);
+  languages.setMonarchTokensProvider(languageId, def.language);
+  languages.setLanguageConfiguration(languageId, def.conf);
+}

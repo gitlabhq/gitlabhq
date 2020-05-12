@@ -1,0 +1,5 @@
+---
+title: Fix duplicated activity and events on deletion of tag
+merge_request: 28861
+author: Sashi Kumar
+type: fixed

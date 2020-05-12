@@ -1,0 +1,7 @@
+---
+title:
+  Add clear explanation to the MR widget when no CI is available and Pipeline
+  must succeed option is activated
+merge_request: 31112
+author:
+type: changed

@@ -130,7 +130,7 @@ other using `docker` executor.
 
 ### `shell` executor example
 
-Let's assume that you have the following [config.toml](https://docs.gitlab.com/runner/configuration/advanced-configuration.html).
+Let's assume that you have the following [`config.toml`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html).
 
 ```toml
 concurrent = 4
@@ -155,7 +155,7 @@ This `config.toml`:
 
 ### `docker` executor example
 
-Let's assume that you have the following [config.toml](https://docs.gitlab.com/runner/configuration/advanced-configuration.html).
+Let's assume that you have the following [`config.toml`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html).
 
 ```toml
 concurrent = 4
@@ -216,7 +216,7 @@ but this brings administrative overhead as the `.gitlab-ci.yml` needs to be upda
 In such cases, it might be desirable to keep the `.gitlab-ci.yml` clone path agnostic, but make it
 a configuration of Runner.
 
-We can extend our [config.toml](https://docs.gitlab.com/runner/configuration/advanced-configuration.html)
+We can extend our [`config.toml`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html)
 with the following specification that will be used by Runner if `.gitlab-ci.yml` will not override it:
 
 ```toml

@@ -6,7 +6,7 @@ module Types
       graphql_name 'AlertManagementAlert'
       description "Describes an alert from the project's Alert Management"
 
-      authorize :read_alert_management_alerts
+      authorize :read_alert_management_alert
 
       field :iid,
             GraphQL::ID_TYPE,

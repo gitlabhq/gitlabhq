@@ -6,6 +6,8 @@ export default ({
   markdownPreviewPath,
   updateReleaseApiDocsPath,
   releaseAssetsDocsPath,
+  manageMilestonesPath,
+  newMilestonePath,
 }) => ({
   projectId,
   tagName,
@@ -14,6 +16,8 @@ export default ({
   markdownPreviewPath,
   updateReleaseApiDocsPath,
   releaseAssetsDocsPath,
+  manageMilestonesPath,
+  newMilestonePath,
 
   /** The Release object */
   release: null,

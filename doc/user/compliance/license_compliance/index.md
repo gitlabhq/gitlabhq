@@ -333,7 +333,7 @@ license_scanning:
 
 For self-managed GitLab instances in an environment with limited, restricted, or intermittent access
 to external resources through the internet, some adjustments are required for the License Compliance job to
-successfully run.
+successfully run. For more information, see [Offline environments](../../application_security/offline_deployments/index.md).
 
 ### Requirements for offline License Compliance
 
@@ -344,11 +344,11 @@ To use License Compliance in an offline environment, you need:
 
 NOTE: **Note:**
 GitLab Runner has a [default `pull policy` of `always`](https://docs.gitlab.com/runner/executors/docker.html#using-the-always-pull-policy),
-meaning the runner will try to pull Docker images from the GitLab container registry even if a local
+meaning the Runner tries to pull Docker images from the GitLab container registry even if a local
 copy is available. GitLab Runner's [`pull_policy` can be set to `if-not-present`](https://docs.gitlab.com/runner/executors/docker.html#using-the-if-not-present-pull-policy)
 in an offline environment if you prefer using only locally available Docker images. However, we
-recommend leaving the pull policy set to `always`, as it better enables updated scanners to be used
-within your CI/CD pipelines.
+recommend keeping the pull policy setting to `always` if not in an offline environment, as this
+enables the use of updated scanners in your CI/CD pipelines.
 
 ### Make GitLab License Compliance analyzer images available inside your Docker registry
 
@@ -371,10 +371,8 @@ For details on saving and transporting Docker images as a file, see Docker's doc
 
 ### Set License Compliance CI job variables to use local License Compliance analyzers
 
-Override License Compliance environment variables to use to your local container registry
-as the source for License Compliance analyzer images.
-
-For example, this assumes a local Docker registry repository of `localhost:5000/analyzers`:
+Add the following configuration to your `.gitlab-ci.yml` file. You must replace `image` to refer to
+the License Compliance Docker image hosted on your local Docker container registry:
 
 ```yaml
 include:

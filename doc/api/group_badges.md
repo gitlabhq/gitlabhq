@@ -7,7 +7,7 @@
 Badges support placeholders that will be replaced in real time in both the link and image URL. The allowed placeholders are:
 
 - **%{project_path}**: will be replaced by the project path.
-- **%{project_id}**: will be replaced by the project id.
+- **%{project_id}**: will be replaced by the project ID.
 - **%{default_branch}**: will be replaced by the project default branch.
 - **%{commit_sha}**: will be replaced by the last project's commit SHA.
 

@@ -14,55 +14,48 @@ describe('new file modal component', () => {
     vm.$destroy();
   });
 
-  describe.each(['tree', 'blob'])('%s', type => {
-    beforeEach(() => {
+  describe.each`
+    entryType | modalTitle                | btnTitle              | showsFileTemplates
+    ${'tree'} | ${'Create new directory'} | ${'Create directory'} | ${false}
+    ${'blob'} | ${'Create new file'}      | ${'Create file'}      | ${true}
+  `('$entryType', ({ entryType, modalTitle, btnTitle, showsFileTemplates }) => {
+    beforeEach(done => {
       const store = createStore();
-      store.state.entryModal = {
-        type,
-        path: '',
-        entry: {
-          path: '',
-        },
-      };
 
       vm = createComponentWithStore(Component, store).$mount();
-
+      vm.open(entryType);
       vm.name = 'testing';
+
+      vm.$nextTick(done);
     });
 
-    it(`sets modal title as ${type}`, () => {
-      const title = type === 'tree' ? 'directory' : 'file';
-
-      expect(vm.$el.querySelector('.modal-title').textContent.trim()).toBe(`Create new ${title}`);
+    afterEach(() => {
+      vm.close();
     });
 
-    it(`sets button label as ${type}`, () => {
-      const title = type === 'tree' ? 'directory' : 'file';
-
-      expect(vm.$el.querySelector('.btn-success').textContent.trim()).toBe(`Create ${title}`);
+    it(`sets modal title as ${entryType}`, () => {
+      expect(document.querySelector('.modal-title').textContent.trim()).toBe(modalTitle);
     });
 
-    it(`sets form label as ${type}`, () => {
-      expect(vm.$el.querySelector('.label-bold').textContent.trim()).toBe('Name');
+    it(`sets button label as ${entryType}`, () => {
+      expect(document.querySelector('.btn-success').textContent.trim()).toBe(btnTitle);
     });
 
-    it(`${type === 'tree' ? 'does not show' : 'shows'} file templates`, () => {
-      const templateFilesEl = vm.$el.querySelector('.file-templates');
-      if (type === 'tree') {
-        expect(templateFilesEl).toBeNull();
-      } else {
-        expect(templateFilesEl instanceof Element).toBeTruthy();
-      }
+    it(`sets form label as ${entryType}`, () => {
+      expect(document.querySelector('.label-bold').textContent.trim()).toBe('Name');
+    });
+
+    it(`shows file templates: ${showsFileTemplates}`, () => {
+      const templateFilesEl = document.querySelector('.file-templates');
+      expect(Boolean(templateFilesEl)).toBe(showsFileTemplates);
     });
   });
 
   describe('rename entry', () => {
     beforeEach(() => {
       const store = createStore();
-      store.state.entryModal = {
-        type: 'rename',
-        path: '',
-        entry: {
+      store.state.entries = {
+        'test-path': {
           name: 'test',
           type: 'blob',
           path: 'test-path',
@@ -72,23 +65,29 @@ describe('new file modal component', () => {
       vm = createComponentWithStore(Component, store).$mount();
     });
 
-    ['tree', 'blob'].forEach(type => {
-      it(`renders title and button for renaming ${type}`, done => {
-        const text = type === 'tree' ? 'folder' : 'file';
-
-        vm.$store.state.entryModal.entry.type = type;
+    it.each`
+      entryType | modalTitle         | btnTitle
+      ${'tree'} | ${'Rename folder'} | ${'Rename folder'}
+      ${'blob'} | ${'Rename file'}   | ${'Rename file'}
+    `(
+      'renders title and button for renaming $entryType',
+      ({ entryType, modalTitle, btnTitle }, done) => {
+        vm.$store.state.entries['test-path'].type = entryType;
+        vm.open('rename', 'test-path');
 
         vm.$nextTick(() => {
-          expect(vm.$el.querySelector('.modal-title').textContent.trim()).toBe(`Rename ${text}`);
-          expect(vm.$el.querySelector('.btn-success').textContent.trim()).toBe(`Rename ${text}`);
+          expect(document.querySelector('.modal-title').textContent.trim()).toBe(modalTitle);
+          expect(document.querySelector('.btn-success').textContent.trim()).toBe(btnTitle);
 
           done();
         });
-      });
-    });
+      },
+    );
 
     describe('entryName', () => {
       it('returns entries name', () => {
+        vm.open('rename', 'test-path');
+
         expect(vm.entryName).toBe('test-path');
       });
 
@@ -115,15 +114,6 @@ describe('new file modal component', () => {
   describe('submitForm', () => {
     it('throws an error when target entry exists', () => {
       const store = createStore();
-      store.state.entryModal = {
-        type: 'rename',
-        path: 'test-path/test',
-        entry: {
-          name: 'test',
-          type: 'blob',
-          path: 'test-path/test',
-        },
-      };
       store.state.entries = {
         'test-path/test': {
           name: 'test',
@@ -132,6 +122,7 @@ describe('new file modal component', () => {
       };
 
       vm = createComponentWithStore(Component, store).$mount();
+      vm.open('rename', 'test-path/test');
 
       expect(createFlash).not.toHaveBeenCalled();
 

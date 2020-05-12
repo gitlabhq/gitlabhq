@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Release', :docker, quarantine: { type: :new } do
+  context 'Release', :docker do
     describe 'Parent-child pipelines independent relationship' do
       let!(:project) do
         Resource::Project.fabricate_via_api! do |project|

@@ -9,6 +9,15 @@ RSpec.describe X509CommitSignature do
   let(:x509_certificate) { create(:x509_certificate) }
   let(:x509_signature) { create(:x509_commit_signature, commit_sha: commit_sha) }
 
+  let(:attributes) do
+    {
+      commit_sha: commit_sha,
+      project: project,
+      x509_certificate_id: x509_certificate.id,
+      verification_status: "verified"
+    }
+  end
+
   it_behaves_like 'having unique enum values'
 
   describe 'validation' do
@@ -23,15 +32,6 @@ RSpec.describe X509CommitSignature do
   end
 
   describe '.safe_create!' do
-    let(:attributes) do
-      {
-        commit_sha: commit_sha,
-        project: project,
-        x509_certificate_id: x509_certificate.id,
-        verification_status: "verified"
-      }
-    end
-
     it 'finds a signature by commit sha if it existed' do
       x509_signature
 
@@ -48,6 +48,20 @@ RSpec.describe X509CommitSignature do
       expect(signature.project).to eq(project)
       expect(signature.commit_sha).to eq(commit_sha)
       expect(signature.x509_certificate_id).to eq(x509_certificate.id)
+    end
+  end
+
+  describe '#user' do
+    context 'if email is assigned to a user' do
+      let!(:user) { create(:user, email: X509Helpers::User1.certificate_email) }
+
+      it 'returns user' do
+        expect(described_class.safe_create!(attributes).user).to eq(user)
+      end
+    end
+
+    it 'if email is not assigned to a user, return nil' do
+      expect(described_class.safe_create!(attributes).user).to be_nil
     end
   end
 end

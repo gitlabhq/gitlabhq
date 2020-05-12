@@ -17,11 +17,12 @@ describe('ImportProjectsTable', () => {
   };
 
   function initStore() {
-    const stubbedActions = Object.assign({}, actions, {
+    const stubbedActions = {
+      ...actions,
       fetchJobs: jest.fn(),
       fetchRepos: jest.fn(actions.requestRepos),
       fetchImport: jest.fn(actions.requestImport),
-    });
+    };
 
     const store = new Vuex.Store({
       state: state(),

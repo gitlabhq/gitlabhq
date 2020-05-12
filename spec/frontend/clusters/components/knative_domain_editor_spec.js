@@ -93,7 +93,7 @@ describe('KnativeDomainEditor', () => {
 
     it('displays toast indicating a successful update', () => {
       wrapper.vm.$toast = { show: jest.fn() };
-      wrapper.setProps({ knative: Object.assign({ updateSuccessful: true }, knative) });
+      wrapper.setProps({ knative: { updateSuccessful: true, ...knative } });
 
       return wrapper.vm.$nextTick(() => {
         expect(wrapper.vm.$toast.show).toHaveBeenCalledWith(

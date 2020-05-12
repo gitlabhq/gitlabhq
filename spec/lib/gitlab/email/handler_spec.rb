@@ -6,6 +6,18 @@ describe Gitlab::Email::Handler do
   let(:email) { Mail.new { body 'email' } }
 
   describe '.for' do
+    context 'key matches the reply_key of a notification' do
+      it 'picks note handler' do
+        expect(described_class.for(email, '1234567890abcdef1234567890abcdef')).to be_an_instance_of(Gitlab::Email::Handler::CreateNoteHandler)
+      end
+    end
+
+    context 'key matches the reply_key of a notification, along with an unsubscribe suffix' do
+      it 'picks unsubscribe handler' do
+        expect(described_class.for(email, '1234567890abcdef1234567890abcdef-unsubscribe')).to be_an_instance_of(Gitlab::Email::Handler::UnsubscribeHandler)
+      end
+    end
+
     it 'picks issue handler if there is no merge request prefix' do
       expect(described_class.for(email, 'project+key')).to be_an_instance_of(Gitlab::Email::Handler::CreateIssueHandler)
     end

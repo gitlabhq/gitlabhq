@@ -24,6 +24,7 @@ describe('issue_comment_form component', () => {
   let store;
   let wrapper;
   let axiosMock;
+  let features = {};
 
   const setupStore = (userData, noteableData) => {
     store.dispatch('setUserData', userData);
@@ -37,12 +38,16 @@ describe('issue_comment_form component', () => {
         noteableType,
       },
       store,
+      provide: {
+        glFeatures: features,
+      },
     });
   };
 
   beforeEach(() => {
     axiosMock = new MockAdapter(axios);
     store = createStore();
+    features = {};
   });
 
   afterEach(() => {
@@ -296,6 +301,32 @@ describe('issue_comment_form component', () => {
 
             done();
           });
+        });
+      });
+
+      describe('when note can be confidential', () => {
+        it('appends confidential status to note payload when saving', () => {
+          jest.spyOn(wrapper.vm, 'saveNote').mockReturnValue(new Promise(() => {}));
+
+          wrapper.vm.note = 'confidential note';
+
+          return wrapper.vm.$nextTick().then(() => {
+            wrapper.find('.js-comment-submit-button').trigger('click');
+
+            const [providedData] = wrapper.vm.saveNote.mock.calls[0];
+
+            expect(providedData.data.note.confidential).toBe(false);
+          });
+        });
+
+        it('should render confidential toggle as false', () => {
+          features = { confidentialNotes: true };
+          mountComponent();
+
+          const input = wrapper.find('.js-confidential-note-toggle .form-check-input');
+
+          expect(input.exists()).toBe(true);
+          expect(input.attributes('checked')).toBeFalsy();
         });
       });
     });

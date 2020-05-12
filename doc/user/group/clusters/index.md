@@ -6,8 +6,6 @@ type: reference
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/34758) in GitLab 11.6.
 
-## Overview
-
 Similar to [project-level](../../project/clusters/index.md) and
 [instance-level](../../instance/clusters/index.md) Kubernetes clusters,
 group-level Kubernetes clusters allow you to connect a Kubernetes cluster to
@@ -22,47 +20,43 @@ and troubleshooting applications for your group cluster, see
 
 ## RBAC compatibility
 
-For each project under a group with a Kubernetes cluster, GitLab will
-create a restricted service account with [`edit`
-privileges](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles)
-in the project namespace.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/29398) in GitLab 11.4.
+> - [Project namespace restriction](https://gitlab.com/gitlab-org/gitlab-foss/issues/51716) was introduced in GitLab 11.5.
 
-NOTE: **Note:**
-RBAC support was introduced in
-[GitLab 11.4](https://gitlab.com/gitlab-org/gitlab-foss/issues/29398), and
-Project namespace restriction was introduced in
-[GitLab 11.5](https://gitlab.com/gitlab-org/gitlab-foss/issues/51716).
+For each project under a group with a Kubernetes cluster, GitLab creates a restricted
+service account with [`edit` privileges](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles)
+in the project namespace.
 
 ## Cluster precedence
 
-GitLab will use the project's cluster before using any cluster belonging
-to the group containing the project if the project's cluster is available and not disabled.
-
-In the case of sub-groups, GitLab will use the cluster of the closest ancestor group
+If the project's cluster is available and not disabled, GitLab uses the
+project's cluster before using any cluster belonging to the group containing
+the project.
+In the case of sub-groups, GitLab uses the cluster of the closest ancestor group
 to the project, provided the cluster is not disabled.
 
 ## Multiple Kubernetes clusters **(PREMIUM)**
 
-With GitLab Premium, you can associate more than one Kubernetes clusters to your
-group. That way you can have different clusters for different environments,
-like dev, staging, production, etc.
+With [GitLab Premium](https://about.gitlab.com/pricing/premium/), you can associate
+more than one Kubernetes cluster to your group, and maintain different clusters
+for different environments, such as development, staging, and production.
 
-Add another cluster similar to the first one and make sure to
-[set an environment scope](#environment-scopes-premium) that will
-differentiate the new cluster from the rest.
+When adding another cluster,
+[set an environment scope](#environment-scopes-premium) to help
+differentiate the new cluster from your other clusters.
 
 ## GitLab-managed clusters
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22011) in GitLab 11.5.
 > - Became [optional](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/26565) in GitLab 11.11.
 
-You can choose to allow GitLab to manage your cluster for you. If your cluster is
-managed by GitLab, resources for your projects will be automatically created. See the
-[Access controls](../../project/clusters/add_remove_clusters.md#access-controls) section for details on which resources will
-be created.
+You can choose to allow GitLab to manage your cluster for you. If GitLab manages
+your cluster, resources for your projects will be automatically created. See the
+[Access controls](../../project/clusters/add_remove_clusters.md#access-controls)
+section for details on which resources GitLab creates for you.
 
-For clusters not managed by GitLab, project-specific resources will not be created
-automatically. If you are using [Auto DevOps](../../../topics/autodevops/index.md)
+For clusters not managed by GitLab, project-specific resources won't be created
+automatically. If you're using [Auto DevOps](../../../topics/autodevops/index.md)
 for deployments with a cluster not managed by GitLab, you must ensure:
 
 - The project's deployment service account has permissions to deploy to
@@ -72,8 +66,8 @@ for deployments with a cluster not managed by GitLab, you must ensure:
   `KUBE_NAMESPACE` directly is discouraged.
 
 NOTE: **Note:**
-If you [install applications](#installing-applications) on your cluster, GitLab will create
-the resources required to run these even if you have chosen to manage your own cluster.
+If you [install applications](#installing-applications) on your cluster, GitLab creates
+the resources required to run them even if you choose to manage your own cluster.
 
 ### Clearing the cluster cache
 
@@ -86,7 +80,8 @@ your cluster, which can cause deployment jobs to fail.
 
 To clear the cache:
 
-1. Navigate to your group’s **Kubernetes** page, and select your cluster.
+1. Navigate to your group’s **{cloud-gear}** **Kubernetes** page,
+   and select your cluster.
 1. Expand the **Advanced settings** section.
 1. Click **Clear cluster cache**.
 
@@ -110,12 +105,12 @@ them with an environment scope. The environment scope associates clusters with
 work.
 
 While evaluating which environment matches the environment scope of a
-cluster, [cluster precedence](#cluster-precedence) will take
-effect. The cluster at the project level will take precedence, followed
+cluster, [cluster precedence](#cluster-precedence) takes
+effect. The cluster at the project level takes precedence, followed
 by the closest ancestor group, followed by that groups' parent and so
 on.
 
-For example, let's say we have the following Kubernetes clusters:
+For example, if your project has the following Kubernetes clusters:
 
 | Cluster    | Environment scope   | Where     |
 | ---------- | ------------------- | ----------|
@@ -151,11 +146,11 @@ deploy to production:
     url: https://example.com/
 ```
 
-The result will then be:
+The result is:
 
-- The Project cluster will be used for the `test` job.
-- The Staging cluster will be used for the `deploy to staging` job.
-- The Production cluster will be used for the `deploy to production` job.
+- The Project cluster is used for the `test` job.
+- The Staging cluster is used for the `deploy to staging` job.
+- The Production cluster is used for the `deploy to production` job.
 
 ## Cluster environments **(PREMIUM)**
 
@@ -166,8 +161,7 @@ are deployed to the Kubernetes cluster, see the documentation for
 ## Security of Runners
 
 For important information about securely configuring GitLab Runners, see
-[Security of
-Runners](../../project/clusters/add_remove_clusters.md#security-of-gitlab-runners)
+[Security of Runners](../../project/clusters/add_remove_clusters.md#security-of-gitlab-runners)
 documentation for project-level clusters.
 
 ## More information

@@ -24,9 +24,9 @@ transitions:
   - event: enqueue
     jobs: [test]
     expect:
-      pipeline: manual
+      pipeline: pending
       stages:
-        test: manual
+        test: pending
         deploy: created
       jobs:
         test: pending

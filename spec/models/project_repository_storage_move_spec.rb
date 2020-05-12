@@ -46,7 +46,7 @@ RSpec.describe ProjectRepositoryStorageMove, type: :model do
 
       context 'and transits to scheduled' do
         it 'triggers ProjectUpdateRepositoryStorageWorker' do
-          expect(ProjectUpdateRepositoryStorageWorker).to receive(:perform_async).with(project.id, 'test_second_storage', repository_storage_move_id: storage_move.id)
+          expect(ProjectUpdateRepositoryStorageWorker).to receive(:perform_async).with(project.id, 'test_second_storage', storage_move.id)
 
           storage_move.schedule!
         end

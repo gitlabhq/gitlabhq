@@ -3,11 +3,11 @@
 require 'spec_helper'
 
 describe GitlabSchema.types['Group'] do
-  it { expect(described_class).to expose_permissions_using(Types::PermissionTypes::Group) }
+  specify { expect(described_class).to expose_permissions_using(Types::PermissionTypes::Group) }
 
-  it { expect(described_class.graphql_name).to eq('Group') }
+  specify { expect(described_class.graphql_name).to eq('Group') }
 
-  it { expect(described_class).to require_graphql_authorizations(:read_group) }
+  specify { expect(described_class).to require_graphql_authorizations(:read_group) }
 
   it 'has the expected fields' do
     expected_fields = %w[

@@ -60,4 +60,3 @@ package-and-qa:
       artifacts: false
     - job: gitlab:assets:compile pull-cache
       artifacts: false
-  allow_failure: true

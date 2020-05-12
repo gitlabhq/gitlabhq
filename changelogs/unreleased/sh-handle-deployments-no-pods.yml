@@ -1,0 +1,5 @@
+---
+title: Fix 500 error loading environments index
+merge_request: 31184
+author:
+type: fixed

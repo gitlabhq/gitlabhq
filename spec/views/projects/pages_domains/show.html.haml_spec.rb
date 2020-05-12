@@ -7,7 +7,7 @@ describe 'projects/pages_domains/show' do
 
   before do
     assign(:project, project)
-    assign(:domain, domain.present)
+    allow(view).to receive(:domain_presenter).and_return(domain.present)
     stub_pages_setting(external_https: true)
   end
 

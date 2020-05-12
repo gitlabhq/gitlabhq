@@ -31,7 +31,7 @@
 %h5 Request body:
 %pre
   :escaped
-    #{JSON.pretty_generate(hook_log.request_data)}
+    #{Gitlab::Json.pretty_generate(hook_log.request_data)}
 %h5 Response headers:
 %pre
   - hook_log.response_headers.each do |k,v|

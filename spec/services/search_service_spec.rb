@@ -18,7 +18,9 @@ describe SearchService do
   let(:group_project) { create(:project, group: accessible_group, name: 'group_project') }
   let(:public_project) { create(:project, :public, name: 'public_project') }
 
-  subject(:search_service) { described_class.new(user, search: search, scope: scope, page: 1) }
+  let(:per_page) { described_class::DEFAULT_PER_PAGE }
+
+  subject(:search_service) { described_class.new(user, search: search, scope: scope, page: 1, per_page: per_page) }
 
   before do
     accessible_project.add_maintainer(user)
@@ -240,6 +242,76 @@ describe SearchService do
   end
 
   describe '#search_objects' do
+    context 'handling per_page param' do
+      let(:search) { '' }
+      let(:scope) { nil }
+
+      context 'when nil' do
+        let(:per_page) { nil }
+
+        it "defaults to #{described_class::DEFAULT_PER_PAGE}" do
+          expect_any_instance_of(Gitlab::SearchResults)
+            .to receive(:objects)
+            .with(anything, hash_including(per_page: described_class::DEFAULT_PER_PAGE))
+            .and_call_original
+
+          subject.search_objects
+        end
+      end
+
+      context 'when empty string' do
+        let(:per_page) { '' }
+
+        it "defaults to #{described_class::DEFAULT_PER_PAGE}" do
+          expect_any_instance_of(Gitlab::SearchResults)
+            .to receive(:objects)
+            .with(anything, hash_including(per_page: described_class::DEFAULT_PER_PAGE))
+            .and_call_original
+
+          subject.search_objects
+        end
+      end
+
+      context 'when negative' do
+        let(:per_page) { '-1' }
+
+        it "defaults to #{described_class::DEFAULT_PER_PAGE}" do
+          expect_any_instance_of(Gitlab::SearchResults)
+            .to receive(:objects)
+            .with(anything, hash_including(per_page: described_class::DEFAULT_PER_PAGE))
+            .and_call_original
+
+          subject.search_objects
+        end
+      end
+
+      context 'when present' do
+        let(:per_page) { '50' }
+
+        it "converts to integer and passes to search results" do
+          expect_any_instance_of(Gitlab::SearchResults)
+            .to receive(:objects)
+            .with(anything, hash_including(per_page: 50))
+            .and_call_original
+
+          subject.search_objects
+        end
+      end
+
+      context "when greater than #{described_class::MAX_PER_PAGE}" do
+        let(:per_page) { described_class::MAX_PER_PAGE + 1 }
+
+        it "passes #{described_class::MAX_PER_PAGE}" do
+          expect_any_instance_of(Gitlab::SearchResults)
+            .to receive(:objects)
+            .with(anything, hash_including(per_page: described_class::MAX_PER_PAGE))
+            .and_call_original
+
+          subject.search_objects
+        end
+      end
+    end
+
     context 'with accessible project_id' do
       it 'returns objects in the project' do
         search_objects = described_class.new(

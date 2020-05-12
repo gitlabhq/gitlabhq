@@ -7,6 +7,7 @@ class SnippetRepository < ApplicationRecord
   EMPTY_FILE_PATTERN = /^#{DEFAULT_EMPTY_FILE_NAME}(\d+)\.txt$/.freeze
 
   CommitError = Class.new(StandardError)
+  InvalidPathError = Class.new(CommitError)
 
   belongs_to :snippet, inverse_of: :snippet_repository
 
@@ -40,8 +41,9 @@ class SnippetRepository < ApplicationRecord
   rescue Gitlab::Git::Index::IndexError,
          Gitlab::Git::CommitError,
          Gitlab::Git::PreReceiveError,
-         Gitlab::Git::CommandError => e
-    raise CommitError, e.message
+         Gitlab::Git::CommandError => error
+
+    raise commit_error_exception(error)
   end
 
   def transform_file_entries(files)
@@ -84,5 +86,17 @@ class SnippetRepository < ApplicationRecord
 
   def build_empty_file_name(index)
     "#{DEFAULT_EMPTY_FILE_NAME}#{index}.txt"
+  end
+
+  def commit_error_exception(error)
+    if error.is_a?(Gitlab::Git::Index::IndexError) && invalid_path_error?(error.message)
+      InvalidPathError.new('Invalid Path') # To avoid returning the message with the path included
+    else
+      CommitError.new(error.message)
+    end
+  end
+
+  def invalid_path_error?(message)
+    message.downcase.start_with?('invalid path', 'path cannot include directory traversal')
   end
 end

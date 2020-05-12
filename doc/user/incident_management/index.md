@@ -1,5 +1,8 @@
 ---
 description: "GitLab - Incident Management. GitLab offers solutions for handling incidents in your applications and services"
+stage: Monitor
+group: Health
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
 # Incident Management

@@ -8,7 +8,7 @@ export default class GLForm {
   constructor(form, enableGFM = {}) {
     this.form = form;
     this.textarea = this.form.find('textarea.js-gfm-input');
-    this.enableGFM = Object.assign({}, defaultAutocompleteConfig, enableGFM);
+    this.enableGFM = { ...defaultAutocompleteConfig, ...enableGFM };
     // Disable autocomplete for keywords which do not have dataSources available
     const dataSources = (gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources) || {};
     Object.keys(this.enableGFM).forEach(item => {

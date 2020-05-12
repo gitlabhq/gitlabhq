@@ -42,8 +42,7 @@ module Ci
 
     state_machine :status, initial: :created do
       event :enqueue do
-        transition [:created, :waiting_for_resource, :preparing] => :pending
-        transition [:success, :failed, :canceled, :skipped] => :running
+        transition any - [:pending] => :pending
       end
 
       event :request_resource do

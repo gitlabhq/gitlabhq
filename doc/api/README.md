@@ -77,10 +77,11 @@ authentication is not provided. For
 those cases where it is not required, this will be mentioned in the documentation
 for each individual endpoint. For example, the [`/projects/:id` endpoint](projects.md).
 
-There are four ways to authenticate with the GitLab API:
+There are several ways to authenticate with the GitLab API:
 
 1. [OAuth2 tokens](#oauth2-tokens)
-1. [Personal access tokens](#personal-access-tokens)
+1. [Personal access tokens](../user/profile/personal_access_tokens.md)
+1. [Project access tokens](../user/project/settings/project_access_tokens.md) **(CORE ONLY)**
 1. [Session cookie](#session-cookie)
 1. [GitLab CI/CD job token](#gitlab-ci-job-token) **(Specific endpoints only)**
 
@@ -117,30 +118,28 @@ curl --header "Authorization: Bearer OAUTH-TOKEN" https://gitlab.example.com/api
 
 Read more about [GitLab as an OAuth2 provider](oauth2.md).
 
-### Personal access tokens
+### Personal/project access tokens
 
-You can use a [personal access token](../user/profile/personal_access_tokens.md) to authenticate with the API by passing it in either the
-`private_token` parameter or the `Private-Token` header.
+Access tokens can be used to authenticate with the API by passing it in either the `private_token` parameter
+or the `Private-Token` header.
 
-Example of using the personal access token in a parameter:
+Example of using the personal/project access token in a parameter:
 
 ```shell
 curl https://gitlab.example.com/api/v4/projects?private_token=<your_access_token>
 ```
 
-Example of using the personal access token in a header:
+Example of using the personal/project access token in a header:
 
 ```shell
 curl --header "Private-Token: <your_access_token>" https://gitlab.example.com/api/v4/projects
 ```
 
-You can also use personal access tokens with OAuth-compliant headers:
+You can also use personal/project access tokens with OAuth-compliant headers:
 
 ```shell
 curl --header "Authorization: Bearer <your_access_token>" https://gitlab.example.com/api/v4/projects
 ```
-
-Read more about [personal access tokens](../user/profile/personal_access_tokens.md).
 
 ### Session cookie
 
@@ -446,9 +445,9 @@ For example:
 DELETE /projects/:id/share/:group_id
 ```
 
-The `:id` path parameter needs to be replaced with the project id, and the `:group_id` needs to be replaced with the id of the group. The colons `:` should not be included.
+The `:id` path parameter needs to be replaced with the project ID, and the `:group_id` needs to be replaced with the ID of the group. The colons `:` should not be included.
 
-The resulting cURL call for a project with id `5` and a group id of `17` is then:
+The resulting cURL call for a project with ID `5` and a group ID of `17` is then:
 
 ```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/share/17

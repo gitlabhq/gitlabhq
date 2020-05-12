@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe GitlabSchema.types['Milestone'] do
-  it { expect(described_class.graphql_name).to eq('Milestone') }
+  specify { expect(described_class.graphql_name).to eq('Milestone') }
 
-  it { expect(described_class).to require_graphql_authorizations(:read_milestone) }
+  specify { expect(described_class).to require_graphql_authorizations(:read_milestone) }
 end

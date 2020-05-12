@@ -68,6 +68,7 @@ GET /groups/:id/packages
 | `order_by`| string | no | The field to use as order. One of `created_at` (default), `name`, `version`, `type`, or `project_path`. |
 | `sort`    | string | no | The direction of the order, either `asc` (default) for ascending order or `desc` for descending order. |
 | `package_type` | string | no | Filter the returned packages by type. One of `conan`, `maven`, `npm`, `pypi` or `nuget`. (_Introduced in GitLab 12.9_) |
+| `package_name` | string | no | Filter the project packages with a fuzzy search by name. (_[Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/30980) in GitLab 13.0_)
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/:id/packages?exclude_subgroups=true

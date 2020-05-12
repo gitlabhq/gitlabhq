@@ -11,6 +11,7 @@ import { ENVIRONMENT_AVAILABLE_STATE } from '~/monitoring/constants';
 import store from '~/monitoring/stores';
 import * as types from '~/monitoring/stores/mutation_types';
 import {
+  fetchData,
   fetchDashboard,
   receiveMetricsDashboardSuccess,
   fetchDeploymentsData,
@@ -24,6 +25,7 @@ import {
   clearExpandedPanel,
   setGettingStartedEmptyState,
   duplicateSystemDashboard,
+  setVariables,
 } from '~/monitoring/stores/actions';
 import {
   gqClient,
@@ -84,6 +86,41 @@ describe('Monitoring store actions', () => {
 
     commonUtils.backOff.mockReset();
     createFlash.mockReset();
+  });
+
+  describe('fetchData', () => {
+    it('dispatches fetchEnvironmentsData and fetchEnvironmentsData', () => {
+      const { state } = store;
+
+      return testAction(
+        fetchData,
+        null,
+        state,
+        [],
+        [{ type: 'fetchEnvironmentsData' }, { type: 'fetchDashboard' }],
+      );
+    });
+
+    it('dispatches when feature metricsDashboardAnnotations is on', () => {
+      const origGon = window.gon;
+      window.gon = { features: { metricsDashboardAnnotations: true } };
+
+      const { state } = store;
+
+      return testAction(
+        fetchData,
+        null,
+        state,
+        [],
+        [
+          { type: 'fetchEnvironmentsData' },
+          { type: 'fetchDashboard' },
+          { type: 'fetchAnnotations' },
+        ],
+      ).then(() => {
+        window.gon = origGon;
+      });
+    });
   });
 
   describe('fetchDeploymentsData', () => {
@@ -356,6 +393,29 @@ describe('Monitoring store actions', () => {
       );
     });
   });
+
+  describe('setVariables', () => {
+    let mockedState;
+    beforeEach(() => {
+      mockedState = storeState();
+    });
+    it('should commit SET_PROM_QUERY_VARIABLES mutation', done => {
+      testAction(
+        setVariables,
+        { pod: 'POD' },
+        mockedState,
+        [
+          {
+            type: types.SET_PROM_QUERY_VARIABLES,
+            payload: { pod: 'POD' },
+          },
+        ],
+        [],
+        done,
+      );
+    });
+  });
+
   describe('fetchDashboard', () => {
     let dispatch;
     let state;

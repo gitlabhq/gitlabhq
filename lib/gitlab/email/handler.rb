@@ -9,10 +9,10 @@ module Gitlab
 
       def self.load_handlers
         [
-          UnsubscribeHandler,
           CreateNoteHandler,
-          CreateMergeRequestHandler,
-          CreateIssueHandler
+          CreateIssueHandler,
+          UnsubscribeHandler,
+          CreateMergeRequestHandler
         ]
       end
 

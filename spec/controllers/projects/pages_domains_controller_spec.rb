@@ -148,16 +148,10 @@ describe Projects::PagesDomainsController do
   describe 'POST verify' do
     let(:params) { request_params.merge(id: pages_domain.domain) }
 
-    def stub_service
-      service = double(:service)
-
-      expect(VerifyPagesDomainService).to receive(:new) { service }
-
-      service
-    end
-
     it 'handles verification success' do
-      expect(stub_service).to receive(:execute).and_return(status: :success)
+      expect_next_instance_of(VerifyPagesDomainService, pages_domain) do |service|
+        expect(service).to receive(:execute).and_return(status: :success)
+      end
 
       post :verify, params: params
 
@@ -166,7 +160,9 @@ describe Projects::PagesDomainsController do
     end
 
     it 'handles verification failure' do
-      expect(stub_service).to receive(:execute).and_return(status: :failed)
+      expect_next_instance_of(VerifyPagesDomainService, pages_domain) do |service|
+        expect(service).to receive(:execute).and_return(status: :failed)
+      end
 
       post :verify, params: params
 

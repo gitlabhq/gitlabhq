@@ -2,7 +2,7 @@
 
 module MergeRequests
   class SquashService < MergeRequests::BaseService
-    include Git::Logger
+    SquashInProgressError = Class.new(RuntimeError)
 
     def execute
       # If performing a squash would result in no change, then
@@ -11,11 +11,13 @@ module MergeRequests
         return success(squash_sha: merge_request.diff_head_sha)
       end
 
-      if merge_request.squash_in_progress?
+      if squash_in_progress?
         return error(s_('MergeRequests|Squash task canceled: another squash is already in progress.'))
       end
 
       squash! || error(s_('MergeRequests|Failed to squash. Should be done manually.'))
+    rescue SquashInProgressError
+      error(s_('MergeRequests|An error occurred while checking whether another squash is in progress.'))
     end
 
     private
@@ -25,9 +27,17 @@ module MergeRequests
 
       success(squash_sha: squash_sha)
     rescue => e
-      log_error("Failed to squash merge request #{merge_request.to_reference(full: true)}:")
-      log_error(e.message)
+      log_error(exception: e, message: 'Failed to squash merge request')
+
       false
+    end
+
+    def squash_in_progress?
+      merge_request.squash_in_progress?
+    rescue => e
+      log_error(exception: e, message: 'Failed to check squash in progress')
+
+      raise SquashInProgressError, e.message
     end
 
     def repository

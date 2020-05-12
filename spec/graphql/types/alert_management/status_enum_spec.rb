@@ -3,9 +3,22 @@
 require 'spec_helper'
 
 describe GitlabSchema.types['AlertManagementStatus'] do
-  it { expect(described_class.graphql_name).to eq('AlertManagementStatus') }
+  specify { expect(described_class.graphql_name).to eq('AlertManagementStatus') }
 
-  it 'exposes all the severity values' do
-    expect(described_class.values.keys).to include(*%w[TRIGGERED ACKNOWLEDGED RESOLVED IGNORED])
+  describe 'statuses' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:status_name, :status_value) do
+      'TRIGGERED'    | 0
+      'ACKNOWLEDGED' | 1
+      'RESOLVED'     | 2
+      'IGNORED'      | 3
+    end
+
+    with_them do
+      it 'exposes a status with the correct value' do
+        expect(described_class.values[status_name].value).to eq(status_value)
+      end
+    end
   end
 end

@@ -107,7 +107,7 @@ export default {
           <span v-html="actionTextHtml"></span>
           <template v-if="canSeeDescriptionVersion" slot="extra-controls">
             &middot;
-            <button type="button" class="btn-blank btn-link" @click="toggleDescriptionVersion">
+            <button type="button" class="btn-blank btn-link ml-1" @click="toggleDescriptionVersion">
               {{ __('Compare with previous version') }}
               <icon :name="descriptionVersionToggleIcon" :size="12" class="append-left-5" />
             </button>

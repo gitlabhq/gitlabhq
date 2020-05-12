@@ -372,13 +372,13 @@ describe('DiffsStoreUtils', () => {
       mock = getDiffFileMock();
       preparedDiff = { diff_files: [mock] };
       splitInlineDiff = {
-        diff_files: [Object.assign({}, mock, { parallel_diff_lines: undefined })],
+        diff_files: [{ ...mock, parallel_diff_lines: undefined }],
       };
       splitParallelDiff = {
-        diff_files: [Object.assign({}, mock, { highlighted_diff_lines: undefined })],
+        diff_files: [{ ...mock, highlighted_diff_lines: undefined }],
       };
       completedDiff = {
-        diff_files: [Object.assign({}, mock, { highlighted_diff_lines: undefined })],
+        diff_files: [{ ...mock, highlighted_diff_lines: undefined }],
       };
 
       preparedDiff.diff_files = utils.prepareDiffData(preparedDiff);

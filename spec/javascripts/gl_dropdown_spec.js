@@ -44,19 +44,17 @@ describe('glDropdown', function describeDropdown() {
   };
 
   function initDropDown(hasRemote, isFilterable, extraOpts = {}) {
-    const options = Object.assign(
-      {
-        selectable: true,
-        filterable: isFilterable,
-        data: hasRemote ? remoteMock.bind({}, this.projectsData) : this.projectsData,
-        search: {
-          fields: ['name'],
-        },
-        text: project => project.name_with_namespace || project.name,
-        id: project => project.id,
+    const options = {
+      selectable: true,
+      filterable: isFilterable,
+      data: hasRemote ? remoteMock.bind({}, this.projectsData) : this.projectsData,
+      search: {
+        fields: ['name'],
       },
-      extraOpts,
-    );
+      text: project => project.name_with_namespace || project.name,
+      id: project => project.id,
+      ...extraOpts,
+    };
     this.dropdownButtonElement = $(
       '#js-project-dropdown',
       this.dropdownContainerElement,

@@ -5,6 +5,7 @@ test:
     POSTGRES_DB: test
   stage: test
   image: gliderlabs/herokuish:latest
+  needs: []
   script:
     - |
       if [ -z ${KUBERNETES_PORT+x} ]; then

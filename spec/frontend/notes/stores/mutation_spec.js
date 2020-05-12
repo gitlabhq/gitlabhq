@@ -50,7 +50,7 @@ describe('Notes Store mutations', () => {
   });
 
   describe('ADD_NEW_REPLY_TO_DISCUSSION', () => {
-    const newReply = Object.assign({}, note, { discussion_id: discussionMock.id });
+    const newReply = { ...note, discussion_id: discussionMock.id };
 
     let state;
 
@@ -86,7 +86,7 @@ describe('Notes Store mutations', () => {
 
   describe('EXPAND_DISCUSSION', () => {
     it('should expand a collapsed discussion', () => {
-      const discussion = Object.assign({}, discussionMock, { expanded: false });
+      const discussion = { ...discussionMock, expanded: false };
 
       const state = {
         discussions: [discussion],
@@ -100,7 +100,7 @@ describe('Notes Store mutations', () => {
 
   describe('COLLAPSE_DISCUSSION', () => {
     it('should collapse an expanded discussion', () => {
-      const discussion = Object.assign({}, discussionMock, { expanded: true });
+      const discussion = { ...discussionMock, expanded: true };
 
       const state = {
         discussions: [discussion],
@@ -114,7 +114,7 @@ describe('Notes Store mutations', () => {
 
   describe('REMOVE_PLACEHOLDER_NOTES', () => {
     it('should remove all placeholder notes in indivudal notes and discussion', () => {
-      const placeholderNote = Object.assign({}, individualNote, { isPlaceholderNote: true });
+      const placeholderNote = { ...individualNote, isPlaceholderNote: true };
       const state = { discussions: [placeholderNote] };
       mutations.REMOVE_PLACEHOLDER_NOTES(state);
 
@@ -298,7 +298,7 @@ describe('Notes Store mutations', () => {
 
   describe('TOGGLE_DISCUSSION', () => {
     it('should open a closed discussion', () => {
-      const discussion = Object.assign({}, discussionMock, { expanded: false });
+      const discussion = { ...discussionMock, expanded: false };
 
       const state = {
         discussions: [discussion],
@@ -348,8 +348,8 @@ describe('Notes Store mutations', () => {
     });
 
     it('should open all closed discussions', () => {
-      const discussion1 = Object.assign({}, discussionMock, { id: 0, expanded: false });
-      const discussion2 = Object.assign({}, discussionMock, { id: 1, expanded: true });
+      const discussion1 = { ...discussionMock, id: 0, expanded: false };
+      const discussion2 = { ...discussionMock, id: 1, expanded: true };
       const discussionIds = [discussion1.id, discussion2.id];
 
       const state = { discussions: [discussion1, discussion2] };
@@ -362,8 +362,8 @@ describe('Notes Store mutations', () => {
     });
 
     it('should close all opened discussions', () => {
-      const discussion1 = Object.assign({}, discussionMock, { id: 0, expanded: false });
-      const discussion2 = Object.assign({}, discussionMock, { id: 1, expanded: true });
+      const discussion1 = { ...discussionMock, id: 0, expanded: false };
+      const discussion2 = { ...discussionMock, id: 1, expanded: true };
       const discussionIds = [discussion1.id, discussion2.id];
 
       const state = { discussions: [discussion1, discussion2] };
@@ -382,7 +382,7 @@ describe('Notes Store mutations', () => {
         discussions: [individualNote],
       };
 
-      const updated = Object.assign({}, individualNote.notes[0], { note: 'Foo' });
+      const updated = { ...individualNote.notes[0], note: 'Foo' };
 
       mutations.UPDATE_NOTE(state, updated);
 

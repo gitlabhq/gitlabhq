@@ -52,6 +52,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   before_action only: :show do
     push_frontend_feature_flag(:real_time_issue_sidebar, @project)
+    push_frontend_feature_flag(:confidential_notes, @project)
   end
 
   around_action :allow_gitaly_ref_name_caching, only: [:discussions]
@@ -85,11 +86,13 @@ class Projects::IssuesController < Projects::ApplicationController
     )
     build_params = issue_params.merge(
       merge_request_to_resolve_discussions_of: params[:merge_request_to_resolve_discussions_of],
-      discussion_to_resolve: params[:discussion_to_resolve]
+      discussion_to_resolve: params[:discussion_to_resolve],
+      confidential: !!Gitlab::Utils.to_boolean(params[:issue][:confidential])
     )
     service = Issues::BuildService.new(project, current_user, build_params)
 
     @issue = @noteable = service.execute
+
     @merge_request_to_resolve_discussions_of = service.merge_request_to_resolve_discussions_of
     @discussion_to_resolve = service.discussions_to_resolve.first if params[:discussion_to_resolve]
 

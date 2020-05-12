@@ -12,6 +12,7 @@ module Projects
           return unprocessable_entity unless valid_version?
           return unauthorized unless valid_alert_manager_token?(token)
 
+          process_prometheus_alerts
           persist_events
           send_alert_email if send_email?
           process_incident_issues if process_issues?
@@ -112,6 +113,16 @@ module Projects
           alerts.each do |alert|
             IncidentManagement::ProcessPrometheusAlertWorker
               .perform_async(project.id, alert.to_h)
+          end
+        end
+
+        def process_prometheus_alerts
+          return unless Feature.enabled?(:alert_management_minimal, project)
+
+          alerts.each do |alert|
+            AlertManagement::ProcessPrometheusAlertService
+              .new(project, nil, alert.to_h)
+              .execute
           end
         end
 

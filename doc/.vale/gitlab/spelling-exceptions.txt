@@ -101,6 +101,7 @@ failovers
 failsafe
 favicon
 firewalled
+Flawfinder
 Flowdock
 Fluentd
 Forgerock
@@ -112,9 +113,11 @@ Gitea
 GitHub
 GitLab
 gitlabsos
+Gitleaks
 Gitter
 Gmail
 Google
+Gosec
 Gradle
 Grafana
 gravatar
@@ -160,6 +163,7 @@ Kibana
 Knative
 Kramdown
 Kubernetes
+Kubesec
 Laravel
 LDAP
 Libravatar
@@ -302,12 +306,14 @@ sanitization
 serializer
 serializers
 serializing
+Sitespeed
 Slack
 Slony
 SMTP
-Sourcegraph
+Sobelow
 spidering
 Splunk
+SpotBugs
 SSH
 storable
 strace

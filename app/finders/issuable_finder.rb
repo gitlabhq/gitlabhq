@@ -40,7 +40,7 @@ class IssuableFinder
 
   requires_cross_project_access unless: -> { params.project? }
 
-  NEGATABLE_PARAMS_HELPER_KEYS = %i[include_subgroups in].freeze
+  NEGATABLE_PARAMS_HELPER_KEYS = %i[project_id scope status include_subgroups].freeze
 
   attr_accessor :current_user, :params
 
@@ -68,7 +68,7 @@ class IssuableFinder
 
     # This should not be used in controller strong params!
     def negatable_scalar_params
-      @negatable_scalar_params ||= scalar_params + %i[project_id group_id]
+      @negatable_scalar_params ||= scalar_params - %i[search in]
     end
 
     # This should not be used in controller strong params!
@@ -100,7 +100,7 @@ class IssuableFinder
     items = filter_items(items)
 
     # Let's see if we have to negate anything
-    items = by_negation(items)
+    items = filter_negated_items(items)
 
     # This has to be last as we use a CTE as an optimization fence
     # for counts by passing the force_cte param and enabling the
@@ -130,6 +130,22 @@ class IssuableFinder
     items = by_release(items)
     items = by_label(items)
     by_my_reaction_emoji(items)
+  end
+
+  # Negates all params found in `negatable_params`
+  def filter_negated_items(items)
+    return items unless Feature.enabled?(:not_issuable_queries, params.group || params.project, default_enabled: true)
+
+    # API endpoints send in `nil` values so we test if there are any non-nil
+    return items unless not_params.present? && not_params.values.any?
+
+    items = by_negated_author(items)
+    items = by_negated_assignee(items)
+    items = by_negated_label(items)
+    items = by_negated_milestone(items)
+    items = by_negated_release(items)
+    items = by_negated_my_reaction_emoji(items)
+    by_negated_iids(items)
   end
 
   def row_count
@@ -189,6 +205,21 @@ class IssuableFinder
 
   private
 
+  def not_params
+    strong_memoize(:not_params) do
+      params_class.new(params[:not].dup, current_user, klass).tap do |not_params|
+        next unless not_params.present?
+
+        # These are "helper" params that modify the results, like :in and :search. They usually come in at the top-level
+        # params, but if they do come in inside the `:not` params, the inner ones should take precedence.
+        not_helpers = params.slice(*NEGATABLE_PARAMS_HELPER_KEYS).merge(params[:not].slice(*NEGATABLE_PARAMS_HELPER_KEYS))
+        not_helpers.each do |key, value|
+          not_params[key] = value unless not_params[key].present?
+        end
+      end
+    end
+  end
+
   def force_cte?
     !!params[:force_cte]
   end
@@ -214,33 +245,6 @@ class IssuableFinder
     value = Array(value).last
     klass.available_states.key(value)
   end
-
-  # Negates all params found in `negatable_params`
-  # rubocop: disable CodeReuse/ActiveRecord
-  def by_negation(items)
-    not_params = params[:not].dup
-    # API endpoints send in `nil` values so we test if there are any non-nil
-    return items unless not_params.present? && not_params.values.any?
-
-    not_params.keep_if { |_k, v| v.present? }.each do |(key, value)|
-      # These aren't negatable params themselves, but rather help other searches, so we skip them.
-      # They will be added into all the NOT searches.
-      next if NEGATABLE_PARAMS_HELPER_KEYS.include?(key.to_sym)
-      next unless self.class.negatable_params.include?(key.to_sym)
-
-      # These are "helper" params that are required inside the NOT to get the right results. They usually come in
-      # at the top-level params, but if they do come in inside the `:not` params, they should take precedence.
-      not_helpers = params.slice(*NEGATABLE_PARAMS_HELPER_KEYS).merge(params[:not].slice(*NEGATABLE_PARAMS_HELPER_KEYS))
-      not_param = { key => value }.with_indifferent_access.merge(not_helpers).merge(not_query: true)
-
-      items_to_negate = self.class.new(current_user, not_param).execute
-
-      items = items.where.not(id: items_to_negate)
-    end
-
-    items
-  end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   # rubocop: disable CodeReuse/ActiveRecord
   def by_scope(items)
@@ -326,6 +330,12 @@ class IssuableFinder
   # rubocop: enable CodeReuse/ActiveRecord
 
   # rubocop: disable CodeReuse/ActiveRecord
+  def by_negated_iids(items)
+    not_params[:iids].present? ? items.where.not(iid: not_params[:iids]) : items
+  end
+  # rubocop: enable CodeReuse/ActiveRecord
+
+  # rubocop: disable CodeReuse/ActiveRecord
   def sort(items)
     # Ensure we always have an explicit sort order (instead of inheriting
     # multiple orders when combining ActiveRecord::Relation objects).
@@ -347,9 +357,19 @@ class IssuableFinder
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
-  def by_assignee(items)
-    return items.assigned_to(params.assignees) if not_query? && params.assignees.any?
+  # rubocop: disable CodeReuse/ActiveRecord
+  def by_negated_author(items)
+    if not_params.author
+      items.where.not(author_id: not_params.author.id)
+    elsif not_params.author_id? || not_params.author_username? # author not found
+      items.none
+    else
+      items
+    end
+  end
+  # rubocop: enable CodeReuse/ActiveRecord
 
+  def by_assignee(items)
     if params.filter_by_no_assignee?
       items.unassigned
     elsif params.filter_by_any_assignee?
@@ -357,6 +377,17 @@ class IssuableFinder
     elsif params.assignee
       items.assigned_to(params.assignee)
     elsif params.assignee_id? || params.assignee_username? # assignee not found
+      items.none
+    else
+      items
+    end
+  end
+
+  def by_negated_assignee(items)
+    # We want CE users to be able to say "Issues not assigned to either PersonA nor PersonB"
+    if not_params.assignees.present?
+      items.not_assigned_to(not_params.assignees)
+    elsif not_params.assignee_id? || not_params.assignee_username? # assignee not found
       items.none
     else
       items
@@ -382,6 +413,20 @@ class IssuableFinder
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
+  # rubocop: disable CodeReuse/ActiveRecord
+  def by_negated_milestone(items)
+    return items unless not_params.milestones?
+
+    if not_params.filter_by_upcoming_milestone?
+      items.joins(:milestone).merge(Milestone.not_upcoming)
+    elsif not_params.filter_by_started_milestone?
+      items.joins(:milestone).merge(Milestone.not_started)
+    else
+      items.without_particular_milestone(not_params[:milestone_title])
+    end
+  end
+  # rubocop: enable CodeReuse/ActiveRecord
+
   def by_release(items)
     return items unless params.releases?
 
@@ -394,6 +439,12 @@ class IssuableFinder
     end
   end
 
+  def by_negated_release(items)
+    return items unless not_params.releases?
+
+    items.without_particular_release(not_params[:release_tag], not_params[:project_id])
+  end
+
   def by_label(items)
     return items unless params.labels?
 
@@ -402,8 +453,14 @@ class IssuableFinder
     elsif params.filter_by_any_label?
       items.any_label
     else
-      items.with_label(params.label_names, params[:sort], not_query: not_query?)
+      items.with_label(params.label_names, params[:sort])
     end
+  end
+
+  def by_negated_label(items)
+    return items unless not_params.labels?
+
+    items.without_particular_labels(not_params.label_names)
   end
 
   def by_my_reaction_emoji(items)
@@ -418,11 +475,13 @@ class IssuableFinder
     end
   end
 
-  def by_non_archived(items)
-    params[:non_archived].present? ? items.non_archived : items
+  def by_negated_my_reaction_emoji(items)
+    return items unless not_params[:my_reaction_emoji] && current_user
+
+    items.not_awarded(current_user, not_params[:my_reaction_emoji])
   end
 
-  def not_query?
-    !!params[:not_query]
+  def by_non_archived(items)
+    params[:non_archived].present? ? items.non_archived : items
   end
 end

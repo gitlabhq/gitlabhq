@@ -1300,6 +1300,12 @@ class MergeRequest < ApplicationRecord
     compare_reports(Ci::CompareTestReportsService)
   end
 
+  def has_accessibility_reports?
+    return false unless Feature.enabled?(:accessibility_report_view, project)
+
+    actual_head_pipeline.present? && actual_head_pipeline.has_reports?(Ci::JobArtifact.accessibility_reports)
+  end
+
   def has_coverage_reports?
     return false unless Feature.enabled?(:coverage_report_view, project)
 

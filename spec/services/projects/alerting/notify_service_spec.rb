@@ -121,7 +121,7 @@ describe Projects::Alerting::NotifyService do
               'hosts' => [],
               'payload' => payload_raw,
               'severity' => 'critical',
-              'status' => 'triggered',
+              'status' => AlertManagement::Alert::STATUSES[:triggered],
               'events' => 1,
               'started_at' => alert.started_at,
               'ended_at' => nil

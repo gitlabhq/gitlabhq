@@ -325,7 +325,7 @@ export default class Clusters {
 
   handleClusterStatusSuccess(data) {
     const prevStatus = this.store.state.status;
-    const prevApplicationMap = Object.assign({}, this.store.state.applications);
+    const prevApplicationMap = { ...this.store.state.applications };
 
     this.store.updateStateFromServer(data.data);
 

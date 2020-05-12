@@ -417,7 +417,7 @@ credentials, which will be the same two credentials (Key ID and Secret). It's a 
 fully understand [IAM Best Practices in AWS](https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html). We need to add these credentials to GitLab:
 
 1. Log into your AWS account and go to the [Security Credentials page](https://console.aws.amazon.com/iam/home#/security_credential)
-1. Click the **Access Keys** section and **Create New Access Key**. Create the key and keep the id and secret around, you'll need them later
+1. Click the **Access Keys** section and **Create New Access Key**. Create the key and keep the ID and secret around, you'll need them later
 
    ![AWS Access Key Config](img/aws_config_window.png)
 
@@ -426,7 +426,7 @@ fully understand [IAM Best Practices in AWS](https://docs.aws.amazon.com/IAM/lat
 
    ![GitLab Secret Config](img/gitlab_config.png)
 
-1. Add a key named `AWS_KEY_ID` and copy the key id from Step 2 into the **Value** textbox
+1. Add a key named `AWS_KEY_ID` and copy the key ID from Step 2 into the **Value** textbox
 1. Add a key named `AWS_KEY_SECRET` and copy the key secret from Step 2 into the **Value** textbox
 
 ### Deploy your game with GitLab CI/CD

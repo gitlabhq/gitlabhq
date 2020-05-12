@@ -96,7 +96,7 @@ describe('Pipelines stage component', () => {
 
   describe('update endpoint correctly', () => {
     beforeEach(() => {
-      const copyStage = Object.assign({}, stageReply);
+      const copyStage = { ...stageReply };
       copyStage.latest_statuses[0].name = 'this is the updated content';
       mock.onGet('bar.json').reply(200, copyStage);
       createComponent({

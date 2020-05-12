@@ -90,7 +90,7 @@ Example response:
 
 ## Delete a managed license
 
-Deletes a managed license with a given id.
+Deletes a managed license with a given ID.
 
 ```plaintext
 DELETE /projects/:id/managed_licenses/:managed_license_id

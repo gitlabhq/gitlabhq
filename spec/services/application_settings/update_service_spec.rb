@@ -335,7 +335,7 @@ describe ApplicationSettings::UpdateService do
     end
   end
 
-  context 'when issues_create_limit is passsed' do
+  context 'when issues_create_limit is passed' do
     let(:params) do
       {
         issues_create_limit: 600

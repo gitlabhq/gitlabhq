@@ -130,4 +130,37 @@ describe Gitlab::Regex do
     it { is_expected.not_to match('aa-1234-cc') }
     it { is_expected.not_to match('9/9/2018') }
   end
+
+  describe '.kubernetes_namespace_regex' do
+    subject { described_class.kubernetes_namespace_regex }
+
+    it { is_expected.to match('foo') }
+    it { is_expected.to match('foo-bar') }
+    it { is_expected.to match('1foo-bar') }
+    it { is_expected.to match('foo-bar2') }
+    it { is_expected.to match('foo-1bar') }
+    it { is_expected.not_to match('foo.bar') }
+    it { is_expected.not_to match('Foo') }
+    it { is_expected.not_to match('FoO') }
+    it { is_expected.not_to match('FoO-') }
+    it { is_expected.not_to match('-foo-') }
+    it { is_expected.not_to match('foo/bar') }
+  end
+
+  describe '.kubernetes_dns_subdomain_regex' do
+    subject { described_class.kubernetes_dns_subdomain_regex }
+
+    it { is_expected.to match('foo') }
+    it { is_expected.to match('foo-bar') }
+    it { is_expected.to match('foo.bar') }
+    it { is_expected.to match('foo1.bar') }
+    it { is_expected.to match('foo1.2bar') }
+    it { is_expected.to match('foo.bar1') }
+    it { is_expected.to match('1foo.bar1') }
+    it { is_expected.not_to match('Foo') }
+    it { is_expected.not_to match('FoO') }
+    it { is_expected.not_to match('FoO-') }
+    it { is_expected.not_to match('-foo-') }
+    it { is_expected.not_to match('foo/bar') }
+  end
 end

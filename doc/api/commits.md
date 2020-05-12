@@ -94,7 +94,7 @@ POST /projects/:id/repository/commits
 | `previous_path` | string | no | Original full path to the file being moved. Ex. `lib/class1.rb`. Only considered for `move` action. |
 | `content` | string | no | File content, required for all except `delete`, `chmod`, and `move`. Move actions that do not specify `content` will preserve the existing file content, and any other value of `content` will overwrite the file content. |
 | `encoding` | string | no | `text` or `base64`. `text` is default. |
-| `last_commit_id` | string | no | Last known file commit id. Will be only considered in update, move and delete actions. |
+| `last_commit_id` | string | no | Last known file commit ID. Will be only considered in update, move, and delete actions. |
 | `execute_filemode` | boolean | no | When `true/false` enables/disables the execute flag on the file. Only considered for `chmod` action. |
 
 ```shell

@@ -130,6 +130,15 @@ describe('Release detail actions', () => {
     });
   });
 
+  describe('updateReleaseMilestones', () => {
+    it(`commits ${types.UPDATE_RELEASE_MILESTONES} with the updated release milestones`, () => {
+      const newReleaseMilestones = ['v0.0', 'v0.1'];
+      return testAction(actions.updateReleaseMilestones, newReleaseMilestones, state, [
+        { type: types.UPDATE_RELEASE_MILESTONES, payload: newReleaseMilestones },
+      ]);
+    });
+  });
+
   describe('requestUpdateRelease', () => {
     it(`commits ${types.REQUEST_UPDATE_RELEASE}`, () =>
       testAction(actions.requestUpdateRelease, undefined, state, [
@@ -248,6 +257,7 @@ describe('Release detail actions', () => {
             {
               name: state.release.name,
               description: state.release.description,
+              milestones: state.release.milestones.map(milestone => milestone.title),
             },
           ],
         ]);

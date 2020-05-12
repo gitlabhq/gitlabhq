@@ -19,6 +19,7 @@
 module Gitlab
   class UsageData
     BATCH_SIZE = 100
+    FALLBACK = -1
 
     class << self
       def data(force_refresh: false)
@@ -34,6 +35,7 @@ module Gitlab
           .merge(components_usage_data)
           .merge(cycle_analytics_usage_data)
           .merge(object_store_usage_data)
+          .merge(recording_ce_finish_data)
       end
 
       def to_json(force_refresh: false)
@@ -42,13 +44,19 @@ module Gitlab
 
       def license_usage_data
         {
+          recorded_at: Time.now, # should be calculated very first
           uuid: alt_usage_data { Gitlab::CurrentSettings.uuid },
           hostname: alt_usage_data { Gitlab.config.gitlab.host },
           version: alt_usage_data { Gitlab::VERSION },
           installation_type: alt_usage_data { installation_type },
           active_user_count: count(User.active),
-          recorded_at: Time.now,
           edition: 'CE'
+        }
+      end
+
+      def recording_ce_finish_data
+        {
+          recording_ce_finished_at: Time.now
         }
       end
 
@@ -342,7 +350,7 @@ module Gitlab
 
         results
       rescue ActiveRecord::StatementInvalid
-        { projects_jira_server_active: -1, projects_jira_cloud_active: -1, projects_jira_active: -1 }
+        { projects_jira_server_active: FALLBACK, projects_jira_cloud_active: FALLBACK, projects_jira_active: FALLBACK }
       end
 
       def successful_deployments_with_cluster(scope)
@@ -367,27 +375,27 @@ module Gitlab
         {} # augmented in EE
       end
 
-      def count(relation, column = nil, fallback: -1, batch: true, start: nil, finish: nil)
+      def count(relation, column = nil, batch: true, start: nil, finish: nil)
         if batch && Feature.enabled?(:usage_ping_batch_counter, default_enabled: true)
           Gitlab::Database::BatchCount.batch_count(relation, column, start: start, finish: finish)
         else
           relation.count
         end
       rescue ActiveRecord::StatementInvalid
-        fallback
+        FALLBACK
       end
 
-      def distinct_count(relation, column = nil, fallback: -1, batch: true, start: nil, finish: nil)
+      def distinct_count(relation, column = nil, batch: true, start: nil, finish: nil)
         if batch && Feature.enabled?(:usage_ping_batch_counter, default_enabled: true)
           Gitlab::Database::BatchCount.batch_distinct_count(relation, column, start: start, finish: finish)
         else
           relation.distinct_count_by(column)
         end
       rescue ActiveRecord::StatementInvalid
-        fallback
+        FALLBACK
       end
 
-      def alt_usage_data(value = nil, fallback: -1, &block)
+      def alt_usage_data(value = nil, fallback: FALLBACK, &block)
         if block_given?
           yield
         else
@@ -410,7 +418,7 @@ module Gitlab
       def redis_usage_counter
         yield
       rescue ::Redis::CommandError, Gitlab::UsageDataCounters::BaseCounter::UnknownEvent
-        -1
+        FALLBACK
       end
 
       def redis_usage_data_totals(counter)

@@ -85,7 +85,7 @@ for the format of the email key:
 
 - Actions are always at the end, separated by `-`. For example `-issue` or `-merge-request`
 - If your feature is related to a project, the key begins with the project identifiers (project path slug
-  and project id), separated by `-`. For example, `gitlab-org-gitlab-foss-20`
+  and project ID), separated by `-`. For example, `gitlab-org-gitlab-foss-20`
 - Additional information, such as an author's token, can be added between the project identifiers and
   the action, separated by `-`. For example, `gitlab-org-gitlab-foss-20-Author_Token12345678-issue`
 - You register your handlers in `lib/gitlab/email/handler.rb`

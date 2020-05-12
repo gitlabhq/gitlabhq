@@ -15,7 +15,7 @@ describe('LabelsSelect Actions', () => {
   };
 
   beforeEach(() => {
-    state = Object.assign({}, defaultState());
+    state = { ...defaultState() };
   });
 
   describe('setInitialState', () => {

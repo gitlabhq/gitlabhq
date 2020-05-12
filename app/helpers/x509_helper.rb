@@ -16,4 +16,8 @@ module X509Helper
   rescue
     {}
   end
+
+  def x509_signature?(sig)
+    sig.is_a?(X509CommitSignature) || sig.is_a?(Gitlab::X509::Signature)
+  end
 end

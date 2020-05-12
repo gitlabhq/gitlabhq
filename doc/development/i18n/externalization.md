@@ -536,9 +536,9 @@ The linter will take the following into account:
 - Variable usage
   - Only one unnamed (`%d`) variable, since the order of variables might change
     in different languages
-  - All variables used in the message-id are used in the translation
+  - All variables used in the message ID are used in the translation
   - There should be no variables used in a translation that aren't in the
-    message-id
+    message ID
 - Errors during translation.
 
 The errors are grouped per file, and per message ID:
@@ -562,7 +562,7 @@ Errors in `locale/zh_TW/gitlab.po`:
 
 In this output the `locale/zh_HK/gitlab.po` has syntax errors.
 The `locale/zh_TW/gitlab.po` has variables that are used in the translation that
-aren't in the message with id `1 pipeline`.
+aren't in the message with ID `1 pipeline`.
 
 ## Adding a new language
 

@@ -9,6 +9,7 @@ import { BACK_URL_PARAM } from '~/releases/constants';
 import { getParameterByName } from '~/lib/utils/common_utils';
 import AssetLinksForm from './asset_links_form.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import MilestoneCombobox from '~/milestones/project_milestone_combobox.vue';
 
 export default {
   name: 'ReleaseEditApp',
@@ -18,6 +19,7 @@ export default {
     GlButton,
     MarkdownField,
     AssetLinksForm,
+    MilestoneCombobox,
   },
   directives: {
     autofocusonshow,
@@ -32,6 +34,10 @@ export default {
       'markdownPreviewPath',
       'releasesPagePath',
       'updateReleaseApiDocsPath',
+      'release',
+      'newMilestonePath',
+      'manageMilestonesPath',
+      'projectId',
     ]),
     ...mapGetters('detail', ['isValid']),
     showForm() {
@@ -82,6 +88,14 @@ export default {
         this.updateReleaseNotes(notes);
       },
     },
+    releaseMilestones: {
+      get() {
+        return this.$store.state.detail.release.milestones;
+      },
+      set(milestones) {
+        this.updateReleaseMilestones(milestones);
+      },
+    },
     cancelPath() {
       return getParameterByName(BACK_URL_PARAM) || this.releasesPagePath;
     },
@@ -90,6 +104,18 @@ export default {
     },
     isSaveChangesDisabled() {
       return this.isUpdatingRelease || !this.isValid;
+    },
+    milestoneComboboxExtraLinks() {
+      return [
+        {
+          text: __('Create new'),
+          url: this.newMilestonePath,
+        },
+        {
+          text: __('Manage milestones'),
+          url: this.manageMilestonesPath,
+        },
+      ];
     },
   },
   created() {
@@ -101,6 +127,7 @@ export default {
       'updateRelease',
       'updateReleaseTitle',
       'updateReleaseNotes',
+      'updateReleaseMilestones',
     ]),
   },
 };
@@ -137,6 +164,16 @@ export default {
           class="form-control"
         />
       </gl-form-group>
+      <gl-form-group class="w-50">
+        <label>{{ __('Milestones') }}</label>
+        <div class="d-flex flex-column col-md-6 col-sm-10 pl-0">
+          <milestone-combobox
+            v-model="releaseMilestones"
+            :project-id="projectId"
+            :extra-links="milestoneComboboxExtraLinks"
+          />
+        </div>
+      </gl-form-group>
       <gl-form-group>
         <label for="release-notes">{{ __('Release notes') }}</label>
         <div class="bordered-box pr-3 pl-3">
@@ -158,8 +195,7 @@ export default {
               :placeholder="__('Write your release notes or drag your files here…')"
               @keydown.meta.enter="updateRelease()"
               @keydown.ctrl.enter="updateRelease()"
-            >
-            </textarea>
+            ></textarea>
           </markdown-field>
         </div>
       </gl-form-group>
@@ -174,12 +210,9 @@ export default {
           type="submit"
           :aria-label="__('Save changes')"
           :disabled="isSaveChangesDisabled"
+          >{{ __('Save changes') }}</gl-button
         >
-          {{ __('Save changes') }}
-        </gl-button>
-        <gl-button :href="cancelPath" class="js-cancel-button">
-          {{ __('Cancel') }}
-        </gl-button>
+        <gl-button :href="cancelPath" class="js-cancel-button">{{ __('Cancel') }}</gl-button>
       </div>
     </form>
   </div>

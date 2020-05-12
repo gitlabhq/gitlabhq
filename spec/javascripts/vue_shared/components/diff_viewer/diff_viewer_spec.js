@@ -30,11 +30,7 @@ describe('DiffViewer', () => {
       relative_url_root: '',
     };
 
-    createComponent(
-      Object.assign({}, requiredProps, {
-        projectPath: '',
-      }),
-    );
+    createComponent({ ...requiredProps, projectPath: '' });
 
     setTimeout(() => {
       expect(vm.$el.querySelector('.deleted img').getAttribute('src')).toBe(
@@ -50,13 +46,12 @@ describe('DiffViewer', () => {
   });
 
   it('renders fallback download diff display', done => {
-    createComponent(
-      Object.assign({}, requiredProps, {
-        diffViewerMode: 'added',
-        newPath: 'test.abc',
-        oldPath: 'testold.abc',
-      }),
-    );
+    createComponent({
+      ...requiredProps,
+      diffViewerMode: 'added',
+      newPath: 'test.abc',
+      oldPath: 'testold.abc',
+    });
 
     setTimeout(() => {
       expect(vm.$el.querySelector('.deleted .file-info').textContent.trim()).toContain(
@@ -77,28 +72,26 @@ describe('DiffViewer', () => {
   });
 
   it('renders renamed component', () => {
-    createComponent(
-      Object.assign({}, requiredProps, {
-        diffMode: 'renamed',
-        diffViewerMode: 'renamed',
-        newPath: 'test.abc',
-        oldPath: 'testold.abc',
-      }),
-    );
+    createComponent({
+      ...requiredProps,
+      diffMode: 'renamed',
+      diffViewerMode: 'renamed',
+      newPath: 'test.abc',
+      oldPath: 'testold.abc',
+    });
 
     expect(vm.$el.textContent).toContain('File moved');
   });
 
   it('renders mode changed component', () => {
-    createComponent(
-      Object.assign({}, requiredProps, {
-        diffMode: 'mode_changed',
-        newPath: 'test.abc',
-        oldPath: 'testold.abc',
-        aMode: '123',
-        bMode: '321',
-      }),
-    );
+    createComponent({
+      ...requiredProps,
+      diffMode: 'mode_changed',
+      newPath: 'test.abc',
+      oldPath: 'testold.abc',
+      aMode: '123',
+      bMode: '321',
+    });
 
     expect(vm.$el.textContent).toContain('File mode changed from 123 to 321');
   });

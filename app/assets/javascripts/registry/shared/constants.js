@@ -41,5 +41,5 @@ export const NAME_REGEX_KEEP_LABEL = s__(
 );
 export const NAME_REGEX_KEEP_PLACEHOLDER = '';
 export const NAME_REGEX_KEEP_DESCRIPTION = s__(
-  'ContainerRegistry|Regular expressions such as %{codeStart}.*-test%{codeEnd} or %{codeStart}dev-.*%{codeEnd} are supported',
+  'ContainerRegistry|Regular expressions such as %{codeStart}.*-master%{codeEnd} or %{codeStart}release-.*%{codeEnd} are supported',
 );

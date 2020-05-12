@@ -16,6 +16,8 @@ describe Mutations::Todos::MarkDone do
 
   let(:mutation) { described_class.new(object: nil, context: { current_user: current_user }, field: nil) }
 
+  specify { expect(described_class).to require_graphql_authorizations(:update_todo) }
+
   describe '#resolve' do
     it 'marks a single todo as done' do
       result = mark_done_mutation(todo1)

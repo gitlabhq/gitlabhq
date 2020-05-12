@@ -99,9 +99,10 @@ export default {
 
           // 3. If GitLab user does not have avatar, they might have a Gravatar
         } else if (this.pipeline.commit.author_gravatar_url) {
-          commitAuthorInformation = Object.assign({}, this.pipeline.commit.author, {
+          commitAuthorInformation = {
+            ...this.pipeline.commit.author,
             avatar_url: this.pipeline.commit.author_gravatar_url,
-          });
+          };
         }
         // 4. If committer is not a GitLab User, they can have a Gravatar
       } else {

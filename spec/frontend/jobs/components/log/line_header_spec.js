@@ -86,7 +86,7 @@ describe('Job Log Header Line', () => {
 
   describe('with duration', () => {
     beforeEach(() => {
-      createComponent(Object.assign({}, data, { duration: '00:10' }));
+      createComponent({ ...data, duration: '00:10' });
     });
 
     it('renders the duration badge', () => {

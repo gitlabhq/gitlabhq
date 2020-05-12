@@ -1,5 +1,5 @@
 - verification_enabled = Gitlab::CurrentSettings.pages_domain_verification_enabled?
-- dns_record = "#{@domain.domain} CNAME #{@domain.project.pages_subdomain}.#{Settings.pages.host}."
+- dns_record = "#{domain_presenter.domain} CNAME #{domain_presenter.project.pages_subdomain}.#{Settings.pages.host}."
 
 .form-group.border-section
   .row
@@ -13,17 +13,17 @@
       %p.form-text.text-muted
         = _("To access this domain create a new DNS record")
 - if verification_enabled
-  - verification_record = "#{@domain.verification_domain} TXT #{@domain.keyed_verification_code}"
+  - verification_record = "#{domain_presenter.verification_domain} TXT #{domain_presenter.keyed_verification_code}"
   .form-group.border-section
     .row
       .col-sm-2
         = _("Verification status")
       .col-sm-10
         .status-badge
-          - text, status = @domain.unverified? ? [_('Unverified'), 'badge-danger'] : [_('Verified'), 'badge-success']
+          - text, status = domain_presenter.unverified? ? [_('Unverified'), 'badge-danger'] : [_('Verified'), 'badge-success']
           .badge{ class: status }
             = text
-          = link_to sprite_icon("redo"), verify_project_pages_domain_path(@project, @domain), method: :post, class: "btn has-tooltip", title: _("Retry verification")
+          = link_to sprite_icon("redo"), verify_project_pages_domain_path(@project, domain_presenter), method: :post, class: "btn has-tooltip", title: _("Retry verification")
         .input-group
           = text_field_tag :domain_verification, verification_record, class: "monospace js-select-on-focus form-control", readonly: true
           .input-group-append

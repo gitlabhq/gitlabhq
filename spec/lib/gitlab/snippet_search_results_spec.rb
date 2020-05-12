@@ -20,4 +20,14 @@ describe Gitlab::SnippetSearchResults do
       expect(results.formatted_count('snippet_titles')).to eq(max_limited_count)
     end
   end
+
+  describe '#objects' do
+    it 'uses page and per_page to paginate results' do
+      snippet2 = create(:snippet, :public, content: 'foo', file_name: 'foo')
+
+      expect(results.objects('snippet_titles', page: 1, per_page: 1).to_a).to eq([snippet2])
+      expect(results.objects('snippet_titles', page: 2, per_page: 1).to_a).to eq([snippet])
+      expect(results.objects('snippet_titles', page: 1, per_page: 2).count).to eq(2)
+    end
+  end
 end

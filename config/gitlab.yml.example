@@ -770,7 +770,7 @@ production: &base
     # Allow smartcard authentication
     enabled: false
 
-    # Path to a file containing a CA certificate
+    # Path to a file containing a CA certificate bundle
     ca_file: '/etc/ssl/certs/CA.pem'
 
     # Host and port where the client side certificate is requested by the

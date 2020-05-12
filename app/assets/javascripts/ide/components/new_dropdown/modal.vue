@@ -1,61 +1,60 @@
 <script>
-import $ from 'jquery';
 import { mapActions, mapState, mapGetters } from 'vuex';
 import flash from '~/flash';
 import { __, sprintf, s__ } from '~/locale';
-import DeprecatedModal2 from '~/vue_shared/components/deprecated_modal_2.vue';
+import { GlModal } from '@gitlab/ui';
 import { modalTypes } from '../../constants';
 
 export default {
   components: {
-    GlModal: DeprecatedModal2,
+    GlModal,
   },
   data() {
     return {
       name: '',
+      type: modalTypes.blob,
+      path: '',
     };
   },
   computed: {
-    ...mapState(['entries', 'entryModal']),
+    ...mapState(['entries']),
     ...mapGetters('fileTemplates', ['templateTypes']),
     entryName: {
       get() {
-        const entryPath = this.entryModal.entry.path;
-
-        if (this.entryModal.type === modalTypes.rename) {
-          return this.name || entryPath;
+        if (this.type === modalTypes.rename) {
+          return this.name || this.path;
         }
 
-        return this.name || (entryPath ? `${entryPath}/` : '');
+        return this.name || (this.path ? `${this.path}/` : '');
       },
       set(val) {
         this.name = val.trim();
       },
     },
     modalTitle() {
-      if (this.entryModal.type === modalTypes.tree) {
+      const entry = this.entries[this.path];
+
+      if (this.type === modalTypes.tree) {
         return __('Create new directory');
-      } else if (this.entryModal.type === modalTypes.rename) {
-        return this.entryModal.entry.type === modalTypes.tree
-          ? __('Rename folder')
-          : __('Rename file');
+      } else if (this.type === modalTypes.rename) {
+        return entry.type === modalTypes.tree ? __('Rename folder') : __('Rename file');
       }
 
       return __('Create new file');
     },
     buttonLabel() {
-      if (this.entryModal.type === modalTypes.tree) {
+      const entry = this.entries[this.path];
+
+      if (this.type === modalTypes.tree) {
         return __('Create directory');
-      } else if (this.entryModal.type === modalTypes.rename) {
-        return this.entryModal.entry.type === modalTypes.tree
-          ? __('Rename folder')
-          : __('Rename file');
+      } else if (this.type === modalTypes.rename) {
+        return entry.type === modalTypes.tree ? __('Rename folder') : __('Rename file');
       }
 
       return __('Create file');
     },
     isCreatingNewFile() {
-      return this.entryModal.type === 'blob';
+      return this.type === modalTypes.blob;
     },
     placeholder() {
       return this.isCreatingNewFile ? 'dir/file_name' : 'dir/';
@@ -64,7 +63,7 @@ export default {
   methods: {
     ...mapActions(['createTempEntry', 'renameEntry']),
     submitForm() {
-      if (this.entryModal.type === modalTypes.rename) {
+      if (this.type === modalTypes.rename) {
         if (this.entries[this.entryName] && !this.entries[this.entryName].deleted) {
           flash(
             sprintf(s__('The name "%{name}" is already taken in this directory.'), {
@@ -82,7 +81,7 @@ export default {
           parentPath = parentPath.join('/');
 
           this.renameEntry({
-            path: this.entryModal.entry.path,
+            path: this.path,
             name: entryName,
             parentPath,
           });
@@ -90,17 +89,17 @@ export default {
       } else {
         this.createTempEntry({
           name: this.name,
-          type: this.entryModal.type,
+          type: this.type,
         });
       }
     },
     createFromTemplate(template) {
       this.createTempEntry({
         name: template.name,
-        type: this.entryModal.type,
+        type: this.type,
       });
 
-      $('#ide-new-entry').modal('toggle');
+      this.$refs.modal.toggle();
     },
     focusInput() {
       const name = this.entries[this.entryName] ? this.entries[this.entryName].name : null;
@@ -112,8 +111,23 @@ export default {
         this.$refs.fieldName.setSelectionRange(inputValue.indexOf(name), inputValue.length);
       }
     },
-    closedModal() {
+    resetData() {
       this.name = '';
+      this.path = '';
+      this.type = modalTypes.blob;
+    },
+    open(type = modalTypes.blob, path = '') {
+      this.type = type;
+      this.path = path;
+      this.$refs.modal.show();
+
+      // wait for modal to show first
+      this.$nextTick(() => {
+        this.focusInput();
+      });
+    },
+    close() {
+      this.$refs.modal.hide();
     },
   },
 };
@@ -121,15 +135,15 @@ export default {
 
 <template>
   <gl-modal
-    id="ide-new-entry"
-    class="qa-new-file-modal"
-    :header-title-text="modalTitle"
-    :footer-primary-button-text="buttonLabel"
-    footer-primary-button-variant="success"
-    modal-size="lg"
-    @submit="submitForm"
-    @open="focusInput"
-    @closed="closedModal"
+    ref="modal"
+    modal-id="ide-new-entry"
+    modal-class="qa-new-file-modal"
+    :title="modalTitle"
+    :ok-title="buttonLabel"
+    ok-variant="success"
+    size="lg"
+    @ok="submitForm"
+    @hide="resetData"
   >
     <div class="form-group row">
       <label class="label-bold col-form-label col-sm-2"> {{ __('Name') }} </label>

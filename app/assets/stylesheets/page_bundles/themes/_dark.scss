@@ -40,7 +40,7 @@
   h1,
   h2,
   h3,
-  h4:not(.modal-title),
+  h4,
   h5,
   h6,
   code,
@@ -80,10 +80,6 @@
     background-color: $dropdown-hover-background;
   }
 
-  .modal-body {
-    color: $gl-text-color;
-  }
-
   .dropdown-menu-toggle svg,
   .dropdown-menu-toggle svg:hover,
   .ide-tree-header:not(.ide-pipeline-header) svg,
@@ -94,7 +90,7 @@
   }
 
   .ide-pipeline svg {
-    --svg-status-bg: transparent;
+    --svg-status-bg: $background;
   }
 
   .multi-file-tab-close:hover {

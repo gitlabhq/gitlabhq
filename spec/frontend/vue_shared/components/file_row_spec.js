@@ -91,9 +91,7 @@ describe('File row component', () => {
     jest.spyOn(wrapper.vm, 'scrollIntoView');
 
     wrapper.setProps({
-      file: Object.assign({}, wrapper.props('file'), {
-        active: true,
-      }),
+      file: { ...wrapper.props('file'), active: true },
     });
 
     return nextTick().then(() => {
@@ -125,9 +123,7 @@ describe('File row component', () => {
 
   it('matches the current route against encoded file URL', () => {
     const fileName = 'with space';
-    const rowFile = Object.assign({}, file(fileName), {
-      url: `/${fileName}`,
-    });
+    const rowFile = { ...file(fileName), url: `/${fileName}` };
     const routerPath = `/project/${escapeFileUrl(fileName)}`;
     createComponent(
       {

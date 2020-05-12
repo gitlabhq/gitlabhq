@@ -57,4 +57,22 @@ describe X509Helper do
       end
     end
   end
+
+  describe '#x509_signature?' do
+    let(:x509_signature) { create(:x509_commit_signature) }
+    let(:gpg_signature) { create(:gpg_signature) }
+
+    it 'detects a x509 signed commit' do
+      signature = Gitlab::X509::Signature.new(
+        X509Helpers::User1.signed_commit_signature,
+        X509Helpers::User1.signed_commit_base_data,
+        X509Helpers::User1.certificate_email,
+        X509Helpers::User1.signed_commit_time
+      )
+
+      expect(x509_signature?(x509_signature)).to be_truthy
+      expect(x509_signature?(signature)).to be_truthy
+      expect(x509_signature?(gpg_signature)).to be_falsey
+    end
+  end
 end

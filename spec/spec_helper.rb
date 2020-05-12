@@ -209,9 +209,7 @@ RSpec.configure do |config|
     # expect(Gitlab::Git::KeepAround).to receive(:execute).and_call_original
     allow(Gitlab::Git::KeepAround).to receive(:execute)
 
-    [Gitlab::ThreadMemoryCache, Gitlab::ProcessMemoryCache].each do |cache|
-      cache.cache_backend.clear
-    end
+    Gitlab::ProcessMemoryCache.cache_backend.clear
 
     Sidekiq::Worker.clear_all
 

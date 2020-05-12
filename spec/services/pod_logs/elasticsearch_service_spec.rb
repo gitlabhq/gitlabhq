@@ -158,6 +158,21 @@ describe ::PodLogs::ElasticsearchService do
       end
     end
 
+    context 'with search provided and invalid' do
+      let(:params) do
+        {
+            'search' => { term: "foo-bar" }
+        }
+      end
+
+      it 'returns error' do
+        result = subject.send(:check_search, {})
+
+        expect(result[:status]).to eq(:error)
+        expect(result[:message]).to eq("Invalid search parameter")
+      end
+    end
+
     context 'with search not provided' do
       let(:params) do
         {}
@@ -185,6 +200,21 @@ describe ::PodLogs::ElasticsearchService do
 
         expect(result[:status]).to eq(:success)
         expect(result[:cursor]).to eq(cursor)
+      end
+    end
+
+    context 'with cursor provided and invalid' do
+      let(:params) do
+        {
+            'cursor' => { term: "foo-bar" }
+        }
+      end
+
+      it 'returns error' do
+        result = subject.send(:check_cursor, {})
+
+        expect(result[:status]).to eq(:error)
+        expect(result[:message]).to eq("Invalid cursor parameter")
       end
     end
 

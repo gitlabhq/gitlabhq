@@ -1,10 +1,12 @@
+import Api from '~/api';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import waitForPromises from 'helpers/wait_for_promises';
 import PipelinesComponent from '~/pipelines/components/pipelines.vue';
 import Store from '~/pipelines/stores/pipelines_store';
-import { pipelineWithStages, stageReply } from './mock_data';
+import { pipelineWithStages, stageReply, users, mockSearch } from './mock_data';
+import { GlFilteredSearch } from '@gitlab/ui';
 
 describe('Pipelines', () => {
   const jsonFixtureName = 'pipelines/pipelines.json';
@@ -42,10 +44,14 @@ describe('Pipelines', () => {
     ...paths,
   };
 
+  const findFilteredSearch = () => wrapper.find(GlFilteredSearch);
+
   const createComponent = (props = defaultProps, methods) => {
     wrapper = mount(PipelinesComponent, {
+      provide: { glFeatures: { filterPipelinesSearch: true } },
       propsData: {
         store: new Store(),
+        projectId: '21',
         ...props,
       },
       methods: {
@@ -57,6 +63,7 @@ describe('Pipelines', () => {
   beforeEach(() => {
     mock = new MockAdapter(axios);
     pipelines = getJSONFixture(jsonFixtureName);
+    jest.spyOn(Api, 'projectUsers').mockResolvedValue(users);
   });
 
   afterEach(() => {
@@ -594,7 +601,7 @@ describe('Pipelines', () => {
 
   describe('updates results when a staged is clicked', () => {
     beforeEach(() => {
-      const copyPipeline = Object.assign({}, pipelineWithStages);
+      const copyPipeline = { ...pipelineWithStages };
       copyPipeline.id += 1;
       mock
         .onGet('twitter/flight/pipelines.json')
@@ -654,6 +661,25 @@ describe('Pipelines', () => {
             expect(restartMock).toHaveBeenCalled();
           });
       });
+    });
+  });
+
+  describe('Pipeline filters', () => {
+    beforeEach(() => {
+      mock.onGet(paths.endpoint).reply(200, pipelines);
+      createComponent();
+
+      return waitForPromises();
+    });
+
+    it('updates request data and query params on filter submit', () => {
+      const updateContentMock = jest.spyOn(wrapper.vm, 'updateContent');
+      const expectedQueryParams = { page: '1', scope: 'all', username: 'root' };
+
+      findFilteredSearch().vm.$emit('submit', [mockSearch]);
+
+      expect(wrapper.vm.requestData).toEqual(expectedQueryParams);
+      expect(updateContentMock).toHaveBeenCalledWith(expectedQueryParams);
     });
   });
 });

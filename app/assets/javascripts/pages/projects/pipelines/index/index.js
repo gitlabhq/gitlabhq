@@ -10,7 +10,6 @@ import { __ } from '~/locale';
 import PipelinesStore from '../../../../pipelines/stores/pipelines_store';
 import pipelinesComponent from '../../../../pipelines/components/pipelines.vue';
 import Translate from '../../../../vue_shared/translate';
-import initVueAlerts from '../../../../vue_alerts';
 
 Vue.use(Translate);
 Vue.use(GlToast);
@@ -51,10 +50,9 @@ document.addEventListener(
             hasGitlabCi: parseBoolean(this.dataset.hasGitlabCi),
             ciLintPath: this.dataset.ciLintPath,
             resetCachePath: this.dataset.resetCachePath,
+            projectId: this.dataset.projectId,
           },
         });
       },
     }),
 );
-
-document.addEventListener('DOMContentLoaded', initVueAlerts);

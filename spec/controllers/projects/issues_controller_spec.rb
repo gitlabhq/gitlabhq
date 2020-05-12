@@ -187,6 +187,33 @@ describe Projects::IssuesController do
         expect(assigns(:issue)).to be_a_new(Issue)
       end
 
+      where(:conf_value, :conf_result) do
+        [
+          [true, true],
+          ['true', true],
+          ['TRUE', true],
+          [false, false],
+          ['false', false],
+          ['FALSE', false]
+        ]
+      end
+
+      with_them do
+        it 'sets the confidential flag to the expected value' do
+          get :new, params: {
+            namespace_id: project.namespace,
+            project_id: project,
+            issue: {
+              confidential: conf_value
+            }
+          }
+
+          assigned_issue = assigns(:issue)
+          expect(assigned_issue).to be_a_new(Issue)
+          expect(assigned_issue.confidential).to eq conf_result
+        end
+      end
+
       it 'fills in an issue for a merge request' do
         project_with_repository = create(:project, :repository)
         project_with_repository.add_developer(user)

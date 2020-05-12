@@ -2,6 +2,7 @@ import { shallowMount, mount } from '@vue/test-utils';
 import Tracking from '~/tracking';
 import { ESC_KEY, ESC_KEY_IE11 } from '~/lib/utils/keys';
 import { GlModal, GlDropdownItem, GlDeprecatedButton } from '@gitlab/ui';
+import { objectToQuery } from '~/lib/utils/url_utility';
 import VueDraggable from 'vuedraggable';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
@@ -20,6 +21,9 @@ import * as types from '~/monitoring/stores/mutation_types';
 import { setupStoreWithDashboard, setMetricResult, setupStoreWithData } from '../store_utils';
 import { environmentData, dashboardGitResponse, propsData } from '../mock_data';
 import { metricsDashboardViewModel, metricsDashboardPanelCount } from '../fixture_data';
+import createFlash from '~/flash';
+
+jest.mock('~/flash');
 
 describe('Dashboard', () => {
   let store;
@@ -64,7 +68,6 @@ describe('Dashboard', () => {
 
   describe('no metrics are available yet', () => {
     beforeEach(() => {
-      jest.spyOn(store, 'dispatch');
       createShallowWrapper();
     });
 
@@ -146,6 +149,171 @@ describe('Dashboard', () => {
 
       return wrapper.vm.$nextTick().then(() => {
         expect(store.dispatch).toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('when the URL contains a reference to a panel', () => {
+    let location;
+
+    const setSearch = search => {
+      window.location = { ...location, search };
+    };
+
+    beforeEach(() => {
+      location = window.location;
+      delete window.location;
+    });
+
+    afterEach(() => {
+      window.location = location;
+    });
+
+    it('when the URL points to a panel it expands', () => {
+      const panelGroup = metricsDashboardViewModel.panelGroups[0];
+      const panel = panelGroup.panels[0];
+
+      setSearch(
+        objectToQuery({
+          group: panelGroup.group,
+          title: panel.title,
+          y_label: panel.y_label,
+        }),
+      );
+
+      createMountedWrapper({ hasMetrics: true });
+      setupStoreWithData(wrapper.vm.$store);
+
+      return wrapper.vm.$nextTick().then(() => {
+        expect(store.dispatch).toHaveBeenCalledWith('monitoringDashboard/setExpandedPanel', {
+          group: panelGroup.group,
+          panel: expect.objectContaining({
+            title: panel.title,
+            y_label: panel.y_label,
+          }),
+        });
+      });
+    });
+
+    it('when the URL does not link to any panel, no panel is expanded', () => {
+      setSearch('');
+
+      createMountedWrapper({ hasMetrics: true });
+      setupStoreWithData(wrapper.vm.$store);
+
+      return wrapper.vm.$nextTick().then(() => {
+        expect(store.dispatch).not.toHaveBeenCalledWith(
+          'monitoringDashboard/setExpandedPanel',
+          expect.anything(),
+        );
+      });
+    });
+
+    it('when the URL points to an incorrect panel it shows an error', () => {
+      const panelGroup = metricsDashboardViewModel.panelGroups[0];
+      const panel = panelGroup.panels[0];
+
+      setSearch(
+        objectToQuery({
+          group: panelGroup.group,
+          title: 'incorrect',
+          y_label: panel.y_label,
+        }),
+      );
+
+      createMountedWrapper({ hasMetrics: true });
+      setupStoreWithData(wrapper.vm.$store);
+
+      return wrapper.vm.$nextTick().then(() => {
+        expect(createFlash).toHaveBeenCalled();
+        expect(store.dispatch).not.toHaveBeenCalledWith(
+          'monitoringDashboard/setExpandedPanel',
+          expect.anything(),
+        );
+      });
+    });
+  });
+
+  describe('when the panel is expanded', () => {
+    let group;
+    let panel;
+
+    const expandPanel = (mockGroup, mockPanel) => {
+      store.commit(`monitoringDashboard/${types.SET_EXPANDED_PANEL}`, {
+        group: mockGroup,
+        panel: mockPanel,
+      });
+    };
+
+    beforeEach(() => {
+      setupStoreWithData(store);
+
+      const { panelGroups } = store.state.monitoringDashboard.dashboard;
+      group = panelGroups[0].group;
+      [panel] = panelGroups[0].panels;
+
+      jest.spyOn(window.history, 'pushState').mockImplementation();
+    });
+
+    afterEach(() => {
+      window.history.pushState.mockRestore();
+    });
+
+    it('URL is updated with panel parameters', () => {
+      createMountedWrapper({ hasMetrics: true });
+      expandPanel(group, panel);
+
+      const expectedSearch = objectToQuery({
+        group,
+        title: panel.title,
+        y_label: panel.y_label,
+      });
+
+      return wrapper.vm.$nextTick(() => {
+        expect(window.history.pushState).toHaveBeenCalledTimes(1);
+        expect(window.history.pushState).toHaveBeenCalledWith(
+          expect.anything(), // state
+          expect.any(String), // document title
+          expect.stringContaining(`?${expectedSearch}`),
+        );
+      });
+    });
+
+    it('URL is updated with panel parameters and custom dashboard', () => {
+      const dashboard = 'dashboard.yml';
+
+      createMountedWrapper({ hasMetrics: true, currentDashboard: dashboard });
+      expandPanel(group, panel);
+
+      const expectedSearch = objectToQuery({
+        dashboard,
+        group,
+        title: panel.title,
+        y_label: panel.y_label,
+      });
+
+      return wrapper.vm.$nextTick(() => {
+        expect(window.history.pushState).toHaveBeenCalledTimes(1);
+        expect(window.history.pushState).toHaveBeenCalledWith(
+          expect.anything(), // state
+          expect.any(String), // document title
+          expect.stringContaining(`?${expectedSearch}`),
+        );
+      });
+    });
+
+    it('URL is updated with no parameters', () => {
+      expandPanel(group, panel);
+      createMountedWrapper({ hasMetrics: true });
+      expandPanel(null, null);
+
+      return wrapper.vm.$nextTick(() => {
+        expect(window.history.pushState).toHaveBeenCalledTimes(1);
+        expect(window.history.pushState).toHaveBeenCalledWith(
+          expect.anything(), // state
+          expect.any(String), // document title
+          expect.not.stringContaining('?'), // no params
+        );
       });
     });
   });

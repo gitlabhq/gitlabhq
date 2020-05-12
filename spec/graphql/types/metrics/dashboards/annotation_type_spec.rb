@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe GitlabSchema.types['MetricsDashboardAnnotation'] do
-  it { expect(described_class.graphql_name).to eq('MetricsDashboardAnnotation') }
+  specify { expect(described_class.graphql_name).to eq('MetricsDashboardAnnotation') }
 
   it 'has the expected fields' do
     expected_fields = %w[
@@ -13,5 +13,5 @@ describe GitlabSchema.types['MetricsDashboardAnnotation'] do
     expect(described_class).to have_graphql_fields(*expected_fields)
   end
 
-  it { expect(described_class).to require_graphql_authorizations(:read_metrics_dashboard_annotation) }
+  specify { expect(described_class).to require_graphql_authorizations(:read_metrics_dashboard_annotation) }
 end

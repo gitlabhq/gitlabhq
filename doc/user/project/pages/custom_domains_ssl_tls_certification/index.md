@@ -2,6 +2,9 @@
 last_updated: 2019-07-04
 type: reference, howto
 disqus_identifier: 'https://docs.gitlab.com/ee/user/project/pages/getting_started_part_three.html'
+stage: Release
+group: Release Management
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
 # Custom domains and SSL/TLS Certificates

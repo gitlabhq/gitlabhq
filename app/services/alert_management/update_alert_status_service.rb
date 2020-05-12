@@ -8,9 +8,9 @@ module AlertManagement
     end
 
     def execute
-      return error('Invalid status') unless AlertManagement::Alert.statuses.key?(status.to_s)
+      return error('Invalid status') unless AlertManagement::Alert::STATUSES.key?(status.to_sym)
 
-      alert.status = status
+      alert.status_event = AlertManagement::Alert::STATUS_EVENTS[status.to_sym]
 
       if alert.save
         success

@@ -8,11 +8,12 @@ import {
   mockLabels,
 } from '../../../../../javascripts/vue_shared/components/sidebar/labels_select/mock_data';
 
-const componentConfig = Object.assign({}, mockConfig, {
+const componentConfig = {
+  ...mockConfig,
   fieldName: 'label_id[]',
   labels: mockLabels,
   showExtraOptions: false,
-});
+};
 
 const createComponent = (config = componentConfig) => {
   const Component = Vue.extend(dropdownButtonComponent);
@@ -34,7 +35,7 @@ describe('DropdownButtonComponent', () => {
   describe('computed', () => {
     describe('dropdownToggleText', () => {
       it('returns text as `Label` when `labels` prop is empty array', () => {
-        const mockEmptyLabels = Object.assign({}, componentConfig, { labels: [] });
+        const mockEmptyLabels = { ...componentConfig, labels: [] };
         const vmEmptyLabels = createComponent(mockEmptyLabels);
 
         expect(vmEmptyLabels.dropdownToggleText).toBe('Label');
@@ -42,9 +43,7 @@ describe('DropdownButtonComponent', () => {
       });
 
       it('returns first label name with remaining label count when `labels` prop has more than one item', () => {
-        const mockMoreLabels = Object.assign({}, componentConfig, {
-          labels: mockLabels.concat(mockLabels),
-        });
+        const mockMoreLabels = { ...componentConfig, labels: mockLabels.concat(mockLabels) };
         const vmMoreLabels = createComponent(mockMoreLabels);
 
         expect(vmMoreLabels.dropdownToggleText).toBe(
@@ -54,9 +53,7 @@ describe('DropdownButtonComponent', () => {
       });
 
       it('returns first label name when `labels` prop has only one item present', () => {
-        const singleLabel = Object.assign({}, componentConfig, {
-          labels: [mockLabels[0]],
-        });
+        const singleLabel = { ...componentConfig, labels: [mockLabels[0]] };
         const vmSingleLabel = createComponent(singleLabel);
 
         expect(vmSingleLabel.dropdownToggleText).toBe(mockLabels[0].title);

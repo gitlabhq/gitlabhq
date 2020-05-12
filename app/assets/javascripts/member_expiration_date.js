@@ -29,8 +29,6 @@ export default function memberExpirationDate(selector = '.js-access-expiration-d
       onSelect(dateText) {
         $input.val(calendar.toString(dateText));
 
-        $input.trigger('change');
-
         toggleClearInput.call($input);
       },
       firstDay: gon.first_day_of_week,
@@ -49,7 +47,6 @@ export default function memberExpirationDate(selector = '.js-access-expiration-d
     const calendar = input.data('pikaday');
 
     calendar.setDate(null);
-    input.trigger('change');
     toggleClearInput.call(input);
   });
 

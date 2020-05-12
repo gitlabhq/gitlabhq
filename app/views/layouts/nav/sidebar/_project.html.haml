@@ -203,7 +203,7 @@
 
       - if project_nav_tab? :operations
         = nav_link(controller: sidebar_operations_paths) do
-          = link_to sidebar_operations_link_path, class: 'shortcuts-operations qa-link-operations' do
+          = link_to sidebar_operations_link_path, class: 'shortcuts-operations', data: { qa_selector: 'operations_link' } do
             .nav-icon-container
               = sprite_icon('cloud-gear')
             %span.nav-item-name
@@ -375,7 +375,7 @@
                       = _('CI / CD')
               - if !@project.archived? && settings_operations_available?
                 = nav_link(controller: [:operations]) do
-                  = link_to project_settings_operations_path(@project), title: _('Operations') do
+                  = link_to project_settings_operations_path(@project), title: _('Operations'), data: { qa_selector: 'operations_settings_link' } do
                     = _('Operations')
               - if @project.pages_available?
                 = nav_link(controller: :pages) do

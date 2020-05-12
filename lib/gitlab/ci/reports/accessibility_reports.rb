@@ -36,6 +36,10 @@ module Gitlab
         def set_error_message(error)
           @error_message = error
         end
+
+        def all_errors
+          @urls.values.flatten
+        end
       end
     end
   end

@@ -1,0 +1,42 @@
+---
+# Verifies that badges are not lower case, which won't render properly.
+#
+# For a list of all options, see https://errata-ai.github.io/vale/styles/
+extends: existence
+message: 'Badge "%s" must be capitalized.'
+link: https://docs.gitlab.com/ee/development/documentation/styleguide.html#product-badges
+level: error
+scope: raw
+raw:
+  - '(\*\*\(Core\)\*\*|'
+  - '\*\*\(core\)\*\*|'
+  - '\*\*\(Starter\)\*\*|'
+  - '\*\*\(starter\)\*\*|'
+  - '\*\*\(Premium\)\*\*|'
+  - '\*\*\(premium\)\*\*|'
+  - '\*\*\(Ultimate\)\*\*|'
+  - '\*\*\(ultimate\)\*\*|'
+  - '\*\*\(Core Only\)\*\*|'
+  - '\*\*\(Core only\)\*\*|'
+  - '\*\*\(core only\)\*\*|'
+  - '\*\*\(Starter Only\)\*\*|'
+  - '\*\*\(Starter only\)\*\*|'
+  - '\*\*\(starter only\)\*\*|'
+  - '\*\*\(Premium Only\)\*\*|'
+  - '\*\*\(Premium only\)\*\*|'
+  - '\*\*\(premium only\)\*\*|'
+  - '\*\*\(Ultimate Only\)\*\*|'
+  - '\*\*\(Ultimate only\)\*\*|'
+  - '\*\*\(ultimate only\)\*\*|'
+  - '\*\*\(Free Only\)\*\*|'
+  - '\*\*\(Free only\)\*\*|'
+  - '\*\*\(free only\)\*\*|'
+  - '\*\*\(Bronze Only\)\*\*|'
+  - '\*\*\(Bronze only\)\*\*|'
+  - '\*\*\(bronze only\)\*\*|'
+  - '\*\*\(Silver Only\)\*\*|'
+  - '\*\*\(Silver only\)\*\*|'
+  - '\*\*\(silver only\)\*\*|'
+  - '\*\*\(Gold Only\)\*\*|'
+  - '\*\*\(Gold only\)\*\*|'
+  - '\*\*\(gold only\)\*\*)'

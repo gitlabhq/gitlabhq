@@ -217,9 +217,10 @@ describe Gitlab::Database::MigrationHelpers do
           it 'appends ON DELETE SET NULL statement' do
             expect(model).to receive(:with_lock_retries).and_call_original
             expect(model).to receive(:disable_statement_timeout).and_call_original
+            expect(model).to receive(:statement_timeout_disabled?).and_return(false)
             expect(model).to receive(:execute).with(/statement_timeout/)
             expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT/)
-            expect(model).to receive(:execute).with(/RESET ALL/)
+            expect(model).to receive(:execute).ordered.with(/RESET ALL/)
 
             expect(model).to receive(:execute).with(/ON DELETE SET NULL/)
 
@@ -233,9 +234,10 @@ describe Gitlab::Database::MigrationHelpers do
           it 'appends ON DELETE CASCADE statement' do
             expect(model).to receive(:with_lock_retries).and_call_original
             expect(model).to receive(:disable_statement_timeout).and_call_original
+            expect(model).to receive(:statement_timeout_disabled?).and_return(false)
             expect(model).to receive(:execute).with(/statement_timeout/)
             expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT/)
-            expect(model).to receive(:execute).with(/RESET ALL/)
+            expect(model).to receive(:execute).ordered.with(/RESET ALL/)
 
             expect(model).to receive(:execute).with(/ON DELETE CASCADE/)
 
@@ -249,9 +251,10 @@ describe Gitlab::Database::MigrationHelpers do
           it 'appends no ON DELETE statement' do
             expect(model).to receive(:with_lock_retries).and_call_original
             expect(model).to receive(:disable_statement_timeout).and_call_original
+            expect(model).to receive(:statement_timeout_disabled?).and_return(false)
             expect(model).to receive(:execute).with(/statement_timeout/)
             expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT/)
-            expect(model).to receive(:execute).with(/RESET ALL/)
+            expect(model).to receive(:execute).ordered.with(/RESET ALL/)
 
             expect(model).not_to receive(:execute).with(/ON DELETE/)
 
@@ -266,10 +269,11 @@ describe Gitlab::Database::MigrationHelpers do
         it 'creates a concurrent foreign key and validates it' do
           expect(model).to receive(:with_lock_retries).and_call_original
           expect(model).to receive(:disable_statement_timeout).and_call_original
+          expect(model).to receive(:statement_timeout_disabled?).and_return(false)
           expect(model).to receive(:execute).with(/statement_timeout/)
           expect(model).to receive(:execute).ordered.with(/NOT VALID/)
           expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT/)
-          expect(model).to receive(:execute).with(/RESET ALL/)
+          expect(model).to receive(:execute).ordered.with(/RESET ALL/)
 
           model.add_concurrent_foreign_key(:projects, :users, column: :user_id)
         end
@@ -293,10 +297,11 @@ describe Gitlab::Database::MigrationHelpers do
           it 'creates a new foreign key' do
             expect(model).to receive(:with_lock_retries).and_call_original
             expect(model).to receive(:disable_statement_timeout).and_call_original
+            expect(model).to receive(:statement_timeout_disabled?).and_return(false)
             expect(model).to receive(:execute).with(/statement_timeout/)
             expect(model).to receive(:execute).ordered.with(/NOT VALID/)
             expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT.+foo/)
-            expect(model).to receive(:execute).with(/RESET ALL/)
+            expect(model).to receive(:execute).ordered.with(/RESET ALL/)
 
             model.add_concurrent_foreign_key(:projects, :users, column: :user_id, name: :foo)
           end
@@ -321,10 +326,11 @@ describe Gitlab::Database::MigrationHelpers do
             it 'creates a new foreign key' do
               expect(model).to receive(:with_lock_retries).and_call_original
               expect(model).to receive(:disable_statement_timeout).and_call_original
+              expect(model).to receive(:statement_timeout_disabled?).and_return(false)
               expect(model).to receive(:execute).with(/statement_timeout/)
               expect(model).to receive(:execute).ordered.with(/NOT VALID/)
               expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT.+bar/)
-              expect(model).to receive(:execute).with(/RESET ALL/)
+              expect(model).to receive(:execute).ordered.with(/RESET ALL/)
 
               model.add_concurrent_foreign_key(:projects, :users, column: :user_id, name: :bar)
             end
@@ -361,6 +367,7 @@ describe Gitlab::Database::MigrationHelpers do
         aggregate_failures do
           expect(model).not_to receive(:concurrent_foreign_key_name)
           expect(model).to receive(:disable_statement_timeout).and_call_original
+          expect(model).to receive(:statement_timeout_disabled?).and_return(false)
           expect(model).to receive(:execute).with(/statement_timeout/)
           expect(model).to receive(:execute).ordered.with(/ALTER TABLE projects VALIDATE CONSTRAINT/)
           expect(model).to receive(:execute).ordered.with(/RESET ALL/)
@@ -377,6 +384,7 @@ describe Gitlab::Database::MigrationHelpers do
         aggregate_failures do
           expect(model).to receive(:concurrent_foreign_key_name)
           expect(model).to receive(:disable_statement_timeout).and_call_original
+          expect(model).to receive(:statement_timeout_disabled?).and_return(false)
           expect(model).to receive(:execute).with(/statement_timeout/)
           expect(model).to receive(:execute).ordered.with(/ALTER TABLE projects VALIDATE CONSTRAINT/)
           expect(model).to receive(:execute).ordered.with(/RESET ALL/)
@@ -527,6 +535,26 @@ describe Gitlab::Database::MigrationHelpers do
         end
       end
     end
+
+    # This spec runs without an enclosing transaction (:delete truncation method for db_cleaner)
+    context 'when the statement_timeout is already disabled', :delete do
+      before do
+        ActiveRecord::Base.connection.execute('SET statement_timeout TO 0')
+      end
+
+      after do
+        # Use ActiveRecord::Base.connection instead of model.execute
+        # so that this call is not counted below
+        ActiveRecord::Base.connection.execute('RESET ALL')
+      end
+
+      it 'yields control without disabling the timeout or resetting' do
+        expect(model).not_to receive(:execute).with('SET statement_timeout TO 0')
+        expect(model).not_to receive(:execute).with('RESET ALL')
+
+        expect { |block| model.disable_statement_timeout(&block) }.to yield_control
+      end
+    end
   end
 
   describe '#true_value' do
@@ -619,7 +647,7 @@ describe Gitlab::Database::MigrationHelpers do
           expect(model).to receive(:update_column_in_batches)
             .with(:projects, :foo, 10)
 
-          expect(model).not_to receive(:change_column_null)
+          expect(model).not_to receive(:add_not_null_constraint)
 
           model.add_column_with_default(:projects, :foo, :integer,
                                         default: 10,
@@ -630,8 +658,8 @@ describe Gitlab::Database::MigrationHelpers do
           expect(model).to receive(:update_column_in_batches)
             .with(:projects, :foo, 10)
 
-          expect(model).to receive(:change_column_null)
-            .with(:projects, :foo, false)
+          expect(model).to receive(:add_not_null_constraint)
+            .with(:projects, :foo)
 
           model.add_column_with_default(:projects, :foo, :integer, default: 10)
         end
@@ -650,16 +678,16 @@ describe Gitlab::Database::MigrationHelpers do
         end
 
         it 'removes the added column whenever changing a column NULL constraint fails' do
-          expect(model).to receive(:change_column_null)
-            .with(:projects, :foo, false)
-            .and_raise(RuntimeError)
+          expect(model).to receive(:add_not_null_constraint)
+            .with(:projects, :foo)
+            .and_raise(ActiveRecord::ActiveRecordError)
 
           expect(model).to receive(:remove_column)
             .with(:projects, :foo)
 
           expect do
             model.add_column_with_default(:projects, :foo, :integer, default: 10)
-          end.to raise_error(RuntimeError)
+          end.to raise_error(ActiveRecord::ActiveRecordError)
         end
       end
 
@@ -671,7 +699,7 @@ describe Gitlab::Database::MigrationHelpers do
           allow(model).to receive(:transaction).and_yield
           allow(model).to receive(:column_for).with(:user_details, :foo).and_return(column)
           allow(model).to receive(:update_column_in_batches).with(:user_details, :foo, 10, batch_column_name: :user_id)
-          allow(model).to receive(:change_column_null).with(:user_details, :foo, false)
+          allow(model).to receive(:add_not_null_constraint).with(:user_details, :foo)
           allow(model).to receive(:change_column_default).with(:user_details, :foo, 10)
 
           expect(model).to receive(:add_column)
@@ -693,7 +721,7 @@ describe Gitlab::Database::MigrationHelpers do
           allow(model).to receive(:transaction).and_yield
           allow(model).to receive(:column_for).with(:projects, :foo).and_return(column)
           allow(model).to receive(:update_column_in_batches).with(:projects, :foo, 10)
-          allow(model).to receive(:change_column_null).with(:projects, :foo, false)
+          allow(model).to receive(:add_not_null_constraint).with(:projects, :foo)
           allow(model).to receive(:change_column_default).with(:projects, :foo, 10)
 
           expect(model).to receive(:add_column)
@@ -782,7 +810,7 @@ describe Gitlab::Database::MigrationHelpers do
 
           expect(model).to receive(:update_column_in_batches)
 
-          expect(model).to receive(:change_column_null).with(:users, :new, false)
+          expect(model).to receive(:add_not_null_constraint).with(:users, :new)
 
           expect(model).to receive(:copy_indexes).with(:users, :old, :new)
           expect(model).to receive(:copy_foreign_keys).with(:users, :old, :new)
@@ -915,7 +943,7 @@ describe Gitlab::Database::MigrationHelpers do
 
         expect(model).to receive(:update_column_in_batches)
 
-        expect(model).to receive(:change_column_null).with(:users, :old, false)
+        expect(model).to receive(:add_not_null_constraint).with(:users, :old)
 
         expect(model).to receive(:copy_indexes).with(:users, :new, :old)
         expect(model).to receive(:copy_foreign_keys).with(:users, :new, :old)
@@ -2225,6 +2253,7 @@ describe Gitlab::Database::MigrationHelpers do
                        .and_return(false).exactly(1)
 
           expect(model).to receive(:disable_statement_timeout).and_call_original
+          expect(model).to receive(:statement_timeout_disabled?).and_return(false)
           expect(model).to receive(:execute).with(/statement_timeout/)
           expect(model).to receive(:with_lock_retries).and_call_original
           expect(model).to receive(:execute).with(/ADD CONSTRAINT check_name_not_null/)
@@ -2268,6 +2297,7 @@ describe Gitlab::Database::MigrationHelpers do
                        .and_return(false).exactly(1)
 
           expect(model).to receive(:disable_statement_timeout).and_call_original
+          expect(model).to receive(:statement_timeout_disabled?).and_return(false)
           expect(model).to receive(:execute).with(/statement_timeout/)
           expect(model).to receive(:with_lock_retries).and_call_original
           expect(model).to receive(:execute).with(/ADD CONSTRAINT check_name_not_null/)
@@ -2309,6 +2339,7 @@ describe Gitlab::Database::MigrationHelpers do
 
         expect(model).to receive(:check_constraint_exists?).and_return(true)
         expect(model).to receive(:disable_statement_timeout).and_call_original
+        expect(model).to receive(:statement_timeout_disabled?).and_return(false)
         expect(model).to receive(:execute).with(/statement_timeout/)
         expect(model).to receive(:execute).ordered.with(validate_sql)
         expect(model).to receive(:execute).ordered.with(/RESET ALL/)
@@ -2445,6 +2476,137 @@ describe Gitlab::Database::MigrationHelpers do
                      .with(:test_table, constraint_name)
 
         model.check_text_limit_exists?(:test_table, :name, constraint_name: constraint_name)
+      end
+    end
+  end
+
+  describe '#add_not_null_constraint' do
+    context 'when it is called with the default options' do
+      it 'calls add_check_constraint with an infered constraint name and validate: true' do
+        constraint_name = model.check_constraint_name(:test_table,
+                                                      :name,
+                                                      'not_null')
+        check = "name IS NOT NULL"
+
+        expect(model).to receive(:column_is_nullable?).and_return(true)
+        expect(model).to receive(:check_constraint_name).and_call_original
+        expect(model).to receive(:add_check_constraint)
+                     .with(:test_table, check, constraint_name, validate: true)
+
+        model.add_not_null_constraint(:test_table, :name)
+      end
+    end
+
+    context 'when all parameters are provided' do
+      it 'calls add_check_constraint with the correct parameters' do
+        constraint_name = 'check_name_not_null'
+        check = "name IS NOT NULL"
+
+        expect(model).to receive(:column_is_nullable?).and_return(true)
+        expect(model).not_to receive(:check_constraint_name)
+        expect(model).to receive(:add_check_constraint)
+                     .with(:test_table, check, constraint_name, validate: false)
+
+        model.add_not_null_constraint(
+          :test_table,
+          :name,
+          constraint_name: constraint_name,
+          validate: false
+        )
+      end
+    end
+
+    context 'when the column is defined as NOT NULL' do
+      it 'does not add a check constraint' do
+        expect(model).to receive(:column_is_nullable?).and_return(false)
+        expect(model).not_to receive(:check_constraint_name)
+        expect(model).not_to receive(:add_check_constraint)
+
+        model.add_not_null_constraint(:test_table, :name)
+      end
+    end
+  end
+
+  describe '#validate_not_null_constraint' do
+    context 'when constraint_name is not provided' do
+      it 'calls validate_check_constraint with an infered constraint name' do
+        constraint_name = model.check_constraint_name(:test_table,
+                                                      :name,
+                                                      'not_null')
+
+        expect(model).to receive(:check_constraint_name).and_call_original
+        expect(model).to receive(:validate_check_constraint)
+                     .with(:test_table, constraint_name)
+
+        model.validate_not_null_constraint(:test_table, :name)
+      end
+    end
+
+    context 'when constraint_name is provided' do
+      it 'calls validate_check_constraint with the correct parameters' do
+        constraint_name = 'check_name_not_null'
+
+        expect(model).not_to receive(:check_constraint_name)
+        expect(model).to receive(:validate_check_constraint)
+                     .with(:test_table, constraint_name)
+
+        model.validate_not_null_constraint(:test_table, :name, constraint_name: constraint_name)
+      end
+    end
+  end
+
+  describe '#remove_not_null_constraint' do
+    context 'when constraint_name is not provided' do
+      it 'calls remove_check_constraint with an infered constraint name' do
+        constraint_name = model.check_constraint_name(:test_table,
+                                                      :name,
+                                                      'not_null')
+
+        expect(model).to receive(:check_constraint_name).and_call_original
+        expect(model).to receive(:remove_check_constraint)
+                     .with(:test_table, constraint_name)
+
+        model.remove_not_null_constraint(:test_table, :name)
+      end
+    end
+
+    context 'when constraint_name is provided' do
+      it 'calls remove_check_constraint with the correct parameters' do
+        constraint_name = 'check_name_not_null'
+
+        expect(model).not_to receive(:check_constraint_name)
+        expect(model).to receive(:remove_check_constraint)
+                     .with(:test_table, constraint_name)
+
+        model.remove_not_null_constraint(:test_table, :name, constraint_name: constraint_name)
+      end
+    end
+  end
+
+  describe '#check_not_null_constraint_exists?' do
+    context 'when constraint_name is not provided' do
+      it 'calls check_constraint_exists? with an infered constraint name' do
+        constraint_name = model.check_constraint_name(:test_table,
+                                                      :name,
+                                                      'not_null')
+
+        expect(model).to receive(:check_constraint_name).and_call_original
+        expect(model).to receive(:check_constraint_exists?)
+                     .with(:test_table, constraint_name)
+
+        model.check_not_null_constraint_exists?(:test_table, :name)
+      end
+    end
+
+    context 'when constraint_name is provided' do
+      it 'calls check_constraint_exists? with the correct parameters' do
+        constraint_name = 'check_name_not_null'
+
+        expect(model).not_to receive(:check_constraint_name)
+        expect(model).to receive(:check_constraint_exists?)
+                     .with(:test_table, constraint_name)
+
+        model.check_not_null_constraint_exists?(:test_table, :name, constraint_name: constraint_name)
       end
     end
   end

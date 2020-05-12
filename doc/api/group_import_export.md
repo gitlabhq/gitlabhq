@@ -1,6 +1,6 @@
 # Group Import/Export API
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20353) in GitLab 12.8 as an experimental feature. May change in future releases.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20353) in GitLab 12.8.
 
 Group Import/Export allows you to export group structure and import it to a new location.
 When used with [Project Import/Export](project_import_export.md), you can preserve connections with
@@ -14,6 +14,19 @@ Group exports include the following:
 - Group badges
 - Group members
 - Sub-groups. Each sub-group includes all data above
+
+## Version history
+
+GitLab can import bundles that were exported from a different GitLab deployment.
+This ability is limited to two previous GitLab [minor](../policy/maintenance.md#versioning)
+releases, which is similar to our process for [Security Releases](../policy/maintenance.md#security-releases).
+
+For example:
+
+| Current version | Can import bundles exported from |
+|-----------------|----------------------------------|
+| 13.0            | 13.0, 12.10, 12.9                |
+| 13.1            | 13.1, 13.0, 12.10                |
 
 ## Schedule new export
 

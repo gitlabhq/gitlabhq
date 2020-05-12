@@ -141,7 +141,7 @@ class MergeRequestDiff < ApplicationRecord
   after_create :save_git_content, unless: :importing?
   after_create_commit :set_as_latest_diff, unless: :importing?
 
-  after_save :update_external_diff_store, if: -> { !importing? && saved_change_to_external_diff? }
+  after_save :update_external_diff_store
 
   def self.find_by_diff_refs(diff_refs)
     find_by(start_commit_sha: diff_refs.start_sha, head_commit_sha: diff_refs.head_sha, base_commit_sha: diff_refs.base_sha)
@@ -385,34 +385,11 @@ class MergeRequestDiff < ApplicationRecord
     end
   end
 
-  # Carrierwave defines `write_uploader` dynamically on this class, so `super`
-  # does not work. Alias the carrierwave method so we can call it when needed
-  alias_method :carrierwave_write_uploader, :write_uploader
-
-  # The `external_diff`, `external_diff_store`, and `stored_externally`
-  # columns were introduced in GitLab 11.8, but some background migration specs
-  # use factories that rely on current code with an old schema. Without these
-  # `has_attribute?` guards, they fail with a `MissingAttributeError`.
-  #
-  # For more details, see: https://gitlab.com/gitlab-org/gitlab-foss/issues/44990
-
-  def write_uploader(column, identifier)
-    carrierwave_write_uploader(column, identifier) if has_attribute?(column)
-  end
-
   def update_external_diff_store
-    update_column(:external_diff_store, external_diff.object_store) if
-      has_attribute?(:external_diff_store)
-  end
+    return unless saved_change_to_external_diff? || saved_change_to_stored_externally?
 
-  def saved_change_to_external_diff?
-    super if has_attribute?(:external_diff)
+    update_column(:external_diff_store, external_diff.object_store)
   end
-
-  def stored_externally
-    super if has_attribute?(:stored_externally)
-  end
-  alias_method :stored_externally?, :stored_externally
 
   # If enabled, yields the external file containing the diff. Otherwise, yields
   # nil. This method is not thread-safe, but it *is* re-entrant, which allows
@@ -575,7 +552,6 @@ class MergeRequestDiff < ApplicationRecord
   end
 
   def use_external_diff?
-    return false unless has_attribute?(:external_diff)
     return false unless Gitlab.config.external_diffs.enabled
 
     case Gitlab.config.external_diffs.when

@@ -91,7 +91,7 @@ module Gitlab
           metrics[:memory_bytes].set(labels, memory_rss)
           metrics[:process_resident_memory_bytes].set(labels, memory_rss)
 
-          if Feature.enabled?(:collect_memory_uss_pss)
+          if Gitlab::Utils.to_boolean(ENV['enable_memory_uss_pss'])
             memory_uss_pss = System.memory_usage_uss_pss
             metrics[:process_unique_memory_bytes].set(labels, memory_uss_pss[:uss])
             metrics[:process_proportional_memory_bytes].set(labels, memory_uss_pss[:pss])

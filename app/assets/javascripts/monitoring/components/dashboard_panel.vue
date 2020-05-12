@@ -345,6 +345,7 @@ export default {
               ref="copyChartLink"
               v-track-event="generateLinkToChartOptions(clipboardText)"
               :data-clipboard-text="clipboardText"
+              data-qa-selector="generate_chart_link_menu_item"
               @click="showToast(clipboardText)"
             >
               {{ __('Copy link to chart') }}

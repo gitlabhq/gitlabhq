@@ -52,7 +52,7 @@ describe('GroupFolderComponent', () => {
     });
 
     it('should render more children link when groups list has children over MAX_CHILDREN_COUNT limit', () => {
-      const parentGroup = Object.assign({}, mockParentGroupItem);
+      const parentGroup = { ...mockParentGroupItem };
       parentGroup.childrenCount = 21;
 
       const newVm = createComponent(mockGroups, parentGroup);

@@ -69,8 +69,10 @@ describe('Suggest gitlab-ci.yml Popover', () => {
     let trackingSpy;
 
     beforeEach(() => {
+      document.body.dataset.page = 'projects:blob:new';
+      trackingSpy = mockTracking('_category_', undefined, jest.spyOn);
+
       createWrapper(commitTrackLabel);
-      trackingSpy = mockTracking('_category_', wrapper.element, jest.spyOn);
     });
 
     afterEach(() => {
@@ -82,10 +84,6 @@ describe('Suggest gitlab-ci.yml Popover', () => {
       const expectedAction = undefined;
       const expectedLabel = 'suggest_commit_first_project_gitlab_ci_yml';
       const expectedProperty = 'owner';
-
-      document.body.dataset.page = 'projects:blob:new';
-
-      wrapper.vm.trackOnShow();
 
       expect(trackingSpy).toHaveBeenCalledWith(expectedCategory, expectedAction, {
         label: expectedLabel,
@@ -99,6 +97,7 @@ describe('Suggest gitlab-ci.yml Popover', () => {
       const expectedProperty = 'owner';
       const expectedValue = '10';
       const dismissButton = wrapper.find(GlDeprecatedButton);
+      trackingSpy = mockTracking('_category_', wrapper.element, jest.spyOn);
 
       triggerEvent(dismissButton.element);
 

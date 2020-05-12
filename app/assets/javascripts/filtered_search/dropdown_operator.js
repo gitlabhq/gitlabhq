@@ -47,13 +47,17 @@ export default class DropdownOperator extends FilteredSearchDropdown {
         title: '=',
         help: __('is'),
       },
-      {
+    ];
+
+    if (gon.features?.notIssuableQueries) {
+      dropdownData.push({
         tag: 'not-equal',
         type: 'string',
         title: '!=',
         help: __('is not'),
-      },
-    ];
+      });
+    }
+
     this.droplab.changeHookList(this.hookId, this.dropdown, [Filter], this.config);
     this.droplab.setData(this.hookId, dropdownData);
     super.renderContent(forceShowList);

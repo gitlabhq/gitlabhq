@@ -132,6 +132,7 @@ and included in `rules` definitions via [YAML anchors](../ci/yaml/README.md#anch
 
 | `changes:` patterns          | Description                                                              |
 |------------------------------|--------------------------------------------------------------------------|
+| `ci-patterns`                | Only create job for CI config-related changes.                           |
 | `yaml-patterns`              | Only create job for YAML-related changes.                                |
 | `docs-patterns`              | Only create job for docs-related changes.                                |
 | `frontend-dependency-patterns` | Only create job when frontend dependencies are updated (i.e. `package.json`, and `yarn.lock`). changes.                                |
@@ -384,7 +385,7 @@ graph RL;
   subgraph "Needs `gitlab:assets:compile`";
     2_3-1 --> 1-5
   end
-  
+
   subgraph "Needs `build-qa-image` & `build-assets-image`";
     2_4-1["package-and-qa (manual)"] --> 1-2 & 2_3-1;
     click 2_4-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914305&udv=0"

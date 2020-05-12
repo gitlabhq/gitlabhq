@@ -1,0 +1,20 @@
+type File {
+  title: String
+  content: String!
+}
+
+extend type Project {
+  file(path: ID!): File
+}
+
+type AppData {
+  isSupportedContent: Boolean!
+  project: String!
+  returnUrl: String
+  sourcePath: String!
+  username: String!
+}
+
+extend type Query {
+  appData: AppData!
+}

@@ -82,17 +82,19 @@ describe('Test reports summary', () => {
 
   describe('success percentage calculation', () => {
     it.each`
-      name                                     | successCount | totalCount | result
-      ${'displays 0 when there are no tests'}  | ${0}         | ${0}       | ${'0'}
-      ${'displays whole number when possible'} | ${10}        | ${50}      | ${'20'}
-      ${'rounds to 0.01'}                      | ${1}         | ${16604}   | ${'0.01'}
-      ${'correctly rounds to 50'}              | ${8302}      | ${16604}   | ${'50'}
-      ${'rounds down for large close numbers'} | ${16603}     | ${16604}   | ${'99.99'}
-      ${'correctly displays 100'}              | ${16604}     | ${16604}   | ${'100'}
-    `('$name', ({ successCount, totalCount, result }) => {
+      name                                     | successCount | totalCount | skippedCount | result
+      ${'displays 0 when there are no tests'}  | ${0}         | ${0}       | ${0}         | ${'0'}
+      ${'displays whole number when possible'} | ${10}        | ${50}      | ${0}         | ${'20'}
+      ${'excludes skipped tests from total'}   | ${10}        | ${50}      | ${5}         | ${'22.22'}
+      ${'rounds to 0.01'}                      | ${1}         | ${16604}   | ${0}         | ${'0.01'}
+      ${'correctly rounds to 50'}              | ${8302}      | ${16604}   | ${0}         | ${'50'}
+      ${'rounds down for large close numbers'} | ${16603}     | ${16604}   | ${0}         | ${'99.99'}
+      ${'correctly displays 100'}              | ${16604}     | ${16604}   | ${0}         | ${'100'}
+    `('$name', ({ successCount, totalCount, skippedCount, result }) => {
       createComponent({
         report: {
           success_count: successCount,
+          skipped_count: skippedCount,
           total_count: totalCount,
         },
       });

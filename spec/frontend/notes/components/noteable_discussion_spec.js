@@ -138,7 +138,7 @@ describe('noteable_discussion component', () => {
 
   describe('signout widget', () => {
     beforeEach(() => {
-      originalGon = Object.assign({}, window.gon);
+      originalGon = { ...window.gon };
       window.gon = window.gon || {};
     });
 

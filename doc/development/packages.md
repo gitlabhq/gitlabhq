@@ -74,7 +74,7 @@ It is using the top-level group or namespace as the defining portion of the name
 
 To avoid name conflict for instance-level endpoints you will need to define a package naming convention
 that gives a way to identify the project that the package belongs to. This generally involves using the project
-id or full project path in the package name. See
+ID or full project path in the package name. See
 [Conan's naming convention](../user/packages/conan_repository/index.md#package-recipe-naming-convention) as an example.
 
 For group and project-level endpoints, naming can be less constrained and it will be up to the group and project
@@ -196,8 +196,8 @@ information like the file `name`, `side`, `sha1`, etc.
 
 If there is specific data necessary to be stored for only one package system support,
 consider creating a separate metadata model. See `packages_maven_metadata` table
-and `Packages::MavenMetadatum` model as an example for package specific data, and `packages_conan_file_metadata` table
-and `Packages::ConanFileMetadatum` model as an example for package file specific data.
+and `Packages::Maven::Metadatum` model as an example for package specific data, and `packages_conan_file_metadata` table
+and `Packages::Conan::FileMetadatum` model as an example for package file specific data.
 
 If there is package specific behavior for a given package manager, add those methods to the metadata models and
 delegate from the package model.

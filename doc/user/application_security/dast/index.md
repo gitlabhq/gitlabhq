@@ -95,11 +95,11 @@ There are two ways to define the URL to be scanned by DAST:
    persist its domain in an `environment_url.txt` file, and DAST
    automatically parses that file to find its scan target.
    You can see an [example](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/Deploy.gitlab-ci.yml)
-   of this in our Auto DevOps CI YML.
+   of this in our Auto DevOps CI YAML.
 
 If both values are set, the `DAST_WEBSITE` value takes precedence.
 
-The included template creates a `dast` job in your CI/CD pipeline and scan
+The included template creates a `dast` job in your CI/CD pipeline and scans
 your project's source code for possible vulnerabilities.
 
 The results are saved as a
@@ -133,14 +133,14 @@ stages:
 ```
 
 Be aware that if your pipeline is configured to deploy to the same webserver in
-each run, running a pipeline while another is still running, could cause a race condition
+each run, running a pipeline while another is still running could cause a race condition
 where one pipeline overwrites the code from another pipeline. The site to be scanned
 should be excluded from changes for the duration of a DAST scan.
 The only changes to the site should be from the DAST scanner. Be aware that any
 changes that users, scheduled tasks, database changes, code changes, other pipelines, or other scanners make to
 the site during a scan could lead to inaccurate results.
 
-### Authenticated scan
+### Authentication
 
 It's also possible to authenticate the user before performing the DAST checks:
 
@@ -454,6 +454,7 @@ DAST can be [configured](#customizing-the-dast-settings) using environment varia
 | `DAST_API_HOST_OVERRIDE` | no | Used to override domains defined in API specification files. |
 | `DAST_EXCLUDE_RULES` | no | Set to a comma-separated list of Vulnerability Rule IDs to exclude them from scans. Rule IDs are numbers and can be found from the DAST log or on the [ZAP project](https://github.com/zaproxy/zaproxy/blob/master/docs/scanners.md). For example, `HTTP Parameter Override` has a rule ID of `10026`. |
 | `DAST_REQUEST_HEADERS` | no | Set to a comma-separated list of request header names and values. For example, `Cache-control: no-cache,User-Agent: DAST/1.0` |
+| `DAST_ZAP_USE_AJAX_SPIDER` | no | Use the AJAX spider in addition to the traditional spider, useful for crawling sites that require JavaScript. Boolean. `true`, `True`, or `1` are considered as true value, otherwise false. Defaults to `false`. |
 
 ### DAST command-line options
 
@@ -471,7 +472,7 @@ dast:
 ```
 
 You must then overwrite the `script` command to pass in the appropriate argument.
-For example, AJAX spidering can be enabled by using `-j`, as shown in the following configuration:
+For example, debug messages can be enabled by using `-d`, as shown in the following configuration:
 
 ```yaml
 include:
@@ -480,7 +481,7 @@ include:
 dast:
   script:
     - export DAST_WEBSITE=${DAST_WEBSITE:-$(cat environment_url.txt)}
-    - /analyze -j -t $DAST_WEBSITE
+    - /analyze -d -t $DAST_WEBSITE
 ```
 
 ### Custom ZAProxy configuration
@@ -523,14 +524,15 @@ To use DAST in an offline environment, you need:
 
 NOTE: **Note:**
 GitLab Runner has a [default `pull policy` of `always`](https://docs.gitlab.com/runner/executors/docker.html#using-the-always-pull-policy),
-meaning the runner may try to pull remote images even if a local copy is available. Set GitLab
-Runner's [`pull_policy` to `if-not-present`](https://docs.gitlab.com/runner/executors/docker.html#using-the-if-not-present-pull-policy)
-in an offline environment if you prefer using only locally available Docker images.
+meaning the Runner tries to pull Docker images from the GitLab container registry even if a local
+copy is available. GitLab Runner's [`pull_policy` can be set to `if-not-present`](https://docs.gitlab.com/runner/executors/docker.html#using-the-if-not-present-pull-policy)
+in an offline environment if you prefer using only locally available Docker images. However, we
+recommend keeping the pull policy setting to `always` if not in an offline environment, as this
+enables the use of updated scanners in your CI/CD pipelines.
 
 ### Make GitLab DAST analyzer images available inside your Docker registry
 
-For DAST, import the following default DAST analyzer image from `registry.gitlab.com` to your local "offline"
-registry:
+For DAST, import the following default DAST analyzer image from `registry.gitlab.com` to your [local Docker container registry](../../packages/container_registry/index.md):
 
 - `registry.gitlab.com/gitlab-org/security-products/dast:latest`
 
@@ -548,16 +550,18 @@ For details on saving and transporting Docker images as a file, see Docker's doc
 
 ### Set DAST CI job variables to use local DAST analyzers
 
-1. Add the following configuration to your `.gitlab-ci.yml` file. You must replace `image` to refer
-   to the DAST Docker image hosted on your local Docker container registry:
+Add the following configuration to your `.gitlab-ci.yml` file. You must replace `image` to refer to
+the DAST Docker image hosted on your local Docker container registry:
 
-   ```yaml
-   include:
-     - template: DAST.gitlab-ci.yml
+```yaml
+include:
+  - template: DAST.gitlab-ci.yml
+dast:
+  image: registry.example.com/namespace/dast:latest
+```
 
-   dast:
-     image: registry.example.com/namespace/dast:latest
-   ```
+The DAST job should now use local copies of the DAST analyzers to scan your code and generate
+security reports without requiring internet access.
 
 ## Reports
 
@@ -579,9 +583,10 @@ The DAST tool always emits a JSON report file called `gl-dast-report.json` and
 sample reports can be found in the
 [DAST repository](https://gitlab.com/gitlab-org/security-products/dast/-/tree/master/test/end-to-end/expect).
 
-There are two formats of data in the JSON report that are used side by side: the
-proprietary ZAP format which will be eventually deprecated, and a "common" format
-which will be the default in the future.
+There are two formats of data in the JSON report that are used side by side:
+
+- The proprietary ZAP format that will be eventually deprecated.
+- A common format that will be the default in the future.
 
 ### Other formats
 

@@ -425,6 +425,12 @@ describe('URL utility', () => {
 
       expect(urlUtils.queryToObject(searchQuery)).toEqual({ one: '1', two: '2' });
     });
+
+    it('removes undefined values from the search query', () => {
+      const searchQuery = '?one=1&two=2&three';
+
+      expect(urlUtils.queryToObject(searchQuery)).toEqual({ one: '1', two: '2' });
+    });
   });
 
   describe('objectToQuery', () => {

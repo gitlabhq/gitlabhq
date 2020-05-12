@@ -14,10 +14,10 @@ describe('Diffs Module Getters', () => {
 
   beforeEach(() => {
     localState = state();
-    discussionMock = Object.assign({}, discussion);
+    discussionMock = { ...discussion };
     discussionMock.diff_file.file_hash = diffFileMock.fileHash;
 
-    discussionMock1 = Object.assign({}, discussion);
+    discussionMock1 = { ...discussion };
     discussionMock1.diff_file.file_hash = diffFileMock.fileHash;
   });
 

@@ -1,15 +1,15 @@
-- if @domain.errors.any?
+- if domain_presenter.errors.any?
   .alert.alert-danger
-    - @domain.errors.full_messages.each do |msg|
+    - domain_presenter.errors.full_messages.each do |msg|
       = msg
 
 .form-group.border-section
   .row
-    - if @domain.persisted?
+    - if domain_presenter.persisted?
       .col-sm-2
         = _("Domain")
       .col-sm-10
-        = external_link(@domain.url, @domain.url)
+        = external_link(domain_presenter.url, domain_presenter.url)
     - else
       .col-sm-2
         = f.label :domain, _("Domain")
@@ -17,7 +17,7 @@
         .input-group
           = f.text_field :domain, required: true, autocomplete: "off", class: "form-control"
 
-- if @domain.persisted?
+- if domain_presenter.persisted?
   = render 'dns'
 
 - if Gitlab.config.pages.external_https

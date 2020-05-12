@@ -8,6 +8,7 @@ describe Gitlab::Metrics::Samplers::RubySampler do
 
   before do
     allow(Gitlab::Metrics::NullMetric).to receive(:instance).and_return(null_metric)
+    stub_env('enable_memory_uss_pss', "1")
   end
 
   describe '#initialize' do

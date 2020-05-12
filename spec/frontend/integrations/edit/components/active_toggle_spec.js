@@ -9,12 +9,11 @@ describe('ActiveToggle', () => {
 
   const defaultProps = {
     initialActivated: true,
-    disabled: false,
   };
 
   const createComponent = props => {
     wrapper = mount(ActiveToggle, {
-      propsData: Object.assign({}, defaultProps, props),
+      propsData: { ...defaultProps, ...props },
     });
   };
 

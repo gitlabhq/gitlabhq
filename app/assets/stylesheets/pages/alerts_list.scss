@@ -53,4 +53,35 @@
       }
     }
   }
+
+  @include media-breakpoint-down(sm) {
+    .alert-management-table {
+      .table-col {
+        min-height: 68px;
+
+        &:last-child {
+          background-color: $gray-normal;
+
+          &::before {
+            content: none !important;
+          }
+
+          div {
+            width: 100% !important;
+            padding: 0 !important;
+          }
+        }
+      }
+    }
+  }
+
+  .gl-tab-nav-item {
+    color: $gl-gray-600;
+
+    > .gl-tab-counter-badge {
+      color: inherit;
+      @include gl-font-sm;
+      background-color: $white-normal;
+    }
+  }
 }

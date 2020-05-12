@@ -1,3 +1,9 @@
+---
+stage: Monitor
+group: APM
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Audit Events **(STARTER)**
 
 GitLab offers a way to view the changes made within the GitLab server for owners and administrators on a [paid plan](https://about.gitlab.com/pricing/).

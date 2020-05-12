@@ -43,7 +43,10 @@ module ApplicationSettingImplementation
         authorized_keys_enabled: true, # TODO default to false if the instance is configured to use AuthorizedKeysCommand
         commit_email_hostname: default_commit_email_hostname,
         container_expiration_policies_enable_historic_entries: false,
+        container_registry_features: [],
         container_registry_token_expire_delay: 5,
+        container_registry_vendor: '',
+        container_registry_version: '',
         default_artifacts_expire_in: '30 days',
         default_branch_protection: Settings.gitlab['default_branch_protection'],
         default_ci_config_path: nil,

@@ -3,13 +3,13 @@
 require 'spec_helper'
 
 describe GitlabSchema.types['Issue'] do
-  it { expect(described_class).to expose_permissions_using(Types::PermissionTypes::Issue) }
+  specify { expect(described_class).to expose_permissions_using(Types::PermissionTypes::Issue) }
 
-  it { expect(described_class.graphql_name).to eq('Issue') }
+  specify { expect(described_class.graphql_name).to eq('Issue') }
 
-  it { expect(described_class).to require_graphql_authorizations(:read_issue) }
+  specify { expect(described_class).to require_graphql_authorizations(:read_issue) }
 
-  it { expect(described_class.interfaces).to include(Types::Notes::NoteableType) }
+  specify { expect(described_class.interfaces).to include(Types::Notes::NoteableType) }
 
   it 'has specific fields' do
     fields = %i[iid title description state reference author assignees participants labels milestone due_date

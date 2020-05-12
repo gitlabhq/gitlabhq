@@ -98,17 +98,17 @@ module Gitlab
       # because it is blocked, internal, ghost, ... we cannot commit
       # files because these users are not allowed to, but we need to
       # migrate their snippets as well.
-      # In this scenario an admin user will be the one that will commit the files.
+      # In this scenario the migration bot user will be the one that will commit the files.
       def commit_author(snippet)
         if Gitlab::UserAccessSnippet.new(snippet.author, snippet: snippet).can_do_action?(:update_snippet)
           snippet.author
         else
-          admin_user
+          migration_bot_user
         end
       end
 
-      def admin_user
-        @admin_user ||= User.admins.active.first
+      def migration_bot_user
+        @migration_bot_user ||= User.migration_bot
       end
 
       # We sometimes receive invalid path errors from Gitaly if the Snippet filename
@@ -117,7 +117,7 @@ module Gitlab
       # the migration can succeed, to achieve that, we'll identify in migration retries
       # that the path is invalid
       def set_file_path_error(error)
-        @invalid_path_error = error.message.downcase.start_with?('invalid path', 'path cannot include directory traversal')
+        @invalid_path_error = error.is_a?(SnippetRepository::InvalidPathError)
       end
     end
   end

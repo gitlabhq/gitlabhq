@@ -18,9 +18,7 @@ describe('ProviderRepoTableRow', () => {
   };
 
   function initStore() {
-    const stubbedActions = Object.assign({}, actions, {
-      fetchImport,
-    });
+    const stubbedActions = { ...actions, fetchImport };
 
     const store = new Vuex.Store({
       state: state(),

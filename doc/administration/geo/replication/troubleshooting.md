@@ -544,6 +544,27 @@ or `gitlab-ctl promote-to-primary-node`, either:
   bug](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/22021) was
   fixed.
 
+### Message: ``NoMethodError: undefined method `secondary?' for nil:NilClass``
+
+When [promoting a **secondary** node](../disaster_recovery/index.md#step-3-promoting-a-secondary-node),
+you might encounter the following error:
+
+```plaintext
+sudo gitlab-rake geo:set_secondary_as_primary
+
+rake aborted!
+NoMethodError: undefined method `secondary?' for nil:NilClass
+/opt/gitlab/embedded/service/gitlab-rails/ee/lib/tasks/geo.rake:232:in `block (3 levels) in <top (required)>'
+/opt/gitlab/embedded/service/gitlab-rails/ee/lib/tasks/geo.rake:221:in `block (2 levels) in <top (required)>'
+/opt/gitlab/embedded/bin/bundle:23:in `load'
+/opt/gitlab/embedded/bin/bundle:23:in `<main>'
+Tasks: TOP => geo:set_secondary_as_primary
+(See full trace by running task with --trace)
+```
+
+This command is intended to be executed on a secondary node only, and this error
+is displayed if you attempt to run this command on a primary node.
+
 ### Message: `sudo: gitlab-pg-ctl: command not found`
 
 When

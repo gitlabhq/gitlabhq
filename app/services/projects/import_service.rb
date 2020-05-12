@@ -3,6 +3,7 @@
 module Projects
   class ImportService < BaseService
     Error = Class.new(StandardError)
+    PermissionError = Class.new(StandardError)
 
     # Returns true if this importer is supposed to perform its work in the
     # background.

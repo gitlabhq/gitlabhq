@@ -2,7 +2,7 @@
 
 module QA
   context 'Monitor' do
-    describe 'Dashboards', :orchestrated, :kubernetes, quarantine: { type: :new } do
+    describe 'Dashboards', :orchestrated, :kubernetes, quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/29262', type: :waiting_on } do
       before(:all) do
         @cluster = Service::KubernetesCluster.new.create!
         Flow::Login.sign_in

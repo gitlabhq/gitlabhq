@@ -153,7 +153,7 @@ describe('MRWidgetHeader', () => {
 
       beforeEach(() => {
         vm = mountComponent(Component, {
-          mr: Object.assign({}, mrDefaultOptions),
+          mr: { ...mrDefaultOptions },
         });
       });
 
@@ -176,7 +176,7 @@ describe('MRWidgetHeader', () => {
       });
 
       it('renders web ide button in disabled state with no href', () => {
-        const mr = Object.assign({}, mrDefaultOptions, { canPushToSourceBranch: false });
+        const mr = { ...mrDefaultOptions, canPushToSourceBranch: false };
         vm = mountComponent(Component, { mr });
 
         const link = vm.$el.querySelector('.js-web-ide');

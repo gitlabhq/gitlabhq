@@ -10,6 +10,7 @@ describe Gitlab::ImportExport::Project::ExportTask do
   let(:file_path) { 'spec/fixtures/gitlab/import_export/test_project_export.tar.gz' }
   let(:project) { create(:project, creator: user, namespace: user.namespace) }
   let(:project_name) { project.name }
+  let(:rake_task) { described_class.new(task_params) }
 
   let(:task_params) do
     {
@@ -21,7 +22,7 @@ describe Gitlab::ImportExport::Project::ExportTask do
     }
   end
 
-  subject { described_class.new(task_params).export }
+  subject { rake_task.export }
 
   context 'when project is found' do
     let(:project) { create(:project, creator: user, namespace: user.namespace) }
@@ -29,8 +30,12 @@ describe Gitlab::ImportExport::Project::ExportTask do
     around do |example|
       example.run
     ensure
-      File.delete(file_path)
+      File.delete(file_path) if File.exist?(file_path)
     end
+
+    include_context 'rake task object storage shared context'
+
+    it_behaves_like 'rake task with disabled object_storage', ::Projects::ImportExport::ExportService, :success
 
     it 'performs project export successfully' do
       expect { subject }.to output(/Done!/).to_stdout
@@ -39,8 +44,6 @@ describe Gitlab::ImportExport::Project::ExportTask do
 
       expect(File).to exist(file_path)
     end
-
-    it_behaves_like 'measurable'
   end
 
   context 'when project is not found' do
@@ -63,6 +66,34 @@ describe Gitlab::ImportExport::Project::ExportTask do
     end
 
     it 'returns false' do
+      expect(subject).to eq(false)
+    end
+  end
+
+  context 'when after export strategy fails' do
+    before do
+      allow_next_instance_of(Gitlab::ImportExport::AfterExportStrategies::MoveFileStrategy) do |after_export_strategy|
+        allow(after_export_strategy).to receive(:strategy_execute).and_raise(Gitlab::ImportExport::AfterExportStrategies::BaseAfterExportStrategy::StrategyError)
+      end
+    end
+
+    it 'error is logged' do
+      expect(rake_task).to receive(:error).and_call_original
+
+      expect(subject).to eq(false)
+    end
+  end
+
+  context 'when saving services fail' do
+    before do
+      allow_next_instance_of(::Projects::ImportExport::ExportService) do |service|
+        allow(service).to receive(:execute).and_raise(Gitlab::ImportExport::Error)
+      end
+    end
+
+    it 'error is logged' do
+      expect(rake_task).to receive(:error).and_call_original
+
       expect(subject).to eq(false)
     end
   end

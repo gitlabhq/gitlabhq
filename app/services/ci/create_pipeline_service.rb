@@ -102,21 +102,12 @@ module Ci
 
     # rubocop: disable CodeReuse/ActiveRecord
     def auto_cancelable_pipelines
-      # TODO: Introduced by https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/23464
-      if Feature.enabled?(:ci_support_interruptible_pipelines, project, default_enabled: true)
-        project.ci_pipelines
-          .where(ref: pipeline.ref)
-          .where.not(id: pipeline.same_family_pipeline_ids)
-          .where.not(sha: project.commit(pipeline.ref).try(:id))
-          .alive_or_scheduled
-          .with_only_interruptible_builds
-      else
-        project.ci_pipelines
-          .where(ref: pipeline.ref)
-          .where.not(id: pipeline.same_family_pipeline_ids)
-          .where.not(sha: project.commit(pipeline.ref).try(:id))
-          .created_or_pending
-      end
+      project.ci_pipelines
+        .where(ref: pipeline.ref)
+        .where.not(id: pipeline.same_family_pipeline_ids)
+        .where.not(sha: project.commit(pipeline.ref).try(:id))
+        .alive_or_scheduled
+        .with_only_interruptible_builds
     end
     # rubocop: enable CodeReuse/ActiveRecord
 

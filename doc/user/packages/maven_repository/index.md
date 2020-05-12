@@ -673,7 +673,7 @@ The example below shows how to create a new package each time the `master` branc
 is updated:
 
 1. Create a `ci_settings.xml` file that will serve as Maven's `settings.xml` file.
-   Add the server section with the same id you defined in your `pom.xml` file.
+   Add the server section with the same ID you defined in your `pom.xml` file.
    For example, in our case it's `gitlab-maven`:
 
    ```xml

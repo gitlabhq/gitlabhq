@@ -39,6 +39,8 @@
       = s_("TagsPage|Can't find HEAD commit for this tag")
 
   .nav-controls
+    - if @tag.has_signature?
+      = render partial: 'projects/commit/signature', object: @tag.signature
     - if can?(current_user, :admin_tag, @project)
       = link_to edit_project_tag_release_path(@project, @tag.name), class: 'btn btn-edit controls-item has-tooltip', title: s_('TagsPage|Edit release notes') do
         = icon("pencil")

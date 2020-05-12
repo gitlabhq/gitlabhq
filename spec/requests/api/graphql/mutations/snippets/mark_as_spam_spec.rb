@@ -25,7 +25,7 @@ describe 'Mark snippet as spam', :do_not_mock_admin_mode do
   end
 
   shared_examples 'does not mark the snippet as spam' do
-    it do
+    specify do
       expect do
         post_graphql_mutation(mutation, current_user: current_user)
       end.not_to change { snippet.reload.user_agent_detail.submitted }

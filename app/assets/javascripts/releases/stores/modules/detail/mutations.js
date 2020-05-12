@@ -28,6 +28,10 @@ export default {
     state.release.description = notes;
   },
 
+  [types.UPDATE_RELEASE_MILESTONES](state, milestones) {
+    state.release.milestones = milestones;
+  },
+
   [types.REQUEST_UPDATE_RELEASE](state) {
     state.isUpdatingRelease = true;
   },

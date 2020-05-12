@@ -12,7 +12,8 @@ module AlertManagement
       return AlertManagement::Alert.none unless authorized?
 
       collection = project.alert_management_alerts
-      by_iid(collection)
+      collection = by_iid(collection)
+      sort(collection)
     end
 
     private
@@ -25,8 +26,12 @@ module AlertManagement
       collection.for_iid(params[:iid])
     end
 
+    def sort(collection)
+      params[:sort] ? collection.sort_by_attribute(params[:sort]) : collection
+    end
+
     def authorized?
-      Ability.allowed?(current_user, :read_alert_management_alerts, project)
+      Ability.allowed?(current_user, :read_alert_management_alert, project)
     end
   end
 end

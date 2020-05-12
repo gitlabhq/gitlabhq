@@ -1,0 +1,455 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Design management dropzone component when dragging renders correct template when drag event contains files 1`] = `
+<div
+  class="w-100 position-relative"
+>
+  <button
+    class="card design-dropzone-card design-dropzone-border w-100 h-100 d-flex-center p-3"
+  >
+    <div
+      class="d-flex-center flex-column text-center"
+    >
+      <gl-icon-stub
+        class="mb-4"
+        name="doc-new"
+        size="48"
+      />
+       
+      <p>
+        <gl-sprintf-stub
+          message="%{lineOneStart}Drag and drop to upload your designs%{lineOneEnd} or %{linkStart}click to upload%{linkEnd}."
+        />
+      </p>
+    </div>
+  </button>
+   
+  <input
+    accept="image/*"
+    class="hide"
+    multiple="multiple"
+    name="design_file"
+    type="file"
+  />
+   
+  <transition-stub
+    name="design-dropzone-fade"
+  >
+    <div
+      class="card design-dropzone-border design-dropzone-overlay w-100 h-100 position-absolute d-flex-center p-3 bg-white"
+      style=""
+    >
+      <div
+        class="mw-50 text-center"
+        style="display: none;"
+      >
+        <h3>
+          Oh no!
+        </h3>
+         
+        <span>
+          You are trying to upload something other than an image. Please upload a .png, .jpg, .jpeg, .gif, .bmp, .tiff or .ico.
+        </span>
+      </div>
+       
+      <div
+        class="mw-50 text-center"
+        style=""
+      >
+        <h3>
+          Incoming!
+        </h3>
+         
+        <span>
+          Drop your designs to start your upload.
+        </span>
+      </div>
+    </div>
+  </transition-stub>
+</div>
+`;
+
+exports[`Design management dropzone component when dragging renders correct template when drag event contains files and text 1`] = `
+<div
+  class="w-100 position-relative"
+>
+  <button
+    class="card design-dropzone-card design-dropzone-border w-100 h-100 d-flex-center p-3"
+  >
+    <div
+      class="d-flex-center flex-column text-center"
+    >
+      <gl-icon-stub
+        class="mb-4"
+        name="doc-new"
+        size="48"
+      />
+       
+      <p>
+        <gl-sprintf-stub
+          message="%{lineOneStart}Drag and drop to upload your designs%{lineOneEnd} or %{linkStart}click to upload%{linkEnd}."
+        />
+      </p>
+    </div>
+  </button>
+   
+  <input
+    accept="image/*"
+    class="hide"
+    multiple="multiple"
+    name="design_file"
+    type="file"
+  />
+   
+  <transition-stub
+    name="design-dropzone-fade"
+  >
+    <div
+      class="card design-dropzone-border design-dropzone-overlay w-100 h-100 position-absolute d-flex-center p-3 bg-white"
+      style=""
+    >
+      <div
+        class="mw-50 text-center"
+        style="display: none;"
+      >
+        <h3>
+          Oh no!
+        </h3>
+         
+        <span>
+          You are trying to upload something other than an image. Please upload a .png, .jpg, .jpeg, .gif, .bmp, .tiff or .ico.
+        </span>
+      </div>
+       
+      <div
+        class="mw-50 text-center"
+        style=""
+      >
+        <h3>
+          Incoming!
+        </h3>
+         
+        <span>
+          Drop your designs to start your upload.
+        </span>
+      </div>
+    </div>
+  </transition-stub>
+</div>
+`;
+
+exports[`Design management dropzone component when dragging renders correct template when drag event contains text 1`] = `
+<div
+  class="w-100 position-relative"
+>
+  <button
+    class="card design-dropzone-card design-dropzone-border w-100 h-100 d-flex-center p-3"
+  >
+    <div
+      class="d-flex-center flex-column text-center"
+    >
+      <gl-icon-stub
+        class="mb-4"
+        name="doc-new"
+        size="48"
+      />
+       
+      <p>
+        <gl-sprintf-stub
+          message="%{lineOneStart}Drag and drop to upload your designs%{lineOneEnd} or %{linkStart}click to upload%{linkEnd}."
+        />
+      </p>
+    </div>
+  </button>
+   
+  <input
+    accept="image/*"
+    class="hide"
+    multiple="multiple"
+    name="design_file"
+    type="file"
+  />
+   
+  <transition-stub
+    name="design-dropzone-fade"
+  >
+    <div
+      class="card design-dropzone-border design-dropzone-overlay w-100 h-100 position-absolute d-flex-center p-3 bg-white"
+      style=""
+    >
+      <div
+        class="mw-50 text-center"
+      >
+        <h3>
+          Oh no!
+        </h3>
+         
+        <span>
+          You are trying to upload something other than an image. Please upload a .png, .jpg, .jpeg, .gif, .bmp, .tiff or .ico.
+        </span>
+      </div>
+       
+      <div
+        class="mw-50 text-center"
+        style="display: none;"
+      >
+        <h3>
+          Incoming!
+        </h3>
+         
+        <span>
+          Drop your designs to start your upload.
+        </span>
+      </div>
+    </div>
+  </transition-stub>
+</div>
+`;
+
+exports[`Design management dropzone component when dragging renders correct template when drag event is empty 1`] = `
+<div
+  class="w-100 position-relative"
+>
+  <button
+    class="card design-dropzone-card design-dropzone-border w-100 h-100 d-flex-center p-3"
+  >
+    <div
+      class="d-flex-center flex-column text-center"
+    >
+      <gl-icon-stub
+        class="mb-4"
+        name="doc-new"
+        size="48"
+      />
+       
+      <p>
+        <gl-sprintf-stub
+          message="%{lineOneStart}Drag and drop to upload your designs%{lineOneEnd} or %{linkStart}click to upload%{linkEnd}."
+        />
+      </p>
+    </div>
+  </button>
+   
+  <input
+    accept="image/*"
+    class="hide"
+    multiple="multiple"
+    name="design_file"
+    type="file"
+  />
+   
+  <transition-stub
+    name="design-dropzone-fade"
+  >
+    <div
+      class="card design-dropzone-border design-dropzone-overlay w-100 h-100 position-absolute d-flex-center p-3 bg-white"
+      style=""
+    >
+      <div
+        class="mw-50 text-center"
+      >
+        <h3>
+          Oh no!
+        </h3>
+         
+        <span>
+          You are trying to upload something other than an image. Please upload a .png, .jpg, .jpeg, .gif, .bmp, .tiff or .ico.
+        </span>
+      </div>
+       
+      <div
+        class="mw-50 text-center"
+        style="display: none;"
+      >
+        <h3>
+          Incoming!
+        </h3>
+         
+        <span>
+          Drop your designs to start your upload.
+        </span>
+      </div>
+    </div>
+  </transition-stub>
+</div>
+`;
+
+exports[`Design management dropzone component when dragging renders correct template when dragging stops 1`] = `
+<div
+  class="w-100 position-relative"
+>
+  <button
+    class="card design-dropzone-card design-dropzone-border w-100 h-100 d-flex-center p-3"
+  >
+    <div
+      class="d-flex-center flex-column text-center"
+    >
+      <gl-icon-stub
+        class="mb-4"
+        name="doc-new"
+        size="48"
+      />
+       
+      <p>
+        <gl-sprintf-stub
+          message="%{lineOneStart}Drag and drop to upload your designs%{lineOneEnd} or %{linkStart}click to upload%{linkEnd}."
+        />
+      </p>
+    </div>
+  </button>
+   
+  <input
+    accept="image/*"
+    class="hide"
+    multiple="multiple"
+    name="design_file"
+    type="file"
+  />
+   
+  <transition-stub
+    name="design-dropzone-fade"
+  >
+    <div
+      class="card design-dropzone-border design-dropzone-overlay w-100 h-100 position-absolute d-flex-center p-3 bg-white"
+      style="display: none;"
+    >
+      <div
+        class="mw-50 text-center"
+      >
+        <h3>
+          Oh no!
+        </h3>
+         
+        <span>
+          You are trying to upload something other than an image. Please upload a .png, .jpg, .jpeg, .gif, .bmp, .tiff or .ico.
+        </span>
+      </div>
+       
+      <div
+        class="mw-50 text-center"
+        style="display: none;"
+      >
+        <h3>
+          Incoming!
+        </h3>
+         
+        <span>
+          Drop your designs to start your upload.
+        </span>
+      </div>
+    </div>
+  </transition-stub>
+</div>
+`;
+
+exports[`Design management dropzone component when no slot provided renders default dropzone card 1`] = `
+<div
+  class="w-100 position-relative"
+>
+  <button
+    class="card design-dropzone-card design-dropzone-border w-100 h-100 d-flex-center p-3"
+  >
+    <div
+      class="d-flex-center flex-column text-center"
+    >
+      <gl-icon-stub
+        class="mb-4"
+        name="doc-new"
+        size="48"
+      />
+       
+      <p>
+        <gl-sprintf-stub
+          message="%{lineOneStart}Drag and drop to upload your designs%{lineOneEnd} or %{linkStart}click to upload%{linkEnd}."
+        />
+      </p>
+    </div>
+  </button>
+   
+  <input
+    accept="image/*"
+    class="hide"
+    multiple="multiple"
+    name="design_file"
+    type="file"
+  />
+   
+  <transition-stub
+    name="design-dropzone-fade"
+  >
+    <div
+      class="card design-dropzone-border design-dropzone-overlay w-100 h-100 position-absolute d-flex-center p-3 bg-white"
+      style="display: none;"
+    >
+      <div
+        class="mw-50 text-center"
+      >
+        <h3>
+          Oh no!
+        </h3>
+         
+        <span>
+          You are trying to upload something other than an image. Please upload a .png, .jpg, .jpeg, .gif, .bmp, .tiff or .ico.
+        </span>
+      </div>
+       
+      <div
+        class="mw-50 text-center"
+        style="display: none;"
+      >
+        <h3>
+          Incoming!
+        </h3>
+         
+        <span>
+          Drop your designs to start your upload.
+        </span>
+      </div>
+    </div>
+  </transition-stub>
+</div>
+`;
+
+exports[`Design management dropzone component when slot provided renders dropzone with slot content 1`] = `
+<div
+  class="w-100 position-relative"
+>
+  <div>
+    dropzone slot
+  </div>
+   
+  <transition-stub
+    name="design-dropzone-fade"
+  >
+    <div
+      class="card design-dropzone-border design-dropzone-overlay w-100 h-100 position-absolute d-flex-center p-3 bg-white"
+      style="display: none;"
+    >
+      <div
+        class="mw-50 text-center"
+      >
+        <h3>
+          Oh no!
+        </h3>
+         
+        <span>
+          You are trying to upload something other than an image. Please upload a .png, .jpg, .jpeg, .gif, .bmp, .tiff or .ico.
+        </span>
+      </div>
+       
+      <div
+        class="mw-50 text-center"
+        style="display: none;"
+      >
+        <h3>
+          Incoming!
+        </h3>
+         
+        <span>
+          Drop your designs to start your upload.
+        </span>
+      </div>
+    </div>
+  </transition-stub>
+</div>
+`;

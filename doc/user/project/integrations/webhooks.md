@@ -1294,7 +1294,7 @@ X-Gitlab-Event: Job Hook
 }
 ```
 
-Note that `commit.id` is the id of the pipeline, not the id of the commit.
+Note that `commit.id` is the ID of the pipeline, not the ID of the commit.
 
 ## Image URL rewriting
 

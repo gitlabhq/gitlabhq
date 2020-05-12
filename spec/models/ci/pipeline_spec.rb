@@ -53,6 +53,29 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
+  describe '#set_status' do
+    where(:from_status, :to_status) do
+      from_status_names = described_class.state_machines[:status].states.map(&:name)
+      to_status_names = from_status_names - [:created] # we never want to transition into created
+
+      from_status_names.product(to_status_names)
+    end
+
+    with_them do
+      it do
+        pipeline.status = from_status.to_s
+
+        if from_status != to_status
+          expect(pipeline.set_status(to_status.to_s))
+            .to eq(true)
+        else
+          expect(pipeline.set_status(to_status.to_s))
+            .to eq(false), "loopback transitions are not allowed"
+        end
+      end
+    end
+  end
+
   describe '.processables' do
     before do
       create(:ci_build, name: 'build', pipeline: pipeline)
@@ -358,6 +381,16 @@ describe Ci::Pipeline, :mailer do
       subject { described_class.with_reports(Ci::JobArtifact.coverage_reports) }
 
       let!(:pipeline_with_report) { create(:ci_pipeline, :with_coverage_reports) }
+
+      it 'selects the pipeline' do
+        is_expected.to eq([pipeline_with_report])
+      end
+    end
+
+    context 'when pipeline has an accessibility report' do
+      subject { described_class.with_reports(Ci::JobArtifact.accessibility_reports) }
+
+      let(:pipeline_with_report) { create(:ci_pipeline, :with_accessibility_reports) }
 
       it 'selects the pipeline' do
         is_expected.to eq([pipeline_with_report])
@@ -707,6 +740,28 @@ describe Ci::Pipeline, :mailer do
             'CI_EXTERNAL_PULL_REQUEST_SOURCE_BRANCH_NAME' => pull_request.source_branch,
             'CI_EXTERNAL_PULL_REQUEST_TARGET_BRANCH_NAME' => pull_request.target_branch
           )
+      end
+    end
+
+    describe 'variable CI_KUBERNETES_ACTIVE' do
+      context 'when pipeline.has_kubernetes_active? is true' do
+        before do
+          allow(pipeline).to receive(:has_kubernetes_active?).and_return(true)
+        end
+
+        it "is incldued with value 'true'" do
+          expect(subject.to_hash).to include('CI_KUBERNETES_ACTIVE' => 'true')
+        end
+      end
+
+      context 'when pipeline.has_kubernetes_active? is false' do
+        before do
+          allow(pipeline).to receive(:has_kubernetes_active?).and_return(false)
+        end
+
+        it 'is not included' do
+          expect(subject.to_hash).not_to have_key('CI_KUBERNETES_ACTIVE')
+        end
       end
     end
   end
@@ -2795,6 +2850,42 @@ describe Ci::Pipeline, :mailer do
       it 'returns empty test report count' do
         expect(subject.total_count).to eq(0)
         expect(subject.total_count).to eq(pipeline.test_reports_count)
+      end
+    end
+  end
+
+  describe '#accessibility_reports' do
+    subject { pipeline.accessibility_reports }
+
+    context 'when pipeline has multiple builds with accessibility reports' do
+      let(:build_rspec) { create(:ci_build, :success, name: 'rspec', pipeline: pipeline, project: project) }
+      let(:build_golang) { create(:ci_build, :success, name: 'golang', pipeline: pipeline, project: project) }
+
+      before do
+        create(:ci_job_artifact, :accessibility, job: build_rspec, project: project)
+        create(:ci_job_artifact, :accessibility_without_errors, job: build_golang, project: project)
+      end
+
+      it 'returns accessibility report with collected data' do
+        expect(subject.urls.keys).to match_array([
+          "https://pa11y.org/",
+          "https://about.gitlab.com/"
+        ])
+      end
+
+      context 'when builds are retried' do
+        let(:build_rspec) { create(:ci_build, :retried, :success, name: 'rspec', pipeline: pipeline, project: project) }
+        let(:build_golang) { create(:ci_build, :retried, :success, name: 'golang', pipeline: pipeline, project: project) }
+
+        it 'returns empty urls for accessibility reports' do
+          expect(subject.urls).to be_empty
+        end
+      end
+    end
+
+    context 'when pipeline does not have any builds with accessibility reports' do
+      it 'returns empty urls for accessibility reports' do
+        expect(subject.urls).to be_empty
       end
     end
   end

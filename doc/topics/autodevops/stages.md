@@ -241,6 +241,8 @@ You can disable DAST:
 - On all branches by setting the `DAST_DISABLED` environment variable to `"true"`.
 - Only on the default branch by setting the `DAST_DISABLED_FOR_DEFAULT_BRANCH`
   environment variable to `"true"`.
+- Only on feature branches by setting `REVIEW_DISABLED` environment variable to
+  `"true"`. This also disables the Review App.
 
 ## Auto Browser Performance Testing **(PREMIUM)**
 

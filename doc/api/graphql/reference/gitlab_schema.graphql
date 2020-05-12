@@ -249,6 +249,101 @@ type AlertManagementAlertEdge {
 }
 
 """
+Values for sorting alerts
+"""
+enum AlertManagementAlertSort {
+  """
+  Created time by ascending order
+  """
+  CREATED_TIME_ASC
+
+  """
+  Created time by ascending order
+  """
+  CREATED_TIME_DESC
+
+  """
+  End time by ascending order
+  """
+  END_TIME_ASC
+
+  """
+  End time by descending order
+  """
+  END_TIME_DESC
+
+  """
+  Events count by ascending order
+  """
+  EVENTS_COUNT_ASC
+
+  """
+  Events count by descending order
+  """
+  EVENTS_COUNT_DESC
+
+  """
+  Severity by ascending order
+  """
+  SEVERITY_ASC
+
+  """
+  Severity by descending order
+  """
+  SEVERITY_DESC
+
+  """
+  Start time by ascending order
+  """
+  START_TIME_ASC
+
+  """
+  Start time by descending order
+  """
+  START_TIME_DESC
+
+  """
+  Status by ascending order
+  """
+  STATUS_ASC
+
+  """
+  Status by descending order
+  """
+  STATUS_DESC
+
+  """
+  Created time by ascending order
+  """
+  UPDATED_TIME_ASC
+
+  """
+  Created time by ascending order
+  """
+  UPDATED_TIME_DESC
+
+  """
+  Created at ascending order
+  """
+  created_asc
+
+  """
+  Created at descending order
+  """
+  created_desc
+
+  """
+  Updated at ascending order
+  """
+  updated_asc
+
+  """
+  Updated at descending order
+  """
+  updated_desc
+}
+
+"""
 Alert severity values
 """
 enum AlertManagementSeverity {
@@ -4062,6 +4157,11 @@ type Group {
     first: Int
 
     """
+    Returns only the projects which have vulnerabilities
+    """
+    hasVulnerabilities: Boolean = false
+
+    """
     Include also subgroup projects
     """
     includeSubgroups: Boolean = false
@@ -4222,6 +4322,33 @@ enum HealthStatus {
   atRisk
   needsAttention
   onTrack
+}
+
+type InstanceSecurityDashboard {
+  """
+  Projects selected in Instance Security Dashboard
+  """
+  projects(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): ProjectConnection!
 }
 
 """
@@ -6094,6 +6221,7 @@ type Mutation {
   mergeRequestSetSubscription(input: MergeRequestSetSubscriptionInput!): MergeRequestSetSubscriptionPayload
   mergeRequestSetWip(input: MergeRequestSetWipInput!): MergeRequestSetWipPayload
   removeAwardEmoji(input: RemoveAwardEmojiInput!): RemoveAwardEmojiPayload
+  removeProjectFromSecurityDashboard(input: RemoveProjectFromSecurityDashboardInput!): RemoveProjectFromSecurityDashboardPayload
   todoMarkDone(input: TodoMarkDoneInput!): TodoMarkDonePayload
   todoRestore(input: TodoRestoreInput!): TodoRestorePayload
   todoRestoreMany(input: TodoRestoreManyInput!): TodoRestoreManyPayload
@@ -6198,6 +6326,11 @@ type Namespace {
     Returns the first _n_ elements from the list.
     """
     first: Int
+
+    """
+    Returns only the projects which have vulnerabilities
+    """
+    hasVulnerabilities: Boolean = false
 
     """
     Include also subgroup projects
@@ -6705,6 +6838,11 @@ type Project {
     IID of the alert. For example, "1"
     """
     iid: String
+
+    """
+    Sort alerts by this criteria
+    """
+    sort: AlertManagementAlertSort
   ): AlertManagementAlert
 
   """
@@ -6735,6 +6873,11 @@ type Project {
     Returns the last _n_ elements from the list.
     """
     last: Int
+
+    """
+    Sort alerts by this criteria
+    """
+    sort: AlertManagementAlertSort
   ): AlertManagementAlertConnection
 
   """
@@ -7264,6 +7407,41 @@ type Project {
   Indicates if there is public access to pipelines and job details of the project, including output logs and artifacts
   """
   publicJobs: Boolean
+
+  """
+  A single release of the project. Available only when feature flag `graphql_release_data` is enabled
+  """
+  release(
+    """
+    The name of the tag associated to the release
+    """
+    tagName: String!
+  ): Release
+
+  """
+  Releases of the project. Available only when feature flag `graphql_release_data` is enabled
+  """
+  releases(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): ReleaseConnection
 
   """
   Indicates if `Delete source branch` option should be enabled by default for all new merge requests of the project
@@ -7882,6 +8060,11 @@ type Query {
   ): Group
 
   """
+  Fields related to Instance Security Dashboard
+  """
+  instanceSecurityDashboard: InstanceSecurityDashboard
+
+  """
   Metadata about GitLab
   """
   metadata: Metadata
@@ -7905,6 +8088,41 @@ type Query {
     """
     fullPath: ID!
   ): Project
+
+  """
+  Find projects visible to the current user
+  """
+  projects(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    Limit projects that the current user is a member of
+    """
+    membership: Boolean
+
+    """
+    Search criteria
+    """
+    search: String
+  ): ProjectConnection
 
   """
   Find Snippets visible to the current user
@@ -8032,6 +8250,118 @@ enum RegistryState {
   SYNCED
 }
 
+type Release {
+  """
+  User that created the release
+  """
+  author: User
+
+  """
+  The commit associated with the release
+  """
+  commit: Commit
+
+  """
+  Timestamp of when the release was created
+  """
+  createdAt: Time
+
+  """
+  Description (also known as "release notes") of the release
+  """
+  description: String
+
+  """
+  The GitLab Flavored Markdown rendering of `description`
+  """
+  descriptionHtml: String
+
+  """
+  SHA of the release's evidence
+  """
+  evidenceSha: String
+
+  """
+  Milestones associated to the release
+  """
+  milestones(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): MilestoneConnection
+
+  """
+  Name of the release
+  """
+  name: String
+
+  """
+  Timestamp of when the release was released
+  """
+  releasedAt: Time
+
+  """
+  Name of the tag associated with the release
+  """
+  tagName: String!
+
+  """
+  Relative web path to the tag associated with the release
+  """
+  tagPath: String
+}
+
+"""
+The connection type for Release.
+"""
+type ReleaseConnection {
+  """
+  A list of edges.
+  """
+  edges: [ReleaseEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [Release]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+An edge in a connection.
+"""
+type ReleaseEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: Release
+}
+
 """
 Autogenerated input type of RemoveAwardEmoji
 """
@@ -8061,6 +8391,36 @@ type RemoveAwardEmojiPayload {
   """
   awardEmoji: AwardEmoji
 
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  Reasons why the mutation failed.
+  """
+  errors: [String!]!
+}
+
+"""
+Autogenerated input type of RemoveProjectFromSecurityDashboard
+"""
+input RemoveProjectFromSecurityDashboardInput {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  ID of the project to remove from the Instance Security Dashboard
+  """
+  projectId: ID!
+}
+
+"""
+Autogenerated return type of RemoveProjectFromSecurityDashboard
+"""
+type RemoveProjectFromSecurityDashboardPayload {
   """
   A unique identifier for the client performing the mutation.
   """
@@ -8870,7 +9230,7 @@ type Snippet implements Noteable {
   httpUrlToRepo: String
 
   """
-  Id of the snippet
+  ID of the snippet
   """
   id: ID!
 
@@ -9316,7 +9676,7 @@ type Todo {
   group: Group
 
   """
-  Id of the todo
+  ID of the todo
   """
   id: ID!
 
@@ -10375,10 +10735,9 @@ type Vulnerability {
   id: ID!
 
   """
-  The JSON location metadata for the vulnerability. Its format depends on the
-  type of the security scan that found the vulnerability
+  Location metadata for the vulnerability. Its fields depend on the type of security scan that found the vulnerability
   """
-  location: JSON
+  location: VulnerabilityLocation
 
   """
   The project on which the vulnerability was found
@@ -10449,6 +10808,101 @@ type VulnerabilityEdge {
   The item at the end of the edge.
   """
   node: Vulnerability
+}
+
+"""
+Represents a vulnerability location. The fields with data will depend on the vulnerability report type
+"""
+union VulnerabilityLocation = VulnerabilityLocationContainerScanning | VulnerabilityLocationDast | VulnerabilityLocationDependencyScanning | VulnerabilityLocationSast
+
+"""
+Represents the location of a vulnerability found by a container security scan
+"""
+type VulnerabilityLocationContainerScanning {
+  """
+  Dependency containing the vulnerability
+  """
+  dependency: VulnerableDependency
+
+  """
+  Name of the vulnerable container image
+  """
+  image: String
+
+  """
+  Operating system that runs on the vulnerable container image
+  """
+  operatingSystem: String
+}
+
+"""
+Represents the location of a vulnerability found by a DAST scan
+"""
+type VulnerabilityLocationDast {
+  """
+  Domain name of the vulnerable request
+  """
+  hostname: String
+
+  """
+  Query parameter for the URL on which the vulnerability occurred
+  """
+  param: String
+
+  """
+  URL path and query string of the vulnerable request
+  """
+  path: String
+
+  """
+  HTTP method of the vulnerable request
+  """
+  requestMethod: String
+}
+
+"""
+Represents the location of a vulnerability found by a dependency security scan
+"""
+type VulnerabilityLocationDependencyScanning {
+  """
+  Dependency containing the vulnerability
+  """
+  dependency: VulnerableDependency
+
+  """
+  Path to the vulnerable file
+  """
+  file: String
+}
+
+"""
+Represents the location of a vulnerability found by a SAST scan
+"""
+type VulnerabilityLocationSast {
+  """
+  Number of the last relevant line in the vulnerable file
+  """
+  endLine: String
+
+  """
+  Path to the vulnerable file
+  """
+  file: String
+
+  """
+  Number of the first relevant line in the vulnerable file
+  """
+  startLine: String
+
+  """
+  Class containing the vulnerability
+  """
+  vulnerableClass: String
+
+  """
+  Method containing the vulnerability
+  """
+  vulnerableMethod: String
 }
 
 """
@@ -10561,4 +11015,29 @@ enum VulnerabilityState {
   DETECTED
   DISMISSED
   RESOLVED
+}
+
+"""
+Represents a vulnerable dependency. Used in vulnerability location data
+"""
+type VulnerableDependency {
+  """
+  The package associated with the vulnerable dependency
+  """
+  package: VulnerablePackage
+
+  """
+  The version of the vulnerable dependency
+  """
+  version: String
+}
+
+"""
+Represents a vulnerable package. Used in vulnerability dependency data
+"""
+type VulnerablePackage {
+  """
+  The name of the vulnerable package
+  """
+  name: String
 }

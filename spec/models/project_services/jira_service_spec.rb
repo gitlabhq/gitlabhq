@@ -582,6 +582,79 @@ describe JiraService do
     end
   end
 
+  describe '#create_cross_reference_note' do
+    let_it_be(:user)    { build_stubbed(:user) }
+    let_it_be(:project) { create(:project, :repository) }
+    let(:jira_service) do
+      described_class.new(
+        project: project,
+        url: url,
+        username: username,
+        password: password
+      )
+    end
+    let(:jira_issue) { ExternalIssue.new('JIRA-123', project) }
+
+    subject { jira_service.create_cross_reference_note(jira_issue, resource, user) }
+
+    shared_examples 'creates a comment on Jira' do
+      let(:issue_url) { "#{url}/rest/api/2/issue/JIRA-123" }
+      let(:comment_url) { "#{issue_url}/comment" }
+      let(:remote_link_url) { "#{issue_url}/remotelink" }
+
+      before do
+        allow(JIRA::Resource::Remotelink).to receive(:all).and_return([])
+        stub_request(:get, issue_url).with(basic_auth: [username, password])
+        stub_request(:post, comment_url).with(basic_auth: [username, password])
+        stub_request(:post, remote_link_url).with(basic_auth: [username, password])
+      end
+
+      it 'creates a comment on Jira' do
+        subject
+
+        expect(WebMock).to have_requested(:post, comment_url).with(
+          body: /mentioned this issue in/
+        ).once
+      end
+    end
+
+    context 'when resource is a commit' do
+      let(:resource) { project.commit('master') }
+
+      context 'when disabled' do
+        before do
+          allow_next_instance_of(JiraService) do |instance|
+            allow(instance).to receive(:commit_events) { false }
+          end
+        end
+
+        it { is_expected.to eq('Events for commits are disabled.') }
+      end
+
+      context 'when enabled' do
+        it_behaves_like 'creates a comment on Jira'
+      end
+    end
+
+    context 'when resource is a merge request' do
+      let(:resource) { build_stubbed(:merge_request, source_project: project) }
+
+      context 'when disabled' do
+        before do
+          allow_next_instance_of(JiraService) do |instance|
+            allow(instance).to receive(:merge_requests_events) { false }
+          end
+        end
+
+        it { is_expected.to eq('Events for merge requests are disabled.') }
+      end
+
+      context 'when enabled' do
+        it_behaves_like 'creates a comment on Jira'
+      end
+    end
+  end
+
   describe '#test' do
     let(:jira_service) do
       described_class.new(

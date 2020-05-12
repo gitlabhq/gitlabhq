@@ -22,10 +22,12 @@ variables:
 stages:
   - production
 
-# This job continuously deploys to staging/production on every push to `master`.
+# This job continuously deploys to production on every push to `master`.
 
 production:
   stage: production
+  tags:
+    - qa
   script:
     - check_kube_domain
     - install_dependencies
@@ -34,7 +36,6 @@ production:
     - initialize_tiller
     - create_secret
     - deploy
-    - persist_environment_url
   environment:
     name: production
     url: http://$CI_PROJECT_PATH_SLUG.$AUTO_DEVOPS_DOMAIN

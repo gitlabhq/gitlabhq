@@ -24,7 +24,7 @@ describe Projects::ServiceHookLogsController do
   describe 'GET #show' do
     subject { get :show, params: log_params }
 
-    it do
+    specify do
       expect(response).to be_successful
     end
   end

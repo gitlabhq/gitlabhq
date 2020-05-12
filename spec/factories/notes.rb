@@ -16,6 +16,7 @@ FactoryBot.define do
     factory :note_on_merge_request,      traits: [:on_merge_request]
     factory :note_on_project_snippet,    traits: [:on_project_snippet]
     factory :note_on_personal_snippet,   traits: [:on_personal_snippet]
+    factory :note_on_design,             traits: [:on_design]
     factory :system_note,                traits: [:system]
 
     factory :discussion_note, class: 'DiscussionNote'

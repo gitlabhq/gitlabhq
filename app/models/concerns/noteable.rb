@@ -17,7 +17,7 @@ module Noteable
 
     # `Noteable` class names that support resolvable notes.
     def resolvable_types
-      %w(MergeRequest)
+      %w(MergeRequest DesignManagement::Design)
     end
   end
 
@@ -138,6 +138,8 @@ module Noteable
   end
 
   def note_etag_key
+    return Gitlab::Routing.url_helpers.designs_project_issue_path(project, issue, { vueroute: filename }) if self.is_a?(DesignManagement::Design)
+
     Gitlab::Routing.url_helpers.project_noteable_notes_path(
       project,
       target_type: self.class.name.underscore,

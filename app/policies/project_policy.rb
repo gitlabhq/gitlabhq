@@ -236,11 +236,8 @@ class ProjectPolicy < BasePolicy
     enable :read_merge_request
     enable :read_sentry_issue
     enable :update_sentry_issue
-    enable :read_alert_management
     enable :read_prometheus
     enable :read_metrics_dashboard_annotation
-    enable :read_alert_management_alerts
-    enable :update_alert_management_alerts
     enable :metrics_dashboard
   end
 
@@ -306,6 +303,8 @@ class ProjectPolicy < BasePolicy
     enable :create_metrics_dashboard_annotation
     enable :delete_metrics_dashboard_annotation
     enable :update_metrics_dashboard_annotation
+    enable :read_alert_management_alert
+    enable :update_alert_management_alert
     enable :create_design
     enable :destroy_design
   end

@@ -42,6 +42,10 @@ export default {
       type: String,
       required: false,
     },
+    pipelineMustSucceed: {
+      type: Boolean,
+      required: false,
+    },
     sourceBranchLink: {
       type: String,
       required: false,
@@ -60,7 +64,10 @@ export default {
       return this.pipeline && Object.keys(this.pipeline).length > 0;
     },
     hasCIError() {
-      return this.hasCi && !this.ciStatus;
+      return (this.hasCi && !this.ciStatus) || this.hasPipelineMustSucceedConflict;
+    },
+    hasPipelineMustSucceedConflict() {
+      return !this.hasCi && this.pipelineMustSucceed;
     },
     status() {
       return this.pipeline.details && this.pipeline.details.status
@@ -76,9 +83,13 @@ export default {
       return this.pipeline.commit && Object.keys(this.pipeline.commit).length > 0;
     },
     errorText() {
+      if (this.hasPipelineMustSucceedConflict) {
+        return s__('Pipeline|No pipeline has been run for this commit.');
+      }
+
       return sprintf(
         s__(
-          'Pipeline|Could not retrieve the pipeline status. For troubleshooting steps, read the %{linkStart}documentation.%{linkEnd}',
+          'Pipeline|Could not retrieve the pipeline status. For troubleshooting steps, read the %{linkStart}documentation%{linkEnd}.',
         ),
         {
           linkStart: `<a href="${this.troubleshootingDocsPath}">`,

@@ -16,9 +16,7 @@ export default {
     });
 
     Object.assign(state, {
-      projects: Object.assign({}, state.projects, {
-        [projectPath]: project,
-      }),
+      projects: { ...state.projects, [projectPath]: project },
     });
   },
   [types.TOGGLE_EMPTY_STATE](state, { projectPath, value }) {

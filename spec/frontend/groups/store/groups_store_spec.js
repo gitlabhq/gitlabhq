@@ -108,8 +108,8 @@ describe('ProjectsStore', () => {
   describe('removeGroup', () => {
     it('should remove children from group item in state', () => {
       const store = new GroupsStore();
-      const rawParentGroup = Object.assign({}, mockGroups[0]);
-      const rawChildGroup = Object.assign({}, mockGroups[1]);
+      const rawParentGroup = { ...mockGroups[0] };
+      const rawChildGroup = { ...mockGroups[1] };
 
       store.setGroups([rawParentGroup]);
       store.setGroupChildren(store.state.groups[0], [rawChildGroup]);

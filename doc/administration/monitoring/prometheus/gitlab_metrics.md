@@ -1,3 +1,9 @@
+---
+stage: Monitor
+group: APM
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # GitLab Prometheus metrics
 
 >**Note:**
@@ -78,7 +84,7 @@ The following metrics are available:
 | `gitlab_transaction_event_remove_tag_total`                    | Counter   |                    9.4 | Counter when a tag is remove for any repository                                                     |                                                     |
 | `gitlab_transaction_event_sidekiq_exception_total`             | Counter   |                    9.4 | Counter of Sidekiq exceptions                                                                       |                                                     |
 | `gitlab_transaction_event_stuck_import_jobs_total`             | Counter   |                    9.4 | Count of stuck import jobs                                                                          | `projects_without_jid_count`, `projects_with_jid_count` |
-| `gitlab_transaction_event_update_build_total`                  | Counter   |                    9.4 | Counter for update build for API /jobs/request/:id                                                  |                                                     |
+| `gitlab_transaction_event_update_build_total`                  | Counter   |                    9.4 | Counter for update build for API `/jobs/request/:id`                                                |                                                     |
 | `gitlab_transaction_new_redis_connections_total`               | Counter   |                    9.4 | Counter for new Redis connections                                                                   |                                                     |
 | `gitlab_transaction_queue_duration_total`                      | Counter   |                    9.4 | Duration jobs were enqueued before processing                                                       |                                                     |
 | `gitlab_transaction_rails_queue_duration_total`                | Counter   |                    9.4 | Measures latency between GitLab Workhorse forwarding a request to Rails                             | `controller`, `action`                              |

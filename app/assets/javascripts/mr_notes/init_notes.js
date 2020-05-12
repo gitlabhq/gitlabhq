@@ -15,6 +15,19 @@ export default () => {
       notesApp,
     },
     store,
+    data() {
+      const notesDataset = document.getElementById('js-vue-mr-discussions').dataset;
+      const noteableData = JSON.parse(notesDataset.noteableData);
+      noteableData.noteableType = notesDataset.noteableType;
+      noteableData.targetType = notesDataset.targetType;
+
+      return {
+        noteableData,
+        currentUserData: JSON.parse(notesDataset.currentUserData),
+        notesData: JSON.parse(notesDataset.notesData),
+        helpPagePath: notesDataset.helpPagePath,
+      };
+    },
     computed: {
       ...mapGetters(['discussionTabCounter']),
       ...mapState({
@@ -54,19 +67,6 @@ export default () => {
       updateDiscussionTabCounter() {
         this.notesCountBadge.text(this.discussionTabCounter);
       },
-      dataset() {
-        const data = this.$el.dataset;
-        const noteableData = JSON.parse(data.noteableData);
-        noteableData.noteableType = data.noteableType;
-        noteableData.targetType = data.targetType;
-
-        return {
-          noteableData,
-          notesData: JSON.parse(data.notesData),
-          userData: JSON.parse(data.currentUserData),
-          helpPagePath: data.helpPagePath,
-        };
-      },
     },
     render(createElement) {
       // NOTE: Even though `discussionKeyboardNavigator` is added to the `notes-app`,
@@ -76,8 +76,11 @@ export default () => {
       return createElement(discussionKeyboardNavigator, [
         createElement('notes-app', {
           props: {
-            ...this.dataset(),
+            noteableData: this.noteableData,
+            notesData: this.notesData,
+            userData: this.currentUserData,
             shouldShow: this.isShowTabActive,
+            helpPagePath: this.helpPagePath,
           },
         }),
       ]);

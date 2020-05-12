@@ -419,24 +419,34 @@ describe RegistrationsController do
   describe '#welcome' do
     subject { get :welcome }
 
-    before do
-      sign_in(create(:user))
-    end
-
     context 'signup_flow experiment enabled' do
       before do
         stub_experiment_for_user(signup_flow: true)
       end
 
       it 'renders the devise_experimental_separate_sign_up_flow layout' do
+        sign_in(create(:user))
+
         expected_layout = Gitlab.ee? ? :checkout : :devise_experimental_separate_sign_up_flow
 
         expect(subject).to render_template(expected_layout)
+      end
+
+      context '2FA is required from group' do
+        before do
+          user = create(:user, require_two_factor_authentication_from_group: true)
+          sign_in(user)
+        end
+
+        it 'does not perform a redirect' do
+          expect(subject).not_to redirect_to(profile_two_factor_auth_path)
+        end
       end
     end
 
     context 'signup_flow experiment disabled' do
       before do
+        sign_in(create(:user))
         stub_experiment_for_user(signup_flow: false)
       end
 

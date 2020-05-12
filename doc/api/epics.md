@@ -249,7 +249,7 @@ POST /groups/:id/epics
 | `start_date_fixed`  | string           | no         | The fixed start date of an epic (since 11.3) |
 | `due_date_is_fixed` | boolean          | no         | Whether due date should be sourced from `due_date_fixed` or from milestones (since 11.3) |
 | `due_date_fixed`    | string           | no         | The fixed due date of an epic (since 11.3) |
-| `parent_id`         | integer/string   | no         | The id of a parent epic (since 11.11) |
+| `parent_id`         | integer/string   | no         | The ID of a parent epic (since 11.11) |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/1/epics?title=Epic&description=Epic%20description

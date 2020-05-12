@@ -660,10 +660,6 @@ $note-form-margin-left: 72px;
   padding-bottom: 0;
 }
 
-.note-headline-light {
-  display: inline;
-}
-
 .note-headline-light,
 .discussion-headline-light {
   color: $gl-text-color-secondary;
@@ -688,8 +684,7 @@ $note-form-margin-left: 72px;
     text-decoration: underline;
   }
 
-  .gl-label-link:hover,
-  .gl-label-icon:hover {
+  .gl-label-link:hover {
     text-decoration: none;
     color: inherit;
 

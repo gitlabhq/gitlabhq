@@ -8,7 +8,7 @@ type: concepts, howto
 > - [Notifications about expiring tokens](https://gitlab.com/gitlab-org/gitlab/-/issues/3649) added in GitLab 12.6.
 > - [Token lifetime limits](https://gitlab.com/gitlab-org/gitlab/-/issues/3649) added in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.6.
 
-If you're unable to use [OAuth2](../../api/oauth2.md), you can use a personal access token to authenticate with the [GitLab API](../../api/README.md#personal-access-tokens).
+If you're unable to use [OAuth2](../../api/oauth2.md), you can use a personal access token to authenticate with the [GitLab API](../../api/README.md#personalproject-access-tokens).
 
 You can also use personal access tokens with Git to authenticate over HTTP or SSH. Personal access tokens are required when [Two-Factor Authentication (2FA)](../account/two_factor_authentication.md) is enabled. In both cases, you can authenticate with a token in place of your password.
 
@@ -17,7 +17,7 @@ Personal access tokens expire on the date you define, at midnight UTC.
 - GitLab runs a check at 01:00 AM UTC every day to identify personal access tokens that will expire in under seven days. The owners of these tokens are notified by email.
 - In GitLab Ultimate, administrators may [limit the lifetime of personal access tokens](../admin_area/settings/account_and_limit_settings.md#limiting-lifetime-of-personal-access-tokens-ultimate-only).
 
-For examples of how you can use a personal access token to authenticate with the API, see the following section from our [API Docs](../../api/README.md#personal-access-tokens).
+For examples of how you can use a personal access token to authenticate with the API, see the following section from our [API Docs](../../api/README.md#personalproject-access-tokens).
 
 GitLab also offers [impersonation tokens](../../api/README.md#impersonation-tokens) which are created by administrators via the API. They're a great fit for automated authentication as a specific user.
 

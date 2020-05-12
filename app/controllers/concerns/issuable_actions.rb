@@ -11,6 +11,9 @@ module IssuableActions
     before_action only: :show do
       push_frontend_feature_flag(:scoped_labels, default_enabled: true)
     end
+    before_action do
+      push_frontend_feature_flag(:not_issuable_queries, @project, default_enabled: true)
+    end
   end
 
   def permitted_keys

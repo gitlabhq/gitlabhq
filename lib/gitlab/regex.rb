@@ -79,6 +79,12 @@ module Gitlab
       "Must start with a letter, and cannot end with '-'"
     end
 
+    # Pod name adheres to DNS Subdomain Names(RFC 1123) naming convention
+    # https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#dns-subdomain-names
+    def kubernetes_dns_subdomain_regex
+      /\A[a-z0-9]([a-z0-9\-\.]*[a-z0-9])?\z/
+    end
+
     def environment_slug_regex
       @environment_slug_regex ||= /\A[a-z]([a-z0-9-]*[a-z0-9])?\z/.freeze
     end

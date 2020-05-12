@@ -30,6 +30,14 @@ If the pipeline for the merge request at the front of the train completes succes
 the changes are merged into the target branch, and the other pipelines continue to
 run.
 
+To add a merge request to a merge train, you need [permissions](../../../../user/permissions.md) to push to the target branch.
+
+NOTE: **Note:**
+Each merge train can run a maximum of **twenty** pipelines in parallel.
+If more than twenty merge requests are added to the merge train, the merge requests
+will be queued until a slot in the merge train is free. There is no limit to the
+number of merge requests that can be queued.
+
 ## Merge train example
 
 Three merge requests (`A`, `B` and `C`) are added to a merge train in order, which
@@ -55,16 +63,13 @@ Watch this video for a demonstration on [how parallel execution
 of Merge Trains can prevent commits from breaking the default
 branch](https://www.youtube.com/watch?v=D4qCqXgZkHQ).
 
-## Requirements and limitations
+## Prerequisites
 
-Merge trains have the following requirements and limitations:
+To enable merge trains:
 
-- Merge trains require [GitLab Runner](https://gitlab.com/gitlab-org/gitlab-runner) 11.9 or newer.
-- GitLab 12.0 and later requires [Redis](https://redis.io/) 3.2 or higher.
-- Each merge train can run a maximum of **twenty** pipelines in parallel.
-  If more than twenty merge requests are added to the merge train, the merge requests
-  will be queued until a slot in the merge train is free. There is no limit to the
-  number of merge requests that can be queued.
+- You must have maintainer [permissions](../../../../user/permissions.md).
+- You must be using [GitLab Runner](https://gitlab.com/gitlab-org/gitlab-runner) 11.9 or later.
+- In GitLab 12.0 and later, you need [Redis](https://redis.io/) 3.2 or later.
 
 ## Enable merge trains
 

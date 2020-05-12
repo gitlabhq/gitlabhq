@@ -146,14 +146,6 @@ describe Feature do
       expect(described_class.enabled?(:enabled_feature_flag)).to be_truthy
     end
 
-    context 'with USE_THREAD_MEMORY_CACHE defined' do
-      before do
-        stub_env('USE_THREAD_MEMORY_CACHE', '1')
-      end
-
-      it { expect(described_class.l1_cache_backend).to eq(Gitlab::ThreadMemoryCache.cache_backend) }
-    end
-
     it { expect(described_class.l1_cache_backend).to eq(Gitlab::ProcessMemoryCache.cache_backend) }
     it { expect(described_class.l2_cache_backend).to eq(Rails.cache) }
 

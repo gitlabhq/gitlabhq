@@ -17,13 +17,13 @@
 - content = capture do
   - if show_user
     .clearfix
-      - uri_signature_badge_user = "projects/commit/#{"x509/" if signature.instance_of?(X509CommitSignature)}signature_badge_user"
+      - uri_signature_badge_user = "projects/commit/#{"x509/" if x509_signature?(signature)}signature_badge_user"
       = render partial: "#{uri_signature_badge_user}", locals: { signature: signature }
 
-  - if signature.instance_of?(X509CommitSignature)
+  - if x509_signature?(signature)
     = render partial: "projects/commit/x509/certificate_details", locals: { signature: signature }
 
-    = link_to(_('Learn more about x509 signed commits'), help_page_path('user/project/repository/x509_signed_commits/index.md'), class: 'gpg-popover-help-link')
+    = link_to(_('Learn more about X.509 signed commits'), help_page_path('user/project/repository/x509_signed_commits/index.md'), class: 'gpg-popover-help-link')
   - else
     = _('GPG Key ID:')
     %span.monospace= signature.gpg_key_primary_keyid

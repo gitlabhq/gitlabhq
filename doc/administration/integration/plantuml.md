@@ -169,10 +169,10 @@ diagram delimiters `@startuml`/`@enduml` as these are replaced by the AsciiDoc `
 
 Some parameters can be added to the AsciiDoc block definition:
 
-- *format*: Can be either `png` or `svg`. Note that `svg` is not supported by
+- `format`: Can be either `png` or `svg`. Note that `svg` is not supported by
   all browsers so use with care. The default is `png`.
-- *id*: A CSS id added to the diagram HTML tag.
-- *width*: Width attribute added to the image tag.
-- *height*: Height attribute added to the image tag.
+- `id`: A CSS ID added to the diagram HTML tag.
+- `width`: Width attribute added to the image tag.
+- `height`: Height attribute added to the image tag.
 
 Markdown does not support any parameters and will always use PNG format.

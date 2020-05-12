@@ -15,7 +15,7 @@ describe('Api', () => {
   beforeEach(() => {
     mock = new MockAdapter(axios);
     originalGon = window.gon;
-    window.gon = Object.assign({}, dummyGon);
+    window.gon = { ...dummyGon };
   });
 
   afterEach(() => {

@@ -88,6 +88,7 @@ describe Gitlab::Ci::Parsers::Accessibility::Pa11y do
           expect(accessibility_report.passes_count).to eq(0)
           expect(accessibility_report.scans_count).to eq(1)
           expect(accessibility_report.urls['https://about.gitlab.com/']).to be_present
+          expect(accessibility_report.urls['https://about.gitlab.com/'].first[:code]).to be_present
         end
       end
     end

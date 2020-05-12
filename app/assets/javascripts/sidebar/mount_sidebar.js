@@ -10,6 +10,7 @@ import sidebarParticipants from './components/participants/sidebar_participants.
 import sidebarSubscriptions from './components/subscriptions/sidebar_subscriptions.vue';
 import Translate from '../vue_shared/translate';
 import createDefaultClient from '~/lib/graphql';
+import { store } from '~/notes/stores';
 
 Vue.use(Translate);
 Vue.use(VueApollo);
@@ -59,8 +60,8 @@ function mountConfidentialComponent(mediator) {
   const ConfidentialComp = Vue.extend(ConfidentialIssueSidebar);
 
   new ConfidentialComp({
+    store,
     propsData: {
-      isConfidential: initialData.is_confidential,
       isEditable: initialData.is_editable,
       service: mediator.service,
     },

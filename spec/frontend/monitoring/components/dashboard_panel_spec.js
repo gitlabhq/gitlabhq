@@ -376,10 +376,6 @@ describe('Dashboard Panel', () => {
       });
     });
 
-    afterEach(() => {
-      wrapper.destroy();
-    });
-
     it('sets clipboard text on the dropdown', () => {
       expect(findCopyLink().exists()).toBe(true);
       expect(findCopyLink().element.dataset.clipboardText).toBe(clipboardText);
@@ -393,6 +389,18 @@ describe('Dashboard Panel', () => {
       findCopyLink().vm.$emit('click');
 
       expect(wrapper.vm.$toast.show).toHaveBeenCalled();
+    });
+  });
+
+  describe('when cliboard data is not available', () => {
+    it('there is no "copy to clipboard" link for a null value', () => {
+      createWrapper({ clipboardText: null });
+      expect(findCopyLink().exists()).toBe(false);
+    });
+
+    it('there is no "copy to clipboard" link for an empty value', () => {
+      createWrapper({ clipboardText: '' });
+      expect(findCopyLink().exists()).toBe(false);
     });
   });
 

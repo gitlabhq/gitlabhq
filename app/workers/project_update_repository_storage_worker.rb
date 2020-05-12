@@ -5,7 +5,7 @@ class ProjectUpdateRepositoryStorageWorker # rubocop:disable Scalability/Idempot
 
   feature_category :gitaly
 
-  def perform(project_id, new_repository_storage_key, repository_storage_move_id: nil)
+  def perform(project_id, new_repository_storage_key, repository_storage_move_id = nil)
     repository_storage_move =
       if repository_storage_move_id
         ProjectRepositoryStorageMove.find(repository_storage_move_id)

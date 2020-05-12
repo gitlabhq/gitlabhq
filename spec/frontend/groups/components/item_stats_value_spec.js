@@ -27,7 +27,7 @@ describe('ItemStatsValueComponent', () => {
 
     describe('isValuePresent', () => {
       it('returns true if non-empty `value` is present', () => {
-        vm = createComponent(Object.assign({}, itemConfig, { value: 10 }));
+        vm = createComponent({ ...itemConfig, value: 10 });
 
         expect(vm.isValuePresent).toBeTruthy();
       });

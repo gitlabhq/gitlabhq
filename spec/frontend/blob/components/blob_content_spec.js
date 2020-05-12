@@ -38,7 +38,7 @@ describe('Blob Content component', () => {
 
     it('renders error if there is any in the viewer', () => {
       const renderError = 'Oops';
-      const viewer = Object.assign({}, SimpleViewerMock, { renderError });
+      const viewer = { ...SimpleViewerMock, renderError };
       createComponent({}, viewer);
       expect(wrapper.contains(GlLoadingIcon)).toBe(false);
       expect(wrapper.contains(BlobContentError)).toBe(true);

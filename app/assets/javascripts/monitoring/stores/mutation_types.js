@@ -1,7 +1,8 @@
-// Dashboard "skeleton", groups, panels and metrics
+// Dashboard "skeleton", groups, panels, metrics, query variables
 export const REQUEST_METRICS_DASHBOARD = 'REQUEST_METRICS_DASHBOARD';
 export const RECEIVE_METRICS_DASHBOARD_SUCCESS = 'RECEIVE_METRICS_DASHBOARD_SUCCESS';
 export const RECEIVE_METRICS_DASHBOARD_FAILURE = 'RECEIVE_METRICS_DASHBOARD_FAILURE';
+export const SET_PROM_QUERY_VARIABLES = 'SET_PROM_QUERY_VARIABLES';
 
 // Annotations
 export const RECEIVE_ANNOTATIONS_SUCCESS = 'RECEIVE_ANNOTATIONS_SUCCESS';

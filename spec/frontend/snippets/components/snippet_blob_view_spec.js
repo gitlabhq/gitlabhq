@@ -84,9 +84,7 @@ describe('Blob Embeddable', () => {
     });
 
     it('sets rich viewer correctly', () => {
-      const data = Object.assign({}, dataMock, {
-        activeViewerType: RichViewerMock.type,
-      });
+      const data = { ...dataMock, activeViewerType: RichViewerMock.type };
       createComponent({}, data);
       expect(wrapper.find(RichViewer).exists()).toBe(true);
     });

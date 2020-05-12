@@ -51,32 +51,16 @@ module Gitlab
         end
       end
 
-      def map_user_id(email)
-        return unless email
-
-        # We also include emails that are not yet confirmed
-        users = User.by_any_email(email).to_a
-
-        # this event should never happen but we should log it in case we have invalid data
-        log_user_mapping_message('Multiple users found for an email address', email) if users.count > 1
-
-        user = users.first
-
-        unless project.project_member(user)
-          log_user_mapping_message('Jira user not found', email)
-
-          return
-        end
-
-        user.id
+      def map_user_id(jira_user)
+        Gitlab::JiraImport::UserMapper.new(project, jira_user).execute&.id
       end
 
       def reporter
-        map_user_id(jira_issue&.reporter&.emailAddress) || import_owner_id
+        map_user_id(jira_issue.reporter&.attrs) || import_owner_id
       end
 
       def assignees
-        found_user_id = map_user_id(jira_issue&.assignee&.emailAddress)
+        found_user_id = map_user_id(jira_issue.assignee&.attrs)
 
         return unless found_user_id
 
@@ -94,15 +78,6 @@ module Gitlab
 
       def logger
         @logger ||= Gitlab::Import::Logger.build
-      end
-
-      def log_user_mapping_message(message, email)
-        logger.info(
-          project_id: project.id,
-          project_path: project.full_path,
-          user_email: email,
-          message: message
-        )
       end
     end
   end

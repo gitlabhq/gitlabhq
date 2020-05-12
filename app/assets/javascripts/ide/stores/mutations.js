@@ -192,15 +192,6 @@ export default {
   [types.SET_ERROR_MESSAGE](state, errorMessage) {
     Object.assign(state, { errorMessage });
   },
-  [types.OPEN_NEW_ENTRY_MODAL](state, { type, path }) {
-    Object.assign(state, {
-      entryModal: {
-        type,
-        path,
-        entry: { ...state.entries[path] },
-      },
-    });
-  },
   [types.DELETE_ENTRY](state, path) {
     const entry = state.entries[path];
     const { tempFile = false } = entry;

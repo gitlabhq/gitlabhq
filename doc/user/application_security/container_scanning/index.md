@@ -229,33 +229,35 @@ To use Container Scanning in an offline environment, you need:
 
 NOTE: **Note:**
 GitLab Runner has a [default `pull policy` of `always`](https://docs.gitlab.com/runner/executors/docker.html#using-the-always-pull-policy),
-meaning the runner may try to pull remote images even if a local copy is available. Set GitLab
-Runner's [`pull_policy` to `if-not-present`](https://docs.gitlab.com/runner/executors/docker.html#using-the-if-not-present-pull-policy)
-in an offline environment if you prefer using only locally available Docker images.
+meaning the Runner tries to pull Docker images from the GitLab container registry even if a local
+copy is available. GitLab Runner's [`pull_policy` can be set to `if-not-present`](https://docs.gitlab.com/runner/executors/docker.html#using-the-if-not-present-pull-policy)
+in an offline environment if you prefer using only locally available Docker images. However, we
+recommend keeping the pull policy setting to `always` if not in an offline environment, as this
+enables the use of updated scanners in your CI/CD pipelines.
 
 #### Make GitLab Container Scanning analyzer images available inside your Docker registry
 
-For Container Scanning, import and host the following images from `registry.gitlab.com` to your
-offline [local Docker container registry](../../packages/container_registry/index.md):
+For Container Scanning, import the following default images from `registry.gitlab.com` into your
+[local Docker container registry](../../packages/container_registry/index.md):
 
-- [arminc/clair-db vulnerabilities database](https://hub.docker.com/r/arminc/clair-db)
-- GitLab klar analyzer: `registry.gitlab.com/gitlab-org/security-products/analyzers/klar`
+```plaintext
+registry.gitlab.com/gitlab-org/security-products/analyzers/klar
+https://hub.docker.com/r/arminc/clair-db
+```
 
 The process for importing Docker images into a local offline Docker registry depends on
 **your network security policy**. Please consult your IT staff to find an accepted and approved
-process by which external resources can be imported or temporarily accessed.
-
-Note that these scanners are [updated periodically](../index.md#maintenance-and-update-of-the-vulnerabilities-database)
+process by which you can import or temporarily access external resources. Note that these scanners
+are [updated periodically](../index.md#maintenance-and-update-of-the-vulnerabilities-database)
 with new definitions, so consider if you are able to make periodic updates yourself.
-You can read more specific steps on how to do this [below](#automating-container-scanning-vulnerability-database-updates-with-a-pipeline).
+
+For more information, see [the specific steps on how to update an image with a pipeline](#automating-container-scanning-vulnerability-database-updates-with-a-pipeline).
 
 For details on saving and transporting Docker images as a file, see Docker's documentation on
 [`docker save`](https://docs.docker.com/engine/reference/commandline/save/), [`docker load`](https://docs.docker.com/engine/reference/commandline/load/),
 [`docker export`](https://docs.docker.com/engine/reference/commandline/export/), and [`docker import`](https://docs.docker.com/engine/reference/commandline/import/).
 
 #### Set Container Scanning CI job variables to use local Container Scanner analyzers
-
-Container Scanning can be executed on an offline GitLab Ultimate installation using the following process:
 
 1. [Override the container scanning template](#overriding-the-container-scanning-template) in your `.gitlab-ci.yml` file to refer to the Docker images hosted on your local Docker container registry:
 
@@ -416,7 +418,7 @@ the report JSON unless stated otherwise. Presence of optional fields depends on 
 | `vulnerabilities[].confidence`                       | How reliable the vulnerability's assessment is. Possible values: `Ignore`, `Unknown`, `Experimental`, `Low`, `Medium`, `High`, `Confirmed`.  **Note:** Our current container scanning tool based on [klar](https://github.com/optiopay/klar) does not provide a confidence level, so this value is currently hardcoded to `Unknown`. |
 | `vulnerabilities[].solution`                         | Explanation of how to fix the vulnerability. Optional.                                                                                                                                                                                                                                                                                                                                     |
 | `vulnerabilities[].scanner`                          | A node that describes the analyzer used to find this vulnerability.                                                                                                                                                                                                                                                                                                                        |
-| `vulnerabilities[].scanner.id`                       | Id of the scanner as a snake_case string.                                                                                                                                                                                                                                                                                                                                                  |
+| `vulnerabilities[].scanner.id`                       | ID of the scanner as a snake_case string.                                                                                                                                                                                                                                                                                                                                                  |
 | `vulnerabilities[].scanner.name`                     | Name of the scanner, for display purposes.                                                                                                                                                                                                                                                                                                                                                 |
 | `vulnerabilities[].location`                         | A node that tells where the vulnerability is located.                                                                                                                                                                                                                                                                                                                                      |
 | `vulnerabilities[].location.dependency`              | A node that describes the dependency of a project where the vulnerability is located.                                                                                                                                                                                                                                                                                                      |
@@ -435,7 +437,7 @@ the report JSON unless stated otherwise. Presence of optional fields depends on 
 | `vulnerabilities[].links[].url`                      | URL of the vulnerability details document. Optional.                                                                                                                                                                                                                                                                                                                                       |
 | `remediations`                                       | An array of objects containing information on cured vulnerabilities along with patch diffs to apply. Empty if no remediations provided by an underlying analyzer.                                                                                                                                                                                                                          |
 | `remediations[].fixes`                               | An array of strings that represent references to vulnerabilities fixed by this particular remediation.                                                                                                                                                                                                                                                                                     |
-| `remediations[].fixes[].id`                          | The id of a fixed vulnerability. |
+| `remediations[].fixes[].id`                          | The ID of a fixed vulnerability. |
 | `remediations[].fixes[].cve`                         | (**DEPRECATED - use `remediations[].fixes[].id` instead**) A string value that describes a fixed vulnerability in the same format as `vulnerabilities[].cve`. |
 | `remediations[].summary`                             | Overview of how the vulnerabilities have been fixed.                                                                                                                                                                                                                                                                                                                                       |
 | `remediations[].diff`                                | base64-encoded remediation code diff, compatible with [`git apply`](https://git-scm.com/docs/git-format-patch#_discussion).                                                                                                                                                                                                                                                                |

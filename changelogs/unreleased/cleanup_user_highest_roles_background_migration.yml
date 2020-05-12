@@ -1,0 +1,5 @@
+---
+title: Cleanup background migration for populating user_highest_roles table
+merge_request: 31218
+author:
+type: other
