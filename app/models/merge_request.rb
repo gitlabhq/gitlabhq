@@ -875,7 +875,7 @@ class MergeRequest < ApplicationRecord
   # rubocop: enable CodeReuse/ServiceClass
 
   def diffable_merge_ref?
-    Feature.enabled?(:diff_compare_with_head, target_project) && can_be_merged? && merge_ref_head.present?
+    can_be_merged? && merge_ref_head.present?
   end
 
   # Returns boolean indicating the merge_status should be rechecked in order to

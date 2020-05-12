@@ -1,5 +1,5 @@
 <script>
-import { mapState, mapActions } from 'vuex';
+import { mapState, mapActions, mapGetters } from 'vuex';
 import {
   GlAlert,
   GlIcon,
@@ -36,11 +36,6 @@ export default {
     GlModal: GlModalDirective,
   },
   props: {
-    selectedDashboard: {
-      type: Object,
-      required: false,
-      default: () => ({}),
-    },
     defaultBranch: {
       type: String,
       required: true,
@@ -56,11 +51,15 @@ export default {
   },
   computed: {
     ...mapState('monitoringDashboard', ['allDashboards']),
+    ...mapGetters('monitoringDashboard', ['selectedDashboard']),
     isSystemDashboard() {
-      return this.selectedDashboard.system_dashboard;
+      return this.selectedDashboard?.system_dashboard;
     },
     selectedDashboardText() {
-      return this.selectedDashboard.display_name;
+      return this.selectedDashboard?.display_name;
+    },
+    selectedDashboardPath() {
+      return this.selectedDashboard?.path;
     },
 
     filteredDashboards() {
@@ -145,7 +144,7 @@ export default {
         <gl-dropdown-item
           v-for="dashboard in starredDashboards"
           :key="dashboard.path"
-          :active="dashboard.path === selectedDashboard.path"
+          :active="dashboard.path === selectedDashboardPath"
           active-class="is-active"
           @click="selectDashboard(dashboard)"
         >
@@ -163,7 +162,7 @@ export default {
         <gl-dropdown-item
           v-for="dashboard in nonStarredDashboards"
           :key="dashboard.path"
-          :active="dashboard.path === selectedDashboard.path"
+          :active="dashboard.path === selectedDashboardPath"
           active-class="is-active"
           @click="selectDashboard(dashboard)"
         >

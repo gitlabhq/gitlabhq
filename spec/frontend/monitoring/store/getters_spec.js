@@ -3,7 +3,7 @@ import * as getters from '~/monitoring/stores/getters';
 import mutations from '~/monitoring/stores/mutations';
 import * as types from '~/monitoring/stores/mutation_types';
 import { metricStates } from '~/monitoring/constants';
-import { environmentData, metricsResult } from '../mock_data';
+import { environmentData, metricsResult, dashboardGitResponse } from '../mock_data';
 import {
   metricsDashboardPayload,
   metricResultStatus,
@@ -348,6 +348,50 @@ describe('Monitoring store Getters', () => {
       const variablesArray = getters.getCustomVariablesArray(state);
 
       expect(variablesArray).toEqual([]);
+    });
+  });
+
+  describe('selectedDashboard', () => {
+    const { selectedDashboard } = getters;
+
+    it('returns a dashboard', () => {
+      const state = {
+        allDashboards: dashboardGitResponse,
+        currentDashboard: dashboardGitResponse[0].path,
+      };
+      expect(selectedDashboard(state)).toEqual(dashboardGitResponse[0]);
+    });
+
+    it('returns a non-default dashboard', () => {
+      const state = {
+        allDashboards: dashboardGitResponse,
+        currentDashboard: dashboardGitResponse[1].path,
+      };
+      expect(selectedDashboard(state)).toEqual(dashboardGitResponse[1]);
+    });
+
+    it('returns a default dashboard when no dashboard is selected', () => {
+      const state = {
+        allDashboards: dashboardGitResponse,
+        currentDashboard: null,
+      };
+      expect(selectedDashboard(state)).toEqual(dashboardGitResponse[0]);
+    });
+
+    it('returns a default dashboard when dashboard cannot be found', () => {
+      const state = {
+        allDashboards: dashboardGitResponse,
+        currentDashboard: 'wrong_path',
+      };
+      expect(selectedDashboard(state)).toEqual(dashboardGitResponse[0]);
+    });
+
+    it('returns null when no dashboards are present', () => {
+      const state = {
+        allDashboards: [],
+        currentDashboard: dashboardGitResponse[0].path,
+      };
+      expect(selectedDashboard(state)).toEqual(null);
     });
   });
 });

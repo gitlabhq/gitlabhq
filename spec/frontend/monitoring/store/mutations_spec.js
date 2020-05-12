@@ -72,6 +72,49 @@ describe('Monitoring mutations', () => {
     });
   });
 
+  describe('Dashboard starring mutations', () => {
+    it('REQUEST_DASHBOARD_STARRING', () => {
+      stateCopy = { isUpdatingStarredValue: false };
+      mutations[types.REQUEST_DASHBOARD_STARRING](stateCopy);
+
+      expect(stateCopy.isUpdatingStarredValue).toBe(true);
+    });
+
+    describe('RECEIVE_DASHBOARD_STARRING_SUCCESS', () => {
+      let allDashboards;
+
+      beforeEach(() => {
+        allDashboards = [...dashboardGitResponse];
+        stateCopy = {
+          allDashboards,
+          currentDashboard: allDashboards[1].path,
+          isUpdatingStarredValue: true,
+        };
+      });
+
+      it('sets a dashboard as starred', () => {
+        mutations[types.RECEIVE_DASHBOARD_STARRING_SUCCESS](stateCopy, true);
+
+        expect(stateCopy.isUpdatingStarredValue).toBe(false);
+        expect(stateCopy.allDashboards[1].starred).toBe(true);
+      });
+
+      it('sets a dashboard as unstarred', () => {
+        mutations[types.RECEIVE_DASHBOARD_STARRING_SUCCESS](stateCopy, false);
+
+        expect(stateCopy.isUpdatingStarredValue).toBe(false);
+        expect(stateCopy.allDashboards[1].starred).toBe(false);
+      });
+    });
+
+    it('RECEIVE_DASHBOARD_STARRING_FAILURE', () => {
+      stateCopy = { isUpdatingStarredValue: true };
+      mutations[types.RECEIVE_DASHBOARD_STARRING_FAILURE](stateCopy);
+
+      expect(stateCopy.isUpdatingStarredValue).toBe(false);
+    });
+  });
+
   describe('RECEIVE_DEPLOYMENTS_DATA_SUCCESS', () => {
     it('stores the deployment data', () => {
       stateCopy.deploymentData = [];

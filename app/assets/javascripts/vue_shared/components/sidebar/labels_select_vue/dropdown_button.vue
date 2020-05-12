@@ -27,9 +27,9 @@ export default {
     class="labels-select-dropdown-button js-dropdown-button w-100 text-left"
     @click="handleButtonClick"
   >
-    <span class="dropdown-toggle-text" :class="{ 'flex-fill': isDropdownVariantStandalone }">{{
-      dropdownButtonText
-    }}</span>
+    <span class="dropdown-toggle-text flex-fill">
+      {{ dropdownButtonText }}
+    </span>
     <gl-icon name="chevron-down" class="pull-right" />
   </gl-button>
 </template>

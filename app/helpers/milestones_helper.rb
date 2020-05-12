@@ -249,7 +249,7 @@ module MilestonesHelper
     if milestone.legacy_group_milestone?
       group_milestone_path(@group, milestone.safe_title, title: milestone.title, milestone: params)
     else
-      group_milestone_path(@group, milestone.iid, milestone: params)
+      group_milestone_path(milestone.group, milestone.iid, milestone: params)
     end
   end
 

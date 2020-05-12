@@ -159,6 +159,17 @@ describe RuboCop::Cop::InjectEnterpriseEditionModule do
     SOURCE
   end
 
+  it 'does not flag the double use of `X_if_ee` on the last line' do
+    expect_no_offenses(<<~SOURCE)
+    class Foo
+    end
+
+    Foo.extend_if_ee('EE::Foo')
+    Foo.include_if_ee('EE::Foo')
+    Foo.prepend_if_ee('EE::Foo')
+    SOURCE
+  end
+
   it 'autocorrects offenses by just disabling the Cop' do
     source = <<~SOURCE
     class Foo

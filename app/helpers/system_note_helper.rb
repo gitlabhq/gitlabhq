@@ -42,7 +42,7 @@ module SystemNoteHelper
   extend self
 end
 
-SystemNoteHelper.prepend_if_ee('EE::SystemNoteHelper') # rubocop: disable Cop/InjectEnterpriseEditionModule
+SystemNoteHelper.prepend_if_ee('EE::SystemNoteHelper')
 
 # The methods in `EE::SystemNoteHelper` should be available as both instance and
 # class methods.

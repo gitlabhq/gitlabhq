@@ -38,7 +38,7 @@ describe 'Creation of a new branch' do
       let(:ref) { 'unknown' }
 
       it_behaves_like 'a mutation that returns errors in the response',
-                      errors: ['Invalid reference name: new_branch']
+                      errors: ['Invalid reference name: unknown']
     end
   end
 end

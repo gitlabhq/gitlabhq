@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 module ProjectsHelper
-  prepend_if_ee('::EE::ProjectsHelper') # rubocop: disable Cop/InjectEnterpriseEditionModule
-
   def project_incident_management_setting
     @project_incident_management_setting ||= @project.incident_management_setting ||
       @project.build_incident_management_setting

@@ -4,6 +4,19 @@ const metricsIdsInPanel = panel =>
   panel.metrics.filter(metric => metric.metricId && metric.result).map(metric => metric.metricId);
 
 /**
+ * Returns a reference to the currently selected dashboard
+ * from the list of dashboards.
+ *
+ * @param {Object} state
+ */
+export const selectedDashboard = state => {
+  const { allDashboards } = state;
+  return (
+    allDashboards.find(({ path }) => path === state.currentDashboard) || allDashboards[0] || null
+  );
+};
+
+/**
  * Get all state for metric in the dashboard or a group. The
  * states are not repeated so the dashboard or group can show
  * a global state.

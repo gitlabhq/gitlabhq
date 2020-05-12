@@ -12,6 +12,14 @@ module Ci
       end
     end
 
+    condition(:unprotected_ref) do
+      if @subject.tag?
+        !ProtectedTag.protected?(@subject.project, @subject.ref)
+      else
+        !ProtectedBranch.protected?(@subject.project, @subject.ref)
+      end
+    end
+
     condition(:owner_of_job) do
       @subject.triggered_by?(@user)
     end
@@ -34,7 +42,7 @@ module Ci
       prevent :erase_build
     end
 
-    rule { can?(:admin_build) | (can?(:update_build) & owner_of_job) }.enable :erase_build
+    rule { can?(:admin_build) | (can?(:update_build) & owner_of_job & unprotected_ref) }.enable :erase_build
 
     rule { can?(:public_access) & branch_allows_collaboration }.policy do
       enable :update_build

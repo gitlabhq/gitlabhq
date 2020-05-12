@@ -345,6 +345,35 @@ export const receiveAnnotationsFailure = ({ commit }) => commit(types.RECEIVE_AN
 
 // Dashboard manipulation
 
+export const toggleStarredValue = ({ commit, state, getters }) => {
+  const { selectedDashboard } = getters;
+
+  if (state.isUpdatingStarredValue) {
+    // Prevent repeating requests for the same change
+    return;
+  }
+  if (!selectedDashboard) {
+    return;
+  }
+
+  const method = selectedDashboard.starred ? 'DELETE' : 'POST';
+  const url = selectedDashboard.user_starred_path;
+  const newStarredValue = !selectedDashboard.starred;
+
+  commit(types.REQUEST_DASHBOARD_STARRING);
+
+  axios({
+    url,
+    method,
+  })
+    .then(() => {
+      commit(types.RECEIVE_DASHBOARD_STARRING_SUCCESS, newStarredValue);
+    })
+    .catch(() => {
+      commit(types.RECEIVE_DASHBOARD_STARRING_FAILURE);
+    });
+};
+
 /**
  * Set a new array of metrics to a panel group
  * @param {*} data An object containing

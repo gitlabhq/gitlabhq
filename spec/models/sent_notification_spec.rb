@@ -326,4 +326,26 @@ describe SentNotification do
       end
     end
   end
+
+  describe "#position=" do
+    subject { build(:sent_notification, noteable: create(:issue)) }
+
+    it "doesn't accept non-hash JSON passed as a string" do
+      subject.position = "true"
+
+      expect(subject.attributes_before_type_cast["position"]).to be(nil)
+    end
+
+    it "does accept a position hash as a string" do
+      subject.position = '{ "base_sha": "test" }'
+
+      expect(subject.position.base_sha).to eq("test")
+    end
+
+    it "does accept a hash" do
+      subject.position = { "base_sha" => "test" }
+
+      expect(subject.position.base_sha).to eq("test")
+    end
+  end
 end

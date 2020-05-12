@@ -82,6 +82,8 @@ class SentNotification < ApplicationRecord
     if new_position.is_a?(Hash)
       new_position = new_position.with_indifferent_access
       new_position = Gitlab::Diff::Position.new(new_position)
+    else
+      new_position = nil
     end
 
     super(new_position)

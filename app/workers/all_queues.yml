@@ -10,6 +10,13 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
+- :name: authorized_project_update:authorized_project_update_user_refresh_with_low_urgency
+  :feature_category: :authentication_and_authorization
+  :has_external_dependencies: 
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
 - :name: auto_devops:auto_devops_disable
   :feature_category: :auto_devops
   :has_external_dependencies: 
@@ -933,13 +940,6 @@
   :urgency: :high
   :resource_boundary: :unknown
   :weight: 2
-  :idempotent: true
-- :name: authorized_project_update_user_refresh_with_low_urgency
-  :feature_category: :authentication_and_authorization
-  :has_external_dependencies: 
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
   :idempotent: true
 - :name: authorized_projects
   :feature_category: :authentication_and_authorization

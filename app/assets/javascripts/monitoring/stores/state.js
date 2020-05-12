@@ -14,6 +14,7 @@ export default () => ({
   emptyState: 'gettingStarted',
   showEmptyState: true,
   showErrorBanner: true,
+  isUpdatingStarredValue: false,
   dashboard: {
     panelGroups: [],
   },

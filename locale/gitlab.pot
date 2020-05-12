@@ -3857,15 +3857,6 @@ msgstr ""
 msgid "Checkout|(x%{numberOfUsers})"
 msgstr ""
 
-msgid "Checkout|1. Your profile"
-msgstr ""
-
-msgid "Checkout|2. Checkout"
-msgstr ""
-
-msgid "Checkout|3. Your GitLab group"
-msgstr ""
-
 msgid "Checkout|Billing address"
 msgstr ""
 
@@ -6511,6 +6502,9 @@ msgid "Customize your pipeline configuration, view your pipeline status and cove
 msgstr ""
 
 msgid "Customize your pipeline configuration."
+msgstr ""
+
+msgid "Cycle Time"
 msgstr ""
 
 msgid "CycleAnalyticsEvent|Issue closed"
@@ -17254,6 +17248,18 @@ msgid "Register with two-factor app"
 msgstr ""
 
 msgid "Registration"
+msgstr ""
+
+msgid "Registration|Checkout"
+msgstr ""
+
+msgid "Registration|Your GitLab group"
+msgstr ""
+
+msgid "Registration|Your first project"
+msgstr ""
+
+msgid "Registration|Your profile"
 msgstr ""
 
 msgid "Related Deployed Jobs"

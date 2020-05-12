@@ -58,29 +58,13 @@ export default {
   },
 
   [types.UPDATE_SELECTED_LABELS](state, { labels }) {
-    // Iterate over all the labels and update
-    // `set` prop value to represent their current state.
-    const labelIds = labels.map(label => label.id);
-    state.labels = state.labels.reduce((allLabels, label) => {
-      if (labelIds.includes(label.id)) {
-        allLabels.push({
-          ...label,
-          touched: true,
-          set: !label.set,
-        });
-      } else {
-        // In case multiselect is not allowed
-        // we unselect any existing selected label
-        const unchangedLabel = state.allowMultiselect
-          ? label
-          : {
-              ...label,
-              touched: true,
-              set: false,
-            };
-        allLabels.push(unchangedLabel);
-      }
-      return allLabels;
-    }, []);
+    // Find the label to update from all the labels
+    // and change `set` prop value to represent their current state.
+    const labelId = labels.pop()?.id;
+    const candidateLabel = state.labels.find(label => labelId === label.id);
+    if (candidateLabel) {
+      candidateLabel.touched = true;
+      candidateLabel.set = !candidateLabel.set;
+    }
   },
 };

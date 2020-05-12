@@ -18,6 +18,7 @@ import {
   fetchEnvironmentsData,
   fetchDashboardData,
   fetchAnnotations,
+  toggleStarredValue,
   fetchPrometheusMetric,
   setInitialState,
   filterEnvironments,
@@ -347,6 +348,49 @@ describe('Monitoring store actions', () => {
           expect(mockMutate).toHaveBeenCalledWith(mutationVariables);
         },
       );
+    });
+  });
+
+  describe('Toggles starred value of current dashboard', () => {
+    const { state } = store;
+    let unstarredDashboard;
+    let starredDashboard;
+
+    beforeEach(() => {
+      state.isUpdatingStarredValue = false;
+      [unstarredDashboard, starredDashboard] = dashboardGitResponse;
+    });
+
+    describe('toggleStarredValue', () => {
+      it('performs no changes if no dashboard is selected', () => {
+        return testAction(toggleStarredValue, null, state, [], []);
+      });
+
+      it('performs no changes if already changing starred value', () => {
+        state.selectedDashboard = unstarredDashboard;
+        state.isUpdatingStarredValue = true;
+        return testAction(toggleStarredValue, null, state, [], []);
+      });
+
+      it('stars dashboard if it is not starred', () => {
+        state.selectedDashboard = unstarredDashboard;
+        mock.onPost(unstarredDashboard.user_starred_path).reply(200);
+
+        return testAction(toggleStarredValue, null, state, [
+          { type: types.REQUEST_DASHBOARD_STARRING },
+          { type: types.RECEIVE_DASHBOARD_STARRING_SUCCESS, payload: true },
+        ]);
+      });
+
+      it('unstars dashboard if it is starred', () => {
+        state.selectedDashboard = starredDashboard;
+        mock.onPost(starredDashboard.user_starred_path).reply(200);
+
+        return testAction(toggleStarredValue, null, state, [
+          { type: types.REQUEST_DASHBOARD_STARRING },
+          { type: types.RECEIVE_DASHBOARD_STARRING_FAILURE },
+        ]);
+      });
     });
   });
 

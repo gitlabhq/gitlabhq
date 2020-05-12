@@ -18,7 +18,6 @@ describe('Compare diff version dropdowns', () => {
     };
     localState.targetBranchName = 'baseVersion';
     localState.mergeRequestDiffs = diffsMockData;
-    gon.features = { diffCompareWithHead: true };
   });
 
   describe('selectedTargetIndex', () => {
@@ -128,14 +127,6 @@ describe('Compare diff version dropdowns', () => {
         selectedTargetIndex: expectedFirstVersion.version_index,
       });
       assertVersions(targetVersions);
-    });
-
-    it('does not list head version if feature flag is not enabled', () => {
-      gon.features = { diffCompareWithHead: false };
-      setupTest();
-      const targetVersions = getters.diffCompareDropdownTargetVersions(localState, getters);
-
-      expect(targetVersions.find(version => version.isHead)).toBeUndefined();
     });
   });
 

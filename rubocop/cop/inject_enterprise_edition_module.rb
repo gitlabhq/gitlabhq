@@ -17,6 +17,8 @@ module RuboCop
       CHECK_LINE_METHODS =
         Set.new(%i[include_if_ee extend_if_ee prepend_if_ee]).freeze
 
+      CHECK_LINE_METHODS_REGEXP = Regexp.union(CHECK_LINE_METHODS.map(&:to_s)).freeze
+
       DISALLOW_METHODS = Set.new(%i[include extend prepend]).freeze
 
       def ee_const?(node)
@@ -48,7 +50,13 @@ module RuboCop
         # the expression is the last line _of code_.
         last_line -= 1 if buffer.source.end_with?("\n")
 
-        add_offense(node, message: INVALID_LINE) if line < last_line
+        last_line_content = buffer.source.split("\n")[-1]
+
+        if CHECK_LINE_METHODS_REGEXP.match?(last_line_content)
+          ignore_node(node)
+        elsif line < last_line
+          add_offense(node, message: INVALID_LINE)
+        end
       end
 
       def verify_argument_type(node)

@@ -15,6 +15,7 @@ const notStarredDashboards = dashboardGitResponse.filter(({ starred }) => !starr
 describe('DashboardsDropdown', () => {
   let wrapper;
   let mockDashboards;
+  let mockSelectedDashboard;
 
   function createComponent(props, opts = {}) {
     const storeOpts = {
@@ -23,6 +24,7 @@ describe('DashboardsDropdown', () => {
       },
       computed: {
         allDashboards: () => mockDashboards,
+        selectedDashboard: () => mockSelectedDashboard,
       },
     };
 
@@ -46,6 +48,7 @@ describe('DashboardsDropdown', () => {
 
   beforeEach(() => {
     mockDashboards = dashboardGitResponse;
+    mockSelectedDashboard = null;
   });
 
   describe('when it receives dashboards data', () => {
@@ -153,13 +156,12 @@ describe('DashboardsDropdown', () => {
     let modalDirective;
 
     beforeEach(() => {
+      [mockSelectedDashboard] = dashboardGitResponse;
       modalDirective = jest.fn();
       duplicateDashboardAction = jest.fn().mockResolvedValue();
 
       wrapper = createComponent(
-        {
-          selectedDashboard: dashboardGitResponse[0],
-        },
+        {},
         {
           directives: {
             GlModal: modalDirective,

@@ -26,7 +26,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:code_navigation, @project)
     push_frontend_feature_flag(:widget_visibility_polling, @project, default_enabled: true)
     push_frontend_feature_flag(:merge_ref_head_comments, @project)
-    push_frontend_feature_flag(:diff_compare_with_head, @project)
     push_frontend_feature_flag(:accessibility_merge_request_widget, @project)
   end
 

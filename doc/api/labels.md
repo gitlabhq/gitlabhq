@@ -7,6 +7,8 @@ The `description_html` - was added to response JSON in [GitLab 12.7](https://git
 
 Get all labels for a given project.
 
+By default, this request returns 20 results at a time because the API results [are paginated](README.md#pagination).
+
 ```plaintext
 GET /projects/:id/labels
 ```

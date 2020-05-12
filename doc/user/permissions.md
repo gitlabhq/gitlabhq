@@ -403,7 +403,9 @@ instance and project. In addition, all admins can use the admin interface under
 | See events in the system              |                 |             |          | ✓      |
 | Admin interface                       |                 |             |          | ✓      |
 
-1. Only if the job was triggered by the user
+1. Only if the job was:
+   - Triggered by the user
+   - [Since GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/35069), not run for a protected branch
 
 ### Job permissions
 

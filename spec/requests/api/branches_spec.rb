@@ -630,7 +630,7 @@ describe API::Branches do
       post api(route, user), params: { branch: 'new_design3', ref: 'foo' }
 
       expect(response).to have_gitlab_http_status(:bad_request)
-      expect(json_response['message']).to eq('Invalid reference name: new_design3')
+      expect(json_response['message']).to eq('Invalid reference name: foo')
     end
   end
 

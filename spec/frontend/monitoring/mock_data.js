@@ -325,6 +325,7 @@ export const dashboardGitResponse = [
     project_blob_path: null,
     path: 'config/prometheus/common_metrics.yml',
     starred: false,
+    user_starred_path: `${mockProjectDir}/metrics_user_starred_dashboards?dashboard_path=config/prometheus/common_metrics.yml`,
   },
   {
     default: false,
@@ -334,6 +335,7 @@ export const dashboardGitResponse = [
     project_blob_path: `${mockProjectDir}/-/blob/master/.gitlab/dashboards/dashboard.yml`,
     path: '.gitlab/dashboards/dashboard.yml',
     starred: true,
+    user_starred_path: `${mockProjectDir}/metrics_user_starred_dashboards?dashboard_path=.gitlab/dashboards/dashboard.yml`,
   },
   ...customDashboardsData,
 ];

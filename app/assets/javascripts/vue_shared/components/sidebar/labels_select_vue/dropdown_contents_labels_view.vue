@@ -1,16 +1,18 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex';
-import { GlLoadingIcon, GlButton, GlIcon, GlSearchBoxByType, GlLink } from '@gitlab/ui';
+import { GlLoadingIcon, GlButton, GlSearchBoxByType, GlLink } from '@gitlab/ui';
 
 import { UP_KEY_CODE, DOWN_KEY_CODE, ENTER_KEY_CODE, ESC_KEY_CODE } from '~/lib/utils/keycodes';
+
+import LabelItem from './label_item.vue';
 
 export default {
   components: {
     GlLoadingIcon,
     GlButton,
-    GlIcon,
     GlSearchBoxByType,
     GlLink,
+    LabelItem,
   },
   data() {
     return {
@@ -60,11 +62,6 @@ export default {
       'updateSelectedLabels',
       'toggleDropdownContents',
     ]),
-    getDropdownLabelBoxStyle(label) {
-      return {
-        backgroundColor: label.color,
-      };
-    },
     isLabelSelected(label) {
       return this.selectedLabelsList.includes(label.id);
     },
@@ -138,24 +135,19 @@ export default {
         @click="toggleDropdownContents"
       />
     </div>
-    <div class="dropdown-input">
+    <div class="dropdown-input" @click.stop="() => {}">
       <gl-search-box-by-type v-model="searchKey" :autofocus="true" />
     </div>
-    <div v-if="!labelsFetchInProgress" ref="labelsListContainer" class="dropdown-content">
+    <div v-show="!labelsFetchInProgress" ref="labelsListContainer" class="dropdown-content">
       <ul class="list-unstyled mb-0">
         <li v-for="(label, index) in visibleLabels" :key="label.id" class="d-block text-left">
-          <gl-link
-            class="d-flex align-items-baseline text-break-word label-item"
-            :class="{ 'is-focused': index === currentHighlightItem }"
-            @click="handleLabelClick(label)"
-          >
-            <gl-icon v-show="label.set" name="mobile-issue-close" class="mr-2 align-self-center" />
-            <span v-show="!label.set" class="mr-3 pr-2"></span>
-            <span class="dropdown-label-box" :style="getDropdownLabelBoxStyle(label)"></span>
-            <span>{{ label.title }}</span>
-          </gl-link>
+          <label-item
+            :label="label"
+            :highlight="index === currentHighlightItem"
+            @clickLabel="handleLabelClick(label)"
+          />
         </li>
-        <li v-if="!visibleLabels.length" class="p-2 text-center">
+        <li v-show="!visibleLabels.length" class="p-2 text-center">
           {{ __('No matching results') }}
         </li>
       </ul>
@@ -170,9 +162,9 @@ export default {
           >
         </li>
         <li>
-          <gl-link :href="labelsManagePath" class="d-flex flex-row text-break-word label-item">
-            {{ footerManageLabelTitle }}
-          </gl-link>
+          <gl-link :href="labelsManagePath" class="d-flex flex-row text-break-word label-item">{{
+            footerManageLabelTitle
+          }}</gl-link>
         </li>
       </ul>
     </div>

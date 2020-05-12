@@ -155,29 +155,12 @@ describe('LabelsSelect Mutations', () => {
   describe(`${types.UPDATE_SELECTED_LABELS}`, () => {
     const labels = [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }];
 
-    it('updates `state.labels` to include `touched` and `set` props based on provided `labels` param when `state.allowMultiselect` is `true`', () => {
-      const updatedLabelIds = [2, 4];
-      const state = {
-        labels,
-        allowMultiselect: true,
-      };
-      mutations[types.UPDATE_SELECTED_LABELS](state, { labels });
-
-      state.labels.forEach(label => {
-        if (updatedLabelIds.includes(label.id)) {
-          expect(label.touched).toBe(true);
-          expect(label.set).toBe(true);
-        }
-      });
-    });
-
-    it('updates `state.labels` to include `touched` and `set` props based on provided `labels` param when `state.allowMultiselect` is `false`', () => {
+    it('updates `state.labels` to include `touched` and `set` props based on provided `labels` param', () => {
       const updatedLabelIds = [2];
       const state = {
         labels,
-        allowMultiselect: false,
       };
-      mutations[types.UPDATE_SELECTED_LABELS](state, { labels });
+      mutations[types.UPDATE_SELECTED_LABELS](state, { labels: [{ id: 2 }] });
 
       state.labels.forEach(label => {
         if (updatedLabelIds.includes(label.id)) {

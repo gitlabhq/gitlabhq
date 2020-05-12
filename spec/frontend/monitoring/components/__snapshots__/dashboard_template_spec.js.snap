@@ -16,7 +16,6 @@ exports[`Dashboard template matches the default snapshot 1`] = `
         data-qa-selector="dashboards_filter_dropdown"
         defaultbranch="master"
         id="monitor-dashboards-dropdown"
-        selecteddashboard="[object Object]"
         toggle-class="dropdown-menu-toggle"
       />
     </div>
