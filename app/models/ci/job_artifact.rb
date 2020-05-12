@@ -35,7 +35,8 @@ module Ci
       lsif: 'lsif.json',
       dotenv: '.env',
       cobertura: 'cobertura-coverage.xml',
-      terraform: 'tfplan.json'
+      terraform: 'tfplan.json',
+      cluster_applications: 'gl-cluster-applications.json'
     }.freeze
 
     INTERNAL_TYPES = {
@@ -52,6 +53,7 @@ module Ci
       lsif: :gzip,
       dotenv: :gzip,
       cobertura: :gzip,
+      cluster_applications: :gzip,
 
       # All these file formats use `raw` as we need to store them uncompressed
       # for Frontend to fetch the files and do analysis
@@ -153,7 +155,8 @@ module Ci
       dotenv: 16,
       cobertura: 17,
       terraform: 18, # Transformed json
-      accessibility: 19
+      accessibility: 19,
+      cluster_applications: 20
     }
 
     enum file_format: {

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe WikiPage::Meta do
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project) { create(:project, :wiki_repo) }
   let_it_be(:other_project) { create(:project) }
 
   describe 'Associations' do
@@ -169,8 +169,11 @@ describe WikiPage::Meta do
       described_class.find_or_create(last_known_slug, wiki_page)
     end
 
-    def create_previous_version(title = old_title, slug = last_known_slug)
-      create(:wiki_page_meta, title: title, project: project, canonical_slug: slug)
+    def create_previous_version(title: old_title, slug: last_known_slug, date: wiki_page.version.commit.committed_date)
+      create(:wiki_page_meta,
+             title: title, project: project,
+             created_at: date, updated_at: date,
+             canonical_slug: slug)
     end
 
     def create_context
@@ -198,6 +201,8 @@ describe WikiPage::Meta do
           title: wiki_page.title,
           project: wiki_page.wiki.project
         )
+        expect(meta.updated_at).to eq(wiki_page.version.commit.committed_date)
+        expect(meta.created_at).not_to be_after(meta.updated_at)
         expect(meta.slugs.where(slug: last_known_slug)).to exist
         expect(meta.slugs.canonical.where(slug: wiki_page.slug)).to exist
       end
@@ -209,22 +214,32 @@ describe WikiPage::Meta do
       end
     end
 
-    context 'the slug is too long' do
-      let(:last_known_slug) { FFaker::Lorem.characters(2050) }
+    context 'there are problems' do
+      context 'the slug is too long' do
+        let(:last_known_slug) { FFaker::Lorem.characters(2050) }
 
-      it 'raises an error' do
-        expect { find_record }.to raise_error ActiveRecord::ValueTooLong
-      end
-    end
-
-    context 'a conflicting record exists' do
-      before do
-        create(:wiki_page_meta, project: project, canonical_slug: last_known_slug)
-        create(:wiki_page_meta, project: project, canonical_slug: current_slug)
+        it 'raises an error' do
+          expect { find_record }.to raise_error ActiveRecord::ValueTooLong
+        end
       end
 
-      it 'raises an error' do
-        expect { find_record }.to raise_error(ActiveRecord::RecordInvalid)
+      context 'a conflicting record exists' do
+        before do
+          create(:wiki_page_meta, project: project, canonical_slug: last_known_slug)
+          create(:wiki_page_meta, project: project, canonical_slug: current_slug)
+        end
+
+        it 'raises an error' do
+          expect { find_record }.to raise_error(ActiveRecord::RecordInvalid)
+        end
+      end
+
+      context 'the wiki page is not valid' do
+        let(:wiki_page) { build(:wiki_page, project: project, title: nil) }
+
+        it 'raises an error' do
+          expect { find_record }.to raise_error(described_class::WikiPageInvalid)
+        end
       end
     end
 
@@ -254,6 +269,17 @@ describe WikiPage::Meta do
         #   ON CONFLICT  DO NOTHING RETURNING id
         #
         # RELEASE SAVEPOINT active_record_2
+        let(:query_limit) { 5 }
+      end
+    end
+
+    context 'the commit happened a day ago' do
+      before do
+        allow(wiki_page.version.commit).to receive(:committed_date).and_return(1.day.ago)
+      end
+
+      include_examples 'metadata examples' do
+        # Identical to the base case.
         let(:query_limit) { 5 }
       end
     end
@@ -289,6 +315,33 @@ describe WikiPage::Meta do
         #
         # RELEASE SAVEPOINT active_record_2
         let(:query_limit) { 3 }
+      end
+    end
+
+    context 'a record exists in the DB, but we need to update timestamps' do
+      let(:last_known_slug) { current_slug }
+      let(:old_title) { title }
+
+      before do
+        create_previous_version(date: 1.week.ago)
+      end
+
+      include_examples 'metadata examples' do
+        # We need the query, and the update
+        # SAVEPOINT active_record_2
+        #
+        # SELECT * FROM wiki_page_meta
+        #   INNER JOIN wiki_page_slugs
+        #     ON wiki_page_slugs.wiki_page_meta_id = wiki_page_meta.id
+        #   WHERE wiki_page_meta.project_id = ?
+        #     AND wiki_page_slugs.canonical = TRUE
+        #     AND wiki_page_slugs.slug = ?
+        #   LIMIT 2
+        #
+        # UPDATE wiki_page_meta SET updated_at = ?date WHERE id = ?id
+        #
+        # RELEASE SAVEPOINT active_record_2
+        let(:query_limit) { 4 }
       end
     end
 
@@ -359,14 +412,14 @@ describe WikiPage::Meta do
     end
 
     context 'we want to change the slug back to a previous version' do
-      let(:slug_1) { 'foo' }
-      let(:slug_2) { 'bar' }
+      let(:slug_1) { generate(:sluggified_title) }
+      let(:slug_2) { generate(:sluggified_title) }
 
       let(:wiki_page) { create(:wiki_page, title: slug_1, project: project) }
       let(:last_known_slug) { slug_2 }
 
       before do
-        meta = create_previous_version(title, slug_1)
+        meta = create_previous_version(title: title, slug: slug_1)
         meta.canonical_slug = slug_2
       end
 

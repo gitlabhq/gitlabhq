@@ -66,5 +66,6 @@ FactoryBot.define do
   end
 
   sequence(:wiki_page_title) { |n| "Page #{n}" }
+  sequence(:wiki_filename) { |n| "Page_#{n}.md" }
   sequence(:sluggified_title) { |n| "slug-#{n}" }
 end
