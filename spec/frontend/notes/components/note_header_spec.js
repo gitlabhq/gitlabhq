@@ -19,7 +19,6 @@ describe('NoteHeader component', () => {
   const findActionText = () => wrapper.find({ ref: 'actionText' });
   const findTimestampLink = () => wrapper.find({ ref: 'noteTimestampLink' });
   const findTimestamp = () => wrapper.find({ ref: 'noteTimestamp' });
-  const findConfidentialIndicator = () => wrapper.find({ ref: 'confidentialIndicator' });
   const findSpinner = () => wrapper.find({ ref: 'spinner' });
 
   const author = {
@@ -245,17 +244,6 @@ describe('NoteHeader component', () => {
           done();
         });
       });
-    });
-  });
-
-  describe('with confidentiality indicator', () => {
-    it.each`
-      status   | condition
-      ${true}  | ${'shows'}
-      ${false} | ${'hides'}
-    `('$condition icon indicator when isConfidential is $status', ({ status }) => {
-      createComponent({ isConfidential: status });
-      expect(findConfidentialIndicator().exists()).toBe(status);
     });
   });
 });

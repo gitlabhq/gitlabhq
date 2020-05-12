@@ -73,13 +73,13 @@ describe('MergeRequestStore', () => {
       it('returns true when nothingToMerge', () => {
         store.state = stateKey.nothingToMerge;
 
-        expect(store.isNothingToMergeState).toEqual(true);
+        expect(store.isNothingToMergeState).toBe(true);
       });
 
       it('returns false when not nothingToMerge', () => {
         store.state = 'state';
 
-        expect(store.isNothingToMergeState).toEqual(false);
+        expect(store.isNothingToMergeState).toBe(false);
       });
     });
   });
@@ -88,13 +88,13 @@ describe('MergeRequestStore', () => {
     it('should set the add ci config path', () => {
       store.setData({ ...mockData });
 
-      expect(store.mergeRequestAddCiConfigPath).toEqual('/group2/project2/new/pipeline');
+      expect(store.mergeRequestAddCiConfigPath).toBe('/group2/project2/new/pipeline');
     });
 
     it('should set humanAccess=Maintainer when user has that role', () => {
       store.setData({ ...mockData });
 
-      expect(store.humanAccess).toEqual('Maintainer');
+      expect(store.humanAccess).toBe('Maintainer');
     });
 
     it('should set pipelinesEmptySvgPath', () => {
