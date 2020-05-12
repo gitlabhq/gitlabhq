@@ -1,17 +1,13 @@
 <script>
 import { mapState, mapActions } from 'vuex';
-
 import SkeletonLoader from '../components/skeleton_loader.vue';
 import EditArea from '../components/edit_area.vue';
-import SavedChangesMessage from '../components/saved_changes_message.vue';
 import InvalidContentMessage from '../components/invalid_content_message.vue';
 import SubmitChangesError from '../components/submit_changes_error.vue';
-
+import { SUCCESS_ROUTE } from '../router/constants';
 import appDataQuery from '../graphql/queries/app_data.query.graphql';
 import sourceContentQuery from '../graphql/queries/source_content.query.graphql';
-
 import createFlash from '~/flash';
-
 import { LOAD_CONTENT_ERROR } from '../constants';
 
 export default {
@@ -19,7 +15,6 @@ export default {
     SkeletonLoader,
     EditArea,
     InvalidContentMessage,
-    SavedChangesMessage,
     SubmitChangesError,
   },
   apollo: {
@@ -50,7 +45,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(['isSavingChanges', 'submitChangesError', 'savedContentMeta']),
+    ...mapState(['isSavingChanges', 'submitChangesError']),
     isLoadingContent() {
       return this.$apollo.queries.sourceContent.loading;
     },
@@ -62,24 +57,15 @@ export default {
     ...mapActions(['setContent', 'submitChanges', 'dismissSubmitChangesError']),
     onSubmit({ content }) {
       this.setContent(content);
-      this.submitChanges();
+
+      return this.submitChanges().then(() => this.$router.push(SUCCESS_ROUTE));
     },
   },
 };
 </script>
 <template>
   <div class="container d-flex gl-flex-direction-column pt-2 h-100">
-    <!-- Success view -->
-    <saved-changes-message
-      v-if="savedContentMeta"
-      :branch="savedContentMeta.branch"
-      :commit="savedContentMeta.commit"
-      :merge-request="savedContentMeta.mergeRequest"
-      :return-url="appData.returnUrl"
-    />
-
-    <!-- Main view -->
-    <template v-else-if="appData.isSupportedContent">
+    <template v-if="appData.isSupportedContent">
       <skeleton-loader v-if="isLoadingContent" class="w-75 gl-align-self-center gl-mt-5" />
       <submit-changes-error
         v-if="submitChangesError"
@@ -97,7 +83,6 @@ export default {
       />
     </template>
 
-    <!-- Error view -->
     <invalid-content-message v-else class="w-75" />
   </div>
 </template>

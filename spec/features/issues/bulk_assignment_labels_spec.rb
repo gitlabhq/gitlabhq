@@ -274,7 +274,7 @@ describe 'Issues > Labels bulk assignment' do
           expect(find("#issue_#{issue2.id}")).to have_content 'First Release'
 
           check 'check-all-issues'
-          open_milestone_dropdown(['No Milestone'])
+          open_milestone_dropdown(['No milestone'])
           update_issues
 
           expect(find("#issue_#{issue1.id}")).to have_content 'bug'

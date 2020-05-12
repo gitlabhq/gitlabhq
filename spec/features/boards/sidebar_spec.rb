@@ -217,7 +217,7 @@ describe 'Issue Boards', :js do
 
         wait_for_requests
 
-        click_link "No Milestone"
+        click_link "No milestone"
 
         wait_for_requests
 

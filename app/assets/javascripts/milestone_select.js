@@ -56,7 +56,7 @@ export default class MilestoneSelect {
       const $loading = $block.find('.block-loading').fadeOut();
       selectedMilestoneDefault = showAny ? '' : null;
       selectedMilestoneDefault =
-        showNo && defaultNo ? __('No Milestone') : selectedMilestoneDefault;
+        showNo && defaultNo ? __('No milestone') : selectedMilestoneDefault;
       selectedMilestone = $dropdown.data('selected') || selectedMilestoneDefault;
 
       if (issueUpdateURL) {
@@ -74,14 +74,14 @@ export default class MilestoneSelect {
               extraOptions.push({
                 id: null,
                 name: null,
-                title: __('Any Milestone'),
+                title: __('Any milestone'),
               });
             }
             if (showNo) {
               extraOptions.push({
                 id: -1,
-                name: __('No Milestone'),
-                title: __('No Milestone'),
+                name: __('No milestone'),
+                title: __('No milestone'),
               });
             }
             if (showUpcoming) {

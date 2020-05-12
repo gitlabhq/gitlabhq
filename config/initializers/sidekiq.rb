@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'sidekiq/web'
-
 def enable_reliable_fetch?
   return true unless Feature::FlipperFeature.table_exists?
 
@@ -14,20 +12,9 @@ def enable_semi_reliable_fetch_mode?
   Feature.enabled?(:gitlab_sidekiq_enable_semi_reliable_fetcher, default_enabled: true)
 end
 
-# Disable the Sidekiq Rack session since GitLab already has its own session store.
-# CSRF protection still works (https://github.com/mperham/sidekiq/commit/315504e766c4fd88a29b7772169060afc4c40329).
-Sidekiq::Web.set :sessions, false
-
 # Custom Queues configuration
 queues_config_hash = Gitlab::Redis::Queues.params
 queues_config_hash[:namespace] = Gitlab::Redis::Queues::SIDEKIQ_NAMESPACE
-
-# Default is to retry 25 times with exponential backoff. That's too much.
-Sidekiq.default_worker_options = { retry: 3 }
-
-if Rails.env.development?
-  Sidekiq.default_worker_options[:backtrace] = true
-end
 
 enable_json_logs = Gitlab.config.sidekiq.log_format == 'json'
 enable_sidekiq_memory_killer = ENV['SIDEKIQ_MEMORY_KILLER_MAX_RSS'].to_i.nonzero?

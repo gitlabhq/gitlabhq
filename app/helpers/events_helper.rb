@@ -167,6 +167,8 @@ module EventsHelper
       project_issue_url(event.project, id: event.note_target, anchor: dom_id(event.target))
     elsif event.merge_request_note?
       project_merge_request_url(event.project, id: event.note_target, anchor: dom_id(event.target))
+    elsif event.design_note?
+      design_url(event.note_target, anchor: dom_id(event.note))
     else
       polymorphic_url([event.project.namespace.becomes(Namespace),
                        event.project, event.note_target],
@@ -236,6 +238,16 @@ module EventsHelper
       concat "&nbsp;".html_safe
       concat content_tag(:span, event.author.to_reference, class: "username")
     end
+  end
+
+  private
+
+  def design_url(design, opts)
+    designs_project_issue_url(
+      design.project,
+      design.issue,
+      opts.merge(vueroute: design.filename)
+    )
   end
 end
 

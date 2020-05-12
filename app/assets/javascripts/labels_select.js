@@ -186,13 +186,13 @@ export default class LabelsSelect {
                 if (showNo) {
                   extraData.unshift({
                     id: 0,
-                    title: __('No Label'),
+                    title: __('No label'),
                   });
                 }
                 if (showAny) {
                   extraData.unshift({
                     isAny: true,
-                    title: __('Any Label'),
+                    title: __('Any label'),
                   });
                 }
                 if (extraData.length) {
@@ -294,7 +294,7 @@ export default class LabelsSelect {
 
           if (selected && selected.id === 0) {
             this.selected = [];
-            return __('No Label');
+            return __('No label');
           } else if (isSelected) {
             this.selected.push(title);
           } else if (!isSelected && title) {

@@ -1,2 +1,2 @@
-// eslint-disable-next-line import/prefer-default-export
-export const HOME_ROUTE_NAME = 'home';
+export const HOME_ROUTE = { name: 'home' };
+export const SUCCESS_ROUTE = { name: 'success' };

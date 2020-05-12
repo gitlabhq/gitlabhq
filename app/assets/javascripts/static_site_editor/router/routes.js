@@ -1,10 +1,17 @@
 import Home from '../pages/home.vue';
-import { HOME_ROUTE_NAME } from './constants';
+import Success from '../pages/success.vue';
+
+import { HOME_ROUTE, SUCCESS_ROUTE } from './constants';
 
 export default [
   {
-    name: HOME_ROUTE_NAME,
+    ...HOME_ROUTE,
     path: '/',
     component: Home,
+  },
+  {
+    ...SUCCESS_ROUTE,
+    path: '/success',
+    component: Success,
   },
 ];

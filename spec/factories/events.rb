@@ -32,6 +32,16 @@ FactoryBot.define do
         wiki_page { create(:wiki_page, container: project) }
       end
     end
+
+    trait :for_design do
+      transient do
+        design { create(:design, issue: create(:issue, project: project)) }
+        note { create(:note, author: author, project: project, noteable: design) }
+      end
+
+      action { Event::COMMENTED }
+      target { note }
+    end
   end
 
   factory :push_event, class: 'PushEvent' do

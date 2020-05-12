@@ -119,6 +119,9 @@ following.
 To take advantage of group sync, group owners or maintainers will need to [create one
 or more LDAP group links](#adding-group-links).
 
+NOTE: **Note:**
+If an LDAP user is a group member when LDAP Synchronization is added, and they are not part of the LDAP group, they will be removed from the group.
+
 ### Adding group links
 
 Once [group sync has been configured](#group-sync) on the instance, one or more LDAP

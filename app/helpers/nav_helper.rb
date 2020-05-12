@@ -54,7 +54,8 @@ module NavHelper
     current_path?('merge_requests#show') ||
       current_path?('projects/merge_requests/conflicts#show') ||
       current_path?('issues#show') ||
-      current_path?('milestones#show')
+      current_path?('milestones#show') ||
+      current_path?('issues#designs')
   end
 
   def admin_monitoring_nav_links

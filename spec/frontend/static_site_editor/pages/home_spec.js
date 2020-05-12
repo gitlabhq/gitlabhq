@@ -1,21 +1,17 @@
 import Vuex from 'vuex';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
-
 import createState from '~/static_site_editor/store/state';
-
+import { SUCCESS_ROUTE } from '~/static_site_editor/router/constants';
 import Home from '~/static_site_editor/pages/home.vue';
-
 import SkeletonLoader from '~/static_site_editor/components/skeleton_loader.vue';
 import EditArea from '~/static_site_editor/components/edit_area.vue';
 import InvalidContentMessage from '~/static_site_editor/components/invalid_content_message.vue';
 import SubmitChangesError from '~/static_site_editor/components/submit_changes_error.vue';
-import SavedChangesMessage from '~/static_site_editor/components/saved_changes_message.vue';
 
 import {
   returnUrl,
   sourceContent as content,
   sourceContentTitle as title,
-  savedContentMeta,
   submitChangesError,
 } from '../mock_data';
 
@@ -27,6 +23,7 @@ describe('static_site_editor/pages/home', () => {
   let wrapper;
   let store;
   let $apollo;
+  let $router;
   let setContentActionMock;
   let submitChangesActionMock;
   let dismissSubmitChangesErrorActionMock;
@@ -63,12 +60,19 @@ describe('static_site_editor/pages/home', () => {
     };
   };
 
+  const buildRouter = () => {
+    $router = {
+      push: jest.fn(),
+    };
+  };
+
   const buildWrapper = (data = {}) => {
     wrapper = shallowMount(Home, {
       localVue,
       store,
       mocks: {
         $apollo,
+        $router,
       },
       data() {
         return {
@@ -83,10 +87,10 @@ describe('static_site_editor/pages/home', () => {
   const findInvalidContentMessage = () => wrapper.find(InvalidContentMessage);
   const findSkeletonLoader = () => wrapper.find(SkeletonLoader);
   const findSubmitChangesError = () => wrapper.find(SubmitChangesError);
-  const findSavedChangesMessage = () => wrapper.find(SavedChangesMessage);
 
   beforeEach(() => {
     buildApollo();
+    buildRouter();
     buildStore();
   });
 
@@ -94,23 +98,6 @@ describe('static_site_editor/pages/home', () => {
     wrapper.destroy();
     wrapper = null;
     $apollo = null;
-  });
-
-  it('renders the saved changes message when changes are submitted successfully', () => {
-    buildStore({ initialState: { returnUrl, savedContentMeta } });
-    buildWrapper();
-
-    expect(findSavedChangesMessage().exists()).toBe(true);
-    expect(findSavedChangesMessage().props()).toEqual({
-      returnUrl,
-      ...savedContentMeta,
-    });
-  });
-
-  it('does not render the saved changes message when changes are not submitted', () => {
-    buildWrapper();
-
-    expect(findSavedChangesMessage().exists()).toBe(false);
   });
 
   describe('when content is loaded', () => {
@@ -123,19 +110,13 @@ describe('static_site_editor/pages/home', () => {
       expect(findEditArea().exists()).toBe(true);
     });
 
-    it('provides source content to the edit area', () => {
+    it('provides source content, returnUrl, and isSavingChanges to the edit area', () => {
       expect(findEditArea().props()).toMatchObject({
         title,
         content,
+        returnUrl,
+        savingChanges: true,
       });
-    });
-
-    it('provides returnUrl to the edit area', () => {
-      expect(findEditArea().props('returnUrl')).toBe(returnUrl);
-    });
-
-    it('provides isSavingChanges to the edit area', () => {
-      expect(findEditArea().props('savingChanges')).toBe(true);
     });
   });
 
@@ -210,6 +191,8 @@ describe('static_site_editor/pages/home', () => {
     const newContent = `new ${content}`;
 
     beforeEach(() => {
+      submitChangesActionMock.mockResolvedValueOnce();
+
       buildWrapper({ sourceContent: { title, content } });
       findEditArea().vm.$emit('submit', { content: newContent });
     });
@@ -220,6 +203,12 @@ describe('static_site_editor/pages/home', () => {
 
     it('dispatches submitChanges action', () => {
       expect(submitChangesActionMock).toHaveBeenCalled();
+    });
+
+    it('pushes success route when submitting changes succeeds', () => {
+      return wrapper.vm.$nextTick().then(() => {
+        expect($router.push).toHaveBeenCalledWith(SUCCESS_ROUTE);
+      });
     });
   });
 });

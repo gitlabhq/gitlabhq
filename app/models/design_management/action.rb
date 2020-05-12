@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_dependency 'design_management'
+
 module DesignManagement
   class Action < ApplicationRecord
     include WithUploads

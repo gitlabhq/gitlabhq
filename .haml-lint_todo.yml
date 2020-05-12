@@ -385,7 +385,6 @@ linters:
       - "ee/app/views/shared/members/ee/_sso_badge.html.haml"
       - "ee/app/views/shared/milestones/_burndown.html.haml"
       - "ee/app/views/shared/milestones/_weight.html.haml"
-      - "ee/app/views/shared/promotions/_promote_burndown_charts.html.haml"
       - "ee/app/views/shared/promotions/_promote_issue_weights.html.haml"
       - "ee/app/views/shared/promotions/_promote_repository_features.html.haml"
       - "ee/app/views/shared/promotions/_promote_servicedesk.html.haml"

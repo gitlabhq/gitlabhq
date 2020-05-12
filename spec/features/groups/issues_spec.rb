@@ -186,4 +186,25 @@ describe 'Group issues page' do
       end
     end
   end
+
+  context 'issues pagination' do
+    let(:user_in_group) { create(:group_member, :maintainer, user: create(:user), group: group ).user }
+
+    let!(:issues) do
+      (1..25).to_a.map { |index| create(:issue, project: project, title: "Issue #{index}") }
+    end
+
+    before do
+      sign_in(user_in_group)
+      visit issues_group_path(group)
+    end
+
+    it 'shows the pagination' do
+      expect(page).to have_selector('.gl-pagination')
+    end
+
+    it 'first pagination item is active' do
+      expect(page).to have_css(".js-first-button a.page-link.active")
+    end
+  end
 end
