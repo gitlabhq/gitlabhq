@@ -1,4 +1,4 @@
-import { shallowMount } from '@vue/test-utils';
+import { mount, shallowMount } from '@vue/test-utils';
 import { GlAlert, GlLoadingIcon } from '@gitlab/ui';
 import AlertDetails from '~/alert_management/components/alert_details.vue';
 
@@ -11,18 +11,20 @@ describe('AlertDetails', () => {
   const newIssuePath = 'root/alerts/-/issues/new';
 
   function mountComponent({
-    data = { alert: {} },
+    data,
     createIssueFromAlertEnabled = false,
     loading = false,
+    mountMethod = shallowMount,
+    stubs = {},
   } = {}) {
-    wrapper = shallowMount(AlertDetails, {
+    wrapper = mountMethod(AlertDetails, {
       propsData: {
         alertId: 'alertId',
         projectPath: 'projectPath',
         newIssuePath,
       },
       data() {
-        return data;
+        return { alert: { ...mockAlert }, ...data };
       },
       provide: {
         glFeatures: { createIssueFromAlertEnabled },
@@ -36,6 +38,7 @@ describe('AlertDetails', () => {
           },
         },
       },
+      stubs,
     });
   }
 
@@ -147,6 +150,34 @@ describe('AlertDetails', () => {
       it('does not display an error when dismissed', () => {
         mountComponent({ data: { errored: true, isErrorDismissed: true } });
         expect(wrapper.find(GlAlert).exists()).toBe(false);
+      });
+    });
+
+    describe('header', () => {
+      const findHeader = () => wrapper.find('[data-testid="alert-header"]');
+      const stubs = { TimeAgoTooltip: '<span>now</span>' };
+
+      describe('individual header fields', () => {
+        describe.each`
+          severity    | createdAt                     | monitoringTool | result
+          ${'MEDIUM'} | ${'2020-04-17T23:18:14.996Z'} | ${null}        | ${'Medium • Reported now'}
+          ${'INFO'}   | ${'2020-04-17T23:18:14.996Z'} | ${'Datadog'}   | ${'Info • Reported now by Datadog'}
+        `(
+          `When severity=$severity, createdAt=$createdAt, monitoringTool=$monitoringTool`,
+          ({ severity, createdAt, monitoringTool, result }) => {
+            beforeEach(() => {
+              mountComponent({
+                data: { alert: { ...mockAlert, severity, createdAt, monitoringTool } },
+                mountMethod: mount,
+                stubs,
+              });
+            });
+
+            it('header text is shown correctly', () => {
+              expect(findHeader().text()).toBe(result);
+            });
+          },
+        );
       });
     });
   });

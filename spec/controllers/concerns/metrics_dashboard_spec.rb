@@ -134,10 +134,10 @@ describe MetricsDashboard do
             it 'adds starred dashboard information and sorts the list' do
               all_dashboards = json_response['all_dashboards'].map { |dashboard| dashboard.slice('display_name', 'starred', 'user_starred_path') }
               expected_response = [
-                { "display_name" => "errors.yml", "starred" => true, 'user_starred_path' => nil },
-                { "display_name" => "test.yml", "starred" => true, 'user_starred_path' => nil },
+                { "display_name" => "Default", "starred" => false, 'user_starred_path' => nil },
                 { "display_name" => "anomaly.yml", "starred" => false, 'user_starred_path' => nil },
-                { "display_name" => "Default", "starred" => false, 'user_starred_path' => nil }
+                { "display_name" => "errors.yml", "starred" => true, 'user_starred_path' => nil },
+                { "display_name" => "test.yml", "starred" => true, 'user_starred_path' => nil }
               ]
 
               expect(all_dashboards).to eql expected_response

@@ -3,6 +3,7 @@ query alertDetails($fullPath: ID!, $alertId: String) {
         alertManagementAlerts(iid: $alertId) {
           nodes {
             iid
+            createdAt
             endedAt
             eventCount
             monitoringTool

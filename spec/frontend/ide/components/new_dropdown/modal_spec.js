@@ -91,22 +91,31 @@ describe('new file modal component', () => {
         expect(vm.entryName).toBe('test-path');
       });
 
-      it('updated name', () => {
-        vm.name = 'index.js';
+      it('does not reset entryName to its old value if empty', () => {
+        vm.entryName = 'hello';
+        vm.entryName = '';
 
-        expect(vm.entryName).toBe('index.js');
+        expect(vm.entryName).toBe('');
+      });
+    });
+
+    describe('open', () => {
+      it('sets entryName to path provided if modalType is rename', () => {
+        vm.open('rename', 'test-path');
+
+        expect(vm.entryName).toBe('test-path');
       });
 
-      it('removes leading/trailing spaces when found in the new name', () => {
-        vm.entryName = ' index.js ';
+      it("appends '/' to the path if modalType isn't rename", () => {
+        vm.open('blob', 'test-path');
 
-        expect(vm.entryName).toBe('index.js');
+        expect(vm.entryName).toBe('test-path/');
       });
 
-      it('does not remove internal spaces in the file name', () => {
-        vm.entryName = ' In Praise of Idleness.txt ';
+      it('leaves entryName blank if no path is provided', () => {
+        vm.open('blob');
 
-        expect(vm.entryName).toBe('In Praise of Idleness.txt');
+        expect(vm.entryName).toBe('');
       });
     });
   });

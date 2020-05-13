@@ -38,7 +38,6 @@ module MetricsDashboard
     dashboard_finder
       .find_all_paths(project_for_dashboard)
       .map(&method(:amend_dashboard))
-      .sort_by { |dashboard| [dashboard[:starred] ? 0 : 1, dashboard[:display_name].downcase] }
   end
 
   def amend_dashboard(dashboard)

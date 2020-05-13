@@ -642,7 +642,7 @@ const generateMockTemplatingData = data => {
 
 const responseForSimpleTextVariable = {
   simpleText: {
-    label: 'simpleText',
+    label: 'var-simpleText',
     type: 'text',
     value: 'Simple text',
   },
@@ -650,7 +650,7 @@ const responseForSimpleTextVariable = {
 
 const responseForAdvTextVariable = {
   advText: {
-    label: 'Variable 4',
+    label: 'var-Variable 4',
     type: 'text',
     value: 'default',
   },
@@ -658,7 +658,7 @@ const responseForAdvTextVariable = {
 
 const responseForSimpleCustomVariable = {
   simpleCustom: {
-    label: 'simpleCustom',
+    label: 'var-simpleCustom',
     options: [
       {
         default: false,
@@ -682,7 +682,7 @@ const responseForSimpleCustomVariable = {
 
 const responseForAdvancedCustomVariableWithoutOptions = {
   advCustomWithoutOpts: {
-    label: 'advCustomWithoutOpts',
+    label: 'var-advCustomWithoutOpts',
     options: [],
     type: 'custom',
   },
@@ -690,7 +690,7 @@ const responseForAdvancedCustomVariableWithoutOptions = {
 
 const responseForAdvancedCustomVariableWithoutLabel = {
   advCustomWithoutLabel: {
-    label: 'advCustomWithoutLabel',
+    label: 'var-advCustomWithoutLabel',
     options: [
       {
         default: false,
@@ -710,7 +710,7 @@ const responseForAdvancedCustomVariableWithoutLabel = {
 const responseForAdvancedCustomVariable = {
   ...responseForSimpleCustomVariable,
   advCustomNormal: {
-    label: 'Advanced Var',
+    label: 'var-Advanced Var',
     options: [
       {
         default: false,

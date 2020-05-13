@@ -42,6 +42,8 @@ module Types
     mount_mutation Mutations::Snippets::Create
     mount_mutation Mutations::Snippets::MarkAsSpam
     mount_mutation Mutations::JiraImport::Start
+    mount_mutation Mutations::DesignManagement::Upload, calls_gitaly: true
+    mount_mutation Mutations::DesignManagement::Delete, calls_gitaly: true
   end
 end
 

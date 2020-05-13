@@ -514,7 +514,7 @@ do that, so we'll follow regular object-oriented practices that we define the
 interface first here.
 
 For example, suppose we have a few more optional parameters for EE. We can move the
-paramters out of the `Grape::API` class to a helper module, so we can inject it
+parameters out of the `Grape::API` class to a helper module, so we can inject it
 before it would be used in the class.
 
 ```ruby

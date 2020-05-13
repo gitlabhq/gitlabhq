@@ -1,4 +1,5 @@
 import { isString } from 'lodash';
+import { addPrefixToLabels } from './utils';
 import { VARIABLE_TYPES } from '../constants';
 
 /**
@@ -149,7 +150,7 @@ export const parseTemplatingVariables = ({ variables = {} } = {}) =>
     if (parsedVar) {
       acc[key] = {
         ...parsedVar,
-        label: parsedVar.label || key,
+        label: addPrefixToLabels(parsedVar.label || key),
       };
     }
     return acc;

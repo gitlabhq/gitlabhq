@@ -21,16 +21,7 @@ describe Gitlab::GitAccessDesign do
     end
 
     context 'when the user is allowed to manage designs' do
-      # TODO This test is being temporarily skipped unless run in EE,
-      # as we are in the process of moving Design Management to FOSS in 13.0
-      # in steps. In the current step the policies have not yet been moved
-      # which means that although the `GitAccessDesign` class has moved, the
-      # user will always be denied access in FOSS.
-      #
-      # See https://gitlab.com/gitlab-org/gitlab/-/issues/212566#note_327724283.
       it do
-        skip 'See https://gitlab.com/gitlab-org/gitlab/-/issues/212566#note_327724283' unless Gitlab.ee?
-
         is_expected.to be_a(::Gitlab::GitAccessResult::Success)
       end
     end

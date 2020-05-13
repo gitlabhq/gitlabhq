@@ -1,0 +1,5 @@
+---
+title: Ruby metrics now include USS and PSS memory readings
+merge_request: 31707
+author:
+type: added

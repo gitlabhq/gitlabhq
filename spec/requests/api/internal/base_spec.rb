@@ -917,6 +917,23 @@ describe API::Internal::Base do
         expect(json_response['status']).to be_falsy
       end
     end
+
+    context 'for design repositories' do
+      let(:gl_repository) { Gitlab::GlRepository::DESIGN.identifier_for_container(project) }
+
+      it 'does not allow access' do
+        post(api('/internal/allowed'),
+             params: {
+               key_id: key.id,
+               project: project.full_path,
+               gl_repository: gl_repository,
+               secret_token: secret_token,
+               protocol: 'ssh'
+             })
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
   end
 
   describe 'POST /internal/post_receive', :clean_gitlab_redis_shared_state do

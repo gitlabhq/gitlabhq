@@ -11,32 +11,20 @@ export default {
   },
   data() {
     return {
-      name: '',
-      type: modalTypes.blob,
+      entryName: '',
+      modalType: modalTypes.blob,
       path: '',
     };
   },
   computed: {
     ...mapState(['entries']),
     ...mapGetters('fileTemplates', ['templateTypes']),
-    entryName: {
-      get() {
-        if (this.type === modalTypes.rename) {
-          return this.name || this.path;
-        }
-
-        return this.name || (this.path ? `${this.path}/` : '');
-      },
-      set(val) {
-        this.name = val.trim();
-      },
-    },
     modalTitle() {
       const entry = this.entries[this.path];
 
-      if (this.type === modalTypes.tree) {
+      if (this.modalType === modalTypes.tree) {
         return __('Create new directory');
-      } else if (this.type === modalTypes.rename) {
+      } else if (this.modalType === modalTypes.rename) {
         return entry.type === modalTypes.tree ? __('Rename folder') : __('Rename file');
       }
 
@@ -45,16 +33,16 @@ export default {
     buttonLabel() {
       const entry = this.entries[this.path];
 
-      if (this.type === modalTypes.tree) {
+      if (this.modalType === modalTypes.tree) {
         return __('Create directory');
-      } else if (this.type === modalTypes.rename) {
+      } else if (this.modalType === modalTypes.rename) {
         return entry.type === modalTypes.tree ? __('Rename folder') : __('Rename file');
       }
 
       return __('Create file');
     },
     isCreatingNewFile() {
-      return this.type === modalTypes.blob;
+      return this.modalType === modalTypes.blob;
     },
     placeholder() {
       return this.isCreatingNewFile ? 'dir/file_name' : 'dir/';
@@ -63,8 +51,8 @@ export default {
   methods: {
     ...mapActions(['createTempEntry', 'renameEntry']),
     submitForm() {
-      if (this.type === modalTypes.rename) {
-        if (this.entries[this.entryName] && !this.entries[this.entryName].deleted) {
+      if (this.modalType === modalTypes.rename) {
+        if (!this.entries[this.entryName]?.deleted) {
           flash(
             sprintf(s__('The name "%{name}" is already taken in this directory.'), {
               name: this.entryName,
@@ -77,32 +65,32 @@ export default {
           );
         } else {
           let parentPath = this.entryName.split('/');
-          const entryName = parentPath.pop();
+          const name = parentPath.pop();
           parentPath = parentPath.join('/');
 
           this.renameEntry({
             path: this.path,
-            name: entryName,
+            name,
             parentPath,
           });
         }
       } else {
         this.createTempEntry({
-          name: this.name,
-          type: this.type,
+          name: this.entryName,
+          type: this.modalType,
         });
       }
     },
     createFromTemplate(template) {
       this.createTempEntry({
         name: template.name,
-        type: this.type,
+        type: this.modalType,
       });
 
       this.$refs.modal.toggle();
     },
     focusInput() {
-      const name = this.entries[this.entryName] ? this.entries[this.entryName].name : null;
+      const name = this.entries[this.entryName]?.name;
       const inputValue = this.$refs.fieldName.value;
 
       this.$refs.fieldName.focus();
@@ -112,19 +100,24 @@ export default {
       }
     },
     resetData() {
-      this.name = '';
+      this.entryName = '';
       this.path = '';
-      this.type = modalTypes.blob;
+      this.modalType = modalTypes.blob;
     },
     open(type = modalTypes.blob, path = '') {
-      this.type = type;
+      this.modalType = type;
       this.path = path;
+
+      if (this.modalType === modalTypes.rename) {
+        this.entryName = path;
+      } else {
+        this.entryName = path ? `${path}/` : '';
+      }
+
       this.$refs.modal.show();
 
       // wait for modal to show first
-      this.$nextTick(() => {
-        this.focusInput();
-      });
+      this.$nextTick(() => this.focusInput());
     },
     close() {
       this.$refs.modal.hide();
@@ -150,7 +143,7 @@ export default {
       <div class="col-sm-10">
         <input
           ref="fieldName"
-          v-model="entryName"
+          v-model.trim="entryName"
           type="text"
           class="form-control qa-full-file-path"
           :placeholder="placeholder"

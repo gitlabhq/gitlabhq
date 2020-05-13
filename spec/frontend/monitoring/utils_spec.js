@@ -192,9 +192,10 @@ describe('monitoring/utils', () => {
         direction: 'left',
         anchor: 'top',
         pod: 'POD',
+        'var-pod': 'POD',
       });
 
-      expect(promCustomVariablesFromUrl()).toEqual(expect.objectContaining({ pod: 'POD' }));
+      expect(promCustomVariablesFromUrl()).toEqual(expect.objectContaining({ 'var-pod': 'POD' }));
     });
 
     it('returns an empty object when no custom variables are present', () => {

@@ -37,10 +37,10 @@ const MOCK_DATA = {
   noteHtml: `
       <div class="suggestion">
       <div class="line">-oldtest</div>
-    </div>  
+    </div>
     <div class="suggestion">
       <div class="line">+newtest</div>
-    </div>    
+    </div>
   `,
   isApplied: false,
   helpPagePath: 'path_to_docs',
@@ -59,7 +59,7 @@ describe('Suggestion component', () => {
 
     diffTable = vm.generateDiff(0).$mount().$el;
 
-    spyOn(vm, 'renderSuggestions');
+    jest.spyOn(vm, 'renderSuggestions').mockImplementation(() => {});
     vm.renderSuggestions();
     Vue.nextTick(done);
   });
@@ -83,10 +83,6 @@ describe('Suggestion component', () => {
   describe('generateDiff', () => {
     it('generates a diff table', () => {
       expect(diffTable.querySelector('.md-suggestion-diff')).not.toBeNull();
-    });
-
-    it('generates a diff table that contains contents of `oldLineContent`', () => {
-      expect(diffTable.innerHTML.includes(vm.fromContent)).toBe(true);
     });
 
     it('generates a diff table that contains contents the suggested lines', () => {

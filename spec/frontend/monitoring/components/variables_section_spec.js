@@ -15,8 +15,8 @@ describe('Metrics dashboard/variables section component', () => {
   let store;
   let wrapper;
   const sampleVariables = {
-    label1: 'pod',
-    label2: 'main',
+    'var-label1': 'pod',
+    'var-label2': 'main',
   };
 
   const createShallowWrapper = () => {

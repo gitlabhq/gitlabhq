@@ -327,7 +327,8 @@ describe('Monitoring store Getters', () => {
   describe('getCustomVariablesArray', () => {
     let state;
     const sampleVariables = {
-      label1: 'pod',
+      'var-label1': 'pod',
+      'var-label2': 'env',
     };
 
     beforeEach(() => {
@@ -340,7 +341,7 @@ describe('Monitoring store Getters', () => {
       mutations[types.SET_PROM_QUERY_VARIABLES](state, sampleVariables);
       const variablesArray = getters.getCustomVariablesArray(state);
 
-      expect(variablesArray).toEqual(['label1', 'pod']);
+      expect(variablesArray).toEqual(['label1', 'pod', 'label2', 'env']);
     });
 
     it('transforms the promVariables object to an empty array when no keys are present', () => {

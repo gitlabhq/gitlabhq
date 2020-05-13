@@ -540,15 +540,12 @@ Save the following to `kibana.yml`:
 elasticsearch:
   enabled: false
 
-logstash:
+filebeat:
   enabled: false
 
 kibana:
   enabled: true
   elasticsearchHosts: http://elastic-stack-elasticsearch-master.gitlab-managed-apps.svc.cluster.local:9200
-
-elasticseach-curator:
-  enabled: false
 ```
 
 Then install it on your cluster:
@@ -561,7 +558,7 @@ helm install --name kibana gitlab/elastic-stack --values kibana.yml
 To access Kibana, forward the port to your local machine:
 
 ```shell
-kubectl port-forward svc/kibana 5601:5601
+kubectl port-forward svc/kibana-kibana 5601:5601
 ```
 
 Then, you can visit Kibana at `http://localhost:5601`.

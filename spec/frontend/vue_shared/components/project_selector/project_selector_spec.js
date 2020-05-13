@@ -3,7 +3,7 @@ import { head } from 'lodash';
 
 import { GlSearchBoxByType, GlInfiniteScroll } from '@gitlab/ui';
 import { mount, createLocalVue } from '@vue/test-utils';
-import { trimText } from 'spec/helpers/text_helper';
+import { trimText } from 'helpers/text_helper';
 import ProjectListItem from '~/vue_shared/components/project_selector/project_list_item.vue';
 import ProjectSelector from '~/vue_shared/components/project_selector/project_selector.vue';
 
@@ -12,7 +12,6 @@ const localVue = createLocalVue();
 describe('ProjectSelector component', () => {
   let wrapper;
   let vm;
-  loadJSONFixtures('static/projects.json');
   const allProjects = getJSONFixture('static/projects.json');
   const searchResults = allProjects.slice(0, 5);
   let selected = [];
@@ -21,9 +20,6 @@ describe('ProjectSelector component', () => {
   const findSearchInput = () => wrapper.find(GlSearchBoxByType).find('input');
 
   beforeEach(() => {
-    jasmine.clock().install();
-    jasmine.clock().mockDate();
-
     wrapper = mount(Vue.extend(ProjectSelector), {
       localVue,
       propsData: {
@@ -41,7 +37,6 @@ describe('ProjectSelector component', () => {
   });
 
   afterEach(() => {
-    jasmine.clock().uninstall();
     vm.$destroy();
   });
 
@@ -49,40 +44,15 @@ describe('ProjectSelector component', () => {
     expect(wrapper.findAll('.js-project-list-item').length).toBe(5);
   });
 
-  it(`triggers a (debounced) search when the search input value changes`, () => {
-    spyOn(vm, '$emit');
+  it(`triggers a search when the search input value changes`, () => {
+    jest.spyOn(vm, '$emit').mockImplementation(() => {});
     const query = 'my test query!';
     const searchInput = findSearchInput();
 
     searchInput.setValue(query);
     searchInput.trigger('input');
 
-    expect(vm.$emit).not.toHaveBeenCalledWith();
-    jasmine.clock().tick(501);
-
     expect(vm.$emit).toHaveBeenCalledWith('searched', query);
-  });
-
-  it(`debounces the search input`, () => {
-    spyOn(vm, '$emit');
-    const searchInput = findSearchInput();
-
-    const updateSearchQuery = (count = 0) => {
-      if (count === 10) {
-        jasmine.clock().tick(101);
-
-        expect(vm.$emit).toHaveBeenCalledTimes(1);
-        expect(vm.$emit).toHaveBeenCalledWith('searched', `search query #9`);
-      } else {
-        searchInput.setValue(`search query #${count}`);
-        searchInput.trigger('input');
-
-        jasmine.clock().tick(400);
-        updateSearchQuery(count + 1);
-      }
-    };
-
-    updateSearchQuery();
   });
 
   it(`includes a placeholder in the search box`, () => {
@@ -92,14 +62,14 @@ describe('ProjectSelector component', () => {
   });
 
   it(`triggers a "bottomReached" event when user has scrolled to the bottom of the list`, () => {
-    spyOn(vm, '$emit');
+    jest.spyOn(vm, '$emit').mockImplementation(() => {});
     wrapper.find(GlInfiniteScroll).vm.$emit('bottomReached');
 
     expect(vm.$emit).toHaveBeenCalledWith('bottomReached');
   });
 
   it(`triggers a "projectClicked" event when a project is clicked`, () => {
-    spyOn(vm, '$emit');
+    jest.spyOn(vm, '$emit').mockImplementation(() => {});
     wrapper.find(ProjectListItem).vm.$emit('click', head(searchResults));
 
     expect(vm.$emit).toHaveBeenCalledWith('projectClicked', head(searchResults));

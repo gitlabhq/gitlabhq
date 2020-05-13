@@ -1769,6 +1769,12 @@ msgstr ""
 msgid "AlertManagement|Overview"
 msgstr ""
 
+msgid "AlertManagement|Reported %{when}"
+msgstr ""
+
+msgid "AlertManagement|Reported %{when} by %{tool}"
+msgstr ""
+
 msgid "AlertManagement|Resolved"
 msgstr ""
 

@@ -85,6 +85,14 @@ module Types
 
     field :task_completion_status, Types::TaskCompletionStatus, null: false,
           description: 'Task completion status of the issue'
+
+    field :designs, Types::DesignManagement::DesignCollectionType, null: true,
+          method: :design_collection,
+          deprecated: { reason: 'Use `designCollection`', milestone: '12.2' },
+          description: 'The designs associated with this issue'
+
+    field :design_collection, Types::DesignManagement::DesignCollectionType, null: true,
+          description: 'Collection of design images associated with this issue'
   end
 end
 

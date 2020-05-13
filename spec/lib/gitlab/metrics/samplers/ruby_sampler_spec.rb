@@ -8,7 +8,6 @@ describe Gitlab::Metrics::Samplers::RubySampler do
 
   before do
     allow(Gitlab::Metrics::NullMetric).to receive(:instance).and_return(null_metric)
-    stub_env('enable_memory_uss_pss', "1")
   end
 
   describe '#initialize' do
@@ -35,6 +34,21 @@ describe Gitlab::Metrics::Samplers::RubySampler do
       expect(sampler.metrics[:process_proportional_memory_bytes]).to receive(:set).with({}, 10_000)
 
       sampler.sample
+    end
+
+    context 'when USS+PSS sampling is disabled via environment' do
+      before do
+        stub_env('enable_memory_uss_pss', "0")
+      end
+
+      it 'does not sample USS or PSS' do
+        expect(Gitlab::Metrics::System).not_to receive(:memory_usage_uss_pss)
+
+        expect(sampler.metrics[:process_unique_memory_bytes]).not_to receive(:set)
+        expect(sampler.metrics[:process_proportional_memory_bytes]).not_to receive(:set)
+
+        sampler.sample
+      end
     end
 
     it 'adds a metric containing the amount of open file descriptors' do

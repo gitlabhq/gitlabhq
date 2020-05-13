@@ -1,10 +1,11 @@
-import { omit } from 'lodash';
+import { pickBy } from 'lodash';
 import { queryToObject, mergeUrlParams, removeParams } from '~/lib/utils/url_utility';
 import {
   timeRangeParamNames,
   timeRangeFromParams,
   timeRangeToParams,
 } from '~/lib/utils/datetime_range';
+import { VARIABLE_PREFIX } from './constants';
 
 /**
  * List of non time range url parameters
@@ -122,19 +123,16 @@ export const timeRangeFromUrl = (search = window.location.search) => {
 };
 
 /**
- * Returns an array with user defined variables from the URL
+ * User-defined variables from the URL are extracted. The variables
+ * begin with a constant prefix so that it doesn't collide with
+ * other URL params.
  *
- * @returns {Array} The custom variables defined by the
- * user in the URL
  * @param {String} New URL
+ * @returns {Object} The custom variables defined by the user in the URL
  */
 
-export const promCustomVariablesFromUrl = (search = window.location.search) => {
-  const params = queryToObject(search);
-  const paramsToRemove = timeRangeParamNames.concat(dashboardParams);
-
-  return omit(params, paramsToRemove);
-};
+export const promCustomVariablesFromUrl = (search = window.location.search) =>
+  pickBy(queryToObject(search), (val, key) => key.startsWith(VARIABLE_PREFIX));
 
 /**
  * Returns a URL with no time range based on the current URL.

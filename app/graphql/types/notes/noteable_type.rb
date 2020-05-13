@@ -17,6 +17,8 @@ module Types
             Types::MergeRequestType
           when Snippet
             Types::SnippetType
+          when ::DesignManagement::Design
+            Types::DesignManagement::DesignType
           else
             raise "Unknown GraphQL type for #{object}"
           end
@@ -25,5 +27,3 @@ module Types
     end
   end
 end
-
-Types::Notes::NoteableType.extend_if_ee('::EE::Types::Notes::NoteableType')
