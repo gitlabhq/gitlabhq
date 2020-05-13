@@ -483,6 +483,16 @@ class Group < Namespace
     false
   end
 
+  def execute_hooks(data, hooks_scope)
+    # NOOP
+    # TODO: group hooks https://gitlab.com/gitlab-org/gitlab/-/issues/216904
+  end
+
+  def execute_services(data, hooks_scope)
+    # NOOP
+    # TODO: group hooks https://gitlab.com/gitlab-org/gitlab/-/issues/216904
+  end
+
   private
 
   def update_two_factor_requirement

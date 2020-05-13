@@ -5,8 +5,8 @@ require 'securerandom'
 module QA
   module Resource
     class Runner < Base
-      attr_writer :name, :tags, :image
-      attr_accessor :config, :token
+      attr_writer :name, :tags, :image, :executor, :executor_image
+      attr_accessor :config, :token, :run_untagged
 
       attribute :id
       attribute :project do
@@ -20,12 +20,16 @@ module QA
         @name || "qa-runner-#{SecureRandom.hex(4)}"
       end
 
-      def tags
-        @tags || %w[qa e2e]
-      end
-
       def image
         @image || 'gitlab/gitlab-runner:alpine'
+      end
+
+      def executor
+        @executor || :shell
+      end
+
+      def executor_image
+        @executor_image || 'registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-qa-alpine-ruby-2.6'
       end
 
       def fabricate_via_api!
@@ -33,22 +37,25 @@ module QA
           runner.pull
           runner.token = @token ||= project.runners_token
           runner.address = Runtime::Scenario.gitlab_address
-          runner.tags = tags
+          runner.tags = @tags if @tags
           runner.image = image
           runner.config = config if config
+          runner.executor = executor
+          runner.executor_image = executor_image if executor == :docker
+          runner.run_untagged = run_untagged if run_untagged
           runner.register!
         end
       end
 
       def remove_via_api!
-        runners = project.runners(tag_list: tags)
+        runners = project.runners(tag_list: @tags)
         unless runners && !runners.empty?
-          raise "Project #{project.path_with_namespace} has no runners with tags #{tags}."
+          raise "Project #{project.path_with_namespace} has no runners#{" with tags #{@tags}." if @tags&.any?}"
         end
 
         this_runner = runners.find { |runner| runner[:description] == name }
         unless this_runner
-          raise "Project #{project.path_with_namespace} does not have a runner with a description matching #{name} and tags #{tags}. Runners available: #{runners}"
+          raise "Project #{project.path_with_namespace} does not have a runner with a description matching #{name} #{"or tags #{@tags}" if @tags&.any?}. Runners available: #{runners}"
         end
 
         @id = this_runner[:id]

@@ -411,7 +411,9 @@ describe API::ProjectExport, :clean_gitlab_redis_cache do
         it 'starts', :sidekiq_might_not_need_inline do
           params = { description: "Foo" }
 
-          expect_any_instance_of(Projects::ImportExport::ExportService).to receive(:execute)
+          expect_next_instance_of(Projects::ImportExport::ExportService) do |service|
+            expect(service).to receive(:execute)
+          end
           post api(path, project.owner), params: params
 
           expect(response).to have_gitlab_http_status(:accepted)

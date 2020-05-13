@@ -54,22 +54,23 @@ export default {
       'issuable-info-container': !canReorder,
       'card-body': canReorder,
     }"
-    class="item-body d-flex align-items-center p-2 p-lg-3 py-xl-2 px-xl-3"
+    class="item-body d-flex align-items-center py-2 px-3"
   >
     <div class="item-contents d-flex align-items-center flex-wrap flex-grow-1 flex-xl-nowrap">
       <!-- Title area: Status icon (XL) and title -->
-      <div class="item-title d-flex align-items-center mb-xl-0">
-        <span ref="iconElementXL">
+      <div class="item-title d-flex align-items-xl-center mb-xl-0">
+        <div ref="iconElementXL">
           <icon
             v-if="hasState"
             ref="iconElementXL"
+            class="mr-2"
             :class="iconClass"
             :name="iconName"
             :size="16"
             :title="stateTitle"
             :aria-label="state"
           />
-        </span>
+        </div>
         <gl-tooltip :target="() => $refs.iconElementXL">
           <span v-html="stateTitle"></span>
         </gl-tooltip>
@@ -97,17 +98,6 @@ export default {
           <div
             class="item-path-area item-path-id d-flex align-items-center mr-2 mt-2 mt-xl-0 ml-xl-2"
           >
-            <span ref="iconElement">
-              <icon
-                v-if="hasState"
-                :class="iconClass"
-                :name="iconName"
-                :title="stateTitle"
-                :aria-label="state"
-                data-html="true"
-                class="d-xl-none"
-              />
-            </span>
             <gl-tooltip :target="() => this.$refs.iconElement">
               <span v-html="stateTitle"></span>
             </gl-tooltip>
@@ -159,7 +149,7 @@ export default {
       v-gl-tooltip
       :disabled="removeDisabled"
       type="button"
-      class="btn btn-default btn-svg btn-item-remove js-issue-item-remove-button mr-xl-0 align-self-xl-center"
+      class="btn btn-default btn-svg btn-item-remove js-issue-item-remove-button"
       data-qa-selector="remove_related_issue_button"
       :title="__('Remove')"
       :aria-label="__('Remove')"

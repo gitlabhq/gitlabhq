@@ -7,8 +7,9 @@ describe Projects::ImportExport::ExportService do
     let!(:user) { create(:user) }
     let(:project) { create(:project) }
     let(:shared) { project.import_export_shared }
-    let(:service) { described_class.new(project, user) }
     let!(:after_export_strategy) { Gitlab::ImportExport::AfterExportStrategies::DownloadNotificationStrategy.new }
+
+    subject(:service) { described_class.new(project, user) }
 
     before do
       project.add_maintainer(user)
@@ -184,7 +185,7 @@ describe Projects::ImportExport::ExportService do
       end
     end
 
-    context 'when measurable params are provided' do
+    it_behaves_like 'measurable service' do
       let(:base_log_data) do
         {
           class: described_class.name,
@@ -194,44 +195,8 @@ describe Projects::ImportExport::ExportService do
         }
       end
 
-      subject(:service) { described_class.new(project, user) }
-
-      context 'when measurement is enabled' do
-        let(:logger) { double(:logger) }
-        let(:measurable_options) do
-          {
-            measurement_enabled: true,
-            measurement_logger: logger
-          }
-        end
-
-        before do
-          allow(logger).to receive(:info)
-        end
-
-        it 'measure service execution with Gitlab::Utils::Measuring' do
-          expect(Gitlab::Utils::Measuring).to receive(:execute_with).with(true, logger, base_log_data).and_call_original
-          expect_next_instance_of(Gitlab::Utils::Measuring) do |measuring|
-            expect(measuring).to receive(:with_measuring).and_call_original
-          end
-
-          service.execute(after_export_strategy, measurable_options)
-        end
-      end
-
-      context 'when measurement is disabled' do
-        let(:measurable_options) do
-          {
-            measurement_enabled: false
-          }
-        end
-
-        it 'does not measure service execution' do
-          expect(Gitlab::Utils::Measuring).to receive(:execute_with).with(false, nil, base_log_data).and_call_original
-          expect(Gitlab::Utils::Measuring).not_to receive(:new)
-
-          service.execute(after_export_strategy, measurable_options)
-        end
+      after do
+        service.execute(after_export_strategy)
       end
     end
   end

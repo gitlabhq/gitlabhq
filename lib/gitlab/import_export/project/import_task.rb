@@ -59,7 +59,7 @@ module Gitlab
               import_params
             )
 
-            service.execute(measurement_options)
+            service.execute
           end
         end
 

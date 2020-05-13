@@ -10,7 +10,7 @@ describe WikiPages::BaseService do
     counter = Gitlab::UsageDataCounters::WikiPageCounter
     error = counter::UnknownEvent
 
-    let(:subject) { bad_service_class.new(project, user, {}) }
+    let(:subject) { bad_service_class.new(container: project, current_user: user) }
 
     context 'the class implements usage_counter_action incorrectly' do
       let(:bad_service_class) do

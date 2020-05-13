@@ -8,6 +8,7 @@ module QA
       let(:runner) do
         Resource::Runner.fabricate_via_api! do |runner|
           runner.name = executor
+          runner.run_untagged = true
         end
       end
 
@@ -17,9 +18,6 @@ module QA
           mr.file_name = '.gitlab-ci.yml'
           mr.file_content = <<~EOF
             test:
-              tags:
-                - qa
-                - e2e
               script:
                 - echo '(66.67%) covered'
           EOF

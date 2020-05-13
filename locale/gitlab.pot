@@ -8,8 +8,6 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-24 17:33-0400\n"
-"PO-Revision-Date: 2020-04-24 17:33-0400\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -1738,16 +1736,10 @@ msgstr ""
 msgid "AlertManagement|End time"
 msgstr ""
 
-msgid "AlertManagement|End time:"
-msgstr ""
-
 msgid "AlertManagement|Events"
 msgstr ""
 
-msgid "AlertManagement|Events:"
-msgstr ""
-
-msgid "AlertManagement|Full Alert Details"
+msgid "AlertManagement|Full alert details"
 msgstr ""
 
 msgid "AlertManagement|High"
@@ -1780,10 +1772,10 @@ msgstr ""
 msgid "AlertManagement|Resolved"
 msgstr ""
 
-msgid "AlertManagement|Start time"
+msgid "AlertManagement|Service"
 msgstr ""
 
-msgid "AlertManagement|Start time:"
+msgid "AlertManagement|Start time"
 msgstr ""
 
 msgid "AlertManagement|Status"
@@ -1796,6 +1788,9 @@ msgid "AlertManagement|There was an error displaying the alert. Please refresh t
 msgstr ""
 
 msgid "AlertManagement|There was an error displaying the alerts. Confirm your endpoint's configuration details to ensure alerts appear."
+msgstr ""
+
+msgid "AlertManagement|Tool"
 msgstr ""
 
 msgid "AlertManagement|Triggered"
@@ -23710,9 +23705,6 @@ msgid "Vulnerabilities"
 msgstr ""
 
 msgid "Vulnerabilities over time"
-msgstr ""
-
-msgid "Vulnerability List"
 msgstr ""
 
 msgid "Vulnerability remediated. Review before resolving."

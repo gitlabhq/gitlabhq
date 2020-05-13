@@ -370,10 +370,10 @@ use of extensions and concurrent index removal, you need at least PostgreSQL 9.2
 
 ## 7. Redis
 
-GitLab requires at least Redis 2.8.
+GitLab requires at least Redis 5.0.
 
-If you are using Debian 8 or Ubuntu 14.04 and up, you can simply install
-Redis 2.8 with:
+If you are using Debian 10 or Ubuntu 20.04 and up, you can install
+Redis 5.0 with:
 
 ```shell
 sudo apt-get install redis-server

@@ -65,7 +65,7 @@ class Projects::WikisController < Projects::ApplicationController
   def update
     return render('empty') unless can?(current_user, :create_wiki, @project)
 
-    @page = WikiPages::UpdateService.new(@project, current_user, wiki_params).execute(@page)
+    @page = WikiPages::UpdateService.new(container: @project, current_user: current_user, params: wiki_params).execute(@page)
 
     if @page.valid?
       redirect_to(
@@ -81,7 +81,7 @@ class Projects::WikisController < Projects::ApplicationController
   end
 
   def create
-    @page = WikiPages::CreateService.new(@project, current_user, wiki_params).execute
+    @page = WikiPages::CreateService.new(container: @project, current_user: current_user, params: wiki_params).execute
 
     if @page.persisted?
       redirect_to(
@@ -112,7 +112,7 @@ class Projects::WikisController < Projects::ApplicationController
   end
 
   def destroy
-    WikiPages::DestroyService.new(@project, current_user).execute(@page)
+    WikiPages::DestroyService.new(container: @project, current_user: current_user).execute(@page)
 
     redirect_to project_wiki_path(@project, :home),
                 status: :found,

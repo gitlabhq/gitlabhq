@@ -49,6 +49,12 @@ describe Groups::ImportExport::ExportService do
       FileUtils.rm_rf(archive_path)
     end
 
+    it 'saves the version' do
+      expect(Gitlab::ImportExport::VersionSaver).to receive(:new).and_call_original
+
+      service.execute
+    end
+
     it 'saves the models using ndjson tree saver' do
       stub_feature_flags(group_export_ndjson: true)
 

@@ -52,7 +52,7 @@ module Groups
       end
 
       def savers
-        [tree_exporter, file_saver]
+        [version_saver, tree_exporter, file_saver]
       end
 
       def tree_exporter
@@ -65,11 +65,15 @@ module Groups
       end
 
       def tree_exporter_class
-        if ::Feature.enabled?(:group_export_ndjson, @group&.parent)
+        if ::Feature.enabled?(:group_export_ndjson, @group&.parent, default_enabled: true)
           Gitlab::ImportExport::Group::TreeSaver
         else
           Gitlab::ImportExport::Group::LegacyTreeSaver
         end
+      end
+
+      def version_saver
+        Gitlab::ImportExport::VersionSaver.new(shared: shared)
       end
 
       def file_saver

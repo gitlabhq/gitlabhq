@@ -489,6 +489,27 @@ describe Projects::CreateService, '#execute' do
     end
   end
 
+  it_behaves_like 'measurable service' do
+    before do
+      opts.merge!(
+        current_user: user,
+        path: 'foo'
+      )
+    end
+
+    let(:base_log_data) do
+      {
+        class: Projects::CreateService.name,
+        current_user: user.name,
+        project_full_path: "#{user.namespace.full_path}/#{opts[:path]}"
+      }
+    end
+
+    after do
+      create_project(user, opts)
+    end
+  end
+
   def create_project(user, opts)
     Projects::CreateService.new(user, opts).execute
   end

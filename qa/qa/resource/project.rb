@@ -171,7 +171,12 @@ module QA
       end
 
       def runners(tag_list: nil)
-        response = get Runtime::API::Request.new(api_client, "#{api_runners_path}?tag_list=#{tag_list.compact.join(',')}").url
+        response = if tag_list
+                     get Runtime::API::Request.new(api_client, "#{api_runners_path}?tag_list=#{tag_list.compact.join(',')}").url
+                   else
+                     get Runtime::API::Request.new(api_client, "#{api_runners_path}").url
+                   end
+
         parse_body(response)
       end
 

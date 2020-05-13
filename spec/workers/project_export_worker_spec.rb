@@ -24,20 +24,6 @@ describe ProjectExportWorker do
         subject.perform(user.id, project.id, { 'klass' => 'Gitlab::ImportExport::AfterExportStrategies::DownloadNotificationStrategy' })
       end
 
-      context 'with measurement options provided' do
-        it 'calls the ExportService with measurement options' do
-          measurement_options = { measurement_enabled: true }
-          params = {}
-          after_export_strategy = { 'klass' => 'Gitlab::ImportExport::AfterExportStrategies::DownloadNotificationStrategy' }
-
-          expect_next_instance_of(::Projects::ImportExport::ExportService) do |service|
-            expect(service).to receive(:execute).with(instance_of(Gitlab::ImportExport::AfterExportStrategies::DownloadNotificationStrategy), measurement_options)
-          end
-
-          subject.perform(user.id, project.id, after_export_strategy, params, measurement_options)
-        end
-      end
-
       context 'export job' do
         before do
           allow_next_instance_of(::Projects::ImportExport::ExportService) do |service|
@@ -69,7 +55,7 @@ describe ProjectExportWorker do
 
     context 'when it fails' do
       it 'does not raise an exception when strategy is invalid' do
-        expect_any_instance_of(::Projects::ImportExport::ExportService).not_to receive(:execute)
+        expect(::Projects::ImportExport::ExportService).not_to receive(:new)
 
         expect { subject.perform(user.id, project.id, { 'klass' => 'Whatever' }) }.not_to raise_error
       end

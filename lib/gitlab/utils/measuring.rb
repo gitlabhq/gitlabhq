@@ -6,19 +6,14 @@ module Gitlab
   module Utils
     class Measuring
       class << self
-        def execute_with(measurement_enabled, logger, base_log_data)
-          measurement_enabled ? measuring(logger, base_log_data).with_measuring { yield } : yield
-        end
+        attr_writer :logger
 
-        private
-
-        def measuring(logger, base_log_data)
-          Gitlab::Utils::Measuring.new(logger: logger, base_log_data: base_log_data)
+        def logger
+          @logger ||= Logger.new(STDOUT)
         end
       end
 
-      def initialize(logger: nil, base_log_data: {})
-        @logger = logger || Logger.new($stdout)
+      def initialize(base_log_data = {})
         @base_log_data = base_log_data
       end
 
@@ -45,7 +40,7 @@ module Gitlab
 
       private
 
-      attr_reader :gc_stats, :time_to_finish, :sql_calls_count, :logger, :base_log_data
+      attr_reader :gc_stats, :time_to_finish, :sql_calls_count, :base_log_data
 
       def with_count_queries(&block)
         @sql_calls_count = 0
@@ -76,21 +71,8 @@ module Gitlab
 
       def log_info(details)
         details = base_log_data.merge(details)
-        details = details.to_yaml if ActiveSupport::Logger.logger_outputs_to?(logger, STDOUT)
-        logger.info(details)
-      end
-
-      def duration_in_numbers(duration_in_seconds)
-        milliseconds = duration_in_seconds.in_milliseconds % 1.second.in_milliseconds
-        seconds = duration_in_seconds % 1.minute
-        minutes = (duration_in_seconds / 1.minute) % (1.hour / 1.minute)
-        hours = duration_in_seconds / 1.hour
-
-        if hours == 0
-          "%02d:%02d:%03d" % [minutes, seconds, milliseconds]
-        else
-          "%02d:%02d:%02d:%03d" % [hours, minutes, seconds, milliseconds]
-        end
+        details = details.to_yaml if ActiveSupport::Logger.logger_outputs_to?(Measuring.logger, STDOUT)
+        Measuring.logger.info(details)
       end
     end
   end

@@ -180,7 +180,8 @@ module Gitlab
           reply_by_email_enabled: alt_usage_data { Gitlab::IncomingEmail.enabled? },
           signup_enabled: alt_usage_data { Gitlab::CurrentSettings.allow_signup? },
           web_ide_clientside_preview_enabled: alt_usage_data { Gitlab::CurrentSettings.web_ide_clientside_preview_enabled? },
-          ingress_modsecurity_enabled: Feature.enabled?(:ingress_modsecurity)
+          ingress_modsecurity_enabled: Feature.enabled?(:ingress_modsecurity),
+          grafana_link_enabled: alt_usage_data { Gitlab::CurrentSettings.grafana_enabled? }
         }.merge(features_usage_data_container_expiration_policies)
       end
 

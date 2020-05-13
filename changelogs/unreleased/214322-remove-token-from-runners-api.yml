@@ -1,0 +1,5 @@
+---
+title: Remove token attribute from Runners API
+merge_request: 31448
+author:
+type: removed

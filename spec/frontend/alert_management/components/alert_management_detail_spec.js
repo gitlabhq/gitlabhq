@@ -2,6 +2,10 @@ import { shallowMount } from '@vue/test-utils';
 import { GlAlert, GlLoadingIcon } from '@gitlab/ui';
 import AlertDetails from '~/alert_management/components/alert_details.vue';
 
+import mockAlerts from '../mocks/alerts.json';
+
+const mockAlert = mockAlerts[0];
+
 describe('AlertDetails', () => {
   let wrapper;
   const newIssuePath = 'root/alerts/-/issues/new';
@@ -56,7 +60,7 @@ describe('AlertDetails', () => {
 
     describe('when alert is present', () => {
       beforeEach(() => {
-        mountComponent();
+        mountComponent({ data: { alert: mockAlert } });
       });
 
       it('renders a tab with overview information', () => {
@@ -67,8 +71,39 @@ describe('AlertDetails', () => {
         expect(wrapper.find('[data-testid="fullDetailsTab"]').exists()).toBe(true);
       });
 
-      it('renders alert details', () => {
+      it('renders a title', () => {
+        expect(wrapper.find('[data-testid="title"]').text()).toBe(mockAlert.title);
+      });
+
+      it('renders a start time', () => {
         expect(wrapper.find('[data-testid="startTimeItem"]').exists()).toBe(true);
+        expect(wrapper.find('[data-testid="startTimeItem"]').props().time).toBe(
+          mockAlert.startedAt,
+        );
+      });
+    });
+
+    describe('individual alert fields', () => {
+      describe.each`
+        field               | data            | isShown
+        ${'eventCount'}     | ${1}            | ${true}
+        ${'eventCount'}     | ${undefined}    | ${false}
+        ${'monitoringTool'} | ${'New Relic'}  | ${true}
+        ${'monitoringTool'} | ${undefined}    | ${false}
+        ${'service'}        | ${'Prometheus'} | ${true}
+        ${'service'}        | ${undefined}    | ${false}
+      `(`$desc`, ({ field, data, isShown }) => {
+        beforeEach(() => {
+          mountComponent({ data: { alert: { ...mockAlert, [field]: data } } });
+        });
+
+        it(`${field} is ${isShown ? 'displayed' : 'hidden'} correctly`, () => {
+          if (isShown) {
+            expect(wrapper.find(`[data-testid="${field}"]`).text()).toBe(data.toString());
+          } else {
+            expect(wrapper.find(`[data-testid="${field}"]`).exists()).toBe(false);
+          }
+        });
       });
     });
 

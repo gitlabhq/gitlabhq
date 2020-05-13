@@ -11,20 +11,12 @@ module Gitlab
           @file_path    = opts.fetch(:file_path)
           @namespace    = Namespace.find_by_full_path(opts.fetch(:namespace_path))
           @current_user = User.find_by_username(opts.fetch(:username))
-          @measurement_enabled = opts.fetch(:measurement_enabled)
           @logger = logger
         end
 
         private
 
-        attr_reader :project, :namespace, :current_user, :file_path, :project_path, :logger, :measurement_enabled
-
-        def measurement_options
-          {
-            measurement_enabled: measurement_enabled,
-            measurement_logger: logger
-          }
-        end
+        attr_reader :project, :namespace, :current_user, :file_path, :project_path, :logger
 
         def disable_upload_object_storage
           overwrite_uploads_setting('enabled', false) do

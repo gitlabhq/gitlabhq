@@ -172,14 +172,34 @@ describe('Snippet header component', () => {
       });
     });
 
-    it('closes modal and redirects to snippets listing in case of successful mutation', () => {
-      createComponent();
-      wrapper.vm.closeDeleteModal = jest.fn();
+    describe('in case of successful mutation, closes modal and redirects to correct listing', () => {
+      const createDeleteSnippet = (snippetProps = {}) => {
+        createComponent({
+          snippetProps,
+        });
+        wrapper.vm.closeDeleteModal = jest.fn();
 
-      wrapper.vm.deleteSnippet();
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.vm.closeDeleteModal).toHaveBeenCalled();
-        expect(window.location.pathname).toEqual('dashboard/snippets');
+        wrapper.vm.deleteSnippet();
+        return wrapper.vm.$nextTick();
+      };
+
+      it('redirects to dashboard/snippets for personal snippet', () => {
+        return createDeleteSnippet().then(() => {
+          expect(wrapper.vm.closeDeleteModal).toHaveBeenCalled();
+          expect(window.location.pathname).toBe('dashboard/snippets');
+        });
+      });
+
+      it('redirects to project snippets for project snippet', () => {
+        const fullPath = 'foo/bar';
+        return createDeleteSnippet({
+          project: {
+            fullPath,
+          },
+        }).then(() => {
+          expect(wrapper.vm.closeDeleteModal).toHaveBeenCalled();
+          expect(window.location.pathname).toBe(fullPath);
+        });
       });
     });
   });

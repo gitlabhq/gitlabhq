@@ -8,6 +8,9 @@ module Gitlab
       def build(wiki_page, user, action)
         wiki = wiki_page.wiki
 
+        # TODO: group hooks https://gitlab.com/gitlab-org/gitlab/-/issues/216904
+        return {} if wiki.container.is_a?(Group)
+
         {
           object_kind: wiki_page.class.name.underscore,
           user: user.hook_attrs,

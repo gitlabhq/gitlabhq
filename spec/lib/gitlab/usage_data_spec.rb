@@ -174,6 +174,21 @@ describe Gitlab::UsageData, :aggregate_failures do
           expect(subject[:dependency_proxy_enabled]).to eq(Gitlab.config.dependency_proxy.enabled)
           expect(subject[:gitlab_shared_runners_enabled]).to eq(Gitlab.config.gitlab_ci.shared_runners_enabled)
           expect(subject[:web_ide_clientside_preview_enabled]).to eq(Gitlab::CurrentSettings.web_ide_clientside_preview_enabled?)
+          expect(subject[:grafana_link_enabled]).to eq(Gitlab::CurrentSettings.grafana_enabled?)
+        end
+
+        context 'with embedded grafana' do
+          it 'returns true when embedded grafana is enabled' do
+            stub_application_setting(grafana_enabled: true)
+
+            expect(subject[:grafana_link_enabled]).to eq(true)
+          end
+
+          it 'returns false when embedded grafana is disabled' do
+            stub_application_setting(grafana_enabled: false)
+
+            expect(subject[:grafana_link_enabled]).to eq(false)
+          end
         end
 
         context 'with existing container expiration policies' do

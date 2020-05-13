@@ -6,6 +6,7 @@ module Gitlab
     include Gitlab::Routing
 
     CODE_NAVIGATION_JOB_NAME = 'code_navigation'
+    LATEST_COMMITS_LIMIT = 10
 
     def initialize(project, commit_sha)
       @project = project
@@ -25,8 +26,11 @@ module Gitlab
 
     def build
       strong_memoize(:build) do
+        latest_commits_shas =
+          project.repository.commits(commit_sha, limit: LATEST_COMMITS_LIMIT).map(&:sha)
+
         artifact = ::Ci::JobArtifact
-          .for_sha(commit_sha, project.id)
+          .for_sha(latest_commits_shas, project.id)
           .for_job_name(CODE_NAVIGATION_JOB_NAME)
           .last
 

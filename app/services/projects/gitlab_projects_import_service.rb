@@ -14,35 +14,15 @@ module Projects
       @current_user, @params, @override_params = user, import_params.dup, override_params
     end
 
-    def execute(options = {})
-      measurement_enabled = !!options[:measurement_enabled]
-      measurement_logger = options[:measurement_logger]
+    def execute
+      prepare_template_environment(template_file)
 
-      ::Gitlab::Utils::Measuring.execute_with(measurement_enabled, measurement_logger, base_log_data) do
-        prepare_template_environment(template_file)
+      prepare_import_params
 
-        prepare_import_params
-
-        ::Projects::CreateService.new(current_user, params).execute
-      end
+      ::Projects::CreateService.new(current_user, params).execute
     end
 
     private
-
-    def base_log_data
-      base_log_data = {
-        class: self.class.name,
-        current_user: current_user.name,
-        project_full_path: project_path
-      }
-
-      if template_file
-        base_log_data[:import_type] = 'gitlab_project'
-        base_log_data[:file_path] = template_file.path
-      end
-
-      base_log_data
-    end
 
     def overwrite_project?
       overwrite? && project_with_same_full_path?

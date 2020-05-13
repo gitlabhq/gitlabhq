@@ -264,10 +264,30 @@ describe Projects::ImportService do
       it 'fails with port 25' do
         project.import_url = "https://github.com:25/vim/vim.git"
 
-        result = described_class.new(project, user).execute
+        result = subject.execute
 
         expect(result[:status]).to eq :error
         expect(result[:message]).to include('Only allowed ports are 80, 443')
+      end
+    end
+
+    it_behaves_like 'measurable service' do
+      let(:base_log_data) do
+        {
+          class: described_class.name,
+          current_user: user.name,
+          project_full_path: project.full_path,
+          import_type: project.import_type,
+          file_path: project.import_source
+        }
+      end
+
+      before do
+        project.import_type = 'github'
+      end
+
+      after do
+        subject.execute
       end
     end
 

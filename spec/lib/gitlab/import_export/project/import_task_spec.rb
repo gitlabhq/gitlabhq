@@ -39,8 +39,6 @@ describe Gitlab::ImportExport::Project::ImportTask, :request_store do
       expect(project.milestones.count).to be > 0
       expect(project.import_state.status).to eq('finished')
     end
-
-    it_behaves_like 'measurable'
   end
 
   context 'when project import is invalid' do
