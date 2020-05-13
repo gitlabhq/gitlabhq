@@ -12,7 +12,7 @@ describe 'Group issues page' do
   let(:path) { issues_group_path(group) }
 
   before do
-    stub_feature_flags({ vue_issuables_list: { enabled: false, thing: group } })
+    stub_feature_flags(vue_issuables_list: false)
   end
 
   context 'with shared examples' do

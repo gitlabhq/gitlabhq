@@ -207,9 +207,9 @@ Enter a project name or hit enter to use the directory name as project name.
 The next step is to add the GitLab Package Registry as a Maven remote. If a
 project is private or you want to upload Maven artifacts to GitLab,
 credentials will need to be provided for authorization too. Support is available
-for [personal access tokens](#authenticating-with-a-personal-access-token) and
-[CI job tokens](#authenticating-with-a-ci-job-token) only.
-[Deploy tokens](../../project/deploy_tokens/index.md) and regular username/password
+for [personal access tokens](#authenticating-with-a-personal-access-token),
+[CI job tokens](#authenticating-with-a-ci-job-token), and
+[deploy tokens](../../project/deploy_tokens/index.md) only. Regular username/password
 credentials do not work.
 
 ### Authenticating with a personal access token
@@ -324,6 +324,59 @@ repositories {
 }
 ```
 
+### Authenticating with a deploy token
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213566) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.0.
+
+To authenticate with a [deploy token](./../../project/deploy_tokens/index.md),
+set the scope to `api` when creating one, and add it to your Maven or Gradle configuration
+files.
+
+#### Authenticating with a deploy token in Maven
+
+Add a corresponding section to your
+[`settings.xml`](https://maven.apache.org/settings.html) file:
+
+```xml
+<settings>
+  <servers>
+    <server>
+      <id>gitlab-maven</id>
+      <configuration>
+        <httpHeaders>
+          <property>
+            <name>Deploy-Token</name>
+            <value>REPLACE_WITH_YOUR_DEPLOY_TOKEN</value>
+          </property>
+        </httpHeaders>
+      </configuration>
+    </server>
+  </servers>
+</settings>
+```
+
+#### Authenticating with a deploy token in Gradle
+
+To authenticate with a deploy token, add a repositories section to your
+[`build.gradle`](https://docs.gradle.org/current/userguide/tutorial_using_tasks.html)
+file:
+
+```groovy
+repositories {
+    maven {
+        url "https://<gitlab-url>/api/v4/groups/<group>/-/packages/maven"
+        name "GitLab"
+        credentials(HttpHeaderCredentials) {
+            name = 'Deploy-Token'
+            value = '<deploy-token>'
+        }
+        authentication {
+            header(HttpHeaderAuthentication)
+        }
+    }
+}
+```
+
 ## Configuring your project to use the GitLab Maven repository URL
 
 To download and upload packages from GitLab, you need a `repository` and
@@ -397,7 +450,7 @@ project's ID can be used for uploading.
 
 ### Group level Maven endpoint
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/8798) in GitLab Premium 11.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/8798) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.7.
 
 If you rely on many packages, it might be inefficient to include the `repository` section
 with a unique URL for each package. Instead, you can use the group level endpoint for
@@ -460,7 +513,7 @@ For retrieving artifacts, you can use either the
 
 ### Instance level Maven endpoint
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/8274) in GitLab Premium 11.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/8274) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.7.
 
 If you rely on many packages, it might be inefficient to include the `repository` section
 with a unique URL for each package. Instead, you can use the instance level endpoint for

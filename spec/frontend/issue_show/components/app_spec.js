@@ -221,6 +221,19 @@ describe('Issuable output', () => {
       });
     });
 
+    it('does not redirect if issue has not moved and user has switched tabs', () => {
+      jest.spyOn(vm.service, 'updateIssuable').mockResolvedValue({
+        data: {
+          web_url: '',
+          confidential: vm.isConfidential,
+        },
+      });
+
+      return vm.updateIssuable().then(() => {
+        expect(visitUrl).not.toHaveBeenCalled();
+      });
+    });
+
     it('redirects if returned web_url has changed', () => {
       jest.spyOn(vm.service, 'updateIssuable').mockResolvedValue({
         data: {

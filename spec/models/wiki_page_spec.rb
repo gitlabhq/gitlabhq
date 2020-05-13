@@ -16,10 +16,7 @@ describe WikiPage do
   end
 
   def enable_front_matter_for(thing)
-    stub_feature_flags(Gitlab::WikiPages::FrontMatterParser::FEATURE_FLAG => {
-      thing: thing,
-      enabled: true
-    })
+    stub_feature_flags(Gitlab::WikiPages::FrontMatterParser::FEATURE_FLAG => thing)
   end
 
   describe '.group_by_directory' do

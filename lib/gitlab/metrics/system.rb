@@ -18,7 +18,7 @@ module Gitlab
       MAX_OPEN_FILES_PATTERN = /Max open files\s*(?<value>\d+)/.freeze
 
       # Returns the current process' RSS (resident set size) in bytes.
-      def self.memory_usage
+      def self.memory_usage_rss
         sum_matches(PROC_STATUS_PATH, rss: RSS_PATTERN)[:rss].kilobytes
       end
 

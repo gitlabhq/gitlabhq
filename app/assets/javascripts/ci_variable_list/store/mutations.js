@@ -104,4 +104,8 @@ export default {
   [types.SET_SELECTED_ENVIRONMENT](state, environment) {
     state.selectedEnvironment = environment;
   },
+
+  [types.SET_VARIABLE_PROTECTED](state) {
+    state.variable.protected = true;
+  },
 };

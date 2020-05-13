@@ -27,7 +27,7 @@ describe 'Explore Groups', :js do
   end
 
   before do
-    stub_feature_flags({ vue_issuables_list: { enabled: false, thing: group } })
+    stub_feature_flags(vue_issuables_list: false)
   end
 
   shared_examples 'renders public and internal projects' do

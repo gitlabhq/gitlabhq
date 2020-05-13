@@ -107,7 +107,7 @@ describe API::RemoteMirrors do
 
     context 'with the `keep_divergent_refs` feature enabled' do
       before do
-        stub_feature_flags(keep_divergent_refs: { enabled: true, project: project })
+        stub_feature_flags(keep_divergent_refs: project)
       end
 
       it 'updates the `keep_divergent_refs` attribute' do

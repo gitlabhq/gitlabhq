@@ -295,7 +295,7 @@ export default {
         .then(res => res.data)
         .then(data => this.checkForSpam(data))
         .then(data => {
-          if (window.location.pathname !== data.web_url) {
+          if (!window.location.pathname.includes(data.web_url)) {
             visitUrl(data.web_url);
           }
         })

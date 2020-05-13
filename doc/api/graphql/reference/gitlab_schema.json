@@ -27883,6 +27883,20 @@
               "deprecationReason": null
             },
             {
+              "name": "externalStorage",
+              "description": "Blob external storage",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "mode",
               "description": "Blob mode",
               "args": [
@@ -27950,6 +27964,24 @@
                 "ofType": {
                   "kind": "SCALAR",
                   "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "renderedAsText",
+              "description": "Shows whether the blob is rendered as text",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
                   "ofType": null
                 }
               },

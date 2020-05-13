@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlAlert, GlLoadingIcon } from '@gitlab/ui';
 import AlertDetails from '~/alert_management/components/alert_details.vue';
 
 describe('AlertDetails', () => {
@@ -7,7 +7,7 @@ describe('AlertDetails', () => {
   const newIssuePath = 'root/alerts/-/issues/new';
 
   function mountComponent({
-    alert = {},
+    data = { alert: {} },
     createIssueFromAlertEnabled = false,
     loading = false,
   } = {}) {
@@ -18,7 +18,7 @@ describe('AlertDetails', () => {
         newIssuePath,
       },
       data() {
-        return { alert };
+        return data;
       },
       provide: {
         glFeatures: { createIssueFromAlertEnabled },
@@ -46,7 +46,7 @@ describe('AlertDetails', () => {
   describe('Alert details', () => {
     describe('when alert is null', () => {
       beforeEach(() => {
-        mountComponent({ alert: null });
+        mountComponent({ data: { alert: null } });
       });
 
       it('shows an empty state', () => {
@@ -100,6 +100,18 @@ describe('AlertDetails', () => {
 
       it('displays a loading state when loading', () => {
         expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
+      });
+    });
+
+    describe('error state', () => {
+      it('displays a error state correctly', () => {
+        mountComponent({ data: { errored: true } });
+        expect(wrapper.find(GlAlert).exists()).toBe(true);
+      });
+
+      it('does not display an error when dismissed', () => {
+        mountComponent({ data: { errored: true, isErrorDismissed: true } });
+        expect(wrapper.find(GlAlert).exists()).toBe(false);
       });
     });
   });

@@ -404,6 +404,9 @@ As of GitLab 10.0, the supported buildpacks are:
 - buildpack-nginx            v8
 ```
 
+If your application needs a buildpack that is not in the above list, you
+might want to use a [custom buildpack](customize.md#custom-buildpacks).
+
 ## Limitations
 
 The following restrictions apply.

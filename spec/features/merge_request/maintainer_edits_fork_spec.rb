@@ -20,7 +20,7 @@ describe 'a maintainer edits files on a source-branch of an MR from a fork', :js
   end
 
   before do
-    stub_feature_flags(web_ide_default: false, single_mr_diff_view: { enabled: false, thing: target_project }, code_navigation: false)
+    stub_feature_flags(web_ide_default: false, single_mr_diff_view: false, code_navigation: false)
 
     target_project.add_maintainer(user)
     sign_in(user)

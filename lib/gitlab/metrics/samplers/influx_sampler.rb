@@ -31,7 +31,7 @@ module Gitlab
         end
 
         def sample_memory_usage
-          add_metric('memory_usage', value: System.memory_usage)
+          add_metric('memory_usage', value: System.memory_usage_rss)
         end
 
         def sample_file_descriptors

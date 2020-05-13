@@ -97,4 +97,12 @@ describe('CI variable list mutations', () => {
       expect(stateCopy.environments).toEqual(['dev', 'production', 'staging']);
     });
   });
+
+  describe('SET_VARIABLE_PROTECTED', () => {
+    it('should set protected value to true', () => {
+      mutations[types.SET_VARIABLE_PROTECTED](stateCopy);
+
+      expect(stateCopy.variable.protected).toBe(true);
+    });
+  });
 });

@@ -30,21 +30,14 @@ describe Namespaces::CheckStorageSizeService, '#execute' do
       expect(subject).to be_error
     end
 
-    it 'is successful when disabled for the current group' do
-      stub_feature_flags(namespace_storage_limit: { enabled: false, thing: root_group })
-
-      expect(subject).to be_success
-    end
-
     it 'is successful when feature flag is activated for another group' do
-      stub_feature_flags(namespace_storage_limit: false)
-      stub_feature_flags(namespace_storage_limit: { enabled: true, thing: create(:group) })
+      stub_feature_flags(namespace_storage_limit: create(:group))
 
       expect(subject).to be_success
     end
 
     it 'errors when feature flag is activated for the current group' do
-      stub_feature_flags(namespace_storage_limit: { enabled: true, thing: root_group })
+      stub_feature_flags(namespace_storage_limit: root_group)
 
       expect(subject).to be_error
     end

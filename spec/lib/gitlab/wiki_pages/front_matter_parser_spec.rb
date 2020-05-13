@@ -76,11 +76,7 @@ describe Gitlab::WikiPages::FrontMatterParser do
       let(:raw_content) { with_front_matter }
 
       before do
-        stub_feature_flags(Gitlab::WikiPages::FrontMatterParser::FEATURE_FLAG => false)
-        stub_feature_flags(Gitlab::WikiPages::FrontMatterParser::FEATURE_FLAG => {
-          enabled: true,
-          thing: gate
-        })
+        stub_feature_flags(Gitlab::WikiPages::FrontMatterParser::FEATURE_FLAG => gate)
       end
 
       it do

@@ -4,12 +4,14 @@ module EventsHelper
   ICON_NAMES_BY_EVENT_TYPE = {
     'pushed to' => 'commit',
     'pushed new' => 'commit',
+    'updated' => 'commit',
     'created' => 'status_open',
     'opened' => 'status_open',
     'closed' => 'status_closed',
     'accepted' => 'fork',
     'commented on' => 'comment',
     'deleted' => 'remove',
+    'destroyed' => 'remove',
     'imported' => 'import',
     'joined' => 'users'
   }.freeze

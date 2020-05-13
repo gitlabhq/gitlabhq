@@ -27,7 +27,7 @@ describe Groups::Settings::IntegrationsController do
 
       context 'when group_level_integrations not enabled' do
         it 'returns not_found' do
-          stub_feature_flags(group_level_integrations: { enabled: false, thing: group })
+          stub_feature_flags(group_level_integrations: false)
 
           get :index, params: { group_id: group }
 
@@ -60,7 +60,7 @@ describe Groups::Settings::IntegrationsController do
 
       context 'when group_level_integrations not enabled' do
         it 'returns not_found' do
-          stub_feature_flags(group_level_integrations: { enabled: false, thing: group })
+          stub_feature_flags(group_level_integrations: false)
 
           get :edit, params: { group_id: group, id: Service.available_services_names.sample }
 

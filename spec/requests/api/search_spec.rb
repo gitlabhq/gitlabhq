@@ -163,7 +163,7 @@ describe API::Search do
 
         context 'when users search feature is disabled' do
           before do
-            allow(Feature).to receive(:disabled?).with(:users_search, default_enabled: true).and_return(true)
+            stub_feature_flags(users_search: false)
 
             get api(endpoint, user), params: { scope: 'users', search: 'billy' }
           end
@@ -336,7 +336,7 @@ describe API::Search do
 
         context 'when users search feature is disabled' do
           before do
-            allow(Feature).to receive(:disabled?).with(:users_search, default_enabled: true).and_return(true)
+            stub_feature_flags(users_search: false)
 
             get api(endpoint, user), params: { scope: 'users', search: 'billy' }
           end
@@ -501,7 +501,7 @@ describe API::Search do
 
         context 'when users search feature is disabled' do
           before do
-            allow(Feature).to receive(:disabled?).with(:users_search, default_enabled: true).and_return(true)
+            stub_feature_flags(users_search: false)
 
             get api(endpoint, user), params: { scope: 'users', search: 'billy' }
           end

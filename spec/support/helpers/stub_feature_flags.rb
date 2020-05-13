@@ -9,23 +9,27 @@ module StubFeatureFlags
   # Examples
   # - `stub_feature_flags(ci_live_trace: false)` ... Disable `ci_live_trace`
   #   feature flag globally.
-  # - `stub_feature_flags(ci_live_trace: { enabled: false, thing: project })` ...
-  #   Disable `ci_live_trace` feature flag on the specified project.
+  # - `stub_feature_flags(ci_live_trace: project)` ...
+  # - `stub_feature_flags(ci_live_trace: [project1, project2])` ...
+  #   Enable `ci_live_trace` feature flag only on the specified projects.
   def stub_feature_flags(features)
-    features.each do |feature_name, option|
-      if option.is_a?(Hash)
-        enabled, thing = option.values_at(:enabled, :thing)
-      else
-        enabled = option
-        thing = nil
-      end
+    features.each do |feature_name, actors|
+      allow(Feature).to receive(:enabled?).with(feature_name, any_args).and_return(false)
+      allow(Feature).to receive(:enabled?).with(feature_name.to_s, any_args).and_return(false)
 
-      if thing
-        allow(Feature).to receive(:enabled?).with(feature_name, thing, any_args) { enabled }
-        allow(Feature).to receive(:enabled?).with(feature_name.to_s, thing, any_args) { enabled }
-      else
-        allow(Feature).to receive(:enabled?).with(feature_name, any_args) { enabled }
-        allow(Feature).to receive(:enabled?).with(feature_name.to_s, any_args) { enabled }
+      Array(actors).each do |actor|
+        raise ArgumentError, "actor cannot be Hash" if actor.is_a?(Hash)
+
+        case actor
+        when false, true
+          allow(Feature).to receive(:enabled?).with(feature_name, any_args).and_return(actor)
+          allow(Feature).to receive(:enabled?).with(feature_name.to_s, any_args).and_return(actor)
+        when nil, ActiveRecord::Base, Symbol, RSpec::Mocks::Double
+          allow(Feature).to receive(:enabled?).with(feature_name, actor, any_args).and_return(true)
+          allow(Feature).to receive(:enabled?).with(feature_name.to_s, actor, any_args).and_return(true)
+        else
+          raise ArgumentError, "#stub_feature_flags accepts only `nil`, `true`, `false`, `ActiveRecord::Base` or `Symbol` as actors"
+        end
       end
     end
   end

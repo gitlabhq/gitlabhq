@@ -878,7 +878,7 @@ describe Projects::PipelinesController do
 
       context 'when junit_pipeline_screenshots_view is enabled' do
         before do
-          stub_feature_flags(junit_pipeline_screenshots_view: { enabled: true, thing: project })
+          stub_feature_flags(junit_pipeline_screenshots_view: project)
         end
 
         context 'when test_report contains attachment and scope is with_attachment as a URL param' do
@@ -907,7 +907,7 @@ describe Projects::PipelinesController do
 
       context 'when junit_pipeline_screenshots_view is disabled' do
         before do
-          stub_feature_flags(junit_pipeline_screenshots_view: { enabled: false, thing: project })
+          stub_feature_flags(junit_pipeline_screenshots_view: false)
         end
 
         context 'when test_report contains attachment and scope is with_attachment as a URL param' do

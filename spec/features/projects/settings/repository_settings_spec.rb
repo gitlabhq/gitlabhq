@@ -30,7 +30,7 @@ describe 'Projects > Settings > Repository settings' do
 
       before do
         stub_container_registry_config(enabled: true)
-        stub_feature_flags(ajax_new_deploy_token: { enabled: false, thing: project })
+        stub_feature_flags(ajax_new_deploy_token: project)
         visit project_settings_repository_path(project)
       end
 
@@ -225,7 +225,7 @@ describe 'Projects > Settings > Repository settings' do
     # Removal: https://gitlab.com/gitlab-org/gitlab/-/issues/208828
     context 'with the `keep_divergent_refs` feature flag disabled' do
       before do
-        stub_feature_flags(keep_divergent_refs: { enabled: false, thing: project })
+        stub_feature_flags(keep_divergent_refs: false)
       end
 
       it 'hides the "Keep divergent refs" option' do

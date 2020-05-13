@@ -9400,6 +9400,11 @@ type SnippetBlob {
   binary: Boolean!
 
   """
+  Blob external storage
+  """
+  externalStorage: String
+
+  """
   Blob mode
   """
   mode: String
@@ -9423,6 +9428,11 @@ type SnippetBlob {
   Blob raw content endpoint path
   """
   rawPath: String!
+
+  """
+  Shows whether the blob is rendered as text
+  """
+  renderedAsText: Boolean!
 
   """
   Blob highlighted data

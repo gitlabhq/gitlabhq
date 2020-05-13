@@ -14,7 +14,7 @@ describe ForkProjectsFinder do
   let(:private_fork_member) { create(:user) }
 
   before do
-    stub_feature_flags(object_pools: { enabled: false, thing: source_project })
+    stub_feature_flags(object_pools: source_project)
 
     private_fork.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
     private_fork.add_developer(private_fork_member)

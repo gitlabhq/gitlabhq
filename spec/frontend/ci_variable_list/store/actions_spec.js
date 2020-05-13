@@ -75,6 +75,16 @@ describe('CI variable list store actions', () => {
     });
   });
 
+  describe('setVariableProtected', () => {
+    it('commits SET_VARIABLE_PROTECTED mutation', () => {
+      testAction(actions.setVariableProtected, {}, {}, [
+        {
+          type: types.SET_VARIABLE_PROTECTED,
+        },
+      ]);
+    });
+  });
+
   describe('deleteVariable', () => {
     it('dispatch correct actions on successful deleted variable', done => {
       mock.onPatch(state.endpoint).reply(200);

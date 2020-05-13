@@ -35,7 +35,6 @@ module Gitlab
         def init_metrics
           metrics = {
             file_descriptors:                  ::Gitlab::Metrics.gauge(with_prefix(:file, :descriptors), 'File descriptors used', labels),
-            memory_bytes:                      ::Gitlab::Metrics.gauge(with_prefix(:memory, :bytes), 'Memory used (RSS)', labels),
             process_cpu_seconds_total:         ::Gitlab::Metrics.gauge(with_prefix(:process, :cpu_seconds_total), 'Process CPU seconds total'),
             process_max_fds:                   ::Gitlab::Metrics.gauge(with_prefix(:process, :max_fds), 'Process max fds'),
             process_resident_memory_bytes:     ::Gitlab::Metrics.gauge(with_prefix(:process, :resident_memory_bytes), 'Memory used (RSS)', labels),
@@ -87,9 +86,7 @@ module Gitlab
         end
 
         def set_memory_usage_metrics
-          memory_rss = System.memory_usage
-          metrics[:memory_bytes].set(labels, memory_rss)
-          metrics[:process_resident_memory_bytes].set(labels, memory_rss)
+          metrics[:process_resident_memory_bytes].set(labels, System.memory_usage_rss)
 
           if Gitlab::Utils.to_boolean(ENV['enable_memory_uss_pss'])
             memory_uss_pss = System.memory_usage_uss_pss

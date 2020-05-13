@@ -3636,6 +3636,24 @@ describe Project do
         expect(projects).to contain_exactly(public_project)
       end
     end
+
+    context 'with deploy token users' do
+      let_it_be(:private_project) { create(:project, :private) }
+
+      subject { described_class.all.public_or_visible_to_user(user) }
+
+      context 'deploy token user without project' do
+        let_it_be(:user) { create(:deploy_token) }
+
+        it { is_expected.to eq [] }
+      end
+
+      context 'deploy token user with project' do
+        let_it_be(:user) { create(:deploy_token, projects: [private_project]) }
+
+        it { is_expected.to include(private_project) }
+      end
+    end
   end
 
   describe '.ids_with_issuables_available_for' do

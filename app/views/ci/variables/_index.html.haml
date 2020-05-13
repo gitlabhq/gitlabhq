@@ -8,7 +8,7 @@
 - if Feature.enabled?(:new_variables_ui, @project || @group, default_enabled: true)
   - is_group = !@group.nil?
 
-  #js-ci-project-variables{ data: { endpoint: save_endpoint, project_id: @project&.id || '', group: is_group.to_s, maskable_regex: ci_variable_maskable_regex} }
+  #js-ci-project-variables{ data: { endpoint: save_endpoint, project_id: @project&.id || '', group: is_group.to_s, maskable_regex: ci_variable_maskable_regex, protected_by_default: ci_variable_protected_by_default?.to_s} }
 
 - else
   .row

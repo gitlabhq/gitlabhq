@@ -1,5 +1,7 @@
 <script>
+import * as Sentry from '@sentry/browser';
 import {
+  GlAlert,
   GlLoadingIcon,
   GlNewDropdown,
   GlNewDropdownItem,
@@ -19,10 +21,14 @@ export default {
     resolved: s__('AlertManagement|Resolved'),
   },
   i18n: {
+    errorMsg: s__(
+      'AlertManagement|There was an error displaying the alert. Please refresh the page to try again.',
+    ),
     fullAlertDetailsTitle: s__('AlertManagement|Full Alert Details'),
     overviewTitle: s__('AlertManagement|Overview'),
   },
   components: {
+    GlAlert,
     GlLoadingIcon,
     GlNewDropdown,
     GlNewDropdownItem,
@@ -58,20 +64,35 @@ export default {
       update(data) {
         return data?.project?.alertManagementAlerts?.nodes?.[0] ?? null;
       },
+      error(error) {
+        this.errored = true;
+        Sentry.captureException(error);
+      },
     },
   },
   data() {
-    return { alert: null };
+    return { alert: null, errored: false, isErrorDismissed: false };
   },
   computed: {
     loading() {
       return this.$apollo.queries.alert.loading;
+    },
+    showErrorMsg() {
+      return this.errored && !this.isErrorDismissed;
+    },
+  },
+  methods: {
+    dismissError() {
+      this.isErrorDismissed = true;
     },
   },
 };
 </script>
 <template>
   <div>
+    <gl-alert v-if="showErrorMsg" variant="danger" @dismiss="dismissError">
+      {{ $options.i18n.errorMsg }}
+    </gl-alert>
     <div v-if="loading"><gl-loading-icon size="lg" class="mt-3" /></div>
     <div
       v-if="alert"

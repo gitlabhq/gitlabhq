@@ -64,11 +64,11 @@ describe Gitlab::Metrics::System do
       SNIP
     end
 
-    describe '.memory_usage' do
+    describe '.memory_usage_rss' do
       it "returns the process' resident set size (RSS) in bytes" do
         mock_existing_proc_file('/proc/self/status', proc_status)
 
-        expect(described_class.memory_usage).to eq(2527232)
+        expect(described_class.memory_usage_rss).to eq(2527232)
       end
     end
 
@@ -103,9 +103,9 @@ describe Gitlab::Metrics::System do
       mock_missing_proc_file
     end
 
-    describe '.memory_usage' do
+    describe '.memory_usage_rss' do
       it 'returns 0' do
-        expect(described_class.memory_usage).to eq(0)
+        expect(described_class.memory_usage_rss).to eq(0)
       end
     end
 

@@ -20,7 +20,7 @@ Merge requests should be submitted to the appropriate project at GitLab.com, for
 [Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests), etc.
 
 If you are new to GitLab development (or web development in general), see the
-[I want to contribute!](index.md#i-want-to-contribute) section to get started with
+[how to contribute](index.md#how-to-contribute) section to get started with
 some potentially easy issues.
 
 To start developing GitLab, download the [GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit)

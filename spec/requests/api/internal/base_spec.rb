@@ -452,7 +452,7 @@ describe API::Internal::Base do
 
           context 'when gitaly_upload_pack_filter feature flag is disabled' do
             before do
-              stub_feature_flags(gitaly_upload_pack_filter: { enabled: false, thing: project })
+              stub_feature_flags(gitaly_upload_pack_filter: false)
             end
 
             it 'returns only maxInputSize and not partial clone git config' do
@@ -481,7 +481,7 @@ describe API::Internal::Base do
 
           context 'when gitaly_upload_pack_filter feature flag is disabled' do
             before do
-              stub_feature_flags(gitaly_upload_pack_filter: { enabled: false, thing: project })
+              stub_feature_flags(gitaly_upload_pack_filter: false)
             end
 
             it 'returns an empty git config' do

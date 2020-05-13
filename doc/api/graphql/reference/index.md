@@ -1392,11 +1392,13 @@ Represents the snippet blob
 | Name  | Type  | Description |
 | ---   |  ---- | ----------  |
 | `binary` | Boolean! | Shows whether the blob is binary |
+| `externalStorage` | String | Blob external storage |
 | `mode` | String | Blob mode |
 | `name` | String | Blob name |
 | `path` | String | Blob path |
 | `plainData` | String | Blob plain highlighted data |
 | `rawPath` | String! | Blob raw content endpoint path |
+| `renderedAsText` | Boolean! | Shows whether the blob is rendered as text |
 | `richData` | String | Blob highlighted data |
 | `richViewer` | SnippetBlobViewer | Blob content rich viewer |
 | `simpleViewer` | SnippetBlobViewer! | Blob content simple viewer |

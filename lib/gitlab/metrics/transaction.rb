@@ -55,13 +55,13 @@ module Gitlab
       def run
         Thread.current[THREAD_KEY] = self
 
-        @memory_before = System.memory_usage
+        @memory_before = System.memory_usage_rss
         @started_at = System.monotonic_time
         @thread_cputime_start = System.thread_cpu_time
 
         yield
       ensure
-        @memory_after = System.memory_usage
+        @memory_after = System.memory_usage_rss
         @finished_at = System.monotonic_time
 
         self.class.gitlab_transaction_cputime_seconds.observe(labels, thread_cpu_duration)

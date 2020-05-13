@@ -318,19 +318,41 @@ stub_feature_flags(ci_live_trace: false)
 Feature.enabled?(:ci_live_trace) # => false
 ```
 
-If you wish to set up a test where a feature flag is disabled for some
-actors and not others, you can specify this in options passed to the
-helper. For example, to disable the `ci_live_trace` feature flag for a
-specifc project:
+If you wish to set up a test where a feature flag is enabled only
+for some actors and not others, you can specify this in options
+passed to the helper. For example, to enable the `ci_live_trace`
+feature flag for a specifc project:
 
 ```ruby
 project1, project2 = build_list(:project, 2)
 
-# Feature will only be disabled for project1
-stub_feature_flags(ci_live_trace: { enabled: false, thing: project1 })
+# Feature will only be enabled for project1
+stub_feature_flags(ci_live_trace: project1)
 
-Feature.enabled?(:ci_live_trace, project1) # => false
-Feature.enabled?(:ci_live_trace, project2) # => true
+Feature.enabled?(:ci_live_trace) # => false
+Feature.enabled?(:ci_live_trace, project1) # => true
+Feature.enabled?(:ci_live_trace, project2) # => false
+```
+
+This represents an actual behavior of FlipperGate:
+
+1. You can enable an override for a specified actor to be enabled
+1. You can disable (remove) an override for a specified actor,
+   fallbacking to default state
+1. There's no way to model that you explicitly disable a specified actor
+
+```ruby
+Feature.enable(:my_feature)
+Feature.disable(:my_feature, project1)
+Feature.enabled?(:my_feature) # => true
+Feature.enabled?(:my_feature, project1) # => true
+```
+
+```ruby
+Feature.disable(:my_feature2)
+Feature.enable(:my_feature2, project1)
+Feature.enabled?(:my_feature2) # => false
+Feature.enabled?(:my_feature2, project1) # => true
 ```
 
 ### Pristine test environments

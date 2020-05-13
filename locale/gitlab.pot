@@ -1792,6 +1792,9 @@ msgstr ""
 msgid "AlertManagement|Surface alerts in GitLab"
 msgstr ""
 
+msgid "AlertManagement|There was an error displaying the alert. Please refresh the page to try again."
+msgstr ""
+
 msgid "AlertManagement|There was an error displaying the alerts. Confirm your endpoint's configuration details to ensure alerts appear."
 msgstr ""
 
@@ -11289,6 +11292,9 @@ msgid "Import from Jira"
 msgstr ""
 
 msgid "Import in progress"
+msgstr ""
+
+msgid "Import in progress. Refresh page to see newly added issues."
 msgstr ""
 
 msgid "Import issues"

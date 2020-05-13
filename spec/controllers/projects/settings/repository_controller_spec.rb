@@ -36,7 +36,7 @@ describe Projects::Settings::RepositoryController do
   describe 'POST create_deploy_token' do
     context 'when ajax_new_deploy_token feature flag is disabled for the project' do
       before do
-        stub_feature_flags(ajax_new_deploy_token: { enabled: false, thing: project })
+        stub_feature_flags(ajax_new_deploy_token: false)
       end
 
       it_behaves_like 'a created deploy token' do

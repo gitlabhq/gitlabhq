@@ -16,7 +16,7 @@ Component's computed properties / methods or external helpers.
 
 **Why?**
 
-`$on` and `$off` methods [are removed](https://github.com/vuejs/rfcs/blob/master/active-rfcs/0020-events-api-change.md) from the Vue instance, so in Vue 3 it can't be used to create an event hub.
+`$on`, `$once`, and `$off` methods [are removed](https://github.com/vuejs/rfcs/blob/master/active-rfcs/0020-events-api-change.md) from the Vue instance, so in Vue 3 it can't be used to create an event hub.
 
 **What to use instead**
 
@@ -55,7 +55,7 @@ import createEventHub from '~/helpers/event_hub_factory';
 export default createEventHub();
 ```
 
-Event hubs created with the factory expose the same methods as Vue 2 event hubs (`$on`, `$off` and
+Event hubs created with the factory expose the same methods as Vue 2 event hubs (`$on`, `$once`, `$off` and
 `$emit`), making them backward compatible with our previous approach.
 
 ## <template functional>

@@ -1067,7 +1067,9 @@ The only clauses currently available are:
 
 Keywords such as `branches` or `refs` that are currently available for
 `only`/`except` are not yet available in `rules` as they are being individually
-considered for their usage and behavior in this context.
+considered for their usage and behavior in this context. Future keyword improvements
+are being discussed in our [epic for improving `rules`](https://gitlab.com/groups/gitlab-org/-/epics/2783),
+where anyone can add suggestions or requests.
 
 #### Permitted attributes
 

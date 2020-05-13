@@ -264,7 +264,7 @@ describe Git::WikiPushService, services: true do
 
         context 'but is enabled for a given project' do
           before do
-            stub_feature_flags(wiki_events_on_git_push: { enabled: true, thing: project })
+            stub_feature_flags(wiki_events_on_git_push: project)
           end
 
           it 'creates events' do

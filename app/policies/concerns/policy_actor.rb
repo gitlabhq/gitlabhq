@@ -1,8 +1,15 @@
 # frozen_string_literal: true
 
-# Include this module if we want to pass something else than the user to
-# check policies. This defines several methods which the policy checker
-# would call and check.
+# Include this module to have an object respond to user messages without being
+# a user.
+#
+# Use Case 1:
+# Pass something else than the user to check policies. This defines several
+# methods which the policy checker would call and check.
+#
+# Use Case 2:
+# Access the API with non-user object such as deploy tokens. This defines
+# several methods which the API auth flow would call.
 module PolicyActor
   extend ActiveSupport::Concern
 
@@ -36,6 +43,30 @@ module PolicyActor
 
   def alert_bot?
     false
+  end
+
+  def deactivated?
+    false
+  end
+
+  def confirmation_required_on_sign_in?
+    false
+  end
+
+  def can?(action, subject = :global)
+    Ability.allowed?(self, action, subject)
+  end
+
+  def preferred_language
+    nil
+  end
+
+  def requires_ldap_check?
+    false
+  end
+
+  def try_obtain_ldap_lease
+    nil
   end
 end
 

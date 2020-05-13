@@ -691,4 +691,28 @@ describe ProjectPolicy do
       end
     end
   end
+
+  context 'deploy token access' do
+    let!(:project_deploy_token) do
+      create(:project_deploy_token, project: project, deploy_token: deploy_token)
+    end
+
+    subject { described_class.new(deploy_token, project) }
+
+    context 'a deploy token with read_package_registry scope' do
+      let(:deploy_token) { create(:deploy_token, read_package_registry: true) }
+
+      it { is_expected.to be_allowed(:read_package) }
+      it { is_expected.to be_allowed(:read_project) }
+      it { is_expected.to be_disallowed(:create_package) }
+    end
+
+    context 'a deploy token with write_package_registry scope' do
+      let(:deploy_token) { create(:deploy_token, write_package_registry: true) }
+
+      it { is_expected.to be_allowed(:create_package) }
+      it { is_expected.to be_allowed(:read_project) }
+      it { is_expected.to be_disallowed(:destroy_package) }
+    end
+  end
 end

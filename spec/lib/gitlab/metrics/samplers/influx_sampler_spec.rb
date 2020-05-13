@@ -37,7 +37,7 @@ describe Gitlab::Metrics::Samplers::InfluxSampler do
 
   describe '#sample_memory_usage' do
     it 'adds a metric containing the memory usage' do
-      expect(Gitlab::Metrics::System).to receive(:memory_usage)
+      expect(Gitlab::Metrics::System).to receive(:memory_usage_rss)
         .and_return(9000)
 
       expect(sampler).to receive(:add_metric)

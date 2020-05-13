@@ -96,6 +96,13 @@ describe('Ci variable modal', () => {
       findModal().vm.$emit('hidden');
       expect(store.dispatch).toHaveBeenCalledWith('clearModal');
     });
+
+    it('should dispatch setVariableProtected when admin settings are configured to protect variables', () => {
+      store.state.isProtectedByDefault = true;
+      findModal().vm.$emit('shown');
+
+      expect(store.dispatch).toHaveBeenCalledWith('setVariableProtected');
+    });
   });
 
   describe('Editing a variable', () => {

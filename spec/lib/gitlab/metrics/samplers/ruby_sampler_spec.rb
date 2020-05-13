@@ -21,7 +21,7 @@ describe Gitlab::Metrics::Samplers::RubySampler do
 
   describe '#sample' do
     it 'adds a metric containing the process resident memory bytes' do
-      expect(Gitlab::Metrics::System).to receive(:memory_usage).and_return(9000)
+      expect(Gitlab::Metrics::System).to receive(:memory_usage_rss).and_return(9000)
 
       expect(sampler.metrics[:process_resident_memory_bytes]).to receive(:set).with({}, 9000)
 

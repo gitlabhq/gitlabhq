@@ -205,6 +205,20 @@ describe Auth::ContainerRegistryAuthenticationService do
 
         it_behaves_like 'an inaccessible'
         it_behaves_like 'not a container repository factory'
+
+        it 'logs an auth warning' do
+          expect(Gitlab::AuthLogger).to receive(:warn).with(
+            message: 'Denied container registry permissions',
+            scope_type: 'repository',
+            requested_project_path: project.full_path,
+            requested_actions: ['*'],
+            authorized_actions: [],
+            user_id: current_user.id,
+            username: current_user.username
+          )
+
+          subject
+        end
       end
 
       context 'disallow developer to delete images since registry 2.7' do

@@ -46,6 +46,7 @@ export default {
       'isGroup',
       'maskableRegex',
       'selectedEnvironment',
+      'isProtectedByDefault',
     ]),
     canSubmit() {
       return (
@@ -123,6 +124,7 @@ export default {
       'addWildCardScope',
       'resetSelectedEnvironment',
       'setSelectedEnvironment',
+      'setVariableProtected',
     ]),
     deleteVarAndClose() {
       this.deleteVariable(this.variableBeingEdited);
@@ -147,6 +149,11 @@ export default {
       }
       this.hideModal();
     },
+    setVariableProtectedByDefault() {
+      if (this.isProtectedByDefault && !this.variableBeingEdited) {
+        this.setVariableProtected();
+      }
+    },
   },
 };
 </script>
@@ -159,6 +166,7 @@ export default {
     static
     lazy
     @hidden="resetModalHandler"
+    @shown="setVariableProtectedByDefault"
   >
     <form>
       <ci-key-field
