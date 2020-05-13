@@ -1,5 +1,12 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 12.9.7 (2020-05-13)
+
+### Fixed (1 change)
+
+- Remove check for user being an applicable code owner. !31808
+
+
 ## 12.9.6 (2020-05-05)
 
 - No changes.
