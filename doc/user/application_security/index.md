@@ -101,25 +101,27 @@ information with several options:
 - [Solution](#solutions-for-vulnerabilities-auto-remediation): For some vulnerabilities,
   a solution is provided for how to fix the vulnerability.
 
-![Interacting with security reports](img/interactive_reports.png)
+![Interacting with security reports](img/interacting_with_vulnerability_v13_0.png)
 
 ### Dismissing a vulnerability
 
-You can dismiss vulnerabilities by clicking the **Dismiss vulnerability** button.
-This will dismiss the vulnerability and re-render it to reflect its dismissed state.
-If you wish to undo this dismissal, you can click the **Undo dismiss** button.
+To dismiss a vulnerability, you must set its status to Dismissed. Follow these steps to do so:
+
+1. Select the vulnerability in the Security Dashboard.
+1. Select **Dismissed** from the **Status** selector menu at the top-right.
+
+You can undo this action by selecting a different status from the same menu.
 
 #### Adding a dismissal reason
 
 > Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.0.
 
-When dismissing a vulnerability, it's often helpful to provide a reason for doing so.
-If you press the comment button next to **Dismiss vulnerability** in the modal,
-a text box appears for you to add a comment with your dismissal.
-Once added, you can edit or delete it. This allows you to add and update
-context for a vulnerability as you learn more over time.
+When dismissing a vulnerability, it's often helpful to provide a reason for doing so. Upon setting a
+vulnerability's status to Dismissed, a text box appears for you to add a comment with your
+dismissal. Once added, you can edit or delete it. This allows you to add and update context for a
+vulnerability as you learn more over time.
 
-![Dismissed vulnerability comment](img/dismissed_info_v12_3.png)
+![Dismissed vulnerability comment](img/adding_a_dismissal_reason_v13_0.png)
 
 #### Dismissing multiple vulnerabilities
 

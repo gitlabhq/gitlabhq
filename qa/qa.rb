@@ -265,6 +265,11 @@ module QA
         autoload :VisibilityFeaturesPermissions, 'qa/page/project/settings/visibility_features_permissions'
         autoload :Operations, 'qa/page/project/settings/operations'
         autoload :Incidents, 'qa/page/project/settings/incidents'
+        autoload :Integrations, 'qa/page/project/settings/integrations'
+
+        module Services
+          autoload :Prometheus, 'qa/page/project/settings/services/prometheus'
+        end
       end
 
       module SubMenus
@@ -412,6 +417,7 @@ module QA
       autoload :UsersSelect, 'qa/page/component/users_select'
       autoload :Note, 'qa/page/component/note'
       autoload :ConfirmModal, 'qa/page/component/confirm_modal'
+      autoload :CustomMetric, 'qa/page/component/custom_metric'
 
       module Issuable
         autoload :Common, 'qa/page/component/issuable/common'

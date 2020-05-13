@@ -23,5 +23,11 @@
             %code prometheus_multiproc_dir
             does not exist or is not pointing to a valid directory.
             = link_to icon('question-circle'), help_page_path('administration/monitoring/prometheus/gitlab_metrics', anchor: 'metrics-shared-directory')
+    .form-group
+      = f.label :metrics_method_call_threshold, 'Method Call Threshold (ms)', class: 'label-bold'
+      = f.number_field :metrics_method_call_threshold, class: 'form-control'
+      .form-text.text-muted
+        A method call is only tracked when it takes longer to complete than
+        the given amount of milliseconds.
 
   = f.submit 'Save changes', class: "btn btn-success"

@@ -24,6 +24,11 @@ export default {
       required: false,
       default: '',
     },
+    commitSha: {
+      type: String,
+      required: false,
+      default: '',
+    },
     projectPath: {
       type: String,
       required: false,
@@ -62,6 +67,7 @@ export default {
       :file-size="fileSize"
       :project-path="projectPath"
       :content="content"
+      :commit-sha="commitSha"
     />
   </div>
 </template>

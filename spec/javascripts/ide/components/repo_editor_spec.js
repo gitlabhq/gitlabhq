@@ -26,7 +26,23 @@ describe('RepoEditor', () => {
 
     f.active = true;
     f.tempFile = true;
+
     vm.$store.state.openFiles.push(f);
+    vm.$store.state.projects = {
+      'gitlab-org/gitlab': {
+        branches: {
+          master: {
+            name: 'master',
+            commit: {
+              id: 'abcdefgh',
+            },
+          },
+        },
+      },
+    };
+    vm.$store.state.currentProjectId = 'gitlab-org/gitlab';
+    vm.$store.state.currentBranchId = 'master';
+
     Vue.set(vm.$store.state.entries, f.path, f);
 
     spyOn(vm, 'getFileData').and.returnValue(Promise.resolve());

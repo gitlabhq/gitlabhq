@@ -43,10 +43,7 @@ describe('Metrics dashboard/variables section component', () => {
 
   it('shows the variables section', () => {
     createShallowWrapper();
-    wrapper.vm.$store.commit(
-      `monitoringDashboard/${types.SET_PROM_QUERY_VARIABLES}`,
-      sampleVariables,
-    );
+    wrapper.vm.$store.commit(`monitoringDashboard/${types.SET_VARIABLES}`, sampleVariables);
 
     return wrapper.vm.$nextTick(() => {
       const allInputs = findAllFormInputs();
@@ -57,7 +54,7 @@ describe('Metrics dashboard/variables section component', () => {
 
   describe('when changing the variable inputs', () => {
     const fetchDashboardData = jest.fn();
-    const setVariableData = jest.fn();
+    const setVariableValues = jest.fn();
 
     beforeEach(() => {
       store = new Vuex.Store({
@@ -70,7 +67,7 @@ describe('Metrics dashboard/variables section component', () => {
             },
             actions: {
               fetchDashboardData,
-              setVariableData,
+              setVariableValues,
             },
           },
         },
@@ -86,7 +83,7 @@ describe('Metrics dashboard/variables section component', () => {
       firstInput.vm.$emit('input');
       firstInput.trigger('blur');
 
-      expect(setVariableData).toHaveBeenCalled();
+      expect(setVariableValues).toHaveBeenCalled();
       expect(mergeUrlParams).toHaveBeenCalledWith(sampleVariables, window.location.href);
       expect(updateHistory).toHaveBeenCalled();
       expect(fetchDashboardData).toHaveBeenCalled();
@@ -99,7 +96,7 @@ describe('Metrics dashboard/variables section component', () => {
       firstInput.vm.$emit('input');
       firstInput.trigger('keyup.enter');
 
-      expect(setVariableData).toHaveBeenCalled();
+      expect(setVariableValues).toHaveBeenCalled();
       expect(mergeUrlParams).toHaveBeenCalledWith(sampleVariables, window.location.href);
       expect(updateHistory).toHaveBeenCalled();
       expect(fetchDashboardData).toHaveBeenCalled();
@@ -111,7 +108,7 @@ describe('Metrics dashboard/variables section component', () => {
       firstInput.vm.$emit('input');
       firstInput.trigger('keyup.enter');
 
-      expect(setVariableData).not.toHaveBeenCalled();
+      expect(setVariableValues).not.toHaveBeenCalled();
       expect(mergeUrlParams).not.toHaveBeenCalled();
       expect(updateHistory).not.toHaveBeenCalled();
       expect(fetchDashboardData).not.toHaveBeenCalled();

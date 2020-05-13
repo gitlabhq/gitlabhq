@@ -84,16 +84,7 @@ module API
       optional :max_artifacts_size, type: Integer, desc: "Set the maximum file size for each job's artifacts"
       optional :max_attachment_size, type: Integer, desc: 'Maximum attachment size in MB'
       optional :max_pages_size, type: Integer, desc: 'Maximum size of pages in MB'
-      optional :metrics_enabled, type: Boolean, desc: 'Enable the InfluxDB metrics'
-      given metrics_enabled: ->(val) { val } do
-        requires :metrics_host, type: String, desc: 'The InfluxDB host'
-        requires :metrics_method_call_threshold, type: Integer, desc: 'A method call is only tracked when it takes longer to complete than the given amount of milliseconds.'
-        requires :metrics_packet_size, type: Integer, desc: 'The amount of points to store in a single UDP packet'
-        requires :metrics_pool_size, type: Integer, desc: 'The amount of InfluxDB connections to open'
-        requires :metrics_port, type: Integer, desc: 'The UDP port to use for connecting to InfluxDB'
-        requires :metrics_sample_interval, type: Integer, desc: 'The sampling interval in seconds'
-        requires :metrics_timeout, type: Integer, desc: 'The amount of seconds after which an InfluxDB connection will time out'
-      end
+      optional :metrics_method_call_threshold, type: Integer, desc: 'A method call is only tracked when it takes longer to complete than the given amount of milliseconds.'
       optional :password_authentication_enabled, type: Boolean, desc: 'Flag indicating if password authentication is enabled for the web interface' # support legacy names, can be removed in v5
       optional :password_authentication_enabled_for_web, type: Boolean, desc: 'Flag indicating if password authentication is enabled for the web interface'
       mutually_exclusive :password_authentication_enabled_for_web, :password_authentication_enabled, :signin_enabled

@@ -14,7 +14,7 @@ module QA
               element :dashboards_filter_dropdown
               element :environments_dropdown
               element :edit_dashboard_button
-              element :show_last_dropdown
+              element :range_picker_dropdown
             end
 
             view 'app/assets/javascripts/monitoring/components/duplicate_dashboard_form.vue' do
@@ -26,6 +26,10 @@ module QA
               element :prometheus_widgets_dropdown
               element :alert_widget_menu_item
               element :generate_chart_link_menu_item
+            end
+
+            view 'app/assets/javascripts/vue_shared/components/date_time_picker/date_time_picker.vue' do
+              element :quick_range_item
             end
 
             def wait_for_metrics
@@ -67,15 +71,19 @@ module QA
             end
 
             def show_last(range = '8 hours')
-              click_element :show_last_dropdown
-              within_element :show_last_dropdown do
-                click_on range
-              end
+              all_elements(:range_picker_dropdown, minimum: 1).first.click
+              click_element :quick_range_item, text: range
             end
 
             def copy_link_to_first_chart
               all_elements(:prometheus_widgets_dropdown, minimum: 1).first.click
               find_element(:generate_chart_link_menu_item)['data-clipboard-text']
+            end
+
+            def has_custom_metric?(metric)
+              within_element :prometheus_graphs do
+                has_text?(metric)
+              end
             end
 
             private

@@ -16,6 +16,11 @@ export default {
       type: String,
       required: true,
     },
+    commitSha: {
+      type: String,
+      required: false,
+      default: '',
+    },
     filePath: {
       type: String,
       required: false,
@@ -55,6 +60,9 @@ export default {
           text: this.content,
           path: this.filePath,
         };
+        if (this.commitSha) {
+          postBody.ref = this.commitSha;
+        }
         const postOptions = {
           cancelToken: axiosSource.token,
         };

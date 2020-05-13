@@ -1,9 +1,5 @@
 # GitLab Performance Monitoring
 
-CAUTION: **InfluxDB is deprecated in favor of Prometheus:**
-InfluxDB support is scheduled to be removed in GitLab 13.0.
-You are advised to use [Prometheus](../prometheus/index.md) instead.
-
 GitLab comes with its own application performance measuring system as of GitLab
 8.4, simply called "GitLab Performance Monitoring". GitLab Performance Monitoring is available in both the
 Community and Enterprise editions.
@@ -12,16 +8,10 @@ Apart from this introduction, you are advised to read through the following
 documents in order to understand and properly configure GitLab Performance Monitoring:
 
 - [GitLab Configuration](gitlab_configuration.md)
-- [InfluxDB Install/Configuration](influxdb_configuration.md)
-- [InfluxDB Schema](influxdb_schema.md)
+- [Prometheus documentation](../prometheus/index.md)
 - [Grafana Install/Configuration](grafana_configuration.md)
 - [Performance bar](performance_bar.md)
 - [Request profiling](request_profiling.md)
-
-NOTE: **Note:**
-Omnibus GitLab 8.16 includes Prometheus as an additional tool to collect
-metrics. It will eventually replace InfluxDB when their metrics collection is
-on par. Read more in the [Prometheus documentation](../prometheus/index.md).
 
 ## Introduction to GitLab Performance Monitoring
 
@@ -34,12 +24,6 @@ including (but not limited to):
 - Ruby object allocations, and retained objects in particular.
 - System statistics such as the process' memory usage and open file descriptors.
 - Ruby garbage collection statistics.
-
-Metrics data is written to [InfluxDB](https://www.influxdata.com/products/influxdb-overview/)
-over [UDP](https://docs.influxdata.com/influxdb/v0.9/write_protocols/udp/).
-Stored data can be visualized using [Grafana](https://grafana.com) or any other application that
-supports reading data from InfluxDB. Alternatively data can be queried using the
-InfluxDB CLI.
 
 ## Metric Types
 

@@ -9,7 +9,7 @@ describe 'GraphQL' do
   context 'logging' do
     shared_examples 'logging a graphql query' do
       let(:expected_params) do
-        { query_string: query, variables: variables.to_s, duration: anything, depth: 1, complexity: 1 }
+        { query_string: query, variables: variables.to_s, duration_s: anything, depth: 1, complexity: 1 }
       end
 
       it 'logs a query with the expected params' do

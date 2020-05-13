@@ -8,6 +8,7 @@
 >   login to GitLab's Container Registry.
 > - Multiple level image names support was added in GitLab 9.1.
 > - The group level Container Registry was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23315) in GitLab 12.10.
+> - Searching by image repository name was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31322) in GitLab 13.0.
 
 NOTE: **Note:**
 This document is the user guide. To learn how to enable GitLab Container
@@ -60,6 +61,7 @@ Navigate to your project's **{package}** **Packages & Registries > Container Reg
 This view will:
 
 - Show all the image repositories that belong to the project.
+- Allow you to filter image repositories by their name.
 - Allow you to [delete](#delete-images-from-within-gitlab) one or more image repository.
 - Allow you to navigate to the image repository details page.
 - Show a **Quick start** dropdown with the most common commands to log in, build and push

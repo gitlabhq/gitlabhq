@@ -71,7 +71,7 @@ exports[`Dashboard template matches the default snapshot 1`] = `
       <date-time-picker-stub
         class="flex-grow-1 show-last-dropdown"
         customenabled="true"
-        data-qa-selector="show_last_dropdown"
+        data-qa-selector="range_picker_dropdown"
         options="[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object]"
         value="[object Object]"
       />

@@ -33,7 +33,7 @@ module Gitlab
         class PrettyNumeric < Numeric
           def to_s
             # 0 is shown as -
-            value.nonzero? ? super : None.new.to_s
+            (value || 0).nonzero? ? super : None.new.to_s
           end
         end
       end

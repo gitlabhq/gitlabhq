@@ -52,12 +52,9 @@ class SnippetsController < ApplicationController
     create_params = snippet_params.merge(spammable_params)
     service_response = Snippets::CreateService.new(nil, current_user, create_params).execute
     @snippet = service_response.payload[:snippet]
-    repository_operation_error = service_response.error? && !@snippet.persisted? && @snippet.valid?
 
-    if repository_operation_error
-      flash.now[:alert] = service_response.message
-
-      render :new
+    if service_response.error? && @snippet.errors[:repository].present?
+      handle_repository_error(:new)
     else
       move_temporary_files if @snippet.valid? && params[:files]
 
@@ -71,7 +68,7 @@ class SnippetsController < ApplicationController
     service_response = Snippets::UpdateService.new(nil, current_user, update_params).execute(@snippet)
     @snippet = service_response.payload[:snippet]
 
-    check_repository_error
+    handle_repository_error(:edit)
   end
 
   def show

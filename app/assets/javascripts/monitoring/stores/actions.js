@@ -77,7 +77,7 @@ export const setTimeRange = ({ commit }, timeRange) => {
 };
 
 export const setVariables = ({ commit }, variables) => {
-  commit(types.SET_PROM_QUERY_VARIABLES, variables);
+  commit(types.SET_VARIABLES, variables);
 };
 
 export const filterEnvironments = ({ commit, dispatch }, searchTerm) => {
@@ -413,8 +413,8 @@ export const duplicateSystemDashboard = ({ state }, payload) => {
 
 // Variables manipulation
 
-export const setVariableData = ({ commit }, updatedVariable) => {
-  commit(types.UPDATE_VARIABLE_DATA, updatedVariable);
+export const setVariableValues = ({ commit }, updatedVariable) => {
+  commit(types.UPDATE_VARIABLE_VALUES, updatedVariable);
 };
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests

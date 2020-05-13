@@ -51,11 +51,10 @@ A pipeline consists of multiple jobs, including SAST and DAST scanning. If any j
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/6165) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.1.
 
-At the project level, the Security Dashboard displays the latest security reports
-for your project from the last successful pipeline. Use it to find and fix vulnerabilities affecting the
-[default branch](../../project/repository/branches/index.md#default-branch).
+At the project level, the Security Dashboard displays the latest security reports for your project.
+Use it to find and fix vulnerabilities.
 
-![Project Security Dashboard](img/project_security_dashboard_v12_3.png)
+![Project Security Dashboard](img/project_security_dashboard_v13_0.png)
 
 ### Export vulnerabilities
 
@@ -81,32 +80,27 @@ First, navigate to the Security Dashboard found under your group's
 
 Once you're on the dashboard, at the top you should see a series of filters for:
 
+- Status
 - Severity
-- Confidence
 - Report type
-- Project
-
-To the right of the filters, you should see a **Hide dismissed** toggle button.
 
 NOTE: **Note:**
-The dashboard only shows projects with [security reports](#supported-reports) enabled in a group
-according to the last successful projects' pipelines.
+The dashboard only shows projects with [security reports](#supported-reports) enabled in a group.
 
-![dashboard with action buttons and metrics](img/group_security_dashboard_v12_6.png)
+![Dashboard with action buttons and metrics](img/group_security_dashboard_v13_0.png)
 
-Selecting one or more filters will filter the results in this page. Disabling the **Hide dismissed**
-toggle button will let you also see vulnerabilities that have been dismissed.
+Selecting one or more filters will filter the results in this page.
 
 The main section is a list of all the vulnerabilities in the group, sorted by severity.
 In that list, you can see the severity of the vulnerability, its name, its
 confidence (likelihood of the vulnerability to be a positive one), and the project
 it's from.
 
-If you hover over a row, there will appear some actions you can take:
+If you hover over a row, the following actions appear:
 
-- "More info"
-- "Create issue"
-- "Dismiss vulnerability"
+- More info
+- Create issue
+- Dismiss vulnerability
 
 Next to the list is a timeline chart that shows how many open
 vulnerabilities your projects had at various points in time. You can filter among 30, 60, and
@@ -150,7 +144,7 @@ To add projects to the dashboard:
 Once added, the dashboard will display the vulnerabilities found in your chosen
 projects.
 
-![Instance Security Dashboard with projects](img/instance_security_dashboard_with_projects_v12_8.png)
+![Instance Security Dashboard with projects](img/instance_security_dashboard_with_projects_v13_0.png)
 
 ### Export vulnerabilities
 

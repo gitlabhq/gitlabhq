@@ -1,17 +1,8 @@
 # Grafana Configuration
 
-CAUTION: **InfluxDB is deprecated in favor of Prometheus:**
-InfluxDB support is scheduled to be removed in GitLab 13.0.
-You are advised to use [Prometheus](../prometheus/index.md) instead.
-
 [Grafana](https://grafana.com/) is a tool that allows you to visualize time
-series metrics through graphs and dashboards. It supports several backend
-data stores, including InfluxDB. GitLab writes performance data to InfluxDB
+series metrics through graphs and dashboards. GitLab writes performance data to Prometheus
 and Grafana will allow you to query to display useful graphs.
-
-For the easiest installation and configuration, install Grafana on the same
-server as InfluxDB. For larger installations, you may want to split out these
-services.
 
 ## Installation
 
@@ -33,48 +24,7 @@ in the top bar.
 
 ![Grafana empty data source page](img/grafana_data_source_empty.png)
 
-Fill in the configuration details for the InfluxDB data source. Save and
-Test Connection to ensure the configuration is correct.
-
-- **Name**: `InfluxDB`
-- **Default**: Checked
-- **Type**: `InfluxDB 0.9.x` (Even if you're using InfluxDB 0.10.x)
-- For the URL, use `https://localhost:8086`, or provide the remote URL if you've installed InfluxDB
-  on a separate server
-- **Access**: `proxy`
-- **Database**: `gitlab`
-- **User**: `admin` (Or the username configured when setting up InfluxDB)
-- **Password**: The password configured when you set up InfluxDB
-
 ![Grafana data source configurations](img/grafana_data_source_configuration.png)
-
-## Apply retention policies and create continuous queries
-
-If you intend to import the GitLab provided Grafana dashboards, you will need to
-set up the right retention policies and continuous queries. The easiest way of
-doing this is by using the [InfluxDB Management](https://gitlab.com/gitlab-org/influxdb-management)
-repository.
-
-To use this repository you must first clone it:
-
-```shell
-git clone https://gitlab.com/gitlab-org/influxdb-management.git
-cd influxdb-management
-```
-
-Next you must install the required dependencies:
-
-```shell
-gem install bundler
-bundle install
-```
-
-Now you must configure the repository by first copying `.env.example` to `.env`
-and then editing the `.env` file to contain the correct InfluxDB settings. Once
-configured you can simply run `bundle exec rake` and the InfluxDB database will
-be configured for you.
-
-For more information see the [InfluxDB Management README](https://gitlab.com/gitlab-org/influxdb-management/blob/master/README.md).
 
 ## Import Dashboards
 
@@ -164,5 +114,3 @@ Read more on:
 
 - [Introduction to GitLab Performance Monitoring](index.md)
 - [GitLab Configuration](gitlab_configuration.md)
-- [InfluxDB Installation/Configuration](influxdb_configuration.md)
-- [InfluxDB Schema](influxdb_schema.md)

@@ -37,7 +37,7 @@ module PreviewMarkdown
     when 'groups'   then { group: group }
     when 'projects' then projects_filter_params
     else {}
-    end.merge(requested_path: params[:path])
+    end.merge(requested_path: params[:path], ref: params[:ref])
   end
 
   # rubocop:enable Gitlab/ModuleWithInstanceVariables

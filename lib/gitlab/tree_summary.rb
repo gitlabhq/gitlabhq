@@ -3,18 +3,20 @@
 module Gitlab
   class TreeSummary
     include ::Gitlab::Utils::StrongMemoize
+    include ::MarkupHelper
 
     CACHE_EXPIRE_IN = 1.hour
     MAX_OFFSET = 2**31
 
-    attr_reader :commit, :project, :path, :offset, :limit
+    attr_reader :commit, :project, :path, :offset, :limit, :user
 
     attr_reader :resolved_commits
     private :resolved_commits
 
-    def initialize(commit, project, params = {})
+    def initialize(commit, project, user, params = {})
       @commit = commit
       @project = project
+      @user = user
 
       @path = params.fetch(:path, nil).presence
       @offset = [params.fetch(:offset, 0).to_i, MAX_OFFSET].min
@@ -96,6 +98,7 @@ module Gitlab
         end
 
       commits_hsh = repository.list_last_commits_for_tree(commit.id, ensured_path, offset: offset, limit: limit)
+      prerender_commit_full_titles!(commits_hsh.values)
 
       entries.each do |entry|
         path_key = entry_path(entry)
@@ -104,6 +107,7 @@ module Gitlab
         if commit
           entry[:commit] = commit
           entry[:commit_path] = commit_path(commit)
+          entry[:commit_title_html] = markdown_field(commit, :full_title)
         end
       end
     end
@@ -130,6 +134,14 @@ module Gitlab
 
     def tree
       strong_memoize(:tree) { repository.tree(commit.id, path) }
+    end
+
+    def prerender_commit_full_titles!(commits)
+      # Preload commit authors as they are used in rendering
+      commits.each(&:lazy_author)
+
+      renderer = Banzai::ObjectRenderer.new(user: user, default_project: project)
+      renderer.render(commits, :full_title)
     end
   end
 end

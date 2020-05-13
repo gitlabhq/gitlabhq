@@ -618,7 +618,7 @@ installations from source.
 GraphQL queries are recorded in that file. For example:
 
 ```json
-{"query_string":"query IntrospectionQuery{__schema {queryType { name },mutationType { name }}}...(etc)","variables":{"a":1,"b":2},"complexity":181,"depth":1,"duration":7}
+{"query_string":"query IntrospectionQuery{__schema {queryType { name },mutationType { name }}}...(etc)","variables":{"a":1,"b":2},"complexity":181,"depth":1,"duration_s":7}
 ```
 
 ## `migrations.log`

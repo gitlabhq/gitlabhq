@@ -46,7 +46,7 @@ GitLab provides built-in tools to help improve performance and availability:
 GitLab team members can use [GitLab.com's performance monitoring systems](https://about.gitlab.com/handbook/engineering/monitoring/) located at
 <https://dashboards.gitlab.net>, this requires you to log in using your
 `@gitlab.com` email address. Non-GitLab team-members are advised to set up their
-own InfluxDB and Grafana stack.
+own Prometheus and Grafana stack.
 
 ## Benchmarks
 

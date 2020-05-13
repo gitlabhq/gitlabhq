@@ -1,5 +1,5 @@
 ---
-redirect_to: '../../administration/monitoring/performance/influxdb_schema.md'
+redirect_to: '../../administration/monitoring/performance/prometheus.md'
 ---
 
-This document was moved to [administration/monitoring/performance/influxdb_schema](../../administration/monitoring/performance/influxdb_schema.md).
+Support for InfluxDB was removed in GitLab 13.0. Use [Prometheus](../../administration/monitoring/performance/prometheus.md) for performance monitoring.

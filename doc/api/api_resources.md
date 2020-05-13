@@ -113,7 +113,8 @@ The following API resources are available outside of project and group contexts 
 
 | Resource                                           | Available endpoints                                                     |
 |:---------------------------------------------------|:------------------------------------------------------------------------|
-| [Admin Sidekiq queues](admin_sidekiq_queues.md)    | `/admin/sidekiq/queues/:queue_name`                                               |
+| [Instance-level CI/CD variables](admin_ci_instance_level_variables.md) | `/admin/ci/variables`                               |
+| [Admin Sidekiq queues](admin_sidekiq_queues.md)    | `/admin/sidekiq/queues/:queue_name`                                     |
 | [Appearance](appearance.md) **(CORE ONLY)**        | `/application/appearance`                                               |
 | [Applications](applications.md)                    | `/applications`                                                         |
 | [Audit Events](audit_events.md) **(PREMIUM ONLY)** | `/audit_events`                                                         |

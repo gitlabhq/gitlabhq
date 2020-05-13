@@ -19,7 +19,8 @@ module Gitlab
           service: annotations[:service],
           hosts: Array(annotations[:hosts]),
           payload: payload,
-          started_at: parsed_payload['startsAt']
+          started_at: parsed_payload['startsAt'],
+          severity: annotations[:severity]
         }
       end
 

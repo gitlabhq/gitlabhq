@@ -169,6 +169,21 @@ development workflow.
 NOTE: **Note:**
 Customizability is [only available for group-level](https://gitlab.com/gitlab-org/gitlab/-/issues/35823#note_272558950) Value Stream Analytics.
 
+### Stage path
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/210315) in GitLab 13.0.
+
+Stages are visually depicted as a horizontal process flow. Selecting a stage will update the
+the content below the value stream.
+
+This is disabled by default. If you have a self-managed instance, an
+administrator can [open a Rails console](../../administration/troubleshooting/navigating_gitlab_via_rails_console.md)
+and enable it with the following command:
+
+```ruby
+Feature.enable(:value_stream_analytics_path_navigation)
+```
+
 ### Adding a stage
 
 In the following example we're creating a new stage that measures and tracks issues from creation

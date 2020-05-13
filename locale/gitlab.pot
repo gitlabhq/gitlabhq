@@ -1188,6 +1188,9 @@ msgstr ""
 msgid "Add a homepage to your wiki that contains information about your project and GitLab will display it here instead of this message."
 msgstr ""
 
+msgid "Add a line"
+msgstr ""
+
 msgid "Add a link"
 msgstr ""
 
@@ -1273,6 +1276,9 @@ msgid "Add reaction"
 msgstr ""
 
 msgid "Add request manually"
+msgstr ""
+
+msgid "Add strikethrough text"
 msgstr ""
 
 msgid "Add system hook"
@@ -2295,6 +2301,9 @@ msgid "An instance-level serverless domain already exists."
 msgstr ""
 
 msgid "An issue can be a bug, a todo or a feature request that needs to be discussed in a project. Besides, issues are searchable and filterable."
+msgstr ""
+
+msgid "An unauthenticated user"
 msgstr ""
 
 msgid "An unexpected error occurred while checking the project environment."
@@ -6519,6 +6528,9 @@ msgstr ""
 msgid "Customize your pipeline configuration."
 msgstr ""
 
+msgid "Cycle Time"
+msgstr ""
+
 msgid "CycleAnalyticsEvent|Issue closed"
 msgstr ""
 
@@ -7916,9 +7928,6 @@ msgstr ""
 msgid "Enable and configure Grafana."
 msgstr ""
 
-msgid "Enable and configure InfluxDB metrics."
-msgstr ""
-
 msgid "Enable and configure Prometheus metrics."
 msgstr ""
 
@@ -8453,6 +8462,9 @@ msgstr ""
 msgid "Error creating new iteration"
 msgstr ""
 
+msgid "Error creating the snippet"
+msgstr ""
+
 msgid "Error deleting %{issuableType}"
 msgstr ""
 
@@ -8571,6 +8583,9 @@ msgid "Error updating status for all to-do items."
 msgstr ""
 
 msgid "Error updating status of to-do item."
+msgstr ""
+
+msgid "Error updating the snippet"
 msgstr ""
 
 msgid "Error uploading file"
@@ -10943,6 +10958,9 @@ msgstr ""
 msgid "Header message"
 msgstr ""
 
+msgid "Headings"
+msgstr ""
+
 msgid "Health"
 msgstr ""
 
@@ -11463,6 +11481,9 @@ msgstr ""
 msgid "Incompatible options set!"
 msgstr ""
 
+msgid "Indent"
+msgstr ""
+
 msgid "Index all projects"
 msgstr ""
 
@@ -11487,10 +11508,16 @@ msgstr ""
 msgid "Input your repository URL"
 msgstr ""
 
+msgid "Insert a code block"
+msgstr ""
+
 msgid "Insert a quote"
 msgstr ""
 
 msgid "Insert code"
+msgstr ""
+
+msgid "Insert inline code"
 msgstr ""
 
 msgid "Insert suggestion"
@@ -13292,9 +13319,6 @@ msgstr ""
 msgid "Metrics - Grafana"
 msgstr ""
 
-msgid "Metrics - Influx"
-msgstr ""
-
 msgid "Metrics - Prometheus"
 msgstr ""
 
@@ -14651,6 +14675,9 @@ msgid "OutdatedBrowser|Please install a %{browser_link_start}supported web brows
 msgstr ""
 
 msgid "OutdatedBrowser|You can provide feedback %{feedback_link_start}on this issue%{feedback_link_end} or via your usual support channels."
+msgstr ""
+
+msgid "Outdent"
 msgstr ""
 
 msgid "Overridden"
@@ -23494,6 +23521,9 @@ msgid "Value Stream Analytics can help you determine your team’s velocity"
 msgstr ""
 
 msgid "Value Stream Analytics gives an overview of how much time it takes to go from idea to production in your project."
+msgstr ""
+
+msgid "ValueStreamAnalytics|%{days}d"
 msgstr ""
 
 msgid "Variable"

@@ -408,27 +408,35 @@ describe('Monitoring mutations', () => {
     });
   });
 
-  describe('SET_PROM_QUERY_VARIABLES', () => {
+  describe('SET_VARIABLES', () => {
     it('stores an empty variables array when no custom variables are given', () => {
-      mutations[types.SET_PROM_QUERY_VARIABLES](stateCopy, {});
+      mutations[types.SET_VARIABLES](stateCopy, {});
 
       expect(stateCopy.promVariables).toEqual({});
     });
 
     it('stores variables in the key key_value format in the array', () => {
-      mutations[types.SET_PROM_QUERY_VARIABLES](stateCopy, { pod: 'POD', stage: 'main ops' });
+      mutations[types.SET_VARIABLES](stateCopy, { pod: 'POD', stage: 'main ops' });
 
       expect(stateCopy.promVariables).toEqual({ pod: 'POD', stage: 'main ops' });
     });
   });
 
-  describe('UPDATE_VARIABLE_DATA', () => {
-    beforeEach(() => {
-      mutations[types.SET_PROM_QUERY_VARIABLES](stateCopy, { pod: 'POD' });
+  describe('UPDATE_VARIABLE_VALUES', () => {
+    afterEach(() => {
+      mutations[types.SET_VARIABLES](stateCopy, {});
     });
 
-    it('sets a new value for an existing key', () => {
-      mutations[types.UPDATE_VARIABLE_DATA](stateCopy, { pod: 'new pod' });
+    it('ignores updates that are not already in promVariables', () => {
+      mutations[types.SET_VARIABLES](stateCopy, { environment: 'prod' });
+      mutations[types.UPDATE_VARIABLE_VALUES](stateCopy, { pod: 'new pod' });
+
+      expect(stateCopy.promVariables).toEqual({ environment: 'prod' });
+    });
+
+    it('only updates existing variables', () => {
+      mutations[types.SET_VARIABLES](stateCopy, { pod: 'POD' });
+      mutations[types.UPDATE_VARIABLE_VALUES](stateCopy, { pod: 'new pod' });
 
       expect(stateCopy.promVariables).toEqual({ pod: 'new pod' });
     });

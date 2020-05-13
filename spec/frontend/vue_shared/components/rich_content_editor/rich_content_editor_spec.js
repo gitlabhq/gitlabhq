@@ -1,30 +1,15 @@
 import { shallowMount } from '@vue/test-utils';
 import RichContentEditor from '~/vue_shared/components/rich_content_editor/rich_content_editor.vue';
+import {
+  EDITOR_OPTIONS,
+  EDITOR_TYPES,
+  EDITOR_HEIGHT,
+  EDITOR_PREVIEW_STYLE,
+} from '~/vue_shared/components/rich_content_editor/constants';
 
 describe('Rich Content Editor', () => {
   let wrapper;
 
-  const editorOptions = {
-    toolbarItems: [
-      'heading',
-      'bold',
-      'italic',
-      'strike',
-      'divider',
-      'quote',
-      'link',
-      'codeblock',
-      'divider',
-      'ul',
-      'ol',
-      'task',
-      'divider',
-      'hr',
-      'table',
-      'divider',
-      'code',
-    ],
-  };
   const value = '## Some Markdown';
   const findEditor = () => wrapper.find({ ref: 'editor' });
 
@@ -44,15 +29,19 @@ describe('Rich Content Editor', () => {
     });
 
     it('provides the correct editor options', () => {
-      expect(findEditor().props().options).toEqual(editorOptions);
+      expect(findEditor().props().options).toEqual(EDITOR_OPTIONS);
+    });
+
+    it('has the correct preview style', () => {
+      expect(findEditor().props().previewStyle).toBe(EDITOR_PREVIEW_STYLE);
     });
 
     it('has the correct initial edit type', () => {
-      expect(findEditor().props().initialEditType).toBe('wysiwyg');
+      expect(findEditor().props().initialEditType).toBe(EDITOR_TYPES.wysiwyg);
     });
 
     it('has the correct height', () => {
-      expect(findEditor().props().height).toBe('100%');
+      expect(findEditor().props().height).toBe(EDITOR_HEIGHT);
     });
   });
 

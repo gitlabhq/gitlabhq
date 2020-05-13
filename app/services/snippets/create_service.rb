@@ -60,7 +60,7 @@ module Snippets
         @snippet = @snippet.dup
       end
 
-      @snippet.errors.add(:base, e.message)
+      add_snippet_repository_error(snippet: @snippet, error: e)
 
       false
     end

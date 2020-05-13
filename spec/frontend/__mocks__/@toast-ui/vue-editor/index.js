@@ -13,6 +13,9 @@ export const Editor = {
     height: {
       type: String,
     },
+    previewStyle: {
+      type: String,
+    },
   },
   render(h) {
     return h('div');

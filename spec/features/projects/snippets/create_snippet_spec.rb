@@ -99,7 +99,7 @@ shared_examples_for 'snippet editor' do
     end
 
     context 'when the git operation fails' do
-      let(:error) { 'This is a git error' }
+      let(:error) { 'Error creating the snippet' }
 
       before do
         allow_next_instance_of(Snippets::CreateService) do |instance|

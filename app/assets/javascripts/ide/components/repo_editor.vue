@@ -44,6 +44,7 @@ export default {
       'isEditModeActive',
       'isCommitModeActive',
       'isReviewModeActive',
+      'currentBranch',
     ]),
     ...mapGetters('fileTemplates', ['showFileTemplatesBar']),
     shouldHideEditor() {
@@ -86,6 +87,9 @@ export default {
         renderWhitespace: this.renderWhitespaceInCode ? 'all' : 'none',
         theme: this.editorTheme,
       };
+    },
+    currentBranchCommit() {
+      return this.currentBranch?.commit.id;
     },
   },
   watch: {
@@ -315,6 +319,7 @@ export default {
       :file-path="file.path"
       :file-size="file.size"
       :project-path="file.projectId"
+      :commit-sha="currentBranchCommit"
       :type="fileType"
     />
     <diff-viewer

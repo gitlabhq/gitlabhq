@@ -1,0 +1,5 @@
+---
+title: Fix broken heading of Vue 3 migration guide doc
+merge_request: 31951
+author: Gilang Gumilar
+type: fixed

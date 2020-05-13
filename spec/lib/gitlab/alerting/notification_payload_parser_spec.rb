@@ -12,7 +12,8 @@ describe Gitlab::Alerting::NotificationPayloadParser do
         'description' => 'Description',
         'monitoring_tool' => 'Monitoring tool name',
         'service' => 'Service',
-        'hosts' => ['gitlab.com']
+        'hosts' => ['gitlab.com'],
+        'severity' => 'low'
       }
     end
 
@@ -26,7 +27,8 @@ describe Gitlab::Alerting::NotificationPayloadParser do
             'description' => 'Description',
             'monitoring_tool' => 'Monitoring tool name',
             'service' => 'Service',
-            'hosts' => ['gitlab.com']
+            'hosts' => ['gitlab.com'],
+            'severity' => 'low'
           },
           'startsAt' => starts_at.rfc3339
         }
@@ -67,10 +69,23 @@ describe Gitlab::Alerting::NotificationPayloadParser do
       let(:payload) { {} }
 
       it 'returns default parameters' do
-        is_expected.to eq(
-          'annotations' => { 'title' => 'New: Incident' },
+        is_expected.to match(
+          'annotations' => {
+            'title' => described_class::DEFAULT_TITLE,
+            'severity' => described_class::DEFAULT_SEVERITY
+          },
           'startsAt' => starts_at.rfc3339
         )
+      end
+
+      context 'when severity is blank' do
+        before do
+          payload[:severity] = ''
+        end
+
+        it 'sets severity to the default ' do
+          expect(subject.dig('annotations', 'severity')).to eq(described_class::DEFAULT_SEVERITY)
+        end
       end
     end
 
@@ -88,7 +103,10 @@ describe Gitlab::Alerting::NotificationPayloadParser do
 
       it 'returns default parameters' do
         is_expected.to eq(
-          'annotations' => { 'title' => 'New: Incident' },
+          'annotations' => {
+            'title' => 'New: Incident',
+            'severity' => described_class::DEFAULT_SEVERITY
+          },
           'startsAt' => starts_at.rfc3339
         )
       end
@@ -112,6 +130,7 @@ describe Gitlab::Alerting::NotificationPayloadParser do
         is_expected.to eq(
           'annotations' => {
             'title' => 'New: Incident',
+            'severity' => described_class::DEFAULT_SEVERITY,
             'description' => 'Description',
             'additional.params.1' => 'Some value 1',
             'additional.params.2' => 'Some value 2'

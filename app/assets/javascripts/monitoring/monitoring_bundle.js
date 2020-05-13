@@ -14,7 +14,7 @@ export default (props = {}) => {
   if (el && el.dataset) {
     const [currentDashboard] = getParameterValues('dashboard');
 
-    store.dispatch('monitoringDashboard/setVariables', promCustomVariablesFromUrl());
+    store.dispatch('monitoringDashboard/setVariableValues', promCustomVariablesFromUrl());
 
     // eslint-disable-next-line no-new
     new Vue({

@@ -169,12 +169,20 @@ describe Snippets::CreateService do
           expect { subject }.not_to change { Snippet.count }
         end
 
-        it 'returns the error' do
-          expect(snippet.errors.full_messages).to include('Repository could not be created')
+        it 'returns a generic creation error' do
+          expect(snippet.errors[:repository]).to eq ['Error creating the snippet - Repository could not be created']
         end
 
         it 'does not return a snippet with an id' do
           expect(snippet.id).to be_nil
+        end
+      end
+
+      context 'when repository creation fails with invalid file name' do
+        let(:extra_opts) { { file_name: 'invalid://file/name/here' } }
+
+        it 'returns an appropriate error' do
+          expect(snippet.errors[:repository]).to eq ['Error creating the snippet - Invalid file name']
         end
       end
 
@@ -209,11 +217,11 @@ describe Snippets::CreateService do
           subject
         end
 
-        it 'returns the error' do
+        it 'returns a generic error' do
           response = subject
 
           expect(response).to be_error
-          expect(response.payload[:snippet].errors.full_messages).to eq ['foobar']
+          expect(response.payload[:snippet].errors[:repository]).to eq ['Error creating the snippet']
         end
       end
 

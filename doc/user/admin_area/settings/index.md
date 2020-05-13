@@ -74,7 +74,6 @@ Access the default page for admin area settings by navigating to
 
 | Option | Description |
 | ------ | ----------- |
-| [Metrics - Influx](../../../administration/monitoring/performance/gitlab_configuration.md) | Enable and configure InfluxDB metrics. |
 | [Metrics - Prometheus](../../../administration/monitoring/prometheus/gitlab_metrics.md) | Enable and configure Prometheus metrics. |
 | [Metrics - Grafana](../../../administration/monitoring/performance/grafana_configuration.md#integration-with-gitlab-ui) | Enable and configure Grafana. |
 | [Profiling - Performance bar](../../../administration/monitoring/performance/performance_bar.md#enable-the-performance-bar-via-the-admin-panel) | Enable access to the Performance Bar for a given group. |

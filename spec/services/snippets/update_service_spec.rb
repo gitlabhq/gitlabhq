@@ -121,7 +121,7 @@ describe Snippets::UpdateService do
           response = subject
 
           expect(response).to be_error
-          expect(response.payload[:snippet].errors[:repository].to_sentence).to eq 'Error updating the snippet'
+          expect(response.payload[:snippet].errors[:repository].to_sentence).to eq 'Error updating the snippet - Repository could not be created'
         end
 
         it 'does not try to commit file' do

@@ -97,9 +97,18 @@ You can filter the **Issues** list to individual instances by their ID. For exam
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/9468) in [GitLab Starter](https://about.gitlab.com/pricing/) 11.9.
 
 To filter merge requests by an individual approver, you can type (or select from
-the dropdown) `approver` and select the user.
+the dropdown) **Approver** and select the user.
 
 ![Filter MRs by an approver](img/filter_approver_merge_requests.png)
+
+### Filtering merge requests by "approved by" **(STARTER)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/30335) in [GitLab Starter](https://about.gitlab.com/pricing/) 13.0.
+
+To filter merge requests already approved by a specific individual, you can type (or select from
+the dropdown) **Approved-By** and select the user.
+
+![Filter MRs by approved by](img/filter_approved_by_merge_requests_v13_0.png)
 
 ## Search history
 

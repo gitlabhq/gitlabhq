@@ -26,7 +26,7 @@ import {
   clearExpandedPanel,
   setGettingStartedEmptyState,
   duplicateSystemDashboard,
-  setVariables,
+  setVariableValues,
 } from '~/monitoring/stores/actions';
 import {
   gqClient,
@@ -442,19 +442,19 @@ describe('Monitoring store actions', () => {
     });
   });
 
-  describe('setVariables', () => {
+  describe('setVariableValues', () => {
     let mockedState;
     beforeEach(() => {
       mockedState = storeState();
     });
-    it('should commit SET_PROM_QUERY_VARIABLES mutation', done => {
+    it('should commit UPDATE_VARIABLE_VALUES mutation', done => {
       testAction(
-        setVariables,
+        setVariableValues,
         { pod: 'POD' },
         mockedState,
         [
           {
-            type: types.SET_PROM_QUERY_VARIABLES,
+            type: types.UPDATE_VARIABLE_VALUES,
             payload: { pod: 'POD' },
           },
         ],

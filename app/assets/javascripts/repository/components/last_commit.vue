@@ -121,9 +121,8 @@ export default {
             :href="commit.webUrl"
             :class="{ 'font-italic': !commit.message }"
             class="commit-row-message item-title"
-          >
-            {{ commit.title }}
-          </gl-link>
+            v-html="commit.titleHtml"
+          />
           <gl-deprecated-button
             v-if="commit.description"
             :class="{ open: showDescription }"

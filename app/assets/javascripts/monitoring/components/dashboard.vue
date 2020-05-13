@@ -494,7 +494,7 @@ export default {
         <date-time-picker
           ref="dateTimePicker"
           class="flex-grow-1 show-last-dropdown"
-          data-qa-selector="show_last_dropdown"
+          data-qa-selector="range_picker_dropdown"
           :value="selectedTimeRange"
           :options="timeRanges"
           @input="onDateTimePickerInput"

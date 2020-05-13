@@ -6778,7 +6778,6 @@ CREATE TABLE public.users (
     commit_email character varying,
     group_view integer,
     managing_group_id integer,
-    bot_type smallint,
     first_name character varying(255),
     last_name character varying(255),
     static_object_token character varying(255),
@@ -10732,8 +10731,6 @@ CREATE INDEX index_users_on_accepted_term_id ON public.users USING btree (accept
 
 CREATE INDEX index_users_on_admin ON public.users USING btree (admin);
 
-CREATE INDEX index_users_on_bot_type ON public.users USING btree (bot_type);
-
 CREATE UNIQUE INDEX index_users_on_confirmation_token ON public.users USING btree (confirmation_token);
 
 CREATE INDEX index_users_on_created_at ON public.users USING btree (created_at);
@@ -13764,7 +13761,9 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200505172405
 20200506085748
 20200506125731
+20200506154421
 20200507221434
+20200508091106
 20200511145545
 \.
 

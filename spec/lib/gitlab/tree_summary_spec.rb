@@ -8,12 +8,13 @@ describe Gitlab::TreeSummary do
   let(:project) { create(:project, :empty_repo) }
   let(:repo) { project.repository }
   let(:commit) { repo.head_commit }
+  let_it_be(:user) { create(:user) }
 
   let(:path) { nil }
   let(:offset) { nil }
   let(:limit) { nil }
 
-  subject(:summary) { described_class.new(commit, project, path: path, offset: offset, limit: limit) }
+  subject(:summary) { described_class.new(commit, project, user, path: path, offset: offset, limit: limit) }
 
   describe '#initialize' do
     it 'defaults offset to 0' do
@@ -72,7 +73,8 @@ describe Gitlab::TreeSummary do
       expected_commit_path = Gitlab::Routing.url_helpers.project_commit_path(project, commit)
 
       expect(entry[:commit]).to be_a(::Commit)
-      expect(entry[:commit_path]).to eq expected_commit_path
+      expect(entry[:commit_path]).to eq(expected_commit_path)
+      expect(entry[:commit_title_html]).to eq(commit.message)
     end
 
     context 'in a good subdirectory' do
@@ -138,6 +140,16 @@ describe Gitlab::TreeSummary do
 
         expect(entry).to be_a(Hash)
         expect(entry).to include(:commit)
+      end
+    end
+
+    context 'rendering commits' do
+      it 'does not perform N + 1 request' do
+        summary
+
+        queries = ActiveRecord::QueryRecorder.new { summary.summarize }
+
+        expect(queries.count).to be <= 3
       end
     end
   end

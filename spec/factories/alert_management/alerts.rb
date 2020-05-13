@@ -25,7 +25,7 @@ FactoryBot.define do
     end
 
     trait :with_host do
-      hosts { FFaker::Internet.ip_v4_address }
+      hosts { [FFaker::Internet.ip_v4_address] }
     end
 
     trait :with_ended_at do
@@ -56,12 +56,17 @@ FactoryBot.define do
       without_ended_at
     end
 
+    trait :low_severity do
+      severity { 'low' }
+    end
+
     trait :all_fields do
       with_issue
       with_fingerprint
       with_service
       with_monitoring_tool
       with_host
+      low_severity
     end
   end
 end

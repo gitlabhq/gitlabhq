@@ -21,6 +21,10 @@ describe Gitlab::CycleAnalytics::Summary::Value do
         expect(described_class.new(0).to_s).to eq('-')
       end
 
+      it 'returns `-` when the number is nil' do
+        expect(described_class.new(nil).to_s).to eq('-')
+      end
+
       it 'returns the string representation of the number' do
         expect(described_class.new(100).to_s).to eq('100')
       end

@@ -302,16 +302,6 @@ describe 'Admin updates settings', :clean_gitlab_redis_shared_state, :do_not_moc
         visit metrics_and_profiling_admin_application_settings_path
       end
 
-      it 'Change Influx settings' do
-        page.within('.as-influx') do
-          check 'Enable InfluxDB Metrics'
-          click_button 'Save changes'
-        end
-
-        expect(current_settings.metrics_enabled?).to be true
-        expect(page).to have_content "Application settings saved successfully"
-      end
-
       it 'Change Prometheus settings' do
         page.within('.as-prometheus') do
           check 'Enable Prometheus Metrics'

@@ -188,13 +188,14 @@ export default {
     state.expandedPanel.group = group;
     state.expandedPanel.panel = panel;
   },
-  [types.SET_PROM_QUERY_VARIABLES](state, variables) {
+  [types.SET_VARIABLES](state, variables) {
     state.promVariables = variables;
   },
-  [types.UPDATE_VARIABLE_DATA](state, newVariable) {
-    Object.assign(state.promVariables, {
-      ...state.promVariables,
-      ...newVariable,
+  [types.UPDATE_VARIABLE_VALUES](state, newVariable) {
+    Object.keys(newVariable).forEach(key => {
+      if (Object.prototype.hasOwnProperty.call(state.promVariables, key)) {
+        state.promVariables[key] = newVariable[key];
+      }
     });
   },
 };

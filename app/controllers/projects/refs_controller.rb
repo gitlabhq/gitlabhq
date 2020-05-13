@@ -45,7 +45,8 @@ class Projects::RefsController < Projects::ApplicationController
 
   def logs_tree
     tree_summary = ::Gitlab::TreeSummary.new(
-      @commit, @project, path: @path, offset: params[:offset], limit: 25)
+      @commit, @project, current_user,
+      path: @path, offset: params[:offset], limit: 25)
 
     respond_to do |format|
       format.html { render_404 }
@@ -60,10 +61,8 @@ class Projects::RefsController < Projects::ApplicationController
       # Deprecated due to https://gitlab.com/gitlab-org/gitlab/-/issues/36863
       # Will be removed soon https://gitlab.com/gitlab-org/gitlab/-/merge_requests/29895
       format.js do
-        @logs, commits = tree_summary.summarize
+        @logs, _ = tree_summary.summarize
         @more_log_url = more_url(tree_summary.next_offset) if tree_summary.more?
-
-        prerender_commit_full_titles!(commits)
       end
     end
   end
@@ -72,14 +71,6 @@ class Projects::RefsController < Projects::ApplicationController
 
   def more_url(offset)
     logs_file_project_ref_path(@project, @ref, @path, offset: offset)
-  end
-
-  def prerender_commit_full_titles!(commits)
-    # Preload commit authors as they are used in rendering
-    commits.each(&:lazy_author)
-
-    renderer = Banzai::ObjectRenderer.new(user: current_user, default_project: @project)
-    renderer.render(commits, :full_title)
   end
 
   def validate_ref_id

@@ -34,7 +34,7 @@ module Gitlab
 
           memo[:depth] = depth
           memo[:complexity] = complexity
-          memo[:duration] = duration(memo[:time_started]).round(1)
+          memo[:duration_s] = duration(memo[:time_started]).round(1)
 
           GraphqlLogger.info(memo.except!(:time_started, :query))
         rescue => e
@@ -62,7 +62,7 @@ module Gitlab
             query_string: nil,
             query: query,
             variables: nil,
-            duration: nil
+            duration_s: nil
           }
         end
       end

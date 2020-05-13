@@ -54,7 +54,8 @@ module Snippets
         snippet.save
       end
 
-      snippet.errors.add(:repository, 'Error updating the snippet')
+      add_snippet_repository_error(snippet: snippet, error: e)
+
       log_error(e.message)
 
       # If the commit action failed we remove it because

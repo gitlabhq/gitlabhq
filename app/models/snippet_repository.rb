@@ -44,6 +44,9 @@ class SnippetRepository < ApplicationRecord
          Gitlab::Git::PreReceiveError,
          Gitlab::Git::CommandError,
          ArgumentError => error
+
+    logger.error(message: "Snippet git error. Reason: #{error.message}", snippet: snippet.id)
+
     raise commit_error_exception(error)
   end
 
@@ -91,7 +94,7 @@ class SnippetRepository < ApplicationRecord
 
   def commit_error_exception(err)
     if invalid_path_error?(err)
-      InvalidPathError.new('Invalid Path') # To avoid returning the message with the path included
+      InvalidPathError.new('Invalid file name') # To avoid returning the message with the path included
     elsif invalid_signature_error?(err)
       InvalidSignatureError.new(err.message)
     else

@@ -244,7 +244,10 @@ export const addPrefixToLabels = label => `${VARIABLE_PREFIX}${label}`;
  * Before the templating variables are passed to the backend the
  * prefix needs to be removed.
  *
+ * This method removes the prefix at the beginning of the string.
+ *
  * @param {String} label label to remove prefix from
  * @returns {String}
  */
-export const removePrefixFromLabels = label => label.replace(VARIABLE_PREFIX, '');
+export const removePrefixFromLabels = label =>
+  (label || '').replace(new RegExp(`^${VARIABLE_PREFIX}`), '');

@@ -24,7 +24,7 @@ Git is really deleted](https://git-scm.com/book/en/v2/Git-Internals-Maintenance-
 
 This means that until Git automatically cleans detached commits (which cannot be
 accessed by branch or tag) it will be possible to view them with `git reflog` command
-and access them with direct commit ID. Read more about _[redoing the undo](#redoing-the-undo)_ on the section below.
+and access them with direct commit ID. Read more about _[redoing the undo](#redoing-the-undo)_ in the section below.
 
 ## Introduction
 
@@ -36,12 +36,12 @@ a file into the **staged** state, which is then committed (`git commit`) to your
 local repository. After that, file can be shared with other developers (`git push`).
 Here's what we'll cover in this tutorial:
 
-- [Undo local changes](#undo-local-changes) which were not pushed to remote repository:
+- [Undo local changes](#undo-local-changes) which were not pushed to a remote repository:
 
   - Before you commit, in both unstaged and staged state.
   - After you committed.
 
-- Undo changes after they are pushed to remote repository:
+- Undo changes after they are pushed to a remote repository:
 
   - [Without history modification](#undo-remote-changes-without-changing-history) (preferred way).
   - [With history modification](#undo-remote-changes-with-modifying-history) (requires
@@ -68,7 +68,7 @@ joined development of the same feature by multiple developers by default.
 
 When multiple developers develop the same feature on the same branch, clashing
 with every synchronization is unavoidable, but a proper or chosen Git Workflow will
-prevent that anything is lost or out of sync when feature is complete.
+prevent that anything is lost or out of sync when the feature is complete.
 
 You can also
 read through this blog post on [Git Tips & Tricks](https://about.gitlab.com/blog/2016/12/08/git-tips-and-tricks/)
@@ -83,7 +83,7 @@ can be on various stages and each stage has a different approach on how to tackl
 ### Unstaged local changes (before you commit)
 
 When a change is made, but it is not added to the staged tree, Git itself
-proposes a solution to discard changes to certain file.
+proposes a solution to discard changes to a certain file.
 
 Suppose you edited a file to change the content using your favorite editor:
 

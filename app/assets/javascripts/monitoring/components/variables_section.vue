@@ -12,14 +12,14 @@ export default {
     ...mapState('monitoringDashboard', ['promVariables']),
   },
   methods: {
-    ...mapActions('monitoringDashboard', ['fetchDashboardData', 'setVariableData']),
+    ...mapActions('monitoringDashboard', ['fetchDashboardData', 'setVariableValues']),
     refreshDashboard(event) {
       const { name, value } = event.target;
 
       if (this.promVariables[name] !== value) {
         const changedVariable = { [name]: value };
 
-        this.setVariableData(changedVariable);
+        this.setVariableValues(changedVariable);
 
         updateHistory({
           url: mergeUrlParams(this.promVariables, window.location.href),

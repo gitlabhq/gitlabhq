@@ -2379,6 +2379,20 @@
               "deprecationReason": null
             },
             {
+              "name": "titleHtml",
+              "description": "The GitLab Flavored Markdown rendering of `title`",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "webUrl",
               "description": "Web URL of the commit",
               "args": [

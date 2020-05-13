@@ -23,7 +23,7 @@ describe Gitlab::GraphqlLogger do
         variables: {},
         complexity: 181,
         depth: 0,
-        duration: 7
+        duration_s: 7
       }
 
       output = subject.format_message('INFO', now, 'test', analyzer_memo)
@@ -34,7 +34,7 @@ describe Gitlab::GraphqlLogger do
       expect(data['complexity']).to eq(181)
       expect(data['variables']).to eq({})
       expect(data['depth']).to eq(0)
-      expect(data['duration']).to eq(7)
+      expect(data['duration_s']).to eq(7)
     end
   end
 end

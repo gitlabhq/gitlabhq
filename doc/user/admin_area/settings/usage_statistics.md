@@ -339,7 +339,6 @@ but commented out to help encourage others to add to it in the future. -->
 |dependency_proxy_enabled|||
 |gitlab_shared_runners_enabled|||
 |gravatar_enabled|||
-|influxdb_metrics_enabled|||
 |ldap_enabled|||
 |mattermost_enabled|||
 |omniauth_enabled|||

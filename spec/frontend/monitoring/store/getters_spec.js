@@ -338,14 +338,14 @@ describe('Monitoring store Getters', () => {
     });
 
     it('transforms the promVariables object to an array in the [variable, variable_value] format', () => {
-      mutations[types.SET_PROM_QUERY_VARIABLES](state, sampleVariables);
+      mutations[types.SET_VARIABLES](state, sampleVariables);
       const variablesArray = getters.getCustomVariablesArray(state);
 
       expect(variablesArray).toEqual(['label1', 'pod', 'label2', 'env']);
     });
 
     it('transforms the promVariables object to an empty array when no keys are present', () => {
-      mutations[types.SET_PROM_QUERY_VARIABLES](state, {});
+      mutations[types.SET_VARIABLES](state, {});
       const variablesArray = getters.getCustomVariablesArray(state);
 
       expect(variablesArray).toEqual([]);
