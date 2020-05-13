@@ -70,7 +70,7 @@ module PodLogs
       client = cluster&.application_elastic_stack&.elasticsearch_client
       return error(_('Unable to connect to Elasticsearch')) unless client
 
-      filebeat7 = cluster.application_elastic_stack.filebeat7?
+      chart_above_v2 = cluster.application_elastic_stack.chart_above_v2?
 
       response = ::Gitlab::Elasticsearch::Logs::Lines.new(client).pod_logs(
         namespace,
@@ -80,7 +80,7 @@ module PodLogs
         start_time: result[:start_time],
         end_time: result[:end_time],
         cursor: result[:cursor],
-        filebeat7: filebeat7
+        chart_above_v2: chart_above_v2
       )
 
       result.merge!(response)

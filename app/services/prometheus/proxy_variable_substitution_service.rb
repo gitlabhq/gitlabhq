@@ -17,8 +17,7 @@ module Prometheus
     steps :validate_variables,
       :add_params_to_result,
       :substitute_params,
-      :substitute_ruby_variables,
-      :substitute_liquid_variables
+      :substitute_variables
 
     def initialize(environment, params = {})
       @environment, @params = environment, params.deep_dup
@@ -56,30 +55,12 @@ module Prometheus
       success(result)
     end
 
-    def substitute_liquid_variables(result)
+    def substitute_variables(result)
       return success(result) unless query(result)
 
       result[:params][:query] = gsub(query(result), full_context)
 
       success(result)
-    end
-
-    def substitute_ruby_variables(result)
-      return success(result) unless query(result)
-
-      # The % operator doesn't replace variables if the hash contains string
-      # keys.
-      result[:params][:query] = query(result) % predefined_context.symbolize_keys
-
-      success(result)
-    rescue TypeError, ArgumentError => exception
-      log_error(exception.message)
-      Gitlab::ErrorTracking.track_exception(exception, {
-        template_string: query(result),
-        variables: predefined_context
-      })
-
-      error(_('Malformed string'))
     end
 
     def gsub(string, context)
@@ -95,11 +76,11 @@ module Prometheus
     end
 
     def predefined_context
-      @predefined_context ||= Gitlab::Prometheus::QueryVariables.call(@environment)
+      Gitlab::Prometheus::QueryVariables.call(@environment).stringify_keys
     end
 
     def full_context
-      @full_context ||= predefined_context.stringify_keys.reverse_merge(variables_hash)
+      @full_context ||= predefined_context.reverse_merge(variables_hash)
     end
 
     def variables

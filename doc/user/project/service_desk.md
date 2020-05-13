@@ -151,6 +151,7 @@ service_desk_email:
   log_path: "log/mailroom.log"
   mailbox: "inbox"
   idle_timeout: 60
+  expunge_deleted: true
 ```
 
 In this case, suppose the `mygroup/myproject` project Service Desk settings has the project name

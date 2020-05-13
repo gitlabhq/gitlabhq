@@ -192,10 +192,11 @@ GitLab supports a limited set of [CI variables](../../../ci/variables/README.md)
 NOTE: **Note:**
 Variables for Prometheus queries must be lowercase.
 
-There are 2 methods to specify a variable in a query or dashboard:
+Variables can be specified using double curly braces, such as `"{{ci_environment_slug}}"` ([added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20793) in GitLab 12.7).
 
-1. Variables can be specified using double curly braces, such as `{{ci_environment_slug}}` ([added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20793) in GitLab 12.7).
-1. You can also enclose it in quotation marks with curly braces with a leading percent, for example `"%{ci_environment_slug}"`. This method is deprecated though and support will be [removed in the next major release](https://gitlab.com/gitlab-org/gitlab/issues/37990).
+Support for the `"%{ci_environment_slug}"` format was
+[removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31581) in GitLab 13.0.
+Queries that continue to use the old format will show no data.
 
 #### Query Variables from URL
 

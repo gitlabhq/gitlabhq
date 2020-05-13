@@ -4,6 +4,9 @@
 
 The SCIM API implements the [the RFC7644 protocol](https://tools.ietf.org/html/rfc7644).
 
+CAUTION: **Caution:**
+This API is for internal system use for connecting with a SCIM provider. While it can be used directly, it is subject to change without notice.
+
 NOTE: **Note:**
 [Group SSO](../user/group/saml_sso/index.md) must be enabled for the group. For more information, see [SCIM setup documentation](../user/group/saml_sso/scim_setup.md#requirements).
 

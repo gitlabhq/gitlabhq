@@ -57,6 +57,9 @@ See the [Rails guides](https://guides.rubyonrails.org/action_mailer_basics.html#
      mailbox: "inbox"
      # The IDLE command timeout.
      idle_timeout: 60
+
+     # Whether to expunge (permanently remove) messages from the mailbox when they are deleted after delivery
+     expunge_deleted: false
    ```
 
    As mentioned, the part after `+` is ignored, and this will end up in the mailbox for `gitlab-incoming@gmail.com`.

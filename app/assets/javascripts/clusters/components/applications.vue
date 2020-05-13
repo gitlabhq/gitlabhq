@@ -662,7 +662,7 @@ Crossplane runs inside your Kubernetes cluster and supports secure connectivity 
         :uninstall-successful="applications.elastic_stack.uninstallSuccessful"
         :uninstall-failed="applications.elastic_stack.uninstallFailed"
         :disabled="!helmInstalled"
-        title-link="https://github.com/helm/charts/tree/master/stable/elastic-stack"
+        title-link="https://gitlab.com/gitlab-org/charts/elastic-stack"
       >
         <div slot="description">
           <p>

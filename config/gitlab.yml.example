@@ -202,6 +202,9 @@ production: &base
     #
     # log_path: log/mail_room_json.log
 
+    # Whether to expunge (permanently remove) messages from the mailbox when they are deleted after delivery
+    expunge_deleted: false
+
   ## Build Artifacts
   artifacts:
     enabled: true

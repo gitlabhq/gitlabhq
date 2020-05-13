@@ -12763,9 +12763,6 @@ msgstr ""
 msgid "Makes this issue confidential."
 msgstr ""
 
-msgid "Malformed string"
-msgstr ""
-
 msgid "Manage"
 msgstr ""
 
@@ -23695,9 +23692,6 @@ msgid "VulnerabilityManagement|Confirm"
 msgstr ""
 
 msgid "VulnerabilityManagement|Confirmed %{timeago} by %{user}"
-msgstr ""
-
-msgid "VulnerabilityManagement|Create issue"
 msgstr ""
 
 msgid "VulnerabilityManagement|Detected %{timeago} in pipeline %{pipelineLink}"

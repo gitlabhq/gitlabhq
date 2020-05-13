@@ -37,6 +37,8 @@ module Gitlab
           @rbac
         end
 
+        private
+
         # Uses `helm upgrade --install` which means we can use this for both
         # installation and uprade of applications
         def install_command
@@ -52,8 +54,6 @@ module Gitlab
 
           command.shelljoin
         end
-
-        private
 
         def install_flag
           ['--install']

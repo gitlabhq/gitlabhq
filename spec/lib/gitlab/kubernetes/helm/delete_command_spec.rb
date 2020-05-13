@@ -75,4 +75,10 @@ describe Gitlab::Kubernetes::Helm::DeleteCommand do
   it_behaves_like 'helm command' do
     let(:command) { delete_command }
   end
+
+  describe '#delete_command' do
+    it 'deletes the release' do
+      expect(subject.delete_command).to eq('helm delete --purge app-name')
+    end
+  end
 end

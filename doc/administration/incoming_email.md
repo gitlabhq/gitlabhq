@@ -182,6 +182,9 @@ gitlab_rails['incoming_email_start_tls'] = false
 gitlab_rails['incoming_email_mailbox_name'] = "inbox"
 # The IDLE command timeout.
 gitlab_rails['incoming_email_idle_timeout'] = 60
+
+# Whether to expunge (permanently remove) messages from the mailbox when they are deleted after delivery
+gitlab_rails['incoming_email_expunge_deleted'] = true
 ```
 
 Example for source installs:
@@ -214,6 +217,9 @@ incoming_email:
     mailbox: "inbox"
     # The IDLE command timeout.
     idle_timeout: 60
+
+    # Whether to expunge (permanently remove) messages from the mailbox when they are deleted after delivery
+    expunge_deleted: true
 ```
 
 #### Gmail
@@ -249,6 +255,9 @@ gitlab_rails['incoming_email_start_tls'] = false
 gitlab_rails['incoming_email_mailbox_name'] = "inbox"
 # The IDLE command timeout.
 gitlab_rails['incoming_email_idle_timeout'] = 60
+
+# Whether to expunge (permanently remove) messages from the mailbox when they are deleted after delivery
+gitlab_rails['incoming_email_expunge_deleted'] = true
 ```
 
 Example for source installs:
@@ -281,6 +290,9 @@ incoming_email:
     mailbox: "inbox"
     # The IDLE command timeout.
     idle_timeout: 60
+
+    # Whether to expunge (permanently remove) messages from the mailbox when they are deleted after delivery
+    expunge_deleted: true
 ```
 
 #### Microsoft Exchange Server

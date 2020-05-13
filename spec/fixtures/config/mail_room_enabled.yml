@@ -9,6 +9,7 @@ test:
     ssl: true
     start_tls: false
     mailbox: "inbox"
+    expunge_deleted: true
 
   service_desk_email:
     enabled: true
@@ -20,3 +21,4 @@ test:
     ssl: true
     start_tls: false
     mailbox: "inbox"
+    expunge_deleted: true

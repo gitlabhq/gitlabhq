@@ -11,7 +11,7 @@ class PlanLimits < ApplicationRecord
     else
       # object.count >= limit value is slower than checking
       # if a record exists at the limit value - 1 position.
-      object.limit(1).offset(read_attribute(limit_name) - 1).exists?
+      object.offset(read_attribute(limit_name) - 1).exists?
     end
   end
 

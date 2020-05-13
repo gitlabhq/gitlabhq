@@ -90,7 +90,7 @@ describe Gitlab::Elasticsearch::Logs::Lines do
     it 'can search on filebeat 6' do
       expect(client).to receive(:search).with(body: a_hash_equal_to_json(body_with_filebeat_6)).and_return(es_response)
 
-      result = subject.pod_logs(namespace, pod_name: pod_name, filebeat7: false)
+      result = subject.pod_logs(namespace, pod_name: pod_name, chart_above_v2: false)
       expect(result).to eq(logs: [es_message_4, es_message_3, es_message_2, es_message_1], cursor: cursor)
     end
   end

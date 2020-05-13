@@ -36,8 +36,6 @@ module Gitlab
           @rbac
         end
 
-        private
-
         def delete_command
           command = ['helm', 'delete', '--purge', name] + tls_flags_if_remote_tiller
 

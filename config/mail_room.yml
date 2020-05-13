@@ -17,6 +17,7 @@
       :name: <%= config[:mailbox].to_json %>
 
       :delete_after_delivery: true
+      :expunge_deleted: <%= config[:expunge_deleted].to_json %>
 
       :delivery_method: sidekiq
       :delivery_options:

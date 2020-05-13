@@ -55,7 +55,7 @@ describe Projects::Environments::PrometheusApiController do
           end
 
           it 'replaces variables with values' do
-            get :proxy, params: environment_params.merge(query: 'up{environment="%{ci_environment_slug}"}')
+            get :proxy, params: environment_params.merge(query: 'up{environment="{{ci_environment_slug}}"}')
 
             expect(Prometheus::ProxyService).to have_received(:new)
               .with(environment, 'GET', 'query', expected_params)
