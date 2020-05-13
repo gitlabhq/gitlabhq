@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 12.10.5 (2020-05-13)
+
+### Added (1 change)
+
+- Consider project group and group ancestors when processing CODEOWNERS entries. !31804
+
+
 ## 12.10.4 (2020-05-05)
 
 ### Fixed (1 change)
