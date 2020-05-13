@@ -647,7 +647,7 @@ describe Gitlab::Database::MigrationHelpers do
           expect(model).to receive(:update_column_in_batches)
             .with(:projects, :foo, 10)
 
-          expect(model).not_to receive(:add_not_null_constraint)
+          expect(model).not_to receive(:change_column_null)
 
           model.add_column_with_default(:projects, :foo, :integer,
                                         default: 10,
@@ -658,8 +658,8 @@ describe Gitlab::Database::MigrationHelpers do
           expect(model).to receive(:update_column_in_batches)
             .with(:projects, :foo, 10)
 
-          expect(model).to receive(:add_not_null_constraint)
-            .with(:projects, :foo)
+          expect(model).to receive(:change_column_null)
+            .with(:projects, :foo, false)
 
           model.add_column_with_default(:projects, :foo, :integer, default: 10)
         end
@@ -678,8 +678,8 @@ describe Gitlab::Database::MigrationHelpers do
         end
 
         it 'removes the added column whenever changing a column NULL constraint fails' do
-          expect(model).to receive(:add_not_null_constraint)
-            .with(:projects, :foo)
+          expect(model).to receive(:change_column_null)
+            .with(:projects, :foo, false)
             .and_raise(ActiveRecord::ActiveRecordError)
 
           expect(model).to receive(:remove_column)
@@ -699,7 +699,7 @@ describe Gitlab::Database::MigrationHelpers do
           allow(model).to receive(:transaction).and_yield
           allow(model).to receive(:column_for).with(:user_details, :foo).and_return(column)
           allow(model).to receive(:update_column_in_batches).with(:user_details, :foo, 10, batch_column_name: :user_id)
-          allow(model).to receive(:add_not_null_constraint).with(:user_details, :foo)
+          allow(model).to receive(:change_column_null).with(:user_details, :foo, false)
           allow(model).to receive(:change_column_default).with(:user_details, :foo, 10)
 
           expect(model).to receive(:add_column)
@@ -721,7 +721,7 @@ describe Gitlab::Database::MigrationHelpers do
           allow(model).to receive(:transaction).and_yield
           allow(model).to receive(:column_for).with(:projects, :foo).and_return(column)
           allow(model).to receive(:update_column_in_batches).with(:projects, :foo, 10)
-          allow(model).to receive(:add_not_null_constraint).with(:projects, :foo)
+          allow(model).to receive(:change_column_null).with(:projects, :foo, false)
           allow(model).to receive(:change_column_default).with(:projects, :foo, 10)
 
           expect(model).to receive(:add_column)

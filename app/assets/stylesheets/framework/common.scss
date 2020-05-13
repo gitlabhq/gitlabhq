@@ -392,6 +392,10 @@ img.emoji {
 }
 
 /** COMMON CLASSES **/
+/**
+  🚨 Do not use these classes — they are deprecated and being removed. 🚨
+  See https://gitlab.com/gitlab-org/gitlab/-/issues/217418 for more details.
+**/
 .prepend-top-0 { margin-top: 0; }
 .prepend-top-2 { margin-top: 2px; }
 .prepend-top-4 { margin-top: $gl-padding-4; }

@@ -17,7 +17,7 @@ led by the [GitLab UI WG](https://gitlab.com/gitlab-com/www-gitlab-com/-/merge_r
 #### Where are utility classes defined?
 
 - [Bootstrap's Utility Classes](https://getbootstrap.com/docs/4.3/utilities/)
-- [`common.scss`](https://gitlab.com/gitlab-org/gitlab/blob/master/app/assets/stylesheets/framework/common.scss) (old)
+- [`common.scss`](https://gitlab.com/gitlab-org/gitlab/blob/master/app/assets/stylesheets/framework/common.scss) (old, many classes are now deprecated)
 - [`utilities.scss`](https://gitlab.com/gitlab-org/gitlab/blob/master/app/assets/stylesheets/utilities.scss) (new)
 
 #### Where should I put new utility classes?

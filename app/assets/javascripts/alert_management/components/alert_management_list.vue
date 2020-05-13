@@ -5,17 +5,21 @@ import {
   GlLoadingIcon,
   GlTable,
   GlAlert,
-  GlNewDropdown,
-  GlNewDropdownItem,
+  GlIcon,
+  GlDropdown,
+  GlDropdownItem,
   GlTabs,
   GlTab,
   GlBadge,
 } from '@gitlab/ui';
+import createFlash from '~/flash';
 import { s__ } from '~/locale';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import getAlerts from '../graphql/queries/getAlerts.query.graphql';
 import { ALERTS_STATUS, ALERTS_STATUS_TABS } from '../constants';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import updateAlertStatus from '../graphql/mutations/update_alert_status.graphql';
+import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 
 const tdClass = 'table-col d-flex d-md-table-cell align-items-center';
 
@@ -53,6 +57,8 @@ export default {
     },
     {
       key: 'status',
+      thClass: 'w-15p',
+      trClass: 'w-15p',
       label: s__('AlertManagement|Status'),
       tdClass: `${tdClass} rounded-bottom text-capitalize`,
     },
@@ -70,8 +76,9 @@ export default {
     GlAlert,
     GlDeprecatedButton,
     TimeAgo,
-    GlNewDropdown,
-    GlNewDropdownItem,
+    GlDropdown,
+    GlDropdownItem,
+    GlIcon,
     GlTabs,
     GlTab,
     GlBadge,
@@ -140,6 +147,25 @@ export default {
     filterALertsByStatus(tabIndex) {
       this.statusFilter = this.$options.statusTabs[tabIndex].status;
     },
+    capitalizeFirstCharacter,
+    updateAlertStatus(status, iid) {
+      this.$apollo
+        .mutate({
+          mutation: updateAlertStatus,
+          variables: {
+            iid,
+            status: status.toUpperCase(),
+            projectPath: this.projectPath,
+          },
+        })
+        .catch(() => {
+          createFlash(
+            s__(
+              'AlertManagement|There was an error while updating the status of the alert. Please try again.',
+            ),
+          );
+        });
+    },
   },
 };
 </script>
@@ -190,11 +216,26 @@ export default {
         </template>
 
         <template #cell(status)="{ item }">
-          <gl-new-dropdown :text="item.status">
-            <gl-new-dropdown-item v-for="(label, field) in $options.statuses" :key="field">
-              {{ label }}
-            </gl-new-dropdown-item>
-          </gl-new-dropdown>
+          <gl-dropdown
+            :text="capitalizeFirstCharacter(item.status.toLowerCase())"
+            class="w-100"
+            right
+          >
+            <gl-dropdown-item
+              v-for="(label, field) in $options.statuses"
+              :key="field"
+              @click="updateAlertStatus(label, item.iid)"
+            >
+              <span class="d-flex">
+                <gl-icon
+                  class="flex-shrink-0 append-right-4"
+                  :class="{ invisible: label.toUpperCase() !== item.status }"
+                  name="mobile-issue-close"
+                />
+                {{ label }}
+              </span>
+            </gl-dropdown-item>
+          </gl-dropdown>
         </template>
 
         <template #empty>

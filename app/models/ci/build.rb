@@ -25,7 +25,8 @@ module Ci
 
     RUNNER_FEATURES = {
       upload_multiple_artifacts: -> (build) { build.publishes_artifacts_reports? },
-      refspecs: -> (build) { build.merge_request_ref? }
+      refspecs: -> (build) { build.merge_request_ref? },
+      artifacts_exclude: -> (build) { build.supports_artifacts_exclude? }
     }.freeze
 
     DEFAULT_RETRIES = {
@@ -918,6 +919,11 @@ module Ci
       update_columns(
         status: :failed,
         failure_reason: :data_integrity_failure)
+    end
+
+    def supports_artifacts_exclude?
+      options&.dig(:artifacts, :exclude)&.any? &&
+        Gitlab::Ci::Features.artifacts_exclude_enabled?
     end
 
     def degradation_threshold

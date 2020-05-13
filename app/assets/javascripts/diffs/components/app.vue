@@ -224,6 +224,7 @@ export default {
   methods: {
     ...mapActions(['startTaskList']),
     ...mapActions('diffs', [
+      'moveToNeighboringCommit',
       'setBaseConfig',
       'fetchDiffFiles',
       'fetchDiffFilesMeta',
@@ -344,9 +345,16 @@ export default {
             break;
         }
       });
+
+      if (this.commit && this.glFeatures.mrCommitNeighborNav) {
+        Mousetrap.bind('c', () => this.moveToNeighboringCommit({ direction: 'next' }));
+        Mousetrap.bind('x', () => this.moveToNeighboringCommit({ direction: 'previous' }));
+      }
     },
     removeEventListeners() {
       Mousetrap.unbind(['[', 'k', ']', 'j']);
+      Mousetrap.unbind('c');
+      Mousetrap.unbind('x');
     },
     jumpToFile(step) {
       const targetIndex = this.currentDiffIndex + step;

@@ -502,7 +502,7 @@ module Gitlab
               update_column_in_batches(table, column, default_after_type_cast, &block)
             end
 
-            add_not_null_constraint(table, column) unless allow_null
+            change_column_null(table, column, false) unless allow_null
           # We want to rescue _all_ exceptions here, even those that don't inherit
           # from StandardError.
           rescue Exception => error # rubocop: disable all

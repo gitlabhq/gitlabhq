@@ -8,19 +8,25 @@ module Projects
     class BaseRepositoryService < BaseService
       include Gitlab::ShellAdapter
 
-      attr_reader :old_disk_path, :new_disk_path, :old_storage_version, :logger, :move_wiki
+      attr_reader :old_disk_path, :new_disk_path, :old_storage_version,
+                  :logger, :move_wiki, :move_design
 
       def initialize(project:, old_disk_path:, logger: nil)
         @project = project
         @logger = logger || Gitlab::AppLogger
         @old_disk_path = old_disk_path
         @move_wiki = has_wiki?
+        @move_design = has_design?
       end
 
       protected
 
       def has_wiki?
         gitlab_shell.repository_exists?(project.repository_storage, "#{old_wiki_disk_path}.git")
+      end
+
+      def has_design?
+        gitlab_shell.repository_exists?(project.repository_storage, "#{old_design_disk_path}.git")
       end
 
       def move_repository(from_name, to_name)
@@ -58,12 +64,18 @@ module Projects
           project.clear_memoization(:wiki)
         end
 
+        if move_design
+          result &&= move_repository(old_design_disk_path, new_design_disk_path)
+          project.clear_memoization(:design_repository)
+        end
+
         result
       end
 
       def rollback_folder_move
         move_repository(new_disk_path, old_disk_path)
         move_repository(new_wiki_disk_path, old_wiki_disk_path)
+        move_repository(new_design_disk_path, old_design_disk_path) if move_design
       end
 
       def try_to_set_repository_read_only!
@@ -87,8 +99,18 @@ module Projects
       def new_wiki_disk_path
         @new_wiki_disk_path ||= "#{new_disk_path}#{wiki_path_suffix}"
       end
+
+      def design_path_suffix
+        @design_path_suffix ||= ::Gitlab::GlRepository::DESIGN.path_suffix
+      end
+
+      def old_design_disk_path
+        @old_design_disk_path ||= "#{old_disk_path}#{design_path_suffix}"
+      end
+
+      def new_design_disk_path
+        @new_design_disk_path ||= "#{new_disk_path}#{design_path_suffix}"
+      end
     end
   end
 end
-
-Projects::HashedStorage::BaseRepositoryService.prepend_if_ee('EE::Projects::HashedStorage::BaseRepositoryService')

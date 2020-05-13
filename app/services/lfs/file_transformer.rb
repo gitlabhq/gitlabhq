@@ -5,8 +5,7 @@ module Lfs
   #        return a transformed result with `content` and `encoding` to commit.
   #
   #        The `repository` passed to the initializer can be a Repository or
-  #        a DesignManagement::Repository (an EE-specific class that inherits
-  #        from Repository).
+  #        class that inherits from Repository.
   #
   #        The `repository_type` property will be one of the types named in
   #        `Gitlab::GlRepository.types`, and is recorded on the `LfsObjectsProject`

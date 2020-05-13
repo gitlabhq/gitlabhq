@@ -245,6 +245,34 @@ module SystemNoteService
   def auto_resolve_prometheus_alert(noteable, project, author)
     ::SystemNotes::IssuablesService.new(noteable: noteable, project: project, author: author).auto_resolve_prometheus_alert
   end
+
+  # Parameters:
+  #   - version [DesignManagement::Version]
+  #
+  # Example Note text:
+  #
+  #   "added [1 designs](link-to-version)"
+  #   "changed [2 designs](link-to-version)"
+  #
+  # Returns [Array<Note>]: the created Note objects
+  def design_version_added(version)
+    ::SystemNotes::DesignManagementService.new(noteable: version.issue, project: version.issue.project, author: version.author).design_version_added(version)
+  end
+
+  # Called when a new discussion is created on a design
+  #
+  # discussion_note - DiscussionNote
+  #
+  # Example Note text:
+  #
+  #   "started a discussion on screen.png"
+  #
+  # Returns the created Note object
+  def design_discussion_added(discussion_note)
+    design = discussion_note.noteable
+
+    ::SystemNotes::DesignManagementService.new(noteable: design.issue, project: design.project, author: discussion_note.author).design_discussion_added(discussion_note)
+  end
 end
 
 SystemNoteService.prepend_if_ee('EE::SystemNoteService')

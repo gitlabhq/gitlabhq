@@ -58,6 +58,10 @@ module Projects
       if project.wiki.repository_exists?
         mirror_repository(type: Gitlab::GlRepository::WIKI)
       end
+
+      if project.design_repository.exists?
+        mirror_repository(type: ::Gitlab::GlRepository::DESIGN)
+      end
     end
 
     def mirror_repository(type: Gitlab::GlRepository::PROJECT)
@@ -106,6 +110,13 @@ module Projects
                                           wiki.disk_path,
                                           "#{new_project_path}.wiki")
         end
+
+        if design_repository.exists?
+          GitlabShellWorker.perform_async(:mv_repository,
+                                          old_repository_storage,
+                                          design_repository.disk_path,
+                                          "#{new_project_path}.design")
+        end
       end
     end
 
@@ -140,5 +151,3 @@ module Projects
     end
   end
 end
-
-Projects::UpdateRepositoryStorageService.prepend_if_ee('EE::Projects::UpdateRepositoryStorageService')

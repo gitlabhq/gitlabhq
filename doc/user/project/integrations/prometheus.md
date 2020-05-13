@@ -663,10 +663,11 @@ When viewing a custom dashboard of a project, you can view the original
 
 From each of the panels in the dashboard, you can access the context menu by clicking the **{ellipsis_v}** **More actions** dropdown box above the upper right corner of the panel to take actions related to the chart's data.
 
-![Context Menu](img/panel_context_menu_v12_10.png)
+![Context Menu](img/panel_context_menu_v13_0.png)
 
 The options are:
 
+- [Expand panel](#expand-panel)
 - [View logs](#view-logs-ultimate)
 - [Download CSV](#downloading-data-as-csv)
 - [Copy link to chart](#embedding-gitlab-managed-kubernetes-metrics)
@@ -688,6 +689,16 @@ You can create annotations by making requests to the
 [Metrics dashboard annotations API](../../../api/metrics_dashboard_annotations.md)
 
 ![Annotations UI](img/metrics_dashboard_annotations_ui_v13.0.png)
+
+### Expand panel
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3100) in GitLab 13.0.
+
+To view a larger version of a visualization, expand the panel by clicking the
+**{ellipsis_v}** **More actions** icon and selecting **Expand panel**.
+
+To return to the metrics dashboard, click the **Back** button in your
+browser, or pressing the <kbd>Esc</kbd> key.
 
 ### View Logs **(ULTIMATE)**
 
@@ -856,6 +867,8 @@ The following requirements must be met for the metric to unfurl:
 Metric charts may also be hidden:
 
 ![Show Hide](img/hide_embedded_metrics_v12_10.png)
+
+You can open the link directly into your browser for a [detailed view of the data](#expand-panel).
 
 ### Embedding metrics in issue templates
 

@@ -709,6 +709,57 @@ describe NotificationService, :mailer do
         end
       end
     end
+
+    context 'when notified of a new design diff note' do
+      include DesignManagementTestHelpers
+
+      let_it_be(:design) { create(:design, :with_file) }
+      let_it_be(:project) { design.project }
+      let_it_be(:dev) { create(:user) }
+      let_it_be(:stranger) { create(:user) }
+      let_it_be(:note) do
+        create(:diff_note_on_design,
+           noteable: design,
+           note: "Hello #{dev.to_reference}, G'day #{stranger.to_reference}")
+      end
+      let(:mailer) { double(deliver_later: true) }
+
+      context 'design management is enabled' do
+        before do
+          enable_design_management
+          project.add_developer(dev)
+          allow(Notify).to receive(:note_design_email) { mailer }
+        end
+
+        it 'sends new note notifications' do
+          expect(subject).to receive(:send_new_note_notifications).with(note)
+
+          subject.new_note(note)
+        end
+
+        it 'sends a mail to the developer' do
+          expect(Notify)
+            .to receive(:note_design_email).with(dev.id, note.id, 'mentioned')
+
+          subject.new_note(note)
+        end
+
+        it 'does not notify non-developers' do
+          expect(Notify)
+            .not_to receive(:note_design_email).with(stranger.id, note.id)
+
+          subject.new_note(note)
+        end
+      end
+
+      context 'design management is disabled' do
+        it 'does not notify the user' do
+          expect(Notify).not_to receive(:note_design_email)
+
+          subject.new_note(note)
+        end
+      end
+    end
   end
 
   describe '#send_new_release_notifications', :deliver_mails_inline, :sidekiq_inline do

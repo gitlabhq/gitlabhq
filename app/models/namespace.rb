@@ -14,6 +14,7 @@ class Namespace < ApplicationRecord
   include IgnorableColumns
 
   ignore_column :plan_id, remove_with: '13.1', remove_after: '2020-06-22'
+  ignore_column :trial_ends_on, remove_with: '13.2', remove_after: '2020-07-22'
 
   # Prevent users from creating unreasonably deep level of nesting.
   # The number 20 was taken based on maximum nesting level of

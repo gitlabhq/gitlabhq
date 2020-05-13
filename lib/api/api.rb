@@ -162,6 +162,7 @@ module API
       mount ::API::MergeRequestDiffs
       mount ::API::MergeRequests
       mount ::API::Metrics::Dashboard::Annotations
+      mount ::API::Metrics::UserStarredDashboards
       mount ::API::Namespaces
       mount ::API::Notes
       mount ::API::Discussions

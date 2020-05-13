@@ -998,6 +998,53 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
           end
         end
 
+        describe 'a job with excluded artifacts' do
+          context 'when excluded paths are defined' do
+            let(:job) do
+              create(:ci_build, pipeline: pipeline, token: 'test-job-token', name: 'test',
+                                stage: 'deploy', stage_idx: 1,
+                                options: { artifacts: { paths: ['abc'], exclude: ['cde'] } })
+            end
+
+            context 'when a runner supports this feature' do
+              it 'exposes excluded paths when the feature is enabled' do
+                stub_feature_flags(ci_artifacts_exclude: true)
+
+                request_job info: { features: { artifacts_exclude: true } }
+
+                expect(response).to have_gitlab_http_status(:created)
+                expect(json_response.dig('artifacts').first).to include('exclude' => ['cde'])
+              end
+
+              it 'does not expose excluded paths when the feature is disabled' do
+                stub_feature_flags(ci_artifacts_exclude: false)
+
+                request_job info: { features: { artifacts_exclude: true } }
+
+                expect(response).to have_gitlab_http_status(:created)
+                expect(json_response.dig('artifacts').first).not_to have_key('exclude')
+              end
+            end
+
+            context 'when a runner does not support this feature' do
+              it 'does not expose the build at all' do
+                stub_feature_flags(ci_artifacts_exclude: true)
+
+                request_job
+
+                expect(response).to have_gitlab_http_status(:no_content)
+              end
+            end
+          end
+
+          it 'does not expose excluded paths when these are empty' do
+            request_job
+
+            expect(response).to have_gitlab_http_status(:created)
+            expect(json_response.dig('artifacts').first).not_to have_key('exclude')
+          end
+        end
+
         def request_job(token = runner.token, **params)
           new_params = params.merge(token: token, last_update: last_update)
           post api('/jobs/request'), params: new_params, headers: { 'User-Agent' => user_agent }

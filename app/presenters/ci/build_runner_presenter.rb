@@ -52,7 +52,7 @@ module Ci
     def create_archive(artifacts)
       return unless artifacts[:untracked] || artifacts[:paths]
 
-      {
+      archive = {
         artifact_type: :archive,
         artifact_format: :zip,
         name: artifacts[:name],
@@ -61,6 +61,12 @@ module Ci
         when: artifacts[:when],
         expire_in: artifacts[:expire_in]
       }
+
+      if artifacts.dig(:exclude).present? && ::Gitlab::Ci::Features.artifacts_exclude_enabled?
+        archive.merge(exclude: artifacts[:exclude])
+      else
+        archive
+      end
     end
 
     def create_reports(reports, expire_in:)

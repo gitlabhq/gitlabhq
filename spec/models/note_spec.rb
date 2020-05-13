@@ -105,6 +105,38 @@ describe Note do
     end
   end
 
+  describe 'callbacks' do
+    describe '#notify_after_create' do
+      it 'calls #after_note_created on the noteable' do
+        note = build(:note)
+
+        expect(note).to receive(:notify_after_create).and_call_original
+        expect(note.noteable).to receive(:after_note_created).with(note)
+
+        note.save!
+      end
+    end
+
+    describe '#notify_after_destroy' do
+      it 'calls #after_note_destroyed on the noteable' do
+        note = create(:note)
+
+        expect(note).to receive(:notify_after_destroy).and_call_original
+        expect(note.noteable).to receive(:after_note_destroyed).with(note)
+
+        note.destroy
+      end
+
+      it 'does not error if noteable is nil' do
+        note = create(:note)
+
+        expect(note).to receive(:notify_after_destroy).and_call_original
+        expect(note).to receive(:noteable).at_least(:once).and_return(nil)
+        expect { note.destroy }.not_to raise_error
+      end
+    end
+  end
+
   describe "Commit notes" do
     before do
       allow(Gitlab::Git::KeepAround).to receive(:execute).and_call_original

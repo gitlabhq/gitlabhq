@@ -38,6 +38,47 @@ describe Ci::BuildRunnerPresenter do
           expect(presenter.artifacts).to be_empty
         end
       end
+
+      context 'when artifacts exclude is defined' do
+        let(:build) do
+          create(:ci_build, options: { artifacts: { paths: %w[abc], exclude: %w[cde] } })
+        end
+
+        context 'when the feature is enabled' do
+          before do
+            stub_feature_flags(ci_artifacts_exclude: true)
+          end
+
+          it 'includes the list of excluded paths' do
+            expect(presenter.artifacts.first).to include(
+              artifact_type: :archive,
+              artifact_format: :zip,
+              paths: %w[abc],
+              exclude: %w[cde]
+            )
+          end
+        end
+
+        context 'when the feature is disabled' do
+          before do
+            stub_feature_flags(ci_artifacts_exclude: false)
+          end
+
+          it 'does not include the list of excluded paths' do
+            expect(presenter.artifacts.first).not_to have_key(:exclude)
+          end
+        end
+      end
+
+      context 'when artifacts exclude is not defined' do
+        let(:build) do
+          create(:ci_build, options: { artifacts: { paths: %w[abc] } })
+        end
+
+        it 'does not include an empty list of excluded paths' do
+          expect(presenter.artifacts.first).not_to have_key(:exclude)
+        end
+      end
     end
 
     context "with reports" do

@@ -320,7 +320,7 @@ describe Git::WikiPushService, services: true do
       file_content: 'some stuff',
       branch_name: 'master'
     }
-    ::Wikis::CreateAttachmentService.new(project, project.owner, params).execute
+    ::Wikis::CreateAttachmentService.new(container: project, current_user: project.owner, params: params).execute
   end
 
   def update_page(title)

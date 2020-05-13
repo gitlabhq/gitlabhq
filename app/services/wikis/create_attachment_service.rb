@@ -5,12 +5,15 @@ module Wikis
     ATTACHMENT_PATH = 'uploads'
     MAX_FILENAME_LENGTH = 255
 
-    delegate :wiki, to: :project
+    attr_reader :container
+
+    delegate :wiki, to: :container
     delegate :repository, to: :wiki
 
-    def initialize(*args)
-      super
+    def initialize(container:, current_user: nil, params: {})
+      super(nil, current_user, params)
 
+      @container = container
       @file_name = clean_file_name(params[:file_name])
       @file_path = File.join(ATTACHMENT_PATH, SecureRandom.hex, @file_name) if @file_name
       @commit_message ||= "Upload attachment #{@file_name}"
@@ -51,7 +54,7 @@ module Wikis
     end
 
     def validate_permissions!
-      unless can?(current_user, :create_wiki, project)
+      unless can?(current_user, :create_wiki, container)
         raise_error('You are not allowed to push to the wiki')
       end
     end

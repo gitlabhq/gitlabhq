@@ -23,15 +23,8 @@ describe DesignManagement::DesignUserNotesCountService, :use_clean_rails_memory_
     end
   end
 
-  # TODO These tests are being temporarily skipped unless run in EE,
-  # as we are in the process of moving Design Management to FOSS in 13.0
-  # in steps. In the current step the services have not yet been moved.
-  #
-  # See https://gitlab.com/gitlab-org/gitlab/-/issues/212566#note_327724283.
   describe 'cache invalidation' do
     it 'changes when a new note is created' do
-      skip 'See https://gitlab.com/gitlab-org/gitlab/-/issues/212566#note_327724283' unless Gitlab.ee?
-
       new_note_attrs = attributes_for(:diff_note_on_design, noteable: design)
 
       expect do
@@ -40,8 +33,6 @@ describe DesignManagement::DesignUserNotesCountService, :use_clean_rails_memory_
     end
 
     it 'changes when a note is destroyed' do
-      skip 'See https://gitlab.com/gitlab-org/gitlab/-/issues/212566#note_327724283' unless Gitlab.ee?
-
       note = create(:diff_note_on_design, noteable: design)
 
       expect do

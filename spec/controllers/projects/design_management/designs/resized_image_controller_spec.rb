@@ -14,16 +14,6 @@ describe Projects::DesignManagement::Designs::ResizedImageController do
   let(:sha) { design.versions.first.sha }
 
   before do
-    # TODO these tests are being temporarily skipped unless run in EE,
-    # as we are in the process of moving Design Management to FOSS in 13.0
-    # in steps. In the current step the services have not yet been moved,
-    # and the `design` factory used in this test uses the `:with_smaller_image_versions`
-    # trait, which calls `GenerateImageVersionsService` to generate the
-    # smaller image versions.
-    #
-    # See https://gitlab.com/gitlab-org/gitlab/-/issues/212566#note_327724283.
-    skip 'See https://gitlab.com/gitlab-org/gitlab/-/issues/212566#note_327724283' unless Gitlab.ee?
-
     enable_design_management
   end
 

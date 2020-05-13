@@ -14,7 +14,10 @@ module WikiHelpers
       file_content: File.read(expand_fixture_path(file_name))
      }
 
-    ::Wikis::CreateAttachmentService.new(project, user, opts)
-                                    .execute[:result][:file_path]
+    ::Wikis::CreateAttachmentService.new(
+      container: project,
+      current_user: user,
+      params: opts
+    ).execute[:result][:file_path]
   end
 end

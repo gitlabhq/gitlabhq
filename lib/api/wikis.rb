@@ -123,9 +123,11 @@ module API
       post ":id/wikis/attachments" do
         authorize! :create_wiki, user_project
 
-        result = ::Wikis::CreateAttachmentService.new(user_project,
-                                                      current_user,
-                                                      commit_params(declared_params(include_missing: false))).execute
+        result = ::Wikis::CreateAttachmentService.new(
+          container: user_project,
+          current_user: current_user,
+          params: commit_params(declared_params(include_missing: false))
+        ).execute
 
         if result[:status] == :success
           status(201)
