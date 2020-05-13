@@ -156,4 +156,44 @@ describe Emails::Profile do
       it { expect { Notify.access_token_about_to_expire_email('foo') }.not_to raise_error }
     end
   end
+
+  describe 'user unknown sign in email' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:ip) { '169.0.0.1' }
+
+    subject { Notify.unknown_sign_in_email(user, ip) }
+
+    it_behaves_like 'an email sent from GitLab'
+    it_behaves_like 'it should not have Gmail Actions links'
+    it_behaves_like 'a user cannot unsubscribe through footer link'
+
+    it 'is sent to the user' do
+      expect(subject).to deliver_to user.email
+    end
+
+    it 'has the correct subject' do
+      expect(subject).to have_subject /^Unknown sign-in from new location$/
+    end
+
+    it 'mentions the unknown sign-in IP' do
+      expect(subject).to have_body_text /A sign-in to your account has been made from the following IP address: #{ip}./
+    end
+
+    it 'includes a link to the change password page' do
+      expect(subject).to have_body_text /#{edit_profile_password_path}/
+    end
+
+    it 'mentions two factor authentication when two factor is not enabled' do
+      expect(subject).to have_body_text /two-factor authentication/
+    end
+
+    context 'when two factor authentication is enabled' do
+      it 'does not mention two factor authentication' do
+        two_factor_user = create(:user, :two_factor)
+
+        expect( Notify.unknown_sign_in_email(two_factor_user, ip) )
+          .not_to have_body_text /two-factor authentication/
+      end
+    end
+  end
 end

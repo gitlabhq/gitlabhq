@@ -66,6 +66,14 @@ class NotificationService
     mailer.access_token_about_to_expire_email(user).deliver_later
   end
 
+  # Notify a user when a previously unknown IP or device is used to
+  # sign in to their account
+  def unknown_sign_in(user, ip)
+    return unless user.can?(:receive_notifications)
+
+    mailer.unknown_sign_in_email(user, ip).deliver_later
+  end
+
   # When create an issue we should send an email to:
   #
   #  * issue assignee if their notification level is not Disabled

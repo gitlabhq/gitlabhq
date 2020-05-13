@@ -65,7 +65,7 @@ reduce the size of your working copy.
 
 ```plaintext
 # Clone the repo excluding all files
-$ git clone --filter=blob:none --sparse git@gitlab.com:gitlab-com/www-gitlab-com/git
+$ git clone --filter=blob:none --sparse git@gitlab.com:gitlab-com/www-gitlab-com.git
 Cloning into 'www-gitlab-com'...
 remote: Enumerating objects: 678296, done.
 remote: Counting objects: 100% (678296/678296), done.

@@ -45,3 +45,5 @@ export const createMergeRequestResponse = {
   iid: '123',
   web_url: '/merge_requests/123',
 };
+
+export const trackingCategory = 'projects:static_site_editor:show';

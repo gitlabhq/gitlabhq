@@ -6,7 +6,6 @@ import {
   GlLoadingIcon,
   GlNewDropdown,
   GlBadge,
-  GlIcon,
   GlTab,
 } from '@gitlab/ui';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -26,7 +25,6 @@ describe('AlertManagementList', () => {
   const findStatusFilterTabs = () => wrapper.findAll(GlTab);
   const findNumberOfAlertsBadge = () => wrapper.findAll(GlBadge);
   const findDateFields = () => wrapper.findAll(TimeAgo);
-  const findSeverityFields = () => wrapper.findAll('[data-testid="severityField"]');
 
   function mountComponent({
     props = {
@@ -185,37 +183,6 @@ describe('AlertManagementList', () => {
       expect(findStatusDropdown().exists()).toBe(true);
     });
 
-    it('shows correct severity icons', () => {
-      mountComponent({
-        props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
-        data: { alerts: mockAlerts, errored: false },
-        loading: false,
-      });
-
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.find(GlTable).exists()).toBe(true);
-        expect(
-          findAlertsTable()
-            .find(GlIcon)
-            .classes('icon-critical'),
-        ).toBe(true);
-      });
-    });
-
-    it('Internationalizes severity text', () => {
-      mountComponent({
-        props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
-        data: { alerts: mockAlerts, errored: false },
-        loading: false,
-      });
-
-      expect(
-        findSeverityFields()
-          .at(0)
-          .text(),
-      ).toBe('Critical');
-    });
-
     describe('handle date fields', () => {
       it('should display time ago dates when values provided', () => {
         mountComponent({
@@ -226,7 +193,6 @@ describe('AlertManagementList', () => {
                 iid: 1,
                 startedAt: '2020-03-17T23:18:14.996Z',
                 endedAt: '2020-04-17T23:18:14.996Z',
-                severity: 'high',
               },
             ],
             errored: false,
@@ -245,7 +211,6 @@ describe('AlertManagementList', () => {
                 iid: 1,
                 startedAt: null,
                 endedAt: null,
-                severity: 'high',
               },
             ],
             errored: false,

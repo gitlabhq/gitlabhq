@@ -7,6 +7,7 @@ class SessionsController < Devise::SessionsController
   include Recaptcha::ClientHelper
   include Recaptcha::Verify
   include RendersLdapServers
+  include KnownSignIn
 
   skip_before_action :check_two_factor_requirement, only: [:destroy]
   # replaced with :require_no_authentication_without_flash
@@ -27,6 +28,7 @@ class SessionsController < Devise::SessionsController
   before_action :frontend_tracking_data, only: [:new]
 
   after_action :log_failed_login, if: :action_new_and_failed_login?
+  after_action :verify_known_sign_in, only: [:create]
 
   helper_method :captcha_enabled?, :captcha_on_login_required?
 

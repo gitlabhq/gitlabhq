@@ -99,6 +99,11 @@ describe SessionsController do
       set_devise_mapping(context: @request)
     end
 
+    it_behaves_like 'known sign in' do
+      let(:user) { create(:user) }
+      let(:post_action) { post(:create, params: { user: { login: user.username, password: user.password } }) }
+    end
+
     context 'when using standard authentications' do
       context 'invalid password' do
         it 'does not authenticate user' do

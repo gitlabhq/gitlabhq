@@ -113,13 +113,6 @@ describe Admin::HookLogsController, 'routing' do
   end
 end
 
-# admin_logs GET    /admin/logs(.:format) admin/logs#show
-describe Admin::LogsController, "routing" do
-  it "to #show" do
-    expect(get("/admin/logs")).to route_to('admin/logs#show')
-  end
-end
-
 # admin_background_jobs GET    /admin/background_jobs(.:format) admin/background_jobs#show
 describe Admin::BackgroundJobsController, "routing" do
   it "to #show" do

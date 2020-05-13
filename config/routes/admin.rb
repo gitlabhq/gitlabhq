@@ -81,7 +81,6 @@ namespace :admin do
     post :preview, on: :collection
   end
 
-  resource :logs, only: [:show]
   resource :health_check, controller: 'health_check', only: [:show]
   resource :background_jobs, controller: 'background_jobs', only: [:show]
 

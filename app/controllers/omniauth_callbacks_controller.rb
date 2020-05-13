@@ -6,6 +6,9 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   include Devise::Controllers::Rememberable
   include AuthHelper
   include InitializesCurrentUserMode
+  include KnownSignIn
+
+  after_action :verify_known_sign_in
 
   protect_from_forgery except: [:kerberos, :saml, :cas3, :failure], with: :exception, prepend: true
 

@@ -240,6 +240,17 @@ describe NotificationService, :mailer do
     end
   end
 
+  describe '#unknown_sign_in' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:ip) { '127.0.0.1' }
+
+    subject { notification.unknown_sign_in(user, ip) }
+
+    it 'sends email to the user' do
+      expect { subject }.to have_enqueued_email(user, ip, mail: 'unknown_sign_in_email')
+    end
+  end
+
   describe 'Notes' do
     context 'issue note' do
       let(:project) { create(:project, :private) }
