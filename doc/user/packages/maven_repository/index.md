@@ -21,7 +21,7 @@ to disable it:
 1. Find the Packages feature and enable or disable it.
 1. Click on **Save changes** for the changes to take effect.
 
-You should then be able to see the **Packages** section on the left sidebar.
+You should then be able to see the **Packages & Registries** section on the left sidebar.
 Next, you must configure your project to authorize with the GitLab Maven
 repository.
 
@@ -595,7 +595,7 @@ Run the publish task:
 gradle publish
 ```
 
-You can then navigate to your project's **Packages** page and see the uploaded
+You can then navigate to your project's **Packages & Registries** page and see the uploaded
 artifacts or even delete them.
 
 ## Installing a package

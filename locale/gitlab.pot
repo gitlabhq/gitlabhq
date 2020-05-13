@@ -1069,12 +1069,6 @@ msgstr ""
 msgid "AccessTokens|reset it"
 msgstr ""
 
-msgid "AccessibilityReport|Accessibility report artifact not found"
-msgstr ""
-
-msgid "AccessibilityReport|Failed to retrieve accessibility report"
-msgstr ""
-
 msgid "AccessibilityReport|Learn More"
 msgstr ""
 
@@ -2486,6 +2480,9 @@ msgid "Approved by: "
 msgstr ""
 
 msgid "Approved the current merge request."
+msgstr ""
+
+msgid "Approved-By"
 msgstr ""
 
 msgid "Approver"
@@ -8516,9 +8513,6 @@ msgstr ""
 msgid "Error rendering markdown preview"
 msgstr ""
 
-msgid "Error rendering query"
-msgstr ""
-
 msgid "Error saving label update."
 msgstr ""
 
@@ -12995,9 +12989,6 @@ msgstr ""
 msgid "Memory Usage"
 msgstr ""
 
-msgid "Memory limit exceeded while rendering template"
-msgstr ""
-
 msgid "Merge"
 msgstr ""
 
@@ -13254,6 +13245,12 @@ msgid "Metrics::Dashboard::Annotation|You are not authorized to create annotatio
 msgstr ""
 
 msgid "Metrics::Dashboard::Annotation|You are not authorized to delete this annotation"
+msgstr ""
+
+msgid "Metrics::UsersStarredDashboards|Dashboard with requested path can not be found"
+msgstr ""
+
+msgid "Metrics::UsersStarredDashboards|You are not authorized to add star to this dashboard"
 msgstr ""
 
 msgid "Metrics|Add metric"
@@ -14795,6 +14792,9 @@ msgid "PackageType|PyPi"
 msgstr ""
 
 msgid "Packages"
+msgstr ""
+
+msgid "Packages & Registries"
 msgstr ""
 
 msgid "Page not found"
@@ -16804,10 +16804,16 @@ msgstr ""
 msgid "Promotions|This feature is locked."
 msgstr ""
 
+msgid "Promotions|Track activity with Contribution Analytics."
+msgstr ""
+
 msgid "Promotions|Upgrade plan"
 msgstr ""
 
 msgid "Promotions|Upgrade your plan"
+msgstr ""
+
+msgid "Promotions|Upgrade your plan to activate Contribution Analytics."
 msgstr ""
 
 msgid "Promotions|Weight"
@@ -16817,6 +16823,9 @@ msgid "Promotions|Weighting your issue"
 msgstr ""
 
 msgid "Promotions|When you have a lot of issues, it can be hard to get an overview. By adding a weight to your issues, you can get a better idea of the effort, cost, required time, or value of each, and so better manage them."
+msgstr ""
+
+msgid "Promotions|With Contribution Analytics you can have an overview for the activity of issues, merge requests, and push events of your organization and its members."
 msgstr ""
 
 msgid "Prompt users to upload SSH keys"
@@ -20429,6 +20438,9 @@ msgstr ""
 msgid "Support page URL"
 msgstr ""
 
+msgid "Survey Response"
+msgstr ""
+
 msgid "Switch branch/tag"
 msgstr ""
 
@@ -20708,6 +20720,9 @@ msgid "Tests"
 msgstr ""
 
 msgid "Thank you for signing up for your free trial! You will get additional instructions in your inbox shortly."
+msgstr ""
+
+msgid "Thank you for your feedback!"
 msgstr ""
 
 msgid "Thank you for your report. A GitLab administrator will look into it shortly."
@@ -22278,9 +22293,6 @@ msgstr ""
 msgid "Tracing"
 msgstr ""
 
-msgid "Track activity with Contribution Analytics."
-msgstr ""
-
 msgid "Track groups of issues that share a theme, across projects and milestones"
 msgstr ""
 
@@ -22783,9 +22795,6 @@ msgid "Upgrade your plan to activate Advanced Global Search."
 msgstr ""
 
 msgid "Upgrade your plan to activate Audit Events."
-msgstr ""
-
-msgid "Upgrade your plan to activate Contribution Analytics."
 msgstr ""
 
 msgid "Upgrade your plan to activate Group Webhooks."
@@ -23340,7 +23349,7 @@ msgstr ""
 msgid "Value Stream Analytics gives an overview of how much time it takes to go from idea to production in your project."
 msgstr ""
 
-msgid "Var"
+msgid "Variable"
 msgstr ""
 
 msgid "Variable will be masked in job logs."
@@ -23910,9 +23919,6 @@ msgstr ""
 msgid "WikiClone|Install Gollum"
 msgstr ""
 
-msgid "WikiClone|It is recommended to install %{markdown} so that GFM features render locally:"
-msgstr ""
-
 msgid "WikiClone|Start Gollum and edit locally"
 msgstr ""
 
@@ -24034,9 +24040,6 @@ msgid "Wiki|Wiki Pages"
 msgstr ""
 
 msgid "Will deploy to"
-msgstr ""
-
-msgid "With contribution analytics you can have an overview for the activity of issues, merge requests and push events of your organization and its members."
 msgstr ""
 
 msgid "Withdraw Access Request"
@@ -24693,6 +24696,9 @@ msgstr ""
 msgid "Your request for access has been queued for review."
 msgstr ""
 
+msgid "Your response has been recorded."
+msgstr ""
+
 msgid "Your search didn't match any commits."
 msgstr ""
 
@@ -24951,6 +24957,9 @@ msgstr ""
 msgid "ciReport|Failed to load %{reportName} report"
 msgstr ""
 
+msgid "ciReport|Fixed"
+msgstr ""
+
 msgid "ciReport|Fixed:"
 msgstr ""
 
@@ -24967,6 +24976,9 @@ msgid "ciReport|Loading %{reportName} report"
 msgstr ""
 
 msgid "ciReport|Manage licenses"
+msgstr ""
+
+msgid "ciReport|New"
 msgstr ""
 
 msgid "ciReport|No changes to code quality"

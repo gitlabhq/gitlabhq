@@ -1,10 +1,12 @@
+import { isString } from 'lodash';
 import { VARIABLE_TYPES } from '../constants';
 
 /**
  * This file exclusively deals with parsing user-defined variables
  * in dashboard yml file.
  *
- * As of 13.0, simple custom and advanced custom variables are supported.
+ * As of 13.0, simple text, advanced text, simple custom and
+ * advanced custom variables are supported.
  *
  * In the future iterations, text and query variables will be
  * supported
@@ -12,13 +14,30 @@ import { VARIABLE_TYPES } from '../constants';
  */
 
 /**
- * Utility method to determine if a custom variable is
- * simple or not. If its not simple, it is advanced.
+ * Simple text variable is a string value only.
+ * This method parses such variables to a standard format.
  *
- * @param {Array|Object} customVar Array if simple, object if advanced
- * @returns {Boolean} true if simple, false if advanced
+ * @param {String|Object} simpleTextVar
+ * @returns {Object}
  */
-const isSimpleCustomVariable = customVar => Array.isArray(customVar);
+const textSimpleVariableParser = simpleTextVar => ({
+  type: VARIABLE_TYPES.text,
+  label: null,
+  value: simpleTextVar,
+});
+
+/**
+ * Advanced text variable is an object.
+ * This method parses such variables to a standard format.
+ *
+ * @param {Object} advTextVar
+ * @returns {Object}
+ */
+const textAdvancedVariableParser = advTextVar => ({
+  type: VARIABLE_TYPES.text,
+  label: advTextVar.label,
+  value: advTextVar.options.default_value,
+});
 
 /**
  * Normalize simple and advanced custom variable options to a standard
@@ -26,19 +45,11 @@ const isSimpleCustomVariable = customVar => Array.isArray(customVar);
  * @param {Object} custom variable option
  * @returns {Object} normalized custom variable options
  */
-const normalizeDropdownOptions = ({ default: defaultOpt = false, text, value }) => ({
+const normalizeCustomVariableOptions = ({ default: defaultOpt = false, text, value }) => ({
   default: defaultOpt,
   text,
   value,
 });
-
-/**
- * Simple custom variables have an array of values.
- * This method parses such variables options to a standard format.
- *
- * @param {String} opt option from simple custom variable
- */
-const parseSimpleDropdownOptions = opt => ({ text: opt, value: opt });
 
 /**
  * Custom advanced variables are rendered as dropdown elements in the dashboard
@@ -52,9 +63,18 @@ const customAdvancedVariableParser = advVariable => {
   return {
     type: VARIABLE_TYPES.custom,
     label: advVariable.label,
-    options: options.map(normalizeDropdownOptions),
+    options: options.map(normalizeCustomVariableOptions),
   };
 };
+
+/**
+ * Simple custom variables have an array of values.
+ * This method parses such variables options to a standard format.
+ *
+ * @param {String} opt option from simple custom variable
+ * @returns {Object}
+ */
+const parseSimpleCustomOptions = opt => ({ text: opt, value: opt });
 
 /**
  * Custom simple variables are rendered as dropdown elements in the dashboard
@@ -66,13 +86,22 @@ const customAdvancedVariableParser = advVariable => {
  * @returns {Object}
  */
 const customSimpleVariableParser = simpleVar => {
-  const options = (simpleVar || []).map(parseSimpleDropdownOptions);
+  const options = (simpleVar || []).map(parseSimpleCustomOptions);
   return {
     type: VARIABLE_TYPES.custom,
     label: null,
-    options: options.map(normalizeDropdownOptions),
+    options: options.map(normalizeCustomVariableOptions),
   };
 };
+
+/**
+ * Utility method to determine if a custom variable is
+ * simple or not. If its not simple, it is advanced.
+ *
+ * @param {Array|Object} customVar Array if simple, object if advanced
+ * @returns {Boolean} true if simple, false if advanced
+ */
+const isSimpleCustomVariable = customVar => Array.isArray(customVar);
 
 /**
  * This method returns a parser based on the type of the variable.
@@ -88,6 +117,10 @@ const getVariableParser = variable => {
     return customSimpleVariableParser;
   } else if (variable.type === VARIABLE_TYPES.custom) {
     return customAdvancedVariableParser;
+  } else if (variable.type === VARIABLE_TYPES.text) {
+    return textAdvancedVariableParser;
+  } else if (isString(variable)) {
+    return textSimpleVariableParser;
   }
   return () => null;
 };

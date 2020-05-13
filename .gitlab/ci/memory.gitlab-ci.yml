@@ -28,6 +28,7 @@ memory-static:
       - tmp/memory_*.txt
     reports:
       metrics: tmp/memory_metrics.txt
+    expire_in: 31d
 
 # Show memory usage caused by invoking require per gem.
 # Unlike `memory-static`, it hits the app with one request to ensure that any last minute require-s have been called.
@@ -54,3 +55,4 @@ memory-on-boot:
       - tmp/memory_*.txt
     reports:
       metrics: tmp/memory_on_boot_metrics.txt
+    expire_in: 31d

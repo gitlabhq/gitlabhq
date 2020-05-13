@@ -230,7 +230,7 @@ gem 'discordrb-webhooks-blackst0ne', '~> 3.3', require: false
 gem 'hipchat', '~> 1.5.0'
 
 # Jira integration
-gem 'jira-ruby', '~> 1.7'
+gem 'jira-ruby', '~> 2.0.0'
 gem 'atlassian-jwt', '~> 0.2.0'
 
 # Flowdock integration
@@ -480,8 +480,6 @@ gem 'gitlab-net-dns', '~> 0.9.1'
 gem 'countries', '~> 3.0'
 
 gem 'retriable', '~> 3.1.2'
-
-gem 'liquid', '~> 4.0'
 
 # LRU cache
 gem 'lru_redux'

@@ -34,6 +34,7 @@ const customDashboardsData = new Array(30).fill(null).map((_, idx) => ({
   system_dashboard: false,
   project_blob_path: `${mockProjectDir}/blob/master/dashboards/.gitlab/dashboards/dashboard_${idx}.yml`,
   path: `.gitlab/dashboards/dashboard_${idx}.yml`,
+  starred: false,
 }));
 
 export const mockDashboardsErrorResponse = {
@@ -323,6 +324,16 @@ export const dashboardGitResponse = [
     system_dashboard: true,
     project_blob_path: null,
     path: 'config/prometheus/common_metrics.yml',
+    starred: false,
+  },
+  {
+    default: false,
+    display_name: 'dashboard.yml',
+    can_edit: true,
+    system_dashboard: false,
+    project_blob_path: `${mockProjectDir}/-/blob/master/.gitlab/dashboards/dashboard.yml`,
+    path: '.gitlab/dashboards/dashboard.yml',
+    starred: true,
   },
   ...customDashboardsData,
 ];
@@ -549,3 +560,214 @@ export const mockNamespacedData = {
 export const mockLogsPath = '/mockLogsPath';
 
 export const mockLogsHref = `${mockLogsPath}?duration_seconds=${mockTimeRange.duration.seconds}`;
+
+const templatingVariableTypes = {
+  text: {
+    simple: 'Simple text',
+    advanced: {
+      label: 'Variable 4',
+      type: 'text',
+      options: {
+        default_value: 'default',
+      },
+    },
+  },
+  custom: {
+    simple: ['value1', 'value2', 'value3'],
+    advanced: {
+      normal: {
+        label: 'Advanced Var',
+        type: 'custom',
+        options: {
+          values: [
+            { value: 'value1', text: 'Var 1 Option 1' },
+            {
+              value: 'value2',
+              text: 'Var 1 Option 2',
+              default: true,
+            },
+          ],
+        },
+      },
+      withoutOpts: {
+        type: 'custom',
+        options: {},
+      },
+      withoutLabel: {
+        type: 'custom',
+        options: {
+          values: [
+            { value: 'value1', text: 'Var 1 Option 1' },
+            {
+              value: 'value2',
+              text: 'Var 1 Option 2',
+              default: true,
+            },
+          ],
+        },
+      },
+      withoutType: {
+        label: 'Variable 2',
+        options: {
+          values: [
+            { value: 'value1', text: 'Var 1 Option 1' },
+            {
+              value: 'value2',
+              text: 'Var 1 Option 2',
+              default: true,
+            },
+          ],
+        },
+      },
+    },
+  },
+};
+
+const generateMockTemplatingData = data => {
+  const vars = data
+    ? {
+        variables: {
+          ...data,
+        },
+      }
+    : {};
+  return {
+    dashboard: {
+      templating: vars,
+    },
+  };
+};
+
+const responseForSimpleTextVariable = {
+  simpleText: {
+    label: 'simpleText',
+    type: 'text',
+    value: 'Simple text',
+  },
+};
+
+const responseForAdvTextVariable = {
+  advText: {
+    label: 'Variable 4',
+    type: 'text',
+    value: 'default',
+  },
+};
+
+const responseForSimpleCustomVariable = {
+  simpleCustom: {
+    label: 'simpleCustom',
+    options: [
+      {
+        default: false,
+        text: 'value1',
+        value: 'value1',
+      },
+      {
+        default: false,
+        text: 'value2',
+        value: 'value2',
+      },
+      {
+        default: false,
+        text: 'value3',
+        value: 'value3',
+      },
+    ],
+    type: 'custom',
+  },
+};
+
+const responseForAdvancedCustomVariableWithoutOptions = {
+  advCustomWithoutOpts: {
+    label: 'advCustomWithoutOpts',
+    options: [],
+    type: 'custom',
+  },
+};
+
+const responseForAdvancedCustomVariableWithoutLabel = {
+  advCustomWithoutLabel: {
+    label: 'advCustomWithoutLabel',
+    options: [
+      {
+        default: false,
+        text: 'Var 1 Option 1',
+        value: 'value1',
+      },
+      {
+        default: true,
+        text: 'Var 1 Option 2',
+        value: 'value2',
+      },
+    ],
+    type: 'custom',
+  },
+};
+
+const responseForAdvancedCustomVariable = {
+  ...responseForSimpleCustomVariable,
+  advCustomNormal: {
+    label: 'Advanced Var',
+    options: [
+      {
+        default: false,
+        text: 'Var 1 Option 1',
+        value: 'value1',
+      },
+      {
+        default: true,
+        text: 'Var 1 Option 2',
+        value: 'value2',
+      },
+    ],
+    type: 'custom',
+  },
+};
+
+const responsesForAllVariableTypes = {
+  ...responseForSimpleTextVariable,
+  ...responseForAdvTextVariable,
+  ...responseForSimpleCustomVariable,
+  ...responseForAdvancedCustomVariable,
+};
+
+export const mockTemplatingData = {
+  emptyTemplatingProp: generateMockTemplatingData(),
+  emptyVariablesProp: generateMockTemplatingData({}),
+  simpleText: generateMockTemplatingData({ simpleText: templatingVariableTypes.text.simple }),
+  advText: generateMockTemplatingData({ advText: templatingVariableTypes.text.advanced }),
+  simpleCustom: generateMockTemplatingData({ simpleCustom: templatingVariableTypes.custom.simple }),
+  advCustomWithoutOpts: generateMockTemplatingData({
+    advCustomWithoutOpts: templatingVariableTypes.custom.advanced.withoutOpts,
+  }),
+  advCustomWithoutType: generateMockTemplatingData({
+    advCustomWithoutType: templatingVariableTypes.custom.advanced.withoutType,
+  }),
+  advCustomWithoutLabel: generateMockTemplatingData({
+    advCustomWithoutLabel: templatingVariableTypes.custom.advanced.withoutLabel,
+  }),
+  simpleAndAdv: generateMockTemplatingData({
+    simpleCustom: templatingVariableTypes.custom.simple,
+    advCustomNormal: templatingVariableTypes.custom.advanced.normal,
+  }),
+  allVariableTypes: generateMockTemplatingData({
+    simpleText: templatingVariableTypes.text.simple,
+    advText: templatingVariableTypes.text.advanced,
+    simpleCustom: templatingVariableTypes.custom.simple,
+    advCustomNormal: templatingVariableTypes.custom.advanced.normal,
+  }),
+};
+
+export const mockTemplatingDataResponses = {
+  emptyTemplatingProp: {},
+  emptyVariablesProp: {},
+  simpleText: responseForSimpleTextVariable,
+  advText: responseForAdvTextVariable,
+  simpleCustom: responseForSimpleCustomVariable,
+  advCustomWithoutOpts: responseForAdvancedCustomVariableWithoutOptions,
+  advCustomWithoutType: {},
+  advCustomWithoutLabel: responseForAdvancedCustomVariableWithoutLabel,
+  simpleAndAdv: responseForAdvancedCustomVariable,
+  allVariableTypes: responsesForAllVariableTypes,
+};

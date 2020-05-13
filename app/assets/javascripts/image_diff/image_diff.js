@@ -128,7 +128,7 @@ export default class ImageDiff {
           const updatedBadgeNumber = index;
           const discussionEl = this.el.querySelector(`#discussion_${discussionId}`);
 
-          imageBadgeEls[index].innerText = updatedBadgeNumber;
+          imageBadgeEls[index].textContent = updatedBadgeNumber;
 
           imageDiffHelper.updateDiscussionBadgeNumber(discussionEl, updatedBadgeNumber);
           imageDiffHelper.updateDiscussionAvatarBadgeNumber(discussionEl, updatedBadgeNumber);

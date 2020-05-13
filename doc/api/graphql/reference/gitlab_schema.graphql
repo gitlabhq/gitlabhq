@@ -178,6 +178,11 @@ type AlertManagementAlert {
   iid: ID!
 
   """
+  Internal ID of the GitLab issue attached to the alert
+  """
+  issueIid: ID
+
+  """
   Monitoring tool the alert came from
   """
   monitoringTool: String
@@ -258,7 +263,7 @@ enum AlertManagementAlertSort {
   CREATED_TIME_ASC
 
   """
-  Created time by ascending order
+  Created time by descending order
   """
   CREATED_TIME_DESC
 
@@ -318,7 +323,7 @@ enum AlertManagementAlertSort {
   UPDATED_TIME_ASC
 
   """
-  Created time by ascending order
+  Created time by descending order
   """
   UPDATED_TIME_DESC
 
@@ -4303,6 +4308,41 @@ type Group {
   ): VulnerabilityConnection
 
   """
+  Number of vulnerabilities per severity level, per day, for the projects in the group and its subgroups
+  """
+  vulnerabilitiesCountByDayAndSeverity(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Last day for which to fetch vulnerability history
+    """
+    endDate: ISO8601Date!
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    First day for which to fetch vulnerability history
+    """
+    startDate: ISO8601Date!
+  ): VulnerabilitiesCountByDayAndSeverityConnection
+
+  """
   Web URL of the group
   """
   webUrl: String!
@@ -4323,6 +4363,11 @@ enum HealthStatus {
   needsAttention
   onTrack
 }
+
+"""
+An ISO 8601-encoded date
+"""
+scalar ISO8601Date
 
 type InstanceSecurityDashboard {
   """
@@ -6031,7 +6076,7 @@ type MetricsDashboardAnnotation {
   """
   Timestamp marking end of annotated time span
   """
-  endingAt: String
+  endingAt: Time
 
   """
   ID of the annotation
@@ -6046,7 +6091,7 @@ type MetricsDashboardAnnotation {
   """
   Timestamp marking start of annotated time span
   """
-  startingAt: String
+  startingAt: Time
 }
 
 """
@@ -6843,6 +6888,11 @@ type Project {
     Sort alerts by this criteria
     """
     sort: AlertManagementAlertSort
+
+    """
+    Alerts with the specified statues. For example, [TRIGGERED]
+    """
+    statuses: [AlertManagementStatus!]
   ): AlertManagementAlert
 
   """
@@ -6878,6 +6928,11 @@ type Project {
     Sort alerts by this criteria
     """
     sort: AlertManagementAlertSort
+
+    """
+    Alerts with the specified statues. For example, [TRIGGERED]
+    """
+    statuses: [AlertManagementStatus!]
   ): AlertManagementAlertConnection
 
   """
@@ -8223,6 +8278,41 @@ type Query {
     """
     state: [VulnerabilityState!]
   ): VulnerabilityConnection
+
+  """
+  Number of vulnerabilities per severity level, per day, for the projects on the current user's instance security dashboard
+  """
+  vulnerabilitiesCountByDayAndSeverity(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Last day for which to fetch vulnerability history
+    """
+    endDate: ISO8601Date!
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    First day for which to fetch vulnerability history
+    """
+    startDate: ISO8601Date!
+  ): VulnerabilitiesCountByDayAndSeverityConnection
 }
 
 """
@@ -10718,6 +10808,61 @@ enum VisibilityScopesEnum {
   internal
   private
   public
+}
+
+"""
+Represents the number of vulnerabilities for a particular severity on a particular day
+"""
+type VulnerabilitiesCountByDayAndSeverity {
+  """
+  Number of vulnerabilities
+  """
+  count: Int
+
+  """
+  Date for the count
+  """
+  day: ISO8601Date
+
+  """
+  Severity of the counted vulnerabilities
+  """
+  severity: VulnerabilitySeverity
+}
+
+"""
+The connection type for VulnerabilitiesCountByDayAndSeverity.
+"""
+type VulnerabilitiesCountByDayAndSeverityConnection {
+  """
+  A list of edges.
+  """
+  edges: [VulnerabilitiesCountByDayAndSeverityEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [VulnerabilitiesCountByDayAndSeverity]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+An edge in a connection.
+"""
+type VulnerabilitiesCountByDayAndSeverityEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: VulnerabilitiesCountByDayAndSeverity
 }
 
 """

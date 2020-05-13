@@ -197,11 +197,11 @@ export default {
         </template>
 
         <template #cell(startedAt)="{ item }">
-          <time-ago :time="item.startedAt" />
+          <time-ago v-if="item.startedAt" :time="item.startedAt" />
         </template>
 
         <template #cell(endedAt)="{ item }">
-          <time-ago :time="item.endedAt" />
+          <time-ago v-if="item.endedAt" :time="item.endedAt" />
         </template>
 
         <template #cell(title)="{ item }">

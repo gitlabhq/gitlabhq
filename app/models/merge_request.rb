@@ -19,6 +19,7 @@ class MergeRequest < ApplicationRecord
   include ShaAttribute
   include IgnorableColumns
   include MilestoneEventable
+  include StateEventable
 
   sha_attribute :squash_commit_sha
 

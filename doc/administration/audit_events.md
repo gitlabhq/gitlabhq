@@ -50,6 +50,7 @@ From there, you can see the following actions:
 - User sign-in via [Group SAML](../user/group/saml_sso/index.md)
 - Permissions changes of a user assigned to a group
 - Removed user from group
+- Project imported in to group
 - Project added to group and with which visibility level
 - Project removed from group
 - [Project shared with group](../user/project/members/share_project_with_groups.md)

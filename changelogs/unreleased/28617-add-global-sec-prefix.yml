@@ -1,0 +1,5 @@
+---
+title: Add the global var SECURE_ANALYZERS_PREFIX
+merge_request: 28617
+author:
+type: added

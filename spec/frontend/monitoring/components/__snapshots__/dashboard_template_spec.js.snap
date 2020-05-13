@@ -111,6 +111,8 @@ exports[`Dashboard template matches the default snapshot 1`] = `
     </div>
   </div>
    
+  <!---->
+   
   <empty-state-stub
     clusterspath="/path/to/clusters"
     documentationpath="/path/to/docs"

@@ -295,6 +295,10 @@ class WikiPage
     'wiki_page'
   end
 
+  def version_commit_timestamp
+    version&.commit&.committed_date
+  end
+
   private
 
   def serialize_front_matter(hash)

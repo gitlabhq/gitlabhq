@@ -1,5 +1,5 @@
 .search-result-row
-  %h4.snippet-title.term
+  %h4
     = link_to gitlab_snippet_path(snippet_title) do
       = truncate(snippet_title.title, length: 60)
       = snippet_badge(snippet_title)

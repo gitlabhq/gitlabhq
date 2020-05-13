@@ -20,6 +20,7 @@ module Issuable
         copy_resource_label_events
         copy_resource_weight_events
         copy_resource_milestone_events
+        copy_resource_state_events
       end
 
       private
@@ -47,8 +48,6 @@ module Issuable
       end
 
       def copy_resource_label_events
-        entity_key = new_entity.class.name.underscore.foreign_key
-
         copy_events(ResourceLabelEvent.table_name, original_entity.resource_label_events) do |event|
           event.attributes
             .except('id', 'reference', 'reference_html')
@@ -80,9 +79,18 @@ module Issuable
         end
       end
 
-      def event_attributes_with_milestone(event, milestone)
-        entity_key = new_entity.class.name.underscore.foreign_key
+      def copy_resource_state_events
+        return unless state_events_supported?
 
+        copy_events(ResourceStateEvent.table_name, original_entity.resource_state_events) do |event|
+          event.attributes
+            .except('id')
+            .merge(entity_key => new_entity.id,
+                   'state' => ResourceStateEvent.states[event.state])
+        end
+      end
+
+      def event_attributes_with_milestone(event, milestone)
         event.attributes
           .except('id')
           .merge(entity_key => new_entity.id,
@@ -102,12 +110,20 @@ module Issuable
       end
 
       def entity_key
-        new_entity.class.name.parameterize('_').foreign_key
+        new_entity.class.name.underscore.foreign_key
       end
 
       def milestone_events_supported?
-        original_entity.respond_to?(:resource_milestone_events) &&
-          new_entity.respond_to?(:resource_milestone_events)
+        both_respond_to?(:resource_milestone_events)
+      end
+
+      def state_events_supported?
+        both_respond_to?(:resource_state_events)
+      end
+
+      def both_respond_to?(method)
+        original_entity.respond_to?(method) &&
+          new_entity.respond_to?(method)
       end
     end
   end

@@ -5,7 +5,14 @@ module Gitlab
     # BackfillEnvironmentIdDeploymentMergeRequests deletes duplicates
     # from deployment_merge_requests table and backfills environment_id
     class BackfillEnvironmentIdDeploymentMergeRequests
-      def perform(start_mr_id, stop_mr_id)
+      def perform(_start_mr_id, _stop_mr_id)
+        # no-op
+
+        # Background migration removed due to
+        # https://gitlab.com/gitlab-org/gitlab/-/issues/217191
+      end
+
+      def backfill_range(start_mr_id, stop_mr_id)
         start_mr_id = Integer(start_mr_id)
         stop_mr_id  = Integer(stop_mr_id)
 

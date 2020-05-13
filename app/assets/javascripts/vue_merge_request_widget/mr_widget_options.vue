@@ -146,11 +146,7 @@ export default {
       });
     },
     shouldShowAccessibilityReport() {
-      return (
-        this.accessibilility?.base_path &&
-        this.accessibilility?.head_path &&
-        this.glFeatures.accessibilityMergeRequestWidget
-      );
+      return this.mr.accessibilityReportPath && this.glFeatures.accessibilityMergeRequestWidget;
     },
   },
   watch: {
@@ -396,8 +392,7 @@ export default {
 
       <grouped-accessibility-reports-app
         v-if="shouldShowAccessibilityReport"
-        :base-endpoint="mr.accessibility.base_path"
-        :head-endpoint="mr.accessibility.head_path"
+        :endpoint="mr.accessibilityReportPath"
       />
 
       <div class="mr-widget-section">

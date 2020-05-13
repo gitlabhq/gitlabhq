@@ -36,6 +36,24 @@ Using the GitLab project Kubernetes integration, you can:
 - View [Logs](#logs).
 - Run serverless workloads on [Kubernetes with Knative](serverless/index.md).
 
+### Supported cluster versions
+
+GitLab is committed to support at least two production-ready Kubernetes minor versions at any given time. We regularly review the versions we support, and provide a four-month deprecation period before we remove support of a specific version. The range of supported versions is based on the evaluation of:
+
+- Our own needs.
+- The versions supported by major managed Kubernetes providers.
+- The versions [supported by the Kubernetes community](https://kubernetes.io/docs/setup/release/version-skew-policy/#supported-versions).
+
+Currently, GitLab supports the following Kubernetes versions:
+
+- 1.15
+- 1.14
+- 1.13 (deprecated, support ends on November 22, 2020)
+- 1.12 (deprecated, support ends on September 22, 2020)
+
+NOTE: **Note:**
+Some GitLab features may support versions outside the range provided here.
+
 ### Deploy Boards **(PREMIUM)**
 
 GitLab's Deploy Boards offer a consolidated view of the current health and

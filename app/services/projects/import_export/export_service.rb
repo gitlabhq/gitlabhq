@@ -56,7 +56,10 @@ module Projects
       end
 
       def exporters
-        [version_saver, avatar_saver, project_tree_saver, uploads_saver, repo_saver, wiki_repo_saver, lfs_saver, snippets_repo_saver]
+        [
+          version_saver, avatar_saver, project_tree_saver, uploads_saver,
+          repo_saver, wiki_repo_saver, lfs_saver, snippets_repo_saver, design_repo_saver
+        ]
       end
 
       def version_saver
@@ -95,6 +98,10 @@ module Projects
         Gitlab::ImportExport::SnippetsRepoSaver.new(current_user: current_user, project: project, shared: shared)
       end
 
+      def design_repo_saver
+        Gitlab::ImportExport::DesignRepoSaver.new(project: project, shared: shared)
+      end
+
       def cleanup
         FileUtils.rm_rf(shared.archive_path) if shared&.archive_path
       end
@@ -117,5 +124,3 @@ module Projects
     end
   end
 end
-
-Projects::ImportExport::ExportService.prepend_if_ee('EE::Projects::ImportExport::ExportService')

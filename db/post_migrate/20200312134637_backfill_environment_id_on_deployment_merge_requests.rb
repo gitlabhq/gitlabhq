@@ -4,46 +4,19 @@ class BackfillEnvironmentIdOnDeploymentMergeRequests < ActiveRecord::Migration[6
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false
-  BATCH_SIZE = 400
-  DELAY = 1.minute
 
   disable_ddl_transaction!
 
   def up
-    max_mr_id = DeploymentMergeRequest
-      .select(:merge_request_id)
-      .distinct
-      .order(merge_request_id: :desc)
-      .limit(1)
-      .pluck(:merge_request_id)
-      .first || 0
+    # no-op
 
-    last_mr_id = 0
-    step = 0
-
-    while last_mr_id < max_mr_id
-      stop =
-        DeploymentMergeRequest
-          .select(:merge_request_id)
-          .distinct
-          .where('merge_request_id > ?', last_mr_id)
-          .order(:merge_request_id)
-          .offset(BATCH_SIZE)
-          .limit(1)
-          .pluck(:merge_request_id)
-          .first
-
-      stop ||= max_mr_id
-
-      migrate_in(
-        step * DELAY,
-        'BackfillEnvironmentIdDeploymentMergeRequests',
-        [last_mr_id + 1, stop]
-      )
-
-      last_mr_id = stop
-      step += 1
-    end
+    # this migration is deleted because there is no foreign key for
+    # deployments.environment_id and this caused a failure upgrading
+    # deployments_merge_requests.environment_id
+    #
+    # Details on the following issues:
+    #  * https://gitlab.com/gitlab-org/gitlab/-/issues/217191
+    #  * https://gitlab.com/gitlab-org/gitlab/-/issues/26229
   end
 
   def down

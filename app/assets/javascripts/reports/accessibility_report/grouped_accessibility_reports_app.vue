@@ -13,11 +13,7 @@ export default {
     IssuesList,
   },
   props: {
-    baseEndpoint: {
-      type: String,
-      required: true,
-    },
-    headEndpoint: {
+    endpoint: {
       type: String,
       required: true,
     },
@@ -34,15 +30,12 @@ export default {
     ]),
   },
   created() {
-    this.setEndpoints({
-      baseEndpoint: this.baseEndpoint,
-      headEndpoint: this.headEndpoint,
-    });
+    this.setEndpoint(this.endpoint);
 
     this.fetchReport();
   },
   methods: {
-    ...mapActions(['fetchReport', 'setEndpoints']),
+    ...mapActions(['fetchReport', 'setEndpoint']),
   },
 };
 </script>

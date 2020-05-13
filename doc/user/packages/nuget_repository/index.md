@@ -61,7 +61,7 @@ by default. To enable it for existing projects, or if you want to disable it:
 1. Find the Packages feature and enable or disable it.
 1. Click on **Save changes** for the changes to take effect.
 
-You should then be able to see the **Packages** section on the left sidebar.
+You should then be able to see the **Packages & Registries** section on the left sidebar.
 
 ## Adding the GitLab NuGet Repository as a source to NuGet
 

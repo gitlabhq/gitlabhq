@@ -1,0 +1,6 @@
+---
+title: Use iso 8601 timestamp format in metrics dashboard annotations graphql resource
+  to assure multi browser compatibility
+merge_request: 31474
+author:
+type: fixed

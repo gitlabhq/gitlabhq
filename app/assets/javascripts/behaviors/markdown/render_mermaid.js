@@ -82,7 +82,7 @@ function renderMermaidEl(el) {
       return;
     }
 
-    svg.classList.add('mermaid');
+    svg.classList.add('mermaid', 'mw-100');
 
     // pre > code > svg
     svg.closest('pre').replaceWith(svg);

@@ -11,12 +11,12 @@ export function setPositionDataAttribute(el, options) {
 
 export function updateDiscussionAvatarBadgeNumber(discussionEl, newBadgeNumber) {
   const avatarBadgeEl = discussionEl.querySelector('.image-diff-avatar-link .badge');
-  avatarBadgeEl.innerText = newBadgeNumber;
+  avatarBadgeEl.textContent = newBadgeNumber;
 }
 
 export function updateDiscussionBadgeNumber(discussionEl, newBadgeNumber) {
   const discussionBadgeEl = discussionEl.querySelector('.badge');
-  discussionBadgeEl.innerText = newBadgeNumber;
+  discussionBadgeEl.textContent = newBadgeNumber;
 }
 
 export function toggleCollapsed(event) {

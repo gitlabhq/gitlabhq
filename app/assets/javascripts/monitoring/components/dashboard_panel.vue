@@ -313,7 +313,12 @@ export default {
             <template slot="button-content">
               <gl-icon name="ellipsis_v" class="text-secondary" />
             </template>
-            <gl-dropdown-item v-if="expandBtnAvailable" ref="expandBtn" @click="onExpand">
+            <gl-dropdown-item
+              v-if="expandBtnAvailable"
+              ref="expandBtn"
+              :href="clipboardText"
+              @click.prevent="onExpand"
+            >
               {{ s__('Metrics|Expand panel') }}
             </gl-dropdown-item>
             <gl-dropdown-item

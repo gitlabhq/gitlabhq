@@ -4,6 +4,16 @@ module Prometheus
   class ProxyVariableSubstitutionService < BaseService
     include Stepable
 
+    VARIABLE_INTERPOLATION_REGEX = /
+      {{                  # Variable needs to be wrapped in these chars.
+        \s*               # Allow whitespace before and after the variable name.
+          (?<variable>    # Named capture.
+            \w+           # Match one or more word characters.
+          )
+        \s*
+      }}
+    /x.freeze
+
     steps :validate_variables,
       :add_params_to_result,
       :substitute_params,
@@ -49,12 +59,9 @@ module Prometheus
     def substitute_liquid_variables(result)
       return success(result) unless query(result)
 
-      result[:params][:query] =
-        TemplateEngines::LiquidService.new(query(result)).render(full_context)
+      result[:params][:query] = gsub(query(result), full_context)
 
       success(result)
-    rescue TemplateEngines::LiquidService::RenderError => e
-      error(e.message)
     end
 
     def substitute_ruby_variables(result)
@@ -75,12 +82,24 @@ module Prometheus
       error(_('Malformed string'))
     end
 
+    def gsub(string, context)
+      # Search for variables of the form `{{variable}}` in the string and replace
+      # them with their value.
+      string.gsub(VARIABLE_INTERPOLATION_REGEX) do |match|
+        # Replace with the value of the variable, or if there is no such variable,
+        # replace the invalid variable with itself. So,
+        # `up{instance="{{invalid_variable}}"}` will remain
+        # `up{instance="{{invalid_variable}}"}` after substitution.
+        context.fetch($~[:variable], match)
+      end
+    end
+
     def predefined_context
       @predefined_context ||= Gitlab::Prometheus::QueryVariables.call(@environment)
     end
 
     def full_context
-      @full_context ||= predefined_context.reverse_merge(variables_hash)
+      @full_context ||= predefined_context.stringify_keys.reverse_merge(variables_hash)
     end
 
     def variables

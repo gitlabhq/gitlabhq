@@ -46,14 +46,20 @@ describe Projects::ImportExport::ExportService do
       # in the corresponding EE spec.
       skip if Gitlab.ee?
 
-      # once for the normal repo, once for the wiki
-      expect(Gitlab::ImportExport::RepoSaver).to receive(:new).twice.and_call_original
+      # once for the normal repo, once for the wiki repo, and once for the design repo
+      expect(Gitlab::ImportExport::RepoSaver).to receive(:new).exactly(3).times.and_call_original
 
       service.execute
     end
 
     it 'saves the wiki repo' do
       expect(Gitlab::ImportExport::WikiRepoSaver).to receive(:new).and_call_original
+
+      service.execute
+    end
+
+    it 'saves the design repo' do
+      expect(Gitlab::ImportExport::DesignRepoSaver).to receive(:new).and_call_original
 
       service.execute
     end

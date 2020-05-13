@@ -16,6 +16,7 @@ module Gitlab
 
           retry_index = 0
           @invalid_path_error = false
+          @invalid_signature_error = false
 
           begin
             create_repository_and_files(snippet)
@@ -23,10 +24,11 @@ module Gitlab
             logger.info(message: 'Snippet Migration: repository created and migrated', snippet: snippet.id)
           rescue => e
             set_file_path_error(e)
+            set_signature_error(e)
 
             retry_index += 1
 
-            retry if retry_index < MAX_RETRIES
+            retry if retry_index < max_retries
 
             logger.error(message: "Snippet Migration: error migrating snippet. Reason: #{e.message}", snippet: snippet.id)
 
@@ -100,6 +102,9 @@ module Gitlab
       # migrate their snippets as well.
       # In this scenario the migration bot user will be the one that will commit the files.
       def commit_author(snippet)
+        return migration_bot_user if snippet_content_size_over_limit?(snippet)
+        return migration_bot_user if @invalid_signature_error
+
         if Gitlab::UserAccessSnippet.new(snippet.author, snippet: snippet).can_do_action?(:update_snippet)
           snippet.author
         else
@@ -117,7 +122,27 @@ module Gitlab
       # the migration can succeed, to achieve that, we'll identify in migration retries
       # that the path is invalid
       def set_file_path_error(error)
-        @invalid_path_error = error.is_a?(SnippetRepository::InvalidPathError)
+        @invalid_path_error ||= error.is_a?(SnippetRepository::InvalidPathError)
+      end
+
+      # We sometimes receive invalid signature from Gitaly if the commit author
+      # name or email is invalid to create the commit signature.
+      # In this situation, we set the error and use the migration_bot since
+      # the information used to build it is valid
+      def set_signature_error(error)
+        @invalid_signature_error ||= error.is_a?(SnippetRepository::InvalidSignatureError)
+      end
+
+      # In the case where the snippet file_name is invalid and also the
+      # snippet author has invalid commit info, we need to increase the
+      # number of retries by 1, because we will receive two errors
+      # from Gitaly and, in the third one, we will commit successfully.
+      def max_retries
+        MAX_RETRIES + (@invalid_signature_error && @invalid_path_error ? 1 : 0)
+      end
+
+      def snippet_content_size_over_limit?(snippet)
+        snippet.content.size > Gitlab::CurrentSettings.snippet_size_limit
       end
     end
   end

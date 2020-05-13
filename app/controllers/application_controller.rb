@@ -18,6 +18,7 @@ class ApplicationController < ActionController::Base
   include Gitlab::Tracking::ControllerConcern
   include Gitlab::Experimentation::ControllerConcern
   include InitializesCurrentUserMode
+  include Gitlab::Logging::CloudflareHelper
 
   before_action :authenticate_user!, except: [:route_not_found]
   before_action :enforce_terms!, if: :should_enforce_terms?
@@ -151,6 +152,8 @@ class ApplicationController < ActionController::Base
     end
 
     payload[:queue_duration_s] = request.env[::Gitlab::Middleware::RailsQueueDuration::GITLAB_RAILS_QUEUE_DURATION_KEY]
+
+    store_cloudflare_headers!(payload, request)
   end
 
   ##

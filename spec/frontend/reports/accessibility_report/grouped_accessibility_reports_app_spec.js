@@ -3,7 +3,7 @@ import Vuex from 'vuex';
 import GroupedAccessibilityReportsApp from '~/reports/accessibility_report/grouped_accessibility_reports_app.vue';
 import AccessibilityIssueBody from '~/reports/accessibility_report/components/accessibility_issue_body.vue';
 import store from '~/reports/accessibility_report/store';
-import { comparedReportResult } from './mock_data';
+import { mockReport } from './mock_data';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -18,8 +18,7 @@ describe('Grouped accessibility reports app', () => {
       store: mockStore,
       localVue,
       propsData: {
-        baseEndpoint: 'base_endpoint.json',
-        headEndpoint: 'head_endpoint.json',
+        endpoint: 'endpoint.json',
       },
       methods: {
         fetchReport: () => {},
@@ -66,8 +65,7 @@ describe('Grouped accessibility reports app', () => {
       beforeEach(() => {
         mockStore.state.report = {
           summary: {
-            errors: 0,
-            warnings: 0,
+            errored: 0,
           },
         };
       });
@@ -83,8 +81,7 @@ describe('Grouped accessibility reports app', () => {
       beforeEach(() => {
         mockStore.state.report = {
           summary: {
-            errors: 0,
-            warnings: 1,
+            errored: 1,
           },
         };
       });
@@ -100,8 +97,7 @@ describe('Grouped accessibility reports app', () => {
       beforeEach(() => {
         mockStore.state.report = {
           summary: {
-            errors: 1,
-            warnings: 1,
+            errored: 2,
           },
         };
       });
@@ -115,18 +111,15 @@ describe('Grouped accessibility reports app', () => {
 
     describe('with issues to show', () => {
       beforeEach(() => {
-        mockStore.state.report = comparedReportResult;
+        mockStore.state.report = mockReport;
       });
 
       it('renders custom accessibility issue body', () => {
         const issueBody = wrapper.find(AccessibilityIssueBody);
 
-        expect(issueBody.props('issue').name).toEqual(comparedReportResult.new_errors[0].name);
-        expect(issueBody.props('issue').code).toEqual(comparedReportResult.new_errors[0].code);
-        expect(issueBody.props('issue').message).toEqual(
-          comparedReportResult.new_errors[0].message,
-        );
-        expect(issueBody.props('isNew')).toEqual(true);
+        expect(issueBody.props('issue').code).toBe(mockReport.new_errors[0].code);
+        expect(issueBody.props('issue').message).toBe(mockReport.new_errors[0].message);
+        expect(issueBody.props('isNew')).toBe(true);
       });
     });
   });

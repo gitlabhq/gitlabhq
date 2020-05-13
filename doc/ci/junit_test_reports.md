@@ -237,6 +237,8 @@ You can view all the known test suites and click on each of these to see further
 details, including the cases that makeup the suite. Cases are ordered by status,
 with failed showing at the top, skipped next and successful cases last.
 
+You can also retrieve the reports via the [GitLab API](../api/pipelines.md#get-a-pipelines-test-report).
+
 ### Enabling the feature
 
 This feature comes with the `:junit_pipeline_view` feature flag disabled by default. This

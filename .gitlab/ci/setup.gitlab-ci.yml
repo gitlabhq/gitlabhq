@@ -15,6 +15,7 @@ cache gems:
   artifacts:
     paths:
       - vendor/cache
+    expire_in: 31d
 
 .minimal-job:
   extends:

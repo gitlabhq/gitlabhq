@@ -8,7 +8,7 @@ describe AlertManagement::UpdateAlertStatusService do
   describe '#execute' do
     subject(:execute) { described_class.new(alert, new_status).execute }
 
-    let(:new_status) { 'acknowledged' }
+    let(:new_status) { Types::AlertManagement::StatusEnum.values['ACKNOWLEDGED'].value }
 
     it 'updates the status' do
       expect { execute }.to change { alert.acknowledged? }.to(true)

@@ -26,7 +26,7 @@ by default. To enable it for existing projects, or if you want to disable it:
 1. Find the Packages feature and enable or disable it.
 1. Click on **Save changes** for the changes to take effect.
 
-You should then be able to see the **Packages** section on the left sidebar.
+You should then be able to see the **Packages & Registries** section on the left sidebar.
 
 ## Getting started
 
@@ -197,7 +197,7 @@ Uploading mypypipackage-0.0.1.tar.gz
 ```
 
 This indicates that the package was uploaded successfully. You can then navigate
-to your project's **Packages** page and see the uploaded packages.
+to your project's **Packages & Registries** page and see the uploaded packages.
 
 If you did not follow the guide above, the you'll need to ensure your package
 has been properly built and you [created a PyPi package with setuptools](https://packaging.python.org/tutorials/packaging-projects/).

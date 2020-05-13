@@ -323,4 +323,31 @@ describe('Monitoring store Getters', () => {
       expect(metricsSavedToDb).toEqual([`${id1}_${metric1.id}`, `${id2}_${metric2.id}`]);
     });
   });
+
+  describe('getCustomVariablesArray', () => {
+    let state;
+    const sampleVariables = {
+      label1: 'pod',
+    };
+
+    beforeEach(() => {
+      state = {
+        promVariables: {},
+      };
+    });
+
+    it('transforms the promVariables object to an array in the [variable, variable_value] format', () => {
+      mutations[types.SET_PROM_QUERY_VARIABLES](state, sampleVariables);
+      const variablesArray = getters.getCustomVariablesArray(state);
+
+      expect(variablesArray).toEqual(['label1', 'pod']);
+    });
+
+    it('transforms the promVariables object to an empty array when no keys are present', () => {
+      mutations[types.SET_PROM_QUERY_VARIABLES](state, {});
+      const variablesArray = getters.getCustomVariablesArray(state);
+
+      expect(variablesArray).toEqual([]);
+    });
+  });
 });

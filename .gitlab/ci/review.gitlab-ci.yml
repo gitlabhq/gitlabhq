@@ -53,7 +53,7 @@ review-build-cng:
   variables:
     HOST_SUFFIX: "${CI_ENVIRONMENT_SLUG}"
     DOMAIN: "-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}"
-    GITLAB_HELM_CHART_REF: "v3.2.2"
+    GITLAB_HELM_CHART_REF: "v3.3.3"
   environment:
     name: review/${CI_COMMIT_REF_NAME}
     url: https://gitlab-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}
@@ -198,6 +198,7 @@ review-performance:
       - sitespeed-results/
     reports:
       performance: performance.json
+    expire_in: 31d
 
 parallel-spec-reports:
   extends:
@@ -223,17 +224,17 @@ parallel-spec-reports:
       - qa/gitlab-qa-run-*
     reports:
       junit: qa/gitlab-qa-run-*/**/rspec-*.xml
+    expire_in: 31d
 
 danger-review:
   extends:
     - .default-retry
-    - .default-cache
+    - .yarn-cache
     - .review:rules:danger
   image: registry.gitlab.com/gitlab-org/gitlab-build-images:danger
   stage: test
   needs: []
   script:
-    - git version
-    - node --version
-    - yarn install --frozen-lockfile --cache-folder .yarn-cache --prefer-offline
+    - source scripts/utils.sh
+    - retry yarn install --frozen-lockfile
     - danger --fail-on-errors=true --verbose

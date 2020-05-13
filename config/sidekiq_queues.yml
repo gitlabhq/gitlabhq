@@ -32,6 +32,8 @@
   - 1
 - - authorized_keys
   - 2
+- - authorized_project_update_user_refresh_with_low_urgency
+  - 1
 - - authorized_projects
   - 2
 - - auto_devops

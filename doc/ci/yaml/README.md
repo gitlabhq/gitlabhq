@@ -756,7 +756,7 @@ Note that `script: rake test` has been overwritten by `script: rake rspec`.
 
 If you do want to include the `rake test`, see [`before_script` and `after_script`](#before_script-and-after_script).
 
-`.tests` in this example is a [hidden key](#hide-jobs), but it's
+`.tests` in this example is a [hidden job](#hide-jobs), but it's
 possible to inherit from regular jobs as well.
 
 `extends` supports multi-level inheritance, however it's not recommended to

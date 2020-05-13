@@ -19,7 +19,12 @@ describe Gitlab::Lograge::CustomOptions do
         1,
         2,
         'transaction_id',
-        { params: params, user_id: 'test' }
+        {
+          params: params,
+          user_id: 'test',
+          cf_ray: SecureRandom.hex,
+          cf_request_id: SecureRandom.hex
+        }
       )
     end
 
@@ -45,6 +50,11 @@ describe Gitlab::Lograge::CustomOptions do
 
     it 'adds the user id' do
       expect(subject[:user_id]).to eq('test')
+    end
+
+    it 'adds Cloudflare headers' do
+      expect(subject[:cf_ray]).to eq(event.payload[:cf_ray])
+      expect(subject[:cf_request_id]).to eq(event.payload[:cf_request_id])
     end
   end
 end

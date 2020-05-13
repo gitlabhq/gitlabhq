@@ -217,6 +217,22 @@ describe SnippetRepository do
       it_behaves_like 'snippet repository with git errors', 'invalid://path/here', described_class::InvalidPathError
       it_behaves_like 'snippet repository with git errors', '../../path/traversal/here', described_class::InvalidPathError
       it_behaves_like 'snippet repository with git errors', 'README', described_class::CommitError
+
+      context 'when user name is invalid' do
+        let(:user) { create(:user, name: '.') }
+
+        it_behaves_like 'snippet repository with git errors', 'non_existing_file', described_class::InvalidSignatureError
+      end
+
+      context 'when user email is empty' do
+        let(:user) { create(:user) }
+
+        before do
+          user.update_column(:email, '')
+        end
+
+        it_behaves_like 'snippet repository with git errors', 'non_existing_file', described_class::InvalidSignatureError
+      end
     end
   end
 

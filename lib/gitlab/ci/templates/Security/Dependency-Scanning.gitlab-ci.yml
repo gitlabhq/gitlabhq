@@ -5,8 +5,13 @@
 # How to set: https://docs.gitlab.com/ee/ci/yaml/#variables
 
 variables:
-  SECURITY_SCANNER_IMAGE_PREFIX: "registry.gitlab.com/gitlab-org/security-products"
-  DS_ANALYZER_IMAGE_PREFIX: "$SECURITY_SCANNER_IMAGE_PREFIX/analyzers"
+  # Setting this variable will affect all Security templates
+  # (SAST, Dependency Scanning, ...)
+  SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/gitlab-org/security-products/analyzers"
+
+  # Deprecated, use SECURE_ANALYZERS_PREFIX instead
+  DS_ANALYZER_IMAGE_PREFIX: "$SECURE_ANALYZERS_PREFIX"
+
   DS_DEFAULT_ANALYZERS: "bundler-audit, retire.js, gemnasium, gemnasium-maven, gemnasium-python"
   DS_MAJOR_VERSION: 2
   DS_DISABLE_DIND: "false"
@@ -67,7 +72,7 @@ dependency_scanning:
         ) \
         --volume "$PWD:/code" \
         --volume /var/run/docker.sock:/var/run/docker.sock \
-        "$SECURITY_SCANNER_IMAGE_PREFIX/dependency-scanning:$DS_MAJOR_VERSION" /code
+        "registry.gitlab.com/gitlab-org/security-products/dependency-scanning:$DS_MAJOR_VERSION" /code
   artifacts:
     reports:
       dependency_scanning: gl-dependency-scanning-report.json

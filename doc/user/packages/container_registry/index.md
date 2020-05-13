@@ -19,14 +19,14 @@ have its own space to store its Docker images.
 
 You can read more about Docker Registry at <https://docs.docker.com/registry/introduction/>.
 
-![Container Registry repositories](img/container_registry_repositories_v12_10.png)
+![Container Registry repositories](img/container_registry_repositories_v13_0.png)
 
 ## Enable the Container Registry for your project
 
 CAUTION: **Warning:**
 The Container Registry follows the visibility settings of the project. If the project is public, so is the Container Registry.
 
-If you cannot find the **Packages > Container Registry** entry under your
+If you cannot find the **Packages & Registries > Container Registry** entry under your
 project's sidebar, it is not enabled in your GitLab instance. Ask your
 administrator to enable GitLab Container Registry following the
 [administration documentation](../../../administration/packages/container_registry.md).
@@ -44,7 +44,7 @@ project:
    projects this might be enabled by default. For existing projects
    (prior GitLab 8.8), you will have to explicitly enable it.
 1. Press **Save changes** for the changes to take effect. You should now be able
-   to see the **Packages > Container Registry**  link in the sidebar.
+   to see the **Packages & Registries > Container Registry** link in the sidebar.
 
 ## Control Container Registry from within GitLab
 
@@ -53,9 +53,9 @@ for both projects and groups.
 
 ### Control Container Registry for your project
 
-Navigate to your project's **{package}** **Packages > Container Registry**.
+Navigate to your project's **{package}** **Packages & Registries > Container Registry**.
 
-![Container Registry project repositories](img/container_registry_repositories_with_quickstart_v12_10.png)
+![Container Registry project repositories](img/container_registry_repositories_with_quickstart_v13_0.png)
 
 This view will:
 
@@ -67,9 +67,9 @@ This view will:
 
 ### Control Container Registry for your group
 
-Navigate to your groups's **{package}** **Packages > Container Registry**.
+Navigate to your groups's **{package}** **Packages & Registries > Container Registry**.
 
-![Container Registry group repositories](img/container_registry_group_repositories_v12_10.png)
+![Container Registry group repositories](img/container_registry_group_repositories_v13_0.png)
 
 This view will:
 
@@ -81,7 +81,7 @@ This view will:
 
 Clicking on the name of any image repository will navigate to the details.
 
-![Container Registry project repository details](img/container_registry_repository_details_v12.10.png)
+![Container Registry project repository details](img/container_registry_repository_details_v13.0.png)
 
 NOTE: **Note:**
 The following page has the same functionalities both in the **Group level container registry**
@@ -108,7 +108,7 @@ For more information on running Docker containers, visit the
 
 ## Authenticating to the GitLab Container Registry
 
-If you visit the **Packages > Container Registry** link under your project's
+If you visit the **Packages & Registries > Container Registry** link under your project's
 menu, you can see the explicit instructions to login to the Container Registry
 using your GitLab credentials.
 
@@ -389,7 +389,7 @@ the deleted images.
 
 To delete images from within GitLab:
 
-1. Navigate to your project's or group's **{package}** **Packages > Container Registry**.
+1. Navigate to your project's or group's **{package}** **Packages & Registries > Container Registry**.
 1. From the **Container Registry** page, you can select what you want to delete,
    by either:
 
@@ -401,7 +401,7 @@ To delete images from within GitLab:
 
 1. In the dialog box, click **Remove tag**.
 
-   ![Container Registry tags](img/container_registry_tags_v12_10.png)
+   ![Container Registry tags](img/container_registry_repository_details_v13.0.png)
 
 ### Delete images using the API
 

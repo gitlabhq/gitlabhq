@@ -88,8 +88,8 @@ export default {
   commit(projectId, payload) {
     return Api.commitMultiple(projectId, payload);
   },
-  getFiles(projectUrl, ref) {
-    const url = `${projectUrl}/-/files/${ref}`;
+  getFiles(projectPath, ref) {
+    const url = `${gon.relative_url_root}/${projectPath}/-/files/${ref}`;
     return axios.get(url, { params: { format: 'json' } });
   },
   lastCommitPipelines({ getters }) {

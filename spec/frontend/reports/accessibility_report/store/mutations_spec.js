@@ -10,17 +10,12 @@ describe('Accessibility Reports mutations', () => {
     localState = localStore.state;
   });
 
-  describe('SET_ENDPOINTS', () => {
-    it('sets base and head endpoints to give values', () => {
-      const baseEndpoint = 'base_endpoint.json';
-      const headEndpoint = 'head_endpoint.json';
-      mutations.SET_ENDPOINTS(localState, {
-        baseEndpoint,
-        headEndpoint,
-      });
+  describe('SET_ENDPOINT', () => {
+    it('sets endpoint to given value', () => {
+      const endpoint = 'endpoint.json';
+      mutations.SET_ENDPOINT(localState, endpoint);
 
-      expect(localState.baseEndpoint).toEqual(baseEndpoint);
-      expect(localState.headEndpoint).toEqual(headEndpoint);
+      expect(localState.endpoint).toEqual(endpoint);
     });
   });
 
@@ -64,12 +59,6 @@ describe('Accessibility Reports mutations', () => {
       mutations.RECEIVE_REPORT_ERROR(localState);
 
       expect(localState.hasError).toEqual(true);
-    });
-
-    it('sets errorMessage to given message', () => {
-      mutations.RECEIVE_REPORT_ERROR(localState, 'message');
-
-      expect(localState.errorMessage).toEqual('message');
     });
   });
 });

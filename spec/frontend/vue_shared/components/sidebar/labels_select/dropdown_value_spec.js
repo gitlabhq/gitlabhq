@@ -2,10 +2,7 @@ import { mount } from '@vue/test-utils';
 import DropdownValueComponent from '~/vue_shared/components/sidebar/labels_select/dropdown_value.vue';
 import { GlLabel } from '@gitlab/ui';
 
-import {
-  mockConfig,
-  mockLabels,
-} from '../../../../../javascripts/vue_shared/components/sidebar/labels_select/mock_data';
+import { mockConfig, mockLabels } from './mock_data';
 
 const createComponent = (
   labels = mockLabels,

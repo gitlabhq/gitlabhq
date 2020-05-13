@@ -104,9 +104,15 @@ export default {
     },
     fields() {
       const tagClass = this.isDesktop ? 'w-25' : '';
+      const tagInnerClass = this.isDesktop ? 'mw-m' : 'gl-justify-content-end';
       return [
         { key: LIST_KEY_CHECKBOX, label: '', class: 'gl-w-16' },
-        { key: LIST_KEY_TAG, label: LIST_LABEL_TAG, class: `${tagClass} js-tag-column` },
+        {
+          key: LIST_KEY_TAG,
+          label: LIST_LABEL_TAG,
+          class: `${tagClass} js-tag-column`,
+          innerClass: tagInnerClass,
+        },
         { key: LIST_KEY_IMAGE_ID, label: LIST_LABEL_IMAGE_ID },
         { key: LIST_KEY_SIZE, label: LIST_LABEL_SIZE },
         { key: LIST_KEY_LAST_UPDATED, label: LIST_LABEL_LAST_UPDATED },
@@ -329,17 +335,24 @@ export default {
           @change="updateSelectedItems(index)"
         />
       </template>
-      <template #cell(name)="{item}">
-        <span ref="rowName">
-          {{ item.name }}
-        </span>
-        <clipboard-button
-          v-if="item.location"
-          ref="rowClipboardButton"
-          :title="item.location"
-          :text="item.location"
-          css-class="btn-default btn-transparent btn-clipboard"
-        />
+      <template #cell(name)="{item, field}">
+        <div ref="rowName" :class="[field.innerClass, 'gl-display-flex']">
+          <span
+            v-gl-tooltip
+            data-testid="rowNameText"
+            :title="item.name"
+            class="gl-text-overflow-ellipsis gl-overflow-hidden gl-white-space-nowrap"
+          >
+            {{ item.name }}
+          </span>
+          <clipboard-button
+            v-if="item.location"
+            ref="rowClipboardButton"
+            :title="item.location"
+            :text="item.location"
+            css-class="btn-default btn-transparent btn-clipboard"
+          />
+        </div>
       </template>
       <template #cell(short_revision)="{value}">
         <span ref="rowShortRevision">
@@ -356,7 +369,7 @@ export default {
         </span>
       </template>
       <template #cell(created_at)="{value}">
-        <span ref="rowTime">
+        <span ref="rowTime" v-gl-tooltip :title="tooltipTitle(value)">
           {{ timeFormatted(value) }}
         </span>
       </template>

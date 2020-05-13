@@ -493,6 +493,7 @@ const fileNameIcons = {
   '.npmignore': 'npm',
   '.npmrc': 'npm',
   '.yarnrc': 'yarn',
+  '.yarnrc.yml': 'yarn',
   'yarn.lock': 'yarn',
   '.yarnclean': 'yarn',
   '.yarn-integrity': 'yarn',

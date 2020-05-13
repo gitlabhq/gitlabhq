@@ -269,6 +269,8 @@ class ProjectPolicy < BasePolicy
     enable :read_prometheus
     enable :read_environment
     enable :read_deployment
+    enable :create_metrics_user_starred_dashboard
+    enable :read_metrics_user_starred_dashboard
   end
 
   rule { owner | admin | guest | group_member }.prevent :request_access

@@ -15,3 +15,4 @@ pages:
   artifacts:
     paths:
       - public
+    expire_in: 31d

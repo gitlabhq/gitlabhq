@@ -67,8 +67,7 @@ describe('Accessibility reports store getters', () => {
         it('returns summary message containing number of errors', () => {
           localState.report = {
             summary: {
-              errors: 1,
-              warnings: 1,
+              errored: 2,
             },
           };
           const result = 'Accessibility scanning detected 2 issues for the source branch only';
@@ -81,8 +80,7 @@ describe('Accessibility reports store getters', () => {
         it('returns summary message containing no errors', () => {
           localState.report = {
             summary: {
-              errors: 0,
-              warnings: 0,
+              errored: 0,
             },
           };
           const result = 'Accessibility scanning detected no issues for the source branch only';
@@ -108,7 +106,7 @@ describe('Accessibility reports store getters', () => {
       it('returns false', () => {
         localState.report = {
           status: 'success',
-          summary: { errors: 0, warnings: 0 },
+          summary: { errored: 0 },
         };
 
         expect(getters.shouldRenderIssuesList(localState)).toEqual(false);

@@ -75,4 +75,9 @@ class JwtController < ApplicationController
 
     Array(Rack::Utils.parse_query(request.query_string)['scope'])
   end
+
+  def auth_user
+    actor = @authentication_result&.actor
+    actor.is_a?(User) ? actor : nil
+  end
 end

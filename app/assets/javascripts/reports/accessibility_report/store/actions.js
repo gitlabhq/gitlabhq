@@ -1,49 +1,78 @@
+import Visibility from 'visibilityjs';
+import Poll from '~/lib/utils/poll';
+import httpStatusCodes from '~/lib/utils/http_status';
 import axios from '~/lib/utils/axios_utils';
 import * as types from './mutation_types';
-import { parseAccessibilityReport, compareAccessibilityReports } from './utils';
-import { s__ } from '~/locale';
 
-export const setEndpoints = ({ commit }, { baseEndpoint, headEndpoint }) =>
-  commit(types.SET_ENDPOINTS, { baseEndpoint, headEndpoint });
+let eTagPoll;
 
+export const clearEtagPoll = () => {
+  eTagPoll = null;
+};
+
+export const stopPolling = () => {
+  if (eTagPoll) eTagPoll.stop();
+};
+
+export const restartPolling = () => {
+  if (eTagPoll) eTagPoll.restart();
+};
+
+export const setEndpoint = ({ commit }, endpoint) => commit(types.SET_ENDPOINT, endpoint);
+
+/**
+ * We need to poll the report endpoint while they are being parsed in the Backend.
+ * This can take up to one minute.
+ *
+ * Poll.js will handle etag response.
+ * While http status code is 204, it means it's parsing, and we'll keep polling
+ * When http status code is 200, it means parsing is done, we can show the results & stop polling
+ * When http status code is 500, it means parsing went wrong and we stop polling
+ */
 export const fetchReport = ({ state, dispatch, commit }) => {
   commit(types.REQUEST_REPORT);
 
-  // If we don't have both endpoints, throw an error.
-  if (!state.baseEndpoint || !state.headEndpoint) {
-    commit(
-      types.RECEIVE_REPORT_ERROR,
-      s__('AccessibilityReport|Accessibility report artifact not found'),
-    );
-    return;
+  eTagPoll = new Poll({
+    resource: {
+      getReport(endpoint) {
+        return axios.get(endpoint);
+      },
+    },
+    data: state.endpoint,
+    method: 'getReport',
+    successCallback: ({ status, data }) => dispatch('receiveReportSuccess', { status, data }),
+    errorCallback: () => dispatch('receiveReportError'),
+  });
+
+  if (!Visibility.hidden()) {
+    eTagPoll.makeRequest();
+  } else {
+    axios
+      .get(state.endpoint)
+      .then(({ status, data }) => dispatch('receiveReportSuccess', { status, data }))
+      .catch(() => dispatch('receiveReportError'));
   }
 
-  Promise.all([
-    axios.get(state.baseEndpoint).then(response => ({
-      ...response.data,
-      isHead: false,
-    })),
-    axios.get(state.headEndpoint).then(response => ({
-      ...response.data,
-      isHead: true,
-    })),
-  ])
-    .then(responses => dispatch('receiveReportSuccess', responses))
-    .catch(() =>
-      commit(
-        types.RECEIVE_REPORT_ERROR,
-        s__('AccessibilityReport|Failed to retrieve accessibility report'),
-      ),
-    );
+  Visibility.change(() => {
+    if (!Visibility.hidden() && state.isLoading) {
+      dispatch('restartPolling');
+    } else {
+      dispatch('stopPolling');
+    }
+  });
 };
 
-export const receiveReportSuccess = ({ commit }, responses) => {
-  const parsedReports = responses.map(response => ({
-    isHead: response.isHead,
-    issues: parseAccessibilityReport(response),
-  }));
-  const report = compareAccessibilityReports(parsedReports);
-  commit(types.RECEIVE_REPORT_SUCCESS, report);
+export const receiveReportSuccess = ({ commit, dispatch }, { status, data }) => {
+  if (status === httpStatusCodes.OK) {
+    commit(types.RECEIVE_REPORT_SUCCESS, data);
+    // Stop polling since we have the information already parsed and it won't be changing
+    dispatch('stopPolling');
+  }
+};
+
+export const receiveReportError = ({ commit, dispatch }) => {
+  commit(types.RECEIVE_REPORT_ERROR);
+  dispatch('stopPolling');
 };
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests

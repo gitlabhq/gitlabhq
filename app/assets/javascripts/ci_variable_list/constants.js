@@ -4,7 +4,7 @@ import { __ } from '~/locale';
 export const ADD_CI_VARIABLE_MODAL_ID = 'add-ci-variable';
 
 export const displayText = {
-  variableText: __('Var'),
+  variableText: __('Variable'),
   fileText: __('File'),
   allEnvironmentsText: __('All (default)'),
 };

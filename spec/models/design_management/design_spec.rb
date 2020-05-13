@@ -380,15 +380,8 @@ describe DesignManagement::Design do
     end
   end
 
-  # TODO these tests are being temporarily skipped unless run in EE,
-  # as we are in the process of moving Design Management to FOSS in 13.0
-  # in steps. In the current step the routes have not yet been moved.
-  #
-  # See https://gitlab.com/gitlab-org/gitlab/-/issues/212566#note_327724283.
   describe '#note_etag_key' do
     it 'returns a correct etag key' do
-      skip 'See https://gitlab.com/gitlab-org/gitlab/-/issues/212566#note_327724283' unless Gitlab.ee?
-
       design = create(:design)
 
       expect(design.note_etag_key).to eq(

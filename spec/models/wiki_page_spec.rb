@@ -844,6 +844,20 @@ describe WikiPage do
     end
   end
 
+  describe '#version_commit_timestamp' do
+    context 'for a new page' do
+      it 'returns nil' do
+        expect(new_page.version_commit_timestamp).to be_nil
+      end
+    end
+
+    context 'for page that exists' do
+      it 'returns the timestamp of the commit' do
+        expect(existing_page.version_commit_timestamp).to eq(existing_page.version.commit.committed_date)
+      end
+    end
+  end
+
   private
 
   def get_slugs(page_or_dir)

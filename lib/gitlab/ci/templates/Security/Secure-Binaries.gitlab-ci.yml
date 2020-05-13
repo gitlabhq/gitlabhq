@@ -16,7 +16,7 @@ variables:
     bandit, brakeman, gosec, spotbugs, flawfinder, phpcs-security-audit, security-code-scan, nodejs-scan, eslint, tslint, secrets, sobelow, pmd-apex, kubesec,
     bundler-audit, retire.js, gemnasium, gemnasium-maven, gemnasium-python,
     klar, clair-vulnerabilities-db,
-    license-management,
+    license-finder,
     dast
 
   SECURE_BINARIES_DOWNLOAD_IMAGES: "true"
@@ -39,7 +39,7 @@ variables:
   script:
     - docker info
     - env
-    - if [ -z "$SECURE_BINARIES_IMAGE" ]; then export SECURE_BINARIES_IMAGE=${SECURE_BINARIES_IMAGE:-"registry.gitlab.com/gitlab-org/security-products/${CI_JOB_NAME}:${SECURE_BINARIES_ANALYZER_VERSION}"}; fi
+    - if [ -z "$SECURE_BINARIES_IMAGE" ]; then export SECURE_BINARIES_IMAGE=${SECURE_BINARIES_IMAGE:-"registry.gitlab.com/gitlab-org/security-products/analyzers/${CI_JOB_NAME}:${SECURE_BINARIES_ANALYZER_VERSION}"}; fi
     - docker pull ${SECURE_BINARIES_IMAGE}
     - mkdir -p output/$(dirname ${CI_JOB_NAME})
     - |
@@ -62,98 +62,98 @@ variables:
 # SAST jobs
 #
 
-analyzers/bandit:
+bandit:
   extends: .download_images
   only:
     variables:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
           $SECURE_BINARIES_ANALYZERS =~ /\bbandit\b/
 
-analyzers/brakeman:
+brakeman:
   extends: .download_images
   only:
     variables:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
           $SECURE_BINARIES_ANALYZERS =~ /\bbrakeman\b/
 
-analyzers/gosec:
+gosec:
   extends: .download_images
   only:
     variables:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
           $SECURE_BINARIES_ANALYZERS =~ /\bgosec\b/
 
-analyzers/spotbugs:
+spotbugs:
   extends: .download_images
   only:
     variables:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
           $SECURE_BINARIES_ANALYZERS =~ /\bspotbugs\b/
 
-analyzers/flawfinder:
+flawfinder:
   extends: .download_images
   only:
     variables:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
           $SECURE_BINARIES_ANALYZERS =~ /\bflawfinder\b/
 
-analyzers/phpcs-security-audit:
+phpcs-security-audit:
   extends: .download_images
   only:
     variables:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
           $SECURE_BINARIES_ANALYZERS =~ /\bphpcs-security-audit\b/
 
-analyzers/security-code-scan:
+security-code-scan:
   extends: .download_images
   only:
     variables:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
           $SECURE_BINARIES_ANALYZERS =~ /\bsecurity-code-scan\b/
 
-analyzers/nodejs-scan:
+nodejs-scan:
   extends: .download_images
   only:
     variables:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
           $SECURE_BINARIES_ANALYZERS =~ /\bnodejs-scan\b/
 
-analyzers/eslint:
+eslint:
   extends: .download_images
   only:
     variables:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
           $SECURE_BINARIES_ANALYZERS =~ /\beslint\b/
 
-analyzers/tslint:
+tslint:
   extends: .download_images
   only:
     variables:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
           $SECURE_BINARIES_ANALYZERS =~ /\btslint\b/
 
-analyzers/secrets:
+secrets:
   extends: .download_images
   only:
     variables:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
           $SECURE_BINARIES_ANALYZERS =~ /\bsecrets\b/
 
-analyzers/sobelow:
+sobelow:
   extends: .download_images
   only:
     variables:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
           $SECURE_BINARIES_ANALYZERS =~ /\bsobelow\b/
 
-analyzers/pmd-apex:
+pmd-apex:
   extends: .download_images
   only:
     variables:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
           $SECURE_BINARIES_ANALYZERS =~ /\bsecrets\b/
 
-analyzers/kubesec:
+kubesec:
   extends: .download_images
   only:
     variables:
@@ -163,14 +163,14 @@ analyzers/kubesec:
 # Container Scanning jobs
 #
 
-analyzers/klar:
+klar:
   extends: .download_images
   only:
     variables:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
           $SECURE_BINARIES_ANALYZERS =~ /\bklar\b/
 
-analyzers/clair-vulnerabilities-db:
+clair-vulnerabilities-db:
   extends: .download_images
   only:
     variables:
@@ -184,35 +184,35 @@ analyzers/clair-vulnerabilities-db:
 # Dependency Scanning jobs
 #
 
-analyzers/bundler-audit:
+bundler-audit:
   extends: .download_images
   only:
     variables:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
           $SECURE_BINARIES_ANALYZERS =~ /\bbundler-audit\b/
 
-analyzers/retire.js:
+retire.js:
   extends: .download_images
   only:
     variables:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
           $SECURE_BINARIES_ANALYZERS =~ /\bretire\.js\b/
 
-analyzers/gemnasium:
+gemnasium:
   extends: .download_images
   only:
     variables:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
           $SECURE_BINARIES_ANALYZERS =~ /\bgemnasium\b/
 
-analyzers/gemnasium-maven:
+gemnasium-maven:
   extends: .download_images
   only:
     variables:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
           $SECURE_BINARIES_ANALYZERS =~ /\bgemnasium-maven\b/
 
-analyzers/gemnasium-python:
+gemnasium-python:
   extends: .download_images
   only:
     variables:
@@ -223,14 +223,14 @@ analyzers/gemnasium-python:
 # License Scanning
 #
 
-license-management:
+license-finder:
   extends: .download_images
   variables:
     SECURE_BINARIES_ANALYZER_VERSION: "3"
   only:
     variables:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
-          $SECURE_BINARIES_ANALYZERS =~ /\blicense-management\b/
+          $SECURE_BINARIES_ANALYZERS =~ /\blicense-finder\b/
 
 #
 # DAST
@@ -238,9 +238,9 @@ license-management:
 
 dast:
   extends: .download_images
+  variables:
+    SECURE_BINARIES_ANALYZER_VERSION: "1"
   only:
     variables:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
           $SECURE_BINARIES_ANALYZERS =~ /\bdast\b/
-  variables:
-    SECURE_BINARIES_ANALYZER_VERSION: 1

@@ -25,7 +25,7 @@ You can take advantage of SAST by doing one of the following:
 GitLab checks the SAST report, compares the found vulnerabilities between the
 source and target branches, and shows the information right on the merge request.
 
-![SAST Widget](img/sast_v12_9.png)
+![SAST Widget](img/sast_v13_0.png)
 
 The results are sorted by the priority of the vulnerability:
 
@@ -293,8 +293,9 @@ The following are Docker image-related variables.
 
 | Environment variable         | Description                                                                                                                                                                                                              |
 |------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `SAST_ANALYZER_IMAGE_PREFIX` | Override the name of the Docker registry providing the default images (proxy). Read more about [customizing analyzers](analyzers.md).                                                                                    |
-| `SAST_ANALYZER_IMAGE_TAG`    | **DEPRECATED:** Override the Docker tag of the default images. Read more about [customizing analyzers](analyzers.md).                                                                                                                    |
+| `SECURE_ANALYZERS_PREFIX`    | Override the name of the Docker registry providing the default images (proxy). Read more about [customizing analyzers](analyzers.md).                                                                                    |
+| `SAST_ANALYZER_IMAGE_PREFIX` | **DEPRECATED**: Use `SECURE_ANALYZERS_PREFIX` instead.                                                                                                                                                                       |
+| `SAST_ANALYZER_IMAGE_TAG`    | **DEPRECATED:** Override the Docker tag of the default images. Read more about [customizing analyzers](analyzers.md).                                                                                                        |
 | `SAST_DEFAULT_ANALYZERS`     | Override the names of default images. Read more about [customizing analyzers](analyzers.md).                                                                                                                             |
 | `SAST_DISABLE_DIND`          | Disable Docker in Docker and run analyzers [individually](#disabling-docker-in-docker-for-sast).                                                                                                                         |
 
@@ -575,7 +576,7 @@ include:
   - template: SAST.gitlab-ci.yml
 
 variables:
-  SAST_ANALYZER_IMAGE_PREFIX: "localhost:5000/analyzers"
+  SECURE_ANALYZERS_PREFIX: "localhost:5000/analyzers"
   SAST_DISABLE_DIND: "true"
   ```
 

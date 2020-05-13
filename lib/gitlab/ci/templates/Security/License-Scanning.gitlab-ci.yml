@@ -5,13 +5,17 @@
 # How to set: https://docs.gitlab.com/ee/ci/yaml/#variables
 
 variables:
+  # Setting this variable will affect all Security templates
+  # (SAST, Dependency Scanning, ...)
+  SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/gitlab-org/security-products/analyzers"
+
   LICENSE_MANAGEMENT_SETUP_CMD: ''  # If needed, specify a command to setup your environment with a custom package manager.
   LICENSE_MANAGEMENT_VERSION: 3
 
 license_scanning:
   stage: test
   image:
-    name: "registry.gitlab.com/gitlab-org/security-products/license-management:$LICENSE_MANAGEMENT_VERSION"
+    name: "$SECURE_ANALYZERS_PREFIX/license-finder:$LICENSE_MANAGEMENT_VERSION"
     entrypoint: [""]
   variables:
     LM_REPORT_FILE: gl-license-scanning-report.json

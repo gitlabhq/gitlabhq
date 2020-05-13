@@ -1,0 +1,5 @@
+---
+title: Add tooltip to container registry tags last update column
+merge_request: 31317
+author:
+type: fixed

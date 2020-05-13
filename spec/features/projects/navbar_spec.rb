@@ -42,7 +42,7 @@ describe 'Project navbar' do
 
   context 'when pages are available' do
     before do
-      allow(Gitlab.config.pages).to receive(:enabled).and_return(true)
+      stub_config(pages: { enabled: true })
 
       insert_after_sub_nav_item(
         _('Operations'),
@@ -50,6 +50,23 @@ describe 'Project navbar' do
         new_sub_nav_item_name: _('Pages')
       )
 
+      visit project_path(project)
+    end
+
+    it_behaves_like 'verified navigation bar'
+  end
+
+  context 'when container registry is available' do
+    before do
+      stub_config(registry: { enabled: true })
+
+      insert_after_nav_item(
+        _('Operations'),
+        new_nav_item: {
+          nav_item: _('Packages & Registries'),
+          nav_sub_items: [_('Container Registry')]
+        }
+      )
       visit project_path(project)
     end
 

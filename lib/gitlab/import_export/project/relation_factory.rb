@@ -17,6 +17,10 @@ module Gitlab
                       merge_access_levels: 'ProtectedBranch::MergeAccessLevel',
                       push_access_levels: 'ProtectedBranch::PushAccessLevel',
                       create_access_levels: 'ProtectedTag::CreateAccessLevel',
+                      design: 'DesignManagement::Design',
+                      designs: 'DesignManagement::Design',
+                      design_versions: 'DesignManagement::Version',
+                      actions: 'DesignManagement::Action',
                       labels: :project_labels,
                       priorities: :label_priorities,
                       auto_devops: :project_auto_devops,
@@ -51,6 +55,7 @@ module Gitlab
           container_expiration_policy
           external_pull_request
           external_pull_requests
+          DesignManagement::Design
         ].freeze
 
         def create

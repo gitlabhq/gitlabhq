@@ -1719,6 +1719,33 @@ describe Projects::IssuesController do
     end
   end
 
+  describe 'GET #designs' do
+    context 'when project has moved' do
+      let(:new_project) { create(:project) }
+      let(:issue) { create(:issue, project: new_project) }
+
+      before do
+        sign_in(user)
+
+        project.route.destroy
+        new_project.redirect_routes.create!(path: project.full_path)
+        new_project.add_developer(user)
+      end
+
+      it 'redirects from an old issue/designs correctly' do
+        get :designs,
+            params: {
+              namespace_id: project.namespace,
+              project_id: project,
+              id: issue
+            }
+
+        expect(response).to redirect_to(designs_project_issue_path(new_project, issue))
+        expect(response).to have_gitlab_http_status(:found)
+      end
+    end
+  end
+
   context 'private project with token authentication' do
     let(:private_project) { create(:project, :private) }
 

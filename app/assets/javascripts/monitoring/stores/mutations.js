@@ -1,4 +1,4 @@
-import pick from 'lodash/pick';
+import { pick } from 'lodash';
 import * as types from './mutation_types';
 import { mapToDashboardViewModel, normalizeQueryResult } from './utils';
 import { BACKOFF_TIMEOUT } from '../../lib/utils/common_utils';
@@ -50,18 +50,6 @@ const emptyStateFromError = error => {
 
   return metricStates.UNKNOWN_ERROR;
 };
-
-/**
- * Maps an variables object to an array
- * @returns {Array} The custom variables array to be send to the API
- * in the format of [variable1, variable1_value]
- * @param {Object} variables - Custom variables provided by the user
- */
-
-const transformVariablesObjectArray = variables =>
-  Object.entries(variables)
-    .flat()
-    .map(encodeURIComponent);
 
 export default {
   /**
@@ -182,6 +170,12 @@ export default {
     state.expandedPanel.panel = panel;
   },
   [types.SET_PROM_QUERY_VARIABLES](state, variables) {
-    state.promVariables = transformVariablesObjectArray(variables);
+    state.promVariables = variables;
+  },
+  [types.UPDATE_VARIABLE_DATA](state, newVariable) {
+    Object.assign(state.promVariables, {
+      ...state.promVariables,
+      ...newVariable,
+    });
   },
 };

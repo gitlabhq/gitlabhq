@@ -927,6 +927,13 @@
   :resource_boundary: :unknown
   :weight: 2
   :idempotent: true
+- :name: authorized_project_update_user_refresh_with_low_urgency
+  :feature_category: :authentication_and_authorization
+  :has_external_dependencies: 
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
 - :name: authorized_projects
   :feature_category: :authentication_and_authorization
   :has_external_dependencies: 
@@ -954,7 +961,7 @@
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 2
-  :idempotent: 
+  :idempotent: true
 - :name: create_evidence
   :feature_category: :release_evidence
   :has_external_dependencies: 
@@ -1002,6 +1009,13 @@
   :has_external_dependencies: 
   :urgency: :low
   :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: 
+- :name: design_management_new_version
+  :feature_category: :design_management
+  :has_external_dependencies: 
+  :urgency: :low
+  :resource_boundary: :memory
   :weight: 1
   :idempotent: 
 - :name: detect_repository_languages
@@ -1143,7 +1157,7 @@
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
-  :idempotent: 
+  :idempotent: true
 - :name: migrate_external_diffs
   :feature_category: :source_code_management
   :has_external_dependencies: 

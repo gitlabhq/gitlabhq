@@ -84,6 +84,21 @@ describe Event do
     end
   end
 
+  describe 'scopes' do
+    describe 'created_at' do
+      it 'can find the right event' do
+        time = 1.day.ago
+        event = create(:event, created_at: time)
+        false_positive = create(:event, created_at: 2.days.ago)
+
+        found = described_class.created_at(time)
+
+        expect(found).to include(event)
+        expect(found).not_to include(false_positive)
+      end
+    end
+  end
+
   describe "Push event" do
     let(:project) { create(:project, :private) }
     let(:user) { project.owner }
@@ -509,6 +524,14 @@ describe Event do
 
         expect(events).not_to match_array(non_wiki_events)
         expect(described_class.not_wiki_page).to match_array(non_wiki_events)
+      end
+    end
+
+    describe '.for_wiki_meta' do
+      it 'finds events for a given wiki page metadata object' do
+        event = events.select(&:wiki_page?).first
+
+        expect(described_class.for_wiki_meta(event.target)).to contain_exactly(event)
       end
     end
   end

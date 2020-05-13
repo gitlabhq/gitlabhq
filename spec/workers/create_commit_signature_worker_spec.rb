@@ -17,6 +17,25 @@ describe CreateCommitSignatureWorker do
   subject { described_class.new.perform(commit_shas, project.id) }
 
   context 'when a signature is found' do
+    it_behaves_like 'an idempotent worker' do
+      let(:job_args) { [commit_shas, project.id] }
+
+      before do
+        # Removing the stub which can cause bugs for multiple calls to
+        # Project#commits_by.
+        allow(project).to receive(:commits_by).and_call_original
+
+        # Making sure it still goes through all the perform execution.
+        allow_next_instance_of(::Commit) do |commit|
+          allow(commit).to receive(:signature_type).and_return(:PGP)
+        end
+
+        allow_next_instance_of(::Gitlab::Gpg::Commit) do |gpg|
+          expect(gpg).to receive(:signature).once.and_call_original
+        end
+      end
+    end
+
     it 'calls Gitlab::Gpg::Commit#signature' do
       commits.each do |commit|
         allow(commit).to receive(:signature_type).and_return(:PGP)

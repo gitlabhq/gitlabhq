@@ -75,7 +75,7 @@ end of an API URL.
 Most API requests require authentication, or will only return public data when
 authentication is not provided. For
 those cases where it is not required, this will be mentioned in the documentation
-for each individual endpoint. For example, the [`/projects/:id` endpoint](projects.md).
+for each individual endpoint. For example, the [`/projects/:id` endpoint](projects.md#get-single-project).
 
 There are several ways to authenticate with the GitLab API:
 

@@ -23,6 +23,12 @@ export const setupStoreWithDashboard = $store => {
   );
 };
 
+export const setupStoreWithVariable = $store => {
+  $store.commit(`monitoringDashboard/${types.SET_PROM_QUERY_VARIABLES}`, {
+    label1: 'pod',
+  });
+};
+
 export const setupStoreWithData = $store => {
   setupStoreWithDashboard($store);
 

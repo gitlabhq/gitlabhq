@@ -142,7 +142,7 @@ describe Prometheus::ProxyVariableSubstitutionService do
         end
 
         it_behaves_like 'success' do
-          let(:expected_query) { 'up{pod_name=""}' }
+          let(:expected_query) { 'up{pod_name="{{pod_name}}"}' }
         end
       end
 
@@ -159,28 +159,6 @@ describe Prometheus::ProxyVariableSubstitutionService do
           let(:expected_query) { %q[up{env1="%{ruby_variable}",env2="env_slug"}] }
         end
       end
-    end
-
-    context 'with liquid tags and ruby format variables' do
-      let(:params_keys) do
-        {
-          query: 'up{ {% if true %}env1="%{ci_environment_slug}",' \
-            'env2="{{ci_environment_slug}}"{% endif %} }'
-        }
-      end
-
-      # The following spec will fail and should be changed to a 'success' spec
-      # once we remove support for the Ruby interpolation format.
-      # https://gitlab.com/gitlab-org/gitlab/issues/37990
-      #
-      # Liquid tags `{% %}` cannot be used currently because the Ruby `%`
-      # operator raises an error when it encounters a Liquid `{% %}` tag in the
-      # string.
-      #
-      # Once we remove support for the Ruby format, users can start using
-      # Liquid tags.
-
-      it_behaves_like 'error', 'Malformed string'
     end
 
     context 'ruby template rendering' do
@@ -271,17 +249,79 @@ describe Prometheus::ProxyVariableSubstitutionService do
       end
     end
 
-    context 'when liquid template rendering raises error' do
-      before do
-        liquid_service = instance_double(TemplateEngines::LiquidService)
+    context 'gsub variable substitution tolerance for weirdness' do
+      context 'with whitespace around variable' do
+        let(:params_keys) do
+          {
+            query: 'up{' \
+                "env1={{ ci_environment_slug}}," \
+                "env2={{ci_environment_slug }}," \
+                "{{  environment_filter }}" \
+              '}'
+          }
+        end
 
-        allow(TemplateEngines::LiquidService).to receive(:new).and_return(liquid_service)
-        allow(liquid_service).to receive(:render).and_raise(
-          TemplateEngines::LiquidService::RenderError, 'error message'
-        )
+        it_behaves_like 'success' do
+          let(:expected_query) do
+            'up{' \
+              "env1=#{environment.slug}," \
+              "env2=#{environment.slug}," \
+              "container_name!=\"POD\",environment=\"#{environment.slug}\"" \
+            '}'
+          end
+        end
       end
 
-      it_behaves_like 'error', 'error message'
+      context 'with empty variables' do
+        let(:params_keys) do
+          { query: "up{env1={{}},env2={{  }}}" }
+        end
+
+        it_behaves_like 'success' do
+          let(:expected_query) { "up{env1={{}},env2={{  }}}" }
+        end
+      end
+
+      context 'with multiple occurrences of variable in string' do
+        let(:params_keys) do
+          { query: "up{env1={{ci_environment_slug}},env2={{ci_environment_slug}}}" }
+        end
+
+        it_behaves_like 'success' do
+          let(:expected_query) { "up{env1=#{environment.slug},env2=#{environment.slug}}" }
+        end
+      end
+
+      context 'with multiple variables in string' do
+        let(:params_keys) do
+          { query: "up{env={{ci_environment_slug}},{{environment_filter}}}" }
+        end
+
+        it_behaves_like 'success' do
+          let(:expected_query) do
+            "up{env=#{environment.slug}," \
+            "container_name!=\"POD\",environment=\"#{environment.slug}\"}"
+          end
+        end
+      end
+
+      context 'with unknown variables in string' do
+        let(:params_keys) { { query: "up{env={{env_slug}}}" } }
+
+        it_behaves_like 'success' do
+          let(:expected_query) { "up{env={{env_slug}}}" }
+        end
+      end
+
+      context 'with unknown and known variables in string' do
+        let(:params_keys) do
+          { query: "up{env={{ci_environment_slug}},other_env={{env_slug}}}" }
+        end
+
+        it_behaves_like 'success' do
+          let(:expected_query) { "up{env=#{environment.slug},other_env={{env_slug}}}" }
+        end
+      end
     end
   end
 end

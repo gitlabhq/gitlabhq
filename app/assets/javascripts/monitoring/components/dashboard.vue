@@ -30,6 +30,7 @@ import GraphGroup from './graph_group.vue';
 import EmptyState from './empty_state.vue';
 import GroupEmptyState from './group_empty_state.vue';
 import DashboardsDropdown from './dashboards_dropdown.vue';
+import VariablesSection from './variables_section.vue';
 
 import TrackEventDirective from '~/vue_shared/directives/track_event';
 import {
@@ -64,6 +65,8 @@ export default {
     EmptyState,
     GroupEmptyState,
     DashboardsDropdown,
+
+    VariablesSection,
   },
   directives: {
     GlModal: GlModalDirective,
@@ -222,6 +225,7 @@ export default {
       'allDashboards',
       'environmentsLoading',
       'expandedPanel',
+      'promVariables',
     ]),
     ...mapGetters('monitoringDashboard', ['getMetricStates', 'filteredEnvironments']),
     firstDashboard() {
@@ -242,6 +246,9 @@ export default {
     },
     shouldShowEnvironmentsDropdownNoMatchedMsg() {
       return !this.environmentsLoading && this.filteredEnvironments.length === 0;
+    },
+    shouldShowVariablesSection() {
+      return Object.keys(this.promVariables).length > 0;
     },
   },
   watch: {
@@ -584,7 +591,7 @@ export default {
         </div>
       </div>
     </div>
-
+    <variables-section v-if="shouldShowVariablesSection && !showEmptyState" />
     <div v-if="!showEmptyState">
       <dashboard-panel
         v-show="expandedPanel.panel"

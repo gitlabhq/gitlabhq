@@ -1,10 +1,12 @@
 # frozen_string_literal: true
 
-class CreateCommitSignatureWorker # rubocop:disable Scalability/IdempotentWorker
+class CreateCommitSignatureWorker
   include ApplicationWorker
 
   feature_category :source_code_management
   weight 2
+
+  idempotent!
 
   # rubocop: disable CodeReuse/ActiveRecord
   def perform(commit_shas, project_id)

@@ -1,0 +1,6 @@
+---
+title: Fix 'not enough data' in Value Stream Analytics when low median values are
+  returned
+merge_request: 31315
+author:
+type: fixed
