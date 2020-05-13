@@ -19,13 +19,17 @@ export default class PipelinesService {
   }
 
   getPipelines(data = {}) {
-    const { scope, page, username } = data;
+    const { scope, page, username, ref } = data;
     const { CancelToken } = axios;
 
     const queryParams = { scope, page };
 
     if (username) {
       queryParams.username = username;
+    }
+
+    if (ref) {
+      queryParams.ref = ref;
     }
 
     this.cancelationSource = CancelToken.source();

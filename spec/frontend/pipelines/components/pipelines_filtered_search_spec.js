@@ -3,7 +3,13 @@ import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import PipelinesFilteredSearch from '~/pipelines/components/pipelines_filtered_search.vue';
-import { users, mockSearch, pipelineWithStages } from '../mock_data';
+import {
+  users,
+  mockSearch,
+  pipelineWithStages,
+  branches,
+  mockBranchesAfterMap,
+} from '../mock_data';
 import { GlFilteredSearch } from '@gitlab/ui';
 
 describe('Pipelines filtered search', () => {
@@ -30,6 +36,7 @@ describe('Pipelines filtered search', () => {
     mock = new MockAdapter(axios);
 
     jest.spyOn(Api, 'projectUsers').mockResolvedValue(users);
+    jest.spyOn(Api, 'branches').mockResolvedValue({ data: branches });
 
     createComponent();
   });
@@ -52,9 +59,19 @@ describe('Pipelines filtered search', () => {
       type: 'username',
       icon: 'user',
       title: 'Trigger author',
-      dataType: 'username',
       unique: true,
       triggerAuthors: users,
+      projectId: '21',
+      operators: [expect.objectContaining({ value: '=' })],
+    });
+
+    expect(getSearchToken('ref')).toMatchObject({
+      type: 'ref',
+      icon: 'branch',
+      title: 'Branch name',
+      unique: true,
+      branches: mockBranchesAfterMap,
+      projectId: '21',
       operators: [expect.objectContaining({ value: '=' })],
     });
   });
@@ -63,6 +80,12 @@ describe('Pipelines filtered search', () => {
     expect(Api.projectUsers).toHaveBeenCalled();
 
     expect(wrapper.vm.projectUsers).toEqual(users);
+  });
+
+  it('fetches and sets branches', () => {
+    expect(Api.branches).toHaveBeenCalled();
+
+    expect(wrapper.vm.projectBranches).toEqual(mockBranchesAfterMap);
   });
 
   it('emits filterPipelines on submit with correct filter', () => {

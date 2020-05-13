@@ -195,6 +195,26 @@ describe Projects::PipelinesController do
       end
     end
 
+    context 'filter by ref' do
+      let!(:pipeline) { create(:ci_pipeline, :running, project: project, ref: 'branch-1') }
+
+      context 'when pipelines with the ref exists' do
+        it 'returns matched pipelines' do
+          get_pipelines_index_json(ref: 'branch-1')
+
+          check_pipeline_response(returned: 1, all: 1, running: 1, pending: 0, finished: 0)
+        end
+      end
+
+      context 'when no pipeline with the ref exists' do
+        it 'returns empty list' do
+          get_pipelines_index_json(ref: 'invalid-ref')
+
+          check_pipeline_response(returned: 0, all: 0, running: 0, pending: 0, finished: 0)
+        end
+      end
+    end
+
     def get_pipelines_index_json(params = {})
       get :index, params: {
                     namespace_id: project.namespace,

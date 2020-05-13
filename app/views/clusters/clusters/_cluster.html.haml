@@ -2,7 +2,8 @@
   .card-body.gl-responsive-table-row
     .table-section.section-60
       .table-mobile-header{ role: "rowheader" }= s_("ClusterIntegration|Kubernetes cluster")
-      .table-mobile-content
+      .table-mobile-content.gl-display-flex.gl-align-items-center.gl-justify-content-end.gl-justify-content-md-start
+        .gl-w-6.gl-h-6.gl-mr-3.gl-display-flex.gl-align-items-center= provider_icon(cluster.provider_type)
         = cluster.item_link(clusterable, html_options: { data: { qa_selector: 'cluster', qa_cluster_name: cluster.name } })
         - if cluster.status_name == :creating
           .spinner.ml-2.align-middle.has-tooltip{ title: s_("ClusterIntegration|Cluster being created") }

@@ -1,9 +1,9 @@
 import { GlFilteredSearchToken, GlFilteredSearchSuggestion, GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import PipelineTriggerAuthorToken from '~/pipelines/components/tokens/pipeline_trigger_author_token.vue';
-import { users } from '../mock_data';
+import PipelineBranchNameToken from '~/pipelines/components/tokens/pipeline_branch_name_token.vue';
+import { branches } from '../mock_data';
 
-describe('Pipeline Trigger Author Token', () => {
+describe('Pipeline Branch Name Token', () => {
   let wrapper;
 
   const findFilteredSearchToken = () => wrapper.find(GlFilteredSearchToken);
@@ -18,12 +18,13 @@ describe('Pipeline Trigger Author Token', () => {
 
   const defaultProps = {
     config: {
-      type: 'username',
-      icon: 'user',
-      title: 'Trigger author',
-      dataType: 'username',
+      type: 'ref',
+      icon: 'branch',
+      title: 'Branch name',
+      dataType: 'ref',
       unique: true,
-      triggerAuthors: users,
+      branches,
+      projectId: '21',
     },
     value: {
       data: '',
@@ -31,7 +32,7 @@ describe('Pipeline Trigger Author Token', () => {
   };
 
   const createComponent = (options, data) => {
-    wrapper = shallowMount(PipelineTriggerAuthorToken, {
+    wrapper = shallowMount(PipelineBranchNameToken, {
       propsData: {
         ...defaultProps,
       },
@@ -71,28 +72,18 @@ describe('Pipeline Trigger Author Token', () => {
     });
   });
 
-  describe('shows trigger authors correctly', () => {
-    beforeEach(() => {});
-
+  describe('shows branches correctly', () => {
     it('renders all trigger authors', () => {
-      createComponent({ stubs }, { users, loading: false });
+      createComponent({ stubs }, { branches, loading: false });
 
-      // should have length of all users plus the static 'Any' option
-      expect(findAllFilteredSearchSuggestions()).toHaveLength(users.length + 1);
+      expect(findAllFilteredSearchSuggestions()).toHaveLength(branches.length);
     });
 
-    it('renders only the trigger author searched for', () => {
-      createComponent(
-        { stubs },
-        {
-          users: [
-            { name: 'Arnold', username: 'admin', state: 'active', avatar_url: 'avatar-link' },
-          ],
-          loading: false,
-        },
-      );
+    it('renders only the branch searched for', () => {
+      const mockBranches = ['master'];
+      createComponent({ stubs }, { branches: mockBranches, loading: false });
 
-      expect(findAllFilteredSearchSuggestions()).toHaveLength(2);
+      expect(findAllFilteredSearchSuggestions()).toHaveLength(mockBranches.length);
     });
   });
 });

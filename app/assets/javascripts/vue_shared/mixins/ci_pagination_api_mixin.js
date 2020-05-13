@@ -35,13 +35,18 @@ export default {
     },
 
     onChangeWithFilter(params) {
-      const { username } = this.requestData;
+      const { username, ref } = this.requestData;
+      const paramsData = params;
 
       if (username) {
-        return { ...params, username };
+        paramsData.username = username;
       }
 
-      return params;
+      if (ref) {
+        paramsData.ref = ref;
+      }
+
+      return paramsData;
     },
 
     updateInternalState(parameters) {

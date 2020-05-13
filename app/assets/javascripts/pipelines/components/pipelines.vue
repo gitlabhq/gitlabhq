@@ -249,15 +249,22 @@ export default {
           createFlash(s__('Pipelines|Something went wrong while cleaning runners cache.'));
         });
     },
+    resetRequestData() {
+      this.requestData = { page: this.page, scope: this.scope };
+    },
     filterPipelines(filters) {
+      this.resetRequestData();
+
       filters.forEach(filter => {
-        this.requestData[filter.type] = filter.value.data;
+        // do not add Any for username query param, so we
+        // can fetch all trigger authors
+        if (filter.value.data !== ANY_TRIGGER_AUTHOR) {
+          this.requestData[filter.type] = filter.value.data;
+        }
       });
 
-      // set query params back to default if filtering by Any author
-      // or input is cleared on submit
-      if (this.requestData.username === ANY_TRIGGER_AUTHOR || filters.length === 0) {
-        this.requestData = { page: this.page, scope: this.scope };
+      if (filters.length === 0) {
+        this.resetRequestData();
       }
 
       this.updateContent(this.requestData);

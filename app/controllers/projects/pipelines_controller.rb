@@ -12,7 +12,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   before_action :authorize_update_pipeline!, only: [:retry, :cancel]
   before_action do
     push_frontend_feature_flag(:junit_pipeline_view)
-    push_frontend_feature_flag(:filter_pipelines_search)
+    push_frontend_feature_flag(:filter_pipelines_search, default_enabled: true)
     push_frontend_feature_flag(:dag_pipeline_tab)
   end
   before_action :ensure_pipeline, only: [:show]
@@ -269,7 +269,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def index_params
-    params.permit(:scope, :username)
+    params.permit(:scope, :username, :ref)
   end
 end
 

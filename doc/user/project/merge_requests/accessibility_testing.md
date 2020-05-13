@@ -18,6 +18,11 @@ measuring the accessibility of web sites, and has built a simple
 This job outputs accessibility violations, warnings, and notices for each page
 analyzed to a file called `accessibility`.
 
+[Since GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/39425), in addition to the report artifact that is created, GitLab will also show the
+Accessibility Report in the merge request widget area:
+
+![Accessibility Merge Request Widget](img/accessibility_mr_widget_v13_0.png)
+
 ## Configure Accessibility Testing
 
 This example shows how to run [pa11y](https://pa11y.org/)

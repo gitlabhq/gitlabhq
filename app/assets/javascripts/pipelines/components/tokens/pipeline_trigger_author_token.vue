@@ -4,8 +4,16 @@ import {
   GlAvatar,
   GlFilteredSearchSuggestion,
   GlDropdownDivider,
+  GlLoadingIcon,
 } from '@gitlab/ui';
-import { ANY_TRIGGER_AUTHOR } from '../../constants';
+import Api from '~/api';
+import createFlash from '~/flash';
+import { debounce } from 'lodash';
+import {
+  ANY_TRIGGER_AUTHOR,
+  FETCH_AUTHOR_ERROR_MESSAGE,
+  FILTER_PIPELINES_SEARCH_DELAY,
+} from '../../constants';
 
 export default {
   anyTriggerAuthor: ANY_TRIGGER_AUTHOR,
@@ -14,6 +22,7 @@ export default {
     GlAvatar,
     GlFilteredSearchSuggestion,
     GlDropdownDivider,
+    GlLoadingIcon,
   },
   props: {
     config: {
@@ -25,26 +34,49 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      users: this.config.triggerAuthors,
+      loading: true,
+    };
+  },
   computed: {
     currentValue() {
       return this.value.data.toLowerCase();
     },
-    filteredTriggerAuthors() {
-      return this.config.triggerAuthors.filter(user => {
-        return user.username.toLowerCase().includes(this.currentValue);
-      });
-    },
     activeUser() {
-      return this.config.triggerAuthors.find(user => {
+      return this.users.find(user => {
         return user.username.toLowerCase() === this.currentValue;
       });
     },
+  },
+  methods: {
+    fetchAuthorBySearchTerm(searchTerm) {
+      Api.projectUsers(this.config.projectId, searchTerm)
+        .then(res => {
+          this.users = res;
+          this.loading = false;
+        })
+        .catch(err => {
+          createFlash(FETCH_AUTHOR_ERROR_MESSAGE);
+          this.loading = false;
+          throw err;
+        });
+    },
+    searchAuthors: debounce(function debounceSearch({ data }) {
+      this.fetchAuthorBySearchTerm(data);
+    }, FILTER_PIPELINES_SEARCH_DELAY),
   },
 };
 </script>
 
 <template>
-  <gl-filtered-search-token :config="config" v-bind="{ ...$props, ...$attrs }" v-on="$listeners">
+  <gl-filtered-search-token
+    :config="config"
+    v-bind="{ ...$props, ...$attrs }"
+    v-on="$listeners"
+    @input="searchAuthors"
+  >
     <template #view="{inputValue}">
       <gl-avatar
         v-if="activeUser"
@@ -60,19 +92,23 @@ export default {
         $options.anyTriggerAuthor
       }}</gl-filtered-search-suggestion>
       <gl-dropdown-divider />
-      <gl-filtered-search-suggestion
-        v-for="user in filteredTriggerAuthors"
-        :key="user.username"
-        :value="user.username"
-      >
-        <div class="d-flex">
-          <gl-avatar :size="32" :src="user.avatar_url" />
-          <div>
-            <div>{{ user.name }}</div>
-            <div>@{{ user.username }}</div>
+
+      <gl-loading-icon v-if="loading" />
+      <template v-else>
+        <gl-filtered-search-suggestion
+          v-for="user in users"
+          :key="user.username"
+          :value="user.username"
+        >
+          <div class="d-flex">
+            <gl-avatar :size="32" :src="user.avatar_url" />
+            <div>
+              <div>{{ user.name }}</div>
+              <div>@{{ user.username }}</div>
+            </div>
           </div>
-        </div>
-      </gl-filtered-search-suggestion>
+        </gl-filtered-search-suggestion>
+      </template>
     </template>
   </gl-filtered-search-token>
 </template>

@@ -5,7 +5,7 @@ import axios from '~/lib/utils/axios_utils';
 import waitForPromises from 'helpers/wait_for_promises';
 import PipelinesComponent from '~/pipelines/components/pipelines.vue';
 import Store from '~/pipelines/stores/pipelines_store';
-import { pipelineWithStages, stageReply, users, mockSearch } from './mock_data';
+import { pipelineWithStages, stageReply, users, mockSearch, branches } from './mock_data';
 import { GlFilteredSearch } from '@gitlab/ui';
 
 describe('Pipelines', () => {
@@ -63,7 +63,9 @@ describe('Pipelines', () => {
   beforeEach(() => {
     mock = new MockAdapter(axios);
     pipelines = getJSONFixture(jsonFixtureName);
+
     jest.spyOn(Api, 'projectUsers').mockResolvedValue(users);
+    jest.spyOn(Api, 'branches').mockResolvedValue({ data: branches });
   });
 
   afterEach(() => {
@@ -674,9 +676,9 @@ describe('Pipelines', () => {
 
     it('updates request data and query params on filter submit', () => {
       const updateContentMock = jest.spyOn(wrapper.vm, 'updateContent');
-      const expectedQueryParams = { page: '1', scope: 'all', username: 'root' };
+      const expectedQueryParams = { page: '1', scope: 'all', username: 'root', ref: 'master' };
 
-      findFilteredSearch().vm.$emit('submit', [mockSearch]);
+      findFilteredSearch().vm.$emit('submit', mockSearch);
 
       expect(wrapper.vm.requestData).toEqual(expectedQueryParams);
       expect(updateContentMock).toHaveBeenCalledWith(expectedQueryParams);

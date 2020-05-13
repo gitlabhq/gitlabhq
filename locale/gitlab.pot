@@ -15237,6 +15237,9 @@ msgstr ""
 msgid "Pipelines|parent"
 msgstr ""
 
+msgid "Pipeline|Branch name"
+msgstr ""
+
 msgid "Pipeline|Commit"
 msgstr ""
 
@@ -21290,6 +21293,9 @@ msgid "There is no data available. Please change your selection."
 msgstr ""
 
 msgid "There was a problem communicating with your device."
+msgstr ""
+
+msgid "There was a problem fetching project branches."
 msgstr ""
 
 msgid "There was a problem fetching project users."
