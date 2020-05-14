@@ -38,7 +38,14 @@ Given you have a primary node set up on AWS EC2 that uses RDS.
 You can now just create a read-only replica in a different region and the
 replication process will be managed by AWS. Make sure you've set Network ACL, Subnet, and
 Security Group according to your needs, so the secondary application node can access the database.
-Skip to the [Configure secondary application node](#configure-secondary-application-nodes-to-use-the-external-read-replica) section below.
+
+The following instructions detail how to create a read-only replica for common
+cloud providers:
+
+- Amazon RDS - [Creating a Read Replica](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ReadRepl.html#USER_ReadRepl.Create)
+- Azure Database for PostgreSQL - [Create and manage read replicas in Azure Database for PostgreSQL](https://docs.microsoft.com/en-us/azure/postgresql/howto-read-replicas-portal)
+
+Once your read-only replica is set up, you can skip to [configure you secondary application node](#configure-secondary-application-nodes-to-use-the-external-read-replica).
 
 #### Manually configure the primary database for replication
 
@@ -133,6 +140,10 @@ To configure the connection to the external read-replica database and enable Log
 
    gitlab_rails['db_username'] = 'gitlab'
    gitlab_rails['db_host'] = '<database_read_replica_host>'
+
+   # Disable the bundled Omnibus PostgreSQL, since we are
+   # using an external PostgreSQL
+   postgresql['enable'] = false
    ```
 
 1. Save the file and [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure)

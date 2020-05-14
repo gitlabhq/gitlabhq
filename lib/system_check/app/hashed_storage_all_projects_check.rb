@@ -12,7 +12,7 @@ module SystemCheck
       def show_error
         try_fixing_it(
           "Please migrate all projects to hashed storage#{' on the primary' if Gitlab.ee? && Gitlab::Geo.secondary?}",
-          "as legacy storage is deprecated in 13.0 and support will be removed in 13.4."
+          "as legacy storage is deprecated in 13.0 and support will be removed in 14.0."
         )
 
         for_more_information('doc/administration/repository_storage_types.md')

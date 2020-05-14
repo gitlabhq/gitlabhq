@@ -18,7 +18,10 @@ describe('ActiveToggle', () => {
   };
 
   afterEach(() => {
-    if (wrapper) wrapper.destroy();
+    if (wrapper) {
+      wrapper.destroy();
+      wrapper = null;
+    }
   });
 
   const findGlToggle = () => wrapper.find(GlToggle);

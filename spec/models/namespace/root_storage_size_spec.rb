@@ -64,22 +64,4 @@ RSpec.describe Namespace::RootStorageSize, type: :model do
 
     it { is_expected.to eq(limit.megabytes) }
   end
-
-  describe '#show_alert?' do
-    subject { model.show_alert? }
-
-    it { is_expected.to eq(true) }
-
-    context 'when limit is 0' do
-      let(:limit) { 0 }
-
-      it { is_expected.to eq(false) }
-    end
-
-    context 'when is below threshold' do
-      let(:current_size) { 49.megabytes }
-
-      it { is_expected.to eq(false) }
-    end
-  end
 end

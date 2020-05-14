@@ -13,6 +13,7 @@ swap:
   gitlab omnibus: Omnibus GitLab
   param: parameter
   params: parameters
+  pg: PostgreSQL
   postgres: PostgreSQL
   raketask: Rake task
   raketasks: Rake tasks

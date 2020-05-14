@@ -1,0 +1,5 @@
+---
+title: Add user last_activity logging in GraphQL
+merge_request: 23063
+author:
+type: fixed

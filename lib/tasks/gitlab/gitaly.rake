@@ -13,7 +13,7 @@ Usage: rake "gitlab:gitaly:install[/installation/dir,/storage/path]")
 
       version = Gitlab::GitalyClient.expected_server_version
 
-      checkout_or_clone_version(version: version, repo: args.repo, target_dir: args.dir)
+      checkout_or_clone_version(version: version, repo: args.repo, target_dir: args.dir, clone_opts: %w[--depth 1])
 
       command = []
       _, status = Gitlab::Popen.popen(%w[which gmake])

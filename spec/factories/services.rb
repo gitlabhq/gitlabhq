@@ -158,6 +158,13 @@ FactoryBot.define do
     token { 'test_token' }
   end
 
+  factory :slack_service do
+    project
+    active { true }
+    webhook { 'https://slack.service.url' }
+    type { 'SlackService' }
+  end
+
   # this is for testing storing values inside properties, which is deprecated and will be removed in
   # https://gitlab.com/gitlab-org/gitlab/issues/29404
   trait :without_properties_callback do

@@ -18,7 +18,10 @@ describe('JiraTriggerFields', () => {
   };
 
   afterEach(() => {
-    if (wrapper) wrapper.destroy();
+    if (wrapper) {
+      wrapper.destroy();
+      wrapper = null;
+    }
   });
 
   const findCommentSettings = () => wrapper.find('[data-testid="comment-settings"]');

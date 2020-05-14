@@ -32,7 +32,7 @@ describe GraphqlController do
 
   describe 'POST #execute' do
     context 'when user is logged in' do
-      let(:user) { create(:user) }
+      let(:user) { create(:user, last_activity_on: Date.yesterday) }
 
       before do
         sign_in(user)
@@ -55,6 +55,19 @@ describe GraphqlController do
 
         expect(response).to have_gitlab_http_status(:forbidden)
         expect(response).to render_template('errors/access_denied')
+      end
+
+      it 'updates the users last_activity_on field' do
+        expect { post :execute }.to change { user.reload.last_activity_on }
+      end
+    end
+
+    context 'when user uses an API token' do
+      let(:user) { create(:user, last_activity_on: Date.yesterday) }
+      let(:token) { create(:personal_access_token, user: user, scopes: [:api]) }
+
+      it 'updates the users last_activity_on field' do
+        expect { post :execute, params: { access_token: token.token } }.to change { user.reload.last_activity_on }
       end
     end
 

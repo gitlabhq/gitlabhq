@@ -1,4 +1,5 @@
 = form_errors(@service)
+- trigger_events = Feature.enabled?(:integration_form_refactor) ? ServiceEventSerializer.new(service: @service).represent(@service.configurable_events).to_json : []
 
 - if lookup_context.template_exists?('help', "projects/services/#{@service.to_param}", true)
   = render "projects/services/#{@service.to_param}/help", subject: @service
@@ -9,9 +10,9 @@
 
 .service-settings
   .js-vue-integration-settings{ data: { show_active: @service.show_active_box?.to_s, activated: (@service.active || @service.new_record?).to_s, type: @service.to_param, merge_request_events: @service.merge_requests_events.to_s,
-commit_events: @service.commit_events.to_s, enable_comments: @service.comment_on_event_enabled.to_s, comment_detail: @service.comment_detail } }
+commit_events: @service.commit_events.to_s, enable_comments: @service.comment_on_event_enabled.to_s, comment_detail: @service.comment_detail, trigger_events: trigger_events } }
 
-  - if @service.configurable_events.present? && !@service.is_a?(JiraService)
+  - if @service.configurable_events.present? && !@service.is_a?(JiraService) && Feature.disabled?(:integration_form_refactor)
     .form-group.row
       %label.col-form-label.col-sm-2= _('Trigger')
 
@@ -33,15 +34,4 @@ commit_events: @service.commit_events.to_s, enable_comments: @service.comment_on
               = @service.class.event_description(event)
 
   - @service.global_fields.each do |field|
-    - type = field[:type]
-
-    - if type == 'fieldset'
-      - fields = field[:fields]
-      - legend = field[:legend]
-
-      %fieldset
-        %legend= legend
-        - fields.each do |subfield|
-          = render 'shared/field', form: form, field: subfield
-    - else
-      = render 'shared/field', form: form, field: field
+    = render 'shared/field', form: form, field: field

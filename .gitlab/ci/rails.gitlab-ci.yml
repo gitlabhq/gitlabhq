@@ -1,11 +1,20 @@
 .rails:needs:setup-and-assets:
   needs: ["setup-test-env", "compile-assets pull-cache"]
 
+.rails-cache:
+  cache:
+    key: "ruby-go-cache-v1"
+    paths:
+      - vendor/ruby
+      - vendor/gitaly-ruby
+      - .go/pkg/mod
+    policy: pull
+
 .rails-job-base:
   extends:
     - .default-retry
-    - .default-cache
     - .default-before_script
+    - .rails-cache
 
 #######################################################
 # EE/FOSS: default refs (MRs, master, schedules) jobs #
@@ -13,15 +22,25 @@
   extends:
     - .rails-job-base
   stage: prepare
+  variables:
+    GITLAB_TEST_EAGER_LOAD: "0"
   script:
-    - bundle exec ruby -Ispec -e 'require "spec_helper" ; TestEnv.init'
-    - scripts/gitaly-test-build  # Do not use 'bundle exec' here
+    - run_timed_command "bundle exec ruby -I. -e 'require \"config/environment\"; TestEnv.init'"
+    - run_timed_command "scripts/gitaly-test-build"  # Do not use 'bundle exec' here
   artifacts:
     expire_in: 7d
     paths:
-      - tmp/tests
       - config/secrets.yml
-      - vendor/gitaly-ruby
+      - tmp/tests/gitaly
+      - tmp/tests/gitlab-elasticsearch-indexer
+      - tmp/tests/gitlab-shell
+      - tmp/tests/gitlab-test-fork
+      - tmp/tests/gitlab-test-fork_bare
+      - tmp/tests/gitlab-test
+      - tmp/tests/gitlab-workhorse
+      - tmp/tests/repositories
+      - tmp/tests/second_storage
+    when: always
   cache:
     policy: pull-push
 
@@ -52,8 +71,8 @@ static-analysis:
 downtime_check:
   extends:
     - .rails-job-base
-    - .rails:needs:setup-and-assets
     - .rails:rules:downtime_check
+  needs: ["setup-test-env"]
   stage: test
   variables:
     SETUP_DB: "false"
@@ -176,7 +195,7 @@ gitlab:setup:
     # db/fixtures/development/04_project.rb thanks to SIZE=1 below
     - git clone https://gitlab.com/gitlab-org/gitlab-test.git
        /home/git/repositories/gitlab-org/gitlab-test.git
-    - scripts/gitaly-test-spawn
+    - run_timed_command "scripts/gitaly-test-spawn"
     - force=yes SIZE=1 FIXTURE_PATH="db/fixtures/development" bundle exec rake gitlab:setup
   artifacts:
     when: on_failure

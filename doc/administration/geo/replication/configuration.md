@@ -262,7 +262,7 @@ You can login to the **secondary** node with the same credentials you used for t
 **secondary** Geo node and if Geo is enabled.
 
 The initial replication, or 'backfill', will probably still be in progress. You
-can monitor the synchronization process on each geo node from the **primary**
+can monitor the synchronization process on each Geo node from the **primary**
 node's **Geo Nodes** dashboard in your browser.
 
 ![Geo dashboard](img/geo_node_dashboard.png)

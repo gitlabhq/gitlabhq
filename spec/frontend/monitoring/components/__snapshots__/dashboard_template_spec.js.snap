@@ -100,6 +100,26 @@ exports[`Dashboard template matches the default snapshot 1`] = `
     <div
       class="d-sm-flex"
     >
+      <div
+        class="mb-2 mr-2 d-flex"
+      >
+        <div
+          class="flex-grow-1"
+          title="Star dashboard"
+        >
+          <gl-deprecated-button-stub
+            class="w-100"
+            size="md"
+            variant="default"
+          >
+            <gl-icon-stub
+              name="star-o"
+              size="16"
+            />
+          </gl-deprecated-button-stub>
+        </div>
+      </div>
+       
       <!---->
        
       <!---->

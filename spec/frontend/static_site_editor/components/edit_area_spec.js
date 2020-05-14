@@ -15,9 +15,6 @@ describe('~/static_site_editor/components/edit_area.vue', () => {
 
   const buildWrapper = (propsData = {}) => {
     wrapper = shallowMount(EditArea, {
-      provide: {
-        glFeatures: { richContentEditor: true },
-      },
       propsData: {
         title,
         content,

@@ -1,7 +1,7 @@
 import { shallowMount, mount } from '@vue/test-utils';
 import Tracking from '~/tracking';
 import { ESC_KEY, ESC_KEY_IE11 } from '~/lib/utils/keys';
-import { GlModal, GlDropdownItem, GlDeprecatedButton } from '@gitlab/ui';
+import { GlModal, GlDropdownItem, GlDeprecatedButton, GlIcon } from '@gitlab/ui';
 import { objectToQuery } from '~/lib/utils/url_utility';
 import VueDraggable from 'vuedraggable';
 import MockAdapter from 'axios-mock-adapter';
@@ -350,6 +350,83 @@ describe('Dashboard', () => {
       );
 
       expect(activeItem.length).toBe(1);
+    });
+  });
+
+  describe('star dashboards', () => {
+    const findToggleStar = () => wrapper.find({ ref: 'toggleStarBtn' });
+    const findToggleStarIcon = () => findToggleStar().find(GlIcon);
+
+    beforeEach(() => {
+      createShallowWrapper();
+    });
+
+    it('toggle star button is shown', () => {
+      expect(findToggleStar().exists()).toBe(true);
+      expect(findToggleStar().props('disabled')).toBe(false);
+    });
+
+    it('toggle star button is disabled when starring is taking place', () => {
+      store.commit(`monitoringDashboard/${types.REQUEST_DASHBOARD_STARRING}`);
+
+      return wrapper.vm.$nextTick(() => {
+        expect(findToggleStar().exists()).toBe(true);
+        expect(findToggleStar().props('disabled')).toBe(true);
+      });
+    });
+
+    describe('when the dashboard list is loaded', () => {
+      // Tooltip element should wrap directly
+      const getToggleTooltip = () => findToggleStar().element.parentElement.getAttribute('title');
+
+      beforeEach(() => {
+        wrapper.vm.$store.commit(
+          `monitoringDashboard/${types.SET_ALL_DASHBOARDS}`,
+          dashboardGitResponse,
+        );
+        jest.spyOn(store, 'dispatch');
+      });
+
+      it('dispatches a toggle star action', () => {
+        findToggleStar().vm.$emit('click');
+
+        return wrapper.vm.$nextTick().then(() => {
+          expect(store.dispatch).toHaveBeenCalledWith(
+            'monitoringDashboard/toggleStarredValue',
+            undefined,
+          );
+        });
+      });
+
+      describe('when dashboard is not starred', () => {
+        beforeEach(() => {
+          wrapper.setProps({ currentDashboard: dashboardGitResponse[0].path });
+          return wrapper.vm.$nextTick();
+        });
+
+        it('toggle star button shows "Star dashboard"', () => {
+          expect(getToggleTooltip()).toBe('Star dashboard');
+        });
+
+        it('toggle star button shows  an unstarred state', () => {
+          expect(findToggleStarIcon().attributes('name')).toBe('star-o');
+        });
+      });
+
+      describe('when dashboard is starred', () => {
+        beforeEach(() => {
+          wrapper.setProps({ currentDashboard: dashboardGitResponse[1].path });
+          return wrapper.vm.$nextTick();
+        });
+
+        it('toggle star button shows "Star dashboard"', () => {
+          expect(getToggleTooltip()).toBe('Unstar dashboard');
+        });
+
+        it('toggle star button shows a starred state', () => {
+          expect(findToggleStarIcon().attributes('name')).toBe('star');
+        });
+      });
     });
   });
 

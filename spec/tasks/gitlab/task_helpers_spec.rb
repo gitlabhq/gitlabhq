@@ -28,7 +28,7 @@ describe Gitlab::TaskHelpers do
 
     context "target_dir doesn't exist" do
       it 'clones the repo' do
-        expect(subject).to receive(:clone_repo).with(repo, clone_path)
+        expect(subject).to receive(:clone_repo).with(repo, clone_path, clone_opts: [])
 
         subject.checkout_or_clone_version(version: version, repo: repo, target_dir: clone_path)
       end
@@ -45,6 +45,12 @@ describe Gitlab::TaskHelpers do
         subject.checkout_or_clone_version(version: version, repo: repo, target_dir: clone_path)
       end
     end
+
+    it 'accepts clone_opts' do
+      expect(subject).to receive(:clone_repo).with(repo, clone_path, clone_opts: %w[--depth 1])
+
+      subject.checkout_or_clone_version(version: version, repo: repo, target_dir: clone_path, clone_opts: %w[--depth 1])
+    end
   end
 
   describe '#clone_repo' do
@@ -53,6 +59,13 @@ describe Gitlab::TaskHelpers do
         .to receive(:run_command!).with(%W[#{Gitlab.config.git.bin_path} clone -- #{repo} #{clone_path}])
 
       subject.clone_repo(repo, clone_path)
+    end
+
+    it 'accepts clone_opts' do
+      expect(subject)
+        .to receive(:run_command!).with(%W[#{Gitlab.config.git.bin_path} clone --depth 1 -- #{repo} #{clone_path}])
+
+      subject.clone_repo(repo, clone_path, clone_opts: %w[--depth 1])
     end
   end
 

@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'rspec/mocks'
-
 module TestEnv
   extend ActiveSupport::Concern
   extend self
@@ -284,29 +282,33 @@ module TestEnv
   end
 
   def setup_factory_repo
-    setup_repo(factory_repo_path, factory_repo_path_bare, factory_repo_name,
-               BRANCH_SHA)
+    setup_repo(factory_repo_path, factory_repo_path_bare, factory_repo_name, BRANCH_SHA)
   end
 
   # This repo has a submodule commit that is not present in the main test
   # repository.
   def setup_forked_repo
-    setup_repo(forked_repo_path, forked_repo_path_bare, forked_repo_name,
-               FORKED_BRANCH_SHA)
+    setup_repo(forked_repo_path, forked_repo_path_bare, forked_repo_name, FORKED_BRANCH_SHA)
   end
 
   def setup_repo(repo_path, repo_path_bare, repo_name, refs)
     clone_url = "https://gitlab.com/gitlab-org/#{repo_name}.git"
 
     unless File.directory?(repo_path)
-      system(*%W(#{Gitlab.config.git.bin_path} clone -q #{clone_url} #{repo_path}))
+      puts "\n==> Setting up #{repo_name} repository in #{repo_path}..."
+      start = Time.now
+      system(*%W(#{Gitlab.config.git.bin_path} clone --quiet -- #{clone_url} #{repo_path}))
+      puts "    #{repo_path} set up in #{Time.now - start} seconds...\n"
     end
 
     set_repo_refs(repo_path, refs)
 
     unless File.directory?(repo_path_bare)
+      puts "\n==> Setting up #{repo_name} bare repository in #{repo_path_bare}..."
+      start = Time.now
       # We must copy bare repositories because we will push to them.
-      system(git_env, *%W(#{Gitlab.config.git.bin_path} clone -q --bare #{repo_path} #{repo_path_bare}))
+      system(git_env, *%W(#{Gitlab.config.git.bin_path} clone --quiet --bare -- #{repo_path} #{repo_path_bare}))
+      puts "    #{repo_path_bare} set up in #{Time.now - start} seconds...\n"
     end
   end
 

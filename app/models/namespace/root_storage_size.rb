@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class Namespace::RootStorageSize
-  ALERT_USAGE_THRESHOLD = 0.5
-
   def initialize(root_namespace)
     @root_namespace = root_namespace
   end
@@ -25,12 +23,6 @@ class Namespace::RootStorageSize
 
   def limit
     @limit ||= Gitlab::CurrentSettings.namespace_storage_size_limit.megabytes
-  end
-
-  def show_alert?
-    return false if limit == 0
-
-    usage_ratio >= ALERT_USAGE_THRESHOLD
   end
 
   private

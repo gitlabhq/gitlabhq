@@ -29,6 +29,8 @@ class PostReceiveService
       response.add_alert_message(message)
     end
 
+    response.add_alert_message(storage_size_limit_alert)
+
     broadcast_message = BroadcastMessage.current_banner_messages&.last&.message
     response.add_alert_message(broadcast_message)
 
@@ -73,6 +75,19 @@ class PostReceiveService
     return [] unless repository&.repo_type&.project?
 
     ::MergeRequests::GetUrlsService.new(project).execute(params[:changes])
+  end
+
+  private
+
+  def storage_size_limit_alert
+    return unless repository&.repo_type&.project?
+
+    payload = Namespaces::CheckStorageSizeService.new(project.namespace, user).execute.payload
+    return unless payload.present?
+
+    alert_level = "##### #{payload[:alert_level].to_s.upcase} #####"
+
+    [alert_level, payload[:usage_message], payload[:explanation_message]].join("\n")
   end
 end
 

@@ -241,7 +241,8 @@ class IssuableBaseService < BaseService
       end
 
       if issuable_saved
-        Issuable::CommonSystemNotesService.new(project, current_user).execute(issuable, old_labels: old_associations[:labels])
+        Issuable::CommonSystemNotesService.new(project, current_user).execute(
+          issuable, old_labels: old_associations[:labels], old_milestone: old_associations[:milestone])
 
         handle_changes(issuable, old_associations: old_associations)
 
@@ -364,7 +365,8 @@ class IssuableBaseService < BaseService
       {
         labels: issuable.labels.to_a,
         mentioned_users: issuable.mentioned_users(current_user).to_a,
-        assignees: issuable.assignees.to_a
+        assignees: issuable.assignees.to_a,
+        milestone: issuable.try(:milestone)
       }
     associations[:total_time_spent] = issuable.total_time_spent if issuable.respond_to?(:total_time_spent)
     associations[:description] = issuable.description

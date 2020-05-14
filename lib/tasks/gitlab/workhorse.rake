@@ -12,7 +12,7 @@ namespace :gitlab do
 
       version = Gitlab::Workhorse.version
 
-      checkout_or_clone_version(version: version, repo: args.repo, target_dir: args.dir)
+      checkout_or_clone_version(version: version, repo: args.repo, target_dir: args.dir, clone_opts: %w[--depth 1])
 
       _, status = Gitlab::Popen.popen(%w[which gmake])
       command = status.zero? ? 'gmake' : 'make'

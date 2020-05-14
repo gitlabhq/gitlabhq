@@ -107,9 +107,12 @@ module Gitlab
       def deploy_token_from_request
         return unless route_authentication_setting[:deploy_token_allowed]
 
-        token = current_request.env[DEPLOY_TOKEN_HEADER].presence
+        token = current_request.env[DEPLOY_TOKEN_HEADER].presence || parsed_oauth_token
 
-        DeployToken.active.find_by_token(token)
+        deploy_token = DeployToken.active.find_by_token(token)
+        @current_authenticated_deploy_token = deploy_token # rubocop:disable Gitlab/ModuleWithInstanceVariables
+
+        deploy_token
       end
 
       def find_runner_from_token
@@ -122,6 +125,9 @@ module Gitlab
       end
 
       def validate_access_token!(scopes: [])
+        # return early if we've already authenticated via a deploy token
+        return if @current_authenticated_deploy_token.present? # rubocop:disable Gitlab/ModuleWithInstanceVariables
+
         return unless access_token
 
         case AccessTokenValidationService.new(access_token, request: request).validate(scopes: scopes)

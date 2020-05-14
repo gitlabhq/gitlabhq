@@ -3797,6 +3797,9 @@ msgstr ""
 msgid "Changing group path can have unintended side effects."
 msgstr ""
 
+msgid "Channel handle (e.g. town-square)"
+msgstr ""
+
 msgid "Charts"
 msgstr ""
 
@@ -9719,13 +9722,13 @@ msgstr ""
 msgid "Geo"
 msgstr ""
 
-msgid "Geo Designs"
-msgstr ""
-
 msgid "Geo Nodes"
 msgstr ""
 
 msgid "Geo Nodes|Cannot remove a primary node if there is a secondary node"
+msgstr ""
+
+msgid "Geo Replication"
 msgstr ""
 
 msgid "Geo Settings"
@@ -10017,6 +10020,9 @@ msgid "Geo|Reverify"
 msgstr ""
 
 msgid "Geo|Reverify all"
+msgstr ""
+
+msgid "Geo|Review replication status, and resynchronize and reverify items with the primary node."
 msgstr ""
 
 msgid "Geo|Status"
@@ -13474,6 +13480,9 @@ msgstr ""
 msgid "Metrics|Refresh dashboard"
 msgstr ""
 
+msgid "Metrics|Star dashboard"
+msgstr ""
+
 msgid "Metrics|There was an error creating the dashboard."
 msgstr ""
 
@@ -13508,6 +13517,9 @@ msgid "Metrics|Unexpected deployment data response from prometheus endpoint"
 msgstr ""
 
 msgid "Metrics|Unit label"
+msgstr ""
+
+msgid "Metrics|Unstar dashboard"
 msgstr ""
 
 msgid "Metrics|Used as a title for the chart"
@@ -17703,6 +17715,9 @@ msgid "Replaced all labels with %{label_references} %{label_text}."
 msgstr ""
 
 msgid "Replaces the clone URL root."
+msgstr ""
+
+msgid "Replication"
 msgstr ""
 
 msgid "Reply by email"

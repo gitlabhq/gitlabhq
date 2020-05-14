@@ -220,6 +220,24 @@ describe Gitlab::Auth::AuthFinders do
         it { is_expected.to be_nil }
       end
     end
+
+    context 'with oauth headers' do
+      before do
+        set_header('HTTP_AUTHORIZATION', "Bearer #{deploy_token.token}")
+      end
+
+      it { is_expected.to eq deploy_token }
+
+      it_behaves_like 'an unauthenticated route'
+
+      context 'with invalid token' do
+        before do
+          set_header('HTTP_AUTHORIZATION', "Bearer invalid_token")
+        end
+
+        it { is_expected.to be_nil }
+      end
+    end
   end
 
   describe '#find_user_from_access_token' do

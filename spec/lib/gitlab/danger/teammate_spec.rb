@@ -163,6 +163,13 @@ describe Gitlab::Danger::Teammate do
       { message: 'OOO: massage' }      | false
       { message: 'love it SOOO much' } | false
       { emoji: 'red_circle' }          | false
+      { emoji: 'palm_tree' }           | false
+      { emoji: 'beach' }               | false
+      { emoji: 'beach_umbrella' }      | false
+      { emoji: 'beach_with_umbrella' } | false
+      { emoji: nil }                   | true
+      { emoji: '' }                    | true
+      { emoji: 'dancer' }              | true
     end
 
     with_them do
@@ -175,9 +182,9 @@ describe Gitlab::Danger::Teammate do
     end
 
     it 'returns true if request fails' do
-      expect(Gitlab::Danger::RequestHelper).to receive(:http_get_json)
-                                                   .twice
-                                                   .and_raise(Gitlab::Danger::RequestHelper::HTTPError.new)
+      expect(Gitlab::Danger::RequestHelper)
+        .to receive(:http_get_json)
+        .and_raise(Gitlab::Danger::RequestHelper::HTTPError.new)
 
       expect(subject.available?).to be true
     end

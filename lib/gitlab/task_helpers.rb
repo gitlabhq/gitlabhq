@@ -157,8 +157,8 @@ module Gitlab
       Rails.env.test? ? Rails.root.join('tmp/tests') : Gitlab.config.gitlab.user_home
     end
 
-    def checkout_or_clone_version(version:, repo:, target_dir:)
-      clone_repo(repo, target_dir) unless Dir.exist?(target_dir)
+    def checkout_or_clone_version(version:, repo:, target_dir:, clone_opts: [])
+      clone_repo(repo, target_dir, clone_opts: clone_opts) unless Dir.exist?(target_dir)
       checkout_version(get_version(version), target_dir)
     end
 
@@ -171,8 +171,8 @@ module Gitlab
       "v#{component_version}"
     end
 
-    def clone_repo(repo, target_dir)
-      run_command!(%W[#{Gitlab.config.git.bin_path} clone -- #{repo} #{target_dir}])
+    def clone_repo(repo, target_dir, clone_opts: [])
+      run_command!(%W[#{Gitlab.config.git.bin_path} clone] + clone_opts + %W[-- #{repo} #{target_dir}])
     end
 
     def checkout_version(version, target_dir)

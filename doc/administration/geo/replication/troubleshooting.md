@@ -860,6 +860,8 @@ which Geo expects to have access to. It usually means, either:
 
 - An unsupported replication method was used (for example, logical replication).
 - The instructions to setup a [Geo database replication](database.md) were not followed correctly.
+- Your database connection details are incorrect, that is you have specified the wrong
+  user in your `/etc/gitlab/gitlab.rb` file.
 
 A common source of confusion with **secondary** nodes is that it requires two separate
 PostgreSQL instances:

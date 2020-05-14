@@ -3,92 +3,157 @@
 require 'spec_helper'
 
 describe Namespaces::CheckStorageSizeService, '#execute' do
-  let_it_be(:root_group) { create(:group) }
-  let(:nested_group) { create(:group, parent: root_group) }
-  let(:service) { described_class.new(nested_group) }
+  let(:namespace) { build_stubbed(:namespace) }
+  let(:user) { build(:user, namespace: namespace) }
+  let(:service) { described_class.new(namespace, user) }
   let(:current_size) { 150.megabytes }
-  let(:limit) { 100 }
+  let(:limit) { 100.megabytes }
 
-  subject { service.execute }
+  subject(:response) { service.execute }
 
   before do
-    stub_application_setting(namespace_storage_size_limit: limit)
+    allow(namespace).to receive(:root_ancestor).and_return(namespace)
 
-    create(:namespace_root_storage_statistics, namespace: root_group, storage_size: current_size)
+    root_storage_size = instance_double("RootStorageSize",
+      current_size: current_size,
+      limit: limit,
+      usage_ratio: limit == 0 ? 0 : current_size.to_f / limit.to_f,
+      above_size_limit?: current_size > limit
+    )
+
+    expect(Namespace::RootStorageSize).to receive(:new).and_return(root_storage_size)
   end
 
   context 'feature flag' do
     it 'is successful when disabled' do
       stub_feature_flags(namespace_storage_limit: false)
 
-      expect(subject).to be_success
+      expect(response).to be_success
     end
 
     it 'errors when enabled' do
       stub_feature_flags(namespace_storage_limit: true)
 
-      expect(subject).to be_error
+      expect(response).to be_error
     end
 
-    it 'is successful when feature flag is activated for another group' do
-      stub_feature_flags(namespace_storage_limit: create(:group))
+    it 'is successful when feature flag is activated for another namespace' do
+      stub_feature_flags(namespace_storage_limit: build(:namespace))
 
-      expect(subject).to be_success
+      expect(response).to be_success
     end
 
-    it 'errors when feature flag is activated for the current group' do
-      stub_feature_flags(namespace_storage_limit: root_group)
+    it 'errors when feature flag is activated for the current namespace' do
+      stub_feature_flags(namespace_storage_limit: namespace )
 
-      expect(subject).to be_error
+      expect(response).to be_error
+      expect(response.message).to be_present
     end
   end
 
   context 'when limit is set to 0' do
     let(:limit) { 0 }
 
-    it { is_expected.to be_success }
-
-    it 'does not respond with a payload' do
-      result = subject
-
-      expect(result.message).to be_nil
-      expect(result.payload).to be_empty
+    it 'is successful and has no payload' do
+      expect(response).to be_success
+      expect(response.payload).to be_empty
     end
   end
 
-  context 'when current size is below threshold to show an alert' do
+  context 'when current size is below threshold' do
     let(:current_size) { 10.megabytes }
 
-    it { is_expected.to be_success }
-  end
-
-  context 'when current size exceeds limit' do
-    it 'returns an error with a payload' do
-      result = subject
-      current_usage_message = result.payload[:current_usage_message]
-
-      expect(result).to be_error
-      expect(result.message).to include("#{root_group.name} is now read-only.")
-      expect(current_usage_message).to include("150%")
-      expect(current_usage_message).to include(root_group.name)
-      expect(current_usage_message).to include("150 MB of 100 MB")
-      expect(result.payload[:usage_ratio]).to eq(1.5)
+    it 'is successful and has no payload' do
+      expect(response).to be_success
+      expect(response.payload).to be_empty
     end
   end
 
-  context 'when current size is below limit but should show an alert' do
-    let(:current_size) { 50.megabytes }
+  context 'when not admin of the namespace' do
+    let(:other_namespace) { build_stubbed(:namespace) }
 
-    it 'returns success with a payload' do
-      result = subject
-      current_usage_message = result.payload[:current_usage_message]
+    subject(:response) { described_class.new(other_namespace, user).execute }
 
-      expect(result).to be_success
-      expect(result.message).to be_present
-      expect(current_usage_message).to include("50%")
-      expect(current_usage_message).to include(root_group.name)
-      expect(current_usage_message).to include("50 MB of 100 MB")
-      expect(result.payload[:usage_ratio]).to eq(0.5)
+    before do
+      allow(other_namespace).to receive(:root_ancestor).and_return(other_namespace)
+    end
+
+    it 'errors and has no payload' do
+      expect(response).to be_error
+      expect(response.payload).to be_empty
+    end
+  end
+
+  context 'when providing the child namespace' do
+    let(:namespace) { build_stubbed(:group) }
+    let(:child_namespace) { build_stubbed(:group, parent: namespace) }
+
+    subject(:response) { described_class.new(child_namespace, user).execute }
+
+    before do
+      allow(child_namespace).to receive(:root_ancestor).and_return(namespace)
+      namespace.add_owner(user)
+    end
+
+    it 'uses the root namespace' do
+      expect(response).to be_error
+    end
+  end
+
+  describe 'payload alert_level' do
+    subject { service.execute.payload[:alert_level] }
+
+    context 'when above info threshold' do
+      let(:current_size) { 50.megabytes }
+
+      it { is_expected.to eq(:info) }
+    end
+
+    context 'when above warning threshold' do
+      let(:current_size) { 75.megabytes }
+
+      it { is_expected.to eq(:warning) }
+    end
+
+    context 'when above alert threshold' do
+      let(:current_size) { 95.megabytes }
+
+      it { is_expected.to eq(:alert) }
+    end
+
+    context 'when above error threshold' do
+      let(:current_size) { 100.megabytes }
+
+      it { is_expected.to eq(:error) }
+    end
+  end
+
+  describe 'payload explanation_message' do
+    subject(:response) { service.execute.payload[:explanation_message] }
+
+    context 'when above limit' do
+      let(:current_size) { 110.megabytes }
+
+      it 'returns message with read-only warning' do
+        expect(response).to include("#{namespace.name} is now read-only")
+      end
+    end
+
+    context 'when below limit' do
+      let(:current_size) { 60.megabytes }
+
+      it { is_expected.to include('If you reach 100% storage capacity') }
+    end
+  end
+
+  describe 'payload usage_message' do
+    let(:current_size) { 60.megabytes }
+
+    subject(:response) { service.execute.payload[:usage_message] }
+
+    it 'returns current usage information' do
+      expect(response).to include("60 MB of 100 MB")
+      expect(response).to include("60%")
     end
   end
 end

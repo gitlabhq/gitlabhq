@@ -1409,6 +1409,7 @@ The activities that update the timestamp are:
 - User logging in into GitLab
 - User visiting pages related to Dashboards, Projects, Issues, and Merge Requests ([introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/54947) in GitLab 11.8)
 - User using the API
+- User using the GraphQL API
 
 By default, it shows the activity for all users in the last 6 months, but this can be
 amended by using the `from` parameter.

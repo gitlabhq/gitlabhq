@@ -8,10 +8,12 @@ ENV["IN_MEMORY_APPLICATION_SETTINGS"] = 'true'
 ENV["RSPEC_ALLOW_INVALID_URLS"] = 'true'
 
 require File.expand_path('../config/environment', __dir__)
+
+require 'rspec/mocks'
 require 'rspec/rails'
-require 'shoulda/matchers'
 require 'rspec/retry'
 require 'rspec-parameterized'
+require 'shoulda/matchers'
 require 'test_prof/recipes/rspec/let_it_be'
 
 rspec_profiling_is_configured =

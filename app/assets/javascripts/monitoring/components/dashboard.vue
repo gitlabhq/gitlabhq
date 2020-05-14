@@ -226,6 +226,7 @@ export default {
       'environmentsLoading',
       'expandedPanel',
       'promVariables',
+      'isUpdatingStarredValue',
     ]),
     ...mapGetters('monitoringDashboard', ['getMetricStates', 'filteredEnvironments']),
     firstDashboard() {
@@ -312,6 +313,7 @@ export default {
       'filterEnvironments',
       'setExpandedPanel',
       'clearExpandedPanel',
+      'toggleStarredValue',
     ]),
     updatePanels(key, panels) {
       this.setPanelGroupMetrics({
@@ -422,6 +424,8 @@ export default {
   },
   i18n: {
     goBackLabel: s__('Metrics|Go back (Esc)'),
+    starDashboard: s__('Metrics|Star dashboard'),
+    unstarDashboard: s__('Metrics|Unstar dashboard'),
   },
 };
 </script>
@@ -518,6 +522,32 @@ export default {
       <div class="flex-grow-1"></div>
 
       <div class="d-sm-flex">
+        <div v-if="selectedDashboard" class="mb-2 mr-2 d-flex">
+          <!--
+            wrapper for tooltip as button can be `disabled`
+            https://bootstrap-vue.org/docs/components/tooltip#disabled-elements
+          -->
+          <div
+            v-gl-tooltip
+            class="flex-grow-1"
+            :title="
+              selectedDashboard.starred
+                ? $options.i18n.unstarDashboard
+                : $options.i18n.starDashboard
+            "
+          >
+            <gl-deprecated-button
+              ref="toggleStarBtn"
+              class="w-100"
+              :disabled="isUpdatingStarredValue"
+              variant="default"
+              @click="toggleStarredValue()"
+            >
+              <gl-icon :name="selectedDashboard.starred ? 'star' : 'star-o'" />
+            </gl-deprecated-button>
+          </div>
+        </div>
+
         <div v-if="showRearrangePanelsBtn" class="mb-2 mr-2 d-flex">
           <gl-deprecated-button
             :pressed="isRearrangingPanels"

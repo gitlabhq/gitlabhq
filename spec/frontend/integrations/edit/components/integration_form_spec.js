@@ -2,6 +2,7 @@ import { shallowMount } from '@vue/test-utils';
 import IntegrationForm from '~/integrations/edit/components/integration_form.vue';
 import ActiveToggle from '~/integrations/edit/components/active_toggle.vue';
 import JiraTriggerFields from '~/integrations/edit/components/jira_trigger_fields.vue';
+import TriggerFields from '~/integrations/edit/components/trigger_fields.vue';
 
 describe('IntegrationForm', () => {
   let wrapper;
@@ -38,6 +39,7 @@ describe('IntegrationForm', () => {
 
   const findActiveToggle = () => wrapper.find(ActiveToggle);
   const findJiraTriggerFields = () => wrapper.find(JiraTriggerFields);
+  const findTriggerFields = () => wrapper.find(TriggerFields);
 
   describe('template', () => {
     describe('showActive is true', () => {
@@ -75,6 +77,22 @@ describe('IntegrationForm', () => {
         });
 
         expect(findJiraTriggerFields().exists()).toBe(true);
+      });
+    });
+
+    describe('triggerEvents is present', () => {
+      it('renders TriggerFields', () => {
+        const events = [{ title: 'push' }];
+        const type = 'slack';
+
+        createComponent({
+          triggerEvents: events,
+          type,
+        });
+
+        expect(findTriggerFields().exists()).toBe(true);
+        expect(findTriggerFields().props('events')).toBe(events);
+        expect(findTriggerFields().props('type')).toBe(type);
       });
     });
   });

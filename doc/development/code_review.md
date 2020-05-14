@@ -64,7 +64,7 @@ It picks reviewers and maintainers from the list at the
 page, with these behaviors:
 
 1. It will not pick people whose [GitLab status](../user/profile/index.md#current-status)
-   contains the string 'OOO'.
+   contains the string 'OOO', or the emoji is `:palm_tree:` or `:beach:`.
 1. [Trainee maintainers](https://about.gitlab.com/handbook/engineering/workflow/code-review/#trainee-maintainer)
    are three times as likely to be picked as other reviewers.
 1. It always picks the same reviewers and maintainers for the same

@@ -18,11 +18,8 @@ function setup_db_user_only() {
 }
 
 function setup_db() {
-    setup_db_user_only
-
-    bundle exec rake db:drop db:create db:structure:load db:migrate
-
-    bundle exec rake gitlab:db:setup_ee
+    run_timed_command "setup_db_user_only"
+    run_timed_command "bundle exec rake db:drop db:create db:structure:load db:migrate gitlab:db:setup_ee"
 }
 
 function install_api_client_dependencies_with_apk() {
@@ -36,6 +33,24 @@ function install_api_client_dependencies_with_apt() {
 function install_gitlab_gem() {
   gem install httparty --no-document --version 0.17.3
   gem install gitlab --no-document --version 4.13.0
+}
+
+function run_timed_command() {
+  local cmd="${1}"
+  local start=$(date +%s)
+  echosuccess "\$ ${cmd}"
+  eval "${cmd}"
+  local ret=$?
+  local end=$(date +%s)
+  local runtime=$((end-start))
+
+  if [[ $ret -eq 0 ]]; then
+    echosuccess "==> '${cmd}' succeeded in ${runtime} seconds."
+    return 0
+  else
+    echoerr "==> '${cmd}' failed (${ret}) in ${runtime} seconds."
+    return $ret
+  fi
 }
 
 function echoerr() {
@@ -55,6 +70,16 @@ function echoinfo() {
     printf "\n\033[0;33m** %s **\n\033[0m" "${1}" >&2;
   else
     printf "\033[0;33m%s\n\033[0m" "${1}" >&2;
+  fi
+}
+
+function echosuccess() {
+  local header="${2}"
+
+  if [ -n "${header}" ]; then
+    printf "\n\033[0;32m** %s **\n\033[0m" "${1}" >&2;
+  else
+    printf "\033[0;32m%s\n\033[0m" "${1}" >&2;
   fi
 }
 

@@ -14,7 +14,7 @@ variables:
 
   DS_DEFAULT_ANALYZERS: "bundler-audit, retire.js, gemnasium, gemnasium-maven, gemnasium-python"
   DS_MAJOR_VERSION: 2
-  DS_DISABLE_DIND: "false"
+  DS_DISABLE_DIND: "true"
 
 dependency_scanning:
   stage: test
@@ -106,7 +106,6 @@ gemnasium-dependency_scanning:
           $DS_DEFAULT_ANALYZERS =~ /gemnasium([^-]|$)/
       exists:
         - 'Gemfile.lock'
-        - 'Pipfile.lock'
         - 'composer.lock'
         - 'gems.locked'
         - 'go.sum'

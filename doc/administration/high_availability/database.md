@@ -125,7 +125,7 @@ otherwise the networks will become a single point of failure.
 
 #### Architecture
 
-![PG HA Architecture](img/pg_ha_architecture.png)
+![PostgreSQL HA Architecture](img/pg_ha_architecture.png)
 
 Database nodes run two services with PostgreSQL:
 

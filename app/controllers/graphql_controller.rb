@@ -19,6 +19,7 @@ class GraphqlController < ApplicationController
 
   before_action :authorize_access_api!
   before_action(only: [:execute]) { authenticate_sessionless_user!(:api) }
+  before_action :set_user_last_activity
 
   # Since we deactivate authentication from the main ApplicationController and
   # defer it to :authorize_access_api!, we need to override the bypass session
@@ -46,6 +47,12 @@ class GraphqlController < ApplicationController
   end
 
   private
+
+  def set_user_last_activity
+    return unless current_user
+
+    Users::ActivityService.new(current_user).execute
+  end
 
   def execute_multiplex
     GitlabSchema.multiplex(multiplex_queries, context: context)

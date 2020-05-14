@@ -153,7 +153,7 @@ request, be sure to start the `dont-interrupt-me` job before pushing.
 
 ### Current versions testing
 
-| Where? | PG version |
+| Where? | PostgreSQL version |
 | ------ | ------ |
 | MRs | 11 |
 | `master` (non-scheduled pipelines) | 11 |
@@ -163,7 +163,7 @@ request, be sure to start the `dont-interrupt-me` job before pushing.
 
 We follow the [PostgreSQL versions shipped with Omnibus GitLab](https://docs.gitlab.com/omnibus/package-information/postgresql_versions.html):
 
-| PG version | 12.10 (April 2020) | 13.0 (May 2020) | 13.1 (June 2020) | 13.2 (July 2020) | 13.3 (August 2020) | 13.4, 13.5   | 13.6 (November 2020) | 14.0 (May 2021?) |
+| PostgreSQL version | 12.10 (April 2020) | 13.0 (May 2020) | 13.1 (June 2020) | 13.2 (July 2020) | 13.3 (August 2020) | 13.4, 13.5   | 13.6 (November 2020) | 14.0 (May 2021?) |
 | ------ | ------------------ | --------------- | ---------------- | ---------------- | ------------------ | ------------ | -------------------- | ---------------- |
 | PG9.6  | MRs/`master`/`2-hour`/`nightly` | -               | -                | -                | -                  | -            | -                    | -                |
 | PG10   | `nightly`           | -               | -                | -                | -                  | -            | -                    | -                |
