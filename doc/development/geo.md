@@ -216,14 +216,10 @@ bundle exec rake geo:db:migrate
 Foreign Data Wrapper ([FDW](#fdw)) is used by the [Geo Log Cursor](#geo-log-cursor) and improves
 the performance of many synchronization operations.
 
-FDW is a PostgreSQL extension ([`postgres_fdw`](https://www.postgresql.org/docs/current/postgres-fdw.html)) that is enabled within
+FDW is a PostgreSQL extension ([`postgres_fdw`](https://www.postgresql.org/docs/11/postgres-fdw.html)) that is enabled within
 the Geo Tracking Database (on a **secondary** node), which allows it
 to connect to the readonly database replica and perform queries and filter
 data from both instances.
-
-While FDW is available in older versions of PostgreSQL, we needed to
-raise the minimum required version to 9.6 as this includes many
-performance improvements to the FDW implementation.
 
 This persistent connection is configured as an FDW server
 named `gitlab_secondary`. This configuration exists within the database's user

@@ -11,6 +11,7 @@ describe('axios_utils', () => {
     mock = new AxiosMockAdapter(axios);
     mock.onAny('/ok').reply(200);
     mock.onAny('/err').reply(500);
+    // eslint-disable-next-line jest/no-standalone-expect
     expect(axios.countActiveRequests()).toBe(0);
   });
 

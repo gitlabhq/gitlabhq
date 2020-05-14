@@ -173,7 +173,7 @@ TIP: **Tip:** You can also
    PostgreSQL.
 1. Set `AUTO_DEVOPS_POSTGRES_DELETE_V1` to a non-empty value. This flag is a
    safeguard to prevent accidental deletion of databases.
-1. Set `POSTGRES_VERSION` to `9.6.16`. This is the minimum PostgreSQL
+1. Set `POSTGRES_VERSION` to `11.7`. This is the minimum PostgreSQL
    version supported.
 1. Set `PRODUCTION_REPLICAS` to `0`. For other environments, use
    `REPLICAS` with an [environment scope](../../ci/environments.md#scoping-environments-with-specs).

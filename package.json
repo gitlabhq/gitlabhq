@@ -164,7 +164,6 @@
     "eslint-import-resolver-jest": "^2.1.1",
     "eslint-import-resolver-webpack": "^0.12.1",
     "eslint-plugin-jasmine": "^4.1.0",
-    "eslint-plugin-jest": "^22.3.0",
     "eslint-plugin-no-jquery": "^2.3.0",
     "gettext-extractor": "^3.4.3",
     "gettext-extractor-vue": "^4.0.2",

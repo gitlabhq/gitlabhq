@@ -229,6 +229,7 @@ stages:
 - processables
 - builds
 - bridges
+- latest_statuses
 statuses:
 - project
 - pipeline

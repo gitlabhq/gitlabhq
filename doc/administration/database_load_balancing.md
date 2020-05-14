@@ -26,9 +26,9 @@ sent to the primary (unless necessary), the primary (`db3`) hardly has any load.
 
 ## Requirements
 
-For load balancing to work you will need at least PostgreSQL 9.2 or newer,
+For load balancing to work you will need at least PostgreSQL 11 or newer,
 [**MySQL is not supported**](../install/requirements.md#database). You also need to make sure that you have
-at least 1 secondary in [hot standby](https://www.postgresql.org/docs/9.6/hot-standby.html) mode.
+at least 1 secondary in [hot standby](https://www.postgresql.org/docs/11/hot-standby.html) mode.
 
 Load balancing also requires that the configured hosts **always** point to the
 primary, even after a database failover. Furthermore, the additional hosts to

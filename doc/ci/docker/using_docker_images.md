@@ -209,7 +209,7 @@ default:
   image: ruby:2.6
 
   services:
-    - postgres:9.3
+    - postgres:11.7
 
   before_script:
     - bundle install
@@ -235,14 +235,14 @@ default:
 test:2.6:
   image: ruby:2.6
   services:
-  - postgres:9.3
+  - postgres:11.7
   script:
   - bundle exec rake spec
 
 test:2.7:
   image: ruby:2.7
   services:
-  - postgres:9.4
+  - postgres:12.2
   script:
   - bundle exec rake spec
 ```
@@ -257,7 +257,7 @@ default:
     entrypoint: ["/bin/bash"]
 
   services:
-  - name: my-postgres:9.4
+  - name: my-postgres:11.7
     alias: db-postgres
     entrypoint: ["/usr/local/bin/db-postgres"]
     command: ["start"]
@@ -289,7 +289,7 @@ variables:
   POSTGRES_INITDB_ARGS: "--encoding=UTF8 --data-checksums"
 
 services:
-- name: postgres:9.4
+- name: postgres:11.7
   alias: db
   entrypoint: ["docker-entrypoint.sh"]
   command: ["postgres"]

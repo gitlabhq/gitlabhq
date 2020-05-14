@@ -256,6 +256,10 @@ NOTE: **Note:** Set the limit to `0` to disable it.
 
 - [Length restrictions for file and directory names](../user/project/wiki/index.md#length-restrictions-for-file-and-directory-names).
 
+## Snippets limits
+
+See the [documentation on Snippets settings](snippets/index.md).
+
 ## Push Event Limits
 
 ### Webhooks and Project Services

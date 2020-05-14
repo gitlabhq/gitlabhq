@@ -41,7 +41,6 @@ describe('New discussion', () => {
 
 describe('Get note', () => {
   beforeEach(() => {
-    expect(Object.keys(CommentsStore.state).length).toBe(0);
     createDiscussion();
   });
 
@@ -55,7 +54,6 @@ describe('Get note', () => {
 
 describe('Delete discussion', () => {
   beforeEach(() => {
-    expect(Object.keys(CommentsStore.state).length).toBe(0);
     createDiscussion();
   });
 
@@ -81,7 +79,6 @@ describe('Delete discussion', () => {
 
 describe('Update note', () => {
   beforeEach(() => {
-    expect(Object.keys(CommentsStore.state).length).toBe(0);
     createDiscussion();
   });
 
@@ -96,7 +93,6 @@ describe('Update note', () => {
 
 describe('Discussion resolved', () => {
   beforeEach(() => {
-    expect(Object.keys(CommentsStore.state).length).toBe(0);
     createDiscussion();
   });
 

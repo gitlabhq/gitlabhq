@@ -596,6 +596,19 @@ ensure that it can reach your private repository. Here is an example configurati
     setuptools.ssl_support.cert_paths = ['internal.crt']
     ```
 
+## Limitations
+
+### Referencing local dependencies using a path in JavaScript projects
+
+Although dependency scanning doesn't support it, you can reference dependencies by using a
+[local path](https://docs.npmjs.com/files/package.json#local-paths) in the `package.json` for a
+JavaScript project. The dependency scan generates the following error when you use
+`file: <path/to/dependency-name>` to reference a package:
+
+```text
+ERROR: Could not find dependencies: <dependency-name>. You may need to run npm install
+```
+
 ## Troubleshooting
 
 ### Error response from daemon: error processing tar file: docker-tar: relocation error

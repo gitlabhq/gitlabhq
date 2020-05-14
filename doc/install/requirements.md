@@ -174,7 +174,7 @@ If you are using [GitLab Geo](../development/geo.md):
 - The
   [tracking database](../development/geo.md#using-the-tracking-database)
   requires the
-  [postgres_fdw](https://www.postgresql.org/docs/9.6/postgres-fdw.html)
+  [postgres_fdw](https://www.postgresql.org/docs/11/postgres-fdw.html)
   extension.
 
 ```sql

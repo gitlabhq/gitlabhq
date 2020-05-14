@@ -167,7 +167,7 @@ metadata:
 specTemplate:
   writeConnectionSecretsToNamespace: gitlab-managed-apps
   forProvider:
-    databaseVersion: POSTGRES_9_6
+    databaseVersion: POSTGRES_11_7
     region: $REGION
     settings:
       tier: db-custom-1-3840
@@ -189,7 +189,7 @@ metadata:
 specTemplate:
   writeConnectionSecretsToNamespace: gitlab-managed-apps
   forProvider:
-    databaseVersion: POSTGRES_9_6
+    databaseVersion: POSTGRES_11_7
     region: $REGION
     settings:
       tier: db-custom-1-3840

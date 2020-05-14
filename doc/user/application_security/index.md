@@ -201,9 +201,19 @@ security team when a merge request would introduce one of the following security
 - A security vulnerability
 - A software license compliance violation
 
-This threshold is defined as `high`, `critical`, or `unknown` severity. When any vulnerabilities are
-present within a merge request, an approval is required from the `Vulnerability-Check` approver
-group.
+The security vulnerability threshold is defined as `high`, `critical`, or `unknown` severity. The
+`Vulnerability-Check` approver group must approve merge requests that contain vulnerabilities.
+
+When GitLab can assess vulnerability severity, the rating can be one of the following:
+
+- `unknown`
+- `low`
+- `medium`
+- `high`
+- `critical`
+
+The rating `unknown` indicates that the underlying scanner doesn't contain or provide a severity
+rating.
 
 ### Enabling Security Approvals within a project
 

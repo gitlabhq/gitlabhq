@@ -30,7 +30,7 @@ describe Ci::FreezePeriodStatus do
 
     it_behaves_like 'outside freeze period', Time.utc(2020, 4, 10, 22, 59)
 
-    it_behaves_like 'within freeze period', Time.utc(2020, 4, 10, 23, 01)
+    it_behaves_like 'within freeze period', Time.utc(2020, 4, 10, 23, 1)
 
     it_behaves_like 'within freeze period', Time.utc(2020, 4, 13, 6, 59)
 

@@ -8,22 +8,31 @@
 # - tracking_category (optional, used to set the category when tracking an experiment event)
 #
 # The experiment is controlled by a Feature Flag (https://docs.gitlab.com/ee/development/feature_flags/controls.html),
-# which is named "#{key}_experiment_percentage" and *must* be set with a percentage and not be used for other purposes.
-# To enable the experiment for 10% of the users (determined by the `experimentation_subject_index` value from a cookie):
+# which is named "#{experiment_key}_experiment_percentage" and *must* be set with a percentage and not be used for other purposes.
 #
-# chatops: `/chatops run feature set key_experiment_percentage 10`
-# console: `Feature.get(:key_experiment_percentage).enable_percentage_of_time(10)`
+# To enable the experiment for 10% of the users:
+#
+# chatops: `/chatops run feature set experiment_key_experiment_percentage 10`
+# console: `Feature.get(:experiment_key_experiment_percentage).enable_percentage_of_time(10)`
 #
 # To disable the experiment:
 #
-# chatops: `/chatops run feature delete key_experiment_percentage`
-# console: `Feature.get(:key_experiment_percentage).remove`
+# chatops: `/chatops run feature delete experiment_key_experiment_percentage`
+# console: `Feature.get(:experiment_key_experiment_percentage).remove`
+#
+# To check the current rollout percentage:
+#
+# chatops: `/chatops run feature get experiment_key_experiment_percentage`
+# console: `Feature.get(:experiment_key_experiment_percentage).percentage_of_time_value`
 #
 module Gitlab
   module Experimentation
     EXPERIMENTS = {
       signup_flow: {
         tracking_category: 'Growth::Acquisition::Experiment::SignUpFlow'
+      },
+      onboarding_issues: {
+        tracking_category: 'Growth::Conversion::Experiment::OnboardingIssues'
       },
       suggest_pipeline: {
         tracking_category: 'Growth::Expansion::Experiment::SuggestPipeline'

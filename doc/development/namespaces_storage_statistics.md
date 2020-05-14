@@ -38,7 +38,7 @@ alternative method.
 
 ### Attempt A: PostgreSQL materialized view
 
-Model can be updated through a refresh strategy based on a project routes SQL and a [materialized view](https://www.postgresql.org/docs/9.6/rules-materializedviews.html):
+Model can be updated through a refresh strategy based on a project routes SQL and a [materialized view](https://www.postgresql.org/docs/11/rules-materializedviews.html):
 
 ```sql
 SELECT split_part("rs".path, '/', 1) as root_path,

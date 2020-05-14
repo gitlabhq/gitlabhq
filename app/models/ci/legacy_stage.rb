@@ -41,6 +41,10 @@ module Ci
         .fabricate!
     end
 
+    def latest_statuses
+      statuses.ordered.latest
+    end
+
     def statuses
       @statuses ||= pipeline.statuses.where(stage: name)
     end

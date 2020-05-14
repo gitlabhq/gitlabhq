@@ -12,7 +12,7 @@ To facilitate this we have the following methods that you can use:
 This allows you to write code such as:
 
 ```ruby
-if Gitlab::Database.version.to_f >= 9.6
+if Gitlab::Database.version.to_f >= 11.7
   run_really_fast_query
 else
   run_fast_query

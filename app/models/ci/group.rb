@@ -46,7 +46,7 @@ module Ci
     end
 
     def self.fabricate(project, stage)
-      stage.statuses.ordered.latest
+      stage.latest_statuses
         .sort_by(&:sortable_name).group_by(&:group_name)
         .map do |group_name, grouped_statuses|
           self.new(project, stage, name: group_name, jobs: grouped_statuses)

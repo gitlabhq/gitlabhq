@@ -794,9 +794,11 @@ For more information, see the [confidential issue](../../user/project/issues/con
 
 ### Link to specific lines of code
 
-When linking to specifics lines within a file, link to a commit instead of to the branch.
+When linking to specific lines within a file, link to a commit instead of to the branch.
 Lines of code change through time, therefore, linking to a line by using the commit link
-ensures the user lands on the line you're referring to.
+ensures the user lands on the line you're referring to. The **Permalink** button, which is
+available when viewing a file within a project, makes it easy to generate a link to the
+most recent commit of the given file.
 
 - **Do:** `[link to line 3](https://gitlab.com/gitlab-org/gitlab/-/blob/11f17c56d8b7f0b752562d78a4298a3a95b5ce66/.gitlab/issue_templates/Feature%20proposal.md#L3)`
 - **Don't:** `[link to line 3](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Feature%20proposal.md#L3).`

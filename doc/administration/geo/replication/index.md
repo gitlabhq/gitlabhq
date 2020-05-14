@@ -110,7 +110,7 @@ The following are required to run Geo:
   The following operating systems are known to ship with a current version of OpenSSH:
   - [CentOS](https://www.centos.org) 7.4+
   - [Ubuntu](https://ubuntu.com) 16.04+
-- PostgreSQL 9.6+ with [FDW](https://www.postgresql.org/docs/9.6/postgres-fdw.html) support and [Streaming Replication](https://wiki.postgresql.org/wiki/Streaming_Replication)
+- PostgreSQL 11+ with [FDW](https://www.postgresql.org/docs/11/postgres-fdw.html) support and [Streaming Replication](https://wiki.postgresql.org/wiki/Streaming_Replication)
 - Git 2.9+
 - All nodes must run the same GitLab version.
 

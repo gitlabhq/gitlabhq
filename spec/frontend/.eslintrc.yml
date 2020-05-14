@@ -1,10 +1,6 @@
 ---
-env:
-  jest/globals: true
-plugins:
-  - jest
 extends:
-  - 'plugin:jest/recommended'
+  - 'plugin:@gitlab/jest'
 settings:
   # We have to teach eslint-plugin-import what node modules we use
   # otherwise there is an error when it tries to resolve them
@@ -20,3 +16,12 @@ globals:
   loadFixtures: false
   preloadFixtures: false
   setFixtures: false
+rules:
+  jest/expect-expect:
+    - off
+    - assertFunctionNames:
+        - 'expect*'
+        - 'assert*'
+        - 'testAction'
+  jest/no-test-callback:
+    - off

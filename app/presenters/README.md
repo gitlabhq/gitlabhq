@@ -8,7 +8,7 @@ methods from models to presenters.
 
 ### When your view is full of logic
 
-When your view is full of logic (`if`, `else`, `select` on arrays etc.), it's
+When your view is full of logic (`if`, `else`, `select` on arrays, etc.), it's
 time to create a presenter!
 
 ### When your model has a lot of view-related logic/data methods
@@ -27,11 +27,11 @@ Presenters should be used for:
   https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/7073/diffs.
 - Data and logic methods that can be pulled from models.
 - Simple text output methods: it's ok if the method returns a string, but not a
-  whole DOM element for which we'd need HAML, a view context, helpers etc.
+  whole DOM element for which we'd need HAML, a view context, helpers, etc.
 
 ## Why use presenters instead of model concerns?
 
-We should strive to follow the single-responsibility principle, and view-related
+We should strive to follow the single-responsibility principle and view-related
 logic/data methods are definitely not the responsibility of models!
 
 Another reason is as follows:
@@ -52,22 +52,22 @@ we gain the following benefits:
 - rules are more explicit and centralized in the presenter => improves security
 - testing is easier and faster as presenters are Plain Old Ruby Object (PORO)
 - views are more readable and maintainable
-- decreases number of CE -> EE merge conflicts since code is in separate files
+- decreases the number of CE -> EE merge conflicts since code is in separate files
 - moves the conflicts from views (not always obvious) to presenters (a lot easier to resolve)
 
 ## What not to do with presenters?
 
 - Don't use helpers in presenters. Presenters are not aware of the view context.
-- Don't generate complex DOM elements, forms etc. with presenters. Presenters
-  can return simple data as texts, and URLs using URL helpers from
-  `Gitlab::Routing` but nothing much more fancy.
+- Don't generate complex DOM elements, forms, etc. with presenters. Presenters
+  can return simple data like texts, and URLs using URL helpers from
+  `Gitlab::Routing` but nothing much fancier.
 
 ## Implementation
 
 ### Presenter definition
 
 Every presenter should inherit from `Gitlab::View::Presenter::Simple`, which
-provides a `.presents` method which allows you to define an accessor for the
+provides a `.presents` the method which allows you to define an accessor for the
 presented object. It also includes common helpers like `Gitlab::Routing` and
 `Gitlab::Allowable`.
 

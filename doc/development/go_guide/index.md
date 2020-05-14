@@ -249,6 +249,59 @@ Programs handling a lot of IO or complex operations should always include
 [benchmarks](https://golang.org/pkg/testing/#hdr-Benchmarks), to ensure
 performance consistency over time.
 
+## Using errors
+
+### Adding context
+
+Adding context before you return the error can be helpful, instead of
+just returning the error. This allows developers to understand what the
+program was trying to do when it entered the error state making it much
+easier to debug.
+
+For example:
+
+```go
+// Wrap the error
+return nil, fmt.Errorf("get cache %s: %w", f.Name, err)
+
+// Just add context
+return nil, fmt.Errorf("saving cache %s: %v", f.Name, err)
+```
+
+A few things to keep in mind when adding context:
+
+- Decide if you want to expose the underlying error
+  to the caller. If so, use `%w`, if not, you can use `%v`.
+- Don't use words like `failed`, `error`, `didn't`. As it's an error,
+  the user already knows that something failed and this might lead to
+  having strings like `failed xx failed xx failed xx`. Explain _what_
+  failed instead.
+- Error strings should not be capitalized or end with punctuation or a
+  newline. You can use `golint` to check for this.
+
+### Naming
+
+- When using sentinel errors they should always be named like `ErrXxx`.
+- When creating a new error type they should always be named like
+  `XxxError`.
+
+### Checking Error types
+
+- To check error equality don't use `==`. Use
+  [`errors.Is`](https://pkg.go.dev/errors?tab=doc#Is) instead (for Go
+  versions >= 1.13).
+- To check if the error is of a certain type don't use type assertion,
+  use [`errors.As`](https://pkg.go.dev/errors?tab=doc#As) instead (for
+  Go versions >= 1.13).
+
+### References for working with errors
+
+- [Go 1.13 errors](https://blog.golang.org/go1.13-errors).
+- [Programing with
+  errors](https://peter.bourgon.org/blog/2019/09/11/programming-with-errors.html).
+- [Don’t just check errors, handle them
+  gracefully](https://dave.cheney.net/2016/04/27/dont-just-check-errors-handle-them-gracefully).
+
 ## CLIs
 
 Every Go program is launched from the command line.

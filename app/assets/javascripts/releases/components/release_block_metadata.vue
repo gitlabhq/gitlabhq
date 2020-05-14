@@ -38,9 +38,12 @@ export default {
       return Boolean(this.author);
     },
     releasedTimeAgo() {
-      return sprintf(__('released %{time}'), {
-        time: this.timeFormatted(this.release.releasedAt),
-      });
+      const now = new Date();
+      const isFuture = now < new Date(this.release.releasedAt);
+      const time = this.timeFormatted(this.release.releasedAt);
+      return isFuture
+        ? sprintf(__('will be released %{time}'), { time })
+        : sprintf(__('released %{time}'), { time });
     },
     shouldRenderMilestones() {
       return Boolean(this.release.milestones?.length);
@@ -74,7 +77,11 @@ export default {
 
     <div class="append-right-4">
       &bull;
-      <span v-gl-tooltip.bottom :title="tooltipTitle(release.releasedAt)">
+      <span
+        v-gl-tooltip.bottom
+        class="js-release-date-info"
+        :title="tooltipTitle(release.releasedAt)"
+      >
         {{ releasedTimeAgo }}
       </span>
     </div>

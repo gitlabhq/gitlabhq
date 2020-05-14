@@ -346,7 +346,7 @@ version of the PostgreSQL chart that supports Kubernetes 1.16 and higher:
 1. Set the:
 
    - `AUTO_DEVOPS_POSTGRES_CHANNEL` variable to `2`.
-   - `POSTGRES_VERSION` variable to `9.6.16` or higher.
+   - `POSTGRES_VERSION` variable to `11.7` or higher.
 
 DANGER: **Danger:** Opting into `AUTO_DEVOPS_POSTGRES_CHANNEL` version `2` deletes
 the version `1` PostgreSQL database. Follow the
