@@ -12,6 +12,9 @@ const note = {
     id: 'author-id',
   },
   body: 'test',
+  userPermissions: {
+    adminNote: false,
+  },
 };
 HTMLElement.prototype.scrollIntoView = scrollIntoViewMock;
 
@@ -93,55 +96,75 @@ describe('Design note component', () => {
     expect(scrollIntoViewMock).toHaveBeenCalled();
   });
 
-  it('should open an edit form on edit button click', () => {
+  it('should not render edit icon when user does not have a permission', () => {
     createComponent({
       note,
     });
 
-    findEditButton().trigger('click');
-
-    return wrapper.vm.$nextTick().then(() => {
-      expect(findReplyForm().exists()).toBe(true);
-      expect(findNoteContent().exists()).toBe(false);
-    });
+    expect(findEditButton().exists()).toBe(false);
   });
 
-  describe('when edit form is rendered', () => {
-    beforeEach(() => {
-      createComponent(
-        {
-          note,
+  describe('when user has a permission to edit note', () => {
+    it('should open an edit form on edit button click', () => {
+      createComponent({
+        note: {
+          ...note,
+          userPermissions: {
+            adminNote: true,
+          },
         },
-        { isEditing: true },
-      );
-    });
+      });
 
-    it('should not render note content and should render reply form', () => {
-      expect(findNoteContent().exists()).toBe(false);
-      expect(findReplyForm().exists()).toBe(true);
-    });
-
-    it('hides the form on hideForm event', () => {
-      findReplyForm().vm.$emit('cancelForm');
+      findEditButton().trigger('click');
 
       return wrapper.vm.$nextTick().then(() => {
-        expect(findReplyForm().exists()).toBe(false);
-        expect(findNoteContent().exists()).toBe(true);
+        expect(findReplyForm().exists()).toBe(true);
+        expect(findNoteContent().exists()).toBe(false);
       });
     });
 
-    it('calls a mutation on submitForm event and hides a form', () => {
-      findReplyForm().vm.$emit('submitForm');
-      expect(mutate).toHaveBeenCalled();
+    describe('when edit form is rendered', () => {
+      beforeEach(() => {
+        createComponent(
+          {
+            note: {
+              ...note,
+              userPermissions: {
+                adminNote: true,
+              },
+            },
+          },
+          { isEditing: true },
+        );
+      });
 
-      return mutate()
-        .then(() => {
-          return wrapper.vm.$nextTick();
-        })
-        .then(() => {
+      it('should not render note content and should render reply form', () => {
+        expect(findNoteContent().exists()).toBe(false);
+        expect(findReplyForm().exists()).toBe(true);
+      });
+
+      it('hides the form on hideForm event', () => {
+        findReplyForm().vm.$emit('cancelForm');
+
+        return wrapper.vm.$nextTick().then(() => {
           expect(findReplyForm().exists()).toBe(false);
           expect(findNoteContent().exists()).toBe(true);
         });
+      });
+
+      it('calls a mutation on submitForm event and hides a form', () => {
+        findReplyForm().vm.$emit('submitForm');
+        expect(mutate).toHaveBeenCalled();
+
+        return mutate()
+          .then(() => {
+            return wrapper.vm.$nextTick();
+          })
+          .then(() => {
+            expect(findReplyForm().exists()).toBe(false);
+            expect(findNoteContent().exists()).toBe(true);
+          });
+      });
     });
   });
 });

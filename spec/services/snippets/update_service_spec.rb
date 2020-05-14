@@ -196,14 +196,24 @@ describe Snippets::UpdateService do
         end
       end
 
-      it 'rolls back any snippet modifications' do
-        option_keys = options.stringify_keys.keys
-        orig_attrs = snippet.attributes.select { |k, v| k.in?(option_keys) }
+      context 'with snippet modifications' do
+        let(:option_keys) { options.stringify_keys.keys }
 
-        subject
+        it 'rolls back any snippet modifications' do
+          orig_attrs = snippet.attributes.select { |k, v| k.in?(option_keys) }
 
-        current_attrs = snippet.attributes.select { |k, v| k.in?(option_keys) }
-        expect(orig_attrs).to eq current_attrs
+          subject
+
+          persisted_attrs = snippet.reload.attributes.select { |k, v| k.in?(option_keys) }
+          expect(orig_attrs).to eq persisted_attrs
+        end
+
+        it 'keeps any snippet modifications' do
+          subject
+
+          instance_attrs = snippet.attributes.select { |k, v| k.in?(option_keys) }
+          expect(options.stringify_keys).to eq instance_attrs
+        end
       end
     end
 

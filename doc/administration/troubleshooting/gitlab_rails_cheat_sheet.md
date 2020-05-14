@@ -578,10 +578,10 @@ The Latest version of these steps can be found in the [job artifacts documentati
 ### SELECTING THE BUILDS TO CLEAR
 # For a single project:
 project = Project.find_by_full_path('')
-builds_with_artifacts =  project.builds.with_artifacts_archive
+builds_with_artifacts =  project.builds.with_downloadable_artifacts
 
 # Instance-wide:
-builds_with_artifacts = Ci::Build.with_artifacts_archive
+builds_with_artifacts = Ci::Build.with_downloadable_artifacts
 
 # Prior to 10.6 the above lines would be:
 # builds_with_artifacts =  project.builds.with_artifacts

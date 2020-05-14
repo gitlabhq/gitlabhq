@@ -17863,6 +17863,9 @@ msgstr ""
 msgid "Request Access"
 msgstr ""
 
+msgid "Request Headers"
+msgstr ""
+
 msgid "Request parameter %{param} is missing."
 msgstr ""
 
@@ -18000,6 +18003,12 @@ msgid "Resolves IP addresses once and uses them to submit requests"
 msgstr ""
 
 msgid "Response"
+msgstr ""
+
+msgid "Response Headers"
+msgstr ""
+
+msgid "Response Status"
 msgstr ""
 
 msgid "Response didn't include `service_desk_address`"

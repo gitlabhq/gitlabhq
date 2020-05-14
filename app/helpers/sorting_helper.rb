@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 module SortingHelper
-  prepend_if_ee('::EE::SortingHelper') # rubocop: disable Cop/InjectEnterpriseEditionModule
-
   def sort_options_hash
     {
       sort_value_created_date      => sort_title_created_date,
@@ -584,3 +582,5 @@ module SortingHelper
     'expired_asc'
   end
 end
+
+SortingHelper.prepend_if_ee('::EE::SortingHelper')

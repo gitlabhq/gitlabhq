@@ -93,7 +93,7 @@
             },
             {
               "name": "errors",
-              "description": "Reasons why the mutation failed.",
+              "description": "Errors encountered during execution of the mutation.",
               "args": [
 
               ],
@@ -181,7 +181,7 @@
             },
             {
               "name": "errors",
-              "description": "Reasons why the mutation failed.",
+              "description": "Errors encountered during execution of the mutation.",
               "args": [
 
               ],
@@ -343,7 +343,7 @@
             },
             {
               "name": "errors",
-              "description": "Reasons why the mutation failed.",
+              "description": "Errors encountered during execution of the mutation.",
               "args": [
 
               ],
@@ -1998,7 +1998,7 @@
             },
             {
               "name": "errors",
-              "description": "Reasons why the mutation failed.",
+              "description": "Errors encountered during execution of the mutation.",
               "args": [
 
               ],
@@ -2516,7 +2516,7 @@
             },
             {
               "name": "errors",
-              "description": "Reasons why the mutation failed.",
+              "description": "Errors encountered during execution of the mutation.",
               "args": [
 
               ],
@@ -2632,7 +2632,7 @@
             },
             {
               "name": "errors",
-              "description": "Reasons why the mutation failed.",
+              "description": "Errors encountered during execution of the mutation.",
               "args": [
 
               ],
@@ -2854,7 +2854,7 @@
             },
             {
               "name": "errors",
-              "description": "Reasons why the mutation failed.",
+              "description": "Errors encountered during execution of the mutation.",
               "args": [
 
               ],
@@ -2970,7 +2970,7 @@
             },
             {
               "name": "errors",
-              "description": "Reasons why the mutation failed.",
+              "description": "Errors encountered during execution of the mutation.",
               "args": [
 
               ],
@@ -3096,7 +3096,7 @@
             },
             {
               "name": "errors",
-              "description": "Reasons why the mutation failed.",
+              "description": "Errors encountered during execution of the mutation.",
               "args": [
 
               ],
@@ -3212,7 +3212,7 @@
             },
             {
               "name": "errors",
-              "description": "Reasons why the mutation failed.",
+              "description": "Errors encountered during execution of the mutation.",
               "args": [
 
               ],
@@ -3372,7 +3372,7 @@
             },
             {
               "name": "errors",
-              "description": "Reasons why the mutation failed.",
+              "description": "Errors encountered during execution of the mutation.",
               "args": [
 
               ],
@@ -4994,7 +4994,7 @@
             },
             {
               "name": "errors",
-              "description": "Reasons why the mutation failed.",
+              "description": "Errors encountered during execution of the mutation.",
               "args": [
 
               ],
@@ -5158,7 +5158,7 @@
             },
             {
               "name": "errors",
-              "description": "Reasons why the mutation failed.",
+              "description": "Errors encountered during execution of the mutation.",
               "args": [
 
               ],
@@ -5665,7 +5665,7 @@
             },
             {
               "name": "errors",
-              "description": "Reasons why the mutation failed.",
+              "description": "Errors encountered during execution of the mutation.",
               "args": [
 
               ],
@@ -5767,7 +5767,7 @@
             },
             {
               "name": "errors",
-              "description": "Reasons why the mutation failed.",
+              "description": "Errors encountered during execution of the mutation.",
               "args": [
 
               ],
@@ -6774,7 +6774,7 @@
             },
             {
               "name": "errors",
-              "description": "Reasons why the mutation failed.",
+              "description": "Errors encountered during execution of the mutation.",
               "args": [
 
               ],
@@ -8334,7 +8334,7 @@
             },
             {
               "name": "errors",
-              "description": "Reasons why the mutation failed.",
+              "description": "Errors encountered during execution of the mutation.",
               "args": [
 
               ],
@@ -9865,7 +9865,7 @@
             },
             {
               "name": "errors",
-              "description": "Reasons why the mutation failed.",
+              "description": "Errors encountered during execution of the mutation.",
               "args": [
 
               ],
@@ -10109,7 +10109,7 @@
             },
             {
               "name": "errors",
-              "description": "Reasons why the mutation failed.",
+              "description": "Errors encountered during execution of the mutation.",
               "args": [
 
               ],
@@ -13435,7 +13435,7 @@
             },
             {
               "name": "errors",
-              "description": "Reasons why the mutation failed.",
+              "description": "Errors encountered during execution of the mutation.",
               "args": [
 
               ],
@@ -13565,7 +13565,7 @@
             },
             {
               "name": "errors",
-              "description": "Reasons why the mutation failed.",
+              "description": "Errors encountered during execution of the mutation.",
               "args": [
 
               ],
@@ -13695,7 +13695,7 @@
             },
             {
               "name": "errors",
-              "description": "Reasons why the mutation failed.",
+              "description": "Errors encountered during execution of the mutation.",
               "args": [
 
               ],
@@ -14146,7 +14146,7 @@
             },
             {
               "name": "errors",
-              "description": "Reasons why the mutation failed.",
+              "description": "Errors encountered during execution of the mutation.",
               "args": [
 
               ],
@@ -14547,7 +14547,7 @@
             },
             {
               "name": "errors",
-              "description": "Reasons why the mutation failed.",
+              "description": "Errors encountered during execution of the mutation.",
               "args": [
 
               ],
@@ -16140,7 +16140,7 @@
             },
             {
               "name": "errors",
-              "description": "Reasons why the mutation failed.",
+              "description": "Errors encountered during execution of the mutation.",
               "args": [
 
               ],
@@ -16288,7 +16288,7 @@
             },
             {
               "name": "errors",
-              "description": "Reasons why the mutation failed.",
+              "description": "Errors encountered during execution of the mutation.",
               "args": [
 
               ],
@@ -16418,7 +16418,7 @@
             },
             {
               "name": "errors",
-              "description": "Reasons why the mutation failed.",
+              "description": "Errors encountered during execution of the mutation.",
               "args": [
 
               ],
@@ -16544,7 +16544,7 @@
             },
             {
               "name": "errors",
-              "description": "Reasons why the mutation failed.",
+              "description": "Errors encountered during execution of the mutation.",
               "args": [
 
               ],
@@ -16674,7 +16674,7 @@
             },
             {
               "name": "errors",
-              "description": "Reasons why the mutation failed.",
+              "description": "Errors encountered during execution of the mutation.",
               "args": [
 
               ],
@@ -16804,7 +16804,7 @@
             },
             {
               "name": "errors",
-              "description": "Reasons why the mutation failed.",
+              "description": "Errors encountered during execution of the mutation.",
               "args": [
 
               ],
@@ -24928,7 +24928,7 @@
             },
             {
               "name": "errors",
-              "description": "Reasons why the mutation failed.",
+              "description": "Errors encountered during execution of the mutation.",
               "args": [
 
               ],
@@ -25016,7 +25016,7 @@
             },
             {
               "name": "errors",
-              "description": "Reasons why the mutation failed.",
+              "description": "Errors encountered during execution of the mutation.",
               "args": [
 
               ],
@@ -29416,7 +29416,7 @@
             },
             {
               "name": "errors",
-              "description": "Reasons why the mutation failed.",
+              "description": "Errors encountered during execution of the mutation.",
               "args": [
 
               ],
@@ -29565,7 +29565,7 @@
             },
             {
               "name": "errors",
-              "description": "Reasons why the mutation failed.",
+              "description": "Errors encountered during execution of the mutation.",
               "args": [
 
               ],
@@ -29644,7 +29644,7 @@
             },
             {
               "name": "errors",
-              "description": "Reasons why the mutation failed.",
+              "description": "Errors encountered during execution of the mutation.",
               "args": [
 
               ],
@@ -29800,7 +29800,7 @@
             },
             {
               "name": "errors",
-              "description": "Reasons why the mutation failed.",
+              "description": "Errors encountered during execution of the mutation.",
               "args": [
 
               ],
@@ -29942,7 +29942,7 @@
             },
             {
               "name": "errors",
-              "description": "Reasons why the mutation failed.",
+              "description": "Errors encountered during execution of the mutation.",
               "args": [
 
               ],
@@ -30562,7 +30562,7 @@
             },
             {
               "name": "errors",
-              "description": "Reasons why the mutation failed.",
+              "description": "Errors encountered during execution of the mutation.",
               "args": [
 
               ],
@@ -30845,7 +30845,7 @@
             },
             {
               "name": "errors",
-              "description": "Reasons why the mutation failed.",
+              "description": "Errors encountered during execution of the mutation.",
               "args": [
 
               ],
@@ -30953,7 +30953,7 @@
             },
             {
               "name": "errors",
-              "description": "Reasons why the mutation failed.",
+              "description": "Errors encountered during execution of the mutation.",
               "args": [
 
               ],
@@ -31119,7 +31119,7 @@
             },
             {
               "name": "errors",
-              "description": "Reasons why the mutation failed.",
+              "description": "Errors encountered during execution of the mutation.",
               "args": [
 
               ],
@@ -31235,7 +31235,7 @@
             },
             {
               "name": "errors",
-              "description": "Reasons why the mutation failed.",
+              "description": "Errors encountered during execution of the mutation.",
               "args": [
 
               ],
@@ -31371,7 +31371,7 @@
             },
             {
               "name": "errors",
-              "description": "Reasons why the mutation failed.",
+              "description": "Errors encountered during execution of the mutation.",
               "args": [
 
               ],
@@ -31523,7 +31523,7 @@
             },
             {
               "name": "errors",
-              "description": "Reasons why the mutation failed.",
+              "description": "Errors encountered during execution of the mutation.",
               "args": [
 
               ],

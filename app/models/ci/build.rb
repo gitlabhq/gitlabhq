@@ -91,8 +91,12 @@ module Ci
 
     scope :unstarted, ->() { where(runner_id: nil) }
     scope :ignore_failures, ->() { where(allow_failure: false) }
-    scope :with_artifacts_archive, ->() do
-      where('EXISTS (?)', Ci::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.job_id').archive)
+    scope :with_downloadable_artifacts, ->() do
+      where('EXISTS (?)',
+        Ci::JobArtifact.select(1)
+          .where('ci_builds.id = ci_job_artifacts.job_id')
+          .where(file_type: Ci::JobArtifact::DOWNLOADABLE_TYPES)
+      )
     end
 
     scope :with_existing_job_artifacts, ->(query) do
@@ -134,8 +138,8 @@ module Ci
         .includes(:metadata, :job_artifacts_metadata)
     end
 
-    scope :with_artifacts_not_expired, ->() { with_artifacts_archive.where('artifacts_expire_at IS NULL OR artifacts_expire_at > ?', Time.now) }
-    scope :with_expired_artifacts, ->() { with_artifacts_archive.where('artifacts_expire_at < ?', Time.now) }
+    scope :with_artifacts_not_expired, ->() { with_downloadable_artifacts.where('artifacts_expire_at IS NULL OR artifacts_expire_at > ?', Time.now) }
+    scope :with_expired_artifacts, ->() { with_downloadable_artifacts.where('artifacts_expire_at < ?', Time.now) }
     scope :last_month, ->() { where('created_at > ?', Date.today - 1.month) }
     scope :manual_actions, ->() { where(when: :manual, status: COMPLETED_STATUSES + %i[manual]) }
     scope :scheduled_actions, ->() { where(when: :delayed, status: COMPLETED_STATUSES + %i[scheduled]) }
@@ -533,6 +537,7 @@ module Ci
           .concat(job_variables)
           .concat(environment_changed_page_variables)
           .concat(persisted_environment_variables)
+          .concat(deploy_freeze_variables)
           .to_runner_variables
       end
     end
@@ -586,6 +591,18 @@ module Ci
         variables.append(key: 'CI_DEPLOY_USER', value: gitlab_deploy_token.username)
         variables.append(key: 'CI_DEPLOY_PASSWORD', value: gitlab_deploy_token.token, public: false, masked: true)
       end
+    end
+
+    def deploy_freeze_variables
+      Gitlab::Ci::Variables::Collection.new.tap do |variables|
+        break variables unless freeze_period?
+
+        variables.append(key: 'CI_DEPLOY_FREEZE', value: 'true')
+      end
+    end
+
+    def freeze_period?
+      Ci::FreezePeriodStatus.new(project: project).execute
     end
 
     def features

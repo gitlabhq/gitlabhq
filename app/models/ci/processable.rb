@@ -49,7 +49,7 @@ module Ci
     end
 
     validates :type, presence: true
-    validates :scheduling_type, presence: true, on: :create, if: :validate_scheduling_type?
+    validates :scheduling_type, presence: true, on: :create, unless: :importing?
 
     delegate :merge_request?,
       :merge_request_ref?,
@@ -98,12 +98,6 @@ module Ci
       strong_memoize(:needs_attributes) do
         needs.map { |need| need.attributes.except('id', 'build_id') }
       end
-    end
-
-    private
-
-    def validate_scheduling_type?
-      !importing? && Feature.enabled?(:validate_scheduling_type_of_processables, project)
     end
   end
 end

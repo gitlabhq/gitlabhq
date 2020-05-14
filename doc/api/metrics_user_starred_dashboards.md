@@ -32,3 +32,30 @@ Example Response:
   "project_id": 20
 }
 ```
+
+## Remove a star from a dashboard
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31892) in GitLab 13.0.
+
+```plaintext
+DELETE /projects/:id/metrics/user_starred_dashboards
+```
+
+Parameters:
+
+| Attribute      | Type           | Required | Description                                                                  |
+|:---------------|:---------------|:---------|:-----------------------------------------------------------------------------|
+| `dashboard_path` | string        | no      | URL-encoded path to file defining the dashboard which should no longer be marked as favorite. When not supplied all dashboards within given projects will be removed from favorites.   |
+
+```shell
+curl --request DELETE --header 'Private-Token: <your_access_token>' https://gitlab.example.com/api/v4/projects/20/metrics/user_starred_dashboards \
+ --data-urlencode "dashboard_path=config/prometheus/dashboards/common_metrics.yml"
+```
+
+Example Response:
+
+```json
+{
+  "deleted_rows": 1
+}
+```

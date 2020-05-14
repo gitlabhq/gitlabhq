@@ -53,16 +53,32 @@ describe('Code component', () => {
     });
   });
 
+  describe('with string for output', () => {
+    // NBFormat Version 4.1 allows outputs.text to be a string
+    beforeEach(() => {
+      const cell = json.cells[2];
+      cell.outputs[0].text = cell.outputs[0].text.join('');
+
+      vm = setupComponent(cell);
+      return vm.$nextTick();
+    });
+
+    it('does not render output prompt', () => {
+      expect(vm.$el.querySelectorAll('.prompt').length).toBe(2);
+    });
+
+    it('renders output cell', () => {
+      expect(vm.$el.querySelector('.output')).toBeDefined();
+    });
+  });
+
   describe('with string for cell.source', () => {
-    beforeEach(done => {
+    beforeEach(() => {
       const cell = json.cells[0];
       cell.source = cell.source.join('');
 
       vm = setupComponent(cell);
-
-      setImmediate(() => {
-        done();
-      });
+      return vm.$nextTick();
     });
 
     it('renders the same input as when cell.source is an array', () => {

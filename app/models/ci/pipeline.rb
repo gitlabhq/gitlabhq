@@ -788,7 +788,7 @@ module Ci
     end
 
     def find_job_with_archive_artifacts(name)
-      builds.latest.with_artifacts_archive.find_by_name(name)
+      builds.latest.with_downloadable_artifacts.find_by_name(name)
     end
 
     def latest_builds_with_artifacts

@@ -44,11 +44,15 @@ class Wiki
   # Returns the Gitlab::Git::Wiki object.
   def wiki
     strong_memoize(:wiki) do
-      repository.create_if_not_exists
-      raise CouldNotCreateWikiError unless repository_exists?
-
+      create_wiki_repository
       Gitlab::Git::Wiki.new(repository.raw)
     end
+  end
+
+  def create_wiki_repository
+    repository.create_if_not_exists
+
+    raise CouldNotCreateWikiError unless repository_exists?
   rescue => err
     Gitlab::ErrorTracking.track_exception(err, wiki: {
       container_type: container.class.name,

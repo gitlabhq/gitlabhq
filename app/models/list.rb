@@ -3,8 +3,6 @@
 class List < ApplicationRecord
   include Importable
 
-  prepend_if_ee('::EE::List') # rubocop: disable Cop/InjectEnterpriseEditionModule
-
   belongs_to :board
   belongs_to :label
   has_many :list_user_preferences
@@ -104,3 +102,5 @@ class List < ApplicationRecord
     throw(:abort) unless destroyable? # rubocop:disable Cop/BanCatchThrow
   end
 end
+
+List.prepend_if_ee('::EE::List')

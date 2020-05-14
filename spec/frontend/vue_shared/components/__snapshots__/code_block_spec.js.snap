@@ -1,16 +1,26 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Code Block matches snapshot 1`] = `
+exports[`Code Block with default props renders correctly 1`] = `
 <pre
   class="code-block rounded"
 >
-    
   <code
     class="d-block"
   >
     test-code
   </code>
-  
+</pre>
+`;
 
+exports[`Code Block with maxHeight set to "200px" renders correctly 1`] = `
+<pre
+  class="code-block rounded"
+  style="max-height: 200px; overflow-y: auto;"
+>
+  <code
+    class="d-block"
+  >
+    test-code
+  </code>
 </pre>
 `;

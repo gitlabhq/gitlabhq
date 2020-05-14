@@ -21,7 +21,7 @@ describe Project do
     it { is_expected.to have_many(:merge_requests) }
     it { is_expected.to have_many(:issues) }
     it { is_expected.to have_many(:milestones) }
-    it { is_expected.to have_many(:sprints) }
+    it { is_expected.to have_many(:iterations) }
     it { is_expected.to have_many(:project_members).dependent(:delete_all) }
     it { is_expected.to have_many(:users).through(:project_members) }
     it { is_expected.to have_many(:requesters).dependent(:delete_all) }

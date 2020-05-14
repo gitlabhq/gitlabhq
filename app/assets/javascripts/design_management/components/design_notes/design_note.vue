@@ -108,7 +108,7 @@ export default {
         </span>
       </div>
       <button
-        v-if="!isEditing"
+        v-if="!isEditing && note.userPermissions.adminNote"
         v-gl-tooltip
         type="button"
         title="Edit comment"

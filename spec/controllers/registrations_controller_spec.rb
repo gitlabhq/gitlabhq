@@ -144,16 +144,6 @@ describe RegistrationsController do
 
         expect(flash[:notice]).to eq(I18n.t('devise.registrations.signed_up'))
       end
-
-      it 'does not require reCAPTCHA if disabled by feature flag' do
-        stub_feature_flags(registrations_recaptcha: false)
-
-        post(:create, params: user_params)
-
-        expect(controller).not_to receive(:verify_recaptcha)
-        expect(flash[:alert]).to be_nil
-        expect(flash[:notice]).to eq(I18n.t('devise.registrations.signed_up'))
-      end
     end
 
     context 'when invisible captcha is enabled' do
@@ -294,8 +284,6 @@ describe RegistrationsController do
     end
 
     it "logs a 'User Created' message" do
-      stub_feature_flags(registrations_recaptcha: false)
-
       expect(Gitlab::AppLogger).to receive(:info).with(/\AUser Created: username=new_username email=new@user.com.+\z/).and_call_original
 
       post(:create, params: user_params)

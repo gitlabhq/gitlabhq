@@ -52,18 +52,12 @@ describe Ci::Processable do
 
     subject { build(:ci_build, project: project, pipeline: pipeline, importing: importing) }
 
-    where(:importing, :validate_scheduling_type_flag, :should_validate) do
-      false | true  | true
-      false | false | false
-      true  | true  | false
-      true  | false | false
+    where(:importing, :should_validate) do
+      false | true
+      true  | false
     end
 
     with_them do
-      before do
-        stub_feature_flags(validate_scheduling_type_of_processables: validate_scheduling_type_flag)
-      end
-
       context 'on create' do
         it 'validates presence' do
           if should_validate

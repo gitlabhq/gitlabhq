@@ -134,10 +134,10 @@ describe MetricsDashboard do
             it 'adds starred dashboard information and sorts the list' do
               all_dashboards = json_response['all_dashboards'].map { |dashboard| dashboard.slice('display_name', 'starred', 'user_starred_path') }
               expected_response = [
-                { "display_name" => "Default", "starred" => false, 'user_starred_path' => nil },
-                { "display_name" => "anomaly.yml", "starred" => false, 'user_starred_path' => nil },
-                { "display_name" => "errors.yml", "starred" => true, 'user_starred_path' => nil },
-                { "display_name" => "test.yml", "starred" => true, 'user_starred_path' => nil }
+                { "display_name" => "Default", "starred" => false, 'user_starred_path' => api_v4_projects_metrics_user_starred_dashboards_path(id: project.id, params: { dashboard_path: 'config/prometheus/common_metrics.yml' }) },
+                { "display_name" => "anomaly.yml", "starred" => false, 'user_starred_path' => api_v4_projects_metrics_user_starred_dashboards_path(id: project.id, params: { dashboard_path: '.gitlab/dashboards/anomaly.yml' }) },
+                { "display_name" => "errors.yml", "starred" => true, 'user_starred_path' => api_v4_projects_metrics_user_starred_dashboards_path(id: project.id, params: { dashboard_path: '.gitlab/dashboards/errors.yml' }) },
+                { "display_name" => "test.yml", "starred" => true, 'user_starred_path' => api_v4_projects_metrics_user_starred_dashboards_path(id: project.id, params: { dashboard_path: '.gitlab/dashboards/test.yml' }) }
               ]
 
               expect(all_dashboards).to eql expected_response

@@ -1,0 +1,5 @@
+---
+title: Add freeze periods via CI_DEPLOY_FREEZE variable
+merge_request: 29244
+author:
+type: added

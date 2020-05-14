@@ -127,6 +127,13 @@ describe('AlertDetails', () => {
       });
     });
 
+    describe('View full alert details', () => {
+      it('should display a unstyled list of alert details', () => {
+        wrapper.find('[data-testid="fullDetailsTab"]').trigger('click');
+        expect(wrapper.find('.list-unstyled').exists()).toBe(true);
+      });
+    });
+
     describe('loading state', () => {
       beforeEach(() => {
         mountComponent({ loading: true });

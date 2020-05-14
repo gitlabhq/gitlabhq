@@ -19,7 +19,7 @@ describe MergeRequest do
     it { is_expected.to have_many(:merge_request_diffs) }
     it { is_expected.to have_many(:user_mentions).class_name("MergeRequestUserMention") }
     it { is_expected.to belong_to(:milestone) }
-    it { is_expected.to belong_to(:sprint) }
+    it { is_expected.to belong_to(:iteration) }
     it { is_expected.to have_many(:resource_milestone_events) }
     it { is_expected.to have_many(:resource_state_events) }
 

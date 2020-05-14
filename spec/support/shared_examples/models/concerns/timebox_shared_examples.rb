@@ -15,7 +15,7 @@ RSpec.shared_examples 'a timebox' do |timebox_type|
         let(:instance) { build(timebox_type, project: build(:project), group: nil) }
         let(:scope) { :project }
         let(:scope_attrs) { { project: instance.project } }
-        let(:usage) {timebox_table_name }
+        let(:usage) { timebox_table_name }
       end
     end
 
@@ -25,7 +25,7 @@ RSpec.shared_examples 'a timebox' do |timebox_type|
         let(:instance) { build(timebox_type, project: nil, group: build(:group)) }
         let(:scope) { :group }
         let(:scope_attrs) { { namespace: instance.group } }
-        let(:usage) {timebox_table_name }
+        let(:usage) { timebox_table_name }
       end
     end
   end

@@ -24,7 +24,7 @@ RSpec.describe Ci::FreezePeriod, type: :model do
       expect(freeze_period).not_to be_valid
     end
 
-    it 'does not allow non-cron strings' do
+    it 'does not allow an invalid timezone' do
       freeze_period = build(:ci_freeze_period, cron_timezone: 'invalid')
 
       expect(freeze_period).not_to be_valid

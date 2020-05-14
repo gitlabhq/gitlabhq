@@ -70,6 +70,24 @@ module Ci
       terraform: :raw
     }.freeze
 
+    DOWNLOADABLE_TYPES = %w[
+      accessibility
+      archive
+      cobertura
+      codequality
+      container_scanning
+      dast
+      dependency_scanning
+      dotenv
+      junit
+      license_management
+      license_scanning
+      lsif
+      metrics
+      performance
+      sast
+    ].freeze
+
     TYPE_AND_FORMAT_PAIRS = INTERNAL_TYPES.merge(REPORT_TYPES).freeze
 
     # This is required since we cannot add a default to the database

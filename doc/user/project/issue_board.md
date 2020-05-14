@@ -251,7 +251,8 @@ clicking **View scope**.
 ### Focus mode
 
 > - [Introduced]((https://about.gitlab.com/releases/2017/04/22/gitlab-9-1-released/#issue-boards-focus-mode-ees-eep)) in [GitLab Starter](https://about.gitlab.com/pricing/) 9.1.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212331) to GitLab Core in 12.10.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28597) to the Free tier of GitLab.com in 12.10.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212331) to GitLab Core in 13.0.
 
 Click the button at the top right to toggle focus mode on and off. In focus mode, the navigation UI
 is hidden, allowing you to focus on issues in the board.

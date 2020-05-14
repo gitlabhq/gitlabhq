@@ -33,7 +33,7 @@ type AddAwardEmojiPayload {
   clientMutationId: String
 
   """
-  Reasons why the mutation failed.
+  Errors encountered during execution of the mutation.
   """
   errors: [String!]!
 }
@@ -63,7 +63,7 @@ type AddProjectToSecurityDashboardPayload {
   clientMutationId: String
 
   """
-  Reasons why the mutation failed.
+  Errors encountered during execution of the mutation.
   """
   errors: [String!]!
 
@@ -128,7 +128,7 @@ type AdminSidekiqQueuesDeleteJobsPayload {
   clientMutationId: String
 
   """
-  Reasons why the mutation failed.
+  Errors encountered during execution of the mutation.
   """
   errors: [String!]!
 
@@ -756,7 +756,7 @@ type BoardListUpdateLimitMetricsPayload {
   clientMutationId: String
 
   """
-  Reasons why the mutation failed.
+  Errors encountered during execution of the mutation.
   """
   errors: [String!]!
 
@@ -940,7 +940,7 @@ type CreateBranchPayload {
   clientMutationId: String
 
   """
-  Reasons why the mutation failed.
+  Errors encountered during execution of the mutation.
   """
   errors: [String!]!
 }
@@ -980,7 +980,7 @@ type CreateDiffNotePayload {
   clientMutationId: String
 
   """
-  Reasons why the mutation failed.
+  Errors encountered during execution of the mutation.
   """
   errors: [String!]!
 
@@ -1065,7 +1065,7 @@ type CreateEpicPayload {
   epic: Epic
 
   """
-  Reasons why the mutation failed.
+  Errors encountered during execution of the mutation.
   """
   errors: [String!]!
 }
@@ -1105,7 +1105,7 @@ type CreateImageDiffNotePayload {
   clientMutationId: String
 
   """
-  Reasons why the mutation failed.
+  Errors encountered during execution of the mutation.
   """
   errors: [String!]!
 
@@ -1150,7 +1150,7 @@ type CreateNotePayload {
   clientMutationId: String
 
   """
-  Reasons why the mutation failed.
+  Errors encountered during execution of the mutation.
   """
   errors: [String!]!
 
@@ -1190,7 +1190,7 @@ type CreateRequirementPayload {
   clientMutationId: String
 
   """
-  Reasons why the mutation failed.
+  Errors encountered during execution of the mutation.
   """
   errors: [String!]!
 
@@ -1250,7 +1250,7 @@ type CreateSnippetPayload {
   clientMutationId: String
 
   """
-  Reasons why the mutation failed.
+  Errors encountered during execution of the mutation.
   """
   errors: [String!]!
 
@@ -1795,7 +1795,7 @@ type DesignManagementDeletePayload {
   clientMutationId: String
 
   """
-  Reasons why the mutation failed.
+  Errors encountered during execution of the mutation.
   """
   errors: [String!]!
 
@@ -1845,7 +1845,7 @@ type DesignManagementUploadPayload {
   designs: [Design!]!
 
   """
-  Reasons why the mutation failed.
+  Errors encountered during execution of the mutation.
   """
   errors: [String!]!
 
@@ -2035,7 +2035,7 @@ type DestroyNotePayload {
   clientMutationId: String
 
   """
-  Reasons why the mutation failed.
+  Errors encountered during execution of the mutation.
   """
   errors: [String!]!
 
@@ -2070,7 +2070,7 @@ type DestroySnippetPayload {
   clientMutationId: String
 
   """
-  Reasons why the mutation failed.
+  Errors encountered during execution of the mutation.
   """
   errors: [String!]!
 
@@ -2399,7 +2399,7 @@ type DismissVulnerabilityPayload {
   clientMutationId: String
 
   """
-  Reasons why the mutation failed.
+  Errors encountered during execution of the mutation.
   """
   errors: [String!]!
 
@@ -2952,7 +2952,7 @@ type EpicAddIssuePayload {
   epicIssue: EpicIssue
 
   """
-  Reasons why the mutation failed.
+  Errors encountered during execution of the mutation.
   """
   errors: [String!]!
 }
@@ -3477,7 +3477,7 @@ type EpicSetSubscriptionPayload {
   epic: Epic
 
   """
-  Reasons why the mutation failed.
+  Errors encountered during execution of the mutation.
   """
   errors: [String!]!
 }
@@ -3586,7 +3586,7 @@ type EpicTreeReorderPayload {
   clientMutationId: String
 
   """
-  Reasons why the mutation failed.
+  Errors encountered during execution of the mutation.
   """
   errors: [String!]!
 }
@@ -4817,7 +4817,7 @@ type IssueSetConfidentialPayload {
   clientMutationId: String
 
   """
-  Reasons why the mutation failed.
+  Errors encountered during execution of the mutation.
   """
   errors: [String!]!
 
@@ -4862,7 +4862,7 @@ type IssueSetDueDatePayload {
   clientMutationId: String
 
   """
-  Reasons why the mutation failed.
+  Errors encountered during execution of the mutation.
   """
   errors: [String!]!
 
@@ -4907,7 +4907,7 @@ type IssueSetWeightPayload {
   clientMutationId: String
 
   """
-  Reasons why the mutation failed.
+  Errors encountered during execution of the mutation.
   """
   errors: [String!]!
 
@@ -5103,7 +5103,7 @@ type JiraImportStartPayload {
   clientMutationId: String
 
   """
-  Reasons why the mutation failed.
+  Errors encountered during execution of the mutation.
   """
   errors: [String!]!
 
@@ -5226,7 +5226,7 @@ type MarkAsSpamSnippetPayload {
   clientMutationId: String
 
   """
-  Reasons why the mutation failed.
+  Errors encountered during execution of the mutation.
   """
   errors: [String!]!
 
@@ -5773,7 +5773,7 @@ type MergeRequestSetAssigneesPayload {
   clientMutationId: String
 
   """
-  Reasons why the mutation failed.
+  Errors encountered during execution of the mutation.
   """
   errors: [String!]!
 
@@ -5823,7 +5823,7 @@ type MergeRequestSetLabelsPayload {
   clientMutationId: String
 
   """
-  Reasons why the mutation failed.
+  Errors encountered during execution of the mutation.
   """
   errors: [String!]!
 
@@ -5868,7 +5868,7 @@ type MergeRequestSetLockedPayload {
   clientMutationId: String
 
   """
-  Reasons why the mutation failed.
+  Errors encountered during execution of the mutation.
   """
   errors: [String!]!
 
@@ -5913,7 +5913,7 @@ type MergeRequestSetMilestonePayload {
   clientMutationId: String
 
   """
-  Reasons why the mutation failed.
+  Errors encountered during execution of the mutation.
   """
   errors: [String!]!
 
@@ -5958,7 +5958,7 @@ type MergeRequestSetSubscriptionPayload {
   clientMutationId: String
 
   """
-  Reasons why the mutation failed.
+  Errors encountered during execution of the mutation.
   """
   errors: [String!]!
 
@@ -6003,7 +6003,7 @@ type MergeRequestSetWipPayload {
   clientMutationId: String
 
   """
-  Reasons why the mutation failed.
+  Errors encountered during execution of the mutation.
   """
   errors: [String!]!
 
@@ -8497,7 +8497,7 @@ type RemoveAwardEmojiPayload {
   clientMutationId: String
 
   """
-  Reasons why the mutation failed.
+  Errors encountered during execution of the mutation.
   """
   errors: [String!]!
 }
@@ -8527,7 +8527,7 @@ type RemoveProjectFromSecurityDashboardPayload {
   clientMutationId: String
 
   """
-  Reasons why the mutation failed.
+  Errors encountered during execution of the mutation.
   """
   errors: [String!]!
 }
@@ -9876,7 +9876,7 @@ type TodoMarkDonePayload {
   clientMutationId: String
 
   """
-  Reasons why the mutation failed.
+  Errors encountered during execution of the mutation.
   """
   errors: [String!]!
 
@@ -9926,7 +9926,7 @@ type TodoRestoreManyPayload {
   clientMutationId: String
 
   """
-  Reasons why the mutation failed.
+  Errors encountered during execution of the mutation.
   """
   errors: [String!]!
 
@@ -9946,7 +9946,7 @@ type TodoRestorePayload {
   clientMutationId: String
 
   """
-  Reasons why the mutation failed.
+  Errors encountered during execution of the mutation.
   """
   errors: [String!]!
 
@@ -10008,7 +10008,7 @@ type TodosMarkAllDonePayload {
   clientMutationId: String
 
   """
-  Reasons why the mutation failed.
+  Errors encountered during execution of the mutation.
   """
   errors: [String!]!
 
@@ -10053,7 +10053,7 @@ type ToggleAwardEmojiPayload {
   clientMutationId: String
 
   """
-  Reasons why the mutation failed.
+  Errors encountered during execution of the mutation.
   """
   errors: [String!]!
 
@@ -10265,7 +10265,7 @@ type UpdateAlertStatusPayload {
   clientMutationId: String
 
   """
-  Reasons why the mutation failed.
+  Errors encountered during execution of the mutation.
   """
   errors: [String!]!
 }
@@ -10377,7 +10377,7 @@ type UpdateEpicPayload {
   epic: Epic
 
   """
-  Reasons why the mutation failed.
+  Errors encountered during execution of the mutation.
   """
   errors: [String!]!
 }
@@ -10417,7 +10417,7 @@ type UpdateImageDiffNotePayload {
   clientMutationId: String
 
   """
-  Reasons why the mutation failed.
+  Errors encountered during execution of the mutation.
   """
   errors: [String!]!
 
@@ -10482,7 +10482,7 @@ type UpdateIssuePayload {
   clientMutationId: String
 
   """
-  Reasons why the mutation failed.
+  Errors encountered during execution of the mutation.
   """
   errors: [String!]!
 
@@ -10522,7 +10522,7 @@ type UpdateNotePayload {
   clientMutationId: String
 
   """
-  Reasons why the mutation failed.
+  Errors encountered during execution of the mutation.
   """
   errors: [String!]!
 
@@ -10572,7 +10572,7 @@ type UpdateRequirementPayload {
   clientMutationId: String
 
   """
-  Reasons why the mutation failed.
+  Errors encountered during execution of the mutation.
   """
   errors: [String!]!
 
@@ -10632,7 +10632,7 @@ type UpdateSnippetPayload {
   clientMutationId: String
 
   """
-  Reasons why the mutation failed.
+  Errors encountered during execution of the mutation.
   """
   errors: [String!]!
 

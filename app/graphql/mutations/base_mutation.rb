@@ -9,7 +9,7 @@ module Mutations
 
     field :errors, [GraphQL::STRING_TYPE],
           null: false,
-          description: "Reasons why the mutation failed."
+          description: "Errors encountered during execution of the mutation."
 
     def current_user
       context[:current_user]

@@ -450,13 +450,13 @@ If you need to manually remove job artifacts associated with multiple jobs while
 
    ```ruby
    project = Project.find_by_full_path('path/to/project')
-   builds_with_artifacts =  project.builds.with_artifacts_archive
+   builds_with_artifacts =  project.builds.with_downloadable_artifacts
    ```
 
    To select all jobs with artifacts across the entire GitLab instance:
 
    ```ruby
-   builds_with_artifacts = Ci::Build.with_artifacts_archive
+   builds_with_artifacts = Ci::Build.with_downloadable_artifacts
    ```
 
 1. Delete job artifacts older than a specific date:

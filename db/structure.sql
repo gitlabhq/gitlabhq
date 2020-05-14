@@ -3167,6 +3167,13 @@ CREATE SEQUENCE public.group_import_states_group_id_seq
 
 ALTER SEQUENCE public.group_import_states_group_id_seq OWNED BY public.group_import_states.group_id;
 
+CREATE TABLE public.group_wiki_repositories (
+    shard_id bigint NOT NULL,
+    group_id bigint NOT NULL,
+    disk_path text NOT NULL,
+    CONSTRAINT check_07f1c81806 CHECK ((char_length(disk_path) <= 80))
+);
+
 CREATE TABLE public.historical_data (
     id integer NOT NULL,
     date date NOT NULL,
@@ -8312,6 +8319,9 @@ ALTER TABLE ONLY public.group_group_links
 ALTER TABLE ONLY public.group_import_states
     ADD CONSTRAINT group_import_states_pkey PRIMARY KEY (group_id);
 
+ALTER TABLE ONLY public.group_wiki_repositories
+    ADD CONSTRAINT group_wiki_repositories_pkey PRIMARY KEY (group_id);
+
 ALTER TABLE ONLY public.historical_data
     ADD CONSTRAINT historical_data_pkey PRIMARY KEY (id);
 
@@ -9722,6 +9732,10 @@ CREATE UNIQUE INDEX index_group_group_links_on_shared_group_and_shared_with_grou
 CREATE INDEX index_group_group_links_on_shared_with_group_id ON public.group_group_links USING btree (shared_with_group_id);
 
 CREATE INDEX index_group_import_states_on_group_id ON public.group_import_states USING btree (group_id);
+
+CREATE UNIQUE INDEX index_group_wiki_repositories_on_disk_path ON public.group_wiki_repositories USING btree (disk_path);
+
+CREATE INDEX index_group_wiki_repositories_on_shard_id ON public.group_wiki_repositories USING btree (shard_id);
 
 CREATE INDEX index_identities_on_saml_provider_id ON public.identities USING btree (saml_provider_id) WHERE (saml_provider_id IS NOT NULL);
 
@@ -11625,6 +11639,9 @@ ALTER TABLE ONLY public.cluster_providers_aws
 ALTER TABLE ONLY public.grafana_integrations
     ADD CONSTRAINT fk_rails_18d0e2b564 FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY public.group_wiki_repositories
+    ADD CONSTRAINT fk_rails_19755e374b FOREIGN KEY (shard_id) REFERENCES public.shards(id) ON DELETE RESTRICT;
+
 ALTER TABLE ONLY public.open_project_tracker_data
     ADD CONSTRAINT fk_rails_1987546e48 FOREIGN KEY (service_id) REFERENCES public.services(id) ON DELETE CASCADE;
 
@@ -11672,6 +11689,9 @@ ALTER TABLE ONLY public.service_desk_settings
 
 ALTER TABLE ONLY public.group_custom_attributes
     ADD CONSTRAINT fk_rails_246e0db83a FOREIGN KEY (group_id) REFERENCES public.namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.group_wiki_repositories
+    ADD CONSTRAINT fk_rails_26f867598c FOREIGN KEY (group_id) REFERENCES public.namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.lfs_file_locks
     ADD CONSTRAINT fk_rails_27a1d98fa8 FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
@@ -13758,6 +13778,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200429181335
 20200429181955
 20200429182245
+20200430103158
 20200505164958
 20200505171834
 20200505172405
@@ -13767,7 +13788,12 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200507221434
 20200508091106
 20200511092714
+20200511121549
+20200511121610
+20200511121620
 20200511145545
+20200511162057
+20200511162115
 20200512085150
 \.
 

@@ -5,7 +5,7 @@ import Icon from '~/vue_shared/components/icon.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import Pagination from './pagination.vue';
 import DeleteButton from '../delete_button.vue';
-import permissionsQuery from '../../graphql/queries/permissions.query.graphql';
+import permissionsQuery from '../../graphql/queries/design_permissions.query.graphql';
 import appDataQuery from '../../graphql/queries/appData.query.graphql';
 import { DESIGNS_ROUTE_NAME } from '../../router/constants';
 

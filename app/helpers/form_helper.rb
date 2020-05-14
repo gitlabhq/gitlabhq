@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 module FormHelper
-  prepend_if_ee('::EE::FormHelper') # rubocop: disable Cop/InjectEnterpriseEditionModule
-
   def form_errors(model, type: 'form', truncate: [])
     return unless model.errors.any?
 
@@ -79,3 +77,5 @@ module FormHelper
     new_options
   end
 end
+
+FormHelper.prepend_if_ee('::EE::FormHelper')

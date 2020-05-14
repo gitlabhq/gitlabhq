@@ -38,7 +38,7 @@ Running the pipeline on any other commit has no effect on the merge request.
 By clicking on one of the detected linked vulnerabilities, you can
 see the details and the URL(s) affected.
 
-![DAST Widget Clicked](img/dast_single_v12_9.png)
+![DAST Widget Clicked](img/dast_single_v13_0.png)
 
 [Dynamic Application Security Testing (DAST)](https://en.wikipedia.org/wiki/Dynamic_Application_Security_Testing)
 uses the popular open source tool [OWASP ZAProxy](https://github.com/zaproxy/zaproxy)

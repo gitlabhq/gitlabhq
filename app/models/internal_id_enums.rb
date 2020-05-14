@@ -13,7 +13,7 @@ module InternalIdEnums
         operations_feature_flags: 6,
         operations_user_lists: 7,
         alert_management_alerts: 8,
-        sprints: 9
+        sprints: 9 # iterations
     }
   end
 end
