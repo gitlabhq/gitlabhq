@@ -7128,10 +7128,16 @@ msgstr ""
 msgid "DeployTokens|Add a deploy token"
 msgstr ""
 
+msgid "DeployTokens|Allows read access to the package registry"
+msgstr ""
+
 msgid "DeployTokens|Allows read-only access to the registry images"
 msgstr ""
 
 msgid "DeployTokens|Allows read-only access to the repository"
+msgstr ""
+
+msgid "DeployTokens|Allows write access to the package registry"
 msgstr ""
 
 msgid "DeployTokens|Allows write access to the registry images"
@@ -7155,13 +7161,13 @@ msgstr ""
 msgid "DeployTokens|Deploy Tokens"
 msgstr ""
 
-msgid "DeployTokens|Deploy tokens allow access to your repository and registry images."
+msgid "DeployTokens|Deploy tokens allow access to packages, your repository, and registry images."
 msgstr ""
 
 msgid "DeployTokens|Expires"
 msgstr ""
 
-msgid "DeployTokens|Group deploy tokens allow read-only access to the repositories and registry images within the group."
+msgid "DeployTokens|Group deploy tokens allow access to the packages, repositories, and registry images within the group."
 msgstr ""
 
 msgid "DeployTokens|Name"
@@ -10496,6 +10502,12 @@ msgstr ""
 msgid "Group"
 msgstr ""
 
+msgid "Group %{group_name} couldn't be exported."
+msgstr ""
+
+msgid "Group %{group_name} was exported successfully."
+msgstr ""
+
 msgid "Group %{group_name} was scheduled for deletion."
 msgstr ""
 
@@ -10547,10 +10559,13 @@ msgstr ""
 msgid "Group export could not be started."
 msgstr ""
 
+msgid "Group export error"
+msgstr ""
+
 msgid "Group export link has expired. Please generate a new export from your group settings."
 msgstr ""
 
-msgid "Group export started."
+msgid "Group export started. A download link will be sent by email."
 msgstr ""
 
 msgid "Group has been already marked for deletion"
@@ -10593,6 +10608,9 @@ msgid "Group requires separate account"
 msgstr ""
 
 msgid "Group variables (inherited)"
+msgstr ""
+
+msgid "Group was exported"
 msgstr ""
 
 msgid "Group was successfully updated."
@@ -14490,9 +14508,6 @@ msgid "Once imported, repositories can be mirrored over SSH. Read more %{link_st
 msgstr ""
 
 msgid "Once removed, the fork relationship cannot be restored and you will no longer be able to send merge requests to the source."
-msgstr ""
-
-msgid "Once the exported file is ready you can download it from this page."
 msgstr ""
 
 msgid "Once the exported file is ready, you will receive a notification email with a download link, or you can download it from this page."
@@ -21027,7 +21042,13 @@ msgstr ""
 msgid "The domain you entered is not allowed."
 msgstr ""
 
+msgid "The download link will expire in 24 hours."
+msgstr ""
+
 msgid "The entered user map is not a valid JSON user map."
+msgstr ""
+
+msgid "The errors we encountered were:"
 msgstr ""
 
 msgid "The file has been successfully created."
@@ -21066,6 +21087,9 @@ msgid "The group and its projects can only be viewed by members."
 msgstr ""
 
 msgid "The group can be fully restored"
+msgstr ""
+
+msgid "The group export can be downloaded from:"
 msgstr ""
 
 msgid "The group has already been shared with this group"

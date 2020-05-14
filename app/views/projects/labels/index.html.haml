@@ -22,13 +22,13 @@
       .content-list.manage-labels-list.js-prioritized-labels{ data: { url: set_priorities_project_labels_path(@project), sortable: can_admin_label } }
         #js-priority-labels-empty-state.priority-labels-empty-state{ class: "#{'hidden' unless @prioritized_labels.empty? && search.blank?}" }
           = render 'shared/empty_states/priority_labels'
-        - if @prioritized_labels.present?
+        - if @prioritized_labels.any?
           = render partial: 'shared/label', collection: @prioritized_labels, as: :label, locals: { force_priority: true, subject: @project }
         - elsif search.present?
           .nothing-here-block
             = _('No prioritized labels with such name or description')
 
-    - if @labels.present?
+    - if @labels.any?
       .other-labels
         %h5{ class: ('hide' if hide) }= _('Other Labels')
         .content-list.manage-labels-list.js-other-labels

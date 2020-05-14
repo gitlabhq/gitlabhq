@@ -63,8 +63,11 @@ For more details on the specific data persisted in a group export, see the
 
    ![Export group panel](img/export_panel.png)
 
-1. Once the export is generated, you can click **Download export** to download the [exported contents](#exported-contents)
-in a compressed tar archive, with contents in JSON format. You can also return to this page to regenerate the export data.
+1. Once the export is generated, you should receive an e-mail with a link to the [exported contents](#exported-contents)
+   in a compressed tar archive, with contents in JSON format.
+
+1. Alternatively, you can come back to the project settings and download the
+   file from there by clicking **Download export**, or generate a new file by clicking **Regenerate export**.
 
 ## Rate Limits
 

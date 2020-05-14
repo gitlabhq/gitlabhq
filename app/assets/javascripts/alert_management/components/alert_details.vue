@@ -1,16 +1,6 @@
 <script>
 import * as Sentry from '@sentry/browser';
-import {
-  GlAlert,
-  GlIcon,
-  GlLoadingIcon,
-  GlNewDropdown,
-  GlNewDropdownItem,
-  GlSprintf,
-  GlTabs,
-  GlTab,
-  GlButton,
-} from '@gitlab/ui';
+import { GlAlert, GlIcon, GlLoadingIcon, GlSprintf, GlTabs, GlTab, GlButton } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import query from '../graphql/queries/details.query.graphql';
 import { fetchPolicies } from '~/lib/graphql';
@@ -38,8 +28,6 @@ export default {
     GlAlert,
     GlIcon,
     GlLoadingIcon,
-    GlNewDropdown,
-    GlNewDropdownItem,
     GlSprintf,
     GlTab,
     GlTabs,
@@ -148,15 +136,6 @@ export default {
         class="gl-display-flex gl-justify-content-space-between gl-align-items-center"
       >
         <h2 data-testid="title">{{ alert.title }}</h2>
-        <gl-new-dropdown right>
-          <gl-new-dropdown-item
-            v-for="(label, field) in $options.statuses"
-            :key="field"
-            data-testid="statusDropdownItem"
-            class="gl-vertical-align-middle"
-            >{{ label }}
-          </gl-new-dropdown-item>
-        </gl-new-dropdown>
       </div>
       <gl-tabs v-if="alert" data-testid="alertDetailsTabs">
         <gl-tab data-testid="overviewTab" :title="$options.i18n.overviewTitle">

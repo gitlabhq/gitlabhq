@@ -9,6 +9,8 @@ is a performance optimization that "allows Git to function without having a
 complete copy of the repository. The goal of this work is to allow Git better
 handle extremely large repositories."
 
+Git 2.22.0 or later is required.
+
 ## Filter by file size
 
 > [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/2553) in GitLab 12.10.
@@ -118,7 +120,7 @@ enabled on the Git server:
    many applications, each in a different subdirectory in the root. Create a file
    `shiny-app/.filterspec` using the GitLab web interface:
 
-   ```.gitignore
+   ```plaintext
    # Only the paths listed in the file will be downloaded when performing a
    # partial clone using `--filter=sparse:oid=shiny-app/.gitfilterspec`
 
@@ -136,7 +138,7 @@ enabled on the Git server:
    shared-component-b/
    ```
 
-1. *Create a new Git repository and fetch.* Support for `--filter=sparse:oid`
+1. **Create a new Git repository and fetch.** Support for `--filter=sparse:oid`
    using the clone command is incomplete, so we will emulate the clone command
    by hand, using `git init` and `git fetch`. Follow
    [issue tracking support for `--filter=sparse:oid`](https://gitlab.com/gitlab-org/git/issues/4)

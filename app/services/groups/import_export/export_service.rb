@@ -96,6 +96,8 @@ module Groups
           group_name: @group.name,
           message:    'Group Import/Export: Export succeeded'
         )
+
+        notification_service.group_was_exported(@group, @current_user)
       end
 
       def notify_error
@@ -105,6 +107,12 @@ module Groups
           error:      @shared.errors.join(', '),
           message:    'Group Import/Export: Export failed'
         )
+
+        notification_service.group_was_not_exported(@group, @current_user, @shared.errors)
+      end
+
+      def notification_service
+        @notification_service ||= NotificationService.new
       end
     end
   end

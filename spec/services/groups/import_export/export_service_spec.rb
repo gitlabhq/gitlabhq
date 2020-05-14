@@ -71,6 +71,14 @@ describe Groups::ImportExport::ExportService do
       service.execute
     end
 
+    it 'notifies the user' do
+      expect_next_instance_of(NotificationService) do |instance|
+        expect(instance).to receive(:group_was_exported)
+      end
+
+      service.execute
+    end
+
     context 'when saver succeeds' do
       it 'saves the group in the file system' do
         service.execute
@@ -114,15 +122,25 @@ describe Groups::ImportExport::ExportService do
 
     context 'when export fails' do
       context 'when file saver fails' do
-        it 'removes the remaining exported data' do
+        before do
           allow_next_instance_of(Gitlab::ImportExport::Saver) do |saver|
             allow(saver).to receive(:save).and_return(false)
           end
+        end
 
+        it 'removes the remaining exported data' do
           expect { service.execute }.to raise_error(Gitlab::ImportExport::Error)
 
           expect(group.import_export_upload).to be_nil
           expect(File.exist?(shared.archive_path)).to eq(false)
+        end
+
+        it 'notifies the user about failed group export' do
+          expect_next_instance_of(NotificationService) do |instance|
+            expect(instance).to receive(:group_was_not_exported)
+          end
+
+          expect { service.execute }.to raise_error(Gitlab::ImportExport::Error)
         end
       end
 

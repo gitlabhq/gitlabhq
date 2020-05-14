@@ -17,7 +17,7 @@
         %li= _('Projects')
         %li= _('Runner tokens')
         %li= _('SAML discovery tokens')
-  %p= _('Once the exported file is ready you can download it from this page.')
+  %p= _('Once the exported file is ready, you will receive a notification email with a download link, or you can download it from this page.')
   - if group.export_file_exists?
     = link_to _('Regenerate export'), export_group_path(group),
         method: :post, class: 'btn btn-default', data: { qa_selector: 'regenerate_export_group_link' }

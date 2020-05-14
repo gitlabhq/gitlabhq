@@ -11,6 +11,8 @@ module API
         result_hash = Hashie::Mash.new
         result_hash[:read_registry] = scopes.include?('read_registry')
         result_hash[:write_registry] = scopes.include?('write_registry')
+        result_hash[:read_package_registry] = scopes.include?('read_package_registry')
+        result_hash[:write_package_registry] = scopes.include?('write_package_registry')
         result_hash[:read_repository] = scopes.include?('read_repository')
         result_hash
       end
@@ -55,7 +57,7 @@ module API
       params do
         requires :name, type: String, desc: "New deploy token's name"
         requires :scopes, type: Array[String], values: ::DeployToken::AVAILABLE_SCOPES.map(&:to_s),
-          desc: 'Indicates the deploy token scopes. Must be at least one of "read_repository", "read_registry", or "write_registry".'
+          desc: 'Indicates the deploy token scopes. Must be at least one of "read_repository", "read_registry", "write_registry", "read_package_registry", or "write_package_registry".'
         optional :expires_at, type: DateTime, desc: 'Expiration date for the deploy token. Does not expire if no value is provided.'
         optional :username, type: String, desc: 'Username for deploy token. Default is `gitlab+deploy-token-{n}`'
       end
@@ -118,7 +120,7 @@ module API
       params do
         requires :name, type: String, desc: 'The name of the deploy token'
         requires :scopes, type: Array[String], values: ::DeployToken::AVAILABLE_SCOPES.map(&:to_s),
-          desc: 'Indicates the deploy token scopes. Must be at least one of "read_repository", "read_registry", or "write_registry".'
+          desc: 'Indicates the deploy token scopes. Must be at least one of "read_repository", "read_registry", "write_registry", "read_package_registry", or "write_package_registry".'
         optional :expires_at, type: DateTime, desc: 'Expiration date for the deploy token. Does not expire if no value is provided.'
         optional :username, type: String, desc: 'Username for deploy token. Default is `gitlab+deploy-token-{n}`'
       end

@@ -1,17 +1,26 @@
-# Praefect: High Availability
+---
+type: reference
+---
 
-NOTE: **Note:** Praefect is a
-[beta](https://about.gitlab.com/handbook/product/#alpha-beta-ga) component that
-allows Gitaly to be run in a highly available configuration. While unexpected
-data loss is not likely, Praefect is not yet ready for production environments.
+# Gitaly Cluster
 
-[Gitaly](index.md) is the service that provides storage for Git repositories in
-the GitLab application. Praefect is an optional reverse proxy for Gitaly to
-manage multiple Gitaly nodes for high availability.
+[Gitaly](index.md), the service that provides storage for Git repositories, can
+be run in a clustered configuration to increase fault tolerance. In this
+configuration, every Git repository is stored on every Gitaly node in the
+cluster. Multiple clusters (or shards), can be configured.
 
-High availability is currently implemented through **asynchronous replication**.
-If a Gitaly node becomes unavailable, Praefect will automatically route traffic
-to a warm Gitaly replica.
+Praefect is a router and transaction manager for Gitaly, and a required
+component for running a Gitaly Cluster.
+
+![Architecture diagram](img/praefect_architecture_v12_10.png)
+
+Using a Gitaly Cluster increase fault tolerance by:
+
+- Replicating write operations to warm standby Gitaly nodes.
+- Detecting Gitaly node failures.
+- Automatically routing Git requests to an available Gitaly node.
+
+The availability objectives for Gitaly clusters are:
 
 - **Recovery Point Objective (RPO):** Less than 1 minute.
 
@@ -35,21 +44,21 @@ The current version supports:
 - Eventual consistency of the secondary replicas.
 - Automatic failover from the primary to the secondary.
 - Reporting of possible data loss if replication queue is non empty.
+- Marking the newly promoted primary read only if possible data loss is
+  detected.
 
 Follow the [HA Gitaly epic](https://gitlab.com/groups/gitlab-org/-/epics/1489)
 for improvements including
 [horizontally distributing reads](https://gitlab.com/groups/gitlab-org/-/epics/2013).
 
-## Requirements for configuring Gitaly for High Availability
+## Requirements for configuring a Gitaly Cluster
 
-A minimum highly available configuration requires:
+The minimum recommended configuration for a Gitaly Cluster requires:
 
 - 1 highly available load balancer
 - 1 highly available PostgreSQL server (PostgreSQL 9.6 or newer)
 - 3 Praefect nodes
 - 3 Gitaly nodes (1 primary, 2 secondary)
-
-![Architecture diagram](img/praefect_architecture_v12_10.png)
 
 See the [design
 document](https://gitlab.com/gitlab-org/gitaly/-/blob/master/doc/design_ha.md)

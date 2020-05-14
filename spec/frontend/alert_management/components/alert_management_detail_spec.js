@@ -110,10 +110,6 @@ describe('AlertDetails', () => {
       });
     });
 
-    it('renders a status dropdown containing three items', () => {
-      expect(wrapper.findAll('[data-testid="statusDropdownItem"]').length).toBe(3);
-    });
-
     describe('Create issue from alert', () => {
       describe('createIssueFromAlertEnabled feature flag enabled', () => {
         it('should display a button that links to new issue page', () => {

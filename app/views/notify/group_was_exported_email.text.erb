@@ -1,0 +1,6 @@
+<%= _('Group %{group_name} was exported successfully.') % { group_name: @group.name } %>
+
+<%= _('The group export can be downloaded from:') %>
+<%= download_export_group_url(@group) %>
+
+<%= _('The download link will expire in 24 hours.') %>

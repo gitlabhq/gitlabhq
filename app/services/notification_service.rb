@@ -545,6 +545,18 @@ class NotificationService
     end
   end
 
+  def group_was_exported(group, current_user)
+    return true unless notifiable?(current_user, :mention, group: group)
+
+    mailer.group_was_exported_email(current_user, group).deliver_later
+  end
+
+  def group_was_not_exported(group, current_user, errors)
+    return true unless notifiable?(current_user, :mention, group: group)
+
+    mailer.group_was_not_exported_email(current_user, group, errors).deliver_later
+  end
+
   protected
 
   def new_resource_email(target, method)

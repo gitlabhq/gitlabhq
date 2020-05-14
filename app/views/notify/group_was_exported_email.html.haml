@@ -1,0 +1,9 @@
+%p
+  = _('Group %{group_name} was exported successfully.') % { group_name: @group.name }
+
+%p
+  = _('The group export can be downloaded from:')
+  = link_to download_export_group_url(@group), rel: 'nofollow', download: '' do
+    #{@group.full_name} export
+%p
+  = _('The download link will expire in 24 hours.')
