@@ -11,9 +11,7 @@ Vue.use(Translate);
 
 function initIntervalPatternInput() {
   const intervalPatternMount = document.getElementById('interval-pattern-input');
-  const initialCronInterval = intervalPatternMount
-    ? intervalPatternMount.dataset.initialInterval
-    : '';
+  const initialCronInterval = intervalPatternMount?.dataset?.initialInterval;
 
   return new Vue({
     el: intervalPatternMount,

@@ -659,9 +659,9 @@ via an Omnibus package or the [cloud native chart](https://docs.gitlab.com/chart
 
 DANGER: **Danger:**
 By running the built-in garbage collection command, it will cause downtime to
-the Container Registry. Running this command on an instance in an HA environment
-while one of your other instances is still writing to the Registry storage,
-will remove referenced manifests. To avoid that, make sure Registry is set to
+the Container Registry. If you run this command on an instance in an environment
+where one of your other instances is still writing to the Registry storage,
+referenced manifests will be removed. To avoid that, make sure Registry is set to
 [read-only mode](#performing-garbage-collection-without-downtime) before proceeding.
 
 Container Registry can use considerable amounts of disk space. To clear up

@@ -20,9 +20,18 @@ You can style a message's content using the `a` and `br` HTML tags. The `br` tag
 
 ## Banners
 
-Banners are shown on the top of a page.
+Banners are shown on the top of a page and in Git remote responses.
 
 ![Broadcast Message Banner](img/broadcast_messages_banner_v12_10.png)
+
+```bash
+$ git push
+...
+remote:
+remote: **Welcome** to GitLab :wave:
+remote:
+...
+```
 
 ## Notifications
 

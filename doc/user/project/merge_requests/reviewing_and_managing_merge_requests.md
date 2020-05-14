@@ -64,6 +64,15 @@ list.
 
 ![Merge request diff file navigation](img/merge_request_diff_file_navigation.png)
 
+### Merge requests commit navigation
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18140) in GitLab 13.0.
+
+To seamlessly navigate among commits in a merge request, from the **Commits** tab, click one of
+the commits to open the single-commit view. From there, you can navigate among the commits
+by clicking the **Prev** and **Next** buttons on the top-right of the page or by using the
+<kbd>X</kbd> and <kbd>C</kbd> keyboard shortcuts.
+
 ### Incrementally expand merge request diffs
 
 By default, the diff shows only the parts of a file which are changed.

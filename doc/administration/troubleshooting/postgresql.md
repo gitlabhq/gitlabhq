@@ -45,7 +45,7 @@ This section is for links to information elsewhere in the GitLab documentation.
 
 - Managing Omnibus PostgreSQL versions [from the development docs](https://docs.gitlab.com/omnibus/development/managing-postgresql-versions.html)
 
-- [PostgreSQL scaling and HA](../high_availability/database.md)
+- [PostgreSQL scaling](../high_availability/database.md)
   - including [troubleshooting](../high_availability/database.md#troubleshooting) `gitlab-ctl repmgr-check-master` and PgBouncer errors
 
 - [Developer database documentation](../../development/README.md#database-guides) - some of which is absolutely not for production use. Including:

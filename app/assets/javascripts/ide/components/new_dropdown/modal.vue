@@ -52,7 +52,7 @@ export default {
     ...mapActions(['createTempEntry', 'renameEntry']),
     submitForm() {
       if (this.modalType === modalTypes.rename) {
-        if (!this.entries[this.entryName]?.deleted) {
+        if (this.entries[this.entryName] && !this.entries[this.entryName].deleted) {
           flash(
             sprintf(s__('The name "%{name}" is already taken in this directory.'), {
               name: this.entryName,

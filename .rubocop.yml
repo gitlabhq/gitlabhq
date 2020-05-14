@@ -384,7 +384,6 @@ RSpec/LeakyConstantDeclaration:
     - 'spec/mailers/notify_spec.rb'
     - 'spec/migrations/20191125114345_add_admin_mode_protected_path_spec.rb'
     - 'spec/migrations/encrypt_plaintext_attributes_on_application_settings_spec.rb'
-    - 'spec/migrations/cleanup_optimistic_locking_nulls_pt2_fixed_spec.rb'
     - 'spec/models/clusters/cluster_spec.rb'
     - 'spec/models/concerns/batch_destroy_dependent_associations_spec.rb'
     - 'spec/models/concerns/blocks_json_serialization_spec.rb'

@@ -586,6 +586,9 @@ msgid_plural "(%d closed)"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "(%{linkStart}Cron syntax%{linkEnd})"
+msgstr ""
+
 msgid "(%{mrCount} merged)"
 msgstr ""
 
@@ -6417,9 +6420,6 @@ msgstr ""
 msgid "Cron Timezone"
 msgstr ""
 
-msgid "Cron syntax"
-msgstr ""
-
 msgid "Crossplane"
 msgstr ""
 
@@ -8711,13 +8711,13 @@ msgstr ""
 msgid "Every day"
 msgstr ""
 
-msgid "Every day (at 4:00am)"
+msgid "Every day (at %{time})"
 msgstr ""
 
 msgid "Every month"
 msgstr ""
 
-msgid "Every month (on the 1st at 4:00am)"
+msgid "Every month (Day %{day} at %{time})"
 msgstr ""
 
 msgid "Every three months"
@@ -8729,7 +8729,7 @@ msgstr ""
 msgid "Every week"
 msgstr ""
 
-msgid "Every week (Sundays at 4:00am)"
+msgid "Every week (%{weekday} at %{time})"
 msgstr ""
 
 msgid "Everyone"
@@ -18591,6 +18591,9 @@ msgstr ""
 msgid "Seats in license"
 msgstr ""
 
+msgid "Secondary"
+msgstr ""
+
 msgid "Secret"
 msgstr ""
 
@@ -21726,9 +21729,6 @@ msgid "This is a delayed job to run in %{remainingTime}"
 msgstr ""
 
 msgid "This is a list of devices that have logged into your account. Revoke any sessions that you do not recognize."
-msgstr ""
-
-msgid "This is a primary node"
 msgstr ""
 
 msgid "This is a security log of important events involving your account."

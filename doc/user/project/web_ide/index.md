@@ -43,6 +43,20 @@ you can find a more complete list of supported languages in the
 NOTE: **Note:**
 Single file editing is based on the [Ace Editor](https://ace.c9.io).
 
+### Themes
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2389) in GitLab 13.0.
+
+All the themes GitLab supports for syntax highlighting are added to the Web IDE's code editor.
+You can pick a theme from your [profile preferences](../../profile/preferences.md).
+
+The themes are available only in the Web IDE file editor, except for the [dark theme](https://gitlab.com/gitlab-org/gitlab/-/issues/209808),
+which applies to the entire Web IDE screen.
+
+| Solarized Light Theme                                         | Dark Theme                              |
+|---------------------------------------------------------------|-----------------------------------------|
+| ![Solarized Light Theme](img/solarized_light_theme_v13.0.png) | ![Dark Theme](img/dark_theme_v13.0.png) |
+
 ## Commit changes
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/4539) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.4 and [brought to GitLab Core](https://gitlab.com/gitlab-org/gitlab-foss/issues/44157) in 10.7.

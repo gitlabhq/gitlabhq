@@ -22,18 +22,6 @@ describe 'gitlab:artifacts namespace rake task' do
     context 'when local storage is used' do
       let(:store) { ObjectStorage::Store::LOCAL }
 
-      context 'and job does not have file store defined' do
-        let(:object_storage_enabled) { true }
-        let(:store) { nil }
-
-        it "migrates file to remote storage" do
-          subject
-
-          expect(artifact.reload.file_store).to eq(ObjectStorage::Store::REMOTE)
-          expect(job_trace.reload.file_store).to eq(ObjectStorage::Store::REMOTE)
-        end
-      end
-
       context 'and remote storage is defined' do
         let(:object_storage_enabled) { true }
 

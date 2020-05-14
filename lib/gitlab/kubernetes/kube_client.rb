@@ -20,6 +20,7 @@ module Gitlab
         extensions: { group: 'apis/extensions', version: 'v1beta1' },
         istio: { group: 'apis/networking.istio.io', version: 'v1alpha3' },
         knative: { group: 'apis/serving.knative.dev', version: 'v1alpha1' },
+        metrics: { group: 'apis/metrics.k8s.io', version: 'v1beta1' },
         networking: { group: 'apis/networking.k8s.io', version: 'v1' }
       }.freeze
 
@@ -34,7 +35,8 @@ module Gitlab
       end
 
       # Core API methods delegates to the core api group client
-      delegate :get_pods,
+      delegate :get_nodes,
+        :get_pods,
         :get_secrets,
         :get_config_map,
         :get_namespace,
@@ -101,6 +103,31 @@ module Gitlab
           read: 30
         }
       }.freeze
+
+      def self.graceful_request(cluster_id)
+        { status: :connected, response: yield }
+      rescue *Gitlab::Kubernetes::Errors::CONNECTION
+        { status: :unreachable }
+      rescue *Gitlab::Kubernetes::Errors::AUTHENTICATION
+        { status: :authentication_failure }
+      rescue Kubeclient::HttpError => e
+        { status: kubeclient_error_status(e.message) }
+      rescue => e
+        Gitlab::ErrorTracking.track_exception(e, cluster_id: cluster_id)
+
+        { status: :unknown_failure }
+      end
+
+      # KubeClient uses the same error class
+      # For connection errors (eg. timeout) and
+      # for Kubernetes errors.
+      def self.kubeclient_error_status(message)
+        if message&.match?(/timed out|timeout/i)
+          :unreachable
+        else
+          :authentication_failure
+        end
+      end
 
       # We disable redirects through 'http_max_redirects: 0',
       # so that KubeClient does not follow redirects and

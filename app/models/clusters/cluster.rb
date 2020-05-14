@@ -206,10 +206,16 @@ module Clusters
       end
     end
 
+    def nodes
+      with_reactive_cache do |data|
+        data[:nodes]
+      end
+    end
+
     def calculate_reactive_cache
       return unless enabled?
 
-      { connection_status: retrieve_connection_status }
+      { connection_status: retrieve_connection_status, nodes: retrieve_nodes }
     end
 
     def persisted_applications
@@ -348,30 +354,53 @@ module Clusters
     end
 
     def retrieve_connection_status
-      kubeclient.core_client.discover
-    rescue *Gitlab::Kubernetes::Errors::CONNECTION
-      :unreachable
-    rescue *Gitlab::Kubernetes::Errors::AUTHENTICATION
-      :authentication_failure
-    rescue Kubeclient::HttpError => e
-      kubeclient_error_status(e.message)
-    rescue => e
-      Gitlab::ErrorTracking.track_exception(e, cluster_id: id)
-
-      :unknown_failure
-    else
-      :connected
+      result = ::Gitlab::Kubernetes::KubeClient.graceful_request(id) { kubeclient.core_client.discover }
+      result[:status]
     end
 
-    # KubeClient uses the same error class
-    # For connection errors (eg. timeout) and
-    # for Kubernetes errors.
-    def kubeclient_error_status(message)
-      if message&.match?(/timed out|timeout/i)
-        :unreachable
-      else
-        :authentication_failure
+    def retrieve_nodes
+      result = ::Gitlab::Kubernetes::KubeClient.graceful_request(id) { kubeclient.get_nodes }
+      cluster_nodes = result[:response].to_a
+
+      result = ::Gitlab::Kubernetes::KubeClient.graceful_request(id) { kubeclient.metrics_client.get_nodes }
+      nodes_metrics = result[:response].to_a
+
+      cluster_nodes.inject([]) do |memo, node|
+        sliced_node = filter_relevant_node_attributes(node)
+
+        matched_node_metric = nodes_metrics.find { |node_metric| node_metric.metadata.name == node.metadata.name }
+
+        sliced_node_metrics = matched_node_metric ? filter_relevant_node_metrics_attributes(matched_node_metric) : {}
+
+        memo << sliced_node.merge(sliced_node_metrics)
       end
+    end
+
+    def filter_relevant_node_attributes(node)
+      {
+        'metadata' => {
+          'name' => node.metadata.name
+        },
+        'status' => {
+          'capacity' => {
+            'cpu' => node.status.capacity.cpu,
+            'memory' => node.status.capacity.memory
+          },
+          'allocatable' => {
+            'cpu' => node.status.allocatable.cpu,
+            'memory' => node.status.allocatable.memory
+          }
+        }
+      }
+    end
+
+    def filter_relevant_node_metrics_attributes(node_metrics)
+      {
+        'usage' => {
+          'cpu' => node_metrics.usage.cpu,
+          'memory' => node_metrics.usage.memory
+        }
+      }
     end
 
     # To keep backward compatibility with AUTO_DEVOPS_DOMAIN

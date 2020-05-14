@@ -55,8 +55,8 @@ for improvements including
 
 The minimum recommended configuration for a Gitaly Cluster requires:
 
-- 1 highly available load balancer
-- 1 highly available PostgreSQL server (PostgreSQL 11 or newer)
+- 1 load balancer
+- 1 PostgreSQL server (PostgreSQL 11 or newer)
 - 3 Praefect nodes
 - 3 Gitaly nodes (1 primary, 2 secondary)
 

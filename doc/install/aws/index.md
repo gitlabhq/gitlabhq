@@ -4,7 +4,7 @@ type: howto
 
 # Installing GitLab HA on Amazon Web Services (AWS)
 
-This page offers a walkthrough of a common HA (Highly Available) configuration
+This page offers a walkthrough of a common configuration
 for GitLab on AWS. You should customize it to accommodate your needs.
 
 NOTE: **Note**
@@ -13,9 +13,8 @@ For organizations with 300 users or less, the recommended AWS installation metho
 ## Introduction
 
 GitLab on AWS can leverage many of the services that are already
-configurable with GitLab High Availability (HA). These services offer a great deal of
-flexibility and can be adapted to the needs of most companies, while enabling the
-automation of both vertical and horizontal scaling.
+configurable. These services offer a great deal of
+flexibility and can be adapted to the needs of most companies.
 
 In this guide, we'll go through a basic HA setup where we'll start by
 configuring our Virtual Private Cloud and subnets to later integrate
@@ -54,11 +53,10 @@ Here's a list of the AWS services we will use, with links to pricing information
   [Amazon S3 pricing](https://aws.amazon.com/s3/pricing/).
 - **ELB**: A Classic Load Balancer will be used to route requests to the
   GitLab instances. See the [Amazon ELB pricing](https://aws.amazon.com/elasticloadbalancing/pricing/).
-- **RDS**: An Amazon Relational Database Service using PostgreSQL will be used
-  to provide a High Availability database configuration. See the
+- **RDS**: An Amazon Relational Database Service using PostgreSQL will be used. See the
   [Amazon RDS pricing](https://aws.amazon.com/rds/postgresql/pricing/).
 - **ElastiCache**: An in-memory cache environment will be used to provide a
-  High Availability Redis configuration. See the
+  Redis configuration. See the
   [Amazon ElastiCache pricing](https://aws.amazon.com/elasticache/pricing/).
 
 NOTE: **Note:** Please note that while we will be using EBS for storage, we do not recommend using EFS as it may negatively impact GitLab's performance. You can review the [relevant documentation](../../administration/high_availability/nfs.md#avoid-using-awss-elastic-file-system-efs) for more details.
@@ -311,7 +309,7 @@ Now, it's time to create the database:
    1. Select **Provisioned IOPS (SSD)** from the storage type dropdown menu. Provisioned IOPS (SSD) storage is best suited for HA (though you can choose General Purpose (SSD) to reduce the costs). Read more about it at [Storage for Amazon RDS](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_Storage.html).
    1. Allocate storage and set provisioned IOPS. We'll use the minimum values, `100` and `1000`, respectively.
    1. Enable storage autoscaling (optional) and set a maximum storage threshold.
-1. Under **Availability & durability**, select **Create a standby instance** to have a standby RDS instance provisioned in a different Availability Zone. Read more at [High Availability (Multi-AZ)](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html).
+1. Under **Availability & durability**, select **Create a standby instance** to have a standby RDS instance provisioned in a different [Availability Zone](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html).
 1. Under **Connectivity**, configure the following:
    1. Select the VPC we created earlier (`gitlab-vpc`) from the **Virtual Private Cloud (VPC)** dropdown menu.
    1. Expand the **Additional connectivity configuration** section and select the subnet group (`gitlab-rds-group`) we created earlier.
@@ -589,7 +587,7 @@ and the repository exists.
 
 #### Configure host keys
 
-Ordinarily we would manually copy the contents (primary and public keys) of `/etc/ssh/` on the primary application server to `/etc/ssh` on all secondary servers. This prevents false man-in-the-middle-attack alerts when accessing servers in your High Availability cluster behind a load balancer.
+Ordinarily we would manually copy the contents (primary and public keys) of `/etc/ssh/` on the primary application server to `/etc/ssh` on all secondary servers. This prevents false man-in-the-middle-attack alerts when accessing servers in your cluster behind a load balancer.
 
 We'll automate this by creating static host keys as part of our custom AMI. As these host keys are also rotated every time an EC2 instance boots up, "hard coding" them into our custom AMI serves as a handy workaround.
 
@@ -770,7 +768,7 @@ After a few minutes, the new version should be up and running.
 In this guide, we went mostly through scaling and some redundancy options,
 your mileage may vary.
 
-Keep in mind that all Highly Available solutions come with a trade-off between
+Keep in mind that all solutions come with a trade-off between
 cost/complexity and uptime. The more uptime you want, the more complex the solution.
 And the more complex the solution, the more work is involved in setting up and
 maintaining it.
@@ -780,7 +778,7 @@ Have a read through these other resources and feel free to
 to request additional material:
 
 - [Scaling GitLab](../../administration/reference_architectures/index.md):
-  GitLab supports several different types of clustering and high-availability.
+  GitLab supports several different types of clustering.
 - [Geo replication](../../administration/geo/replication/index.md):
   Geo is the solution for widely distributed development teams.
 - [Omnibus GitLab](https://docs.gitlab.com/omnibus/) - Everything you need to know

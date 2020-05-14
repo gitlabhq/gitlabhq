@@ -275,8 +275,7 @@ You must define environment-scoped variables for `POSTGRES_ENABLED` and
 1. Disable the built-in PostgreSQL installation for the required environments using
    scoped [environment variables](../../ci/environments.md#scoping-environments-with-specs).
    For this use case, it's likely that only `production` will need to be added to this
-   list. The built-in PostgreSQL setup for Review Apps and staging is sufficient,
-   because a high availability setup is not required.
+   list. The built-in PostgreSQL setup for Review Apps and staging is sufficient.
 
    ![Auto Metrics](img/disable_postgres.png)
 

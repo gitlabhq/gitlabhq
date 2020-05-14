@@ -1,0 +1,5 @@
+---
+title: Decode dashboard_path when creating annotations
+merge_request: 31665
+author:
+type: fixed

@@ -70,8 +70,8 @@ The Status Page landing page shows you an overview of the recent incidents. Clic
 The incident detail page shows detailed information about a particular incident. For example:
 
 - Status on the incident, including when the incident was last updated.
-- The incident title.
-- The description of the incident.
+- The incident title, including any emojis.
+- The description of the incident, including emojis and static images.
 - A chronological ordered list of updates to the incident.
 
 ![Status Page detail](../img/status_page_detail_v12_10.png)

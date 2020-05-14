@@ -57,6 +57,19 @@ export const getMonthNames = abbreviated => {
 export const pad = (val, len = 2) => `0${val}`.slice(-len);
 
 /**
+ * Returns i18n weekday names array.
+ */
+export const getWeekdayNames = () => [
+  __('Sunday'),
+  __('Monday'),
+  __('Tuesday'),
+  __('Wednesday'),
+  __('Thursday'),
+  __('Friday'),
+  __('Saturday'),
+];
+
+/**
  * Given a date object returns the day of the week in English
  * @param {date} date
  * @returns {String}

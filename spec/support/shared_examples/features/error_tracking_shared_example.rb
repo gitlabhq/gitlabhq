@@ -71,7 +71,7 @@ shared_examples 'error tracking show page' do
     expect(page).to have_content('Stack trace')
   end
 
-  it 'renders the stack trace' do
+  it 'renders the stack trace', :quarantine do
     event_response['entries'][0]['data']['values'][0]['stacktrace']['frames'].each do |frame|
       expect(frame['filename']).not_to be_nil
       expect(page).to have_content(frame['filename'])

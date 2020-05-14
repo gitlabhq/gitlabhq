@@ -86,9 +86,6 @@ with this approach, however, and there is a
 
 > Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.8.
 
-CAUTION: **Warning:**
-This feature is currently [Alpha](https://about.gitlab.com/handbook/product/#alpha-beta-ga) and while you can start using it, it may receive important changes in the future.
-
 Each security vulnerability in the merge request report or the
 [Security Dashboard](security_dashboard/index.md) is actionable. Click an entry to view detailed
 information with several options:

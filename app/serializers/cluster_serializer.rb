@@ -11,6 +11,7 @@ class ClusterSerializer < BaseSerializer
         :enabled,
         :environment_scope,
         :name,
+        :nodes,
         :path,
         :status
       ]

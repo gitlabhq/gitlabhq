@@ -488,6 +488,7 @@ Service:
 - confidential_note_events
 - deployment_events
 - description
+- inherit_from_id
 ProjectHook:
 - id
 - url

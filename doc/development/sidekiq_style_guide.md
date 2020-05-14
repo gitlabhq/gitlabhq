@@ -82,6 +82,11 @@ As a general rule, a worker can be considered idempotent if:
 
 A good example of that would be a cache expiration worker.
 
+NOTE: **Note:**
+A job scheduled for an idempotent worker will automatically be
+[deduplicated](#deduplication) when an unstarted job with the same
+arguments is already in the queue.
+
 ### Ensuring a worker is idempotent
 
 Make sure the worker tests pass using the following shared example:

@@ -4,11 +4,11 @@ require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20200427064130_cleanup_optimistic_locking_nulls_pt2_fixed.rb')
 
 describe CleanupOptimisticLockingNullsPt2Fixed, :migration do
-  TABLES = %w(ci_stages ci_builds ci_pipelines).freeze
-  TABLES.each do |table|
+  test_tables = %w(ci_stages ci_builds ci_pipelines).freeze
+  test_tables.each do |table|
     let(table.to_sym) { table(table.to_sym) }
   end
-  let(:tables) { TABLES.map { |t| method(t.to_sym).call } }
+  let(:tables) { test_tables.map { |t| method(t.to_sym).call } }
 
   before do
     # Create necessary rows

@@ -121,8 +121,10 @@ describe('new file modal component', () => {
   });
 
   describe('submitForm', () => {
-    it('throws an error when target entry exists', () => {
-      const store = createStore();
+    let store;
+    beforeEach(() => {
+      store = createStore();
+
       store.state.entries = {
         'test-path/test': {
           name: 'test',
@@ -131,6 +133,9 @@ describe('new file modal component', () => {
       };
 
       vm = createComponentWithStore(Component, store).$mount();
+    });
+
+    it('throws an error when target entry exists', () => {
       vm.open('rename', 'test-path/test');
 
       expect(createFlash).not.toHaveBeenCalled();
@@ -145,6 +150,16 @@ describe('new file modal component', () => {
         false,
         true,
       );
+    });
+
+    it('does not throw error when target entry does not exist', () => {
+      jest.spyOn(vm, 'renameEntry').mockImplementation();
+
+      vm.open('rename', 'test-path/test');
+      vm.entryName = 'test-path/test2';
+      vm.submitForm();
+
+      expect(createFlash).not.toHaveBeenCalled();
     });
   });
 });

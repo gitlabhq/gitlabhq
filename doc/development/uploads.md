@@ -11,7 +11,7 @@ The following graph explains machine boundaries in a scalable GitLab installatio
 ```mermaid
 graph TB
     subgraph "load balancers"
-      LB(HA Proxy)
+      LB(Proxy)
     end
 
     subgraph "Shared storage"
