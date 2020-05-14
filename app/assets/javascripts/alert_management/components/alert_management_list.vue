@@ -16,7 +16,7 @@ import createFlash from '~/flash';
 import { s__ } from '~/locale';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import getAlerts from '../graphql/queries/getAlerts.query.graphql';
-import { ALERTS_STATUS, ALERTS_STATUS_TABS } from '../constants';
+import { ALERTS_STATUS, ALERTS_STATUS_TABS, ALERTS_SEVERITY_LABELS } from '../constants';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import updateAlertStatus from '../graphql/mutations/update_alert_status.graphql';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
@@ -33,6 +33,11 @@ export default {
     ),
   },
   fields: [
+    {
+      key: 'severity',
+      label: s__('AlertManagement|Severity'),
+      tdClass: `${tdClass} rounded-top text-capitalize`,
+    },
     {
       key: 'startedAt',
       label: s__('AlertManagement|Start time'),
@@ -68,6 +73,7 @@ export default {
     [ALERTS_STATUS.ACKNOWLEDGED]: s__('AlertManagement|Acknowledged'),
     [ALERTS_STATUS.RESOLVED]: s__('AlertManagement|Resolved'),
   },
+  severityLabels: ALERTS_SEVERITY_LABELS,
   statusTabs: ALERTS_STATUS_TABS,
   components: {
     GlEmptyState,
@@ -203,6 +209,21 @@ export default {
         fixed
         stacked="md"
       >
+        <template #cell(severity)="{ item }">
+          <div
+            class="d-inline-flex align-items-center justify-content-between"
+            data-testid="severityField"
+          >
+            <gl-icon
+              class="mr-2"
+              :size="12"
+              :name="`severity-${item.severity.toLowerCase()}`"
+              :class="`icon-${item.severity.toLowerCase()}`"
+            />
+            {{ $options.severityLabels[item.severity] }}
+          </div>
+        </template>
+
         <template #cell(startedAt)="{ item }">
           <time-ago v-if="item.startedAt" :time="item.startedAt" />
         </template>

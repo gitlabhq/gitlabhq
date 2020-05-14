@@ -26,21 +26,15 @@ module Gitlab
         private
 
         def track(event)
-          values = values_for(event)
-          tags   = tags_for(event)
+          tags = tags_for(event)
 
           self.class.gitlab_view_rendering_duration_seconds.observe(current_transaction.labels.merge(tags), event.duration)
 
           current_transaction.increment(:view_duration, event.duration)
-          current_transaction.add_metric(SERIES, values, tags)
         end
 
         def relative_path(path)
           path.gsub(%r{^#{Rails.root}/?}, '')
-        end
-
-        def values_for(event)
-          { duration: event.duration }
         end
 
         def tags_for(event)

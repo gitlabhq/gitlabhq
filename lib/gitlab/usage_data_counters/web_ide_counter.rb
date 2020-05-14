@@ -4,7 +4,7 @@ module Gitlab
   module UsageDataCounters
     class WebIdeCounter
       extend RedisCounter
-      KNOWN_EVENTS = %i[commits views merge_requests previews terminals].freeze
+      KNOWN_EVENTS = %i[commits views merge_requests previews terminals pipelines].freeze
       PREFIX = 'web_ide'
 
       class << self
@@ -22,6 +22,10 @@ module Gitlab
 
         def increment_terminals_count
           increment(redis_key('terminals'))
+        end
+
+        def increment_pipelines_count
+          increment(redis_key('pipelines'))
         end
 
         def increment_previews_count

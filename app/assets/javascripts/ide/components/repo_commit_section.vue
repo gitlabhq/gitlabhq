@@ -17,13 +17,7 @@ export default {
     tooltip,
   },
   computed: {
-    ...mapState([
-      'changedFiles',
-      'stagedFiles',
-      'rightPanelCollapsed',
-      'lastCommitMsg',
-      'unusedSeal',
-    ]),
+    ...mapState(['changedFiles', 'stagedFiles', 'lastCommitMsg', 'unusedSeal']),
     ...mapState('commit', ['commitMessage', 'submitCommitLoading']),
     ...mapGetters(['lastOpenedFile', 'hasChanges', 'someUncommittedChanges', 'activeFile']),
     ...mapGetters('commit', ['discardDraftButtonDisabled']),

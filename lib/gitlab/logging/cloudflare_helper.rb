@@ -14,7 +14,7 @@ module Gitlab
       def valid_cloudflare_header?(value)
         return false unless value.present?
         return false if value.length > 64
-        return false if value.index(/[^[:alnum:]]/)
+        return false if value.index(/[^[A-Za-z0-9-]]/)
 
         true
       end

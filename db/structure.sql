@@ -10843,6 +10843,8 @@ CREATE UNIQUE INDEX index_vulnerability_occurrences_on_uuid ON public.vulnerabil
 
 CREATE INDEX index_vulnerability_occurrences_on_vulnerability_id ON public.vulnerability_occurrences USING btree (vulnerability_id);
 
+CREATE INDEX index_vulnerability_on_id_and_confidence_eq_zero ON public.vulnerabilities USING btree (id) WHERE (confidence = 0);
+
 CREATE UNIQUE INDEX index_vulnerability_scanners_on_project_id_and_external_id ON public.vulnerability_scanners USING btree (project_id, external_id);
 
 CREATE UNIQUE INDEX index_vulnerability_user_mentions_on_note_id ON public.vulnerability_user_mentions USING btree (note_id) WHERE (note_id IS NOT NULL);
@@ -13764,6 +13766,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200506154421
 20200507221434
 20200508091106
+20200511092714
 20200511145545
 \.
 

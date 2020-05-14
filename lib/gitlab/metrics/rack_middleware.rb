@@ -20,10 +20,6 @@ module Gitlab
           trans.add_event(:rails_exception)
 
           raise error
-        # Even in the event of an error we want to submit any metrics we
-        # might've gathered up to this point.
-        ensure
-          trans.finish
         end
 
         retval

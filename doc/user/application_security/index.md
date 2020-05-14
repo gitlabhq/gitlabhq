@@ -321,7 +321,8 @@ You can do it quickly by following the hyperlink given to run a new pipeline.
 
 ### Getting error message `sast job: stage parameter should be [some stage name here]`
 
-When including a security job template like [`SAST`](sast/index.md#configuration),
+When [including](../../ci/yaml/README.md#includetemplate) a `.gitlab-ci.yml` template
+like [`SAST.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml),
 the following error may occur, depending on your GitLab CI/CD configuration:
 
 ```plaintext
@@ -334,22 +335,23 @@ This error appears when the included job's stage (named `test`) isn't declared i
 To fix this issue, you can either:
 
 - Add a `test` stage in your `.gitlab-ci.yml`.
-- Change the default stage of the included security jobs. For example, with `SAST`:
+- Change the default stage of the included security jobs. For example, with SpotBugs (SAST):
 
   ```yaml
   include:
     template: SAST.gitlab-ci.yml
 
-  sast:
+  spotbugs-sast:
     stage: unit-tests
   ```
 
-[Learn more on overriding the SAST template](sast/index.md#overriding-the-sast-template).
+[Learn more on overriding SAST jobs](sast/index.md#overriding-sast-jobs).
 All the security scanning tools define their stage, so this error can occur with all of them.
 
 ### Getting error message `sast job: config key may not be used with 'rules': only/except`
 
-When including a security job template like [`SAST`](sast/index.md#overriding-the-sast-template),
+When [including](../../ci/yaml/README.md#includetemplate) a `.gitlab-ci.yml` template
+like [`SAST.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml),
 the following error may occur, depending on your GitLab CI/CD configuration:
 
 ```plaintext
@@ -358,14 +360,14 @@ Found errors in your .gitlab-ci.yml:
     jobs:sast config key may not be used with `rules`: only/except
 ```
 
-This error appears when the included job's `rules` configuration has been [overridden](sast/index.md#overriding-the-sast-template)
+This error appears when the included job's `rules` configuration has been [overridden](sast/index.md#overriding-sast-jobs)
 with [the deprecated `only` or `except` syntax.](../../ci/yaml/README.md#onlyexcept-basic)
 To fix this issue, you must either:
 
 - [Transition your `only/except` syntax to `rules`](#transitioning-your-onlyexcept-syntax-to-rules).
 - (Temporarily) [Pin your templates to the deprecated versions](#pin-your-templates-to-the-deprecated-versions)
 
-[Learn more on overriding the SAST template](sast/index.md#overriding-the-sast-template).
+[Learn more on overriding SAST jobs](sast/index.md#overriding-sast-jobs).
 
 #### Transitioning your `only/except` syntax to `rules`
 

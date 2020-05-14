@@ -468,6 +468,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
       scope :usage_ping, controller: :usage_ping do
         post :web_ide_clientside_preview
+        post :web_ide_pipelines_count
       end
 
       # Deprecated unscoped routing.

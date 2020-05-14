@@ -133,7 +133,6 @@ module UsageDataHelpers
       gitaly
       database
       avg_cycle_analytics
-      influxdb_metrics_enabled
       prometheus_metrics_enabled
       web_ide_clientside_preview_enabled
       ingress_modsecurity_enabled

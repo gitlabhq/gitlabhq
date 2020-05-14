@@ -13,7 +13,7 @@ module NotesActions
   end
 
   def index
-    current_fetched_at = Time.now.to_i
+    current_fetched_at = Time.current.to_i
 
     notes_json = { notes: [], last_fetched_at: current_fetched_at }
 

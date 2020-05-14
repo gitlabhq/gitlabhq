@@ -31,7 +31,6 @@ export default {
       rightPaneIsOpen: 'isOpen',
     }),
     ...mapState([
-      'rightPanelCollapsed',
       'viewer',
       'panelResizing',
       'currentActivityView',
@@ -117,9 +116,6 @@ export default {
           viewMode: FILE_VIEW_MODE_EDITOR,
         });
       }
-    },
-    rightPanelCollapsed() {
-      this.refreshEditorDimensions();
     },
     viewer() {
       if (!this.file.pending) {

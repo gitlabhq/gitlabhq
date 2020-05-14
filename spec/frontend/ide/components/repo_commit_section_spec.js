@@ -36,7 +36,6 @@ describe('RepoCommitSection', () => {
       }),
     );
 
-    store.state.rightPanelCollapsed = false;
     store.state.currentBranch = 'master';
     store.state.changedFiles = [];
     store.state.stagedFiles = [{ ...files[0] }, { ...files[1] }];

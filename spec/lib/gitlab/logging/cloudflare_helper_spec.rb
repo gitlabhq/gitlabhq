@@ -19,7 +19,7 @@ describe Gitlab::Logging::CloudflareHelper do
     end
 
     context 'with normal headers' do
-      let(:headers) { { 'Cf-Ray' => SecureRandom.hex, 'Cf-Request-Id' => SecureRandom.hex } }
+      let(:headers) { { 'Cf-Ray' => '592f0aa22b3dea38-IAD', 'Cf-Request-Id' => SecureRandom.hex } }
 
       it 'adds Cf-Ray-Id and Cf-Request-Id' do
         helper.store_cloudflare_headers!(payload, request)

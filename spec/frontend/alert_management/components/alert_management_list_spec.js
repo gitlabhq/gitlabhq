@@ -6,6 +6,7 @@ import {
   GlLoadingIcon,
   GlDropdown,
   GlBadge,
+  GlIcon,
   GlTab,
   GlDropdownItem,
 } from '@gitlab/ui';
@@ -30,6 +31,7 @@ describe('AlertManagementList', () => {
   const findNumberOfAlertsBadge = () => wrapper.findAll(GlBadge);
   const findDateFields = () => wrapper.findAll(TimeAgo);
   const findFirstStatusOption = () => findStatusDropdown().find(GlDropdownItem);
+  const findSeverityFields = () => wrapper.findAll('[data-testid="severityField"]');
 
   function mountComponent({
     props = {
@@ -189,6 +191,37 @@ describe('AlertManagementList', () => {
       expect(findStatusDropdown().exists()).toBe(true);
     });
 
+    it('shows correct severity icons', () => {
+      mountComponent({
+        props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
+        data: { alerts: mockAlerts, errored: false },
+        loading: false,
+      });
+
+      return wrapper.vm.$nextTick().then(() => {
+        expect(wrapper.find(GlTable).exists()).toBe(true);
+        expect(
+          findAlertsTable()
+            .find(GlIcon)
+            .classes('icon-critical'),
+        ).toBe(true);
+      });
+    });
+
+    it('renders severity text', () => {
+      mountComponent({
+        props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
+        data: { alerts: mockAlerts, errored: false },
+        loading: false,
+      });
+
+      expect(
+        findSeverityFields()
+          .at(0)
+          .text(),
+      ).toBe('Critical');
+    });
+
     describe('handle date fields', () => {
       it('should display time ago dates when values provided', () => {
         mountComponent({
@@ -200,6 +233,7 @@ describe('AlertManagementList', () => {
                 status: 'acknowledged',
                 startedAt: '2020-03-17T23:18:14.996Z',
                 endedAt: '2020-04-17T23:18:14.996Z',
+                severity: 'high',
               },
             ],
             errored: false,
@@ -219,6 +253,7 @@ describe('AlertManagementList', () => {
                 status: 'acknowledged',
                 startedAt: null,
                 endedAt: null,
+                severity: 'high',
               },
             ],
             errored: false,

@@ -62,11 +62,6 @@ describe('RepoEditor', () => {
   });
 
   const findEditor = () => vm.$el.querySelector('.multi-file-editor-holder');
-  const changeRightPanelCollapsed = () => {
-    const { state } = vm.$store;
-
-    state.rightPanelCollapsed = !state.rightPanelCollapsed;
-  };
 
   it('sets renderWhitespace to `all`', () => {
     vm.$store.state.renderWhitespaceInCode = true;
@@ -319,17 +314,6 @@ describe('RepoEditor', () => {
       spyOn(vm.editor, 'updateDiffView');
     });
 
-    it('calls updateDimensions when rightPanelCollapsed is changed', done => {
-      changeRightPanelCollapsed();
-
-      vm.$nextTick(() => {
-        expect(vm.editor.updateDimensions).toHaveBeenCalled();
-        expect(vm.editor.updateDiffView).toHaveBeenCalled();
-
-        done();
-      });
-    });
-
     it('calls updateDimensions when panelResizing is false', done => {
       vm.$store.state.panelResizing = true;
 
@@ -405,17 +389,6 @@ describe('RepoEditor', () => {
     it('should hide editor', () => {
       expect(vm.showEditor).toBe(false);
       expect(findEditor()).toHaveCss({ display: 'none' });
-    });
-
-    it('should not update dimensions', done => {
-      changeRightPanelCollapsed();
-
-      vm.$nextTick()
-        .then(() => {
-          expect(vm.editor.updateDimensions).not.toHaveBeenCalled();
-        })
-        .then(done)
-        .catch(done.fail);
     });
 
     describe('when file view mode changes to editor', () => {

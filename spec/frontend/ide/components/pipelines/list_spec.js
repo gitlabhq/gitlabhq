@@ -7,9 +7,14 @@ import JobsList from '~/ide/components/jobs/list.vue';
 import Tab from '~/vue_shared/components/tabs/tab.vue';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import { pipelines } from '../../../../javascripts/ide/mock_data';
+import IDEServices from '~/ide/services';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
+
+jest.mock('~/ide/services', () => ({
+  pingUsage: jest.fn(),
+}));
 
 describe('IDE pipelines list', () => {
   let wrapper;
@@ -25,14 +30,18 @@ describe('IDE pipelines list', () => {
   };
 
   const fetchLatestPipelineMock = jest.fn();
+  const pingUsageMock = jest.fn();
   const failedStagesGetterMock = jest.fn().mockReturnValue([]);
+  const fakeProjectPath = 'alpha/beta';
 
   const createComponent = (state = {}) => {
     const { pipelines: pipelinesState, ...restOfState } = state;
     const { defaultPipelines, ...defaultRestOfState } = defaultState;
 
     const fakeStore = new Vuex.Store({
-      getters: { currentProject: () => ({ web_url: 'some/url ' }) },
+      getters: {
+        currentProject: () => ({ web_url: 'some/url ', path_with_namespace: fakeProjectPath }),
+      },
       state: {
         ...defaultRestOfState,
         ...restOfState,
@@ -46,6 +55,7 @@ describe('IDE pipelines list', () => {
           },
           actions: {
             fetchLatestPipeline: fetchLatestPipelineMock,
+            pingUsage: pingUsageMock,
           },
           getters: {
             jobsCount: () => 1,
@@ -75,6 +85,11 @@ describe('IDE pipelines list', () => {
     createComponent();
 
     expect(fetchLatestPipelineMock).toHaveBeenCalled();
+  });
+
+  it('pings pipeline usage', () => {
+    createComponent();
+    expect(IDEServices.pingUsage).toHaveBeenCalledWith(fakeProjectPath);
   });
 
   describe('when loading', () => {

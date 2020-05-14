@@ -103,7 +103,6 @@ export default {
   >
     <resizable-panel
       v-show="isOpen"
-      :collapsible="false"
       :initial-width="width"
       :min-size="width"
       :class="`ide-${side}-sidebar-${currentView}`"

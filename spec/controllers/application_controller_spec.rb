@@ -25,7 +25,7 @@ describe ApplicationController do
     end
 
     it 'does not redirect if the user is under their password expiry' do
-      user.password_expires_at = Time.now + 20010101
+      user.password_expires_at = Time.current + 20010101
 
       expect(user.ldap_user?).to be_falsey
       allow(controller).to receive(:current_user).and_return(user)

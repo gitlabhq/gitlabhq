@@ -6,7 +6,6 @@ import 'ee_else_ce/boards/models/list';
 import BoardSidebar from 'ee_else_ce/boards/components/board_sidebar';
 import initNewListDropdown from 'ee_else_ce/boards/components/new_list_dropdown';
 import boardConfigToggle from 'ee_else_ce/boards/config_toggle';
-import toggleFocusMode from 'ee_else_ce/boards/toggle_focus';
 import toggleLabels from 'ee_else_ce/boards/toggle_labels';
 import {
   setPromotionState,
@@ -24,6 +23,7 @@ import './models/label';
 import './models/assignee';
 import { BoardType } from './constants';
 
+import toggleFocusMode from '~/boards/toggle_focus';
 import FilteredSearchBoards from '~/boards/filtered_search_boards';
 import eventHub from '~/boards/eventhub';
 import sidebarEventHub from '~/sidebar/event_hub';
@@ -305,7 +305,7 @@ export default () => {
         return {
           modal: ModalStore.store,
           store: boardsStore.state,
-          ...getBoardsModalData($boardApp),
+          ...getBoardsModalData(),
           canAdminList: this.$options.el.hasAttribute('data-can-admin-list'),
         };
       },
@@ -369,7 +369,7 @@ export default () => {
     });
   }
 
-  toggleFocusMode(ModalStore, boardsStore, $boardApp);
+  toggleFocusMode(ModalStore, boardsStore);
   toggleLabels();
   mountMultipleBoardsSwitcher();
 };

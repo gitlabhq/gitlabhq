@@ -323,18 +323,74 @@ describe('URL utility', () => {
     });
   });
 
+  describe('isAbsolute', () => {
+    it.each`
+      url                                      | valid
+      ${'https://gitlab.com/'}                 | ${true}
+      ${'http://gitlab.com/'}                  | ${true}
+      ${'/users/sign_in'}                      | ${false}
+      ${' https://gitlab.com'}                 | ${false}
+      ${'somepath.php?url=https://gitlab.com'} | ${false}
+      ${'notaurl'}                             | ${false}
+      ${'../relative_url'}                     | ${false}
+      ${'<a></a>'}                             | ${false}
+    `('returns $valid for $url', ({ url, valid }) => {
+      expect(urlUtils.isAbsolute(url)).toBe(valid);
+    });
+  });
+
+  describe('isRootRelative', () => {
+    it.each`
+      url                                       | valid
+      ${'https://gitlab.com/'}                  | ${false}
+      ${'http://gitlab.com/'}                   | ${false}
+      ${'/users/sign_in'}                       | ${true}
+      ${' https://gitlab.com'}                  | ${false}
+      ${'/somepath.php?url=https://gitlab.com'} | ${true}
+      ${'notaurl'}                              | ${false}
+      ${'../relative_url'}                      | ${false}
+      ${'<a></a>'}                              | ${false}
+    `('returns $valid for $url', ({ url, valid }) => {
+      expect(urlUtils.isRootRelative(url)).toBe(valid);
+    });
+  });
+
   describe('isAbsoluteOrRootRelative', () => {
-    const validUrls = ['https://gitlab.com/', 'http://gitlab.com/', '/users/sign_in'];
-
-    const invalidUrls = [' https://gitlab.com/', './file/path', 'notanurl', '<a></a>'];
-
-    it.each(validUrls)(`returns true for %s`, url => {
-      expect(urlUtils.isAbsoluteOrRootRelative(url)).toBe(true);
+    it.each`
+      url                                       | valid
+      ${'https://gitlab.com/'}                  | ${true}
+      ${'http://gitlab.com/'}                   | ${true}
+      ${'/users/sign_in'}                       | ${true}
+      ${' https://gitlab.com'}                  | ${false}
+      ${'/somepath.php?url=https://gitlab.com'} | ${true}
+      ${'notaurl'}                              | ${false}
+      ${'../relative_url'}                      | ${false}
+      ${'<a></a>'}                              | ${false}
+    `('returns $valid for $url', ({ url, valid }) => {
+      expect(urlUtils.isAbsoluteOrRootRelative(url)).toBe(valid);
     });
+  });
 
-    it.each(invalidUrls)(`returns false for %s`, url => {
-      expect(urlUtils.isAbsoluteOrRootRelative(url)).toBe(false);
-    });
+  describe('relativePathToAbsolute', () => {
+    it.each`
+      path                       | base                                  | result
+      ${'./foo'}                 | ${'bar/'}                             | ${'/bar/foo'}
+      ${'../john.md'}            | ${'bar/baz/foo.php'}                  | ${'/bar/john.md'}
+      ${'../images/img.png'}     | ${'bar/baz/foo.php'}                  | ${'/bar/images/img.png'}
+      ${'../images/Image 1.png'} | ${'bar/baz/foo.php'}                  | ${'/bar/images/Image 1.png'}
+      ${'/images/img.png'}       | ${'bar/baz/foo.php'}                  | ${'/images/img.png'}
+      ${'/images/img.png'}       | ${'/bar/baz/foo.php'}                 | ${'/images/img.png'}
+      ${'../john.md'}            | ${'/bar/baz/foo.php'}                 | ${'/bar/john.md'}
+      ${'../john.md'}            | ${'///bar/baz/foo.php'}               | ${'/bar/john.md'}
+      ${'/images/img.png'}       | ${'https://gitlab.com/user/project/'} | ${'https://gitlab.com/images/img.png'}
+      ${'../images/img.png'}     | ${'https://gitlab.com/user/project/'} | ${'https://gitlab.com/user/images/img.png'}
+      ${'../images/Image 1.png'} | ${'https://gitlab.com/user/project/'} | ${'https://gitlab.com/user/images/Image%201.png'}
+    `(
+      'converts relative path "$path" with base "$base" to absolute path => "expected"',
+      ({ path, base, result }) => {
+        expect(urlUtils.relativePathToAbsolute(path, base)).toBe(result);
+      },
+    );
   });
 
   describe('isSafeUrl', () => {

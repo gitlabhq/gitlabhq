@@ -27,7 +27,7 @@ describe Import::BitbucketController do
     end
 
     it "updates access token" do
-      expires_at = Time.now + 1.day
+      expires_at = Time.current + 1.day
       expires_in = 1.day
       access_token = double(token: token,
                             secret: secret,

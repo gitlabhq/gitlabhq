@@ -55,30 +55,6 @@ describe('Multi-file store mutations', () => {
     });
   });
 
-  describe('SET_LEFT_PANEL_COLLAPSED', () => {
-    it('sets left panel collapsed', () => {
-      mutations.SET_LEFT_PANEL_COLLAPSED(localState, true);
-
-      expect(localState.leftPanelCollapsed).toBeTruthy();
-
-      mutations.SET_LEFT_PANEL_COLLAPSED(localState, false);
-
-      expect(localState.leftPanelCollapsed).toBeFalsy();
-    });
-  });
-
-  describe('SET_RIGHT_PANEL_COLLAPSED', () => {
-    it('sets right panel collapsed', () => {
-      mutations.SET_RIGHT_PANEL_COLLAPSED(localState, true);
-
-      expect(localState.rightPanelCollapsed).toBeTruthy();
-
-      mutations.SET_RIGHT_PANEL_COLLAPSED(localState, false);
-
-      expect(localState.rightPanelCollapsed).toBeFalsy();
-    });
-  });
-
   describe('CLEAR_STAGED_CHANGES', () => {
     it('clears stagedFiles array', () => {
       localState.stagedFiles.push('a');

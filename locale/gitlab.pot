@@ -1787,6 +1787,9 @@ msgstr ""
 msgid "AlertManagement|Service"
 msgstr ""
 
+msgid "AlertManagement|Severity"
+msgstr ""
+
 msgid "AlertManagement|Start time"
 msgstr ""
 
@@ -2837,13 +2840,31 @@ msgstr ""
 msgid "AuditLogs|Date"
 msgstr ""
 
+msgid "AuditLogs|Failed to find %{type}. Please search for another %{type}."
+msgstr ""
+
+msgid "AuditLogs|Failed to find %{type}. Please try again."
+msgstr ""
+
+msgid "AuditLogs|Group Events"
+msgstr ""
+
 msgid "AuditLogs|IP Address"
+msgstr ""
+
+msgid "AuditLogs|No matching %{type} found."
 msgstr ""
 
 msgid "AuditLogs|Object"
 msgstr ""
 
+msgid "AuditLogs|Project Events"
+msgstr ""
+
 msgid "AuditLogs|Target"
+msgstr ""
+
+msgid "AuditLogs|User Events"
 msgstr ""
 
 msgid "Aug"
@@ -13807,6 +13828,9 @@ msgid "Needs attention"
 msgstr ""
 
 msgid "Network"
+msgstr ""
+
+msgid "NetworkPolicies|Something went wrong, unable to fetch policies"
 msgstr ""
 
 msgid "Never"

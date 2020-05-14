@@ -384,28 +384,6 @@
     - <<: *if-default-refs
       changes: *code-backstage-qa-patterns
 
-.rails:rules:master-push--master-schedule-2-hourly--code-backstage:
-  rules:
-    - <<: *if-master-push
-      changes: *code-backstage-patterns
-    - <<: *if-master-schedule-2-hourly
-    - <<: *if-merge-request
-      changes: [".gitlab/ci/rails.gitlab-ci.yml"]
-
-.rails:rules:master-schedule-nightly--code-backstage:
-  rules:
-    - <<: *if-master-schedule-nightly
-    - <<: *if-merge-request
-      changes: [".gitlab/ci/rails.gitlab-ci.yml"]
-
-.rails:rules:master-schedule-nightly--code-backstage-ee-only:
-  rules:
-    - <<: *if-not-ee
-      when: never
-    - <<: *if-master-schedule-nightly
-    - <<: *if-merge-request
-      changes: [".gitlab/ci/rails.gitlab-ci.yml"]
-
 .rails:rules:ee-only:
   rules:
     - <<: *if-not-ee

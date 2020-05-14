@@ -172,7 +172,6 @@ module Gitlab
           dependency_proxy_enabled: Gitlab.config.try(:dependency_proxy)&.enabled,
           gitlab_shared_runners_enabled: alt_usage_data { Gitlab.config.gitlab_ci.shared_runners_enabled },
           gravatar_enabled: alt_usage_data { Gitlab::CurrentSettings.gravatar_enabled? },
-          influxdb_metrics_enabled: alt_usage_data { Gitlab::Metrics.influx_metrics_enabled? },
           ldap_enabled: alt_usage_data { Gitlab.config.ldap.enabled },
           mattermost_enabled: alt_usage_data { Gitlab.config.mattermost.enabled },
           omniauth_enabled: alt_usage_data { Gitlab::Auth.omniauth_enabled? },

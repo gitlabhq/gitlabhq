@@ -224,12 +224,45 @@ export function getBaseURL() {
 }
 
 /**
+ * Returns true if url is an absolute URL
+ *
+ * @param {String} url
+ */
+export function isAbsolute(url) {
+  return /^https?:\/\//.test(url);
+}
+
+/**
+ * Returns true if url is a root-relative URL
+ *
+ * @param {String} url
+ */
+export function isRootRelative(url) {
+  return /^\//.test(url);
+}
+
+/**
  * Returns true if url is an absolute or root-relative URL
  *
  * @param {String} url
  */
 export function isAbsoluteOrRootRelative(url) {
-  return /^(https?:)?\//.test(url);
+  return isAbsolute(url) || isRootRelative(url);
+}
+
+/**
+ * Converts a relative path to an absolute or a root relative path depending
+ * on what is passed as a basePath.
+ *
+ * @param {String} path       Relative path, eg. ../img/img.png
+ * @param {String} basePath   Absolute or root relative path, eg. /user/project or
+ *                            https://gitlab.com/user/project
+ */
+export function relativePathToAbsolute(path, basePath) {
+  const absolute = isAbsolute(basePath);
+  const base = absolute ? basePath : `file:///${basePath}`;
+  const url = new URL(path, base);
+  return absolute ? url.href : decodeURIComponent(url.pathname);
 }
 
 /**

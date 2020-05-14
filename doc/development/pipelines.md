@@ -70,11 +70,7 @@ that are scoped to a single [configuration parameter](../ci/yaml/README.md#confi
 | `.default-retry` | Allows a job to [retry](../ci/yaml/README.md#retry) upon `unknown_failure`, `api_failure`, `runner_system_failure`, `job_execution_timeout`, or `stuck_or_timeout_failure`. |
 | `.default-before_script` | Allows a job to use a default `before_script` definition suitable for Ruby/Rails tasks that may need a database running (e.g. tests). |
 | `.default-cache` | Allows a job to use a default `cache` definition suitable for Ruby/Rails and frontend tasks. |
-| `.use-pg9` | Allows a job to use the `postgres:9.6.17` and `redis:alpine` services. |
-| `.use-pg10` | Allows a job to use the `postgres:10.12` and `redis:alpine` services. |
 | `.use-pg11` | Allows a job to use the `postgres:11.6` and `redis:alpine` services. |
-| `.use-pg9-ee` | Same as `.use-pg9` but also use the `docker.elastic.co/elasticsearch/elasticsearch:6.4.2` services. |
-| `.use-pg10-ee` | Same as `.use-pg10` but also use the `docker.elastic.co/elasticsearch/elasticsearch:6.4.2` services. |
 | `.use-pg11-ee` | Same as `.use-pg11` but also use the `docker.elastic.co/elasticsearch/elasticsearch:6.4.2` services. |
 | `.use-kaniko` | Allows a job to use the `kaniko` tool to build Docker images. |
 | `.as-if-foss` | Simulate the FOSS project by setting the `FOSS_ONLY='1'` environment variable. |
@@ -159,10 +155,9 @@ request, be sure to start the `dont-interrupt-me` job before pushing.
 
 | Where? | PG version |
 | ------ | ------ |
-| MRs | 9.6 |
-| `master` (non-scheduled pipelines) | 9.6 / 11 |
-| 2-hourly scheduled pipelines | 9.6 / 11 |
-| Nightly scheduled pipeline | 9.6 / 10 |
+| MRs | 11 |
+| `master` (non-scheduled pipelines) | 11 |
+| 2-hourly scheduled pipelines | 11 |
 
 ### Long-term plan
 
@@ -215,7 +210,7 @@ graph RL;
     click 1-4 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8356616&udv=0"
     1-5["gitlab:assets:compile pull-cache (22 minutes)"];
     click 1-5 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914312&udv=0"
-    1-6["setup-test-env pg11 (9.6 minutes)"];
+    1-6["setup-test-env (9.6 minutes)"];
     click 1-6 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914315&udv=0"
     1-7["review-stop-failed-deployment"];
     1-8["dependency_scanning"];
@@ -329,7 +324,7 @@ graph RL;
     click 1-4 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8356616&udv=0"
     1-5["gitlab:assets:compile pull-cache (22 minutes)"];
     click 1-5 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914312&udv=0"
-    1-6["setup-test-env pg11 (9.6 minutes)"];
+    1-6["setup-test-env (9.6 minutes)"];
     click 1-6 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914315&udv=0"
     1-7["review-stop-failed-deployment"];
     1-8["dependency_scanning"];
@@ -468,7 +463,7 @@ graph RL;
     click 1-4 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8356616&udv=0"
     1-5["gitlab:assets:compile pull-cache (22 minutes)"];
     click 1-5 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914312&udv=0"
-    1-6["setup-test-env pg11 (9.6 minutes)"];
+    1-6["setup-test-env (9.6 minutes)"];
     click 1-6 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914315&udv=0"
     1-7["review-stop-failed-deployment"];
     1-8["dependency_scanning"];

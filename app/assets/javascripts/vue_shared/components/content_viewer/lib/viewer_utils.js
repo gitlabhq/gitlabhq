@@ -26,8 +26,8 @@ const fileExtensionViewers = {
 export function viewerInformationForPath(path) {
   if (!path) return null;
   const name = path.split('/').pop();
-  const viewerName =
-    fileNameViewers[name] || fileExtensionViewers[name ? name.split('.').pop() : ''] || '';
+  const extension = name.includes('.') && name.split('.').pop();
+  const viewerName = fileNameViewers[name] || fileExtensionViewers[extension];
 
   return viewers[viewerName];
 }

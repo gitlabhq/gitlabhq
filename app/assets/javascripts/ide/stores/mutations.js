@@ -29,16 +29,6 @@ export default {
       });
     }
   },
-  [types.SET_LEFT_PANEL_COLLAPSED](state, collapsed) {
-    Object.assign(state, {
-      leftPanelCollapsed: collapsed,
-    });
-  },
-  [types.SET_RIGHT_PANEL_COLLAPSED](state, collapsed) {
-    Object.assign(state, {
-      rightPanelCollapsed: collapsed,
-    });
-  },
   [types.SET_RESIZING_STATUS](state, resizing) {
     Object.assign(state, {
       panelResizing: resizing,

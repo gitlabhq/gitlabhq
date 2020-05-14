@@ -1,5 +1,7 @@
 <script>
 import $ from 'jquery';
+import '~/behaviors/markdown/render_gfm';
+
 import { GlSkeletonLoading } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
@@ -78,7 +80,7 @@ export default {
             this.isLoading = false;
 
             this.$nextTick(() => {
-              $(this.$refs['markdown-preview']).renderGFM();
+              $(this.$refs.markdownPreview).renderGFM();
             });
           })
           .catch(() => {
@@ -92,7 +94,7 @@ export default {
 </script>
 
 <template>
-  <div ref="markdown-preview" class="md-previewer">
+  <div ref="markdownPreview" class="md-previewer">
     <gl-skeleton-loading v-if="isLoading" />
     <div v-else class="md" v-html="previewContent"></div>
   </div>

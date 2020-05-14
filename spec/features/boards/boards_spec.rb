@@ -549,6 +549,17 @@ describe 'Issue Boards', :js do
     end
   end
 
+  context 'issue board focus mode' do
+    before do
+      visit project_board_path(project, board)
+      wait_for_requests
+    end
+
+    it 'shows the button' do
+      expect(page).to have_link('Toggle focus mode')
+    end
+  end
+
   context 'keyboard shortcuts' do
     before do
       visit project_board_path(project, board)

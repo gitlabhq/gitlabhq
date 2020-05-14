@@ -254,4 +254,34 @@ describe('IDE services', () => {
       });
     });
   });
+
+  describe('pingUsage', () => {
+    let mock;
+    let relativeUrlRoot;
+    const TEST_RELATIVE_URL_ROOT = 'blah-blah';
+
+    beforeEach(() => {
+      jest.spyOn(axios, 'post');
+      relativeUrlRoot = gon.relative_url_root;
+      gon.relative_url_root = TEST_RELATIVE_URL_ROOT;
+
+      mock = new MockAdapter(axios);
+    });
+
+    afterEach(() => {
+      mock.restore();
+      gon.relative_url_root = relativeUrlRoot;
+    });
+
+    it('posts to usage endpoint', () => {
+      const TEST_PROJECT_PATH = 'foo/bar';
+      const axiosURL = `${TEST_RELATIVE_URL_ROOT}/${TEST_PROJECT_PATH}/usage_ping/web_ide_pipelines_count`;
+
+      mock.onPost(axiosURL).reply(200);
+
+      return services.pingUsage(TEST_PROJECT_PATH).then(() => {
+        expect(axios.post).toHaveBeenCalledWith(axiosURL);
+      });
+    });
+  });
 });

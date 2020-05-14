@@ -5,7 +5,7 @@ class UserCalloutsController < ApplicationController
     callout = ensure_callout
 
     if callout.persisted?
-      callout.update(dismissed_at: Time.now)
+      callout.update(dismissed_at: Time.current)
       respond_to do |format|
         format.json { head :ok }
       end

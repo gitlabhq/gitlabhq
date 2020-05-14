@@ -1,5 +1,5 @@
 <script>
-import { mapActions, mapState } from 'vuex';
+import { mapActions } from 'vuex';
 import PanelResizer from '~/vue_shared/components/panel_resizer.vue';
 
 export default {
@@ -7,10 +7,6 @@ export default {
     PanelResizer,
   },
   props: {
-    collapsible: {
-      type: Boolean,
-      required: true,
-    },
     initialWidth: {
       type: Number,
       required: true,
@@ -31,11 +27,6 @@ export default {
     };
   },
   computed: {
-    ...mapState({
-      collapsed(state) {
-        return state[`${this.side}PanelCollapsed`];
-      },
-    }),
     panelStyle() {
       if (!this.collapsed) {
         return {
@@ -47,33 +38,17 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['setPanelCollapsedStatus', 'setResizingStatus']),
-    toggleFullbarCollapsed() {
-      if (this.collapsed && this.collapsible) {
-        this.setPanelCollapsedStatus({
-          side: this.side,
-          collapsed: !this.collapsed,
-        });
-      }
-    },
+    ...mapActions(['setResizingStatus']),
   },
   maxSize: window.innerWidth / 2,
 };
 </script>
 
 <template>
-  <div
-    :class="{
-      'is-collapsed': collapsed && collapsible,
-    }"
-    :style="panelStyle"
-    class="multi-file-commit-panel"
-    @click="toggleFullbarCollapsed"
-  >
+  <div :style="panelStyle" class="multi-file-commit-panel">
     <slot></slot>
     <panel-resizer
       :size.sync="width"
-      :enabled="!collapsed"
       :start-size="initialWidth"
       :min-size="minSize"
       :max-size="$options.maxSize"

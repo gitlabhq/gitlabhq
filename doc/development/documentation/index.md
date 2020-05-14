@@ -530,7 +530,7 @@ on or off when markdownlint was enabled on the docs.
 
 #### Vale
 
-[Vale](https://errata-ai.github.io/vale/) is a grammar, style, and word usage linter
+[Vale](https://errata-ai.gitbook.io/vale/) is a grammar, style, and word usage linter
 for the English language. Vale's configuration is stored in the
 [`.vale.ini`](https://gitlab.com/gitlab-org/gitlab/blob/master/.vale.ini) file
 located in the root directory of the [GitLab repository](https://gitlab.com/gitlab-org/gitlab).

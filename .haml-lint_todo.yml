@@ -18,7 +18,6 @@ linters:
       - "app/views/admin/application_settings/_abuse.html.haml"
       - "app/views/admin/application_settings/_diff_limits.html.haml"
       - "app/views/admin/application_settings/_gitaly.html.haml"
-      - "app/views/admin/application_settings/_influx.html.haml"
       - "app/views/admin/application_settings/_ip_limits.html.haml"
       - "app/views/admin/application_settings/_performance.html.haml"
       - "app/views/admin/application_settings/_plantuml.html.haml"

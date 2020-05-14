@@ -609,7 +609,7 @@ describe Projects::IssuesController do
       before do
         project.add_developer(user)
 
-        issue.update!(last_edited_by: deleted_user, last_edited_at: Time.now)
+        issue.update!(last_edited_by: deleted_user, last_edited_at: Time.current)
 
         deleted_user.destroy
         sign_in(user)
