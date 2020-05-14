@@ -15361,6 +15361,9 @@ msgstr ""
 msgid "Pipeline|Pipelines"
 msgstr ""
 
+msgid "Pipeline|Raw text search is not currently supported. Please use the available search tokens."
+msgstr ""
+
 msgid "Pipeline|Run Pipeline"
 msgstr ""
 

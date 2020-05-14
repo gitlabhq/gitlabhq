@@ -10,7 +10,7 @@ import NavigationControls from './nav_controls.vue';
 import { getParameterByName } from '../../lib/utils/common_utils';
 import CIPaginationMixin from '../../vue_shared/mixins/ci_pagination_api_mixin';
 import PipelinesFilteredSearch from './pipelines_filtered_search.vue';
-import { ANY_TRIGGER_AUTHOR } from '../constants';
+import { ANY_TRIGGER_AUTHOR, RAW_TEXT_WARNING } from '../constants';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
@@ -258,8 +258,12 @@ export default {
       filters.forEach(filter => {
         // do not add Any for username query param, so we
         // can fetch all trigger authors
-        if (filter.value.data !== ANY_TRIGGER_AUTHOR) {
+        if (filter.type && filter.value.data !== ANY_TRIGGER_AUTHOR) {
           this.requestData[filter.type] = filter.value.data;
+        }
+
+        if (!filter.type) {
+          createFlash(RAW_TEXT_WARNING, 'warning');
         }
       });
 

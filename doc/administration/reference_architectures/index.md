@@ -156,14 +156,14 @@ column.
 |-----------|-------------|----------------------------|
 | Load balancer(s) ([6](#footnotes)) | Handles load balancing, typically when you have multiple GitLab application services nodes | [Load balancer configuration](../high_availability/load_balancer.md) ([6](#footnotes))      | No |
 | Object storage service ([4](#footnotes)) | Recommended store for shared data objects | [Object Storage configuration](../object_storage.md) | No |
-| NFS ([5](#footnotes)) ([7](#footnotes)) | Shared disk storage service. Can be used as an alternative for Gitaly or Object Storage. Required for GitLab Pages | [NFS configuration](../high_availability/nfs.md) | No |
+| NFS ([5](#footnotes)) ([7](#footnotes)) | Shared disk storage service. Can be used as an alternative Object Storage. Required for GitLab Pages | [NFS configuration](../high_availability/nfs.md) | No |
 | [Consul](../../development/architecture.md#consul) ([3](#footnotes)) | Service discovery and health checks/failover | [Consul HA configuration](../high_availability/consul.md) **(PREMIUM ONLY)** | Yes |
 | [PostgreSQL](../../development/architecture.md#postgresql) | Database | [PostgreSQL configuration](https://docs.gitlab.com/omnibus/settings/database.html) | Yes |
 | [PgBouncer](../../development/architecture.md#pgbouncer) | Database connection pooler | [PgBouncer configuration](../high_availability/pgbouncer.md#running-pgbouncer-as-part-of-a-non-ha-gitlab-installation) **(PREMIUM ONLY)** | Yes |
 | Repmgr | PostgreSQL cluster management and failover | [PostgreSQL and Repmgr configuration](../high_availability/database.md) | Yes |
 | [Redis](../../development/architecture.md#redis) ([3](#footnotes))  | Key/value store for fast data lookup and caching | [Redis configuration](../high_availability/redis.md) | Yes |
 | Redis Sentinel | High availability for Redis | [Redis Sentinel configuration](../high_availability/redis.md) | Yes |
-| [Gitaly](../../development/architecture.md#gitaly) ([2](#footnotes)) ([5](#footnotes)) ([7](#footnotes))  | Provides access to Git repositories | [Gitaly configuration](../gitaly/index.md#running-gitaly-on-its-own-server) | Yes |
+| [Gitaly](../../development/architecture.md#gitaly) ([2](#footnotes)) ([7](#footnotes)) ([10](#footnotes)) | Provides access to Git repositories | [Gitaly configuration](../gitaly/index.md#running-gitaly-on-its-own-server) | Yes |
 | [Sidekiq](../../development/architecture.md#sidekiq) | Asynchronous/background jobs | [Sidekiq configuration](../high_availability/sidekiq.md) | Yes |
 | [GitLab application services](../../development/architecture.md#unicorn)([1](#footnotes)) | Unicorn/Puma, Workhorse, GitLab Shell - serves front-end requests (UI, API, Git over HTTP/SSH) | [GitLab app scaling configuration](../high_availability/gitlab.md) | Yes |
 | [Prometheus](../../development/architecture.md#prometheus) and [Grafana](../../development/architecture.md#grafana) | GitLab environment monitoring | [Monitoring node for scaling](../high_availability/monitoring_node.md) | Yes |
@@ -196,9 +196,9 @@ column.
 1. For data objects such as LFS, Uploads, Artifacts, etc. We recommend an [Object Storage service](../object_storage.md)
    over NFS where possible, due to better performance and availability.
 
-1. NFS can be used as an alternative for both repository data (replacing Gitaly) and
-   object storage but this isn't typically recommended for performance reasons. Note however it is required for
-   [GitLab Pages](https://gitlab.com/gitlab-org/gitlab-pages/issues/196).
+1. NFS can be used as an alternative for object storage but this isn't typically
+   recommended for performance reasons. Note however it is required for [GitLab
+   Pages](https://gitlab.com/gitlab-org/gitlab-pages/issues/196).
 
 1. Our architectures have been tested and validated with [HAProxy](https://www.haproxy.org/)
    as the load balancer. Although other load balancers with similar feature sets
@@ -219,3 +219,7 @@ column.
 
 1. AWS-equivalent and Azure-equivalent configurations are rough suggestions
    and may change in the future. They have not yet been tested and validated.
+
+1. From GitLab 13.0, using NFS for Git repositories is deprecated. In GitLab
+   14.0, support for NFS for Git repositories is scheduled to be removed.
+   Upgrade to [Gitaly Cluster](../gitaly/praefect.md) as soon as possible.

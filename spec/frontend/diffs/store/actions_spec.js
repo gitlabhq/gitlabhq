@@ -40,6 +40,7 @@ import {
   receiveFullDiffError,
   fetchFullDiff,
   toggleFullDiff,
+  switchToFullDiffFromRenamedFile,
   setFileCollapsed,
   setExpandedDiffLines,
   setSuggestPopoverDismissed,
@@ -1249,6 +1250,87 @@ describe('DiffsStoreActions', () => {
         ],
         done,
       );
+    });
+  });
+
+  describe('switchToFullDiffFromRenamedFile', () => {
+    const SUCCESS_URL = 'fakehost/context.success';
+    const ERROR_URL = 'fakehost/context.error';
+    const testFilePath = 'testpath';
+    const updatedViewerName = 'testviewer';
+    const preparedLine = { prepared: 'in-a-test' };
+    const testFile = {
+      file_path: testFilePath,
+      file_hash: 'testhash',
+      alternate_viewer: { name: updatedViewerName },
+    };
+    const updatedViewer = { name: updatedViewerName, collapsed: false };
+    const testData = [{ rich_text: 'test' }, { rich_text: 'file2' }];
+    let renamedFile;
+    let mock;
+
+    beforeEach(() => {
+      mock = new MockAdapter(axios);
+      jest.spyOn(utils, 'prepareLineForRenamedFile').mockImplementation(() => preparedLine);
+    });
+
+    afterEach(() => {
+      renamedFile = null;
+      mock.restore();
+    });
+
+    describe('success', () => {
+      beforeEach(() => {
+        renamedFile = { ...testFile, context_lines_path: SUCCESS_URL };
+        mock.onGet(SUCCESS_URL).replyOnce(200, testData);
+      });
+
+      it.each`
+        diffViewType
+        ${INLINE_DIFF_VIEW_TYPE}
+        ${PARALLEL_DIFF_VIEW_TYPE}
+      `(
+        'performs the correct mutations and starts a render queue for view type $diffViewType',
+        ({ diffViewType }) => {
+          return testAction(
+            switchToFullDiffFromRenamedFile,
+            { diffFile: renamedFile },
+            { diffViewType },
+            [
+              {
+                type: types.SET_DIFF_FILE_VIEWER,
+                payload: { filePath: testFilePath, viewer: updatedViewer },
+              },
+              {
+                type: types.SET_CURRENT_VIEW_DIFF_FILE_LINES,
+                payload: { filePath: testFilePath, lines: [preparedLine, preparedLine] },
+              },
+            ],
+            [{ type: 'startRenderDiffsQueue' }],
+          );
+        },
+      );
+    });
+
+    describe('error', () => {
+      beforeEach(() => {
+        renamedFile = { ...testFile, context_lines_path: ERROR_URL };
+        mock.onGet(ERROR_URL).reply(500);
+      });
+
+      it('dispatches the error handling action', () => {
+        const rejected = testAction(
+          switchToFullDiffFromRenamedFile,
+          { diffFile: renamedFile },
+          null,
+          [],
+          [{ type: 'receiveFullDiffError', payload: testFilePath }],
+        );
+
+        return rejected.catch(error =>
+          expect(error).toEqual(new Error('Request failed with status code 500')),
+        );
+      });
     });
   });
 

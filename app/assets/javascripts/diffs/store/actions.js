@@ -16,6 +16,7 @@ import {
   idleCallback,
   allDiscussionWrappersExpanded,
   prepareDiffData,
+  prepareLineForRenamedFile,
 } from './utils';
 import * as types from './mutation_types';
 import {
@@ -626,6 +627,42 @@ export const toggleFullDiff = ({ dispatch, getters, state }, filePath) => {
     dispatch('fetchFullDiff', file);
   }
 };
+
+export function switchToFullDiffFromRenamedFile({ commit, dispatch, state }, { diffFile }) {
+  return axios
+    .get(diffFile.context_lines_path, {
+      params: {
+        full: true,
+        from_merge_request: true,
+      },
+    })
+    .then(({ data }) => {
+      const lines = data.map((line, index) =>
+        prepareLineForRenamedFile({
+          diffViewType: state.diffViewType,
+          line,
+          diffFile,
+          index,
+        }),
+      );
+
+      commit(types.SET_DIFF_FILE_VIEWER, {
+        filePath: diffFile.file_path,
+        viewer: {
+          ...diffFile.alternate_viewer,
+          collapsed: false,
+        },
+      });
+      commit(types.SET_CURRENT_VIEW_DIFF_FILE_LINES, { filePath: diffFile.file_path, lines });
+
+      dispatch('startRenderDiffsQueue');
+    })
+    .catch(error => {
+      dispatch('receiveFullDiffError', diffFile.file_path);
+
+      throw error;
+    });
+}
 
 export const setFileCollapsed = ({ commit }, { filePath, collapsed }) =>
   commit(types.SET_FILE_COLLAPSED, { filePath, collapsed });

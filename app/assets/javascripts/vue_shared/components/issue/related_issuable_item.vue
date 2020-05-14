@@ -1,6 +1,6 @@
 <script>
 import '~/commons/bootstrap';
-import { GlTooltip, GlTooltipDirective } from '@gitlab/ui';
+import { GlIcon, GlTooltip, GlTooltipDirective } from '@gitlab/ui';
 import { sprintf } from '~/locale';
 import IssueMilestone from '../../components/issue/issue_milestone.vue';
 import IssueAssignees from '../../components/issue/issue_assignees.vue';
@@ -13,6 +13,7 @@ export default {
     IssueMilestone,
     IssueAssignees,
     CiIcon,
+    GlIcon,
     GlTooltip,
   },
   directives: {
@@ -44,6 +45,9 @@ export default {
         visibility: 'hidden',
       };
     },
+    iconClasses() {
+      return `${this.iconClass} ic-${this.iconName}`;
+    },
   },
 };
 </script>
@@ -60,13 +64,12 @@ export default {
       <!-- Title area: Status icon (XL) and title -->
       <div class="item-title d-flex align-items-xl-center mb-xl-0">
         <div ref="iconElementXL">
-          <icon
+          <gl-icon
             v-if="hasState"
             ref="iconElementXL"
-            class="mr-2"
-            :class="iconClass"
+            class="mr-2 d-block"
+            :class="iconClasses"
             :name="iconName"
-            :size="16"
             :title="stateTitle"
             :aria-label="state"
           />
@@ -74,11 +77,10 @@ export default {
         <gl-tooltip :target="() => $refs.iconElementXL">
           <span v-html="stateTitle"></span>
         </gl-tooltip>
-        <icon
+        <gl-icon
           v-if="confidential"
           v-gl-tooltip
           name="eye-slash"
-          :size="16"
           :title="__('Confidential')"
           class="confidential-icon append-right-4 align-self-baseline align-self-md-auto mt-xl-0"
           :aria-label="__('Confidential')"

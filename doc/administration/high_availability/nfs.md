@@ -7,6 +7,11 @@ type: reference
 You can view information and options set for each of the mounted NFS file
 systems by running `nfsstat -m` and `cat /etc/fstab`.
 
+CAUTION: **Caution:**
+From GitLab 13.0, using NFS for Git repositories is deprecated. In GitLab 14.0,
+support for NFS for Git repositories is scheduled to be removed. Upgrade to
+[Gitaly Cluster](../gitaly/praefect.md) as soon as possible.
+
 NOTE: **Note:** Filesystem performance has a big impact on overall GitLab
 performance, especially for actions that read or write to Git repositories. See
 [Filesystem Performance Benchmarking](../operations/filesystem_benchmarking.md)

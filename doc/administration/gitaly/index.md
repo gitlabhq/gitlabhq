@@ -10,6 +10,11 @@ On this page, *Gitaly server* refers to a standalone node that only runs Gitaly
 and *Gitaly client* is a GitLab Rails app node that runs all other processes
 except Gitaly.
 
+CAUTION: **Caution:**
+From GitLab 13.0, using NFS for Git repositories is deprecated. In GitLab 14.0,
+support for NFS for Git repositories is scheduled to be removed. Upgrade to
+[Gitaly Cluster](praefect.md) as soon as possible.
+
 ## Architecture
 
 Here's a high-level architecture overview of how Gitaly is used.

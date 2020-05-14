@@ -361,6 +361,72 @@ describe('DiffsStoreUtils', () => {
     });
   });
 
+  describe('prepareLineForRenamedFile', () => {
+    const diffFile = {
+      file_hash: 'file-hash',
+    };
+    const lineIndex = 4;
+    const sourceLine = {
+      foo: 'test',
+      rich_text: ' <p>rich</p>', // Note the leading space
+    };
+    const correctLine = {
+      foo: 'test',
+      line_code: 'file-hash_5_5',
+      old_line: 5,
+      new_line: 5,
+      rich_text: '<p>rich</p>', // Note no leading space
+      discussionsExpanded: true,
+      discussions: [],
+      hasForm: false,
+      text: undefined,
+      alreadyPrepared: true,
+    };
+    let preppedLine;
+
+    beforeEach(() => {
+      preppedLine = utils.prepareLineForRenamedFile({
+        diffViewType: INLINE_DIFF_VIEW_TYPE,
+        line: sourceLine,
+        index: lineIndex,
+        diffFile,
+      });
+    });
+
+    it('copies over the original line object to the new prepared line', () => {
+      expect(preppedLine).toEqual(
+        expect.objectContaining({
+          foo: correctLine.foo,
+          rich_text: correctLine.rich_text,
+        }),
+      );
+    });
+
+    it('correctly sets the old and new lines, plus a line code', () => {
+      expect(preppedLine.old_line).toEqual(correctLine.old_line);
+      expect(preppedLine.new_line).toEqual(correctLine.new_line);
+      expect(preppedLine.line_code).toEqual(correctLine.line_code);
+    });
+
+    it('returns a single object with the correct structure for `inline` lines', () => {
+      expect(preppedLine).toEqual(correctLine);
+    });
+
+    it('returns a nested object with "left" and "right" lines + the line code for `parallel` lines', () => {
+      preppedLine = utils.prepareLineForRenamedFile({
+        diffViewType: PARALLEL_DIFF_VIEW_TYPE,
+        line: sourceLine,
+        index: lineIndex,
+        diffFile,
+      });
+
+      expect(Object.keys(preppedLine)).toEqual(['left', 'right', 'line_code']);
+      expect(preppedLine.left).toEqual(correctLine);
+      expect(preppedLine.right).toEqual(correctLine);
+      expect(preppedLine.line_code).toEqual(correctLine.line_code);
+    });
+  });
+
   describe('prepareDiffData', () => {
     let mock;
     let preparedDiff;

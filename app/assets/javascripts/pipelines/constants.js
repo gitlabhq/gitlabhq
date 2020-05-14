@@ -1,4 +1,4 @@
-import { __ } from '~/locale';
+import { s__, __ } from '~/locale';
 
 export const CANCEL_REQUEST = 'CANCEL_REQUEST';
 export const PIPELINES_TABLE = 'PIPELINES_TABLE';
@@ -14,3 +14,6 @@ export const TestStatus = {
 
 export const FETCH_AUTHOR_ERROR_MESSAGE = __('There was a problem fetching project users.');
 export const FETCH_BRANCH_ERROR_MESSAGE = __('There was a problem fetching project branches.');
+export const RAW_TEXT_WARNING = s__(
+  'Pipeline|Raw text search is not currently supported. Please use the available search tokens.',
+);
