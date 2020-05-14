@@ -6,16 +6,6 @@ describe 'Getting designs related to an issue' do
   include GraphqlHelpers
   include DesignManagementTestHelpers
 
-  before_all do
-    # TODO these tests are being temporarily skipped unless run in EE,
-    # as we are in the process of moving Design Management to FOSS in 13.0
-    # in steps. In the current step the services have not yet been moved,
-    # which are used by the `:with_smaller_image_versions` factory trait.
-    #
-    # See https://gitlab.com/gitlab-org/gitlab/-/issues/212566#note_327724283.
-    skip 'See https://gitlab.com/gitlab-org/gitlab/-/issues/212566#note_327724283' unless Gitlab.ee?
-  end
-
   let_it_be(:design) { create(:design, :with_smaller_image_versions, versions_count: 1) }
   let_it_be(:current_user) { design.project.owner }
   let(:design_query) do

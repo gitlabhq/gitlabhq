@@ -25,7 +25,7 @@ describe('init markdown', () => {
         insertMarkdownText({
           textArea,
           text: textArea.value,
-          tag: '*',
+          tag: '* ',
           blockTag: null,
           selected: '',
           wrap: false,
@@ -43,7 +43,7 @@ describe('init markdown', () => {
         insertMarkdownText({
           textArea,
           text: textArea.value,
-          tag: '*',
+          tag: '* ',
           blockTag: null,
           selected: '',
           wrap: false,
@@ -61,7 +61,7 @@ describe('init markdown', () => {
         insertMarkdownText({
           textArea,
           text: textArea.value,
-          tag: '*',
+          tag: '* ',
           blockTag: null,
           selected: '',
           wrap: false,
@@ -79,7 +79,7 @@ describe('init markdown', () => {
         insertMarkdownText({
           textArea,
           text: textArea.value,
-          tag: '*',
+          tag: '* ',
           blockTag: null,
           selected: '',
           wrap: false,

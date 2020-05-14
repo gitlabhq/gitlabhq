@@ -261,7 +261,7 @@ Configure the tracking database.
    redis_exporter['enable'] = false
    repmgr['enable'] = false
    sidekiq['enable'] = false
-   unicorn['enable'] = false
+   puma['enable'] = false
    ```
 
 After making these changes, [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure) so the changes take effect.
@@ -354,7 +354,7 @@ On the secondary the following GitLab frontend services will be enabled:
 - `registry`
 - `remote-syslog`
 - `sidekiq`
-- `unicorn`
+- `puma`
 
 Verify these services by running `sudo gitlab-ctl status` on the frontend
 application servers.
@@ -407,7 +407,7 @@ application servers above, with some changes to run only the `sidekiq` service:
    redis['enable'] = false
    redis_exporter['enable'] = false
    repmgr['enable'] = false
-   unicorn['enable'] = false
+   puma['enable'] = false
 
    ##
    ## The unique identifier for the Geo node.

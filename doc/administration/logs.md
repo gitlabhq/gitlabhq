@@ -538,7 +538,17 @@ This file lives in `/var/log/gitlab/gitaly/current` and is produced by [runit](h
 
 This file lives in `/var/log/gitlab/gitlab-rails/grpc.log` for Omnibus GitLab packages. Native [gRPC](https://grpc.io/) logging used by Gitaly.
 
+## `puma_stderr.log` & `puma_stdout.log`
+
+This file lives in `/var/log/gitlab/puma/puma_stderr.log` and `/var/log/gitlab/puma/puma_stdout.log` for
+Omnibus GitLab packages or in `/home/git/gitlab/log/puma_stderr.log` and `/home/git/gitlab/log/puma_stdout.log`
+for installations from source.
+
 ## `unicorn_stderr.log` & `unicorn_stdout.log`
+
+NOTE: **Note:**
+Starting with GitLab 13.0, Puma is the default web server used in GitLab
+all-in-one package based installations as well as GitLab Helm chart deployments.
 
 This file lives in `/var/log/gitlab/unicorn/unicorn_stderr.log` and `/var/log/gitlab/unicorn/unicorn_stdout.log` for
 Omnibus GitLab packages or in `/home/git/gitlab/log/unicorn_stderr.log` and `/home/git/gitlab/log/unicorn_stdout.log`
@@ -564,12 +574,6 @@ I, [2015-02-13T07:16:01.530733 #9047]  INFO -- : reaped #<Process::Status: pid 9
 I, [2015-02-13T07:16:01.534501 #13379]  INFO -- : worker=1 spawned pid=13379
 I, [2015-02-13T07:16:01.534848 #13379]  INFO -- : worker=1 ready
 ```
-
-## `puma_stderr.log` & `puma_stdout.log`
-
-This file lives in `/var/log/gitlab/puma/puma_stderr.log` and `/var/log/gitlab/puma/puma_stdout.log` for
-Omnibus GitLab packages or in `/home/git/gitlab/log/puma_stderr.log` and `/home/git/gitlab/log/puma_stdout.log`
-for installations from source.
 
 ## `repocheck.log`
 
@@ -657,7 +661,7 @@ will be generated in `/var/log/gitlab/gitlab-rails/sidekiq_exporter.log` for
 Omnibus GitLab packages or in `/home/git/gitlab/log/sidekiq_exporter.log` for
 installations from source.
 
-If Prometheus metrics and the Web Exporter are both enabled, Unicorn/Puma will
+If Prometheus metrics and the Web Exporter are both enabled, Puma/Unicorn will
 start a Web server and listen to the defined port (default: `8083`). Access logs
 will be generated in `/var/log/gitlab/gitlab-rails/web_exporter.log` for
 Omnibus GitLab packages or in `/home/git/gitlab/log/web_exporter.log` for

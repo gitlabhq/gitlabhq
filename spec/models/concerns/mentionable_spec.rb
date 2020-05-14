@@ -342,3 +342,19 @@ describe PersonalSnippet, 'Mentionable' do
     end
   end
 end
+
+describe DesignManagement::Design do
+  describe '#store_mentions!' do
+    it_behaves_like 'mentions in notes', :design do
+      let(:note) { create(:diff_note_on_design) }
+      let(:mentionable) { note.noteable }
+    end
+  end
+
+  describe 'load mentions' do
+    it_behaves_like 'load mentions from DB', :design do
+      let(:note) { create(:diff_note_on_design) }
+      let(:mentionable) { note.noteable }
+    end
+  end
+end

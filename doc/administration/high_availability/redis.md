@@ -63,7 +63,7 @@ Omnibus:
    ## Disable all other services
    sidekiq['enable'] = false
    gitlab_workhorse['enable'] = false
-   unicorn['enable'] = false
+   puma['enable'] = false
    postgresql['enable'] = false
    nginx['enable'] = false
    prometheus['enable'] = false

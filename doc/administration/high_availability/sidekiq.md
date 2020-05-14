@@ -88,7 +88,7 @@ you want using steps 1 and 2 from the GitLab downloads page.
    postgresql['enable'] = false
    redis['enable'] = false
    redis_exporter['enable'] = false
-   unicorn['enable'] = false
+   puma['enable'] = false
    gitlab_exporter['enable'] = false
    ```
 
@@ -119,7 +119,7 @@ postgres_exporter['enable'] = false
 postgresql['enable'] = false
 redis['enable'] = false
 redis_exporter['enable'] = false
-unicorn['enable'] = false
+puma['enable'] = false
 gitlab_exporter['enable'] = false
 
 ########################################

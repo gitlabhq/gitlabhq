@@ -225,7 +225,7 @@ export function insertMarkdownText({
   } else if (tag.indexOf(textPlaceholder) > -1) {
     textToInsert = tag.replace(textPlaceholder, selected);
   } else {
-    textToInsert = String(startChar) + tag + selected + (wrap ? tag : ' ');
+    textToInsert = String(startChar) + tag + selected + (wrap ? tag : '');
   }
 
   if (removedFirstNewLine) {

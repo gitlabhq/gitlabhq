@@ -59,7 +59,7 @@ describe Gitlab::Kubernetes::Helm::Parsers::ListV2 do
     it 'raises an error on invalid JSON' do
       expect do
         described_class.new('')
-      end.to raise_error(described_class::ParserError, 'A JSON text must at least contain two octets!')
+      end.to raise_error(described_class::ParserError)
     end
   end
 

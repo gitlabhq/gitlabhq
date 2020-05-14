@@ -472,7 +472,7 @@ To configure GitLab Pages on a separate server:
    postgresql['enable'] = false
    redis['enable'] = false
    prometheus['enable'] = false
-   unicorn['enable'] = false
+   puma['enable'] = false
    sidekiq['enable'] = false
    gitlab_workhorse['enable'] = false
    gitaly['enable'] = false

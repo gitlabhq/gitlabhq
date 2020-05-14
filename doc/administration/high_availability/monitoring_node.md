@@ -64,7 +64,7 @@ Omnibus:
    redis['enable'] = false
    redis_exporter['enable'] = false
    sidekiq['enable'] = false
-   unicorn['enable'] = false
+   puma['enable'] = false
    node_exporter['enable'] = false
    gitlab_exporter['enable'] = false
    ```

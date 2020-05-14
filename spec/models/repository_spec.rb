@@ -2876,7 +2876,7 @@ describe Repository do
   end
 
   describe '#lfs_enabled?' do
-    let_it_be(:project) { create(:project, :repository, lfs_enabled: true) }
+    let_it_be(:project) { create(:project, :repository, :design_repo, lfs_enabled: true) }
 
     subject { repository.lfs_enabled? }
 
@@ -2929,6 +2929,22 @@ describe Repository do
 
       it 'returns false when LFS is enabled' do
         stub_lfs_setting(enabled: true)
+
+        is_expected.to be_falsy
+      end
+    end
+
+    context 'for a design repository' do
+      let(:repository) { project.design_repository }
+
+      it 'returns true when LFS is enabled' do
+        stub_lfs_setting(enabled: true)
+
+        is_expected.to be_truthy
+      end
+
+      it 'returns false when LFS is disabled' do
+        stub_lfs_setting(enabled: false)
 
         is_expected.to be_falsy
       end

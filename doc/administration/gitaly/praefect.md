@@ -207,7 +207,7 @@ application server, or a Gitaly node.
    nginx['enable'] = false
    prometheus['enable'] = false
    grafana['enable'] = false
-   unicorn['enable'] = false
+   puma['enable'] = false
    sidekiq['enable'] = false
    gitlab_workhorse['enable'] = false
    gitaly['enable'] = false
@@ -421,7 +421,7 @@ documentation](index.md#3-gitaly-server-configuration).
    nginx['enable'] = false
    prometheus['enable'] = false
    grafana['enable'] = false
-   unicorn['enable'] = false
+   puma['enable'] = false
    sidekiq['enable'] = false
    gitlab_workhorse['enable'] = false
    prometheus_monitoring['enable'] = false

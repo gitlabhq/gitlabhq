@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Monitor' do
+  context 'Monitor', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/217705', type: :flaky } do
     describe 'with Prometheus Gitlab-managed cluster', :orchestrated, :kubernetes, :docker, :runner do
       before :all do
         Flow::Login.sign_in

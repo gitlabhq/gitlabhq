@@ -52,7 +52,7 @@ and they will assist you with any issues you are having.
   - Check logs via Kubectl:
 
     ```shell
-    kubectl logs <unicorn pod> -c dependencies
+    kubectl logs <webservice pod> -c dependencies
     ```
 
 - How to tail all Kubernetes cluster events in real time:
@@ -87,20 +87,20 @@ and they will assist you with any issues you are having.
 - Minimal config that can be used to test a Kubernetes Helm chart can be found
   [here](https://gitlab.com/gitlab-org/charts/gitlab/issues/620).
 
-- Tailing logs of a separate pod. An example for a Unicorn pod:
+- Tailing logs of a separate pod. An example for a Webservice pod:
 
   ```shell
-  kubectl logs gitlab-unicorn-7656fdd6bf-jqzfs -c unicorn
+  kubectl logs gitlab-webservice-54fbf6698b-hpckq -c webservice
   ```
 
-- Tail and follow all pods that share a label (in this case, `unicorn`):
+- Tail and follow all pods that share a label (in this case, `webservice`):
 
   ```shell
-  # all containers in the unicorn pods
-  kubectl logs -f -l app=unicorn --all-containers=true --max-log-requests=50
+  # all containers in the webservice pods
+  kubectl logs -f -l app=webservice --all-containers=true --max-log-requests=50
 
-  # only the unicorn containers in all unicorn pods
-  kubectl logs -f -l app=unicorn -c unicorn --max-log-requests=50
+  # only the webservice containers in all webservice pods
+  kubectl logs -f -l app=webservice -c webservice --max-log-requests=50
   ```
 
 - One can stream logs from all containers at once, similar to the Omnibus

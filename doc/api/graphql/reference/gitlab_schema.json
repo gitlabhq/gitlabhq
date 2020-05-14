@@ -11440,6 +11440,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "includeDescendants",
+                  "description": "Return also milestones in all subgroups and subprojects",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "after",
                   "description": "Returns the elements in the list that come after the specified cursor.",
                   "type": {

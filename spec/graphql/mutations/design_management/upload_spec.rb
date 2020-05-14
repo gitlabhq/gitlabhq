@@ -37,14 +37,6 @@ describe Mutations::DesignManagement::Upload do
 
     context "when the feature is available" do
       before do
-        # TODO these tests are being temporarily skipped unless run in EE,
-        # as we are in the process of moving Design Management to FOSS in 13.0
-        # in steps. In the current step the services have not yet been moved,
-        # which are used by this mutation.
-        #
-        # See https://gitlab.com/gitlab-org/gitlab/-/issues/212566#note_327724283.
-        skip 'See https://gitlab.com/gitlab-org/gitlab/-/issues/212566#note_327724283' unless Gitlab.ee?
-
         enable_design_management
       end
 

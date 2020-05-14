@@ -96,7 +96,7 @@ module ApplicationSettingImplementation
         plantuml_url: nil,
         polling_interval_multiplier: 1,
         project_export_enabled: true,
-        protected_ci_variables: false,
+        protected_ci_variables: true,
         push_event_hooks_limit: 3,
         push_event_activities_limit: 3,
         raw_blob_request_limit: 300,

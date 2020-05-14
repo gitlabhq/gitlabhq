@@ -177,7 +177,7 @@ from [owasp.org](https://owasp.org/).
 
 ### What databases and application servers support the application?
 
-- PostgreSQL >= 9.6, Redis, Sidekiq, Unicorn.
+- PostgreSQL >= 9.6, Redis, Sidekiq, Puma.
 
 ### How will database connection strings, encryption keys, and other sensitive components be stored, accessed, and protected from unauthorized detection?
 

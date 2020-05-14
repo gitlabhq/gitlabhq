@@ -185,7 +185,7 @@ describe('Markdown field component', () => {
         markdownButton.trigger('click');
 
         return wrapper.vm.$nextTick(() => {
-          expect(textarea.value).toContain('*  testing');
+          expect(textarea.value).toContain('* testing');
         });
       });
 

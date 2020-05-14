@@ -40,9 +40,10 @@
             - if note.system
               %span.system-note-message
                 = markdown_field(note, :note)
-            %span.system-note-separator
-              &middot;
-            %a.system-note-separator{ href: "##{dom_id(note)}" }= time_ago_with_tooltip(note.created_at, placement: 'bottom', html_class: 'note-created-ago')
+            - if note.created_at
+              %span.system-note-separator
+                &middot;
+              %a.system-note-separator{ href: "##{dom_id(note)}" }= time_ago_with_tooltip(note.created_at, placement: 'bottom', html_class: 'note-created-ago')
         - unless note.system?
           .note-actions
             - if note.for_personal_snippet?

@@ -2,13 +2,13 @@
 
 The GitLab Rails application code suffers from memory leaks. For web requests
 this problem is made manageable using
-[`unicorn-worker-killer`](https://github.com/kzk/unicorn-worker-killer) which
-restarts Unicorn worker processes in between requests when needed. The Sidekiq
+[`puma-worker-killer`](https://github.com/schneems/puma_worker_killer) which
+restarts Puma worker processes if it exceeds a memory limit. The Sidekiq
 MemoryKiller applies the same approach to the Sidekiq processes used by GitLab
 to process background jobs.
 
-Unlike unicorn-worker-killer, which is enabled by default for all GitLab
-installations since GitLab 6.4, the Sidekiq MemoryKiller is enabled by default
+Unlike puma-worker-killer, which is enabled by default for all GitLab
+installations since GitLab 13.0, the Sidekiq MemoryKiller is enabled by default
 _only_ for Omnibus packages. The reason for this is that the MemoryKiller
 relies on runit to restart Sidekiq after a memory-induced shutdown and GitLab
 installations from source do not all use runit or an equivalent.

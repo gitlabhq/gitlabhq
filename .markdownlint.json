@@ -102,6 +102,7 @@
       "PostgreSQL",
       "Prometheus",
       "Puma",
+      "puma-worker-killer",
       "Python",
       "Rake",
       "Redis",

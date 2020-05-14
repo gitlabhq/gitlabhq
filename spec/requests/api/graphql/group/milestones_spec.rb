@@ -7,7 +7,7 @@ describe 'Milestones through GroupQuery' do
 
   let_it_be(:user) { create(:user) }
   let_it_be(:now) { Time.now }
-  let_it_be(:group) { create(:group, :private) }
+  let_it_be(:group) { create(:group) }
   let_it_be(:milestone_1) { create(:milestone, group: group) }
   let_it_be(:milestone_2) { create(:milestone, group: group, state: :closed, start_date: now, due_date: now + 1.day) }
   let_it_be(:milestone_3) { create(:milestone, group: group, start_date: now, due_date: now + 2.days) }
@@ -17,10 +17,6 @@ describe 'Milestones through GroupQuery' do
   let(:milestone_data) { graphql_data['group']['milestones']['edges'] }
 
   describe 'Get list of milestones from a group' do
-    before do
-      group.add_developer(user)
-    end
-
     context 'when the request is correct' do
       before do
         fetch_milestones(user)
@@ -48,6 +44,48 @@ describe 'Milestones through GroupQuery' do
         fetch_milestones(user, { state: :active })
 
         expect_array_response(milestone_1.to_global_id.to_s, milestone_3.to_global_id.to_s)
+      end
+    end
+
+    context 'when including milestones from decendants' do
+      let_it_be(:accessible_group) { create(:group, :private, parent: group) }
+      let_it_be(:accessible_project) { create(:project, group: accessible_group) }
+      let_it_be(:inaccessible_group) { create(:group, :private, parent: group) }
+      let_it_be(:inaccessible_project) { create(:project, :private, group: group) }
+      let_it_be(:submilestone_1) { create(:milestone, group: accessible_group) }
+      let_it_be(:submilestone_2) { create(:milestone, project: accessible_project) }
+      let_it_be(:submilestone_3) { create(:milestone, group: inaccessible_group) }
+      let_it_be(:submilestone_4) { create(:milestone, project: inaccessible_project) }
+
+      let(:args) { { include_descendants: true } }
+
+      before do
+        accessible_group.add_developer(user)
+      end
+
+      it 'returns milestones also from subgroups and subprojects visible to user' do
+        fetch_milestones(user, args)
+
+        expect_array_response(
+          milestone_1.to_global_id.to_s, milestone_2.to_global_id.to_s,
+          milestone_3.to_global_id.to_s, milestone_4.to_global_id.to_s,
+          submilestone_1.to_global_id.to_s, submilestone_2.to_global_id.to_s
+        )
+      end
+
+      context 'when group_milestone_descendants is disabled' do
+        before do
+          stub_feature_flags(group_milestone_descendants: false)
+        end
+
+        it 'ignores descendant milestones' do
+          fetch_milestones(user, args)
+
+          expect_array_response(
+            milestone_1.to_global_id.to_s, milestone_2.to_global_id.to_s,
+            milestone_3.to_global_id.to_s, milestone_4.to_global_id.to_s
+          )
+        end
       end
     end
 

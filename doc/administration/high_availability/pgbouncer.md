@@ -165,7 +165,7 @@ Refer to your preferred Load Balancer's documentation for further guidance.
 
 1. Run `gitlab-ctl reconfigure`
 
-1. On the node running Unicorn, make sure the following is set in `/etc/gitlab/gitlab.rb`
+1. On the node running Puma, make sure the following is set in `/etc/gitlab/gitlab.rb`
 
    ```ruby
    gitlab_rails['db_host'] = 'PGBOUNCER_HOST'

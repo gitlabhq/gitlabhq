@@ -29,7 +29,6 @@ RSpec.shared_examples 'variable list' do
     page.within('.js-ci-variable-list-section .js-row:last-child') do
       find('.js-ci-variable-input-key').set('key')
       find('.js-ci-variable-input-value').set('key_value')
-      find('.ci-variable-protected-item .js-project-feature-toggle').click
 
       expect(find('.js-ci-variable-input-protected', visible: false).value).to eq('true')
     end
@@ -173,6 +172,7 @@ RSpec.shared_examples 'variable list' do
     page.within('.js-ci-variable-list-section .js-row:last-child') do
       find('.js-ci-variable-input-key').set('unprotected_key')
       find('.js-ci-variable-input-value').set('unprotected_value')
+      find('.ci-variable-protected-item .js-project-feature-toggle').click
 
       expect(find('.js-ci-variable-input-protected', visible: false).value).to eq('false')
     end
@@ -207,7 +207,6 @@ RSpec.shared_examples 'variable list' do
     page.within('.js-ci-variable-list-section .js-row:last-child') do
       find('.js-ci-variable-input-key').set('protected_key')
       find('.js-ci-variable-input-value').set('protected_value')
-      find('.ci-variable-protected-item .js-project-feature-toggle').click
 
       expect(find('.js-ci-variable-input-protected', visible: false).value).to eq('true')
     end

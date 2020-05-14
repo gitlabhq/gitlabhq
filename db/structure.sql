@@ -349,7 +349,7 @@ CREATE TABLE public.application_settings (
     diff_max_patch_bytes integer DEFAULT 102400 NOT NULL,
     archive_builds_in_seconds integer,
     commit_email_hostname character varying,
-    protected_ci_variables boolean DEFAULT false NOT NULL,
+    protected_ci_variables boolean DEFAULT true NOT NULL,
     runners_registration_token_encrypted character varying,
     local_markdown_version integer DEFAULT 0 NOT NULL,
     first_day_of_week integer DEFAULT 0 NOT NULL,
@@ -13768,5 +13768,6 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200508091106
 20200511092714
 20200511145545
+20200512085150
 \.
 

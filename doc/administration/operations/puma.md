@@ -3,7 +3,9 @@
 ## Puma
 
 As of GitLab 12.9, [Puma](https://github.com/puma/puma) has replaced [Unicorn](https://yhbt.net/unicorn/).
-as the default web server.
+as the default web server. Starting with 13.0, both all-in-one package based
+installations as well as Helm chart based installations will run Puma instead of
+Unicorn unless explicitly specified not to.
 
 ## Why switch to Puma?
 

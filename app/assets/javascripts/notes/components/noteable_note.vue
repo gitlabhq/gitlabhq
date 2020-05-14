@@ -258,7 +258,7 @@ export default {
         <note-header v-once :author="author" :created-at="note.created_at" :note-id="note.id">
           <slot slot="note-header-info" name="note-header-info"></slot>
           <span v-if="commit" v-html="actionText"></span>
-          <span v-else class="d-none d-sm-inline">&middot;</span>
+          <span v-else-if="note.created_at" class="d-none d-sm-inline">&middot;</span>
         </note-header>
         <note-actions
           :author-id="author.id"

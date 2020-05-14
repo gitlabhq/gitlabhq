@@ -1452,24 +1452,8 @@ describe Projects::IssuesController do
       let(:target_project) { fork_project(project, user, repository: true) }
       let(:target_project_id) { target_project.id }
 
-      context 'create_confidential_merge_request feature is enabled' do
-        before do
-          stub_feature_flags(create_confidential_merge_request: true)
-        end
-
-        it 'creates a new merge request', :sidekiq_might_not_need_inline do
-          expect { create_merge_request }.to change(target_project.merge_requests, :count).by(1)
-        end
-      end
-
-      context 'create_confidential_merge_request feature is disabled' do
-        before do
-          stub_feature_flags(create_confidential_merge_request: false)
-        end
-
-        it 'creates a new merge request' do
-          expect { create_merge_request }.to change(project.merge_requests, :count).by(1)
-        end
+      it 'creates a new merge request', :sidekiq_might_not_need_inline do
+        expect { create_merge_request }.to change(target_project.merge_requests, :count).by(1)
       end
     end
 

@@ -16,7 +16,7 @@ If you have used the [Omnibus packages](https://about.gitlab.com/install/) to in
 you should already have `gitlab-ctl` in your `PATH`.
 
 `gitlab-ctl` interacts with the Omnibus packages and can be used to restart the
-GitLab Rails application (Unicorn) as well as the other components, like:
+GitLab Rails application (Puma) as well as the other components, like:
 
 - GitLab Workhorse
 - Sidekiq
@@ -45,7 +45,7 @@ ok: run: nginx: (pid 11309) 0s
 ok: run: postgresql: (pid 11316) 1s
 ok: run: redis: (pid 11325) 0s
 ok: run: sidekiq: (pid 11331) 1s
-ok: run: unicorn: (pid 11338) 0s
+ok: run: puma: (pid 11338) 0s
 ```
 
 To restart a component separately, you can append its service name to the
@@ -110,25 +110,25 @@ sudo service gitlab restart
 The output should be similar to this:
 
 ```plaintext
-Shutting down GitLab Unicorn
+Shutting down GitLab Puma
 Shutting down GitLab Sidekiq
 Shutting down GitLab Workhorse
 Shutting down GitLab MailRoom
 ...
 GitLab is not running.
-Starting GitLab Unicorn
+Starting GitLab Puma
 Starting GitLab Sidekiq
 Starting GitLab Workhorse
 Starting GitLab MailRoom
 ...
-The GitLab Unicorn web server with pid 28059 is running.
+The GitLab Puma web server with pid 28059 is running.
 The GitLab Sidekiq job dispatcher with pid 28176 is running.
 The GitLab Workhorse with pid 28122 is running.
 The GitLab MailRoom email processor with pid 28114 is running.
 GitLab and all its components are up and running.
 ```
 
-This should restart Unicorn, Sidekiq, GitLab Workhorse, and [Mailroom](reply_by_email.md)
+This should restart Puma, Sidekiq, GitLab Workhorse, and [Mailroom](reply_by_email.md)
 (if enabled). The init service file that does all the magic can be found on
 your server in `/etc/init.d/gitlab`.
 
@@ -142,7 +142,7 @@ If you are using other init systems, like systemd, you can check the
 
 There is no single command to restart the entire GitLab application installed via
 the [cloud native Helm Chart](https://docs.gitlab.com/charts/). Usually, it should be
-enough to restart a specific component separately (for example, `gitaly`, `unicorn`,
+enough to restart a specific component separately (for example, `gitaly`, `puma`,
 `workhorse`, or `gitlab-shell`) by deleting all the pods related to it:
 
 ```shell

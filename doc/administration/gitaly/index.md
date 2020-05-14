@@ -74,7 +74,7 @@ The following list depicts what the network architecture of Gitaly is:
 - A GitLab server can use one or more Gitaly servers.
 - Gitaly addresses must be specified in such a way that they resolve
   correctly for ALL Gitaly clients.
-- Gitaly clients are: Unicorn, Sidekiq, GitLab Workhorse,
+- Gitaly clients are: Puma/Unicorn, Sidekiq, GitLab Workhorse,
   GitLab Shell, Elasticsearch Indexer, and Gitaly itself.
 - A Gitaly server must be able to make RPC calls **to itself** via its own
   `(Gitaly address, Gitaly token)` pair as specified in `/config/gitlab.yml`.
@@ -195,7 +195,7 @@ authentication](https://gitlab.com/gitlab-org/gitaly/blob/master/doc/configurati
    postgresql['enable'] = false
    redis['enable'] = false
    nginx['enable'] = false
-   unicorn['enable'] = false
+   puma['enable'] = false
    sidekiq['enable'] = false
    gitlab_workhorse['enable'] = false
    grafana['enable'] = false

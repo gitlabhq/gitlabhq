@@ -167,6 +167,10 @@ queried over UDP. To overcome this issue, you can use TCP for querying by settin
 
 ### Forking
 
+NOTE: **Note:**
+Starting with GitLab 13.0, Puma is the default web server used in GitLab
+all-in-one package based installations as well as GitLab Helm chart deployments.
+
 If you use an application server that forks, such as Unicorn, you _have to_
 update your Unicorn configuration to start service discovery _after_ a fork.
 Failure to do so will lead to service discovery only running in the parent
