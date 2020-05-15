@@ -53,13 +53,36 @@ exports[`Design management design index page renders design index 1`] = `
       participants="[object Object]"
     />
      
-    <design-discussion-stub
-      designid="1"
-      discussion="[object Object]"
-      discussionindex="1"
-      markdownpreviewpath="//preview_markdown?target_type=Issue"
-      noteableid="design-id"
-    />
+    <div
+      class="design-discussion-wrapper"
+    >
+      <div
+        class="badge badge-pill"
+        type="button"
+      >
+        1
+      </div>
+       
+      <div
+        class="design-discussion bordered-box position-relative"
+        data-qa-selector="design_discussion_content"
+      >
+        <design-note-stub
+          class=""
+          markdownpreviewpath="//preview_markdown?target_type=Issue"
+          note="[object Object]"
+        />
+         
+        <div
+          class="reply-wrapper"
+        >
+          <reply-placeholder-stub
+            buttontext="Reply..."
+            class="qa-discussion-reply"
+          />
+        </div>
+      </div>
+    </div>
      
     <!---->
   </div>

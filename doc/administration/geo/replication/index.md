@@ -2,7 +2,7 @@
 
 > - Introduced in GitLab Enterprise Edition 8.9.
 > - Using Geo in combination with
->   [High Availability](../../reference_architectures/index.md)
+>   [multi-server architectures](../../reference_architectures/index.md)
 >   is considered **Generally Available** (GA) in
 >   [GitLab Premium](https://about.gitlab.com/pricing/) 10.4.
 
@@ -206,9 +206,9 @@ For information on configuring Geo, see [Geo configuration](configuration.md).
 
 For information on how to update your Geo nodes to the latest GitLab version, see [Updating the Geo nodes](updating_the_geo_nodes.md).
 
-### Configuring Geo high availability
+### Configuring Geo for multiple servers
 
-For information on configuring Geo for high availability, see [Geo High Availability](high_availability.md).
+For information on configuring Geo for multiple servers, see [Geo for multiple servers](high_availability.md).
 
 ### Configuring Geo with Object Storage
 

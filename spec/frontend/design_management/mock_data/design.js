@@ -30,17 +30,15 @@ export default {
         id: 'discussion-id',
         replyId: 'discussion-reply-id',
         notes: {
-          edges: [
+          nodes: [
             {
-              node: {
-                id: 'note-id',
-                body: '123',
-                author: {
-                  name: 'Administrator',
-                  username: 'root',
-                  webUrl: 'link-to-author',
-                  avatarUrl: 'link-to-avatar',
-                },
+              id: 'note-id',
+              body: '123',
+              author: {
+                name: 'Administrator',
+                username: 'root',
+                webUrl: 'link-to-author',
+                avatarUrl: 'link-to-avatar',
               },
             },
           ],

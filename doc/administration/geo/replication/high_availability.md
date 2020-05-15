@@ -1,12 +1,12 @@
-# Geo High Availability **(PREMIUM ONLY)**
+# Geo for multiple servers **(PREMIUM ONLY)**
 
 This document describes a minimal reference architecture for running Geo
-in a high availability configuration. If your HA setup differs from the one
+in a multi-server configuration. If your multi-server setup differs from the one
 described, it is possible to adapt these instructions to your needs.
 
 ## Architecture overview
 
-![Geo HA Diagram](../../high_availability/img/geo-ha-diagram.png)
+![Geo multi-server diagram](../../high_availability/img/geo-ha-diagram.png)
 
 _[diagram source - GitLab employees only](https://docs.google.com/drawings/d/1z0VlizKiLNXVVVaERFwgsIOuEgjcUqDTWPdQYsE7Z4c/edit)_
 
@@ -23,36 +23,36 @@ The only external way to access the two Geo deployments is by HTTPS at
 NOTE: **Note:**
 The **primary** and **secondary** Geo deployments must be able to communicate to each other over HTTPS.
 
-## Redis and PostgreSQL High Availability
+## Redis and PostgreSQL for multiple servers
 
 Geo supports:
 
-- Redis and PostgreSQL on the **primary** node configured for high availability
-- Redis on **secondary** nodes configured for high availability.
+- Redis and PostgreSQL on the **primary** node configured for multiple servers.
+- Redis on **secondary** nodes configured for multiple servers.
 
 NOTE: **Note:**
-Support for PostgreSQL on **secondary** nodes in high availability configuration
+Support for PostgreSQL on **secondary** nodes in multi-server configuration
 [is planned](https://gitlab.com/groups/gitlab-org/-/epics/2536).
 
 Because of the additional complexity involved in setting up this configuration
-for PostgreSQL and Redis, it is not covered by this Geo HA documentation.
+for PostgreSQL and Redis, it is not covered by this Geo multi-server documentation.
 
-For more information about setting up a highly available PostgreSQL cluster and Redis cluster using the omnibus package see the high availability documentation for
+For more information about setting up a multi-server PostgreSQL cluster and Redis cluster using the omnibus package see the multi-server documentation for
 [PostgreSQL](../../high_availability/database.md) and
 [Redis](../../high_availability/redis.md), respectively.
 
 NOTE: **Note:**
 It is possible to use cloud hosted services for PostgreSQL and Redis, but this is beyond the scope of this document.
 
-## Prerequisites: Two working GitLab HA clusters
+## Prerequisites: Two working GitLab multi-server clusters
 
 One cluster will serve as the **primary** node. Use the
-[GitLab HA documentation](../../reference_architectures/index.md) to set this up. If
+[GitLab multi-server documentation](../../reference_architectures/index.md) to set this up. If
 you already have a working GitLab instance that is in-use, it can be used as a
 **primary**.
 
 The second cluster will serve as the **secondary** node. Again, use the
-[GitLab HA documentation](../../reference_architectures/index.md) to set this up.
+[GitLab multi-server documentation](../../reference_architectures/index.md) to set this up.
 It's a good idea to log in and test it, however, note that its data will be
 wiped out as part of the process of replicating from the **primary**.
 
@@ -85,8 +85,8 @@ After making these changes, [reconfigure GitLab](../../restart_gitlab.md#omnibus
 
 NOTE: **Note:** PostgreSQL and Redis should have already been disabled on the
 application servers, and connections from the application servers to those
-services on the backend servers configured, during normal GitLab HA set up. See
-high availability configuration documentation for
+services on the backend servers configured, during normal GitLab multi-server set up. See
+multi-server configuration documentation for
 [PostgreSQL](../../high_availability/database.md#configuring-the-application-nodes)
 and [Redis](../../high_availability/redis.md#example-configuration-for-the-gitlab-application).
 
@@ -103,7 +103,7 @@ and [Redis](../../high_availability/redis.md#example-configuration-for-the-gitla
 
 ## Configure a **secondary** node
 
-A **secondary** cluster is similar to any other GitLab HA cluster, with two
+A **secondary** cluster is similar to any other GitLab multi-server cluster, with two
 major differences:
 
 - The main PostgreSQL database is a read-only replica of the **primary** node's
@@ -112,8 +112,8 @@ major differences:
   called the "tracking database", which tracks the synchronization state of
   various resources.
 
-Therefore, we will set up the HA components one-by-one, and include deviations
-from the normal HA setup. However, we highly recommend first configuring a
+Therefore, we will set up the multi-server components one-by-one, and include deviations
+from the normal multi-server setup. However, we highly recommend first configuring a
 brand-new cluster as if it were not part of a Geo setup so that it can be
 tested and verified as a working cluster. And only then should it be modified
 for use as a Geo **secondary**. This helps to separate problems that are related
@@ -121,11 +121,10 @@ and are not related to Geo setup.
 
 ### Step 1: Configure the Redis and Gitaly services on the **secondary** node
 
-Configure the following services, again using the non-Geo high availability
+Configure the following services, again using the non-Geo multi-server
 documentation:
 
-- [Configuring Redis for GitLab HA](../../high_availability/redis.md) for high
-  availability.
+- [Configuring Redis for GitLab](../../high_availability/redis.md) for multiple servers.
 - [Gitaly](../../high_availability/gitaly.md), which will store data that is
   synchronized from the **primary** node.
 
@@ -136,7 +135,7 @@ recommended.
 ### Step 2: Configure the main read-only replica PostgreSQL database on the **secondary** node
 
 NOTE: **Note:** The following documentation assumes the database will be run on
-a single node only. PostgreSQL HA on **secondary** nodes is
+a single node only. Multi-server PostgreSQL on **secondary** nodes is
 [not currently supported](https://gitlab.com/groups/gitlab-org/-/epics/2536).
 
 Configure the [**secondary** database](database.md) as a read-only replica of
@@ -276,7 +275,7 @@ application services. These services are enabled selectively in the
 configuration.
 
 Configure the application servers following
-[Configuring GitLab for HA](../../high_availability/gitlab.md), then make the
+[Configuring GitLab for multiple servers](../../high_availability/gitlab.md), then make the
 following modifications:
 
 1. Edit `/etc/gitlab/gitlab.rb` on each application server in the **secondary**
@@ -364,13 +363,13 @@ application servers.
 In this topology, a load balancer is required at each geographic location to
 route traffic to the application servers.
 
-See [Load Balancer for GitLab HA](../../high_availability/load_balancer.md) for
+See [Load Balancer for GitLab with multiple servers](../../high_availability/load_balancer.md) for
 more information.
 
 ### Step 6: Configure the backend application servers on the **secondary** node
 
 The minimal reference architecture diagram above shows all application services
-running together on the same machines. However, for high availability we
+running together on the same machines. However, for multiple servers we
 [strongly recommend running all services separately](../../reference_architectures/index.md).
 
 For example, a Sidekiq server could be configured similarly to the frontend

@@ -1,6 +1,10 @@
 import { mount } from '@vue/test-utils';
 import DesignOverlay from '~/design_management/components/design_overlay.vue';
+import updateActiveDiscussion from '~/design_management/graphql/mutations/update_active_discussion.mutation.graphql';
 import notes from '../mock_data/notes';
+import { ACTIVE_DISCUSSION_SOURCE_TYPES } from '~/design_management/constants';
+
+const mutate = jest.fn(() => Promise.resolve());
 
 describe('Design overlay component', () => {
   let wrapper;
@@ -31,7 +35,7 @@ describe('Design overlay component', () => {
     });
   };
 
-  function createComponent(props = {}) {
+  function createComponent(props = {}, data = {}) {
     wrapper = mount(DesignOverlay, {
       propsData: {
         dimensions: mockDimensions,
@@ -40,6 +44,20 @@ describe('Design overlay component', () => {
           left: '0',
         },
         ...props,
+      },
+      data() {
+        return {
+          activeDiscussion: {
+            id: null,
+            source: null,
+          },
+          ...data,
+        };
+      },
+      mocks: {
+        $apollo: {
+          mutate,
+        },
       },
     });
   }
@@ -105,6 +123,38 @@ describe('Design overlay component', () => {
 
       return wrapper.vm.$nextTick().then(() => {
         expect(findFirstBadge().attributes().style).toBe('left: 20px; top: 30px;');
+      });
+    });
+
+    it('should call an update active discussion mutation when clicking a note without moving it', () => {
+      const note = notes[0];
+      const { position } = note;
+      const mutationVariables = {
+        mutation: updateActiveDiscussion,
+        variables: {
+          id: note.id,
+          source: ACTIVE_DISCUSSION_SOURCE_TYPES.pin,
+        },
+      };
+
+      findFirstBadge().trigger('mousedown', { clientX: position.x, clientY: position.y });
+
+      return wrapper.vm.$nextTick().then(() => {
+        findFirstBadge().trigger('mouseup', { clientX: position.x, clientY: position.y });
+        expect(mutate).toHaveBeenCalledWith(mutationVariables);
+      });
+    });
+
+    it('when there is an active discussion, should apply inactive class to all pins besides the active one', () => {
+      wrapper.setData({
+        activeDiscussion: {
+          id: notes[0].id,
+          source: 'discussion',
+        },
+      });
+
+      return wrapper.vm.$nextTick().then(() => {
+        expect(findSecondBadge().classes()).toContain('inactive');
       });
     });
   });

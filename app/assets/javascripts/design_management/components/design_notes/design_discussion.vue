@@ -4,9 +4,11 @@ import ReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vu
 import allVersionsMixin from '../../mixins/all_versions';
 import createNoteMutation from '../../graphql/mutations/createNote.mutation.graphql';
 import getDesignQuery from '../../graphql/queries/getDesign.query.graphql';
+import activeDiscussionQuery from '../../graphql/queries/active_discussion.query.graphql';
 import DesignNote from './design_note.vue';
 import DesignReplyForm from './design_reply_form.vue';
 import { updateStoreAfterAddDiscussionComment } from '../../utils/cache_update';
+import { ACTIVE_DISCUSSION_SOURCE_TYPES } from '../../constants';
 
 export default {
   components: {
@@ -39,10 +41,31 @@ export default {
       default: '',
     },
   },
+  apollo: {
+    activeDiscussion: {
+      query: activeDiscussionQuery,
+      result({ data }) {
+        const discussionId = data.activeDiscussion.id;
+        // We watch any changes to the active discussion from the design pins and scroll to this discussion if it exists
+        // We don't want scrollIntoView to be triggered from the discussion click itself
+        if (
+          discussionId &&
+          data.activeDiscussion.source === ACTIVE_DISCUSSION_SOURCE_TYPES.pin &&
+          discussionId === this.discussion.notes[0].id
+        ) {
+          this.$el.scrollIntoView({
+            behavior: 'smooth',
+            inline: 'start',
+          });
+        }
+      },
+    },
+  },
   data() {
     return {
       discussionComment: '',
       isFormRendered: false,
+      activeDiscussion: {},
     };
   },
   computed: {
@@ -60,6 +83,9 @@ export default {
         filenames: [this.$route.params.id],
         atVersion: this.designsVersion,
       };
+    },
+    isDiscussionHighlighted() {
+      return this.discussion.notes[0].id === this.activeDiscussion.id;
     },
   },
   methods: {
@@ -108,6 +134,7 @@ export default {
         :key="note.id"
         :note="note"
         :markdown-preview-path="markdownPreviewPath"
+        :class="{ 'gl-bg-blue-50': isDiscussionHighlighted }"
         @error="$emit('updateNoteError', $event)"
       />
       <div class="reply-wrapper">

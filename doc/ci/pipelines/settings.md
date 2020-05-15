@@ -130,6 +130,16 @@ in the jobs table.
 A few examples of known coverage tools for a variety of languages can be found
 in the pipelines settings page.
 
+### Download test coverage history
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/209121) in GitLab 12.10.
+
+If you want to see the evolution of your project code coverage over time,
+you can download a CSV file with this data. From your project:
+
+1. Go to **{chart}** **Project Analytics > Repository**.
+1. Click **Download raw data (.csv)**
+
 ### Removing color codes
 
 Some test coverage tools output with ANSI color codes that won't be

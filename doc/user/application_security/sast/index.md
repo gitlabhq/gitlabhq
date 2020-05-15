@@ -452,21 +452,7 @@ the report JSON unless stated otherwise. Presence of optional fields depends on 
 
 ## Secret detection
 
-GitLab is also able to detect secrets and credentials that have been unintentionally pushed to the
-repository, such as an API key that allows write access to third-party deployment
-environments.
-
-This check is performed by a specific analyzer during the `sast` job. It runs regardless of the programming
-language of your app, and you don't need to change anything to your
-CI/CD configuration file to turn it on. Results are available in the SAST report.
-
-GitLab currently includes [Gitleaks](https://github.com/zricethezav/gitleaks) and [TruffleHog](https://github.com/dxa4481/truffleHog) checks.
-
-NOTE: **Note:**
-The secrets analyzer will ignore "Password in URL" vulnerabilities if the password begins
-with a dollar sign (`$`) as this likely indicates the password being used is an environment
-variable. For example, `https://username:$password@example.com/path/to/repo` won't be
-detected, whereas `https://username:password@example.com/path/to/repo` would be detected.
+Learn more about [Secret Detection](../secret_detection).
 
 ## Security Dashboard
 

@@ -21,7 +21,9 @@ module Ci
       aggregate(pipeline.builds.with_coverage).map do |group_name, group|
         base_attrs.merge(
           group_name: group_name,
-          data: { coverage: average_coverage(group) }
+          data: {
+            'coverage' => average_coverage(group)
+          }
         )
       end
     end

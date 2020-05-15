@@ -1,17 +1,21 @@
 import Vuex from 'vuex';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
-import createState from '~/static_site_editor/store/state';
-import { SUCCESS_ROUTE } from '~/static_site_editor/router/constants';
 import Home from '~/static_site_editor/pages/home.vue';
 import SkeletonLoader from '~/static_site_editor/components/skeleton_loader.vue';
 import EditArea from '~/static_site_editor/components/edit_area.vue';
 import InvalidContentMessage from '~/static_site_editor/components/invalid_content_message.vue';
 import SubmitChangesError from '~/static_site_editor/components/submit_changes_error.vue';
+import submitContentChangesMutation from '~/static_site_editor/graphql/mutations/submit_content_changes.mutation.graphql';
+import { SUCCESS_ROUTE } from '~/static_site_editor/router/constants';
 
 import {
+  projectId as project,
   returnUrl,
   sourceContent as content,
   sourceContentTitle as title,
+  sourcePath,
+  username,
+  savedContentMeta,
   submitChangesError,
 } from '../mock_data';
 
@@ -24,32 +28,11 @@ describe('static_site_editor/pages/home', () => {
   let store;
   let $apollo;
   let $router;
-  let setContentActionMock;
-  let submitChangesActionMock;
-  let dismissSubmitChangesErrorActionMock;
-
-  const buildStore = ({ initialState, getters } = {}) => {
-    setContentActionMock = jest.fn();
-    submitChangesActionMock = jest.fn();
-    dismissSubmitChangesErrorActionMock = jest.fn();
-
-    store = new Vuex.Store({
-      state: createState({
-        ...initialState,
-      }),
-      getters: {
-        contentChanged: () => false,
-        ...getters,
-      },
-      actions: {
-        setContent: setContentActionMock,
-        submitChanges: submitChangesActionMock,
-        dismissSubmitChangesError: dismissSubmitChangesErrorActionMock,
-      },
-    });
-  };
+  let mutateMock;
 
   const buildApollo = (queries = {}) => {
+    mutateMock = jest.fn();
+
     $apollo = {
       queries: {
         sourceContent: {
@@ -57,6 +40,7 @@ describe('static_site_editor/pages/home', () => {
         },
         ...queries,
       },
+      mutate: mutateMock,
     };
   };
 
@@ -76,7 +60,8 @@ describe('static_site_editor/pages/home', () => {
       },
       data() {
         return {
-          appData: { isSupportedContent: true, returnUrl },
+          appData: { isSupportedContent: true, returnUrl, project, username, sourcePath },
+          sourceContent: { title, content },
           ...data,
         };
       },
@@ -91,7 +76,6 @@ describe('static_site_editor/pages/home', () => {
   beforeEach(() => {
     buildApollo();
     buildRouter();
-    buildStore();
   });
 
   afterEach(() => {
@@ -102,8 +86,7 @@ describe('static_site_editor/pages/home', () => {
 
   describe('when content is loaded', () => {
     beforeEach(() => {
-      buildStore({ initialState: { isSavingChanges: true } });
-      buildWrapper({ sourceContent: { title, content } });
+      buildWrapper();
     });
 
     it('renders edit area', () => {
@@ -115,7 +98,7 @@ describe('static_site_editor/pages/home', () => {
         title,
         content,
         returnUrl,
-        savingChanges: true,
+        savingChanges: false,
       });
     });
   });
@@ -148,30 +131,44 @@ describe('static_site_editor/pages/home', () => {
     expect(findSkeletonLoader().exists()).toBe(false);
   });
 
-  describe('when submitting changes fail', () => {
+  it('displays invalid content message when content is not supported', () => {
+    buildWrapper({ appData: { isSupportedContent: false } });
+
+    expect(findInvalidContentMessage().exists()).toBe(true);
+  });
+
+  it('does not display invalid content message when content is supported', () => {
+    buildWrapper({ appData: { isSupportedContent: true } });
+
+    expect(findInvalidContentMessage().exists()).toBe(false);
+  });
+
+  describe('when submitting changes fails', () => {
     beforeEach(() => {
-      buildStore({
-        initialState: {
-          submitChangesError,
-        },
-      });
+      mutateMock.mockRejectedValue(new Error(submitChangesError));
+
       buildWrapper();
+      findEditArea().vm.$emit('submit', { content });
+
+      return wrapper.vm.$nextTick();
     });
 
     it('displays submit changes error message', () => {
       expect(findSubmitChangesError().exists()).toBe(true);
     });
 
-    it('dispatches submitChanges action when error message emits retry event', () => {
+    it('retries submitting changes when retry button is clicked', () => {
       findSubmitChangesError().vm.$emit('retry');
 
-      expect(submitChangesActionMock).toHaveBeenCalled();
+      expect(mutateMock).toHaveBeenCalled();
     });
 
-    it('dispatches dismissSubmitChangesError action when error message emits dismiss event', () => {
+    it('hides submit changes error message when dismiss button is clicked', () => {
       findSubmitChangesError().vm.$emit('dismiss');
 
-      expect(dismissSubmitChangesErrorActionMock).toHaveBeenCalled();
+      return wrapper.vm.$nextTick().then(() => {
+        expect(findSubmitChangesError().exists()).toBe(false);
+      });
     });
   });
 
@@ -181,34 +178,34 @@ describe('static_site_editor/pages/home', () => {
     expect(findSubmitChangesError().exists()).toBe(false);
   });
 
-  it('displays invalid content message when content is not supported', () => {
-    buildWrapper({ appData: { isSupportedContent: false } });
-
-    expect(findInvalidContentMessage().exists()).toBe(true);
-  });
-
-  describe('when edit area emits submit event', () => {
+  describe('when submitting changes succeeds', () => {
     const newContent = `new ${content}`;
 
     beforeEach(() => {
-      submitChangesActionMock.mockResolvedValueOnce();
+      mutateMock.mockResolvedValueOnce({ data: { submitContentChanges: savedContentMeta } });
 
-      buildWrapper({ sourceContent: { title, content } });
+      buildWrapper();
       findEditArea().vm.$emit('submit', { content: newContent });
+
+      return wrapper.vm.$nextTick();
     });
 
-    it('dispatches setContent property', () => {
-      expect(setContentActionMock).toHaveBeenCalledWith(expect.anything(), newContent, undefined);
-    });
-
-    it('dispatches submitChanges action', () => {
-      expect(submitChangesActionMock).toHaveBeenCalled();
-    });
-
-    it('pushes success route when submitting changes succeeds', () => {
-      return wrapper.vm.$nextTick().then(() => {
-        expect($router.push).toHaveBeenCalledWith(SUCCESS_ROUTE);
+    it('dispatches submitContentChanges mutation', () => {
+      expect(mutateMock).toHaveBeenCalledWith({
+        mutation: submitContentChangesMutation,
+        variables: {
+          input: {
+            content: newContent,
+            project,
+            sourcePath,
+            username,
+          },
+        },
       });
+    });
+
+    it('transitions to the SUCCESS route', () => {
+      expect($router.push).toHaveBeenCalledWith(SUCCESS_ROUTE);
     });
   });
 });

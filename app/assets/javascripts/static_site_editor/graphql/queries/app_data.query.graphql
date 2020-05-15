@@ -3,6 +3,7 @@ query appData {
     isSupportedContent
     project
     sourcePath
+    username,
     returnUrl
   }
 }

@@ -211,6 +211,10 @@ export default {
       this.currentAnnotationPosition = this.getAnnotationPositon(coordinates);
       this.$emit('openCommentForm', this.currentAnnotationPosition);
     },
+    closeCommentForm() {
+      this.currentAnnotationPosition = null;
+      this.$emit('closeCommentForm');
+    },
     moveNote({ noteId, discussionId, coordinates }) {
       const position = this.getAnnotationPositon(coordinates);
       this.$emit('moveNote', { noteId, discussionId, position });
@@ -302,6 +306,7 @@ export default {
         :current-comment-form="currentCommentForm"
         :disable-commenting="isDraggingDesign"
         @openCommentForm="openCommentForm"
+        @closeCommentForm="closeCommentForm"
         @moveNote="moveNote"
       />
     </div>

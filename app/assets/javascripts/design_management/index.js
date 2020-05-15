@@ -24,6 +24,11 @@ export default () => {
     data: {
       projectPath,
       issueIid,
+      activeDiscussion: {
+        __typename: 'ActiveDiscussion',
+        id: null,
+        source: null,
+      },
     },
   });
 

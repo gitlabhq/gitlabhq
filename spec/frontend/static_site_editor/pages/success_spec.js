@@ -1,6 +1,5 @@
 import Vuex from 'vuex';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
-import createState from '~/static_site_editor/store/state';
 import Success from '~/static_site_editor/pages/success.vue';
 import SavedChangesMessage from '~/static_site_editor/components/saved_changes_message.vue';
 import { savedContentMeta, returnUrl } from '../mock_data';
@@ -21,22 +20,21 @@ describe('static_site_editor/pages/success', () => {
     };
   };
 
-  const buildStore = (initialState = {}) => {
-    store = new Vuex.Store({
-      state: createState({
-        savedContentMeta,
-        returnUrl,
-        ...initialState,
-      }),
-    });
-  };
-
-  const buildWrapper = () => {
+  const buildWrapper = (data = {}) => {
     wrapper = shallowMount(Success, {
       localVue,
       store,
       mocks: {
         $router: router,
+      },
+      data() {
+        return {
+          savedContentMeta,
+          appData: {
+            returnUrl,
+          },
+          ...data,
+        };
       },
     });
   };
@@ -45,7 +43,6 @@ describe('static_site_editor/pages/success', () => {
 
   beforeEach(() => {
     buildRouter();
-    buildStore();
   });
 
   afterEach(() => {
@@ -74,8 +71,7 @@ describe('static_site_editor/pages/success', () => {
   });
 
   it('redirects to the HOME route when content has not been submitted', () => {
-    buildStore({ savedContentMeta: null });
-    buildWrapper();
+    buildWrapper({ savedContentMeta: null });
 
     expect(router.push).toHaveBeenCalledWith(HOME_ROUTE);
   });

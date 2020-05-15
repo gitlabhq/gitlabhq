@@ -28,7 +28,7 @@ describe('Design discussions component', () => {
     mutate,
   };
 
-  function createComponent(props = {}) {
+  function createComponent(props = {}, data = {}) {
     wrapper = shallowMount(DesignDiscussion, {
       propsData: {
         discussion: {
@@ -47,6 +47,11 @@ describe('Design discussions component', () => {
         discussionIndex: 1,
         ...props,
       },
+      data() {
+        return {
+          ...data,
+        };
+      },
       stubs: {
         ReplyPlaceholder,
         ApolloMutation,
@@ -55,23 +60,22 @@ describe('Design discussions component', () => {
     });
   }
 
-  beforeEach(() => {
-    createComponent();
-  });
-
   afterEach(() => {
     wrapper.destroy();
   });
 
   it('renders correct amount of discussion notes', () => {
+    createComponent();
     expect(wrapper.findAll(DesignNote)).toHaveLength(2);
   });
 
   it('renders reply placeholder by default', () => {
+    createComponent();
     expect(findReplyPlaceholder().exists()).toBe(true);
   });
 
   it('hides reply placeholder and opens form on placeholder click', () => {
+    createComponent();
     findReplyPlaceholder().trigger('click');
 
     return wrapper.vm.$nextTick().then(() => {
@@ -81,19 +85,14 @@ describe('Design discussions component', () => {
   });
 
   it('calls mutation on submitting form and closes the form', () => {
-    wrapper.setData({
-      discussionComment: 'test',
-      isFormRendered: true,
-    });
+    createComponent({}, { discussionComment: 'test', isFormRendered: true });
 
-    return wrapper.vm
-      .$nextTick()
+    findReplyForm().vm.$emit('submitForm');
+    expect(mutate).toHaveBeenCalledWith(mutationVariables);
+
+    return mutate()
       .then(() => {
-        findReplyForm().vm.$emit('submitForm');
-
-        expect(mutate).toHaveBeenCalledWith(mutationVariables);
-
-        return mutate({ variables: mutationVariables });
+        return wrapper.vm.$nextTick();
       })
       .then(() => {
         expect(findReplyForm().exists()).toBe(false);
@@ -101,10 +100,7 @@ describe('Design discussions component', () => {
   });
 
   it('clears the discussion comment on closing comment form', () => {
-    wrapper.setData({
-      discussionComment: 'test',
-      isFormRendered: true,
-    });
+    createComponent({}, { discussionComment: 'test', isFormRendered: true });
 
     return wrapper.vm
       .$nextTick()
@@ -117,5 +113,21 @@ describe('Design discussions component', () => {
       .then(() => {
         expect(findReplyForm().exists()).toBe(false);
       });
+  });
+
+  it('applies correct class to design notes when discussion is highlighted', () => {
+    createComponent(
+      {},
+      {
+        activeDiscussion: {
+          id: '1',
+          source: 'pin',
+        },
+      },
+    );
+
+    expect(wrapper.findAll(DesignNote).wrappers.every(note => note.classes('gl-bg-blue-50'))).toBe(
+      true,
+    );
   });
 });

@@ -52,7 +52,7 @@ docs-only merge requests using the following guide:
 
 [Contributions to GitLab docs](workflow.md) are welcome from the entire GitLab community.
 
-To ensure that GitLab docs are current, there are special processes and responsibilities for all [feature changes](feature-change-workflow.md)—i.e. development work that impacts the appearance, usage, or administration of a feature.
+To ensure that GitLab docs are current, there are special processes and responsibilities for all [feature changes](feature-change-workflow.md), that is development work that impacts the appearance, usage, or administration of a feature.
 
 However, anyone can contribute [documentation improvements](improvement-workflow.md) that are not associated with a feature change. For example, adding a new doc on how to accomplish a use case that's already possible with GitLab or with third-party tools and GitLab.
 

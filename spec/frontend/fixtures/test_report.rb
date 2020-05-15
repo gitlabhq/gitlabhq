@@ -15,7 +15,7 @@ describe Projects::PipelinesController, "(JavaScript fixtures)", type: :controll
 
   before do
     sign_in(user)
-    stub_feature_flags(junit_pipeline_view: true)
+    stub_feature_flags(junit_pipeline_view: project)
   end
 
   it "pipelines/test_report.json" do

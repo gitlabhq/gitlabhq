@@ -9,7 +9,7 @@ removed](https://gitlab.com/gitlab-org/gitlab/issues/1648) in GitLab 9.0 (2017/0
 Read through the [migration guide from git-annex to Git LFS](../topics/git/lfs/migrate_from_git_annex_to_git_lfs.md).
 
 The biggest limitation of Git, compared to some older centralized version
-control systems, has been the maximum size of the repositories.
+control systems has been the maximum size of the repositories.
 
 The general recommendation is to not have Git repositories larger than 1GB to
 preserve performance. Although GitLab has no limit (some repositories in GitLab
@@ -21,7 +21,7 @@ larger organizations.
 Videos, photos, audio, compiled binaries, and many other types of files are too
 large. As a workaround, people keep artwork-in-progress in a Dropbox folder and
 only check in the final result. This results in using outdated files, not
-having a complete history and increases the risk of losing work.
+having a complete history, and increases the risk of losing work.
 
 This problem is solved in GitLab Enterprise Edition by integrating the
 [git-annex](https://git-annex.branchable.com/) application.
@@ -39,7 +39,7 @@ configuration options required to enable it.
 
 ### Requirements
 
-`git-annex` needs to be installed both on the server and the client side.
+`git-annex` needs to be installed both on the server and the client-side.
 
 For Debian-like systems (for example, Debian and Ubuntu) this can be achieved by running:
 
@@ -193,7 +193,7 @@ if you want to.
 
 ## Troubleshooting tips
 
-Differences in version of `git-annex` on the GitLab server and on local machines
+Differences in the version of `git-annex` on the GitLab server and on local machines
 can cause `git-annex` to raise unpredicted warnings and errors.
 
 Consult the [Annex upgrade page](https://git-annex.branchable.com/upgrades/) for more information about

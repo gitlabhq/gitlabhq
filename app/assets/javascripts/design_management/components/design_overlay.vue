@@ -1,5 +1,8 @@
 <script>
+import activeDiscussionQuery from '../graphql/queries/active_discussion.query.graphql';
+import updateActiveDiscussionMutation from '../graphql/mutations/update_active_discussion.mutation.graphql';
 import DesignNotePin from './design_note_pin.vue';
+import { ACTIVE_DISCUSSION_SOURCE_TYPES } from '../constants';
 
 export default {
   name: 'DesignOverlay',
@@ -31,10 +34,16 @@ export default {
       default: false,
     },
   },
+  apollo: {
+    activeDiscussion: {
+      query: activeDiscussionQuery,
+    },
+  },
   data() {
     return {
       movingNoteNewPosition: null,
       movingNoteStartPosition: null,
+      activeDiscussion: {},
     };
   },
   computed: {
@@ -162,8 +171,12 @@ export default {
       const { x, y } = this.movingNoteNewPosition;
       this.setNewNoteCoordinates({ x, y });
     },
-    onExistingNoteMouseup() {
-      if (!this.movingNoteStartPosition || !this.movingNoteNewPosition) return;
+    onExistingNoteMouseup(note) {
+      if (!this.movingNoteStartPosition || !this.movingNoteNewPosition) {
+        this.updateActiveDiscussion(note.id);
+        this.$emit('closeCommentForm');
+        return;
+      }
 
       const { x, y } = this.movingNoteNewPosition;
       this.$emit('moveNote', {
@@ -191,13 +204,13 @@ export default {
         this.onExistingNoteMove(e);
       }
     },
-    onNoteMouseup() {
+    onNoteMouseup(note) {
       if (!this.movingNoteStartPosition) return;
 
       if (this.isMovingCurrentComment) {
         this.onNewNoteMouseup();
       } else {
-        this.onExistingNoteMouseup();
+        this.onExistingNoteMouseup(note);
       }
 
       this.movingNoteStartPosition = null;
@@ -205,8 +218,23 @@ export default {
     },
     onAddCommentMouseup({ offsetX, offsetY }) {
       if (this.disableCommenting) return;
+      if (this.activeDiscussion.id) {
+        this.updateActiveDiscussion();
+      }
 
       this.setNewNoteCoordinates({ x: offsetX, y: offsetY });
+    },
+    updateActiveDiscussion(id) {
+      this.$apollo.mutate({
+        mutation: updateActiveDiscussionMutation,
+        variables: {
+          id,
+          source: ACTIVE_DISCUSSION_SOURCE_TYPES.pin,
+        },
+      });
+    },
+    isNoteInactive(note) {
+      return this.activeDiscussion.id && this.activeDiscussion.id !== note.id;
     },
   },
 };
@@ -236,8 +264,9 @@ export default {
           ? getNotePositionStyle(movingNoteNewPosition)
           : getNotePositionStyle(note.position)
       "
+      :class="{ inactive: isNoteInactive(note) }"
       @mousedown.stop="onNoteMousedown($event, note)"
-      @mouseup.stop="onNoteMouseup"
+      @mouseup.stop="onNoteMouseup(note)"
     />
     <design-note-pin
       v-if="currentCommentForm"

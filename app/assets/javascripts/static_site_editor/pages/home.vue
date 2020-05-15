@@ -1,14 +1,14 @@
 <script>
-import { mapState, mapActions } from 'vuex';
 import SkeletonLoader from '../components/skeleton_loader.vue';
 import EditArea from '../components/edit_area.vue';
 import InvalidContentMessage from '../components/invalid_content_message.vue';
 import SubmitChangesError from '../components/submit_changes_error.vue';
-import { SUCCESS_ROUTE } from '../router/constants';
 import appDataQuery from '../graphql/queries/app_data.query.graphql';
 import sourceContentQuery from '../graphql/queries/source_content.query.graphql';
+import submitContentChangesMutation from '../graphql/mutations/submit_content_changes.mutation.graphql';
 import createFlash from '~/flash';
 import { LOAD_CONTENT_ERROR } from '../constants';
+import { SUCCESS_ROUTE } from '../router/constants';
 
 export default {
   components: {
@@ -44,8 +44,14 @@ export default {
       },
     },
   },
+  data() {
+    return {
+      content: null,
+      submitChangesError: null,
+      isSavingChanges: false,
+    };
+  },
   computed: {
-    ...mapState(['isSavingChanges', 'submitChangesError']),
     isLoadingContent() {
       return this.$apollo.queries.sourceContent.loading;
     },
@@ -54,11 +60,37 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['setContent', 'submitChanges', 'dismissSubmitChangesError']),
+    onDismissError() {
+      this.submitChangesError = null;
+    },
     onSubmit({ content }) {
-      this.setContent(content);
+      this.content = content;
+      this.submitChanges();
+    },
+    submitChanges() {
+      this.isSavingChanges = true;
 
-      return this.submitChanges().then(() => this.$router.push(SUCCESS_ROUTE));
+      this.$apollo
+        .mutate({
+          mutation: submitContentChangesMutation,
+          variables: {
+            input: {
+              project: this.appData.project,
+              username: this.appData.username,
+              sourcePath: this.appData.sourcePath,
+              content: this.content,
+            },
+          },
+        })
+        .then(() => {
+          this.$router.push(SUCCESS_ROUTE);
+        })
+        .catch(e => {
+          this.submitChangesError = e.message;
+        })
+        .finally(() => {
+          this.isSavingChanges = false;
+        });
     },
   },
 };
@@ -71,7 +103,7 @@ export default {
         v-if="submitChangesError"
         :error="submitChangesError"
         @retry="submitChanges"
-        @dismiss="dismissSubmitChangesError"
+        @dismiss="onDismissError"
       />
       <edit-area
         v-if="isContentLoaded"

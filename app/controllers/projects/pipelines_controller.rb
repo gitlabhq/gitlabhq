@@ -11,7 +11,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   before_action :authorize_create_pipeline!, only: [:new, :create]
   before_action :authorize_update_pipeline!, only: [:retry, :cancel]
   before_action do
-    push_frontend_feature_flag(:junit_pipeline_view)
+    push_frontend_feature_flag(:junit_pipeline_view, project)
     push_frontend_feature_flag(:filter_pipelines_search, default_enabled: true)
     push_frontend_feature_flag(:dag_pipeline_tab)
   end
