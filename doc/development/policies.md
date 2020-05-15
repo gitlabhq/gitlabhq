@@ -123,7 +123,7 @@ class FooPolicy < BasePolicy
 end
 ```
 
-Naively, if we call `Ability.can?(user1, :some_ability, foo)` and `Ability.can?(user2, :some_ability, foo)`, we would have to calculate the condition twice - since they are for different users. But if we use the `scope: :subject` option:
+Naively, if we call `Ability.allowed?(user1, :some_ability, foo)` and `Ability.allowed?(user2, :some_ability, foo)`, we would have to calculate the condition twice - since they are for different users. But if we use the `scope: :subject` option:
 
 ```ruby
   condition(:expensive_condition, scope: :subject) { @subject.expensive_query? }

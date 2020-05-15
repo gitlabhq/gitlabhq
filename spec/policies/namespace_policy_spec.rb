@@ -40,6 +40,12 @@ describe NamespacePolicy do
   context 'admin' do
     let(:current_user) { admin }
 
-    it { is_expected.to be_allowed(*owner_permissions) }
+    context 'when admin mode is enabled', :enable_admin_mode do
+      it { is_expected.to be_allowed(*owner_permissions) }
+    end
+
+    context 'when admin mode is disabled' do
+      it { is_expected.to be_disallowed(*owner_permissions) }
+    end
   end
 end

@@ -84,7 +84,7 @@ gitlab-rake "gitlab:uploads:migrate[PersonalFileUploader, Snippet]"
 gitlab-rake "gitlab:uploads:migrate[NamespaceFileUploader, Snippet]"
 gitlab-rake "gitlab:uploads:migrate[FileUploader, MergeRequest]"
 
-# Design Management design thumbnails (EE)
+# Design Management design thumbnails
 gitlab-rake "gitlab:uploads:migrate[DesignManagement::DesignV432x230Uploader, DesignManagement::Action, :image_v432x230]"
 ```
 
@@ -115,7 +115,7 @@ sudo -u git -H bundle exec rake "gitlab:uploads:migrate[PersonalFileUploader, Sn
 sudo -u git -H bundle exec rake "gitlab:uploads:migrate[NamespaceFileUploader, Snippet]"
 sudo -u git -H bundle exec rake "gitlab:uploads:migrate[FileUploader, MergeRequest]"
 
-# Design Management design thumbnails (EE)
+# Design Management design thumbnails
 sudo -u git -H bundle exec rake "gitlab:uploads:migrate[DesignManagement::DesignV432x230Uploader, DesignManagement::Action]"
 ```
 

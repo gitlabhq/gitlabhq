@@ -29,6 +29,10 @@ module CycleAnalyticsHelpers
       scenarios.each do |start_time_conditions, end_time_conditions|
         let_it_be(:other_project) { create(:project, :repository) }
 
+        before do
+          other_project.add_developer(self.user)
+        end
+
         context "start condition: #{start_time_conditions.map(&:first).to_sentence}" do
           context "end condition: #{end_time_conditions.map(&:first).to_sentence}" do
             it "finds the median of available durations between the two conditions", :sidekiq_might_not_need_inline do

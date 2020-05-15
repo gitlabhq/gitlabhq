@@ -163,7 +163,7 @@ frontend-fixtures:
 frontend-fixtures-as-if-foss:
   extends:
     - .frontend-fixtures-base
-    - .frontend:rules:default-frontend-jobs-no-foss
+    - .frontend:rules:default-frontend-jobs-as-if-foss
     - .as-if-foss
 
 .frontend-job-base:
@@ -206,7 +206,7 @@ karma:
 karma-as-if-foss:
   extends:
     - .karma-base
-    - .frontend:rules:default-frontend-jobs-no-foss
+    - .frontend:rules:default-frontend-jobs-as-if-foss
     - .as-if-foss
   needs: ["frontend-fixtures-as-if-foss"]
 
@@ -241,7 +241,7 @@ jest:
 jest-as-if-foss:
   extends:
     - .jest-base
-    - .frontend:rules:default-frontend-jobs-no-foss
+    - .frontend:rules:default-frontend-jobs-as-if-foss
     - .as-if-foss
   needs: ["frontend-fixtures-as-if-foss"]
   cache:
@@ -250,11 +250,13 @@ jest-as-if-foss:
 coverage-frontend:
   extends:
     - .default-retry
+    - .yarn-cache
     - .frontend:rules:ee-mr-and-master-only
   needs: ["jest"]
   stage: post-test
   before_script:
-    - yarn install --frozen-lockfile --cache-folder .yarn-cache --prefer-offline
+    - source scripts/utils.sh
+    - retry yarn install --frozen-lockfile
   script:
     - yarn node scripts/frontend/merge_coverage_frontend.js
   artifacts:
@@ -263,8 +265,7 @@ coverage-frontend:
     paths:
       - coverage-frontend/
   cache:
-    paths:
-      - .yarn-cache/
+    policy: pull
 
 .qa-frontend-node:
   extends:

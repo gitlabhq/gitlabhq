@@ -10,7 +10,6 @@ module Ci
 
     def execute(trigger_build_ids = nil, initial_process: false)
       update_retried
-      ensure_scheduling_type_for_processables
 
       if Feature.enabled?(:ci_atomic_processing, pipeline.project)
         Ci::PipelineProcessing::AtomicProcessingService
@@ -44,17 +43,5 @@ module Ci
         .update_all(retried: true) if latest_statuses.any?
     end
     # rubocop: enable CodeReuse/ActiveRecord
-
-    # Set scheduling type of processables if they were created before scheduling_type
-    # data was deployed (https://gitlab.com/gitlab-org/gitlab/-/merge_requests/22246).
-    # Given that this service runs multiple times during the pipeline
-    # life cycle we need to ensure we populate the data once.
-    # See more: https://gitlab.com/gitlab-org/gitlab/issues/205426
-    def ensure_scheduling_type_for_processables
-      lease = Gitlab::ExclusiveLease.new("set-scheduling-types:#{pipeline.id}", timeout: 1.hour.to_i)
-      return unless lease.try_obtain
-
-      pipeline.processables.populate_scheduling_type!
-    end
   end
 end

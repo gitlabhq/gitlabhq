@@ -12,7 +12,7 @@ class AddDiffMaxPatchBytesToApplicationSettings < ActiveRecord::Migration[4.2]
   disable_ddl_transaction!
 
   def up
-    add_column_with_default(:application_settings,
+    add_column_with_default(:application_settings, # rubocop:disable Migration/AddColumnWithDefault
                             :diff_max_patch_bytes,
                             :integer,
                             default: 100.kilobytes,

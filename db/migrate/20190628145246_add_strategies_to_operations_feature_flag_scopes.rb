@@ -8,7 +8,9 @@ class AddStrategiesToOperationsFeatureFlagScopes < ActiveRecord::Migration[5.1]
   disable_ddl_transaction!
 
   def up
+    # rubocop:disable Migration/AddColumnWithDefault
     add_column_with_default :operations_feature_flag_scopes, :strategies, :jsonb, default: [{ name: "default", parameters: {} }]
+    # rubocop:enable Migration/AddColumnWithDefault
   end
 
   def down

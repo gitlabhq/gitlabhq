@@ -15,19 +15,6 @@ Group exports include the following:
 - Group members
 - Sub-groups. Each sub-group includes all data above
 
-## Version history
-
-GitLab can import bundles that were exported from a different GitLab deployment.
-This ability is limited to two previous GitLab [minor](../policy/maintenance.md#versioning)
-releases, which is similar to our process for [Security Releases](../policy/maintenance.md#security-releases).
-
-For example:
-
-| Current version | Can import bundles exported from |
-|-----------------|----------------------------------|
-| 13.0            | 13.0, 12.10, 12.9                |
-| 13.1            | 13.1, 13.0, 12.10                |
-
 ## Schedule new export
 
 Start a new group export.

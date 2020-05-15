@@ -9,7 +9,7 @@ class AddUsageToPagesDomains < ActiveRecord::Migration[5.2]
   disable_ddl_transaction!
 
   def up
-    add_column_with_default :pages_domains, :usage, :integer, limit: 2, default: PAGES_USAGE, allow_null: false
+    add_column_with_default :pages_domains, :usage, :integer, limit: 2, default: PAGES_USAGE, allow_null: false # rubocop:disable Migration/AddColumnWithDefault
   end
 
   def down

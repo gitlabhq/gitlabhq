@@ -27,44 +27,15 @@ describe RuboCop::Cop::Migration::AddColumnWithDefault do
       allow(cop).to receive(:in_migration?).and_return(true)
     end
 
-    let(:offense) { '`add_column_with_default` without `allow_null: true` may cause prolonged lock situations and downtime, see https://gitlab.com/gitlab-org/gitlab/issues/38060' }
+    let(:offense) { '`add_column_with_default` is deprecated, use `add_column` instead' }
 
-    context 'for blacklisted table' do
-      it 'registers an offense when specifying allow_null: false' do
-        expect_offense(<<~RUBY)
-          def up
-            add_column_with_default(:merge_request_diff_files, :artifacts, :boolean, default: true, allow_null: false)
-            ^^^^^^^^^^^^^^^^^^^^^^^ #{offense}
-          end
-        RUBY
-      end
-
-      it 'registers no offense when specifying allow_null: true' do
-        expect_no_offenses(<<~RUBY)
-          def up
-            add_column_with_default(:merge_request_diff_files, :artifacts, :boolean, default: true, allow_null: true)
-          end
-        RUBY
-      end
-
-      it 'registers an offense when allow_null is not specified' do
-        expect_offense(<<~RUBY)
-          def up
-            add_column_with_default(:merge_request_diff_files, :artifacts, :boolean, default: true)
-            ^^^^^^^^^^^^^^^^^^^^^^^ #{offense}
-          end
-        RUBY
-      end
-    end
-
-    context 'for tables not on the blacklist' do
-      it 'registers no offense for application_settings (not on blacklist)' do
-        expect_no_offenses(<<~RUBY)
-          def up
-            add_column_with_default(:application_settings, :another_column, :boolean, default: true, allow_null: false)
-          end
-        RUBY
-      end
+    it 'registers an offense ' do
+      expect_offense(<<~RUBY)
+        def up
+          add_column_with_default(:merge_request_diff_files, :artifacts, :boolean, default: true, allow_null: false)
+          ^^^^^^^^^^^^^^^^^^^^^^^ #{offense}
+        end
+      RUBY
     end
   end
 end

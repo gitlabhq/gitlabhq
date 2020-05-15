@@ -11,6 +11,8 @@ module Ci
 
       needs = Set.new
 
+      pipeline.ensure_scheduling_type!
+
       pipeline.retryable_builds.preload_needs.find_each do |build|
         next unless can?(current_user, :update_build, build)
 

@@ -9,7 +9,7 @@ class AddRepositoryStorageToSnippets < ActiveRecord::Migration[5.2]
 
   # rubocop:disable Migration/PreventStrings
   def up
-    add_column_with_default(
+    add_column_with_default( # rubocop:disable Migration/AddColumnWithDefault
       :snippets,
       :repository_storage,
       :string,

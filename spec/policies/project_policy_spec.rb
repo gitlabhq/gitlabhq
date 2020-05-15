@@ -275,7 +275,8 @@ describe ProjectPolicy do
   it_behaves_like 'project policies as developer'
   it_behaves_like 'project policies as maintainer'
   it_behaves_like 'project policies as owner'
-  it_behaves_like 'project policies as admin'
+  it_behaves_like 'project policies as admin with admin mode'
+  it_behaves_like 'project policies as admin without admin mode'
 
   context 'when a public project has merge requests allowing access' do
     include ProjectForksHelper
@@ -306,7 +307,7 @@ describe ProjectPolicy do
       expect_allowed(*maintainer_abilities)
     end
 
-    it 'dissallows abilities to a maintainer if the merge request was closed' do
+    it 'disallows abilities to a maintainer if the merge request was closed' do
       target_project.add_developer(user)
       merge_request.close!
 
@@ -350,10 +351,24 @@ describe ProjectPolicy do
         expect(described_class.new(developer, project)).to be_allowed(:read_project)
       end
 
-      it 'does not check the external service for admins and allows access' do
-        expect(::Gitlab::ExternalAuthorization).not_to receive(:access_allowed?)
+      context 'with an admin' do
+        context 'when admin mode is enabled', :enable_admin_mode do
+          it 'does not check the external service and allows access' do
+            expect(::Gitlab::ExternalAuthorization).not_to receive(:access_allowed?)
 
-        expect(described_class.new(admin, project)).to be_allowed(:read_project)
+            expect(described_class.new(admin, project)).to be_allowed(:read_project)
+          end
+        end
+
+        context 'when admin mode is disabled' do
+          it 'checks the external service and allows access' do
+            external_service_allow_access(admin, project)
+
+            expect(::Gitlab::ExternalAuthorization).to receive(:access_allowed?)
+
+            expect(described_class.new(admin, project)).to be_allowed(:read_project)
+          end
+        end
       end
 
       it 'prevents all but seeing a public project in a list when access is denied' do
@@ -416,7 +431,13 @@ describe ProjectPolicy do
     context 'admin' do
       let(:current_user) { admin }
 
-      it { expect_allowed(:update_max_artifacts_size) }
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it { expect_allowed(:update_max_artifacts_size) }
+      end
+
+      context 'when admin mode is disabled' do
+        it { expect_disallowed(:update_max_artifacts_size) }
+      end
     end
 
     %w(guest reporter developer maintainer owner).each do |role|
@@ -448,7 +469,13 @@ describe ProjectPolicy do
     context 'with admin' do
       let(:current_user) { admin }
 
-      it { is_expected.to be_allowed(:read_prometheus_alerts) }
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it { is_expected.to be_allowed(:read_prometheus_alerts) }
+      end
+
+      context 'when admin mode is disabled' do
+        it { is_expected.to be_disallowed(:read_prometheus_alerts) }
+      end
     end
 
     context 'with owner' do

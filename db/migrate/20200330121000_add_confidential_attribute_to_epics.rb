@@ -8,7 +8,7 @@ class AddConfidentialAttributeToEpics < ActiveRecord::Migration[6.0]
   disable_ddl_transaction!
 
   def up
-    add_column_with_default(:epics, :confidential, :boolean, default: false)
+    add_column_with_default(:epics, :confidential, :boolean, default: false) # rubocop:disable Migration/AddColumnWithDefault
   end
 
   def down

@@ -961,6 +961,14 @@ module Ci
       end
     end
 
+    # Set scheduling type of processables if they were created before scheduling_type
+    # data was deployed (https://gitlab.com/gitlab-org/gitlab/-/merge_requests/22246).
+    def ensure_scheduling_type!
+      return unless ::Gitlab::Ci::Features.ensure_scheduling_type_enabled?
+
+      processables.populate_scheduling_type!
+    end
+
     private
 
     def pipeline_data

@@ -252,7 +252,8 @@ rspec:coverage:
 
 .rspec-base-pg11-as-if-foss:
   extends:
-    - .rspec-base-ee
+    - .rspec-base
+    - .rails:rules:as-if-foss
     - .as-if-foss
     - .use-pg11
   needs: ["setup-test-env", "retrieve-tests-metadata", "compile-assets pull-cache as-if-foss"]

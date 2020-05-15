@@ -229,26 +229,25 @@ RSpec.configure do |config|
       ./ee/spec/features
       ./ee/spec/finders
       ./ee/spec/lib
-      ./ee/spec/models
-      ./ee/spec/policies
       ./ee/spec/requests/admin
       ./ee/spec/serializers
       ./ee/spec/services
       ./ee/spec/support/protected_tags
-      ./ee/spec/support/shared_examples
+      ./ee/spec/support/shared_examples/features
+      ./ee/spec/support/shared_examples/finders/geo
+      ./ee/spec/support/shared_examples/graphql/geo
+      ./ee/spec/support/shared_examples/services
       ./spec/features
       ./spec/finders
       ./spec/frontend
       ./spec/helpers
       ./spec/lib
-      ./spec/models
-      ./spec/policies
       ./spec/requests
       ./spec/serializers
       ./spec/services
-      ./spec/support/cycle_analytics_helpers
       ./spec/support/protected_tags
-      ./spec/support/shared_examples
+      ./spec/support/shared_examples/features
+      ./spec/support/shared_examples/requests
       ./spec/views
       ./spec/workers
     )

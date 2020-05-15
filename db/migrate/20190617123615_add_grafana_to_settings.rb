@@ -8,7 +8,7 @@ class AddGrafanaToSettings < ActiveRecord::Migration[5.1]
   DOWNTIME = false
 
   def up
-    add_column_with_default(:application_settings, :grafana_enabled, :boolean,
+    add_column_with_default(:application_settings, :grafana_enabled, :boolean, # rubocop:disable Migration/AddColumnWithDefault
                             default: false, allow_null: false)
   end
 

@@ -8,7 +8,7 @@ class AddCiPipelineSchedulesToPlanLimits < ActiveRecord::Migration[6.0]
   DOWNTIME = false
 
   def up
-    add_column_with_default(:plan_limits, :ci_pipeline_schedules, :integer, default: 0, allow_null: false)
+    add_column_with_default(:plan_limits, :ci_pipeline_schedules, :integer, default: 0, allow_null: false) # rubocop:disable Migration/AddColumnWithDefault
   end
 
   def down

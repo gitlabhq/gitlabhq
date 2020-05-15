@@ -34,6 +34,12 @@
 .if-merge-request: &if-merge-request
   if: '$CI_MERGE_REQUEST_IID'
 
+.if-merge-request-title-as-if-foss: &if-merge-request-title-as-if-foss
+  if: '$CI_MERGE_REQUEST_TITLE =~ /RUN AS-IF-FOSS/'
+
+.if-security-merge-request: &if-security-merge-request
+  if: '$CI_PROJECT_NAMESPACE == "gitlab-org/security" && $CI_MERGE_REQUEST_IID'
+
 .if-dot-com-gitlab-org-schedule: &if-dot-com-gitlab-org-schedule
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_PIPELINE_SOURCE == "schedule"'
 
@@ -42,9 +48,6 @@
 
 .if-dot-com-gitlab-org-merge-request: &if-dot-com-gitlab-org-merge-request
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_MERGE_REQUEST_IID'
-
-.if-dot-com-gitlab-org-and-security-merge-request: &if-dot-com-gitlab-org-and-security-merge-request
-  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/security$)/ && $CI_MERGE_REQUEST_IID'
 
 .if-dot-com-gitlab-org-and-security-tag: &if-dot-com-gitlab-org-and-security-tag
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/security$)/ && $CI_COMMIT_TAG'
@@ -59,6 +62,7 @@
 # Changes patterns #
 ####################
 .ci-patterns: &ci-patterns
+  - ".gitlab-ci.yml"
   - ".gitlab/ci/**/*"
 
 .yaml-patterns: &yaml-patterns
@@ -234,6 +238,7 @@
 ##################
 # Frontend rules #
 ##################
+# This job only runs on `master` since it pushes to the cache.
 .frontend:rules:gitlab-assets-compile-pull-push-cache:
   rules:
     - <<: *if-not-canonical-namespace
@@ -256,13 +261,14 @@
       changes: *code-backstage-qa-patterns
       when: on_success
 
+# This job only runs on `master` since it pushes to the cache.
 .frontend:rules:compile-assets-pull-push-cache-as-if-foss:
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-master-refs
+    - <<: *if-master-push
       changes: *code-backstage-qa-patterns
-      when: on_success
+    - <<: *if-master-schedule-2-hourly
 
 .frontend:rules:compile-assets-pull-cache:
   rules:
@@ -274,9 +280,14 @@
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-default-refs
+    - <<: *if-master-push
       changes: *code-backstage-qa-patterns
-      when: on_success
+    - <<: *if-master-schedule-2-hourly
+    - <<: *if-security-merge-request
+      changes: *code-backstage-qa-patterns
+    - <<: *if-merge-request-title-as-if-foss
+    - <<: *if-merge-request
+      changes: *ci-patterns
 
 .frontend:rules:default-frontend-jobs:
   rules:
@@ -284,13 +295,18 @@
       changes: *code-backstage-patterns
       when: on_success
 
-.frontend:rules:default-frontend-jobs-no-foss:
+.frontend:rules:default-frontend-jobs-as-if-foss:
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-default-refs
+    - <<: *if-master-push
       changes: *code-backstage-patterns
-      when: on_success
+    - <<: *if-master-schedule-2-hourly
+    - <<: *if-security-merge-request
+      changes: *code-backstage-patterns
+    - <<: *if-merge-request-title-as-if-foss
+    - <<: *if-merge-request
+      changes: *ci-patterns
 
 .frontend:rules:ee-mr-and-master-only:
   rules:
@@ -348,13 +364,18 @@
       changes: *code-qa-patterns
       when: on_success
 
-.qa:rules:ee-only:
+.qa:rules:as-if-foss:
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-default-refs
+    - <<: *if-master-push
       changes: *code-qa-patterns
-      when: on_success
+    - <<: *if-master-schedule-2-hourly
+    - <<: *if-security-merge-request
+      changes: *code-qa-patterns
+    - <<: *if-merge-request-title-as-if-foss
+    - <<: *if-merge-request
+      changes: *ci-patterns
 
 .qa:rules:package-and-qa:
   rules:
@@ -390,6 +411,19 @@
       when: never
     - <<: *if-default-refs
       changes: *code-backstage-patterns
+
+.rails:rules:as-if-foss:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-master-push
+      changes: *code-backstage-patterns
+    - <<: *if-master-schedule-2-hourly
+    - <<: *if-security-merge-request
+      changes: *code-backstage-patterns
+    - <<: *if-merge-request-title-as-if-foss
+    - <<: *if-merge-request
+      changes: *ci-patterns
 
 .rails:rules:ee-mr-and-master-only:
   rules:

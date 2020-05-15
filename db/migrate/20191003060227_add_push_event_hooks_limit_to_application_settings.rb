@@ -8,7 +8,7 @@ class AddPushEventHooksLimitToApplicationSettings < ActiveRecord::Migration[5.2]
   disable_ddl_transaction!
 
   def up
-    add_column_with_default(:application_settings, :push_event_hooks_limit, :integer, default: 3)
+    add_column_with_default(:application_settings, :push_event_hooks_limit, :integer, default: 3) # rubocop:disable Migration/AddColumnWithDefault
   end
 
   def down

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe BasePolicy, :do_not_mock_admin_mode do
+describe BasePolicy do
   include ExternalAuthorizationServiceHelpers
   include AdminModeHelper
 

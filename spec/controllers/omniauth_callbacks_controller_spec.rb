@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe OmniauthCallbacksController, type: :controller, do_not_mock_admin_mode: true do
+describe OmniauthCallbacksController, type: :controller do
   include LoginHelpers
 
   describe 'omniauth' do

@@ -5,38 +5,6 @@ GitLab offline, others do require a downtime period. This guide describes
 various operations, their impact, and how to perform them without requiring
 downtime.
 
-## Adding Columns
-
-You can safely add a new column to an existing table as long as it does **not**
-have a default value. For example, this query would not require downtime:
-
-```sql
-ALTER TABLE projects ADD COLUMN random_value int;
-```
-
-Add a column _with_ a default however does require downtime. For example,
-consider this query:
-
-```sql
-ALTER TABLE projects ADD COLUMN random_value int DEFAULT 42;
-```
-
-This requires updating every single row in the `projects` table so that
-`random_value` is set to `42` by default. This requires updating all rows and
-indexes in a table. This in turn acquires enough locks on the table for it to
-effectively block any other queries.
-
-Adding a column with a default value _can_ be done without requiring downtime
-when using the migration helper method
-`Gitlab::Database::MigrationHelpers#add_column_with_default`. This method works
-similar to `add_column` except it updates existing rows in batches without
-blocking access to the table being modified. See ["Adding Columns With Default
-Values"](migration_style_guide.md#adding-columns-with-default-values) for more
-information on how to use this method.
-
-Note that usage of `add_column_with_default` with `allow_null: false` to also add
-a `NOT NULL` constraint is [discouraged](https://gitlab.com/gitlab-org/gitlab/issues/38060).
-
 ## Dropping Columns
 
 Removing columns is tricky because running GitLab processes may still be using

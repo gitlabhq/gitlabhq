@@ -12,7 +12,7 @@ class AddLetsEncryptTermsOfServiceAcceptedToApplicationSettings < ActiveRecord::
   disable_ddl_transaction!
 
   def up
-    add_column_with_default(:application_settings, :lets_encrypt_terms_of_service_accepted, :boolean, default: false)
+    add_column_with_default(:application_settings, :lets_encrypt_terms_of_service_accepted, :boolean, default: false) # rubocop:disable Migration/AddColumnWithDefault
   end
 
   def down

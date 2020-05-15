@@ -18,6 +18,7 @@ class ApplicationController < ActionController::Base
   include Gitlab::Tracking::ControllerConcern
   include Gitlab::Experimentation::ControllerConcern
   include InitializesCurrentUserMode
+  include Impersonation
   include Gitlab::Logging::CloudflareHelper
 
   before_action :authenticate_user!, except: [:route_not_found]
@@ -526,36 +527,6 @@ class ApplicationController < ActionController::Base
     ApplicationSettings::UpdateService
       .new(settings, current_user, application_setting_params)
       .execute
-  end
-
-  def check_impersonation_availability
-    return unless session[:impersonator_id]
-
-    unless Gitlab.config.gitlab.impersonation_enabled
-      stop_impersonation
-      access_denied! _('Impersonation has been disabled')
-    end
-  end
-
-  def stop_impersonation
-    log_impersonation_event
-
-    warden.set_user(impersonator, scope: :user)
-    session[:impersonator_id] = nil
-
-    impersonated_user
-  end
-
-  def impersonated_user
-    current_user
-  end
-
-  def log_impersonation_event
-    Gitlab::AppLogger.info("User #{impersonator.username} has stopped impersonating #{impersonated_user.username}")
-  end
-
-  def impersonator
-    @impersonator ||= User.find(session[:impersonator_id]) if session[:impersonator_id]
   end
 
   def sentry_context(&block)

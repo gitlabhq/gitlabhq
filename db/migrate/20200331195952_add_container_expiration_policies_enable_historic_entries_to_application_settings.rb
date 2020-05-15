@@ -8,7 +8,7 @@ class AddContainerExpirationPoliciesEnableHistoricEntriesToApplicationSettings <
   disable_ddl_transaction!
 
   def up
-    add_column_with_default(:application_settings,
+    add_column_with_default(:application_settings, # rubocop:disable Migration/AddColumnWithDefault
                             :container_expiration_policies_enable_historic_entries,
                             :boolean,
                             default: false,

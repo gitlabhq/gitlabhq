@@ -238,3 +238,5 @@ danger-review:
     - source scripts/utils.sh
     - retry yarn install --frozen-lockfile
     - danger --fail-on-errors=true --verbose
+  cache:
+    policy: pull

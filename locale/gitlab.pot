@@ -2315,6 +2315,9 @@ msgstr ""
 msgid "An instance-level serverless domain already exists."
 msgstr ""
 
+msgid "An issue already exists"
+msgstr ""
+
 msgid "An issue can be a bug, a todo or a feature request that needs to be discussed in a project. Besides, issues are searchable and filterable."
 msgstr ""
 
@@ -7640,6 +7643,9 @@ msgstr ""
 msgid "Don't have an account yet?"
 msgstr ""
 
+msgid "Don't include description in commit message"
+msgstr ""
+
 msgid "Don't paste the private part of the GPG key. Paste the public part which begins with '-----BEGIN PGP PUBLIC KEY BLOCK-----'."
 msgstr ""
 
@@ -11533,6 +11539,9 @@ msgid "Include a Terms of Service agreement and Privacy Policy that all users mu
 msgstr ""
 
 msgid "Include author name in notification email body"
+msgstr ""
+
+msgid "Include description in commit message"
 msgstr ""
 
 msgid "Include merge request description"
@@ -16612,6 +16621,9 @@ msgstr ""
 msgid "ProjectSettings|Share code pastes with others out of Git repository"
 msgstr ""
 
+msgid "ProjectSettings|Show default award emojis"
+msgstr ""
+
 msgid "ProjectSettings|Show link to create/view merge request when pushing from the command line"
 msgstr ""
 
@@ -16655,6 +16667,9 @@ msgid "ProjectSettings|View and edit files in this project. Non-project members 
 msgstr ""
 
 msgid "ProjectSettings|When conflicts arise the user is given the option to rebase"
+msgstr ""
+
+msgid "ProjectSettings|When enabled, issues, merge requests, and snippets will always show thumbs-up and thumbs-down award emoji buttons."
 msgstr ""
 
 msgid "ProjectSettings|Wiki"
@@ -22741,6 +22756,9 @@ msgid "Try changing or removing filters."
 msgstr ""
 
 msgid "Try to fork again"
+msgstr ""
+
+msgid "Try to keep the first line under 52 characters and the others under 72."
 msgstr ""
 
 msgid "Try using a different search term to find the file you are looking for."

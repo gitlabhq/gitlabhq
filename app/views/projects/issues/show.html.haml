@@ -93,6 +93,6 @@
         #js-vue-discussion-filter{ data: { default_filter: current_user&.notes_filter_for(@issue), notes_filters: UserPreference.notes_filters.to_json } }
         = render 'new_branch' if show_new_branch_button?
 
-  = render_if_exists 'projects/issues/discussion'
+  = render 'projects/issues/tabs'
 
 = render 'shared/issuable/sidebar', issuable_sidebar: @issuable_sidebar, assignees: @issue.assignees

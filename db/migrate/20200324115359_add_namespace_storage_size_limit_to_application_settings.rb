@@ -7,7 +7,7 @@ class AddNamespaceStorageSizeLimitToApplicationSettings < ActiveRecord::Migratio
   disable_ddl_transaction!
 
   def up
-    add_column_with_default :application_settings, :namespace_storage_size_limit, :bigint, default: 0
+    add_column_with_default :application_settings, :namespace_storage_size_limit, :bigint, default: 0 # rubocop:disable Migration/AddColumnWithDefault
   end
 
   def down

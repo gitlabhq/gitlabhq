@@ -5252,7 +5252,9 @@ CREATE TABLE public.project_settings (
     project_id integer NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    push_rule_id bigint
+    push_rule_id bigint,
+    show_default_award_emojis boolean DEFAULT true,
+    CONSTRAINT check_bde223416c CHECK ((show_default_award_emojis IS NOT NULL))
 );
 
 CREATE TABLE public.project_statistics (
@@ -13659,6 +13661,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200319203901
 20200320112455
 20200320123839
+20200320212400
 20200323011225
 20200323011955
 20200323071918

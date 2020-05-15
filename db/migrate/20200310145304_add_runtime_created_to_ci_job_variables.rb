@@ -10,7 +10,7 @@ class AddRuntimeCreatedToCiJobVariables < ActiveRecord::Migration[6.0]
   DEFAULT_SOURCE = 0 # Equvalent to Ci::JobVariable.internal_source
 
   def up
-    add_column_with_default(:ci_job_variables, :source, :integer, limit: 2, default: DEFAULT_SOURCE, allow_null: false)
+    add_column_with_default(:ci_job_variables, :source, :integer, limit: 2, default: DEFAULT_SOURCE, allow_null: false) # rubocop:disable Migration/AddColumnWithDefault
   end
 
   def down

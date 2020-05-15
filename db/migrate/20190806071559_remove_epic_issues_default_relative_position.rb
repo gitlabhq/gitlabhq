@@ -14,7 +14,7 @@ class RemoveEpicIssuesDefaultRelativePosition < ActiveRecord::Migration[5.2]
       change_column_null :epic_issues, :relative_position, true
       change_column_default :epic_issues, :relative_position, from: 1073741823, to: nil
     else
-      add_column_with_default(:epic_issues, :relative_position, :integer, default: nil, allow_null: true)
+      add_column_with_default(:epic_issues, :relative_position, :integer, default: nil, allow_null: true) # rubocop:disable Migration/AddColumnWithDefault
     end
   end
 

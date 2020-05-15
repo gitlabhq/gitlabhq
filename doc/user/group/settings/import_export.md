@@ -69,6 +69,25 @@ For more details on the specific data persisted in a group export, see the
 1. Alternatively, you can come back to the project settings and download the
    file from there by clicking **Download export**, or generate a new file by clicking **Regenerate export**.
 
+### Between CE and EE
+
+You can export groups from the [Community Edition to the Enterprise Edition](https://about.gitlab.com/install/ce-or-ee/) and vice versa.
+
+If you're exporting a group from the Enterprise Edition to the Community Edition, you may lose data that is retained only in the Enterprise Edition. For more information, see [downgrading from EE to CE](../../../README.md).
+
+## Version history
+
+GitLab can import bundles that were exported from a different GitLab deployment.
+This ability is limited to two previous GitLab [minor](../../../policy/maintenance.md#versioning)
+releases, which is similar to our process for [Security Releases](../../../policy/maintenance.md#security-releases).
+
+For example:
+
+| Current version | Can import bundles exported from |
+|-----------------|----------------------------------|
+| 13.0            | 13.0, 12.10, 12.9                |
+| 13.1            | 13.1, 13.0, 12.10                |
+
 ## Rate Limits
 
 To help avoid abuse, users are rate limited to:

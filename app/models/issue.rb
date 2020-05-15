@@ -359,7 +359,7 @@ class Issue < ApplicationRecord
   # for performance reasons, check commit: 002ad215818450d2cbbc5fa065850a953dc7ada8
   # Make sure to sync this method with issue_policy.rb
   def readable_by?(user)
-    if user.admin?
+    if user.can_read_all_resources?
       true
     elsif project.owner == user
       true

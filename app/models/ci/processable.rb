@@ -99,5 +99,13 @@ module Ci
         needs.map { |need| need.attributes.except('id', 'build_id') }
       end
     end
+
+    def ensure_scheduling_type!
+      # If this has a scheduling_type, it means all processables in the pipeline already have.
+      return if scheduling_type
+
+      pipeline.ensure_scheduling_type!
+      reset
+    end
   end
 end

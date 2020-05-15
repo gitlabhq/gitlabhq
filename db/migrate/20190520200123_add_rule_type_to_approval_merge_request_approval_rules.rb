@@ -12,7 +12,7 @@ class AddRuleTypeToApprovalMergeRequestApprovalRules < ActiveRecord::Migration[5
   disable_ddl_transaction!
 
   def up
-    add_column_with_default(:approval_merge_request_rules, :rule_type, :integer, limit: 2, default: 1)
+    add_column_with_default(:approval_merge_request_rules, :rule_type, :integer, limit: 2, default: 1) # rubocop:disable Migration/AddColumnWithDefault
   end
 
   def down

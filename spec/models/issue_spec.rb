@@ -612,8 +612,15 @@ describe Issue do
       context 'with an admin user' do
         let(:user) { build(:admin) }
 
-        it_behaves_like 'issue readable by user'
-        it_behaves_like 'confidential issue readable by user'
+        context 'when admin mode is enabled', :enable_admin_mode do
+          it_behaves_like 'issue readable by user'
+          it_behaves_like 'confidential issue readable by user'
+        end
+
+        context 'when admin mode is disabled' do
+          it_behaves_like 'issue not readable by user'
+          it_behaves_like 'confidential issue not readable by user'
+        end
       end
 
       context 'with an owner' do
@@ -732,13 +739,29 @@ describe Issue do
           expect(issue.visible_to_user?(user)).to be_falsy
         end
 
-        it 'does not check the external webservice for admins' do
-          issue = build(:issue)
-          user = build(:admin)
+        context 'with an admin' do
+          context 'when admin mode is enabled', :enable_admin_mode do
+            it 'does not check the external webservice' do
+              issue = build(:issue)
+              user = build(:admin)
 
-          expect(::Gitlab::ExternalAuthorization).not_to receive(:access_allowed?)
+              expect(::Gitlab::ExternalAuthorization).not_to receive(:access_allowed?)
 
-          issue.visible_to_user?(user)
+              issue.visible_to_user?(user)
+            end
+          end
+
+          context 'when admin mode is disabled' do
+            it 'checks the external service to determine if an issue is readable by the admin' do
+              project = build(:project, :public,
+                              external_authorization_classification_label: 'a-label')
+              issue = build(:issue, project: project)
+              user = build(:admin)
+
+              expect(::Gitlab::ExternalAuthorization).to receive(:access_allowed?).with(user, 'a-label') { false }
+              expect(issue.visible_to_user?(user)).to be_falsy
+            end
+          end
         end
       end
 

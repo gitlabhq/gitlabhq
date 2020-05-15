@@ -914,4 +914,43 @@ describe ApplicationController do
       expect(json_response['meta.caller_id']).to eq('AnonymousController#index')
     end
   end
+
+  describe '#current_user' do
+    controller(described_class) do
+      def index; end
+    end
+
+    let_it_be(:impersonator) { create(:user) }
+    let_it_be(:user) { create(:user) }
+
+    before do
+      sign_in(user)
+    end
+
+    context 'when being impersonated' do
+      before do
+        allow(controller).to receive(:session).and_return({ impersonator_id: impersonator.id })
+      end
+
+      it 'returns a User with impersonator', :aggregate_failures do
+        get :index
+
+        expect(controller.current_user).to be_a(User)
+        expect(controller.current_user.impersonator).to eq(impersonator)
+      end
+    end
+
+    context 'when not being impersonated' do
+      before do
+        allow(controller).to receive(:session).and_return({})
+      end
+
+      it 'returns a User', :aggregate_failures do
+        get :index
+
+        expect(controller.current_user).to be_a(User)
+        expect(controller.current_user.impersonator).to be_nil
+      end
+    end
+  end
 end

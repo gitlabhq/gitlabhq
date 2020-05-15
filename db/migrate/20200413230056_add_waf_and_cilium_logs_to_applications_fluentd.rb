@@ -8,12 +8,12 @@ class AddWafAndCiliumLogsToApplicationsFluentd < ActiveRecord::Migration[6.0]
   disable_ddl_transaction!
 
   def up
-    add_column_with_default(:clusters_applications_fluentd,
+    add_column_with_default(:clusters_applications_fluentd, # rubocop:disable Migration/AddColumnWithDefault
                             :waf_log_enabled,
                             :boolean,
                             default: true,
                             allow_null: false)
-    add_column_with_default(:clusters_applications_fluentd,
+    add_column_with_default(:clusters_applications_fluentd, # rubocop:disable Migration/AddColumnWithDefault
                             :cilium_log_enabled,
                             :boolean,
                             default: true,

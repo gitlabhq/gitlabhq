@@ -19,8 +19,8 @@ describe PersonalSnippetPolicy do
     described_class.new(user, snippet)
   end
 
-  shared_examples 'admin access' do
-    context 'admin user' do
+  shared_examples 'admin access with admin mode' do
+    context 'admin user', :enable_admin_mode do
       subject { permissions(admin_user) }
 
       it do
@@ -68,7 +68,7 @@ describe PersonalSnippetPolicy do
       end
     end
 
-    it_behaves_like 'admin access'
+    it_behaves_like 'admin access with admin mode'
   end
 
   context 'internal snippet' do
@@ -118,7 +118,7 @@ describe PersonalSnippetPolicy do
       end
     end
 
-    it_behaves_like 'admin access'
+    it_behaves_like 'admin access with admin mode'
   end
 
   context 'private snippet' do
@@ -168,6 +168,6 @@ describe PersonalSnippetPolicy do
       end
     end
 
-    it_behaves_like 'admin access'
+    it_behaves_like 'admin access with admin mode'
   end
 end

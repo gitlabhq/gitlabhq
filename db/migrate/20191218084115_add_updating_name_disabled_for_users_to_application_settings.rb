@@ -8,7 +8,7 @@ class AddUpdatingNameDisabledForUsersToApplicationSettings < ActiveRecord::Migra
   disable_ddl_transaction!
 
   def up
-    add_column_with_default(:application_settings, :updating_name_disabled_for_users,
+    add_column_with_default(:application_settings, :updating_name_disabled_for_users, # rubocop:disable Migration/AddColumnWithDefault
                             :boolean,
                             default: false,
                             allow_null: false)

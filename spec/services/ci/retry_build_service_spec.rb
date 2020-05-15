@@ -190,6 +190,35 @@ describe Ci::RetryBuildService do
           expect(subsequent_build.reload).to be_created
         end
       end
+
+      context 'when pipeline has other builds' do
+        let!(:stage2) { create(:ci_stage_entity, project: project, pipeline: pipeline, name: 'deploy') }
+        let!(:build2) { create(:ci_build, pipeline: pipeline, stage_id: stage.id ) }
+        let!(:deploy) { create(:ci_build, pipeline: pipeline, stage_id: stage2.id) }
+        let!(:deploy_needs_build2) { create(:ci_build_need, build: deploy, name: build2.name) }
+
+        context 'when build has nil scheduling_type' do
+          before do
+            build.pipeline.processables.update_all(scheduling_type: nil)
+            build.reload
+          end
+
+          it 'populates scheduling_type of processables' do
+            expect(new_build.scheduling_type).to eq('stage')
+            expect(build.reload.scheduling_type).to eq('stage')
+            expect(build2.reload.scheduling_type).to eq('stage')
+            expect(deploy.reload.scheduling_type).to eq('dag')
+          end
+        end
+
+        context 'when build has scheduling_type' do
+          it 'does not call populate_scheduling_type!' do
+            expect_any_instance_of(Ci::Pipeline).not_to receive(:ensure_scheduling_type!)
+
+            expect(new_build.scheduling_type).to eq('stage')
+          end
+        end
+      end
     end
 
     context 'when user does not have ability to execute build' do

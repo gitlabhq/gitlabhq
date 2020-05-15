@@ -206,11 +206,25 @@ describe IssuePolicy do
       it 'allows guests to comment' do
         expect(permissions(guest, issue)).to be_allowed(:create_note)
       end
-      it 'allows admins to view' do
-        expect(permissions(admin, issue)).to be_allowed(:read_issue)
+
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it 'allows admins to view' do
+          expect(permissions(admin, issue)).to be_allowed(:read_issue)
+        end
+
+        it 'allows admins to comment' do
+          expect(permissions(admin, issue)).to be_allowed(:create_note)
+        end
       end
-      it 'allows admins to comment' do
-        expect(permissions(admin, issue)).to be_allowed(:create_note)
+
+      context 'when admin mode is disabled' do
+        it 'forbids admins to view' do
+          expect(permissions(admin, issue)).to be_disallowed(:read_issue)
+        end
+
+        it 'forbids admins to comment' do
+          expect(permissions(admin, issue)).to be_disallowed(:create_note)
+        end
       end
     end
 

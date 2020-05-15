@@ -131,9 +131,9 @@ and included in `rules` definitions via [YAML anchors](../ci/yaml/README.md#anch
 | `ci-patterns`                | Only create job for CI config-related changes.                           |
 | `yaml-patterns`              | Only create job for YAML-related changes.                                |
 | `docs-patterns`              | Only create job for docs-related changes.                                |
-| `frontend-dependency-patterns` | Only create job when frontend dependencies are updated (i.e. `package.json`, and `yarn.lock`). changes.                                |
+| `frontend-dependency-patterns` | Only create job when frontend dependencies are updated (i.e. `package.json`, and `yarn.lock`). changes. |
 | `frontend-patterns`          | Only create job for frontend-related changes.                           |
-| `backstage-patterns`         | Only create job for backstage-related changes (i.e. Danger, fixtures, RuboCop, specs).                           |
+| `backstage-patterns`         | Only create job for backstage-related changes (i.e. Danger, fixtures, RuboCop, specs). |
 | `code-patterns`              | Only create job for code-related changes.                                |
 | `qa-patterns`                | Only create job for QA-related changes.                                  |
 | `code-backstage-patterns`    | Combination of `code-patterns` and `backstage-patterns`.                 |
@@ -515,6 +515,22 @@ for more information.
 ## Review app jobs
 
 Consult the [Review Apps](testing_guide/review_apps.md) dedicated page for more information.
+
+## As-if-FOSS jobs
+
+The `* as-if-foss` jobs allows to run GitLab's test suite "as-if-FOSS", meaning as if the jobs would run in the context
+of the `gitlab-org/gitlab-foss` project. These jobs are only created in the following cases:
+
+- `master` commits (pushes and scheduled pipelines).
+- `gitlab-org/security/gitlab` merge requests.
+- Merge requests which include `RUN AS-IF-FOSS` in their title.
+- Merge requests that changes the CI config.
+
+The `* as-if-foss` jobs have the `FOSS_ONLY='1'` variable set and gets their EE-specific
+folders removed before the tests start running.
+
+The intent is to ensure that a change won't introduce a failure once the `gitlab-org/gitlab` project will be synced to
+the `gitlab-org/gitlab-foss` project.
 
 ## Pre-clone step
 

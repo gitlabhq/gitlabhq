@@ -3777,7 +3777,7 @@ describe Project do
     end
   end
 
-  describe '.filter_by_feature_visibility' do
+  describe '.filter_by_feature_visibility', :enable_admin_mode do
     include_context 'ProjectPolicyTable context'
     include ProjectHelpers
     using RSpec::Parameterized::TableSyntax

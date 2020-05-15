@@ -88,6 +88,9 @@ class User < ApplicationRecord
   # Virtual attribute for authenticating by either username or email
   attr_accessor :login
 
+  # Virtual attribute for impersonator
+  attr_accessor :impersonator
+
   #
   # Relations
   #
@@ -1681,6 +1684,10 @@ class User < ApplicationRecord
 
   def confirmation_required_on_sign_in?
     !confirmed? && !confirmation_period_valid?
+  end
+
+  def impersonated?
+    impersonator.present?
   end
 
   protected

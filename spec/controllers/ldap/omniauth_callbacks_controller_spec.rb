@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ldap::OmniauthCallbacksController, :do_not_mock_admin_mode do
+describe Ldap::OmniauthCallbacksController do
   include_context 'Ldap::OmniauthCallbacksController'
 
   it 'allows sign in' do

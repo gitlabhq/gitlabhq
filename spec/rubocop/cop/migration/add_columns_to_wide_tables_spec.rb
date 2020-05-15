@@ -42,8 +42,8 @@ describe RuboCop::Cop::Migration::AddColumnsToWideTables do
 
         expect_offense(<<~RUBY)
           def up
-            add_column_with_default(:users, :another_column, :boolean, default: false)
-            ^^^^^^^^^^^^^^^^^^^^^^^ #{offense}
+            add_column(:users, :another_column, :boolean, default: false)
+            ^^^^^^^^^^ #{offense}
           end
         RUBY
       end

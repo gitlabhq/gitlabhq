@@ -287,8 +287,16 @@ describe Event do
       context 'private project' do
         let(:project) { create(:project, :private, :repository) }
 
-        include_examples 'visibility examples' do
-          let(:visibility) { visible_to_none_except(:member, :admin) }
+        context 'when admin mode enabled', :enable_admin_mode do
+          include_examples 'visibility examples' do
+            let(:visibility) { visible_to_none_except(:member, :admin) }
+          end
+        end
+
+        context 'when admin mode disabled' do
+          include_examples 'visibility examples' do
+            let(:visibility) { visible_to_none_except(:member) }
+          end
         end
       end
     end
@@ -340,8 +348,16 @@ describe Event do
         let(:project) { private_project }
         let(:target) { note_on_issue }
 
-        include_examples 'visibility examples' do
-          let(:visibility) { visible_to_none_except(:guest, :member, :admin) }
+        context 'when admin mode enabled', :enable_admin_mode do
+          include_examples 'visibility examples' do
+            let(:visibility) { visible_to_none_except(:guest, :member, :admin) }
+          end
+        end
+
+        context 'when admin mode disabled' do
+          include_examples 'visibility examples' do
+            let(:visibility) { visible_to_none_except(:guest, :member) }
+          end
         end
 
         include_examples 'visible to assignee and author', false
@@ -366,8 +382,16 @@ describe Event do
       context 'private project' do
         let(:project) { private_project }
 
-        include_examples 'visibility examples' do
-          let(:visibility) { visible_to_none_except(:member, :admin) }
+        context 'when admin mode enabled', :enable_admin_mode do
+          include_examples 'visibility examples' do
+            let(:visibility) { visible_to_none_except(:member, :admin) }
+          end
+        end
+
+        context 'when admin mode disabled' do
+          include_examples 'visibility examples' do
+            let(:visibility) { visible_to_none_except(:member) }
+          end
         end
 
         include_examples 'visible to assignee', false
@@ -384,16 +408,32 @@ describe Event do
       context 'on public project with private issue tracker and merge requests' do
         let(:project) { create(:project, :public, :issues_private, :merge_requests_private) }
 
-        include_examples 'visibility examples' do
-          let(:visibility) { visible_to_all_except(:logged_out, :non_member) }
+        context 'when admin mode enabled', :enable_admin_mode do
+          include_examples 'visibility examples' do
+            let(:visibility) { visible_to_all_except(:logged_out, :non_member) }
+          end
+        end
+
+        context 'when admin mode disabled' do
+          include_examples 'visibility examples' do
+            let(:visibility) { visible_to_all_except(:logged_out, :non_member, :admin) }
+          end
         end
       end
 
       context 'on private project' do
         let(:project) { create(:project, :private) }
 
-        include_examples 'visibility examples' do
-          let(:visibility) { visible_to_all_except(:logged_out, :non_member) }
+        context 'when admin mode enabled', :enable_admin_mode do
+          include_examples 'visibility examples' do
+            let(:visibility) { visible_to_all_except(:logged_out, :non_member) }
+          end
+        end
+
+        context 'when admin mode disabled' do
+          include_examples 'visibility examples' do
+            let(:visibility) { visible_to_all_except(:logged_out, :non_member, :admin) }
+          end
         end
       end
     end
@@ -404,8 +444,16 @@ describe Event do
       context 'on private project', :aggregate_failures do
         let(:project) { create(:project, :wiki_repo) }
 
-        include_examples 'visibility examples' do
-          let(:visibility) { visible_to_all_except(:logged_out, :non_member) }
+        context 'when admin mode enabled', :enable_admin_mode do
+          include_examples 'visibility examples' do
+            let(:visibility) { visible_to_all_except(:logged_out, :non_member) }
+          end
+        end
+
+        context 'when admin mode disabled' do
+          include_examples 'visibility examples' do
+            let(:visibility) { visible_to_all_except(:logged_out, :non_member, :admin) }
+          end
         end
       end
 
@@ -428,9 +476,18 @@ describe Event do
       context 'on public project with private snippets' do
         let(:project) { create(:project, :public, :snippets_private) }
 
-        include_examples 'visibility examples' do
-          let(:visibility) { visible_to_none_except(:guest, :member, :admin) }
+        context 'when admin mode enabled', :enable_admin_mode do
+          include_examples 'visibility examples' do
+            let(:visibility) { visible_to_none_except(:guest, :member, :admin) }
+          end
         end
+
+        context 'when admin mode disabled' do
+          include_examples 'visibility examples' do
+            let(:visibility) { visible_to_none_except(:guest, :member) }
+          end
+        end
+
         # Normally, we'd expect the author of a comment to be able to view it.
         # However, this doesn't seem to be the case for comments on snippets.
 
@@ -440,9 +497,18 @@ describe Event do
       context 'on private project' do
         let(:project) { create(:project, :private) }
 
-        include_examples 'visibility examples' do
-          let(:visibility) { visible_to_none_except(:guest, :member, :admin) }
+        context 'when admin mode enabled', :enable_admin_mode do
+          include_examples 'visibility examples' do
+            let(:visibility) { visible_to_none_except(:guest, :member, :admin) }
+          end
         end
+
+        context 'when admin mode disabled' do
+          include_examples 'visibility examples' do
+            let(:visibility) { visible_to_none_except(:guest, :member) }
+          end
+        end
+
         # Normally, we'd expect the author of a comment to be able to view it.
         # However, this doesn't seem to be the case for comments on snippets.
 
@@ -470,8 +536,16 @@ describe Event do
       context 'on private snippet' do
         let(:personal_snippet) { create(:personal_snippet, :private, author: author) }
 
-        include_examples 'visibility examples' do
-          let(:visibility) { visible_to_none_except(:admin) }
+        context 'when admin mode enabled', :enable_admin_mode do
+          include_examples 'visibility examples' do
+            let(:visibility) { visible_to_none_except(:admin) }
+          end
+        end
+
+        context 'when admin mode disabled' do
+          include_examples 'visibility examples' do
+            let(:visibility) { visible_to_none }
+          end
         end
 
         include_examples 'visible to author', true

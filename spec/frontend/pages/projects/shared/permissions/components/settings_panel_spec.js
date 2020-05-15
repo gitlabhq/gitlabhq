@@ -23,6 +23,7 @@ const defaultProps = {
     lfsEnabled: true,
     emailsDisabled: false,
     packagesEnabled: true,
+    showDefaultAwardEmojis: true,
   },
   canDisableEmails: true,
   canChangeVisibilityLevel: true,
@@ -470,6 +471,18 @@ describe('Settings Panel', () => {
 
       return wrapper.vm.$nextTick(() => {
         expect(wrapper.find({ ref: 'email-settings' }).exists()).toBe(false);
+      });
+    });
+  });
+
+  describe('Default award emojis', () => {
+    it('should show the "Show default award emojis" input', () => {
+      return wrapper.vm.$nextTick(() => {
+        expect(
+          wrapper
+            .find('input[name="project[project_setting_attributes][show_default_award_emojis]"]')
+            .exists(),
+        ).toBe(true);
       });
     });
   });

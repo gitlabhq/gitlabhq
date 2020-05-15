@@ -11,7 +11,9 @@ class AddDefaultProjectDeletionProtectionToApplicationSettings < ActiveRecord::M
   disable_ddl_transaction!
 
   def up
+    # rubocop:disable Migration/AddColumnWithDefault
     add_column_with_default :application_settings, :default_project_deletion_protection, :boolean, default: false, allow_null: false
+    # rubocop:enable Migration/AddColumnWithDefault
   end
 
   def down

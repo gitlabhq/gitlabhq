@@ -64,7 +64,7 @@ TARGET=12-9-stable-ee scripts/regenerate-schema
 The document ["What Requires Downtime?"](what_requires_downtime.md) specifies
 various database operations, such as
 
-- [adding, dropping, and renaming columns](what_requires_downtime.md#adding-columns)
+- [dropping and renaming columns](what_requires_downtime.md#dropping-columns)
 - [changing column constraints and types](what_requires_downtime.md#changing-column-constraints)
 - [adding and dropping indexes, tables, and foreign keys](what_requires_downtime.md#adding-indexes)
 
@@ -552,34 +552,12 @@ You can read more about adding [foreign key constraints to an existing column](d
 
 ## Adding Columns With Default Values
 
-When adding columns with default values to non-empty tables, you must use
-`add_column_with_default`. This method ensures the table is updated without
-requiring downtime. This method is not reversible so you must manually define
-the `up` and `down` methods in your migration class.
+With PostgreSQL 11 being the minimum version since GitLab 13.0, adding columns with default values has become much easier and
+the standard `add_column` helper should be used in all cases.
 
-For example, to add the column `foo` to the `projects` table with a default
-value of `10` you'd write the following:
-
-```ruby
-class MyMigration < ActiveRecord::Migration[4.2]
-  include Gitlab::Database::MigrationHelpers
-  disable_ddl_transaction!
-
-  def up
-    add_column_with_default(:projects, :foo, :integer, default: 10)
-  end
-
-  def down
-    remove_column(:projects, :foo)
-  end
-end
-```
-
-Keep in mind that this operation can easily take 10-15 minutes to complete on
-larger installations (e.g. GitLab.com). As a result, you should only add
-default values if absolutely necessary. There is a RuboCop cop that will fail if
-this method is used on some tables that are very large on GitLab.com, which
-would cause other issues.
+Before PostgreSQL 11, adding a column with a default was problematic as it would
+have caused a full table rewrite. The corresponding helper `add_column_with_default`
+has been deprecated and will be removed in a later release.
 
 ## Changing the column default
 
@@ -620,8 +598,7 @@ without requiring `disable_ddl_transaction!`.
 ## Updating an existing column
 
 To update an existing column to a particular value, you can use
-`update_column_in_batches` (`add_column_with_default` uses this internally to
-fill in the default value). This will split the updates into batches, so we
+`update_column_in_batches`. This will split the updates into batches, so we
 don't update too many rows at in a single statement.
 
 This updates the column `foo` in the `projects` table to 10, where `some_column`
@@ -747,7 +724,7 @@ set the limit to 8-bytes. This will allow the column to hold a value up to
 Rails migration example:
 
 ```ruby
-add_column_with_default(:projects, :foo, :integer, default: 10, limit: 8)
+add_column(:projects, :foo, :integer, default: 10, limit: 8)
 ```
 
 ## Timestamp column type

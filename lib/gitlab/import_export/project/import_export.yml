@@ -168,6 +168,7 @@ excluded_attributes:
     - :marked_for_deletion_at
     - :marked_for_deletion_by_user_id
     - :compliance_framework_setting
+    - :show_default_award_emojis
   namespaces:
     - :runners_token
     - :runners_token_encrypted

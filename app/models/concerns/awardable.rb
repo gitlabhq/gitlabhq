@@ -74,7 +74,7 @@ module Awardable
     # By default we always load award_emoji user association
     awards = award_emoji.group_by(&:name)
 
-    if with_thumbs
+    if with_thumbs && (!project || project.show_default_award_emojis?)
       awards[AwardEmoji::UPVOTE_NAME]   ||= []
       awards[AwardEmoji::DOWNVOTE_NAME] ||= []
     end

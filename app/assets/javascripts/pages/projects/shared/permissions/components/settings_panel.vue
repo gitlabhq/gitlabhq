@@ -1,5 +1,5 @@
 <script>
-import { GlSprintf, GlLink } from '@gitlab/ui';
+import { GlSprintf, GlLink, GlFormCheckbox } from '@gitlab/ui';
 
 import settingsMixin from 'ee_else_ce/pages/projects/shared/permissions/mixins/settings_pannel_mixin';
 import { s__ } from '~/locale';
@@ -24,6 +24,7 @@ export default {
     projectSettingRow,
     GlSprintf,
     GlLink,
+    GlFormCheckbox,
   },
   mixins: [settingsMixin],
 
@@ -518,6 +519,24 @@ export default {
           'ProjectSettings|This setting will override user notification preferences for all project members.',
         )
       }}</span>
+    </project-setting-row>
+    <project-setting-row class="mb-3">
+      <input
+        :value="showDefaultAwardEmojis"
+        type="hidden"
+        name="project[project_setting_attributes][show_default_award_emojis]"
+      />
+      <gl-form-checkbox
+        v-model="showDefaultAwardEmojis"
+        name="project[project_setting_attributes][show_default_award_emojis]"
+      >
+        {{ s__('ProjectSettings|Show default award emojis') }}
+        <template #help>{{
+          s__(
+            'ProjectSettings|When enabled, issues, merge requests, and snippets will always show thumbs-up and thumbs-down award emoji buttons.',
+          )
+        }}</template>
+      </gl-form-checkbox>
     </project-setting-row>
   </div>
 </template>

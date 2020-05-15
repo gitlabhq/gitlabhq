@@ -7,7 +7,7 @@ describe 'CycleAnalytics#review' do
 
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:from_date) { 10.days.ago }
-  let_it_be(:user) { create(:user, :admin) }
+  let_it_be(:user) { project.owner }
 
   subject { CycleAnalytics::ProjectLevel.new(project, options: { from: from_date }) }
 

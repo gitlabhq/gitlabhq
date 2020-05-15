@@ -8,7 +8,7 @@ class AddNpmPackageRequestsForwardingToApplicationSettings < ActiveRecord::Migra
   disable_ddl_transaction!
 
   def up
-    add_column_with_default(:application_settings, :npm_package_requests_forwarding,
+    add_column_with_default(:application_settings, :npm_package_requests_forwarding, # rubocop:disable Migration/AddColumnWithDefault
                             :boolean,
                             default: false,
                             allow_null: false)

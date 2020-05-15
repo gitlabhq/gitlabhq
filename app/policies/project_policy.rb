@@ -196,6 +196,7 @@ class ProjectPolicy < BasePolicy
     enable :set_issue_updated_at
     enable :set_note_created_at
     enable :set_emails_disabled
+    enable :set_show_default_award_emojis
   end
 
   rule { can?(:guest_access) }.policy do

@@ -127,6 +127,10 @@ module AlertManagement
       Gitlab::Utils::InlineHash.merge_keys(details_payload)
     end
 
+    def prometheus?
+      monitoring_tool == Gitlab::AlertManagement::AlertParams::MONITORING_TOOLS[:prometheus]
+    end
+
     private
 
     def hosts_length

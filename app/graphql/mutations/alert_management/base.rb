@@ -18,6 +18,11 @@ module Mutations
             null: true,
             description: "The alert after mutation"
 
+      field :issue,
+            Types::IssueType,
+            null: true,
+            description: "The issue created after mutation"
+
       authorize :update_alert_management_alert
 
       private

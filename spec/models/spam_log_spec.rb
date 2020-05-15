@@ -20,15 +20,30 @@ describe SpamLog do
       expect { spam_log.remove_user(deleted_by: admin) }.to change { spam_log.user.blocked? }.to(true)
     end
 
-    it 'removes the user', :sidekiq_might_not_need_inline do
-      spam_log = build(:spam_log)
-      user = spam_log.user
+    context 'when admin mode is enabled', :enable_admin_mode do
+      it 'removes the user', :sidekiq_might_not_need_inline do
+        spam_log = build(:spam_log)
+        user = spam_log.user
 
-      perform_enqueued_jobs do
-        spam_log.remove_user(deleted_by: admin)
+        perform_enqueued_jobs do
+          spam_log.remove_user(deleted_by: admin)
+        end
+
+        expect { User.find(user.id) }.to raise_error(ActiveRecord::RecordNotFound)
       end
+    end
 
-      expect { User.find(user.id) }.to raise_error(ActiveRecord::RecordNotFound)
+    context 'when admin mode is disabled' do
+      it 'does not allow to remove the user', :sidekiq_might_not_need_inline do
+        spam_log = build(:spam_log)
+        user = spam_log.user
+
+        perform_enqueued_jobs do
+          spam_log.remove_user(deleted_by: admin)
+        end
+
+        expect(User.exists?(user.id)).to be(true)
+      end
     end
   end
 

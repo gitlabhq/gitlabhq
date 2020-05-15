@@ -9,7 +9,7 @@ class AddGrafanaUrlToSettings < ActiveRecord::Migration[5.1]
 
   # rubocop:disable Migration/PreventStrings
   def up
-    add_column_with_default(:application_settings, :grafana_url, :string,
+    add_column_with_default(:application_settings, :grafana_url, :string, # rubocop:disable Migration/AddColumnWithDefault
                             default: '/-/grafana', allow_null: false)
   end
   # rubocop:enable Migration/PreventStrings

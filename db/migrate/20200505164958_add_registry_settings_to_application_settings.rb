@@ -9,13 +9,13 @@ class AddRegistrySettingsToApplicationSettings < ActiveRecord::Migration[6.0]
 
   # rubocop:disable Migration/AddLimitToTextColumns
   def up
-    add_column_with_default(:application_settings,
+    add_column_with_default(:application_settings, # rubocop:disable Migration/AddColumnWithDefault
                             :container_registry_vendor,
                             :text,
                             default: '',
                             allow_null: false)
 
-    add_column_with_default(:application_settings,
+    add_column_with_default(:application_settings, # rubocop:disable Migration/AddColumnWithDefault
                             :container_registry_version,
                             :text,
                             default: '',

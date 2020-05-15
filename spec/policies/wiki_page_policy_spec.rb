@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe WikiPagePolicy do
+describe WikiPagePolicy, :enable_admin_mode do
   include_context 'ProjectPolicyTable context'
   include ProjectHelpers
   using RSpec::Parameterized::TableSyntax

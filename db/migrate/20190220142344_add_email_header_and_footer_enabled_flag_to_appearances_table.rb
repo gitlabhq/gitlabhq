@@ -8,7 +8,7 @@ class AddEmailHeaderAndFooterEnabledFlagToAppearancesTable < ActiveRecord::Migra
   DOWNTIME = false
 
   def up
-    add_column_with_default(:appearances, :email_header_and_footer_enabled, :boolean, default: false)
+    add_column_with_default(:appearances, :email_header_and_footer_enabled, :boolean, default: false) # rubocop:disable Migration/AddColumnWithDefault
   end
 
   def down

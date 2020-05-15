@@ -5,7 +5,7 @@ require 'spec_helper'
 describe CycleAnalytics::ProjectLevel do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:from_date) { 10.days.ago }
-  let_it_be(:user) { create(:user, :admin) }
+  let_it_be(:user) { project.owner }
   let_it_be(:issue) { create(:issue, project: project, created_at: 2.days.ago) }
   let_it_be(:milestone) { create(:milestone, project: project) }
   let(:mr) { create_merge_request_closing_issue(user, project, issue, commit_message: "References #{issue.to_reference}") }

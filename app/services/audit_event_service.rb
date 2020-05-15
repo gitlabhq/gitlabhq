@@ -50,8 +50,9 @@ class AuditEventService
   private
 
   def build_author(author)
-    if author.is_a?(User)
-      author
+    case author
+    when User
+      author.impersonated? ? Gitlab::Audit::ImpersonatedAuthor.new(author) : author
     else
       Gitlab::Audit::UnauthenticatedAuthor.new(name: author)
     end

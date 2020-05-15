@@ -198,7 +198,7 @@ class BackportEnterpriseSchema < ActiveRecord::Migration[5.0]
 
   def add_column_with_default_if_not_exists(table, name, *args)
     unless column_exists?(table, name)
-      add_column_with_default(table, name, *args)
+      add_column_with_default(table, name, *args) # rubocop:disable Migration/AddColumnWithDefault
     end
   end
 

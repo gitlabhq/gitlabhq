@@ -2,6 +2,7 @@
 
 RSpec.shared_examples 'model with wiki policies' do
   include ProjectHelpers
+  include AdminModeHelper
 
   let(:container) { raise NotImplementedError }
   let(:user) { raise NotImplementedError }
@@ -94,6 +95,7 @@ RSpec.shared_examples 'model with wiki policies' do
     before do
       container.visibility = container_level.to_s
       set_access_level(ProjectFeature.access_level_from_str(access_level.to_s))
+      enable_admin_mode!(user) if user&.admin?
 
       if allowed_permissions.any? && [container_level, access_level, membership] != [:private, :private, :guest]
         allowed_permissions << :download_wiki_code

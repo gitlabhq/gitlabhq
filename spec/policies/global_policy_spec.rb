@@ -118,8 +118,15 @@ describe GlobalPolicy do
     context 'admin' do
       let(:current_user) { create(:user, :admin) }
 
-      it { is_expected.to be_allowed(:read_custom_attribute) }
-      it { is_expected.to be_allowed(:update_custom_attribute) }
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it { is_expected.to be_allowed(:read_custom_attribute) }
+        it { is_expected.to be_allowed(:update_custom_attribute) }
+      end
+
+      context 'when admin mode is disabled' do
+        it { is_expected.to be_disallowed(:read_custom_attribute) }
+        it { is_expected.to be_disallowed(:update_custom_attribute) }
+      end
     end
   end
 
@@ -368,7 +375,13 @@ describe GlobalPolicy do
           stub_application_setting(instance_statistics_visibility_private: true)
         end
 
-        it { is_expected.to be_allowed(:read_instance_statistics) }
+        context 'when admin mode is enabled', :enable_admin_mode do
+          it { is_expected.to be_allowed(:read_instance_statistics) }
+        end
+
+        context 'when admin mode is disabled' do
+          it { is_expected.to be_disallowed(:read_instance_statistics) }
+        end
       end
     end
 

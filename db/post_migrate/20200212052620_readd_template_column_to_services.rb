@@ -15,7 +15,7 @@ class ReaddTemplateColumnToServices < ActiveRecord::Migration[6.0]
     # to production, so we should be okay to re-add it without worrying
     # about doing a data migration.  If we needed to restore the value
     # of `template`, we would look for entries with `project_id IS NULL`.
-    add_column_with_default :services, :template, :boolean, default: false, allow_null: true
+    add_column_with_default :services, :template, :boolean, default: false, allow_null: true # rubocop:disable Migration/AddColumnWithDefault
   end
   # rubocop:enable Migration/UpdateLargeTable
 

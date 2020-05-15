@@ -400,6 +400,9 @@ class ProjectsController < Projects::ApplicationController
         wiki_access_level
         pages_access_level
         metrics_dashboard_access_level
+      ],
+      project_setting_attributes: %i[
+        show_default_award_emojis
       ]
     ]
   end

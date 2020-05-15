@@ -91,4 +91,45 @@ describe Awardable do
       expect(issue.award_emoji).to eq issue.award_emoji.sort_by(&:id)
     end
   end
+
+  describe "#grouped_awards" do
+    context 'default award emojis' do
+      let(:issue_without_downvote) { create(:issue) }
+      let(:issue_with_downvote) do
+        issue_with_downvote = create(:issue)
+        create(:award_emoji, :downvote, awardable: issue_with_downvote)
+        issue_with_downvote
+      end
+
+      it "includes unused thumbs buttons by default" do
+        expect(issue_without_downvote.grouped_awards.keys.sort).to eq %w(thumbsdown thumbsup)
+      end
+
+      it "doesn't include unused thumbs buttons when disabled in project" do
+        issue_without_downvote.project.show_default_award_emojis = false
+
+        expect(issue_without_downvote.grouped_awards.keys.sort).to eq []
+      end
+
+      it "includes unused thumbs buttons when enabled in project" do
+        issue_without_downvote.project.show_default_award_emojis = true
+
+        expect(issue_without_downvote.grouped_awards.keys.sort).to eq %w(thumbsdown thumbsup)
+      end
+
+      it "doesn't include unused thumbs buttons in summary" do
+        expect(issue_without_downvote.grouped_awards(with_thumbs: false).keys).to eq []
+      end
+
+      it "includes used thumbs buttons when disabled in project" do
+        issue_with_downvote.project.show_default_award_emojis = false
+
+        expect(issue_with_downvote.grouped_awards.keys).to eq %w(thumbsdown)
+      end
+
+      it "includes used thumbs buttons in summary" do
+        expect(issue_with_downvote.grouped_awards(with_thumbs: false).keys).to eq %w(thumbsdown)
+      end
+    end
+  end
 end

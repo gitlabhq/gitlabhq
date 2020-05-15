@@ -281,12 +281,22 @@ describe IncidentManagement::CreateIssueService do
       setting.update!(create_issue: false)
     end
 
-    it 'returns an error' do
-      expect(service)
-        .to receive(:log_error)
-        .with(error_message('setting disabled'))
+    context 'when skip_settings_check is false (default)' do
+      it 'returns an error' do
+        expect(service)
+          .to receive(:log_error)
+          .with(error_message('setting disabled'))
 
-      expect(subject).to eq(status: :error, message: 'setting disabled')
+        expect(subject).to eq(status: :error, message: 'setting disabled')
+      end
+    end
+
+    context 'when skip_settings_check is true' do
+      subject { service.execute(skip_settings_check: true) }
+
+      it 'creates an issue' do
+        expect { subject }.to change(Issue, :count).by(1)
+      end
     end
   end
 

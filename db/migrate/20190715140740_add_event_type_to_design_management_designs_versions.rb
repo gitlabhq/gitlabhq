@@ -10,7 +10,6 @@ class AddEventTypeToDesignManagementDesignsVersions < ActiveRecord::Migration[5.
   # We disable these cops here because adding this column is safe. The table does not
   # have any data in it.
   # rubocop: disable Migration/AddIndex
-  # rubocop: disable Migration/AddColumn
   def up
     add_column(:design_management_designs_versions, :event, :integer,
                limit: 2,

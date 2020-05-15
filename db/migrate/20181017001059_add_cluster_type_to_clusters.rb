@@ -9,7 +9,7 @@ class AddClusterTypeToClusters < ActiveRecord::Migration[4.2]
   disable_ddl_transaction!
 
   def up
-    add_column_with_default(:clusters, :cluster_type, :smallint, default: PROJECT_CLUSTER_TYPE)
+    add_column_with_default(:clusters, :cluster_type, :smallint, default: PROJECT_CLUSTER_TYPE) # rubocop:disable Migration/AddColumnWithDefault
   end
 
   def down

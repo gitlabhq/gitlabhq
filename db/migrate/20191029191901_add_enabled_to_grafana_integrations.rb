@@ -8,7 +8,7 @@ class AddEnabledToGrafanaIntegrations < ActiveRecord::Migration[5.2]
   disable_ddl_transaction!
 
   def up
-    add_column_with_default(
+    add_column_with_default( # rubocop:disable Migration/AddColumnWithDefault
       :grafana_integrations,
       :enabled,
       :boolean,

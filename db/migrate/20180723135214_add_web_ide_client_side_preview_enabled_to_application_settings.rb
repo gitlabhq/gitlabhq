@@ -8,7 +8,7 @@ class AddWebIdeClientSidePreviewEnabledToApplicationSettings < ActiveRecord::Mig
   disable_ddl_transaction!
 
   def up
-    add_column_with_default(:application_settings, :web_ide_clientside_preview_enabled,
+    add_column_with_default(:application_settings, :web_ide_clientside_preview_enabled, # rubocop:disable Migration/AddColumnWithDefault
                             :boolean,
                             default: false,
                             allow_null: false)

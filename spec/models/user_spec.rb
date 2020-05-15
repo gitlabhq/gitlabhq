@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe User, :do_not_mock_admin_mode do
+describe User do
   include ProjectForksHelper
   include TermsHelper
   include ExclusiveLeaseHelpers

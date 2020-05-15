@@ -419,6 +419,7 @@ module QA
       autoload :Note, 'qa/page/component/note'
       autoload :ConfirmModal, 'qa/page/component/confirm_modal'
       autoload :CustomMetric, 'qa/page/component/custom_metric'
+      autoload :DesignManagement, 'qa/page/component/design_management'
 
       module Issuable
         autoload :Common, 'qa/page/component/issuable/common'

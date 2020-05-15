@@ -34,6 +34,12 @@ There are two kinds of events logged:
 - Instance events scoped to the whole GitLab instance, used by your Compliance team to
   perform formal audits.
 
+### Impersonation data **(PREMIUM)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/536) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.0.
+
+Impersonation is where an administrator uses credentials to perform an action as a different user.
+
 ### Group events **(STARTER)**
 
 NOTE: **Note:**
