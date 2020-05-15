@@ -491,6 +491,13 @@ entry.
 - Remove store_mentions! in Snippets::CreateService. !29581 (Sashi Kumar)
 
 
+## 12.9.7 (2020-05-13)
+
+### Added (1 change)
+
+- Consider project group and group ancestors when processing CODEOWNERS entries. !31806
+
+
 ## 12.9.6 (2020-05-05)
 
 ### Fixed (1 change)
