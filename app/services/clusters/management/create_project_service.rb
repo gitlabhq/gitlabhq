@@ -15,11 +15,8 @@ module Clusters
       def execute
         return unless management_project_required?
 
-        ActiveRecord::Base.transaction do
-          project = create_management_project!
-
-          update_cluster!(project)
-        end
+        project = create_management_project!
+        update_cluster!(project)
       end
 
       private

@@ -141,6 +141,7 @@ module API
       mount ::API::Events
       mount ::API::Features
       mount ::API::Files
+      mount ::API::FreezePeriods
       mount ::API::GroupBoards
       mount ::API::GroupClusters
       mount ::API::GroupExport

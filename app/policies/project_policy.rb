@@ -362,6 +362,10 @@ class ProjectPolicy < BasePolicy
     enable :destroy_deploy_token
     enable :read_prometheus_alerts
     enable :admin_terraform_state
+    enable :create_freeze_period
+    enable :read_freeze_period
+    enable :update_freeze_period
+    enable :destroy_freeze_period
   end
 
   rule { public_project & metrics_dashboard_allowed }.policy do

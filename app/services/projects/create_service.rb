@@ -108,8 +108,22 @@ module Projects
     # users in the background
     def setup_authorizations
       if @project.group
-        @project.group.refresh_members_authorized_projects(blocking: false)
         current_user.refresh_authorized_projects
+
+        if Feature.enabled?(:specialized_project_authorization_workers)
+          AuthorizedProjectUpdate::ProjectCreateWorker.perform_async(@project.id)
+          # AuthorizedProjectsWorker uses an exclusive lease per user but
+          # specialized workers might have synchronization issues. Until we
+          # compare the inconsistency rates of both approaches, we still run
+          # AuthorizedProjectsWorker but with some delay and lower urgency as a
+          # safety net.
+          @project.group.refresh_members_authorized_projects(
+            blocking: false,
+            priority: UserProjectAccessChangedService::LOW_PRIORITY
+          )
+        else
+          @project.group.refresh_members_authorized_projects(blocking: false)
+        end
       else
         @project.add_maintainer(@project.namespace.owner, current_user: current_user)
       end

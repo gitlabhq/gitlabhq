@@ -1,7 +1,7 @@
 - if show_no_ssh_key_message?
   %div{ class: 'no-ssh-key-message gl-alert gl-alert-warning', role: 'alert' }
     = sprite_icon('warning', size: 16, css_class: 'gl-icon s16 gl-alert-icon gl-alert-icon-no-title')
-    %button{ class: 'gl-alert-dismiss hide-no-ssh-message', type: 'button', 'aria-label': 'Dismiss' }
+    %button{ class: 'gl-alert-dismiss hide-no-ssh-message', type: 'button', 'aria-label': _('Dismiss') }
       = sprite_icon('close', size: 16, css_class: 'gl-icon s16')
     .gl-alert-body
       = s_("MissingSSHKeyWarningLink|You won't be able to pull or push project code via SSH until you add an SSH key to your profile").html_safe

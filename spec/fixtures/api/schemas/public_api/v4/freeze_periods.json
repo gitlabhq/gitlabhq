@@ -1,0 +1,5 @@
+{
+  "type": "array",
+  "items": { "$ref": "freeze_period.json" }
+}
+

@@ -91,7 +91,7 @@ module API
         options = {
           with: Entities::Group,
           current_user: current_user,
-          statistics: params[:statistics] && current_user.admin?
+          statistics: params[:statistics] && current_user&.admin?
         }
 
         groups = groups.with_statistics if options[:statistics]

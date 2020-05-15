@@ -324,7 +324,7 @@ Widgets should now be replicated by Geo!
      def change
        add_column :widgets, :verification_retry_at, :datetime_with_timezone
        add_column :widgets, :verified_at, :datetime_with_timezone
-       add_column :widgets, :verification_checksum, :string
+       add_column :widgets, :verification_checksum, :binary, using: 'verification_checksum::bytea'
        add_column :widgets, :verification_failure, :string
        add_column :widgets, :verification_retry_count, :integer
      end

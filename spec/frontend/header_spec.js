@@ -60,8 +60,8 @@ describe('Header', () => {
     beforeEach(() => {
       setFixtures(`
       <li class="js-nav-user-dropdown">
-        <a class="js-buy-ci-minutes-link" data-track-event="click_buy_ci_minutes" data-track-label="free" data-track-property="user_dropdown">Buy CI minutes
-        </a>
+        <a class="js-buy-ci-minutes-link" data-track-event="click_buy_ci_minutes" data-track-label="free" data-track-property="user_dropdown">Buy CI minutes</a>
+        <a class="js-upgrade-plan-link" data-track-event="click_upgrade_link" data-track-label="free" data-track-property="user_dropdown">Upgrade</a>
       </li>`);
 
       trackingSpy = mockTracking('_category_', $('.js-nav-user-dropdown').element, jest.spyOn);
@@ -77,8 +77,16 @@ describe('Header', () => {
     it('sends a tracking event when the dropdown is opened and contains Buy CI minutes link', () => {
       $('.js-nav-user-dropdown').trigger('shown.bs.dropdown');
 
-      expect(trackingSpy).toHaveBeenCalledTimes(1);
-      expect(trackingSpy).toHaveBeenCalledWith(undefined, 'show_buy_ci_minutes', {
+      expect(trackingSpy).toHaveBeenCalledWith('some:page', 'show_buy_ci_minutes', {
+        label: 'free',
+        property: 'user_dropdown',
+      });
+    });
+
+    it('sends a tracking event when the dropdown is opened and contains Upgrade link', () => {
+      $('.js-nav-user-dropdown').trigger('shown.bs.dropdown');
+
+      expect(trackingSpy).toHaveBeenCalledWith('some:page', 'show_upgrade_link', {
         label: 'free',
         property: 'user_dropdown',
       });

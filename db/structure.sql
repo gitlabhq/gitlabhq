@@ -4668,9 +4668,9 @@ CREATE TABLE public.packages_package_files (
     file_sha256 bytea,
     verification_retry_at timestamp with time zone,
     verified_at timestamp with time zone,
-    verification_checksum character varying(255),
     verification_failure character varying(255),
-    verification_retry_count integer
+    verification_retry_count integer,
+    verification_checksum bytea
 );
 
 CREATE SEQUENCE public.packages_package_files_id_seq
@@ -13738,6 +13738,8 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200408175424
 20200408212219
 20200409085956
+20200409105455
+20200409105456
 20200409211607
 20200410104828
 20200410232012
@@ -13817,6 +13819,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200511162115
 20200512085150
 20200512164334
+20200513160930
 20200513234502
 20200513235347
 20200513235532

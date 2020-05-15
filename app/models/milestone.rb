@@ -171,6 +171,14 @@ class Milestone < ApplicationRecord
   alias_method :group_milestone?, :group_timebox?
   alias_method :project_milestone?, :project_timebox?
 
+  def parent
+    if group_milestone?
+      group
+    else
+      project
+    end
+  end
+
   private
 
   def milestone_format_reference(format = :iid)

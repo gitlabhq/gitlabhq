@@ -6,15 +6,15 @@ describe API::Groups do
   include GroupAPIHelpers
   include UploadHelpers
 
-  let(:user1) { create(:user, can_create_group: false) }
-  let(:user2) { create(:user) }
-  let(:user3) { create(:user) }
-  let(:admin) { create(:admin) }
-  let!(:group1) { create(:group, avatar: File.open(uploaded_image_temp_path)) }
-  let!(:group2) { create(:group, :private) }
-  let!(:project1) { create(:project, namespace: group1) }
-  let!(:project2) { create(:project, namespace: group2) }
-  let!(:project3) { create(:project, namespace: group1, path: 'test', visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
+  let_it_be(:user1) { create(:user, can_create_group: false) }
+  let_it_be(:user2) { create(:user) }
+  let_it_be(:user3) { create(:user) }
+  let_it_be(:admin) { create(:admin) }
+  let_it_be(:group1) { create(:group, avatar: File.open(uploaded_image_temp_path)) }
+  let_it_be(:group2) { create(:group, :private) }
+  let_it_be(:project1) { create(:project, namespace: group1) }
+  let_it_be(:project2) { create(:project, namespace: group2) }
+  let_it_be(:project3) { create(:project, namespace: group1, path: 'test', visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
 
   before do
     group1.add_owner(user1)
@@ -89,6 +89,17 @@ describe API::Groups do
         expect do
           get api("/groups", admin)
         end.not_to exceed_query_limit(control)
+      end
+
+      context 'when statistics are requested' do
+        it 'does not include statistics' do
+          get api("/groups"), params: { statistics: true }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(json_response.first).not_to include 'statistics'
+        end
       end
     end
 
@@ -1112,6 +1123,17 @@ describe API::Groups do
         get api("/groups/#{group2.id}/subgroups")
 
         expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      context 'when statistics are requested' do
+        it 'does not include statistics' do
+          get api("/groups/#{group1.id}/subgroups"), params: { statistics: true }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(json_response.first).not_to include 'statistics'
+        end
       end
     end
 

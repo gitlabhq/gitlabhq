@@ -66,17 +66,36 @@ describe API::MergeRequests do
       end
 
       context 'when merge request is unchecked' do
+        let(:check_service_class) { MergeRequests::MergeabilityCheckService }
+        let(:mr_entity) { json_response.find { |mr| mr['id'] == merge_request.id } }
+
         before do
           merge_request.mark_as_unchecked!
         end
 
-        it 'checks mergeability asynchronously' do
-          expect_next_instance_of(MergeRequests::MergeabilityCheckService) do |service|
-            expect(service).not_to receive(:execute)
-            expect(service).to receive(:async_execute)
-          end
+        context 'with merge status recheck projection' do
+          it 'checks mergeability asynchronously' do
+            expect_next_instance_of(check_service_class) do |service|
+              expect(service).not_to receive(:execute)
+              expect(service).to receive(:async_execute).and_call_original
+            end
 
-          get api(endpoint_path, user)
+            get(api(endpoint_path, user), params: { with_merge_status_recheck: true })
+
+            expect_successful_response_with_paginated_array
+            expect(mr_entity['merge_status']).to eq('checking')
+          end
+        end
+
+        context 'without merge status recheck projection' do
+          it 'does not enqueue a merge status recheck' do
+            expect(check_service_class).not_to receive(:new)
+
+            get api(endpoint_path, user)
+
+            expect_successful_response_with_paginated_array
+            expect(mr_entity['merge_status']).to eq('unchecked')
+          end
         end
       end
 

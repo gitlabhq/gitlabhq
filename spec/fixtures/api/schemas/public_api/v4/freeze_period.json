@@ -1,0 +1,20 @@
+{
+  "type": "object",
+  "required": [
+    "id",
+    "freeze_start",
+    "freeze_end",
+    "cron_timezone",
+    "created_at",
+    "updated_at"
+  ],
+  "properties": {
+    "id": { "type": "integer" },
+    "freeze_start": { "type": "string" },
+    "freeze_end": { "type": "string"},
+    "cron_timezone": { "type": "string" },
+    "created_at": { "type": "string" },
+    "updated_at": { "type": "string" }
+  },
+  "additionalProperties": false
+}

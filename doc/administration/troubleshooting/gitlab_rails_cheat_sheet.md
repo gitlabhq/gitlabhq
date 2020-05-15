@@ -150,9 +150,9 @@ Project.update_all(visibility_level: 0)
 #
 projects = Project.where(pending_delete: true)
 projects.each do |p|
-  puts "Project name: #{p.id}"
+  puts "Project ID: #{p.id}"
   puts "Project name: #{p.name}"
-  puts "Repository path: #{p.repository.storage_path}"
+  puts "Repository path: #{p.repository.full_path}"
 end
 
 #

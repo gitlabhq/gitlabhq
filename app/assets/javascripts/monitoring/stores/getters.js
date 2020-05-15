@@ -14,7 +14,9 @@ const metricsIdsInPanel = panel =>
 export const selectedDashboard = state => {
   const { allDashboards } = state;
   return (
-    allDashboards.find(({ path }) => path === state.currentDashboard) || allDashboards[0] || null
+    allDashboards.find(d => d.path === state.currentDashboard) ||
+    allDashboards.find(d => d.default) ||
+    null
   );
 };
 

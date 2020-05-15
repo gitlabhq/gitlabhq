@@ -148,7 +148,7 @@ snippet was created using the GitLab web interface the original line ending is W
 > Introduced in GitLab 10.8.
 
 Public snippets can not only be shared, but also embedded on any website. This
-allows to reuse a GitLab snippet in multiple places and any change to the source
+allows us to reuse a GitLab snippet in multiple places and any change to the source
 is automatically reflected in the embedded snippet.
 
 To embed a snippet, first make sure that:
@@ -172,6 +172,6 @@ Here's how an embedded snippet looks like:
 
 <script src="https://gitlab.com/gitlab-org/gitlab-foss/snippets/1717978.js"></script>
 
-Embedded snippets are displayed with a header that shows the file name if defined,
+Embedded snippets are displayed with a header that shows the file name is defined,
 the snippet size, a link to GitLab, and the actual snippet content. Actions in
 the header allow users to see the snippet in raw format and download it.

@@ -5,6 +5,8 @@ module Ci
     include StripAttribute
     self.table_name = 'ci_freeze_periods'
 
+    default_scope { order(created_at: :asc) }
+
     belongs_to :project, inverse_of: :freeze_periods
 
     strip_attributes :freeze_start, :freeze_end

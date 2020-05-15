@@ -93,6 +93,9 @@ module API
           options[:with] = Entities::MergeRequestSimple
         else
           options[:issuable_metadata] = issuable_meta_data(merge_requests, 'MergeRequest', current_user)
+          if Feature.enabled?(:mr_list_api_skip_merge_status_recheck, default_enabled: true)
+            options[:skip_merge_status_recheck] = !declared_params[:with_merge_status_recheck]
+          end
         end
 
         options

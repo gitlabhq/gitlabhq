@@ -8,6 +8,12 @@ description: "The static site editor enables users to edit content on static web
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28758) in GitLab 12.10.
 > - WYSIWYG editor [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214559) in GitLab 13.0.
 
+DANGER: **Danger:**
+In GitLab 13.0, we [introduced breaking changes](https://gitlab.com/gitlab-org/gitlab/-/issues/213282)
+to the URL structure of the Static Site Editor. Follow the instructions in this
+[snippet](https://gitlab.com/gitlab-org/project-templates/static-site-editor-middleman/snippets/1976539)
+to update your project with the latest changes.
+
 Static Site Editor enables users to edit content on static websites without
 prior knowledge of the underlying templating language, site architecture, or
 Git commands. A contributor to your project can quickly edit a Markdown page

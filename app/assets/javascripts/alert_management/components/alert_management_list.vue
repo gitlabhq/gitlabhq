@@ -148,7 +148,7 @@ export default {
     },
   },
   methods: {
-    filterALertsByStatus(tabIndex) {
+    filterAlertsByStatus(tabIndex) {
       this.statusFilter = this.$options.statusTabs[tabIndex].filters;
     },
     capitalizeFirstCharacter,
@@ -184,7 +184,7 @@ export default {
         {{ $options.i18n.errorMsg }}
       </gl-alert>
 
-      <gl-tabs v-if="glFeatures.alertListStatusFilteringEnabled" @input="filterALertsByStatus">
+      <gl-tabs v-if="glFeatures.alertListStatusFilteringEnabled" @input="filterAlertsByStatus">
         <gl-tab v-for="tab in $options.statusTabs" :key="tab.status">
           <template slot="title">
             <span>{{ tab.title }}</span>

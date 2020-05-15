@@ -480,4 +480,22 @@ describe Milestone do
     it { is_expected.not_to match("#{Gitlab.config.gitlab.url}/gitlab-org/gitlab-foss/issues/123") }
     it { is_expected.not_to match("gitlab-org/gitlab-ce/milestones/123") }
   end
+
+  describe '#parent' do
+    context 'with group' do
+      it 'returns the expected parent' do
+        group = create(:group)
+
+        expect(build(:milestone, group: group).parent).to eq(group)
+      end
+    end
+
+    context 'with project' do
+      it 'returns the expected parent' do
+        project = create(:project)
+
+        expect(build(:milestone, project: project).parent).to eq(project)
+      end
+    end
+  end
 end

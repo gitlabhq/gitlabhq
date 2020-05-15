@@ -39,6 +39,8 @@ module MergeRequests
 
     # Don't try to print expensive instance variables.
     def inspect
+      return "#<#{self.class}>" unless respond_to?(:merge_request)
+
       "#<#{self.class} #{merge_request.to_reference(full: true)}>"
     end
 

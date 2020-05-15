@@ -300,6 +300,7 @@ describe Event do
         include_examples 'visibility examples' do
           let(:visibility) { visible_to_all }
         end
+
         include_examples 'visible to assignee and author', true
       end
 
@@ -309,6 +310,7 @@ describe Event do
         include_examples 'visibility examples' do
           let(:visibility) { visible_to_none_except(:member, :admin) }
         end
+
         include_examples 'visible to assignee and author', true
       end
     end
@@ -320,6 +322,7 @@ describe Event do
         include_examples 'visibility examples' do
           let(:visibility) { visible_to_all }
         end
+
         include_examples 'visible to assignee and author', true
       end
 
@@ -329,6 +332,7 @@ describe Event do
         include_examples 'visibility examples' do
           let(:visibility) { visible_to_none_except(:member, :admin) }
         end
+
         include_examples 'visible to assignee and author', true
       end
 
@@ -429,6 +433,7 @@ describe Event do
         end
         # Normally, we'd expect the author of a comment to be able to view it.
         # However, this doesn't seem to be the case for comments on snippets.
+
         include_examples 'visible to author', false
       end
 
@@ -440,6 +445,7 @@ describe Event do
         end
         # Normally, we'd expect the author of a comment to be able to view it.
         # However, this doesn't seem to be the case for comments on snippets.
+
         include_examples 'visible to author', false
       end
     end
@@ -450,6 +456,7 @@ describe Event do
       include_examples 'visibility examples' do
         let(:visibility) { visible_to_all }
       end
+
       include_examples 'visible to author', true
 
       context 'on internal snippet' do
@@ -466,6 +473,7 @@ describe Event do
         include_examples 'visibility examples' do
           let(:visibility) { visible_to_none_except(:admin) }
         end
+
         include_examples 'visible to author', true
       end
     end

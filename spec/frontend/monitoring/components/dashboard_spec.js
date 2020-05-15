@@ -19,6 +19,7 @@ import DashboardPanel from '~/monitoring/components/dashboard_panel.vue';
 import { createStore } from '~/monitoring/stores';
 import * as types from '~/monitoring/stores/mutation_types';
 import {
+  setupAllDashboards,
   setupStoreWithDashboard,
   setMetricResult,
   setupStoreWithData,
@@ -279,7 +280,7 @@ describe('Dashboard', () => {
         expect(window.history.pushState).toHaveBeenCalledWith(
           expect.anything(), // state
           expect.any(String), // document title
-          expect.stringContaining(`?${expectedSearch}`),
+          expect.stringContaining(`${expectedSearch}`),
         );
       });
     });
@@ -302,7 +303,7 @@ describe('Dashboard', () => {
         expect(window.history.pushState).toHaveBeenCalledWith(
           expect.anything(), // state
           expect.any(String), // document title
-          expect.stringContaining(`?${expectedSearch}`),
+          expect.stringContaining(`${expectedSearch}`),
         );
       });
     });
@@ -317,7 +318,7 @@ describe('Dashboard', () => {
         expect(window.history.pushState).toHaveBeenCalledWith(
           expect.anything(), // state
           expect.any(String), // document title
-          expect.not.stringContaining('?'), // no params
+          expect.not.stringMatching(/group|title|y_label/), // no panel params
         );
       });
     });
@@ -359,6 +360,7 @@ describe('Dashboard', () => {
 
     beforeEach(() => {
       createShallowWrapper();
+      setupAllDashboards(store);
     });
 
     it('toggle star button is shown', () => {
@@ -380,10 +382,7 @@ describe('Dashboard', () => {
       const getToggleTooltip = () => findToggleStar().element.parentElement.getAttribute('title');
 
       beforeEach(() => {
-        wrapper.vm.$store.commit(
-          `monitoringDashboard/${types.SET_ALL_DASHBOARDS}`,
-          dashboardGitResponse,
-        );
+        setupAllDashboards(store);
         jest.spyOn(store, 'dispatch');
       });
 
@@ -400,7 +399,9 @@ describe('Dashboard', () => {
 
       describe('when dashboard is not starred', () => {
         beforeEach(() => {
-          wrapper.setProps({ currentDashboard: dashboardGitResponse[0].path });
+          store.commit(`monitoringDashboard/${types.SET_INITIAL_STATE}`, {
+            currentDashboard: dashboardGitResponse[0].path,
+          });
           return wrapper.vm.$nextTick();
         });
 
@@ -415,7 +416,9 @@ describe('Dashboard', () => {
 
       describe('when dashboard is starred', () => {
         beforeEach(() => {
-          wrapper.setProps({ currentDashboard: dashboardGitResponse[1].path });
+          store.commit(`monitoringDashboard/${types.SET_INITIAL_STATE}`, {
+            currentDashboard: dashboardGitResponse[1].path,
+          });
           return wrapper.vm.$nextTick();
         });
 
@@ -551,7 +554,7 @@ describe('Dashboard', () => {
 
       it('sets a link to the expanded panel', () => {
         const searchQuery =
-          '?group=System%20metrics%20(Kubernetes)&title=Memory%20Usage%20(Total)&y_label=Total%20Memory%20Used%20(GB)';
+          '?dashboard=config%2Fprometheus%2Fcommon_metrics.yml&group=System%20metrics%20(Kubernetes)&title=Memory%20Usage%20(Total)&y_label=Total%20Memory%20Used%20(GB)';
 
         expect(findExpandedPanel().attributes('clipboard-text')).toEqual(
           expect.stringContaining(searchQuery),
@@ -808,10 +811,7 @@ describe('Dashboard', () => {
     beforeEach(() => {
       createShallowWrapper({ hasMetrics: true });
 
-      wrapper.vm.$store.commit(
-        `monitoringDashboard/${types.SET_ALL_DASHBOARDS}`,
-        dashboardGitResponse,
-      );
+      setupAllDashboards(store);
       return wrapper.vm.$nextTick();
     });
 
@@ -820,10 +820,11 @@ describe('Dashboard', () => {
     });
 
     it('is present for a custom dashboard, and links to its edit_path', () => {
-      const dashboard = dashboardGitResponse[1]; // non-default dashboard
-      const currentDashboard = dashboard.path;
+      const dashboard = dashboardGitResponse[1];
+      store.commit(`monitoringDashboard/${types.SET_INITIAL_STATE}`, {
+        currentDashboard: dashboard.path,
+      });
 
-      wrapper.setProps({ currentDashboard });
       return wrapper.vm.$nextTick().then(() => {
         expect(findEditLink().exists()).toBe(true);
         expect(findEditLink().attributes('href')).toBe(dashboard.project_blob_path);
@@ -834,12 +835,7 @@ describe('Dashboard', () => {
   describe('Dashboard dropdown', () => {
     beforeEach(() => {
       createMountedWrapper({ hasMetrics: true });
-
-      wrapper.vm.$store.commit(
-        `monitoringDashboard/${types.SET_ALL_DASHBOARDS}`,
-        dashboardGitResponse,
-      );
-
+      setupAllDashboards(store);
       return wrapper.vm.$nextTick();
     });
 
@@ -872,7 +868,7 @@ describe('Dashboard', () => {
   });
 
   describe('Clipboard text in panels', () => {
-    const currentDashboard = 'TEST_DASHBOARD';
+    const currentDashboard = dashboardGitResponse[1].path;
     const panelIndex = 1; // skip expanded panel
 
     const getClipboardTextFirstPanel = () =>
@@ -882,36 +878,19 @@ describe('Dashboard', () => {
         .props('clipboardText');
 
     beforeEach(() => {
+      setupStoreWithData(store);
       createShallowWrapper({ hasMetrics: true, currentDashboard });
-
-      setupStoreWithData(wrapper.vm.$store);
 
       return wrapper.vm.$nextTick();
     });
 
     it('contains a link to the dashboard', () => {
-      expect(getClipboardTextFirstPanel()).toContain(`dashboard=${currentDashboard}`);
+      const dashboardParam = `dashboard=${encodeURIComponent(currentDashboard)}`;
+
+      expect(getClipboardTextFirstPanel()).toContain(dashboardParam);
       expect(getClipboardTextFirstPanel()).toContain(`group=`);
       expect(getClipboardTextFirstPanel()).toContain(`title=`);
       expect(getClipboardTextFirstPanel()).toContain(`y_label=`);
-    });
-
-    it('strips the undefined parameter', () => {
-      wrapper.setProps({ currentDashboard: undefined });
-
-      return wrapper.vm.$nextTick(() => {
-        expect(getClipboardTextFirstPanel()).not.toContain(`dashboard=`);
-        expect(getClipboardTextFirstPanel()).toContain(`y_label=`);
-      });
-    });
-
-    it('null parameter is stripped', () => {
-      wrapper.setProps({ currentDashboard: null });
-
-      return wrapper.vm.$nextTick(() => {
-        expect(getClipboardTextFirstPanel()).not.toContain(`dashboard=`);
-        expect(getClipboardTextFirstPanel()).toContain(`y_label=`);
-      });
     });
   });
 

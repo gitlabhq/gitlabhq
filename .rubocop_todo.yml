@@ -208,17 +208,6 @@ Naming/RescuedExceptionsVariableName:
 RSpec/ContextWording:
   Enabled: false
 
-RSpec/EmptyLineAfterSharedExample:
-  Exclude:
-    - 'ee/spec/mailers/notify_spec.rb'
-    - 'ee/spec/services/quick_actions/interpret_service_spec.rb'
-    - 'spec/controllers/repositories/git_http_controller_spec.rb'
-    - 'spec/finders/projects/serverless/functions_finder_spec.rb'
-    - 'spec/lib/gitlab/hook_data/issuable_builder_spec.rb'
-    - 'spec/lib/gitlab/legacy_github_import/importer_spec.rb'
-    - 'spec/models/event_spec.rb'
-    - 'spec/support/shared_examples/models/issuable_hook_data_shared_examples.rb'
-
 # Offense count: 879
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.

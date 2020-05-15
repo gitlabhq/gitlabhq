@@ -305,9 +305,10 @@ class Group < Namespace
   # rubocop: enable CodeReuse/ServiceClass
 
   # rubocop: disable CodeReuse/ServiceClass
-  def refresh_members_authorized_projects(blocking: true)
-    UserProjectAccessChangedService.new(user_ids_for_project_authorizations)
-      .execute(blocking: blocking)
+  def refresh_members_authorized_projects(blocking: true, priority: UserProjectAccessChangedService::HIGH_PRIORITY)
+    UserProjectAccessChangedService
+      .new(user_ids_for_project_authorizations)
+      .execute(blocking: blocking, priority: priority)
   end
   # rubocop: enable CodeReuse/ServiceClass
 

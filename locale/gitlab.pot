@@ -2978,6 +2978,9 @@ msgstr ""
 msgid "AutoDevOps|Auto DevOps documentation"
 msgstr ""
 
+msgid "AutoDevOps|Dismiss Auto DevOps box"
+msgstr ""
+
 msgid "AutoDevOps|Enable in settings"
 msgstr ""
 
@@ -3504,6 +3507,9 @@ msgid "BurndownChartLabel|Open issue weight"
 msgstr ""
 
 msgid "BurndownChartLabel|Open issues"
+msgstr ""
+
+msgid "Burnup chart"
 msgstr ""
 
 msgid "Business"
@@ -6469,6 +6475,9 @@ msgid "CurrentUser|Settings"
 msgstr ""
 
 msgid "CurrentUser|Start a Gold trial"
+msgstr ""
+
+msgid "CurrentUser|Upgrade"
 msgstr ""
 
 msgid "Custom CI configuration path"
@@ -9443,7 +9452,19 @@ msgstr ""
 msgid "Filter by %{issuable_type} that are currently opened."
 msgstr ""
 
+msgid "Filter by %{page_context_word} that are currently opened."
+msgstr ""
+
 msgid "Filter by commit message"
+msgstr ""
+
+msgid "Filter by issues that are currently closed."
+msgstr ""
+
+msgid "Filter by merge requests that are currently closed and unmerged."
+msgstr ""
+
+msgid "Filter by merge requests that are currently merged."
 msgstr ""
 
 msgid "Filter by milestone name"
@@ -16274,6 +16295,9 @@ msgid "Project avatar"
 msgstr ""
 
 msgid "Project cannot be shared with the group it is in or one of its ancestors."
+msgstr ""
+
+msgid "Project clone URL"
 msgstr ""
 
 msgid "Project configuration, including services"
@@ -24603,6 +24627,9 @@ msgstr ""
 msgid "You didn't renew your %{strong}%{plan_name}%{strong_close} subscription so it was downgraded to the GitLab Core Plan."
 msgstr ""
 
+msgid "You do not have an active license"
+msgstr ""
+
 msgid "You do not have any subscriptions yet"
 msgstr ""
 
@@ -24649,6 +24676,9 @@ msgid "You don’t have access to Productivity Analytics in this group"
 msgstr ""
 
 msgid "You don’t have access to Value Stream Analytics for this group"
+msgstr ""
+
+msgid "You have a license(s) that activates at a future date. Please see the License History table below."
 msgstr ""
 
 msgid "You have been granted %{access_level} access to the %{source_link} %{source_type}."

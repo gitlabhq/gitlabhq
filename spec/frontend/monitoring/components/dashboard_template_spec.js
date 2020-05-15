@@ -3,6 +3,7 @@ import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import Dashboard from '~/monitoring/components/dashboard.vue';
 import { createStore } from '~/monitoring/stores';
+import { setupAllDashboards } from '../store_utils';
 import { propsData } from '../mock_data';
 
 jest.mock('~/lib/utils/url_utility');
@@ -15,6 +16,8 @@ describe('Dashboard template', () => {
   beforeEach(() => {
     store = createStore();
     mock = new MockAdapter(axios);
+
+    setupAllDashboards(store);
   });
 
   afterEach(() => {
