@@ -39,6 +39,11 @@ export default {
       required: false,
       default: '',
     },
+    images: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
   },
   computed: {
     viewer() {
@@ -67,6 +72,7 @@ export default {
       :file-size="fileSize"
       :project-path="projectPath"
       :content="content"
+      :images="images"
       :commit-sha="commitSha"
     />
   </div>

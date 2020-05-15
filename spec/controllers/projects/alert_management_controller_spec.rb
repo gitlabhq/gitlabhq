@@ -14,32 +14,14 @@ describe Projects::AlertManagementController do
   end
 
   describe 'GET #index' do
-    context 'when alert_management_minimal is enabled' do
-      before do
-        stub_feature_flags(alert_management_minimal: true)
-      end
+    it 'shows the page' do
+      get :index, params: { namespace_id: project.namespace, project_id: project }
 
-      it 'shows the page' do
-        get :index, params: { namespace_id: project.namespace, project_id: project }
-
-        expect(response).to have_gitlab_http_status(:ok)
-      end
-
-      context 'when user is unauthorized' do
-        let(:role) { :reporter }
-
-        it 'shows 404' do
-          get :index, params: { namespace_id: project.namespace, project_id: project }
-
-          expect(response).to have_gitlab_http_status(:not_found)
-        end
-      end
+      expect(response).to have_gitlab_http_status(:ok)
     end
 
-    context 'when alert_management_minimal is disabled' do
-      before do
-        stub_feature_flags(alert_management_minimal: false)
-      end
+    context 'when user is unauthorized' do
+      let(:role) { :reporter }
 
       it 'shows 404' do
         get :index, params: { namespace_id: project.namespace, project_id: project }

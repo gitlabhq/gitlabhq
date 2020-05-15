@@ -40,7 +40,6 @@ import TerraformPlan from './components/mr_widget_terraform_plan.vue';
 import GroupedTestReportsApp from '../reports/components/grouped_test_reports_app.vue';
 import { setFaviconOverlay } from '../lib/utils/common_utils';
 import GroupedAccessibilityReportsApp from '../reports/accessibility_report/grouped_accessibility_reports_app.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   el: '#js-vue-mr-widget',
@@ -80,7 +79,6 @@ export default {
     TerraformPlan,
     GroupedAccessibilityReportsApp,
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     mrData: {
       type: Object,
@@ -146,7 +144,7 @@ export default {
       });
     },
     shouldShowAccessibilityReport() {
-      return this.mr.accessibilityReportPath && this.glFeatures.accessibilityMergeRequestWidget;
+      return this.mr.accessibilityReportPath;
     },
   },
   watch: {

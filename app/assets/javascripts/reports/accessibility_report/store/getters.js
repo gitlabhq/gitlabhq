@@ -37,23 +37,12 @@ export const summaryStatus = state => {
 export const shouldRenderIssuesList = state =>
   Object.values(state.report).some(x => Array.isArray(x) && x.length > 0);
 
-export const unresolvedIssues = state => [
-  ...state.report.existing_errors,
-  ...state.report.existing_warnings,
-  ...state.report.existing_notes,
-];
-
-export const resolvedIssues = state => [
-  ...state.report.resolved_errors,
-  ...state.report.resolved_warnings,
-  ...state.report.resolved_notes,
-];
-
-export const newIssues = state => [
-  ...state.report.new_errors,
-  ...state.report.new_warnings,
-  ...state.report.new_notes,
-];
+// We could just map state, but we're going to iterate in the future
+// to add notes and warnings to these issue lists, so I'm going to
+// keep these as getters
+export const unresolvedIssues = state => state.report.existing_errors;
+export const resolvedIssues = state => state.report.resolved_errors;
+export const newIssues = state => state.report.new_errors;
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};

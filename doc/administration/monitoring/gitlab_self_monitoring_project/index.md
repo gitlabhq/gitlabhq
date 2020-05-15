@@ -46,7 +46,7 @@ The project will be automatically configured to connect to the
 instance is present (should be the case if GitLab was installed via Omnibus
 and you haven't disabled it).
 
-If that's not the case or if you have an external Prometheus instance or an HA setup,
+If that's not the case or if you have an external Prometheus instance or a customized setup,
 you should
 [configure it manually](../../../user/project/integrations/prometheus.md#manual-configuration-of-prometheus).
 

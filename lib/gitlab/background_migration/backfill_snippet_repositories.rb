@@ -8,7 +8,21 @@ module Gitlab
       MAX_RETRIES = 2
 
       def perform(start_id, stop_id)
-        Snippet.includes(:author, snippet_repository: :shard).where(id: start_id..stop_id).find_each do |snippet|
+        snippets = snippet_relation.where(id: start_id..stop_id)
+
+        migrate_snippets(snippets)
+      end
+
+      def perform_by_ids(snippet_ids)
+        snippets = snippet_relation.where(id: snippet_ids)
+
+        migrate_snippets(snippets)
+      end
+
+      private
+
+      def migrate_snippets(snippets)
+        snippets.find_each do |snippet|
           # We need to expire the exists? value for the cached method in case it was cached
           snippet.repository.expire_exists_cache
 
@@ -38,7 +52,9 @@ module Gitlab
         end
       end
 
-      private
+      def snippet_relation
+        @snippet_relation ||= Snippet.includes(:author, snippet_repository: :shard)
+      end
 
       def repository_present?(snippet)
         snippet.snippet_repository && !snippet.empty_repo?

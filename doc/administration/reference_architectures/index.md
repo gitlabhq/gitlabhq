@@ -57,9 +57,9 @@ The following reference architectures are available:
 - [Up to 25,000 users](25k_users.md)
 - [Up to 50,000 users](50k_users.md)
 
-## Availability components
+## Availability Components
 
-GitLab comes with the following availability components for your use, listed from
+GitLab comes with the following components for your use, listed from
 least to most complex:
 
 1. [Automated backups](#automated-backups-core-only)
@@ -68,11 +68,11 @@ least to most complex:
 1. [Automated database failover](#automated-database-failover-premium-only)
 1. [Instance level replication with GitLab Geo](#instance-level-replication-with-gitlab-geo-premium-only)
 
-As you get started implementing HA, begin with a single server and then do
+As you implement these components, begin with a single server and then do
 backups. Only after completing the first server should you proceed to the next.
 
-Also, not implementing HA for GitLab doesn't necessarily mean that you'll have
-more downtime. Depending on your needs and experience level, non-HA servers can
+Also, not implementing extra servers for GitLab doesn't necessarily mean that you'll have
+more downtime. Depending on your needs and experience level, single servers can
 have more actual perceived uptime for your users.
 
 ### Automated backups **(CORE ONLY)**
@@ -83,7 +83,7 @@ have more actual perceived uptime for your users.
 
 This solution is appropriate for many teams that have the default GitLab installation.
 With automatic backups of the GitLab repositories, configuration, and the database,
-this can be an optimal solution if you don't have strict availability requirements.
+this can be an optimal solution if you don't have strict requirements.
 [Automated backups](../../raketasks/backup_restore.md#configuring-cron-to-make-daily-backups)
 is the least complex to setup. This provides a point-in-time recovery of a predetermined schedule.
 
@@ -100,7 +100,7 @@ shared file server and database systems on the back end. This way, if one of the
 application servers fails, the workflow is not interrupted.
 [HAProxy](https://www.haproxy.org/) is recommended as the load balancer.
 
-With this added availability component you have a number of advantages compared
+With this added component you have a number of advantages compared
 to the default installation:
 
 - Increase the number of users.
@@ -124,7 +124,7 @@ As long as at least one of each component is online and capable of handling the 
 > - Supported tiers: [GitLab Premium and Ultimate](https://about.gitlab.com/pricing/)
 
 By adding automatic failover for database systems, you can enable higher uptime
-with an additional database nodes. This extends the default database with a
+with additional database nodes. This extends the default database with
 cluster management and failover policies.
 [PgBouncer](../../development/architecture.md#pgbouncer) in conjunction with
 [Repmgr](../high_availability/database.md) is recommended.
@@ -157,12 +157,12 @@ column.
 | Load balancer(s) ([6](#footnotes)) | Handles load balancing, typically when you have multiple GitLab application services nodes | [Load balancer configuration](../high_availability/load_balancer.md) ([6](#footnotes))      | No |
 | Object storage service ([4](#footnotes)) | Recommended store for shared data objects | [Object Storage configuration](../object_storage.md) | No |
 | NFS ([5](#footnotes)) ([7](#footnotes)) | Shared disk storage service. Can be used as an alternative Object Storage. Required for GitLab Pages | [NFS configuration](../high_availability/nfs.md) | No |
-| [Consul](../../development/architecture.md#consul) ([3](#footnotes)) | Service discovery and health checks/failover | [Consul HA configuration](../high_availability/consul.md) **(PREMIUM ONLY)** | Yes |
+| [Consul](../../development/architecture.md#consul) ([3](#footnotes)) | Service discovery and health checks/failover | [Consul configuration](../high_availability/consul.md) **(PREMIUM ONLY)** | Yes |
 | [PostgreSQL](../../development/architecture.md#postgresql) | Database | [PostgreSQL configuration](https://docs.gitlab.com/omnibus/settings/database.html) | Yes |
 | [PgBouncer](../../development/architecture.md#pgbouncer) | Database connection pooler | [PgBouncer configuration](../high_availability/pgbouncer.md#running-pgbouncer-as-part-of-a-non-ha-gitlab-installation) **(PREMIUM ONLY)** | Yes |
 | Repmgr | PostgreSQL cluster management and failover | [PostgreSQL and Repmgr configuration](../high_availability/database.md) | Yes |
 | [Redis](../../development/architecture.md#redis) ([3](#footnotes))  | Key/value store for fast data lookup and caching | [Redis configuration](../high_availability/redis.md) | Yes |
-| Redis Sentinel | High availability for Redis | [Redis Sentinel configuration](../high_availability/redis.md) | Yes |
+| Redis Sentinel | Redis | [Redis Sentinel configuration](../high_availability/redis.md) | Yes |
 | [Gitaly](../../development/architecture.md#gitaly) ([2](#footnotes)) ([7](#footnotes)) ([10](#footnotes)) | Provides access to Git repositories | [Gitaly configuration](../gitaly/index.md#running-gitaly-on-its-own-server) | Yes |
 | [Sidekiq](../../development/architecture.md#sidekiq) | Asynchronous/background jobs | [Sidekiq configuration](../high_availability/sidekiq.md) | Yes |
 | [GitLab application services](../../development/architecture.md#unicorn)([1](#footnotes)) | Puma/Unicorn, Workhorse, GitLab Shell - serves front-end requests (UI, API, Git over HTTP/SSH) | [GitLab app scaling configuration](../high_availability/gitlab.md) | Yes |
@@ -177,7 +177,7 @@ column.
    on workload.
 
 1. Gitaly node requirements are dependent on customer data, specifically the number of
-   projects and their sizes. We recommend two nodes as an absolute minimum for HA environments
+   projects and their sizes. We recommend two nodes as an absolute minimum,
    and at least four nodes should be used when supporting 50,000 or more users.
    We also recommend that each Gitaly node should store no more than 5TB of data
    and have the number of [`gitaly-ruby` workers](../gitaly/index.md#gitaly-ruby)
@@ -194,7 +194,7 @@ column.
    that you run the Redis Sentinel clusters separately for each Redis Cluster.
 
 1. For data objects such as LFS, Uploads, Artifacts, etc. We recommend an [Object Storage service](../object_storage.md)
-   over NFS where possible, due to better performance and availability.
+   over NFS where possible, due to better performance.
 
 1. NFS can be used as an alternative for object storage but this isn't typically
    recommended for performance reasons. Note however it is required for [GitLab

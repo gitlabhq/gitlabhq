@@ -1,4 +1,5 @@
 import { commitActionTypes, FILE_VIEW_MODE_EDITOR } from '../constants';
+import { relativePathToAbsolute, isAbsolute, isRootRelative } from '~/lib/utils/url_utility';
 
 export const dataStructure = () => ({
   id: '',
@@ -274,3 +275,45 @@ export const pathsAreEqual = (a, b) => {
 // if the contents of a file dont end with a newline, this function adds a newline
 export const addFinalNewlineIfNeeded = content =>
   content.charAt(content.length - 1) !== '\n' ? `${content}\n` : content;
+
+export function extractMarkdownImagesFromEntries(mdFile, entries) {
+  /**
+   * Regex to identify an image tag in markdown, like:
+   *
+   * ![img alt goes here](/img.png)
+   * ![img alt](../img 1/img.png "my image title")
+   * ![img alt](https://gitlab.com/assets/logo.svg "title here")
+   *
+   */
+  const reMdImage = /!\[([^\]]*)\]\((.*?)(?:(?="|\))"([^"]*)")?\)/gi;
+  const prefix = 'gl_md_img_';
+  const images = {};
+
+  let content = mdFile.content || mdFile.raw;
+  let i = 0;
+
+  content = content.replace(reMdImage, (_, alt, path, title) => {
+    const imagePath = (isRootRelative(path) ? path : relativePathToAbsolute(path, mdFile.path))
+      .substr(1)
+      .trim();
+
+    const imageContent = entries[imagePath]?.content || entries[imagePath]?.raw;
+
+    if (!isAbsolute(path) && imageContent) {
+      const ext = path.includes('.')
+        ? path
+            .split('.')
+            .pop()
+            .trim()
+        : 'jpeg';
+      const src = `data:image/${ext};base64,${imageContent}`;
+      i += 1;
+      const key = `{{${prefix}${i}}}`;
+      images[key] = { alt, src, title };
+      return key;
+    }
+    return title ? `![${alt}](${path}"${title}")` : `![${alt}](${path})`;
+  });
+
+  return { content, images };
+}

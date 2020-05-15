@@ -38,3 +38,4 @@ The following are available Rake tasks:
 | [User management](user_management.md)                                                               | Perform user management tasks.                                                            |
 | [Webhooks administration](web_hooks.md)                                                             | Maintain project Webhooks.                                                                |
 | [X.509 signatures](x509_signatures.md)                                                              | Update X.509 commit signatures, useful if certificate store has changed.                  |
+| [Migrate Snippets to Git](migrate_snippets.md)                                                      | Migrate GitLab Snippets to Git repositories and show migration status                     |

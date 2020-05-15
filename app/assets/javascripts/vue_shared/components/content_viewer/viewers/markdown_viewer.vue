@@ -5,6 +5,7 @@ import '~/behaviors/markdown/render_gfm';
 import { GlSkeletonLoading } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
+import { forEach, escape } from 'lodash';
 
 const { CancelToken } = axios;
 let axiosSource;
@@ -31,6 +32,11 @@ export default {
     projectPath: {
       type: String,
       required: true,
+    },
+    images: {
+      type: Object,
+      required: false,
+      default: () => ({}),
     },
   },
   data() {
@@ -76,7 +82,15 @@ export default {
             postOptions,
           )
           .then(({ data }) => {
-            this.previewContent = data.body;
+            let previewContent = data.body;
+            forEach(this.images, ({ src, title = '', alt }, key) => {
+              previewContent = previewContent.replace(
+                key,
+                `<img src="${escape(src)}" title="${escape(title)}" alt="${escape(alt)}">`,
+              );
+            });
+
+            this.previewContent = previewContent;
             this.isLoading = false;
 
             this.$nextTick(() => {

@@ -35,7 +35,7 @@ describe('MarkdownViewer', () => {
   describe('success', () => {
     beforeEach(() => {
       mock.onPost(`${gon.relative_url_root}/testproject/preview_markdown`).replyOnce(200, {
-        body: '<b>testing</b>',
+        body: '<b>testing</b> {{gl_md_img_1}}',
       });
     });
 
@@ -53,15 +53,48 @@ describe('MarkdownViewer', () => {
       });
     });
 
-    it('receives the filePath as a parameter and passes it on to the server', () => {
-      createComponent({ filePath: 'foo/test.md' });
+    it('receives the filePath and commitSha as a parameters and passes them on to the server', () => {
+      createComponent({ filePath: 'foo/test.md', commitSha: 'abcdef' });
 
       expect(axios.post).toHaveBeenCalledWith(
         `${gon.relative_url_root}/testproject/preview_markdown`,
-        { path: 'foo/test.md', text: '*  Test' },
+        { path: 'foo/test.md', text: '*  Test', ref: 'abcdef' },
         expect.any(Object),
       );
     });
+
+    it.each`
+      imgSrc                               | imgAlt
+      ${'data:image/jpeg;base64,AAAAAA+/'} | ${'my image title'}
+      ${'data:image/jpeg;base64,AAAAAA+/'} | ${'"somebody\'s image" &'}
+      ${'hack" onclick=alert(0)'}          | ${'hack" onclick=alert(0)'}
+      ${'hack\\" onclick=alert(0)'}        | ${'hack\\" onclick=alert(0)'}
+      ${"hack' onclick=alert(0)"}          | ${"hack' onclick=alert(0)"}
+      ${"hack'><script>alert(0)</script>"} | ${"hack'><script>alert(0)</script>"}
+    `(
+      'transforms template tags with base64 encoded images available locally',
+      ({ imgSrc, imgAlt }) => {
+        createComponent({
+          images: {
+            '{{gl_md_img_1}}': {
+              src: imgSrc,
+              alt: imgAlt,
+              title: imgAlt,
+            },
+          },
+        });
+
+        return waitForPromises().then(() => {
+          const img = wrapper.find('.md-previewer img').element;
+
+          // if the values are the same as the input, it means
+          // they were escaped correctly
+          expect(img).toHaveAttr('src', imgSrc);
+          expect(img).toHaveAttr('alt', imgAlt);
+          expect(img).toHaveAttr('title', imgAlt);
+        });
+      },
+    );
   });
 
   describe('error', () => {

@@ -163,28 +163,10 @@ describe 'layouts/nav/sidebar/_project' do
     end
 
     describe 'Alert Management' do
-      context 'when alert_management_minimal is enabled' do
-        before do
-          stub_feature_flags(alert_management_minimal: true)
-        end
+      it 'shows the Alerts sidebar entry' do
+        render
 
-        it 'shows the Alerts sidebar entry' do
-          render
-
-          expect(rendered).to have_css('a[title="Alerts"]')
-        end
-      end
-
-      context 'when alert_management_minimal is disabled' do
-        before do
-          stub_feature_flags(alert_management_minimal: false)
-        end
-
-        it 'does not show the Alerts sidebar entry' do
-          render
-
-          expect(rendered).to have_no_css('a[title="Alerts"]')
-        end
+        expect(rendered).to have_css('a[title="Alerts"]')
       end
     end
   end

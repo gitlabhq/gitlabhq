@@ -685,4 +685,75 @@ describe('Multi-file store utils', () => {
       });
     });
   });
+
+  describe('extractMarkdownImagesFromEntries', () => {
+    let mdFile;
+    let entries;
+
+    beforeEach(() => {
+      const img = { content: '/base64/encoded/image+' };
+      mdFile = { path: 'path/to/some/directory/myfile.md' };
+      entries = {
+        // invalid (or lack of) extensions are also supported as long as there's
+        // a real image inside and can go into an <img> tag's `src` and the browser
+        // can render it
+        img,
+        'img.js': img,
+        'img.png': img,
+        'img.with.many.dots.png': img,
+        'path/to/img.gif': img,
+        'path/to/some/img.jpg': img,
+        'path/to/some/img 1/img.png': img,
+        'path/to/some/directory/img.png': img,
+        'path/to/some/directory/img 1.png': img,
+      };
+    });
+
+    it.each`
+      markdownBefore                          | ext       | imgAlt           | imgTitle
+      ${'* ![img](/img)'}                     | ${'jpeg'} | ${'img'}         | ${undefined}
+      ${'* ![img](/img.js)'}                  | ${'js'}   | ${'img'}         | ${undefined}
+      ${'* ![img](img.png)'}                  | ${'png'}  | ${'img'}         | ${undefined}
+      ${'* ![img](./img.png)'}                | ${'png'}  | ${'img'}         | ${undefined}
+      ${'* ![with spaces](../img 1/img.png)'} | ${'png'}  | ${'with spaces'} | ${undefined}
+      ${'* ![img](../../img.gif " title ")'}  | ${'gif'}  | ${'img'}         | ${' title '}
+      ${'* ![img](../img.jpg)'}               | ${'jpg'}  | ${'img'}         | ${undefined}
+      ${'* ![img](/img.png "title")'}         | ${'png'}  | ${'img'}         | ${'title'}
+      ${'* ![img](/img.with.many.dots.png)'}  | ${'png'}  | ${'img'}         | ${undefined}
+      ${'* ![img](img 1.png)'}                | ${'png'}  | ${'img'}         | ${undefined}
+      ${'* ![img](img.png "title here")'}     | ${'png'}  | ${'img'}         | ${'title here'}
+    `(
+      'correctly transforms markdown with uncommitted images: $markdownBefore',
+      ({ markdownBefore, ext, imgAlt, imgTitle }) => {
+        mdFile.content = markdownBefore;
+
+        expect(utils.extractMarkdownImagesFromEntries(mdFile, entries)).toEqual({
+          content: '* {{gl_md_img_1}}',
+          images: {
+            '{{gl_md_img_1}}': {
+              src: `data:image/${ext};base64,/base64/encoded/image+`,
+              alt: imgAlt,
+              title: imgTitle,
+            },
+          },
+        });
+      },
+    );
+
+    it.each`
+      markdown
+      ${'* ![img](i.png)'}
+      ${'* ![img](img.png invalid title)'}
+      ${'* ![img](img.png "incorrect" "markdown")'}
+      ${'* ![img](https://gitlab.com/logo.png)'}
+      ${'* ![img](https://gitlab.com/some/deep/nested/path/logo.png)'}
+    `("doesn't touch invalid or non-existant images in markdown: $markdown", ({ markdown }) => {
+      mdFile.content = markdown;
+
+      expect(utils.extractMarkdownImagesFromEntries(mdFile, entries)).toEqual({
+        content: markdown,
+        images: {},
+      });
+    });
+  });
 });

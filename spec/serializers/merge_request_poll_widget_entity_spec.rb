@@ -93,6 +93,28 @@ describe MergeRequestPollWidgetEntity do
     end
   end
 
+  describe 'accessibility_report_path' do
+    context 'when merge request has accessibility reports' do
+      before do
+        allow(resource).to receive(:has_accessibility_reports?).and_return(true)
+      end
+
+      it 'set the path to poll data' do
+        expect(subject[:accessibility_report_path]).to be_present
+      end
+    end
+
+    context 'when merge request has no accessibility reports' do
+      before do
+        allow(resource).to receive(:has_accessibility_reports?).and_return(false)
+      end
+
+      it 'set the path to poll data' do
+        expect(subject[:accessibility_report_path]).to be_nil
+      end
+    end
+  end
+
   describe 'exposed_artifacts_path' do
     context 'when merge request has exposed artifacts' do
       before do

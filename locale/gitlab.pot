@@ -393,6 +393,12 @@ msgstr ""
 msgid "%{name} found %{resultsString}"
 msgstr ""
 
+msgid "%{name} has %{percent} or less Shared Runner Pipeline minutes remaining. Once it runs out, no new jobs or pipelines in its projects will run."
+msgstr ""
+
+msgid "%{name} has run out of Shared Runner Pipeline minutes so no new jobs or pipelines in its projects will run."
+msgstr ""
+
 msgid "%{name} is scheduled for %{action}"
 msgstr ""
 
@@ -24005,6 +24011,12 @@ msgid "We have found the following errors:"
 msgstr ""
 
 msgid "We heard back from your U2F device. You have been authenticated."
+msgstr ""
+
+msgid "We recommend that you buy more Pipeline minutes to avoid any interruption of service."
+msgstr ""
+
+msgid "We recommend that you buy more Pipeline minutes to resume normal service."
 msgstr ""
 
 msgid "We sent you an email with reset password instructions"
