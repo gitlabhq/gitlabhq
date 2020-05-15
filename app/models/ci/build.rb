@@ -33,7 +33,6 @@ module Ci
       scheduler_failure: 2
     }.freeze
 
-    CODE_NAVIGATION_JOB_NAME = 'code_navigation'
     DEGRADATION_THRESHOLD_VARIABLE_NAME = 'DEGRADATION_THRESHOLD'
 
     has_one :deployment, as: :deployable, class_name: 'Deployment'
@@ -603,6 +602,14 @@ module Ci
 
     def freeze_period?
       Ci::FreezePeriodStatus.new(project: project).execute
+    end
+
+    def dependency_variables
+      return [] if all_dependencies.empty?
+
+      Gitlab::Ci::Variables::Collection.new.concat(
+        Ci::JobVariable.where(job: all_dependencies).dotenv_source
+      )
     end
 
     def features

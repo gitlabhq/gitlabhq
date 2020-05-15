@@ -18,7 +18,7 @@ module MetricsDashboard
 
     if result
       result[:all_dashboards] = all_dashboards if include_all_dashboards?
-      result[:metrics_data] = metrics_data(project_for_dashboard, environment_for_dashboard) if project_for_dashboard && environment_for_dashboard
+      result[:metrics_data] = metrics_data(project_for_dashboard, environment_for_dashboard)
     end
 
     respond_to do |format|

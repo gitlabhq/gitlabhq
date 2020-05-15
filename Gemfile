@@ -324,7 +324,6 @@ gem 'derailed_benchmarks', require: false
 # Metrics
 group :metrics do
   gem 'method_source', '~> 0.8', require: false
-  gem 'influxdb', '~> 0.2', require: false
 
   # Prometheus
   gem 'prometheus-client-mmap', '~> 0.10.0'

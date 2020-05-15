@@ -238,6 +238,18 @@ jest:
       junit: junit_jest.xml
   parallel: 2
 
+jest-integration:
+  extends: .frontend-job-base
+  script:
+    - date
+    - yarn jest:integration --ci
+  needs: ["frontend-fixtures"]
+  cache:
+    key: jest-integration
+    paths:
+      - tmp/cache/jest/
+    policy: pull-push
+
 jest-as-if-foss:
   extends:
     - .jest-base
@@ -307,10 +319,10 @@ webpack-dev-server:
     key:
       files:
         - yarn.lock
-        - config/webpack.vendor.config.js
-      prefix: "v2"
+      prefix: "v1"
     paths:
       - node_modules/
+      - tmp/cache/webpack-dlls/
   script:
     - source scripts/utils.sh
     - retry yarn install --frozen-lockfile

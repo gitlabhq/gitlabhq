@@ -45,7 +45,7 @@ describe MetricsDashboard do
       it 'returns the specified dashboard' do
         expect(json_response['dashboard']['dashboard']).to eq('Environment metrics')
         expect(json_response).not_to have_key('all_dashboards')
-        expect(json_response).not_to have_key('metrics_data')
+        expect(json_response).to have_key('metrics_data')
       end
 
       context 'when the params are in an alternate format' do
@@ -54,7 +54,7 @@ describe MetricsDashboard do
         it 'returns the specified dashboard' do
           expect(json_response['dashboard']['dashboard']).to eq('Environment metrics')
           expect(json_response).not_to have_key('all_dashboards')
-          expect(json_response).not_to have_key('metrics_data')
+          expect(json_response).to have_key('metrics_data')
         end
       end
 

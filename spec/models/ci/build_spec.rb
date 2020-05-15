@@ -2375,12 +2375,14 @@ describe Ci::Build do
           let(:pipeline_pre_var) { { key: 'pipeline', value: 'value', public: true, masked: false } }
           let(:build_yaml_var) { { key: 'yaml', value: 'value', public: true, masked: false } }
           let(:job_jwt_var) { { key: 'CI_JOB_JWT', value: 'ci.job.jwt', public: false, masked: true } }
+          let(:job_dependency_var) { { key: 'job_dependency', value: 'value', public: true, masked: false } }
 
           before do
             allow(build).to receive(:predefined_variables) { [build_pre_var] }
             allow(build).to receive(:yaml_variables) { [build_yaml_var] }
             allow(build).to receive(:persisted_variables) { [] }
             allow(build).to receive(:job_jwt_variables) { [job_jwt_var] }
+            allow(build).to receive(:dependency_variables) { [job_dependency_var] }
 
             allow_any_instance_of(Project)
               .to receive(:predefined_variables) { [project_pre_var] }
@@ -2398,6 +2400,7 @@ describe Ci::Build do
                project_pre_var,
                pipeline_pre_var,
                build_yaml_var,
+               job_dependency_var,
                { key: 'secret', value: 'value', public: false, masked: false }])
           end
         end
@@ -3008,6 +3011,15 @@ describe Ci::Build do
         end
       end
     end
+
+    context 'when build has dependency which has dotenv variable' do
+      let!(:prepare) { create(:ci_build, pipeline: pipeline, stage_idx: 0) }
+      let!(:build) { create(:ci_build, pipeline: pipeline, stage_idx: 1, options: { dependencies: [prepare.name] }) }
+
+      let!(:job_variable) { create(:ci_job_variable, :dotenv_source, job: prepare) }
+
+      it { is_expected.to include(key: job_variable.key, value: job_variable.value, public: false, masked: false) }
+    end
   end
 
   describe '#scoped_variables' do
@@ -3067,6 +3079,33 @@ describe Ci::Build do
 
         build.scoped_variables.map { |env| env[:key] }.tap do |names|
           expect(names).not_to include(*keys)
+        end
+      end
+    end
+
+    context 'with dependency variables' do
+      let!(:prepare) { create(:ci_build, name: 'prepare', pipeline: pipeline, stage_idx: 0) }
+      let!(:build) { create(:ci_build, pipeline: pipeline, stage_idx: 1, options: { dependencies: ['prepare'] }) }
+
+      let!(:job_variable) { create(:ci_job_variable, :dotenv_source, job: prepare) }
+
+      context 'FF ci_dependency_variables is enabled' do
+        before do
+          stub_feature_flags(ci_dependency_variables: true)
+        end
+
+        it 'inherits dependent variables' do
+          expect(build.scoped_variables.to_hash).to include(job_variable.key => job_variable.value)
+        end
+      end
+
+      context 'FF ci_dependency_variables is disabled' do
+        before do
+          stub_feature_flags(ci_dependency_variables: false)
+        end
+
+        it 'does not inherit dependent variables' do
+          expect(build.scoped_variables.to_hash).not_to include(job_variable.key => job_variable.value)
         end
       end
     end
@@ -3310,6 +3349,41 @@ describe Ci::Build do
 
       it 'does not persist data in build metadata' do
         expect(build.metadata.read_attribute(:config_variables)).to be_nil
+      end
+    end
+  end
+
+  describe '#dependency_variables' do
+    subject { build.dependency_variables }
+
+    context 'when using dependencies' do
+      let!(:prepare1) { create(:ci_build, name: 'prepare1', pipeline: pipeline, stage_idx: 0) }
+      let!(:prepare2) { create(:ci_build, name: 'prepare2', pipeline: pipeline, stage_idx: 0) }
+      let!(:build) { create(:ci_build, pipeline: pipeline, stage_idx: 1, options: { dependencies: ['prepare1'] }) }
+
+      let!(:job_variable_1) { create(:ci_job_variable, :dotenv_source, job: prepare1) }
+      let!(:job_variable_2) { create(:ci_job_variable, job: prepare1) }
+      let!(:job_variable_3) { create(:ci_job_variable, :dotenv_source, job: prepare2) }
+
+      it 'inherits only dependent variables' do
+        expect(subject.to_hash).to eq(job_variable_1.key => job_variable_1.value)
+      end
+    end
+
+    context 'when using needs' do
+      let!(:prepare1) { create(:ci_build, name: 'prepare1', pipeline: pipeline, stage_idx: 0) }
+      let!(:prepare2) { create(:ci_build, name: 'prepare2', pipeline: pipeline, stage_idx: 0) }
+      let!(:prepare3) { create(:ci_build, name: 'prepare3', pipeline: pipeline, stage_idx: 0) }
+      let!(:build) { create(:ci_build, pipeline: pipeline, stage_idx: 1, scheduling_type: 'dag') }
+      let!(:build_needs_prepare1) { create(:ci_build_need, build: build, name: 'prepare1', artifacts: true) }
+      let!(:build_needs_prepare2) { create(:ci_build_need, build: build, name: 'prepare2', artifacts: false) }
+
+      let!(:job_variable_1) { create(:ci_job_variable, :dotenv_source, job: prepare1) }
+      let!(:job_variable_2) { create(:ci_job_variable, :dotenv_source, job: prepare2) }
+      let!(:job_variable_3) { create(:ci_job_variable, :dotenv_source, job: prepare3) }
+
+      it 'inherits only needs with artifacts variables' do
+        expect(subject.to_hash).to eq(job_variable_1.key => job_variable_1.value)
       end
     end
   end

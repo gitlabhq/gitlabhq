@@ -61,6 +61,8 @@ if !Rails.env.test? && Gitlab::Metrics.prometheus_metrics_enabled?
       Gitlab::Metrics::Samplers::PumaSampler.instance(Settings.monitoring.puma_sampler_interval).start
     end
 
+    Gitlab::Metrics.gauge(:deployments, 'GitLab Version', {}, :max).set({ version: Gitlab::VERSION }, 1)
+
     Gitlab::Metrics::RequestsRackMiddleware.initialize_http_request_duration_seconds
   rescue IOError => e
     Gitlab::ErrorTracking.track_exception(e)

@@ -159,6 +159,14 @@ describe API::Settings, 'Settings' do
       expect(json_response['allow_local_requests_from_hooks_and_services']).to eq(true)
     end
 
+    it 'disables ability to switch to legacy storage' do
+      put api("/application/settings", admin),
+          params: { hashed_storage_enabled: false }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['hashed_storage_enabled']).to eq(true)
+    end
+
     context 'external policy classification settings' do
       let(:settings) do
         {

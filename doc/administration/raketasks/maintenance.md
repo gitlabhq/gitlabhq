@@ -196,27 +196,6 @@ production machine after installing the package, there should be no reason to re
 `rake gitlab:assets:compile` on the production machine. If you suspect that assets
 have been corrupted, you should reinstall the omnibus package.
 
-## Tracking Deployments
-
-GitLab provides a Rake task that lets you track deployments in GitLab
-Performance Monitoring. This Rake task simply stores the current GitLab version
-in the GitLab Performance Monitoring database.
-
-To run `gitlab:track_deployment`:
-
-**Omnibus Installation**
-
-```shell
-sudo gitlab-rake gitlab:track_deployment
-```
-
-**Source Installation**
-
-```shell
-cd /home/git/gitlab
-sudo -u git -H bundle exec rake gitlab:track_deployment RAILS_ENV=production
-```
-
 ## Check TCP connectivity to a remote site
 
 Sometimes you need to know if your GitLab installation can connect to a TCP

@@ -153,7 +153,6 @@ GEM
       activemodel (>= 4.0.0)
       activesupport (>= 4.0.0)
       mime-types (>= 1.16)
-    cause (0.1)
     character_set (1.1.2)
     charlock_holmes (0.7.6)
     childprocess (3.0.0)
@@ -535,9 +534,6 @@ GEM
     i18n_data (0.8.0)
     icalendar (2.4.1)
     ice_nine (0.11.2)
-    influxdb (0.2.3)
-      cause
-      json
     invisible_captcha (0.12.1)
       rails (>= 3.2.0)
     ipaddress (0.8.3)
@@ -1276,7 +1272,6 @@ DEPENDENCIES
   html2text
   httparty (~> 0.16.4)
   icalendar
-  influxdb (~> 0.2)
   invisible_captcha (~> 0.12.1)
   jira-ruby (~> 2.0.0)
   js_regex (~> 3.1)

@@ -394,6 +394,73 @@ Once you set them, they will be available for all subsequent pipelines. Any grou
 
 ![CI/CD settings - inherited variables](img/inherited_group_variables_v12_5.png)
 
+### Inherit environment variables
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22638) in GitLab 13.0.
+> - It's deployed behind a feature flag (`ci_dependency_variables`), disabled by default.
+
+You can inherit environment variables from dependent jobs.
+
+This feature makes use of the [`artifacts:reports:dotenv`](../pipelines/job_artifacts.md#artifactsreportsdotenv) report feature.
+
+Example with [`dependencies`](../yaml/README.md#dependencies) keyword.
+
+```yaml
+build:
+  stage: build
+  script:
+    - echo "BUILD_VERSION=hello" >> build.env
+  artifacts:
+    reports:
+      dotenv: build.env
+
+deploy:
+  stage: deploy
+  script:
+    - echo $BUILD_VERSION # => hello
+  dependencies:
+    - build
+```
+
+Example with the [`needs`](../yaml/README.md#artifact-downloads-with-needs) keyword:
+
+```yaml
+build:
+  stage: build
+  script:
+    - echo "BUILD_VERSION=hello" >> build.env
+  artifacts:
+    reports:
+      dotenv: build.env
+
+deploy:
+  stage: deploy
+  script:
+    - echo $BUILD_VERSION # => hello
+  needs:
+    - job: build
+      artifacts: true
+```
+
+### Enable inherited environment variables **(CORE ONLY)**
+
+The Inherited Environment Variables feature is under development and not ready for production use. It is
+deployed behind a feature flag that is **disabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
+can enable it for your instance.
+
+To enable it:
+
+```ruby
+Feature.enable(:ci_dependency_variables)
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:ci_dependency_variables)
+```
+
 ## Priority of environment variables
 
 Variables of different types can take precedence over other
@@ -404,6 +471,7 @@ The order of precedence for variables is (from highest to lowest):
 1. [Trigger variables](../triggers/README.md#making-use-of-trigger-variables) or [scheduled pipeline variables](../pipelines/schedules.md#using-variables).
 1. Project-level [variables](#custom-environment-variables) or [protected variables](#protect-a-custom-variable).
 1. Group-level [variables](#group-level-environment-variables) or [protected variables](#protect-a-custom-variable).
+1. [Inherited environment variables](#inherit-environment-variables).
 1. YAML-defined [job-level variables](../yaml/README.md#variables).
 1. YAML-defined [global variables](../yaml/README.md#variables).
 1. [Deployment variables](#deployment-environment-variables).

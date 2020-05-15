@@ -352,7 +352,7 @@ describe Projects::Prometheus::AlertsController do
       get :metrics_dashboard, params: request_params(id: metric.id, environment_id: alert.environment.id), format: :json
 
       expect(response).to have_gitlab_http_status(:ok)
-      expect(json_response.keys).to contain_exactly('dashboard', 'status')
+      expect(json_response.keys).to contain_exactly('dashboard', 'status', 'metrics_data')
     end
 
     it 'is the correct embed' do

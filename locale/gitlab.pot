@@ -7416,6 +7416,9 @@ msgstr ""
 msgid "Destroy"
 msgstr ""
 
+msgid "Detail"
+msgstr ""
+
 msgid "Details"
 msgstr ""
 
@@ -9263,6 +9266,9 @@ msgstr ""
 msgid "FeatureFlags|Feature Flags"
 msgstr ""
 
+msgid "FeatureFlags|Feature Flags will look different in the next milestone. No action is needed, but you may notice the functionality was changed to improve the workflow."
+msgstr ""
+
 msgid "FeatureFlags|Feature flag %{name} will be removed. Are you sure?"
 msgstr ""
 
@@ -11037,6 +11043,9 @@ msgid "Hashed Storage must be enabled to use Geo"
 msgstr ""
 
 msgid "Hashed repository storage paths"
+msgstr ""
+
+msgid "Hashed storage can't be disabled anymore for new projects"
 msgstr ""
 
 msgid "Have your users email"
@@ -14986,6 +14995,9 @@ msgstr ""
 msgid "PackageRegistry|There are no %{packageType} packages yet"
 msgstr ""
 
+msgid "PackageRegistry|There are no other versions of this package."
+msgstr ""
+
 msgid "PackageRegistry|There are no packages yet"
 msgstr ""
 
@@ -14996,6 +15008,9 @@ msgid "PackageRegistry|There was a problem fetching the details for this package
 msgstr ""
 
 msgid "PackageRegistry|To widen your search, change or remove the filters above."
+msgstr ""
+
+msgid "PackageRegistry|Unable to fetch package version information."
 msgstr ""
 
 msgid "PackageRegistry|Unable to load package"
@@ -20309,6 +20324,9 @@ msgstr ""
 msgid "Starts at (UTC)"
 msgstr ""
 
+msgid "State"
+msgstr ""
+
 msgid "State your message to activate"
 msgstr ""
 
@@ -23289,7 +23307,7 @@ msgstr ""
 msgid "Use hashed storage"
 msgstr ""
 
-msgid "Use hashed storage paths for newly created and renamed repositories. Enable immutable, hash-based paths and repository names to store repositories on disk. This prevents repositories from having to be moved or renamed when the Repository URL changes and may improve disk I/O performance."
+msgid "Use hashed storage paths for newly created and renamed repositories. Enable immutable, hash-based paths and repository names to store repositories on disk. This prevents repositories from having to be moved or renamed when the Repository URL changes and may improve disk I/O performance. (Always enabled since 13.0)"
 msgstr ""
 
 msgid "Use one line per URI"
@@ -23743,6 +23761,9 @@ msgid "Verify configuration"
 msgstr ""
 
 msgid "Version"
+msgstr ""
+
+msgid "Versions"
 msgstr ""
 
 msgid "Very helpful"

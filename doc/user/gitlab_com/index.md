@@ -115,6 +115,9 @@ A limit of:
 
 GitLab offers Linux and Windows shared runners hosted on GitLab.com for executing your pipelines.
 
+NOTE: **Note:**
+Shared Runners provided by GitLab are **not** configurable. Consider [installing your own Runner](https://docs.gitlab.com/runner/install/) if you have specific configuration needs.
+
 ### Linux Shared Runners
 
 Linux Shared Runners on GitLab.com run in [autoscale mode](https://docs.gitlab.com/runner/configuration/autoscale.html) and are powered by Google Cloud Platform.

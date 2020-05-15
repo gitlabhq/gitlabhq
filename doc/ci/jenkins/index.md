@@ -40,6 +40,15 @@ things we have found that helps this:
   of the improvements that GitLab offers, and this requires (eventually) updating
   your implementation as part of the transition.
 
+## JenkinsFile Wrapper
+
+We are building a [JenkinsFile Wrapper](https://gitlab.com/gitlab-org/jfr-container-builder/) which will allow
+you to run a complete Jenkins instance inside of a GitLab job, including plugins. This can help ease the process
+of transition, by letting you delay the migration of less urgent pipelines for a period of time.
+
+If you are interested, join our [public testing issue](https://gitlab.com/gitlab-org/gitlab/-/issues/215675) to
+If you are interested, you might be able to [help GitLab test the wrapper](https://gitlab.com/gitlab-org/gitlab/-/issues/215675).
+
 ## Important product differences
 
 There are some high level differences between the products worth mentioning:
