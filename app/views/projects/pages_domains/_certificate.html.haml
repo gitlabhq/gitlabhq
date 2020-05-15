@@ -1,7 +1,7 @@
 - auto_ssl_available = ::Gitlab::LetsEncrypt.enabled?
-- auto_ssl_enabled = @domain.auto_ssl_enabled?
+- auto_ssl_enabled = domain_presenter.auto_ssl_enabled?
 - auto_ssl_available_and_enabled = auto_ssl_available && auto_ssl_enabled
-- has_user_defined_certificate = @domain.certificate && @domain.certificate_user_provided?
+- has_user_defined_certificate = domain_presenter.certificate && domain_presenter.certificate_user_provided?
 
 - if auto_ssl_available
   .form-group.border-section
@@ -36,9 +36,9 @@
             = _('Certificate')
           .d-flex.justify-content-between.align-items-center.p-3
             %span
-              = @domain.pages_domain.subject || _('missing')
+              = domain_presenter.pages_domain.subject || _('missing')
             = link_to _('Remove'),
-              clean_certificate_project_pages_domain_path(@project, @domain),
+              clean_certificate_project_pages_domain_path(@project, domain_presenter),
               data: { confirm: _('Are you sure?') },
               class: 'btn btn-remove btn-sm',
               method: :delete

@@ -19,6 +19,20 @@ describe Gitlab::Graphql::Pagination::ExternallyPaginatedArrayConnection do
     it_behaves_like 'connection with paged nodes' do
       let(:paged_nodes_size) { values.size }
     end
+
+    context 'when after or before is specified, they are ignored' do
+      # after and before are not used to filter the array, as they
+      # were already used to directly fetch the external array
+      it_behaves_like 'connection with paged nodes' do
+        let(:arguments) { { after: next_cursor } }
+        let(:paged_nodes_size) { values.size }
+      end
+
+      it_behaves_like 'connection with paged nodes' do
+        let(:arguments) { { before: prev_cursor } }
+        let(:paged_nodes_size) { values.size }
+      end
+    end
   end
 
   describe '#start_cursor' do

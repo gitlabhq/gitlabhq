@@ -16,7 +16,7 @@ You can find all the information for that issue on one screen.
 - **2.** [To Do](#to-do)
 - **3.** [Assignee](#assignee)
   - **3.1.** [Multiple Assignees **(STARTER)**](#multiple-assignees-starter)
-- **4.** [Epic **(ULTIMATE)**](#epic-ultimate)
+- **4.** [Epic **(PREMIUM)**](#epic-premium)
 - **5.** [Milestone](#milestone)
 - **6.** [Time tracking](#time-tracking)
 - **7.** [Due date](#due-date)
@@ -100,7 +100,7 @@ to track in large teams where there is shared ownership of an issue.
 In [GitLab Starter](https://about.gitlab.com/pricing/), you can
 [assign multiple people](multiple_assignees_for_issues.md) to an issue.
 
-### Epic **(ULTIMATE)**
+### Epic **(PREMIUM)**
 
 You can assign issues to an [Epic](../../group/epics/index.md), which allows better
 management of groups of related issues.

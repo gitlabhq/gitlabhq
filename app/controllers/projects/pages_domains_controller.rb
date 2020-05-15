@@ -7,6 +7,8 @@ class Projects::PagesDomainsController < Projects::ApplicationController
   before_action :authorize_update_pages!
   before_action :domain, except: [:new, :create]
 
+  helper_method :domain_presenter
+
   def show
   end
 
@@ -27,7 +29,7 @@ class Projects::PagesDomainsController < Projects::ApplicationController
   end
 
   def retry_auto_ssl
-    PagesDomains::RetryAcmeOrderService.new(@domain.pages_domain).execute
+    PagesDomains::RetryAcmeOrderService.new(@domain).execute
 
     redirect_to project_pages_domain_path(@project, @domain)
   end
@@ -88,6 +90,10 @@ class Projects::PagesDomainsController < Projects::ApplicationController
   end
 
   def domain
-    @domain ||= @project.pages_domains.find_by_domain!(params[:id].to_s).present(current_user: current_user)
+    @domain ||= @project.pages_domains.find_by_domain!(params[:id].to_s)
+  end
+
+  def domain_presenter
+    @domain_presenter ||= domain.present(current_user: current_user)
   end
 end
