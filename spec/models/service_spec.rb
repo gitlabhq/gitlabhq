@@ -87,6 +87,20 @@ describe Service do
       end
     end
 
+    describe '#operating?' do
+      it 'is false when the service is not active' do
+        expect(build(:service).operating?).to eq(false)
+      end
+
+      it 'is false when the service is not persisted' do
+        expect(build(:service, active: true).operating?).to eq(false)
+      end
+
+      it 'is true when the service is active and persisted' do
+        expect(create(:service, active: true).operating?).to eq(true)
+      end
+    end
+
     describe '.confidential_note_hooks' do
       it 'includes services where confidential_note_events is true' do
         create(:service, active: true, confidential_note_events: true)

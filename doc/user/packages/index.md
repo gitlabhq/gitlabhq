@@ -18,13 +18,15 @@ The Packages feature allows GitLab to act as a repository for the following:
 
 ## Enable the Package Registry for your project
 
-If you cannot find the **{package}** **Packages & Registries > Package Registry** entry under your
-project's sidebar, it is not enabled in your GitLab instance. Ask your
-administrator to enable GitLab Package Registry following the [administration
-documentation](../../administration/packages/index.md).
+If you cannot find the **{package}** **Packages & Registries > Package
+Registry** entry under your project's sidebar, ensure that:
 
-Once enabled for your GitLab instance, to enable Package Registry for your
-project:
+1. The GitLab Package Registry has been enabled by your administrator (following
+   [this documentation](../../administration/packages/index.md)); and
+1. The Package Registry has been enabled for your project.
+
+Once an administrator has enabled the GitLab Package Registry for your GitLab
+instance, to enable Package Registry for your project:
 
 1. Go to your project's **Settings > General** page.
 1. Expand the **Visibility, project features, permissions** section and enable the

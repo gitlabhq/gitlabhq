@@ -54,7 +54,7 @@ module API
 
         bad_request! unless path.valid?
 
-        send_artifacts_entry(build, path)
+        send_artifacts_entry(build.artifacts_file, path)
       end
 
       desc 'Download the artifacts archive from a job' do
@@ -90,7 +90,7 @@ module API
 
         bad_request! unless path.valid?
 
-        send_artifacts_entry(build, path)
+        send_artifacts_entry(build.artifacts_file, path)
       end
 
       desc 'Keep the artifacts to prevent them from being deleted' do

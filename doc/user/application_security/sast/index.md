@@ -145,10 +145,10 @@ CAUTION: **Deprecation:**
 Beginning in GitLab 13.0, the use of [`only` and `except`](../../../ci/yaml/README.md#onlyexcept-basic)
 is no longer supported. When overriding the template, you must use [`rules`](../../../ci/yaml/README.md#rules) instead.
 
-If you want to override a job definition (for example, change properties like
-`variables` or `dependencies`), you need to declare a job with the same name as the SAST job to override, after the
-template inclusion and specify any additional keys under it.
-For example, this enables `FAIL_NEVER` for the `spotbugs` analyzer:
+To override a job definition, (for example, change properties like `variables` or `dependencies`),
+declare a job with the same name as the SAST job to override. Place this new job after the template
+inclusion and specify any additional keys under it. For example, this enables `FAIL_NEVER` for the
+`spotbugs` analyzer:
 
 ```yaml
 include:
@@ -176,19 +176,22 @@ Read more on [how to use private Maven repositories](../index.md#using-private-m
 
 ### Enabling Docker-in-Docker
 
-If needed, you can restore the behavior of SAST prior to %13.0 by enabling back Docker-in-Docker.
-You need GitLab Runner with the [`docker`](https://docs.gitlab.com/runner/executors/docker.html#use-docker-in-docker-with-privileged-mode), and the variable `SAST_DISABLE_DIND` set to `false`:
+If needed, you can enable Docker-in-Docker to restore the SAST behavior that existed prior to GitLab
+13.0. Follow these steps to do so:
 
-```yaml
-include:
-  - template: SAST.gitlab-ci.yml
+1. Configure GitLab Runner with Docker-inDocker in [privileged mode](https://docs.gitlab.com/runner/executors/docker.html#use-docker-in-docker-with-privileged-mode).
+1. Set the variable `SAST_DISABLE_DIND` set to `false`:
 
-variables:
-  SAST_DISABLE_DIND: "false"
-```
+   ```yaml
+   include:
+     - template: SAST.gitlab-ci.yml
 
-This will create a single `sast` job in your CI/CD pipeline
-instead of multiple `<analyzer-name>-sast` jobs.
+   variables:
+     SAST_DISABLE_DIND: "false"
+   ```
+
+This creates a single `sast` job in your CI/CD pipeline instead of multiple `<analyzer-name>-sast`
+jobs.
 
 #### Enabling Kubesec analyzer
 
@@ -545,7 +548,7 @@ security reports without requiring internet access.
 
 ### Error response from daemon: error processing tar file: docker-tar: relocation error
 
-This error occurs when the Docker version used to run the SAST job is `19.03.0`.
+This error occurs when the Docker version that runs the SAST job is `19.03.0`.
 Consider updating to Docker `19.03.1` or greater. Older versions are not
 affected. Read more in
 [this issue](https://gitlab.com/gitlab-org/gitlab/issues/13830#note_211354992 "Current SAST container fails").

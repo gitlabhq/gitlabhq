@@ -80,6 +80,18 @@ describe Issue do
     end
   end
 
+  describe '.with_alert_management_alerts' do
+    subject { described_class.with_alert_management_alerts }
+
+    it 'gets only issues with alerts' do
+      alert = create(:alert_management_alert, issue: create(:issue))
+      issue = create(:issue)
+
+      expect(subject).to contain_exactly(alert.issue)
+      expect(subject).not_to include(issue)
+    end
+  end
+
   describe 'locking' do
     using RSpec::Parameterized::TableSyntax
 

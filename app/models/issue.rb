@@ -74,6 +74,7 @@ class Issue < ApplicationRecord
   scope :due_before, ->(date) { where('issues.due_date < ?', date) }
   scope :due_between, ->(from_date, to_date) { where('issues.due_date >= ?', from_date).where('issues.due_date <= ?', to_date) }
   scope :due_tomorrow, -> { where(due_date: Date.tomorrow) }
+  scope :not_authored_by, ->(user) { where.not(author_id: user) }
 
   scope :order_due_date_asc, -> { reorder(::Gitlab::Database.nulls_last_order('due_date', 'ASC')) }
   scope :order_due_date_desc, -> { reorder(::Gitlab::Database.nulls_last_order('due_date', 'DESC')) }
@@ -90,6 +91,7 @@ class Issue < ApplicationRecord
   scope :confidential_only, -> { where(confidential: true) }
 
   scope :counts_by_state, -> { reorder(nil).group(:state_id).count }
+  scope :with_alert_management_alerts, -> { joins(:alert_management_alert) }
 
   # An issue can be uniquely identified by project_id and iid
   # Takes one or more sets of composite IDs, expressed as hash-like records of

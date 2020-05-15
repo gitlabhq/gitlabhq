@@ -20,6 +20,7 @@ class ApplicationController < ActionController::Base
   include InitializesCurrentUserMode
   include Impersonation
   include Gitlab::Logging::CloudflareHelper
+  include Gitlab::Utils::StrongMemoize
 
   before_action :authenticate_user!, except: [:route_not_found]
   before_action :enforce_terms!, if: :should_enforce_terms?
@@ -36,6 +37,10 @@ class ApplicationController < ActionController::Base
   before_action :set_usage_stats_consent_flag
   before_action :check_impersonation_availability
   before_action :required_signup_info
+
+  # Make sure the `auth_user` is memoized so it can be logged, we do this after
+  # all other before filters that could have set the user.
+  before_action :auth_user
 
   prepend_around_action :set_current_context
 
@@ -143,10 +148,11 @@ class ApplicationController < ActionController::Base
 
     payload[:ua] = request.env["HTTP_USER_AGENT"]
     payload[:remote_ip] = request.remote_ip
+
     payload[Labkit::Correlation::CorrelationId::LOG_KEY] = Labkit::Correlation::CorrelationId.current_id
+    payload[:metadata] = @current_context
 
     logged_user = auth_user
-
     if logged_user.present?
       payload[:user_id] = logged_user.try(:id)
       payload[:username] = logged_user.try(:username)
@@ -162,10 +168,12 @@ class ApplicationController < ActionController::Base
   # (e.g. tokens) to authenticate the user, whereas Devise sets current_user.
   #
   def auth_user
-    if user_signed_in?
-      current_user
-    else
-      try(:authenticated_user)
+    strong_memoize(:auth_user) do
+      if user_signed_in?
+        current_user
+      else
+        try(:authenticated_user)
+      end
     end
   end
 
@@ -457,11 +465,16 @@ class ApplicationController < ActionController::Base
 
   def set_current_context(&block)
     Gitlab::ApplicationContext.with_context(
-      user: -> { auth_user },
-      project: -> { @project },
-      namespace: -> { @group },
-      caller_id: full_action_name,
-      &block)
+      # Avoid loading the auth_user again after the request. Otherwise calling
+      # `auth_user` again would also trigger the Warden callbacks again
+      user: -> { auth_user if strong_memoized?(:auth_user) },
+      project: -> { @project if @project&.persisted? },
+      namespace: -> { @group if @group&.persisted? },
+      caller_id: full_action_name) do
+      yield
+    ensure
+      @current_context = Labkit::Context.current.to_h
+    end
   end
 
   def set_locale(&block)

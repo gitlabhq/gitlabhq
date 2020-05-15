@@ -12920,6 +12920,9 @@ msgstr ""
 msgid "Make sure you're logged into the account that owns the projects you'd like to import."
 msgstr ""
 
+msgid "Make this epic confidential"
+msgstr ""
+
 msgid "Makes this issue confidential."
 msgstr ""
 
@@ -13861,6 +13864,9 @@ msgid "Multiple model types found: %{model_types}"
 msgstr ""
 
 msgid "Multiple uploaders found: %{uploader_types}"
+msgstr ""
+
+msgid "My Awesome Group"
 msgstr ""
 
 msgid "My company or team"
@@ -21770,6 +21776,9 @@ msgstr ""
 msgid "This epic already has the maximum number of child epics."
 msgstr ""
 
+msgid "This epic and its child elements will only be visible to team members with at minimum Reporter access."
+msgstr ""
+
 msgid "This epic does not exist or you don't have sufficient permission."
 msgstr ""
 
@@ -26065,6 +26074,9 @@ msgid "mrWidget|to start a merge train when the pipeline succeeds"
 msgstr ""
 
 msgid "must be greater than start date"
+msgstr ""
+
+msgid "my-awesome-group"
 msgstr ""
 
 msgid "n/a"

@@ -102,10 +102,10 @@ subgraph "CNG-mirror pipeline"
 ### Auto-stopping of Review Apps
 
 Review Apps are automatically stopped 2 days after the last deployment thanks to
-the [Environment auto-stop](../../ci/environments.md#environments-auto-stop) feature.
+the [Environment auto-stop](../../ci/environments/index.md#environments-auto-stop) feature.
 
 If you need your Review App to stay up for a longer time, you can
-[pin its environment](../../ci/environments.md#auto-stop-example) or retry the
+[pin its environment](../../ci/environments/index.md#auto-stop-example) or retry the
 `review-deploy` job to update the "latest deployed at" time.
 
 The `review-cleanup` job that automatically runs in scheduled

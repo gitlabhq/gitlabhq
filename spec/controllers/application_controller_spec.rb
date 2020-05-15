@@ -530,6 +530,14 @@ describe ApplicationController do
 
       expect(controller.last_payload).to include('correlation_id' => 'new-id')
     end
+
+    it 'adds context metadata to the payload' do
+      sign_in user
+
+      get :index
+
+      expect(controller.last_payload[:metadata]).to include('meta.user' => user.username)
+    end
   end
 
   describe '#access_denied' do
@@ -891,7 +899,7 @@ describe ApplicationController do
     end
 
     it 'sets the group if it was available' do
-      group = build(:group)
+      group = build_stubbed(:group)
       controller.instance_variable_set(:@group, group)
 
       get :index, format: :json
@@ -900,7 +908,7 @@ describe ApplicationController do
     end
 
     it 'sets the project if one was available' do
-      project = build(:project)
+      project = build_stubbed(:project)
       controller.instance_variable_set(:@project, project)
 
       get :index, format: :json
@@ -912,6 +920,20 @@ describe ApplicationController do
       get :index, format: :json
 
       expect(json_response['meta.caller_id']).to eq('AnonymousController#index')
+    end
+
+    it 'assigns the context to a variable for logging' do
+      get :index, format: :json
+
+      expect(assigns(:current_context)).to include('meta.user' => user.username)
+    end
+
+    it 'assigns the context when the action caused an error' do
+      allow(controller).to receive(:index) { raise 'Broken' }
+
+      expect { get :index, format: :json }.to raise_error('Broken')
+
+      expect(assigns(:current_context)).to include('meta.user' => user.username)
     end
   end
 

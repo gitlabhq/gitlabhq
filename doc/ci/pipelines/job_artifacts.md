@@ -109,7 +109,7 @@ combination thereof (`junit: [rspec.xml, test-results/TEST-*.xml]`).
 The `dotenv` report collects a set of environment variables as artifacts.
 
 The collected variables are registered as runtime-created variables of the job,
-which is useful to [set dynamic environment URLs after a job finishes](../environments.md#set-dynamic-environment-urls-after-a-job-finishes).
+which is useful to [set dynamic environment URLs after a job finishes](../environments/index.md#set-dynamic-environment-urls-after-a-job-finishes).
 It's not available for download through the web interface.
 
 There are a couple of limitations on top of the [original dotenv rules](https://github.com/motdotla/dotenv#rules).

@@ -10,7 +10,7 @@ class Projects::ArtifactsController < Projects::ApplicationController
   before_action :authorize_update_build!, only: [:keep]
   before_action :authorize_destroy_artifacts!, only: [:destroy]
   before_action :extract_ref_name_and_path
-  before_action :validate_artifacts!, except: [:index, :download, :destroy]
+  before_action :validate_artifacts!, except: [:index, :download, :raw, :destroy]
   before_action :entry, only: [:file]
 
   MAX_PER_PAGE = 20
@@ -73,9 +73,11 @@ class Projects::ArtifactsController < Projects::ApplicationController
   end
 
   def raw
+    return render_404 unless zip_artifact?
+
     path = Gitlab::Ci::Build::Artifacts::Path.new(params[:path])
 
-    send_artifacts_entry(build, path)
+    send_artifacts_entry(artifacts_file, path)
   end
 
   def keep
@@ -136,6 +138,13 @@ class Projects::ArtifactsController < Projects::ApplicationController
 
   def artifacts_file
     @artifacts_file ||= build&.artifacts_file_for_type(params[:file_type] || :archive)
+  end
+
+  def zip_artifact?
+    types = HashWithIndifferentAccess.new(Ci::JobArtifact::TYPE_AND_FORMAT_PAIRS)
+    file_type = params[:file_type] || :archive
+
+    types[file_type] == :zip
   end
 
   def entry

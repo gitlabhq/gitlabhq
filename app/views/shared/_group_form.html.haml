@@ -6,7 +6,7 @@
   .form-group.group-name-holder.col-sm-12
     = f.label :name, class: 'label-bold' do
       = _("Group name")
-    = f.text_field :name, placeholder: 'My Awesome Group', class: 'form-control input-lg',
+    = f.text_field :name, placeholder: _('My Awesome Group'), class: 'form-control input-lg',
       required: true,
       title: _('Please fill in a descriptive name for your group.'),
       autofocus: true
@@ -22,7 +22,7 @@
           - if parent
             %strong= parent.full_path + '/'
       = f.hidden_field :parent_id
-      = f.text_field :path, placeholder: 'my-awesome-group', class: 'form-control js-validate-group-path',
+      = f.text_field :path, placeholder: _('my-awesome-group'), class: 'form-control js-validate-group-path',
         autofocus: local_assigns[:autofocus] || false, required: true,
         pattern: Gitlab::PathRegex::NAMESPACE_FORMAT_REGEX_JS,
         title: _('Please choose a group URL with no special characters.'),

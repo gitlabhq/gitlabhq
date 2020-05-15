@@ -1,11 +1,13 @@
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex';
 import { n__, __ } from '~/locale';
+import { GlModal } from '@gitlab/ui';
 import LoadingButton from '~/vue_shared/components/loading_button.vue';
 import CommitMessageField from './message_field.vue';
 import Actions from './actions.vue';
 import SuccessMessage from './success_message.vue';
 import { leftSidebarViews, MAX_WINDOW_HEIGHT_COMPACT } from '../../constants';
+import consts from '../../stores/modules/commit/constants';
 
 export default {
   components: {
@@ -13,6 +15,7 @@ export default {
     LoadingButton,
     CommitMessageField,
     SuccessMessage,
+    GlModal,
   },
   data() {
     return {
@@ -54,7 +57,20 @@ export default {
   },
   methods: {
     ...mapActions(['updateActivityBarView']),
-    ...mapActions('commit', ['updateCommitMessage', 'discardDraft', 'commitChanges']),
+    ...mapActions('commit', [
+      'updateCommitMessage',
+      'discardDraft',
+      'commitChanges',
+      'updateCommitAction',
+    ]),
+    commit() {
+      return this.commitChanges().catch(() => {
+        this.$refs.createBranchModal.show();
+      });
+    },
+    forceCreateNewBranch() {
+      return this.updateCommitAction(consts.COMMIT_TO_NEW_BRANCH).then(() => this.commit());
+    },
     toggleIsCompact() {
       if (this.currentViewIsCommitView) {
         this.isCompact = !this.isCompact;
@@ -119,13 +135,13 @@ export default {
         </button>
         <p class="text-center bold">{{ overviewText }}</p>
       </div>
-      <form v-if="!isCompact" ref="formEl" @submit.prevent.stop="commitChanges">
+      <form v-if="!isCompact" ref="formEl" @submit.prevent.stop="commit">
         <transition name="fade"> <success-message v-show="lastCommitMsg" /> </transition>
         <commit-message-field
           :text="commitMessage"
           :placeholder="preBuiltCommitMessage"
           @input="updateCommitMessage"
-          @submit="commitChanges"
+          @submit="commit"
         />
         <div class="clearfix prepend-top-15">
           <actions />
@@ -133,7 +149,7 @@ export default {
             :loading="submitCommitLoading"
             :label="commitButtonText"
             container-class="btn btn-success btn-sm float-left qa-commit-button"
-            @click="commitChanges"
+            @click="commit"
           />
           <button
             v-if="!discardDraftButtonDisabled"
@@ -152,6 +168,19 @@ export default {
             {{ __('Collapse') }}
           </button>
         </div>
+        <gl-modal
+          ref="createBranchModal"
+          modal-id="ide-create-branch-modal"
+          :ok-title="__('Create new branch')"
+          :title="__('Branch has changed')"
+          ok-variant="success"
+          @ok="forceCreateNewBranch"
+        >
+          {{
+            __(`This branch has changed since you started editing.
+                Would you like to create a new branch?`)
+          }}
+        </gl-modal>
       </form>
     </transition>
   </div>

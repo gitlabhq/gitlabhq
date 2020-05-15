@@ -64,3 +64,16 @@ Standard alert statuses include `triggered`, `acknowledged`, and `resolved`:
 - **Triggered**: No one has begun investigation.
 - **Acknowledged**: Someone is actively investigating the problem.
 - **Resolved**: No further work is required.
+
+## Alert Management details
+
+NOTE: **Note:**
+You will need at least Developer [permissions](../../permissions.md) to view Alert Management details.
+
+Navigate to the Alert Management detail view by visiting the [Alert Management list](#alert-management-list) and selecting an Alert from the list.
+
+![Alert Management Detail View](img/alert_detail_v13_0.png)
+
+### Update an Alert's status
+
+The Alert Management detail view allows users to update the Alert Status. See [Alert Management statuses](#alert-management-statuses) for more details.

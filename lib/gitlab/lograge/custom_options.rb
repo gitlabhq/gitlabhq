@@ -23,6 +23,8 @@ module Gitlab
           queue_duration_s: event.payload[:queue_duration_s]
         }
 
+        payload.merge!(event.payload[:metadata]) if event.payload[:metadata]
+
         ::Gitlab::InstrumentationHelper.add_instrumentation_data(payload)
 
         payload[:response] = event.payload[:response] if event.payload[:response]

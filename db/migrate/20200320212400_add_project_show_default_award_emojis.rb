@@ -6,6 +6,6 @@ class AddProjectShowDefaultAwardEmojis < ActiveRecord::Migration[6.0]
   DOWNTIME = false
 
   def change
-    add_column :project_settings, :show_default_award_emojis, :boolean, default: true, null: false # rubocop: disable Migration/AddColumn
+    add_column :project_settings, :show_default_award_emojis, :boolean, default: true, null: false
   end
 end

@@ -231,11 +231,14 @@ FactoryBot.define do
 
     trait :lsif do
       file_type { :lsif }
-      file_format { :gzip }
+      file_format { :zip }
+
+      transient do
+        file_path { Rails.root.join('spec/fixtures/lsif.json.gz') }
+      end
 
       after(:build) do |artifact, evaluator|
-        artifact.file = fixture_file_upload(
-          Rails.root.join('spec/fixtures/lsif.json.gz'), 'application/x-gzip')
+        artifact.file = fixture_file_upload(evaluator.file_path, 'application/x-gzip')
       end
     end
 

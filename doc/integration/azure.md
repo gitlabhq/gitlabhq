@@ -22,7 +22,7 @@ To enable the Microsoft Azure OAuth2 OmniAuth provider you must register your ap
 
 1. Add a "Reply URL" pointing to the Azure OAuth callback of your GitLab installation (e.g. `https://gitlab.mycompany.com/users/auth/azure_oauth2/callback`).
 
-1. Create a "Client secret" by selecting a duration, the secret will be generated as soon as you click the "Save" button in the bottom menu..
+1. Create a "Client secret" by selecting a duration, the secret will be generated as soon as you click the "Save" button in the bottom menu.
 
 1. Note the "CLIENT ID" and the "CLIENT SECRET".
 

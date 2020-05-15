@@ -1,3 +1,10 @@
+/**
+ * This file should only contain browser specific specs.
+ * If you need to add or update a spec, please see spec/frontend/monitoring/components/*.js
+ * https://gitlab.com/gitlab-org/gitlab/-/issues/194244#note_343427737
+ * https://gitlab.com/groups/gitlab-org/-/epics/895#what-if-theres-a-karma-spec-which-is-simply-unmovable-to-jest-ie-it-is-dependent-on-a-running-browser-environment
+ */
+
 import Vue from 'vue';
 import { createLocalVue } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';

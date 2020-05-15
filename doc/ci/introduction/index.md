@@ -136,7 +136,7 @@ displayed by GitLab:
 ![pipeline status](img/pipeline_status.png)
 
 At the end, if anything goes wrong, you can easily
-[roll back](../environments.md#retrying-and-rolling-back) all the changes:
+[roll back](../environments/index.md#retrying-and-rolling-back) all the changes:
 
 ![rollback button](img/rollback.png)
 
@@ -207,7 +207,7 @@ according to each stage (Verify, Package, Release).
 With GitLab CI/CD you can also:
 
 - Easily set up your app's entire lifecycle with [Auto DevOps](../../topics/autodevops/index.md).
-- Deploy your app to different [environments](../environments.md).
+- Deploy your app to different [environments](../environments/index.md).
 - Install your own [GitLab Runner](https://docs.gitlab.com/runner/).
 - [Schedule pipelines](../pipelines/schedules.md).
 - Check for app vulnerabilities with [Security Test reports](../../user/application_security/index.md). **(ULTIMATE)**

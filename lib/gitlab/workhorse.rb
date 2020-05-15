@@ -130,8 +130,7 @@ module Gitlab
         ]
       end
 
-      def send_artifacts_entry(build, entry)
-        file = build.artifacts_file
+      def send_artifacts_entry(file, entry)
         archive = file.file_storage? ? file.path : file.url
 
         params = {

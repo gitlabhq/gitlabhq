@@ -8,7 +8,7 @@ type: concepts, howto
 
 ## Overview
 
-[Environments](../environments.md) can be used for different reasons:
+[Environments](../environments/index.md) can be used for different reasons:
 
 - Some of them are just for testing.
 - Others are for production.

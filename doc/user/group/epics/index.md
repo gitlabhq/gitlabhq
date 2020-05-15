@@ -31,6 +31,7 @@ To learn what you can do with an epic, see [Manage epics](manage_epics.md). Poss
 - [Reopen a closed epic](manage_epics.md#reopen-a-closed-epic)
 - [Go to an epic from an issue](manage_epics.md#go-to-an-epic-from-an-issue)
 - [Search for an epic from epics list page](manage_epics.md#search-for-an-epic-from-epics-list-page)
+- [Make an epic confidential](manage_epics.md#make-an-epic-confidential)
 - [Manage issues assigned to an epic](manage_epics.md#manage-issues-assigned-to-an-epic)
 - [Manage multi-level child epics **(ULTIMATE)**](manage_epics.md#manage-multi-level-child-epics-ultimate)
 

@@ -261,6 +261,8 @@ I, [2020-01-13T19:01:17.091Z #11056]  INFO -- : {"message"=>"Message", "project_
 lifecycle, which can then be added to the web request
 or Sidekiq logs.
 
+The API, Rails and Sidekiq logs contain fields starting with `meta.` with this context information.
+
 Entry points can be seen at:
 
 - [`ApplicationController`](https://gitlab.com/gitlab-org/gitlab/blob/master/app/controllers/application_controller.rb)

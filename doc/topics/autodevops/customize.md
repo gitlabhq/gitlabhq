@@ -179,7 +179,7 @@ into your project and edit it as needed.
 
 For clusters not managed by GitLab, you can customize the namespace in
 `.gitlab-ci.yml` by specifying
-[`environment:kubernetes:namespace`](../../ci/environments.md#configuring-kubernetes-deployments).
+[`environment:kubernetes:namespace`](../../ci/environments/index.md#configuring-kubernetes-deployments).
 For example, the following configuration overrides the namespace used for
 `production` deployments:
 
@@ -269,7 +269,7 @@ You must define environment-scoped variables for `POSTGRES_ENABLED` and
 `DATABASE_URL` in your project's CI/CD settings:
 
 1. Disable the built-in PostgreSQL installation for the required environments using
-   scoped [environment variables](../../ci/environments.md#scoping-environments-with-specs).
+   scoped [environment variables](../../ci/environments/index.md#scoping-environments-with-specs).
    For this use case, it's likely that only `production` will need to be added to this
    list. The built-in PostgreSQL setup for Review Apps and staging is sufficient.
 
@@ -534,7 +534,7 @@ required to go from `10%` to `100%`, you can jump to whatever job you want.
 You can also scale down by running a lower percentage job, just before hitting
 `100%`. Once you get to `100%`, you can't scale down, and you'd have to roll
 back by redeploying the old version using the
-[rollback button](../../ci/environments.md#retrying-and-rolling-back) in the
+[rollback button](../../ci/environments/index.md#retrying-and-rolling-back) in the
 environment page.
 
 Below, you can see how the pipeline will look if the rollout or staging

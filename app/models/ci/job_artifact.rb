@@ -50,10 +50,10 @@ module Ci
       metrics: :gzip,
       metrics_referee: :gzip,
       network_referee: :gzip,
-      lsif: :gzip,
       dotenv: :gzip,
       cobertura: :gzip,
       cluster_applications: :gzip,
+      lsif: :zip,
 
       # All these file formats use `raw` as we need to store them uncompressed
       # for Frontend to fetch the files and do analysis

@@ -17,7 +17,8 @@ selected group. From your group page:
 
 1. Go to **Epics**.
 1. Click **New epic**.
-1. Enter a descriptive title and click **Create epic**.
+1. Enter a descriptive title.
+1. Click **Create epic**.
 
 You will be taken to the new epic where can edit the following details:
 
@@ -29,8 +30,7 @@ You will be taken to the new epic where can edit the following details:
 
 An epic's page contains the following tabs:
 
-- **Epics and Issues**: epics and issues added to this epic. Child epics and their issues appear in
-  a tree view.
+- **Epics and Issues**: epics and issues added to this epic. Child epics, and their issues, are shown in a tree view.
   - Click the <kbd>></kbd> beside a parent epic to reveal the child epics and issues.
   - Hover over the total counts to see a breakdown of open and closed items.
 - **Roadmap**: a roadmap view of child epics which have start and due dates.
@@ -120,6 +120,36 @@ The sort option and order is saved and used wherever you browse epics, including
 [Roadmap](../roadmap/index.md).
 
 ![epics sort](img/epics_sort.png)
+
+## Make an epic confidential
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213068) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.0.
+> - It's deployed behind a feature flag, disabled by default.
+> - It's disabled on GitLab.com.
+> - It's not recommended for production use.
+> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-confidential-epics-premium-only). **(PREMIUM ONLY)**
+
+When you're creating an epic, you can make it confidential by selecting the **Make this epic
+confidential** checkbox.
+
+### Enable Confidential Epics **(PREMIUM ONLY)**
+
+The Confidential Epics feature is under development and not ready for production use. It's deployed behind a
+feature flag that is **disabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
+can enable it for your instance.
+
+To enable it:
+
+```ruby
+Feature.enable(:confidential_epics)
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:confidential_epics)
+```
 
 ## Manage issues assigned to an epic
 

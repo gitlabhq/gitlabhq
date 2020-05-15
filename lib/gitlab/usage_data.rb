@@ -114,6 +114,7 @@ module Gitlab
             issues_with_associated_zoom_link: count(ZoomMeeting.added_to_issue),
             issues_using_zoom_quick_actions: distinct_count(ZoomMeeting, :issue_id),
             issues_with_embedded_grafana_charts_approx: grafana_embed_usage_data,
+            issues_created_gitlab_alerts: count(Issue.with_alert_management_alerts.not_authored_by(::User.alert_bot)),
             incident_issues: alert_bot_incident_count,
             alert_bot_incident_issues: alert_bot_incident_count,
             incident_labeled_issues: count(::Issue.with_label_attributes(IncidentManagement::CreateIssueService::INCIDENT_LABEL)),

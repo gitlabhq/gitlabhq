@@ -5,9 +5,9 @@ import {
   GlAlert,
   GlLoadingIcon,
   GlDropdown,
+  GlDropdownItem,
   GlIcon,
   GlTab,
-  GlDropdownItem,
 } from '@gitlab/ui';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import createFlash from '~/flash';
@@ -49,7 +49,9 @@ describe('AlertManagementList', () => {
         ...props,
       },
       provide: {
-        glFeatures: { alertListStatusFilteringEnabled },
+        glFeatures: {
+          alertListStatusFilteringEnabled,
+        },
       },
       data() {
         return data;
@@ -209,6 +211,21 @@ describe('AlertManagementList', () => {
           .at(0)
           .text(),
       ).toBe('Critical');
+    });
+
+    it('navigates to the detail page when alert row is clicked', () => {
+      mountComponent({
+        props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
+        data: { alerts: mockAlerts, errored: false },
+        loading: false,
+      });
+
+      window.location.assign = jest.fn();
+
+      findAlerts()
+        .at(0)
+        .trigger('click');
+      expect(window.location.assign).toHaveBeenCalledWith('/1527542/details');
     });
 
     describe('handle date fields', () => {

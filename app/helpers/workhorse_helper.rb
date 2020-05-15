@@ -36,8 +36,8 @@ module WorkhorseHelper
   end
 
   # Send an entry from artifacts through Workhorse
-  def send_artifacts_entry(build, entry)
-    headers.store(*Gitlab::Workhorse.send_artifacts_entry(build, entry))
+  def send_artifacts_entry(file, entry)
+    headers.store(*Gitlab::Workhorse.send_artifacts_entry(file, entry))
     head :ok
   end
 

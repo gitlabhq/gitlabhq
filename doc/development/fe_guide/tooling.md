@@ -56,13 +56,13 @@ When declaring multiple globals, always use one `/* global [name] */` line per v
 
 ## Formatting with Prettier
 
-Our code is automatically formatted with [Prettier](https://prettier.io) to follow our style guides. Prettier is taking care of formatting .js, .vue, and .scss files based on the standard prettier rules. You can find all settings for Prettier in `.prettierrc`.
+Our code is automatically formatted with [Prettier](https://prettier.io) to follow our style guides. Prettier is taking care of formatting `.js`, `.vue`, and `.scss` files based on the standard prettier rules. You can find all settings for Prettier in `.prettierrc`.
 
 ### Editor
 
 The easiest way to include prettier in your workflow is by setting up your preferred editor (all major editors are supported) accordingly. We suggest setting up prettier to run automatically when each file is saved. Find [here](https://prettier.io/docs/en/editors.html) the best way to set it up in your preferred editor.
 
-Please take care that you only let Prettier format the same file types as the global Yarn script does (.js, .vue, and .scss). In VSCode by example you can easily exclude file formats in your settings file:
+Please take care that you only let Prettier format the same file types as the global Yarn script does (`.js`, `.vue`, and `.scss`). In VSCode by example you can easily exclude file formats in your settings file:
 
 ```json
   "prettier.disableLanguages": [

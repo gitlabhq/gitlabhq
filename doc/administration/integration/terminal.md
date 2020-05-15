@@ -8,7 +8,7 @@ Only project maintainers and owners can access web terminals.
 With the introduction of the [Kubernetes integration](../../user/project/clusters/index.md),
 GitLab gained the ability to store and use credentials for a Kubernetes cluster.
 One of the things it uses these credentials for is providing access to
-[web terminals](../../ci/environments.md#web-terminals) for environments.
+[web terminals](../../ci/environments/index.md#web-terminals) for environments.
 
 ## How it works
 

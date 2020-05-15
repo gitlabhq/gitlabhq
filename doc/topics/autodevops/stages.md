@@ -538,7 +538,7 @@ may require commands to be wrapped as follows:
 Some of the reasons you may need to wrap commands:
 
 - Attaching using `kubectl exec`.
-- Using GitLab's [Web Terminal](../../ci/environments.md#web-terminals).
+- Using GitLab's [Web Terminal](../../ci/environments/index.md#web-terminals).
 
 For example, to start a Rails console from the application root directory, run:
 
@@ -572,7 +572,7 @@ To use Auto Monitoring:
 1. [Enable Auto DevOps](index.md#enablingdisabling-auto-devops), if you haven't done already.
 1. Navigate to your project's **{rocket}** **CI/CD > Pipelines** and click **Run Pipeline**.
 1. After the pipeline finishes successfully, open the
-   [monitoring dashboard for a deployed environment](../../ci/environments.md#monitoring-environments)
+   [monitoring dashboard for a deployed environment](../../ci/environments/index.md#monitoring-environments)
    to view the metrics of your deployed application. To view the metrics of the
    whole Kubernetes cluster, navigate to **{cloud-gear}** **Operations > Metrics**.
 

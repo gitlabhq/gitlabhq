@@ -3,7 +3,7 @@
     %h4.prepend-top-0
       = @service.title
       - [true, false].each do |value|
-        - hide_class = 'd-none' if @service.activated? != value
+        - hide_class = 'd-none' if @service.operating? != value
         %span.js-service-active-status{ class: hide_class, data: { value: value.to_s } }
           = boolean_to_icon value
 

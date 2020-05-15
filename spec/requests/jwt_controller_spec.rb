@@ -23,6 +23,7 @@ describe JwtController do
     it 'logs username and ID' do
       expect(log_data['username']).to eq(user.username)
       expect(log_data['user_id']).to eq(user.id)
+      expect(log_data['meta.user']).to eq(user.username)
     end
   end
 

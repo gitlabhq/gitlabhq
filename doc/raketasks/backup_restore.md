@@ -300,7 +300,7 @@ sudo -u git -H bundle exec rake gitlab:backup:create SKIP=tar RAILS_ENV=producti
 
 #### Uploading backups to a remote (cloud) storage
 
-Starting with GitLab 7.4 you can let the backup script upload the '.tar' file it creates.
+Starting with GitLab 7.4 you can let the backup script upload the `.tar` file it creates.
 It uses the [Fog library](http://fog.io/) to perform the upload.
 In the example below we use Amazon S3 for storage, but Fog also lets you use
 [other storage providers](http://fog.io/storage/). GitLab

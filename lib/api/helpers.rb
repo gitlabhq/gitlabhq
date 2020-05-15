@@ -609,8 +609,8 @@ module API
       header(*Gitlab::Workhorse.send_git_archive(repository, **kwargs))
     end
 
-    def send_artifacts_entry(build, entry)
-      header(*Gitlab::Workhorse.send_artifacts_entry(build, entry))
+    def send_artifacts_entry(file, entry)
+      header(*Gitlab::Workhorse.send_artifacts_entry(file, entry))
     end
 
     # The Grape Error Middleware only has access to `env` but not `params` nor

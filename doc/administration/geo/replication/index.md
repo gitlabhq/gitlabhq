@@ -134,7 +134,7 @@ The following table lists basic ports that must be open between the **primary** 
 See the full list of ports used by GitLab in [Package defaults](https://docs.gitlab.com/omnibus/package-information/defaults.html)
 
 NOTE: **Note:**
-[Web terminal](../../../ci/environments.md#web-terminals) support requires your load balancer to correctly handle WebSocket connections.
+[Web terminal](../../../ci/environments/index.md#web-terminals) support requires your load balancer to correctly handle WebSocket connections.
 When using HTTP or HTTPS proxying, your load balancer must be configured to pass through the `Connection` and `Upgrade` hop-by-hop headers. See the [web terminal](../../integration/terminal.md) integration guide for more details.
 
 NOTE: **Note:**

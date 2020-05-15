@@ -1,5 +1,7 @@
 # Features flags API
 
+This API is for managing Flipper-based [feature flags used in development of GitLab](../development/feature_flags/index.md).
+
 All methods require administrator authorization.
 
 Notice that currently the API only supports boolean and percentage-of-time gate

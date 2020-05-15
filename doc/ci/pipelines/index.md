@@ -82,7 +82,7 @@ You can find the current and historical pipeline runs under your project's
 **CI/CD > Pipelines** page. You can also access pipelines for a merge request by navigating
 to its **Pipelines** tab.
 
-![Pipelines index page](img/pipelines_index.png)
+![Pipelines index page](img/pipelines_index_v13_0.png)
 
 Clicking a pipeline will bring you to the **Pipeline Details** page and show
 the jobs that were run for that pipeline. From here you can cancel a running pipeline,
@@ -92,6 +92,12 @@ retry jobs on a failed pipeline, or [delete a pipeline](#delete-a-pipeline).
 latest pipeline for the last commit of a given branch is available at `/project/pipelines/[branch]/latest`.
 Also, `/project/pipelines/latest` will redirect you to the latest pipeline for the last commit
 on the project's default branch.
+
+[Starting in GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/215367),
+you can filter the pipeline list by:
+
+- Trigger author
+- Branch name
 
 ### Run a pipeline manually
 
@@ -153,7 +159,7 @@ You can do this straight from the pipeline graph. Just click the play button
 to execute that particular job.
 
 For example, your pipeline might start automatically, but it requires manual action to
-[deploy to production](../environments.md#configuring-manual-deployments). In the example below, the `production`
+[deploy to production](../environments/index.md#configuring-manual-deployments). In the example below, the `production`
 stage has a job with a manual action.
 
 ![Pipelines example](img/pipelines.png)
@@ -343,7 +349,7 @@ build ruby 2/3:
   stage: build
   script:
   - echo "ruby2"
-  
+
 build ruby 3/3:
   stage: build
   script:
@@ -391,7 +397,7 @@ For example, if you start rolling out new code and:
 
 - Users do not experience trouble, GitLab can automatically complete the deployment from 0% to 100%.
 - Users experience trouble with the new code, you can stop the timed incremental rollout by canceling the pipeline
-  and [rolling](../environments.md#retrying-and-rolling-back) back to the last stable version.
+  and [rolling](../environments/index.md#retrying-and-rolling-back) back to the last stable version.
 
 ![Pipelines example](img/pipeline_incremental_rollout.png)
 

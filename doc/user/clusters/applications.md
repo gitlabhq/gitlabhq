@@ -10,7 +10,7 @@ GitLab provides **GitLab Managed Apps**, a one-click install for various applica
 be added directly to your configured cluster.
 
 These applications are needed for [Review Apps](../../ci/review_apps/index.md)
-and [deployments](../../ci/environments.md) when using [Auto DevOps](../../topics/autodevops/index.md).
+and [deployments](../../ci/environments/index.md) when using [Auto DevOps](../../topics/autodevops/index.md).
 
 You can install them after you
 [create a cluster](../project/clusters/add_remove_clusters.md).

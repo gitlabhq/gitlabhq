@@ -21,7 +21,7 @@ The Web Application Firewall section provides metrics for the NGINX
 Ingress controller and ModSecurity firewall. This section has the
 following prerequisites:
 
-- Project has to have at least one [environment](../../../ci/environments.md).
+- Project has to have at least one [environment](../../../ci/environments/index.md).
 - [Web Application Firewall](../../clusters/applications.md#web-application-firewall-modsecurity) has to be enabled.
 - [Elastic Stack](../../clusters/applications.md#web-application-firewall-modsecurity) has to be installed.
 
@@ -48,7 +48,7 @@ The **Container Network Policy** section provides packet flow metrics for
 your application's Kubernetes namespace. This section has the following
 prerequisites:
 
-- Your project contains at least one [environment](../../../ci/environments.md)
+- Your project contains at least one [environment](../../../ci/environments/index.md)
 - You've [installed Cilium](../../clusters/applications.md#install-cilium-using-gitlab-cicd)
 - You've configured the [Prometheus service](../../project/integrations/prometheus.md#enabling-prometheus-integration)
 

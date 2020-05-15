@@ -1871,7 +1871,7 @@ Manual actions are a special type of job that are not executed automatically,
 they need to be explicitly started by a user. An example usage of manual actions
 would be a deployment to a production environment. Manual actions can be started
 from the pipeline, job, environment, and deployment views. Read more at the
-[environments documentation](../environments.md#configuring-manual-deployments).
+[environments documentation](../environments/index.md#configuring-manual-deployments).
 
 Manual actions can be either optional or blocking. Blocking manual actions will
 block the execution of the pipeline at the stage this action is defined in. It's
@@ -1984,7 +1984,7 @@ GitLab Runner will pick your job soon and start the job.
 
 > - Introduced in GitLab 8.9.
 > - You can read more about environments and find more examples in the
->   [documentation about environments](../environments.md).
+>   [documentation about environments](../environments/index.md).
 
 `environment` is used to define that a job deploys to a specific environment.
 If `environment` is specified and no environment under that name exists, a new
@@ -2114,7 +2114,7 @@ GitLab's web interface in order to run.
 
 Also in the example, `GIT_STRATEGY` is set to `none` so that GitLab Runner won’t
 try to check out the code after the branch is deleted when the `stop_review_app`
-job is [automatically triggered](../environments.md#automatically-stopping-an-environment).
+job is [automatically triggered](../environments/index.md#automatically-stopping-an-environment).
 
 NOTE: **Note:**
 The above example overwrites global variables. If your stop environment job depends
@@ -2150,7 +2150,7 @@ When `review_app` job is executed and a review app is created, a life period of
 the environment is set to `1 day`.
 
 For more information, see
-[the environments auto-stop documentation](../environments.md#environments-auto-stop)
+[the environments auto-stop documentation](../environments/index.md#environments-auto-stop)
 
 #### `environment:kubernetes`
 
@@ -2176,7 +2176,7 @@ environment, using the `production`
 [Kubernetes namespace](https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/).
 
 For more information, see
-[Available settings for `kubernetes`](../environments.md#configuring-kubernetes-deployments).
+[Available settings for `kubernetes`](../environments/index.md#configuring-kubernetes-deployments).
 
 NOTE: **Note:**
 Kubernetes configuration is not supported for Kubernetes clusters

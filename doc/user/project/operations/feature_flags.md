@@ -73,22 +73,22 @@ For example, you may not want to enable a feature flag on production until your 
 first confirmed that the feature is working correctly on testing environments.
 
 To handle these situations, you can enable a feature flag on a particular environment
-with [Environment specs](../../../ci/environments.md#scoping-environments-with-specs).
+with [Environment specs](../../../ci/environments/index.md#scoping-environments-with-specs).
 You can define multiple specs per flag so that you can control your feature flag more granularly.
 
 To define specs for each environment:
 
 1. Navigate to your project's **Operations > Feature Flags**.
 1. Click on the **New Feature Flag** button or edit an existing flag.
-1. Set the status of the default [spec](../../../ci/environments.md#scoping-environments-with-specs) (`*`). Choose a rollout strategy. This status and rollout strategy combination will be used for _all_ environments.
-1. If you want to enable/disable the feature on a specific environment, create a new [spec](../../../ci/environments.md#scoping-environments-with-specs) and type the environment name.
+1. Set the status of the default [spec](../../../ci/environments/index.md#scoping-environments-with-specs) (`*`). Choose a rollout strategy. This status and rollout strategy combination will be used for _all_ environments.
+1. If you want to enable/disable the feature on a specific environment, create a new [spec](../../../ci/environments/index.md#scoping-environments-with-specs) and type the environment name.
 1. Set the status and rollout strategy of the additional spec. This status and rollout strategy combination takes precedence over the default spec since we always use the most specific match available.
 1. Click **Create feature flag** or **Update feature flag**.
 
 ![Feature flag specs list](img/specs_list_v12_6.png)
 
 NOTE: **NOTE**
-We'd highly recommend you to use the [Environment](../../../ci/environments.md)
+We'd highly recommend you to use the [Environment](../../../ci/environments/index.md)
 feature in order to quickly assess which flag is enabled per environment.
 
 ## Feature flag behavior change in 13.0
@@ -122,7 +122,7 @@ make a strategy apply to a specific environment spec:
 
 1. Click the **Add Environment** button.
 1. Create a new
-   [spec](../../../ci/environments.md#scoping-environments-with-specs).
+   [spec](../../../ci/environments/index.md#scoping-environments-with-specs).
 
 To apply the strategy to multiple environment specs, repeat these steps.
 

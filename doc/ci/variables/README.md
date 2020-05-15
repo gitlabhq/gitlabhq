@@ -431,9 +431,9 @@ Click [here](where_variables_can_be_used.md) for a section that describes where 
 ### Limit the environment scopes of environment variables
 
 You can limit the environment scope of a variable by
-[defining which environments](../environments.md) it can be available for.
+[defining which environments](../environments/index.md) it can be available for.
 
-To learn more about scoping environments, see [Scoping environments with specs](../environments.md#scoping-environments-with-specs).
+To learn more about scoping environments, see [Scoping environments with specs](../environments/index.md#scoping-environments-with-specs).
 
 ### Deployment environment variables
 
@@ -442,7 +442,7 @@ To learn more about scoping environments, see [Scoping environments with specs](
 [Integrations](../../user/project/integrations/overview.md) that are
 responsible for deployment configuration may define their own variables that
 are set in the build environment. These variables are only defined for
-[deployment jobs](../environments.md). Please consult the documentation of
+[deployment jobs](../environments/index.md). Please consult the documentation of
 the integrations that you are using to learn which variables they define.
 
 An example integration that defines deployment variables is the
