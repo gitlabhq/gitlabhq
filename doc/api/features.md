@@ -102,7 +102,7 @@ Example response:
 
 ### Set percentage of actors rollout
 
-Rollout to percentage of users.
+Rollout to percentage of actors.
 
 ```plaintext
 POST https://gitlab.example.com/api/v4/features/my_user_feature?private_token=<your_access_token>
@@ -122,14 +122,14 @@ Example response:
       "value": false
     },
     {
-      "key": "percentage_of_time",
+      "key": "percentage_of_actors",
       "value": 42
     }
   ]
 }
 ```
 
-Rolls out the `my_user_feature` to `42%` of users.
+Rolls out the `my_user_feature` to `42%` of actors.
 
 ## Delete a feature
 

@@ -58,5 +58,5 @@ package-and-qa:
   needs:
     - job: build-qa-image
       artifacts: false
-    - job: gitlab:assets:compile pull-cache
+    - job: build-assets-image
       artifacts: false

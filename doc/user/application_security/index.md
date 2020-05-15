@@ -75,9 +75,10 @@ The scanning tools and vulnerabilities database are updated regularly.
 | [Static Application Security Testing (SAST)](sast/index.md)  | Relies exclusively on [the tools GitLab wraps](sast/index.md#supported-languages-and-frameworks). The underlying analyzers are updated at least once per month if a relevant update is available. The vulnerabilities database is updated by the upstream tools. |
 
 Currently, you do not have to update GitLab to benefit from the latest vulnerabilities definitions.
-The security tools are released as Docker images. The vendored job definitions to enable them use
-the `x-y-stable` image tags that get overridden each time a new release of the tools is pushed. The
-Docker images are updated to match the previous GitLab releases, so users automatically get the
+The security tools are released as Docker images. The vendored job definitions that enable them use
+major release tags according to [Semantic Versioning](https://semver.org/). Each new release of the
+tools overrides these tags.
+The Docker images are updated to match the previous GitLab releases, so users automatically get the
 latest versions of the scanning tools without having to do anything. There are some known issues
 with this approach, however, and there is a
 [plan to resolve them](https://gitlab.com/gitlab-org/gitlab/issues/9725).

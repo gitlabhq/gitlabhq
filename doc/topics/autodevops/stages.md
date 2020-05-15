@@ -324,34 +324,40 @@ as it attempts to fetch the image using `CI_REGISTRY_PASSWORD`.
 
 > - [Introduced](https://gitlab.com/gitlab-org/charts/auto-deploy-app/-/merge_requests/51) in GitLab 12.8.
 > - Support for deploying a PostgreSQL version that supports Kubernetes 1.16+ was [introduced](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/merge_requests/49) in GitLab 12.9.
+> - Supported out of the box for new deployments as of GitLab 13.0.
 
 CAUTION: **Deprecation**
-The default value of `extensions/v1beta1` for the `deploymentApiVersion` setting is
-deprecated, and is scheduled to be changed to a new default of `apps/v1` in
-[GitLab 13.0](https://gitlab.com/gitlab-org/charts/auto-deploy-app/issues/47).
+The default value for the `deploymentApiVersion` setting was changed from
+`extensions/v1beta` to `apps/v1` in [GitLab 13.0](https://gitlab.com/gitlab-org/charts/auto-deploy-app/issues/47).
 
 In Kubernetes 1.16 and later, a number of
 [APIs were removed](https://kubernetes.io/blog/2019/07/18/api-deprecations-in-1-16/),
 including support for `Deployment` in the `extensions/v1beta1` version.
 
-To use Auto Deploy on a Kubernetes 1.16+ cluster, you must opt-in to using a
-version of the PostgreSQL chart that supports Kubernetes 1.16 and higher:
+To use Auto Deploy on a Kubernetes 1.16+ cluster:
 
-1. Set the following in the [`.gitlab/auto-deploy-values.yaml` file](customize.md#customize-values-for-helm-chart):
+1. If you are deploying your application for the first time on GitLab 13.0 or
+   newer, no configuration should be required.
+
+1. On GitLab 12.10 or older, set the following in the [`.gitlab/auto-deploy-values.yaml` file](customize.md#customize-values-for-helm-chart):
 
    ```yml
    deploymentApiVersion: apps/v1
    ```
 
-1. Set the:
+1. If you have an in-cluster PostgreSQL database installed with
+   `AUTO_DEVOPS_POSTGRES_CHANNEL` set to `1`, follow the [guide to upgrade
+   PostgreSQL](upgrading_postgresql.md).
 
-   - `AUTO_DEVOPS_POSTGRES_CHANNEL` variable to `2`.
-   - `POSTGRES_VERSION` variable to `11.7` or higher.
+1. If you are deploying your application for the first time and are using
+   GitLab 12.9 or 12.10, set `AUTO_DEVOPS_POSTGRES_CHANNEL` to `2`.
 
-DANGER: **Danger:** Opting into `AUTO_DEVOPS_POSTGRES_CHANNEL` version `2` deletes
-the version `1` PostgreSQL database. Follow the
-[guide to upgrading PostgreSQL](upgrading_postgresql.md) to back up and restore
-your database before opting into version `2`.
+DANGER: **Danger:** On GitLab 12.9 and 12.10, opting into
+`AUTO_DEVOPS_POSTGRES_CHANNEL` version `2` deletes the version `1` PostgreSQL
+database. Follow the [guide to upgrading PostgreSQL](upgrading_postgresql.md)
+to back up and restore your database before opting into version `2` (On
+GitLab 13.0, an additional variable is required to trigger the database
+deletion).
 
 ### Migrations
 

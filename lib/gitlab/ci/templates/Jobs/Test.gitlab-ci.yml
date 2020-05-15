@@ -1,8 +1,9 @@
 test:
+  variables:
+    POSTGRES_VERSION: 9.6.16
+    POSTGRES_DB: test
   services:
     - "postgres:${POSTGRES_VERSION}"
-  variables:
-    POSTGRES_DB: test
   stage: test
   image: gliderlabs/herokuish:latest
   needs: []
