@@ -1,0 +1,34 @@
+- breadcrumb_title s_('AccessTokens|Access Tokens')
+- page_title _('Project Access Tokens')
+- type = _('project access token')
+- type_plural = _('project access tokens')
+- @content_class = 'limit-container-width' unless fluid_layout
+
+.row.prepend-top-default
+  .col-lg-4.profile-settings-sidebar
+    %h4.prepend-top-0
+      = page_title
+    %p
+      = _('You can generate an access token scoped to this project for each application to use the GitLab API.')
+    %p
+      = _('You can also use project access tokens to authenticate against Git over HTTP.')
+
+  .col-lg-8
+    - if @new_project_access_token
+      = render 'shared/access_tokens/created_container',
+          type: type,
+          new_token_value: @new_project_access_token
+
+    = render 'shared/access_tokens/form',
+        type: type,
+        path: project_settings_access_tokens_path(@project),
+        token: @project_access_token,
+        scopes: @scopes,
+        prefix: :project_access_token
+
+    = render 'shared/access_tokens/table',
+        active_tokens: @active_project_access_tokens,
+        type: type,
+        type_plural: type_plural,
+        revoke_route_helper: ->(token) { revoke_namespace_project_settings_access_token_path(id: token) },
+        no_active_tokens_message: _('This project has no active access tokens.')

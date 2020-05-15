@@ -143,38 +143,6 @@ RSpec.describe Release do
     end
   end
 
-  describe '#evidence_sha' do
-    subject { release.evidence_sha }
-
-    context 'when a release was created before evidence collection existed' do
-      let!(:release) { create(:release) }
-
-      it { is_expected.to be_nil }
-    end
-
-    context 'when a release was created with evidence collection' do
-      let!(:release) { create(:release, :with_evidence) }
-
-      it { is_expected.to eq(release.evidences.first.summary_sha) }
-    end
-  end
-
-  describe '#evidence_summary' do
-    subject { release.evidence_summary }
-
-    context 'when a release was created before evidence collection existed' do
-      let!(:release) { create(:release) }
-
-      it { is_expected.to eq({}) }
-    end
-
-    context 'when a release was created with evidence collection' do
-      let!(:release) { create(:release, :with_evidence) }
-
-      it { is_expected.to eq(release.evidences.first.summary) }
-    end
-  end
-
   describe '#milestone_titles' do
     let(:release) { create(:release, :with_milestones) }
 

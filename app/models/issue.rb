@@ -84,6 +84,7 @@ class Issue < ApplicationRecord
 
   scope :preload_associated_models, -> { preload(:assignees, :labels, project: :namespace) }
   scope :with_api_entity_associations, -> { preload(:timelogs, :assignees, :author, :notes, :labels, project: [:route, { namespace: :route }] ) }
+  scope :with_label_attributes, ->(label_attributes) { joins(:labels).where(labels: label_attributes) }
 
   scope :public_only, -> { where(confidential: false) }
   scope :confidential_only, -> { where(confidential: true) }

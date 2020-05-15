@@ -429,7 +429,6 @@ project:
 - mirror_user
 - push_rule
 - jenkins_service
-- jenkins_deprecated_service
 - index_status
 - feature_usage
 - approval_rules

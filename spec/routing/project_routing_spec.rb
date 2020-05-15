@@ -230,6 +230,8 @@ describe 'project routing' do
       expect(delete('/gitlab/gitlabhq/-/tags/feature%2B45/foo/bar/baz')).to route_to('projects/tags#destroy', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'feature+45/foo/bar/baz')
       expect(delete('/gitlab/gitlabhq/-/tags/feature@45/foo/bar/baz')).to route_to('projects/tags#destroy', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'feature@45/foo/bar/baz')
     end
+
+    it_behaves_like 'redirecting a legacy project path', "/gitlab/gitlabhq/tags", "/gitlab/gitlabhq/-/tags"
   end
 
   #     project_deploy_keys GET    /:project_id/deploy_keys(.:format)          deploy_keys#index

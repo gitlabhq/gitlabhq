@@ -1,0 +1,6 @@
+{
+  "type": "array",
+  "items": {
+    "$ref": "./project_repository_storage_move.json"
+  }
+}

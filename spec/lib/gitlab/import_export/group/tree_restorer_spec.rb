@@ -24,10 +24,6 @@ describe Gitlab::ImportExport::Group::TreeRestorer do
       end
     end
 
-    after(:context) do
-      cleanup_artifacts_from_extract_archive('group_exports/complex')
-    end
-
     it 'has the group description' do
       expect(Group.find_by_path('group').description).to eq('Group Description')
     end
@@ -83,10 +79,6 @@ describe Gitlab::ImportExport::Group::TreeRestorer do
       expect(group_tree_restorer.restore).to be_falsey
     end
 
-    after do
-      cleanup_artifacts_from_extract_archive('group_exports/child_with_no_parent')
-    end
-
     it 'fails when a child group does not have a valid parent_id' do
       expect(shared.errors).to include('Parent group not found')
     end
@@ -122,10 +114,6 @@ describe Gitlab::ImportExport::Group::TreeRestorer do
 
         group_tree_restorer.restore
         group.reload
-      end
-
-      after do
-        cleanup_artifacts_from_extract_archive('group_exports/complex')
       end
 
       it 'does not import root group name' do
@@ -176,10 +164,6 @@ describe Gitlab::ImportExport::Group::TreeRestorer do
       setup_import_export_config(filepath)
 
       group_tree_restorer.restore
-    end
-
-    after do
-      cleanup_artifacts_from_extract_archive(filepath)
     end
 
     shared_examples 'with visibility level' do |visibility_level, expected_visibilities|

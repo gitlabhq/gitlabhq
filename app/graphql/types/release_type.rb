@@ -19,8 +19,6 @@ module Types
     markdown_field :description_html, null: true
     field :name, GraphQL::STRING_TYPE, null: true,
           description: 'Name of the release'
-    field :evidence_sha, GraphQL::STRING_TYPE, null: true,
-          description: "SHA of the release's evidence"
     field :created_at, Types::TimeType, null: true,
           description: 'Timestamp of when the release was created'
     field :released_at, Types::TimeType, null: true,

@@ -8,7 +8,7 @@ development:
   #     host: localhost
   #     port: 26380 # point to sentinel, not to redis port
   #   -
-  #     host: slave2
+  #     host: replica2
   #     port: 26381 # point to sentinel, not to redis port
 test:
   url: redis://localhost:6379
@@ -27,8 +27,8 @@ production:
   # url: redis://master:6379
   # sentinels:
   #   -
-  #     host: slave1
+  #     host: replica1
   #     port: 26379 # point to sentinel, not to redis port
   #   -
-  #     host: slave2
+  #     host: replica2
   #     port: 26379 # point to sentinel, not to redis port

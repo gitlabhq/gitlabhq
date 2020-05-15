@@ -150,6 +150,8 @@ Package Registry**. Before we do so, we next need to set up authentication.
 
 ## Adding the GitLab PyPi Repository as a source
 
+### Authenticating with a personal access token
+
 You will need the following:
 
 - A personal access token. You can generate a [personal access token](../../../user/profile/personal_access_tokens.md) with the scope set to `api` for repository authentication.
@@ -167,6 +169,27 @@ index-servers =
 repository = https://gitlab.com/api/v4/projects/<project_id>/packages/pypi
 username = __token__
 password = <your personal access token>
+```
+
+### Authenticating with a deploy token
+
+You will need the following:
+
+- A deploy token. You can generate a [deploy token](./../../project/deploy_tokens/index.md) with the `read_package_registry` and/or `write_package_registry` scopes for repository authentication.
+- A suitable name for your source.
+- Your project ID which can be found on the home page of your project.
+
+Edit your `~/.pypirc` file and add the following:
+
+```ini
+[distutils]
+index-servers =
+    gitlab
+
+[gitlab]
+repository = https://gitlab.com/api/v4/projects/<project_id>/packages/pypi
+username = <deploy token username>
+password = <deploy token>
 ```
 
 ## Uploading packages

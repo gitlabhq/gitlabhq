@@ -674,6 +674,7 @@ module ProjectsHelper
       services#edit
       hooks#index
       hooks#edit
+      access_tokens#index
       hook_logs#show
       repository#show
       ci_cd#show

@@ -68,7 +68,9 @@ You should then be able to see the **Packages & Registries** section on the left
 You will need the following:
 
 - Your GitLab username.
-- A personal access token. You can generate a [personal access token](../../../user/profile/personal_access_tokens.md) with the scope set to `api` for repository authentication.
+- A personal access token or deploy token. For repository authentication:
+  - You can generate a [personal access token](../../../user/profile/personal_access_tokens.md) with the scope set to `api`.
+  - You can generate a [deploy token](./../../project/deploy_tokens/index.md) with the scope set to `read_package_registry`, `write_package_registry`, or both.
 - A suitable name for your source.
 - Your project ID which can be found on the home page of your project.
 
@@ -83,7 +85,7 @@ You can now add a new source to NuGet with:
 To add the GitLab NuGet Repository as a source with `nuget`:
 
 ```shell
-nuget source Add -Name <source_name> -Source "https://gitlab-instance.example.com/api/v4/projects/<your_project_id>/packages/nuget/index.json" -UserName <gitlab_username> -Password <gitlab_personal_access_token>
+nuget source Add -Name <source_name> -Source "https://gitlab-instance.example.com/api/v4/projects/<your_project_id>/packages/nuget/index.json" -UserName <gitlab_username or deploy_token_username> -Password <gitlab_personal_access_token or deploy_token>
 ```
 
 Where:
@@ -107,8 +109,8 @@ nuget source Add -Name "GitLab" -Source "https//gitlab.example/api/v4/projects/1
    - **Location**: `https://gitlab.com/api/v4/projects/<your_project_id>/packages/nuget/index.json`
      - Replace `<your_project_id>` with your project ID.
      - If you have a self-managed GitLab installation, replace `gitlab.com` with your domain name.
-   - **Username**: Your GitLab username
-   - **Password**: Your personal access token
+   - **Username**: Your GitLab username or deploy token username
+   - **Password**: Your personal access token or deploy token
 
    ![Visual Studio Adding a NuGet source](img/visual_studio_adding_nuget_source.png)
 
@@ -131,8 +133,8 @@ To add the GitLab NuGet Repository as a source for .NET, create a file named `nu
     </packageSources>
     <packageSourceCredentials>
         <gitlab>
-            <add key="Username" value="<gitlab_username>" />
-            <add key="ClearTextPassword" value="<gitlab_personal_access_token>" />
+            <add key="Username" value="<gitlab_username or deploy_token_username>" />
+            <add key="ClearTextPassword" value="<gitlab_personal_access_token or deploy_token>" />
         </gitlab>
     </packageSourceCredentials>
 </configuration>

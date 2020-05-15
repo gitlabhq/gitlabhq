@@ -81,14 +81,6 @@ class Release < ApplicationRecord
     self.milestones.map {|m| m.title }.sort.join(", ")
   end
 
-  def evidence_sha
-    evidences.first&.summary_sha
-  end
-
-  def evidence_summary
-    evidences.first&.summary || {}
-  end
-
   private
 
   def actual_sha

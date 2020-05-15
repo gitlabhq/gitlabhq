@@ -84,13 +84,14 @@ RSpec.shared_examples 'a timebox' do |timebox_type|
     describe "#uniqueness_of_title" do
       context "per project" do
         it "does not accept the same title in a project twice" do
-          new_timebox = described_class.new(project: timebox.project, title: timebox.title)
+          new_timebox = timebox.dup
           expect(new_timebox).not_to be_valid
         end
 
         it "accepts the same title in another project" do
           project = create(:project)
-          new_timebox = described_class.new(project: project, title: timebox.title)
+          new_timebox = timebox.dup
+          new_timebox.project = project
 
           expect(new_timebox).to be_valid
         end
@@ -229,15 +230,6 @@ RSpec.shared_examples 'a timebox' do |timebox_type|
         expect(timebox.merge_requests_enabled?).to be_truthy
       end
     end
-  end
-
-  it_behaves_like 'within_timeframe scope' do
-    let_it_be(:now) { Time.now }
-    let_it_be(:project) { create(:project, :empty_repo) }
-    let_it_be(:resource_1) { create(timebox_type, project: project, start_date: now - 1.day, due_date: now + 1.day) }
-    let_it_be(:resource_2) { create(timebox_type, project: project, start_date: now + 2.days, due_date: now + 3.days) }
-    let_it_be(:resource_3) { create(timebox_type, project: project, due_date: now) }
-    let_it_be(:resource_4) { create(timebox_type, project: project, start_date: now) }
   end
 
   describe '#to_ability_name' do

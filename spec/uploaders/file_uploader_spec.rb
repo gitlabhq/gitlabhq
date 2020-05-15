@@ -145,39 +145,57 @@ describe FileUploader do
   end
 
   describe '.extract_dynamic_path' do
-    context 'with a 32-byte hexadecimal secret in the path' do
-      let(:secret) { SecureRandom.hex }
-      let(:path) { "export/4b227777d4dd1fc61c6f884f48641d02b4d121d3fd328cb08b5531fcacdabf8a/test/uploads/#{secret}/dummy.txt" }
+    shared_examples 'a valid secret' do |root_path|
+      context 'with a 32-byte hexadecimal secret' do
+        let(:secret) { SecureRandom.hex }
+        let(:path) { File.join(*[root_path, secret, 'dummy.txt'].compact) }
 
-      it 'extracts the secret' do
-        expect(described_class.extract_dynamic_path(path)[:secret]).to eq(secret)
+        it 'extracts the secret' do
+          expect(described_class.extract_dynamic_path(path)[:secret]).to eq(secret)
+        end
+
+        it 'extracts the identifier' do
+          expect(described_class.extract_dynamic_path(path)[:identifier]).to eq('dummy.txt')
+        end
       end
 
-      it 'extracts the identifier' do
-        expect(described_class.extract_dynamic_path(path)[:identifier]).to eq('dummy.txt')
+      context 'with a 10-byte hexadecimal secret' do
+        let(:secret) { SecureRandom.hex[0, 10] }
+        let(:path) { File.join(*[root_path, secret, 'dummy.txt'].compact) }
+
+        it 'extracts the secret' do
+          expect(described_class.extract_dynamic_path(path)[:secret]).to eq(secret)
+        end
+
+        it 'extracts the identifier' do
+          expect(described_class.extract_dynamic_path(path)[:identifier]).to eq('dummy.txt')
+        end
+      end
+
+      context 'with an invalid secret' do
+        let(:secret) { 'foo' }
+        let(:path) { File.join(*[root_path, secret, 'dummy.txt'].compact) }
+
+        it 'returns nil' do
+          expect(described_class.extract_dynamic_path(path)).to be_nil
+        end
       end
     end
 
-    context 'with a 10-byte hexadecimal secret in the path' do
-      let(:secret) { SecureRandom.hex(10) }
-      let(:path) { "export/4b227777d4dd1fc61c6f884f48641d02b4d121d3fd328cb08b5531fcacdabf8a/test/uploads/#{secret}/dummy.txt" }
-
-      it 'extracts the secret' do
-        expect(described_class.extract_dynamic_path(path)[:secret]).to eq(secret)
-      end
-
-      it 'extracts the identifier' do
-        expect(described_class.extract_dynamic_path(path)[:identifier]).to eq('dummy.txt')
-      end
+    context 'with an absolute path without a slash in the beginning' do
+      it_behaves_like 'a valid secret', 'export/4b227777d4dd1fc61c6f884f48641d02b4d121d3fd328cb08b5531fcacdabf8a/test/uploads'
     end
 
-    context 'with an invalid secret in the path' do
-      let(:secret) { 'foo' }
-      let(:path) { "export/4b227777d4dd1fc61c6f884f48641d02b4d121d3fd328cb08b5531fcacdabf8a/test/uploads/#{secret}/dummy.txt" }
+    context 'with an absolute path with a slash in the beginning' do
+      it_behaves_like 'a valid secret', '/export/4b227777d4dd1fc61c6f884f48641d02b4d121d3fd328cb08b5531fcacdabf8a/test/uploads'
+    end
 
-      it 'returns nil' do
-        expect(described_class.extract_dynamic_path(path)).to be_nil
-      end
+    context 'with an relative path without a slash in the beginning' do
+      it_behaves_like 'a valid secret', nil
+    end
+
+    context 'with an relative path with a slash in the beginning' do
+      it_behaves_like 'a valid secret', '/'
     end
   end
 
@@ -202,7 +220,7 @@ describe FileUploader do
       end
 
       context "10-byte hexadecimal" do
-        let(:secret) { SecureRandom.hex(10) }
+        let(:secret) { SecureRandom.hex[0, 10] }
 
         it "returns the secret" do
           expect(uploader.secret).to eq(secret)

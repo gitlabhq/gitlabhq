@@ -40,6 +40,8 @@ module Gitlab
             end
 
             if order_list.count > 2
+              # Keep in mind an order clause for primary key is added if one is not present
+              # lib/gitlab/graphql/pagination/keyset/connection.rb:97
               raise ArgumentError.new('A maximum of 2 ordering fields are allowed')
             end
 

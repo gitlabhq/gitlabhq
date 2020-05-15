@@ -18,6 +18,7 @@ class Milestone < ApplicationRecord
 
   has_many :events, as: :target, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
+  scope :active, -> { with_state(:active) }
   scope :started, -> { active.where('milestones.start_date <= CURRENT_DATE') }
   scope :not_started, -> { active.where('milestones.start_date > CURRENT_DATE') }
   scope :not_upcoming, -> do

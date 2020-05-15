@@ -21,6 +21,13 @@ describe Gitlab::Auth::AuthFinders do
     env[key] = value
   end
 
+  def set_basic_auth_header(username, password)
+    set_header(
+      'HTTP_AUTHORIZATION',
+      ActionController::HttpAuthentication::Basic.encode_credentials(username, password)
+    )
+  end
+
   describe '#find_user_from_warden' do
     context 'with CSRF token' do
       before do
@@ -238,6 +245,24 @@ describe Gitlab::Auth::AuthFinders do
         it { is_expected.to be_nil }
       end
     end
+
+    context 'with basic auth headers' do
+      before do
+        set_basic_auth_header(deploy_token.username, deploy_token.token)
+      end
+
+      it { is_expected.to eq deploy_token }
+
+      it_behaves_like 'an unauthenticated route'
+
+      context 'with incorrect token' do
+        before do
+          set_basic_auth_header(deploy_token.username, 'invalid')
+        end
+
+        it { is_expected.to be_nil }
+      end
+    end
   end
 
   describe '#find_user_from_access_token' do
@@ -394,7 +419,7 @@ describe Gitlab::Auth::AuthFinders do
 
   describe '#find_personal_access_token_from_http_basic_auth' do
     def auth_header_with(token)
-      set_header('HTTP_AUTHORIZATION', ActionController::HttpAuthentication::Basic.encode_credentials('username', token))
+      set_basic_auth_header('username', token)
     end
 
     context 'access token is valid' do
@@ -441,14 +466,6 @@ describe Gitlab::Auth::AuthFinders do
   end
 
   describe '#find_user_from_basic_auth_job' do
-    def basic_http_auth(username, password)
-      ActionController::HttpAuthentication::Basic.encode_credentials(username, password)
-    end
-
-    def set_auth(username, password)
-      set_header('HTTP_AUTHORIZATION', basic_http_auth(username, password))
-    end
-
     subject { find_user_from_basic_auth_job }
 
     context 'when the request does not have AUTHORIZATION header' do
@@ -457,25 +474,25 @@ describe Gitlab::Auth::AuthFinders do
 
     context 'with wrong credentials' do
       it 'returns nil without user and password' do
-        set_auth(nil, nil)
+        set_basic_auth_header(nil, nil)
 
         is_expected.to be_nil
       end
 
       it 'returns nil without password' do
-        set_auth('some-user', nil)
+        set_basic_auth_header('some-user', nil)
 
         is_expected.to be_nil
       end
 
       it 'returns nil without user' do
-        set_auth(nil, 'password')
+        set_basic_auth_header(nil, 'password')
 
         is_expected.to be_nil
       end
 
       it 'returns nil without CI username' do
-        set_auth('user', 'password')
+        set_basic_auth_header('user', 'password')
 
         is_expected.to be_nil
       end
@@ -487,19 +504,19 @@ describe Gitlab::Auth::AuthFinders do
       let(:build) { create(:ci_build, user: user) }
 
       it 'returns nil without password' do
-        set_auth(username, nil)
+        set_basic_auth_header(username, nil)
 
         is_expected.to be_nil
       end
 
       it 'returns user with valid token' do
-        set_auth(username, build.token)
+        set_basic_auth_header(username, build.token)
 
         is_expected.to eq user
       end
 
       it 'raises error with invalid token' do
-        set_auth(username, 'token')
+        set_basic_auth_header(username, 'token')
 
         expect { subject }.to raise_error(Gitlab::Auth::UnauthorizedError)
       end

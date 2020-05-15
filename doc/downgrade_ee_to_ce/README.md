@@ -48,14 +48,17 @@ to avoid getting this error, you need to remove all instances of the
 **Omnibus Installation**
 
 ```shell
-sudo gitlab-rails runner "Service.where(type: ['JenkinsService', 'JenkinsDeprecatedService', 'GithubService']).delete_all"
+sudo gitlab-rails runner "Service.where(type: ['JenkinsService', 'GithubService']).delete_all"
 ```
 
 **Source Installation**
 
 ```shell
-bundle exec rails runner "Service.where(type: ['JenkinsService', 'JenkinsDeprecatedService', 'GithubService']).delete_all" production
+bundle exec rails runner "Service.where(type: ['JenkinsService', 'GithubService']).delete_all" production
 ```
+
+NOTE: **Note:**
+If you are running `GitLab =< v13.0` you need to also remove `JenkinsDeprecatedService` records.
 
 ### Variables environment scopes
 

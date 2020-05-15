@@ -98,7 +98,7 @@ Starting with 8.14, Redis Sentinel is no longer experimental.
 If you've used it with versions `< 8.14` before, please check the updated
 documentation here.
 
-High Availability with [Redis](https://redis.io/) is possible using a **Master** x **Slave**
+High Availability with [Redis](https://redis.io/) is possible using a **Master** x **Replica**
 topology with a [Redis Sentinel](https://redis.io/topics/sentinel) service to watch and automatically
 start the failover procedure.
 
@@ -130,12 +130,12 @@ make sure you read this Overview section to better understand how the components
 are tied together.
 
 You need at least `3` independent machines: physical, or VMs running into
-distinct physical machines. It is essential that all master and slaves Redis
+distinct physical machines. It is essential that all master and replica Redis
 instances run in different machines. If you fail to provision the machines in
 that specific way, any issue with the shared environment can bring your entire
 setup down.
 
-It is OK to run a Sentinel alongside of a master or slave Redis instance.
+It is OK to run a Sentinel alongside of a master or replica Redis instance.
 There should be no more than one Sentinel on the same machine though.
 
 You also need to take into consideration the underlying network topology,
@@ -156,16 +156,16 @@ components below.
 High Availability with Redis requires a few things:
 
 - Multiple Redis instances
-- Run Redis in a **Master** x **Slave** topology
+- Run Redis in a **Master** x **Replica** topology
 - Multiple Sentinel instances
 - Application support and visibility to all Sentinel and Redis instances
 
 Redis Sentinel can handle the most important tasks in an HA environment and that's
 to help keep servers online with minimal to no downtime. Redis Sentinel:
 
-- Monitors **Master** and **Slaves** instances to see if they are available
-- Promotes a **Slave** to **Master** when the **Master** fails
-- Demotes a **Master** to **Slave** when the failed **Master** comes back online
+- Monitors **Master** and **Replicas** instances to see if they are available
+- Promotes a **Replica** to **Master** when the **Master** fails
+- Demotes a **Master** to **Replica** when the failed **Master** comes back online
   (to prevent data-partitioning)
 - Can be queried by the application to always connect to the current **Master**
   server
@@ -185,8 +185,8 @@ For a minimal setup, you will install the Omnibus GitLab package in `3`
 **independent** machines, both with **Redis** and **Sentinel**:
 
 - Redis Master + Sentinel
-- Redis Slave + Sentinel
-- Redis Slave + Sentinel
+- Redis Replica + Sentinel
+- Redis Replica + Sentinel
 
 If you are not sure or don't understand why and where the amount of nodes come
 from, read [Redis setup overview](#redis-setup-overview) and
@@ -197,14 +197,14 @@ the Omnibus GitLab package in `5` **independent** machines, both with
 **Redis** and **Sentinel**:
 
 - Redis Master + Sentinel
-- Redis Slave + Sentinel
-- Redis Slave + Sentinel
-- Redis Slave + Sentinel
-- Redis Slave + Sentinel
+- Redis Replica + Sentinel
+- Redis Replica + Sentinel
+- Redis Replica + Sentinel
+- Redis Replica + Sentinel
 
 ### Redis setup overview
 
-You must have at least `3` Redis servers: `1` Master, `2` Slaves, and they
+You must have at least `3` Redis servers: `1` Master, `2` Replicas, and they
 need to each be on independent machines (see explanation above).
 
 You can have additional Redis nodes, that will help survive a situation
@@ -221,7 +221,7 @@ nodes to be provisioned. See [Sentinel setup overview](#sentinel-setup-overview)
 documentation for more information.
 
 All Redis nodes should be configured the same way and with similar server specs, as
-in a failover situation, any **Slave** can be promoted as the new **Master** by
+in a failover situation, any **Replica** can be promoted as the new **Master** by
 the Sentinel servers.
 
 The replication requires authentication, so you need to define a password to
@@ -241,9 +241,9 @@ need to be available and reachable, so that they can elect the Sentinel **leader
 who will take all the decisions to restore the service availability by:
 
 - Promoting a new **Master**
-- Reconfiguring the other **Slaves** and make them point to the new **Master**
+- Reconfiguring the other **Replicas** and make them point to the new **Master**
 - Announce the new **Master** to every other Sentinel peer
-- Reconfigure the old **Master** and demote to **Slave** when it comes back online
+- Reconfigure the old **Master** and demote to **Replica** when it comes back online
 
 You must have at least `3` Redis Sentinel servers, and they need to
 be each in an independent machine (that are believed to fail independently),
@@ -280,18 +280,18 @@ the official documentation:
   already tried against the same master by a given Sentinel, is two
   times the failover timeout.
 
-- The time needed for a slave replicating to a wrong master according
+- The time needed for a replica replicating to a wrong master according
   to a Sentinel current configuration, to be forced to replicate
   with the right master, is exactly the failover timeout (counting since
   the moment a Sentinel detected the misconfiguration).
 
 - The time needed to cancel a failover that is already in progress but
-  did not produced any configuration change (SLAVEOF NO ONE yet not
-  acknowledged by the promoted slave).
+  did not produced any configuration change (REPLICAOF NO ONE yet not
+  acknowledged by the promoted replica).
 
-- The maximum time a failover in progress waits for all the slaves to be
-  reconfigured as slaves of the new master. However even after this time
-  the slaves will be reconfigured by the Sentinels anyway, but not with
+- The maximum time a failover in progress waits for all the replicas to be
+  reconfigured as replicas of the new master. However even after this time
+  the replicas will be reconfigured by the Sentinels anyway, but not with
   the exact parallel-syncs progression as specified.
 
 ### Available configuration setups
@@ -306,12 +306,12 @@ Pick the one that suits your needs.
   documentation.
 - [Omnibus GitLab **Community Edition** (CE) package](https://about.gitlab.com/install/?version=ce): Redis is bundled, so you
   can use the package with only the Redis service enabled as described in steps
-  1 and 2 of this document (works for both master and slave setups). To install
+  1 and 2 of this document (works for both master and replica setups). To install
   and configure Sentinel, jump directly to the Sentinel section in the
   [Redis HA installation from source](redis_source.md#step-3-configuring-the-redis-sentinel-instances) documentation.
 - [Omnibus GitLab **Enterprise Edition** (EE) package](https://about.gitlab.com/install/?version=ee): Both Redis and Sentinel
   are bundled in the package, so you can use the EE package to set up the whole
-  Redis HA infrastructure (master, slave and Sentinel) which is described in
+  Redis HA infrastructure (master, replica and Sentinel) which is described in
   this document.
 - If you have installed GitLab using the Omnibus GitLab packages (CE or EE),
   but you want to use your own external Redis server, follow steps 1-3 in the
@@ -328,9 +328,9 @@ This is the section where we install and set up the new Redis instances.
 > - We assume that you have installed GitLab and all HA components from scratch. If you
 >   already have it installed and running, read how to
 >   [switch from a single-machine installation to Redis HA](#switching-from-an-existing-single-machine-installation-to-redis-ha).
-> - Redis nodes (both master and slaves) will need the same password defined in
+> - Redis nodes (both master and replica) will need the same password defined in
 >   `redis['password']`. At any time during a failover the Sentinels can
->  reconfigure a node and change its status from master to slave and vice versa.
+>  reconfigure a node and change its status from master to replica and vice versa.
 
 ### Prerequisites
 
@@ -392,9 +392,9 @@ The prerequisites for a HA Redis setup are the following:
 > `roles ['redis_sentinel_role', 'redis_master_role']`. Read more about high
 > availability roles at <https://docs.gitlab.com/omnibus/roles/>.
 
-### Step 2. Configuring the slave Redis instances
+### Step 2. Configuring the replica Redis instances
 
-1. SSH into the **slave** Redis server.
+1. SSH into the **replica** Redis server.
 1. [Download/install](https://about.gitlab.com/install/) the Omnibus GitLab
    package you want using **steps 1 and 2** from the GitLab downloads page.
    - Make sure you select the correct Omnibus package, with the same version
@@ -404,8 +404,8 @@ The prerequisites for a HA Redis setup are the following:
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
 
    ```ruby
-   # Specify server role as 'redis_slave_role'
-   roles ['redis_slave_role']
+   # Specify server role as 'redis_replica_role'
+   roles ['redis_replica_role']
 
    # IP address pointing to a local IP that the other machines can reach to.
    # You can also set bind to '0.0.0.0' which listen in all interfaces.
@@ -435,10 +435,10 @@ The prerequisites for a HA Redis setup are the following:
    ```
 
 1. [Reconfigure Omnibus GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
-1. Go through the steps again for all the other slave nodes.
+1. Go through the steps again for all the other replica nodes.
 
 > Note: You can specify multiple roles like sentinel and Redis as:
-> `roles ['redis_sentinel_role', 'redis_slave_role']`. Read more about high
+> `roles ['redis_sentinel_role', 'redis_replica_role']`. Read more about high
 > availability roles at <https://docs.gitlab.com/omnibus/roles/>.
 
 ---
@@ -542,18 +542,18 @@ multiple machines with the Sentinel daemon.
    ##   already tried against the same master by a given Sentinel, is two
    ##   times the failover timeout.
    ##
-   ## - The time needed for a slave replicating to a wrong master according
+   ## - The time needed for a replica replicating to a wrong master according
    ##   to a Sentinel current configuration, to be forced to replicate
    ##   with the right master, is exactly the failover timeout (counting since
    ##   the moment a Sentinel detected the misconfiguration).
    ##
    ## - The time needed to cancel a failover that is already in progress but
-   ##   did not produced any configuration change (SLAVEOF NO ONE yet not
-   ##   acknowledged by the promoted slave).
+   ##   did not produced any configuration change (REPLICAOF NO ONE yet not
+   ##   acknowledged by the promoted replica).
    ##
-   ## - The maximum time a failover in progress waits for all the slaves to be
-   ##   reconfigured as slaves of the new master. However even after this time
-   ##   the slaves will be reconfigured by the Sentinels anyway, but not with
+   ## - The maximum time a failover in progress waits for all the replica to be
+   ##   reconfigured as replicas of the new master. However even after this time
+   ##   the replicas will be reconfigured by the Sentinels anyway, but not with
    ##   the exact parallel-syncs progression as specified.
    # sentinel['failover_timeout'] = 60000
    ```
@@ -612,7 +612,7 @@ replicate from this machine first, before de-activating the Redis instance
 inside it.
 
 Your single-machine install will be the initial **Master**, and the `3` others
-should be configured as **Slave** pointing to this machine.
+should be configured as **Replica** pointing to this machine.
 
 After replication catches up, you will need to stop services in the
 single-machine install, to rotate the **Master** to one of the new nodes.
@@ -627,7 +627,7 @@ redis['enable'] = false
 
 If you fail to replicate first, you may loose data (unprocessed background jobs).
 
-## Example of a minimal configuration with 1 master, 2 slaves and 3 Sentinels
+## Example of a minimal configuration with 1 master, 2 replicas and 3 Sentinels
 
 >**Note:**
 Redis Sentinel is bundled with Omnibus GitLab Enterprise Edition only. For
@@ -649,8 +649,8 @@ discussed in [Redis setup overview](#redis-setup-overview) and
 Here is a list and description of each **machine** and the assigned **IP**:
 
 - `10.0.0.1`: Redis Master + Sentinel 1
-- `10.0.0.2`: Redis Slave 1 + Sentinel 2
-- `10.0.0.3`: Redis Slave 2 + Sentinel 3
+- `10.0.0.2`: Redis Replica 1 + Sentinel 2
+- `10.0.0.3`: Redis Replica 2 + Sentinel 3
 - `10.0.0.4`: GitLab application
 
 Please note that after the initial configuration, if a failover is initiated
@@ -684,12 +684,12 @@ sentinel['quorum'] = 2
 
 [Reconfigure Omnibus GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
-### Example configuration for Redis slave 1 and Sentinel 2
+### Example configuration for Redis replica 1 and Sentinel 2
 
 In `/etc/gitlab/gitlab.rb`:
 
 ```ruby
-roles ['redis_sentinel_role', 'redis_slave_role']
+roles ['redis_sentinel_role', 'redis_replica_role']
 redis['bind'] = '10.0.0.2'
 redis['port'] = 6379
 redis['password'] = 'redis-password-goes-here'
@@ -706,12 +706,12 @@ sentinel['quorum'] = 2
 
 [Reconfigure Omnibus GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
-### Example configuration for Redis slave 2 and Sentinel 3
+### Example configuration for Redis replica 2 and Sentinel 3
 
 In `/etc/gitlab/gitlab.rb`:
 
 ```ruby
-roles ['redis_sentinel_role', 'redis_slave_role']
+roles ['redis_sentinel_role', 'redis_replica_role']
 redis['bind'] = '10.0.0.3'
 redis['port'] = 6379
 redis['password'] = 'redis-password-goes-here'
@@ -847,11 +847,11 @@ mailroom['enable'] = false
 
 -------
 
-## Redis master/slave Role
+## Redis master/replica Role
 redis_master_role['enable'] = true # enable only one of them
-redis_slave_role['enable'] = true # enable only one of them
+redis_replica_role['enable'] = true # enable only one of them
 
-# When Redis Master or Slave role are enabled, the following services are
+# When Redis Master or Replica role are enabled, the following services are
 # enabled/disabled. Note that if Redis and Sentinel roles are combined, both
 # services will be enabled.
 
@@ -863,7 +863,7 @@ postgresql['enable'] = false
 gitlab_rails['enable'] = false
 mailroom['enable'] = false
 
-# For Redis Slave role, also change this setting from default 'true' to 'false':
+# For Redis Replica role, also change this setting from default 'true' to 'false':
 redis['master'] = false
 ```
 
@@ -894,13 +894,13 @@ You can check if everything is correct by connecting to each server using
 ```
 
 When connected to a `master` Redis, you will see the number of connected
-`slaves`, and a list of each with connection details:
+`replicas`, and a list of each with connection details:
 
 ```plaintext
 # Replication
 role:master
-connected_slaves:1
-slave0:ip=10.133.5.21,port=6379,state=online,offset=208037514,lag=1
+connected_replicas:1
+replica0:ip=10.133.5.21,port=6379,state=online,offset=208037514,lag=1
 master_repl_offset:208037658
 repl_backlog_active:1
 repl_backlog_size:1048576
@@ -908,21 +908,21 @@ repl_backlog_first_byte_offset:206989083
 repl_backlog_histlen:1048576
 ```
 
-When it's a `slave`, you will see details of the master connection and if
+When it's a `replica`, you will see details of the master connection and if
 its `up` or `down`:
 
 ```plaintext
 # Replication
-role:slave
+role:replica
 master_host:10.133.1.58
 master_port:6379
 master_link_status:up
 master_last_io_seconds_ago:1
 master_sync_in_progress:0
-slave_repl_offset:208096498
-slave_priority:100
-slave_read_only:1
-connected_slaves:0
+replica_repl_offset:208096498
+replica_priority:100
+replica_read_only:1
+connected_replicas:0
 master_repl_offset:0
 repl_backlog_active:0
 repl_backlog_size:1048576

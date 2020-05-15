@@ -214,7 +214,7 @@ Redis process.
 Single-core: Like PgBouncer, a single Redis process can only use one
 core. It does not support multi-threading.
 
-Dumb secondaries: Redis secondaries (aka slaves) don't actually
+Dumb secondaries: Redis secondaries (aka replicas) don't actually
 handle any load. Unlike PostgreSQL secondaries, they don't even serve
 read queries. They simply replicate data from the primary and take over
 only when the primary fails.
@@ -231,8 +231,8 @@ election to determine a new leader.
 No leader: A Redis cluster can get into a mode where there are no
 primaries. For example, this can happen if Redis nodes are misconfigured
 to follow the wrong node. Sometimes this requires forcing one node to
-become a primary via the [`SLAVEOF NO ONE`
-command](https://redis.io/commands/slaveof).
+become a primary via the [`REPLICAOF NO ONE`
+command](https://redis.io/commands/replicaof).
 
 ### Sidekiq
 

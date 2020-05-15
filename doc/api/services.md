@@ -1303,6 +1303,9 @@ GET /projects/:id/services/jenkins
 
 A continuous integration and build server
 
+NOTE: **Note:**
+This service was [removed in v13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/1600)
+
 ### Create/Edit Jenkins CI (Deprecated) service
 
 Set Jenkins CI (Deprecated) service for a project.

@@ -122,9 +122,9 @@ describe('new file modal component', () => {
 
   describe('submitForm', () => {
     let store;
+
     beforeEach(() => {
       store = createStore();
-
       store.state.entries = {
         'test-path/test': {
           name: 'test',
@@ -160,6 +160,16 @@ describe('new file modal component', () => {
       vm.submitForm();
 
       expect(createFlash).not.toHaveBeenCalled();
+    });
+
+    it('removes leading/trailing found in the new name', () => {
+      vm.open('rename', 'test-path/test');
+
+      vm.entryName = 'test-path /test';
+
+      vm.submitForm();
+
+      expect(vm.entryName).toBe('test-path/test');
     });
   });
 });

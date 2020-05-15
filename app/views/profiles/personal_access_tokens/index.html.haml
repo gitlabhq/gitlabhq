@@ -1,6 +1,8 @@
 - breadcrumb_title s_('AccessTokens|Access Tokens')
 - page_title s_('AccessTokens|Personal Access Tokens')
-- @content_class = "limit-container-width" unless fluid_layout
+- type = _('personal access token')
+- type_plural = _('personal access tokens')
+- @content_class = 'limit-container-width' unless fluid_layout
 
 .row.prepend-top-default
   .col-lg-4.profile-settings-sidebar
@@ -14,11 +16,21 @@
 
   .col-lg-8
     - if @new_personal_access_token
-      = render "shared/personal_access_tokens_created_container", new_token_value: @new_personal_access_token
+      = render 'shared/access_tokens/created_container',
+        type: type,
+        new_token_value: @new_personal_access_token
 
-    = render "shared/personal_access_tokens_form", path: profile_personal_access_tokens_path, impersonation: false, token: @personal_access_token, scopes: @scopes
+    = render 'shared/access_tokens/form',
+        type: type,
+        path: profile_personal_access_tokens_path,
+        token: @personal_access_token,
+        scopes: @scopes
 
-    = render "shared/personal_access_tokens_table", impersonation: false, active_tokens: @active_personal_access_tokens, inactive_tokens: @inactive_personal_access_tokens
+    = render 'shared/access_tokens/table',
+        type: type,
+        type_plural: type_plural,
+        active_tokens: @active_personal_access_tokens,
+        revoke_route_helper: ->(token) { revoke_profile_personal_access_token_path(token) }
 
 %hr
 .row.prepend-top-default
@@ -30,7 +42,7 @@
     %p
       = s_('AccessTokens|It cannot be used to access any other data.')
   .col-lg-8.feed-token-reset
-    = label_tag :feed_token, s_('AccessTokens|Feed token'), class: "label-bold"
+    = label_tag :feed_token, s_('AccessTokens|Feed token'), class: 'label-bold'
     = text_field_tag :feed_token, current_user.feed_token, class: 'form-control js-select-on-focus', readonly: true
     %p.form-text.text-muted
       - reset_link = link_to s_('AccessTokens|reset it'), [:reset, :feed_token, :profile], method: :put, data: { confirm: s_('AccessTokens|Are you sure? Any RSS or calendar URLs currently in use will stop working.') }
@@ -48,7 +60,7 @@
       %p
         = s_('AccessTokens|It cannot be used to access any other data.')
     .col-lg-8.incoming-email-token-reset
-      = label_tag :incoming_email_token, s_('AccessTokens|Incoming email token'), class: "label-bold"
+      = label_tag :incoming_email_token, s_('AccessTokens|Incoming email token'), class: 'label-bold'
       = text_field_tag :incoming_email_token, current_user.incoming_email_token, class: 'form-control js-select-on-focus', readonly: true
       %p.form-text.text-muted
         - reset_link = link_to s_('AccessTokens|reset it'), [:reset, :incoming_email_token, :profile], method: :put, data: { confirm: s_('AccessTokens|Are you sure? Any issue email addresses currently in use will stop working.') }

@@ -1120,7 +1120,7 @@ msgstr ""
 msgid "Active"
 msgstr ""
 
-msgid "Active %{type} Tokens (%{token_length})"
+msgid "Active %{type} (%{token_length})"
 msgstr ""
 
 msgid "Active Sessions"
@@ -1173,7 +1173,7 @@ msgstr ""
 msgid "Add Zoom meeting"
 msgstr ""
 
-msgid "Add a %{type} token"
+msgid "Add a %{type}"
 msgstr ""
 
 msgid "Add a GPG key"
@@ -1222,6 +1222,9 @@ msgid "Add an SSH key"
 msgstr ""
 
 msgid "Add an existing issue"
+msgstr ""
+
+msgid "Add an impersonation token"
 msgstr ""
 
 msgid "Add an issue"
@@ -2659,7 +2662,7 @@ msgstr ""
 msgid "Are you sure you want to reset the health check token?"
 msgstr ""
 
-msgid "Are you sure you want to revoke this %{type} Token? This action cannot be undone."
+msgid "Are you sure you want to revoke this %{type}? This action cannot be undone."
 msgstr ""
 
 msgid "Are you sure you want to revoke this nickname?"
@@ -4358,6 +4361,9 @@ msgstr ""
 msgid "Close"
 msgstr ""
 
+msgid "Close %{display_issuable_type}"
+msgstr ""
+
 msgid "Close %{tabname}"
 msgstr ""
 
@@ -6042,6 +6048,9 @@ msgstr ""
 msgid "Copy %{proxy_url}"
 msgstr ""
 
+msgid "Copy %{type}"
+msgstr ""
+
 msgid "Copy Account ID to clipboard"
 msgstr ""
 
@@ -6087,9 +6096,6 @@ msgstr ""
 msgid "Copy file path"
 msgstr ""
 
-msgid "Copy impersonation token"
-msgstr ""
-
 msgid "Copy key"
 msgstr ""
 
@@ -6103,9 +6109,6 @@ msgid "Copy link"
 msgstr ""
 
 msgid "Copy link to chart"
-msgstr ""
-
-msgid "Copy personal access token"
 msgstr ""
 
 msgid "Copy reference"
@@ -6204,7 +6207,7 @@ msgstr ""
 msgid "Create %{environment}"
 msgstr ""
 
-msgid "Create %{type} token"
+msgid "Create %{type}"
 msgstr ""
 
 msgid "Create New Directory"
@@ -8145,6 +8148,9 @@ msgid "Enter the merge request description"
 msgstr ""
 
 msgid "Enter the merge request title"
+msgstr ""
+
+msgid "Enter the name of your application, and we'll return a unique %{type}."
 msgstr ""
 
 msgid "Enter your password to approve"
@@ -11337,6 +11343,9 @@ msgstr ""
 msgid "ImageViewerDimensions|W"
 msgstr ""
 
+msgid "Impersonation Tokens"
+msgstr ""
+
 msgid "Impersonation has been disabled"
 msgstr ""
 
@@ -11952,6 +11961,18 @@ msgid "It seems like the Dependency Scanning job ran successfully, but no depend
 msgstr ""
 
 msgid "It's you"
+msgstr ""
+
+msgid "Iterations"
+msgstr ""
+
+msgid "Iteration|Dates cannot overlap with other existing Iterations"
+msgstr ""
+
+msgid "Iteration|cannot be in the past"
+msgstr ""
+
+msgid "Iteration|cannot be more than 500 years in the future"
 msgstr ""
 
 msgid "Jaeger URL"
@@ -13904,6 +13925,9 @@ msgid_plural "New Issues"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "New Iteration"
+msgstr ""
+
 msgid "New Jira import"
 msgstr ""
 
@@ -15181,9 +15205,6 @@ msgstr ""
 msgid "Pick a name"
 msgstr ""
 
-msgid "Pick a name for the application, and we'll give you a unique %{type} token."
-msgstr ""
-
 msgid "Pin code"
 msgstr ""
 
@@ -15982,9 +16003,6 @@ msgstr ""
 msgid "Profiles|Give your individual key a title"
 msgstr ""
 
-msgid "Profiles|Impersonation"
-msgstr ""
-
 msgid "Profiles|Include private contributions on my profile"
 msgstr ""
 
@@ -16028,9 +16046,6 @@ msgid "Profiles|Organization"
 msgstr ""
 
 msgid "Profiles|Path"
-msgstr ""
-
-msgid "Profiles|Personal Access"
 msgstr ""
 
 msgid "Profiles|Position and size your new avatar"
@@ -16177,12 +16192,6 @@ msgstr ""
 msgid "Profiles|e.g. My MacBook key"
 msgstr ""
 
-msgid "Profiles|impersonation"
-msgstr ""
-
-msgid "Profiles|personal access"
-msgstr ""
-
 msgid "Profiles|username"
 msgstr ""
 
@@ -16232,6 +16241,9 @@ msgid "Project '%{project_name}' was successfully updated."
 msgstr ""
 
 msgid "Project '%{project_name}' will be deleted on %{date}"
+msgstr ""
+
+msgid "Project Access Tokens"
 msgstr ""
 
 msgid "Project Audit Events"
@@ -17711,6 +17723,9 @@ msgstr ""
 msgid "Reopen"
 msgstr ""
 
+msgid "Reopen %{display_issuable_type}"
+msgstr ""
+
 msgid "Reopen epic"
 msgstr ""
 
@@ -17759,7 +17774,13 @@ msgstr ""
 msgid "Repo by URL"
 msgstr ""
 
+msgid "Report %{display_issuable_type} that are abusive, inappropriate or spam."
+msgstr ""
+
 msgid "Report Type: %{report_type}"
+msgstr ""
+
+msgid "Report abuse"
 msgstr ""
 
 msgid "Report abuse to admin"
@@ -21938,6 +21959,9 @@ msgstr ""
 msgid "This project does not have billing enabled. To create a cluster, <a href=%{linkToBilling} target=\"_blank\" rel=\"noopener noreferrer\">enable billing <i class=\"fa fa-external-link\" aria-hidden=\"true\"></i></a> and try again."
 msgstr ""
 
+msgid "This project has no active access tokens."
+msgstr ""
+
 msgid "This project is archived and cannot be commented on."
 msgstr ""
 
@@ -21983,7 +22007,7 @@ msgstr ""
 msgid "This user cannot be unlocked manually from GitLab"
 msgstr ""
 
-msgid "This user has no active %{type} Tokens."
+msgid "This user has no active %{type}."
 msgstr ""
 
 msgid "This user has no identities"
@@ -22486,6 +22510,9 @@ msgid "Toggle commit description"
 msgstr ""
 
 msgid "Toggle commit list"
+msgstr ""
+
+msgid "Toggle dropdown"
 msgstr ""
 
 msgid "Toggle emoji award"
@@ -24447,6 +24474,9 @@ msgstr ""
 msgid "You can also upload existing files from your computer using the instructions below."
 msgstr ""
 
+msgid "You can also use project access tokens to authenticate against Git over HTTP."
+msgstr ""
+
 msgid "You can always edit this later"
 msgstr ""
 
@@ -24472,6 +24502,9 @@ msgid "You can easily install a Runner on a Kubernetes cluster. %{link_to_help_p
 msgstr ""
 
 msgid "You can filter by 'days to merge' by clicking on the columns in the chart."
+msgstr ""
+
+msgid "You can generate an access token scoped to this project for each application to use the GitLab API."
 msgstr ""
 
 msgid "You can get started by cloning the repository or start adding files to it with one of the following options."
@@ -24753,6 +24786,9 @@ msgstr ""
 msgid "You will receive notifications only for comments in which you were @mentioned"
 msgstr ""
 
+msgid "You won't be able to create new projects because you have reached your project limit."
+msgstr ""
+
 msgid "You won't be able to pull or push project code via %{protocol} until you %{set_password_link} on your account"
 msgstr ""
 
@@ -24844,9 +24880,6 @@ msgid "Your Gitlab Gold trial will last 30 days after which point you can keep y
 msgstr ""
 
 msgid "Your Groups"
-msgstr ""
-
-msgid "Your New Personal Access Token"
 msgstr ""
 
 msgid "Your Personal Access Tokens will expire in %{days_to_expire} days or less"
@@ -24955,6 +24988,9 @@ msgid "Your message here"
 msgstr ""
 
 msgid "Your name"
+msgstr ""
+
+msgid "Your new %{type}"
 msgstr ""
 
 msgid "Your new SCIM token"
@@ -25514,6 +25550,12 @@ msgstr ""
 msgid "image diff"
 msgstr ""
 
+msgid "impersonation token"
+msgstr ""
+
+msgid "impersonation tokens"
+msgstr ""
+
 msgid "import flow"
 msgstr ""
 
@@ -26053,6 +26095,12 @@ msgstr ""
 msgid "per day"
 msgstr ""
 
+msgid "personal access token"
+msgstr ""
+
+msgid "personal access tokens"
+msgstr ""
+
 msgid "pipeline"
 msgstr ""
 
@@ -26080,6 +26128,12 @@ msgid "project"
 msgid_plural "projects"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "project access token"
+msgstr ""
+
+msgid "project access tokens"
+msgstr ""
 
 msgid "project avatar"
 msgstr ""

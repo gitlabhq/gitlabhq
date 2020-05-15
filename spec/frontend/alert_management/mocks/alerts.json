@@ -6,7 +6,7 @@
       "eventCount": 7,
       "startedAt": "2020-04-17T23:18:14.996Z",
       "endedAt": "2020-04-17T23:18:14.996Z",
-      "status": "triggered"
+      "status": "TRIGGERED"
     },
     {
       "iid": "1527543",
@@ -15,7 +15,7 @@
       "eventCount": 1,
       "startedAt": "2020-04-17T23:18:14.996Z",
       "endedAt": "2020-04-17T23:18:14.996Z",
-      "status": "acknowledged"
+      "status": "ACKNOWLEDGED"
     },
     {
       "iid": "1527544",
@@ -24,6 +24,6 @@
       "eventCount": 4,
       "startedAt": "2020-04-17T23:18:14.996Z",
       "endedAt": "2020-04-17T23:18:14.996Z",
-      "status": "resolved"
+      "status": "RESOLVED"
     }
   ]

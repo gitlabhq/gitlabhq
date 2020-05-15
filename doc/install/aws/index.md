@@ -79,7 +79,7 @@ As we'll be using [Amazon S3 object storage](#amazon-s3-object-storage), our EC2
             "Effect": "Allow",
             "Action": [
                 "s3:AbortMultipartUpload",
-                "s3::CompleteMultipartUpload",
+                "s3:CompleteMultipartUpload",
                 "s3:ListBucket",
                 "s3:PutObject",
                 "s3:GetObject",

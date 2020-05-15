@@ -52,4 +52,7 @@ class ProjectRepositoryStorageMove < ApplicationRecord
     state :finished, value: 4
     state :failed, value: 5
   end
+
+  scope :order_created_at_desc, -> { order(created_at: :desc) }
+  scope :with_projects, -> { includes(project: :route) }
 end

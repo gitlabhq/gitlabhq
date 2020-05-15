@@ -9,7 +9,7 @@ describe GitlabSchema.types['Release'] do
     expected_fields = %w[
       tag_name tag_path
       description description_html
-      name evidence_sha milestones author commit
+      name milestones author commit
       created_at released_at
     ]
 

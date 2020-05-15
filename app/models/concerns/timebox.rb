@@ -53,7 +53,6 @@ module Timebox
 
     scope :of_projects, ->(ids) { where(project_id: ids) }
     scope :of_groups, ->(ids) { where(group_id: ids) }
-    scope :active, -> { with_state(:active) }
     scope :closed, -> { with_state(:closed) }
     scope :for_projects, -> { where(group: nil).includes(:project) }
     scope :with_title, -> (title) { where(title: title) }

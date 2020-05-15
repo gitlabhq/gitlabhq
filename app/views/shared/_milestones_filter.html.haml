@@ -1,13 +1,13 @@
 %ul.nav-links.mobile-separator.nav.nav-tabs
   %li{ class: milestone_class_for_state(params[:state], 'opened', true) }>
     = link_to milestones_filter_path(state: 'opened') do
-      Open
+      = _('Open')
       %span.badge.badge-pill= counts[:opened]
   %li{ class: milestone_class_for_state(params[:state], 'closed') }>
     = link_to milestones_filter_path(state: 'closed', sort: 'due_date_desc') do
-      Closed
+      = _('Closed')
       %span.badge.badge-pill= counts[:closed]
   %li{ class: milestone_class_for_state(params[:state], 'all') }>
     = link_to milestones_filter_path(state: 'all', sort: 'due_date_desc') do
-      All
+      = _('All')
       %span.badge.badge-pill= counts[:all]

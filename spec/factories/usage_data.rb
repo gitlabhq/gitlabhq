@@ -40,6 +40,16 @@ FactoryBot.define do
       create_list(:zoom_meeting, 2, project: projects[0], issue: projects[0].issues[2], issue_status: :removed)
       create(:sentry_issue, issue: projects[0].issues[0])
 
+      # Incident Labeled Issues
+      incident_label_attrs = IncidentManagement::CreateIssueService::INCIDENT_LABEL
+      incident_label = create(:label, project: projects[0], **incident_label_attrs)
+      create(:labeled_issue, project: projects[0], labels: [incident_label])
+      incident_group = create(:group)
+      incident_label_scoped_to_project = create(:label, project: projects[1], **incident_label_attrs)
+      incident_label_scoped_to_group = create(:group_label, group: incident_group, **incident_label_attrs)
+      create(:labeled_issue, project: projects[1], labels: [incident_label_scoped_to_project])
+      create(:labeled_issue, project: projects[1], labels: [incident_label_scoped_to_group])
+
       # Enabled clusters
       gcp_cluster = create(:cluster_provider_gcp, :created).cluster
       create(:cluster_provider_aws, :created)

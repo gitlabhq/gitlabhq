@@ -196,4 +196,30 @@ describe 'layouts/nav/sidebar/_project' do
       end
     end
   end
+
+  describe 'project access tokens' do
+    context 'self-managed instance' do
+      before do
+        allow(Gitlab).to receive(:com?).and_return(false)
+      end
+
+      it 'displays "Access Tokens" nav item' do
+        render
+
+        expect(rendered).to have_link('Access Tokens', href: project_settings_access_tokens_path(project))
+      end
+    end
+
+    context 'gitlab.com' do
+      before do
+        allow(Gitlab).to receive(:com?).and_return(true)
+      end
+
+      it 'does not display "Access Tokens" nav item' do
+        render
+
+        expect(rendered).not_to have_link('Access Tokens', href: project_settings_access_tokens_path(project))
+      end
+    end
+  end
 end

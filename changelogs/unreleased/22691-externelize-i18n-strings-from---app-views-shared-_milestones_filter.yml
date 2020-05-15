@@ -1,0 +1,5 @@
+---
+title: Externalize i18n strings from ./app/views/shared/_milestones_filter.html.haml
+merge_request: 32120
+author: Gilang Gumilar
+type: changed

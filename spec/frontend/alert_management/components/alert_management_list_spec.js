@@ -5,7 +5,6 @@ import {
   GlAlert,
   GlLoadingIcon,
   GlDropdown,
-  GlBadge,
   GlIcon,
   GlTab,
   GlDropdownItem,
@@ -28,7 +27,6 @@ describe('AlertManagementList', () => {
   const findLoader = () => wrapper.find(GlLoadingIcon);
   const findStatusDropdown = () => wrapper.find(GlDropdown);
   const findStatusFilterTabs = () => wrapper.findAll(GlTab);
-  const findNumberOfAlertsBadge = () => wrapper.findAll(GlBadge);
   const findDateFields = () => wrapper.findAll(TimeAgo);
   const findFirstStatusOption = () => findStatusDropdown().find(GlDropdownItem);
   const findSeverityFields = () => wrapper.findAll('[data-testid="severityField"]');
@@ -105,15 +103,6 @@ describe('AlertManagementList', () => {
         tabs.forEach((tab, i) => {
           expect(tab.text()).toContain(ALERTS_STATUS_TABS[i].title);
         });
-      });
-
-      it('should have number of items badge along with status tab', () => {
-        expect(findNumberOfAlertsBadge().length).toEqual(ALERTS_STATUS_TABS.length);
-        expect(
-          findNumberOfAlertsBadge()
-            .at(0)
-            .text(),
-        ).toEqual(`${mockAlerts.length}`);
       });
     });
 

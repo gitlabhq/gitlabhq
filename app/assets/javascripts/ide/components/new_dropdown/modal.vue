@@ -4,6 +4,7 @@ import flash from '~/flash';
 import { __, sprintf, s__ } from '~/locale';
 import { GlModal } from '@gitlab/ui';
 import { modalTypes } from '../../constants';
+import { trimPathComponents } from '../../utils';
 
 export default {
   components: {
@@ -51,6 +52,8 @@ export default {
   methods: {
     ...mapActions(['createTempEntry', 'renameEntry']),
     submitForm() {
+      this.entryName = trimPathComponents(this.entryName);
+
       if (this.modalType === modalTypes.rename) {
         if (this.entries[this.entryName] && !this.entries[this.entryName].deleted) {
           flash(

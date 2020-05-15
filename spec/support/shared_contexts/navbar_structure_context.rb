@@ -86,6 +86,7 @@ RSpec.shared_context 'project navbar structure' do
           _('Members'),
           _('Integrations'),
           _('Webhooks'),
+          _('Access Tokens'),
           _('Repository'),
           _('CI / CD'),
           _('Operations'),

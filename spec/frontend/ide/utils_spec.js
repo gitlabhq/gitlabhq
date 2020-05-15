@@ -1,5 +1,5 @@
 import { commitItemIconMap } from '~/ide/constants';
-import { getCommitIconMap, isTextFile, registerLanguages } from '~/ide/utils';
+import { getCommitIconMap, isTextFile, registerLanguages, trimPathComponents } from '~/ide/utils';
 import { decorateData } from '~/ide/stores/utils';
 import { languages } from 'monaco-editor';
 
@@ -101,6 +101,21 @@ describe('WebIDE utils', () => {
       entry.prevPath = 'foo/bar';
       entry.tempFile = true;
       expect(getCommitIconMap(entry)).toEqual(commitItemIconMap.modified);
+    });
+  });
+
+  describe('trimPathComponents', () => {
+    it.each`
+      input                           | output
+      ${'example path '}              | ${'example path'}
+      ${'p/somefile '}                | ${'p/somefile'}
+      ${'p /somefile '}               | ${'p/somefile'}
+      ${'p/ somefile '}               | ${'p/somefile'}
+      ${' p/somefile '}               | ${'p/somefile'}
+      ${'p/somefile  .md'}            | ${'p/somefile  .md'}
+      ${'path / to / some/file.doc '} | ${'path/to/some/file.doc'}
+    `('trims all path components in path: "$input"', ({ input, output }) => {
+      expect(trimPathComponents(input)).toEqual(output);
     });
   });
 

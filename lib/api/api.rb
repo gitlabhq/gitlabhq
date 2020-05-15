@@ -180,6 +180,7 @@ module API
       mount ::API::ProjectImport
       mount ::API::ProjectHooks
       mount ::API::ProjectMilestones
+      mount ::API::ProjectRepositoryStorageMoves
       mount ::API::Projects
       mount ::API::ProjectSnapshots
       mount ::API::ProjectSnippets

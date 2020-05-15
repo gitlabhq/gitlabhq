@@ -1,12 +1,25 @@
 <script>
 import * as Sentry from '@sentry/browser';
-import { GlAlert, GlIcon, GlLoadingIcon, GlSprintf, GlTabs, GlTab, GlButton } from '@gitlab/ui';
+import {
+  GlAlert,
+  GlIcon,
+  GlLoadingIcon,
+  GlDropdown,
+  GlDropdownItem,
+  GlSprintf,
+  GlTabs,
+  GlTab,
+  GlButton,
+} from '@gitlab/ui';
+import createFlash from '~/flash';
+import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import { s__ } from '~/locale';
 import query from '../graphql/queries/details.query.graphql';
 import { fetchPolicies } from '~/lib/graphql';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { ALERTS_SEVERITY_LABELS } from '../constants';
+import updateAlertStatus from '../graphql/mutations/update_alert_status.graphql';
 
 export default {
   statuses: {
@@ -29,6 +42,8 @@ export default {
     GlIcon,
     GlLoadingIcon,
     GlSprintf,
+    GlDropdown,
+    GlDropdownItem,
     GlTab,
     GlTabs,
     GlButton,
@@ -85,8 +100,27 @@ export default {
     },
   },
   methods: {
+    capitalizeFirstCharacter,
     dismissError() {
       this.isErrorDismissed = true;
+    },
+    updateAlertStatus(status) {
+      this.$apollo
+        .mutate({
+          mutation: updateAlertStatus,
+          variables: {
+            iid: this.alertId,
+            status: status.toUpperCase(),
+            projectPath: this.projectPath,
+          },
+        })
+        .catch(() => {
+          createFlash(
+            s__(
+              'AlertManagement|There was an error while updating the status of the alert. Please try again.',
+            ),
+          );
+        });
     },
   },
 };
@@ -97,7 +131,7 @@ export default {
       {{ $options.i18n.errorMsg }}
     </gl-alert>
     <div v-if="loading"><gl-loading-icon size="lg" class="gl-mt-5" /></div>
-    <div v-if="alert" class="alert-management-details">
+    <div v-if="alert" class="alert-management-details gl-relative">
       <div
         class="gl-display-flex gl-justify-content-space-between gl-align-items-center gl-px-1 gl-py-6 gl-border-b-1 gl-border-b-gray-200 gl-border-b-solid"
       >
@@ -137,6 +171,28 @@ export default {
       >
         <h2 data-testid="title">{{ alert.title }}</h2>
       </div>
+      <gl-dropdown
+        :text="capitalizeFirstCharacter(alert.status.toLowerCase())"
+        class="gl-absolute gl-right-0"
+        right
+      >
+        <gl-dropdown-item
+          v-for="(label, field) in $options.statuses"
+          :key="field"
+          data-testid="statusDropdownItem"
+          class="gl-vertical-align-middle"
+          @click="updateAlertStatus(label)"
+        >
+          <span class="d-flex">
+            <gl-icon
+              class="flex-shrink-0 append-right-4"
+              :class="{ invisible: label.toUpperCase() !== alert.status }"
+              name="mobile-issue-close"
+            />
+            {{ label }}
+          </span>
+        </gl-dropdown-item>
+      </gl-dropdown>
       <gl-tabs v-if="alert" data-testid="alertDetailsTabs">
         <gl-tab data-testid="overviewTab" :title="$options.i18n.overviewTitle">
           <ul class="pl-4 mb-n1">

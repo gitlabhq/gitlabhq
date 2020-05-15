@@ -152,8 +152,8 @@ The following Elasticsearch settings are available:
 | `AWS Access Key`                                      | The AWS access key. |
 | `AWS Secret Access Key`                               | The AWS secret access key. |
 | `Maximum field length`                                | See [the explanation in instance limits.](../administration/instance_limits.md#maximum-field-length). |
-| `Maximum bulk request size (MiB)` | Repository indexing uses the Elasticsearch bulk request API. This setting determines the maximum size of an individual bulk request during these operations. |
-| `Bulk request concurrency` | Each repository indexing operation may submit bulk requests in parallel. This increases indexing performance, but fills the Elasticsearch bulk requests queue faster. |
+| `Maximum bulk request size (MiB)` | The Maximum Bulk Request size is used by GitLab's Golang-based indexer processes and indicates how much data it ought to collect (and store in memory) in a given indexing process before submitting the payload to Elasticsearch’s Bulk API. This setting works in tandem with the Bulk request concurrency setting (see below) and needs to accomodate the resource constraints of both the Elasticsearch host(s) and the host(s) running GitLab's Golang-based indexer either from the `gitlab-rake` command or the Sidekiq tasks. |
+| `Bulk request concurrency` | The Bulk request concurrency indicates how many of GitLab's Golang-based indexer processes (or threads) can run in parallel to collect data to subsequently submit to Elasticsearch’s Bulk API. This increases indexing performance, but fills the Elasticsearch bulk requests queue faster. This setting works in tandem with the Maximum bulk request size setting (see above) and needs to accomodate the resource constraints of both the Elasticsearch host(s) and the host(s) running GitLab's Golang-based indexer either from the `gitlab-rake` command or the Sidekiq tasks. |
 
 ### Limiting namespaces and projects
 
