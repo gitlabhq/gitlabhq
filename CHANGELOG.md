@@ -2,6 +2,17 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 12.10.6 (2020-05-15)
+
+### Fixed (5 changes)
+
+- Fix duplicate index removal on ci_pipelines.project_id. !31043
+- Fix 500 on creating an invalid domains and verification. !31190
+- Fix incorrect number of errors returned when querying sentry errors. !31252
+- Add instance column to services table if it's missing. !31631
+- Fix incorrect regex used in FileUploader#extract_dynamic_path. !32271
+
+
 ## 12.10.5 (2020-05-13)
 
 ### Added (1 change)

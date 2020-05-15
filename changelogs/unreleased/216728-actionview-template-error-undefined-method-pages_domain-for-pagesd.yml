@@ -1,5 +1,0 @@
----
-title: Fix 500 on creating an invalid domains and verification
-merge_request: 31190
-author:
-type: fixed
