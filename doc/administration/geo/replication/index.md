@@ -208,7 +208,7 @@ For information on how to update your Geo nodes to the latest GitLab version, se
 
 ### Configuring Geo for multiple servers
 
-For information on configuring Geo for multiple servers, see [Geo for multiple servers](high_availability.md).
+For information on configuring Geo for multiple servers, see [Geo for multiple servers](multiple_servers.md).
 
 ### Configuring Geo with Object Storage
 

@@ -18,10 +18,22 @@ measuring the accessibility of web sites, and has built a simple
 This job outputs accessibility violations, warnings, and notices for each page
 analyzed to a file called `accessibility`.
 
+## Accessibility Merge Request widget
+
 [Since GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/39425), in addition to the report artifact that is created, GitLab will also show the
 Accessibility Report in the merge request widget area:
 
 ![Accessibility Merge Request Widget](img/accessibility_mr_widget_v13_0.png)
+
+This widget comes with the `:accessibility_report_view` feature flag disabled by default while we test feature stability.
+Once we have determined the widget is stable, this feature will be enabled by default.
+
+To enable this feature, ask a GitLab administrator with [Rails console access](../../../administration/feature_flags.md#how-to-enable-and-disable-features-behind-flags) to run the
+following command:
+
+```ruby
+Feature.enable(:accessibility_report_view)
+```
 
 ## Configure Accessibility Testing
 

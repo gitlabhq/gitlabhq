@@ -239,7 +239,9 @@ jest:
   parallel: 2
 
 jest-integration:
-  extends: .frontend-job-base
+  extends:
+    - .frontend-job-base
+    - .frontend:rules:default-frontend-jobs
   script:
     - date
     - yarn jest:integration --ci

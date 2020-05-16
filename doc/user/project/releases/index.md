@@ -354,6 +354,39 @@ terminal.
 Read the [GitLab Releaser documentation](https://gitlab.com/gitlab-org/gitlab-releaser/-/tree/master/docs/index.md)
 for details.
 
+## Set a deploy freeze
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/29382) in GitLab 13.0.
+
+With a deploy freeze, you can prevent an unintended production release during a
+period of time you specify, whether a company event or public holiday. You can
+now rely on the enforcement of policies that are typically outside the scope of
+GitLab to reduce uncertainty and risk when automating deployments.
+
+Deploy freeze periods are set at the Project level, and may be created and
+managed using the [Freeze Periods API](../../../api/freeze_periods.md).
+Each Freeze Period has a `freeze_start` and a `freeze_end`, which are defined
+as [crontab](https://crontab.guru/) entries. If a project contains multiple
+freeze periods, all will apply, and should they overlap, the freeze covers the
+complete overlapped period.
+
+During pipeline processing, GitLab CI creates an environment variable named
+`$CI_ENVIRONMENT_FROZEN` if the currently executing job is within a
+Freeze Period.
+
+To take advantage of this variable, create a `rules` entry in your
+`gitlab-ci.yaml` to prevent the deployment job from executing.
+
+For example:
+
+```yaml
+deploy_to_production:
+  stage: deploy
+  script: deploy_to_prod.sh
+  rules:
+    - if: $CI_ENVIRONMENT_FROZEN == null
+```
+
 <!-- ## Troubleshooting
 
 Include any troubleshooting steps that you can foresee. If you know beforehand what issues
