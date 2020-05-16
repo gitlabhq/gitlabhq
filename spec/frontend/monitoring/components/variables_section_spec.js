@@ -1,10 +1,13 @@
 import { shallowMount } from '@vue/test-utils';
 import Vuex from 'vuex';
-import { GlFormInput } from '@gitlab/ui';
 import VariablesSection from '~/monitoring/components/variables_section.vue';
+import CustomVariable from '~/monitoring/components/variables/custom_variable.vue';
+import TextVariable from '~/monitoring/components/variables/text_variable.vue';
 import { updateHistory, mergeUrlParams } from '~/lib/utils/url_utility';
 import { createStore } from '~/monitoring/stores';
+import { convertVariablesForURL } from '~/monitoring/utils';
 import * as types from '~/monitoring/stores/mutation_types';
+import { mockTemplatingDataResponses } from '../mock_data';
 
 jest.mock('~/lib/utils/url_utility', () => ({
   updateHistory: jest.fn(),
@@ -15,8 +18,9 @@ describe('Metrics dashboard/variables section component', () => {
   let store;
   let wrapper;
   const sampleVariables = {
-    'var-label1': 'pod',
-    'var-label2': 'main',
+    label1: mockTemplatingDataResponses.simpleText.simpleText,
+    label2: mockTemplatingDataResponses.advText.advText,
+    label3: mockTemplatingDataResponses.simpleCustom.simpleCustom,
   };
 
   const createShallowWrapper = () => {
@@ -25,8 +29,8 @@ describe('Metrics dashboard/variables section component', () => {
     });
   };
 
-  const findAllFormInputs = () => wrapper.findAll(GlFormInput);
-  const getInputAt = i => findAllFormInputs().at(i);
+  const findTextInput = () => wrapper.findAll(TextVariable);
+  const findCustomInput = () => wrapper.findAll(CustomVariable);
 
   beforeEach(() => {
     store = createStore();
@@ -36,9 +40,9 @@ describe('Metrics dashboard/variables section component', () => {
 
   it('does not show the variables section', () => {
     createShallowWrapper();
-    const allInputs = findAllFormInputs();
+    const allInputs = findTextInput().length + findCustomInput().length;
 
-    expect(allInputs).toHaveLength(0);
+    expect(allInputs).toBe(0);
   });
 
   it('shows the variables section', () => {
@@ -46,15 +50,15 @@ describe('Metrics dashboard/variables section component', () => {
     wrapper.vm.$store.commit(`monitoringDashboard/${types.SET_VARIABLES}`, sampleVariables);
 
     return wrapper.vm.$nextTick(() => {
-      const allInputs = findAllFormInputs();
+      const allInputs = findTextInput().length + findCustomInput().length;
 
-      expect(allInputs).toHaveLength(Object.keys(sampleVariables).length);
+      expect(allInputs).toBe(Object.keys(sampleVariables).length);
     });
   });
 
   describe('when changing the variable inputs', () => {
     const fetchDashboardData = jest.fn();
-    const setVariableValues = jest.fn();
+    const updateVariableValues = jest.fn();
 
     beforeEach(() => {
       store = new Vuex.Store({
@@ -67,7 +71,7 @@ describe('Metrics dashboard/variables section component', () => {
             },
             actions: {
               fetchDashboardData,
-              setVariableValues,
+              updateVariableValues,
             },
           },
         },
@@ -76,39 +80,44 @@ describe('Metrics dashboard/variables section component', () => {
       createShallowWrapper();
     });
 
-    it('merges the url params and refreshes the dashboard when a form input is blurred', () => {
-      const firstInput = getInputAt(0);
+    it('merges the url params and refreshes the dashboard when a text-based variables inputs are updated', () => {
+      const firstInput = findTextInput().at(0);
 
-      firstInput.element.value = 'POD';
-      firstInput.vm.$emit('input');
-      firstInput.trigger('blur');
+      firstInput.vm.$emit('onUpdate', 'label1', 'test');
 
-      expect(setVariableValues).toHaveBeenCalled();
-      expect(mergeUrlParams).toHaveBeenCalledWith(sampleVariables, window.location.href);
-      expect(updateHistory).toHaveBeenCalled();
-      expect(fetchDashboardData).toHaveBeenCalled();
+      return wrapper.vm.$nextTick(() => {
+        expect(updateVariableValues).toHaveBeenCalled();
+        expect(mergeUrlParams).toHaveBeenCalledWith(
+          convertVariablesForURL(sampleVariables),
+          window.location.href,
+        );
+        expect(updateHistory).toHaveBeenCalled();
+        expect(fetchDashboardData).toHaveBeenCalled();
+      });
     });
 
-    it('merges the url params and refreshes the dashboard when a form input has received an enter key press', () => {
-      const firstInput = getInputAt(0);
+    it('merges the url params and refreshes the dashboard when a custom-based variables inputs are updated', () => {
+      const firstInput = findCustomInput().at(0);
 
-      firstInput.element.value = 'POD';
-      firstInput.vm.$emit('input');
-      firstInput.trigger('keyup.enter');
+      firstInput.vm.$emit('onUpdate', 'label1', 'test');
 
-      expect(setVariableValues).toHaveBeenCalled();
-      expect(mergeUrlParams).toHaveBeenCalledWith(sampleVariables, window.location.href);
-      expect(updateHistory).toHaveBeenCalled();
-      expect(fetchDashboardData).toHaveBeenCalled();
+      return wrapper.vm.$nextTick(() => {
+        expect(updateVariableValues).toHaveBeenCalled();
+        expect(mergeUrlParams).toHaveBeenCalledWith(
+          convertVariablesForURL(sampleVariables),
+          window.location.href,
+        );
+        expect(updateHistory).toHaveBeenCalled();
+        expect(fetchDashboardData).toHaveBeenCalled();
+      });
     });
 
     it('does not merge the url params and refreshes the dashboard if the value entered is not different that is what currently stored', () => {
-      const firstInput = getInputAt(0);
+      const firstInput = findTextInput().at(0);
 
-      firstInput.vm.$emit('input');
-      firstInput.trigger('keyup.enter');
+      firstInput.vm.$emit('onUpdate', 'label1', 'Simple text');
 
-      expect(setVariableValues).not.toHaveBeenCalled();
+      expect(updateVariableValues).not.toHaveBeenCalled();
       expect(mergeUrlParams).not.toHaveBeenCalled();
       expect(updateHistory).not.toHaveBeenCalled();
       expect(fetchDashboardData).not.toHaveBeenCalled();

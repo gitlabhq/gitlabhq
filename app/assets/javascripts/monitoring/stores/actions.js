@@ -3,6 +3,8 @@ import * as types from './mutation_types';
 import axios from '~/lib/utils/axios_utils';
 import createFlash from '~/flash';
 import { convertToFixedRange } from '~/lib/utils/datetime_range';
+import { parseTemplatingVariables } from './variable_mapping';
+import { mergeURLVariables } from '../utils';
 import {
   gqClient,
   parseEnvironmentsResponse,
@@ -159,6 +161,7 @@ export const receiveMetricsDashboardSuccess = ({ commit, dispatch }, { response 
 
   commit(types.SET_ALL_DASHBOARDS, all_dashboards);
   commit(types.RECEIVE_METRICS_DASHBOARD_SUCCESS, dashboard);
+  commit(types.SET_VARIABLES, mergeURLVariables(parseTemplatingVariables(dashboard.templating)));
   commit(types.SET_ENDPOINTS, convertObjectPropsToCamelCase(metrics_data));
 
   return dispatch('fetchDashboardData');
@@ -413,7 +416,7 @@ export const duplicateSystemDashboard = ({ state }, payload) => {
 
 // Variables manipulation
 
-export const setVariableValues = ({ commit }, updatedVariable) => {
+export const updateVariableValues = ({ commit }, updatedVariable) => {
   commit(types.UPDATE_VARIABLE_VALUES, updatedVariable);
 };
 

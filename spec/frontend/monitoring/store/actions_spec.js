@@ -26,7 +26,7 @@ import {
   clearExpandedPanel,
   setGettingStartedEmptyState,
   duplicateSystemDashboard,
-  setVariableValues,
+  updateVariableValues,
 } from '~/monitoring/stores/actions';
 import {
   gqClient,
@@ -40,6 +40,7 @@ import {
   deploymentData,
   environmentData,
   annotationsData,
+  mockTemplatingData,
   dashboardGitResponse,
   mockDashboardsErrorResponse,
 } from '../mock_data';
@@ -442,14 +443,14 @@ describe('Monitoring store actions', () => {
     });
   });
 
-  describe('setVariableValues', () => {
+  describe('updateVariableValues', () => {
     let mockedState;
     beforeEach(() => {
       mockedState = storeState();
     });
     it('should commit UPDATE_VARIABLE_VALUES mutation', done => {
       testAction(
-        setVariableValues,
+        updateVariableValues,
         { pod: 'POD' },
         mockedState,
         [
@@ -574,6 +575,33 @@ describe('Monitoring store actions', () => {
       );
       expect(dispatch).toHaveBeenCalledWith('fetchDashboardData');
     });
+
+    it('stores templating variables', () => {
+      const response = {
+        ...metricsDashboardResponse.dashboard,
+        ...mockTemplatingData.allVariableTypes.dashboard,
+      };
+
+      receiveMetricsDashboardSuccess(
+        { state, commit, dispatch },
+        {
+          response: {
+            ...metricsDashboardResponse,
+            dashboard: {
+              ...metricsDashboardResponse.dashboard,
+              ...mockTemplatingData.allVariableTypes.dashboard,
+            },
+          },
+        },
+      );
+
+      expect(commit).toHaveBeenCalledWith(
+        types.RECEIVE_METRICS_DASHBOARD_SUCCESS,
+
+        response,
+      );
+    });
+
     it('sets the dashboards loaded from the repository', () => {
       const params = {};
       const response = metricsDashboardResponse;

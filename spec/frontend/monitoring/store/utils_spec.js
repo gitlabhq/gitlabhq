@@ -5,7 +5,6 @@ import {
   parseAnnotationsResponse,
   removeLeadingSlash,
   mapToDashboardViewModel,
-  removePrefixFromLabels,
 } from '~/monitoring/stores/utils';
 import { annotationsData } from '../mock_data';
 import { NOT_IN_DB_PREFIX } from '~/monitoring/constants';
@@ -418,26 +417,5 @@ describe('removeLeadingSlash', () => {
     it(`removeLeadingSlash returns ${output} with input ${input}`, () => {
       expect(removeLeadingSlash(input)).toEqual(output);
     });
-  });
-});
-
-describe('removePrefixFromLabels', () => {
-  it.each`
-    input               | expected
-    ${undefined}        | ${''}
-    ${null}             | ${''}
-    ${''}               | ${''}
-    ${'    '}           | ${'    '}
-    ${'pod-1'}          | ${'pod-1'}
-    ${'pod-var-1'}      | ${'pod-var-1'}
-    ${'pod-1-var'}      | ${'pod-1-var'}
-    ${'podvar--1'}      | ${'podvar--1'}
-    ${'povar-d-1'}      | ${'povar-d-1'}
-    ${'var-pod-1'}      | ${'pod-1'}
-    ${'var-var-pod-1'}  | ${'var-pod-1'}
-    ${'varvar-pod-1'}   | ${'varvar-pod-1'}
-    ${'var-pod-1-var-'} | ${'pod-1-var-'}
-  `('removePrefixFromLabels returns $expected with input $input', ({ input, expected }) => {
-    expect(removePrefixFromLabels(input)).toEqual(expected);
   });
 });

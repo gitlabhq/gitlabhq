@@ -1,5 +1,4 @@
 import { isString } from 'lodash';
-import { addPrefixToLabels } from './utils';
 import { VARIABLE_TYPES } from '../constants';
 
 /**
@@ -56,15 +55,20 @@ const normalizeCustomVariableOptions = ({ default: defaultOpt = false, text, val
  * Custom advanced variables are rendered as dropdown elements in the dashboard
  * header. This method parses advanced custom variables.
  *
+ * The default value is the option with default set to true or the first option
+ * if none of the options have default prop true.
+ *
  * @param {Object} advVariable advance custom variable
  * @returns {Object}
  */
 const customAdvancedVariableParser = advVariable => {
-  const options = advVariable?.options?.values ?? [];
+  const options = (advVariable?.options?.values ?? []).map(normalizeCustomVariableOptions);
+  const defaultOpt = options.find(opt => opt.default === true) || options[0];
   return {
     type: VARIABLE_TYPES.custom,
     label: advVariable.label,
-    options: options.map(normalizeCustomVariableOptions),
+    value: defaultOpt?.value,
+    options,
   };
 };
 
@@ -83,6 +87,9 @@ const parseSimpleCustomOptions = opt => ({ text: opt, value: opt });
  *
  * Simple custom variables do not have labels so its set to null here.
  *
+ * The default value is set to the first option as the user cannot
+ * set a default value for this format
+ *
  * @param {Array} customVariable array of options
  * @returns {Object}
  */
@@ -90,6 +97,7 @@ const customSimpleVariableParser = simpleVar => {
   const options = (simpleVar || []).map(parseSimpleCustomOptions);
   return {
     type: VARIABLE_TYPES.custom,
+    value: options[0].value,
     label: null,
     options: options.map(normalizeCustomVariableOptions),
   };
@@ -150,7 +158,7 @@ export const parseTemplatingVariables = ({ variables = {} } = {}) =>
     if (parsedVar) {
       acc[key] = {
         ...parsedVar,
-        label: addPrefixToLabels(parsedVar.label || key),
+        label: parsedVar.label || key,
       };
     }
     return acc;

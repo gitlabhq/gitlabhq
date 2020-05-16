@@ -141,8 +141,8 @@ module.exports = {
   output: {
     path: path.join(ROOT_PATH, 'public/assets/webpack'),
     publicPath: '/assets/webpack/',
-    filename: IS_PRODUCTION ? '[name].[chunkhash:8].bundle.js' : '[name].bundle.js',
-    chunkFilename: IS_PRODUCTION ? '[name].[chunkhash:8].chunk.js' : '[name].chunk.js',
+    filename: IS_PRODUCTION ? '[name].[contenthash:8].bundle.js' : '[name].bundle.js',
+    chunkFilename: IS_PRODUCTION ? '[name].[contenthash:8].chunk.js' : '[name].chunk.js',
     globalObject: 'this', // allow HMR and web workers to play nice
   },
 
@@ -191,7 +191,7 @@ module.exports = {
         test: /icons\.svg$/,
         loader: 'file-loader',
         options: {
-          name: '[name].[hash:8].[ext]',
+          name: '[name].[contenthash:8].[ext]',
         },
       },
       {
@@ -210,7 +210,7 @@ module.exports = {
           {
             loader: 'worker-loader',
             options: {
-              name: '[name].[hash:8].worker.js',
+              name: '[name].[contenthash:8].worker.js',
               inline: IS_DEV_SERVER,
             },
           },
@@ -222,7 +222,7 @@ module.exports = {
         exclude: /node_modules/,
         loader: 'file-loader',
         options: {
-          name: '[name].[hash:8].[ext]',
+          name: '[name].[contenthash:8].[ext]',
         },
       },
       {
@@ -232,7 +232,7 @@ module.exports = {
           {
             loader: 'css-loader',
             options: {
-              name: '[name].[hash:8].[ext]',
+              name: '[name].[contenthash:8].[ext]',
             },
           },
         ],
@@ -242,13 +242,15 @@ module.exports = {
         include: /node_modules\/katex\/dist\/fonts/,
         loader: 'file-loader',
         options: {
-          name: '[name].[hash:8].[ext]',
+          name: '[name].[contenthash:8].[ext]',
         },
       },
     ],
   },
 
   optimization: {
+    // Replace 'hashed' with 'deterministic' in webpack 5
+    moduleIds: 'hashed',
     runtimeChunk: 'single',
     splitChunks: {
       maxInitialRequests: 4,

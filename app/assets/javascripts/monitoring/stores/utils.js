@@ -2,7 +2,7 @@ import { slugify } from '~/lib/utils/text_utility';
 import createGqClient, { fetchPolicies } from '~/lib/graphql';
 import { SUPPORTED_FORMATS } from '~/lib/utils/unit_format';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { NOT_IN_DB_PREFIX, VARIABLE_PREFIX } from '../constants';
+import { NOT_IN_DB_PREFIX } from '../constants';
 
 export const gqClient = createGqClient(
   {},
@@ -229,25 +229,3 @@ export const normalizeQueryResult = timeSeries => {
 
   return normalizedResult;
 };
-
-/**
- * Variable labels are used as names for the dropdowns and also
- * as URL params. Prefixing the name reduces the risk of
- * collision with other URL params
- *
- * @param {String} label label for the template variable
- * @returns {String}
- */
-export const addPrefixToLabels = label => `${VARIABLE_PREFIX}${label}`;
-
-/**
- * Before the templating variables are passed to the backend the
- * prefix needs to be removed.
- *
- * This method removes the prefix at the beginning of the string.
- *
- * @param {String} label label to remove prefix from
- * @returns {String}
- */
-export const removePrefixFromLabels = label =>
-  (label || '').replace(new RegExp(`^${VARIABLE_PREFIX}`), '');

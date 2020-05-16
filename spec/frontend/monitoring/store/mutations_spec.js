@@ -427,18 +427,11 @@ describe('Monitoring mutations', () => {
       mutations[types.SET_VARIABLES](stateCopy, {});
     });
 
-    it('ignores updates that are not already in promVariables', () => {
-      mutations[types.SET_VARIABLES](stateCopy, { environment: 'prod' });
-      mutations[types.UPDATE_VARIABLE_VALUES](stateCopy, { pod: 'new pod' });
+    it('updates only the value of the variable in promVariables', () => {
+      mutations[types.SET_VARIABLES](stateCopy, { environment: { value: 'prod', type: 'text' } });
+      mutations[types.UPDATE_VARIABLE_VALUES](stateCopy, { key: 'environment', value: 'new prod' });
 
-      expect(stateCopy.promVariables).toEqual({ environment: 'prod' });
-    });
-
-    it('only updates existing variables', () => {
-      mutations[types.SET_VARIABLES](stateCopy, { pod: 'POD' });
-      mutations[types.UPDATE_VARIABLE_VALUES](stateCopy, { pod: 'new pod' });
-
-      expect(stateCopy.promVariables).toEqual({ pod: 'new pod' });
+      expect(stateCopy.promVariables).toEqual({ environment: { value: 'new prod', type: 'text' } });
     });
   });
 });
