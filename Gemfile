@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '~> 6.0.2.2'
+gem 'rails', '~> 6.0.3'
 
 gem 'bootsnap', '~> 1.4.6'
 
@@ -293,7 +293,7 @@ gem 'base32', '~> 0.3.0'
 gem "gitlab-license", "~> 1.0"
 
 # Protect against bruteforcing
-gem 'rack-attack', '~> 6.2.0'
+gem 'rack-attack', '~> 6.3.0'
 
 # Sentry integration
 gem 'sentry-raven', '~> 2.9'
