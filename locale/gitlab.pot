@@ -15703,6 +15703,9 @@ msgstr ""
 msgid "Point to any links you like: documentation, built binaries, or other related materials. These can be internal or external links from your GitLab instance. Duplicate URLs are not allowed."
 msgstr ""
 
+msgid "Pre-defined push rules."
+msgstr ""
+
 msgid "Preferences"
 msgstr ""
 
@@ -18275,6 +18278,9 @@ msgid "Rollback"
 msgstr ""
 
 msgid "Rook"
+msgstr ""
+
+msgid "Rules that define what git pushes are accepted for a project in this group. All newly created projects in this group will use these settings."
 msgstr ""
 
 msgid "Rules that define what git pushes are accepted for a project. All newly created projects will use these settings."

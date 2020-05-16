@@ -10,7 +10,42 @@ describe 'Group navbar' do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
 
+  let(:structure) do
+    [
+      {
+        nav_item: _('Group overview'),
+        nav_sub_items: [
+          _('Details'),
+          _('Activity')
+        ]
+      },
+      {
+        nav_item: _('Issues'),
+        nav_sub_items: [
+          _('List'),
+          _('Board'),
+          _('Labels'),
+          _('Milestones')
+        ]
+      },
+      {
+        nav_item: _('Merge Requests'),
+        nav_sub_items: []
+      },
+      {
+        nav_item: _('Kubernetes'),
+        nav_sub_items: []
+      },
+      (analytics_nav_item if Gitlab.ee?),
+      {
+        nav_item: _('Members'),
+        nav_sub_items: []
+      }
+    ]
+  end
+
   before do
+    stub_feature_flags(group_push_rules: false)
     group.add_maintainer(user)
     sign_in(user)
   end
