@@ -97,6 +97,13 @@
     }
   }
 
+  @include media-breakpoint-down(xs) {
+    // TODO Remove in favour of a details CSS page
+    [data-testid='createIssueBtn'] {
+      width: 100%;
+    }
+  }
+
   .gl-tab-nav-item {
     color: $gl-gray-600;
 

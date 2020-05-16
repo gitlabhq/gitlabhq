@@ -133,30 +133,34 @@ export default {
     <div v-if="loading"><gl-loading-icon size="lg" class="gl-mt-5" /></div>
     <div v-if="alert" class="alert-management-details gl-relative">
       <div
-        class="gl-display-flex gl-justify-content-space-between gl-align-items-center gl-px-1 gl-py-6 gl-border-b-1 gl-border-b-gray-200 gl-border-b-solid"
+        class="gl-display-flex gl-justify-content-space-between gl-align-items-baseline gl-px-1 py-3 py-md-4 gl-border-b-1 gl-border-b-gray-200 gl-border-b-solid flex-column flex-sm-row"
       >
-        <div data-testid="alert-header">
+        <div
+          data-testid="alert-header"
+          class="gl-display-flex gl-align-items-center gl-justify-content-center"
+        >
           <div
             class="gl-display-inline-flex gl-align-items-center gl-justify-content-space-between"
           >
             <gl-icon
-              class="gl-mr-3"
+              class="gl-mr-3 align-middle"
               :size="12"
               :name="`severity-${alert.severity.toLowerCase()}`"
               :class="`icon-${alert.severity.toLowerCase()}`"
             />
             <strong>{{ $options.severityLabels[alert.severity] }}</strong>
           </div>
-          <span class="gl-shim-mx-2">&bull;</span>
+          <span class="mx-2">&bull;</span>
           <gl-sprintf :message="reportedAtMessage">
             <template #when>
-              <time-ago-tooltip :time="alert.createdAt" />
+              <time-ago-tooltip :time="alert.createdAt" class="gl-ml-3" />
             </template>
             <template #tool>{{ alert.monitoringTool }}</template>
           </gl-sprintf>
         </div>
         <gl-button
           v-if="glFeatures.createIssueFromAlertEnabled"
+          class="gl-mt-3 mt-sm-0 align-self-center align-self-sm-baseline"
           data-testid="createIssueBtn"
           :href="newIssuePath"
           category="primary"
