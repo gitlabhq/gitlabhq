@@ -63,6 +63,9 @@ describe Ci::RetryBuildService do
     end
 
     before do
+      # Test correctly behaviour of deprecated artifact because it can be still in use
+      stub_feature_flags(drop_license_management_artifact: false)
+
       # Make sure that build has both `stage_id` and `stage` because FactoryBot
       # can reset one of the fields when assigning another. We plan to deprecate
       # and remove legacy `stage` column in the future.

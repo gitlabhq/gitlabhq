@@ -9419,6 +9419,9 @@ msgstr ""
 msgid "File deleted"
 msgstr ""
 
+msgid "File format is no longer supported"
+msgstr ""
+
 msgid "File hooks are similar to system hooks but are executed as files instead of sending data to a URL."
 msgstr ""
 
