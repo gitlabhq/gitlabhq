@@ -1,25 +1,13 @@
 # Deprecated: https://gitlab.com/gitlab-org/gitlab/issues/14624
 # Please, use License-Scanning.gitlab-ci.yml template instead
 
-license_management:
-  stage: test
-  image: alpine:latest
-  allow_failure: false
-  script:
+include:
+  - template: License-Scanning.gitlab-ci.yml
+
+license_scanning:
+  before_script:
     - |
-      echo "Sorry for failing your pipeline!
-      As of GitLab 13.0, we have removed the License-Management.gitlab.ci.yml template (deprecated since GitLab 12.8).
+      echo "As of GitLab 12.8, we deprecated the License-Management.gitlab.ci.yml template.
       Please replace it with the License-Scanning.gitlab-ci.yml template instead.
       For more details visit
       https://docs.gitlab.com/ee/user/compliance/license_compliance/#migration-from-license_management-to-license_scanning"
-    - exit 1
-  only:
-    refs:
-      - branches
-    variables:
-      - $GITLAB_FEATURES =~ /\blicense_scanning\b/
-  except:
-    refs:
-      - master
-    variables:
-      - $LICENSE_MANAGEMENT_DISABLED
