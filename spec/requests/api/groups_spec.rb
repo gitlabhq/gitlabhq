@@ -341,7 +341,7 @@ describe API::Groups do
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
-        expect(response_groups).to eq([group2.id, group3.id])
+        expect(response_groups).to contain_exactly(group2.id, group3.id)
       end
     end
   end
