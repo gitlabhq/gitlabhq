@@ -21680,6 +21680,9 @@ msgstr ""
 msgid "There was an error while fetching value stream analytics recent activity data."
 msgstr ""
 
+msgid "There was an error while fetching value stream analytics time summary data."
+msgstr ""
+
 msgid "There was an error with the reCAPTCHA. Please solve the reCAPTCHA again."
 msgstr ""
 
