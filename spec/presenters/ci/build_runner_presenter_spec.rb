@@ -185,16 +185,19 @@ describe Ci::BuildRunnerPresenter do
     subject { presenter.refspecs }
 
     let(:build) { create(:ci_build) }
+    let(:pipeline) { build.pipeline }
 
     it 'returns the correct refspecs' do
-      is_expected.to contain_exactly("+refs/heads/#{build.ref}:refs/remotes/origin/#{build.ref}")
+      is_expected.to contain_exactly("+refs/heads/#{build.ref}:refs/remotes/origin/#{build.ref}",
+                                     "+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}")
     end
 
     context 'when ref is tag' do
       let(:build) { create(:ci_build, :tag) }
 
       it 'returns the correct refspecs' do
-        is_expected.to contain_exactly("+refs/tags/#{build.ref}:refs/tags/#{build.ref}")
+        is_expected.to contain_exactly("+refs/tags/#{build.ref}:refs/tags/#{build.ref}",
+                                       "+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}")
       end
 
       context 'when GIT_DEPTH is zero' do
@@ -204,7 +207,8 @@ describe Ci::BuildRunnerPresenter do
 
         it 'returns the correct refspecs' do
           is_expected.to contain_exactly('+refs/tags/*:refs/tags/*',
-                                         '+refs/heads/*:refs/remotes/origin/*')
+                                         '+refs/heads/*:refs/remotes/origin/*',
+                                         "+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}")
         end
       end
     end

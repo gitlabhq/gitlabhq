@@ -596,6 +596,29 @@ For performance reasons, we may delay the update up to 1 hour and 30 minutes.
 
 If your namespace shows `N/A` as the total storage usage, you can trigger a recalculation by pushing a commit to any project in that namespace.
 
+#### Group push rules **(STARTER)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/34370) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.8.
+
+Group push rules allow group maintainers to set
+[push rules](../../push_rules/push_rules.md) for newly created projects within the specific group.
+
+To configure push rules for a group, navigate to **{push-rules}** on the group's
+sidebar.
+
+When set, new subgroups have push rules set for them based on either:
+
+- The closest parent group with push rules defined.
+- Push rules set at the instance level, if no parent groups have push rules defined.
+
+##### Enabling the feature
+
+This feature comes with the `:group_push_rules` feature flag disabled by default. It can be enabled for specific group using feature flag [API endpoint](../../api/features.md#set-or-create-a-feature) or by GitLab administrator with Rails console access by running:
+
+```ruby
+Feature.enable(:group_push_rules)
+```
+
 ### Maximum artifacts size **(CORE ONLY)**
 
 For information about setting a maximum artifact size for a group, see

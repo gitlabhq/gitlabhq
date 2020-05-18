@@ -201,7 +201,7 @@ class ProjectsController < Projects::ApplicationController
 
     redirect_to(
       edit_project_path(@project, anchor: 'js-export-project'),
-      notice: _("Project export started. A download link will be sent by email.")
+      notice: _("Project export started. A download link will be sent by email and made available on this page.")
     )
   end
 

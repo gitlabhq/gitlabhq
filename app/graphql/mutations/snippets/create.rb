@@ -36,6 +36,10 @@ module Mutations
                required: false,
                description: 'The project full path the snippet is associated with'
 
+      argument :uploaded_files, [GraphQL::STRING_TYPE],
+               required: false,
+               description: 'The paths to files uploaded in the snippet description'
+
       def resolve(args)
         project_path = args.delete(:project_path)
 
@@ -45,9 +49,14 @@ module Mutations
           raise_resource_not_available_error!
         end
 
+        # We need to rename `uploaded_files` into `files` because
+        # it's the expected key param
+        args[:files] = args.delete(:uploaded_files)
+
         service_response = ::Snippets::CreateService.new(project,
                                            context[:current_user],
                                            args).execute
+
         snippet = service_response.payload[:snippet]
 
         {

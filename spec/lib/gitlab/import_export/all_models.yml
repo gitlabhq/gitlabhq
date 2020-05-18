@@ -493,6 +493,7 @@ project:
 - alert_management_alerts
 - repository_storage_moves
 - freeze_periods
+- webex_teams_service
 award_emoji:
 - awardable
 - user

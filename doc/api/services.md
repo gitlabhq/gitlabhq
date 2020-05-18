@@ -331,6 +331,51 @@ Get Unify Circuit service settings for a project.
 GET /projects/:id/services/unify-circuit
 ```
 
+## Webex Teams
+
+Webex Teams collaboration tool.
+
+### Create/Edit Webex Teams service
+
+Set Webex Teams service for a project.
+
+```plaintext
+PUT /projects/:id/services/webex-teams
+```
+
+Parameters:
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `webhook` | string | true | The Webex Teams webhook. For example, `https://api.ciscospark.com/v1/webhooks/incoming/...`. |
+| `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines |
+| `branches_to_be_notified` | string | all | Branches to send notifications for. Valid options are "all", "default", "protected", and "default_and_protected" |
+| `push_events` | boolean | false | Enable notifications for push events |
+| `issues_events` | boolean | false | Enable notifications for issue events |
+| `confidential_issues_events` | boolean | false | Enable notifications for confidential issue events |
+| `merge_requests_events` | boolean | false | Enable notifications for merge request events |
+| `tag_push_events` | boolean | false | Enable notifications for tag push events |
+| `note_events` | boolean | false | Enable notifications for note events |
+| `confidential_note_events` | boolean | false | Enable notifications for confidential note events |
+| `pipeline_events` | boolean | false | Enable notifications for pipeline events |
+| `wiki_page_events` | boolean | false | Enable notifications for wiki page events |
+
+### Delete Webex Teams service
+
+Delete Webex Teams service for a project.
+
+```plaintext
+DELETE /projects/:id/services/webex-teams
+```
+
+### Get Webex Teams service settings
+
+Get Webex Teams service settings for a project.
+
+```plaintext
+GET /projects/:id/services/webex-teams
+```
+
 ## Custom Issue Tracker
 
 Custom issue tracker

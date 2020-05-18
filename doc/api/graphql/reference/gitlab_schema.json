@@ -3609,6 +3609,24 @@
               "defaultValue": null
             },
             {
+              "name": "uploadedFiles",
+              "description": "The paths to files uploaded in the snippet description",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                }
+              },
+              "defaultValue": null
+            },
+            {
               "name": "clientMutationId",
               "description": "A unique identifier for the client performing the mutation.",
               "type": {
@@ -28726,6 +28744,12 @@
             },
             {
               "name": "UNIFY_CIRCUIT_SERVICE",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "WEBEX_TEAMS_SERVICE",
               "description": null,
               "isDeprecated": false,
               "deprecationReason": null

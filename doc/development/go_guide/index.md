@@ -249,7 +249,7 @@ Programs handling a lot of IO or complex operations should always include
 [benchmarks](https://golang.org/pkg/testing/#hdr-Benchmarks), to ensure
 performance consistency over time.
 
-## Using errors
+## Error handling
 
 ### Adding context
 

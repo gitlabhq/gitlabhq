@@ -63,6 +63,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 Create a new instance-level variable.
 
+NOTE: **Note:**
+The maximum number of instance-level variables is [planned to be 25](https://gitlab.com/gitlab-org/gitlab/-/issues/216097).
+
 ```plaintext
 POST /admin/ci/variables
 ```

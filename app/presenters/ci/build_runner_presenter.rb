@@ -97,6 +97,13 @@ module Ci
     end
 
     def persistent_ref_exist?
+      ##
+      # Persistent refs for pipelines definitely exist from GitLab 12.4,
+      # hence, we don't need to check the ref existence before passing it to runners.
+      # Checking refs pressurizes gitaly node and should be avoided.
+      # Issue: https://gitlab.com/gitlab-com/gl-infra/production/-/issues/2143
+      return true if Feature.enabled?(:ci_skip_persistent_ref_existence_check)
+
       pipeline.persistent_ref.exist?
     end
 

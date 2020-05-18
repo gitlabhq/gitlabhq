@@ -318,9 +318,6 @@ gem 'peek', '~> 1.1'
 # Snowplow events tracking
 gem 'snowplow-tracker', '~> 0.6.1'
 
-# Memory benchmarks
-gem 'derailed_benchmarks', require: false
-
 # Metrics
 group :metrics do
   gem 'method_source', '~> 0.8', require: false
@@ -413,6 +410,9 @@ group :test do
   gem 'test-prof', '~> 0.10.0'
   gem 'rspec_junit_formatter'
   gem 'guard-rspec'
+
+  # Moved in `test` because https://gitlab.com/gitlab-org/gitlab/-/issues/217527
+  gem 'derailed_benchmarks', require: false
 end
 
 gem 'octokit', '~> 4.15'

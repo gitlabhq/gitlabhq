@@ -271,6 +271,7 @@ but commented out to help encourage others to add to it in the future. -->
 |projects_slack_slash_commands_active|counts||
 |projects_teamcity_active|counts||
 |projects_unify_circuit_active|counts||
+|projects_webex_teams_active|counts||
 |projects_youtrack_active|counts||
 |projects_slack_notifications_active|counts||
 |projects_slack_slash_active|counts||

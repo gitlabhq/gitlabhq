@@ -54,7 +54,7 @@ module Gitlab
         end
 
         def ndjson_relation_reader
-          return unless Feature.enabled?(:project_import_ndjson, project.namespace)
+          return unless Feature.enabled?(:project_import_ndjson, project.namespace, default_enabled: true)
 
           ImportExport::JSON::NdjsonReader.new(
             File.join(shared.export_path, 'tree')

@@ -17,4 +17,4 @@
 
   - if has_submit
     .row-content-block.footer-block
-      = f.submit "Submit #{humanized_resource_name}", class: 'btn btn-success'
+      = f.submit _("Submit %{humanized_resource_name}") % { humanized_resource_name: humanized_resource_name }, class: 'btn btn-success'

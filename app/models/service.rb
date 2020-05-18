@@ -12,7 +12,7 @@ class Service < ApplicationRecord
     alerts asana assembla bamboo bugzilla buildkite campfire custom_issue_tracker discord
     drone_ci emails_on_push external_wiki flowdock hangouts_chat hipchat irker jira
     mattermost mattermost_slash_commands microsoft_teams packagist pipelines_email
-    pivotaltracker prometheus pushover redmine slack slack_slash_commands teamcity unify_circuit youtrack
+    pivotaltracker prometheus pushover redmine slack slack_slash_commands teamcity unify_circuit webex_teams youtrack
   ].freeze
 
   DEV_SERVICE_NAMES = %w[

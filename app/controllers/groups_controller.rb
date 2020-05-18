@@ -146,7 +146,7 @@ class GroupsController < Groups::ApplicationController
     export_service = Groups::ImportExport::ExportService.new(group: @group, user: current_user)
 
     if export_service.async_execute
-      redirect_to edit_group_path(@group), notice: _('Group export started. A download link will be sent by email.')
+      redirect_to edit_group_path(@group), notice: _('Group export started. A download link will be sent by email and made available on this page.')
     else
       redirect_to edit_group_path(@group), alert: _('Group export could not be started.')
     end

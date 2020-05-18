@@ -10670,7 +10670,7 @@ msgstr ""
 msgid "Group export link has expired. Please generate a new export from your group settings."
 msgstr ""
 
-msgid "Group export started. A download link will be sent by email."
+msgid "Group export started. A download link will be sent by email and made available on this page."
 msgstr ""
 
 msgid "Group has been already marked for deletion"
@@ -16426,7 +16426,7 @@ msgstr ""
 msgid "Project export link has expired. Please generate a new export from your project settings."
 msgstr ""
 
-msgid "Project export started. A download link will be sent by email."
+msgid "Project export started. A download link will be sent by email and made available on this page."
 msgstr ""
 
 msgid "Project has too many %{label_for_message} to search"
@@ -20574,6 +20574,9 @@ msgid "Subject Key Identifier:"
 msgstr ""
 
 msgid "Subkeys"
+msgstr ""
+
+msgid "Submit %{humanized_resource_name}"
 msgstr ""
 
 msgid "Submit Changes"

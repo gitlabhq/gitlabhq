@@ -154,24 +154,22 @@ db:check-schema:
   script:
     - source scripts/schema_changed.sh
 
-db:migrate-from-v11.11.0:
+db:migrate-from-v12.10.0:
   extends: .db-job-base
   variables:
     SETUP_DB: "false"
   script:
-    - export PROJECT_TO_CHECKOUT="gitlab-foss"
-    - export TAG_TO_CHECKOUT="v11.11.0"
-    - '[[ ! -d "ee/" ]] || export PROJECT_TO_CHECKOUT="gitlab"'
-    - '[[ ! -d "ee/" ]] || export TAG_TO_CHECKOUT="v11.11.0-ee"'
+    - export PROJECT_TO_CHECKOUT="gitlab"
+    - export TAG_TO_CHECKOUT="v12.10.0-ee"
+    - '[[ -d "ee/" ]] || export PROJECT_TO_CHECKOUT="gitlab-foss"'
+    - '[[ -d "ee/" ]] || export TAG_TO_CHECKOUT="v12.10.0"'
     - git fetch https://gitlab.com/gitlab-org/$PROJECT_TO_CHECKOUT.git $TAG_TO_CHECKOUT
     - git checkout -f FETCH_HEAD
-    - sed -i "s/gem 'oj', '~> 2.17.4'//" Gemfile
-    - sed -i "s/gem 'bootsnap', '~> 1.0.0'/gem 'bootsnap'/" Gemfile
     - bundle update google-protobuf grpc bootsnap
     - bundle install $BUNDLE_INSTALL_FLAGS
     - date
     - cp config/gitlab.yml.example config/gitlab.yml
-    - bundle exec rake db:drop db:create db:schema:load db:seed_fu
+    - bundle exec rake db:drop db:create db:structure:load db:seed_fu
     - date
     - git checkout -f $CI_COMMIT_SHA
     - bundle install $BUNDLE_INSTALL_FLAGS

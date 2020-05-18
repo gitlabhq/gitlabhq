@@ -1335,6 +1335,11 @@ input CreateSnippetInput {
   title: String!
 
   """
+  The paths to files uploaded in the snippet description
+  """
+  uploadedFiles: [String!]
+
+  """
   The visibility level of the snippet
   """
   visibilityLevel: VisibilityLevelsEnum!
@@ -9699,6 +9704,7 @@ enum ServiceType {
   SLACK_SLASH_COMMANDS_SERVICE
   TEAMCITY_SERVICE
   UNIFY_CIRCUIT_SERVICE
+  WEBEX_TEAMS_SERVICE
   YOUTRACK_SERVICE
 }
 

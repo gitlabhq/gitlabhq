@@ -116,7 +116,9 @@ export default {
         </template>
       </table>
 
-      <div slot="footer"></div>
+      <template #footer>
+        <div></div>
+      </template>
     </gl-modal>
     {{ title }}
     <request-warning :html-id="htmlId" :warnings="warnings" />
