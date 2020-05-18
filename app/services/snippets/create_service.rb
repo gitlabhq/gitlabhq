@@ -9,6 +9,8 @@ module Snippets
     def execute
       filter_spam_check_params
 
+      @files = Array(params.delete(:files).presence)
+
       @snippet = if project
                    project.snippets.build(params)
                  else
@@ -28,6 +30,8 @@ module Snippets
       if save_and_commit
         UserAgentDetailService.new(@snippet, @request).create
         Gitlab::UsageDataCounters::SnippetCounter.count(:create)
+
+        move_temporary_files
 
         ServiceResponse.success(payload: { snippet: @snippet } )
       else
@@ -82,6 +86,14 @@ module Snippets
 
     def snippet_files
       [{ file_path: params[:file_name], content: params[:content] }]
+    end
+
+    def move_temporary_files
+      return unless @snippet.is_a?(PersonalSnippet)
+
+      @files.each do |file|
+        FileMover.new(file, from_model: current_user, to_model: @snippet).execute
+      end
     end
   end
 end

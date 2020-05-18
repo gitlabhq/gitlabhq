@@ -17,7 +17,7 @@ import { VARIABLE_PREFIX } from './constants';
  * This will be removed once we add support for free text variables
  * via the dashboard yaml files in https://gitlab.com/gitlab-org/gitlab/-/issues/215689
  */
-export const dashboardParams = ['dashboard', 'group', 'title', 'y_label'];
+export const dashboardParams = ['dashboard', 'group', 'title', 'y_label', 'embedded'];
 
 /**
  * This method is used to validate if the graph data format for a chart component
@@ -262,14 +262,22 @@ export const expandedPanelPayloadFromUrl = (dashboard, search = window.location.
  * If no group/panel is set, the dashboard URL is returned.
  *
  * @param {?String} dashboard - Dashboard path, used as identifier for a dashboard
+ * @param {?Object} promVariables - Custom variables that came from the URL
  * @param {?String} group - Group Identifier
  * @param {?Object} panel - Panel object from the dashboard
  * @param {?String} url - Base URL including current search params
  * @returns Dashboard URL which expands a panel (chart)
  */
-export const panelToUrl = (dashboard = null, group, panel, url = window.location.href) => {
+export const panelToUrl = (
+  dashboard = null,
+  promVariables,
+  group,
+  panel,
+  url = window.location.href,
+) => {
   const params = {
     dashboard,
+    ...promVariables,
   };
 
   if (group && panel) {

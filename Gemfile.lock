@@ -84,7 +84,7 @@ GEM
     asciidoctor (2.0.10)
     asciidoctor-include-ext (0.3.1)
       asciidoctor (>= 1.5.6, < 3.0.0)
-    asciidoctor-plantuml (0.0.10)
+    asciidoctor-plantuml (0.0.12)
       asciidoctor (>= 1.5.6, < 3.0.0)
     ast (2.4.0)
     atlassian-jwt (0.2.0)
@@ -1162,7 +1162,7 @@ DEPENDENCIES
   asana (~> 0.9)
   asciidoctor (~> 2.0.10)
   asciidoctor-include-ext (~> 0.3.1)
-  asciidoctor-plantuml (= 0.0.10)
+  asciidoctor-plantuml (~> 0.0.12)
   atlassian-jwt (~> 0.2.0)
   attr_encrypted (~> 3.1.0)
   awesome_print

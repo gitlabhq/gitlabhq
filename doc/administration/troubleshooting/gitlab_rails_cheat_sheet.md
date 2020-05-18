@@ -572,29 +572,7 @@ Ci::Pipeline.where(project_id: p.id).where(status: 'pending').count
 
 ### Remove artifacts more than a week old
 
-The Latest version of these steps can be found in the [job artifacts documentation](../job_artifacts.md)
-
-```ruby
-### SELECTING THE BUILDS TO CLEAR
-# For a single project:
-project = Project.find_by_full_path('')
-builds_with_artifacts =  project.builds.with_downloadable_artifacts
-
-# Instance-wide:
-builds_with_artifacts = Ci::Build.with_downloadable_artifacts
-
-# Prior to 10.6 the above lines would be:
-# builds_with_artifacts =  project.builds.with_artifacts
-# builds_with_artifacts = Ci::Build.with_artifacts
-
-### CLEAR THEM OUT
-# Note that this will also erase artifacts that developers marked to "Keep"
-builds_to_clear = builds_with_artifacts.where("finished_at < ?", 1.week.ago)
-builds_to_clear.each do |build|
-  build.artifacts_expire_at = Time.now
-  build.erase_erasable_artifacts!
-end
-```
+This section has been moved to the [job artifacts troubleshooting documentation](../job_artifacts.md#delete-job-artifacts-from-jobs-completed-before-a-specific-date).
 
 ### Find reason failure (for when build trace is empty) (Introduced in 10.3.0)
 

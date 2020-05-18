@@ -67,7 +67,8 @@ The following table shows which languages, package managers and frameworks are s
 
 | Language (package managers) / framework                                     | Scan tool                                                                              | Introduced in GitLab Version |
 |-----------------------------------------------------------------------------|----------------------------------------------------------------------------------------|------------------------------|
-| .NET                                                                        | [Security Code Scan](https://security-code-scan.github.io)                             | 11.0                         |
+| .NET Core                                                                   | [Security Code Scan](https://security-code-scan.github.io)                             | 11.0                         |
+| .NET Framework                                                              | [Security Code Scan](https://security-code-scan.github.io)                             | 13.0                         |
 | Any                                                                         | [Gitleaks](https://github.com/zricethezav/gitleaks) and [TruffleHog](https://github.com/dxa4481/truffleHog) | 11.9    |
 | Apex (Salesforce)                                                           | [PMD](https://pmd.github.io/pmd/index.html)                                            | 12.1                         |
 | C/C++                                                                       | [Flawfinder](https://dwheeler.com/flawfinder/)                                         | 10.7                         |

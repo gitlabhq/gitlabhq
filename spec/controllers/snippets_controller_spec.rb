@@ -243,39 +243,13 @@ describe SnippetsController do
       end
     end
 
-    context 'when the snippet description contains a file' do
-      include FileMoverHelpers
+    context 'when the controller receives the files param' do
+      let(:files) { %w(foo bar) }
 
-      let(:picture_secret) { SecureRandom.hex }
-      let(:text_secret) { SecureRandom.hex }
-      let(:picture_file) { "/-/system/user/#{user.id}/#{picture_secret}/picture.jpg" }
-      let(:text_file) { "/-/system/user/#{user.id}/#{text_secret}/text.txt" }
-      let(:description) do
-        "Description with picture: ![picture](/uploads#{picture_file}) and "\
-        "text: [text.txt](/uploads#{text_file})"
-      end
+      it 'passes the files param to the snippet create service' do
+        expect(Snippets::CreateService).to receive(:new).with(nil, user, hash_including(files: files)).and_call_original
 
-      before do
-        allow(FileUtils).to receive(:mkdir_p)
-        allow(FileUtils).to receive(:move)
-        stub_file_mover(text_file)
-        stub_file_mover(picture_file)
-      end
-
-      subject { create_snippet({ description: description }, { files: [picture_file, text_file] }) }
-
-      it 'creates the snippet' do
-        expect { subject }.to change { Snippet.count }.by(1)
-      end
-
-      it 'stores the snippet description correctly' do
-        snippet = subject
-
-        expected_description = "Description with picture: "\
-          "![picture](/uploads/-/system/personal_snippet/#{snippet.id}/#{picture_secret}/picture.jpg) and "\
-          "text: [text.txt](/uploads/-/system/personal_snippet/#{snippet.id}/#{text_secret}/text.txt)"
-
-        expect(snippet.description).to eq(expected_description)
+        create_snippet({ title: nil }, { files: files })
       end
     end
 

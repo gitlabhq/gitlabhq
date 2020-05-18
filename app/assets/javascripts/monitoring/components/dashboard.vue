@@ -39,6 +39,7 @@ import {
   timeRangeFromUrl,
   panelToUrl,
   expandedPanelPayloadFromUrl,
+  convertVariablesForURL,
 } from '../utils';
 import { metricStates } from '../constants';
 import { defaultTimeRange, timeRanges } from '~/vue_shared/constants';
@@ -272,7 +273,7 @@ export default {
       handler({ group, panel }) {
         const dashboardPath = this.currentDashboard || this.selectedDashboard?.path;
         updateHistory({
-          url: panelToUrl(dashboardPath, group, panel),
+          url: panelToUrl(dashboardPath, convertVariablesForURL(this.promVariables), group, panel),
           title: document.title,
         });
       },
@@ -343,7 +344,7 @@ export default {
     },
     generatePanelUrl(groupKey, panel) {
       const dashboardPath = this.currentDashboard || this.selectedDashboard?.path;
-      return panelToUrl(dashboardPath, groupKey, panel);
+      return panelToUrl(dashboardPath, convertVariablesForURL(this.promVariables), groupKey, panel);
     },
     hideAddMetricModal() {
       this.$refs.addMetricModal.hide();

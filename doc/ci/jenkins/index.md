@@ -13,6 +13,10 @@ First of all, our [Quick Start Guide](../quick_start/README.md) contains a good 
 You may also be interested in [Auto DevOps](../../topics/autodevops/index.md) which can potentially be used to build, test,
 and deploy your applications with little to no configuration needed at all.
 
+For an example of how to convert a Jenkins pipeline into a GitLab CI/CD pipeline,
+or how to use Auto DevOps to test your code automatically, watch the
+[Migrating from Jenkins to GitLab](https://www.youtube.com/watch?v=RlEVGOpYF5Y) video.
+
 For advanced CI/CD teams, [templates](#templates) can enable the reuse of pipeline configurations.
 
 Otherwise, read on for important information that will help you get the ball rolling. Welcome

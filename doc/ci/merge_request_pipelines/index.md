@@ -37,79 +37,23 @@ To enable pipelines for merge requests:
 
 ## Configuring pipelines for merge requests
 
-To configure pipelines for merge requests, configure your [CI/CD configuration file](../yaml/README.md).
-There are a few different ways to do this.
+To configure pipelines for merge requests you need to configure your [CI/CD configuration file](../yaml/README.md).
+There are a few different ways to do this:
 
-### Enable pipelines for merge requests for all jobs
+### Use `rules` to run pipelines for merge requests
 
-The recommended method for enabling pipelines for merge requests for all jobs in
-a pipeline is to use [`workflow:rules`](../yaml/README.md#workflowrules).
-
-In this example, the pipeline always runs for all merge requests, as well as for all changes
-to the master branch:
-
-```yaml
-workflow:
-  rules:
-    - if: $CI_MERGE_REQUEST_ID               # Execute jobs in merge request context
-    - if: $CI_COMMIT_BRANCH == 'master'      # Execute jobs when a new commit is pushed to master branch
-
-build:
-  stage: build
-  script: ./build
-
-test:
-  stage: test
-  script: ./test
-
-deploy:
-  stage: deploy
-  script: ./deploy
-```
-
-### Enable pipelines for merge requests for specific jobs
-
-To enable pipelines for merge requests for specific jobs, you can use
-[`rules`](../yaml/README.md#rules).
-
-In the following example:
-
-- The `build` job runs for all changes to the `master` branch, as well as for all merge requests.
-- The `test` job runs for all merge requests.
-- The `deploy` job runs for all changes to the `master` branch, but does *not* run
-  for merge requests.
-
-```yaml
-build:
-  stage: build
-  script: ./build
-  rules:
-    - if: $CI_COMMIT_BRANCH == 'master'   # Execute jobs when a new commit is pushed to master branch
-    - if: $CI_MERGE_REQUEST_ID            # Execute jobs in merge request context
-
-test:
-  stage: test
-  script: ./test
-  rules:
-    - if: $CI_MERGE_REQUEST_ID             # Execute jobs in merge request context
-
-deploy:
-  stage: deploy
-  script: ./deploy
-  rules:
-    - if: $CI_COMMIT_BRANCH == 'master'    # Execute jobs when a new commit is pushed to master branch
-```
+When using `rules`, which is the preferred method, we recommend starting with one
+of the [`workflow:rules` templates](../yaml/README.md#workflowrules-templates) to ensure
+your basic configuration is correct. Instructions on how to do this, as well as how
+to customize, are available at that link.
 
 ### Use `only` or `except` to run pipelines for merge requests
 
-NOTE: **Note**:
-The [`only` / `except`](../yaml/README.md#onlyexcept-basic) keywords are going to be deprecated
-and you should not use them.
+If you want to continue using `only/except`, this is possible but please review the drawbacks
+below.
 
-To enable pipelines for merge requests, you can use `only / except`. When you use this method,
-you have to specify `only: - merge_requests` for each job.
-
-In this example, the pipeline contains a `test` job that is configured to run on merge requests.
+When you use this method, you have to specify `only: - merge_requests` for each job. In this
+example, the pipeline contains a `test` job that is configured to run on merge requests.
 
 The `build` and `deploy` jobs don't have the `only: - merge_requests` parameter,
 so they will not run on merge requests.
@@ -259,60 +203,16 @@ The variable names begin with the `CI_MERGE_REQUEST_` prefix.
 
 ### Two pipelines created when pushing to a merge request
 
-If two pipelines are created when you push a new change to a merge request,
-check your CI configuration file.
+If you are experiencing duplicated pipelines when using `rules`, take a look at
+the [key details when using `rules`](../yaml/README.md#key-details-when-using-rules),
+which will help you get your starting configuration correct.
 
-For example, with this `.gitlab-ci.yml` configuration:
-
-```yaml
-test:
-  script: ./test
-  rules:
-    - if: $CI_MERGE_REQUEST_ID                      # Include this job in pipelines for merge request
-    - if: $CI_COMMIT_BRANCH                         # Include this job in all branch pipelines
-  # Or, if you are using the `only:` keyword:
-  # only:
-  #  - merge_requests
-  #  - branches
-```
-
-Two pipelines are created when you push a commit to a branch that also has a pending
-merge request:
-
-- A merge request pipeline that runs for the changes in the merge request. In
-  **CI/CD > Pipelines**, the merge request icon (**{merge-request}**)
-  and the merge request ID are displayed. If you hover over the ID, the merge request name is displayed.
-
-  ![MR pipeline icon example](img/merge_request_pipelines_doubled_MR_v12_09.png)
-
-- A "branch" pipeline that runs for the commit pushed to the branch. In **CI/CD > Pipelines**,
-  the branch icon (**{branch}**) and branch name are displayed. This pipeline is
-  created even if no merge request exists.
-
-  ![branch pipeline icon example](img/merge_request_pipelines_doubled_branch_v12_09.png)
-
-With the example configuration above, there is overlap between these two events.
-When you push a commit to a branch that also has an open merge request pending,
-both types of pipelines are created.
-
-To fix this overlap, you must explicitly define which job should run for which
-purpose, for example:
-
-```yaml
-test:
-  script: ./test
-  rules:
-    - if: $CI_MERGE_REQUEST_ID                      # Include this job in pipelines for merge request
-    - if: $CI_COMMIT_BRANCH == 'master'             # Include this job in master branch pipelines
-```
-
-Similar `rules:` should be added to all jobs to avoid any overlapping pipelines. Alternatively,
-you can use the [`workflow:`](../yaml/README.md#exclude-jobs-with-rules-from-certain-pipelines)
-parameter to add the same rules to all jobs globally.
+If you are seeing two pipelines when using `only/except`, please see the caveats
+related to using `only/except` above (or, consider moving to `rules`).
 
 ### Two pipelines created when pushing an invalid CI configuration file
 
-Similar to above, pushing to a branch with an invalid CI configuration file can trigger
+Pushing to a branch with an invalid CI configuration file can trigger
 the creation of two types of failed pipelines. One pipeline is a failed merge request
 pipeline, and the other is a failed branch pipeline, but both are caused by the same
 invalid configuration.

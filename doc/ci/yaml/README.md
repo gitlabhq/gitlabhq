@@ -286,7 +286,45 @@ determine whether or not a pipeline is created. It currently accepts a single
 `rules:` key that operates similarly to [`rules:` defined within jobs](#rules),
 enabling dynamic configuration of the pipeline.
 
-The configuration options currently available for `workflow:rules` are:​
+#### `workflow:rules` templates
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217732) in GitLab 13.0.
+
+We provide pre-made templates for use with your pipelines that set up `workflow: rules`
+for common scenarios. Usage of these will make things easier and prevent duplicate pipelines from running.
+
+The [`Branch-Pipelines` template](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates/Workflows/Branch-Pipelines.gitlab-ci.yml)
+makes your pipelines run for branches and tags.
+
+Branch pipeline status will be displayed within merge requests that use that branch
+as a source, but this pipeline type does not support any features offered by
+[Merge Request Pipelines](../merge_request_pipelines/) like
+[Pipelines for Merge Results](../merge_request_pipelines/#pipelines-for-merged-results-premium)
+or [Merge Trains](../merge_request_pipelines/pipelines_for_merged_results/merge_trains/).
+Use this template if you are intentionally avoiding those features.
+
+It is [included](#include) as follows:
+
+```yaml
+include:
+  - template: 'Workflows/Branch-Pipelines.gitlab-ci.yml'
+```
+
+The [`MergeRequest-Pipelines` include](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates/Workflows/MergeRequest-Pipelines.gitlab-ci.yml) sets your pipelines to run for the default branch (usually `master`), tags, and
+The [`MergeRequest-Pipelines` template](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates/Workflows/MergeRequest-Pipelines.gitlab-ci.yml)
+makes your pipelines run for the default branch (usually `master`), tags, and
+all types of merge request pipelines. Use this template if you use any of the
+the [Pipelines for Merge Requests features](../merge_request_pipelines/), as mentioned
+above.
+
+It is [included](#include) as follows:
+
+```yaml
+include:
+  - template: 'Workflows/MergeRequest-Pipelines.gitlab-ci.yml'
+```
+
+If you prefer to define your own rules, the configuration options currently available are:​
 
 - [`if`](#rulesif): Define a rule.
 - [`when`](#when): May be set to `always` or `never` only. If not provided, the default value is `always`​.
@@ -858,9 +896,25 @@ the `.template` job, and uses the `alpine` Docker image as defined in the local 
 
 `rules` allows for a list of individual rule objects to be evaluated
 *in order*, until one matches and dynamically provides attributes to the job.
-Note that `rules` can't be used in combination with `only/except` since it's intended
-to replace that functionality. If you attempt to do this the linter will return a
+
+CAUTION: **Caution:**
+`rules` can't be used in combination with `only/except` as it is a replacement for that functionality. If you attempt to do this, the linter will return a
 `key may not be used with rules` error.
+
+#### Key details when using `rules`
+
+A very important difference between `rules` and `only/except`, is that jobs defined
+with `rules` trigger merge request pipelines by default, but `only/except` jobs do not.
+This may be surprising if migrating from `only` and `except`, so new users of `rules`
+can use one of the [`workflow: rules` templates](#workflowrules-templates) to get started.
+This will ensure that the behavior is more stable as you start adding additional `rules`
+blocks, and will avoid issues like creating a duplicate, merge request (detached) pipeline.
+
+We don't recomment mixing `only/except` jobs with `rules` jobs in the same pipeline.
+It may not cause YAML errors, but debugging the exact execution behavior can be complex
+due to the different default behaviors of `only/except` and `rules`.
+
+### Rules clauses
 
 Available rule clauses include:
 
@@ -994,47 +1048,6 @@ job:
 ```
 
 In this example, if the first rule matches, then the job will have `when: manual` and `allow_failure: true`.
-
-#### Exclude jobs with `rules:` from certain pipelines
-
-Jobs with `rules:` can cause two pipelines to be created unexpectedly:
-
-- One pipeline from pushing a commit to a branch.
-- A second ["detached" pipeline for a merge request](../merge_request_pipelines/index.md).
-
-`only` and `except` jobs don't trigger merge request pipelines by default, but this
-is not the case for jobs with `rules:`, which may be surprising if migrating from `only`
-and `except` to `rules:`.
-
-If you're using `rules:` and you see two pipelines for commits to branches that have
-a merge request, you have two options:
-
-- Individually exclude each job that uses `rules:` from merge request pipelines. The
-  example below will cause the job to **not** run in *pipelines for merge requests*,
-  but it **will** run in pipelines for *new tags and pipelines running on branch refs*:
-
-  ```yaml
-  job:
-    rules:
-      - if: $CI_MERGE_REQUEST_ID
-        when: never
-      - when: manual
-    script:
-      - echo hello
-  ```
-
-- Add a global [`workflow: rules`](#workflowrules) to allow pipelines in only certain
-  situations. The example below will only run pipelines for merge requests, new tags and
-  changes to master. It will **not** run any pipelines *on any branch except master*, but
-  it will run **detached merge request pipelines** for any merge request, targeting any branch:
-
-  ```yaml
-  workflow:
-    rules:
-      - if: $CI_MERGE_REQUEST_ID
-      - if: $CI_COMMIT_TAG
-      - if: $CI_COMMIT_BRANCH == "master"
-  ```
 
 #### Complex rule clauses
 

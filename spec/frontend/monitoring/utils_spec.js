@@ -315,24 +315,31 @@ describe('monitoring/utils', () => {
     const getUrlParams = url => urlUtils.queryToObject(url.split('?')[1]);
 
     it('returns URL for a panel when query parameters are given', () => {
-      const params = getUrlParams(panelToUrl(dashboard, panelGroup.group, panel));
+      const params = getUrlParams(panelToUrl(dashboard, {}, panelGroup.group, panel));
 
-      expect(params).toEqual({
-        dashboard,
-        group: panelGroup.group,
-        title: panel.title,
-        y_label: panel.y_label,
-      });
+      expect(params).toEqual(
+        expect.objectContaining({
+          dashboard,
+          group: panelGroup.group,
+          title: panel.title,
+          y_label: panel.y_label,
+        }),
+      );
     });
 
     it('returns a dashboard only URL if group is missing', () => {
-      const params = getUrlParams(panelToUrl(dashboard, null, panel));
-      expect(params).toEqual({ dashboard: 'metrics.yml' });
+      const params = getUrlParams(panelToUrl(dashboard, {}, null, panel));
+      expect(params).toEqual(expect.objectContaining({ dashboard: 'metrics.yml' }));
     });
 
     it('returns a dashboard only URL if panel is missing', () => {
-      const params = getUrlParams(panelToUrl(dashboard, panelGroup.group, null));
-      expect(params).toEqual({ dashboard: 'metrics.yml' });
+      const params = getUrlParams(panelToUrl(dashboard, {}, panelGroup.group, null));
+      expect(params).toEqual(expect.objectContaining({ dashboard: 'metrics.yml' }));
+    });
+
+    it('returns URL for a panel when query paramters are given including custom variables', () => {
+      const params = getUrlParams(panelToUrl(dashboard, { pod: 'pod' }, panelGroup.group, null));
+      expect(params).toEqual(expect.objectContaining({ dashboard: 'metrics.yml', pod: 'pod' }));
     });
   });
 

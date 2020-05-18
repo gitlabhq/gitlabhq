@@ -10,7 +10,13 @@ describe EnvironmentEntity do
     described_class.new(environment, request: spy('request'))
   end
 
-  let(:environment) { create(:environment) }
+  let_it_be(:user)    { create(:user) }
+  let_it_be(:project) { create(:project) }
+  let_it_be(:environment) { create(:environment, project: project) }
+
+  before do
+    allow(entity).to receive(:current_user).and_return(user)
+  end
 
   subject { entity.as_json }
 
@@ -67,28 +73,48 @@ describe EnvironmentEntity do
   end
 
   context 'with auto_stop_in' do
-    let(:environment) { create(:environment, :will_auto_stop) }
+    let(:environment) { create(:environment, :will_auto_stop, project: project) }
 
     it 'exposes auto stop related information' do
+      project.add_maintainer(user)
+
       expect(subject).to include(:cancel_auto_stop_path, :auto_stop_at)
     end
   end
 
   context 'pod_logs' do
-    it 'exposes logs keys' do
-      expect(subject).to include(:logs_path)
-      expect(subject).to include(:logs_api_path)
-      expect(subject).to include(:enable_advanced_logs_querying)
+    context 'with developer access' do
+      before do
+        project.add_developer(user)
+      end
+
+      it 'does not expose logs keys' do
+        expect(subject).not_to include(:logs_path)
+        expect(subject).not_to include(:logs_api_path)
+        expect(subject).not_to include(:enable_advanced_logs_querying)
+      end
     end
 
-    it 'uses k8s api when ES is not available' do
-      expect(subject[:logs_api_path]).to eq(k8s_project_logs_path(environment.project, environment_name: environment.name, format: :json))
-    end
+    context 'with maintainer access' do
+      before do
+        project.add_maintainer(user)
+      end
 
-    it 'uses ES api when ES is available' do
-      allow(environment).to receive(:elastic_stack_available?).and_return(true)
+      it 'exposes logs keys' do
+        expect(subject).to include(:logs_path)
+        expect(subject).to include(:logs_api_path)
+        expect(subject).to include(:enable_advanced_logs_querying)
+      end
 
-      expect(subject[:logs_api_path]).to eq(elasticsearch_project_logs_path(environment.project, environment_name: environment.name, format: :json))
+      it 'uses k8s api when ES is not available' do
+        expect(subject[:logs_api_path]).to eq(k8s_project_logs_path(project, environment_name: environment.name, format: :json))
+      end
+
+      it 'uses ES api when ES is available' do
+        allow(environment).to receive(:elastic_stack_available?).and_return(true)
+
+        expect(subject[:logs_api_path]).to eq(elasticsearch_project_logs_path(project, environment_name: environment.name, format: :json))
+      end
     end
   end
 end
