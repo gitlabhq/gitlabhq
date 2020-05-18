@@ -146,22 +146,22 @@ describe VisibilityLevelHelper do
 
     using RSpec::Parameterized::TableSyntax
 
-    PUBLIC = Gitlab::VisibilityLevel::PUBLIC
-    INTERNAL = Gitlab::VisibilityLevel::INTERNAL
-    PRIVATE = Gitlab::VisibilityLevel::PRIVATE
+    public_vis = Gitlab::VisibilityLevel::PUBLIC
+    internal_vis = Gitlab::VisibilityLevel::INTERNAL
+    private_vis = Gitlab::VisibilityLevel::PRIVATE
 
     # This is a subset of all the permutations
     where(:requested_level, :max_allowed, :global_default_level, :restricted_levels, :expected) do
-      PUBLIC | PUBLIC | PUBLIC | [] | PUBLIC
-      PUBLIC | PUBLIC | PUBLIC | [PUBLIC] | INTERNAL
-      INTERNAL | PUBLIC | PUBLIC | [] | INTERNAL
-      INTERNAL | PRIVATE | PRIVATE | [] | PRIVATE
-      PRIVATE | PUBLIC | PUBLIC | [] | PRIVATE
-      PUBLIC | PRIVATE | INTERNAL | [] | PRIVATE
-      PUBLIC | INTERNAL | PUBLIC | [] | INTERNAL
-      PUBLIC | PRIVATE | PUBLIC | [] | PRIVATE
-      PUBLIC | INTERNAL | INTERNAL | [] | INTERNAL
-      PUBLIC | PUBLIC | INTERNAL | [] | PUBLIC
+      public_vis | public_vis | public_vis | [] | public_vis
+      public_vis | public_vis | public_vis | [public_vis] | internal_vis
+      internal_vis | public_vis | public_vis | [] | internal_vis
+      internal_vis | private_vis | private_vis | [] | private_vis
+      private_vis | public_vis | public_vis | [] | private_vis
+      public_vis | private_vis | internal_vis | [] | private_vis
+      public_vis | internal_vis | public_vis | [] | internal_vis
+      public_vis | private_vis | public_vis | [] | private_vis
+      public_vis | internal_vis | internal_vis | [] | internal_vis
+      public_vis | public_vis | internal_vis | [] | public_vis
     end
 
     before do

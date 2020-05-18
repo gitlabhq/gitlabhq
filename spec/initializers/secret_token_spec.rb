@@ -7,9 +7,8 @@ describe 'create_tokens' do
   include StubENV
 
   let(:secrets) { ActiveSupport::OrderedOptions.new }
-
-  HEX_KEY = /\h{128}/.freeze
-  RSA_KEY = /\A-----BEGIN RSA PRIVATE KEY-----\n.+\n-----END RSA PRIVATE KEY-----\n\Z/m.freeze
+  let(:hex_key) { /\h{128}/.freeze }
+  let(:rsa_key) { /\A-----BEGIN RSA PRIVATE KEY-----\n.+\n-----END RSA PRIVATE KEY-----\n\Z/m.freeze }
 
   before do
     allow(File).to receive(:write)
@@ -35,7 +34,7 @@ describe 'create_tokens' do
         keys = secrets.values_at(:secret_key_base, :otp_key_base, :db_key_base)
 
         expect(keys.uniq).to eq(keys)
-        expect(keys).to all(match(HEX_KEY))
+        expect(keys).to all(match(hex_key))
       end
 
       it 'generates an RSA key for openid_connect_signing_key' do
@@ -44,7 +43,7 @@ describe 'create_tokens' do
         keys = secrets.values_at(:openid_connect_signing_key)
 
         expect(keys.uniq).to eq(keys)
-        expect(keys).to all(match(RSA_KEY))
+        expect(keys).to all(match(rsa_key))
       end
 
       it 'warns about the secrets to add to secrets.yml' do

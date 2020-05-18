@@ -348,12 +348,7 @@ RSpec/LeakyConstantDeclaration:
   Enabled: true
   Exclude:
     - 'spec/db/schema_spec.rb'
-    - 'spec/graphql/gitlab_schema_spec.rb'
-    - 'spec/helpers/visibility_level_helper_spec.rb'
-    - 'spec/initializers/secret_token_spec.rb'
-    - 'spec/lib/declarative_policy_spec.rb'
     - 'spec/lib/feature_spec.rb'
-    - 'spec/lib/gitlab/background_migration/migrate_issue_trackers_sensitive_data_spec.rb'
     - 'spec/lib/gitlab/ci/build/credentials/factory_spec.rb'
     - 'spec/lib/gitlab/ci/config/entry/retry_spec.rb'
     - 'spec/lib/gitlab/cluster/mixins/puma_cluster_spec.rb'

@@ -4,40 +4,45 @@ require 'spec_helper'
 describe Gitlab::BackgroundMigration::MigrateIssueTrackersSensitiveData, schema: 20200130145430 do
   let(:services) { table(:services) }
 
-  # we need to define the classes due to encryption
-  class IssueTrackerData < ApplicationRecord
-    self.table_name = 'issue_tracker_data'
+  before do
+    # we need to define the classes due to encryption
+    issue_tracker_data = Class.new(ApplicationRecord) do
+      self.table_name = 'issue_tracker_data'
 
-    def self.encryption_options
-      {
-        key: Settings.attr_encrypted_db_key_base_32,
-        encode: true,
-        mode: :per_attribute_iv,
-        algorithm: 'aes-256-gcm'
-      }
+      def self.encryption_options
+        {
+          key: Settings.attr_encrypted_db_key_base_32,
+          encode: true,
+          mode: :per_attribute_iv,
+          algorithm: 'aes-256-gcm'
+        }
+      end
+
+      attr_encrypted :project_url, encryption_options
+      attr_encrypted :issues_url, encryption_options
+      attr_encrypted :new_issue_url, encryption_options
     end
 
-    attr_encrypted :project_url, encryption_options
-    attr_encrypted :issues_url, encryption_options
-    attr_encrypted :new_issue_url, encryption_options
-  end
+    jira_tracker_data = Class.new(ApplicationRecord) do
+      self.table_name = 'jira_tracker_data'
 
-  class JiraTrackerData < ApplicationRecord
-    self.table_name = 'jira_tracker_data'
+      def self.encryption_options
+        {
+          key: Settings.attr_encrypted_db_key_base_32,
+          encode: true,
+          mode: :per_attribute_iv,
+          algorithm: 'aes-256-gcm'
+        }
+      end
 
-    def self.encryption_options
-      {
-        key: Settings.attr_encrypted_db_key_base_32,
-        encode: true,
-        mode: :per_attribute_iv,
-        algorithm: 'aes-256-gcm'
-      }
+      attr_encrypted :url, encryption_options
+      attr_encrypted :api_url, encryption_options
+      attr_encrypted :username, encryption_options
+      attr_encrypted :password, encryption_options
     end
 
-    attr_encrypted :url, encryption_options
-    attr_encrypted :api_url, encryption_options
-    attr_encrypted :username, encryption_options
-    attr_encrypted :password, encryption_options
+    stub_const('IssueTrackerData', issue_tracker_data)
+    stub_const('JiraTrackerData', jira_tracker_data)
   end
 
   let(:url) { 'http://base-url.tracker.com' }

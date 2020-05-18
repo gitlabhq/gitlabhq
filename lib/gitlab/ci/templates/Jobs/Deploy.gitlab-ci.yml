@@ -1,6 +1,9 @@
 .auto-deploy:
   image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-deploy-image:v0.15.0"
 
+include:
+  - template: Jobs/Deploy/ECS.gitlab-ci.yml
+
 review:
   extends: .auto-deploy
   stage: review

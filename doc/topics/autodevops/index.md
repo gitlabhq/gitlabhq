@@ -53,6 +53,9 @@ If you use a self-managed instance of GitLab, you must configure the
 configuring a cluster on GKE. After configuring the provider, you can follow
 the steps in the [quick start guide](quick_start_guide.md) to get started.
 
+In [GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/208132) and later, it is
+possible to leverage Auto DevOps to deploy to [AWS ECS](#aws-ecs).
+
 ## Comparison to application platforms and PaaS
 
 Auto DevOps provides features often included in an application
@@ -110,7 +113,9 @@ Auto DevOps.
 
 ## Requirements
 
-To make full use of Auto DevOps, you need:
+### Kubernetes
+
+To make full use of Auto DevOps with Kubernetes, you need:
 
 - **Kubernetes** (for [Auto Review Apps](stages.md#auto-review-apps),
   [Auto Deploy](stages.md#auto-deploy), and [Auto Monitoring](stages.md#auto-monitoring))
@@ -201,6 +206,31 @@ If you don't have Kubernetes or Prometheus installed, then
 are skipped.
 
 After all requirements are met, you can [enable Auto DevOps](#enablingdisabling-auto-devops).
+
+### AWS ECS
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/208132) in GitLab 13.0.
+
+You can choose to target [AWS ECS](../../ci/cloud_deployment/index.md) as a deployment platform instead of using Kubernetes.
+
+To get started on Auto DevOps to ECS, you'll have to add a specific Environment
+Variable. To do so, follow these steps:
+
+1. In your project, go to **Settings > CI / CD** and expand the **Variables**
+   section.
+
+1. Specify which AWS platform to target during the Auto DevOps deployment
+   by adding the `AUTO_DEVOPS_PLATFORM_TARGET` variable.
+
+1. Give this variable the value `ECS` before saving it.
+
+When you trigger a pipeline, if you have AutoDev Ops enabled and if you have correctly
+[entered AWS credentials as environment variables](../../ci/cloud_deployment/index.md#deploy-your-application-to-aws-elastic-container-service-ecs),
+your application will be deployed to AWS ECS.
+
+NOTE: **Note:**
+If you have both a valid `AUTO_DEVOPS_PLATFORM_TARGET` variable and a Kubernetes cluster tied to your project,
+only the deployment to Kubernetes will run.
 
 ## Auto DevOps base domain
 

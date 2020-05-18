@@ -23,8 +23,10 @@ describe DeclarativePolicy do
     end
 
     context 'when found policy class does not inherit base' do
-      class Foo; end
-      class FooPolicy; end
+      before do
+        stub_const('Foo', Class.new)
+        stub_const('FooPolicy', Class.new)
+      end
 
       it 'raises error if inferred class does not inherit Base' do
         instance = Foo.new

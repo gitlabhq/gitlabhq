@@ -5,6 +5,9 @@ stages:
   - deploy
   - production
 
+variables:
+  AUTO_DEVOPS_PLATFORM_TARGET: ECS
+
 include:
   - template: Jobs/Build.gitlab-ci.yml
   - template: Jobs/Deploy/ECS.gitlab-ci.yml

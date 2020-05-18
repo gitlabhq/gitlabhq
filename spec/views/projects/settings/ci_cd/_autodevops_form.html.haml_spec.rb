@@ -13,7 +13,7 @@ describe 'projects/settings/ci_cd/_autodevops_form' do
   it 'shows a warning message about Kubernetes cluster' do
     render
 
-    expect(rendered).to have_text('You must add a Kubernetes cluster integration to this project with a domain in order for your deployment strategy to work correctly.')
+    expect(rendered).to have_text('Add a Kubernetes cluster integration with a domain or create an AUTO_DEVOPS_PLATFORM_TARGET CI variable')
   end
 
   context 'when the project has an available kubernetes cluster' do
