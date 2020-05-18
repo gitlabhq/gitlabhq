@@ -479,7 +479,9 @@ CREATE TABLE public.approval_merge_request_rules (
     code_owner boolean DEFAULT false NOT NULL,
     name character varying NOT NULL,
     rule_type smallint DEFAULT 1 NOT NULL,
-    report_type smallint
+    report_type smallint,
+    section text,
+    CONSTRAINT check_6fca5928b2 CHECK ((char_length(section) <= 255))
 );
 
 CREATE TABLE public.approval_merge_request_rules_approved_approvers (
@@ -13832,6 +13834,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200512164334
 20200513160930
 20200513171959
+20200513224143
 20200513234502
 20200513235347
 20200513235532

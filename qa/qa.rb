@@ -162,6 +162,7 @@ module QA
     autoload :Base, 'qa/page/base'
     autoload :View, 'qa/page/view'
     autoload :Element, 'qa/page/element'
+    autoload :PageConcern, 'qa/page/page_concern'
     autoload :Validator, 'qa/page/validator'
     autoload :Validatable, 'qa/page/validatable'
 
@@ -248,7 +249,6 @@ module QA
       end
 
       module Settings
-        autoload :Common, 'qa/page/project/settings/common'
         autoload :Advanced, 'qa/page/project/settings/advanced'
         autoload :Main, 'qa/page/project/settings/main'
         autoload :Repository, 'qa/page/project/settings/repository'
@@ -409,6 +409,7 @@ module QA
       autoload :Breadcrumbs, 'qa/page/component/breadcrumbs'
       autoload :CiBadgeLink, 'qa/page/component/ci_badge_link'
       autoload :ClonePanel, 'qa/page/component/clone_panel'
+      autoload :DesignManagement, 'qa/page/component/design_management'
       autoload :LazyLoader, 'qa/page/component/lazy_loader'
       autoload :LegacyClonePanel, 'qa/page/component/legacy_clone_panel'
       autoload :Dropzone, 'qa/page/component/dropzone'

@@ -4,7 +4,11 @@ module QA
   module Page
     module Component
       module ConfirmModal
+        extend QA::Page::PageConcern
+
         def self.included(base)
+          super
+
           base.view 'app/views/shared/_confirm_modal.html.haml' do
             element :confirm_modal
             element :confirm_input

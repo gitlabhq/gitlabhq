@@ -4,7 +4,11 @@ module QA
   module Page
     module Component
       module Note
+        extend QA::Page::PageConcern
+
         def self.included(base)
+          super
+
           base.view 'app/assets/javascripts/notes/components/comment_form.vue' do
             element :note_dropdown
             element :discussion_option

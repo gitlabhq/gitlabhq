@@ -5,7 +5,7 @@ module QA
     module Project
       module Settings
         class MergeRequest < QA::Page::Base
-          include Common
+          include QA::Page::Settings::Common
 
           view 'app/views/projects/edit.html.haml' do
             element :save_merge_request_changes

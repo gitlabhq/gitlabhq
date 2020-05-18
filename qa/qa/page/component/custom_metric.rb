@@ -4,7 +4,11 @@ module QA
   module Page
     module Component
       module CustomMetric
+        extend QA::Page::PageConcern
+
         def self.included(base)
+          super
+
           base.view 'app/assets/javascripts/custom_metrics/components/custom_metrics_form_fields.vue' do
             element :custom_metric_prometheus_title_field
             element :custom_metric_prometheus_query_field

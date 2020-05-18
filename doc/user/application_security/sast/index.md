@@ -469,7 +469,12 @@ vulnerabilities in your groups, projects and pipelines. Read more about the
 Once a vulnerability is found, you can interact with it. Read more on how to
 [interact with the vulnerabilities](../index.md#interacting-with-the-vulnerabilities).
 
-## Vulnerabilities database update
+## Vulnerabilities database
+
+Vulnerabilities contained within the vulnerability database can be searched
+and viewed at the [GitLab vulnerability advisory database](https://advisories.gitlab.com).
+
+### Vulnerabilities database update
 
 For more information about the vulnerabilities database update, check the
 [maintenance table](../index.md#maintenance-and-update-of-the-vulnerabilities-database).

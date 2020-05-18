@@ -5,7 +5,11 @@ module QA
     module Component
       module Issuable
         module Common
+          extend QA::Page::PageConcern
+
           def self.included(base)
+            super
+
             base.view 'app/assets/javascripts/issue_show/components/title.vue' do
               element :edit_button
               element :title, required: true

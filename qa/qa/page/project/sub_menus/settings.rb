@@ -5,10 +5,14 @@ module QA
     module Project
       module SubMenus
         module Settings
-          include Page::Project::SubMenus::Common
+          extend QA::Page::PageConcern
 
           def self.included(base)
+            super
+
             base.class_eval do
+              include QA::Page::Project::SubMenus::Common
+
               view 'app/views/layouts/nav/sidebar/_project.html.haml' do
                 element :settings_item
                 element :link_members_settings

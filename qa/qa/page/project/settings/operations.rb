@@ -5,7 +5,7 @@ module QA
     module Project
       module Settings
         class Operations < Page::Base
-          include Common
+          include QA::Page::Settings::Common
 
           view 'app/views/projects/settings/operations/_incidents.html.haml' do
             element :incidents_settings_content

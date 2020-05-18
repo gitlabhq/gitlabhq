@@ -3,16 +3,20 @@
 require 'spec_helper'
 
 describe ContentTypeWhitelist do
-  class DummyUploader < CarrierWave::Uploader::Base
-    include ContentTypeWhitelist::Concern
-
-    def content_type_whitelist
-      %w[image/png image/jpeg]
-    end
-  end
-
   let_it_be(:model) { build_stubbed(:user) }
-  let_it_be(:uploader) { DummyUploader.new(model, :dummy) }
+  let!(:uploader) do
+    stub_const('DummyUploader', Class.new(CarrierWave::Uploader::Base))
+
+    DummyUploader.class_eval do
+      include ContentTypeWhitelist::Concern
+
+      def content_type_whitelist
+        %w[image/png image/jpeg]
+      end
+    end
+
+    DummyUploader.new(model, :dummy)
+  end
 
   context 'upload whitelisted file content type' do
     let(:path) { File.join('spec', 'fixtures', 'rails_sample.jpg') }

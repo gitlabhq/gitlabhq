@@ -110,7 +110,6 @@ The `dotenv` report collects a set of environment variables as artifacts.
 
 The collected variables are registered as runtime-created variables of the job,
 which is useful to [set dynamic environment URLs after a job finishes](../environments/index.md#set-dynamic-environment-urls-after-a-job-finishes).
-It's not available for download through the web interface.
 
 There are a couple of limitations on top of the [original dotenv rules](https://github.com/motdotla/dotenv#rules).
 
@@ -151,7 +150,7 @@ The `codequality` report collects [CodeQuality issues](../../user/project/merge_
 as artifacts.
 
 The collected Code Quality report will be uploaded to GitLab as an artifact and will
-be summarized in merge requests. It's not available for download through the web interface.
+be summarized in merge requests.
 
 #### `artifacts:reports:sast` **(ULTIMATE)**
 
@@ -163,7 +162,7 @@ as artifacts.
 
 The collected SAST report will be uploaded to GitLab as an artifact and will be summarized
 in the merge requests and pipeline view. It's also used to provide data for security
-dashboards. It's not available for download through the web interface.
+dashboards.
 
 #### `artifacts:reports:dependency_scanning` **(ULTIMATE)**
 
@@ -175,7 +174,7 @@ as artifacts.
 
 The collected Dependency Scanning report will be uploaded to GitLab as an artifact and will
 be summarized in the merge requests and pipeline view. It's also used to provide data for security
-dashboards. It's not available for download through the web interface.
+dashboards.
 
 #### `artifacts:reports:container_scanning` **(ULTIMATE)**
 
@@ -187,7 +186,7 @@ as artifacts.
 
 The collected Container Scanning report will be uploaded to GitLab as an artifact and will
 be summarized in the merge requests and pipeline view. It's also used to provide data for security
-dashboards. It's not available for download through the web interface.
+dashboards.
 
 #### `artifacts:reports:dast` **(ULTIMATE)**
 
@@ -199,7 +198,7 @@ as artifacts.
 
 The collected DAST report will be uploaded to GitLab as an artifact and will
 be summarized in the merge requests and pipeline view. It's also used to provide data for security
-dashboards. It's not available for download through the web interface.
+dashboards.
 
 #### `artifacts:reports:license_management` **(ULTIMATE)**
 
@@ -216,7 +215,7 @@ as artifacts.
 
 The collected License Compliance report will be uploaded to GitLab as an artifact and will
 be summarized in the merge requests and pipeline view. It's also used to provide data for security
-dashboards. It's not available for download through the web interface.
+dashboards.
 
 #### `artifacts:reports:license_scanning` **(ULTIMATE)**
 
@@ -239,7 +238,7 @@ The `performance` report collects [Performance metrics](../../user/project/merge
 as artifacts.
 
 The collected Performance report will be uploaded to GitLab as an artifact and will
-be automatically shown in merge requests. It's not available for download through the web interface.
+be automatically shown in merge requests.
 
 #### `artifacts:reports:metrics` **(PREMIUM)**
 
@@ -249,7 +248,7 @@ The `metrics` report collects [Metrics](../metrics_reports.md)
 as artifacts.
 
 The collected Metrics report will be uploaded to GitLab as an artifact and will
-be automatically shown in merge requests. It's not available for download through the web interface.
+be automatically shown in merge requests.
 
 ## Browsing artifacts
 
@@ -277,16 +276,16 @@ one HTML file that you can view directly online when
 
 ## Downloading artifacts
 
-If you need to download the whole archive, there are buttons in various places
+If you need to download an artifact or the whole archive, there are buttons in various places
 in the GitLab UI to do this:
 
 1. While on the pipelines page, you can see the download icon for each job's
-   artifacts archive in the right corner:
+   artifacts and archive in the right corner:
 
    ![Job artifacts in Pipelines page](img/job_artifacts_pipelines_page.png)
 
 1. While on the **Jobs** page, you can see the download icon for each job's
-   artifacts archive in the right corner:
+   artifacts and archive in the right corner:
 
    ![Job artifacts in Builds page](img/job_artifacts_builds_page.png)
 

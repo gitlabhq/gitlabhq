@@ -5,7 +5,7 @@ module QA
     module Project
       module Settings
         class Repository < Page::Base
-          include Common
+          include QA::Page::Settings::Common
 
           view 'app/views/projects/protected_branches/shared/_index.html.haml' do
             element :protected_branches_settings

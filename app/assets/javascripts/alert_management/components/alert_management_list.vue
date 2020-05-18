@@ -13,7 +13,7 @@ import {
 } from '@gitlab/ui';
 import createFlash from '~/flash';
 import { s__ } from '~/locale';
-import { joinPaths } from '~/lib/utils/url_utility';
+import { joinPaths, visitUrl } from '~/lib/utils/url_utility';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import getAlerts from '../graphql/queries/getAlerts.query.graphql';
 import { ALERTS_STATUS, ALERTS_STATUS_TABS, ALERTS_SEVERITY_LABELS } from '../constants';
@@ -165,6 +165,9 @@ export default {
             projectPath: this.projectPath,
           },
         })
+        .then(() => {
+          this.$apollo.queries.alerts.refetch();
+        })
         .catch(() => {
           createFlash(
             s__(
@@ -173,13 +176,12 @@ export default {
           );
         });
     },
-    handleRowClick({ iid }) {
-      window.location.assign(joinPaths(window.location.pathname, iid, 'details'));
+    navigateToAlertDetails({ iid }) {
+      return visitUrl(joinPaths(window.location.pathname, iid, 'details'));
     },
   },
 };
 </script>
-
 <template>
   <div>
     <div v-if="alertManagementEnabled" class="alert-management-list">
@@ -209,7 +211,7 @@ export default {
         :busy="loading"
         stacked="md"
         :tbody-tr-class="$options.bodyTrClass"
-        @row-clicked="handleRowClick"
+        @row-clicked="navigateToAlertDetails"
       >
         <template #cell(severity)="{ item }">
           <div

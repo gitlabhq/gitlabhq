@@ -9,6 +9,7 @@ import {
   GlIcon,
   GlTab,
 } from '@gitlab/ui';
+import { visitUrl } from '~/lib/utils/url_utility';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import createFlash from '~/flash';
 import AlertManagementList from '~/alert_management/components/alert_management_list.vue';
@@ -17,6 +18,11 @@ import updateAlertStatus from '~/alert_management/graphql/mutations/update_alert
 import mockAlerts from '../mocks/alerts.json';
 
 jest.mock('~/flash');
+
+jest.mock('~/lib/utils/url_utility', () => ({
+  visitUrl: jest.fn().mockName('visitUrlMock'),
+  joinPaths: jest.requireActual('~/lib/utils/url_utility').joinPaths,
+}));
 
 describe('AlertManagementList', () => {
   let wrapper;
@@ -220,12 +226,10 @@ describe('AlertManagementList', () => {
         loading: false,
       });
 
-      window.location.assign = jest.fn();
-
       findAlerts()
         .at(0)
         .trigger('click');
-      expect(window.location.assign).toHaveBeenCalledWith('/1527542/details');
+      expect(visitUrl).toHaveBeenCalledWith('/1527542/details');
     });
 
     describe('handle date fields', () => {

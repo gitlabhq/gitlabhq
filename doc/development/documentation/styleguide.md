@@ -308,12 +308,14 @@ tenses, words, and phrases:
     appropriate way.
   - Exceptions to this rule include commonly accepted technical terms, such as
     CI/CD and TCP/IP.
-- We discourage use of Latin abbreviations, such as "e.g.," "i.e.," or "etc.,"
+- <!-- vale gitlab.LatinTerms = NO -->
+  We discourage use of Latin abbreviations, such as "e.g.," "i.e.," or "etc.,"
   as even native users of English might misunderstand them.
   - Instead of "i.e.," use "that is."
   - Instead of "e.g.," use "for example," "such as," "for instance," or "like."
   - Instead of "etc.," either use "and so on" or consider editing it out, since
     it can be vague.
+    <!-- vale gitlab.rulename = NO -->
 - Avoid using the word *currently* when talking about the product or its
   features. The documentation describes the product as it is, and not as it
   will be at some indeterminate point in the future.
@@ -378,6 +380,8 @@ tenses, words, and phrases:
 |------------------------------------------|----------------------------|
 | Requests to localhost are not allowed    | Requests to localhost aren't allowed |
 | Specified URL cannot be used             | Specified URL can't be used          |
+
+<!-- vale on -->
 
 ## Text
 
@@ -1308,7 +1312,7 @@ a helpful link back to how the feature was developed.
   ```
 
 NOTE: **Note:**
-Version text must be on its own line and surounded by blank lines to render correctly.
+Version text must be on its own line and surrounded by blank lines to render correctly.
 
 ### Versions in the past or future
 

@@ -5,7 +5,11 @@ module QA
     module File
       module Shared
         module Editor
+          extend QA::Page::PageConcern
+
           def self.included(base)
+            super
+
             base.view 'app/views/projects/blob/_editor.html.haml' do
               element :editor
             end

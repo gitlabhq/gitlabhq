@@ -5,6 +5,7 @@ module QA
     module Project
       module SubMenus
         module Common
+          extend QA::Page::PageConcern
           include QA::Page::SubMenus::Common
 
           private

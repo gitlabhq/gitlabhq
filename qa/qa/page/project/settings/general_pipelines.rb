@@ -5,7 +5,7 @@ module QA
     module Project
       module Settings
         class GeneralPipelines < Page::Base
-          include Common
+          include QA::Page::Settings::Common
 
           view 'app/views/projects/settings/ci_cd/_form.html.haml' do
             element :build_coverage_regex_field
