@@ -61,6 +61,7 @@ module Ci
 
       case artifact.file_type
       when 'dotenv' then parse_dotenv_artifact(job, artifact)
+      when 'cluster_applications' then parse_cluster_applications_artifact(job, artifact)
       else success
       end
     end
@@ -110,6 +111,10 @@ module Ci
 
     def parse_dotenv_artifact(job, artifact)
       Ci::ParseDotenvArtifactService.new(job.project, current_user).execute(artifact)
+    end
+
+    def parse_cluster_applications_artifact(job, artifact)
+      Clusters::ParseClusterApplicationsArtifactService.new(job, job.user).execute(artifact)
     end
   end
 end

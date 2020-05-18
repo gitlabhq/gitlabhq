@@ -105,13 +105,13 @@ gemnasium-dependency_scanning:
           $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
           $DS_DEFAULT_ANALYZERS =~ /gemnasium([^-]|$)/
       exists:
-        - 'Gemfile.lock'
-        - 'composer.lock'
-        - 'gems.locked'
-        - 'go.sum'
-        - 'npm-shrinkwrap.json'
-        - 'package-lock.json'
-        - 'yarn.lock'
+        - '{Gemfile.lock,*/Gemfile.lock,*/*/Gemfile.lock}'
+        - '{composer.lock,*/composer.lock,*/*/composer.lock}'
+        - '{gems.locked,*/gems.locked,*/*/gems.locked}'
+        - '{go.sum,*/go.sum,*/*/go.sum}'
+        - '{npm-shrinkwrap.json,*/npm-shrinkwrap.json,*/*/npm-shrinkwrap.json}'
+        - '{package-lock.json,*/package-lock.json,*/*/package-lock.json}'
+        - '{yarn.lock,*/yarn.lock,*/*/yarn.lock}'
 
 gemnasium-maven-dependency_scanning:
   extends: .ds-analyzer
@@ -124,9 +124,9 @@ gemnasium-maven-dependency_scanning:
           $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
           $DS_DEFAULT_ANALYZERS =~ /gemnasium-maven/
       exists:
-        - 'build.gradle'
-        - 'build.sbt'
-        - 'pom.xml'
+        - '{build.gradle,*/build.gradle,*/*/build.gradle}'
+        - '{build.sbt,*/build.sbt,*/*/build.sbt}'
+        - '{pom.xml,*/pom.xml,*/*/pom.xml}'
 
 gemnasium-python-dependency_scanning:
   extends: .ds-analyzer
@@ -139,11 +139,11 @@ gemnasium-python-dependency_scanning:
           $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
           $DS_DEFAULT_ANALYZERS =~ /gemnasium-python/
       exists:
-        - 'requirements.txt'
-        - 'requirements.pip'
-        - 'Pipfile'
-        - 'requires.txt'
-        - 'setup.py'
+        - '{requirements.txt,*/requirements.txt,*/*/requirements.txt}'
+        - '{requirements.pip,*/requirements.pip,*/*/requirements.pip}'
+        - '{Pipfile,*/Pipfile,*/*/Pipfile}'
+        - '{requires.txt,*/requires.txt,*/*/requires.txt}'
+        - '{setup.py,*/setup.py,*/*/setup.py}'
       # Support passing of $PIP_REQUIREMENTS_FILE
       # See https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#configuring-specific-analyzers-used-by-dependency-scanning
     - if: $CI_COMMIT_BRANCH &&
@@ -162,7 +162,7 @@ bundler-audit-dependency_scanning:
           $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
           $DS_DEFAULT_ANALYZERS =~ /bundler-audit/
       exists:
-        - 'Gemfile.lock'
+        - '{Gemfile.lock,*/Gemfile.lock,*/*/Gemfile.lock}'
 
 retire-js-dependency_scanning:
   extends: .ds-analyzer
@@ -175,4 +175,4 @@ retire-js-dependency_scanning:
           $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
           $DS_DEFAULT_ANALYZERS =~ /retire.js/
       exists:
-        - 'package.json'
+        - '{package.json,*/package.json,*/*/package.json}'

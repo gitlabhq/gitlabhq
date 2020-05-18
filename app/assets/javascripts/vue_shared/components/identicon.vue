@@ -4,7 +4,7 @@ import { getIdenticonBackgroundClass, getIdenticonTitle } from '~/helpers/avatar
 export default {
   props: {
     entityId: {
-      type: Number,
+      type: [Number, String],
       required: true,
     },
     entityName: {

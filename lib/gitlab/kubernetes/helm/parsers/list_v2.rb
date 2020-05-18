@@ -18,7 +18,17 @@ module Gitlab
           end
 
           def releases
-            @releases ||= json["Releases"] || []
+            @releases = helm_releases
+          end
+
+          private
+
+          def helm_releases
+            helm_releases = json['Releases'] || []
+
+            raise ParserError, 'Invalid format for Releases' unless helm_releases.all? { |item| item.is_a?(Hash) }
+
+            helm_releases
           end
         end
       end

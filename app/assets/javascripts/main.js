@@ -111,6 +111,9 @@ function deferredInitialisation() {
   const recoverySettingsCallout = document.querySelector('.js-recovery-settings-callout');
   PersistentUserCallout.factory(recoverySettingsCallout);
 
+  const usersOverLicenseCallout = document.querySelector('.js-users-over-license-callout');
+  PersistentUserCallout.factory(usersOverLicenseCallout);
+
   if (document.querySelector('.search')) initSearchAutocomplete();
 
   addSelectOnFocusBehaviour('.js-select-on-focus');

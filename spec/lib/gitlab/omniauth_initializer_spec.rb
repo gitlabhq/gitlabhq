@@ -86,6 +86,22 @@ describe Gitlab::OmniauthInitializer do
       subject.execute([cas3_config])
     end
 
+    it 'configures defaults for google_oauth2' do
+      google_config = {
+        'name' => 'google_oauth2',
+        "args" => { "access_type" => "offline", "approval_prompt" => '' }
+      }
+
+      expect(devise_config).to receive(:omniauth).with(
+        :google_oauth2,
+        access_type: "offline",
+        approval_prompt: "",
+        client_options: { connection_opts: { request: { timeout: Gitlab::OmniauthInitializer::OAUTH2_TIMEOUT_SECONDS } } }
+      )
+
+      subject.execute([google_config])
+    end
+
     it 'converts client_auth_method to a Symbol for openid_connect' do
       openid_connect_config = {
         'name' => 'openid_connect',

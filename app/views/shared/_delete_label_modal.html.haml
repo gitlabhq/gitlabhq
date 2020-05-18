@@ -2,20 +2,19 @@
   .modal-dialog
     .modal-content
       .modal-header
-        %h3.page-title Delete label: #{label.name} ?
+        %h3.page-title= _('Delete label: %{label_name} ?') % { label_name: label.name }
         %button.close{ type: "button", "data-dismiss": "modal", "aria-label" => _('Close') }
           %span{ "aria-hidden": true } &times;
 
       .modal-body
         %p
-          %strong= label.name
-          %span will be permanently deleted from #{label.subject_name}. This cannot be undone.
+          = _('<strong>%{label_name}</strong> <span>will be permanently deleted from %{subject_name}. This cannot be undone.</span>').html_safe % { label_name: label.name, subject_name: label.subject_name }
 
       .modal-footer
-        %a{ href: '#', data: { dismiss: 'modal' }, class: 'btn btn-default' } Cancel
+        %a{ href: '#', data: { dismiss: 'modal' }, class: 'btn btn-default' }= _('Cancel')
 
-        = link_to 'Delete label',
+        = link_to _('Delete label'),
           label.destroy_path,
-          title: 'Delete',
+          title: _('Delete'),
           method: :delete,
           class: 'btn btn-remove'

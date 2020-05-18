@@ -70,12 +70,12 @@ module API
         service_response = ::Snippets::CreateService.new(user_project, current_user, snippet_params).execute
         snippet = service_response.payload[:snippet]
 
-        render_spam_error! if snippet.spam?
-
-        if snippet.persisted?
+        if service_response.success?
           present snippet, with: Entities::ProjectSnippet
         else
-          render_validation_error!(snippet)
+          render_spam_error! if snippet.spam?
+
+          render_api_error!({ error: service_response.message }, service_response.http_status)
         end
       end
 
@@ -106,12 +106,12 @@ module API
         service_response = ::Snippets::UpdateService.new(user_project, current_user, snippet_params).execute(snippet)
         snippet = service_response.payload[:snippet]
 
-        render_spam_error! if snippet.spam?
-
-        if snippet.valid?
+        if service_response.success?
           present snippet, with: Entities::ProjectSnippet
         else
-          render_validation_error!(snippet)
+          render_spam_error! if snippet.spam?
+
+          render_api_error!({ error: service_response.message }, service_response.http_status)
         end
       end
       # rubocop: enable CodeReuse/ActiveRecord

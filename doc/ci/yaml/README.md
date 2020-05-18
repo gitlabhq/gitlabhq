@@ -3617,7 +3617,7 @@ Read more about the various [YAML features](https://learnxinyminutes.com/docs/ya
 
 YAML has a handy feature called 'anchors', which lets you easily duplicate
 content across your document. Anchors can be used to duplicate/inherit
-properties, and is a perfect example to be used with [hidden keys](#hide-jobs)
+properties, and is a perfect example to be used with [hidden jobs](#hide-jobs)
 to provide templates for your jobs.
 
 The following example uses anchors and map merging. It will create two jobs,
@@ -3731,7 +3731,7 @@ test:mysql:
     - ruby
 ```
 
-You can see that the hidden keys are conveniently used as templates.
+You can see that the hidden jobs are conveniently used as templates.
 
 NOTE: **Note:**
 You can't use YAML anchors across multiple files when leveraging the [`include`](#include)
@@ -3829,7 +3829,7 @@ GitLab CI/CD. In the following example, `.hidden_job` will be ignored:
 ```
 
 Use this feature to ignore jobs, or use the
-[special YAML features](#special-yaml-features) and transform the hidden keys
+[special YAML features](#special-yaml-features) and transform the hidden jobs
 into templates.
 
 ## Skip Pipeline

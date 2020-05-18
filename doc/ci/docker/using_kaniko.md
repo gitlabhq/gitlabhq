@@ -82,6 +82,7 @@ store:
 
 ```yaml
   before_script:
+    - mkdir -p /kaniko/.docker
     - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
     - |
       echo "-----BEGIN CERTIFICATE-----

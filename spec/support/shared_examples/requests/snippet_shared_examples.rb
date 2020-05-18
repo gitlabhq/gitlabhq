@@ -48,6 +48,28 @@ RSpec.shared_examples 'update with repository actions' do
         expect(blob).not_to be_nil
         expect(blob.data).to eq content
       end
+
+      context 'when save fails due to a repository creation error' do
+        let(:content) { 'File content' }
+        let(:file_name) { 'test.md' }
+
+        before do
+          allow_next_instance_of(Snippets::UpdateService) do |instance|
+            allow(instance).to receive(:create_repository_for).with(snippet).and_raise(Snippets::UpdateService::CreateRepositoryError)
+          end
+
+          update_snippet(snippet_id: snippet.id, params: { content: content, file_name: file_name })
+        end
+
+        it 'returns 400' do
+          expect(response).to have_gitlab_http_status(:bad_request)
+        end
+
+        it 'does not save the changes to the snippet object' do
+          expect(snippet.content).not_to eq(content)
+          expect(snippet.file_name).not_to eq(file_name)
+        end
+      end
     end
   end
 end

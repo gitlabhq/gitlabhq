@@ -17,6 +17,8 @@ fragment SnippetBase on Snippet {
     path
     rawPath
     size
+    externalStorage
+    renderedAsText
     simpleViewer {
       ...BlobViewer
     }

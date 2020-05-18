@@ -267,6 +267,28 @@ describe API::Snippets do
       expect(response).to have_gitlab_http_status(:bad_request)
     end
 
+    it 'returns 400 for validation errors' do
+      params[:title] = ''
+
+      post api("/snippets/", user), params: params
+
+      expect(response).to have_gitlab_http_status(:bad_request)
+    end
+
+    context 'when save fails because the repository could not be created' do
+      before do
+        allow_next_instance_of(Snippets::CreateService) do |instance|
+          allow(instance).to receive(:create_repository).and_raise(Snippets::CreateService::CreateRepositoryError)
+        end
+      end
+
+      it 'returns 400' do
+        post api("/snippets/", user), params: params
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+    end
+
     context 'when the snippet is spam' do
       def create_snippet(snippet_params = {})
         post api('/snippets', user), params: params.merge(snippet_params)
@@ -352,6 +374,12 @@ describe API::Snippets do
 
     it 'returns 400 for missing parameters' do
       update_snippet
+
+      expect(response).to have_gitlab_http_status(:bad_request)
+    end
+
+    it 'returns 400 for validation errors' do
+      update_snippet(params: { title: '' })
 
       expect(response).to have_gitlab_http_status(:bad_request)
     end

@@ -224,6 +224,20 @@ describe API::ProjectSnippets do
       expect(response).to have_gitlab_http_status(:bad_request)
     end
 
+    context 'when save fails because the repository could not be created' do
+      before do
+        allow_next_instance_of(Snippets::CreateService) do |instance|
+          allow(instance).to receive(:create_repository).and_raise(Snippets::CreateService::CreateRepositoryError)
+        end
+      end
+
+      it 'returns 400' do
+        post api("/projects/#{project.id}/snippets", admin), params: params
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+    end
+
     context 'when the snippet is spam' do
       def create_snippet(project, snippet_params = {})
         project.add_developer(user)

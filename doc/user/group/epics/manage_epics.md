@@ -217,9 +217,9 @@ To reorder child epics assigned to an epic:
 1. Go to the **Epics and Issues** tab.
 1. Drag and drop epics into the desired order.
 
-### Move issues between epics
+### Move issues between epics **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33039) in GitLab 13.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33039) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.0.
 
 New issues are added to the top of their list in the **Epics and Issues**
 tab. You can move issues from one epic to another. Issues and child epics cannot be intermingled.
@@ -270,14 +270,14 @@ To add a child epic to an epic:
 
 ### Move child epics between epics
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33039) in GitLab 13.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33039) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.0.
 
 New child epics are added to the top of their list in the **Epics and Issues** tab.
 You can move child epics from one epic to another.
 When you add an epic that's already linked to a parent epic, the link to its current parent is removed.
 Issues and child epics cannot be intermingled.
 
-To move child epics **(ULTIMATE)** to another epic:
+To move child epics to another epic:
 
 1. Go to the **Epics and Issues** tab.
 1. Drag and drop epics into the desired parent epic.

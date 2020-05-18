@@ -82,5 +82,19 @@ describe Gitlab::Kubernetes::Helm::Parsers::ListV2 do
         expect(list_v2.releases).to eq([])
       end
     end
+
+    context 'invalid Releases' do
+      let(:invalid_file_contents) do
+        '{ "Releases" : ["a", "b"] }'
+      end
+
+      subject(:list_v2) { described_class.new(invalid_file_contents) }
+
+      it 'raises an error' do
+        expect do
+          list_v2.releases
+        end.to raise_error(described_class::ParserError, 'Invalid format for Releases')
+      end
+    end
   end
 end

@@ -4,12 +4,17 @@ import IdenticonComponent from '~/vue_shared/components/identicon.vue';
 describe('Identicon', () => {
   let wrapper;
 
-  const createComponent = () => {
+  const defaultProps = {
+    entityId: 1,
+    entityName: 'entity-name',
+    sizeClass: 's40',
+  };
+
+  const createComponent = (props = {}) => {
     wrapper = shallowMount(IdenticonComponent, {
       propsData: {
-        entityId: 1,
-        entityName: 'entity-name',
-        sizeClass: 's40',
+        ...defaultProps,
+        ...props,
       },
     });
   };
@@ -19,15 +24,27 @@ describe('Identicon', () => {
     wrapper = null;
   });
 
-  it('matches snapshot', () => {
-    createComponent();
+  describe('entity id is a number', () => {
+    beforeEach(createComponent);
 
-    expect(wrapper.element).toMatchSnapshot();
+    it('matches snapshot', () => {
+      expect(wrapper.element).toMatchSnapshot();
+    });
+
+    it('adds a correct class to identicon', () => {
+      expect(wrapper.find({ ref: 'identicon' }).classes()).toContain('bg2');
+    });
   });
 
-  it('adds a correct class to identicon', () => {
-    createComponent();
+  describe('entity id is a GraphQL id', () => {
+    beforeEach(() => createComponent({ entityId: 'gid://gitlab/Project/8' }));
 
-    expect(wrapper.find({ ref: 'identicon' }).classes()).toContain('bg2');
+    it('matches snapshot', () => {
+      expect(wrapper.element).toMatchSnapshot();
+    });
+
+    it('adds a correct class to identicon', () => {
+      expect(wrapper.find({ ref: 'identicon' }).classes()).toContain('bg2');
+    });
   });
 });

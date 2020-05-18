@@ -223,9 +223,17 @@ module Clusters
     end
 
     def applications
-      APPLICATIONS_ASSOCIATIONS.map do |association_name|
-        public_send(association_name) || public_send("build_#{association_name}") # rubocop:disable GitlabSecurity/PublicSend
+      APPLICATIONS.each_value.map do |application_class|
+        find_or_build_application(application_class)
       end
+    end
+
+    def find_or_build_application(application_class)
+      raise ArgumentError, "#{application_class} is not in APPLICATIONS" unless APPLICATIONS.value?(application_class)
+
+      association_name = application_class.association_name
+
+      public_send(association_name) || public_send("build_#{association_name}") # rubocop:disable GitlabSecurity/PublicSend
     end
 
     def provider

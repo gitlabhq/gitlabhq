@@ -18,21 +18,22 @@ You can read more about the Docker Registry at
 
 **Omnibus GitLab installations**
 
-If you are using the Omnibus GitLab built-in [Let's Encrypt integration](https://docs.gitlab.com/omnibus/settings/ssl.html#lets-encrypt-integration), as of GitLab 12.5, the Container Registry will be automatically enabled on port 5050 of the default domain.
+If you installed GitLab by using the Omnibus installation package, the Container Registry
+may or may not be available by default.
 
-If you are not using GitLab 12.5 or later, or do not use GitLab's built-in Let's Encrypt
-integration, the GitLab Container Registry must be enabled and
-[configured to use an external domain](#container-registry-domain-configuration).
+The Container Registry is automatically enabled and available on your GitLab domain, port 5050 if:
 
-To enable the GitLab Container Registry on your *existing* GitLab domain, refer to the section on
-[configuring Container Registry to use an existing domain](#configure-container-registry-under-an-existing-gitlab-domain).
+- You're using the built-in [Let's Encrypt integration](https://docs.gitlab.com/omnibus/settings/ssl.html#lets-encrypt-integration), and
+- You're using GitLab 12.5 or later.
 
-To use a *separate* domain with your Container Registry, refer to the section on
-[configuring Container Registry under its own domain](#configure-container-registry-under-its-own-domain).
+Otherwise, the Container Registry is not enabled. To enable it:
+
+- You can configure it for your [GitLab domain](#configure-container-registry-under-an-existing-gitlab-domain), or
+- You can configure it for [a different domain](#configure-container-registry-under-its-own-domain).
 
 NOTE: **Note:**
-The container registry works under HTTPS by default. Using HTTP is possible
-but not recommended and out of the scope of this document.
+The Container Registry works under HTTPS by default. You can use HTTP
+but it's not recommended and is out of the scope of this document.
 Read the [insecure Registry documentation](https://docs.docker.com/registry/insecure/)
 if you want to implement this.
 

@@ -590,6 +590,60 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
     end
   end
 
+  describe '#find_or_build_application' do
+    let_it_be(:cluster, reload: true) { create(:cluster) }
+
+    it 'rejects classes that are not applications' do
+      expect do
+        cluster.find_or_build_application(Project)
+      end.to raise_error(ArgumentError)
+    end
+
+    context 'when none of applications are created' do
+      it 'returns the new application', :aggregate_failures do
+        described_class::APPLICATIONS.values.each do |application_class|
+          application = cluster.find_or_build_application(application_class)
+
+          expect(application).to be_a(application_class)
+          expect(application).not_to be_persisted
+        end
+      end
+    end
+
+    context 'when application is persisted' do
+      let!(:helm) { create(:clusters_applications_helm, cluster: cluster) }
+      let!(:ingress) { create(:clusters_applications_ingress, cluster: cluster) }
+      let!(:cert_manager) { create(:clusters_applications_cert_manager, cluster: cluster) }
+      let!(:crossplane) { create(:clusters_applications_crossplane, cluster: cluster) }
+      let!(:prometheus) { create(:clusters_applications_prometheus, cluster: cluster) }
+      let!(:runner) { create(:clusters_applications_runner, cluster: cluster) }
+      let!(:jupyter) { create(:clusters_applications_jupyter, cluster: cluster) }
+      let!(:knative) { create(:clusters_applications_knative, cluster: cluster) }
+      let!(:elastic_stack) { create(:clusters_applications_elastic_stack, cluster: cluster) }
+      let!(:fluentd) { create(:clusters_applications_fluentd, cluster: cluster) }
+
+      it 'returns the persisted application', :aggregate_failures do
+        {
+          Clusters::Applications::Helm => helm,
+          Clusters::Applications::Ingress => ingress,
+          Clusters::Applications::CertManager => cert_manager,
+          Clusters::Applications::Crossplane => crossplane,
+          Clusters::Applications::Prometheus => prometheus,
+          Clusters::Applications::Runner => runner,
+          Clusters::Applications::Jupyter => jupyter,
+          Clusters::Applications::Knative => knative,
+          Clusters::Applications::ElasticStack => elastic_stack,
+          Clusters::Applications::Fluentd => fluentd
+        }.each do |application_class, expected_object|
+          application = cluster.find_or_build_application(application_class)
+
+          expect(application).to eq(expected_object)
+          expect(application).to be_persisted
+        end
+      end
+    end
+  end
+
   describe '#allow_user_defined_namespace?' do
     subject { cluster.allow_user_defined_namespace? }
 

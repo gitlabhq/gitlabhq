@@ -1,6 +1,16 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Identicon matches snapshot 1`] = `
+exports[`Identicon entity id is a GraphQL id matches snapshot 1`] = `
+<div
+  class="avatar identicon s40 bg2"
+>
+  
+  E
+
+</div>
+`;
+
+exports[`Identicon entity id is a number matches snapshot 1`] = `
 <div
   class="avatar identicon s40 bg2"
 >

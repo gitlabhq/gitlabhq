@@ -1,11 +1,14 @@
 import { escape } from 'lodash';
 import { getFirstCharacterCapitalized } from '~/lib/utils/text_utility';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 
 export const DEFAULT_SIZE_CLASS = 's40';
 export const IDENTICON_BG_COUNT = 7;
 
 export function getIdenticonBackgroundClass(entityId) {
-  const type = (entityId % IDENTICON_BG_COUNT) + 1;
+  // If a GraphQL string id is passed in, convert it to the entity number
+  const id = typeof entityId === 'string' ? getIdFromGraphQLId(entityId) : entityId;
+  const type = (id % IDENTICON_BG_COUNT) + 1;
   return `bg${type}`;
 }
 

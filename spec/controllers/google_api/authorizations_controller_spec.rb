@@ -12,10 +12,6 @@ describe GoogleApi::AuthorizationsController do
 
     before do
       sign_in(user)
-
-      allow_next_instance_of(GoogleApi::CloudPlatform::Client) do |instance|
-        allow(instance).to receive(:get_token).and_return([token, expires_at])
-      end
     end
 
     shared_examples_for 'access denied' do
@@ -37,6 +33,12 @@ describe GoogleApi::AuthorizationsController do
 
       context 'session key matches state param' do
         let(:state) { session_key }
+
+        before do
+          allow_next_instance_of(GoogleApi::CloudPlatform::Client) do |instance|
+            allow(instance).to receive(:get_token).and_return([token, expires_at])
+          end
+        end
 
         it 'sets token and expires_at in session' do
           subject
@@ -62,6 +64,22 @@ describe GoogleApi::AuthorizationsController do
         let(:state) { '' }
 
         it_behaves_like 'access denied'
+      end
+
+      context 'when a Faraday exception occurs' do
+        let(:state) { session_key }
+
+        [::Faraday::TimeoutError, ::Faraday::ConnectionFailed].each do |error|
+          it "sets a flash alert on #{error}" do
+            allow_next_instance_of(GoogleApi::CloudPlatform::Client) do |instance|
+              allow(instance).to receive(:get_token).and_raise(error.new(nil))
+            end
+
+            subject
+
+            expect(flash[:alert]).to eq('Timeout connecting to the Google API. Please try again.')
+          end
+        end
       end
     end
 

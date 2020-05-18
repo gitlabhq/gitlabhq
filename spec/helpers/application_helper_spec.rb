@@ -71,6 +71,28 @@ describe ApplicationHelper do
     end
   end
 
+  describe '#admin_section?' do
+    context 'when controller is under the admin namespace' do
+      before do
+        allow(helper).to receive(:controller).and_return(Admin::UsersController.new)
+      end
+
+      it 'returns true' do
+        expect(helper.admin_section?).to eq(true)
+      end
+    end
+
+    context 'when controller is not under the admin namespace' do
+      before do
+        allow(helper).to receive(:controller).and_return(UsersController.new)
+      end
+
+      it 'returns true' do
+        expect(helper.admin_section?).to eq(false)
+      end
+    end
+  end
+
   describe 'simple_sanitize' do
     let(:a_tag) { '<a href="#">Foo</a>' }
 
