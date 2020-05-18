@@ -184,18 +184,19 @@ export default {
             :add-spacing-classes="false"
             class="prepend-top-10 append-bottom-10"
           >
-            <textarea
-              id="release-notes"
-              slot="textarea"
-              v-model="releaseNotes"
-              class="note-textarea js-gfm-input js-autosize markdown-area"
-              dir="auto"
-              data-supports-quick-actions="false"
-              :aria-label="__('Release notes')"
-              :placeholder="__('Write your release notes or drag your files here…')"
-              @keydown.meta.enter="updateRelease()"
-              @keydown.ctrl.enter="updateRelease()"
-            ></textarea>
+            <template #textarea>
+              <textarea
+                id="release-notes"
+                v-model="releaseNotes"
+                class="note-textarea js-gfm-input js-autosize markdown-area"
+                dir="auto"
+                data-supports-quick-actions="false"
+                :aria-label="__('Release notes')"
+                :placeholder="__('Write your release notes or drag your files here…')"
+                @keydown.meta.enter="updateRelease()"
+                @keydown.ctrl.enter="updateRelease()"
+              ></textarea>
+            </template>
           </markdown-field>
         </div>
       </gl-form-group>

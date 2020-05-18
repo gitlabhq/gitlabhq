@@ -192,7 +192,7 @@ feature flag. This ensures the change is available to all users and self-managed
 instances. Make sure to add the ~"feature flag" label to this merge request so
 release managers are aware the changes are hidden behind a feature flag. If the
 merge request has to be picked into a stable branch, make sure to also add the
-appropriate "Pick into X" label (e.g. "Pick into XX.X").
+appropriate `~"Pick into X.Y"` label (e.g. `~"Pick into 13.0"`).
 See [the process document](process.md#including-a-feature-behind-feature-flag-in-the-final-release) for further details.
 
 When a feature gate has been removed from the code base, the feature

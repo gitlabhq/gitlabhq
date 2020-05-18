@@ -264,7 +264,7 @@ release. There are three levels of Release Scoping labels:
   milestone. If these issues are not done in the current release, they will
   strongly be considered for the next release.
 - ~"Next Patch Release": Issues to put in the next patch release. Work on these
-  first, and add the "Pick Into X" label to the merge request, along with the
+  first, and add the `~"Pick into X.Y"` label to the merge request, along with the
   appropriate milestone.
 
 Each issue scheduled for the current milestone should be labeled ~Deliverable

@@ -470,21 +470,15 @@ include:
 
 variables:
   DS_ANALYZER_IMAGE_PREFIX: "docker-registry.example.com/analyzers"
+  GEMNASIUM_DB_REMOTE_URL: "gitlab.example.com/gemnasium-db.git"
+  GIT_SSL_NO_VERIFY: "true"
 ```
 
 See explanations of the variables above in the [configuration section](#configuration).
 
 ### Specific settings for languages and package managers
 
-For every language and package manager, add the following to the variables section of
-`.gitlab-ci.yml`:
-
-```yaml
-GEMNASIUM_DB_REMOTE_URL: "gitlab.example.com/gemnasium-db.git"
-GIT_SSL_NO_VERIFY: "true"
-```
-
-See the following sections for additional instructions on specific languages and package managers.
+See the following sections for configuring specific languages and package managers.
 
 #### JavaScript (npm and yarn) projects
 
@@ -540,26 +534,6 @@ gemnasium-maven-dependency_scanning:
 
 This adds the self-signed certificates of your Maven repository to the Java KeyStore of the analyzer's Docker image.
 
-#### Python (pip) and Python (Pipfile) projects
-
-Add the following `pip.conf` to your repository to define your index URL and trust its self-signed
-certificate:
-
-```toml
-[global]
-index-url = https://pypi.example.com
-trusted-host = pypi.example.com
-```
-
-Add the following job section to `.gitlab-ci.yml`:
-
-```yaml
-gemnasium-python-dependency_scanning:
-  before_script:
-    - mkdir -p ~/.config/pip
-    - cp pip.conf ~/.config/pip/pip.conf
-```
-
 #### Python (setuptools)
 
 When using self-signed certificates for your private PyPi repository, no extra job configuration (aside
@@ -591,14 +565,17 @@ ensure that it can reach your private repository. Here is an example configurati
 
 ### Referencing local dependencies using a path in JavaScript projects
 
-Although dependency scanning doesn't support it, you can reference dependencies by using a
-[local path](https://docs.npmjs.com/files/package.json#local-paths) in the `package.json` for a
-JavaScript project. The dependency scan generates the following error when you use
-`file: <path/to/dependency-name>` to reference a package:
+The [Retire.js](https://gitlab.com/gitlab-org/security-products/analyzers/retire.js) analyzer
+doesn't support dependency references made with [local paths](https://docs.npmjs.com/files/package.json#local-paths)
+in the `package.json` of JavaScript projects. The dependency scan outputs the following error for
+such references:
 
 ```text
 ERROR: Could not find dependencies: <dependency-name>. You may need to run npm install
 ```
+
+As a workaround, remove the [`retire.js`](analyzers.md#selecting-specific-analyzers) analyzer from
+[DS_DEFAULT_ANALYZERS](#configuring-dependency-scanning).
 
 ## Troubleshooting
 

@@ -32,7 +32,7 @@ describe Blob do
       it 'does not fetch blobs when none are accessed' do
         expect(container.repository).not_to receive(:blobs_at)
 
-        described_class.lazy(container, commit_id, 'CHANGELOG')
+        described_class.lazy(container.repository, commit_id, 'CHANGELOG')
       end
 
       it 'fetches all blobs for the same repository when one is accessed' do
@@ -41,10 +41,10 @@ describe Blob do
           .once.and_call_original
         expect(other_container.repository).not_to receive(:blobs_at)
 
-        changelog = described_class.lazy(container, commit_id, 'CHANGELOG')
-        contributing = described_class.lazy(same_container, commit_id, 'CONTRIBUTING.md')
+        changelog = described_class.lazy(container.repository, commit_id, 'CHANGELOG')
+        contributing = described_class.lazy(same_container.repository, commit_id, 'CONTRIBUTING.md')
 
-        described_class.lazy(other_container, commit_id, 'CHANGELOG')
+        described_class.lazy(other_container.repository, commit_id, 'CHANGELOG')
 
         # Access property so the values are loaded
         changelog.id
@@ -52,14 +52,14 @@ describe Blob do
       end
 
       it 'does not include blobs from previous requests in later requests' do
-        changelog = described_class.lazy(container, commit_id, 'CHANGELOG')
-        contributing = described_class.lazy(same_container, commit_id, 'CONTRIBUTING.md')
+        changelog = described_class.lazy(container.repository, commit_id, 'CHANGELOG')
+        contributing = described_class.lazy(same_container.repository, commit_id, 'CONTRIBUTING.md')
 
         # Access property so the values are loaded
         changelog.id
         contributing.id
 
-        readme = described_class.lazy(container, commit_id, 'README.md')
+        readme = described_class.lazy(container.repository, commit_id, 'README.md')
 
         expect(container.repository).to receive(:blobs_at)
           .with([[commit_id, 'README.md']], blob_size_limit: blob_size_limit).once.and_call_original

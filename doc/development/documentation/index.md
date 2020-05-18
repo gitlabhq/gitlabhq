@@ -183,7 +183,7 @@ in a follow-up MR or issue.
 
 NOTE: **Note:**
 If the release version you want to add the documentation to has already been
-frozen or released, use the label `Pick into X.Y` to get it merged into
+frozen or released, use the label `~"Pick into X.Y"` to get it merged into
 the correct release. Avoid picking into a past release as much as you can, as
 it increases the work of the release managers.
 
@@ -203,7 +203,7 @@ to the MR.
 For example, let's say your merge request has a milestone set to 11.3, which
 will be released on 2018-09-22. If it gets merged on 2018-09-15, it will be
 available online on 2018-09-15, but, as the feature freeze date has passed, if
-the MR does not have a "pick into 11.3" label, the milestone has to be changed
+the MR does not have a `~"Pick into 11.3"` label, the milestone has to be changed
 to 11.4 and it will be shipped with all GitLab packages only on 2018-10-22,
 with GitLab 11.4. Meaning, it will only be available under `/help` from GitLab
 11.4 onward, but available on <https://docs.gitlab.com/> on the same day it was merged.

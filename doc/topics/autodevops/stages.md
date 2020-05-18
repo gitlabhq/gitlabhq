@@ -341,7 +341,7 @@ To use Auto Deploy on a Kubernetes 1.16+ cluster:
 
 1. On GitLab 12.10 or older, set the following in the [`.gitlab/auto-deploy-values.yaml` file](customize.md#customize-values-for-helm-chart):
 
-   ```yml
+   ```yaml
    deploymentApiVersion: apps/v1
    ```
 

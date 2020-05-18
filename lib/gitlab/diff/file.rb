@@ -357,7 +357,7 @@ module Gitlab
       def fetch_blob(sha, path)
         return unless sha
 
-        Blob.lazy(repository.project, sha, path)
+        Blob.lazy(repository, sha, path)
       end
 
       def total_blob_lines(blob)

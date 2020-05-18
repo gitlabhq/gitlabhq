@@ -10,11 +10,13 @@ The relationship only shows up in the UI if the user can see both issues.
 
 ## Adding a related issue
 
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2035) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.8.
+> - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/34239) in [GitLab Starter](https://about.gitlab.com/pricing/) 13.0.
+>   When you try to close an issue with open blockers, you'll see a warning that you can dismiss.
+
 You can relate one issue to another by clicking the related issues "+" button
 in the header of the related issue block. Then, input the issue reference number
 or paste in the full URL of the issue.
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/2035) in GitLab 12.8.
 
 Additionally, you can select whether the current issue relates to, blocks, or is blocked by the issues being entered.
 

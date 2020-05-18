@@ -40,6 +40,9 @@ You can customize the payload by sending the following parameters. All fields ar
 | `hosts` | String or Array | One or more hosts, as to where this incident occurred. |
 | `severity` | String | The severity of the alert. Must be one of `critical`, `high`, `medium`, `low`, `info`, `unknown`. Default is `critical`. |
 
+TIP: **Payload size:**
+Ensure your requests are smaller than the [payload application limits](../../../administration/instance_limits.md#generic-alert-json-payloads).
+
 Example request:
 
 ```shell
