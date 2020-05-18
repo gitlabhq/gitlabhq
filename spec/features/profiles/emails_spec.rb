@@ -67,7 +67,7 @@ describe 'Profile > Emails' do
     email = user.emails.create(email: 'my@email.com')
     visit profile_emails_path
 
-    expect { click_link("Resend confirmation email") }.to change { ActionMailer::Base.deliveries.size }
+    expect { click_link("Resend confirmation email") }.to have_enqueued_job.on_queue('mailers')
     expect(page).to have_content("Confirmation email sent to #{email.email}")
   end
 

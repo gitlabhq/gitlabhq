@@ -21865,6 +21865,16 @@
                     "ofType": null
                   },
                   "defaultValue": null
+                },
+                {
+                  "name": "search",
+                  "description": "Search criteria for filtering alerts. This will search on title, description, service, monitoring_tool.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
                 }
               ],
               "type": {
@@ -21913,6 +21923,16 @@
                   "type": {
                     "kind": "ENUM",
                     "name": "AlertManagementAlertSort",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "search",
+                  "description": "Search criteria for filtering alerts. This will search on title, description, service, monitoring_tool.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
                     "ofType": null
                   },
                   "defaultValue": null

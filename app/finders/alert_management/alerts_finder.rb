@@ -13,6 +13,7 @@ module AlertManagement
 
       collection = project.alert_management_alerts
       collection = by_status(collection)
+      collection = by_search(collection)
       collection = by_iid(collection)
       sort(collection)
     end
@@ -31,6 +32,10 @@ module AlertManagement
       values = AlertManagement::Alert::STATUSES.values & Array(params[:status])
 
       values.present? ? collection.for_status(values) : collection
+    end
+
+    def by_search(collection)
+      params[:search].present? ? collection.search(params[:search]) : collection
     end
 
     def sort(collection)

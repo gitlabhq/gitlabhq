@@ -17,6 +17,7 @@ describe User do
     it { is_expected.to include_module(Sortable) }
     it { is_expected.to include_module(TokenAuthenticatable) }
     it { is_expected.to include_module(BlocksJsonSerialization) }
+    it { is_expected.to include_module(AsyncDeviseEmail) }
   end
 
   describe 'delegations' do
@@ -161,6 +162,18 @@ describe User do
         project.request_access(user)
 
         expect(user.project_members).to be_empty
+      end
+    end
+  end
+
+  describe 'Devise emails' do
+    let!(:user) { create(:user) }
+
+    describe 'behaviour' do
+      it 'sends emails asynchronously' do
+        expect do
+          user.update!(email: 'hello@hello.com')
+        end.to have_enqueued_job.on_queue('mailers').exactly(:twice)
       end
     end
   end

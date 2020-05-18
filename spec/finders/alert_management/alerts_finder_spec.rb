@@ -5,9 +5,9 @@ require 'spec_helper'
 describe AlertManagement::AlertsFinder, '#execute' do
   let_it_be(:current_user) { create(:user) }
   let_it_be(:project) { create(:project) }
-  let_it_be(:alert_1) { create(:alert_management_alert, :resolved, project: project, ended_at: 1.year.ago, events: 2, severity: :high) }
-  let_it_be(:alert_2) { create(:alert_management_alert, :ignored, project: project, events: 1, severity: :critical) }
-  let_it_be(:alert_3) { create(:alert_management_alert) }
+  let_it_be(:alert_1) { create(:alert_management_alert, :all_fields, :resolved, project: project, ended_at: 1.year.ago, events: 2, severity: :high) }
+  let_it_be(:alert_2) { create(:alert_management_alert, :all_fields, :ignored, project: project, events: 1, severity: :critical) }
+  let_it_be(:alert_3) { create(:alert_management_alert, :all_fields) }
   let(:params) { {} }
 
   subject { described_class.new(current_user, project, params).execute }
@@ -220,6 +220,60 @@ describe AlertManagement::AlertsFinder, '#execute' do
             ]
           end
         end
+      end
+    end
+
+    context 'search query given' do
+      let_it_be(:alert) do
+        create(:alert_management_alert,
+          :with_fingerprint,
+          title: 'Title',
+          description: 'Desc',
+          service: 'Service',
+          monitoring_tool: 'Monitor'
+        )
+      end
+
+      before do
+        alert.project.add_developer(current_user)
+      end
+
+      subject { described_class.new(current_user, alert.project, params).execute }
+
+      context 'searching title' do
+        let(:params) { { search: alert.title } }
+
+        it { is_expected.to match_array([alert]) }
+      end
+
+      context 'searching description' do
+        let(:params) { { search: alert.description } }
+
+        it { is_expected.to match_array([alert]) }
+      end
+
+      context 'searching service' do
+        let(:params) { { search: alert.service } }
+
+        it { is_expected.to match_array([alert]) }
+      end
+
+      context 'searching monitoring tool' do
+        let(:params) { { search: alert.monitoring_tool } }
+
+        it { is_expected.to match_array([alert]) }
+      end
+
+      context 'searching something else' do
+        let(:params) { { search: alert.fingerprint } }
+
+        it { is_expected.to be_empty }
+      end
+
+      context 'empty search' do
+        let(:params) { { search: ' ' } }
+
+        it { is_expected.to match_array([alert]) }
       end
     end
   end

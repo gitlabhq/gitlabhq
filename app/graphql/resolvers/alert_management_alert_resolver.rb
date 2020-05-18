@@ -15,6 +15,10 @@ module Resolvers
               description: 'Sort alerts by this criteria',
               required: false
 
+    argument :search, GraphQL::STRING_TYPE,
+              description: 'Search criteria for filtering alerts. This will search on title, description, service, monitoring_tool.',
+              required: false
+
     type Types::AlertManagement::AlertType, null: true
 
     def resolve(**args)

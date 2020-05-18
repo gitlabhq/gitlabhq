@@ -10,6 +10,7 @@ describe 'getting Alert Management Alerts' do
   let_it_be(:alert_1) { create(:alert_management_alert, :all_fields, :resolved, project: project, issue: nil, severity: :low) }
   let_it_be(:alert_2) { create(:alert_management_alert, :all_fields, project: project, severity: :critical, payload: payload) }
   let_it_be(:other_project_alert) { create(:alert_management_alert, :all_fields) }
+  let(:params) { {} }
 
   let(:fields) do
     <<~QUERY
@@ -23,7 +24,7 @@ describe 'getting Alert Management Alerts' do
     graphql_query_for(
       'project',
       { 'fullPath' => project.full_path },
-      query_graphql_field('alertManagementAlerts', {}, fields)
+      query_graphql_field('alertManagementAlerts', params, fields)
     )
   end
 
@@ -83,13 +84,7 @@ describe 'getting Alert Management Alerts' do
       end
 
       context 'with iid given' do
-        let(:query) do
-          graphql_query_for(
-            'project',
-            { 'fullPath' => project.full_path },
-            query_graphql_field('alertManagementAlerts', { iid: alert_1.iid.to_s }, fields)
-          )
-        end
+        let(:params) { { iid: alert_1.iid.to_s } }
 
         it_behaves_like 'a working graphql query'
 
@@ -98,14 +93,6 @@ describe 'getting Alert Management Alerts' do
       end
 
       context 'sorting data given' do
-        let(:query) do
-          graphql_query_for(
-            'project',
-            { 'fullPath' => project.full_path },
-            query_graphql_field('alertManagementAlerts', params, fields)
-          )
-        end
-
         let(:params) { 'sort: SEVERITY_DESC' }
         let(:iids) { alerts.map { |a| a['iid'] } }
 
@@ -121,6 +108,21 @@ describe 'getting Alert Management Alerts' do
           it 'sorts in the correct order' do
             expect(iids).to eq [alert_2.iid.to_s, alert_1.iid.to_s]
           end
+        end
+      end
+
+      context 'searching' do
+        let(:params) { { search: alert_1.title } }
+
+        it_behaves_like 'a working graphql query'
+
+        it { expect(alerts.size).to eq(1) }
+        it { expect(first_alert['iid']).to eq(alert_1.iid.to_s) }
+
+        context 'unknown criteria' do
+          let(:params) { { search: 'something random' } }
+
+          it { expect(alerts.size).to eq(0) }
         end
       end
     end

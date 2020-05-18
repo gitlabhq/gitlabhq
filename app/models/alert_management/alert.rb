@@ -5,6 +5,7 @@ module AlertManagement
     include AtomicInternalId
     include ShaAttribute
     include Sortable
+    include Gitlab::SQL::Pattern
 
     STATUSES = {
       triggered: 0,
@@ -97,6 +98,7 @@ module AlertManagement
     scope :for_iid, -> (iid) { where(iid: iid) }
     scope :for_status, -> (status) { where(status: status) }
     scope :for_fingerprint, -> (project, fingerprint) { where(project: project, fingerprint: fingerprint) }
+    scope :search, -> (query) { fuzzy_search(query, [:title, :description, :monitoring_tool, :service]) }
 
     scope :order_start_time,    -> (sort_order) { order(started_at: sort_order) }
     scope :order_end_time,      -> (sort_order) { order(ended_at: sort_order) }

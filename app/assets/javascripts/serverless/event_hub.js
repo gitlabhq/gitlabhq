@@ -1,3 +1,3 @@
-import Vue from 'vue';
+import createEventHub from '~/helpers/event_hub_factory';
 
-export default new Vue();
+export default createEventHub();

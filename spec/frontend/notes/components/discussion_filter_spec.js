@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import createEventHub from '~/helpers/event_hub_factory';
 import Vuex from 'vuex';
 
 import { createLocalVue, mount } from '@vue/test-utils';
@@ -132,7 +132,7 @@ describe('DiscussionFilter component', () => {
   });
 
   describe('Merge request tabs', () => {
-    eventHub = new Vue();
+    eventHub = createEventHub();
 
     beforeEach(() => {
       window.mrTabs = {

@@ -3117,11 +3117,7 @@ describe Ci::Build do
     end
   end
 
-  describe '#secret_group_variables' do
-    subject { build.secret_group_variables }
-
-    let!(:variable) { create(:ci_group_variable, protected: true, group: group) }
-
+  shared_examples "secret CI variables" do
     context 'when ref is branch' do
       let(:build) { create(:ci_build, ref: 'master', tag: false, project: project) }
 
@@ -3175,62 +3171,28 @@ describe Ci::Build do
     end
   end
 
+  describe '#secret_instance_variables' do
+    subject { build.secret_instance_variables }
+
+    let_it_be(:variable) { create(:ci_instance_variable, protected: true) }
+
+    include_examples "secret CI variables"
+  end
+
+  describe '#secret_group_variables' do
+    subject { build.secret_group_variables }
+
+    let_it_be(:variable) { create(:ci_group_variable, protected: true, group: group) }
+
+    include_examples "secret CI variables"
+  end
+
   describe '#secret_project_variables' do
     subject { build.secret_project_variables }
 
-    let!(:variable) { create(:ci_variable, protected: true, project: project) }
+    let_it_be(:variable) { create(:ci_variable, protected: true, project: project) }
 
-    context 'when ref is branch' do
-      let(:build) { create(:ci_build, ref: 'master', tag: false, project: project) }
-
-      context 'when ref is protected' do
-        before do
-          create(:protected_branch, :developers_can_merge, name: 'master', project: project)
-        end
-
-        it { is_expected.to include(variable) }
-      end
-
-      context 'when ref is not protected' do
-        it { is_expected.not_to include(variable) }
-      end
-    end
-
-    context 'when ref is tag' do
-      let(:build) { create(:ci_build, ref: 'v1.1.0', tag: true, project: project) }
-
-      context 'when ref is protected' do
-        before do
-          create(:protected_tag, project: project, name: 'v*')
-        end
-
-        it { is_expected.to include(variable) }
-      end
-
-      context 'when ref is not protected' do
-        it { is_expected.not_to include(variable) }
-      end
-    end
-
-    context 'when ref is merge request' do
-      let(:merge_request) { create(:merge_request, :with_detached_merge_request_pipeline) }
-      let(:pipeline) { merge_request.pipelines_for_merge_request.first }
-      let(:build) { create(:ci_build, ref: merge_request.source_branch, tag: false, pipeline: pipeline, project: project) }
-
-      context 'when ref is protected' do
-        before do
-          create(:protected_branch, :developers_can_merge, name: merge_request.source_branch, project: project)
-        end
-
-        it 'does not return protected variables as it is not supported for merge request pipelines' do
-          is_expected.not_to include(variable)
-        end
-      end
-
-      context 'when ref is not protected' do
-        it { is_expected.not_to include(variable) }
-      end
-    end
+    include_examples "secret CI variables"
   end
 
   describe '#deployment_variables' do
@@ -3281,6 +3243,29 @@ describe Ci::Build do
       it 'returns a hash including variable with higher precedence' do
         expect(build.scoped_variables_hash).to include('MY_VAR': 'pipeline value')
         expect(build.scoped_variables_hash).not_to include('MY_VAR': 'myvar')
+      end
+    end
+
+    context 'when overriding CI instance variables' do
+      before do
+        create(:ci_instance_variable, key: 'MY_VAR', value: 'my value 1')
+        group.variables.create!(key: 'MY_VAR', value: 'my value 2')
+      end
+
+      it 'returns a regular hash created using valid ordering' do
+        expect(build.scoped_variables_hash).to include('MY_VAR': 'my value 2')
+        expect(build.scoped_variables_hash).not_to include('MY_VAR': 'my value 1')
+      end
+    end
+
+    context 'when CI instance variables are disabled' do
+      before do
+        create(:ci_instance_variable, key: 'MY_VAR', value: 'my value 1')
+        stub_feature_flags(ci_instance_level_variables: false)
+      end
+
+      it 'does not include instance level variables' do
+        expect(build.scoped_variables_hash).not_to include('MY_VAR': 'my value 1')
       end
     end
   end

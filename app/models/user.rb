@@ -58,6 +58,10 @@ class User < ApplicationRecord
   devise :lockable, :recoverable, :rememberable, :trackable,
          :validatable, :omniauthable, :confirmable, :registerable
 
+  # This module adds async behaviour to Devise emails
+  # and should be added after Devise modules are initialized.
+  include AsyncDeviseEmail
+
   BLOCKED_MESSAGE = "Your account has been blocked. Please contact your GitLab " \
                     "administrator if you think this is an error."
   LOGIN_FORBIDDEN = "Your account does not have the required permission to login. Please contact your GitLab " \
@@ -1744,13 +1748,6 @@ class User < ApplicationRecord
     # user is an admin and the only user in the instance, this shouldn't
     # cause too much load on the system.
     ApplicationSetting.current_without_cache&.usage_stats_set_by_user_id == self.id
-  end
-
-  # Added according to https://github.com/plataformatec/devise/blob/7df57d5081f9884849ca15e4fde179ef164a575f/README.md#activejob-integration
-  def send_devise_notification(notification, *args)
-    return true unless can?(:receive_notifications)
-
-    devise_mailer.__send__(notification, self, *args).deliver_later # rubocop:disable GitlabSecurity/PublicSend
   end
 
   def ensure_user_rights_and_limits

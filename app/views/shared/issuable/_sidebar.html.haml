@@ -15,7 +15,7 @@
         - if signed_in
           %span.issuable-header-text.hide-collapsed.float-left
             = _('To Do')
-        %a.gutter-toggle.float-right.js-sidebar-toggle.has-tooltip{ role: "button", href: "#", "aria-label" => "Toggle sidebar", title: sidebar_gutter_tooltip_text, data: { container: 'body', placement: 'left', boundary: 'viewport' } }
+        %a.gutter-toggle.float-right.js-sidebar-toggle.has-tooltip{ role: "button", href: "#", "aria-label" => _('Toggle sidebar'), title: sidebar_gutter_tooltip_text, data: { container: 'body', placement: 'left', boundary: 'viewport' } }
           = sidebar_gutter_toggle_icon
         - if signed_in
           = render "shared/issuable/sidebar_todo", issuable_sidebar: issuable_sidebar
@@ -65,7 +65,7 @@
             .sidebar-collapsed-icon.has-tooltip{ data: { placement: 'left', container: 'body', html: 'true', boundary: 'viewport' }, title: sidebar_due_date_tooltip_label(issuable_sidebar[:due_date]) }
               = icon('calendar', 'aria-hidden': 'true')
               %span.js-due-date-sidebar-value
-                = issuable_sidebar[:due_date].try(:to_s, :medium) || 'None'
+                = issuable_sidebar[:due_date].try(:to_s, :medium) || _('None')
             .title.hide-collapsed
               = _('Due date')
               = icon('spinner spin', class: 'hidden block-loading', 'aria-hidden': 'true')

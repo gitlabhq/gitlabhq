@@ -9,6 +9,12 @@ describe Profiles::EmailsController do
     sign_in(user)
   end
 
+  around do |example|
+    perform_enqueued_jobs do
+      example.run
+    end
+  end
+
   describe '#create' do
     context 'when email address is valid' do
       let(:email_params) { { email: "add_email@example.com" } }

@@ -15,9 +15,14 @@ class Email < ApplicationRecord
   after_commit :update_invalid_gpg_signatures, if: -> { previous_changes.key?('confirmed_at') }
 
   devise :confirmable
+
+  # This module adds async behaviour to Devise emails
+  # and should be added after Devise modules are initialized.
+  include AsyncDeviseEmail
+
   self.reconfirmable = false # currently email can't be changed, no need to reconfirm
 
-  delegate :username, to: :user
+  delegate :username, :can?, to: :user
 
   def email=(value)
     write_attribute(:email, value.downcase.strip)

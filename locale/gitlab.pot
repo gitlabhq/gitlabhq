@@ -874,6 +874,9 @@ msgstr ""
 msgid "A fork is a copy of a project.<br />Forking a repository allows you to make changes without affecting the original project."
 msgstr ""
 
+msgid "A group is a collection of several projects"
+msgstr ""
+
 msgid "A group represents your organization in GitLab."
 msgstr ""
 
@@ -2777,6 +2780,9 @@ msgid "Assigned Issues"
 msgstr ""
 
 msgid "Assigned Merge Requests"
+msgstr ""
+
+msgid "Assigned to %{assignee_name}"
 msgstr ""
 
 msgid "Assigned to me"
@@ -8828,6 +8834,9 @@ msgstr ""
 msgid "Existing members and groups"
 msgstr ""
 
+msgid "Existing projects may be moved into a group"
+msgstr ""
+
 msgid "Existing projects will be able to use expiration policies. Avoid enabling this if an external Container Registry is being used, as there is a performance risk if many images exist on one project."
 msgstr ""
 
@@ -9480,6 +9489,9 @@ msgid "Filter by commit message"
 msgstr ""
 
 msgid "Filter by issues that are currently closed."
+msgstr ""
+
+msgid "Filter by label"
 msgstr ""
 
 msgid "Filter by merge requests that are currently closed and unmerged."
@@ -10671,6 +10683,9 @@ msgid "Group path is available."
 msgstr ""
 
 msgid "Group pipeline minutes were successfully reset."
+msgstr ""
+
+msgid "Group project URLs are prefixed with the group namespace"
 msgstr ""
 
 msgid "Group requires separate account"
@@ -13214,6 +13229,9 @@ msgstr ""
 msgid "Members of <strong>%{project_name}</strong>"
 msgstr ""
 
+msgid "Members of a group may only view projects they have permission to access"
+msgstr ""
+
 msgid "Members with access to %{strong_start}%{group_name}%{strong_end}"
 msgstr ""
 
@@ -13677,6 +13695,9 @@ msgstr ""
 msgid "Milestones| You’re about to permanently delete the milestone %{milestoneTitle}. This milestone is not currently used in any issues or merge requests."
 msgstr ""
 
+msgid "Milestones|Completed Issues (closed)"
+msgstr ""
+
 msgid "Milestones|Delete milestone"
 msgstr ""
 
@@ -13689,6 +13710,9 @@ msgstr ""
 msgid "Milestones|Milestone %{milestoneTitle} was not found"
 msgstr ""
 
+msgid "Milestones|Ongoing Issues (open and assigned)"
+msgstr ""
+
 msgid "Milestones|Promote %{milestoneTitle} to group milestone?"
 msgstr ""
 
@@ -13699,6 +13723,9 @@ msgid "Milestones|Promoting %{milestoneTitle} will make it available for all pro
 msgstr ""
 
 msgid "Milestones|This action cannot be reversed."
+msgstr ""
+
+msgid "Milestones|Unstarted Issues (open and unassigned)"
 msgstr ""
 
 msgid "Minimum capacity to be available before we schedule more mirrors preemptively."

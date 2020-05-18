@@ -8,10 +8,10 @@ describe Emails::ConfirmService do
   subject(:service) { described_class.new(user) }
 
   describe '#execute' do
-    it 'sends a confirmation email again' do
+    it 'enqueues a background job to send confirmation email again' do
       email = user.emails.create(email: 'new@email.com')
-      mail  = service.execute(email)
-      expect(mail.subject).to eq('Confirmation instructions')
+
+      expect { service.execute(email) }.to have_enqueued_job.on_queue('mailers')
     end
   end
 end

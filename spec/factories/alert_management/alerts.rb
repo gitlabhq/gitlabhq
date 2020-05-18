@@ -24,6 +24,10 @@ FactoryBot.define do
       monitoring_tool { FFaker::AWS.product_description }
     end
 
+    trait :with_description do
+      description { FFaker::Lorem.sentence }
+    end
+
     trait :with_host do
       hosts { [FFaker::Internet.ip_v4_address] }
     end
@@ -70,6 +74,7 @@ FactoryBot.define do
       with_service
       with_monitoring_tool
       with_host
+      with_description
       low_severity
     end
   end

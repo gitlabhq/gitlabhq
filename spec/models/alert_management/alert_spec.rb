@@ -162,7 +162,50 @@ describe AlertManagement::Alert do
     it { is_expected.to contain_exactly(alert_1) }
   end
 
-  describe '.details' do
+  describe '.search' do
+    let_it_be(:alert) do
+      create(:alert_management_alert,
+        title: 'Title',
+        description: 'Desc',
+        service: 'Service',
+        monitoring_tool: 'Monitor'
+      )
+    end
+
+    subject { AlertManagement::Alert.search(query) }
+
+    context 'does not contain search string' do
+      let(:query) { 'something else' }
+
+      it { is_expected.to be_empty }
+    end
+
+    context 'title includes query' do
+      let(:query) { alert.title.upcase }
+
+      it { is_expected.to contain_exactly(alert) }
+    end
+
+    context 'description includes query' do
+      let(:query) { alert.description.upcase }
+
+      it { is_expected.to contain_exactly(alert) }
+    end
+
+    context 'service includes query' do
+      let(:query) { alert.service.upcase }
+
+      it { is_expected.to contain_exactly(alert) }
+    end
+
+    context 'monitoring tool includes query' do
+      let(:query) { alert.monitoring_tool.upcase }
+
+      it { is_expected.to contain_exactly(alert) }
+    end
+  end
+
+  describe '#details' do
     let(:payload) do
       {
         'title' => 'Details title',
