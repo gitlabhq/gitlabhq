@@ -16282,6 +16282,9 @@ msgstr ""
 msgid "Project %{project_repo} could not be found"
 msgstr ""
 
+msgid "Project & Group can not be assigned at the same time"
+msgstr ""
+
 msgid "Project '%{project_name}' is being imported."
 msgstr ""
 

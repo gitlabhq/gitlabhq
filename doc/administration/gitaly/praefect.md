@@ -2,7 +2,12 @@
 type: reference
 ---
 
-# Gitaly Cluster
+# Gitaly Cluster **(PREMIUM)**
+
+NOTE: **Note:**
+Support for Gitaly Cluster is only available through [Priority
+Support](https://about.gitlab.com/support/#priority-support) for self-managed
+Premium and Ultimate customers.
 
 [Gitaly](index.md), the service that provides storage for Git repositories, can
 be run in a clustered configuration to increase fault tolerance. In this
