@@ -466,8 +466,12 @@ Rails/TimeZone:
   Enabled: true
   EnforcedStyle: 'flexible'
   Include:
+    - 'app/controllers/**/*'
     - 'app/services/**/*'
+    - 'spec/controllers/**/*'
     - 'spec/services/**/*'
+    - 'ee/app/controllers/**/*'
     - 'ee/app/services/**/*'
+    - 'ee/spec/controllers/**/*'
     - 'ee/spec/services/**/*'
 

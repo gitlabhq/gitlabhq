@@ -1,6 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import Vue from 'vue';
-import { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
+import { mountComponentWithStore } from 'helpers/vue_mount_component_helper';
 import axios from '~/lib/utils/axios_utils';
 import appComponent from '~/frequent_items/components/app.vue';
 import eventHub from '~/frequent_items/event_hub';
@@ -8,6 +8,10 @@ import store from '~/frequent_items/store';
 import { FREQUENT_ITEMS, HOUR_IN_MS } from '~/frequent_items/constants';
 import { getTopFrequentItems } from '~/frequent_items/utils';
 import { currentSession, mockFrequentProjects, mockSearchedProjects } from '../mock_data';
+import { useLocalStorageSpy } from 'helpers/local_storage_helper';
+import waitForPromises from 'helpers/wait_for_promises';
+
+useLocalStorageSpy();
 
 let session;
 const createComponentWithStore = (namespace = 'projects') => {
@@ -42,7 +46,7 @@ describe('Frequent Items App Component', () => {
   describe('methods', () => {
     describe('dropdownOpenHandler', () => {
       it('should fetch frequent items when no search has been previously made on desktop', () => {
-        spyOn(vm, 'fetchFrequentItems');
+        jest.spyOn(vm, 'fetchFrequentItems').mockImplementation(() => {});
 
         vm.dropdownOpenHandler();
 
@@ -56,11 +60,11 @@ describe('Frequent Items App Component', () => {
       beforeEach(() => {
         storage = {};
 
-        spyOn(window.localStorage, 'setItem').and.callFake((storageKey, value) => {
+        localStorage.setItem.mockImplementation((storageKey, value) => {
           storage[storageKey] = value;
         });
 
-        spyOn(window.localStorage, 'getItem').and.callFake(storageKey => {
+        localStorage.getItem.mockImplementation(storageKey => {
           if (storage[storageKey]) {
             return storage[storageKey];
           }
@@ -156,12 +160,12 @@ describe('Frequent Items App Component', () => {
 
   describe('created', () => {
     it('should bind event listeners on eventHub', done => {
-      spyOn(eventHub, '$on');
+      jest.spyOn(eventHub, '$on').mockImplementation(() => {});
 
       createComponentWithStore().$mount();
 
       Vue.nextTick(() => {
-        expect(eventHub.$on).toHaveBeenCalledWith('projects-dropdownOpen', jasmine.any(Function));
+        expect(eventHub.$on).toHaveBeenCalledWith('projects-dropdownOpen', expect.any(Function));
         done();
       });
     });
@@ -169,13 +173,13 @@ describe('Frequent Items App Component', () => {
 
   describe('beforeDestroy', () => {
     it('should unbind event listeners on eventHub', done => {
-      spyOn(eventHub, '$off');
+      jest.spyOn(eventHub, '$off').mockImplementation(() => {});
 
       vm.$mount();
       vm.$destroy();
 
       Vue.nextTick(() => {
-        expect(eventHub.$off).toHaveBeenCalledWith('projects-dropdownOpen', jasmine.any(Function));
+        expect(eventHub.$off).toHaveBeenCalledWith('projects-dropdownOpen', expect.any(Function));
         done();
       });
     });
@@ -211,9 +215,7 @@ describe('Frequent Items App Component', () => {
 
     it('should render frequent projects list', done => {
       const expectedResult = getTopFrequentItems(mockFrequentProjects);
-      spyOn(window.localStorage, 'getItem').and.callFake(() =>
-        JSON.stringify(mockFrequentProjects),
-      );
+      localStorage.getItem.mockImplementation(() => JSON.stringify(mockFrequentProjects));
 
       expect(vm.$el.querySelectorAll('.frequent-items-list-container li').length).toBe(1);
 
@@ -236,15 +238,7 @@ describe('Frequent Items App Component', () => {
         .then(() => {
           expect(vm.$el.querySelector('.loading-animation')).toBeDefined();
         })
-
-        // This test waits for multiple ticks in order to allow the responses to
-        // propagate through each interceptor installed on the Axios instance.
-        // This shouldn't be necessary; this test should be refactored to avoid this.
-        // https://gitlab.com/gitlab-org/gitlab/issues/32479
-        .then(vm.$nextTick)
-        .then(vm.$nextTick)
-        .then(vm.$nextTick)
-
+        .then(waitForPromises)
         .then(() => {
           expect(vm.$el.querySelectorAll('.frequent-items-list-container li').length).toBe(
             mockSearchedProjects.data.length,

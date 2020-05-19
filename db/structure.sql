@@ -288,7 +288,6 @@ CREATE TABLE public.application_settings (
     geo_status_timeout integer DEFAULT 10,
     uuid character varying,
     polling_interval_multiplier numeric DEFAULT 1.0 NOT NULL,
-    elasticsearch_experimental_indexer boolean,
     cached_markdown_version integer,
     check_namespace_plan boolean DEFAULT false NOT NULL,
     mirror_max_delay integer DEFAULT 300 NOT NULL,
@@ -10101,6 +10100,8 @@ CREATE INDEX index_namespaces_on_trial_ends_on ON public.namespaces USING btree 
 
 CREATE INDEX index_namespaces_on_type_partial ON public.namespaces USING btree (type) WHERE (type IS NOT NULL);
 
+CREATE INDEX index_non_requested_project_members_on_source_id_and_type ON public.members USING btree (source_id, source_type) WHERE ((requested_at IS NULL) AND ((type)::text = 'ProjectMember'::text));
+
 CREATE UNIQUE INDEX index_note_diff_files_on_diff_note_id ON public.note_diff_files USING btree (diff_note_id);
 
 CREATE INDEX index_notes_on_author_id_and_created_at_and_id ON public.notes USING btree (author_id, created_at, id);
@@ -11562,6 +11563,9 @@ ALTER TABLE ONLY public.personal_access_tokens
 
 ALTER TABLE ONLY public.project_settings
     ADD CONSTRAINT fk_project_settings_push_rule_id FOREIGN KEY (push_rule_id) REFERENCES public.push_rules(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY public.projects
+    ADD CONSTRAINT fk_projects_namespace_id FOREIGN KEY (namespace_id) REFERENCES public.namespaces(id) ON DELETE RESTRICT;
 
 ALTER TABLE ONLY public.protected_branch_merge_access_levels
     ADD CONSTRAINT fk_protected_branch_merge_access_levels_user_id FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
@@ -13818,6 +13822,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200424101920
 20200424135319
 20200427064130
+20200428134356
 20200429001827
 20200429002150
 20200429015603
@@ -13834,6 +13839,8 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200506154421
 20200507221434
 20200508091106
+20200511080113
+20200511083541
 20200511092246
 20200511092505
 20200511092714
@@ -13847,6 +13854,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200511145545
 20200511162057
 20200511162115
+20200511220023
 20200512085150
 20200512164334
 20200513160930
@@ -13858,5 +13866,6 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200514000009
 20200514000132
 20200514000340
+20200515155620
 \.
 

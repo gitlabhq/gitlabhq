@@ -136,16 +136,15 @@ compile-assets pull-cache as-if-foss:
 .frontend-fixtures-base:
   extends:
     - .default-retry
-    - .default-cache
+    - .rails-cache
     - .default-before_script
     - .use-pg11
   stage: fixtures
   needs: ["setup-test-env", "compile-assets pull-cache"]
   script:
-    - date
-    - scripts/gitaly-test-spawn
-    - date
-    - bundle exec rake frontend:fixtures
+    - run_timed_command "scripts/gitaly-test-build"
+    - run_timed_command "scripts/gitaly-test-spawn"
+    - run_timed_command "bundle exec rake frontend:fixtures"
   artifacts:
     name: frontend-fixtures
     expire_in: 31d

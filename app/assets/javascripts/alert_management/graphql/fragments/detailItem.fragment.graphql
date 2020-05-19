@@ -1,0 +1,11 @@
+#import "./listItem.fragment.graphql"
+
+fragment AlertDetailItem on AlertManagementAlert {
+  ...AlertListItem
+  createdAt
+  monitoringTool
+  service
+  description
+  updatedAt
+  details
+}

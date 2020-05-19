@@ -1,6 +1,6 @@
 <script>
-import CollapsedAssigneeList from '../assignees/collapsed_assignee_list.vue';
-import UncollapsedAssigneeList from '../assignees/uncollapsed_assignee_list.vue';
+import CollapsedAssigneeList from './collapsed_assignee_list.vue';
+import UncollapsedAssigneeList from './uncollapsed_assignee_list.vue';
 
 export default {
   // name: 'Assignees' is a false positive: https://gitlab.com/gitlab-org/frontend/eslint-plugin-i18n/issues/26#possible-false-positives

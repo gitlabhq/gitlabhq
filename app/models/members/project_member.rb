@@ -17,6 +17,11 @@ class ProjectMember < Member
       .where('projects.namespace_id in (?)', groups.select(:id))
   end
 
+  scope :without_project_bots, -> do
+    left_join_users
+      .merge(User.without_project_bot)
+  end
+
   class << self
     # Add users to projects with passed access option
     #

@@ -29,6 +29,19 @@
       - vendor/gitaly-ruby
     policy: pull
 
+.rails-cache:
+  cache:
+    key:
+      files:
+        - Gemfile.lock
+        - GITALY_SERVER_VERSION
+      prefix: "ruby-go-cache-v1"
+    paths:
+      - vendor/ruby
+      - vendor/gitaly-ruby
+      - .go/pkg/mod
+    policy: pull
+
 .yarn-cache:
   cache:
     key:

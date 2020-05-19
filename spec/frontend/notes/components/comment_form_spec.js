@@ -9,12 +9,7 @@ import CommentForm from '~/notes/components/comment_form.vue';
 import * as constants from '~/notes/constants';
 import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
 import { keyboardDownEvent } from '../../issue_show/helpers';
-import {
-  loggedOutnoteableData,
-  notesDataMock,
-  userDataMock,
-  noteableDataMock,
-} from '../../notes/mock_data';
+import { loggedOutnoteableData, notesDataMock, userDataMock, noteableDataMock } from '../mock_data';
 
 jest.mock('autosize');
 jest.mock('~/commons/nav/user_merge_requests');

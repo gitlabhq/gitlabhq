@@ -23,11 +23,12 @@ Did you run bin/rake frontend:fixtures?`,
 export const getJSONFixture = relativePath => JSON.parse(getFixture(relativePath));
 
 export const resetHTMLFixture = () => {
-  document.body.textContent = '';
+  document.head.innerHTML = '';
+  document.body.innerHTML = '';
 };
 
 export const setHTMLFixture = (htmlContent, resetHook = afterEach) => {
-  document.body.outerHTML = htmlContent;
+  document.body.innerHTML = htmlContent;
   resetHook(resetHTMLFixture);
 };
 

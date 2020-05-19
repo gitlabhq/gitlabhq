@@ -1,7 +1,7 @@
 <script>
 import RichContentEditor from '~/vue_shared/components/rich_content_editor/rich_content_editor.vue';
-import PublishToolbar from '../components/publish_toolbar.vue';
-import EditHeader from '../components/edit_header.vue';
+import PublishToolbar from './publish_toolbar.vue';
+import EditHeader from './edit_header.vue';
 
 export default {
   components: {

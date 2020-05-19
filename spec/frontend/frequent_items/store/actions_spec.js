@@ -1,4 +1,4 @@
-import testAction from 'spec/helpers/vuex_action_helper';
+import testAction from 'helpers/vuex_action_helper';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import AccessorUtilities from '~/lib/utils/accessor';
@@ -109,7 +109,7 @@ describe('Frequent Items Dropdown Store Actions', () => {
     });
 
     it('should dispatch `receiveFrequentItemsError`', done => {
-      spyOn(AccessorUtilities, 'isLocalStorageAccessSafe').and.returnValue(false);
+      jest.spyOn(AccessorUtilities, 'isLocalStorageAccessSafe').mockReturnValue(false);
       mockedState.namespace = mockNamespace;
       mockedState.storageKey = mockStorageKey;
 

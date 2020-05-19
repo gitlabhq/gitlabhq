@@ -12,7 +12,6 @@ import {
   GlButton,
 } from '@gitlab/ui';
 import createFlash from '~/flash';
-import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import { s__ } from '~/locale';
 import query from '../graphql/queries/details.query.graphql';
 import { fetchPolicies } from '~/lib/graphql';
@@ -23,9 +22,9 @@ import updateAlertStatus from '../graphql/mutations/update_alert_status.graphql'
 
 export default {
   statuses: {
-    triggered: s__('AlertManagement|Triggered'),
-    acknowledged: s__('AlertManagement|Acknowledged'),
-    resolved: s__('AlertManagement|Resolved'),
+    TRIGGERED: s__('AlertManagement|Triggered'),
+    ACKNOWLEDGED: s__('AlertManagement|Acknowledged'),
+    RESOLVED: s__('AlertManagement|Resolved'),
   },
   i18n: {
     errorMsg: s__(
@@ -100,7 +99,6 @@ export default {
     },
   },
   methods: {
-    capitalizeFirstCharacter,
     dismissError() {
       this.isErrorDismissed = true;
     },
@@ -177,11 +175,7 @@ export default {
       >
         <h2 data-testid="title">{{ alert.title }}</h2>
       </div>
-      <gl-dropdown
-        :text="capitalizeFirstCharacter(alert.status.toLowerCase())"
-        class="gl-absolute gl-right-0"
-        right
-      >
+      <gl-dropdown :text="$options.statuses[alert.status]" class="gl-absolute gl-right-0" right>
         <gl-dropdown-item
           v-for="(label, field) in $options.statuses"
           :key="field"

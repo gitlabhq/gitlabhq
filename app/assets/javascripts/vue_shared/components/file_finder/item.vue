@@ -1,8 +1,8 @@
 <script>
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import Icon from '~/vue_shared/components/icon.vue';
-import FileIcon from '../../../vue_shared/components/file_icon.vue';
-import ChangedFileIcon from '../../../vue_shared/components/changed_file_icon.vue';
+import FileIcon from '../file_icon.vue';
+import ChangedFileIcon from '../changed_file_icon.vue';
 
 const MAX_PATH_LENGTH = 60;
 

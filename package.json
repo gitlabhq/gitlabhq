@@ -70,7 +70,7 @@
     "copy-webpack-plugin": "^5.0.5",
     "core-js": "^3.6.4",
     "cropper": "^2.3.0",
-    "css-loader": "^1.0.0",
+    "css-loader": "^2.1.1",
     "d3-scale": "^2.2.2",
     "d3-selection": "^1.2.0",
     "dateformat": "^3.0.3",

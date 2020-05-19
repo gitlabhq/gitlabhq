@@ -1,11 +1,13 @@
+import Vue from 'vue';
 import RecentSearchesRoot from '~/filtered_search/recent_searches_root';
+
+jest.mock('vue');
 
 describe('RecentSearchesRoot', () => {
   describe('render', () => {
     let recentSearchesRoot;
     let data;
     let template;
-    let VueSpy;
 
     beforeEach(() => {
       recentSearchesRoot = {
@@ -14,7 +16,7 @@ describe('RecentSearchesRoot', () => {
         },
       };
 
-      VueSpy = spyOnDependency(RecentSearchesRoot, 'Vue').and.callFake(options => {
+      Vue.mockImplementation(options => {
         ({ data, template } = options);
       });
 
@@ -22,7 +24,7 @@ describe('RecentSearchesRoot', () => {
     });
 
     it('should instantiate Vue', () => {
-      expect(VueSpy).toHaveBeenCalled();
+      expect(Vue).toHaveBeenCalled();
       expect(data()).toBe(recentSearchesRoot.store.state);
       expect(template).toContain(':is-local-storage-available="isLocalStorageAvailable"');
     });

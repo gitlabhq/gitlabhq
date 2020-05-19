@@ -23,6 +23,4 @@ type: index
 
 ## Securing your GitLab installation
 
-To make sure your GitLab instance is safe and secure, please consider implementing
-[Sign up restrictions](../user/admin_area/settings/sign_up_restrictions.md) to avoid
-malicious users creating accounts.
+Consider access control features like [Sign up restrictions](../user/admin_area/settings/sign_up_restrictions.md) and [Authentication options](../topics/authentication/) to harden your GitLab instance and minimize the risk of unwanted user account creation.

@@ -1,7 +1,7 @@
 <script>
 import { GlLoadingIcon } from '@gitlab/ui';
 import TablePagination from '~/vue_shared/components/pagination/table_pagination.vue';
-import EnvironmentTable from '../components/environments_table.vue';
+import EnvironmentTable from './environments_table.vue';
 
 export default {
   components: {

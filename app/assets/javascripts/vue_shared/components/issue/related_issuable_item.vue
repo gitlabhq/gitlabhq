@@ -2,8 +2,8 @@
 import '~/commons/bootstrap';
 import { GlIcon, GlTooltip, GlTooltipDirective } from '@gitlab/ui';
 import { sprintf } from '~/locale';
-import IssueMilestone from '../../components/issue/issue_milestone.vue';
-import IssueAssignees from '../../components/issue/issue_assignees.vue';
+import IssueMilestone from './issue_milestone.vue';
+import IssueAssignees from './issue_assignees.vue';
 import relatedIssuableMixin from '../../mixins/related_issuable_mixin';
 import CiIcon from '../ci_icon.vue';
 

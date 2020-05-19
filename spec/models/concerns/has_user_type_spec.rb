@@ -49,6 +49,12 @@ describe User do
       end
     end
 
+    describe '.without_project_bot' do
+      it 'includes everyone except project_bot' do
+        expect(described_class.without_project_bot).to match_array(everyone - [project_bot])
+      end
+    end
+
     describe '#bot?' do
       it 'is true for all bot user types and false for others' do
         expect(bots).to all(be_bot)

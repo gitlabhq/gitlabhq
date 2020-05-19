@@ -1,19 +1,20 @@
 import MockAdapter from 'axios-mock-adapter';
-import testAction from 'spec/helpers/vuex_action_helper';
+import createFlash from '~/flash';
+import testAction from 'helpers/vuex_action_helper';
 import axios from '~/lib/utils/axios_utils';
 import * as types from '~/related_merge_requests/store/mutation_types';
-import actionsModule, * as actions from '~/related_merge_requests/store/actions';
+import * as actions from '~/related_merge_requests/store/actions';
+
+jest.mock('~/flash');
 
 describe('RelatedMergeRequest store actions', () => {
   let state;
-  let flashSpy;
   let mock;
 
   beforeEach(() => {
     state = {
       apiEndpoint: '/api/related_merge_requests',
     };
-    flashSpy = spyOnDependency(actionsModule, 'createFlash');
     mock = new MockAdapter(axios);
   });
 
@@ -98,8 +99,8 @@ describe('RelatedMergeRequest store actions', () => {
           [],
           [{ type: 'requestData' }, { type: 'receiveDataError' }],
           () => {
-            expect(flashSpy).toHaveBeenCalledTimes(1);
-            expect(flashSpy).toHaveBeenCalledWith(jasmine.stringMatching('Something went wrong'));
+            expect(createFlash).toHaveBeenCalledTimes(1);
+            expect(createFlash).toHaveBeenCalledWith(expect.stringMatching('Something went wrong'));
 
             done();
           },

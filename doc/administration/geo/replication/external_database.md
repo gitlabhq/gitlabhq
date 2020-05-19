@@ -17,6 +17,19 @@ developed and tested. We aim to be compatible with most external
    sudo -i
    ```
 
+1. Edit `/etc/gitlab/gitlab.rb` and add a **unique** ID for your node (arbitrary value):
+
+   ```ruby
+   # The unique identifier for the Geo node.
+   gitlab_rails['geo_node_name'] = '<node_name_here>'
+   ```
+
+1. Reconfigure the **primary** node for the change to take effect:
+
+   ```shell
+   gitlab-ctl reconfigure
+   ```
+
 1. Execute the command below to define the node as **primary** node:
 
    ```shell

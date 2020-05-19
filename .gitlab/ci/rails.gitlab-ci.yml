@@ -1,15 +1,6 @@
 .rails:needs:setup-and-assets:
   needs: ["setup-test-env", "compile-assets pull-cache"]
 
-.rails-cache:
-  cache:
-    key: "ruby-go-cache-v1"
-    paths:
-      - vendor/ruby
-      - vendor/gitaly-ruby
-      - .go/pkg/mod
-    policy: pull
-
 .rails-job-base:
   extends:
     - .default-retry
@@ -18,15 +9,18 @@
 
 #######################################################
 # EE/FOSS: default refs (MRs, master, schedules) jobs #
-.base-setup-test-env:
+setup-test-env:
   extends:
     - .rails-job-base
+    - .rails:rules:default-refs-code-backstage-qa
+    - .use-pg11
   stage: prepare
   variables:
     GITLAB_TEST_EAGER_LOAD: "0"
   script:
     - run_timed_command "bundle exec ruby -I. -e 'require \"config/environment\"; TestEnv.init'"
     - run_timed_command "scripts/gitaly-test-build"  # Do not use 'bundle exec' here
+    - rm tmp/tests/gitaly/.ruby-bundle  # This file prevents gems from being installed even if vendor/gitaly-ruby is missing
   artifacts:
     expire_in: 7d
     paths:
@@ -43,12 +37,6 @@
     when: always
   cache:
     policy: pull-push
-
-setup-test-env:
-  extends:
-    - .base-setup-test-env
-    - .rails:rules:default-refs-code-backstage-qa
-    - .use-pg11
 
 static-analysis:
   extends:
@@ -84,6 +72,8 @@ downtime_check:
   stage: test
   needs: ["setup-test-env", "retrieve-tests-metadata", "compile-assets pull-cache"]
   script:
+    - run_timed_command "scripts/gitaly-test-build"
+    - run_timed_command "scripts/gitaly-test-spawn"
     - source scripts/rspec_helpers.sh
     - rspec_paralellized_job "--tag ~quarantine --tag ~geo --tag ~level:migration"
   artifacts:
@@ -108,6 +98,8 @@ downtime_check:
 
 .rspec-base-migration:
   script:
+    - run_timed_command "scripts/gitaly-test-build"
+    - run_timed_command "scripts/gitaly-test-spawn"
     - source scripts/rspec_helpers.sh
     - rspec_paralellized_job "--tag ~quarantine --tag ~geo --tag level:migration"
 
@@ -193,6 +185,7 @@ gitlab:setup:
     # db/fixtures/development/04_project.rb thanks to SIZE=1 below
     - git clone https://gitlab.com/gitlab-org/gitlab-test.git
        /home/git/repositories/gitlab-org/gitlab-test.git
+    - run_timed_command "scripts/gitaly-test-build"
     - run_timed_command "scripts/gitaly-test-spawn"
     - force=yes SIZE=1 FIXTURE_PATH="db/fixtures/development" bundle exec rake gitlab:setup
   artifacts:
@@ -300,6 +293,8 @@ rspec-ee system pg11:
 .rspec-ee-base-geo:
   extends: .rspec-base-ee
   script:
+    - run_timed_command "scripts/gitaly-test-build"
+    - run_timed_command "scripts/gitaly-test-spawn"
     - source scripts/rspec_helpers.sh
     - scripts/prepare_postgres_fdw.sh
     - rspec_paralellized_job "--tag ~quarantine --tag geo"

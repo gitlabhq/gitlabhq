@@ -9,8 +9,14 @@ import FilteredSearchDropdownManager from '~/filtered_search/filtered_search_dro
 import FilteredSearchManager from '~/filtered_search/filtered_search_manager';
 import FilteredSearchSpecHelper from '../helpers/filtered_search_spec_helper';
 import { BACKSPACE_KEY_CODE, DELETE_KEY_CODE } from '~/lib/utils/keycodes';
+import { visitUrl } from '~/lib/utils/url_utility';
 
-describe('Filtered Search Manager', function() {
+jest.mock('~/lib/utils/url_utility', () => ({
+  ...jest.requireActual('~/lib/utils/url_utility'),
+  visitUrl: jest.fn(),
+}));
+
+describe('Filtered Search Manager', () => {
   let input;
   let manager;
   let tokensContainer;
@@ -68,17 +74,17 @@ describe('Filtered Search Manager', function() {
       </div>
     `);
 
-    spyOn(FilteredSearchDropdownManager.prototype, 'setDropdown').and.callFake(() => {});
+    jest.spyOn(FilteredSearchDropdownManager.prototype, 'setDropdown').mockImplementation();
   });
 
   const initializeManager = () => {
-    /* eslint-disable jasmine/no-unsafe-spy */
-    spyOn(FilteredSearchManager.prototype, 'loadSearchParamsFromURL').and.callFake(() => {});
-    spyOn(FilteredSearchManager.prototype, 'tokenChange').and.callFake(() => {});
-    spyOn(FilteredSearchDropdownManager.prototype, 'updateDropdownOffset').and.callFake(() => {});
-    spyOn(gl.utils, 'getParameterByName').and.returnValue(null);
-    spyOn(FilteredSearchVisualTokens, 'unselectTokens').and.callThrough();
-    /* eslint-enable jasmine/no-unsafe-spy */
+    jest.spyOn(FilteredSearchManager.prototype, 'loadSearchParamsFromURL').mockImplementation();
+    jest.spyOn(FilteredSearchManager.prototype, 'tokenChange').mockImplementation();
+    jest
+      .spyOn(FilteredSearchDropdownManager.prototype, 'updateDropdownOffset')
+      .mockImplementation();
+    jest.spyOn(gl.utils, 'getParameterByName').mockReturnValue(null);
+    jest.spyOn(FilteredSearchVisualTokens, 'unselectTokens');
 
     input = document.querySelector('.filtered-search');
     tokensContainer = document.querySelector('.tokens-container');
@@ -92,22 +98,22 @@ describe('Filtered Search Manager', function() {
 
   describe('class constructor', () => {
     const isLocalStorageAvailable = 'isLocalStorageAvailable';
-    let RecentSearchesStoreSpy;
 
     beforeEach(() => {
-      spyOn(RecentSearchesService, 'isAvailable').and.returnValue(isLocalStorageAvailable);
-      spyOn(RecentSearchesRoot.prototype, 'render');
-      RecentSearchesStoreSpy = spyOnDependency(FilteredSearchManager, 'RecentSearchesStore');
+      jest.spyOn(RecentSearchesService, 'isAvailable').mockReturnValue(isLocalStorageAvailable);
+      jest.spyOn(RecentSearchesRoot.prototype, 'render').mockImplementation();
     });
 
     it('should instantiate RecentSearchesStore with isLocalStorageAvailable', () => {
       manager = new FilteredSearchManager({ page });
 
       expect(RecentSearchesService.isAvailable).toHaveBeenCalled();
-      expect(RecentSearchesStoreSpy).toHaveBeenCalledWith({
-        isLocalStorageAvailable,
-        allowedKeys: IssuableFilteredSearchTokenKeys.getKeys(),
-      });
+      expect(manager.recentSearchesStore.state).toEqual(
+        expect.objectContaining({
+          isLocalStorageAvailable,
+          allowedKeys: IssuableFilteredSearchTokenKeys.getKeys(),
+        }),
+      );
     });
   });
 
@@ -117,10 +123,10 @@ describe('Filtered Search Manager', function() {
     });
 
     it('should not instantiate Flash if an RecentSearchesServiceError is caught', () => {
-      spyOn(RecentSearchesService.prototype, 'fetch').and.callFake(() =>
-        Promise.reject(new RecentSearchesServiceError()),
-      );
-      spyOn(window, 'Flash');
+      jest
+        .spyOn(RecentSearchesService.prototype, 'fetch')
+        .mockImplementation(() => Promise.reject(new RecentSearchesServiceError()));
+      jest.spyOn(window, 'Flash').mockImplementation();
 
       manager.setup();
 
@@ -130,7 +136,7 @@ describe('Filtered Search Manager', function() {
 
   describe('searchState', () => {
     beforeEach(() => {
-      spyOn(FilteredSearchManager.prototype, 'search').and.callFake(() => {});
+      jest.spyOn(FilteredSearchManager.prototype, 'search').mockImplementation();
       initializeManager();
     });
 
@@ -141,7 +147,7 @@ describe('Filtered Search Manager', function() {
           blur: () => {},
         },
       };
-      spyOn(e.currentTarget, 'blur').and.callThrough();
+      jest.spyOn(e.currentTarget, 'blur');
       manager.searchState(e);
 
       expect(e.currentTarget.blur).toHaveBeenCalled();
@@ -187,7 +193,7 @@ describe('Filtered Search Manager', function() {
     it('should search with a single word', done => {
       input.value = 'searchTerm';
 
-      spyOnDependency(FilteredSearchManager, 'visitUrl').and.callFake(url => {
+      visitUrl.mockImplementation(url => {
         expect(url).toEqual(`${defaultParams}&search=searchTerm`);
         done();
       });
@@ -198,7 +204,7 @@ describe('Filtered Search Manager', function() {
     it('should search with multiple words', done => {
       input.value = 'awesome search terms';
 
-      spyOnDependency(FilteredSearchManager, 'visitUrl').and.callFake(url => {
+      visitUrl.mockImplementation(url => {
         expect(url).toEqual(`${defaultParams}&search=awesome+search+terms`);
         done();
       });
@@ -209,7 +215,7 @@ describe('Filtered Search Manager', function() {
     it('should search with special characters', done => {
       input.value = '~!@#$%^&*()_+{}:<>,.?/';
 
-      spyOnDependency(FilteredSearchManager, 'visitUrl').and.callFake(url => {
+      visitUrl.mockImplementation(url => {
         expect(url).toEqual(
           `${defaultParams}&search=~!%40%23%24%25%5E%26*()_%2B%7B%7D%3A%3C%3E%2C.%3F%2F`,
         );
@@ -225,7 +231,7 @@ describe('Filtered Search Manager', function() {
         ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '=', '~bug')}
       `);
 
-      spyOnDependency(FilteredSearchManager, 'visitUrl').and.callFake(url => {
+      visitUrl.mockImplementation(url => {
         expect(url).toEqual(`${defaultParams}&label_name[]=bug`);
         done();
       });
@@ -277,7 +283,7 @@ describe('Filtered Search Manager', function() {
       });
 
       it('removes last token', () => {
-        spyOn(FilteredSearchVisualTokens, 'removeLastTokenPartial').and.callThrough();
+        jest.spyOn(FilteredSearchVisualTokens, 'removeLastTokenPartial');
         dispatchBackspaceEvent(input, 'keyup');
         dispatchBackspaceEvent(input, 'keyup');
 
@@ -285,7 +291,7 @@ describe('Filtered Search Manager', function() {
       });
 
       it('sets the input', () => {
-        spyOn(FilteredSearchVisualTokens, 'getLastTokenPartial').and.callThrough();
+        jest.spyOn(FilteredSearchVisualTokens, 'getLastTokenPartial');
         dispatchDeleteEvent(input, 'keyup');
         dispatchDeleteEvent(input, 'keyup');
 
@@ -295,8 +301,8 @@ describe('Filtered Search Manager', function() {
     });
 
     it('does not remove token or change input when there is existing input', () => {
-      spyOn(FilteredSearchVisualTokens, 'removeLastTokenPartial').and.callThrough();
-      spyOn(FilteredSearchVisualTokens, 'getLastTokenPartial').and.callThrough();
+      jest.spyOn(FilteredSearchVisualTokens, 'removeLastTokenPartial');
+      jest.spyOn(FilteredSearchVisualTokens, 'getLastTokenPartial');
 
       input.value = 'text';
       dispatchDeleteEvent(input, 'keyup');
@@ -307,8 +313,8 @@ describe('Filtered Search Manager', function() {
     });
 
     it('does not remove previous token on single backspace press', () => {
-      spyOn(FilteredSearchVisualTokens, 'removeLastTokenPartial').and.callThrough();
-      spyOn(FilteredSearchVisualTokens, 'getLastTokenPartial').and.callThrough();
+      jest.spyOn(FilteredSearchVisualTokens, 'removeLastTokenPartial');
+      jest.spyOn(FilteredSearchVisualTokens, 'getLastTokenPartial');
 
       input.value = 't';
       dispatchDeleteEvent(input, 'keyup');
@@ -322,7 +328,7 @@ describe('Filtered Search Manager', function() {
   describe('checkForAltOrCtrlBackspace', () => {
     beforeEach(() => {
       initializeManager();
-      spyOn(FilteredSearchVisualTokens, 'removeLastTokenPartial').and.callThrough();
+      jest.spyOn(FilteredSearchVisualTokens, 'removeLastTokenPartial');
     });
 
     describe('tokens and no input', () => {
@@ -384,7 +390,7 @@ describe('Filtered Search Manager', function() {
     });
 
     it('removes all tokens and input', () => {
-      spyOn(FilteredSearchManager.prototype, 'clearSearch').and.callThrough();
+      jest.spyOn(FilteredSearchManager.prototype, 'clearSearch');
       dispatchMetaBackspaceEvent(input, 'keydown');
 
       expect(manager.clearSearch).toHaveBeenCalled();
@@ -410,7 +416,7 @@ describe('Filtered Search Manager', function() {
 
     describe('unselected token', () => {
       beforeEach(() => {
-        spyOn(FilteredSearchManager.prototype, 'removeSelectedToken').and.callThrough();
+        jest.spyOn(FilteredSearchManager.prototype, 'removeSelectedToken');
 
         tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(
           FilteredSearchSpecHelper.createFilterVisualTokenHTML('milestone', '=', 'none'),
@@ -481,9 +487,9 @@ describe('Filtered Search Manager', function() {
 
   describe('removeSelectedToken', () => {
     beforeEach(() => {
-      spyOn(FilteredSearchVisualTokens, 'removeSelectedToken').and.callThrough();
-      spyOn(FilteredSearchManager.prototype, 'handleInputPlaceholder').and.callThrough();
-      spyOn(FilteredSearchManager.prototype, 'toggleClearSearchButton').and.callThrough();
+      jest.spyOn(FilteredSearchVisualTokens, 'removeSelectedToken');
+      jest.spyOn(FilteredSearchManager.prototype, 'handleInputPlaceholder');
+      jest.spyOn(FilteredSearchManager.prototype, 'toggleClearSearchButton');
       initializeManager();
     });
 
@@ -554,8 +560,9 @@ describe('Filtered Search Manager', function() {
   });
 
   describe('getAllParams', () => {
+    let paramsArr;
     beforeEach(() => {
-      this.paramsArr = ['key=value', 'otherkey=othervalue'];
+      paramsArr = ['key=value', 'otherkey=othervalue'];
 
       initializeManager();
     });
@@ -563,18 +570,18 @@ describe('Filtered Search Manager', function() {
     it('correctly modifies params when custom modifier is passed', () => {
       const modifedParams = manager.getAllParams.call(
         {
-          modifyUrlParams: paramsArr => paramsArr.reverse(),
+          modifyUrlParams: params => params.reverse(),
         },
-        [].concat(this.paramsArr),
+        [].concat(paramsArr),
       );
 
-      expect(modifedParams[0]).toBe(this.paramsArr[1]);
+      expect(modifedParams[0]).toBe(paramsArr[1]);
     });
 
     it('does not modify params when no custom modifier is passed', () => {
-      const modifedParams = manager.getAllParams.call({}, this.paramsArr);
+      const modifedParams = manager.getAllParams.call({}, paramsArr);
 
-      expect(modifedParams[1]).toBe(this.paramsArr[1]);
+      expect(modifedParams[1]).toBe(paramsArr[1]);
     });
   });
 });

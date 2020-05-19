@@ -11,25 +11,25 @@ import { mockProject, unsortedFrequentItems, sortedFrequentItems } from './mock_
 describe('Frequent Items utils spec', () => {
   describe('isMobile', () => {
     it('returns true when the screen is medium ', () => {
-      spyOn(bp, 'getBreakpointSize').and.returnValue('md');
+      jest.spyOn(bp, 'getBreakpointSize').mockReturnValue('md');
 
       expect(isMobile()).toBe(true);
     });
 
     it('returns true when the screen is small ', () => {
-      spyOn(bp, 'getBreakpointSize').and.returnValue('sm');
+      jest.spyOn(bp, 'getBreakpointSize').mockReturnValue('sm');
 
       expect(isMobile()).toBe(true);
     });
 
     it('returns true when the screen is extra-small ', () => {
-      spyOn(bp, 'getBreakpointSize').and.returnValue('xs');
+      jest.spyOn(bp, 'getBreakpointSize').mockReturnValue('xs');
 
       expect(isMobile()).toBe(true);
     });
 
     it('returns false when the screen is larger than medium ', () => {
-      spyOn(bp, 'getBreakpointSize').and.returnValue('lg');
+      jest.spyOn(bp, 'getBreakpointSize').mockReturnValue('lg');
 
       expect(isMobile()).toBe(false);
     });
@@ -43,21 +43,21 @@ describe('Frequent Items utils spec', () => {
     });
 
     it('returns correct amount of items for mobile', () => {
-      spyOn(bp, 'getBreakpointSize').and.returnValue('md');
+      jest.spyOn(bp, 'getBreakpointSize').mockReturnValue('md');
       const result = getTopFrequentItems(unsortedFrequentItems);
 
       expect(result.length).toBe(FREQUENT_ITEMS.LIST_COUNT_MOBILE);
     });
 
     it('returns correct amount of items for desktop', () => {
-      spyOn(bp, 'getBreakpointSize').and.returnValue('xl');
+      jest.spyOn(bp, 'getBreakpointSize').mockReturnValue('xl');
       const result = getTopFrequentItems(unsortedFrequentItems);
 
       expect(result.length).toBe(FREQUENT_ITEMS.LIST_COUNT_DESKTOP);
     });
 
     it('sorts frequent items in order of frequency and lastAccessedOn', () => {
-      spyOn(bp, 'getBreakpointSize').and.returnValue('xl');
+      jest.spyOn(bp, 'getBreakpointSize').mockReturnValue('xl');
       const result = getTopFrequentItems(unsortedFrequentItems);
       const expectedResult = sortedFrequentItems.slice(0, FREQUENT_ITEMS.LIST_COUNT_DESKTOP);
 

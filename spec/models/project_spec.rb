@@ -4012,16 +4012,6 @@ describe Project do
       expect { project.remove_pages }.to change { pages_metadatum.reload.deployed }.from(true).to(false)
     end
 
-    it 'is a no-op when there is no namespace' do
-      project.namespace.delete
-      project.reload
-
-      expect_any_instance_of(Projects::UpdatePagesConfigurationService).not_to receive(:execute)
-      expect_any_instance_of(Gitlab::PagesTransfer).not_to receive(:rename_project)
-
-      expect { project.remove_pages }.not_to change { pages_metadatum.reload.deployed }
-    end
-
     it 'is run when the project is destroyed' do
       expect(project).to receive(:remove_pages).and_call_original
 

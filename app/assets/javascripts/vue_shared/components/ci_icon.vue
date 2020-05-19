@@ -1,5 +1,5 @@
 <script>
-import Icon from '../../vue_shared/components/icon.vue';
+import Icon from './icon.vue';
 
 /**
  * Renders CI icon based on API response shared between all places where it is used.

@@ -5,7 +5,7 @@ import Flash from '~/flash';
 import tooltip from '~/vue_shared/directives/tooltip';
 import { s__, __ } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
-import MrWidgetAuthorTime from '../../components/mr_widget_author_time.vue';
+import MrWidgetAuthorTime from '../mr_widget_author_time.vue';
 import statusIcon from '../mr_widget_status_icon.vue';
 import eventHub from '../../event_hub';
 

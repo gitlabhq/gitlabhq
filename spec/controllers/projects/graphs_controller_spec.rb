@@ -48,8 +48,8 @@ describe Projects::GraphsController do
 
           expect(assigns[:daily_coverage_options]).to eq(
             base_params: {
-              start_date: Time.now.to_date - 90.days,
-              end_date: Time.now.to_date,
+              start_date: Time.current.to_date - 90.days,
+              end_date: Time.current.to_date,
               ref_path: project.repository.expand_ref('master'),
               param_type: 'coverage'
             },

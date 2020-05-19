@@ -1,37 +1,44 @@
 import csrf from '~/lib/utils/csrf';
+import { setHTMLFixture } from 'helpers/fixtures';
 
-describe('csrf', function() {
+describe('csrf', () => {
+  let testContext;
+
   beforeEach(() => {
-    this.tokenKey = 'X-CSRF-Token';
-    this.token =
+    testContext = {};
+  });
+
+  beforeEach(() => {
+    testContext.tokenKey = 'X-CSRF-Token';
+    testContext.token =
       'pH1cvjnP9grx2oKlhWEDvUZnJ8x2eXsIs1qzyHkF3DugSG5yTxR76CWeEZRhML2D1IeVB7NEW0t5l/axE4iJpQ==';
   });
 
   it('returns the correct headerKey', () => {
-    expect(csrf.headerKey).toBe(this.tokenKey);
+    expect(csrf.headerKey).toBe(testContext.tokenKey);
   });
 
   describe('when csrf token is in the DOM', () => {
     beforeEach(() => {
-      setFixtures(`
-        <meta name="csrf-token" content="${this.token}">
+      setHTMLFixture(`
+        <meta name="csrf-token" content="${testContext.token}">
       `);
 
       csrf.init();
     });
 
     it('returns the csrf token', () => {
-      expect(csrf.token).toBe(this.token);
+      expect(csrf.token).toBe(testContext.token);
     });
 
     it('returns the csrf headers object', () => {
-      expect(csrf.headers[this.tokenKey]).toBe(this.token);
+      expect(csrf.headers[testContext.tokenKey]).toBe(testContext.token);
     });
   });
 
   describe('when csrf token is not in the DOM', () => {
     beforeEach(() => {
-      setFixtures(`
+      setHTMLFixture(`
         <meta name="some-other-token">
       `);
 

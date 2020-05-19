@@ -73,7 +73,7 @@ describe Projects::Settings::RepositoryController do
             'id' => be_a(Integer),
             'name' => deploy_token_params[:name],
             'username' => deploy_token_params[:username],
-            'expires_at' => Time.parse(deploy_token_params[:expires_at]),
+            'expires_at' => Time.zone.parse(deploy_token_params[:expires_at]),
             'token' => be_a(String),
             'scopes' => deploy_token_params.inject([]) do |scopes, kv|
               key, value = kv

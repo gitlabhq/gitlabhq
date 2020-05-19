@@ -52,7 +52,7 @@ export default {
     footer-primary-button-variant="danger"
     @submit="onSubmit"
   >
-    <template slot="header">
+    <template #header>
       <h4 class="modal-title d-flex mw-100">
         {{ __('Delete') }}
         <span v-gl-tooltip :title="environment.name" class="text-truncate mx-1 flex-fill">

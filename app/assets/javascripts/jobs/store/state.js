@@ -1,4 +1,4 @@
-import { isNewJobLogActive } from '../store/utils';
+import { isNewJobLogActive } from './utils';
 
 export default () => ({
   jobEndpoint: null,

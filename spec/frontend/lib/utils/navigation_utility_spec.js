@@ -1,9 +1,11 @@
 import findAndFollowLink from '~/lib/utils/navigation_utility';
+import { visitUrl } from '~/lib/utils/url_utility';
+
+jest.mock('~/lib/utils/url_utility');
 
 describe('findAndFollowLink', () => {
   it('visits a link when the selector exists', () => {
     const href = '/some/path';
-    const visitUrl = spyOnDependency(findAndFollowLink, 'visitUrl');
 
     setFixtures(`<a class="my-shortcut" href="${href}">link</a>`);
 
@@ -13,8 +15,6 @@ describe('findAndFollowLink', () => {
   });
 
   it('does not throw an exception when the selector does not exist', () => {
-    const visitUrl = spyOnDependency(findAndFollowLink, 'visitUrl');
-
     // this should not throw an exception
     findAndFollowLink('.this-selector-does-not-exist');
 

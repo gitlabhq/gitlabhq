@@ -4,7 +4,7 @@ import { GlTooltipDirective, GlLink } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
 import UserAvatarLink from './user_avatar/user_avatar_link.vue';
-import Icon from '../../vue_shared/components/icon.vue';
+import Icon from './icon.vue';
 
 export default {
   directives: {

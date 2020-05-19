@@ -1,6 +1,6 @@
 import { mapGetters, mapActions, mapState } from 'vuex';
 import { scrollToElement } from '~/lib/utils/common_utils';
-import eventHub from '../../notes/event_hub';
+import eventHub from '../event_hub';
 
 /**
  * @param {string} selector

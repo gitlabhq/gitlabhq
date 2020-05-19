@@ -2,7 +2,7 @@
 import { GlLink } from '@gitlab/ui';
 import { escape } from 'lodash';
 import { __, sprintf } from '~/locale';
-import icon from '../../../vue_shared/components/icon.vue';
+import icon from '../icon.vue';
 
 function buildDocsLinkStart(path) {
   return `<a href="${escape(path)}" target="_blank" rel="noopener noreferrer">`;

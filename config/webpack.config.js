@@ -232,7 +232,8 @@ module.exports = {
           {
             loader: 'css-loader',
             options: {
-              name: '[name].[contenthash:8].[ext]',
+              modules: 'global',
+              localIdentName: '[name].[contenthash:8].[ext]',
             },
           },
         ],

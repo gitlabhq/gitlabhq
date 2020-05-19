@@ -1,4 +1,4 @@
-import service from './../services';
+import service from '../services';
 import * as types from './mutation_types';
 import createFlash from '~/flash';
 import { visitUrl } from '~/lib/utils/url_utility';

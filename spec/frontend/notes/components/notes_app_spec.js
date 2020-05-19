@@ -10,7 +10,7 @@ import createStore from '~/notes/stores';
 import * as constants from '~/notes/constants';
 import '~/behaviors/markdown/render_gfm';
 // TODO: use generated fixture (https://gitlab.com/gitlab-org/gitlab-foss/issues/62491)
-import * as mockData from '../../notes/mock_data';
+import * as mockData from '../mock_data';
 import * as urlUtility from '~/lib/utils/url_utility';
 import OrderedLayout from '~/vue_shared/components/ordered_layout.vue';
 

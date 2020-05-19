@@ -4,7 +4,7 @@ import icon from '~/vue_shared/components/icon.vue';
 import upload from './upload.vue';
 import ItemButton from './button.vue';
 import { modalTypes } from '../../constants';
-import NewModal from '../new_dropdown/modal.vue';
+import NewModal from './modal.vue';
 
 export default {
   components: {

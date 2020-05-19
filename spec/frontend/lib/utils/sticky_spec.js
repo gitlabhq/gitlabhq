@@ -1,20 +1,32 @@
 import { isSticky } from '~/lib/utils/sticky';
+import { setHTMLFixture } from 'helpers/fixtures';
+
+const TEST_OFFSET_TOP = 500;
 
 describe('sticky', () => {
   let el;
+  let offsetTop;
 
   beforeEach(() => {
-    document.body.innerHTML += `
+    setHTMLFixture(
+      `
       <div class="parent">
         <div id="js-sticky"></div>
       </div>
-    `;
+    `,
+    );
 
+    offsetTop = TEST_OFFSET_TOP;
     el = document.getElementById('js-sticky');
+    Object.defineProperty(el, 'offsetTop', {
+      get() {
+        return offsetTop;
+      },
+    });
   });
 
   afterEach(() => {
-    el.parentNode.remove();
+    el = null;
   });
 
   describe('when stuck', () => {
@@ -40,14 +52,13 @@ describe('sticky', () => {
 
   describe('when not stuck', () => {
     it('removes is-stuck class', () => {
-      spyOn(el.classList, 'remove').and.callThrough();
+      jest.spyOn(el.classList, 'remove');
 
       isSticky(el, 0, el.offsetTop);
       isSticky(el, 0, 0);
 
       expect(el.classList.remove).toHaveBeenCalledWith('is-stuck');
-
-      expect(el.classList.contains('is-stuck')).toBeFalsy();
+      expect(el.classList.contains('is-stuck')).toBe(false);
     });
 
     it('does not add is-stuck class', () => {
