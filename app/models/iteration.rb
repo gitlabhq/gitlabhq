@@ -88,12 +88,12 @@ class Iteration < ApplicationRecord
   # ensure dates are in the future
   def future_date
     if start_date_changed?
-      errors.add(:start_date, s_("Iteration|cannot be in the past")) if start_date < Date.today
+      errors.add(:start_date, s_("Iteration|cannot be in the past")) if start_date < Date.current
       errors.add(:start_date, s_("Iteration|cannot be more than 500 years in the future")) if start_date > 500.years.from_now
     end
 
     if due_date_changed?
-      errors.add(:due_date, s_("Iteration|cannot be in the past")) if due_date < Date.today
+      errors.add(:due_date, s_("Iteration|cannot be in the past")) if due_date < Date.current
       errors.add(:due_date, s_("Iteration|cannot be more than 500 years in the future")) if due_date > 500.years.from_now
     end
   end

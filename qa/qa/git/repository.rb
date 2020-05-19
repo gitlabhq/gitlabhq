@@ -122,6 +122,14 @@ module QA
         run("git merge #{branch}")
       end
 
+      def init_repository
+        run("git init")
+      end
+
+      def pull(repository = nil, branch = nil)
+        run(['git', 'pull', repository, branch].compact.join(' '))
+      end
+
       def commits
         run('git log --oneline').to_s.split("\n")
       end
@@ -175,6 +183,10 @@ module QA
         return if netrc_already_contains_content?
 
         save_netrc_content
+      end
+
+      def file_content(file)
+        run("cat #{file}").to_s
       end
 
       private

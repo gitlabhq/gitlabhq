@@ -315,7 +315,7 @@ describe Git::BranchPushService, services: true do
     let(:issue) { create :issue, project: project }
     let(:commit_author) { create :user }
     let(:commit) { project.commit }
-    let(:commit_time) { Time.now }
+    let(:commit_time) { Time.current }
 
     before do
       project.add_developer(commit_author)

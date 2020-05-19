@@ -133,8 +133,13 @@ module QA
       end
 
       # replace with (..., page = self.class)
-      def click_element(name, page = nil, text: nil, wait: Capybara.default_max_wait_time)
-        find_element(name, text: text, wait: wait).click
+      def click_element(name, page = nil, **kwargs)
+        wait_for_requests
+
+        wait = kwargs.delete(:wait) || Capybara.default_max_wait_time
+        text = kwargs.delete(:text)
+
+        find(element_selector_css(name, kwargs), text: text, wait: wait).click
         page.validate_elements_present! if page
       end
 

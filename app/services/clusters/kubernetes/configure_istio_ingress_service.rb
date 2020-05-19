@@ -54,8 +54,8 @@ module Clusters
         cert = OpenSSL::X509::Certificate.new
         cert.version = 2
         cert.serial = 0
-        cert.not_before = Time.now
-        cert.not_after = Time.now + 1000.years
+        cert.not_before = Time.current
+        cert.not_after = Time.current + 1000.years
 
         cert.public_key = key.public_key
         cert.subject = name

@@ -26,7 +26,7 @@ module ResourceEvents
     def since_fetch_at(events)
       return events unless params[:last_fetched_at].present?
 
-      last_fetched_at = Time.at(params.fetch(:last_fetched_at).to_i)
+      last_fetched_at = Time.zone.at(params.fetch(:last_fetched_at).to_i)
       events.created_after(last_fetched_at - NotesFinder::FETCH_OVERLAP)
     end
 

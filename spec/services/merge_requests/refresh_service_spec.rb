@@ -635,7 +635,7 @@ describe MergeRequests::RefreshService do
           references: [issue],
           author_name: commit_author.name,
           author_email: commit_author.email,
-          committed_date: Time.now
+          committed_date: Time.current
         )
 
         allow_any_instance_of(MergeRequest).to receive(:commits).and_return(CommitCollection.new(@project, [commit], 'feature'))

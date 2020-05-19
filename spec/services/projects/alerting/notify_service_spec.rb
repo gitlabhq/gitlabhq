@@ -72,7 +72,7 @@ describe Projects::Alerting::NotifyService do
 
   describe '#execute' do
     let(:token) { 'invalid-token' }
-    let(:starts_at) { Time.now.change(usec: 0) }
+    let(:starts_at) { Time.current.change(usec: 0) }
     let(:service) { described_class.new(project, nil, payload) }
     let(:payload_raw) do
       {
@@ -121,7 +121,7 @@ describe Projects::Alerting::NotifyService do
             expect(last_alert_attributes).to match(
               project_id: project.id,
               title: payload_raw.fetch(:title),
-              started_at: Time.parse(payload_raw.fetch(:start_time)),
+              started_at: Time.zone.parse(payload_raw.fetch(:start_time)),
               severity: payload_raw.fetch(:severity),
               status: AlertManagement::Alert::STATUSES[:triggered],
               events: 1,
@@ -154,7 +154,7 @@ describe Projects::Alerting::NotifyService do
               expect(last_alert_attributes).to match(
                 project_id: project.id,
                 title: payload_raw.fetch(:title),
-                started_at: Time.parse(payload_raw.fetch(:start_time)),
+                started_at: Time.zone.parse(payload_raw.fetch(:start_time)),
                 severity: 'critical',
                 status: AlertManagement::Alert::STATUSES[:triggered],
                 events: 1,

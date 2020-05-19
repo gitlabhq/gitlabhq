@@ -207,7 +207,7 @@ export default {
             category="primary"
             variant="success"
             :disabled="updatePrevented"
-            data-qa-selector="create_snippet_button"
+            data-qa-selector="submit_button"
             @click="handleFormSubmit"
             >{{ saveButtonLabel }}</gl-button
           >

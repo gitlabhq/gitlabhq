@@ -6,7 +6,7 @@ module QA
       module Snippet
         class New < Page::Base
           view 'app/assets/javascripts/snippets/components/edit.vue' do
-            element :create_snippet_button
+            element :submit_button
           end
 
           view 'app/assets/javascripts/snippets/components/snippet_description_edit.vue' do
@@ -31,7 +31,7 @@ module QA
             element :description_placeholder
             element :snippet_title
             element :snippet_file_name
-            element :create_snippet_button
+            element :submit_button
           end
 
           view 'app/views/projects/_zen.html.haml' do
@@ -63,8 +63,8 @@ module QA
           end
 
           def click_create_snippet_button
-            wait_until(reload: false) { !find_element(:create_snippet_button).disabled? }
-            click_element :create_snippet_button
+            wait_until(reload: false) { !find_element(:submit_button).disabled? }
+            click_element :submit_button
           end
 
           private

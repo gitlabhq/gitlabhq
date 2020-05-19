@@ -201,7 +201,7 @@ module Ci
         labels[:shard] = shard.gsub(METRICS_SHARD_TAG_PREFIX, '') if shard
       end
 
-      job_queue_duration_seconds.observe(labels, Time.now - job.queued_at) unless job.queued_at.nil?
+      job_queue_duration_seconds.observe(labels, Time.current - job.queued_at) unless job.queued_at.nil?
       attempt_counter.increment
     end
 

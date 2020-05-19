@@ -191,6 +191,7 @@ module QA
         autoload :New, 'qa/page/dashboard/snippet/new'
         autoload :Index, 'qa/page/dashboard/snippet/index'
         autoload :Show, 'qa/page/dashboard/snippet/show'
+        autoload :Edit, 'qa/page/dashboard/snippet/edit'
       end
     end
 

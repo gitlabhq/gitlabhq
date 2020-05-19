@@ -425,7 +425,7 @@ describe Notes::CreateService do
         expect do
           existing_note
 
-          Timecop.freeze(Time.now + 1.minute) { subject }
+          Timecop.freeze(Time.current + 1.minute) { subject }
 
           existing_note.reload
         end.to change { existing_note.type }.from(nil).to('DiscussionNote')

@@ -4,7 +4,7 @@ module ResourceEvents
   class ChangeMilestoneService
     attr_reader :resource, :user, :event_created_at, :milestone, :old_milestone
 
-    def initialize(resource, user, created_at: Time.now, old_milestone:)
+    def initialize(resource, user, created_at: Time.current, old_milestone:)
       @resource = resource
       @user = user
       @event_created_at = created_at

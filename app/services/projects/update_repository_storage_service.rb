@@ -121,7 +121,7 @@ module Projects
     end
 
     def moved_path(path)
-      "#{path}+#{project.id}+moved+#{Time.now.to_i}"
+      "#{path}+#{project.id}+moved+#{Time.current.to_i}"
     end
 
     # The underlying FetchInternalRemote call uses a `git fetch` to move data

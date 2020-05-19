@@ -8,7 +8,7 @@ describe Projects::UpdateRepositoryStorageService do
   subject { described_class.new(repository_storage_move) }
 
   describe "#execute" do
-    let(:time) { Time.now }
+    let(:time) { Time.current }
 
     before do
       allow(Time).to receive(:now).and_return(time)

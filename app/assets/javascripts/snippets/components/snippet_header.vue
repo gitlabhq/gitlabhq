@@ -207,6 +207,8 @@ export default {
               :category="action.category"
               :class="action.cssClass"
               :href="action.href"
+              data-qa-selector="snippet_action_button"
+              :data-qa-action="action.text"
               @click="action.click ? action.click() : undefined"
             >
               {{ action.text }}

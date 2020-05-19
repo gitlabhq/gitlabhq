@@ -8,7 +8,7 @@ module Members
       source.members.create(
         access_level: Gitlab::Access::DEVELOPER,
         user: current_user,
-        requested_at: Time.now.utc)
+        requested_at: Time.current.utc)
     end
 
     private

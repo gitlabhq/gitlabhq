@@ -461,3 +461,13 @@ Performance/ChainArrayAllocation:
     - 'lib/gitlab/import_export/**/*'
     - 'ee/lib/gitlab/import_export/**/*'
     - 'ee/lib/ee/gitlab/import_export/**/*'
+
+Rails/TimeZone:
+  Enabled: true
+  EnforcedStyle: 'flexible'
+  Include:
+    - 'app/services/**/*'
+    - 'spec/services/**/*'
+    - 'ee/app/services/**/*'
+    - 'ee/spec/services/**/*'
+

@@ -52,7 +52,7 @@ module Auth
     end
 
     def self.token_expire_at
-      Time.now + Gitlab::CurrentSettings.container_registry_token_expire_delay.minutes
+      Time.current + Gitlab::CurrentSettings.container_registry_token_expire_delay.minutes
     end
 
     private

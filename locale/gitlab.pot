@@ -14630,6 +14630,9 @@ msgstr ""
 msgid "Now you can access the merge request navigation tabs at the top, where they’re easier to find."
 msgstr ""
 
+msgid "Nuget metadatum must have at least license_url, project_url or icon_url set"
+msgstr ""
+
 msgid "Number of %{itemTitle}"
 msgstr ""
 

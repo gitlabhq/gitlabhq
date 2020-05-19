@@ -99,6 +99,7 @@ export default {
             class="mr-2"
             :ssh-link="snippet.sshUrlToRepo"
             :http-link="snippet.httpUrlToRepo"
+            data-qa-selector="clone_button"
           />
         </template>
       </blob-header>

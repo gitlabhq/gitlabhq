@@ -33,7 +33,7 @@ module Projects
       end
 
       def order_by_date(tags)
-        now = DateTime.now
+        now = DateTime.current
         tags.sort_by { |tag| tag.created_at || now }.reverse
       end
 

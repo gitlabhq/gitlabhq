@@ -85,7 +85,7 @@ Once you confirm %{deleteAccount}, it cannot be undone or recovered.`),
     kind="danger"
     @submit="onSubmit"
   >
-    <template slot="body" slot-scope="props">
+    <template #body="props">
       <p v-html="props.text"></p>
 
       <form ref="form" :action="actionUrl" method="post">

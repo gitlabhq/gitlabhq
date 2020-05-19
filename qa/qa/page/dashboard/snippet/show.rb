@@ -35,6 +35,20 @@ module QA
             element :file_content
           end
 
+          view 'app/assets/javascripts/snippets/components/snippet_header.vue' do
+            element :snippet_action_button
+            element :delete_snippet_button
+          end
+
+          view 'app/assets/javascripts/snippets/components/snippet_blob_view.vue' do
+            element :clone_button
+          end
+
+          view 'app/assets/javascripts/vue_shared/components/clone_dropdown.vue' do
+            element :copy_http_url_button
+            element :copy_ssh_url_button
+          end
+
           def has_snippet_title?(snippet_title)
             has_element? :snippet_title, text: snippet_title
           end
@@ -60,6 +74,30 @@ module QA
             within_element(:file_content) do
               has_text?(file_content)
             end
+          end
+
+          def click_edit_button
+            finished_loading?
+            click_element(:snippet_action_button, action: 'Edit')
+          end
+
+          def click_delete_button
+            finished_loading?
+            click_element(:snippet_action_button, action: 'Delete')
+            click_element(:delete_snippet_button)
+            finished_loading? # wait for the page to reload after deletion
+          end
+
+          def get_repository_uri_http
+            finished_loading?
+            click_element(:clone_button)
+            Git::Location.new(find_element(:copy_http_url_button)['data-clipboard-text']).uri.to_s
+          end
+
+          def get_repository_uri_ssh
+            finished_loading?
+            click_element(:clone_button)
+            Git::Location.new(find_element(:copy_ssh_url_button)['data-clipboard-text']).uri.to_s
           end
         end
       end

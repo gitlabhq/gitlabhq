@@ -76,10 +76,10 @@ export default {
         </gl-link>
 
         <expand-button>
-          <template slot="short">
+          <template #short>
             <span class="js-short monospace">{{ shortSha(index) }}</span>
           </template>
-          <template slot="expanded">
+          <template #expanded>
             <span class="js-expanded monospace gl-pl-1-deprecated-no-really-do-not-use-me">{{
               sha(index)
             }}</span>

@@ -453,7 +453,7 @@ describe MergeRequests::UpdateService, :mailer do
         end
 
         it 'updates updated_at' do
-          expect(merge_request.reload.updated_at).to be > Time.now
+          expect(merge_request.reload.updated_at).to be > Time.current
         end
       end
 

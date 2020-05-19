@@ -13,7 +13,7 @@ describe CohortsService do
       6.times do |months_ago|
         months_ago_time = (months_ago * 2).months.ago
 
-        create(:user, created_at: months_ago_time, last_activity_on: Time.now)
+        create(:user, created_at: months_ago_time, last_activity_on: Time.current)
         create(:user, created_at: months_ago_time, last_activity_on: months_ago_time)
       end
 

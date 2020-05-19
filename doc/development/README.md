@@ -98,6 +98,7 @@ Complementary reads:
 - [Rails initializers](rails_initializers.md)
 - [Code comments](code_comments.md)
 - [Renaming features](renaming_features.md)
+- [Windows Development on GCP](windows.md)
 
 ## Performance guides
 

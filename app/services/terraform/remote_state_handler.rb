@@ -42,7 +42,7 @@ module Terraform
 
         state.lock_xid = params[:lock_id]
         state.locked_by_user = current_user
-        state.locked_at = Time.now
+        state.locked_at = Time.current
 
         state.save!
       end
