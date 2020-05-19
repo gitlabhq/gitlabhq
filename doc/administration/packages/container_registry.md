@@ -716,7 +716,7 @@ built-in command:
 
 If you did not change the default location of the configuration file, run:
 
-```sh
+```shell
 sudo gitlab-ctl registry-garbage-collect
 ```
 
@@ -725,7 +725,7 @@ layers you have stored.
 
 If you changed the location of the Container Registry `config.yml`:
 
-```sh
+```shell
 sudo gitlab-ctl registry-garbage-collect /path/to/config.yml
 ```
 
@@ -749,7 +749,7 @@ referenced by the registry tag. The `registry-garbage-collect` command supports 
 `-m` switch to allow you to remove all unreferenced manifests and layers that are
 not directly accessible via `tag`:
 
-```sh
+```shell
 sudo gitlab-ctl registry-garbage-collect -m
 ```
 
@@ -787,7 +787,7 @@ To enable the read-only mode:
 
 1. Save and reconfigure GitLab:
 
-   ```sh
+   ```shell
    sudo gitlab-ctl reconfigure
    ```
 
@@ -795,7 +795,7 @@ To enable the read-only mode:
 
 1. Next, trigger one of the garbage collect commands:
 
-   ```sh
+   ```shell
    # Recycling unused tags
    sudo /opt/gitlab/embedded/bin/registry garbage-collect /var/opt/gitlab/registry/config.yml
 
@@ -822,7 +822,7 @@ To enable the read-only mode:
 
 1. Save and reconfigure GitLab:
 
-   ```sh
+   ```shell
    sudo gitlab-ctl reconfigure
    ```
 

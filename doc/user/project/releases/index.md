@@ -252,6 +252,9 @@ generate Release Evidence for an existing release. Because of this, [each releas
 can have multiple Release Evidence snapshots. You can view the Release Evidence and
 its details on the Release page.
 
+NOTE: **Note:**
+When the issue tracker is disabled, release evidence [is not collected](https://gitlab.com/gitlab-org/gitlab/-/issues/208397).
+
 Release Evidence is stored as a JSON object, so you can compare evidence by using
 commonly-available tools.
 
@@ -371,7 +374,7 @@ freeze periods, all will apply, and should they overlap, the freeze covers the
 complete overlapped period.
 
 During pipeline processing, GitLab CI creates an environment variable named
-`$CI_ENVIRONMENT_FROZEN` if the currently executing job is within a
+`$CI_DEPLOY_FREEZE` if the currently executing job is within a
 Freeze Period.
 
 To take advantage of this variable, create a `rules` entry in your
@@ -384,7 +387,7 @@ deploy_to_production:
   stage: deploy
   script: deploy_to_prod.sh
   rules:
-    - if: $CI_ENVIRONMENT_FROZEN == null
+    - if: $CI_DEPLOY_FREEZE == null
 ```
 
 <!-- ## Troubleshooting

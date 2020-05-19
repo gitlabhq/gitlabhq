@@ -49,7 +49,7 @@ For feature flags disabled by default, if they can be used by end users:
 For example, for a feature disabled by default, disabled on GitLab.com, and
 not ready for production use:
 
-````md
+````markdown
 # Feature Name
 
 > - [Introduced](link-to-issue) in GitLab 12.0.
@@ -93,7 +93,7 @@ For features that became enabled by default:
 
 For example, for a feature initially deployed disabled by default, that became enabled by default, that is enabled on GitLab.com, and ready for production use:
 
-````md
+````markdown
 # Feature Name
 
 > - [Introduced](link-to-issue) in GitLab 12.0.
@@ -138,7 +138,7 @@ For features enabled by default:
 
 For example, for a feature enabled by default, enabled on GitLab.com, and ready for production use:
 
-````md
+````markdown
 # Feature Name
 
 > - [Introduced](link-to-issue) in GitLab 12.0.
@@ -177,7 +177,7 @@ Once the feature is ready and the flag has been removed, clean up the
 documentation. Remove the feature flag mention keeping only a note that
 mentions the flag in the version history notes:
 
-````md
+````markdown
 # Feature Name
 
 > - [Introduced](link-to-issue) in GitLab 12.0.

@@ -23,7 +23,7 @@ You can also set the `InputSetter` config to an array of objects, which will all
 <ul>
 ```
 
-```js
+```javascript
 const droplab = new DropLab();
 
 const trigger = document.getElementById('trigger');

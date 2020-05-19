@@ -183,7 +183,7 @@ but it will not close automatically.
 
 If the issue is in a different repository than the MR, add the full URL for the issue(s):
 
-```md
+```markdown
 Closes #4, #6, and https://gitlab.com/<username>/<projectname>/issues/<xxx>
 ```
 

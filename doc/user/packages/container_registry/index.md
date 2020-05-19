@@ -137,7 +137,7 @@ The minimum scope needed for both of them is `read_registry`.
 
 Example of using a token:
 
-```sh
+```shell
 docker login registry.example.com -u <username> -p <token>
 ```
 
@@ -206,7 +206,7 @@ Available for all projects, though more suitable for public ones:
   your Docker images and has read/write access to the Registry. This is ephemeral,
   so it's only valid for one job. You can use the following example as-is:
 
-  ```sh
+  ```shell
   docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   ```
 
@@ -221,7 +221,7 @@ For private and internal projects:
 
   Replace the `<username>` and `<access_token>` in the following example:
 
-  ```sh
+  ```shell
   docker login -u <username> -p <access_token> $CI_REGISTRY
   ```
 
@@ -231,7 +231,7 @@ For private and internal projects:
   Once created, you can use the special environment variables, and GitLab CI/CD
   will fill them in for you. You can use the following example as-is:
 
-  ```sh
+  ```shell
   docker login -u $CI_DEPLOY_USER -p $CI_DEPLOY_PASSWORD $CI_REGISTRY
   ```
 

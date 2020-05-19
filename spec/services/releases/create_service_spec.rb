@@ -20,6 +20,8 @@ describe Releases::CreateService do
   describe '#execute' do
     shared_examples 'a successful release creation' do
       it 'creates a new release' do
+        expected_job_count = MailScheduler::NotificationServiceWorker.jobs.size + 1
+
         result = service.execute
 
         expect(project.releases.count).to eq(1)
@@ -30,6 +32,7 @@ describe Releases::CreateService do
         expect(result[:release].name).to eq(name)
         expect(result[:release].author).to eq(user)
         expect(result[:release].sha).to eq(tag_sha)
+        expect(MailScheduler::NotificationServiceWorker.jobs.size).to eq(expected_job_count)
       end
     end
 

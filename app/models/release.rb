@@ -34,8 +34,6 @@ class Release < ApplicationRecord
 
   delegate :repository, to: :project
 
-  after_commit :notify_new_release, on: :create, unless: :importing?
-
   MAX_NUMBER_TO_DISPLAY = 3
 
   def to_param
@@ -91,10 +89,6 @@ class Release < ApplicationRecord
     strong_memoize(:actual_tag) do
       repository.find_tag(tag)
     end
-  end
-
-  def notify_new_release
-    NewReleaseWorker.perform_async(id)
   end
 end
 

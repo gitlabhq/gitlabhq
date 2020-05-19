@@ -11,7 +11,7 @@ interact with the Freeze Period API endpoints.
 
 ## List Freeze Periods
 
-Paginated list of Freeze Periods, sorted by `created_at`.
+Paginated list of Freeze Periods, sorted by `created_at` in ascending order.
 
 ```plaintext
 GET /projects/:id/freeze_periods

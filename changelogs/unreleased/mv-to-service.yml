@@ -1,0 +1,5 @@
+---
+title: Move release notification from model callbacks to service
+merge_request: 29853
+author: Ravishankar
+type: performance

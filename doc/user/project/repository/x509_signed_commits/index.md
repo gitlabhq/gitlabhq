@@ -47,7 +47,7 @@ and some of them generate keys for free.
 To take advantage of X.509 signing, you will need Git 2.19.0 or later. You can
 check your Git version with:
 
-```sh
+```shell
 git --version
 ```
 
@@ -57,7 +57,7 @@ If you have the correct version, you can proceed to configure Git.
 
 Configure Git to use your key for signing:
 
-```sh
+```shell
 signingkey = $( gpgsm --list-secret-keys | egrep '(key usage|ID)' | grep -B 1 digitalSignature | awk '/ID/ {print $2}' )
 git config --global user.signingkey $signingkey
 git config --global gpg.format x509
@@ -71,7 +71,7 @@ installer or via `brew install smimesign` on MacOS.
 Get the ID of your certificate with `smimesign --list-keys` and set your
 signingkey `git config --global user.signingkey ID`, then configure X.509:
 
-```sh
+```shell
 git config --global gpg.x509.program smimesign
 git config --global gpg.format x509
 ```
@@ -83,7 +83,7 @@ can start signing your commits:
 
 1. Commit like you used to, the only difference is the addition of the `-S` flag:
 
-   ```sh
+   ```shell
    git commit -S -m "feat: x509 signed commits"
    ```
 
@@ -92,7 +92,7 @@ can start signing your commits:
 If you don't want to type the `-S` flag every time you commit, you can tell Git
 to sign your commits automatically:
 
-```sh
+```shell
 git config --global commit.gpgsign true
 ```
 
@@ -100,7 +100,7 @@ git config --global commit.gpgsign true
 
 To verify that a commit is signed, you can use the `--show-signature` flag:
 
-```sh
+```shell
 git log --show-signature
 ```
 
@@ -111,7 +111,7 @@ can start signing your tags:
 
 1. Tag like you used to, the only difference is the addition of the `-s` flag:
 
-   ```sh
+   ```shell
    git tag -s v1.1.1 -m "My signed tag"
    ```
 
@@ -120,7 +120,7 @@ can start signing your tags:
 If you don't want to type the `-s` flag every time you tag, you can tell Git
 to sign your tags automatically:
 
-```sh
+```shell
 git config --global tag.gpgsign true
 ```
 
@@ -128,6 +128,6 @@ git config --global tag.gpgsign true
 
 To verify that a tag is signed, you can use the `--verify` flag:
 
-```sh
+```shell
 git tag --verify v1.1.1
 ```

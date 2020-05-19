@@ -47,9 +47,15 @@ module Releases
 
       release.save!
 
+      notify_create_release(release)
+
       success(tag: tag, release: release)
     rescue => e
       error(e.message, 400)
+    end
+
+    def notify_create_release(release)
+      NotificationService.new.async.send_new_release_notifications(release)
     end
 
     def build_release(tag)

@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# TODO: Worker can be removed in 13.2:
+# https://gitlab.com/gitlab-org/gitlab/-/issues/218231
 class NewReleaseWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 

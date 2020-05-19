@@ -390,7 +390,7 @@ tenses, words, and phrases:
 - Insert an empty line for new paragraphs.
 - Insert an empty line between different markups (for example, after every paragraph, header, list, and so on). Example:
 
-  ```md
+  ```markdown
   ## Header
 
   Paragraph.
@@ -447,7 +447,7 @@ Only use ordered lists when their items describe a sequence of steps to follow.
 
 Do:
 
-```md
+```markdown
 These are the steps to do something:
 
 1. First, do the first step.
@@ -457,7 +457,7 @@ These are the steps to do something:
 
 Don't:
 
-```md
+```markdown
 This is a list of available features:
 
 1. Feature 1
@@ -483,7 +483,7 @@ This is a list of available features:
   all with a period.
 - Separate list items from explanatory text with a colon (`:`). For example:
 
-  ```md
+  ```markdown
   The list is as follows:
 
   - First item: this explains the first item.
@@ -630,7 +630,7 @@ page), use the following phrases (based on the SVG icons):
 
 ## Quotes
 
-Valid for Markdown content only, not for frontmatter entries:
+Valid for Markdown content only, not for front matter entries:
 
 - Standard quotes: double quotes (`"`). Example: "This is wrapped in double quotes".
 - Quote within a quote: double quotes (`"`) wrap single quotes (`'`). Example: "I am 'quoting' something within a quote".
@@ -792,7 +792,7 @@ Instead:
 
 Example:
 
-```md
+```markdown
 For more information, see the [confidential issue](../../user/project/issues/confidential_issues.md) `https://gitlab.com/gitlab-org/gitlab-foss/issues/<issue_number>`.
 ```
 
@@ -908,7 +908,7 @@ Do not upload videos to the product repositories. [Link](#link-to-video) or [emb
 To link out to a video, include a YouTube icon so that readers can
 quickly and easily scan the page for videos before reading:
 
-```md
+```markdown
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview, see [Video Title](link-to-video).
 ```
@@ -1082,7 +1082,7 @@ This will ensure that the source Markdown remains readable and should help with 
 
 The following are examples of source Markdown for menu items with their published output:
 
-```md
+```markdown
 1. Go to **{home}** **Project overview > Details**
 1. Go to **{doc-text}** **Repository > Branches**
 1. Go to **{issues}** **Issues > List**
@@ -1143,7 +1143,7 @@ of users.
 Weigh the costs of distracting users to whom the content is not relevant against
 the cost of users missing the content if it were not expressed as a note.
 
-```md
+```markdown
 NOTE: **Note:**
 This is something to note.
 ```
@@ -1155,7 +1155,7 @@ This is something to note.
 
 ### Tip
 
-```md
+```markdown
 TIP: **Tip:**
 This is a tip.
 ```
@@ -1167,7 +1167,7 @@ This is a tip.
 
 ### Caution
 
-```md
+```markdown
 CAUTION: **Caution:**
 This is something to be cautious about.
 ```
@@ -1179,7 +1179,7 @@ This is something to be cautious about.
 
 ### Danger
 
-```md
+```markdown
 DANGER: **Danger:**
 This is a breaking change, a bug, or something very important to note.
 ```
@@ -1193,7 +1193,7 @@ This is a breaking change, a bug, or something very important to note.
 
 For highlighting a text within a blue blockquote, use this format:
 
-```md
+```markdown
 > This is a blockquote.
 ```
 
@@ -1205,7 +1205,7 @@ If the text spans across multiple lines it's OK to split the line.
 
 For multiple paragraphs, use the symbol `>` before every line:
 
-```md
+```markdown
 > This is the first paragraph.
 >
 > This is the second paragraph.
@@ -1298,14 +1298,14 @@ a helpful link back to how the feature was developed.
 - If listing information for multiple version as a feature evolves, add the information to a
   block-quoted bullet list. For example:
 
-  ```md
+  ```markdown
   > - [Introduced](<link-to-issue>) in GitLab 11.3.
   > - Enabled by default in GitLab 11.4.
   ```
 
 - If a feature is moved to another tier:
 
-  ```md
+  ```markdown
   > - [Introduced](<link-to-issue>) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.5.
   > - [Moved](<link-to-issue>) to [GitLab Starter](https://about.gitlab.com/pricing/) in 11.8.
   > - [Moved](<link-to-issue>) to GitLab Core in 12.0.
@@ -1417,7 +1417,7 @@ avoid duplication, link to the special document that can be found in
 [`doc/administration/restart_gitlab.md`](../../administration/restart_gitlab.md).
 Usually the text will read like:
 
-```md
+```markdown
 Save the file and [reconfigure GitLab](../../administration/restart_gitlab.md)
 for the changes to take effect.
 ```
@@ -1453,7 +1453,7 @@ When there is a list of steps to perform, usually that entails editing the
 configuration file and reconfiguring/restarting GitLab. In such case, follow
 the style below as a guide:
 
-````md
+````markdown
 **For Omnibus installations**
 
 1. Edit `/etc/gitlab/gitlab.rb`:
@@ -1591,7 +1591,7 @@ You can use the following fake tokens as examples.
 Use the following table headers to describe the methods. Attributes should
 always be in code blocks using backticks (`` ` ``).
 
-```md
+```markdown
 | Attribute | Type | Required | Description |
 |:----------|:-----|:---------|:------------|
 ```

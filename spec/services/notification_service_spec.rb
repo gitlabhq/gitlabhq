@@ -762,7 +762,7 @@ describe NotificationService, :mailer do
     end
   end
 
-  describe '#send_new_release_notifications', :deliver_mails_inline, :sidekiq_inline do
+  describe '#send_new_release_notifications', :deliver_mails_inline do
     context 'when recipients for a new release exist' do
       let(:release) { create(:release) }
 
@@ -774,7 +774,7 @@ describe NotificationService, :mailer do
         recipient_2 = NotificationRecipient.new(user_2, :custom, custom_action: :new_release)
         allow(NotificationRecipients::BuildService).to receive(:build_new_release_recipients).and_return([recipient_1, recipient_2])
 
-        release
+        notification.send_new_release_notifications(release)
 
         should_email(user_1)
         should_email(user_2)

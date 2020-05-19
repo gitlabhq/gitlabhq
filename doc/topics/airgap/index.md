@@ -98,7 +98,7 @@ If it's not possible to follow the above method, the images can be transferred m
 
 #### Example image packager script
 
-```sh
+```shell
 #!/bin/bash
 set -ux
 
@@ -120,7 +120,7 @@ done
 This example loads the images from a bastion host to an offline host. In certain configurations,
 physical media may be needed for such a transfer:
 
-```sh
+```shell
 #!/bin/bash
 set -ux
 

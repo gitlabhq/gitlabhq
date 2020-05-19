@@ -111,7 +111,7 @@ export default {
 </template>
 ```
 
-```js
+```javascript
 // MyAwesomeComponent.spec.js
 
 import SomeChildComponent from '~/some_child_component.vue'

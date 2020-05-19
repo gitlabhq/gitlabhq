@@ -154,6 +154,10 @@ namespace :admin do
     end
   end
 
+  namespace :ci do
+    resource :variables, only: [:show, :update]
+  end
+
   concerns :clusterable
 
   get '/dashboard/stats', to: 'dashboard#stats'

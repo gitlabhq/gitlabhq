@@ -18,7 +18,7 @@ Add the `Ajax` object to the plugins array of a `DropLab.prototype.init` or `Dro
 <ul id="list" data-dropdown><!-- ... --><ul>
 ```
 
-```js
+```javascript
 const droplab = new DropLab();
 
 const trigger = document.getElementById('trigger');

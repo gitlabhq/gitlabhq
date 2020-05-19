@@ -111,26 +111,6 @@ RSpec.describe Release do
     end
   end
 
-  describe '#notify_new_release' do
-    context 'when a release is created' do
-      it 'instantiates NewReleaseWorker to send notifications' do
-        expect(NewReleaseWorker).to receive(:perform_async)
-
-        create(:release)
-      end
-    end
-
-    context 'when a release is updated' do
-      let!(:release) { create(:release) }
-
-      it 'does not send any new notification' do
-        expect(NewReleaseWorker).not_to receive(:perform_async)
-
-        release.update!(description: 'new description')
-      end
-    end
-  end
-
   describe '#name' do
     context 'name is nil' do
       before do

@@ -51,7 +51,7 @@ or `db/post_migrate`, so if there are any migrations you don't want to
 commit to the schema, rename or remove them. If your branch is not
 targetting `master` you can set the `TARGET` environment variable.
 
-```sh
+```shell
 # Regenerate schema against `master`
 scripts/regenerate-schema
 

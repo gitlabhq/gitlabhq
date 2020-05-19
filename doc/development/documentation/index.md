@@ -79,7 +79,7 @@ change prior to merging.
 If you indeed need to change a document's location, do not remove the old
 document, but instead replace all of its content with the following:
 
-```md
+```markdown
 ---
 redirect_to: '../path/to/file/index.md'
 ---
@@ -93,7 +93,7 @@ The `redirect_to` variable supports both full and relative URLs, for example
 `https://docs.gitlab.com/ee/path/to/file.html`, `../path/to/file.html`, `path/to/file.md`.
 It ensures that the redirect will work for <https://docs.gitlab.com> and any `*.md` paths
 will be compiled to `*.html`.
-The new line underneath the frontmatter informs the user that the document
+The new line underneath the front matter informs the user that the document
 changed location and is useful for someone that browses that file from the repository.
 
 For example, if you move `doc/workflow/lfs/index.md` to
@@ -102,7 +102,7 @@ For example, if you move `doc/workflow/lfs/index.md` to
 1. Copy `doc/workflow/lfs/index.md` to `doc/administration/lfs.md`
 1. Replace the contents of `doc/workflow/lfs/index.md` with:
 
-   ```md
+   ```markdown
    ---
    redirect_to: '../../administration/lfs.md'
    ---
@@ -148,12 +148,12 @@ Disqus uses an identifier per page, and for <https://docs.gitlab.com>, the page 
 is configured to be the page URL. Therefore, when we change the document location,
 we need to preserve the old URL as the same Disqus identifier.
 
-To do that, add to the frontmatter the variable `disqus_identifier`,
-using the old URL as value. For example, let's say I moved the document
+To do that, add to the front matter the variable `disqus_identifier`,
+using the old URL as value. For example, let's say we moved the document
 available under `https://docs.gitlab.com/my-old-location/README.html` to a new location,
 `https://docs.gitlab.com/my-new-location/index.html`.
 
-Into the **new document** frontmatter add the following:
+Into the **new document** front matter, we add the following:
 
 ```yaml
 ---
@@ -298,8 +298,8 @@ To preview your changes to documentation locally, follow this
 
 The live preview is currently enabled for the following projects:
 
-- <https://gitlab.com/gitlab-org/gitlab>
-- <https://gitlab.com/gitlab-org/gitlab-runner>
+- [`gitlab`](https://gitlab.com/gitlab-org/gitlab)
+- [`gitlab-runner`](https://gitlab.com/gitlab-org/gitlab-runner)
 
 If your merge request has docs changes, you can use the manual `review-docs-deploy` job
 to deploy the docs review app for your merge request.
@@ -485,14 +485,14 @@ markdownlint can be used [on the command line](https://github.com/igorshubovych/
 either on a single Markdown file or on all Markdown files in a project. For example, to run
 markdownlint on all documentation in the [`gitlab` project](https://gitlab.com/gitlab-org/gitlab),
 run the following commands from within your `gitlab` project root directory, which will
-automatically detect the [`.markdownlint.json`](#markdownlint-configuration) config
+automatically detect the [`.markdownlint.json`](#markdownlint-configuration) configuration
 file in the root of the project, and test all files in `/doc` and its subdirectories:
 
 ```shell
 markdownlint 'doc/**/*.md'
 ```
 
-If you wish to use a different config file, use the `-c` flag:
+If you wish to use a different configuration file, use the `-c` flag:
 
 ```shell
 markdownlint -c <config-file-name> 'doc/**/*.md'
@@ -506,7 +506,7 @@ such as:
 - [Atom](https://atom.io/packages/linter-node-markdownlint)
 
 It is best to use the [same configuration file](#markdownlint-configuration) as what
-is in use in the four repos that are the sources for <https://docs.gitlab.com>. Each
+is in use in the four repositories that are the sources for <https://docs.gitlab.com>. Each
 plugin/extension has different requirements regarding the configuration file, which
 is explained in each editor's docs.
 
@@ -515,12 +515,12 @@ is explained in each editor's docs.
 Each formatting issue that markdownlint checks has an associated
 [rule](https://github.com/DavidAnson/markdownlint/blob/master/doc/Rules.md#rules).
 These rules are configured in the `.markdownlint.json` files located in the root of
-four repos that are the sources for <https://docs.gitlab.com>:
+four repositories that are the sources for <https://docs.gitlab.com>:
 
-- <https://gitlab.com/gitlab-org/gitlab/blob/master/.markdownlint.json>
-- <https://gitlab.com/gitlab-org/gitlab-runner/blob/master/.markdownlint.json>
-- <https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/.markdownlint.json>
-- <https://gitlab.com/charts/gitlab/blob/master/.markdownlint.json>
+- [`gitlab`](https://gitlab.com/gitlab-org/gitlab/blob/master/.markdownlint.json)
+- [`gitlab-runner`](https://gitlab.com/gitlab-org/gitlab-runner/blob/master/.markdownlint.json)
+- [`omnibus-gitlab`](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/.markdownlint.json)
+- [`charts`](https://gitlab.com/charts/gitlab/blob/master/.markdownlint.json)
 
 By default all rules are enabled, so the configuration file is used to disable unwanted
 rules, and also to configure optional parameters for enabled rules as needed. You can
@@ -550,7 +550,7 @@ You can also
 [configure the text editor of your choice](https://errata-ai.github.io/vale/#local-use-by-a-single-writer)
 to display the results.
 
-Vale's test results are not currently displayed in CI, but may be displayed in the future.
+Vale's test results [are displayed](#testing) in CI pipelines.
 
 ##### Disable a Vale test
 
@@ -573,5 +573,5 @@ For more information, see [Vale's documentation](https://errata-ai.gitbook.io/va
 GitLab uses [Danger](https://github.com/danger/danger) for some elements in
 code review. For docs changes in merge requests, whenever a change to files under `/doc`
 is made, Danger Bot leaves a comment with further instructions about the documentation
-process. This is configured in the Dangerfile in the GitLab repo under
+process. This is configured in the `Dangerfile` in the GitLab repository under
 [/danger/documentation/](https://gitlab.com/gitlab-org/gitlab/tree/master/danger/documentation).

@@ -297,7 +297,7 @@ POST /projects/:id/pipeline_schedules/:pipeline_schedule_id/play
 
 Example request:
 
-```sh
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" 'https://gitlab.example.com/api/v4/projects/42/pipeline_schedules/1/play
 ```
 

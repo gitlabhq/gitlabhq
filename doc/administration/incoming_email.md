@@ -226,6 +226,9 @@ incoming_email:
 
 Example configuration for Gmail/G Suite. Assumes mailbox `gitlab-incoming@gmail.com`.
 
+NOTE: **Note:**
+`incoming_email_email` cannot be a Gmail alias account.
+
 Example for Omnibus installs:
 
 ```ruby

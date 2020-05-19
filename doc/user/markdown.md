@@ -228,7 +228,7 @@ To make PlantUML available in GitLab, a GitLab administrator needs to enable it 
 
 > If this is not rendered correctly, [view it in GitLab itself](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md#emoji).
 
-```md
+```markdown
 Sometimes you want to :monkey: around a bit and add some :star2: to your :speech_balloon:. Well we have a gift for you:
 
 :zap: You can use emoji anywhere GFM is supported. :v:
@@ -804,7 +804,7 @@ but_emphasis is_desired _here_
 
 If you wish to emphasize only a part of a word, it can still be done with asterisks:
 
-```md
+```markdown
 perform*complicated*task
 
 do*this*and*do*that*and*another thing
@@ -976,7 +976,7 @@ Do not change to a reference style link.
 Image tags that link to files with a video extension are automatically converted to
 a video player. The valid video extensions are `.mp4`, `.m4v`, `.mov`, `.webm`, and `.ogv`:
 
-```md
+```markdown
 Here's a sample video:
 
 ![Sample Video](img/markdown_video.mp4)
@@ -993,7 +993,7 @@ Here's a sample video:
 Similar to videos, link tags for files with an audio extension are automatically converted to
 an audio player. The valid audio extensions are `.mp3`, `.oga`, `.ogg`, `.spx`, and `.wav`:
 
-```md
+```markdown
 Here's a sample audio clip:
 
 ![Sample Audio](img/markdown_audio.mp3)
@@ -1275,7 +1275,7 @@ number, and count up from there.
 
 Examples:
 
-```md
+```markdown
 1. First ordered list item
 2. Another item
    - Unordered sub-list.
@@ -1302,7 +1302,7 @@ See https://docs.gitlab.com/ee/development/documentation/styleguide.html#lists
 For an unordered list, add a `-`, `*` or `+`, followed by a space, at the start of
 each line for unordered lists, but you should not use a mix of them.
 
-```md
+```markdown
 Unordered lists can:
 
 - use

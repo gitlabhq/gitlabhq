@@ -499,7 +499,7 @@ to start again from scratch, there are a few steps that can help you:
 
 1. Refresh Foreign Data Wrapper tables
 
-   ```sh
+   ```shell
    gitlab-rake geo:db:refresh_foreign_tables
    ```
 
