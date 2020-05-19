@@ -57,12 +57,12 @@
   variables:
     POSTGRES_HOST_AUTH_METHOD: trust
 
-# Pin kaniko to v0.16.0 due to https://github.com/GoogleContainerTools/kaniko/issues/1162
 .use-kaniko:
   image:
-    name: gcr.io/kaniko-project/executor:debug-v0.16.0
+    name: gcr.io/kaniko-project/executor:debug-v0.20.0
     entrypoint: [""]
   before_script:
+    - mkdir -p /kaniko/.docker
     - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
 
 .as-if-foss:
