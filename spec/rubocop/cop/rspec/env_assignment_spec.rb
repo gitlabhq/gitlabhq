@@ -10,8 +10,8 @@ require_relative '../../../../rubocop/cop/rspec/env_assignment'
 describe RuboCop::Cop::RSpec::EnvAssignment do
   include CopHelper
 
-  OFFENSE_CALL_SINGLE_QUOTES_KEY = %(ENV['FOO'] = 'bar').freeze
-  OFFENSE_CALL_DOUBLE_QUOTES_KEY = %(ENV["FOO"] = 'bar').freeze
+  offense_call_single_quotes_key = %(ENV['FOO'] = 'bar').freeze
+  offense_call_double_quotes_key = %(ENV["FOO"] = 'bar').freeze
 
   let(:source_file) { 'spec/foo_spec.rb' }
 
@@ -36,12 +36,12 @@ describe RuboCop::Cop::RSpec::EnvAssignment do
   end
 
   context 'with a key using single quotes' do
-    it_behaves_like 'an offensive ENV#[]= call', OFFENSE_CALL_SINGLE_QUOTES_KEY
-    it_behaves_like 'an autocorrected ENV#[]= call', OFFENSE_CALL_SINGLE_QUOTES_KEY, %(stub_env('FOO', 'bar'))
+    it_behaves_like 'an offensive ENV#[]= call', offense_call_single_quotes_key
+    it_behaves_like 'an autocorrected ENV#[]= call', offense_call_single_quotes_key, %(stub_env('FOO', 'bar'))
   end
 
   context 'with a key using double quotes' do
-    it_behaves_like 'an offensive ENV#[]= call', OFFENSE_CALL_DOUBLE_QUOTES_KEY
-    it_behaves_like 'an autocorrected ENV#[]= call', OFFENSE_CALL_DOUBLE_QUOTES_KEY, %(stub_env("FOO", 'bar'))
+    it_behaves_like 'an offensive ENV#[]= call', offense_call_double_quotes_key
+    it_behaves_like 'an autocorrected ENV#[]= call', offense_call_double_quotes_key, %(stub_env("FOO", 'bar'))
   end
 end

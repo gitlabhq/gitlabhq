@@ -42,7 +42,7 @@ describe ProjectPolicy do
       admin_tag admin_milestone admin_merge_request update_merge_request create_commit_status
       update_commit_status create_build update_build create_pipeline
       update_pipeline create_merge_request_from create_wiki push_code
-      resolve_note create_container_image update_container_image destroy_container_image
+      resolve_note create_container_image update_container_image destroy_container_image daily_statistics
       create_environment update_environment create_deployment update_deployment create_release update_release
       create_metrics_dashboard_annotation delete_metrics_dashboard_annotation update_metrics_dashboard_annotation
     ]
@@ -54,7 +54,7 @@ describe ProjectPolicy do
       admin_snippet admin_project_member admin_note admin_wiki admin_project
       admin_commit_status admin_build admin_container_image
       admin_pipeline admin_environment admin_deployment destroy_release add_cluster
-      daily_statistics read_deploy_token create_deploy_token destroy_deploy_token
+      read_deploy_token create_deploy_token destroy_deploy_token
       admin_terraform_state
     ]
   end

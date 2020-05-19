@@ -47,7 +47,7 @@ describe('Metrics dashboard/variables section component', () => {
 
   it('shows the variables section', () => {
     createShallowWrapper();
-    wrapper.vm.$store.commit(`monitoringDashboard/${types.SET_VARIABLES}`, sampleVariables);
+    store.commit(`monitoringDashboard/${types.SET_VARIABLES}`, sampleVariables);
 
     return wrapper.vm.$nextTick(() => {
       const allInputs = findTextInput().length + findCustomInput().length;

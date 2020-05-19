@@ -11589,6 +11589,9 @@ msgstr ""
 msgid "Improve search with Advanced Global Search and GitLab Enterprise Edition."
 msgstr ""
 
+msgid "In %{time_to_now}"
+msgstr ""
+
 msgid "In order to enable instance-level analytics, please ask an admin to enable %{usage_ping_link_start}usage ping%{usage_ping_link_end}."
 msgstr ""
 
@@ -14519,6 +14522,9 @@ msgstr ""
 msgid "Notes|Collapse replies"
 msgstr ""
 
+msgid "Notes|Private comments are accessible by internal staff only"
+msgstr ""
+
 msgid "Notes|Show all activity"
 msgstr ""
 
@@ -14963,6 +14969,9 @@ msgid "Package type must be Maven"
 msgstr ""
 
 msgid "Package type must be NuGet"
+msgstr ""
+
+msgid "Package type must be PyPi"
 msgstr ""
 
 msgid "Package was removed"
@@ -23773,6 +23782,12 @@ msgid "UserProfile|You haven't created any snippets."
 msgstr ""
 
 msgid "UserProfile|Your projects can be available publicly, internally, or privately, at your choice."
+msgstr ""
+
+msgid "UserProfile|at"
+msgstr ""
+
+msgid "UserProfile|made a private contribution"
 msgstr ""
 
 msgid "Username (optional)"

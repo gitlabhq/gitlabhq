@@ -2,7 +2,7 @@
 type: howto
 ---
 
-# Installing GitLab HA on Amazon Web Services (AWS)
+# Installing GitLab on Amazon Web Services (AWS)
 
 This page offers a walkthrough of a common configuration
 for GitLab on AWS. You should customize it to accommodate your needs.
@@ -16,7 +16,7 @@ GitLab on AWS can leverage many of the services that are already
 configurable. These services offer a great deal of
 flexibility and can be adapted to the needs of most companies.
 
-In this guide, we'll go through a basic HA setup where we'll start by
+In this guide, we'll go through a multi-node setup where we'll start by
 configuring our Virtual Private Cloud and subnets to later integrate
 services such as RDS for our database server and ElastiCache as a Redis
 cluster to finally manage them within an auto scaling group with custom
@@ -306,7 +306,7 @@ Now, it's time to create the database:
 1. Under **Settings**, set a DB instance identifier, a master username, and a master password. We'll use `gitlab-db-ha`, `gitlab`, and a very secure password respectively. Make a note of these as we'll need them later.
 1. For the DB instance size, select **Standard classes** and select an instance size that meets your requirements from the dropdown menu. We'll use a `db.m4.large` instance.
 1. Under **Storage**, configure the following:
-   1. Select **Provisioned IOPS (SSD)** from the storage type dropdown menu. Provisioned IOPS (SSD) storage is best suited for HA (though you can choose General Purpose (SSD) to reduce the costs). Read more about it at [Storage for Amazon RDS](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_Storage.html).
+   1. Select **Provisioned IOPS (SSD)** from the storage type dropdown menu. Provisioned IOPS (SSD) storage is best suited for this use (though you can choose General Purpose (SSD) to reduce the costs). Read more about it at [Storage for Amazon RDS](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_Storage.html).
    1. Allocate storage and set provisioned IOPS. We'll use the minimum values, `100` and `1000`, respectively.
    1. Enable storage autoscaling (optional) and set a maximum storage threshold.
 1. Under **Availability & durability**, select **Create a standby instance** to have a standby RDS instance provisioned in a different [Availability Zone](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html).

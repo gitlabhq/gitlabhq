@@ -2,26 +2,15 @@
 
 module Snippets
   class UpdateService < Snippets::BaseService
-    include SpamCheckMethods
-
     COMMITTABLE_ATTRIBUTES = %w(file_name content).freeze
 
     UpdateError = Class.new(StandardError)
-    CreateRepositoryError = Class.new(StandardError)
 
     def execute(snippet)
-      # check that user is allowed to set specified visibility_level
-      new_visibility = visibility_level
-
-      if new_visibility && new_visibility.to_i != snippet.visibility_level
-        unless Gitlab::VisibilityLevel.allowed_for?(current_user, new_visibility)
-          deny_visibility_level(snippet, new_visibility)
-
-          return snippet_error_response(snippet, 403)
-        end
+      if visibility_changed?(snippet) && !visibility_allowed?(snippet, visibility_level)
+        return error_forbidden_visibility(snippet)
       end
 
-      filter_spam_check_params
       snippet.assign_attributes(params)
       spam_check(snippet, current_user)
 
@@ -35,6 +24,10 @@ module Snippets
     end
 
     private
+
+    def visibility_changed?(snippet)
+      visibility_level && visibility_level.to_i != snippet.visibility_level
+    end
 
     def save_and_commit(snippet)
       return false unless snippet.save

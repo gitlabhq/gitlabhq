@@ -39,7 +39,7 @@ describe('Dashboard', () => {
   const findEnvironmentsDropdown = () => wrapper.find({ ref: 'monitorEnvironmentsDropdown' });
   const findAllEnvironmentsDropdownItems = () => findEnvironmentsDropdown().findAll(GlDropdownItem);
   const setSearchTerm = searchTerm => {
-    wrapper.vm.$store.commit(`monitoringDashboard/${types.SET_ENVIRONMENTS_FILTER}`, searchTerm);
+    store.commit(`monitoringDashboard/${types.SET_ENVIRONMENTS_FILTER}`, searchTerm);
   };
 
   const createShallowWrapper = (props = {}, options = {}) => {
@@ -135,7 +135,7 @@ describe('Dashboard', () => {
     it('hides the group panels when showPanels is false', () => {
       createMountedWrapper({ hasMetrics: true, showPanels: false });
 
-      setupStoreWithData(wrapper.vm.$store);
+      setupStoreWithData(store);
 
       return wrapper.vm.$nextTick().then(() => {
         expect(wrapper.vm.showEmptyState).toEqual(false);
@@ -148,7 +148,7 @@ describe('Dashboard', () => {
 
       createMountedWrapper({ hasMetrics: true });
 
-      wrapper.vm.$store.commit(
+      store.commit(
         `monitoringDashboard/${types.RECEIVE_ENVIRONMENTS_DATA_SUCCESS}`,
         environmentData,
       );
@@ -188,7 +188,7 @@ describe('Dashboard', () => {
       );
 
       createMountedWrapper({ hasMetrics: true });
-      setupStoreWithData(wrapper.vm.$store);
+      setupStoreWithData(store);
 
       return wrapper.vm.$nextTick().then(() => {
         expect(store.dispatch).toHaveBeenCalledWith('monitoringDashboard/setExpandedPanel', {
@@ -205,7 +205,7 @@ describe('Dashboard', () => {
       setSearch('');
 
       createMountedWrapper({ hasMetrics: true });
-      setupStoreWithData(wrapper.vm.$store);
+      setupStoreWithData(store);
 
       return wrapper.vm.$nextTick().then(() => {
         expect(store.dispatch).not.toHaveBeenCalledWith(
@@ -228,7 +228,7 @@ describe('Dashboard', () => {
       );
 
       createMountedWrapper({ hasMetrics: true });
-      setupStoreWithData(wrapper.vm.$store);
+      setupStoreWithData(store);
 
       return wrapper.vm.$nextTick().then(() => {
         expect(createFlash).toHaveBeenCalled();
@@ -328,7 +328,7 @@ describe('Dashboard', () => {
     beforeEach(() => {
       createMountedWrapper({ hasMetrics: true });
 
-      setupStoreWithData(wrapper.vm.$store);
+      setupStoreWithData(store);
 
       return wrapper.vm.$nextTick();
     });
@@ -436,7 +436,7 @@ describe('Dashboard', () => {
   it('hides the environments dropdown list when there is no environments', () => {
     createMountedWrapper({ hasMetrics: true });
 
-    setupStoreWithDashboard(wrapper.vm.$store);
+    setupStoreWithDashboard(store);
 
     return wrapper.vm.$nextTick().then(() => {
       expect(findAllEnvironmentsDropdownItems()).toHaveLength(0);
@@ -446,7 +446,7 @@ describe('Dashboard', () => {
   it('renders the datetimepicker dropdown', () => {
     createMountedWrapper({ hasMetrics: true });
 
-    setupStoreWithData(wrapper.vm.$store);
+    setupStoreWithData(store);
 
     return wrapper.vm.$nextTick().then(() => {
       expect(wrapper.find(DateTimePicker).exists()).toBe(true);
@@ -456,7 +456,7 @@ describe('Dashboard', () => {
   it('renders the refresh dashboard button', () => {
     createMountedWrapper({ hasMetrics: true });
 
-    setupStoreWithData(wrapper.vm.$store);
+    setupStoreWithData(store);
 
     return wrapper.vm.$nextTick().then(() => {
       const refreshBtn = wrapper.findAll({ ref: 'refreshDashboardBtn' });
@@ -469,8 +469,8 @@ describe('Dashboard', () => {
   describe('variables section', () => {
     beforeEach(() => {
       createShallowWrapper({ hasMetrics: true });
-      setupStoreWithData(wrapper.vm.$store);
-      setupStoreWithVariable(wrapper.vm.$store);
+      setupStoreWithData(store);
+      setupStoreWithVariable(store);
 
       return wrapper.vm.$nextTick();
     });
@@ -486,7 +486,7 @@ describe('Dashboard', () => {
     describe('when the panel is not expanded', () => {
       beforeEach(() => {
         createShallowWrapper({ hasMetrics: true });
-        setupStoreWithData(wrapper.vm.$store);
+        setupStoreWithData(store);
         return wrapper.vm.$nextTick();
       });
 
@@ -524,14 +524,14 @@ describe('Dashboard', () => {
 
       beforeEach(() => {
         createShallowWrapper({ hasMetrics: true }, { stubs: { DashboardPanel: MockPanel } });
-        setupStoreWithData(wrapper.vm.$store);
+        setupStoreWithData(store);
 
-        const { panelGroups } = wrapper.vm.$store.state.monitoringDashboard.dashboard;
+        const { panelGroups } = store.state.monitoringDashboard.dashboard;
 
         group = panelGroups[0].group;
         [panel] = panelGroups[0].panels;
 
-        wrapper.vm.$store.commit(`monitoringDashboard/${types.SET_EXPANDED_PANEL}`, {
+        store.commit(`monitoringDashboard/${types.SET_EXPANDED_PANEL}`, {
           group,
           panel,
         });
@@ -593,10 +593,8 @@ describe('Dashboard', () => {
     beforeEach(() => {
       createShallowWrapper({ hasMetrics: true });
 
-      const { $store } = wrapper.vm;
-
-      setupStoreWithDashboard($store);
-      setMetricResult({ $store, result: [], panel: 2 });
+      setupStoreWithDashboard(store);
+      setMetricResult({ store, result: [], panel: 2 });
 
       return wrapper.vm.$nextTick();
     });
@@ -622,7 +620,7 @@ describe('Dashboard', () => {
     beforeEach(() => {
       createMountedWrapper({ hasMetrics: true }, { attachToDocument: true });
 
-      setupStoreWithData(wrapper.vm.$store);
+      setupStoreWithData(store);
 
       return wrapper.vm.$nextTick();
     });
@@ -673,7 +671,7 @@ describe('Dashboard', () => {
     });
 
     it('shows loading element when environments fetch is still loading', () => {
-      wrapper.vm.$store.commit(`monitoringDashboard/${types.REQUEST_ENVIRONMENTS_DATA}`);
+      store.commit(`monitoringDashboard/${types.REQUEST_ENVIRONMENTS_DATA}`);
 
       return wrapper.vm
         .$nextTick()
@@ -681,7 +679,7 @@ describe('Dashboard', () => {
           expect(wrapper.find({ ref: 'monitorEnvironmentsDropdownLoading' }).exists()).toBe(true);
         })
         .then(() => {
-          wrapper.vm.$store.commit(
+          store.commit(
             `monitoringDashboard/${types.RECEIVE_ENVIRONMENTS_DATA_SUCCESS}`,
             environmentData,
           );
@@ -703,7 +701,7 @@ describe('Dashboard', () => {
       store.dispatch.mockRestore();
 
       createShallowWrapper({ hasMetrics: true });
-      setupStoreWithData(wrapper.vm.$store);
+      setupStoreWithData(store);
 
       return wrapper.vm.$nextTick();
     });
@@ -791,7 +789,7 @@ describe('Dashboard', () => {
       createShallowWrapper({ hasMetrics: true, showHeader: false });
 
       // all_dashboards is not defined in health dashboards
-      wrapper.vm.$store.commit(`monitoringDashboard/${types.SET_ALL_DASHBOARDS}`, undefined);
+      store.commit(`monitoringDashboard/${types.SET_ALL_DASHBOARDS}`, undefined);
       return wrapper.vm.$nextTick();
     });
 
@@ -917,7 +915,7 @@ describe('Dashboard', () => {
           customMetricsPath: '/endpoint',
           customMetricsAvailable: true,
         });
-        setupStoreWithData(wrapper.vm.$store);
+        setupStoreWithData(store);
 
         origPage = document.body.dataset.page;
         document.body.dataset.page = 'projects:environments:metrics';

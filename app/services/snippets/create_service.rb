@@ -2,25 +2,11 @@
 
 module Snippets
   class CreateService < Snippets::BaseService
-    include SpamCheckMethods
-
-    CreateRepositoryError = Class.new(StandardError)
-
     def execute
-      filter_spam_check_params
+      @snippet = build_from_params
 
-      @files = Array(params.delete(:files).presence)
-
-      @snippet = if project
-                   project.snippets.build(params)
-                 else
-                   PersonalSnippet.new(params)
-                 end
-
-      unless Gitlab::VisibilityLevel.allowed_for?(current_user, @snippet.visibility_level)
-        deny_visibility_level(@snippet)
-
-        return snippet_error_response(@snippet, 403)
+      unless visibility_allowed?(@snippet, @snippet.visibility_level)
+        return error_forbidden_visibility(@snippet)
       end
 
       @snippet.author = current_user
@@ -40,6 +26,14 @@ module Snippets
     end
 
     private
+
+    def build_from_params
+      if project
+        project.snippets.build(params)
+      else
+        PersonalSnippet.new(params)
+      end
+    end
 
     def save_and_commit
       snippet_saved = @snippet.save
@@ -91,7 +85,7 @@ module Snippets
     def move_temporary_files
       return unless @snippet.is_a?(PersonalSnippet)
 
-      @files.each do |file|
+      uploaded_files.each do |file|
         FileMover.new(file, from_model: current_user, to_model: @snippet).execute
       end
     end

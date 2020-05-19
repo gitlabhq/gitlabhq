@@ -19,14 +19,29 @@ describe('Clusters store actions', () => {
     afterEach(() => mock.restore());
 
     it('should commit SET_CLUSTERS_DATA with received response', done => {
-      mock.onGet().reply(200, apiData);
+      const headers = {
+        'x-total': apiData.clusters.length,
+        'x-per-page': 20,
+        'x-page': 1,
+      };
+
+      const paginationInformation = {
+        nextPage: NaN,
+        page: 1,
+        perPage: 20,
+        previousPage: NaN,
+        total: apiData.clusters.length,
+        totalPages: NaN,
+      };
+
+      mock.onGet().reply(200, apiData, headers);
 
       testAction(
         actions.fetchClusters,
         { endpoint: apiData.endpoint },
         {},
         [
-          { type: types.SET_CLUSTERS_DATA, payload: apiData },
+          { type: types.SET_CLUSTERS_DATA, payload: { data: apiData, paginationInformation } },
           { type: types.SET_LOADING_STATE, payload: false },
         ],
         [],

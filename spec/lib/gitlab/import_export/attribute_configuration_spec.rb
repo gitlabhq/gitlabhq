@@ -43,7 +43,4 @@ describe 'Import/Export attribute configuration' do
       IMPORT_EXPORT_CONFIG: #{Gitlab::ImportExport.config_file}
     MSG
   end
-
-  class Author < User
-  end
 end

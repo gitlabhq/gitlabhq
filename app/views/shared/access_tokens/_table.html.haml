@@ -27,7 +27,7 @@
             %td
               - if token.expires?
                 %span{ class: ('text-warning' if token.expires_soon?) }
-                  In #{distance_of_time_in_words_to_now(token.expires_at)}
+                  = _('In %{time_to_now}') % { time_to_now: distance_of_time_in_words_to_now(token.expires_at) }
               - else
                 %span.token-never-expires-label= _('Never')
             %td= token.scopes.present? ? token.scopes.join(', ') : _('<no scopes selected>')

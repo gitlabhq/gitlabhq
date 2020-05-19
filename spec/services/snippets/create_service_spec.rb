@@ -74,47 +74,6 @@ describe Snippets::CreateService do
       end
     end
 
-    shared_examples 'spam check is performed' do
-      shared_examples 'marked as spam' do
-        it 'marks a snippet as spam' do
-          expect(snippet).to be_spam
-        end
-
-        it 'invalidates the snippet' do
-          expect(snippet).to be_invalid
-        end
-
-        it 'creates a new spam_log' do
-          expect { snippet }
-            .to have_spam_log(title: snippet.title, noteable_type: snippet.class.name)
-        end
-
-        it 'assigns a spam_log to an issue' do
-          expect(snippet.spam_log).to eq(SpamLog.last)
-        end
-      end
-
-      let(:extra_opts) do
-        { visibility_level: Gitlab::VisibilityLevel::PUBLIC, request: double(:request, env: {}) }
-      end
-
-      before do
-        expect_next_instance_of(Spam::AkismetService) do |akismet_service|
-          expect(akismet_service).to receive_messages(spam?: true)
-        end
-      end
-
-      [true, false, nil].each do |allow_possible_spam|
-        context "when recaptcha_disabled flag is #{allow_possible_spam.inspect}" do
-          before do
-            stub_feature_flags(allow_possible_spam: allow_possible_spam) unless allow_possible_spam.nil?
-          end
-
-          it_behaves_like 'marked as spam'
-        end
-      end
-    end
-
     shared_examples 'snippet create data is tracked' do
       let(:counter) { Gitlab::UsageDataCounters::SnippetCounter }
 
@@ -280,7 +239,7 @@ describe Snippets::CreateService do
 
       it_behaves_like 'a service that creates a snippet'
       it_behaves_like 'public visibility level restrictions apply'
-      it_behaves_like 'spam check is performed'
+      it_behaves_like 'snippets spam check is performed'
       it_behaves_like 'snippet create data is tracked'
       it_behaves_like 'an error service response when save fails'
       it_behaves_like 'creates repository and files'
@@ -306,7 +265,7 @@ describe Snippets::CreateService do
 
       it_behaves_like 'a service that creates a snippet'
       it_behaves_like 'public visibility level restrictions apply'
-      it_behaves_like 'spam check is performed'
+      it_behaves_like 'snippets spam check is performed'
       it_behaves_like 'snippet create data is tracked'
       it_behaves_like 'an error service response when save fails'
       it_behaves_like 'creates repository and files'

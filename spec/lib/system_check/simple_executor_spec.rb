@@ -4,99 +4,109 @@ require 'spec_helper'
 require 'rake_helper'
 
 describe SystemCheck::SimpleExecutor do
-  class SimpleCheck < SystemCheck::BaseCheck
-    set_name 'my simple check'
+  before do
+    stub_const('SimpleCheck', Class.new(SystemCheck::BaseCheck))
+    stub_const('OtherCheck', Class.new(SystemCheck::BaseCheck))
+    stub_const('SkipCheck', Class.new(SystemCheck::BaseCheck))
+    stub_const('DynamicSkipCheck', Class.new(SystemCheck::BaseCheck))
+    stub_const('MultiCheck', Class.new(SystemCheck::BaseCheck))
+    stub_const('SkipMultiCheck', Class.new(SystemCheck::BaseCheck))
+    stub_const('RepairCheck', Class.new(SystemCheck::BaseCheck))
+    stub_const('BugousCheck', Class.new(SystemCheck::BaseCheck))
 
-    def check?
-      true
-    end
-  end
+    SimpleCheck.class_eval do
+      set_name 'my simple check'
 
-  class OtherCheck < SystemCheck::BaseCheck
-    set_name 'other check'
-
-    def check?
-      false
-    end
-
-    def show_error
-      $stdout.puts 'this is an error text'
-    end
-  end
-
-  class SkipCheck < SystemCheck::BaseCheck
-    set_name 'skip check'
-    set_skip_reason 'this is a skip reason'
-
-    def skip?
-      true
+      def check?
+        true
+      end
     end
 
-    def check?
-      raise 'should not execute this'
-    end
-  end
+    OtherCheck.class_eval do
+      set_name 'other check'
 
-  class DynamicSkipCheck < SystemCheck::BaseCheck
-    set_name 'dynamic skip check'
-    set_skip_reason 'this is a skip reason'
+      def check?
+        false
+      end
 
-    def skip?
-      self.skip_reason = 'this is a dynamic skip reason'
-      true
+      def show_error
+        $stdout.puts 'this is an error text'
+      end
     end
 
-    def check?
-      raise 'should not execute this'
-    end
-  end
+    SkipCheck.class_eval do
+      set_name 'skip check'
+      set_skip_reason 'this is a skip reason'
 
-  class MultiCheck < SystemCheck::BaseCheck
-    set_name 'multi check'
+      def skip?
+        true
+      end
 
-    def multi_check
-      $stdout.puts 'this is a multi output check'
-    end
-
-    def check?
-      raise 'should not execute this'
-    end
-  end
-
-  class SkipMultiCheck < SystemCheck::BaseCheck
-    set_name 'skip multi check'
-
-    def skip?
-      true
+      def check?
+        raise 'should not execute this'
+      end
     end
 
-    def multi_check
-      raise 'should not execute this'
-    end
-  end
+    DynamicSkipCheck.class_eval do
+      set_name 'dynamic skip check'
+      set_skip_reason 'this is a skip reason'
 
-  class RepairCheck < SystemCheck::BaseCheck
-    set_name 'repair check'
+      def skip?
+        self.skip_reason = 'this is a dynamic skip reason'
+        true
+      end
 
-    def check?
-      false
-    end
-
-    def repair!
-      true
+      def check?
+        raise 'should not execute this'
+      end
     end
 
-    def show_error
-      $stdout.puts 'this is an error message'
+    MultiCheck.class_eval do
+      set_name 'multi check'
+
+      def multi_check
+        $stdout.puts 'this is a multi output check'
+      end
+
+      def check?
+        raise 'should not execute this'
+      end
     end
-  end
 
-  class BugousCheck < SystemCheck::BaseCheck
-    CustomError = Class.new(StandardError)
-    set_name 'my bugous check'
+    SkipMultiCheck.class_eval do
+      set_name 'skip multi check'
 
-    def check?
-      raise CustomError, 'omg'
+      def skip?
+        true
+      end
+
+      def multi_check
+        raise 'should not execute this'
+      end
+    end
+
+    RepairCheck.class_eval do
+      set_name 'repair check'
+
+      def check?
+        false
+      end
+
+      def repair!
+        true
+      end
+
+      def show_error
+        $stdout.puts 'this is an error message'
+      end
+    end
+
+    BugousCheck.class_eval do
+      set_name 'my bugous check'
+
+      def check?
+        raise StandardError, 'omg'
+      end
     end
   end
 

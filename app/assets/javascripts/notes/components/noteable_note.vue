@@ -255,7 +255,13 @@ export default {
     </div>
     <div class="timeline-content">
       <div class="note-header">
-        <note-header v-once :author="author" :created-at="note.created_at" :note-id="note.id">
+        <note-header
+          v-once
+          :author="author"
+          :created-at="note.created_at"
+          :note-id="note.id"
+          :is-confidential="note.confidential"
+        >
           <slot slot="note-header-info" name="note-header-info"></slot>
           <span v-if="commit" v-html="actionText"></span>
           <span v-else-if="note.created_at" class="d-none d-sm-inline">&middot;</span>

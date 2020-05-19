@@ -2,7 +2,31 @@
 
 module Snippets
   class BaseService < ::BaseService
+    include SpamCheckMethods
+
+    CreateRepositoryError = Class.new(StandardError)
+
+    attr_reader :uploaded_files
+
+    def initialize(project, user = nil, params = {})
+      super
+
+      @uploaded_files = Array(@params.delete(:files).presence)
+
+      filter_spam_check_params
+    end
+
     private
+
+    def visibility_allowed?(snippet, visibility_level)
+      Gitlab::VisibilityLevel.allowed_for?(current_user, visibility_level)
+    end
+
+    def error_forbidden_visibility(snippet)
+      deny_visibility_level(snippet)
+
+      snippet_error_response(snippet, 403)
+    end
 
     def snippet_error_response(snippet, http_status)
       ServiceResponse.error(
