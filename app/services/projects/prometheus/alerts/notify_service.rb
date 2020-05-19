@@ -117,8 +117,6 @@ module Projects
         end
 
         def process_prometheus_alerts
-          return unless Feature.enabled?(:alert_management_minimal, project)
-
           alerts.each do |alert|
             AlertManagement::ProcessPrometheusAlertService
               .new(project, nil, alert.to_h)

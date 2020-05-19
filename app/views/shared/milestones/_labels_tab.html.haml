@@ -9,6 +9,6 @@
 
       .float-right.d-none.d-lg-block.d-xl-block
         = link_to milestones_issues_path(options.merge(state: 'opened')), class: 'btn btn-transparent btn-action' do
-          - pluralize milestone_issues_by_label_count(@milestone, label, state: :opened), 'open issue'
+          - pluralize milestone_issues_by_label_count(@milestone, label, state: :opened), _('open issue')
         = link_to milestones_issues_path(options.merge(state: 'closed')), class: 'btn btn-transparent btn-action' do
-          - pluralize milestone_issues_by_label_count(@milestone, label, state: :closed), 'closed issue'
+          - pluralize milestone_issues_by_label_count(@milestone, label, state: :closed), _('closed issue')

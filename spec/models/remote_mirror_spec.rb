@@ -147,13 +147,13 @@ describe RemoteMirror, :mailer do
       git_remote_mirror = stub_const('Gitlab::Git::RemoteMirror', spy)
       mirror = build(:remote_mirror)
 
-      expect(mirror).to receive(:options_for_update).and_return(options: true)
+      expect(mirror).to receive(:options_for_update).and_return(keep_divergent_refs: true)
       mirror.update_repository
 
       expect(git_remote_mirror).to have_received(:new).with(
         mirror.project.repository.raw,
         mirror.remote_name,
-        options: true
+        keep_divergent_refs: true
       )
       expect(git_remote_mirror).to have_received(:update)
     end

@@ -222,20 +222,6 @@ describe 'Projects > Settings > Repository settings' do
       end
     end
 
-    # Removal: https://gitlab.com/gitlab-org/gitlab/-/issues/208828
-    context 'with the `keep_divergent_refs` feature flag disabled' do
-      before do
-        stub_feature_flags(keep_divergent_refs: false)
-      end
-
-      it 'hides the "Keep divergent refs" option' do
-        visit project_settings_repository_path(project)
-
-        expect(page).not_to have_selector('#keep_divergent_refs')
-        expect(page).not_to have_text('Keep divergent refs')
-      end
-    end
-
     context 'repository cleanup settings' do
       let(:object_map_file) { Rails.root.join('spec', 'fixtures', 'bfg_object_map.txt') }
 

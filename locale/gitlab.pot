@@ -3779,6 +3779,12 @@ msgstr ""
 msgid "Change permissions"
 msgstr ""
 
+msgid "Change status"
+msgstr ""
+
+msgid "Change subscription"
+msgstr ""
+
 msgid "Change template"
 msgstr ""
 
@@ -8186,6 +8192,9 @@ msgstr ""
 msgid "Enter merge request URLs"
 msgstr ""
 
+msgid "Enter new %{field_title}"
+msgstr ""
+
 msgid "Enter new AWS Secret Access Key"
 msgstr ""
 
@@ -12266,6 +12275,9 @@ msgstr ""
 msgid "Just me"
 msgstr ""
 
+msgid "Keep divergent refs"
+msgstr ""
+
 msgid "Key"
 msgstr ""
 
@@ -13734,6 +13746,9 @@ msgstr ""
 msgid "Milestones| You’re about to permanently delete the milestone %{milestoneTitle}. This milestone is not currently used in any issues or merge requests."
 msgstr ""
 
+msgid "Milestones|Close Milestone"
+msgstr ""
+
 msgid "Milestones|Completed Issues (closed)"
 msgstr ""
 
@@ -13746,10 +13761,16 @@ msgstr ""
 msgid "Milestones|Failed to delete milestone %{milestoneTitle}"
 msgstr ""
 
+msgid "Milestones|Group Milestone"
+msgstr ""
+
 msgid "Milestones|Milestone %{milestoneTitle} was not found"
 msgstr ""
 
 msgid "Milestones|Ongoing Issues (open and assigned)"
+msgstr ""
+
+msgid "Milestones|Project Milestone"
 msgstr ""
 
 msgid "Milestones|Promote %{milestoneTitle} to group milestone?"
@@ -13758,7 +13779,13 @@ msgstr ""
 msgid "Milestones|Promote Milestone"
 msgstr ""
 
+msgid "Milestones|Promote to Group Milestone"
+msgstr ""
+
 msgid "Milestones|Promoting %{milestoneTitle} will make it available for all projects inside %{groupName}. Existing project milestones with the same title will be merged."
+msgstr ""
+
+msgid "Milestones|Reopen Milestone"
 msgstr ""
 
 msgid "Milestones|This action cannot be reversed."
@@ -17098,9 +17125,6 @@ msgstr ""
 msgid "Promote these project milestones into a group milestone."
 msgstr ""
 
-msgid "Promote to Group Milestone"
-msgstr ""
-
 msgid "Promote to group label"
 msgstr ""
 
@@ -18601,6 +18625,9 @@ msgstr ""
 msgid "Search an environment spec"
 msgstr ""
 
+msgid "Search authors"
+msgstr ""
+
 msgid "Search branches"
 msgstr ""
 
@@ -19098,6 +19125,9 @@ msgstr ""
 msgid "Select an existing Kubernetes cluster or create a new one"
 msgstr ""
 
+msgid "Select assignee"
+msgstr ""
+
 msgid "Select branch"
 msgstr ""
 
@@ -19149,7 +19179,13 @@ msgstr ""
 msgid "Select source branch"
 msgstr ""
 
+msgid "Select status"
+msgstr ""
+
 msgid "Select strategy activation method"
+msgstr ""
+
+msgid "Select subscription"
 msgstr ""
 
 msgid "Select target branch"
@@ -25541,6 +25577,9 @@ msgstr[1] ""
 msgid "ciReport|View full report"
 msgstr ""
 
+msgid "closed issue"
+msgstr ""
+
 msgid "comment"
 msgstr ""
 
@@ -26254,6 +26293,9 @@ msgid "nounSeries|%{item}, and %{lastItem}"
 msgstr ""
 
 msgid "on track"
+msgstr ""
+
+msgid "open issue"
 msgstr ""
 
 msgid "opened %{timeAgoString} by %{user}"

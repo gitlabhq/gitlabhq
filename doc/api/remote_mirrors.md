@@ -33,6 +33,7 @@ Example response:
     "last_update_at": "2020-01-06T17:32:02.823Z",
     "last_update_started_at": "2020-01-06T17:31:55.864Z",
     "only_protected_branches": true,
+    "keep_divergent_refs": true,
     "update_status": "finished",
     "url": "https://*****:*****@gitlab.com/gitlab-org/security/gitlab.git"
   }
@@ -58,6 +59,7 @@ POST /projects/:id/remote_mirrors
 | `url`                     | String  | yes        | The URL of the remote repository to be mirrored.    |
 | `enabled`                 | Boolean | no         | Determines if the mirror is enabled.                |
 | `only_protected_branches` | Boolean | no         | Determines if only protected branches are mirrored. |
+| `keep_divergent_refs`     | Boolean | no         | Determines if divergent refs are skipped.           |
 
 Example request:
 
@@ -76,6 +78,7 @@ Example response:
     "last_update_at": null,
     "last_update_started_at": null,
     "only_protected_branches": false,
+    "keep_divergent_refs": false,
     "update_status": "none",
     "url": "https://*****:*****@example.com/gitlab/example.git"
 }
@@ -97,6 +100,7 @@ PUT /projects/:id/remote_mirrors/:mirror_id
 | `mirror_id`               | Integer | yes        | The remote mirror ID.                               |
 | `enabled`                 | Boolean | no         | Determines if the mirror is enabled.                |
 | `only_protected_branches` | Boolean | no         | Determines if only protected branches are mirrored. |
+| `keep_divergent_refs`     | Boolean | no         | Determines if divergent refs are skipped.           |
 
 Example request:
 
@@ -115,6 +119,7 @@ Example response:
     "last_update_at": "2020-01-06T17:32:02.823Z",
     "last_update_started_at": "2020-01-06T17:31:55.864Z",
     "only_protected_branches": true,
+    "keep_divergent_refs": true,
     "update_status": "finished",
     "url": "https://*****:*****@gitlab.com/gitlab-org/security/gitlab.git"
 }

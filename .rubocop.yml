@@ -402,7 +402,6 @@ RSpec/LeakyConstantDeclaration:
     - 'spec/services/metrics/dashboard/clone_dashboard_service_spec.rb'
     - 'spec/support/shared_contexts/spam_constants.rb'
     - 'spec/support/shared_examples/quick_actions/issuable/issuable_quick_actions_shared_examples.rb'
-    - 'spec/support_specs/helpers/active_record/query_recorder_spec.rb'
     - 'spec/support_specs/matchers/exceed_query_limit_helpers_spec.rb'
     - 'spec/uploaders/records_uploads_spec.rb'
 

@@ -225,37 +225,18 @@ describe Projects::Prometheus::Alerts::NotifyService do
         create(:project_alerting_setting, project: project, token: token)
       end
 
-      context 'when alert_management_minimal feature enabled' do
-        before do
-          stub_feature_flags(alert_management_minimal: true)
+      context 'with multiple firing alerts and resolving alerts' do
+        let(:payload_raw) do
+          payload_for(firing: [alert_firing, alert_firing], resolved: [alert_resolved])
         end
 
-        context 'with multiple firing alerts and resolving alerts' do
-          let(:payload_raw) do
-            payload_for(firing: [alert_firing, alert_firing], resolved: [alert_resolved])
-          end
-
-          it 'processes Prometheus alerts' do
-            expect(AlertManagement::ProcessPrometheusAlertService)
-              .to receive(:new)
-              .with(project, nil, kind_of(Hash))
-              .exactly(3).times
-              .and_return(process_service)
-            expect(process_service).to receive(:execute).exactly(3).times
-
-            subject
-          end
-        end
-      end
-
-      context 'when alert_management_minimal feature disabled' do
-        before do
-          stub_feature_flags(alert_management_minimal: false)
-        end
-
-        it 'does not process Prometheus alerts' do
+        it 'processes Prometheus alerts' do
           expect(AlertManagement::ProcessPrometheusAlertService)
-            .not_to receive(:new)
+            .to receive(:new)
+            .with(project, nil, kind_of(Hash))
+            .exactly(3).times
+            .and_return(process_service)
+          expect(process_service).to receive(:execute).exactly(3).times
 
           subject
         end

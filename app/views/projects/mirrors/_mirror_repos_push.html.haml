@@ -1,15 +1,13 @@
 - protocols = Gitlab::UrlSanitizer::ALLOWED_SCHEMES.join('|')
-- keep_divergent_refs = Feature.enabled?(:keep_divergent_refs, @project)
 
 = f.fields_for :remote_mirrors, @project.remote_mirrors.build do |rm_f|
   = rm_f.hidden_field :enabled, value: '1'
   = rm_f.hidden_field :url, class: 'js-mirror-url-hidden', required: true, pattern: "(#{protocols}):\/\/.+"
   = rm_f.hidden_field :only_protected_branches, class: 'js-mirror-protected-hidden'
-  - if keep_divergent_refs
-    = rm_f.hidden_field :keep_divergent_refs, class: 'js-mirror-keep-divergent-refs-hidden'
+  = rm_f.hidden_field :keep_divergent_refs, class: 'js-mirror-keep-divergent-refs-hidden'
   = render partial: 'projects/mirrors/ssh_host_keys', locals: { f: rm_f }
   = render partial: 'projects/mirrors/authentication_method', locals: { f: rm_f }
-  - if keep_divergent_refs
-    .form-check.append-bottom-10
-      = check_box_tag :keep_divergent_refs, '1', false, class: 'js-mirror-keep-divergent-refs form-check-input'
-      = label_tag :keep_divergent_refs, 'Keep divergent refs', class: 'form-check-label'
+  .form-check.append-bottom-10
+    = check_box_tag :keep_divergent_refs, '1', false, class: 'js-mirror-keep-divergent-refs form-check-input'
+    = label_tag :keep_divergent_refs, _('Keep divergent refs'), class: 'form-check-label'
+    = link_to icon('question-circle'), help_page_path('user/project/repository/repository_mirroring', anchor: 'keep-divergent-refs-core'), target: '_blank'

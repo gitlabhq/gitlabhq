@@ -187,10 +187,11 @@ Complementary reads:
 
 ## Telemetry guides
 
-- [Introduction](../telemetry/index.md)
-- [Snowplow tracking guide](../telemetry/snowplow.md)
+- [Telemetry guide](telemetry/index.md)
+- [Usage Ping guide](telemetry/usage_ping.md)
+- [Snowplow guide](telemetry/snowplow.md)
 
-## Experiment Guide
+## Experiment guide
 
 - [Introduction](experiment_guide/index.md)
 

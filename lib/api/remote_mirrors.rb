@@ -34,7 +34,6 @@ module API
       end
       post ':id/remote_mirrors' do
         create_params = declared_params(include_missing: false)
-        create_params.delete(:keep_divergent_refs) unless ::Feature.enabled?(:keep_divergent_refs, user_project)
 
         new_mirror = user_project.remote_mirrors.create(create_params)
 
@@ -59,7 +58,6 @@ module API
 
         mirror_params = declared_params(include_missing: false)
         mirror_params[:id] = mirror_params.delete(:mirror_id)
-        mirror_params.delete(:keep_divergent_refs) unless ::Feature.enabled?(:keep_divergent_refs, user_project)
 
         update_params = { remote_mirrors_attributes: mirror_params }
 
