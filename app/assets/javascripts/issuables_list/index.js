@@ -27,6 +27,7 @@ function mountIssuableListRootApp() {
         props: {
           canEdit: parseBoolean(el.dataset.canEdit),
           isJiraConfigured: parseBoolean(el.dataset.isJiraConfigured),
+          issuesPath: el.dataset.issuesPath,
           projectPath: el.dataset.projectPath,
         },
       });

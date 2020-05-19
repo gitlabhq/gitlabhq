@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ArtifactsFinder do
+describe Ci::JobArtifactsFinder do
   let(:project) { create(:project) }
 
   describe '#execute' do

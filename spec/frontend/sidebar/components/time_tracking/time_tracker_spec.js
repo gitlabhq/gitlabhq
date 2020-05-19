@@ -1,6 +1,6 @@
 import Vue from 'vue';
 
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import mountComponent from 'helpers/vue_mount_component_helper';
 import TimeTracker from '~/sidebar/components/time_tracking/time_tracker.vue';
 
 describe('Issuable Time Tracker', () => {
@@ -35,7 +35,9 @@ describe('Issuable Time Tracker', () => {
         ...TimeTracker.components,
         transition: {
           // disable animations
-          template: '<div><slot></slot></div>',
+          render(h) {
+            return h('div', this.$slots.default);
+          },
         },
       },
     });
@@ -100,9 +102,9 @@ describe('Issuable Time Tracker', () => {
         it('should show full times when the sidebar is collapsed', done => {
           Vue.nextTick(() => {
             const timeTrackingText = vm.$el.querySelector('.time-tracking-collapsed-summary span')
-              .innerText;
+              .textContent;
 
-            expect(timeTrackingText).toBe('1h 23m / 1d 3h');
+            expect(timeTrackingText.trim()).toBe('1h 23m / 1d 3h');
             done();
           });
         });
@@ -175,10 +177,10 @@ describe('Issuable Time Tracker', () => {
         it('should display the human readable version of time estimated', done => {
           Vue.nextTick(() => {
             const estimateText = vm.$el.querySelector('.time-tracking-estimate-only-pane')
-              .innerText;
-            const correctText = 'Estimated: 2h 46m';
+              .textContent;
+            const correctText = 'Estimated:  2h 46m';
 
-            expect(estimateText).toBe(correctText);
+            expect(estimateText.trim()).toBe(correctText);
             done();
           });
         });
@@ -196,7 +198,7 @@ describe('Issuable Time Tracker', () => {
 
         it('should display the human readable version of time spent', done => {
           Vue.nextTick(() => {
-            const spentText = vm.$el.querySelector('.time-tracking-spend-only-pane').innerText;
+            const spentText = vm.$el.querySelector('.time-tracking-spend-only-pane').textContent;
             const correctText = 'Spent: 1h 23m';
 
             expect(spentText).toBe(correctText);
@@ -218,12 +220,12 @@ describe('Issuable Time Tracker', () => {
         it('should only show the "No time tracking" pane when both timeEstimate and time_spent are falsey', done => {
           Vue.nextTick(() => {
             const $noTrackingPane = vm.$el.querySelector('.time-tracking-no-tracking-pane');
-            const noTrackingText = $noTrackingPane.innerText;
+            const noTrackingText = $noTrackingPane.textContent;
             const correctText = 'No estimate or time spent';
 
             expect(vm.showNoTimeTrackingState).toBe(true);
             expect($noTrackingPane).toBeVisible();
-            expect(noTrackingText).toBe(correctText);
+            expect(noTrackingText.trim()).toBe(correctText);
             done();
           });
         });
@@ -234,12 +236,10 @@ describe('Issuable Time Tracker', () => {
         const closeHelpButton = () => vm.$el.querySelector('.close-help-button');
         const helpPane = () => vm.$el.querySelector('.time-tracking-help-state');
 
-        beforeEach(done => {
+        beforeEach(() => {
           initTimeTrackingComponent({ timeEstimate: 0, timeSpent: 0 });
 
-          Vue.nextTick()
-            .then(done)
-            .catch(done.fail);
+          return vm.$nextTick();
         });
 
         it('should not show the "Help" pane by default', () => {
@@ -247,16 +247,17 @@ describe('Issuable Time Tracker', () => {
           expect(helpPane()).toBeNull();
         });
 
-        it('should show the "Help" pane when help button is clicked', done => {
+        it('should show the "Help" pane when help button is clicked', () => {
           helpButton().click();
 
-          Vue.nextTick()
-            .then(() => {
-              expect(vm.showHelpState).toBe(true);
-              expect(helpPane()).toBeVisible();
-            })
-            .then(done)
-            .catch(done.fail);
+          return vm.$nextTick().then(() => {
+            expect(vm.showHelpState).toBe(true);
+
+            // let animations run
+            jest.advanceTimersByTime(500);
+
+            expect(helpPane()).toBeVisible();
+          });
         });
 
         it('should not show the "Help" pane when help button is clicked and then closed', done => {

@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { mockTracking, triggerEvent } from 'spec/helpers/tracking_helper';
+import { mockTracking, triggerEvent } from 'helpers/tracking_helper';
 import lockIssueSidebar from '~/sidebar/components/lock/lock_issue_sidebar.vue';
 
 describe('LockIssueSidebar', () => {
@@ -61,7 +61,7 @@ describe('LockIssueSidebar', () => {
   });
 
   it('tracks an event when "Edit" is clicked', () => {
-    const spy = mockTracking('_category_', vm1.$el, spyOn);
+    const spy = mockTracking('_category_', vm1.$el, jest.spyOn);
     triggerEvent('.lock-edit');
 
     expect(spy).toHaveBeenCalledWith('_category_', 'click_edit_button', {
@@ -77,7 +77,7 @@ describe('LockIssueSidebar', () => {
 
     expect(vm1.isLockDialogOpen).toBe(true);
 
-    setTimeout(() => {
+    setImmediate(() => {
       expect(vm1.$el.innerHTML.includes('Unlock this issue?')).toBe(true);
 
       done();

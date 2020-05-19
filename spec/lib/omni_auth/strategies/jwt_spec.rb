@@ -35,7 +35,7 @@ describe OmniAuth::Strategies::Jwt do
       end
     end
 
-    ECDSA_NAMED_CURVES = {
+    ecdsa_named_curves = {
       'ES256' => 'prime256v1',
       'ES384' => 'secp384r1',
       'ES512' => 'secp521r1'
@@ -54,7 +54,7 @@ describe OmniAuth::Strategies::Jwt do
               private_key_class.generate(2048)
                 .to_pem
             elsif private_key_class == OpenSSL::PKey::EC
-              private_key_class.new(ECDSA_NAMED_CURVES[algorithm])
+              private_key_class.new(ecdsa_named_curves[algorithm])
                 .tap { |key| key.generate_key! }
                 .to_pem
             else

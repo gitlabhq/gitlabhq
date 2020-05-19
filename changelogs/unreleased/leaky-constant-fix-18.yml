@@ -1,0 +1,5 @@
+---
+title: Fix leaky constant issue in json serialization spec
+merge_request: 32051
+author: Rajendra Kadam
+type: fixed

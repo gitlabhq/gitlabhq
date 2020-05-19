@@ -943,9 +943,9 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
     end
 
     describe '#make_cleanup_errored!' do
-      NON_ERRORED_STATES = Clusters::Cluster.state_machines[:cleanup_status].states.keys - [:cleanup_errored]
+      non_errored_states = Clusters::Cluster.state_machines[:cleanup_status].states.keys - [:cleanup_errored]
 
-      NON_ERRORED_STATES.each do |state|
+      non_errored_states.each do |state|
         it "transitions cleanup_status from #{state} to cleanup_errored" do
           cluster = create(:cluster, state)
 

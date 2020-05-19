@@ -1,0 +1,5 @@
+---
+title: Fix leaky constant issue in statistics api spec
+merge_request: 32042
+author: Rajendra Kadam
+type: fixed

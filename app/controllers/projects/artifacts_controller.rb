@@ -22,7 +22,7 @@ class Projects::ArtifactsController < Projects::ApplicationController
     # issues: https://gitlab.com/gitlab-org/gitlab/issues/32281
     return head :no_content unless Feature.enabled?(:artifacts_management_page, @project)
 
-    finder = ArtifactsFinder.new(@project, artifacts_params)
+    finder = Ci::JobArtifactsFinder.new(@project, artifacts_params)
     all_artifacts = finder.execute
 
     @artifacts = all_artifacts.page(params[:page]).per(MAX_PER_PAGE)

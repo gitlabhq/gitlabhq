@@ -16,18 +16,11 @@
   .md table:not(.code),
   .md,
   .md p,
-  .ide-view,
   .context-header > a,
-  .ide-sidebar-link,
-  .multi-file-tab-close,
-  .ide-tree-header button,
-  .ide-status-bar,
   input,
   textarea,
   .md-area.is-focused,
-  .ide-entry-dropdown-toggle,
   .dropdown-menu li button,
-  .ide-merge-request-project-path,
   .dropdown-menu-selectable li a.is-active,
   .dropdown-menu-inner-title,
   .dropdown-menu-inner-content,
@@ -36,9 +29,7 @@
   .nav-links:not(.quick-links) li:not(.md-header-toolbar) a.active .badge.badge-pill,
   .nav-links:not(.quick-links) li:not(.md-header-toolbar) a:hover .badge.badge-pill,
   .badge.badge-pill,
-  .ide-navigator-button,
   .bs-callout,
-  .ide-navigator-btn,
   .ide-pipeline .top-bar,
   .ide-pipeline .top-bar .controllers .controllers-buttons {
     color: var(--ide-text-color);
@@ -49,29 +40,14 @@
     background-color: var(--ide-dropdown-hover-background);
   }
 
-  .dropdown-menu-toggle svg,
-  .dropdown-menu-toggle svg:hover,
-  .ide-tree-header:not(.ide-pipeline-header) svg,
   .file-row .file-row-icon svg,
   .file-row:hover .file-row-icon svg,
   .controllers-buttons svg {
-    fill: var(--ide-text-color);
-  }
-
-  .ide-pipeline svg {
-    --svg-status-bg: var(--ide-background);
-  }
-
-  .multi-file-tab-close:hover {
-    background-color: var(--ide-input-border);
-  }
-
-  .ide-review-sub-header:hover {
-    color: var(--ide-input-border);
+    color: var(--ide-text-color-secondary);
   }
 
   .text-secondary {
-    color: var(--ide-text-color) !important;
+    color: var(--ide-text-color-secondary) !important;
   }
 
   input[type='search']::placeholder,
@@ -82,23 +58,10 @@
   }
 
   .ide-nav-form .input-icon {
-    fill: var(--ide-input-border);
+    color: var(--ide-input-border);
   }
 
   code,
-  .multi-file-commit-panel,
-  .multi-file-tabs,
-  .multi-file-tabs li,
-  .file-row:hover,
-  .file-row:focus,
-  .multi-file-commit-list-path:hover,
-  .multi-file-commit-list-path:focus,
-  .multi-file-commit-list-path.is-active,
-  .file-row.is-active,
-  .ide-commit-editor-header,
-  .ide-file-templates,
-  .ide-entry-dropdown-toggle,
-  .ide-staged-action-btn,
   .badge.badge-pill,
   .card-header,
   .bs-callout,
@@ -119,80 +82,33 @@
     border-color: var(--ide-dropdown-hover-background);
   }
 
-  .ide-sidebar-link:hover,
-  .multi-file-tabs li {
-    background-color: var(--ide-background-hover);
-  }
-
   .common-note-form .md-area {
     border-color: var(--ide-input-border);
   }
 
   &,
   .md table:not(.code) tr th,
-  .multi-file-commit-panel-inner-content,
-  .multi-file-commit-form,
-  .multi-file-tabs li.active,
-  .ide-sidebar-link.active,
-  .ide-sidebar-link.active::after,
-  .ide-right-sidebar .multi-file-commit-panel-inner,
   .common-note-form .md-area,
-  .ide-commit-message-field,
-  .card,
-  .multi-file-commit-panel-success-message,
-  .ide-preview-header {
+  .card {
     background-color: var(--ide-highlight-background);
   }
 
-  .multi-file-commit-panel {
-    padding-right: 0;
-  }
-
-  .ide-mode-tabs,
-  .multi-file-commit-panel-inner,
-  .multi-file-commit-panel-inner-content,
-  .multi-file-commit-form,
-  .multi-file-edit-pane,
-  .ide-right-sidebar .ide-activity-bar,
-  .ide-sidebar-link.active,
-  .multi-file-tabs li.active,
-  .multi-file-tabs li,
-  .ide-status-bar,
-  .ide-commit-editor-header,
-  .ide-file-templates,
   .card,
   .card-header,
-  .ide-job-item:not(:last-child),
   .ide-terminal .top-bar,
   .ide-pipeline .top-bar {
     border-color: var(--ide-border-color);
   }
 
+  hr,
   .md h1,
   .md h2,
   .md blockquote,
   pre,
   .md table:not(.code) tbody td,
   .md table:not(.code) tr th,
-  .multi-file-commit-form > .commit-form-compact,
-  .ide-tree-header,
-  .multi-file-commit-panel-header,
-  .multi-file-commit-form > form,
-  .multi-file-commit-form hr,
-  .ide-commit-list-container.is-first,
-  .multi-file-commit-form .nav-links:not(.quick-links),
-  .ide-pipeline-list .nav-links:not(.quick-links),
-  .ide-preview-header {
-    border-color: var(--ide-background);
-  }
-
-  .multi-file-tabs li.active {
-    border-bottom-color: var(--ide-highlight-background);
-  }
-
-  .multi-file-tabs,
-  .ide-commit-editor-header {
-    box-shadow: inset 0 -1px var(--ide-border-color);
+  .nav-links:not(.quick-links) {
+    border-color: var(--ide-border-color-alt);
   }
 
   .ide-sidebar-link.active {
@@ -217,10 +133,6 @@
       background-color: var(--ide-highlight-background);
       border-color: var(--ide-highlight-background);
     }
-  }
-
-  .ide-status-bar {
-    background-color: var(--ide-footer-background);
   }
 
   input[type='text'],
@@ -249,10 +161,6 @@
     &:hover {
       background-color: var(--ide-input-border);
     }
-  }
-
-  .ide-entry-dropdown-toggle:hover {
-    background: var(--ide-file-row-btn-hover-background);
   }
 
   @function calc-btn-hover-padding($original-padding, $original-border: 1px) {
@@ -313,10 +221,6 @@
       border-color: var(--ide-highlight-accent);
     }
 
-    .ide-nav-form .nav-links li a:not(.active) {
-      background-color: var(--ide-dropdown-background);
-    }
-
     .nav-links:not(.quick-links) li:not(.md-header-toolbar) a {
       color: var(--ide-text-color);
 
@@ -367,16 +271,9 @@
     color: var(--ide-btn-disabled-color) !important;
   }
 
-  .md-previewer,
   pre code,
-  .md table:not(.code) tbody,
-  .ide-empty-state {
+  .md table:not(.code) tbody {
     background-color: var(--ide-border-color);
-  }
-
-  .ide-tree-header svg:focus,
-  .ide-tree-header svg:hover {
-    color: var(--ide-link-color);
   }
 
   .animation-container {

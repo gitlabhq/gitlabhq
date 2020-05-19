@@ -3,14 +3,17 @@
 require 'spec_helper'
 
 describe Mentionable do
-  class Example
-    include Mentionable
+  before do
+    stub_const('Example', Class.new)
+    Example.class_eval do
+      include Mentionable
 
-    attr_accessor :project, :message
-    attr_mentionable :message
+      attr_accessor :project, :message
+      attr_mentionable :message
 
-    def author
-      nil
+      def author
+        nil
+      end
     end
   end
 
@@ -28,11 +31,11 @@ describe Mentionable do
   end
 
   describe '#any_mentionable_attributes_changed?' do
-    Message = Struct.new(:text)
+    message = Struct.new(:text)
 
     let(:mentionable) { Example.new }
     let(:changes) do
-      msg = Message.new('test')
+      msg = message.new('test')
 
       changes = {}
       changes[msg] = ['', 'some message']

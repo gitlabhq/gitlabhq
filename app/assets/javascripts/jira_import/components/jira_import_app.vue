@@ -1,6 +1,6 @@
 <script>
 import { GlAlert, GlLoadingIcon, GlSprintf } from '@gitlab/ui';
-import last from 'lodash/last';
+import { last } from 'lodash';
 import { __ } from '~/locale';
 import getJiraImportDetailsQuery from '../queries/get_jira_import_details.query.graphql';
 import initiateJiraImportMutation from '../queries/initiate_jira_import.mutation.graphql';

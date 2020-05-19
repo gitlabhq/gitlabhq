@@ -12026,6 +12026,9 @@ msgstr ""
 msgid "Issues referenced by merge requests and commits within the default branch will be closed automatically"
 msgstr ""
 
+msgid "Issues successfully imported with the label"
+msgstr ""
+
 msgid "Issues with comments, merge requests with diffs and comments, labels, milestones, snippets, and other project entities"
 msgstr ""
 
