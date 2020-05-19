@@ -65,9 +65,9 @@ module API
         success Entities::PersonalSnippet
       end
       params do
-        requires :title, type: String, desc: 'The title of a snippet'
+        requires :title, type: String, allow_blank: false, desc: 'The title of a snippet'
         requires :file_name, type: String, desc: 'The name of a snippet file'
-        requires :content, type: String, desc: 'The content of a snippet'
+        requires :content, type: String, allow_blank: false, desc: 'The content of a snippet'
         optional :description, type: String, desc: 'The description of a snippet'
         optional :visibility, type: String,
                               values: Gitlab::VisibilityLevel.string_values,
@@ -96,9 +96,9 @@ module API
       end
       params do
         requires :id, type: Integer, desc: 'The ID of a snippet'
-        optional :title, type: String, desc: 'The title of a snippet'
+        optional :title, type: String, allow_blank: false, desc: 'The title of a snippet'
         optional :file_name, type: String, desc: 'The name of a snippet file'
-        optional :content, type: String, desc: 'The content of a snippet'
+        optional :content, type: String, allow_blank: false, desc: 'The content of a snippet'
         optional :description, type: String, desc: 'The description of a snippet'
         optional :visibility, type: String,
                               values: Gitlab::VisibilityLevel.string_values,

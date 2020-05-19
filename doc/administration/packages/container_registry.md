@@ -526,7 +526,7 @@ on how to achieve that.
 
 NOTE: **Note:**
 In using an external container registry, some features associated with the
-container registry may be unavailable or have [inherant risks](./../../user/packages/container_registry/index.md#use-with-external-container-registries)
+container registry may be unavailable or have [inherent risks](./../../user/packages/container_registry/index.md#use-with-external-container-registries)
 
 **Omnibus GitLab**
 

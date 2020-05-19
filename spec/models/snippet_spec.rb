@@ -734,4 +734,20 @@ describe Snippet do
       it { is_expected.to eq(Gitlab.config.gitlab_shell.ssh_path_prefix + "#{snippet.project.full_path}/snippets/#{snippet.id}.git") }
     end
   end
+
+  describe '.max_file_limit' do
+    subject { described_class.max_file_limit(nil) }
+
+    it "returns #{Snippet::MAX_FILE_COUNT}" do
+      expect(subject).to eq Snippet::MAX_FILE_COUNT
+    end
+
+    context 'when feature flag :snippet_multiple_files is disabled' do
+      it "returns #{described_class::MAX_SINGLE_FILE_COUNT}" do
+        stub_feature_flags(snippet_multiple_files: false)
+
+        expect(subject).to eq described_class::MAX_SINGLE_FILE_COUNT
+      end
+    end
+  end
 end

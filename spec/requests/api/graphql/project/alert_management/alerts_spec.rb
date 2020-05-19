@@ -92,6 +92,15 @@ describe 'getting Alert Management Alerts' do
         it { expect(first_alert['iid']).to eq(resolved_alert.iid.to_s) }
       end
 
+      context 'with statuses given' do
+        let(:params) { 'statuses: [TRIGGERED, ACKNOWLEDGED]' }
+
+        it_behaves_like 'a working graphql query'
+
+        it { expect(alerts.size).to eq(1) }
+        it { expect(first_alert['iid']).to eq(triggered_alert.iid.to_s) }
+      end
+
       context 'sorting data given' do
         let(:params) { 'sort: SEVERITY_DESC' }
         let(:iids) { alerts.map { |a| a['iid'] } }

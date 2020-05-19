@@ -22,9 +22,9 @@ describe Ci::RetryBuildService do
     described_class.new(project, user)
   end
 
-  CLONE_ACCESSORS = described_class::CLONE_ACCESSORS
+  clone_accessors = described_class::CLONE_ACCESSORS
 
-  REJECT_ACCESSORS =
+  reject_accessors =
     %i[id status user token token_encrypted coverage trace runner
        artifacts_expire_at
        created_at updated_at started_at finished_at queued_at erased_by
@@ -40,7 +40,7 @@ describe Ci::RetryBuildService do
        job_artifacts_network_referee job_artifacts_dotenv
        job_artifacts_cobertura needs job_artifacts_accessibility].freeze
 
-  IGNORE_ACCESSORS =
+  ignore_accessors =
     %i[type lock_version target_url base_tags trace_sections
        commit_id deployment erased_by_id project_id
        runner_id tag_taggings taggings tags trigger_request_id
@@ -91,7 +91,7 @@ describe Ci::RetryBuildService do
         end
       end
 
-      CLONE_ACCESSORS.each do |attribute|
+      clone_accessors.each do |attribute|
         it "clones #{attribute} build attribute" do
           expect(attribute).not_to be_in(forbidden_associations), "association #{attribute} must be `belongs_to`"
           expect(build.send(attribute)).not_to be_nil
@@ -121,7 +121,7 @@ describe Ci::RetryBuildService do
     end
 
     describe 'reject accessors' do
-      REJECT_ACCESSORS.each do |attribute|
+      reject_accessors.each do |attribute|
         it "does not clone #{attribute} build attribute" do
           expect(new_build.send(attribute)).not_to eq build.send(attribute)
         end
@@ -129,8 +129,8 @@ describe Ci::RetryBuildService do
     end
 
     it 'has correct number of known attributes' do
-      processed_accessors = CLONE_ACCESSORS + REJECT_ACCESSORS
-      known_accessors = processed_accessors + IGNORE_ACCESSORS
+      processed_accessors = clone_accessors + reject_accessors
+      known_accessors = processed_accessors + ignore_accessors
 
       # :tag_list is a special case, this accessor does not exist
       # in reflected associations, comes from `act_as_taggable` and

@@ -72,8 +72,8 @@ describe API::Pipelines do
         end
 
         context 'when scope is branches or tags' do
-          let!(:pipeline_branch) { create(:ci_pipeline, project: project) }
-          let!(:pipeline_tag) { create(:ci_pipeline, project: project, ref: 'v1.0.0', tag: true) }
+          let_it_be(:pipeline_branch) { create(:ci_pipeline, project: project) }
+          let_it_be(:pipeline_tag) { create(:ci_pipeline, project: project, ref: 'v1.0.0', tag: true) }
 
           context 'when scope is branches' do
             it 'returns matched pipelines' do
@@ -161,7 +161,7 @@ describe API::Pipelines do
         end
 
         context 'when name is specified' do
-          let!(:pipeline) { create(:ci_pipeline, project: project, user: user) }
+          let_it_be(:pipeline) { create(:ci_pipeline, project: project, user: user) }
 
           context 'when name exists' do
             it 'returns matched pipelines' do
@@ -185,7 +185,7 @@ describe API::Pipelines do
         end
 
         context 'when username is specified' do
-          let!(:pipeline) { create(:ci_pipeline, project: project, user: user) }
+          let_it_be(:pipeline) { create(:ci_pipeline, project: project, user: user) }
 
           context 'when username exists' do
             it 'returns matched pipelines' do
@@ -209,8 +209,8 @@ describe API::Pipelines do
         end
 
         context 'when yaml_errors is specified' do
-          let!(:pipeline1) { create(:ci_pipeline, project: project, yaml_errors: 'Syntax error') }
-          let!(:pipeline2) { create(:ci_pipeline, project: project) }
+          let_it_be(:pipeline1) { create(:ci_pipeline, project: project, yaml_errors: 'Syntax error') }
+          let_it_be(:pipeline2) { create(:ci_pipeline, project: project) }
 
           context 'when yaml_errors is true' do
             it 'returns matched pipelines' do
@@ -242,9 +242,9 @@ describe API::Pipelines do
         end
 
         context 'when updated_at filters are specified' do
-          let!(:pipeline1) { create(:ci_pipeline, project: project, updated_at: 2.days.ago) }
-          let!(:pipeline2) { create(:ci_pipeline, project: project, updated_at: 4.days.ago) }
-          let!(:pipeline3) { create(:ci_pipeline, project: project, updated_at: 1.hour.ago) }
+          let_it_be(:pipeline1) { create(:ci_pipeline, project: project, updated_at: 2.days.ago) }
+          let_it_be(:pipeline2) { create(:ci_pipeline, project: project, updated_at: 4.days.ago) }
+          let_it_be(:pipeline3) { create(:ci_pipeline, project: project, updated_at: 1.hour.ago) }
 
           it 'returns pipelines with last update date in specified datetime range' do
             get api("/projects/#{project.id}/pipelines", user), params: { updated_before: 1.day.ago, updated_after: 3.days.ago }
@@ -614,7 +614,7 @@ describe API::Pipelines do
       end
 
       context 'when the pipeline has jobs' do
-        let!(:build) { create(:ci_build, project: project, pipeline: pipeline) }
+        let_it_be(:build) { create(:ci_build, project: project, pipeline: pipeline) }
 
         it 'destroys associated jobs' do
           delete api("/projects/#{project.id}/pipelines/#{pipeline.id}", owner)
@@ -654,12 +654,12 @@ describe API::Pipelines do
 
   describe 'POST /projects/:id/pipelines/:pipeline_id/retry' do
     context 'authorized user' do
-      let!(:pipeline) do
+      let_it_be(:pipeline) do
         create(:ci_pipeline, project: project, sha: project.commit.id,
                              ref: project.default_branch)
       end
 
-      let!(:build) { create(:ci_build, :failed, pipeline: pipeline) }
+      let_it_be(:build) { create(:ci_build, :failed, pipeline: pipeline) }
 
       it 'retries failed builds' do
         expect do
@@ -683,12 +683,12 @@ describe API::Pipelines do
   end
 
   describe 'POST /projects/:id/pipelines/:pipeline_id/cancel' do
-    let!(:pipeline) do
+    let_it_be(:pipeline) do
       create(:ci_empty_pipeline, project: project, sha: project.commit.id,
                                  ref: project.default_branch)
     end
 
-    let!(:build) { create(:ci_build, :running, pipeline: pipeline) }
+    let_it_be(:build) { create(:ci_build, :running, pipeline: pipeline) }
 
     context 'authorized user' do
       it 'retries failed builds', :sidekiq_might_not_need_inline do
@@ -700,7 +700,7 @@ describe API::Pipelines do
     end
 
     context 'user without proper access rights' do
-      let!(:reporter) { create(:user) }
+      let_it_be(:reporter) { create(:user) }
 
       before do
         project.add_reporter(reporter)

@@ -25,7 +25,7 @@ RSpec.describe AlertManagement::CreateAlertIssueService do
     before do
       allow(user).to receive(:can?).and_call_original
       allow(user).to receive(:can?)
-        .with(:update_alert_management_alert, project)
+        .with(:create_issue, project)
         .and_return(can_create)
     end
 
@@ -60,6 +60,11 @@ RSpec.describe AlertManagement::CreateAlertIssueService do
 
       before do
         project.add_developer(user)
+      end
+
+      it 'checks permissions' do
+        execute
+        expect(user).to have_received(:can?).with(:create_issue, project)
       end
 
       context 'when the alert is prometheus alert' do
@@ -132,6 +137,11 @@ RSpec.describe AlertManagement::CreateAlertIssueService do
 
     context 'when a user is not allowed to create an issue' do
       let(:can_create) { false }
+
+      it 'checks permissions' do
+        execute
+        expect(user).to have_received(:can?).with(:create_issue, project)
+      end
 
       it 'responds with error' do
         expect(execute).to be_error

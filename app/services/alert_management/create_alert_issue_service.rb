@@ -30,7 +30,7 @@ module AlertManagement
 
     def allowed?
       Feature.enabled?(:alert_management_create_alert_issue, project) &&
-        user.can?(:update_alert_management_alert, project)
+        user.can?(:create_issue, project)
     end
 
     def create_issue(alert, user, alert_payload)

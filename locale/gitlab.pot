@@ -1748,6 +1748,9 @@ msgstr ""
 msgid "AlertManagement|Alert detail"
 msgstr ""
 
+msgid "AlertManagement|Alert details"
+msgstr ""
+
 msgid "AlertManagement|Alerts"
 msgstr ""
 
@@ -1772,9 +1775,6 @@ msgstr ""
 msgid "AlertManagement|Events"
 msgstr ""
 
-msgid "AlertManagement|Full alert details"
-msgstr ""
-
 msgid "AlertManagement|High"
 msgstr ""
 
@@ -1788,6 +1788,9 @@ msgid "AlertManagement|Medium"
 msgstr ""
 
 msgid "AlertManagement|More information"
+msgstr ""
+
+msgid "AlertManagement|No alert data to display."
 msgstr ""
 
 msgid "AlertManagement|No alerts available to display. If you think you're seeing this message in error, refresh the page."

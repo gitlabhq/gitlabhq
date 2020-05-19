@@ -59,7 +59,7 @@ module TestEnv
     'merge-commit-analyze-side-branch'   => '8a99451',
     'merge-commit-analyze-after'         => '646ece5',
     'snippet/single-file'                => '43e4080aaa14fc7d4b77ee1f5c9d067d5a7df10e',
-    'snippet/multiple-files'             => 'b80faa8c5b2b62f6489a0d84755580e927e1189b',
+    'snippet/multiple-files'             => '40232f7eb98b3f221886432def6e8bab2432add9',
     'snippet/rename-and-edit-file'       => '220a1e4b4dff37feea0625a7947a4c60fbe78365',
     'snippet/edit-file'                  => 'c2f074f4f26929c92795a75775af79a6ed6d8430',
     'snippet/no-files'                   => '671aaa842a4875e5f30082d1ab6feda345fdb94d',

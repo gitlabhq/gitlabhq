@@ -9,6 +9,7 @@ describe Gitlab::SidekiqMiddleware do
 
     TestWorker.class_eval do
       include Sidekiq::Worker
+      include ApplicationWorker
 
       def perform(_arg)
         Gitlab::SafeRequestStore['gitaly_call_actual'] = 1
@@ -55,6 +56,7 @@ describe Gitlab::SidekiqMiddleware do
        Gitlab::SidekiqMiddleware::ArgumentsLogger,
        Gitlab::SidekiqMiddleware::MemoryKiller,
        Gitlab::SidekiqMiddleware::RequestStoreMiddleware,
+       Gitlab::SidekiqMiddleware::ExtraDoneLogMetadata,
        Gitlab::SidekiqMiddleware::WorkerContext::Server,
        Gitlab::SidekiqMiddleware::AdminMode::Server,
        Gitlab::SidekiqMiddleware::DuplicateJobs::Server

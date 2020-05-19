@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe API::Snippets do
-  let!(:user) { create(:user) }
+  let_it_be(:user) { create(:user) }
 
   describe 'GET /snippets/' do
     it 'returns snippets available' do
@@ -195,7 +195,7 @@ describe API::Snippets do
   end
 
   describe 'POST /snippets/' do
-    let(:params) do
+    let(:base_params) do
       {
         title: 'Test Title',
         file_name: 'test.rb',
@@ -204,11 +204,13 @@ describe API::Snippets do
         visibility: 'public'
       }
     end
+    let(:params) { base_params.merge(extra_params) }
+    let(:extra_params) { {} }
+
+    subject { post api("/snippets/", user), params: params }
 
     shared_examples 'snippet creation' do
       let(:snippet) { Snippet.find(json_response["id"]) }
-
-      subject { post api("/snippets/", user), params: params }
 
       it 'creates a new snippet' do
         expect do
@@ -253,7 +255,7 @@ describe API::Snippets do
       let(:user) { create(:user, :external) }
 
       it 'does not create a new snippet' do
-        post api("/snippets/", user), params: params
+        subject
 
         expect(response).to have_gitlab_http_status(:forbidden)
       end
@@ -262,17 +264,27 @@ describe API::Snippets do
     it 'returns 400 for missing parameters' do
       params.delete(:title)
 
-      post api("/snippets/", user), params: params
+      subject
 
       expect(response).to have_gitlab_http_status(:bad_request)
     end
 
-    it 'returns 400 for validation errors' do
-      params[:title] = ''
+    it 'returns 400 if content is blank' do
+      params[:content] = ''
 
-      post api("/snippets/", user), params: params
+      subject
 
       expect(response).to have_gitlab_http_status(:bad_request)
+      expect(json_response['error']).to eq 'content is empty'
+    end
+
+    it 'returns 400 if title is blank' do
+      params[:title] = ''
+
+      subject
+
+      expect(response).to have_gitlab_http_status(:bad_request)
+      expect(json_response['error']).to eq 'title is empty'
     end
 
     context 'when save fails because the repository could not be created' do
@@ -283,17 +295,13 @@ describe API::Snippets do
       end
 
       it 'returns 400' do
-        post api("/snippets/", user), params: params
+        subject
 
         expect(response).to have_gitlab_http_status(:bad_request)
       end
     end
 
     context 'when the snippet is spam' do
-      def create_snippet(snippet_params = {})
-        post api('/snippets', user), params: params.merge(snippet_params)
-      end
-
       before do
         allow_next_instance_of(Spam::AkismetService) do |instance|
           allow(instance).to receive(:spam?).and_return(true)
@@ -301,23 +309,25 @@ describe API::Snippets do
       end
 
       context 'when the snippet is private' do
+        let(:extra_params) { { visibility: 'private' } }
+
         it 'creates the snippet' do
-          expect { create_snippet(visibility: 'private') }
-            .to change { Snippet.count }.by(1)
+          expect { subject }.to change { Snippet.count }.by(1)
         end
       end
 
       context 'when the snippet is public' do
+        let(:extra_params) { { visibility: 'public' } }
+
         it 'rejects the shippet' do
-          expect { create_snippet(visibility: 'public') }
-            .not_to change { Snippet.count }
+          expect { subject }.not_to change { Snippet.count }
 
           expect(response).to have_gitlab_http_status(:bad_request)
           expect(json_response['message']).to eq({ "error" => "Spam detected" })
         end
 
         it 'creates a spam log' do
-          expect { create_snippet(visibility: 'public') }
+          expect { subject }
             .to log_spam(title: 'Test Title', user_id: user.id, noteable_type: 'PersonalSnippet')
         end
       end
@@ -325,8 +335,9 @@ describe API::Snippets do
   end
 
   describe 'PUT /snippets/:id' do
+    let_it_be(:other_user) { create(:user) }
+
     let(:visibility_level) { Snippet::PUBLIC }
-    let(:other_user) { create(:user) }
     let(:snippet) do
       create(:personal_snippet, :repository, author: user, visibility_level: visibility_level)
     end
@@ -378,10 +389,18 @@ describe API::Snippets do
       expect(response).to have_gitlab_http_status(:bad_request)
     end
 
-    it 'returns 400 for validation errors' do
+    it 'returns 400 if content is blank' do
+      update_snippet(params: { content: '' })
+
+      expect(response).to have_gitlab_http_status(:bad_request)
+      expect(json_response['error']).to eq 'content is empty'
+    end
+
+    it 'returns 400 if title is blank' do
       update_snippet(params: { title: '' })
 
       expect(response).to have_gitlab_http_status(:bad_request)
+      expect(json_response['error']).to eq 'title is empty'
     end
 
     it_behaves_like 'update with repository actions' do

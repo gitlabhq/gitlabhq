@@ -199,6 +199,10 @@ RSpec.configure do |config|
     stub_feature_flags(vue_issuable_sidebar: false)
     stub_feature_flags(vue_issuable_epic_sidebar: false)
 
+    allow(Feature).to receive(:enabled?)
+      .with(/\Apromo_\w+\z/, default_enabled: false)
+      .and_return(false)
+
     # Stub these calls due to being expensive operations
     # It can be reenabled for specific tests via:
     #

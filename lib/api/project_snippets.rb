@@ -55,9 +55,9 @@ module API
         success Entities::ProjectSnippet
       end
       params do
-        requires :title, type: String, desc: 'The title of the snippet'
+        requires :title, type: String, allow_blank: false, desc: 'The title of the snippet'
         requires :file_name, type: String, desc: 'The file name of the snippet'
-        optional :content, type: String, allow_blank: false, desc: 'The content of the snippet'
+        requires :content, type: String, allow_blank: false, desc: 'The content of the snippet'
         optional :description, type: String, desc: 'The description of a snippet'
         requires :visibility, type: String,
                               values: Gitlab::VisibilityLevel.string_values,
@@ -84,7 +84,7 @@ module API
       end
       params do
         requires :snippet_id, type: Integer, desc: 'The ID of a project snippet'
-        optional :title, type: String, desc: 'The title of the snippet'
+        optional :title, type: String, allow_blank: false, desc: 'The title of the snippet'
         optional :file_name, type: String, desc: 'The file name of the snippet'
         optional :content, type: String, allow_blank: false, desc: 'The content of the snippet'
         optional :description, type: String, desc: 'The description of a snippet'

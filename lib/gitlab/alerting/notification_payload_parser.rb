@@ -5,8 +5,8 @@ module Gitlab
     class NotificationPayloadParser
       BadPayloadError = Class.new(StandardError)
 
-      DEFAULT_TITLE = 'New: Incident'.freeze
-      DEFAULT_SEVERITY = 'critical'.freeze
+      DEFAULT_TITLE = 'New: Incident'
+      DEFAULT_SEVERITY = 'critical'
 
       def initialize(payload)
         @payload = payload.to_h.with_indifferent_access

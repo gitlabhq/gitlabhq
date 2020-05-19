@@ -1,5 +1,5 @@
 import { mount, shallowMount } from '@vue/test-utils';
-import { GlAlert, GlLoadingIcon, GlDropdownItem } from '@gitlab/ui';
+import { GlAlert, GlLoadingIcon, GlDropdownItem, GlTable } from '@gitlab/ui';
 import AlertDetails from '~/alert_management/components/alert_details.vue';
 import updateAlertStatus from '~/alert_management/graphql/mutations/update_alert_status.graphql';
 import createFlash from '~/flash';
@@ -13,6 +13,7 @@ describe('AlertDetails', () => {
   let wrapper;
   const newIssuePath = 'root/alerts/-/issues/new';
   const findStatusDropdownItem = () => wrapper.find(GlDropdownItem);
+  const findDetailsTable = () => wrapper.find(GlTable);
 
   function mountComponent({
     data,
@@ -133,9 +134,12 @@ describe('AlertDetails', () => {
     });
 
     describe('View full alert details', () => {
-      it('should display a unstyled list of alert details', () => {
+      beforeEach(() => {
+        mountComponent({ data: { alert: mockAlert } });
+      });
+      it('should display a table of raw alert details data', () => {
         wrapper.find('[data-testid="fullDetailsTab"]').trigger('click');
-        expect(wrapper.find('.list-unstyled').exists()).toBe(true);
+        expect(findDetailsTable().exists()).toBe(true);
       });
     });
 

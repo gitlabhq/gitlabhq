@@ -10,6 +10,7 @@ import {
   GlTabs,
   GlTab,
   GlButton,
+  GlTable,
 } from '@gitlab/ui';
 import createFlash from '~/flash';
 import { s__ } from '~/locale';
@@ -30,7 +31,7 @@ export default {
     errorMsg: s__(
       'AlertManagement|There was an error displaying the alert. Please refresh the page to try again.',
     ),
-    fullAlertDetailsTitle: s__('AlertManagement|Full alert details'),
+    fullAlertDetailsTitle: s__('AlertManagement|Alert details'),
     overviewTitle: s__('AlertManagement|Overview'),
     reportedAt: s__('AlertManagement|Reported %{when}'),
     reportedAtWithTool: s__('AlertManagement|Reported %{when} by %{tool}'),
@@ -46,6 +47,7 @@ export default {
     GlTab,
     GlTabs,
     GlButton,
+    GlTable,
     TimeAgoTooltip,
   },
   mixins: [glFeatureFlagsMixin()],
@@ -149,18 +151,16 @@ export default {
             <strong>{{ $options.severityLabels[alert.severity] }}</strong>
           </div>
           <span class="mx-2">&bull;</span>
-          <span>
-            <gl-sprintf :message="reportedAtMessage">
-              <template #when>
-                <time-ago-tooltip :time="alert.createdAt" />
-              </template>
-              <template #tool>{{ alert.monitoringTool }}</template>
-            </gl-sprintf>
-          </span>
+          <gl-sprintf :message="reportedAtMessage">
+            <template #when>
+              <time-ago-tooltip :time="alert.createdAt" class="gl-ml-3" />
+            </template>
+            <template #tool>{{ alert.monitoringTool }}</template>
+          </gl-sprintf>
         </div>
         <gl-button
           v-if="glFeatures.createIssueFromAlertEnabled"
-          class="gl-mt-3 mt-sm-0 align-self-center align-self-sm-baseline"
+          class="gl-mt-3 mt-sm-0 align-self-center align-self-sm-baseline alert-details-create-issue-button"
           data-testid="createIssueBtn"
           :href="newIssuePath"
           category="primary"
@@ -215,13 +215,20 @@ export default {
           </ul>
         </gl-tab>
         <gl-tab data-testid="fullDetailsTab" :title="$options.i18n.fullAlertDetailsTitle">
-          <ul class="list-unstyled">
-            <li v-for="(value, key) in alert" v-if="key !== '__typename'" :key="key">
-              <p class="py-1 my-1 gl-font-base">
-                <strong>{{ key }}: </strong> {{ value }}
-              </p>
-            </li>
-          </ul>
+          <gl-table
+            class="alert-management-details-table"
+            :items="[{ key: 'Value', ...alert }]"
+            :show-empty="true"
+            :busy="loading"
+            stacked
+          >
+            <template #empty>
+              {{ s__('AlertManagement|No alert data to display.') }}
+            </template>
+            <template #table-busy>
+              <gl-loading-icon size="lg" color="dark" class="mt-3" />
+            </template>
+          </gl-table>
         </gl-tab>
       </gl-tabs>
     </div>

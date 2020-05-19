@@ -795,8 +795,8 @@ describe API::MergeRequests do
   end
 
   describe "GET /groups/:id/merge_requests" do
-    let!(:group) { create(:group, :public) }
-    let!(:project) { create(:project, :public, :repository, creator: user, namespace: group, only_allow_merge_if_pipeline_succeeds: false) }
+    let_it_be(:group) { create(:group, :public) }
+    let_it_be(:project) { create(:project, :public, :repository, creator: user, namespace: group, only_allow_merge_if_pipeline_succeeds: false) }
     let(:endpoint_path) { "/groups/#{group.id}/merge_requests" }
 
     before do
@@ -806,9 +806,9 @@ describe API::MergeRequests do
     it_behaves_like 'merge requests list'
 
     context 'when have subgroups' do
-      let!(:group) { create(:group, :public) }
-      let!(:subgroup) { create(:group, parent: group) }
-      let!(:project) { create(:project, :public, :repository, creator: user, namespace: subgroup, only_allow_merge_if_pipeline_succeeds: false) }
+      let_it_be(:group) { create(:group, :public) }
+      let_it_be(:subgroup) { create(:group, parent: group) }
+      let_it_be(:project) { create(:project, :public, :repository, creator: user, namespace: subgroup, only_allow_merge_if_pipeline_succeeds: false) }
 
       it_behaves_like 'merge requests list'
     end
@@ -1554,7 +1554,7 @@ describe API::MergeRequests do
     end
 
     context 'forked projects', :sidekiq_might_not_need_inline do
-      let!(:user2) { create(:user) }
+      let_it_be(:user2) { create(:user) }
       let(:project) { create(:project, :public, :repository) }
       let!(:forked_project) { fork_project(project, user2, repository: true) }
       let!(:unrelated_project) { create(:project, namespace: create(:user).namespace, creator_id: user2.id) }

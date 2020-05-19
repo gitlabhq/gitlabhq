@@ -30,6 +30,12 @@ module Gitlab
         output_payload.merge!(job.slice(*::Gitlab::InstrumentationHelper::KEYS))
       end
 
+      def add_logging_extras!(job, output_payload)
+        output_payload.merge!(
+          job.select { |key, _| key.to_s.start_with?("#{ApplicationWorker::LOGGING_EXTRA_KEY}.") }
+        )
+      end
+
       def log_job_start(payload)
         payload['message'] = "#{base_message(payload)}: start"
         payload['job_status'] = 'start'
@@ -43,6 +49,7 @@ module Gitlab
       def log_job_done(job, started_time, payload, job_exception = nil)
         payload = payload.dup
         add_instrumentation_keys!(job, payload)
+        add_logging_extras!(job, payload)
 
         elapsed_time = elapsed(started_time)
         add_time_keys!(elapsed_time, payload)

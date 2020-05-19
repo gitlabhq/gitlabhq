@@ -35,3 +35,7 @@ the instance license.
 ```ruby
 License.feature_available?(:feature_symbol)
 ```
+
+## Enabling promo features on GitLab.com
+
+A paid feature can be made available to everyone on GitLab.com by enabling the feature flag `"promo_#{feature}"`.

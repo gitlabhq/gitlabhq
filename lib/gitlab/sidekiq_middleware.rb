@@ -14,6 +14,7 @@ module Gitlab
         chain.add ::Gitlab::SidekiqMiddleware::ArgumentsLogger if arguments_logger
         chain.add ::Gitlab::SidekiqMiddleware::MemoryKiller if memory_killer
         chain.add ::Gitlab::SidekiqMiddleware::RequestStoreMiddleware
+        chain.add ::Gitlab::SidekiqMiddleware::ExtraDoneLogMetadata
         chain.add ::Gitlab::SidekiqMiddleware::BatchLoader
         chain.add ::Labkit::Middleware::Sidekiq::Server
         chain.add ::Gitlab::SidekiqMiddleware::InstrumentationLogger

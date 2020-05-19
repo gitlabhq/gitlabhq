@@ -42,7 +42,7 @@ export default {
 
 <template>
   <ide-tree-list viewer-type="editor">
-    <template slot="header">
+    <template #header>
       {{ __('Edit') }}
       <div class="ide-tree-actions ml-auto d-flex">
         <new-entry-button

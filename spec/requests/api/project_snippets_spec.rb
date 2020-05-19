@@ -216,12 +216,22 @@ describe API::ProjectSnippets do
       expect(response).to have_gitlab_http_status(:bad_request)
     end
 
-    it 'returns 400 for empty content field' do
+    it 'returns 400 if content is blank' do
       params[:content] = ''
 
       post api("/projects/#{project.id}/snippets/", admin), params: params
 
       expect(response).to have_gitlab_http_status(:bad_request)
+      expect(json_response['error']).to eq 'content is empty'
+    end
+
+    it 'returns 400 if title is blank' do
+      params[:title] = ''
+
+      post api("/projects/#{project.id}/snippets/", admin), params: params
+
+      expect(response).to have_gitlab_http_status(:bad_request)
+      expect(json_response['error']).to eq 'title is empty'
     end
 
     context 'when save fails because the repository could not be created' do
@@ -323,10 +333,17 @@ describe API::ProjectSnippets do
       expect(response).to have_gitlab_http_status(:bad_request)
     end
 
-    it 'returns 400 for empty content field' do
+    it 'returns 400 if content is blank' do
       update_snippet(params: { content: '' })
 
       expect(response).to have_gitlab_http_status(:bad_request)
+    end
+
+    it 'returns 400 if title is blank' do
+      update_snippet(params: { title: '' })
+
+      expect(response).to have_gitlab_http_status(:bad_request)
+      expect(json_response['error']).to eq 'title is empty'
     end
 
     it_behaves_like 'update with repository actions' do
