@@ -349,6 +349,41 @@ enum AlertManagementAlertSort {
 }
 
 """
+Represents total number of alerts for the represented categories
+"""
+type AlertManagementAlertStatusCountsType {
+  """
+  Number of alerts with status ACKNOWLEDGED for the project
+  """
+  acknowledged: Int
+
+  """
+  Total number of alerts for the project
+  """
+  all: Int
+
+  """
+  Number of alerts with status IGNORED for the project
+  """
+  ignored: Int
+
+  """
+  Number of alerts with status TRIGGERED or ACKNOWLEDGED for the project
+  """
+  open: Int
+
+  """
+  Number of alerts with status RESOLVED for the project
+  """
+  resolved: Int
+
+  """
+  Number of alerts with status TRIGGERED for the project
+  """
+  triggered: Int
+}
+
+"""
 Alert severity values
 """
 enum AlertManagementSeverity {
@@ -7383,6 +7418,11 @@ type Project {
     """
     statuses: [AlertManagementStatus!]
   ): AlertManagementAlert
+
+  """
+  Counts of alerts by status for the project
+  """
+  alertManagementAlertStatusCounts: AlertManagementAlertStatusCountsType
 
   """
   Alert Management alerts of the project

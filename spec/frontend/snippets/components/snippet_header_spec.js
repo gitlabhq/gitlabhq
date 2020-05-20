@@ -198,7 +198,7 @@ describe('Snippet header component', () => {
           },
         }).then(() => {
           expect(wrapper.vm.closeDeleteModal).toHaveBeenCalled();
-          expect(window.location.pathname).toBe(fullPath);
+          expect(window.location.pathname).toBe(`${fullPath}/snippets`);
         });
       });
     });

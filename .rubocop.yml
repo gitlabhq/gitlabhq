@@ -367,7 +367,6 @@ RSpec/LeakyConstantDeclaration:
     - 'spec/lib/gitlab/quick_actions/dsl_spec.rb'
     - 'spec/lib/gitlab/sidekiq_middleware/client_metrics_spec.rb'
     - 'spec/lib/gitlab/sidekiq_middleware/server_metrics_spec.rb'
-    - 'spec/lib/gitlab/view/presenter/factory_spec.rb'
     - 'spec/lib/marginalia_spec.rb'
     - 'spec/mailers/notify_spec.rb'
     - 'spec/migrations/20191125114345_add_admin_mode_protected_path_spec.rb'

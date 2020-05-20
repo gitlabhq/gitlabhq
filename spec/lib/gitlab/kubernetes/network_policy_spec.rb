@@ -212,7 +212,7 @@ spec:
           {
             metadata: { name: name, namespace: namespace },
             spec: { podSelector: pod_selector, policyTypes: %w(Ingress Egress), ingress: ingress, egress: egress }
-          }
+          }.deep_stringify_keys
         )
       }
     end

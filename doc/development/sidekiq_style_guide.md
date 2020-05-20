@@ -150,6 +150,24 @@ execute.
 More [deduplication strategies have been suggested](https://gitlab.com/gitlab-com/gl-infra/scalability/issues/195). If you are implementing a worker that
 could benefit from a different strategy, please comment in the issue.
 
+If the automatic deduplication were to cause issues in certain
+queues. This can be temporarily disabled by enabling a feature flag
+named `disable_<queue name>_deduplication`. For example to disable
+deduplication for the `AuthorizedProjectsWorker`, we would enable the
+feature flag `disable_authorized_projects_deduplication`.
+
+From chatops:
+
+```shell
+/chatops run feature set disable_authorized_projects_deduplication true
+```
+
+From the rails console:
+
+```ruby
+Feature.enable!(:disable_authorized_projects_deduplication)
+```
+
 ## Job urgency
 
 Jobs can have an `urgency` attribute set, which can be `:high`,

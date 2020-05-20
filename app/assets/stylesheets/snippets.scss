@@ -40,10 +40,9 @@
     margin: 0;
     padding: 0;
     table-layout: fixed;
+    overflow-x: auto;
 
     .blob-content {
-      overflow-x: auto;
-
       pre {
         height: 100%;
         padding: 10px;
@@ -61,6 +60,7 @@
         font-family: $monospace-font;
         font-size: $code-font-size;
         line-height: $code-line-height;
+        display: inline-block;
       }
     }
 
@@ -73,7 +73,7 @@
         font-family: $monospace-font;
         display: block;
         font-size: $code-font-size;
-        min-height: $code-line-height;
+        line-height: $code-line-height;
         white-space: nowrap;
         color: $black-transparent;
         min-width: 30px;

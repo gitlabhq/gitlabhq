@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import mountComponent from 'helpers/vue_mount_component_helper';
 import promoteLabelModal from '~/pages/projects/labels/components/promote_label_modal.vue';
 import eventHub from '~/pages/projects/labels/event_hub';
 import axios from '~/lib/utils/axios_utils';
@@ -43,7 +43,7 @@ describe('Promote label modal', () => {
       vm = mountComponent(Component, {
         ...labelMockData,
       });
-      spyOn(eventHub, '$emit');
+      jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
     });
 
     afterEach(() => {
@@ -52,7 +52,7 @@ describe('Promote label modal', () => {
 
     it('redirects when a label is promoted', done => {
       const responseURL = `${gl.TEST_HOST}/dummy/endpoint`;
-      spyOn(axios, 'post').and.callFake(url => {
+      jest.spyOn(axios, 'post').mockImplementation(url => {
         expect(url).toBe(labelMockData.url);
         expect(eventHub.$emit).toHaveBeenCalledWith(
           'promoteLabelModal.requestStarted',
@@ -79,7 +79,7 @@ describe('Promote label modal', () => {
     it('displays an error if promoting a label failed', done => {
       const dummyError = new Error('promoting label failed');
       dummyError.response = { status: 500 };
-      spyOn(axios, 'post').and.callFake(url => {
+      jest.spyOn(axios, 'post').mockImplementation(url => {
         expect(url).toBe(labelMockData.url);
         expect(eventHub.$emit).toHaveBeenCalledWith(
           'promoteLabelModal.requestStarted',

@@ -1,0 +1,5 @@
+---
+title: Add alert counts by status to GraphQL API
+merge_request: 31818
+author:
+type: changed

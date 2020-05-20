@@ -218,6 +218,12 @@ module Types
           description: 'A single Alert Management alert of the project',
           resolver: Resolvers::AlertManagementAlertResolver.single
 
+    field :alert_management_alert_status_counts,
+          Types::AlertManagement::AlertStatusCountsType,
+          null: true,
+          description: 'Counts of alerts by status for the project',
+          resolver: Resolvers::AlertManagement::AlertStatusCountsResolver
+
     field :releases,
           Types::ReleaseType.connection_type,
           null: true,

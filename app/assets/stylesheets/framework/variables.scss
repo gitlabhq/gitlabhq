@@ -163,7 +163,8 @@ $red-800: #8b2615;
 $red-900: #711e11;
 $red-950: #4b140b;
 
-$gray-50: #fafafa;
+$gray-10: #fafafa;
+$gray-50: #f0f0f0;
 $gray-100: #f2f2f2;
 $gray-200: #dfdfdf;
 $gray-300: #ccc;
@@ -232,6 +233,7 @@ $reds: (
 );
 
 $grays: (
+  '10': $gray-10,
   '50': $gray-50,
   '100': $gray-100,
   '200': $gray-200,
@@ -699,7 +701,7 @@ $logs-p-color: #333;
 */
 $input-height: 34px;
 $input-danger-bg: #f2dede;
-$input-group-addon-bg: $gray-50;
+$input-group-addon-bg: $gray-10;
 $gl-field-focus-shadow: rgba(0, 0, 0, 0.075);
 $gl-field-focus-shadow-error: rgba($red-500, 0.6);
 $input-short-width: 200px;

@@ -7,7 +7,8 @@ type: reference
 > - Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.5.
 > - In [GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/issues/198062), Roadmaps were moved to the Premium tier.
 > - In [GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/issues/5164) and later, the epic bars show epics' title, progress, and completed weight percentage.
-> - In [GitLab 12.10](https://gitlab.com/gitlab-org/gitlab/-/issues/6802), and later, milestones appear in Roadmaps.
+> - Milestones appear in Roadmaps in [GitLab 12.10](https://gitlab.com/gitlab-org/gitlab/-/issues/6802), and later.
+> - Feature flag removed in [GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/29641).
 
 Epics and milestones within a group containing **Start date** and/or **Due date**
 can be visualized in a form of a timeline (that is, a Gantt chart). The Roadmap page

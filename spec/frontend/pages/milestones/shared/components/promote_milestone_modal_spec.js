@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import mountComponent from 'helpers/vue_mount_component_helper';
 import promoteMilestoneModal from '~/pages/milestones/shared/components/promote_milestone_modal.vue';
 import eventHub from '~/pages/milestones/shared/event_hub';
 import axios from '~/lib/utils/axios_utils';
@@ -38,7 +38,7 @@ describe('Promote milestone modal', () => {
       vm = mountComponent(Component, {
         ...milestoneMockData,
       });
-      spyOn(eventHub, '$emit');
+      jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
     });
 
     afterEach(() => {
@@ -47,7 +47,7 @@ describe('Promote milestone modal', () => {
 
     it('redirects when a milestone is promoted', done => {
       const responseURL = `${gl.TEST_HOST}/dummy/endpoint`;
-      spyOn(axios, 'post').and.callFake(url => {
+      jest.spyOn(axios, 'post').mockImplementation(url => {
         expect(url).toBe(milestoneMockData.url);
         expect(eventHub.$emit).toHaveBeenCalledWith(
           'promoteMilestoneModal.requestStarted',
@@ -74,7 +74,7 @@ describe('Promote milestone modal', () => {
     it('displays an error if promoting a milestone failed', done => {
       const dummyError = new Error('promoting milestone failed');
       dummyError.response = { status: 500 };
-      spyOn(axios, 'post').and.callFake(url => {
+      jest.spyOn(axios, 'post').mockImplementation(url => {
         expect(url).toBe(milestoneMockData.url);
         expect(eventHub.$emit).toHaveBeenCalledWith(
           'promoteMilestoneModal.requestStarted',

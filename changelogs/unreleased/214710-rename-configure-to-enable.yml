@@ -1,0 +1,5 @@
+---
+title: Changed terminology of security scanner status from configure to enable
+merge_request: 31503
+author:
+type: changed

@@ -125,14 +125,14 @@ describe AlertManagement::Alert do
 
   describe 'scopes' do
     let_it_be(:project) { create(:project) }
-    let_it_be(:alert_1) { create(:alert_management_alert, project: project) }
-    let_it_be(:alert_2) { create(:alert_management_alert, :resolved, project: project) }
-    let_it_be(:alert_3) { create(:alert_management_alert, :ignored, project: project) }
+    let_it_be(:triggered_alert) { create(:alert_management_alert, project: project) }
+    let_it_be(:resolved_alert) { create(:alert_management_alert, :resolved, project: project) }
+    let_it_be(:ignored_alert) { create(:alert_management_alert, :ignored, project: project) }
 
     describe '.for_iid' do
-      subject { AlertManagement::Alert.for_iid(alert_1.iid) }
+      subject { AlertManagement::Alert.for_iid(triggered_alert.iid) }
 
-      it { is_expected.to match_array(alert_1) }
+      it { is_expected.to match_array(triggered_alert) }
     end
 
     describe '.for_status' do
@@ -140,26 +140,36 @@ describe AlertManagement::Alert do
 
       subject { AlertManagement::Alert.for_status(status) }
 
-      it { is_expected.to match_array(alert_2) }
+      it { is_expected.to match_array(resolved_alert) }
 
       context 'with multiple statuses' do
         let(:status) { AlertManagement::Alert::STATUSES.values_at(:resolved, :ignored) }
 
-        it { is_expected.to match_array([alert_2, alert_3]) }
+        it { is_expected.to match_array([resolved_alert, ignored_alert]) }
       end
     end
-  end
 
-  describe '.for_fingerprint' do
-    let_it_be(:fingerprint) { SecureRandom.hex }
-    let_it_be(:project) { create(:project) }
-    let_it_be(:alert_1) { create(:alert_management_alert, project: project, fingerprint: fingerprint) }
-    let_it_be(:alert_2) { create(:alert_management_alert, project: project) }
-    let_it_be(:alert_3) { create(:alert_management_alert, fingerprint: fingerprint) }
+    describe '.for_fingerprint' do
+      let_it_be(:fingerprint) { SecureRandom.hex }
+      let_it_be(:alert_with_fingerprint) { create(:alert_management_alert, project: project, fingerprint: fingerprint) }
+      let_it_be(:unrelated_alert_with_finger_print) { create(:alert_management_alert, fingerprint: fingerprint) }
 
-    subject { described_class.for_fingerprint(project, fingerprint) }
+      subject { described_class.for_fingerprint(project, fingerprint) }
 
-    it { is_expected.to contain_exactly(alert_1) }
+      it { is_expected.to contain_exactly(alert_with_fingerprint) }
+    end
+
+    describe '.counts_by_status' do
+      subject { described_class.counts_by_status }
+
+      it do
+        is_expected.to eq(
+          triggered_alert.status => 1,
+          resolved_alert.status => 1,
+          ignored_alert.status => 1
+        )
+      end
+    end
   end
 
   describe '.search' do

@@ -1,5 +1,4 @@
 <script>
-import { s__, sprintf } from '~/locale';
 import { GlPopover, GlDeprecatedButton } from '@gitlab/ui';
 import Icon from '~/vue_shared/components/icon.vue';
 import Cookies from 'js-cookie';
@@ -15,18 +14,6 @@ export default {
   dismissTrackValue: 20,
   showTrackValue: 10,
   trackEvent: 'click_button',
-  popoverContent: sprintf(
-    '%{messageText1}%{lineBreak}%{messageText2}%{lineBreak}%{messageText3}%{lineBreak}%{messageText4}%{lineBreak}%{messageText5}',
-    {
-      messageText1: s__('mrWidget|Detect issues before deployment with a CI pipeline'),
-      messageText2: s__('mrWidget|that continuously tests your code. We created'),
-      messageText3: s__("mrWidget|a quick guide that'll show you how to create"),
-      messageText4: s__('mrWidget|one. Make your code more secure and more'),
-      messageText5: s__('mrWidget|robust in just a minute.'),
-      lineBreak: '<br/>',
-    },
-    false,
-  ),
   components: {
     GlPopover,
     GlDeprecatedButton,
@@ -110,7 +97,13 @@ export default {
     <div class="svg-content svg-150 pt-1">
       <img :src="pipelineSvgPath" />
     </div>
-    <p v-html="$options.popoverContent"></p>
+    <p>
+      {{
+        s__(
+          'mrWidget|Detect issues before deployment with a CI pipeline that continuously tests your code. We created a quick guide that will show you how to create one. Make your code more secure and more robust in just a minute.',
+        )
+      }}
+    </p>
     <gl-deprecated-button
       ref="ok"
       category="primary"

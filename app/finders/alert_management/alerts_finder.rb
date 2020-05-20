@@ -2,6 +2,12 @@
 
 module AlertManagement
   class AlertsFinder
+    # @return [Hash<Integer,Integer>] Mapping of status id to count
+    #          ex) { 0: 6, ...etc }
+    def self.counts_by_status(current_user, project, params = {})
+      new(current_user, project, params).execute.counts_by_status
+    end
+
     def initialize(current_user, project, params)
       @current_user = current_user
       @project = project

@@ -127,7 +127,7 @@ export default {
   },
   methods: {
     redirectToSnippets() {
-      window.location.pathname = this.snippet.project?.fullPath || 'dashboard/snippets';
+      window.location.pathname = `${this.snippet.project?.fullPath || 'dashboard'}/snippets`;
     },
     closeDeleteModal() {
       this.$refs.deleteModal.hide();

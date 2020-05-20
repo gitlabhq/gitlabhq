@@ -2,7 +2,7 @@ import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import PrometheusMetrics from '~/prometheus_metrics/prometheus_metrics';
 import PANEL_STATE from '~/prometheus_metrics/constants';
-import { metrics, missingVarMetrics } from './mock_data';
+import { metrics2 as metrics, missingVarMetrics } from './mock_data';
 
 describe('PrometheusMetrics', () => {
   const FIXTURE = 'services/prometheus/prometheus_service.html';
@@ -126,7 +126,7 @@ describe('PrometheusMetrics', () => {
     }
 
     beforeEach(() => {
-      spyOn(axios, 'get').and.callThrough();
+      jest.spyOn(axios, 'get');
 
       prometheusMetrics = new PrometheusMetrics('.js-prometheus-metrics-monitoring');
 
@@ -145,7 +145,7 @@ describe('PrometheusMetrics', () => {
       expect(prometheusMetrics.$monitoredMetricsLoading.hasClass('hidden')).toBeFalsy();
       expect(axios.get).toHaveBeenCalledWith(prometheusMetrics.activeMetricsEndpoint);
 
-      setTimeout(() => {
+      setImmediate(() => {
         expect(prometheusMetrics.$monitoredMetricsLoading.hasClass('hidden')).toBeTruthy();
         done();
       });
@@ -156,7 +156,7 @@ describe('PrometheusMetrics', () => {
 
       prometheusMetrics.loadActiveMetrics();
 
-      setTimeout(() => {
+      setImmediate(() => {
         expect(prometheusMetrics.$monitoredMetricsLoading.hasClass('hidden')).toBeTruthy();
         expect(prometheusMetrics.$monitoredMetricsEmpty.hasClass('hidden')).toBeFalsy();
         done();
@@ -164,12 +164,12 @@ describe('PrometheusMetrics', () => {
     });
 
     it('should populate metrics list once response is loaded', done => {
-      spyOn(prometheusMetrics, 'populateActiveMetrics');
+      jest.spyOn(prometheusMetrics, 'populateActiveMetrics').mockImplementation();
       mockSuccess();
 
       prometheusMetrics.loadActiveMetrics();
 
-      setTimeout(() => {
+      setImmediate(() => {
         expect(prometheusMetrics.populateActiveMetrics).toHaveBeenCalledWith(metrics);
         done();
       });

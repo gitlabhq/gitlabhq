@@ -106,6 +106,8 @@ module AlertManagement
     scope :order_severity,      -> (sort_order) { order(severity: sort_order) }
     scope :order_status,        -> (sort_order) { order(status: sort_order) }
 
+    scope :counts_by_status, -> { group(:status).count }
+
     def self.sort_by_attribute(method)
       case method.to_s
       when 'start_time_asc'     then order_start_time(:asc)

@@ -25,6 +25,7 @@ describe GitlabSchema.types['Project'] do
       issue pipelines removeSourceBranchAfterMerge sentryDetailedError snippets
       grafanaIntegration autocloseReferencedIssues suggestion_commit_message environments
       boards jira_import_status jira_imports services releases release
+      alert_management_alerts alert_management_alert alert_management_alert_status_counts
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)

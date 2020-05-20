@@ -1,8 +1,13 @@
 import Vue from 'vue';
-
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import { redirectTo } from '~/lib/utils/url_utility';
+import mountComponent from 'helpers/vue_mount_component_helper';
 import axios from '~/lib/utils/axios_utils';
 import stopJobsModal from '~/pages/admin/jobs/index/components/stop_jobs_modal.vue';
+
+jest.mock('~/lib/utils/url_utility', () => ({
+  ...jest.requireActual('~/lib/utils/url_utility'),
+  redirectTo: jest.fn(),
+}));
 
 describe('stop_jobs_modal.vue', () => {
   const props = {
@@ -22,8 +27,7 @@ describe('stop_jobs_modal.vue', () => {
   describe('onSubmit', () => {
     it('stops jobs and redirects to overview page', done => {
       const responseURL = `${gl.TEST_HOST}/stop_jobs_modal.vue/jobs`;
-      const redirectSpy = spyOnDependency(stopJobsModal, 'redirectTo');
-      spyOn(axios, 'post').and.callFake(url => {
+      jest.spyOn(axios, 'post').mockImplementation(url => {
         expect(url).toBe(props.url);
         return Promise.resolve({
           request: {
@@ -34,7 +38,7 @@ describe('stop_jobs_modal.vue', () => {
 
       vm.onSubmit()
         .then(() => {
-          expect(redirectSpy).toHaveBeenCalledWith(responseURL);
+          expect(redirectTo).toHaveBeenCalledWith(responseURL);
         })
         .then(done)
         .catch(done.fail);
@@ -42,8 +46,7 @@ describe('stop_jobs_modal.vue', () => {
 
     it('displays error if stopping jobs failed', done => {
       const dummyError = new Error('stopping jobs failed');
-      const redirectSpy = spyOnDependency(stopJobsModal, 'redirectTo');
-      spyOn(axios, 'post').and.callFake(url => {
+      jest.spyOn(axios, 'post').mockImplementation(url => {
         expect(url).toBe(props.url);
         return Promise.reject(dummyError);
       });
@@ -52,7 +55,7 @@ describe('stop_jobs_modal.vue', () => {
         .then(done.fail)
         .catch(error => {
           expect(error).toBe(dummyError);
-          expect(redirectSpy).not.toHaveBeenCalled();
+          expect(redirectTo).not.toHaveBeenCalled();
         })
         .then(done)
         .catch(done.fail);

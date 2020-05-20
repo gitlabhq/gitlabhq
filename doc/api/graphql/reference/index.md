@@ -68,6 +68,19 @@ Describes an alert from the project's Alert Management
 | `title` | String | Title of the alert |
 | `updatedAt` | Time | Timestamp the alert was last updated |
 
+## AlertManagementAlertStatusCountsType
+
+Represents total number of alerts for the represented categories
+
+| Name  | Type  | Description |
+| ---   |  ---- | ----------  |
+| `acknowledged` | Int | Number of alerts with status ACKNOWLEDGED for the project |
+| `all` | Int | Total number of alerts for the project |
+| `ignored` | Int | Number of alerts with status IGNORED for the project |
+| `open` | Int | Number of alerts with status TRIGGERED or ACKNOWLEDGED for the project |
+| `resolved` | Int | Number of alerts with status RESOLVED for the project |
+| `triggered` | Int | Number of alerts with status TRIGGERED for the project |
+
 ## AwardEmoji
 
 An emoji awarded by a user.
@@ -1115,6 +1128,7 @@ Information about pagination in a connection.
 | Name  | Type  | Description |
 | ---   |  ---- | ----------  |
 | `alertManagementAlert` | AlertManagementAlert | A single Alert Management alert of the project |
+| `alertManagementAlertStatusCounts` | AlertManagementAlertStatusCountsType | Counts of alerts by status for the project |
 | `archived` | Boolean | Indicates the archived status of the project |
 | `autocloseReferencedIssues` | Boolean | Indicates if issues referenced by merge requests and commits within the default branch are closed automatically |
 | `avatarUrl` | String | URL to avatar image file of the project |

@@ -1,9 +1,14 @@
 import Vue from 'vue';
-
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import { redirectTo } from '~/lib/utils/url_utility';
+import mountComponent from 'helpers/vue_mount_component_helper';
 import axios from '~/lib/utils/axios_utils';
 import deleteMilestoneModal from '~/pages/milestones/shared/components/delete_milestone_modal.vue';
 import eventHub from '~/pages/milestones/shared/event_hub';
+
+jest.mock('~/lib/utils/url_utility', () => ({
+  ...jest.requireActual('~/lib/utils/url_utility'),
+  redirectTo: jest.fn(),
+}));
 
 describe('delete_milestone_modal.vue', () => {
   const Component = Vue.extend(deleteMilestoneModal);
@@ -23,29 +28,28 @@ describe('delete_milestone_modal.vue', () => {
   describe('onSubmit', () => {
     beforeEach(() => {
       vm = mountComponent(Component, props);
-      spyOn(eventHub, '$emit');
+      jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
     });
 
     it('deletes milestone and redirects to overview page', done => {
       const responseURL = `${gl.TEST_HOST}/delete_milestone_modal.vue/milestoneOverview`;
-      spyOn(axios, 'delete').and.callFake(url => {
+      jest.spyOn(axios, 'delete').mockImplementation(url => {
         expect(url).toBe(props.milestoneUrl);
         expect(eventHub.$emit).toHaveBeenCalledWith(
           'deleteMilestoneModal.requestStarted',
           props.milestoneUrl,
         );
-        eventHub.$emit.calls.reset();
+        eventHub.$emit.mockReset();
         return Promise.resolve({
           request: {
             responseURL,
           },
         });
       });
-      const redirectSpy = spyOnDependency(deleteMilestoneModal, 'redirectTo');
 
       vm.onSubmit()
         .then(() => {
-          expect(redirectSpy).toHaveBeenCalledWith(responseURL);
+          expect(redirectTo).toHaveBeenCalledWith(responseURL);
           expect(eventHub.$emit).toHaveBeenCalledWith('deleteMilestoneModal.requestFinished', {
             milestoneUrl: props.milestoneUrl,
             successful: true,
@@ -58,21 +62,20 @@ describe('delete_milestone_modal.vue', () => {
     it('displays error if deleting milestone failed', done => {
       const dummyError = new Error('deleting milestone failed');
       dummyError.response = { status: 418 };
-      spyOn(axios, 'delete').and.callFake(url => {
+      jest.spyOn(axios, 'delete').mockImplementation(url => {
         expect(url).toBe(props.milestoneUrl);
         expect(eventHub.$emit).toHaveBeenCalledWith(
           'deleteMilestoneModal.requestStarted',
           props.milestoneUrl,
         );
-        eventHub.$emit.calls.reset();
+        eventHub.$emit.mockReset();
         return Promise.reject(dummyError);
       });
-      const redirectSpy = spyOnDependency(deleteMilestoneModal, 'redirectTo');
 
       vm.onSubmit()
         .catch(error => {
           expect(error).toBe(dummyError);
-          expect(redirectSpy).not.toHaveBeenCalled();
+          expect(redirectTo).not.toHaveBeenCalled();
           expect(eventHub.$emit).toHaveBeenCalledWith('deleteMilestoneModal.requestFinished', {
             milestoneUrl: props.milestoneUrl,
             successful: false,

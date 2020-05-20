@@ -84,7 +84,7 @@ module Gitlab
       end
 
       def manifest
-        YAML.dump(metadata: metadata, spec: spec)
+        YAML.dump({ metadata: metadata, spec: spec }.deep_stringify_keys)
       end
     end
   end

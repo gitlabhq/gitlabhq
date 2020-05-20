@@ -23,9 +23,9 @@ module Resolvers
 
     def resolve(**args)
       parent = object.respond_to?(:sync) ? object.sync : object
-      return AlertManagement::Alert.none if parent.nil?
+      return ::AlertManagement::Alert.none if parent.nil?
 
-      AlertManagement::AlertsFinder.new(context[:current_user], parent, args).execute
+      ::AlertManagement::AlertsFinder.new(context[:current_user], parent, args).execute
     end
   end
 end
