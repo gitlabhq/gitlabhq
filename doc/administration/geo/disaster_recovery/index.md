@@ -125,10 +125,10 @@ Note the following when promoting a secondary:
    previously for the **secondary** node.
 1. If successful, the **secondary** node has now been promoted to the **primary** node.
 
-#### Promoting a **secondary** node with HA
+#### Promoting a **secondary** node with multiple servers
 
 The `gitlab-ctl promote-to-primary-node` command cannot be used yet in
-conjunction with High Availability or with multiple machines, as it can only
+conjunction with multiple servers, as it can only
 perform changes on a **secondary** with only a single machine. Instead, you must
 do this manually.
 

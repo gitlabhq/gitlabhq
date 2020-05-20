@@ -568,7 +568,7 @@ is displayed if you attempt to run this command on a primary node.
 ### Message: `sudo: gitlab-pg-ctl: command not found`
 
 When
-[promoting a **secondary** node with HA](../disaster_recovery/index.md#promoting-a-secondary-node-with-ha),
+[promoting a **secondary** node with multiple servers](../disaster_recovery/index.md#promoting-a-secondary-node-with-multiple-servers),
 you need to run the `gitlab-pg-ctl` command to promote the PostgreSQL
 read-replica database.
 

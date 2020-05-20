@@ -1,5 +1,8 @@
 import MockAdapter from 'axios-mock-adapter';
-import actions, {
+import { visitUrl } from '~/lib/utils/url_utility';
+import { createStore } from '~/ide/stores';
+import router from '~/ide/ide_router';
+import {
   stageAllChanges,
   unstageAllChanges,
   toggleFileFinder,
@@ -15,12 +18,15 @@ import actions, {
   discardAllChanges,
 } from '~/ide/stores/actions';
 import axios from '~/lib/utils/axios_utils';
-import { createStore } from '~/ide/stores';
 import * as types from '~/ide/stores/mutation_types';
-import router from '~/ide/ide_router';
 import { file } from '../helpers';
 import testAction from '../../helpers/vuex_action_helper';
 import eventHub from '~/ide/eventhub';
+
+jest.mock('~/lib/utils/url_utility', () => ({
+  visitUrl: jest.fn(),
+  joinPaths: jest.requireActual('~/lib/utils/url_utility').joinPaths,
+}));
 
 describe('Multi-file store actions', () => {
   let store;
@@ -28,15 +34,13 @@ describe('Multi-file store actions', () => {
   beforeEach(() => {
     store = createStore();
 
-    spyOn(store, 'commit').and.callThrough();
-    spyOn(store, 'dispatch').and.callThrough();
-    spyOn(router, 'push');
+    jest.spyOn(store, 'commit');
+    jest.spyOn(store, 'dispatch');
+    jest.spyOn(router, 'push').mockImplementation();
   });
 
   describe('redirectToUrl', () => {
     it('calls visitUrl', done => {
-      const visitUrl = spyOnDependency(actions, 'visitUrl');
-
       store
         .dispatch('redirectToUrl', 'test')
         .then(() => {
@@ -79,7 +83,7 @@ describe('Multi-file store actions', () => {
 
       discardAllChanges(store);
 
-      expect(store.dispatch.calls.allArgs()).toEqual(jasmine.arrayContaining(expectedCalls));
+      expect(store.dispatch.mock.calls).toEqual(expect.arrayContaining(expectedCalls));
     });
 
     it('removes all files from changedFiles state', done => {
@@ -255,7 +259,7 @@ describe('Multi-file store actions', () => {
             type: 'blob',
           })
           .then(() => {
-            expect(store.state.stagedFiles).toEqual([jasmine.objectContaining({ name })]);
+            expect(store.state.stagedFiles).toEqual([expect.objectContaining({ name })]);
 
             done();
           })
@@ -311,12 +315,12 @@ describe('Multi-file store actions', () => {
       document.body.innerHTML +=
         '<div id="tabs"><div class="active"><div class="repo-tab"></div></div></div>';
       const el = document.querySelector('.repo-tab');
-      spyOn(el, 'focus');
+      jest.spyOn(el, 'focus').mockImplementation();
 
       store
         .dispatch('scrollToTab')
         .then(() => {
-          setTimeout(() => {
+          setImmediate(() => {
             expect(el.focus).toHaveBeenCalled();
 
             document.getElementById('tabs').remove();
@@ -350,16 +354,16 @@ describe('Multi-file store actions', () => {
       it('adds all files from changedFiles to stagedFiles', () => {
         stageAllChanges(store);
 
-        expect(store.commit.calls.allArgs()).toEqual([
+        expect(store.commit.mock.calls).toEqual([
           [types.SET_LAST_COMMIT_MSG, ''],
-          [types.STAGE_CHANGE, jasmine.objectContaining({ path: file1.path })],
+          [types.STAGE_CHANGE, expect.objectContaining({ path: file1.path })],
         ]);
       });
 
       it('opens pending tab if a change exists in that file', () => {
         stageAllChanges(store);
 
-        expect(store.dispatch.calls.allArgs()).toEqual([
+        expect(store.dispatch.mock.calls).toEqual([
           [
             'openPendingTab',
             { file: { ...file1, staged: true, changed: true }, keyPrefix: 'staged' },
@@ -382,15 +386,15 @@ describe('Multi-file store actions', () => {
       it('removes all files from stagedFiles after unstaging', () => {
         unstageAllChanges(store);
 
-        expect(store.commit.calls.allArgs()).toEqual([
-          [types.UNSTAGE_CHANGE, jasmine.objectContaining({ path: file2.path })],
+        expect(store.commit.mock.calls).toEqual([
+          [types.UNSTAGE_CHANGE, expect.objectContaining({ path: file2.path })],
         ]);
       });
 
       it('opens pending tab if a change exists in that file', () => {
         unstageAllChanges(store);
 
-        expect(store.dispatch.calls.allArgs()).toEqual([
+        expect(store.dispatch.mock.calls).toEqual([
           ['openPendingTab', { file: file1, keyPrefix: 'unstaged' }],
         ]);
       });
@@ -696,7 +700,7 @@ describe('Multi-file store actions', () => {
   describe('renameEntry', () => {
     describe('purging of file model cache', () => {
       beforeEach(() => {
-        spyOn(eventHub, '$emit');
+        jest.spyOn(eventHub, '$emit').mockImplementation();
       });
 
       it('does not purge model cache for temporary entries that got renamed', done => {
@@ -715,9 +719,7 @@ describe('Multi-file store actions', () => {
             name: 'new',
           })
           .then(() => {
-            expect(eventHub.$emit.calls.allArgs()).not.toContain(
-              'editor.update.model.dispose.foo-bar',
-            );
+            expect(eventHub.$emit.mock.calls).not.toContain('editor.update.model.dispose.foo-bar');
           })
           .then(done)
           .catch(done.fail);
@@ -768,17 +770,17 @@ describe('Multi-file store actions', () => {
       });
 
       it('by default renames an entry and stages it', () => {
-        const dispatch = jasmine.createSpy();
-        const commit = jasmine.createSpy();
+        const dispatch = jest.fn();
+        const commit = jest.fn();
 
         renameEntry(
           { dispatch, commit, state: store.state, getters: store.getters },
           { path: 'orig', name: 'renamed' },
         );
 
-        expect(commit.calls.allArgs()).toEqual([
+        expect(commit.mock.calls).toEqual([
           [types.RENAME_ENTRY, { path: 'orig', name: 'renamed', parentPath: undefined }],
-          [types.STAGE_CHANGE, jasmine.objectContaining({ path: 'renamed' })],
+          [types.STAGE_CHANGE, expect.objectContaining({ path: 'renamed' })],
         ]);
       });
 
@@ -813,7 +815,7 @@ describe('Multi-file store actions', () => {
           renameEntry,
           { path: 'orig', name: 'renamed' },
           store.state,
-          [jasmine.objectContaining({ type: types.RENAME_ENTRY })],
+          [expect.objectContaining({ type: types.RENAME_ENTRY })],
           [{ type: 'triggerFilesChange' }],
           done,
         );
@@ -831,7 +833,7 @@ describe('Multi-file store actions', () => {
             name: 'renamed',
           })
           .then(() => {
-            expect(router.push.calls.count()).toBe(1);
+            expect(router.push.mock.calls).toHaveLength(1);
             expect(router.push).toHaveBeenCalledWith(`/project/foo-bar.md`);
           })
           .then(done)
@@ -918,7 +920,7 @@ describe('Multi-file store actions', () => {
 
             expect(entries['new-folder']).toBeDefined();
             expect(entries['new-folder/test']).toEqual(
-              jasmine.objectContaining({
+              expect.objectContaining({
                 path: 'new-folder/test',
                 name: 'test',
                 prevPath: 'old-folder/test',
@@ -941,7 +943,7 @@ describe('Multi-file store actions', () => {
 
             expect(entries['old-folder']).toBeDefined();
             expect(entries['old-folder/test']).toEqual(
-              jasmine.objectContaining({
+              expect.objectContaining({
                 path: 'old-folder/test',
                 name: 'test',
                 prevPath: undefined,
@@ -989,10 +991,10 @@ describe('Multi-file store actions', () => {
             .dispatch('renameEntry', { path: filePath, name: fileName, parentPath: newParentPath })
             .then(() => {
               expect(store.state.entries[newParentPath]).toEqual(
-                jasmine.objectContaining({
+                expect.objectContaining({
                   path: newParentPath,
                   type: 'tree',
-                  tree: jasmine.arrayContaining([
+                  tree: expect.arrayContaining([
                     store.state.entries[`${newParentPath}/${fileName}`],
                   ]),
                 }),
@@ -1078,7 +1080,7 @@ describe('Multi-file store actions', () => {
             branchId: 'master-testing',
           },
         ];
-        dispatch = jasmine.createSpy('dispatchSpy');
+        dispatch = jest.fn();
         document.body.innerHTML += '<div class="flash-container"></div>';
       });
 
@@ -1092,7 +1094,7 @@ describe('Multi-file store actions', () => {
         getBranchData(...callParams)
           .then(done.fail)
           .catch(e => {
-            expect(dispatch.calls.count()).toEqual(0);
+            expect(dispatch.mock.calls).toHaveLength(0);
             expect(e.response.status).toEqual(404);
             expect(document.querySelector('.flash-alert')).toBeNull();
             done();
@@ -1105,7 +1107,7 @@ describe('Multi-file store actions', () => {
         getBranchData(...callParams)
           .then(done.fail)
           .catch(e => {
-            expect(dispatch.calls.count()).toEqual(0);
+            expect(dispatch.mock.calls).toHaveLength(0);
             expect(e.response).toBeUndefined();
             expect(document.querySelector('.flash-alert')).not.toBeNull();
             done();

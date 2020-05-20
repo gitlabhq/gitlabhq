@@ -1,7 +1,8 @@
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import store from '~/ide/stores';
-import actions, {
+import createFlash from '~/flash';
+import {
   getMergeRequestData,
   getMergeRequestChanges,
   getMergeRequestVersions,
@@ -13,6 +14,8 @@ import { resetStore } from '../../helpers';
 
 const TEST_PROJECT = 'abcproject';
 const TEST_PROJECT_ID = 17;
+
+jest.mock('~/flash');
 
 describe('IDE store merge request actions', () => {
   let mock;
@@ -41,7 +44,7 @@ describe('IDE store merge request actions', () => {
 
       describe('base case', () => {
         beforeEach(() => {
-          spyOn(service, 'getProjectMergeRequests').and.callThrough();
+          jest.spyOn(service, 'getProjectMergeRequests');
           mock.onGet(/api\/(.*)\/projects\/abcproject\/merge_requests/).reply(200, mockData);
         });
 
@@ -66,7 +69,7 @@ describe('IDE store merge request actions', () => {
             .dispatch('getMergeRequestsForBranch', { projectId: TEST_PROJECT, branchId: 'bar' })
             .then(() => {
               expect(store.state.projects.abcproject.mergeRequests).toEqual({
-                '2': jasmine.objectContaining(mrData),
+                '2': expect.objectContaining(mrData),
               });
               done();
             })
@@ -99,7 +102,7 @@ describe('IDE store merge request actions', () => {
 
       describe('no merge requests for branch available case', () => {
         beforeEach(() => {
-          spyOn(service, 'getProjectMergeRequests').and.callThrough();
+          jest.spyOn(service, 'getProjectMergeRequests');
           mock.onGet(/api\/(.*)\/projects\/abcproject\/merge_requests/).reply(200, []);
         });
 
@@ -122,16 +125,11 @@ describe('IDE store merge request actions', () => {
       });
 
       it('flashes message, if error', done => {
-        const flashSpy = spyOnDependency(actions, 'flash');
-
         store
           .dispatch('getMergeRequestsForBranch', { projectId: TEST_PROJECT, branchId: 'bar' })
-          .then(() => {
-            fail('Expected getMergeRequestsForBranch to throw an error');
-          })
           .catch(() => {
-            expect(flashSpy).toHaveBeenCalled();
-            expect(flashSpy.calls.argsFor(0)[0]).toEqual('Error fetching merge requests for bar');
+            expect(createFlash).toHaveBeenCalled();
+            expect(createFlash.mock.calls[0][0]).toBe('Error fetching merge requests for bar');
           })
           .then(done)
           .catch(done.fail);
@@ -142,7 +140,7 @@ describe('IDE store merge request actions', () => {
   describe('getMergeRequestData', () => {
     describe('success', () => {
       beforeEach(() => {
-        spyOn(service, 'getProjectMergeRequestData').and.callThrough();
+        jest.spyOn(service, 'getProjectMergeRequestData');
 
         mock
           .onGet(/api\/(.*)\/projects\/abcproject\/merge_requests\/1/)
@@ -181,7 +179,7 @@ describe('IDE store merge request actions', () => {
       });
 
       it('dispatches error action', done => {
-        const dispatch = jasmine.createSpy('dispatch');
+        const dispatch = jest.fn();
 
         getMergeRequestData(
           {
@@ -195,7 +193,7 @@ describe('IDE store merge request actions', () => {
           .catch(() => {
             expect(dispatch).toHaveBeenCalledWith('setErrorMessage', {
               text: 'An error occurred while loading the merge request.',
-              action: jasmine.any(Function),
+              action: expect.any(Function),
               actionText: 'Please try again',
               actionPayload: {
                 projectId: TEST_PROJECT,
@@ -217,7 +215,7 @@ describe('IDE store merge request actions', () => {
 
     describe('success', () => {
       beforeEach(() => {
-        spyOn(service, 'getProjectMergeRequestChanges').and.callThrough();
+        jest.spyOn(service, 'getProjectMergeRequestChanges');
 
         mock
           .onGet(/api\/(.*)\/projects\/abcproject\/merge_requests\/1\/changes/)
@@ -254,7 +252,7 @@ describe('IDE store merge request actions', () => {
       });
 
       it('dispatches error action', done => {
-        const dispatch = jasmine.createSpy('dispatch');
+        const dispatch = jest.fn();
 
         getMergeRequestChanges(
           {
@@ -268,7 +266,7 @@ describe('IDE store merge request actions', () => {
           .catch(() => {
             expect(dispatch).toHaveBeenCalledWith('setErrorMessage', {
               text: 'An error occurred while loading the merge request changes.',
-              action: jasmine.any(Function),
+              action: expect.any(Function),
               actionText: 'Please try again',
               actionPayload: {
                 projectId: TEST_PROJECT,
@@ -293,7 +291,7 @@ describe('IDE store merge request actions', () => {
         mock
           .onGet(/api\/(.*)\/projects\/abcproject\/merge_requests\/1\/versions/)
           .reply(200, [{ id: 789 }]);
-        spyOn(service, 'getProjectMergeRequestVersions').and.callThrough();
+        jest.spyOn(service, 'getProjectMergeRequestVersions');
       });
 
       it('calls getProjectMergeRequestVersions service method', done => {
@@ -324,7 +322,7 @@ describe('IDE store merge request actions', () => {
       });
 
       it('dispatches error action', done => {
-        const dispatch = jasmine.createSpy('dispatch');
+        const dispatch = jest.fn();
 
         getMergeRequestVersions(
           {
@@ -338,7 +336,7 @@ describe('IDE store merge request actions', () => {
           .catch(() => {
             expect(dispatch).toHaveBeenCalledWith('setErrorMessage', {
               text: 'An error occurred while loading the merge request version data.',
-              action: jasmine.any(Function),
+              action: expect.any(Function),
               actionText: 'Please try again',
               actionPayload: {
                 projectId: TEST_PROJECT,
@@ -400,7 +398,7 @@ describe('IDE store merge request actions', () => {
 
       const originalDispatch = store.dispatch;
 
-      spyOn(store, 'dispatch').and.callFake((type, payload) => {
+      jest.spyOn(store, 'dispatch').mockImplementation((type, payload) => {
         switch (type) {
           case 'getMergeRequestData':
             return Promise.resolve(testMergeRequest);
@@ -415,7 +413,7 @@ describe('IDE store merge request actions', () => {
             return originalDispatch(type, payload);
         }
       });
-      spyOn(service, 'getFileData').and.callFake(() =>
+      jest.spyOn(service, 'getFileData').mockImplementation(() =>
         Promise.resolve({
           headers: {},
         }),
@@ -425,7 +423,7 @@ describe('IDE store merge request actions', () => {
     it('dispatches actions for merge request data', done => {
       openMergeRequest({ state: store.state, dispatch: store.dispatch, getters: mockGetters }, mr)
         .then(() => {
-          expect(store.dispatch.calls.allArgs()).toEqual([
+          expect(store.dispatch.mock.calls).toEqual([
             ['getMergeRequestData', mr],
             ['setCurrentBranchId', testMergeRequest.source_branch],
             [
@@ -493,15 +491,11 @@ describe('IDE store merge request actions', () => {
     });
 
     it('flashes message, if error', done => {
-      const flashSpy = spyOnDependency(actions, 'flash');
-      store.dispatch.and.returnValue(Promise.reject());
+      store.dispatch.mockRejectedValue();
 
       openMergeRequest(store, mr)
-        .then(() => {
-          fail('Expected openMergeRequest to throw an error');
-        })
         .catch(() => {
-          expect(flashSpy).toHaveBeenCalledWith(jasmine.any(String));
+          expect(createFlash).toHaveBeenCalledWith(expect.any(String));
         })
         .then(done)
         .catch(done.fail);

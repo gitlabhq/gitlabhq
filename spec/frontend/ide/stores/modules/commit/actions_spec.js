@@ -1,5 +1,7 @@
-import { resetStore, file } from 'spec/ide/helpers';
-import rootActions from '~/ide/stores/actions';
+import { resetStore, file } from 'jest/ide/helpers';
+import axios from 'axios';
+import MockAdapter from 'axios-mock-adapter';
+import { visitUrl } from '~/lib/utils/url_utility';
 import { createStore } from '~/ide/stores';
 import service from '~/ide/services';
 import router from '~/ide/ide_router';
@@ -10,15 +12,28 @@ import * as actions from '~/ide/stores/modules/commit/actions';
 import { commitActionTypes, PERMISSION_CREATE_MR } from '~/ide/constants';
 import testAction from '../../../../helpers/vuex_action_helper';
 
+jest.mock('~/lib/utils/url_utility', () => ({
+  visitUrl: jest.fn(),
+  joinPaths: jest.requireActual('~/lib/utils/url_utility').joinPaths,
+}));
+
 const TEST_COMMIT_SHA = '123456789';
 const store = createStore();
 
 describe('IDE commit module actions', () => {
+  let mock;
+
   beforeEach(() => {
-    spyOn(router, 'push');
+    gon.api_version = 'v1';
+    mock = new MockAdapter(axios);
+    jest.spyOn(router, 'push').mockImplementation();
+
+    mock.onGet('/api/v1/projects/abcproject/repository/branches/master').reply(200);
   });
 
   afterEach(() => {
+    delete gon.api_version;
+    mock.restore();
     resetStore(store);
   });
 
@@ -71,7 +86,7 @@ describe('IDE commit module actions', () => {
         [
           {
             type: mutationTypes.UPDATE_COMMIT_ACTION,
-            payload: { commitAction: jasmine.anything() },
+            payload: { commitAction: expect.anything() },
           },
           { type: mutationTypes.TOGGLE_SHOULD_CREATE_MR, payload: true },
         ],
@@ -92,7 +107,7 @@ describe('IDE commit module actions', () => {
         [
           {
             type: mutationTypes.UPDATE_COMMIT_ACTION,
-            payload: { commitAction: jasmine.anything() },
+            payload: { commitAction: expect.anything() },
           },
           { type: mutationTypes.TOGGLE_SHOULD_CREATE_MR, payload: false },
         ],
@@ -168,7 +183,7 @@ describe('IDE commit module actions', () => {
     let f;
 
     beforeEach(() => {
-      spyOn(eventHub, '$emit');
+      jest.spyOn(eventHub, '$emit').mockImplementation();
 
       f = file('changedFile');
       Object.assign(f, {
@@ -200,9 +215,9 @@ describe('IDE commit module actions', () => {
             changed: true,
           },
         ],
-        openFiles: store.state.stagedFiles,
       });
 
+      store.state.openFiles = store.state.stagedFiles;
       store.state.stagedFiles.forEach(stagedFile => {
         store.state.entries[stagedFile.path] = stagedFile;
       });
@@ -280,11 +295,7 @@ describe('IDE commit module actions', () => {
   });
 
   describe('commitChanges', () => {
-    let visitUrl;
-
     beforeEach(() => {
-      visitUrl = spyOnDependency(rootActions, 'visitUrl');
-
       document.body.innerHTML += '<div class="flash-container"></div>';
 
       const f = {
@@ -346,11 +357,7 @@ describe('IDE commit module actions', () => {
       };
 
       beforeEach(() => {
-        spyOn(service, 'commit').and.returnValue(
-          Promise.resolve({
-            data: COMMIT_RESPONSE,
-          }),
-        );
+        jest.spyOn(service, 'commit').mockResolvedValue({ data: COMMIT_RESPONSE });
       });
 
       it('calls service', done => {
@@ -358,14 +365,14 @@ describe('IDE commit module actions', () => {
           .dispatch('commit/commitChanges')
           .then(() => {
             expect(service.commit).toHaveBeenCalledWith('abcproject', {
-              branch: jasmine.anything(),
+              branch: expect.anything(),
               commit_message: 'testing 123',
               actions: [
                 {
                   action: commitActionTypes.update,
-                  file_path: jasmine.anything(),
+                  file_path: expect.anything(),
                   content: '\n',
-                  encoding: jasmine.anything(),
+                  encoding: expect.anything(),
                   last_commit_id: undefined,
                   previous_path: undefined,
                 },
@@ -385,14 +392,14 @@ describe('IDE commit module actions', () => {
           .dispatch('commit/commitChanges')
           .then(() => {
             expect(service.commit).toHaveBeenCalledWith('abcproject', {
-              branch: jasmine.anything(),
+              branch: expect.anything(),
               commit_message: 'testing 123',
               actions: [
                 {
                   action: commitActionTypes.update,
-                  file_path: jasmine.anything(),
+                  file_path: expect.anything(),
                   content: '\n',
-                  encoding: jasmine.anything(),
+                  encoding: expect.anything(),
                   last_commit_id: TEST_COMMIT_SHA,
                   previous_path: undefined,
                 },
@@ -455,7 +462,7 @@ describe('IDE commit module actions', () => {
 
       describe('merge request', () => {
         it('redirects to new merge request page', done => {
-          spyOn(eventHub, '$on');
+          jest.spyOn(eventHub, '$on').mockImplementation();
 
           store.state.commit.commitAction = consts.COMMIT_TO_NEW_BRANCH;
           store.state.commit.shouldCreateMR = true;
@@ -475,7 +482,7 @@ describe('IDE commit module actions', () => {
         });
 
         it('does not redirect to new merge request page when shouldCreateMR is not checked', done => {
-          spyOn(eventHub, '$on');
+          jest.spyOn(eventHub, '$on').mockImplementation();
 
           store.state.commit.commitAction = consts.COMMIT_TO_NEW_BRANCH;
           store.state.commit.shouldCreateMR = false;
@@ -489,30 +496,25 @@ describe('IDE commit module actions', () => {
             .catch(done.fail);
         });
 
-        it('resets changed files before redirecting', done => {
-          visitUrl = visitUrl.and.callFake(() => {
-            expect(store.state.stagedFiles.length).toBe(0);
-            done();
-          });
-
-          spyOn(eventHub, '$on');
+        it('resets changed files before redirecting', () => {
+          jest.spyOn(eventHub, '$on').mockImplementation();
 
           store.state.commit.commitAction = '3';
 
-          store.dispatch('commit/commitChanges').catch(done.fail);
+          return store.dispatch('commit/commitChanges').then(() => {
+            expect(store.state.stagedFiles.length).toBe(0);
+          });
         });
       });
     });
 
     describe('failed', () => {
       beforeEach(() => {
-        spyOn(service, 'commit').and.returnValue(
-          Promise.resolve({
-            data: {
-              message: 'failed message',
-            },
-          }),
-        );
+        jest.spyOn(service, 'commit').mockResolvedValue({
+          data: {
+            message: 'failed message',
+          },
+        });
       });
 
       it('shows failed message', done => {
@@ -543,20 +545,15 @@ describe('IDE commit module actions', () => {
       };
 
       it('commits TOGGLE_EMPTY_STATE mutation on empty repo', done => {
-        spyOn(service, 'commit').and.returnValue(
-          Promise.resolve({
-            data: COMMIT_RESPONSE,
-          }),
-        );
-
-        spyOn(store, 'commit').and.callThrough();
+        jest.spyOn(service, 'commit').mockResolvedValue({ data: COMMIT_RESPONSE });
+        jest.spyOn(store, 'commit');
 
         store
           .dispatch('commit/commitChanges')
           .then(() => {
-            expect(store.commit.calls.allArgs()).toEqual(
-              jasmine.arrayContaining([
-                ['TOGGLE_EMPTY_STATE', jasmine.any(Object), jasmine.any(Object)],
+            expect(store.commit.mock.calls).toEqual(
+              expect.arrayContaining([
+                ['TOGGLE_EMPTY_STATE', expect.any(Object), expect.any(Object)],
               ]),
             );
             done();
@@ -566,19 +563,15 @@ describe('IDE commit module actions', () => {
 
       it('does not commmit TOGGLE_EMPTY_STATE mutation on existing project', done => {
         COMMIT_RESPONSE.parent_ids.push('1234');
-        spyOn(service, 'commit').and.returnValue(
-          Promise.resolve({
-            data: COMMIT_RESPONSE,
-          }),
-        );
-        spyOn(store, 'commit').and.callThrough();
+        jest.spyOn(service, 'commit').mockResolvedValue({ data: COMMIT_RESPONSE });
+        jest.spyOn(store, 'commit');
 
         store
           .dispatch('commit/commitChanges')
           .then(() => {
-            expect(store.commit.calls.allArgs()).not.toEqual(
-              jasmine.arrayContaining([
-                ['TOGGLE_EMPTY_STATE', jasmine.any(Object), jasmine.any(Object)],
+            expect(store.commit.mock.calls).not.toEqual(
+              expect.arrayContaining([
+                ['TOGGLE_EMPTY_STATE', expect.any(Object), expect.any(Object)],
               ]),
             );
             done();

@@ -1,5 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
+import { createStore } from '~/ide/stores';
+import router from '~/ide/ide_router';
 import {
   refreshLastCommitData,
   showBranchNotFoundError,
@@ -9,10 +11,8 @@ import {
   loadFile,
   loadBranch,
 } from '~/ide/stores/actions';
-import { createStore } from '~/ide/stores';
 import service from '~/ide/services';
 import api from '~/api';
-import router from '~/ide/ide_router';
 import { resetStore } from '../../helpers';
 import testAction from '../../../helpers/vuex_action_helper';
 
@@ -49,13 +49,11 @@ describe('IDE store project actions', () => {
           },
         },
       };
-      spyOn(service, 'getBranchData').and.returnValue(
-        Promise.resolve({
-          data: {
-            commit: { id: '123' },
-          },
-        }),
-      );
+      jest.spyOn(service, 'getBranchData').mockResolvedValue({
+        data: {
+          commit: { id: '123' },
+        },
+      });
     });
 
     it('calls the service', done => {
@@ -110,7 +108,7 @@ describe('IDE store project actions', () => {
             type: 'setErrorMessage',
             payload: {
               text: "Branch <strong>master</strong> was not found in this project's repository.",
-              action: jasmine.any(Function),
+              action: expect.any(Function),
               actionText: 'Create branch',
               actionPayload: 'master',
             },
@@ -122,10 +120,12 @@ describe('IDE store project actions', () => {
   });
 
   describe('createNewBranchFromDefault', () => {
-    it('calls API', done => {
-      spyOn(api, 'createBranch').and.returnValue(Promise.resolve());
-      spyOn(router, 'push');
+    beforeEach(() => {
+      jest.spyOn(api, 'createBranch').mockResolvedValue();
+      jest.spyOn(router, 'push').mockImplementation();
+    });
 
+    it('calls API', done => {
       createNewBranchFromDefault(
         {
           state: {
@@ -151,9 +151,7 @@ describe('IDE store project actions', () => {
     });
 
     it('clears error message', done => {
-      const dispatchSpy = jasmine.createSpy('dispatch');
-      spyOn(api, 'createBranch').and.returnValue(Promise.resolve());
-      spyOn(router, 'push');
+      const dispatchSpy = jest.fn().mockName('dispatch');
 
       createNewBranchFromDefault(
         {
@@ -177,9 +175,6 @@ describe('IDE store project actions', () => {
     });
 
     it('reloads window', done => {
-      spyOn(api, 'createBranch').and.returnValue(Promise.resolve());
-      spyOn(router, 'push');
-
       createNewBranchFromDefault(
         {
           state: {
@@ -215,7 +210,7 @@ describe('IDE store project actions', () => {
             payload: { entry: store.state.trees[`${TEST_PROJECT_ID}/master`], forceValue: false },
           },
         ],
-        jasmine.any(Object),
+        expect.any(Object),
         done,
       );
     });
@@ -243,7 +238,7 @@ describe('IDE store project actions', () => {
           'foo/bar': { pending: false },
         },
       });
-      spyOn(store, 'dispatch');
+      jest.spyOn(store, 'dispatch').mockImplementation();
     });
 
     it('does nothing, if basePath is not given', () => {
@@ -264,15 +259,15 @@ describe('IDE store project actions', () => {
     it('does not handle tree entry action, if entry is pending', () => {
       loadFile(store, { basePath: 'foo/bar-pending/' });
 
-      expect(store.dispatch).not.toHaveBeenCalledWith('handleTreeEntryAction', jasmine.anything());
+      expect(store.dispatch).not.toHaveBeenCalledWith('handleTreeEntryAction', expect.anything());
     });
 
     it('creates a new temp file supplied via URL if the file does not exist yet', () => {
       loadFile(store, { basePath: 'not-existent.md' });
 
-      expect(store.dispatch.calls.count()).toBe(1);
+      expect(store.dispatch.mock.calls).toHaveLength(1);
 
-      expect(store.dispatch).not.toHaveBeenCalledWith('handleTreeEntryAction', jasmine.anything());
+      expect(store.dispatch).not.toHaveBeenCalledWith('handleTreeEntryAction', expect.anything());
 
       expect(store.dispatch).toHaveBeenCalledWith('createTempEntry', {
         name: 'not-existent.md',
@@ -307,14 +302,14 @@ describe('IDE store project actions', () => {
 
     it('fetches branch data', done => {
       const mockGetters = { findBranch: () => ({ commit: { id: ref } }) };
-      spyOn(store, 'dispatch').and.returnValue(Promise.resolve());
+      jest.spyOn(store, 'dispatch').mockResolvedValue();
 
       loadBranch(
         { getters: mockGetters, state: store.state, dispatch: store.dispatch },
         { projectId, branchId },
       )
         .then(() => {
-          expect(store.dispatch.calls.allArgs()).toEqual([
+          expect(store.dispatch.mock.calls).toEqual([
             ['getBranchData', { projectId, branchId }],
             ['getMergeRequestsForBranch', { projectId, branchId }],
             ['getFiles', { projectId, branchId, ref }],
@@ -325,12 +320,12 @@ describe('IDE store project actions', () => {
     });
 
     it('shows an error if branch can not be fetched', done => {
-      spyOn(store, 'dispatch').and.returnValue(Promise.reject());
+      jest.spyOn(store, 'dispatch').mockReturnValue(Promise.reject());
 
       loadBranch(store, { projectId, branchId })
         .then(done.fail)
         .catch(() => {
-          expect(store.dispatch.calls.allArgs()).toEqual([
+          expect(store.dispatch.mock.calls).toEqual([
             ['getBranchData', { projectId, branchId }],
             ['showBranchNotFoundError', branchId],
           ]);
@@ -360,13 +355,13 @@ describe('IDE store project actions', () => {
 
     describe('existing branch', () => {
       beforeEach(() => {
-        spyOn(store, 'dispatch').and.returnValue(Promise.resolve());
+        jest.spyOn(store, 'dispatch').mockResolvedValue();
       });
 
       it('dispatches branch actions', done => {
         openBranch(store, branch)
           .then(() => {
-            expect(store.dispatch.calls.allArgs()).toEqual([
+            expect(store.dispatch.mock.calls).toEqual([
               ['setCurrentBranchId', branchId],
               ['loadBranch', { projectId, branchId }],
               ['loadFile', { basePath: undefined }],
@@ -379,13 +374,13 @@ describe('IDE store project actions', () => {
 
     describe('non-existent branch', () => {
       beforeEach(() => {
-        spyOn(store, 'dispatch').and.returnValue(Promise.reject());
+        jest.spyOn(store, 'dispatch').mockReturnValue(Promise.reject());
       });
 
       it('dispatches correct branch actions', done => {
         openBranch(store, branch)
           .then(val => {
-            expect(store.dispatch.calls.allArgs()).toEqual([
+            expect(store.dispatch.mock.calls).toEqual([
               ['setCurrentBranchId', branchId],
               ['loadBranch', { projectId, branchId }],
             ]);

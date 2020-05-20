@@ -156,6 +156,9 @@ export default {
   },
   mounted() {
     Mousetrap.bind('esc', this.closeDesign);
+    this.trackEvent();
+    // We need to reset the active discussion when opening a new design
+    this.updateActiveDiscussion();
   },
   beforeDestroy() {
     Mousetrap.unbind('esc', this.closeDesign);
@@ -278,23 +281,6 @@ export default {
         },
       });
     },
-  },
-  beforeRouteEnter(to, from, next) {
-    next(vm => {
-      vm.trackEvent();
-    });
-  },
-  beforeRouteUpdate(to, from, next) {
-    this.trackEvent();
-    this.closeCommentForm();
-    // We need to reset the active discussion when opening a new design
-    this.updateActiveDiscussion();
-    next();
-  },
-  beforeRouteLeave(to, from, next) {
-    // We need to reset the active discussion when moving to design list view
-    this.updateActiveDiscussion();
-    next();
   },
   createImageDiffNoteMutation,
   DESIGNS_ROUTE_NAME,

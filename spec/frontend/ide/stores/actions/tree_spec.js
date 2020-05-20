@@ -1,5 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
-import testAction from 'spec/helpers/vuex_action_helper';
+import testAction from 'helpers/vuex_action_helper';
 import { showTreeEntry, getFiles, setDirectoryData } from '~/ide/stores/actions/tree';
 import * as types from '~/ide/stores/mutation_types';
 import axios from '~/lib/utils/axios_utils';
@@ -21,8 +21,7 @@ describe('Multi-file store tree actions', () => {
   };
 
   beforeEach(() => {
-    jasmine.clock().install();
-    spyOn(router, 'push');
+    jest.spyOn(router, 'push').mockImplementation();
 
     mock = new MockAdapter(axios);
 
@@ -35,7 +34,6 @@ describe('Multi-file store tree actions', () => {
   });
 
   afterEach(() => {
-    jasmine.clock().uninstall();
     mock.restore();
     resetStore(store);
   });
@@ -43,7 +41,7 @@ describe('Multi-file store tree actions', () => {
   describe('getFiles', () => {
     describe('success', () => {
       beforeEach(() => {
-        spyOn(service, 'getFiles').and.callThrough();
+        jest.spyOn(service, 'getFiles');
 
         mock
           .onGet(/(.*)/)
@@ -54,15 +52,16 @@ describe('Multi-file store tree actions', () => {
           ]);
       });
 
-      it('calls service getFiles', done => {
-        store
-          .dispatch('getFiles', basicCallParameters)
-          .then(() => {
-            expect(service.getFiles).toHaveBeenCalledWith('foo/abcproject', '12345678');
-
-            done();
-          })
-          .catch(done.fail);
+      it('calls service getFiles', () => {
+        return (
+          store
+            .dispatch('getFiles', basicCallParameters)
+            // getFiles actions calls lodash.defer
+            .then(() => jest.runOnlyPendingTimers())
+            .then(() => {
+              expect(service.getFiles).toHaveBeenCalledWith('foo/abcproject', '12345678');
+            })
+        );
       });
 
       it('adds data into tree', done => {
@@ -71,7 +70,7 @@ describe('Multi-file store tree actions', () => {
           .then(() => {
             // The populating of the tree is deferred for performance reasons.
             // See this merge request for details: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/25700
-            jasmine.clock().tick(1);
+            jest.advanceTimersByTime(1);
           })
           .then(() => {
             projectTree = store.state.trees['abcproject/master'];
@@ -91,7 +90,7 @@ describe('Multi-file store tree actions', () => {
 
     describe('error', () => {
       it('dispatches error action', done => {
-        const dispatch = jasmine.createSpy('dispatchSpy');
+        const dispatch = jest.fn();
 
         store.state.projects = {
           'abc/def': {
@@ -127,7 +126,7 @@ describe('Multi-file store tree actions', () => {
           .catch(() => {
             expect(dispatch).toHaveBeenCalledWith('setErrorMessage', {
               text: 'An error occurred while loading all the files.',
-              action: jasmine.any(Function),
+              action: expect.any(Function),
               actionText: 'Please try again',
               actionPayload: { projectId: 'abc/def', branchId: 'master-testing' },
             });

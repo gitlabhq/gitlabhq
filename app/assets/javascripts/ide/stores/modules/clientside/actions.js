@@ -8,5 +8,4 @@ export const pingUsage = ({ rootGetters }) => {
   return axios.post(url);
 };
 
-// prevent babel-plugin-rewire from generating an invalid default during karma tests
-export default () => {};
+export default pingUsage;

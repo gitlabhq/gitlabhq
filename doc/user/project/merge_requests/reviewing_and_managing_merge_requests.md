@@ -82,6 +82,10 @@ to expand the entire file.
 
 ![Incrementally expand merge request diffs](img/incrementally_expand_merge_request_diffs_v12_2.png)
 
+[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/205401) in GitLab 13.1, when viewing a
+merge request's **Changes** tab, if a certain file was only renamed, you can expand it to see the
+entire content by clicking **Show file contents**.
+
 ### Ignore whitespace changes in Merge Request diff view
 
 If you click the **Hide whitespace changes** button, you can see the diff

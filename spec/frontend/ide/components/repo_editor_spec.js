@@ -7,13 +7,13 @@ import repoEditor from '~/ide/components/repo_editor.vue';
 import Editor from '~/ide/lib/editor';
 import { leftSidebarViews, FILE_VIEW_MODE_EDITOR, FILE_VIEW_MODE_PREVIEW } from '~/ide/constants';
 import { createComponentWithStore } from '../../helpers/vue_mount_component_helper';
-import setTimeoutPromise from '../../helpers/set_timeout_promise_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import { file, resetStore } from '../helpers';
 
 describe('RepoEditor', () => {
   let vm;
 
-  beforeEach(done => {
+  beforeEach(() => {
     const f = {
       ...file(),
       viewMode: FILE_VIEW_MODE_EDITOR,
@@ -45,12 +45,12 @@ describe('RepoEditor', () => {
 
     Vue.set(vm.$store.state.entries, f.path, f);
 
-    spyOn(vm, 'getFileData').and.returnValue(Promise.resolve());
-    spyOn(vm, 'getRawFileData').and.returnValue(Promise.resolve());
+    jest.spyOn(vm, 'getFileData').mockResolvedValue();
+    jest.spyOn(vm, 'getRawFileData').mockResolvedValue();
 
     vm.$mount();
 
-    Vue.nextTick(() => setTimeout(done));
+    return vm.$nextTick();
   });
 
   afterEach(() => {
@@ -161,7 +161,7 @@ describe('RepoEditor', () => {
         .then(() => {
           vm.$el.querySelectorAll('.ide-mode-tabs .nav-links a')[1].click();
         })
-        .then(setTimeoutPromise)
+        .then(waitForPromises)
         .then(() => {
           expect(vm.$el.querySelector('.preview-container').innerHTML).toContain(
             '<p>testing 123</p>',
@@ -186,7 +186,7 @@ describe('RepoEditor', () => {
 
   describe('createEditorInstance', () => {
     it('calls createInstance when viewer is editor', done => {
-      spyOn(vm.editor, 'createInstance');
+      jest.spyOn(vm.editor, 'createInstance').mockImplementation();
 
       vm.createEditorInstance();
 
@@ -200,7 +200,7 @@ describe('RepoEditor', () => {
     it('calls createDiffInstance when viewer is diff', done => {
       vm.$store.state.viewer = 'diff';
 
-      spyOn(vm.editor, 'createDiffInstance');
+      jest.spyOn(vm.editor, 'createDiffInstance').mockImplementation();
 
       vm.createEditorInstance();
 
@@ -214,7 +214,7 @@ describe('RepoEditor', () => {
     it('calls createDiffInstance when viewer is a merge request diff', done => {
       vm.$store.state.viewer = 'mrdiff';
 
-      spyOn(vm.editor, 'createDiffInstance');
+      jest.spyOn(vm.editor, 'createDiffInstance').mockImplementation();
 
       vm.createEditorInstance();
 
@@ -228,7 +228,7 @@ describe('RepoEditor', () => {
 
   describe('setupEditor', () => {
     it('creates new model', () => {
-      spyOn(vm.editor, 'createModel').and.callThrough();
+      jest.spyOn(vm.editor, 'createModel');
 
       Editor.editorInstance.modelManager.dispose();
 
@@ -239,7 +239,7 @@ describe('RepoEditor', () => {
     });
 
     it('attaches model to editor', () => {
-      spyOn(vm.editor, 'attachModel').and.callThrough();
+      jest.spyOn(vm.editor, 'attachModel');
 
       Editor.editorInstance.modelManager.dispose();
 
@@ -251,7 +251,7 @@ describe('RepoEditor', () => {
     it('attaches model to merge request editor', () => {
       vm.$store.state.viewer = 'mrdiff';
       vm.file.mrChange = true;
-      spyOn(vm.editor, 'attachMergeRequestModel');
+      jest.spyOn(vm.editor, 'attachMergeRequestModel').mockImplementation();
 
       Editor.editorInstance.modelManager.dispose();
 
@@ -263,7 +263,7 @@ describe('RepoEditor', () => {
     it('does not attach model to merge request editor when not a MR change', () => {
       vm.$store.state.viewer = 'mrdiff';
       vm.file.mrChange = false;
-      spyOn(vm.editor, 'attachMergeRequestModel');
+      jest.spyOn(vm.editor, 'attachMergeRequestModel').mockImplementation();
 
       Editor.editorInstance.modelManager.dispose();
 
@@ -273,7 +273,7 @@ describe('RepoEditor', () => {
     });
 
     it('adds callback methods', () => {
-      spyOn(vm.editor, 'onPositionChange').and.callThrough();
+      jest.spyOn(vm.editor, 'onPositionChange');
 
       Editor.editorInstance.modelManager.dispose();
 
@@ -286,7 +286,7 @@ describe('RepoEditor', () => {
     it('updates state when model content changed', done => {
       vm.model.setValue('testing 123\n');
 
-      setTimeout(() => {
+      setImmediate(() => {
         expect(vm.file.content).toBe('testing 123\n');
 
         done();
@@ -294,7 +294,7 @@ describe('RepoEditor', () => {
     });
 
     it('sets head model as staged file', () => {
-      spyOn(vm.editor, 'createModel').and.callThrough();
+      jest.spyOn(vm.editor, 'createModel');
 
       Editor.editorInstance.modelManager.dispose();
 
@@ -310,8 +310,8 @@ describe('RepoEditor', () => {
 
   describe('editor updateDimensions', () => {
     beforeEach(() => {
-      spyOn(vm.editor, 'updateDimensions').and.callThrough();
-      spyOn(vm.editor, 'updateDiffView');
+      jest.spyOn(vm.editor, 'updateDimensions');
+      jest.spyOn(vm.editor, 'updateDiffView').mockImplementation();
     });
 
     it('calls updateDimensions when panelResizing is false', done => {
@@ -381,7 +381,7 @@ describe('RepoEditor', () => {
 
   describe('when files view mode is preview', () => {
     beforeEach(done => {
-      spyOn(vm.editor, 'updateDimensions');
+      jest.spyOn(vm.editor, 'updateDimensions').mockImplementation();
       vm.file.viewMode = FILE_VIEW_MODE_PREVIEW;
       vm.$nextTick(done);
     });
@@ -392,19 +392,12 @@ describe('RepoEditor', () => {
     });
 
     describe('when file view mode changes to editor', () => {
-      beforeEach(done => {
+      it('should update dimensions', () => {
         vm.file.viewMode = FILE_VIEW_MODE_EDITOR;
 
-        // one tick to trigger watch
-        vm.$nextTick()
-          // another tick needed until we can update dimensions
-          .then(() => vm.$nextTick())
-          .then(done)
-          .catch(done.fail);
-      });
-
-      it('should update dimensions', () => {
-        expect(vm.editor.updateDimensions).toHaveBeenCalled();
+        return vm.$nextTick().then(() => {
+          expect(vm.editor.updateDimensions).toHaveBeenCalled();
+        });
       });
     });
   });
@@ -412,8 +405,8 @@ describe('RepoEditor', () => {
   describe('initEditor', () => {
     beforeEach(() => {
       vm.file.tempFile = false;
-      spyOn(vm.editor, 'createInstance');
-      spyOnProperty(vm, 'shouldHideEditor').and.returnValue(true);
+      jest.spyOn(vm.editor, 'createInstance').mockImplementation();
+      jest.spyOn(vm, 'shouldHideEditor', 'get').mockReturnValue(true);
     });
 
     it('does not fetch file information for temp entries', done => {
@@ -459,12 +452,12 @@ describe('RepoEditor', () => {
 
   describe('updates on file changes', () => {
     beforeEach(() => {
-      spyOn(vm, 'initEditor');
+      jest.spyOn(vm, 'initEditor').mockImplementation();
     });
 
     it('calls removePendingTab when old file is pending', done => {
-      spyOnProperty(vm, 'shouldHideEditor').and.returnValue(true);
-      spyOn(vm, 'removePendingTab');
+      jest.spyOn(vm, 'shouldHideEditor', 'get').mockReturnValue(true);
+      jest.spyOn(vm, 'removePendingTab').mockImplementation();
 
       vm.file.pending = true;
 

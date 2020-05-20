@@ -4,7 +4,7 @@ import tooltip from '~/vue_shared/directives/tooltip';
 import Icon from '~/vue_shared/components/icon.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 import { viewerTypes } from '../../constants';
-import { getCommitIconMap } from '../../utils';
+import getCommitIconMap from '../../commit_icon';
 
 export default {
   components: {

@@ -656,11 +656,6 @@ export function switchToFullDiffFromRenamedFile({ commit, dispatch, state }, { d
       commit(types.SET_CURRENT_VIEW_DIFF_FILE_LINES, { filePath: diffFile.file_path, lines });
 
       dispatch('startRenderDiffsQueue');
-    })
-    .catch(error => {
-      dispatch('receiveFullDiffError', diffFile.file_path);
-
-      throw error;
     });
 }
 

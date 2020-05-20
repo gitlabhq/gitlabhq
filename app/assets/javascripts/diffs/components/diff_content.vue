@@ -128,6 +128,7 @@ export default {
       <no-preview-viewer v-else-if="noPreview" />
       <diff-viewer
         v-else
+        :diff-file="diffFile"
         :diff-mode="diffMode"
         :diff-viewer-mode="diffViewerMode"
         :new-path="diffFile.new_path"

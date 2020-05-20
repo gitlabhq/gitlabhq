@@ -22,6 +22,8 @@ export default (props = {}) => {
           props: {
             ...el.dataset,
             currentDashboard,
+            customMetricsAvailable: parseBoolean(el.dataset.customMetricsAvailable),
+            prometheusAlertsAvailable: parseBoolean(el.dataset.prometheusAlertsAvailable),
             hasMetrics: parseBoolean(el.dataset.hasMetrics),
             ...props,
           },

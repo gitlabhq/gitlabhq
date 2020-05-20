@@ -204,7 +204,7 @@ Omnibus GitLab defaults to the recommended Puma settings. Regardless of installa
 tune the Puma settings.
 
 If you're using Omnibus GitLab, see [Puma settings](https://docs.gitlab.com/omnibus/settings/puma.html)
-for instructions on changing the Puma settings.
+for instructions on changing the Puma settings. If you are using the GitLab Helm chart, see the [Webservice chart](https://docs.gitlab.com/charts/charts/gitlab/webservice/index.html).
 
 ### Puma workers
 

@@ -161,6 +161,3 @@ export const canCreateMergeRequests = (state, getters) =>
 
 export const canPushCode = (state, getters) =>
   Boolean(getters.findProjectPermissions(state.currentProjectId)[PERMISSION_PUSH_CODE]);
-
-// prevent babel-plugin-rewire from generating an invalid default during karma tests
-export default () => {};

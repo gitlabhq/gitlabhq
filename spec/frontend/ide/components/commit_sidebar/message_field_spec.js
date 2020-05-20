@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import createComponent from 'spec/helpers/vue_mount_component_helper';
+import createComponent from 'helpers/vue_mount_component_helper';
 import CommitMessageField from '~/ide/components/commit_sidebar/message_field.vue';
 
 describe('IDE commit message field', () => {
@@ -54,7 +54,7 @@ describe('IDE commit message field', () => {
   });
 
   it('emits input event on input', () => {
-    spyOn(vm, '$emit');
+    jest.spyOn(vm, '$emit').mockImplementation();
 
     const textarea = vm.$el.querySelector('textarea');
     textarea.value = 'testing';
@@ -160,7 +160,7 @@ describe('IDE commit message field', () => {
         .then(() => {
           expect(vm.scrollTop).toBe(50);
           expect(vm.$el.querySelector('.highlights').style.transform).toBe(
-            'translate3d(0px, -50px, 0px)',
+            'translate3d(0, -50px, 0)',
           );
         })
         .then(done)

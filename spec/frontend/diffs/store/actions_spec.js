@@ -1255,7 +1255,6 @@ describe('DiffsStoreActions', () => {
 
   describe('switchToFullDiffFromRenamedFile', () => {
     const SUCCESS_URL = 'fakehost/context.success';
-    const ERROR_URL = 'fakehost/context.error';
     const testFilePath = 'testpath';
     const updatedViewerName = 'testviewer';
     const preparedLine = { prepared: 'in-a-test' };
@@ -1310,27 +1309,6 @@ describe('DiffsStoreActions', () => {
           );
         },
       );
-    });
-
-    describe('error', () => {
-      beforeEach(() => {
-        renamedFile = { ...testFile, context_lines_path: ERROR_URL };
-        mock.onGet(ERROR_URL).reply(500);
-      });
-
-      it('dispatches the error handling action', () => {
-        const rejected = testAction(
-          switchToFullDiffFromRenamedFile,
-          { diffFile: renamedFile },
-          null,
-          [],
-          [{ type: 'receiveFullDiffError', payload: testFilePath }],
-        );
-
-        return rejected.catch(error =>
-          expect(error).toEqual(new Error('Request failed with status code 500')),
-        );
-      });
     });
   });
 

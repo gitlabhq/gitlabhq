@@ -1,4 +1,3 @@
-import { commitItemIconMap } from './constants';
 import { languages } from 'monaco-editor';
 import { flatten } from 'lodash';
 
@@ -52,16 +51,6 @@ export function isTextFile(content, mimeType, fileName) {
   // for unknown types, determine the type by evaluating the file contents
   return asciiRegex.test(content);
 }
-
-export const getCommitIconMap = file => {
-  if (file.deleted) {
-    return commitItemIconMap.deleted;
-  } else if (file.tempFile && !file.prevPath) {
-    return commitItemIconMap.addition;
-  }
-
-  return commitItemIconMap.modified;
-};
 
 export const createPathWithExt = p => {
   const ext = p.lastIndexOf('.') >= 0 ? p.substring(p.lastIndexOf('.') + 1) : '';

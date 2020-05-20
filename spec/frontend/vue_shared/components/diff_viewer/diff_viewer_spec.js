@@ -8,6 +8,7 @@ describe('DiffViewer', () => {
   const requiredProps = {
     diffMode: 'replaced',
     diffViewerMode: 'image',
+    diffFile: {},
     newPath: GREEN_BOX_IMAGE_URL,
     newSha: 'ABC',
     oldPath: RED_BOX_IMAGE_URL,
@@ -71,16 +72,27 @@ describe('DiffViewer', () => {
     });
   });
 
-  it('renders renamed component', () => {
-    createComponent({
-      ...requiredProps,
-      diffMode: 'renamed',
-      diffViewerMode: 'renamed',
-      newPath: 'test.abc',
-      oldPath: 'testold.abc',
-    });
+  describe('renamed file', () => {
+    it.each`
+      altViewer
+      ${'text'}
+      ${'notText'}
+    `('renders the renamed component when the alternate viewer is $altViewer', ({ altViewer }) => {
+      createComponent({
+        ...requiredProps,
+        diffFile: {
+          content_sha: '',
+          view_path: '',
+          alternate_viewer: { name: altViewer },
+        },
+        diffMode: 'renamed',
+        diffViewerMode: 'renamed',
+        newPath: 'test.abc',
+        oldPath: 'testold.abc',
+      });
 
-    expect(vm.$el.textContent).toContain('File moved');
+      expect(vm.$el.textContent).toContain('File renamed with no changes.');
+    });
   });
 
   it('renders mode changed component', () => {

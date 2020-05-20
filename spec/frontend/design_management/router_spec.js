@@ -33,6 +33,7 @@ function factory(routeArg) {
           design: { loading: true },
           permissions: { loading: true },
         },
+        mutate: jest.fn(),
       },
     },
   });

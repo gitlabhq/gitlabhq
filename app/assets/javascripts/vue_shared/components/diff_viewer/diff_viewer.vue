@@ -7,6 +7,10 @@ import ModeChanged from './viewers/mode_changed.vue';
 
 export default {
   props: {
+    diffFile: {
+      type: Object,
+      required: true,
+    },
     diffMode: {
       type: String,
       required: true,
@@ -92,6 +96,7 @@ export default {
   <div v-if="viewer" class="diff-file preview-container">
     <component
       :is="viewer"
+      :diff-file="diffFile"
       :diff-mode="diffMode"
       :new-path="fullNewPath"
       :old-path="fullOldPath"

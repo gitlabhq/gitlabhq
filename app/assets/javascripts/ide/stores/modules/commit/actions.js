@@ -234,6 +234,3 @@ export const commitChanges = ({ commit, state, getters, dispatch, rootState, roo
       window.dispatchEvent(new Event('resize'));
     });
 };
-
-// prevent babel-plugin-rewire from generating an invalid default during karma tests
-export default () => {};
