@@ -210,6 +210,8 @@
   - 1
 - - prometheus_create_default_alerts
   - 1
+- - propagate_integration
+  - 1
 - - propagate_service_template
   - 1
 - - reactive_caching

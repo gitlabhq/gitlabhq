@@ -20243,6 +20243,9 @@ msgstr ""
 msgid "SortOptions|Size"
 msgstr ""
 
+msgid "SortOptions|Sort by:"
+msgstr ""
+
 msgid "SortOptions|Sort direction"
 msgstr ""
 

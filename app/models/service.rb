@@ -134,6 +134,14 @@ class Service < ApplicationRecord
     %w(active)
   end
 
+  def to_service_hash
+    as_json(methods: :type, except: %w[id template instance project_id])
+  end
+
+  def to_data_fields_hash
+    data_fields.as_json(only: data_fields.class.column_names).except('id', 'service_id')
+  end
+
   def test_data(project, user)
     Gitlab::DataBuilder::Push.build_sample(project, user)
   end

@@ -183,6 +183,27 @@ See also the [Why CI/CD?](https://docs.google.com/presentation/d/1OGgk2Tcxbpl7DJ
 As GitLab CI/CD has evolved, certain breaking changes have
 been necessary. These are:
 
+#### 13.0
+
+- [Remove Backported
+  `os.Expand`](https://gitlab.com/gitlab-org/gitlab-runner/issues/4915)
+- [Remove Fedora 29 package
+  support](https://gitlab.com/gitlab-org/gitlab-runner/issues/16158)
+- [Remove macOS 32-bit
+  support](https://gitlab.com/gitlab-org/gitlab-runner/issues/25466)
+- [Removed `debug/jobs/list?v=1`
+  endpoint](https://gitlab.com/gitlab-org/gitlab-runner/issues/6361)
+- [Remove support for array of strings when defining services for Docker
+  executor](https://gitlab.com/gitlab-org/gitlab-runner/issues/4922)
+- [Remove `--docker-services` flag on register
+  command](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/6404)
+- [Remove legacy build directory
+  caching](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4180)
+- [Remove `FF_USE_LEGACY_VOLUMES_MOUNTING_ORDER` feature
+  flag](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/6581)
+- [Remove support for Windows Server
+  1803](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/6553)
+
 #### 12.0
 
 - [Use refspec to clone/fetch Git

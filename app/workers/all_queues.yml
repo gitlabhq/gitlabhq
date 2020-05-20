@@ -1291,6 +1291,13 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
+- :name: propagate_integration
+  :feature_category: :integrations
+  :has_external_dependencies: 
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
 - :name: propagate_service_template
   :feature_category: :source_code_management
   :has_external_dependencies: 

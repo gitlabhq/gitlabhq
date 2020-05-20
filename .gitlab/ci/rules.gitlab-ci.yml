@@ -78,9 +78,11 @@
 
 .frontend-patterns: &frontend-patterns
   - "{package.json,yarn.lock}"
-  - "{babel.config,jest.config}.js"
+  - "babel.config.js"
+  - "jest.config.{base,integration,unit}.js"
   - ".csscomb.json"
   - "Dockerfile.assets"
+  - "config/**/*.js"
   - "vendor/assets/**/*"
   - "{,ee/}{app/assets,app/helpers,app/presenters,app/views,locale,public,symbol}/**/*"
 
@@ -93,7 +95,8 @@
 
 .code-patterns: &code-patterns
   - "{package.json,yarn.lock}"
-  - "{babel.config,jest.config}.js"
+  - "babel.config.js"
+  - "jest.config.{base,integration,unit}.js"
   - ".csscomb.json"
   - "Dockerfile.assets"
   - "vendor/assets/**/*"
@@ -113,7 +116,8 @@
 
 .code-backstage-patterns: &code-backstage-patterns
   - "{package.json,yarn.lock}"
-  - "{babel.config,jest.config}.js"
+  - "babel.config.js"
+  - "jest.config.{base,integration,unit}.js"
   - ".csscomb.json"
   - "Dockerfile.assets"
   - "vendor/assets/**/*"
@@ -135,7 +139,8 @@
 
 .code-qa-patterns: &code-qa-patterns
   - "{package.json,yarn.lock}"
-  - "{babel.config,jest.config}.js"
+  - "babel.config.js"
+  - "jest.config.{base,integration,unit}.js"
   - ".csscomb.json"
   - "Dockerfile.assets"
   - "vendor/assets/**/*"
@@ -154,7 +159,8 @@
 
 .code-backstage-qa-patterns: &code-backstage-qa-patterns
   - "{package.json,yarn.lock}"
-  - "{babel.config,jest.config}.js"
+  - "babel.config.js"
+  - "jest.config.{base,integration,unit}.js"
   - ".csscomb.json"
   - "Dockerfile.assets"
   - "vendor/assets/**/*"
@@ -333,6 +339,12 @@
       allow_failure: true
     - <<: *if-merge-request
       changes: *frontend-dependency-patterns
+      allow_failure: true
+
+.frontend:rules:bundle-size-review:
+  rules:
+    - if: '$DANGER_GITLAB_API_TOKEN && $CI_MERGE_REQUEST_IID && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"'
+      changes: *frontend-patterns
       allow_failure: true
 
 ################
