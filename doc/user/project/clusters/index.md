@@ -338,7 +338,7 @@ the deployment job:
 
 However, sometimes GitLab can not create them. In such instances, your job will fail with the message:
 
-```text
+```plaintext
 This job failed because the necessary resources were not successfully created.
 ```
 

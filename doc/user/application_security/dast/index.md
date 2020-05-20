@@ -315,7 +315,7 @@ API scans support OpenAPI V2 and OpenAPI V3 specifications. You can define these
 If your API specification is accessible at a URL, you can pass that URL in directly as the target.
 The specification does not have to be hosted on the same host as the API being tested.
 
-```yml
+```yaml
 include:
   - template: DAST.gitlab-ci.yml
 

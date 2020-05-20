@@ -12,7 +12,7 @@ Get a list of repository branches from a project, sorted by name alphabetically.
 NOTE: **Note:**
 This endpoint can be accessed without authentication if the repository is publicly accessible.
 
-```text
+```plaintext
 GET /projects/:id/repository/branches
 ```
 
@@ -69,7 +69,7 @@ Get a single project repository branch.
 NOTE: **Note:**
 This endpoint can be accessed without authentication if the repository is publicly accessible.
 
-```text
+```plaintext
 GET /projects/:id/repository/branches/:branch
 ```
 
@@ -130,7 +130,7 @@ for information on unprotecting repository branches.
 
 Create a new branch in the repository.
 
-```text
+```plaintext
 POST /projects/:id/repository/branches
 ```
 
@@ -185,7 +185,7 @@ Delete a branch from the repository.
 NOTE: **Note:**
 In the case of an error, an explanation message is provided.
 
-```text
+```plaintext
 DELETE /projects/:id/repository/branches/:branch
 ```
 
@@ -209,7 +209,7 @@ Will delete all branches that are merged into the project's default branch.
 NOTE: **Note:**
 [Protected branches](../user/project/protected_branches.md) will not be deleted as part of this operation.
 
-```text
+```plaintext
 DELETE /projects/:id/repository/merged_branches
 ```
 

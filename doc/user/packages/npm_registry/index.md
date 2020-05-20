@@ -291,7 +291,7 @@ To work with NPM commands within [GitLab CI/CD](./../../../ci/README.md), you ca
 
 A simple example `.gitlab-ci.yml` file for publishing NPM packages:
 
-```yml
+```yaml
 image: node:latest
 
 stages:
@@ -326,7 +326,7 @@ info Visit https://classic.yarnpkg.com/en/docs/cli/install for documentation abo
 In this case, try adding this to your `.npmrc` file (and replace `<your_token>`
 with your personal access token or deploy token):
 
-```text
+```plaintext
 //gitlab.com/api/v4/projects/:_authToken=<your_token>
 ```
 

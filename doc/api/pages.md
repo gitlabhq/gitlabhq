@@ -8,7 +8,7 @@ The GitLab Pages feature must be enabled to use these endpoints. Find out more a
 
 Remove pages. The user must have admin privileges.
 
-```text
+```plaintext
 DELETE /projects/:id/pages
 ```
 

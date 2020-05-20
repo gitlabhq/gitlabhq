@@ -41,7 +41,7 @@ an error message and keep troubleshooting from there.
 
 You may see an entry similar to the following in your Sidekiq log:
 
-```text
+```plaintext
 2019-01-10_13:22:08.42572 2019-01-10T13:22:08.425Z 6877 TID-abcdefg ProjectServiceWorker JID-3bade5fb3dd47a85db6d78c5 ERROR: {:class=>"ProjectServiceWorker", :service_class=>"SlackService", :message=>"SSL_connect returned=1 errno=0 state=error: certificate verify failed"}
 ```
 

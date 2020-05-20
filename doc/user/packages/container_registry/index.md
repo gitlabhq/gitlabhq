@@ -154,14 +154,14 @@ docker push registry.example.com/group/project/image
 
 Your image will be named after the following scheme:
 
-```text
+```plaintext
 <registry URL>/<namespace>/<project>/<image>
 ```
 
 GitLab supports up to three levels of image repository names.
 The following examples of image tags are valid:
 
-```text
+```plaintext
 registry.example.com/group/project:some-tag
 registry.example.com/group/project/image:latest
 registry.example.com/group/project/my/image:rc1

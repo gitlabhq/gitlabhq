@@ -37,7 +37,7 @@ To use a smartcard with an X.509 certificate to authenticate against a local
 database with GitLab, `CN` and `emailAddress` must be defined in the
 certificate. For example:
 
-```text
+```plaintext
 Certificate:
     Data:
         Version: 1 (0x0)
@@ -73,7 +73,7 @@ database with GitLab, in:
 
 For example:
 
-```text
+```plaintext
 Certificate:
     Data:
         Version: 1 (0x0)

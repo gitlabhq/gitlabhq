@@ -250,7 +250,7 @@ Depending on the status of your job, a badge can have the following values:
 
 You can access a pipeline status badge image using the following link:
 
-```text
+```plaintext
 https://example.gitlab.com/<namespace>/<project>/badges/<branch>/pipeline.svg
 ```
 
@@ -262,7 +262,7 @@ pipeline can have the test coverage percentage value defined.
 
 The test coverage badge can be accessed using following link:
 
-```text
+```plaintext
 https://example.gitlab.com/<namespace>/<project>/badges/<branch>/coverage.svg
 ```
 
@@ -281,7 +281,7 @@ Pipeline badges can be rendered in different styles by adding the `style=style_n
 
 #### Flat (default)
 
-```text
+```plaintext
 https://example.gitlab.com/<namespace>/<project>/badges/<branch>/coverage.svg?style=flat
 ```
 
@@ -291,7 +291,7 @@ https://example.gitlab.com/<namespace>/<project>/badges/<branch>/coverage.svg?st
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/30120) in GitLab 11.8.
 
-```text
+```plaintext
 https://example.gitlab.com/<namespace>/<project>/badges/<branch>/coverage.svg?style=flat-square
 ```
 

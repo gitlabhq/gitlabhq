@@ -25,15 +25,15 @@ For details, see [how to add IPs to a whitelist for the monitoring endpoints](..
 
 With default whitelist settings, the probes can be accessed from localhost using the following URLs:
 
-```text
+```plaintext
 GET http://localhost/-/health
 ```
 
-```text
+```plaintext
 GET http://localhost/-/readiness
 ```
 
-```text
+```plaintext
 GET http://localhost/-/liveness
 ```
 
@@ -45,7 +45,7 @@ are running. This endpoint circumvents Rails Controllers
 and is implemented as additional middleware `BasicHealthCheck`
 very early into the request processing lifecycle.
 
-```text
+```plaintext
 GET /-/health
 ```
 
@@ -57,7 +57,7 @@ curl 'https://gitlab.example.com/-/health'
 
 Example response:
 
-```text
+```plaintext
 GitLab OK
 ```
 
@@ -71,7 +71,7 @@ If the `all=1` parameter is specified, the check will also validate
 the dependent services (Database, Redis, Gitaly etc.)
 and gives a status for each.
 
-```text
+```plaintext
 GET /-/readiness
 GET /-/readiness?all=1
 ```
@@ -111,7 +111,7 @@ Checks whether the application server is running.
 This probe is used to know if Rails Controllers
 are not deadlocked due to a multi-threading.
 
-```text
+```plaintext
 GET /-/liveness
 ```
 
@@ -148,7 +148,7 @@ accepted token can be found under the **Admin Area > Monitoring > Health check**
 
 The access token can be passed as a URL parameter:
 
-```text
+```plaintext
 https://gitlab.example.com/-/readiness?token=ACCESS_TOKEN
 ```
 

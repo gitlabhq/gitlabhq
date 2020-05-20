@@ -570,7 +570,7 @@ doesn't support dependency references made with [local paths](https://docs.npmjs
 in the `package.json` of JavaScript projects. The dependency scan outputs the following error for
 such references:
 
-```text
+```plaintext
 ERROR: Could not find dependencies: <dependency-name>. You may need to run npm install
 ```
 

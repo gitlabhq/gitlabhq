@@ -13,7 +13,7 @@ As of GitLab 12.8, GET requests do not require authentication. All other broadca
 
 List all broadcast messages.
 
-```text
+```plaintext
 GET /broadcast_messages
 ```
 
@@ -46,7 +46,7 @@ Example response:
 
 Get a specific broadcast message.
 
-```text
+```plaintext
 GET /broadcast_messages/:id
 ```
 
@@ -83,7 +83,7 @@ Example response:
 
 Create a new broadcast message.
 
-```text
+```plaintext
 POST /broadcast_messages
 ```
 
@@ -127,7 +127,7 @@ Example response:
 
 Update an existing broadcast message.
 
-```text
+```plaintext
 PUT /broadcast_messages/:id
 ```
 

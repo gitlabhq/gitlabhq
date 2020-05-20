@@ -70,7 +70,7 @@ sudo service tomcat8 restart
 Once the Tomcat service restarts the PlantUML service will be ready and
 listening for requests on port 8080:
 
-```text
+```plaintext
 http://localhost:8080/plantuml
 ```
 
@@ -144,7 +144,7 @@ our AsciiDoc snippets, wikis, and repositories using delimited blocks:
 
 - **AsciiDoc**
 
-  ```text
+  ```plaintext
   [plantuml, format="png", id="myDiagram", width="200px"]
   ----
   Bob->Alice : hello
@@ -154,7 +154,7 @@ our AsciiDoc snippets, wikis, and repositories using delimited blocks:
 
 - **reStructuredText**
 
-  ```text
+  ```plaintext
   .. plantuml::
      :caption: Caption with **bold** and *italic*
 

@@ -78,7 +78,7 @@ will whitelist all ports on all IPs in that range.
 
 Example:
 
-```text
+```plaintext
 example.com;gitlab.example.com
 127.0.0.1,1:0:0:0:0:0:0:1
 127.0.0.0/8 1:0:0:0:0:0:0:0/124

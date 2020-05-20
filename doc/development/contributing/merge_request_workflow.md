@@ -138,7 +138,7 @@ For more information see [How to Write a Git Commit Message](https://chris.beams
 
 Example commit message template that can be used on your machine that embodies the above (guide for [how to apply template](https://codeinthehole.com/tips/a-useful-template-for-commit-messages/)):
 
-```text
+```plaintext
 # (If applied, this commit will...) <subject> (Max 50 char)
 # |<----  Using a Maximum Of 50 Characters  ---->|
 

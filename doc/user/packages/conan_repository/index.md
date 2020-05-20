@@ -279,7 +279,7 @@ To work with Conan commands within [GitLab CI/CD](./../../../ci/README.md), you 
 It is easiest to provide the `CONAN_LOGIN_USERNAME` and `CONAN_PASSWORD` with each
 Conan command in your `.gitlab-ci.yml` file:
 
-```yml
+```yaml
 image: conanio/gcc7
 
 create_package:

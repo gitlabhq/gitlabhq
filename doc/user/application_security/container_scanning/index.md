@@ -59,7 +59,7 @@ To enable Container Scanning in your pipeline, you need:
   [predefined environment variables](../../../ci/variables/predefined_variables.md)
   as defined below:
 
-  ```text
+  ```plaintext
   $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:$CI_COMMIT_SHA
   ```
 
@@ -479,7 +479,7 @@ When the GitLab Runner uses the Docker executor and NFS is used
 (for example, `/var/lib/docker` is on an NFS mount), Container Scanning might fail with
 an error like the following:
 
-```text
+```plaintext
 docker: Error response from daemon: failed to copy xattrs: failed to set xattr "security.selinux" on /path/to/file: operation not supported.
 ```
 

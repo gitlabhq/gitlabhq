@@ -263,7 +263,7 @@ and replaced with `KUBE_INGRESS_BASE_DOMAIN`, and removed in
 Auto DevOps requires a wildcard DNS A record matching the base domain(s). For
 a base domain of `example.com`, you'd need a DNS entry like:
 
-```text
+```plaintext
 *.example.com   3600     A     1.2.3.4
 ```
 

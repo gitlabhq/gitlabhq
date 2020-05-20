@@ -101,20 +101,20 @@ automatically.
 
 Its simplest usage is to provide the value for `title`:
 
-```text
+```plaintext
 bin/changelog 'Hey DZ, I added a feature to GitLab!'
 ```
 
 If you want to generate a changelog entry for GitLab EE, you will need to pass
 the `--ee` option:
 
-```text
+```plaintext
 bin/changelog --ee 'Hey DZ, I added a feature to GitLab!'
 ```
 
 At this point the script would ask you to select the category of the change (mapped to the `type` field in the entry):
 
-```text
+```plaintext
 >> Please specify the category of your change:
 1. New feature
 2. Bug fix
@@ -132,7 +132,7 @@ the command above on a branch called `feature/hey-dz`, it will generate a
 
 The command will output the path of the generated file and its contents:
 
-```text
+```plaintext
 create changelogs/unreleased/my-feature.yml
 ---
 title: Hey DZ, I added a feature to GitLab!
@@ -162,7 +162,7 @@ If you use **`--amend`** and don't provide a title, it will automatically use
 the "subject" of the previous commit, which is the first line of the commit
 message:
 
-```text
+```plaintext
 $ git show --oneline
 ab88683 Added an awesome new feature to GitLab
 
@@ -180,7 +180,7 @@ type:
 Use **`--force`** or **`-f`** to overwrite an existing changelog entry if it
 already exists.
 
-```text
+```plaintext
 $ bin/changelog 'Hey DZ, I added a feature to GitLab!'
 error changelogs/unreleased/feature-hey-dz.yml already exists! Use `--force` to overwrite.
 
@@ -198,7 +198,7 @@ type:
 Use the **`--merge-request`** or **`-m`** argument to provide the
 `merge_request` value:
 
-```text
+```plaintext
 $ bin/changelog 'Hey DZ, I added a feature to GitLab!' -m 1983
 create changelogs/unreleased/feature-hey-dz.yml
 ---
@@ -213,7 +213,7 @@ type:
 Use the **`--dry-run`** or **`-n`** argument to prevent actually writing or
 committing anything:
 
-```text
+```plaintext
 $ bin/changelog --amend --dry-run
 create changelogs/unreleased/feature-hey-dz.yml
 ---
@@ -230,7 +230,7 @@ $ ls changelogs/unreleased/
 Use the **`--git-username`** or **`-u`** argument to automatically fill in the
 `author` value with your configured Git `user.name` value:
 
-```text
+```plaintext
 $ git config user.name
 Jane Doe
 
@@ -247,7 +247,7 @@ type:
 
 Use the **`--type`** or **`-t`** argument to provide the `type` value:
 
-```text
+```plaintext
 $ bin/changelog 'Hey DZ, I added a feature to GitLab!' -t added
 create changelogs/unreleased/feature-hey-dz.yml
 ---

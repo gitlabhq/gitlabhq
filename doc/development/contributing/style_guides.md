@@ -53,7 +53,7 @@ should enable all RuboCop rules to avoid style-related
 discussions/nitpicking/back-and-forth in reviews.
 
 Additionally, we have a dedicated
-[newlines styleguide](../newlines_styleguide.md), as well as dedicated
+[newlines style guide](../newlines_styleguide.md), as well as dedicated
 [test-specific style guides and best practices](../testing_guide/index.md).
 
 ## Database migrations

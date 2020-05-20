@@ -460,7 +460,7 @@ However, this behavior is undesirable for registries used by internal hosts that
 
 1. Add the `redirect` flag to your registry configuration YML file:
 
-    ```yml
+    ```yaml
     storage:
       s3:
         accesskey: 'AKIAKIAKI'

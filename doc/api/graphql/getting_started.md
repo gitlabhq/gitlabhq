@@ -2,7 +2,7 @@
 
 This guide demonstrates basic usage of GitLab's GraphQL API.
 
-See the [GraphQL API StyleGuide](../../development/api_graphql_styleguide.md) for implementation details
+See the [GraphQL API style guide](../../development/api_graphql_styleguide.md) for implementation details
 aimed at developers who wish to work on developing the API itself.
 
 ## Running examples

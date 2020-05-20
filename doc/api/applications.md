@@ -16,7 +16,7 @@ Create an application by posting a JSON payload.
 
 Returns `200` if the request succeeds.
 
-```text
+```plaintext
 POST /applications
 ```
 
@@ -52,7 +52,7 @@ Example response:
 
 List all registered applications.
 
-```text
+```plaintext
 GET /applications
 ```
 
@@ -85,7 +85,7 @@ Delete a specific application.
 
 Returns `204` if the request succeeds.
 
-```text
+```plaintext
 DELETE /applications/:id
 ```
 

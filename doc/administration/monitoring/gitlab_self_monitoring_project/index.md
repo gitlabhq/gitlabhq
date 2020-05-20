@@ -74,7 +74,7 @@ project creation to fail with the following error (which appears in the log file
 when the first admin user is an
 [external user](../../../user/permissions.md#external-users-core-only):
 
-```text
+```plaintext
 Could not create instance administrators group. Errors: ["You don’t have permission to create groups."]
 ```
 

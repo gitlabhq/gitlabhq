@@ -6,7 +6,7 @@ Project repository storage can be moved. To retrieve project repository storage 
 
 ## Retrieve all project repository storage moves
 
-```text
+```plaintext
 GET /project_repository_storage_moves
 ```
 
@@ -43,7 +43,7 @@ Example response:
 
 ## Get a single project repository storage move
 
-```text
+```plaintext
 GET /project_repository_storage_moves/:id
 ```
 

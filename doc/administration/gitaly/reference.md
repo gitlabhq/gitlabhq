@@ -149,7 +149,7 @@ before and after. If the hit ratio does not improve, the higher limit is
 probably not making a meaningful difference. Here is an example
 Prometheus query to see the hit rate:
 
-```text
+```plaintext
 sum(rate(gitaly_catfile_cache_total{type="hit"}[5m])) / sum(rate(gitaly_catfile_cache_total{type=~"(hit)|(miss)"}[5m]))
 ```
 

@@ -41,7 +41,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab
 
 Download the finished export.
 
-```text
+```plaintext
 GET /groups/:id/export/download
 ```
 
@@ -66,7 +66,7 @@ returns either:
 
 ## Import a file
 
-```text
+```plaintext
 POST /groups/import
 ```
 

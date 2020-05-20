@@ -1,4 +1,7 @@
 ---
+stage: Release
+group: Release Management
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 type: reference
 disqus_identifier: 'https://docs.gitlab.com/ee/ci/environments.html'
 ---
@@ -902,7 +905,7 @@ knowing the state of your current environments is only a `git fetch` away.
 In your Git configuration, append the `[remote "<your-remote>"]` block with an extra
 fetch line:
 
-```text
+```plaintext
 fetch = +refs/environments/*:refs/remotes/origin/environments/*
 ```
 

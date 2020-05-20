@@ -40,7 +40,7 @@ are supported:
 Each template must go in its respective subdirectory, have the correct
 extension and not be empty. So, the hierarchy should look like this:
 
-```text
+```plaintext
 |-- README.md
 |-- Dockerfile
     |-- custom_dockerfile.dockerfile

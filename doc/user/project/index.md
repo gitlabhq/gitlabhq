@@ -242,7 +242,7 @@ field.
 
 For example:
 
-```text
+```plaintext
 machine example.gitlab.com
 login <gitlab_user_name>
 password <personal_access_token>

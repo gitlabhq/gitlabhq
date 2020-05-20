@@ -11,7 +11,7 @@ outlined below.
 
 Returns an Array of remote mirrors and their statuses:
 
-```text
+```plaintext
 GET /projects/:id/remote_mirrors
 ```
 
@@ -50,7 +50,7 @@ and password information.
 
 Create a remote mirror for a project. The mirror will be disabled by default. You can enable it by including the optional parameter `enabled` when creating it:
 
-```text
+```plaintext
 POST /projects/:id/remote_mirrors
 ```
 
@@ -91,7 +91,7 @@ Example response:
 Toggle a remote mirror on or off, or change which types of branches are
 mirrored:
 
-```text
+```plaintext
 PUT /projects/:id/remote_mirrors/:mirror_id
 ```
 

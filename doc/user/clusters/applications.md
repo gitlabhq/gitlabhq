@@ -1232,7 +1232,7 @@ epic](https://gitlab.com/groups/gitlab-org/-/epics/1201).
 
 Applications can fail with the following error:
 
-```text
+```plaintext
 Error: remote error: tls: bad certificate
 ```
 

@@ -1,6 +1,6 @@
-# API styleguide
+# API style guide
 
-This styleguide recommends best practices for API development.
+This style guide recommends best practices for API development.
 
 ## Instance variables
 

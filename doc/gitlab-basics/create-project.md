@@ -145,7 +145,7 @@ git push --set-upstream https://gitlab.example.com/namespace/nonexistent-project
 Once the push finishes successfully, a remote message will indicate
 the command to set the remote and the URL to the new project:
 
-```text
+```plaintext
 remote:
 remote: The private project namespace/nonexistent-project was created.
 remote:

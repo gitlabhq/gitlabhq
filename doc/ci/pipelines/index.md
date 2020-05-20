@@ -222,7 +222,7 @@ In the example:
 
 Visually, it can be viewed as:
 
-```text
+```plaintext
 0  1  2  3  4  5  6  7
    AAAAAAA
       BBBBBBB
@@ -231,7 +231,7 @@ Visually, it can be viewed as:
 
 The union of A, B, and C is (1, 4) and (6, 7). Therefore, the total running time is:
 
-```text
+```plaintext
 (4 - 1) + (7 - 6) => 4
 ```
 

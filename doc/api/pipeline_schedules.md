@@ -286,7 +286,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" "https://gi
 Trigger a new scheduled pipeline, which runs immediately. The next scheduled run
 of this pipeline is not affected.
 
-```text
+```plaintext
 POST /projects/:id/pipeline_schedules/:pipeline_schedule_id/play
 ```
 

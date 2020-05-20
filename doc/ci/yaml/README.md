@@ -715,7 +715,7 @@ For example, the following are equivalent configuration:
 
 - Configured in order:
 
-  ```yml
+  ```yaml
   stages:
     - .pre
     - a
@@ -725,7 +725,7 @@ For example, the following are equivalent configuration:
 
 - Configured out of order:
 
-  ```yml
+  ```yaml
   stages:
     - a
     - .pre
@@ -735,7 +735,7 @@ For example, the following are equivalent configuration:
 
 - Not explicitly configured:
 
-  ```yml
+  ```yaml
   stages:
     - a
     - b
@@ -2554,7 +2554,7 @@ in the [merge request](../../user/project/merge_requests/index.md) UI.
 
 For example, to match a single file:
 
-```yml
+```yaml
 test:
   script: [ 'echo 1' ]
   artifacts:
@@ -2567,7 +2567,7 @@ that points to `file1.txt`.
 
 An example that will match an entire directory:
 
-```yml
+```yaml
 test:
   script: [ 'echo 1' ]
   artifacts:
@@ -3534,7 +3534,7 @@ specific directory (Go projects, for example). In that case, you can specify
 the `GIT_CLONE_PATH` variable to tell the Runner in which directory to clone the
 repository:
 
-```yml
+```yaml
 variables:
   GIT_CLONE_PATH: $CI_BUILDS_DIR/project-name
 
@@ -3564,7 +3564,7 @@ exposes two additional variables that provide a unique `ID` of concurrency:
 The most stable configuration that should work well in any scenario and on any executor
 is to use `$CI_CONCURRENT_ID` in the `GIT_CLONE_PATH`. For example:
 
-```yml
+```yaml
 variables:
   GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_CONCURRENT_ID/project-name
 
@@ -3576,7 +3576,7 @@ test:
 The `$CI_CONCURRENT_PROJECT_ID` should be used in conjunction with `$CI_PROJECT_PATH`
 as the `$CI_PROJECT_PATH` provides a path of a repository. That is, `group/subgroup/project`. For example:
 
-```yml
+```yaml
 variables:
   GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_CONCURRENT_ID/$CI_PROJECT_PATH
 
@@ -3593,7 +3593,7 @@ within is not supported.
 For example, you define both the variables below in your
 `.gitlab-ci.yml` file:
 
-```yml
+```yaml
 variables:
   GOPATH: $CI_BUILDS_DIR/go
   GIT_CLONE_PATH: $GOPATH/src/namespace/project

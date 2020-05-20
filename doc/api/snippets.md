@@ -21,7 +21,7 @@ Valid values for snippet visibility levels are:
 
 Get a list of the current user's snippets.
 
-```text
+```plaintext
 GET /snippets
 ```
 
@@ -82,7 +82,7 @@ Example response:
 
 Get a single snippet.
 
-```text
+```plaintext
 GET /snippets/:id
 ```
 
@@ -128,7 +128,7 @@ Example response:
 
 Get a single snippet's raw contents.
 
-```text
+```plaintext
 GET /snippets/:id/raw
 ```
 
@@ -146,7 +146,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/ap
 
 Example response:
 
-```text
+```plaintext
 Hello World snippet
 ```
 
@@ -157,7 +157,7 @@ Create a new snippet.
 NOTE: **Note:**
 The user must have permission to create new snippets.
 
-```text
+```plaintext
 POST /snippets
 ```
 
@@ -214,7 +214,7 @@ Update an existing snippet.
 NOTE: **Note:**
 The user must have permission to change an existing snippet.
 
-```text
+```plaintext
 PUT /snippets/:id
 ```
 
@@ -269,7 +269,7 @@ Example response:
 
 Delete an existing snippet.
 
-```text
+```plaintext
 DELETE /snippets/:id
 ```
 
@@ -296,7 +296,7 @@ The following are possible return codes:
 
 List all public snippets.
 
-```text
+```plaintext
 GET /snippets/public
 ```
 
@@ -364,7 +364,7 @@ Example response:
 NOTE: **Note:**
 Available only for administrators.
 
-```text
+```plaintext
 GET /snippets/:id/user_agent_detail
 ```
 

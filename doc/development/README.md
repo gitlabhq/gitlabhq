@@ -57,8 +57,8 @@ Complementary reads:
 - [GitLab utilities](utilities.md)
 - [Issuable-like Rails models](issuable-like-models.md)
 - [Logging](logging.md)
-- [API styleguide](api_styleguide.md) for contributing to the API
-- [GraphQL API styleguide](api_graphql_styleguide.md) for contributing to the [GraphQL API](../api/graphql/index.md)
+- [API style guide](api_styleguide.md) for contributing to the API
+- [GraphQL API style guide](api_graphql_styleguide.md) for contributing to the [GraphQL API](../api/graphql/index.md)
 - [Sidekiq guidelines](sidekiq_style_guide.md) for working with Sidekiq workers
 - [Working with Gitaly](gitaly.md)
 - [Manage feature flags](feature_flags/index.md)
@@ -177,7 +177,7 @@ Complementary reads:
 ## Documentation guides
 
 - [Writing documentation](documentation/index.md)
-- [Documentation styleguide](documentation/styleguide.md)
+- [Documentation style guide](documentation/styleguide.md)
 - [Markdown](../user/markdown.md)
 
 ## Internationalization (i18n) guides

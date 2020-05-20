@@ -284,7 +284,7 @@ license_scanning:
 The [`pip.conf`](https://pip.pypa.io/en/stable/reference/pip/) allows you to specify a list of
 [trusted hosts](https://pip.pypa.io/en/stable/reference/pip/#cmdoption-trusted-host):
 
-```text
+```plaintext
 [global]
 trusted-host = pypi.example.com
 ```
@@ -308,7 +308,7 @@ setting to specify its location.
 
 For example:
 
-```text
+```plaintext
 registry = https://npm.example.com
 ```
 
@@ -322,7 +322,7 @@ setting.
 
 For example:
 
-```text
+```plaintext
 strict-ssl = false
 ```
 
@@ -385,7 +385,7 @@ license_scanning:
 
 If you use the `license_management` artifact in GitLab 13.0 or later, the License Compliance job generates this error:
 
-```text
+```plaintext
 WARNING: Uploading artifacts to coordinator... failed id=:id responseStatus=400 Bad Request status=400 Bad Request token=:sha
 
 FATAL: invalid_argument

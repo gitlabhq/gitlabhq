@@ -65,7 +65,7 @@ curl --head --header 'PRIVATE-TOKEN: <your_access_token>' 'https://gitlab.exampl
 
 Example response:
 
-```text
+```plaintext
 HTTP/1.1 200 OK
 ...
 X-Gitlab-Blob-Id: 79f7bbd25901e8334750839545a9bd021f0e4c83
@@ -134,7 +134,7 @@ curl --head --header 'PRIVATE-TOKEN: <your_access_token>' 'https://gitlab.exampl
 
 Example response:
 
-```text
+```plaintext
 HTTP/1.1 200 OK
 ...
 X-Gitlab-Blob-Id: 79f7bbd25901e8334750839545a9bd021f0e4c83

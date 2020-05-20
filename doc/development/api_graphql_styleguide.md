@@ -1,6 +1,6 @@
-# GraphQL API
+# GraphQL API style guide
 
-This document outlines the styleguide for GitLab's [GraphQL API](../api/graphql/index.md).
+This document outlines the style guide for GitLab's [GraphQL API](../api/graphql/index.md).
 
 ## How GitLab implements GraphQL
 
@@ -365,7 +365,7 @@ field :token, GraphQL::STRING_TYPE, null: true,
 The original `description:` of the field should be maintained, and should
 _not_ be updated to mention the deprecation.
 
-### Deprecation reason styleguide
+### Deprecation reason style guide
 
 Where the reason for deprecation is due to the field being replaced
 with another field, the `reason` must be:
@@ -446,7 +446,7 @@ Descriptions of fields and arguments are viewable to users through:
 - The [GraphiQL explorer](#graphiql).
 - The [static GraphQL API reference](../api/graphql/#reference).
 
-### Description styleguide
+### Description style guide
 
 To ensure consistency, the following should be followed whenever adding or updating
 descriptions:

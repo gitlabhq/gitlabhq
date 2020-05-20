@@ -367,7 +367,7 @@ from Jekyll `_config.yml` file, otherwise Jekyll will
 understand it as a regular directory to build
 together with the site:
 
-```yml
+```yaml
 exclude:
   - vendor
 ```

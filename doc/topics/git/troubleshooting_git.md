@@ -13,7 +13,7 @@ with Git.
 'Broken pipe' errors can occur when attempting to push to a remote repository.
 When pushing you will usually see:
 
-```text
+```plaintext
 Write failed: Broken pipe
 fatal: The remote end hung up unexpectedly
 ```
@@ -56,7 +56,7 @@ Configuring *both* the client and the server is unnecessary.
 - On UNIX, edit `~/.ssh/config` (create the file if it doesn’t exist) and
   add or edit:
 
-  ```text
+  ```plaintext
   Host your-gitlab-instance-url.com
     ServerAliveInterval 60
     ServerAliveCountMax 5
@@ -68,7 +68,7 @@ Configuring *both* the client and the server is unnecessary.
 
 **To configure SSH on the server side**, edit `/etc/ssh/sshd_config` and add:
 
-```text
+```plaintext
 ClientAliveInterval 60
 ClientAliveCountMax 5
 ```
@@ -93,7 +93,7 @@ to >= 2.9 (see [Broken pipe when pushing to Git repository](https://stackoverflo
 Users may experience the following error when attempting to push or pull
 using Git over SSH:
 
-```text
+```plaintext
 Please make sure you have the correct access rights
 and the repository exists.
 ...
@@ -103,7 +103,7 @@ fatal: Could not read from remote repository.
 
 or
 
-```text
+```plaintext
 ssh_exchange_identification: Connection closed by remote host
 fatal: The remote end hung up unexpectedly
 ```
@@ -117,7 +117,7 @@ beginning. The default value is `10`.
 Increase `MaxStartups` on the GitLab server
 by adding or modifying the value in `/etc/ssh/sshd_config`:
 
-```text
+```plaintext
 MaxStartups 100:30:200
 ```
 
@@ -140,7 +140,7 @@ If pulling/pushing from/to your repository ends up taking more than 50 seconds,
 a timeout will be issued with a log of the number of operations performed
 and their respective timings, like the example below:
 
-```text
+```plaintext
 remote: Running checks for branch: master
 remote: Scanning for LFS objects... (153ms)
 remote: Calculating new repository size... (cancelled after 729ms)
@@ -153,7 +153,7 @@ and provide GitLab with more information on how to improve the service.
 
 If the buffer size is lower than what is allowed in the request, the action will fail with an error similar to the one below:
 
-```text
+```plaintext
 error: RPC failed; curl 18 transfer closed with outstanding read data remaining
 fatal: The remote end hung up unexpectedly
 fatal: early EOF

@@ -541,7 +541,7 @@ In unordered lists (using `-`), this means two spaces for each level of indentat
 
 - Unordered list item 3
 
-  ```text
+  ```plaintext
   a codeblock that will next inside list item 3
   ```
 
@@ -564,7 +564,7 @@ For ordered lists, use three spaces for each level of indentation:
 
 1. Ordered list item 3
 
-   ```text
+   ```plaintext
    a codeblock that will next inside list item 3
    ```
 
@@ -1529,7 +1529,7 @@ The following can be used as a template to get started:
 
 One or two sentence description of what endpoint does.
 
-```text
+```plaintext
 METHOD /endpoint
 ```
 

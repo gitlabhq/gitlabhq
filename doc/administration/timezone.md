@@ -2,7 +2,7 @@
 
 The global time zone configuration parameter can be changed in `config/gitlab.yml`:
 
-```text
+```plaintext
 # time_zone: 'UTC'
 ```
 

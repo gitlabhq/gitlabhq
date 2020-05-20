@@ -16,7 +16,7 @@ NOTE: **Note:**
 This endpoint is used as part of the SCIM syncing mechanism and it only returns
 a single user based on a unique ID which should match the `extern_uid` of the user.
 
-```text
+```plaintext
 GET /api/scim/v2/groups/:group_path/Users
 ```
 
@@ -72,7 +72,7 @@ Example response:
 
 ## Get a single SAML user
 
-```text
+```plaintext
 GET /api/scim/v2/groups/:group_path/Users/:id
 ```
 
@@ -113,7 +113,7 @@ Example response:
 
 ## Create a SAML user
 
-```text
+```plaintext
 POST /api/scim/v2/groups/:group_path/Users/
 ```
 
@@ -169,7 +169,7 @@ Fields that can be updated are:
 | `active`                         | Identity removal if `active` = `false` |
 | `userName`                       | `username`                             |
 
-```text
+```plaintext
 PATCH /api/scim/v2/groups/:group_path/Users/:id
 ```
 
@@ -193,7 +193,7 @@ Returns an empty response with a `204` status code if successful.
 
 Removes the user's SSO identity and group membership.
 
-```text
+```plaintext
 DELETE /api/scim/v2/groups/:group_path/Users/:id
 ```
 

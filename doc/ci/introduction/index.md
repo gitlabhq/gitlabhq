@@ -108,7 +108,7 @@ The scripts are grouped into **jobs**, and together they compose
 a **pipeline**. A minimalist example of `.gitlab-ci.yml` file
 could contain:
 
-```yml
+```yaml
 before_script:
   - apt-get install rubygems ruby-dev -y
 
