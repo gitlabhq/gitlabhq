@@ -178,7 +178,7 @@ module Projects
     # rubocop: disable CodeReuse/ActiveRecord
     def create_services_from_active_templates(project)
       Service.where(template: true, active: true).each do |template|
-        service = Service.build_from_template(project.id, template)
+        service = Service.build_from_integration(project.id, template)
         service.save!
       end
     end

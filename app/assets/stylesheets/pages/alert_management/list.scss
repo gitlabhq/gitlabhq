@@ -30,10 +30,6 @@
       th {
         @include gl-p-5;
         border: 0; // Remove cell border styling so that we can set border styling per row
-
-        &.event-count {
-          @include gl-pr-9;
-        }
       }
 
       th {

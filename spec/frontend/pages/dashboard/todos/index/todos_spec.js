@@ -5,6 +5,11 @@ import '~/lib/utils/common_utils';
 import '~/gl_dropdown';
 import axios from '~/lib/utils/axios_utils';
 import { addDelimiter } from '~/lib/utils/text_utility';
+import { visitUrl } from '~/lib/utils/url_utility';
+
+jest.mock('~/lib/utils/url_utility', () => ({
+  visitUrl: jest.fn().mockName('visitUrl'),
+}));
 
 const TEST_COUNT_BIG = 2000;
 const TEST_DONE_COUNT_BIG = 7300;
@@ -30,7 +35,7 @@ describe('Todos', () => {
     it('opens the todo url', done => {
       const todoLink = todoItem.dataset.url;
 
-      spyOnDependency(Todos, 'visitUrl').and.callFake(url => {
+      visitUrl.mockImplementation(url => {
         expect(url).toEqual(todoLink);
         done();
       });
@@ -39,14 +44,12 @@ describe('Todos', () => {
     });
 
     describe('meta click', () => {
-      let visitUrlSpy;
       let windowOpenSpy;
       let metakeyEvent;
 
       beforeEach(() => {
         metakeyEvent = $.Event('click', { keyCode: 91, ctrlKey: true });
-        visitUrlSpy = spyOnDependency(Todos, 'visitUrl').and.callFake(() => {});
-        windowOpenSpy = spyOn(window, 'open').and.callFake(() => {});
+        windowOpenSpy = jest.spyOn(window, 'open').mockImplementation(() => {});
       });
 
       it('opens the todo url in another tab', () => {
@@ -54,7 +57,7 @@ describe('Todos', () => {
 
         $('.todos-list .todo').trigger(metakeyEvent);
 
-        expect(visitUrlSpy).not.toHaveBeenCalled();
+        expect(visitUrl).not.toHaveBeenCalled();
         expect(windowOpenSpy).toHaveBeenCalledWith(todoLink, '_blank');
       });
 
@@ -62,7 +65,7 @@ describe('Todos', () => {
         $('.todos-list a').on('click', e => e.preventDefault());
         $('.todos-list img').trigger(metakeyEvent);
 
-        expect(visitUrlSpy).not.toHaveBeenCalled();
+        expect(visitUrl).not.toHaveBeenCalled();
         expect(windowOpenSpy).not.toHaveBeenCalled();
       });
     });
@@ -78,7 +81,7 @@ describe('Todos', () => {
         mock
           .onDelete(path)
           .replyOnce(200, { count: TEST_COUNT_BIG, done_count: TEST_DONE_COUNT_BIG });
-        onToggleSpy = jasmine.createSpy('onToggle');
+        onToggleSpy = jest.fn();
         $(document).on('todo:toggle', onToggleSpy);
 
         // Act
@@ -89,7 +92,7 @@ describe('Todos', () => {
       });
 
       it('dispatches todo:toggle', () => {
-        expect(onToggleSpy).toHaveBeenCalledWith(jasmine.anything(), TEST_COUNT_BIG);
+        expect(onToggleSpy).toHaveBeenCalledWith(expect.anything(), TEST_COUNT_BIG);
       });
 
       it('updates pending text', () => {

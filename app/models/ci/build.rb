@@ -576,7 +576,7 @@ module Ci
 
     def environment_changed_page_variables
       Gitlab::Ci::Variables::Collection.new.tap do |variables|
-        break variables unless environment_status
+        break variables unless environment_status && Feature.enabled?(:modifed_path_ci_variables, project)
 
         variables.append(key: 'CI_MERGE_REQUEST_CHANGED_PAGE_PATHS', value: environment_status.changed_paths.join(','))
         variables.append(key: 'CI_MERGE_REQUEST_CHANGED_PAGE_URLS', value: environment_status.changed_urls.join(','))

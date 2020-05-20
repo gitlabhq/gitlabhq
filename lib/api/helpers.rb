@@ -437,7 +437,7 @@ module API
       if report_exception?(exception)
         define_params_for_grape_middleware
         Gitlab::ErrorTracking.with_context(current_user) do
-          Gitlab::ErrorTracking.track_exception(exception, params)
+          Gitlab::ErrorTracking.track_exception(exception)
         end
       end
 

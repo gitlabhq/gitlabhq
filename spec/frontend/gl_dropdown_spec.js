@@ -1,19 +1,22 @@
 /* eslint-disable no-param-reassign */
 
 import $ from 'jquery';
-import GLDropdown from '~/gl_dropdown';
+import '~/gl_dropdown';
 import '~/lib/utils/common_utils';
+import { visitUrl } from '~/lib/utils/url_utility';
 
-describe('glDropdown', function describeDropdown() {
+jest.mock('~/lib/utils/url_utility', () => ({
+  visitUrl: jest.fn().mockName('visitUrl'),
+}));
+
+describe('glDropdown', () => {
   preloadFixtures('static/gl_dropdown.html');
-  loadJSONFixtures('static/projects.json');
 
   const NON_SELECTABLE_CLASSES =
     '.divider, .separator, .dropdown-header, .dropdown-menu-empty-item';
   const SEARCH_INPUT_SELECTOR = '.dropdown-input-field';
   const ITEM_SELECTOR = `.dropdown-content li:not(${NON_SELECTABLE_CLASSES})`;
   const FOCUSED_ITEM_SELECTOR = `${ITEM_SELECTOR} a.is-focused`;
-
   const ARROW_KEYS = {
     DOWN: 40,
     UP: 38,
@@ -23,7 +26,9 @@ describe('glDropdown', function describeDropdown() {
 
   let remoteCallback;
 
-  const navigateWithKeys = function navigateWithKeys(direction, steps, cb, i) {
+  const test = {};
+
+  const navigateWithKeys = (direction, steps, cb, i) => {
     i = i || 0;
     if (!i) direction = direction.toUpperCase();
     $('body').trigger({
@@ -39,7 +44,7 @@ describe('glDropdown', function describeDropdown() {
     }
   };
 
-  const remoteMock = function remoteMock(data, term, callback) {
+  const remoteMock = (data, term, callback) => {
     remoteCallback = callback.bind({}, data);
   };
 
@@ -47,7 +52,7 @@ describe('glDropdown', function describeDropdown() {
     const options = {
       selectable: true,
       filterable: isFilterable,
-      data: hasRemote ? remoteMock.bind({}, this.projectsData) : this.projectsData,
+      data: hasRemote ? remoteMock.bind({}, test.projectsData) : test.projectsData,
       search: {
         fields: ['name'],
       },
@@ -55,52 +60,52 @@ describe('glDropdown', function describeDropdown() {
       id: project => project.id,
       ...extraOpts,
     };
-    this.dropdownButtonElement = $(
+    test.dropdownButtonElement = $(
       '#js-project-dropdown',
-      this.dropdownContainerElement,
+      test.dropdownContainerElement,
     ).glDropdown(options);
   }
 
   beforeEach(() => {
     loadFixtures('static/gl_dropdown.html');
-    this.dropdownContainerElement = $('.dropdown.inline');
-    this.$dropdownMenuElement = $('.dropdown-menu', this.dropdownContainerElement);
-    this.projectsData = getJSONFixture('static/projects.json');
+    test.dropdownContainerElement = $('.dropdown.inline');
+    test.$dropdownMenuElement = $('.dropdown-menu', test.dropdownContainerElement);
+    test.projectsData = getJSONFixture('static/projects.json');
   });
 
   afterEach(() => {
     $('body').off('keydown');
-    this.dropdownContainerElement.off('keyup');
+    test.dropdownContainerElement.off('keyup');
   });
 
   it('should open on click', () => {
     initDropDown.call(this, false);
 
-    expect(this.dropdownContainerElement).not.toHaveClass('show');
-    this.dropdownButtonElement.click();
+    expect(test.dropdownContainerElement).not.toHaveClass('show');
+    test.dropdownButtonElement.click();
 
-    expect(this.dropdownContainerElement).toHaveClass('show');
+    expect(test.dropdownContainerElement).toHaveClass('show');
   });
 
   it('escapes HTML as text', () => {
-    this.projectsData[0].name_with_namespace = '<script>alert("testing");</script>';
+    test.projectsData[0].name_with_namespace = '<script>alert("testing");</script>';
 
     initDropDown.call(this, false);
 
-    this.dropdownButtonElement.click();
+    test.dropdownButtonElement.click();
 
     expect($('.dropdown-content li:first-child').text()).toBe('<script>alert("testing");</script>');
   });
 
   it('should output HTML when highlighting', () => {
-    this.projectsData[0].name_with_namespace = 'testing';
+    test.projectsData[0].name_with_namespace = 'testing';
     $('.dropdown-input .dropdown-input-field').val('test');
 
     initDropDown.call(this, false, true, {
       highlight: true,
     });
 
-    this.dropdownButtonElement.click();
+    test.dropdownButtonElement.click();
 
     expect($('.dropdown-content li:first-child').text()).toBe('testing');
 
@@ -112,31 +117,31 @@ describe('glDropdown', function describeDropdown() {
   describe('that is open', () => {
     beforeEach(() => {
       initDropDown.call(this, false, false);
-      this.dropdownButtonElement.click();
+      test.dropdownButtonElement.click();
     });
 
     it('should select a following item on DOWN keypress', () => {
-      expect($(FOCUSED_ITEM_SELECTOR, this.$dropdownMenuElement).length).toBe(0);
-      const randomIndex = Math.floor(Math.random() * (this.projectsData.length - 1)) + 0;
+      expect($(FOCUSED_ITEM_SELECTOR, test.$dropdownMenuElement).length).toBe(0);
+      const randomIndex = Math.floor(Math.random() * (test.projectsData.length - 1)) + 0;
       navigateWithKeys('down', randomIndex, () => {
-        expect($(FOCUSED_ITEM_SELECTOR, this.$dropdownMenuElement).length).toBe(1);
-        expect($(`${ITEM_SELECTOR}:eq(${randomIndex}) a`, this.$dropdownMenuElement)).toHaveClass(
+        expect($(FOCUSED_ITEM_SELECTOR, test.$dropdownMenuElement).length).toBe(1);
+        expect($(`${ITEM_SELECTOR}:eq(${randomIndex}) a`, test.$dropdownMenuElement)).toHaveClass(
           'is-focused',
         );
       });
     });
 
     it('should select a previous item on UP keypress', () => {
-      expect($(FOCUSED_ITEM_SELECTOR, this.$dropdownMenuElement).length).toBe(0);
-      navigateWithKeys('down', this.projectsData.length - 1, () => {
-        expect($(FOCUSED_ITEM_SELECTOR, this.$dropdownMenuElement).length).toBe(1);
-        const randomIndex = Math.floor(Math.random() * (this.projectsData.length - 2)) + 0;
+      expect($(FOCUSED_ITEM_SELECTOR, test.$dropdownMenuElement).length).toBe(0);
+      navigateWithKeys('down', test.projectsData.length - 1, () => {
+        expect($(FOCUSED_ITEM_SELECTOR, test.$dropdownMenuElement).length).toBe(1);
+        const randomIndex = Math.floor(Math.random() * (test.projectsData.length - 2)) + 0;
         navigateWithKeys('up', randomIndex, () => {
-          expect($(FOCUSED_ITEM_SELECTOR, this.$dropdownMenuElement).length).toBe(1);
+          expect($(FOCUSED_ITEM_SELECTOR, test.$dropdownMenuElement).length).toBe(1);
           expect(
             $(
-              `${ITEM_SELECTOR}:eq(${this.projectsData.length - 2 - randomIndex}) a`,
-              this.$dropdownMenuElement,
+              `${ITEM_SELECTOR}:eq(${test.projectsData.length - 2 - randomIndex}) a`,
+              test.$dropdownMenuElement,
             ),
           ).toHaveClass('is-focused');
         });
@@ -144,13 +149,12 @@ describe('glDropdown', function describeDropdown() {
     });
 
     it('should click the selected item on ENTER keypress', () => {
-      expect(this.dropdownContainerElement).toHaveClass('show');
-      const randomIndex = Math.floor(Math.random() * (this.projectsData.length - 1)) + 0;
+      expect(test.dropdownContainerElement).toHaveClass('show');
+      const randomIndex = Math.floor(Math.random() * (test.projectsData.length - 1)) + 0;
       navigateWithKeys('down', randomIndex, () => {
-        const visitUrl = spyOnDependency(GLDropdown, 'visitUrl').and.stub();
         navigateWithKeys('enter', null, () => {
-          expect(this.dropdownContainerElement).not.toHaveClass('show');
-          const link = $(`${ITEM_SELECTOR}:eq(${randomIndex}) a`, this.$dropdownMenuElement);
+          expect(test.dropdownContainerElement).not.toHaveClass('show');
+          const link = $(`${ITEM_SELECTOR}:eq(${randomIndex}) a`, test.$dropdownMenuElement);
 
           expect(link).toHaveClass('is-active');
           const linkedLocation = link.attr('href');
@@ -162,21 +166,21 @@ describe('glDropdown', function describeDropdown() {
     });
 
     it('should close on ESC keypress', () => {
-      expect(this.dropdownContainerElement).toHaveClass('show');
-      this.dropdownContainerElement.trigger({
+      expect(test.dropdownContainerElement).toHaveClass('show');
+      test.dropdownContainerElement.trigger({
         type: 'keyup',
         which: ARROW_KEYS.ESC,
         keyCode: ARROW_KEYS.ESC,
       });
 
-      expect(this.dropdownContainerElement).not.toHaveClass('show');
+      expect(test.dropdownContainerElement).not.toHaveClass('show');
     });
   });
 
   describe('opened and waiting for a remote callback', () => {
     beforeEach(() => {
       initDropDown.call(this, true, true);
-      this.dropdownButtonElement.click();
+      test.dropdownButtonElement.click();
     });
 
     it('should show loading indicator while search results are being fetched by backend', () => {
@@ -203,13 +207,13 @@ describe('glDropdown', function describeDropdown() {
 
     it('should focus on input when opening for the second time after transition', () => {
       remoteCallback();
-      this.dropdownContainerElement.trigger({
+      test.dropdownContainerElement.trigger({
         type: 'keyup',
         which: ARROW_KEYS.ESC,
         keyCode: ARROW_KEYS.ESC,
       });
-      this.dropdownButtonElement.click();
-      this.dropdownContainerElement.trigger('transitionend');
+      test.dropdownButtonElement.click();
+      test.dropdownContainerElement.trigger('transitionend');
 
       expect($(document.activeElement)).toEqual($(SEARCH_INPUT_SELECTOR));
     });
@@ -218,8 +222,8 @@ describe('glDropdown', function describeDropdown() {
   describe('input focus with array data', () => {
     it('should focus input when passing array data to drop down', () => {
       initDropDown.call(this, false, true);
-      this.dropdownButtonElement.click();
-      this.dropdownContainerElement.trigger('transitionend');
+      test.dropdownButtonElement.click();
+      test.dropdownContainerElement.trigger('transitionend');
 
       expect($(document.activeElement)).toEqual($(SEARCH_INPUT_SELECTOR));
     });
@@ -234,7 +238,7 @@ describe('glDropdown', function describeDropdown() {
       .trigger('input');
 
     expect($searchInput.val()).toEqual('g');
-    this.dropdownButtonElement.trigger('hidden.bs.dropdown');
+    test.dropdownButtonElement.trigger('hidden.bs.dropdown');
     $searchInput.trigger('blur').trigger('focus');
 
     expect($searchInput.val()).toEqual('g');
@@ -323,19 +327,19 @@ describe('glDropdown', function describeDropdown() {
       },
     };
     initDropDown.call(this, false, false, options);
-    const $item = $(`${ITEM_SELECTOR}:first() a`, this.$dropdownMenuElement);
+    const $item = $(`${ITEM_SELECTOR}:first() a`, test.$dropdownMenuElement);
 
     // select item the first time
-    this.dropdownButtonElement.click();
+    test.dropdownButtonElement.click();
     $item.click();
 
     expect($item).toHaveClass('is-active');
     // select item the second time
-    this.dropdownButtonElement.click();
+    test.dropdownButtonElement.click();
     $item.click();
 
     expect($item).toHaveClass('is-active');
 
-    expect($('.dropdown-toggle-text')).toHaveText(this.projectsData[0].id.toString());
+    expect($('.dropdown-toggle-text')).toHaveText(test.projectsData[0].id.toString());
   });
 });

@@ -1273,7 +1273,7 @@ class Project < ApplicationRecord
     template = find_service(services_templates, name)
 
     if template
-      Service.build_from_template(id, template)
+      Service.build_from_integration(id, template)
     else
       public_send("build_#{name}_service") # rubocop:disable GitlabSecurity/PublicSend
     end

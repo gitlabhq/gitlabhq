@@ -16,9 +16,8 @@ describe('Importer Status', () => {
 
   describe('addToImport', () => {
     const importUrl = '/import_url';
-
-    beforeEach(() => {
-      setFixtures(`
+    const fixtures = `
+      <table>
         <tr id="repo_123">
           <td class="import-target"></td>
           <td class="import-actions job-status">
@@ -26,9 +25,13 @@ describe('Importer Status', () => {
             </button>
           </td>
         </tr>
-      `);
-      spyOn(ImporterStatus.prototype, 'initStatusPage').and.callFake(() => {});
-      spyOn(ImporterStatus.prototype, 'setAutoUpdate').and.callFake(() => {});
+      </table>
+    `;
+
+    beforeEach(() => {
+      setFixtures(fixtures);
+      jest.spyOn(ImporterStatus.prototype, 'initStatusPage').mockImplementation(() => {});
+      jest.spyOn(ImporterStatus.prototype, 'setAutoUpdate').mockImplementation(() => {});
       instance = new ImporterStatus({
         jobsUrl: '',
         importUrl,
@@ -53,7 +56,7 @@ describe('Importer Status', () => {
     });
 
     it('shows error message after failed POST request', done => {
-      appendSetFixtures('<div class="flash-container"></div>');
+      setFixtures(`${fixtures}<div class="flash-container"></div>`);
 
       mock.onPost(importUrl).reply(422, {
         errors: 'You forgot your lunch',
@@ -89,8 +92,8 @@ describe('Importer Status', () => {
 
       document.body.appendChild(div);
 
-      spyOn(ImporterStatus.prototype, 'initStatusPage').and.callFake(() => {});
-      spyOn(ImporterStatus.prototype, 'setAutoUpdate').and.callFake(() => {});
+      jest.spyOn(ImporterStatus.prototype, 'initStatusPage').mockImplementation(() => {});
+      jest.spyOn(ImporterStatus.prototype, 'setAutoUpdate').mockImplementation(() => {});
       instance = new ImporterStatus({
         jobsUrl,
       });

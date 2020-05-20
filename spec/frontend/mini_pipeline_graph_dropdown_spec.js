@@ -2,7 +2,7 @@ import $ from 'jquery';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import MiniPipelineGraph from '~/mini_pipeline_graph_dropdown';
-import timeoutPromise from './helpers/set_timeout_promise_helper';
+import waitForPromises from './helpers/wait_for_promises';
 
 describe('Mini Pipeline Graph Dropdown', () => {
   preloadFixtures('static/mini_dropdown_graph.html');
@@ -39,9 +39,9 @@ describe('Mini Pipeline Graph Dropdown', () => {
     });
 
     it('should call getBuildsList', () => {
-      const getBuildsListSpy = spyOn(MiniPipelineGraph.prototype, 'getBuildsList').and.callFake(
-        function() {},
-      );
+      const getBuildsListSpy = jest
+        .spyOn(MiniPipelineGraph.prototype, 'getBuildsList')
+        .mockImplementation(() => {});
 
       new MiniPipelineGraph({ container: '.js-builds-dropdown-tests' }).bindEvents();
 
@@ -51,7 +51,7 @@ describe('Mini Pipeline Graph Dropdown', () => {
     });
 
     it('should make a request to the endpoint provided in the html', () => {
-      const ajaxSpy = spyOn(axios, 'get').and.callThrough();
+      const ajaxSpy = jest.spyOn(axios, 'get');
 
       mock.onGet('foobar').reply(200, {
         html: '',
@@ -61,7 +61,7 @@ describe('Mini Pipeline Graph Dropdown', () => {
 
       document.querySelector('.js-builds-dropdown-button').click();
 
-      expect(ajaxSpy.calls.allArgs()[0][0]).toEqual('foobar');
+      expect(ajaxSpy.mock.calls[0][0]).toEqual('foobar');
     });
 
     it('should not close when user uses cmd/ctrl + click', done => {
@@ -78,11 +78,11 @@ describe('Mini Pipeline Graph Dropdown', () => {
 
       document.querySelector('.js-builds-dropdown-button').click();
 
-      timeoutPromise()
+      waitForPromises()
         .then(() => {
           document.querySelector('a.mini-pipeline-graph-dropdown-item').click();
         })
-        .then(timeoutPromise)
+        .then(waitForPromises)
         .then(() => {
           expect($('.js-builds-dropdown-list').is(':visible')).toEqual(true);
         })
@@ -97,7 +97,7 @@ describe('Mini Pipeline Graph Dropdown', () => {
 
       document.querySelector('.js-builds-dropdown-button').click();
 
-      setTimeout(() => {
+      setImmediate(() => {
         expect($('.js-builds-dropdown-tests .dropdown').hasClass('open')).toEqual(false);
         done();
       });

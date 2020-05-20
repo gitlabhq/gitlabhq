@@ -24,6 +24,9 @@ module Gitlab
       REDIS_CALL_DURATION = :redis_call_duration
       REDIS_CALL_DETAILS = :redis_call_details
 
+      # Milliseconds represented in seconds (from 1 to 500 milliseconds).
+      QUERY_TIME_BUCKETS = [0.001, 0.0025, 0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5].freeze
+
       def self.get_request_count
         ::RequestStore[REDIS_REQUEST_COUNT] || 0
       end

@@ -9582,6 +9582,8 @@ CREATE INDEX index_epics_on_author_id ON public.epics USING btree (author_id);
 
 CREATE INDEX index_epics_on_closed_by_id ON public.epics USING btree (closed_by_id);
 
+CREATE INDEX index_epics_on_confidential ON public.epics USING btree (confidential);
+
 CREATE INDEX index_epics_on_due_date_sourcing_epic_id ON public.epics USING btree (due_date_sourcing_epic_id) WHERE (due_date_sourcing_epic_id IS NOT NULL);
 
 CREATE INDEX index_epics_on_due_date_sourcing_milestone_id ON public.epics USING btree (due_date_sourcing_milestone_id);
@@ -13867,5 +13869,6 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200514000132
 20200514000340
 20200515155620
+20200519115908
 \.
 

@@ -335,17 +335,18 @@ class Service < ApplicationRecord
     services_names.map { |service_name| "#{service_name}_service".camelize }
   end
 
-  def self.build_from_template(project_id, template)
-    service = template.dup
+  def self.build_from_integration(project_id, integration)
+    service = integration.dup
 
-    if template.supports_data_fields?
-      data_fields = template.data_fields.dup
+    if integration.supports_data_fields?
+      data_fields = integration.data_fields.dup
       data_fields.service = service
     end
 
     service.template = false
+    service.instance = false
     service.project_id = project_id
-    service.active = false if service.active? && service.invalid?
+    service.active = false if service.invalid?
     service
   end
 

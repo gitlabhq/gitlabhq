@@ -2,6 +2,11 @@ import $ from 'jquery';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import Pager from '~/pager';
+import { removeParams } from '~/lib/utils/url_utility';
+
+jest.mock('~/lib/utils/url_utility', () => ({
+  removeParams: jest.fn().mockName('removeParams'),
+}));
 
 describe('pager', () => {
   let axiosMock;
@@ -19,7 +24,7 @@ describe('pager', () => {
 
     beforeEach(() => {
       setFixtures('<div class="content_list"></div><div class="loading"></div>');
-      spyOn($.fn, 'endlessScroll').and.stub();
+      jest.spyOn($.fn, 'endlessScroll').mockImplementation();
     });
 
     afterEach(() => {
@@ -36,7 +41,7 @@ describe('pager', () => {
 
     it('should use current url if data-href attribute not provided', () => {
       const href = `${gl.TEST_HOST}/some_list`;
-      spyOnDependency(Pager, 'removeParams').and.returnValue(href);
+      removeParams.mockReturnValue(href);
       Pager.init();
 
       expect(Pager.url).toBe(href);
@@ -52,7 +57,7 @@ describe('pager', () => {
     it('keeps extra query parameters from url', () => {
       window.history.replaceState({}, null, '?filter=test&offset=100');
       const href = `${gl.TEST_HOST}/some_list?filter=test`;
-      const removeParams = spyOnDependency(Pager, 'removeParams').and.returnValue(href);
+      removeParams.mockReturnValue(href);
       Pager.init();
 
       expect(removeParams).toHaveBeenCalledWith(['limit', 'offset']);
@@ -78,7 +83,7 @@ describe('pager', () => {
       setFixtures(
         '<div class="content_list" data-href="/some_list"></div><div class="loading"></div>',
       );
-      spyOn(axios, 'get').and.callThrough();
+      jest.spyOn(axios, 'get');
 
       Pager.init();
     });
@@ -86,10 +91,10 @@ describe('pager', () => {
     it('shows loader while loading next page', done => {
       mockSuccess();
 
-      spyOn(Pager.loading, 'show');
+      jest.spyOn(Pager.loading, 'show').mockImplementation(() => {});
       Pager.getOld();
 
-      setTimeout(() => {
+      setImmediate(() => {
         expect(Pager.loading.show).toHaveBeenCalled();
 
         done();
@@ -99,10 +104,10 @@ describe('pager', () => {
     it('hides loader on success', done => {
       mockSuccess();
 
-      spyOn(Pager.loading, 'hide');
+      jest.spyOn(Pager.loading, 'hide').mockImplementation(() => {});
       Pager.getOld();
 
-      setTimeout(() => {
+      setImmediate(() => {
         expect(Pager.loading.hide).toHaveBeenCalled();
 
         done();
@@ -112,10 +117,10 @@ describe('pager', () => {
     it('hides loader on error', done => {
       mockError();
 
-      spyOn(Pager.loading, 'hide');
+      jest.spyOn(Pager.loading, 'hide').mockImplementation(() => {});
       Pager.getOld();
 
-      setTimeout(() => {
+      setImmediate(() => {
         expect(Pager.loading.hide).toHaveBeenCalled();
 
         done();
@@ -127,8 +132,8 @@ describe('pager', () => {
       Pager.limit = 20;
       Pager.getOld();
 
-      setTimeout(() => {
-        const [url, params] = axios.get.calls.argsFor(0);
+      setImmediate(() => {
+        const [url, params] = axios.get.mock.calls[0];
 
         expect(params).toEqual({
           params: {
@@ -148,10 +153,10 @@ describe('pager', () => {
       Pager.limit = 20;
 
       mockSuccess(1);
-      spyOn(Pager.loading, 'hide');
+      jest.spyOn(Pager.loading, 'hide').mockImplementation(() => {});
       Pager.getOld();
 
-      setTimeout(() => {
+      setImmediate(() => {
         expect(Pager.loading.hide).toHaveBeenCalled();
         expect(Pager.disable).toBe(true);
 

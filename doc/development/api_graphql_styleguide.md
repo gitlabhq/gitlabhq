@@ -690,8 +690,9 @@ should look like this:
   # The merge request modified, this will be wrapped in the type
   # defined on the field
   merge_request: merge_request,
-  # An array if strings if the mutation failed after authorization
-  errors: merge_request.errors.full_messages
+  # An array of strings if the mutation failed after authorization.
+  # The `errors_on_object` helper collects `errors.full_messages`
+  errors: errors_on_object(merge_request)
 }
 ```
 

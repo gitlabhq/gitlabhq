@@ -264,13 +264,13 @@ describe Service do
       end
     end
 
-    describe '.build_from_template' do
+    describe '.build_from_integration' do
       context 'when template is invalid' do
         it 'sets service template to inactive when template is invalid' do
           template = build(:prometheus_service, template: true, active: true, properties: {})
           template.save(validate: false)
 
-          service = described_class.build_from_template(project.id, template)
+          service = described_class.build_from_integration(project.id, template)
 
           expect(service).to be_valid
           expect(service.active).to be false
@@ -293,7 +293,7 @@ describe Service do
 
         shared_examples 'service creation from a template' do
           it 'creates a correct service' do
-            service = described_class.build_from_template(project.id, template)
+            service = described_class.build_from_integration(project.id, template)
 
             expect(service).to be_active
             expect(service.title).to eq(title)
@@ -302,6 +302,8 @@ describe Service do
             expect(service.api_url).to eq(api_url)
             expect(service.username).to eq(username)
             expect(service.password).to eq(password)
+            expect(service.template).to eq(false)
+            expect(service.instance).to eq(false)
           end
         end
 

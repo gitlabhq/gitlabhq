@@ -5,6 +5,7 @@ class Projects::AlertManagementController < Projects::ApplicationController
   before_action do
     push_frontend_feature_flag(:alert_list_status_filtering_enabled)
     push_frontend_feature_flag(:create_issue_from_alert_enabled)
+    push_frontend_feature_flag(:alert_assignee, project)
   end
 
   def index

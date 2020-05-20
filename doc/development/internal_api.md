@@ -43,7 +43,7 @@ POST /internal/allowed
 | `key_id`  | string | no       | ID of the SSH-key used to connect to GitLab-shell |
 | `username` | string | no      | Username from the certificate used to connect to GitLab-Shell |
 | `project`  | string | no (if `gl_repository` is passed) | Path to the project |
-| `gl_repository`  | string | no (if `project` is passed) | Path to the project |
+| `gl_repository`  | string | no (if `project` is passed) | Repository identifier (e.g. `project-7`) |
 | `protocol` | string | yes     | SSH when called from GitLab-shell, HTTP or SSH when called from Gitaly |
 | `action`   | string | yes     | Git command being run (`git-upload-pack`, `git-receive-pack`, `git-upload-archive`) |
 | `changes`  | string | yes     | `<oldrev> <newrev> <refname>` when called from Gitaly, The magic string `_any` when called from GitLab Shell |

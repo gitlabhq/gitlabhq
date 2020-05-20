@@ -2,6 +2,8 @@
 
 module Projects
   class UpdatePagesService < BaseService
+    include Gitlab::OptimisticLocking
+
     InvalidStateError = Class.new(StandardError)
     FailedToExtractError = Class.new(StandardError)
 
@@ -23,8 +25,8 @@ module Projects
 
       # Create status notifying the deployment of pages
       @status = create_status
-      @status.enqueue!
-      @status.run!
+      retry_optimistic_lock(@status, &:enqueue!)
+      retry_optimistic_lock(@status, &:run!)
 
       raise InvalidStateError, 'missing pages artifacts' unless build.artifacts?
       raise InvalidStateError, 'build SHA is outdated for this ref' unless latest?
@@ -51,7 +53,7 @@ module Projects
     private
 
     def success
-      @status.success
+      retry_optimistic_lock(@status, &:success)
       @project.mark_pages_as_deployed
       super
     end
@@ -61,7 +63,7 @@ module Projects
       log_error("Projects::UpdatePagesService: #{message}")
       @status.allow_failure = !latest?
       @status.description = message
-      @status.drop(:script_failure)
+      retry_optimistic_lock(@status) { |status| status.drop(:script_failure) }
       super
     end
 

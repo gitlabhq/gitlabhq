@@ -60,8 +60,8 @@ export default {
     {
       key: 'eventCount',
       label: s__('AlertManagement|Events'),
-      thClass: 'text-right event-count',
-      tdClass: `${tdClass} text-md-right event-count`,
+      thClass: 'text-right gl-pr-9',
+      tdClass: `${tdClass} text-md-right`,
     },
     {
       key: 'status',

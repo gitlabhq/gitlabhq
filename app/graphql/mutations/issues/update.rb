@@ -33,7 +33,7 @@ module Mutations
 
         {
           issue: issue,
-          errors: issue.errors.full_messages
+          errors: errors_on_object(issue)
         }
       end
     end

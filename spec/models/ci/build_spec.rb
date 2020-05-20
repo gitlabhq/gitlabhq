@@ -2512,6 +2512,17 @@ describe Ci::Build do
           end
         end
       end
+
+      context 'with the :modified_path_ci_variables feature flag disabled' do
+        before do
+          stub_feature_flags(modified_path_ci_variables: false)
+        end
+
+        it 'does not set CI_MERGE_REQUEST_CHANGED_PAGES_* variables' do
+          expect(subject.find { |var| var[:key] == 'CI_MERGE_REQUEST_CHANGED_PAGE_PATHS' }).to be_nil
+          expect(subject.find { |var| var[:key] == 'CI_MERGE_REQUEST_CHANGED_PAGE_URLS' }).to be_nil
+        end
+      end
     end
 
     context 'when build has user' do

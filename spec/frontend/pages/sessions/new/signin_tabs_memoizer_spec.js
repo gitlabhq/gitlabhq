@@ -2,6 +2,9 @@ import AccessorUtilities from '~/lib/utils/accessor';
 import SigninTabsMemoizer from '~/pages/sessions/new/signin_tabs_memoizer';
 import trackData from '~/pages/sessions/new/index';
 import Tracking from '~/tracking';
+import { useLocalStorageSpy } from 'helpers/local_storage_helper';
+
+useLocalStorageSpy();
 
 describe('SigninTabsMemoizer', () => {
   const fixtureTemplate = 'static/signin_tabs.html';
@@ -22,7 +25,7 @@ describe('SigninTabsMemoizer', () => {
   beforeEach(() => {
     loadFixtures(fixtureTemplate);
 
-    spyOn(AccessorUtilities, 'isLocalStorageAccessSafe').and.returnValue(true);
+    jest.spyOn(AccessorUtilities, 'isLocalStorageAccessSafe').mockReturnValue(true);
   });
 
   it('does nothing if no tab was previously selected', () => {
@@ -38,8 +41,8 @@ describe('SigninTabsMemoizer', () => {
     const fakeTab = {
       click: () => {},
     };
-    spyOn(document, 'querySelector').and.returnValue(fakeTab);
-    spyOn(fakeTab, 'click');
+    jest.spyOn(document, 'querySelector').mockReturnValue(fakeTab);
+    jest.spyOn(fakeTab, 'click').mockImplementation(() => {});
 
     memo.bootstrap();
 
@@ -51,17 +54,18 @@ describe('SigninTabsMemoizer', () => {
   it('clicks the first tab if value in local storage is bad', () => {
     createMemoizer().saveData('#bogus');
     const fakeTab = {
-      click: () => {},
+      click: jest.fn().mockName('fakeTab_click'),
     };
-    spyOn(document, 'querySelector').and.callFake(selector =>
-      selector === `${tabSelector} a[href="#bogus"]` ? null : fakeTab,
-    );
-    spyOn(fakeTab, 'click');
+    jest
+      .spyOn(document, 'querySelector')
+      .mockImplementation(selector =>
+        selector === `${tabSelector} a[href="#bogus"]` ? null : fakeTab,
+      );
 
     memo.bootstrap();
 
     // verify that triggers click on stored selector and fallback
-    expect(document.querySelector.calls.allArgs()).toEqual([
+    expect(document.querySelector.mock.calls).toEqual([
       ['ul.new-session-tabs a[href="#bogus"]'],
       ['ul.new-session-tabs a'],
     ]);
@@ -97,7 +101,7 @@ describe('SigninTabsMemoizer', () => {
 
   describe('trackData', () => {
     beforeEach(() => {
-      spyOn(Tracking, 'event');
+      jest.spyOn(Tracking, 'event').mockImplementation(() => {});
     });
 
     describe('with tracking data', () => {
@@ -144,12 +148,10 @@ describe('SigninTabsMemoizer', () => {
       memo = {
         currentTabKey,
       };
-
-      spyOn(localStorage, 'setItem');
     });
 
     describe('if .isLocalStorageAvailable is `false`', () => {
-      beforeEach(function() {
+      beforeEach(() => {
         memo.isLocalStorageAvailable = false;
 
         SigninTabsMemoizer.prototype.saveData.call(memo);
@@ -163,7 +165,7 @@ describe('SigninTabsMemoizer', () => {
     describe('if .isLocalStorageAvailable is `true`', () => {
       const value = 'value';
 
-      beforeEach(function() {
+      beforeEach(() => {
         memo.isLocalStorageAvailable = true;
 
         SigninTabsMemoizer.prototype.saveData.call(memo, value);
@@ -184,11 +186,11 @@ describe('SigninTabsMemoizer', () => {
         currentTabKey,
       };
 
-      spyOn(localStorage, 'getItem').and.returnValue(itemValue);
+      localStorage.getItem.mockReturnValue(itemValue);
     });
 
     describe('if .isLocalStorageAvailable is `false`', () => {
-      beforeEach(function() {
+      beforeEach(() => {
         memo.isLocalStorageAvailable = false;
 
         readData = SigninTabsMemoizer.prototype.readData.call(memo);
@@ -201,7 +203,7 @@ describe('SigninTabsMemoizer', () => {
     });
 
     describe('if .isLocalStorageAvailable is `true`', () => {
-      beforeEach(function() {
+      beforeEach(() => {
         memo.isLocalStorageAvailable = true;
 
         readData = SigninTabsMemoizer.prototype.readData.call(memo);
