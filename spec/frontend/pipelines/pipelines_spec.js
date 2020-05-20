@@ -56,6 +56,7 @@ describe('Pipelines', () => {
       propsData: {
         store: new Store(),
         projectId: '21',
+        params: {},
         ...props,
       },
       methods: {

@@ -768,6 +768,8 @@ PUT /projects/:id/issues/:issue_iid
 | `assignee_ids` | integer array | no | The ID of the user(s) to assign the issue to. Set to `0` or provide an empty value to unassign all assignees. |
 | `milestone_id` | integer | no       | The global ID of a milestone to assign the issue to. Set to `0` or provide an empty value to unassign a milestone.|
 | `labels`       | string  | no       | Comma-separated label names for an issue. Set to an empty string to unassign all labels.                   |
+| `add_labels`   | string  | no       | Comma-separated label names to add to an issue.                                                            |
+| `remove_labels`| string  | no       | Comma-separated label names to remove from an issue.                                                       |
 | `state_event`  | string  | no       | The state event of an issue. Set `close` to close the issue and `reopen` to reopen it                      |
 | `updated_at`   | string  | no       | Date time string, ISO 8601 formatted, for example `2016-03-11T03:45:40Z` (requires admin or project owner rights). Empty string or null values are not accepted.|
 | `due_date`     | string  | no       | Date time string in the format YEAR-MONTH-DAY, for example `2016-03-11`                                           |

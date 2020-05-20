@@ -24,6 +24,8 @@ module API
           :discussion_locked,
           :due_date,
           :labels,
+          :add_labels,
+          :remove_labels,
           :milestone_id,
           :state_event,
           :title

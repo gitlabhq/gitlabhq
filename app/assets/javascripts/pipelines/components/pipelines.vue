@@ -1,5 +1,5 @@
 <script>
-import { isEqual } from 'lodash';
+import { isEqual, pickBy } from 'lodash';
 import { __, sprintf, s__ } from '../../locale';
 import createFlash from '../../flash';
 import PipelinesService from '../services/pipelines_service';
@@ -10,7 +10,7 @@ import NavigationControls from './nav_controls.vue';
 import { getParameterByName } from '../../lib/utils/common_utils';
 import CIPaginationMixin from '../../vue_shared/mixins/ci_pagination_api_mixin';
 import PipelinesFilteredSearch from './pipelines_filtered_search.vue';
-import { ANY_TRIGGER_AUTHOR, RAW_TEXT_WARNING } from '../constants';
+import { ANY_TRIGGER_AUTHOR, RAW_TEXT_WARNING, SUPPORTED_FILTER_PARAMETERS } from '../constants';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
@@ -84,6 +84,10 @@ export default {
     },
     projectId: {
       type: String,
+      required: true,
+    },
+    params: {
+      type: Object,
       required: true,
     },
   },
@@ -220,10 +224,15 @@ export default {
     canFilterPipelines() {
       return this.glFeatures.filterPipelinesSearch;
     },
+    validatedParams() {
+      return pickBy(this.params, (val, key) => SUPPORTED_FILTER_PARAMETERS.includes(key) && val);
+    },
   },
   created() {
     this.service = new PipelinesService(this.endpoint);
     this.requestData = { page: this.page, scope: this.scope };
+
+    Object.assign(this.requestData, this.validatedParams);
   },
   methods: {
     successCallback(resp) {
@@ -306,6 +315,7 @@ export default {
       v-if="canFilterPipelines"
       :pipelines="state.pipelines"
       :project-id="projectId"
+      :params="validatedParams"
       @filterPipelines="filterPipelines"
     />
 

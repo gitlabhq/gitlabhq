@@ -39,8 +39,8 @@ describe Gitlab::JiraImport::IssuesImporter do
     end
 
     context 'with results returned' do
-      JiraIssue = Struct.new(:id)
-      let_it_be(:jira_issues) { [JiraIssue.new(1), JiraIssue.new(2)] }
+      jira_issue = Struct.new(:id)
+      let_it_be(:jira_issues) { [jira_issue.new(1), jira_issue.new(2)] }
 
       def mock_issue_serializer(count)
         serializer = instance_double(Gitlab::JiraImport::IssueSerializer, execute: { key: 'data' })

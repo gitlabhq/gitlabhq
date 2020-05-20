@@ -36,7 +36,7 @@ export default {
   },
   data() {
     return {
-      users: this.config.triggerAuthors,
+      users: [],
       loading: true,
     };
   },
@@ -50,11 +50,14 @@ export default {
       });
     },
   },
+  created() {
+    this.fetchProjectUsers();
+  },
   methods: {
-    fetchAuthorBySearchTerm(searchTerm) {
+    fetchProjectUsers(searchTerm) {
       Api.projectUsers(this.config.projectId, searchTerm)
-        .then(res => {
-          this.users = res;
+        .then(users => {
+          this.users = users;
           this.loading = false;
         })
         .catch(err => {
@@ -64,7 +67,7 @@ export default {
         });
     },
     searchAuthors: debounce(function debounceSearch({ data }) {
-      this.fetchAuthorBySearchTerm(data);
+      this.fetchProjectUsers(data);
     }, FILTER_PIPELINES_SEARCH_DELAY),
   },
 };

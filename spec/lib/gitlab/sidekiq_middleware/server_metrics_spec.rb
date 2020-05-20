@@ -164,9 +164,13 @@ describe Gitlab::SidekiqMiddleware::ServerMetrics do
     end
 
     context "when workers are not attributed" do
-      class TestNonAttributedWorker
-        include Sidekiq::Worker
+      before do
+        stub_const('TestNonAttributedWorker', Class.new)
+        TestNonAttributedWorker.class_eval do
+          include Sidekiq::Worker
+        end
       end
+
       let(:worker) { TestNonAttributedWorker.new }
       let(:labels) { default_labels.merge(urgency: "") }
 

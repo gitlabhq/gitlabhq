@@ -483,11 +483,12 @@ class ProjectsController < Projects::ApplicationController
   def export_rate_limit
     prefixed_action = "project_#{params[:action]}".to_sym
 
-    if rate_limiter.throttled?(prefixed_action, scope: [current_user, prefixed_action, @project])
+    project_scope = params[:action] == :download_export ? @project : nil
+
+    if rate_limiter.throttled?(prefixed_action, scope: [current_user, prefixed_action, project_scope].compact)
       rate_limiter.log_request(request, "#{prefixed_action}_request_limit".to_sym, current_user)
 
-      flash[:alert] = _('This endpoint has been requested too many times. Try again later.')
-      redirect_to edit_project_path(@project)
+      render plain: _('This endpoint has been requested too many times. Try again later.'), status: :too_many_requests
     end
   end
 

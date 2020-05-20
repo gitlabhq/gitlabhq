@@ -4,11 +4,14 @@ require 'spec_helper'
 
 describe Gitlab::Config::Entry::Factory do
   describe '#create!' do
-    class Script < Gitlab::Config::Entry::Node
-      include Gitlab::Config::Entry::Validatable
+    before do
+      stub_const('Script', Class.new(Gitlab::Config::Entry::Node))
+      Script.class_eval do
+        include Gitlab::Config::Entry::Validatable
 
-      validations do
-        validates :config, array_of_strings: true
+        validations do
+          validates :config, array_of_strings: true
+        end
       end
     end
 

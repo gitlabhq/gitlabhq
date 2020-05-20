@@ -1159,17 +1159,18 @@ describe ProjectsController do
     end
 
     shared_examples 'rate limits project export endpoint' do
-      before do
-        allow(::Gitlab::ApplicationRateLimiter)
-          .to receive(:throttled?)
-          .and_return(true)
-      end
-
       it 'prevents requesting project export' do
+        exportable_project = create(:project)
+        exportable_project.add_maintainer(user)
+
+        post action, params: { namespace_id: exportable_project.namespace, id: exportable_project }
+
+        expect(response).to have_gitlab_http_status(:found)
+
         post action, params: { namespace_id: project.namespace, id: project }
 
-        expect(flash[:alert]).to eq('This endpoint has been requested too many times. Try again later.')
-        expect(response).to have_gitlab_http_status(:found)
+        expect(response.body).to eq('This endpoint has been requested too many times. Try again later.')
+        expect(response).to have_gitlab_http_status(:too_many_requests)
       end
     end
 
@@ -1226,7 +1227,18 @@ describe ProjectsController do
         end
 
         context 'when the endpoint receives requests above the limit', :clean_gitlab_redis_cache do
-          include_examples 'rate limits project export endpoint'
+          before do
+            allow(::Gitlab::ApplicationRateLimiter)
+              .to receive(:throttled?)
+              .and_return(true)
+          end
+
+          it 'prevents requesting project export' do
+            post action, params: { namespace_id: project.namespace, id: project }
+
+            expect(response.body).to eq('This endpoint has been requested too many times. Try again later.')
+            expect(response).to have_gitlab_http_status(:too_many_requests)
+          end
         end
       end
     end

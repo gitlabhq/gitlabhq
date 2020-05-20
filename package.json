@@ -10,7 +10,7 @@
     "eslint-report": "eslint --max-warnings 0 --ext .js,.vue --format html --output-file ./eslint-report.html --no-inline-config .",
     "file-coverage": "scripts/frontend/file_test_coverage.js",
     "prejest": "yarn check-dependencies",
-    "jest": "jest --config jest.config.unit.js",
+    "jest": "jest --config jest.config.js",
     "jest-debug": "node --inspect-brk node_modules/.bin/jest --runInBand",
     "jest:integration": "jest --config jest.config.integration.js",
     "jsdoc": "jsdoc -c config/jsdocs.config.js",

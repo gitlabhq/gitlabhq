@@ -301,6 +301,35 @@ describe API::Issues do
     let!(:label) { create(:label, title: 'dummy', project: project) }
     let!(:label_link) { create(:label_link, label: label, target: issue) }
 
+    it 'adds relevant labels' do
+      put api("/projects/#{project.id}/issues/#{issue.iid}", user),
+        params: { add_labels: '1, 2' }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['labels']).to contain_exactly(label.title, '1', '2')
+    end
+
+    context 'removes' do
+      let!(:label2) { create(:label, title: 'a-label', project: project) }
+      let!(:label_link2) { create(:label_link, label: label2, target: issue) }
+
+      it 'removes relevant labels' do
+        put api("/projects/#{project.id}/issues/#{issue.iid}", user),
+          params: { remove_labels: label2.title }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['labels']).to eq([label.title])
+      end
+
+      it 'removes all labels' do
+        put api("/projects/#{project.id}/issues/#{issue.iid}", user),
+          params: { remove_labels: "#{label.title}, #{label2.title}" }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['labels']).to be_empty
+      end
+    end
+
     it 'does not update labels if not present' do
       put api("/projects/#{project.id}/issues/#{issue.iid}", user),
         params: { title: 'updated title' }

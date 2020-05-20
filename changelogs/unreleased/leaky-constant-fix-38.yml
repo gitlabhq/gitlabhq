@@ -1,0 +1,5 @@
+---
+title: Fix leaky constant issue in factory spec
+merge_request: 32174
+author: Rajendra Kadam
+type: fixed

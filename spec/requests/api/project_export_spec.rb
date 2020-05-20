@@ -44,19 +44,6 @@ describe API::ProjectExport, :clean_gitlab_redis_cache do
     it_behaves_like '404 response'
   end
 
-  shared_examples_for 'when rate limit is exceeded' do
-    before do
-      allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(true)
-    end
-
-    it 'prevents requesting project export' do
-      request
-
-      expect(response).to have_gitlab_http_status(:too_many_requests)
-      expect(json_response['message']['error']).to eq('This endpoint has been requested too many times. Try again later.')
-    end
-  end
-
   describe 'GET /projects/:project_id/export' do
     shared_examples_for 'get project export status not found' do
       it_behaves_like '404 response' do
@@ -247,7 +234,16 @@ describe API::ProjectExport, :clean_gitlab_redis_cache do
         context 'when rate limit is exceeded' do
           let(:request) { get api(download_path, admin) }
 
-          include_examples 'when rate limit is exceeded'
+          before do
+            allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(true)
+          end
+
+          it 'prevents requesting project export' do
+            request
+
+            expect(response).to have_gitlab_http_status(:too_many_requests)
+            expect(json_response['message']['error']).to eq('This endpoint has been requested too many times. Try again later.')
+          end
         end
       end
 
@@ -360,10 +356,17 @@ describe API::ProjectExport, :clean_gitlab_redis_cache do
 
         it_behaves_like 'post project export start'
 
-        context 'when rate limit is exceeded' do
-          let(:request) { post api(path, admin) }
+        context 'when rate limit is exceeded across projects' do
+          it 'prevents requesting project export' do
+            post api(path_none, admin)
 
-          include_examples 'when rate limit is exceeded'
+            expect(response).not_to have_gitlab_http_status(:too_many_requests)
+
+            post api(path, admin)
+
+            expect(response).to have_gitlab_http_status(:too_many_requests)
+            expect(json_response['message']['error']).to eq('This endpoint has been requested too many times. Try again later.')
+          end
         end
       end
 

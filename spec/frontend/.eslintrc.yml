@@ -10,7 +10,7 @@ settings:
     - path
   import/resolver:
     jest:
-      jestConfigFile: 'jest.config.unit.js'
+      jestConfigFile: 'jest.config.js'
 globals:
   getJSONFixture: false
   loadFixtures: false
