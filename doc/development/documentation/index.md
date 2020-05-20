@@ -550,7 +550,7 @@ You can also
 [configure the text editor of your choice](https://errata-ai.github.io/vale/#local-use-by-a-single-writer)
 to display the results.
 
-Vale's test results [are displayed](#testing) in CI pipelines.
+Vale's error-level test results [are displayed](#testing) in CI pipelines.
 
 ##### Disable a Vale test
 

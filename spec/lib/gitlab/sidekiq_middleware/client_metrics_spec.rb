@@ -47,8 +47,11 @@ describe Gitlab::SidekiqMiddleware::ClientMetrics do
     end
 
     context "when workers are not attributed" do
-      class TestNonAttributedWorker
-        include Sidekiq::Worker
+      before do
+        stub_const('TestNonAttributedWorker', Class.new)
+        TestNonAttributedWorker.class_eval do
+          include Sidekiq::Worker
+        end
       end
 
       it_behaves_like "a metrics client middleware" do

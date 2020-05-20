@@ -5,7 +5,6 @@ class SearchService
 
   SEARCH_TERM_LIMIT = 64
   SEARCH_CHAR_LIMIT = 4096
-
   DEFAULT_PER_PAGE = Gitlab::SearchResults::DEFAULT_PER_PAGE
   MAX_PER_PAGE = 200
 
@@ -62,8 +61,8 @@ class SearchService
     @search_results ||= search_service.execute
   end
 
-  def search_objects
-    @search_objects ||= redact_unauthorized_results(search_results.objects(scope, page: params[:page], per_page: per_page))
+  def search_objects(preload_method = nil)
+    @search_objects ||= redact_unauthorized_results(search_results.objects(scope, page: params[:page], per_page: per_page, preload_method: preload_method))
   end
 
   private

@@ -20,6 +20,10 @@ module API
         users: Entities::UserBasic
       }.freeze
 
+      SCOPE_PRELOAD_METHOD = {
+          merge_requests: :with_api_entity_associations
+      }.freeze
+
       def search(additional_params = {})
         search_params = {
           scope: params[:scope],
@@ -29,7 +33,7 @@ module API
           per_page: params[:per_page]
         }.merge(additional_params)
 
-        results = SearchService.new(current_user, search_params).search_objects
+        results = SearchService.new(current_user, search_params).search_objects(preload_method)
 
         paginate(results)
       end
@@ -40,6 +44,10 @@ module API
 
       def entity
         SCOPE_ENTITY[params[:scope].to_sym]
+      end
+
+      def preload_method
+        SCOPE_PRELOAD_METHOD[params[:scope].to_sym]
       end
 
       def verify_search_scope!(resource:)

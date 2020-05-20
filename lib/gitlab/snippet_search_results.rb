@@ -11,7 +11,7 @@ module Gitlab
       @query = query
     end
 
-    def objects(scope, page: nil, per_page: DEFAULT_PER_PAGE)
+    def objects(scope, page: nil, per_page: DEFAULT_PER_PAGE, preload_method: nil)
       paginated_objects(snippet_titles, page, per_page)
     end
 

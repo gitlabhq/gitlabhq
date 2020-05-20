@@ -9,6 +9,7 @@ link: https://about.gitlab.com/handbook/communication/#top-misused-terms
 level: error
 ignorecase: true
 swap:
+  frontmatter: front matter
   GitLabber: GitLab team member
   gitlab omnibus: Omnibus GitLab
   param: parameter
