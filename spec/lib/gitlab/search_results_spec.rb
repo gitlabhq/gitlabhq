@@ -28,7 +28,15 @@ describe Gitlab::SearchResults do
       end
 
       it 'returns with counts collection when requested' do
-        expect(results.objects('projects', 1, false)).not_to be_kind_of(Kaminari::PaginatableWithoutCount)
+        expect(results.objects('projects', page: 1, per_page: 1, without_count: false)).not_to be_kind_of(Kaminari::PaginatableWithoutCount)
+      end
+
+      it 'uses page and per_page to paginate results' do
+        project2 = create(:project, name: 'foo')
+
+        expect(results.objects('projects', page: 1, per_page: 1).to_a).to eq([project])
+        expect(results.objects('projects', page: 2, per_page: 1).to_a).to eq([project2])
+        expect(results.objects('projects', page: 1, per_page: 2).count).to eq(2)
       end
     end
 

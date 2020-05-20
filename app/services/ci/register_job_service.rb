@@ -85,8 +85,6 @@ module Ci
       # to make sure that this is properly handled by runner.
       Result.new(nil, false)
     rescue => ex
-      raise ex unless Feature.enabled?(:ci_doom_build, default_enabled: true)
-
       scheduler_failure!(build)
       track_exception_for_build(ex, build)
 
@@ -203,7 +201,7 @@ module Ci
         labels[:shard] = shard.gsub(METRICS_SHARD_TAG_PREFIX, '') if shard
       end
 
-      job_queue_duration_seconds.observe(labels, Time.now - job.queued_at) unless job.queued_at.nil?
+      job_queue_duration_seconds.observe(labels, Time.current - job.queued_at) unless job.queued_at.nil?
       attempt_counter.increment
     end
 

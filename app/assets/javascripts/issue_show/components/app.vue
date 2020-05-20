@@ -295,7 +295,7 @@ export default {
         .then(res => res.data)
         .then(data => this.checkForSpam(data))
         .then(data => {
-          if (window.location.pathname !== data.web_url) {
+          if (!window.location.pathname.includes(data.web_url)) {
             visitUrl(data.web_url);
           }
         })
@@ -329,7 +329,7 @@ export default {
     },
 
     deleteIssuable(payload) {
-      this.service
+      return this.service
         .deleteIssuable(payload)
         .then(res => res.data)
         .then(data => {
@@ -340,7 +340,7 @@ export default {
         })
         .catch(() => {
           createFlash(
-            sprintf(s__('Error deleting  %{issuableType}'), { issuableType: this.issuableType }),
+            sprintf(s__('Error deleting %{issuableType}'), { issuableType: this.issuableType }),
           );
         });
     },
@@ -365,7 +365,12 @@ export default {
         :issuable-type="issuableType"
       />
 
-      <recaptcha-modal v-show="showRecaptcha" :html="recaptchaHTML" @close="closeRecaptchaModal" />
+      <recaptcha-modal
+        v-show="showRecaptcha"
+        ref="recaptchaModal"
+        :html="recaptchaHTML"
+        @close="closeRecaptchaModal"
+      />
     </div>
     <div v-else>
       <title-component

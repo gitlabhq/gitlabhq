@@ -81,6 +81,23 @@ describe Lfs::FileTransformer do
 
           expect(LfsObject.last.file.read).to eq file_content
         end
+
+        context 'when repository is a design repository' do
+          let(:file_path) { "/#{DesignManagement.designs_directory}/test_file.lfs" }
+          let(:repository) { project.design_repository }
+
+          it "creates an LfsObject with the file's content" do
+            subject.new_file(file_path, file)
+
+            expect(LfsObject.last.file.read).to eq(file_content)
+          end
+
+          it 'saves the correct repository_type to LfsObjectsProject' do
+            subject.new_file(file_path, file)
+
+            expect(project.lfs_objects_projects.first.repository_type).to eq('design')
+          end
+        end
       end
 
       context "when doesn't use LFS" do

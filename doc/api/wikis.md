@@ -1,6 +1,6 @@
 # Wikis API
 
-> [Introduced][ce-13372] in GitLab 10.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/13372) in GitLab 10.0.
 
 Available only in APIv4.
 
@@ -152,8 +152,6 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 ```
 
 On success the HTTP status code is `204` and no JSON response is expected.
-
-[ce-13372]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/13372
 
 ## Upload an attachment to the wiki repository
 

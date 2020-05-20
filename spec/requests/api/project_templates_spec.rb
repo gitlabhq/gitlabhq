@@ -3,15 +3,29 @@
 require 'spec_helper'
 
 describe API::ProjectTemplates do
-  let_it_be(:public_project) { create(:project, :public) }
+  let_it_be(:public_project) { create(:project, :public, path: 'path.with.dot') }
   let_it_be(:private_project) { create(:project, :private) }
   let_it_be(:developer) { create(:user) }
+
+  let(:url_encoded_path) { "#{public_project.namespace.path}%2F#{public_project.path}" }
 
   before do
     private_project.add_developer(developer)
   end
 
+  shared_examples 'accepts project paths with dots' do
+    it do
+      subject
+
+      expect(response).to have_gitlab_http_status(:ok)
+    end
+  end
+
   describe 'GET /projects/:id/templates/:type' do
+    it_behaves_like 'accepts project paths with dots' do
+      subject { get api("/projects/#{url_encoded_path}/templates/dockerfiles") }
+    end
+
     it 'returns dockerfiles' do
       get api("/projects/#{public_project.id}/templates/dockerfiles")
 
@@ -74,6 +88,10 @@ describe API::ProjectTemplates do
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(response).to match_response_schema('public_api/v4/template_list')
+    end
+
+    it_behaves_like 'accepts project paths with dots' do
+      subject { get api("/projects/#{url_encoded_path}/templates/licenses") }
     end
   end
 
@@ -144,6 +162,10 @@ describe API::ProjectTemplates do
       expect(response).to match_response_schema('public_api/v4/license')
     end
 
+    it_behaves_like 'accepts project paths with dots' do
+      subject { get api("/projects/#{url_encoded_path}/templates/gitlab_ci_ymls/Android") }
+    end
+
     shared_examples 'path traversal attempt' do |template_type|
       it 'rejects invalid filenames' do
         get api("/projects/#{public_project.id}/templates/#{template_type}/%2e%2e%2fPython%2ea")
@@ -172,6 +194,10 @@ describe API::ProjectTemplates do
 
       expect(content).to include('Project Placeholder')
       expect(content).to include("Copyright (C) #{Time.now.year}  Fullname Placeholder")
+    end
+
+    it_behaves_like 'accepts project paths with dots' do
+      subject { get api("/projects/#{url_encoded_path}/templates/licenses/mit") }
     end
   end
 end

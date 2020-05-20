@@ -17,8 +17,6 @@ describe Gitlab::Metrics::SidekiqMiddleware do
       expect_any_instance_of(Gitlab::Metrics::Transaction).to receive(:set)
         .with(:sidekiq_queue_duration, instance_of(Float))
 
-      expect_any_instance_of(Gitlab::Metrics::Transaction).to receive(:finish)
-
       middleware.call(worker, message, :test) { nil }
     end
 
@@ -32,8 +30,6 @@ describe Gitlab::Metrics::SidekiqMiddleware do
       expect_any_instance_of(Gitlab::Metrics::Transaction).to receive(:set)
         .with(:sidekiq_queue_duration, instance_of(Float))
 
-      expect_any_instance_of(Gitlab::Metrics::Transaction).to receive(:finish)
-
       middleware.call(worker, {}, :test) { nil }
     end
 
@@ -45,9 +41,6 @@ describe Gitlab::Metrics::SidekiqMiddleware do
 
       expect_any_instance_of(Gitlab::Metrics::Transaction)
         .to receive(:add_event).with(:sidekiq_exception)
-
-      expect_any_instance_of(Gitlab::Metrics::Transaction)
-        .to receive(:finish)
 
       expect { middleware.call(worker, message, :test) }
         .to raise_error(RuntimeError)

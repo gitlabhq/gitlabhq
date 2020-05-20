@@ -1,4 +1,5 @@
 - can_create_subgroups = can?(current_user, :create_subgroup, @group)
+- can_create_projects = can?(current_user, :create_projects, @group)
 - emails_disabled = @group.emails_disabled?
 
 .group-home-panel
@@ -23,32 +24,33 @@
       - if current_user
         .group-buttons
           = render 'shared/notifications/new_button', notification_setting: @notification_setting, btn_class: 'btn', emails_disabled: emails_disabled
-          - if can? current_user, :create_projects, @group
-            - new_project_label = _("New project")
-            - new_subgroup_label = _("New subgroup")
-            - if can_create_subgroups
-              .btn-group.new-project-subgroup.droplab-dropdown.home-panel-action-button.prepend-top-default.js-new-project-subgroup.qa-new-project-or-subgroup-dropdown{ data: { project_path: new_project_path(namespace_id: @group.id), subgroup_path: new_group_path(parent_id: @group.id) } }
-                %input.btn.btn-success.dropdown-primary.js-new-group-child.qa-new-in-group-button{ type: "button", value: new_project_label, data: { action: "new-project" } }
-                %button.btn.btn-success.dropdown-toggle.js-dropdown-toggle.qa-new-project-or-subgroup-dropdown-toggle{ type: "button", data: { "dropdown-trigger" => "#new-project-or-subgroup-dropdown", 'display' => 'static' } }
-                  = sprite_icon("chevron-down", css_class: "icon dropdown-btn-icon")
-                %ul#new-project-or-subgroup-dropdown.dropdown-menu.dropdown-menu-right{ data: { dropdown: true } }
-                  %li.droplab-item-selected.qa-new-project-option{ role: "button", data: { value: "new-project", text: new_project_label } }
+          - new_project_label = _("New project")
+          - new_subgroup_label = _("New subgroup")
+          - if can_create_projects and can_create_subgroups
+            .btn-group.new-project-subgroup.droplab-dropdown.home-panel-action-button.prepend-top-default.js-new-project-subgroup.qa-new-project-or-subgroup-dropdown{ data: { project_path: new_project_path(namespace_id: @group.id), subgroup_path: new_group_path(parent_id: @group.id) } }
+              %input.btn.btn-success.dropdown-primary.js-new-group-child.qa-new-in-group-button{ type: "button", value: new_project_label, data: { action: "new-project" } }
+              %button.btn.btn-success.dropdown-toggle.js-dropdown-toggle.qa-new-project-or-subgroup-dropdown-toggle{ type: "button", data: { "dropdown-trigger" => "#new-project-or-subgroup-dropdown", 'display' => 'static' } }
+                = sprite_icon("chevron-down", css_class: "icon dropdown-btn-icon")
+              %ul#new-project-or-subgroup-dropdown.dropdown-menu.dropdown-menu-right{ data: { dropdown: true } }
+                %li.droplab-item-selected.qa-new-project-option{ role: "button", data: { value: "new-project", text: new_project_label } }
+                  .menu-item
+                    .icon-container
+                      = icon("check", class: "list-item-checkmark")
+                    .description
+                      %strong= new_project_label
+                      %span= s_("GroupsTree|Create a project in this group.")
+                %li.divider.droplap-item-ignore
+                  %li.qa-new-subgroup-option{ role: "button", data: { value: "new-subgroup", text: new_subgroup_label } }
                     .menu-item
                       .icon-container
                         = icon("check", class: "list-item-checkmark")
                       .description
-                        %strong= new_project_label
-                        %span= s_("GroupsTree|Create a project in this group.")
-                  %li.divider.droplap-item-ignore
-                    %li.qa-new-subgroup-option{ role: "button", data: { value: "new-subgroup", text: new_subgroup_label } }
-                      .menu-item
-                        .icon-container
-                          = icon("check", class: "list-item-checkmark")
-                        .description
-                          %strong= new_subgroup_label
-                          %span= s_("GroupsTree|Create a subgroup in this group.")
-            - else
-              = link_to new_project_label, new_project_path(namespace_id: @group.id), class: "btn btn-success prepend-top-default"
+                        %strong= new_subgroup_label
+                        %span= s_("GroupsTree|Create a subgroup in this group.")
+          - elsif can_create_projects
+            = link_to new_project_label, new_project_path(namespace_id: @group.id), class: "btn btn-success prepend-top-default"
+          - elsif can_create_subgroups
+            = link_to new_subgroup_label, new_group_path(parent_id: @group.id), class: "btn btn-success prepend-top-default"
 
   - if @group.description.present?
     .group-home-desc.mt-1

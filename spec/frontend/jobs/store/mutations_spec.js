@@ -59,7 +59,7 @@ describe('Jobs Store Mutations', () => {
 
     describe('when traceSize is bigger than the total size', () => {
       it('sets isTraceSizeVisible to false', () => {
-        const copy = Object.assign({}, stateCopy, { traceSize: 5118460, size: 2321312 });
+        const copy = { ...stateCopy, traceSize: 5118460, size: 2321312 };
 
         mutations[types.RECEIVE_TRACE_SUCCESS](copy, { total: 511846 });
 

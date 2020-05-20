@@ -54,14 +54,14 @@ Feature.enable('geo_repository_verification')
 Navigate to the **{admin}** **Admin Area >** **{location-dot}** **Geo** dashboard on the **primary** node and expand
 the **Verification information** tab for that node to view automatic checksumming
 status for repositories and wikis. Successes are shown in green, pending work
-in grey, and failures in red.
+in gray, and failures in red.
 
 ![Verification status](img/verification-status-primary.png)
 
 Navigate to the **{admin}** **Admin Area >** **{location-dot}** **Geo** dashboard on the **secondary** node and expand
 the **Verification information** tab for that node to view automatic verification
 status for repositories and wikis. As with checksumming, successes are shown in
-green, pending work in grey, and failures in red.
+green, pending work in gray, and failures in red.
 
 ![Verification status](img/verification-status-secondary.png)
 

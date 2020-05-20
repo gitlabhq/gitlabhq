@@ -16,7 +16,7 @@ describe Sentry::Client::IssueLink do
     let(:sentry_issue_link_url) { "https://sentrytest.gitlab.com/api/0/groups/#{sentry_issue_id}/integrations/#{integration_id}/" }
     let(:integration_id) { 44444 }
 
-    let(:issue_link_sample_response) { JSON.parse(fixture_file('sentry/global_integration_link_sample_response.json')) }
+    let(:issue_link_sample_response) { Gitlab::Json.parse(fixture_file('sentry/global_integration_link_sample_response.json')) }
     let(:sentry_api_response) { issue_link_sample_response }
     let!(:sentry_api_request) { stub_sentry_request(sentry_issue_link_url, :put, body: sentry_api_response, status: 201) }
 
@@ -42,7 +42,7 @@ describe Sentry::Client::IssueLink do
       let(:sentry_issue_link_url) { "https://sentrytest.gitlab.com/api/0/issues/#{sentry_issue_id}/plugins/gitlab/link/" }
       let(:integration_id) { nil }
 
-      let(:issue_link_sample_response) { JSON.parse(fixture_file('sentry/plugin_link_sample_response.json')) }
+      let(:issue_link_sample_response) { Gitlab::Json.parse(fixture_file('sentry/plugin_link_sample_response.json')) }
       let!(:sentry_api_request) { stub_sentry_request(sentry_issue_link_url, :post, body: sentry_api_response) }
 
       it_behaves_like 'calls sentry api'

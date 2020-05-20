@@ -123,25 +123,53 @@ describe Gitlab::Ci::Config::Entry::Artifacts do
           end
         end
       end
+    end
 
-      context 'when feature flag :ci_expose_arbitrary_artifacts_in_mr is disabled' do
+    describe 'excluded artifacts' do
+      context 'when configuration is valid and the feature is enabled' do
         before do
-          stub_feature_flags(ci_expose_arbitrary_artifacts_in_mr: false)
+          stub_feature_flags(ci_artifacts_exclude: true)
         end
 
-        context 'when syntax is correct' do
-          let(:config) { { expose_as: 'Test results', paths: ['test.txt'] } }
+        context 'when configuration is valid' do
+          let(:config) { { untracked: true, exclude: ['some/directory/'] } }
 
-          it 'is valid' do
-            expect(entry.errors).to be_empty
+          it 'correctly parses the configuration' do
+            expect(entry).to be_valid
+            expect(entry.value).to eq config
           end
         end
 
-        context 'when syntax for :expose_as is incorrect' do
-          let(:config) { { paths: %w[results.txt], expose_as: '' } }
+        context 'when configuration is not valid' do
+          let(:config) { { untracked: true, exclude: 1234 } }
 
-          it 'is valid' do
-            expect(entry.errors).to be_empty
+          it 'returns an error' do
+            expect(entry).not_to be_valid
+            expect(entry.errors)
+              .to include 'artifacts exclude should be an array of strings'
+          end
+        end
+      end
+
+      context 'when artifacts/exclude feature is disabled' do
+        before do
+          stub_feature_flags(ci_artifacts_exclude: false)
+        end
+
+        context 'when configuration has been provided' do
+          let(:config) { { untracked: true, exclude: ['some/directory/'] } }
+
+          it 'returns an error' do
+            expect(entry).not_to be_valid
+            expect(entry.errors).to include 'artifacts exclude feature is disabled'
+          end
+        end
+
+        context 'when configuration is not present' do
+          let(:config) { { untracked: true } }
+
+          it 'is a valid configuration' do
+            expect(entry).to be_valid
           end
         end
       end

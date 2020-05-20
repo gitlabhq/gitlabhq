@@ -3,18 +3,7 @@
 require 'spec_helper'
 
 describe 'projects/issues/show' do
-  let(:project) { create(:project, :repository) }
-  let(:issue) { create(:issue, project: project, author: user) }
-  let(:user) { create(:user) }
-
-  before do
-    assign(:project, project)
-    assign(:issue, issue)
-    assign(:noteable, issue)
-    stub_template 'shared/issuable/_sidebar' => ''
-    stub_template 'projects/issues/_discussion' => ''
-    allow(view).to receive(:user_status).and_return('')
-  end
+  include_context 'project show action'
 
   context 'when the issue is closed' do
     before do
@@ -150,20 +139,6 @@ describe 'projects/issues/show' do
       render
 
       expect(rendered).not_to have_selector('#js-sentry-error-stack-trace')
-    end
-  end
-
-  context 'when issue is created by a GitLab team member' do
-    let(:user) { create(:user, email: 'test@gitlab.com') }
-
-    before do
-      allow(Gitlab).to receive(:com?).and_return(true)
-    end
-
-    it 'renders an employee badge next to their name' do
-      render
-
-      expect(rendered).to have_selector('[aria-label="GitLab Team Member"]')
     end
   end
 end

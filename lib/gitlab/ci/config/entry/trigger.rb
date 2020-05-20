@@ -25,8 +25,7 @@ module Gitlab
             strategy :CrossProjectTrigger, if: -> (config) { !config.key?(:include) }
 
             strategy :SameProjectTrigger, if: -> (config) do
-              ::Feature.enabled?(:ci_parent_child_pipeline, default_enabled: true) &&
-                config.key?(:include)
+              config.key?(:include)
             end
 
             class CrossProjectTrigger < ::Gitlab::Config::Entry::Node
@@ -72,11 +71,7 @@ module Gitlab
 
             class UnknownStrategy < ::Gitlab::Config::Entry::Node
               def errors
-                if ::Feature.enabled?(:ci_parent_child_pipeline, default_enabled: true)
-                  ['config must specify either project or include']
-                else
-                  ['config must specify project']
-                end
+                ['config must specify either project or include']
               end
             end
           end

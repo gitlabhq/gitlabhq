@@ -17,6 +17,17 @@ module ClustersHelper
     end
   end
 
+  def provider_icon(provider = nil)
+    case provider
+    when 'aws'
+      image_tag 'illustrations/logos/amazon_eks.svg', alt: s_('ClusterIntegration|Amazon EKS'), class: 'gl-h-full'
+    when 'gcp'
+      image_tag 'illustrations/logos/google_gke.svg', alt: s_('ClusterIntegration|Google GKE'), class: 'gl-h-full'
+    else
+      image_tag 'illustrations/logos/kubernetes.svg', alt: _('Kubernetes Cluster'), class: 'gl-h-full'
+    end
+  end
+
   def render_gcp_signup_offer
     return if Gitlab::CurrentSettings.current_application_settings.hide_third_party_offers?
     return unless show_gcp_signup_offer?

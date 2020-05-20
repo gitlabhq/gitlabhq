@@ -1,0 +1,5 @@
+---
+title: Use stricter regex for broadcast target path
+merge_request: 30210
+author:
+type: changed

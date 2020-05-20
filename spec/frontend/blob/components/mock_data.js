@@ -21,7 +21,7 @@ export const RichViewerMock = {
 export const Blob = {
   binary: false,
   name: 'dummy.md',
-  path: 'dummy.md',
+  path: 'foo/bar/dummy.md',
   rawPath: '/flightjs/flight/snippets/51/raw',
   size: 75,
   simpleViewer: {

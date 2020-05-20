@@ -7,9 +7,24 @@ describe JwtController do
   let(:service_class) { double(new: service) }
   let(:service_name) { 'test' }
   let(:parameters) { { service: service_name } }
+  let(:log_output) { StringIO.new }
+  let(:logger) do
+    Logger.new(log_output).tap { |logger| logger.formatter = ->(_, _, _, msg) { msg } }
+  end
+  let(:log_data) { Gitlab::Json.parse(log_output.string) }
 
   before do
+    Lograge.logger = logger
+
     stub_const('JwtController::SERVICES', service_name => service_class)
+  end
+
+  shared_examples 'user logging' do
+    it 'logs username and ID' do
+      expect(log_data['username']).to eq(user.username)
+      expect(log_data['user_id']).to eq(user.id)
+      expect(log_data['meta.user']).to eq(user.username)
+    end
   end
 
   context 'existing service' do
@@ -37,14 +52,17 @@ describe JwtController do
     end
 
     context 'using CI token' do
-      let(:build) { create(:ci_build, :running) }
+      let(:user) { create(:user) }
+      let(:build) { create(:ci_build, :running, user: user) }
       let(:project) { build.project }
       let(:headers) { { authorization: credentials('gitlab-ci-token', build.token) } }
 
       context 'project with enabled CI' do
         subject! { get '/jwt/auth', params: parameters, headers: headers }
 
-        it { expect(service_class).to have_received(:new).with(project, nil, ActionController::Parameters.new(parameters).permit!) }
+        it { expect(service_class).to have_received(:new).with(project, user, ActionController::Parameters.new(parameters).permit!) }
+
+        it_behaves_like 'user logging'
       end
 
       context 'project with disabled CI' do
@@ -57,8 +75,23 @@ describe JwtController do
         it { expect(response).to have_gitlab_http_status(:unauthorized) }
       end
 
+      context 'using deploy tokens' do
+        let(:deploy_token) { create(:deploy_token, read_registry: true, projects: [project]) }
+        let(:headers) { { authorization: credentials(deploy_token.username, deploy_token.token) } }
+
+        subject! { get '/jwt/auth', params: parameters, headers: headers }
+
+        it 'authenticates correctly' do
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(service_class).to have_received(:new).with(nil, deploy_token, ActionController::Parameters.new(parameters).permit!)
+        end
+
+        it 'does not log a user' do
+          expect(log_data.keys).not_to include(%w(username user_id))
+        end
+      end
+
       context 'using personal access tokens' do
-        let(:user) { create(:user) }
         let(:pat) { create(:personal_access_token, user: user, scopes: ['read_registry']) }
         let(:headers) { { authorization: credentials('personal_access_token', pat.token) } }
 
@@ -74,6 +107,7 @@ describe JwtController do
         end
 
         it_behaves_like 'rejecting a blocked user'
+        it_behaves_like 'user logging'
       end
     end
 
@@ -104,6 +138,8 @@ describe JwtController do
         end
 
         it { expect(service_class).to have_received(:new).with(nil, user, service_parameters) }
+
+        it_behaves_like 'user logging'
       end
 
       context 'when user has 2FA enabled' do

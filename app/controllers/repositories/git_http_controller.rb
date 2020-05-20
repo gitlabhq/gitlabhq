@@ -4,7 +4,6 @@ module Repositories
   class GitHttpController < Repositories::GitHttpClientController
     include WorkhorseRequest
 
-    before_action :snippet_request_allowed?
     before_action :access_check
     prepend_before_action :deny_head_requests, only: [:info_refs]
 
@@ -120,13 +119,6 @@ module Repositories
 
     def log_user_activity
       Users::ActivityService.new(user).execute
-    end
-
-    def snippet_request_allowed?
-      if repo_type.snippet? && Feature.disabled?(:version_snippets, user)
-        Gitlab::AppLogger.info('Snippet access attempt with feature disabled')
-        render plain: 'Snippet git access is disabled.', status: :forbidden
-      end
     end
   end
 end

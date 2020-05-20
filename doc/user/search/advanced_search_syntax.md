@@ -3,13 +3,15 @@
 > **Notes:**
 >
 > - Introduced in [GitLab Enterprise Starter](https://about.gitlab.com/pricing/) 9.2
-> - This is the user documentation. To install and configure Elasticsearch,
->   visit the [administrator documentation](../../integration/elasticsearch.md).
 
 NOTE: **Note**
-Advanced Global Search (powered by Elasticsearch) is not yet available on GitLab.com. We are working on adding it. [Follow this epic for the latest updates](https://gitlab.com/groups/gitlab-org/-/epics/153).
+Advanced Global Search (powered by Elasticsearch) is not yet available on GitLab.com. We are working on adding it.
+[Follow this epic for the latest updates](https://gitlab.com/groups/gitlab-org/-/epics/153).
 
 Use advanced queries for more targeted search results.
+
+This is the user documentation. To install and configure Elasticsearch,
+visit the [administrator documentation](../../integration/elasticsearch.md).
 
 ## Overview
 

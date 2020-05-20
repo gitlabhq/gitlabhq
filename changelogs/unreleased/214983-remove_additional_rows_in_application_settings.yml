@@ -1,0 +1,5 @@
+---
+title: Delete orphaned rows in application_settings table
+merge_request: 29981
+author:
+type: performance

@@ -191,13 +191,17 @@ describe GitlabSchema do
     context 'for other classes' do
       # We cannot use an anonymous class here as `GlobalID` expects `.name` not
       # to return `nil`
-      class TestGlobalId
-        include GlobalID::Identification
-        attr_accessor :id
+      before do
+        test_global_id = Class.new do
+          include GlobalID::Identification
+          attr_accessor :id
 
-        def initialize(id)
-          @id = id
+          def initialize(id)
+            @id = id
+          end
         end
+
+        stub_const('TestGlobalId', test_global_id)
       end
 
       it 'falls back to a regular find' do

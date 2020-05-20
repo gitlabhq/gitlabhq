@@ -57,6 +57,11 @@ export default {
         ? sprintf(__("%{username}'s avatar"), { username: this.author.username })
         : null;
     },
+    createdTime() {
+      const now = new Date();
+      const isFuture = now < new Date(this.releasedAt);
+      return isFuture ? __('Will be created') : __('Created');
+    },
   },
 };
 </script>
@@ -86,7 +91,7 @@ export default {
       v-if="releasedAt || author"
       class="float-left d-flex align-items-center js-author-date-info"
     >
-      <span class="text-secondary">{{ __('Created') }}&nbsp;</span>
+      <span class="text-secondary">{{ createdTime }}&nbsp;</span>
       <template v-if="releasedAt">
         <span
           v-gl-tooltip.bottom

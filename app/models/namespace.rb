@@ -14,6 +14,7 @@ class Namespace < ApplicationRecord
   include IgnorableColumns
 
   ignore_column :plan_id, remove_with: '13.1', remove_after: '2020-06-22'
+  ignore_column :trial_ends_on, remove_with: '13.2', remove_after: '2020-07-22'
 
   # Prevent users from creating unreasonably deep level of nesting.
   # The number 20 was taken based on maximum nesting level of
@@ -135,11 +136,6 @@ class Namespace < ApplicationRecord
       name = host.delete_suffix(gitlab_host)
       Namespace.where(parent_id: nil).by_path(name)
     end
-
-    # overridden in ee
-    def reset_ci_minutes!(namespace_id)
-      false
-    end
   end
 
   def default_branch_protection
@@ -178,6 +174,10 @@ class Namespace < ApplicationRecord
 
   def user?
     kind == 'user'
+  end
+
+  def group?
+    type == 'Group'
   end
 
   def find_fork_of(project)
@@ -344,6 +344,21 @@ class Namespace < ApplicationRecord
     self_and_ancestors(hierarchy_order: :asc)
       .find { |n| !n.read_attribute(name).nil? }
       .try(name)
+  end
+
+  def actual_plan
+    Plan.default
+  end
+
+  def actual_limits
+    # We default to PlanLimits.new otherwise a lot of specs would fail
+    # On production each plan should already have associated limits record
+    # https://gitlab.com/gitlab-org/gitlab/issues/36037
+    actual_plan.actual_limits
+  end
+
+  def actual_plan_name
+    actual_plan.name
   end
 
   private

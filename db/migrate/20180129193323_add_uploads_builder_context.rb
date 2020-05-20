@@ -7,10 +7,10 @@ class AddUploadsBuilderContext < ActiveRecord::Migration[4.2]
   # Set this constant to true if this migration requires downtime.
   DOWNTIME = false
 
+  # rubocop:disable Migration/PreventStrings
   def change
-    # rubocop:disable Migration/AddLimitToStringColumns
     add_column :uploads, :mount_point, :string
     add_column :uploads, :secret, :string
-    # rubocop:enable Migration/AddLimitToStringColumns
   end
+  # rubocop:enable Migration/PreventStrings
 end

@@ -24,6 +24,7 @@ class SshHostKey
   # This is achieved by making the lifetime shorter than the refresh interval.
   self.reactive_cache_refresh_interval = 15.minutes
   self.reactive_cache_lifetime = 10.minutes
+  self.reactive_cache_work_type = :external_dependency
 
   def self.find_by(opts = {})
     opts = HashWithIndifferentAccess.new(opts)

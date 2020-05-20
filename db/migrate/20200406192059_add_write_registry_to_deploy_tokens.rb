@@ -8,7 +8,7 @@ class AddWriteRegistryToDeployTokens < ActiveRecord::Migration[6.0]
   disable_ddl_transaction!
 
   def up
-    add_column_with_default(:deploy_tokens, :write_registry, :boolean, default: false, allow_null: false)
+    add_column_with_default(:deploy_tokens, :write_registry, :boolean, default: false, allow_null: false) # rubocop:disable Migration/AddColumnWithDefault
   end
 
   def down

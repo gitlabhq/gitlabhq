@@ -65,7 +65,7 @@ Example response:
 
 ## Create a commit with multiple files and actions
 
-> [Introduced][ce-6096] in GitLab 8.13.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/6096) in GitLab 8.13.
 
 Create a commit by posting a JSON payload
 
@@ -94,7 +94,7 @@ POST /projects/:id/repository/commits
 | `previous_path` | string | no | Original full path to the file being moved. Ex. `lib/class1.rb`. Only considered for `move` action. |
 | `content` | string | no | File content, required for all except `delete`, `chmod`, and `move`. Move actions that do not specify `content` will preserve the existing file content, and any other value of `content` will overwrite the file content. |
 | `encoding` | string | no | `text` or `base64`. `text` is default. |
-| `last_commit_id` | string | no | Last known file commit id. Will be only considered in update, move and delete actions. |
+| `last_commit_id` | string | no | Last known file commit ID. Will be only considered in update, move, and delete actions. |
 | `execute_filemode` | boolean | no | When `true/false` enables/disables the execute flag on the file. Only considered for `chmod` action. |
 
 ```shell
@@ -245,7 +245,7 @@ Example response:
 
 ## Get references a commit is pushed to
 
-> [Introduced][ce-15026] in GitLab 10.6
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/15026) in GitLab 10.6
 
 Get all references (from branches or tags) a commit is pushed to.
 The pagination parameters `page` and `per_page` can be used to restrict the list of references.
@@ -280,7 +280,7 @@ Example response:
 
 ## Cherry pick a commit
 
-> [Introduced][ce-8047] in GitLab 8.15.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/8047) in GitLab 8.15.
 
 Cherry picks a commit to a given branch.
 
@@ -340,7 +340,7 @@ conflict.
 
 ## Revert a commit
 
-> [Introduced][ce-22919] in GitLab 11.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22919) in GitLab 11.5.
 
 Reverts a commit in a given branch.
 
@@ -521,6 +521,62 @@ Example response:
 }
 ```
 
+## Get the discussions of a commit
+
+Get the discussions of a commit in a project.
+
+```plaintext
+GET /projects/:id/repository/commits/:sha/discussions
+```
+
+Parameters:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
+| `sha`     | string | yes | The commit hash or name of a repository branch or tag |
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/repository/commits/4604744a1c64de00ff62e1e8a6766919923d2b41/discussions"
+```
+
+Example response:
+
+```json
+[
+  {
+    "id": "4604744a1c64de00ff62e1e8a6766919923d2b41",
+    "individual_note": true,
+    "notes": [
+      {
+        "id": 334686748,
+        "type": null,
+        "body": "I'm the Dude, so that's what you call me.",
+        "attachment": null,
+        "author" : {
+          "id" : 28,
+          "name" : "Jeff Lebowski",
+          "username" : "thedude",
+          "web_url" : "https://gitlab.example.com/thedude",
+          "state" : "active",
+          "avatar_url" : "https://gitlab.example.com/uploads/user/avatar/28/The-Big-Lebowski-400-400.png"
+        },
+        "created_at": "2020-04-30T18:48:11.432Z",
+        "updated_at": "2020-04-30T18:48:11.432Z",
+        "system": false,
+        "noteable_id": null,
+        "noteable_type": "Commit",
+        "resolvable": false,
+        "confidential": null,
+        "noteable_iid": null,
+        "commands_changes": {}
+      }
+    ]
+  }
+]
+
+```
+
 ## Commit status
 
 Since GitLab 8.1, this is the new commit status API.
@@ -653,7 +709,7 @@ Example response:
 
 ## List Merge Requests associated with a commit
 
-> [Introduced][ce-18004] in GitLab 10.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18004) in GitLab 10.7.
 
 Get a list of Merge Requests related to the specified commit.
 
@@ -755,7 +811,7 @@ Example response if commit is GPG signed:
 }
 ```
 
-Example response if commit is x509 signed:
+Example response if commit is X.509 signed:
 
 ```json
 {
@@ -785,9 +841,3 @@ Example response if commit is unsigned:
   "message": "404 GPG Signature Not Found"
 }
 ```
-
-[ce-6096]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/6096 "Multi-file commit"
-[ce-8047]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/8047
-[ce-15026]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/15026
-[ce-18004]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18004
-[ce-22919]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22919

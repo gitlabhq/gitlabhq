@@ -33,9 +33,32 @@ describe('DropdownButton', () => {
     wrapper.destroy();
   });
 
+  describe('methods', () => {
+    describe('handleButtonClick', () => {
+      it('calls action `toggleDropdownContents` and stops event propagation when `state.variant` is "standalone"', () => {
+        const event = {
+          stopPropagation: jest.fn(),
+        };
+        wrapper = createComponent({
+          ...mockConfig,
+          variant: 'standalone',
+        });
+
+        jest.spyOn(wrapper.vm, 'toggleDropdownContents');
+
+        wrapper.vm.handleButtonClick(event);
+
+        expect(wrapper.vm.toggleDropdownContents).toHaveBeenCalled();
+        expect(event.stopPropagation).toHaveBeenCalled();
+
+        wrapper.destroy();
+      });
+    });
+  });
+
   describe('template', () => {
     it('renders component container element', () => {
-      expect(wrapper.is('gl-deprecated-button-stub')).toBe(true);
+      expect(wrapper.is('gl-button-stub')).toBe(true);
     });
 
     it('renders button text element', () => {

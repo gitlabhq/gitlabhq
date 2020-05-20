@@ -91,6 +91,20 @@ describe ApplicationSetting do
     it { is_expected.not_to allow_value(nil).for(:namespace_storage_size_limit) }
     it { is_expected.not_to allow_value(-1).for(:namespace_storage_size_limit) }
 
+    it { is_expected.to allow_value(300).for(:issues_create_limit) }
+    it { is_expected.not_to allow_value('three').for(:issues_create_limit) }
+    it { is_expected.not_to allow_value(nil).for(:issues_create_limit) }
+    it { is_expected.not_to allow_value(10.5).for(:issues_create_limit) }
+    it { is_expected.not_to allow_value(-1).for(:issues_create_limit) }
+
+    it { is_expected.to allow_value(0).for(:raw_blob_request_limit) }
+    it { is_expected.not_to allow_value('abc').for(:raw_blob_request_limit) }
+    it { is_expected.not_to allow_value(nil).for(:raw_blob_request_limit) }
+    it { is_expected.not_to allow_value(10.5).for(:raw_blob_request_limit) }
+    it { is_expected.not_to allow_value(-1).for(:raw_blob_request_limit) }
+
+    it { is_expected.not_to allow_value(false).for(:hashed_storage_enabled) }
+
     context 'grafana_url validations' do
       before do
         subject.instance_variable_set(:@parsed_grafana_url, nil)

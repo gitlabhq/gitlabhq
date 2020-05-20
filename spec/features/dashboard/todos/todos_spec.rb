@@ -3,10 +3,10 @@
 require 'spec_helper'
 
 describe 'Dashboard Todos' do
-  let(:user)    { create(:user, username: 'john') }
-  let(:author)  { create(:user) }
-  let(:project) { create(:project, :public) }
-  let(:issue)   { create(:issue, due_date: Date.today, title: "Fix bug") }
+  let_it_be(:user)    { create(:user, username: 'john') }
+  let_it_be(:author)  { create(:user) }
+  let_it_be(:project) { create(:project, :public) }
+  let_it_be(:issue)   { create(:issue, due_date: Date.today, title: "Fix bug") }
 
   context 'User does not have todos' do
     before do
@@ -355,6 +355,40 @@ describe 'Dashboard Todos' do
       href = pipelines_project_merge_request_path(project, todo.target)
 
       expect(page).to have_link "merge request #{todo.target.to_reference}", href: href
+    end
+  end
+
+  context 'User has a todo regarding a design' do
+    let_it_be(:target) { create(:design, issue: issue, project: project) }
+    let_it_be(:note) { create(:note, project: project, note: 'I am note, hear me roar') }
+    let_it_be(:todo) do
+      create(:todo, :mentioned,
+             user: user,
+             project: project,
+             target: target,
+             author: author,
+             note: note)
+    end
+
+    before do
+      project.add_developer(user)
+      sign_in(user)
+
+      visit dashboard_todos_path
+    end
+
+    it 'has todo present' do
+      expect(page).to have_selector('.todos-list .todo', count: 1)
+    end
+
+    it 'has a link that will take me to the design page' do
+      click_link "design #{target.to_reference}"
+
+      expectation = Gitlab::Routing.url_helpers.designs_project_issue_path(
+        target.project, target.issue, target.filename
+      )
+
+      expect(current_path).to eq(expectation)
     end
   end
 end

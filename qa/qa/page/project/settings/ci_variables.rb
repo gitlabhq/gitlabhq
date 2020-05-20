@@ -5,7 +5,7 @@ module QA
     module Project
       module Settings
         class CiVariables < Page::Base
-          include Common
+          include QA::Page::Settings::Common
 
           view 'app/assets/javascripts/ci_variable_list/components/ci_variable_modal.vue' do
             element :ci_variable_key_field

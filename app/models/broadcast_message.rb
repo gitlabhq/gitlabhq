@@ -105,7 +105,10 @@ class BroadcastMessage < ApplicationRecord
   def matches_current_path(current_path)
     return true if current_path.blank? || target_path.blank?
 
-    current_path.match(Regexp.escape(target_path).gsub('\\*', '.*'))
+    escaped = Regexp.escape(target_path).gsub('\\*', '.*')
+    regexp = Regexp.new "^#{escaped}$", Regexp::IGNORECASE
+
+    regexp.match(current_path)
   end
 
   def flush_redis_cache

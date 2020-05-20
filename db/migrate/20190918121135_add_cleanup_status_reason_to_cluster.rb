@@ -7,6 +7,6 @@ class AddCleanupStatusReasonToCluster < ActiveRecord::Migration[5.2]
   DOWNTIME = false
 
   def change
-    add_column :clusters, :cleanup_status_reason, :text
+    add_column :clusters, :cleanup_status_reason, :text # rubocop:disable Migration/AddLimitToTextColumns
   end
 end

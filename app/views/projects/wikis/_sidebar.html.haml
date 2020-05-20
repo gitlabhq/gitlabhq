@@ -17,6 +17,6 @@
           %ul.wiki-pages
             = render @sidebar_wiki_entries, context: 'sidebar'
       .block.w-100
-        - if @sidebar_wiki_entries&.length.to_i >= 15
+        - if @sidebar_limited
           = link_to project_wikis_pages_path(@project), class: 'btn btn-block' do
             = s_("Wiki|View All Pages")

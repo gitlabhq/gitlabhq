@@ -16,7 +16,7 @@
 
     .row
       .form-group.col-md-9
-        = f.label :tag_list, _('Topics'), class: 'label-bold'
+        = f.label :tag_list, _('Topics (optional)'), class: 'label-bold'
         = f.text_field :tag_list, value: @project.tag_list.join(', '), maxlength: 2000, class: "form-control"
         %p.form-text.text-muted= _('Separate topics with commas.')
 

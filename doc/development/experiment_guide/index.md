@@ -32,10 +32,9 @@ The author then adds a comment to this piece of code and adds a link to the issu
       #...
     },
     # Add your experiment here:
-    sign_up_flow: {
-      feature_toggle: :experimental_sign_up_flow, # Feature flag that will be used
-      environment: ::Gitlab.dev_env_or_com?, # Target environment
-      enabled_ratio: 0.1 # Percentage of users that will be part of the experiment. 10% of the users would be part of this experiments.
+    signup_flow: {
+      environment: ::Gitlab.dev_env_or_com?, # Target environment, defaults to enabled for development and GitLab.com
+      tracking_category: 'Growth::Acquisition::Experiment::SignUpFlow' # Used for providing the category when setting up tracking data
     }
   }.freeze
   ```
@@ -46,7 +45,7 @@ The author then adds a comment to this piece of code and adds a link to the issu
   class RegistrationController < Applicationcontroller
    def show
      # experiment_enabled?(:feature_name) is also available in views and helpers
-     if experiment_enabled?(:sign_up_flow)
+     if experiment_enabled?(:signup_flow)
        # render the experiment
      else
        # render the original version
@@ -55,13 +54,18 @@ The author then adds a comment to this piece of code and adds a link to the issu
   end
   ```
 
-- Track necessary events. See the [telemetry guide](../../telemetry/index.md) for details.
+- Track necessary events. See the [telemetry guide](../telemetry/index.md) for details.
 - After the merge request is merged, use [`chatops`](../../ci/chatops/README.md) in the
-[appropriate channel](../feature_flags/controls.md#where-to-run-commands) to enable the feature flag and start the experiment.
+[appropriate channel](../feature_flags/controls.md#communicate-the-change) to start the experiment for 10% of the users.
+The feature flag should have the name of the experiment with the `_experiment_percentage` suffix appended.
 For visibility, please also share any commands run against production in the `#s_growth` channel:
 
   ```shell
-  /chatops run feature set --project=gitlab-org/gitlab experimental_sign_up_flow true
+  /chatops run feature set signup_flow_experiment_percentage 10
   ```
 
-  If you notice issues with the experiment, you can disable the experiment by setting the feature flag to `false` again.
+  If you notice issues with the experiment, you can disable the experiment by removing the feature flag:
+
+  ```shell
+  /chatops run feature delete signup_flow_experiment_percentage
+  ```

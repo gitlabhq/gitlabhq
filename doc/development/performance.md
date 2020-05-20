@@ -46,7 +46,7 @@ GitLab provides built-in tools to help improve performance and availability:
 GitLab team members can use [GitLab.com's performance monitoring systems](https://about.gitlab.com/handbook/engineering/monitoring/) located at
 <https://dashboards.gitlab.net>, this requires you to log in using your
 `@gitlab.com` email address. Non-GitLab team-members are advised to set up their
-own InfluxDB and Grafana stack.
+own Prometheus and Grafana stack.
 
 ## Benchmarks
 
@@ -109,7 +109,7 @@ In short:
 By collecting snapshots of process state at regular intervals, profiling allows
 you to see where time is spent in a process. The [StackProf](https://github.com/tmm1/stackprof)
 gem is included in GitLab's development environment, allowing you to investigate
-the behaviour of suspect code in detail.
+the behavior of suspect code in detail.
 
 It's important to note that profiling an application *alters its performance*,
 and will generally be done *in an unrepresentative environment*. In particular,

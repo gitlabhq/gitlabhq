@@ -1,5 +1,7 @@
 # Features flags API
 
+This API is for managing Flipper-based [feature flags used in development of GitLab](../development/feature_flags/index.md).
+
 All methods require administrator authorization.
 
 Notice that currently the API only supports boolean and percentage-of-time gate
@@ -32,6 +34,16 @@ Example response:
     ]
   },
   {
+    "name": "my_user_feature",
+    "state": "on",
+    "gates": [
+      {
+        "key": "percentage_of_actors",
+        "value": 34
+      }
+    ]
+  },
+  {
     "name": "new_library",
     "state": "on",
     "gates": [
@@ -58,6 +70,7 @@ POST /features/:name
 | --------- | ---- | -------- | ----------- |
 | `name` | string | yes | Name of the feature to create or update |
 | `value` | integer/string | yes | `true` or `false` to enable/disable, or an integer for percentage of time |
+| `key` | string | no | `percentage_of_actors` or `percentage_of_time` (default) |
 | `feature_group` | string | no | A Feature group name |
 | `user` | string | no | A GitLab username |
 | `group` | string | no | A GitLab group's path, for example `gitlab-org` |
@@ -88,6 +101,37 @@ Example response:
   ]
 }
 ```
+
+### Set percentage of actors rollout
+
+Rollout to percentage of actors.
+
+```plaintext
+POST https://gitlab.example.com/api/v4/features/my_user_feature?private_token=<your_access_token>
+Content-Type: application/x-www-form-urlencoded
+value=42&key=percentage_of_actors&
+```
+
+Example response:
+
+```json
+{
+  "name": "my_user_feature",
+  "state": "conditional",
+  "gates": [
+    {
+      "key": "boolean",
+      "value": false
+    },
+    {
+      "key": "percentage_of_actors",
+      "value": 42
+    }
+  ]
+}
+```
+
+Rolls out the `my_user_feature` to `42%` of actors.
 
 ## Delete a feature
 

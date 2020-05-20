@@ -67,7 +67,7 @@ module Gitlab
         end
 
         def droppable?
-          idempotent? && duplicate?
+          idempotent? && duplicate? && ::Feature.disabled?("disable_#{queue_name}_deduplication")
         end
 
         private

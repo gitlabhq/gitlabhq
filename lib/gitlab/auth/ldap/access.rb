@@ -8,8 +8,6 @@ module Gitlab
   module Auth
     module Ldap
       class Access
-        prepend_if_ee('::EE::Gitlab::Auth::Ldap::Access') # rubocop: disable Cop/InjectEnterpriseEditionModule
-
         attr_reader :provider, :user, :ldap_identity
 
         def self.open(user, &block)
@@ -118,3 +116,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Auth::Ldap::Access.prepend_if_ee('::EE::Gitlab::Auth::Ldap::Access')

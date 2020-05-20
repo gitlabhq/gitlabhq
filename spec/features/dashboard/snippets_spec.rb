@@ -35,7 +35,7 @@ describe 'Dashboard snippets' do
       element = page.find('.row.empty-state')
 
       expect(element).to have_content("Code snippets")
-      expect(element.find('.svg-content img')['src']).to have_content('illustrations/snippets_empty')
+      expect(element.find('.svg-content img.js-lazy-loaded')['src']).to have_content('illustrations/snippets_empty')
     end
 
     it 'shows new snippet button in main content area' do
@@ -46,47 +46,6 @@ describe 'Dashboard snippets' do
     it 'shows documentation button in main comment area' do
       parent_element = page.find('.row.empty-state')
       expect(parent_element).to have_link('Documentation', href: help_page_path('user/snippets.md'))
-    end
-  end
-
-  context 'rendering file names' do
-    let_it_be(:snippet) { create(:personal_snippet, :public, author: user, file_name: 'foo.txt') }
-    let_it_be(:versioned_snippet) { create(:personal_snippet, :repository, :public, author: user, file_name: 'bar.txt') }
-
-    before do
-      sign_in(user)
-    end
-
-    context 'when feature flag :version_snippets is disabled' do
-      before do
-        stub_feature_flags(version_snippets: false)
-
-        visit dashboard_snippets_path
-      end
-
-      it 'contains the snippet file names from the DB' do
-        aggregate_failures do
-          expect(page).to have_content 'foo.txt'
-          expect(page).to have_content('bar.txt')
-          expect(page).not_to have_content('.gitattributes')
-        end
-      end
-    end
-
-    context 'when feature flag :version_snippets is enabled' do
-      before do
-        stub_feature_flags(version_snippets: true)
-
-        visit dashboard_snippets_path
-      end
-
-      it 'contains both the versioned and non-versioned filenames' do
-        aggregate_failures do
-          expect(page).to have_content 'foo.txt'
-          expect(page).to have_content('.gitattributes')
-          expect(page).not_to have_content('bar.txt')
-        end
-      end
     end
   end
 

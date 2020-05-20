@@ -12,4 +12,6 @@
     .gl-alert-actions
       = link_to _('Go to Webhooks'), project_hooks_path(@project), class: 'btn gl-alert-action btn-info new-gl-button'
 
-= render 'projects/services/index'
+%h4= s_('Integrations')
+%p= s_('Integrations allow you to integrate GitLab with other applications')
+= render 'shared/integrations/index', integrations: @services

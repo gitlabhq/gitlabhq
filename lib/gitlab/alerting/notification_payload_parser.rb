@@ -6,6 +6,7 @@ module Gitlab
       BadPayloadError = Class.new(StandardError)
 
       DEFAULT_TITLE = 'New: Incident'
+      DEFAULT_SEVERITY = 'critical'
 
       def initialize(payload)
         @payload = payload.to_h.with_indifferent_access
@@ -30,6 +31,10 @@ module Gitlab
         payload[:title].presence || DEFAULT_TITLE
       end
 
+      def severity
+        payload[:severity].presence || DEFAULT_SEVERITY
+      end
+
       def annotations
         primary_params
           .reverse_merge(flatten_secondary_params)
@@ -43,7 +48,8 @@ module Gitlab
           'description' => payload[:description],
           'monitoring_tool' => payload[:monitoring_tool],
           'service' => payload[:service],
-          'hosts' => hosts.presence
+          'hosts' => hosts.presence,
+          'severity' => severity
         }
       end
 

@@ -11,6 +11,10 @@ module Gitlab
     class << self
       include ActionView::RecordIdentifier
 
+      # Using a case statement here is preferable for readability and maintainability.
+      # See discussion in https://gitlab.com/gitlab-org/gitlab/-/issues/217397
+      #
+      # rubocop:disable Metrics/CyclomaticComplexity
       def build(object, **options)
         # Objects are sometimes wrapped in a BatchLoader instance
         case object.itself
@@ -34,14 +38,17 @@ module Gitlab
           snippet_url(object, **options)
         when User
           instance.user_url(object, **options)
-        when ProjectWiki
-          instance.project_wiki_url(object.project, :home, **options)
+        when Wiki
+          wiki_url(object, **options)
         when WikiPage
           instance.project_wiki_url(object.wiki.project, object.slug, **options)
+        when ::DesignManagement::Design
+          design_url(object, **options)
         else
           raise NotImplementedError.new("No URL builder defined for #{object.inspect}")
         end
       end
+      # rubocop:enable Metrics/CyclomaticComplexity
 
       def commit_url(commit, **options)
         return '' unless commit.project
@@ -68,6 +75,25 @@ module Gitlab
           instance.gitlab_raw_snippet_url(snippet, **options)
         else
           instance.gitlab_snippet_url(snippet, **options)
+        end
+      end
+
+      def wiki_url(object, **options)
+        if object.container.is_a?(Project)
+          instance.project_wiki_url(object.container, Wiki::HOMEPAGE, **options)
+        else
+          raise NotImplementedError.new("No URL builder defined for #{object.inspect}")
+        end
+      end
+
+      def design_url(design, **options)
+        size, ref = options.values_at(:size, :ref)
+        options.except!(:size, :ref)
+
+        if size
+          instance.project_design_management_designs_resized_image_url(design.project, design, ref, size, **options)
+        else
+          instance.project_design_management_designs_raw_image_url(design.project, design, ref, **options)
         end
       end
     end

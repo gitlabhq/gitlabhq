@@ -1,9 +1,10 @@
 import Vuex from 'vuex';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 
-import { GlDeprecatedButton, GlLoadingIcon, GlIcon, GlSearchBoxByType, GlLink } from '@gitlab/ui';
+import { GlButton, GlLoadingIcon, GlSearchBoxByType, GlLink } from '@gitlab/ui';
 import { UP_KEY_CODE, DOWN_KEY_CODE, ENTER_KEY_CODE, ESC_KEY_CODE } from '~/lib/utils/keycodes';
 import DropdownContentsLabelsView from '~/vue_shared/components/sidebar/labels_select_vue/dropdown_contents_labels_view.vue';
+import LabelItem from '~/vue_shared/components/sidebar/labels_select_vue/label_item.vue';
 
 import defaultState from '~/vue_shared/components/sidebar/labels_select_vue/store/state';
 import mutations from '~/vue_shared/components/sidebar/labels_select_vue/store/mutations';
@@ -41,13 +42,19 @@ const createComponent = (initialState = mockConfig) => {
 
 describe('DropdownContentsLabelsView', () => {
   let wrapper;
+  let wrapperStandalone;
 
   beforeEach(() => {
     wrapper = createComponent();
+    wrapperStandalone = createComponent({
+      ...mockConfig,
+      variant: 'standalone',
+    });
   });
 
   afterEach(() => {
     wrapper.destroy();
+    wrapperStandalone.destroy();
   });
 
   describe('computed', () => {
@@ -72,16 +79,6 @@ describe('DropdownContentsLabelsView', () => {
   });
 
   describe('methods', () => {
-    describe('getDropdownLabelBoxStyle', () => {
-      it('returns an object containing `backgroundColor` based on provided `label` param', () => {
-        expect(wrapper.vm.getDropdownLabelBoxStyle(mockRegularLabel)).toEqual(
-          expect.objectContaining({
-            backgroundColor: mockRegularLabel.color,
-          }),
-        );
-      });
-    });
-
     describe('isLabelSelected', () => {
       it('returns true when provided `label` param is one of the selected labels', () => {
         expect(wrapper.vm.isLabelSelected(mockRegularLabel)).toBe(true);
@@ -165,12 +162,23 @@ describe('DropdownContentsLabelsView', () => {
     });
 
     describe('handleLabelClick', () => {
-      it('calls action `updateSelectedLabels` with provided `label` param', () => {
+      beforeEach(() => {
         jest.spyOn(wrapper.vm, 'updateSelectedLabels').mockImplementation();
+      });
 
+      it('calls action `updateSelectedLabels` with provided `label` param', () => {
         wrapper.vm.handleLabelClick(mockRegularLabel);
 
         expect(wrapper.vm.updateSelectedLabels).toHaveBeenCalledWith([mockRegularLabel]);
+      });
+
+      it('calls action `toggleDropdownContents` when `state.allowMultiselect` is false', () => {
+        jest.spyOn(wrapper.vm, 'toggleDropdownContents');
+        wrapper.vm.$store.state.allowMultiselect = false;
+
+        wrapper.vm.handleLabelClick(mockRegularLabel);
+
+        expect(wrapper.vm.toggleDropdownContents).toHaveBeenCalled();
       });
     });
   });
@@ -198,12 +206,15 @@ describe('DropdownContentsLabelsView', () => {
       expect(titleEl.text()).toBe('Assign labels');
     });
 
+    it('does not render dropdown title element when `state.variant` is "standalone"', () => {
+      expect(wrapperStandalone.find('.dropdown-title').exists()).toBe(false);
+    });
+
     it('renders dropdown close button element', () => {
-      const closeButtonEl = wrapper.find('.dropdown-title').find(GlDeprecatedButton);
+      const closeButtonEl = wrapper.find('.dropdown-title').find(GlButton);
 
       expect(closeButtonEl.exists()).toBe(true);
-      expect(closeButtonEl.find(GlIcon).exists()).toBe(true);
-      expect(closeButtonEl.find(GlIcon).props('name')).toBe('close');
+      expect(closeButtonEl.props('icon')).toBe('close');
     });
 
     it('renders label search input element', () => {
@@ -214,16 +225,7 @@ describe('DropdownContentsLabelsView', () => {
     });
 
     it('renders label elements for all labels', () => {
-      const labelsEl = wrapper.findAll('.dropdown-content li');
-      const labelItemEl = labelsEl.at(0).find(GlLink);
-
-      expect(labelsEl.length).toBe(mockLabels.length);
-      expect(labelItemEl.exists()).toBe(true);
-      expect(labelItemEl.find(GlIcon).props('name')).toBe('mobile-issue-close');
-      expect(labelItemEl.find('.dropdown-label-box').attributes('style')).toBe(
-        'background-color: rgb(186, 218, 85);',
-      );
-      expect(labelItemEl.find(GlLink).text()).toContain(mockLabels[0].title);
+      expect(wrapper.findAll(LabelItem)).toHaveLength(mockLabels.length);
     });
 
     it('renders label element with "is-focused" when value of `currentHighlightItem` is more than -1', () => {
@@ -233,9 +235,9 @@ describe('DropdownContentsLabelsView', () => {
 
       return wrapper.vm.$nextTick(() => {
         const labelsEl = wrapper.findAll('.dropdown-content li');
-        const labelItemEl = labelsEl.at(0).find(GlLink);
+        const labelItemEl = labelsEl.at(0).find(LabelItem);
 
-        expect(labelItemEl.attributes('class')).toContain('is-focused');
+        expect(labelItemEl.props('highlight')).toBe(true);
       });
     });
 
@@ -247,19 +249,42 @@ describe('DropdownContentsLabelsView', () => {
       return wrapper.vm.$nextTick(() => {
         const noMatchEl = wrapper.find('.dropdown-content li');
 
-        expect(noMatchEl.exists()).toBe(true);
+        expect(noMatchEl.isVisible()).toBe(true);
         expect(noMatchEl.text()).toContain('No matching results');
       });
     });
 
     it('renders footer list items', () => {
-      const createLabelBtn = wrapper.find('.dropdown-footer').find(GlDeprecatedButton);
-      const manageLabelsLink = wrapper.find('.dropdown-footer').find(GlLink);
+      const createLabelLink = wrapper
+        .find('.dropdown-footer')
+        .findAll(GlLink)
+        .at(0);
+      const manageLabelsLink = wrapper
+        .find('.dropdown-footer')
+        .findAll(GlLink)
+        .at(1);
 
-      expect(createLabelBtn.exists()).toBe(true);
-      expect(createLabelBtn.text()).toBe('Create label');
+      expect(createLabelLink.exists()).toBe(true);
+      expect(createLabelLink.text()).toBe('Create label');
       expect(manageLabelsLink.exists()).toBe(true);
       expect(manageLabelsLink.text()).toBe('Manage labels');
+    });
+
+    it('does not render "Create label" footer link when `state.allowLabelCreate` is `false`', () => {
+      wrapper.vm.$store.state.allowLabelCreate = false;
+
+      return wrapper.vm.$nextTick(() => {
+        const createLabelLink = wrapper
+          .find('.dropdown-footer')
+          .findAll(GlLink)
+          .at(0);
+
+        expect(createLabelLink.text()).not.toBe('Create label');
+      });
+    });
+
+    it('does not render footer list items when `state.variant` is "standalone"', () => {
+      expect(wrapperStandalone.find('.dropdown-footer').exists()).toBe(false);
     });
   });
 });

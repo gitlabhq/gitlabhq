@@ -40,10 +40,7 @@ export const diffCompareDropdownTargetVersions = (state, getters) => {
     };
   };
 
-  if (gon.features?.diffCompareWithHead) {
-    return [...state.mergeRequestDiffs.slice(1).map(formatVersion), baseVersion, headVersion];
-  }
-  return [...state.mergeRequestDiffs.slice(1).map(formatVersion), baseVersion];
+  return [...state.mergeRequestDiffs.slice(1).map(formatVersion), baseVersion, headVersion];
 };
 
 export const diffCompareDropdownSourceVersions = (state, getters) => {

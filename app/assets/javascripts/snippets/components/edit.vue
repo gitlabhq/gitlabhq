@@ -81,7 +81,10 @@ export default {
       return this.isUpdating ? __('Saving') : __('Save changes');
     },
     cancelButtonHref() {
-      return this.projectPath ? `/${this.projectPath}/snippets` : `/snippets`;
+      if (this.newSnippet) {
+        return this.projectPath ? `/${this.projectPath}/snippets` : `/snippets`;
+      }
+      return this.snippet.webUrl;
     },
     titleFieldId() {
       return `${this.isProjectSnippet ? 'project' : 'personal'}_snippet_title`;
@@ -173,7 +176,13 @@ export default {
       class="loading-animation prepend-top-20 append-bottom-20"
     />
     <template v-else>
-      <title-field :id="titleFieldId" v-model="snippet.title" required :autofocus="true" />
+      <title-field
+        :id="titleFieldId"
+        v-model="snippet.title"
+        data-qa-selector="snippet_title"
+        required
+        :autofocus="true"
+      />
       <snippet-description-edit
         :id="descriptionFieldId"
         v-model="snippet.description"
@@ -198,12 +207,15 @@ export default {
             category="primary"
             variant="success"
             :disabled="updatePrevented"
+            data-qa-selector="submit_button"
             @click="handleFormSubmit"
             >{{ saveButtonLabel }}</gl-button
           >
         </template>
         <template #append>
-          <gl-button :href="cancelButtonHref">{{ __('Cancel') }}</gl-button>
+          <gl-button data-testid="snippet-cancel-btn" :href="cancelButtonHref">{{
+            __('Cancel')
+          }}</gl-button>
         </template>
       </form-footer-actions>
     </template>

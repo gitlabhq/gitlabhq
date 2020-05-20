@@ -5,10 +5,14 @@ module QA
     module Project
       module SubMenus
         module Issues
-          include Page::Project::SubMenus::Common
+          extend QA::Page::PageConcern
 
           def self.included(base)
+            super
+
             base.class_eval do
+              include QA::Page::Project::SubMenus::Common
+
               view 'app/views/layouts/nav/sidebar/_project.html.haml' do
                 element :issue_boards_link
                 element :issues_item

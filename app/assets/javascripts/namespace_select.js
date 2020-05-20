@@ -1,5 +1,3 @@
-/* eslint-disable no-else-return */
-
 import $ from 'jquery';
 import '~/gl_dropdown';
 import Api from './api';
@@ -23,9 +21,8 @@ export default class NamespaceSelect {
       toggleLabel(selected) {
         if (selected.id == null) {
           return selected.text;
-        } else {
-          return `${selected.kind}: ${selected.full_path}`;
         }
+        return `${selected.kind}: ${selected.full_path}`;
       },
       data(term, dataCallback) {
         return Api.namespaces(term, namespaces => {
@@ -43,9 +40,8 @@ export default class NamespaceSelect {
       text(namespace) {
         if (namespace.id == null) {
           return namespace.text;
-        } else {
-          return `${namespace.kind}: ${namespace.full_path}`;
         }
+        return `${namespace.kind}: ${namespace.full_path}`;
       },
       renderRow: this.renderRow,
       clicked(options) {

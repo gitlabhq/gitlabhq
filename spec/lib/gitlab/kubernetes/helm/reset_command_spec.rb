@@ -3,14 +3,13 @@
 require 'spec_helper'
 
 describe Gitlab::Kubernetes::Helm::ResetCommand do
+  subject(:reset_command) { described_class.new(name: name, rbac: rbac, files: files) }
+
   let(:rbac) { true }
   let(:name) { 'helm' }
   let(:files) { {} }
-  let(:reset_command) { described_class.new(name: name, rbac: rbac, files: files) }
 
-  subject { reset_command }
-
-  it_behaves_like 'helm commands' do
+  it_behaves_like 'helm command generator' do
     let(:commands) do
       <<~EOS
       helm reset
@@ -23,7 +22,7 @@ describe Gitlab::Kubernetes::Helm::ResetCommand do
   context 'when there is a ca.pem file' do
     let(:files) { { 'ca.pem': 'some file content' } }
 
-    it_behaves_like 'helm commands' do
+    it_behaves_like 'helm command generator' do
       let(:commands) do
         <<~EOS1.squish + "\n" + <<~EOS2
         helm reset
@@ -39,29 +38,13 @@ describe Gitlab::Kubernetes::Helm::ResetCommand do
     end
   end
 
-  describe '#pod_resource' do
-    subject { reset_command.pod_resource }
-
-    context 'rbac is enabled' do
-      let(:rbac) { true }
-
-      it 'generates a pod that uses the tiller serviceAccountName' do
-        expect(subject.spec.serviceAccountName).to eq('tiller')
-      end
-    end
-
-    context 'rbac is not enabled' do
-      let(:rbac) { false }
-
-      it 'generates a pod that uses the default serviceAccountName' do
-        expect(subject.spec.serviceAcccountName).to be_nil
-      end
-    end
-  end
-
   describe '#pod_name' do
     subject { reset_command.pod_name }
 
     it { is_expected.to eq('uninstall-helm') }
+  end
+
+  it_behaves_like 'helm command' do
+    let(:command) { reset_command }
   end
 end

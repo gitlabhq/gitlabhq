@@ -1,70 +1,36 @@
-.review-docker:
-  extends:
-    - .default-retry
-    - .use-docker-in-docker
-  image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-qa-alpine-ruby-2.6
-  variables:
-    GITLAB_EDITION: "ce"
-
 build-qa-image:
   extends:
     - .use-kaniko
     - .default-retry
-    - .review:rules:mr-and-schedule-auto
-  stage: prepare
+    - .review:rules:build-qa-image
+  stage: build-images
+  needs: []
   script:
-    - '[[ ! -d "ee/" ]] || export GITLAB_EDITION="ee"'
-    - export QA_IMAGE="${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-${GITLAB_EDITION}-qa:${CI_COMMIT_REF_SLUG}"
+    - export QA_IMAGE="${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-ee-qa:${CI_COMMIT_REF_SLUG}"
     - /kaniko/executor --context=${CI_PROJECT_DIR} --dockerfile=${CI_PROJECT_DIR}/qa/Dockerfile --destination=${QA_IMAGE} --cache=true
 
-.review-cleanup-base:
+review-cleanup:
   extends:
     - .default-retry
     - .review:rules:review-cleanup
+  image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-helm3-kubectl1.14
   stage: prepare
-  allow_failure: true
   environment:
     name: review/auto-cleanup
     action: stop
   before_script:
     - source scripts/utils.sh
+    - source scripts/review_apps/gcp_cleanup.sh
     - install_gitlab_gem
+    - setup_gcp_dependencies
   script:
     - ruby -rrubygems scripts/review_apps/automated_cleanup.rb
-
-review-cleanup:
-  extends:
-    - .review-cleanup-base
-  image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-charts-build-base
-
-review-cleanup-helm3:
-  extends:
-    - .review-cleanup-base
-  variables:
-    HELM_3: 1
-  image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-helm3-kubectl1.14
-
-review-gcp-cleanup:
-  extends:
-    - .review:rules:review-gcp-cleanup
-  stage: prepare
-  image: gcr.io/google.com/cloudsdktool/cloud-sdk:latest
-  allow_failure: true
-  environment:
-    name: review/auto-gcp-cleanup
-    action: stop
-  before_script:
-    - gcloud auth activate-service-account --key-file=$REVIEW_APPS_GCP_CREDENTIALS
-    - gcloud config set project $REVIEW_APPS_GCP_PROJECT
-    - apt-get install -y jq
-    - source scripts/review_apps/gcp_cleanup.sh
-  script:
     - gcp_cleanup
 
 review-build-cng:
   extends:
     - .default-retry
-    - .review:rules:mr-and-schedule-auto-if-frontend-manual-otherwise
+    - .review:rules:review-build-cng
   image: ruby:2.6-alpine
   stage: review-prepare
   before_script:
@@ -87,8 +53,7 @@ review-build-cng:
   variables:
     HOST_SUFFIX: "${CI_ENVIRONMENT_SLUG}"
     DOMAIN: "-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}"
-    GITLAB_HELM_CHART_REF: "v3.2.2"
-    GITLAB_EDITION: "ce"
+    GITLAB_HELM_CHART_REF: "v3.3.3"
   environment:
     name: review/${CI_COMMIT_REF_NAME}
     url: https://gitlab-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}
@@ -102,9 +67,7 @@ review-deploy:
   stage: review
   dependencies: []
   resource_group: "review/${CI_COMMIT_REF_NAME}"
-  allow_failure: true
   before_script:
-    - '[[ ! -d "ee/" ]] || export GITLAB_EDITION="ee"'
     - export GITLAB_SHELL_VERSION=$(<GITLAB_SHELL_VERSION)
     - export GITALY_VERSION=$(<GITALY_SERVER_VERSION)
     - export GITLAB_WORKHORSE_VERSION=$(<GITLAB_WORKHORSE_VERSION)
@@ -146,28 +109,28 @@ review-deploy:
 review-stop-failed-deployment:
   extends:
     - .review-stop-base
-    - .review:rules:mr-only-auto
+    - .review:rules:review-stop-failed-deployment
   stage: prepare
   script:
     - delete_failed_release
-    - delete_helm2_release
 
 review-stop:
   extends:
     - .review-stop-base
     - .review:rules:mr-only-manual
   stage: review
-  allow_failure: true
   script:
     - delete_release
 
 .review-qa-base:
-  extends: .review-docker
+  extends:
+    - .default-retry
+    - .use-docker-in-docker
+  image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-qa-alpine-ruby-2.6
   stage: qa
   # This is needed so that manual jobs with needs don't block the pipeline.
   # See https://gitlab.com/gitlab-org/gitlab/-/issues/199979.
   dependencies: ["review-deploy"]
-  allow_failure: true
   variables:
     QA_ARTIFACTS_DIR: "${CI_PROJECT_DIR}/qa"
     QA_CAN_TEST_GIT_PROTOCOL_V2: "false"
@@ -179,8 +142,7 @@ review-stop:
     GITHUB_ACCESS_TOKEN: "${REVIEW_APPS_QA_GITHUB_ACCESS_TOKEN}"
     EE_LICENSE: "${REVIEW_APPS_EE_LICENSE}"
   before_script:
-    - '[[ ! -d "ee/" ]] || export GITLAB_EDITION="ee"'
-    - export QA_IMAGE="${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-${GITLAB_EDITION}-qa:${CI_COMMIT_REF_SLUG}"
+    - export QA_IMAGE="${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-ee-qa:${CI_COMMIT_REF_SLUG}"
     - export CI_ENVIRONMENT_URL="$(cat environment_url.txt)"
     - echo "${CI_ENVIRONMENT_URL}"
     - echo "${QA_IMAGE}"
@@ -196,7 +158,7 @@ review-stop:
 review-qa-smoke:
   extends:
     - .review-qa-base
-    - .review:rules:mr-only-auto-if-frontend-manual-otherwise
+    - .review:rules:review-qa-smoke
   script:
     - gitlab-qa Test::Instance::Smoke "${QA_IMAGE}" "${CI_ENVIRONMENT_URL}"
 
@@ -221,7 +183,6 @@ review-performance:
   # This is needed so that manual jobs with needs don't block the pipeline.
   # See https://gitlab.com/gitlab-org/gitlab/-/issues/199979.
   dependencies: ["review-deploy"]
-  allow_failure: true
   before_script:
     - export CI_ENVIRONMENT_URL="$(cat environment_url.txt)"
     - echo "${CI_ENVIRONMENT_URL}"
@@ -237,6 +198,7 @@ review-performance:
       - sitespeed-results/
     reports:
       performance: performance.json
+    expire_in: 31d
 
 parallel-spec-reports:
   extends:
@@ -244,7 +206,6 @@ parallel-spec-reports:
   image: ruby:2.6-alpine
   stage: post-qa
   dependencies: ["review-qa-all"]
-  allow_failure: true
   variables:
     NEW_PARALLEL_SPECS_REPORT: qa/report-new.html
     BASE_ARTIFACT_URL: "${CI_PROJECT_URL}/-/jobs/${CI_JOB_ID}/artifacts/file/qa/"
@@ -263,17 +224,19 @@ parallel-spec-reports:
       - qa/gitlab-qa-run-*
     reports:
       junit: qa/gitlab-qa-run-*/**/rspec-*.xml
+    expire_in: 31d
 
 danger-review:
   extends:
     - .default-retry
-    - .default-cache
+    - .yarn-cache
     - .review:rules:danger
   image: registry.gitlab.com/gitlab-org/gitlab-build-images:danger
   stage: test
   needs: []
   script:
-    - git version
-    - node --version
-    - yarn install --frozen-lockfile --cache-folder .yarn-cache --prefer-offline
+    - source scripts/utils.sh
+    - retry yarn install --frozen-lockfile
     - danger --fail-on-errors=true --verbose
+  cache:
+    policy: pull

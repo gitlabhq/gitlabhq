@@ -1,0 +1,6 @@
+---
+title: Deploy tokens can be used in the API with Basic Auth Headers enabling NuGet
+  and PyPI to be used with deploy tokens
+merge_request: 31035
+author:
+type: added

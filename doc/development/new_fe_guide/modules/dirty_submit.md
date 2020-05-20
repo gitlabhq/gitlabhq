@@ -13,7 +13,7 @@ within the GitLab project.
 
 ## Usage
 
-```js
+```javascript
 import dirtySubmitFactory from './dirty_submit/dirty_submit_form';
 
 new DirtySubmitForm(document.querySelector('form'));

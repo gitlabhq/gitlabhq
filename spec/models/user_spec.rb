@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe User, :do_not_mock_admin_mode do
+describe User do
   include ProjectForksHelper
   include TermsHelper
   include ExclusiveLeaseHelpers
@@ -17,6 +17,7 @@ describe User, :do_not_mock_admin_mode do
     it { is_expected.to include_module(Sortable) }
     it { is_expected.to include_module(TokenAuthenticatable) }
     it { is_expected.to include_module(BlocksJsonSerialization) }
+    it { is_expected.to include_module(AsyncDeviseEmail) }
   end
 
   describe 'delegations' do
@@ -54,6 +55,7 @@ describe User, :do_not_mock_admin_mode do
     it { is_expected.to have_many(:reported_abuse_reports).dependent(:destroy).class_name('AbuseReport') }
     it { is_expected.to have_many(:custom_attributes).class_name('UserCustomAttribute') }
     it { is_expected.to have_many(:releases).dependent(:nullify) }
+    it { is_expected.to have_many(:metrics_users_starred_dashboards).inverse_of(:user) }
 
     describe "#bio" do
       it 'syncs bio with `user_details.bio` on create' do
@@ -160,6 +162,18 @@ describe User, :do_not_mock_admin_mode do
         project.request_access(user)
 
         expect(user.project_members).to be_empty
+      end
+    end
+  end
+
+  describe 'Devise emails' do
+    let!(:user) { create(:user) }
+
+    describe 'behaviour' do
+      it 'sends emails asynchronously' do
+        expect do
+          user.update!(email: 'hello@hello.com')
+        end.to have_enqueued_job.on_queue('mailers').exactly(:twice)
       end
     end
   end
@@ -295,7 +309,7 @@ describe User, :do_not_mock_admin_mode do
       subject { build(:user) }
     end
 
-    it_behaves_like 'an object with email-formated attributes', :public_email, :notification_email do
+    it_behaves_like 'an object with RFC3696 compliant email-formated attributes', :public_email, :notification_email do
       subject { build(:user).tap { |user| user.emails << build(:email, email: email_value) } }
     end
 
@@ -536,18 +550,6 @@ describe User, :do_not_mock_admin_mode do
             user = build(:user, email: 'info@test.com')
 
             expect(user).to be_valid
-          end
-
-          context 'when feature flag is turned off' do
-            before do
-              stub_feature_flags(email_restrictions: false)
-            end
-
-            it 'does accept the email address' do
-              user = build(:user, email: 'info+1@test.com')
-
-              expect(user).to be_valid
-            end
           end
 
           context 'when created_by_id is set' do
@@ -813,7 +815,7 @@ describe User, :do_not_mock_admin_mode do
     describe '.active_without_ghosts' do
       let_it_be(:user1) { create(:user, :external) }
       let_it_be(:user2) { create(:user, state: 'blocked') }
-      let_it_be(:user3) { create(:user, ghost: true) }
+      let_it_be(:user3) { create(:user, :ghost) }
       let_it_be(:user4) { create(:user) }
 
       it 'returns all active users but ghost users' do
@@ -824,7 +826,7 @@ describe User, :do_not_mock_admin_mode do
     describe '.without_ghosts' do
       let_it_be(:user1) { create(:user, :external) }
       let_it_be(:user2) { create(:user, state: 'blocked') }
-      let_it_be(:user3) { create(:user, ghost: true) }
+      let_it_be(:user3) { create(:user, :ghost) }
 
       it 'returns users without ghosts users' do
         expect(described_class.without_ghosts).to match_array([user1, user2])
@@ -927,7 +929,6 @@ describe User, :do_not_mock_admin_mode do
             user.tap { |u| u.update!(email: new_email) }.reload
           end.to change(user, :unconfirmed_email).to(new_email)
         end
-
         it 'does not change :notification_email' do
           expect do
             user.tap { |u| u.update!(email: new_email) }.reload
@@ -3275,7 +3276,6 @@ describe User, :do_not_mock_admin_mode do
       expect(ghost.namespace).not_to be_nil
       expect(ghost.namespace).to be_persisted
       expect(ghost.user_type).to eq 'ghost'
-      expect(ghost.ghost).to eq true
     end
 
     it "does not create a second ghost user if one is already present" do
@@ -4077,7 +4077,7 @@ describe User, :do_not_mock_admin_mode do
 
     context 'in single-user environment' do
       it 'requires user consent after one week' do
-        create(:user, ghost: true)
+        create(:user, :ghost)
 
         expect(user.requires_usage_stats_consent?).to be true
       end
@@ -4355,31 +4355,15 @@ describe User, :do_not_mock_admin_mode do
     end
   end
 
-  describe 'internal methods' do
-    let_it_be(:user) { create(:user) }
-    let_it_be(:ghost) { described_class.ghost }
-    let_it_be(:alert_bot) { described_class.alert_bot }
-    let_it_be(:project_bot) { create(:user, :project_bot) }
-    let_it_be(:non_internal) { [user, project_bot] }
-    let_it_be(:internal) { [ghost, alert_bot] }
+  describe '.active_without_ghosts' do
+    let_it_be(:user1) { create(:user, :external) }
+    let_it_be(:user2) { create(:user, state: 'blocked') }
+    let_it_be(:user3) { create(:user, :ghost) }
+    let_it_be(:user4) { create(:user, user_type: :support_bot) }
+    let_it_be(:user5) { create(:user, state: 'blocked', user_type: :support_bot) }
 
-    it 'returns internal users' do
-      expect(described_class.internal).to match_array(internal)
-      expect(internal.all?(&:internal?)).to eq(true)
-    end
-
-    it 'returns non internal users' do
-      expect(described_class.non_internal).to match_array(non_internal)
-      expect(non_internal.all?(&:internal?)).to eq(false)
-    end
-
-    describe '#bot?' do
-      it 'marks bot users' do
-        expect(user.bot?).to eq(false)
-        expect(ghost.bot?).to eq(false)
-
-        expect(alert_bot.bot?).to eq(true)
-      end
+    it 'returns all active users including active bots but ghost users' do
+      expect(described_class.active_without_ghosts).to match_array([user1, user4])
     end
   end
 
@@ -4417,19 +4401,6 @@ describe User, :do_not_mock_admin_mode do
     end
   end
 
-  describe 'bots & humans' do
-    it 'returns corresponding users' do
-      human = create(:user)
-      bot = create(:user, :bot)
-      project_bot = create(:user, :project_bot)
-
-      expect(described_class.humans).to match_array([human])
-      expect(described_class.bots).to match_array([bot, project_bot])
-      expect(described_class.bots_without_project_bot).to match_array([bot])
-      expect(described_class.with_project_bots).to match_array([human, project_bot])
-    end
-  end
-
   describe '#hook_attrs' do
     it 'includes name, username, avatar_url, and email' do
       user = create(:user)
@@ -4458,45 +4429,6 @@ describe User, :do_not_mock_admin_mode do
     end
   end
 
-  describe '#gitlab_employee?' do
-    using RSpec::Parameterized::TableSyntax
-
-    subject { user.gitlab_employee? }
-
-    where(:email, :is_com, :expected_result) do
-      'test@gitlab.com'   | true  | true
-      'test@example.com'  | true  | false
-      'test@gitlab.com'   | false | false
-      'test@example.com'  | false | false
-    end
-
-    with_them do
-      let(:user) { build(:user, email: email) }
-
-      before do
-        allow(Gitlab).to receive(:com?).and_return(is_com)
-      end
-
-      it { is_expected.to be expected_result }
-    end
-
-    context 'when email is of Gitlab and is not confirmed' do
-      let(:user) { build(:user, email: 'test@gitlab.com', confirmed_at: nil) }
-
-      it { is_expected.to be false }
-    end
-
-    context 'when `:gitlab_employee_badge` feature flag is disabled' do
-      let(:user) { build(:user, email: 'test@gitlab.com') }
-
-      before do
-        stub_feature_flags(gitlab_employee_badge: false)
-      end
-
-      it { is_expected.to be false }
-    end
-  end
-
   describe '#current_highest_access_level' do
     let_it_be(:user) { create(:user) }
 
@@ -4514,27 +4446,6 @@ describe User, :do_not_mock_admin_mode do
 
         expect(user.current_highest_access_level).to eq(Gitlab::Access::REPORTER)
       end
-    end
-  end
-
-  describe '#organization' do
-    using RSpec::Parameterized::TableSyntax
-
-    let(:user) { build(:user, organization: 'ACME') }
-
-    subject { user.organization }
-
-    where(:gitlab_employee?, :expected_result) do
-      true  | 'GitLab'
-      false | 'ACME'
-    end
-
-    with_them do
-      before do
-        allow(user).to receive(:gitlab_employee?).and_return(gitlab_employee?)
-      end
-
-      it { is_expected.to eql(expected_result) }
     end
   end
 
@@ -4563,7 +4474,7 @@ describe User, :do_not_mock_admin_mode do
         where(:attributes) do
           [
             { state: 'blocked' },
-            { ghost: true },
+            { user_type: :ghost },
             { user_type: :alert_bot }
           ]
         end
@@ -4606,7 +4517,7 @@ describe User, :do_not_mock_admin_mode do
 
     context 'when user is a ghost user' do
       before do
-        user.update(ghost: true)
+        user.update(user_type: :ghost)
       end
 
       it { is_expected.to be false }
@@ -4645,7 +4556,7 @@ describe User, :do_not_mock_admin_mode do
 
     context 'when user is an internal user' do
       before do
-        user.update(ghost: true)
+        user.update(user_type: :ghost)
       end
 
       it { is_expected.to be User::LOGIN_FORBIDDEN }
@@ -4683,6 +4594,22 @@ describe User, :do_not_mock_admin_mode do
       end
 
       it_behaves_like 'does not require password to be present'
+    end
+  end
+
+  describe '#migration_bot' do
+    it 'creates the user if it does not exist' do
+      expect do
+        described_class.migration_bot
+      end.to change { User.where(user_type: :migration_bot).count }.by(1)
+    end
+
+    it 'does not create a new user if it already exists' do
+      described_class.migration_bot
+
+      expect do
+        described_class.migration_bot
+      end.not_to change { User.count }
     end
   end
 end

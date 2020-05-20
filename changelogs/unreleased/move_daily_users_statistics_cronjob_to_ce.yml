@@ -1,0 +1,5 @@
+---
+title: Move daily create users statistics cronjob to CE
+merge_request: 30843
+author:
+type: fixed

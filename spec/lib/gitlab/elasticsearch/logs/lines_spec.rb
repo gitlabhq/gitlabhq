@@ -10,7 +10,7 @@ describe Gitlab::Elasticsearch::Logs::Lines do
   let(:es_message_3) { { timestamp: "2019-12-13T14:35:36.034Z", pod: "production-6866bc8974-m4sk4", message: "10.8.2.1 - - [04/Nov/2019:23:09:24 UTC] \"GET / HTTP/1.1\" 200 13" } }
   let(:es_message_4) { { timestamp: "2019-12-13T14:35:37.034Z", pod: "production-6866bc8974-m4sk4", message: "- -\u003e /" } }
 
-  let(:es_response) { JSON.parse(fixture_file('lib/elasticsearch/logs_response.json')) }
+  let(:es_response) { Gitlab::Json.parse(fixture_file('lib/elasticsearch/logs_response.json')) }
 
   subject { described_class.new(client) }
 
@@ -22,13 +22,14 @@ describe Gitlab::Elasticsearch::Logs::Lines do
   let(:end_time) { "2019-12-13T14:35:34.034Z" }
   let(:cursor) { "9999934,1572449784442" }
 
-  let(:body) { JSON.parse(fixture_file('lib/elasticsearch/query.json')) }
-  let(:body_with_container) { JSON.parse(fixture_file('lib/elasticsearch/query_with_container.json')) }
-  let(:body_with_search) { JSON.parse(fixture_file('lib/elasticsearch/query_with_search.json')) }
-  let(:body_with_times) { JSON.parse(fixture_file('lib/elasticsearch/query_with_times.json')) }
-  let(:body_with_start_time) { JSON.parse(fixture_file('lib/elasticsearch/query_with_start_time.json')) }
-  let(:body_with_end_time) { JSON.parse(fixture_file('lib/elasticsearch/query_with_end_time.json')) }
-  let(:body_with_cursor) { JSON.parse(fixture_file('lib/elasticsearch/query_with_cursor.json')) }
+  let(:body) { Gitlab::Json.parse(fixture_file('lib/elasticsearch/query.json')) }
+  let(:body_with_container) { Gitlab::Json.parse(fixture_file('lib/elasticsearch/query_with_container.json')) }
+  let(:body_with_search) { Gitlab::Json.parse(fixture_file('lib/elasticsearch/query_with_search.json')) }
+  let(:body_with_times) { Gitlab::Json.parse(fixture_file('lib/elasticsearch/query_with_times.json')) }
+  let(:body_with_start_time) { Gitlab::Json.parse(fixture_file('lib/elasticsearch/query_with_start_time.json')) }
+  let(:body_with_end_time) { Gitlab::Json.parse(fixture_file('lib/elasticsearch/query_with_end_time.json')) }
+  let(:body_with_cursor) { Gitlab::Json.parse(fixture_file('lib/elasticsearch/query_with_cursor.json')) }
+  let(:body_with_filebeat_6) { Gitlab::Json.parse(fixture_file('lib/elasticsearch/query_with_filebeat_6.json')) }
 
   RSpec::Matchers.define :a_hash_equal_to_json do |expected|
     match do |actual|
@@ -83,6 +84,13 @@ describe Gitlab::Elasticsearch::Logs::Lines do
       expect(client).to receive(:search).with(body: a_hash_equal_to_json(body_with_cursor)).and_return(es_response)
 
       result = subject.pod_logs(namespace, pod_name: pod_name, cursor: cursor)
+      expect(result).to eq(logs: [es_message_4, es_message_3, es_message_2, es_message_1], cursor: cursor)
+    end
+
+    it 'can search on filebeat 6' do
+      expect(client).to receive(:search).with(body: a_hash_equal_to_json(body_with_filebeat_6)).and_return(es_response)
+
+      result = subject.pod_logs(namespace, pod_name: pod_name, chart_above_v2: false)
       expect(result).to eq(logs: [es_message_4, es_message_3, es_message_2, es_message_1], cursor: cursor)
     end
   end

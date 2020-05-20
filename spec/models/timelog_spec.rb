@@ -56,12 +56,12 @@ RSpec.describe Timelog do
       end
     end
 
-    describe 'between_dates' do
-      it 'returns collection of timelogs within given dates' do
+    describe 'between_times' do
+      it 'returns collection of timelogs within given times' do
         create(:timelog, spent_at: 65.days.ago)
         timelog1 = create(:timelog, spent_at: 15.days.ago)
         timelog2 = create(:timelog, spent_at: 5.days.ago)
-        timelogs = described_class.between_dates(20.days.ago, 1.day.ago)
+        timelogs = described_class.between_times(20.days.ago, 1.day.ago)
 
         expect(timelogs).to contain_exactly(timelog1, timelog2)
       end

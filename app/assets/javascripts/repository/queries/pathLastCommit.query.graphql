@@ -5,6 +5,7 @@ query pathLastCommit($projectPath: ID!, $path: String, $ref: String!) {
         lastCommit {
           sha
           title
+          titleHtml
           description
           message
           webUrl

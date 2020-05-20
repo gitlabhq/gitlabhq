@@ -1,6 +1,6 @@
 <script>
 import { isEmpty } from 'lodash';
-import { GlIcon, GlDeprecatedButton } from '@gitlab/ui';
+import { GlIcon, GlDeprecatedButton, GlSprintf, GlLink } from '@gitlab/ui';
 import successSvg from 'icons/_icon_status_success.svg';
 import warningSvg from 'icons/_icon_status_warning.svg';
 import readyToMergeMixin from 'ee_else_ce/vue_merge_request_widget/mixins/ready_to_merge';
@@ -26,6 +26,8 @@ export default {
     CommitEdit,
     CommitMessageDropdown,
     GlIcon,
+    GlSprintf,
+    GlLink,
     GlDeprecatedButton,
     MergeImmediatelyConfirmationDialog: () =>
       import(
@@ -56,7 +58,7 @@ export default {
     status() {
       const { pipeline, isPipelineFailed, hasCI, ciStatus } = this.mr;
 
-      if (hasCI && !ciStatus) {
+      if ((hasCI && !ciStatus) || this.hasPipelineMustSucceedConflict) {
         return 'failed';
       } else if (this.isAutoMergeAvailable) {
         return 'pending';
@@ -96,6 +98,9 @@ export default {
       }
 
       return __('Merge');
+    },
+    hasPipelineMustSucceedConflict() {
+      return !this.mr.hasCI && this.mr.onlyAllowMergeIfPipelineSucceeds;
     },
     isRemoveSourceBranchButtonDisabled() {
       return this.isMergeButtonDisabled;
@@ -343,9 +348,19 @@ export default {
               />
             </template>
             <template v-else>
-              <span class="bold js-resolve-mr-widget-items-message">
-                {{ mergeDisabledText }}
-              </span>
+              <div class="bold js-resolve-mr-widget-items-message">
+                <gl-sprintf
+                  v-if="hasPipelineMustSucceedConflict"
+                  :message="pipelineMustSucceedConflictText"
+                >
+                  <template #link="{ content }">
+                    <gl-link :href="mr.pipelineMustSucceedDocsPath" target="_blank">
+                      {{ content }}
+                    </gl-link>
+                  </template>
+                </gl-sprintf>
+                <gl-sprintf v-else :message="mergeDisabledText" />
+              </div>
             </template>
           </div>
         </div>

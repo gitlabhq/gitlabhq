@@ -3,6 +3,7 @@
 class CreateClustersApplicationsFluentd < ActiveRecord::Migration[6.0]
   DOWNTIME = false
 
+  # rubocop:disable Migration/PreventStrings
   def change
     create_table :clusters_applications_fluentd do |t|
       t.integer :protocol, null: false, limit: 2
@@ -12,7 +13,8 @@ class CreateClustersApplicationsFluentd < ActiveRecord::Migration[6.0]
       t.timestamps_with_timezone null: false
       t.string :version, null: false, limit: 255
       t.string :host, null: false, limit: 255
-      t.text :status_reason
+      t.text :status_reason # rubocop:disable Migration/AddLimitToTextColumns
     end
   end
+  # rubocop:enable Migration/PreventStrings
 end

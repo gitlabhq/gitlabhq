@@ -1,0 +1,5 @@
+---
+title: Fixed Cancel action on Snippet edit for existing snippets
+merge_request: 29993
+author:
+type: fixed

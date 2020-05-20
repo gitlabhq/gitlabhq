@@ -24,7 +24,9 @@ class RemoveCircuitBreaker < ActiveRecord::Migration[4.2]
 
   def down
     CIRCUIT_BREAKER_COLUMS_WITH_DEFAULT.each do |column, default|
+      # rubocop:disable Migration/AddColumnWithDefault
       add_column_with_default(:application_settings, column, :integer, default: default) unless column_exists?(:application_settings, column)
+      # rubocop:enable Migration/AddColumnWithDefault
     end
   end
 end

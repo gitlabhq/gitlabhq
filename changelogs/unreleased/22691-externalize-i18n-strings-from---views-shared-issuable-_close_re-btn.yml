@@ -1,0 +1,5 @@
+---
+title: Externalize i18n strings from ./app/views/shared/issuable/_close_reopen_button.html.haml
+merge_request: 32172
+author: Gilang Gumilar
+type: changed

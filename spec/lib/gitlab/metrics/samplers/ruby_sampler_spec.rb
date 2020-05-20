@@ -19,22 +19,36 @@ describe Gitlab::Metrics::Samplers::RubySampler do
   end
 
   describe '#sample' do
-    it 'samples various statistics' do
-      expect(Gitlab::Metrics::System).to receive(:cpu_time)
-      expect(Gitlab::Metrics::System).to receive(:file_descriptor_count)
-      expect(Gitlab::Metrics::System).to receive(:memory_usage)
-      expect(Gitlab::Metrics::System).to receive(:max_open_file_descriptors)
-      expect(sampler).to receive(:sample_gc)
-
-      sampler.sample
-    end
-
     it 'adds a metric containing the process resident memory bytes' do
-      expect(Gitlab::Metrics::System).to receive(:memory_usage).and_return(9000)
+      expect(Gitlab::Metrics::System).to receive(:memory_usage_rss).and_return(9000)
 
       expect(sampler.metrics[:process_resident_memory_bytes]).to receive(:set).with({}, 9000)
 
       sampler.sample
+    end
+
+    it 'adds a metric containing the process unique and proportional memory bytes' do
+      expect(Gitlab::Metrics::System).to receive(:memory_usage_uss_pss).and_return(uss: 9000, pss: 10_000)
+
+      expect(sampler.metrics[:process_unique_memory_bytes]).to receive(:set).with({}, 9000)
+      expect(sampler.metrics[:process_proportional_memory_bytes]).to receive(:set).with({}, 10_000)
+
+      sampler.sample
+    end
+
+    context 'when USS+PSS sampling is disabled via environment' do
+      before do
+        stub_env('enable_memory_uss_pss', "0")
+      end
+
+      it 'does not sample USS or PSS' do
+        expect(Gitlab::Metrics::System).not_to receive(:memory_usage_uss_pss)
+
+        expect(sampler.metrics[:process_unique_memory_bytes]).not_to receive(:set)
+        expect(sampler.metrics[:process_proportional_memory_bytes]).not_to receive(:set)
+
+        sampler.sample
+      end
     end
 
     it 'adds a metric containing the amount of open file descriptors' do

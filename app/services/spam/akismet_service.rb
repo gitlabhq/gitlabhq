@@ -17,7 +17,7 @@ module Spam
       params = {
         type: 'comment',
         text: text,
-        created_at: DateTime.now,
+        created_at: DateTime.current,
         author: owner_name,
         author_email: owner_email,
         referrer: options[:referrer]

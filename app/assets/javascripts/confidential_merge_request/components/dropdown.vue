@@ -39,7 +39,7 @@ export default {
 
 <template>
   <gl-dropdown toggle-class="d-flex align-items-center w-100" class="w-100">
-    <template slot="button-content">
+    <template #button-content>
       <span class="str-truncated-100 mr-2">
         <icon name="lock" />
         {{ dropdownText }}

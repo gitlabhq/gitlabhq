@@ -49,29 +49,22 @@ class SnippetsController < ApplicationController
   end
 
   def create
-    create_params = snippet_params.merge(spammable_params)
+    create_params = snippet_params.merge(files: params.delete(:files))
     service_response = Snippets::CreateService.new(nil, current_user, create_params).execute
     @snippet = service_response.payload[:snippet]
-    repository_operation_error = service_response.error? && !@snippet.persisted? && @snippet.valid?
 
-    if repository_operation_error
-      flash.now[:alert] = service_response.message
-
-      render :new
+    if service_response.error? && @snippet.errors[:repository].present?
+      handle_repository_error(:new)
     else
-      move_temporary_files if @snippet.valid? && params[:files]
-
       recaptcha_check_with_fallback { render :new }
     end
   end
 
   def update
-    update_params = snippet_params.merge(spammable_params)
-
-    service_response = Snippets::UpdateService.new(nil, current_user, update_params).execute(@snippet)
+    service_response = Snippets::UpdateService.new(nil, current_user, snippet_params).execute(@snippet)
     @snippet = service_response.payload[:snippet]
 
-    check_repository_error
+    handle_repository_error(:edit)
   end
 
   def show
@@ -153,12 +146,6 @@ class SnippetsController < ApplicationController
   end
 
   def snippet_params
-    params.require(:personal_snippet).permit(:title, :content, :file_name, :private, :visibility_level, :description)
-  end
-
-  def move_temporary_files
-    params[:files].each do |file|
-      FileMover.new(file, from_model: current_user, to_model: @snippet).execute
-    end
+    params.require(:personal_snippet).permit(:title, :content, :file_name, :private, :visibility_level, :description).merge(spammable_params)
   end
 end

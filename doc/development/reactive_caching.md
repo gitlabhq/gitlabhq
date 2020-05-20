@@ -85,6 +85,9 @@ The ReactiveCaching concern can be used in models as well as `project_services`
 
 1. Implement the `calculate_reactive_cache` method in your model/service.
 1. Call `with_reactive_cache` in your model/service where the cached value is needed.
+1. If the `calculate_reactive_cache` method above submits requests to external services
+(e.g. Prometheus, K8s), make sure to change the
+[`reactive_cache_work_type` accordingly](#selfreactive_cache_work_type).
 
 ### In controllers
 
@@ -244,6 +247,13 @@ and will silently raise `ReactiveCaching::ExceededReactiveCacheLimit` on Sentry.
 self.reactive_cache_hard_limit = 5.megabytes
 ```
 
+#### `self.reactive_cache_work_type`
+
+- This is the type of work performed by the `calculate_reactive_cache` method. Based on this attribute,
+it's able to pick the right worker to process the caching job. Make sure to
+set it as `:external_dependency` if the work performs any external request
+(e.g. Kubernetes, Sentry).
+
 #### `self.reactive_cache_worker_finder`
 
 - This is the method used by the background worker to find or generate the object on
@@ -256,7 +266,7 @@ which `calculate_reactive_cache` can be called.
   end
   ```
 
-- The default behaviour can be overridden by defining a custom `reactive_cache_worker_finder`.
+- The default behavior can be overridden by defining a custom `reactive_cache_worker_finder`.
 
   ```ruby
   class Foo < ApplicationRecord

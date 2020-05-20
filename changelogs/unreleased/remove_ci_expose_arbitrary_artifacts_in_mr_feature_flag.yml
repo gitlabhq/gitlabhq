@@ -1,0 +1,5 @@
+---
+title: Remove ci_expose_arbitrary_artifacts_in_mr feature flag
+merge_request: 29363
+author: Lee Tickett
+type: other

@@ -5,7 +5,9 @@ class AddEncryptedRunnersTokenToSettings < ActiveRecord::Migration[4.2]
 
   DOWNTIME = false
 
+  # rubocop:disable Migration/PreventStrings
   def change
-    add_column :application_settings, :runners_registration_token_encrypted, :string # rubocop:disable Migration/AddLimitToStringColumns
+    add_column :application_settings, :runners_registration_token_encrypted, :string
   end
+  # rubocop:enable Migration/PreventStrings
 end

@@ -167,9 +167,8 @@ export default {
         :href="commit.commitPath"
         :title="commit.message"
         class="str-truncated-100 tree-commit-link"
-      >
-        {{ commit.message }}
-      </gl-link>
+        v-html="commit.titleHtml"
+      />
       <gl-skeleton-loading v-else :lines="1" class="h-auto" />
     </td>
     <td class="tree-time-ago text-right cursor-default">

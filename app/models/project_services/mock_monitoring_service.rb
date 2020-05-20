@@ -14,7 +14,7 @@ class MockMonitoringService < MonitoringService
   end
 
   def metrics(environment)
-    JSON.parse(File.read(Rails.root + 'spec/fixtures/metrics.json'))
+    Gitlab::Json.parse(File.read(Rails.root + 'spec/fixtures/metrics.json'))
   end
 
   def can_test?

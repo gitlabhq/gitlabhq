@@ -6,7 +6,12 @@ import { sortBy } from 'lodash';
 import Vue from 'vue';
 import Cookies from 'js-cookie';
 import BoardsStoreEE from 'ee_else_ce/boards/stores/boards_store_ee';
-import { getUrlParamsArray, parseBoolean } from '~/lib/utils/common_utils';
+import {
+  urlParamsToObject,
+  getUrlParamsArray,
+  parseBoolean,
+  convertObjectPropsToCamelCase,
+} from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
@@ -23,7 +28,6 @@ const boardsStore = {
     limitToHours: false,
   },
   scopedLabels: {
-    helpLink: '',
     enabled: false,
   },
   filter: {
@@ -75,7 +79,15 @@ const boardsStore = {
     this.state.currentPage = page;
   },
   addList(listObj) {
-    const list = new List(listObj);
+    const listType = listObj.listType || listObj.list_type;
+    let { position } = listObj;
+    if (listType === ListType.closed) {
+      position = Infinity;
+    } else if (listType === ListType.backlog) {
+      position = -1;
+    }
+
+    const list = new List({ ...listObj, position });
     this.state.lists = sortBy([...this.state.lists, list], 'position');
     return list;
   },
@@ -120,6 +132,50 @@ const boardsStore = {
       expires: 365 * 10,
       path: '',
     });
+  },
+  addListIssue(list, issue, listFrom, newIndex) {
+    let moveBeforeId = null;
+    let moveAfterId = null;
+
+    if (!list.findIssue(issue.id)) {
+      if (newIndex !== undefined) {
+        list.issues.splice(newIndex, 0, issue);
+
+        if (list.issues[newIndex - 1]) {
+          moveBeforeId = list.issues[newIndex - 1].id;
+        }
+
+        if (list.issues[newIndex + 1]) {
+          moveAfterId = list.issues[newIndex + 1].id;
+        }
+      } else {
+        list.issues.push(issue);
+      }
+
+      if (list.label) {
+        issue.addLabel(list.label);
+      }
+
+      if (list.assignee) {
+        if (listFrom && listFrom.type === 'assignee') {
+          issue.removeAssignee(listFrom.assignee);
+        }
+        issue.addAssignee(list.assignee);
+      }
+
+      if (IS_EE && list.milestone) {
+        if (listFrom && listFrom.type === 'milestone') {
+          issue.removeMilestone(listFrom.milestone);
+        }
+        issue.addMilestone(list.milestone);
+      }
+
+      if (listFrom) {
+        list.issuesSize += 1;
+
+        list.updateIssueLabel(issue, listFrom, moveBeforeId, moveAfterId);
+      }
+    }
   },
   welcomeIsHidden() {
     return parseBoolean(Cookies.get('issue_board_welcome_hidden'));
@@ -487,6 +543,36 @@ const boardsStore = {
       });
   },
 
+  getListIssues(list, emptyIssues = true) {
+    const data = {
+      ...urlParamsToObject(this.filter.path),
+      page: list.page,
+    };
+
+    if (list.label && data.label_name) {
+      data.label_name = data.label_name.filter(label => label !== list.label.title);
+    }
+
+    if (emptyIssues) {
+      list.loading = true;
+    }
+
+    return this.getIssuesForList(list.id, data)
+      .then(res => res.data)
+      .then(data => {
+        list.loading = false;
+        list.issuesSize = data.size;
+
+        if (emptyIssues) {
+          list.issues = [];
+        }
+
+        list.createIssues(data.issues);
+
+        return data;
+      });
+  },
+
   getIssuesForList(id, filter = {}) {
     const data = { id };
     Object.keys(filter).forEach(key => {
@@ -631,6 +717,28 @@ const boardsStore = {
     if (obj.assignees) {
       issue.assignees = obj.assignees.map(a => new ListAssignee(a));
     }
+  },
+  updateIssue(issue) {
+    const data = {
+      issue: {
+        milestone_id: issue.milestone ? issue.milestone.id : null,
+        due_date: issue.dueDate,
+        assignee_ids: issue.assignees.length > 0 ? issue.assignees.map(({ id }) => id) : [0],
+        label_ids: issue.labels.length > 0 ? issue.labels.map(({ id }) => id) : [''],
+      },
+    };
+
+    return axios.patch(`${issue.path}.json`, data).then(({ data: body = {} } = {}) => {
+      /**
+       * Since post implementation of Scoped labels, server can reject
+       * same key-ed labels. To keep the UI and server Model consistent,
+       * we're just assigning labels that server echo's back to us when we
+       * PATCH the said object.
+       */
+      if (body) {
+        issue.labels = convertObjectPropsToCamelCase(body.labels, { deep: true });
+      }
+    });
   },
 };
 

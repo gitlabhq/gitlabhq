@@ -1,0 +1,5 @@
+---
+title: Update deprecated slot syntax in ./app/assets/javascripts/profile/account/components/delete_account_modal.vue
+merge_request: 32007
+author: Gilang Gumilar
+type: other

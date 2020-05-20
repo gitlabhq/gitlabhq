@@ -70,7 +70,7 @@ module API
       post ':id/wikis' do
         authorize! :create_wiki, user_project
 
-        page = WikiPages::CreateService.new(user_project, current_user, params).execute
+        page = WikiPages::CreateService.new(container: user_project, current_user: current_user, params: params).execute
 
         if page.valid?
           present page, with: Entities::WikiPage
@@ -91,7 +91,7 @@ module API
       put ':id/wikis/:slug' do
         authorize! :create_wiki, user_project
 
-        page = WikiPages::UpdateService.new(user_project, current_user, params).execute(wiki_page)
+        page = WikiPages::UpdateService.new(container: user_project, current_user: current_user, params: params).execute(wiki_page)
 
         if page.valid?
           present page, with: Entities::WikiPage
@@ -107,7 +107,7 @@ module API
       delete ':id/wikis/:slug' do
         authorize! :admin_wiki, user_project
 
-        WikiPages::DestroyService.new(user_project, current_user).execute(wiki_page)
+        WikiPages::DestroyService.new(container: user_project, current_user: current_user).execute(wiki_page)
 
         no_content!
       end
@@ -123,9 +123,11 @@ module API
       post ":id/wikis/attachments" do
         authorize! :create_wiki, user_project
 
-        result = ::Wikis::CreateAttachmentService.new(user_project,
-                                                      current_user,
-                                                      commit_params(declared_params(include_missing: false))).execute
+        result = ::Wikis::CreateAttachmentService.new(
+          container: user_project,
+          current_user: current_user,
+          params: commit_params(declared_params(include_missing: false))
+        ).execute
 
         if result[:status] == :success
           status(201)

@@ -12,6 +12,15 @@ describe StageUpdateWorker do
 
         described_class.new.perform(stage.id)
       end
+
+      it_behaves_like 'an idempotent worker' do
+        let(:job_args) { [stage.id] }
+
+        it 'results in the stage getting the skipped status' do
+          expect { subject }.to change { stage.reload.status }.from('pending').to('skipped')
+          expect { subject }.not_to change { stage.reload.status }
+        end
+      end
     end
 
     context 'when stage does not exist' do

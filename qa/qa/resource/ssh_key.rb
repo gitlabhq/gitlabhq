@@ -5,11 +5,15 @@ module QA
     class SSHKey < Base
       extend Forwardable
 
-      attr_accessor :title
+      attr_reader :title
 
       attribute :id
 
       def_delegators :key, :private_key, :public_key, :md5_fingerprint
+
+      def initialize
+        self.title = Time.now.to_f
+      end
 
       def key
         @key ||= Runtime::Key::RSA.new
@@ -26,6 +30,10 @@ module QA
 
       def fabricate_via_api!
         api_post
+      end
+
+      def title=(title)
+        @title = "E2E test key: #{title}"
       end
 
       def api_delete

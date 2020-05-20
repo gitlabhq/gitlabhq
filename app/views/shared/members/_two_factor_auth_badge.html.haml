@@ -1,0 +1,3 @@
+- if user.two_factor_enabled?
+  = render 'shared/members/badge', type: 'info' do
+    = _("2FA")

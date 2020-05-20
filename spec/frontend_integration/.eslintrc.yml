@@ -1,0 +1,6 @@
+---
+extends: ../frontend/.eslintrc.yml
+settings:
+  import/resolver:
+    jest:
+      jestConfigFile: 'jest.config.integration.js'

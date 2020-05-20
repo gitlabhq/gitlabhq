@@ -14,7 +14,6 @@ module RuboCop
 
         BLACKLISTED_METHODS = %i[
           add_column
-          add_column_with_default
           add_reference
           add_timestamps_with_timezone
         ].freeze

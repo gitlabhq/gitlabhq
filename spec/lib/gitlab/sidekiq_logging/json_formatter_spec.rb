@@ -9,7 +9,7 @@ describe Gitlab::SidekiqLogging::JSONFormatter do
   let(:timestamp_iso8601) { now.iso8601(3) }
 
   describe 'with a Hash' do
-    subject { JSON.parse(described_class.new.call('INFO', now, 'my program', hash_input)) }
+    subject { Gitlab::Json.parse(described_class.new.call('INFO', now, 'my program', hash_input)) }
 
     let(:hash_input) do
       {
@@ -34,7 +34,8 @@ describe Gitlab::SidekiqLogging::JSONFormatter do
           'started_at' => timestamp_iso8601,
           'retried_at' => timestamp_iso8601,
           'failed_at' => timestamp_iso8601,
-          'completed_at' => timestamp_iso8601
+          'completed_at' => timestamp_iso8601,
+          'retry' => 0
         }
       )
 
@@ -57,13 +58,33 @@ describe Gitlab::SidekiqLogging::JSONFormatter do
 
       expect(subject['args']).to eq(["1", "test", "2", %({"test"=>1})])
     end
+
+    context 'when the job has a non-integer value for retry' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:retry_in_job, :retry_in_logs) do
+        3        | 3
+        true     | 25
+        false    | 0
+        nil      | 0
+        'string' | -1
+      end
+
+      with_them do
+        it 'logs as the correct integer' do
+          hash_input['retry'] = retry_in_job
+
+          expect(subject['retry']).to eq(retry_in_logs)
+        end
+      end
+    end
   end
 
   describe 'with a String' do
     it 'accepts strings with no changes' do
       result = subject.call('DEBUG', now, 'my string', message)
 
-      data = JSON.parse(result)
+      data = Gitlab::Json.parse(result)
       expected_output = {
         severity: 'DEBUG',
         time: timestamp_iso8601,

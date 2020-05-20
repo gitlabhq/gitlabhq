@@ -41,4 +41,8 @@ class X509CommitSignature < ApplicationRecord
 
     Gitlab::X509::Commit.new(commit)
   end
+
+  def user
+    commit.committer
+  end
 end

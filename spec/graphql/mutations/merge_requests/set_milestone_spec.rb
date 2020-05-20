@@ -8,6 +8,8 @@ describe Mutations::MergeRequests::SetMilestone do
 
   subject(:mutation) { described_class.new(object: nil, context: { current_user: user }, field: nil) }
 
+  specify { expect(described_class).to require_graphql_authorizations(:update_merge_request) }
+
   describe '#resolve' do
     let(:milestone) { create(:milestone, project: merge_request.project) }
     let(:mutated_merge_request) { subject[:merge_request] }

@@ -1,0 +1,5 @@
+---
+title: Externalize i18n strings from ./app/views/shared/issuable/_label_*
+merge_request: 32167
+author: Gilang Gumilar
+type: changed

@@ -2,23 +2,11 @@
 
 module Snippets
   class CreateService < Snippets::BaseService
-    include SpamCheckMethods
-
-    CreateRepositoryError = Class.new(StandardError)
-
     def execute
-      filter_spam_check_params
+      @snippet = build_from_params
 
-      @snippet = if project
-                   project.snippets.build(params)
-                 else
-                   PersonalSnippet.new(params)
-                 end
-
-      unless Gitlab::VisibilityLevel.allowed_for?(current_user, @snippet.visibility_level)
-        deny_visibility_level(@snippet)
-
-        return snippet_error_response(@snippet, 403)
+      unless visibility_allowed?(@snippet, @snippet.visibility_level)
+        return error_forbidden_visibility(@snippet)
       end
 
       @snippet.author = current_user
@@ -29,6 +17,8 @@ module Snippets
         UserAgentDetailService.new(@snippet, @request).create
         Gitlab::UsageDataCounters::SnippetCounter.count(:create)
 
+        move_temporary_files
+
         ServiceResponse.success(payload: { snippet: @snippet } )
       else
         snippet_error_response(@snippet, 400)
@@ -37,10 +27,18 @@ module Snippets
 
     private
 
+    def build_from_params
+      if project
+        project.snippets.build(params)
+      else
+        PersonalSnippet.new(params)
+      end
+    end
+
     def save_and_commit
       snippet_saved = @snippet.save
 
-      if snippet_saved && Feature.enabled?(:version_snippets, current_user)
+      if snippet_saved
         create_repository
         create_commit
       end
@@ -60,7 +58,7 @@ module Snippets
         @snippet = @snippet.dup
       end
 
-      @snippet.errors.add(:base, e.message)
+      add_snippet_repository_error(snippet: @snippet, error: e)
 
       false
     end
@@ -82,6 +80,14 @@ module Snippets
 
     def snippet_files
       [{ file_path: params[:file_name], content: params[:content] }]
+    end
+
+    def move_temporary_files
+      return unless @snippet.is_a?(PersonalSnippet)
+
+      uploaded_files.each do |file|
+        FileMover.new(file, from_model: current_user, to_model: @snippet).execute
+      end
     end
   end
 end

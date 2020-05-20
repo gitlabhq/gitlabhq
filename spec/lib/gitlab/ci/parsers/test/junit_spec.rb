@@ -215,8 +215,64 @@ describe Gitlab::Ci::Parsers::Test::Junit do
     context 'when data is not JUnit style XML' do
       let(:junit) { { testsuite: 'abc' }.to_json }
 
-      it 'raises an error' do
-        expect { subject }.to raise_error(described_class::JunitParserError)
+      it 'attaches an error to the TestSuite object' do
+        expect { subject }.not_to raise_error
+        expect(test_cases).to be_empty
+      end
+    end
+
+    context 'when data is malformed JUnit XML' do
+      let(:junit) do
+        <<-EOF.strip_heredoc
+          <testsuite>
+            <testcase classname='Calculator' name='sumTest1' time='0.01'></testcase>
+            <testcase classname='Calculator' name='sumTest2' time='0.02'></testcase
+          </testsuite>
+        EOF
+      end
+
+      it 'attaches an error to the TestSuite object' do
+        expect { subject }.not_to raise_error
+        expect(test_suite.suite_error).to eq("JUnit XML parsing failed: 4:1: FATAL: expected '>'")
+      end
+
+      it 'returns 0 tests cases' do
+        subject
+
+        expect(test_cases).to be_empty
+        expect(test_suite.total_count).to eq(0)
+        expect(test_suite.success_count).to eq(0)
+        expect(test_suite.error_count).to eq(0)
+      end
+
+      it 'returns a failure status' do
+        subject
+
+        expect(test_suite.total_status).to eq(Gitlab::Ci::Reports::TestCase::STATUS_ERROR)
+      end
+    end
+
+    context 'when data is not XML' do
+      let(:junit) { double(:random_trash) }
+
+      it 'attaches an error to the TestSuite object' do
+        expect { subject }.not_to raise_error
+        expect(test_suite.suite_error).to eq('JUnit data parsing failed: no implicit conversion of RSpec::Mocks::Double into String')
+      end
+
+      it 'returns 0 tests cases' do
+        subject
+
+        expect(test_cases).to be_empty
+        expect(test_suite.total_count).to eq(0)
+        expect(test_suite.success_count).to eq(0)
+        expect(test_suite.error_count).to eq(0)
+      end
+
+      it 'returns a failure status' do
+        subject
+
+        expect(test_suite.total_status).to eq(Gitlab::Ci::Reports::TestCase::STATUS_ERROR)
       end
     end
 

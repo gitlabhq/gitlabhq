@@ -16,7 +16,7 @@ describe 'User views AsciiDoc page with includes', :js do
       format: :asciidoc
     }
 
-    create(:wiki_page, wiki: project.wiki, attrs: attrs)
+    create(:wiki_page, wiki: project.wiki, **attrs)
   end
 
   before do

@@ -75,12 +75,12 @@ module Gitlab
       str.gsub(/\r?\n/, '')
     end
 
-    def to_boolean(value)
+    def to_boolean(value, default: nil)
       return value if [true, false].include?(value)
       return true if value =~ /^(true|t|yes|y|1|on)$/i
       return false if value =~ /^(false|f|no|n|0|off)$/i
 
-      nil
+      default
     end
 
     def boolean_to_yes_no(bool)
@@ -123,7 +123,7 @@ module Gitlab
     end
 
     def ms_to_round_sec(ms)
-      (ms.to_f / 1000).round(2)
+      (ms.to_f / 1000).round(6)
     end
 
     # Used in EE

@@ -1,4 +1,4 @@
-/* eslint-disable func-names, no-else-return */
+/* eslint-disable func-names */
 
 import $ from 'jquery';
 import Api from './api';
@@ -74,18 +74,17 @@ const projectSelect = () => {
             },
             projectsCallback,
           );
-        } else {
-          return Api.projects(
-            query.term,
-            {
-              order_by: this.orderBy,
-              with_issues_enabled: this.withIssuesEnabled,
-              with_merge_requests_enabled: this.withMergeRequestsEnabled,
-              membership: !this.allProjects,
-            },
-            projectsCallback,
-          );
         }
+        return Api.projects(
+          query.term,
+          {
+            order_by: this.orderBy,
+            with_issues_enabled: this.withIssuesEnabled,
+            with_merge_requests_enabled: this.withMergeRequestsEnabled,
+            membership: !this.allProjects,
+          },
+          projectsCallback,
+        );
       },
       id(project) {
         if (simpleFilter) return project.id;

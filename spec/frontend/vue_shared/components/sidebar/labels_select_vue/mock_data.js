@@ -30,15 +30,16 @@ export const mockConfig = {
   allowLabelEdit: true,
   allowLabelCreate: true,
   allowScopedLabels: true,
+  allowMultiselect: true,
   labelsListTitle: 'Assign labels',
   labelsCreateTitle: 'Create label',
+  variant: 'sidebar',
   dropdownOnly: false,
   selectedLabels: [mockRegularLabel, mockScopedLabel],
   labelsSelectInProgress: false,
   labelsFetchPath: '/gitlab-org/my-project/-/labels.json',
   labelsManagePath: '/gitlab-org/my-project/-/labels',
   labelsFilterBasePath: '/gitlab-org/my-project/issues',
-  scopedLabelsDocumentationPath: '/help/user/project/labels.md#scoped-labels-premium',
 };
 
 export const mockSuggestedColors = {

@@ -85,4 +85,19 @@ describe MilestonesHelper do
       end
     end
   end
+
+  describe "#group_milestone_route" do
+    let(:group) { build_stubbed(:group) }
+    let(:subgroup) { build_stubbed(:group, parent: group, name: "Test Subgrp") }
+
+    context "when in subgroup" do
+      let(:milestone) { build_stubbed(:group_milestone, group: subgroup) }
+
+      it 'generates correct url despite assigned @group' do
+        assign(:group, group)
+        milestone_path = "/groups/#{subgroup.full_path}/-/milestones/#{milestone.iid}"
+        expect(helper.group_milestone_route(milestone)).to eq(milestone_path)
+      end
+    end
+  end
 end

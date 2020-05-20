@@ -80,7 +80,7 @@ it did not improve query performance.
 ## Attempt B: Denormalize using an array column
 
 Having [removed MySQL support in GitLab 12.1](https://about.gitlab.com/blog/2019/06/27/removing-mysql-support/),
-using [PostgreSQL's arrays](https://www.postgresql.org/docs/9.6/arrays.html) became more
+using [PostgreSQL's arrays](https://www.postgresql.org/docs/11/arrays.html) became more
 tractable as we didn't have to support two databases. We discussed denormalizing
 the `label_links` table for querying in
 [issue #49651](https://gitlab.com/gitlab-org/gitlab-foss/issues/49651),
@@ -91,7 +91,7 @@ and `epics`: `issues.label_ids` would be an array column of label IDs, and
 `issues.label_titles` would be an array of label titles.
 
 These array columns can be complemented with [GIN
-indexes](https://www.postgresql.org/docs/9.6/gin-intro.html) to improve
+indexes](https://www.postgresql.org/docs/11/gin-intro.html) to improve
 matching.
 
 ### Attempt B1: store label IDs for each object

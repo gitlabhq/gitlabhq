@@ -100,7 +100,7 @@ def instrument_classes(instrumentation)
     instrumentation.instrument_instance_methods(Gitlab::Elastic::ProjectSearchResults)
     instrumentation.instrument_instance_methods(Gitlab::Elastic::Indexer)
     instrumentation.instrument_instance_methods(Gitlab::Elastic::SnippetSearchResults)
-    instrumentation.instrument_methods(Gitlab::Elastic::Helper)
+    instrumentation.instrument_instance_methods(Gitlab::Elastic::Helper)
 
     instrumentation.instrument_instance_methods(Elastic::ApplicationVersionedSearch)
     instrumentation.instrument_instance_methods(Elastic::ProjectsSearch)
@@ -135,7 +135,6 @@ end
 # loading of our custom migration templates.
 if Gitlab::Metrics.enabled? && !Rails.env.test? && !(Rails.env.development? && defined?(Rails::Generators))
   require 'pathname'
-  require 'influxdb'
   require 'connection_pool'
   require 'method_source'
 
@@ -192,10 +191,6 @@ if Gitlab::Metrics.enabled? && !Rails.env.test? && !(Rails.env.development? && d
   end
 
   GC::Profiler.enable
-
-  Gitlab::Cluster::LifecycleEvents.on_worker_start do
-    Gitlab::Metrics::Samplers::InfluxSampler.initialize_instance.start
-  end
 
   module TrackNewRedisConnections
     def connect(*args)

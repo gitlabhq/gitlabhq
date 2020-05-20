@@ -43,7 +43,7 @@ include:
   template: Dependency-Scanning.gitlab-ci.yml
 
 variables:
-  DS_ANALYZER_IMAGE_PREFIX: my-docker-registry/gl-images
+  SECURE_ANALYZERS_PREFIX: my-docker-registry/gl-images
 ```
 
 This configuration requires that your custom registry provides images for all

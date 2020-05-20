@@ -7,6 +7,8 @@ describe 'projects/services/_form' do
   let(:user) { create(:admin) }
 
   before do
+    stub_feature_flags(integration_form_refactor: false)
+
     assign(:project, project)
 
     allow(controller).to receive(:current_user).and_return(user)
@@ -28,21 +30,6 @@ describe 'projects/services/_form' do
 
       expect(rendered).to have_content('Event will be triggered when a commit is created/updated')
       expect(rendered).to have_content('Event will be triggered when a merge request is created/updated/merged')
-    end
-
-    context 'when service is Jira' do
-      let(:project) { create(:jira_project) }
-
-      before do
-        assign(:service, project.jira_service)
-      end
-
-      it 'display merge_request_events and commit_events descriptions' do
-        render
-
-        expect(rendered).to have_content('Jira comments will be created when an issue gets referenced in a commit.')
-        expect(rendered).to have_content('Jira comments will be created when an issue gets referenced in a merge request.')
-      end
     end
   end
 end

@@ -18,6 +18,11 @@ export default class PersistentUserCallout {
 
   init() {
     const closeButton = this.container.querySelector('.js-close');
+
+    if (!closeButton) {
+      return;
+    }
+
     closeButton.addEventListener('click', event => this.dismiss(event));
 
     if (this.deferLinks) {

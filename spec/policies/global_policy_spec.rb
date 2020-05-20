@@ -6,6 +6,7 @@ describe GlobalPolicy do
   include TermsHelper
 
   let_it_be(:project_bot) { create(:user, :project_bot) }
+  let_it_be(:migration_bot) { create(:user, :migration_bot) }
   let(:current_user) { create(:user) }
   let(:user) { create(:user) }
 
@@ -80,6 +81,34 @@ describe GlobalPolicy do
     end
   end
 
+  describe 'create group' do
+    context 'when user has the ability to create group' do
+      let(:current_user) { create(:user, can_create_group: true) }
+
+      it { is_expected.to be_allowed(:create_group) }
+    end
+
+    context 'when user does not have the ability to create group' do
+      let(:current_user) { create(:user, can_create_group: false) }
+
+      it { is_expected.not_to be_allowed(:create_group) }
+    end
+  end
+
+  describe 'create group with default branch protection' do
+    context 'when user has the ability to create group' do
+      let(:current_user) { create(:user, can_create_group: true) }
+
+      it { is_expected.to be_allowed(:create_group_with_default_branch_protection) }
+    end
+
+    context 'when user does not have the ability to create group' do
+      let(:current_user) { create(:user, can_create_group: false) }
+
+      it { is_expected.not_to be_allowed(:create_group_with_default_branch_protection) }
+    end
+  end
+
   describe 'custom attributes' do
     context 'regular user' do
       it { is_expected.not_to be_allowed(:read_custom_attribute) }
@@ -89,8 +118,15 @@ describe GlobalPolicy do
     context 'admin' do
       let(:current_user) { create(:user, :admin) }
 
-      it { is_expected.to be_allowed(:read_custom_attribute) }
-      it { is_expected.to be_allowed(:update_custom_attribute) }
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it { is_expected.to be_allowed(:read_custom_attribute) }
+        it { is_expected.to be_allowed(:update_custom_attribute) }
+      end
+
+      context 'when admin mode is disabled' do
+        it { is_expected.to be_disallowed(:read_custom_attribute) }
+        it { is_expected.to be_disallowed(:update_custom_attribute) }
+      end
     end
   end
 
@@ -125,6 +161,12 @@ describe GlobalPolicy do
       let(:current_user) { project_bot }
 
       it { is_expected.to be_allowed(:access_api) }
+    end
+
+    context 'migration bot' do
+      let(:current_user) { migration_bot }
+
+      it { is_expected.not_to be_allowed(:access_api) }
     end
 
     context 'when terms are enforced' do
@@ -216,6 +258,12 @@ describe GlobalPolicy do
 
       it { is_expected.not_to be_allowed(:receive_notifications) }
     end
+
+    context 'migration bot' do
+      let(:current_user) { migration_bot }
+
+      it { is_expected.not_to be_allowed(:receive_notifications) }
+    end
   end
 
   describe 'git access' do
@@ -231,6 +279,12 @@ describe GlobalPolicy do
 
     describe 'anonymous' do
       let(:current_user) { nil }
+
+      it { is_expected.to be_allowed(:access_git) }
+    end
+
+    context 'migration bot' do
+      let(:current_user) { migration_bot }
 
       it { is_expected.to be_allowed(:access_git) }
     end
@@ -321,7 +375,13 @@ describe GlobalPolicy do
           stub_application_setting(instance_statistics_visibility_private: true)
         end
 
-        it { is_expected.to be_allowed(:read_instance_statistics) }
+        context 'when admin mode is enabled', :enable_admin_mode do
+          it { is_expected.to be_allowed(:read_instance_statistics) }
+        end
+
+        context 'when admin mode is disabled' do
+          it { is_expected.to be_disallowed(:read_instance_statistics) }
+        end
       end
     end
 
@@ -386,6 +446,12 @@ describe GlobalPolicy do
 
       it { is_expected.to be_allowed(:use_slash_commands) }
     end
+
+    context 'migration bot' do
+      let(:current_user) { migration_bot }
+
+      it { is_expected.not_to be_allowed(:use_slash_commands) }
+    end
   end
 
   describe 'create_snippet' do
@@ -409,6 +475,12 @@ describe GlobalPolicy do
   describe 'log in' do
     context 'project bot' do
       let(:current_user) { project_bot }
+
+      it { is_expected.not_to be_allowed(:log_in) }
+    end
+
+    context 'migration bot' do
+      let(:current_user) { migration_bot }
 
       it { is_expected.not_to be_allowed(:log_in) }
     end

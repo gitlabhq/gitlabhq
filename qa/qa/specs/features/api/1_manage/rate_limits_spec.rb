@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'airborne'
+
 module QA
   context 'Manage with IP rate limits', :requires_admin do
     describe 'Users API' do

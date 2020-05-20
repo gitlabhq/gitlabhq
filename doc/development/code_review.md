@@ -64,7 +64,7 @@ It picks reviewers and maintainers from the list at the
 page, with these behaviors:
 
 1. It will not pick people whose [GitLab status](../user/profile/index.md#current-status)
-   contains the string 'OOO'.
+   contains the string 'OOO', or the emoji is `:palm_tree:` or `:beach:`.
 1. [Trainee maintainers](https://about.gitlab.com/handbook/engineering/workflow/code-review/#trainee-maintainer)
    are three times as likely to be picked as other reviewers.
 1. It always picks the same reviewers and maintainers for the same
@@ -76,26 +76,36 @@ page, with these behaviors:
 
 As described in the section on the responsibility of the maintainer below, you
 are recommended to get your merge request approved and merged by maintainer(s)
- with [domain expertise](#domain-experts).
+with [domain expertise](#domain-experts).
 
-1. If your merge request includes backend changes [^1], it must be
+1. If your merge request includes backend changes (*1*), it must be
    **approved by a [backend maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_maintainers_backend)**.
-1. If your merge request includes database migrations or changes to expensive queries [^2], it must be
+1. If your merge request includes database migrations or changes to expensive queries (*2*), it must be
    **approved by a [database maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_maintainers_database)**.
    Read the [database review guidelines](database_review.md) for more details.
-1. If your merge request includes frontend changes [^1], it must be
+1. If your merge request includes frontend changes (*1*), it must be
    **approved by a [frontend maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_maintainers_frontend)**.
-1. If your merge request includes UX changes [^1], it must be
+1. If your merge request includes UX changes (*1*), it must be
    **approved by a [UX team member](https://about.gitlab.com/company/team/)**.
-1. If your merge request includes adding a new JavaScript library [^1], it must be
+1. If your merge request includes adding a new JavaScript library (*1*), it must be
    **approved by a [frontend lead](https://about.gitlab.com/company/team/)**.
-1. If your merge request includes adding a new UI/UX paradigm [^1], it must be
+1. If your merge request includes adding a new UI/UX paradigm (*1*), it must be
    **approved by a [UX lead](https://about.gitlab.com/company/team/)**.
 1. If your merge request includes a new dependency or a filesystem change, it must be
    **approved by a [Distribution team member](https://about.gitlab.com/company/team/)**. See how to work with the [Distribution team](https://about.gitlab.com/handbook/engineering/development/enablement/distribution/#how-to-work-with-distribution) for more details.
 1. If your merge request includes documentation changes, it must be **approved
    by a [Technical writer](https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers)**, based on
    the appropriate [product category](https://about.gitlab.com/handbook/product/categories/).
+1. If your merge request includes Quality and non-Quality-related changes (*3*), it must be **approved
+   by a [Software Engineer in Test](https://about.gitlab.com/handbook/engineering/quality/#individual-contributors)**.
+1. If your merge request includes _only_ Quality-related changes (*3*), it must be **approved
+   by a [Quality maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_maintainers_qa)**.
+
+- (*1*): Please note that specs other than JavaScript specs are considered backend code.
+- (*2*): We encourage you to seek guidance from a database maintainer if your merge
+  request is potentially introducing expensive queries. It is most efficient to comment
+  on the line of code in question with the SQL queries so they can give their advice.
+- (*3*): Quality-related changes include all files within the `qa` directory.
 
 #### Security requirements
 
@@ -314,7 +324,25 @@ Before taking the decision to merge:
 - Set the milestone.
 - Consider warnings and errors from danger bot, code quality, and other reports.
   Unless a strong case can be made for the violation, these should be resolved
-  before merge. A comment must to be posted if the MR is merged with any failed job.
+  before merging. A comment must to be posted if the MR is merged with any failed job.
+- If the MR contains both Quality and non-Quality-related changes, the MR should be merged by the relevant maintainer for user-facing changes (backend, frontend, or database) after the Quality related changes are approved by a Software Engineer in Test.
+
+If a merge request is fundamentally ready, but needs only trivial fixes (such as
+typos), consider demonstrating a [bias for
+action](https://about.gitlab.com/handbook/values/#bias-for-action) by making
+those changes directly without going back to the author. You can do this by
+using the [suggest changes](../user/discussions/index.md#suggest-changes) feature to apply
+your own suggestions to the merge request. Note that:
+
+- If the changes are not straightforward, please prefer assigning the merge request back
+  to the author.
+- **Before applying suggestions**, edit the merge request to make sure
+  [squash and
+  merge](../user/project/merge_requests/squash_and_merge.md#squash-and-merge)
+  is enabled, otherwise, the pipeline's Danger job will fail.
+  - If a merge request does not have squash and merge enabled, and it
+    has more than one commit, then see the note below about rewriting
+    commit history.
 
 When ready to merge:
 
@@ -463,6 +491,21 @@ When a merge request author has been blocked for longer than
 the `Review-response` SLO, they are free to remind the reviewer through Slack or assign
 another reviewer.
 
+### Customer critical merge requests
+
+A merge request may benefit from being considered a customer critical priority because there is a significant benefit to the business in doing so.
+
+Properties of customer critical merge requests:
+
+- The [Senior Director of Development](https://about.gitlab.com/job-families/engineering/engineering-management/#senior-director-engineering) ([@clefelhocz1](https://gitlab.com/clefelhocz1)) is the DRI for deciding if a merge request will be customer critical.
+- The DRI will assign the `customer-critical-merge-request` label to the merge request.
+- It is required that the reviewer(s) and maintainer(s) involved with a customer critical merge request are engaged as soon as this decision is made.
+- It is required to prioritize work for those involved on a customer critical merge request so that they have the time available necessary to focus on it.
+- It is required to adhere to GitLab [values](https://about.gitlab.com/handbook/values.md) and processes when working on customer critical merge requests, taking particular note of family and friends first/work second, definition of done, iteration, and release when it's ready.
+- Customer critical merge requests are required to not reduce security, introduce data-loss risk, reduce availability, nor break existing functionality per the process for [prioritizing technical decisions](https://about.gitlab.com/handbook/engineering/#prioritizing-technical-decisions.md).
+- On customer critical requests, it is _recommended_ that those involved _consider_ coordinating synchronously (Zoom, Slack) in addition to asynchronously (merge requests comments) if they believe this will reduce elapsed time to merge even though this _may_ sacrifice [efficiency](https://about.gitlab.com/company/culture/all-remote/asynchronous/#evaluating-efficiency.md).
+- After a customer critical merge request is merged, a retrospective must be completed with the intention of reducing the frequency of future customer critical merge requests.
+
 ## Examples
 
 How code reviews are conducted can surprise new contributors. Here are some examples of code reviews that should help to orient you as to what to expect.
@@ -495,6 +538,3 @@ Largely based on the [thoughtbot code review guide](https://github.com/thoughtbo
 ---
 
 [Return to Development documentation](README.md)
-
-[^1]: Please note that specs other than JavaScript specs are considered backend code.
-[^2]: We encourage you to seek guidance from a database maintainer if your merge request is potentially introducing expensive queries. It is most efficient to comment on the line of code in question with the SQL queries so they can give their advice.

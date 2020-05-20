@@ -78,4 +78,21 @@ describe ResourceMilestoneEvent, type: :model do
       let(:query_method) { :remove? }
     end
   end
+
+  describe '#milestone_title' do
+    let(:milestone) { create(:milestone, title: 'v2.3') }
+    let(:event) { create(:resource_milestone_event, milestone: milestone) }
+
+    it 'returns the expected title' do
+      expect(event.milestone_title).to eq('v2.3')
+    end
+
+    context 'when milestone is nil' do
+      let(:event) { create(:resource_milestone_event, milestone: nil) }
+
+      it 'returns nil' do
+        expect(event.milestone_title).to be_nil
+      end
+    end
+  end
 end

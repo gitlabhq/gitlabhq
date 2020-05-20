@@ -3,16 +3,12 @@
 require 'spec_helper'
 
 describe 'Disable individual triggers' do
-  let(:project) { create(:project) }
-  let(:user) { project.owner }
+  include_context 'project service activation'
+
   let(:checkbox_selector) { 'input[type=checkbox][id$=_events]' }
 
   before do
-    sign_in(user)
-
-    visit(project_settings_integrations_path(project))
-
-    click_link(service_name)
+    visit_project_integration(service_name)
   end
 
   context 'service has multiple supported events' do

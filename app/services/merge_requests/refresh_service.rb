@@ -115,6 +115,10 @@ module MergeRequests
       filter_merge_requests(merge_requests).each do |merge_request|
         if branch_and_project_match?(merge_request) || @push.force_push?
           merge_request.reload_diff(current_user)
+          # Clear existing merge error if the push were directed at the
+          # source branch. Clearing the error when the target branch
+          # changes will hide the error from the user.
+          merge_request.merge_error = nil
         elsif merge_request.merge_request_diff.includes_any_commits?(push_commit_ids)
           merge_request.reload_diff(current_user)
         end

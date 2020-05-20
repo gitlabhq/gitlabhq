@@ -3,26 +3,26 @@
 require 'spec_helper'
 
 describe API::Issues do
-  let_it_be(:user)          { create(:user) }
-  let(:user2)               { create(:user) }
-  let(:non_member)          { create(:user) }
-  let_it_be(:guest)         { create(:user) }
-  let_it_be(:author)        { create(:author) }
-  let_it_be(:assignee)      { create(:assignee) }
-  let(:admin)               { create(:user, :admin) }
-  let(:issue_title)         { 'foo' }
-  let(:issue_description)   { 'closed' }
-  let(:no_milestone_title)  { 'None' }
-  let(:any_milestone_title) { 'Any' }
+  let_it_be(:user2)               { create(:user) }
+  let_it_be(:admin)               { create(:user, :admin) }
+  let_it_be(:non_member)          { create(:user) }
+  let_it_be(:user)                { create(:user) }
+  let_it_be(:guest)               { create(:user) }
+  let_it_be(:author)              { create(:author) }
+  let_it_be(:assignee)            { create(:assignee) }
+  let_it_be(:issue_title)         { 'foo' }
+  let_it_be(:issue_description)   { 'closed' }
+  let_it_be(:no_milestone_title)  { 'None' }
+  let_it_be(:any_milestone_title) { 'Any' }
 
   before do
     stub_licensed_features(multiple_issue_assignees: false, issue_weights: false)
   end
 
   describe 'GET /groups/:id/issues' do
-    let!(:group)            { create(:group) }
-    let!(:group_project)    { create(:project, :public, :repository, creator_id: user.id, namespace: group) }
-    let!(:private_mrs_project) do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:group_project) { create(:project, :public, :repository, creator_id: user.id, namespace: group) }
+    let_it_be(:private_mrs_project) do
       create(:project, :public, :repository, creator_id: user.id, namespace: group, merge_requests_access_level: ProjectFeature::PRIVATE)
     end
 
@@ -453,6 +453,29 @@ describe API::Issues do
         let(:label) { group_label }
 
         it_behaves_like 'labeled issues with labels and label_name params'
+      end
+
+      context 'with archived projects' do
+        let_it_be(:archived_issue) do
+          create(
+            :issue, author: user, assignees: [user],
+            project: create(:project, :public, :archived, creator_id: user.id, namespace: group)
+          )
+        end
+
+        it 'returns only non archived projects issues' do
+          get api(base_url, user)
+
+          expect_paginated_array_response([group_closed_issue.id, group_confidential_issue.id, group_issue.id])
+        end
+
+        it 'returns issues from archived projects if non_archived it set to false' do
+          get api(base_url, user), params: { non_archived: false }
+
+          expect_paginated_array_response(
+            [archived_issue.id, group_closed_issue.id, group_confidential_issue.id, group_issue.id]
+          )
+        end
       end
 
       it 'returns an array of issues found by iids' do

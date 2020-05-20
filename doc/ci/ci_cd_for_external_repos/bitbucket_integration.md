@@ -29,7 +29,7 @@ To use GitLab CI/CD with a Bitbucket Cloud repository:
    The web hook URL should be set to the GitLab API to trigger pull mirroring,
    using the Personal Access Token we just generated for authentication.
 
-   ```text
+   ```plaintext
    https://gitlab.com/api/v4/projects/<PROJECT_ID>/mirror/pull?private_token=<PERSONAL_ACCESS_TOKEN>
    ```
 

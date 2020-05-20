@@ -1,0 +1,6 @@
+---
+title: Migration to add partitioned_foreign_keys table that tracks foreign keys for
+  partitioned tables
+merge_request: 29064
+author:
+type: added

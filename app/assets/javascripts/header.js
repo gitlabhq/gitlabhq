@@ -74,20 +74,27 @@ function initStatusTriggers() {
   }
 }
 
+function trackShowUserDropdownLink(trackEvent, elToTrack, el) {
+  const { trackLabel, trackProperty } = elToTrack.dataset;
+
+  $(el).on('shown.bs.dropdown', () => {
+    Tracking.event(document.body.dataset.page, trackEvent, {
+      label: trackLabel,
+      property: trackProperty,
+    });
+  });
+}
 export function initNavUserDropdownTracking() {
   const el = document.querySelector('.js-nav-user-dropdown');
   const buyEl = document.querySelector('.js-buy-ci-minutes-link');
+  const upgradeEl = document.querySelector('.js-upgrade-plan-link');
 
   if (el && buyEl) {
-    const { trackLabel, trackProperty } = buyEl.dataset;
-    const trackEvent = 'show_buy_ci_minutes';
+    trackShowUserDropdownLink('show_buy_ci_minutes', buyEl, el);
+  }
 
-    $(el).on('shown.bs.dropdown', () => {
-      Tracking.event(undefined, trackEvent, {
-        label: trackLabel,
-        property: trackProperty,
-      });
-    });
+  if (el && upgradeEl) {
+    trackShowUserDropdownLink('show_upgrade_link', upgradeEl, el);
   }
 }
 

@@ -36,10 +36,6 @@ class ProjectsController < Projects::ApplicationController
 
   layout :determine_layout
 
-  before_action do
-    push_frontend_feature_flag(:metrics_dashboard_visibility_switching_available)
-  end
-
   def index
     redirect_to(current_user ? root_path : explore_root_path)
   end
@@ -62,7 +58,7 @@ class ProjectsController < Projects::ApplicationController
     @project = ::Projects::CreateService.new(current_user, project_params(attributes: project_params_create_attributes)).execute
 
     if @project.saved?
-      cookies[:issue_board_welcome_hidden] = { path: project_path(@project), value: nil, expires: Time.at(0) }
+      cookies[:issue_board_welcome_hidden] = { path: project_path(@project), value: nil, expires: Time.zone.at(0) }
 
       redirect_to(
         project_path(@project, custom_import_params),
@@ -205,7 +201,7 @@ class ProjectsController < Projects::ApplicationController
 
     redirect_to(
       edit_project_path(@project, anchor: 'js-export-project'),
-      notice: _("Project export started. A download link will be sent by email.")
+      notice: _("Project export started. A download link will be sent by email and made available on this page.")
     )
   end
 
@@ -403,6 +399,10 @@ class ProjectsController < Projects::ApplicationController
         snippets_access_level
         wiki_access_level
         pages_access_level
+        metrics_dashboard_access_level
+      ],
+      project_setting_attributes: %i[
+        show_default_award_emojis
       ]
     ]
   end

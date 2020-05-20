@@ -16,6 +16,7 @@ describe API::Branches do
 
   before do
     project.add_maintainer(user)
+    project.repository.add_branch(user, 'ends-with.txt', branch_sha)
   end
 
   describe "GET /projects/:id/repository/branches" do
@@ -236,6 +237,12 @@ describe API::Branches do
 
       context 'when branch contains a dot' do
         let(:branch_name) { branch_with_dot.name }
+
+        it_behaves_like 'repository branch'
+      end
+
+      context 'when branch contains dot txt' do
+        let(:branch_name) { project.repository.find_branch('ends-with.txt').name }
 
         it_behaves_like 'repository branch'
       end
@@ -623,7 +630,7 @@ describe API::Branches do
       post api(route, user), params: { branch: 'new_design3', ref: 'foo' }
 
       expect(response).to have_gitlab_http_status(:bad_request)
-      expect(json_response['message']).to eq('Invalid reference name: new_design3')
+      expect(json_response['message']).to eq('Invalid reference name: foo')
     end
   end
 

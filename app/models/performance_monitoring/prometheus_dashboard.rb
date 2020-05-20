@@ -4,7 +4,7 @@ module PerformanceMonitoring
   class PrometheusDashboard
     include ActiveModel::Model
 
-    attr_accessor :dashboard, :panel_groups, :path, :environment, :priority
+    attr_accessor :dashboard, :panel_groups, :path, :environment, :priority, :templating
 
     validates :dashboard, presence: true
     validates :panel_groups, presence: true

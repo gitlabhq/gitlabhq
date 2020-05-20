@@ -30,7 +30,7 @@ GitLab 12.2 includes the following minor PostgreSQL updates:
 
 This update will occur even if major PostgreSQL updates are disabled.
 
-Before [refreshing Foreign Data Wrapper during a Geo HA upgrade](https://docs.gitlab.com/omnibus/update/README.html#run-post-deployment-migrations-and-checks),
+Before [refreshing Foreign Data Wrapper during a Geo upgrade](https://docs.gitlab.com/omnibus/update/README.html#run-post-deployment-migrations-and-checks),
 restart the Geo tracking database:
 
 ```shell
@@ -100,8 +100,8 @@ authentication method.
    postgresql['sql_user_password'] = '<md5_hash_of_your_password>'
 
    # Every node that runs Unicorn or Sidekiq needs to have the database
-   # password specified as below. If you have a high-availability setup, this
-   # must be present in all application nodes.
+   # password specified as below.
+   # This must be present in all application nodes.
    gitlab_rails['db_password'] = '<your_password_here>'
    ```
 
@@ -125,8 +125,8 @@ authentication method.
    postgresql['sql_user_password'] = '<md5_hash_of_your_password>'
 
    # Every node that runs Unicorn or Sidekiq needs to have the database
-   # password specified as below. If you have a high-availability setup, this
-   # must be present in all application nodes.
+   # password specified as below.
+   # This must be present in all application nodes.
    gitlab_rails['db_password'] = '<your_password_here>'
 
    # Enable Foreign Data Wrapper

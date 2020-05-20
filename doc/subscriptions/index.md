@@ -75,9 +75,10 @@ count as active users in the subscription period in which they were originally a
 - Members with Guest permissions on an Ultimate subscription.
 - GitLab-created service accounts: `Ghost User` and `Support Bot`.
 
-##### User Statistics
+##### Users statistics
 
-A breakdown of the users within your instance including active, billable and blocked can be found by navigating to **Admin Area > Overview > Dashboard** and selecting `Users Statistics` button within the `Users` widget..
+To view a breakdown of the users within your instance, including active, billable, and blocked, go to **Admin Area > Overview > Dashboard** and select **Users statistics** in the **Users** section.
+For more details, see [Users statistics](../user/admin_area/index.md#users-statistics).
 
 NOTE: **Note:**
 If you have LDAP integration enabled, anyone in the configured domain can sign up for a GitLab account. This can result in an unexpected bill at time of renewal. Consider [disabling new signups](../user/admin_area/settings/sign_up_restrictions.md) and managing new users manually instead.
@@ -126,6 +127,7 @@ instance, ensure you're purchasing enough seats to
 With the [Customers Portal](https://customers.gitlab.com/) you can:
 
 - [Change billing information](#change-billing-information)
+- [Change the payment method](#change-payment-method)
 - [Change the linked account](#change-the-linked-account)
 - [Change the associated namespace](#change-the-associated-namespace)
 
@@ -142,6 +144,15 @@ NOTE: **Note:**
 Future purchases will use the information in this section.
 The email listed in this section is used for the Customers Portal
 login and for license-related email communication.
+
+### Change payment method
+
+To change payment method or update credit card information:
+
+1. Log in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
+1. Select the **My account** drop-down and click on **Payment methods**.
+1. **Edit** the existing payment method information or **Add new payment method**.
+1. Save changes.
 
 ### Change the linked account
 
@@ -171,6 +182,8 @@ Subscription charges are calculated based on the total number of users in a grou
 
 ## View your subscription
 
+### View your GitLab.com subscription
+
 To see the status of your GitLab.com subscription, log into GitLab.com and go to the **Billing** section of the relevant namespace:
 
 - For individuals:
@@ -189,6 +202,13 @@ The following table describes details of your subscription for groups:
 | Seats owed | If your maximum seats used exceeds the seats in your subscription, you'll owe an additional fee for the users you've added. |
 | Subscription start date | Date your subscription started. If this is for a Free plan, is the date you transitioned off your group's paid plan. |
 | Subscription end date | Date your current subscription will end. Does not apply to Free plans. |
+
+### View your self-managed subscription
+
+To view the status of your self-managed subscription, log into the self-managed instance and go to the **License** page.
+
+  1. Go to **{admin}** **Admin Area**.
+  1. From the left-hand menu, select **License**.
 
 ## Renew your subscription
 

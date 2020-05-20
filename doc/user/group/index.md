@@ -196,6 +196,9 @@ To change this setting for a specific group:
 
 To change this setting globally, see [Default branch protection](../admin_area/settings/visibility_and_access_controls.md#default-branch-protection).
 
+NOTE: **Note:**
+In [GitLab Premium or higher](https://about.gitlab.com/pricing/), GitLab administrators can choose to [disable group owners from updating the default branch protection](../admin_area/settings/visibility_and_access_controls.md#disable-group-owners-from-updating-default-branch-protection-premium-only).
+
 ## Add projects to a group
 
 There are two different ways to add a new project to a group:
@@ -211,8 +214,8 @@ There are two different ways to add a new project to a group:
 
 ### Default project-creation level
 
-> - [Introduced][ee-2534] in [GitLab Premium][ee] 10.5.
-> - Brought to [GitLab Starter][ee] in 10.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/2534) in [GitLab Premium](https://about.gitlab.com/pricing/) 10.5.
+> - Brought to [GitLab Starter](https://about.gitlab.com/pricing/) in 10.7.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/25975) to [GitLab Core](https://about.gitlab.com/pricing/) in 11.10.
 
 By default, [Developers and Maintainers](../permissions.md#group-members-permissions) can create projects under a group.
@@ -308,7 +311,7 @@ See [the GitLab Enterprise Edition documentation](../../integration/ldap.md) for
 
 ## Epics **(ULTIMATE)**
 
-> Introduced in [GitLab Ultimate][ee] 10.2.
+> Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.2.
 
 Epics let you manage your portfolio of projects more efficiently and with less
 effort by tracking groups of issues that share a theme, across projects and
@@ -593,6 +596,29 @@ For performance reasons, we may delay the update up to 1 hour and 30 minutes.
 
 If your namespace shows `N/A` as the total storage usage, you can trigger a recalculation by pushing a commit to any project in that namespace.
 
+#### Group push rules **(STARTER)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/34370) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.8.
+
+Group push rules allow group maintainers to set
+[push rules](../../push_rules/push_rules.md) for newly created projects within the specific group.
+
+To configure push rules for a group, navigate to **{push-rules}** on the group's
+sidebar.
+
+When set, new subgroups have push rules set for them based on either:
+
+- The closest parent group with push rules defined.
+- Push rules set at the instance level, if no parent groups have push rules defined.
+
+##### Enabling the feature
+
+This feature comes with the `:group_push_rules` feature flag disabled by default. It can be enabled for specific group using feature flag [API endpoint](../../api/features.md#set-or-create-a-feature) or by GitLab administrator with Rails console access by running:
+
+```ruby
+Feature.enable(:group_push_rules)
+```
+
 ### Maximum artifacts size **(CORE ONLY)**
 
 For information about setting a maximum artifact size for a group, see
@@ -623,6 +649,3 @@ questions that you know someone might ask.
 Each scenario can be a third-level heading, e.g. `### Getting error message X`.
 If you have none to add when creating a doc, leave this section in place
 but commented out to help encourage others to add to it in the future. -->
-
-[ee]: https://about.gitlab.com/pricing/
-[ee-2534]: https://gitlab.com/gitlab-org/gitlab/issues/2534

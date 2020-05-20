@@ -9,10 +9,10 @@ describe Gitlab::AppJsonLogger do
   let(:string_message) { 'Information' }
 
   it 'logs a hash as a JSON' do
-    expect(JSON.parse(subject.format_message('INFO', Time.now, nil, hash_message))).to include(hash_message)
+    expect(Gitlab::Json.parse(subject.format_message('INFO', Time.now, nil, hash_message))).to include(hash_message)
   end
 
   it 'logs a string as a JSON' do
-    expect(JSON.parse(subject.format_message('INFO', Time.now, nil, string_message))).to include('message' => string_message)
+    expect(Gitlab::Json.parse(subject.format_message('INFO', Time.now, nil, string_message))).to include('message' => string_message)
   end
 end

@@ -1,0 +1,10 @@
+= _('Hi %{username}!') % { username: sanitize_name(@user.name) }
+
+= _('A sign-in to your account has been made from the following IP address: %{ip}') % { ip: @ip }
+
+= _('If you recently signed in and recognize the IP address, you may disregard this email.')
+= _('If you did not recently sign in, you should immediately change your password: %{password_link}.') % { password_link: 'https://docs.gitlab.com/ee/user/profile/#changing-your-password' }
+= _('Passwords should be unique and not used for any other sites or services.')
+
+- unless @user.two_factor_enabled?
+  = _('To further protect your account, consider configuring a two-factor authentication method: %{mfa_link}.') % { mfa_link: 'https://docs.gitlab.com/ee/user/profile/account/two_factor_authentication.html' }

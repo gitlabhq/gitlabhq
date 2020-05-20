@@ -94,7 +94,7 @@ The OpenID Connect will provide you with a client details and secret for you to 
        - `basic` - HTTP Basic Authentication
        - `jwt_bearer` - JWT based authentication (private key and client secret signing)
        - `mtls` - Mutual TLS or X.509 certificate validation
-       - Any other value will POST the client id and secret in the request body
+       - Any other value will POST the client ID and secret in the request body
      - If not specified, defaults to `basic`.
    - `<uid_field>` (optional) is the field name from the `user_info` details that will be used as `uid` value. For example, `preferred_username`.
      If this value is not provided or the field with the configured value is missing from the `user_info` details, the `uid` will use the `sub` field.

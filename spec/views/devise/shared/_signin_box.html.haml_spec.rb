@@ -6,7 +6,7 @@ describe 'devise/shared/_signin_box' do
   describe 'Crowd form' do
     before do
       stub_devise
-      assign(:ldap_servers, [])
+      allow(view).to receive(:ldap_servers).and_return([])
       allow(view).to receive(:current_application_settings).and_return(Gitlab::CurrentSettings.current_application_settings)
       allow(view).to receive(:captcha_enabled?).and_return(false)
       allow(view).to receive(:captcha_on_login_required?).and_return(false)

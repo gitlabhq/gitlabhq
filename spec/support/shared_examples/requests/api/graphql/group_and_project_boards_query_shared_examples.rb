@@ -80,7 +80,7 @@ RSpec.shared_examples 'group and project boards query' do
               cursored_query = query("after: \"#{end_cursor}\"")
               post_graphql(cursored_query, current_user: current_user)
 
-              response_data = JSON.parse(response.body)['data'][board_parent_type]['boards']['edges']
+              response_data = Gitlab::Json.parse(response.body)['data'][board_parent_type]['boards']['edges']
 
               expect(grab_names(response_data)).to eq expected_boards.drop(2).first(2).map(&:name)
             end

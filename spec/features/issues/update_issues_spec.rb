@@ -95,7 +95,7 @@ describe 'Multiple issue updating from issues#index', :js do
       find('#check-all-issues').click
       find('.issues-bulk-update .js-milestone-select').click
 
-      find('.dropdown-menu-milestone a', text: "No Milestone").click
+      find('.dropdown-menu-milestone a', text: "No milestone").click
       click_update_issues_button
 
       expect(find('.issue:first-child')).not_to have_content milestone.title

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Create', :smoke, quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/215031', type: :investigating } do
+  context 'Create', :smoke do
     describe 'Snippet creation' do
       it 'User creates a snippet' do
         Flow::Login.sign_in

@@ -18,7 +18,7 @@ describe Sentry::Client do
   describe '#issue_latest_event' do
     let(:sample_response) do
       Gitlab::Utils.deep_indifferent_access(
-        JSON.parse(fixture_file('sentry/issue_latest_event_sample_response.json'))
+        Gitlab::Json.parse(fixture_file('sentry/issue_latest_event_sample_response.json'))
       )
     end
     let(:issue_id) { '1234' }

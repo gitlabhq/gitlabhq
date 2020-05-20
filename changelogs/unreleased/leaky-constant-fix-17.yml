@@ -1,0 +1,5 @@
+---
+title: Fix leaky constant issue in mentionable spec
+merge_request: 32049
+author: Rajendra Kadam
+type: fixed

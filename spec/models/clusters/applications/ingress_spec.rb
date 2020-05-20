@@ -220,6 +220,12 @@ describe Clusters::Applications::Ingress do
         expect(subject.values).to include('extraContainers')
       end
 
+      it 'executes command to tail modsecurity logs with -F option' do
+        args = YAML.safe_load(subject.values).dig('controller', 'extraContainers', 0, 'args')
+
+        expect(args).to eq(['/bin/sh', '-c', 'tail -F /var/log/modsec/audit.log'])
+      end
+
       it 'includes livenessProbe for modsecurity sidecar container' do
         probe_config = YAML.safe_load(subject.values).dig('controller', 'extraContainers', 0, 'livenessProbe')
 

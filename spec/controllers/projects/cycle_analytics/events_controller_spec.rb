@@ -17,7 +17,7 @@ describe Projects::CycleAnalytics::EventsController do
         get_issue
 
         expect(response).to be_successful
-        expect(JSON.parse(response.body)['events']).to be_empty
+        expect(Gitlab::Json.parse(response.body)['events']).to be_empty
       end
     end
 
@@ -38,7 +38,7 @@ describe Projects::CycleAnalytics::EventsController do
       it 'contains event detais' do
         get_issue
 
-        events = JSON.parse(response.body)['events']
+        events = Gitlab::Json.parse(response.body)['events']
 
         expect(events).not_to be_empty
         expect(events.first).to include('title', 'author', 'iid', 'total_time', 'created_at', 'url')
@@ -51,7 +51,7 @@ describe Projects::CycleAnalytics::EventsController do
 
           expect(response).to be_successful
 
-          expect(JSON.parse(response.body)['events']).to be_empty
+          expect(Gitlab::Json.parse(response.body)['events']).to be_empty
         end
       end
     end

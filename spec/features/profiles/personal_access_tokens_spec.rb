@@ -86,7 +86,7 @@ describe 'Profile > Personal Access Tokens', :js do
       accept_confirm { click_on "Revoke" }
 
       expect(page).to have_selector(".settings-message")
-      expect(no_personal_access_tokens_message).to have_text("This user has no active Personal Access Tokens.")
+      expect(no_personal_access_tokens_message).to have_text("This user has no active personal access tokens.")
     end
 
     it "removes expired tokens from 'active' section" do
@@ -94,7 +94,7 @@ describe 'Profile > Personal Access Tokens', :js do
       visit profile_personal_access_tokens_path
 
       expect(page).to have_selector(".settings-message")
-      expect(no_personal_access_tokens_message).to have_text("This user has no active Personal Access Tokens.")
+      expect(no_personal_access_tokens_message).to have_text("This user has no active personal access tokens.")
     end
 
     context "when revocation fails" do

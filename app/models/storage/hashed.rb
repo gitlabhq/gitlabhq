@@ -6,6 +6,7 @@ module Storage
     delegate :gitlab_shell, :repository_storage, to: :container
 
     REPOSITORY_PATH_PREFIX = '@hashed'
+    GROUP_REPOSITORY_PATH_PREFIX = '@groups'
     SNIPPET_REPOSITORY_PATH_PREFIX = '@snippets'
     POOL_PATH_PREFIX = '@pools'
 

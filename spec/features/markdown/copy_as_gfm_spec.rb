@@ -173,6 +173,12 @@ describe 'Copy as GFM', :js do
       )
 
       verify_media_with_partial_path(
+        '[test.txt](/uploads/a123/image.txt)',
+
+        project_media_uri(@project, '/uploads/a123/image.txt')
+      )
+
+      verify_media_with_partial_path(
         '![Image](/uploads/a123/image.png)',
 
         project_media_uri(@project, '/uploads/a123/image.png')

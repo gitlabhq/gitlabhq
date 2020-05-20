@@ -14,7 +14,7 @@ for details.
 ## Introduction
 
 [OpenShift Origin](https://www.okd.io/) (**Note:** renamed to OKD in Aug 2018) is an open source container application
-platform created by [RedHat], based on [Kubernetes](https://kubernetes.io/) and [Docker]. That means
+platform created by [RedHat](https://www.redhat.com/en), based on [Kubernetes](https://kubernetes.io/) and [Docker](https://www.docker.com). That means
 you can host your own PaaS for free and almost with no hassle.
 
 In this tutorial, we will see how to deploy GitLab in OpenShift using GitLab's
@@ -34,16 +34,16 @@ offered by the OpenShift developers and managed by Vagrant. If you haven't done
 already, go ahead and install the following components as they are essential to
 test OpenShift easily:
 
-- [VirtualBox]
-- [Vagrant]
+- [VirtualBox](https://www.virtualbox.org/wiki/Downloads)
+- [Vagrant](https://www.vagrantup.com/downloads.html)
 - [OpenShift Client](https://docs.okd.io/3.11/cli_reference/get_started_cli.html) (`oc` for short)
 
 It is also important to mention that for the purposes of this tutorial, the
 latest Origin release is used:
 
-- **oc** `v1.3.0` (must be [installed][oc-gh] locally on your computer)
-- **OpenShift** `v1.3.0` (is pre-installed in the [VM image][vm-new])
-- **Kubernetes** `v1.3.0` (is pre-installed in the [VM image][vm-new])
+- **oc** `v1.3.0` (must be [installed](https://github.com/openshift/origin/releases/tag/v1.3.0) locally on your computer)
+- **OpenShift** `v1.3.0` (is pre-installed in the [VM image](https://app.vagrantup.com/openshift/boxes/origin-all-in-one))
+- **Kubernetes** `v1.3.0` (is pre-installed in the [VM image](https://app.vagrantup.com/openshift/boxes/origin-all-in-one))
 
 >**Note:**
 If you intend to deploy GitLab on a production OpenShift cluster, there are some
@@ -302,7 +302,7 @@ template:
 - `gitlab-ce-postgresql`
 
 While PostgreSQL and Redis are bundled in Omnibus GitLab, the template is using
-separate images as you can see from [this line][line] in the template.
+separate images as you can see from [this line](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/658c065c8d022ce858dd63eaeeadb0b2ddc8deea/docker/openshift-template.json#L239) in the template.
 
 The predefined values have been calculated for the purposes of testing out
 GitLab in the all-in-one VM. You don't need to change anything here, hit
@@ -371,7 +371,7 @@ running scaled to 2.
 
 Upping the GitLab pods is actually like adding new application servers to your
 cluster. You can see how that would work if you didn't use GitLab with
-OpenShift by following the [HA documentation][ha] for the application servers.
+OpenShift by following the [HA documentation](../../administration/high_availability/gitlab.md) for the application servers.
 
 Bare in mind that you may need more resources (CPU, RAM, disk space) when you
 scale up. If a pod is in pending state for too long, you can navigate to
@@ -505,14 +505,3 @@ And remember that in this tutorial we just scratched the surface of what Origin
 is capable of. As always, you can refer to the detailed
 [documentation](https://docs.okd.io) to learn more about deploying your own OpenShift
 PaaS and managing your applications with the ease of containers.
-
-[RedHat]: https://www.redhat.com/en "RedHat website"
-[vm-new]: https://app.vagrantup.com/openshift/boxes/origin-all-in-one "Official OpenShift Vagrant box on Vagrant Cloud"
-[template]: https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/docker/openshift-template.json "OpenShift template for GitLab"
-[Docker]: https://www.docker.com "Docker website"
-[VirtualBox]: https://www.virtualbox.org/wiki/Downloads "VirtualBox downloads"
-[Vagrant]: https://www.vagrantup.com/downloads.html "Vagrant downloads"
-[old-post]: https://blog.openshift.com/deploy-gitlab-openshift/ "Old post - Deploy GitLab on OpenShift"
-[line]: https://gitlab.com/gitlab-org/omnibus-gitlab/blob/658c065c8d022ce858dd63eaeeadb0b2ddc8deea/docker/openshift-template.json#L239 "GitLab - OpenShift template"
-[oc-gh]: https://github.com/openshift/origin/releases/tag/v1.3.0 "OpenShift Origin 1.3.0 release on GitHub"
-[ha]: ../../administration/high_availability/gitlab.md "Documentation - GitLab High Availability"

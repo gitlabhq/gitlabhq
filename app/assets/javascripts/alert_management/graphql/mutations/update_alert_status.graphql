@@ -1,0 +1,9 @@
+mutation ($projectPath: ID!, $status: AlertManagementStatus!, $iid: String!) {
+  updateAlertStatus(input: { iid: $iid, status: $status, projectPath: $projectPath }) {
+    errors
+    alert {
+      iid,
+      status,
+    }
+  }
+}

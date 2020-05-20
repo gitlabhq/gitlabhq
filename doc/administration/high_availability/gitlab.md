@@ -2,7 +2,9 @@
 type: reference
 ---
 
-# Configuring GitLab for Scaling and High Availability
+# Configuring GitLab application (Rails)
+
+This section describes how to configure the GitLab application (Rails) component.
 
 NOTE: **Note:** There is some additional configuration near the bottom for
 additional GitLab application servers. It's important to read and understand
@@ -34,7 +36,7 @@ is recommended over [NFS](nfs.md) wherever possible for improved performance.
    mkdir -p /var/opt/gitlab/.ssh /var/opt/gitlab/gitlab-rails/uploads /var/opt/gitlab/gitlab-rails/shared /var/opt/gitlab/gitlab-ci/builds /var/opt/gitlab/git-data
    ```
 
-1. Download/install GitLab Omnibus using **steps 1 and 2** from
+1. Download/install Omnibus GitLab using **steps 1 and 2** from
    [GitLab downloads](https://about.gitlab.com/install/). Do not complete other
    steps on the download page.
 1. Create/edit `/etc/gitlab/gitlab.rb` and use the following configuration.
@@ -79,8 +81,8 @@ is recommended over [NFS](nfs.md) wherever possible for improved performance.
 
    NOTE: **Note:** To maintain uniformity of links across HA clusters, the `external_url`
    on the first application server as well as the additional application
-   servers should point to the external url that users will use to access GitLab.
-   In a typical HA setup, this will be the url of the load balancer which will
+   servers should point to the external URL that users will use to access GitLab.
+   In a typical HA setup, this will be the URL of the load balancer which will
    route traffic to all GitLab application servers in the HA cluster.
 
    NOTE: **Note:** When you specify `https` in the `external_url`, as in the example
@@ -131,6 +133,9 @@ need some extra configuration.
 
 1. Run `sudo gitlab-ctl reconfigure` to compile the configuration.
 
+NOTE: **Note:** You will need to restart the GitLab applications nodes after an update has occurred and database
+migrations performed.
+
 ## Enable Monitoring
 
 > [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/issues/3786) in GitLab 12.0.
@@ -157,7 +162,7 @@ If you enable Monitoring, it must be enabled on **all** GitLab servers.
    node_exporter['listen_address'] = '0.0.0.0:9100'
    gitlab_workhorse['prometheus_listen_addr'] = '0.0.0.0:9229'
    sidekiq['listen_address'] = "0.0.0.0"
-   unicorn['listen'] = '0.0.0.0'
+   puma['listen'] = '0.0.0.0'
 
    # Add the monitoring node's IP address to the monitoring whitelist and allow it to
    # scrape the NGINX metrics. Replace placeholder `monitoring.gitlab.example.com` with
@@ -169,9 +174,11 @@ If you enable Monitoring, it must be enabled on **all** GitLab servers.
 1. Run `sudo gitlab-ctl reconfigure` to compile the configuration.
 
    CAUTION: **Warning:**
-   After changing `unicorn['listen']` in `gitlab.rb`, and running `sudo gitlab-ctl reconfigure`,
-   it can take an extended period of time for Unicorn to complete reloading after receiving a `HUP`.
-   For more information, see the [issue](https://gitlab.com/gitlab-org/omnibus-gitlab/issues/4401).
+   If running Unicorn, after changing `unicorn['listen']` in `gitlab.rb`, and
+   running `sudo gitlab-ctl reconfigure`, it can take an extended period of time
+   for Unicorn to complete reloading after receiving a `HUP`. For more
+   information, see the
+   [issue](https://gitlab.com/gitlab-org/omnibus-gitlab/issues/4401).
 
 ## Troubleshooting
 

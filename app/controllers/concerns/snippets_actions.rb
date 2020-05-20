@@ -53,10 +53,10 @@ module SnippetsActions
   def blob
     return unless snippet
 
-    @blob ||= if Feature.enabled?(:version_snippets, current_user) && !snippet.repository.empty?
-                snippet.blobs.first
-              else
+    @blob ||= if snippet.empty_repo?
                 snippet.blob
+              else
+                snippet.blobs.first
               end
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
@@ -65,11 +65,12 @@ module SnippetsActions
     params[:line_ending] == 'raw' ? content : content.gsub(/\r\n/, "\n")
   end
 
-  def check_repository_error
-    repository_errors = Array(snippet.errors.delete(:repository))
+  def handle_repository_error(action)
+    errors = Array(snippet.errors.delete(:repository))
 
-    flash.now[:alert] = repository_errors.first if repository_errors.present?
-    recaptcha_check_with_fallback(repository_errors.empty?) { render :edit }
+    flash.now[:alert] = errors.first if errors.present?
+
+    recaptcha_check_with_fallback(errors.empty?) { render action }
   end
 
   def redirect_if_binary

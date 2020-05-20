@@ -23,12 +23,15 @@ export const receiveTagsListSuccess = ({ commit }, { data, headers }) => {
   commit(types.SET_TAGS_PAGINATION, headers);
 };
 
-export const requestImagesList = ({ commit, dispatch, state }, pagination = {}) => {
+export const requestImagesList = (
+  { commit, dispatch, state },
+  { pagination = {}, name = null } = {},
+) => {
   commit(types.SET_MAIN_LOADING, true);
   const { page = DEFAULT_PAGE, perPage = DEFAULT_PAGE_SIZE } = pagination;
 
   return axios
-    .get(state.config.endpoint, { params: { page, per_page: perPage } })
+    .get(state.config.endpoint, { params: { page, per_page: perPage, name } })
     .then(({ data, headers }) => {
       dispatch('receiveImagesListSuccess', { data, headers });
     })
@@ -66,7 +69,7 @@ export const requestDeleteTag = ({ commit, dispatch, state }, { tag, params }) =
       dispatch('setShowGarbageCollectionTip', true);
       return dispatch('requestTagsList', { pagination: state.tagsPagination, params });
     })
-    .catch(() => {
+    .finally(() => {
       commit(types.SET_MAIN_LOADING, false);
     });
 };
@@ -83,7 +86,7 @@ export const requestDeleteTags = ({ commit, dispatch, state }, { ids, params }) 
       dispatch('setShowGarbageCollectionTip', true);
       return dispatch('requestTagsList', { pagination: state.tagsPagination, params });
     })
-    .catch(() => {
+    .finally(() => {
       commit(types.SET_MAIN_LOADING, false);
     });
 };

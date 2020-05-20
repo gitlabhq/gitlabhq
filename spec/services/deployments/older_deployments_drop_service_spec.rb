@@ -66,6 +66,43 @@ describe Deployments::OlderDeploymentsDropService do
             expect(deployable.reload.failed?).to be_truthy
           end
 
+          context 'when older deployable is a manual job' do
+            let(:older_deployment) { create(:deployment, :created, environment: environment, deployable: build) }
+            let(:build) { create(:ci_build, :manual) }
+
+            it 'does not drop any builds nor track the exception' do
+              expect(Gitlab::ErrorTracking).not_to receive(:track_exception)
+
+              expect { subject }.not_to change { Ci::Build.failed.count }
+            end
+          end
+
+          context 'when deployable.drop raises RuntimeError' do
+            before do
+              allow_any_instance_of(Ci::Build).to receive(:drop).and_raise(RuntimeError)
+            end
+
+            it 'does not drop an older deployment and tracks the exception' do
+              expect(Gitlab::ErrorTracking).to receive(:track_exception)
+                .with(kind_of(RuntimeError), subject_id: deployment.id, deployment_id: older_deployment.id)
+
+              expect { subject }.not_to change { Ci::Build.failed.count }
+            end
+          end
+
+          context 'when ActiveRecord::StaleObjectError is raised' do
+            before do
+              allow_any_instance_of(Ci::Build)
+                .to receive(:drop).and_raise(ActiveRecord::StaleObjectError)
+            end
+
+            it 'resets the object via Gitlab::OptimisticLocking' do
+              allow_any_instance_of(Ci::Build).to receive(:reset).at_least(:once)
+
+              subject
+            end
+          end
+
           context 'and there is no deployable for that older deployment' do
             let(:older_deployment) { create(:deployment, :running, environment: environment, deployable: nil) }
 

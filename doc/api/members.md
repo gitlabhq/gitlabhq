@@ -282,6 +282,78 @@ Example response:
 }
 ```
 
+### Set override flag for a member of a group
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/4875) in GitLab 12.10.
+
+By default, the access level of LDAP group members is set to the value specified
+by LDAP through Group Sync. You can allow access level overrides by calling this endpoint.
+
+```plaintext
+POST /groups/:id/members/:user_id/override
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `user_id` | integer | yes   | The user ID of the member |
+
+```bash
+curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/:id/members/:user_id/override
+```
+
+Example response:
+
+```json
+{
+  "id": 1,
+  "username": "raymond_smith",
+  "name": "Raymond Smith",
+  "state": "active",
+  "avatar_url": "https://www.gravatar.com/avatar/c2525a7f58ae3776070e44c106c48e15?s=80&d=identicon",
+  "web_url": "http://192.168.1.8:3000/root",
+  "expires_at": "2012-10-22T14:13:35Z",
+  "access_level": 40,
+  "override": true
+}
+```
+
+### Remove override for a member of a group
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/4875) in GitLab 12.10.
+
+Sets the override flag to false and allows LDAP Group Sync to reset the access
+level to the LDAP-prescribed value.
+
+```plaintext
+DELETE /groups/:id/members/:user_id/override
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `user_id` | integer | yes   | The user ID of the member |
+
+```bash
+curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/:id/members/:user_id/override
+```
+
+Example response:
+
+```json
+{
+  "id": 1,
+  "username": "raymond_smith",
+  "name": "Raymond Smith",
+  "state": "active",
+  "avatar_url": "https://www.gravatar.com/avatar/c2525a7f58ae3776070e44c106c48e15?s=80&d=identicon",
+  "web_url": "http://192.168.1.8:3000/root",
+  "expires_at": "2012-10-22T14:13:35Z",
+  "access_level": 40,
+  "override": false
+}
+```
+
 ## Remove a member from a group or project
 
 Removes a user from a group or project.

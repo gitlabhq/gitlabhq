@@ -11,6 +11,7 @@ module PodLogs
           :pod_logs,
           :filter_return_keys
 
+    self.reactive_cache_work_type = :external_dependency
     self.reactive_cache_worker_finder = ->(id, _cache_key, namespace, params) { new(::Clusters::Cluster.find(id), namespace, params: params) }
 
     private
@@ -52,11 +53,15 @@ module PodLogs
     def check_search(result)
       result[:search] = params['search'] if params.key?('search')
 
+      return error(_('Invalid search parameter')) if result[:search] && !result[:search].is_a?(String)
+
       success(result)
     end
 
     def check_cursor(result)
       result[:cursor] = params['cursor'] if params.key?('cursor')
+
+      return error(_('Invalid cursor parameter')) if result[:cursor] && !result[:cursor].is_a?(String)
 
       success(result)
     end
@@ -65,6 +70,8 @@ module PodLogs
       client = cluster&.application_elastic_stack&.elasticsearch_client
       return error(_('Unable to connect to Elasticsearch')) unless client
 
+      chart_above_v2 = cluster.application_elastic_stack.chart_above_v2?
+
       response = ::Gitlab::Elasticsearch::Logs::Lines.new(client).pod_logs(
         namespace,
         pod_name: result[:pod_name],
@@ -72,7 +79,8 @@ module PodLogs
         search: result[:search],
         start_time: result[:start_time],
         end_time: result[:end_time],
-        cursor: result[:cursor]
+        cursor: result[:cursor],
+        chart_above_v2: chart_above_v2
       )
 
       result.merge!(response)

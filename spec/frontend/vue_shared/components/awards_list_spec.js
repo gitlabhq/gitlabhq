@@ -210,4 +210,46 @@ describe('vue_shared/components/awards_list', () => {
       expect(buttons.wrappers.every(x => x.classes('disabled'))).toBe(true);
     });
   });
+
+  describe('with default awards', () => {
+    beforeEach(() => {
+      createComponent({
+        awards: [createAward(EMOJI_SMILE, USERS.marie), createAward(EMOJI_100, USERS.marie)],
+        canAwardEmoji: true,
+        currentUserId: USERS.root.id,
+        // Let's assert that it puts thumbsup and thumbsdown in the right order still
+        defaultAwards: [EMOJI_THUMBSDOWN, EMOJI_100, EMOJI_THUMBSUP],
+      });
+    });
+
+    it('shows awards in correct order', () => {
+      expect(findAwardsData()).toEqual([
+        {
+          classes: ['btn', 'award-control'],
+          count: 0,
+          html: matchingEmojiTag(EMOJI_THUMBSUP),
+          title: '',
+        },
+        {
+          classes: ['btn', 'award-control'],
+          count: 0,
+          html: matchingEmojiTag(EMOJI_THUMBSDOWN),
+          title: '',
+        },
+        // We expect the EMOJI_100 before the EMOJI_SMILE because it was given as a defaultAward
+        {
+          classes: ['btn', 'award-control'],
+          count: 1,
+          html: matchingEmojiTag(EMOJI_100),
+          title: 'Marie',
+        },
+        {
+          classes: ['btn', 'award-control'],
+          count: 1,
+          html: matchingEmojiTag(EMOJI_SMILE),
+          title: 'Marie',
+        },
+      ]);
+    });
+  });
 });

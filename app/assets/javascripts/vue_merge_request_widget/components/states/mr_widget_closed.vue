@@ -1,5 +1,5 @@
 <script>
-import MrWidgetAuthorTime from '../../components/mr_widget_author_time.vue';
+import MrWidgetAuthorTime from '../mr_widget_author_time.vue';
 import statusIcon from '../mr_widget_status_icon.vue';
 
 export default {

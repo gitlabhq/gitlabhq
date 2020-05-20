@@ -1,8 +1,7 @@
 - breadcrumb_title @service.title
 - add_to_breadcrumbs _('Integration Settings'), project_settings_integrations_path(@project)
 - page_title @service.title, _('Integrations')
-
-= render 'deprecated_message' if @service.deprecation_message
+- @content_class = 'limit-container-width' unless fluid_layout
 
 = render 'form'
 - if @web_hook_logs

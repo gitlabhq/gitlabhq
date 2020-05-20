@@ -3,8 +3,14 @@
 require 'spec_helper'
 
 describe Email do
+  describe 'modules' do
+    subject { described_class }
+
+    it { is_expected.to include_module(AsyncDeviseEmail) }
+  end
+
   describe 'validations' do
-    it_behaves_like 'an object with email-formated attributes', :email do
+    it_behaves_like 'an object with RFC3696 compliant email-formated attributes', :email do
       subject { build(:email) }
     end
   end
@@ -43,6 +49,18 @@ describe Email do
 
     it 'delegates to :user' do
       expect(build(:email, user: user).username).to eq user.username
+    end
+  end
+
+  describe 'Devise emails' do
+    let!(:user) { create(:user) }
+
+    describe 'behaviour' do
+      it 'sends emails asynchronously' do
+        expect do
+          user.emails.create!(email: 'hello@hello.com')
+        end.to have_enqueued_job.on_queue('mailers')
+      end
     end
   end
 end

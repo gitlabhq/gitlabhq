@@ -7,7 +7,7 @@ namespace :gemojione do
     aliases = {}
 
     index_file = File.join(Rails.root, 'fixtures', 'emojis', 'index.json')
-    index = JSON.parse(File.read(index_file))
+    index = Gitlab::Json.parse(File.read(index_file))
 
     index.each_pair do |key, data|
       data['aliases'].each do |a|
@@ -19,7 +19,7 @@ namespace :gemojione do
 
     out = File.join(Rails.root, 'fixtures', 'emojis', 'aliases.json')
     File.open(out, 'w') do |handle|
-      handle.write(JSON.pretty_generate(aliases, indent: '   ', space: '', space_before: ''))
+      handle.write(Gitlab::Json.pretty_generate(aliases, indent: '   ', space: '', space_before: ''))
     end
   end
 
@@ -58,7 +58,7 @@ namespace :gemojione do
 
     out = File.join(Rails.root, 'fixtures', 'emojis', 'digests.json')
     File.open(out, 'w') do |handle|
-      handle.write(JSON.pretty_generate(resultant_emoji_map))
+      handle.write(Gitlab::Json.pretty_generate(resultant_emoji_map))
     end
   end
 

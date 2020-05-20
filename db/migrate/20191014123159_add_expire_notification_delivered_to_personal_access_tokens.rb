@@ -8,7 +8,7 @@ class AddExpireNotificationDeliveredToPersonalAccessTokens < ActiveRecord::Migra
   disable_ddl_transaction!
 
   def up
-    add_column_with_default :personal_access_tokens, :expire_notification_delivered, :boolean, default: false
+    add_column_with_default :personal_access_tokens, :expire_notification_delivered, :boolean, default: false # rubocop:disable Migration/AddColumnWithDefault
   end
 
   def down

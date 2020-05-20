@@ -11,6 +11,7 @@ module API
     SUDO_PARAM = :sudo
     API_USER_ENV = 'gitlab.api.user'
     API_EXCEPTION_ENV = 'gitlab.api.exception'
+    API_RESPONSE_STATUS_CODE = 'gitlab.api.response_status_code'
 
     def declared_params(options = {})
       options = { include_parent_namespaces: false }.merge(options)
@@ -175,6 +176,14 @@ module API
         user_project.repository.find_branch(branch_name) || not_found!('Branch')
       else
         render_api_error!('The branch refname is invalid', 400)
+      end
+    end
+
+    def find_tag!(tag_name)
+      if Gitlab::GitRefValidator.validate(tag_name)
+        user_project.repository.find_tag(tag_name) || not_found!('Tag')
+      else
+        render_api_error!('The tag refname is invalid', 400)
       end
     end
 
@@ -416,6 +425,11 @@ module API
     end
 
     def render_api_error!(message, status)
+      # grape-logging doesn't pass the status code, so this is a
+      # workaround for getting that information in the loggers:
+      # https://github.com/aserafin/grape_logging/issues/71
+      env[API_RESPONSE_STATUS_CODE] = Rack::Utils.status_code(status)
+
       error!({ 'message' => message }, status, header)
     end
 
@@ -595,8 +609,8 @@ module API
       header(*Gitlab::Workhorse.send_git_archive(repository, **kwargs))
     end
 
-    def send_artifacts_entry(build, entry)
-      header(*Gitlab::Workhorse.send_artifacts_entry(build, entry))
+    def send_artifacts_entry(file, entry)
+      header(*Gitlab::Workhorse.send_artifacts_entry(file, entry))
     end
 
     # The Grape Error Middleware only has access to `env` but not `params` nor

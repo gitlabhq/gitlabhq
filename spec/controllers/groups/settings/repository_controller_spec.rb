@@ -15,7 +15,7 @@ describe Groups::Settings::RepositoryController do
   describe 'POST create_deploy_token' do
     context 'when ajax_new_deploy_token feature flag is disabled for the project' do
       before do
-        stub_feature_flags(ajax_new_deploy_token: { enabled: false, thing: group })
+        stub_feature_flags(ajax_new_deploy_token: false)
         entity.add_owner(user)
       end
 
@@ -56,7 +56,7 @@ describe Groups::Settings::RepositoryController do
             'id' => be_a(Integer),
             'name' => deploy_token_params[:name],
             'username' => deploy_token_params[:username],
-            'expires_at' => Time.parse(deploy_token_params[:expires_at]),
+            'expires_at' => Time.zone.parse(deploy_token_params[:expires_at]),
             'token' => be_a(String),
             'scopes' => deploy_token_params.inject([]) do |scopes, kv|
               key, value = kv

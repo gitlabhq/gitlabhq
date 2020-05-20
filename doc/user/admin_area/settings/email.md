@@ -12,7 +12,7 @@ The logo in the header of some emails can be customized, see the [logo customiza
 
 ## Custom additional text **(PREMIUM ONLY)**
 
-> [Introduced][ee-5031] in [GitLab Premium][eep] 10.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/5031) in [GitLab Premium](https://about.gitlab.com/pricing/) 10.7.
 
 The additional text will appear at the bottom of any email and can be used for
 legal/auditing/compliance reasons.
@@ -21,9 +21,6 @@ legal/auditing/compliance reasons.
 1. Expand the **Email** section.
 1. Enter your text in the **Additional text** field.
 1. Click **Save**.
-
-[ee-5031]: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/5031
-[eep]: https://about.gitlab.com/pricing/
 
 ## Custom hostname for private commit emails
 

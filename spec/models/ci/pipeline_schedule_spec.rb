@@ -17,14 +17,18 @@ describe Ci::PipelineSchedule do
   it { is_expected.to respond_to(:description) }
   it { is_expected.to respond_to(:next_run_at) }
 
+  it_behaves_like 'includes Limitable concern' do
+    subject { build(:ci_pipeline_schedule) }
+  end
+
   describe 'validations' do
-    it 'does not allow invalid cron patters' do
+    it 'does not allow invalid cron patterns' do
       pipeline_schedule = build(:ci_pipeline_schedule, cron: '0 0 0 * *')
 
       expect(pipeline_schedule).not_to be_valid
     end
 
-    it 'does not allow invalid cron patters' do
+    it 'does not allow invalid cron patterns' do
       pipeline_schedule = build(:ci_pipeline_schedule, cron_timezone: 'invalid')
 
       expect(pipeline_schedule).not_to be_valid

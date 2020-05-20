@@ -221,4 +221,67 @@ describe('IDE services', () => {
       });
     });
   });
+
+  describe('getFiles', () => {
+    let mock;
+    let relativeUrlRoot;
+    const TEST_RELATIVE_URL_ROOT = 'blah-blah';
+
+    beforeEach(() => {
+      jest.spyOn(axios, 'get');
+      relativeUrlRoot = gon.relative_url_root;
+      gon.relative_url_root = TEST_RELATIVE_URL_ROOT;
+
+      mock = new MockAdapter(axios);
+
+      mock
+        .onGet(`${TEST_RELATIVE_URL_ROOT}/${TEST_PROJECT_ID}/-/files/${TEST_COMMIT_SHA}`)
+        .reply(200, [TEST_FILE_PATH]);
+    });
+
+    afterEach(() => {
+      mock.restore();
+      gon.relative_url_root = relativeUrlRoot;
+    });
+
+    it('initates the api call based on the passed path and commit hash', () => {
+      return services.getFiles(TEST_PROJECT_ID, TEST_COMMIT_SHA).then(({ data }) => {
+        expect(axios.get).toHaveBeenCalledWith(
+          `${gon.relative_url_root}/${TEST_PROJECT_ID}/-/files/${TEST_COMMIT_SHA}`,
+          expect.any(Object),
+        );
+        expect(data).toEqual([TEST_FILE_PATH]);
+      });
+    });
+  });
+
+  describe('pingUsage', () => {
+    let mock;
+    let relativeUrlRoot;
+    const TEST_RELATIVE_URL_ROOT = 'blah-blah';
+
+    beforeEach(() => {
+      jest.spyOn(axios, 'post');
+      relativeUrlRoot = gon.relative_url_root;
+      gon.relative_url_root = TEST_RELATIVE_URL_ROOT;
+
+      mock = new MockAdapter(axios);
+    });
+
+    afterEach(() => {
+      mock.restore();
+      gon.relative_url_root = relativeUrlRoot;
+    });
+
+    it('posts to usage endpoint', () => {
+      const TEST_PROJECT_PATH = 'foo/bar';
+      const axiosURL = `${TEST_RELATIVE_URL_ROOT}/${TEST_PROJECT_PATH}/usage_ping/web_ide_pipelines_count`;
+
+      mock.onPost(axiosURL).reply(200);
+
+      return services.pingUsage(TEST_PROJECT_PATH).then(() => {
+        expect(axios.post).toHaveBeenCalledWith(axiosURL);
+      });
+    });
+  });
 });

@@ -7,7 +7,7 @@ class AddCiResourceGroups < ActiveRecord::Migration[5.2]
     create_table :ci_resource_groups do |t|
       t.timestamps_with_timezone
       t.bigint :project_id, null: false
-      t.string :key, null: false, limit: 255
+      t.string :key, null: false, limit: 255 # rubocop:disable Migration/PreventStrings
       t.index %i[project_id key], unique: true
     end
 

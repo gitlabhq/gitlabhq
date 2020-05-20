@@ -26,7 +26,13 @@ describe UserPolicy do
     context "when an admin user tries to destroy a regular user" do
       let(:current_user) { create(:user, :admin) }
 
-      it { is_expected.to be_allowed(ability) }
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it { is_expected.to be_allowed(ability) }
+      end
+
+      context 'when admin mode is disabled' do
+        it { is_expected.to be_disallowed(ability) }
+      end
     end
 
     context "when an admin user tries to destroy a ghost user" do

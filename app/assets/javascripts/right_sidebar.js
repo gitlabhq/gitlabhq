@@ -1,7 +1,6 @@
 /* eslint-disable func-names, consistent-return, no-param-reassign */
 
 import $ from 'jquery';
-import _ from 'underscore';
 import Cookies from 'js-cookie';
 import flash from './flash';
 import axios from './lib/utils/axios_utils';
@@ -142,7 +141,7 @@ Sidebar.prototype.sidebarCollapseClicked = function(e) {
 };
 
 Sidebar.prototype.openDropdown = function(blockOrName) {
-  const $block = _.isString(blockOrName) ? this.getBlock(blockOrName) : blockOrName;
+  const $block = typeof blockOrName === 'string' ? this.getBlock(blockOrName) : blockOrName;
   if (!this.isOpen()) {
     this.setCollapseAfterUpdate($block);
     this.toggleSidebar('open');

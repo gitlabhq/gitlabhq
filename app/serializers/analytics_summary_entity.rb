@@ -8,8 +8,6 @@ class AnalyticsSummaryEntity < Grape::Entity
   private
 
   def value
-    return object.value if object.value.is_a? String
-
-    object.value&.nonzero? ? object.value.to_s : '-'
+    object.value.to_s
   end
 end

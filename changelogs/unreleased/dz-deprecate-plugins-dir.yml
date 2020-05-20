@@ -1,0 +1,5 @@
+---
+title: Deprecate /plugins directory
+merge_request: 29678
+author:
+type: deprecated

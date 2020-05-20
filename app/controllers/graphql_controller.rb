@@ -3,7 +3,12 @@
 class GraphqlController < ApplicationController
   # Unauthenticated users have access to the API for public data
   skip_before_action :authenticate_user!
-  skip_around_action :set_session_storage
+
+  # If a user is using their session to access GraphQL, we need to have session
+  # storage, since the admin-mode check is session wide.
+  # We can't enable this for anonymous users because that would cause users using
+  # enforced SSO from using an auth token to access the API.
+  skip_around_action :set_session_storage, unless: :current_user
 
   # Allow missing CSRF tokens, this would mean that if a CSRF is invalid or missing,
   # the user won't be authenticated but can proceed as an anonymous user.
@@ -14,6 +19,7 @@ class GraphqlController < ApplicationController
 
   before_action :authorize_access_api!
   before_action(only: [:execute]) { authenticate_sessionless_user!(:api) }
+  before_action :set_user_last_activity
 
   # Since we deactivate authentication from the main ApplicationController and
   # defer it to :authorize_access_api!, we need to override the bypass session
@@ -41,6 +47,12 @@ class GraphqlController < ApplicationController
   end
 
   private
+
+  def set_user_last_activity
+    return unless current_user
+
+    Users::ActivityService.new(current_user).execute
+  end
 
   def execute_multiplex
     GitlabSchema.multiplex(multiplex_queries, context: context)

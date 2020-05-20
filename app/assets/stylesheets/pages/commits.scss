@@ -208,6 +208,18 @@
   }
 }
 
+.commit-nav-buttons {
+  a.btn,
+  button {
+    // See: https://gitlab.com/gitlab-org/gitlab-ui/-/issues/730
+    &:last-child > svg {
+      margin-left: 0.25rem;
+      margin-right: 0;
+    }
+  }
+}
+
+
 .clipboard-group,
 .commit-sha-group {
   display: inline-flex;

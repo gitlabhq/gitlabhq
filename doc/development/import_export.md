@@ -331,3 +331,78 @@ module Projects
            wiki_repo_saver, lfs_saver].all?(&:save)
       end
 ```
+
+## Test fixtures
+
+Fixtures used in Import/Export specs live in `spec/fixtures/lib/gitlab/import_export`. There are both Project and Group fixtures.
+
+There are two versions of each of these fixtures:
+
+- A human readable single JSON file with all objects, called either `project.json` or `group.json`.
+- A folder named `tree`, containing a tree of files in `ndjson` format. **Please do not edit files under this folder manually unless strictly necessary.**
+
+The tools to generate the NDJSON tree from the human-readable JSON files live in the [`gitlab-org/memory-team/team-tools`](https://gitlab.com/gitlab-org/memory-team/team-tools/-/blob/master/import-export/) project.
+
+### Project
+
+**Please use `legacy-project-json-to-ndjson.sh` to generate the NDJSON tree.**
+
+The NDJSON tree will look like this:
+
+```shell
+tree
+├── project
+│   ├── auto_devops.ndjson
+│   ├── boards.ndjson
+│   ├── ci_cd_settings.ndjson
+│   ├── ci_pipelines.ndjson
+│   ├── container_expiration_policy.ndjson
+│   ├── custom_attributes.ndjson
+│   ├── error_tracking_setting.ndjson
+│   ├── external_pull_requests.ndjson
+│   ├── issues.ndjson
+│   ├── labels.ndjson
+│   ├── merge_requests.ndjson
+│   ├── milestones.ndjson
+│   ├── pipeline_schedules.ndjson
+│   ├── project_badges.ndjson
+│   ├── project_feature.ndjson
+│   ├── project_members.ndjson
+│   ├── protected_branches.ndjson
+│   ├── protected_tags.ndjson
+│   ├── releases.ndjson
+│   ├── services.ndjson
+│   ├── snippets.ndjson
+│   └── triggers.ndjson
+└── project.json
+```
+
+### Group
+
+**Please use `legacy-group-json-to-ndjson.rb` to generate the NDJSON tree.**
+
+The NDJSON tree will look like this:
+
+```shell
+tree
+└── groups
+    ├── 4351
+    │   ├── badges.ndjson
+    │   ├── boards.ndjson
+    │   ├── epics.ndjson
+    │   ├── labels.ndjson
+    │   ├── members.ndjson
+    │   └── milestones.ndjson
+    ├── 4352
+    │   ├── badges.ndjson
+    │   ├── boards.ndjson
+    │   ├── epics.ndjson
+    │   ├── labels.ndjson
+    │   ├── members.ndjson
+    │   └── milestones.ndjson
+    ├── _all.ndjson
+    ├── 4351.json
+    └── 4352.json
+```
+
+CAUTION: **Caution:** When updating these fixtures, please ensure you update both `json` files and `tree` folder, as the tests apply to both.

@@ -66,7 +66,7 @@ describe Grafana::ProxyService do
     context 'with caching', :use_clean_rails_memory_store_caching do
       context 'when value not present in cache' do
         it 'returns nil' do
-          expect(ReactiveCachingWorker)
+          expect(ExternalServiceReactiveCachingWorker)
             .to receive(:perform_async)
             .with(service.class, service.id, *cache_params)
 

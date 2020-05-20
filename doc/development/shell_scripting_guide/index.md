@@ -80,18 +80,26 @@ We format shell scripts according to the [Google Shell Style Guide](https://goog
 so the following `shfmt` invocation should be applied to the project's script files:
 
 ```shell
-shfmt -i 2 -ci scripts/**/*.sh
+shfmt -i 2 -ci -w scripts/**/*.sh
+```
+
+In addition to the [Linting](#linting) GitLab CI/CD job, all projects with shell scripts should also
+use this job:
+
+```yaml
+shfmt:
+  image: mvdan/shfmt:v3.1.0-alpine
+  stage: test
+  before_script:
+    - shfmt -version
+  script:
+    - shfmt -i 2 -ci -d scripts # path to your shell scripts
 ```
 
 TIP: **Tip:**
 By default, shfmt will use the [shell detection](https://github.com/mvdan/sh#shfmt) similar to one of ShellCheck
 and ignore files starting with a period. To override this, use `-ln` flag to specify the shell dialect:
 `-ln posix` or `-ln bash`.
-
-NOTE: **Note:**
-Currently, the `shfmt` tool [is not shipped](https://github.com/mvdan/sh/issues/68) as a Docker image containing
-a Linux shell. This makes it impossible to use the [official Docker image](https://hub.docker.com/r/mvdan/shfmt)
-in GitLab Runner. This [may change](https://github.com/mvdan/sh/issues/68#issuecomment-507721371) in future.
 
 ## Testing
 

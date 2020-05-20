@@ -7,6 +7,7 @@ class CreateJiraImportsTable < ActiveRecord::Migration[6.0]
 
   disable_ddl_transaction!
 
+  # rubocop:disable Migration/PreventStrings
   def change
     create_table :jira_imports do |t|
       t.integer :project_id, null: false, limit: 8
@@ -26,4 +27,5 @@ class CreateJiraImportsTable < ActiveRecord::Migration[6.0]
 
     add_index :jira_imports, [:project_id, :jira_project_key], name: 'index_jira_imports_on_project_id_and_jira_project_key'
   end
+  # rubocop:enable Migration/PreventStrings
 end

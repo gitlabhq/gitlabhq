@@ -2,4 +2,8 @@
 
 class PersonalSnippet < Snippet
   include WithUploads
+
+  def skip_project_check?
+    true
+  end
 end

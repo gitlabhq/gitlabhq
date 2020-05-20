@@ -1,0 +1,5 @@
+---
+title: Fix templates API endpoint when project name has dots
+merge_request: 31758
+author:
+type: fixed

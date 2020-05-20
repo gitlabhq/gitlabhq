@@ -11,20 +11,20 @@ const getElements = () => Array.from(document.getElementsByClassName('js-render-
 
 describe('Render metrics for Gitlab Flavoured Markdown', () => {
   it('does nothing when no elements are found', () => {
-    renderMetrics([]);
-
-    expect(mockEmbedGroup).not.toHaveBeenCalled();
+    return renderMetrics([]).then(() => {
+      expect(mockEmbedGroup).not.toHaveBeenCalled();
+    });
   });
 
   it('renders a vue component when elements are found', () => {
     document.body.innerHTML = `<div class="js-render-metrics" data-dashboard-url="${TEST_HOST}"></div>`;
 
-    renderMetrics(getElements());
-
-    expect(mockEmbedGroup).toHaveBeenCalledTimes(1);
-    expect(mockEmbedGroup).toHaveBeenCalledWith(
-      expect.objectContaining({ propsData: { urls: [`${TEST_HOST}`] } }),
-    );
+    return renderMetrics(getElements()).then(() => {
+      expect(mockEmbedGroup).toHaveBeenCalledTimes(1);
+      expect(mockEmbedGroup).toHaveBeenCalledWith(
+        expect.objectContaining({ propsData: { urls: [`${TEST_HOST}`] } }),
+      );
+    });
   });
 
   it('takes sibling metrics and groups them under a shared parent', () => {
@@ -36,14 +36,14 @@ describe('Render metrics for Gitlab Flavoured Markdown', () => {
       <div class="js-render-metrics" data-dashboard-url="${TEST_HOST}/3"></div>
     `;
 
-    renderMetrics(getElements());
-
-    expect(mockEmbedGroup).toHaveBeenCalledTimes(2);
-    expect(mockEmbedGroup).toHaveBeenCalledWith(
-      expect.objectContaining({ propsData: { urls: [`${TEST_HOST}/1`, `${TEST_HOST}/2`] } }),
-    );
-    expect(mockEmbedGroup).toHaveBeenCalledWith(
-      expect.objectContaining({ propsData: { urls: [`${TEST_HOST}/3`] } }),
-    );
+    return renderMetrics(getElements()).then(() => {
+      expect(mockEmbedGroup).toHaveBeenCalledTimes(2);
+      expect(mockEmbedGroup).toHaveBeenCalledWith(
+        expect.objectContaining({ propsData: { urls: [`${TEST_HOST}/1`, `${TEST_HOST}/2`] } }),
+      );
+      expect(mockEmbedGroup).toHaveBeenCalledWith(
+        expect.objectContaining({ propsData: { urls: [`${TEST_HOST}/3`] } }),
+      );
+    });
   });
 });

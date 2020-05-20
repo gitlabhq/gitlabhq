@@ -48,7 +48,6 @@ module Gitlab
       # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
       def worker_queues(rails_path = Rails.root.to_s)
-        # https://gitlab.com/gitlab-org/gitlab/issues/199230
         worker_names(all_queues(rails_path))
       end
 
@@ -75,7 +74,7 @@ module Gitlab
       private
 
       def worker_names(workers)
-        workers.map { |queue| queue.is_a?(Hash) ? queue[:name] : queue }
+        workers.map { |queue| queue[:name] }
       end
 
       def query_string_to_lambda(query_string)

@@ -7,7 +7,7 @@ import PlaceholderNote from '~/vue_shared/components/notes/placeholder_note.vue'
 import PlaceholderSystemNote from '~/vue_shared/components/notes/placeholder_system_note.vue';
 import SystemNote from '~/vue_shared/components/notes/system_note.vue';
 import createStore from '~/notes/stores';
-import { noteableDataMock, discussionMock, notesDataMock } from '../../notes/mock_data';
+import { noteableDataMock, discussionMock, notesDataMock } from '../mock_data';
 
 describe('DiscussionNotes', () => {
   let wrapper;

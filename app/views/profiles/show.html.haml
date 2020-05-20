@@ -20,6 +20,9 @@
             = s_("Profiles|You can upload your avatar here or change it at %{gravatar_link}").html_safe % { gravatar_link: gravatar_link }
           - else
             = s_("Profiles|You can upload your avatar here")
+        - if current_appearance&.profile_image_guidelines?
+          .md
+            = brand_profile_image_guidelines
     .col-lg-8
       .clearfix.avatar-image.append-bottom-default
         = link_to avatar_icon_for_user(@user, 400), target: '_blank', rel: 'noopener noreferrer' do
@@ -101,7 +104,7 @@
       - else
         = f.text_field :location, label: s_('Profiles|Location'), class: 'input-lg', placeholder: s_("Profiles|City, country")
       = f.text_field :job_title, class: 'input-md'
-      = f.text_field :organization, readonly: @user.gitlab_employee?, label: s_('Profiles|Organization'), class: 'input-md', help: s_("Profiles|Who you represent or work for")
+      = f.text_field :organization, label: s_('Profiles|Organization'), class: 'input-md', help: s_("Profiles|Who you represent or work for")
       = f.text_area :bio, label: s_('Profiles|Bio'), rows: 4, maxlength: 250, help: s_("Profiles|Tell us about yourself in fewer than 250 characters")
       %hr
       %h5= s_("Private profile")

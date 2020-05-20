@@ -12,6 +12,7 @@ See also:
 
 - [Project import/export API](../../../api/project_import_export.md)
 - [Project import/export administration Rake tasks](../../../administration/raketasks/project_import_export.md) **(CORE ONLY)**
+- [Group import/export](../../group/settings/import_export.md)
 - [Group import/export API](../../../api/group_import_export.md)
 
 To set up a project import/export:
@@ -24,6 +25,8 @@ To set up a project import/export:
 
 Note the following:
 
+- Imports from a newer version of GitLab are not supported.
+  The Importing GitLab version must be greater than or equal to the Exporting GitLab version.
 - Imports will fail unless the import and export GitLab instances are
   compatible as described in the [Version history](#version-history).
 - Exports are stored in a temporary [shared directory](../../../development/shared_files.md)
@@ -41,11 +44,24 @@ Note the following:
 
 ## Version history
 
-The following table lists updates to Import/Export:
+Starting with GitLab 13.0, GitLab can import bundles that were exported from a different GitLab deployment.
+This ability is limited to two previous GitLab [minor](../../../policy/maintenance.md#versioning)
+releases, which is similar to our process for [Security Releases](../../../policy/maintenance.md#security-releases).
+
+For example:
+
+| Current version | Can import bundles exported from |
+|-----------------|----------------------------------|
+| 13.0            | 13.0, 12.10, 12.9                |
+| 13.1            | 13.1, 13.0, 12.10                |
+
+### 12.x
+
+Prior to 13.0 this was a defined compatibility table:
 
 | Exporting GitLab version   | Importing GitLab version   |
 | -------------------------- | -------------------------- |
-| 11.7 to current            | 11.7 to current            |
+| 11.7 to 13.0               | 11.7 to 13.0               |
 | 11.1 to 11.6               | 11.1 to 11.6               |
 | 10.8 to 11.0               | 10.8 to 11.0               |
 | 10.4 to 10.7               | 10.4 to 10.7               |
@@ -65,6 +81,13 @@ Projects can be exported and imported only between versions of GitLab with match
 
 For example, 8.10.3 and 8.11 have the same Import/Export version (0.1.3)
 and the exports between them will be compatible.
+
+## Between CE and EE
+
+You can export projects from the [Community Edition to the Enterprise Edition](https://about.gitlab.com/install/ce-or-ee/) and vice versa.
+This assumes [version history](#version-history) requirements are met.
+
+If you're exporting a project from the Enterprise Edition to the Community Edition, you may lose data that is retained only in the Enterprise Edition. For more information, see [downgrading from EE to CE](../../../README.md).
 
 ## Exported contents
 

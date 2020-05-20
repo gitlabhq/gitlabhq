@@ -6,6 +6,7 @@ class CreateExternalPullRequests < ActiveRecord::Migration[5.2]
   DOWNTIME = false
   INDEX = 'index_external_pull_requests_on_project_and_branches'
 
+  # rubocop:disable Migration/PreventStrings
   def change
     create_table :external_pull_requests do |t|
       t.timestamps_with_timezone null: false
@@ -22,4 +23,5 @@ class CreateExternalPullRequests < ActiveRecord::Migration[5.2]
       t.index [:project_id, :source_branch, :target_branch], unique: true, name: INDEX
     end
   end
+  # rubocop:enable Migration/PreventStrings
 end

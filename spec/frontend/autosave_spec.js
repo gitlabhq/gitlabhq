@@ -10,6 +10,8 @@ describe('Autosave', () => {
   const field = $('<textarea></textarea>');
   const key = 'key';
   const fallbackKey = 'fallbackKey';
+  const lockVersionKey = 'lockVersionKey';
+  const lockVersion = 1;
 
   describe('class constructor', () => {
     beforeEach(() => {
@@ -26,6 +28,13 @@ describe('Autosave', () => {
 
     it('should set .isLocalStorageAvailable if fallbackKey is passed', () => {
       autosave = new Autosave(field, key, fallbackKey);
+
+      expect(AccessorUtilities.isLocalStorageAccessSafe).toHaveBeenCalled();
+      expect(autosave.isLocalStorageAvailable).toBe(true);
+    });
+
+    it('should set .isLocalStorageAvailable if lockVersion is passed', () => {
+      autosave = new Autosave(field, key, null, lockVersion);
 
       expect(AccessorUtilities.isLocalStorageAccessSafe).toHaveBeenCalled();
       expect(autosave.isLocalStorageAvailable).toBe(true);
@@ -96,6 +105,40 @@ describe('Autosave', () => {
     });
   });
 
+  describe('getSavedLockVersion', () => {
+    beforeEach(() => {
+      autosave = {
+        field,
+        key,
+        lockVersionKey,
+      };
+    });
+
+    describe('if .isLocalStorageAvailable is `false`', () => {
+      beforeEach(() => {
+        autosave.isLocalStorageAvailable = false;
+
+        Autosave.prototype.getSavedLockVersion.call(autosave);
+      });
+
+      it('should not call .getItem', () => {
+        expect(window.localStorage.getItem).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('if .isLocalStorageAvailable is `true`', () => {
+      beforeEach(() => {
+        autosave.isLocalStorageAvailable = true;
+      });
+
+      it('should call .getItem', () => {
+        Autosave.prototype.getSavedLockVersion.call(autosave);
+
+        expect(window.localStorage.getItem).toHaveBeenCalledWith(lockVersionKey);
+      });
+    });
+  });
+
   describe('save', () => {
     beforeEach(() => {
       autosave = { reset: jest.fn() };
@@ -128,10 +171,51 @@ describe('Autosave', () => {
     });
   });
 
+  describe('save with lockVersion', () => {
+    beforeEach(() => {
+      autosave = {
+        field,
+        key,
+        lockVersionKey,
+        lockVersion,
+        isLocalStorageAvailable: true,
+      };
+    });
+
+    describe('lockVersion is valid', () => {
+      it('should call .setItem', () => {
+        Autosave.prototype.save.call(autosave);
+        expect(window.localStorage.setItem).toHaveBeenCalledWith(lockVersionKey, lockVersion);
+      });
+
+      it('should call .setItem when version is 0', () => {
+        autosave.lockVersion = 0;
+        Autosave.prototype.save.call(autosave);
+        expect(window.localStorage.setItem).toHaveBeenCalledWith(
+          lockVersionKey,
+          autosave.lockVersion,
+        );
+      });
+    });
+
+    describe('lockVersion is invalid', () => {
+      it('should not call .setItem with lockVersion', () => {
+        delete autosave.lockVersion;
+        Autosave.prototype.save.call(autosave);
+
+        expect(window.localStorage.setItem).not.toHaveBeenCalledWith(
+          lockVersionKey,
+          autosave.lockVersion,
+        );
+      });
+    });
+  });
+
   describe('reset', () => {
     beforeEach(() => {
       autosave = {
         key,
+        lockVersionKey,
       };
     });
 
@@ -156,6 +240,7 @@ describe('Autosave', () => {
 
       it('should call .removeItem', () => {
         expect(window.localStorage.removeItem).toHaveBeenCalledWith(key);
+        expect(window.localStorage.removeItem).toHaveBeenCalledWith(lockVersionKey);
       });
     });
   });
@@ -166,8 +251,8 @@ describe('Autosave', () => {
         field,
         key,
         fallbackKey,
+        isLocalStorageAvailable: true,
       };
-      autosave.isLocalStorageAvailable = true;
     });
 
     it('should call .getItem', () => {
@@ -185,7 +270,8 @@ describe('Autosave', () => {
     it('should call .removeItem for key and fallbackKey', () => {
       Autosave.prototype.reset.call(autosave);
 
-      expect(window.localStorage.removeItem).toHaveBeenCalledTimes(2);
+      expect(window.localStorage.removeItem).toHaveBeenCalledWith(fallbackKey);
+      expect(window.localStorage.removeItem).toHaveBeenCalledWith(key);
     });
   });
 });

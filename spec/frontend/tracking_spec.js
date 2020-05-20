@@ -4,6 +4,7 @@ import Tracking, { initUserTracking } from '~/tracking';
 describe('Tracking', () => {
   let snowplowSpy;
   let bindDocumentSpy;
+  let trackLoadEventsSpy;
 
   beforeEach(() => {
     window.snowplow = window.snowplow || (() => {});
@@ -18,6 +19,7 @@ describe('Tracking', () => {
   describe('initUserTracking', () => {
     beforeEach(() => {
       bindDocumentSpy = jest.spyOn(Tracking, 'bindDocument').mockImplementation(() => null);
+      trackLoadEventsSpy = jest.spyOn(Tracking, 'trackLoadEvents').mockImplementation(() => null);
     });
 
     it('calls through to get a new tracker with the expected options', () => {
@@ -44,10 +46,11 @@ describe('Tracking', () => {
       expect(snowplowSpy).not.toHaveBeenCalledWith('enableFormTracking');
       expect(snowplowSpy).not.toHaveBeenCalledWith('enableLinkClickTracking');
 
-      window.snowplowOptions = Object.assign({}, window.snowplowOptions, {
+      window.snowplowOptions = {
+        ...window.snowplowOptions,
         formTracking: true,
         linkClickTracking: true,
-      });
+      };
 
       initUserTracking();
       expect(snowplowSpy).toHaveBeenCalledWith('enableFormTracking');
@@ -57,6 +60,11 @@ describe('Tracking', () => {
     it('binds the document event handling', () => {
       initUserTracking();
       expect(bindDocumentSpy).toHaveBeenCalled();
+    });
+
+    it('tracks page loaded events', () => {
+      initUserTracking();
+      expect(trackLoadEventsSpy).toHaveBeenCalled();
     });
   });
 
@@ -127,6 +135,7 @@ describe('Tracking', () => {
         <input type="checkbox" data-track-event="toggle_checkbox" value="_value_" checked/>
         <input class="dropdown" data-track-event="toggle_dropdown"/>
         <div data-track-event="nested_event"><span class="nested"></span></div>
+        <input data-track-eventbogus="click_bogusinput" data-track-label="_label_" value="_value_"/>
       `);
     });
 
@@ -137,6 +146,12 @@ describe('Tracking', () => {
         label: '_label_',
         value: '_value_',
       });
+    });
+
+    it('does not bind to clicks on elements without [data-track-event]', () => {
+      trigger('[data-track-eventbogus="click_bogusinput"]');
+
+      expect(eventSpy).not.toHaveBeenCalled();
     });
 
     it('allows value override with the data-track-value attribute', () => {
@@ -175,6 +190,44 @@ describe('Tracking', () => {
       trigger('span.nested', 'click');
 
       expect(eventSpy).toHaveBeenCalledWith('_category_', 'nested_event', {});
+    });
+  });
+
+  describe('tracking page loaded events', () => {
+    let eventSpy;
+
+    beforeEach(() => {
+      eventSpy = jest.spyOn(Tracking, 'event');
+      setHTMLFixture(`
+        <input data-track-event="render" data-track-label="label1" value="_value_" data-track-property="_property_"/>
+        <span data-track-event="render" data-track-label="label2" data-track-value="_value_">
+          Something
+        </span>
+        <input data-track-event="_render_bogus_" data-track-label="label3" value="_value_" data-track-property="_property_"/>
+      `);
+      Tracking.trackLoadEvents('_category_'); // only happens once
+    });
+
+    it('sends tracking events when [data-track-event="render"] is on an element', () => {
+      expect(eventSpy.mock.calls).toEqual([
+        [
+          '_category_',
+          'render',
+          {
+            label: 'label1',
+            value: '_value_',
+            property: '_property_',
+          },
+        ],
+        [
+          '_category_',
+          'render',
+          {
+            label: 'label2',
+            value: '_value_',
+          },
+        ],
+      ]);
     });
   });
 

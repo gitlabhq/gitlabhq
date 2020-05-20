@@ -588,7 +588,8 @@ $note-form-margin-left: 72px;
   a {
     color: inherit;
 
-    &:hover {
+    &:hover,
+    &.hover {
       color: $blue-600;
     }
 
@@ -604,6 +605,21 @@ $note-form-margin-left: 72px;
 
   .author-link {
     color: $gl-text-color;
+  }
+
+  // Prevent flickering of link when hovering between `author-name-link` and `.author-username-link`
+  .author-name-link + .author-username .author-username-link {
+    position: relative;
+
+    &::before {
+      content: '';
+      position: absolute;
+      right: 100%;
+      width: 0.25rem;
+      height: 100%;
+      top: 0;
+      bottom: 0;
+    }
   }
 }
 
@@ -672,8 +688,7 @@ $note-form-margin-left: 72px;
     text-decoration: underline;
   }
 
-  .gl-label-link:hover,
-  .gl-label-icon:hover {
+  .gl-label-link:hover {
     text-decoration: none;
     color: inherit;
 
@@ -892,11 +907,10 @@ $note-form-margin-left: 72px;
   border-right: 0;
 
   .line-resolve-btn {
-    margin-right: 5px;
     color: $gray-700;
 
     svg {
-      vertical-align: middle;
+      vertical-align: text-top;
     }
   }
 

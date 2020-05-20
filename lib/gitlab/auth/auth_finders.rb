@@ -18,8 +18,6 @@ module Gitlab
     end
 
     module AuthFinders
-      prepend_if_ee('::EE::Gitlab::Auth::AuthFinders') # rubocop: disable Cop/InjectEnterpriseEditionModule
-
       include Gitlab::Utils::StrongMemoize
       include ActionController::HttpAuthentication::Basic
 
@@ -27,6 +25,7 @@ module Gitlab
       PRIVATE_TOKEN_PARAM = :private_token
       JOB_TOKEN_HEADER = 'HTTP_JOB_TOKEN'.freeze
       JOB_TOKEN_PARAM = :job_token
+      DEPLOY_TOKEN_HEADER = 'HTTP_DEPLOY_TOKEN'.freeze
       RUNNER_TOKEN_PARAM = :token
       RUNNER_JOB_TOKEN_PARAM = :token
 
@@ -103,6 +102,25 @@ module Gitlab
         access_token.user || raise(UnauthorizedError)
       end
 
+      # This returns a deploy token, not a user since a deploy token does not
+      # belong to a user.
+      #
+      # deploy tokens are accepted with deploy token headers and basic auth headers
+      def deploy_token_from_request
+        return unless route_authentication_setting[:deploy_token_allowed]
+
+        token = current_request.env[DEPLOY_TOKEN_HEADER].presence || parsed_oauth_token
+
+        if has_basic_credentials?(current_request)
+          _, token = user_name_and_password(current_request)
+        end
+
+        deploy_token = DeployToken.active.find_by_token(token)
+        @current_authenticated_deploy_token = deploy_token # rubocop:disable Gitlab/ModuleWithInstanceVariables
+
+        deploy_token
+      end
+
       def find_runner_from_token
         return unless api_request?
 
@@ -113,6 +131,9 @@ module Gitlab
       end
 
       def validate_access_token!(scopes: [])
+        # return early if we've already authenticated via a deploy token
+        return if @current_authenticated_deploy_token.present? # rubocop:disable Gitlab/ModuleWithInstanceVariables
+
         return unless access_token
 
         case AccessTokenValidationService.new(access_token, request: request).validate(scopes: scopes)
@@ -249,3 +270,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Auth::AuthFinders.prepend_if_ee('::EE::Gitlab::Auth::AuthFinders')

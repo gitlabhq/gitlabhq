@@ -46,7 +46,7 @@ module Clusters
       end
 
       def timed_out?
-        Time.now.utc - app.updated_at.to_time.utc > ::ClusterWaitForAppUpdateWorker::TIMEOUT
+        Time.current.utc - app.updated_at.to_time.utc > ::ClusterWaitForAppUpdateWorker::TIMEOUT
       end
 
       def remove_pod

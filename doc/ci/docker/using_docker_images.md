@@ -26,7 +26,20 @@ test them on a dedicated CI server.
 To use GitLab Runner with Docker you need to [register a new Runner](https://docs.gitlab.com/runner/register/)
 to use the `docker` executor.
 
-A one-line example can be seen below:
+An example can be seen below. First we set up a temporary template to supply the services:
+
+```shell
+cat > /tmp/test-config.template.toml << EOF
+[[runners]]
+[runners.docker]
+[[runners.docker.services]]
+name = "postgres:latest"
+[[runners.docker.services]]
+name = "mysql:latest"
+EOF
+```
+
+Then we register the runner using the template that was just created:
 
 ```shell
 sudo gitlab-runner register \
@@ -34,9 +47,8 @@ sudo gitlab-runner register \
   --registration-token "PROJECT_REGISTRATION_TOKEN" \
   --description "docker-ruby:2.6" \
   --executor "docker" \
-  --docker-image ruby:2.6 \
-  --docker-services postgres:latest \
-  --docker-services mysql:latest
+  --template-config /tmp/test-config.template.toml \
+  --docker-image ruby:2.6
 ```
 
 The registered runner will use the `ruby:2.6` Docker image and will run two
@@ -197,7 +209,7 @@ default:
   image: ruby:2.6
 
   services:
-    - postgres:9.3
+    - postgres:11.7
 
   before_script:
     - bundle install
@@ -206,6 +218,12 @@ test:
   script:
   - bundle exec rake spec
 ```
+
+The image name must be in one of the following formats:
+
+- `image: <image-name>` (Same as using `<image-name>` with the `latest` tag)
+- `image: <image-name>:<tag>`
+- `image: <image-name>@<digest>`
 
 It is also possible to define different images and services per job:
 
@@ -217,14 +235,14 @@ default:
 test:2.6:
   image: ruby:2.6
   services:
-  - postgres:9.3
+  - postgres:11.7
   script:
   - bundle exec rake spec
 
 test:2.7:
   image: ruby:2.7
   services:
-  - postgres:9.4
+  - postgres:12.2
   script:
   - bundle exec rake spec
 ```
@@ -239,7 +257,7 @@ default:
     entrypoint: ["/bin/bash"]
 
   services:
-  - name: my-postgres:9.4
+  - name: my-postgres:11.7
     alias: db-postgres
     entrypoint: ["/usr/local/bin/db-postgres"]
     command: ["start"]
@@ -271,7 +289,7 @@ variables:
   POSTGRES_INITDB_ARGS: "--encoding=UTF8 --data-checksums"
 
 services:
-- name: postgres:9.4
+- name: postgres:11.7
   alias: db
   entrypoint: ["docker-entrypoint.sh"]
   command: ["postgres"]

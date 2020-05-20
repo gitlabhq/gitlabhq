@@ -1,6 +1,5 @@
 /* global ListIssue */
 
-import axios from '~/lib/utils/axios_utils';
 import '~/boards/models/label';
 import '~/boards/models/assignee';
 import '~/boards/models/issue';
@@ -173,25 +172,12 @@ describe('Issue model', () => {
   });
 
   describe('update', () => {
-    it('passes assignee ids when there are assignees', done => {
-      jest.spyOn(axios, 'patch').mockImplementation((url, data) => {
-        expect(data.issue.assignee_ids).toEqual([1]);
-        done();
-        return Promise.resolve();
-      });
+    it('passes update to boardsStore', () => {
+      jest.spyOn(boardsStore, 'updateIssue').mockImplementation();
 
-      issue.update('url');
-    });
+      issue.update();
 
-    it('passes assignee ids of [0] when there are no assignees', done => {
-      jest.spyOn(axios, 'patch').mockImplementation((url, data) => {
-        expect(data.issue.assignee_ids).toEqual([0]);
-        done();
-        return Promise.resolve();
-      });
-
-      issue.removeAllAssignees();
-      issue.update('url');
+      expect(boardsStore.updateIssue).toHaveBeenCalledWith(issue);
     });
   });
 });

@@ -3,6 +3,7 @@
 class CreateImportFailures < ActiveRecord::Migration[5.2]
   DOWNTIME = false
 
+  # rubocop:disable Migration/PreventStrings
   def change
     create_table :import_failures do |t|
       t.integer :relation_index
@@ -14,4 +15,5 @@ class CreateImportFailures < ActiveRecord::Migration[5.2]
       t.string :exception_message, limit: 255
     end
   end
+  # rubocop:enable Migration/PreventStrings
 end

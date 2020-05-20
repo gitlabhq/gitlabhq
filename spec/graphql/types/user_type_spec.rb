@@ -3,13 +3,13 @@
 require 'spec_helper'
 
 describe GitlabSchema.types['User'] do
-  it { expect(described_class.graphql_name).to eq('User') }
+  specify { expect(described_class.graphql_name).to eq('User') }
 
-  it { expect(described_class).to require_graphql_authorizations(:read_user) }
+  specify { expect(described_class).to require_graphql_authorizations(:read_user) }
 
   it 'has the expected fields' do
     expected_fields = %w[
-      user_permissions snippets name username avatarUrl webUrl todos
+      id user_permissions snippets name username avatarUrl webUrl todos state
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)

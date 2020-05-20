@@ -70,7 +70,7 @@ describe 'Admin > Users > Impersonation Tokens', :js do
       accept_confirm { click_on "Revoke" }
 
       expect(page).to have_selector(".settings-message")
-      expect(no_personal_access_tokens_message).to have_text("This user has no active Impersonation Tokens.")
+      expect(no_personal_access_tokens_message).to have_text("This user has no active impersonation tokens.")
     end
 
     it "removes expired tokens from 'active' section" do
@@ -79,7 +79,7 @@ describe 'Admin > Users > Impersonation Tokens', :js do
       visit admin_user_impersonation_tokens_path(user_id: user.username)
 
       expect(page).to have_selector(".settings-message")
-      expect(no_personal_access_tokens_message).to have_text("This user has no active Impersonation Tokens.")
+      expect(no_personal_access_tokens_message).to have_text("This user has no active impersonation tokens.")
     end
   end
 end

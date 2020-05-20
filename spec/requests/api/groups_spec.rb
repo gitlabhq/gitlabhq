@@ -6,15 +6,15 @@ describe API::Groups do
   include GroupAPIHelpers
   include UploadHelpers
 
-  let(:user1) { create(:user, can_create_group: false) }
-  let(:user2) { create(:user) }
-  let(:user3) { create(:user) }
-  let(:admin) { create(:admin) }
-  let!(:group1) { create(:group, avatar: File.open(uploaded_image_temp_path)) }
-  let!(:group2) { create(:group, :private) }
-  let!(:project1) { create(:project, namespace: group1) }
-  let!(:project2) { create(:project, namespace: group2) }
-  let!(:project3) { create(:project, namespace: group1, path: 'test', visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
+  let_it_be(:user1) { create(:user, can_create_group: false) }
+  let_it_be(:user2) { create(:user) }
+  let_it_be(:user3) { create(:user) }
+  let_it_be(:admin) { create(:admin) }
+  let_it_be(:group1) { create(:group, avatar: File.open(uploaded_image_temp_path)) }
+  let_it_be(:group2) { create(:group, :private) }
+  let_it_be(:project1) { create(:project, namespace: group1) }
+  let_it_be(:project2) { create(:project, namespace: group2) }
+  let_it_be(:project3) { create(:project, namespace: group1, path: 'test', visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
 
   before do
     group1.add_owner(user1)
@@ -89,6 +89,17 @@ describe API::Groups do
         expect do
           get api("/groups", admin)
         end.not_to exceed_query_limit(control)
+      end
+
+      context 'when statistics are requested' do
+        it 'does not include statistics' do
+          get api("/groups"), params: { statistics: true }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(json_response.first).not_to include 'statistics'
+        end
       end
     end
 
@@ -330,7 +341,7 @@ describe API::Groups do
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
-        expect(response_groups).to eq([group2.id, group3.id])
+        expect(response_groups).to contain_exactly(group2.id, group3.id)
       end
     end
   end
@@ -642,6 +653,33 @@ describe API::Groups do
         expect(json_response['default_branch_protection']).to eq(::Gitlab::Access::MAINTAINER_PROJECT_ACCESS)
       end
 
+      context 'updating the `default_branch_protection` attribute' do
+        subject do
+          put api("/groups/#{group1.id}", user1), params: { default_branch_protection: ::Gitlab::Access::PROTECTION_NONE }
+        end
+
+        context 'for users who have the ability to update default_branch_protection' do
+          it 'updates the attribute' do
+            subject
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['default_branch_protection']).to eq(Gitlab::Access::PROTECTION_NONE)
+          end
+        end
+
+        context 'for users who does not have the ability to update default_branch_protection`' do
+          it 'does not update the attribute' do
+            allow(Ability).to receive(:allowed?).and_call_original
+            allow(Ability).to receive(:allowed?).with(user1, :update_default_branch_protection, group1) { false }
+
+            subject
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['default_branch_protection']).not_to eq(Gitlab::Access::PROTECTION_NONE)
+          end
+        end
+      end
+
       context 'malicious group name' do
         subject { put api("/groups/#{group1.id}", user1), params: { name: "<SCRIPT>alert('DOUBLE-ATTACK!')</SCRIPT>" } }
 
@@ -889,6 +927,181 @@ describe API::Groups do
     end
   end
 
+  describe "GET /groups/:id/projects/shared" do
+    let!(:project4) do
+      create(:project, namespace: group2, path: 'test_project', visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+    end
+    let(:path) { "/groups/#{group1.id}/projects/shared" }
+
+    before do
+      create(:project_group_link, project: project2, group: group1)
+      create(:project_group_link, project: project4, group: group1)
+    end
+
+    context 'when authenticated as user' do
+      it 'returns the shared projects in the group' do
+        get api(path, user1)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response.length).to eq(2)
+        project_ids = json_response.map { |project| project['id'] }
+        expect(project_ids).to match_array([project2.id, project4.id])
+        expect(json_response.first['visibility']).to be_present
+      end
+
+      it 'returns shared projects with min access level or higher' do
+        user = create(:user)
+
+        project2.add_guest(user)
+        project4.add_reporter(user)
+
+        get api(path, user), params: { min_access_level: Gitlab::Access::REPORTER }
+
+        expect(json_response).to be_an(Array)
+        expect(json_response.length).to eq(1)
+        expect(json_response.first['id']).to eq(project4.id)
+      end
+
+      it 'returns the shared projects of the group with simple representation' do
+        get api(path, user1), params: { simple: true }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response.length).to eq(2)
+        project_ids = json_response.map { |project| project['id'] }
+        expect(project_ids).to match_array([project2.id, project4.id])
+        expect(json_response.first['visibility']).not_to be_present
+      end
+
+      it 'filters the shared projects in the group based on visibility' do
+        internal_project = create(:project, :internal, namespace: create(:group))
+
+        create(:project_group_link, project: internal_project, group: group1)
+
+        get api(path, user1), params: { visibility: 'internal' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an(Array)
+        expect(json_response.length).to eq(1)
+        expect(json_response.first['id']).to eq(internal_project.id)
+      end
+
+      it 'filters the shared projects in the group based on search params' do
+        get api(path, user1), params: { search: 'test_project' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an(Array)
+        expect(json_response.length).to eq(1)
+        expect(json_response.first['id']).to eq(project4.id)
+      end
+
+      it 'does not return the projects owned by the group' do
+        get api(path, user1)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an(Array)
+        project_ids = json_response.map { |project| project['id'] }
+
+        expect(project_ids).not_to include(project1.id)
+      end
+
+      it 'returns 404 for a non-existing group' do
+        get api("/groups/0000/projects/shared", user1)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      it 'does not return a group not attached to the user' do
+        group = create(:group, :private)
+
+        get api("/groups/#{group.id}/projects/shared", user1)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      it 'only returns shared projects to which user has access' do
+        project4.add_developer(user3)
+
+        get api(path, user3)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response.length).to eq(1)
+        expect(json_response.first['id']).to eq(project4.id)
+      end
+
+      it 'only returns the projects starred by user' do
+        user1.starred_projects = [project2]
+
+        get api(path, user1), params: { starred: true }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.length).to eq(1)
+        expect(json_response.first['id']).to eq(project2.id)
+      end
+    end
+
+    context "when authenticated as admin" do
+      subject { get api(path, admin) }
+
+      it "returns shared projects of an existing group" do
+        subject
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response.length).to eq(2)
+        project_ids = json_response.map { |project| project['id'] }
+        expect(project_ids).to match_array([project2.id, project4.id])
+      end
+
+      context 'for a non-existent group' do
+        let(:path) { "/groups/000/projects/shared" }
+
+        it 'returns 404 for a non-existent group' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      it 'avoids N+1 queries' do
+        control_count = ActiveRecord::QueryRecorder.new do
+          subject
+        end.count
+
+        create(:project_group_link, project: create(:project), group: group1)
+
+        expect do
+          subject
+        end.not_to exceed_query_limit(control_count)
+      end
+    end
+
+    context 'when using group path in URL' do
+      let(:path) { "/groups/#{group1.path}/projects/shared" }
+
+      it 'returns the right details' do
+        get api(path, admin)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response.length).to eq(2)
+        project_ids = json_response.map { |project| project['id'] }
+        expect(project_ids).to match_array([project2.id, project4.id])
+      end
+
+      it 'returns 404 for a non-existent group' do
+        get api('/groups/unknown/projects/shared', admin)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
+
   describe 'GET /groups/:id/subgroups' do
     let!(:subgroup1) { create(:group, parent: group1) }
     let!(:subgroup2) { create(:group, :private, parent: group1) }
@@ -910,6 +1123,17 @@ describe API::Groups do
         get api("/groups/#{group2.id}/subgroups")
 
         expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      context 'when statistics are requested' do
+        it 'does not include statistics' do
+          get api("/groups/#{group1.id}/subgroups"), params: { statistics: true }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(json_response.first).not_to include 'statistics'
+        end
       end
     end
 
@@ -1109,6 +1333,33 @@ describe API::Groups do
         end
 
         it { expect { subject }.not_to change { Group.count } }
+      end
+
+      context 'when creating a group with `default_branch_protection` attribute' do
+        let(:params) { attributes_for_group_api default_branch_protection: Gitlab::Access::PROTECTION_NONE }
+
+        subject { post api("/groups", user3), params: params }
+
+        context 'for users who have the ability to create a group with `default_branch_protection`' do
+          it 'creates group with the specified branch protection level' do
+            subject
+
+            expect(response).to have_gitlab_http_status(:created)
+            expect(json_response['default_branch_protection']).to eq(Gitlab::Access::PROTECTION_NONE)
+          end
+        end
+
+        context 'for users who do not have the ability to create a group with `default_branch_protection`' do
+          it 'does not create the group with the specified branch protection level' do
+            allow(Ability).to receive(:allowed?).and_call_original
+            allow(Ability).to receive(:allowed?).with(user3, :create_group_with_default_branch_protection) { false }
+
+            subject
+
+            expect(response).to have_gitlab_http_status(:created)
+            expect(json_response['default_branch_protection']).not_to eq(Gitlab::Access::PROTECTION_NONE)
+          end
+        end
       end
 
       it "does not create group, duplicate" do

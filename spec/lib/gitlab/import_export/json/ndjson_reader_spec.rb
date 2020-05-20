@@ -6,17 +6,9 @@ describe Gitlab::ImportExport::JSON::NdjsonReader do
   include ImportExport::CommonUtil
 
   let(:fixture) { 'spec/fixtures/lib/gitlab/import_export/light/tree' }
-  let(:root_tree) { JSON.parse(File.read(File.join(fixture, 'project.json'))) }
+  let(:root_tree) { Gitlab::Json.parse(File.read(File.join(fixture, 'project.json'))) }
   let(:ndjson_reader) { described_class.new(dir_path) }
   let(:importable_path) { 'project' }
-
-  before :all do
-    extract_archive('spec/fixtures/lib/gitlab/import_export/light', 'tree.tar.gz')
-  end
-
-  after :all do
-    cleanup_artifacts_from_extract_archive('light')
-  end
 
   describe '#exist?' do
     subject { ndjson_reader.exist? }
@@ -101,8 +93,8 @@ describe Gitlab::ImportExport::JSON::NdjsonReader do
 
       context 'relation file contains multiple lines' do
         let(:key) { 'custom_attributes' }
-        let(:attr_1) { JSON.parse('{"id":201,"project_id":5,"created_at":"2016-06-14T15:01:51.315Z","updated_at":"2016-06-14T15:01:51.315Z","key":"color","value":"red"}') }
-        let(:attr_2) { JSON.parse('{"id":202,"project_id":5,"created_at":"2016-06-14T15:01:51.315Z","updated_at":"2016-06-14T15:01:51.315Z","key":"size","value":"small"}') }
+        let(:attr_1) { Gitlab::Json.parse('{"id":201,"project_id":5,"created_at":"2016-06-14T15:01:51.315Z","updated_at":"2016-06-14T15:01:51.315Z","key":"color","value":"red"}') }
+        let(:attr_2) { Gitlab::Json.parse('{"id":202,"project_id":5,"created_at":"2016-06-14T15:01:51.315Z","updated_at":"2016-06-14T15:01:51.315Z","key":"size","value":"small"}') }
 
         it 'yields every relation value to the Enumerator' do
           expect(subject.to_a).to eq([[attr_1, 0], [attr_2, 1]])

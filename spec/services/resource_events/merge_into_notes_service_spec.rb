@@ -21,7 +21,7 @@ describe ResourceEvents::MergeIntoNotesService do
   let_it_be(:resource) { create(:issue, project: project) }
   let_it_be(:label) { create(:label, project: project) }
   let_it_be(:label2) { create(:label, project: project) }
-  let(:time) { Time.now }
+  let(:time) { Time.current }
 
   describe '#execute' do
     it 'merges label events into notes in order of created_at' do

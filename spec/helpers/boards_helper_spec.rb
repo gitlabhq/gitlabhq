@@ -48,6 +48,10 @@ describe BoardsHelper do
     it 'returns a board_lists_path as lists_endpoint' do
       expect(helper.board_data[:lists_endpoint]).to eq(board_lists_path(board))
     end
+
+    it 'returns board type as parent' do
+      expect(helper.board_data[:parent]).to eq('project')
+    end
   end
 
   describe '#current_board_json' do

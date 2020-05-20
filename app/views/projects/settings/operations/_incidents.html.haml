@@ -2,7 +2,7 @@
 - setting = project_incident_management_setting
 - templates = setting.available_issue_templates.map { |t| [t.name, t.key] }
 
-%section.settings.no-animate.qa-incident-management-settings
+%section.settings.no-animate.qa-incident-management-settings{ data: { qa_selector: 'incidents_settings_content' } }
   .settings-header
     %h3{ :class => "h4" }= _('Incidents')
     %button.btn.js-settings-toggle{ type: 'button' }
@@ -17,16 +17,16 @@
       .form-group
         = f.fields_for :incident_management_setting_attributes, setting do |form|
           .form-group
-            = form.check_box :create_issue
+            = form.check_box :create_issue, data: { qa_selector: 'create_issue_checkbox' }
             = form.label :create_issue, _('Create an issue. Issues are created for each alert triggered.'), class: 'form-check-label'
           .form-group.col-sm-8
             = form.label :issue_template_key, class: 'label-bold' do
               = _('Issue template (optional)')
               = link_to icon('question-circle'), help_page_path('user/project/description_templates', anchor: 'creating-issue-templates'), target: '_blank', rel: 'noopener noreferrer'
             .select-wrapper
-              = form.select :issue_template_key, templates, {include_blank: 'No template selected'}, class: "form-control select-control"
+              = form.select :issue_template_key, templates, {include_blank: 'No template selected'}, class: "form-control select-control", data: { qa_selector: 'incident_templates_dropdown' }
               = icon('chevron-down')
           .form-group
             = form.check_box :send_email
             = form.label :send_email, _('Send a separate email notification to Developers.'), class: 'form-check-label'
-      = f.submit _('Save changes'), class: 'btn btn-success'
+      = f.submit _('Save changes'), class: 'btn btn-success', data: { qa_selector: 'save_changes_button' }

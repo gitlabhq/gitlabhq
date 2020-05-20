@@ -7,6 +7,7 @@ RSpec.shared_examples 'issuable hook data' do |kind|
   include_examples 'project hook data' do
     let(:project) { builder.issuable.project }
   end
+
   include_examples 'deprecated repository hook data'
 
   context "with a #{kind}" do

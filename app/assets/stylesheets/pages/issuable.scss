@@ -167,10 +167,6 @@
     }
   }
 
-  a.gl-label-icon {
-    color: $gray-500;
-  }
-
   .gl-label .gl-label-link:hover {
     text-decoration: none;
     color: inherit;
@@ -178,11 +174,6 @@
     .gl-label-text:last-of-type {
       text-decoration: underline;
     }
-  }
-
-  .gl-label .gl-label-icon:hover {
-    text-decoration: none;
-    color: $gray-500;
   }
 
   .btn-link {
@@ -825,10 +816,6 @@
             text-decoration: underline;
           }
         }
-      }
-
-      .gl-label-icon {
-        color: $gray-500;
       }
     }
 

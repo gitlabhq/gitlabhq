@@ -17,14 +17,18 @@ describe ProjectExportWorker do
 
     context 'when it succeeds' do
       it 'calls the ExportService' do
-        expect_any_instance_of(::Projects::ImportExport::ExportService).to receive(:execute)
+        expect_next_instance_of(::Projects::ImportExport::ExportService) do |service|
+          expect(service).to receive(:execute)
+        end
 
         subject.perform(user.id, project.id, { 'klass' => 'Gitlab::ImportExport::AfterExportStrategies::DownloadNotificationStrategy' })
       end
 
       context 'export job' do
         before do
-          allow_any_instance_of(::Projects::ImportExport::ExportService).to receive(:execute)
+          allow_next_instance_of(::Projects::ImportExport::ExportService) do |service|
+            allow(service).to receive(:execute)
+          end
         end
 
         it 'creates an export job record for the project' do
@@ -51,7 +55,7 @@ describe ProjectExportWorker do
 
     context 'when it fails' do
       it 'does not raise an exception when strategy is invalid' do
-        expect_any_instance_of(::Projects::ImportExport::ExportService).not_to receive(:execute)
+        expect(::Projects::ImportExport::ExportService).not_to receive(:new)
 
         expect { subject.perform(user.id, project.id, { 'klass' => 'Whatever' }) }.not_to raise_error
       end

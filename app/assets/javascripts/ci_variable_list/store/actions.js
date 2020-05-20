@@ -20,6 +20,10 @@ export const resetEditing = ({ commit, dispatch }) => {
   commit(types.RESET_EDITING);
 };
 
+export const setVariableProtected = ({ commit }) => {
+  commit(types.SET_VARIABLE_PROTECTED);
+};
+
 export const requestAddVariable = ({ commit }) => {
   commit(types.REQUEST_ADD_VARIABLE);
 };

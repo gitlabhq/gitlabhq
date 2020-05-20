@@ -1311,4 +1311,25 @@ describe Environment, :use_clean_rails_memory_store_caching do
       expect { environment.destroy }.to change { project.commit(deployment.ref_path) }.to(nil)
     end
   end
+
+  describe '.count_by_state' do
+    context 'when environments are not empty' do
+      let!(:environment1) { create(:environment, project: project, state: 'stopped') }
+      let!(:environment2) { create(:environment, project: project, state: 'available') }
+      let!(:environment3) { create(:environment, project: project, state: 'stopped') }
+
+      it 'returns the environments count grouped by state' do
+        expect(project.environments.count_by_state).to eq({ stopped: 2, available: 1 })
+      end
+
+      it 'returns the environments count grouped by state with zero value' do
+        environment2.update(state: 'stopped')
+        expect(project.environments.count_by_state).to eq({ stopped: 3, available: 0 })
+      end
+    end
+
+    it 'returns zero state counts when environments are empty' do
+      expect(project.environments.count_by_state).to eq({ stopped: 0, available: 0 })
+    end
+  end
 end

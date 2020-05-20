@@ -1,0 +1,5 @@
+---
+title: Fix layout in issue view, on large screen some buttons were misaligned
+merge_request: 30947
+author: Michele (macno) Azzolari
+type: fixed

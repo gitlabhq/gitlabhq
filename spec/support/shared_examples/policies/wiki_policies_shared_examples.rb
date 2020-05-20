@@ -1,152 +1,116 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'model with wiki policies' do
+  include ProjectHelpers
+  include AdminModeHelper
+
   let(:container) { raise NotImplementedError }
-  let(:permissions) { %i(read_wiki create_wiki update_wiki admin_wiki download_wiki_code) }
+  let(:user) { raise NotImplementedError }
+
+  subject { described_class.new(user, container) }
+
+  let_it_be(:wiki_permissions) do
+    {}.tap do |permissions|
+      permissions[:guest] = %i[read_wiki]
+      permissions[:reporter] = permissions[:guest] + %i[download_wiki_code]
+      permissions[:developer] = permissions[:reporter] + %i[create_wiki]
+      permissions[:maintainer] = permissions[:developer] + %i[admin_wiki]
+      permissions[:all] = permissions[:maintainer]
+    end
+  end
+
+  using RSpec::Parameterized::TableSyntax
+
+  where(:container_level, :access_level, :membership, :access) do
+    :public   | :enabled  | :admin      | :all
+    :public   | :enabled  | :maintainer | :maintainer
+    :public   | :enabled  | :developer  | :developer
+    :public   | :enabled  | :reporter   | :reporter
+    :public   | :enabled  | :guest      | :guest
+    :public   | :enabled  | :non_member | :guest
+    :public   | :enabled  | :anonymous  | :guest
+
+    :public   | :private  | :admin      | :all
+    :public   | :private  | :maintainer | :maintainer
+    :public   | :private  | :developer  | :developer
+    :public   | :private  | :reporter   | :reporter
+    :public   | :private  | :guest      | :guest
+    :public   | :private  | :non_member | nil
+    :public   | :private  | :anonymous  | nil
+
+    :public   | :disabled | :admin      | nil
+    :public   | :disabled | :maintainer | nil
+    :public   | :disabled | :developer  | nil
+    :public   | :disabled | :reporter   | nil
+    :public   | :disabled | :guest      | nil
+    :public   | :disabled | :non_member | nil
+    :public   | :disabled | :anonymous  | nil
+
+    :internal | :enabled  | :admin      | :all
+    :internal | :enabled  | :maintainer | :maintainer
+    :internal | :enabled  | :developer  | :developer
+    :internal | :enabled  | :reporter   | :reporter
+    :internal | :enabled  | :guest      | :guest
+    :internal | :enabled  | :non_member | :guest
+    :internal | :enabled  | :anonymous  | nil
+
+    :internal | :private  | :admin      | :all
+    :internal | :private  | :maintainer | :maintainer
+    :internal | :private  | :developer  | :developer
+    :internal | :private  | :reporter   | :reporter
+    :internal | :private  | :guest      | :guest
+    :internal | :private  | :non_member | nil
+    :internal | :private  | :anonymous  | nil
+
+    :internal | :disabled | :admin      | nil
+    :internal | :disabled | :maintainer | nil
+    :internal | :disabled | :developer  | nil
+    :internal | :disabled | :reporter   | nil
+    :internal | :disabled | :guest      | nil
+    :internal | :disabled | :non_member | nil
+    :internal | :disabled | :anonymous  | nil
+
+    :private  | :private  | :admin      | :all
+    :private  | :private  | :maintainer | :maintainer
+    :private  | :private  | :developer  | :developer
+    :private  | :private  | :reporter   | :reporter
+    :private  | :private  | :guest      | :guest
+    :private  | :private  | :non_member | nil
+    :private  | :private  | :anonymous  | nil
+
+    :private  | :disabled | :admin      | nil
+    :private  | :disabled | :maintainer | nil
+    :private  | :disabled | :developer  | nil
+    :private  | :disabled | :reporter   | nil
+    :private  | :disabled | :guest      | nil
+    :private  | :disabled | :non_member | nil
+    :private  | :disabled | :anonymous  | nil
+  end
+
+  with_them do
+    let(:user) { create_user_from_membership(container, membership) }
+    let(:allowed_permissions) { wiki_permissions[access].dup || [] }
+    let(:disallowed_permissions) { wiki_permissions[:all] - allowed_permissions }
+
+    before do
+      container.visibility = container_level.to_s
+      set_access_level(ProjectFeature.access_level_from_str(access_level.to_s))
+      enable_admin_mode!(user) if user&.admin?
+
+      if allowed_permissions.any? && [container_level, access_level, membership] != [:private, :private, :guest]
+        allowed_permissions << :download_wiki_code
+      end
+    end
+
+    it 'allows actions based on membership' do
+      expect_allowed(*allowed_permissions)
+      expect_disallowed(*disallowed_permissions)
+    end
+  end
 
   # TODO: Remove this helper once we implement group features
   # https://gitlab.com/gitlab-org/gitlab/-/issues/208412
   def set_access_level(access_level)
     raise NotImplementedError
-  end
-
-  subject { described_class.new(owner, container) }
-
-  context 'when the feature is disabled' do
-    before do
-      set_access_level(ProjectFeature::DISABLED)
-    end
-
-    it 'does not include the wiki permissions' do
-      expect_disallowed(*permissions)
-    end
-
-    context 'when there is an external wiki' do
-      it 'does not include the wiki permissions' do
-        allow(container).to receive(:has_external_wiki?).and_return(true)
-
-        expect_disallowed(*permissions)
-      end
-    end
-  end
-
-  describe 'read_wiki' do
-    subject { described_class.new(user, container) }
-
-    member_roles = %i[guest developer]
-    stranger_roles = %i[anonymous non_member]
-
-    user_roles = stranger_roles + member_roles
-
-    # When a user is anonymous, their `current_user == nil`
-    let(:user) { create(:user) unless user_role == :anonymous }
-
-    before do
-      container.visibility = container_visibility
-      set_access_level(wiki_access_level)
-      container.add_user(user, user_role) if member_roles.include?(user_role)
-    end
-
-    title = ->(container_visibility, wiki_access_level, user_role) do
-      [
-        "container is #{Gitlab::VisibilityLevel.level_name container_visibility}",
-        "wiki is #{ProjectFeature.str_from_access_level wiki_access_level}",
-        "user is #{user_role}"
-      ].join(', ')
-    end
-
-    describe 'Situations where :read_wiki is always false' do
-      where(case_names: title,
-            container_visibility: Gitlab::VisibilityLevel.options.values,
-            wiki_access_level: [ProjectFeature::DISABLED],
-            user_role: user_roles)
-
-      with_them do
-        it { is_expected.to be_disallowed(:read_wiki) }
-      end
-    end
-
-    describe 'Situations where :read_wiki is always true' do
-      where(case_names: title,
-            container_visibility: [Gitlab::VisibilityLevel::PUBLIC],
-            wiki_access_level: [ProjectFeature::ENABLED],
-            user_role: user_roles)
-
-      with_them do
-        it { is_expected.to be_allowed(:read_wiki) }
-      end
-    end
-
-    describe 'Situations where :read_wiki requires membership' do
-      context 'the wiki is private, and the user is a member' do
-        where(case_names: title,
-              container_visibility: [Gitlab::VisibilityLevel::PUBLIC,
-                                     Gitlab::VisibilityLevel::INTERNAL],
-              wiki_access_level: [ProjectFeature::PRIVATE],
-              user_role: member_roles)
-
-        with_them do
-          it { is_expected.to be_allowed(:read_wiki) }
-        end
-      end
-
-      context 'the wiki is private, and the user is not member' do
-        where(case_names: title,
-              container_visibility: [Gitlab::VisibilityLevel::PUBLIC,
-                                     Gitlab::VisibilityLevel::INTERNAL],
-              wiki_access_level: [ProjectFeature::PRIVATE],
-              user_role: stranger_roles)
-
-        with_them do
-          it { is_expected.to be_disallowed(:read_wiki) }
-        end
-      end
-
-      context 'the wiki is enabled, and the user is a member' do
-        where(case_names: title,
-              container_visibility: [Gitlab::VisibilityLevel::PRIVATE],
-              wiki_access_level: [ProjectFeature::ENABLED],
-              user_role: member_roles)
-
-        with_them do
-          it { is_expected.to be_allowed(:read_wiki) }
-        end
-      end
-
-      context 'the wiki is enabled, and the user is not a member' do
-        where(case_names: title,
-              container_visibility: [Gitlab::VisibilityLevel::PRIVATE],
-              wiki_access_level: [ProjectFeature::ENABLED],
-              user_role: stranger_roles)
-
-        with_them do
-          it { is_expected.to be_disallowed(:read_wiki) }
-        end
-      end
-    end
-
-    describe 'Situations where :read_wiki prohibits anonymous access' do
-      context 'the user is not anonymous' do
-        where(case_names: title,
-              container_visibility: [Gitlab::VisibilityLevel::INTERNAL],
-              wiki_access_level: [ProjectFeature::ENABLED, ProjectFeature::PUBLIC],
-              user_role: user_roles.reject { |u| u == :anonymous })
-
-        with_them do
-          it { is_expected.to be_allowed(:read_wiki) }
-        end
-      end
-
-      context 'the user is anonymous' do
-        where(case_names: title,
-              container_visibility: [Gitlab::VisibilityLevel::INTERNAL],
-              wiki_access_level: [ProjectFeature::ENABLED, ProjectFeature::PUBLIC],
-              user_role: %i[anonymous])
-
-        with_them do
-          it { is_expected.to be_disallowed(:read_wiki) }
-        end
-      end
-    end
   end
 end

@@ -8,6 +8,8 @@ module API
 
     BRANCH_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(branch: API::NO_SLASH_URL_PART_REGEX)
 
+    after_validation { content_type "application/json" }
+
     before do
       require_repository_enabled!
       authorize! :download_code, user_project

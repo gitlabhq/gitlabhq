@@ -28,6 +28,11 @@ you can also view all the issues collectively at the group level.
 
 See also [Always start a discussion with an issue](https://about.gitlab.com/blog/2016/03/03/start-with-an-issue/).
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+To learn how GitLab's Strategic Marketing department uses GitLab issues with [labels](../labels.md) and
+[issue boards](../issue_board.md), see the video on
+[Managing Commitments with Issues](https://www.youtube.com/watch?v=cuIHNintg1o&t=3).
+
 ## Parts of an issue
 
 Issues contain a variety of content and metadata, enabling a large range of flexibility

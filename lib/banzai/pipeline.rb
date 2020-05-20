@@ -9,7 +9,7 @@ module Banzai
     # Examples:
     #     Pipeline[nil] # => Banzai::Pipeline::FullPipeline
     #     Pipeline[:label] # => Banzai::Pipeline::LabelPipeline
-    #     Pipeline[StatusPage::PostProcessPipeline] # => StatusPage::PostProcessPipeline
+    #     Pipeline[StatusPage::Pipeline::PostProcessPipeline] # => StatusPage::Pipeline::PostProcessPipeline
     #
     #     Pipeline['label'] # => raises ArgumentError - unsupport type
     #     Pipeline[Project] # => raises ArgumentError - not a subclass of BasePipeline

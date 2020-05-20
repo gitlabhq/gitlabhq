@@ -15,8 +15,6 @@ export default () => ({
   parentTreeUrl: '',
   trees: {},
   projects: {},
-  leftPanelCollapsed: false,
-  rightPanelCollapsed: false,
   panelResizing: false,
   entries: {},
   viewer: viewerTypes.edit,

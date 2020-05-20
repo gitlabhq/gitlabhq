@@ -57,7 +57,7 @@
         .form-group
           = label_tag nil, _('Customize icon'), class: 'col-12 col-form-label label-bold'
           .col-12
-            = image_tag(asset_url('slash-command-logo.png'), width: 36, height: 36, class: 'mr-3')
+            = image_tag(asset_url('slash-command-logo.png', skip_pipeline: true), width: 36, height: 36, class: 'mr-3')
             = link_to(_('Download image'), asset_url('gitlab_logo.png'), class: 'btn btn-sm', target: '_blank', rel: 'noopener noreferrer')
 
         .form-group

@@ -1,9 +1,9 @@
-/* eslint-disable one-var, no-else-return, no-self-compare, consistent-return, no-param-reassign, no-shadow */
+/* eslint-disable one-var, no-self-compare, consistent-return, no-param-reassign, no-shadow */
 /* global Issuable */
 /* global ListMilestone */
 
 import $ from 'jquery';
-import _ from 'underscore';
+import { template, escape } from 'lodash';
 import { __ } from '~/locale';
 import '~/gl_dropdown';
 import axios from './lib/utils/axios_utils';
@@ -56,11 +56,11 @@ export default class MilestoneSelect {
       const $loading = $block.find('.block-loading').fadeOut();
       selectedMilestoneDefault = showAny ? '' : null;
       selectedMilestoneDefault =
-        showNo && defaultNo ? __('No Milestone') : selectedMilestoneDefault;
+        showNo && defaultNo ? __('No milestone') : selectedMilestoneDefault;
       selectedMilestone = $dropdown.data('selected') || selectedMilestoneDefault;
 
       if (issueUpdateURL) {
-        milestoneLinkTemplate = _.template(
+        milestoneLinkTemplate = template(
           '<a href="<%- web_url %>" class="bold has-tooltip" data-container="body" title="<%- remaining %>"><%- title %></a>',
         );
         milestoneLinkNoneTemplate = `<span class="no-value">${__('None')}</span>`;
@@ -74,14 +74,14 @@ export default class MilestoneSelect {
               extraOptions.push({
                 id: null,
                 name: null,
-                title: __('Any Milestone'),
+                title: __('Any milestone'),
               });
             }
             if (showNo) {
               extraOptions.push({
                 id: -1,
-                name: __('No Milestone'),
-                title: __('No Milestone'),
+                name: __('No milestone'),
+                title: __('No milestone'),
               });
             }
             if (showUpcoming) {
@@ -106,12 +106,12 @@ export default class MilestoneSelect {
             if (showMenuAbove) {
               $dropdown.data('glDropdown').positionMenuAbove();
             }
-            $(`[data-milestone-id="${_.escape(selectedMilestone)}"] > a`).addClass('is-active');
+            $(`[data-milestone-id="${escape(selectedMilestone)}"] > a`).addClass('is-active');
           }),
         renderRow: milestone => `
-          <li data-milestone-id="${_.escape(milestone.name)}">
+          <li data-milestone-id="${escape(milestone.name)}">
             <a href='#' class='dropdown-menu-milestone-link'>
-              ${_.escape(milestone.title)}
+              ${escape(milestone.title)}
             </a>
           </li>
         `,
@@ -123,19 +123,17 @@ export default class MilestoneSelect {
         toggleLabel: (selected, el) => {
           if (selected && 'id' in selected && $(el).hasClass('is-active')) {
             return selected.title;
-          } else {
-            return defaultLabel;
           }
+          return defaultLabel;
         },
         defaultLabel,
         fieldName: $dropdown.data('fieldName'),
-        text: milestone => _.escape(milestone.title),
+        text: milestone => escape(milestone.title),
         id: milestone => {
           if (!useId && !$dropdown.is('.js-issuable-form-dropdown')) {
             return milestone.name;
-          } else {
-            return milestone.id;
           }
+          return milestone.id;
         },
         hidden: () => {
           $selectBox.hide();
@@ -148,7 +146,7 @@ export default class MilestoneSelect {
             selectedMilestone = $dropdown[0].dataset.selected || selectedMilestoneDefault;
           }
           $('a.is-active', $el).removeClass('is-active');
-          $(`[data-milestone-id="${_.escape(selectedMilestone)}"] > a`, $el).addClass('is-active');
+          $(`[data-milestone-id="${escape(selectedMilestone)}"] > a`, $el).addClass('is-active');
         },
         vue: $dropdown.hasClass('js-issue-board-sidebar'),
         clicked: clickEvent => {
@@ -244,13 +242,12 @@ export default class MilestoneSelect {
                     )
                     .find('span')
                     .text(data.milestone.title);
-                } else {
-                  $value.html(milestoneLinkNoneTemplate);
-                  return $sidebarCollapsedValue
-                    .attr('data-original-title', __('Milestone'))
-                    .find('span')
-                    .text(__('None'));
                 }
+                $value.html(milestoneLinkNoneTemplate);
+                return $sidebarCollapsedValue
+                  .attr('data-original-title', __('Milestone'))
+                  .find('span')
+                  .text(__('None'));
               })
               .catch(() => {
                 // eslint-disable-next-line no-jquery/no-fade

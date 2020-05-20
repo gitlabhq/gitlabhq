@@ -61,7 +61,7 @@ Before proceeding with the Pages configuration, make sure that:
 ### DNS configuration
 
 GitLab Pages expect to run on their own virtual host. In your DNS server/provider
-you need to add a [wildcard DNS A record][wiki-wildcard-dns] pointing to the
+you need to add a [wildcard DNS A record](https://en.wikipedia.org/wiki/Wildcard_DNS_record) pointing to the
 host that GitLab runs. For example, an entry would look like this:
 
 ```plaintext
@@ -74,8 +74,6 @@ and `192.0.2.1` is the IP address of your GitLab instance.
 > **Note:**
 You should not use the GitLab domain to serve user pages. For more information
 see the [security section](#security).
-
-[wiki-wildcard-dns]: https://en.wikipedia.org/wiki/Wildcard_DNS_record
 
 ## Configuration
 

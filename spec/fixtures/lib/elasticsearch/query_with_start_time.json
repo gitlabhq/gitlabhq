@@ -35,7 +35,7 @@
       }
     },
     {
-      "offset": {
+      "log.offset": {
         "order": "desc"
       }
     }

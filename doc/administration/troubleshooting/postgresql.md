@@ -33,7 +33,7 @@ This section is for links to information elsewhere in the GitLab documentation.
 
 - [More about external PostgreSQL](../external_database.md)
 
-- [Running GEO with external PostgreSQL](../geo/replication/external_database.md)
+- [Running Geo with external PostgreSQL](../geo/replication/external_database.md)
 
 - [Upgrades when running PostgreSQL configured for HA.](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-gitlab-ha-cluster)
 
@@ -45,7 +45,7 @@ This section is for links to information elsewhere in the GitLab documentation.
 
 - Managing Omnibus PostgreSQL versions [from the development docs](https://docs.gitlab.com/omnibus/development/managing-postgresql-versions.html)
 
-- [PostgreSQL scaling and HA](../high_availability/database.md)
+- [PostgreSQL scaling](../high_availability/database.md)
   - including [troubleshooting](../high_availability/database.md#troubleshooting) `gitlab-ctl repmgr-check-master` and PgBouncer errors
 
 - [Developer database documentation](../../development/README.md#database-guides) - some of which is absolutely not for production use. Including:
@@ -71,7 +71,7 @@ This section is for links to information elsewhere in the GitLab documentation.
   HINT:  Free one or increase max_replication_slots.
   ```
 
-- GEO [replication errors](../geo/replication/troubleshooting.md#fixing-replication-errors) including:
+- Geo [replication errors](../geo/replication/troubleshooting.md#fixing-replication-errors) including:
 
   ```plaintext
   ERROR: replication slots can only be used if max_replication_slots > 0
@@ -83,11 +83,11 @@ This section is for links to information elsewhere in the GitLab documentation.
   PANIC: could not write to file ‘pg_xlog/xlogtemp.123’: No space left on device
   ```
 
-- [Checking GEO configuration](../geo/replication/troubleshooting.md#checking-configuration) including
+- [Checking Geo configuration](../geo/replication/troubleshooting.md#checking-configuration) including
   - reconfiguring hosts/ports
   - checking and fixing user/password mappings
 
-- [Common GEO errors](../geo/replication/troubleshooting.md#fixing-common-errors)
+- [Common Geo errors](../geo/replication/troubleshooting.md#fixing-common-errors)
 
 ## Support topics
 

@@ -6,13 +6,13 @@ module WikiPages
   # - external_action: the action we report to external clients with webhooks
   # - usage_counter_action: the action that we count in out internal counters
   # - event_action: what we record as the value of `Event#action`
-  class BaseService < ::BaseService
+  class BaseService < ::BaseContainerService
     private
 
     def execute_hooks(page)
       page_data = payload(page)
-      @project.execute_hooks(page_data, :wiki_page_hooks)
-      @project.execute_services(page_data, :wiki_page_hooks)
+      container.execute_hooks(page_data, :wiki_page_hooks)
+      container.execute_services(page_data, :wiki_page_hooks)
       increment_usage
       create_wiki_event(page)
     end
@@ -46,12 +46,9 @@ module WikiPages
     def create_wiki_event(page)
       return unless ::Feature.enabled?(:wiki_events)
 
-      slug = slug_for_page(page)
+      response = WikiPages::EventCreateService.new(current_user).execute(slug_for_page(page), page, event_action)
 
-      Event.transaction do
-        wiki_page_meta = WikiPage::Meta.find_or_create(slug, page)
-        EventCreateService.new.wiki_event(wiki_page_meta, current_user, event_action)
-      end
+      log_error(response.message) if response.error?
     end
 
     def slug_for_page(page)

@@ -4,7 +4,7 @@ require 'spec_helper'
 
 describe API::Statistics, 'Statistics' do
   include ProjectForksHelper
-  TABLES_TO_ANALYZE = %w[
+  tables_to_analyze = %w[
     projects
     users
     namespaces
@@ -62,7 +62,7 @@ describe API::Statistics, 'Statistics' do
 
         # Make sure the reltuples have been updated
         # to get a correct count on postgresql
-        TABLES_TO_ANALYZE.each do |table|
+        tables_to_analyze.each do |table|
           ActiveRecord::Base.connection.execute("ANALYZE #{table}")
         end
 

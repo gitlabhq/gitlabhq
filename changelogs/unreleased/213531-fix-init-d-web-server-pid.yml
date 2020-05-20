@@ -1,0 +1,5 @@
+---
+title: Fix init.d script to correctly set web server PID
+merge_request: 29164
+author:
+type: fixed

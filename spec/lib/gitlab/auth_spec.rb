@@ -715,6 +715,14 @@ describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
     end
   end
 
+  describe ".resource_bot_scopes" do
+    subject { described_class.resource_bot_scopes }
+
+    it { is_expected.to include(*described_class::API_SCOPES - [:read_user]) }
+    it { is_expected.to include(*described_class::REPOSITORY_SCOPES) }
+    it { is_expected.to include(*described_class.registry_scopes) }
+  end
+
   private
 
   def expect_results_with_abilities(personal_access_token, abilities, success = true)

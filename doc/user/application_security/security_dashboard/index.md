@@ -30,7 +30,7 @@ To use the instance, group, project, or pipeline security dashboard:
 
 1. At least one project inside a group must be configured with at least one of
    the [supported reports](#supported-reports).
-1. The configured jobs must use the [new `reports` syntax](../../../ci/yaml/README.md#artifactsreports).
+1. The configured jobs must use the [new `reports` syntax](../../../ci/pipelines/job_artifacts.md#artifactsreports).
 1. [GitLab Runner](https://docs.gitlab.com/runner/) 11.5 or newer must be used.
    If you're using the shared Runners on GitLab.com, this is already the case.
 
@@ -44,15 +44,17 @@ Visit the page for any pipeline which has run any of the [supported reports](#su
 
 ![Pipeline Security Dashboard](img/pipeline_security_dashboard_v12_6.png)
 
+NOTE: **Note:**
+A pipeline consists of multiple jobs, including SAST and DAST scanning. If any job fails to finish for any reason, the security dashboard will not show SAST scanner output. For example, if the SAST job finishes but the DAST job fails, the security dashboard will not show SAST results. The analyzer will output an [exit code](../../../development/integrations/secure.md#exit-code) on failure.
+
 ## Project Security Dashboard
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/6165) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.1.
 
-At the project level, the Security Dashboard displays the latest security reports
-for your project from the last successful pipeline. Use it to find and fix vulnerabilities affecting the
-[default branch](../../project/repository/branches/index.md#default-branch).
+At the project level, the Security Dashboard displays the latest security reports for your project.
+Use it to find and fix vulnerabilities.
 
-![Project Security Dashboard](img/project_security_dashboard_v12_3.png)
+![Project Security Dashboard](img/project_security_dashboard_v13_0.png)
 
 ### Export vulnerabilities
 
@@ -64,7 +66,7 @@ NOTE: **Note:**
 It may take several minutes for the download to start if your project consists
 of thousands of vulnerabilities. Do not close the page until the download finishes.
 
-![CSV Export Button](img/project_security_dashboard_export_csv_v12.10.png)
+![CSV Export Button](img/project_security_dashboard_export_csv_v12_10.png)
 
 ## Group Security Dashboard
 
@@ -78,32 +80,27 @@ First, navigate to the Security Dashboard found under your group's
 
 Once you're on the dashboard, at the top you should see a series of filters for:
 
+- Status
 - Severity
-- Confidence
 - Report type
-- Project
-
-To the right of the filters, you should see a **Hide dismissed** toggle button.
 
 NOTE: **Note:**
-The dashboard only shows projects with [security reports](#supported-reports) enabled in a group
-according to the last successful projects' pipelines.
+The dashboard only shows projects with [security reports](#supported-reports) enabled in a group.
 
-![dashboard with action buttons and metrics](img/group_security_dashboard_v12_6.png)
+![Dashboard with action buttons and metrics](img/group_security_dashboard_v13_0.png)
 
-Selecting one or more filters will filter the results in this page. Disabling the **Hide dismissed**
-toggle button will let you also see vulnerabilities that have been dismissed.
+Selecting one or more filters will filter the results in this page.
 
 The main section is a list of all the vulnerabilities in the group, sorted by severity.
 In that list, you can see the severity of the vulnerability, its name, its
 confidence (likelihood of the vulnerability to be a positive one), and the project
 it's from.
 
-If you hover over a row, there will appear some actions you can take:
+If you hover over a row, the following actions appear:
 
-- "More info"
-- "Create issue"
-- "Dismiss vulnerability"
+- More info
+- Create issue
+- Dismiss vulnerability
 
 Next to the list is a timeline chart that shows how many open
 vulnerabilities your projects had at various points in time. You can filter among 30, 60, and
@@ -147,7 +144,23 @@ To add projects to the dashboard:
 Once added, the dashboard will display the vulnerabilities found in your chosen
 projects.
 
-![Instance Security Dashboard with projects](img/instance_security_dashboard_with_projects_v12_8.png)
+![Instance Security Dashboard with projects](img/instance_security_dashboard_with_projects_v13_0.png)
+
+### Export vulnerabilities
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213014) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.0.
+
+You can export all your vulnerabilities as CSV by clicking the **{upload}** **Export**
+button located at top right of the **Instance Security Dashboard**. After the report
+is built, the CSV report downloads to your local machine. The report contains all
+vulnerabilities for the projects defined in the **Instance Security Dashboard**,
+as filters don't apply to the export function.
+
+NOTE: **Note:**
+It may take several minutes for the download to start if your project contains
+thousands of vulnerabilities. Do not close the page until the download finishes.
+
+![CSV Export Button](img/instance_security_dashboard_export_csv_v13_0.png)
 
 ## Keeping the dashboards up to date
 

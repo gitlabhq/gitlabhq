@@ -13,6 +13,7 @@ import {
 import Editor from '../lib/editor';
 import FileTemplatesBar from './file_templates/bar.vue';
 import { __ } from '~/locale';
+import { extractMarkdownImagesFromEntries } from '../stores/utils';
 
 export default {
   components: {
@@ -26,17 +27,23 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      content: '',
+      images: {},
+    };
+  },
   computed: {
     ...mapState('rightPane', {
       rightPaneIsOpen: 'isOpen',
     }),
     ...mapState([
-      'rightPanelCollapsed',
       'viewer',
       'panelResizing',
       'currentActivityView',
       'renderWhitespaceInCode',
       'editorTheme',
+      'entries',
     ]),
     ...mapGetters([
       'currentMergeRequest',
@@ -44,6 +51,7 @@ export default {
       'isEditModeActive',
       'isCommitModeActive',
       'isReviewModeActive',
+      'currentBranch',
     ]),
     ...mapGetters('fileTemplates', ['showFileTemplatesBar']),
     shouldHideEditor() {
@@ -87,6 +95,9 @@ export default {
         theme: this.editorTheme,
       };
     },
+    currentBranchCommit() {
+      return this.currentBranch?.commit.id;
+    },
   },
   watch: {
     file(newVal, oldVal) {
@@ -114,9 +125,6 @@ export default {
         });
       }
     },
-    rightPanelCollapsed() {
-      this.refreshEditorDimensions();
-    },
     viewer() {
       if (!this.file.pending) {
         this.createEditorInstance();
@@ -134,6 +142,18 @@ export default {
       if (val) {
         // We need to wait for the editor to actually be rendered.
         this.$nextTick(() => this.refreshEditorDimensions());
+      }
+    },
+    showContentViewer(val) {
+      if (!val) return;
+
+      if (this.fileType === 'markdown') {
+        const { content, images } = extractMarkdownImagesFromEntries(this.file, this.entries);
+        this.content = content;
+        this.images = images;
+      } else {
+        this.content = this.file.content || this.file.raw;
+        this.images = {};
       }
     },
   },
@@ -310,11 +330,13 @@ export default {
     ></div>
     <content-viewer
       v-if="showContentViewer"
-      :content="file.content || file.raw"
+      :content="content"
+      :images="images"
       :path="file.rawPath || file.path"
       :file-path="file.path"
       :file-size="file.size"
       :project-path="file.projectId"
+      :commit-sha="currentBranchCommit"
       :type="fileType"
     />
     <diff-viewer

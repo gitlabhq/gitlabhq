@@ -1,0 +1,83 @@
+.alert-management-list {
+  // consider adding these stateful variants to @gitlab-ui
+  // https://gitlab.com/gitlab-org/gitlab-ui/-/merge_requests/1178
+  .hover-bg-blue-50:hover {
+    background-color: $blue-50;
+  }
+
+  .hover-gl-cursor-pointer:hover {
+    cursor: pointer;
+  }
+
+  .hover-gl-border-b-solid:hover {
+    @include gl-border-b-solid;
+  }
+
+  .hover-gl-border-blue-200:hover {
+    border-color: $blue-200;
+  }
+
+  // these styles need to be deleted once GlTable component looks in GitLab same as in @gitlab/ui
+  table {
+    color: $gray-700;
+
+    tr {
+      &:focus {
+        outline: none;
+      }
+
+      td,
+      th {
+        @include gl-p-5;
+        border: 0; // Remove cell border styling so that we can set border styling per row
+
+        &.event-count {
+          @include gl-pr-9;
+        }
+      }
+
+      th {
+        background-color: transparent;
+        font-weight: $gl-font-weight-bold;
+        color: $gl-gray-600;
+      }
+
+      &:last-child {
+        td {
+          @include gl-border-0;
+        }
+      }
+    }
+  }
+
+  @include media-breakpoint-down(sm) {
+    .alert-management-table {
+      .table-col {
+        min-height: 68px;
+
+        &:last-child {
+          background-color: $gray-10;
+
+          &::before {
+            content: none !important;
+          }
+
+          div {
+            width: 100% !important;
+            padding: 0 !important;
+          }
+        }
+      }
+    }
+  }
+
+  .gl-tab-nav-item {
+    color: $gl-gray-600;
+
+    > .gl-tab-counter-badge {
+      color: inherit;
+      @include gl-font-sm;
+      background-color: $white-normal;
+    }
+  }
+}

@@ -8,6 +8,11 @@ module ReactiveCaching
   InvalidateReactiveCache = Class.new(StandardError)
   ExceededReactiveCacheLimit = Class.new(StandardError)
 
+  WORK_TYPE = {
+    default: ReactiveCachingWorker,
+    external_dependency: ExternalServiceReactiveCachingWorker
+  }.freeze
+
   included do
     extend ActiveModel::Naming
 
@@ -16,6 +21,7 @@ module ReactiveCaching
     class_attribute :reactive_cache_refresh_interval
     class_attribute :reactive_cache_lifetime
     class_attribute :reactive_cache_hard_limit
+    class_attribute :reactive_cache_work_type
     class_attribute :reactive_cache_worker_finder
 
     # defaults
@@ -24,6 +30,7 @@ module ReactiveCaching
     self.reactive_cache_refresh_interval = 1.minute
     self.reactive_cache_lifetime = 10.minutes
     self.reactive_cache_hard_limit = 1.megabyte
+    self.reactive_cache_work_type = :default
     self.reactive_cache_worker_finder = ->(id, *_args) do
       find_by(primary_key => id)
     end
@@ -112,7 +119,7 @@ module ReactiveCaching
     def refresh_reactive_cache!(*args)
       clear_reactive_cache!(*args)
       keep_alive_reactive_cache!(*args)
-      ReactiveCachingWorker.perform_async(self.class, id, *args)
+      worker_class.perform_async(self.class, id, *args)
     end
 
     def keep_alive_reactive_cache!(*args)
@@ -145,7 +152,11 @@ module ReactiveCaching
     def enqueuing_update(*args)
       yield
 
-      ReactiveCachingWorker.perform_in(self.class.reactive_cache_refresh_interval, self.class, id, *args)
+      worker_class.perform_in(self.class.reactive_cache_refresh_interval, self.class, id, *args)
+    end
+
+    def worker_class
+      WORK_TYPE.fetch(self.class.reactive_cache_work_type.to_sym)
     end
 
     def check_exceeded_reactive_cache_limit!(data)

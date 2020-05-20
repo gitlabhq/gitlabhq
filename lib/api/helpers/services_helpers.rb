@@ -724,6 +724,15 @@ module API
               desc: 'The Unify Circuit webhook. e.g. https://circuit.com/rest/v2/webhooks/incoming/…'
             },
             chat_notification_events
+          ].flatten,
+          'webex-teams' => [
+            {
+              required: true,
+              name: :webhook,
+              type: String,
+              desc: 'The Webex Teams webhook. e.g. https://api.ciscospark.com/v1/webhooks/incoming/…'
+            },
+            chat_notification_events
           ].flatten
         }
       end

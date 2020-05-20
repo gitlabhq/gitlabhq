@@ -19,32 +19,32 @@ describe 'Pipeline', :js do
   shared_context 'pipeline builds' do
     let!(:build_passed) do
       create(:ci_build, :success,
-             pipeline: pipeline, stage: 'build', name: 'build')
+             pipeline: pipeline, stage: 'build', stage_idx: 0, name: 'build')
     end
 
     let!(:build_failed) do
       create(:ci_build, :failed,
-             pipeline: pipeline, stage: 'test', name: 'test')
+             pipeline: pipeline, stage: 'test', stage_idx: 1, name: 'test')
     end
 
     let!(:build_preparing) do
       create(:ci_build, :preparing,
-             pipeline: pipeline, stage: 'deploy', name: 'prepare')
+             pipeline: pipeline, stage: 'deploy', stage_idx: 2, name: 'prepare')
     end
 
     let!(:build_running) do
       create(:ci_build, :running,
-             pipeline: pipeline, stage: 'deploy', name: 'deploy')
+             pipeline: pipeline, stage: 'deploy', stage_idx: 3, name: 'deploy')
     end
 
     let!(:build_manual) do
       create(:ci_build, :manual,
-             pipeline: pipeline, stage: 'deploy', name: 'manual-build')
+             pipeline: pipeline, stage: 'deploy', stage_idx: 3, name: 'manual-build')
     end
 
     let!(:build_scheduled) do
       create(:ci_build, :scheduled,
-             pipeline: pipeline, stage: 'deploy', name: 'delayed-job')
+             pipeline: pipeline, stage: 'deploy', stage_idx: 3, name: 'delayed-job')
     end
 
     let!(:build_external) do
@@ -307,9 +307,12 @@ describe 'Pipeline', :js do
 
     context 'when the pipeline has manual stage' do
       before do
-        create(:ci_build, :manual, pipeline: pipeline, stage: 'publish', name: 'CentOS')
-        create(:ci_build, :manual, pipeline: pipeline, stage: 'publish', name: 'Debian')
-        create(:ci_build, :manual, pipeline: pipeline, stage: 'publish', name: 'OpenSUDE')
+        create(:ci_build, :manual, pipeline: pipeline, stage_idx: 10, stage: 'publish', name: 'CentOS')
+        create(:ci_build, :manual, pipeline: pipeline, stage_idx: 10, stage: 'publish', name: 'Debian')
+        create(:ci_build, :manual, pipeline: pipeline, stage_idx: 10, stage: 'publish', name: 'OpenSUDE')
+
+        # force to update stages statuses
+        Ci::ProcessPipelineService.new(pipeline).execute
 
         visit_pipeline
       end
@@ -324,9 +327,10 @@ describe 'Pipeline', :js do
         visit_pipeline
       end
 
-      it 'shows Pipeline, Jobs and Failed Jobs tabs with link' do
+      it 'shows Pipeline, Jobs, DAG and Failed Jobs tabs with link' do
         expect(page).to have_link('Pipeline')
         expect(page).to have_link('Jobs')
+        expect(page).to have_link('DAG')
         expect(page).to have_link('Failed Jobs')
       end
 
@@ -611,6 +615,20 @@ describe 'Pipeline', :js do
         end
       end
     end
+
+    context 'when FF dag_pipeline_tab is disabled' do
+      before do
+        stub_feature_flags(dag_pipeline_tab: false)
+        visit_pipeline
+      end
+
+      it 'does not show DAG link' do
+        expect(page).to have_link('Pipeline')
+        expect(page).to have_link('Jobs')
+        expect(page).not_to have_link('DAG')
+        expect(page).to have_link('Failed Jobs')
+      end
+    end
   end
 
   context 'when user does not have access to read jobs' do
@@ -862,9 +880,10 @@ describe 'Pipeline', :js do
     end
 
     context 'page tabs' do
-      it 'shows Pipeline and Jobs tabs with link' do
+      it 'shows Pipeline, Jobs and DAG tabs with link' do
         expect(page).to have_link('Pipeline')
         expect(page).to have_link('Jobs')
+        expect(page).to have_link('DAG')
       end
 
       it 'shows counter in Jobs tab' do
@@ -1050,6 +1069,37 @@ describe 'Pipeline', :js do
         expect(current_path).to eq(pipeline_path(pipeline))
         expect(page).not_to have_content('Failed Jobs')
         expect(page).to have_selector('.pipeline-visualization')
+      end
+    end
+  end
+
+  describe 'GET /:project/pipelines/:id/dag' do
+    include_context 'pipeline builds'
+
+    let(:project) { create(:project, :repository) }
+    let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master', sha: project.commit.id) }
+
+    before do
+      visit dag_project_pipeline_path(project, pipeline)
+    end
+
+    it 'shows DAG tab pane as active' do
+      expect(page).to have_css('#js-tab-dag.active', visible: false)
+    end
+
+    context 'page tabs' do
+      it 'shows Pipeline, Jobs and DAG tabs with link' do
+        expect(page).to have_link('Pipeline')
+        expect(page).to have_link('Jobs')
+        expect(page).to have_link('DAG')
+      end
+
+      it 'shows counter in Jobs tab' do
+        expect(page.find('.js-builds-counter').text).to eq(pipeline.total_size.to_s)
+      end
+
+      it 'shows DAG tab as active' do
+        expect(page).to have_css('li.js-dag-tab-link .active')
       end
     end
   end

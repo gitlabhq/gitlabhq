@@ -58,15 +58,6 @@ describe 'layouts/nav/sidebar/_admin' do
     it_behaves_like 'page has active sub tab', 'Users'
   end
 
-  context 'on logs' do
-    before do
-      allow(controller).to receive(:controller_name).and_return('logs')
-    end
-
-    it_behaves_like 'page has active tab', 'Monitoring'
-    it_behaves_like 'page has active sub tab', 'Logs'
-  end
-
   context 'on messages' do
     before do
       allow(controller).to receive(:controller_name).and_return('broadcast_messages')

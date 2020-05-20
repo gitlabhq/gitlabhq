@@ -323,36 +323,12 @@ describe API::Internal::Base do
         end
       end
 
-      shared_examples 'snippets with disabled feature flag' do
-        context 'when feature flag :version_snippets is disabled' do
-          it 'returns 401' do
-            stub_feature_flags(version_snippets: false)
-
-            subject
-
-            expect(response).to have_gitlab_http_status(:unauthorized)
-          end
-        end
-      end
-
       shared_examples 'snippet success' do
         it 'responds with success' do
           subject
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response['status']).to be_truthy
-        end
-      end
-
-      shared_examples 'snippets with web protocol' do
-        it_behaves_like 'snippet success'
-
-        context 'with disabled version flag' do
-          before do
-            stub_feature_flags(version_snippets: false)
-          end
-
-          it_behaves_like 'snippet success'
         end
       end
 
@@ -367,12 +343,6 @@ describe API::Internal::Base do
           expect(json_response["gl_project_path"]).to eq(personal_snippet.repository.full_path)
           expect(json_response["gl_repository"]).to eq("snippet-#{personal_snippet.id}")
           expect(user.reload.last_activity_on).to be_nil
-        end
-
-        it_behaves_like 'snippets with disabled feature flag'
-
-        it_behaves_like 'snippets with web protocol' do
-          subject { push(key, personal_snippet, 'web', env: env.to_json, changes: snippet_changes) }
         end
 
         it_behaves_like 'sets hook env' do
@@ -392,12 +362,6 @@ describe API::Internal::Base do
           expect(json_response["gl_repository"]).to eq("snippet-#{personal_snippet.id}")
           expect(user.reload.last_activity_on).to eql(Date.today)
         end
-
-        it_behaves_like 'snippets with disabled feature flag'
-
-        it_behaves_like 'snippets with web protocol' do
-          subject { pull(key, personal_snippet, 'web') }
-        end
       end
 
       context 'git push with project snippet' do
@@ -411,12 +375,6 @@ describe API::Internal::Base do
           expect(json_response["gl_project_path"]).to eq(project_snippet.repository.full_path)
           expect(json_response["gl_repository"]).to eq("snippet-#{project_snippet.id}")
           expect(user.reload.last_activity_on).to be_nil
-        end
-
-        it_behaves_like 'snippets with disabled feature flag'
-
-        it_behaves_like 'snippets with web protocol' do
-          subject { push(key, project_snippet, 'web', env: env.to_json, changes: snippet_changes) }
         end
 
         it_behaves_like 'sets hook env' do
@@ -433,14 +391,6 @@ describe API::Internal::Base do
           expect(json_response["gl_project_path"]).to eq(project_snippet.repository.full_path)
           expect(json_response["gl_repository"]).to eq("snippet-#{project_snippet.id}")
           expect(user.reload.last_activity_on).to eql(Date.today)
-        end
-
-        it_behaves_like 'snippets with disabled feature flag' do
-          subject { pull(key, project_snippet) }
-        end
-
-        it_behaves_like 'snippets with web protocol' do
-          subject { pull(key, project_snippet, 'web') }
         end
       end
 
@@ -491,7 +441,37 @@ describe API::Internal::Base do
             allow(Gitlab::CurrentSettings).to receive(:receive_max_input_size) { 1 }
           end
 
-          it 'returns custom git config' do
+          it 'returns maxInputSize and partial clone git config' do
+            push(key, project)
+
+            expect(json_response["git_config_options"]).to be_present
+            expect(json_response["git_config_options"]).to include("receive.maxInputSize=1048576")
+            expect(json_response["git_config_options"]).to include("uploadpack.allowFilter=true")
+            expect(json_response["git_config_options"]).to include("uploadpack.allowAnySHA1InWant=true")
+          end
+
+          context 'when gitaly_upload_pack_filter feature flag is disabled' do
+            before do
+              stub_feature_flags(gitaly_upload_pack_filter: false)
+            end
+
+            it 'returns only maxInputSize and not partial clone git config' do
+              push(key, project)
+
+              expect(json_response["git_config_options"]).to be_present
+              expect(json_response["git_config_options"]).to include("receive.maxInputSize=1048576")
+              expect(json_response["git_config_options"]).not_to include("uploadpack.allowFilter=true")
+              expect(json_response["git_config_options"]).not_to include("uploadpack.allowAnySHA1InWant=true")
+            end
+          end
+        end
+
+        context 'when receive_max_input_size is empty' do
+          before do
+            allow(Gitlab::CurrentSettings).to receive(:receive_max_input_size) { nil }
+          end
+
+          it 'returns partial clone git config' do
             push(key, project)
 
             expect(json_response["git_config_options"]).to be_present
@@ -501,26 +481,14 @@ describe API::Internal::Base do
 
           context 'when gitaly_upload_pack_filter feature flag is disabled' do
             before do
-              stub_feature_flags(gitaly_upload_pack_filter: { enabled: false, thing: project })
+              stub_feature_flags(gitaly_upload_pack_filter: false)
             end
 
-            it 'does not include allowFilter and allowAnySha1InWant in the git config options' do
+            it 'returns an empty git config' do
               push(key, project)
 
-              expect(json_response["git_config_options"]).to be_present
-              expect(json_response["git_config_options"]).not_to include("uploadpack.allowFilter=true")
-              expect(json_response["git_config_options"]).not_to include("uploadpack.allowAnySHA1InWant=true")
+              expect(json_response["git_config_options"]).to be_empty
             end
-          end
-        end
-
-        context 'when receive_max_input_size is empty' do
-          it 'returns an empty git config' do
-            allow(Gitlab::CurrentSettings).to receive(:receive_max_input_size) { nil }
-
-            push(key, project)
-
-            expect(json_response["git_config_options"]).to be_empty
           end
         end
       end
@@ -947,6 +915,23 @@ describe API::Internal::Base do
 
         expect(response).to have_gitlab_http_status(:not_found)
         expect(json_response['status']).to be_falsy
+      end
+    end
+
+    context 'for design repositories' do
+      let(:gl_repository) { Gitlab::GlRepository::DESIGN.identifier_for_container(project) }
+
+      it 'does not allow access' do
+        post(api('/internal/allowed'),
+             params: {
+               key_id: key.id,
+               project: project.full_path,
+               gl_repository: gl_repository,
+               secret_token: secret_token,
+               protocol: 'ssh'
+             })
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
       end
     end
   end

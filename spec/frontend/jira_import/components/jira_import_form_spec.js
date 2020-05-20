@@ -2,11 +2,15 @@ import { GlAvatar, GlButton, GlFormSelect, GlLabel } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 import JiraImportForm from '~/jira_import/components/jira_import_form.vue';
 
+const importLabel = 'jira-import::MTG-1';
+const value = 'MTG';
+
 const mountComponent = ({ mountType } = {}) => {
   const mountFunction = mountType === 'mount' ? mount : shallowMount;
 
   return mountFunction(JiraImportForm, {
     propsData: {
+      importLabel,
       issuesPath: 'gitlab-org/gitlab-test/-/issues',
       jiraProjects: [
         {
@@ -22,12 +26,15 @@ const mountComponent = ({ mountType } = {}) => {
           value: 'MTG',
         },
       ],
+      value,
     },
   });
 };
 
 describe('JiraImportForm', () => {
   let wrapper;
+
+  const getSelectDropdown = () => wrapper.find(GlFormSelect);
 
   const getCancelButton = () => wrapper.findAll(GlButton).at(1);
 
@@ -40,7 +47,7 @@ describe('JiraImportForm', () => {
     it('is shown', () => {
       wrapper = mountComponent();
 
-      expect(wrapper.find(GlFormSelect).exists()).toBe(true);
+      expect(wrapper.contains(GlFormSelect)).toBe(true);
     });
 
     it('contains a list of Jira projects to select from', () => {
@@ -48,8 +55,7 @@ describe('JiraImportForm', () => {
 
       const optionItems = ['My Jira Project', 'My Second Jira Project', 'Migrate to GitLab'];
 
-      wrapper
-        .find(GlFormSelect)
+      getSelectDropdown()
         .findAll('option')
         .wrappers.forEach((optionEl, index) => {
           expect(optionEl.text()).toBe(optionItems[index]);
@@ -63,7 +69,7 @@ describe('JiraImportForm', () => {
     });
 
     it('shows a label which will be applied to imported Jira projects', () => {
-      expect(wrapper.find(GlLabel).attributes('title')).toBe('jira-import::KEY-1');
+      expect(wrapper.find(GlLabel).props('title')).toBe(importLabel);
     });
 
     it('shows information to the user', () => {
@@ -77,7 +83,7 @@ describe('JiraImportForm', () => {
     });
 
     it('shows an avatar for the Reporter', () => {
-      expect(wrapper.find(GlAvatar).exists()).toBe(true);
+      expect(wrapper.contains(GlAvatar)).toBe(true);
     });
 
     it('shows jira.issue.description.content for the Description', () => {
@@ -111,16 +117,19 @@ describe('JiraImportForm', () => {
     });
   });
 
-  it('emits an "initiateJiraImport" event with the selected dropdown value when submitted', () => {
-    const selectedOption = 'MTG';
+  it('emits an "input" event when the input select value changes', () => {
+    wrapper = mountComponent({ mountType: 'mount' });
 
+    getSelectDropdown().vm.$emit('change', value);
+
+    expect(wrapper.emitted('input')[0]).toEqual([value]);
+  });
+
+  it('emits an "initiateJiraImport" event with the selected dropdown value when submitted', () => {
     wrapper = mountComponent();
-    wrapper.setData({
-      selectedOption,
-    });
 
     wrapper.find('form').trigger('submit');
 
-    expect(wrapper.emitted('initiateJiraImport')[0]).toEqual([selectedOption]);
+    expect(wrapper.emitted('initiateJiraImport')[0]).toEqual([value]);
   });
 });

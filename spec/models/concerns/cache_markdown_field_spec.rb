@@ -223,6 +223,10 @@ describe CacheMarkdownField, :clean_gitlab_redis_cache do
       end
 
       context 'when the markdown cache is up to date' do
+        before do
+          thing.try(:save)
+        end
+
         it 'does not call #refresh_markdown_cache' do
           expect(thing).not_to receive(:refresh_markdown_cache)
 
@@ -256,6 +260,54 @@ describe CacheMarkdownField, :clean_gitlab_redis_cache do
     let(:klass) { ar_class }
 
     it_behaves_like 'a class with cached markdown fields'
+
+    describe '#attribute_invalidated?' do
+      let(:thing) { klass.create(description: markdown, description_html: html, cached_markdown_version: cache_version) }
+
+      it 'returns true when cached_markdown_version is different' do
+        thing.cached_markdown_version += 1
+
+        expect(thing.attribute_invalidated?(:description_html)).to eq(true)
+      end
+
+      it 'returns true when markdown is changed' do
+        thing.description = updated_markdown
+
+        expect(thing.attribute_invalidated?(:description_html)).to eq(true)
+      end
+
+      it 'returns true when both markdown and HTML are changed' do
+        thing.description = updated_markdown
+        thing.description_html = updated_html
+
+        expect(thing.attribute_invalidated?(:description_html)).to eq(true)
+      end
+
+      it 'returns false when there are no changes' do
+        expect(thing.attribute_invalidated?(:description_html)).to eq(false)
+      end
+    end
+
+    context 'when cache version is updated' do
+      let(:old_version) { cache_version - 1 }
+      let(:old_html) { '<p data-sourcepos="1:1-1:5" dir="auto" class="some-old-class"><code>Foo</code></p>' }
+
+      let(:thing) do
+        # This forces the record to have outdated HTML. We can't use `create` because the `before_create` hook
+        # would re-render the HTML to the latest version
+        klass.create.tap do |thing|
+          thing.update_columns(description: markdown, description_html: old_html, cached_markdown_version: old_version)
+        end
+      end
+
+      it 'correctly updates cached HTML even if refresh_markdown_cache is called before updating the attribute' do
+        thing.refresh_markdown_cache
+
+        thing.update(description: updated_markdown)
+
+        expect(thing.description_html).to eq(updated_html)
+      end
+    end
   end
 
   context 'for other classes' do

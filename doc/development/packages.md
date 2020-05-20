@@ -74,7 +74,7 @@ It is using the top-level group or namespace as the defining portion of the name
 
 To avoid name conflict for instance-level endpoints you will need to define a package naming convention
 that gives a way to identify the project that the package belongs to. This generally involves using the project
-id or full project path in the package name. See
+ID or full project path in the package name. See
 [Conan's naming convention](../user/packages/conan_repository/index.md#package-recipe-naming-convention) as an example.
 
 For group and project-level endpoints, naming can be less constrained and it will be up to the group and project
@@ -110,7 +110,7 @@ The way new package systems are integrated in GitLab is using an [MVC](https://a
 Required actions are all the additional requests that GitLab will need to handle so the corresponding package manager CLI can work properly. It could be a search feature or an endpoint providing meta information about a package. For example:
 
 - For NuGet, the search request was implemented during the first MVC iteration, to support Visual Studio.
-- For NPM, there is a metadata endpoint used by `npm` to get the tarball url.
+- For NPM, there is a metadata endpoint used by `npm` to get the tarball URL.
 
 For the first MVC iteration, it's recommended to stay at the project level of the [remote hierarchy](#remote-hierarchy). Other levels can be tackled with [future Merge Requests](#future-work).
 
@@ -139,7 +139,7 @@ During this phase, the idea is to collect as much information as possible about 
 - **Requests**: Which requests are needed to have a working MVC. Ideally, produce
   a list of all the requests needed for the MVC (including required actions). Further
   investigation could provide an example for each request with the request and the response bodies.
-- **Upload**: Carefully analyse how the upload process works. This will probably be the most
+- **Upload**: Carefully analyze how the upload process works. This will probably be the most
   complex request to implement. A detailed analysis is desired here as uploads can be
   encoded in different ways (body or multipart) and can even be in a totally different
   format (for example, a JSON structure where the package file is a Base64 value of
@@ -159,7 +159,7 @@ During this phase, the idea is to collect as much information as possible about 
 
 The analysis usually takes a full milestone to complete, though it's not impossible to start the implementation in the same milestone.
 
-In particular, the upload request can have some [requirements in the GitLab Workhorse project](#file-uploads). This project has a different release cycle than the rails backend. It's **strongly** recommended that you open an issue there as soon as the upload request analysis is done. This way GitLab Worhorse is already ready when the upload request is implemented on the rails backend.
+In particular, the upload request can have some [requirements in the GitLab Workhorse project](#file-uploads). This project has a different release cycle than the rails backend. It's **strongly** recommended that you open an issue there as soon as the upload request analysis is done. This way GitLab Workhorse is already ready when the upload request is implemented on the rails backend.
 
 ### Implementation
 
@@ -196,8 +196,8 @@ information like the file `name`, `side`, `sha1`, etc.
 
 If there is specific data necessary to be stored for only one package system support,
 consider creating a separate metadata model. See `packages_maven_metadata` table
-and `Packages::MavenMetadatum` model as an example for package specific data, and `packages_conan_file_metadata` table
-and `Packages::ConanFileMetadatum` model as an example for package file specific data.
+and `Packages::Maven::Metadatum` model as an example for package specific data, and `packages_conan_file_metadata` table
+and `Packages::Conan::FileMetadatum` model as an example for package file specific data.
 
 If there is package specific behavior for a given package manager, add those methods to the metadata models and
 delegate from the package model.

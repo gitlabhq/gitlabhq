@@ -15,6 +15,5 @@ build:
         export CI_APPLICATION_TAG=${CI_APPLICATION_TAG:-$CI_COMMIT_TAG}
       fi
     - /build/build.sh
-  only:
-    - branches
-    - tags
+  rules:
+    - if: '$CI_COMMIT_TAG || $CI_COMMIT_BRANCH'

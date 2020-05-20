@@ -8,7 +8,7 @@ class AddSamlProviderProhibitedOuterForks < ActiveRecord::Migration[5.2]
   disable_ddl_transaction!
 
   def up
-    add_column_with_default :saml_providers, :prohibited_outer_forks, :boolean, default: false, allow_null: true
+    add_column_with_default :saml_providers, :prohibited_outer_forks, :boolean, default: false, allow_null: true # rubocop:disable Migration/AddColumnWithDefault
   end
 
   def down

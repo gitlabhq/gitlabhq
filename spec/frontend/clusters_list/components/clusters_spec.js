@@ -1,46 +1,68 @@
-import Vuex from 'vuex';
-import { createLocalVue, mount } from '@vue/test-utils';
-import { GlTable, GlLoadingIcon } from '@gitlab/ui';
+import axios from '~/lib/utils/axios_utils';
 import Clusters from '~/clusters_list/components/clusters.vue';
-import mockData from '../mock_data';
-
-const localVue = createLocalVue();
-localVue.use(Vuex);
+import ClusterStore from '~/clusters_list/store';
+import MockAdapter from 'axios-mock-adapter';
+import { apiData } from '../mock_data';
+import { mount } from '@vue/test-utils';
+import { GlLoadingIcon, GlTable, GlPagination } from '@gitlab/ui';
 
 describe('Clusters', () => {
+  let mock;
+  let store;
   let wrapper;
 
-  const findTable = () => wrapper.find(GlTable);
+  const endpoint = 'some/endpoint';
+
   const findLoader = () => wrapper.find(GlLoadingIcon);
+  const findPaginatedButtons = () => wrapper.find(GlPagination);
+  const findTable = () => wrapper.find(GlTable);
   const findStatuses = () => findTable().findAll('.js-status');
 
-  const mountComponent = _state => {
-    const state = { clusters: mockData, endpoint: 'some/endpoint', ..._state };
-    const store = new Vuex.Store({
-      state,
-    });
+  const mockPollingApi = (response, body, header) => {
+    mock.onGet(`${endpoint}?page=${header['x-page']}`).reply(response, body, header);
+  };
 
-    wrapper = mount(Clusters, { localVue, store });
+  const mountWrapper = () => {
+    store = ClusterStore({ endpoint });
+    wrapper = mount(Clusters, { store });
+    return axios.waitForAll();
   };
 
   beforeEach(() => {
-    mountComponent({ loading: false });
+    mock = new MockAdapter(axios);
+    mockPollingApi(200, apiData, {
+      'x-total': apiData.clusters.length,
+      'x-per-page': 20,
+      'x-page': 1,
+    });
+
+    return mountWrapper();
+  });
+
+  afterEach(() => {
+    wrapper.destroy();
+    mock.restore();
   });
 
   describe('clusters table', () => {
-    it('displays a loader instead of the table while loading', () => {
-      mountComponent({ loading: true });
-      expect(findLoader().exists()).toBe(true);
-      expect(findTable().exists()).toBe(false);
+    describe('when data is loading', () => {
+      beforeEach(() => {
+        wrapper.vm.$store.state.loading = true;
+        return wrapper.vm.$nextTick();
+      });
+
+      it('displays a loader instead of the table while loading', () => {
+        expect(findLoader().exists()).toBe(true);
+        expect(findTable().exists()).toBe(false);
+      });
     });
 
     it('displays a table component', () => {
       expect(findTable().exists()).toBe(true);
-      expect(findTable().exists()).toBe(true);
     });
 
     it('renders the correct table headers', () => {
-      const tableHeaders = wrapper.vm.$options.fields;
+      const tableHeaders = wrapper.vm.fields;
       const headers = findTable().findAll('th');
 
       expect(headers.length).toBe(tableHeaders.length);
@@ -62,7 +84,8 @@ describe('Clusters', () => {
       ${'unreachable'}            | ${'bg-danger'}  | ${1}
       ${'authentication_failure'} | ${'bg-warning'} | ${2}
       ${'deleting'}               | ${null}         | ${3}
-      ${'connected'}              | ${'bg-success'} | ${4}
+      ${'created'}                | ${'bg-success'} | ${4}
+      ${'default'}                | ${'bg-white'}   | ${5}
     `('renders a status for each cluster', ({ statusName, className, lineNumber }) => {
       const statuses = findStatuses();
       const status = statuses.at(lineNumber);
@@ -73,6 +96,49 @@ describe('Clusters', () => {
       } else {
         expect(status.find(GlLoadingIcon).exists()).toBe(true);
       }
+    });
+  });
+
+  describe('pagination', () => {
+    const perPage = apiData.clusters.length;
+    const totalFirstPage = 100;
+    const totalSecondPage = 500;
+
+    beforeEach(() => {
+      mockPollingApi(200, apiData, {
+        'x-total': totalFirstPage,
+        'x-per-page': perPage,
+        'x-page': 1,
+      });
+      return mountWrapper();
+    });
+
+    it('should load to page 1 with header values', () => {
+      const buttons = findPaginatedButtons();
+
+      expect(buttons.props('perPage')).toBe(perPage);
+      expect(buttons.props('totalItems')).toBe(totalFirstPage);
+      expect(buttons.props('value')).toBe(1);
+    });
+
+    describe('when updating currentPage', () => {
+      beforeEach(() => {
+        mockPollingApi(200, apiData, {
+          'x-total': totalSecondPage,
+          'x-per-page': perPage,
+          'x-page': 2,
+        });
+        wrapper.setData({ currentPage: 2 });
+        return axios.waitForAll();
+      });
+
+      it('should change pagination when currentPage changes', () => {
+        const buttons = findPaginatedButtons();
+
+        expect(buttons.props('perPage')).toBe(perPage);
+        expect(buttons.props('totalItems')).toBe(totalSecondPage);
+        expect(buttons.props('value')).toBe(2);
+      });
     });
   });
 });

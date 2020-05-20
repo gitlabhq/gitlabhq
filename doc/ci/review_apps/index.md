@@ -1,4 +1,7 @@
 ---
+stage: Release
+group: Progressive Delivery
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 type: reference
 ---
 
@@ -29,7 +32,7 @@ In the above example:
 
 ## How Review Apps work
 
-A Review App is a mapping of a branch with an [environment](../environments.md).
+A Review App is a mapping of a branch with an [environment](../environments/index.md).
 Access to the Review App is made available as a link on the [merge request](../../user/project/merge_requests.md) relevant to the branch.
 
 The following is an example of a merge request with an environment set dynamically.
@@ -49,7 +52,7 @@ After adding Review Apps to your workflow, you follow the branched Git flow. Tha
 
 ## Configuring Review Apps
 
-Review Apps are built on [dynamic environments](../environments.md#configuring-dynamic-environments), which allow you to dynamically create a new environment for each branch.
+Review Apps are built on [dynamic environments](../environments/index.md#configuring-dynamic-environments), which allow you to dynamically create a new environment for each branch.
 
 The process of configuring Review Apps is as follows:
 
@@ -58,7 +61,7 @@ The process of configuring Review Apps is as follows:
 1. Set up a job in `.gitlab-ci.yml` that uses the [predefined CI environment variable](../variables/README.md) `${CI_COMMIT_REF_NAME}`
    to create dynamic environments and restrict it to run only on branches.
    Alternatively, you can get a YML template for this job by [enabling review apps](#enable-review-apps-button) for your project.
-1. Optionally, set a job that [manually stops](../environments.md#stopping-an-environment) the Review Apps.
+1. Optionally, set a job that [manually stops](../environments/index.md#stopping-an-environment) the Review Apps.
 
 ### Enable Review Apps button
 
@@ -82,7 +85,7 @@ you can copy and paste into `.gitlab-ci.yml` as a starting point. To do so:
 
 ## Review Apps auto-stop
 
-See how to [configure Review Apps environments to expire and auto-stop](../environments.md#environments-auto-stop)
+See how to [configure Review Apps environments to expire and auto-stop](../environments/index.md#environments-auto-stop)
 after a given period of time.
 
 ## Review Apps examples
@@ -100,7 +103,7 @@ See also the video [Demo: Cloud Native Development with GitLab](https://www.yout
 > Introduced in GitLab 8.17. In GitLab 11.5, the file links are available in the merge request widget.
 
 Route Maps allows you to go directly from source files
-to public pages on the [environment](../environments.md) defined for
+to public pages on the [environment](../environments/index.md) defined for
 Review Apps.
 
 Once set up, the review app link in the merge request
@@ -205,7 +208,7 @@ if [route maps](#route-maps) are configured in the project.
 
 ![review button](img/review_button.png)
 
-The provided script should be added to the `<head>` of you application and
+The provided script should be added to the `<head>` of your application and
 consists of some project and merge request specific values. Here's what it
 looks like:
 
@@ -267,7 +270,7 @@ to your review app.
 ​After determining the ID for the merge request to link to a visual review app, you
 can supply the ID by either:​​
 
-- Hardcoding it in the script tag via the data attribute `data-merge-request-id` of the app.
+- Hard-coding it in the script tag via the data attribute `data-merge-request-id` of the app.
 - Dynamically adding the `data-merge-request-id` value during the build of the app.
 - Supplying it manually through the visual review form in the app.
 
@@ -278,7 +281,7 @@ can supply the ID by either:​​
 To enable visual reviews for private and internal projects, set the
 [`data-require-auth` variable](#configuring-visual-reviews) to `true`. When enabled,
 the user must enter a [personal access token](../../user/profile/personal_access_tokens.md)
-with `read_api` scope before submitting feedback.
+with `api` scope before submitting feedback.
 
 ### Using Visual Reviews
 
@@ -301,4 +304,4 @@ automatically in the respective merge request.
 
 ## Limitations
 
-Review App limitations are the same as [environments limitations](../environments.md#limitations).
+Review App limitations are the same as [environments limitations](../environments/index.md#limitations).

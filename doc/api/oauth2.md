@@ -4,7 +4,7 @@ This document covers using the [OAuth2](https://oauth.net/2/) protocol to allow
 other services to access GitLab resources on user's behalf.
 
 If you want GitLab to be an OAuth authentication service provider to sign into
-other services, see the [OAuth2 provider](../integration/oauth_provider.md)
+other services, see the [OAuth2 authentication service provider](../integration/oauth_provider.md)
 documentation. This functionality is based on the
 [doorkeeper Ruby gem](https://github.com/doorkeeper-gem/doorkeeper).
 

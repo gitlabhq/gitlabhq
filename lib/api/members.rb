@@ -160,3 +160,5 @@ module API
     end
   end
 end
+
+API::Members.prepend_if_ee('EE::API::Members')

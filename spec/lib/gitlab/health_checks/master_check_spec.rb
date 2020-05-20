@@ -6,10 +6,9 @@ require_relative './simple_check_shared'
 describe Gitlab::HealthChecks::MasterCheck do
   let(:result_class) { Gitlab::HealthChecks::Result }
 
-  SUCCESS_CODE = 100
-  FAILURE_CODE = 101
-
   before do
+    stub_const('SUCCESS_CODE', 100)
+    stub_const('FAILURE_CODE', 101)
     described_class.register_master
   end
 

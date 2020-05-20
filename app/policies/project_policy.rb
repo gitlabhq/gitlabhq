@@ -11,6 +11,7 @@ class ProjectPolicy < BasePolicy
     milestone
     snippet
     wiki
+    design
     note
     pipeline
     pipeline_schedule
@@ -83,9 +84,24 @@ class ProjectPolicy < BasePolicy
     project.merge_requests_allowing_push_to_user(user).any?
   end
 
+  desc "Deploy token with read_package_registry scope"
+  condition(:read_package_registry_deploy_token) do
+    user.is_a?(DeployToken) && user.has_access_to?(project) && user.read_package_registry
+  end
+
+  desc "Deploy token with write_package_registry scope"
+  condition(:write_package_registry_deploy_token) do
+    user.is_a?(DeployToken) && user.has_access_to?(project) && user.write_package_registry
+  end
+
   with_scope :subject
   condition(:forking_allowed) do
     @subject.feature_available?(:forking, @user)
+  end
+
+  with_scope :subject
+  condition(:metrics_dashboard_allowed) do
+    feature_available?(:metrics_dashboard)
   end
 
   with_scope :global
@@ -100,6 +116,11 @@ class ProjectPolicy < BasePolicy
       @subject.external_authorization_classification_label,
       @subject.full_path
     )
+  end
+
+  with_scope :subject
+  condition(:design_management_disabled) do
+    !@subject.design_management_enabled?
   end
 
   # We aren't checking `:read_issue` or `:read_merge_request` in this case
@@ -134,6 +155,7 @@ class ProjectPolicy < BasePolicy
     wiki
     builds
     pages
+    metrics_dashboard
   ]
 
   features.each do |f|
@@ -174,6 +196,7 @@ class ProjectPolicy < BasePolicy
     enable :set_issue_updated_at
     enable :set_note_created_at
     enable :set_emails_disabled
+    enable :set_show_default_award_emojis
   end
 
   rule { can?(:guest_access) }.policy do
@@ -218,6 +241,7 @@ class ProjectPolicy < BasePolicy
     enable :read_build
     enable :read_container_image
     enable :read_pipeline
+    enable :read_pipeline_schedule
     enable :read_environment
     enable :read_deployment
     enable :read_merge_request
@@ -225,6 +249,7 @@ class ProjectPolicy < BasePolicy
     enable :update_sentry_issue
     enable :read_prometheus
     enable :read_metrics_dashboard_annotation
+    enable :metrics_dashboard
   end
 
   # We define `:public_user_access` separately because there are cases in gitlab-ee
@@ -247,6 +272,21 @@ class ProjectPolicy < BasePolicy
     enable :fork_project
   end
 
+  rule { metrics_dashboard_disabled }.policy do
+    prevent(:metrics_dashboard)
+  end
+
+  rule { can?(:metrics_dashboard) }.policy do
+    enable :read_prometheus
+    enable :read_environment
+    enable :read_deployment
+  end
+
+  rule { ~anonymous & can?(:metrics_dashboard) }.policy do
+    enable :create_metrics_user_starred_dashboard
+    enable :read_metrics_user_starred_dashboard
+  end
+
   rule { owner | admin | guest | group_member }.prevent :request_access
   rule { ~request_access_enabled }.prevent :request_access
 
@@ -262,7 +302,6 @@ class ProjectPolicy < BasePolicy
     enable :update_commit_status
     enable :create_build
     enable :update_build
-    enable :read_pipeline_schedule
     enable :create_merge_request_from
     enable :create_wiki
     enable :push_code
@@ -277,9 +316,14 @@ class ProjectPolicy < BasePolicy
     enable :update_deployment
     enable :create_release
     enable :update_release
+    enable :daily_statistics
     enable :create_metrics_dashboard_annotation
     enable :delete_metrics_dashboard_annotation
     enable :update_metrics_dashboard_annotation
+    enable :read_alert_management_alert
+    enable :update_alert_management_alert
+    enable :create_design
+    enable :destroy_design
   end
 
   rule { can?(:developer_access) & user_confirmed? }.policy do
@@ -315,7 +359,6 @@ class ProjectPolicy < BasePolicy
     enable :create_environment_terminal
     enable :destroy_release
     enable :destroy_artifacts
-    enable :daily_statistics
     enable :admin_operations
     enable :read_deploy_token
     enable :create_deploy_token
@@ -323,6 +366,18 @@ class ProjectPolicy < BasePolicy
     enable :destroy_deploy_token
     enable :read_prometheus_alerts
     enable :admin_terraform_state
+    enable :create_freeze_period
+    enable :read_freeze_period
+    enable :update_freeze_period
+    enable :destroy_freeze_period
+  end
+
+  rule { public_project & metrics_dashboard_allowed }.policy do
+    enable :metrics_dashboard
+  end
+
+  rule { internal_access & metrics_dashboard_allowed }.policy do
+    enable :metrics_dashboard
   end
 
   rule { (mirror_available & can?(:admin_project)) | admin }.enable :admin_remote_mirror
@@ -374,9 +429,25 @@ class ProjectPolicy < BasePolicy
   rule { builds_disabled | repository_disabled }.policy do
     prevent(*create_read_update_admin_destroy(:build))
     prevent(*create_read_update_admin_destroy(:pipeline_schedule))
-    prevent(*create_read_update_admin_destroy(:environment))
     prevent(*create_read_update_admin_destroy(:cluster))
     prevent(*create_read_update_admin_destroy(:deployment))
+  end
+
+  # Enabling `read_environment` specifically for the condition of `metrics_dashboard_allowed` is
+  # necessary due to the route for metrics dashboard requiring an environment id.
+  # This will be addressed in https://gitlab.com/gitlab-org/gitlab/-/issues/213833 when
+  # environments and metrics are decoupled and these rules will be removed.
+
+  rule { (builds_disabled | repository_disabled) & ~metrics_dashboard_allowed}.policy do
+    prevent(*create_read_update_admin_destroy(:environment))
+  end
+
+  rule { (builds_disabled | repository_disabled) & metrics_dashboard_allowed}.policy do
+    prevent :create_environment
+    prevent :update_environment
+    prevent :admin_environment
+    prevent :destroy_environment
+    enable :read_environment
   end
 
   # There's two separate cases when builds_disabled is true:
@@ -395,6 +466,7 @@ class ProjectPolicy < BasePolicy
     prevent :fork_project
     prevent :read_commit_status
     prevent :read_pipeline
+    prevent :read_pipeline_schedule
     prevent(*create_read_update_admin_destroy(:release))
   end
 
@@ -421,6 +493,7 @@ class ProjectPolicy < BasePolicy
     enable :read_merge_request
     enable :read_note
     enable :read_pipeline
+    enable :read_pipeline_schedule
     enable :read_commit_status
     enable :read_container_image
     enable :download_code
@@ -439,6 +512,7 @@ class ProjectPolicy < BasePolicy
 
   rule { public_builds & can?(:guest_access) }.policy do
     enable :read_pipeline
+    enable :read_pipeline_schedule
   end
 
   # These rules are included to allow maintainers of projects to push to certain
@@ -480,6 +554,27 @@ class ProjectPolicy < BasePolicy
   end
 
   rule { admin }.enable :change_repository_storage
+
+  rule { can?(:read_issue) }.policy do
+    enable :read_design
+  end
+
+  # Design abilities could also be prevented in the issue policy.
+  rule { design_management_disabled }.policy do
+    prevent :read_design
+    prevent :create_design
+    prevent :destroy_design
+  end
+
+  rule { read_package_registry_deploy_token }.policy do
+    enable :read_package
+    enable :read_project
+  end
+
+  rule { write_package_registry_deploy_token }.policy do
+    enable :create_package
+    enable :read_project
+  end
 
   private
 

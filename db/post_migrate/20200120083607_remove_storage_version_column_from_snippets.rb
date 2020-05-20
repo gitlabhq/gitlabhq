@@ -19,7 +19,7 @@ class RemoveStorageVersionColumnFromSnippets < ActiveRecord::Migration[5.2]
   def down
     return if column_exists?(:snippets, :storage_version)
 
-    add_column_with_default(
+    add_column_with_default( # rubocop:disable Migration/AddColumnWithDefault
       :snippets,
       :storage_version,
       :integer,

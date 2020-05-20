@@ -18,11 +18,6 @@ module Tags
           .new(project, current_user, tag: tag_name)
           .execute
 
-        push_data = build_push_data(tag)
-        EventCreateService.new.push(project, current_user, push_data)
-        project.execute_hooks(push_data.dup, :tag_push_hooks)
-        project.execute_services(push_data.dup, :tag_push_hooks)
-
         success('Tag was removed')
       else
         error('Failed to remove tag')
@@ -37,15 +32,6 @@ module Tags
 
     def success(message)
       super().merge(message: message)
-    end
-
-    def build_push_data(tag)
-      Gitlab::DataBuilder::Push.build(
-        project: project,
-        user: current_user,
-        oldrev: tag.dereferenced_target.sha,
-        newrev: Gitlab::Git::BLANK_SHA,
-        ref: "#{Gitlab::Git::TAG_REF_PREFIX}#{tag.name}")
     end
   end
 end

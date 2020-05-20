@@ -1,0 +1,5 @@
+---
+title: Return validation errors for invalid pod name or container name when viewing pod logs
+merge_request: 30165
+author: Sashi Kumar
+type: changed

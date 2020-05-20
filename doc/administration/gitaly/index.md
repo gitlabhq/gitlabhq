@@ -10,6 +10,11 @@ On this page, *Gitaly server* refers to a standalone node that only runs Gitaly
 and *Gitaly client* is a GitLab Rails app node that runs all other processes
 except Gitaly.
 
+CAUTION: **Caution:**
+From GitLab 13.0, using NFS for Git repositories is deprecated. In GitLab 14.0,
+support for NFS for Git repositories is scheduled to be removed. Upgrade to
+[Gitaly Cluster](praefect.md) as soon as possible.
+
 ## Architecture
 
 Here's a high-level architecture overview of how Gitaly is used.
@@ -69,7 +74,7 @@ The following list depicts what the network architecture of Gitaly is:
 - A GitLab server can use one or more Gitaly servers.
 - Gitaly addresses must be specified in such a way that they resolve
   correctly for ALL Gitaly clients.
-- Gitaly clients are: Unicorn, Sidekiq, GitLab Workhorse,
+- Gitaly clients are: Puma/Unicorn, Sidekiq, GitLab Workhorse,
   GitLab Shell, Elasticsearch Indexer, and Gitaly itself.
 - A Gitaly server must be able to make RPC calls **to itself** via its own
   `(Gitaly address, Gitaly token)` pair as specified in `/config/gitlab.yml`.
@@ -101,13 +106,16 @@ Omnibus GitLab or install it from source:
   **_do not_** provide the `EXTERNAL_URL=` value.
 - From source: [Install Gitaly](../../install/installation.md#install-gitaly).
 
-### 2. Client side token configuration
+### 2. Authentication
 
-Configure a token on the instance that runs the GitLab Rails application.
+Gitaly and GitLab use two shared secrets for authentication, one to authenticate gRPC requests
+to Gitaly, and a second for authentication callbacks from GitLab-Shell to the GitLab internal API.
 
 **For Omnibus GitLab**
 
-1. On the client node(s), edit `/etc/gitlab/gitlab.rb`:
+To configure the Gitaly token:
+
+1. On the client server, edit `/etc/gitlab/gitlab.rb`:
 
    ```ruby
    gitlab_rails['gitaly_token'] = 'abc123secret'
@@ -115,9 +123,42 @@ Configure a token on the instance that runs the GitLab Rails application.
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
 
+1. On the Gitaly server, edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitaly['auth_token'] = 'abc123secret'
+   ```
+
+1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+
+There are two ways to configure the GitLab-Shell token:
+
+1. Copy `/etc/gitlab/gitlab-secrets.json` from the client server to same path on the Gitaly server.
+1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+
+**OR**
+
+1. On the client server, edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_shell['secret_token'] = 'shellsecret'
+   ```
+
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+
+1. On the Gitaly server, edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_shell['secret_token'] = 'shellsecret'
+   ```
+
+1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+
 **For installations from source**
 
-1. On the client node(s), edit `/home/git/gitlab/config/gitlab.yml`:
+1. Copy `/home/git/gitlab/.gitlab_shell_secret` from the client server to the same path on the Gitaly
+server.
+1. On the client server, edit `/home/git/gitlab/config/gitlab.yml`:
 
    ```yaml
    gitlab:
@@ -138,12 +179,6 @@ documentation on configuring Gitaly
 authentication](https://gitlab.com/gitlab-org/gitaly/blob/master/doc/configuration/README.md#authentication)
 .
 
-Gitaly must trigger some callbacks to GitLab via GitLab Shell. As a result,
-the GitLab Shell secret must be the same between the other GitLab servers and
-the Gitaly server. The easiest way to accomplish this is to copy `/etc/gitlab/gitlab-secrets.json`
-from an existing GitLab server to the Gitaly server. Without this shared secret,
-Git operations in GitLab will result in an API error.
-
 **For Omnibus GitLab**
 
 1. Edit `/etc/gitlab/gitlab.rb`:
@@ -160,17 +195,17 @@ Git operations in GitLab will result in an API error.
    postgresql['enable'] = false
    redis['enable'] = false
    nginx['enable'] = false
-   unicorn['enable'] = false
+   puma['enable'] = false
    sidekiq['enable'] = false
    gitlab_workhorse['enable'] = false
    grafana['enable'] = false
 
-   # If you run a seperate monitoring node you can disable these services
+   # If you run a separate monitoring node you can disable these services
    alertmanager['enable'] = false
    prometheus['enable'] = false
 
-   # If you don't run a seperate monitoring node you can
-   # Enable Prometheus access & disable these extra services
+   # If you don't run a separate monitoring node you can
+   # enable Prometheus access & disable these extra services.
    # This makes Prometheus listen on all interfaces. You must use firewalls to restrict access to this address/port.
    # prometheus['listen_address'] = '0.0.0.0:9090'
    # prometheus['monitor_kubernetes'] = false
@@ -188,10 +223,6 @@ Git operations in GitLab will result in an API error.
    # balancer.
    # Don't forget to copy `/etc/gitlab/gitlab-secrets.json` from web server to Gitaly server.
    gitlab_rails['internal_api_url'] = 'https://gitlab.example.com'
-
-   # Authentication token to ensure only authorized servers can communicate with
-   # Gitaly server
-   gitaly['auth_token'] = 'abc123secret'
 
    # Make Gitaly accept connections on all network interfaces. You must use
    # firewalls to restrict access to this address/port.
@@ -230,6 +261,8 @@ Git operations in GitLab will result in an API error.
    ```
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+1. Run `sudo /opt/gitlab/embedded/service/gitlab-shell/bin/check -config /opt/gitlab/embedded/service/gitlab-shell/config.yml`
+to confirm that Gitaly can perform callbacks to the internal API.
 
 **For installations from source**
 
@@ -271,7 +304,15 @@ Git operations in GitLab will result in an API error.
    path = '/srv/gitlab/git-data/repositories'
    ```
 
+1. On each Gitaly server, edit `/home/git/gitlab-shell/config.yml`:
+
+   ```yaml
+   gitlab_url: https://gitlab.example.com
+   ```
+
 1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source).
+1. Run `sudo -u git /home/git/gitlab-shell/bin/check -config /home/git/gitlab-shell/config.yml`
+to confirm that Gitaly can perform callbacks to the internal API.
 
 ### 4. Converting clients to use the Gitaly server
 
@@ -302,11 +343,10 @@ can read and write to `/mnt/gitlab/storage2`.
      'storage1' => { 'gitaly_address' => 'tcp://gitaly1.internal:8075' },
      'storage2' => { 'gitaly_address' => 'tcp://gitaly2.internal:8075' },
    })
-
-   gitlab_rails['gitaly_token'] = 'abc123secret'
    ```
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+1. Run `sudo gitlab-rake gitlab:gitaly:check` to confirm the client can connect to Gitaly.
 1. Tail the logs to see the requests:
 
    ```shell
@@ -330,9 +370,6 @@ can read and write to `/mnt/gitlab/storage2`.
          storage2:
            gitaly_address: tcp://gitaly2.internal:8075
            path: /some/dummy/path
-
-     gitaly:
-       token: 'abc123secret'
    ```
 
    NOTE: **Note:**
@@ -341,6 +378,8 @@ can read and write to `/mnt/gitlab/storage2`.
    [this issue](https://gitlab.com/gitlab-org/gitaly/issues/1282) is resolved.
 
 1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source).
+1. Run `sudo -u git -H bundle exec rake gitlab:gitaly:check RAILS_ENV=production` to
+confirm the client can connect to Gitaly.
 1. Tail the logs to see the requests:
 
    ```shell
@@ -397,9 +436,9 @@ with a Gitaly instance that listens for secure connections you will need to use 
 scheme in the `gitaly_address` of the corresponding storage entry in the GitLab configuration.
 
 You will need to bring your own certificates as this isn't provided automatically.
-The certificate to be used needs to be installed on all Gitaly nodes, and the
-certificate (or CA of certificate) on all
-client nodes that communicate with it following the procedure described in
+The certificate, or its certificate authority, must be installed on all Gitaly
+nodes (including the Gitaly node using the certificate) and on all client nodes
+that communicate with it following the procedure described in
 [GitLab custom certificate configuration](https://docs.gitlab.com/omnibus/settings/ssl.html#install-custom-public-certificates).
 
 NOTE: **Note**
@@ -430,16 +469,31 @@ To configure Gitaly with TLS:
    })
 
    gitlab_rails['gitaly_token'] = 'abc123secret'
+   gitlab_shell['secret_token'] = 'shellsecret'
    ```
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) on client node(s).
+1. On the client node(s), copy the cert into the `/etc/gitlab/trusted-certs`:
+
+  ```shell
+  sudo cp cert.pem /etc/gitlab/trusted-certs/
+  ```
+
 1. On the Gitaly server, create the `/etc/gitlab/ssl` directory and copy your key and certificate there:
 
    ```shell
    sudo mkdir -p /etc/gitlab/ssl
    sudo chmod 755 /etc/gitlab/ssl
    sudo cp key.pem cert.pem /etc/gitlab/ssl/
+   sudo chmod 644 key.pem cert.pem
    ```
+
+1. Copy the cert to `/etc/gitlab/trusted-certs` so Gitaly will trust the cert when
+calling into itself:
+
+  ```shell
+  sudo cp /etc/gitlab/ssl/cert.pem /etc/gitlab/trusted-certs/
+  ```
 
 1. On the Gitaly server node(s), edit `/etc/gitlab/gitlab.rb` and add:
 
@@ -462,6 +516,13 @@ To configure Gitaly with TLS:
    on Gitaly server node(s).
 
 **For installations from source**
+
+1. On the client node(s), add the cert to the system trusted certs:
+
+   ```shell
+   sudo cp cert.pem /usr/local/share/ca-certificates/gitaly.crt
+   sudo update-ca-certificates
+   ```
 
 1. On the client node(s), edit `/home/git/gitlab/config/gitlab.yml` as follows:
 
@@ -488,13 +549,32 @@ To configure Gitaly with TLS:
    data will be stored in this folder. This will no longer be necessary after
    [this issue](https://gitlab.com/gitlab-org/gitaly/issues/1282) is resolved.
 
-1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source) on client node(s).
+1. Save the file and[restart GitLab](../restart_gitlab.md#installations-from-source)
+on client node(s).
+1. Copy `/home/git/gitlab/.gitlab_shell_secret` from the client server to the same
+path on the Gitaly server.
+1. On the Gitaly server, create or edit `/etc/default/gitlab` and add:
+
+   ```shell
+   export SSL_CERT_DIR=/etc/gitlab/ssl
+   ```
+
+1. Save the file.
 1. Create the `/etc/gitlab/ssl` directory and copy your key and certificate there:
 
    ```shell
    sudo mkdir -p /etc/gitlab/ssl
-   sudo chmod 700 /etc/gitlab/ssl
+   sudo chmod 755 /etc/gitlab/ssl
    sudo cp key.pem cert.pem /etc/gitlab/ssl/
+   sudo chmod 644 key.pem cert.pem
+   ```
+
+1. On the Gitaly server, add the cert to the system trusted certs so Gitaly will trust it
+when calling into itself:
+
+   ```shell
+   sudo cp cert.pem /usr/local/share/ca-certificates/gitaly.crt
+   sudo update-ca-certificates
    ```
 
 1. On the Gitaly server node(s), edit `/home/git/gitaly/config.toml` and add:
@@ -781,7 +861,7 @@ two checks. The result of both of these checks is cached.
     see if we can access filesystem underneath the Gitaly server
     directly. If so, use the Rugged patch.
 
-To see if GitLab Rails can access the repo filesystem directly, we use
+To see if GitLab Rails can access the repository filesystem directly, we use
 the following heuristic:
 
 - Gitaly ensures that the filesystem has a metadata file in its root

@@ -3,6 +3,8 @@
 module QA
   context 'Plan', :orchestrated, :smtp do
     describe 'Email Notification' do
+      include Support::Api
+
       let(:user) do
         Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_username_1, Runtime::Env.gitlab_qa_password_1)
       end

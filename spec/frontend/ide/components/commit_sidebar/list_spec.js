@@ -21,8 +21,6 @@ describe('Multi-file editor commit sidebar list', () => {
       keyPrefix: 'staged',
     });
 
-    vm.$store.state.rightPanelCollapsed = false;
-
     vm.$mount();
   });
 

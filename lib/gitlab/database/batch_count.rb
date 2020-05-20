@@ -91,10 +91,16 @@ module Gitlab
 
       def batch_fetch(start, finish, mode)
         # rubocop:disable GitlabSecurity/PublicSend
-        @relation.select(@column).public_send(mode).where(@column => start..(finish - 1)).count
+        @relation.select(@column).public_send(mode).where(between_condition(start, finish)).count
       end
 
       private
+
+      def between_condition(start, finish)
+        return @column.between(start..(finish - 1)) if @column.is_a?(Arel::Attributes::Attribute)
+
+        { @column => start..(finish - 1) }
+      end
 
       def actual_start(start)
         start || @relation.minimum(@column) || 0

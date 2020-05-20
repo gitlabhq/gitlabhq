@@ -19,7 +19,11 @@ module Gitlab
               .execute(Gitlab::ImportExport::AfterExportStrategies::MoveFileStrategy.new(archive_path: file_path))
           end
 
+          return error(project.import_export_shared.errors.join(', ')) if project.import_export_shared.errors.any?
+
           success('Done!')
+        rescue Gitlab::ImportExport::Error => e
+          error(e.message)
         end
 
         private
@@ -32,8 +36,13 @@ module Gitlab
 
         def with_export
           with_request_store do
-            ::Gitlab::GitalyClient.allow_n_plus_1_calls do
-              measurement_enabled? ? measurement.with_measuring { yield } : yield
+            # We are disabling ObjectStorage for `export`
+            # since when direct upload is enabled, remote storage will be used
+            # and Gitlab::ImportExport::AfterExportStrategies::MoveFileStrategy will fail to copy exported archive
+            disable_upload_object_storage do
+              ::Gitlab::GitalyClient.allow_n_plus_1_calls do
+                yield
+              end
             end
           end
         end

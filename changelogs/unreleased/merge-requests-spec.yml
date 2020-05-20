@@ -1,0 +1,5 @@
+---
+title: Replace let! with let_it_be in merge request spec
+merge_request: 31909
+author: Rajendra Kadam
+type: fixed

@@ -24,7 +24,7 @@ Git is really deleted](https://git-scm.com/book/en/v2/Git-Internals-Maintenance-
 
 This means that until Git automatically cleans detached commits (which cannot be
 accessed by branch or tag) it will be possible to view them with `git reflog` command
-and access them with direct commit-id. Read more about _[redoing the undo](#redoing-the-undo)_ on the section below.
+and access them with direct commit ID. Read more about _[redoing the undo](#redoing-the-undo)_ in the section below.
 
 ## Introduction
 
@@ -36,12 +36,12 @@ a file into the **staged** state, which is then committed (`git commit`) to your
 local repository. After that, file can be shared with other developers (`git push`).
 Here's what we'll cover in this tutorial:
 
-- [Undo local changes](#undo-local-changes) which were not pushed to remote repository:
+- [Undo local changes](#undo-local-changes) which were not pushed to a remote repository:
 
   - Before you commit, in both unstaged and staged state.
   - After you committed.
 
-- Undo changes after they are pushed to remote repository:
+- Undo changes after they are pushed to a remote repository:
 
   - [Without history modification](#undo-remote-changes-without-changing-history) (preferred way).
   - [With history modification](#undo-remote-changes-with-modifying-history) (requires
@@ -68,7 +68,7 @@ joined development of the same feature by multiple developers by default.
 
 When multiple developers develop the same feature on the same branch, clashing
 with every synchronization is unavoidable, but a proper or chosen Git Workflow will
-prevent that anything is lost or out of sync when feature is complete.
+prevent that anything is lost or out of sync when the feature is complete.
 
 You can also
 read through this blog post on [Git Tips & Tricks](https://about.gitlab.com/blog/2016/12/08/git-tips-and-tricks/)
@@ -83,7 +83,7 @@ can be on various stages and each stage has a different approach on how to tackl
 ### Unstaged local changes (before you commit)
 
 When a change is made, but it is not added to the staged tree, Git itself
-proposes a solution to discard changes to certain file.
+proposes a solution to discard changes to a certain file.
 
 Suppose you edited a file to change the content using your favorite editor:
 
@@ -233,7 +233,7 @@ last known good commit (we assume `A`) and first known bad commit (where bug was
 git bisect A..E
 ```
 
-Bisect will provide us with commit-id of the middle commit to test, and then guide us
+Bisect will provide us with commit ID of the middle commit to test, and then guide us
 through simple bisection process. You can read more about it [in official Git Tools](https://git-scm.com/book/en/v2/Git-Tools-Debugging-with-Git)
 In our example we will end up with commit `B`, that introduced bug/error. We have
 4 options on how to remove it (or part of it) from our repository.
@@ -332,7 +332,7 @@ history](#how-modifying-history-is-done)
 Sometimes you realize that the changes you undid were useful and you want them
 back. Well because of first paragraph you are in luck. Command `git reflog`
 enables you to *recall* detached local commits by referencing or applying them
-via commit-id. Although, do not expect to see really old commits in reflog, because
+via commit ID. Although, do not expect to see really old commits in reflog, because
 Git regularly [cleans the commits which are *unreachable* by branches or tags](https://git-scm.com/book/en/v2/Git-Internals-Maintenance-and-Data-Recovery).
 
 To view repository history and to track older commits you can use below command:
@@ -353,7 +353,7 @@ eb37e74 HEAD@{6}: rebase -i (pick): Commit C
 6e43d59 HEAD@{16}: commit: Commit B
 ```
 
-Output of command shows repository history. In first column there is commit-id,
+Output of command shows repository history. In first column there is commit ID,
 in following column, number next to `HEAD` indicates how many commits ago something
 was made, after that indicator of action that was made (commit, rebase, merge, ...)
 and then on end description of that action.
@@ -393,7 +393,7 @@ passwords, SSH keys, etc. It is and should not be used to hide mistakes, as
 it will make it harder to debug in case there are some other bugs. The main
 reason for this is that you loose the real development progress. **Also keep in
 mind that, even with modified history, commits are just detached and can still be
-accessed through commit-id** - at least until all repositories perform
+accessed through commit ID** - at least until all repositories perform
 the cleanup of detached commits (happens automatically).
 
 ![Modifying history causes problems on remote branch](img/rebase_reset.png)
@@ -426,7 +426,7 @@ Never modify the commit history of `master` or shared branch.
 
 After you know what you want to modify (how far in history or how which range of
 old commits), use `git rebase -i commit-id`. This command will then display all the commits from
-current version to chosen commit-id and allow modification, squashing, deletion
+current version to chosen commit ID and allow modification, squashing, deletion
 of that commits.
 
 ```shell

@@ -44,7 +44,7 @@ describe Gitlab::SidekiqLogging::StructuredLogger do
         'job_status' => 'done',
         'duration_s' => 0.0,
         'completed_at' => timestamp.to_f,
-        'cpu_s' => 1.11,
+        'cpu_s' => 1.111112,
         'db_duration_s' => 0.0
       )
     end
@@ -218,13 +218,34 @@ describe Gitlab::SidekiqLogging::StructuredLogger do
         subject.call(job, 'test_queue') { }
       end
     end
+
+    context 'when there is extra metadata set for the done log' do
+      let(:expected_start_payload) { start_payload.except('args') }
+
+      let(:expected_end_payload) do
+        end_payload.except('args').merge("#{ApplicationWorker::LOGGING_EXTRA_KEY}.key1" => 15, "#{ApplicationWorker::LOGGING_EXTRA_KEY}.key2" => 16)
+      end
+
+      it 'logs it in the done log' do
+        Timecop.freeze(timestamp) do
+          expect(logger).to receive(:info).with(expected_start_payload).ordered
+          expect(logger).to receive(:info).with(expected_end_payload).ordered
+
+          subject.call(job, 'test_queue') do
+            job["#{ApplicationWorker::LOGGING_EXTRA_KEY}.key1"] = 15
+            job["#{ApplicationWorker::LOGGING_EXTRA_KEY}.key2"] = 16
+            job['key that will be ignored because it does not start with extra.'] = 17
+          end
+        end
+      end
+    end
   end
 
   describe '#add_time_keys!' do
     let(:time) { { duration: 0.1231234, cputime: 1.2342345 } }
     let(:payload) { { 'class' => 'my-class', 'message' => 'my-message', 'job_status' => 'my-job-status' } }
     let(:current_utc_time) { Time.now.utc }
-    let(:payload_with_time_keys) { { 'class' => 'my-class', 'message' => 'my-message', 'job_status' => 'my-job-status', 'duration_s' => 0.12, 'cpu_s' => 1.23, 'completed_at' => current_utc_time.to_f } }
+    let(:payload_with_time_keys) { { 'class' => 'my-class', 'message' => 'my-message', 'job_status' => 'my-job-status', 'duration_s' => 0.123123, 'cpu_s' => 1.234235, 'completed_at' => current_utc_time.to_f } }
 
     subject { described_class.new }
 

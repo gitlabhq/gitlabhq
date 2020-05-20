@@ -1,0 +1,39 @@
+panel_groups:
+  - group: 'Usage Variation'
+    panels:
+      - type: anomaly-chart
+        title: "Memory Usage Rate Anomalies"
+        y_label: "Memory Usage Rate"
+        metrics:
+          - id: container_memory_usage_bytes
+            query_range: avg(sum(rate(container_memory_usage_bytes[15m]))) /1024
+            label: "Memory Usage Rate"
+            unit: "kB"
+          - id: container_memory_usage_bytes_upper
+            query_range: 80000
+            label: "Memory Usage Rate Lower Limit"
+            unit: "kB"
+          - id: container_memory_usage_bytes_lower
+            query_range: 50000
+            label: "Memory Usage Rate Upper Limit"
+            unit: "kB"
+  - group: System metrics (Kubernetes)
+    panels:
+      - title: 'Container CPU Usage by Environment (seconds)'
+        type: 'heatmap'
+        metrics:
+          - id: container_cpu_usage_by_env
+            query_range: 'sum(rate(container_cpu_usage_seconds_total{environment=~"coredns|production|kube|kube-controller"}[1h])) by (environment)'
+            step: 3600
+      - title: 'Number of GitLab Runner requests by status'
+        type: 'heatmap'
+        metrics:
+          - id: number_of_runner_requests_by_status
+            query_range: 'sum(rate(gitlab_runner_api_request_statuses_total[60m])) by (status)'
+            step: 3600
+      - title: '95 percentile of request durations per handler (seconds)'
+        type: 'heatmap'
+        metrics:
+          - id: 95_percentile_of_request_durations_per_handler
+            query_range: 'histogram_quantile(0.95, sum(rate(prometheus_http_request_duration_seconds_bucket[1h])) by (handler,le))'
+            step: 3600

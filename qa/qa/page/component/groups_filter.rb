@@ -4,7 +4,11 @@ module QA
   module Page
     module Component
       module GroupsFilter
+        extend QA::Page::PageConcern
+
         def self.included(base)
+          super
+
           base.view 'app/views/shared/groups/_search_form.html.haml' do
             element :groups_filter
           end

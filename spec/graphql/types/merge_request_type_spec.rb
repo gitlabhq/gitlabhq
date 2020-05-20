@@ -3,11 +3,11 @@
 require 'spec_helper'
 
 describe GitlabSchema.types['MergeRequest'] do
-  it { expect(described_class).to expose_permissions_using(Types::PermissionTypes::MergeRequest) }
+  specify { expect(described_class).to expose_permissions_using(Types::PermissionTypes::MergeRequest) }
 
-  it { expect(described_class).to require_graphql_authorizations(:read_merge_request) }
+  specify { expect(described_class).to require_graphql_authorizations(:read_merge_request) }
 
-  it { expect(described_class.interfaces).to include(Types::Notes::NoteableType) }
+  specify { expect(described_class.interfaces).to include(Types::Notes::NoteableType) }
 
   it 'has the expected fields' do
     expected_fields = %w[

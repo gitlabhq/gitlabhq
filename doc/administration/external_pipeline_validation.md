@@ -20,7 +20,7 @@ Response Code Legend:
 
 ## Configuration
 
-Set the `EXTERNAL_VALIDATION_SERVICE_URL` to the external service url.
+Set the `EXTERNAL_VALIDATION_SERVICE_URL` to the external service URL.
 
 ## Payload Schema
 

@@ -23,7 +23,7 @@ class ProjectFeature < ApplicationRecord
   PUBLIC   = 30
 
   FEATURES = %i(issues forking merge_requests wiki snippets builds repository pages metrics_dashboard).freeze
-  PRIVATE_FEATURES_MIN_ACCESS_LEVEL = { merge_requests: Gitlab::Access::REPORTER }.freeze
+  PRIVATE_FEATURES_MIN_ACCESS_LEVEL = { merge_requests: Gitlab::Access::REPORTER, metrics_dashboard: Gitlab::Access::REPORTER }.freeze
   PRIVATE_FEATURES_MIN_ACCESS_LEVEL_FOR_PRIVATE_PROJECT = { repository: Gitlab::Access::REPORTER }.freeze
   STRING_OPTIONS = HashWithIndifferentAccess.new({
     'disabled' => DISABLED,

@@ -3,7 +3,7 @@
 module Clusters
   module Applications
     class ElasticStack < ApplicationRecord
-      VERSION = '1.9.0'
+      VERSION = '3.0.0'
 
       ELASTICSEARCH_PORT = 9200
 
@@ -18,7 +18,11 @@ module Clusters
       default_value_for :version, VERSION
 
       def chart
-        'stable/elastic-stack'
+        'elastic-stack/elastic-stack'
+      end
+
+      def repository
+        'https://charts.gitlab.io'
       end
 
       def install_command
@@ -27,7 +31,9 @@ module Clusters
           version: VERSION,
           rbac: cluster.platform_kubernetes_rbac?,
           chart: chart,
+          repository: repository,
           files: files,
+          preinstall: migrate_to_3_script,
           postinstall: post_install_script
         )
       end
@@ -49,7 +55,7 @@ module Clusters
         strong_memoize(:elasticsearch_client) do
           next unless kube_client
 
-          proxy_url = kube_client.proxy_url('service', 'elastic-stack-elasticsearch-client', ::Clusters::Applications::ElasticStack::ELASTICSEARCH_PORT, Gitlab::Kubernetes::Helm::NAMESPACE)
+          proxy_url = kube_client.proxy_url('service', service_name, ::Clusters::Applications::ElasticStack::ELASTICSEARCH_PORT, Gitlab::Kubernetes::Helm::NAMESPACE)
 
           Elasticsearch::Client.new(url: proxy_url) do |faraday|
             # ensures headers containing auth data are appended to original client options
@@ -69,22 +75,53 @@ module Clusters
         end
       end
 
+      def chart_above_v2?
+        Gem::Version.new(version) >= Gem::Version.new('2.0.0')
+      end
+
+      def chart_above_v3?
+        Gem::Version.new(version) >= Gem::Version.new('3.0.0')
+      end
+
       private
+
+      def service_name
+        chart_above_v3? ? 'elastic-stack-elasticsearch-master' : 'elastic-stack-elasticsearch-client'
+      end
+
+      def pvc_selector
+        chart_above_v3? ? "app=elastic-stack-elasticsearch-master" : "release=elastic-stack"
+      end
 
       def post_install_script
         [
-          "timeout -t60 sh /data/helm/elastic-stack/config/wait-for-elasticsearch.sh http://elastic-stack-elasticsearch-client:9200"
+          "timeout -t60 sh /data/helm/elastic-stack/config/wait-for-elasticsearch.sh http://elastic-stack-elasticsearch-master:9200"
         ]
       end
 
       def post_delete_script
         [
-          Gitlab::Kubernetes::KubectlCmd.delete("pvc", "--selector", "release=elastic-stack")
+          Gitlab::Kubernetes::KubectlCmd.delete("pvc", "--selector", pvc_selector, "--namespace", Gitlab::Kubernetes::Helm::NAMESPACE)
         ]
       end
 
       def kube_client
         cluster&.kubeclient&.core_client
+      end
+
+      def migrate_to_3_script
+        return [] if !updating? || chart_above_v3?
+
+        # Chart version 3.0.0 moves to our own chart at https://gitlab.com/gitlab-org/charts/elastic-stack
+        # and is not compatible with pre-existing resources. We first remove them.
+        [
+          Gitlab::Kubernetes::Helm::DeleteCommand.new(
+            name: 'elastic-stack',
+            rbac: cluster.platform_kubernetes_rbac?,
+            files: files
+          ).delete_command,
+          Gitlab::Kubernetes::KubectlCmd.delete("pvc", "--selector", "release=elastic-stack", "--namespace", Gitlab::Kubernetes::Helm::NAMESPACE)
+        ]
       end
     end
   end

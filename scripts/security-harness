@@ -19,7 +19,7 @@ end
 
 HOOK_PATH = File.expand_path("../.git/hooks/pre-push", __dir__)
 HOOK_DATA = <<~HOOK
-  #!/bin/bash
+  #!/usr/bin/env bash
 
   set -e
 

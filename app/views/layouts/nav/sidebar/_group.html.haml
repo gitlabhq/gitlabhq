@@ -102,6 +102,8 @@
 
       = render_if_exists "layouts/nav/ee/security_link" # EE-specific
 
+      = render_if_exists "layouts/nav/ee/push_rules_link" # EE-specific
+
       - if group_sidebar_link?(:kubernetes)
         = nav_link(controller: [:clusters]) do
           = link_to group_clusters_path(@group) do

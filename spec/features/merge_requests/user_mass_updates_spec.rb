@@ -91,7 +91,7 @@ describe 'Merge requests > User mass updates', :js do
       end
 
       it 'removes milestone from the merge request' do
-        change_milestone("No Milestone")
+        change_milestone("No milestone")
 
         expect(find('.merge-request')).not_to have_content milestone.title
       end

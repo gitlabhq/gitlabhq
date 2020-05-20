@@ -6,6 +6,7 @@ class AddHeaderAndFooterBannersToAppearancesTable < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def change
+    # rubocop:disable Migration/AddLimitToTextColumns
     add_column :appearances, :header_message, :text
     add_column :appearances, :header_message_html, :text
 
@@ -14,5 +15,6 @@ class AddHeaderAndFooterBannersToAppearancesTable < ActiveRecord::Migration[4.2]
 
     add_column :appearances, :message_background_color, :text
     add_column :appearances, :message_font_color, :text
+    # rubocop:enable Migration/AddLimitToTextColumns
   end
 end

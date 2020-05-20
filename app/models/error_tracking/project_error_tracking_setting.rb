@@ -22,6 +22,7 @@ module ErrorTracking
     }x.freeze
 
     self.reactive_cache_key = ->(setting) { [setting.class.model_name.singular, setting.project_id] }
+    self.reactive_cache_work_type = :external_dependency
 
     belongs_to :project
 

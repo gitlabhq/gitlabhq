@@ -7,6 +7,6 @@ class AddPushEventsBranchFilterToWebHooks < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def change
-    add_column :web_hooks, :push_events_branch_filter, :text
+    add_column :web_hooks, :push_events_branch_filter, :text # rubocop:disable Migration/AddLimitToTextColumns
   end
 end

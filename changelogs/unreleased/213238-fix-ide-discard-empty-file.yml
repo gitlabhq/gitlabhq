@@ -1,0 +1,5 @@
+---
+title: Fix discard button not showing for new empty files in Web IDE
+merge_request: 30767
+author:
+type: fixed

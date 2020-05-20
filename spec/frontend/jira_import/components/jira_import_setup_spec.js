@@ -2,15 +2,19 @@ import { GlEmptyState } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import JiraImportSetup from '~/jira_import/components/jira_import_setup.vue';
 
+const illustration = 'illustration.svg';
+const jiraIntegrationPath = 'gitlab-org/gitlab-test/-/services/jira/edit';
+
 describe('JiraImportSetup', () => {
   let wrapper;
 
-  const getGlEmptyStateAttribute = attribute => wrapper.find(GlEmptyState).attributes(attribute);
+  const getGlEmptyStateProp = attribute => wrapper.find(GlEmptyState).props(attribute);
 
   beforeEach(() => {
     wrapper = shallowMount(JiraImportSetup, {
       propsData: {
-        illustration: 'illustration.svg',
+        illustration,
+        jiraIntegrationPath,
       },
     });
   });
@@ -21,15 +25,19 @@ describe('JiraImportSetup', () => {
   });
 
   it('contains illustration', () => {
-    expect(getGlEmptyStateAttribute('svgpath')).toBe('illustration.svg');
+    expect(getGlEmptyStateProp('svgPath')).toBe(illustration);
   });
 
   it('contains a description', () => {
     const description = 'You will first need to set up Jira Integration to use this feature.';
-    expect(getGlEmptyStateAttribute('description')).toBe(description);
+    expect(getGlEmptyStateProp('description')).toBe(description);
   });
 
   it('contains button text', () => {
-    expect(getGlEmptyStateAttribute('primarybuttontext')).toBe('Set up Jira Integration');
+    expect(getGlEmptyStateProp('primaryButtonText')).toBe('Set up Jira Integration');
+  });
+
+  it('contains button link', () => {
+    expect(getGlEmptyStateProp('primaryButtonLink')).toBe(jiraIntegrationPath);
   });
 });

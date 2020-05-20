@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class GroupPolicy < BasePolicy
-  include CrudPolicyHelpers
   include FindGroupProjects
 
   desc "Group is public"
@@ -43,23 +42,15 @@ class GroupPolicy < BasePolicy
     @subject.subgroup_creation_level == ::Gitlab::Access::MAINTAINER_SUBGROUP_ACCESS
   end
 
-  desc "Group has wiki disabled"
-  condition(:wiki_disabled, score: 32) { !feature_available?(:wiki) }
-
   rule { public_group }.policy do
     enable :read_group
     enable :read_package
-    enable :read_wiki
   end
 
-  rule { logged_in_viewable }.policy do
-    enable :read_group
-    enable :read_wiki
-  end
+  rule { logged_in_viewable }.enable :read_group
 
   rule { guest }.policy do
     enable :read_group
-    enable :read_wiki
     enable :upload_file
   end
 
@@ -87,13 +78,11 @@ class GroupPolicy < BasePolicy
     enable :create_metrics_dashboard_annotation
     enable :delete_metrics_dashboard_annotation
     enable :update_metrics_dashboard_annotation
-    enable :create_wiki
   end
 
   rule { reporter }.policy do
     enable :reporter_access
     enable :read_container_image
-    enable :download_wiki_code
     enable :admin_label
     enable :admin_list
     enable :admin_issue
@@ -112,7 +101,6 @@ class GroupPolicy < BasePolicy
     enable :destroy_deploy_token
     enable :read_deploy_token
     enable :create_deploy_token
-    enable :admin_wiki
   end
 
   rule { owner }.policy do
@@ -123,6 +111,7 @@ class GroupPolicy < BasePolicy
 
     enable :set_note_created_at
     enable :set_emails_disabled
+    enable :update_default_branch_protection
   end
 
   rule { can?(:read_nested_project_resources) }.policy do
@@ -158,11 +147,6 @@ class GroupPolicy < BasePolicy
 
   rule { maintainer & can?(:create_projects) }.enable :transfer_projects
 
-  rule { wiki_disabled }.policy do
-    prevent(*create_read_update_admin_destroy(:wiki))
-    prevent(:download_wiki_code)
-  end
-
   def access_level
     return GroupMember::NO_ACCESS if @user.nil?
 
@@ -171,21 +155,6 @@ class GroupPolicy < BasePolicy
 
   def lookup_access_level!
     @subject.max_member_access_for_user(@user)
-  end
-
-  # TODO: Extract this into a helper shared with ProjectPolicy, once we implement group-level features.
-  # https://gitlab.com/gitlab-org/gitlab/-/issues/208412
-  def feature_available?(feature)
-    return false unless feature == :wiki
-
-    case @subject.wiki_access_level
-    when ProjectFeature::DISABLED
-      false
-    when ProjectFeature::PRIVATE
-      admin? || access_level >= ProjectFeature.required_minimum_access_level(feature)
-    else
-      true
-    end
   end
 end
 

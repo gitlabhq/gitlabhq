@@ -12,8 +12,6 @@ module Gitlab
       end
 
       def save
-        return true unless Feature.enabled?(:version_snippets, @current_user)
-
         create_snippets_repo_directory
 
         @project.snippets.find_each.all? do |snippet|

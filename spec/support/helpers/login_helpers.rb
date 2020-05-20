@@ -50,9 +50,7 @@ module LoginHelpers
 
   def gitlab_enable_admin_mode_sign_in(user)
     visit new_admin_session_path
-
     fill_in 'user_password', with: user.password
-
     click_button 'Enter Admin Mode'
   end
 

@@ -105,6 +105,10 @@ module Gitlab
         metric_id.present?
       end
 
+      def gitlab_fingerprint
+        Digest::SHA1.hexdigest(plain_gitlab_fingerprint)
+      end
+
       def valid?
         payload.respond_to?(:dig) && project && title && starts_at
       end
@@ -114,6 +118,14 @@ module Gitlab
       end
 
       private
+
+      def plain_gitlab_fingerprint
+        if gitlab_managed?
+          [metric_id, starts_at].join('/')
+        else # self managed
+          [starts_at, title, full_query].join('/')
+        end
+      end
 
       def parse_environment_from_payload
         environment_name = payload&.dig('labels', 'gitlab_environment_name')

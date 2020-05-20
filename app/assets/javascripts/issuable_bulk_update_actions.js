@@ -1,7 +1,7 @@
 /* eslint-disable consistent-return, func-names, array-callback-return */
 
 import $ from 'jquery';
-import _ from 'underscore';
+import { intersection } from 'lodash';
 import axios from './lib/utils/axios_utils';
 import Flash from './flash';
 import { __ } from './locale';
@@ -111,7 +111,7 @@ export default {
     this.getElement('.selected-issuable:checked').each((i, el) => {
       labelIds.push(this.getElement(`#${this.prefixId}${el.dataset.id}`).data('labels'));
     });
-    return _.intersection.apply(this, labelIds);
+    return intersection.apply(this, labelIds);
   },
 
   // From issuable's initial bulk selection
@@ -120,7 +120,7 @@ export default {
     this.getElement('.selected-issuable:checked').each((i, el) => {
       labelIds.push(this.getElement(`#${this.prefixId}${el.dataset.id}`).data('labels'));
     });
-    return _.intersection.apply(this, labelIds);
+    return intersection.apply(this, labelIds);
   },
 
   // From issuable's initial bulk selection
@@ -144,7 +144,7 @@ export default {
     // Add uniqueIds to add it as argument for _.intersection
     labelIds.unshift(uniqueIds);
     // Return IDs that are present but not in all selected issueables
-    return _.difference(uniqueIds, _.intersection.apply(this, labelIds));
+    return uniqueIds.filter(x => !intersection.apply(this, labelIds).includes(x));
   },
 
   getElement(selector) {

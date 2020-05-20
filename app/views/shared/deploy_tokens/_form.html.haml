@@ -35,5 +35,15 @@
         = label_tag ("deploy_token_write_registry"), 'write_registry', class: 'label-bold form-check-label'
         .text-secondary= s_('DeployTokens|Allows write access to the registry images')
 
+      %fieldset.form-group.form-check
+        = f.check_box :read_package_registry, class: 'form-check-input'
+        = label_tag ("deploy_token_read_package_registry"), 'read_package_registry', class: 'label-bold form-check-label'
+        .text-secondary= s_('DeployTokens|Allows read access to the package registry')
+
+      %fieldset.form-group.form-check
+        = f.check_box :write_package_registry, class: 'form-check-input'
+        = label_tag ("deploy_token_write_package_registry"), 'write_package_registry', class: 'label-bold form-check-label'
+        .text-secondary= s_('DeployTokens|Allows write access to the package registry')
+
   .prepend-top-default
     = f.submit s_('DeployTokens|Create deploy token'), class: 'btn btn-success qa-create-deploy-token'

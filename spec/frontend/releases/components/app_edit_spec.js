@@ -1,11 +1,13 @@
 import Vuex from 'vuex';
 import { mount } from '@vue/test-utils';
 import ReleaseEditApp from '~/releases/components/app_edit.vue';
-import { release as originalRelease } from '../mock_data';
+import { release as originalRelease, milestones as originalMilestones } from '../mock_data';
 import * as commonUtils from '~/lib/utils/common_utils';
 import { BACK_URL_PARAM } from '~/releases/constants';
 import AssetLinksForm from '~/releases/components/asset_links_form.vue';
 import { merge } from 'lodash';
+import axios from 'axios';
+import MockAdapter from 'axios-mock-adapter';
 
 describe('Release edit component', () => {
   let wrapper;
@@ -13,6 +15,7 @@ describe('Release edit component', () => {
   let actions;
   let getters;
   let state;
+  let mock;
 
   const factory = ({ featureFlags = {}, store: storeUpdates = {} } = {}) => {
     state = {
@@ -20,6 +23,7 @@ describe('Release edit component', () => {
       markdownDocsPath: 'path/to/markdown/docs',
       updateReleaseApiDocsPath: 'path/to/update/release/api/docs',
       releasesPagePath: 'path/to/releases/page',
+      projectId: '8',
     };
 
     actions = {
@@ -62,7 +66,10 @@ describe('Release edit component', () => {
   };
 
   beforeEach(() => {
+    mock = new MockAdapter(axios);
     gon.api_version = 'v4';
+
+    mock.onGet('/api/v4/projects/8/milestones').reply(200, originalMilestones);
 
     release = commonUtils.convertObjectPropsToCamelCase(originalRelease, { deep: true });
   });

@@ -47,7 +47,8 @@ export default class PasteMarkdownTable {
 
     const htmlData = this.data.getData('text/html');
     this.doc = new DOMParser().parseFromString(htmlData, 'text/html');
-    const tables = this.doc.querySelectorAll('table');
+    // Avoid formatting lines that were copied from a diff
+    const tables = this.doc.querySelectorAll('table:not(.diff-wrap-lines)');
 
     // We're only looking for exactly one table. If there happens to be
     // multiple tables, it's possible an application copied data into

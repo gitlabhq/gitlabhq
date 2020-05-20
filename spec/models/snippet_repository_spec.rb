@@ -202,6 +202,38 @@ describe SnippetRepository do
 
       it_behaves_like 'snippet repository with file names', 'snippetfile10.txt', 'snippetfile11.txt'
     end
+
+    shared_examples 'snippet repository with git errors' do |path, error|
+      let(:new_file) { { file_path: path, content: 'bar' } }
+
+      it 'raises a path specific error' do
+        expect do
+          snippet_repository.multi_files_action(user, data, commit_opts)
+        end.to raise_error(error)
+      end
+    end
+
+    context 'with git errors' do
+      it_behaves_like 'snippet repository with git errors', 'invalid://path/here', described_class::InvalidPathError
+      it_behaves_like 'snippet repository with git errors', '../../path/traversal/here', described_class::InvalidPathError
+      it_behaves_like 'snippet repository with git errors', 'README', described_class::CommitError
+
+      context 'when user name is invalid' do
+        let(:user) { create(:user, name: '.') }
+
+        it_behaves_like 'snippet repository with git errors', 'non_existing_file', described_class::InvalidSignatureError
+      end
+
+      context 'when user email is empty' do
+        let(:user) { create(:user) }
+
+        before do
+          user.update_column(:email, '')
+        end
+
+        it_behaves_like 'snippet repository with git errors', 'non_existing_file', described_class::InvalidSignatureError
+      end
+    end
   end
 
   def blob_at(snippet, path)

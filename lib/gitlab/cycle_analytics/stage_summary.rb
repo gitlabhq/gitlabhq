@@ -28,8 +28,7 @@ module Gitlab
       end
 
       def deployments_summary
-        @deployments_summary ||=
-          Summary::Deploy.new(project: @project, from: @from, to: @to)
+        @deployments_summary ||= Summary::Deploy.new(project: @project, from: @from, to: @to)
       end
 
       def deploy_stats
@@ -39,7 +38,7 @@ module Gitlab
       def deployment_frequency_stats
         serialize(
           Summary::DeploymentFrequency.new(
-            deployments: deployments_summary.value,
+            deployments: deployments_summary.value.raw_value,
             from: @from,
             to: @to),
           with_unit: true

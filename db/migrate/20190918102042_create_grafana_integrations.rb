@@ -3,6 +3,7 @@
 class CreateGrafanaIntegrations < ActiveRecord::Migration[5.2]
   DOWNTIME = false
 
+  # rubocop:disable Migration/PreventStrings
   def change
     create_table :grafana_integrations do |t|
       t.references :project, index: true, foreign_key: { on_delete: :cascade }, unique: true, null: false
@@ -12,4 +13,5 @@ class CreateGrafanaIntegrations < ActiveRecord::Migration[5.2]
       t.string :grafana_url, null: false, limit: 1024
     end
   end
+  # rubocop:enable Migration/PreventStrings
 end

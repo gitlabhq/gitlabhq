@@ -1,6 +1,5 @@
-import $ from 'jquery';
 import Vue from 'vue';
-import { escape as esc } from 'lodash';
+import { escape } from 'lodash';
 import { __, sprintf } from '~/locale';
 import { visitUrl } from '~/lib/utils/url_utility';
 import flash from '~/flash';
@@ -23,14 +22,6 @@ export const discardAllChanges = ({ state, commit, dispatch }) => {
 
 export const closeAllFiles = ({ state, dispatch }) => {
   state.openFiles.forEach(file => dispatch('closeFile', file));
-};
-
-export const setPanelCollapsedStatus = ({ commit }, { side, collapsed }) => {
-  if (side === 'left') {
-    commit(types.SET_LEFT_PANEL_COLLAPSED, collapsed);
-  } else {
-    commit(types.SET_RIGHT_PANEL_COLLAPSED, collapsed);
-  }
 };
 
 export const setResizingStatus = ({ commit }, resizing) => {
@@ -176,13 +167,6 @@ export const setLinks = ({ commit }, links) => commit(types.SET_LINKS, links);
 export const setErrorMessage = ({ commit }, errorMessage) =>
   commit(types.SET_ERROR_MESSAGE, errorMessage);
 
-export const openNewEntryModal = ({ commit }, { type, path = '' }) => {
-  commit(types.OPEN_NEW_ENTRY_MODAL, { type, path });
-
-  // open the modal manually so we don't mess around with dropdown/rows
-  $('#ide-new-entry').modal('show');
-};
-
 export const deleteEntry = ({ commit, dispatch, state }, path) => {
   const entry = state.entries[path];
   const { prevPath, prevName, prevParentPath } = entry;
@@ -296,7 +280,7 @@ export const getBranchData = ({ commit, state }, { projectId, branchId, force = 
                 sprintf(
                   __('Branch not loaded - %{branchId}'),
                   {
-                    branchId: `<strong>${esc(projectId)}/${esc(branchId)}</strong>`,
+                    branchId: `<strong>${escape(projectId)}/${escape(branchId)}</strong>`,
                   },
                   false,
                 ),

@@ -14,13 +14,13 @@ describe "User creates milestone", :js do
   end
 
   it "creates milestone" do
-    TITLE = "v2.3".freeze
+    title = "v2.3".freeze
 
-    fill_in("Title", with: TITLE)
+    fill_in("Title", with: title)
     fill_in("Description", with: "# Description header")
     click_button("Create milestone")
 
-    expect(page).to have_content(TITLE)
+    expect(page).to have_content(title)
       .and have_content("Issues")
       .and have_header_with_correct_id_and_link(1, "Description header", "description-header")
 

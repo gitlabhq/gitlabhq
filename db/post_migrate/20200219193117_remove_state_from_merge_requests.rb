@@ -18,7 +18,7 @@ class RemoveStateFromMergeRequests < ActiveRecord::Migration[6.0]
     return if merge_requests_state_column_exists?
 
     with_lock_retries do
-      add_column :merge_requests, :state, :string # rubocop:disable Migration/AddLimitToStringColumns
+      add_column :merge_requests, :state, :string
     end
   end
 

@@ -12,6 +12,7 @@ class ChangeCommitUserMentionsCommitIdColumnType < ActiveRecord::Migration[5.2]
   NEW_TMP_INDEX = 'temp_commit_id_for_type_change_and_note_id_index'
   NEW_INDEX = 'commit_id_and_note_id_index'
 
+  # rubocop:disable Migration/PreventStrings
   def up
     # the initial index name is too long and fails during migration. Renaming the index first.
     add_concurrent_index :commit_user_mentions, [:commit_id, :note_id], name: OLD_TMP_INDEX
@@ -29,6 +30,7 @@ class ChangeCommitUserMentionsCommitIdColumnType < ActiveRecord::Migration[5.2]
     add_concurrent_index :commit_user_mentions, [:commit_id_for_type_change, :note_id], name: NEW_INDEX
     remove_concurrent_index_by_name :commit_user_mentions, NEW_TMP_INDEX
   end
+  # rubocop:enable Migration/PreventStrings
 
   def down
     cleanup_concurrent_column_type_change :commit_user_mentions, :commit_id

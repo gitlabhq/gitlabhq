@@ -16,6 +16,6 @@ class RemoveAlternateUrlFromGeoNodes < ActiveRecord::Migration[5.0]
   end
 
   def down
-    add_column :geo_nodes, :alternate_url, :string # rubocop:disable Migration/AddLimitToStringColumns
+    add_column :geo_nodes, :alternate_url, :string
   end
 end

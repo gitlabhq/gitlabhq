@@ -4,10 +4,15 @@ import CodeBlock from '~/vue_shared/components/code_block.vue';
 describe('Code Block', () => {
   let wrapper;
 
-  const createComponent = () => {
+  const defaultProps = {
+    code: 'test-code',
+  };
+
+  const createComponent = (props = {}) => {
     wrapper = shallowMount(CodeBlock, {
       propsData: {
-        code: 'test-code',
+        ...defaultProps,
+        ...props,
       },
     });
   };
@@ -17,9 +22,23 @@ describe('Code Block', () => {
     wrapper = null;
   });
 
-  it('matches snapshot', () => {
-    createComponent();
+  describe('with default props', () => {
+    beforeEach(() => {
+      createComponent();
+    });
 
-    expect(wrapper.element).toMatchSnapshot();
+    it('renders correctly', () => {
+      expect(wrapper.element).toMatchSnapshot();
+    });
+  });
+
+  describe('with maxHeight set to "200px"', () => {
+    beforeEach(() => {
+      createComponent({ maxHeight: '200px' });
+    });
+
+    it('renders correctly', () => {
+      expect(wrapper.element).toMatchSnapshot();
+    });
   });
 });

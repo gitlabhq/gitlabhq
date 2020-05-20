@@ -52,7 +52,7 @@ module Gitlab
         end
 
         def compare
-          @opts[:compare] if @opts[:compare]
+          @opts[:compare]
         end
 
         def diff_refs

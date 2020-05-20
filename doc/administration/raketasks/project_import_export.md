@@ -3,10 +3,12 @@
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/3050) in GitLab 8.9.
 > - From GitLab 11.3, import/export can use object storage automatically.
 
-See also:
+GitLab provides Rake tasks relating to project import and export. For more information, see:
 
 - [Project import/export documentation](../../user/project/settings/import_export.md).
 - [Project import/export API](../../api/project_import_export.md).
+
+## Import/export tasks
 
 The GitLab import/export version can be checked by using the following command:
 
@@ -27,8 +29,6 @@ sudo gitlab-rake gitlab:import_export:data
 # Installations from source
 bundle exec rake gitlab:import_export:data RAILS_ENV=production
 ```
-
-## Important notes
 
 Note the following:
 

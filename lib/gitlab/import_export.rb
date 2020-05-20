@@ -42,6 +42,10 @@ module Gitlab
       "project.wiki.bundle"
     end
 
+    def design_repo_bundle_filename
+      'project.design.bundle'
+    end
+
     def snippet_repo_bundle_dir
       'snippets'
     end
@@ -86,6 +90,10 @@ module Gitlab
 
     def group_filename
       'group.json'
+    end
+
+    def legacy_group_config_file
+      Rails.root.join('lib/gitlab/import_export/group/legacy_import_export.yml')
     end
 
     def group_config_file

@@ -1,0 +1,5 @@
+---
+title: Embed metrics charts for both /metrics and /metrics_dashboard routes
+merge_request: 29838
+author:
+type: fixed

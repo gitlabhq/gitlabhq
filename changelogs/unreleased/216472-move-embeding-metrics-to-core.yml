@@ -1,0 +1,5 @@
+---
+title: Moves embedded metrics for Prometheus alerts to Core
+merge_request: 31203
+author:
+type: changed

@@ -17,6 +17,11 @@ There are several ways to create users on GitLab. See the [creating users docume
 There are several ways to sign into your GitLab account.
 See the [authentication topic](../../topics/authentication/index.md) for more details.
 
+### Unknown sign-in
+
+GitLab will notify you if a sign-in occurs that is from an unknown IP address.
+See [Unknown Sign-In Notification](unknown_sign_in_notification.md) for more details.
+
 ## User profile
 
 To access your profile:
@@ -44,6 +49,7 @@ To access your profile settings:
 From there, you can:
 
 - Update your personal information
+- Change your [password](#changing-your-password)
 - Set a [custom status](#current-status) for your profile
 - Manage your [commit email](#commit-email) for your profile
 - Manage [2FA](account/two_factor_authentication.md)
@@ -59,6 +65,18 @@ From there, you can:
   to customize your own GitLab experience
 - [View your active sessions](active_sessions.md) and revoke any of them if necessary
 - Access your audit log, a security log of important events involving your account
+
+## Changing your password
+
+1. Navigate to your [profile's](#profile-settings) **Settings > Password**.
+1. Enter your current password in the 'Current password' field.
+1. Enter your desired new password twice, once in the 'New password' field and
+   once in the 'Password confirmation' field.
+1. Click the 'Save password' button.
+
+If you don't know your current password, select the 'I forgot my password' link.
+
+![Change your password](./img/change_password_v13_0.png)
 
 ## Changing your username
 

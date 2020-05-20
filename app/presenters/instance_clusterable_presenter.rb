@@ -13,8 +13,8 @@ class InstanceClusterablePresenter < ClusterablePresenter
   end
 
   override :index_path
-  def index_path
-    admin_clusters_path
+  def index_path(options = {})
+    admin_clusters_path(options)
   end
 
   override :new_path

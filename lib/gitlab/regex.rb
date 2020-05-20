@@ -79,6 +79,12 @@ module Gitlab
       "Must start with a letter, and cannot end with '-'"
     end
 
+    # Pod name adheres to DNS Subdomain Names(RFC 1123) naming convention
+    # https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#dns-subdomain-names
+    def kubernetes_dns_subdomain_regex
+      /\A[a-z0-9]([a-z0-9\-\.]*[a-z0-9])?\z/
+    end
+
     def environment_slug_regex
       @environment_slug_regex ||= /\A[a-z]([a-z0-9-]*[a-z0-9])?\z/.freeze
     end
@@ -121,7 +127,7 @@ module Gitlab
     # Based on Jira's project key format
     # https://confluence.atlassian.com/adminjiraserver073/changing-the-project-key-format-861253229.html
     def jira_issue_key_regex
-      @jira_issue_key_regex ||= /[A-Z][A-Z_0-9]+-\d+\b/
+      @jira_issue_key_regex ||= /[A-Z][A-Z_0-9]+-\d+/
     end
 
     def jira_transition_id_regex

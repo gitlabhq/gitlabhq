@@ -620,7 +620,11 @@ describe PagesDomain do
       create(:pages_domain, :letsencrypt, :with_expired_certificate)
     end
 
-    it 'contains only domains needing verification' do
+    let!(:domain_with_failed_auto_ssl) do
+      create(:pages_domain, auto_ssl_enabled: true, auto_ssl_failed: true)
+    end
+
+    it 'contains only domains needing ssl renewal' do
       is_expected.to(
         contain_exactly(
           domain_with_user_provided_certificate_and_auto_ssl,

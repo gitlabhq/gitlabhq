@@ -113,7 +113,7 @@ describe 'Visual tokens', :js do
   describe 'add new token after editing existing token' do
     before do
       input_filtered_search('author:=@root assignee:=none', submit: false)
-      first('.tokens-container .filtered-search-token').double_click
+      first('.tokens-container .filtered-search-token').click
       filtered_search.send_keys(' ')
     end
 
@@ -174,5 +174,21 @@ describe 'Visual tokens', :js do
 
     expect(token.find('.name').text).to eq('Label')
     expect(token.find('.operator').text).to eq('=')
+  end
+
+  describe 'Any/None option' do
+    it 'hidden when NOT operator is selected' do
+      input_filtered_search('milestone:!=', extra_space: false, submit: false)
+
+      expect(page).not_to have_selector("#js-dropdown-milestone", text: 'Any')
+      expect(page).not_to have_selector("#js-dropdown-milestone", text: 'None')
+    end
+
+    it 'shown when EQUAL operator is selected' do
+      input_filtered_search('milestone:=', extra_space: false, submit: false)
+
+      expect(page).to have_selector("#js-dropdown-milestone", text: 'Any')
+      expect(page).to have_selector("#js-dropdown-milestone", text: 'None')
+    end
   end
 end

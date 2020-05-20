@@ -51,9 +51,9 @@ export default {
       >
         <textarea
           slot="textarea"
-          class="note-textarea js-gfm-input js-autosize markdown-area
-            qa-description-textarea"
+          class="note-textarea js-gfm-input js-autosize markdown-area"
           dir="auto"
+          data-qa-selector="snippet_description_field"
           data-supports-quick-actions="false"
           :value="value"
           :aria-label="__('Description')"

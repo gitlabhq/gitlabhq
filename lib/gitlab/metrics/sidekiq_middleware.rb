@@ -17,8 +17,6 @@ module Gitlab
           trans.add_event(:sidekiq_exception)
 
           raise error
-        ensure
-          trans.finish
         end
       end
     end

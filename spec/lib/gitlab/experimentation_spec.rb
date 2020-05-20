@@ -6,19 +6,16 @@ describe Gitlab::Experimentation do
   before do
     stub_const('Gitlab::Experimentation::EXPERIMENTS', {
       test_experiment: {
-        feature_toggle: feature_toggle,
         environment: environment,
-        enabled_ratio: enabled_ratio,
         tracking_category: 'Team'
       }
     })
 
-    stub_feature_flags(feature_toggle => true)
+    allow(Feature).to receive(:get).with(:test_experiment_experiment_percentage).and_return double(percentage_of_time_value: enabled_percentage)
   end
 
-  let(:feature_toggle) { :test_experiment_toggle }
   let(:environment) { Rails.env.test? }
-  let(:enabled_ratio) { 0.1 }
+  let(:enabled_percentage) { 10 }
 
   describe Gitlab::Experimentation::ControllerConcern, type: :controller do
     controller(ApplicationController) do
@@ -251,44 +248,16 @@ describe Gitlab::Experimentation do
       end
     end
 
-    describe 'feature toggle' do
-      context 'feature toggle is not set' do
-        let(:feature_toggle) { nil }
+    describe 'experiment is disabled' do
+      let(:enabled_percentage) { 0 }
 
-        it { is_expected.to be_truthy }
-      end
-
-      context 'feature toggle is not set, but a feature with the experiment key as name does exist' do
-        before do
-          stub_feature_flags(test_experiment: false)
-        end
-
-        let(:feature_toggle) { nil }
-
-        it { is_expected.to be_falsey }
-      end
-
-      context 'feature toggle is disabled' do
-        before do
-          stub_feature_flags(feature_toggle => false)
-        end
-
-        it { is_expected.to be_falsey }
-      end
+      it { is_expected.to be_falsey }
     end
 
-    describe 'environment' do
-      context 'environment is not set' do
-        let(:environment) { nil }
+    describe 'we are on the wrong environment' do
+      let(:environment) { ::Gitlab.com? }
 
-        it { is_expected.to be_truthy }
-      end
-
-      context 'we are on the wrong environment' do
-        let(:environment) { ::Gitlab.com? }
-
-        it { is_expected.to be_falsey }
-      end
+      it { is_expected.to be_falsey }
     end
   end
 
@@ -311,12 +280,6 @@ describe Gitlab::Experimentation do
       end
 
       it { is_expected.to be_truthy }
-
-      context 'enabled ratio is not set' do
-        let(:enabled_ratio) { nil }
-
-        it { is_expected.to be_falsey }
-      end
 
       describe 'experimentation_subject_index' do
         context 'experimentation_subject_index is not set' do

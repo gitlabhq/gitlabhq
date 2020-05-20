@@ -7,7 +7,7 @@ class AddDefaultProjectCreationSetting < ActiveRecord::Migration[4.2]
 
   def up
     unless column_exists?(:application_settings, :default_project_creation)
-      add_column_with_default(:application_settings, :default_project_creation, :integer, default: 2)
+      add_column_with_default(:application_settings, :default_project_creation, :integer, default: 2) # rubocop:disable Migration/AddColumnWithDefault
     end
   end
 

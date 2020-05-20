@@ -17,6 +17,7 @@ class Issue < ApplicationRecord
   include IgnorableColumns
   include MilestoneEventable
   include WhereComposite
+  include StateEventable
 
   DueDateStruct                   = Struct.new(:title, :name).freeze
   NoDueDate                       = DueDateStruct.new('No Due Date', '0').freeze
@@ -29,9 +30,12 @@ class Issue < ApplicationRecord
   SORTING_PREFERENCE_FIELD = :issues_sort
 
   belongs_to :project
-  belongs_to :moved_to, class_name: 'Issue'
   belongs_to :duplicated_to, class_name: 'Issue'
   belongs_to :closed_by, class_name: 'User'
+  belongs_to :iteration, foreign_key: 'sprint_id'
+
+  belongs_to :moved_to, class_name: 'Issue'
+  has_one :moved_from, class_name: 'Issue', foreign_key: :moved_to_id
 
   has_internal_id :iid, scope: :project, track_if: -> { !importing? }, init: ->(s) { s&.project&.issues&.maximum(:iid) }
 
@@ -46,8 +50,15 @@ class Issue < ApplicationRecord
   has_many :zoom_meetings
   has_many :user_mentions, class_name: "IssueUserMention", dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
   has_many :sent_notifications, as: :noteable
+  has_many :designs, class_name: 'DesignManagement::Design', inverse_of: :issue
+  has_many :design_versions, class_name: 'DesignManagement::Version', inverse_of: :issue do
+    def most_recent
+      ordered.first
+    end
+  end
 
   has_one :sentry_issue
+  has_one :alert_management_alert, class_name: 'AlertManagement::Alert'
 
   accepts_nested_attributes_for :sentry_issue
 
@@ -63,6 +74,7 @@ class Issue < ApplicationRecord
   scope :due_before, ->(date) { where('issues.due_date < ?', date) }
   scope :due_between, ->(from_date, to_date) { where('issues.due_date >= ?', from_date).where('issues.due_date <= ?', to_date) }
   scope :due_tomorrow, -> { where(due_date: Date.tomorrow) }
+  scope :not_authored_by, ->(user) { where.not(author_id: user) }
 
   scope :order_due_date_asc, -> { reorder(::Gitlab::Database.nulls_last_order('due_date', 'ASC')) }
   scope :order_due_date_desc, -> { reorder(::Gitlab::Database.nulls_last_order('due_date', 'DESC')) }
@@ -73,11 +85,13 @@ class Issue < ApplicationRecord
 
   scope :preload_associated_models, -> { preload(:assignees, :labels, project: :namespace) }
   scope :with_api_entity_associations, -> { preload(:timelogs, :assignees, :author, :notes, :labels, project: [:route, { namespace: :route }] ) }
+  scope :with_label_attributes, ->(label_attributes) { joins(:labels).where(labels: label_attributes) }
 
   scope :public_only, -> { where(confidential: false) }
   scope :confidential_only, -> { where(confidential: true) }
 
   scope :counts_by_state, -> { reorder(nil).group(:state_id).count }
+  scope :with_alert_management_alerts, -> { joins(:alert_management_alert) }
 
   # An issue can be uniquely identified by project_id and iid
   # Takes one or more sets of composite IDs, expressed as hash-like records of
@@ -330,6 +344,10 @@ class Issue < ApplicationRecord
     previous_changes['updated_at']&.first || updated_at
   end
 
+  def design_collection
+    @design_collection ||= ::DesignManagement::DesignCollection.new(self)
+  end
+
   private
 
   def ensure_metrics
@@ -343,7 +361,7 @@ class Issue < ApplicationRecord
   # for performance reasons, check commit: 002ad215818450d2cbbc5fa065850a953dc7ada8
   # Make sure to sync this method with issue_policy.rb
   def readable_by?(user)
-    if user.admin?
+    if user.can_read_all_resources?
       true
     elsif project.owner == user
       true

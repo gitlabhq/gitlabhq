@@ -64,7 +64,7 @@ describe Gitlab::ImportExport::RelationTreeRestorer do
   shared_examples 'logging of relations creation' do
     context 'when log_import_export_relation_creation feature flag is enabled' do
       before do
-        stub_feature_flags(log_import_export_relation_creation: { enabled: true, thing: group })
+        stub_feature_flags(log_import_export_relation_creation: group)
       end
 
       it 'logs top-level relation creation' do
@@ -79,7 +79,7 @@ describe Gitlab::ImportExport::RelationTreeRestorer do
 
     context 'when log_import_export_relation_creation feature flag is disabled' do
       before do
-        stub_feature_flags(log_import_export_relation_creation: { enabled: false, thing: group })
+        stub_feature_flags(log_import_export_relation_creation: false)
       end
 
       it 'does not log top-level relation creation' do
@@ -126,14 +126,6 @@ describe Gitlab::ImportExport::RelationTreeRestorer do
         let(:path) { 'spec/fixtures/lib/gitlab/import_export/complex/tree' }
         let(:relation_reader) { Gitlab::ImportExport::JSON::NdjsonReader.new(path) }
 
-        before :all do
-          extract_archive('spec/fixtures/lib/gitlab/import_export/complex', 'tree.tar.gz')
-        end
-
-        after :all do
-          cleanup_artifacts_from_extract_archive('complex')
-        end
-
         it_behaves_like 'import project successfully'
       end
     end
@@ -156,7 +148,7 @@ describe Gitlab::ImportExport::RelationTreeRestorer do
     let(:reader) do
       Gitlab::ImportExport::Reader.new(
         shared: shared,
-        config: Gitlab::ImportExport::Config.new(config: Gitlab::ImportExport.group_config_file).to_h
+        config: Gitlab::ImportExport::Config.new(config: Gitlab::ImportExport.legacy_group_config_file).to_h
       )
     end
 

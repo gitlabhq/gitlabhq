@@ -303,3 +303,13 @@ ul.related-merge-requests > li {
     }
   }
 }
+
+.issuable-list-root {
+  .gl-label-link {
+    text-decoration: none;
+
+    &:hover {
+      color: inherit;
+    }
+  }
+}

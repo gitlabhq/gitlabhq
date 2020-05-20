@@ -40,5 +40,19 @@ describe GoogleApi::Auth do
       expect(token).to eq('token')
       expect(expires_at).to eq('expires_at')
     end
+
+    it 'expects the client to receive default options' do
+      config = Gitlab::Auth::OAuth::Provider.config_for('google_oauth2')
+
+      expect(OAuth2::Client).to receive(:new).with(
+        config.app_id,
+        config.app_secret,
+        hash_including(
+          **config.args.client_options.deep_symbolize_keys
+        )
+      ).and_call_original
+
+      client.get_token('xxx')
+    end
   end
 end

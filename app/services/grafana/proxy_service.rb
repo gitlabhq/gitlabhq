@@ -12,6 +12,7 @@ module Grafana
     self.reactive_cache_key = ->(service) { service.cache_key }
     self.reactive_cache_lease_timeout = 30.seconds
     self.reactive_cache_refresh_interval = 30.seconds
+    self.reactive_cache_work_type = :external_dependency
     self.reactive_cache_worker_finder = ->(_id, *args) { from_cache(*args) }
 
     attr_accessor :project, :datasource_id, :proxy_path, :query_params

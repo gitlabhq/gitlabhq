@@ -18,7 +18,7 @@ data file uploads to the final server.
 
 From GitLab 10.7, the `upload[url]` parameter is required if the `upload` parameter is present.
 
-```text
+```plaintext
 POST /projects/:id/export
 ```
 
@@ -42,11 +42,14 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab
 }
 ```
 
+NOTE: **Note:**
+The upload request will be sent with `Content-Type: application/gzip` header. Ensure that your pre-signed URL includes this as part of the signature.
+
 ## Export status
 
 Get the status of export.
 
-```text
+```plaintext
 GET /projects/:id/export
 ```
 
@@ -99,7 +102,7 @@ an email notifying the user to download the file, uploading the exported file to
 
 Download the finished export.
 
-```text
+```plaintext
 GET /projects/:id/export/download
 ```
 
@@ -118,7 +121,7 @@ ls *export.tar.gz
 
 ## Import a file
 
-```text
+```plaintext
 POST /projects/import
 ```
 
@@ -182,7 +185,7 @@ requests.post(url, headers=headers, data=data, files=files)
 
 Get the status of an import.
 
-```text
+```plaintext
 GET /projects/:id/import
 ```
 

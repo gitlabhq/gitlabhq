@@ -1,3 +1,9 @@
+---
+stage: Configure
+group: Configure
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Deploying AWS Lambda function using GitLab CI/CD
 
 GitLab allows users to easily deploy AWS Lambda functions and create rich serverless applications.
@@ -150,7 +156,7 @@ endpoints:
 Running the following `curl` command should trigger your function.
 
 NOTE: **Note:**
-  Your url should be the one retrieved from the GitLab deploy stage log.
+Your URL should be the one retrieved from the GitLab deploy stage log.
 
 ```shell
 curl https://u768nzby1j.execute-api.us-east-1.amazonaws.com/production/hello

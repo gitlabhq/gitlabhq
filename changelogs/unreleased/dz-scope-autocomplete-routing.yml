@@ -1,0 +1,5 @@
+---
+title: Move global autocomplete routes to /-/ scope
+merge_request: 30173
+author:
+type: changed

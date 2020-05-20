@@ -158,6 +158,21 @@ describe ::PodLogs::ElasticsearchService do
       end
     end
 
+    context 'with search provided and invalid' do
+      let(:params) do
+        {
+            'search' => { term: "foo-bar" }
+        }
+      end
+
+      it 'returns error' do
+        result = subject.send(:check_search, {})
+
+        expect(result[:status]).to eq(:error)
+        expect(result[:message]).to eq("Invalid search parameter")
+      end
+    end
+
     context 'with search not provided' do
       let(:params) do
         {}
@@ -185,6 +200,21 @@ describe ::PodLogs::ElasticsearchService do
 
         expect(result[:status]).to eq(:success)
         expect(result[:cursor]).to eq(cursor)
+      end
+    end
+
+    context 'with cursor provided and invalid' do
+      let(:params) do
+        {
+            'cursor' => { term: "foo-bar" }
+        }
+      end
+
+      it 'returns error' do
+        result = subject.send(:check_cursor, {})
+
+        expect(result[:status]).to eq(:error)
+        expect(result[:message]).to eq("Invalid cursor parameter")
       end
     end
 
@@ -225,7 +255,7 @@ describe ::PodLogs::ElasticsearchService do
         .and_return(Elasticsearch::Transport::Client.new)
       allow_any_instance_of(::Gitlab::Elasticsearch::Logs::Lines)
         .to receive(:pod_logs)
-        .with(namespace, pod_name: pod_name, container_name: container_name, search: search, start_time: start_time, end_time: end_time, cursor: cursor)
+        .with(namespace, pod_name: pod_name, container_name: container_name, search: search, start_time: start_time, end_time: end_time, cursor: cursor, chart_above_v2: true)
         .and_return({ logs: expected_logs, cursor: expected_cursor })
 
       result = subject.send(:pod_logs, result_arg)

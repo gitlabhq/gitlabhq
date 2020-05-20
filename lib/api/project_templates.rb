@@ -5,6 +5,10 @@ module API
     include PaginationParams
 
     TEMPLATE_TYPES = %w[dockerfiles gitignores gitlab_ci_ymls licenses].freeze
+    # The regex is needed to ensure a period (e.g. agpl-3.0)
+    # isn't confused with a format type. We also need to allow encoded
+    # values (e.g. C%2B%2B for C++), so allow % and + as well.
+    TEMPLATE_NAMES_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(name: /[\w%.+-]+/)
 
     before { authenticate_non_get! }
 
@@ -12,7 +16,7 @@ module API
       requires :id, type: String, desc: 'The ID of a project'
       requires :type, type: String, values: TEMPLATE_TYPES, desc: 'The type (dockerfiles|gitignores|gitlab_ci_ymls|licenses) of the template'
     end
-    resource :projects do
+    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Get a list of templates available to this project' do
         detail 'This endpoint was introduced in GitLab 11.4'
       end
@@ -36,10 +40,8 @@ module API
         optional :project, type: String, desc: 'The project name to use when expanding placeholders in the template. Only affects licenses'
         optional :fullname, type: String, desc: 'The full name of the copyright holder to use when expanding placeholders in the template. Only affects licenses'
       end
-      # The regex is needed to ensure a period (e.g. agpl-3.0)
-      # isn't confused with a format type. We also need to allow encoded
-      # values (e.g. C%2B%2B for C++), so allow % and + as well.
-      get ':id/templates/:type/:name', requirements: { name: /[\w%.+-]+/ } do
+
+      get ':id/templates/:type/:name', requirements: TEMPLATE_NAMES_ENDPOINT_REQUIREMENTS do
         template = TemplateFinder
           .build(params[:type], user_project, name: params[:name])
           .execute

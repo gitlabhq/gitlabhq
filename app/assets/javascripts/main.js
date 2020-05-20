@@ -106,11 +106,13 @@ function deferredInitialisation() {
   initLogoAnimation();
   initUsagePingConsent();
   initUserPopovers();
-  initUserTracking();
   initBroadcastNotifications();
 
   const recoverySettingsCallout = document.querySelector('.js-recovery-settings-callout');
   PersistentUserCallout.factory(recoverySettingsCallout);
+
+  const usersOverLicenseCallout = document.querySelector('.js-users-over-license-callout');
+  PersistentUserCallout.factory(usersOverLicenseCallout);
 
   if (document.querySelector('.search')) initSearchAutocomplete();
 
@@ -187,6 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (document.querySelector('#js-peek')) initPerformanceBar({ container: '#js-peek' });
 
+  initUserTracking();
   initLayoutNav();
 
   // Set the default path for all cookies to GitLab's root directory

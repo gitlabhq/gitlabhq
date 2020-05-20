@@ -296,7 +296,7 @@ describe Admin::UsersController do
 
         it 'sets the new password to expire immediately' do
           expect { update_password(user, 'AValidPassword1') }
-            .to change { user.reload.password_expires_at }.to be_within(2.seconds).of(Time.now)
+            .to change { user.reload.password_expires_at }.to be_within(2.seconds).of(Time.current)
         end
       end
 

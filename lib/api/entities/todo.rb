@@ -22,6 +22,7 @@ module API
       expose :body
       expose :state
       expose :created_at
+      expose :updated_at
 
       def todo_target_class(target_type)
         # false as second argument prevents looking up in module hierarchy
@@ -30,6 +31,8 @@ module API
       end
 
       def todo_target_url(todo)
+        return design_todo_target_url(todo) if todo.for_design?
+
         target_type = todo.target_type.underscore
         target_url = "#{todo.resource_parent.class.to_s.underscore}_#{target_type}_url"
 
@@ -40,6 +43,16 @@ module API
 
       def todo_target_anchor(todo)
         "note_#{todo.note_id}" if todo.note_id?
+      end
+
+      def design_todo_target_url(todo)
+        design = todo.target
+        path_options = {
+          anchor: todo_target_anchor(todo),
+          vueroute: design.filename
+        }
+
+        ::Gitlab::Routing.url_helpers.designs_project_issue_url(design.project, design.issue, path_options)
       end
     end
   end

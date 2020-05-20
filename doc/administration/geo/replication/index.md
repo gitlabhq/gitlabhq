@@ -2,7 +2,7 @@
 
 > - Introduced in GitLab Enterprise Edition 8.9.
 > - Using Geo in combination with
->   [High Availability](../../availability/index.md)
+>   [multi-server architectures](../../reference_architectures/index.md)
 >   is considered **Generally Available** (GA) in
 >   [GitLab Premium](https://about.gitlab.com/pricing/) 10.4.
 
@@ -110,7 +110,7 @@ The following are required to run Geo:
   The following operating systems are known to ship with a current version of OpenSSH:
   - [CentOS](https://www.centos.org) 7.4+
   - [Ubuntu](https://ubuntu.com) 16.04+
-- PostgreSQL 9.6+ with [FDW](https://www.postgresql.org/docs/9.6/postgres-fdw.html) support and [Streaming Replication](https://wiki.postgresql.org/wiki/Streaming_Replication)
+- PostgreSQL 11+ with [FDW](https://www.postgresql.org/docs/11/postgres-fdw.html) support and [Streaming Replication](https://wiki.postgresql.org/wiki/Streaming_Replication)
 - Git 2.9+
 - All nodes must run the same GitLab version.
 
@@ -134,7 +134,7 @@ The following table lists basic ports that must be open between the **primary** 
 See the full list of ports used by GitLab in [Package defaults](https://docs.gitlab.com/omnibus/package-information/defaults.html)
 
 NOTE: **Note:**
-[Web terminal](../../../ci/environments.md#web-terminals) support requires your load balancer to correctly handle WebSocket connections.
+[Web terminal](../../../ci/environments/index.md#web-terminals) support requires your load balancer to correctly handle WebSocket connections.
 When using HTTP or HTTPS proxying, your load balancer must be configured to pass through the `Connection` and `Upgrade` hop-by-hop headers. See the [web terminal](../../integration/terminal.md) integration guide for more details.
 
 NOTE: **Note:**
@@ -206,9 +206,9 @@ For information on configuring Geo, see [Geo configuration](configuration.md).
 
 For information on how to update your Geo nodes to the latest GitLab version, see [Updating the Geo nodes](updating_the_geo_nodes.md).
 
-### Configuring Geo high availability
+### Configuring Geo for multiple servers
 
-For information on configuring Geo for high availability, see [Geo High Availability](high_availability.md).
+For information on configuring Geo for multiple servers, see [Geo for multiple servers](multiple_servers.md).
 
 ### Configuring Geo with Object Storage
 
@@ -245,7 +245,7 @@ This list of limitations only reflects the latest version of GitLab. If you are 
 
 - Pushing directly to a **secondary** node redirects (for HTTP) or proxies (for SSH) the request to the **primary** node instead of [handling it directly](https://gitlab.com/gitlab-org/gitlab/issues/1381), except when using Git over HTTP with credentials embedded within the URI. For example, `https://user:password@secondary.tld`.
 - Cloning, pulling, or pushing repositories that exist on the **primary** node but not on the **secondary** nodes where [selective synchronization](configuration.md#selective-synchronization) does not include the project is not supported over SSH [but support is planned](https://gitlab.com/groups/gitlab-org/-/epics/2562). HTTP(S) is supported.
-- The **primary** node has to be online for OAuth login to happen. Existing sessions and Git are not affected.
+- The **primary** node has to be online for OAuth login to happen. Existing sessions and Git are not affected. Support for the **secondary** node to use an OAuth provider independent from the primary is [being planned](https://gitlab.com/gitlab-org/gitlab/issues/208465).
 - The installation takes multiple manual steps that together can take about an hour depending on circumstances. We are working on improving this experience. See [Omnibus GitLab issue #2978](https://gitlab.com/gitlab-org/omnibus-gitlab/issues/2978) for details.
 - Real-time updates of issues/merge requests (for example, via long polling) doesn't work on the **secondary** node.
 - [Selective synchronization](configuration.md#selective-synchronization) applies only to files and repositories. Other datasets are replicated to the **secondary** node in full, making it inappropriate for use as an access control mechanism.

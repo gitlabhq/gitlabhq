@@ -3,6 +3,8 @@
 # This has been extracted from https://github.com/github/linguist/blob/master/lib/linguist/blob_helper.rb
 module Gitlab
   module BlobHelper
+    include Gitlab::Utils::StrongMemoize
+
     def extname
       File.extname(name.to_s)
     end
@@ -120,8 +122,18 @@ module Gitlab
     end
 
     def encoded_newlines_re
-      @encoded_newlines_re ||=
-        Regexp.union(["\r\n", "\r", "\n"].map { |nl| nl.encode(ruby_encoding, "ASCII-8BIT").force_encoding(data.encoding) })
+      strong_memoize(:encoded_newlines_re) do
+        newlines = ["\r\n", "\r", "\n"]
+        data_encoding = data&.encoding
+
+        if ruby_encoding && data_encoding
+          newlines.map! do |nl|
+            nl.encode(ruby_encoding, "ASCII-8BIT").force_encoding(data_encoding)
+          end
+        end
+
+        Regexp.union(newlines)
+      end
     end
 
     def ruby_encoding

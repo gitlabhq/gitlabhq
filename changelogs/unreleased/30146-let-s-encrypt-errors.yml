@@ -1,0 +1,5 @@
+---
+title: Allow users to retry obtaining Let's Encrypt certificates for GitLab Pages
+merge_request: 28784
+author:
+type: added

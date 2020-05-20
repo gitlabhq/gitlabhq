@@ -224,19 +224,6 @@ describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state do
             end
           end
 
-          context 'when ci_use_merge_request_ref feature flag is false' do
-            before do
-              stub_feature_flags(ci_use_merge_request_ref: false)
-            end
-
-            it 'create legacy detached merge request pipeline for non-fork merge request' do
-              merge_request.reload
-
-              expect(merge_request.actual_head_pipeline)
-                .to be_legacy_detached_merge_request_pipeline
-            end
-          end
-
           context 'when there are no commits between source branch and target branch' do
             let(:opts) do
               {

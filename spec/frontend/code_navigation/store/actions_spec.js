@@ -143,6 +143,16 @@ describe('Code navigation actions', () => {
       expect(addInteractionClass.mock.calls[0]).toEqual(['index.js', 'test']);
       expect(addInteractionClass.mock.calls[1]).toEqual(['index.js', 'console.log']);
     });
+
+    it('does not call addInteractionClass when no data exists', () => {
+      const state = {
+        data: null,
+      };
+
+      actions.showBlobInteractionZones({ state }, 'index.js');
+
+      expect(addInteractionClass).not.toHaveBeenCalled();
+    });
   });
 
   describe('showDefinition', () => {
@@ -173,7 +183,11 @@ describe('Code navigation actions', () => {
         [
           {
             type: 'SET_CURRENT_DEFINITION',
-            payload: { definition: { hover: 'test' }, position: { height: 0, x: 0, y: 0 } },
+            payload: {
+              blobPath: 'index.js',
+              definition: { hover: 'test' },
+              position: { height: 0, x: 0, y: 0 },
+            },
           },
         ],
         [],
@@ -193,7 +207,11 @@ describe('Code navigation actions', () => {
         [
           {
             type: 'SET_CURRENT_DEFINITION',
-            payload: { definition: { hover: 'test' }, position: { height: 0, x: 0, y: 0 } },
+            payload: {
+              blobPath: 'index.js',
+              definition: { hover: 'test' },
+              position: { height: 0, x: 0, y: 0 },
+            },
           },
         ],
         [],
@@ -214,7 +232,11 @@ describe('Code navigation actions', () => {
         [
           {
             type: 'SET_CURRENT_DEFINITION',
-            payload: { definition: { hover: 'test' }, position: { height: 0, x: 0, y: 0 } },
+            payload: {
+              blobPath: 'index.js',
+              definition: { hover: 'test' },
+              position: { height: 0, x: 0, y: 0 },
+            },
           },
         ],
         [],

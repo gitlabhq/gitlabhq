@@ -72,9 +72,6 @@ export default {
     dismissCookieName() {
       return `${this.trackLabel}_${this.dismissKey}`;
     },
-    commitCookieName() {
-      return `suggest_gitlab_ci_yml_commit_${this.dismissKey}`;
-    },
   },
   mounted() {
     if (

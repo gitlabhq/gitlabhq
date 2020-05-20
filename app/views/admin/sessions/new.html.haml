@@ -5,18 +5,19 @@
   .col-md-5.new-session-forms-container
     .login-page
       #signin-container
-        = render 'admin/sessions/tabs_normal', tab_title: _('Enter Admin Mode')
+        - if any_form_based_providers_enabled?
+          = render 'devise/shared/tabs_ldap', show_password_form: allow_admin_mode_password_authentication_for_web?, render_signup_link: false
+        - else
+          = render 'devise/shared/tabs_normal', tab_title: _('Enter Admin Mode'), render_signup_link: false
         .tab-content
-          - if !current_user.require_password_creation_for_web?
-            .login-box.tab-pane.active{ id: 'login-pane', role: 'tabpanel' }
-              .login-body
-                = render 'admin/sessions/new_base'
+          - if allow_admin_mode_password_authentication_for_web? || ldap_sign_in_enabled? || crowd_enabled?
+            = render 'admin/sessions/signin_box'
 
-          - if omniauth_enabled? && button_based_providers_enabled?
-            .clearfix
-              = render 'devise/shared/omniauth_box', hide_remember_me: true
+        -# Show a message if none of the mechanisms above are enabled
+        - if !allow_admin_mode_password_authentication_for_web? && !ldap_sign_in_enabled? && !omniauth_enabled?
+          .prepend-top-default.center
+            = _('No authentication methods configured.')
 
-          -# Show a message if none of the mechanisms above are enabled
-          - if current_user.require_password_creation_for_web? && !omniauth_enabled?
-            .prepend-top-default.center
-              = _('No authentication methods configured.')
+        - if omniauth_enabled? && button_based_providers_enabled?
+          .clearfix
+            = render 'devise/shared/omniauth_box', hide_remember_me: true

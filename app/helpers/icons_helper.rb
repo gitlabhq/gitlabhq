@@ -158,6 +158,6 @@ module IconsHelper
   def known_sprites
     return if Rails.env.production?
 
-    @known_sprites ||= JSON.parse(File.read(Rails.root.join('node_modules/@gitlab/svgs/dist/icons.json')))['icons']
+    @known_sprites ||= Gitlab::Json.parse(File.read(Rails.root.join('node_modules/@gitlab/svgs/dist/icons.json')))['icons']
   end
 end

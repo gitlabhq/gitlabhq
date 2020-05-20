@@ -49,19 +49,6 @@ module Gitlab
         retval
       end
 
-      # Returns a Metric instance of the current method call.
-      def to_metric
-        Metric.new(
-          Instrumentation.series,
-          {
-            duration: real_time.in_milliseconds.to_i,
-            cpu_duration: cpu_time.in_milliseconds.to_i,
-            call_count: call_count
-          },
-          method: @name
-        )
-      end
-
       # Returns true if the total runtime of this method exceeds the method call
       # threshold.
       def above_threshold?

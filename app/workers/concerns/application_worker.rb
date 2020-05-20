@@ -11,6 +11,8 @@ module ApplicationWorker
   include WorkerAttributes
   include WorkerContext
 
+  LOGGING_EXTRA_KEY = 'extra'
+
   included do
     set_queue
 
@@ -23,6 +25,21 @@ module ApplicationWorker
       )
 
       payload.stringify_keys.merge(context)
+    end
+
+    def log_extra_metadata_on_done(key, value)
+      @done_log_extra_metadata ||= {}
+      @done_log_extra_metadata[key] = value
+    end
+
+    def logging_extras
+      return {} unless @done_log_extra_metadata
+
+      # Prefix keys with class name to avoid conflicts in Elasticsearch types.
+      # Also prefix with "extra." so that we know to log these new fields.
+      @done_log_extra_metadata.transform_keys do |k|
+        "#{LOGGING_EXTRA_KEY}.#{self.class.name.gsub("::", "_").underscore}.#{k}"
+      end
     end
   end
 

@@ -36,7 +36,7 @@ module Projects
           response = ::JiraImport::StartImportService.new(current_user, @project, jira_project_key).execute
           flash[:notice] = response.message if response.message.present?
         else
-          flash[:alert] = 'No jira project key has been provided.'
+          flash[:alert] = 'No Jira project key has been provided.'
         end
 
         redirect_to project_import_jira_path(@project)

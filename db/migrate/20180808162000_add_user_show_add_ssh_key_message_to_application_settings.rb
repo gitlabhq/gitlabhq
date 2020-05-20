@@ -10,7 +10,9 @@ class AddUserShowAddSshKeyMessageToApplicationSettings < ActiveRecord::Migration
   disable_ddl_transaction!
 
   def up
+    # rubocop:disable Migration/AddColumnWithDefault
     add_column_with_default :application_settings, :user_show_add_ssh_key_message, :boolean, default: true, allow_null: false
+    # rubocop:enable Migration/AddColumnWithDefault
   end
 
   def down

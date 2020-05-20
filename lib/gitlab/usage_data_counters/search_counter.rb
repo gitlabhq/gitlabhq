@@ -21,6 +21,10 @@ module Gitlab
             navbar_searches: total_navbar_searches_count
           }
         end
+
+        def fallback_totals
+          { navbar_searches: -1 }
+        end
       end
     end
   end

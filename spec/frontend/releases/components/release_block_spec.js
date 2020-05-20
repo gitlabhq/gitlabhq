@@ -1,6 +1,5 @@
 import $ from 'jquery';
 import { mount } from '@vue/test-utils';
-import { first } from 'underscore';
 import EvidenceBlock from '~/releases/components/evidence_block.vue';
 import ReleaseBlock from '~/releases/components/release_block.vue';
 import ReleaseBlockFooter from '~/releases/components/release_block_footer.vue';
@@ -80,11 +79,11 @@ describe('Release block', () => {
       );
 
       expect(wrapper.find('.js-sources-dropdown li a').attributes().href).toEqual(
-        first(release.assets.sources).url,
+        release.assets.sources[0].url,
       );
 
       expect(wrapper.find('.js-sources-dropdown li a').text()).toContain(
-        first(release.assets.sources).format,
+        release.assets.sources[0].format,
       );
     });
 
@@ -92,12 +91,10 @@ describe('Release block', () => {
       expect(wrapper.findAll('.js-assets-list li').length).toEqual(release.assets.links.length);
 
       expect(wrapper.find('.js-assets-list li a').attributes().href).toEqual(
-        first(release.assets.links).directAssetUrl,
+        release.assets.links[0].directAssetUrl,
       );
 
-      expect(wrapper.find('.js-assets-list li a').text()).toContain(
-        first(release.assets.links).name,
-      );
+      expect(wrapper.find('.js-assets-list li a').text()).toContain(release.assets.links[0].name);
     });
 
     it('renders author avatar', () => {
@@ -264,7 +261,7 @@ describe('Release block', () => {
       });
 
       it('renders a link to the milestone with a tooltip', () => {
-        const milestone = first(release.milestones);
+        const milestone = release.milestones[0];
         const milestoneLink = wrapper.find('.js-milestone-link');
 
         expect(milestoneLink.exists()).toBe(true);

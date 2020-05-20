@@ -1,6 +1,6 @@
 <script>
 import { mapState, mapActions } from 'vuex';
-import PanelType from 'ee_else_ce/monitoring/components/panel_type.vue';
+import DashboardPanel from '~/monitoring/components/dashboard_panel.vue';
 import { convertToFixedRange } from '~/lib/utils/datetime_range';
 import { defaultTimeRange } from '~/vue_shared/constants';
 import { timeRangeFromUrl, removeTimeRangeParams } from '../../utils';
@@ -10,7 +10,7 @@ let sidebarMutationObserver;
 
 export default {
   components: {
-    PanelType,
+    DashboardPanel,
   },
   props: {
     containerClass: {
@@ -113,9 +113,9 @@ export default {
 </script>
 <template>
   <div class="metrics-embed p-0 d-flex flex-wrap" :class="embedClass">
-    <panel-type
+    <dashboard-panel
       v-for="(graphData, graphIndex) in charts"
-      :key="`panel-type-${graphIndex}`"
+      :key="`dashboard-panel-${graphIndex}`"
       :class="panelClass"
       :graph-data="graphData"
       :group-id="dashboardUrl"

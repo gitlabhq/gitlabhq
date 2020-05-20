@@ -1,0 +1,5 @@
+---
+title: Uses Kubernetes API conventions to create or update a resource leandrogs
+merge_request: 29010
+author: Leandro Silva
+type: performance

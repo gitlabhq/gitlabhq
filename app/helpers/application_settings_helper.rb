@@ -229,14 +229,7 @@ module ApplicationSettingsHelper
       :max_artifacts_size,
       :max_attachment_size,
       :max_pages_size,
-      :metrics_enabled,
-      :metrics_host,
       :metrics_method_call_threshold,
-      :metrics_packet_size,
-      :metrics_pool_size,
-      :metrics_port,
-      :metrics_sample_interval,
-      :metrics_timeout,
       :minimum_password_length,
       :mirror_available,
       :pages_domain_verification_enabled,
@@ -310,7 +303,9 @@ module ApplicationSettingsHelper
       :custom_http_clone_url_root,
       :snippet_size_limit,
       :email_restrictions_enabled,
-      :email_restrictions
+      :email_restrictions,
+      :issues_create_limit,
+      :raw_blob_request_limit
     ]
   end
 
@@ -365,7 +360,7 @@ module ApplicationSettingsHelper
   end
 end
 
-ApplicationSettingsHelper.prepend_if_ee('EE::ApplicationSettingsHelper') # rubocop: disable Cop/InjectEnterpriseEditionModule
+ApplicationSettingsHelper.prepend_if_ee('EE::ApplicationSettingsHelper')
 
 # The methods in `EE::ApplicationSettingsHelper` should be available as both
 # instance and class methods.

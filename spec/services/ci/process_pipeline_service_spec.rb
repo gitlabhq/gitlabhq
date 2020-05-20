@@ -33,25 +33,6 @@ describe Ci::ProcessPipelineService do
     end
   end
 
-  context 'with a pipeline which has processables with nil scheduling_type', :clean_gitlab_redis_shared_state do
-    let!(:build1) { create_build('build1') }
-    let!(:build2) { create_build('build2') }
-    let!(:build3) { create_build('build3', scheduling_type: :dag) }
-    let!(:build3_on_build2) { create(:ci_build_need, build: build3, name: 'build2') }
-
-    before do
-      pipeline.processables.update_all(scheduling_type: nil)
-    end
-
-    it 'populates scheduling_type before processing' do
-      process_pipeline
-
-      expect(build1.scheduling_type).to eq('stage')
-      expect(build2.scheduling_type).to eq('stage')
-      expect(build3.scheduling_type).to eq('dag')
-    end
-  end
-
   def process_pipeline
     described_class.new(pipeline).execute
   end

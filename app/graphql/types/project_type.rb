@@ -205,6 +205,38 @@ module Types
           null: true,
           description: 'Project services',
           resolver: Resolvers::Projects::ServicesResolver
+
+    field :alert_management_alerts,
+          Types::AlertManagement::AlertType.connection_type,
+          null: true,
+          description: 'Alert Management alerts of the project',
+          resolver: Resolvers::AlertManagementAlertResolver
+
+    field :alert_management_alert,
+          Types::AlertManagement::AlertType,
+          null: true,
+          description: 'A single Alert Management alert of the project',
+          resolver: Resolvers::AlertManagementAlertResolver.single
+
+    field :alert_management_alert_status_counts,
+          Types::AlertManagement::AlertStatusCountsType,
+          null: true,
+          description: 'Counts of alerts by status for the project',
+          resolver: Resolvers::AlertManagement::AlertStatusCountsResolver
+
+    field :releases,
+          Types::ReleaseType.connection_type,
+          null: true,
+          description: 'Releases of the project',
+          resolver: Resolvers::ReleasesResolver,
+          feature_flag: :graphql_release_data
+
+    field :release,
+          Types::ReleaseType,
+          null: true,
+          description: 'A single release of the project',
+          resolver: Resolvers::ReleasesResolver.single,
+          feature_flag: :graphql_release_data
   end
 end
 

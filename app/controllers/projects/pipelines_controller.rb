@@ -11,7 +11,9 @@ class Projects::PipelinesController < Projects::ApplicationController
   before_action :authorize_create_pipeline!, only: [:new, :create]
   before_action :authorize_update_pipeline!, only: [:retry, :cancel]
   before_action do
-    push_frontend_feature_flag(:junit_pipeline_view)
+    push_frontend_feature_flag(:junit_pipeline_view, project)
+    push_frontend_feature_flag(:filter_pipelines_search, default_enabled: true)
+    push_frontend_feature_flag(:dag_pipeline_tab)
   end
   before_action :ensure_pipeline, only: [:show]
 
@@ -22,9 +24,8 @@ class Projects::PipelinesController < Projects::ApplicationController
   POLLING_INTERVAL = 10_000
 
   def index
-    @scope = params[:scope]
     @pipelines = Ci::PipelinesFinder
-      .new(project, current_user, scope: @scope)
+      .new(project, current_user, index_params)
       .execute
       .page(params[:page])
       .per(30)
@@ -69,6 +70,8 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def show
+    Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab/-/issues/26657')
+
     respond_to do |format|
       format.html
       format.json do
@@ -88,6 +91,10 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def builds
+    render_show
+  end
+
+  def dag
     render_show
   end
 
@@ -169,19 +176,9 @@ class Projects::PipelinesController < Projects::ApplicationController
       end
 
       format.json do
-        if pipeline_test_report == :error
-          render json: { status: :error_parsing_report }
-        else
-          test_reports = if params[:scope] == "with_attachment"
-                           pipeline_test_report.with_attachment!
-                         else
-                           pipeline_test_report
-                         end
-
-          render json: TestReportSerializer
-            .new(current_user: @current_user)
-            .represent(test_reports, project: project)
-        end
+        render json: TestReportSerializer
+          .new(current_user: @current_user)
+          .represent(pipeline_test_report, project: project)
       end
     end
   end
@@ -189,11 +186,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   def test_reports_count
     return unless Feature.enabled?(:junit_pipeline_view, project)
 
-    begin
-      render json: { total_count: pipeline.test_reports_count }.to_json
-    rescue Gitlab::Ci::Parsers::ParserError
-      render json: { total_count: 0 }.to_json
-    end
+    render json: { total_count: pipeline.test_reports_count }.to_json
   end
 
   private
@@ -262,17 +255,21 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def limited_pipelines_count(project, scope = nil)
-    finder = Ci::PipelinesFinder.new(project, current_user, scope: scope)
+    finder = Ci::PipelinesFinder.new(project, current_user, index_params.merge(scope: scope))
 
     view_context.limited_counter_with_delimiter(finder.execute)
   end
 
   def pipeline_test_report
     strong_memoize(:pipeline_test_report) do
-      @pipeline.test_reports
-    rescue Gitlab::Ci::Parsers::ParserError
-      :error
+      @pipeline.test_reports.tap do |reports|
+        reports.with_attachment! if params[:scope] == 'with_attachment'
+      end
     end
+  end
+
+  def index_params
+    params.permit(:scope, :username, :ref)
   end
 end
 

@@ -1,0 +1,19 @@
+.design-list-item {
+  height: 280px;
+  text-decoration: none;
+
+  .icon-version-status {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+  }
+
+  .design-event {
+    top: $gl-padding;
+    right: $gl-padding;
+  }
+
+  .card-body {
+    height: 230px;
+  }
+}

@@ -376,7 +376,7 @@ You might want to create another Envoy task to do that for you.
 We also create the `.env` file in the same path to set up our production environment variables for Laravel.
 These are persistent data and will be shared to every new release.
 
-Now, we would need to deploy our app by running `envoy run deploy`, but it won't be necessary since GitLab can handle that for us with CI's [environments](../../environments.md), which will be described [later](#setting-up-gitlab-cicd) in this tutorial.
+Now, we would need to deploy our app by running `envoy run deploy`, but it won't be necessary since GitLab can handle that for us with CI's [environments](../../environments/index.md), which will be described [later](#setting-up-gitlab-cicd) in this tutorial.
 
 Now it's time to commit [Envoy.blade.php](https://gitlab.com/mehranrasulian/laravel-sample/blob/master/Envoy.blade.php) and push it to the `master` branch.
 To keep things simple, we commit directly to `master`, without using [feature-branches](../../../topics/gitlab_flow.md#github-flow-as-a-simpler-alternative) since collaboration is beyond the scope of this tutorial.

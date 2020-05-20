@@ -23,21 +23,53 @@ RSpec.shared_examples 'update with repository actions' do
   context 'when the repository does not exist' do
     let(:snippet) { snippet_without_repo }
 
-    it 'creates the repository' do
-      update_snippet(snippet_id: snippet.id, params: { title: 'foo' })
+    context 'when update attributes does not include file_name or content' do
+      it 'does not create the repository' do
+        update_snippet(snippet_id: snippet.id, params: { title: 'foo' })
 
-      expect(snippet.repository).to exist
+        expect(snippet.repository).not_to exist
+      end
     end
 
-    it 'commits the file to the repository' do
-      content = 'New Content'
-      file_name = 'file_name.rb'
+    context 'when update attributes include file_name or content' do
+      it 'creates the repository' do
+        update_snippet(snippet_id: snippet.id, params: { title: 'foo', file_name: 'foo' })
 
-      update_snippet(snippet_id: snippet.id, params: { content: content, file_name: file_name })
+        expect(snippet.repository).to exist
+      end
 
-      blob = snippet.repository.blob_at('master', file_name)
-      expect(blob).not_to be_nil
-      expect(blob.data).to eq content
+      it 'commits the file to the repository' do
+        content = 'New Content'
+        file_name = 'file_name.rb'
+
+        update_snippet(snippet_id: snippet.id, params: { content: content, file_name: file_name })
+
+        blob = snippet.repository.blob_at('master', file_name)
+        expect(blob).not_to be_nil
+        expect(blob.data).to eq content
+      end
+
+      context 'when save fails due to a repository creation error' do
+        let(:content) { 'File content' }
+        let(:file_name) { 'test.md' }
+
+        before do
+          allow_next_instance_of(Snippets::UpdateService) do |instance|
+            allow(instance).to receive(:create_repository_for).with(snippet).and_raise(Snippets::UpdateService::CreateRepositoryError)
+          end
+
+          update_snippet(snippet_id: snippet.id, params: { content: content, file_name: file_name })
+        end
+
+        it 'returns 400' do
+          expect(response).to have_gitlab_http_status(:bad_request)
+        end
+
+        it 'does not save the changes to the snippet object' do
+          expect(snippet.content).not_to eq(content)
+          expect(snippet.file_name).not_to eq(file_name)
+        end
+      end
     end
   end
 end
@@ -46,5 +78,23 @@ RSpec.shared_examples 'snippet response without repository URLs' do
   it 'skip inclusion of repository URLs' do
     expect(json_response).not_to have_key('ssh_url_to_repo')
     expect(json_response).not_to have_key('http_url_to_repo')
+  end
+end
+
+RSpec.shared_examples 'snippet blob content' do
+  it 'returns content from repository' do
+    subject
+
+    expect(response.body).to eq(snippet.blobs.first.data)
+  end
+
+  context 'when snippet repository is empty' do
+    let(:snippet) { snippet_with_empty_repo }
+
+    it 'returns content from database' do
+      subject
+
+      expect(response.body).to eq(snippet.content)
+    end
   end
 end

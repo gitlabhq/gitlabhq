@@ -95,7 +95,7 @@ module API
         projects = reorder_projects(projects)
         projects = apply_filters(projects)
 
-        records, options = paginate_with_strategies(projects) do |projects|
+        records, options = paginate_with_strategies(projects, options[:request_scope]) do |projects|
           projects, options = with_custom_attributes(projects, options)
 
           options = options.reverse_merge(
@@ -313,7 +313,7 @@ module API
       get ':id/forks' do
         forks = ForkProjectsFinder.new(user_project, params: project_finder_params, current_user: current_user).execute
 
-        present_projects forks
+        present_projects forks, request_scope: user_project
       end
 
       desc 'Check pages access of this project'

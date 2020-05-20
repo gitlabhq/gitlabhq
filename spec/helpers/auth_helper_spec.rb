@@ -184,4 +184,40 @@ describe AuthHelper do
       end
     end
   end
+
+  describe '#allow_admin_mode_password_authentication_for_web?' do
+    let(:user) { create(:user) }
+
+    subject { helper.allow_admin_mode_password_authentication_for_web? }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(user)
+    end
+
+    it { is_expected.to be(true) }
+
+    context 'when password authentication for web is disabled' do
+      before do
+        stub_application_setting(password_authentication_enabled_for_web: false)
+      end
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'when current_user is an ldap user' do
+      before do
+        allow(user).to receive(:ldap_user?).and_return(true)
+      end
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'when user got password automatically set' do
+      before do
+        user.update_attribute(:password_automatically_set, true)
+      end
+
+      it { is_expected.to be(false) }
+    end
+  end
 end

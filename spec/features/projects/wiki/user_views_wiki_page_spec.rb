@@ -11,7 +11,7 @@ describe 'User views a wiki page' do
   let(:wiki_page) do
     create(:wiki_page,
            wiki: project.wiki,
-           attrs: { title: 'home', content: "Look at this [image](#{path})\n\n ![alt text](#{path})" })
+           title: 'home', content: "Look at this [image](#{path})\n\n ![alt text](#{path})")
   end
 
   before do

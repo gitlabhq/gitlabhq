@@ -4,7 +4,7 @@ shared_examples 'a milestone events creator' do
   let_it_be(:user) { create(:user) }
 
   let(:created_at_time) { Time.utc(2019, 12, 30) }
-  let(:service) { described_class.new(resource, user, created_at: created_at_time) }
+  let(:service) { described_class.new(resource, user, created_at: created_at_time, old_milestone: nil) }
 
   context 'when milestone is present' do
     let_it_be(:milestone) { create(:milestone) }
@@ -25,10 +25,13 @@ shared_examples 'a milestone events creator' do
       resource.milestone = nil
     end
 
+    let(:old_milestone) { create(:milestone, project: resource.project) }
+    let(:service) { described_class.new(resource, user, created_at: created_at_time, old_milestone: old_milestone) }
+
     it 'creates the expected event records' do
       expect { service.execute }.to change { ResourceMilestoneEvent.count }.by(1)
 
-      expect_event_record(ResourceMilestoneEvent.last, action: 'remove', milestone: nil, state: 'opened')
+      expect_event_record(ResourceMilestoneEvent.last, action: 'remove', milestone: old_milestone, state: 'opened')
     end
   end
 

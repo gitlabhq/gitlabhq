@@ -11,7 +11,7 @@ class AddBuildNeed < ActiveRecord::Migration[5.2]
   def change
     create_table :ci_build_needs, id: :serial do |t|
       t.integer :build_id, null: false
-      t.text :name, null: false
+      t.text :name, null: false # rubocop:disable Migration/AddLimitToTextColumns
 
       t.index [:build_id, :name], unique: true
       t.foreign_key :ci_builds, column: :build_id, on_delete: :cascade

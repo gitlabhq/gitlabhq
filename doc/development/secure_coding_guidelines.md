@@ -1,4 +1,4 @@
-# Security Guidelines
+# Secure Coding Guidelines
 
 This document contains descriptions and guidelines for addressing security
 vulnerabilities commonly identified in the GitLab codebase. They are intended
@@ -26,7 +26,7 @@ Improper permission handling can have significant impacts on the security of an 
 Some situations may reveal [sensitive data](https://gitlab.com/gitlab-com/gl-infra/production/issues/477) or allow a malicious actor to perform [harmful actions](https://gitlab.com/gitlab-org/gitlab/issues/8180).
 The overall impact depends heavily on what resources can be accessed or modified improperly.
 
-A common vulnerability when permission checks are missing is called [IDOR](https://www.owasp.org/index.php/Testing_for_Insecure_Direct_Object_References_(OTG-AUTHZ-004)) for Insecure Direct Object References.
+A common vulnerability when permission checks are missing is called [IDOR](https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/05-Authorization_Testing/04-Testing_for_Insecure_Direct_Object_References) for Insecure Direct Object References.
 
 ### When to Consider
 
@@ -49,8 +49,8 @@ Be careful to **also test [visibility levels](https://gitlab.com/gitlab-org/gitl
 Some example of well implemented access controls and tests:
 
 1. [example1](https://dev.gitlab.org/gitlab/gitlab-ee/merge_requests/710/diffs?diff_id=13750#af40ef0eaae3c1e018809e1d88086e32bccaca40_43_43)
-1. [example2](https://dev.gitlab.org/gitlab/gitlabhq/merge_requests/2511/diffs#ed3aaab1510f43b032ce345909a887e5b167e196_142_155)
-1. [example3](https://dev.gitlab.org/gitlab/gitlabhq/merge_requests/3170/diffs?diff_id=17494)
+1. [example2](https://dev.gitlab.org/gitlab/gitlabhq/-/merge_requests/2511/diffs#ed3aaab1510f43b032ce345909a887e5b167e196_142_155)
+1. [example3](https://dev.gitlab.org/gitlab/gitlabhq/-/merge_requests/3170/diffs?diff_id=17494)
 
 **NB:** any input from development team is welcome, e.g. about rubocop rules.
 
@@ -74,11 +74,11 @@ text = "foo\nbar"
 p text.match /^bar$/
 ```
 
-The output of this example is `#<MatchData "bar">`, as Ruby treats the input `text` line by line. In order to match the whole __string__ the Regex anchors `\A` and `\z` should be used according to [Rubular](https://rubular.com/).
+The output of this example is `#<MatchData "bar">`, as Ruby treats the input `text` line by line. In order to match the whole __string__ the Regex anchors `\A` and `\z` should be used.
 
 #### Impact
 
-This Ruby Regex speciality can have security impact, as often regular expressions are used for validations or to impose restrictions on user-input.
+This Ruby Regex specialty can have security impact, as often regular expressions are used for validations or to impose restrictions on user-input.
 
 #### Examples
 
@@ -104,15 +104,64 @@ Here `params[:ip]` should not contain anything else but numbers and dots. Howeve
 
 In most cases the anchors `\A` for beginning of text and `\z` for end of text should be used instead of `^` and `$`.
 
-### Further Links
+## Denial of Service (ReDoS)
+
+[ReDoS](https://owasp.org/www-community/attacks/Regular_expression_Denial_of_Service_-_ReDoS) is a possible attack if the attacker knows
+or controls the regular expression (regex) used, and is able to enter user input to match against the bad regular expression.
+
+### Impact
+
+The resource, for example Unicorn, Puma, or Sidekiq, can be made to hang as it takes a long time to evaulate the bad regex match.
+
+### Examples
+
+GitLab-specific examples can be found in the following merge requests:
+
+- [MR25314](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25314)
+- [MR25122](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25122#note_289087459)
+
+Consider the following example application, which defines a check using a regular expression. A user entering `user@aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa!.com` as the email on a form will hang the web server.
+
+```ruby
+class Email < ApplicationRecord
+  DOMAIN_MATCH = Regexp.new('([a-zA-Z0-9]+)+\.com')
+
+  validates :domain_matches
+  
+  private
+  
+  def domain_matches
+    errors.add(:email, 'does not match') if email =~ DOMAIN_MATCH
+  end
+```
+
+### Mitigation
+
+GitLab has `Gitlab::UntrustedRegexp` which internally uses the [`re2`](https://github.com/google/re2/wiki/Syntax) library.
+By utilizing `re2`, we get a strict limit on total execution time, and a smaller subset of available regex features.
+
+All user-provided regexes should use `Gitlab::UntrustedRegexp`.
+
+For other regexes, here are a few guidelines:
+
+- Remove unnecessary backtracking.
+- Avoid nested quantifiers if possible.
+- Try to be as precise as possible in your regex and avoid the `.` if something else can be used (e.g.: Use `_[^_]+_` instead of `_.*_` to match `_text here_`).
+
+An example can be found [in this commit](https://gitlab.com/gitlab-org/gitlab/commit/717824144f8181bef524592eab882dd7525a60ef).
+
+## Further Links
 
 - [Rubular](https://rubular.com/) is a nice online tool to fiddle with Ruby Regexps.
+- [Runaway Regular Expressions](https://www.regular-expressions.info/catastrophic.html)
+- [The impact of regular expression denial of service (ReDoS) in practice: an empirical study at the ecosystem scale](http://people.cs.vt.edu/~davisjam/downloads/publications/DavisCoghlanServantLee-EcosystemREDOS-ESECFSE18.pdf). This research paper discusses approaches to automatically detect ReDoS vulnerabilities.
+- [Freezing the web: A study of redos vulnerabilities in JavaScript-based web servers](https://www.usenix.org/system/files/conference/usenixsecurity18/sec18-staicu.pdf). Another research paper about detecting ReDoS vulnerabilities.
 
 ## Server Side Request Forgery (SSRF)
 
 ### Description
 
-A [Server-side Request Forgery (SSRF)][1] is an attack in which an attacker
+A [Server-side Request Forgery (SSRF)](https://www.hackerone.com/blog-How-To-Server-Side-Request-Forgery-SSRF) is an attack in which an attacker
 is able coerce a application into making an outbound request to an unintended
 resource. This resource is usually internal. In GitLab, the connection most
 commonly uses HTTP, but an SSRF can be performed with any protocol, such as
@@ -121,8 +170,6 @@ Redis or SSH.
 With an SSRF attack, the UI may or may not show the response. The latter is
 called a Blind SSRF. While the impact is reduced, it can still be useful for
 attackers, especially for mapping internal network services as part of recon.
-
-[1]: https://www.hackerone.com/blog-How-To-Server-Side-Request-Forgery-SSRF
 
 ### Impact
 
@@ -155,16 +202,14 @@ The preferred SSRF mitigations within GitLab are:
 
 #### GitLab HTTP Library
 
-The [GitLab::HTTP][2] wrapper library has grown to include mitigations for all of the GitLab-known SSRF vectors. It is also configured to respect the
+The [GitLab::HTTP](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/http.rb) wrapper library has grown to include mitigations for all of the GitLab-known SSRF vectors. It is also configured to respect the
 `Outbound requests` options that allow instance administrators to block all internal connections, or limit the networks to which connections can be made.
 
 In some cases, it has been possible to configure GitLab::HTTP as the HTTP
 connection library for 3rd-party gems. This is preferrable over re-implementing
 the mitigations for a new feature.
 
-- [More details](https://dev.gitlab.org/gitlab/gitlabhq/merge_requests/2530/diffs)
-
-[2]: https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/http.rb
+- [More details](https://dev.gitlab.org/gitlab/gitlabhq/-/merge_requests/2530/diffs)
 
 #### Feature-specific Mitigations
 
@@ -185,9 +230,7 @@ For situtions in which a whitelist or GitLab:HTTP cannot be used, it will be nec
 - For HTTP connections: Disable redirects or validate the redirect destination
 - To mitigate DNS rebinding attacks, validate and use the first IP address received
 
-See [url_blocker_spec.rb][3] for examples of SSRF payloads
-
-[3]: https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/lib/gitlab/url_blocker_spec.rb
+See [url_blocker_spec.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/lib/gitlab/url_blocker_spec.rb) for examples of SSRF payloads
 
 ## XSS guidelines
 
@@ -236,7 +279,7 @@ For any and all input fields, ensure to define expectations on the type/format o
   - Validate the input using a [whitelist approach](https://youtu.be/2VFavqfDS6w?t=7816) to only allow characters through which you are expecting to receive for the field.
     - Input which fails validation should be **rejected**, and not sanitized.
 
-Note that blacklists should be avoided, as it is near impossible to block all [variations of XSS](https://www.owasp.org/index.php/XSS_Filter_Evasion_Cheat_Sheet).
+Note that blacklists should be avoided, as it is near impossible to block all [variations of XSS](https://owasp.org/www-community/xss-filter-evasion-cheatsheet).
 
 #### Output encoding
 

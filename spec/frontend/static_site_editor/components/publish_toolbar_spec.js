@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlButton, GlLoadingIcon } from '@gitlab/ui';
+import { GlButton } from '@gitlab/ui';
 
 import PublishToolbar from '~/static_site_editor/components/publish_toolbar.vue';
 
@@ -19,7 +19,6 @@ describe('Static Site Editor Toolbar', () => {
 
   const findReturnUrlLink = () => wrapper.find({ ref: 'returnUrlLink' });
   const findSaveChangesButton = () => wrapper.find(GlButton);
-  const findLoadingIndicator = () => wrapper.find(GlLoadingIcon);
 
   beforeEach(() => {
     buildWrapper();
@@ -37,8 +36,8 @@ describe('Static Site Editor Toolbar', () => {
     expect(findSaveChangesButton().attributes('disabled')).toBe('true');
   });
 
-  it('does not display saving changes indicator', () => {
-    expect(findLoadingIndicator().classes()).toContain('invisible');
+  it('does not render the Submit Changes button with a loader', () => {
+    expect(findSaveChangesButton().props('loading')).toBe(false);
   });
 
   it('does not render returnUrl link', () => {
@@ -62,15 +61,11 @@ describe('Static Site Editor Toolbar', () => {
 
   describe('when saving changes', () => {
     beforeEach(() => {
-      buildWrapper({ saveable: true, savingChanges: true });
+      buildWrapper({ savingChanges: true });
     });
 
-    it('disables Submit Changes button', () => {
-      expect(findSaveChangesButton().attributes('disabled')).toBe('true');
-    });
-
-    it('displays saving changes indicator', () => {
-      expect(findLoadingIndicator().classes()).not.toContain('invisible');
+    it('renders the Submit Changes button with a loading indicator', () => {
+      expect(findSaveChangesButton().props('loading')).toBe(true);
     });
   });
 

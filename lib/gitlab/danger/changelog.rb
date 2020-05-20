@@ -14,10 +14,6 @@ module Gitlab
         @found ||= git.added_files.find { |path| path =~ %r{\A(ee/)?(changelogs/unreleased)(-ee)?/} }
       end
 
-      def presented_no_changelog_labels
-        NO_CHANGELOG_LABELS.map { |label| "~#{label}" }.join(', ')
-      end
-
       def sanitized_mr_title
         gitlab.mr_json["title"].gsub(/^WIP: */, '').gsub(/`/, '\\\`')
       end

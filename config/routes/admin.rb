@@ -81,7 +81,6 @@ namespace :admin do
     post :preview, on: :collection
   end
 
-  resource :logs, only: [:show]
   resource :health_check, controller: 'health_check', only: [:show]
   resource :background_jobs, controller: 'background_jobs', only: [:show]
 
@@ -116,10 +115,6 @@ namespace :admin do
   end
 
   resource :application_settings, only: :update do
-    # This redirect should be removed with 13.0 release.
-    # https://gitlab.com/gitlab-org/gitlab/issues/199427
-    get '/', to: redirect('admin/application_settings/general'), as: nil
-
     resources :services, only: [:index, :edit, :update]
     resources :integrations, only: [:edit, :update] do
       member do
@@ -157,6 +152,10 @@ namespace :admin do
     collection do
       post :cancel_all
     end
+  end
+
+  namespace :ci do
+    resource :variables, only: [:show, :update]
   end
 
   concerns :clusterable

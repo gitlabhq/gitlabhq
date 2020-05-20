@@ -4,10 +4,7 @@ import { shallowMount } from '@vue/test-utils';
 import LabelsSelect from '~/labels_select';
 import BaseComponent from '~/vue_shared/components/sidebar/labels_select/base.vue';
 
-import {
-  mockConfig,
-  mockLabels,
-} from '../../../../../javascripts/vue_shared/components/sidebar/labels_select/mock_data';
+import { mockConfig, mockLabels } from './mock_data';
 
 const createComponent = (config = mockConfig) =>
   shallowMount(BaseComponent, {

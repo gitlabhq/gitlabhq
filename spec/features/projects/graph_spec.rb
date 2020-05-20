@@ -59,7 +59,7 @@ describe 'Project Graph', :js do
 
     it 'HTML escapes branch name' do
       expect(page.body).to include("Commit statistics for <strong>#{ERB::Util.html_escape(branch_name)}</strong>")
-      expect(page.body).not_to include(branch_name)
+      expect(page.find('.dropdown-toggle-text')['innerHTML']).to eq(ERB::Util.html_escape(branch_name))
     end
   end
 

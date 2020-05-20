@@ -9,18 +9,26 @@ describe Projects::TransferService do
   let(:group) { create(:group) }
   let(:project) { create(:project, :repository, :legacy_storage, namespace: user.namespace) }
 
+  subject(:execute_transfer) { described_class.new(project, user).execute(group) }
+
   context 'namespace -> namespace' do
     before do
-      allow_any_instance_of(Gitlab::UploadsTransfer)
-        .to receive(:move_project).and_return(true)
-      allow_any_instance_of(Gitlab::PagesTransfer)
-        .to receive(:move_project).and_return(true)
+      allow_next_instance_of(Gitlab::UploadsTransfer) do |service|
+        allow(service).to receive(:move_project).and_return(true)
+      end
+      allow_next_instance_of(Gitlab::PagesTransfer) do |service|
+        allow(service).to receive(:move_project).and_return(true)
+      end
+
       group.add_owner(user)
-      @result = transfer_project(project, user, group)
     end
 
-    it { expect(@result).to be_truthy }
-    it { expect(project.namespace).to eq(group) }
+    it 'updates the namespace' do
+      transfer_result = execute_transfer
+
+      expect(transfer_result).to be_truthy
+      expect(project.namespace).to eq(group)
+    end
   end
 
   context 'when transfer succeeds' do
@@ -31,26 +39,29 @@ describe Projects::TransferService do
     it 'sends notifications' do
       expect_any_instance_of(NotificationService).to receive(:project_was_moved)
 
-      transfer_project(project, user, group)
+      execute_transfer
     end
 
     it 'invalidates the user\'s personal_project_count cache' do
       expect(user).to receive(:invalidate_personal_projects_count)
 
-      transfer_project(project, user, group)
+      execute_transfer
     end
 
     it 'executes system hooks' do
-      transfer_project(project, user, group) do |service|
+      expect_next_instance_of(described_class) do |service|
         expect(service).to receive(:execute_system_hooks)
       end
+
+      execute_transfer
     end
 
     it 'moves the disk path', :aggregate_failures do
       old_path = project.repository.disk_path
       old_full_path = project.repository.full_path
 
-      transfer_project(project, user, group)
+      execute_transfer
+
       project.reload_repository!
 
       expect(project.repository.disk_path).not_to eq(old_path)
@@ -60,13 +71,13 @@ describe Projects::TransferService do
     end
 
     it 'updates project full path in .git/config' do
-      transfer_project(project, user, group)
+      execute_transfer
 
       expect(rugged_config['gitlab.fullpath']).to eq "#{group.full_path}/#{project.path}"
     end
 
     it 'updates storage location' do
-      transfer_project(project, user, group)
+      execute_transfer
 
       expect(project.project_repository).to have_attributes(
         disk_path: "#{group.full_path}/#{project.path}",
@@ -80,7 +91,7 @@ describe Projects::TransferService do
 
     def attempt_project_transfer(&block)
       expect do
-        transfer_project(project, user, group, &block)
+        execute_transfer
       end.to raise_error(ActiveRecord::ActiveRecordError)
     end
 
@@ -138,13 +149,15 @@ describe Projects::TransferService do
   end
 
   context 'namespace -> no namespace' do
-    before do
-      @result = transfer_project(project, user, nil)
-    end
+    let(:group) { nil }
 
-    it { expect(@result).to eq false }
-    it { expect(project.namespace).to eq(user.namespace) }
-    it { expect(project.errors.messages[:new_namespace].first).to eq 'Please select a new namespace for your project.' }
+    it 'does not allow the project transfer' do
+      transfer_result = execute_transfer
+
+      expect(transfer_result).to eq false
+      expect(project.namespace).to eq(user.namespace)
+      expect(project.errors.messages[:new_namespace].first).to eq 'Please select a new namespace for your project.'
+    end
   end
 
   context 'disallow transferring of project with tags' do
@@ -156,18 +169,18 @@ describe Projects::TransferService do
       project.container_repositories << container_repository
     end
 
-    subject { transfer_project(project, user, group) }
-
-    it { is_expected.to be_falsey }
+    it 'does not allow the project transfer' do
+      expect(execute_transfer).to eq false
+    end
   end
 
   context 'namespace -> not allowed namespace' do
-    before do
-      @result = transfer_project(project, user, group)
-    end
+    it 'does not allow the project transfer' do
+      transfer_result = execute_transfer
 
-    it { expect(@result).to eq false }
-    it { expect(project.namespace).to eq(user.namespace) }
+      expect(transfer_result).to eq false
+      expect(project.namespace).to eq(user.namespace)
+    end
   end
 
   context 'namespace which contains orphan repository with same projects path name' do
@@ -177,99 +190,94 @@ describe Projects::TransferService do
       group.add_owner(user)
 
       TestEnv.create_bare_repository(fake_repo_path)
-
-      @result = transfer_project(project, user, group)
     end
 
     after do
       FileUtils.rm_rf(fake_repo_path)
     end
 
-    it { expect(@result).to eq false }
-    it { expect(project.namespace).to eq(user.namespace) }
-    it { expect(project.errors[:new_namespace]).to include('Cannot move project') }
+    it 'does not allow the project transfer' do
+      transfer_result = execute_transfer
+
+      expect(transfer_result).to eq false
+      expect(project.namespace).to eq(user.namespace)
+      expect(project.errors[:new_namespace]).to include('Cannot move project')
+    end
   end
 
   context 'target namespace containing the same project name' do
     before do
       group.add_owner(user)
-      project.update(name: 'new_name')
-
-      create(:project, name: 'new_name', group: group, path: 'other')
-
-      @result = transfer_project(project, user, group)
+      create(:project, name: project.name, group: group, path: 'other')
     end
 
-    it { expect(@result).to eq false }
-    it { expect(project.namespace).to eq(user.namespace) }
-    it { expect(project.errors[:new_namespace]).to include('Project with same name or path in target namespace already exists') }
+    it 'does not allow the project transfer' do
+      transfer_result = execute_transfer
+
+      expect(transfer_result).to eq false
+      expect(project.namespace).to eq(user.namespace)
+      expect(project.errors[:new_namespace]).to include('Project with same name or path in target namespace already exists')
+    end
   end
 
   context 'target namespace containing the same project path' do
     before do
       group.add_owner(user)
-
       create(:project, name: 'other-name', path: project.path, group: group)
-
-      @result = transfer_project(project, user, group)
     end
 
-    it { expect(@result).to eq false }
-    it { expect(project.namespace).to eq(user.namespace) }
-    it { expect(project.errors[:new_namespace]).to include('Project with same name or path in target namespace already exists') }
+    it 'does not allow the project transfer' do
+      transfer_result = execute_transfer
+
+      expect(transfer_result).to eq false
+      expect(project.namespace).to eq(user.namespace)
+      expect(project.errors[:new_namespace]).to include('Project with same name or path in target namespace already exists')
+    end
   end
 
   context 'target namespace allows developers to create projects' do
     let(:group) { create(:group, project_creation_level: ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS) }
 
     context 'the user is a member of the target namespace with developer permissions' do
-      subject(:transfer_project_result) { transfer_project(project, user, group) }
-
       before do
         group.add_developer(user)
       end
 
       it 'does not allow project transfer to the target namespace' do
-        expect(transfer_project_result).to eq false
+        transfer_result = execute_transfer
+
+        expect(transfer_result).to eq false
         expect(project.namespace).to eq(user.namespace)
         expect(project.errors[:new_namespace]).to include('Transfer failed, please contact an admin.')
       end
     end
   end
 
-  def transfer_project(project, user, new_namespace)
-    service = Projects::TransferService.new(project, user)
-
-    yield(service) if block_given?
-
-    service.execute(new_namespace)
-  end
-
   context 'visibility level' do
-    let(:internal_group) { create(:group, :internal) }
+    let(:group) { create(:group, :internal) }
 
     before do
-      internal_group.add_owner(user)
+      group.add_owner(user)
     end
 
     context 'when namespace visibility level < project visibility level' do
-      let(:public_project) { create(:project, :public, :repository, namespace: user.namespace) }
+      let(:project) { create(:project, :public, :repository, namespace: user.namespace) }
 
       before do
-        transfer_project(public_project, user, internal_group)
+        execute_transfer
       end
 
-      it { expect(public_project.visibility_level).to eq(internal_group.visibility_level) }
+      it { expect(project.visibility_level).to eq(group.visibility_level) }
     end
 
     context 'when namespace visibility level > project visibility level' do
-      let(:private_project) { create(:project, :private, :repository, namespace: user.namespace) }
+      let(:project) { create(:project, :private, :repository, namespace: user.namespace) }
 
       before do
-        transfer_project(private_project, user, internal_group)
+        execute_transfer
       end
 
-      it { expect(private_project.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE) }
+      it { expect(project.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE) }
     end
   end
 
@@ -277,9 +285,11 @@ describe Projects::TransferService do
     it 'delegates transfer to Labels::TransferService' do
       group.add_owner(user)
 
-      expect_any_instance_of(Labels::TransferService).to receive(:execute).once.and_call_original
+      expect_next_instance_of(Labels::TransferService, user, project.group, project) do |labels_transfer_service|
+        expect(labels_transfer_service).to receive(:execute).once.and_call_original
+      end
 
-      transfer_project(project, user, group)
+      execute_transfer
     end
   end
 
@@ -287,49 +297,52 @@ describe Projects::TransferService do
     it 'delegates transfer to Milestones::TransferService' do
       group.add_owner(user)
 
-      expect(Milestones::TransferService).to receive(:new).with(user, project.group, project).and_call_original
-      expect_any_instance_of(Milestones::TransferService).to receive(:execute).once
+      expect_next_instance_of(Milestones::TransferService, user, project.group, project) do |milestones_transfer_service|
+        expect(milestones_transfer_service).to receive(:execute).once.and_call_original
+      end
 
-      transfer_project(project, user, group)
+      execute_transfer
     end
   end
 
   context 'when hashed storage in use' do
-    let!(:hashed_project) { create(:project, :repository, namespace: user.namespace) }
-    let!(:old_disk_path) { hashed_project.repository.disk_path }
+    let!(:project) { create(:project, :repository, namespace: user.namespace) }
+    let!(:old_disk_path) { project.repository.disk_path }
 
     before do
       group.add_owner(user)
     end
 
     it 'does not move the disk path', :aggregate_failures do
-      new_full_path = "#{group.full_path}/#{hashed_project.path}"
+      new_full_path = "#{group.full_path}/#{project.path}"
 
-      transfer_project(hashed_project, user, group)
-      hashed_project.reload_repository!
+      execute_transfer
 
-      expect(hashed_project.repository).to have_attributes(
+      project.reload_repository!
+
+      expect(project.repository).to have_attributes(
         disk_path: old_disk_path,
         full_path: new_full_path
       )
-      expect(hashed_project.disk_path).to eq(old_disk_path)
+      expect(project.disk_path).to eq(old_disk_path)
     end
 
     it 'does not move the disk path when the transfer fails', :aggregate_failures do
-      old_full_path = hashed_project.full_path
+      old_full_path = project.full_path
 
       expect_next_instance_of(described_class) do |service|
         allow(service).to receive(:execute_system_hooks).and_raise('foo')
       end
-      expect { transfer_project(hashed_project, user, group) }.to raise_error('foo')
 
-      hashed_project.reload_repository!
+      expect { execute_transfer }.to raise_error('foo')
 
-      expect(hashed_project.repository).to have_attributes(
+      project.reload_repository!
+
+      expect(project.repository).to have_attributes(
         disk_path: old_disk_path,
         full_path: old_full_path
       )
-      expect(hashed_project.disk_path).to eq(old_disk_path)
+      expect(project.disk_path).to eq(old_disk_path)
     end
   end
 
@@ -344,18 +357,102 @@ describe Projects::TransferService do
     end
 
     it 'refreshes the permissions of the old and new namespace' do
-      transfer_project(project, owner, group)
+      execute_transfer
 
       expect(group_member.authorized_projects).to include(project)
       expect(owner.authorized_projects).to include(project)
     end
 
     it 'only schedules a single job for every user' do
-      expect(UserProjectAccessChangedService).to receive(:new)
-        .with([owner.id, group_member.id])
-        .and_call_original
+      expect_next_instance_of(UserProjectAccessChangedService, [owner.id, group_member.id]) do |service|
+        expect(service).to receive(:execute).once.and_call_original
+      end
 
-      transfer_project(project, owner, group)
+      execute_transfer
+    end
+  end
+
+  describe 'transferring a design repository' do
+    subject { described_class.new(project, user) }
+
+    before do
+      group.add_owner(user)
+    end
+
+    def design_repository
+      project.design_repository
+    end
+
+    it 'does not create a design repository' do
+      expect(subject.execute(group)).to be true
+
+      project.clear_memoization(:design_repository)
+
+      expect(design_repository.exists?).to be false
+    end
+
+    describe 'when the project has a design repository' do
+      let(:project_repo_path) { "#{project.path}#{::Gitlab::GlRepository::DESIGN.path_suffix}" }
+      let(:old_full_path) { "#{user.namespace.full_path}/#{project_repo_path}" }
+      let(:new_full_path) { "#{group.full_path}/#{project_repo_path}" }
+
+      context 'with legacy storage' do
+        let(:project) { create(:project, :repository, :legacy_storage, :design_repo, namespace: user.namespace) }
+
+        it 'moves the repository' do
+          expect(subject.execute(group)).to be true
+
+          project.clear_memoization(:design_repository)
+
+          expect(design_repository).to have_attributes(
+            disk_path: new_full_path,
+            full_path: new_full_path
+          )
+        end
+
+        it 'does not move the repository when an error occurs', :aggregate_failures do
+          allow(subject).to receive(:execute_system_hooks).and_raise('foo')
+          expect { subject.execute(group) }.to raise_error('foo')
+
+          project.clear_memoization(:design_repository)
+
+          expect(design_repository).to have_attributes(
+            disk_path: old_full_path,
+            full_path: old_full_path
+          )
+        end
+      end
+
+      context 'with hashed storage' do
+        let(:project) { create(:project, :repository, namespace: user.namespace) }
+
+        it 'does not move the repository' do
+          old_disk_path = design_repository.disk_path
+
+          expect(subject.execute(group)).to be true
+
+          project.clear_memoization(:design_repository)
+
+          expect(design_repository).to have_attributes(
+            disk_path: old_disk_path,
+            full_path: new_full_path
+          )
+        end
+
+        it 'does not move the repository when an error occurs' do
+          old_disk_path = design_repository.disk_path
+
+          allow(subject).to receive(:execute_system_hooks).and_raise('foo')
+          expect { subject.execute(group) }.to raise_error('foo')
+
+          project.clear_memoization(:design_repository)
+
+          expect(design_repository).to have_attributes(
+            disk_path: old_disk_path,
+            full_path: old_full_path
+          )
+        end
+      end
     end
   end
 

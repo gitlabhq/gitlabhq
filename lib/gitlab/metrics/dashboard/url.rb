@@ -23,7 +23,7 @@ module Gitlab
                 %r{
                     /environments
                     /(?<environment>\d+)
-                    /metrics
+                    /(metrics_dashboard|metrics)
                 }x
               )
             end

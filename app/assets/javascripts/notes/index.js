@@ -2,11 +2,9 @@ import Vue from 'vue';
 import notesApp from './components/notes_app.vue';
 import initDiscussionFilters from './discussion_filters';
 import initSortDiscussions from './sort_discussions';
-import createStore from './stores';
+import { store } from './stores';
 
 document.addEventListener('DOMContentLoaded', () => {
-  const store = createStore();
-
   // eslint-disable-next-line no-new
   new Vue({
     el: '#js-vue-notes',

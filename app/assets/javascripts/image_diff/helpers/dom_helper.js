@@ -4,24 +4,19 @@ export function setPositionDataAttribute(el, options) {
   const { x, y, width, height } = options;
   const { position } = el.dataset;
 
-  const positionObject = Object.assign({}, JSON.parse(position), {
-    x,
-    y,
-    width,
-    height,
-  });
+  const positionObject = { ...JSON.parse(position), x, y, width, height };
 
   el.setAttribute('data-position', JSON.stringify(positionObject));
 }
 
 export function updateDiscussionAvatarBadgeNumber(discussionEl, newBadgeNumber) {
   const avatarBadgeEl = discussionEl.querySelector('.image-diff-avatar-link .badge');
-  avatarBadgeEl.innerText = newBadgeNumber;
+  avatarBadgeEl.textContent = newBadgeNumber;
 }
 
 export function updateDiscussionBadgeNumber(discussionEl, newBadgeNumber) {
   const discussionBadgeEl = discussionEl.querySelector('.badge');
-  discussionBadgeEl.innerText = newBadgeNumber;
+  discussionBadgeEl.textContent = newBadgeNumber;
 }
 
 export function toggleCollapsed(event) {

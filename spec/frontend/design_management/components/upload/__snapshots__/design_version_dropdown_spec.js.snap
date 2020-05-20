@@ -1,0 +1,111 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Design management design version dropdown component renders design version dropdown button 1`] = `
+<gl-dropdown-stub
+  class="design-version-dropdown"
+  issueiid=""
+  projectpath=""
+  text="Showing Latest Version"
+  variant="link"
+>
+  <gl-dropdown-item-stub>
+    <router-link-stub
+      class="d-flex js-version-link"
+      to="[object Object]"
+    >
+      <div
+        class="flex-grow-1 ml-2"
+      >
+        <div>
+          <strong>
+            Version 2
+            
+            <span>
+              (latest)
+            </span>
+          </strong>
+        </div>
+      </div>
+       
+      <i
+        class="fa fa-check pull-right"
+      />
+    </router-link-stub>
+  </gl-dropdown-item-stub>
+  <gl-dropdown-item-stub>
+    <router-link-stub
+      class="d-flex js-version-link"
+      to="[object Object]"
+    >
+      <div
+        class="flex-grow-1 ml-2"
+      >
+        <div>
+          <strong>
+            Version 1
+            
+            <!---->
+          </strong>
+        </div>
+      </div>
+       
+      <!---->
+    </router-link-stub>
+  </gl-dropdown-item-stub>
+</gl-dropdown-stub>
+`;
+
+exports[`Design management design version dropdown component renders design version list 1`] = `
+<gl-dropdown-stub
+  class="design-version-dropdown"
+  issueiid=""
+  projectpath=""
+  text="Showing Latest Version"
+  variant="link"
+>
+  <gl-dropdown-item-stub>
+    <router-link-stub
+      class="d-flex js-version-link"
+      to="[object Object]"
+    >
+      <div
+        class="flex-grow-1 ml-2"
+      >
+        <div>
+          <strong>
+            Version 2
+            
+            <span>
+              (latest)
+            </span>
+          </strong>
+        </div>
+      </div>
+       
+      <i
+        class="fa fa-check pull-right"
+      />
+    </router-link-stub>
+  </gl-dropdown-item-stub>
+  <gl-dropdown-item-stub>
+    <router-link-stub
+      class="d-flex js-version-link"
+      to="[object Object]"
+    >
+      <div
+        class="flex-grow-1 ml-2"
+      >
+        <div>
+          <strong>
+            Version 1
+            
+            <!---->
+          </strong>
+        </div>
+      </div>
+       
+      <!---->
+    </router-link-stub>
+  </gl-dropdown-item-stub>
+</gl-dropdown-stub>
+`;

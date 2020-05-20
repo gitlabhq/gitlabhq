@@ -52,14 +52,10 @@ describe Gitlab::GitAccessWiki do
       end
 
       context 'when the wiki repository does not exist' do
-        it 'returns not found' do
-          wiki_repo = project.wiki.repository
-          Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-            FileUtils.rm_rf(wiki_repo.path)
-          end
+        let(:project) { create(:project) }
 
-          # Sanity check for rm_rf
-          expect(wiki_repo.exists?).to eq(false)
+        it 'returns not found' do
+          expect(project.wiki_repository_exists?).to eq(false)
 
           expect { subject }.to raise_error(Gitlab::GitAccess::NotFoundError, 'A repository for this project does not exist yet.')
         end

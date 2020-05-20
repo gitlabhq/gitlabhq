@@ -1,61 +1,63 @@
-# Import bare repositories into your GitLab instance
+# Import bare repositories **(CORE ONLY)**
 
-## Notes
+Rake tasks are available to import bare repositories into a GitLab instance.
 
-- The owner of the project will be the first admin
-- The groups will be created as needed, including subgroups
-- The owner of the group will be the first admin
-- Existing projects will be skipped
-- Projects in hashed storage may be skipped (see [Importing bare repositories from hashed storage](#importing-bare-repositories-from-hashed-storage))
-- The existing Git repos will be moved from disk (removed from the original path)
+Note that:
 
-## How to use
+- The owner of the project will be the first administrator.
+- The groups will be created as needed, including subgroups.
+- The owner of the group will be the first administrator.
+- Existing projects will be skipped.
+- Projects in hashed storage may be skipped. For more information, see
+  [Importing bare repositories from hashed storage](#importing-bare-repositories-from-hashed-storage).
+- The existing Git repositories will be moved from disk (removed from the original path).
 
-### Create a new folder to import your Git repositories from
+To import bare repositories into a GitLab instance:
 
-The new folder needs to have Git user ownership and read/write/execute access for Git user and its group:
+1. Create a new folder to import your Git repositories from. The new folder needs to have Git user
+   ownership and read/write/execute access for Git user and its group:
 
-```shell
-sudo -u git mkdir -p /var/opt/gitlab/git-data/repository-import-<date>/new_group
-```
+   ```shell
+   sudo -u git mkdir -p /var/opt/gitlab/git-data/repository-import-<date>/new_group
+   ```
 
-### Copy your bare repositories inside this newly created folder
+1. Copy your bare repositories inside this newly created folder. Note:
 
-- Any `.git` repositories found on any of the subfolders will be imported as projects
-- Groups will be created as needed, these could be nested folders. Example:
+   - Any `.git` repositories found on any of the subfolders will be imported as projects.
+   - Groups will be created as needed, these could be nested folders.
 
-If we copy the repos to `/var/opt/gitlab/git-data/repository-import-<date>`, and repo A needs to be under the groups G1 and G2, it will
-have to be created under those folders: `/var/opt/gitlab/git-data/repository-import-<date>/G1/G2/A.git`.
+   For example, if we copy the repositories to `/var/opt/gitlab/git-data/repository-import-<date>`,
+   and repository `A` needs to be under the groups `G1` and `G2`, it must be created under those folders:
+   `/var/opt/gitlab/git-data/repository-import-<date>/G1/G2/A.git`.
 
-```shell
-sudo cp -r /old/git/foo.git /var/opt/gitlab/git-data/repository-import-<date>/new_group/
+   ```shell
+   sudo cp -r /old/git/foo.git /var/opt/gitlab/git-data/repository-import-<date>/new_group/
 
-# Do this once when you are done copying git repositories
-sudo chown -R git:git /var/opt/gitlab/git-data/repository-import-<date>
-```
+   # Do this once when you are done copying git repositories
+   sudo chown -R git:git /var/opt/gitlab/git-data/repository-import-<date>
+   ```
 
-`foo.git` needs to be owned by the `git` user and `git` users group.
+   `foo.git` needs to be owned by the `git` user and `git` users group.
 
-If you are using an installation from source, replace `/var/opt/gitlab/` with `/home/git`.
+   If you are using an installation from source, replace `/var/opt/gitlab/` with `/home/git`.
 
-### Run the command below depending on your type of installation
+1. Run the following command depending on your type of installation:
 
-#### Omnibus Installation
+   - Omnibus Installation
 
-```shell
-sudo gitlab-rake gitlab:import:repos['/var/opt/gitlab/git-data/repository-import-<date>']
-```
+   ```shell
+   sudo gitlab-rake gitlab:import:repos['/var/opt/gitlab/git-data/repository-import-<date>']
+   ```
 
-#### Installation from source
+   - Installation from source. Before running this command you need to change to the directory where
+     your GitLab installation is located:
 
-Before running this command you need to change the directory to where your GitLab installation is located:
+   ```shell
+   cd /home/git/gitlab
+   sudo -u git -H bundle exec rake gitlab:import:repos['/var/opt/gitlab/git-data/repository-import-<date>'] RAILS_ENV=production
+   ```
 
-```shell
-cd /home/git/gitlab
-sudo -u git -H bundle exec rake gitlab:import:repos['/var/opt/gitlab/git-data/repository-import-<date>'] RAILS_ENV=production
-```
-
-#### Example output
+## Example output
 
 ```plaintext
 Processing /var/opt/gitlab/git-data/repository-import-1/a/b/c/blah.git
@@ -73,8 +75,6 @@ Processing /var/opt/gitlab/git-data/repository-import-1/group/xyz.git
 
 ## Importing bare repositories from hashed storage
 
-### Background
-
 Projects in legacy storage have a directory structure that mirrors their full
 project path in GitLab, including their namespace structure. This information is
 leveraged by the bare repository importer to import projects into their proper
@@ -86,17 +86,17 @@ improved performance and data integrity. See
 [Repository Storage Types](../administration/repository_storage_types.md) for
 more details.
 
-### Which repositories are importable?
+The repositories that are importable depends on the version of GitLab.
 
-#### GitLab 10.3 or earlier
+### GitLab 10.3 or earlier
 
 Importing bare repositories from hashed storage is unsupported.
 
-#### GitLab 10.4 and later
+### GitLab 10.4 and later
 
 To support importing bare repositories from hashed storage, GitLab 10.4 and
 later stores the full project path with each repository, in a special section of
-the Git repository's config file. This section is formatted as follows:
+the Git repository's configuration file. This section is formatted as follows:
 
 ```ini
 [gitlab]

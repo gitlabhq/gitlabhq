@@ -85,17 +85,39 @@ class EventCreateService
   # Create a new wiki page event
   #
   # @param [WikiPage::Meta] wiki_page_meta The event target
-  # @param [User] current_user The event author
+  # @param [User] author The event author
   # @param [Integer] action One of the Event::WIKI_ACTIONS
-  def wiki_event(wiki_page_meta, current_user, action)
+  #
+  # @return a tuple of event and either :found or :created
+  def wiki_event(wiki_page_meta, author, action)
     return unless Feature.enabled?(:wiki_events)
 
     raise IllegalActionError, action unless Event::WIKI_ACTIONS.include?(action)
 
-    create_record_event(wiki_page_meta, current_user, action)
+    if duplicate = existing_wiki_event(wiki_page_meta, action)
+      return duplicate
+    end
+
+    event = create_record_event(wiki_page_meta, author, action)
+    # Ensure that the event is linked in time to the metadata, for non-deletes
+    unless action == Event::DESTROYED
+      time_stamp = wiki_page_meta.updated_at
+      event.update_columns(updated_at: time_stamp, created_at: time_stamp)
+    end
+
+    event
   end
 
   private
+
+  def existing_wiki_event(wiki_page_meta, action)
+    if action == Event::DESTROYED
+      most_recent = Event.for_wiki_meta(wiki_page_meta).recent.first
+      return most_recent if most_recent.present? && most_recent.action == action
+    else
+      Event.for_wiki_meta(wiki_page_meta).created_at(wiki_page_meta.updated_at).first
+    end
+  end
 
   def create_record_event(record, current_user, status)
     create_event(record.resource_parent, current_user, status, target_id: record.id, target_type: record.class.name)

@@ -1,0 +1,5 @@
+---
+title: Restore original sort order of the metrics dashboard select list
+merge_request: 31859
+author:
+type: fixed

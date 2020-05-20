@@ -8,8 +8,8 @@
 
 .row.prepend-top-default
   .col-md-4
-    = render 'shared/milestones/issuables', args.merge(title: 'Unstarted Issues (open and unassigned)', issuables: issues.opened.unassigned, id: 'unassigned', show_counter: true)
+    = render 'shared/milestones/issuables', args.merge(title: s_('Milestones|Unstarted Issues (open and unassigned)'), issuables: issues.opened.unassigned, id: 'unassigned', show_counter: true)
   .col-md-4
-    = render 'shared/milestones/issuables', args.merge(title: 'Ongoing Issues (open and assigned)', issuables: issues.opened.assigned, id: 'ongoing', show_counter: true)
+    = render 'shared/milestones/issuables', args.merge(title: s_('Milestones|Ongoing Issues (open and assigned)'), issuables: issues.opened.assigned, id: 'ongoing', show_counter: true)
   .col-md-4
-    = render 'shared/milestones/issuables', args.merge(title: 'Completed Issues (closed)', issuables: issues.closed, id: 'closed', show_counter: true)
+    = render 'shared/milestones/issuables', args.merge(title: s_('Milestones|Completed Issues (closed)'), issuables: issues.closed, id: 'closed', show_counter: true)

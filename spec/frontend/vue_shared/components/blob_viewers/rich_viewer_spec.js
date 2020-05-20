@@ -1,5 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import RichViewer from '~/vue_shared/components/blob_viewers/rich_viewer.vue';
+import MarkdownFieldView from '~/vue_shared/components/markdown/field_view.vue';
 import { handleBlobRichViewer } from '~/blob/viewer';
 
 jest.mock('~/blob/viewer');
@@ -32,5 +33,9 @@ describe('Blob Rich Viewer component', () => {
 
   it('queries for advanced viewer', () => {
     expect(handleBlobRichViewer).toHaveBeenCalledWith(expect.anything(), defaultType);
+  });
+
+  it('is using Markdown View Field', () => {
+    expect(wrapper.contains(MarkdownFieldView)).toBe(true);
   });
 });

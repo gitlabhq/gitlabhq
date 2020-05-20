@@ -7,6 +7,8 @@ class SnippetRepository < ApplicationRecord
   EMPTY_FILE_PATTERN = /^#{DEFAULT_EMPTY_FILE_NAME}(\d+)\.txt$/.freeze
 
   CommitError = Class.new(StandardError)
+  InvalidPathError = Class.new(CommitError)
+  InvalidSignatureError = Class.new(CommitError)
 
   belongs_to :snippet, inverse_of: :snippet_repository
 
@@ -40,8 +42,12 @@ class SnippetRepository < ApplicationRecord
   rescue Gitlab::Git::Index::IndexError,
          Gitlab::Git::CommitError,
          Gitlab::Git::PreReceiveError,
-         Gitlab::Git::CommandError => e
-    raise CommitError, e.message
+         Gitlab::Git::CommandError,
+         ArgumentError => error
+
+    logger.error(message: "Snippet git error. Reason: #{error.message}", snippet: snippet.id)
+
+    raise commit_error_exception(error)
   end
 
   def transform_file_entries(files)
@@ -84,5 +90,25 @@ class SnippetRepository < ApplicationRecord
 
   def build_empty_file_name(index)
     "#{DEFAULT_EMPTY_FILE_NAME}#{index}.txt"
+  end
+
+  def commit_error_exception(err)
+    if invalid_path_error?(err)
+      InvalidPathError.new('Invalid file name') # To avoid returning the message with the path included
+    elsif invalid_signature_error?(err)
+      InvalidSignatureError.new(err.message)
+    else
+      CommitError.new(err.message)
+    end
+  end
+
+  def invalid_path_error?(err)
+    err.is_a?(Gitlab::Git::Index::IndexError) &&
+      err.message.downcase.start_with?('invalid path', 'path cannot include directory traversal')
+  end
+
+  def invalid_signature_error?(err)
+    err.is_a?(ArgumentError) &&
+      err.message.downcase.match?(/failed to parse signature/)
   end
 end

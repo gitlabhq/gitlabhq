@@ -69,7 +69,9 @@ Example response:
    "asset_proxy_enabled": true,
    "asset_proxy_url": "https://assets.example.com",
    "asset_proxy_whitelist": ["example.com", "*.example.com", "your-instance.com"],
-   "npm_package_requests_forwarding": true
+   "npm_package_requests_forwarding": true,
+   "issues_create_limit": 300,
+   "raw_blob_request_limit": 300
 }
 ```
 
@@ -156,7 +158,9 @@ Example response:
   "allow_local_requests_from_hooks_and_services": true,
   "allow_local_requests_from_web_hooks_and_services": true,
   "allow_local_requests_from_system_hooks": false,
-  "npm_package_requests_forwarding": true
+  "npm_package_requests_forwarding": true,
+  "issues_create_limit": 300,
+  "raw_blob_request_limit": 300
 }
 ```
 
@@ -228,12 +232,15 @@ are listed in the descriptions of the relevant settings.
 | `elasticsearch_aws`                      | boolean          | no                                   | **(PREMIUM)** Enable the use of AWS hosted Elasticsearch |
 | `elasticsearch_aws_region`               | string           | no                                   | **(PREMIUM)** The AWS region the Elasticsearch domain is configured |
 | `elasticsearch_aws_secret_access_key`    | string           | no                                   | **(PREMIUM)** AWS IAM secret access key |
+| `elasticsearch_indexed_field_length_limit` | integer          | no                                   | **(PREMIUM)**  Maximum size of text fields that will be indexed by Elasticsearch. 0 value means no limit. This does not apply to repository and wiki indexing. |
 | `elasticsearch_indexing`                 | boolean          | no                                   | **(PREMIUM)** Enable Elasticsearch indexing |
 | `elasticsearch_limit_indexing`           | boolean          | no                                   | **(PREMIUM)** Limit Elasticsearch to index certain namespaces and projects |
+| `elasticsearch_max_bulk_concurrency`     | integer          | no                                   | **(PREMIUM)**  Maximum concurrency of Elasticsearch bulk requests per indexing operation. This only applies to repository indexing operations. |
+| `elasticsearch_max_bulk_size_mb`         | integer          | no                                   | **(PREMIUM)**  Maximum size of Elasticsearch bulk indexing requests in MB. This only applies to repository indexing operations. |
 | `elasticsearch_namespace_ids`            | array of integers | no                                  | **(PREMIUM)** The namespaces to index via Elasticsearch if `elasticsearch_limit_indexing` is enabled. |
 | `elasticsearch_project_ids`              | array of integers | no                                  | **(PREMIUM)** The projects to index via Elasticsearch if `elasticsearch_limit_indexing` is enabled. |
 | `elasticsearch_search`                   | boolean          | no                                   | **(PREMIUM)** Enable Elasticsearch search |
-| `elasticsearch_url`                      | string           | no                                   | **(PREMIUM)** The url to use for connecting to Elasticsearch. Use a comma-separated list to support cluster (for example, `http://localhost:9200, http://localhost:9201"`). If your Elasticsearch instance is password protected, pass the `username:password` in the URL (for example, `http://<username>:<password>@<elastic_host>:9200/`). |
+| `elasticsearch_url`                      | string           | no                                   | **(PREMIUM)** The URL to use for connecting to Elasticsearch. Use a comma-separated list to support cluster (for example, `http://localhost:9200, http://localhost:9201"`). If your Elasticsearch instance is password protected, pass the `username:password` in the URL (for example, `http://<username>:<password>@<elastic_host>:9200/`). |
 | `email_additional_text`                  | string           | no                                   | **(PREMIUM)** Additional text added to the bottom of every email for legal/auditing/compliance reasons |
 | `email_author_in_body`                   | boolean          | no                                   | Some email servers do not support overriding the email sender name. Enable this option to include the name of the author of the issue, merge request or comment in the email body instead. |
 | `enabled_git_access_protocol`            | string           | no                                   | Enabled protocols for Git access. Allowed values are: `ssh`, `http`, and `nil` to allow both protocols. |
@@ -255,7 +262,7 @@ are listed in the descriptions of the relevant settings.
 | `grafana_enabled`                        | boolean          | no                                   | Enable Grafana. |
 | `grafana_url`                            | string           | no                                   | Grafana URL. |
 | `gravatar_enabled`                       | boolean          | no                                   | Enable Gravatar. |
-| `hashed_storage_enabled`                 | boolean          | no                                   | Create new projects using hashed storage paths: Enable immutable, hash-based paths and repository names to store repositories on disk. This prevents repositories from having to be moved or renamed when the Project URL changes and may improve disk I/O performance. (EXPERIMENTAL) |
+| `hashed_storage_enabled`                 | boolean          | no                                   | Create new projects using hashed storage paths: Enable immutable, hash-based paths and repository names to store repositories on disk. This prevents repositories from having to be moved or renamed when the Project URL changes and may improve disk I/O performance. (Always enabled since 13.0, configuration will be removed in 14.0) |
 | `help_page_hide_commercial_content`      | boolean          | no                                   | Hide marketing-related entries from help. |
 | `help_page_support_url`                  | string           | no                                   | Alternate support URL for help page and help dropdown. |
 | `help_page_text`                         | string           | no                                   | Custom text displayed on the help page. |
@@ -275,14 +282,7 @@ are listed in the descriptions of the relevant settings.
 | `max_attachment_size`                    | integer          | no                                   | Limit attachment size in MB |
 | `max_pages_size`                         | integer          | no                                   | Maximum size of pages repositories in MB |
 | `max_personal_access_token_lifetime`     | integer          | no                                   | **(ULTIMATE ONLY)** Maximum allowable lifetime for personal access tokens in days |
-| `metrics_enabled`                        | boolean          | no                                   | (**If enabled, requires:** `metrics_host`, `metrics_method_call_threshold`, `metrics_packet_size`, `metrics_pool_size`, `metrics_port`, `metrics_sample_interval` and `metrics_timeout`) Enable influxDB metrics. |
-| `metrics_host`                           | string           | required by: `metrics_enabled`       | InfluxDB host. |
-| `metrics_method_call_threshold`          | integer          | required by: `metrics_enabled`       | A method call is only tracked when it takes longer than the given amount of milliseconds. |
-| `metrics_packet_size`                    | integer          | required by: `metrics_enabled`       | The amount of data points to send in a single UDP packet. |
-| `metrics_pool_size`                      | integer          | required by: `metrics_enabled`       | The amount of InfluxDB connections to keep open. |
-| `metrics_port`                           | integer          | required by: `metrics_enabled`       | The UDP port to use for connecting to InfluxDB. |
-| `metrics_sample_interval`                | integer          | required by: `metrics_enabled`       | The sampling interval in seconds. |
-| `metrics_timeout`                        | integer          | required by: `metrics_enabled`       | The amount of seconds after which InfluxDB will time out. |
+| `metrics_method_call_threshold`          | integer          | no                                   | A method call is only tracked when it takes longer than the given amount of milliseconds. |
 | `mirror_available`                       | boolean          | no                                   | Allow repository mirroring to configured by project Maintainers. If disabled, only Admins will be able to configure repository mirroring. |
 | `mirror_capacity_threshold`              | integer          | no                                   | **(PREMIUM)** Minimum capacity to be available before scheduling more mirrors preemptively |
 | `mirror_max_capacity`                    | integer          | no                                   | **(PREMIUM)** Maximum number of mirrors that can be synchronizing at the same time. |
@@ -324,13 +324,13 @@ are listed in the descriptions of the relevant settings.
 | `sign_in_text`                           | string           | no                                   | Text on the login page. |
 | `signup_enabled`                         | boolean          | no                                   | Enable registration. Default is `true`. |
 | `slack_app_enabled`                      | boolean          | no                                   | **(PREMIUM)** (**If enabled, requires:** `slack_app_id`, `slack_app_secret` and `slack_app_secret`) Enable Slack app. |
-| `slack_app_id`                           | string           | required by: `slack_app_enabled`      | **(PREMIUM)** The app id of the Slack-app. |
+| `slack_app_id`                           | string           | required by: `slack_app_enabled`      | **(PREMIUM)** The app ID of the Slack-app. |
 | `slack_app_secret`                       | string           | required by: `slack_app_enabled`      | **(PREMIUM)** The app secret of the Slack-app. |
 | `slack_app_verification_token`           | string           | required by: `slack_app_enabled`      | **(PREMIUM)** The verification token of the Slack-app. |
 | `snowplow_collector_hostname`            | string           | required by: `snowplow_enabled`      | The Snowplow collector hostname. (for example, `snowplow.trx.gitlab.net`) |
 | `snowplow_cookie_domain`                 | string           | no                                   | The Snowplow cookie domain. (for example, `.gitlab.com`) |
 | `snowplow_enabled`                       | boolean          | no                                   | Enable snowplow tracking. |
-| `snowplow_app_id`                        | string           | no                                   | The Snowplow site name / application id. (for example, `gitlab`) |
+| `snowplow_app_id`                        | string           | no                                   | The Snowplow site name / application ID. (for example, `gitlab`) |
 | `snowplow_iglu_registry_url`             | string           | no                                   | The Snowplow base Iglu Schema Registry URL to use for custom context and self describing events'|
 | `sourcegraph_enabled`                    | boolean          | no                                    | Enables Sourcegraph integration. Default is `false`. **If enabled, requires** `sourcegraph_url`. |
 | `sourcegraph_url`                        | string           | required by: `sourcegraph_enabled`    | The Sourcegraph instance URL for integration. |
@@ -357,5 +357,7 @@ are listed in the descriptions of the relevant settings.
 | `user_oauth_applications`                | boolean          | no                                   | Allow users to register any application to use GitLab as an OAuth provider. |
 | `user_show_add_ssh_key_message`          | boolean          | no                                   | When set to `false` disable the "You won't be able to pull or push project code via SSH" warning shown to users with no uploaded SSH key. |
 | `version_check_enabled`                  | boolean          | no                                   | Let GitLab inform you when an update is available. |
-| `web_ide_clientside_preview_enabled`     | boolean          | no                                   | Client side evaluation (allow live previews of JavaScript projects in the Web IDE using CodeSandbox client side evaluation). |
+| `web_ide_clientside_preview_enabled`     | boolean          | no                                   | Live Preview (allow live previews of JavaScript projects in the Web IDE using CodeSandbox Live Preview). |
 | `snippet_size_limit`                     | integer          | no                                   | Max snippet content size in **bytes**. Default: 52428800 Bytes (50MB).|
+| `issues_create_limit`                    | integer          | no                                   | Max number of issue creation requests per minute per user. Default: 300. To disable throttling set to 0.|
+| `raw_blob_request_limit`                 | integer          | no                                   | Max number of requests per minute for each raw path. Default: 300. To disable throttling set to 0.|

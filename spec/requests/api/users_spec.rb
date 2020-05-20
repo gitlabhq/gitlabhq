@@ -734,7 +734,7 @@ describe API::Users, :do_not_mock_admin_mode do
   end
 
   describe "PUT /users/:id" do
-    let!(:admin_user) { create(:admin) }
+    let_it_be(:admin_user) { create(:admin) }
 
     it "returns 200 OK on success" do
       put api("/users/#{user.id}", admin), params: { bio: 'new test bio' }
@@ -2405,8 +2405,8 @@ describe API::Users, :do_not_mock_admin_mode do
   end
 
   context "user activities", :clean_gitlab_redis_shared_state do
-    let!(:old_active_user) { create(:user, last_activity_on: Time.utc(2000, 1, 1)) }
-    let!(:newly_active_user) { create(:user, last_activity_on: 2.days.ago.midday) }
+    let_it_be(:old_active_user) { create(:user, last_activity_on: Time.utc(2000, 1, 1)) }
+    let_it_be(:newly_active_user) { create(:user, last_activity_on: 2.days.ago.midday) }
 
     context 'last activity as normal user' do
       it 'has no permission' do

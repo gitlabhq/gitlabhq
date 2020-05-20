@@ -57,6 +57,10 @@ module QA
             click_element :download_export_link
           end
 
+          def has_download_export_link?
+            has_element? :download_export_link
+          end
+
           def archive_project
             page.accept_alert("Are you sure that you want to archive this project?") do
               click_element :archive_project_link

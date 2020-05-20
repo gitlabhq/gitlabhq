@@ -50,7 +50,7 @@ create issues for the same project.
 
 ![Create issue from group-level issue tracker](img/create_issue_from_group_level_issue_tracker.png)
 
-### New issue via Service Desk **(PREMIUM)**
+### New issue via Service Desk **(STARTER)**
 
 Enable [Service Desk](../service_desk.md) for your project and offer email support.
 By doing so, when your customer sends a new email, a new issue can be created in
@@ -92,9 +92,17 @@ field values using query string parameters in a URL. This is useful for embeddin
 a URL in an external HTML page, and also certain scenarios where you want the user to
 create an issue with certain fields prefilled.
 
-The title, description, and description template fields can be prefilled using
-this method. You cannot pre-fill both the description and description template fields
-in the same URL (since a description template also populates the description field).
+The title, description, description template, and confidential fields can be prefilled
+using this method. You cannot pre-fill both the description and description template
+fields in the same URL (since a description template also populates the description
+field).
+
+| Field                | URL Parameter Name    | Notes                                                 |
+|----------------------|-----------------------|-------------------------------------------------------|
+| title                | `issue[title]`        |                                                       |
+| description          | `issue[description]`  |                                                       |
+| description template | `issuable_template`   |                                                       |
+| confidential         | `issue[confidential]` | Parameter value must be `true` to set to confidential |
 
 Follow these examples to form your new issue URL with prefilled fields.
 
@@ -102,6 +110,8 @@ Follow these examples to form your new issue URL with prefilled fields.
   and a pre-filled description, the URL would be `https://gitlab.com/gitlab-org/gitlab-foss/issues/new?issue[title]=Validate%20new%20concept&issue[description]=Research%20idea`
 - For a new issue in the GitLab Community Edition project with a pre-filled title
   and a pre-filled description template, the URL would be `https://gitlab.com/gitlab-org/gitlab-foss/issues/new?issue[title]=Validate%20new%20concept&issuable_template=Research%20proposal`
+- For a new issue in the GitLab Community Edition project with a pre-filled title,
+  a pre-filled description, and the confidential flag set, the URL would be `https://gitlab.com/gitlab-org/gitlab-foss/issues/new?issue[title]=Validate%20new%20concept&issue[description]=Research%20idea&issue[confidential]=true`
 
 ## Moving Issues
 
@@ -117,7 +127,10 @@ The "Move issue" button is at the bottom of the right-sidebar when viewing the i
 
 If you have advanced technical skills you can also bulk move all the issues from one project to another in the rails console. The below script will move all the issues from one project to another that are not in status **closed**.
 
-To access rails console run `sudo gitlab-rails console` on the GitLab server and run the below script. Please be sure to change **project**, **admin_user** and **target_project** to your values. We do also recommend [creating a backup](../../../raketasks/backup_restore.md#creating-a-backup-of-the-gitlab-system) before attempting any changes in the console.
+To access rails console run `sudo gitlab-rails console` on the GitLab server and run the below
+script. Please be sure to change **project**, **admin_user** and **target_project** to your values.
+We do also recommend [creating a backup](../../../raketasks/backup_restore.md#back-up-gitlab) before
+attempting any changes in the console.
 
 ```ruby
 project = Project.find_by_full_path('full path of the project where issues are moved from')
@@ -170,7 +183,7 @@ but it will not close automatically.
 
 If the issue is in a different repository than the MR, add the full URL for the issue(s):
 
-```md
+```markdown
 Closes #4, #6, and https://gitlab.com/<username>/<projectname>/issues/<xxx>
 ```
 
@@ -179,7 +192,7 @@ Closes #4, #6, and https://gitlab.com/<username>/<projectname>/issues/<xxx>
 When not specified, the default issue closing pattern as shown below will be used:
 
 ```shell
-((?:[Cc]los(?:e[sd]?|ing)|[Ff]ix(?:e[sd]|ing)?|[Rr]esolv(?:e[sd]?|ing)|[Ii]mplement(?:s|ed|ing)?)(:?) +(?:(?:issues? +)?%{issue_ref}(?:(?:, *| +and +)?)|([A-Z][A-Z0-9_]+-\d+))+)
+\b((?:[Cc]los(?:e[sd]?|ing)|\b[Ff]ix(?:e[sd]|ing)?|\b[Rr]esolv(?:e[sd]?|ing)|\b[Ii]mplement(?:s|ed|ing)?)(:?) +(?:(?:issues? +)?%{issue_ref}(?:(?: *,? +and +| *,? *)?)|([A-Z][A-Z0-9_]+-\d+))+)
 ```
 
 This translates to the following keywords:

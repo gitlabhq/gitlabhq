@@ -88,7 +88,7 @@ to deploy this project to.
      [Cloud Run](../../user/project/clusters/add_gke_clusters.md#cloud-run-for-anthos),
      Istio, and HTTP Load Balancing add-ons for this cluster.
    - **GitLab-managed cluster** - Select this checkbox to
-     [allow GitLab to manage namespace and service accounts](../..//user/project/clusters/index.md#gitlab-managed-clusters) for this cluster.
+     [allow GitLab to manage namespace and service accounts](../../user/project/clusters/index.md#gitlab-managed-clusters) for this cluster.
 
 1. Click **Create Kubernetes cluster**.
 
@@ -215,12 +215,12 @@ you to common environment tasks:
   about the Kubernetes cluster and how the application
   affects it in terms of memory usage, CPU usage, and latency
 - **Deploy to** (**{play}** **{angle-down}**) - Displays a list of environments you can deploy to
-- **Terminal** (**{terminal}**) - Opens a [web terminal](../../ci/environments.md#web-terminals)
+- **Terminal** (**{terminal}**) - Opens a [web terminal](../../ci/environments/index.md#web-terminals)
   session inside the container where the application is running
 - **Re-deploy to environment** (**{repeat}**) - For more information, see
-  [Retrying and rolling back](../../ci/environments.md#retrying-and-rolling-back)
+  [Retrying and rolling back](../../ci/environments/index.md#retrying-and-rolling-back)
 - **Stop environment** (**{stop}**) - For more information, see
-  [Stopping an environment](../../ci/environments.md#stopping-an-environment)
+  [Stopping an environment](../../ci/environments/index.md#stopping-an-environment)
 
 GitLab displays the [Deploy Board](../../user/project/deploy_boards.md) below the
 environment's information, with squares representing pods in your

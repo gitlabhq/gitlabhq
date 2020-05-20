@@ -12,7 +12,7 @@ projects.
 
 ## Cluster precedence
 
-GitLab will try [to match](../../../ci/environments.md#scoping-environments-with-specs) clusters in
+GitLab will try [to match](../../../ci/environments/index.md#scoping-environments-with-specs) clusters in
 the following order:
 
 - Project-level clusters.
@@ -20,11 +20,11 @@ the following order:
 - Instance-level clusters.
 
 To be selected, the cluster must be enabled and
-match the [environment selector](../../../ci/environments.md#scoping-environments-with-specs).
+match the [environment selector](../../../ci/environments/index.md#scoping-environments-with-specs).
 
 ## Cluster environments **(PREMIUM)**
 
-For a consolidated view of which CI [environments](../../../ci/environments.md)
+For a consolidated view of which CI [environments](../../../ci/environments/index.md)
 are deployed to the Kubernetes cluster, see the documentation for
 [cluster environments](../../clusters/environments.md).
 

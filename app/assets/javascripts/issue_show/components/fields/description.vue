@@ -45,22 +45,24 @@ export default {
       :markdown-docs-path="markdownDocsPath"
       :can-attach-file="canAttachFile"
       :enable-autocomplete="enableAutocomplete"
+      :textarea-value="formState.description"
     >
-      <textarea
-        id="issue-description"
-        ref="textarea"
-        slot="textarea"
-        v-model="formState.description"
-        class="note-textarea js-gfm-input js-autosize markdown-area
-        qa-description-textarea"
-        dir="auto"
-        data-supports-quick-actions="false"
-        :aria-label="__('Description')"
-        :placeholder="__('Write a comment or drag your files here…')"
-        @keydown.meta.enter="updateIssuable"
-        @keydown.ctrl.enter="updateIssuable"
-      >
-      </textarea>
+      <template #textarea>
+        <textarea
+          id="issue-description"
+          ref="textarea"
+          v-model="formState.description"
+          class="note-textarea js-gfm-input js-autosize markdown-area
+          qa-description-textarea"
+          dir="auto"
+          data-supports-quick-actions="false"
+          :aria-label="__('Description')"
+          :placeholder="__('Write a comment or drag your files here…')"
+          @keydown.meta.enter="updateIssuable"
+          @keydown.ctrl.enter="updateIssuable"
+        >
+        </textarea>
+      </template>
     </markdown-field>
   </div>
 </template>

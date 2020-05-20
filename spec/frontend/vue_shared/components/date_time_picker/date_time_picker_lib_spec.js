@@ -56,13 +56,8 @@ describe('date time picker lib', () => {
 
   describe('stringToISODate', () => {
     ['', 'null', undefined, 'abc'].forEach(input => {
-      it(`throws error for invalid input like ${input}`, done => {
-        try {
-          dateTimePickerLib.stringToISODate(input);
-        } catch (e) {
-          expect(e).toBeDefined();
-          done();
-        }
+      it(`throws error for invalid input like ${input}`, () => {
+        expect(() => dateTimePickerLib.stringToISODate(input)).toThrow();
       });
     });
     [

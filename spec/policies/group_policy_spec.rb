@@ -644,7 +644,13 @@ describe GroupPolicy do
     context 'admin' do
       let(:current_user) { admin }
 
-      it { expect_allowed(:update_max_artifacts_size) }
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it { expect_allowed(:update_max_artifacts_size) }
+      end
+
+      context 'when admin mode is enabled' do
+        it { expect_disallowed(:update_max_artifacts_size) }
+      end
     end
 
     %w(guest reporter developer maintainer owner).each do |role|
@@ -652,28 +658,6 @@ describe GroupPolicy do
         let(:current_user) { send(role) }
 
         it { expect_disallowed(:update_max_artifacts_size) }
-      end
-    end
-  end
-
-  it_behaves_like 'model with wiki policies' do
-    let(:container) { create(:group) }
-
-    def set_access_level(access_level)
-      allow(container).to receive(:wiki_access_level).and_return(access_level)
-    end
-
-    before do
-      stub_feature_flags(group_wiki: true)
-    end
-
-    context 'when the feature flag is disabled' do
-      before do
-        stub_feature_flags(group_wiki: false)
-      end
-
-      it 'does not include the wiki permissions' do
-        expect_disallowed(*permissions)
       end
     end
   end

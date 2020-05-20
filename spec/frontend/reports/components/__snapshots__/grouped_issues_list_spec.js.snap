@@ -1,0 +1,25 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Grouped Issues List renders a smart virtual list with the correct props 1`] = `
+Object {
+  "length": 4,
+  "remain": 20,
+  "rtag": "div",
+  "size": 32,
+  "wclass": "report-block-list",
+  "wtag": "ul",
+}
+`;
+
+exports[`Grouped Issues List with data renders a report item with the correct props 1`] = `
+Object {
+  "component": "TestIssueBody",
+  "isNew": false,
+  "issue": Object {
+    "name": "foo",
+  },
+  "showReportSectionStatusIcon": false,
+  "status": "none",
+  "statusIconSize": 24,
+}
+`;

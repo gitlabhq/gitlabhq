@@ -14,6 +14,7 @@ export default () => ({
 
     // View layer
     isToggleStateButtonLoading: false,
+    isToggleBlockedIssueWarning: false,
     isNotesFetched: false,
     isLoading: true,
     isLoadingDescriptionVersion: false,
@@ -24,6 +25,7 @@ export default () => ({
     },
     userData: {},
     noteableData: {
+      confidential: false, // TODO: Move data like this to Issue Store, should not be apart of notes.
       current_user: {},
       preview_note_path: 'path/to/preview',
     },

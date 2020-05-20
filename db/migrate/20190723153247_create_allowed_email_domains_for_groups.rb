@@ -16,7 +16,7 @@ class CreateAllowedEmailDomainsForGroups < ActiveRecord::Migration[5.2]
         null: false,
         index: true
       t.foreign_key :namespaces, column: :group_id, on_delete: :cascade
-      t.string :domain, null: false, limit: 255
+      t.string :domain, null: false, limit: 255 # rubocop:disable Migration/PreventStrings
     end
   end
 end

@@ -1,0 +1,1 @@
+{"id":2,"title":"A project label","color":"#428bca","project_id":8,"created_at":"2016-07-22T08:55:44.161Z","updated_at":"2016-07-22T08:55:44.161Z","template":false,"description":"","type":"ProjectLabel","priorities":[{"id":1,"project_id":5,"label_id":1,"priority":1,"created_at":"2016-10-18T09:35:43.338Z","updated_at":"2016-10-18T09:35:43.338Z"}]}

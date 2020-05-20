@@ -1,10 +1,12 @@
 test:
+  variables:
+    POSTGRES_VERSION: 9.6.16
+    POSTGRES_DB: test
   services:
     - "postgres:${POSTGRES_VERSION}"
-  variables:
-    POSTGRES_DB: test
   stage: test
   image: gliderlabs/herokuish:latest
+  needs: []
   script:
     - |
       if [ -z ${KUBERNETES_PORT+x} ]; then
@@ -15,9 +17,7 @@ test:
     - export DATABASE_URL="postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${DB_HOST}:5432/${POSTGRES_DB}"
     - cp -R . /tmp/app
     - /bin/herokuish buildpack test
-  only:
-    - branches
-    - tags
-  except:
-    variables:
-      - $TEST_DISABLED
+  rules:
+    - if: '$TEST_DISABLED'
+      when: never
+    - if: '$CI_COMMIT_TAG || $CI_COMMIT_BRANCH'

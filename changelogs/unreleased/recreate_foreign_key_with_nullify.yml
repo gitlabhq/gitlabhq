@@ -1,0 +1,5 @@
+---
+title: Recreate foreign key in project settings to use nullify instead of cascade
+merge_request: 29767
+author:
+type: changed

@@ -5,6 +5,7 @@ module QA
     module Project
       class New < Page::Base
         include Page::Component::Select2
+        include Page::Component::Project::Templates
 
         view 'app/views/projects/new.html.haml' do
           element :project_create_from_template_tab
@@ -24,6 +25,11 @@ module QA
 
         view 'app/views/projects/_import_project_pane.html.haml' do
           element :import_github, "icon('github', text: 'GitHub')" # rubocop:disable QA/ElementWithPattern
+        end
+
+        view 'app/views/projects/project_templates/_built_in_templates.html.haml' do
+          element :use_template_button
+          element :template_option_row
         end
 
         def choose_test_namespace

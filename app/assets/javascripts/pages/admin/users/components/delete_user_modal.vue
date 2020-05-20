@@ -1,5 +1,5 @@
 <script>
-import { escape as esc } from 'lodash';
+import { escape } from 'lodash';
 import { GlModal, GlDeprecatedButton, GlFormInput } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
 
@@ -56,7 +56,7 @@ export default {
       return sprintf(
         this.content,
         {
-          username: `<strong>${esc(this.username)}</strong>`,
+          username: `<strong>${escape(this.username)}</strong>`,
           strong_start: '<strong>',
           strong_end: '</strong>',
         },
@@ -67,7 +67,7 @@ export default {
       return sprintf(
         s__('AdminUsers|To confirm, type %{username}'),
         {
-          username: `<code>${esc(this.username)}</code>`,
+          username: `<code>${escape(this.username)}</code>`,
         },
         false,
       );
@@ -121,7 +121,7 @@ export default {
         />
       </form>
     </template>
-    <template slot="modal-footer">
+    <template #modal-footer>
       <gl-deprecated-button variant="secondary" @click="onCancel">{{
         s__('Cancel')
       }}</gl-deprecated-button>

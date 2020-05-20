@@ -11,7 +11,7 @@ describe 'Search Snippets' do
     visit dashboard_snippets_path
 
     submit_search('Middle')
-    select_search_scope('Titles and Filenames')
+    select_search_scope('Titles and Descriptions')
 
     expect(page).to have_link(public_snippet.title)
     expect(page).to have_link(private_snippet.title)

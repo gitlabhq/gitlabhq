@@ -95,37 +95,6 @@ function delete_failed_release() {
   fi
 }
 
-function helm2_deploy_exists() {
-  local namespace="${1}"
-  local release="${2}"
-  local deploy_exists
-
-  echoinfo "Checking if Helm 2 ${release} exists in the ${namespace} namespace..." true
-
-  kubectl get cm -l OWNER=TILLER -n ${namespace} | grep ${release} 2>&1
-  deploy_exists=$?
-
-  echoinfo "Helm 2 release for ${release} is ${deploy_exists}"
-  return $deploy_exists
-}
-
-function delete_helm2_release() {
-  local namespace="${KUBE_NAMESPACE}"
-  local release="${CI_ENVIRONMENT_SLUG}"
-
-  if [ -z "${release}" ]; then
-    echoerr "No release given, aborting the delete!"
-    return
-  fi
-
-  if ! helm2_deploy_exists "${namespace}" "${release}"; then
-    echoinfo "No Review App with ${release} is currently deployed by Helm 2."
-  else
-    echoinfo "Cleaning up ${release} installed by Helm 2"
-    kubectl_cleanup_release "${namespace}" "${release}"
-  fi
-}
-
 function get_pod() {
   local namespace="${KUBE_NAMESPACE}"
   local release="${CI_ENVIRONMENT_SLUG}"
@@ -267,7 +236,6 @@ function base_config_changed() {
 function deploy() {
   local namespace="${KUBE_NAMESPACE}"
   local release="${CI_ENVIRONMENT_SLUG}"
-  local edition="${GITLAB_EDITION-ce}"
   local base_config_file_ref="master"
   if [[ "$(base_config_changed)" == "true" ]]; then base_config_file_ref="${CI_COMMIT_SHA}"; fi
   local base_config_file="https://gitlab.com/gitlab-org/gitlab/raw/${base_config_file_ref}/scripts/review_apps/base-config.yaml"
@@ -275,13 +243,13 @@ function deploy() {
   echoinfo "Deploying ${release}..." true
 
   IMAGE_REPOSITORY="registry.gitlab.com/gitlab-org/build/cng-mirror"
-  gitlab_migrations_image_repository="${IMAGE_REPOSITORY}/gitlab-rails-${edition}"
-  gitlab_sidekiq_image_repository="${IMAGE_REPOSITORY}/gitlab-sidekiq-${edition}"
-  gitlab_unicorn_image_repository="${IMAGE_REPOSITORY}/gitlab-webservice-${edition}"
-  gitlab_task_runner_image_repository="${IMAGE_REPOSITORY}/gitlab-task-runner-${edition}"
+  gitlab_migrations_image_repository="${IMAGE_REPOSITORY}/gitlab-rails-ee"
+  gitlab_sidekiq_image_repository="${IMAGE_REPOSITORY}/gitlab-sidekiq-ee"
+  gitlab_unicorn_image_repository="${IMAGE_REPOSITORY}/gitlab-webservice-ee"
+  gitlab_task_runner_image_repository="${IMAGE_REPOSITORY}/gitlab-task-runner-ee"
   gitlab_gitaly_image_repository="${IMAGE_REPOSITORY}/gitaly"
   gitlab_shell_image_repository="${IMAGE_REPOSITORY}/gitlab-shell"
-  gitlab_workhorse_image_repository="${IMAGE_REPOSITORY}/gitlab-workhorse-${edition}"
+  gitlab_workhorse_image_repository="${IMAGE_REPOSITORY}/gitlab-workhorse-ee"
 
   create_application_secret
 
@@ -290,7 +258,7 @@ HELM_CMD=$(cat << EOF
     --namespace="${namespace}" \
     --install \
     --wait \
-    --timeout 900s \
+    --timeout 15m \
     --set ci.branch="${CI_COMMIT_REF_NAME}" \
     --set ci.commit.sha="${CI_COMMIT_SHORT_SHA}" \
     --set ci.job.url="${CI_JOB_URL}" \
@@ -304,8 +272,10 @@ HELM_CMD=$(cat << EOF
     --set gitlab.gitaly.image.tag="v${GITALY_VERSION}" \
     --set gitlab.gitlab-shell.image.repository="${gitlab_shell_image_repository}" \
     --set gitlab.gitlab-shell.image.tag="v${GITLAB_SHELL_VERSION}" \
+    --set gitlab.sidekiq.annotations.commit="${CI_COMMIT_SHORT_SHA}" \
     --set gitlab.sidekiq.image.repository="${gitlab_sidekiq_image_repository}" \
     --set gitlab.sidekiq.image.tag="${CI_COMMIT_REF_SLUG}" \
+    --set gitlab.unicorn.annotations.commit="${CI_COMMIT_SHORT_SHA}" \
     --set gitlab.unicorn.image.repository="${gitlab_unicorn_image_repository}" \
     --set gitlab.unicorn.image.tag="${CI_COMMIT_REF_SLUG}" \
     --set gitlab.unicorn.workhorse.image="${gitlab_workhorse_image_repository}" \

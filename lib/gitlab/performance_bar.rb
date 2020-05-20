@@ -44,7 +44,7 @@ module Gitlab
     end
 
     def self.l1_cache_backend
-      Gitlab::ThreadMemoryCache.cache_backend
+      Gitlab::ProcessMemoryCache.cache_backend
     end
 
     def self.l2_cache_backend

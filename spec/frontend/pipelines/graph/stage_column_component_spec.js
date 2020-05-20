@@ -26,7 +26,7 @@ describe('stage column component', () => {
   beforeEach(() => {
     const mockGroups = [];
     for (let i = 0; i < 3; i += 1) {
-      const mockedJob = Object.assign({}, mockJob);
+      const mockedJob = { ...mockJob };
       mockedJob.id += i;
       mockGroups.push(mockedJob);
     }

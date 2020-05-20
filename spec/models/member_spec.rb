@@ -241,10 +241,22 @@ describe Member do
           expect(member).to be_persisted
         end
 
-        it 'sets members.created_by to the given current_user' do
-          member = described_class.add_user(source, user, :maintainer, current_user: admin)
+        context 'when admin mode is enabled', :enable_admin_mode do
+          it 'sets members.created_by to the given admin current_user' do
+            member = described_class.add_user(source, user, :maintainer, current_user: admin)
 
-          expect(member.created_by).to eq(admin)
+            expect(member.created_by).to eq(admin)
+          end
+        end
+
+        context 'when admin mode is disabled' do
+          # Skipped because `Group#max_member_access_for_user` needs to be migrated to use admin mode
+          # https://gitlab.com/gitlab-org/gitlab/-/issues/207950
+          xit 'rejects setting members.created_by to the given admin current_user' do
+            member = described_class.add_user(source, user, :maintainer, current_user: admin)
+
+            expect(member.created_by).not_to be_persisted
+          end
         end
 
         it 'sets members.expires_at to the given expires_at' do
@@ -353,7 +365,7 @@ describe Member do
           end
         end
 
-        context 'when current_user can update member' do
+        context 'when current_user can update member', :enable_admin_mode do
           it 'creates the member' do
             expect(source.users).not_to include(user)
 
@@ -421,7 +433,7 @@ describe Member do
             end
           end
 
-          context 'when current_user can update member' do
+          context 'when current_user can update member', :enable_admin_mode do
             it 'updates the member' do
               expect(source.users).to include(user)
 

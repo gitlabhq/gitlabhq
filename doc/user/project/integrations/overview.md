@@ -47,7 +47,7 @@ Click on the service links to see further configuration instructions and details
 | [Microsoft teams](microsoft_teams.md) |  Receive notifications for actions that happen on GitLab into a room on Microsoft Teams using Office 365 Connectors | No |
 | Packagist | Update your project on Packagist, the main Composer repository | Yes |
 | Pipelines emails | Email the pipeline status to a list of recipients | No |
-| [Slack Notifications](slack.md) | Send GitLab events (e.g. issue created) to Slack as notifications | No |
+| [Slack Notifications](slack.md) | Send GitLab events (for example, an issue was created) to Slack as notifications | No |
 | [Slack slash commands](slack_slash_commands.md) **(CORE ONLY)** | Use slash commands in Slack to control GitLab | No |
 | [GitLab Slack application](gitlab_slack_application.md) **(FREE ONLY)** | Use Slack's official application | No |
 | PivotalTracker | Project Management Software (Source Commits Endpoint) | No |
@@ -55,6 +55,7 @@ Click on the service links to see further configuration instructions and details
 | Pushover | Pushover makes it easy to get real-time notifications on your Android device, iPhone, iPad, and Desktop | No |
 | [Redmine](redmine.md) | Redmine issue tracker | No |
 | [Unify Circuit](unify_circuit.md) | Receive events notifications in Unify Circuit | No |
+| [Webex Teams](webex_teams.md) | Receive events notifications in Webex Teams | No |
 | [YouTrack](youtrack.md) | YouTrack issue tracker | No |
 
 ## Push hooks limit
@@ -93,6 +94,15 @@ From this page, you can repeat delivery with the same data by clicking **Resend 
 
 ![Recent deliveries](img/webhook_logs.png)
 
+### Uninitialized repositories
+
+Some integrations fail with an error `Test Failed. Save Anyway` when you attempt to set them up on
+uninitialized repositories. This is because the default service test uses push data to build the
+payload for the test request, and it fails, because there are no push events for the project.
+
+To resolve this error, initialize the repository by pushing a test file to the project and set up
+the integration again.
+
 ## Contributing to integrations
 
 Because GitLab is open source we can ship with the code and tests for all
@@ -100,9 +110,6 @@ plugins. This allows the community to keep the plugins up to date so that they
 always work in newer GitLab versions.
 
 For an overview of what integrations are available, please see the
-[project_services source directory][projects-code].
+[project_services source directory](https://gitlab.com/gitlab-org/gitlab/tree/master/app/models/project_services).
 
 Contributions are welcome!
-
-[projects-code]: https://gitlab.com/gitlab-org/gitlab-foss/tree/master/app/models/project_services
-[permissions]: ../../permissions.md

@@ -2,7 +2,7 @@
 
 describe QA::Resource::User do
   describe "#fabricate_via_api!" do
-    Response = Struct.new(:code, :body)
+    response = Struct.new(:code, :body)
 
     it 'fetches an existing user' do
       existing_users = [
@@ -13,8 +13,8 @@ describe QA::Resource::User do
           web_url: ''
         }
       ]
-      users_response = Response.new('200', JSON.dump(existing_users))
-      single_user_response = Response.new('200', JSON.dump(existing_users.first))
+      users_response = response.new('200', JSON.dump(existing_users))
+      single_user_response = response.new('200', JSON.dump(existing_users.first))
 
       expect(subject).to receive(:api_get_from).with("/users?username=name").and_return(users_response)
       expect(subject).to receive(:api_get_from).with("/users/0").and_return(single_user_response)
@@ -26,7 +26,7 @@ describe QA::Resource::User do
     end
 
     it 'tries to create a user if it does not exist' do
-      expect(subject).to receive(:api_get_from).with("/users?username=foo").and_return(Response.new('200', '[]'))
+      expect(subject).to receive(:api_get_from).with("/users?username=foo").and_return(response.new('200', '[]'))
       expect(subject).to receive(:api_post).and_return({ web_url: '' })
 
       subject.username = 'foo'

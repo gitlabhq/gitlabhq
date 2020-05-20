@@ -9,8 +9,9 @@ class TestSuiteEntity < Grape::Entity
   expose :failed_count
   expose :skipped_count
   expose :error_count
+  expose :suite_error
 
   expose :test_cases, using: TestCaseEntity do |test_suite|
-    test_suite.test_cases.values.flat_map(&:values)
+    test_suite.suite_error ? [] : test_suite.test_cases.values.flat_map(&:values)
   end
 end

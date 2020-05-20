@@ -3,6 +3,8 @@
 module Gitlab
   module Lograge
     module CustomOptions
+      include ::Gitlab::Logging::CloudflareHelper
+
       LIMITED_ARRAY_SENTINEL = { key: 'truncated', value: '...' }.freeze
       IGNORE_PARAMS = Set.new(%w(controller action format)).freeze
 
@@ -21,6 +23,8 @@ module Gitlab
           queue_duration_s: event.payload[:queue_duration_s]
         }
 
+        payload.merge!(event.payload[:metadata]) if event.payload[:metadata]
+
         ::Gitlab::InstrumentationHelper.add_instrumentation_data(payload)
 
         payload[:response] = event.payload[:response] if event.payload[:response]
@@ -29,6 +33,10 @@ module Gitlab
 
         if cpu_s = Gitlab::Metrics::System.thread_cpu_duration(::Gitlab::RequestContext.instance.start_thread_cpu_time)
           payload[:cpu_s] = cpu_s.round(2)
+        end
+
+        CLOUDFLARE_CUSTOM_HEADERS.each do |_, value|
+          payload[value] = event.payload[value] if event.payload[value]
         end
 
         # https://github.com/roidrage/lograge#logging-errors--exceptions

@@ -16,7 +16,16 @@ module Gitlab
         end
 
         def value
-          @value ||= IssuesFinder.new(@current_user, project_id: @project.id, created_after: @from, created_before: @to).execute.count
+          @value ||= Value::PrettyNumeric.new(issues_count)
+        end
+
+        private
+
+        def issues_count
+          IssuesFinder
+            .new(@current_user, project_id: @project.id, created_after: @from, created_before: @to)
+            .execute
+            .count
         end
       end
     end

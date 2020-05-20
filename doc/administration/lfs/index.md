@@ -2,7 +2,7 @@
 disqus_identifier: 'https://docs.gitlab.com/ee/workflow/lfs/lfs_administration.html'
 ---
 
-# GitLab Git LFS Administration
+# GitLab Git Large File Storage (LFS) Administration
 
 Documentation on how to use Git LFS are under [Managing large binary files with Git LFS doc](../../topics/git/lfs/index.md).
 
@@ -50,7 +50,7 @@ In `config/gitlab.yml`:
 
 ## Storing LFS objects in remote object storage
 
-> [Introduced][ee-2760] in [GitLab Premium][eep] 10.0. Brought to GitLab Core in 10.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/2760) in [GitLab Premium](https://about.gitlab.com/pricing/) 10.0. Brought to GitLab Core in 10.7.
 
 It is possible to store LFS objects in remote object storage which allows you
 to offload local hard disk R/W operations, and free up disk space significantly.
@@ -129,7 +129,7 @@ Here is a configuration example with Rackspace Cloud Files.
 NOTE: **Note:**
 Regardless of whether the container has public access enabled or disabled, Fog will
 use the TempURL method to grant access to LFS objects. If you see errors in logs referencing
-instantiating storage with a temp-url-key, ensure that you have set the key properly
+instantiating storage with a `temp-url-key`, ensure that you have set the key properly
 on the Rackspace API and in `gitlab.rb`. You can verify the value of the key Rackspace
 has set by sending a GET request with token header to the service access endpoint URL
 and comparing the output of the returned headers.
@@ -141,18 +141,23 @@ There are two ways to manually do the same thing as automatic uploading (describ
 **Option 1: Rake task**
 
 ```shell
-rake gitlab:lfs:migrate
+gitlab-rake gitlab:lfs:migrate
 ```
 
-**Option 2: rails console**
+**Option 2: Rails console**
+
+Log into the Rails console:
 
 ```shell
-$ sudo gitlab-rails console            # Login to rails console
+sudo gitlab-rails console
+```
 
-> # Upload LFS files manually
-> LfsObject.where(file_store: [nil, 1]).find_each do |lfs_object|
->   lfs_object.file.migrate!(ObjectStorage::Store::REMOTE) if lfs_object.file.file.exists?
-> end
+Upload LFS files manually
+
+```ruby
+LfsObject.where(file_store: [nil, 1]).find_each do |lfs_object|
+  lfs_object.file.migrate!(ObjectStorage::Store::REMOTE) if lfs_object.file.file.exists?
+end
 ```
 
 ### S3 for Omnibus installations
@@ -177,7 +182,7 @@ On Omnibus installations, the settings are prefixed by `lfs_object_store_`:
    }
    ```
 
-1. Save the file and [reconfigure GitLab]s for the changes to take effect.
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 1. Migrate any existing local LFS objects to the object storage:
 
    ```shell
@@ -213,7 +218,7 @@ For source installations the settings are nested under `lfs:` and then
        path_style: true
    ```
 
-1. Save the file and [restart GitLab][] for the changes to take effect.
+1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
 1. Migrate any existing local LFS objects to the object storage:
 
    ```shell
@@ -244,19 +249,29 @@ If LFS integration is configured with Google Cloud Storage and background upload
 Sidekiq workers may encounter this error. This is because the uploading timed out with very large files.
 LFS files up to 6Gb can be uploaded without any extra steps, otherwise you need to use the following workaround.
 
+Log into Rails console:
+
 ```shell
-$ sudo gitlab-rails console            # Login to rails console
+sudo gitlab-rails console
+```
 
-> # Set up timeouts. 20 minutes is enough to upload 30GB LFS files.
-> # These settings are only in effect for the same session, i.e. they are not effective for sidekiq workers.
-> ::Google::Apis::ClientOptions.default.open_timeout_sec = 1200
-> ::Google::Apis::ClientOptions.default.read_timeout_sec = 1200
-> ::Google::Apis::ClientOptions.default.send_timeout_sec = 1200
+Set up timeouts:
 
-> # Upload LFS files manually. This process does not use sidekiq at all.
-> LfsObject.where(file_store: [nil, 1]).find_each do |lfs_object|
->   lfs_object.file.migrate!(ObjectStorage::Store::REMOTE) if lfs_object.file.file.exists?
-> end
+- These settings are only in effect for the same session. For example, they are not effective for Sidekiq workers.
+- 20 minutes (1200 sec) is enough to upload 30GB LFS files:
+
+```ruby
+::Google::Apis::ClientOptions.default.open_timeout_sec = 1200
+::Google::Apis::ClientOptions.default.read_timeout_sec = 1200
+::Google::Apis::ClientOptions.default.send_timeout_sec = 1200
+```
+
+Upload LFS files manually (this process does not use Sidekiq at all):
+
+```ruby
+LfsObject.where(file_store: [nil, 1]).find_each do |lfs_object|
+  lfs_object.file.migrate!(ObjectStorage::Store::REMOTE) if lfs_object.file.file.exists?
+end
 ```
 
 See more information in [!19581](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/19581)
@@ -268,8 +283,3 @@ See more information in [!19581](https://gitlab.com/gitlab-org/gitlab-foss/-/mer
 - Only compatible with the Git LFS client versions 1.1.0 and up, or 1.0.2.
 - The storage statistics currently count each LFS object multiple times for
   every project linking to it.
-
-[reconfigure gitlab]: ../restart_gitlab.md#omnibus-gitlab-reconfigure "How to reconfigure Omnibus GitLab"
-[restart gitlab]: ../restart_gitlab.md#installations-from-source "How to restart GitLab"
-[eep]: https://about.gitlab.com/pricing/ "GitLab Premium"
-[ee-2760]: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/2760

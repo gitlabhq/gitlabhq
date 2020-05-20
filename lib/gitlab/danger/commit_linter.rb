@@ -18,7 +18,7 @@ module Gitlab
       PROBLEMS = {
         subject_too_short: "The %s must contain at least #{MIN_SUBJECT_WORDS_COUNT} words",
         subject_too_long: "The %s may not be longer than #{MAX_LINE_LENGTH} characters",
-        subject_above_warning: "The %s length is acceptable, but please try to [reduce it to #{WARN_SUBJECT_LENGTH} characters](#{URL_LIMIT_SUBJECT}).",
+        subject_above_warning: "The %s length is acceptable, but please try to [reduce it to #{WARN_SUBJECT_LENGTH} characters](#{URL_LIMIT_SUBJECT})",
         subject_starts_with_lowercase: "The %s must start with a capital letter",
         subject_ends_with_a_period: "The %s must not end with a period",
         separator_missing: "The commit subject and body must be separated by a blank line",

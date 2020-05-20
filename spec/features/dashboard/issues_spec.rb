@@ -73,7 +73,7 @@ RSpec.describe 'Dashboard Issues' do
 
       find('.new-project-item-link').click
 
-      expect(page).to have_current_path("#{project_path}/issues/new")
+      expect(page).to have_current_path("#{project_path}/-/issues/new")
 
       page.within('#content-body') do
         expect(page).to have_selector('.issue-form')

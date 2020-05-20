@@ -9,7 +9,7 @@ class AddMergeRequestsRequireCodeOwnerApprovalToProtectedBranches < ActiveRecord
   disable_ddl_transaction!
 
   def up
-    add_column_with_default(
+    add_column_with_default( # rubocop:disable Migration/AddColumnWithDefault
       :protected_branches,
       :code_owner_approval_required,
       :boolean,

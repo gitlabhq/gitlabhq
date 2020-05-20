@@ -6,6 +6,7 @@ describe Project do
   include ProjectForksHelper
   include GitHelpers
   include ExternalAuthorizationServiceHelpers
+  using RSpec::Parameterized::TableSyntax
 
   it_behaves_like 'having unique enum values'
 
@@ -20,6 +21,7 @@ describe Project do
     it { is_expected.to have_many(:merge_requests) }
     it { is_expected.to have_many(:issues) }
     it { is_expected.to have_many(:milestones) }
+    it { is_expected.to have_many(:iterations) }
     it { is_expected.to have_many(:project_members).dependent(:delete_all) }
     it { is_expected.to have_many(:users).through(:project_members) }
     it { is_expected.to have_many(:requesters).dependent(:delete_all) }
@@ -34,6 +36,7 @@ describe Project do
     it { is_expected.to have_one(:mattermost_service) }
     it { is_expected.to have_one(:hangouts_chat_service) }
     it { is_expected.to have_one(:unify_circuit_service) }
+    it { is_expected.to have_one(:webex_teams_service) }
     it { is_expected.to have_one(:packagist_service) }
     it { is_expected.to have_one(:pushover_service) }
     it { is_expected.to have_one(:asana_service) }
@@ -110,12 +113,20 @@ describe Project do
     it { is_expected.to have_many(:source_pipelines) }
     it { is_expected.to have_many(:prometheus_alert_events) }
     it { is_expected.to have_many(:self_managed_prometheus_alert_events) }
+    it { is_expected.to have_many(:alert_management_alerts) }
     it { is_expected.to have_many(:jira_imports) }
+    it { is_expected.to have_many(:metrics_users_starred_dashboards).inverse_of(:project) }
+    it { is_expected.to have_many(:repository_storage_moves) }
 
     it_behaves_like 'model with repository' do
       let_it_be(:container) { create(:project, :repository, path: 'somewhere') }
       let(:stubbed_container) { build_stubbed(:project) }
       let(:expected_full_path) { "#{container.namespace.full_path}/somewhere" }
+    end
+
+    it_behaves_like 'model with wiki' do
+      let(:container) { create(:project, :wiki_repo) }
+      let(:container_without_wiki) { create(:project) }
     end
 
     it 'has an inverse relationship with merge requests' do
@@ -261,27 +272,6 @@ describe Project do
       expect_any_instance_of(described_class).to receive(:visibility_level_allowed_by_group).and_call_original
 
       create(:project)
-    end
-
-    describe 'wiki path conflict' do
-      context "when the new path has been used by the wiki of other Project" do
-        it 'has an error on the name attribute' do
-          new_project = build_stubbed(:project, namespace_id: project.namespace_id, path: "#{project.path}.wiki")
-
-          expect(new_project).not_to be_valid
-          expect(new_project.errors[:name].first).to eq(_('has already been taken'))
-        end
-      end
-
-      context "when the new wiki path has been used by the path of other Project" do
-        it 'has an error on the name attribute' do
-          project_with_wiki_suffix = create(:project, path: 'foo.wiki')
-          new_project = build_stubbed(:project, namespace_id: project_with_wiki_suffix.namespace_id, path: 'foo')
-
-          expect(new_project).not_to be_valid
-          expect(new_project.errors[:name].first).to eq(_('has already been taken'))
-        end
-      end
     end
 
     context 'repository storages inclusion' do
@@ -1791,6 +1781,7 @@ describe Project do
     let(:project) { create(:project, :repository) }
     let(:repo)    { double(:repo, exists?: true) }
     let(:wiki)    { double(:wiki, exists?: true) }
+    let(:design)  { double(:design, exists?: true) }
 
     it 'expires the caches of the repository and wiki' do
       # In EE, there are design repositories as well
@@ -1804,8 +1795,13 @@ describe Project do
         .with('foo.wiki', project, shard: project.repository_storage, repo_type: Gitlab::GlRepository::WIKI)
         .and_return(wiki)
 
+      allow(Repository).to receive(:new)
+        .with('foo.design', project, shard: project.repository_storage, repo_type: Gitlab::GlRepository::DESIGN)
+        .and_return(design)
+
       expect(repo).to receive(:before_delete)
       expect(wiki).to receive(:before_delete)
+      expect(design).to receive(:before_delete)
 
       project.expire_caches_before_rename('foo')
     end
@@ -2849,12 +2845,16 @@ describe Project do
     end
 
     it 'schedules the transfer of the repository to the new storage and locks the project' do
-      expect(ProjectUpdateRepositoryStorageWorker).to receive(:perform_async).with(project.id, 'test_second_storage')
+      expect(ProjectUpdateRepositoryStorageWorker).to receive(:perform_async).with(project.id, 'test_second_storage', anything)
 
       project.change_repository_storage('test_second_storage')
       project.save!
 
       expect(project).to be_repository_read_only
+      expect(project.repository_storage_moves.last).to have_attributes(
+        source_storage_name: "default",
+        destination_storage_name: "test_second_storage"
+      )
     end
 
     it "doesn't schedule the transfer if the repository is already read-only" do
@@ -3135,6 +3135,45 @@ describe Project do
              partially_matched_variable,
              perfectly_matched_variable])
         end
+      end
+    end
+  end
+
+  describe '#ci_instance_variables_for' do
+    let(:project) { create(:project) }
+
+    let!(:instance_variable) do
+      create(:ci_instance_variable, value: 'secret')
+    end
+
+    let!(:protected_instance_variable) do
+      create(:ci_instance_variable, :protected, value: 'protected')
+    end
+
+    subject { project.ci_instance_variables_for(ref: 'ref') }
+
+    before do
+      stub_application_setting(
+        default_branch_protection: Gitlab::Access::PROTECTION_NONE)
+    end
+
+    context 'when the ref is not protected' do
+      before do
+        allow(project).to receive(:protected_for?).with('ref').and_return(false)
+      end
+
+      it 'contains only the CI variables' do
+        is_expected.to contain_exactly(instance_variable)
+      end
+    end
+
+    context 'when the ref is protected' do
+      before do
+        allow(project).to receive(:protected_for?).with('ref').and_return(true)
+      end
+
+      it 'contains all the variables' do
+        is_expected.to contain_exactly(instance_variable, protected_instance_variable)
       end
     end
   end
@@ -3637,6 +3676,24 @@ describe Project do
         expect(projects).to contain_exactly(public_project)
       end
     end
+
+    context 'with deploy token users' do
+      let_it_be(:private_project) { create(:project, :private) }
+
+      subject { described_class.all.public_or_visible_to_user(user) }
+
+      context 'deploy token user without project' do
+        let_it_be(:user) { create(:deploy_token) }
+
+        it { is_expected.to eq [] }
+      end
+
+      context 'deploy token user with project' do
+        let_it_be(:user) { create(:deploy_token, projects: [private_project]) }
+
+        it { is_expected.to include(private_project) }
+      end
+    end
   end
 
   describe '.ids_with_issuables_available_for' do
@@ -3760,7 +3817,7 @@ describe Project do
     end
   end
 
-  describe '.filter_by_feature_visibility' do
+  describe '.filter_by_feature_visibility', :enable_admin_mode do
     include_context 'ProjectPolicyTable context'
     include ProjectHelpers
     using RSpec::Parameterized::TableSyntax
@@ -3953,16 +4010,6 @@ describe Project do
       expect(PagesWorker).to receive(:perform_in).with(5.minutes, :remove, namespace.full_path, anything)
 
       expect { project.remove_pages }.to change { pages_metadatum.reload.deployed }.from(true).to(false)
-    end
-
-    it 'is a no-op when there is no namespace' do
-      project.namespace.delete
-      project.reload
-
-      expect_any_instance_of(Projects::UpdatePagesConfigurationService).not_to receive(:execute)
-      expect_any_instance_of(Gitlab::PagesTransfer).not_to receive(:rename_project)
-
-      expect { project.remove_pages }.not_to change { pages_metadatum.reload.deployed }
     end
 
     it 'is run when the project is destroyed' do
@@ -4713,20 +4760,6 @@ describe Project do
         .and_call_original
 
       project.update_project_counter_caches
-    end
-  end
-
-  describe '#wiki_repository_exists?' do
-    it 'returns true when the wiki repository exists' do
-      project = create(:project, :wiki_repo)
-
-      expect(project.wiki_repository_exists?).to eq(true)
-    end
-
-    it 'returns false when the wiki repository does not exist' do
-      project = create(:project)
-
-      expect(project.wiki_repository_exists?).to eq(false)
     end
   end
 
@@ -5970,6 +6003,158 @@ describe Project do
         expect(project.latest_jira_import).to eq(jira_import1)
       end
     end
+  end
+
+  describe '#validate_jira_import_settings!' do
+    include JiraServiceHelper
+
+    let_it_be(:project, reload: true) { create(:project) }
+
+    shared_examples 'raise Jira import error' do |message|
+      it 'returns error' do
+        expect { subject }.to raise_error(Projects::ImportService::Error, message)
+      end
+    end
+
+    shared_examples 'jira configuration base checks' do
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(jira_issue_import: false)
+        end
+
+        it_behaves_like 'raise Jira import error', 'Jira import feature is disabled.'
+      end
+
+      context 'when feature flag is enabled' do
+        before do
+          stub_feature_flags(jira_issue_import: true)
+        end
+
+        context 'when Jira service was not setup' do
+          it_behaves_like 'raise Jira import error', 'Jira integration not configured.'
+        end
+
+        context 'when Jira service exists' do
+          let!(:jira_service) { create(:jira_service, project: project, active: true) }
+
+          context 'when Jira connection is not valid' do
+            before do
+              WebMock.stub_request(:get, 'https://jira.example.com/rest/api/2/serverInfo')
+                .to_raise(JIRA::HTTPError.new(double(message: 'Some failure.')))
+            end
+
+            it_behaves_like 'raise Jira import error', 'Unable to connect to the Jira instance. Please check your Jira integration configuration.'
+          end
+        end
+      end
+    end
+
+    before do
+      stub_jira_service_test
+    end
+
+    context 'without user param' do
+      subject { project.validate_jira_import_settings! }
+
+      it_behaves_like 'jira configuration base checks'
+
+      context 'when jira connection is valid' do
+        let!(:jira_service) { create(:jira_service, project: project, active: true) }
+
+        it 'does not return any error' do
+          expect { subject }.not_to raise_error
+        end
+      end
+    end
+
+    context 'with user param provided' do
+      let_it_be(:user) { create(:user) }
+
+      subject { project.validate_jira_import_settings!(user: user) }
+
+      context 'when user has permission to run import' do
+        before do
+          project.add_maintainer(user)
+        end
+
+        it_behaves_like 'jira configuration base checks'
+      end
+
+      context 'when feature flag is enabled' do
+        before do
+          stub_feature_flags(jira_issue_import: true)
+        end
+
+        context 'when user does not have permissions to run the import' do
+          before do
+            create(:jira_service, project: project, active: true)
+
+            project.add_developer(user)
+          end
+
+          it_behaves_like 'raise Jira import error', 'You do not have permissions to run the import.'
+        end
+
+        context 'when user has permission to run import' do
+          before do
+            project.add_maintainer(user)
+          end
+
+          let!(:jira_service) { create(:jira_service, project: project, active: true) }
+
+          context 'when issues feature is disabled' do
+            let_it_be(:project, reload: true) { create(:project, :issues_disabled) }
+
+            it_behaves_like 'raise Jira import error', 'Cannot import because issues are not available in this project.'
+          end
+
+          context 'when everything is ok' do
+            it 'does not return any error' do
+              expect { subject }.not_to raise_error
+            end
+          end
+        end
+      end
+    end
+  end
+
+  describe '#design_management_enabled?' do
+    let(:project) { build(:project) }
+
+    where(:lfs_enabled, :hashed_storage_enabled, :expectation) do
+      false | false | false
+      true  | false | false
+      false | true  | false
+      true  | true  | true
+    end
+
+    with_them do
+      before do
+        expect(project).to receive(:lfs_enabled?).and_return(lfs_enabled)
+        allow(project).to receive(:hashed_storage?).with(:repository).and_return(hashed_storage_enabled)
+      end
+
+      it do
+        expect(project.design_management_enabled?).to be(expectation)
+      end
+    end
+  end
+
+  describe '#bots' do
+    subject { project.bots }
+
+    let_it_be(:project) { create(:project) }
+    let_it_be(:project_bot) { create(:user, :project_bot) }
+    let_it_be(:user) { create(:user) }
+
+    before_all do
+      [project_bot, user].each do |member|
+        project.add_maintainer(member)
+      end
+    end
+
+    it { is_expected.to contain_exactly(project_bot) }
+    it { is_expected.not_to include(user) }
   end
 
   def finish_job(export_job)

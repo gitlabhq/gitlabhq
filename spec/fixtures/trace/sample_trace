@@ -2768,10 +2768,6 @@ Service
       updates the has_external_issue_tracker boolean
     on update
       updates the has_external_issue_tracker boolean
-  #deprecated?
-    should return false by default
-  #deprecation_message
-    should be empty by default
   #api_field_names
     filters out sensitive fields
 

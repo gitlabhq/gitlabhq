@@ -1,0 +1,9 @@
+query appData {
+  appData @client {
+    isSupportedContent
+    project
+    sourcePath
+    username,
+    returnUrl
+  }
+}

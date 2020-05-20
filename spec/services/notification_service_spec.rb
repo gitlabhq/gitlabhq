@@ -240,6 +240,17 @@ describe NotificationService, :mailer do
     end
   end
 
+  describe '#unknown_sign_in' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:ip) { '127.0.0.1' }
+
+    subject { notification.unknown_sign_in(user, ip) }
+
+    it 'sends email to the user' do
+      expect { subject }.to have_enqueued_email(user, ip, mail: 'unknown_sign_in_email')
+    end
+  end
+
   describe 'Notes' do
     context 'issue note' do
       let(:project) { create(:project, :private) }
@@ -698,9 +709,60 @@ describe NotificationService, :mailer do
         end
       end
     end
+
+    context 'when notified of a new design diff note' do
+      include DesignManagementTestHelpers
+
+      let_it_be(:design) { create(:design, :with_file) }
+      let_it_be(:project) { design.project }
+      let_it_be(:dev) { create(:user) }
+      let_it_be(:stranger) { create(:user) }
+      let_it_be(:note) do
+        create(:diff_note_on_design,
+           noteable: design,
+           note: "Hello #{dev.to_reference}, G'day #{stranger.to_reference}")
+      end
+      let(:mailer) { double(deliver_later: true) }
+
+      context 'design management is enabled' do
+        before do
+          enable_design_management
+          project.add_developer(dev)
+          allow(Notify).to receive(:note_design_email) { mailer }
+        end
+
+        it 'sends new note notifications' do
+          expect(subject).to receive(:send_new_note_notifications).with(note)
+
+          subject.new_note(note)
+        end
+
+        it 'sends a mail to the developer' do
+          expect(Notify)
+            .to receive(:note_design_email).with(dev.id, note.id, 'mentioned')
+
+          subject.new_note(note)
+        end
+
+        it 'does not notify non-developers' do
+          expect(Notify)
+            .not_to receive(:note_design_email).with(stranger.id, note.id)
+
+          subject.new_note(note)
+        end
+      end
+
+      context 'design management is disabled' do
+        it 'does not notify the user' do
+          expect(Notify).not_to receive(:note_design_email)
+
+          subject.new_note(note)
+        end
+      end
+    end
   end
 
-  describe '#send_new_release_notifications', :deliver_mails_inline, :sidekiq_inline do
+  describe '#send_new_release_notifications', :deliver_mails_inline do
     context 'when recipients for a new release exist' do
       let(:release) { create(:release) }
 
@@ -712,7 +774,7 @@ describe NotificationService, :mailer do
         recipient_2 = NotificationRecipient.new(user_2, :custom, custom_action: :new_release)
         allow(NotificationRecipients::BuildService).to receive(:build_new_release_recipients).and_return([recipient_1, recipient_2])
 
-        release
+        notification.send_new_release_notifications(release)
 
         should_email(user_1)
         should_email(user_2)

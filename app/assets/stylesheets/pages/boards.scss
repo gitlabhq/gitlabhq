@@ -548,3 +548,27 @@
    */
   height: $input-height;
 }
+
+.issue-boards-content.is-focused {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background: $white;
+  z-index: 9000;
+
+  @include media-breakpoint-down(sm) {
+    padding-top: 10px;
+  }
+
+  .boards-list {
+    height: calc(100vh - #{$issue-boards-filter-height});
+    overflow-x: scroll;
+  }
+
+  .issue-boards-sidebar {
+    height: 100%;
+    top: 0;
+  }
+}

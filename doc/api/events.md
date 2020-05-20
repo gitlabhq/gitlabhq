@@ -62,10 +62,10 @@ Parameters:
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `action` | string | no | Include only events of a particular [action type][action-types] |
-| `target_type` | string | no | Include only events of a particular [target type][target-types] |
-| `before` | date | no |  Include only events created before a particular date. Please see [here for the supported format][date-formatting] |
-| `after` | date | no |  Include only events created after a particular date. Please see [here for the supported format][date-formatting]  |
+| `action` | string | no | Include only events of a particular [action type](#action-types) |
+| `target_type` | string | no | Include only events of a particular [target type](#target-types) |
+| `before` | date | no |  Include only events created before a particular date. Please see [here for the supported format](#date-formatting) |
+| `after` | date | no |  Include only events created after a particular date. Please see [here for the supported format](#date-formatting)  |
 | `scope` | string | no | Include all events across a user's projects. |
 | `sort` | string | no | Sort events in `asc` or `desc` order by `created_at`. Default is `desc` |
 
@@ -123,7 +123,7 @@ Example response:
 ### Get user contribution events
 
 >**Notes:**
-> Documentation was formerly located in the [Users API pages][users-api].
+> Documentation was formerly located in the [Users API pages](users.md).
 > `read_user` access was introduced in GitLab 11.3.
 
 Get the contribution events for the specified user, sorted from newest to oldest. Scope `read_user` or `api` is required.
@@ -137,10 +137,10 @@ Parameters:
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id` | integer | yes | The ID or Username of the user |
-| `action` | string | no | Include only events of a particular [action type][action-types] |
-| `target_type` | string | no | Include only events of a particular [target type][target-types] |
-| `before` | date | no |  Include only events created before a particular date. Please see [here for the supported format][date-formatting] |
-| `after` | date | no |  Include only events created after a particular date. Please see [here for the supported format][date-formatting]  |
+| `action` | string | no | Include only events of a particular [action type](#action-types) |
+| `target_type` | string | no | Include only events of a particular [target type](#target-types) |
+| `before` | date | no |  Include only events created before a particular date. Please see [here for the supported format](#date-formatting) |
+| `after` | date | no |  Include only events created after a particular date. Please see [here for the supported format](#date-formatting)  |
 | `sort` | string | no | Sort events in `asc` or `desc` order by `created_at`. Default is `desc` |
 
 ```shell
@@ -255,7 +255,7 @@ Example response:
 
 ## List a Project's visible events
 
->**Note:** This endpoint has been around longer than the others. Documentation was formerly located in the [Projects API pages][projects-api].
+>**Note:** This endpoint has been around longer than the others. Documentation was formerly located in the [Projects API pages](projects.md).
 
 Get a list of visible events for a particular project.
 
@@ -268,10 +268,10 @@ Parameters:
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `project_id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
-| `action` | string | no | Include only events of a particular [action type][action-types] |
-| `target_type` | string | no | Include only events of a particular [target type][target-types] |
-| `before` | date | no |  Include only events created before a particular date. Please see [here for the supported format][date-formatting] |
-| `after` | date | no |  Include only events created after a particular date. Please see [here for the supported format][date-formatting]  |
+| `action` | string | no | Include only events of a particular [action type](#action-types) |
+| `target_type` | string | no | Include only events of a particular [target type](#target-types) |
+| `before` | date | no |  Include only events created before a particular date. Please see [here for the supported format](#date-formatting) |
+| `after` | date | no |  Include only events created after a particular date. Please see [here for the supported format](#date-formatting)  |
 | `sort` | string | no | Sort events in `asc` or `desc` order by `created_at`. Default is `desc` |
 
 Example request:
@@ -365,9 +365,3 @@ Example response:
   }
 ]
 ```
-
-[target-types]: #target-types "Target Type parameter"
-[action-types]: #action-types "Action Type parameter"
-[date-formatting]: #date-formatting "Date Formatting guidance"
-[projects-api]: projects.md "Projects API pages"
-[users-api]: users.md "Users API pages"

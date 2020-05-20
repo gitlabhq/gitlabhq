@@ -313,7 +313,7 @@ describe Gitlab::PrometheusClient do
           req_stub = stub_prometheus_request(query_url, body: prometheus_value_body('vector'))
 
           response = subject.proxy('query', { query: prometheus_query })
-          json_response = JSON.parse(response.body)
+          json_response = Gitlab::Json.parse(response.body)
 
           expect(response.code).to eq(200)
           expect(json_response).to eq({
@@ -332,7 +332,7 @@ describe Gitlab::PrometheusClient do
           req_stub = stub_prometheus_request(query_url, status: 400, body: { error: 'error' })
 
           response = subject.proxy('query', { query: prometheus_query })
-          json_response = JSON.parse(response.body)
+          json_response = Gitlab::Json.parse(response.body)
 
           expect(req_stub).to have_been_requested
           expect(response.code).to eq(400)

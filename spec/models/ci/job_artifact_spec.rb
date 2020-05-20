@@ -19,24 +19,8 @@ describe Ci::JobArtifact do
 
   it_behaves_like 'having unique enum values'
 
-  context 'with update_project_statistics_after_commit enabled' do
-    before do
-      stub_feature_flags(update_project_statistics_after_commit: true)
-    end
-
-    it_behaves_like 'UpdateProjectStatistics' do
-      subject { build(:ci_job_artifact, :archive, size: 107464) }
-    end
-  end
-
-  context 'with update_project_statistics_after_commit disabled' do
-    before do
-      stub_feature_flags(update_project_statistics_after_commit: false)
-    end
-
-    it_behaves_like 'UpdateProjectStatistics' do
-      subject { build(:ci_job_artifact, :archive, size: 107464) }
-    end
+  it_behaves_like 'UpdateProjectStatistics' do
+    subject { build(:ci_job_artifact, :archive, size: 107464) }
   end
 
   describe '.with_reports' do
@@ -70,6 +54,22 @@ describe Ci::JobArtifact do
     end
   end
 
+  describe '.accessibility_reports' do
+    subject { described_class.accessibility_reports }
+
+    context 'when there is an accessibility report' do
+      let(:artifact) { create(:ci_job_artifact, :accessibility) }
+
+      it { is_expected.to eq([artifact]) }
+    end
+
+    context 'when there are no accessibility report' do
+      let(:artifact) { create(:ci_job_artifact, :archive) }
+
+      it { is_expected.to be_empty }
+    end
+  end
+
   describe '.coverage_reports' do
     subject { described_class.coverage_reports }
 
@@ -83,6 +83,22 @@ describe Ci::JobArtifact do
       let!(:artifact) { create(:ci_job_artifact, :archive) }
 
       it { is_expected.to be_empty }
+    end
+  end
+
+  describe '.terraform_reports' do
+    context 'when there is a terraform report' do
+      it 'return the job artifact' do
+        artifact = create(:ci_job_artifact, :terraform)
+
+        expect(described_class.terraform_reports).to eq([artifact])
+      end
+    end
+
+    context 'when there are no terraform reports' do
+      it 'return the an empty array' do
+        expect(described_class.terraform_reports).to eq([])
+      end
     end
   end
 
@@ -128,15 +144,26 @@ describe Ci::JobArtifact do
   end
 
   describe '.for_sha' do
-    it 'returns job artifacts for a given pipeline sha' do
-      project = create(:project)
-      first_pipeline = create(:ci_pipeline, project: project)
-      second_pipeline = create(:ci_pipeline, project: project, sha: Digest::SHA1.hexdigest(SecureRandom.hex))
-      first_artifact = create(:ci_job_artifact, job: create(:ci_build, pipeline: first_pipeline))
-      second_artifact = create(:ci_job_artifact, job: create(:ci_build, pipeline: second_pipeline))
+    let(:first_pipeline) { create(:ci_pipeline) }
+    let(:second_pipeline) { create(:ci_pipeline, project: first_pipeline.project, sha: Digest::SHA1.hexdigest(SecureRandom.hex)) }
+    let!(:first_artifact) { create(:ci_job_artifact, job: create(:ci_build, pipeline: first_pipeline)) }
+    let!(:second_artifact) { create(:ci_job_artifact, job: create(:ci_build, pipeline: second_pipeline)) }
 
-      expect(described_class.for_sha(first_pipeline.sha, project.id)).to eq([first_artifact])
-      expect(described_class.for_sha(second_pipeline.sha, project.id)).to eq([second_artifact])
+    it 'returns job artifacts for a given pipeline sha' do
+      expect(described_class.for_sha(first_pipeline.sha, first_pipeline.project.id)).to eq([first_artifact])
+      expect(described_class.for_sha(second_pipeline.sha, first_pipeline.project.id)).to eq([second_artifact])
+    end
+  end
+
+  describe '.for_ref' do
+    let(:first_pipeline) { create(:ci_pipeline, ref: 'first_ref') }
+    let(:second_pipeline) { create(:ci_pipeline, ref: 'second_ref', project: first_pipeline.project) }
+    let!(:first_artifact) { create(:ci_job_artifact, job: create(:ci_build, pipeline: first_pipeline)) }
+    let!(:second_artifact) { create(:ci_job_artifact, job: create(:ci_build, pipeline: second_pipeline)) }
+
+    it 'returns job artifacts for a given pipeline ref' do
+      expect(described_class.for_ref(first_pipeline.ref, first_pipeline.project.id)).to eq([first_artifact])
+      expect(described_class.for_ref(second_pipeline.ref, first_pipeline.project.id)).to eq([second_artifact])
     end
   end
 
@@ -153,9 +180,9 @@ describe Ci::JobArtifact do
   end
 
   describe 'callbacks' do
-    subject { create(:ci_job_artifact, :archive) }
-
     describe '#schedule_background_upload' do
+      subject { create(:ci_job_artifact, :archive) }
+
       context 'when object storage is disabled' do
         before do
           stub_artifacts_object_storage(enabled: false)
@@ -212,8 +239,34 @@ describe Ci::JobArtifact do
     end
   end
 
+  describe 'validates if file format is supported' do
+    subject { artifact }
+
+    let(:artifact) { build(:ci_job_artifact, file_type: :license_management, file_format: :raw) }
+
+    context 'when license_management is supported' do
+      before do
+        stub_feature_flags(drop_license_management_artifact: false)
+      end
+
+      it { is_expected.to be_valid }
+    end
+
+    context 'when license_management is not supported' do
+      before do
+        stub_feature_flags(drop_license_management_artifact: true)
+      end
+
+      it { is_expected.not_to be_valid }
+    end
+  end
+
   describe 'validates file format' do
     subject { artifact }
+
+    before do
+      stub_feature_flags(drop_license_management_artifact: false)
+    end
 
     described_class::TYPE_AND_FORMAT_PAIRS.except(:trace).each do |file_type, file_format|
       context "when #{file_type} type with #{file_format} format" do
@@ -350,19 +403,6 @@ describe Ci::JobArtifact do
 
   describe 'file is being stored' do
     subject { create(:ci_job_artifact, :archive) }
-
-    context 'when object has nil store' do
-      before do
-        subject.update_column(:file_store, nil)
-        subject.reload
-      end
-
-      it 'is stored locally' do
-        expect(subject.file_store).to be(nil)
-        expect(subject.file).to be_file_storage
-        expect(subject.file.object_store).to eq(ObjectStorage::Store::LOCAL)
-      end
-    end
 
     context 'when existing object has local store' do
       it 'is stored locally' do

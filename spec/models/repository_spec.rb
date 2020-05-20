@@ -2874,4 +2874,80 @@ describe Repository do
       expect(repository.submodule_links).to be_a(Gitlab::SubmoduleLinks)
     end
   end
+
+  describe '#lfs_enabled?' do
+    let_it_be(:project) { create(:project, :repository, :design_repo, lfs_enabled: true) }
+
+    subject { repository.lfs_enabled? }
+
+    context 'for a project repository' do
+      let(:repository) { project.repository }
+
+      it 'returns true when LFS is enabled' do
+        stub_lfs_setting(enabled: true)
+
+        is_expected.to be_truthy
+      end
+
+      it 'returns false when LFS is disabled' do
+        stub_lfs_setting(enabled: false)
+
+        is_expected.to be_falsy
+      end
+    end
+
+    context 'for a project wiki repository' do
+      let(:repository) { project.wiki.repository }
+
+      it 'returns true when LFS is enabled' do
+        stub_lfs_setting(enabled: true)
+
+        is_expected.to be_truthy
+      end
+
+      it 'returns false when LFS is disabled' do
+        stub_lfs_setting(enabled: false)
+
+        is_expected.to be_falsy
+      end
+    end
+
+    context 'for a project snippet repository' do
+      let(:snippet) { create(:project_snippet, project: project) }
+      let(:repository) { snippet.repository }
+
+      it 'returns false when LFS is enabled' do
+        stub_lfs_setting(enabled: true)
+
+        is_expected.to be_falsy
+      end
+    end
+
+    context 'for a personal snippet repository' do
+      let(:snippet) { create(:personal_snippet) }
+      let(:repository) { snippet.repository }
+
+      it 'returns false when LFS is enabled' do
+        stub_lfs_setting(enabled: true)
+
+        is_expected.to be_falsy
+      end
+    end
+
+    context 'for a design repository' do
+      let(:repository) { project.design_repository }
+
+      it 'returns true when LFS is enabled' do
+        stub_lfs_setting(enabled: true)
+
+        is_expected.to be_truthy
+      end
+
+      it 'returns false when LFS is disabled' do
+        stub_lfs_setting(enabled: false)
+
+        is_expected.to be_falsy
+      end
+    end
+  end
 end

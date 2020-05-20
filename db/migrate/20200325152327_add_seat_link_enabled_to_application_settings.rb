@@ -8,7 +8,7 @@ class AddSeatLinkEnabledToApplicationSettings < ActiveRecord::Migration[6.0]
   disable_ddl_transaction!
 
   def up
-    add_column_with_default(:application_settings, :seat_link_enabled,
+    add_column_with_default(:application_settings, :seat_link_enabled, # rubocop:disable Migration/AddColumnWithDefault
                             :boolean,
                             default: true,
                             allow_null: false)

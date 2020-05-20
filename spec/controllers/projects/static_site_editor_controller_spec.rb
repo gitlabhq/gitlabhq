@@ -3,7 +3,8 @@
 require 'spec_helper'
 
 describe Projects::StaticSiteEditorController do
-  let(:project) { create(:project, :public, :repository) }
+  let_it_be(:project) { create(:project, :public, :repository) }
+  let_it_be(:user) { create(:user) }
 
   describe 'GET show' do
     let(:default_params) do
@@ -27,8 +28,6 @@ describe Projects::StaticSiteEditorController do
       end
 
       context 'as guest' do
-        let(:user) { create(:user) }
-
         before do
           project.add_guest(user)
           sign_in(user)
@@ -42,10 +41,11 @@ describe Projects::StaticSiteEditorController do
 
       %w[developer maintainer].each do |role|
         context "as #{role}" do
-          let(:user) { create(:user) }
+          before_all do
+            project.add_role(user, role)
+          end
 
           before do
-            project.add_role(user, role)
             sign_in(user)
             get :show, params: default_params
           end
@@ -54,8 +54,10 @@ describe Projects::StaticSiteEditorController do
             expect(response).to render_template(:show)
           end
 
-          it 'assigns a config variable' do
+          it 'assigns a required variables' do
             expect(assigns(:config)).to be_a(Gitlab::StaticSiteEditor::Config)
+            expect(assigns(:ref)).to eq('master')
+            expect(assigns(:path)).to eq('README.md')
           end
 
           context 'when combination of ref and file path is incorrect' do

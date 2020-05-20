@@ -14,10 +14,13 @@ import TreeList from '~/diffs/components/tree_list.vue';
 import { INLINE_DIFF_VIEW_TYPE, PARALLEL_DIFF_VIEW_TYPE } from '~/diffs/constants';
 import createDiffsStore from '../create_diffs_store';
 import axios from '~/lib/utils/axios_utils';
+import * as urlUtils from '~/lib/utils/url_utility';
 import diffsMockData from '../mock_data/merge_request_diffs';
 
 const mergeRequestDiff = { version_index: 1 };
 const TEST_ENDPOINT = `${TEST_HOST}/diff/endpoint`;
+const COMMIT_URL = '[BASE URL]/OLD';
+const UPDATED_COMMIT_URL = '[BASE URL]/NEW';
 
 describe('diffs/components/app', () => {
   const oldMrTabs = window.mrTabs;
@@ -25,8 +28,14 @@ describe('diffs/components/app', () => {
   let wrapper;
   let mock;
 
-  function createComponent(props = {}, extendStore = () => {}) {
+  function createComponent(props = {}, extendStore = () => {}, provisions = {}) {
     const localVue = createLocalVue();
+    const provide = {
+      ...provisions,
+      glFeatures: {
+        ...(provisions.glFeatures || {}),
+      },
+    };
 
     localVue.use(Vuex);
 
@@ -49,6 +58,7 @@ describe('diffs/components/app', () => {
         showSuggestPopover: true,
         ...props,
       },
+      provide,
       store,
       methods: {
         isLatestVersion() {
@@ -79,7 +89,10 @@ describe('diffs/components/app', () => {
     window.mrTabs = oldMrTabs;
 
     // reset component
-    wrapper.destroy();
+    if (wrapper) {
+      wrapper.destroy();
+      wrapper = null;
+    }
 
     mock.restore();
   });
@@ -452,76 +465,109 @@ describe('diffs/components/app', () => {
   });
 
   describe('keyboard shortcut navigation', () => {
-    const mappings = {
-      '[': -1,
-      k: -1,
-      ']': +1,
-      j: +1,
-    };
-    let spy;
+    let spies = [];
+    let jumpSpy;
+    let moveSpy;
+
+    function setup(componentProps, featureFlags) {
+      createComponent(
+        componentProps,
+        ({ state }) => {
+          state.diffs.commit = { id: 'SHA123' };
+        },
+        { glFeatures: { mrCommitNeighborNav: true, ...featureFlags } },
+      );
+
+      moveSpy = jest.spyOn(wrapper.vm, 'moveToNeighboringCommit').mockImplementation(() => {});
+      jumpSpy = jest.fn();
+      spies = [jumpSpy, moveSpy];
+      wrapper.setMethods({
+        jumpToFile: jumpSpy,
+      });
+    }
 
     describe('visible app', () => {
-      beforeEach(() => {
-        spy = jest.fn();
+      it.each`
+        key    | name                         | spy  | args                           | featureFlags
+        ${'['} | ${'jumpToFile'}              | ${0} | ${[-1]}                        | ${{}}
+        ${'k'} | ${'jumpToFile'}              | ${0} | ${[-1]}                        | ${{}}
+        ${']'} | ${'jumpToFile'}              | ${0} | ${[+1]}                        | ${{}}
+        ${'j'} | ${'jumpToFile'}              | ${0} | ${[+1]}                        | ${{}}
+        ${'x'} | ${'moveToNeighboringCommit'} | ${1} | ${[{ direction: 'previous' }]} | ${{ mrCommitNeighborNav: true }}
+        ${'c'} | ${'moveToNeighboringCommit'} | ${1} | ${[{ direction: 'next' }]}     | ${{ mrCommitNeighborNav: true }}
+      `(
+        'calls `$name()` with correct parameters whenever the "$key" key is pressed',
+        ({ key, spy, args, featureFlags }) => {
+          setup({ shouldShow: true }, featureFlags);
 
-        createComponent({
-          shouldShow: true,
-        });
-        wrapper.setMethods({
-          jumpToFile: spy,
-        });
-      });
-
-      it.each(Object.keys(mappings))(
-        'calls `jumpToFile()` with correct parameter whenever pre-defined %s is pressed',
-        key => {
           return wrapper.vm.$nextTick().then(() => {
-            expect(spy).not.toHaveBeenCalled();
+            expect(spies[spy]).not.toHaveBeenCalled();
 
             Mousetrap.trigger(key);
 
-            expect(spy).toHaveBeenCalledWith(mappings[key]);
+            expect(spies[spy]).toHaveBeenCalledWith(...args);
           });
         },
       );
 
-      it('does not call `jumpToFile()` when unknown key is pressed', done => {
-        wrapper.vm
-          .$nextTick()
-          .then(() => {
-            Mousetrap.trigger('d');
+      it.each`
+        key    | name                         | spy  | featureFlags
+        ${'x'} | ${'moveToNeighboringCommit'} | ${1} | ${{ mrCommitNeighborNav: false }}
+        ${'c'} | ${'moveToNeighboringCommit'} | ${1} | ${{ mrCommitNeighborNav: false }}
+      `(
+        'does not call `$name()` even when the correct key is pressed if the feature flag is disabled',
+        ({ key, spy, featureFlags }) => {
+          setup({ shouldShow: true }, featureFlags);
 
-            expect(spy).not.toHaveBeenCalled();
-          })
-          .then(done)
-          .catch(done.fail);
-      });
+          return wrapper.vm.$nextTick().then(() => {
+            expect(spies[spy]).not.toHaveBeenCalled();
+
+            Mousetrap.trigger(key);
+
+            expect(spies[spy]).not.toHaveBeenCalled();
+          });
+        },
+      );
+
+      it.each`
+        key    | name                         | spy  | allowed
+        ${'d'} | ${'jumpToFile'}              | ${0} | ${['[', ']', 'j', 'k']}
+        ${'r'} | ${'moveToNeighboringCommit'} | ${1} | ${['x', 'c']}
+      `(
+        `does not call \`$name()\` when a key that is not one of \`$allowed\` is pressed`,
+        ({ key, spy }) => {
+          setup({ shouldShow: true }, { mrCommitNeighborNav: true });
+
+          return wrapper.vm.$nextTick().then(() => {
+            Mousetrap.trigger(key);
+
+            expect(spies[spy]).not.toHaveBeenCalled();
+          });
+        },
+      );
     });
 
-    describe('hideen app', () => {
+    describe('hidden app', () => {
       beforeEach(() => {
-        spy = jest.fn();
+        setup({ shouldShow: false }, { mrCommitNeighborNav: true });
 
-        createComponent({
-          shouldShow: false,
-        });
-        wrapper.setMethods({
-          jumpToFile: spy,
+        return wrapper.vm.$nextTick().then(() => {
+          Mousetrap.reset();
         });
       });
 
-      it('stops calling `jumpToFile()` when application is hidden', done => {
-        wrapper.vm
-          .$nextTick()
-          .then(() => {
-            Object.keys(mappings).forEach(key => {
-              Mousetrap.trigger(key);
+      it.each`
+        key    | name                         | spy
+        ${'['} | ${'jumpToFile'}              | ${0}
+        ${'k'} | ${'jumpToFile'}              | ${0}
+        ${']'} | ${'jumpToFile'}              | ${0}
+        ${'j'} | ${'jumpToFile'}              | ${0}
+        ${'x'} | ${'moveToNeighboringCommit'} | ${1}
+        ${'c'} | ${'moveToNeighboringCommit'} | ${1}
+      `('stops calling `$name()` when the app is hidden', ({ key, spy }) => {
+        Mousetrap.trigger(key);
 
-              expect(spy).not.toHaveBeenCalled();
-            });
-          })
-          .then(done)
-          .catch(done.fail);
+        expect(spies[spy]).not.toHaveBeenCalled();
       });
     });
   });
@@ -600,6 +646,70 @@ describe('diffs/components/app', () => {
         .then(done)
         .catch(done.fail);
     });
+  });
+
+  describe('commit watcher', () => {
+    const spy = () => {
+      jest.spyOn(wrapper.vm, 'refetchDiffData').mockImplementation(() => {});
+      jest.spyOn(wrapper.vm, 'adjustView').mockImplementation(() => {});
+    };
+    let location;
+
+    beforeAll(() => {
+      location = window.location;
+      delete window.location;
+      window.location = COMMIT_URL;
+      document.title = 'My Title';
+    });
+
+    beforeEach(() => {
+      jest.spyOn(urlUtils, 'updateHistory');
+    });
+
+    afterAll(() => {
+      window.location = location;
+    });
+
+    it('when the commit changes and the app is not loading it should update the history, refetch the diff data, and update the view', () => {
+      createComponent({}, ({ state }) => {
+        state.diffs.commit = { ...state.diffs.commit, id: 'OLD' };
+      });
+      spy();
+
+      store.state.diffs.commit = { id: 'NEW' };
+
+      return wrapper.vm.$nextTick().then(() => {
+        expect(urlUtils.updateHistory).toHaveBeenCalledWith({
+          title: document.title,
+          url: UPDATED_COMMIT_URL,
+        });
+        expect(wrapper.vm.refetchDiffData).toHaveBeenCalled();
+        expect(wrapper.vm.adjustView).toHaveBeenCalled();
+      });
+    });
+
+    it.each`
+      isLoading | oldSha   | newSha
+      ${true}   | ${'OLD'} | ${'NEW'}
+      ${false}  | ${'NEW'} | ${'NEW'}
+    `(
+      'given `{ "isLoading": $isLoading, "oldSha": "$oldSha", "newSha": "$newSha" }`, nothing should happen',
+      ({ isLoading, oldSha, newSha }) => {
+        createComponent({}, ({ state }) => {
+          state.diffs.isLoading = isLoading;
+          state.diffs.commit = { ...state.diffs.commit, id: oldSha };
+        });
+        spy();
+
+        store.state.diffs.commit = { id: newSha };
+
+        return wrapper.vm.$nextTick().then(() => {
+          expect(urlUtils.updateHistory).not.toHaveBeenCalled();
+          expect(wrapper.vm.refetchDiffData).not.toHaveBeenCalled();
+          expect(wrapper.vm.adjustView).not.toHaveBeenCalled();
+        });
+      },
+    );
   });
 
   describe('diffs', () => {

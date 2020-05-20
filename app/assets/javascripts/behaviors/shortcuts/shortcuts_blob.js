@@ -22,7 +22,7 @@ function eventHasModifierKeys(event) {
 
 export default class ShortcutsBlob extends Shortcuts {
   constructor(opts) {
-    const options = Object.assign({}, defaults, opts);
+    const options = { ...defaults, ...opts };
     super(options.skipResetBindings);
     this.options = options;
 

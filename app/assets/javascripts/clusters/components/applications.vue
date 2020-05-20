@@ -1,5 +1,5 @@
 <script>
-import { escape as esc } from 'lodash';
+import { escape } from 'lodash';
 import helmInstallIllustration from '@gitlab/svgs/dist/illustrations/kubernetes-installation.svg';
 import { GlLoadingIcon } from '@gitlab/ui';
 import elasticsearchLogo from 'images/cluster_app_logos/elasticsearch.png';
@@ -14,6 +14,7 @@ import knativeLogo from 'images/cluster_app_logos/knative.png';
 import meltanoLogo from 'images/cluster_app_logos/meltano.png';
 import prometheusLogo from 'images/cluster_app_logos/prometheus.png';
 import elasticStackLogo from 'images/cluster_app_logos/elastic_stack.png';
+import fluentdLogo from 'images/cluster_app_logos/fluentd.png';
 import { s__, sprintf } from '../../locale';
 import applicationRow from './application_row.vue';
 import clipboardButton from '../../vue_shared/components/clipboard_button.vue';
@@ -22,6 +23,7 @@ import { CLUSTER_TYPE, PROVIDER_TYPE, APPLICATION_STATUS, INGRESS } from '../con
 import eventHub from '~/clusters/event_hub';
 import CrossplaneProviderStack from './crossplane_provider_stack.vue';
 import IngressModsecuritySettings from './ingress_modsecurity_settings.vue';
+import FluentdOutputSettings from './fluentd_output_settings.vue';
 
 export default {
   components: {
@@ -31,6 +33,7 @@ export default {
     KnativeDomainEditor,
     CrossplaneProviderStack,
     IngressModsecuritySettings,
+    FluentdOutputSettings,
   },
   props: {
     type: {
@@ -102,6 +105,7 @@ export default {
     meltanoLogo,
     prometheusLogo,
     elasticStackLogo,
+    fluentdLogo,
   }),
   computed: {
     isProjectCluster() {
@@ -134,7 +138,7 @@ export default {
     },
     ingressDescription() {
       return sprintf(
-        esc(
+        escape(
           s__(
             `ClusterIntegration|Installing Ingress may incur additional costs. Learn more about %{pricingLink}.`,
           ),
@@ -142,14 +146,14 @@ export default {
         {
           pricingLink: `<a href="https://cloud.google.com/compute/pricing#lb"
               target="_blank" rel="noopener noreferrer">
-              ${esc(s__('ClusterIntegration|pricing'))}</a>`,
+              ${escape(s__('ClusterIntegration|pricing'))}</a>`,
         },
         false,
       );
     },
     certManagerDescription() {
       return sprintf(
-        esc(
+        escape(
           s__(
             `ClusterIntegration|Cert-Manager is a native Kubernetes certificate management controller that helps with issuing certificates.
             Installing Cert-Manager on your cluster will issue a certificate by %{letsEncrypt} and ensure that certificates
@@ -159,14 +163,14 @@ export default {
         {
           letsEncrypt: `<a href="https://letsencrypt.org/"
               target="_blank" rel="noopener noreferrer">
-              ${esc(s__("ClusterIntegration|Let's Encrypt"))}</a>`,
+              ${escape(s__("ClusterIntegration|Let's Encrypt"))}</a>`,
         },
         false,
       );
     },
     crossplaneDescription() {
       return sprintf(
-        esc(
+        escape(
           s__(
             `ClusterIntegration|Crossplane enables declarative provisioning of managed services from your cloud of choice using %{kubectl} or %{gitlabIntegrationLink}.
 Crossplane runs inside your Kubernetes cluster and supports secure connectivity and secrets management between app containers and the cloud services they depend on.`,
@@ -175,7 +179,7 @@ Crossplane runs inside your Kubernetes cluster and supports secure connectivity 
         {
           gitlabIntegrationLink: `<a href="https://docs.gitlab.com/ee/user/clusters/applications.html#crossplane"
           target="_blank" rel="noopener noreferrer">
-          ${esc(s__('ClusterIntegration|Gitlab Integration'))}</a>`,
+          ${escape(s__('ClusterIntegration|Gitlab Integration'))}</a>`,
           kubectl: `<code>kubectl</code>`,
         },
         false,
@@ -184,7 +188,7 @@ Crossplane runs inside your Kubernetes cluster and supports secure connectivity 
 
     prometheusDescription() {
       return sprintf(
-        esc(
+        escape(
           s__(
             `ClusterIntegration|Prometheus is an open-source monitoring system
             with %{gitlabIntegrationLink} to monitor deployed applications.`,
@@ -193,7 +197,7 @@ Crossplane runs inside your Kubernetes cluster and supports secure connectivity 
         {
           gitlabIntegrationLink: `<a href="https://docs.gitlab.com/ce/user/project/integrations/prometheus.html"
               target="_blank" rel="noopener noreferrer">
-              ${esc(s__('ClusterIntegration|GitLab Integration'))}</a>`,
+              ${escape(s__('ClusterIntegration|GitLab Integration'))}</a>`,
         },
         false,
       );
@@ -219,11 +223,11 @@ Crossplane runs inside your Kubernetes cluster and supports secure connectivity 
     installedVia() {
       if (this.cloudRun) {
         return sprintf(
-          esc(s__(`ClusterIntegration|installed via %{installed_via}`)),
+          escape(s__(`ClusterIntegration|installed via %{installed_via}`)),
           {
             installed_via: `<a href="${
               this.cloudRunHelpPath
-            }" target="_blank" rel="noopener noreferrer">${esc(
+            }" target="_blank" rel="noopener noreferrer">${escape(
               s__('ClusterIntegration|Cloud Run'),
             )}</a>`,
           },
@@ -658,7 +662,7 @@ Crossplane runs inside your Kubernetes cluster and supports secure connectivity 
         :uninstall-successful="applications.elastic_stack.uninstallSuccessful"
         :uninstall-failed="applications.elastic_stack.uninstallFailed"
         :disabled="!helmInstalled"
-        title-link="https://github.com/helm/charts/tree/master/stable/elastic-stack"
+        title-link="https://gitlab.com/gitlab-org/charts/elastic-stack"
       >
         <div slot="description">
           <p>
@@ -668,6 +672,51 @@ Crossplane runs inside your Kubernetes cluster and supports secure connectivity 
               )
             }}
           </p>
+        </div>
+      </application-row>
+
+      <application-row
+        id="fluentd"
+        :logo-url="fluentdLogo"
+        :title="applications.fluentd.title"
+        :status="applications.fluentd.status"
+        :status-reason="applications.fluentd.statusReason"
+        :request-status="applications.fluentd.requestStatus"
+        :request-reason="applications.fluentd.requestReason"
+        :installed="applications.fluentd.installed"
+        :install-failed="applications.fluentd.installFailed"
+        :install-application-request-params="{
+          host: applications.fluentd.host,
+          port: applications.fluentd.port,
+          protocol: applications.fluentd.protocol,
+          waf_log_enabled: applications.fluentd.wafLogEnabled,
+          cilium_log_enabled: applications.fluentd.ciliumLogEnabled,
+        }"
+        :uninstallable="applications.fluentd.uninstallable"
+        :uninstall-successful="applications.fluentd.uninstallSuccessful"
+        :uninstall-failed="applications.fluentd.uninstallFailed"
+        :disabled="!helmInstalled"
+        :updateable="false"
+        title-link="https://github.com/helm/charts/tree/master/stable/fluentd"
+      >
+        <div slot="description">
+          <p>
+            {{
+              s__(
+                `ClusterIntegration|Fluentd is an open source data collector, which lets you unify the data collection and consumption for a better use and understanding of data. It requires at least one of the following logs to be successfully installed.`,
+              )
+            }}
+          </p>
+
+          <fluentd-output-settings
+            :port="applications.fluentd.port"
+            :protocol="applications.fluentd.protocol"
+            :host="applications.fluentd.host"
+            :waf-log-enabled="applications.fluentd.wafLogEnabled"
+            :cilium-log-enabled="applications.fluentd.ciliumLogEnabled"
+            :status="applications.fluentd.status"
+            :update-failed="applications.fluentd.updateFailed"
+          />
         </div>
       </application-row>
     </div>

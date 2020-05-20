@@ -5,10 +5,14 @@ module QA
     module Project
       module SubMenus
         module Repository
-          include Page::Project::SubMenus::Common
+          extend QA::Page::PageConcern
 
           def self.included(base)
+            super
+
             base.class_eval do
+              include QA::Page::Project::SubMenus::Common
+
               view 'app/views/layouts/nav/sidebar/_project.html.haml' do
                 element :project_menu_repo
                 element :branches_link
@@ -44,5 +48,3 @@ module QA
     end
   end
 end
-
-QA::Page::Project::SubMenus::Repository.prepend_if_ee('QA::EE::Page::Project::SubMenus::Repository')

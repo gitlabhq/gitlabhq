@@ -39,7 +39,7 @@ being modified after the database dump is created.
 1. Get the Kubernetes namespace for the environment. It typically looks like `<project-name>-<project-id>-<environment>`.
    In our example, the namespace is called `minimal-ruby-app-4349298-production`.
 
-    ```sh
+    ```shell
     $ kubectl get ns
 
     NAME                                                  STATUS   AGE
@@ -48,13 +48,13 @@ being modified after the database dump is created.
 
 1. For ease of use, export the namespace name:
 
-   ```sh
+   ```shell
    export APP_NAMESPACE=minimal-ruby-app-4349298-production
    ```
 
 1. Get the deployment name for your application with the following command. In our example, the deployment name is `production`.
 
-    ```sh
+    ```shell
     $ kubectl get deployment --namespace "$APP_NAMESPACE"
     NAME                  READY   UP-TO-DATE   AVAILABLE   AGE
     production            2/2     2            2           7d21h
@@ -64,7 +64,7 @@ being modified after the database dump is created.
 1. To prevent the database from being modified, set replicas to 0 for the deployment with the following command.
    We use the deployment name from the previous step (`deployments/<DEPLOYMENT_NAME>`).
 
-    ```sh
+    ```shell
     $ kubectl scale --replicas=0 deployments/production --namespace "$APP_NAMESPACE"
     deployment.extensions/production scaled
     ```
@@ -75,7 +75,7 @@ being modified after the database dump is created.
 
 1. Get the service name for PostgreSQL. The name of the service should end with `-postgres`. In our example the service name is `production-postgres`.
 
-    ```sh
+    ```shell
     $ kubectl get svc --namespace "$APP_NAMESPACE"
     NAME                     TYPE        CLUSTER-IP    EXTERNAL-IP   PORT(S)    AGE
     production-auto-deploy   ClusterIP   10.30.13.90   <none>        5000/TCP   7d14h
@@ -84,7 +84,7 @@ being modified after the database dump is created.
 
 1. Get the pod name for PostgreSQL with the following command. In our example, the pod name is `production-postgres-5db86568d7-qxlxv`.
 
-    ```sh
+    ```shell
     $ kubectl get pod --namespace "$APP_NAMESPACE" -l app=production-postgres
     NAME                                   READY   STATUS    RESTARTS   AGE
     production-postgres-5db86568d7-qxlxv   1/1     Running   0          7d14h
@@ -92,7 +92,7 @@ being modified after the database dump is created.
 
 1. Connect to the pod with:
 
-    ```sh
+    ```shell
     kubectl exec -it production-postgres-5db86568d7-qxlxv --namespace "$APP_NAMESPACE" bash
     ```
 
@@ -104,7 +104,7 @@ being modified after the database dump is created.
 
    - You will be asked for the database password, the default is `testing-password`.
 
-    ```sh
+    ```shell
     ## Format is:
     # pg_dump -h SERVICE_NAME -U USERNAME DATABASE_NAME > /tmp/backup.sql
 
@@ -115,7 +115,7 @@ being modified after the database dump is created.
 
 1. Download the dump file with the following command:
 
-    ```sh
+    ```shell
     kubectl cp --namespace "$APP_NAMESPACE" production-postgres-5db86568d7-qxlxv:/tmp/backup.sql backup.sql
     ```
 
@@ -126,12 +126,12 @@ volumes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)
 used to store the underlying data for PostgreSQL is marked as `Delete`
 when the pods and pod claims that use the volume is deleted.
 
-This is signficant as, when you opt into the newer 8.2.1 PostgreSQL, the older 0.7.1 PostgreSQL is
+This is significant as, when you opt into the newer 8.2.1 PostgreSQL, the older 0.7.1 PostgreSQL is
 deleted causing the persistent volumes to be deleted as well.
 
 You can verify this by using the following command:
 
-```sh
+```shell
 $ kubectl get pv
 NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                                                     STORAGECLASS   REASON   AGE
 pvc-0da80c08-5239-11ea-9c8d-42010a8e0096   8Gi        RWO            Delete           Bound    minimal-ruby-app-4349298-staging/staging-postgres         standard                7d22h
@@ -145,7 +145,7 @@ interested in keeping the volumes for the staging and production of the
 `minimal-ruby-app-4349298` application, the volume names here are
 `pvc-0da80c08-5239-11ea-9c8d-42010a8e0096` and `pvc-9085e3d3-5239-11ea-9c8d-42010a8e0096`:
 
-```sh
+```shell
 $ kubectl patch pv  pvc-0da80c08-5239-11ea-9c8d-42010a8e0096 -p '{"spec":{"persistentVolumeReclaimPolicy":"Retain"}}'
 persistentvolume/pvc-0da80c08-5239-11ea-9c8d-42010a8e0096 patched
 $ kubectl patch pv  pvc-9085e3d3-5239-11ea-9c8d-42010a8e0096 -p '{"spec":{"persistentVolumeReclaimPolicy":"Retain"}}'
@@ -164,17 +164,19 @@ deleted, you can choose to retain the [persistent
 volume](#retain-persistent-volumes).
 
 TIP: **Tip:** You can also
-[scope](../../ci/environments.md#scoping-environments-with-specs) the
-`AUTO_DEVOPS_POSTGRES_CHANNEL` and `POSTGRES_VERSION` variables to
-specific environments, e.g. `staging`.
+[scope](../../ci/environments/index.md#scoping-environments-with-specs) the
+`AUTO_DEVOPS_POSTGRES_CHANNEL`, `AUTO_DEVOPS_POSTGRES_DELETE_V1` and
+`POSTGRES_VERSION` variables to specific environments, e.g. `staging`.
 
 1. Set `AUTO_DEVOPS_POSTGRES_CHANNEL` to `2`. This opts into using the
    newer 8.2.1-based PostgreSQL, and removes the older 0.7.1-based
    PostgreSQL.
-1. Set `POSTGRES_VERSION` to `9.6.16`. This is the minimum PostgreSQL
+1. Set `AUTO_DEVOPS_POSTGRES_DELETE_V1` to a non-empty value. This flag is a
+   safeguard to prevent accidental deletion of databases.
+1. Set `POSTGRES_VERSION` to `11.7`. This is the minimum PostgreSQL
    version supported.
 1. Set `PRODUCTION_REPLICAS` to `0`. For other environments, use
-   `REPLICAS` with an [environment scope](../../ci/environments.md#scoping-environments-with-specs).
+   `REPLICAS` with an [environment scope](../../ci/environments/index.md#scoping-environments-with-specs).
 1. If you have set the `DB_INITIALIZE` or `DB_MIGRATE` variables, either
    remove the variables, or rename the variables temporarily to
    `XDB_INITIALIZE` or the `XDB_MIGRATE` to effectively disable them.
@@ -190,7 +192,7 @@ specific environments, e.g. `staging`.
 1. Get the pod name for the new PostgreSQL, in our example, the pod name is
    `production-postgresql-0`:
 
-    ```sh
+    ```shell
     $ kubectl get pod --namespace "$APP_NAMESPACE" -l app=postgresql
     NAME                      READY   STATUS    RESTARTS   AGE
     production-postgresql-0   1/1     Running   0          19m
@@ -198,13 +200,13 @@ specific environments, e.g. `staging`.
 
 1. Copy the dump file from the backup steps to the pod:
 
-   ```sh
+   ```shell
    kubectl cp --namespace "$APP_NAMESPACE" backup.sql production-postgresql-0:/tmp/backup.sql
    ```
 
 1. Connect to the pod:
 
-   ```sh
+   ```shell
    kubectl exec -it production-postgresql-0 --namespace "$APP_NAMESPACE" bash
    ```
 
@@ -214,7 +216,7 @@ specific environments, e.g. `staging`.
    - `USERNAME` is the username you have configured for PostgreSQL. The default is `user`.
    - `DATABASE_NAME` is usually the environment name.
 
-   ```sh
+   ```shell
    ## Format is:
    # psql -U USERNAME -d DATABASE_NAME < /tmp/backup.sql
 

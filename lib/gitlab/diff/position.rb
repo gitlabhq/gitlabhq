@@ -68,7 +68,7 @@ module Gitlab
       end
 
       def to_json(opts = nil)
-        JSON.generate(formatter.to_h, opts)
+        Gitlab::Json.generate(formatter.to_h, opts)
       end
 
       def as_json(opts = nil)

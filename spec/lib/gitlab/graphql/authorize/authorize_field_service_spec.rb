@@ -84,6 +84,16 @@ describe Gitlab::Graphql::Authorize::AuthorizeFieldService do
       end
     end
 
+    context 'when the field is a connection' do
+      context 'when it resolves to nil' do
+        let(:field) { type_with_field(Types::QueryType.connection_type, :read_field, nil).fields['testField'].to_graphql }
+
+        it 'does not fail when authorizing' do
+          expect(resolved).to be_nil
+        end
+      end
+    end
+
     context 'when the field is a specific type' do
       let(:custom_type) { type(:read_type) }
       let(:object_in_field) { double('presented in field') }

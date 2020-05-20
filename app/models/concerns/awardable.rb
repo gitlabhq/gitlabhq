@@ -14,32 +14,29 @@ module Awardable
 
   class_methods do
     def awarded(user, name = nil)
-      sql = <<~EOL
-        EXISTS (
-          SELECT TRUE
-          FROM award_emoji
-          WHERE user_id = :user_id AND
-                #{"name = :name AND" if name.present?}
-                awardable_type = :awardable_type AND
-                awardable_id = #{self.arel_table.name}.id
-        )
-      EOL
+      award_emoji_table = Arel::Table.new('award_emoji')
+      inner_query = award_emoji_table
+                .project('true')
+                .where(award_emoji_table[:user_id].eq(user.id))
+                .where(award_emoji_table[:awardable_type].eq(self.name))
+                .where(award_emoji_table[:awardable_id].eq(self.arel_table[:id]))
 
-      where(sql, user_id: user.id, name: name, awardable_type: self.name)
+      inner_query = inner_query.where(award_emoji_table[:name].eq(name)) if name.present?
+
+      where(inner_query.exists)
     end
 
-    def not_awarded(user)
-      sql = <<~EOL
-        NOT EXISTS (
-          SELECT TRUE
-          FROM award_emoji
-          WHERE user_id = :user_id AND
-                awardable_type = :awardable_type AND
-                awardable_id = #{self.arel_table.name}.id
-        )
-      EOL
+    def not_awarded(user, name = nil)
+      award_emoji_table = Arel::Table.new('award_emoji')
+      inner_query = award_emoji_table
+                .project('true')
+                .where(award_emoji_table[:user_id].eq(user.id))
+                .where(award_emoji_table[:awardable_type].eq(self.name))
+                .where(award_emoji_table[:awardable_id].eq(self.arel_table[:id]))
 
-      where(sql, user_id: user.id, awardable_type: self.name)
+      inner_query = inner_query.where(award_emoji_table[:name].eq(name)) if name.present?
+
+      where(inner_query.exists.not)
     end
 
     def order_upvotes_desc
@@ -77,7 +74,7 @@ module Awardable
     # By default we always load award_emoji user association
     awards = award_emoji.group_by(&:name)
 
-    if with_thumbs
+    if with_thumbs && (!project || project.show_default_award_emojis?)
       awards[AwardEmoji::UPVOTE_NAME]   ||= []
       awards[AwardEmoji::DOWNVOTE_NAME] ||= []
     end

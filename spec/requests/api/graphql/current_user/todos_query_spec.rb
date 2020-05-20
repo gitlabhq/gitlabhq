@@ -9,6 +9,7 @@ describe 'Query current user todos' do
   let_it_be(:commit_todo) { create(:on_commit_todo, user: current_user, project: create(:project, :repository)) }
   let_it_be(:issue_todo) { create(:todo, user: current_user, target: create(:issue)) }
   let_it_be(:merge_request_todo) { create(:todo, user: current_user, target: create(:merge_request)) }
+  let_it_be(:design_todo) { create(:todo, user: current_user, target: create(:design)) }
 
   let(:fields) do
     <<~QUERY
@@ -34,7 +35,8 @@ describe 'Query current user todos' do
     is_expected.to include(
       a_hash_including('id' => commit_todo.to_global_id.to_s),
       a_hash_including('id' => issue_todo.to_global_id.to_s),
-      a_hash_including('id' => merge_request_todo.to_global_id.to_s)
+      a_hash_including('id' => merge_request_todo.to_global_id.to_s),
+      a_hash_including('id' => design_todo.to_global_id.to_s)
     )
   end
 
@@ -42,7 +44,8 @@ describe 'Query current user todos' do
     is_expected.to include(
       a_hash_including('targetType' => 'COMMIT'),
       a_hash_including('targetType' => 'ISSUE'),
-      a_hash_including('targetType' => 'MERGEREQUEST')
+      a_hash_including('targetType' => 'MERGEREQUEST'),
+      a_hash_including('targetType' => 'DESIGN')
     )
   end
 end

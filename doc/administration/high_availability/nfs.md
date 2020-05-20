@@ -7,13 +7,15 @@ type: reference
 You can view information and options set for each of the mounted NFS file
 systems by running `nfsstat -m` and `cat /etc/fstab`.
 
+CAUTION: **Caution:**
+From GitLab 13.0, using NFS for Git repositories is deprecated. In GitLab 14.0,
+support for NFS for Git repositories is scheduled to be removed. Upgrade to
+[Gitaly Cluster](../gitaly/praefect.md) as soon as possible.
+
 NOTE: **Note:** Filesystem performance has a big impact on overall GitLab
 performance, especially for actions that read or write to Git repositories. See
 [Filesystem Performance Benchmarking](../operations/filesystem_benchmarking.md)
 for steps to test filesystem performance.
-
-NOTE: **Note:** [Cloud Object Storage service](object_storage.md) with [Gitaly](gitaly.md)
-is recommended over NFS wherever possible for improved performance.
 
 ## NFS Server features
 
@@ -73,7 +75,7 @@ To disable NFS server delegation, do the following:
 #### Important notes
 
 The kernel bug may be fixed in
-[more recent kernels with this commit](https://github.om/torvalds/linux/commit/95da1b3a5aded124dd1bda1e3cdb876184813140).
+[more recent kernels with this commit](https://github.com/torvalds/linux/commit/95da1b3a5aded124dd1bda1e3cdb876184813140).
 
 Red Hat Enterprise 7 [shipped a kernel update](https://access.redhat.com/errata/RHSA-2019:2029)
 on August 6, 2019 that may also have resolved this problem.
@@ -184,7 +186,7 @@ The NFS man page states:
 Read the [Linux man page](https://linux.die.net/man/5/nfs) to understand the difference,
 and if you do use `soft`, ensure that you've taken steps to mitigate the risks.
 
-If you experience behaviour that might have been caused by
+If you experience behavior that might have been caused by
 writes to disk on the NFS server not occurring, such as commits going missing,
 use the `hard` option, because (from the man page):
 
@@ -271,7 +273,7 @@ following are the 4 locations need to be shared:
 
 Other GitLab directories should not be shared between nodes. They contain
 node-specific files and GitLab code that does not need to be shared. To ship
-logs to a central location consider using remote syslog. GitLab Omnibus packages
+logs to a central location consider using remote syslog. Omnibus GitLab packages
 provide configuration for [UDP log shipping](https://docs.gitlab.com/omnibus/settings/logs.html#udp-log-shipping-gitlab-enterprise-edition-only).
 
 Having multiple NFS mounts will require manually making sure the data directories

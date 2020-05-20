@@ -22,16 +22,26 @@ describe ProcessCommitWorker do
       worker.perform(project.id, -1, commit.to_hash)
     end
 
-    it 'processes the commit message' do
-      expect(worker).to receive(:process_commit_message).and_call_original
+    include_examples 'an idempotent worker' do
+      subject do
+        perform_multiple([project.id, user.id, commit.to_hash], worker: worker)
+      end
 
-      worker.perform(project.id, user.id, commit.to_hash)
-    end
+      it 'processes the commit message' do
+        expect(worker).to receive(:process_commit_message)
+          .exactly(IdempotentWorkerHelper::WORKER_EXEC_TIMES)
+          .and_call_original
 
-    it 'updates the issue metrics' do
-      expect(worker).to receive(:update_issue_metrics).and_call_original
+        subject
+      end
 
-      worker.perform(project.id, user.id, commit.to_hash)
+      it 'updates the issue metrics' do
+        expect(worker).to receive(:update_issue_metrics)
+          .exactly(IdempotentWorkerHelper::WORKER_EXEC_TIMES)
+          .and_call_original
+
+        subject
+      end
     end
   end
 

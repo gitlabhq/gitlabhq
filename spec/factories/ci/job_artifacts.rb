@@ -139,6 +139,36 @@ FactoryBot.define do
       end
     end
 
+    trait :accessibility do
+      file_type { :accessibility }
+      file_format { :raw }
+
+      after(:build) do |artifact, _evaluator|
+        artifact.file = fixture_file_upload(
+          Rails.root.join('spec/fixtures/accessibility/pa11y_with_errors.json'), 'application/json')
+      end
+    end
+
+    trait :accessibility_with_invalid_url do
+      file_type { :accessibility }
+      file_format { :raw }
+
+      after(:build) do |artifact, _evaluator|
+        artifact.file = fixture_file_upload(
+          Rails.root.join('spec/fixtures/accessibility/pa11y_with_invalid_url.json'), 'application/json')
+      end
+    end
+
+    trait :accessibility_without_errors do
+      file_type { :accessibility }
+      file_format { :raw }
+
+      after(:build) do |artifact, _evaluator|
+        artifact.file = fixture_file_upload(
+          Rails.root.join('spec/fixtures/accessibility/pa11y_without_errors.json'), 'application/json')
+      end
+    end
+
     trait :cobertura do
       file_type { :cobertura }
       file_format { :gzip }
@@ -146,6 +176,26 @@ FactoryBot.define do
       after(:build) do |artifact, evaluator|
         artifact.file = fixture_file_upload(
           Rails.root.join('spec/fixtures/cobertura/coverage.xml.gz'), 'application/x-gzip')
+      end
+    end
+
+    trait :terraform do
+      file_type { :terraform }
+      file_format { :raw }
+
+      after(:build) do |artifact, evaluator|
+        artifact.file = fixture_file_upload(
+          Rails.root.join('spec/fixtures/terraform/tfplan.json'), 'application/json')
+      end
+    end
+
+    trait :terraform_with_corrupted_data do
+      file_type { :terraform }
+      file_format { :raw }
+
+      after(:build) do |artifact, evaluator|
+        artifact.file = fixture_file_upload(
+          Rails.root.join('spec/fixtures/terraform/tfplan_with_corrupted_data.json'), 'application/json')
       end
     end
 
@@ -181,11 +231,14 @@ FactoryBot.define do
 
     trait :lsif do
       file_type { :lsif }
-      file_format { :gzip }
+      file_format { :zip }
+
+      transient do
+        file_path { Rails.root.join('spec/fixtures/lsif.json.gz') }
+      end
 
       after(:build) do |artifact, evaluator|
-        artifact.file = fixture_file_upload(
-          Rails.root.join('spec/fixtures/lsif.json.gz'), 'application/x-gzip')
+        artifact.file = fixture_file_upload(evaluator.file_path, 'application/x-gzip')
       end
     end
 
@@ -196,6 +249,21 @@ FactoryBot.define do
       after(:build) do |artifact, evaluator|
         artifact.file = fixture_file_upload(
           Rails.root.join('spec/fixtures/build.env.gz'), 'application/x-gzip')
+      end
+    end
+
+    trait :cluster_applications do
+      file_type { :cluster_applications }
+      file_format { :gzip }
+
+      transient do
+        file do
+          fixture_file_upload(Rails.root.join('spec/fixtures/helm/helm_list_v2_prometheus_missing.json.gz'), 'application/x-gzip')
+        end
+      end
+
+      after(:build) do |artifact, evaluator|
+        artifact.file = evaluator.file
       end
     end
 

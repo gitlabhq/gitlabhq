@@ -122,7 +122,7 @@ module Gitlab
           @reader ||= Gitlab::ImportExport::Reader.new(
             shared: @shared,
             config: Gitlab::ImportExport::Config.new(
-              config: Gitlab::ImportExport.group_config_file
+              config: Gitlab::ImportExport.legacy_group_config_file
             ).to_h
           )
         end

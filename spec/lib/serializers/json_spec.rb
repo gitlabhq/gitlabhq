@@ -15,7 +15,7 @@ describe Serializers::JSON do
 
   describe '.load' do
     let(:data_string) { '{"key":"value","variables":[{"key":"VAR1","value":"VALUE1"}]}' }
-    let(:data_hash) { JSON.parse(data_string) }
+    let(:data_hash) { Gitlab::Json.parse(data_string) }
 
     context 'when loading a hash' do
       subject { described_class.load(data_hash) }

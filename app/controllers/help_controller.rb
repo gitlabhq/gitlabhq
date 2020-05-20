@@ -26,7 +26,7 @@ class HelpController < ApplicationController
 
     respond_to do |format|
       format.any(:markdown, :md, :html) do
-        # Note: We are purposefully NOT using `Rails.root.join`
+        # Note: We are purposefully NOT using `Rails.root.join` because of https://gitlab.com/gitlab-org/gitlab/-/issues/216028.
         path = File.join(Rails.root, 'doc', "#{@path}.md")
 
         if File.exist?(path)
@@ -42,7 +42,7 @@ class HelpController < ApplicationController
 
       # Allow access to specific media files in the doc folder
       format.any(:png, :gif, :jpeg, :mp4, :mp3) do
-        # Note: We are purposefully NOT using `Rails.root.join`
+        # Note: We are purposefully NOT using `Rails.root.join` because of https://gitlab.com/gitlab-org/gitlab/-/issues/216028.
         path = File.join(Rails.root, 'doc', "#{@path}.#{params[:format]}")
 
         if File.exist?(path)

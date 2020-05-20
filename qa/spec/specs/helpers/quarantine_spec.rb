@@ -31,14 +31,6 @@ RSpec.configure do |c|
 
       config.color_mode = :off
 
-      # Load airborne again to avoid "undefined method `match_expected_default?'" errors
-      # that happen because a hook calls a method added via a custom RSpec setting
-      # that is removed when the RSpec configuration is sandboxed.
-      # If this needs to be changed (e.g., to load other libraries as well), see
-      # this discussion for alternative solutions:
-      # https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/25223#note_143392053
-      load 'airborne.rb'
-
       ex.run
     end
   end

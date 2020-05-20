@@ -2,7 +2,7 @@
 
 module Gitlab
   class OmniauthInitializer
-    prepend_if_ee('::EE::Gitlab::OmniauthInitializer') # rubocop: disable Cop/InjectEnterpriseEditionModule
+    OAUTH2_TIMEOUT_SECONDS = 10
 
     def initialize(devise_config)
       @devise_config = devise_config
@@ -14,6 +14,47 @@ module Gitlab
 
         add_provider_to_devise(name, *arguments_for(provider))
         setup_provider(name)
+      end
+    end
+
+    class << self
+      def default_arguments_for(provider_name)
+        case provider_name
+        when 'cas3'
+          { on_single_sign_out: cas3_signout_handler }
+        when 'authentiq'
+          { remote_sign_out_handler: authentiq_signout_handler }
+        when 'shibboleth'
+          { fail_with_empty_uid: true }
+        when 'google_oauth2'
+          { client_options: { connection_opts: { request: { timeout: OAUTH2_TIMEOUT_SECONDS } } } }
+        else
+          {}
+        end
+      end
+
+      private
+
+      def cas3_signout_handler
+        lambda do |request|
+          ticket = request.params[:session_index]
+          raise "Service Ticket not found." unless Gitlab::Auth::OAuth::Session.valid?(:cas3, ticket)
+
+          Gitlab::Auth::OAuth::Session.destroy(:cas3, ticket)
+          true
+        end
+      end
+
+      def authentiq_signout_handler
+        lambda do |request|
+          authentiq_session = request.params['sid']
+          if Gitlab::Auth::OAuth::Session.valid?(:authentiq, authentiq_session)
+            Gitlab::Auth::OAuth::Session.destroy(:authentiq, authentiq_session)
+            true
+          else
+            false
+          end
+        end
       end
     end
 
@@ -35,7 +76,8 @@ module Gitlab
         # An Array from the configuration will be expanded.
         provider_arguments.concat provider['args']
       when Hash
-        hash_arguments = provider['args'].merge(provider_defaults(provider))
+        defaults = provider_defaults(provider)
+        hash_arguments = provider['args'].deep_symbolize_keys.deep_merge(defaults)
 
         # A Hash from the configuration will be passed as is.
         provider_arguments << normalize_hash_arguments(hash_arguments)
@@ -45,7 +87,7 @@ module Gitlab
     end
 
     def normalize_hash_arguments(args)
-      args.symbolize_keys!
+      args.deep_symbolize_keys!
 
       # Rails 5.1 deprecated the use of string names in the middleware
       # (https://github.com/rails/rails/commit/83b767ce), so we need to
@@ -68,38 +110,7 @@ module Gitlab
     end
 
     def provider_defaults(provider)
-      case provider['name']
-      when 'cas3'
-        { on_single_sign_out: cas3_signout_handler }
-      when 'authentiq'
-        { remote_sign_out_handler: authentiq_signout_handler }
-      when 'shibboleth'
-        { fail_with_empty_uid: true }
-      else
-        {}
-      end
-    end
-
-    def cas3_signout_handler
-      lambda do |request|
-        ticket = request.params[:session_index]
-        raise "Service Ticket not found." unless Gitlab::Auth::OAuth::Session.valid?(:cas3, ticket)
-
-        Gitlab::Auth::OAuth::Session.destroy(:cas3, ticket)
-        true
-      end
-    end
-
-    def authentiq_signout_handler
-      lambda do |request|
-        authentiq_session = request.params['sid']
-        if Gitlab::Auth::OAuth::Session.valid?(:authentiq, authentiq_session)
-          Gitlab::Auth::OAuth::Session.destroy(:authentiq, authentiq_session)
-          true
-        else
-          false
-        end
-      end
+      self.class.default_arguments_for(provider['name'])
     end
 
     def omniauth_customized_providers
@@ -121,3 +132,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::OmniauthInitializer.prepend_if_ee('::EE::Gitlab::OmniauthInitializer')

@@ -4,7 +4,9 @@ class JwtController < ApplicationController
   skip_around_action :set_session_storage
   skip_before_action :authenticate_user!
   skip_before_action :verify_authenticity_token
-  before_action :authenticate_project_or_user
+
+  # Add this before other actions, since we want to have the user or project
+  prepend_before_action :auth_user, :authenticate_project_or_user
 
   SERVICES = {
     Auth::ContainerRegistryAuthenticationService::AUDIENCE => Auth::ContainerRegistryAuthenticationService
@@ -74,5 +76,12 @@ class JwtController < ApplicationController
     return unless params[:scope].present?
 
     Array(Rack::Utils.parse_query(request.query_string)['scope'])
+  end
+
+  def auth_user
+    strong_memoize(:auth_user) do
+      actor = @authentication_result&.actor
+      actor.is_a?(User) ? actor : nil
+    end
   end
 end

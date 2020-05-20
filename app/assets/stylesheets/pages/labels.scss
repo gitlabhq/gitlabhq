@@ -307,7 +307,7 @@
   }
 
   .label-name {
-    width: 150px;
+    width: 200px;
     flex-shrink: 0;
 
     .scoped-label-wrapper,
@@ -460,8 +460,7 @@
 // Label inside title of Delete Label Modal
 .modal-header .page-title {
   .scoped-label-wrapper {
-    .scoped-label,
-    .gl-label-icon {
+    .scoped-label {
       line-height: 20px;
     }
 

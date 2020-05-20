@@ -3,7 +3,8 @@
 - **Write the code and the tests.**: As with any code, EE features should have
   good test coverage to prevent regressions.
 - **Write documentation.**: Add documentation to the `doc/` directory. Describe
-  the feature and include screenshots, if applicable.
+  the feature and include screenshots, if applicable. Indicate [what editions](documentation/styleguide.md#product-badges)
+  the feature applies to.
 - **Submit a MR to the `www-gitlab-com` project.**: Add the new feature to the
   [EE features list](https://about.gitlab.com/features/).
 
@@ -111,7 +112,7 @@ There are a few gotchas with it:
   smaller methods. Or create a "hook" method that is empty in CE,
   and with the EE-specific implementation in EE.
 - when the original implementation contains a guard clause (e.g.
-  `return unless condition`), we cannot easily extend the behaviour by
+  `return unless condition`), we cannot easily extend the behavior by
   overriding the method, because we can't know when the overridden method
   (i.e. calling `super` in the overriding method) would want to stop early.
   In this case, we shouldn't just override it, but update the original method
@@ -131,7 +132,7 @@ There are a few gotchas with it:
   ```
 
   Instead of just overriding `Base#execute`, we should update it and extract
-  the behaviour into another method:
+  the behavior into another method:
 
   ```ruby
     class Base
@@ -513,7 +514,7 @@ do that, so we'll follow regular object-oriented practices that we define the
 interface first here.
 
 For example, suppose we have a few more optional parameters for EE. We can move the
-paramters out of the `Grape::API` class to a helper module, so we can inject it
+parameters out of the `Grape::API` class to a helper module, so we can inject it
 before it would be used in the class.
 
 ```ruby
@@ -613,9 +614,9 @@ module EE
 end
 ```
 
-#### EE-specific behaviour
+#### EE-specific behavior
 
-Sometimes we need EE-specific behaviour in some of the APIs. Normally we could
+Sometimes we need EE-specific behavior in some of the APIs. Normally we could
 use EE methods to override CE methods, however API routes are not methods and
 therefore can't be simply overridden. We need to extract them into a standalone
 method, or introduce some "hooks" where we could inject behavior in the CE

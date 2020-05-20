@@ -1,5 +1,6 @@
 ---
 # Checks for use of some of the top misused terms at GitLab.
+# For substitutions only flagged as warnings, see SubstitutionWarning.yml
 #
 # For a list of all options, see https://errata-ai.github.io/vale/styles/
 extends: substitution
@@ -9,8 +10,16 @@ level: error
 ignorecase: true
 swap:
   GitLabber: GitLab team member
+  gitlab omnibus: Omnibus GitLab
   param: parameter
   params: parameters
+  pg: PostgreSQL
   postgres: PostgreSQL
+  raketask: Rake task
+  raketasks: Rake tasks
+  rspec: RSpec
   self hosted: self-managed
   self-hosted: self-managed
+  styleguide: style guide
+  x509: X.509
+  yaml: YAML

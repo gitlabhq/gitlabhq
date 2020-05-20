@@ -4,6 +4,12 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   include MetricsDashboard
 
   layout 'project'
+
+  before_action only: [:metrics, :additional_metrics, :metrics_dashboard] do
+    authorize_metrics_dashboard!
+
+    push_frontend_feature_flag(:prometheus_computed_alerts)
+  end
   before_action :authorize_read_environment!
   before_action :authorize_create_environment!, only: [:new, :create]
   before_action :authorize_stop_environment!, only: [:stop]
@@ -12,10 +18,6 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   before_action :environment, only: [:show, :edit, :update, :stop, :terminal, :terminal_websocket_authorize, :metrics, :cancel_auto_stop]
   before_action :verify_api_request!, only: :terminal_websocket_authorize
   before_action :expire_etag_cache, only: [:index], unless: -> { request.format.json? }
-  before_action only: [:metrics, :additional_metrics, :metrics_dashboard] do
-    push_frontend_feature_flag(:prometheus_computed_alerts)
-    push_frontend_feature_flag(:metrics_dashboard_annotations)
-  end
   after_action :expire_etag_cache, only: [:cancel_auto_stop]
 
   def index
@@ -27,12 +29,13 @@ class Projects::EnvironmentsController < Projects::ApplicationController
       format.html
       format.json do
         Gitlab::PollingInterval.set_header(response, interval: 3_000)
+        environments_count_by_state = project.environments.count_by_state
 
         render json: {
           environments: serialize_environments(request, response, params[:nested]),
           review_app: serialize_review_app,
-          available_count: project.environments.available.count,
-          stopped_count: project.environments.stopped.count
+          available_count: environments_count_by_state[:available],
+          stopped_count: environments_count_by_state[:stopped]
         }
       end
     end

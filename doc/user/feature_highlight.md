@@ -1,6 +1,6 @@
 # Feature highlight
 
-> [Introduced][ce-16379] in GitLab 10.5
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/16379) in GitLab 10.5
 
 Feature highlights are represented by a pulsing blue dot. Hovering over the dot
 will open up callout with more information.
@@ -11,5 +11,3 @@ at the bottom of the callout. There isn't a way to restore the feature highlight
 after it has been dismissed.
 
 ![Clusters feature highlight](img/feature_highlight_example.png)
-
-[ce-16379]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/16379

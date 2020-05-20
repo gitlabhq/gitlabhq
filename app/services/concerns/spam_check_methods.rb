@@ -23,14 +23,14 @@ module SpamCheckMethods
   # attribute values.
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def spam_check(spammable, user)
-    Spam::SpamCheckService.new(
+    Spam::SpamActionService.new(
       spammable: spammable,
       request: @request
     ).execute(
       api: @api,
       recaptcha_verified: @recaptcha_verified,
       spam_log_id: @spam_log_id,
-      user_id: user.id)
+      user: user)
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
 end

@@ -96,7 +96,6 @@ Example response:
       ],
       "commit_path":"/root/awesome-app/commit/588440f66559714280628a4f9799f0c4eb880a4a",
       "tag_path":"/root/awesome-app/-/tags/v0.11.1",
-      "evidence_sha":"760d6cdfb0879c3ffedec13af470e0f71cf52c6cde4d",
       "assets":{
          "count":6,
          "sources":[
@@ -133,6 +132,13 @@ Example response:
          ],
          "evidence_file_path":"https://gitlab.example.com/root/awesome-app/-/releases/v0.2/evidence.json"
       },
+      "evidences":[
+        {
+          sha: "760d6cdfb0879c3ffedec13af470e0f71cf52c6cde4d",
+          filepath: "https://gitlab.example.com/root/awesome-app/-/releases/v0.2/evidence.json",
+          collected_at: "2019-01-03T01:56:19.539Z"
+        }
+     ]
    },
    {
       "tag_name":"v0.1",
@@ -165,7 +171,6 @@ Example response:
          "committer_email":"admin@example.com",
          "committed_date":"2019-01-03T01:53:28.000Z"
       },
-      "evidence_sha":"760d6cdfb0879c3ffedec13af470e0f71cf52c6cde4d",
       "assets":{
          "count":4,
          "sources":[
@@ -191,6 +196,13 @@ Example response:
          ],
          "evidence_file_path":"https://gitlab.example.com/root/awesome-app/-/releases/v0.1/evidence.json"
       },
+      "evidences":[
+        {
+          sha: "c3ffedec13af470e760d6cdfb08790f71cf52c6cde4d",
+          filepath: "https://gitlab.example.com/root/awesome-app/-/releases/v0.1/evidence.json",
+          collected_at: "2019-01-03T01:55:18.203Z"
+        }
+     ]
    }
 ]
 ```
@@ -286,7 +298,6 @@ Example response:
    ],
    "commit_path":"/root/awesome-app/commit/588440f66559714280628a4f9799f0c4eb880a4a",
    "tag_path":"/root/awesome-app/-/tags/v0.11.1",
-   "evidence_sha":"760d6cdfb0879c3ffedec13af470e0f71cf52c6cde4d",
    "assets":{
       "count":5,
       "sources":[
@@ -314,9 +325,15 @@ Example response:
             "url":"https://gitlab.example.com/root/awesome-app/-/tags/v0.11.1/binaries/linux-amd64",
             "external":true
          }
-      ],
-      "evidence_url":"https://gitlab.example.com/root/awesome-app/-/releases/v0.1/evidence.json"
+      ]
    },
+   "evidences":[
+     {
+       sha: "760d6cdfb0879c3ffedec13af470e0f71cf52c6cde4d",
+       filepath: "https://gitlab.example.com/root/awesome-app/-/releases/v0.1/evidence.json",
+       collected_at: "2019-07-16T14:00:12.256Z"
+     }
+  ]
 }
 ```
 
@@ -338,7 +355,7 @@ POST /projects/:id/releases
 | `milestones`       | array of string | no                          | The title of each milestone the release is associated with.                                                                      |
 | `assets:links`     | array of hash   | no                          | An array of assets links.                                                                                                        |
 | `assets:links:name`| string          | required by: `assets:links` | The name of the link.                                                                                                            |
-| `assets:links:url` | string          | required by: `assets:links` | The url of the link.                                                                                                             |
+| `assets:links:url` | string          | required by: `assets:links` | The URL of the link.                                                                                                             |
 | `assets:links:filepath` | string     | no | Optional path for a [Direct Asset link](../../user/project/releases.md).
 | `released_at`      | datetime        | no                          | The date when the release will be/was ready. Defaults to the current time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 

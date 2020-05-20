@@ -3,35 +3,35 @@
 require 'spec_helper'
 
 describe Gitlab::UsageDataCounters::WebIdeCounter, :clean_gitlab_redis_shared_state do
-  shared_examples 'counter examples' do
+  shared_examples 'counter examples' do |event|
     it 'increments counter and return the total count' do
-      expect(described_class.public_send(total_counter_method)).to eq(0)
+      expect(described_class.public_send(:total_count, event)).to eq(0)
 
-      2.times { described_class.public_send(increment_counter_method) }
+      2.times { described_class.public_send(:"increment_#{event}_count") }
 
-      expect(described_class.public_send(total_counter_method)).to eq(2)
+      redis_key = "web_ide_#{event}_count".upcase
+      expect(described_class.public_send(:total_count, redis_key)).to eq(2)
     end
   end
 
   describe 'commits counter' do
-    let(:increment_counter_method) { :increment_commits_count }
-    let(:total_counter_method) { :total_commits_count }
-
-    it_behaves_like 'counter examples'
+    it_behaves_like 'counter examples', 'commits'
   end
 
   describe 'merge requests counter' do
-    let(:increment_counter_method) { :increment_merge_requests_count }
-    let(:total_counter_method) { :total_merge_requests_count }
-
-    it_behaves_like 'counter examples'
+    it_behaves_like 'counter examples', 'merge_requests'
   end
 
   describe 'views counter' do
-    let(:increment_counter_method) { :increment_views_count }
-    let(:total_counter_method) { :total_views_count }
+    it_behaves_like 'counter examples', 'views'
+  end
 
-    it_behaves_like 'counter examples'
+  describe 'terminals counter' do
+    it_behaves_like 'counter examples', 'terminals'
+  end
+
+  describe 'pipelines counter' do
+    it_behaves_like 'counter examples', 'pipelines'
   end
 
   describe 'previews counter' do
@@ -42,21 +42,19 @@ describe Gitlab::UsageDataCounters::WebIdeCounter, :clean_gitlab_redis_shared_st
     end
 
     context 'when web ide clientside preview is enabled' do
-      let(:increment_counter_method) { :increment_previews_count }
-      let(:total_counter_method) { :total_previews_count }
-
-      it_behaves_like 'counter examples'
+      it_behaves_like 'counter examples', 'previews'
     end
 
     context 'when web ide clientside preview is not enabled' do
       let(:setting_enabled) { false }
 
       it 'does not increment the counter' do
-        expect(described_class.total_previews_count).to eq(0)
+        redis_key = 'WEB_IDE_PREVIEWS_COUNT'
+        expect(described_class.total_count(redis_key)).to eq(0)
 
         2.times { described_class.increment_previews_count }
 
-        expect(described_class.total_previews_count).to eq(0)
+        expect(described_class.total_count(redis_key)).to eq(0)
       end
     end
   end
@@ -66,6 +64,8 @@ describe Gitlab::UsageDataCounters::WebIdeCounter, :clean_gitlab_redis_shared_st
     merge_requests = 3
     views = 2
     previews = 4
+    terminals = 1
+    pipelines = 2
 
     before do
       stub_application_setting(web_ide_clientside_preview_enabled: true)
@@ -74,6 +74,8 @@ describe Gitlab::UsageDataCounters::WebIdeCounter, :clean_gitlab_redis_shared_st
       merge_requests.times { described_class.increment_merge_requests_count }
       views.times { described_class.increment_views_count }
       previews.times { described_class.increment_previews_count }
+      terminals.times { described_class.increment_terminals_count }
+      pipelines.times { described_class.increment_pipelines_count }
     end
 
     it 'can report all totals' do
@@ -81,7 +83,8 @@ describe Gitlab::UsageDataCounters::WebIdeCounter, :clean_gitlab_redis_shared_st
         web_ide_commits: commits,
         web_ide_views: views,
         web_ide_merge_requests: merge_requests,
-        web_ide_previews: previews
+        web_ide_previews: previews,
+        web_ide_terminals: terminals
       )
     end
   end

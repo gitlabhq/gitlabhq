@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'rspec/mocks'
-
 module TestEnv
   extend ActiveSupport::Concern
   extend self
@@ -61,7 +59,7 @@ module TestEnv
     'merge-commit-analyze-side-branch'   => '8a99451',
     'merge-commit-analyze-after'         => '646ece5',
     'snippet/single-file'                => '43e4080aaa14fc7d4b77ee1f5c9d067d5a7df10e',
-    'snippet/multiple-files'             => 'b80faa8c5b2b62f6489a0d84755580e927e1189b',
+    'snippet/multiple-files'             => '40232f7eb98b3f221886432def6e8bab2432add9',
     'snippet/rename-and-edit-file'       => '220a1e4b4dff37feea0625a7947a4c60fbe78365',
     'snippet/edit-file'                  => 'c2f074f4f26929c92795a75775af79a6ed6d8430',
     'snippet/no-files'                   => '671aaa842a4875e5f30082d1ab6feda345fdb94d',
@@ -284,29 +282,33 @@ module TestEnv
   end
 
   def setup_factory_repo
-    setup_repo(factory_repo_path, factory_repo_path_bare, factory_repo_name,
-               BRANCH_SHA)
+    setup_repo(factory_repo_path, factory_repo_path_bare, factory_repo_name, BRANCH_SHA)
   end
 
   # This repo has a submodule commit that is not present in the main test
   # repository.
   def setup_forked_repo
-    setup_repo(forked_repo_path, forked_repo_path_bare, forked_repo_name,
-               FORKED_BRANCH_SHA)
+    setup_repo(forked_repo_path, forked_repo_path_bare, forked_repo_name, FORKED_BRANCH_SHA)
   end
 
   def setup_repo(repo_path, repo_path_bare, repo_name, refs)
     clone_url = "https://gitlab.com/gitlab-org/#{repo_name}.git"
 
     unless File.directory?(repo_path)
-      system(*%W(#{Gitlab.config.git.bin_path} clone -q #{clone_url} #{repo_path}))
+      puts "\n==> Setting up #{repo_name} repository in #{repo_path}..."
+      start = Time.now
+      system(*%W(#{Gitlab.config.git.bin_path} clone --quiet -- #{clone_url} #{repo_path}))
+      puts "    #{repo_path} set up in #{Time.now - start} seconds...\n"
     end
 
     set_repo_refs(repo_path, refs)
 
     unless File.directory?(repo_path_bare)
+      puts "\n==> Setting up #{repo_name} bare repository in #{repo_path_bare}..."
+      start = Time.now
       # We must copy bare repositories because we will push to them.
-      system(git_env, *%W(#{Gitlab.config.git.bin_path} clone -q --bare #{repo_path} #{repo_path_bare}))
+      system(git_env, *%W(#{Gitlab.config.git.bin_path} clone --quiet --bare -- #{repo_path} #{repo_path_bare}))
+      puts "    #{repo_path_bare} set up in #{Time.now - start} seconds...\n"
     end
   end
 

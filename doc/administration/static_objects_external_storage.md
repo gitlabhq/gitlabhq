@@ -63,7 +63,7 @@ other CDNs or Function as a Service (FaaS) systems should work using the same pr
      `pwgen -cn1 64` on a UNIX machine). Save this token for the admin panel, as
      described in the [configuring](#configuring) section.
 
-     ```js
+     ```javascript
      const ORIGIN_HOSTNAME = 'gitlab.installation.com' // FIXME: SET CORRECT VALUE
      const STORAGE_TOKEN = 'very-secure-token' // FIXME: SET CORRECT VALUE
      const CACHE_PRIVATE_OBJECTS = false

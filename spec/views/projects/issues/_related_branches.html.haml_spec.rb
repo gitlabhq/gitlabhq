@@ -5,23 +5,25 @@ require 'spec_helper'
 describe 'projects/issues/_related_branches' do
   include Devise::Test::ControllerHelpers
 
-  let(:user) { create(:user) }
-  let(:project) { create(:project, :repository) }
-  let(:branch) { project.repository.find_branch('feature') }
-  let!(:pipeline) { create(:ci_pipeline, project: project, sha: branch.dereferenced_target.id, ref: 'feature') }
+  let(:pipeline) { build(:ci_pipeline, :success) }
+  let(:status) { pipeline.detailed_status(build(:user)) }
 
   before do
-    assign(:project, project)
-    assign(:related_branches, ['feature'])
-
-    project.add_developer(user)
-    allow(view).to receive(:current_user).and_return(user)
+    assign(:related_branches, [
+      { name: 'other', link: 'link-to-other', pipeline_status: nil },
+      { name: 'feature', link: 'link-to-feature', pipeline_status: status }
+    ])
 
     render
   end
 
-  it 'shows the related branches with their build status' do
-    expect(rendered).to match('feature')
+  it 'shows the related branches with their build status', :aggregate_failures do
+    expect(rendered).to have_text('feature')
+    expect(rendered).to have_text('other')
+    expect(rendered).to have_link(href: 'link-to-feature')
+    expect(rendered).to have_link(href: 'link-to-other')
     expect(rendered).to have_css('.related-branch-ci-status')
+    expect(rendered).to have_css('.ci-status-icon')
+    expect(rendered).to have_css('.related-branch-info')
   end
 end

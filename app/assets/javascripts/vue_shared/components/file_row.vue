@@ -148,19 +148,6 @@ export default {
   cursor: pointer;
 }
 
-.file-row:hover,
-.file-row:focus {
-  background: #f2f2f2;
-}
-
-.file-row:active {
-  background: #dfdfdf;
-}
-
-.file-row.is-active {
-  background: #f2f2f2;
-}
-
 .file-row-name-container {
   display: flex;
   width: 100%;

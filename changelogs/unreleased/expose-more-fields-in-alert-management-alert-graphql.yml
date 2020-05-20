@@ -1,0 +1,5 @@
+---
+title: Exposes description, hosts, details, and timestamps for Alert Management Alert GraphQL
+merge_request: 31091
+author:
+type: changed

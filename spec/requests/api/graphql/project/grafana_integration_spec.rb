@@ -35,7 +35,7 @@ describe 'Getting Grafana Integration' do
 
       it_behaves_like 'a working graphql query'
 
-      it { expect(integration_data).to be nil }
+      specify { expect(integration_data).to be nil }
     end
 
     context 'with project admin permissions' do
@@ -45,16 +45,16 @@ describe 'Getting Grafana Integration' do
 
       it_behaves_like 'a working graphql query'
 
-      it { expect(integration_data['token']).to eql grafana_integration.masked_token }
-      it { expect(integration_data['grafanaUrl']).to eql grafana_integration.grafana_url }
+      specify { expect(integration_data['token']).to eql grafana_integration.masked_token }
+      specify { expect(integration_data['grafanaUrl']).to eql grafana_integration.grafana_url }
 
-      it do
+      specify do
         expect(
           integration_data['createdAt']
         ).to eql grafana_integration.created_at.strftime('%Y-%m-%dT%H:%M:%SZ')
       end
 
-      it do
+      specify do
         expect(
           integration_data['updatedAt']
         ).to eql grafana_integration.updated_at.strftime('%Y-%m-%dT%H:%M:%SZ')

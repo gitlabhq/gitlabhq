@@ -40,10 +40,6 @@ module StaticModel
   end
 
   def ==(other)
-    if other.is_a? ::StaticModel
-      id == other.id
-    else
-      super
-    end
+    other.present? && other.is_a?(self.class) && id == other.id
   end
 end

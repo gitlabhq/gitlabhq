@@ -8,6 +8,7 @@ import eventHub from '~/clusters/event_hub';
 import KnativeDomainEditor from '~/clusters/components/knative_domain_editor.vue';
 import CrossplaneProviderStack from '~/clusters/components/crossplane_provider_stack.vue';
 import IngressModsecuritySettings from '~/clusters/components/ingress_modsecurity_settings.vue';
+import FluentdOutputSettings from '~/clusters/components/fluentd_output_settings.vue';
 
 describe('Applications', () => {
   let vm;
@@ -67,6 +68,10 @@ describe('Applications', () => {
     it('renders a row for Elastic Stack', () => {
       expect(vm.$el.querySelector('.js-cluster-application-row-elastic_stack')).not.toBeNull();
     });
+
+    it('renders a row for Fluentd', () => {
+      expect(vm.$el.querySelector('.js-cluster-application-row-fluentd')).not.toBeNull();
+    });
   });
 
   describe('Group cluster applications', () => {
@@ -112,6 +117,10 @@ describe('Applications', () => {
     it('renders a row for Elastic Stack', () => {
       expect(vm.$el.querySelector('.js-cluster-application-row-elastic_stack')).not.toBeNull();
     });
+
+    it('renders a row for Fluentd', () => {
+      expect(vm.$el.querySelector('.js-cluster-application-row-fluentd')).not.toBeNull();
+    });
   });
 
   describe('Instance cluster applications', () => {
@@ -156,6 +165,10 @@ describe('Applications', () => {
 
     it('renders a row for Elastic Stack', () => {
       expect(vm.$el.querySelector('.js-cluster-application-row-elastic_stack')).not.toBeNull();
+    });
+
+    it('renders a row for Fluentd', () => {
+      expect(vm.$el.querySelector('.js-cluster-application-row-fluentd')).not.toBeNull();
     });
   });
 
@@ -240,6 +253,7 @@ describe('Applications', () => {
               jupyter: { title: 'JupyterHub', hostname: '' },
               knative: { title: 'Knative', hostname: '' },
               elastic_stack: { title: 'Elastic Stack' },
+              fluentd: { title: 'Fluentd' },
             },
           });
 
@@ -537,6 +551,25 @@ describe('Applications', () => {
             .getAttribute('disabled'),
         ).toEqual('disabled');
       });
+    });
+  });
+
+  describe('Fluentd application', () => {
+    const propsData = {
+      applications: {
+        ...APPLICATIONS_MOCK_STATE,
+      },
+    };
+
+    let wrapper;
+    beforeEach(() => {
+      wrapper = shallowMount(Applications, { propsData });
+    });
+    afterEach(() => {
+      wrapper.destroy();
+    });
+    it('renders the correct Component', () => {
+      expect(wrapper.contains(FluentdOutputSettings)).toBe(true);
     });
   });
 });

@@ -487,6 +487,12 @@ Settings.cron_jobs['namespaces_prune_aggregation_schedules_worker']['job_class']
 Settings.cron_jobs['container_expiration_policy_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['container_expiration_policy_worker']['cron'] ||= '50 * * * *'
 Settings.cron_jobs['container_expiration_policy_worker']['job_class'] = 'ContainerExpirationPolicyWorker'
+Settings.cron_jobs['x509_issuer_crl_check_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['x509_issuer_crl_check_worker']['cron'] ||= '30 1 * * *'
+Settings.cron_jobs['x509_issuer_crl_check_worker']['job_class'] = 'X509IssuerCrlCheckWorker'
+Settings.cron_jobs['users_create_statistics_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['users_create_statistics_worker']['cron'] ||= '2 15 * * *'
+Settings.cron_jobs['users_create_statistics_worker']['job_class'] = 'Users::CreateStatisticsWorker'
 
 Gitlab.ee do
   Settings.cron_jobs['adjourned_group_deletion_worker'] ||= Settingslogic.new({})
@@ -549,9 +555,6 @@ Gitlab.ee do
   Settings.cron_jobs['sync_seat_link_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['sync_seat_link_worker']['cron'] ||= "#{rand(60)} 0 * * *"
   Settings.cron_jobs['sync_seat_link_worker']['job_class'] = 'SyncSeatLinkWorker'
-  Settings.cron_jobs['users_create_statistics_worker'] ||= Settingslogic.new({})
-  Settings.cron_jobs['users_create_statistics_worker']['cron'] ||= '2 15 * * *'
-  Settings.cron_jobs['users_create_statistics_worker']['job_class'] = 'Users::CreateStatisticsWorker'
 end
 
 #
@@ -698,7 +701,6 @@ Settings.rack_attack.git_basic_auth['ip_whitelist'] ||= %w{127.0.0.1}
 Settings.rack_attack.git_basic_auth['maxretry'] ||= 10
 Settings.rack_attack.git_basic_auth['findtime'] ||= 1.minute
 Settings.rack_attack.git_basic_auth['bantime'] ||= 1.hour
-Settings.rack_attack['admin_area_protected_paths_enabled'] ||= false
 
 #
 # Gitaly
@@ -713,6 +715,12 @@ Settings.webpack['dev_server'] ||= Settingslogic.new({})
 Settings.webpack.dev_server['enabled'] ||= false
 Settings.webpack.dev_server['host']    ||= 'localhost'
 Settings.webpack.dev_server['port']    ||= 3808
+
+#
+# ActionCable settings
+#
+Settings['action_cable'] ||= Settingslogic.new({})
+Settings.action_cable['worker_pool_size'] ||= 4
 
 #
 # Monitoring settings

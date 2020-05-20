@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 describe 'Starting a Jira Import' do
+  include JiraServiceHelper
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }
@@ -104,6 +105,8 @@ describe 'Starting a Jira Import' do
 
           before do
             project.reload
+
+            stub_jira_service_test
           end
 
           context 'when issues feature are disabled' do
@@ -118,7 +121,7 @@ describe 'Starting a Jira Import' do
             it_behaves_like 'a mutation that returns errors in the response', errors: ['Unable to find Jira project to import data from.']
           end
 
-          context 'when jira import successfully scheduled' do
+          context 'when Jira import successfully scheduled' do
             it 'schedules a Jira import' do
               post_graphql_mutation(mutation, current_user: current_user)
 

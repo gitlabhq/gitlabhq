@@ -1,0 +1,5 @@
+---
+title: Move Deploy.gitlab-ci.yml to `rules` syntax
+merge_request: 31290
+author:
+type: changed

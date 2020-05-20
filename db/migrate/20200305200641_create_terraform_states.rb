@@ -3,6 +3,7 @@
 class CreateTerraformStates < ActiveRecord::Migration[6.0]
   DOWNTIME = false
 
+  # rubocop:disable Migration/PreventStrings
   def change
     create_table :terraform_states do |t|
       t.references :project, index: true, foreign_key: { on_delete: :cascade }, null: false
@@ -11,4 +12,5 @@ class CreateTerraformStates < ActiveRecord::Migration[6.0]
       t.string :file, limit: 255
     end
   end
+  # rubocop:enable Migration/PreventStrings
 end

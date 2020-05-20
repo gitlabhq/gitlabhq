@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 describe Projects::Registry::RepositoriesController do
-  let(:user) { create(:user) }
-  let(:project) { create(:project, :private) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :private) }
 
   before do
     sign_in(user)
@@ -14,6 +14,22 @@ describe Projects::Registry::RepositoriesController do
   context 'when user has access to registry' do
     before do
       project.add_developer(user)
+    end
+
+    shared_examples 'with name parameter' do
+      let_it_be(:repo) { create(:container_repository, project: project, name: 'my_searched_image') }
+      let_it_be(:another_repo) { create(:container_repository, project: project, name: 'bar') }
+
+      it 'returns the searched repo' do
+        go_to_index(format: :json, params: { name: 'my_searched_image' })
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.length).to eq 1
+        expect(json_response.first).to include(
+          'id' => repo.id,
+          'name' => repo.name
+        )
+      end
     end
 
     shared_examples 'renders a list of repositories' do
@@ -60,6 +76,8 @@ describe Projects::Registry::RepositoriesController do
             expect(response).to match_response_schema('registry/repositories')
             expect(response).to include_pagination_headers
           end
+
+          it_behaves_like 'with name parameter'
         end
 
         context 'when there are no tags for this repository' do
@@ -138,11 +156,11 @@ describe Projects::Registry::RepositoriesController do
     end
   end
 
-  def go_to_index(format: :html)
-    get :index, params: {
+  def go_to_index(format: :html, params: {} )
+    get :index, params: params.merge({
                   namespace_id: project.namespace,
                   project_id: project
-                },
+                }),
                 format: format
   end
 

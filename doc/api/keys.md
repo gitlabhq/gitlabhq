@@ -4,7 +4,7 @@
 
 Get SSH key with user by ID of an SSH key. Note only administrators can lookup SSH key with user by ID of an SSH key.
 
-```text
+```plaintext
 GET /keys/:id
 ```
 
@@ -63,7 +63,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" 'https://gitlab.example.com/a
 
 You can search for a user that owns a specific SSH key. Note only administrators can lookup SSH key with the fingerprint of an SSH key.
 
-```text
+```plaintext
 GET /keys
 ```
 

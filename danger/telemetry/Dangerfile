@@ -9,24 +9,27 @@ USAGE_DATA_FILES_MESSAGE = <<~MSG
 For the following files, a review from the [Data team and Telemetry team](https://gitlab.com/groups/gitlab-org/growth/telemetry/engineers/-/group_members?with_inherited_permissions=exclude) is recommended:
 MSG
 
+tracking_files = [
+  'lib/gitlab/tracking.rb',
+  'spec/lib/gitlab/tracking_spec.rb',
+  'app/helpers/tracking_helper.rb',
+  'spec/helpers/tracking_helper_spec.rb',
+  'app/assets/javascripts/tracking.js',
+  'spec/frontend/tracking_spec.js'
+  ]
+
 usage_data_changed_files = git.modified_files.grep(%r{usage_data})
+snowplow_events_changed_files = git.modified_files & tracking_files
 
-def has_label?(label)
-  gitlab.mr_labels.include?(label)
-end
+changed_files = (usage_data_changed_files + snowplow_events_changed_files)
 
-def labels_for_merge_request(labels)
-  labels_list = labels.map { |label| %Q{~"#{label}"} }.join(' ')
-  "/label #{labels_list}"
-end
-
-if usage_data_changed_files.any?
+if changed_files.any?
   warn format(TELEMETRY_CHANGED_FILES_MESSAGE)
 
-  markdown(USAGE_DATA_FILES_MESSAGE + helper.markdown_list(usage_data_changed_files))
+  markdown(USAGE_DATA_FILES_MESSAGE + helper.markdown_list(changed_files))
 
   telemetry_labels = ['telemetry']
-  telemetry_labels << 'telemetry::review pending' unless has_label?('telemetry::reviewed')
+  telemetry_labels << 'telemetry::review pending' unless helper.mr_has_labels?('telemetry::reviewed')
 
-  markdown(labels_for_merge_request(telemetry_labels))
+  markdown(helper.prepare_labels_for_mr(telemetry_labels))
 end

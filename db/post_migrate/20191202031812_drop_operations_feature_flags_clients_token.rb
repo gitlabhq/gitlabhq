@@ -14,7 +14,7 @@ class DropOperationsFeatureFlagsClientsToken < ActiveRecord::Migration[5.2]
 
   def down
     unless column_exists?(:operations_feature_flags_clients, :token)
-      add_column :operations_feature_flags_clients, :token, :string # rubocop:disable Migration/AddLimitToStringColumns
+      add_column :operations_feature_flags_clients, :token, :string
     end
 
     add_concurrent_index :operations_feature_flags_clients, [:project_id, :token], unique: true,

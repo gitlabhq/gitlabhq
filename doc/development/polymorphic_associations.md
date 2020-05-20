@@ -4,7 +4,7 @@
 
 Rails makes it possible to define so called "polymorphic associations". This
 usually works by adding two columns to a table: a target type column, and a
-target id. For example, at the time of writing we have such a setup for
+target ID. For example, at the time of writing we have such a setup for
 `members` with the following columns:
 
 - `source_type`: a string defining the model to use, can be either `Project` or

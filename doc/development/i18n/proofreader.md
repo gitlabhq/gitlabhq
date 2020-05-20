@@ -87,7 +87,7 @@ are very appreciative of the work done by translators and proofreaders!
   - Mark Minakou - [GitLab](https://gitlab.com/sandzhaj), [Crowdin](https://crowdin.com/profile/sandzhaj)
   - NickVolynkin - [Crowdin](https://crowdin.com/profile/NickVolynkin)
   - Andrey Komarov - [GitLab](https://gitlab.com/elkamarado), [Crowdin](https://crowdin.com/profile/kamarado)
-  - Iaroslav Postovalov - [GitLab](https://gitlab/CMDR_Tvis), [Crowdin](https://crowdin.com/profile/CMDR_Tvis)
+  - Iaroslav Postovalov - [GitLab](https://gitlab.com/CMDR_Tvis), [Crowdin](https://crowdin.com/profile/CMDR_Tvis)
 - Serbian (Cyrillic)
   - Proofreaders needed.
 - Serbian (Latin)

@@ -25,7 +25,7 @@ _The uploads are stored by default in `/var/opt/gitlab/gitlab-rails/uploads`._
    gitlab_rails['uploads_base_dir'] = "uploads"
    ```
 
-1. Save the file and [reconfigure GitLab][] for the changes to take effect.
+1. Save the file and [reconfigure GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
 **In installations from source:**
 
@@ -41,13 +41,13 @@ _The uploads are stored by default in
      base_dir: uploads
    ```
 
-1. Save the file and [restart GitLab][] for the changes to take effect.
+1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
 
 ## Using object storage **(CORE ONLY)**
 
 > **Notes:**
 >
-> - [Introduced][ee-3867] in [GitLab Premium][eep] 10.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3867) in [GitLab Premium](https://about.gitlab.com/pricing/) 10.5.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17358) in [GitLab Core](https://about.gitlab.com/pricing/) 10.7.
 > - Since version 11.1, we support direct_upload to S3.
 
@@ -65,7 +65,7 @@ For source installations the following settings are nested under `uploads:` and 
 |---------|-------------|---------|
 | `enabled` | Enable/disable object storage | `false` |
 | `remote_directory` | The bucket name where Uploads will be stored| |
-| `direct_upload` | Set to true to remove Unicorn from the Upload path. Workhorse handles the actual Artifact Upload to Object Storage while Unicorn does minimal processing to keep track of the upload. There is no need for local shared storage. The option may be removed if support for a single storage type for all files is introduced. Read more on [direct upload](../development/uploads.md#direct-upload). | `false` |
+| `direct_upload` | Set to true to remove Puma from the Upload path. Workhorse handles the actual Artifact Upload to Object Storage while Puma does minimal processing to keep track of the upload. There is no need for local shared storage. The option may be removed if support for a single storage type for all files is introduced. Read more on [direct upload](../development/uploads.md#direct-upload). | `false` |
 | `background_upload` | Set to false to disable automatic upload. Option may be removed once upload is direct to S3 (if `direct_upload` is set to `true` it will override `background_upload`) | `true` |
 | `proxy_download` | Set to true to enable proxying all files served. Option allows to reduce egress traffic as this allows clients to download directly from remote storage instead of proxying all data | `false` |
 | `connection` | Various connection options described below | |
@@ -76,16 +76,16 @@ The connection settings match those provided by [Fog](https://github.com/fog), a
 
 | Setting | Description | Default |
 |---------|-------------|---------|
-| `provider` | Always `AWS` for compatible hosts | AWS |
+| `provider` | Always `AWS` for compatible hosts | `AWS` |
 | `aws_access_key_id` | AWS credentials, or compatible | |
 | `aws_secret_access_key` | AWS credentials, or compatible | |
-| `aws_signature_version` | AWS signature version to use. 2 or 4 are valid options. Digital Ocean Spaces and other providers may need 2. | 4 |
-| `enable_signature_v4_streaming` | Set to true to enable HTTP chunked transfers with [AWS v4 signatures](https://docs.aws.amazon.com/AmazonS3/latest/API/sigv4-streaming.html). Oracle Cloud S3 needs this to be false | true |
+| `aws_signature_version` | AWS signature version to use. `2` or `4` are valid options. Digital Ocean Spaces and other providers may need `2`. | `4` |
+| `enable_signature_v4_streaming` | Set to true to enable HTTP chunked transfers with [AWS v4 signatures](https://docs.aws.amazon.com/AmazonS3/latest/API/sigv4-streaming.html). Oracle Cloud S3 needs this to be `false`. | `true` |
 | `region` | AWS region | us-east-1 |
-| `host` | S3 compatible host for when not using AWS, e.g. `localhost` or `storage.example.com` | s3.amazonaws.com |
+| `host` | S3 compatible host for when not using AWS, e.g. `localhost` or `storage.example.com` | `s3.amazonaws.com` |
 | `endpoint` | Can be used when configuring an S3 compatible service such as [MinIO](https://min.io), by entering a URL such as `http://127.0.0.1:9000` | (optional) |
-| `path_style` | Set to true to use `host/bucket_name/object` style paths instead of `bucket_name.host/object`. Leave as false for AWS S3 | false |
-| `use_iam_profile` | Set to true to use IAM profile instead of access keys | false
+| `path_style` | Set to `true` to use `host/bucket_name/object` style paths instead of `bucket_name.host/object`. Leave as `false` for AWS S3. | `false` |
+| `use_iam_profile` | Set to `true` to use IAM profile instead of access keys | false
 
 **In Omnibus installations:**
 
@@ -117,7 +117,7 @@ _The uploads are stored by default in
    }
    ```
 
-1. Save the file and [reconfigure GitLab][] for the changes to take effect.
+1. Save the file and [reconfigure GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 1. Migrate any existing local uploads to the object storage using [`gitlab:uploads:migrate` Rake task](raketasks/uploads/migrate.md).
 
 **In installations from source:**
@@ -140,7 +140,7 @@ _The uploads are stored by default in
          region: eu-central-1
    ```
 
-1. Save the file and [restart GitLab][] for the changes to take effect.
+1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
 1. Migrate any existing local uploads to the object storage using [`gitlab:uploads:migrate` Rake task](raketasks/uploads/migrate.md).
 
 ### Oracle Cloud S3 connection settings
@@ -149,8 +149,8 @@ Note that Oracle Cloud S3 must be sure to use the following settings:
 
 | Setting | Value |
 |---------|-------|
-| `enable_signature_v4_streaming` | false |
-| `path_style` | true |
+| `enable_signature_v4_streaming` | `false` |
+| `path_style` | `true` |
 
 If `enable_signature_v4_streaming` is set to `true`, you may see the
 following error:
@@ -165,7 +165,7 @@ The connection settings match those provided by [Fog](https://github.com/fog), a
 
 | Setting | Description | Default |
 |---------|-------------|---------|
-| `provider` | Always `OpenStack` for compatible hosts | OpenStack |
+| `provider` | Always `OpenStack` for compatible hosts | `OpenStack` |
 | `openstack_username` | OpenStack username | |
 | `openstack_api_key` | OpenStack API key  | |
 | `openstack_temp_url_key` | OpenStack key for generating temporary urls | |
@@ -194,7 +194,7 @@ _The uploads are stored by default in
    }
    ```
 
-1. Save the file and [reconfigure GitLab][] for the changes to take effect.
+1. Save the file and [reconfigure GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 1. Migrate any existing local uploads to the object storage using [`gitlab:uploads:migrate` Rake task](raketasks/uploads/migrate.md).
 
 ---
@@ -225,10 +225,5 @@ _The uploads are stored by default in
          openstack_tenant: 'TENANT_ID'
    ```
 
-1. Save the file and [reconfigure GitLab][] for the changes to take effect.
+1. Save the file and [reconfigure GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 1. Migrate any existing local uploads to the object storage using [`gitlab:uploads:migrate` Rake task](raketasks/uploads/migrate.md).
-
-[reconfigure gitlab]: restart_gitlab.md#omnibus-gitlab-reconfigure "How to reconfigure Omnibus GitLab"
-[restart gitlab]: restart_gitlab.md#installations-from-source "How to restart GitLab"
-[eep]: https://about.gitlab.com/pricing/ "GitLab Premium"
-[ee-3867]: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3867

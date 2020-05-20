@@ -5,27 +5,28 @@ module Gitlab
     extend self
 
     KEYS = %i(gitaly_calls gitaly_duration_s rugged_calls rugged_duration_s redis_calls redis_duration_s).freeze
+    DURATION_PRECISION = 6 # microseconds
 
     def add_instrumentation_data(payload)
       gitaly_calls = Gitlab::GitalyClient.get_request_count
 
       if gitaly_calls > 0
         payload[:gitaly_calls] = gitaly_calls
-        payload[:gitaly_duration_s] = Gitlab::GitalyClient.query_time.round(2)
+        payload[:gitaly_duration_s] = Gitlab::GitalyClient.query_time
       end
 
       rugged_calls = Gitlab::RuggedInstrumentation.query_count
 
       if rugged_calls > 0
         payload[:rugged_calls] = rugged_calls
-        payload[:rugged_duration_s] = Gitlab::RuggedInstrumentation.query_time.round(2)
+        payload[:rugged_duration_s] = Gitlab::RuggedInstrumentation.query_time
       end
 
       redis_calls = Gitlab::Instrumentation::Redis.get_request_count
 
       if redis_calls > 0
         payload[:redis_calls] = redis_calls
-        payload[:redis_duration_s] = Gitlab::Instrumentation::Redis.query_time.round(2)
+        payload[:redis_duration_s] = Gitlab::Instrumentation::Redis.query_time
       end
     end
 
@@ -47,7 +48,7 @@ module Gitlab
       # Its possible that if theres clock-skew between two nodes
       # this value may be less than zero. In that event, we record the value
       # as zero.
-      [elapsed_by_absolute_time(enqueued_at_time), 0].max.round(2)
+      [elapsed_by_absolute_time(enqueued_at_time), 0].max.round(DURATION_PRECISION)
     end
 
     # Calculates the time in seconds, as a float, from

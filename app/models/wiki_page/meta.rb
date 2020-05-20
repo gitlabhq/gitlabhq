@@ -5,6 +5,7 @@ class WikiPage
     include Gitlab::Utils::StrongMemoize
 
     CanonicalSlugConflictError = Class.new(ActiveRecord::RecordInvalid)
+    WikiPageInvalid = Class.new(ArgumentError)
 
     self.table_name = 'wiki_page_meta'
 
@@ -23,46 +24,62 @@ class WikiPage
 
     alias_method :resource_parent, :project
 
-    # Return the (updated) WikiPage::Meta record for a given wiki page
-    #
-    # If none is found, then a new record is created, and its fields are set
-    # to reflect the wiki_page passed.
-    #
-    # @param [String] last_known_slug
-    # @param [WikiPage] wiki_page
-    #
-    # As with all `find_or_create` methods, this one raises errors on
-    # validation issues.
-    def self.find_or_create(last_known_slug, wiki_page)
-      project = wiki_page.wiki.project
-      known_slugs = [last_known_slug, wiki_page.slug].compact.uniq
-      raise 'no slugs!' if known_slugs.empty?
+    class << self
+      # Return the (updated) WikiPage::Meta record for a given wiki page
+      #
+      # If none is found, then a new record is created, and its fields are set
+      # to reflect the wiki_page passed.
+      #
+      # @param [String] last_known_slug
+      # @param [WikiPage] wiki_page
+      #
+      # This method raises errors on validation issues.
+      def find_or_create(last_known_slug, wiki_page)
+        raise WikiPageInvalid unless wiki_page.valid?
 
-      transaction do
-        found = find_by_canonical_slug(known_slugs, project)
-        meta = found || create(title: wiki_page.title, project_id: project.id)
+        project = wiki_page.wiki.project
+        known_slugs = [last_known_slug, wiki_page.slug].compact.uniq
+        raise 'No slugs found! This should not be possible.' if known_slugs.empty?
 
-        meta.update_state(found.nil?, known_slugs, wiki_page)
+        transaction do
+          updates = wiki_page_updates(wiki_page)
+          found = find_by_canonical_slug(known_slugs, project)
+          meta = found || create!(updates.merge(project_id: project.id))
 
-        # We don't need to run validations here, since find_by_canonical_slug
-        # guarantees that there is no conflict in canonical_slug, and DB
-        # constraints on title and project_id enforce our other invariants
-        # This saves us a query.
+          meta.update_state(found.nil?, known_slugs, wiki_page, updates)
+
+          # We don't need to run validations here, since find_by_canonical_slug
+          # guarantees that there is no conflict in canonical_slug, and DB
+          # constraints on title and project_id enforce our other invariants
+          # This saves us a query.
+          meta
+        end
+      end
+
+      def find_by_canonical_slug(canonical_slug, project)
+        meta, conflict = with_canonical_slug(canonical_slug)
+          .where(project_id: project.id)
+          .limit(2)
+
+        if conflict.present?
+          meta.errors.add(:canonical_slug, 'Duplicate value found')
+          raise CanonicalSlugConflictError.new(meta)
+        end
+
         meta
       end
-    end
 
-    def self.find_by_canonical_slug(canonical_slug, project)
-      meta, conflict = with_canonical_slug(canonical_slug)
-        .where(project_id: project.id)
-        .limit(2)
+      private
 
-      if conflict.present?
-        meta.errors.add(:canonical_slug, 'Duplicate value found')
-        raise CanonicalSlugConflictError.new(meta)
+      def wiki_page_updates(wiki_page)
+        last_commit_date = wiki_page.version_commit_timestamp || Time.now.utc
+
+        {
+          title: wiki_page.title,
+          created_at: last_commit_date,
+          updated_at: last_commit_date
+        }
       end
-
-      meta
     end
 
     def canonical_slug
@@ -85,24 +102,21 @@ class WikiPage
       @canonical_slug = slug
     end
 
-    def update_state(created, known_slugs, wiki_page)
-      update_wiki_page_attributes(wiki_page)
+    def update_state(created, known_slugs, wiki_page, updates)
+      update_wiki_page_attributes(updates)
       insert_slugs(known_slugs, created, wiki_page.slug)
       self.canonical_slug = wiki_page.slug
     end
 
-    def update_columns(attrs = {})
-      super(attrs.reverse_merge(updated_at: Time.now.utc))
-    end
-
-    def self.update_all(attrs = {})
-      super(attrs.reverse_merge(updated_at: Time.now.utc))
-    end
-
     private
 
-    def update_wiki_page_attributes(page)
-      update_columns(title: page.title) unless page.title == title
+    def update_wiki_page_attributes(updates)
+      # Remove all unnecessary updates:
+      updates.delete(:updated_at) if updated_at == updates[:updated_at]
+      updates.delete(:created_at) if created_at <= updates[:created_at]
+      updates.delete(:title) if title == updates[:title]
+
+      update_columns(updates) unless updates.empty?
     end
 
     def insert_slugs(strings, is_new, canonical_slug)

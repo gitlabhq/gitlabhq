@@ -1,0 +1,24 @@
+= form_for [@project.namespace.becomes(Namespace), @project, @deploy_keys.new_key], url: namespace_project_deploy_keys_path, html: { class: "js-requires-input container" } do |f|
+  = form_errors(@deploy_keys.new_key)
+  .form-group.row
+    = f.label :title, class: "label-bold"
+    = f.text_field :title, class: 'form-control', required: true
+  .form-group.row
+    = f.label :key, class: "label-bold"
+    = f.text_area :key, class: "form-control", rows: 5, required: true
+  .form-group.row
+    %p.light.append-bottom-0
+      = _('Paste a machine public key here. Read more about how to generate it')
+      = link_to "here", help_page_path("ssh/README")
+
+  = f.fields_for :deploy_keys_projects do |deploy_keys_project_form|
+    .form-group.row
+      = deploy_keys_project_form.label :can_push do
+        = deploy_keys_project_form.check_box :can_push
+        %strong= _('Write access allowed')
+    .form-group.row
+      %p.light.append-bottom-0
+        = _('Allow this key to push to repository as well? (Default only allows pull access.)')
+
+  .form-group.row
+    = f.submit "Add key", class: "btn-success btn"

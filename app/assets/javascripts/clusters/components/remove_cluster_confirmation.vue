@@ -1,5 +1,5 @@
 <script>
-import { escape as esc } from 'lodash';
+import { escape } from 'lodash';
 import SplitButton from '~/vue_shared/components/split_button.vue';
 import { GlModal, GlDeprecatedButton, GlFormInput } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
@@ -82,7 +82,7 @@ export default {
             )
           : s__('ClusterIntegration|To remove your integration, type %{clusterName} to confirm:'),
         {
-          clusterName: `<code>${esc(this.clusterName)}</code>`,
+          clusterName: `<code>${escape(this.clusterName)}</code>`,
         },
         false,
       );

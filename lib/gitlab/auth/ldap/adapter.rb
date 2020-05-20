@@ -4,8 +4,6 @@ module Gitlab
   module Auth
     module Ldap
       class Adapter
-        prepend_if_ee('::EE::Gitlab::Auth::Ldap::Adapter') # rubocop: disable Cop/InjectEnterpriseEditionModule
-
         SEARCH_RETRY_FACTOR = [1, 1, 2, 3].freeze
         MAX_SEARCH_RETRIES = Rails.env.test? ? 1 : SEARCH_RETRY_FACTOR.size.freeze
 
@@ -142,3 +140,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Auth::Ldap::Adapter.prepend_if_ee('::EE::Gitlab::Auth::Ldap::Adapter')

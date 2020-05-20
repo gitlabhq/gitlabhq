@@ -1,0 +1,5 @@
+---
+title: Fix redirect loop on .com when 2FA is required
+merge_request: 31229
+author:
+type: fixed

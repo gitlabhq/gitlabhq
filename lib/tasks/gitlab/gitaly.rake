@@ -13,10 +13,9 @@ Usage: rake "gitlab:gitaly:install[/installation/dir,/storage/path]")
 
       version = Gitlab::GitalyClient.expected_server_version
 
-      checkout_or_clone_version(version: version, repo: args.repo, target_dir: args.dir)
+      checkout_or_clone_version(version: version, repo: args.repo, target_dir: args.dir, clone_opts: %w[--depth 1])
 
-      command = %w[/usr/bin/env -u RUBYOPT -u BUNDLE_GEMFILE]
-
+      command = []
       _, status = Gitlab::Popen.popen(%w[which gmake])
       command << (status.zero? ? 'gmake' : 'make')
 
@@ -31,7 +30,7 @@ Usage: rake "gitlab:gitaly:install[/installation/dir,/storage/path]")
       Dir.chdir(args.dir) do
         # In CI we run scripts/gitaly-test-build instead of this command
         unless ENV['CI'].present?
-          Bundler.with_original_env { run_command!(command) }
+          Bundler.with_original_env { Gitlab::Popen.popen(command, nil, { "RUBYOPT" => nil, "BUNDLE_GEMFILE" => nil }) }
         end
       end
     end

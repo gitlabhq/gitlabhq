@@ -30,6 +30,12 @@ module Gitlab
         output_payload.merge!(job.slice(*::Gitlab::InstrumentationHelper::KEYS))
       end
 
+      def add_logging_extras!(job, output_payload)
+        output_payload.merge!(
+          job.select { |key, _| key.to_s.start_with?("#{ApplicationWorker::LOGGING_EXTRA_KEY}.") }
+        )
+      end
+
       def log_job_start(payload)
         payload['message'] = "#{base_message(payload)}: start"
         payload['job_status'] = 'start'
@@ -43,6 +49,7 @@ module Gitlab
       def log_job_done(job, started_time, payload, job_exception = nil)
         payload = payload.dup
         add_instrumentation_keys!(job, payload)
+        add_logging_extras!(job, payload)
 
         elapsed_time = elapsed(started_time)
         add_time_keys!(elapsed_time, payload)
@@ -66,11 +73,11 @@ module Gitlab
       end
 
       def add_time_keys!(time, payload)
-        payload['duration_s'] = time[:duration].round(2)
+        payload['duration_s'] = time[:duration].round(Gitlab::InstrumentationHelper::DURATION_PRECISION)
 
         # ignore `cpu_s` if the platform does not support Process::CLOCK_THREAD_CPUTIME_ID (time[:cputime] == 0)
         # supported OS version can be found at: https://www.rubydoc.info/stdlib/core/2.1.6/Process:clock_gettime
-        payload['cpu_s'] = time[:cputime].round(2) if time[:cputime] > 0
+        payload['cpu_s'] = time[:cputime].round(Gitlab::InstrumentationHelper::DURATION_PRECISION) if time[:cputime] > 0
         payload['completed_at'] = Time.now.utc.to_f
       end
 

@@ -1,6 +1,6 @@
 <script>
 import { mapGetters } from 'vuex';
-import { escape as esc } from 'lodash';
+import { escape } from 'lodash';
 import { GlDeprecatedButton } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
 
@@ -24,8 +24,8 @@ export default {
         {
           ref_start: '<span class="ref-name">',
           ref_end: '</span>',
-          source_branch: esc(this.getNoteableData.source_branch),
-          target_branch: esc(this.getNoteableData.target_branch),
+          source_branch: escape(this.getNoteableData.source_branch),
+          target_branch: escape(this.getNoteableData.target_branch),
         },
         false,
       );

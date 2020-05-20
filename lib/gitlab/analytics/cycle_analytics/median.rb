@@ -15,7 +15,11 @@ module Gitlab
           @query = @query.select(median_duration_in_seconds.as('median'))
           result = execute_query(@query).first || {}
 
-          result['median'] ? result['median'].to_i : nil
+          result['median'] || nil
+        end
+
+        def days
+          seconds ? seconds.fdiv(1.day) : nil
         end
 
         private

@@ -9,16 +9,19 @@ module QA
         class ConfigureJob < Page::Base
           attr_accessor :job_name
 
-          def initialize
-            @path = "/job/#{@job_name}/configure"
+          def path
+            "/job/#{@job_name}/configure"
           end
 
           def configure(scm_url:)
             set_git_source_code_management_url(scm_url)
             click_build_when_change_is_pushed_to_gitlab
             set_publish_status_to_gitlab
-            click_save
-            wait_for_configuration_to_save
+
+            Support::Retrier.retry_until(sleep_interval: 0.5) do
+              click_save
+              wait_for_configuration_to_save
+            end
           end
 
           private
@@ -58,8 +61,8 @@ module QA
           end
 
           def wait_for_configuration_to_save
-            QA::Support::Waiter.wait_until(sleep_interval: 1.0) do
-              !page.current_url.include?(@path)
+            QA::Support::Waiter.wait_until(max_duration: 10, raise_on_failure: false) do
+              !page.current_url.include?(path)
             end
           end
         end

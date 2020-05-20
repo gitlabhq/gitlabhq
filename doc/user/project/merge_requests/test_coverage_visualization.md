@@ -17,14 +17,14 @@ MR is merged.
 ## How test coverage visualization works
 
 Collecting the coverage information is done via GitLab CI/CD's
-[artifacts reports feature](../../../ci/yaml/README.md#artifactsreports).
+[artifacts reports feature](../../../ci/pipelines/job_artifacts.md#artifactsreports).
 You can specify one or more coverage reports to collect, including wildcard paths.
 GitLab will then take the coverage information in all the files and combine it
 together.
 
 For the coverage analysis to work, you have to provide a properly formatted
 [Cobertura XML](https://cobertura.github.io/cobertura/) report to
-[`artifacts:reports:cobertura`](../../../ci/yaml/README.md#artifactsreportscobertura).
+[`artifacts:reports:cobertura`](../../../ci/pipelines/job_artifacts.md#artifactsreportscobertura).
 This format was originally developed for Java, but most coverage analysis frameworks
 for other languages have plugins to add support for it, like:
 

@@ -5,12 +5,16 @@ module QA
     module Project
       module SubMenus
         module Operations
-          include Page::Project::SubMenus::Common
+          extend QA::Page::PageConcern
 
           def self.included(base)
+            super
+
             base.class_eval do
+              include QA::Page::Project::SubMenus::Common
+
               view 'app/views/layouts/nav/sidebar/_project.html.haml' do
-                element :link_operations
+                element :operations_link
                 element :operations_environments_link
                 element :operations_metrics_link
               end
@@ -45,8 +49,8 @@ module QA
 
           def hover_operations
             within_sidebar do
-              scroll_to_element(:link_operations)
-              find_element(:link_operations).hover
+              scroll_to_element(:operations_link)
+              find_element(:operations_link).hover
 
               yield
             end

@@ -31,7 +31,7 @@ module Clusters
       end
 
       def timed_out?
-        Time.now.utc - app.updated_at.utc > WaitForUninstallAppWorker::TIMEOUT
+        Time.current.utc - app.updated_at.utc > WaitForUninstallAppWorker::TIMEOUT
       end
 
       def remove_uninstallation_pod

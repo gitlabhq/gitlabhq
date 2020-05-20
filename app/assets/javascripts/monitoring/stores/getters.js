@@ -1,7 +1,23 @@
+import { flatMap } from 'lodash';
 import { NOT_IN_DB_PREFIX } from '../constants';
 
 const metricsIdsInPanel = panel =>
   panel.metrics.filter(metric => metric.metricId && metric.result).map(metric => metric.metricId);
+
+/**
+ * Returns a reference to the currently selected dashboard
+ * from the list of dashboards.
+ *
+ * @param {Object} state
+ */
+export const selectedDashboard = state => {
+  const { allDashboards } = state;
+  return (
+    allDashboards.find(d => d.path === state.currentDashboard) ||
+    allDashboards.find(d => d.default) ||
+    null
+  );
+};
 
 /**
  * Get all state for metric in the dashboard or a group. The
@@ -95,6 +111,18 @@ export const filteredEnvironments = state =>
   state.environments.filter(env =>
     env.name.toLowerCase().includes((state.environmentsSearchTerm || '').trim().toLowerCase()),
   );
+
+/**
+ * Maps an variables object to an array along with stripping
+ * the variable prefix.
+ *
+ * @param {Object} variables - Custom variables provided by the user
+ * @returns {Array} The custom variables array to be send to the API
+ * in the format of [variable1, variable1_value]
+ */
+
+export const getCustomVariablesArray = state =>
+  flatMap(state.promVariables, (variable, key) => [key, variable.value]);
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};

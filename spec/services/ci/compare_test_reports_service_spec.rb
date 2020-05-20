@@ -38,9 +38,10 @@ describe Ci::CompareTestReportsService do
         create(:ci_job_artifact, :junit_with_corrupted_data, job: build, project: project)
       end
 
-      it 'returns status and error message' do
-        expect(subject[:status]).to eq(:error)
-        expect(subject[:status_reason]).to include('XML parsing failed')
+      it 'returns a parsed TestReports success status and failure on the individual suite' do
+        expect(subject[:status]).to eq(:parsed)
+        expect(subject.dig(:data, 'status')).to eq('success')
+        expect(subject.dig(:data, 'suites', 0, 'status') ).to eq('error')
       end
     end
   end

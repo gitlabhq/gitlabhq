@@ -8,6 +8,7 @@
 #
 ---
 - accessibility_testing
+- alert_management
 - analysis
 - api
 - attack_emulation
@@ -17,11 +18,10 @@
 - auto_devops
 - backup_restore
 - behavior_analytics
-- chaos_engineering
+- billing
 - chatops
 - cloud_native_installation
 - cluster_cost_optimization
-- cluster_monitoring
 - code_analytics
 - code_quality
 - code_review
@@ -71,6 +71,7 @@
 - kubernetes_management
 - language_specific
 - license_compliance
+- live_preview
 - load_testing
 - logging
 - malware_scanning
@@ -92,6 +93,7 @@
 - runner
 - secret_detection
 - secrets_management
+- security_benchmarking
 - serverless
 - service_desk
 - snippets

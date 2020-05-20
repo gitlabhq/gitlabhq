@@ -93,8 +93,8 @@ module ButtonHelper
     content_tag (href ? :a : :span),
       (href ? button_content : title),
       class: "#{title.downcase}-selector #{active_class}",
-      href: (href if href),
-      data: (data if data)
+      href: href,
+      data: data
   end
 end
 

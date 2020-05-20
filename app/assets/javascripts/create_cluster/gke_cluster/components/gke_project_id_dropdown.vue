@@ -1,5 +1,5 @@
 <script>
-import { escape as esc } from 'lodash';
+import { escape } from 'lodash';
 import { mapState, mapGetters, mapActions } from 'vuex';
 import { s__, sprintf } from '~/locale';
 
@@ -65,7 +65,7 @@ export default {
         s__(message),
         {
           docsLinkEnd: '&nbsp;<i class="fa fa-external-link" aria-hidden="true"></i></a>',
-          docsLinkStart: `<a href="${esc(
+          docsLinkStart: `<a href="${escape(
             this.docsUrl,
           )}" target="_blank" rel="noopener noreferrer">`,
         },

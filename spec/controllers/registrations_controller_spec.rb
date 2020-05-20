@@ -139,19 +139,9 @@ describe RegistrationsController do
         expect(flash[:alert]).to eq(_('There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.'))
       end
 
-      it 'redirects to the dashboard when the recaptcha is solved' do
+      it 'redirects to the dashboard when the reCAPTCHA is solved' do
         post(:create, params: user_params)
 
-        expect(flash[:notice]).to eq(I18n.t('devise.registrations.signed_up'))
-      end
-
-      it 'does not require reCAPTCHA if disabled by feature flag' do
-        stub_feature_flags(registrations_recaptcha: false)
-
-        post(:create, params: user_params)
-
-        expect(controller).not_to receive(:verify_recaptcha)
-        expect(flash[:alert]).to be_nil
         expect(flash[:notice]).to eq(I18n.t('devise.registrations.signed_up'))
       end
     end
@@ -294,8 +284,6 @@ describe RegistrationsController do
     end
 
     it "logs a 'User Created' message" do
-      stub_feature_flags(registrations_recaptcha: false)
-
       expect(Gitlab::AppLogger).to receive(:info).with(/\AUser Created: username=new_username email=new@user.com.+\z/).and_call_original
 
       post(:create, params: user_params)
@@ -419,24 +407,34 @@ describe RegistrationsController do
   describe '#welcome' do
     subject { get :welcome }
 
-    before do
-      sign_in(create(:user))
-    end
-
     context 'signup_flow experiment enabled' do
       before do
         stub_experiment_for_user(signup_flow: true)
       end
 
       it 'renders the devise_experimental_separate_sign_up_flow layout' do
+        sign_in(create(:user))
+
         expected_layout = Gitlab.ee? ? :checkout : :devise_experimental_separate_sign_up_flow
 
         expect(subject).to render_template(expected_layout)
+      end
+
+      context '2FA is required from group' do
+        before do
+          user = create(:user, require_two_factor_authentication_from_group: true)
+          sign_in(user)
+        end
+
+        it 'does not perform a redirect' do
+          expect(subject).not_to redirect_to(profile_two_factor_auth_path)
+        end
       end
     end
 
     context 'signup_flow experiment disabled' do
       before do
+        sign_in(create(:user))
         stub_experiment_for_user(signup_flow: false)
       end
 

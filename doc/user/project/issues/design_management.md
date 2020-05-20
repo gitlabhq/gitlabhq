@@ -1,6 +1,7 @@
-# Design Management **(PREMIUM)**
+# Design Management
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/660) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.2.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/660) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.2.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212566) to GitLab Core in 13.0.
 
 CAUTION: **Warning:**
 This an **alpha** feature and is subject to change at any time without
@@ -86,6 +87,7 @@ Copy-and-pasting has some limitations:
 
 - You can paste only one image at a time. When copy/pasting multiple files, only the first one will be uploaded.
 - All images will be converted to `png` format under the hood, so when you want to copy/paste `gif` file, it will result in broken animation.
+- If you are pasting a screenshot from the clipboard, it will be renamed to `design_<timestamp>.png`
 - Copy/pasting designs is not supported on Internet Explorer.
 
 Designs with the same filename as an existing uploaded design will create a new version

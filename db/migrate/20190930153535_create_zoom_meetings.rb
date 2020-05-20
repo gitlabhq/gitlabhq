@@ -15,7 +15,7 @@ class CreateZoomMeetings < ActiveRecord::Migration[5.2]
         null: false
       t.timestamps_with_timezone null: false
       t.integer :issue_status, limit: 2, default: 1, null: false
-      t.string :url, limit: 255
+      t.string :url, limit: 255 # rubocop:disable Migration/PreventStrings
 
       t.index [:issue_id, :issue_status], unique: true,
         where: "issue_status = #{ZOOM_MEETING_STATUS_ADDED}"

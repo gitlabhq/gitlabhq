@@ -7394,26 +7394,6 @@
       "category": "common",
       "default": false,
       "wiki_page_events": true
-    },
-    {
-      "id": 101,
-      "title": "JenkinsDeprecated",
-      "project_id": 5,
-      "created_at": "2016-06-14T15:01:51.031Z",
-      "updated_at": "2016-06-14T15:01:51.031Z",
-      "active": false,
-      "properties": {},
-      "template": false,
-      "push_events": true,
-      "issues_events": true,
-      "merge_requests_events": true,
-      "tag_push_events": true,
-      "note_events": true,
-      "job_events": true,
-      "category": "common",
-      "default": false,
-      "wiki_page_events": true,
-      "type": "JenkinsDeprecatedService"
     }
   ],
   "hooks": [],
@@ -7440,6 +7420,26 @@
           "access_level": 40,
           "created_at": "2016-08-30T07:32:52.490Z",
           "updated_at": "2016-08-30T07:32:52.490Z"
+        }
+      ]
+    }
+  ],
+  "protected_environments": [
+    {
+      "id": 1,
+      "project_id": 9,
+      "created_at": "2017-10-19T15:36:23.466Z",
+      "updated_at": "2017-10-19T15:36:23.466Z",
+      "name": "production",
+      "deploy_access_levels": [
+        {
+          "id": 1,
+          "protected_environment_id": 1,
+          "created_at": "2017-10-19T15:36:23.466Z",
+          "updated_at": "2017-10-19T15:36:23.466Z",
+          "access_level": 40,
+          "user_id": 1,
+          "group_id": null
         }
       ]
     }

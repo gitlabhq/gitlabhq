@@ -30,7 +30,7 @@
               .card-footer.js-extra-settings{ class: auto_devops_enabled || 'hidden' }
                 - if @project.all_clusters.empty?
                   %p.settings-message.text-center
-                    = s_('CICD|You must add a %{kubernetes_cluster_link_start}Kubernetes cluster integration%{link_end} to this project with a domain in order for your deployment strategy to work correctly.').html_safe % { kubernetes_cluster_link_start: kubernetes_cluster_link_start, link_end: link_end }
+                    = s_('CICD|Add a %{kubernetes_cluster_link_start}Kubernetes cluster integration%{link_end} with a domain or create an AUTO_DEVOPS_PLATFORM_TARGET CI variable.').html_safe % { kubernetes_cluster_link_start: kubernetes_cluster_link_start, link_end: link_end }
                 - elsif !has_base_domain
                   %p.settings-message.text-center
                     = s_('CICD|You must add a %{base_domain_link_start}base domain%{link_end} to your %{kubernetes_cluster_link_start}Kubernetes cluster%{link_end} in order for your deployment strategy to work.').html_safe % { base_domain_link_start: base_domain_link_start, kubernetes_cluster_link_start: kubernetes_cluster_link_start, link_end: link_end }

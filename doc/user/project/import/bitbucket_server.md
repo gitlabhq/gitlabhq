@@ -73,3 +73,7 @@ namespace that started the import process.
    imported.
 
    ![Import projects](img/bitbucket_server_import_select_project_v12_3.png)
+
+## Troubleshooting
+
+See the [troubleshooting](bitbucket.md#troubleshooting) section for [Bitbucket](bitbucket.md).

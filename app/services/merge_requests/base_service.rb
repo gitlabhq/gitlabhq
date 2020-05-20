@@ -39,6 +39,8 @@ module MergeRequests
 
     # Don't try to print expensive instance variables.
     def inspect
+      return "#<#{self.class}>" unless respond_to?(:merge_request)
+
       "#<#{self.class} #{merge_request.to_reference(full: true)}>"
     end
 
@@ -89,8 +91,7 @@ module MergeRequests
     end
 
     def can_use_merge_request_ref?(merge_request)
-      Feature.enabled?(:ci_use_merge_request_ref, project, default_enabled: true) &&
-        !merge_request.for_fork?
+      !merge_request.for_fork?
     end
 
     def abort_auto_merge(merge_request, reason)
@@ -114,6 +115,32 @@ module MergeRequests
 
         yield merge_request
       end
+    end
+
+    def log_error(exception:, message:, save_message_on_model: false)
+      reference = merge_request.to_reference(full: true)
+      data = {
+        class: self.class.name,
+        message: message,
+        merge_request_id: merge_request.id,
+        merge_request: reference,
+        save_message_on_model: save_message_on_model
+      }
+
+      if exception
+        Gitlab::ErrorTracking.with_context(current_user) do
+          Gitlab::ErrorTracking.track_exception(exception, data)
+        end
+
+        data[:"exception.message"] = exception.message
+      end
+
+      # TODO: Deprecate Gitlab::GitLogger since ErrorTracking should suffice:
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/216379
+      data[:message] = "#{self.class.name} error (#{reference}): #{message}"
+      Gitlab::GitLogger.error(data)
+
+      merge_request.update(merge_error: message) if save_message_on_model
     end
   end
 end

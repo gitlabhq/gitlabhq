@@ -6,12 +6,13 @@ describe Groups::Registry::RepositoriesController do
   let_it_be(:user)  { create(:user) }
   let_it_be(:guest) { create(:user) }
   let_it_be(:group, reload: true) { create(:group) }
+  let(:additional_parameters) { {} }
 
   subject do
-    get :index, params: {
+    get :index, params: additional_parameters.merge({
       group_id: group,
       format: format
-    }
+    })
   end
 
   before do
@@ -29,6 +30,25 @@ describe Groups::Registry::RepositoriesController do
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response).to be_kind_of(Array)
+      expect(json_response.first).to include(
+        'id' => repo.id,
+        'name' => repo.name
+      )
+    end
+  end
+
+  shared_examples 'with name parameter' do
+    let_it_be(:project) { create(:project, group: test_group) }
+    let_it_be(:repo) { create(:container_repository, project: project, name: 'my_searched_image') }
+    let_it_be(:another_repo) { create(:container_repository, project: project, name: 'bar') }
+
+    let(:additional_parameters) { { name: 'my_searched_image' } }
+
+    it 'returns the searched repo' do
+      subject
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response.length).to eq 1
       expect(json_response.first).to include(
         'id' => repo.id,
         'name' => repo.name
@@ -64,12 +84,16 @@ describe Groups::Registry::RepositoriesController do
 
         it_behaves_like 'renders a list of repositories'
 
+        it_behaves_like 'with name parameter'
+
         it_behaves_like 'a gitlab tracking event', described_class.name, 'list_repositories'
 
         context 'with project in subgroup' do
           let_it_be(:test_group) { create(:group, parent: group ) }
 
           it_behaves_like 'renders a list of repositories'
+
+          it_behaves_like 'with name parameter'
 
           context 'with project in subgroup and group' do
             let_it_be(:repo_in_test_group) { create_project_with_repo(test_group) }
@@ -81,6 +105,8 @@ describe Groups::Registry::RepositoriesController do
               expect(json_response).to be_kind_of(Array)
               expect(json_response.length).to eq 2
             end
+
+            it_behaves_like 'with name parameter'
           end
         end
       end

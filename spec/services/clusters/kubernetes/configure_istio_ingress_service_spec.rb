@@ -120,8 +120,8 @@ describe Clusters::Kubernetes::ConfigureIstioIngressService, '#execute' do
 
       expect(certificate.subject.to_s).to include(serverless_domain_cluster.knative.hostname)
 
-      expect(certificate.not_before).to be_within(1.minute).of(Time.now)
-      expect(certificate.not_after).to be_within(1.minute).of(Time.now + 1000.years)
+      expect(certificate.not_before).to be_within(1.minute).of(Time.current)
+      expect(certificate.not_after).to be_within(1.minute).of(Time.current + 1000.years)
 
       expect(WebMock).to have_requested(:put, api_url + '/api/v1/namespaces/istio-system/secrets/istio-ingressgateway-ca-certs').with(
         body: hash_including(

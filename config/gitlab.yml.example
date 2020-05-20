@@ -107,6 +107,9 @@ production: &base
       # S/MIME public certificate key in PEM format, will be attached to signed messages
       # Default is '.gitlab_smime_cert' relative to Rails.root (i.e. root of the GitLab app).
       # cert_file: /home/git/gitlab/.gitlab_smime_cert
+      # S/MIME extra CA public certificates in PEM format, will be attached to signed messages
+      # Optional
+      # ca_certs_file: /home/git/gitlab/.gitlab_smime_ca_certs
 
     # Email server smtp settings are in config/initializers/smtp_settings.rb.sample
 
@@ -198,6 +201,9 @@ production: &base
     # The default is 'log/mail_room_json.log' relative to the root of the Rails app.
     #
     # log_path: log/mail_room_json.log
+
+    # Whether to expunge (permanently remove) messages from the mailbox when they are deleted after delivery
+    expunge_deleted: false
 
   ## Build Artifacts
   artifacts:
@@ -767,7 +773,7 @@ production: &base
     # Allow smartcard authentication
     enabled: false
 
-    # Path to a file containing a CA certificate
+    # Path to a file containing a CA certificate bundle
     ca_file: '/etc/ssl/certs/CA.pem'
 
     # Host and port where the client side certificate is requested by the
@@ -1061,6 +1067,11 @@ production: &base
     #   enabled: true
     #   host: localhost
     #   port: 3808
+
+  ## ActionCable settings
+  action_cable:
+    # Number of threads used to process ActionCable connection callbacks and channel actions
+    # worker_pool_size: 4
 
   ## Monitoring
   # Built in monitoring settings

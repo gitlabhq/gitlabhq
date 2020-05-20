@@ -1,36 +1,8 @@
 # frozen_string_literal: true
 
 class ReactiveCachingWorker # rubocop:disable Scalability/IdempotentWorker
-  include ApplicationWorker
+  include ReactiveCacheableWorker
 
-  feature_category_not_owned!
-
-  # TODO: The reactive caching worker should be split into
-  # two different workers, one for high urgency jobs without external dependencies
-  # and another worker without high urgency, but with external dependencies
-  # https://gitlab.com/gitlab-com/gl-infra/scalability/issues/34
-  # This worker should also have `worker_has_external_dependencies!` enabled
-  urgency :high
+  urgency :low
   worker_resource_boundary :cpu
-
-  def self.context_for_arguments(arguments)
-    class_name, *_other_args = arguments
-    Gitlab::ApplicationContext.new(related_class: class_name.to_s)
-  end
-
-  def perform(class_name, id, *args)
-    klass = begin
-      class_name.constantize
-    rescue NameError
-      nil
-    end
-    return unless klass
-
-    klass
-      .reactive_cache_worker_finder
-      .call(id, *args)
-      .try(:exclusively_update_reactive_cache!, *args)
-  rescue ReactiveCaching::ExceededReactiveCacheLimit => e
-    Gitlab::ErrorTracking.track_exception(e)
-  end
 end

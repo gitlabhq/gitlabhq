@@ -3,7 +3,8 @@ class CreateProjectMirrorData < ActiveRecord::Migration[4.2]
 
   DOWNTIME = false
 
-  # rubocop:disable Migration/AddLimitToStringColumns
+  # rubocop:disable Migration/PreventStrings
+  # rubocop:disable Migration/AddLimitToTextColumns
   def up
     if table_exists?(:project_mirror_data)
       add_column :project_mirror_data, :status, :string unless column_exists?(:project_mirror_data, :status)
@@ -18,7 +19,8 @@ class CreateProjectMirrorData < ActiveRecord::Migration[4.2]
       end
     end
   end
-  # rubocop:enable Migration/AddLimitToStringColumns
+  # rubocop:enable Migration/AddLimitToTextColumns
+  # rubocop:enable Migration/PreventStrings
 
   def down
     remove_column :project_mirror_data, :status

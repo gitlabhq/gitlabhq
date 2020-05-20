@@ -57,6 +57,8 @@ module Gitlab
 
         # Returns Arel clause for a particular model or `nil`.
         def where_clause_for_klass
+          return attrs_to_arel(attributes.slice('filename')).and(table[:issue_id].eq(nil)) if design?
+
           attrs_to_arel(attributes.slice('iid')) if merge_request?
         end
 
@@ -95,6 +97,10 @@ module Gitlab
           klass == Epic
         end
 
+        def design?
+          klass == DesignManagement::Design
+        end
+
         # If an existing group milestone used the IID
         # claim the IID back and set the group milestone to use one available
         # This is necessary to fix situations like the following:
@@ -115,5 +121,3 @@ module Gitlab
     end
   end
 end
-
-Gitlab::ImportExport::Project::ObjectBuilder.prepend_if_ee('EE::Gitlab::ImportExport::Project::ObjectBuilder')

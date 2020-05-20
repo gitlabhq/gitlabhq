@@ -1,0 +1,10 @@
+%p
+  = _("Group %{group_name} couldn't be exported.") % { group_name: @group.name }
+
+%p
+  = _('The errors we encountered were:')
+
+  %ul
+  - @errors.each do |error|
+    %li
+      #{error}

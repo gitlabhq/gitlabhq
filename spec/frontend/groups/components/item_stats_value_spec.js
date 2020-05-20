@@ -1,0 +1,82 @@
+import Vue from 'vue';
+
+import mountComponent from 'helpers/vue_mount_component_helper';
+import itemStatsValueComponent from '~/groups/components/item_stats_value.vue';
+
+const createComponent = ({ title, cssClass, iconName, tooltipPlacement, value }) => {
+  const Component = Vue.extend(itemStatsValueComponent);
+
+  return mountComponent(Component, {
+    title,
+    cssClass,
+    iconName,
+    tooltipPlacement,
+    value,
+  });
+};
+
+describe('ItemStatsValueComponent', () => {
+  describe('computed', () => {
+    let vm;
+    const itemConfig = {
+      title: 'Subgroups',
+      cssClass: 'number-subgroups',
+      iconName: 'folder',
+      tooltipPlacement: 'left',
+    };
+
+    describe('isValuePresent', () => {
+      it('returns true if non-empty `value` is present', () => {
+        vm = createComponent({ ...itemConfig, value: 10 });
+
+        expect(vm.isValuePresent).toBeTruthy();
+      });
+
+      it('returns false if empty `value` is present', () => {
+        vm = createComponent(itemConfig);
+
+        expect(vm.isValuePresent).toBeFalsy();
+      });
+
+      afterEach(() => {
+        vm.$destroy();
+      });
+    });
+  });
+
+  describe('template', () => {
+    let vm;
+    beforeEach(() => {
+      vm = createComponent({
+        title: 'Subgroups',
+        cssClass: 'number-subgroups',
+        iconName: 'folder',
+        tooltipPlacement: 'left',
+        value: 10,
+      });
+    });
+
+    afterEach(() => {
+      vm.$destroy();
+    });
+
+    it('renders component element correctly', () => {
+      expect(vm.$el.classList.contains('number-subgroups')).toBeTruthy();
+      expect(vm.$el.querySelectorAll('svg').length).toBeGreaterThan(0);
+      expect(vm.$el.querySelectorAll('.stat-value').length).toBeGreaterThan(0);
+    });
+
+    it('renders element tooltip correctly', () => {
+      expect(vm.$el.dataset.originalTitle).toBe('Subgroups');
+      expect(vm.$el.dataset.placement).toBe('left');
+    });
+
+    it('renders element icon correctly', () => {
+      expect(vm.$el.querySelector('svg use').getAttribute('xlink:href')).toContain('folder');
+    });
+
+    it('renders value count correctly', () => {
+      expect(vm.$el.querySelector('.stat-value').innerText.trim()).toContain('10');
+    });
+  });
+});

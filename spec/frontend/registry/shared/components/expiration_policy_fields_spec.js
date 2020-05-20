@@ -40,12 +40,13 @@ describe('Expiration Policy Form', () => {
   });
 
   describe.each`
-    elementName        | modelName       | value    | disabledByToggle
-    ${'toggle'}        | ${'enabled'}    | ${true}  | ${'not disabled'}
-    ${'interval'}      | ${'older_than'} | ${'foo'} | ${'disabled'}
-    ${'schedule'}      | ${'cadence'}    | ${'foo'} | ${'disabled'}
-    ${'latest'}        | ${'keep_n'}     | ${'foo'} | ${'disabled'}
-    ${'name-matching'} | ${'name_regex'} | ${'foo'} | ${'disabled'}
+    elementName        | modelName            | value    | disabledByToggle
+    ${'toggle'}        | ${'enabled'}         | ${true}  | ${'not disabled'}
+    ${'interval'}      | ${'older_than'}      | ${'foo'} | ${'disabled'}
+    ${'schedule'}      | ${'cadence'}         | ${'foo'} | ${'disabled'}
+    ${'latest'}        | ${'keep_n'}          | ${'foo'} | ${'disabled'}
+    ${'name-matching'} | ${'name_regex'}      | ${'foo'} | ${'disabled'}
+    ${'keep-name'}     | ${'name_regex_keep'} | ${'bar'} | ${'disabled'}
   `(
     `${FORM_ELEMENTS_ID_PREFIX}-$elementName form element`,
     ({ elementName, modelName, value, disabledByToggle }) => {
@@ -118,21 +119,26 @@ describe('Expiration Policy Form', () => {
       ${'schedule'}
       ${'latest'}
       ${'name-matching'}
+      ${'keep-name'}
     `(`${FORM_ELEMENTS_ID_PREFIX}-$elementName is disabled`, ({ elementName }) => {
       expect(findFormElements(elementName).attributes('disabled')).toBe('true');
     });
   });
 
-  describe('form validation', () => {
+  describe.each`
+    modelName            | elementName        | stateVariable
+    ${'name_regex'}      | ${'name-matching'} | ${'nameRegexState'}
+    ${'name_regex_keep'} | ${'keep-name'}     | ${'nameKeepRegexState'}
+  `('regex textarea validation', ({ modelName, elementName, stateVariable }) => {
     describe(`when name regex is longer than ${NAME_REGEX_LENGTH}`, () => {
       const invalidString = new Array(NAME_REGEX_LENGTH + 2).join(',');
 
       beforeEach(() => {
-        mountComponent({ value: { name_regex: invalidString } });
+        mountComponent({ value: { [modelName]: invalidString } });
       });
 
-      it('nameRegexState is false', () => {
-        expect(wrapper.vm.nameRegexState).toBe(false);
+      it(`${stateVariable} is false`, () => {
+        expect(wrapper.vm.textAreaState[stateVariable]).toBe(false);
       });
 
       it('emit the @invalidated event', () => {
@@ -141,17 +147,20 @@ describe('Expiration Policy Form', () => {
     });
 
     it('if the user did not type validation is null', () => {
-      mountComponent({ value: { name_regex: '' } });
+      mountComponent({ value: { [modelName]: '' } });
       return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.vm.nameRegexState).toBe(null);
+        expect(wrapper.vm.textAreaState[stateVariable]).toBe(null);
         expect(wrapper.emitted('validated')).toBeTruthy();
       });
     });
 
     it(`if the user typed and is less than ${NAME_REGEX_LENGTH} state is true`, () => {
-      mountComponent({ value: { name_regex: 'foo' } });
+      mountComponent({ value: { [modelName]: 'foo' } });
       return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.vm.nameRegexState).toBe(true);
+        const formGroup = findFormGroup(elementName);
+        const formElement = findFormElements(elementName, formGroup);
+        expect(formGroup.attributes('state')).toBeTruthy();
+        expect(formElement.attributes('state')).toBeTruthy();
       });
     });
   });

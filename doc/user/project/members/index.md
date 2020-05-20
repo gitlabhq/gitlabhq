@@ -1,4 +1,4 @@
-# Project's members
+# Members of a project
 
 You can manage the groups and users and their access levels in all of your
 projects. You can also personalize the access level you give each user,

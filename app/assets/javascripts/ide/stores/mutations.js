@@ -29,16 +29,6 @@ export default {
       });
     }
   },
-  [types.SET_LEFT_PANEL_COLLAPSED](state, collapsed) {
-    Object.assign(state, {
-      leftPanelCollapsed: collapsed,
-    });
-  },
-  [types.SET_RIGHT_PANEL_COLLAPSED](state, collapsed) {
-    Object.assign(state, {
-      rightPanelCollapsed: collapsed,
-    });
-  },
   [types.SET_RESIZING_STATUS](state, resizing) {
     Object.assign(state, {
       panelResizing: resizing,
@@ -191,15 +181,6 @@ export default {
   },
   [types.SET_ERROR_MESSAGE](state, errorMessage) {
     Object.assign(state, { errorMessage });
-  },
-  [types.OPEN_NEW_ENTRY_MODAL](state, { type, path }) {
-    Object.assign(state, {
-      entryModal: {
-        type,
-        path,
-        entry: { ...state.entries[path] },
-      },
-    });
   },
   [types.DELETE_ENTRY](state, path) {
     const entry = state.entries[path];

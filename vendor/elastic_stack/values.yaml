@@ -1,60 +1,41 @@
+# Default values for elastic-stack.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
 elasticsearch:
   enabled: true
-  cluster:
-    env:
-      MINIMUM_MASTER_NODES: "1"
-  master:
-    replicas: 2
-  client:
-    replicas: 1
-  data:
-    replicas: 2
-
-kibana:
-  enabled: false
-
-logstash:
-  enabled: false
+  # prefix elasticsearch resources with the name of the releases
+  # looks like we can't use {{ .Release.Name }}-elasticsearch
+  # https://github.com/helm/helm/issues/2133
+  clusterName: "elastic-stack-elasticsearch"
 
 filebeat:
   enabled: true
-  config:
-    output.file.enabled: false
-    output.elasticsearch:
-      enabled: true
-      hosts: ["http://elastic-stack-elasticsearch-client:9200"]
-    filebeat.prospectors:
-    - type: log
-      enabled: true
-      paths:
-        - /var/log/*.log
-        - /var/log/messages
-        - /var/log/syslog
-    - type: docker
-      containers.ids:
-      - "*"
-      json.keys_under_root: true
-      json.ignore_decoding_error: true
-      processors:
-        - add_kubernetes_metadata:
-        - drop_event:
-            when:
-              equals:
-                kubernetes.container.name: "filebeat"
-        - decode_json_fields:
-            fields: ["message"]
-            when:
-              equals:
-                kubernetes.container.name: "modsecurity-log"
-
-fluentd:
+  filebeatConfig:
+    filebeat.yml: |
+      output.file.enabled: false
+      output.elasticsearch:
+        hosts: ["http://elastic-stack-elasticsearch-master:9200"]
+      filebeat.inputs:
+      - type: container
+        paths:
+          - '/var/lib/docker/containers/*/*.log'
+        json.keys_under_root: true
+        json.ignore_decoding_error: true
+        processors:
+          - add_id:
+              target_field: tie_breaker_id
+          - add_cloud_metadata: ~
+          - add_kubernetes_metadata: ~
+          - decode_json_fields:
+              fields: ["message"]
+              when:
+                equals:
+                  kubernetes.container.namespace: "gitlab-managed-apps"
+                  kubernetes.container.name: "modsecurity-log"
+kibana:
   enabled: false
-
-fluent-bit:
-  enabled: false
-
-nginx-ldapauth-proxy:
-  enabled: false
+  elasticsearchHosts: "http://elastic-stack-elasticsearch-master:9200"
 
 elasticsearch-curator:
   enabled: true
@@ -63,7 +44,7 @@ elasticsearch-curator:
       ---
       client:
         hosts:
-          - elastic-stack-elasticsearch-client
+          - elastic-stack-elasticsearch-master
         port: 9200
     action_file_yml: |-
       ---
@@ -76,6 +57,7 @@ elasticsearch-curator:
             actionable list of indices (ignore_empty_list) and exit cleanly.
           options:
             ignore_empty_list: True
+            allow_ilm_indices: True
           filters:
           - filtertype: pattern
             kind: prefix
@@ -86,6 +68,3 @@ elasticsearch-curator:
             timestring: '%Y.%m.%d'
             unit: days
             unit_count: 30
-
-elasticsearch-exporter:
-  enabled: false

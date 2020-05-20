@@ -497,6 +497,12 @@ to start again from scratch, there are a few steps that can help you:
    gitlab-ctl start
    ```
 
+1. Refresh Foreign Data Wrapper tables
+
+   ```shell
+   gitlab-rake geo:db:refresh_foreign_tables
+   ```
+
 ## Fixing errors during a failover or when promoting a secondary to a primary node
 
 The following are possible errors that might be encountered during failover or
@@ -537,6 +543,27 @@ or `gitlab-ctl promote-to-primary-node`, either:
   if the failover was just a test. A [caching-related
   bug](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/22021) was
   fixed.
+
+### Message: ``NoMethodError: undefined method `secondary?' for nil:NilClass``
+
+When [promoting a **secondary** node](../disaster_recovery/index.md#step-3-promoting-a-secondary-node),
+you might encounter the following error:
+
+```plaintext
+sudo gitlab-rake geo:set_secondary_as_primary
+
+rake aborted!
+NoMethodError: undefined method `secondary?' for nil:NilClass
+/opt/gitlab/embedded/service/gitlab-rails/ee/lib/tasks/geo.rake:232:in `block (3 levels) in <top (required)>'
+/opt/gitlab/embedded/service/gitlab-rails/ee/lib/tasks/geo.rake:221:in `block (2 levels) in <top (required)>'
+/opt/gitlab/embedded/bin/bundle:23:in `load'
+/opt/gitlab/embedded/bin/bundle:23:in `<main>'
+Tasks: TOP => geo:set_secondary_as_primary
+(See full trace by running task with --trace)
+```
+
+This command is intended to be executed on a secondary node only, and this error
+is displayed if you attempt to run this command on a primary node.
 
 ### Message: `sudo: gitlab-pg-ctl: command not found`
 
@@ -624,9 +651,9 @@ To check the configuration:
    ```
 
    This password is normally set on the tracking database during
-   [Step 3: Configure the tracking database on the secondary node](high_availability.md#step-3-configure-the-tracking-database-on-the-secondary-node),
+   [Step 3: Configure the tracking database on the secondary node](multiple_servers.md#step-3-configure-the-tracking-database-on-the-secondary-node),
    and it is set on the app nodes during
-   [Step 4: Configure the frontend application servers on the secondary node](high_availability.md#step-4-configure-the-frontend-application-servers-on-the-secondary-node).
+   [Step 4: Configure the frontend application servers on the secondary node](multiple_servers.md#step-4-configure-the-frontend-application-servers-on-the-secondary-node).
 
 1. Check whether any tables are present with the following statement:
 
@@ -833,6 +860,8 @@ which Geo expects to have access to. It usually means, either:
 
 - An unsupported replication method was used (for example, logical replication).
 - The instructions to setup a [Geo database replication](database.md) were not followed correctly.
+- Your database connection details are incorrect, that is you have specified the wrong
+  user in your `/etc/gitlab/gitlab.rb` file.
 
 A common source of confusion with **secondary** nodes is that it requires two separate
 PostgreSQL instances:
@@ -854,7 +883,7 @@ Make sure you follow the [Geo database replication](database.md) instructions fo
 
 ### Geo database version (...) does not match latest migration (...)
 
-If you are using GitLab Omnibus installation, something might have failed during upgrade. You can:
+If you are using Omnibus GitLab installation, something might have failed during upgrade. You can:
 
 - Run `sudo gitlab-ctl reconfigure`.
 - Manually trigger the database migration by running: `sudo gitlab-rake geo:db:migrate` as root on the **secondary** node.

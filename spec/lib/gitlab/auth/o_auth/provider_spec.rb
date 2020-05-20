@@ -63,7 +63,7 @@ describe Gitlab::Auth::OAuth::Provider do
     context 'for an OmniAuth provider' do
       before do
         provider = OpenStruct.new(
-          name: 'google',
+          name: 'google_oauth2',
           app_id: 'asd123',
           app_secret: 'asd123'
         )
@@ -71,8 +71,16 @@ describe Gitlab::Auth::OAuth::Provider do
       end
 
       context 'when the provider exists' do
+        subject { described_class.config_for('google_oauth2') }
+
         it 'returns the config' do
-          expect(described_class.config_for('google')).to be_a(OpenStruct)
+          expect(subject).to be_a(OpenStruct)
+        end
+
+        it 'merges defaults with the given configuration' do
+          defaults = Gitlab::OmniauthInitializer.default_arguments_for('google_oauth2').deep_stringify_keys
+
+          expect(subject['args']).to include(defaults)
         end
       end
 

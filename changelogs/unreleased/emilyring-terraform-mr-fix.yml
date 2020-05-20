@@ -1,0 +1,5 @@
+---
+title: Remove Visibility from terraform widget
+merge_request: 30737
+author:
+type: fixed

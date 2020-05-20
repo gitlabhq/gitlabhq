@@ -38,6 +38,47 @@ describe Ci::BuildRunnerPresenter do
           expect(presenter.artifacts).to be_empty
         end
       end
+
+      context 'when artifacts exclude is defined' do
+        let(:build) do
+          create(:ci_build, options: { artifacts: { paths: %w[abc], exclude: %w[cde] } })
+        end
+
+        context 'when the feature is enabled' do
+          before do
+            stub_feature_flags(ci_artifacts_exclude: true)
+          end
+
+          it 'includes the list of excluded paths' do
+            expect(presenter.artifacts.first).to include(
+              artifact_type: :archive,
+              artifact_format: :zip,
+              paths: %w[abc],
+              exclude: %w[cde]
+            )
+          end
+        end
+
+        context 'when the feature is disabled' do
+          before do
+            stub_feature_flags(ci_artifacts_exclude: false)
+          end
+
+          it 'does not include the list of excluded paths' do
+            expect(presenter.artifacts.first).not_to have_key(:exclude)
+          end
+        end
+      end
+
+      context 'when artifacts exclude is not defined' do
+        let(:build) do
+          create(:ci_build, options: { artifacts: { paths: %w[abc] } })
+        end
+
+        it 'does not include an empty list of excluded paths' do
+          expect(presenter.artifacts.first).not_to have_key(:exclude)
+        end
+      end
     end
 
     context "with reports" do
@@ -138,32 +179,25 @@ describe Ci::BuildRunnerPresenter do
     it 'defaults to git depth setting for the project' do
       expect(git_depth).to eq(build.project.ci_default_git_depth)
     end
-
-    context 'when feature flag :ci_project_git_depth is disabled' do
-      before do
-        stub_feature_flags(ci_project_git_depth: { enabled: false })
-      end
-
-      it 'defaults to 0' do
-        expect(git_depth).to eq(0)
-      end
-    end
   end
 
   describe '#refspecs' do
     subject { presenter.refspecs }
 
     let(:build) { create(:ci_build) }
+    let(:pipeline) { build.pipeline }
 
     it 'returns the correct refspecs' do
-      is_expected.to contain_exactly("+refs/heads/#{build.ref}:refs/remotes/origin/#{build.ref}")
+      is_expected.to contain_exactly("+refs/heads/#{build.ref}:refs/remotes/origin/#{build.ref}",
+                                     "+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}")
     end
 
     context 'when ref is tag' do
       let(:build) { create(:ci_build, :tag) }
 
       it 'returns the correct refspecs' do
-        is_expected.to contain_exactly("+refs/tags/#{build.ref}:refs/tags/#{build.ref}")
+        is_expected.to contain_exactly("+refs/tags/#{build.ref}:refs/tags/#{build.ref}",
+                                       "+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}")
       end
 
       context 'when GIT_DEPTH is zero' do
@@ -173,7 +207,8 @@ describe Ci::BuildRunnerPresenter do
 
         it 'returns the correct refspecs' do
           is_expected.to contain_exactly('+refs/tags/*:refs/tags/*',
-                                         '+refs/heads/*:refs/remotes/origin/*')
+                                         '+refs/heads/*:refs/remotes/origin/*',
+                                         "+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}")
         end
       end
     end
@@ -183,81 +218,34 @@ describe Ci::BuildRunnerPresenter do
       let(:pipeline) { merge_request.all_pipelines.first }
       let(:build) { create(:ci_build, ref: pipeline.ref, pipeline: pipeline) }
 
-      context 'when depend_on_persistent_pipeline_ref feature flag is enabled' do
+      before do
+        pipeline.persistent_ref.create
+      end
+
+      it 'returns the correct refspecs' do
+        is_expected
+          .to contain_exactly("+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}")
+      end
+
+      context 'when GIT_DEPTH is zero' do
         before do
-          stub_feature_flags(ci_force_exposing_merge_request_refs: false)
-          pipeline.persistent_ref.create
+          create(:ci_pipeline_variable, key: 'GIT_DEPTH', value: 0, pipeline: build.pipeline)
         end
 
         it 'returns the correct refspecs' do
           is_expected
-            .to contain_exactly("+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}")
-        end
-
-        context 'when ci_force_exposing_merge_request_refs feature flag is enabled' do
-          before do
-            stub_feature_flags(ci_force_exposing_merge_request_refs: true)
-          end
-
-          it 'returns the correct refspecs' do
-            is_expected
-              .to contain_exactly("+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}",
-                                  '+refs/merge-requests/1/head:refs/merge-requests/1/head')
-          end
-        end
-
-        context 'when GIT_DEPTH is zero' do
-          before do
-            create(:ci_pipeline_variable, key: 'GIT_DEPTH', value: 0, pipeline: build.pipeline)
-          end
-
-          it 'returns the correct refspecs' do
-            is_expected
-              .to contain_exactly("+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}",
-                                  '+refs/heads/*:refs/remotes/origin/*',
-                                  '+refs/tags/*:refs/tags/*')
-          end
-        end
-
-        context 'when pipeline is legacy detached merge request pipeline' do
-          let(:merge_request) { create(:merge_request, :with_legacy_detached_merge_request_pipeline) }
-
-          it 'returns the correct refspecs' do
-            is_expected.to contain_exactly("+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}",
-                                           "+refs/heads/#{build.ref}:refs/remotes/origin/#{build.ref}")
-          end
+            .to contain_exactly("+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}",
+                                '+refs/heads/*:refs/remotes/origin/*',
+                                '+refs/tags/*:refs/tags/*')
         end
       end
 
-      context 'when depend_on_persistent_pipeline_ref feature flag is disabled' do
-        before do
-          stub_feature_flags(depend_on_persistent_pipeline_ref: false)
-        end
+      context 'when pipeline is legacy detached merge request pipeline' do
+        let(:merge_request) { create(:merge_request, :with_legacy_detached_merge_request_pipeline) }
 
         it 'returns the correct refspecs' do
-          is_expected
-            .to contain_exactly('+refs/merge-requests/1/head:refs/merge-requests/1/head')
-        end
-
-        context 'when GIT_DEPTH is zero' do
-          before do
-            create(:ci_pipeline_variable, key: 'GIT_DEPTH', value: 0, pipeline: build.pipeline)
-          end
-
-          it 'returns the correct refspecs' do
-            is_expected
-              .to contain_exactly('+refs/merge-requests/1/head:refs/merge-requests/1/head',
-                                  '+refs/heads/*:refs/remotes/origin/*',
-                                  '+refs/tags/*:refs/tags/*')
-          end
-        end
-
-        context 'when pipeline is legacy detached merge request pipeline' do
-          let(:merge_request) { create(:merge_request, :with_legacy_detached_merge_request_pipeline) }
-
-          it 'returns the correct refspecs' do
-            is_expected.to contain_exactly("+refs/heads/#{build.ref}:refs/remotes/origin/#{build.ref}")
-          end
+          is_expected.to contain_exactly("+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}",
+                                          "+refs/heads/#{build.ref}:refs/remotes/origin/#{build.ref}")
         end
       end
     end

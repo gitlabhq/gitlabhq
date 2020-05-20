@@ -5,11 +5,16 @@
 # How to set: https://docs.gitlab.com/ee/ci/yaml/#variables
 
 variables:
-  SECURITY_SCANNER_IMAGE_PREFIX: "registry.gitlab.com/gitlab-org/security-products"
-  DS_ANALYZER_IMAGE_PREFIX: "$SECURITY_SCANNER_IMAGE_PREFIX/analyzers"
+  # Setting this variable will affect all Security templates
+  # (SAST, Dependency Scanning, ...)
+  SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/gitlab-org/security-products/analyzers"
+
+  # Deprecated, use SECURE_ANALYZERS_PREFIX instead
+  DS_ANALYZER_IMAGE_PREFIX: "$SECURE_ANALYZERS_PREFIX"
+
   DS_DEFAULT_ANALYZERS: "bundler-audit, retire.js, gemnasium, gemnasium-maven, gemnasium-python"
   DS_MAJOR_VERSION: 2
-  DS_DISABLE_DIND: "false"
+  DS_DISABLE_DIND: "true"
 
 dependency_scanning:
   stage: test
@@ -21,7 +26,6 @@ dependency_scanning:
   services:
     - docker:stable-dind
   script:
-    - export DS_VERSION=${SP_VERSION:-$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')}
     - |
       if ! docker info &>/dev/null; then
         if [ -z "$DOCKER_HOST" -a "$KUBERNETES_PORT" ]; then
@@ -68,28 +72,25 @@ dependency_scanning:
         ) \
         --volume "$PWD:/code" \
         --volume /var/run/docker.sock:/var/run/docker.sock \
-        "$SECURITY_SCANNER_IMAGE_PREFIX/dependency-scanning:$DS_VERSION" /code
+        "registry.gitlab.com/gitlab-org/security-products/dependency-scanning:$DS_MAJOR_VERSION" /code
   artifacts:
     reports:
       dependency_scanning: gl-dependency-scanning-report.json
   dependencies: []
-  only:
-    refs:
-      - branches
-    variables:
-      - $GITLAB_FEATURES =~ /\bdependency_scanning\b/
-  except:
-    variables:
-      - $DEPENDENCY_SCANNING_DISABLED
-      - $DS_DISABLE_DIND == 'true'
+  rules:
+    - if: $DEPENDENCY_SCANNING_DISABLED || $DS_DISABLE_DIND == 'true'
+      when: never
+    - if: $CI_COMMIT_BRANCH &&
+          $GITLAB_FEATURES =~ /\bdependency_scanning\b/
 
 .ds-analyzer:
   extends: dependency_scanning
   services: []
-  except:
-    variables:
-      - $DEPENDENCY_SCANNING_DISABLED
-      - $DS_DISABLE_DIND == 'false'
+  rules:
+    - if: $DEPENDENCY_SCANNING_DISABLED || $DS_DISABLE_DIND == 'false'
+      when: never
+    - if: $CI_COMMIT_BRANCH &&
+          $GITLAB_FEATURES =~ /\bdependency_scanning\b/
   script:
     - /analyzer run
 
@@ -97,48 +98,81 @@ gemnasium-dependency_scanning:
   extends: .ds-analyzer
   image:
     name: "$DS_ANALYZER_IMAGE_PREFIX/gemnasium:$DS_MAJOR_VERSION"
-  only:
-    variables:
-      - $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
-        $DS_DEFAULT_ANALYZERS =~ /gemnasium([^-]|$)/ &&
-        $CI_PROJECT_REPOSITORY_LANGUAGES =~ /ruby|javascript|php|\bgo\b/
+  rules:
+    - if: $DEPENDENCY_SCANNING_DISABLED || $DS_DISABLE_DIND == 'false'
+      when: never
+    - if: $CI_COMMIT_BRANCH &&
+          $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
+          $DS_DEFAULT_ANALYZERS =~ /gemnasium([^-]|$)/
+      exists:
+        - '{Gemfile.lock,*/Gemfile.lock,*/*/Gemfile.lock}'
+        - '{composer.lock,*/composer.lock,*/*/composer.lock}'
+        - '{gems.locked,*/gems.locked,*/*/gems.locked}'
+        - '{go.sum,*/go.sum,*/*/go.sum}'
+        - '{npm-shrinkwrap.json,*/npm-shrinkwrap.json,*/*/npm-shrinkwrap.json}'
+        - '{package-lock.json,*/package-lock.json,*/*/package-lock.json}'
+        - '{yarn.lock,*/yarn.lock,*/*/yarn.lock}'
 
 gemnasium-maven-dependency_scanning:
   extends: .ds-analyzer
   image:
     name: "$DS_ANALYZER_IMAGE_PREFIX/gemnasium-maven:$DS_MAJOR_VERSION"
-  only:
-    variables:
-      - $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
-        $DS_DEFAULT_ANALYZERS =~ /gemnasium-maven/ &&
-        $CI_PROJECT_REPOSITORY_LANGUAGES =~ /\b(java|scala)\b/
+  rules:
+    - if: $DEPENDENCY_SCANNING_DISABLED || $DS_DISABLE_DIND == 'false'
+      when: never
+    - if: $CI_COMMIT_BRANCH &&
+          $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
+          $DS_DEFAULT_ANALYZERS =~ /gemnasium-maven/
+      exists:
+        - '{build.gradle,*/build.gradle,*/*/build.gradle}'
+        - '{build.sbt,*/build.sbt,*/*/build.sbt}'
+        - '{pom.xml,*/pom.xml,*/*/pom.xml}'
 
 gemnasium-python-dependency_scanning:
   extends: .ds-analyzer
   image:
     name: "$DS_ANALYZER_IMAGE_PREFIX/gemnasium-python:$DS_MAJOR_VERSION"
-  only:
-    variables:
-      - $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
-        $DS_DEFAULT_ANALYZERS =~ /gemnasium-python/ &&
-        $CI_PROJECT_REPOSITORY_LANGUAGES =~ /python/
+  rules:
+    - if: $DEPENDENCY_SCANNING_DISABLED || $DS_DISABLE_DIND == 'false'
+      when: never
+    - if: $CI_COMMIT_BRANCH &&
+          $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
+          $DS_DEFAULT_ANALYZERS =~ /gemnasium-python/
+      exists:
+        - '{requirements.txt,*/requirements.txt,*/*/requirements.txt}'
+        - '{requirements.pip,*/requirements.pip,*/*/requirements.pip}'
+        - '{Pipfile,*/Pipfile,*/*/Pipfile}'
+        - '{requires.txt,*/requires.txt,*/*/requires.txt}'
+        - '{setup.py,*/setup.py,*/*/setup.py}'
+      # Support passing of $PIP_REQUIREMENTS_FILE
+      # See https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#configuring-specific-analyzers-used-by-dependency-scanning
+    - if: $CI_COMMIT_BRANCH &&
+          $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
+          $DS_DEFAULT_ANALYZERS =~ /gemnasium-python/ &&
+          $PIP_REQUIREMENTS_FILE
 
 bundler-audit-dependency_scanning:
   extends: .ds-analyzer
   image:
     name: "$DS_ANALYZER_IMAGE_PREFIX/bundler-audit:$DS_MAJOR_VERSION"
-  only:
-    variables:
-      - $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
-        $DS_DEFAULT_ANALYZERS =~ /bundler-audit/ &&
-        $CI_PROJECT_REPOSITORY_LANGUAGES =~ /ruby/
+  rules:
+    - if: $DEPENDENCY_SCANNING_DISABLED || $DS_DISABLE_DIND == 'false'
+      when: never
+    - if: $CI_COMMIT_BRANCH &&
+          $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
+          $DS_DEFAULT_ANALYZERS =~ /bundler-audit/
+      exists:
+        - '{Gemfile.lock,*/Gemfile.lock,*/*/Gemfile.lock}'
 
 retire-js-dependency_scanning:
   extends: .ds-analyzer
   image:
     name: "$DS_ANALYZER_IMAGE_PREFIX/retire.js:$DS_MAJOR_VERSION"
-  only:
-    variables:
-      - $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
-        $DS_DEFAULT_ANALYZERS =~ /retire.js/ &&
-        $CI_PROJECT_REPOSITORY_LANGUAGES =~ /javascript/
+  rules:
+    - if: $DEPENDENCY_SCANNING_DISABLED || $DS_DISABLE_DIND == 'false'
+      when: never
+    - if: $CI_COMMIT_BRANCH &&
+          $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
+          $DS_DEFAULT_ANALYZERS =~ /retire.js/
+      exists:
+        - '{package.json,*/package.json,*/*/package.json}'

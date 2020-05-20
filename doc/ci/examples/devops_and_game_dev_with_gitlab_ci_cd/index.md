@@ -269,7 +269,7 @@ we know we will need to access everything in the `built` folder, given by GitLab
 We'll also cache `node_modules` to avoid having to do a full re-pull of those dependencies:
 just pack them up in the cache. Here is the full `build` job:
 
-```yml
+```yaml
 build:
     stage: build
     script:
@@ -296,7 +296,7 @@ the previous job. Lastly, by convention, we let GitLab CI/CD know this needs to 
 the `build` job by giving it a `test` [stage](../../../ci/yaml/README.md#stages).
 Following the YAML structure, the `test` job should look like this:
 
-```yml
+```yaml
 test:
     stage: test
     script:
@@ -318,7 +318,7 @@ we've added test artifacts and a test stage to our GitLab CI/CD pipeline using `
 allowing us to run our tests by every push.
 Our entire `.gitlab-ci.yml` file should now look like this:
 
-```yml
+```yaml
 image: node:10
 
 build:
@@ -417,7 +417,7 @@ credentials, which will be the same two credentials (Key ID and Secret). It's a 
 fully understand [IAM Best Practices in AWS](https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html). We need to add these credentials to GitLab:
 
 1. Log into your AWS account and go to the [Security Credentials page](https://console.aws.amazon.com/iam/home#/security_credential)
-1. Click the **Access Keys** section and **Create New Access Key**. Create the key and keep the id and secret around, you'll need them later
+1. Click the **Access Keys** section and **Create New Access Key**. Create the key and keep the ID and secret around, you'll need them later
 
    ![AWS Access Key Config](img/aws_config_window.png)
 
@@ -426,7 +426,7 @@ fully understand [IAM Best Practices in AWS](https://docs.aws.amazon.com/IAM/lat
 
    ![GitLab Secret Config](img/gitlab_config.png)
 
-1. Add a key named `AWS_KEY_ID` and copy the key id from Step 2 into the **Value** textbox
+1. Add a key named `AWS_KEY_ID` and copy the key ID from Step 2 into the **Value** textbox
 1. Add a key named `AWS_KEY_SECRET` and copy the key secret from Step 2 into the **Value** textbox
 
 ### Deploy your game with GitLab CI/CD
@@ -440,7 +440,7 @@ we add directives to ensure deployment `only` happens on pushes to `master`. Thi
 single branch still runs through CI, and only merging (or committing directly) to master will
 trigger the `deploy` job of our pipeline. Put these together to get the following:
 
-```yml
+```yaml
 deploy:
     stage: deploy
     variables:
@@ -459,7 +459,7 @@ deploy:
 Be sure to update the region and S3 URL in that last script command to fit your setup.
 Our final configuration file `.gitlab-ci.yml` looks like:
 
-```yml
+```yaml
 image: node:10
 
 build:
@@ -516,7 +516,7 @@ Errors can be easily debugged through GitLab's build logs, and within minutes of
 you can see the changes live on your game.
 
 Setting up Continuous Integration and Continuous Deployment from the start with Dark Nova enables
-rapid but stable development. We can easily test changes in a separate [environment](../../environments.md),
+rapid but stable development. We can easily test changes in a separate [environment](../../environments/index.md),
 or multiple environments if needed. Balancing and updating a multiplayer game can be ongoing
 and tedious, but having faith in a stable deployment with GitLab CI/CD allows
 a lot of breathing room in quickly getting changes to players.

@@ -49,6 +49,10 @@ module GroupsHelper
     can?(current_user, :change_visibility_level, group)
   end
 
+  def can_update_default_branch_protection?(group)
+    can?(current_user, :update_default_branch_protection, group)
+  end
+
   def can_change_share_with_group_lock?(group)
     can?(current_user, :change_share_with_group_lock, group)
   end

@@ -2,6 +2,9 @@
 last_updated: 2019-07-04
 type: reference, howto
 disqus_identifier: 'https://docs.gitlab.com/ee/user/project/pages/getting_started_part_three.html'
+stage: Release
+group: Release Management
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
 # Custom domains and SSL/TLS Certificates
@@ -59,6 +62,11 @@ according to the type of domain you want to use with your Pages site:
 - [For root domains](#for-root-domains), `example.com`.
 - [For subdomains](#for-subdomains), `subdomain.example.com`.
 - [For both](#for-both-root-and-subdomains).
+
+NOTE: **Note:**
+You can [configure IPv6 on self-managed instances](../../../../administration/pages/index.md#advanced-configuration),
+but IPv6 is not currently configured for Pages on GitLab.com.
+Follow [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/214718) for details.
 
 ##### For root domains
 

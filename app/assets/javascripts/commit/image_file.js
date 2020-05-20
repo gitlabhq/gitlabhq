@@ -1,4 +1,4 @@
-/* eslint-disable func-names, no-else-return, consistent-return, one-var, no-return-assign */
+/* eslint-disable func-names, consistent-return, one-var, no-return-assign */
 
 import $ from 'jquery';
 
@@ -201,9 +201,8 @@ export default class ImageFile {
     if (domImg) {
       if (domImg.complete) {
         return callback.call(this, domImg.naturalWidth, domImg.naturalHeight);
-      } else {
-        return img.on('load', () => callback.call(this, domImg.naturalWidth, domImg.naturalHeight));
       }
+      return img.on('load', () => callback.call(this, domImg.naturalWidth, domImg.naturalHeight));
     }
   }
 }

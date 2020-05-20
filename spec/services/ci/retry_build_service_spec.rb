@@ -22,9 +22,9 @@ describe Ci::RetryBuildService do
     described_class.new(project, user)
   end
 
-  CLONE_ACCESSORS = described_class::CLONE_ACCESSORS
+  clone_accessors = described_class::CLONE_ACCESSORS
 
-  REJECT_ACCESSORS =
+  reject_accessors =
     %i[id status user token token_encrypted coverage trace runner
        artifacts_expire_at
        created_at updated_at started_at finished_at queued_at erased_by
@@ -34,13 +34,13 @@ describe Ci::RetryBuildService do
        job_artifacts_container_scanning job_artifacts_dast
        job_artifacts_license_management job_artifacts_license_scanning
        job_artifacts_performance job_artifacts_lsif
-       job_artifacts_terraform
+       job_artifacts_terraform job_artifacts_cluster_applications
        job_artifacts_codequality job_artifacts_metrics scheduled_at
        job_variables waiting_for_resource_at job_artifacts_metrics_referee
        job_artifacts_network_referee job_artifacts_dotenv
-       job_artifacts_cobertura needs].freeze
+       job_artifacts_cobertura needs job_artifacts_accessibility].freeze
 
-  IGNORE_ACCESSORS =
+  ignore_accessors =
     %i[type lock_version target_url base_tags trace_sections
        commit_id deployment erased_by_id project_id
        runner_id tag_taggings taggings tags trigger_request_id
@@ -63,6 +63,9 @@ describe Ci::RetryBuildService do
     end
 
     before do
+      # Test correctly behaviour of deprecated artifact because it can be still in use
+      stub_feature_flags(drop_license_management_artifact: false)
+
       # Make sure that build has both `stage_id` and `stage` because FactoryBot
       # can reset one of the fields when assigning another. We plan to deprecate
       # and remove legacy `stage` column in the future.
@@ -88,7 +91,7 @@ describe Ci::RetryBuildService do
         end
       end
 
-      CLONE_ACCESSORS.each do |attribute|
+      clone_accessors.each do |attribute|
         it "clones #{attribute} build attribute" do
           expect(attribute).not_to be_in(forbidden_associations), "association #{attribute} must be `belongs_to`"
           expect(build.send(attribute)).not_to be_nil
@@ -118,7 +121,7 @@ describe Ci::RetryBuildService do
     end
 
     describe 'reject accessors' do
-      REJECT_ACCESSORS.each do |attribute|
+      reject_accessors.each do |attribute|
         it "does not clone #{attribute} build attribute" do
           expect(new_build.send(attribute)).not_to eq build.send(attribute)
         end
@@ -126,8 +129,8 @@ describe Ci::RetryBuildService do
     end
 
     it 'has correct number of known attributes' do
-      processed_accessors = CLONE_ACCESSORS + REJECT_ACCESSORS
-      known_accessors = processed_accessors + IGNORE_ACCESSORS
+      processed_accessors = clone_accessors + reject_accessors
+      known_accessors = processed_accessors + ignore_accessors
 
       # :tag_list is a special case, this accessor does not exist
       # in reflected associations, comes from `act_as_taggable` and
@@ -188,6 +191,35 @@ describe Ci::RetryBuildService do
           service.execute(build)
 
           expect(subsequent_build.reload).to be_created
+        end
+      end
+
+      context 'when pipeline has other builds' do
+        let!(:stage2) { create(:ci_stage_entity, project: project, pipeline: pipeline, name: 'deploy') }
+        let!(:build2) { create(:ci_build, pipeline: pipeline, stage_id: stage.id ) }
+        let!(:deploy) { create(:ci_build, pipeline: pipeline, stage_id: stage2.id) }
+        let!(:deploy_needs_build2) { create(:ci_build_need, build: deploy, name: build2.name) }
+
+        context 'when build has nil scheduling_type' do
+          before do
+            build.pipeline.processables.update_all(scheduling_type: nil)
+            build.reload
+          end
+
+          it 'populates scheduling_type of processables' do
+            expect(new_build.scheduling_type).to eq('stage')
+            expect(build.reload.scheduling_type).to eq('stage')
+            expect(build2.reload.scheduling_type).to eq('stage')
+            expect(deploy.reload.scheduling_type).to eq('dag')
+          end
+        end
+
+        context 'when build has scheduling_type' do
+          it 'does not call populate_scheduling_type!' do
+            expect_any_instance_of(Ci::Pipeline).not_to receive(:ensure_scheduling_type!)
+
+            expect(new_build.scheduling_type).to eq('stage')
+          end
         end
       end
     end

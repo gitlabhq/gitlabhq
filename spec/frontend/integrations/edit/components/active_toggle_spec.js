@@ -9,17 +9,19 @@ describe('ActiveToggle', () => {
 
   const defaultProps = {
     initialActivated: true,
-    disabled: false,
   };
 
   const createComponent = props => {
     wrapper = mount(ActiveToggle, {
-      propsData: Object.assign({}, defaultProps, props),
+      propsData: { ...defaultProps, ...props },
     });
   };
 
   afterEach(() => {
-    if (wrapper) wrapper.destroy();
+    if (wrapper) {
+      wrapper.destroy();
+      wrapper = null;
+    }
   });
 
   const findGlToggle = () => wrapper.find(GlToggle);

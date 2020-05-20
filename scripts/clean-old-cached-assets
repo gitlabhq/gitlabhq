@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Clean up cached files that are older than 4 days
 find tmp/cache/assets/sprockets/ -type f -mtime +4 -execdir rm -- "{}" \;

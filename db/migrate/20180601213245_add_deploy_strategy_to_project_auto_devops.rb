@@ -10,7 +10,7 @@ class AddDeployStrategyToProjectAutoDevops < ActiveRecord::Migration[4.2]
   disable_ddl_transaction!
 
   def up
-    add_column_with_default :project_auto_devops, :deploy_strategy, :integer, default: 0, allow_null: false
+    add_column_with_default :project_auto_devops, :deploy_strategy, :integer, default: 0, allow_null: false # rubocop:disable Migration/AddColumnWithDefault
   end
 
   def down

@@ -571,7 +571,7 @@ module Ci
     end
 
     describe '#register_success' do
-      let!(:current_time) { Time.new(2018, 4, 5, 14, 0, 0) }
+      let!(:current_time) { Time.zone.local(2018, 4, 5, 14, 0, 0) }
       let!(:attempt_counter) { double('Gitlab::Metrics::NullMetric') }
       let!(:job_queue_duration_seconds) { double('Gitlab::Metrics::NullMetric') }
 

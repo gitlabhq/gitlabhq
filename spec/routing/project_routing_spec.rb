@@ -143,8 +143,6 @@ describe 'project routing' do
         expect(get("/gitlab/gitlabhq/-/autocomplete_sources/#{action}")).to route_to("projects/autocomplete_sources##{action}", namespace_id: 'gitlab', project_id: 'gitlabhq')
       end
     end
-
-    it_behaves_like 'redirecting a legacy project path', "/gitlab/gitlabhq/autocomplete_sources/labels", "/gitlab/gitlabhq/-/autocomplete_sources/labels"
   end
 
   #  pages_project_wikis GET    /:project_id/wikis/pages(.:format)       projects/wikis#pages
@@ -220,8 +218,6 @@ describe 'project routing' do
       expect(delete('/gitlab/gitlabhq/-/branches/feature%2B45/foo/bar/baz')).to route_to('projects/branches#destroy', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'feature+45/foo/bar/baz')
       expect(delete('/gitlab/gitlabhq/-/branches/feature@45/foo/bar/baz')).to route_to('projects/branches#destroy', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'feature@45/foo/bar/baz')
     end
-
-    it_behaves_like 'redirecting a legacy project path', "/gitlab/gitlabhq/branches", "/gitlab/gitlabhq/-/branches"
   end
 
   describe Projects::TagsController, 'routing' do
@@ -234,6 +230,8 @@ describe 'project routing' do
       expect(delete('/gitlab/gitlabhq/-/tags/feature%2B45/foo/bar/baz')).to route_to('projects/tags#destroy', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'feature+45/foo/bar/baz')
       expect(delete('/gitlab/gitlabhq/-/tags/feature@45/foo/bar/baz')).to route_to('projects/tags#destroy', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'feature@45/foo/bar/baz')
     end
+
+    it_behaves_like 'redirecting a legacy project path', "/gitlab/gitlabhq/tags", "/gitlab/gitlabhq/-/tags"
   end
 
   #     project_deploy_keys GET    /:project_id/deploy_keys(.:format)          deploy_keys#index
@@ -249,8 +247,6 @@ describe 'project routing' do
       let(:controller) { 'deploy_keys' }
       let(:controller_path) { '/-/deploy_keys' }
     end
-
-    it_behaves_like 'redirecting a legacy project path', "/gitlab/gitlabhq/deploy_keys", "/gitlab/gitlabhq/-/deploy_keys"
   end
 
   # project_protected_branches GET    /:project_id/protected_branches(.:format)     protected_branches#index
@@ -487,7 +483,6 @@ describe 'project routing' do
       let(:controller_path) { '/-/project_members' }
     end
 
-    it_behaves_like 'redirecting a legacy project path', "/gitlab/gitlabhq/project_members", "/gitlab/gitlabhq/-/project_members"
     it_behaves_like 'redirecting a legacy project path', "/gitlab/gitlabhq/-/settings/members", "/gitlab/gitlabhq/-/project_members"
   end
 
@@ -509,8 +504,6 @@ describe 'project routing' do
     it 'to #promote' do
       expect(post('/gitlab/gitlabhq/-/milestones/1/promote')).to route_to('projects/milestones#promote', namespace_id: 'gitlab', project_id: 'gitlabhq', id: "1")
     end
-
-    it_behaves_like 'redirecting a legacy project path', "/gitlab/gitlabhq/milestones", "/gitlab/gitlabhq/-/milestones"
   end
 
   # project_labels GET    /:project_id/labels(.:format) labels#index
@@ -518,8 +511,6 @@ describe 'project routing' do
     it 'to #index' do
       expect(get('/gitlab/gitlabhq/-/labels')).to route_to('projects/labels#index', namespace_id: 'gitlab', project_id: 'gitlabhq')
     end
-
-    it_behaves_like 'redirecting a legacy project path', "/gitlab/gitlabhq/labels", "/gitlab/gitlabhq/-/labels"
   end
 
   #        sort_project_issues POST   /:project_id/issues/sort(.:format)        issues#sort
@@ -534,13 +525,17 @@ describe 'project routing' do
   #                            DELETE /:project_id/issues/:id(.:format)         issues#destroy
   describe Projects::IssuesController, 'routing' do
     it 'to #bulk_update' do
-      expect(post('/gitlab/gitlabhq/issues/bulk_update')).to route_to('projects/issues#bulk_update', namespace_id: 'gitlab', project_id: 'gitlabhq')
+      expect(post('/gitlab/gitlabhq/-/issues/bulk_update')).to route_to('projects/issues#bulk_update', namespace_id: 'gitlab', project_id: 'gitlabhq')
     end
 
     it_behaves_like 'RESTful project resources' do
       let(:controller) { 'issues' }
       let(:actions) { [:index, :create, :new, :edit, :show, :update] }
+      let(:controller_path) { '/-/issues' }
     end
+
+    it_behaves_like 'redirecting a legacy project path', "/gitlab/gitlabhq/issues", "/gitlab/gitlabhq/-/issues"
+    it_behaves_like 'redirecting a legacy project path', "/gitlab/gitlabhq/issues/1/edit", "/gitlab/gitlabhq/-/issues/1/edit"
   end
 
   # project_noteable_notes GET    /:project_id/noteable/:target_type/:target_id/notes notes#index
@@ -719,8 +714,6 @@ describe 'project routing' do
       expect(get('/gitlab/gitlabhq/-/network/ends-with.json')).to route_to('projects/network#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'ends-with.json')
       expect(get('/gitlab/gitlabhq/-/network/master?format=json')).to route_to('projects/network#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master', format: 'json')
     end
-
-    it_behaves_like 'redirecting a legacy project path', "/gitlab/gitlabhq/network/master", "/gitlab/gitlabhq/-/network/master"
   end
 
   describe Projects::GraphsController, 'routing' do
@@ -729,8 +722,6 @@ describe 'project routing' do
       expect(get('/gitlab/gitlabhq/-/graphs/ends-with.json')).to route_to('projects/graphs#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'ends-with.json')
       expect(get('/gitlab/gitlabhq/-/graphs/master?format=json')).to route_to('projects/graphs#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master', format: 'json')
     end
-
-    it_behaves_like 'redirecting a legacy project path', "/gitlab/gitlabhq/graphs/master", "/gitlab/gitlabhq/-/graphs/master"
   end
 
   describe Projects::ForksController, 'routing' do
@@ -741,8 +732,6 @@ describe 'project routing' do
     it 'to #create' do
       expect(post('/gitlab/gitlabhq/-/forks')).to route_to('projects/forks#create', namespace_id: 'gitlab', project_id: 'gitlabhq')
     end
-
-    it_behaves_like 'redirecting a legacy project path', "/gitlab/gitlabhq/forks", "/gitlab/gitlabhq/-/forks"
   end
 
   # project_avatar DELETE /project/avatar(.:format) projects/avatars#destroy
@@ -751,8 +740,6 @@ describe 'project routing' do
       expect(delete('/gitlab/gitlabhq/-/avatar')).to route_to(
         'projects/avatars#destroy', namespace_id: 'gitlab', project_id: 'gitlabhq')
     end
-
-    it_behaves_like 'redirecting a legacy project path', "/gitlab/gitlabhq/avatar", "/gitlab/gitlabhq/-/avatar"
   end
 
   describe Projects::PagesDomainsController, 'routing' do
@@ -798,8 +785,6 @@ describe 'project routing' do
       expect(get('/gitlab/gitlabhq/-/settings/repository')).to route_to('projects/settings/repository#show', namespace_id: 'gitlab', project_id: 'gitlabhq')
     end
 
-    it_behaves_like 'redirecting a legacy project path', "/gitlab/gitlabhq/settings/repository", "/gitlab/gitlabhq/-/settings/repository"
-
     it 'to repository#create_deploy_token' do
       expect(post('gitlab/gitlabhq/-/settings/ci_cd/deploy_token/create')).to route_to('projects/settings/repository#create_deploy_token', namespace_id: 'gitlab', project_id: 'gitlabhq')
     end
@@ -835,12 +820,18 @@ describe 'project routing' do
     it 'routes to usage_ping#web_ide_clientside_preview' do
       expect(post('/gitlab/gitlabhq/usage_ping/web_ide_clientside_preview')).to route_to('projects/usage_ping#web_ide_clientside_preview', namespace_id: 'gitlab', project_id: 'gitlabhq')
     end
+
+    it 'routes to usage_ping#web_ide_pipelines_count' do
+      expect(post('/gitlab/gitlabhq/usage_ping/web_ide_pipelines_count')).to route_to('projects/usage_ping#web_ide_pipelines_count', namespace_id: 'gitlab', project_id: 'gitlabhq')
+    end
   end
 
   describe Projects::StaticSiteEditorController, 'routing' do
     it 'routes to static_site_editor#show', :aggregate_failures do
-      expect(get('/gitlab/gitlabhq/-/sse/master/CONTRIBUTING.md')).to route_to('projects/static_site_editor#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/CONTRIBUTING.md')
-      expect(get('/gitlab/gitlabhq/-/sse/master/README')).to route_to('projects/static_site_editor#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/README')
+      expect(get('/gitlab/gitlabhq/-/sse/master%2FCONTRIBUTING.md')).to route_to('projects/static_site_editor#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/CONTRIBUTING.md')
+      expect(get('/gitlab/gitlabhq/-/sse/master%2FCONTRIBUTING.md/')).to route_to('projects/static_site_editor#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/CONTRIBUTING.md')
+      expect(get('/gitlab/gitlabhq/-/sse/master%2FREADME/unsupported/error')).to route_to('projects/static_site_editor#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/README', vueroute: 'unsupported/error')
+      expect(get('/gitlab/gitlabhq/-/sse/master%2Flib%2FREADME/success')).to route_to('projects/static_site_editor#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/lib/README', vueroute: 'success')
     end
   end
 
@@ -865,6 +856,22 @@ describe 'project routing' do
   describe Projects::Serverless, 'routing' do
     describe 'legacy routing' do
       it_behaves_like 'redirecting a legacy project path', "/gitlab/gitlabhq/serverless", "/gitlab/gitlabhq/-/serverless"
+    end
+  end
+
+  describe Projects::DesignManagement::Designs::RawImagesController, 'routing' do
+    it 'to #show' do
+      expect(get('/gitlab/gitlabhq/-/design_management/designs/1/raw_image')).to route_to('projects/design_management/designs/raw_images#show', namespace_id: 'gitlab', project_id: 'gitlabhq', design_id: '1')
+      expect(get('/gitlab/gitlabhq/-/design_management/designs/1/c6f00aa50b80887ada30a6fe517670be9f8f9ece/raw_image')).to route_to('projects/design_management/designs/raw_images#show', namespace_id: 'gitlab', project_id: 'gitlabhq', design_id: '1', sha: 'c6f00aa50b80887ada30a6fe517670be9f8f9ece')
+    end
+  end
+
+  describe Projects::DesignManagement::Designs::ResizedImageController, 'routing' do
+    it 'to #show' do
+      expect(get('/gitlab/gitlabhq/-/design_management/designs/1/resized_image/v432x230')).to route_to('projects/design_management/designs/resized_image#show', namespace_id: 'gitlab', project_id: 'gitlabhq', design_id: '1', id: 'v432x230')
+      expect(get('/gitlab/gitlabhq/-/design_management/designs/1/c6f00aa50b80887ada30a6fe517670be9f8f9ece/resized_image/v432x230')).to route_to('projects/design_management/designs/resized_image#show', namespace_id: 'gitlab', project_id: 'gitlabhq', design_id: '1', sha: 'c6f00aa50b80887ada30a6fe517670be9f8f9ece', id: 'v432x230')
+      expect(get('/gitlab/gitlabhq/-/design_management/designs/1/invalid/resized_image/v432x230')).to route_to('application#route_not_found', unmatched_route: 'gitlab/gitlabhq/-/design_management/designs/1/invalid/resized_image/v432x230')
+      expect(get('/gitlab/gitlabhq/-/design_management/designs/1/c6f00aa50b80887ada30a6fe517670be9f8f9ece/resized_image/small')).to route_to('application#route_not_found', unmatched_route: 'gitlab/gitlabhq/-/design_management/designs/1/c6f00aa50b80887ada30a6fe517670be9f8f9ece/resized_image/small')
     end
   end
 end

@@ -7,6 +7,7 @@ module QA
       let!(:runner) do
         Resource::Runner.fabricate! do |runner|
           runner.name = executor
+          runner.tags = ['e2e-test']
         end
       end
 

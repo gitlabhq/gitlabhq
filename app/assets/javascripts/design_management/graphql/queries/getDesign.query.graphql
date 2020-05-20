@@ -1,0 +1,31 @@
+#import "../fragments/design.fragment.graphql"
+#import "~/graphql_shared/fragments/author.fragment.graphql"
+
+query getDesign($fullPath: ID!, $iid: String!, $atVersion: ID, $filenames: [String!]) {
+  project(fullPath: $fullPath) {
+    id
+    issue(iid: $iid) {
+      designCollection {
+        designs(atVersion: $atVersion, filenames: $filenames) {
+          edges {
+            node {
+              ...DesignItem
+              issue {
+                title
+                webPath
+                webUrl
+                participants {
+                  edges {
+                    node {
+                      ...Author
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

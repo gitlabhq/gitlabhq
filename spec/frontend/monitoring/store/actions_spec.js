@@ -11,17 +11,22 @@ import { ENVIRONMENT_AVAILABLE_STATE } from '~/monitoring/constants';
 import store from '~/monitoring/stores';
 import * as types from '~/monitoring/stores/mutation_types';
 import {
+  fetchData,
   fetchDashboard,
   receiveMetricsDashboardSuccess,
   fetchDeploymentsData,
   fetchEnvironmentsData,
   fetchDashboardData,
   fetchAnnotations,
+  toggleStarredValue,
   fetchPrometheusMetric,
   setInitialState,
   filterEnvironments,
+  setExpandedPanel,
+  clearExpandedPanel,
   setGettingStartedEmptyState,
   duplicateSystemDashboard,
+  updateVariableValues,
 } from '~/monitoring/stores/actions';
 import {
   gqClient,
@@ -35,6 +40,7 @@ import {
   deploymentData,
   environmentData,
   annotationsData,
+  mockTemplatingData,
   dashboardGitResponse,
   mockDashboardsErrorResponse,
 } from '../mock_data';
@@ -62,9 +68,6 @@ describe('Monitoring store actions', () => {
   beforeEach(() => {
     mock = new MockAdapter(axios);
 
-    // Mock `backOff` function to remove exponential algorithm delay.
-    jest.useFakeTimers();
-
     jest.spyOn(commonUtils, 'backOff').mockImplementation(callback => {
       const q = new Promise((resolve, reject) => {
         const stop = arg => (arg instanceof Error ? reject(arg) : resolve(arg));
@@ -85,6 +88,45 @@ describe('Monitoring store actions', () => {
 
     commonUtils.backOff.mockReset();
     createFlash.mockReset();
+  });
+
+  describe('fetchData', () => {
+    it('dispatches fetchEnvironmentsData and fetchEnvironmentsData', () => {
+      const { state } = store;
+
+      return testAction(
+        fetchData,
+        null,
+        state,
+        [],
+        [
+          { type: 'fetchEnvironmentsData' },
+          { type: 'fetchDashboard' },
+          { type: 'fetchAnnotations' },
+        ],
+      );
+    });
+
+    it('dispatches when feature metricsDashboardAnnotations is on', () => {
+      const origGon = window.gon;
+      window.gon = { features: { metricsDashboardAnnotations: true } };
+
+      const { state } = store;
+
+      return testAction(
+        fetchData,
+        null,
+        state,
+        [],
+        [
+          { type: 'fetchEnvironmentsData' },
+          { type: 'fetchDashboard' },
+          { type: 'fetchAnnotations' },
+        ],
+      ).then(() => {
+        window.gon = origGon;
+      });
+    });
   });
 
   describe('fetchDeploymentsData', () => {
@@ -310,6 +352,49 @@ describe('Monitoring store actions', () => {
     });
   });
 
+  describe('Toggles starred value of current dashboard', () => {
+    const { state } = store;
+    let unstarredDashboard;
+    let starredDashboard;
+
+    beforeEach(() => {
+      state.isUpdatingStarredValue = false;
+      [unstarredDashboard, starredDashboard] = dashboardGitResponse;
+    });
+
+    describe('toggleStarredValue', () => {
+      it('performs no changes if no dashboard is selected', () => {
+        return testAction(toggleStarredValue, null, state, [], []);
+      });
+
+      it('performs no changes if already changing starred value', () => {
+        state.selectedDashboard = unstarredDashboard;
+        state.isUpdatingStarredValue = true;
+        return testAction(toggleStarredValue, null, state, [], []);
+      });
+
+      it('stars dashboard if it is not starred', () => {
+        state.selectedDashboard = unstarredDashboard;
+        mock.onPost(unstarredDashboard.user_starred_path).reply(200);
+
+        return testAction(toggleStarredValue, null, state, [
+          { type: types.REQUEST_DASHBOARD_STARRING },
+          { type: types.RECEIVE_DASHBOARD_STARRING_SUCCESS, payload: true },
+        ]);
+      });
+
+      it('unstars dashboard if it is starred', () => {
+        state.selectedDashboard = starredDashboard;
+        mock.onPost(starredDashboard.user_starred_path).reply(200);
+
+        return testAction(toggleStarredValue, null, state, [
+          { type: types.REQUEST_DASHBOARD_STARRING },
+          { type: types.RECEIVE_DASHBOARD_STARRING_FAILURE },
+        ]);
+      });
+    });
+  });
+
   describe('Set initial state', () => {
     let mockedState;
     beforeEach(() => {
@@ -357,6 +442,29 @@ describe('Monitoring store actions', () => {
       );
     });
   });
+
+  describe('updateVariableValues', () => {
+    let mockedState;
+    beforeEach(() => {
+      mockedState = storeState();
+    });
+    it('should commit UPDATE_VARIABLE_VALUES mutation', done => {
+      testAction(
+        updateVariableValues,
+        { pod: 'POD' },
+        mockedState,
+        [
+          {
+            type: types.UPDATE_VARIABLE_VALUES,
+            payload: { pod: 'POD' },
+          },
+        ],
+        [],
+        done,
+      );
+    });
+  });
+
   describe('fetchDashboard', () => {
     let dispatch;
     let state;
@@ -467,6 +575,33 @@ describe('Monitoring store actions', () => {
       );
       expect(dispatch).toHaveBeenCalledWith('fetchDashboardData');
     });
+
+    it('stores templating variables', () => {
+      const response = {
+        ...metricsDashboardResponse.dashboard,
+        ...mockTemplatingData.allVariableTypes.dashboard,
+      };
+
+      receiveMetricsDashboardSuccess(
+        { state, commit, dispatch },
+        {
+          response: {
+            ...metricsDashboardResponse,
+            dashboard: {
+              ...metricsDashboardResponse.dashboard,
+              ...mockTemplatingData.allVariableTypes.dashboard,
+            },
+          },
+        },
+      );
+
+      expect(commit).toHaveBeenCalledWith(
+        types.RECEIVE_METRICS_DASHBOARD_SUCCESS,
+
+        response,
+      );
+    });
+
     it('sets the dashboards loaded from the repository', () => {
       const params = {};
       const response = metricsDashboardResponse;
@@ -871,6 +1006,45 @@ describe('Monitoring store actions', () => {
 
         done();
       });
+    });
+  });
+
+  describe('setExpandedPanel', () => {
+    let state;
+
+    beforeEach(() => {
+      state = storeState();
+    });
+
+    it('Sets a panel as expanded', () => {
+      const group = 'group_1';
+      const panel = { title: 'A Panel' };
+
+      return testAction(
+        setExpandedPanel,
+        { group, panel },
+        state,
+        [{ type: types.SET_EXPANDED_PANEL, payload: { group, panel } }],
+        [],
+      );
+    });
+  });
+
+  describe('clearExpandedPanel', () => {
+    let state;
+
+    beforeEach(() => {
+      state = storeState();
+    });
+
+    it('Clears a panel as expanded', () => {
+      return testAction(
+        clearExpandedPanel,
+        undefined,
+        state,
+        [{ type: types.SET_EXPANDED_PANEL, payload: { group: null, panel: null } }],
+        [],
+      );
     });
   });
 });

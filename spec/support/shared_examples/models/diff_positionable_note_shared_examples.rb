@@ -49,5 +49,29 @@ RSpec.shared_examples 'a valid diff positionable note' do |factory_on_commit|
         expect(subject.errors).to have_key(:commit_id)
       end
     end
+
+    %i(original_position position change_position).each do |method|
+      describe "#{method}=" do
+        it "doesn't accept non-hash JSON passed as a string" do
+          subject.send(:"#{method}=", "true")
+          expect(subject.attributes_before_type_cast[method.to_s]).to be(nil)
+        end
+
+        it "does accept a position hash as a string" do
+          subject.send(:"#{method}=", position.to_json)
+          expect(subject.position).to eq(position)
+        end
+
+        it "doesn't accept an array" do
+          subject.send(:"#{method}=", ["test"])
+          expect(subject.attributes_before_type_cast[method.to_s]).to be(nil)
+        end
+
+        it "does accept a hash" do
+          subject.send(:"#{method}=", position.to_h)
+          expect(subject.position).to eq(position)
+        end
+      end
+    end
   end
 end

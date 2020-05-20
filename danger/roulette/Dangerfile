@@ -13,8 +13,9 @@ MARKDOWN
 CATEGORY_TABLE_HEADER = <<MARKDOWN
 
 To spread load more evenly across eligible reviewers, Danger has randomly picked
-a candidate for each review slot. Feel free to override this selection if you
-think someone else would be better-suited, or the chosen person is unavailable.
+a candidate for each review slot. Feel free to
+[override these selections](https://about.gitlab.com/handbook/engineering/projects/#gitlab)
+if you think someone else would be better-suited, or the chosen person is unavailable.
 
 To read more on how to use the reviewer roulette, please take a look at the
 [Engineering workflow](https://about.gitlab.com/handbook/engineering/workflow/#basics)
@@ -76,9 +77,7 @@ categories = changes.keys - [:unknown]
 # Ensure to spin for database reviewer/maintainer when ~database is applied (e.g. to review SQL queries)
 categories << :database if gitlab.mr_labels.include?('database') && !categories.include?(:database)
 
-# CSS Clean up MRs are reviewed using a slightly different process, so we
-# disable the review roulette for such MRs.
-if changes.any? && !gitlab.mr_labels.include?('CSS cleanup')
+if changes.any?
   # Strip leading and trailing CE/EE markers
   canonical_branch_name =
     roulette.canonical_branch_name(gitlab.mr_json['source_branch'])

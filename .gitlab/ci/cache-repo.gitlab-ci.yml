@@ -21,7 +21,6 @@ cache-repo:
   extends: .cache-repo:rules
   image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
   stage: sync
-  allow_failure: true
   variables:
     GIT_STRATEGY: none
     TAR_FILENAME: /tmp/gitlab-master.tar

@@ -13,7 +13,8 @@ describe Gitlab::MailRoom do
       start_tls: false,
       mailbox: 'inbox',
       idle_timeout: 60,
-      log_path: Rails.root.join('log', 'mail_room_json.log').to_s
+      log_path: Rails.root.join('log', 'mail_room_json.log').to_s,
+      expunge_deleted: false
     }
   end
 

@@ -14,17 +14,16 @@ RSpec.shared_context 'GroupPolicy context' do
     %i[
       read_label read_group upload_file read_namespace read_group_activity
       read_group_issues read_group_boards read_group_labels read_group_milestones
-      read_group_merge_requests read_wiki
+      read_group_merge_requests
    ]
   end
   let(:read_group_permissions) { %i[read_label read_list read_milestone read_board] }
-  let(:reporter_permissions) { %i[admin_label read_container_image read_metrics_dashboard_annotation download_wiki_code] }
-  let(:developer_permissions) { %i[admin_milestone create_metrics_dashboard_annotation delete_metrics_dashboard_annotation update_metrics_dashboard_annotation create_wiki] }
+  let(:reporter_permissions) { %i[admin_label read_container_image read_metrics_dashboard_annotation] }
+  let(:developer_permissions) { %i[admin_milestone create_metrics_dashboard_annotation delete_metrics_dashboard_annotation update_metrics_dashboard_annotation] }
   let(:maintainer_permissions) do
     %i[
       create_projects
       read_cluster create_cluster update_cluster admin_cluster add_cluster
-      admin_wiki
     ]
   end
   let(:owner_permissions) do
@@ -35,7 +34,8 @@ RSpec.shared_context 'GroupPolicy context' do
       :change_visibility_level,
       :set_note_created_at,
       :create_subgroup,
-      :read_statistics
+      :read_statistics,
+      :update_default_branch_protection
     ].compact
   end
 

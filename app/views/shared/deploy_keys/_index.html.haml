@@ -1,0 +1,14 @@
+- expanded = expanded_by_default?
+%section.qa-deploy-keys-settings.settings.no-animate#js-deploy-keys-settings{ class: ('expanded' if expanded), data: { qa_selector: 'deploy_keys_settings' } }
+  .settings-header
+    %h4= _('Deploy Keys')
+    %button.btn.js-settings-toggle{ type: 'button' }
+      = expanded ? 'Collapse' : 'Expand'
+    %p
+      = _('Deploy keys allow read-only or read-write (if enabled) access to your repository. Deploy keys can be used for CI, staging or production servers. You can create a deploy key or add an existing one.')
+  .settings-content
+    %h5.prepend-top-0
+      = _('Create a new deploy key for this project')
+    = render @deploy_keys.form_partial_path
+    %hr
+    #js-deploy-keys{ data: { endpoint: project_deploy_keys_path(@project), project_id: @project.id } }

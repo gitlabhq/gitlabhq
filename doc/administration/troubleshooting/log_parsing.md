@@ -16,19 +16,19 @@ include use cases targeted for parsing GitLab log files.
 
 #### Pipe colorized `jq` output into `less`
 
-```sh
+```shell
 jq . <FILE> -C | less -R
 ```
 
 #### Search for a term and pretty-print all matching lines
 
-```sh
+```shell
 grep <TERM> <FILE> | jq .
 ```
 
 #### Skip invalid lines of JSON
 
-```sh
+```shell
 jq -cR 'fromjson?' file.json | jq <COMMAND>
 ```
 
@@ -39,49 +39,49 @@ This skips over all invalid lines and parses the rest.
 
 #### Find all requests with a 5XX status code
 
-```sh
+```shell
 jq 'select(status >= 500)' <FILE>
 ```
 
 #### Top 10 slowest requests
 
-```sh
+```shell
 jq -s 'sort_by(-.duration) | limit(10; .[])' <FILE>
 ```
 
 #### Find and pretty print all requests related to a project
 
-```sh
+```shell
 grep <PROJECT_NAME> <FILE> | jq .
 ```
 
 #### Find all requests with a total duration > 5 seconds
 
-```sh
+```shell
 jq 'select(.duration > 5000)' <FILE>
 ```
 
 #### Find all project requests with more than 5 rugged calls
 
-```sh
+```shell
 grep <PROJECT_NAME> <FILE> | jq 'select(.rugged_calls > 5)'
 ```
 
 #### Find all requests with a Gitaly duration > 10 seconds
 
-```sh
+```shell
 jq 'select(.gitaly_duration > 10000)' <FILE>
 ```
 
 #### Find all requests with a queue duration > 10 seconds
 
-```sh
+```shell
 jq 'select(.queue_duration > 10000)' <FILE>
 ```
 
 #### Top 10 requests by # of Gitaly calls
 
-```sh
+```shell
 jq -s 'map(select(.gitaly_calls != null)) | sort_by(-.gitaly_calls) | limit(10; .[])' <FILE>
 ```
 
@@ -89,7 +89,7 @@ jq -s 'map(select(.gitaly_calls != null)) | sort_by(-.gitaly_calls) | limit(10; 
 
 #### Print the top three controller methods by request volume and their three longest durations
 
-```sh
+```shell
 jq -s -r 'group_by(.controller+.action) | sort_by(-length) | limit(3; .[]) | sort_by(-.duration) | "CT: \(length)\tMETHOD: \(.[0].controller)#\(.[0].action)\tDURS: \(.[0].duration),  \(.[1].duration),  \(.[2].duration)"' production_json.log
 ```
 
@@ -105,7 +105,7 @@ CT: 1328   METHOD: Projects::NotesController#index DURS: 403.99,  386.29,  384.3
 
 #### Print top three routes with request count and their three longest durations
 
-```sh
+```shell
 jq -s -r 'group_by(.route) | sort_by(-length) | limit(3; .[]) | sort_by(-.duration) | "CT: \(length)\tROUTE: \(.[0].route)\tDURS: \(.[0].duration),  \(.[1].duration),  \(.[2].duration)"' api_json.log
 ```
 
@@ -121,25 +121,25 @@ CT: 190  ROUTE: /api/:version/projects/:id/repository/commits    DURS: 1079.02, 
 
 #### Find all Gitaly requests sent from web UI
 
-```sh
+```shell
 jq 'select(."grpc.meta.client_name" == "gitlab-web")' current
 ```
 
 #### Find all failed Gitaly requests
 
-```sh
+```shell
 jq 'select(."grpc.code" != null and ."grpc.code" != "OK")' current
 ```
 
 #### Find all requests that took longer than 30 seconds
 
-```sh
+```shell
 jq 'select(."grpc.time_ms" > 30000)' current
 ```
 
 #### Print top three projects by request volume and their three longest durations
 
-```sh
+```shell
 jq -s -r 'map(select(."grpc.request.glProjectPath" != null and ."grpc.request.glProjectPath" != "" and ."grpc.time_ms" != null)) | group_by(."grpc.request.glProjectPath") | sort_by(-length) | limit(3; .[]) | sort_by(-."grpc.time_ms") | "CT: \(length)\tPROJECT: \(.[0]."grpc.request.glProjectPath")\tDURS: \(.[0]."grpc.time_ms"),  \(.[1]."grpc.time_ms"),  \(.[2]."grpc.time_ms")"' current
 ```
 

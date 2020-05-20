@@ -1,0 +1,6 @@
+---
+title: Add database relation to preserve users starred
+  metrics dashboard information.
+merge_request: 29912
+author:
+type: added

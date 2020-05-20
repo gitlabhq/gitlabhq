@@ -8,16 +8,19 @@ describe Projects::PropagateServiceTemplate do
       PushoverService.create(
         template: true,
         active: true,
+        push_events: false,
         properties: {
           device: 'MyDevice',
           sound: 'mic',
           priority: 4,
           user_key: 'asdf',
           api_key: '123456789'
-        })
+        }
+      )
     end
 
     let!(:project) { create(:project) }
+    let(:excluded_attributes) { %w[id project_id template created_at updated_at title description] }
 
     it 'creates services for projects' do
       expect(project.pushover_service).to be_nil
@@ -35,7 +38,7 @@ describe Projects::PropagateServiceTemplate do
         properties: {
           bamboo_url: 'http://gitlab.com',
           username: 'mic',
-          password: "password",
+          password: 'password',
           build_key: 'build'
         }
       )
@@ -54,7 +57,7 @@ describe Projects::PropagateServiceTemplate do
         properties: {
           bamboo_url: 'http://gitlab.com',
           username: 'mic',
-          password: "password",
+          password: 'password',
           build_key: 'build'
         }
       )
@@ -70,6 +73,33 @@ describe Projects::PropagateServiceTemplate do
       described_class.propagate(service_template)
 
       expect(project.pushover_service.properties).to eq(service_template.properties)
+
+      expect(project.pushover_service.attributes.except(*excluded_attributes))
+        .to eq(service_template.attributes.except(*excluded_attributes))
+    end
+
+    context 'service with data fields' do
+      let(:service_template) do
+        JiraService.create!(
+          template: true,
+          active: true,
+          push_events: false,
+          url: 'http://jira.instance.com',
+          username: 'user',
+          password: 'secret'
+        )
+      end
+
+      it 'creates the service containing the template attributes' do
+        described_class.propagate(service_template)
+
+        expect(project.jira_service.attributes.except(*excluded_attributes))
+          .to eq(service_template.attributes.except(*excluded_attributes))
+
+        excluded_attributes = %w[id service_id created_at updated_at]
+        expect(project.jira_service.data_fields.attributes.except(*excluded_attributes))
+          .to eq(service_template.data_fields.attributes.except(*excluded_attributes))
+      end
     end
 
     describe 'bulk update', :use_sql_query_cache do

@@ -1,8 +1,8 @@
 - if cookies[:hide_project_limit_message].blank? && !current_user.hide_project_limit && !current_user.can_create_project? && current_user.projects_limit > 0
   .project-limit-message.alert.alert-warning.d-none.d-sm-block
-    You won't be able to create new projects because you have reached your project limit.
+    = _("You won't be able to create new projects because you have reached your project limit.")
 
     .float-right
-      = link_to "Don't show again", profile_path(user: {hide_project_limit: true}), method: :put, class: 'alert-link'
+      = link_to _("Don't show again"), profile_path(user: {hide_project_limit: true}), method: :put, class: 'alert-link'
       |
-      = link_to 'Remind later', '#', class: 'hide-project-limit-message alert-link'
+      = link_to _('Remind later'), '#', class: 'hide-project-limit-message alert-link'

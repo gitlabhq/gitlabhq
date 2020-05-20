@@ -21,7 +21,7 @@ export default {
     state.original = Object.freeze(settings);
   },
   [types.RESET_SETTINGS](state) {
-    state.settings = Object.assign({}, state.original);
+    state.settings = { ...state.original };
   },
   [types.TOGGLE_LOADING](state) {
     state.isLoading = !state.isLoading;

@@ -105,7 +105,7 @@ changing how standard Markdown is used:
 
 | Standard Markdown                     | Extended Markdown in GitLab |
 | ------------------------------------- | ------------------------- |
-| [blockquotes](#blockquotes)           | [multiline blockquotes](#multiline-blockquote) |
+| [blockquotes](#blockquotes)           | [multi-line blockquotes](#multiline-blockquote) |
 | [code blocks](#code-spans-and-blocks) | [colored code and syntax highlighting](#colored-code-and-syntax-highlighting) |
 | [emphasis](#emphasis)                 | [multiple underscores in words](#multiple-underscores-in-words-and-mid-word-emphasis)
 | [headers](#headers)                   | [linkable Header IDs](#header-ids-and-links) |
@@ -228,7 +228,7 @@ To make PlantUML available in GitLab, a GitLab administrator needs to enable it 
 
 > If this is not rendered correctly, [view it in GitLab itself](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md#emoji).
 
-```md
+```markdown
 Sometimes you want to :monkey: around a bit and add some :star2: to your :speech_balloon:. Well we have a gift for you:
 
 :zap: You can use emoji anywhere GFM is supported. :v:
@@ -353,7 +353,7 @@ However, the wrapping tags can't be mixed:
 - [- deletion -}
 ```
 
-If your diff includes words in `` `code` `` font, make sure to escape each bactick `` ` `` with a
+If your diff includes words in `` `code` `` font, make sure to escape each backtick `` ` `` with a
 backslash `\`, otherwise the diff highlight won't render correctly:
 
 ```markdown
@@ -396,8 +396,8 @@ a^2+b^2=c^2
 
 _Be advised that KaTeX only supports a [subset](https://katex.org/docs/supported.html) of LaTeX._
 
-NOTE: **Note:** This also works for the asciidoctor `:stem: latexmath`. For details see
-the [asciidoctor user manual](https://asciidoctor.org/docs/user-manual/#activating-stem-support).
+NOTE: **Note:** This also works for the Asciidoctor `:stem: latexmath`. For details see
+the [Asciidoctor user manual](https://asciidoctor.org/docs/user-manual/#activating-stem-support).
 
 ### Special GitLab references
 
@@ -608,7 +608,7 @@ Quote break.
 
 > If this is not rendered correctly, [view it in GitLab itself](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md#multiline-blockquote).
 
-GFM extends the standard Markdown standard by also supporting multiline blockquotes
+GFM extends the standard Markdown standard by also supporting multi-line blockquotes
 fenced by `>>>`:
 
 ```markdown
@@ -804,7 +804,7 @@ but_emphasis is_desired _here_
 
 If you wish to emphasize only a part of a word, it can still be done with asterisks:
 
-```md
+```markdown
 perform*complicated*task
 
 do*this*and*do*that*and*another thing
@@ -828,23 +828,31 @@ Reference tags can use letters and other characters. Avoid using lowercase `w` o
 (`_`) in footnote tag names until [this bug](https://gitlab.com/gitlab-org/gitlab/issues/24423) is
 resolved.
 
-```markdown
-A footnote reference tag looks like this: [^1]
+<!--
+Do not edit the following codeblock. It uses HTML to skip the Vale ReferenceLinks test.
+-->
+
+<pre class="highlight"><code>A footnote reference tag looks like this: [^1]
 
 This reference tag is a mix of letters and numbers. [^footnote-42]
 
-[^1]: This is the text inside a footnote.
+&#91;^1]: This is the text inside a footnote.
 
-[^footnote-42]: This is another footnote.
-```
+&#91;^footnote-42]: This is another footnote.
+</code></pre>
 
 A footnote reference tag looks like this:[^1]
 
 This reference tag is a mix of letters and numbers.[^footnote-42]
 
-[^1]: This is the text inside a footnote.
+<!--
+Do not delete the single space before the [^1] and [^footnotes] references below.
+These are used to force the Vale ReferenceLinks check to skip these examples.
+-->
 
-[^footnote-42]: This is another footnote.
+ [^1]: This is the text inside a footnote.
+
+ [^footnote-42]: This is another footnote.
 
 ### Headers
 
@@ -928,8 +936,11 @@ ___
 
 Examples:
 
-```markdown
-Inline-style (hover to see title text):
+<!--
+Do not edit the following codeblock. It uses HTML to skip the Vale ReferenceLinks test.
+-->
+
+<pre class="highlight"><code>Inline-style (hover to see title text):
 
 ![alt text](img/markdown_logo.png "Title Text")
 
@@ -937,12 +948,12 @@ Reference-style (hover to see title text):
 
 ![alt text1][logo]
 
-[logo]: img/markdown_logo.png "Title Text"
-```
+&#91;logo]: img/markdown_logo.png "Title Text"
+</code></pre>
 
 <!--
-DO NOT change the name of markdown_logo.png. This is used for a test
-in spec/controllers/help_controller_spec.rb.
+DO NOT change the name of markdown_logo.png. This is used for a test in
+spec/controllers/help_controller_spec.rb.
 -->
 
 Inline-style (hover to see title text):
@@ -951,9 +962,12 @@ Inline-style (hover to see title text):
 
 Reference-style (hover to see title text):
 
-![alt text][logo]
+<!--
+The example below uses an in-line link to pass the Vale ReferenceLinks test.
+Do not change to a reference style link.
+-->
 
-[logo]: img/markdown_logo.png "Title Text"
+![alt text](img/markdown_logo.png "Title Text")
 
 #### Videos
 
@@ -962,7 +976,7 @@ Reference-style (hover to see title text):
 Image tags that link to files with a video extension are automatically converted to
 a video player. The valid video extensions are `.mp4`, `.m4v`, `.mov`, `.webm`, and `.ogv`:
 
-```md
+```markdown
 Here's a sample video:
 
 ![Sample Video](img/markdown_video.mp4)
@@ -979,7 +993,7 @@ Here's a sample video:
 Similar to videos, link tags for files with an audio extension are automatically converted to
 an audio player. The valid audio extensions are `.mp3`, `.oga`, `.ogg`, `.spx`, and `.wav`:
 
-```md
+```markdown
 Here's a sample audio clip:
 
 ![Sample Audio](img/markdown_audio.mp3)
@@ -1036,7 +1050,10 @@ are separated into their own lines:
 </dl>
 ```
 
-<!-- Note: The example below uses HTML to force correct rendering on docs.gitlab.com, Markdown will be fine in GitLab -->
+<!--
+Note: The example below uses HTML to force correct rendering on docs.gitlab.com,
+Markdown will be fine in GitLab.
+-->
 
 <dl>
   <dt>Markdown in HTML</dt>
@@ -1102,7 +1119,10 @@ PASTE LOGS HERE
 </details>
 ````
 
-<!-- Note: The example below uses HTML to force correct rendering on docs.gitlab.com, Markdown will be fine in GitLab -->
+<!--
+The example below uses HTML to force correct rendering on docs.gitlab.com, Markdown
+will work correctly in GitLab.
+-->
 
 <details>
 <summary>Click this to collapse/fold.</summary>
@@ -1167,8 +1187,11 @@ A new line due to the previous backslash.
 
 There are two ways to create links, inline-style and reference-style:
 
-```markdown
-- This is an [inline-style link](https://www.google.com)
+<!--
+Do not edit the following codeblock. It uses HTML to skip the Vale ReferenceLinks test.
+-->
+
+<pre class="highlight"><code>- This is an [inline-style link](https://www.google.com)
 - This is a [link to a repository file in the same directory](index.md)
 - This is a [relative link to a readme one directory higher](../README.md)
 - This is a [link that also has title text](https://www.google.com "This link takes you to Google!")
@@ -1186,14 +1209,14 @@ Using references:
 
 Some text to show that the reference links can follow later.
 
-[arbitrary case-insensitive reference text]: https://www.mozilla.org/en-US/
-[1]: https://slashdot.org
-[link text itself]: https://www.reddit.com
-```
+&#91;arbitrary case-insensitive reference text]: https://www.mozilla.org/en-US/
+&#91;1]: https://slashdot.org
+&#91;link text itself]: https://www.reddit.com
+</code></pre>
 
 - This is an [inline-style link](https://www.google.com)
 - This is a [link to a repository file in the same directory](index.md)
-- This is a [relative link to a readme one directory higher](../README.md)
+- This is a [relative link to a README one directory higher](../README.md)
 - This is a [link that also has title text](https://www.google.com "This link takes you to Google!")
 
 Using header ID anchors:
@@ -1203,15 +1226,16 @@ Using header ID anchors:
 
 Using references:
 
-- This is a [reference-style link, see below][Arbitrary case-insensitive reference text]
-- You can [use numbers for reference-style link definitions, see below][1]
-- Or leave it empty and use the [link text itself][], see below.
+<!--
+The example below uses in-line links to pass the Vale ReferenceLinks test.
+Do not change to reference style links.
+-->
+
+- This is a [reference-style link, see below](https://www.mozilla.org/en-US/)
+- You can [use numbers for reference-style link definitions, see below](https://slashdot.org)
+- Or leave it empty and use the [link text itself](https://www.reddit.com), see below.
 
 Some text to show that the reference links can follow later.
-
-[arbitrary case-insensitive reference text]: https://www.mozilla.org/en-US/
-[1]: https://slashdot.org
-[link text itself]: https://www.reddit.com
 
 NOTE: **Note:** Relative links do not allow the referencing of project files in a wiki
 page, or a wiki page in a project file. The reason for this is that a wiki is always
@@ -1220,7 +1244,7 @@ will point the link to `wikis/style` only when the link is inside of a wiki Mark
 
 #### URL auto-linking
 
-GFM will autolink almost any URL you put into your text:
+GFM will auto-link almost any URL you put into your text:
 
 ```markdown
 - https://www.google.com
@@ -1251,7 +1275,7 @@ number, and count up from there.
 
 Examples:
 
-```md
+```markdown
 1. First ordered list item
 2. Another item
    - Unordered sub-list.
@@ -1261,8 +1285,11 @@ Examples:
 4. And another item.
 ```
 
-<!-- The "2." and "4." in the example above are changed to "1." below, to match the style standards on docs.gitlab.com -->
-<!-- See https://docs.gitlab.com/ee/development/documentation/styleguide.html#lists -->
+<!--
+The "2." and "4." in the example above are changed to "1." below, to match the style
+standards on docs.gitlab.com.
+See https://docs.gitlab.com/ee/development/documentation/styleguide.html#lists
+-->
 
 1. First ordered list item
 1. Another item
@@ -1275,7 +1302,7 @@ Examples:
 For an unordered list, add a `-`, `*` or `+`, followed by a space, at the start of
 each line for unordered lists, but you should not use a mix of them.
 
-```md
+```markdown
 Unordered lists can:
 
 - use
@@ -1292,8 +1319,11 @@ They can even:
 + pluses
 ```
 
-<!-- The "*" and "+" in the example above are changed to "-" below, to match the style standards on docs.gitlab.com -->
-<!-- See https://docs.gitlab.com/ee/development/documentation/styleguide.html#lists -->
+<!--
+The "*" and "+" in the example above are changed to "-" below, to match the style
+standards on docs.gitlab.com.
+See https://docs.gitlab.com/ee/development/documentation/styleguide.html#lists
+-->
 
 Unordered lists can:
 

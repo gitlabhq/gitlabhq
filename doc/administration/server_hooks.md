@@ -11,12 +11,13 @@ disqus_identifier: 'https://docs.gitlab.com/ee/administration/custom_hooks.html'
 > - Server hooks must be configured on the filesystem of the GitLab server. Only GitLab server administrators will be able to complete these tasks. Please explore [webhooks](../user/project/integrations/webhooks.md) and [GitLab CI/CD](../ci/README.md) as an option if you do not have filesystem access. For a user-configurable Git hook interface, see [Push Rules](../push_rules/push_rules.md), available in GitLab Starter **(STARTER)**.
 > - Server hooks won't be replicated to secondary nodes if you use [GitLab Geo](geo/replication/index.md).
 
-Git natively supports hooks that are executed on different actions.
-Examples of server-side Git hooks include pre-receive, post-receive, and update.
-See [Git SCM Server-Side Hooks](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks#Server-Side-Hooks) for more information about each hook type.
+Git natively supports hooks that are executed on different actions. These hooks run
+on the server and can be used to enforce specific commit policies or perform other
+tasks based on the state of the repository.
 
-As of GitLab Shell version 2.2.0 (which requires GitLab 7.5+), GitLab
-administrators can add custom Git hooks to any GitLab project.
+Examples of server-side Git hooks include `pre-receive`, `post-receive`, and `update`.
+See [Git SCM Server-Side Hooks](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks#Server-Side-Hooks)
+for more information about each hook type.
 
 ## Create a server hook for a repository
 
@@ -24,14 +25,21 @@ Server-side Git hooks are typically placed in the repository's `hooks`
 subdirectory. In GitLab, hook directories are symlinked to the GitLab Shell
 `hooks` directory for ease of maintenance between GitLab Shell upgrades.
 Server hooks are implemented differently, but the behavior is exactly the same
-once the hook is created. Follow the steps below to set up a server hook for a
+once the hook is created.
+
+NOTE: **Note:**
+If you are not using [hashed storage](repository_storage_types.md#hashed-storage), the project's
+repository directory might not exactly match the instructions below. In that case,
+for an installation from source the path is usually `/home/git/repositories/<group>/<project>.git`.
+For Omnibus installs the path is usually `/var/opt/gitlab/git-data/repositories/<group>/<project>.git`.
+
+Follow the steps below to set up a server hook for a
 repository:
 
-1. Pick a project that needs a server hook.
-1. On the GitLab server, navigate to the project's repository directory.
-   For an installation from source the path is usually
-   `/home/git/repositories/<group>/<project>.git`. For Omnibus installs the path is
-   usually `/var/opt/gitlab/git-data/repositories/<group>/<project>.git`.
+1. Find that project's path on the GitLab server, by navigating to the
+   **Admin area > Projects**. From there, select the project for which you
+   would like to add a hook. You can find the path to the project's repository
+   under **Gitaly relative path** on that page.
 1. Create a new directory in this location called `custom_hooks`.
 1. Inside the new `custom_hooks` directory, create a file with a name matching
    the hook type. For a pre-receive hook the file name should be `pre-receive`
@@ -42,8 +50,7 @@ repository:
    type. For example, if the script is in Ruby the shebang will probably be
    `#!/usr/bin/env ruby`.
 
-That's it! Assuming the hook code is properly implemented the hook will fire
-as appropriate.
+Assuming the hook code is properly implemented the hook will run as appropriate.
 
 ## Set a global server hook for all repositories
 

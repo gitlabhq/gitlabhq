@@ -24,7 +24,8 @@ module API
                     Gitlab::GrapeLogging::Loggers::ExceptionLogger.new,
                     Gitlab::GrapeLogging::Loggers::QueueDurationLogger.new,
                     Gitlab::GrapeLogging::Loggers::PerfLogger.new,
-                    Gitlab::GrapeLogging::Loggers::CorrelationIdLogger.new
+                    Gitlab::GrapeLogging::Loggers::CorrelationIdLogger.new,
+                    Gitlab::GrapeLogging::Loggers::ContextLogger.new
                   ]
 
     allow_access_with_scope :api
@@ -97,6 +98,15 @@ module API
       handle_api_exception(exception)
     end
 
+    # This is a specific exception raised by `rack-timeout` gem when Puma
+    # requests surpass its timeout. Given it inherits from Exception, we
+    # should rescue it separately. For more info, see:
+    # - https://github.com/sharpstone/rack-timeout/blob/master/doc/exceptions.md
+    # - https://github.com/ruby-grape/grape#exception-handling
+    rescue_from Rack::Timeout::RequestTimeoutException do |exception|
+      handle_api_exception(exception)
+    end
+
     format :json
     content_type :txt, "text/plain"
 
@@ -111,6 +121,7 @@ module API
 
       # Keep in alphabetical order
       mount ::API::AccessRequests
+      mount ::API::Admin::Ci::Variables
       mount ::API::Admin::Sidekiq
       mount ::API::Appearance
       mount ::API::Applications
@@ -131,6 +142,7 @@ module API
       mount ::API::Events
       mount ::API::Features
       mount ::API::Files
+      mount ::API::FreezePeriods
       mount ::API::GroupBoards
       mount ::API::GroupClusters
       mount ::API::GroupExport
@@ -153,6 +165,7 @@ module API
       mount ::API::MergeRequestDiffs
       mount ::API::MergeRequests
       mount ::API::Metrics::Dashboard::Annotations
+      mount ::API::Metrics::UserStarredDashboards
       mount ::API::Namespaces
       mount ::API::Notes
       mount ::API::Discussions
@@ -169,6 +182,7 @@ module API
       mount ::API::ProjectImport
       mount ::API::ProjectHooks
       mount ::API::ProjectMilestones
+      mount ::API::ProjectRepositoryStorageMoves
       mount ::API::Projects
       mount ::API::ProjectSnapshots
       mount ::API::ProjectSnippets

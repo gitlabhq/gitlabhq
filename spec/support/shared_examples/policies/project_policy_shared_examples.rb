@@ -212,8 +212,8 @@ RSpec.shared_examples 'project policies as owner' do
   end
 end
 
-RSpec.shared_examples 'project policies as admin' do
-  context 'abilities for non-public projects' do
+RSpec.shared_examples 'project policies as admin with admin mode' do
+  context 'abilities for non-public projects', :enable_admin_mode do
     let(:project) { create(:project, namespace: owner.namespace) }
 
     subject { described_class.new(admin, project) }
@@ -230,5 +230,15 @@ RSpec.shared_examples 'project policies as admin' do
     it_behaves_like 'archived project policies' do
       let(:regular_abilities) { owner_permissions }
     end
+  end
+end
+
+RSpec.shared_examples 'project policies as admin without admin mode' do
+  context 'abilities for non-public projects' do
+    let(:project) { create(:project, namespace: owner.namespace) }
+
+    subject { described_class.new(admin, project) }
+
+    it { is_expected.to be_banned }
   end
 end

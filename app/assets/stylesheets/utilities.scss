@@ -1,3 +1,10 @@
+/**
+  Please note: These are deprecated in favor of the Gitlab UI utility classes.
+  Check https://unpkg.com/browse/@gitlab/ui/src/scss/utilities.scss
+  to see the available utility classes. If you cannot find the class you need,
+  consider adding it to Gitlab UI before adding it here.
+**/
+
 @each $variant, $range in $color-ranges {
   @each $suffix, $color in $range {
     #{'.bg-#{$variant}-#{$suffix}'} {
@@ -6,6 +13,12 @@
 
     #{'.text-#{$variant}-#{$suffix}'} {
       color: $color;
+    }
+
+    #{'.hover-text-#{$variant}-#{$suffix}'} {
+      &:hover {
+        color: $color;
+      }
     }
   }
 }
@@ -44,6 +57,7 @@
 .border-color-default { border-color: $border-color; }
 .border-bottom-color-default { border-bottom-color: $border-color; }
 .border-radius-default { border-radius: $border-radius-default; }
+.border-radius-small { border-radius: $border-radius-small; }
 .box-shadow-default { box-shadow: 0 2px 4px 0 $black-transparent; }
 
 .gl-children-ml-sm-3 > * {
@@ -75,6 +89,19 @@
   width: px-to-rem(16px);
 }
 
+.gl-shim-pb-3 {
+  padding-bottom: 8px;
+}
+
+.gl-shim-pt-5 {
+  padding-top: 16px;
+}
+
+.gl-shim-mx-2 {
+  margin-left: 4px;
+  margin-right: 4px;
+}
+
 .gl-text-purple { color: $purple; }
 .gl-text-gray-800 { color: $gray-800; }
 .gl-bg-purple-light { background-color: $purple-light; }
@@ -85,6 +112,7 @@
 .gl-bg-blue-50 { @include gl-bg-blue-50; }
 .gl-bg-red-100 { @include gl-bg-red-100; }
 .gl-bg-orange-100 { @include gl-bg-orange-100; }
+.gl-bg-gray-50 { @include gl-bg-gray-50; }
 .gl-bg-gray-100 { @include gl-bg-gray-100; }
 .gl-bg-green-100 { @include gl-bg-green-100;}
 .gl-bg-blue-500 { @include gl-bg-blue-500; }
@@ -107,8 +135,14 @@
 .gl-text-green-700 { @include gl-text-green-700; }
 
 .gl-align-items-center { @include gl-align-items-center; }
+
 .d-sm-table-column {
   @include media-breakpoint-up(sm) {
     display: table-column !important;
   }
 }
+
+.gl-white-space-normal { @include gl-white-space-normal; }
+.gl-word-break-all { @include gl-word-break-all; }
+.gl-reset-line-height { @include gl-reset-line-height; }
+.gl-reset-text-align { @include gl-reset-text-align; }

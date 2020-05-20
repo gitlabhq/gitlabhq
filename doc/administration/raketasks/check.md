@@ -1,6 +1,8 @@
-# Integrity Check Rake Task
+# Integrity check Rake task **(CORE ONLY)**
 
-## Repository Integrity
+GitLab provides Rake tasks to check the integrity of various components.
+
+## Repository integrity
 
 Even though Git is very resilient and tries to prevent data integrity issues,
 there are times when things go wrong. The following Rake tasks intend to
@@ -43,7 +45,7 @@ sudo gitlab-rake gitlab:git:fsck
 sudo -u git -H bundle exec rake gitlab:git:fsck RAILS_ENV=production
 ```
 
-## Uploaded Files Integrity
+## Uploaded files integrity
 
 Various types of files can be uploaded to a GitLab installation by users.
 These integrity checks can detect missing files. Additionally, for locally
@@ -127,11 +129,9 @@ Checking integrity of Uploads
 Done!
 ```
 
-## LDAP Check
+## LDAP check
 
 The LDAP check Rake task will test the bind DN and password credentials
 (if configured) and will list a sample of LDAP users. This task is also
 executed as part of the `gitlab:check` task, but can run independently.
 See [LDAP Rake Tasks - LDAP Check](ldap.md#check) for details.
-
-[git-fsck]: https://git-scm.com/docs/git-fsck

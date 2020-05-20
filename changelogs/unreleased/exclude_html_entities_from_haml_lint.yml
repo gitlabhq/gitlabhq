@@ -1,0 +1,5 @@
+---
+title: Exclude html entities from haml lint
+merge_request: 29847
+author: Lee Tickett
+type: fixed

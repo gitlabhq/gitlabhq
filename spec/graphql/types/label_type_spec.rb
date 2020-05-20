@@ -8,5 +8,5 @@ describe GitlabSchema.types['Label'] do
     expect(described_class).to have_graphql_fields(*expected_fields)
   end
 
-  it { expect(described_class).to require_graphql_authorizations(:read_label) }
+  specify { expect(described_class).to require_graphql_authorizations(:read_label) }
 end

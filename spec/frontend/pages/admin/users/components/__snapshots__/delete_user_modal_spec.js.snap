@@ -37,7 +37,6 @@ exports[`User Operation confirmation modal renders modal with form included 1`] 
       value=""
     />
   </form>
-   
   <gl-deprecated-button-stub
     size="md"
     variant="secondary"

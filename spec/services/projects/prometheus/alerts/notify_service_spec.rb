@@ -217,6 +217,32 @@ describe Projects::Prometheus::Alerts::NotifyService do
       end
     end
 
+    context 'process Alert Management alerts' do
+      let(:process_service) { instance_double(AlertManagement::ProcessPrometheusAlertService) }
+
+      before do
+        create(:prometheus_service, project: project)
+        create(:project_alerting_setting, project: project, token: token)
+      end
+
+      context 'with multiple firing alerts and resolving alerts' do
+        let(:payload_raw) do
+          payload_for(firing: [alert_firing, alert_firing], resolved: [alert_resolved])
+        end
+
+        it 'processes Prometheus alerts' do
+          expect(AlertManagement::ProcessPrometheusAlertService)
+            .to receive(:new)
+            .with(project, nil, kind_of(Hash))
+            .exactly(3).times
+            .and_return(process_service)
+          expect(process_service).to receive(:execute).exactly(3).times
+
+          subject
+        end
+      end
+    end
+
     context 'process incident issues' do
       before do
         create(:prometheus_service, project: project)
@@ -285,6 +311,13 @@ describe Projects::Prometheus::Alerts::NotifyService do
       end
 
       it_behaves_like 'no notifications', http_status: :bad_request
+
+      it 'does not process Prometheus alerts' do
+        expect(AlertManagement::ProcessPrometheusAlertService)
+          .not_to receive(:new)
+
+        subject
+      end
 
       it 'does not process issues' do
         expect(IncidentManagement::ProcessPrometheusAlertWorker)

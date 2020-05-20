@@ -1,5 +1,7 @@
-import pick from 'lodash/pick';
+import Vue from 'vue';
+import { pick } from 'lodash';
 import * as types from './mutation_types';
+import { selectedDashboard } from './getters';
 import { mapToDashboardViewModel, normalizeQueryResult } from './utils';
 import { BACKOFF_TIMEOUT } from '../../lib/utils/common_utils';
 import { endpointKeys, initialStateKeys, metricStates } from '../constants';
@@ -71,6 +73,23 @@ export default {
     state.showEmptyState = true;
   },
 
+  [types.REQUEST_DASHBOARD_STARRING](state) {
+    state.isUpdatingStarredValue = true;
+  },
+  [types.RECEIVE_DASHBOARD_STARRING_SUCCESS](state, newStarredValue) {
+    const dashboard = selectedDashboard(state);
+    const index = state.allDashboards.findIndex(d => d === dashboard);
+
+    state.isUpdatingStarredValue = false;
+
+    // Trigger state updates in the reactivity system for this change
+    // https://vuejs.org/v2/guide/reactivity.html#For-Arrays
+    Vue.set(state.allDashboards, index, { ...dashboard, starred: newStarredValue });
+  },
+  [types.RECEIVE_DASHBOARD_STARRING_FAILURE](state) {
+    state.isUpdatingStarredValue = false;
+  },
+
   /**
    * Deployments and environments
    */
@@ -134,6 +153,8 @@ export default {
     metric.loading = false;
     metric.result = null;
   },
+
+  // Parameters and other information
   [types.SET_INITIAL_STATE](state, initialState = {}) {
     Object.assign(state, pick(initialState, initialStateKeys));
   },
@@ -162,5 +183,18 @@ export default {
   },
   [types.SET_ENVIRONMENTS_FILTER](state, searchTerm) {
     state.environmentsSearchTerm = searchTerm;
+  },
+  [types.SET_EXPANDED_PANEL](state, { group, panel }) {
+    state.expandedPanel.group = group;
+    state.expandedPanel.panel = panel;
+  },
+  [types.SET_VARIABLES](state, variables) {
+    state.promVariables = variables;
+  },
+  [types.UPDATE_VARIABLE_VALUES](state, updatedVariable) {
+    Object.assign(state.promVariables[updatedVariable.key], {
+      ...state.promVariables[updatedVariable.key],
+      value: updatedVariable.value,
+    });
   },
 };

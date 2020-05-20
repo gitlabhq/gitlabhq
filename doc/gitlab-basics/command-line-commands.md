@@ -2,7 +2,7 @@
 type: howto, reference
 ---
 
-# Command Line basic commands
+# Edit files through the command line
 
 When [working with Git from the command line](start-using-git.md), you will need to
 use more than just the Git commands. There are several basic commands that you should

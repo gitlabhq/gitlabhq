@@ -278,7 +278,7 @@ git rm '*.txt'
 git rm -r <dirname>
 ```
 
-If we want to remove a file from the repository but keep it on disk, say we forgot to add it to our .gitignore file then use `--cache`:
+If we want to remove a file from the repository but keep it on disk, say we forgot to add it to our `.gitignore` file then use `--cache`:
 
 ```shell
 git rm <filename> --cache

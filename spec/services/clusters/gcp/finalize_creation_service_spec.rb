@@ -108,8 +108,7 @@ describe Clusters::Gcp::FinalizeCreationService, '#execute' do
         }
       )
 
-      stub_kubeclient_get_cluster_role_binding_error(api_url, 'gitlab-admin')
-      stub_kubeclient_create_cluster_role_binding(api_url)
+      stub_kubeclient_put_cluster_role_binding(api_url, 'gitlab-admin')
     end
   end
 

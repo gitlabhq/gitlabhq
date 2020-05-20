@@ -1,6 +1,5 @@
 <script>
 import { GlDeprecatedButton } from '@gitlab/ui';
-import envrionmentsAppMixin from 'ee_else_ce/environments/mixins/environments_app_mixin';
 import Flash from '~/flash';
 import { s__ } from '~/locale';
 import emptyState from './empty_state.vue';
@@ -22,12 +21,17 @@ export default {
     DeleteEnvironmentModal,
   },
 
-  mixins: [CIPaginationMixin, environmentsMixin, envrionmentsAppMixin],
+  mixins: [CIPaginationMixin, environmentsMixin],
 
   props: {
     endpoint: {
       type: String,
       required: true,
+    },
+    canaryDeploymentFeatureId: {
+      type: String,
+      required: false,
+      default: '',
     },
     canCreateEnvironment: {
       type: Boolean,
@@ -41,6 +45,11 @@ export default {
       type: String,
       required: true,
     },
+    helpCanaryDeploymentsPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
     helpPagePath: {
       type: String,
       required: true,
@@ -50,17 +59,37 @@ export default {
       required: false,
       default: '',
     },
+    lockPromotionSvgPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    showCanaryDeploymentCallout: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    userCalloutsPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
 
   created() {
     eventHub.$on('toggleFolder', this.toggleFolder);
+    eventHub.$on('toggleDeployBoard', this.toggleDeployBoard);
   },
 
   beforeDestroy() {
     eventHub.$off('toggleFolder');
+    eventHub.$off('toggleDeployBoard');
   },
 
   methods: {
+    toggleDeployBoard(model) {
+      this.store.toggleDeployBoard(model.id);
+    },
     toggleFolder(folder) {
       this.store.toggleFolder(folder);
 

@@ -6,7 +6,7 @@ class AddHideThirdPartyOffersToApplicationSettings < ActiveRecord::Migration[4.2
   disable_ddl_transaction!
 
   def up
-    add_column_with_default(:application_settings, :hide_third_party_offers,
+    add_column_with_default(:application_settings, :hide_third_party_offers, # rubocop:disable Migration/AddColumnWithDefault
                             :boolean,
                             default: false,
                             allow_null: false)

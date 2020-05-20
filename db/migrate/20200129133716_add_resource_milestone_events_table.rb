@@ -3,6 +3,7 @@
 class AddResourceMilestoneEventsTable < ActiveRecord::Migration[5.2]
   DOWNTIME = false
 
+  # rubocop:disable Migration/AddLimitToTextColumns
   def change
     create_table :resource_milestone_events, id: :bigserial do |t|
       t.references :user, null: false, foreign_key: { on_delete: :nullify },
@@ -22,4 +23,5 @@ class AddResourceMilestoneEventsTable < ActiveRecord::Migration[5.2]
       t.datetime_with_timezone :created_at, null: false
     end
   end
+  # rubocop:enable Migration/AddLimitToTextColumns
 end

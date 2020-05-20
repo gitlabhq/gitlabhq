@@ -6,7 +6,9 @@ class AddMirrorAvailableToApplicationSettings < ActiveRecord::Migration[4.2]
   disable_ddl_transaction!
 
   def up
+    # rubocop:disable Migration/AddColumnWithDefault
     add_column_with_default(:application_settings, :mirror_available, :boolean, default: true, allow_null: false) unless column_exists?(:application_settings, :mirror_available)
+    # rubocop:enable Migration/AddColumnWithDefault
   end
 
   def down

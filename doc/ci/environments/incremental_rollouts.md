@@ -46,7 +46,7 @@ application will be deployed to a single pod while the remaining 9 will present 
 
 First we [define the template as manual](https://gitlab.com/gl-release/incremental-rollout-example/blob/master/.gitlab-ci.yml#L100-103):
 
-```yml
+```yaml
 .manual_rollout_template: &manual_rollout_template
   <<: *rollout_template
   stage: production
@@ -55,7 +55,7 @@ First we [define the template as manual](https://gitlab.com/gl-release/increment
 
 Then we [define the rollout amount for each step](https://gitlab.com/gl-release/incremental-rollout-example/blob/master/.gitlab-ci.yml#L152-155):
 
-```yml
+```yaml
 rollout 10%:
   <<: *manual_rollout_template
   variables:
@@ -86,7 +86,7 @@ countdown and then deploy.
 
 First we [define the template as timed](https://gitlab.com/gl-release/timed-rollout-example/blob/master/.gitlab-ci.yml#L86-89):
 
-```yml
+```yaml
 .timed_rollout_template: &timed_rollout_template
   <<: *rollout_template
   when: delayed
@@ -95,13 +95,13 @@ First we [define the template as timed](https://gitlab.com/gl-release/timed-roll
 
 We can define the delay period using the `start_in` key:
 
-```yml
+```yaml
 start_in: 1 minutes
 ```
 
 Then we [define the rollout amount for each step](https://gitlab.com/gl-release/timed-rollout-example/blob/master/.gitlab-ci.yml#L97-101):
 
-```yml
+```yaml
 timed rollout 30%:
   <<: *timed_rollout_template
   stage: timed rollout 30%

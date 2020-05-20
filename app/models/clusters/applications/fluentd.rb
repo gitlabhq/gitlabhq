@@ -4,6 +4,7 @@ module Clusters
   module Applications
     class Fluentd < ApplicationRecord
       VERSION = '2.4.0'
+      CILIUM_CONTAINER_NAME = 'cilium-monitor'
 
       self.table_name = 'clusters_applications_fluentd'
 
@@ -17,6 +18,8 @@ module Clusters
       default_value_for :protocol, :tcp
 
       enum protocol: { tcp: 0, udp: 1 }
+
+      validate :has_at_least_one_log_enabled?
 
       def chart
         'stable/fluentd'
@@ -38,6 +41,12 @@ module Clusters
       end
 
       private
+
+      def has_at_least_one_log_enabled?
+        if !waf_log_enabled && !cilium_log_enabled
+          errors.add(:base, _("At least one logging option is required to be enabled"))
+        end
+      end
 
       def content_values
         YAML.load_file(chart_values_file).deep_merge!(specification)
@@ -62,7 +71,7 @@ module Clusters
           program fluentd
           hostname ${kubernetes_host}
           protocol #{protocol}
-          packet_size 65535
+          packet_size 131072
           <buffer kubernetes_host>
           </buffer>
           <format>
@@ -85,7 +94,7 @@ module Clusters
         <source>
           @type tail
           @id in_tail_container_logs
-          path /var/log/containers/*#{Ingress::MODSECURITY_LOG_CONTAINER_NAME}*.log
+          path #{path_to_logs}
           pos_file /var/log/fluentd-containers.log.pos
           tag kubernetes.*
           read_from_head true
@@ -95,6 +104,13 @@ module Clusters
           </parse>
         </source>
         EOF
+      end
+
+      def path_to_logs
+        path = []
+        path << "/var/log/containers/*#{Ingress::MODSECURITY_LOG_CONTAINER_NAME}*.log" if waf_log_enabled
+        path << "/var/log/containers/*#{CILIUM_CONTAINER_NAME}*.log" if cilium_log_enabled
+        path.join(',')
       end
     end
   end

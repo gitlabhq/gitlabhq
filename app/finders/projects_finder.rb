@@ -151,11 +151,11 @@ class ProjectsFinder < UnionFinder
   end
 
   def by_personal(items)
-    (params[:personal].present? && current_user) ? items.personal(current_user) : items
+    params[:personal].present? && current_user ? items.personal(current_user) : items
   end
 
   def by_starred(items)
-    (params[:starred].present? && current_user) ? items.starred_by(current_user) : items
+    params[:starred].present? && current_user ? items.starred_by(current_user) : items
   end
 
   def by_trending(items)

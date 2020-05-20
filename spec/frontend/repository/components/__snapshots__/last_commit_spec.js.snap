@@ -26,9 +26,7 @@ exports[`Repository last commit component renders commit widget 1`] = `
         class="commit-row-message item-title"
         href="https://test.com/commit/123"
       >
-        
-          Commit title
-        
+        Commit title
       </gl-link-stub>
        
       <!---->
@@ -128,9 +126,7 @@ exports[`Repository last commit component renders the signature HTML as returned
         class="commit-row-message item-title"
         href="https://test.com/commit/123"
       >
-        
-          Commit title
-        
+        Commit title
       </gl-link-stub>
        
       <!---->

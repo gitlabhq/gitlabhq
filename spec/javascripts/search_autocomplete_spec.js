@@ -188,4 +188,28 @@ describe('Search autocomplete dropdown', () => {
     // example) on JavaScript-created keypresses.
     expect(submitSpy).not.toHaveBeenTriggered();
   });
+
+  describe('disableAutocomplete', function() {
+    beforeEach(function() {
+      widget.enableAutocomplete();
+    });
+
+    it('should close the Dropdown', function() {
+      const toggleSpy = spyOn(widget.dropdownToggle, 'dropdown');
+
+      widget.dropdown.addClass('show');
+      widget.disableAutocomplete();
+
+      expect(toggleSpy).toHaveBeenCalledWith('toggle');
+    });
+  });
+
+  describe('enableAutocomplete', function() {
+    it('should open the Dropdown', function() {
+      const toggleSpy = spyOn(widget.dropdownToggle, 'dropdown');
+      widget.enableAutocomplete();
+
+      expect(toggleSpy).toHaveBeenCalledWith('toggle');
+    });
+  });
 });

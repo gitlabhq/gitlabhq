@@ -194,6 +194,66 @@ RSpec.shared_examples 'cluster application status specs' do |application_name|
       end
     end
 
+    describe '#make_externally_installed' do
+      subject { create(application_name, :installing) }
+
+      it 'is installed' do
+        subject.make_externally_installed
+
+        expect(subject).to be_installed
+      end
+
+      context 'application is updated' do
+        subject { create(application_name, :updated) }
+
+        it 'is installed' do
+          subject.make_externally_installed
+
+          expect(subject).to be_installed
+        end
+      end
+
+      context 'application is errored' do
+        subject { create(application_name, :errored) }
+
+        it 'is installed' do
+          subject.make_externally_installed
+
+          expect(subject).to be_installed
+        end
+      end
+    end
+
+    describe '#make_externally_uninstalled' do
+      subject { create(application_name, :installed) }
+
+      it 'is uninstalled' do
+        subject.make_externally_uninstalled
+
+        expect(subject).to be_uninstalled
+      end
+
+      context 'application is updated' do
+        subject { create(application_name, :updated) }
+
+        it 'is uninstalled' do
+          subject.make_externally_uninstalled
+
+          expect(subject).to be_uninstalled
+        end
+      end
+
+      context 'application is errored' do
+        subject { create(application_name, :errored) }
+
+        it 'is uninstalled' do
+          subject.make_externally_uninstalled
+
+          expect(subject).to be_uninstalled
+        end
+      end
+    end
+
     describe '#make_scheduled' do
       subject { create(application_name, :installable) }
 
@@ -278,6 +338,7 @@ RSpec.shared_examples 'cluster application status specs' do |application_name|
       :update_errored    | false
       :uninstalling      | false
       :uninstall_errored | false
+      :uninstalled       | false
       :timed_out         | false
     end
 

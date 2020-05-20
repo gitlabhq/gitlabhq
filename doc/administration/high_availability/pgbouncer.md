@@ -165,7 +165,7 @@ Refer to your preferred Load Balancer's documentation for further guidance.
 
 1. Run `gitlab-ctl reconfigure`
 
-1. On the node running Unicorn, make sure the following is set in `/etc/gitlab/gitlab.rb`
+1. On the node running Puma, make sure the following is set in `/etc/gitlab/gitlab.rb`
 
    ```ruby
    gitlab_rails['db_host'] = 'PGBOUNCER_HOST'
@@ -215,7 +215,7 @@ To start a session, run
 ```shell
 # gitlab-ctl pgb-console
 Password for user pgbouncer:
-psql (9.6.8, server 1.7.2/bouncer)
+psql (11.7, server 1.7.2/bouncer)
 Type "help" for help.
 
 pgbouncer=#

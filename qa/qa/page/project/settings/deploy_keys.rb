@@ -5,7 +5,7 @@ module QA
     module Project
       module Settings
         class DeployKeys < Page::Base
-          view 'app/views/projects/deploy_keys/_form.html.haml' do
+          view 'app/views/shared/deploy_keys/_form.html.haml' do
             element :deploy_key_title, 'text_field :title' # rubocop:disable QA/ElementWithPattern
             element :deploy_key_key, 'text_area :key' # rubocop:disable QA/ElementWithPattern
           end

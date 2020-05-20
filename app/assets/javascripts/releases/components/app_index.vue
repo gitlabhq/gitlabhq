@@ -1,6 +1,6 @@
 <script>
 import { mapState, mapActions } from 'vuex';
-import { GlSkeletonLoading, GlEmptyState, GlLink } from '@gitlab/ui';
+import { GlSkeletonLoading, GlEmptyState, GlLink, GlButton } from '@gitlab/ui';
 import {
   getParameterByName,
   historyPushState,
@@ -18,6 +18,7 @@ export default {
     ReleaseBlock,
     TablePagination,
     GlLink,
+    GlButton,
   },
   props: {
     projectId: {
@@ -69,14 +70,16 @@ export default {
 </script>
 <template>
   <div class="flex flex-column mt-2">
-    <gl-link
+    <gl-button
       v-if="newReleasePath"
       :href="newReleasePath"
       :aria-describedby="shouldRenderEmptyState && 'releases-description'"
-      class="btn btn-success align-self-end mb-2 js-new-release-btn"
+      category="primary"
+      variant="success"
+      class="align-self-end mb-2 js-new-release-btn"
     >
       {{ __('New release') }}
-    </gl-link>
+    </gl-button>
 
     <gl-skeleton-loading v-if="isLoading" class="js-loading" />
 

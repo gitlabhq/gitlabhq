@@ -5,6 +5,6 @@ module ChaosQueue
 
   included do
     queue_namespace :chaos
-    feature_category :chaos_engineering
+    feature_category_not_owned!
   end
 end

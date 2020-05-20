@@ -1,0 +1,5 @@
+---
+title: Fix 500 error for non-existing snippet on graphql mutations
+merge_request: 30632
+author: Sashi Kumar
+type: fixed

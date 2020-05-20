@@ -1,10 +1,9 @@
-/* eslint-disable no-underscore-dangle, class-methods-use-this, consistent-return, no-shadow */
+/* eslint-disable no-underscore-dangle, class-methods-use-this, consistent-return */
 
 import ListIssue from 'ee_else_ce/boards/models/issue';
 import { __ } from '~/locale';
 import ListLabel from './label';
 import ListAssignee from './assignee';
-import { urlParamsToObject } from '~/lib/utils/common_utils';
 import flash from '~/flash';
 import boardsStore from '../stores/boards_store';
 import ListMilestone from './milestone';
@@ -40,8 +39,8 @@ class List {
     this.id = obj.id;
     this._uid = this.guid();
     this.position = obj.position;
-    this.title = obj.list_type === 'backlog' ? __('Open') : obj.title;
-    this.type = obj.list_type;
+    this.title = (obj.list_type || obj.listType) === 'backlog' ? __('Open') : obj.title;
+    this.type = obj.list_type || obj.listType;
 
     const typeInfo = this.getTypeInfo(this.type);
     this.preset = Boolean(typeInfo.isPreset);
@@ -52,14 +51,12 @@ class List {
     this.loadingMore = false;
     this.issues = obj.issues || [];
     this.issuesSize = obj.issuesSize ? obj.issuesSize : 0;
-    this.maxIssueCount = Object.hasOwnProperty.call(obj, 'max_issue_count')
-      ? obj.max_issue_count
-      : 0;
+    this.maxIssueCount = obj.maxIssueCount || obj.max_issue_count || 0;
 
     if (obj.label) {
       this.label = new ListLabel(obj.label);
-    } else if (obj.user) {
-      this.assignee = new ListAssignee(obj.user);
+    } else if (obj.user || obj.assignee) {
+      this.assignee = new ListAssignee(obj.user || obj.assignee);
       this.title = this.assignee.name;
     } else if (IS_EE && obj.milestone) {
       this.milestone = new ListMilestone(obj.milestone);
@@ -113,34 +110,7 @@ class List {
   }
 
   getIssues(emptyIssues = true) {
-    const data = {
-      ...urlParamsToObject(boardsStore.filter.path),
-      page: this.page,
-    };
-
-    if (this.label && data.label_name) {
-      data.label_name = data.label_name.filter(label => label !== this.label.title);
-    }
-
-    if (emptyIssues) {
-      this.loading = true;
-    }
-
-    return boardsStore
-      .getIssuesForList(this.id, data)
-      .then(res => res.data)
-      .then(data => {
-        this.loading = false;
-        this.issuesSize = data.size;
-
-        if (emptyIssues) {
-          this.issues = [];
-        }
-
-        this.createIssues(data.issues);
-
-        return data;
-      });
+    return boardsStore.getListIssues(this, emptyIssues);
   }
 
   newIssue(issue) {
@@ -164,48 +134,7 @@ class List {
   }
 
   addIssue(issue, listFrom, newIndex) {
-    let moveBeforeId = null;
-    let moveAfterId = null;
-
-    if (!this.findIssue(issue.id)) {
-      if (newIndex !== undefined) {
-        this.issues.splice(newIndex, 0, issue);
-
-        if (this.issues[newIndex - 1]) {
-          moveBeforeId = this.issues[newIndex - 1].id;
-        }
-
-        if (this.issues[newIndex + 1]) {
-          moveAfterId = this.issues[newIndex + 1].id;
-        }
-      } else {
-        this.issues.push(issue);
-      }
-
-      if (this.label) {
-        issue.addLabel(this.label);
-      }
-
-      if (this.assignee) {
-        if (listFrom && listFrom.type === 'assignee') {
-          issue.removeAssignee(listFrom.assignee);
-        }
-        issue.addAssignee(this.assignee);
-      }
-
-      if (IS_EE && this.milestone) {
-        if (listFrom && listFrom.type === 'milestone') {
-          issue.removeMilestone(listFrom.milestone);
-        }
-        issue.addMilestone(this.milestone);
-      }
-
-      if (listFrom) {
-        this.issuesSize += 1;
-
-        this.updateIssueLabel(issue, listFrom, moveBeforeId, moveAfterId);
-      }
-    }
+    boardsStore.addListIssue(this, issue, listFrom, newIndex);
   }
 
   moveIssue(issue, oldIndex, newIndex, moveBeforeId, moveAfterId) {

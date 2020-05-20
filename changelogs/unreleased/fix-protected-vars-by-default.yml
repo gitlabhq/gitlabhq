@@ -1,0 +1,6 @@
+---
+title: Fixes bug where variables were not protected by default when using the correct
+  CI/CD admin setting
+merge_request: 31655
+author:
+type: fixed

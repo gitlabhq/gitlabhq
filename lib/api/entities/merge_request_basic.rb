@@ -50,8 +50,10 @@ module API
       # use `MergeRequest#mergeable?` instead (boolean).
       # See https://gitlab.com/gitlab-org/gitlab-foss/issues/42344 for more
       # information.
-      expose :merge_status do |merge_request|
-        merge_request.check_mergeability(async: true)
+      #
+      # For list endpoints, we skip the recheck by default, since it's expensive
+      expose :merge_status do |merge_request, options|
+        merge_request.check_mergeability(async: true) unless options[:skip_merge_status_recheck]
         merge_request.public_merge_status
       end
       expose :diff_head_sha, as: :sha

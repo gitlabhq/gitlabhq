@@ -6,39 +6,47 @@ describe ReactiveCaching, :use_clean_rails_memory_store_caching do
   include ExclusiveLeaseHelpers
   include ReactiveCachingHelpers
 
-  class CacheTest
-    include ReactiveCaching
+  let(:cache_class_test) do
+    Class.new do
+      include ReactiveCaching
 
-    self.reactive_cache_key = ->(thing) { ["foo", thing.id] }
+      self.reactive_cache_key = ->(thing) { ["foo", thing.id] }
 
-    self.reactive_cache_lifetime = 5.minutes
-    self.reactive_cache_refresh_interval = 15.seconds
+      self.reactive_cache_lifetime = 5.minutes
+      self.reactive_cache_refresh_interval = 15.seconds
 
-    attr_reader :id
+      attr_reader :id
 
-    def self.primary_key
-      :id
-    end
-
-    def initialize(id, &blk)
-      @id = id
-      @calculator = blk
-    end
-
-    def calculate_reactive_cache
-      @calculator.call
-    end
-
-    def result
-      with_reactive_cache do |data|
-        data
+      def self.primary_key
+        :id
       end
+
+      def initialize(id, &blk)
+        @id = id
+        @calculator = blk
+      end
+
+      def calculate_reactive_cache
+        @calculator.call
+      end
+
+      def result
+        with_reactive_cache do |data|
+          data
+        end
+      end
+    end
+  end
+
+  let(:external_dependency_cache_class_test) do
+    Class.new(cache_class_test) do
+      self.reactive_cache_work_type = :external_dependency
     end
   end
 
   let(:calculation) { -> { 2 + 2 } }
   let(:cache_key) { "foo:666" }
-  let(:instance) { CacheTest.new(666, &calculation) }
+  let(:instance) { cache_class_test.new(666, &calculation) }
 
   describe '#with_reactive_cache' do
     before do
@@ -46,6 +54,18 @@ describe ReactiveCaching, :use_clean_rails_memory_store_caching do
     end
 
     subject(:go!) { instance.result }
+
+    shared_examples 'reactive worker call' do |worker_class|
+      let(:instance) do
+        test_class.new(666, &calculation)
+      end
+
+      it 'performs caching with correct worker' do
+        expect(worker_class).to receive(:perform_async).with(test_class, 666)
+
+        go!
+      end
+    end
 
     shared_examples 'a cacheable value' do |cached_value|
       before do
@@ -73,10 +93,12 @@ describe ReactiveCaching, :use_clean_rails_memory_store_caching do
 
         it { is_expected.to be_nil }
 
-        it 'refreshes cache' do
-          expect(ReactiveCachingWorker).to receive(:perform_async).with(CacheTest, 666)
+        it_behaves_like 'reactive worker call', ReactiveCachingWorker do
+          let(:test_class) { cache_class_test }
+        end
 
-          instance.with_reactive_cache { raise described_class::InvalidateReactiveCache }
+        it_behaves_like 'reactive worker call', ExternalServiceReactiveCachingWorker do
+          let(:test_class) { external_dependency_cache_class_test }
         end
       end
     end
@@ -84,10 +106,12 @@ describe ReactiveCaching, :use_clean_rails_memory_store_caching do
     context 'when cache is empty' do
       it { is_expected.to be_nil }
 
-      it 'enqueues a background worker to bootstrap the cache' do
-        expect(ReactiveCachingWorker).to receive(:perform_async).with(CacheTest, 666)
+      it_behaves_like 'reactive worker call', ReactiveCachingWorker do
+        let(:test_class) { cache_class_test }
+      end
 
-        go!
+      it_behaves_like 'reactive worker call', ExternalServiceReactiveCachingWorker do
+        let(:test_class) { external_dependency_cache_class_test }
       end
 
       it 'updates the cache lifespan' do
@@ -168,12 +192,14 @@ describe ReactiveCaching, :use_clean_rails_memory_store_caching do
 
     context 'with custom reactive_cache_worker_finder' do
       let(:args) { %w(arg1 arg2) }
-      let(:instance) { CustomFinderCacheTest.new(666, &calculation) }
+      let(:instance) { custom_finder_cache_test.new(666, &calculation) }
 
-      class CustomFinderCacheTest < CacheTest
-        self.reactive_cache_worker_finder = ->(_id, *args) { from_cache(*args) }
+      let(:custom_finder_cache_test) do
+        Class.new(cache_class_test) do
+          self.reactive_cache_worker_finder = ->(_id, *args) { from_cache(*args) }
 
-        def self.from_cache(*args); end
+          def self.from_cache(*args); end
+        end
       end
 
       before do
@@ -234,6 +260,18 @@ describe ReactiveCaching, :use_clean_rails_memory_store_caching do
         go!
       end
 
+      context 'when :external_dependency cache' do
+        let(:instance) do
+          external_dependency_cache_class_test.new(666, &calculation)
+        end
+
+        it 'enqueues a repeat worker' do
+          expect_reactive_cache_update_queued(instance, worker_klass: ExternalServiceReactiveCachingWorker)
+
+          go!
+        end
+      end
+
       it 'calls a reactive_cache_updated only once if content did not change on subsequent update' do
         expect(instance).to receive(:calculate_reactive_cache).twice
         expect(instance).to receive(:reactive_cache_updated).once
@@ -262,7 +300,7 @@ describe ReactiveCaching, :use_clean_rails_memory_store_caching do
           it_behaves_like 'ExceededReactiveCacheLimit'
 
           context 'when reactive_cache_hard_limit is overridden' do
-            let(:test_class) { Class.new(CacheTest) { self.reactive_cache_hard_limit = 3.megabytes } }
+            let(:test_class) { Class.new(cache_class_test) { self.reactive_cache_hard_limit = 3.megabytes } }
             let(:instance) { test_class.new(666, &calculation) }
 
             it_behaves_like 'successful cache'

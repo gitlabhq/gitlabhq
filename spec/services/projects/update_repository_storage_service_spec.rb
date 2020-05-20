@@ -5,17 +5,20 @@ require 'spec_helper'
 describe Projects::UpdateRepositoryStorageService do
   include Gitlab::ShellAdapter
 
-  subject { described_class.new(project) }
+  subject { described_class.new(repository_storage_move) }
 
   describe "#execute" do
-    let(:time) { Time.now }
+    let(:time) { Time.current }
 
     before do
       allow(Time).to receive(:now).and_return(time)
+      allow(Gitlab.config.repositories.storages).to receive(:keys).and_return(%w[default test_second_storage])
     end
 
     context 'without wiki and design repository' do
       let(:project) { create(:project, :repository, repository_read_only: true, wiki_enabled: false) }
+      let(:destination) { 'test_second_storage' }
+      let(:repository_storage_move) { create(:project_repository_storage_move, :scheduled, project: project, destination_storage_name: destination) }
       let!(:checksum) { project.repository.checksum }
       let(:project_repository_double) { double(:repository) }
 
@@ -41,9 +44,9 @@ describe Projects::UpdateRepositoryStorageService do
           expect(project_repository_double).to receive(:checksum)
             .and_return(checksum)
 
-          result = subject.execute('test_second_storage')
+          result = subject.execute
 
-          expect(result[:status]).to eq(:success)
+          expect(result).to be_success
           expect(project).not_to be_repository_read_only
           expect(project.repository_storage).to eq('test_second_storage')
           expect(gitlab_shell.repository_exists?('default', old_path)).to be(false)
@@ -52,11 +55,13 @@ describe Projects::UpdateRepositoryStorageService do
       end
 
       context 'when the filesystems are the same' do
-        it 'bails out and does nothing' do
-          result = subject.execute(project.repository_storage)
+        let(:destination) { project.repository_storage }
 
-          expect(result[:status]).to eq(:error)
-          expect(result[:message]).to match(/SameFilesystemError/)
+        it 'bails out and does nothing' do
+          result = subject.execute
+
+          expect(result).to be_error
+          expect(result.message).to match(/SameFilesystemError/)
         end
       end
 
@@ -72,9 +77,9 @@ describe Projects::UpdateRepositoryStorageService do
             .and_raise(Gitlab::Git::CommandError)
           expect(GitlabShellWorker).not_to receive(:perform_async)
 
-          result = subject.execute('test_second_storage')
+          result = subject.execute
 
-          expect(result[:status]).to eq(:error)
+          expect(result).to be_error
           expect(project).not_to be_repository_read_only
           expect(project.repository_storage).to eq('default')
         end
@@ -93,9 +98,9 @@ describe Projects::UpdateRepositoryStorageService do
             .and_return('not matching checksum')
           expect(GitlabShellWorker).not_to receive(:perform_async)
 
-          result = subject.execute('test_second_storage')
+          result = subject.execute
 
-          expect(result[:status]).to eq(:error)
+          expect(result).to be_error
           expect(project).not_to be_repository_read_only
           expect(project.repository_storage).to eq('default')
         end
@@ -115,9 +120,9 @@ describe Projects::UpdateRepositoryStorageService do
           expect(project_repository_double).to receive(:checksum)
             .and_return(checksum)
 
-          result = subject.execute('test_second_storage')
+          result = subject.execute
 
-          expect(result[:status]).to eq(:success)
+          expect(result).to be_success
           expect(project.repository_storage).to eq('test_second_storage')
           expect(project.reload_pool_repository).to be_nil
         end
@@ -128,9 +133,24 @@ describe Projects::UpdateRepositoryStorageService do
       include_examples 'moves repository to another storage', 'wiki' do
         let(:project) { create(:project, :repository, repository_read_only: true, wiki_enabled: true) }
         let(:repository) { project.wiki.repository }
+        let(:destination) { 'test_second_storage' }
+        let(:repository_storage_move) { create(:project_repository_storage_move, :scheduled, project: project, destination_storage_name: destination) }
 
         before do
           project.create_wiki
+        end
+      end
+    end
+
+    context 'with design repository' do
+      include_examples 'moves repository to another storage', 'design' do
+        let(:project) { create(:project, :repository, repository_read_only: true) }
+        let(:repository) { project.design_repository }
+        let(:destination) { 'test_second_storage' }
+        let(:repository_storage_move) { create(:project_repository_storage_move, :scheduled, project: project, destination_storage_name: destination) }
+
+        before do
+          project.design_repository.create_if_not_exists
         end
       end
     end

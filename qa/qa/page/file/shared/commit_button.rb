@@ -5,7 +5,11 @@ module QA
     module File
       module Shared
         module CommitButton
+          extend QA::Page::PageConcern
+
           def self.included(base)
+            super
+
             base.view 'app/views/projects/_commit_button.html.haml' do
               element :commit_button
             end

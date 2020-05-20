@@ -1,15 +1,12 @@
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex';
 import tooltip from '~/vue_shared/directives/tooltip';
-import DeprecatedModal from '~/vue_shared/components/deprecated_modal.vue';
 import CommitFilesList from './commit_sidebar/list.vue';
 import EmptyState from './commit_sidebar/empty_state.vue';
-import consts from '../stores/modules/commit/constants';
 import { leftSidebarViews, stageKeys } from '../constants';
 
 export default {
   components: {
-    DeprecatedModal,
     CommitFilesList,
     EmptyState,
   },
@@ -17,13 +14,7 @@ export default {
     tooltip,
   },
   computed: {
-    ...mapState([
-      'changedFiles',
-      'stagedFiles',
-      'rightPanelCollapsed',
-      'lastCommitMsg',
-      'unusedSeal',
-    ]),
+    ...mapState(['changedFiles', 'stagedFiles', 'lastCommitMsg', 'unusedSeal']),
     ...mapState('commit', ['commitMessage', 'submitCommitLoading']),
     ...mapGetters(['lastOpenedFile', 'hasChanges', 'someUncommittedChanges', 'activeFile']),
     ...mapGetters('commit', ['discardDraftButtonDisabled']),
@@ -59,10 +50,6 @@ export default {
   },
   methods: {
     ...mapActions(['openPendingTab', 'updateViewer', 'updateActivityBarView']),
-    ...mapActions('commit', ['commitChanges', 'updateCommitAction']),
-    forceCreateNewBranch() {
-      return this.updateCommitAction(consts.COMMIT_TO_NEW_BRANCH).then(() => this.commitChanges());
-    },
   },
   stageKeys,
 };
@@ -70,20 +57,6 @@ export default {
 
 <template>
   <div class="multi-file-commit-panel-section">
-    <deprecated-modal
-      id="ide-create-branch-modal"
-      :primary-button-label="__('Create new branch')"
-      :title="__('Branch has changed')"
-      kind="success"
-      @submit="forceCreateNewBranch"
-    >
-      <template slot="body">
-        {{
-          __(`This branch has changed since you started editing.
-          Would you like to create a new branch?`)
-        }}
-      </template>
-    </deprecated-modal>
     <template v-if="showStageUnstageArea">
       <commit-files-list
         :key-prefix="$options.stageKeys.staged"

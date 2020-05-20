@@ -20,7 +20,7 @@ shared_examples 'does not advance to next stage' do
   end
 end
 
-shared_examples 'cannot do jira import' do
+shared_examples 'cannot do Jira import' do
   it 'does not advance to next stage' do
     worker = described_class.new
     expect(worker).not_to receive(:import)

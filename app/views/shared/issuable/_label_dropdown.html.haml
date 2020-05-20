@@ -8,10 +8,11 @@
 - data_options = local_assigns.fetch(:data_options, {})
 - classes = local_assigns.fetch(:classes, [])
 - selected = local_assigns.fetch(:selected, nil)
-- dropdown_title = local_assigns.fetch(:dropdown_title, "Filter by label")
-- dropdown_data = label_dropdown_data(edit_context, labels: labels_filter_path_with_defaults(only_group_labels: edit_context.is_a?(Group)), default_label: "Labels")
+- dropdown_title = local_assigns.fetch(:dropdown_title, _('Filter by label'))
+- dropdown_data = label_dropdown_data(edit_context, labels: labels_filter_path_with_defaults(only_group_labels: edit_context.is_a?(Group)), default_label: _('Labels'))
+
 - dropdown_data.merge!(data_options)
-- label_name = local_assigns.fetch(:label_name, "Labels")
+- label_name = local_assigns.fetch(:label_name, _('Labels'))
 - no_default_styles = local_assigns.fetch(:no_default_styles, false)
 - classes << 'js-extra-options' if extra_options
 - classes << 'js-filter-submit' if filter_submit

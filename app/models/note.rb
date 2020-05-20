@@ -159,6 +159,8 @@ class Note < ApplicationRecord
   after_save :touch_noteable, unless: :importing?
   after_destroy :expire_etag_cache
   after_save :store_mentions!, if: :any_mentionable_attributes_changed?
+  after_commit :notify_after_create, on: :create
+  after_commit :notify_after_destroy, on: :destroy
 
   class << self
     def model_name
@@ -277,6 +279,10 @@ class Note < ApplicationRecord
 
   def for_project_noteable?
     !for_personal_snippet?
+  end
+
+  def for_design?
+    noteable_type == DesignManagement::Design.name
   end
 
   def for_issuable?
@@ -503,6 +509,14 @@ class Note < ApplicationRecord
 
     # We return the noteable object so we can re-use it in EE for Elasticsearch.
     noteable_object
+  end
+
+  def notify_after_create
+    noteable&.after_note_created(self)
+  end
+
+  def notify_after_destroy
+    noteable&.after_note_destroyed(self)
   end
 
   def banzai_render_context(field)

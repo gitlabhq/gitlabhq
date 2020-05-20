@@ -9,11 +9,11 @@ regular expressions to reject pushes based on commit contents, branch names or f
 
 ## Overview
 
-GitLab already offers [protected branches][protected-branches], but there are
+GitLab already offers [protected branches](../user/project/protected_branches.md), but there are
 cases when you need some specific rules like preventing Git tag removal or
 enforcing a special format for commit messages.
 
-Push rules are essentially [pre-receive Git hooks][hooks] that are easy to
+Push rules are essentially [pre-receive Git hooks](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks) that are easy to
 enable in a user-friendly interface. They are defined globally if you are an
 admin or per project so you can have different rules applied to different
 projects depending on your needs.
@@ -43,11 +43,18 @@ you want the branches to start with a certain name because you have different
 GitLab CI/CD jobs (`feature`, `hotfix`, `docker`, `android`, etc.) that rely on the
 branch name.
 
-Your developers however, don't always remember that policy, so they push
-various branches and CI pipelines do not work as expected. By restricting the
-branch names globally in Push Rules, you can now sleep without the anxiety
-of your developers' mistakes. Every branch that doesn't match your push rule
-will get rejected.
+Your developers, however, don't always remember that policy, so they might push to
+various branches, and CI pipelines might not work as expected. By restricting the
+branch names globally in Push Rules, such mistakes are prevented.
+Any branch name that doesn't match your push rule will get rejected.
+
+Note that the name of your default branch is always allowed, regardless of the branch naming
+regular expression (regex) specified. GitLab is configured this way
+because merges typically have the default branch as their target.
+If you have other target branches, include them in your regex. (See [Enabling push rules](#enabling-push-rules)).
+
+The default branch also defaults to being a [protected branch](../user/project/protected_branches.md),
+which already limits users from pushing directly.
 
 ### Custom Push Rules **(CORE ONLY)**
 
@@ -61,7 +68,7 @@ See [server hooks](../administration/server_hooks.md) for more information.
 NOTE: **Note:**
 GitLab administrators can set push rules globally under
 **Admin Area > Push Rules** that all new projects will inherit. You can later
-override them in a project's settings.
+override them in a project's settings. They can be also set on a [group level](../user/group/index.md#group-push-rules-starter).
 
 1. Navigate to your project's **Settings > Repository** and expand **Push Rules**
 1. Set the rule you want
@@ -74,7 +81,7 @@ The following options are available.
 | Removal of tags with `git push` | **Starter** 7.10 | Forbid users to remove Git tags with `git push`. Tags will still be able to be deleted through the web UI. |
 | Check whether author is a GitLab user | **Starter** 7.10 | Restrict commits by author (email) to existing GitLab users. |
 | Committer restriction | **Premium** 10.2 | GitLab will reject any commit that was not committed by the current authenticated user |
-| Check whether commit is signed through GPG | **Premium** 10.1 | Reject commit when it is not signed through GPG. Read [signing commits with GPG][signing-commits]. |
+| Check whether commit is signed through GPG | **Premium** 10.1 | Reject commit when it is not signed through GPG. Read [signing commits with GPG](../user/project/repository/gpg_signed_commits/index.md). |
 | Prevent committing secrets to Git | **Starter** 8.12 | GitLab will reject any files that are likely to contain secrets. Read [what files are forbidden](#prevent-pushing-secrets-to-the-repository). |
 | Restrict by commit message | **Starter** 7.10 | Only commit messages that match this regular expression are allowed to be pushed. Leave empty to allow any commit message. Uses multiline mode, which can be disabled using `(?-m)`. |
 | Restrict by commit message (negative match)| **Starter** 11.1 | Only commit messages that do not match this regular expression are allowed to be pushed. Leave empty to allow any commit message. Uses multiline mode, which can be disabled using `(?-m)`. |
@@ -88,14 +95,15 @@ GitLab uses [RE2 syntax](https://github.com/google/re2/wiki/Syntax) for regular 
 
 ## Prevent pushing secrets to the repository
 
-> [Introduced][ee-385] in [GitLab Starter][ee] 8.12.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/385) in [GitLab Starter](https://about.gitlab.com/pricing/) 8.12.
 
-You can turn on a predefined blacklist of files which won't be allowed to be
-pushed to a repository.
+Secrets such as credential files, SSH private keys, and other files containing secrets should never be committed to source control.
+GitLab allows you to turn on a predefined blacklist of files which won't be allowed to be
+pushed to a repository, stopping those commits from reaching the remote repository.
 
 By selecting the checkbox *Prevent committing secrets to Git*, GitLab prevents
 pushes to the repository when a file matches a regular expression as read from
-[`files_blacklist.yml`][list] (make sure you are at the right branch
+[`files_blacklist.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/gitlab/checks/files_blacklist.yml) (make sure you are at the right branch
 as your GitLab version when viewing this file).
 
 NOTE: **Note:**
@@ -171,10 +179,3 @@ questions that you know someone might ask.
 Each scenario can be a third-level heading, e.g. `### Getting error message X`.
 If you have none to add when creating a doc, leave this section in place
 but commented out to help encourage others to add to it in the future. -->
-
-[protected-branches]: ../user/project/protected_branches.md
-[signing-commits]: ../user/project/repository/gpg_signed_commits/index.md
-[ee-385]: https://gitlab.com/gitlab-org/gitlab/issues/385
-[list]: https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/gitlab/checks/files_blacklist.yml
-[hooks]: https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks
-[ee]: https://about.gitlab.com/pricing/

@@ -182,6 +182,8 @@ describe API::Issues do
   end
 
   describe 'PUT /projects/:id/issues/:issue_iid with spam filtering' do
+    include_context 'includes Spam constants'
+
     def update_issue
       put api("/projects/#{project.id}/issues/#{issue.iid}", user), params: params
     end
@@ -195,11 +197,12 @@ describe API::Issues do
     end
 
     before do
-      expect_next_instance_of(Spam::SpamCheckService) do |spam_service|
+      expect_next_instance_of(Spam::SpamActionService) do |spam_service|
         expect(spam_service).to receive_messages(check_for_spam?: true)
       end
-      expect_next_instance_of(Spam::AkismetService) do |akismet_service|
-        expect(akismet_service).to receive_messages(spam?: true)
+
+      expect_next_instance_of(Spam::SpamVerdictService) do |verdict_service|
+        expect(verdict_service).to receive(:execute).and_return(DISALLOW)
       end
     end
 

@@ -60,7 +60,9 @@ Parameters:
   },
   "updated_at": "2012-06-28T10:52:04Z",
   "created_at": "2012-06-28T10:52:04Z",
-  "web_url": "http://example.com/example/example/snippets/1"
+  "project_id": 1,
+  "web_url": "http://example.com/example/example/snippets/1",
+  "raw_url": "http://example.com/example/example/snippets/1/raw"
 }
 ```
 

@@ -71,6 +71,28 @@ describe ApplicationHelper do
     end
   end
 
+  describe '#admin_section?' do
+    context 'when controller is under the admin namespace' do
+      before do
+        allow(helper).to receive(:controller).and_return(Admin::UsersController.new)
+      end
+
+      it 'returns true' do
+        expect(helper.admin_section?).to eq(true)
+      end
+    end
+
+    context 'when controller is not under the admin namespace' do
+      before do
+        allow(helper).to receive(:controller).and_return(UsersController.new)
+      end
+
+      it 'returns true' do
+        expect(helper.admin_section?).to eq(false)
+      end
+    end
+  end
+
   describe 'simple_sanitize' do
     let(:a_tag) { '<a href="#">Foo</a>' }
 
@@ -90,8 +112,11 @@ describe ApplicationHelper do
   end
 
   describe 'time_ago_with_tooltip' do
+    around do |example|
+      Time.use_zone('UTC') { example.run }
+    end
+
     def element(*arguments)
-      Time.zone = 'UTC'
       @time = Time.zone.parse('2015-07-02 08:23')
       element = helper.time_ago_with_tooltip(@time, *arguments)
 

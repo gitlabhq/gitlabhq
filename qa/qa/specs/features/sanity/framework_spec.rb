@@ -6,7 +6,7 @@ module QA
       it 'succeeds' do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
 
-        expect(page).to have_text('Open source software to collaborate on code')
+        expect(page).to have_text('A complete DevOps platform')
       end
     end
 

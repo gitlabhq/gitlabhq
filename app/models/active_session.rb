@@ -124,7 +124,7 @@ class ActiveSession
     end
   end
 
-  # Lists the ActiveSession objects for the given session IDs.
+  # Lists the session Hash objects for the given session IDs.
   #
   # session_ids - An array of Rack::Session::SessionId objects
   #
@@ -143,7 +143,7 @@ class ActiveSession
     end
   end
 
-  # Deserializes an ActiveSession object from Redis.
+  # Deserializes a session Hash object from Redis.
   #
   # raw_session - Raw bytes from Redis
   #

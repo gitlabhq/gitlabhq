@@ -176,15 +176,21 @@ describe Ci::BuildPolicy do
         end
 
         context 'when developers can push to the branch' do
-          before do
-            create(:protected_branch, :developers_can_push,
-                   name: build.ref, project: project)
-          end
-
           context 'when the build was created by the developer' do
             let(:owner) { user }
 
-            it { expect(policy).to be_allowed :erase_build }
+            context 'when the build was created for a protected ref' do
+              before do
+                create(:protected_branch, :developers_can_push,
+                       name: build.ref, project: project)
+              end
+
+              it { expect(policy).to be_disallowed :erase_build }
+            end
+
+            context 'when the build was created for an unprotected ref' do
+              it { expect(policy).to be_allowed :erase_build }
+            end
           end
 
           context 'when the build was created by the other' do

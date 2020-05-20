@@ -2,10 +2,7 @@ import Vue from 'vue';
 import { mount } from '@vue/test-utils';
 import { formatDate } from '~/lib/utils/datetime_utility';
 import RelatedIssuableItem from '~/vue_shared/components/issue/related_issuable_item.vue';
-import {
-  defaultAssignees,
-  defaultMilestone,
-} from '../../../../javascripts/vue_shared/components/issue/related_issuable_mock_data';
+import { defaultAssignees, defaultMilestone } from './related_issuable_mock_data';
 
 describe('RelatedIssuableItem', () => {
   let wrapper;

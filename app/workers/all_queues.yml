@@ -3,6 +3,20 @@
 #
 # Do not edit it manually!
 ---
+- :name: authorized_project_update:authorized_project_update_project_create
+  :feature_category: :authentication_and_authorization
+  :has_external_dependencies: 
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+- :name: authorized_project_update:authorized_project_update_user_refresh_with_low_urgency
+  :feature_category: :authentication_and_authorization
+  :has_external_dependencies: 
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
 - :name: auto_devops:auto_devops_disable
   :feature_category: :auto_devops
   :has_external_dependencies: 
@@ -18,35 +32,35 @@
   :weight: 3
   :idempotent: 
 - :name: chaos:chaos_cpu_spin
-  :feature_category: :chaos_engineering
+  :feature_category: :not_owned
   :has_external_dependencies: 
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 2
   :idempotent: 
 - :name: chaos:chaos_db_spin
-  :feature_category: :chaos_engineering
+  :feature_category: :not_owned
   :has_external_dependencies: 
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 2
   :idempotent: 
 - :name: chaos:chaos_kill
-  :feature_category: :chaos_engineering
+  :feature_category: :not_owned
   :has_external_dependencies: 
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 2
   :idempotent: 
 - :name: chaos:chaos_leak_mem
-  :feature_category: :chaos_engineering
+  :feature_category: :not_owned
   :has_external_dependencies: 
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 2
   :idempotent: 
 - :name: chaos:chaos_sleep
-  :feature_category: :chaos_engineering
+  :feature_category: :not_owned
   :has_external_dependencies: 
   :urgency: :low
   :resource_boundary: :unknown
@@ -269,6 +283,13 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: 
+- :name: cronjob:x509_issuer_crl_check
+  :feature_category: :source_code_management
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
 - :name: deployment:deployments_finished
   :feature_category: :continuous_delivery
   :has_external_dependencies: 
@@ -290,13 +311,6 @@
   :resource_boundary: :cpu
   :weight: 3
   :idempotent: 
-- :name: gcp_cluster:cluster_configure
-  :feature_category: :kubernetes_management
-  :has_external_dependencies: 
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: 
 - :name: gcp_cluster:cluster_configure_istio
   :feature_category: :kubernetes_management
   :has_external_dependencies: true
@@ -312,13 +326,6 @@
   :weight: 1
   :idempotent: 
 - :name: gcp_cluster:cluster_patch_app
-  :feature_category: :kubernetes_management
-  :has_external_dependencies: true
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: 
-- :name: gcp_cluster:cluster_project_configure
   :feature_category: :kubernetes_management
   :has_external_dependencies: true
   :urgency: :low
@@ -689,7 +696,7 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: 
-- :name: pipeline_background:ci_daily_report_results
+- :name: pipeline_background:ci_daily_build_group_report_results
   :feature_category: :continuous_integration
   :has_external_dependencies: 
   :urgency: :low
@@ -849,14 +856,14 @@
   :urgency: :high
   :resource_boundary: :unknown
   :weight: 5
-  :idempotent: 
+  :idempotent: true
 - :name: pipeline_processing:update_head_pipeline_for_merge_request
   :feature_category: :continuous_integration
   :has_external_dependencies: 
   :urgency: :high
   :resource_boundary: :cpu
   :weight: 5
-  :idempotent: 
+  :idempotent: true
 - :name: repository_check:repository_check_batch
   :feature_category: :source_code_management
   :has_external_dependencies: 
@@ -961,7 +968,7 @@
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 2
-  :idempotent: 
+  :idempotent: true
 - :name: create_evidence
   :feature_category: :release_evidence
   :has_external_dependencies: 
@@ -1011,6 +1018,13 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: 
+- :name: design_management_new_version
+  :feature_category: :design_management
+  :has_external_dependencies: 
+  :urgency: :low
+  :resource_boundary: :memory
+  :weight: 1
+  :idempotent: 
 - :name: detect_repository_languages
   :feature_category: :source_code_management
   :has_external_dependencies: 
@@ -1051,6 +1065,13 @@
   :has_external_dependencies: 
   :urgency: :low
   :resource_boundary: :cpu
+  :weight: 1
+  :idempotent: 
+- :name: external_service_reactive_caching
+  :feature_category: :not_owned
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
   :weight: 1
   :idempotent: 
 - :name: file_hook
@@ -1143,7 +1164,7 @@
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
-  :idempotent: 
+  :idempotent: true
 - :name: migrate_external_diffs
   :feature_category: :source_code_management
   :has_external_dependencies: 
@@ -1220,7 +1241,7 @@
   :urgency: :high
   :resource_boundary: :unknown
   :weight: 3
-  :idempotent: 
+  :idempotent: true
 - :name: project_cache
   :feature_category: :source_code_management
   :has_external_dependencies: 
@@ -1280,7 +1301,7 @@
 - :name: reactive_caching
   :feature_category: :not_owned
   :has_external_dependencies: 
-  :urgency: :high
+  :urgency: :low
   :resource_boundary: :cpu
   :weight: 1
   :idempotent: 

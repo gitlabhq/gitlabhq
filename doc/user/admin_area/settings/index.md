@@ -25,7 +25,7 @@ Access the default page for admin area settings by navigating to
 | [Terms of Service and Privacy Policy](terms.md) | Include a Terms of Service agreement and Privacy Policy that all users must accept. |
 | [External Authentication](external_authorization.md#configuration) | External Classification Policy Authorization |
 | [Web terminal](../../../administration/integration/terminal.md#limiting-websocket-connection-time) | Set max session time for web terminal. |
-| [Web IDE](../../project/web_ide/index.md#enabling-client-side-evaluation) | Manage Web IDE Features. |
+| [Web IDE](../../project/web_ide/index.md#enabling-live-preview) | Manage Web IDE Features. |
 
 ## Integrations
 
@@ -35,7 +35,7 @@ Access the default page for admin area settings by navigating to
 | [PlantUML](../../../administration/integration/plantuml.md#gitlab) | Allow rendering of PlantUML diagrams in Asciidoc documents. |
 | [Slack application](../../../user/project/integrations/gitlab_slack_application.md#configuration) **(FREE ONLY)** | Slack integration allows you to interact with GitLab via slash commands in a chat window. This option is only available on GitLab.com, though it may be [available for self-managed instances in the future](https://gitlab.com/gitlab-org/gitlab/-/issues/28164). |
 | [Third party offers](third_party_offers.md) | Control the display of third party offers. |
-| [Snowplow](../../../telemetry/index.md#enabling-tracking) | Configure the Snowplow integration. |
+| [Snowplow](../../../development/telemetry/snowplow.md) | Configure the Snowplow integration. |
 | [Google GKE](../../project/clusters/add_gke_clusters.md) | Google GKE integration allows you to provision GKE clusters from GitLab. |
 | [Amazon EKS](../../project/clusters/add_eks_clusters.md) | Amazon EKS integration allows you to provision EKS clusters from GitLab. |
 
@@ -44,7 +44,7 @@ Access the default page for admin area settings by navigating to
 | Option | Description |
 | ------ | ----------- |
 | [Repository mirror](visibility_and_access_controls.md#allow-mirrors-to-be-set-up-for-projects) | Configure repository mirroring. |
-| [Repository storage](../../../administration/repository_storage_types.md#how-to-migrate-to-hashed-storage) | Configure storage path settings. |
+| [Repository storage](../../../administration/repository_storage_types.md) | Configure storage path settings. |
 | Repository maintenance | ([Repository checks](../../../administration/repository_checks.md) and [Housekeeping](../../../administration/housekeeping.md)). Configure automatic Git checks and housekeeping on repositories. |
 | [Repository static objects](../../../administration/static_objects_external_storage.md) | Serve repository static objects (for example, archives, blobs, ...) from an external storage (for example, a CDN). |
 
@@ -74,7 +74,6 @@ Access the default page for admin area settings by navigating to
 
 | Option | Description |
 | ------ | ----------- |
-| [Metrics - Influx](../../../administration/monitoring/performance/gitlab_configuration.md) | Enable and configure InfluxDB metrics. |
 | [Metrics - Prometheus](../../../administration/monitoring/prometheus/gitlab_metrics.md) | Enable and configure Prometheus metrics. |
 | [Metrics - Grafana](../../../administration/monitoring/performance/grafana_configuration.md#integration-with-gitlab-ui) | Enable and configure Grafana. |
 | [Profiling - Performance bar](../../../administration/monitoring/performance/performance_bar.md#enable-the-performance-bar-via-the-admin-panel) | Enable access to the Performance Bar for a given group. |
@@ -103,7 +102,7 @@ Access the default page for admin area settings by navigating to
 | Option | Description |
 | ------ | ----------- |
 | [Email](email.md) | Various email settings. |
-| [Help page](../../../customization/help_message.md) | Help page text and support page url. |
+| [Help page](../../../customization/help_message.md) | Help page text and support page URL. |
 | [Pages](../../../administration/pages/index.md#custom-domain-verification) | Size and domain settings for static websites |
 | [Real-time features](../../../administration/polling.md) | Change this value to influence how frequently the GitLab UI polls for updates. |
 | [Gitaly timeouts](gitaly_timeouts.md) | Configure Gitaly timeouts. |

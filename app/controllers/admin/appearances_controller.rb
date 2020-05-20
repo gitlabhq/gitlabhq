@@ -73,6 +73,7 @@ class Admin::AppearancesController < Admin::ApplicationController
       favicon
       favicon_cache
       new_project_guidelines
+      profile_image_guidelines
       updated_by
       header_message
       footer_message

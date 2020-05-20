@@ -70,7 +70,10 @@ module Gitlab
         end
 
         def filter_allowed(current_user, resolved_type, authorizing_object)
-          if authorizing_object
+          if resolved_type.nil?
+            # We're not rendering anything, for example when a record was not found
+            # no need to do anything
+          elsif authorizing_object
             # Authorizing fields representing scalars, or a simple field with an object
             resolved_type if allowed_access?(current_user, authorizing_object)
           elsif @field.connection?
@@ -83,9 +86,6 @@ module Gitlab
             resolved_type.select do |single_object_type|
               allowed_access?(current_user, single_object_type.object)
             end
-          elsif resolved_type.nil?
-            # We're not rendering anything, for example when a record was not found
-            # no need to do anything
           else
             raise "Can't authorize #{@field}"
           end

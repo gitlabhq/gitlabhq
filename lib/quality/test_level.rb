@@ -14,6 +14,7 @@ module Quality
       ],
       unit: %w[
         bin
+        channels
         config
         db
         dependencies

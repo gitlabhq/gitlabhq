@@ -1,0 +1,5 @@
+---
+title: Fix mapping group membets as Jira issues authors/assignees
+merge_request: 30820
+author:
+type: fixed

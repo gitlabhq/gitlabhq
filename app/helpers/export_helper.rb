@@ -9,7 +9,18 @@ module ExportHelper
       _('Project configuration, including services'),
       _('Issues with comments, merge requests with diffs and comments, labels, milestones, snippets, and other project entities'),
       _('LFS objects'),
-      _('Issue Boards')
+      _('Issue Boards'),
+      _('Design Management files and data')
+    ]
+  end
+
+  def group_export_descriptions
+    [
+      _('Milestones'),
+      _('Labels'),
+      _('Boards and Board Lists'),
+      _('Badges'),
+      _('Subgroups')
     ]
   end
 end

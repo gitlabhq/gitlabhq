@@ -212,12 +212,12 @@ describe 'Admin updates settings', :clean_gitlab_redis_shared_state, :do_not_moc
         expect(current_settings.hide_third_party_offers).to be true
       end
 
-      it 'Change Slack Notifications Service template settings' do
+      it 'Change Slack Notifications Service template settings', :js do
         first(:link, 'Service Templates').click
         click_link 'Slack notifications'
         fill_in 'Webhook', with: 'http://localhost'
         fill_in 'Username', with: 'test_user'
-        fill_in 'service_push_channel', with: '#test_channel'
+        fill_in 'service[push_channel]', with: '#test_channel'
         page.check('Notify only broken pipelines')
         page.select 'All branches', from: 'Branches to be notified'
 
@@ -231,10 +231,10 @@ describe 'Admin updates settings', :clean_gitlab_redis_shared_state, :do_not_moc
         expect(page.all('input[type=checkbox]')).to all(be_checked)
         expect(find_field('Webhook').value).to eq 'http://localhost'
         expect(find_field('Username').value).to eq 'test_user'
-        expect(find('#service_push_channel').value).to eq '#test_channel'
+        expect(find('[name="service[push_channel]"]').value).to eq '#test_channel'
       end
 
-      it 'defaults Deployment events to false for chat notification template settings' do
+      it 'defaults Deployment events to false for chat notification template settings', :js do
         first(:link, 'Service Templates').click
         click_link 'Slack notifications'
 
@@ -300,16 +300,6 @@ describe 'Admin updates settings', :clean_gitlab_redis_shared_state, :do_not_moc
     context 'Metrics and profiling page' do
       before do
         visit metrics_and_profiling_admin_application_settings_path
-      end
-
-      it 'Change Influx settings' do
-        page.within('.as-influx') do
-          check 'Enable InfluxDB Metrics'
-          click_button 'Save changes'
-        end
-
-        expect(current_settings.metrics_enabled?).to be true
-        expect(page).to have_content "Application settings saved successfully"
       end
 
       it 'Change Prometheus settings' do
@@ -381,6 +371,18 @@ describe 'Admin updates settings', :clean_gitlab_redis_shared_state, :do_not_moc
         expect(current_settings.allow_local_requests_from_web_hooks_and_services).to be true
         expect(current_settings.allow_local_requests_from_system_hooks).to be false
         expect(current_settings.dns_rebinding_protection_enabled).to be false
+      end
+
+      it 'Changes Issues rate limits settings' do
+        visit network_admin_application_settings_path
+
+        page.within('.as-issue-limits') do
+          fill_in 'Max requests per second per user', with: 0
+          click_button 'Save changes'
+        end
+
+        expect(page).to have_content "Application settings saved successfully"
+        expect(current_settings.issues_create_limit).to eq(0)
       end
     end
 
@@ -498,13 +500,13 @@ describe 'Admin updates settings', :clean_gitlab_redis_shared_state, :do_not_moc
   def check_all_events
     page.check('Push')
     page.check('Issue')
-    page.check('Confidential issue')
-    page.check('Merge request')
+    page.check('Confidential Issue')
+    page.check('Merge Request')
     page.check('Note')
-    page.check('Confidential note')
-    page.check('Tag push')
+    page.check('Confidential Note')
+    page.check('Tag Push')
     page.check('Pipeline')
-    page.check('Wiki page')
+    page.check('Wiki Page')
     page.check('Deployment')
   end
 

@@ -45,7 +45,7 @@ module GettextI18nRailsJs
       private
 
       def gettext_messages_by_file
-        @gettext_messages_by_file ||= JSON.parse(load_messages)
+        @gettext_messages_by_file ||= Gitlab::Json.parse(load_messages)
       end
 
       def load_messages

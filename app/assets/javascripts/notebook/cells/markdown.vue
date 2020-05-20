@@ -36,9 +36,9 @@ const katexRegexString = `(
   .replace(/\s/g, '')
   .trim();
 
-renderer.paragraph = t => {
+function renderKatex(t) {
   let text = t;
-  let inline = false;
+  let numInline = 0; // number of successfull converted math formulas
 
   if (typeof katex !== 'undefined') {
     const katexString = text
@@ -50,23 +50,39 @@ renderer.paragraph = t => {
     const numberOfMatches = katexString.match(regex);
 
     if (numberOfMatches && numberOfMatches.length !== 0) {
+      let matches = regex.exec(katexString);
       if (matchLocation > 0) {
-        let matches = regex.exec(katexString);
-        inline = true;
+        numInline += 1;
 
         while (matches !== null) {
-          const renderedKatex = katex.renderToString(matches[0].replace(/\$/g, ''));
-          text = `${text.replace(matches[0], ` ${renderedKatex}`)}`;
+          try {
+            const renderedKatex = katex.renderToString(
+              matches[0].replace(/\$/g, '').replace(/&#39;/g, "'"),
+            ); // get the tick ' back again from HTMLified string
+            text = `${text.replace(matches[0], ` ${renderedKatex}`)}`;
+          } catch {
+            numInline -= 1;
+          }
           matches = regex.exec(katexString);
         }
       } else {
-        const matches = regex.exec(katexString);
-        text = katex.renderToString(matches[2]);
+        try {
+          text = katex.renderToString(matches[2].replace(/&#39;/g, "'"));
+        } catch (error) {
+          numInline -= 1;
+        }
       }
     }
   }
-
+  return [text, numInline > 0];
+}
+renderer.paragraph = t => {
+  const [text, inline] = renderKatex(t);
   return `<p class="${inline ? 'inline-katex' : ''}">${text}</p>`;
+};
+renderer.listitem = t => {
+  const [text, inline] = renderKatex(t);
+  return `<li class="${inline ? 'inline-katex' : ''}">${text}</li>`;
 };
 
 marked.setOptions({

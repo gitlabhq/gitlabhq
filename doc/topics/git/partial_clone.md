@@ -9,22 +9,7 @@ is a performance optimization that "allows Git to function without having a
 complete copy of the repository. The goal of this work is to allow Git better
 handle extremely large repositories."
 
-## Enabling partial clone
-
-> [Introduced](https://gitlab.com/gitlab-org/gitaly/issues/1553) in GitLab 12.4.
-
-To enable partial clone, use the [feature flags API](../../api/features.md).
-For example:
-
-```shell
-curl --data "value=true" --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/features/gitaly_upload_pack_filter
-```
-
-Alternatively, flip the switch and enable the feature flag:
-
-```ruby
-Feature.enable(:gitaly_upload_pack_filter)
-```
+Git 2.22.0 or later is required.
 
 ## Filter by file size
 
@@ -82,7 +67,7 @@ reduce the size of your working copy.
 
 ```plaintext
 # Clone the repo excluding all files
-$ git clone --filter=blob:none --sparse git@gitlab.com:gitlab-com/www-gitlab-com/git
+$ git clone --filter=blob:none --sparse git@gitlab.com:gitlab-com/www-gitlab-com.git
 Cloning into 'www-gitlab-com'...
 remote: Enumerating objects: 678296, done.
 remote: Counting objects: 100% (678296/678296), done.
@@ -135,7 +120,7 @@ enabled on the Git server:
    many applications, each in a different subdirectory in the root. Create a file
    `shiny-app/.filterspec` using the GitLab web interface:
 
-   ```.gitignore
+   ```plaintext
    # Only the paths listed in the file will be downloaded when performing a
    # partial clone using `--filter=sparse:oid=shiny-app/.gitfilterspec`
 
@@ -153,7 +138,7 @@ enabled on the Git server:
    shared-component-b/
    ```
 
-1. *Create a new Git repository and fetch.* Support for `--filter=sparse:oid`
+1. **Create a new Git repository and fetch.** Support for `--filter=sparse:oid`
    using the clone command is incomplete, so we will emulate the clone command
    by hand, using `git init` and `git fetch`. Follow
    [issue tracking support for `--filter=sparse:oid`](https://gitlab.com/gitlab-org/git/issues/4)

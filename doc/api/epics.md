@@ -1,5 +1,8 @@
 # Epics API **(PREMIUM)**
 
+> - Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.2.
+> - Single-level Epics [were moved](https://gitlab.com/gitlab-org/gitlab/issues/37081) to [GitLab Premium](https://about.gitlab.com/pricing/) in 12.8.
+
 Every API call to epic must be authenticated.
 
 If a user is not a member of a group and the group is private, a `GET` request on that group will result to a `404` status code.
@@ -64,6 +67,7 @@ GET /groups/:id/epics?state=opened
 | `updated_before`    | datetime         | no         | Return epics updated on or before the given time                                                                            |
 | `include_ancestor_groups` | boolean    | no         | Include epics from the requested group's ancestors. Default is `false`                                                      |
 | `include_descendant_groups` | boolean  | no         | Include epics from the requested group's descendants. Default is `true`                                                     |
+| `my_reaction_emoji` | string           | no         | Return epics reacted by the authenticated user by the given emoji. `None` returns epics not given a reaction. `Any` returns epics given at least one reaction. Introduced in [GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31479)|
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/1/epics
@@ -246,7 +250,7 @@ POST /groups/:id/epics
 | `start_date_fixed`  | string           | no         | The fixed start date of an epic (since 11.3) |
 | `due_date_is_fixed` | boolean          | no         | Whether due date should be sourced from `due_date_fixed` or from milestones (since 11.3) |
 | `due_date_fixed`    | string           | no         | The fixed due date of an epic (since 11.3) |
-| `parent_id`         | integer/string   | no         | The id of a parent epic (since 11.11) |
+| `parent_id`         | integer/string   | no         | The ID of a parent epic (since 11.11) |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/1/epics?title=Epic&description=Epic%20description

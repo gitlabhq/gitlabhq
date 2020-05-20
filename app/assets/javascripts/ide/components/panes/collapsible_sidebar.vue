@@ -103,7 +103,6 @@ export default {
   >
     <resizable-panel
       v-show="isOpen"
-      :collapsible="false"
       :initial-width="width"
       :min-size="width"
       :class="`ide-${side}-sidebar-${currentView}`"
@@ -116,7 +115,7 @@ export default {
           v-for="tabView in aliveTabViews"
           v-show="isActiveView(tabView.name)"
           :key="tabView.name"
-          class="flex-fill js-tab-view"
+          class="flex-fill gl-overflow-hidden js-tab-view"
         >
           <component :is="tabView.component" />
         </div>

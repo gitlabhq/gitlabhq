@@ -12,3 +12,5 @@ module API
     end
   end
 end
+
+API::Entities::UserPath.prepend_if_ee('EE::API::Entities::UserPath')

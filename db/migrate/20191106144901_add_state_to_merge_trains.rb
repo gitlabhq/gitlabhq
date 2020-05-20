@@ -9,7 +9,7 @@ class AddStateToMergeTrains < ActiveRecord::Migration[5.2]
   disable_ddl_transaction!
 
   def up
-    add_column_with_default :merge_trains, :status, :integer, limit: 2, default: MERGE_TRAIN_STATUS_CREATED
+    add_column_with_default :merge_trains, :status, :integer, limit: 2, default: MERGE_TRAIN_STATUS_CREATED # rubocop:disable Migration/AddColumnWithDefault
   end
 
   def down

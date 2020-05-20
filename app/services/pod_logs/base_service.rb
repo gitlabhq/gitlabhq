@@ -58,6 +58,9 @@ module PodLogs
       result[:pod_name] = params['pod_name'].presence
       result[:container_name] = params['container_name'].presence
 
+      return error(_('Invalid pod_name')) if result[:pod_name] && !result[:pod_name].is_a?(String)
+      return error(_('Invalid container_name')) if result[:container_name] && !result[:container_name].is_a?(String)
+
       success(result)
     end
 

@@ -88,7 +88,9 @@ describe API::Settings, 'Settings' do
             allow_local_requests_from_system_hooks: false,
             push_event_hooks_limit: 2,
             push_event_activities_limit: 2,
-            snippet_size_limit: 5
+            snippet_size_limit: 5,
+            issues_create_limit: 300,
+            raw_blob_request_limit: 300
           }
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -125,6 +127,8 @@ describe API::Settings, 'Settings' do
         expect(json_response['push_event_hooks_limit']).to eq(2)
         expect(json_response['push_event_activities_limit']).to eq(2)
         expect(json_response['snippet_size_limit']).to eq(5)
+        expect(json_response['issues_create_limit']).to eq(300)
+        expect(json_response['raw_blob_request_limit']).to eq(300)
       end
     end
 
@@ -153,6 +157,14 @@ describe API::Settings, 'Settings' do
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['allow_local_requests_from_hooks_and_services']).to eq(true)
+    end
+
+    it 'disables ability to switch to legacy storage' do
+      put api("/application/settings", admin),
+          params: { hashed_storage_enabled: false }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['hashed_storage_enabled']).to eq(true)
     end
 
     context 'external policy classification settings' do

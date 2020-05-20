@@ -229,5 +229,5 @@ to projects and their project permissions.
 
 ### API
 
-GitLab API cannot be used via `CI_JOB_TOKEN` but there is a [proposal](https://gitlab.com/gitlab-org/gitlab-foss/issues/29566)
+GitLab API cannot be used via `CI_JOB_TOKEN` but there is a [proposal](https://gitlab.com/gitlab-org/gitlab/-/issues/35067)
 to support it.

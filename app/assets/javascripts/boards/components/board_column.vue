@@ -113,9 +113,6 @@ export default {
       // eslint-disable-next-line @gitlab/require-i18n-strings
       return `boards.${this.boardId}.${this.list.type}.${this.list.id}`;
     },
-    helpLink() {
-      return boardsStore.scopedLabels.helpLink;
-    },
   },
   watch: {
     filter: {
@@ -286,7 +283,6 @@ export default {
               :background-color="list.label.color"
               :description="list.label.description"
               :scoped="showScopedLabels(list.label)"
-              :scoped-labels-documentation-link="helpLink"
               :size="!list.isExpanded ? 'sm' : ''"
               :title="list.label.title"
               tooltip-placement="bottom"
@@ -353,7 +349,7 @@ export default {
               v-if="isSettingsShown"
               ref="settingsBtn"
               :aria-label="__(`List settings`)"
-              class="no-drag rounded-right"
+              class="no-drag rounded-right js-board-settings-button"
               title="List settings"
               type="button"
               @click="openSidebarSettings"

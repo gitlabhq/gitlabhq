@@ -16,8 +16,16 @@ module Notes
         return if @note.for_personal_snippet?
 
         @note.create_cross_references!
+        ::SystemNoteService.design_discussion_added(@note) if create_design_discussion_system_note?
+
         execute_note_hooks
       end
+    end
+
+    private
+
+    def create_design_discussion_system_note?
+      @note && @note.for_design? && @note.start_of_discussion?
     end
 
     def hook_data

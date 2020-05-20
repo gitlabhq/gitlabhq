@@ -76,6 +76,9 @@ to apply all the continuous methods (Continuous Integration,
 Delivery, and Deployment) to your software with no third-party
 application or integration needed.
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an overview, see [Introduction to GitLab CI](https://www.youtube.com/watch?v=l5705U8s_nQ&t=397) from a recent GitLab meetup.
+
 ### How GitLab CI/CD works
 
 To use GitLab CI/CD, all you need is an application codebase hosted in a
@@ -105,7 +108,7 @@ The scripts are grouped into **jobs**, and together they compose
 a **pipeline**. A minimalist example of `.gitlab-ci.yml` file
 could contain:
 
-```yml
+```yaml
 before_script:
   - apt-get install rubygems ruby-dev -y
 
@@ -133,7 +136,7 @@ displayed by GitLab:
 ![pipeline status](img/pipeline_status.png)
 
 At the end, if anything goes wrong, you can easily
-[roll back](../environments.md#retrying-and-rolling-back) all the changes:
+[roll back](../environments/index.md#retrying-and-rolling-back) all the changes:
 
 ![rollback button](img/rollback.png)
 
@@ -204,7 +207,7 @@ according to each stage (Verify, Package, Release).
 With GitLab CI/CD you can also:
 
 - Easily set up your app's entire lifecycle with [Auto DevOps](../../topics/autodevops/index.md).
-- Deploy your app to different [environments](../environments.md).
+- Deploy your app to different [environments](../environments/index.md).
 - Install your own [GitLab Runner](https://docs.gitlab.com/runner/).
 - [Schedule pipelines](../pipelines/schedules.md).
 - Check for app vulnerabilities with [Security Test reports](../../user/application_security/index.md). **(ULTIMATE)**
@@ -212,7 +215,7 @@ With GitLab CI/CD you can also:
 To see all CI/CD features, navigate back to the [CI/CD index](../README.md).
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-Watch the video [GitLab CI Live Demo](https://www.youtube.com/watch?v=pBe4t1CD8Fc) with a deeper overview of GitLab CI/CD.
+Watch the video [GitLab CI Live Demo](https://youtu.be/l5705U8s_nQ?t=369) with a deeper overview of GitLab CI/CD.
 
 ### Setting up GitLab CI/CD for the first time
 

@@ -63,7 +63,7 @@ shared_examples 'Gitlab::Analytics::CycleAnalytics::DataCollector backend exampl
 
   context 'provides the same results as the old implementation' do
     it 'for the median' do
-      expect(data_collector.median.seconds).to eq(ISSUES_MEDIAN)
+      expect(data_collector.median.seconds).to be_within(0.5).of(ISSUES_MEDIAN)
     end
 
     it 'for the list of event records' do

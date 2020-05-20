@@ -86,20 +86,6 @@ describe SnippetsController do
 
         expect(assigns(:blob)).to eq(personal_snippet.blobs.first)
       end
-
-      context 'when feature flag version_snippets is disabled' do
-        before do
-          stub_feature_flags(version_snippets: false)
-        end
-
-        it 'returns the snippet database content' do
-          subject
-
-          blob = assigns(:blob)
-
-          expect(blob.data).to eq(personal_snippet.content)
-        end
-      end
     end
 
     context 'when the personal snippet is private' do
@@ -257,39 +243,13 @@ describe SnippetsController do
       end
     end
 
-    context 'when the snippet description contains a file' do
-      include FileMoverHelpers
+    context 'when the controller receives the files param' do
+      let(:files) { %w(foo bar) }
 
-      let(:picture_secret) { SecureRandom.hex }
-      let(:text_secret) { SecureRandom.hex }
-      let(:picture_file) { "/-/system/user/#{user.id}/#{picture_secret}/picture.jpg" }
-      let(:text_file) { "/-/system/user/#{user.id}/#{text_secret}/text.txt" }
-      let(:description) do
-        "Description with picture: ![picture](/uploads#{picture_file}) and "\
-        "text: [text.txt](/uploads#{text_file})"
-      end
+      it 'passes the files param to the snippet create service' do
+        expect(Snippets::CreateService).to receive(:new).with(nil, user, hash_including(files: files)).and_call_original
 
-      before do
-        allow(FileUtils).to receive(:mkdir_p)
-        allow(FileUtils).to receive(:move)
-        stub_file_mover(text_file)
-        stub_file_mover(picture_file)
-      end
-
-      subject { create_snippet({ description: description }, { files: [picture_file, text_file] }) }
-
-      it 'creates the snippet' do
-        expect { subject }.to change { Snippet.count }.by(1)
-      end
-
-      it 'stores the snippet description correctly' do
-        snippet = subject
-
-        expected_description = "Description with picture: "\
-          "![picture](/uploads/-/system/personal_snippet/#{snippet.id}/#{picture_secret}/picture.jpg) and "\
-          "text: [text.txt](/uploads/-/system/personal_snippet/#{snippet.id}/#{text_secret}/text.txt)"
-
-        expect(snippet.description).to eq(expected_description)
+        create_snippet({ title: nil }, { files: files })
       end
     end
 
@@ -318,7 +278,7 @@ describe SnippetsController do
             .to log_spam(title: 'Title', user: user, noteable_type: 'PersonalSnippet')
         end
 
-        it 'renders :new with recaptcha disabled' do
+        it 'renders :new with reCAPTCHA disabled' do
           stub_application_setting(recaptcha_enabled: false)
 
           create_snippet(visibility_level: Snippet::PUBLIC)
@@ -326,18 +286,18 @@ describe SnippetsController do
           expect(response).to render_template(:new)
         end
 
-        context 'recaptcha enabled' do
+        context 'reCAPTCHA enabled' do
           before do
             stub_application_setting(recaptcha_enabled: true)
           end
 
-          it 'renders :verify with recaptcha enabled' do
+          it 'renders :verify' do
             create_snippet(visibility_level: Snippet::PUBLIC)
 
             expect(response).to render_template(:verify)
           end
 
-          it 'renders snippet page when recaptcha verified' do
+          it 'renders snippet page' do
             spammy_title = 'Whatever'
 
             spam_logs = create_list(:spam_log, 2, user: user, title: spammy_title)
@@ -403,7 +363,7 @@ describe SnippetsController do
             .to log_spam(title: 'Foo', user: user, noteable_type: 'PersonalSnippet')
         end
 
-        it 'renders :edit with recaptcha disabled' do
+        it 'renders :edit with reCAPTCHA disabled' do
           stub_application_setting(recaptcha_enabled: false)
 
           update_snippet(title: 'Foo', visibility_level: Snippet::PUBLIC)
@@ -411,18 +371,18 @@ describe SnippetsController do
           expect(response).to render_template(:edit)
         end
 
-        context 'recaptcha enabled' do
+        context 'reCAPTCHA enabled' do
           before do
             stub_application_setting(recaptcha_enabled: true)
           end
 
-          it 'renders :verify with recaptcha enabled' do
+          it 'renders :verify' do
             update_snippet(title: 'Foo', visibility_level: Snippet::PUBLIC)
 
             expect(response).to render_template(:verify)
           end
 
-          it 'renders snippet page when recaptcha verified' do
+          it 'renders snippet page when reCAPTCHA verified' do
             spammy_title = 'Whatever'
 
             spam_logs = create_list(:spam_log, 2, user: user, title: spammy_title)
@@ -446,7 +406,7 @@ describe SnippetsController do
             .to log_spam(title: 'Foo', user: user, noteable_type: 'PersonalSnippet')
         end
 
-        it 'renders :edit with recaptcha disabled' do
+        it 'renders :edit with reCAPTCHA disabled' do
           stub_application_setting(recaptcha_enabled: false)
 
           update_snippet(title: 'Foo')
@@ -459,13 +419,13 @@ describe SnippetsController do
             stub_application_setting(recaptcha_enabled: true)
           end
 
-          it 'renders :verify with recaptcha enabled' do
+          it 'renders :verify' do
             update_snippet(title: 'Foo')
 
             expect(response).to render_template(:verify)
           end
 
-          it 'renders snippet page when recaptcha verified' do
+          it 'renders snippet page when reCAPTCHA verified' do
             spammy_title = 'Whatever'
 
             spam_logs = create_list(:spam_log, 2, user: user, title: spammy_title)
@@ -570,24 +530,6 @@ describe SnippetsController do
         subject
 
         expect(response.cache_control[:public]).to eq snippet.public?
-      end
-
-      context 'when feature flag version_snippets is disabled' do
-        before do
-          stub_feature_flags(version_snippets: false)
-        end
-
-        it_behaves_like '200 status'
-        it_behaves_like 'CRLF line ending'
-
-        it 'returns snippet database content' do
-          subject
-
-          expect(response.body).to eq snippet.content
-          expect(response.header['Content-Type']).to eq('text/plain; charset=utf-8')
-        end
-
-        it_behaves_like 'content disposition headers'
       end
 
       context 'when snippet repository is empty' do

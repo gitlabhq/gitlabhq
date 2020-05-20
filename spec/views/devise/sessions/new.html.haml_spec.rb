@@ -54,14 +54,14 @@ describe 'devise/sessions/new' do
 
   def enable_ldap
     stub_ldap_setting(enabled: true)
-    assign(:ldap_servers, [server])
+    allow(view).to receive(:ldap_servers).and_return([server])
     allow(view).to receive(:form_based_providers).and_return([:ldapmain])
     allow(view).to receive(:omniauth_callback_path).with(:user, 'ldapmain').and_return('/ldapmain')
   end
 
   def disable_ldap_sign_in
     allow(view).to receive(:ldap_sign_in_enabled?).and_return(false)
-    assign(:ldap_servers, [])
+    allow(view).to receive(:ldap_servers).and_return([])
   end
 
   def disable_captcha

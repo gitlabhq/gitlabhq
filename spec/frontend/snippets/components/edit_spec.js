@@ -100,6 +100,7 @@ describe('Snippet Edit app', () => {
   });
 
   const findSubmitButton = () => wrapper.find('[type=submit]');
+  const findCancellButton = () => wrapper.find('[data-testid="snippet-cancel-btn"]');
 
   describe('rendering', () => {
     it('renders loader while the query is in flight', () => {
@@ -148,6 +149,21 @@ describe('Snippet Edit app', () => {
         expect(isBtnDisabled).toBe(expectation);
       },
     );
+
+    it.each`
+      isNew    | status        | expectation
+      ${true}  | ${`new`}      | ${`/snippets`}
+      ${false} | ${`existing`} | ${newlyEditedSnippetUrl}
+    `('sets correct href for the cancel button on a $status snippet', ({ isNew, expectation }) => {
+      createComponent({
+        data: {
+          snippet: { webUrl: newlyEditedSnippetUrl },
+          newSnippet: isNew,
+        },
+      });
+
+      expect(findCancellButton().attributes('href')).toBe(expectation);
+    });
   });
 
   describe('functionality', () => {

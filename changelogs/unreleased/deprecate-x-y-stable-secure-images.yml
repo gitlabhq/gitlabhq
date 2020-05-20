@@ -1,0 +1,5 @@
+---
+title: Drop x-y-stable version pinning for Secure templates
+merge_request: 29603
+author:
+type: removed

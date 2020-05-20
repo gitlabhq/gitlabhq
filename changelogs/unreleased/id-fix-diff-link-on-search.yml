@@ -1,0 +1,5 @@
+---
+title: Fix blob link for the code search
+merge_request: 30473
+author:
+type: fixed

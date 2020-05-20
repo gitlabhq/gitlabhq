@@ -14,6 +14,9 @@
 #     CsvBuilder.new(@posts, columns).render
 #
 class CsvBuilder
+  DEFAULT_ORDER_BY = 'id'.freeze
+  DEFAULT_BATCH_SIZE = 1000
+
   attr_reader :rows_written
 
   #
@@ -68,6 +71,12 @@ class CsvBuilder
     }
   end
 
+  protected
+
+  def each(&block)
+    @collection.find_each(&block) # rubocop: disable CodeReuse/ActiveRecord
+  end
+
   private
 
   def headers
@@ -91,7 +100,7 @@ class CsvBuilder
   def write_csv(csv, until_condition:)
     csv << headers
 
-    @collection.find_each do |object|
+    each do |object|
       csv << row(object)
 
       @rows_written += 1

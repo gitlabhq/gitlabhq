@@ -98,13 +98,12 @@ describe Projects::WikisController do
       let(:id) { wiki_title }
 
       it 'limits the retrieved pages for the sidebar' do
-        expect(controller).to receive(:load_wiki).and_return(project_wiki)
-        expect(project_wiki).to receive(:list_pages).with(limit: 15).and_call_original
-
         subject
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(assigns(:page).title).to eq(wiki_title)
+        expect(assigns(:sidebar_wiki_entries)).to contain_exactly(an_instance_of(WikiPage))
+        expect(assigns(:sidebar_limited)).to be(false)
       end
 
       context 'when page content encoding is invalid' do
@@ -200,7 +199,20 @@ describe Projects::WikisController do
 
         subject
 
-        expect(response).to redirect_to(project_wiki_path(project, project_wiki.list_pages.first))
+        expect(response).to redirect_to_wiki(project, project_wiki.list_pages.first)
+      end
+    end
+
+    context 'when the page has nil content' do
+      let(:page) { create(:wiki_page) }
+
+      it 'redirects to show' do
+        allow(page).to receive(:content).and_return(nil)
+        allow(controller).to receive(:find_page).and_return(page)
+
+        subject
+
+        expect(response).to redirect_to_wiki(project, page)
       end
     end
 
@@ -235,7 +247,7 @@ describe Projects::WikisController do
         allow(controller).to receive(:valid_encoding?).and_return(false)
 
         subject
-        expect(response).to redirect_to(project_wiki_path(project, project_wiki.list_pages.first))
+        expect(response).to redirect_to_wiki(project, project_wiki.list_pages.first)
       end
     end
 
@@ -264,5 +276,9 @@ describe Projects::WikisController do
   def destroy_page(title, dir = '')
     page = wiki.page(title: title, dir: dir)
     project_wiki.delete_page(page, "test commit")
+  end
+
+  def redirect_to_wiki(project, page)
+    redirect_to(controller.project_wiki_path(project, page))
   end
 end

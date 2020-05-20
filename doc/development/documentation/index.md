@@ -6,13 +6,14 @@ description: Learn how to contribute to GitLab Documentation.
 
 GitLab's documentation is [intended as the single source of truth (SSOT)](https://about.gitlab.com/handbook/documentation/) for information about how to configure, use, and troubleshoot GitLab. The documentation contains use cases and usage instructions for every GitLab feature, organized by product area and subject. This includes topics and workflows that span multiple GitLab features, and the use of GitLab with other applications.
 
-In addition to this page, the following resources can help you craft and contribute documentation:
+In addition to this page, the following resources can help you craft and contribute to documentation:
 
 - [Style Guide](styleguide.md) - What belongs in the docs, language guidelines, Markdown standards to follow, links, and more.
 - [Structure and template](structure.md) - Learn the typical parts of a doc page and how to write each one.
 - [Documentation process](workflow.md).
 - [Markdown Guide](../../user/markdown.md) - A reference for all Markdown syntax supported by GitLab.
 - [Site architecture](site_architecture/index.md) - How <https://docs.gitlab.com> is built.
+- [Documentation for feature flags](feature_flags.md) - How to write and update documentation for GitLab features deployed behind feature flags.
 
 ## Source files and rendered web locations
 
@@ -51,7 +52,7 @@ docs-only merge requests using the following guide:
 
 [Contributions to GitLab docs](workflow.md) are welcome from the entire GitLab community.
 
-To ensure that GitLab docs are current, there are special processes and responsibilities for all [feature changes](feature-change-workflow.md)—i.e. development work that impacts the appearance, usage, or administration of a feature.
+To ensure that GitLab docs are current, there are special processes and responsibilities for all [feature changes](feature-change-workflow.md), that is development work that impacts the appearance, usage, or administration of a feature.
 
 However, anyone can contribute [documentation improvements](improvement-workflow.md) that are not associated with a feature change. For example, adding a new doc on how to accomplish a use case that's already possible with GitLab or with third-party tools and GitLab.
 
@@ -76,13 +77,24 @@ whether the move is necessary), and ensure that a technical writer reviews this
 change prior to merging.
 
 If you indeed need to change a document's location, do not remove the old
-document, but instead replace all of its content with a new line:
+document, but instead replace all of its content with the following:
 
-```md
-This document was moved to [another location](path/to/new_doc.md).
+```markdown
+---
+redirect_to: '../path/to/file/index.md'
+---
+
+This document was moved to [another location](../path/to/file/index.md).
 ```
 
-where `path/to/new_doc.md` is the relative path to the root directory `doc/`.
+Where `../path/to/file/index.md` is usually the relative path to the old document.
+
+The `redirect_to` variable supports both full and relative URLs, for example
+`https://docs.gitlab.com/ee/path/to/file.html`, `../path/to/file.html`, `path/to/file.md`.
+It ensures that the redirect will work for <https://docs.gitlab.com> and any `*.md` paths
+will be compiled to `*.html`.
+The new line underneath the front matter informs the user that the document
+changed location and is useful for someone that browses that file from the repository.
 
 For example, if you move `doc/workflow/lfs/index.md` to
 `doc/administration/lfs.md`, then the steps would be:
@@ -90,13 +102,17 @@ For example, if you move `doc/workflow/lfs/index.md` to
 1. Copy `doc/workflow/lfs/index.md` to `doc/administration/lfs.md`
 1. Replace the contents of `doc/workflow/lfs/index.md` with:
 
-   ```md
+   ```markdown
+   ---
+   redirect_to: '../../administration/lfs.md'
+   ---
+
    This document was moved to [another location](../../administration/lfs.md).
    ```
 
 1. Find and replace any occurrences of the old location with the new one.
-   A quick way to find them is to use `git grep`. First go to the root directory
-   where you cloned the `gitlab` repository and then do:
+   A quick way to find them is to use `git grep` on the repository you changed
+   the file from:
 
    ```shell
    git grep -n "workflow/lfs/lfs_administration"
@@ -123,24 +139,6 @@ Things to note:
   built-in help page, that's why we omit it in `git grep`.
 - Use the checklist on the "Change documentation location" MR description template.
 
-### Alternative redirection method
-
-You can also replace the content
-of the old file with a frontmatter containing a redirect link:
-
-```yaml
----
-redirect_to: '../path/to/file/README.md'
----
-```
-
-It supports both full and relative URLs, e.g. `https://docs.gitlab.com/ee/path/to/file.html`, `../path/to/file.html`, `path/to/file.md`. Note that any `*.md` paths will be compiled to `*.html`.
-
-NOTE: **Note:**
-This redirection method will not provide a redirect fallback on GitLab `/help`. When using
-it, make sure to add a link to the new page on the doc, otherwise it's a dead end for users that
-land on the doc via `/help`.
-
 ### Redirections for pages with Disqus comments
 
 If the documentation page being relocated already has Disqus comments,
@@ -150,12 +148,12 @@ Disqus uses an identifier per page, and for <https://docs.gitlab.com>, the page 
 is configured to be the page URL. Therefore, when we change the document location,
 we need to preserve the old URL as the same Disqus identifier.
 
-To do that, add to the frontmatter the variable `disqus_identifier`,
-using the old URL as value. For example, let's say I moved the document
+To do that, add to the front matter the variable `disqus_identifier`,
+using the old URL as value. For example, let's say we moved the document
 available under `https://docs.gitlab.com/my-old-location/README.html` to a new location,
 `https://docs.gitlab.com/my-new-location/index.html`.
 
-Into the **new document** frontmatter add the following:
+Into the **new document** front matter, we add the following:
 
 ```yaml
 ---
@@ -173,8 +171,8 @@ Before getting started, make sure you read the introductory section
 [documentation workflow](workflow.md).
 
 - Use the current [merge request description template](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab/merge_request_templates/Documentation.md)
-- Label the MR `Documentation`
-- Assign the correct milestone (see note below)
+- Label the MR `Documentation` (can only be done by people with `developer` access, for example, GitLab team members)
+- Assign the correct milestone per note below (can only be done by people with `developer` access, for example, GitLab team members)
 
 Documentation will be merged if it is an improvement on existing content,
 represents a good-faith effort to follow the template and style standards,
@@ -185,7 +183,7 @@ in a follow-up MR or issue.
 
 NOTE: **Note:**
 If the release version you want to add the documentation to has already been
-frozen or released, use the label `Pick into X.Y` to get it merged into
+frozen or released, use the label `~"Pick into X.Y"` to get it merged into
 the correct release. Avoid picking into a past release as much as you can, as
 it increases the work of the release managers.
 
@@ -205,7 +203,7 @@ to the MR.
 For example, let's say your merge request has a milestone set to 11.3, which
 will be released on 2018-09-22. If it gets merged on 2018-09-15, it will be
 available online on 2018-09-15, but, as the feature freeze date has passed, if
-the MR does not have a "pick into 11.3" label, the milestone has to be changed
+the MR does not have a `~"Pick into 11.3"` label, the milestone has to be changed
 to 11.4 and it will be shipped with all GitLab packages only on 2018-10-22,
 with GitLab 11.4. Meaning, it will only be available under `/help` from GitLab
 11.4 onward, but available on <https://docs.gitlab.com/> on the same day it was merged.
@@ -277,7 +275,7 @@ You can combine one or more of the following:
 
 ### GitLab `/help` tests
 
-Several [rspec tests](https://gitlab.com/gitlab-org/gitlab/blob/master/spec/features/help_pages_spec.rb)
+Several [RSpec tests](https://gitlab.com/gitlab-org/gitlab/blob/master/spec/features/help_pages_spec.rb)
 are run to ensure GitLab documentation renders and works correctly. In particular, that [main docs landing page](../../README.md) will work correctly from `/help`.
 For example, [GitLab.com's `/help`](https://gitlab.com/help).
 
@@ -300,8 +298,8 @@ To preview your changes to documentation locally, follow this
 
 The live preview is currently enabled for the following projects:
 
-- <https://gitlab.com/gitlab-org/gitlab>
-- <https://gitlab.com/gitlab-org/gitlab-runner>
+- [`gitlab`](https://gitlab.com/gitlab-org/gitlab)
+- [`gitlab-runner`](https://gitlab.com/gitlab-org/gitlab-runner)
 
 If your merge request has docs changes, you can use the manual `review-docs-deploy` job
 to deploy the docs review app for your merge request.
@@ -407,8 +405,6 @@ merge request with new or changed docs is submitted, are:
     - [`internal_anchors`](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab/ci/docs.gitlab-ci.yml#L69)
       checks that all internal anchors (ex: `[link](../index.md#internal_anchor)`)
       are valid.
-- If any code or the `doc/README.md` file is changed, a full pipeline will run, which
-  runs tests for [`/help`](#gitlab-help-tests).
 
 ### Running tests
 
@@ -489,14 +485,14 @@ markdownlint can be used [on the command line](https://github.com/igorshubovych/
 either on a single Markdown file or on all Markdown files in a project. For example, to run
 markdownlint on all documentation in the [`gitlab` project](https://gitlab.com/gitlab-org/gitlab),
 run the following commands from within your `gitlab` project root directory, which will
-automatically detect the [`.markdownlint.json`](#markdownlint-configuration) config
+automatically detect the [`.markdownlint.json`](#markdownlint-configuration) configuration
 file in the root of the project, and test all files in `/doc` and its subdirectories:
 
 ```shell
 markdownlint 'doc/**/*.md'
 ```
 
-If you wish to use a different config file, use the `-c` flag:
+If you wish to use a different configuration file, use the `-c` flag:
 
 ```shell
 markdownlint -c <config-file-name> 'doc/**/*.md'
@@ -510,7 +506,7 @@ such as:
 - [Atom](https://atom.io/packages/linter-node-markdownlint)
 
 It is best to use the [same configuration file](#markdownlint-configuration) as what
-is in use in the four repos that are the sources for <https://docs.gitlab.com>. Each
+is in use in the four repositories that are the sources for <https://docs.gitlab.com>. Each
 plugin/extension has different requirements regarding the configuration file, which
 is explained in each editor's docs.
 
@@ -519,12 +515,12 @@ is explained in each editor's docs.
 Each formatting issue that markdownlint checks has an associated
 [rule](https://github.com/DavidAnson/markdownlint/blob/master/doc/Rules.md#rules).
 These rules are configured in the `.markdownlint.json` files located in the root of
-four repos that are the sources for <https://docs.gitlab.com>:
+four repositories that are the sources for <https://docs.gitlab.com>:
 
-- <https://gitlab.com/gitlab-org/gitlab/blob/master/.markdownlint.json>
-- <https://gitlab.com/gitlab-org/gitlab-runner/blob/master/.markdownlint.json>
-- <https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/.markdownlint.json>
-- <https://gitlab.com/charts/gitlab/blob/master/.markdownlint.json>
+- [`gitlab`](https://gitlab.com/gitlab-org/gitlab/blob/master/.markdownlint.json)
+- [`gitlab-runner`](https://gitlab.com/gitlab-org/gitlab-runner/blob/master/.markdownlint.json)
+- [`omnibus-gitlab`](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/.markdownlint.json)
+- [`charts`](https://gitlab.com/charts/gitlab/blob/master/.markdownlint.json)
 
 By default all rules are enabled, so the configuration file is used to disable unwanted
 rules, and also to configure optional parameters for enabled rules as needed. You can
@@ -534,7 +530,7 @@ on or off when markdownlint was enabled on the docs.
 
 #### Vale
 
-[Vale](https://errata-ai.github.io/vale/) is a grammar, style, and word usage linter
+[Vale](https://errata-ai.gitbook.io/vale/) is a grammar, style, and word usage linter
 for the English language. Vale's configuration is stored in the
 [`.vale.ini`](https://gitlab.com/gitlab-org/gitlab/blob/master/.vale.ini) file
 located in the root directory of the [GitLab repository](https://gitlab.com/gitlab-org/gitlab).
@@ -554,10 +550,28 @@ You can also
 [configure the text editor of your choice](https://errata-ai.github.io/vale/#local-use-by-a-single-writer)
 to display the results.
 
+Vale's test results [are displayed](#testing) in CI pipelines.
+
+##### Disable a Vale test
+
+You can disable a specific Vale linting rule or all Vale linting rules for any portion of a document:
+
+- To disable a specific rule, add a `<!-- vale gitlab.rulename = NO -->` tag
+  before the text, and a `<!-- vale gitlab.rulename = YES -->` tag after the text,
+  replacing `rulename` with the filename of a test in the [GitLab styles](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc/.linting/vale/styles/gitlab) directory.
+- To disable all Vale linting rules, add a `<!-- vale off -->` tag before the text,
+  and a `<!-- vale on -->` tag after the text.
+
+Whenever possible, exclude only the problematic rule and line(s).
+In some cases, such as list items, you may need to disable linting for the entire
+list until ["Ignore comments are not honored in a Markdown file"](https://github.com/errata-ai/vale/issues/175) is resolved.
+
+For more information, see [Vale's documentation](https://errata-ai.gitbook.io/vale/getting-started/markup#markup-based-configuration).
+
 ## Danger Bot
 
 GitLab uses [Danger](https://github.com/danger/danger) for some elements in
 code review. For docs changes in merge requests, whenever a change to files under `/doc`
 is made, Danger Bot leaves a comment with further instructions about the documentation
-process. This is configured in the Dangerfile in the GitLab repo under
+process. This is configured in the `Dangerfile` in the GitLab repository under
 [/danger/documentation/](https://gitlab.com/gitlab-org/gitlab/tree/master/danger/documentation).

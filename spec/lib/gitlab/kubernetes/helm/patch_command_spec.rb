@@ -33,7 +33,7 @@ describe Gitlab::Kubernetes::Helm::PatchCommand do
       EOS
     end
 
-    it_behaves_like 'helm commands' do
+    it_behaves_like 'helm command generator' do
       let(:commands) do
         <<~EOS
         helm init --upgrade
@@ -57,7 +57,7 @@ describe Gitlab::Kubernetes::Helm::PatchCommand do
     end
   end
 
-  it_behaves_like 'helm commands' do
+  it_behaves_like 'helm command generator' do
     let(:commands) do
       <<~EOS
       export HELM_HOST="localhost:44134"
@@ -83,7 +83,7 @@ describe Gitlab::Kubernetes::Helm::PatchCommand do
   context 'when rbac is true' do
     let(:rbac) { true }
 
-    it_behaves_like 'helm commands' do
+    it_behaves_like 'helm command generator' do
       let(:commands) do
         <<~EOS
         export HELM_HOST="localhost:44134"
@@ -110,7 +110,7 @@ describe Gitlab::Kubernetes::Helm::PatchCommand do
   context 'when there is no ca.pem file' do
     let(:files) { { 'file.txt': 'some content' } }
 
-    it_behaves_like 'helm commands' do
+    it_behaves_like 'helm command generator' do
       let(:commands) do
         <<~EOS
         export HELM_HOST="localhost:44134"
@@ -134,69 +134,19 @@ describe Gitlab::Kubernetes::Helm::PatchCommand do
     end
   end
 
-  describe '#pod_name' do
-    subject { patch_command.pod_name }
-
-    it { is_expected.to eq 'install-app-name' }
-  end
-
   context 'when there is no version' do
     let(:version) { nil }
 
     it { expect { patch_command }.to raise_error(ArgumentError, 'version is required') }
   end
 
-  describe '#rbac?' do
-    subject { patch_command.rbac? }
+  describe '#pod_name' do
+    subject { patch_command.pod_name }
 
-    context 'rbac is enabled' do
-      let(:rbac) { true }
-
-      it { is_expected.to be_truthy }
-    end
-
-    context 'rbac is not enabled' do
-      let(:rbac) { false }
-
-      it { is_expected.to be_falsey }
-    end
+    it { is_expected.to eq 'install-app-name' }
   end
 
-  describe '#pod_resource' do
-    subject { patch_command.pod_resource }
-
-    context 'rbac is enabled' do
-      let(:rbac) { true }
-
-      it 'generates a pod that uses the tiller serviceAccountName' do
-        expect(subject.spec.serviceAccountName).to eq('tiller')
-      end
-    end
-
-    context 'rbac is not enabled' do
-      let(:rbac) { false }
-
-      it 'generates a pod that uses the default serviceAccountName' do
-        expect(subject.spec.serviceAcccountName).to be_nil
-      end
-    end
-  end
-
-  describe '#config_map_resource' do
-    let(:metadata) do
-      {
-        name: "values-content-configuration-app-name",
-        namespace: 'gitlab-managed-apps',
-        labels: { name: "values-content-configuration-app-name" }
-      }
-    end
-
-    let(:resource) { ::Kubeclient::Resource.new(metadata: metadata, data: files) }
-
-    subject { patch_command.config_map_resource }
-
-    it 'returns a KubeClient resource with config map content for the application' do
-      is_expected.to eq(resource)
-    end
+  it_behaves_like 'helm command' do
+    let(:command) { patch_command }
   end
 end

@@ -1,0 +1,5 @@
+---
+title: Add admin controller actions for interacting with instance variables
+merge_request: 30385
+author:
+type: added

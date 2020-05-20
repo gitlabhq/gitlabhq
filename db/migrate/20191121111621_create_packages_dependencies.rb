@@ -3,6 +3,7 @@
 class CreatePackagesDependencies < ActiveRecord::Migration[5.2]
   DOWNTIME = false
 
+  # rubocop:disable Migration/PreventStrings
   def change
     create_table :packages_dependencies do |t|
       t.string :name, null: false, limit: 255
@@ -11,4 +12,5 @@ class CreatePackagesDependencies < ActiveRecord::Migration[5.2]
 
     add_index :packages_dependencies, [:name, :version_pattern], unique: true
   end
+  # rubocop:enable Migration/PreventStrings
 end

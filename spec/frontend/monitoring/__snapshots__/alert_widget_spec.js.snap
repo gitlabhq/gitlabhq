@@ -1,0 +1,43 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AlertWidget Alert firing displays a warning icon and matches snapshot 1`] = `
+<gl-badge-stub
+  class="d-flex-center text-truncate"
+  pill=""
+  variant="danger"
+>
+  <gl-icon-stub
+    class="flex-shrink-0"
+    name="warning"
+    size="16"
+  />
+   
+  <span
+    class="text-truncate gl-pl-1-deprecated-no-really-do-not-use-me"
+  >
+    Firing: 
+            alert-label &gt; 42
+          
+  </span>
+</gl-badge-stub>
+`;
+
+exports[`AlertWidget Alert not firing displays a warning icon and matches snapshot 1`] = `
+<gl-badge-stub
+  class="d-flex-center text-truncate"
+  pill=""
+  variant="secondary"
+>
+  <gl-icon-stub
+    class="flex-shrink-0"
+    name="warning"
+    size="16"
+  />
+   
+  <span
+    class="text-truncate gl-pl-1-deprecated-no-really-do-not-use-me"
+  >
+    alert-label &gt; 42
+  </span>
+</gl-badge-stub>
+`;

@@ -10,8 +10,9 @@ class Projects::WikisController < Projects::ApplicationController
   before_action :authorize_admin_wiki!, only: :destroy
   before_action :load_project_wiki
   before_action :load_page, only: [:show, :edit, :update, :history, :destroy]
-  before_action :valid_encoding?,
-    if: -> { %w[show edit update].include?(action_name) && load_page }
+  before_action only: [:show, :edit, :update] do
+    @valid_encoding = valid_encoding?
+  end
   before_action only: [:edit, :update], unless: :valid_encoding? do
     redirect_to(project_wiki_path(@project, @page))
   end
@@ -64,7 +65,7 @@ class Projects::WikisController < Projects::ApplicationController
   def update
     return render('empty') unless can?(current_user, :create_wiki, @project)
 
-    @page = WikiPages::UpdateService.new(@project, current_user, wiki_params).execute(@page)
+    @page = WikiPages::UpdateService.new(container: @project, current_user: current_user, params: wiki_params).execute(@page)
 
     if @page.valid?
       redirect_to(
@@ -80,7 +81,7 @@ class Projects::WikisController < Projects::ApplicationController
   end
 
   def create
-    @page = WikiPages::CreateService.new(@project, current_user, wiki_params).execute
+    @page = WikiPages::CreateService.new(container: @project, current_user: current_user, params: wiki_params).execute
 
     if @page.persisted?
       redirect_to(
@@ -111,7 +112,7 @@ class Projects::WikisController < Projects::ApplicationController
   end
 
   def destroy
-    WikiPages::DestroyService.new(@project, current_user).execute(@page)
+    WikiPages::DestroyService.new(container: @project, current_user: current_user).execute(@page)
 
     redirect_to project_wiki_path(@project, :home),
                 status: :found,
@@ -144,7 +145,7 @@ class Projects::WikisController < Projects::ApplicationController
     @sidebar_page = @project_wiki.find_sidebar(params[:version_id])
 
     unless @sidebar_page # Fallback to default sidebar
-      @sidebar_wiki_entries = WikiPage.group_by_directory(@project_wiki.list_pages(limit: 15))
+      @sidebar_wiki_entries, @sidebar_limited = @project_wiki.sidebar_entries
     end
   rescue ProjectWiki::CouldNotCreateWikiError
     flash[:notice] = _("Could not create Wiki Repository at this time. Please try again later.")
@@ -167,7 +168,11 @@ class Projects::WikisController < Projects::ApplicationController
   end
 
   def load_page
-    @page ||= @project_wiki.find_page(*page_params)
+    @page ||= find_page
+  end
+
+  def find_page
+    @project_wiki.find_page(*page_params)
   end
 
   def page_params
@@ -178,9 +183,11 @@ class Projects::WikisController < Projects::ApplicationController
   end
 
   def valid_encoding?
-    strong_memoize(:valid_encoding) do
-      @page.content.encoding == Encoding::UTF_8
-    end
+    page_encoding == Encoding::UTF_8
+  end
+
+  def page_encoding
+    strong_memoize(:page_encoding) { @page&.content&.encoding }
   end
 
   def set_encoding_error

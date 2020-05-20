@@ -23,7 +23,7 @@ qa:internal:
 qa:internal-as-if-foss:
   extends:
     - .qa-job-base
-    - .qa:rules:ee-only
+    - .qa:rules:as-if-foss
     - .as-if-foss
   script:
     - bundle exec rspec
@@ -38,7 +38,7 @@ qa:selectors:
 qa:selectors-as-if-foss:
   extends:
     - qa:selectors
-    - .qa:rules:ee-only
+    - .qa:rules:as-if-foss
     - .as-if-foss
 
 .package-and-qa-base:
@@ -58,6 +58,5 @@ package-and-qa:
   needs:
     - job: build-qa-image
       artifacts: false
-    - job: gitlab:assets:compile pull-cache
+    - job: build-assets-image
       artifacts: false
-  allow_failure: true

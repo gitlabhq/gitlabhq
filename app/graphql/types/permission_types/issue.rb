@@ -6,11 +6,9 @@ module Types
       description 'Check permissions for the current user on a issue'
       graphql_name 'IssuePermissions'
 
-      abilities :read_issue, :admin_issue,
-                :update_issue, :create_note,
-                :reopen_issue
+      abilities :read_issue, :admin_issue, :update_issue, :reopen_issue,
+                :read_design, :create_design, :destroy_design,
+                :create_note
     end
   end
 end
-
-Types::PermissionTypes::Issue.prepend_if_ee('::EE::Types::PermissionTypes::Issue')

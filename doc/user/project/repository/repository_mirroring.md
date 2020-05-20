@@ -55,6 +55,7 @@ For an existing project, you can set up push mirroring as follows:
 1. Select **Push** from the **Mirror direction** dropdown.
 1. Select an authentication method from the **Authentication method** dropdown, if necessary.
 1. Check the **Only mirror protected branches** box, if necessary.
+1. Check the **Keep divergent refs** box, if desired.
 1. Click the **Mirror repository** button to save the configuration.
 
 ![Repository mirroring push settings screen](img/repository_mirroring_push_settings.png)
@@ -87,6 +88,27 @@ You can choose to only push your protected branches from GitLab to your remote r
 
 To use this option, check the **Only mirror protected branches** box when creating a repository
 mirror.
+
+### Keep divergent refs **(CORE)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/208828) in GitLab 13.0.
+
+By default, if any ref on the remote mirror has diverged from the local
+repository, the *entire push* will fail, and nothing will be updated.
+
+For example, if a repository has `master`, `develop`, and `stable` branches that
+have been mirrored to a remote, and then a new commit is added to `develop` on
+the mirror, the next push attempt will fail, leaving `master` and `stable`
+out-of-date despite not having diverged. No change on any branch can be mirrored
+until the divergence is resolved.
+
+With the **Keep divergent refs** option enabled, the `develop` branch is
+skipped, allowing `master` and `stable` to be updated. The mirror status will
+reflect that `develop` has diverged and was skipped, and be marked as a failed
+update.
+
+NOTE: **Note:**
+After the mirror is created, this option can currently only be modified via the [API](../../../api/remote_mirrors.md).
 
 ## Setting up a push mirror from GitLab to GitHub **(CORE)**
 

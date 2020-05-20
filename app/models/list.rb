@@ -3,8 +3,6 @@
 class List < ApplicationRecord
   include Importable
 
-  prepend_if_ee('::EE::List') # rubocop: disable Cop/InjectEnterpriseEditionModule
-
   belongs_to :board
   belongs_to :label
   has_many :list_user_preferences
@@ -74,14 +72,18 @@ class List < ApplicationRecord
     label? ? label.name : list_type.humanize
   end
 
+  def collapsed?(user)
+    preferences = preferences_for(user)
+
+    preferences.collapsed?
+  end
+
   def as_json(options = {})
     super(options).tap do |json|
       json[:collapsed] = false
 
       if options.key?(:collapsed)
-        preferences = preferences_for(options[:current_user])
-
-        json[:collapsed] = preferences.collapsed?
+        json[:collapsed] = collapsed?(options[:current_user])
       end
 
       if options.key?(:label)
@@ -100,3 +102,5 @@ class List < ApplicationRecord
     throw(:abort) unless destroyable? # rubocop:disable Cop/BanCatchThrow
   end
 end
+
+List.prepend_if_ee('::EE::List')

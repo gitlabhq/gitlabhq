@@ -1,4 +1,7 @@
 ---
+stage: Release
+group: Progressive Delivery
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 type: howto
 ---
 
@@ -36,7 +39,7 @@ Some credentials are required to be able to run `aws` commands:
 
 1. You can now use `aws` commands in the `.gitlab-ci.yml` file of this project:
 
-   ```yml
+   ```yaml
    deploy:
      stage: deploy
      image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest # see the note below

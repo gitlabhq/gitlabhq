@@ -2,10 +2,14 @@ import { GlEmptyState } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 import JiraImportProgress from '~/jira_import/components/jira_import_progress.vue';
 
+const illustration = 'illustration.svg';
+const importProject = 'JIRAPROJECT';
+const issuesPath = 'gitlab-org/gitlab-test/-/issues';
+
 describe('JiraImportProgress', () => {
   let wrapper;
 
-  const getGlEmptyStateAttribute = attribute => wrapper.find(GlEmptyState).attributes(attribute);
+  const getGlEmptyStateProp = attribute => wrapper.find(GlEmptyState).props(attribute);
 
   const getParagraphText = () => wrapper.find('p').text();
 
@@ -13,11 +17,11 @@ describe('JiraImportProgress', () => {
     const mountFunction = mountType === 'shallowMount' ? shallowMount : mount;
     return mountFunction(JiraImportProgress, {
       propsData: {
-        illustration: 'illustration.svg',
+        illustration,
         importInitiator: 'Jane Doe',
-        importProject: 'JIRAPROJECT',
+        importProject,
         importTime: '2020-04-08T12:17:25+00:00',
-        issuesPath: 'gitlab-org/gitlab-test/-/issues',
+        issuesPath,
       },
     });
   };
@@ -33,20 +37,21 @@ describe('JiraImportProgress', () => {
     });
 
     it('contains illustration', () => {
-      expect(getGlEmptyStateAttribute('svgpath')).toBe('illustration.svg');
+      expect(getGlEmptyStateProp('svgPath')).toBe(illustration);
     });
 
     it('contains a title', () => {
       const title = 'Import in progress';
-      expect(getGlEmptyStateAttribute('title')).toBe(title);
+      expect(getGlEmptyStateProp('title')).toBe(title);
     });
 
     it('contains button text', () => {
-      expect(getGlEmptyStateAttribute('primarybuttontext')).toBe('View issues');
+      expect(getGlEmptyStateProp('primaryButtonText')).toBe('View issues');
     });
 
     it('contains button url', () => {
-      expect(getGlEmptyStateAttribute('primarybuttonlink')).toBe('gitlab-org/gitlab-test/-/issues');
+      const expected = `${issuesPath}?search=${importProject}`;
+      expect(getGlEmptyStateProp('primaryButtonLink')).toBe(expected);
     });
   });
 

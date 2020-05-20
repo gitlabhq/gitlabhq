@@ -14,6 +14,7 @@ describe('Wikis', () => {
           <option value="asciidoc">AsciiDoc</option>
           <option value="org">Org</option>
         </select>
+        <textarea id="wiki_content"></textarea>
         <code class="js-markup-link-example">{Link title}[link:page-slug]</code>
       </form>
       `;
@@ -23,6 +24,10 @@ describe('Wikis', () => {
     let messageInput;
     let changeFormatSelect;
     let linkExample;
+
+    const findBeforeUnloadWarning = () => window.onbeforeunload?.();
+    const findContent = () => document.getElementById('wiki_content');
+    const findForm = () => document.querySelector('.wiki-form');
 
     describe('when the wiki page is being created', () => {
       const formHtmlFixture = editFormHtmlFixture({ newPage: true });
@@ -93,6 +98,27 @@ describe('Wikis', () => {
         changeFormatSelect.dispatchEvent(new Event('change'));
 
         expect(linkExample.innerHTML).toBe(text);
+      });
+
+      it('starts with no unload warning', () => {
+        expect(findBeforeUnloadWarning()).toBeUndefined();
+      });
+
+      describe('when wiki content is updated', () => {
+        beforeEach(() => {
+          const content = findContent();
+          content.value = 'Lorem ipsum dolar sit!';
+          content.dispatchEvent(new Event('input'));
+        });
+
+        it('sets before unload warning', () => {
+          expect(findBeforeUnloadWarning()).toBe('');
+        });
+
+        it('when form submitted, unsets before unload warning', () => {
+          findForm().dispatchEvent(new Event('submit'));
+          expect(findBeforeUnloadWarning()).toBeUndefined();
+        });
       });
     });
   });

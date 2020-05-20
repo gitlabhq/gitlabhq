@@ -61,6 +61,13 @@ module Gitlab
       end
     end
 
+    override :can_read_project?
+    def can_read_project?
+      return true if user&.migration_bot?
+
+      super
+    end
+
     override :check_download_access!
     def check_download_access!
       passed = guest_can_download_code? || user_can_download_code?
@@ -99,7 +106,7 @@ module Gitlab
 
     def check_single_change_access(change)
       Checks::SnippetCheck.new(change, logger: logger).validate!
-      Checks::PushFileCountCheck.new(change, repository: repository, limit: Snippet::MAX_FILE_COUNT, logger: logger).validate!
+      Checks::PushFileCountCheck.new(change, repository: repository, limit: Snippet.max_file_limit(user), logger: logger).validate!
     rescue Checks::TimedLogger::TimeoutError
       raise TimeoutError, logger.full_message
     end
@@ -120,6 +127,13 @@ module Gitlab
     override :check_custom_action
     def check_custom_action(cmd)
       nil
+    end
+
+    override :check_size_limit?
+    def check_size_limit?
+      return false if user&.migration_bot?
+
+      super
     end
   end
 end

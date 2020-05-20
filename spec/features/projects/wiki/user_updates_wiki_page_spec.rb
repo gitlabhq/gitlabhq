@@ -64,7 +64,7 @@ describe 'User updates wiki page' do
 
   context 'when wiki is not empty' do
     let(:project_wiki) { create(:project_wiki, project: project, user: project.creator) }
-    let!(:wiki_page) { create(:wiki_page, wiki: project_wiki, attrs: { title: 'home', content: 'Home page' }) }
+    let!(:wiki_page) { create(:wiki_page, wiki: project_wiki, title: 'home', content: 'Home page') }
 
     before do
       visit(project_wikis_path(project))
@@ -168,7 +168,7 @@ describe 'User updates wiki page' do
     let(:project_wiki) { create(:project_wiki, project: project, user: project.creator) }
     let(:page_name) { 'page_name' }
     let(:page_dir) { "foo/bar/#{page_name}" }
-    let!(:wiki_page) { create(:wiki_page, wiki: project_wiki, attrs: { title: page_dir, content: 'Home page' }) }
+    let!(:wiki_page) { create(:wiki_page, wiki: project_wiki, title: page_dir, content: 'Home page') }
 
     before do
       visit(project_wiki_edit_path(project, wiki_page))

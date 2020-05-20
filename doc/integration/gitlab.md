@@ -24,9 +24,8 @@ GitLab.com will generate an application ID and secret key for you to use.
 
 1. Select **Save application**.
 
-1. You should now see a **Application Id** and **Secret** near the top right of the page (see screenshot).
-   Keep this page open as you continue configuration.
-   ![GitLab app](img/gitlab_app.png)
+1. You should now see an **Application ID** and **Secret**. Keep this page open as you continue
+   configuration.
 
 1. On your GitLab server, open the configuration file.
 

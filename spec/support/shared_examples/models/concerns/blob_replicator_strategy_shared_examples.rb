@@ -76,7 +76,7 @@ RSpec.shared_examples 'a blob replicator' do
       expect(service).to receive(:execute)
       expect(::Geo::BlobDownloadService).to receive(:new).with(replicator: replicator).and_return(service)
 
-      replicator.consume_created_event
+      replicator.consume_event_created
     end
   end
 
@@ -89,7 +89,7 @@ RSpec.shared_examples 'a blob replicator' do
   end
 
   describe '#model' do
-    let(:invoke_model) { replicator.send(:model) }
+    let(:invoke_model) { replicator.class.model }
 
     it 'is implemented' do
       expect do

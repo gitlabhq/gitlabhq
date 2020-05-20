@@ -134,11 +134,7 @@ class Feature
     end
 
     def l1_cache_backend
-      if Gitlab::Utils.to_boolean(ENV['USE_THREAD_MEMORY_CACHE'])
-        Gitlab::ThreadMemoryCache.cache_backend
-      else
-        Gitlab::ProcessMemoryCache.cache_backend
-      end
+      Gitlab::ProcessMemoryCache.cache_backend
     end
 
     def l2_cache_backend

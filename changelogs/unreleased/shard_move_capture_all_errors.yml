@@ -1,0 +1,5 @@
+---
+title: Capture all errors when updating repository storage
+merge_request: 30119
+author:
+type: fixed

@@ -119,7 +119,7 @@ describe PagesDomains::ObtainLetsEncryptCertificateService do
 
       cert = OpenSSL::X509::Certificate.new
       cert.subject = cert.issuer = OpenSSL::X509::Name.parse(subject)
-      cert.not_before = Time.now
+      cert.not_before = Time.current
       cert.not_after = 1.year.from_now
       cert.public_key = key.public_key
       cert.serial = 0x0

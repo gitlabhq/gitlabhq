@@ -20,7 +20,7 @@
           &middot;
           opened #{time_ago_with_tooltip(merge_request.created_at, placement: 'bottom')}
           by #{link_to_member(@project, merge_request.author, avatar: false)}
-          = gitlab_team_member_badge(merge_request.author)
+          = render_if_exists 'shared/issuable/gitlab_team_member_badge', {author: merge_request.author}
         - if merge_request.milestone
           %span.issuable-milestone.d-none.d-sm-inline-block
             &nbsp;

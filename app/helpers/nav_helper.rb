@@ -54,11 +54,12 @@ module NavHelper
     current_path?('merge_requests#show') ||
       current_path?('projects/merge_requests/conflicts#show') ||
       current_path?('issues#show') ||
-      current_path?('milestones#show')
+      current_path?('milestones#show') ||
+      current_path?('issues#designs')
   end
 
   def admin_monitoring_nav_links
-    %w(system_info background_jobs logs health_check requests_profiles)
+    %w(system_info background_jobs health_check requests_profiles)
   end
 
   def group_issues_sub_menu_items

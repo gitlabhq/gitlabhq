@@ -112,7 +112,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do |service_name|
         message: "user created page: Awesome wiki_page"
       }
 
-      @wiki_page = create(:wiki_page, wiki: project.wiki, attrs: opts)
+      @wiki_page = create(:wiki_page, wiki: project.wiki, **opts)
       @wiki_page_sample_data = Gitlab::DataBuilder::WikiPage.build(@wiki_page, user, 'create')
     end
 

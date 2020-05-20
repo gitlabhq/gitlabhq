@@ -26,7 +26,7 @@ module Gitlab
           json_stats = puma_stats
           return unless json_stats
 
-          stats = JSON.parse(json_stats)
+          stats = Gitlab::Json.parse(json_stats)
 
           if cluster?(stats)
             sample_cluster(stats)

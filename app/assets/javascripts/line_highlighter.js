@@ -1,4 +1,4 @@
-/* eslint-disable func-names, no-underscore-dangle, no-param-reassign, consistent-return, no-else-return */
+/* eslint-disable func-names, no-underscore-dangle, no-param-reassign, consistent-return */
 
 import $ from 'jquery';
 
@@ -54,6 +54,7 @@ LineHighlighter.prototype.bindEvents = function() {
 
   $fileHolder.on('click', 'a[data-line-number]', this.clickHandler);
   $fileHolder.on('highlight:line', this.highlightHash);
+  window.addEventListener('hashchange', e => this.highlightHash(e.target.location.hash));
 };
 
 LineHighlighter.prototype.highlightHash = function(newHash) {
@@ -127,9 +128,8 @@ LineHighlighter.prototype.hashToRange = function(hash) {
     const first = parseInt(matches[1], 10);
     const last = matches[2] ? parseInt(matches[2], 10) : null;
     return [first, last];
-  } else {
-    return [null, null];
   }
+  return [null, null];
 };
 
 // Highlight a single line
@@ -152,9 +152,8 @@ LineHighlighter.prototype.highlightRange = function(range) {
     }
 
     return results;
-  } else {
-    return this.highlightLine(range[0]);
   }
+  return this.highlightLine(range[0]);
 };
 
 // Set the URL hash string

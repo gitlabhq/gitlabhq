@@ -1,3 +1,9 @@
+---
+stage: Configure
+group: Configure
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Crossplane configuration
 
 Once Crossplane [is installed](applications.md#crossplane), it must be configured for
@@ -161,7 +167,7 @@ metadata:
 specTemplate:
   writeConnectionSecretsToNamespace: gitlab-managed-apps
   forProvider:
-    databaseVersion: POSTGRES_9_6
+    databaseVersion: POSTGRES_11_7
     region: $REGION
     settings:
       tier: db-custom-1-3840
@@ -183,7 +189,7 @@ metadata:
 specTemplate:
   writeConnectionSecretsToNamespace: gitlab-managed-apps
   forProvider:
-    databaseVersion: POSTGRES_9_6
+    databaseVersion: POSTGRES_11_7
     region: $REGION
     settings:
       tier: db-custom-1-3840

@@ -53,7 +53,7 @@ class IrkerWorker # rubocop:disable Scalability/IdempotentWorker
 
   def sendtoirker(privmsg)
     to_send = { to: @channels, privmsg: privmsg }
-    @socket.puts JSON.dump(to_send)
+    @socket.puts Gitlab::Json.dump(to_send)
   end
 
   def close_connection

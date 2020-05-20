@@ -77,7 +77,7 @@ describe RspecFlaky::FlakyExample, :aggregate_failures do
 
       it 'updates the first_flaky_at' do
         now = Time.now
-        expected_first_flaky_at = flaky_example.first_flaky_at ? flaky_example.first_flaky_at : now
+        expected_first_flaky_at = flaky_example.first_flaky_at || now
         Timecop.freeze(now) { flaky_example.update_flakiness! }
 
         expect(flaky_example.first_flaky_at).to eq(expected_first_flaky_at)

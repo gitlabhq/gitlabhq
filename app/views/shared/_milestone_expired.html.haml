@@ -1,6 +1,6 @@
 - if milestone.expired? and not milestone.closed?
-  .status-box.status-box-expired.append-bottom-5 Expired
+  .status-box.status-box-expired.append-bottom-5= _('Expired')
 - if milestone.upcoming?
-  .status-box.status-box-mr-merged.append-bottom-5 Upcoming
+  .status-box.status-box-mr-merged.append-bottom-5= _('Upcoming')
 - if milestone.closed?
-  .status-box.status-box-closed.append-bottom-5 Closed
+  .status-box.status-box-closed.append-bottom-5= _('Closed')

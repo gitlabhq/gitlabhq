@@ -1041,6 +1041,36 @@ describe('DiffsStoreMutations', () => {
     });
   });
 
+  describe('SET_DIFF_FILE_VIEWER', () => {
+    it("should update the correct diffFile's viewer property", () => {
+      const state = {
+        diffFiles: [
+          { file_path: 'SearchString', viewer: 'OLD VIEWER' },
+          { file_path: 'OtherSearchString' },
+          { file_path: 'SomeOtherString' },
+        ],
+      };
+
+      mutations[types.SET_DIFF_FILE_VIEWER](state, {
+        filePath: 'SearchString',
+        viewer: 'NEW VIEWER',
+      });
+
+      expect(state.diffFiles[0].viewer).toEqual('NEW VIEWER');
+      expect(state.diffFiles[1].viewer).not.toBeDefined();
+      expect(state.diffFiles[2].viewer).not.toBeDefined();
+
+      mutations[types.SET_DIFF_FILE_VIEWER](state, {
+        filePath: 'OtherSearchString',
+        viewer: 'NEW VIEWER',
+      });
+
+      expect(state.diffFiles[0].viewer).toEqual('NEW VIEWER');
+      expect(state.diffFiles[1].viewer).toEqual('NEW VIEWER');
+      expect(state.diffFiles[2].viewer).not.toBeDefined();
+    });
+  });
+
   describe('SET_SHOW_SUGGEST_POPOVER', () => {
     it('sets showSuggestPopover to false', () => {
       const state = { showSuggestPopover: true };

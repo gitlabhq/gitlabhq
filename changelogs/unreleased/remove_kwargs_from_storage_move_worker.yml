@@ -1,0 +1,5 @@
+---
+title: Remove kwargs from storage move worker
+merge_request: 31412
+author:
+type: fixed

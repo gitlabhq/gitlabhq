@@ -1,4 +1,4 @@
-/* eslint-disable func-names, no-param-reassign, operator-assignment, no-else-return, consistent-return */
+/* eslint-disable func-names, no-param-reassign, operator-assignment, consistent-return */
 import $ from 'jquery';
 import { insertText } from '~/lib/utils/common_utils';
 
@@ -217,16 +217,15 @@ export function insertMarkdownText({
           }
           if (val.indexOf(tag) === 0) {
             return String(val.replace(tag, ''));
-          } else {
-            return String(tag) + val;
           }
+          return String(tag) + val;
         })
         .join('\n');
     }
   } else if (tag.indexOf(textPlaceholder) > -1) {
     textToInsert = tag.replace(textPlaceholder, selected);
   } else {
-    textToInsert = String(startChar) + tag + selected + (wrap ? tag : ' ');
+    textToInsert = String(startChar) + tag + selected + (wrap ? tag : '');
   }
 
   if (removedFirstNewLine) {

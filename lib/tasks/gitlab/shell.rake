@@ -12,7 +12,7 @@ namespace :gitlab do
       gitlab_url += '/' unless gitlab_url.end_with?('/')
       target_dir = Gitlab.config.gitlab_shell.path
 
-      checkout_or_clone_version(version: default_version, repo: args.repo, target_dir: target_dir)
+      checkout_or_clone_version(version: default_version, repo: args.repo, target_dir: target_dir, clone_opts: %w[--depth 1])
 
       # Make sure we're on the right tag
       Dir.chdir(target_dir) do

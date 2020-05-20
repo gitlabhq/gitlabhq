@@ -20,7 +20,7 @@ by default. To enable it for existing projects, or if you want to disable it:
 1. Find the Packages feature and enable or disable it.
 1. Click on **Save changes** for the changes to take effect.
 
-You should then be able to see the **Packages** section on the left sidebar.
+You should then be able to see the **Packages & Registries** section on the left sidebar.
 
 ## Getting started
 
@@ -108,14 +108,19 @@ conan search Hello* --all --remote=gitlab
 
 ## Authenticating to the GitLab Conan Repository
 
-You will need to generate a [personal access token](../../../user/profile/personal_access_tokens.md) with the scope set to `api` for repository authentication.
+You will need a personal access token or deploy token.
+
+For repository authentication:
+
+- You can generate a [personal access token](../../../user/profile/personal_access_tokens.md) with the scope set to `api`.
+- You can generate a [deploy token](./../../project/deploy_tokens/index.md) with the scope set to `read_package_registry`, `write_package_registry`, or both.
 
 ### Adding a Conan user to the GitLab remote
 
 Once you have a personal access token and have [set your Conan remote](#adding-the-gitlab-package-registry-as-a-conan-remote), you can associate the token with the remote so you do not have to explicitly add them to each Conan command you run:
 
 ```shell
-conan user <gitlab-username> -r gitlab -p <personal_access_token>
+conan user <gitlab_username or deploy_token_username> -r gitlab -p <personal_access_token or deploy_token>
 ```
 
 Note: **Note**
@@ -130,7 +135,7 @@ Alternatively, you could explicitly include your credentials in any given comman
 For example:
 
 ```shell
-CONAN_LOGIN_USERNAME=<gitlab-username> CONAN_PASSWORD=<personal_access_token> conan upload Hello/0.1@my-group+my-project/beta --all --remote=gitlab
+CONAN_LOGIN_USERNAME=<gitlab_username or deploy_token_username> CONAN_PASSWORD=<personal_access_token or deploy_token> conan upload Hello/0.1@my-group+my-project/beta --all --remote=gitlab
 ```
 
 ### Setting a default remote to your project (optional)
@@ -148,7 +153,7 @@ This functionality is best suited for when you want to consume or install packag
 The rest of the example commands in this documentation assume that you have added a Conan user with your credentials to the `gitlab` remote and will not include the explicit credentials or remote option, but be aware that any of the commands could be run without having added a user or default remote:
 
 ```shell
-`CONAN_LOGIN_USERNAME=<gitlab-username> CONAN_PASSWORD=<personal_access_token> <conan command> --remote=gitlab
+`CONAN_LOGIN_USERNAME=<gitlab_username or deploy_token_username> CONAN_PASSWORD=<personal_access_token or deploy_token> <conan command> --remote=gitlab
 ```
 
 ## Uploading a package
@@ -274,7 +279,7 @@ To work with Conan commands within [GitLab CI/CD](./../../../ci/README.md), you 
 It is easiest to provide the `CONAN_LOGIN_USERNAME` and `CONAN_PASSWORD` with each
 Conan command in your `.gitlab-ci.yml` file:
 
-```yml
+```yaml
 image: conanio/gcc7
 
 create_package:

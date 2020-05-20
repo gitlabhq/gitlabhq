@@ -361,7 +361,7 @@ describe QuickActions::InterpretService do
         expect(updates).to eq(spend_time: {
                                 duration: 3600,
                                 user_id: developer.id,
-                                spent_at: DateTime.now.to_date
+                                spent_at: DateTime.current.to_date
                               })
       end
 
@@ -379,7 +379,7 @@ describe QuickActions::InterpretService do
         expect(updates).to eq(spend_time: {
                                 duration: -1800,
                                 user_id: developer.id,
-                                spent_at: DateTime.now.to_date
+                                spent_at: DateTime.current.to_date
                               })
       end
     end

@@ -751,4 +751,48 @@ describe CommitStatus do
 
     it { is_expected.to be_a(CommitStatusPresenter) }
   end
+
+  describe '#recoverable?' do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:commit_status) { create(:commit_status, :pending) }
+
+    subject(:recoverable?) { commit_status.recoverable? }
+
+    context 'when commit status is failed' do
+      before do
+        commit_status.drop!
+      end
+
+      where(:failure_reason, :recoverable) do
+        :script_failure | false
+        :missing_dependency_failure | false
+        :archived_failure | false
+        :scheduler_failure | false
+        :data_integrity_failure | false
+        :unknown_failure | true
+        :api_failure | true
+        :stuck_or_timeout_failure | true
+        :runner_system_failure | true
+      end
+
+      with_them do
+        context "when failure reason is #{params[:failure_reason]}" do
+          before do
+            commit_status.update_attribute(:failure_reason, failure_reason)
+          end
+
+          it { is_expected.to eq(recoverable) }
+        end
+      end
+    end
+
+    context 'when commit status is not failed' do
+      before do
+        commit_status.success!
+      end
+
+      it { is_expected.to eq(false) }
+    end
+  end
 end

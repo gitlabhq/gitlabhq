@@ -63,7 +63,7 @@ export default {
 };
 </script>
 <template>
-  <div v-gl-resize-observer-directive="onResize" class="col-12 col-lg-6">
+  <div v-gl-resize-observer-directive="onResize">
     <gl-heatmap
       ref="heatmapChart"
       v-bind="$attrs"

@@ -5,7 +5,7 @@ require 'spec_helper'
 describe Gitlab::SnippetSearchResults do
   include SearchHelpers
 
-  let!(:snippet) { create(:snippet, content: 'foo', file_name: 'foo') }
+  let_it_be(:snippet) { create(:snippet, content: 'foo', file_name: 'foo') }
   let(:results) { described_class.new(snippet.author, 'foo') }
 
   describe '#snippet_titles_count' do
@@ -14,27 +14,20 @@ describe Gitlab::SnippetSearchResults do
     end
   end
 
-  describe '#snippet_blobs_count' do
-    it 'returns the amount of matched snippet blobs' do
-      expect(results.limited_snippet_blobs_count).to eq(1)
+  describe '#formatted_count' do
+    it 'returns the expected formatted count' do
+      expect(results).to receive(:limited_snippet_titles_count).and_return(1234)
+      expect(results.formatted_count('snippet_titles')).to eq(max_limited_count)
     end
   end
 
-  describe '#formatted_count' do
-    using RSpec::Parameterized::TableSyntax
+  describe '#objects' do
+    it 'uses page and per_page to paginate results' do
+      snippet2 = create(:snippet, :public, content: 'foo', file_name: 'foo')
 
-    where(:scope, :count_method, :expected) do
-      'snippet_titles' | :limited_snippet_titles_count   | max_limited_count
-      'snippet_blobs'  | :limited_snippet_blobs_count    | max_limited_count
-      'projects'       | :limited_projects_count         | max_limited_count
-      'unknown'        | nil                             | nil
-    end
-
-    with_them do
-      it 'returns the expected formatted count' do
-        expect(results).to receive(count_method).and_return(1234) if count_method
-        expect(results.formatted_count(scope)).to eq(expected)
-      end
+      expect(results.objects('snippet_titles', page: 1, per_page: 1).to_a).to eq([snippet2])
+      expect(results.objects('snippet_titles', page: 2, per_page: 1).to_a).to eq([snippet])
+      expect(results.objects('snippet_titles', page: 1, per_page: 2).count).to eq(2)
     end
   end
 end

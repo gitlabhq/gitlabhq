@@ -246,6 +246,30 @@ describe Gitlab::Alerting::Alert do
     it_behaves_like 'parse payload', 'annotations/gitlab_incident_markdown'
   end
 
+  describe '#gitlab_fingerprint' do
+    subject { alert.gitlab_fingerprint }
+
+    context 'when the alert is a GitLab managed alert' do
+      include_context 'gitlab alert'
+
+      it 'returns a fingerprint' do
+        plain_fingerprint = [alert.metric_id, alert.starts_at].join('/')
+
+        is_expected.to eq(Digest::SHA1.hexdigest(plain_fingerprint))
+      end
+    end
+
+    context 'when the alert is from self managed Prometheus' do
+      include_context 'full query'
+
+      it 'returns a fingerprint' do
+        plain_fingerprint = [alert.starts_at, alert.title, alert.full_query].join('/')
+
+        is_expected.to eq(Digest::SHA1.hexdigest(plain_fingerprint))
+      end
+    end
+  end
+
   describe '#valid?' do
     before do
       payload.update(

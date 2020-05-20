@@ -1,3 +1,9 @@
+---
+stage: Monitor
+group: APM
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Monitoring GitLab with Prometheus
 
 > **Notes:**
@@ -49,7 +55,7 @@ To disable Prometheus and all of its exporters, as well as any added in the futu
 ### Changing the port and address Prometheus listens on
 
 NOTE: **Note:**
-The following change was added in [GitLab Omnibus 8.17](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/1261). Although possible,
+The following change was added in [Omnibus GitLab 8.17](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/1261). Although possible,
 it's not recommended to change the port Prometheus listens
 on, as this might affect or conflict with other services running on the GitLab
 server. Proceed at your own risk.
@@ -80,7 +86,7 @@ To change the address/port that Prometheus listens on:
 
 ### Adding custom scrape configs
 
-You can configure additional scrape targets for the GitLab Omnibus-bundled
+You can configure additional scrape targets for the Omnibus GitLab-bundled
 Prometheus by editing `prometheus['scrape_configs']` in `/etc/gitlab/gitlab.rb`
 using the [Prometheus scrape target configuration](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#%3Cscrape_config%3E)
 syntax.
@@ -108,7 +114,7 @@ prometheus['scrape_configs'] = [
 NOTE: **Note:**
 Prometheus and most exporters don't support authentication. We don't recommend exposing them outside the local network.
 
-A few configuration changes are required to allow GitLab to be monitored by an external Prometheus server. External servers are recommended for highly available deployments of GitLab with multiple nodes.
+A few configuration changes are required to allow GitLab to be monitored by an external Prometheus server. External servers are recommended for [GitLab deployments with multiple nodes](../../reference_architectures/index.md).
 
 To use an external Prometheus server:
 

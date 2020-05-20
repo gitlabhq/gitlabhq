@@ -15,7 +15,7 @@ export default class PipelineStore {
    * @param {Object} pipeline
    */
   storePipeline(pipeline = {}) {
-    const pipelineCopy = Object.assign({}, pipeline);
+    const pipelineCopy = { ...pipeline };
 
     if (pipelineCopy.triggered_by) {
       pipelineCopy.triggered_by = [pipelineCopy.triggered_by];

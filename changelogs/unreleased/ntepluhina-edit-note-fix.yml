@@ -1,0 +1,5 @@
+---
+title: Allow only users with `adminNote` permission to edit the design note
+merge_request: 32035
+author:
+type: fixed

@@ -6,4 +6,4 @@
   %fieldset.form-group.form-check
     = check_box_tag "#{prefix}[scopes][]", scope, token.scopes.include?(scope), id: "#{prefix}_scopes_#{scope}", class: "form-check-input qa-#{scope}-radio"
     = label_tag ("#{prefix}_scopes_#{scope}"), scope, class: 'label-bold form-check-label'
-    .text-secondary= t scope, scope: [:doorkeeper, :scope_desc]
+    .text-secondary= t scope, scope: scope_description(prefix)

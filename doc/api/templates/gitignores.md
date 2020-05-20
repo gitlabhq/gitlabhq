@@ -2,7 +2,7 @@
 type: reference
 ---
 
-# .gitignore API
+# `.gitignore` API
 
 In GitLab, there is an API endpoint available for `.gitignore`. For more
 information on `gitignore`, see the

@@ -127,7 +127,7 @@ describe Projects::SnippetsController do
             .to log_spam(title: 'Title', user_id: user.id, noteable_type: 'ProjectSnippet')
         end
 
-        it 'renders :new with recaptcha disabled' do
+        it 'renders :new with reCAPTCHA disabled' do
           stub_application_setting(recaptcha_enabled: false)
 
           create_snippet(project, visibility_level: Snippet::PUBLIC)
@@ -135,18 +135,18 @@ describe Projects::SnippetsController do
           expect(response).to render_template(:new)
         end
 
-        context 'recaptcha enabled' do
+        context 'reCAPTCHA enabled' do
           before do
             stub_application_setting(recaptcha_enabled: true)
           end
 
-          it 'renders :verify with recaptcha enabled' do
+          it 'renders :verify with reCAPTCHA enabled' do
             create_snippet(project, visibility_level: Snippet::PUBLIC)
 
             expect(response).to render_template(:verify)
           end
 
-          it 'renders snippet page when recaptcha verified' do
+          it 'renders snippet page when reCAPTCHA verified' do
             spammy_title = 'Whatever'
 
             spam_logs = create_list(:spam_log, 2, user: user, title: spammy_title)
@@ -223,7 +223,7 @@ describe Projects::SnippetsController do
             .to log_spam(title: 'Foo', user_id: user.id, noteable_type: 'ProjectSnippet')
         end
 
-        it 'renders :edit with recaptcha disabled' do
+        it 'renders :edit with reCAPTCHA disabled' do
           stub_application_setting(recaptcha_enabled: false)
 
           update_snippet(title: 'Foo')
@@ -231,18 +231,18 @@ describe Projects::SnippetsController do
           expect(response).to render_template(:edit)
         end
 
-        context 'recaptcha enabled' do
+        context 'reCAPTCHA enabled' do
           before do
             stub_application_setting(recaptcha_enabled: true)
           end
 
-          it 'renders :verify with recaptcha enabled' do
+          it 'renders :verify with reCAPTCHA enabled' do
             update_snippet(title: 'Foo')
 
             expect(response).to render_template(:verify)
           end
 
-          it 'renders snippet page when recaptcha verified' do
+          it 'renders snippet page when reCAPTCHA verified' do
             spammy_title = 'Whatever'
 
             spam_logs = create_list(:spam_log, 2, user: user, title: spammy_title)
@@ -268,7 +268,7 @@ describe Projects::SnippetsController do
             .to log_spam(title: 'Foo', user_id: user.id, noteable_type: 'ProjectSnippet')
         end
 
-        it 'renders :edit with recaptcha disabled' do
+        it 'renders :edit with reCAPTCHA disabled' do
           stub_application_setting(recaptcha_enabled: false)
 
           update_snippet(title: 'Foo', visibility_level: Snippet::PUBLIC)
@@ -276,18 +276,18 @@ describe Projects::SnippetsController do
           expect(response).to render_template(:edit)
         end
 
-        context 'recaptcha enabled' do
+        context 'reCAPTCHA enabled' do
           before do
             stub_application_setting(recaptcha_enabled: true)
           end
 
-          it 'renders :verify with recaptcha enabled' do
+          it 'renders :verify' do
             update_snippet(title: 'Foo', visibility_level: Snippet::PUBLIC)
 
             expect(response).to render_template(:verify)
           end
 
-          it 'renders snippet page when recaptcha verified' do
+          it 'renders snippet page' do
             spammy_title = 'Whatever'
 
             spam_logs = create_list(:spam_log, 2, user: user, title: spammy_title)
@@ -345,20 +345,6 @@ describe Projects::SnippetsController do
       subject
 
       expect(assigns(:blob)).to eq(project_snippet.blobs.first)
-    end
-
-    context 'when feature flag version_snippets is disabled' do
-      before do
-        stub_feature_flags(version_snippets: false)
-      end
-
-      it 'returns the snippet database content' do
-        subject
-
-        blob = assigns(:blob)
-
-        expect(blob.data).to eq(project_snippet.content)
-      end
     end
   end
 

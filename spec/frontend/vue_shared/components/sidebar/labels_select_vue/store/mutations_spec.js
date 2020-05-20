@@ -29,6 +29,7 @@ describe('LabelsSelect Mutations', () => {
       const state = {
         dropdownOnly: false,
         showDropdownButton: false,
+        variant: 'sidebar',
       };
       mutations[types.TOGGLE_DROPDOWN_CONTENTS](state);
 
@@ -155,11 +156,11 @@ describe('LabelsSelect Mutations', () => {
     const labels = [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }];
 
     it('updates `state.labels` to include `touched` and `set` props based on provided `labels` param', () => {
-      const updatedLabelIds = [2, 4];
+      const updatedLabelIds = [2];
       const state = {
         labels,
       };
-      mutations[types.UPDATE_SELECTED_LABELS](state, { labels });
+      mutations[types.UPDATE_SELECTED_LABELS](state, { labels: [{ id: 2 }] });
 
       state.labels.forEach(label => {
         if (updatedLabelIds.includes(label.id)) {

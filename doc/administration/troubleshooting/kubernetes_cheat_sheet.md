@@ -52,7 +52,7 @@ and they will assist you with any issues you are having.
   - Check logs via Kubectl:
 
     ```shell
-    kubectl logs <unicorn pod> -c dependencies
+    kubectl logs <webservice pod> -c dependencies
     ```
 
 - How to tail all Kubernetes cluster events in real time:
@@ -72,7 +72,7 @@ and they will assist you with any issues you are having.
   This is the principle of Kubernetes, read [Twelve-factor app](https://12factor.net/)
   for details.
 
-- How to get cronjobs configured on a cluster
+- How to get cron jobs configured on a cluster
 
   ```shell
   kubectl get cronjobs
@@ -87,20 +87,20 @@ and they will assist you with any issues you are having.
 - Minimal config that can be used to test a Kubernetes Helm chart can be found
   [here](https://gitlab.com/gitlab-org/charts/gitlab/issues/620).
 
-- Tailing logs of a separate pod. An example for a Unicorn pod:
+- Tailing logs of a separate pod. An example for a Webservice pod:
 
   ```shell
-  kubectl logs gitlab-unicorn-7656fdd6bf-jqzfs -c unicorn
+  kubectl logs gitlab-webservice-54fbf6698b-hpckq -c webservice
   ```
 
-- Tail and follow all pods that share a label (in this case, `unicorn`):
+- Tail and follow all pods that share a label (in this case, `webservice`):
 
   ```shell
-  # all containers in the unicorn pods
-  kubectl logs -f -l app=unicorn --all-containers=true --max-log-requests=50
+  # all containers in the webservice pods
+  kubectl logs -f -l app=webservice --all-containers=true --max-log-requests=50
 
-  # only the unicorn containers in all unicorn pods
-  kubectl logs -f -l app=unicorn -c unicorn --max-log-requests=50
+  # only the webservice containers in all webservice pods
+  kubectl logs -f -l app=webservice -c webservice --max-log-requests=50
   ```
 
 - One can stream logs from all containers at once, similar to the Omnibus
@@ -132,7 +132,7 @@ and they will assist you with any issues you are having.
   /srv/gitlab/bin/rails console
 
   # source-style commands should also work
-  /srv/gitlab && bundle exec rake gitlab:check RAILS_ENV=production
+  cd /srv/gitlab && bundle exec rake gitlab:check RAILS_ENV=production
 
   # run GitLab check. Note that the output can be confusing and invalid because of the specific structure of GitLab installed via helm chart
   /usr/local/bin/gitlab-rake gitlab:check
@@ -206,7 +206,7 @@ all Kubernetes resources and dependent charts:
   helm get manifest <release name>
   ```
 
-## Installation of minimal GitLab config via Minukube on macOS
+## Installation of minimal GitLab config via Minikube on macOS
 
 This section is based on [Developing for Kubernetes with Minikube](https://docs.gitlab.com/charts/development/minikube/index.html)
 and [Helm](https://docs.gitlab.com/charts/installation/tools.html#helm). Refer
@@ -230,31 +230,33 @@ to those documents for details.
   ```shell
   minikube start --cpus 3 --memory 8192 # minimum amount for GitLab to work
   minikube addons enable ingress
-  minikube addons enable kube-dns
   ```
 
 - Install Helm via Homebrew and initialize it:
 
   ```shell
-  brew install kubernetes-helm
-  helm init --service-account tiller
+  brew install helm
   ```
 
-- Copy the file <https://gitlab.com/gitlab-org/charts/gitlab/raw/master/examples/values-minikube-minimum.yaml>
-  to your workstation.
+- Copy the [Minikube minimum values YAML file](https://gitlab.com/gitlab-org/charts/gitlab/raw/master/examples/values-minikube-minimum.yaml)
+  to your workstation:
 
-- Find the IP address in the output of `minikube ip` and update the yaml file with
+  ```shell
+  curl --output values.yaml "https://gitlab.com/gitlab-org/charts/gitlab/raw/master/examples/values-minikube-minimum.yaml"
+  ```
+
+- Find the IP address in the output of `minikube ip` and update the YAML file with
   this IP address.
 
 - Install the GitLab Helm Chart:
 
   ```shell
   helm repo add gitlab https://charts.gitlab.io
-  helm install --name gitlab -f <path-to-yaml-file> gitlab/gitlab
+  helm install gitlab -f <path-to-yaml-file> gitlab/gitlab
   ```
 
   If you want to modify some GitLab settings, you can use the above-mentioned config
-  as a base and create your own yaml file.
+  as a base and create your own YAML file.
 
 - Monitor the installation progress via `helm status gitlab` and `minikube dashboard`.
   The installation could take up to 20-30 minutes depending on the amount of resources
@@ -263,7 +265,7 @@ to those documents for details.
 - When all the pods show either a `Running` or `Completed` status, get the GitLab password as
   described in [Initial login](https://docs.gitlab.com/charts/installation/deployment.html#initial-login),
   and log in to GitLab via the UI. It will be accessible via `https://gitlab.domain`
-  where `domain` is the value provided in the yaml file.
+  where `domain` is the value provided in the YAML file.
 
 <!-- ## Troubleshooting
 

@@ -14,7 +14,7 @@ module Types
     expose_permissions Types::PermissionTypes::Snippet
 
     field :id, GraphQL::ID_TYPE,
-          description: 'Id of the snippet',
+          description: 'ID of the snippet',
           null: false
 
     field :title, GraphQL::STRING_TYPE,

@@ -72,6 +72,49 @@ describe('Monitoring mutations', () => {
     });
   });
 
+  describe('Dashboard starring mutations', () => {
+    it('REQUEST_DASHBOARD_STARRING', () => {
+      stateCopy = { isUpdatingStarredValue: false };
+      mutations[types.REQUEST_DASHBOARD_STARRING](stateCopy);
+
+      expect(stateCopy.isUpdatingStarredValue).toBe(true);
+    });
+
+    describe('RECEIVE_DASHBOARD_STARRING_SUCCESS', () => {
+      let allDashboards;
+
+      beforeEach(() => {
+        allDashboards = [...dashboardGitResponse];
+        stateCopy = {
+          allDashboards,
+          currentDashboard: allDashboards[1].path,
+          isUpdatingStarredValue: true,
+        };
+      });
+
+      it('sets a dashboard as starred', () => {
+        mutations[types.RECEIVE_DASHBOARD_STARRING_SUCCESS](stateCopy, true);
+
+        expect(stateCopy.isUpdatingStarredValue).toBe(false);
+        expect(stateCopy.allDashboards[1].starred).toBe(true);
+      });
+
+      it('sets a dashboard as unstarred', () => {
+        mutations[types.RECEIVE_DASHBOARD_STARRING_SUCCESS](stateCopy, false);
+
+        expect(stateCopy.isUpdatingStarredValue).toBe(false);
+        expect(stateCopy.allDashboards[1].starred).toBe(false);
+      });
+    });
+
+    it('RECEIVE_DASHBOARD_STARRING_FAILURE', () => {
+      stateCopy = { isUpdatingStarredValue: true };
+      mutations[types.RECEIVE_DASHBOARD_STARRING_FAILURE](stateCopy);
+
+      expect(stateCopy.isUpdatingStarredValue).toBe(false);
+    });
+  });
+
   describe('RECEIVE_DEPLOYMENTS_DATA_SUCCESS', () => {
     it('stores the deployment data', () => {
       stateCopy.deploymentData = [];
@@ -340,6 +383,55 @@ describe('Monitoring mutations', () => {
     it('stores dashboards loaded from the git repository', () => {
       mutations[types.SET_ALL_DASHBOARDS](stateCopy, dashboardGitResponse);
       expect(stateCopy.allDashboards).toEqual(dashboardGitResponse);
+    });
+  });
+
+  describe('SET_EXPANDED_PANEL', () => {
+    it('no expanded panel is set initally', () => {
+      expect(stateCopy.expandedPanel.panel).toEqual(null);
+      expect(stateCopy.expandedPanel.group).toEqual(null);
+    });
+
+    it('sets a panel id as the expanded panel', () => {
+      const group = 'group_1';
+      const panel = { title: 'A Panel' };
+      mutations[types.SET_EXPANDED_PANEL](stateCopy, { group, panel });
+
+      expect(stateCopy.expandedPanel).toEqual({ group, panel });
+    });
+
+    it('clears panel as the expanded panel', () => {
+      mutations[types.SET_EXPANDED_PANEL](stateCopy, { group: null, panel: null });
+
+      expect(stateCopy.expandedPanel.group).toEqual(null);
+      expect(stateCopy.expandedPanel.panel).toEqual(null);
+    });
+  });
+
+  describe('SET_VARIABLES', () => {
+    it('stores an empty variables array when no custom variables are given', () => {
+      mutations[types.SET_VARIABLES](stateCopy, {});
+
+      expect(stateCopy.promVariables).toEqual({});
+    });
+
+    it('stores variables in the key key_value format in the array', () => {
+      mutations[types.SET_VARIABLES](stateCopy, { pod: 'POD', stage: 'main ops' });
+
+      expect(stateCopy.promVariables).toEqual({ pod: 'POD', stage: 'main ops' });
+    });
+  });
+
+  describe('UPDATE_VARIABLE_VALUES', () => {
+    afterEach(() => {
+      mutations[types.SET_VARIABLES](stateCopy, {});
+    });
+
+    it('updates only the value of the variable in promVariables', () => {
+      mutations[types.SET_VARIABLES](stateCopy, { environment: { value: 'prod', type: 'text' } });
+      mutations[types.UPDATE_VARIABLE_VALUES](stateCopy, { key: 'environment', value: 'new prod' });
+
+      expect(stateCopy.promVariables).toEqual({ environment: { value: 'new prod', type: 'text' } });
     });
   });
 });

@@ -51,7 +51,7 @@ export default {
       rel="noopener noreferrer nofollow"
       data-container="body"
     >
-      <icon name="question-o" />
+      <icon name="question" />
     </a>
   </div>
 </template>

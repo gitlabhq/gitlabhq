@@ -69,8 +69,17 @@
       display: none !important;
     }
   }
+}
 
-  .monaco-diff-editor.vs {
+.multi-file-editor-holder {
+  height: 100%;
+  min-height: 0; // firefox fix
+}
+
+// Apply theme related overrides only to the white theme and none theme
+.theme-white .blob-editor-container,
+.theme-none .blob-editor-container {
+  .monaco-diff-editor {
     .editor.modified {
       box-shadow: none;
     }
@@ -131,16 +140,14 @@
   }
 }
 
-.multi-file-editor-holder {
-  height: 100%;
-  min-height: 0; // firefox fix
-
-  &.is-readonly .vs,
-  .vs .editor.original {
+.theme-white .multi-file-editor-holder,
+.theme-none .multi-file-editor-holder {
+  &.is-readonly,
+  .editor.original {
     .monaco-editor,
     .monaco-editor-background,
     .monaco-editor .inputarea.ime-input {
-      background-color: $gray-50;
+      background-color: $gray-10;
     }
   }
 }

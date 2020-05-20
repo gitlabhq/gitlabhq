@@ -79,19 +79,5 @@ describe NamespacelessProjectDestroyWorker do
         end
       end
     end
-
-    context 'project has non-existing namespace' do
-      let!(:project) do
-        project = build(:project, namespace_id: non_existing_record_id)
-        project.save(validate: false)
-        project
-      end
-
-      it 'deletes the project' do
-        subject.perform(project.id)
-
-        expect(Project.unscoped.all).not_to include(project)
-      end
-    end
   end
 end

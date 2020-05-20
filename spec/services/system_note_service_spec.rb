@@ -6,6 +6,7 @@ describe SystemNoteService do
   include Gitlab::Routing
   include RepoHelpers
   include AssetsHelpers
+  include DesignManagementTestHelpers
 
   let_it_be(:group)    { create(:group) }
   let_it_be(:project)  { create(:project, :repository, group: group) }
@@ -462,7 +463,8 @@ describe SystemNoteService do
     describe "existing reference" do
       before do
         allow(JIRA::Resource::Remotelink).to receive(:all).and_return([])
-        message = "[#{author.name}|http://localhost/#{author.username}] mentioned this issue in [a commit of #{project.full_path}|http://localhost/#{project.full_path}/-/commit/#{commit.id}]:\n'#{commit.title.chomp}'"
+        message = double('message')
+        allow(message).to receive(:include?) { true }
         allow_next_instance_of(JIRA::Resource::Issue) do |instance|
           allow(instance).to receive(:comments).and_return([OpenStruct.new(body: message)])
         end
@@ -633,6 +635,30 @@ describe SystemNoteService do
       end
 
       described_class.auto_resolve_prometheus_alert(noteable, project, author)
+    end
+  end
+
+  describe '.design_version_added' do
+    let(:version) { create(:design_version) }
+
+    it 'calls DesignManagementService' do
+      expect_next_instance_of(SystemNotes::DesignManagementService) do |service|
+        expect(service).to receive(:design_version_added).with(version)
+      end
+
+      described_class.design_version_added(version)
+    end
+  end
+
+  describe '.design_discussion_added' do
+    let(:discussion_note) { create(:diff_note_on_design) }
+
+    it 'calls DesignManagementService' do
+      expect_next_instance_of(SystemNotes::DesignManagementService) do |service|
+        expect(service).to receive(:design_discussion_added).with(discussion_note)
+      end
+
+      described_class.design_discussion_added(discussion_note)
     end
   end
 end

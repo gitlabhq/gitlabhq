@@ -1,0 +1,6 @@
+---
+title: Add a CI variable CI_KUBERNETES_ACTIVE as an alternative to only:kubernetes/except:kubernetes
+  that works with the rules syntax
+merge_request: 31146
+author:
+type: added

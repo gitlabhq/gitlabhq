@@ -21,7 +21,7 @@ module Gitlab
     end
 
     def emojis_aliases
-      @emoji_aliases ||= JSON.parse(File.read(Rails.root.join('fixtures', 'emojis', 'aliases.json')))
+      @emoji_aliases ||= Gitlab::Json.parse(File.read(Rails.root.join('fixtures', 'emojis', 'aliases.json')))
     end
 
     def emoji_filename(name)
@@ -63,7 +63,7 @@ module Gitlab
 
     def emoji_unicode_versions_by_name
       @emoji_unicode_versions_by_name ||=
-        JSON.parse(File.read(Rails.root.join('fixtures', 'emojis', 'emoji-unicode-version-map.json')))
+        Gitlab::Json.parse(File.read(Rails.root.join('fixtures', 'emojis', 'emoji-unicode-version-map.json')))
     end
   end
 end

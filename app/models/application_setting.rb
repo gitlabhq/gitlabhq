@@ -144,7 +144,7 @@ class ApplicationSetting < ApplicationRecord
   validates :default_artifacts_expire_in, presence: true, duration: true
 
   validates :container_expiration_policies_enable_historic_entries,
-             inclusion: { in: [true, false], message: 'must be a boolean value' }
+            inclusion: { in: [true, false], message: 'must be a boolean value' }
 
   validates :container_registry_token_expire_delay,
             presence: true,
@@ -263,6 +263,8 @@ class ApplicationSetting < ApplicationRecord
 
   validates :email_restrictions, untrusted_regexp: true
 
+  validates :hashed_storage_enabled, inclusion: { in: [true], message: _("Hashed storage can't be disabled anymore for new projects") }
+
   SUPPORTED_KEY_TYPES.each do |type|
     validates :"#{type}_key_restriction", presence: true, key_restriction: { type: type }
   end
@@ -345,6 +347,12 @@ class ApplicationSetting < ApplicationRecord
             presence: true,
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
+  validates :issues_create_limit,
+            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+
+  validates :raw_blob_request_limit,
+            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+
   attr_encrypted :asset_proxy_secret_key,
                  mode: :per_attribute_iv,
                  key: Settings.attr_encrypted_db_key_base_truncated,
@@ -412,7 +420,7 @@ class ApplicationSetting < ApplicationRecord
   # can cause a significant amount of load on Redis, let's cache it in
   # memory.
   def self.cache_backend
-    Gitlab::ThreadMemoryCache.cache_backend
+    Gitlab::ProcessMemoryCache.cache_backend
   end
 
   def recaptcha_or_login_protection_enabled

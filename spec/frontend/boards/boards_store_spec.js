@@ -214,6 +214,22 @@ describe('boardsStore', () => {
     });
   });
 
+  describe('getListIssues', () => {
+    let list;
+
+    beforeEach(() => {
+      list = new List(listObj);
+      setupDefaultResponses();
+    });
+
+    it('makes a request to get issues', () => {
+      const expectedResponse = expect.objectContaining({ issues: [createTestIssue()] });
+      expect(list.issues).toEqual([]);
+
+      return expect(boardsStore.getListIssues(list, true)).resolves.toEqual(expectedResponse);
+    });
+  });
+
   describe('getIssuesForList', () => {
     const id = 'TOO-MUCH';
     const url = `${endpoints.listsEndpoint}/${id}/issues?id=${id}`;
@@ -1036,6 +1052,127 @@ describe('boardsStore', () => {
             toListId: null,
             moveBeforeId: 1,
             moveAfterId: null,
+          });
+        });
+      });
+    });
+
+    describe('addListIssue', () => {
+      let list;
+      const issue1 = new ListIssue({
+        title: 'Testing',
+        id: 2,
+        iid: 2,
+        confidential: false,
+        labels: [
+          {
+            color: '#ff0000',
+            description: 'testing;',
+            id: 5000,
+            priority: undefined,
+            textColor: 'white',
+            title: 'Test',
+          },
+        ],
+        assignees: [],
+      });
+      const issue2 = new ListIssue({
+        title: 'Testing',
+        id: 1,
+        iid: 1,
+        confidential: false,
+        labels: [
+          {
+            id: 1,
+            title: 'test',
+            color: 'red',
+            description: 'testing',
+          },
+        ],
+        assignees: [
+          {
+            id: 1,
+            name: 'name',
+            username: 'username',
+            avatar_url: 'http://avatar_url',
+          },
+        ],
+        real_path: 'path/to/issue',
+      });
+
+      beforeEach(() => {
+        list = new List(listObj);
+        list.addIssue(issue1);
+        setupDefaultResponses();
+      });
+
+      it('adds issues that are not already on the list', () => {
+        expect(list.findIssue(issue2.id)).toBe(undefined);
+        expect(list.issues).toEqual([issue1]);
+
+        boardsStore.addListIssue(list, issue2);
+        expect(list.findIssue(issue2.id)).toBe(issue2);
+        expect(list.issues.length).toBe(2);
+        expect(list.issues).toEqual([issue1, issue2]);
+      });
+    });
+
+    describe('updateIssue', () => {
+      let issue;
+      let patchSpy;
+
+      beforeEach(() => {
+        issue = new ListIssue({
+          title: 'Testing',
+          id: 1,
+          iid: 1,
+          confidential: false,
+          labels: [
+            {
+              id: 1,
+              title: 'test',
+              color: 'red',
+              description: 'testing',
+            },
+          ],
+          assignees: [
+            {
+              id: 1,
+              name: 'name',
+              username: 'username',
+              avatar_url: 'http://avatar_url',
+            },
+          ],
+          real_path: 'path/to/issue',
+        });
+
+        patchSpy = jest.fn().mockReturnValue([200, { labels: [] }]);
+        axiosMock.onPatch(`path/to/issue.json`).reply(({ data }) => patchSpy(JSON.parse(data)));
+      });
+
+      it('passes assignee ids when there are assignees', () => {
+        boardsStore.updateIssue(issue);
+        return boardsStore.updateIssue(issue).then(() => {
+          expect(patchSpy).toHaveBeenCalledWith({
+            issue: {
+              milestone_id: null,
+              assignee_ids: [1],
+              label_ids: [1],
+            },
+          });
+        });
+      });
+
+      it('passes assignee ids of [0] when there are no assignees', () => {
+        issue.removeAllAssignees();
+
+        return boardsStore.updateIssue(issue).then(() => {
+          expect(patchSpy).toHaveBeenCalledWith({
+            issue: {
+              milestone_id: null,
+              assignee_ids: [0],
+              label_ids: [1],
+            },
           });
         });
       });

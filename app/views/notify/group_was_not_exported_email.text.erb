@@ -1,0 +1,7 @@
+<%= _("Group %{group_name} couldn't be exported.") % { group_name: @group.name } %>
+
+<%= _('The errors we encountered were:') %>
+
+<% @errors.each do |error| -%>
+  - <%= error %>
+<% end -%>

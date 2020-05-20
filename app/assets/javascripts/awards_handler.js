@@ -1,7 +1,7 @@
 /* eslint-disable class-methods-use-this, @gitlab/require-i18n-strings */
 
 import $ from 'jquery';
-import _ from 'underscore';
+import { uniq } from 'lodash';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import Cookies from 'js-cookie';
 import { __ } from './locale';
@@ -513,7 +513,7 @@ export class AwardsHandler {
 
   addEmojiToFrequentlyUsedList(emoji) {
     if (this.emoji.isEmojiNameValid(emoji)) {
-      this.frequentlyUsedEmojis = _.uniq(this.getFrequentlyUsedEmojis().concat(emoji));
+      this.frequentlyUsedEmojis = uniq(this.getFrequentlyUsedEmojis().concat(emoji));
       Cookies.set('frequently_used_emojis', this.frequentlyUsedEmojis.join(','), { expires: 365 });
     }
   }
@@ -522,9 +522,7 @@ export class AwardsHandler {
     return (
       this.frequentlyUsedEmojis ||
       (() => {
-        const frequentlyUsedEmojis = _.uniq(
-          (Cookies.get('frequently_used_emojis') || '').split(','),
-        );
+        const frequentlyUsedEmojis = uniq((Cookies.get('frequently_used_emojis') || '').split(','));
         this.frequentlyUsedEmojis = frequentlyUsedEmojis.filter(inputName =>
           this.emoji.isEmojiNameValid(inputName),
         );

@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'rest-client'
+
 module QA
   module Support
     module Api
@@ -7,6 +9,7 @@ module QA
       HTTP_STATUS_CREATED = 201
       HTTP_STATUS_NO_CONTENT = 204
       HTTP_STATUS_ACCEPTED = 202
+      HTTP_STATUS_SERVER_ERROR = 500
 
       def post(url, payload)
         RestClient::Request.execute(

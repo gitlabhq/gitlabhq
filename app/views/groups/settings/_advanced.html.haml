@@ -1,3 +1,5 @@
+= render 'groups/settings/export', group: @group
+
 .sub-section
   %h4.warning-title= s_('GroupSettings|Change group path')
   = form_for @group, html: { multipart: true, class: 'gl-show-field-errors' }, authenticity_token: true do |f|

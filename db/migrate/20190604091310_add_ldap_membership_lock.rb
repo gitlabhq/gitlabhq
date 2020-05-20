@@ -11,7 +11,7 @@ class AddLdapMembershipLock < ActiveRecord::Migration[5.1]
   disable_ddl_transaction!
 
   def up
-    add_column_with_default(:application_settings, :lock_memberships_to_ldap, :boolean, default: false)
+    add_column_with_default(:application_settings, :lock_memberships_to_ldap, :boolean, default: false) # rubocop:disable Migration/AddColumnWithDefault
   end
 
   def down

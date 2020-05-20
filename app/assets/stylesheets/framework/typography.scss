@@ -86,7 +86,7 @@
     line-height: 10px;
     color: $gl-gray-700;
     vertical-align: middle;
-    background-color: $gray-50;
+    background-color: $gray-10;
     border-width: 1px;
     border-style: solid;
     border-color: $gray-200 $gray-200 $gray-400;
@@ -532,6 +532,17 @@
       */
       margin: 0;
       font-size: $gl-font-size-small;
+    }
+
+    ul.dropdown-menu {
+      margin-top: 4px;
+      margin-bottom: 24px;
+      padding: 8px 0;
+
+      li {
+        margin: 0;
+        padding: 0 1px;
+      }
     }
   }
 }

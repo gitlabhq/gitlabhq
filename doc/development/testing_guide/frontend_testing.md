@@ -5,7 +5,7 @@ at GitLab. We use Karma with Jasmine and Jest for JavaScript unit and integratio
 and RSpec feature tests with Capybara for e2e (end-to-end) integration testing.
 
 Unit and feature tests need to be written for all new features.
-Most of the time, you should use [RSpec] for your feature tests.
+Most of the time, you should use [RSpec](https://github.com/rspec/rspec-rails#feature-specs) for your feature tests.
 
 Regression tests should be written for bug fixes to prevent them from recurring
 in the future.
@@ -15,7 +15,7 @@ information on general testing practices at GitLab.
 
 ## Vue.js testing
 
-If you are looking for a guide on Vue component testing, you can jump right away to this [section][vue-test].
+If you are looking for a guide on Vue component testing, you can jump right away to this [section](../fe_guide/vue.md#testing-vue-components).
 
 ## Jest
 
@@ -30,7 +30,7 @@ Jest tests can be found in `/spec/frontend` and `/ee/spec/frontend` in EE.
 
 ## Karma test suite
 
-While GitLab is switching over to [Jest][jest] you'll still find Karma tests in our application. [Karma][karma] is a test runner which uses [Jasmine] as its test
+While GitLab is switching over to [Jest](https://jestjs.io) you'll still find Karma tests in our application. [Karma](http://karma-runner.github.io/) is a test runner which uses [Jasmine](https://jasmine.github.io/) as its test
 framework. Jest also uses Jasmine as foundation, that's why it's looking quite similar.
 
 Karma tests live in `spec/javascripts/` and `/ee/spec/javascripts` in EE.
@@ -549,7 +549,8 @@ TBU
 
 Jasmine provides stubbing and mocking capabilities. There are some subtle differences in how to use it within Karma and Jest.
 
-Stubs or spies are often used synonymously. In Jest it's quite easy thanks to the `.spyOn` method. [Official docs][jestspy]
+Stubs or spies are often used synonymously. In Jest it's quite easy thanks to the `.spyOn` method.
+[Official docs](https://jestjs.io/docs/en/jest-object#jestspyonobject-methodname)
 The more challenging part are mocks, which can be used for functions or even dependencies.
 
 ### Manual module mocks
@@ -637,12 +638,12 @@ Karma allows something similar, but it's way more costly.
 
 Running Karma with `yarn run karma-start` will compile the JavaScript
 assets and run a server at `http://localhost:9876/` where it will automatically
-run the tests on any browser which connects to it. You can enter that url on
+run the tests on any browser which connects to it. You can enter that URL on
 multiple browsers at once to have it run the tests on each in parallel.
 
 While Karma is running, any changes you make will instantly trigger a recompile
 and retest of the **entire test suite**, so you can see instantly if you've broken
-a test with your changes. You can use [Jasmine focused][jasmine-focus] or
+a test with your changes. You can use [Jasmine focused](https://jasmine.github.io/2.5/focused_specs.html) or
 excluded tests (with `fdescribe` or `xdescribe`) to get Karma to run only the
 tests you want while you're working on a specific feature, but make sure to
 remove these directives when you commit your code.
@@ -831,43 +832,6 @@ testAction(
 
 Check an example in [spec/javascripts/ide/stores/actions_spec.jsspec/javascripts/ide/stores/actions_spec.js](https://gitlab.com/gitlab-org/gitlab/blob/master/spec/javascripts/ide/stores/actions_spec.js).
 
-### Vue Helper: `mountComponent`
-
-To make mounting a Vue component easier and more readable, we have a few helpers available in `spec/helpers/vue_mount_component_helper`:
-
-- `createComponentWithStore`
-- `mountComponentWithStore`
-
-Examples of usage:
-
-```javascript
-beforeEach(() => {
-  vm = createComponentWithStore(Component, store);
-
-  vm.$store.state.currentBranchId = 'master';
-
-  vm.$mount();
-});
-```
-
-```javascript
-beforeEach(() => {
-  vm = mountComponentWithStore(Component, {
-    el: '#dummy-element',
-    store,
-    props: { badge },
-  });
-});
-```
-
-Don't forget to clean up:
-
-```javascript
-afterEach(() => {
-  vm.$destroy();
-});
-```
-
 ### Wait until axios requests finish
 
 The axios utils mock module located in `spec/frontend/mocks/ce/lib/utils/axios_utils.js` contains two helper methods for Jest tests that spawn HTTP requests.
@@ -906,13 +870,3 @@ You can download any older version of Firefox from the releases FTP server, <htt
 ---
 
 [Return to Testing documentation](index.md)
-
-<!-- URL References -->
-
-[jasmine-focus]: https://jasmine.github.io/2.5/focused_specs.html
-[karma]: http://karma-runner.github.io/
-[vue-test]: ../fe_guide/vue.md#testing-vue-components
-[rspec]: https://github.com/rspec/rspec-rails#feature-specs
-[jasmine]: https://jasmine.github.io/
-[jest]: https://jestjs.io
-[jestspy]: https://jestjs.io/docs/en/jest-object#jestspyonobject-methodname

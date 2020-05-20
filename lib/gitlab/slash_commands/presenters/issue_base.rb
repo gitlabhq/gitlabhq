@@ -4,8 +4,6 @@ module Gitlab
   module SlashCommands
     module Presenters
       module IssueBase
-        prepend_if_ee('EE::Gitlab::SlashCommands::Presenters::IssueBase') # rubocop: disable Cop/InjectEnterpriseEditionModule
-
         def color(issuable)
           issuable.open? ? '#38ae67' : '#d22852'
         end
@@ -51,3 +49,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::SlashCommands::Presenters::IssueBase.prepend_if_ee('EE::Gitlab::SlashCommands::Presenters::IssueBase')

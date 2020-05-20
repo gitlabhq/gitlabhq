@@ -3,6 +3,7 @@
 class JiraImportState < ApplicationRecord
   include AfterCommitQueue
   include ImportState::SidekiqJobTracker
+  include UsageStatistics
 
   self.table_name = 'jira_imports'
 
@@ -46,7 +47,7 @@ class JiraImportState < ApplicationRecord
     after_transition initial: :scheduled do |state, _|
       state.run_after_commit do
         job_id = Gitlab::JiraImport::Stage::StartImportWorker.perform_async(project.id)
-        state.update(jid: job_id) if job_id
+        state.update(jid: job_id, scheduled_at: Time.now) if job_id
       end
     end
 
@@ -96,5 +97,9 @@ class JiraImportState < ApplicationRecord
         total_issue_count: total_issue_count
       }
     )
+  end
+
+  def self.finished_imports_count
+    finished.sum(:imported_issues_count)
   end
 end

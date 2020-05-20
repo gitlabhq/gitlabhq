@@ -1,3 +1,9 @@
+---
+stage: Release
+group: Progressive Delivery
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Feature Flags **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/7433) in GitLab 11.4.
@@ -14,6 +20,13 @@ This helps reducing risk and allows you to easily manage which features to enabl
 
 GitLab offers a Feature Flags interface that allows you to create, toggle and
 remove feature flags.
+
+<div class="video-fallback">
+  <a href="https://www.youtube.com/watch?v=5tw2p6lwXxo">Watch</a> a use case between Feature Flags and Sentry Error Tracking
+</div>
+<figure class="video-container">
+  <iframe src="https://www.youtube.com/embed/5tw2p6lwXxo" frameborder="0" allowfullscreen="true"> </iframe>
+</figure>
 
 ## How it works
 
@@ -36,10 +49,10 @@ To add a new feature flag:
 1. Click on the **New Feature Flag** button.
 1. Give it a name.
 
-    NOTE: **Note:**
-    A name can contain only lowercase letters, digits, underscores (`_`)
-    and dashes (`-`), must start with a letter, and cannot end with a dash (`-`)
-    or an underscore (`_`).
+   NOTE: **Note:**
+   A name can contain only lowercase letters, digits, underscores (`_`)
+   and dashes (`-`), must start with a letter, and cannot end with a dash (`-`)
+   or an underscore (`_`).
 
 1. Give it a description (optional, 255 characters max).
 1. Define environment [specs](#define-environment-specs). If you want the flag on by default, enable the catch-all [wildcard spec (`*`)](#define-environment-specs)
@@ -66,23 +79,58 @@ For example, you may not want to enable a feature flag on production until your 
 first confirmed that the feature is working correctly on testing environments.
 
 To handle these situations, you can enable a feature flag on a particular environment
-with [Environment specs](../../../ci/environments.md#scoping-environments-with-specs).
+with [Environment specs](../../../ci/environments/index.md#scoping-environments-with-specs).
 You can define multiple specs per flag so that you can control your feature flag more granularly.
 
 To define specs for each environment:
 
 1. Navigate to your project's **Operations > Feature Flags**.
 1. Click on the **New Feature Flag** button or edit an existing flag.
-1. Set the status of the default [spec](../../../ci/environments.md#scoping-environments-with-specs) (`*`). Choose a rollout strategy. This status and rollout strategy combination will be used for _all_ environments.
-1. If you want to enable/disable the feature on a specific environment, create a new [spec](../../../ci/environments.md#scoping-environments-with-specs) and type the environment name.
+1. Set the status of the default [spec](../../../ci/environments/index.md#scoping-environments-with-specs) (`*`). Choose a rollout strategy. This status and rollout strategy combination will be used for _all_ environments.
+1. If you want to enable/disable the feature on a specific environment, create a new [spec](../../../ci/environments/index.md#scoping-environments-with-specs) and type the environment name.
 1. Set the status and rollout strategy of the additional spec. This status and rollout strategy combination takes precedence over the default spec since we always use the most specific match available.
 1. Click **Create feature flag** or **Update feature flag**.
 
 ![Feature flag specs list](img/specs_list_v12_6.png)
 
 NOTE: **NOTE**
-We'd highly recommend you to use the [Environment](../../../ci/environments.md)
+We'd highly recommend you to use the [Environment](../../../ci/environments/index.md)
 feature in order to quickly assess which flag is enabled per environment.
+
+## Feature flag behavior change in 13.0
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35555) in GitLab 13.0.
+
+Starting in GitLab 13.0, you can apply a feature flag strategy across multiple environment specs,
+without defining the strategy multiple times.
+
+This feature is under development and not ready for production use. It is
+deployed behind a feature flag that is **disabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
+can enable it for your instance.
+
+To enable it:
+
+```ruby
+Feature.enable(:feature_flags_new_version)
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:feature_flags_new_version)
+```
+
+### Applying a strategy to environments
+
+After a strategy is defined, it applies to **All Environments** by default. To
+make a strategy apply to a specific environment spec:
+
+1. Click the **Add Environment** button.
+1. Create a new
+   [spec](../../../ci/environments/index.md#scoping-environments-with-specs).
+
+To apply the strategy to multiple environment specs, repeat these steps.
 
 ## Feature Flag strategies
 
@@ -148,12 +196,12 @@ To get the access credentials that your application will need to talk to GitLab:
 
 1. Navigate to your project's **Operations > Feature Flags**.
 1. Click on the **Configure** button to see the values:
-    - **API URL**: URL where the client (application) connects to get a list of feature flags.
-    - **Instance ID**: Unique token that authorizes the retrieval of the feature flags.
-    - **Application name**: The name of the running environment. For instance,
-       if the application runs for production server, application name would be
-      `production` or similar. This value is used for
-      [the environment spec evaluation](#define-environment-specs).
+   - **API URL**: URL where the client (application) connects to get a list of feature flags.
+   - **Instance ID**: Unique token that authorizes the retrieval of the feature flags.
+   - **Application name**: The name of the running environment. For instance,
+     if the application runs for a production server, application name would be
+     `production` or similar. This value is used for
+     [the environment spec evaluation](#define-environment-specs).
 
 NOTE: **Note:**
 The meaning of these fields might change over time. For example, we are not sure
@@ -231,7 +279,7 @@ func main() {
 
 Here's an example of how to integrate the feature flags in a Ruby application.
 
-The Unleash client is given a user id for use with a **Percent rollout (logged in users)** rollout strategy or a list of **Target Users**.
+The Unleash client is given a user ID for use with a **Percent rollout (logged in users)** rollout strategy or a list of **Target Users**.
 
 ```ruby
 #!/usr/bin/env ruby
@@ -265,3 +313,4 @@ to control them in an automated flow:
 
 - [Feature Flags API](../../../api/feature_flags.md)
 - [Feature Flag Specs API](../../../api/feature_flag_specs.md)
+- [Feature Flag User Lists API](../../../api/feature_flag_user_lists.md)

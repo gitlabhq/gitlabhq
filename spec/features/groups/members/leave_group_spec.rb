@@ -31,8 +31,6 @@ describe 'Groups > Members > Leave group' do
 
     page.accept_confirm
 
-    expect(find('.flash-notice')).to have_content "You left the \"#{group.full_name}\" group"
-    expect(page).to have_content left_group_message(group)
     expect(current_path).to eq(dashboard_groups_path)
     expect(group.users).not_to include(user)
   end

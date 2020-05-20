@@ -3,6 +3,7 @@ import { shallowMount } from '@vue/test-utils';
 import axios from '~/lib/utils/axios_utils';
 import MockAdapter from 'axios-mock-adapter';
 import MrWidgetTerraformPlan from '~/vue_merge_request_widget/components/mr_widget_terraform_plan.vue';
+import Poll from '~/lib/utils/poll';
 
 const plan = {
   create: 10,
@@ -57,9 +58,21 @@ describe('MrWidgetTerraformPlan', () => {
   });
 
   describe('successful poll', () => {
+    let pollRequest;
+    let pollStop;
+
     beforeEach(() => {
+      pollRequest = jest.spyOn(Poll.prototype, 'makeRequest');
+      pollStop = jest.spyOn(Poll.prototype, 'stop');
+
       mockPollingApi(200, { 'tfplan.json': plan }, {});
+
       return mountWrapper();
+    });
+
+    afterEach(() => {
+      pollRequest.mockRestore();
+      pollStop.mockRestore();
     });
 
     it('content change text', () => {
@@ -68,6 +81,11 @@ describe('MrWidgetTerraformPlan', () => {
 
     it('renders button when url is found', () => {
       expect(wrapper.find('a').text()).toContain('View full log');
+    });
+
+    it('does not make additional requests after poll is successful', () => {
+      expect(pollRequest).toHaveBeenCalledTimes(1);
+      expect(pollStop).toHaveBeenCalledTimes(1);
     });
   });
 

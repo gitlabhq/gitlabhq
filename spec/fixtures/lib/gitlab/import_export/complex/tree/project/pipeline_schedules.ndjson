@@ -1,0 +1,1 @@
+{"id":1,"description":"Schedule Description","ref":"master","cron":"0 4 * * 0","cron_timezone":"UTC","next_run_at":"2019-12-29T04:19:00.000Z","project_id":5,"owner_id":1,"active":true,"created_at":"2019-12-26T10:14:57.778Z","updated_at":"2019-12-26T10:14:57.778Z"}

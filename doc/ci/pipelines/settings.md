@@ -130,6 +130,16 @@ in the jobs table.
 A few examples of known coverage tools for a variety of languages can be found
 in the pipelines settings page.
 
+### Download test coverage history
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/209121) in GitLab 12.10.
+
+If you want to see the evolution of your project code coverage over time,
+you can download a CSV file with this data. From your project:
+
+1. Go to **{chart}** **Project Analytics > Repository**.
+1. Click **Download raw data (.csv)**
+
 ### Removing color codes
 
 Some test coverage tools output with ANSI color codes that won't be
@@ -161,6 +171,9 @@ This also determines the visibility of these related features:
 - Job output logs
 - Job artifacts
 - The [pipeline security dashboard](../../user/application_security/security_dashboard/index.md#pipeline-security) **(ULTIMATE)**
+
+NOTE: **Note:**
+Currently, job logs and artifacts are [not yet visible for guest users and non-project members](https://gitlab.com/gitlab-org/gitlab/-/issues/25649).
 
 If **Public pipelines** is enabled (default):
 
@@ -237,7 +250,7 @@ Depending on the status of your job, a badge can have the following values:
 
 You can access a pipeline status badge image using the following link:
 
-```text
+```plaintext
 https://example.gitlab.com/<namespace>/<project>/badges/<branch>/pipeline.svg
 ```
 
@@ -249,7 +262,7 @@ pipeline can have the test coverage percentage value defined.
 
 The test coverage badge can be accessed using following link:
 
-```text
+```plaintext
 https://example.gitlab.com/<namespace>/<project>/badges/<branch>/coverage.svg
 ```
 
@@ -268,7 +281,7 @@ Pipeline badges can be rendered in different styles by adding the `style=style_n
 
 #### Flat (default)
 
-```text
+```plaintext
 https://example.gitlab.com/<namespace>/<project>/badges/<branch>/coverage.svg?style=flat
 ```
 
@@ -278,7 +291,7 @@ https://example.gitlab.com/<namespace>/<project>/badges/<branch>/coverage.svg?st
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/30120) in GitLab 11.8.
 
-```text
+```plaintext
 https://example.gitlab.com/<namespace>/<project>/badges/<branch>/coverage.svg?style=flat-square
 ```
 

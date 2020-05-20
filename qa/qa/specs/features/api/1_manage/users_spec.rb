@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'airborne'
+
 module QA
   context 'Manage' do
     describe 'Users API' do

@@ -7,8 +7,6 @@ class CommitStatus < ApplicationRecord
   include Presentable
   include EnumWithNil
 
-  prepend_if_ee('::EE::CommitStatus') # rubocop: disable Cop/InjectEnterpriseEditionModule
-
   self.table_name = 'ci_builds'
 
   belongs_to :user
@@ -267,7 +265,15 @@ class CommitStatus < ApplicationRecord
     end
   end
 
+  def recoverable?
+    failed? && !unrecoverable_failure?
+  end
+
   private
+
+  def unrecoverable_failure?
+    script_failure? || missing_dependency_failure? || archived_failure? || scheduler_failure? || data_integrity_failure?
+  end
 
   def schedule_stage_and_pipeline_update
     if Feature.enabled?(:ci_atomic_processing, project)
@@ -284,3 +290,5 @@ class CommitStatus < ApplicationRecord
     end
   end
 end
+
+CommitStatus.prepend_if_ee('::EE::CommitStatus')

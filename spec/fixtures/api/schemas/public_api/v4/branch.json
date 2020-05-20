@@ -7,7 +7,8 @@
     "protected",
     "default",
     "developers_can_push",
-    "developers_can_merge"
+    "developers_can_merge",
+    "web_url"
   ],
   "properties" : {
     "name": { "type": "string" },
@@ -17,7 +18,8 @@
     "default": { "type": "boolean" },
     "developers_can_push": { "type": "boolean" },
     "developers_can_merge": { "type": "boolean" },
-    "can_push": { "type": "boolean" }
+    "can_push": { "type": "boolean" },
+    "web_url": { "type": "uri" }
   },
   "additionalProperties": false
 }

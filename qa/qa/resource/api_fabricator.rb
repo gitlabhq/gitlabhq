@@ -14,6 +14,7 @@ module QA
       ResourceQueryError = Class.new(RuntimeError)
       ResourceUpdateFailedError = Class.new(RuntimeError)
       ResourceURLMissingError = Class.new(RuntimeError)
+      InternalServerError = Class.new(RuntimeError)
 
       attr_reader :api_resource, :api_response
       attr_writer :api_client
@@ -54,10 +55,22 @@ module QA
         end
       end
 
-      private
-
       include Support::Api
       attr_writer :api_resource, :api_response
+
+      def api_put(body = api_put_body)
+        response = put(
+          Runtime::API::Request.new(api_client, api_put_path).url,
+          body)
+
+        unless response.code == HTTP_STATUS_OK
+          raise ResourceFabricationFailedError, "Updating #{self.class.name} using the API failed (#{response.code}) with `#{response}`."
+        end
+
+        process_api_response(parse_body(response))
+      end
+
+      private
 
       def resource_web_url(resource)
         resource.fetch(:web_url) do
@@ -73,7 +86,9 @@ module QA
         url = Runtime::API::Request.new(api_client, get_path).url
         response = get(url)
 
-        unless response.code == HTTP_STATUS_OK
+        if response.code == HTTP_STATUS_SERVER_ERROR
+          raise InternalServerError, "Failed to GET #{url} - (#{response.code}): `#{response}`."
+        elsif response.code != HTTP_STATUS_OK
           raise ResourceNotFoundError, "Resource at #{url} could not be found (#{response.code}): `#{response}`."
         end
 
@@ -87,18 +102,6 @@ module QA
 
         unless response.code == HTTP_STATUS_CREATED
           raise ResourceFabricationFailedError, "Fabrication of #{self.class.name} using the API failed (#{response.code}) with `#{response}`."
-        end
-
-        process_api_response(parse_body(response))
-      end
-
-      def api_put
-        response = put(
-          Runtime::API::Request.new(api_client, api_put_path).url,
-          api_put_body)
-
-        unless response.code == HTTP_STATUS_OK
-          raise ResourceFabricationFailedError, "Updating #{self.class.name} using the API failed (#{response.code}) with `#{response}`."
         end
 
         process_api_response(parse_body(response))

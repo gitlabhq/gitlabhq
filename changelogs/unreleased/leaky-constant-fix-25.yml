@@ -1,0 +1,5 @@
+---
+title: Fix leaky constant issue in jwt spec
+merge_request: 32093
+author: Rajendra Kadam
+type: fixed

@@ -71,7 +71,14 @@
         "avatar_url": { "type": "uri" },
         "web_url": { "type": "uri" }
       },
-      "additionalProperties": false
+      "required": [
+        "id",
+        "state",
+        "avatar_url",
+        "name",
+        "username",
+        "web_url"
+      ]
     },
     "user_notes_count": { "type": "integer" },
     "upvotes": { "type": "integer" },

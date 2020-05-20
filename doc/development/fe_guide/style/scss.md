@@ -9,30 +9,25 @@ easy to maintain, and performant for the end-user.
 
 ## Rules
 
+Our CSS is a mixture of current and legacy approaches. That means sometimes it may be difficult to follow this guide to the letter; it means you will definitely run into exceptions, where following the guide is difficult to impossible without outsized effort. In those cases, you may work with your reviewers and maintainers to identify an approach that does not fit these rules. Please endeavor to limit these cases.
+
 ### Utility Classes
 
-As part of the effort for [cleaning up our CSS and moving our components into `gitlab-ui`](https://gitlab.com/groups/gitlab-org/-/epics/950)
-led by the [GitLab UI WG](https://gitlab.com/gitlab-com/www-gitlab-com/-/merge_requests/20623) we prefer the use of utility classes over adding new CSS. However, complex CSS can be addressed by adding component classes.
+In order to reduce the generation of more CSS as our site grows, prefer the use of utility classes over adding new CSS. In complex cases, CSS can be addressed by adding component classes.
 
 #### Where are utility classes defined?
 
-- [Bootstrap's Utility Classes](https://getbootstrap.com/docs/4.3/utilities/)
-- [`common.scss`](https://gitlab.com/gitlab-org/gitlab/blob/master/app/assets/stylesheets/framework/common.scss) (old)
-- [`utilities.scss`](https://gitlab.com/gitlab-org/gitlab/blob/master/app/assets/stylesheets/utilities.scss) (new)
+Prefer the use of [utility classes defined in GitLab UI](https://gitlab.com/gitlab-org/gitlab-ui/-/blob/master/doc/css.md#utilities). An easy list of classes can also be [seen on Unpkg](https://unpkg.com/browse/@gitlab/ui/src/scss/utilities.scss).
+
+Classes in [`utilities.scss`](https://gitlab.com/gitlab-org/gitlab/blob/master/app/assets/stylesheets/utilities.scss) and [`common.scss`](https://gitlab.com/gitlab-org/gitlab/blob/master/app/assets/stylesheets/framework/common.scss) are being deprecated. Classes in [`common.scss`](https://gitlab.com/gitlab-org/gitlab/blob/master/app/assets/stylesheets/framework/common.scss) that use non-design system values should be avoided in favor of conformant values.
+
+Avoid [Bootstrap's Utility Classes](https://getbootstrap.com/docs/4.3/utilities/).
 
 #### Where should I put new utility classes?
 
-New utility classes should be added to [`utilities.scss`](https://gitlab.com/gitlab-org/gitlab/blob/master/app/assets/stylesheets/utilities.scss). Existing classes include:
+If a class you need has not been added to GitLab UI, you get to add it! Follow the naming patterns documented in the [utility files](https://gitlab.com/gitlab-org/gitlab-ui/-/tree/master/src/scss/utility-mixins) and refer to [GitLab UI's CSS documentation](https://gitlab.com/gitlab-org/gitlab-ui/-/blob/master/doc/contributing/adding_css.md#adding-utility-mixins) for more details, especially about adding responsive and stateful rules.
 
-| Name | Pattern | Example |
-|------|---------|---------|
-| Background color | `.bg-{variant}-{shade}` | `.bg-warning-400` |
-| Text color | `.text-{variant}-{shade}` | `.text-success-500` |
-| Font size | `.text-{size}` | `.text-2` |
-
-- `{variant}` is one of 'primary', 'secondary', 'success', 'warning', 'error'
-- `{shade}` is one of the shades listed on [colors](https://design.gitlab.com/product-foundations/colors/)
-- `{size}` is a number from 1-6 from our [Type scale](https://design.gitlab.com/product-foundations/typography/)
+If it is not possible to wait for a GitLab UI update (generally one day), add the class to [`utilities.scss`](https://gitlab.com/gitlab-org/gitlab/blob/master/app/assets/stylesheets/utilities.scss) following the same naming conventions documented in GitLab UI. A follow—up issue to backport the class to GitLab UI and delete it from GitLab should be opened.
 
 #### When should I create component classes?
 
@@ -68,6 +63,24 @@ CSS classes should use the `lowercase-hyphenated` format rather than
 
 // Bad
 .className {
+  color: #fff;
+}
+
+// Good
+.class-name {
+  color: #fff;
+}
+```
+
+Class names should be used instead of tag name selectors.
+Using tag name selectors are discouraged in CSS because
+they can affect unintended elements in the hierarchy.
+Also, since they are not meaningful names, they do not
+add meaning to the code.
+
+```scss
+// Bad
+ul {
   color: #fff;
 }
 
@@ -254,8 +267,8 @@ documentation includes [a full list of their linters](https://github.com/sds/scs
 ### Fixing issues
 
 If you want to automate changing a large portion of the codebase to conform to
-the SCSS style guide, you can use [CSSComb][csscomb]. First install
-[Node][node] and [NPM][npm], then run `npm install csscomb -g` to install
+the SCSS style guide, you can use [CSSComb](https://github.com/csscomb/csscomb.js). First install
+[Node](https://github.com/nodejs/node) and [NPM](https://www.npmjs.com/), then run `npm install csscomb -g` to install
 CSSComb globally (system-wide). Run it in the GitLab directory with
 `csscomb app/assets/stylesheets` to automatically fix issues with CSS/SCSS.
 
@@ -279,7 +292,3 @@ Make sure a comment is added on the line above the `disable` rule, otherwise the
 linter will throw a warning. `DisableLinterReason` is enabled to make sure the
 style guide isn't being ignored, and to communicate to others why the style
 guide is ignored in this instance.
-
-[csscomb]: https://github.com/csscomb/csscomb.js
-[node]: https://github.com/nodejs/node
-[npm]: https://www.npmjs.com/

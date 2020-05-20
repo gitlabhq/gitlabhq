@@ -58,11 +58,6 @@ export default {
       required: false,
       default: false,
     },
-    scopedLabelsDocumentationLink: {
-      type: String,
-      required: false,
-      default: '#',
-    },
   },
   data() {
     return {
@@ -182,7 +177,7 @@ export default {
     @cancel="cancel"
     @submit="submit"
   >
-    <template slot="body">
+    <template #body>
       <p v-if="isDeleteForm">{{ __('Are you sure you want to delete this board?') }}</p>
       <form v-else class="js-board-config-modal" @submit.prevent>
         <div v-if="!readonly" class="append-bottom-20">
@@ -208,7 +203,6 @@ export default {
           :can-admin-board="canAdminBoard"
           :milestone-path="milestonePath"
           :labels-path="labelsPath"
-          :scoped-labels-documentation-link="scopedLabelsDocumentationLink"
           :enable-scoped-labels="enableScopedLabels"
           :project-id="projectId"
           :group-id="groupId"

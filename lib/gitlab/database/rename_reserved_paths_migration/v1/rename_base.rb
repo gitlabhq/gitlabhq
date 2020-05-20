@@ -157,7 +157,7 @@ module Gitlab
               failed_reverts = []
 
               while rename_info = redis.lpop(key)
-                path_before_rename, path_after_rename = JSON.parse(rename_info)
+                path_before_rename, path_after_rename = Gitlab::Json.parse(rename_info)
                 say "renaming #{type} from #{path_after_rename} back to #{path_before_rename}"
                 begin
                   yield(path_before_rename, path_after_rename)

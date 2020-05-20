@@ -24,16 +24,16 @@ If you use a cloud-managed service, or provide your own PostgreSQL:
 
 ## PostgreSQL in a Scaled and Highly Available Environment
 
-This section is relevant for [Scalable and Highly Available Setups](../scaling/index.md).
+This section is relevant for [Scalable and Highly Available Setups](../reference_architectures/index.md).
 
 ### Provide your own PostgreSQL instance **(CORE ONLY)**
 
 If you want to use your own deployed PostgreSQL instance(s),
 see [Provide your own PostgreSQL instance](#provide-your-own-postgresql-instance-core-only)
-for more details. However, you can use the GitLab Omnibus package to easily
+for more details. However, you can use the Omnibus GitLab package to easily
 deploy the bundled PostgreSQL.
 
-### Standalone PostgreSQL using GitLab Omnibus **(CORE ONLY)**
+### Standalone PostgreSQL using Omnibus GitLab **(CORE ONLY)**
 
 1. SSH into the PostgreSQL server.
 1. [Download/install](https://about.gitlab.com/install/) the Omnibus GitLab
@@ -92,7 +92,7 @@ deploy the bundled PostgreSQL.
 Advanced configuration options are supported and can be added if
 needed.
 
-### High Availability with GitLab Omnibus **(PREMIUM ONLY)**
+### High Availability with Omnibus GitLab **(PREMIUM ONLY)**
 
 > Important notes:
 >
@@ -125,7 +125,7 @@ otherwise the networks will become a single point of failure.
 
 #### Architecture
 
-![PG HA Architecture](img/pg_ha_architecture.png)
+![PostgreSQL HA Architecture](img/pg_ha_architecture.png)
 
 Database nodes run two services with PostgreSQL:
 
@@ -271,7 +271,7 @@ Few notes on the service itself:
 #### Installing Omnibus GitLab
 
 First, make sure to [download/install](https://about.gitlab.com/install/)
-GitLab Omnibus **on each node**.
+Omnibus GitLab **on each node**.
 
 Make sure you install the necessary dependencies from step 1,
 add GitLab package repository from step 2.
@@ -969,7 +969,7 @@ repmgr['trust_auth_cidr_addresses'] = %w(192.168.1.44/32 db2.example.com)
 ##### MD5 Authentication
 
 If you are running on an untrusted network, repmgr can use md5 authentication
-with a [`.pgpass` file](https://www.postgresql.org/docs/9.6/libpq-pgpass.html)
+with a [`.pgpass` file](https://www.postgresql.org/docs/11/libpq-pgpass.html)
 to authenticate.
 
 You can specify by IP address, FQDN, or by subnet, using the same format as in
@@ -1091,7 +1091,7 @@ If you're running into an issue with a component not outlined here, be sure to c
 
 ## Configure using Omnibus
 
-**Note**: We recommend that you follow the instructions here for a full [PostgreSQL cluster](#high-availability-with-gitlab-omnibus-premium-only).
+**Note**: We recommend that you follow the instructions here for a full [PostgreSQL cluster](#high-availability-with-omnibus-gitlab-premium-only).
 If you are reading this section due to an old bookmark, you can find that old documentation [in the repository](https://gitlab.com/gitlab-org/gitlab/blob/v10.1.4/doc/administration/high_availability/database.md#configure-using-omnibus).
 
 Read more on high-availability configuration:

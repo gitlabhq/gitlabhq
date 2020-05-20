@@ -2,13 +2,31 @@
 
 require 'spec_helper'
 
-describe Gitlab::BackgroundMigration::BackfillSnippetRepositories, :migration, schema: 2020_02_26_162723 do
+describe Gitlab::BackgroundMigration::BackfillSnippetRepositories, :migration, schema: 2020_04_20_094444 do
   let(:gitlab_shell) { Gitlab::Shell.new }
   let(:users) { table(:users) }
   let(:snippets) { table(:snippets) }
   let(:snippet_repositories) { table(:snippet_repositories) }
 
-  let(:user) { users.create(id: 1, email: 'user@example.com', projects_limit: 10, username: 'test', name: 'Test') }
+  let(:user_state) { 'active' }
+  let(:ghost) { false }
+  let(:user_type) { nil }
+  let(:user_name) { 'Test' }
+
+  let!(:user) do
+    users.create(id: 1,
+                 email: 'user@example.com',
+                 projects_limit: 10,
+                 username: 'test',
+                 name: user_name,
+                 state: user_state,
+                 ghost: ghost,
+                 last_activity_on: 1.minute.ago,
+                 user_type: user_type,
+                 confirmed_at: 1.day.ago)
+  end
+
+  let(:migration_bot) { User.migration_bot }
   let!(:snippet_with_repo) { snippets.create(id: 1, type: 'PersonalSnippet', author_id: user.id, file_name: file_name, content: content) }
   let!(:snippet_with_empty_repo) { snippets.create(id: 2, type: 'PersonalSnippet', author_id: user.id, file_name: file_name, content: content) }
   let!(:snippet_without_repo) { snippets.create(id: 3, type: 'PersonalSnippet', author_id: user.id, file_name: file_name, content: content) }
@@ -53,15 +71,52 @@ describe Gitlab::BackgroundMigration::BackfillSnippetRepositories, :migration, s
       end
     end
 
-    shared_examples 'commits the file to the repository' do
+    shared_examples 'migration_bot user commits files' do
       it do
         subject
 
-        blob = blob_at(snippet, file_name)
+        last_commit = raw_repository(snippet).commit
 
-        aggregate_failures do
-          expect(blob).to be
-          expect(blob.data).to eq content
+        expect(last_commit.author_name).to eq migration_bot.name
+        expect(last_commit.author_email).to eq migration_bot.email
+      end
+    end
+
+    shared_examples 'commits the file to the repository' do
+      context 'when author can update snippet and use git' do
+        it 'creates the repository and commit the file' do
+          subject
+
+          blob = blob_at(snippet, file_name)
+          last_commit = raw_repository(snippet).commit
+
+          aggregate_failures do
+            expect(blob).to be
+            expect(blob.data).to eq content
+            expect(last_commit.author_name).to eq user.name
+            expect(last_commit.author_email).to eq user.email
+          end
+        end
+      end
+
+      context 'when author cannot update snippet or use git' do
+        context 'when user is blocked' do
+          let(:user_state) { 'blocked' }
+
+          it_behaves_like 'migration_bot user commits files'
+        end
+
+        context 'when user is deactivated' do
+          let(:user_state) { 'deactivated' }
+
+          it_behaves_like 'migration_bot user commits files'
+        end
+
+        context 'when user is a ghost' do
+          let(:ghost) { true }
+          let(:user_type) { 'ghost' }
+
+          it_behaves_like 'migration_bot user commits files'
         end
       end
     end
@@ -121,6 +176,124 @@ describe Gitlab::BackgroundMigration::BackfillSnippetRepositories, :migration, s
           expect(repository_exists?(snippet_without_repo)).to be_falsey
           expect(repository_exists?(snippet_with_empty_repo)).to be_falsey
         end
+      end
+    end
+
+    context 'with invalid file names' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:invalid_file_name, :converted_file_name) do
+        'filename.js // with comment'       | 'filename-js-with-comment'
+        '.git/hooks/pre-commit'             | 'git-hooks-pre-commit'
+        'https://gitlab.com'                | 'https-gitlab-com'
+        'html://web.title%mp4/mpg/mpeg.net' | 'html-web-title-mp4-mpg-mpeg-net'
+        '../../etc/passwd'                  | 'etc-passwd'
+        '.'                                 | 'snippetfile1.txt'
+      end
+
+      with_them do
+        let!(:snippet_with_invalid_path) { snippets.create(id: 4, type: 'PersonalSnippet', author_id: user.id, file_name: invalid_file_name, content: content) }
+        let!(:snippet_with_valid_path) { snippets.create(id: 5, type: 'PersonalSnippet', author_id: user.id, file_name: file_name, content: content) }
+        let(:ids) { [4, 5] }
+
+        after do
+          raw_repository(snippet_with_invalid_path).remove
+          raw_repository(snippet_with_valid_path).remove
+        end
+
+        it 'checks for file path errors when errors are raised' do
+          expect(service).to receive(:set_file_path_error).once.and_call_original
+
+          subject
+        end
+
+        it 'converts invalid filenames' do
+          subject
+
+          expect(blob_at(snippet_with_invalid_path, converted_file_name)).to be
+        end
+
+        it 'does not convert valid filenames on subsequent migrations' do
+          subject
+
+          expect(blob_at(snippet_with_valid_path, file_name)).to be
+        end
+      end
+    end
+
+    context 'when snippet content size is higher than the existing limit' do
+      let(:limit) { 15 }
+      let(:content) { 'a' * (limit + 1) }
+      let(:snippet) { snippet_without_repo }
+      let(:ids) { [snippet.id, snippet.id] }
+
+      before do
+        allow(Gitlab::CurrentSettings).to receive(:snippet_size_limit).and_return(limit)
+      end
+
+      it_behaves_like 'migration_bot user commits files'
+    end
+
+    context 'when user name is invalid' do
+      let(:user_name) { '.' }
+      let!(:snippet) { snippets.create(id: 4, type: 'PersonalSnippet', author_id: user.id, file_name: file_name, content: content) }
+      let(:ids) { [4, 4] }
+
+      after do
+        raw_repository(snippet).remove
+      end
+
+      it_behaves_like 'migration_bot user commits files'
+    end
+
+    context 'when both user name and snippet file_name are invalid' do
+      let(:user_name) { '.' }
+      let!(:other_user) do
+        users.create(id: 2,
+                     email: 'user2@example.com',
+                     projects_limit: 10,
+                     username: 'test2',
+                     name: 'Test2',
+                     state: user_state,
+                     ghost: ghost,
+                     last_activity_on: 1.minute.ago,
+                     user_type: user_type,
+                     confirmed_at: 1.day.ago)
+      end
+      let!(:invalid_snippet) { snippets.create(id: 4, type: 'PersonalSnippet', author_id: user.id, file_name: '.', content: content) }
+      let!(:snippet) { snippets.create(id: 5, type: 'PersonalSnippet', author_id: other_user.id, file_name: file_name, content: content) }
+      let(:ids) { [4, 5] }
+
+      after do
+        raw_repository(snippet).remove
+        raw_repository(invalid_snippet).remove
+      end
+
+      it 'updates the file_name only when it is invalid' do
+        subject
+
+        expect(blob_at(invalid_snippet, 'snippetfile1.txt')).to be
+        expect(blob_at(snippet, file_name)).to be
+      end
+
+      it_behaves_like 'migration_bot user commits files' do
+        let(:snippet) { invalid_snippet }
+      end
+
+      it 'does not alter the commit author in subsequent migrations' do
+        subject
+
+        last_commit = raw_repository(snippet).commit
+
+        expect(last_commit.author_name).to eq other_user.name
+        expect(last_commit.author_email).to eq other_user.email
+      end
+
+      it "increases the number of retries temporarily from #{described_class::MAX_RETRIES} to #{described_class::MAX_RETRIES + 1}" do
+        expect(service).to receive(:create_commit).with(Snippet.find(invalid_snippet.id)).exactly(described_class::MAX_RETRIES + 1).times.and_call_original
+        expect(service).to receive(:create_commit).with(Snippet.find(snippet.id)).once.and_call_original
+
+        subject
       end
     end
   end

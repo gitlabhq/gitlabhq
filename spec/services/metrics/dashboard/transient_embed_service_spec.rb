@@ -67,6 +67,12 @@ describe Metrics::Dashboard::TransientEmbedService, :use_clean_rails_memory_stor
       expect(get_type_for_embed(alt_embed)).to eq('area-chart')
     end
 
+    context 'when embed_json cannot be parsed as json' do
+      let(:embed_json) { '' }
+
+      it_behaves_like 'misconfigured dashboard service response', :unprocessable_entity
+    end
+
     private
 
     def get_embed_json(type = 'line-graph')

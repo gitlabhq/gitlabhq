@@ -10,7 +10,6 @@ class DropGcpClustersTable < ActiveRecord::Migration[4.2]
   end
 
   def down
-    # rubocop:disable Migration/AddLimitToStringColumns
     create_table :gcp_clusters do |t|
       # Order columns by best align scheme
       t.references :project, null: false, index: { unique: true }, foreign_key: { on_delete: :cascade }
@@ -50,6 +49,5 @@ class DropGcpClustersTable < ActiveRecord::Migration[4.2]
       t.text :encrypted_gcp_token
       t.string :encrypted_gcp_token_iv
     end
-    # rubocop:enable Migration/AddLimitToStringColumns
   end
 end

@@ -1,0 +1,5 @@
+---
+title: Decouple partial clone config from max input size
+merge_request: 30354
+author: Son Luong Ngoc
+type: changed

@@ -1,0 +1,5 @@
+---
+title: Graphql query for issues can now be sorted by priority
+merge_request: 18901
+author:
+type: added

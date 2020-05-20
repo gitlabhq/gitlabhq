@@ -17,7 +17,14 @@ module Gitlab
       @project = snippet&.project
     end
 
+    def allowed?
+      return true if snippet_migration?
+
+      super
+    end
+
     def can_do_action?(action)
+      return true if snippet_migration?
       return false unless can_access_git?
 
       permission_cache[action] =
@@ -35,7 +42,10 @@ module Gitlab
     end
 
     def can_push_to_branch?(ref)
+      return true if snippet_migration?
+
       super
+
       return false unless snippet
       return false unless can_do_action?(:update_snippet)
 
@@ -44,6 +54,10 @@ module Gitlab
 
     def can_merge_to_branch?(ref)
       false
+    end
+
+    def snippet_migration?
+      user&.migration_bot? && snippet
     end
   end
 end

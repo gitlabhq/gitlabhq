@@ -119,4 +119,16 @@ describe 'gitlab:uploads:migrate and migrate_to_local rake tasks' do
 
     it_behaves_like 'enqueue upload migration jobs in batch', batch: 4
   end
+
+  context 'for DesignManagement::DesignV432x230Uploader' do
+    let(:uploader_class) { DesignManagement::DesignV432x230Uploader }
+    let(:model_class) {  DesignManagement::Action }
+    let(:mounted_as) { :image_v432x230 }
+
+    before do
+      create_list(:design_action, 10, :with_image_v432x230)
+    end
+
+    it_behaves_like 'enqueue upload migration jobs in batch', batch: 4
+  end
 end

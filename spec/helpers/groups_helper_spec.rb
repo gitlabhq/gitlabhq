@@ -340,4 +340,31 @@ describe GroupsHelper do
       end
     end
   end
+
+  describe '#can_update_default_branch_protection?' do
+    let(:current_user) { create(:user) }
+    let(:group) { create(:group) }
+
+    subject { helper.can_update_default_branch_protection?(group) }
+
+    before do
+      allow(helper).to receive(:current_user) { current_user }
+    end
+
+    context 'for users who can update default branch protection of the group' do
+      before do
+        allow(helper).to receive(:can?).with(current_user, :update_default_branch_protection, group) { true }
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'for users who cannot update default branch protection of the group' do
+      before do
+        allow(helper).to receive(:can?).with(current_user, :update_default_branch_protection, group) { false }
+      end
+
+      it { is_expected.to be_falsey }
+    end
+  end
 end

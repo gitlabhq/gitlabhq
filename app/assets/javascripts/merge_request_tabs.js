@@ -1,9 +1,9 @@
 /* eslint-disable no-new, class-methods-use-this */
 
 import $ from 'jquery';
-import Vue from 'vue';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import Cookies from 'js-cookie';
+import createEventHub from '~/helpers/event_hub_factory';
 import axios from './lib/utils/axios_utils';
 import flash from './flash';
 import BlobForkSuggestion from './blob/blob_fork_suggestion';
@@ -93,7 +93,7 @@ export default class MergeRequestTabs {
     this.pipelinesLoaded = false;
     this.commitsLoaded = false;
     this.fixedLayoutPref = null;
-    this.eventHub = new Vue();
+    this.eventHub = createEventHub();
 
     this.setUrl = setUrl !== undefined ? setUrl : true;
     this.setCurrentAction = this.setCurrentAction.bind(this);

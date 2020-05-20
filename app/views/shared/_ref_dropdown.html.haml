@@ -1,7 +1,7 @@
 - dropdown_class = local_assigns.fetch(:dropdown_class, '')
 
 .dropdown-menu.dropdown-menu-selectable.git-revision-dropdown{ class: dropdown_class }
-  = dropdown_title "Select Git revision"
-  = dropdown_filter "Filter by Git revision"
+  = dropdown_title _('Select Git revision')
+  = dropdown_filter _('Filter by Git revision')
   = dropdown_content
   = dropdown_loading

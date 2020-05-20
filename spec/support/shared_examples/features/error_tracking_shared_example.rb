@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 shared_examples 'error tracking index page' do
-  it 'renders the error index page' do
+  it 'renders the error index page', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/217810' } do
     within('div.js-title-container') do
       expect(page).to have_content(project.namespace.name)
       expect(page).to have_content(project.name)
@@ -15,7 +15,7 @@ shared_examples 'error tracking index page' do
     end
   end
 
-  it 'loads the error show page on click' do
+  it 'loads the error show page on click', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/217810' } do
     click_on issues_response[0]['title']
 
     wait_for_requests
@@ -23,7 +23,7 @@ shared_examples 'error tracking index page' do
     expect(page).to have_content('Error Details')
   end
 
-  it 'renders the error index data' do
+  it 'renders the error index data', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/217810' } do
     within('div.error-list') do
       expect(page).to have_content(issues_response[0]['title'])
       expect(page).to have_content(issues_response[0]['count'].to_s)
@@ -34,7 +34,7 @@ shared_examples 'error tracking index page' do
 end
 
 shared_examples 'expanded stack trace context' do |selected_line: nil, expected_line: 1|
-  it 'expands the stack trace context' do
+  it 'expands the stack trace context', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/217810' } do
     within('div.stacktrace') do
       find("div.file-holder:nth-child(#{selected_line}) svg.ic-chevron-right").click if selected_line
 
@@ -49,7 +49,7 @@ shared_examples 'expanded stack trace context' do |selected_line: nil, expected_
 end
 
 shared_examples 'error tracking show page' do
-  it 'renders the error details' do
+  it 'renders the error details', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/217810' } do
     content = page.find(".content")
     nav = page.find("nav.breadcrumbs")
     header = page.find(".error-details-header")
@@ -67,11 +67,11 @@ shared_examples 'error tracking show page' do
     expect(content).to have_content('Users: 0')
   end
 
-  it 'renders the stack trace heading' do
+  it 'renders the stack trace heading', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/217810' } do
     expect(page).to have_content('Stack trace')
   end
 
-  it 'renders the stack trace' do
+  it 'renders the stack trace', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/217810' } do
     event_response['entries'][0]['data']['values'][0]['stacktrace']['frames'].each do |frame|
       expect(frame['filename']).not_to be_nil
       expect(page).to have_content(frame['filename'])

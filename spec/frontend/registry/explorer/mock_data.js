@@ -87,3 +87,11 @@ export const tagsListResponse = {
   ],
   headers,
 };
+
+export const imagePagination = {
+  perPage: 10,
+  page: 1,
+  total: 14,
+  totalPages: 2,
+  nextPage: 2,
+};

@@ -1,0 +1,5 @@
+---
+title: Disallow developers to delete builds of protected branches
+merge_request: 28881
+author: Alexander Kutelev
+type: changed

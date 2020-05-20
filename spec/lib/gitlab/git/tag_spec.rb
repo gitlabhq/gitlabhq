@@ -13,6 +13,13 @@ describe Gitlab::Git::Tag, :seed_helper do
       it { expect(tag.target).to eq("f4e6814c3e4e7a0de82a9e7cd20c626cc963a2f8") }
       it { expect(tag.dereferenced_target.sha).to eq("6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9") }
       it { expect(tag.message).to eq("Release") }
+      it { expect(tag.has_signature?).to be_falsey }
+      it { expect(tag.signature_type).to eq(:NONE) }
+      it { expect(tag.signature).to be_nil }
+      it { expect(tag.tagger.name).to eq("Dmitriy Zaporozhets") }
+      it { expect(tag.tagger.email).to eq("dmitriy.zaporozhets@gmail.com") }
+      it { expect(tag.tagger.date).to eq(Google::Protobuf::Timestamp.new(seconds: 1393491299)) }
+      it { expect(tag.tagger.timezone).to eq("+0200") }
     end
 
     describe 'last tag' do
@@ -22,6 +29,29 @@ describe Gitlab::Git::Tag, :seed_helper do
       it { expect(tag.target).to eq("2ac1f24e253e08135507d0830508febaaccf02ee") }
       it { expect(tag.dereferenced_target.sha).to eq("fa1b1e6c004a68b7d8763b86455da9e6b23e36d6") }
       it { expect(tag.message).to eq("Version 1.2.1") }
+      it { expect(tag.has_signature?).to be_falsey }
+      it { expect(tag.signature_type).to eq(:NONE) }
+      it { expect(tag.signature).to be_nil }
+      it { expect(tag.tagger.name).to eq("Douwe Maan") }
+      it { expect(tag.tagger.email).to eq("douwe@selenight.nl") }
+      it { expect(tag.tagger.date).to eq(Google::Protobuf::Timestamp.new(seconds: 1427789449)) }
+      it { expect(tag.tagger.timezone).to eq("+0200") }
+    end
+
+    describe 'signed tag' do
+      let(:project) { create(:project, :repository) }
+      let(:tag) { project.repository.find_tag('v1.1.1') }
+
+      it { expect(tag.target).to eq("8f03acbcd11c53d9c9468078f32a2622005a4841") }
+      it { expect(tag.dereferenced_target.sha).to eq("189a6c924013fc3fe40d6f1ec1dc20214183bc97") }
+      it { expect(tag.message).to eq("x509 signed tag" + "\n" + X509Helpers::User1.signed_tag_signature.chomp) }
+      it { expect(tag.has_signature?).to be_truthy }
+      it { expect(tag.signature_type).to eq(:X509) }
+      it { expect(tag.signature).not_to be_nil }
+      it { expect(tag.tagger.name).to eq("Roger Meier") }
+      it { expect(tag.tagger.email).to eq("r.meier@siemens.com") }
+      it { expect(tag.tagger.date).to eq(Google::Protobuf::Timestamp.new(seconds: 1574261780)) }
+      it { expect(tag.tagger.timezone).to eq("+0100") }
     end
 
     it { expect(repository.tags.size).to eq(SeedRepo::Repo::TAGS.size) }

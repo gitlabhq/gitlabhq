@@ -40,7 +40,7 @@ POST /internal/allowed
 
 | Attribute | Type   | Required | Description |
 |:----------|:-------|:---------|:------------|
-| `key_id`  | string | no       | Id of the SSH-key used to connect to GitLab-shell |
+| `key_id`  | string | no       | ID of the SSH-key used to connect to GitLab-shell |
 | `username` | string | no      | Username from the certificate used to connect to GitLab-Shell |
 | `project`  | string | no (if `gl_repository` is passed) | Path to the project |
 | `gl_repository`  | string | no (if `project` is passed) | Path to the project |
@@ -93,7 +93,7 @@ information for LFS clients when the repository is accessed over SSH.
 
 | Attribute | Type   | Required | Description |
 |:----------|:-------|:---------|:------------|
-| `key_id`  | string | no       | Id of the SSH-key used to connect to GitLab-shell |
+| `key_id`  | string | no       | ID of the SSH-key used to connect to GitLab-shell |
 | `username`| string | no       | Username from the certificate used to connect to GitLab-Shell |
 | `project` | string | no       | Path to the project |
 
@@ -151,14 +151,14 @@ Example response:
 
 - GitLab-shell
 
-## Get user for user id or key
+## Get user for user ID or key
 
 This endpoint is used when a user performs `ssh git@gitlab.com`. It
 discovers the user associated with an SSH key.
 
 | Attribute | Type   | Required | Description |
 |:----------|:-------|:---------|:------------|
-| `key_id` | integer | no | The id of the SSH key used as found in the authorized-keys file or through the `/authorized_keys` check |
+| `key_id` | integer | no | The ID of the SSH key used as found in the authorized-keys file or through the `/authorized_keys` check |
 | `username` | string | no | Username of the user being looked up, used by GitLab-shell when authenticating using a certificate |
 
 ```plaintext
@@ -223,7 +223,7 @@ recovery codes based on their SSH key
 
 | Attribute | Type   | Required | Description |
 |:----------|:-------|:---------|:------------|
-| `key_id`  | integer | no | The id of the SSH key used as found in the authorized-keys file or through the `/authorized_keys` check |
+| `key_id`  | integer | no | The ID of the SSH key used as found in the authorized-keys file or through the `/authorized_keys` check |
 | `user_id` | integer | no | **Deprecated** User_id for which to generate new recovery codes |
 
 ```plaintext

@@ -489,6 +489,104 @@ describe Projects::CreateService, '#execute' do
     end
   end
 
+  it_behaves_like 'measurable service' do
+    before do
+      opts.merge!(
+        current_user: user,
+        path: 'foo'
+      )
+    end
+
+    let(:base_log_data) do
+      {
+        class: Projects::CreateService.name,
+        current_user: user.name,
+        project_full_path: "#{user.namespace.full_path}/#{opts[:path]}"
+      }
+    end
+
+    after do
+      create_project(user, opts)
+    end
+  end
+
+  context 'with specialized_project_authorization_workers' do
+    let_it_be(:other_user) { create(:user) }
+    let_it_be(:group) { create(:group) }
+
+    let(:opts) do
+      {
+        name: 'GitLab',
+        namespace_id: group.id
+      }
+    end
+
+    before do
+      group.add_maintainer(user)
+      group.add_developer(other_user)
+    end
+
+    it 'updates authorization for current_user' do
+      expect(Users::RefreshAuthorizedProjectsService).to(
+        receive(:new).with(user).and_call_original
+      )
+
+      project = create_project(user, opts)
+
+      expect(
+        Ability.allowed?(user, :read_project, project)
+      ).to be_truthy
+    end
+
+    it 'schedules authorization update for users with access to group' do
+      expect(AuthorizedProjectsWorker).not_to(
+        receive(:bulk_perform_async)
+      )
+      expect(AuthorizedProjectUpdate::ProjectCreateWorker).to(
+        receive(:perform_async).and_call_original
+      )
+      expect(AuthorizedProjectUpdate::UserRefreshWithLowUrgencyWorker).to(
+        receive(:bulk_perform_in)
+          .with(1.hour, array_including([user.id], [other_user.id]))
+          .and_call_original
+      )
+
+      create_project(user, opts)
+    end
+
+    context 'when feature is disabled' do
+      before do
+        stub_feature_flags(specialized_project_authorization_workers: false)
+      end
+
+      it 'updates authorization for current_user' do
+        expect(Users::RefreshAuthorizedProjectsService).to(
+          receive(:new).with(user).and_call_original
+        )
+
+        project = create_project(user, opts)
+
+        expect(
+          Ability.allowed?(user, :read_project, project)
+        ).to be_truthy
+      end
+
+      it 'uses AuthorizedProjectsWorker' do
+        expect(AuthorizedProjectsWorker).to(
+          receive(:bulk_perform_async).with(array_including([user.id], [other_user.id])).and_call_original
+        )
+        expect(AuthorizedProjectUpdate::ProjectCreateWorker).not_to(
+          receive(:perform_async)
+        )
+        expect(AuthorizedProjectUpdate::UserRefreshWithLowUrgencyWorker).not_to(
+          receive(:bulk_perform_in)
+        )
+
+        create_project(user, opts)
+      end
+    end
+  end
+
   def create_project(user, opts)
     Projects::CreateService.new(user, opts).execute
   end

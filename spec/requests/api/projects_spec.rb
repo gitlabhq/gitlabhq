@@ -24,7 +24,7 @@ shared_examples 'languages and percentages JSON response' do
       get api("/projects/#{project.id}/languages", user)
 
       expect(response).to have_gitlab_http_status(:ok)
-      expect(JSON.parse(response.body)).to eq(expected_languages)
+      expect(Gitlab::Json.parse(response.body)).to eq(expected_languages)
     end
   end
 
@@ -672,7 +672,7 @@ describe API::Projects do
               match[1]
             end
 
-            ids += JSON.parse(response.body).map { |p| p['id'] }
+            ids += Gitlab::Json.parse(response.body).map { |p| p['id'] }
           end
 
           expect(ids).to contain_exactly(*projects.map(&:id))
@@ -1806,7 +1806,7 @@ describe API::Projects do
         first_user = json_response.first
         expect(first_user['username']).to eq(user.username)
         expect(first_user['name']).to eq(user.name)
-        expect(first_user.keys).to contain_exactly(*%w[name username id state avatar_url web_url])
+        expect(first_user.keys).to include(*%w[name username id state avatar_url web_url])
       end
     end
 

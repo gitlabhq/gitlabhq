@@ -4,7 +4,7 @@ type: reference
 
 # Rate limits on issue creation
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/55241) in GitLab 12.10.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28129) in GitLab 12.10.
 
 This setting allows you to rate limit the requests to the issue creation endpoint.
 It defaults to 300 requests per minute.

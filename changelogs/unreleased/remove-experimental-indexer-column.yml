@@ -1,0 +1,5 @@
+---
+title: Remove elasticsearch_experimental_indexer column
+merge_request: 30628
+author:
+type: other

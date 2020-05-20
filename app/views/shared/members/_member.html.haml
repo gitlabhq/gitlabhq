@@ -13,24 +13,23 @@
     - if user
       = image_tag avatar_icon_for_user(user, 40), class: "avatar s40 flex-shrink-0 flex-grow-0", alt: ''
       .user-info
-        = link_to user.name, user_path(user), class: 'member js-user-link', data: { user_id: user.id }
-        = user_status(user)
-        %span.cgray= user.to_reference
+        %span.mr-1
+          = link_to user.name, user_path(user), class: 'member js-user-link', data: { user_id: user.id }
+          = user_status(user)
+          %span.cgray= user.to_reference
 
-        = render_if_exists 'shared/members/ee/sso_badge', member: member
+        .mx-n1.d-inline-flex.flex-wrap
+          = render_if_exists 'shared/members/ee/sso_badge', member: member
 
-        - if user == current_user
-          %span.badge.badge-success.prepend-left-5= _("It's you")
+          = render_if_exists 'shared/members/ee/gma_badge', member: member
 
-        = render_if_exists 'shared/members/ee/license_badge', user: user, group: @group
+          = render 'shared/members/its_you_badge', user: user, current_user: current_user
 
-        - if user.blocked?
-          %label.badge.badge-danger
-            %strong= _("Blocked")
+          = render_if_exists 'shared/members/ee/license_badge', user: user, group: @group
 
-        - if user.two_factor_enabled?
-          %label.badge.badge-info
-            = _("2FA")
+          = render 'shared/members/blocked_badge', user: user
+
+          = render 'shared/members/two_factor_auth_badge', user: user
 
         - if source.instance_of?(Group) && source != @group
           &middot;
@@ -68,7 +67,7 @@
                     class: 'btn btn-default align-self-center mr-sm-2',
                     title: _('Resend invite')
 
-        - if user != current_user && member.can_update?
+        - if user != current_user && member.can_update? && !user&.project_bot?
           = form_for member, remote: true, html: { class: "js-edit-member-form form-group #{'d-sm-flex' unless force_mobile_view}" } do |f|
             = f.hidden_field :access_level
             .member-form-control.dropdown{ class: [("mr-sm-2 d-sm-inline-block" unless force_mobile_view)] }
@@ -118,7 +117,7 @@
                       method: :delete,
                       data: { confirm: leave_confirmation_message(member.source) },
                       class: "btn btn-remove align-self-center m-0 #{'ml-sm-2' unless force_mobile_view}"
-          - else
+          - elsif !user&.project_bot?
             = link_to member,
                       method: :delete,
                       data: { confirm: remove_member_message(member), qa_selector: 'delete_member_button' },

@@ -1,0 +1,5 @@
+---
+title: Cache TreeSummary response for logs_tree
+merge_request: 29828
+author:
+type: performance

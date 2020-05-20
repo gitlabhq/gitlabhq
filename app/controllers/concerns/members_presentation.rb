@@ -5,6 +5,7 @@ module MembersPresentation
 
   def present_members(members)
     preload_associations(members)
+
     Gitlab::View::Presenter::Factory.new(
       members,
       current_user: current_user,

@@ -115,9 +115,31 @@ module Issuable
     end
     # rubocop:enable GitlabSecurity/SqlInjection
 
+    scope :not_assigned_to, ->(users) do
+      assignees_table = Arel::Table.new("#{to_ability_name}_assignees")
+      sql = assignees_table.project('true')
+                .where(assignees_table[:user_id].in(users))
+                .where(Arel::Nodes::SqlLiteral.new("#{to_ability_name}_id = #{to_ability_name}s.id"))
+      where(sql.exists.not)
+    end
+
+    scope :without_particular_labels, ->(label_names) do
+      labels_table = Label.arel_table
+      label_links_table = LabelLink.arel_table
+      issuables_table = klass.arel_table
+      inner_query = label_links_table.project('true')
+                        .join(labels_table, Arel::Nodes::InnerJoin).on(labels_table[:id].eq(label_links_table[:label_id]))
+                        .where(label_links_table[:target_type].eq(name)
+                                   .and(label_links_table[:target_id].eq(issuables_table[:id]))
+                                   .and(labels_table[:title].in(label_names)))
+                        .exists.not
+
+      where(inner_query)
+    end
+
     scope :without_label, -> { joins("LEFT OUTER JOIN label_links ON label_links.target_type = '#{name}' AND label_links.target_id = #{table_name}.id").where(label_links: { id: nil }) }
     scope :with_label_ids, ->(label_ids) { joins(:label_links).where(label_links: { label_id: label_ids }) }
-    scope :any_label, -> { joins(:label_links).group(:id) }
+    scope :any_label, -> { joins(:label_links).distinct }
     scope :join_project, -> { joins(:project) }
     scope :inc_notes_with_associations, -> { includes(notes: [:project, :author, :award_emoji]) }
     scope :references_project, -> { references(:project) }
@@ -286,9 +308,8 @@ module Issuable
         .reorder(Gitlab::Database.nulls_last_order('highest_priority', direction))
     end
 
-    def with_label(title, sort = nil, not_query: false)
-      multiple_labels = title.is_a?(Array) && title.size > 1
-      if multiple_labels && !not_query
+    def with_label(title, sort = nil)
+      if title.is_a?(Array) && title.size > 1
         joins(:labels).where(labels: { title: title }).group(*grouping_columns(sort)).having("COUNT(DISTINCT labels.title) = #{title.size}")
       else
         joins(:labels).where(labels: { title: title })

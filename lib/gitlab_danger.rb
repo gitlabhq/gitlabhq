@@ -12,6 +12,7 @@ class GitlabDanger
     database
     commit_messages
     telemetry
+    utility_css
   ].freeze
 
   CI_ONLY_RULES ||= %w[
@@ -19,7 +20,6 @@ class GitlabDanger
     changelog
     specs
     roulette
-    gitlab_ui_wg
     ce_ee_vue_templates
   ].freeze
 

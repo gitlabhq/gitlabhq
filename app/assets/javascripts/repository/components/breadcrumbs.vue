@@ -242,7 +242,7 @@ export default {
       </li>
       <li v-if="renderAddToTreeDropdown" class="breadcrumb-item">
         <gl-dropdown toggle-class="add-to-tree qa-add-to-tree ml-1">
-          <template slot="button-content">
+          <template #button-content>
             <span class="sr-only">{{ __('Add to tree') }}</span>
             <icon name="plus" :size="16" class="float-left" />
             <icon name="chevron-down" :size="16" class="float-left" />

@@ -7,7 +7,7 @@ describe 'CycleAnalytics#test' do
 
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:from_date) { 10.days.ago }
-  let_it_be(:user) { create(:user, :admin) }
+  let_it_be(:user) { project.owner }
   let_it_be(:issue) { create(:issue, project: project) }
   let_it_be(:project_level) { CycleAnalytics::ProjectLevel.new(project, options: { from: from_date }) }
   let!(:merge_request) { create_merge_request_closing_issue(user, project, issue) }

@@ -8,8 +8,8 @@ class CreateIssueTrackerData < ActiveRecord::Migration[5.1]
 
   DOWNTIME = false
 
+  # rubocop:disable Migration/PreventStrings
   def change
-    # rubocop:disable Migration/AddLimitToStringColumns
     create_table :issue_tracker_data do |t|
       t.references :service, foreign_key: { on_delete: :cascade }, type: :integer, index: true, null: false
       t.timestamps_with_timezone
@@ -20,6 +20,6 @@ class CreateIssueTrackerData < ActiveRecord::Migration[5.1]
       t.string :encrypted_new_issue_url
       t.string :encrypted_new_issue_url_iv
     end
-    # rubocop:enable Migration/AddLimitToStringColumns
   end
+  # rubocop:enable Migration/PreventStrings
 end

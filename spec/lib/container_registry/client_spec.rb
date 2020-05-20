@@ -85,7 +85,7 @@ describe ContainerRegistry::Client do
     it 'follows 307 redirect for GET /v2/:name/blobs/:digest' do
       stub_request(:get, "http://container-registry/v2/group/test/blobs/sha256:0123456789012345")
         .with(headers: blob_headers)
-        .to_return(status: 307, body: "", headers: { Location: 'http://redirected' })
+        .to_return(status: 307, body: '', headers: { Location: 'http://redirected' })
       # We should probably use hash_excluding here, but that requires an update to WebMock:
       # https://github.com/bblimke/webmock/blob/master/lib/webmock/matchers/hash_excluding_matcher.rb
       stub_request(:get, "http://redirected/")
@@ -236,6 +236,56 @@ describe ContainerRegistry::Client do
       end
 
       it { is_expected.to be_falsey }
+    end
+  end
+
+  def stub_registry_info(headers: {}, status: 200)
+    stub_request(:get, 'http://container-registry/v2/')
+      .to_return(status: status, body: "", headers: headers)
+  end
+
+  describe '#registry_info' do
+    subject { client.registry_info }
+
+    context 'when the check is successful' do
+      context 'when using the GitLab container registry' do
+        before do
+          stub_registry_info(headers: {
+            'GitLab-Container-Registry-Version' => '2.9.1-gitlab',
+            'GitLab-Container-Registry-Features' => 'a,b,c'
+          })
+        end
+
+        it 'identifies the vendor as "gitlab"' do
+          expect(subject).to include(vendor: 'gitlab')
+        end
+
+        it 'identifies version and features' do
+          expect(subject).to include(version: '2.9.1-gitlab', features: %w[a b c])
+        end
+      end
+
+      context 'when using a third-party container registry' do
+        before do
+          stub_registry_info
+        end
+
+        it 'identifies the vendor as "other"' do
+          expect(subject).to include(vendor: 'other')
+        end
+
+        it 'does not identify version or features' do
+          expect(subject).to include(version: nil, features: [])
+        end
+      end
+    end
+
+    context 'when the check is not successful' do
+      it 'does not identify vendor, version or features' do
+        stub_registry_info(status: 500)
+
+        expect(subject).to eq({})
+      end
     end
   end
 end

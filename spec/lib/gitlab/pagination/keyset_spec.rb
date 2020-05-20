@@ -3,6 +3,18 @@
 require 'spec_helper'
 
 describe Gitlab::Pagination::Keyset do
+  describe '.available_for_type?' do
+    subject { described_class }
+
+    it 'returns true for Project' do
+      expect(subject.available_for_type?(Project.all)).to be_truthy
+    end
+
+    it 'return false for other types of relations' do
+      expect(subject.available_for_type?(User.all)).to be_falsey
+    end
+  end
+
   describe '.available?' do
     subject { described_class }
 

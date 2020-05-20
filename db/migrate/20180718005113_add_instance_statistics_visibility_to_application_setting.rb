@@ -8,7 +8,7 @@ class AddInstanceStatisticsVisibilityToApplicationSetting < ActiveRecord::Migrat
   disable_ddl_transaction!
 
   def up
-    add_column_with_default(:application_settings, :instance_statistics_visibility_private,
+    add_column_with_default(:application_settings, :instance_statistics_visibility_private, # rubocop:disable Migration/AddColumnWithDefault
                             :boolean,
                             default: false,
                             allow_null: false)

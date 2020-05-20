@@ -87,7 +87,7 @@ printer.print(File.open('/tmp/profile.html', 'w'))
 
 [GitLab-Profiler](https://gitlab.com/gitlab-com/gitlab-profiler) is a project
 that builds on this to add some additional niceties, such as allowing
-configuration with a single Yaml file for multiple URLs, and uploading of the
+configuration with a single YAML file for multiple URLs, and uploading of the
 profile and log output to S3.
 
 For GitLab.com, you can find the latest results here (restricted to GitLab Team members only):

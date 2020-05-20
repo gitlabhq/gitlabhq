@@ -13,6 +13,8 @@ module ContainerRegistry
     DOCKER_DISTRIBUTION_MANIFEST_V2_TYPE = 'application/vnd.docker.distribution.manifest.v2+json'
     OCI_MANIFEST_V1_TYPE = 'application/vnd.oci.image.manifest.v1+json'
     CONTAINER_IMAGE_V1_TYPE = 'application/vnd.docker.container.image.v1+json'
+    REGISTRY_VERSION_HEADER = 'gitlab-container-registry-version'
+    REGISTRY_FEATURES_HEADER = 'gitlab-container-registry-features'
 
     ACCEPTED_TYPES = [DOCKER_DISTRIBUTION_MANIFEST_V2_TYPE, OCI_MANIFEST_V1_TYPE].freeze
 
@@ -22,6 +24,21 @@ module ContainerRegistry
     def initialize(base_uri, options = {})
       @base_uri = base_uri
       @options = options
+    end
+
+    def registry_info
+      response = faraday.get("/v2/")
+
+      return {} unless response&.success?
+
+      version = response.headers[REGISTRY_VERSION_HEADER]
+      features = response.headers.fetch(REGISTRY_FEATURES_HEADER, '')
+
+      {
+        version: version,
+        features: features.split(',').map(&:strip),
+        vendor: version ? 'gitlab' : 'other'
+      }
     end
 
     def repository_tags(name)
@@ -83,7 +100,7 @@ module ContainerRegistry
       image = {
         config: {}
       }
-      image, image_digest = upload_raw_blob(path, JSON.pretty_generate(image))
+      image, image_digest = upload_raw_blob(path, Gitlab::Json.pretty_generate(image))
       return unless image
 
       {
@@ -109,7 +126,7 @@ module ContainerRegistry
     def put_tag(name, reference, manifest)
       response = faraday.put("/v2/#{name}/manifests/#{reference}") do |req|
         req.headers['Content-Type'] = DOCKER_DISTRIBUTION_MANIFEST_V2_TYPE
-        req.body = JSON.pretty_generate(manifest)
+        req.body = Gitlab::Json.pretty_generate(manifest)
       end
 
       response.headers['docker-content-digest'] if response.success?

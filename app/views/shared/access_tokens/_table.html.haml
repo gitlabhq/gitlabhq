@@ -1,0 +1,37 @@
+- no_active_tokens_message = local_assigns.fetch(:no_active_tokens_message, _('This user has no active %{type}.') % { type: type_plural })
+- impersonation = local_assigns.fetch(:impersonation, false)
+
+%hr
+
+%h5
+  = _('Active %{type} (%{token_length})') % { type: type_plural, token_length: active_tokens.length }
+- if impersonation
+  %p.profile-settings-content
+    = _("To see all the user's personal access tokens you must impersonate them first.")
+
+- if active_tokens.present?
+  .table-responsive
+    %table.table.active-tokens
+      %thead
+        %tr
+          %th= _('Name')
+          %th= s_('AccessTokens|Created')
+          %th= _('Expires')
+          %th= _('Scopes')
+          %th
+      %tbody
+        - active_tokens.each do |token|
+          %tr
+            %td= token.name
+            %td= token.created_at.to_date.to_s(:medium)
+            %td
+              - if token.expires?
+                %span{ class: ('text-warning' if token.expires_soon?) }
+                  = _('In %{time_to_now}') % { time_to_now: distance_of_time_in_words_to_now(token.expires_at) }
+              - else
+                %span.token-never-expires-label= _('Never')
+            %td= token.scopes.present? ? token.scopes.join(', ') : _('<no scopes selected>')
+            %td= link_to _('Revoke'), revoke_route_helper.call(token), method: :put, class: 'btn btn-danger float-right qa-revoke-button', data: { confirm: _('Are you sure you want to revoke this %{type}? This action cannot be undone.') % { type: type } }
+- else
+  .settings-message.text-center
+    = no_active_tokens_message

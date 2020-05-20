@@ -18,6 +18,8 @@ You can configure your job to use JUnit test reports, and GitLab will display a
 report on the merge request so that it's easier and faster to identify the
 failure without having to check the entire log.
 
+If you don't use Merge Requests but still want to see the JUnit output without searching through job logs, the full [JUnit test reports](#viewing-junit-test-reports-on-gitlab) are available in the pipeline detail view.
+
 ## Use cases
 
 Consider the following workflow:
@@ -66,7 +68,7 @@ For a list of supported languages on JUnit tests, check the
 [Wikipedia article](https://en.wikipedia.org/wiki/JUnit#Ports).
 
 To enable the JUnit reports in merge requests, you need to add
-[`artifacts:reports:junit`](yaml/README.md#artifactsreportsjunit)
+[`artifacts:reports:junit`](pipelines/job_artifacts.md#artifactsreportsjunit)
 in `.gitlab-ci.yml`, and specify the path(s) of the generated test reports.
 
 In the following examples, the job in the `test` stage runs and GitLab
@@ -235,15 +237,44 @@ You can view all the known test suites and click on each of these to see further
 details, including the cases that makeup the suite. Cases are ordered by status,
 with failed showing at the top, skipped next and successful cases last.
 
+You can also retrieve the reports via the [GitLab API](../api/pipelines.md#get-a-pipelines-test-report).
+
 ### Enabling the feature
 
 This feature comes with the `:junit_pipeline_view` feature flag disabled by default. This
 feature is disabled due to some performance issues with very large data sets.
 When [the performance is improved](https://gitlab.com/groups/gitlab-org/-/epics/2854), the feature will be enabled by default.
 
-To enable this feature, ask a GitLab administrator with Rails console access to run the
+To enable this feature, ask a GitLab administrator with [Rails console access](../administration/feature_flags.md#how-to-enable-and-disable-features-behind-flags) to run the
 following command:
 
 ```ruby
 Feature.enable(:junit_pipeline_view)
+```
+
+## Viewing JUnit screenshots on GitLab
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/202114) in GitLab 13.0.
+
+If JUnit XML files contain an `attachment` tag, GitLab parses the attachment.
+
+Upload your screenshots as [artifacts](pipelines/job_artifacts.md#artifactsreportsjunit) to GitLab. The `attachment` tag **must** contain the absolute path to the screenshots you uploaded.
+
+```xml
+<testcase time="1.00" name="Test">
+  <system-out>[[ATTACHMENT|/absolute/path/to/some/file]]</system-out>
+</testcase>
+```
+
+When [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/6061) is complete, the attached file will be visible on the pipeline details page.
+
+### Enabling the feature
+
+This feature comes with the `:junit_pipeline_screenshots_view` feature flag disabled by default.
+
+To enable this feature, ask a GitLab administrator with [Rails console access](../administration/feature_flags.md#how-to-enable-and-disable-features-behind-flags) to run the
+following command:
+
+```ruby
+Feature.enable(:junit_pipeline_screenshots_view)
 ```

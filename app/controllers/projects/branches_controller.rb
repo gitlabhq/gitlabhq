@@ -186,7 +186,6 @@ class Projects::BranchesController < Projects::ApplicationController
   end
 
   def confidential_issue_project
-    return unless helpers.create_confidential_merge_request_enabled?
     return if params[:confidential_issue_project_id].blank?
 
     confidential_issue_project = Project.find(params[:confidential_issue_project_id])

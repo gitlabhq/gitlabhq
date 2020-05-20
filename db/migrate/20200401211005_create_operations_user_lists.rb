@@ -8,8 +8,8 @@ class CreateOperationsUserLists < ActiveRecord::Migration[6.0]
       t.references :project, index: false, foreign_key: { on_delete: :cascade }, null: false
       t.timestamps_with_timezone
       t.integer :iid, null: false
-      t.string :name, null: false, limit: 255
-      t.text :user_xids, null: false, default: ''
+      t.string :name, null: false, limit: 255 # rubocop:disable Migration/PreventStrings
+      t.text :user_xids, null: false, default: '' # rubocop:disable Migration/AddLimitToTextColumns
 
       t.index [:project_id, :iid], unique: true
       t.index [:project_id, :name], unique: true

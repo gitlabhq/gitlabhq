@@ -9,7 +9,7 @@ describe Gitlab::RepositoryUrlBuilder do
     where(:factory, :path_generator) do
       :project          | ->(project) { project.full_path }
       :project_snippet  | ->(snippet) { "#{snippet.project.full_path}/snippets/#{snippet.id}" }
-      :project_wiki     | ->(wiki)    { "#{wiki.project.full_path}.wiki" }
+      :project_wiki     | ->(wiki)    { "#{wiki.container.full_path}.wiki" }
 
       :personal_snippet | ->(snippet) { "snippets/#{snippet.id}" }
     end

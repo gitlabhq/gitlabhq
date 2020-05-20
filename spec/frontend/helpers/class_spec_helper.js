@@ -1,3 +1,4 @@
+// eslint-disable-next-line jest/no-export
 export default class ClassSpecHelper {
   static itShouldBeAStaticMethod(base, method) {
     return it('should be a static method', () => {

@@ -3,8 +3,12 @@
 require 'spec_helper'
 
 describe ActiveRecord::QueryRecorder do
-  class TestQueries < ActiveRecord::Base
-    self.table_name = 'schema_migrations'
+  before do
+    stub_const('TestQueries', Class.new(ActiveRecord::Base))
+
+    TestQueries.class_eval do
+      self.table_name = 'schema_migrations'
+    end
   end
 
   describe 'detecting the right number of calls and their origin' do

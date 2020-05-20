@@ -53,22 +53,15 @@ describe 'Test coverage of the Project Import' do
   ].freeze
 
   # A list of JSON fixture files we use to test Import.
-  # Note that we use separate fixture to test ee-only features.
   # Most of the relations are present in `complex/project.json`
   # which is our main fixture.
-  PROJECT_JSON_FIXTURES_EE =
-    if Gitlab.ee?
-      ['ee/spec/fixtures/lib/gitlab/import_export/designs/project.json'].freeze
-    else
-      []
-    end
-
   PROJECT_JSON_FIXTURES = [
     'spec/fixtures/lib/gitlab/import_export/complex/project.json',
     'spec/fixtures/lib/gitlab/import_export/group/project.json',
     'spec/fixtures/lib/gitlab/import_export/light/project.json',
-    'spec/fixtures/lib/gitlab/import_export/milestone-iid/project.json'
-  ].freeze + PROJECT_JSON_FIXTURES_EE
+    'spec/fixtures/lib/gitlab/import_export/milestone-iid/project.json',
+    'spec/fixtures/lib/gitlab/import_export/designs/project.json'
+  ].freeze
 
   it 'ensures that all imported/exported relations are present in test JSONs' do
     not_tested_relations = (relations_from_config - tested_relations) - MUTED_RELATIONS

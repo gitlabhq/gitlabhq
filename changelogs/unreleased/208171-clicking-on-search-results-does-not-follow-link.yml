@@ -1,0 +1,5 @@
+---
+title: Fix an issue where the Search dropdown results would not be clickable.
+merge_request: 30087
+author: mbergeron
+type: fixed

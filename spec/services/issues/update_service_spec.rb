@@ -510,7 +510,7 @@ describe Issues::UpdateService, :mailer do
         end
 
         it 'updates updated_at' do
-          expect(issue.reload.updated_at).to be > Time.now
+          expect(issue.reload.updated_at).to be > Time.current
         end
       end
     end
@@ -841,6 +841,34 @@ describe Issues::UpdateService, :mailer do
     include_examples 'issuable update service' do
       let(:open_issuable) { issue }
       let(:closed_issuable) { create(:closed_issue, project: project) }
+    end
+
+    context 'real-time updates' do
+      let(:update_params) { { assignee_ids: [user2.id] } }
+
+      context 'when broadcast_issue_updates is enabled' do
+        before do
+          stub_feature_flags(broadcast_issue_updates: true)
+        end
+
+        it 'broadcasts to the issues channel' do
+          expect(IssuesChannel).to receive(:broadcast_to).with(issue, event: 'updated')
+
+          update_issue(update_params)
+        end
+      end
+
+      context 'when broadcast_issue_updates is disabled' do
+        before do
+          stub_feature_flags(broadcast_issue_updates: false)
+        end
+
+        it 'does not broadcast to the issues channel' do
+          expect(IssuesChannel).not_to receive(:broadcast_to)
+
+          update_issue(update_params)
+        end
+      end
     end
   end
 end

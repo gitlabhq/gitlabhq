@@ -5,27 +5,33 @@ run into some head-banging database problems.
 
 An easy first step is to search for your error in Slack, or search for `GitLab <my error>` with Google.
 
----
+Available `RAILS_ENV`:
 
-Available `RAILS_ENV`
-
-- `production` (generally not for your main GDK db, but you may need this for e.g. Omnibus)
-- `development` (this is your main GDK db)
-- `test` (used for tests like rspec)
+- `production` (generally not for your main GDK database, but you may need this for other installations such as Omnibus).
+- `development` (this is your main GDK db).
+- `test` (used for tests like RSpec).
 
 ## Nuke everything and start over
 
-If you just want to delete everything and start over with an empty DB (~1 minute):
+If you just want to delete everything and start over with an empty DB (approximately 1 minute):
 
-- `bundle exec rake db:reset RAILS_ENV=development`
+```shell
+bundle exec rake db:reset RAILS_ENV=development
+```
 
-If you just want to delete everything and start over with dummy data (~4 minutes). This also does `db:reset` and runs DB-specific migrations:
+If you just want to delete everything and start over with dummy data (approximately 4 minutes). This
+also does `db:reset` and runs DB-specific migrations:
 
-- `bundle exec rake dev:setup RAILS_ENV=development`
+```shell
+bundle exec rake dev:setup RAILS_ENV=development
+```
 
-If your test DB is giving you problems, it is safe to nuke it because it doesn't contain important data:
+If your test DB is giving you problems, it is safe to nuke it because it doesn't contain important
+data:
 
-- `bundle exec rake db:reset RAILS_ENV=test`
+```shell
+bundle exec rake db:reset RAILS_ENV=test
+```
 
 ## Migration wrangling
 

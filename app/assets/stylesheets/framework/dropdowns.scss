@@ -317,13 +317,6 @@
     }
   }
 
-  // Temporary fix to ensure tick is aligned
-  // Follow up Issue to remove after the GlNewDropdownItem component is fixed
-  // > https://gitlab.com/gitlab-org/gitlab/-/issues/213948
-  li:not(.gl-new-dropdown-item) .dropdown-item {
-    @include dropdown-link;
-  }
-
   .divider {
     height: 1px;
     margin: #{$grid-size / 2} 0;
@@ -382,6 +375,10 @@
   .dropdown-menu-content {
     padding: $dropdown-item-padding-y $dropdown-item-padding-x;
   }
+}
+
+.dropdown-item {
+  @include dropdown-link;
 }
 
 .droplab-dropdown {
@@ -1032,6 +1029,16 @@ header.header-content .dropdown-menu.frequent-items-dropdown-menu {
 }
 
 .labels-select-wrapper {
+  &.is-standalone {
+    .labels-select-dropdown-contents {
+      max-height: 350px;
+
+      .dropdown-content {
+        height: 250px;
+      }
+    }
+  }
+
   .labels-select-dropdown-contents {
     min-height: $dropdown-min-height;
     max-height: 330px;

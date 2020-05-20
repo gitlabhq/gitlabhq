@@ -48,6 +48,7 @@ describe('Code navigation app component', () => {
     factory({
       currentDefinition: { hover: 'console' },
       currentDefinitionPosition: { x: 0 },
+      currentBlobPath: 'index.js',
     });
 
     expect(wrapper.find(Popover).exists()).toBe(true);

@@ -40,7 +40,7 @@ module RspecFlaky
       new_flaky_examples = flaky_examples - suite_flaky_examples
       if new_flaky_examples.any?
         Rails.logger.warn "\nNew flaky examples detected:\n"
-        Rails.logger.warn JSON.pretty_generate(new_flaky_examples.to_h)
+        Rails.logger.warn Gitlab::Json.pretty_generate(new_flaky_examples.to_h)
 
         RspecFlaky::Report.new(new_flaky_examples).write(RspecFlaky::Config.new_flaky_examples_report_path)
         # write_report_file(new_flaky_examples, RspecFlaky::Config.new_flaky_examples_report_path)

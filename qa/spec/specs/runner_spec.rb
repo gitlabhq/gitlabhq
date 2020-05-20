@@ -14,6 +14,8 @@ describe QA::Specs::Runner do
   describe '#perform' do
     before do
       allow(QA::Runtime::Browser).to receive(:configure!)
+
+      QA::Runtime::Scenario.define(:gitlab_address, "http://gitlab.test")
     end
 
     it_behaves_like 'excludes orchestrated'
@@ -75,6 +77,18 @@ describe QA::Specs::Runner do
 
       it 'includes default args and excludes the skip_signup_disabled tag' do
         expect_rspec_runner_arguments(['--tag', '~orchestrated', '--tag', '~skip_signup_disabled', *described_class::DEFAULT_TEST_PATH_ARGS])
+
+        subject.perform
+      end
+    end
+
+    context 'when running against live environment' do
+      before do
+        QA::Runtime::Scenario.define(:gitlab_address, "https://staging.gitlab.com")
+      end
+
+      it 'includes default args and excludes the skip_live_env tag' do
+        expect_rspec_runner_arguments(['--tag', '~orchestrated', '--tag', '~skip_live_env', *described_class::DEFAULT_TEST_PATH_ARGS])
 
         subject.perform
       end

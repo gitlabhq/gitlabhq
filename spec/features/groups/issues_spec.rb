@@ -12,7 +12,7 @@ describe 'Group issues page' do
   let(:path) { issues_group_path(group) }
 
   before do
-    stub_feature_flags({ vue_issuables_list: { enabled: false, thing: group } })
+    stub_feature_flags(vue_issuables_list: false)
   end
 
   context 'with shared examples' do
@@ -184,6 +184,27 @@ describe 'Group issues page' do
         expect(find('.issue:nth-child(2) .title')).to have_content('Issue #3')
         expect(find('.issue:nth-child(3) .title')).to have_content('Issue #1')
       end
+    end
+  end
+
+  context 'issues pagination' do
+    let(:user_in_group) { create(:group_member, :maintainer, user: create(:user), group: group ).user }
+
+    let!(:issues) do
+      (1..25).to_a.map { |index| create(:issue, project: project, title: "Issue #{index}") }
+    end
+
+    before do
+      sign_in(user_in_group)
+      visit issues_group_path(group)
+    end
+
+    it 'shows the pagination' do
+      expect(page).to have_selector('.gl-pagination')
+    end
+
+    it 'first pagination item is active' do
+      expect(page).to have_css(".js-first-button a.page-link.active")
     end
   end
 end

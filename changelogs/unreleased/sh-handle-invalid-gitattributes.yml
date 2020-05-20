@@ -1,0 +1,5 @@
+---
+title: Ignore .gitattributes if they contain invalid byte sequences
+merge_request: 30922
+author:
+type: fixed

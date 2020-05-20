@@ -38,8 +38,7 @@
             ":description" => "list.label.description",
             "tooltipPlacement" => "bottom",
             ":size" => '(!list.isExpanded ? "sm" : "")',
-            ":scoped" => "showScopedLabels(list.label)",
-            ":scoped-labels-documentation-link" => "helpLink" }
+            ":scoped" => "showScopedLabels(list.label)" }
 
         - if can?(current_user, :admin_list, current_board_parent)
           %board-delete{ "inline-template" => true,

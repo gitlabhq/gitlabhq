@@ -3,17 +3,16 @@
 require 'spec_helper'
 
 describe Groups::ImportExport::ImportService do
-  describe '#execute' do
+  context 'with group_import_ndjson feature flag disabled' do
     let(:user) { create(:admin) }
     let(:group) { create(:group) }
-    let(:service) { described_class.new(group: group, user: user) }
-    let(:import_file) { fixture_file_upload('spec/fixtures/group_export.tar.gz') }
-
     let(:import_logger) { instance_double(Gitlab::Import::Logger) }
 
-    subject { service.execute }
+    subject(:service) { described_class.new(group: group, user: user) }
 
     before do
+      stub_feature_flags(group_import_ndjson: false)
+
       ImportExportUpload.create(group: group, import_file: import_file)
 
       allow(Gitlab::Import::Logger).to receive(:build).and_return(import_logger)
@@ -21,84 +20,227 @@ describe Groups::ImportExport::ImportService do
       allow(import_logger).to receive(:info)
     end
 
-    context 'when user has correct permissions' do
-      it 'imports group structure successfully' do
-        expect(subject).to be_truthy
-      end
+    context 'with a json file' do
+      let(:import_file) { fixture_file_upload('spec/fixtures/legacy_group_export.tar.gz') }
 
-      it 'removes import file' do
-        subject
+      it 'uses LegacyTreeRestorer to import the file' do
+        expect(Gitlab::ImportExport::Group::LegacyTreeRestorer).to receive(:new).and_call_original
 
-        expect(group.import_export_upload.import_file.file).to be_nil
-      end
-
-      it 'logs the import success' do
-        expect(import_logger).to receive(:info).with(
-          group_id:   group.id,
-          group_name: group.name,
-          message:    'Group Import/Export: Import succeeded'
-        ).once
-
-        subject
+        service.execute
       end
     end
 
-    context 'when user does not have correct permissions' do
-      let(:user) { create(:user) }
+    context 'with a ndjson file' do
+      let(:import_file) { fixture_file_upload('spec/fixtures/group_export.tar.gz') }
 
-      it 'logs the error and raises an exception' do
-        expect(import_logger).to receive(:error).with(
-          group_id:   group.id,
-          group_name: group.name,
-          message:    a_string_including('Errors occurred')
-        )
+      it 'fails to import' do
+        expect { service.execute }.to raise_error(Gitlab::ImportExport::Error, 'Incorrect JSON format')
+      end
+    end
+  end
 
-        expect { subject }.to raise_error(Gitlab::ImportExport::Error)
+  context 'with group_import_ndjson feature flag enabled' do
+    before do
+      stub_feature_flags(group_import_ndjson: true)
+    end
+
+    context 'when importing a ndjson export' do
+      let(:user) { create(:admin) }
+      let(:group) { create(:group) }
+      let(:service) { described_class.new(group: group, user: user) }
+      let(:import_file) { fixture_file_upload('spec/fixtures/group_export.tar.gz') }
+
+      let(:import_logger) { instance_double(Gitlab::Import::Logger) }
+
+      subject { service.execute }
+
+      before do
+        ImportExportUpload.create(group: group, import_file: import_file)
+
+        allow(Gitlab::Import::Logger).to receive(:build).and_return(import_logger)
+        allow(import_logger).to receive(:error)
+        allow(import_logger).to receive(:info)
       end
 
-      it 'tracks the error' do
-        shared = Gitlab::ImportExport::Shared.new(group)
-        allow(Gitlab::ImportExport::Shared).to receive(:new).and_return(shared)
-
-        expect(shared).to receive(:error) do |param|
-          expect(param.message).to include 'does not have required permissions for'
+      context 'when user has correct permissions' do
+        it 'imports group structure successfully' do
+          expect(subject).to be_truthy
         end
 
-        expect { subject }.to raise_error(Gitlab::ImportExport::Error)
+        it 'removes import file' do
+          subject
+
+          expect(group.import_export_upload.import_file.file).to be_nil
+        end
+
+        it 'logs the import success' do
+          expect(import_logger).to receive(:info).with(
+            group_id:   group.id,
+            group_name: group.name,
+            message:    'Group Import/Export: Import succeeded'
+          ).once
+
+          subject
+        end
+      end
+
+      context 'when user does not have correct permissions' do
+        let(:user) { create(:user) }
+
+        it 'logs the error and raises an exception' do
+          expect(import_logger).to receive(:error).with(
+            group_id:   group.id,
+            group_name: group.name,
+            message:    a_string_including('Errors occurred')
+          )
+
+          expect { subject }.to raise_error(Gitlab::ImportExport::Error)
+        end
+
+        it 'tracks the error' do
+          shared = Gitlab::ImportExport::Shared.new(group)
+          allow(Gitlab::ImportExport::Shared).to receive(:new).and_return(shared)
+
+          expect(shared).to receive(:error) do |param|
+            expect(param.message).to include 'does not have required permissions for'
+          end
+
+          expect { subject }.to raise_error(Gitlab::ImportExport::Error)
+        end
+      end
+
+      context 'when there are errors with the import file' do
+        let(:import_file) { fixture_file_upload('spec/fixtures/symlink_export.tar.gz') }
+
+        it 'logs the error and raises an exception' do
+          expect(import_logger).to receive(:error).with(
+            group_id:   group.id,
+            group_name: group.name,
+            message:    a_string_including('Errors occurred')
+          ).once
+
+          expect { subject }.to raise_error(Gitlab::ImportExport::Error)
+        end
+      end
+
+      context 'when there are errors with the sub-relations' do
+        let(:import_file) { fixture_file_upload('spec/fixtures/group_export_invalid_subrelations.tar.gz') }
+
+        it 'successfully imports the group' do
+          expect(subject).to be_truthy
+        end
+
+        it 'logs the import success' do
+          allow(Gitlab::Import::Logger).to receive(:build).and_return(import_logger)
+
+          expect(import_logger).to receive(:info).with(
+            group_id: group.id,
+            group_name: group.name,
+            message: 'Group Import/Export: Import succeeded'
+          )
+
+          subject
+        end
       end
     end
 
-    context 'when there are errors with the import file' do
-      let(:import_file) { fixture_file_upload('spec/fixtures/symlink_export.tar.gz') }
+    context 'when importing a json export' do
+      let(:user) { create(:admin) }
+      let(:group) { create(:group) }
+      let(:service) { described_class.new(group: group, user: user) }
+      let(:import_file) { fixture_file_upload('spec/fixtures/legacy_group_export.tar.gz') }
 
-      it 'logs the error and raises an exception' do
-        expect(import_logger).to receive(:error).with(
-          group_id:   group.id,
-          group_name: group.name,
-          message:    a_string_including('Errors occurred')
-        ).once
+      let(:import_logger) { instance_double(Gitlab::Import::Logger) }
 
-        expect { subject }.to raise_error(Gitlab::ImportExport::Error)
-      end
-    end
+      subject { service.execute }
 
-    context 'when there are errors with the sub-relations' do
-      let(:import_file) { fixture_file_upload('spec/fixtures/group_export_invalid_subrelations.tar.gz') }
+      before do
+        ImportExportUpload.create(group: group, import_file: import_file)
 
-      it 'successfully imports the group' do
-        expect(subject).to be_truthy
-      end
-
-      it 'logs the import success' do
         allow(Gitlab::Import::Logger).to receive(:build).and_return(import_logger)
+        allow(import_logger).to receive(:error)
+        allow(import_logger).to receive(:info)
+      end
 
-        expect(import_logger).to receive(:info).with(
-          group_id:   group.id,
-          group_name: group.name,
-          message:    'Group Import/Export: Import succeeded'
-        )
+      context 'when user has correct permissions' do
+        it 'imports group structure successfully' do
+          expect(subject).to be_truthy
+        end
 
-        subject
+        it 'removes import file' do
+          subject
+
+          expect(group.import_export_upload.import_file.file).to be_nil
+        end
+
+        it 'logs the import success' do
+          expect(import_logger).to receive(:info).with(
+            group_id:   group.id,
+            group_name: group.name,
+            message:    'Group Import/Export: Import succeeded'
+          ).once
+
+          subject
+        end
+      end
+
+      context 'when user does not have correct permissions' do
+        let(:user) { create(:user) }
+
+        it 'logs the error and raises an exception' do
+          expect(import_logger).to receive(:error).with(
+            group_id:   group.id,
+            group_name: group.name,
+            message:    a_string_including('Errors occurred')
+          )
+
+          expect { subject }.to raise_error(Gitlab::ImportExport::Error)
+        end
+
+        it 'tracks the error' do
+          shared = Gitlab::ImportExport::Shared.new(group)
+          allow(Gitlab::ImportExport::Shared).to receive(:new).and_return(shared)
+
+          expect(shared).to receive(:error) do |param|
+            expect(param.message).to include 'does not have required permissions for'
+          end
+
+          expect { subject }.to raise_error(Gitlab::ImportExport::Error)
+        end
+      end
+
+      context 'when there are errors with the import file' do
+        let(:import_file) { fixture_file_upload('spec/fixtures/legacy_symlink_export.tar.gz') }
+
+        it 'logs the error and raises an exception' do
+          expect(import_logger).to receive(:error).with(
+            group_id:   group.id,
+            group_name: group.name,
+            message:    a_string_including('Errors occurred')
+          ).once
+
+          expect { subject }.to raise_error(Gitlab::ImportExport::Error)
+        end
+      end
+
+      context 'when there are errors with the sub-relations' do
+        let(:import_file) { fixture_file_upload('spec/fixtures/legacy_group_export_invalid_subrelations.tar.gz') }
+
+        it 'successfully imports the group' do
+          expect(subject).to be_truthy
+        end
+
+        it 'logs the import success' do
+          allow(Gitlab::Import::Logger).to receive(:build).and_return(import_logger)
+
+          expect(import_logger).to receive(:info).with(
+            group_id:   group.id,
+            group_name: group.name,
+            message:    'Group Import/Export: Import succeeded'
+          )
+
+          subject
+        end
       end
     end
   end

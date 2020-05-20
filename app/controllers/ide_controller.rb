@@ -6,10 +6,6 @@ class IdeController < ApplicationController
   include ClientsidePreviewCSP
   include StaticObjectExternalStorageCSP
 
-  before_action do
-    push_frontend_feature_flag(:webide_dark_theme)
-  end
-
   def index
     Gitlab::UsageDataCounters::WebIdeCounter.increment_views_count
   end

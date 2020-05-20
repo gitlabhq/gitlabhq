@@ -9,8 +9,10 @@ class AddLetsEncryptPrivateKeyToApplicationSettings < ActiveRecord::Migration[5.
   # Set this constant to true if this migration requires downtime.
   DOWNTIME = false
 
+  # rubocop:disable Migration/AddLimitToTextColumns
   def change
     add_column :application_settings, :encrypted_lets_encrypt_private_key, :text
     add_column :application_settings, :encrypted_lets_encrypt_private_key_iv, :text
   end
+  # rubocop:enable Migration/AddLimitToTextColumns
 end

@@ -3,6 +3,7 @@
 class CreateProjectExportJobs < ActiveRecord::Migration[6.0]
   DOWNTIME = false
 
+  # rubocop:disable Migration/PreventStrings
   def change
     create_table :project_export_jobs do |t|
       t.references :project, index: false, null: false, foreign_key: { on_delete: :cascade }
@@ -16,4 +17,5 @@ class CreateProjectExportJobs < ActiveRecord::Migration[6.0]
       t.index [:project_id, :status]
     end
   end
+  # rubocop:enable Migration/PreventStrings
 end

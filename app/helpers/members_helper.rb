@@ -15,7 +15,18 @@ module MembersHelper
       elsif member.invite?
         "revoke the invitation for #{member.invite_email} to join"
       else
-        "remove #{member.user.name} from"
+        if member.user
+          "remove #{member.user.name} from"
+        else
+          e = RuntimeError.new("Data integrity error: no associated user for member ID #{member.id}")
+          Gitlab::ErrorTracking.track_exception(e,
+            member_id: member.id,
+            invite_email: member.invite_email,
+            invite_accepted_at: member.invite_accepted_at,
+            source_id: member.source_id,
+            source_type: member.source_type)
+          "remove this orphaned member from"
+        end
       end
 
     "#{text} #{action} the #{member.source.human_name} #{source_text(member)}?"

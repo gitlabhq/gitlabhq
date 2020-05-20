@@ -2,7 +2,7 @@
 
 While [Auto DevOps](index.md) provides great defaults to get you started, you can customize
 almost everything to fit your needs. Auto DevOps offers everything from custom
-[buildpacks](#custom-buildpacks), to [`Dockerfiles](#custom-dockerfile), and
+[buildpacks](#custom-buildpacks), to [Dockerfiles](#custom-dockerfile), and
 [Helm charts](#custom-helm-chart). You can even copy the complete
 [CI/CD configuration](#customizing-gitlab-ciyml) into your project to enable
 staging and canary deployments, and more.
@@ -146,7 +146,7 @@ to override the default chart values by setting `HELM_UPGRADE_EXTRA_ARGS` to `--
 ## Custom Helm chart per environment
 
 You can specify the use of a custom Helm chart per environment by scoping the environment variable
-to the desired environment. See [Limiting environment scopes of variables](../../ci/variables/README.md#limiting-environment-scopes-of-environment-variables).
+to the desired environment. See [Limiting environment scopes of variables](../../ci/variables/README.md#limit-the-environment-scopes-of-environment-variables).
 
 ## Customizing `.gitlab-ci.yml`
 
@@ -179,7 +179,7 @@ into your project and edit it as needed.
 
 For clusters not managed by GitLab, you can customize the namespace in
 `.gitlab-ci.yml` by specifying
-[`environment:kubernetes:namespace`](../../ci/environments.md#configuring-kubernetes-deployments).
+[`environment:kubernetes:namespace`](../../ci/environments/index.md#configuring-kubernetes-deployments).
 For example, the following configuration overrides the namespace used for
 `production` deployments:
 
@@ -227,6 +227,8 @@ If your `.gitlab-ci.yml` extends these Auto DevOps templates and override the `o
 `except` keywords, you must migrate your templates to use the
 [`rules`](../../ci/yaml/README.md#rules) syntax after the
 base template is migrated to use the `rules` syntax.
+For users who cannot migrate just yet, you can alternatively pin your templates to
+the [GitLab 12.10 based templates](https://gitlab.com/gitlab-org/auto-devops-v12-10).
 
 ## PostgreSQL database support
 
@@ -243,22 +245,18 @@ postgres://user:password@postgres-host:postgres-port/postgres-database
 
 CAUTION: **Deprecation**
 The variable `AUTO_DEVOPS_POSTGRES_CHANNEL` that controls default provisioned
-PostgreSQL currently defaults to `1`. This value is scheduled to change to `2` in
-[GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/210499).
+PostgreSQL was changed to `2` in [GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/210499).
+To keep using the old PostgreSQL, set the `AUTO_DEVOPS_POSTGRES_CHANNEL` variable to
+`1`.
 
 The version of the chart used to provision PostgreSQL:
 
+- Is 8.2.1 in GitLab 13.0 and later, but can be set back to 0.7.1 if needed.
+- Can be set to from 0.7.1 to 8.2.1 in GitLab 12.9 and 12.10.
 - Is 0.7.1 in GitLab 12.8 and earlier.
-- Can be set to from 0.7.1 to 8.2.1 in GitLab 12.9 and later.
 
 GitLab encourages users to [migrate their database](upgrading_postgresql.md)
 to the newer PostgreSQL.
-
-To use the new PostgreSQL:
-
-- New projects can set the `AUTO_DEVOPS_POSTGRES_CHANNEL` variable to `2`.
-- Old projects can be upgraded by following the guide to
-  [upgrading PostgresSQL](upgrading_postgresql.md).
 
 ### Using external PostgreSQL database providers
 
@@ -271,10 +269,9 @@ You must define environment-scoped variables for `POSTGRES_ENABLED` and
 `DATABASE_URL` in your project's CI/CD settings:
 
 1. Disable the built-in PostgreSQL installation for the required environments using
-   scoped [environment variables](../../ci/environments.md#scoping-environments-with-specs).
+   scoped [environment variables](../../ci/environments/index.md#scoping-environments-with-specs).
    For this use case, it's likely that only `production` will need to be added to this
-   list. The built-in PostgreSQL setup for Review Apps and staging is sufficient,
-   because a high availability setup is not required.
+   list. The built-in PostgreSQL setup for Review Apps and staging is sufficient.
 
    ![Auto Metrics](img/disable_postgres.png)
 
@@ -303,6 +300,7 @@ applications.
 |-----------------------------------------|------------------------------------|
 | `ADDITIONAL_HOSTS`                      | Fully qualified domain names specified as a comma-separated list that are added to the Ingress hosts. |
 | `<ENVIRONMENT>_ADDITIONAL_HOSTS`        | For a specific environment, the fully qualified domain names specified as a comma-separated list that are added to the Ingress hosts. This takes precedence over `ADDITIONAL_HOSTS`. |
+| `AUTO_DEVOPS_ATOMIC_RELEASE`            | As of GitLab 13.0, Auto DevOps uses [`--atomic`](https://v2.helm.sh/docs/helm/#options-43) for Helm deployments by default. Set this variable to `false` to disable the use of `--atomic` |
 | `AUTO_DEVOPS_BUILD_IMAGE_CNB_ENABLED`   | When set to a non-empty value and no `Dockerfile` is present, Auto Build builds your application using Cloud Native Buildpacks instead of Herokuish. [More details](stages.md#auto-build-using-cloud-native-buildpacks-beta). |
 | `AUTO_DEVOPS_BUILD_IMAGE_EXTRA_ARGS`    | Extra arguments to be passed to the `docker build` command. Note that using quotes won't prevent word splitting. [More details](#passing-arguments-to-docker-build). |
 | `AUTO_DEVOPS_BUILD_IMAGE_FORWARDED_CI_VARIABLES` | A [comma-separated list of CI variable names](#passing-secrets-to-docker-build) to be passed to the `docker build` command as secrets. |
@@ -318,7 +316,7 @@ applications.
 | `CANARY_REPLICAS`                       | Number of canary replicas to deploy for [Canary Deployments](../../user/project/canary_deployments.md). Defaults to 1. |
 | `HELM_RELEASE_NAME`                     | From GitLab 12.1, allows the `helm` release name to be overridden. Can be used to assign unique release names when deploying multiple projects to a single namespace. |
 | `HELM_UPGRADE_VALUES_FILE`              | From GitLab 12.6, allows the `helm upgrade` values file to be overridden. Defaults to `.gitlab/auto-deploy-values.yaml`. |
-| `HELM_UPGRADE_EXTRA_ARGS`               | From GitLab 11.11, allows extra arguments in `helm` commands when deploying the application. Note that using quotes won't prevent word splitting. **Tip:** you can use this variable to [customize the Auto Deploy Helm chart](#custom-helm-chart) by applying custom override values with `--values my-values.yaml`. |
+| `HELM_UPGRADE_EXTRA_ARGS`               | From GitLab 11.11, allows extra arguments in `helm` commands when deploying the application. Note that using quotes won't prevent word splitting. |
 | `INCREMENTAL_ROLLOUT_MODE`              | From GitLab 11.4, if present, can be used to enable an [incremental rollout](#incremental-rollout-to-production-premium) of your application for the production environment. Set to `manual` for manual deployment jobs or `timed` for automatic rollout deployments with a 5 minute delay each one. |
 | `K8S_SECRET_*`                          | From GitLab 11.7, any variable prefixed with [`K8S_SECRET_`](#application-secret-variables) will be made available by Auto DevOps as environment variables to the deployed application. |
 | `KUBE_INGRESS_BASE_DOMAIN`              | From GitLab 11.8, can be used to set a domain per cluster. See [cluster domains](../../user/project/clusters/index.md#base-domain) for more information. |
@@ -329,9 +327,9 @@ applications.
 | `STAGING_ENABLED`                       | From GitLab 10.8, used to define a [deploy policy for staging and production environments](#deploy-policy-for-staging-and-production-environments). |
 
 TIP: **Tip:**
-Set up the replica variables using a
-[project variable](../../ci/variables/README.md#gitlab-cicd-environment-variables)
-and scale your application by only redeploying it.
+After you set up your replica variables using a
+[project variable](../../ci/variables/README.md#gitlab-cicd-environment-variables),
+you can scale your application by redeploying it.
 
 CAUTION: **Caution:**
 You should *not* scale your application using Kubernetes directly. This can
@@ -350,15 +348,7 @@ The following table lists variables related to the database.
 | `POSTGRES_USER`                         | The PostgreSQL user. Defaults to `user`. Set it to use a custom username. |
 | `POSTGRES_PASSWORD`                     | The PostgreSQL password. Defaults to `testing-password`. Set it to use a custom password. |
 | `POSTGRES_DB`                           | The PostgreSQL database name. Defaults to the value of [`$CI_ENVIRONMENT_SLUG`](../../ci/variables/README.md#predefined-environment-variables). Set it to use a custom database name. |
-| `POSTGRES_VERSION`                      | Tag for the [`postgres` Docker image](https://hub.docker.com/_/postgres) to use. Defaults to `9.6.2`. |
-
-### Security tools
-
-The following table lists variables related to security tools.
-
-| **Variable**                            | **Description**                    |
-|-----------------------------------------|------------------------------------|
-| `SAST_CONFIDENCE_LEVEL`                 | Minimum confidence level of security issues you want to be reported; `1` for Low, `2` for Medium, `3` for High. Defaults to `3`. |
+| `POSTGRES_VERSION`                      | Tag for the [`postgres` Docker image](https://hub.docker.com/_/postgres) to use. Defaults to `9.6.16` for tests and deployments as of GitLab 13.0 (previously `9.6.2`). If `AUTO_DEVOPS_POSTGRES_CHANNEL` is set to `1`, deployments will use the default version `9.6.2`. |
 
 ### Disable jobs
 
@@ -544,7 +534,7 @@ required to go from `10%` to `100%`, you can jump to whatever job you want.
 You can also scale down by running a lower percentage job, just before hitting
 `100%`. Once you get to `100%`, you can't scale down, and you'd have to roll
 back by redeploying the old version using the
-[rollback button](../../ci/environments.md#retrying-and-rolling-back) in the
+[rollback button](../../ci/environments/index.md#retrying-and-rolling-back) in the
 environment page.
 
 Below, you can see how the pipeline will look if the rollout or staging

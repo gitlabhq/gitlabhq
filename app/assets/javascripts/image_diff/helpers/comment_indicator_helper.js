@@ -32,9 +32,7 @@ export function removeCommentIndicator(imageFrameEl) {
     commentIndicatorEl.remove();
   }
 
-  return Object.assign({}, meta, {
-    removed: willRemove,
-  });
+  return { ...meta, removed: willRemove };
 }
 
 export function showCommentIndicator(imageFrameEl, coordinate) {

@@ -27,6 +27,7 @@ module API
                  coerce_with: Validations::Types::LabelsList.coerce,
                  desc: 'Comma-separated list of label names'
         optional :with_labels_details, type: Boolean, desc: 'Return titles of labels and other details', default: false
+        optional :with_merge_status_recheck, type: Boolean, desc: 'Request that stale merge statuses be rechecked asynchronously', default: false
         optional :created_after, type: DateTime, desc: 'Return merge requests created after the specified time'
         optional :created_before, type: DateTime, desc: 'Return merge requests created before the specified time'
         optional :updated_after, type: DateTime, desc: 'Return merge requests updated after the specified time'

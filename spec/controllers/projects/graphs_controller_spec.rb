@@ -41,6 +41,26 @@ describe Projects::GraphsController do
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to render_template(:charts)
       end
+
+      it 'sets the daily coverage options' do
+        Timecop.freeze do
+          get(:charts, params: { namespace_id: project.namespace.path, project_id: project.path, id: 'master' })
+
+          expect(assigns[:daily_coverage_options]).to eq(
+            base_params: {
+              start_date: Time.current.to_date - 90.days,
+              end_date: Time.current.to_date,
+              ref_path: project.repository.expand_ref('master'),
+              param_type: 'coverage'
+            },
+            download_path: namespace_project_ci_daily_build_group_report_results_path(
+              namespace_id: project.namespace,
+              project_id: project,
+              format: :csv
+            )
+          )
+        end
+      end
     end
 
     context 'when languages were previously detected' do

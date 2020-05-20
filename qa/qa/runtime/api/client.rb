@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'airborne'
-
 module QA
   module Runtime
     module API

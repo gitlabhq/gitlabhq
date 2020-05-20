@@ -11,7 +11,7 @@ type: reference, howto
 The security configuration page displays the configuration state of each of the security
 features and can be accessed through a project's sidebar nav.
 
-![Screenshot of security configuration page](../img/security_configuration_page_v12_9.png)
+![Screenshot of security configuration page](../img/security_configuration_page_v13_1.png)
 
 The page uses the project's latest default branch [CI pipeline](../../../ci/pipelines/index.md) to determine the configuration
 state of each feature. If a job with the expected security report artifact exists in the pipeline,

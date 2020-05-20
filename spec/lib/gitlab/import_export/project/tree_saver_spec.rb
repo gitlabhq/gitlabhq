@@ -168,6 +168,28 @@ describe Gitlab::ImportExport::Project::TreeSaver do
         it 'has issue resource label events' do
           expect(subject.first['resource_label_events']).not_to be_empty
         end
+
+        it 'saves the issue designs correctly' do
+          expect(subject.first['designs'].size).to eq(1)
+        end
+
+        it 'saves the issue design notes correctly' do
+          expect(subject.first['designs'].first['notes']).not_to be_empty
+        end
+
+        it 'saves the issue design versions correctly' do
+          issue_json = subject.first
+          actions = issue_json['design_versions'].flat_map { |v| v['actions'] }
+
+          expect(issue_json['design_versions'].size).to eq(2)
+          issue_json['design_versions'].each do |version|
+            expect(version['author_id']).to be_kind_of(Integer)
+          end
+          expect(actions.size).to eq(2)
+          actions.each do |action|
+            expect(action['design']).to be_present
+          end
+        end
       end
 
       context 'with ci_pipelines' do
@@ -441,6 +463,9 @@ describe Gitlab::ImportExport::Project::TreeSaver do
 
     board = create(:board, project: project, name: 'TestBoard')
     create(:list, board: board, position: 0, label: project_label)
+
+    design = create(:design, :with_file, versions_count: 2, issue: issue)
+    create(:diff_note_on_design, noteable: design, project: project, author: user)
 
     project
   end

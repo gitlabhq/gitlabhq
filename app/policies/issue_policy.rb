@@ -15,6 +15,9 @@ class IssuePolicy < IssuablePolicy
   desc "Issue is confidential"
   condition(:confidential, scope: :subject) { @subject.confidential? }
 
+  desc "Issue has moved"
+  condition(:moved) { @subject.moved? }
+
   rule { confidential & ~can_read_confidential }.policy do
     prevent(*create_read_update_admin_destroy(:issue))
     prevent :read_issue_iid
@@ -25,6 +28,15 @@ class IssuePolicy < IssuablePolicy
   rule { locked }.policy do
     prevent :reopen_issue
   end
-end
 
-IssuePolicy.prepend_if_ee('::EE::IssuePolicy')
+  rule { ~can?(:read_issue) }.policy do
+    prevent :read_design
+    prevent :create_design
+    prevent :destroy_design
+  end
+
+  rule { locked | moved }.policy do
+    prevent :create_design
+    prevent :destroy_design
+  end
+end

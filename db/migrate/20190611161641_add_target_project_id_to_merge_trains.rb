@@ -5,10 +5,14 @@ class AddTargetProjectIdToMergeTrains < ActiveRecord::Migration[5.1]
 
   DOWNTIME = false
 
+  # rubocop:disable Rails/NotNullColumn
+  # rubocop:disable Migration/AddReference
+  # rubocop:disable Migration/AddLimitToTextColumns
   def change
-    # rubocop:disable Rails/NotNullColumn, Migration/AddReference
     add_reference :merge_trains, :target_project, null: false, index: true, foreign_key: { on_delete: :cascade, to_table: :projects }, type: :integer
     add_column :merge_trains, :target_branch, :text, null: false
-    # rubocop:enable Rails/NotNullColumn, Migration/AddReference
   end
+  # rubocop:enable Migration/AddLimitToTextColumns
+  # rubocop:enable Migration/AddReference
+  # rubocop:enable Rails/NotNullColumn
 end

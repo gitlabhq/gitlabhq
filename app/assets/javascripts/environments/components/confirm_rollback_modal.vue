@@ -3,7 +3,7 @@
  * Render modal to confirm rollback/redeploy.
  */
 
-import { escape as esc } from 'lodash';
+import { escape } from 'lodash';
 import { GlModal } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
 
@@ -30,7 +30,7 @@ export default {
         : s__('Environments|Rollback environment %{name}?');
 
       return sprintf(title, {
-        name: esc(this.environment.name),
+        name: escape(this.environment.name),
       });
     },
 
@@ -50,10 +50,10 @@ export default {
     },
 
     modalText() {
-      const linkStart = `<a class="commit-sha mr-0" href="${esc(this.commitUrl)}">`;
-      const commitId = esc(this.commitShortSha);
+      const linkStart = `<a class="commit-sha mr-0" href="${escape(this.commitUrl)}">`;
+      const commitId = escape(this.commitShortSha);
       const linkEnd = '</a>';
-      const name = esc(this.name);
+      const name = escape(this.name);
       const body = this.environment.isLastDeployment
         ? s__(
             'Environments|This action will relaunch the job for commit %{linkStart}%{commitId}%{linkEnd}, putting the environment in a previous version. Are you sure you want to continue?',

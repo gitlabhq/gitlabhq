@@ -43,7 +43,7 @@ queue_requests false
 # accepted protocols.
 bind 'unix:///home/git/gitlab_actioncable.socket'
 
-workers 2
+workers 1
 
 require_relative "/home/git/gitlab/lib/gitlab/cluster/lifecycle_events"
 

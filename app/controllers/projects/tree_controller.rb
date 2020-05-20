@@ -16,7 +16,7 @@ class Projects::TreeController < Projects::ApplicationController
   before_action :authorize_edit_tree!, only: [:create_dir]
 
   before_action only: [:show] do
-    push_frontend_feature_flag(:vue_file_list_lfs_badge)
+    push_frontend_feature_flag(:vue_file_list_lfs_badge, default_enabled: true)
   end
 
   def show

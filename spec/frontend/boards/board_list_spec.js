@@ -64,7 +64,7 @@ describe('Board list component', () => {
   let getIssues;
   function generateIssues(compWrapper) {
     for (let i = 1; i < 20; i += 1) {
-      const issue = Object.assign({}, compWrapper.list.issues[0]);
+      const issue = { ...compWrapper.list.issues[0] };
       issue.id += i;
       compWrapper.list.issues.push(issue);
     }

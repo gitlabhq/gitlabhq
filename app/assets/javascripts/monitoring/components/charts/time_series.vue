@@ -6,7 +6,7 @@ import dateFormat from 'dateformat';
 import { s__, __ } from '~/locale';
 import { getSvgIconPathContent } from '~/lib/utils/icon_utils';
 import Icon from '~/vue_shared/components/icon.vue';
-import { chartHeight, lineTypes, lineWidths, dateFormats } from '../../constants';
+import { panelTypes, chartHeight, lineTypes, lineWidths, dateFormats } from '../../constants';
 import { getYAxisOptions, getChartGrid, getTooltipFormatter } from './options';
 import { annotationsYAxis, generateAnnotationsSeries } from './annotations';
 import { makeDataSeries } from '~/helpers/monitor_helper';
@@ -64,10 +64,10 @@ export default {
       required: false,
       default: '',
     },
-    singleEmbed: {
-      type: Boolean,
+    height: {
+      type: Number,
       required: false,
-      default: false,
+      default: chartHeight,
     },
     thresholds: {
       type: Array,
@@ -100,7 +100,6 @@ export default {
         sha: '',
       },
       width: 0,
-      height: chartHeight,
       svgs: {},
       primaryColor: null,
       throttledDatazoom: null,
@@ -211,8 +210,8 @@ export default {
     },
     glChartComponent() {
       const chartTypes = {
-        'area-chart': GlAreaChart,
-        'line-chart': GlLineChart,
+        [panelTypes.AREA_CHART]: GlAreaChart,
+        [panelTypes.LINE_CHART]: GlLineChart,
       };
       return chartTypes[this.graphData.type] || GlAreaChart;
     },

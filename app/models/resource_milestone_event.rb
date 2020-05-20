@@ -2,13 +2,10 @@
 
 class ResourceMilestoneEvent < ResourceEvent
   include IgnorableColumns
+  include IssueResourceEvent
+  include MergeRequestResourceEvent
 
-  belongs_to :issue
-  belongs_to :merge_request
   belongs_to :milestone
-
-  scope :by_issue, ->(issue) { where(issue_id: issue.id) }
-  scope :by_merge_request, ->(merge_request) { where(merge_request_id: merge_request.id) }
 
   validate :exactly_one_issuable
 
@@ -24,5 +21,9 @@ class ResourceMilestoneEvent < ResourceEvent
 
   def self.issuable_attrs
     %i(issue merge_request).freeze
+  end
+
+  def milestone_title
+    milestone&.title
   end
 end

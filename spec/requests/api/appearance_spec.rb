@@ -31,6 +31,7 @@ describe API::Appearance, 'Appearance' do
         expect(json_response['message_background_color']).to eq('#E75E40')
         expect(json_response['message_font_color']).to eq('#FFFFFF')
         expect(json_response['new_project_guidelines']).to eq('')
+        expect(json_response['profile_image_guidelines']).to eq('')
         expect(json_response['title']).to eq('')
       end
     end
@@ -51,7 +52,8 @@ describe API::Appearance, 'Appearance' do
           put api("/application/appearance", admin), params: {
             title: "GitLab Test Instance",
             description: "gitlab-test.example.com",
-            new_project_guidelines: "Please read the FAQs for help."
+            new_project_guidelines: "Please read the FAQs for help.",
+            profile_image_guidelines: "Custom profile image guidelines"
           }
 
           expect(response).to have_gitlab_http_status(:ok)
@@ -66,6 +68,7 @@ describe API::Appearance, 'Appearance' do
           expect(json_response['message_background_color']).to eq('#E75E40')
           expect(json_response['message_font_color']).to eq('#FFFFFF')
           expect(json_response['new_project_guidelines']).to eq('Please read the FAQs for help.')
+          expect(json_response['profile_image_guidelines']).to eq('Custom profile image guidelines')
           expect(json_response['title']).to eq('GitLab Test Instance')
         end
       end

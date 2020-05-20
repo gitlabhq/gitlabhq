@@ -99,6 +99,29 @@ header. Such emails don't create comments on issues or merge requests.
 Sentry payloads sent to GitLab have a 1 MB maximum limit, both for security reasons
 and to limit memory consumption.
 
+## Max offset allowed via REST API for offset-based pagination
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34565) in GitLab 13.0.
+
+When using offset-based pagination in the REST API, there is a limit to the maximum
+requested offset into the set of results. This limit is only applied to endpoints that
+support keyset-based pagination. More information about pagination options can be
+found in the [API docs section on pagination](../api/README.md#pagination).
+
+To set this limit on a self-managed installation, run the following in the
+[GitLab Rails console](troubleshooting/debug.md#starting-a-rails-console-session):
+
+```ruby
+# If limits don't exist for the default plan, you can create one with:
+# Plan.default.create_limits!
+
+Plan.default.limits.update!(offset_pagination_limit: 10000)
+```
+
+- **Default offset pagination limit:** 50000
+
+NOTE: **Note:** Set the limit to `0` to disable it.
+
 ## CI/CD limits
 
 ### Number of jobs in active pipelines
@@ -180,7 +203,7 @@ Plan.default.limits.update!(ci_pipeline_schedules: 100)
 
 ### Incident Management inbound alert limits
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14932) in GitLab 12.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17859) in GitLab 12.5.
 
 Limiting inbound alerts for an incident reduces the number of alerts (issues)
 that can be created within a period of time, which can help prevent overloading
@@ -192,9 +215,15 @@ alerts in the following ways:
 
 ### Prometheus Alert JSON payloads
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14929) in GitLab 12.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/19940) in GitLab 12.6.
 
 Prometheus alert payloads sent to the `notify.json` endpoint are limited to 1 MB in size.
+
+### Generic Alert JSON payloads
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/16441) in GitLab 12.4.
+
+Alert payloads sent to the `notify.json` endpoint are limited to 1 MB in size.
 
 ## Environment data on Deploy Boards
 
@@ -232,6 +261,10 @@ NOTE: **Note:** Set the limit to `0` to disable it.
 ## Wiki limits
 
 - [Length restrictions for file and directory names](../user/project/wiki/index.md#length-restrictions-for-file-and-directory-names).
+
+## Snippets limits
+
+See the [documentation on Snippets settings](snippets/index.md).
 
 ## Push Event Limits
 

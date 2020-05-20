@@ -24,17 +24,22 @@ module Gitlab
     end
 
     def ensure_deadline_not_exceeded!
+      return unless enabled?
       return unless request_deadline
       return if Gitlab::Metrics::System.real_time < request_deadline
 
       raise RequestDeadlineExceeded,
-            "Request takes longer than #{max_request_duration_seconds}"
+            "Request takes longer than #{max_request_duration_seconds} seconds"
     end
 
     private
 
     def max_request_duration_seconds
       Settings.gitlab.max_request_duration_seconds
+    end
+
+    def enabled?
+      !Rails.env.test?
     end
   end
 end

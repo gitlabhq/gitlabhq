@@ -1,9 +1,11 @@
 $item-path-max-width: 160px;
 $item-milestone-max-width: 120px;
 $item-weight-max-width: 48px;
+$item-remove-button-space: 42px;
 
 .related-items-list {
   padding: $gl-padding-4;
+  padding-right: $gl-padding-6;
 
   &,
   .list-item:last-child {
@@ -11,15 +13,15 @@ $item-weight-max-width: 48px;
   }
 }
 
-.sortable-link {
-  max-width: 85%;
-}
-
 .related-items-tree {
   .card-header {
     .gl-label {
       line-height: $gl-line-height;
     }
+  }
+
+  .sortable-link {
+    white-space: normal;
   }
 }
 
@@ -48,17 +50,12 @@ $item-weight-max-width: 48px;
     cursor: help;
   }
 
-  .issue-token-state-icon-open,
-  .issue-token-state-icon-closed {
-    margin-right: $gl-padding-4;
-  }
-
   .confidential-icon {
     color: $orange-600;
   }
 
   .item-title-wrapper {
-    max-width: 100%;
+    max-width: calc(100% - #{$item-remove-button-space});
   }
 
   .item-title {
@@ -67,11 +64,6 @@ $item-weight-max-width: 48px;
 
     &.mr-title {
       font-weight: $gl-font-weight-bold;
-    }
-
-    .issue-token-state-icon-open,
-    .issue-token-state-icon-closed {
-      display: none;
     }
 
     .sortable-link {
@@ -90,17 +82,14 @@ $item-weight-max-width: 48px;
     white-space: nowrap;
   }
 
-  @include media-breakpoint-down(lg) {
-    .issue-count-badge {
-      padding-left: 0;
-    }
+  .health-label-short {
+    display: none;
   }
 }
 
 .item-body,
 .card-header {
   .health-label-short {
-    display: initial;
     max-width: 0;
   }
 
@@ -132,6 +121,12 @@ $item-weight-max-width: 48px;
   .bullet-separator {
     font-size: 9px;
     color: $gray-400;
+  }
+}
+
+.card-header {
+  .health-label-short {
+    display: initial;
   }
 }
 
@@ -227,25 +222,28 @@ $item-weight-max-width: 48px;
     font-weight: $gl-font-weight-bold;
     max-width: $item-path-max-width;
   }
-
-  .issue-token-state-icon-open,
-  .issue-token-state-icon-closed {
-    display: block;
-  }
 }
 
 .btn-item-remove {
   position: absolute;
-  right: 0;
   top: $gl-padding-4 / 2;
+  right: 0;
   padding: $gl-padding-4;
   margin-right: $gl-padding-4 / 2;
   line-height: 0;
   border-color: transparent;
   color: $gl-text-color-secondary;
 
+  .related-items-tree & {
+    position: relative;
+    top: initial;
+    padding: $btn-sm-side-margin;
+    margin-right: initial;
+  }
+
   &:hover {
     color: $gl-text-color;
+    border-color: $border-color;
   }
 }
 
@@ -269,7 +267,6 @@ $item-weight-max-width: 48px;
     max-width: 90%;
   }
 
-  .item-body,
   .card-header {
     .health-label-short {
       max-width: 30px;
@@ -279,6 +276,15 @@ $item-weight-max-width: 48px;
 
 /* Small devices (landscape phones, 768px and up) */
 @include media-breakpoint-up(md) {
+  .item-body .item-contents {
+    max-width: 95%;
+  }
+
+  .related-items-tree .item-contents,
+  .item-body .item-title {
+    max-width: 100%;
+  }
+
   .sortable-link {
     text-overflow: ellipsis;
     overflow: hidden;
@@ -290,27 +296,8 @@ $item-weight-max-width: 48px;
     .item-contents {
       min-width: 0;
     }
-
-    .item-title {
-      flex-basis: unset;
-      // 95% because we compensate
-      // for remove button which is
-      // positioned absolutely
-      width: 95%;
-    }
-
-    .btn-item-remove {
-      order: 1;
-    }
   }
 
-  .item-meta {
-    .item-meta-child {
-      flex-basis: unset;
-    }
-  }
-
-  .item-body,
   .card-header {
     .health-label-short {
       max-width: 60px;
@@ -330,7 +317,6 @@ $item-weight-max-width: 48px;
     }
   }
 
-  .item-body,
   .card-header {
     .health-label-short {
       max-width: 100px;
@@ -346,30 +332,11 @@ $item-weight-max-width: 48px;
 @include media-breakpoint-up(xl) {
   .item-body {
     .item-title {
-      min-width: 0;
       width: auto;
       flex-basis: auto;
       flex-shrink: 1;
       font-weight: $gl-font-weight-normal;
-
-      .issue-token-state-icon-open,
-      .issue-token-state-icon-closed {
-        display: block;
-        margin-right: $gl-padding-8;
-      }
     }
-
-    .item-title-wrapper {
-      max-width: calc(100% - 500px);
-    }
-
-    .item-info-area {
-      flex-basis: auto;
-    }
-  }
-
-  .health-label-short {
-    display: initial;
   }
 
   .health-label-long {
@@ -380,16 +347,7 @@ $item-weight-max-width: 48px;
     overflow: hidden;
   }
 
-  .item-meta {
-    flex: 1;
-  }
-
   .item-assignees {
-    .avatar {
-      height: $gl-padding-24;
-      width: $gl-padding-24;
-    }
-
     .avatar-counter {
       height: $gl-padding-24;
       min-width: $gl-padding-24;
@@ -401,12 +359,8 @@ $item-weight-max-width: 48px;
   .btn-item-remove {
     position: relative;
     top: initial;
-    right: 0;
     padding: $btn-sm-side-margin;
-
-    &:hover {
-      border-color: $border-color;
-    }
+    margin-right: $gl-padding-4 / 2;
   }
 
   .sortable-link {
@@ -415,20 +369,13 @@ $item-weight-max-width: 48px;
 }
 
 @media only screen and (min-width: 1500px) {
-  .card-header,
-  .item-body {
+  .card-header {
     .health-label-short {
       display: none;
     }
 
     .health-label-long {
       display: initial;
-    }
-  }
-
-  .item-body {
-    .item-title-wrapper {
-      max-width: calc(100% - 640px);
     }
   }
 }

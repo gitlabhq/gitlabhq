@@ -3,14 +3,13 @@
 require 'spec_helper'
 
 describe 'User activates Jira', :js do
-  let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  include_context 'project service activation'
 
   let(:url) { 'http://jira.example.com' }
   let(:test_url) { 'http://jira.example.com/rest/api/2/serverInfo' }
 
-  def fill_form(disabled: false)
-    find('input[name="service[active]"] + button').click if disabled
+  def fill_form(disable: false)
+    click_active_toggle if disable
 
     fill_in 'service_url', with: url
     fill_in 'service_username', with: 'username'
@@ -18,23 +17,15 @@ describe 'User activates Jira', :js do
     fill_in 'service_jira_issue_transition_id', with: '25'
   end
 
-  before do
-    project.add_maintainer(user)
-    sign_in(user)
-
-    visit project_settings_integrations_path(project)
-  end
-
   describe 'user sets and activates Jira Service' do
     context 'when Jira connection test succeeds' do
       before do
         server_info = { key: 'value' }.to_json
-        WebMock.stub_request(:get, test_url).with(basic_auth: %w(username password)).to_return(body: server_info)
+        stub_request(:get, test_url).with(basic_auth: %w(username password)).to_return(body: server_info)
 
-        click_link('Jira')
+        visit_project_integration('Jira')
         fill_form
-        click_button('Test settings and save changes')
-        wait_for_requests
+        click_test_integration
       end
 
       it 'activates the Jira service' do
@@ -51,10 +42,10 @@ describe 'User activates Jira', :js do
 
     context 'when Jira connection test fails' do
       it 'shows errors when some required fields are not filled in' do
-        click_link('Jira')
+        visit_project_integration('Jira')
 
         fill_in 'service_password', with: 'password'
-        click_button('Test settings and save changes')
+        click_test_integration
 
         page.within('.service-settings') do
           expect(page).to have_content('This field is required.')
@@ -62,19 +53,12 @@ describe 'User activates Jira', :js do
       end
 
       it 'activates the Jira service' do
-        WebMock.stub_request(:get, test_url).with(basic_auth: %w(username password))
+        stub_request(:get, test_url).with(basic_auth: %w(username password))
           .to_raise(JIRA::HTTPError.new(double(message: 'message')))
 
-        click_link('Jira')
+        visit_project_integration('Jira')
         fill_form
-        click_button('Test settings and save changes')
-        wait_for_requests
-
-        expect(find('.flash-container-page')).to have_content 'Test failed. message'
-        expect(find('.flash-container-page')).to have_content 'Save anyway'
-
-        find('.flash-alert .flash-action').click
-        wait_for_requests
+        click_test_then_save_integration
 
         expect(page).to have_content('Jira activated.')
         expect(current_path).to eq(project_settings_integrations_path(project))
@@ -84,8 +68,8 @@ describe 'User activates Jira', :js do
 
   describe 'user disables the Jira Service' do
     before do
-      click_link('Jira')
-      fill_form(disabled: true)
+      visit_project_integration('Jira')
+      fill_form(disable: true)
       click_button('Save changes')
     end
 

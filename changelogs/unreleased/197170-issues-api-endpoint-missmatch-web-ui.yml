@@ -1,0 +1,5 @@
+---
+title: Add non_archived argument to issues API endpoint
+merge_request: 30381
+author:
+type: added

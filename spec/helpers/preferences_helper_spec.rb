@@ -123,7 +123,7 @@ describe PreferencesHelper do
   describe '#language_choices' do
     it 'returns an array of all available languages' do
       expect(helper.language_choices).to be_an(Array)
-      expect(helper.language_choices.map(&:second)).to eq(Gitlab::I18n.available_locales)
+      expect(helper.language_choices.map(&:first)).to eq(Gitlab::I18n::AVAILABLE_LANGUAGES.values.sort)
     end
   end
 

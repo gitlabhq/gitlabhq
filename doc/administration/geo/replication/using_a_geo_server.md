@@ -1,4 +1,4 @@
-[//]: # (Please update EE::GitLab::GeoGitAccess::GEO_SERVER_DOCS_URL if this file is moved)
+<!-- Please update EE::GitLab::GeoGitAccess::GEO_SERVER_DOCS_URL if this file is moved) -->
 
 # Using a Geo Server **(PREMIUM ONLY)**
 

@@ -12,7 +12,9 @@ class AddTimeTrackingLimitToHoursToApplicationSettings < ActiveRecord::Migration
   disable_ddl_transaction!
 
   def up
+    # rubocop:disable Migration/AddColumnWithDefault
     add_column_with_default :application_settings, :time_tracking_limit_to_hours, :boolean, default: false, allow_null: false
+    # rubocop:enable Migration/AddColumnWithDefault
   end
 
   def down

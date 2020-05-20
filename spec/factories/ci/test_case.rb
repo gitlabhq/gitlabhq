@@ -16,7 +16,7 @@ FactoryBot.define do
       system_output { "Failure/Error: is_expected.to eq(300) expected: 300 got: -100" }
     end
 
-    trait :with_attachment do
+    trait :failed_with_attachment do
       status { Gitlab::Ci::Reports::TestCase::STATUS_FAILED }
       attachment { "some/path.png" }
     end

@@ -1,0 +1,6 @@
+---
+title: Update auto-deploy-image to v0.15.0, with an upgraded PostgreSQL chart used
+  by default for Auto DevOps deployments
+merge_request: 31799
+author:
+type: changed

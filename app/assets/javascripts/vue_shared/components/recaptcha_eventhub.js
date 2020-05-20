@@ -1,9 +1,9 @@
-import Vue from 'vue';
+import createEventHub from '~/helpers/event_hub_factory';
 
 // see recaptcha_tags in app/views/shared/_recaptcha_form.html.haml
 export const callbackName = 'recaptchaDialogCallback';
 
-export const eventHub = new Vue();
+export const eventHub = createEventHub();
 
 const throwDuplicateCallbackError = () => {
   throw new Error(`${callbackName} is already defined!`);

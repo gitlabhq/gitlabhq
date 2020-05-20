@@ -1,21 +1,24 @@
-# X509 signatures
+# X.509 signatures **(CORE ONLY)**
 
-When [signing commits with x509](../user/project/repository/x509_signed_commits/index.md)
-the trust anchor might change and the signatures stored within the database have
-to be updated.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/122159) in GitLab 12.10.
 
-## Update all x509 signatures
+When [signing commits with X.509](../user/project/repository/x509_signed_commits/index.md),
+the trust anchor might change and the signatures stored within the database must be updated.
 
-This task loops through all X509 signed commits and updates their verification
-based on current certificate store.
+## Update all X.509 signatures
 
-**Omnibus Installation**
+This task loops through all X.509 signed commits and updates their verification based on current
+certificate store.
+
+To update all X.509 signatures, run:
+
+**Omnibus Installations:**
 
 ```shell
 sudo gitlab-rake gitlab:x509:update_signatures
 ```
 
-**Source Installation**
+**Source Installations:**
 
 ```shell
 sudo -u git -H bundle exec rake gitlab:x509:update_signatures RAILS_ENV=production

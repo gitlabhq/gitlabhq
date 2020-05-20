@@ -83,6 +83,9 @@ Or:
 1. Click the notification dropdown, marked with a bell icon.
 1. Select the desired [notification level](#notification-levels).
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For a demonstration of how to be notified when a new release is available, see [Notification for releases](https://www.youtube.com/watch?v=qyeNkGgqmH4).
+
 #### Group notifications
 
 You can select a notification level and email address for each group.
@@ -208,17 +211,17 @@ The following table lists all GitLab-specific email headers:
 
 | Header                      | Description                                                             |
 |------------------------------------|-------------------------------------------------------------------------|
-| X-GitLab-Group-Id **(PREMIUM)**   | The group's ID. Only present on notification emails for epics.         |
-| X-GitLab-Group-Path **(PREMIUM)** | The group's path. Only present on notification emails for epics.       |
-| X-GitLab-Project                   | The name of the project the notification belongs to.                     |
-| X-GitLab-Project-Id                | The project's ID.                                                   |
-| X-GitLab-Project-Path              | The project's path.                                                 |
-| X-GitLab-(Resource)-ID             | The ID of the resource the notification is for. The resource, for example, can be `Issue`, `MergeRequest`, `Commit`, or another such resource. |
-| X-GitLab-Discussion-ID             | The ID of the thread the comment belongs to, in notification emails for comments.    |
-| X-GitLab-Pipeline-Id               | The ID of the pipeline the notification is for, in notification emails for pipelines. |
-| X-GitLab-Reply-Key                 | A unique token to support reply by email.                                |
-| X-GitLab-NotificationReason        | The reason for the notification. This can be `mentioned`, `assigned`, or `own_activity`. |
-| List-Id                            | The path of the project in an RFC 2919 mailing list identifier. This is useful for email organization with filters, for example. |
+| `X-GitLab-Group-Id` **(PREMIUM)**    | The group's ID. Only present on notification emails for epics.         |
+| `X-GitLab-Group-Path` **(PREMIUM)**  | The group's path. Only present on notification emails for epics.       |
+| `X-GitLab-Project`                   | The name of the project the notification belongs to.                     |
+| `X-GitLab-Project-Id`                | The project's ID.                                                   |
+| `X-GitLab-Project-Path`              | The project's path.                                                 |
+| `X-GitLab-(Resource)-ID`             | The ID of the resource the notification is for. The resource, for example, can be `Issue`, `MergeRequest`, `Commit`, or another such resource. |
+| `X-GitLab-Discussion-ID`             | The ID of the thread the comment belongs to, in notification emails for comments.    |
+| `X-GitLab-Pipeline-Id`               | The ID of the pipeline the notification is for, in notification emails for pipelines. |
+| `X-GitLab-Reply-Key`                 | A unique token to support reply by email.                                |
+| `X-GitLab-NotificationReason`        | The reason for the notification. This can be `mentioned`, `assigned`, or `own_activity`. |
+| `List-Id`                            | The path of the project in an RFC 2919 mailing list identifier. This is useful for email organization with filters, for example. |
 
 ### X-GitLab-NotificationReason
 

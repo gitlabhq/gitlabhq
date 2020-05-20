@@ -8,7 +8,7 @@ class AddActiveJobsLimitToPlans < ActiveRecord::Migration[5.2]
   disable_ddl_transaction!
 
   def up
-    add_column_with_default :plans, :active_jobs_limit, :integer, default: 0
+    add_column_with_default :plans, :active_jobs_limit, :integer, default: 0 # rubocop:disable Migration/AddColumnWithDefault
   end
 
   def down

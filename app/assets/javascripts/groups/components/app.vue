@@ -111,8 +111,8 @@ export default {
       const filterGroupsBy = getParameterByName('filter') || null;
 
       this.isLoading = true;
-      // eslint-disable-next-line promise/catch-or-return
-      this.fetchGroups({
+
+      return this.fetchGroups({
         page,
         filterGroupsBy,
         sortBy,
@@ -126,8 +126,7 @@ export default {
     fetchPage(page, filterGroupsBy, sortBy, archived) {
       this.isLoading = true;
 
-      // eslint-disable-next-line promise/catch-or-return
-      this.fetchGroups({
+      return this.fetchGroups({
         page,
         filterGroupsBy,
         sortBy,

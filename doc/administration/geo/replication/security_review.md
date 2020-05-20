@@ -73,7 +73,7 @@ from [owasp.org](https://owasp.org/).
 - Nothing Geo-specific. Any user where `admin: true` is set in the database is
   considered an admin with super-user privileges.
 - See also: [more granular access control](https://gitlab.com/gitlab-org/gitlab-foss/issues/32730)
-  (not geo-specific)
+  (not Geo-specific).
 - Much of Geo’s integration (database replication, for instance) must be
   configured with the application, typically by system administrators.
 
@@ -177,7 +177,7 @@ from [owasp.org](https://owasp.org/).
 
 ### What databases and application servers support the application?
 
-- PostgreSQL >= 9.6, Redis, Sidekiq, Unicorn.
+- PostgreSQL >= 11, Redis, Sidekiq, Puma.
 
 ### How will database connection strings, encryption keys, and other sensitive components be stored, accessed, and protected from unauthorized detection?
 

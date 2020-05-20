@@ -83,7 +83,7 @@ at Super User also has relevant information.
 **Omnibus Trusted Chain**
 
 [Install the self signed certificate or custom certificate authorities](https://docs.gitlab.com/omnibus/common_installation_problems/README.html#using-self-signed-certificate-or-custom-certificate-authorities)
-in to GitLab Omnibus.
+in to Omnibus GitLab.
 
 It is enough to concatenate the certificate to the main trusted certificate
 however it may be overwritten during upgrades:

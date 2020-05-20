@@ -1,5 +1,9 @@
 - page_title _("Repository Analytics")
 
+.mb-3
+  %h3
+    = _("Repository Analytics")
+
 .repo-charts
   %h4.sub-header
     = _("Programming languages used in this repository")
@@ -8,6 +12,23 @@
     = _("Measured in bytes of code. Excludes generated and vendored code.")
 
   #js-languages-chart{ data: { chart_data: @languages.to_json.html_safe } }
+
+- if defined?(@daily_coverage_options)
+  .repo-charts.my-5
+    .sub-header-block.border-top
+    .d-flex.justify-content-between.align-items-center
+      %h4.sub-header.m-0
+        - start_date = capture do
+          #{@daily_coverage_options[:base_params][:start_date].strftime('%b %d')}
+        - end_date = capture do
+          #{@daily_coverage_options[:base_params][:end_date].strftime('%b %d')}
+        = (_("Code coverage statistics for master %{start_date} - %{end_date}") % {start_date: start_date, end_date: end_date})
+      - download_path = capture do
+        #{@daily_coverage_options[:download_path]}
+      %a.btn.btn-sm{ href: "#{download_path}?#{@daily_coverage_options[:base_params].to_query}" }
+        %small
+          = _("Download raw data (.csv)")
+    #js-code-coverage-chart{ data: { daily_coverage_options: @daily_coverage_options.to_json.html_safe } }
 
 .repo-charts
   .sub-header-block.border-top

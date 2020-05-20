@@ -37,7 +37,13 @@ describe EnvironmentPolicy do
         context 'when an admin user' do
           let(:user) { create(:user, :admin) }
 
-          it { expect(policy).to be_allowed :stop_environment }
+          context 'when admin mode is enabled', :enable_admin_mode do
+            it { expect(policy).to be_allowed :stop_environment }
+          end
+
+          context 'when admin mode is disabled' do
+            it { expect(policy).to be_disallowed :stop_environment }
+          end
         end
 
         context 'with protected branch' do
@@ -54,7 +60,13 @@ describe EnvironmentPolicy do
           context 'when an admin user' do
             let(:user) { create(:user, :admin) }
 
-            it { expect(policy).to be_allowed :stop_environment }
+            context 'when admin mode is enabled', :enable_admin_mode do
+              it { expect(policy).to be_allowed :stop_environment }
+            end
+
+            context 'when admin mode is disabled' do
+              it { expect(policy).to be_disallowed :stop_environment }
+            end
           end
         end
       end
@@ -83,7 +95,13 @@ describe EnvironmentPolicy do
         context 'when an admin user' do
           let(:user) { create(:user, :admin) }
 
-          it { expect(policy).to be_allowed :stop_environment }
+          context 'when admin mode is enabled', :enable_admin_mode do
+            it { expect(policy).to be_allowed :stop_environment }
+          end
+
+          context 'when admin mode is disabled' do
+            it { expect(policy).to be_disallowed :stop_environment }
+          end
         end
       end
 
@@ -126,7 +144,13 @@ describe EnvironmentPolicy do
               environment.stop!
             end
 
-            it { expect(policy).to be_allowed :destroy_environment }
+            context 'when admin mode is enabled', :enable_admin_mode do
+              it { expect(policy).to be_allowed :destroy_environment }
+            end
+
+            context 'when admin mode is disabled' do
+              it { expect(policy).to be_disallowed :destroy_environment }
+            end
           end
         end
       end

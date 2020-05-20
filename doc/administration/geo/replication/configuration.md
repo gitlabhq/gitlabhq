@@ -262,7 +262,7 @@ You can login to the **secondary** node with the same credentials you used for t
 **secondary** Geo node and if Geo is enabled.
 
 The initial replication, or 'backfill', will probably still be in progress. You
-can monitor the synchronization process on each geo node from the **primary**
+can monitor the synchronization process on each Geo node from the **primary**
 node's **Geo Nodes** dashboard in your browser.
 
 ![Geo dashboard](img/geo_node_dashboard.png)
@@ -314,18 +314,16 @@ It is important to note that selective synchronization:
      Selective synchronization restrictions are implemented on the **secondary** nodes,
      not the **primary** node.
 
-### Git operations on unreplicated respositories
+### Git operations on unreplicated repositories
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2562) in GitLab 12.10.
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2562) in GitLab 12.10 for HTTP(S) and in GitLab 13.0 for SSH.
 
-Git clone, pull, and push operations over HTTP(S) are supported for repositories that
+Git clone, pull, and push operations over HTTP(S) and SSH are supported for repositories that
 exist on the **primary** node but not on **secondary** nodes. This situation can occur
 when:
 
 - Selective synchronization does not include the project attached to the repository.
 - The repository is actively being replicated but has not completed yet.
-
-SSH [support is planned](https://gitlab.com/groups/gitlab-org/-/epics/2562).
 
 ## Upgrading Geo
 

@@ -24,12 +24,7 @@ exports[`Clone Dropdown Button rendering matches the snapshot 1`] = `
         <b-input-group-stub
           tag="div"
         >
-          <b-input-group-prepend-stub
-            tag="div"
-          >
-             
-            <!---->
-          </b-input-group-prepend-stub>
+          <!---->
            
           <b-form-input-stub
             class="gl-form-input"
@@ -44,18 +39,14 @@ exports[`Clone Dropdown Button rendering matches the snapshot 1`] = `
           >
             <gl-button-stub
               category="tertiary"
+              class="d-inline-flex"
               data-clipboard-text="ssh://foo.bar"
-              icon=""
+              data-qa-selector="copy_ssh_url_button"
+              icon="copy-to-clipboard"
               size="medium"
               title="Copy URL"
               variant="default"
-            >
-              <gl-icon-stub
-                name="copy-to-clipboard"
-                size="16"
-                title="Copy URL"
-              />
-            </gl-button-stub>
+            />
           </b-input-group-append-stub>
         </b-input-group-stub>
       </div>
@@ -74,12 +65,7 @@ exports[`Clone Dropdown Button rendering matches the snapshot 1`] = `
         <b-input-group-stub
           tag="div"
         >
-          <b-input-group-prepend-stub
-            tag="div"
-          >
-             
-            <!---->
-          </b-input-group-prepend-stub>
+          <!---->
            
           <b-form-input-stub
             class="gl-form-input"
@@ -94,18 +80,14 @@ exports[`Clone Dropdown Button rendering matches the snapshot 1`] = `
           >
             <gl-button-stub
               category="tertiary"
+              class="d-inline-flex"
               data-clipboard-text="http://foo.bar"
-              icon=""
+              data-qa-selector="copy_http_url_button"
+              icon="copy-to-clipboard"
               size="medium"
               title="Copy URL"
               variant="default"
-            >
-              <gl-icon-stub
-                name="copy-to-clipboard"
-                size="16"
-                title="Copy URL"
-              />
-            </gl-button-stub>
+            />
           </b-input-group-append-stub>
         </b-input-group-stub>
       </div>

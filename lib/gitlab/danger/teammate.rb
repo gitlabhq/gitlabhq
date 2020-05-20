@@ -1,11 +1,18 @@
 # frozen_string_literal: true
 
 require 'cgi'
+require 'set'
 
 module Gitlab
   module Danger
     class Teammate
       attr_reader :name, :username, :role, :projects
+
+      AT_CAPACITY_EMOJI = Set.new(%w[red_circle]).freeze
+      OOO_EMOJI = Set.new(%w[
+        palm_tree
+        beach beach_umbrella beach_with_umbrella
+      ]).freeze
 
       def initialize(options = {})
         @username = options['username']
@@ -37,10 +44,14 @@ module Gitlab
       end
 
       def status
-        api_endpoint = "https://gitlab.com/api/v4/users/#{CGI.escape(username)}/status"
-        @status ||= Gitlab::Danger::RequestHelper.http_get_json(api_endpoint)
-      rescue Gitlab::Danger::RequestHelper::HTTPError, JSON::ParserError
-        nil # better no status than a crashing Danger
+        return @status if defined?(@status)
+
+        @status ||=
+          begin
+            Gitlab::Danger::RequestHelper.http_get_json(status_api_endpoint)
+          rescue Gitlab::Danger::RequestHelper::HTTPError, JSON::ParserError
+            nil # better no status than a crashing Danger
+          end
       end
 
       # @return [Boolean]
@@ -50,14 +61,22 @@ module Gitlab
 
       private
 
+      def status_api_endpoint
+        "https://gitlab.com/api/v4/users/#{CGI.escape(username)}/status"
+      end
+
+      def status_emoji
+        status&.dig("emoji")
+      end
+
       # @return [Boolean]
       def out_of_office?
-        status&.dig("message")&.match?(/OOO/i) || false
+        status&.dig("message")&.match?(/OOO/i) || OOO_EMOJI.include?(status_emoji)
       end
 
       # @return [Boolean]
       def has_capacity?
-        status&.dig("emoji") != 'red_circle'
+        !AT_CAPACITY_EMOJI.include?(status_emoji)
       end
 
       def has_capability?(project, category, kind, labels)

@@ -13,12 +13,25 @@
 
 <!-- Link related issues below. Insert the issue link or reference after the word "Closes" if merging this should automatically close it. -->
 
-## Author's checklist
+## Author's checklist (required)
 
 - [ ] Follow the [Documentation Guidelines](https://docs.gitlab.com/ee/development/documentation/) and [Style Guide](https://docs.gitlab.com/ee/development/documentation/styleguide.html).
-- [ ] If applicable, update the [permissions table](https://docs.gitlab.com/ee/user/permissions.html).
+- If you have `developer` access or higher (for example, GitLab team members or [Core Team](https://about.gitlab.com/community/core-team/) members)
+  - [ ] Apply the ~documentation label, plus:
+    - The corresponding DevOps stage and group label, if applicable.
+    - ~"development guidelines" when changing docs under `doc/development/*`, `CONTRIBUTING.md`, or `README.md`.
+    - ~"development guidelines" and ~"Documentation guidelines" when changing docs under `development/documentation/*`.
+    - ~"development guidelines" and ~"Description templates (.gitlab/\*)" when creating/updating issue and MR description templates.
+  - [ ] Assign the [designated Technical Writer](https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments).
+
+When applicable:
+
+- [ ] Update the [permissions table](https://docs.gitlab.com/ee/user/permissions.html).
 - [ ] Link docs to and from the higher-level index page, plus other related docs where helpful.
-- [ ] Apply the ~documentation label.
+- [ ] Add [GitLab's version history note(s)](https://docs.gitlab.com/ee/development/documentation/styleguide.html#text-for-documentation-requiring-version-text).
+- [ ] Add the [product tier badge](https://docs.gitlab.com/ee/development/documentation/styleguide.html#product-badges).
+- [ ] Add/update the [feature flag section](https://docs.gitlab.com/ee/development/documentation/feature_flags.html).
+- [ ] If you're changing document headings, search `doc/*`, `app/views/*`, and `ee/app/views/*` for old headings replacing with the new ones to [avoid broken anchors](https://docs.gitlab.com/ee/development/documentation/styleguide.html#anchor-links).
 
 ## Review checklist
 
@@ -30,7 +43,9 @@ All reviewers can help ensure accuracy, clarity, completeness, and adherence to 
 
 **2. Technical Writer**
 
-* [ ] Optional: Technical writer review. If not requested for this MR, must be scheduled post-merge. To request for this MR, assign the writer listed for the applicable [DevOps stage](https://about.gitlab.com/handbook/product/categories/#devops-stages).
+- [ ] Optional: Technical writer review. If not requested for this MR, must be scheduled post-merge. To request for this MR, assign the writer listed for the applicable [DevOps stage](https://about.gitlab.com/handbook/product/categories/#devops-stages).
+  - [ ] Add ~"Technical Writing" and `docs::` workflow label.
+  - [ ] Add ~docs-only when the only files changed are under `doc/*`.
 
 **3. Maintainer**
 

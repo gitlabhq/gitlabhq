@@ -14,11 +14,7 @@ code_quality:
     - .use-docker-in-docker
   stage: test
   needs: []
-  allow_failure: true
   variables:
-    # emptying DOCKER_HOST so it can be detected properly on kubernetes executor
-    # with the script below
-    DOCKER_HOST: ""
     CODE_QUALITY_IMAGE: "registry.gitlab.com/gitlab-org/ci-cd/codequality:0.85.9"
   script:
     - |
@@ -47,12 +43,10 @@ code_quality:
   extends:
     - .default-retry
     - .reports:rules:sast
-    - .use-docker-in-docker
   stage: test
   # `needs: []` starts the job immediately in the pipeline
   # https://docs.gitlab.com/ee/ci/yaml/README.html#needs
   needs: []
-  allow_failure: true
   artifacts:
     paths:
       - gl-sast-report.json  # GitLab-specific
@@ -60,10 +54,6 @@ code_quality:
       sast: gl-sast-report.json
     expire_in: 1 week  # GitLab-specific
   variables:
-    # emptying DOCKER_HOST so it can be detected properly on kubernetes executor
-    # with the script below
-    DOCKER_HOST: ""
-    DOCKER_DRIVER: overlay2
     DOCKER_TLS_CERTDIR: ""
     SAST_ANALYZER_IMAGE_PREFIX: "registry.gitlab.com/gitlab-org/security-products/analyzers"
     SAST_ANALYZER_IMAGE_TAG: 2
@@ -82,15 +72,11 @@ eslint-sast:
   image:
     name: "$SAST_ANALYZER_IMAGE_PREFIX/eslint:$SAST_ANALYZER_IMAGE_TAG"
 
-kubesec-sast:
-  extends: .sast
-  image:
-    name: "$SAST_ANALYZER_IMAGE_PREFIX/kubesec:$SAST_ANALYZER_IMAGE_TAG"
-
-nodejs-scan-sast:
-  extends: .sast
-  image:
-    name: "$SAST_ANALYZER_IMAGE_PREFIX/nodejs-scan:$SAST_ANALYZER_IMAGE_TAG"
+# Temporary disabled as it's constantly failing. See https://gitlab.com/gitlab-org/gitlab/-/issues/213769.
+# nodejs-scan-sast:
+#   extends: .sast
+#   image:
+#     name: "$SAST_ANALYZER_IMAGE_PREFIX/nodejs-scan:$SAST_ANALYZER_IMAGE_TAG"
 
 secrets-sast:
   extends: .sast
@@ -108,11 +94,7 @@ dependency_scanning:
   stage: test
   needs: []
   variables:
-    # emptying DOCKER_HOST so it can be detected properly on kubernetes executor
-    # with the script below
-    DOCKER_HOST: ""
     DS_EXCLUDED_PATHS: "qa/qa/ee/fixtures/secure_premade_reports,spec,ee/spec"  # GitLab-specific
-  allow_failure: true
   script:
     - export DS_VERSION=${SP_VERSION:-$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')}
     - |
@@ -183,7 +165,6 @@ dast:
     # DAST_USERNAME_FIELD: "user[login]"
     # DAST_PASSWORD_FIELD: "user[passowrd]"
     DAST_VERSION: 1
-  allow_failure: true
   script:
     - 'export DAST_WEBSITE="${DAST_WEBSITE:-$(cat environment_url.txt)}"'
     # To be done in a later iteration

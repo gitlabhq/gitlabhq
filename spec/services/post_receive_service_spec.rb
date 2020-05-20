@@ -166,6 +166,41 @@ describe PostReceiveService do
         expect(subject).to include(build_alert_message(message))
       end
     end
+
+    context 'storage size limit alerts' do
+      let(:check_storage_size_response) { ServiceResponse.success }
+
+      before do
+        expect_next_instance_of(Namespaces::CheckStorageSizeService, project.namespace, user) do |check_storage_size_service|
+          expect(check_storage_size_service).to receive(:execute).and_return(check_storage_size_response)
+        end
+      end
+
+      context 'when there is no payload' do
+        it 'adds no alert' do
+          expect(subject.size).to eq(1)
+        end
+      end
+
+      context 'when there is payload' do
+        let(:check_storage_size_response) do
+          ServiceResponse.success(
+            payload: {
+              alert_level: :info,
+              usage_message: "Usage",
+              explanation_message: "Explanation"
+            }
+          )
+        end
+
+        it 'adds an alert' do
+          response = subject
+
+          expect(response.size).to eq(2)
+          expect(response).to include(build_alert_message("##### INFO #####\nUsage\nExplanation"))
+        end
+      end
+    end
   end
 
   context 'with PersonalSnippet' do

@@ -63,6 +63,9 @@ from when the merge request is first reviewed to when the change is deployed to
 GitLab.com. However, it is recommended to allow 10-14 days for this activity to
 account for unforeseen problems.
 
+Feature flags must be [documented according to their state (enabled/disabled)](../documentation/feature_flags.md),
+and when the state changes, docs **must** be updated accordingly.
+
 NOTE: **Note:**
 Take into consideration that such action can make the feature available on
 GitLab.com shortly after the change to the feature flag is merged.

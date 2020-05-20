@@ -12,7 +12,7 @@ GitLab provides a lot of great reporting tools for [merge requests](../user/proj
 
 You can configure your job to use custom Metrics Reports, and GitLab will display a report on the merge request so that it's easier and faster to identify changes without having to check the entire log.
 
-![Metrics Reports](img/metrics_reports.png)
+![Metrics Reports](img/metrics_reports_v13_0.png)
 
 ## Use cases
 
@@ -34,7 +34,7 @@ All values are considered strings and string compare is used to find differences
 
 ## How to set it up
 
-Add a job that creates a [metrics report](yaml/README.md#artifactsreportsmetrics-premium) (default filename: `metrics.txt`). The file should conform to the [OpenMetrics](https://openmetrics.io/) format.
+Add a job that creates a [metrics report](pipelines/job_artifacts.md#artifactsreportsmetrics-premium) (default filename: `metrics.txt`). The file should conform to the [OpenMetrics](https://openmetrics.io/) format.
 
 For example:
 

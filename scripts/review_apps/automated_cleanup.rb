@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'gitlab'
-require_relative File.expand_path('../../lib/quality/helm_client.rb', __dir__)
 require_relative File.expand_path('../../lib/quality/helm3_client.rb', __dir__)
 require_relative File.expand_path('../../lib/quality/kubernetes_client.rb', __dir__)
 
@@ -9,7 +8,6 @@ class AutomatedCleanup
   attr_reader :project_path, :gitlab_token
 
   DEPLOYMENTS_PER_PAGE = 100
-  HELM_RELEASES_BATCH_SIZE = 5
   IGNORED_HELM_ERRORS = [
     'transport is closing',
     'error upgrading connection',
@@ -45,18 +43,8 @@ class AutomatedCleanup
     self.class.ee? ? 'review-apps-ee' : 'review-apps-ce'
   end
 
-  def helm3?
-    !ENV['HELM_3'].nil?
-  end
-
-  def helm_client_class
-    helm3? ? Quality::Helm3Client : Quality::HelmClient
-  end
-
   def helm
-    @helm ||= helm_client_class.new(
-      tiller_namespace: review_apps_namespace,
-      namespace: review_apps_namespace)
+    @helm ||= Quality::Helm3Client.new(namespace: review_apps_namespace)
   end
 
   def kubernetes
@@ -88,7 +76,7 @@ class AutomatedCleanup
       if deployed_at < delete_threshold
         deleted_environment = delete_environment(environment, deployment)
         if deleted_environment
-          release = helm_client_class::Release.new(environment.slug, 1, deployed_at.to_s, nil, nil, review_apps_namespace)
+          release = Quality::Helm3Client::Release.new(environment.slug, 1, deployed_at.to_s, nil, nil, review_apps_namespace)
           releases_to_delete << release
         end
       else
@@ -117,7 +105,7 @@ class AutomatedCleanup
       # Prevents deleting `dns-gitlab-review-app` releases or other unrelated releases
       next unless release.name.start_with?('review-')
 
-      if release.status.casecmp('failed') == 0 || release.last_update < threshold
+      if release.status == 'failed' || release.last_update < threshold
         releases_to_delete << release
       else
         print_release_state(subject: 'Release', release_name: release.name, release_date: release.last_update, action: 'leaving')
@@ -154,7 +142,6 @@ class AutomatedCleanup
 
   def helm_releases
     args = ['--all', '--date']
-    args << "--max #{HELM_RELEASES_BATCH_SIZE}" unless helm3?
 
     helm.releases(args: args)
   end
@@ -170,7 +157,7 @@ class AutomatedCleanup
     helm.delete(release_name: releases_names)
     kubernetes.cleanup(release_name: releases_names, wait: false)
 
-  rescue helm_client_class::CommandFailedError => ex
+  rescue Quality::Helm3Client::CommandFailedError => ex
     raise ex unless ignore_exception?(ex.message, IGNORED_HELM_ERRORS)
 
     puts "Ignoring the following Helm error:\n#{ex}\n"

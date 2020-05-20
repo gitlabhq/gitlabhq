@@ -82,7 +82,7 @@ module Ci
 
     has_one :pipeline_config, class_name: 'Ci::PipelineConfig', inverse_of: :pipeline
 
-    has_many :daily_report_results, class_name: 'Ci::DailyReportResult', foreign_key: :last_pipeline_id
+    has_many :daily_build_group_report_results, class_name: 'Ci::DailyBuildGroupReportResult', foreign_key: :last_pipeline_id
 
     accepts_nested_attributes_for :variables, reject_if: :persisted?
 
@@ -115,8 +115,11 @@ module Ci
 
     state_machine :status, initial: :created do
       event :enqueue do
-        transition [:created, :waiting_for_resource, :preparing, :skipped, :scheduled] => :pending
+        transition [:created, :manual, :waiting_for_resource, :preparing, :skipped, :scheduled] => :pending
         transition [:success, :failed, :canceled] => :running
+
+        # this is needed to ensure tests to be covered
+        transition [:running] => :running
       end
 
       event :request_resource do
@@ -194,7 +197,7 @@ module Ci
         # We wait a little bit to ensure that all BuildFinishedWorkers finish first
         # because this is where some metrics like code coverage is parsed and stored
         # in CI build records which the daily build metrics worker relies on.
-        pipeline.run_after_commit { Ci::DailyReportResultsWorker.perform_in(10.minutes, pipeline.id) }
+        pipeline.run_after_commit { Ci::DailyBuildGroupReportResultsWorker.perform_in(10.minutes, pipeline.id) }
       end
 
       after_transition do |pipeline, transition|
@@ -393,16 +396,18 @@ module Ci
       false
     end
 
-    ##
-    # TODO We do not completely switch to persisted stages because of
-    # race conditions with setting statuses gitlab-foss#23257.
-    #
     def ordered_stages
-      return legacy_stages unless complete?
-
-      if Feature.enabled?('ci_pipeline_persisted_stages', default_enabled: true)
+      if Feature.enabled?(:ci_atomic_processing, project, default_enabled: false)
+        # The `Ci::Stage` contains all up-to date data
+        # as atomic processing updates all data in-bulk
+        stages
+      elsif Feature.enabled?(:ci_pipeline_persisted_stages, default_enabled: true) && complete?
+        # The `Ci::Stage` contains up-to date data only for `completed` pipelines
+        # this is due to asynchronous processing of pipeline, and stages possibly
+        # not updated inline with processing of pipeline
         stages
       else
+        # In other cases, we need to calculate stages dynamically
         legacy_stages
       end
     end
@@ -440,7 +445,7 @@ module Ci
     end
 
     def legacy_stages
-      if Feature.enabled?(:ci_composite_status, default_enabled: false)
+      if Feature.enabled?(:ci_composite_status, project, default_enabled: false)
         legacy_stages_using_composite_status
       else
         legacy_stages_using_sql
@@ -681,6 +686,8 @@ module Ci
           variables.concat(merge_request.predefined_variables)
         end
 
+        variables.append(key: 'CI_KUBERNETES_ACTIVE', value: 'true') if has_kubernetes_active?
+
         if external_pull_request_event? && external_pull_request
           variables.concat(external_pull_request.predefined_variables)
         end
@@ -781,7 +788,7 @@ module Ci
     end
 
     def find_job_with_archive_artifacts(name)
-      builds.latest.with_artifacts_archive.find_by_name(name)
+      builds.latest.with_downloadable_artifacts.find_by_name(name)
     end
 
     def latest_builds_with_artifacts
@@ -809,10 +816,26 @@ module Ci
       end
     end
 
+    def accessibility_reports
+      Gitlab::Ci::Reports::AccessibilityReports.new.tap do |accessibility_reports|
+        builds.latest.with_reports(Ci::JobArtifact.accessibility_reports).each do |build|
+          build.collect_accessibility_reports!(accessibility_reports)
+        end
+      end
+    end
+
     def coverage_reports
       Gitlab::Ci::Reports::CoverageReports.new.tap do |coverage_reports|
         builds.latest.with_reports(Ci::JobArtifact.coverage_reports).each do |build|
           build.collect_coverage_reports!(coverage_reports)
+        end
+      end
+    end
+
+    def terraform_reports
+      ::Gitlab::Ci::Reports::TerraformReports.new.tap do |terraform_reports|
+        builds.latest.with_reports(::Ci::JobArtifact.terraform_reports).each do |build|
+          build.collect_terraform_reports!(terraform_reports)
         end
       end
     end
@@ -936,6 +959,14 @@ module Ci
       elsif tag?
         Gitlab::Git::TAG_REF_PREFIX + source_ref.to_s
       end
+    end
+
+    # Set scheduling type of processables if they were created before scheduling_type
+    # data was deployed (https://gitlab.com/gitlab-org/gitlab/-/merge_requests/22246).
+    def ensure_scheduling_type!
+      return unless ::Gitlab::Ci::Features.ensure_scheduling_type_enabled?
+
+      processables.populate_scheduling_type!
     end
 
     private

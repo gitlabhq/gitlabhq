@@ -10,7 +10,7 @@ class AddModsecurityModeToIngressApplication < ActiveRecord::Migration[6.0]
   disable_ddl_transaction!
 
   def up
-    add_column_with_default(:clusters_applications_ingress, :modsecurity_mode, :smallint, default: 0, allow_null: false)
+    add_column_with_default(:clusters_applications_ingress, :modsecurity_mode, :smallint, default: 0, allow_null: false) # rubocop:disable Migration/AddColumnWithDefault
   end
 
   def down

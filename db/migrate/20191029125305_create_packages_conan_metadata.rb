@@ -5,6 +5,7 @@ class CreatePackagesConanMetadata < ActiveRecord::Migration[5.2]
 
   DOWNTIME = false
 
+  # rubocop:disable Migration/PreventStrings
   def change
     create_table :packages_conan_metadata do |t|
       t.references :package, index: { unique: true }, null: false, foreign_key: { to_table: :packages_packages, on_delete: :cascade }, type: :bigint
@@ -13,4 +14,5 @@ class CreatePackagesConanMetadata < ActiveRecord::Migration[5.2]
       t.string "package_channel", null: false, limit: 255
     end
   end
+  # rubocop:enable Migration/PreventStrings
 end

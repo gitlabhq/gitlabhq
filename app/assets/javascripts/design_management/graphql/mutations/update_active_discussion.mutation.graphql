@@ -1,0 +1,3 @@
+mutation updateActiveDiscussion($id: String, $source: String) {
+  updateActiveDiscussion (id: $id, source: $source ) @client
+}

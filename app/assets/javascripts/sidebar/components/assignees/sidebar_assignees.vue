@@ -3,8 +3,10 @@ import Flash from '~/flash';
 import eventHub from '~/sidebar/event_hub';
 import Store from '~/sidebar/stores/sidebar_store';
 import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import AssigneeTitle from './assignee_title.vue';
 import Assignees from './assignees.vue';
+import AssigneesRealtime from './assignees_realtime.vue';
 import { __ } from '~/locale';
 
 export default {
@@ -12,7 +14,9 @@ export default {
   components: {
     AssigneeTitle,
     Assignees,
+    AssigneesRealtime,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     mediator: {
       type: Object,
@@ -32,12 +36,26 @@ export default {
       required: false,
       default: 'issue',
     },
+    issuableIid: {
+      type: String,
+      required: true,
+    },
+    projectPath: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {
       store: new Store(),
       loading: false,
     };
+  },
+  computed: {
+    shouldEnableRealtime() {
+      // Note: Realtime is only available on issues right now, future support for MR wil be built later.
+      return this.glFeatures.realTimeIssueSidebar && this.issuableType === 'issue';
+    },
   },
   created() {
     this.removeAssignee = this.store.removeAssignee.bind(this.store);
@@ -84,6 +102,12 @@ export default {
 
 <template>
   <div>
+    <assignees-realtime
+      v-if="shouldEnableRealtime"
+      :issuable-iid="issuableIid"
+      :project-path="projectPath"
+      :mediator="mediator"
+    />
     <assignee-title
       :number-of-assignees="store.assignees.length"
       :loading="loading || store.isFetching.assignees"

@@ -84,7 +84,7 @@ describe SearchController do
       with_them do
         it do
           project_wiki = create(:project_wiki, project: project, user: user)
-          create(:wiki_page, wiki: project_wiki, attrs: { title: 'merge', content: 'merge' })
+          create(:wiki_page, wiki: project_wiki, title: 'merge', content: 'merge')
 
           expect(subject).to render_template("search/results/#{partial}")
         end
@@ -137,14 +137,6 @@ describe SearchController do
             end
           end
         end
-      end
-    end
-
-    context 'snippet search' do
-      it 'forces title search' do
-        get :show, params: { scope: 'snippet_blobs', snippets: 'true', search: 'foo' }
-
-        expect(assigns[:scope]).to eq('snippet_titles')
       end
     end
 

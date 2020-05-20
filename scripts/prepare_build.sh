@@ -6,12 +6,17 @@ export BUNDLE_INSTALL_FLAGS="--without=production --jobs=$(nproc) --path=vendor 
 
 if [ "$USE_BUNDLE_INSTALL" != "false" ]; then
   bundle --version
-  bundle install --clean $BUNDLE_INSTALL_FLAGS && bundle check
+  run_timed_command "bundle install --clean ${BUNDLE_INSTALL_FLAGS}"
+  run_timed_command "bundle check"
+  # When we test multiple versions of PG in the same pipeline, we have a single `setup-test-env`
+  # job but the `pg` gem needs to be rebuilt since it includes extensions (https://guides.rubygems.org/gems-with-extensions).
+  # Uncomment the following line if multiple versions of PG are tested in the same pipeline.
+  # run_timed_command "bundle pristine pg"
 fi
 
 # Only install knapsack after bundle install! Otherwise oddly some native
 # gems could not be found under some circumstance. No idea why, hours wasted.
-retry gem install knapsack --no-document
+run_timed_command "gem install knapsack --no-document"
 
 cp config/gitlab.yml.example config/gitlab.yml
 sed -i 's/bin_path: \/usr\/bin\/git/bin_path: \/usr\/local\/bin\/git/' config/gitlab.yml
@@ -32,6 +37,9 @@ if [ -f config/database_geo.yml ]; then
   sed -i 's/localhost/postgres/g' config/database_geo.yml
   sed -i 's/username: git/username: postgres/g' config/database_geo.yml
 fi
+
+cp config/cable.yml.example config/cable.yml
+sed -i 's|url:.*$|url: redis://redis:6379|g' config/cable.yml
 
 cp config/resque.yml.example config/resque.yml
 sed -i 's|url:.*$|url: redis://redis:6379|g' config/resque.yml

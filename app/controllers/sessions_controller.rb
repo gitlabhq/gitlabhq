@@ -6,6 +6,8 @@ class SessionsController < Devise::SessionsController
   include Devise::Controllers::Rememberable
   include Recaptcha::ClientHelper
   include Recaptcha::Verify
+  include RendersLdapServers
+  include KnownSignIn
 
   skip_before_action :check_two_factor_requirement, only: [:destroy]
   # replaced with :require_no_authentication_without_flash
@@ -16,7 +18,6 @@ class SessionsController < Devise::SessionsController
     if: -> { action_name == 'create' && two_factor_enabled? }
   prepend_before_action :check_captcha, only: [:create]
   prepend_before_action :store_redirect_uri, only: [:new]
-  prepend_before_action :ldap_servers, only: [:new, :create]
   prepend_before_action :require_no_authentication_without_flash, only: [:new, :create]
   prepend_before_action :ensure_password_authentication_enabled!, if: -> { action_name == 'create' && password_based_login? }
 
@@ -27,6 +28,7 @@ class SessionsController < Devise::SessionsController
   before_action :frontend_tracking_data, only: [:new]
 
   after_action :log_failed_login, if: :action_new_and_failed_login?
+  after_action :verify_known_sign_in, only: [:create]
 
   helper_method :captcha_enabled?, :captcha_on_login_required?
 
@@ -267,16 +269,6 @@ class SessionsController < Devise::SessionsController
 
   def load_recaptcha
     Gitlab::Recaptcha.load_configurations!
-  end
-
-  def ldap_servers
-    @ldap_servers ||= begin
-      if Gitlab::Auth::Ldap::Config.sign_in_enabled?
-        Gitlab::Auth::Ldap::Config.available_servers
-      else
-        []
-      end
-    end
   end
 
   def unverified_anonymous_user?

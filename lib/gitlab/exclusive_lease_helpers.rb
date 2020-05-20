@@ -6,29 +6,38 @@ module Gitlab
     FailedToObtainLockError = Class.new(StandardError)
 
     ##
-    # This helper method blocks a process/thread until the other process cancel the obrainted lease key.
+    # This helper method blocks a process/thread until the lease can be acquired, either due to
+    # the lease TTL expiring, or due to the current holder explicitly releasing
+    # their hold.
     #
-    # Note: It's basically discouraged to use this method in the unicorn's thread,
-    #       because it holds the connection until all `retries` is consumed.
+    # If the lease cannot be obtained, raises `FailedToObtainLockError`.
+    #
+    # @param [String] key The lock the thread will try to acquire. Only one thread
+    #                     in one process across all Rails instances can hold this named lock at any
+    #                     one time.
+    # @param [Float] ttl: The length of time the lock will be valid for. The lock
+    #                    will be automatically be released after this time, so any work should be
+    #                    completed within this time.
+    # @param [Integer] retries: The maximum number of times we will re-attempt
+    #                           to acquire the lock. The maximum number of attempts will be `retries + 1`:
+    #                           one for the initial attempt, and then one for every re-try.
+    # @param [Float|Proc] sleep_sec: Either a number of seconds to sleep, or
+    #                                a proc that computes the sleep time given the number of preceding attempts
+    #                               (from 1 to retries - 1)
+    #
+    # Note: It's basically discouraged to use this method in a unicorn thread,
+    #       because this ties up all thread related resources until all `retries` are consumed.
     #       This could potentially eat up all connection pools.
     def in_lock(key, ttl: 1.minute, retries: 10, sleep_sec: 0.01.seconds)
       raise ArgumentError, 'Key needs to be specified' unless key
 
-      lease = Gitlab::ExclusiveLease.new(key, timeout: ttl)
-      retried = false
+      lease = SleepingLock.new(key, timeout: ttl, delay: sleep_sec)
 
-      until uuid = lease.try_obtain
-        # Keep trying until we obtain the lease. To prevent hammering Redis too
-        # much we'll wait for a bit.
-        sleep(sleep_sec)
-        (retries -= 1) < 0 ? break : retried ||= true
-      end
+      lease.obtain(1 + retries)
 
-      raise FailedToObtainLockError, 'Failed to obtain a lock' unless uuid
-
-      yield(retried)
+      yield(lease.retried?)
     ensure
-      Gitlab::ExclusiveLease.cancel(key, uuid)
+      lease&.cancel
     end
   end
 end

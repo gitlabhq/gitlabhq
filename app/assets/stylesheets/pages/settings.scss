@@ -335,15 +335,6 @@
   }
 }
 
-.deprecated-service {
-  cursor: default;
-
-  a {
-    font-weight: $gl-font-weight-bold;
-    color: $white;
-  }
-}
-
 .personal-access-tokens-never-expires-label {
   color: $note-disabled-comment-color;
 }
@@ -401,4 +392,3 @@
     }
   }
 }
-

@@ -56,7 +56,7 @@
             = _('Monitoring')
 
         %ul.sidebar-sub-level-items{ data: { qa_selector: 'admin_sidebar_monitoring_submenu_content' } }
-          = nav_link(controller: %w(system_info background_jobs logs health_check requests_profiles), html_options: { class: "fly-out-top-item" } ) do
+          = nav_link(controller: %w(system_info background_jobs health_check requests_profiles), html_options: { class: "fly-out-top-item" } ) do
             = link_to admin_system_info_path do
               %strong.fly-out-top-item-name
                 = _('Monitoring')
@@ -69,10 +69,6 @@
             = link_to admin_background_jobs_path, title: _('Background Jobs') do
               %span
                 = _('Background Jobs')
-          = nav_link(controller: :logs) do
-            = link_to admin_logs_path, title: _('Logs') do
-              %span
-                = _('Logs')
           = nav_link(controller: :health_check) do
             = link_to admin_health_check_path, title: _('Health Check') do
               %span
@@ -271,11 +267,6 @@
               = link_to network_admin_application_settings_path, title: _('Network'), data: { qa_selector: 'admin_settings_network_item' } do
                 %span
                   = _('Network')
-            - if template_exists?('admin/geo/settings/show')
-              = nav_link do
-                = link_to geo_admin_application_settings_path, title: _('Geo') do
-                  %span
-                    = _('Geo')
             = nav_link(path: 'application_settings#preferences') do
               = link_to preferences_admin_application_settings_path, title: _('Preferences'), data: { qa_selector: 'admin_settings_preferences_link' } do
                 %span

@@ -50,7 +50,7 @@ describe Projects::Prometheus::Alerts::CreateEventsService do
     let(:events) { service.execute }
 
     context 'with a firing payload' do
-      let(:started_at) { truncate_to_second(Time.now) }
+      let(:started_at) { truncate_to_second(Time.current) }
       let(:firing_event) { alert_payload(status: 'firing', started_at: started_at) }
       let(:alerts_payload) { { 'alerts' => [firing_event] } }
 
@@ -87,7 +87,7 @@ describe Projects::Prometheus::Alerts::CreateEventsService do
     end
 
     context 'with a resolved payload' do
-      let(:started_at) { truncate_to_second(Time.now) }
+      let(:started_at) { truncate_to_second(Time.current) }
       let(:ended_at) { started_at + 1 }
       let(:payload_key) { PrometheusAlertEvent.payload_key_for(alert.prometheus_metric_id, utc_rfc3339(started_at)) }
       let(:resolved_event) { alert_payload(status: 'resolved', started_at: started_at, ended_at: ended_at) }
@@ -285,7 +285,7 @@ describe Projects::Prometheus::Alerts::CreateEventsService do
 
   private
 
-  def alert_payload(status: 'firing', started_at: Time.now, ended_at: Time.now, gitlab_alert_id: alert.prometheus_metric_id, title: nil, environment: nil)
+  def alert_payload(status: 'firing', started_at: Time.current, ended_at: Time.current, gitlab_alert_id: alert.prometheus_metric_id, title: nil, environment: nil)
     payload = {}
 
     payload['status'] = status if status

@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 describe Grafana::Validator do
-  let(:grafana_dashboard) { JSON.parse(fixture_file('grafana/simplified_dashboard_response.json'), symbolize_names: true) }
-  let(:datasource) { JSON.parse(fixture_file('grafana/datasource_response.json'), symbolize_names: true) }
+  let(:grafana_dashboard) { Gitlab::Json.parse(fixture_file('grafana/simplified_dashboard_response.json'), symbolize_names: true) }
+  let(:datasource) { Gitlab::Json.parse(fixture_file('grafana/datasource_response.json'), symbolize_names: true) }
   let(:panel) { grafana_dashboard[:dashboard][:panels].first }
 
   let(:query_params) do

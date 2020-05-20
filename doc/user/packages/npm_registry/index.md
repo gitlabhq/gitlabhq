@@ -23,7 +23,7 @@ by default. To enable it for existing projects, or if you want to disable it:
 1. Find the Packages feature and enable or disable it.
 1. Click on **Save changes** for the changes to take effect.
 
-You should then be able to see the **Packages** section on the left sidebar.
+You should then be able to see the **Packages & Registries** section on the left sidebar.
 
 Before proceeding to authenticating with the GitLab NPM Registry, you should
 get familiar with the package naming convention.
@@ -100,14 +100,15 @@ configure GitLab as a remote registry.
 
 If a project is private or you want to upload an NPM package to GitLab,
 credentials will need to be provided for authentication. [Personal access tokens](../../profile/personal_access_tokens.md)
+and [deploy tokens](../../project/deploy_tokens/index.md)
 are preferred, but support is available for [OAuth tokens](../../../api/oauth2.md#resource-owner-password-credentials-flow).
 
-CAUTION: **2FA is only supported with personal access tokens:**
-If you have 2FA enabled, you need to use a [personal access token](../../profile/personal_access_tokens.md) with OAuth headers with the scope set to `api`. Standard OAuth tokens won't be able to authenticate to the GitLab NPM Registry.
+CAUTION: **Two-factor authentication (2FA) is only supported with personal access tokens:**
+If you have 2FA enabled, you need to use a [personal access token](../../profile/personal_access_tokens.md) with OAuth headers with the scope set to `api` or a [deploy token](../../project/deploy_tokens/index.md) with `read_package_registry` or `write_package_registry` scopes. Standard OAuth tokens won't be able to authenticate to the GitLab NPM Registry.
 
-### Authenticating with a personal access token
+### Authenticating with a personal access token or deploy token
 
-To authenticate with a [personal access token](../../profile/personal_access_tokens.md),
+To authenticate with a [personal access token](../../profile/personal_access_tokens.md) or [deploy token](../../project/deploy_tokens/index.md),
 set your NPM configuration:
 
 ```shell
@@ -125,7 +126,7 @@ npm config set '//gitlab.com/api/v4/projects/<your_project_id>/packages/npm/:_au
 ```
 
 Replace `<your_project_id>` with your project ID which can be found on the home page
-of your project and `<your_token>` with your personal access token.
+of your project and `<your_token>` with your personal access token or deploy token.
 
 If you have a self-managed GitLab installation, replace `gitlab.com` with your
 domain name.
@@ -160,7 +161,7 @@ Then, you could run `npm publish` either locally or via GitLab CI/CD:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/9104) in GitLab Premium 12.5.
 
-If you’re using NPM with GitLab CI/CD, a CI job token can be used instead of a personal access token.
+If you’re using NPM with GitLab CI/CD, a CI job token can be used instead of a personal access token or deploy token.
 The token will inherit the permissions of the user that generates the pipeline.
 
 Add a corresponding section to your `.npmrc` file:
@@ -195,7 +196,7 @@ you can upload an NPM package to your project:
 npm publish
 ```
 
-You can then navigate to your project's **Packages** page and see the uploaded
+You can then navigate to your project's **Packages & Registries** page and see the uploaded
 packages or even delete them.
 
 If you attempt to publish a package with a name that already exists within
@@ -286,11 +287,11 @@ page.
 ## Publishing a package with CI/CD
 
 To work with NPM commands within [GitLab CI/CD](./../../../ci/README.md), you can use
-`CI_JOB_TOKEN` in place of the personal access token in your commands.
+`CI_JOB_TOKEN` in place of the personal access token or deploy token in your commands.
 
 A simple example `.gitlab-ci.yml` file for publishing NPM packages:
 
-```yml
+```yaml
 image: node:latest
 
 stages:
@@ -323,9 +324,9 @@ info Visit https://classic.yarnpkg.com/en/docs/cli/install for documentation abo
 ```
 
 In this case, try adding this to your `.npmrc` file (and replace `<your_token>`
-with your personal access token):
+with your personal access token or deploy token):
 
-```text
+```plaintext
 //gitlab.com/api/v4/projects/:_authToken=<your_token>
 ```
 
@@ -362,6 +363,14 @@ You do not need a token to run `npm install` unless your project is private (the
 ```shell
 NPM_TOKEN=<your_token> npm install
 ```
+
+### `npm install` returns `npm ERR! 403 Forbidden`
+
+- Check that your token is not expired and has appropriate permissions.
+- Check if you have attempted to publish a package with a name that already exists within a given scope.
+- Ensure the scoped packages URL includes a trailing slash:
+  - Correct: `//gitlab.com/api/v4/packages/npm/`
+  - Incorrect: `//gitlab.com/api/v4/packages/npm`
 
 ## NPM dependencies metadata
 

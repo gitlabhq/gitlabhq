@@ -117,7 +117,7 @@ describe Prometheus::ProxyService do
 
       context 'when value not present in cache' do
         it 'returns nil' do
-          expect(ReactiveCachingWorker)
+          expect(ExternalServiceReactiveCachingWorker)
             .to receive(:perform_async)
             .with(subject.class, subject.id, *opts)
 

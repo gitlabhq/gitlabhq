@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe GitlabSchema.types['MergeRequestState'] do
-  it { expect(described_class.graphql_name).to eq('MergeRequestState') }
+  specify { expect(described_class.graphql_name).to eq('MergeRequestState') }
 
   it_behaves_like 'issuable state'
 

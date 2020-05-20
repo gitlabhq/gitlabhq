@@ -7,17 +7,28 @@ import TreePage from './pages/tree.vue';
 Vue.use(VueRouter);
 
 export default function createRouter(base, baseRef) {
+  const treePathRoute = {
+    component: TreePage,
+    props: route => ({
+      path: route.params.path?.replace(/^\//, '') || '/',
+    }),
+  };
+
   return new VueRouter({
     mode: 'history',
     base: joinPaths(gon.relative_url_root || '', base),
     routes: [
       {
-        path: `(/-)?/tree/${baseRef}/:path*`,
+        name: 'treePathDecoded',
+        // Sometimes the ref needs decoding depending on how the backend sends it to us
+        path: `(/-)?/tree/${decodeURI(baseRef)}/:path*`,
+        ...treePathRoute,
+      },
+      {
         name: 'treePath',
-        component: TreePage,
-        props: route => ({
-          path: route.params.path?.replace(/^\//, '') || '/',
-        }),
+        // Support without decoding as well just in case the ref doesn't need to be decoded
+        path: `(/-)?/tree/${baseRef}/:path*`,
+        ...treePathRoute,
       },
       {
         path: '/',

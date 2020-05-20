@@ -78,12 +78,18 @@ module Gitlab
           run_block_with_transaction
         rescue ActiveRecord::LockWaitTimeout
           if retry_with_lock_timeout?
+            disable_idle_in_transaction_timeout
             wait_until_next_retry
+            reset_db_settings
 
             retry
           else
+            reset_db_settings
             run_block_without_lock_timeout
           end
+
+        ensure
+          reset_db_settings
         end
       end
 
@@ -152,6 +158,14 @@ module Gitlab
 
       def current_sleep_time_in_seconds
         timing_configuration[current_iteration - 1][1].to_f
+      end
+
+      def disable_idle_in_transaction_timeout
+        execute("SET LOCAL idle_in_transaction_session_timeout TO '0'")
+      end
+
+      def reset_db_settings
+        execute('RESET idle_in_transaction_session_timeout; RESET lock_timeout')
       end
     end
   end

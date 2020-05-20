@@ -17,7 +17,9 @@
           "avatar_url": { "type": "uri" },
           "web_url": { "type": "uri" }
         },
-        "additionalProperties": false
+        "required" : [
+          "id", "name", "username", "state", "avatar_url", "web_url"
+        ]
       },
       "commands_changes": { "type": "object", "additionalProperties": true },
       "created_at": { "type": "date" },

@@ -1,0 +1,22 @@
+#import "~/jira_import/queries/jira_import.fragment.graphql"
+
+query($fullPath: ID!) {
+  project(fullPath: $fullPath) {
+    issues {
+      nodes {
+        labels {
+          nodes {
+            title
+            color
+          }
+        }
+      }
+    }
+    jiraImportStatus
+    jiraImports {
+      nodes {
+        ...JiraImport
+      }
+    }
+  }
+}

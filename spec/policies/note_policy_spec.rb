@@ -295,8 +295,16 @@ describe NotePolicy do
             expect(permissions(maintainer, confidential_note)).to be_allowed(:read_note, :admin_note, :resolve_note, :award_emoji)
           end
 
-          it 'allows admins to read all notes and admin them' do
-            expect(permissions(admin, confidential_note)).to be_allowed(:read_note, :admin_note, :resolve_note, :award_emoji)
+          context 'when admin mode is enabled', :enable_admin_mode do
+            it 'allows admins to read all notes and admin them' do
+              expect(permissions(admin, confidential_note)).to be_allowed(:read_note, :admin_note, :resolve_note, :award_emoji)
+            end
+          end
+
+          context 'when admin mode is disabled' do
+            it 'does not allow non members to read confidential notes and replies' do
+              expect(permissions(admin, confidential_note)).to be_disallowed(:read_note, :admin_note, :resolve_note, :award_emoji)
+            end
           end
 
           it 'allows noteable author to read and resolve all notes' do

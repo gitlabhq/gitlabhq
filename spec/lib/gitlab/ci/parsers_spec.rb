@@ -22,6 +22,22 @@ describe Gitlab::Ci::Parsers do
       end
     end
 
+    context 'when file_type is accessibility' do
+      let(:file_type) { 'accessibility' }
+
+      it 'fabricates the class' do
+        is_expected.to be_a(described_class::Accessibility::Pa11y)
+      end
+    end
+
+    context 'when file_type is terraform' do
+      let(:file_type) { 'terraform' }
+
+      it 'fabricates the class' do
+        is_expected.to be_a(described_class::Terraform::Tfplan)
+      end
+    end
+
     context 'when file_type does not exist' do
       let(:file_type) { 'undefined' }
 

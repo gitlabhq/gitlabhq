@@ -14,12 +14,13 @@ export default {
   },
   [types.CREATE_TREE](state, { treePath }) {
     Object.assign(state, {
-      trees: Object.assign({}, state.trees, {
+      trees: {
+        ...state.trees,
         [treePath]: {
           tree: [],
           loading: true,
         },
-      }),
+      },
     });
   },
   [types.SET_DIRECTORY_DATA](state, { data, treePath }) {

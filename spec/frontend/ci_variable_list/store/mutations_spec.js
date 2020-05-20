@@ -47,7 +47,7 @@ describe('CI variable list mutations', () => {
   describe('CLEAR_MODAL', () => {
     it('should clear modal state ', () => {
       const modalState = {
-        variable_type: 'Var',
+        variable_type: 'Variable',
         key: '',
         secret_value: '',
         protected: false,
@@ -95,6 +95,14 @@ describe('CI variable list mutations', () => {
       mutations[types.ADD_WILD_CARD_SCOPE](stateCopy, 'production');
 
       expect(stateCopy.environments).toEqual(['dev', 'production', 'staging']);
+    });
+  });
+
+  describe('SET_VARIABLE_PROTECTED', () => {
+    it('should set protected value to true', () => {
+      mutations[types.SET_VARIABLE_PROTECTED](stateCopy);
+
+      expect(stateCopy.variable.protected).toBe(true);
     });
   });
 });

@@ -1,0 +1,30 @@
+.deploy_to_ecs:
+  image: 'registry.gitlab.com/gitlab-org/cloud-deploy/aws-ecs:latest'
+  script:
+    - ecs update-task-definition
+
+review_ecs:
+  extends: .deploy_to_ecs
+  stage: review
+  environment:
+    name: review/$CI_COMMIT_REF_NAME
+  rules:
+    - if: '$AUTO_DEVOPS_PLATFORM_TARGET != "ECS"'
+      when: never
+    - if: '$CI_KUBERNETES_ACTIVE'
+      when: never
+    - if: '$REVIEW_DISABLED'
+      when: never
+    - if: '$CI_COMMIT_BRANCH != "master"'
+
+production_ecs:
+  extends: .deploy_to_ecs
+  stage: production
+  environment:
+    name: production
+  rules:
+    - if: '$AUTO_DEVOPS_PLATFORM_TARGET != "ECS"'
+      when: never
+    - if: '$CI_KUBERNETES_ACTIVE'
+      when: never
+    - if: '$CI_COMMIT_BRANCH == "master"'

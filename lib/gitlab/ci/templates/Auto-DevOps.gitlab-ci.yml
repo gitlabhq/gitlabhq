@@ -48,7 +48,6 @@ variables:
   POSTGRES_PASSWORD: testing-password
   POSTGRES_ENABLED: "true"
   POSTGRES_DB: $CI_ENVIRONMENT_SLUG
-  POSTGRES_VERSION: 9.6.2
 
   DOCKER_DRIVER: overlay2
 
@@ -159,5 +158,5 @@ include:
   - template: Security/DAST.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/gitlab/ci/templates/Security/DAST.gitlab-ci.yml
   - template: Security/Container-Scanning.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/gitlab/ci/templates/Security/Container-Scanning.gitlab-ci.yml
   - template: Security/Dependency-Scanning.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/gitlab/ci/templates/Security/Dependency-Scanning.gitlab-ci.yml
-  - template: Security/License-Management.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/gitlab/ci/templates/Security/License-Management.gitlab-ci.yml
+  - template: Security/License-Scanning.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/gitlab/ci/templates/Security/License-Scanning.gitlab-ci.yml
   - template: Security/SAST.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml

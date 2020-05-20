@@ -1,0 +1,8 @@
+# Read more on when to use this template at
+# https://docs.gitlab.com/ee/ci/yaml/#workflowrules
+
+workflow:
+  rules:
+    - if: $CI_MERGE_REQUEST_IID
+    - if: $CI_COMMIT_TAG
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH

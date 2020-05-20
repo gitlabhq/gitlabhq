@@ -57,11 +57,8 @@ module Gitlab
           # Already a commit?
           return commit_id if commit_id.is_a?(Gitlab::Git::Commit)
 
-          # Some weird thing?
-          return unless commit_id.is_a?(String)
-
           # This saves us an RPC round trip.
-          return if commit_id.include?(':')
+          return unless valid?(commit_id)
 
           commit = find_commit(repo, commit_id)
 
@@ -430,6 +427,15 @@ module Gitlab
 
       def fetch_body_from_gitaly
         self.class.get_message(@repository, id)
+      end
+
+      def self.valid?(commit_id)
+        commit_id.is_a?(String) && !(
+          commit_id.start_with?('-') ||
+            commit_id.include?(':') ||
+            commit_id.include?("\x00") ||
+            commit_id.match?(/\s/)
+        )
       end
     end
   end

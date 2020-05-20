@@ -1,0 +1,5 @@
+---
+title: "Add GraphQL support for querying a board's lists"
+merge_request: 24812
+author:
+type: added

@@ -14,7 +14,7 @@ describe Gitlab::JsonLogger do
 
     it 'formats strings' do
       output = subject.format_message('INFO', now, 'test', 'Hello world')
-      data = JSON.parse(output)
+      data = Gitlab::Json.parse(output)
 
       expect(data['severity']).to eq('INFO')
       expect(data['time']).to eq(now.utc.iso8601(3))
@@ -24,7 +24,7 @@ describe Gitlab::JsonLogger do
 
     it 'formats hashes' do
       output = subject.format_message('INFO', now, 'test', { hello: 1 })
-      data = JSON.parse(output)
+      data = Gitlab::Json.parse(output)
 
       expect(data['severity']).to eq('INFO')
       expect(data['time']).to eq(now.utc.iso8601(3))

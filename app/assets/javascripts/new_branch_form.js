@@ -1,4 +1,4 @@
-/* eslint-disable func-names, consistent-return, no-return-assign, no-else-return, @gitlab/require-i18n-strings */
+/* eslint-disable func-names, consistent-return, no-return-assign, @gitlab/require-i18n-strings */
 
 import $ from 'jquery';
 import RefSelectDropdown from './ref_select_dropdown';
@@ -76,9 +76,8 @@ export default class NewBranchForm {
       const matched = this.name.val().match(restriction.pattern);
       if (matched) {
         return errors.concat(formatter(matched.reduce(unique, []), restriction));
-      } else {
-        return errors;
       }
+      return errors;
     };
     const errors = this.restrictions.reduce(validator, []);
     if (errors.length > 0) {

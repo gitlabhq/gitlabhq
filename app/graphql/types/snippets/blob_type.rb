@@ -14,6 +14,7 @@ module Types
 
       field :plain_data, GraphQL::STRING_TYPE,
             description: 'Blob plain highlighted data',
+            calls_gitaly: true,
             null: true
 
       field :raw_path, GraphQL::STRING_TYPE,
@@ -48,6 +49,15 @@ module Types
       field :mode, type: GraphQL::STRING_TYPE,
             description: 'Blob mode',
             null: true
+
+      field :external_storage, type: GraphQL::STRING_TYPE,
+            description: 'Blob external storage',
+            null: true
+
+      field :rendered_as_text, type: GraphQL::BOOLEAN_TYPE,
+            description: 'Shows whether the blob is rendered as text',
+            method: :rendered_as_text?,
+            null: false
     end
     # rubocop: enable Graphql/AuthorizeTypes
   end

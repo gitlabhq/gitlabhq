@@ -9,6 +9,7 @@ function createCommitData(data = {}) {
   const defaultData = {
     sha: '123456789',
     title: 'Commit title',
+    titleHtml: 'Commit title',
     message: 'Commit message',
     webUrl: 'https://test.com/commit/123',
     authoredDate: '2019-01-01',

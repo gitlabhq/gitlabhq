@@ -5,8 +5,9 @@ require 'spec_helper'
 describe Types::PermissionTypes::Issue do
   it do
     expected_permissions = [
-      :read_issue, :admin_issue, :update_issue,
-      :create_note, :reopen_issue
+      :read_issue, :admin_issue, :update_issue, :reopen_issue,
+      :read_design, :create_design, :destroy_design,
+      :create_note
     ]
 
     expected_permissions.each do |permission|

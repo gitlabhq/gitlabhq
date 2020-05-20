@@ -78,6 +78,11 @@ module JiraServiceHelper
     JIRA_API + "/issue/#{issue_id}"
   end
 
+  def stub_jira_service_test
+    WebMock.stub_request(:get, 'https://jira.example.com/rest/api/2/serverInfo')
+      .to_return(body: { url: 'http://url' }.to_json)
+  end
+
   def stub_jira_urls(issue_id)
     WebMock.stub_request(:get, jira_project_url)
     WebMock.stub_request(:get, jira_api_comment_url(issue_id)).to_return(body: jira_issue_comments)

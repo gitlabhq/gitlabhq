@@ -11,15 +11,15 @@ as the hardware requirements that are needed to install and use GitLab.
 
 ### Supported Linux distributions
 
-- Ubuntu
-- Debian
-- CentOS
-- openSUSE
+- Ubuntu (16.04/18.04)
+- Debian (8/9/10)
+- CentOS (6/7/8)
+- openSUSE (Leap 15.1/Enterprise Server 12.2)
 - Red Hat Enterprise Linux (please use the CentOS packages and instructions)
 - Scientific Linux (please use the CentOS packages and instructions)
 - Oracle Linux (please use the CentOS packages and instructions)
 
-For the installations options, see [the main installation page](README.md).
+For the installation options, see [the main installation page](README.md).
 
 ### Unsupported Linux distributions and Unix-like operating systems
 
@@ -68,9 +68,13 @@ GitLab uses [webpack](https://webpack.js.org/) to compile frontend assets, which
 version of Node.js 10.13.0.
 
 You can check which version you are running with `node -v`. If you are running
-a version older than `v10.13.0`, you need to update to a newer version. You
+a version older than `v10.13.0`, you need to update it to a newer version. You
 can find instructions to install from community maintained packages or compile
 from source at the [Node.js website](https://nodejs.org/en/download/).
+
+## Redis versions
+
+GitLab requires Redis 5.0+. Beginning in GitLab 13.0, lower versions are not supported.
 
 ## Hardware requirements
 
@@ -95,7 +99,7 @@ This is the recommended minimum hardware for a handful of example GitLab user ba
 - 4 cores supports up to 500 users
 - 8 cores supports up to 1,000 users
 - 32 cores supports up to 5,000 users
-- More users? Run it high-availability on [multiple application servers](https://about.gitlab.com/solutions/high-availability/)
+- More users? Consult the [reference architectures page](../administration/reference_architectures/index.md)
 
 ### Memory
 
@@ -112,7 +116,7 @@ errors during usage.
 - 16GB RAM supports up to 500 users
 - 32GB RAM supports up to 1,000 users
 - 128GB RAM supports up to 5,000 users
-- More users? Run it high-availability on [multiple application servers](https://about.gitlab.com/solutions/high-availability/)
+- More users? Consult the [reference architectures page](../administration/reference_architectures/index.md)
 
 We recommend having at least [2GB of swap on your server](https://askubuntu.com/a/505344/310789), even if you currently have
 enough available RAM. Having swap will help reduce the chance of errors occurring
@@ -122,7 +126,7 @@ available when needed.
 
 Our [Memory Team](https://about.gitlab.com/handbook/engineering/development/enablement/memory/) is actively working to reduce the memory requirement.
 
-NOTE: **Note:** The 25 workers of Sidekiq will show up as separate processes in your process overview (such as `top` or `htop`) but they share the same RAM allocation since Sidekiq is a multithreaded application. Please see the section below about Unicorn workers for information about how many you need of those.
+NOTE: **Note:** The 25 workers of Sidekiq will show up as separate processes in your process overview (such as `top` or `htop`) but they share the same RAM allocation since Sidekiq is a multithreaded application. Please see the section below about Unicorn workers for information about how many you need for those.
 
 ## Database
 
@@ -139,9 +143,12 @@ MySQL/MariaDB are advised to [migrate to PostgreSQL](../update/mysql_to_postgres
 
 ### PostgreSQL Requirements
 
-As of GitLab 10.0, PostgreSQL 9.6 or newer is required, and earlier versions are
-not supported. We highly recommend users to use PostgreSQL 9.6 as this
-is the PostgreSQL version used for development and testing.
+We highly recommend users to use the minimum PostgreSQL versions specified below as these are the versions used for development and testing.
+
+GitLab version | Minimum PostgreSQL version
+-|-
+10.0 | 9.6
+12.10 | 11
 
 Users using PostgreSQL must ensure the `pg_trgm` extension is loaded into every
 GitLab database. This extension can be enabled (using a PostgreSQL super user)
@@ -167,7 +174,7 @@ If you are using [GitLab Geo](../development/geo.md):
 - The
   [tracking database](../development/geo.md#using-the-tracking-database)
   requires the
-  [postgres_fdw](https://www.postgresql.org/docs/9.6/postgres-fdw.html)
+  [postgres_fdw](https://www.postgresql.org/docs/11/postgres-fdw.html)
   extension.
 
 ```sql
@@ -180,28 +187,50 @@ For most instances we recommend using: (CPU cores * 1.5) + 1 = Unicorn workers.
 For example a node with 4 cores would have 7 Unicorn workers.
 
 For all machines that have 2GB and up we recommend a minimum of three Unicorn workers.
-If you have a 1GB machine we recommend to configure only two Unicorn workers to prevent excessive swapping.
+If you have a 1GB machine we recommend to configure only two Unicorn workers to prevent excessive
+swapping.
 
-As long as you have enough available CPU and memory capacity, it's okay to increase the number of Unicorn workers and this will usually help to reduce the response time of the applications and increase the ability to handle parallel requests.
+As long as you have enough available CPU and memory capacity, it's okay to increase the number of
+Unicorn workers and this will usually help to reduce the response time of the applications and
+increase the ability to handle parallel requests.
 
-To change the Unicorn workers when you have the Omnibus package (which defaults to the recommendation above) please see [the Unicorn settings in the Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/settings/unicorn.html).
+To change the Unicorn workers when you have the Omnibus package (which defaults to the
+recommendation above) please see [the Unicorn settings in the Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/settings/unicorn.html).
 
-## Puma Workers
+## Puma settings
 
-For most instances we recommend using: max(CPU cores * 0.9, 2) = Puma workers.
-For example a node with 4 cores would have 3 Puma workers.
+The recommended settings for Puma are determined by the infrastructure on which it's running.
+Omnibus GitLab defaults to the recommended Puma settings. Regardless of installation method, you can
+tune the Puma settings.
 
-For all machines that have 4GB and up we recommend a minimum of three Puma workers.
-If you have a 2GB machine we recommend to configure only one Puma worker to prevent excessive swapping.
+If you're using Omnibus GitLab, see [Puma settings](https://docs.gitlab.com/omnibus/settings/puma.html)
+for instructions on changing the Puma settings.
 
-By default each Puma worker runs with 4 threads. We do not recommend setting more,
-due to how [Ruby MRI multi-threading](https://en.wikipedia.org/wiki/Global_interpreter_lock) works.
+### Puma workers
 
-For cases when you have to use [Legacy Rugged code](../development/gitaly.md#legacy-rugged-code) it is recommended to set number of threads to 1.
+The recommended number of workers is calculated as the highest of the following:
 
-As long as you have enough available CPU and memory capacity, it's okay to increase the number of Puma workers and this will usually help to reduce the response time of the applications and increase the ability to handle parallel requests.
+- `2`
+- Number of CPU cores - 1
 
-To change the Puma workers when you have the Omnibus package (which defaults to the recommendation above) please see [the Puma settings in the Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/settings/puma.html).
+For example a node with 4 cores should be configured with 3 Puma workers.
+
+You can increase the number of Puma workers, providing enough CPU and memory capacity is available.
+A higher number of Puma workers will usually help to reduce the response time of the application
+and increase the ability to handle parallel requests. You must perform testing to verify the
+optimal settings for your infrastructure.
+
+### Puma threads
+
+The recommended number of threads is dependent on several factors, including total memory, and use
+of [legacy Rugged code](../development/gitaly.md#legacy-rugged-code).
+
+- If the operating system has a maximum 2 GB of memory, the recommended number of threads is `1`.
+  A higher value will result in excess swapping, and decrease performance.
+- If legacy Rugged code is in use, the recommended number of threads is `1`.
+- In all other cases, the recommended number of threads is `4`. We do not recommend setting this
+higher, due to how [Ruby MRI multi-threading](https://en.wikipedia.org/wiki/Global_interpreter_lock)
+works.
 
 ## Redis and Sidekiq
 

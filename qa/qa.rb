@@ -39,7 +39,6 @@ module QA
     autoload :MailHog, 'qa/runtime/mail_hog'
     autoload :IPAddress, 'qa/runtime/ip_address'
     autoload :Search, 'qa/runtime/search'
-    autoload :Project, 'qa/runtime/project'
     autoload :ApplicationSettings, 'qa/runtime/application_settings'
 
     module API
@@ -73,10 +72,10 @@ module QA
     autoload :DeployKey, 'qa/resource/deploy_key'
     autoload :DeployToken, 'qa/resource/deploy_token'
     autoload :ProtectedBranch, 'qa/resource/protected_branch'
+    autoload :Pipeline, 'qa/resource/pipeline'
     autoload :CiVariable, 'qa/resource/ci_variable'
     autoload :Runner, 'qa/resource/runner'
     autoload :PersonalAccessToken, 'qa/resource/personal_access_token'
-    autoload :KubernetesCluster, 'qa/resource/kubernetes_cluster'
     autoload :User, 'qa/resource/user'
     autoload :ProjectMilestone, 'qa/resource/project_milestone'
     autoload :Members, 'qa/resource/members'
@@ -88,6 +87,12 @@ module QA
     autoload :Tag, 'qa/resource/tag'
     autoload :ProjectMember, 'qa/resource/project_member'
     autoload :UserGPG, 'qa/resource/user_gpg'
+    autoload :Visibility, 'qa/resource/visibility'
+
+    module KubernetesCluster
+      autoload :Base, 'qa/resource/kubernetes_cluster/base'
+      autoload :ProjectCluster, 'qa/resource/kubernetes_cluster/project_cluster'
+    end
 
     module Events
       autoload :Base, 'qa/resource/events/base'
@@ -138,6 +143,7 @@ module QA
         autoload :Mattermost, 'qa/scenario/test/integration/mattermost'
         autoload :ObjectStorage, 'qa/scenario/test/integration/object_storage'
         autoload :SMTP, 'qa/scenario/test/integration/smtp'
+        autoload :GitalyHA, 'qa/scenario/test/integration/gitaly_ha'
       end
 
       module Sanity
@@ -156,6 +162,7 @@ module QA
     autoload :Base, 'qa/page/base'
     autoload :View, 'qa/page/view'
     autoload :Element, 'qa/page/element'
+    autoload :PageConcern, 'qa/page/page_concern'
     autoload :Validator, 'qa/page/validator'
     autoload :Validatable, 'qa/page/validatable'
 
@@ -184,6 +191,7 @@ module QA
         autoload :New, 'qa/page/dashboard/snippet/new'
         autoload :Index, 'qa/page/dashboard/snippet/index'
         autoload :Show, 'qa/page/dashboard/snippet/show'
+        autoload :Edit, 'qa/page/dashboard/snippet/edit'
       end
     end
 
@@ -242,11 +250,11 @@ module QA
       end
 
       module Settings
-        autoload :Common, 'qa/page/project/settings/common'
         autoload :Advanced, 'qa/page/project/settings/advanced'
         autoload :Main, 'qa/page/project/settings/main'
         autoload :Repository, 'qa/page/project/settings/repository'
         autoload :CICD, 'qa/page/project/settings/ci_cd'
+        autoload :GeneralPipelines, 'qa/page/project/settings/general_pipelines'
         autoload :AutoDevops, 'qa/page/project/settings/auto_devops'
         autoload :DeployKeys, 'qa/page/project/settings/deploy_keys'
         autoload :DeployTokens, 'qa/page/project/settings/deploy_tokens'
@@ -257,6 +265,13 @@ module QA
         autoload :Members, 'qa/page/project/settings/members'
         autoload :MirroringRepositories, 'qa/page/project/settings/mirroring_repositories'
         autoload :VisibilityFeaturesPermissions, 'qa/page/project/settings/visibility_features_permissions'
+        autoload :Operations, 'qa/page/project/settings/operations'
+        autoload :Incidents, 'qa/page/project/settings/incidents'
+        autoload :Integrations, 'qa/page/project/settings/integrations'
+
+        module Services
+          autoload :Prometheus, 'qa/page/project/settings/services/prometheus'
+        end
       end
 
       module SubMenus
@@ -395,6 +410,7 @@ module QA
       autoload :Breadcrumbs, 'qa/page/component/breadcrumbs'
       autoload :CiBadgeLink, 'qa/page/component/ci_badge_link'
       autoload :ClonePanel, 'qa/page/component/clone_panel'
+      autoload :DesignManagement, 'qa/page/component/design_management'
       autoload :LazyLoader, 'qa/page/component/lazy_loader'
       autoload :LegacyClonePanel, 'qa/page/component/legacy_clone_panel'
       autoload :Dropzone, 'qa/page/component/dropzone'
@@ -404,6 +420,8 @@ module QA
       autoload :UsersSelect, 'qa/page/component/users_select'
       autoload :Note, 'qa/page/component/note'
       autoload :ConfirmModal, 'qa/page/component/confirm_modal'
+      autoload :CustomMetric, 'qa/page/component/custom_metric'
+      autoload :DesignManagement, 'qa/page/component/design_management'
 
       module Issuable
         autoload :Common, 'qa/page/component/issuable/common'
@@ -411,6 +429,10 @@ module QA
 
       module WebIDE
         autoload :Alert, 'qa/page/component/web_ide/alert'
+      end
+
+      module Project
+        autoload :Templates, 'qa/page/component/project/templates'
       end
     end
   end
@@ -431,6 +453,7 @@ module QA
     autoload :Shellout, 'qa/service/shellout'
     autoload :KubernetesCluster, 'qa/service/kubernetes_cluster'
     autoload :Omnibus, 'qa/service/omnibus'
+    autoload :PraefectManager, 'qa/service/praefect_manager'
 
     module ClusterProvider
       autoload :Base, 'qa/service/cluster_provider/base'

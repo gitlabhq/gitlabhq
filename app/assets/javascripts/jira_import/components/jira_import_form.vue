@@ -13,6 +13,10 @@ export default {
   currentUserAvatarUrl: gon.current_user_avatar_url,
   currentUsername: gon.current_username,
   props: {
+    importLabel: {
+      type: String,
+      required: true,
+    },
     issuesPath: {
       type: String,
       required: true,
@@ -21,21 +25,25 @@ export default {
       type: Array,
       required: true,
     },
+    value: {
+      type: String,
+      required: false,
+      default: undefined,
+    },
   },
   data() {
     return {
-      selectedOption: null,
       selectState: null,
     };
   },
   methods: {
     initiateJiraImport(event) {
       event.preventDefault();
-      if (!this.selectedOption) {
-        this.showValidationError();
-      } else {
+      if (this.value) {
         this.hideValidationError();
-        this.$emit('initiateJiraImport', this.selectedOption);
+        this.$emit('initiateJiraImport', this.value);
+      } else {
+        this.showValidationError();
       }
     },
     hideValidationError() {
@@ -62,10 +70,11 @@ export default {
       >
         <gl-form-select
           id="jira-project-select"
-          v-model="selectedOption"
           class="mb-2"
           :options="jiraProjects"
           :state="selectState"
+          :value="value"
+          @change="$emit('input', $event)"
         />
       </gl-form-group>
 
@@ -79,7 +88,7 @@ export default {
           id="jira-project-label"
           class="mb-2"
           background-color="#428BCA"
-          title="jira-import::KEY-1"
+          :title="importLabel"
           scoped
         />
       </gl-form-group>

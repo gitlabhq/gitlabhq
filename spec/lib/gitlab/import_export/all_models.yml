@@ -6,10 +6,12 @@ issues:
 - assignees
 - updated_by
 - milestone
+- iteration
 - notes
 - resource_label_events
 - resource_weight_events
 - resource_milestone_events
+- resource_state_events
 - sent_notifications
 - sentry_issue
 - label_links
@@ -18,6 +20,7 @@ issues:
 - todos
 - user_agent_detail
 - moved_to
+- moved_from
 - duplicated_to
 - promoted_to_epic
 - events
@@ -39,6 +42,8 @@ issues:
 - related_vulnerabilities
 - user_mentions
 - system_note_metadata
+- alert_management_alert
+- status_page_published_incident
 events:
 - author
 - project
@@ -111,9 +116,11 @@ merge_requests:
 - assignee
 - updated_by
 - milestone
+- iteration
 - notes
 - resource_label_events
 - resource_milestone_events
+- resource_state_events
 - label_links
 - labels
 - last_edited_by
@@ -212,7 +219,7 @@ ci_pipelines:
 - vulnerability_findings
 - pipeline_config
 - security_scans
-- daily_report_results
+- daily_build_group_report_results
 pipeline_variables:
 - pipeline
 stages:
@@ -222,6 +229,7 @@ stages:
 - processables
 - builds
 - bridges
+- latest_statuses
 statuses:
 - project
 - pipeline
@@ -343,6 +351,7 @@ project:
 - labels
 - events
 - milestones
+- iterations
 - notes
 - snippets
 - hooks
@@ -420,7 +429,6 @@ project:
 - mirror_user
 - push_rule
 - jenkins_service
-- jenkins_deprecated_service
 - index_status
 - feature_usage
 - approval_rules
@@ -443,6 +451,7 @@ project:
 - vulnerability_scanners
 - operations_feature_flags
 - operations_feature_flags_client
+- operations_feature_flags_user_lists
 - prometheus_alerts
 - prometheus_alert_events
 - self_managed_prometheus_alert_events
@@ -477,9 +486,14 @@ project:
 - status_page_setting
 - requirements
 - export_jobs
-- daily_report_results
+- daily_build_group_report_results
 - jira_imports
 - compliance_framework_setting
+- metrics_users_starred_dashboards
+- alert_management_alerts
+- repository_storage_moves
+- freeze_periods
+- webex_teams_service
 award_emoji:
 - awardable
 - user
@@ -631,3 +645,5 @@ epic_issue:
 system_note_metadata:
 - note
 - description_version
+status_page_published_incident:
+- issue

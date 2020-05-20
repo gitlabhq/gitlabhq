@@ -11,7 +11,7 @@ coordinate with others to [document](../administration/instance_limits.md)
 and communicate those limits.
 
 There is a guide about [introducing application
-limits](https://about.gitlab.com/handbook/product/#introducing-application-limits).
+limits](https://about.gitlab.com/handbook/product/product-management/process/index.html#introducing-application-limits).
 
 ## Development
 
@@ -90,7 +90,7 @@ project.actual_limits.exceeded?(:project_hooks, 10)
 
 #### `Limitable` concern
 
-The [`Limitable` concern](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/app/models/concerns/limitable.rb)
+The [`Limitable` concern](https://gitlab.com/gitlab-org/gitlab/blob/master/app/models/concerns/limitable.rb)
 can be used to validate that a model does not exceed the limits. It ensures
 that the count of the records for the current model does not exceed the defined
 limit.

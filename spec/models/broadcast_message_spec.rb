@@ -143,6 +143,24 @@ describe BroadcastMessage do
 
       expect(subject.call('/group/groupname/issues').length).to eq(0)
     end
+
+    it 'does not return message if target path has no wild card at the end' do
+      create(:broadcast_message, target_path: "*/issues", broadcast_type: broadcast_type)
+
+      expect(subject.call('/group/issues/test').length).to eq(0)
+    end
+
+    it 'does not return message if target path has wild card at the end' do
+      create(:broadcast_message, target_path: "/issues/*", broadcast_type: broadcast_type)
+
+      expect(subject.call('/group/issues/test').length).to eq(0)
+    end
+
+    it 'does return message if target path has wild card at the beginning and the end' do
+      create(:broadcast_message, target_path: "*/issues/*", broadcast_type: broadcast_type)
+
+      expect(subject.call('/group/issues/test').length).to eq(1)
+    end
   end
 
   describe '.current', :use_clean_rails_memory_store_caching do

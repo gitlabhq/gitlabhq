@@ -82,4 +82,32 @@ describe CommitsHelper do
       expect(helper.commit_to_html(commit, ref, project)).to include('<div class="commit-content')
     end
   end
+
+  describe 'commit_path' do
+    it 'returns a persisted merge request commit path' do
+      project = create(:project, :repository)
+      persisted_merge_request = create(:merge_request, source_project: project, target_project: project)
+      commit = project.repository.commit
+
+      expect(helper.commit_path(persisted_merge_request.project, commit, merge_request: persisted_merge_request))
+        .to eq(diffs_project_merge_request_path(project, persisted_merge_request, commit_id: commit.id))
+    end
+
+    it 'returns a non-persisted merge request commit path which commits still reside in the source project' do
+      source_project = create(:project, :repository)
+      target_project = create(:project, :repository)
+      non_persisted_merge_request = build(:merge_request, source_project: source_project, target_project: target_project)
+      commit = source_project.repository.commit
+
+      expect(helper.commit_path(non_persisted_merge_request.project, commit, merge_request: non_persisted_merge_request))
+        .to eq(project_commit_path(source_project, commit))
+    end
+
+    it 'returns a project commit path' do
+      project = create(:project, :repository)
+      commit = project.repository.commit
+
+      expect(helper.commit_path(project, commit)).to eq(project_commit_path(project, commit))
+    end
+  end
 end

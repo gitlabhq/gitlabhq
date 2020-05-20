@@ -27,12 +27,24 @@ RSpec.shared_examples 'instance statistics availability' do
     context 'for admins' do
       let(:user) { create(:admin) }
 
-      it 'allows access when the feature is not available publicly' do
-        stub_application_setting(instance_statistics_visibility_private: true)
+      context 'when admin mode disabled' do
+        it 'forbids access when the feature is not available publicly' do
+          stub_application_setting(instance_statistics_visibility_private: true)
 
-        get :index
+          get :index
 
-        expect(response).to have_gitlab_http_status(:success)
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'when admin mode enabled', :enable_admin_mode do
+        it 'allows access when the feature is not available publicly' do
+          stub_application_setting(instance_statistics_visibility_private: true)
+
+          get :index
+
+          expect(response).to have_gitlab_http_status(:success)
+        end
       end
     end
   end

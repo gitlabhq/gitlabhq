@@ -7,7 +7,7 @@ import { decodeAndParse } from './utils';
 
 Vue.use(VueRouter);
 
-export default function createRouter(base, store) {
+export default function createRouter(base) {
   const router = new VueRouter({
     base,
     mode: 'history',
@@ -20,12 +20,6 @@ export default function createRouter(base, store) {
           nameGenerator: () => s__('ContainerRegistry|Container Registry'),
           root: true,
         },
-        beforeEnter: (to, from, next) => {
-          if (!from.name || !store.state.images?.length) {
-            store.dispatch('requestImagesList');
-          }
-          next();
-        },
       },
       {
         name: 'details',
@@ -33,10 +27,6 @@ export default function createRouter(base, store) {
         component: Details,
         meta: {
           nameGenerator: route => decodeAndParse(route.params.id).name,
-        },
-        beforeEnter: (to, from, next) => {
-          store.dispatch('requestTagsList', { params: to.params.id });
-          next();
         },
       },
     ],

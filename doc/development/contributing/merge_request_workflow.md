@@ -17,10 +17,10 @@ wireframes of the proposed feature if it will also change the UI.
 Merge requests should be submitted to the appropriate project at GitLab.com, for example
 [GitLab](https://gitlab.com/gitlab-org/gitlab/-/merge_requests),
 [GitLab Runner](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests),
-[GitLab Omnibus](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests), etc.
+[Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests), etc.
 
 If you are new to GitLab development (or web development in general), see the
-[I want to contribute!](index.md#i-want-to-contribute) section to get started with
+[how to contribute](index.md#how-to-contribute) section to get started with
 some potentially easy issues.
 
 To start developing GitLab, download the [GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit)
@@ -138,7 +138,7 @@ For more information see [How to Write a Git Commit Message](https://chris.beams
 
 Example commit message template that can be used on your machine that embodies the above (guide for [how to apply template](https://codeinthehole.com/tips/a-useful-template-for-commit-messages/)):
 
-```text
+```plaintext
 # (If applied, this commit will...) <subject> (Max 50 char)
 # |<----  Using a Maximum Of 50 Characters  ---->|
 
@@ -244,7 +244,7 @@ request:
 1. The [CI environment preparation](https://gitlab.com/gitlab-org/gitlab/blob/master/scripts/prepare_build.sh).
 1. The [Omnibus package creator](https://gitlab.com/gitlab-org/omnibus-gitlab).
 
-### Incremental improvements
+## Incremental improvements
 
 We allow engineering time to fix small problems (with or without an
 issue) that are incremental improvements, such as:

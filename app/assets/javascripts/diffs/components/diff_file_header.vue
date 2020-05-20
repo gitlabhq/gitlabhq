@@ -1,5 +1,5 @@
 <script>
-import { escape as esc } from 'lodash';
+import { escape } from 'lodash';
 import { mapActions, mapGetters } from 'vuex';
 import { GlDeprecatedButton, GlTooltipDirective, GlLoadingIcon } from '@gitlab/ui';
 import { polyfillSticky } from '~/lib/utils/sticky';
@@ -91,7 +91,7 @@ export default {
       return this.expanded ? 'chevron-down' : 'chevron-right';
     },
     viewFileButtonText() {
-      const truncatedContentSha = esc(truncateSha(this.diffFile.content_sha));
+      const truncatedContentSha = escape(truncateSha(this.diffFile.content_sha));
       return sprintf(
         s__('MergeRequests|View file @ %{commitId}'),
         { commitId: truncatedContentSha },
@@ -99,7 +99,7 @@ export default {
       );
     },
     viewReplacedFileButtonText() {
-      const truncatedBaseSha = esc(truncateSha(this.diffFile.diff_refs.base_sha));
+      const truncatedBaseSha = escape(truncateSha(this.diffFile.diff_refs.base_sha));
       return sprintf(
         s__('MergeRequests|View replaced file @ %{commitId}'),
         {

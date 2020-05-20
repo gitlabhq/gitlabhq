@@ -1,0 +1,50 @@
+// -------
+// Please see `app/assets/stylesheets/page_bundles/ide_themes/README.md` for a guide on contributing new themes
+// -------
+.ide.theme-dark {
+  --ide-border-color: #1d1f21;
+  --ide-border-color-alt: #333;
+  --ide-highlight-accent: #fff;
+  --ide-text-color: #ccc;
+  --ide-text-color-secondary: #ccc;
+  --ide-background: #333;
+  --ide-background-hover: #2d2d2d;
+  --ide-highlight-background: #252526;
+  --ide-link-color: #428fdc;
+  --ide-footer-background: #060606;
+
+  --ide-input-border: #868686;
+  --ide-input-background: transparent;
+  --ide-input-color: #fff;
+
+  --ide-btn-default-background: transparent;
+  --ide-btn-default-border: #bfbfbf;
+  --ide-btn-default-hover-border: #d8d8d8;
+
+  --ide-btn-primary-background: #1068bf;
+  --ide-btn-primary-border: #428fdc;
+  --ide-btn-primary-hover-border: #63a6e9;
+
+  --ide-btn-success-background: #217645;
+  --ide-btn-success-border: #108548;
+  --ide-btn-success-hover-border: #2da160;
+
+  --ide-btn-disabled-border: rgba(223, 223, 223, 0.24);
+  --ide-btn-disabled-color: rgba(145, 145, 145, 0.48);
+
+  --ide-btn-hover-border-width: 2px;
+
+  --ide-dropdown-background: #404040;
+  --ide-dropdown-hover-background: #525252;
+
+  --ide-dropdown-btn-hover-border: #{$gray-200};
+  --ide-dropdown-btn-hover-background: #{$gray-900};
+
+  --ide-file-row-btn-hover-background: #{$gray-800};
+
+  --ide-diff-insert: rgba(155, 185, 85, 0.2);
+  --ide-diff-remove: rgba(255, 0, 0, 0.2);
+
+  --ide-animation-gradient-1: #{$gray-800};
+  --ide-animation-gradient-2: #{$gray-700};
+}

@@ -1,6 +1,9 @@
 ---
 last_updated: 2018-06-04
 type: concepts, reference
+stage: Release
+group: Release Management
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
 # GitLab Pages domain names, URLs, and baseurls

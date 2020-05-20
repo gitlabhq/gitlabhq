@@ -1,0 +1,5 @@
+---
+title: Move snippet raw_url attribute to base entity
+merge_request: 29776
+author:
+type: fixed

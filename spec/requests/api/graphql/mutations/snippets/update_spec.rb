@@ -15,9 +15,10 @@ describe 'Updating a Snippet' do
   let(:updated_file_name) { 'Updated file_name' }
   let(:current_user) { snippet.author }
 
+  let(:snippet_gid) { GitlabSchema.id_from_object(snippet).to_s }
   let(:mutation) do
     variables = {
-      id: GitlabSchema.id_from_object(snippet).to_s,
+      id: snippet_gid,
       content: updated_content,
       description: updated_description,
       visibility_level: 'public',
@@ -90,16 +91,18 @@ describe 'Updating a Snippet' do
   end
 
   describe 'PersonalSnippet' do
-    it_behaves_like 'graphql update actions' do
-      let(:snippet) do
-        create(:personal_snippet,
-               :private,
-               file_name: original_file_name,
-               title: original_title,
-               content: original_content,
-               description: original_description)
-      end
+    let(:snippet) do
+      create(:personal_snippet,
+             :private,
+             file_name: original_file_name,
+             title: original_title,
+             content: original_content,
+             description: original_description)
     end
+
+    it_behaves_like 'graphql update actions'
+
+    it_behaves_like 'when the snippet is not found'
   end
 
   describe 'ProjectSnippet' do
@@ -142,5 +145,7 @@ describe 'Updating a Snippet' do
         end
       end
     end
+
+    it_behaves_like 'when the snippet is not found'
   end
 end

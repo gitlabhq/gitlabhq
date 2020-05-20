@@ -45,7 +45,6 @@ describe('LabelsSelect', () => {
             labels: mockLabels,
             issueUpdateURL: mockUrl,
             enableScopedLabels: true,
-            scopedLabelsDocumentationLink: 'docs-link',
           }),
         );
       });
@@ -71,10 +70,6 @@ describe('LabelsSelect', () => {
       it('generated label item has a gl-label-text class', () => {
         expect($labelEl.find('span').hasClass('gl-label-text')).toEqual(true);
       });
-
-      it('generated label item template does not have gl-label-icon class', () => {
-        expect($labelEl.find('.gl-label-icon')).toHaveLength(0);
-      });
     });
 
     describe('when scoped label is present', () => {
@@ -87,7 +82,6 @@ describe('LabelsSelect', () => {
             labels: mockScopedLabels,
             issueUpdateURL: mockUrl,
             enableScopedLabels: true,
-            scopedLabelsDocumentationLink: 'docs-link',
           }),
         );
       });
@@ -104,14 +98,6 @@ describe('LabelsSelect', () => {
 
       it('generated label item template has html flag as true', () => {
         expect($labelEl.find('a').attr('data-html')).toBe('true');
-      });
-
-      it('generated label item template has question icon', () => {
-        expect($labelEl.find('i.fa-question-circle')).toHaveLength(1);
-      });
-
-      it('generated label item template has gl-label-icon class', () => {
-        expect($labelEl.find('.gl-label-icon')).toHaveLength(1);
       });
 
       it('generated label item template has correct label styles', () => {
@@ -141,7 +127,6 @@ describe('LabelsSelect', () => {
             labels: mockScopedLabels2,
             issueUpdateURL: mockUrl,
             enableScopedLabels: true,
-            scopedLabelsDocumentationLink: 'docs-link',
           }),
         );
       });

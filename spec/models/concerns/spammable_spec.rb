@@ -39,39 +39,96 @@ describe Spammable do
     describe '#invalidate_if_spam' do
       using RSpec::Parameterized::TableSyntax
 
+      before do
+        stub_application_setting(recaptcha_enabled: true)
+      end
+
       context 'when the model is spam' do
-        where(:recaptcha_enabled, :error) do
-          true  | /solve the reCAPTCHA to proceed/
-          false | /has been discarded/
-        end
+        subject { invalidate_if_spam(is_spam: true) }
 
-        with_them do
-          subject { invalidate_if_spam(true, recaptcha_enabled) }
-
-          it 'has an error related to spam on the model' do
-            expect(subject.errors.messages[:base]).to match_array error
-          end
+        it 'has an error related to spam on the model' do
+          expect(subject.errors.messages[:base]).to match_array /has been discarded/
         end
       end
 
-      context 'when the model is not spam' do
-        [true, false].each do |enabled|
-          let(:recaptcha_enabled) { enabled }
+      context 'when the model needs recaptcha' do
+        subject { invalidate_if_spam(needs_recaptcha: true) }
 
-          subject { invalidate_if_spam(false, recaptcha_enabled) }
-
-          it 'returns no error' do
-            expect(subject.errors.messages[:base]).to be_empty
-          end
+        it 'has an error related to spam on the model' do
+          expect(subject.errors.messages[:base]).to match_array /solve the reCAPTCHA/
         end
       end
 
-      def invalidate_if_spam(is_spam, recaptcha_enabled)
-        stub_application_setting(recaptcha_enabled: recaptcha_enabled)
+      context 'if the model is spam and also needs recaptcha' do
+        subject { invalidate_if_spam(is_spam: true, needs_recaptcha: true) }
 
+        it 'has an error related to spam on the model' do
+          expect(subject.errors.messages[:base]).to match_array /solve the reCAPTCHA/
+        end
+      end
+
+      context 'when the model is not spam nor needs recaptcha' do
+        subject { invalidate_if_spam }
+
+        it 'returns no error' do
+          expect(subject.errors.messages[:base]).to be_empty
+        end
+      end
+
+      context 'if recaptcha is not enabled and the model needs recaptcha' do
+        before do
+          stub_application_setting(recaptcha_enabled: false)
+        end
+
+        subject { invalidate_if_spam(needs_recaptcha: true) }
+
+        it 'has no errors' do
+          expect(subject.errors.messages[:base]).to match_array /has been discarded/
+        end
+      end
+
+      def invalidate_if_spam(is_spam: false, needs_recaptcha: false)
         issue.tap do |i|
           i.spam = is_spam
+          i.needs_recaptcha = needs_recaptcha
           i.invalidate_if_spam
+        end
+      end
+    end
+
+    describe 'spam flags' do
+      before do
+        issue.spam = false
+        issue.needs_recaptcha = false
+      end
+
+      describe '#spam!' do
+        it 'adds only `spam` flag' do
+          issue.spam!
+
+          expect(issue.spam).to be_truthy
+          expect(issue.needs_recaptcha).to be_falsey
+        end
+      end
+
+      describe '#needs_recaptcha!' do
+        it 'adds `needs_recaptcha` flag' do
+          issue.needs_recaptcha!
+
+          expect(issue.spam).to be_falsey
+          expect(issue.needs_recaptcha).to be_truthy
+        end
+      end
+
+      describe '#clear_spam_flags!' do
+        it 'clears spam and recaptcha flags' do
+          issue.spam = true
+          issue.needs_recaptcha = true
+
+          issue.clear_spam_flags!
+
+          expect(issue).not_to be_spam
+          expect(issue.needs_recaptcha).to be_falsey
         end
       end
     end

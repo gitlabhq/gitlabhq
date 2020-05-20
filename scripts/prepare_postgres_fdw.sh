@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 psql -h postgres -U postgres gitlabhq_geo_test <<EOF
 CREATE EXTENSION postgres_fdw;

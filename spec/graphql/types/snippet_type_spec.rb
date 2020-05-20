@@ -17,7 +17,7 @@ describe GitlabSchema.types['Snippet'] do
   end
 
   describe 'authorizations' do
-    it { expect(described_class).to require_graphql_authorizations(:read_snippet) }
+    specify { expect(described_class).to require_graphql_authorizations(:read_snippet) }
   end
 
   shared_examples 'response without repository URLs' do
@@ -34,14 +34,6 @@ describe GitlabSchema.types['Snippet'] do
       it 'responds with repository URLs' do
         expect(response['sshUrlToRepo']).to eq(snippet.ssh_url_to_repo)
         expect(response['httpUrlToRepo']).to eq(snippet.http_url_to_repo)
-      end
-
-      context 'when version_snippets feature is disabled' do
-        before do
-          stub_feature_flags(version_snippets: false)
-        end
-
-        it_behaves_like 'response without repository URLs'
       end
     end
   end

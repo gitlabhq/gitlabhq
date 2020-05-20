@@ -1,0 +1,5 @@
+---
+title: Fix leaky constant issue in tree spec
+merge_request: 32045
+author: Rajendra Kadam
+type: fixed

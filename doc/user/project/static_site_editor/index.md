@@ -5,7 +5,14 @@ description: "The static site editor enables users to edit content on static web
 
 # Static Site Editor
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28758) in GitLab 12.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28758) in GitLab 12.10.
+> - WYSIWYG editor [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214559) in GitLab 13.0.
+
+DANGER: **Danger:**
+In GitLab 13.0, we [introduced breaking changes](https://gitlab.com/gitlab-org/gitlab/-/issues/213282)
+to the URL structure of the Static Site Editor. Follow the instructions in this
+[snippet](https://gitlab.com/gitlab-org/project-templates/static-site-editor-middleman/snippets/1976539)
+to update your project with the latest changes.
 
 Static Site Editor enables users to edit content on static websites without
 prior knowledge of the underlying templating language, site architecture, or
@@ -44,7 +51,7 @@ When clicking it, GitLab will open up an editor window from which the content
 can be directly edited. When you're ready, you can submit your changes in a
 click of a button:
 
-![Static Site Editor](img/static_site_editor_v12_10.png)
+![Static Site Editor](img/wysiwyg_editor_v13_0.png)
 
 When an editor submits their changes, in the background, GitLab automatically
 creates a new branch, commits their changes, and opens a merge request. The
@@ -79,7 +86,8 @@ company and a new feature has been added to the company product.
 1. You are assigned the task of updating the documentation.
 1. You visit a page and see content that needs to be edited.
 1. Click the **Edit this page** button on the production site.
-1. The file is opened in the Static Site Editor.
+1. The file is opened in the Static Site Editor in **WYSIWYG** mode. If you wish to edit the raw Markdown
+   instead, you can toggle the **Markdown** mode in the bottom-right corner.
 1. You edit the file right there and click **Submit changes**.
 1. A new merge request is automatically created and you assign it to your colleague for review.
 

@@ -1,5 +1,5 @@
 <script>
-import { escape as esc } from 'lodash';
+import { escape } from 'lodash';
 import { GlModal, GlModalDirective } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
 
@@ -38,7 +38,7 @@ export default {
       return sprintf(
         s__('WikiPageConfirmDelete|Delete page %{pageTitle}?'),
         {
-          pageTitle: esc(this.pageTitle),
+          pageTitle: escape(this.pageTitle),
         },
         false,
       );
@@ -46,6 +46,7 @@ export default {
   },
   methods: {
     onSubmit() {
+      window.onbeforeunload = null;
       this.$refs.form.submit();
     },
   },

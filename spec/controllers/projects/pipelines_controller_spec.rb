@@ -145,11 +145,81 @@ describe Projects::PipelinesController do
       end
     end
 
-    def get_pipelines_index_json
+    context 'filter by scope' do
+      it 'returns matched pipelines' do
+        get_pipelines_index_json(scope: 'running')
+
+        check_pipeline_response(returned: 2, all: 6, running: 2, pending: 1, finished: 3)
+      end
+
+      context 'scope is branches or tags' do
+        before do
+          create(:ci_pipeline, :failed, project: project, ref: 'v1.0.0', tag: true)
+        end
+
+        context 'when scope is branches' do
+          it 'returns matched pipelines' do
+            get_pipelines_index_json(scope: 'branches')
+
+            check_pipeline_response(returned: 1, all: 7, running: 2, pending: 1, finished: 4)
+          end
+        end
+
+        context 'when scope is tags' do
+          it 'returns matched pipelines' do
+            get_pipelines_index_json(scope: 'tags')
+
+            check_pipeline_response(returned: 1, all: 7, running: 2, pending: 1, finished: 4)
+          end
+        end
+      end
+    end
+
+    context 'filter by username' do
+      let!(:pipeline) { create(:ci_pipeline, :running, project: project, user: user) }
+
+      context 'when username exists' do
+        it 'returns matched pipelines' do
+          get_pipelines_index_json(username: user.username)
+
+          check_pipeline_response(returned: 1, all: 1, running: 1, pending: 0, finished: 0)
+        end
+      end
+
+      context 'when username does not exist' do
+        it 'returns empty' do
+          get_pipelines_index_json(username: 'invalid-username')
+
+          check_pipeline_response(returned: 0, all: 0, running: 0, pending: 0, finished: 0)
+        end
+      end
+    end
+
+    context 'filter by ref' do
+      let!(:pipeline) { create(:ci_pipeline, :running, project: project, ref: 'branch-1') }
+
+      context 'when pipelines with the ref exists' do
+        it 'returns matched pipelines' do
+          get_pipelines_index_json(ref: 'branch-1')
+
+          check_pipeline_response(returned: 1, all: 1, running: 1, pending: 0, finished: 0)
+        end
+      end
+
+      context 'when no pipeline with the ref exists' do
+        it 'returns empty list' do
+          get_pipelines_index_json(ref: 'invalid-ref')
+
+          check_pipeline_response(returned: 0, all: 0, running: 0, pending: 0, finished: 0)
+        end
+      end
+    end
+
+    def get_pipelines_index_json(params = {})
       get :index, params: {
                     namespace_id: project.namespace,
                     project_id: project
-                  },
+                  }.merge(params),
                   format: :json
     end
 
@@ -198,6 +268,18 @@ describe Projects::PipelinesController do
         status: status,
         user: user
       )
+    end
+
+    def check_pipeline_response(returned:, all:, running:, pending:, finished:)
+      aggregate_failures do
+        expect(response).to match_response_schema('pipeline')
+
+        expect(json_response['pipelines'].count).to eq returned
+        expect(json_response['count']['all'].to_i).to eq all
+        expect(json_response['count']['running'].to_i).to eq running
+        expect(json_response['count']['pending'].to_i).to eq pending
+        expect(json_response['count']['finished'].to_i).to eq finished
+      end
     end
   end
 
@@ -748,12 +830,10 @@ describe Projects::PipelinesController do
 
     context 'when feature is enabled' do
       before do
-        stub_feature_flags(junit_pipeline_view: true)
+        stub_feature_flags(junit_pipeline_view: project)
       end
 
       context 'when pipeline does not have a test report' do
-        let(:pipeline) { create(:ci_pipeline, project: project) }
-
         it 'renders an empty test report' do
           get_test_report_json
 
@@ -763,7 +843,11 @@ describe Projects::PipelinesController do
       end
 
       context 'when pipeline has a test report' do
-        let(:pipeline) { create(:ci_pipeline, :with_test_reports, project: project) }
+        before do
+          create(:ci_build, name: 'rspec', pipeline: pipeline).tap do |build|
+            create(:ci_job_artifact, :junit, job: build)
+          end
+        end
 
         it 'renders the test report' do
           get_test_report_json
@@ -773,25 +857,28 @@ describe Projects::PipelinesController do
         end
       end
 
-      context 'when pipeline has corrupt test reports' do
-        let(:pipeline) { create(:ci_pipeline, project: project) }
-
+      context 'when pipeline has a corrupt test report artifact' do
         before do
-          job = create(:ci_build, pipeline: pipeline)
-          create(:ci_job_artifact, :junit_with_corrupted_data, job: job, project: project)
+          create(:ci_build, name: 'rspec', pipeline: pipeline).tap do |build|
+            create(:ci_job_artifact, :junit_with_corrupted_data, job: build)
+          end
+
+          get_test_report_json
         end
 
         it 'renders the test reports' do
-          get_test_report_json
-
           expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response['status']).to eq('error_parsing_report')
+          expect(json_response['test_suites'].count).to eq(1)
+        end
+
+        it 'returns a suite_error on the suite with corrupted XML' do
+          expect(json_response['test_suites'].first['suite_error']).to eq('JUnit XML parsing failed: 1:1: FATAL: Document is empty')
         end
       end
 
       context 'when junit_pipeline_screenshots_view is enabled' do
         before do
-          stub_feature_flags(junit_pipeline_screenshots_view: { enabled: true, thing: project })
+          stub_feature_flags(junit_pipeline_screenshots_view: project)
         end
 
         context 'when test_report contains attachment and scope is with_attachment as a URL param' do
@@ -820,7 +907,7 @@ describe Projects::PipelinesController do
 
       context 'when junit_pipeline_screenshots_view is disabled' do
         before do
-          stub_feature_flags(junit_pipeline_screenshots_view: { enabled: false, thing: project })
+          stub_feature_flags(junit_pipeline_screenshots_view: false)
         end
 
         context 'when test_report contains attachment and scope is with_attachment as a URL param' do

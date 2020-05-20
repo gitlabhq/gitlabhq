@@ -1,11 +1,11 @@
 .run-dev-fixtures:
   extends:
     - .default-retry
-    - .default-cache
+    - .rails-cache
     - .default-before_script
     - .use-pg11
   stage: test
-  needs: ["setup-test-env pg11"]
+  needs: ["setup-test-env"]
   variables:
     FIXTURE_PATH: "db/fixtures/development"
     SEED_CYCLE_ANALYTICS: "true"
@@ -19,8 +19,9 @@ run-dev-fixtures:
     - .run-dev-fixtures
     - .dev-fixtures:rules:ee-and-foss
   script:
-    - scripts/gitaly-test-spawn
-    - RAILS_ENV=test bundle exec rake db:seed_fu
+    - run_timed_command "scripts/gitaly-test-build"
+    - run_timed_command "scripts/gitaly-test-spawn"
+    - run_timed_command "RAILS_ENV=test bundle exec rake db:seed_fu"
 
 run-dev-fixtures-ee:
   extends:
@@ -28,6 +29,7 @@ run-dev-fixtures-ee:
     - .dev-fixtures:rules:ee-only
     - .use-pg11-ee
   script:
-    - scripts/gitaly-test-spawn
+    - run_timed_command "scripts/gitaly-test-build"
+    - run_timed_command "scripts/gitaly-test-spawn"
     - cp ee/db/fixtures/development/* $FIXTURE_PATH
-    - RAILS_ENV=test bundle exec rake db:seed_fu
+    - run_timed_command "RAILS_ENV=test bundle exec rake db:seed_fu"

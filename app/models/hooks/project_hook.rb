@@ -3,6 +3,9 @@
 class ProjectHook < WebHook
   include TriggerableHooks
   include Presentable
+  include Limitable
+
+  self.limit_scope = :project
 
   triggerable_hooks [
     :push_hooks,

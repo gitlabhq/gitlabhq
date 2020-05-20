@@ -13,3 +13,92 @@ def change
   add_column :ci_job_artifacts, :file_format, :integer, limit: 2
 end
 ```
+
+## All of the key/value pairs should be defined in FOSS
+
+**Summary:** All enums needs to be defined in FOSS, if a model is also part of the FOSS.
+
+```ruby
+class Model < ApplicationRecord
+  enum platform: {
+    aws: 0,
+    gcp: 1      # EE-only
+  }
+end
+```
+
+When you add a new key/value pair to a `enum` and if it's EE-specific, you might be
+tempted to organize the `enum` as the following:
+
+```ruby
+# Define `failure_reason` enum in `Pipeline` model:
+class Pipeline < ApplicationRecord
+  enum failure_reason: ::PipelineEnums.failure_reasons
+end
+```
+
+```ruby
+# Define key/value pairs that used in FOSS and EE:
+module PipelineEnums
+  def self.failure_reasons
+    { unknown_failure: 0, config_error: 1 }
+  end
+end
+
+PipelineEnums.prepend_if_ee('EE::PipelineEnums')
+```
+
+```ruby
+# Define key/value pairs that used in EE only:
+module EE
+  module PipelineEnums
+    override :failure_reasons
+    def failure_reasons
+      super.merge(activity_limit_exceeded: 2)
+    end
+  end
+end
+```
+
+This works as-is, however, it has a couple of downside that:
+
+- Someone could define a key/value pair in EE that is **conflicted** with a value defined in FOSS.
+  e.g. Define `activity_limit_exceeded: 1` in `EE::PipelineEnums`.
+- When it happens, the feature works totally different.
+  e.g. We cannot figure out `failure_reason` is either `config_error` or `activity_limit_exceeded`.
+- When it happens, we have to ship a database migration to fix the data integrity,
+  which might be impossible if you cannot recover the original value.
+
+Also, you might observe a workaround for this concern by setting an offset in EE's values.
+For example, this example sets `1000` as the offset:
+
+```ruby
+module EE
+  module PipelineEnums
+    override :failure_reasons
+    def failure_reasons
+      super.merge(activity_limit_exceeded: 1_000, size_limit_exceeded: 1_001)
+    end
+  end
+end
+```
+
+This looks working as a workaround, however, this approach has some donwside that:
+
+- Features could move from EE to FOSS or vice versa. Therefore, the offset might be mixed between FOSS and EE in the future.
+  e.g. When you move `activity_limit_exceeded` to FOSS, you'll see `{ unknown_failure: 0, config_error: 1, activity_limit_exceeded: 1_000 }`.
+- The integer column for the `enum` is likely created [as `SMALLINT`](#creating-enums).
+  Therefore, you need to be careful of that the offset doesn't exceed the maximum value of 2 bytes integer.
+
+As a conclusion, you should define all of the key/value pairs in FOSS.
+For example, you can simply write the following code in the above case:
+
+```ruby
+class Pipeline < ApplicationRecord
+  enum failure_reason: {
+    unknown_failure: 0,
+    config_error: 1,
+    activity_limit_exceeded: 2
+  }
+end
+```

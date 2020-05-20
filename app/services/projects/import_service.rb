@@ -3,6 +3,7 @@
 module Projects
   class ImportService < BaseService
     Error = Class.new(StandardError)
+    PermissionError = Class.new(StandardError)
 
     # Returns true if this importer is supposed to perform its work in the
     # background.
@@ -21,6 +22,8 @@ module Projects
 
       import_data
 
+      after_execute_hook
+
       success
     rescue Gitlab::UrlBlocker::BlockedUrlError => e
       Gitlab::ErrorTracking.track_exception(e, project_path: project.full_path, importer: project.import_type)
@@ -34,7 +37,22 @@ module Projects
       error(s_("ImportProjects|Error importing repository %{project_safe_import_url} into %{project_full_path} - %{message}") % { project_safe_import_url: project.safe_import_url, project_full_path: project.full_path, message: message })
     end
 
+    protected
+
+    def extra_attributes_for_measurement
+      {
+        current_user: current_user&.name,
+        project_full_path: project&.full_path,
+        import_type: project&.import_type,
+        file_path: project&.import_source
+      }
+    end
+
     private
+
+    def after_execute_hook
+      # Defined in EE::Projects::ImportService
+    end
 
     def add_repository_to_project
       if project.external_import? && !unknown_url?
@@ -130,3 +148,10 @@ module Projects
     end
   end
 end
+
+# rubocop: disable Cop/InjectEnterpriseEditionModule
+Projects::ImportService.prepend_if_ee('EE::Projects::ImportService')
+# rubocop: enable Cop/InjectEnterpriseEditionModule
+
+# Measurable should be at the bottom of the ancestor chain, so it will measure execution of EE::Projects::ImportService as well
+Projects::ImportService.prepend(Measurable)

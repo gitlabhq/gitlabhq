@@ -161,6 +161,26 @@ describe Gitlab::Git::Commit, :seed_helper do
         expect(described_class.find(repository, "+123_4532530XYZ")).to be_nil
       end
 
+      it "returns nil for id started with dash" do
+        expect(described_class.find(repository, "-HEAD")).to be_nil
+      end
+
+      it "returns nil for id containing colon" do
+        expect(described_class.find(repository, "HEAD:")).to be_nil
+      end
+
+      it "returns nil for id containing space" do
+        expect(described_class.find(repository, "HE AD")).to be_nil
+      end
+
+      it "returns nil for id containing tab" do
+        expect(described_class.find(repository, "HE\tAD")).to be_nil
+      end
+
+      it "returns nil for id containing NULL" do
+        expect(described_class.find(repository, "HE\x00AD")).to be_nil
+      end
+
       context 'with broken repo' do
         let(:repository) { Gitlab::Git::Repository.new('default', TEST_BROKEN_REPO_PATH, '', 'group/project') }
 

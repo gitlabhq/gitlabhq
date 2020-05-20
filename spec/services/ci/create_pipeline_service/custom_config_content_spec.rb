@@ -34,7 +34,7 @@ describe Ci::CreatePipelineService do
 
     it 'creates a pipeline using the content passed in as param' do
       expect(subject).to be_persisted
-      expect(subject.builds.map(&:name)).to eq %w[rspec custom]
+      expect(subject.builds.pluck(:name)).to match_array %w[rspec custom]
       expect(subject.config_source).to eq 'bridge_source'
     end
 
@@ -59,7 +59,7 @@ describe Ci::CreatePipelineService do
 
         it 'created a pipeline using the content passed in as param and download the artifact' do
           expect(subject).to be_persisted
-          expect(subject.builds.pluck(:name)).to eq %w[rspec time custom]
+          expect(subject.builds.pluck(:name)).to match_array %w[rspec time custom]
           expect(subject.config_source).to eq 'bridge_source'
         end
       end

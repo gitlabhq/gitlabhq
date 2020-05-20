@@ -15,7 +15,7 @@ class ListIssue {
     this.labels = [];
     this.assignees = [];
     this.selected = false;
-    this.position = obj.relative_position || Infinity;
+    this.position = obj.position || obj.relative_position || Infinity;
     this.isFetching = {
       subscriptions: true,
     };
@@ -99,31 +99,7 @@ class ListIssue {
   }
 
   update() {
-    const data = {
-      issue: {
-        milestone_id: this.milestone ? this.milestone.id : null,
-        due_date: this.dueDate,
-        assignee_ids: this.assignees.length > 0 ? this.assignees.map(u => u.id) : [0],
-        label_ids: this.labels.map(label => label.id),
-      },
-    };
-
-    if (!data.issue.label_ids.length) {
-      data.issue.label_ids = [''];
-    }
-
-    const projectPath = this.project ? this.project.path : '';
-    return axios.patch(`${this.path}.json`, data).then(({ data: body = {} } = {}) => {
-      /**
-       * Since post implementation of Scoped labels, server can reject
-       * same key-ed labels. To keep the UI and server Model consistent,
-       * we're just assigning labels that server echo's back to us when we
-       * PATCH the said object.
-       */
-      if (body) {
-        this.labels = convertObjectPropsToCamelCase(body.labels, { deep: true });
-      }
-    });
+    return boardsStore.updateIssue(this);
   }
 }
 

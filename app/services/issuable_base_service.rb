@@ -22,7 +22,9 @@ class IssuableBaseService < BaseService
       params.delete(:milestone_id)
       params.delete(:labels)
       params.delete(:add_label_ids)
+      params.delete(:add_labels)
       params.delete(:remove_label_ids)
+      params.delete(:remove_labels)
       params.delete(:label_ids)
       params.delete(:assignee_ids)
       params.delete(:assignee_id)
@@ -91,6 +93,8 @@ class IssuableBaseService < BaseService
     elsif params[label_key]
       params[label_id_key] = labels_service.find_or_create_by_titles(label_key, find_only: find_only).map(&:id)
     end
+
+    params.delete(label_key) if params[label_key].nil?
   end
 
   def filter_labels_in_param(key)
@@ -217,7 +221,7 @@ class IssuableBaseService < BaseService
       issuable.assign_attributes(params)
 
       if has_title_or_description_changed?(issuable)
-        issuable.assign_attributes(last_edited_at: Time.now, last_edited_by: current_user)
+        issuable.assign_attributes(last_edited_at: Time.current, last_edited_by: current_user)
       end
 
       before_update(issuable)
@@ -237,7 +241,8 @@ class IssuableBaseService < BaseService
       end
 
       if issuable_saved
-        Issuable::CommonSystemNotesService.new(project, current_user).execute(issuable, old_labels: old_associations[:labels])
+        Issuable::CommonSystemNotesService.new(project, current_user).execute(
+          issuable, old_labels: old_associations[:labels], old_milestone: old_associations[:milestone])
 
         handle_changes(issuable, old_associations: old_associations)
 
@@ -265,7 +270,7 @@ class IssuableBaseService < BaseService
 
     if issuable.changed? || params.present?
       issuable.assign_attributes(params.merge(updated_by: current_user,
-                                              last_edited_at: Time.now,
+                                              last_edited_at: Time.current,
                                               last_edited_by: current_user))
 
       before_update(issuable, skip_spam_check: true)
@@ -360,7 +365,8 @@ class IssuableBaseService < BaseService
       {
         labels: issuable.labels.to_a,
         mentioned_users: issuable.mentioned_users(current_user).to_a,
-        assignees: issuable.assignees.to_a
+        assignees: issuable.assignees.to_a,
+        milestone: issuable.try(:milestone)
       }
     associations[:total_time_spent] = issuable.total_time_spent if issuable.respond_to?(:total_time_spent)
     associations[:description] = issuable.description

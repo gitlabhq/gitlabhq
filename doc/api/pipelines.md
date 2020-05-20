@@ -1,5 +1,12 @@
 # Pipelines API
 
+## Pipelines pagination
+
+By default, `GET` requests return 20 results at a time because the API results
+are paginated.
+
+Read more on [pagination](README.md#pagination).
+
 ## List project pipelines
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5837) in GitLab 8.11
@@ -130,6 +137,62 @@ Example of response
 ]
 ```
 
+### Get a pipeline's test report
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/202525) in GitLab 13.0.
+
+CAUTION: **Caution:**
+This API route is part of the [JUnit test report](../ci/junit_test_reports.md) feature. It is protected by a [feature flag](../development/feature_flags/index.md) that is **disabled** due to performance issues with very large data sets. See [the documentation for the feature](../ci/junit_test_reports.md#enabling-the-feature) for further details.
+
+```plaintext
+GET /projects/:id/pipelines/:pipeline_id/test_report
+```
+
+| Attribute  | Type    | Required | Description         |
+|------------|---------|----------|---------------------|
+| `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `pipeline_id` | integer | yes      | The ID of a pipeline   |
+
+Sample request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/pipelines/46/test_report"
+```
+
+Sample response:
+
+```json
+{
+  "total_time": 5,
+  "total_count": 1,
+  "success_count": 1,
+  "failed_count": 0,
+  "skipped_count": 0,
+  "error_count": 0,
+  "test_suites": [
+    {
+      "name": "Secure",
+      "total_time": 5,
+      "total_count": 1,
+      "success_count": 1,
+      "failed_count": 0,
+      "skipped_count": 0,
+      "error_count": 0,
+      "test_cases": [
+        {
+          "status": "success",
+          "name": "Security Reports can create an auto-remediation MR",
+          "classname": "vulnerability_management_spec",
+          "execution_time": 5,
+          "system_output": null,
+          "stack_trace": null
+        }
+      ]
+    }
+  ]
+}
+```
+
 ## Create a new pipeline
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/7209) in GitLab 8.14
@@ -225,7 +288,7 @@ Response:
 }
 ```
 
-## Cancel a pipelines jobs
+## Cancel a pipeline's jobs
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5837) in GitLab 8.11
 

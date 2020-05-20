@@ -40,7 +40,7 @@ This is the section where we install and set up the new Redis instances.
 - Since Redis 3.2, you must define a password to receive external connections
   (`requirepass`).
 - If you are using Redis with Sentinel, you will also need to define the same
-  password for the slave password definition (`masterauth`) in the same instance.
+  password for the replica password definition (`masterauth`) in the same instance.
 
 In addition, read the prerequisites as described in the
 [Omnibus Redis HA document](redis.md#prerequisites) since they provide some
@@ -72,9 +72,9 @@ Assuming that the Redis master instance IP is `10.0.0.1`:
 
 1. Restart the Redis service for the changes to take effect.
 
-### Step 2. Configuring the slave Redis instances
+### Step 2. Configuring the replica Redis instances
 
-Assuming that the Redis slave instance IP is `10.0.0.2`:
+Assuming that the Redis replica instance IP is `10.0.0.2`:
 
 1. [Install Redis](../../install/installation.md#7-redis).
 1. Edit `/etc/redis/redis.conf`:
@@ -95,12 +95,12 @@ Assuming that the Redis slave instance IP is `10.0.0.2`:
    requirepass redis-password-goes-here
    masterauth redis-password-goes-here
 
-   ## Define `slaveof` pointing to the Redis master instance with IP and port.
-   slaveof 10.0.0.1 6379
+   ## Define `replicaof` pointing to the Redis master instance with IP and port.
+   replicaof 10.0.0.1 6379
    ```
 
 1. Restart the Redis service for the changes to take effect.
-1. Go through the steps again for all the other slave nodes.
+1. Go through the steps again for all the other replica nodes.
 
 ### Step 3. Configuring the Redis Sentinel instances
 
@@ -131,7 +131,7 @@ master with IP `10.0.0.1` (some settings might overlap with the master):
    masterauth redis-password-goes-here
 
    ## Define with `sentinel auth-pass` the same shared password you have
-   ## defined for both Redis master and slaves instances.
+   ## defined for both Redis master and replicas instances.
    sentinel auth-pass gitlab-redis redis-password-goes-here
 
    ## Define with `sentinel monitor` the IP and port of the Redis
@@ -149,18 +149,18 @@ master with IP `10.0.0.1` (some settings might overlap with the master):
    ##   already tried against the same master by a given Sentinel, is two
    ##   times the failover timeout.
    ##
-   ## * The time needed for a slave replicating to a wrong master according
+   ## * The time needed for a replica replicating to a wrong master according
    ##   to a Sentinel current configuration, to be forced to replicate
    ##   with the right master, is exactly the failover timeout (counting since
    ##   the moment a Sentinel detected the misconfiguration).
    ##
    ## * The time needed to cancel a failover that is already in progress but
-   ##   did not produced any configuration change (SLAVEOF NO ONE yet not
-   ##   acknowledged by the promoted slave).
+   ##   did not produced any configuration change (REPLICAOF NO ONE yet not
+   ##   acknowledged by the promoted replica).
    ##
-   ## * The maximum time a failover in progress waits for all the slaves to be
-   ##   reconfigured as slaves of the new master. However even after this time
-   ##   the slaves will be reconfigured by the Sentinels anyway, but not with
+   ## * The maximum time a failover in progress waits for all the replicas to be
+   ##   reconfigured as replicas of the new master. However even after this time
+   ##   the replicas will be reconfigured by the Sentinels anyway, but not with
    ##   the exact parallel-syncs progression as specified.
    sentinel failover_timeout 30000
    ```
@@ -203,7 +203,7 @@ setup:
 
 1. [Restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
 
-## Example of minimal configuration with 1 master, 2 slaves and 3 Sentinels
+## Example of minimal configuration with 1 master, 2 replicas and 3 Sentinels
 
 In this example we consider that all servers have an internal network
 interface with IPs in the `10.0.0.x` range, and that they can connect
@@ -215,13 +215,13 @@ outside ([Internet](https://gitlab.com/gitlab-org/gitlab-foss/uploads/c4cc8cd353
 
 For this example, **Sentinel 1** will be configured in the same machine as the
 **Redis Master**, **Sentinel 2** and **Sentinel 3** in the same machines as the
-**Slave 1** and **Slave 2** respectively.
+**Replica 1** and **Replica 2** respectively.
 
 Here is a list and description of each **machine** and the assigned **IP**:
 
 - `10.0.0.1`: Redis Master + Sentinel 1
-- `10.0.0.2`: Redis Slave 1 + Sentinel 2
-- `10.0.0.3`: Redis Slave 2 + Sentinel 3
+- `10.0.0.2`: Redis Replica 1 + Sentinel 2
+- `10.0.0.3`: Redis Replica 2 + Sentinel 3
 - `10.0.0.4`: GitLab application
 
 Please note that after the initial configuration, if a failover is initiated
@@ -257,7 +257,7 @@ or a failover promotes a different **Master** node.
 
 1. Restart the Redis service for the changes to take effect.
 
-### Example configuration for Redis slave 1 and Sentinel 2
+### Example configuration for Redis replica 1 and Sentinel 2
 
 1. In `/etc/redis/redis.conf`:
 
@@ -266,7 +266,7 @@ or a failover promotes a different **Master** node.
    port 6379
    requirepass redis-password-goes-here
    masterauth redis-password-goes-here
-   slaveof 10.0.0.1 6379
+   replicaof 10.0.0.1 6379
    ```
 
 1. In `/etc/redis/sentinel.conf`:
@@ -282,7 +282,7 @@ or a failover promotes a different **Master** node.
 
 1. Restart the Redis service for the changes to take effect.
 
-### Example configuration for Redis slave 2 and Sentinel 3
+### Example configuration for Redis replica 2 and Sentinel 3
 
 1. In `/etc/redis/redis.conf`:
 
@@ -291,7 +291,7 @@ or a failover promotes a different **Master** node.
    port 6379
    requirepass redis-password-goes-here
    masterauth redis-password-goes-here
-   slaveof 10.0.0.1 6379
+   replicaof 10.0.0.1 6379
    ```
 
 1. In `/etc/redis/sentinel.conf`:

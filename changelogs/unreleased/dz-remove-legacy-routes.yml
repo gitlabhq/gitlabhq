@@ -1,0 +1,5 @@
+---
+title: Remove project routes that were deprecated before 12.1
+merge_request: 26808
+author:
+type: removed

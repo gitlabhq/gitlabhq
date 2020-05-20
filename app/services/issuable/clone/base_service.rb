@@ -47,7 +47,7 @@ module Issuable
       end
 
       def new_parent
-        new_entity.project ? new_entity.project : new_entity.group
+        new_entity.project || new_entity.group
       end
 
       def group

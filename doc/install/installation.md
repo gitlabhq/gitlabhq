@@ -142,21 +142,31 @@ Starting with GitLab 12.0, Git is required to be compiled with `libpcre2`.
 Find out if that's the case:
 
 ```shell
-ldd /usr/local/bin/git | grep pcre2
+ldd $(which git) | grep pcre2
 ```
 
-The output should be similar to:
+The output should contain `libpcre2-8.so.0`.
 
-```plaintext
-libpcre2-8.so.0 => /usr/lib/libpcre2-8.so.0 (0x00007f08461c3000)
-```
-
-Is the system packaged Git too old, or not compiled with pcre2? Remove it and compile from source:
+Is the system packaged Git too old, or not compiled with pcre2?
+Remove it:
 
 ```shell
-# Remove packaged Git
 sudo apt-get remove git-core
+```
 
+On Ubuntu, install Git from [its official PPA](https://git-scm.com/download/linux):
+
+```shell
+# run as root!
+add-apt-repository ppa:git-core/ppa
+apt update
+apt install git
+# repeat libpcre2 check as above
+```
+
+On Debian, use the following compilation instructions:
+
+```shell
 # Install dependencies
 sudo apt-get install -y libcurl4-openssl-dev libexpat1-dev gettext libz-dev libssl-dev build-essential
 
@@ -180,7 +190,7 @@ make prefix=/usr/local all
 # Install into /usr/local/bin
 sudo make prefix=/usr/local install
 
-# When editing config/gitlab.yml (Step 5), change the git -> bin_path to /usr/local/bin/git
+# When editing config/gitlab.yml later, change the git -> bin_path to /usr/local/bin/git
 ```
 
 For the [Custom Favicon](../user/admin_area/appearance.md#favicon) to work, GraphicsMagick
@@ -205,7 +215,7 @@ The Ruby interpreter is required to run GitLab.
 **Note:** The current supported Ruby (MRI) version is 2.6.x. GitLab 12.2
   dropped support for Ruby 2.5.x.
 
-The use of Ruby version managers such as [RVM], [rbenv](https://github.com/rbenv/rbenv) or [chruby] with GitLab
+The use of Ruby version managers such as [RVM](https://rvm.io/), [rbenv](https://github.com/rbenv/rbenv) or [chruby](https://github.com/postmodern/chruby) with GitLab
 in production, frequently leads to hard to diagnose problems. For example,
 GitLab Shell is called from OpenSSH, and having a version manager can prevent
 pushing and pulling over SSH. Version managers are not supported and we strongly
@@ -360,10 +370,10 @@ use of extensions and concurrent index removal, you need at least PostgreSQL 9.2
 
 ## 7. Redis
 
-GitLab requires at least Redis 2.8.
+GitLab requires at least Redis 5.0.
 
-If you are using Debian 8 or Ubuntu 14.04 and up, you can simply install
-Redis 2.8 with:
+If you are using Debian 10 or Ubuntu 20.04 and up, you can install
+Redis 5.0 with:
 
 ```shell
 sudo apt-get install redis-server
@@ -966,7 +976,7 @@ If you want to switch back to Unicorn, follow these steps:
    sudo -u git -H cp config/unicorn.rb.example config/unicorn.rb
    ```
 
-1. Edit the system `init.d` script to set the `USE_UNICORN=1` flag. If you have `/etc/default/gitlab`, then you should edit it instead.
+1. Edit the system `init.d` script and set `USE_WEB_SERVER="unicorn"`. If you have `/etc/default/gitlab`, then you should edit it instead.
 1. Restart GitLab.
 
 ### Using Sidekiq instead of Sidekiq Cluster
@@ -1035,6 +1045,3 @@ On RedHat/CentOS:
 ```shell
 sudo yum groupinstall 'Development Tools'
 ```
-
-[RVM]: https://rvm.io/ "RVM Homepage"
-[chruby]: https://github.com/postmodern/chruby "chruby on GitHub"

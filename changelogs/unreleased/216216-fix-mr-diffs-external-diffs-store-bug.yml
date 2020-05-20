@@ -1,0 +1,5 @@
+---
+title: Correctly track the store that external MR diffs are placed on
+merge_request: 31005
+author:
+type: fixed

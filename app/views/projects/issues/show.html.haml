@@ -10,6 +10,8 @@
 - can_report_spam = @issue.submittable_as_spam_by?(current_user)
 - can_create_issue = show_new_issue_link?(@project)
 
+= render_if_exists "projects/issues/alert_blocked", issue: @issue, current_user: current_user
+
 .detail-page-header
   .detail-page-header-body
     .issuable-status-box.status-box.status-box-issue-closed{ class: issue_status_visibility(@issue, status_box: :closed) }
@@ -50,7 +52,7 @@
               %li.divider
             %li= link_to 'New issue', new_project_issue_path(@project), id: 'new_issue_link'
 
-    = render 'shared/issuable/close_reopen_button', issuable: @issue, can_update: can_update_issue, can_reopen: can_reopen_issue
+    = render 'shared/issuable/close_reopen_button', issuable: @issue, can_update: can_update_issue, can_reopen: can_reopen_issue, warn_before_close: defined?(@issue.blocked?) && @issue.blocked?
 
     - if can_report_spam
       = link_to 'Submit as spam', mark_as_spam_project_issue_path(@project, @issue), method: :post, class: 'd-none d-sm-none d-md-block btn btn-grouped btn-spam', title: 'Submit as spam'
@@ -84,13 +86,13 @@
 
   .content-block.emoji-block.emoji-block-sticky
     .row
-      .col-md-12.col-lg-6.js-noteable-awards
+      .col-md-12.col-lg-4.js-noteable-awards
         = render 'award_emoji/awards_block', awardable: @issue, inline: true
-      .col-md-12.col-lg-6.new-branch-col
+      .col-md-12.col-lg-8.new-branch-col
         #js-vue-sort-issue-discussions
         #js-vue-discussion-filter{ data: { default_filter: current_user&.notes_filter_for(@issue), notes_filters: UserPreference.notes_filters.to_json } }
         = render 'new_branch' if show_new_branch_button?
 
-  = render_if_exists 'projects/issues/discussion'
+  = render 'projects/issues/tabs'
 
 = render 'shared/issuable/sidebar', issuable_sidebar: @issuable_sidebar, assignees: @issue.assignees

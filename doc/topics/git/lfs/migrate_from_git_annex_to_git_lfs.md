@@ -1,16 +1,16 @@
 # Migration guide from Git Annex to Git LFS
 
 >**Note:**
-Git Annex support [has been removed][issue-remove-annex] in GitLab Enterprise
+Git Annex support [has been removed](https://gitlab.com/gitlab-org/gitlab/issues/1648) in GitLab Enterprise
 Edition 9.0 (2017/03/22).
 
-Both [Git Annex][] and [Git LFS][] are tools to manage large files in Git.
+Both [Git Annex](http://git-annex.branchable.com/) and [Git LFS](https://git-lfs.github.com/) are tools to manage large files in Git.
 
 ## History
 
-Git Annex [was introduced in GitLab Enterprise Edition 7.8][post-3], at a time
+Git Annex [was introduced in GitLab Enterprise Edition 7.8](https://about.gitlab.com/blog/2015/02/17/gitlab-annex-solves-the-problem-of-versioning-large-binaries-with-git/), at a time
 where Git LFS didn't yet exist. A few months later, GitLab brought support for
-Git LFS in [GitLab 8.2][post-2] and is available for both Community and
+Git LFS in [GitLab 8.2](https://about.gitlab.com/blog/2015/11/23/announcing-git-lfs-support-in-gitlab/) and is available for both Community and
 Enterprise editions.
 
 ## Differences between Git Annex and Git LFS
@@ -71,13 +71,13 @@ Before changing anything, make sure you have a backup of your repository first.
 There are a couple of ways to do that, but you can simply clone it to another
 local path and maybe push it to GitLab if you want a remote backup as well.
 Here you'll find a guide on
-[how to back up a **git-annex** repository to an external hard drive][bkp-ext-drive].
+[how to back up a **git-annex** repository to an external hard drive](https://www.thomas-krenn.com/en/wiki/Git-annex_Repository_on_an_External_Hard_Drive).
 
 Since Annex files are stored as objects with symlinks and cannot be directly
 modified, we need to first remove those symlinks.
 
 NOTE: **Note:**
-Make sure the you read about the [`direct` mode][annex-direct] as it contains
+Make sure the you read about the [`direct` mode](https://git-annex.branchable.com/direct_mode/) as it contains
 useful information that may fit in your use case. Note that `annex direct` is
 deprecated in Git Annex version 6, so you may need to upgrade your repository
 if the server also has Git Annex 6 installed. Read more in the
@@ -114,7 +114,7 @@ if the server also has Git Annex 6 installed. Read more in the
    direct  ok
    ```
 
-1. Disable Git Annex with [`annex uninit`][uninit]:
+1. Disable Git Annex with [`annex uninit`](https://git-annex.branchable.com/git-annex-uninit/):
 
    ```shell
    git annex uninit
@@ -170,7 +170,7 @@ GitLab.com), therefore, you don't need to do anything server-side.
    ```
 
    If the terminal doesn't prompt you with a full response on `git-lfs` commands,
-   [install the Git LFS client][install-lfs] first.
+   [install the Git LFS client](https://git-lfs.github.com/) first.
 
 1. Inside the repo, run the following command to initiate LFS:
 
@@ -235,19 +235,8 @@ git annex uninit
 
 ## Further Reading
 
-- (Blog Post) [Getting Started with Git FLS][post-1]
-- (Blog Post) [Announcing LFS Support in GitLab][post-2]
-- (Blog Post) [GitLab Annex Solves the Problem of Versioning Large Binaries with Git][post-3]
+- (Blog Post) [Getting Started with Git FLS](https://about.gitlab.com/blog/2017/01/30/getting-started-with-git-lfs-tutorial/)
+- (Blog Post) [Announcing LFS Support in GitLab](https://about.gitlab.com/blog/2015/11/23/announcing-git-lfs-support-in-gitlab/)
+- (Blog Post) [GitLab Annex Solves the Problem of Versioning Large Binaries with Git](https://about.gitlab.com/blog/2015/02/17/gitlab-annex-solves-the-problem-of-versioning-large-binaries-with-git/)
 - (GitLab Docs) [Git Annex](../../../administration/git_annex.md)
 - (GitLab Docs) [Git LFS](index.md)
-
-[annex-direct]: https://git-annex.branchable.com/direct_mode/
-[bkp-ext-drive]: https://www.thomas-krenn.com/en/wiki/Git-annex_Repository_on_an_External_Hard_Drive
-[Git Annex]: http://git-annex.branchable.com/
-[Git LFS]: https://git-lfs.github.com/
-[install-lfs]: https://git-lfs.github.com/
-[issue-remove-annex]: https://gitlab.com/gitlab-org/gitlab/issues/1648
-[post-1]: https://about.gitlab.com/blog/2017/01/30/getting-started-with-git-lfs-tutorial/
-[post-2]: https://about.gitlab.com/blog/2015/11/23/announcing-git-lfs-support-in-gitlab/
-[post-3]: https://about.gitlab.com/blog/2015/02/17/gitlab-annex-solves-the-problem-of-versioning-large-binaries-with-git/
-[uninit]: https://git-annex.branchable.com/git-annex-uninit/

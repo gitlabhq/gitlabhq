@@ -11,7 +11,7 @@ module WorkhorseHelpers
       header = split_header.join(':')
       [
         type,
-        JSON.parse(Base64.urlsafe_decode64(header))
+        Gitlab::Json.parse(Base64.urlsafe_decode64(header))
       ]
     end
   end

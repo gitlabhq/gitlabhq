@@ -87,6 +87,20 @@ describe Service do
       end
     end
 
+    describe '#operating?' do
+      it 'is false when the service is not active' do
+        expect(build(:service).operating?).to eq(false)
+      end
+
+      it 'is false when the service is not persisted' do
+        expect(build(:service, active: true).operating?).to eq(false)
+      end
+
+      it 'is true when the service is active and persisted' do
+        expect(create(:service, active: true).operating?).to eq(true)
+      end
+    end
+
     describe '.confidential_note_hooks' do
       it 'includes services where confidential_note_events is true' do
         create(:service, active: true, confidential_note_events: true)
@@ -520,24 +534,6 @@ describe Service do
           service.update(active: false)
         end.to change { service.project.has_external_issue_tracker }.from(true).to(false)
       end
-    end
-  end
-
-  describe "#deprecated?" do
-    let(:project) { create(:project, :repository) }
-
-    it 'returns false by default' do
-      service = create(:service, project: project)
-      expect(service.deprecated?).to be_falsy
-    end
-  end
-
-  describe "#deprecation_message" do
-    let(:project) { create(:project, :repository) }
-
-    it 'is empty by default' do
-      service = create(:service, project: project)
-      expect(service.deprecation_message).to be_nil
     end
   end
 

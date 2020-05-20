@@ -639,11 +639,11 @@ describe Gitlab::Diff::Position do
       let(:diff_position) { described_class.new(args) }
 
       it "returns the position as JSON" do
-        expect(JSON.parse(diff_position.to_json)).to eq(args.stringify_keys)
+        expect(Gitlab::Json.parse(diff_position.to_json)).to eq(args.stringify_keys)
       end
 
       it "works when nested under another hash" do
-        expect(JSON.parse(JSON.generate(pos: diff_position))).to eq('pos' => args.stringify_keys)
+        expect(Gitlab::Json.parse(Gitlab::Json.generate(pos: diff_position))).to eq('pos' => args.stringify_keys)
       end
     end
 

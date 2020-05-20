@@ -1,0 +1,5 @@
+---
+title: Log when container registry permissions are denied
+merge_request: 31536
+author:
+type: other

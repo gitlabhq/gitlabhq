@@ -3,7 +3,7 @@
 import AccessorUtilities from './lib/utils/accessor';
 
 export default class Autosave {
-  constructor(field, key, fallbackKey) {
+  constructor(field, key, fallbackKey, lockVersion) {
     this.field = field;
 
     this.isLocalStorageAvailable = AccessorUtilities.isLocalStorageAccessSafe();
@@ -12,6 +12,8 @@ export default class Autosave {
     }
     this.key = `autosave/${key}`;
     this.fallbackKey = fallbackKey;
+    this.lockVersionKey = `${this.key}/lockVersion`;
+    this.lockVersion = lockVersion;
     this.field.data('autosave', this);
     this.restore();
     this.field.on('input', () => this.save());
@@ -40,6 +42,11 @@ export default class Autosave {
     }
   }
 
+  getSavedLockVersion() {
+    if (!this.isLocalStorageAvailable) return;
+    return window.localStorage.getItem(this.lockVersionKey);
+  }
+
   save() {
     if (!this.field.length) return;
 
@@ -48,6 +55,9 @@ export default class Autosave {
     if (this.isLocalStorageAvailable && text) {
       if (this.fallbackKey) {
         window.localStorage.setItem(this.fallbackKey, text);
+      }
+      if (this.lockVersion !== undefined) {
+        window.localStorage.setItem(this.lockVersionKey, this.lockVersion);
       }
       return window.localStorage.setItem(this.key, text);
     }
@@ -58,6 +68,7 @@ export default class Autosave {
   reset() {
     if (!this.isLocalStorageAvailable) return;
 
+    window.localStorage.removeItem(this.lockVersionKey);
     window.localStorage.removeItem(this.fallbackKey);
     return window.localStorage.removeItem(this.key);
   }

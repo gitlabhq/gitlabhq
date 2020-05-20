@@ -68,3 +68,19 @@ export const createPathWithExt = p => {
 
   return `${p.substring(1, p.lastIndexOf('.') + 1 || p.length)}${ext || '.js'}`;
 };
+
+export const trimPathComponents = path =>
+  path
+    .split('/')
+    .map(s => s.trim())
+    .join('/');
+
+export function registerLanguages(def, ...defs) {
+  if (defs.length) defs.forEach(lang => registerLanguages(lang));
+
+  const languageId = def.id;
+
+  languages.register(def);
+  languages.setMonarchTokensProvider(languageId, def.language);
+  languages.setLanguageConfiguration(languageId, def.conf);
+}

@@ -25,6 +25,10 @@ module AppearancesHelper
     markdown_field(current_appearance, :new_project_guidelines)
   end
 
+  def brand_profile_image_guidelines
+    markdown_field(current_appearance, :profile_image_guidelines)
+  end
+
   def current_appearance
     strong_memoize(:current_appearance) do
       Appearance.current

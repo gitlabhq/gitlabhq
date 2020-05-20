@@ -80,11 +80,6 @@ export default {
       required: false,
       default: false,
     },
-    scopedLabelsDocumentationLink: {
-      type: String,
-      required: false,
-      default: '#',
-    },
   },
   computed: {
     hiddenInputName() {
@@ -136,7 +131,6 @@ export default {
     <dropdown-value
       :labels="context.labels"
       :label-filter-base-path="labelFilterBasePath"
-      :scoped-labels-documentation-link="scopedLabelsDocumentationLink"
       :enable-scoped-labels="enableScopedLabels"
     >
       <slot></slot>
@@ -157,7 +151,6 @@ export default {
           :namespace="namespace"
           :labels="context.labels"
           :show-extra-options="!showCreate"
-          :scoped-labels-documentation-link="scopedLabelsDocumentationLink"
           :enable-scoped-labels="enableScopedLabels"
         />
         <div

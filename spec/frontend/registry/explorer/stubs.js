@@ -9,3 +9,8 @@ export const GlEmptyState = {
   template: '<div><slot name="description"></slot></div>',
   name: 'GlEmptyStateSTub',
 };
+
+export const RouterLink = {
+  template: `<div><slot></slot></div>`,
+  props: ['to'],
+};

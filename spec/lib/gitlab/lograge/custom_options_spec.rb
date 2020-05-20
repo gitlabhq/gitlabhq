@@ -19,7 +19,13 @@ describe Gitlab::Lograge::CustomOptions do
         1,
         2,
         'transaction_id',
-        { params: params, user_id: 'test' }
+        {
+          params: params,
+          user_id: 'test',
+          cf_ray: SecureRandom.hex,
+          cf_request_id: SecureRandom.hex,
+          metadata: { 'meta.user' => 'jane.doe' }
+        }
       )
     end
 
@@ -45,6 +51,31 @@ describe Gitlab::Lograge::CustomOptions do
 
     it 'adds the user id' do
       expect(subject[:user_id]).to eq('test')
+    end
+
+    it 'adds Cloudflare headers' do
+      expect(subject[:cf_ray]).to eq(event.payload[:cf_ray])
+      expect(subject[:cf_request_id]).to eq(event.payload[:cf_request_id])
+    end
+
+    it 'adds the metadata' do
+      expect(subject['meta.user']).to eq('jane.doe')
+    end
+
+    context 'when metadata is missing' do
+      let(:event) do
+        ActiveSupport::Notifications::Event.new(
+          'test',
+          1,
+          2,
+          'transaction_id',
+          { params: {} }
+        )
+      end
+
+      it 'does not break' do
+        expect { subject }.not_to raise_error
+      end
     end
   end
 end

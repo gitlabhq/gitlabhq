@@ -79,11 +79,12 @@ export default {
       :pipeline-coverage-delta="mr.pipelineCoverageDelta"
       :ci-status="mr.ciStatus"
       :has-ci="mr.hasCI"
+      :pipeline-must-succeed="mr.onlyAllowMergeIfPipelineSucceeds"
       :source-branch="branch"
       :source-branch-link="branchLink"
       :troubleshooting-docs-path="mr.troubleshootingDocsPath"
     />
-    <template v-slot:footer>
+    <template #footer>
       <div v-if="mr.exposedArtifactsPath" class="js-exposed-artifacts">
         <artifacts-app :endpoint="mr.exposedArtifactsPath" />
       </div>

@@ -24,8 +24,8 @@ describe 'Update of user activity' do
     '/dashboard/snippets',
     '/dashboard/groups',
     '/dashboard/todos',
-    '/group/project/issues',
-    '/group/project/issues/10',
+    '/group/project/-/issues',
+    '/group/project/-/issues/10',
     '/group/project/-/merge_requests',
     '/group/project/-/merge_requests/15'
   ]

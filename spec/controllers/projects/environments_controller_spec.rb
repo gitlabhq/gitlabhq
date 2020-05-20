@@ -410,6 +410,18 @@ describe Projects::EnvironmentsController do
         expect(json_response['last_update']).to eq(42)
       end
     end
+
+    context 'permissions' do
+      before do
+        allow(controller).to receive(:can?).and_return true
+      end
+
+      it 'checks :metrics_dashboard ability' do
+        expect(controller).to receive(:can?).with(anything, :metrics_dashboard, anything)
+
+        get :metrics, params: environment_params
+      end
+    end
   end
 
   describe 'GET #additional_metrics' do
@@ -471,6 +483,18 @@ describe Projects::EnvironmentsController do
       it 'raises an error when end is missing' do
         expect { additional_metrics(start: '1552647300.651094') }
           .to raise_error(ActionController::ParameterMissing)
+      end
+    end
+
+    context 'permissions' do
+      before do
+        allow(controller).to receive(:can?).and_return true
+      end
+
+      it 'checks :metrics_dashboard ability' do
+        expect(controller).to receive(:can?).with(anything, :metrics_dashboard, anything)
+
+        get :metrics, params: environment_params
       end
     end
   end
@@ -648,6 +672,18 @@ describe Projects::EnvironmentsController do
     it_behaves_like 'the default dashboard'
     it_behaves_like 'dashboard can be specified'
     it_behaves_like 'dashboard can be embedded'
+
+    context 'permissions' do
+      before do
+        allow(controller).to receive(:can?).and_return true
+      end
+
+      it 'checks :metrics_dashboard ability' do
+        expect(controller).to receive(:can?).with(anything, :metrics_dashboard, anything)
+
+        get :metrics, params: environment_params
+      end
+    end
   end
 
   describe 'GET #search' do

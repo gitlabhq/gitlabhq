@@ -1,0 +1,6 @@
+---
+title: Update GitLab-managed helm from 2.16.3 to 2.16.6, improving the reliability
+  of GitLab's Kubernetes integration
+merge_request: 30067
+author:
+type: changed

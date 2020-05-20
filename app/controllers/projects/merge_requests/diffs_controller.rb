@@ -9,6 +9,8 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
   before_action :define_diff_vars
   before_action :define_diff_comment_vars, except: [:diffs_batch, :diffs_metadata]
 
+  around_action :allow_gitaly_ref_name_caching
+
   def show
     render_diffs
   end

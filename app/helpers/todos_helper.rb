@@ -53,6 +53,8 @@ module TodosHelper
   end
 
   def todo_target_type_name(todo)
+    return _('design') if todo.for_design?
+
     todo.target_type.titleize.downcase
   end
 
@@ -63,6 +65,8 @@ module TodosHelper
 
     if todo.for_commit?
       project_commit_path(todo.project, todo.target, path_options)
+    elsif todo.for_design?
+      todos_design_path(todo, path_options)
     else
       path = [todo.resource_parent, todo.target]
 
@@ -151,7 +155,8 @@ module TodosHelper
     [
       { id: '', text: 'Any Type' },
       { id: 'Issue', text: 'Issue' },
-      { id: 'MergeRequest', text: 'Merge Request' }
+      { id: 'MergeRequest', text: 'Merge Request' },
+      { id: 'DesignManagement::Design', text: 'Design' }
     ]
   end
 
@@ -187,6 +192,18 @@ module TodosHelper
   end
 
   private
+
+  def todos_design_path(todo, path_options)
+    design = todo.target
+
+    designs_project_issue_path(
+      todo.resource_parent,
+      design.issue,
+      path_options.merge(
+        vueroute: design.filename
+      )
+    )
+  end
 
   def todo_action_subject(todo)
     todo.self_added? ? 'yourself' : 'you'

@@ -146,7 +146,7 @@ describe Issues::CloseService do
 
         context 'when `metrics.first_mentioned_in_commit_at` is already set' do
           before do
-            issue.metrics.update!(first_mentioned_in_commit_at: Time.now)
+            issue.metrics.update!(first_mentioned_in_commit_at: Time.current)
           end
 
           it 'does not update the metrics' do

@@ -1,0 +1,15 @@
+fragment BoardListShared on BoardList {
+  id,
+  title,
+  position,
+  listType,
+  collapsed,
+  label {
+    id,
+    title,
+    color,
+    textColor,
+    description,
+    descriptionHtml
+  }
+}

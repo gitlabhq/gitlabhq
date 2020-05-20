@@ -74,47 +74,6 @@ describe Snippets::CreateService do
       end
     end
 
-    shared_examples 'spam check is performed' do
-      shared_examples 'marked as spam' do
-        it 'marks a snippet as spam' do
-          expect(snippet).to be_spam
-        end
-
-        it 'invalidates the snippet' do
-          expect(snippet).to be_invalid
-        end
-
-        it 'creates a new spam_log' do
-          expect { snippet }
-            .to have_spam_log(title: snippet.title, noteable_type: snippet.class.name)
-        end
-
-        it 'assigns a spam_log to an issue' do
-          expect(snippet.spam_log).to eq(SpamLog.last)
-        end
-      end
-
-      let(:extra_opts) do
-        { visibility_level: Gitlab::VisibilityLevel::PUBLIC, request: double(:request, env: {}) }
-      end
-
-      before do
-        expect_next_instance_of(Spam::AkismetService) do |akismet_service|
-          expect(akismet_service).to receive_messages(spam?: true)
-        end
-      end
-
-      [true, false, nil].each do |allow_possible_spam|
-        context "when recaptcha_disabled flag is #{allow_possible_spam.inspect}" do
-          before do
-            stub_feature_flags(allow_possible_spam: allow_possible_spam) unless allow_possible_spam.nil?
-          end
-
-          it_behaves_like 'marked as spam'
-        end
-      end
-    end
-
     shared_examples 'snippet create data is tracked' do
       let(:counter) { Gitlab::UsageDataCounters::SnippetCounter }
 
@@ -169,12 +128,20 @@ describe Snippets::CreateService do
           expect { subject }.not_to change { Snippet.count }
         end
 
-        it 'returns the error' do
-          expect(snippet.errors.full_messages).to include('Repository could not be created')
+        it 'returns a generic creation error' do
+          expect(snippet.errors[:repository]).to eq ['Error creating the snippet - Repository could not be created']
         end
 
         it 'does not return a snippet with an id' do
           expect(snippet.id).to be_nil
+        end
+      end
+
+      context 'when repository creation fails with invalid file name' do
+        let(:extra_opts) { { file_name: 'invalid://file/name/here' } }
+
+        it 'returns an appropriate error' do
+          expect(snippet.errors[:repository]).to eq ['Error creating the snippet - Invalid file name']
         end
       end
 
@@ -209,11 +176,11 @@ describe Snippets::CreateService do
           subject
         end
 
-        it 'returns the error' do
+        it 'returns a generic error' do
           response = subject
 
           expect(response).to be_error
-          expect(response.payload[:snippet].errors.full_messages).to eq ['foobar']
+          expect(response.payload[:snippet].errors[:repository]).to eq ['Error creating the snippet']
         end
       end
 
@@ -228,36 +195,14 @@ describe Snippets::CreateService do
           expect(snippet.repository_exists?).to be_falsey
         end
       end
-
-      context 'when feature flag :version_snippets is disabled' do
-        before do
-          stub_feature_flags(version_snippets: false)
-        end
-
-        it 'does not create snippet repository' do
-          expect do
-            subject
-          end.to change(Snippet, :count).by(1)
-
-          expect(snippet.repository_exists?).to be_falsey
-        end
-
-        it 'does not try to commit files' do
-          expect_next_instance_of(described_class) do |instance|
-            expect(instance).not_to receive(:create_commit)
-          end
-
-          subject
-        end
-      end
     end
 
-    shared_examples 'after_save callback to store_mentions' do
+    shared_examples 'after_save callback to store_mentions' do |mentionable_class|
       context 'when mentionable attributes change' do
         let(:extra_opts) { { description: "Description with #{user.to_reference}" } }
 
         it 'saves mentions' do
-          expect_next_instance_of(Snippet) do |instance|
+          expect_next_instance_of(mentionable_class) do |instance|
             expect(instance).to receive(:store_mentions!).and_call_original
           end
           expect(snippet.user_mentions.count).to eq 1
@@ -266,7 +211,7 @@ describe Snippets::CreateService do
 
       context 'when mentionable attributes do not change' do
         it 'does not call store_mentions' do
-          expect_next_instance_of(Snippet) do |instance|
+          expect_next_instance_of(mentionable_class) do |instance|
             expect(instance).not_to receive(:store_mentions!)
           end
           expect(snippet.user_mentions.count).to eq 0
@@ -277,7 +222,7 @@ describe Snippets::CreateService do
         it 'does not call store_mentions' do
           base_opts.delete(:title)
 
-          expect_next_instance_of(Snippet) do |instance|
+          expect_next_instance_of(mentionable_class) do |instance|
             expect(instance).not_to receive(:store_mentions!)
           end
           expect(snippet.valid?).to be false
@@ -294,11 +239,25 @@ describe Snippets::CreateService do
 
       it_behaves_like 'a service that creates a snippet'
       it_behaves_like 'public visibility level restrictions apply'
-      it_behaves_like 'spam check is performed'
+      it_behaves_like 'snippets spam check is performed'
       it_behaves_like 'snippet create data is tracked'
       it_behaves_like 'an error service response when save fails'
       it_behaves_like 'creates repository and files'
-      it_behaves_like 'after_save callback to store_mentions'
+      it_behaves_like 'after_save callback to store_mentions', ProjectSnippet
+
+      context 'when uploaded files are passed to the service' do
+        let(:extra_opts) { { files: ['foo'] } }
+
+        it 'does not move uploaded files to the snippet' do
+          expect_next_instance_of(described_class) do |instance|
+            expect(instance).to receive(:move_temporary_files).and_call_original
+          end
+
+          expect_any_instance_of(FileMover).not_to receive(:execute)
+
+          subject
+        end
+      end
     end
 
     context 'when PersonalSnippet' do
@@ -306,12 +265,55 @@ describe Snippets::CreateService do
 
       it_behaves_like 'a service that creates a snippet'
       it_behaves_like 'public visibility level restrictions apply'
-      it_behaves_like 'spam check is performed'
+      it_behaves_like 'snippets spam check is performed'
       it_behaves_like 'snippet create data is tracked'
       it_behaves_like 'an error service response when save fails'
       it_behaves_like 'creates repository and files'
-      pending('See https://gitlab.com/gitlab-org/gitlab/issues/30742') do
-        it_behaves_like 'after_save callback to store_mentions'
+      it_behaves_like 'after_save callback to store_mentions', PersonalSnippet
+
+      context 'when the snippet description contains files' do
+        include FileMoverHelpers
+
+        let(:title) { 'Title' }
+        let(:picture_secret) { SecureRandom.hex }
+        let(:text_secret) { SecureRandom.hex }
+        let(:picture_file) { "/-/system/user/#{creator.id}/#{picture_secret}/picture.jpg" }
+        let(:text_file) { "/-/system/user/#{creator.id}/#{text_secret}/text.txt" }
+        let(:files) { [picture_file, text_file] }
+        let(:description) do
+          "Description with picture: ![picture](/uploads#{picture_file}) and "\
+          "text: [text.txt](/uploads#{text_file})"
+        end
+
+        before do
+          allow(FileUtils).to receive(:mkdir_p)
+          allow(FileUtils).to receive(:move)
+        end
+
+        let(:extra_opts) { { description: description, title: title, files: files } }
+
+        it 'stores the snippet description correctly' do
+          stub_file_mover(text_file)
+          stub_file_mover(picture_file)
+
+          snippet = subject.payload[:snippet]
+
+          expected_description = "Description with picture: "\
+            "![picture](/uploads/-/system/personal_snippet/#{snippet.id}/#{picture_secret}/picture.jpg) and "\
+            "text: [text.txt](/uploads/-/system/personal_snippet/#{snippet.id}/#{text_secret}/text.txt)"
+
+          expect(snippet.description).to eq(expected_description)
+        end
+
+        context 'when there is a validation error' do
+          let(:title) { nil }
+
+          it 'does not move uploaded files to the snippet' do
+            expect_any_instance_of(described_class).not_to receive(:move_temporary_files)
+
+            subject
+          end
+        end
       end
     end
   end

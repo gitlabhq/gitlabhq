@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+import { GlDeprecatedButton } from '@gitlab/ui';
 import EditButton from '~/diffs/components/edit_button.vue';
 
 const editPath = 'test-path';
@@ -22,7 +23,7 @@ describe('EditButton', () => {
       canCurrentUserFork: false,
     });
 
-    expect(wrapper.attributes('href')).toBe(editPath);
+    expect(wrapper.find(GlDeprecatedButton).attributes('href')).toBe(editPath);
   });
 
   it('emits a show fork message event if current user can fork', () => {
@@ -30,7 +31,7 @@ describe('EditButton', () => {
       editPath,
       canCurrentUserFork: true,
     });
-    wrapper.trigger('click');
+    wrapper.find(GlDeprecatedButton).trigger('click');
 
     return wrapper.vm.$nextTick().then(() => {
       expect(wrapper.emitted('showForkMessage')).toBeTruthy();
@@ -42,7 +43,7 @@ describe('EditButton', () => {
       editPath,
       canCurrentUserFork: false,
     });
-    wrapper.trigger('click');
+    wrapper.find(GlDeprecatedButton).trigger('click');
 
     return wrapper.vm.$nextTick().then(() => {
       expect(wrapper.emitted('showForkMessage')).toBeFalsy();
@@ -55,10 +56,20 @@ describe('EditButton', () => {
       canCurrentUserFork: true,
       canModifyBlob: true,
     });
-    wrapper.trigger('click');
+    wrapper.find(GlDeprecatedButton).trigger('click');
 
     return wrapper.vm.$nextTick().then(() => {
       expect(wrapper.emitted('showForkMessage')).toBeFalsy();
     });
+  });
+
+  it('disables button if editPath is empty', () => {
+    createComponent({
+      editPath: '',
+      canCurrentUserFork: true,
+      canModifyBlob: true,
+    });
+
+    expect(wrapper.find(GlDeprecatedButton).attributes('disabled')).toBe('true');
   });
 });

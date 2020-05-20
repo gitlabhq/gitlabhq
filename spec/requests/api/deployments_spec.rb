@@ -439,7 +439,7 @@ describe API::Deployments do
       let!(:merge_request3) { create(:merge_request, source_project: project2, target_project: project2) }
 
       it 'returns the relevant merge requests linked to a deployment for a project' do
-        deployment.merge_requests << [merge_request1, merge_request2]
+        deployment.link_merge_requests(MergeRequest.where(id: [merge_request1.id, merge_request2.id]))
 
         subject
 

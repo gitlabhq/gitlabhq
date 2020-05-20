@@ -74,11 +74,18 @@ describe Ability do
     context 'using a private project' do
       let(:project) { create(:project, :private) }
 
-      it 'returns users that are administrators' do
+      it 'returns users that are administrators when admin mode is enabled', :enable_admin_mode do
         user = build(:user, admin: true)
 
         expect(described_class.users_that_can_read_project([user], project))
           .to eq([user])
+      end
+
+      it 'does not return users that are administrators when admin mode is disabled' do
+        user = build(:user, admin: true)
+
+        expect(described_class.users_that_can_read_project([user], project))
+            .to eq([])
       end
 
       it 'returns external users if they are the project owner' do
@@ -145,13 +152,26 @@ describe Ability do
   end
 
   describe '.merge_requests_readable_by_user' do
-    context 'with an admin' do
+    context 'with an admin when admin mode is enabled', :enable_admin_mode do
       it 'returns all merge requests' do
         user = build(:user, admin: true)
         merge_request = build(:merge_request)
 
         expect(described_class.merge_requests_readable_by_user([merge_request], user))
           .to eq([merge_request])
+      end
+    end
+
+    context 'with an admin when admin mode is disabled' do
+      it 'returns merge_requests that are publicly visible' do
+        user = build(:user, admin: true)
+        hidden_merge_request = build(:merge_request)
+        visible_merge_request = build(:merge_request, source_project: build(:project, :public))
+
+        merge_requests = described_class
+            .merge_requests_readable_by_user([hidden_merge_request, visible_merge_request], user)
+
+        expect(merge_requests).to eq([visible_merge_request])
       end
     end
 
@@ -217,13 +237,33 @@ describe Ability do
   end
 
   describe '.issues_readable_by_user' do
-    context 'with an admin user' do
+    context 'with an admin when admin mode is enabled', :enable_admin_mode do
       it 'returns all given issues' do
         user = build(:user, admin: true)
         issue = build(:issue)
 
         expect(described_class.issues_readable_by_user([issue], user))
           .to eq([issue])
+      end
+    end
+
+    context 'with an admin when admin mode is disabled' do
+      it 'returns the issues readable by the admin' do
+        user = build(:user, admin: true)
+        issue = build(:issue)
+
+        expect(issue).to receive(:readable_by?).with(user).and_return(true)
+
+        expect(described_class.issues_readable_by_user([issue], user))
+          .to eq([issue])
+      end
+
+      it 'returns no issues when not given access' do
+        user = build(:user, admin: true)
+        issue = build(:issue)
+
+        expect(described_class.issues_readable_by_user([issue], user))
+          .to be_empty
       end
     end
 

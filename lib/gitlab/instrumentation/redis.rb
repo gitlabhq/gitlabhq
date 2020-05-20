@@ -38,7 +38,8 @@ module Gitlab
       end
 
       def self.query_time
-        ::RequestStore[REDIS_CALL_DURATION] || 0
+        query_time = ::RequestStore[REDIS_CALL_DURATION] || 0
+        query_time.round(::Gitlab::InstrumentationHelper::DURATION_PRECISION)
       end
 
       def self.add_duration(duration)

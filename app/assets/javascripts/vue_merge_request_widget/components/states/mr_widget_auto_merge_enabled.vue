@@ -2,7 +2,7 @@
 import autoMergeMixin from 'ee_else_ce/vue_merge_request_widget/mixins/auto_merge';
 import Flash from '../../../flash';
 import statusIcon from '../mr_widget_status_icon.vue';
-import MrWidgetAuthor from '../../components/mr_widget_author.vue';
+import MrWidgetAuthor from '../mr_widget_author.vue';
 import eventHub from '../../event_hub';
 import { AUTO_MERGE_STRATEGIES } from '../../constants';
 import { __ } from '~/locale';
@@ -52,7 +52,6 @@ export default {
         .then(res => res.data)
         .then(data => {
           eventHub.$emit('UpdateWidgetData', data);
-          eventHub.$emit('MRWidgetUpdateRequested');
         })
         .catch(() => {
           this.isCancellingAutoMerge = false;

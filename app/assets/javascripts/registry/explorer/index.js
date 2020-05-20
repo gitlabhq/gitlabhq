@@ -19,7 +19,7 @@ export default () => {
   const { endpoint } = el.dataset;
 
   const store = createStore();
-  const router = createRouter(endpoint, store);
+  const router = createRouter(endpoint);
   store.dispatch('setInitialState', el.dataset);
 
   const attachMainComponent = () =>

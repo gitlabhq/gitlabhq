@@ -353,7 +353,7 @@ module Gitlab
 
         def restore_state(new_state, stream)
           state = Base64.urlsafe_decode64(new_state)
-          state = JSON.parse(state, symbolize_names: true)
+          state = Gitlab::Json.parse(state, symbolize_names: true)
           return if state[:offset].to_i > stream.size
 
           STATE_PARAMS.each do |param|

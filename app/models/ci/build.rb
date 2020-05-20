@@ -25,12 +25,15 @@ module Ci
 
     RUNNER_FEATURES = {
       upload_multiple_artifacts: -> (build) { build.publishes_artifacts_reports? },
-      refspecs: -> (build) { build.merge_request_ref? }
+      refspecs: -> (build) { build.merge_request_ref? },
+      artifacts_exclude: -> (build) { build.supports_artifacts_exclude? }
     }.freeze
 
     DEFAULT_RETRIES = {
       scheduler_failure: 2
     }.freeze
+
+    DEGRADATION_THRESHOLD_VARIABLE_NAME = 'DEGRADATION_THRESHOLD'
 
     has_one :deployment, as: :deployable, class_name: 'Deployment'
     has_one :resource, class_name: 'Ci::Resource', inverse_of: :build
@@ -87,8 +90,12 @@ module Ci
 
     scope :unstarted, ->() { where(runner_id: nil) }
     scope :ignore_failures, ->() { where(allow_failure: false) }
-    scope :with_artifacts_archive, ->() do
-      where('EXISTS (?)', Ci::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.job_id').archive)
+    scope :with_downloadable_artifacts, ->() do
+      where('EXISTS (?)',
+        Ci::JobArtifact.select(1)
+          .where('ci_builds.id = ci_job_artifacts.job_id')
+          .where(file_type: Ci::JobArtifact::DOWNLOADABLE_TYPES)
+      )
     end
 
     scope :with_existing_job_artifacts, ->(query) do
@@ -130,8 +137,8 @@ module Ci
         .includes(:metadata, :job_artifacts_metadata)
     end
 
-    scope :with_artifacts_not_expired, ->() { with_artifacts_archive.where('artifacts_expire_at IS NULL OR artifacts_expire_at > ?', Time.now) }
-    scope :with_expired_artifacts, ->() { with_artifacts_archive.where('artifacts_expire_at < ?', Time.now) }
+    scope :with_artifacts_not_expired, ->() { with_downloadable_artifacts.where('artifacts_expire_at IS NULL OR artifacts_expire_at > ?', Time.now) }
+    scope :with_expired_artifacts, ->() { with_downloadable_artifacts.where('artifacts_expire_at < ?', Time.now) }
     scope :last_month, ->() { where('created_at > ?', Date.today - 1.month) }
     scope :manual_actions, ->() { where(when: :manual, status: COMPLETED_STATUSES + %i[manual]) }
     scope :scheduled_actions, ->() { where(when: :delayed, status: COMPLETED_STATUSES + %i[scheduled]) }
@@ -486,8 +493,7 @@ module Ci
     end
 
     def requires_resource?
-      Feature.enabled?(:ci_resource_group, project, default_enabled: true) &&
-        self.resource_group_id.present?
+      self.resource_group_id.present?
     end
 
     def has_environment?
@@ -530,6 +536,7 @@ module Ci
           .concat(job_variables)
           .concat(environment_changed_page_variables)
           .concat(persisted_environment_variables)
+          .concat(deploy_freeze_variables)
           .to_runner_variables
       end
     end
@@ -583,6 +590,26 @@ module Ci
         variables.append(key: 'CI_DEPLOY_USER', value: gitlab_deploy_token.username)
         variables.append(key: 'CI_DEPLOY_PASSWORD', value: gitlab_deploy_token.token, public: false, masked: true)
       end
+    end
+
+    def deploy_freeze_variables
+      Gitlab::Ci::Variables::Collection.new.tap do |variables|
+        break variables unless freeze_period?
+
+        variables.append(key: 'CI_DEPLOY_FREEZE', value: 'true')
+      end
+    end
+
+    def freeze_period?
+      Ci::FreezePeriodStatus.new(project: project).execute
+    end
+
+    def dependency_variables
+      return [] if all_dependencies.empty?
+
+      Gitlab::Ci::Variables::Collection.new.concat(
+        Ci::JobVariable.where(job: all_dependencies).dotenv_source
+      )
     end
 
     def features
@@ -870,12 +897,28 @@ module Ci
       end
     end
 
+    def collect_accessibility_reports!(accessibility_report)
+      each_report(Ci::JobArtifact::ACCESSIBILITY_REPORT_FILE_TYPES) do |file_type, blob|
+        Gitlab::Ci::Parsers.fabricate!(file_type).parse!(blob, accessibility_report)
+      end
+
+      accessibility_report
+    end
+
     def collect_coverage_reports!(coverage_report)
       each_report(Ci::JobArtifact::COVERAGE_REPORT_FILE_TYPES) do |file_type, blob|
         Gitlab::Ci::Parsers.fabricate!(file_type).parse!(blob, coverage_report)
       end
 
       coverage_report
+    end
+
+    def collect_terraform_reports!(terraform_reports)
+      each_report(::Ci::JobArtifact::TERRAFORM_REPORT_FILE_TYPES) do |file_type, blob, report_artifact|
+        ::Gitlab::Ci::Parsers.fabricate!(file_type).parse!(blob, terraform_reports, artifact: report_artifact)
+      end
+
+      terraform_reports
     end
 
     def report_artifacts
@@ -900,6 +943,16 @@ module Ci
       update_columns(
         status: :failed,
         failure_reason: :data_integrity_failure)
+    end
+
+    def supports_artifacts_exclude?
+      options&.dig(:artifacts, :exclude)&.any? &&
+        Gitlab::Ci::Features.artifacts_exclude_enabled?
+    end
+
+    def degradation_threshold
+      var = yaml_variables.find { |v| v[:key] == DEGRADATION_THRESHOLD_VARIABLE_NAME }
+      var[:value]&.to_i if var
     end
 
     private

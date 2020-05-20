@@ -63,6 +63,6 @@ For example, the following is a link to an image in Markdown:
 
 The following is an example of a source link that could result:
 
-```text
+```plaintext
 http://proxy.gitlab.example.com/f9dd2b40157757eb82afeedbf1290ffb67a3aeeb/68747470733a2f2f61626f75742e6769746c61622e636f6d2f696d616765732f70726573732f6c6f676f2f6a70672f6769746c61622d69636f6e2d7267622e6a7067
 ```

@@ -13,6 +13,7 @@ export default class ClusterService {
       jupyter: this.options.installJupyterEndpoint,
       knative: this.options.installKnativeEndpoint,
       elastic_stack: this.options.installElasticStackEndpoint,
+      fluentd: this.options.installFluentdEndpoint,
     };
     this.appUpdateEndpointMap = {
       knative: this.options.updateKnativeEndpoint,

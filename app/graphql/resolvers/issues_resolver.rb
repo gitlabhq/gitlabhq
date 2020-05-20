@@ -52,6 +52,10 @@ module Resolvers
 
     type Types::IssueType, null: true
 
+    NON_STABLE_CURSOR_SORTS = %i[priority_asc priority_desc
+                                 label_priority_asc label_priority_desc
+                                 milestone_due_asc milestone_due_desc].freeze
+
     def resolve(**args)
       # The project could have been loaded in batch by `BatchLoader`.
       # At this point we need the `id` of the project to query for issues, so
@@ -70,7 +74,15 @@ module Resolvers
       args[:iids] ||= [args[:iid]].compact
       args[:attempt_project_search_optimizations] = args[:search].present?
 
-      IssuesFinder.new(context[:current_user], args).execute
+      issues = IssuesFinder.new(context[:current_user], args).execute
+
+      if non_stable_cursor_sort?(args[:sort])
+        # Certain complex sorts are not supported by the stable cursor pagination yet.
+        # In these cases, we use offset pagination, so we return the correct connection.
+        Gitlab::Graphql::Pagination::OffsetActiveRecordRelationConnection.new(issues)
+      else
+        issues
+      end
     end
 
     def self.resolver_complexity(args, child_complexity:)
@@ -78,6 +90,10 @@ module Resolvers
       complexity += 2 if args[:labelName]
 
       complexity
+    end
+
+    def non_stable_cursor_sort?(sort)
+      NON_STABLE_CURSOR_SORTS.include?(sort)
     end
   end
 end

@@ -18,7 +18,9 @@ describe SearchService do
   let(:group_project) { create(:project, group: accessible_group, name: 'group_project') }
   let(:public_project) { create(:project, :public, name: 'public_project') }
 
-  subject(:search_service) { described_class.new(user, search: search, scope: scope, page: 1) }
+  let(:per_page) { described_class::DEFAULT_PER_PAGE }
+
+  subject(:search_service) { described_class.new(user, search: search, scope: scope, page: 1, per_page: per_page) }
 
   before do
     accessible_project.add_maintainer(user)
@@ -151,7 +153,7 @@ describe SearchService do
         it 'returns the default scope' do
           scope = described_class.new(user, snippets: 'true', scope: 'projects').scope
 
-          expect(scope).to eq 'snippet_blobs'
+          expect(scope).to eq 'snippet_titles'
         end
       end
 
@@ -159,7 +161,7 @@ describe SearchService do
         it 'returns the default scope' do
           scope = described_class.new(user, snippets: 'true').scope
 
-          expect(scope).to eq 'snippet_blobs'
+          expect(scope).to eq 'snippet_titles'
         end
       end
     end
@@ -222,7 +224,7 @@ describe SearchService do
         search_results = described_class.new(
           user,
           snippets: 'true',
-          search: snippet.content).search_results
+          search: snippet.title).search_results
 
         expect(search_results).to be_a Gitlab::SnippetSearchResults
       end
@@ -240,6 +242,76 @@ describe SearchService do
   end
 
   describe '#search_objects' do
+    context 'handling per_page param' do
+      let(:search) { '' }
+      let(:scope) { nil }
+
+      context 'when nil' do
+        let(:per_page) { nil }
+
+        it "defaults to #{described_class::DEFAULT_PER_PAGE}" do
+          expect_any_instance_of(Gitlab::SearchResults)
+            .to receive(:objects)
+            .with(anything, hash_including(per_page: described_class::DEFAULT_PER_PAGE))
+            .and_call_original
+
+          subject.search_objects
+        end
+      end
+
+      context 'when empty string' do
+        let(:per_page) { '' }
+
+        it "defaults to #{described_class::DEFAULT_PER_PAGE}" do
+          expect_any_instance_of(Gitlab::SearchResults)
+            .to receive(:objects)
+            .with(anything, hash_including(per_page: described_class::DEFAULT_PER_PAGE))
+            .and_call_original
+
+          subject.search_objects
+        end
+      end
+
+      context 'when negative' do
+        let(:per_page) { '-1' }
+
+        it "defaults to #{described_class::DEFAULT_PER_PAGE}" do
+          expect_any_instance_of(Gitlab::SearchResults)
+            .to receive(:objects)
+            .with(anything, hash_including(per_page: described_class::DEFAULT_PER_PAGE))
+            .and_call_original
+
+          subject.search_objects
+        end
+      end
+
+      context 'when present' do
+        let(:per_page) { '50' }
+
+        it "converts to integer and passes to search results" do
+          expect_any_instance_of(Gitlab::SearchResults)
+            .to receive(:objects)
+            .with(anything, hash_including(per_page: 50))
+            .and_call_original
+
+          subject.search_objects
+        end
+      end
+
+      context "when greater than #{described_class::MAX_PER_PAGE}" do
+        let(:per_page) { described_class::MAX_PER_PAGE + 1 }
+
+        it "passes #{described_class::MAX_PER_PAGE}" do
+          expect_any_instance_of(Gitlab::SearchResults)
+            .to receive(:objects)
+            .with(anything, hash_including(per_page: described_class::MAX_PER_PAGE))
+            .and_call_original
+
+          subject.search_objects
+        end
+      end
+    end
+
     context 'with accessible project_id' do
       it 'returns objects in the project' do
         search_objects = described_class.new(
@@ -270,7 +342,7 @@ describe SearchService do
         search_objects = described_class.new(
           user,
           snippets: 'true',
-          search: snippet.content).search_objects
+          search: snippet.title).search_objects
 
         expect(search_objects.first).to eq snippet
       end
@@ -383,7 +455,7 @@ describe SearchService do
         let(:readable) { create(:project_snippet, project: accessible_project) }
         let(:unreadable) { create(:project_snippet, project: inaccessible_project) }
         let(:unredacted_results) { ar_relation(ProjectSnippet, readable, unreadable) }
-        let(:scope) { 'snippet_blobs' }
+        let(:scope) { 'snippet_titles' }
 
         it 'redacts the inaccessible snippet' do
           expect(result).to contain_exactly(readable)
@@ -394,7 +466,7 @@ describe SearchService do
         let(:readable) { create(:personal_snippet, :private, author: user) }
         let(:unreadable) { create(:personal_snippet, :private) }
         let(:unredacted_results) { ar_relation(PersonalSnippet, readable, unreadable) }
-        let(:scope) { 'snippet_blobs' }
+        let(:scope) { 'snippet_titles' }
 
         it 'redacts the inaccessible snippet' do
           expect(result).to contain_exactly(readable)

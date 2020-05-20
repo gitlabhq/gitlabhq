@@ -5,12 +5,17 @@ require 'spec_helper'
 describe Blob do
   include FakeBlobHelpers
 
-  let(:project) { build(:project, lfs_enabled: true) }
+  using RSpec::Parameterized::TableSyntax
+
+  let(:project) { build(:project) }
   let(:personal_snippet) { build(:personal_snippet) }
   let(:project_snippet) { build(:project_snippet, project: project) }
 
+  let(:repository) { project.repository }
+  let(:lfs_enabled) { true }
+
   before do
-    allow(Gitlab.config.lfs).to receive(:enabled).and_return(true)
+    allow(repository).to receive(:lfs_enabled?) { lfs_enabled }
   end
 
   describe '.decorate' do
@@ -27,7 +32,7 @@ describe Blob do
       it 'does not fetch blobs when none are accessed' do
         expect(container.repository).not_to receive(:blobs_at)
 
-        described_class.lazy(container, commit_id, 'CHANGELOG')
+        described_class.lazy(container.repository, commit_id, 'CHANGELOG')
       end
 
       it 'fetches all blobs for the same repository when one is accessed' do
@@ -36,10 +41,10 @@ describe Blob do
           .once.and_call_original
         expect(other_container.repository).not_to receive(:blobs_at)
 
-        changelog = described_class.lazy(container, commit_id, 'CHANGELOG')
-        contributing = described_class.lazy(same_container, commit_id, 'CONTRIBUTING.md')
+        changelog = described_class.lazy(container.repository, commit_id, 'CHANGELOG')
+        contributing = described_class.lazy(same_container.repository, commit_id, 'CONTRIBUTING.md')
 
-        described_class.lazy(other_container, commit_id, 'CHANGELOG')
+        described_class.lazy(other_container.repository, commit_id, 'CHANGELOG')
 
         # Access property so the values are loaded
         changelog.id
@@ -47,14 +52,14 @@ describe Blob do
       end
 
       it 'does not include blobs from previous requests in later requests' do
-        changelog = described_class.lazy(container, commit_id, 'CHANGELOG')
-        contributing = described_class.lazy(same_container, commit_id, 'CONTRIBUTING.md')
+        changelog = described_class.lazy(container.repository, commit_id, 'CHANGELOG')
+        contributing = described_class.lazy(same_container.repository, commit_id, 'CONTRIBUTING.md')
 
         # Access property so the values are loaded
         changelog.id
         contributing.id
 
-        readme = described_class.lazy(container, commit_id, 'README.md')
+        readme = described_class.lazy(container.repository, commit_id, 'README.md')
 
         expect(container.repository).to receive(:blobs_at)
           .with([[commit_id, 'README.md']], blob_size_limit: blob_size_limit).once.and_call_original
@@ -128,399 +133,84 @@ describe Blob do
   end
 
   describe '#external_storage_error?' do
-    shared_examples 'no error' do
-      it do
-        expect(blob.external_storage_error?).to be_falsey
-      end
-    end
+    subject { blob.external_storage_error? }
 
-    shared_examples 'returns error' do
-      it do
-        expect(blob.external_storage_error?).to be_truthy
-      end
-    end
-
-    context 'if the blob is stored in LFS' do
-      let(:blob) { fake_blob(path: 'file.pdf', lfs: true, container: container) }
-
-      context 'when the project has LFS enabled' do
-        context 'with project' do
-          let(:container) { project }
-
-          it_behaves_like 'no error'
-        end
-
-        context 'with personal snippet' do
-          let(:container) { personal_snippet }
-
-          it_behaves_like 'returns error'
-        end
-
-        context 'with project snippet' do
-          let(:container) { project_snippet }
-
-          it_behaves_like 'no error'
-        end
-      end
-
-      context 'when the project does not have LFS enabled' do
-        before do
-          project.lfs_enabled = false
-        end
-
-        context 'with project' do
-          let(:container) { project }
-
-          it_behaves_like 'returns error'
-        end
-
-        context 'with project snippet' do
-          let(:container) { project_snippet }
-
-          it_behaves_like 'returns error'
-        end
-      end
-    end
-
-    context 'if the blob is not stored in LFS' do
-      let(:blob) { fake_blob(path: 'file.md', container: container) }
-
-      context 'with project' do
-        let(:container) { project }
-
-        it_behaves_like 'no error'
-      end
-
-      context 'with personal snippet' do
-        let(:container) { personal_snippet }
-
-        it_behaves_like 'no error'
-      end
-
-      context 'with project snippet' do
-        let(:container) { project_snippet }
-
-        it_behaves_like 'no error'
-      end
-    end
-  end
-
-  describe '#stored_externally?' do
     context 'if the blob is stored in LFS' do
       let(:blob) { fake_blob(path: 'file.pdf', lfs: true) }
 
-      shared_examples 'returns true' do
-        it do
-          expect(blob.stored_externally?).to be_truthy
-        end
+      context 'when LFS is enabled' do
+        let(:lfs_enabled) { true }
+
+        it { is_expected.to be_falsy }
       end
 
-      shared_examples 'returns false' do
-        it do
-          expect(blob.stored_externally?).to be_falsey
-        end
-      end
+      context 'when LFS is not enabled' do
+        let(:lfs_enabled) { false }
 
-      context 'when the project has LFS enabled' do
-        context 'with project' do
-          let(:container) { project }
-
-          it_behaves_like 'returns true'
-        end
-
-        context 'with personal snippet' do
-          let(:container) { personal_snippet }
-
-          it_behaves_like 'returns true'
-        end
-
-        context 'with project snippet' do
-          let(:container) { project_snippet }
-
-          it_behaves_like 'returns true'
-        end
-      end
-
-      context 'when the project does not have LFS enabled' do
-        before do
-          project.lfs_enabled = false
-        end
-
-        context 'with project' do
-          let(:container) { project }
-
-          it_behaves_like 'returns false'
-        end
-
-        context 'with personal snippet' do
-          let(:container) { personal_snippet }
-
-          it_behaves_like 'returns false'
-        end
-
-        context 'with project snippet' do
-          let(:container) { project_snippet }
-
-          it_behaves_like 'returns false'
-        end
+        it { is_expected.to be_truthy }
       end
     end
 
     context 'if the blob is not stored in LFS' do
       let(:blob) { fake_blob(path: 'file.md') }
 
-      it 'returns false' do
-        expect(blob.stored_externally?).to be_falsey
+      it { is_expected.to be_falsy }
+    end
+  end
+
+  describe '#stored_externally?' do
+    subject { blob.stored_externally? }
+
+    context 'if the blob is stored in LFS' do
+      let(:blob) { fake_blob(path: 'file.pdf', lfs: true) }
+
+      context 'when LFS is enabled' do
+        let(:lfs_enabled) { true }
+
+        it { is_expected.to be_truthy }
       end
+
+      context 'when LFS is not enabled' do
+        let(:lfs_enabled) { false }
+
+        it { is_expected.to be_falsy }
+      end
+    end
+
+    context 'if the blob is not stored in LFS' do
+      let(:blob) { fake_blob(path: 'file.md') }
+
+      it { is_expected.to be_falsy }
     end
   end
 
   describe '#binary?' do
-    shared_examples 'returns true' do
-      it do
-        expect(blob.binary?).to be_truthy
+    context 'an lfs object' do
+      where(:filename, :is_binary) do
+        'file.pdf' | true
+        'file.md'  | false
+        'file.txt' | false
+        'file.ics' | false
+        'file.rb'  | false
+        'file.exe' | true
+        'file.ini' | false
+        'file.wtf' | true
+      end
+
+      with_them do
+        let(:blob) { fake_blob(path: filename, lfs: true, container: project) }
+
+        it { expect(blob.binary?).to eq(is_binary) }
       end
     end
 
-    shared_examples 'returns false' do
-      it do
-        expect(blob.binary?).to be_falsey
-      end
-    end
+    context 'a non-lfs object' do
+      let(:blob) { fake_blob(path: 'anything', container: project) }
 
-    context 'if the blob is stored externally' do
-      let(:blob) { fake_blob(path: file, lfs: true) }
+      it 'delegates to binary_in_repo?' do
+        expect(blob).to receive(:binary_in_repo?) { :result }
 
-      context 'if the extension has a rich viewer' do
-        context 'if the viewer is binary' do
-          let(:file) { 'file.pdf' }
-
-          context 'with project' do
-            let(:container) { project }
-
-            it_behaves_like 'returns true'
-          end
-
-          context 'with personal snippet' do
-            let(:container) { personal_snippet }
-
-            it_behaves_like 'returns true'
-          end
-
-          context 'with project snippet' do
-            let(:container) { project_snippet }
-
-            it_behaves_like 'returns true'
-          end
-        end
-
-        context 'if the viewer is text-based' do
-          let(:file) { 'file.md' }
-
-          context 'with project' do
-            let(:container) { project }
-
-            it_behaves_like 'returns false'
-          end
-
-          context 'with personal snippet' do
-            let(:container) { personal_snippet }
-
-            it_behaves_like 'returns false'
-          end
-
-          context 'with project snippet' do
-            let(:container) { project_snippet }
-
-            it_behaves_like 'returns false'
-          end
-        end
-      end
-
-      context "if the extension doesn't have a rich viewer" do
-        context 'if the extension has a text mime type' do
-          context 'if the extension is for a programming language' do
-            let(:file) { 'file.txt' }
-
-            context 'with project' do
-              let(:container) { project }
-
-              it_behaves_like 'returns false'
-            end
-
-            context 'with personal snippet' do
-              let(:container) { personal_snippet }
-
-              it_behaves_like 'returns false'
-            end
-
-            context 'with project snippet' do
-              let(:container) { project_snippet }
-
-              it_behaves_like 'returns false'
-            end
-          end
-
-          context 'if the extension is not for a programming language' do
-            let(:file) { 'file.ics' }
-
-            context 'with project' do
-              let(:container) { project }
-
-              it_behaves_like 'returns false'
-            end
-
-            context 'with personal snippet' do
-              let(:container) { personal_snippet }
-
-              it_behaves_like 'returns false'
-            end
-
-            context 'with project snippet' do
-              let(:container) { project_snippet }
-
-              it_behaves_like 'returns false'
-            end
-          end
-        end
-
-        context 'if the extension has a binary mime type' do
-          context 'if the extension is for a programming language' do
-            let(:file) { 'file.rb' }
-
-            context 'with project' do
-              let(:container) { project }
-
-              it_behaves_like 'returns false'
-            end
-
-            context 'with personal snippet' do
-              let(:container) { personal_snippet }
-
-              it_behaves_like 'returns false'
-            end
-
-            context 'with project snippet' do
-              let(:container) { project_snippet }
-
-              it_behaves_like 'returns false'
-            end
-          end
-
-          context 'if the extension is not for a programming language' do
-            let(:file) { 'file.exe' }
-
-            context 'with project' do
-              let(:container) { project }
-
-              it_behaves_like 'returns true'
-            end
-
-            context 'with personal snippet' do
-              let(:container) { personal_snippet }
-
-              it_behaves_like 'returns true'
-            end
-
-            context 'with project snippet' do
-              let(:container) { project_snippet }
-
-              it_behaves_like 'returns true'
-            end
-          end
-        end
-
-        context 'if the extension has an unknown mime type' do
-          context 'if the extension is for a programming language' do
-            let(:file) { 'file.ini' }
-
-            context 'with project' do
-              let(:container) { project }
-
-              it_behaves_like 'returns false'
-            end
-
-            context 'with personal snippet' do
-              let(:container) { personal_snippet }
-
-              it_behaves_like 'returns false'
-            end
-
-            context 'with project snippet' do
-              let(:container) { project_snippet }
-
-              it_behaves_like 'returns false'
-            end
-          end
-
-          context 'if the extension is not for a programming language' do
-            let(:file) { 'file.wtf' }
-
-            context 'with project' do
-              let(:container) { project }
-
-              it_behaves_like 'returns true'
-            end
-
-            context 'with personal snippet' do
-              let(:container) { personal_snippet }
-
-              it_behaves_like 'returns true'
-            end
-
-            context 'with project snippet' do
-              let(:container) { project_snippet }
-
-              it_behaves_like 'returns true'
-            end
-          end
-        end
-      end
-    end
-
-    context 'if the blob is not stored externally' do
-      context 'if the blob is binary' do
-        let(:blob) { fake_blob(path: 'file.pdf', binary: true, container: container) }
-
-        context 'with project' do
-          let(:container) { project }
-
-          it_behaves_like 'returns true'
-        end
-
-        context 'with personal snippet' do
-          let(:container) { personal_snippet }
-
-          it_behaves_like 'returns true'
-        end
-
-        context 'with project snippet' do
-          let(:container) { project_snippet }
-
-          it_behaves_like 'returns true'
-        end
-      end
-
-      context 'if the blob is text-based' do
-        let(:blob) { fake_blob(path: 'file.md', container: container) }
-
-        context 'with project' do
-          let(:container) { project }
-
-          it_behaves_like 'returns false'
-        end
-
-        context 'with personal snippet' do
-          let(:container) { personal_snippet }
-
-          it_behaves_like 'returns false'
-        end
-
-        context 'with project snippet' do
-          let(:container) { project_snippet }
-
-          it_behaves_like 'returns false'
-        end
+        expect(blob.binary?).to eq(:result)
       end
     end
   end
@@ -569,9 +259,7 @@ describe Blob do
 
   describe '#rich_viewer' do
     context 'when the blob has an external storage error' do
-      before do
-        project.lfs_enabled = false
-      end
+      let(:lfs_enabled) { false }
 
       it 'returns nil' do
         blob = fake_blob(path: 'file.pdf', lfs: true)
@@ -631,9 +319,7 @@ describe Blob do
 
   describe '#auxiliary_viewer' do
     context 'when the blob has an external storage error' do
-      before do
-        project.lfs_enabled = false
-      end
+      let(:lfs_enabled) { false }
 
       it 'returns nil' do
         blob = fake_blob(path: 'LICENSE', lfs: true)
@@ -676,63 +362,21 @@ describe Blob do
   end
 
   describe '#rendered_as_text?' do
-    shared_examples 'returns true' do
-      it do
-        expect(blob.rendered_as_text?(ignore_errors: ignore_errors)).to be_truthy
-      end
-    end
-
-    shared_examples 'returns false' do
-      it do
-        expect(blob.rendered_as_text?(ignore_errors: ignore_errors)).to be_falsey
-      end
-    end
+    subject { blob.rendered_as_text?(ignore_errors: ignore_errors) }
 
     context 'when ignoring errors' do
       let(:ignore_errors) { true }
 
       context 'when the simple viewer is text-based' do
-        let(:blob) { fake_blob(path: 'file.md', size: 100.megabytes, container: container) }
+        let(:blob) { fake_blob(path: 'file.md', size: 100.megabytes) }
 
-        context 'with project' do
-          let(:container) { project }
-
-          it_behaves_like 'returns true'
-        end
-
-        context 'with personal snippet' do
-          let(:container) { personal_snippet }
-
-          it_behaves_like 'returns true'
-        end
-
-        context 'with project snippet' do
-          let(:container) { project_snippet }
-
-          it_behaves_like 'returns true'
-        end
+        it { is_expected.to be_truthy }
       end
 
       context 'when the simple viewer is binary' do
-        let(:blob) { fake_blob(path: 'file.pdf', binary: true, size: 100.megabytes, container: container) }
+        let(:blob) { fake_blob(path: 'file.pdf', binary: true, size: 100.megabytes) }
 
-        context 'with project' do
-          let(:container) { project }
-
-          it_behaves_like 'returns false'
-        end
-
-        context 'with personal snippet' do
-          let(:container) { personal_snippet }
-
-          it_behaves_like 'returns false'
-        end
-
-        context 'with project snippet' do
-          let(:container) { project_snippet }
-
-          it_behaves_like 'returns false'
-        end
+        it { is_expected.to be_falsy }
       end
     end
 
@@ -740,47 +384,15 @@ describe Blob do
       let(:ignore_errors) { false }
 
       context 'when the viewer has render errors' do
-        let(:blob) { fake_blob(path: 'file.md', size: 100.megabytes, container: container) }
+        let(:blob) { fake_blob(path: 'file.md', size: 100.megabytes) }
 
-        context 'with project' do
-          let(:container) { project }
-
-          it_behaves_like 'returns false'
-        end
-
-        context 'with personal snippet' do
-          let(:container) { personal_snippet }
-
-          it_behaves_like 'returns false'
-        end
-
-        context 'with project snippet' do
-          let(:container) { project_snippet }
-
-          it_behaves_like 'returns false'
-        end
+        it { is_expected.to be_falsy }
       end
 
       context "when the viewer doesn't have render errors" do
-        let(:blob) { fake_blob(path: 'file.md', container: container) }
+        let(:blob) { fake_blob(path: 'file.md') }
 
-        context 'with project' do
-          let(:container) { project }
-
-          it_behaves_like 'returns true'
-        end
-
-        context 'with personal snippet' do
-          let(:container) { personal_snippet }
-
-          it_behaves_like 'returns true'
-        end
-
-        context 'with project snippet' do
-          let(:container) { project_snippet }
-
-          it_behaves_like 'returns true'
-        end
+        it { is_expected.to be_truthy }
       end
     end
   end

@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 describe GitlabSchema.types['SentryErrorStackTrace'] do
-  it { expect(described_class.graphql_name).to eq('SentryErrorStackTrace') }
+  specify { expect(described_class.graphql_name).to eq('SentryErrorStackTrace') }
 
-  it { expect(described_class).to require_graphql_authorizations(:read_sentry_issue) }
+  specify { expect(described_class).to require_graphql_authorizations(:read_sentry_issue) }
 
   it 'exposes the expected fields' do
     expected_fields = %i[

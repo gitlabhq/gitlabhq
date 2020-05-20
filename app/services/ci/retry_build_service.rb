@@ -9,6 +9,8 @@ module Ci
                          resource_group scheduling_type].freeze
 
     def execute(build)
+      build.ensure_scheduling_type!
+
       reprocess!(build).tap do |new_build|
         build.pipeline.mark_as_processable_after_stage(build.stage_idx)
 
@@ -31,6 +33,9 @@ module Ci
       end.to_h
 
       attributes[:user] = current_user
+
+      # TODO: we can probably remove this logic
+      # see: https://gitlab.com/gitlab-org/gitlab/-/issues/217930
       attributes[:scheduling_type] ||= build.find_legacy_scheduling_type
 
       Ci::Build.transaction do

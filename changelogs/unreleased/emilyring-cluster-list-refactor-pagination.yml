@@ -1,0 +1,5 @@
+---
+title: 'Cluster index refactor: Add missing pagination'
+merge_request: 32338
+author:
+type: changed

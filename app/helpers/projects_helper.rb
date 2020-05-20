@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 module ProjectsHelper
-  prepend_if_ee('::EE::ProjectsHelper') # rubocop: disable Cop/InjectEnterpriseEditionModule
-
   def project_incident_management_setting
     @project_incident_management_setting ||= @project.incident_management_setting ||
       @project.build_incident_management_setting
@@ -297,11 +295,11 @@ module ProjectsHelper
   end
 
   def show_merge_request_count?(disabled: false, compact_mode: false)
-    !disabled && !compact_mode && Feature.enabled?(:project_list_show_mr_count, default_enabled: true)
+    !disabled && !compact_mode
   end
 
   def show_issue_count?(disabled: false, compact_mode: false)
-    !disabled && !compact_mode && Feature.enabled?(:project_list_show_issue_count, default_enabled: true)
+    !disabled && !compact_mode
   end
 
   # overridden in EE
@@ -448,6 +446,7 @@ module ProjectsHelper
       clusters:         :read_cluster,
       serverless:       :read_cluster,
       error_tracking:   :read_sentry_issue,
+      alert_management: :read_alert_management_alert,
       labels:           :read_label,
       issues:           :read_issue,
       project_members:  :read_project_member,
@@ -588,7 +587,9 @@ module ProjectsHelper
       pagesAccessLevel: feature.pages_access_level,
       containerRegistryEnabled: !!project.container_registry_enabled,
       lfsEnabled: !!project.lfs_enabled,
-      emailsDisabled: project.emails_disabled?
+      emailsDisabled: project.emails_disabled?,
+      metricsDashboardAccessLevel: feature.metrics_dashboard_access_level,
+      showDefaultAwardEmojis: project.show_default_award_emojis?
     }
   end
 
@@ -674,6 +675,7 @@ module ProjectsHelper
       services#edit
       hooks#index
       hooks#edit
+      access_tokens#index
       hook_logs#show
       repository#show
       ci_cd#show
@@ -708,6 +710,7 @@ module ProjectsHelper
       clusters
       functions
       error_tracking
+      alert_management
       user
       gcp
       logs
@@ -736,6 +739,12 @@ module ProjectsHelper
   def settings_container_registry_expiration_policy_available?(project)
     Gitlab.config.registry.enabled &&
       can?(current_user, :destroy_container_image, project)
+  end
+
+  def project_access_token_available?(project)
+    return false if ::Gitlab.com?
+
+    ::Feature.enabled?(:resource_access_token, project)
   end
 end
 

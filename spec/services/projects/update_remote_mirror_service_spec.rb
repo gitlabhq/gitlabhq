@@ -5,7 +5,7 @@ require 'spec_helper'
 describe Projects::UpdateRemoteMirrorService do
   let(:project) { create(:project, :repository) }
   let(:remote_project) { create(:forked_project_with_submodules) }
-  let(:remote_mirror) { project.remote_mirrors.create!(url: remote_project.http_url_to_repo, enabled: true, only_protected_branches: false) }
+  let(:remote_mirror) { create(:remote_mirror, project: project, enabled: true) }
   let(:remote_name) { remote_mirror.remote_name }
 
   subject(:service) { described_class.new(project, project.creator) }
@@ -16,7 +16,9 @@ describe Projects::UpdateRemoteMirrorService do
     before do
       project.repository.add_branch(project.owner, 'existing-branch', 'master')
 
-      allow(remote_mirror).to receive(:update_repository).and_return(true)
+      allow(remote_mirror)
+        .to receive(:update_repository)
+        .and_return(double(divergent_refs: []))
     end
 
     it 'ensures the remote exists' do
@@ -53,7 +55,7 @@ describe Projects::UpdateRemoteMirrorService do
     it 'marks the mirror as failed and raises the error when an unexpected error occurs' do
       allow(project.repository).to receive(:fetch_remote).and_raise('Badly broken')
 
-      expect { execute! }.to raise_error /Badly broken/
+      expect { execute! }.to raise_error(/Badly broken/)
 
       expect(remote_mirror).to be_failed
       expect(remote_mirror.last_error).to include('Badly broken')
@@ -83,32 +85,21 @@ describe Projects::UpdateRemoteMirrorService do
       end
     end
 
-    context 'when syncing all branches' do
-      it 'push all the branches the first time' do
+    context 'when there are divergent refs' do
+      before do
         stub_fetch_remote(project, remote_name: remote_name, ssh_auth: remote_mirror)
-
-        expect(remote_mirror).to receive(:update_repository).with({})
-
-        execute!
-      end
-    end
-
-    context 'when only syncing protected branches' do
-      it 'sync updated protected branches' do
-        stub_fetch_remote(project, remote_name: remote_name, ssh_auth: remote_mirror)
-        protected_branch = create_protected_branch(project)
-        remote_mirror.only_protected_branches = true
-
-        expect(remote_mirror)
-          .to receive(:update_repository)
-          .with(only_branches_matching: [protected_branch.name])
-
-        execute!
       end
 
-      def create_protected_branch(project)
-        branch_name = project.repository.branch_names.find { |n| n != 'existing-branch' }
-        create(:protected_branch, project: project, name: branch_name)
+      it 'marks the mirror as failed and sets an error message' do
+        response = double(divergent_refs: %w[refs/heads/master refs/heads/develop])
+        expect(remote_mirror).to receive(:update_repository).and_return(response)
+
+        execute!
+
+        expect(remote_mirror).to be_failed
+        expect(remote_mirror.last_error).to include("Some refs have diverged")
+        expect(remote_mirror.last_error).to include("refs/heads/master\n")
+        expect(remote_mirror.last_error).to include("refs/heads/develop")
       end
     end
   end

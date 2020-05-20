@@ -21,7 +21,7 @@
 # Jobs that only need to pull cache
 .default-cache:
   cache:
-    key: "debian-stretch-ruby-2.6.5-pg11-node-12.x"
+    key: "debian-stretch-ruby-2.6.6-pg11-node-12.x"
     paths:
       - .go/pkg/mod
       - vendor/ruby
@@ -29,65 +29,39 @@
       - vendor/gitaly-ruby
     policy: pull
 
-.use-pg9:
-  image: "registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.6.5-golang-1.14-git-2.26-lfs-2.9-chrome-73.0-node-12.x-yarn-1.21-postgresql-9.6-graphicsmagick-1.3.34"
-  services:
-    - name: postgres:9.6.17
-      command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
-    - name: redis:alpine
-  variables:
-    POSTGRES_HOST_AUTH_METHOD: trust
+.rails-cache:
   cache:
-    key: "debian-stretch-ruby-2.6.5-pg9-node-12.x"
+    key:
+      files:
+        - Gemfile.lock
+        - GITALY_SERVER_VERSION
+      prefix: "ruby-go-cache-v1"
+    paths:
+      - vendor/ruby
+      - vendor/gitaly-ruby
+      - .go/pkg/mod
+    policy: pull
 
-.use-pg10:
-  image: "registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.6.5-golang-1.14-git-2.26-lfs-2.9-chrome-73.0-node-12.x-yarn-1.21-postgresql-10-graphicsmagick-1.3.34"
-  services:
-    - name: postgres:10.12
-      command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
-    - name: redis:alpine
-  variables:
-    POSTGRES_HOST_AUTH_METHOD: trust
+.yarn-cache:
   cache:
-    key: "debian-stretch-ruby-2.6.5-pg10-node-12.x"
+    key:
+      files:
+        - yarn.lock
+      prefix: "v1"
+    paths:
+      - node_modules/
 
 .use-pg11:
-  image: "registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.6.5-golang-1.14-git-2.26-lfs-2.9-chrome-73.0-node-12.x-yarn-1.21-postgresql-11-graphicsmagick-1.3.34"
+  image: "registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.6.6-golang-1.14-git-2.26-lfs-2.9-chrome-73.0-node-12.x-yarn-1.21-postgresql-11-graphicsmagick-1.3.34"
   services:
     - name: postgres:11.6
       command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
     - name: redis:alpine
   variables:
     POSTGRES_HOST_AUTH_METHOD: trust
-  cache:
-    key: "debian-stretch-ruby-2.6.5-pg11-node-12.x"
-
-.use-pg9-ee:
-  image: "registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.6.5-golang-1.14-git-2.26-lfs-2.9-chrome-73.0-node-12.x-yarn-1.21-postgresql-9.6-graphicsmagick-1.3.34"
-  services:
-    - name: postgres:9.6.17
-      command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
-    - name: redis:alpine
-    - name: elasticsearch:6.4.2
-  variables:
-    POSTGRES_HOST_AUTH_METHOD: trust
-  cache:
-    key: "debian-stretch-ruby-2.6.5-pg9-node-12.x"
-
-.use-pg10-ee:
-  image: "registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.6.5-golang-1.14-git-2.26-lfs-2.9-chrome-73.0-node-12.x-yarn-1.21-postgresql-10-graphicsmagick-1.3.34"
-  services:
-    - name: postgres:10.12
-      command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
-    - name: redis:alpine
-    - name: elasticsearch:6.4.2
-  variables:
-    POSTGRES_HOST_AUTH_METHOD: trust
-  cache:
-    key: "debian-stretch-ruby-2.6.5-pg10-node-12.x"
 
 .use-pg11-ee:
-  image: "registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.6.5-golang-1.14-git-2.26-lfs-2.9-chrome-73.0-node-12.x-yarn-1.21-postgresql-11-graphicsmagick-1.3.34"
+  image: "registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.6.6-golang-1.14-git-2.26-lfs-2.9-chrome-73.0-node-12.x-yarn-1.21-postgresql-11-graphicsmagick-1.3.34"
   services:
     - name: postgres:11.6
       command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
@@ -95,15 +69,13 @@
     - name: elasticsearch:6.4.2
   variables:
     POSTGRES_HOST_AUTH_METHOD: trust
-  cache:
-    key: "debian-stretch-ruby-2.6.5-pg11-node-12.x"
 
-# Pin kaniko to v0.16.0 due to https://github.com/GoogleContainerTools/kaniko/issues/1162
 .use-kaniko:
   image:
-    name: gcr.io/kaniko-project/executor:debug-v0.16.0
+    name: gcr.io/kaniko-project/executor:debug-v0.20.0
     entrypoint: [""]
   before_script:
+    - mkdir -p /kaniko/.docker
     - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
 
 .as-if-foss:

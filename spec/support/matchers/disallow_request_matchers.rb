@@ -11,7 +11,7 @@ end
 
 RSpec::Matchers.define :disallow_request_in_json do
   match do |response|
-    json_response = JSON.parse(response.body)
+    json_response = Gitlab::Json.parse(response.body)
     response.body.include?('You cannot perform write operations') && json_response.key?('message')
   end
 end

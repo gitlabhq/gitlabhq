@@ -62,7 +62,7 @@ describe Gitlab::Ci::Reports::TestCase do
     end
 
     context 'when attachment is present' do
-      let(:attachment_test_case) { build(:test_case, :with_attachment) }
+      let(:attachment_test_case) { build(:test_case, :failed_with_attachment) }
 
       it "initializes the attachment if present" do
         expect(attachment_test_case.attachment).to eq("some/path.png")

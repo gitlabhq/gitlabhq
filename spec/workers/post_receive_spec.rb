@@ -299,12 +299,43 @@ describe PostReceive do
       end
     end
 
+    context "master" do
+      let(:default_branch) { 'master' }
+      let(:oldrev) { '012345' }
+      let(:newrev) { '6789ab' }
+      let(:changes) do
+        <<~EOF
+            #{oldrev} #{newrev} refs/heads/#{default_branch}
+            123456 789012 refs/heads/tést2
+        EOF
+      end
+
+      let(:raw_repo) { double('RawRepo') }
+
+      it 'processes the changes on the master branch' do
+        expect_next_instance_of(Git::WikiPushService) do |service|
+          expect(service).to receive(:process_changes).and_call_original
+        end
+        expect(project.wiki).to receive(:default_branch).twice.and_return(default_branch)
+        expect(project.wiki.repository).to receive(:raw).and_return(raw_repo)
+        expect(raw_repo).to receive(:raw_changes_between).once.with(oldrev, newrev).and_return([])
+
+        perform
+      end
+    end
+
     context "branches" do
       let(:changes) do
         <<~EOF
             123456 789012 refs/heads/tést1
             123456 789012 refs/heads/tést2
         EOF
+      end
+
+      before do
+        allow_next_instance_of(Git::WikiPushService) do |service|
+          allow(service).to receive(:process_changes)
+        end
       end
 
       it 'expires the branches cache' do
@@ -438,6 +469,19 @@ describe PostReceive do
       let!(:snippet) { create(:project_snippet, :repository, project: project, author: project.owner) }
 
       it_behaves_like 'snippet changes actions'
+    end
+  end
+
+  describe 'processing design changes' do
+    let(:gl_repository) { "design-#{project.id}" }
+
+    it 'does not do anything' do
+      worker = described_class.new
+
+      expect(worker).not_to receive(:process_wiki_changes)
+      expect(worker).not_to receive(:process_project_changes)
+
+      described_class.new.perform(gl_repository, key_id, base64_changes)
     end
   end
 end

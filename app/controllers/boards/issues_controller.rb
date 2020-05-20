@@ -20,9 +20,6 @@ module Boards
     skip_before_action :authenticate_user!, only: [:index]
     before_action :validate_id_list, only: [:bulk_move]
     before_action :can_move_issues?, only: [:bulk_move]
-    before_action do
-      push_frontend_feature_flag(:board_search_optimization, board.group, default_enabled: true)
-    end
 
     def index
       list_service = Boards::Issues::ListService.new(board_parent, current_user, filter_params)

@@ -166,6 +166,10 @@ module Ci
       end
     end
 
+    def dependency_variables
+      []
+    end
+
     private
 
     def cross_project_params

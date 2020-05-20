@@ -8,11 +8,6 @@ jest.mock('~/editor/editor_lite', () => {
   });
 });
 
-const mockCreateAceInstance = jest.fn();
-global.ace = {
-  edit: mockCreateAceInstance,
-};
-
 describe('Blob utilities', () => {
   beforeEach(() => {
     Editor.mockClear();
@@ -29,21 +24,6 @@ describe('Blob utilities', () => {
     });
 
     describe('Monaco editor', () => {
-      let origProp;
-
-      beforeEach(() => {
-        origProp = window.gon;
-        window.gon = {
-          features: {
-            monacoSnippets: true,
-          },
-        };
-      });
-
-      afterEach(() => {
-        window.gon = origProp;
-      });
-
       it('initializes the Editor Lite', () => {
         utils.initEditorLite({ el: editorEl });
         expect(Editor).toHaveBeenCalled();
@@ -67,28 +47,6 @@ describe('Blob utilities', () => {
             blobContent,
           },
         ]);
-      });
-    });
-    describe('ACE editor', () => {
-      let origProp;
-
-      beforeEach(() => {
-        origProp = window.gon;
-        window.gon = {
-          features: {
-            monacoSnippets: false,
-          },
-        };
-      });
-
-      afterEach(() => {
-        window.gon = origProp;
-      });
-
-      it('does not initialize the Editor Lite', () => {
-        utils.initEditorLite({ el: editorEl });
-        expect(Editor).not.toHaveBeenCalled();
-        expect(mockCreateAceInstance).toHaveBeenCalledWith(editorEl);
       });
     });
   });

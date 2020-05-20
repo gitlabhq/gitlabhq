@@ -11,7 +11,7 @@ In order to use SSH, you will need to:
 
 ## Creating your SSH key pair
 
-1. Go to your [command line](start-using-git.md#open-a-shell).
+1. Go to your [command line](start-using-git.md#command-shell).
 1. Follow the [instructions](../ssh/README.md#generating-a-new-ssh-key-pair) to generate
    your SSH key pair.
 

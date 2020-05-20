@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe OmniauthCallbacksController, type: :controller, do_not_mock_admin_mode: true do
+describe OmniauthCallbacksController, type: :controller do
   include LoginHelpers
 
   describe 'omniauth' do
@@ -143,6 +143,10 @@ describe OmniauthCallbacksController, type: :controller, do_not_mock_admin_mode:
       context 'github' do
         let(:extern_uid) { 'my-uid' }
         let(:provider) { :github }
+
+        it_behaves_like 'known sign in' do
+          let(:post_action) { post provider }
+        end
 
         it 'allows sign in' do
           post provider
@@ -285,6 +289,11 @@ describe OmniauthCallbacksController, type: :controller, do_not_mock_admin_mode:
       mock_auth_hash_with_saml_xml('saml', +'my-uid', user.email, mock_saml_response)
       request.env['devise.mapping'] = Devise.mappings[:user]
       request.env['omniauth.auth'] = Rails.application.env_config['omniauth.auth']
+    end
+
+    it_behaves_like 'known sign in' do
+      let(:user) { create(:omniauth_user, extern_uid: 'my-uid', provider: 'saml') }
+      let(:post_action) { post :saml, params: { SAMLResponse: mock_saml_response } }
     end
 
     context 'sign up' do

@@ -3,7 +3,7 @@
 query($fullPath: ID!) {
   project(fullPath: $fullPath) {
     jiraImportStatus
-    jiraImports(last: 1) {
+    jiraImports {
       nodes {
         ...JiraImport
       }

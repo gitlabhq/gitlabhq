@@ -3,7 +3,9 @@
 ## Puma
 
 As of GitLab 12.9, [Puma](https://github.com/puma/puma) has replaced [Unicorn](https://yhbt.net/unicorn/).
-as the default web server.
+as the default web server. Starting with 13.0, both all-in-one package based
+installations as well as Helm chart based installations will run Puma instead of
+Unicorn unless explicitly specified not to.
 
 ## Why switch to Puma?
 
@@ -13,6 +15,12 @@ application server like Unicorn.
 Most Rails applications requests normally include a proportion of I/O wait time.
 During I/O wait time MRI Ruby will release the GVL (Global VM Lock) to other threads.
 Multi-threaded Puma can therefore still serve more requests than a single process.
+
+## Configuring Puma to replace Unicorn
+
+If you are currently running Unicorn and would like to switch to Puma, server configuration
+will _not_ carry over automatically. For details on matching Unicorn configuration settings with
+the Puma equivalent, where applicable, see [Converting Unicorn settings to Puma](https://docs.gitlab.com/omnibus/settings/puma.html#converting-unicorn-settings-to-puma).
 
 ## Performance caveat when using Puma with Rugged
 

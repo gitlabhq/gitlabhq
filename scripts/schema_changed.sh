@@ -2,13 +2,13 @@
 
 schema_changed() {
   if [ ! -z "$(git diff --name-only -- db/structure.sql)" ]; then
-    printf "db/structure.sql after rake db:migrate:reset is different from one in the repository"
+    printf "Schema changes are not cleanly committed to db/structure.sql\n"
     printf "The diff is as follows:\n"
     diff=$(git diff -p --binary -- db/structure.sql)
     printf "%s" "$diff"
     exit 1
   else
-    printf "db/structure.sql after rake db:migrate:reset matches one in the repository"
+    printf "Schema changes are correctly applied to db/structure.sql\n"
   fi
 }
 

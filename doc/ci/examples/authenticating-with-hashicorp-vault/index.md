@@ -20,7 +20,7 @@ You will need to replace the `vault.example.com` URL below with the URL of your 
 
 ## How it works
 
-Each job has JSON Web Token (JWT) provided as environment variable named `CI_JOB_JWT`. This JWT can be used to authenticate with Vault using the [JWT Auth](https://www.vaultproject.io/docs/auth/jwt/#jwt-authentication) method.
+Each job has JSON Web Token (JWT) provided as environment variable named `CI_JOB_JWT`. This JWT can be used to authenticate with Vault using the [JWT Auth](https://www.vaultproject.io/docs/auth/jwt#jwt-authentication) method.
 
 The JWT's payload looks like this:
 
@@ -51,7 +51,7 @@ The JWT is encoded by using RS256 and signed with your GitLab instance's OpenID 
 
 You can use this JWT and your instance's JWKS endpoint (`https://gitlab.example.com/-/jwks`) to authenticate with a Vault server that is configured to allow the JWT Authentication method for authentication.
 
-When configuring roles in Vault, you can use [bound_claims](https://www.vaultproject.io/docs/auth/jwt/#bound-claims) to match against the JWT's claims and restrict which secrets each CI job has access to.
+When configuring roles in Vault, you can use [bound_claims](https://www.vaultproject.io/docs/auth/jwt#bound-claims) to match against the JWT's claims and restrict which secrets each CI job has access to.
 
 To communicate with Vault, you can use either its CLI client or perform API requests (using `curl` or another client).
 
@@ -70,7 +70,7 @@ $ vault kv get -field=password secret/myproject/production/db
 real-pa$$w0rd
 ```
 
-To configure your Vault server, start by enabling the [JWT Auth](https://www.vaultproject.io/docs/auth/jwt/) method:
+To configure your Vault server, start by enabling the [JWT Auth](https://www.vaultproject.io/docs/auth/jwt) method:
 
 ```shell
 $ vault auth enable jwt

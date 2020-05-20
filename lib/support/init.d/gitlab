@@ -23,11 +23,20 @@
 # An example defaults file can be found in lib/support/init.d/gitlab.default.example
 ###
 
-
 ### Environment variables
-RAILS_ENV="production"
-USE_UNICORN=""
-SIDEKIQ_WORKERS=1
+RAILS_ENV=${RAILS_ENV:-'production'}
+SIDEKIQ_WORKERS=${SIDEKIQ_WORKERS:-1}
+USE_WEB_SERVER=${USE_WEB_SERVER:-'puma'}
+
+case "${USE_WEB_SERVER}" in
+  puma|unicorn)
+    use_web_server="$USE_WEB_SERVER"
+    ;;
+  *)
+    echo "Unsupported web server '${USE_WEB_SERVER}' (Allowed: 'puma', 'unicorn')" 1>&2
+    exit 1
+    ;;
+esac
 
 # Script variable names should be lower-case not to conflict with
 # internal /bin/sh variables such as PATH, EDITOR or SHELL.
@@ -36,7 +45,7 @@ app_root="/home/$app_user/gitlab"
 pid_path="$app_root/tmp/pids"
 socket_path="$app_root/tmp/sockets"
 rails_socket="$socket_path/gitlab.socket"
-web_server_pid_path="$pid_path/unicorn.pid"
+web_server_pid_path="$pid_path/$use_web_server.pid"
 mail_room_enabled=false
 mail_room_pid_path="$pid_path/mail_room.pid"
 gitlab_workhorse_dir=$(cd $app_root/../gitlab-workhorse 2> /dev/null && pwd)
@@ -65,13 +74,6 @@ fi
 # Switch to the gitlab path, exit on failure.
 if ! cd "$app_root" ; then
  echo "Failed to cd into $app_root, exiting!";  exit 1
-fi
-
-# Select the web server to use
-if [ -z "$USE_UNICORN" ]; then
-  use_web_server="puma"
-else
-  use_web_server="unicorn"
 fi
 
 if [ -z "$SIDEKIQ_WORKERS" ]; then

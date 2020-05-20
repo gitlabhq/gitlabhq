@@ -1,0 +1,5 @@
+---
+title: Avoid copying diffs as Markdown tables
+merge_request: 30572
+author:
+type: fixed

@@ -3,14 +3,13 @@
 require 'spec_helper'
 
 describe Gitlab::Kubernetes::Helm::DeleteCommand do
+  subject(:delete_command) { described_class.new(name: app_name, rbac: rbac, files: files) }
+
   let(:app_name) { 'app-name' }
   let(:rbac) { true }
   let(:files) { {} }
-  let(:delete_command) { described_class.new(name: app_name, rbac: rbac, files: files) }
 
-  subject { delete_command }
-
-  it_behaves_like 'helm commands' do
+  it_behaves_like 'helm command generator' do
     let(:commands) do
       <<~EOS
       export HELM_HOST="localhost:44134"
@@ -26,7 +25,7 @@ describe Gitlab::Kubernetes::Helm::DeleteCommand do
       stub_feature_flags(managed_apps_local_tiller: false)
     end
 
-    it_behaves_like 'helm commands' do
+    it_behaves_like 'helm command generator' do
       let(:commands) do
         <<~EOS
         helm init --upgrade
@@ -48,7 +47,7 @@ describe Gitlab::Kubernetes::Helm::DeleteCommand do
         EOS
       end
 
-      it_behaves_like 'helm commands' do
+      it_behaves_like 'helm command generator' do
         let(:commands) do
           <<~EOS
           helm init --upgrade
@@ -67,29 +66,19 @@ describe Gitlab::Kubernetes::Helm::DeleteCommand do
     end
   end
 
-  describe '#pod_resource' do
-    subject { delete_command.pod_resource }
-
-    context 'rbac is enabled' do
-      let(:rbac) { true }
-
-      it 'generates a pod that uses the tiller serviceAccountName' do
-        expect(subject.spec.serviceAccountName).to eq('tiller')
-      end
-    end
-
-    context 'rbac is not enabled' do
-      let(:rbac) { false }
-
-      it 'generates a pod that uses the default serviceAccountName' do
-        expect(subject.spec.serviceAcccountName).to be_nil
-      end
-    end
-  end
-
   describe '#pod_name' do
     subject { delete_command.pod_name }
 
     it { is_expected.to eq('uninstall-app-name') }
+  end
+
+  it_behaves_like 'helm command' do
+    let(:command) { delete_command }
+  end
+
+  describe '#delete_command' do
+    it 'deletes the release' do
+      expect(subject.delete_command).to eq('helm delete --purge app-name')
+    end
   end
 end

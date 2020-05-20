@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'query jira import data' do
+describe 'query Jira import data' do
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }
@@ -18,6 +18,7 @@ describe 'query jira import data' do
           jiraImports {
             nodes {
               jiraProjectKey
+              createdAt
               scheduledAt
               scheduledBy {
                 username

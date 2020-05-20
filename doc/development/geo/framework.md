@@ -84,10 +84,8 @@ module Geo
       model_record.file
     end
 
-    private
-
     # Specify the model this replicator belongs to
-    def model
+    def self.model
       ::Packages::PackageFile
     end
   end
@@ -163,47 +161,7 @@ state.
 For example, to add support for files referenced by a `Widget` model with a
 `widgets` table, you would perform the following steps:
 
-1. Add verification state fields to the `widgets` table so the Geo primary can
-   track verification state:
-
-   ```ruby
-   # frozen_string_literal: true
-
-   class AddVerificationStateToWidgets < ActiveRecord::Migration[6.0]
-     DOWNTIME = false
-
-     def change
-       add_column :widgets, :verification_retry_at,  :datetime_with_timezone
-       add_column :widgets, :verified_at,  :datetime_with_timezone
-       add_column :widgets, :verification_checksum, :string
-       add_column :widgets, :verification_failure, :string
-       add_column :widgets, :verification_retry_count, :integer
-     end
-   end
-   ```
-
-1. Add a partial index on `verification_failure` to ensure re-verification can
-   be performed efficiently:
-
-   ```ruby
-   # frozen_string_literal: true
-
-   class AddVerificationFailureIndexToWidgets < ActiveRecord::Migration[6.0]
-     include Gitlab::Database::MigrationHelpers
-
-     DOWNTIME = false
-
-     disable_ddl_transaction!
-
-     def up
-       add_concurrent_index :widgets, :verification_failure, where: "(verification_failure IS NOT NULL)", name: "widgets_verification_failure_partial"
-     end
-
-     def down
-       remove_concurrent_index :widgets, :verification_failure
-     end
-   end
-   ```
+#### Replication
 
 1. Include `Gitlab::Geo::ReplicableModel` in the `Widget` class, and specify
    the Replicator class `with_replicator Geo::WidgetReplicator`.
@@ -270,7 +228,7 @@ For example, to add support for files referenced by a `Widget` model with a
    ```ruby
    # frozen_string_literal: true
 
-   class CreateWidgetRegistry < ActiveRecord::Migration[5.2]
+   class CreateWidgetRegistry < ActiveRecord::Migration[6.0]
      DOWNTIME = false
 
      def change
@@ -334,7 +292,7 @@ For example, to add support for files referenced by a `Widget` model with a
    end
    ```
 
-1. Create `ee/spec/models/geo/widget_registry.rb`:
+1. Create `ee/spec/models/geo/widget_registry_spec.rb`:
 
    ```ruby
    # frozen_string_literal: true
@@ -350,4 +308,206 @@ For example, to add support for files referenced by a `Widget` model with a
    end
    ```
 
-Widget files should now be replicated and verified by Geo!
+Widgets should now be replicated by Geo!
+
+#### Verification
+
+1. Add verification state fields to the `widgets` table so the Geo primary can
+   track verification state:
+
+   ```ruby
+   # frozen_string_literal: true
+
+   class AddVerificationStateToWidgets < ActiveRecord::Migration[6.0]
+     DOWNTIME = false
+
+     def change
+       add_column :widgets, :verification_retry_at, :datetime_with_timezone
+       add_column :widgets, :verified_at, :datetime_with_timezone
+       add_column :widgets, :verification_checksum, :binary, using: 'verification_checksum::bytea'
+       add_column :widgets, :verification_failure, :string
+       add_column :widgets, :verification_retry_count, :integer
+     end
+   end
+   ```
+
+1. Add a partial index on `verification_failure` and `verification_checksum` to ensure
+   re-verification can be performed efficiently:
+
+   ```ruby
+   # frozen_string_literal: true
+
+   class AddVerificationFailureIndexToWidgets < ActiveRecord::Migration[6.0]
+     include Gitlab::Database::MigrationHelpers
+
+     DOWNTIME = false
+
+     disable_ddl_transaction!
+
+     def up
+       add_concurrent_index :widgets, :verification_failure, where: "(verification_failure IS NOT NULL)", name: "widgets_verification_failure_partial"
+       add_concurrent_index :widgets, :verification_checksum, where: "(verification_checksum IS NOT NULL)", name: "widgets_verification_checksum_partial"
+     end
+
+     def down
+       remove_concurrent_index :widgets, :verification_failure
+       remove_concurrent_index :widgets, :verification_checksum
+     end
+   end
+   ```
+
+1. Add fields `widget_count`, `widget_checksummed_count`, and `widget_checksum_failed_count`
+   to `GeoNodeStatus#RESOURCE_STATUS_FIELDS` array in `ee/app/models/geo_node_status.rb`.
+1. Add the same fields to `GeoNodeStatus#PROMETHEUS_METRICS` hash in
+   `ee/app/models/geo_node_status.rb`.
+1. Add the same fields to `Sidekiq metrics` table in
+   `doc/administration/monitoring/prometheus/gitlab_metrics.md`.
+1. Add the same fields to `GET /geo_nodes/status` example response in `doc/api/geo_nodes.md`.
+1. Modify `GeoNodeStatus#load_verification_data` to make sure the fields mantioned above
+   are set:
+
+   ```ruby
+     self.widget_count = Geo::WidgetReplicator.model.count
+     self.widget_checksummed_count = Geo::WidgetReplicator.checksummed.count
+     self.widget_checksum_failed_count = Geo::WidgetReplicator.checksum_failed.count
+   ```
+
+1. Make sure `Widget` model has `checksummed` and `checksum_failed` scopes.
+1. Update `ee/spec/fixtures/api/schemas/public_api/v4/geo_node_status.json` with new fields.
+1. Update `GeoNodeStatus#PROMETHEUS_METRICS` hash in `ee/app/models/geo_node_status.rb` with new fields.
+1. Update `Sidekiq metrics` table in `doc/administration/monitoring/prometheus/gitlab_metrics.md` with new fields.
+1. Update `GET /geo_nodes/status` example response in `doc/api/geo_nodes.md` with new fields.
+1. Update `ee/spec/models/geo_node_status_spec.rb` and `ee/spec/factories/geo_node_statuses.rb` with new fields.
+
+To do: Add verification on secondaries. This should be done as part of
+[Geo: Self Service Framework - First Implementation for Package File verification](https://gitlab.com/groups/gitlab-org/-/epics/1817)
+
+Widgets should now be verified by Geo!
+
+#### GraphQL API
+
+1. Add a new field to `GeoNodeType` in
+   `ee/app/graphql/types/geo/geo_node_type.rb`:
+
+   ```ruby
+   field :widget_registries, ::Types::Geo::WidgetRegistryType.connection_type,
+         null: true,
+         resolver: ::Resolvers::Geo::WidgetRegistriesResolver,
+         description: 'Find widget registries on this Geo node',
+         feature_flag: :geo_self_service_framework
+   ```
+
+1. Add the new `widget_registries` field name to the `expected_fields` array in
+   `ee/spec/graphql/types/geo/geo_node_type_spec.rb`.
+
+1. Create `ee/app/graphql/resolvers/geo/widget_registries_resolver.rb`:
+
+   ```ruby
+   # frozen_string_literal: true
+
+   module Resolvers
+     module Geo
+       class WidgetRegistriesResolver < BaseResolver
+         include RegistriesResolver
+       end
+     end
+   end
+   ```
+
+1. Create `ee/spec/graphql/resolvers/geo/widget_registries_resolver_spec.rb`:
+
+   ```ruby
+   # frozen_string_literal: true
+
+   require 'spec_helper'
+
+   describe Resolvers::Geo::WidgetRegistriesResolver do
+     it_behaves_like 'a Geo registries resolver', :widget_registry
+   end
+   ```
+
+1. Create `ee/app/finders/geo/widget_registry_finder.rb`:
+
+   ```ruby
+   # frozen_string_literal: true
+
+   module Geo
+     class WidgetRegistryFinder
+       include FrameworkRegistryFinder
+     end
+   end
+   ```
+
+1. Create `ee/spec/finders/geo/widget_registry_finder_spec.rb`:
+
+   ```ruby
+   # frozen_string_literal: true
+
+   require 'spec_helper'
+
+   describe Geo::WidgetRegistryFinder do
+     it_behaves_like 'a framework registry finder', :widget_registry
+   end
+   ```
+
+1. Create `ee/app/graphql/types/geo/package_file_registry_type.rb`:
+
+   ```ruby
+   # frozen_string_literal: true
+
+   module Types
+     module Geo
+       # rubocop:disable Graphql/AuthorizeTypes because it is included
+       class WidgetRegistryType < BaseObject
+         include ::Types::Geo::RegistryType
+
+         graphql_name 'WidgetRegistry'
+         description 'Represents the sync and verification state of a widget'
+
+         field :widget_id, GraphQL::ID_TYPE, null: false, description: 'ID of the Widget'
+       end
+     end
+   end
+   ```
+
+1. Create `ee/spec/graphql/types/geo/widget_registry_type_spec.rb`:
+
+   ```ruby
+   # frozen_string_literal: true
+
+   require 'spec_helper'
+
+   describe GitlabSchema.types['WidgetRegistry'] do
+     it_behaves_like 'a Geo registry type'
+
+     it 'has the expected fields (other than those included in RegistryType)' do
+       expected_fields = %i[widget_id]
+
+       expect(described_class).to have_graphql_fields(*expected_fields).at_least
+     end
+   end
+   ```
+
+1. Add integration tests for providing Widget registry data to the frontend via
+   the GraphQL API, by duplicating and modifying the following shared examples
+   in `ee/spec/requests/api/graphql/geo/registries_spec.rb`:
+
+   ```ruby
+   it_behaves_like 'gets registries for', {
+     field_name: 'widgetRegistries',
+     registry_class_name: 'WidgetRegistry',
+     registry_factory: :widget_registry,
+     registry_foreign_key_field_name: 'widgetId'
+   }
+   ```
+
+Individual widget synchronization and verification data should now be available
+via the GraphQL API!
+
+#### Admin UI
+
+To do: This should be done as part of
+[Geo: Implement frontend for Self-Service Framework replicables](https://gitlab.com/groups/gitlab-org/-/epics/2525)
+
+Widget sync and verification data (aggregate and individual) should now be
+available in the Admin UI!

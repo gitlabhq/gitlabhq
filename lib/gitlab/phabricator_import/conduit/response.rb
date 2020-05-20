@@ -9,7 +9,7 @@ module Gitlab
                   "Phabricator responded with #{http_response.status}"
           end
 
-          response = new(JSON.parse(http_response.body))
+          response = new(Gitlab::Json.parse(http_response.body))
 
           unless response.success?
             raise ResponseError,

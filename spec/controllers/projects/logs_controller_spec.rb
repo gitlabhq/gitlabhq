@@ -16,16 +16,23 @@ describe Projects::LogsController do
   let(:container) { 'container-1' }
 
   before do
-    project.add_maintainer(user)
-
     sign_in(user)
   end
 
   describe 'GET #index' do
     let(:empty_project) { create(:project) }
 
+    it 'returns 404 with developer access' do
+      project.add_developer(user)
+
+      get :index, params: environment_params
+
+      expect(response).to have_gitlab_http_status(:not_found)
+    end
+
     it 'renders empty logs page if no environment exists' do
       empty_project.add_maintainer(user)
+
       get :index, params: { namespace_id: empty_project.namespace, project_id: empty_project }
 
       expect(response).to be_ok
@@ -33,6 +40,8 @@ describe Projects::LogsController do
     end
 
     it 'renders index template' do
+      project.add_maintainer(user)
+
       get :index, params: environment_params
 
       expect(response).to be_ok
@@ -50,7 +59,7 @@ describe Projects::LogsController do
         container_name: container
       }
     end
-    let(:service_result_json) { JSON.parse(service_result.to_json) }
+    let(:service_result_json) { Gitlab::Json.parse(service_result.to_json) }
 
     let_it_be(:cluster) { create(:cluster, :provided_by_gcp, environment_scope: '*', projects: [project]) }
 
@@ -60,70 +69,84 @@ describe Projects::LogsController do
       end
     end
 
-    it 'returns the service result' do
-      get endpoint, params: environment_params(pod_name: pod_name, format: :json)
-
-      expect(response).to have_gitlab_http_status(:success)
-      expect(json_response).to eq(service_result_json)
-    end
-
-    it 'registers a usage of the endpoint' do
-      expect(::Gitlab::UsageCounters::PodLogs).to receive(:increment).with(project.id)
+    it 'returns 404 with developer access' do
+      project.add_developer(user)
 
       get endpoint, params: environment_params(pod_name: pod_name, format: :json)
 
-      expect(response).to have_gitlab_http_status(:success)
+      expect(response).to have_gitlab_http_status(:not_found)
     end
 
-    it 'sets the polling header' do
-      get endpoint, params: environment_params(pod_name: pod_name, format: :json)
-
-      expect(response).to have_gitlab_http_status(:success)
-      expect(response.headers['Poll-Interval']).to eq('3000')
-    end
-
-    context 'when service is processing' do
-      let(:service_result) { nil }
-
-      it 'returns a 202' do
-        get endpoint, params: environment_params(pod_name: pod_name, format: :json)
-
-        expect(response).to have_gitlab_http_status(:accepted)
-      end
-    end
-
-    shared_examples 'unsuccessful execution response' do |message|
-      let(:service_result) do
-        {
-          status: :error,
-          message: message
-        }
+    context 'with maintainer access' do
+      before do
+        project.add_maintainer(user)
       end
 
-      it 'returns the error' do
+      it 'returns the service result' do
         get endpoint, params: environment_params(pod_name: pod_name, format: :json)
 
-        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(response).to have_gitlab_http_status(:success)
         expect(json_response).to eq(service_result_json)
       end
-    end
 
-    context 'when service is failing' do
-      it_behaves_like 'unsuccessful execution response', 'some error'
-    end
+      it 'registers a usage of the endpoint' do
+        expect(::Gitlab::UsageCounters::PodLogs).to receive(:increment).with(project.id)
 
-    context 'when cluster is nil' do
-      let!(:cluster) { nil }
+        get endpoint, params: environment_params(pod_name: pod_name, format: :json)
 
-      it_behaves_like 'unsuccessful execution response', 'Environment does not have deployments'
-    end
-
-    context 'when namespace is empty' do
-      before do
-        allow(environment).to receive(:deployment_namespace).and_return('')
+        expect(response).to have_gitlab_http_status(:success)
       end
 
-      it_behaves_like 'unsuccessful execution response', 'Environment does not have deployments'
+      it 'sets the polling header' do
+        get endpoint, params: environment_params(pod_name: pod_name, format: :json)
+
+        expect(response).to have_gitlab_http_status(:success)
+        expect(response.headers['Poll-Interval']).to eq('3000')
+      end
+
+      context 'when service is processing' do
+        let(:service_result) { nil }
+
+        it 'returns a 202' do
+          get endpoint, params: environment_params(pod_name: pod_name, format: :json)
+
+          expect(response).to have_gitlab_http_status(:accepted)
+        end
+      end
+
+      shared_examples 'unsuccessful execution response' do |message|
+        let(:service_result) do
+          {
+            status: :error,
+            message: message
+          }
+        end
+
+        it 'returns the error' do
+          get endpoint, params: environment_params(pod_name: pod_name, format: :json)
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response).to eq(service_result_json)
+        end
+      end
+
+      context 'when service is failing' do
+        it_behaves_like 'unsuccessful execution response', 'some error'
+      end
+
+      context 'when cluster is nil' do
+        let!(:cluster) { nil }
+
+        it_behaves_like 'unsuccessful execution response', 'Environment does not have deployments'
+      end
+
+      context 'when namespace is empty' do
+        before do
+          allow(environment).to receive(:deployment_namespace).and_return('')
+        end
+
+        it_behaves_like 'unsuccessful execution response', 'Environment does not have deployments'
+      end
     end
   end
 

@@ -215,6 +215,12 @@ FactoryBot.define do
       end
     end
 
+    trait :design_repo do
+      after(:create) do |project|
+        raise 'Failed to create design repository!' unless project.design_repository.create_if_not_exists
+      end
+    end
+
     trait :remote_mirror do
       transient do
         remote_name { "remote_mirror_#{SecureRandom.hex}" }

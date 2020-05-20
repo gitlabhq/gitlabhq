@@ -14,9 +14,9 @@ describe GitlabSchema.types['GrafanaIntegration'] do
     ]
   end
 
-  it { expect(described_class.graphql_name).to eq('GrafanaIntegration') }
+  specify { expect(described_class.graphql_name).to eq('GrafanaIntegration') }
 
-  it { expect(described_class).to require_graphql_authorizations(:admin_operations) }
+  specify { expect(described_class).to require_graphql_authorizations(:admin_operations) }
 
-  it { expect(described_class).to have_graphql_fields(*expected_fields) }
+  specify { expect(described_class).to have_graphql_fields(*expected_fields) }
 end

@@ -16,10 +16,12 @@ class AddThrottleProtectedPathColumns < ActiveRecord::Migration[5.2]
     '/import/github/personal_access_token'
   ]
 
+  # rubocop:disable Migration/PreventStrings
   def change
     add_column :application_settings, :throttle_protected_paths_enabled, :boolean, default: true, null: false
     add_column :application_settings, :throttle_protected_paths_requests_per_period, :integer, default: 10, null: false
     add_column :application_settings, :throttle_protected_paths_period_in_seconds, :integer, default: 60, null: false
     add_column :application_settings, :protected_paths, :string, array: true, limit: 255, default: DEFAULT_PROTECTED_PATHS
   end
+  # rubocop:enable Migration/PreventStrings
 end

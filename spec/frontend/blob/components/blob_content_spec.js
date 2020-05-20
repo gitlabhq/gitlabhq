@@ -2,6 +2,12 @@ import { shallowMount } from '@vue/test-utils';
 import BlobContent from '~/blob/components/blob_content.vue';
 import BlobContentError from '~/blob/components/blob_content_error.vue';
 import {
+  BLOB_RENDER_EVENT_LOAD,
+  BLOB_RENDER_EVENT_SHOW_SOURCE,
+  BLOB_RENDER_ERRORS,
+} from '~/blob/components/constants';
+import {
+  Blob,
   RichViewerMock,
   SimpleViewerMock,
   RichBlobContentMock,
@@ -38,7 +44,7 @@ describe('Blob Content component', () => {
 
     it('renders error if there is any in the viewer', () => {
       const renderError = 'Oops';
-      const viewer = Object.assign({}, SimpleViewerMock, { renderError });
+      const viewer = { ...SimpleViewerMock, renderError };
       createComponent({}, viewer);
       expect(wrapper.contains(GlLoadingIcon)).toBe(false);
       expect(wrapper.contains(BlobContentError)).toBe(true);
@@ -65,6 +71,34 @@ describe('Blob Content component', () => {
     `('renders correct content that is passed to the component', ({ content, mock, viewer }) => {
       createComponent({ content }, mock);
       expect(wrapper.find(viewer).html()).toContain(content);
+    });
+  });
+
+  describe('functionality', () => {
+    describe('render error', () => {
+      const findErrorEl = () => wrapper.find(BlobContentError);
+      const renderError = BLOB_RENDER_ERRORS.REASONS.COLLAPSED.id;
+      const viewer = { ...SimpleViewerMock, renderError };
+
+      beforeEach(() => {
+        createComponent({ blob: Blob }, viewer);
+      });
+
+      it('correctly sets blob on the blob-content-error component', () => {
+        expect(findErrorEl().props('blob')).toEqual(Blob);
+      });
+
+      it(`properly proxies ${BLOB_RENDER_EVENT_LOAD} event`, () => {
+        expect(wrapper.emitted(BLOB_RENDER_EVENT_LOAD)).toBeUndefined();
+        findErrorEl().vm.$emit(BLOB_RENDER_EVENT_LOAD);
+        expect(wrapper.emitted(BLOB_RENDER_EVENT_LOAD)).toBeTruthy();
+      });
+
+      it(`properly proxies ${BLOB_RENDER_EVENT_SHOW_SOURCE} event`, () => {
+        expect(wrapper.emitted(BLOB_RENDER_EVENT_SHOW_SOURCE)).toBeUndefined();
+        findErrorEl().vm.$emit(BLOB_RENDER_EVENT_SHOW_SOURCE);
+        expect(wrapper.emitted(BLOB_RENDER_EVENT_SHOW_SOURCE)).toBeTruthy();
+      });
     });
   });
 });

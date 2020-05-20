@@ -18,7 +18,7 @@ Add the `Filter` object to the plugins array of a `DropLab.prototype.init` or `D
 <ul>
 ```
 
-```js
+```javascript
 const droplab = new DropLab();
 
 const trigger = document.getElementById('trigger');

@@ -1,0 +1,5 @@
+---
+title: Fix leaky constant issue in env assignment spec
+merge_request: 32040
+author: Rajendra Kadam
+type: fixed

@@ -11,7 +11,7 @@ class AddDnsRebindingProtectionEnabledToApplicationSettings < ActiveRecord::Migr
   disable_ddl_transaction!
 
   def up
-    add_column_with_default(:application_settings, :dns_rebinding_protection_enabled,
+    add_column_with_default(:application_settings, :dns_rebinding_protection_enabled, # rubocop:disable Migration/AddColumnWithDefault
                             :boolean,
                             default: true,
                             allow_null: false)

@@ -1,5 +1,5 @@
-Your CSV export of <%= pluralize(@written_count, 'issue') %> from project <%= @project.full_name %> (<%= project_url(@project) %>) has been added to this email as an attachment.
+<%= _('Your CSV export of %{written_count} from project %{project_name} (%{project_url}) has been added to this email as an attachment.') %  { written_count: pluralize(@written_count, 'issue'), project_name: @project.full_name, project_url: project_url(@project) } %>
 
 <% if @truncated %>
-This attachment has been truncated to avoid exceeding a maximum allowed attachment size of 15MB. <%= @written_count %> of <%= @issues_count %> issues have been included. Consider re-exporting with a narrower selection of issues.
+  <%= _('This attachment has been truncated to avoid exceeding the maximum allowed attachment size of 15MB. %{written_count} of %{issues_count} issues have been included. Consider re-exporting with a narrower selection of issues.') % { written_count: @written_count, issues_count: @issues_count} %>
 <% end %>

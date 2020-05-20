@@ -344,3 +344,27 @@ describe SentNotificationsController, 'routing' do
       .to route_to('sent_notifications#unsubscribe', id: '4bee17d4a63ed60cf5db53417e9aeb4c')
   end
 end
+
+describe AutocompleteController, 'routing' do
+  it 'to #users' do
+    expect(get("/-/autocomplete/users")).to route_to('autocomplete#users')
+  end
+
+  it 'to #projects' do
+    expect(get("/-/autocomplete/projects")).to route_to('autocomplete#projects')
+  end
+
+  it 'to #award_emojis' do
+    expect(get("/-/autocomplete/award_emojis")).to route_to('autocomplete#award_emojis')
+  end
+
+  it 'to #merge_request_target_branches' do
+    expect(get("/-/autocomplete/merge_request_target_branches")).to route_to('autocomplete#merge_request_target_branches')
+  end
+
+  it 'to legacy route' do
+    expect(get("/autocomplete/users")).to route_to('autocomplete#users')
+    expect(get("/autocomplete/projects")).to route_to('autocomplete#projects')
+    expect(get("/autocomplete/award_emojis")).to route_to('autocomplete#award_emojis')
+  end
+end

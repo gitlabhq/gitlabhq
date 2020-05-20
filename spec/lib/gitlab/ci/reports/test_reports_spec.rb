@@ -127,7 +127,7 @@ describe Gitlab::Ci::Reports::TestReports do
 
     context 'when test suites contain an attachment' do
       let(:test_case_succes) { build(:test_case) }
-      let(:test_case_with_attachment) { build(:test_case, :with_attachment) }
+      let(:test_case_with_attachment) { build(:test_case, :failed_with_attachment) }
 
       before do
         test_reports.get_suite('rspec').add_test_case(test_case_succes)
@@ -138,6 +138,29 @@ describe Gitlab::Ci::Reports::TestReports do
         expect(subject.test_suites.count).to eq(1)
         expect(subject.test_suites['junit'].test_cases['failed']).to be_present
       end
+    end
+  end
+
+  describe '#suite_errors' do
+    subject { test_reports.suite_errors }
+
+    context 'when a suite has normal spec errors or failures' do
+      before do
+        test_reports.get_suite('junit').add_test_case(create_test_case_java_success)
+        test_reports.get_suite('junit').add_test_case(create_test_case_java_failed)
+        test_reports.get_suite('junit').add_test_case(create_test_case_java_error)
+      end
+
+      it { is_expected.to be_empty }
+    end
+
+    context 'when there is an error test case' do
+      before do
+        test_reports.get_suite('rspec').add_test_case(create_test_case_rspec_success)
+        test_reports.get_suite('junit').set_suite_error('Existential parsing error')
+      end
+
+      it { is_expected.to eq({ 'junit' => 'Existential parsing error' }) }
     end
   end
 

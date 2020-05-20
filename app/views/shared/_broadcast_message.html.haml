@@ -6,5 +6,5 @@
     = render_broadcast_message(message)
   .flex-grow-1.text-right{ style: 'flex-basis: 0' }
     - if (message.notification? || message.dismissable?) && opts[:preview].blank?
-      %button.broadcast-message-dismiss.js-dismiss-current-broadcast-notification.btn.btn-link.pl-2.pr-2{ 'aria-label' => _('Close'), :type => 'button', data: { id: message.id } }
+      %button.broadcast-message-dismiss.js-dismiss-current-broadcast-notification.btn.btn-link.pl-2.pr-2{ 'aria-label' => _('Close'), :type => 'button', data: { id: message.id, expire_date: message.ends_at.iso8601 } }
         %i.fa.fa-times

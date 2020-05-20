@@ -32,7 +32,7 @@ module Gitlab
               raise ParserError, 'Errors field not found!' unless errors
 
               begin
-                JSON.parse(errors)
+                Gitlab::Json.parse(errors)
               rescue JSON::ParserError
                 raise ParserError, 'Invalid errors field!'
               end
@@ -71,7 +71,7 @@ module Gitlab
                 next unless path =~ match_pattern
                 next if path =~ INVALID_PATH_PATTERN
 
-                entries[path] = JSON.parse(meta, symbolize_names: true)
+                entries[path] = Gitlab::Json.parse(meta, symbolize_names: true)
               rescue JSON::ParserError, Encoding::CompatibilityError
                 next
               end

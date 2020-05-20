@@ -1,7 +1,7 @@
 ---
-type: reference, concepts
+redirect_to: ../reference_architectures/index.md
 ---
 
-# High Availability
+# Reference Architectures
 
-This content has been moved to the [availability page](../availability/index.md).
+This document was moved to [another location](../reference_architectures/index.md).

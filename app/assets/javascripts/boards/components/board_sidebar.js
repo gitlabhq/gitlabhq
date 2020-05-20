@@ -51,7 +51,7 @@ export default Vue.extend({
       return Object.keys(this.issue).length;
     },
     milestoneTitle() {
-      return this.issue.milestone ? this.issue.milestone.title : __('No Milestone');
+      return this.issue.milestone ? this.issue.milestone.title : __('No milestone');
     },
     canRemove() {
       return !this.list.preset;
@@ -69,9 +69,6 @@ export default Vue.extend({
     },
     selectedLabels() {
       return this.hasLabels ? this.issue.labels.map(l => l.title).join(',') : '';
-    },
-    helpLink() {
-      return boardsStore.scopedLabels.helpLink;
     },
   },
   watch: {

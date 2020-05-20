@@ -14,6 +14,7 @@ import {
   INGRESS_DOMAIN_SUFFIX,
   CROSSPLANE,
   KNATIVE,
+  FLUENTD,
 } from './constants';
 import ClustersService from './services/clusters_service';
 import ClustersStore from './stores/clusters_store';
@@ -49,6 +50,7 @@ export default class Clusters {
       installElasticStackPath,
       installCrossplanePath,
       installPrometheusPath,
+      installFluentdPath,
       managePrometheusPath,
       clusterEnvironmentsPath,
       hasRbac,
@@ -102,6 +104,7 @@ export default class Clusters {
       updateKnativeEndpoint: updateKnativePath,
       installElasticStackEndpoint: installElasticStackPath,
       clusterEnvironmentsEndpoint: clusterEnvironmentsPath,
+      installFluentdEndpoint: installFluentdPath,
     });
 
     this.installApplication = this.installApplication.bind(this);
@@ -265,6 +268,7 @@ export default class Clusters {
     eventHub.$on('setIngressModSecurityEnabled', data => this.setIngressModSecurityEnabled(data));
     eventHub.$on('setIngressModSecurityMode', data => this.setIngressModSecurityMode(data));
     eventHub.$on('resetIngressModSecurityChanges', id => this.resetIngressModSecurityChanges(id));
+    eventHub.$on('setFluentdSettings', data => this.setFluentdSettings(data));
     // Add event listener to all the banner close buttons
     this.addBannerCloseHandler(this.unreachableContainer, 'unreachable');
     this.addBannerCloseHandler(this.authenticationFailureContainer, 'authentication_failure');
@@ -281,6 +285,7 @@ export default class Clusters {
     eventHub.$off('setIngressModSecurityEnabled');
     eventHub.$off('setIngressModSecurityMode');
     eventHub.$off('resetIngressModSecurityChanges');
+    eventHub.$off('setFluentdSettings');
   }
 
   initPolling(method, successCallback, errorCallback) {
@@ -320,7 +325,7 @@ export default class Clusters {
 
   handleClusterStatusSuccess(data) {
     const prevStatus = this.store.state.status;
-    const prevApplicationMap = Object.assign({}, this.store.state.applications);
+    const prevApplicationMap = { ...this.store.state.applications };
 
     this.store.updateStateFromServer(data.data);
 
@@ -503,6 +508,12 @@ export default class Clusters {
     this.store.updateApplication(appId);
     this.service.installApplication(appId, params).catch(() => {
       this.store.notifyUpdateFailure(appId);
+    });
+  }
+
+  setFluentdSettings(settings = {}) {
+    Object.entries(settings).forEach(([key, value]) => {
+      this.store.updateAppProperty(FLUENTD, key, value);
     });
   }
 

@@ -6,14 +6,14 @@
     = link_to s_('PrometheusService|More information'), help_page_path('user/project/integrations/prometheus', anchor: 'adding-custom-metrics'), target: '_blank', rel: "noopener noreferrer"
 
 .col-lg-9
-  .card.custom-monitored-metrics.js-panel-custom-monitored-metrics{ data: { active_custom_metrics: project_prometheus_metrics_path(project), environments_data: environments_list_data, service_active: "#{@service.active}" } }
+  .card.custom-monitored-metrics.js-panel-custom-monitored-metrics{ data: { qa_selector: 'custom_metrics_container', active_custom_metrics: project_prometheus_metrics_path(project), environments_data: environments_list_data, service_active: "#{@service.active}" } }
     .card-header
       %strong
         = s_('PrometheusService|Custom metrics')
       -# haml-lint:disable NoPlainNodes
       %span.badge.badge-pill.js-custom-monitored-count 0
       -# haml-lint:enable NoPlainNodes
-      = link_to s_('PrometheusService|New metric'), new_project_prometheus_metric_path(project), class: 'btn btn-success js-new-metric-button hidden'
+      = link_to s_('PrometheusService|New metric'), new_project_prometheus_metric_path(project), class: 'btn btn-success js-new-metric-button hidden', data: { qa_selector: 'new_metric_button' }
     .card-body
       .flash-container.hidden
         .flash-warning

@@ -218,7 +218,7 @@ describe ::PodLogs::KubernetesService do
     end
 
     it 'returns error if pod_name was specified but does not exist' do
-      result = subject.send(:check_pod_name, pod_name: 'another_pod', pods: [pod_name])
+      result = subject.send(:check_pod_name, pod_name: 'another-pod', pods: [pod_name])
 
       expect(result[:status]).to eq(:error)
       expect(result[:message]).to eq('Pod does not exist')
@@ -229,6 +229,13 @@ describe ::PodLogs::KubernetesService do
 
       expect(result[:status]).to eq(:error)
       expect(result[:message]).to eq('pod_name cannot be larger than 253 chars')
+    end
+
+    it 'returns error if pod_name is in invalid format' do
+      result = subject.send(:check_pod_name, pod_name: "Invalid_pod_name", pods: [pod_name])
+
+      expect(result[:status]).to eq(:error)
+      expect(result[:message]).to eq('pod_name can contain only lowercase letters, digits, \'-\', and \'.\' and must start and end with an alphanumeric character')
     end
   end
 
@@ -286,6 +293,17 @@ describe ::PodLogs::KubernetesService do
 
       expect(result[:status]).to eq(:error)
       expect(result[:message]).to eq('container_name cannot be larger than 253 chars')
+    end
+
+    it 'returns error if container_name is in invalid format' do
+      result = subject.send(:check_container_name,
+        container_name: "Invalid_container_name",
+        pod_name: pod_name,
+        raw_pods: raw_pods
+      )
+
+      expect(result[:status]).to eq(:error)
+      expect(result[:message]).to eq('container_name can contain only lowercase letters, digits, \'-\', and \'.\' and must start and end with an alphanumeric character')
     end
   end
 end

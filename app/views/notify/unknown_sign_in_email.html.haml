@@ -1,0 +1,14 @@
+%p
+  = _('Hi %{username}!') % { username: sanitize_name(@user.name) }
+%p
+  = _('A sign-in to your account has been made from the following IP address: %{ip}.') % { ip: @ip }
+%p
+  - password_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: 'https://docs.gitlab.com/ee/user/profile/#changing-your-password' }
+  = _('If you recently signed in and recognize the IP address, you may disregard this email.')
+  = _('If you did not recently sign in, you should immediately %{password_link_start}change your password%{password_link_end}.').html_safe % { password_link_start: password_link_start, password_link_end: '</a>'.html_safe }
+  = _('Passwords should be unique and not used for any other sites or services.')
+
+- unless @user.two_factor_enabled?
+  %p
+    - mfa_link_start = '<a href="https://docs.gitlab.com/ee/user/profile/account/two_factor_authentication.html" target="_blank">'.html_safe
+    = _('To further protect your account, consider configuring a %{mfa_link_start}two-factor authentication%{mfa_link_end} method.').html_safe % { mfa_link_start: mfa_link_start, mfa_link_end: '</a>'.html_safe }

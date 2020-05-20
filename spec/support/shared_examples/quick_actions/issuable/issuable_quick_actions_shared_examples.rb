@@ -18,6 +18,16 @@ RSpec.shared_examples 'issuable quick actions' do
     end
   end
 
+  let(:unlabel_expectation) do
+    ->(noteable, can_use_quick_action) {
+      if can_use_quick_action
+        expect(noteable.labels).to be_empty
+      else
+        expect(noteable.labels).not_to be_empty
+      end
+    }
+  end
+
   # Quick actions shared by issues and merge requests
   let(:issuable_quick_actions) do
     [
@@ -136,13 +146,11 @@ RSpec.shared_examples 'issuable quick actions' do
       ),
       QuickAction.new(
         action_text: "/unlabel",
-        expectation: ->(noteable, can_use_quick_action) {
-          if can_use_quick_action
-            expect(noteable.labels).to be_empty
-          else
-            expect(noteable.labels).not_to be_empty
-          end
-        }
+        expectation: unlabel_expectation
+      ),
+      QuickAction.new(
+        action_text: "/remove_label",
+        expectation: unlabel_expectation
       ),
       QuickAction.new(
         action_text: "/award :100:",

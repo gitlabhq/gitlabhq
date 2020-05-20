@@ -4,7 +4,12 @@ require 'spec_helper'
 
 describe Gitlab::JiraImport::IssueSerializer do
   describe '#execute' do
-    let_it_be(:project) { create(:project) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, group: group) }
+    let_it_be(:project_label) { create(:label, project: project, title: 'bug') }
+    let_it_be(:other_project_label) { create(:label, project: project, title: 'feature') }
+    let_it_be(:group_label) { create(:group_label, group: group, title: 'dev') }
+    let_it_be(:current_user) { create(:user) }
 
     let(:iid) { 5 }
     let(:key) { 'PROJECT-5' }
@@ -12,28 +17,21 @@ describe Gitlab::JiraImport::IssueSerializer do
     let(:description) { 'basic description' }
     let(:created_at) { '2020-01-01 20:00:00' }
     let(:updated_at) { '2020-01-10 20:00:00' }
-    let(:assignee) { double(displayName: 'Solver') }
+    let(:assignee) { double(attrs: { 'displayName' => 'Solver', 'emailAddress' => 'assignee@example.com' }) }
+    let(:reporter) { double(attrs: { 'displayName' => 'Reporter', 'emailAddress' => 'reporter@example.com' }) }
     let(:jira_status) { 'new' }
 
     let(:parent_field) do
       { 'key' => 'FOO-2', 'id' => '1050', 'fields' => { 'summary' => 'parent issue FOO' } }
     end
-    let(:issue_type_field) { { 'name' => 'Task' } }
-    let(:fix_versions_field) { [{ 'name' => '1.0' }, { 'name' => '1.1' }] }
     let(:priority_field) { { 'name' => 'Medium' } }
-    let(:labels_field) { %w(bug backend) }
-    let(:environment_field) { 'staging' }
-    let(:duedate_field) { '2020-03-01' }
+    let(:labels_field) { %w(bug dev backend frontend) }
 
     let(:fields) do
       {
         'parent' => parent_field,
-        'issuetype' => issue_type_field,
-        'fixVersions' => fix_versions_field,
         'priority' => priority_field,
-        'labels' => labels_field,
-        'environment' => environment_field,
-        'duedate' => duedate_field
+        'labels' => labels_field
       }
     end
 
@@ -46,7 +44,7 @@ describe Gitlab::JiraImport::IssueSerializer do
         created: created_at,
         updated: updated_at,
         assignee: assignee,
-        reporter: double(displayName: 'Reporter'),
+        reporter: reporter,
         status: double(statusCategory: { 'key' => jira_status }),
         fields: fields
       )
@@ -54,27 +52,18 @@ describe Gitlab::JiraImport::IssueSerializer do
 
     let(:params) { { iid: iid } }
 
-    subject { described_class.new(project, jira_issue, params).execute }
+    subject { described_class.new(project, jira_issue, current_user.id, params).execute }
 
     let(:expected_description) do
       <<~MD
-        *Created by: Reporter*
-
-        *Assigned to: Solver*
-
         basic description
 
         ---
 
         **Issue metadata**
 
-        - Issue type: Task
         - Priority: Medium
-        - Labels: bug, backend
-        - Environment: staging
-        - Due date: 2020-03-01
         - Parent issue: [FOO-2] parent issue FOO
-        - Fix versions: 1.0, 1.1
       MD
     end
 
@@ -88,55 +77,102 @@ describe Gitlab::JiraImport::IssueSerializer do
           state_id: 1,
           updated_at: updated_at,
           created_at: created_at,
-          author_id: project.creator_id
+          author_id: current_user.id,
+          assignee_ids: nil,
+          label_ids: [project_label.id, group_label.id] + Label.reorder(id: :asc).last(2).pluck(:id)
         )
       end
 
-      context 'when some metadata fields are missing' do
-        let(:assignee) { nil }
-        let(:parent_field) { nil }
-        let(:fix_versions_field) { [] }
-        let(:labels_field) { [] }
-        let(:environment_field) { nil }
-        let(:duedate_field) { '2020-03-01' }
+      it 'creates a hash for valid issue' do
+        expect(Issue.new(subject)).to be_valid
+      end
 
-        it 'skips the missing fields' do
-          expected_description = <<~MD
-            *Created by: Reporter*
+      context 'labels' do
+        it 'creates all missing labels (on project level)' do
+          expect { subject }.to change { Label.count }.from(3).to(5)
 
-            basic description
+          expect(Label.find_by(title: 'frontend').project).to eq(project)
+          expect(Label.find_by(title: 'backend').project).to eq(project)
+        end
 
-            ---
+        context 'when there are no new labels' do
+          let(:labels_field) { %w(bug dev) }
 
-            **Issue metadata**
+          it 'assigns the labels to the Issue hash' do
+            expect(subject[:label_ids]).to match_array([project_label.id, group_label.id])
+          end
 
-            - Issue type: Task
-            - Priority: Medium
-            - Due date: 2020-03-01
-          MD
-
-          expect(subject[:description]).to eq(expected_description.strip)
+          it 'does not create new labels' do
+            expect { subject }.not_to change { Label.count }.from(3)
+          end
         end
       end
 
-      context 'when all metadata fields are missing' do
-        let(:assignee) { nil }
-        let(:parent_field) { nil }
-        let(:issue_type_field) { nil }
-        let(:fix_versions_field) { [] }
-        let(:priority_field) { nil }
-        let(:labels_field) { [] }
-        let(:environment_field) { nil }
-        let(:duedate_field) { nil }
+      context 'author' do
+        context 'when reporter maps to a valid GitLab user' do
+          let!(:user) { create(:user, email: 'reporter@example.com') }
 
-        it 'skips the whole metadata secction' do
-          expected_description = <<~MD
-            *Created by: Reporter*
+          it 'sets the issue author to the mapped user' do
+            project.add_developer(user)
 
-            basic description
-          MD
+            expect(subject[:author_id]).to eq(user.id)
+          end
+        end
 
-          expect(subject[:description]).to eq(expected_description.strip)
+        context 'when reporter does not map to a valid Gitlab user' do
+          it 'defaults the issue author to project creator' do
+            expect(subject[:author_id]).to eq(current_user.id)
+          end
+        end
+
+        context 'when reporter field is empty' do
+          let(:reporter) { nil }
+
+          it 'defaults the issue author to project creator' do
+            expect(subject[:author_id]).to eq(current_user.id)
+          end
+        end
+
+        context 'when reporter field is missing email address' do
+          let(:reporter) { double(attrs: { 'displayName' => 'Reporter' }) }
+
+          it 'defaults the issue author to project creator' do
+            expect(subject[:author_id]).to eq(current_user.id)
+          end
+        end
+      end
+
+      context 'assignee' do
+        context 'when assignee maps to a valid GitLab user' do
+          let!(:user) { create(:user, email: 'assignee@example.com') }
+
+          it 'sets the issue assignees to the mapped user' do
+            project.add_developer(user)
+
+            expect(subject[:assignee_ids]).to eq([user.id])
+          end
+        end
+
+        context 'when assignee does not map to a valid GitLab user' do
+          it 'leaves the assignee empty' do
+            expect(subject[:assignee_ids]).to be_nil
+          end
+        end
+
+        context 'when assginee field is empty' do
+          let(:assignee) { nil }
+
+          it 'leaves the assignee empty' do
+            expect(subject[:assignee_ids]).to be_nil
+          end
+        end
+
+        context 'when assginee field is missing email address' do
+          let(:assignee) { double(attrs: { 'displayName' => 'Reporter' }) }
+
+          it 'leaves the assignee empty' do
+            expect(subject[:assignee_ids]).to be_nil
+          end
         end
       end
     end

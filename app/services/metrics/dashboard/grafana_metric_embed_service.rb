@@ -18,6 +18,7 @@ module Metrics
       self.reactive_cache_lease_timeout = 30.seconds
       self.reactive_cache_refresh_interval = 30.minutes
       self.reactive_cache_lifetime = 30.minutes
+      self.reactive_cache_work_type = :external_dependency
       self.reactive_cache_worker_finder = ->(_id, *args) { from_cache(*args) }
 
       class << self
@@ -112,7 +113,7 @@ module Metrics
       end
 
       def parse_json(json)
-        JSON.parse(json, symbolize_names: true)
+        Gitlab::Json.parse(json, symbolize_names: true)
       rescue JSON::ParserError
         raise DashboardProcessingError.new('Grafana response contains invalid json')
       end

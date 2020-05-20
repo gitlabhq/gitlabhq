@@ -6,6 +6,7 @@
 class CreateX509Signatures < ActiveRecord::Migration[5.2]
   DOWNTIME = false
 
+  # rubocop:disable Migration/PreventStrings
   def change
     create_table :x509_issuers do |t|
       t.timestamps_with_timezone null: false
@@ -38,4 +39,5 @@ class CreateX509Signatures < ActiveRecord::Migration[5.2]
       t.integer :verification_status, limit: 2, default: 0, null: false
     end
   end
+  # rubocop:enable Migration/PreventStrings
 end

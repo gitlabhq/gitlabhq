@@ -70,7 +70,7 @@ module Projects
       #
       # @param [String] new_path
       def discard_path!(new_path)
-        discarded_path = "#{new_path}-#{Time.now.utc.to_i}"
+        discarded_path = "#{new_path}-#{Time.current.utc.to_i}"
 
         logger.info("Moving existing empty attachments folder from '#{new_path}' to '#{discarded_path}', (PROJECT_ID=#{project.id})")
         FileUtils.mv(new_path, discarded_path)

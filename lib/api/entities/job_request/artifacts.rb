@@ -7,6 +7,7 @@ module API
         expose :name
         expose :untracked
         expose :paths
+        expose :exclude, expose_nil: false
         expose :when
         expose :expire_in
         expose :artifact_type

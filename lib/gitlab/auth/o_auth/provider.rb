@@ -66,7 +66,10 @@ module Gitlab
               nil
             end
           else
-            Gitlab.config.omniauth.providers.find { |provider| provider.name == name }
+            provider = Gitlab.config.omniauth.providers.find { |provider| provider.name == name }
+            merge_provider_args_with_defaults!(provider)
+
+            provider
           end
         end
 
@@ -80,6 +83,15 @@ module Gitlab
           name = name.to_s
           config = config_for(name)
           config && config['icon']
+        end
+
+        def self.merge_provider_args_with_defaults!(provider)
+          return unless provider
+
+          provider['args'] ||= {}
+
+          defaults = Gitlab::OmniauthInitializer.default_arguments_for(provider['name'])
+          provider['args'].deep_merge!(defaults.deep_stringify_keys)
         end
       end
     end

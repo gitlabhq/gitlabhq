@@ -1,0 +1,43 @@
+config:
+  build:
+    stage: build
+    script: exit 1
+
+  test:
+    stage: test
+    script: exit 0
+
+  deploy:
+    stage: deploy
+    script: exit 0
+    when: always
+    needs: [test]
+
+init:
+  expect:
+    pipeline: pending
+    stages:
+      build: pending
+      test: created
+      deploy: created
+    jobs:
+      build: pending
+      test: created
+      deploy: created
+
+transitions:
+  - event: drop
+    jobs: [build]
+    expect:
+      pipeline: running
+      stages:
+        build: failed
+        test: skipped
+        deploy: pending
+      jobs:
+        build: failed
+        test: skipped
+        deploy: pending
+
+# TODO: `test` is actually skipped, but we run `deploy`. Should we?
+# Further discussions: https://gitlab.com/gitlab-org/gitlab/-/issues/213080

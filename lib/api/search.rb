@@ -17,7 +17,6 @@ module API
         blobs: Entities::Blob,
         wiki_blobs: Entities::Blob,
         snippet_titles: Entities::Snippet,
-        snippet_blobs: Entities::Snippet,
         users: Entities::UserBasic
       }.freeze
 
@@ -36,7 +35,7 @@ module API
       end
 
       def snippets?
-        %w(snippet_blobs snippet_titles).include?(params[:scope]).to_s
+        %w(snippet_titles).include?(params[:scope]).to_s
       end
 
       def entity

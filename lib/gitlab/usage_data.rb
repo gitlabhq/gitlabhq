@@ -1,15 +1,25 @@
 # frozen_string_literal: true
 
-# For hardening usage ping and make it easier to add measures there is in place alt_usage_data method
-# which handles StandardError and fallbacks into -1
-# this way not all measures fail if we encounter one exception
+# For hardening usage ping and make it easier to add measures there is in place
+#   * alt_usage_data method
+#     handles StandardError and fallbacks into -1 this way not all measures fail if we encounter one exception
 #
-# Examples:
-#  alt_usage_data { Gitlab::VERSION }
-#  alt_usage_data { Gitlab::CurrentSettings.uuid }
+#     Examples:
+#     alt_usage_data { Gitlab::VERSION }
+#     alt_usage_data { Gitlab::CurrentSettings.uuid }
+#
+#   * redis_usage_data method
+#     handles ::Redis::CommandError, Gitlab::UsageDataCounters::BaseCounter::UnknownEvent
+#     returns -1 when a block is sent or hash with all values -1 when a counter is sent
+#     different behaviour due to 2 different implementations of redis counter
+#
+#     Examples:
+#     redis_usage_data(Gitlab::UsageDataCounters::WikiPageCounter)
+#     redis_usage_data { ::Gitlab::UsageCounters::PodLogs.usage_totals[:total] }
 module Gitlab
   class UsageData
     BATCH_SIZE = 100
+    FALLBACK = -1
 
     class << self
       def data(force_refresh: false)
@@ -24,6 +34,8 @@ module Gitlab
           .merge(features_usage_data)
           .merge(components_usage_data)
           .merge(cycle_analytics_usage_data)
+          .merge(object_store_usage_data)
+          .merge(recording_ce_finish_data)
       end
 
       def to_json(force_refresh: false)
@@ -32,19 +44,27 @@ module Gitlab
 
       def license_usage_data
         {
+          recorded_at: Time.now, # should be calculated very first
           uuid: alt_usage_data { Gitlab::CurrentSettings.uuid },
           hostname: alt_usage_data { Gitlab.config.gitlab.host },
           version: alt_usage_data { Gitlab::VERSION },
           installation_type: alt_usage_data { installation_type },
           active_user_count: count(User.active),
-          recorded_at: Time.now,
           edition: 'CE'
+        }
+      end
+
+      def recording_ce_finish_data
+        {
+          recording_ce_finished_at: Time.now
         }
       end
 
       # rubocop: disable Metrics/AbcSize
       # rubocop: disable CodeReuse/ActiveRecord
       def system_usage_data
+        alert_bot_incident_count = count(::Issue.authored(::User.alert_bot))
+
         {
           counts: {
             assignee_lists: count(List.assignee),
@@ -94,7 +114,10 @@ module Gitlab
             issues_with_associated_zoom_link: count(ZoomMeeting.added_to_issue),
             issues_using_zoom_quick_actions: distinct_count(ZoomMeeting, :issue_id),
             issues_with_embedded_grafana_charts_approx: grafana_embed_usage_data,
-            incident_issues: count(::Issue.authored(::User.alert_bot)),
+            issues_created_gitlab_alerts: count(Issue.with_alert_management_alerts.not_authored_by(::User.alert_bot)),
+            incident_issues: alert_bot_incident_count,
+            alert_bot_incident_issues: alert_bot_incident_count,
+            incident_labeled_issues: count(::Issue.with_label_attributes(IncidentManagement::CreateIssueService::INCIDENT_LABEL)),
             keys: count(Key),
             label_lists: count(List.label),
             lfs_objects: count(LfsObject),
@@ -123,7 +146,8 @@ module Gitlab
             services_usage,
             usage_counters,
             user_preferences_usage,
-            ingress_modsecurity_usage
+            ingress_modsecurity_usage,
+            container_expiration_policies_usage
           )
         }
       end
@@ -154,7 +178,6 @@ module Gitlab
           dependency_proxy_enabled: Gitlab.config.try(:dependency_proxy)&.enabled,
           gitlab_shared_runners_enabled: alt_usage_data { Gitlab.config.gitlab_ci.shared_runners_enabled },
           gravatar_enabled: alt_usage_data { Gitlab::CurrentSettings.gravatar_enabled? },
-          influxdb_metrics_enabled: alt_usage_data { Gitlab::Metrics.influx_metrics_enabled? },
           ldap_enabled: alt_usage_data { Gitlab.config.ldap.enabled },
           mattermost_enabled: alt_usage_data { Gitlab.config.mattermost.enabled },
           omniauth_enabled: alt_usage_data { Gitlab::Auth.omniauth_enabled? },
@@ -162,36 +185,14 @@ module Gitlab
           reply_by_email_enabled: alt_usage_data { Gitlab::IncomingEmail.enabled? },
           signup_enabled: alt_usage_data { Gitlab::CurrentSettings.allow_signup? },
           web_ide_clientside_preview_enabled: alt_usage_data { Gitlab::CurrentSettings.web_ide_clientside_preview_enabled? },
-          ingress_modsecurity_enabled: Feature.enabled?(:ingress_modsecurity)
-        }.merge(features_usage_data_container_expiration_policies)
+          ingress_modsecurity_enabled: Feature.enabled?(:ingress_modsecurity),
+          grafana_link_enabled: alt_usage_data { Gitlab::CurrentSettings.grafana_enabled? }
+        }
       end
-
-      # rubocop: disable CodeReuse/ActiveRecord
-      def features_usage_data_container_expiration_policies
-        results = {}
-        start = ::Project.minimum(:id)
-        finish = ::Project.maximum(:id)
-
-        results[:projects_with_expiration_policy_disabled] = distinct_count(::ContainerExpirationPolicy.where(enabled: false), :project_id, start: start, finish: finish)
-        base = ::ContainerExpirationPolicy.active
-        results[:projects_with_expiration_policy_enabled] = distinct_count(base, :project_id, start: start, finish: finish)
-
-        %i[keep_n cadence older_than].each do |option|
-          ::ContainerExpirationPolicy.public_send("#{option}_options").keys.each do |value| # rubocop: disable GitlabSecurity/PublicSend
-            results["projects_with_expiration_policy_enabled_with_#{option}_set_to_#{value}".to_sym] = distinct_count(base.where(option => value), :project_id, start: start, finish: finish)
-          end
-        end
-
-        results[:projects_with_expiration_policy_enabled_with_keep_n_unset] = distinct_count(base.where(keep_n: nil), :project_id, start: start, finish: finish)
-        results[:projects_with_expiration_policy_enabled_with_older_than_unset] = distinct_count(base.where(older_than: nil), :project_id, start: start, finish: finish)
-
-        results
-      end
-      # rubocop: enable CodeReuse/ActiveRecord
 
       # @return [Hash<Symbol, Integer>]
       def usage_counters
-        usage_data_counters.map(&:totals).reduce({}) { |a, b| a.merge(b) }
+        usage_data_counters.map { |counter| redis_usage_data(counter) }.reduce({}, :merge)
       end
 
       # @return [Array<#totals>] An array of objects that respond to `#totals`
@@ -205,7 +206,8 @@ module Gitlab
           Gitlab::UsageDataCounters::CycleAnalyticsCounter,
           Gitlab::UsageDataCounters::ProductivityAnalyticsCounter,
           Gitlab::UsageDataCounters::SourceCodeCounter,
-          Gitlab::UsageDataCounters::MergeRequestCounter
+          Gitlab::UsageDataCounters::MergeRequestCounter,
+          Gitlab::UsageDataCounters::DesignsCounter
         ]
       end
 
@@ -237,9 +239,83 @@ module Gitlab
         'unknown_app_server_type'
       end
 
-      def ingress_modsecurity_usage
-        ::Clusters::Applications::IngressModsecurityUsageService.new.execute
+      def object_store_config(component)
+        config = alt_usage_data(fallback: nil) do
+          Settings[component]['object_store']
+        end
+
+        if config
+          {
+            enabled: alt_usage_data { Settings[component]['enabled'] },
+            object_store: {
+              enabled: alt_usage_data { config['enabled'] },
+              direct_upload: alt_usage_data { config['direct_upload'] },
+              background_upload: alt_usage_data { config['background_upload'] },
+              provider: alt_usage_data { config['connection']['provider'] }
+            }
+          }
+        else
+          {
+            enabled: alt_usage_data { Settings[component]['enabled'] }
+          }
+        end
       end
+
+      def object_store_usage_data
+        {
+          object_store: {
+            artifacts: object_store_config('artifacts'),
+            external_diffs: object_store_config('external_diffs'),
+            lfs: object_store_config('lfs'),
+            uploads: object_store_config('uploads'),
+            packages: object_store_config('packages')
+          }
+        }
+      end
+
+      def ingress_modsecurity_usage
+        ##
+        # This method measures usage of the Modsecurity Web Application Firewall across the entire
+        # instance's deployed environments.
+        #
+        # NOTE: this service is an approximation as it does not yet take into account if environment
+        # is enabled and only measures applications installed using GitLab Managed Apps (disregards
+        # CI-based managed apps).
+        #
+        # More details: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28331#note_318621786
+        ##
+
+        column = ::Deployment.arel_table[:environment_id]
+        {
+          ingress_modsecurity_logging: distinct_count(successful_deployments_with_cluster(::Clusters::Applications::Ingress.modsecurity_enabled.logging), column),
+          ingress_modsecurity_blocking: distinct_count(successful_deployments_with_cluster(::Clusters::Applications::Ingress.modsecurity_enabled.blocking), column),
+          ingress_modsecurity_disabled: distinct_count(successful_deployments_with_cluster(::Clusters::Applications::Ingress.modsecurity_disabled), column),
+          ingress_modsecurity_not_installed: distinct_count(successful_deployments_with_cluster(::Clusters::Applications::Ingress.modsecurity_not_installed), column)
+        }
+      end
+
+      # rubocop: disable CodeReuse/ActiveRecord
+      def container_expiration_policies_usage
+        results = {}
+        start = ::Project.minimum(:id)
+        finish = ::Project.maximum(:id)
+
+        results[:projects_with_expiration_policy_disabled] = distinct_count(::ContainerExpirationPolicy.where(enabled: false), :project_id, start: start, finish: finish)
+        base = ::ContainerExpirationPolicy.active
+        results[:projects_with_expiration_policy_enabled] = distinct_count(base, :project_id, start: start, finish: finish)
+
+        %i[keep_n cadence older_than].each do |option|
+          ::ContainerExpirationPolicy.public_send("#{option}_options").keys.each do |value| # rubocop: disable GitlabSecurity/PublicSend
+            results["projects_with_expiration_policy_enabled_with_#{option}_set_to_#{value}".to_sym] = distinct_count(base.where(option => value), :project_id, start: start, finish: finish)
+          end
+        end
+
+        results[:projects_with_expiration_policy_enabled_with_keep_n_unset] = distinct_count(base.where(keep_n: nil), :project_id, start: start, finish: finish)
+        results[:projects_with_expiration_policy_enabled_with_older_than_unset] = distinct_count(base.where(older_than: nil), :project_id, start: start, finish: finish)
+
+        results
+      end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       # rubocop: disable CodeReuse/ActiveRecord
       def services_usage
@@ -251,7 +327,7 @@ module Gitlab
         results[:projects_slack_notifications_active] = results[:projects_slack_active]
         results[:projects_slack_slash_active] = results[:projects_slack_slash_commands_active]
 
-        results.merge(jira_usage)
+        results.merge(jira_usage).merge(jira_import_usage)
       end
 
       def jira_usage
@@ -281,35 +357,52 @@ module Gitlab
 
         results
       rescue ActiveRecord::StatementInvalid
-        { projects_jira_server_active: -1, projects_jira_cloud_active: -1, projects_jira_active: -1 }
+        { projects_jira_server_active: FALLBACK, projects_jira_cloud_active: FALLBACK, projects_jira_active: FALLBACK }
+      end
+
+      def successful_deployments_with_cluster(scope)
+        scope
+          .joins(cluster: :deployments)
+          .merge(Clusters::Cluster.enabled)
+          .merge(Deployment.success)
       end
       # rubocop: enable CodeReuse/ActiveRecord
+
+      def jira_import_usage
+        finished_jira_imports = JiraImportState.finished
+
+        {
+          jira_imports_total_imported_count: count(finished_jira_imports),
+          jira_imports_projects_count: distinct_count(finished_jira_imports, :project_id),
+          jira_imports_total_imported_issues_count: alt_usage_data { JiraImportState.finished_imports_count }
+        }
+      end
 
       def user_preferences_usage
         {} # augmented in EE
       end
 
-      def count(relation, column = nil, fallback: -1, batch: true, start: nil, finish: nil)
+      def count(relation, column = nil, batch: true, start: nil, finish: nil)
         if batch && Feature.enabled?(:usage_ping_batch_counter, default_enabled: true)
           Gitlab::Database::BatchCount.batch_count(relation, column, start: start, finish: finish)
         else
           relation.count
         end
       rescue ActiveRecord::StatementInvalid
-        fallback
+        FALLBACK
       end
 
-      def distinct_count(relation, column = nil, fallback: -1, batch: true, start: nil, finish: nil)
+      def distinct_count(relation, column = nil, batch: true, start: nil, finish: nil)
         if batch && Feature.enabled?(:usage_ping_batch_counter, default_enabled: true)
           Gitlab::Database::BatchCount.batch_distinct_count(relation, column, start: start, finish: finish)
         else
           relation.distinct_count_by(column)
         end
       rescue ActiveRecord::StatementInvalid
-        fallback
+        FALLBACK
       end
 
-      def alt_usage_data(value = nil, fallback: -1, &block)
+      def alt_usage_data(value = nil, fallback: FALLBACK, &block)
         if block_given?
           yield
         else
@@ -319,7 +412,27 @@ module Gitlab
         fallback
       end
 
+      def redis_usage_data(counter = nil, &block)
+        if block_given?
+          redis_usage_counter(&block)
+        elsif counter.present?
+          redis_usage_data_totals(counter)
+        end
+      end
+
       private
+
+      def redis_usage_counter
+        yield
+      rescue ::Redis::CommandError, Gitlab::UsageDataCounters::BaseCounter::UnknownEvent
+        FALLBACK
+      end
+
+      def redis_usage_data_totals(counter)
+        counter.totals
+      rescue ::Redis::CommandError, Gitlab::UsageDataCounters::BaseCounter::UnknownEvent
+        counter.fallback_totals
+      end
 
       def installation_type
         if Rails.env.production?

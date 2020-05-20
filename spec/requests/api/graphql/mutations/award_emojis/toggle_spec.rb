@@ -23,7 +23,7 @@ describe 'Toggling an AwardEmoji' do
   end
 
   shared_examples 'a mutation that does not create or destroy an AwardEmoji' do
-    it do
+    specify do
       expect do
         post_graphql_mutation(mutation, current_user: current_user)
       end.not_to change { AwardEmoji.count }

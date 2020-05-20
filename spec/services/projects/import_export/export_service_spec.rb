@@ -7,8 +7,9 @@ describe Projects::ImportExport::ExportService do
     let!(:user) { create(:user) }
     let(:project) { create(:project) }
     let(:shared) { project.import_export_shared }
-    let(:service) { described_class.new(project, user) }
     let!(:after_export_strategy) { Gitlab::ImportExport::AfterExportStrategies::DownloadNotificationStrategy.new }
+
+    subject(:service) { described_class.new(project, user) }
 
     before do
       project.add_maintainer(user)
@@ -46,14 +47,20 @@ describe Projects::ImportExport::ExportService do
       # in the corresponding EE spec.
       skip if Gitlab.ee?
 
-      # once for the normal repo, once for the wiki
-      expect(Gitlab::ImportExport::RepoSaver).to receive(:new).twice.and_call_original
+      # once for the normal repo, once for the wiki repo, and once for the design repo
+      expect(Gitlab::ImportExport::RepoSaver).to receive(:new).exactly(3).times.and_call_original
 
       service.execute
     end
 
     it 'saves the wiki repo' do
       expect(Gitlab::ImportExport::WikiRepoSaver).to receive(:new).and_call_original
+
+      service.execute
+    end
+
+    it 'saves the design repo' do
+      expect(Gitlab::ImportExport::DesignRepoSaver).to receive(:new).and_call_original
 
       service.execute
     end
@@ -175,6 +182,21 @@ describe Projects::ImportExport::ExportService do
           "User with ID: %s does not have required permissions for Project: %s with ID: %s" %
             [another_user.id, project.name, project.id]
         expect { service.execute }.to raise_error(Gitlab::ImportExport::Error).with_message(expected_message)
+      end
+    end
+
+    it_behaves_like 'measurable service' do
+      let(:base_log_data) do
+        {
+          class: described_class.name,
+          current_user: user.name,
+          project_full_path: project.full_path,
+          file_path: shared.export_path
+        }
+      end
+
+      after do
+        service.execute(after_export_strategy)
       end
     end
   end

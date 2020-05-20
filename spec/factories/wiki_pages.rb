@@ -7,10 +7,17 @@ FactoryBot.define do
     transient do
       title { generate(:wiki_page_title) }
       content { 'Content for wiki page' }
-      format { 'markdown' }
-      project { create(:project) }
-      attrs do
-        {
+      format { :markdown }
+      message { nil }
+      project { association(:project, :wiki_repo) }
+      container { project }
+      wiki { association(:wiki, container: container) }
+      page { OpenStruct.new(url_path: title) }
+    end
+
+    initialize_with do
+      new(wiki, page).tap do |page|
+        page.attributes = {
           title: title,
           content: content,
           format: format
@@ -18,27 +25,13 @@ FactoryBot.define do
       end
     end
 
-    page { OpenStruct.new(url_path: 'some-name') }
-    wiki { build(:project_wiki, project: project) }
-
-    initialize_with { new(wiki, page) }
-
-    before(:create) do |page, evaluator|
-      page.attributes = evaluator.attrs
+    # Clear our default @page, except when using build_stubbed
+    after(:build) do |page|
+      page.instance_variable_set('@page', nil)
     end
 
-    to_create do |page|
-      page.create
-    end
-
-    trait :with_real_page do
-      project { create(:project, :repository) }
-
-      page do
-        wiki.create_page(title, content)
-        page_title, page_dir = wiki.page_title_and_dir(title)
-        wiki.wiki.page(title: page_title, dir: page_dir, version: nil)
-      end
+    to_create do |page, evaluator|
+      page.create(message: evaluator.message)
     end
   end
 
@@ -48,10 +41,10 @@ FactoryBot.define do
 
     trait :for_wiki_page do
       transient do
-        wiki_page { create(:wiki_page, project: project) }
+        wiki_page { create(:wiki_page, container: project) }
       end
 
-      project { @overrides[:wiki_page]&.project || create(:project) }
+      project { @overrides[:wiki_page]&.container || create(:project) }
       title { wiki_page.title }
 
       initialize_with do
@@ -73,5 +66,6 @@ FactoryBot.define do
   end
 
   sequence(:wiki_page_title) { |n| "Page #{n}" }
+  sequence(:wiki_filename) { |n| "Page_#{n}.md" }
   sequence(:sluggified_title) { |n| "slug-#{n}" }
 end

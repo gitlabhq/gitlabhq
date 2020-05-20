@@ -2,14 +2,12 @@ import { uniq } from 'lodash';
 
 class RecentSearchesStore {
   constructor(initialState = {}, allowedKeys) {
-    this.state = Object.assign(
-      {
-        isLocalStorageAvailable: true,
-        recentSearches: [],
-        allowedKeys,
-      },
-      initialState,
-    );
+    this.state = {
+      isLocalStorageAvailable: true,
+      recentSearches: [],
+      allowedKeys,
+      ...initialState,
+    };
   }
 
   addRecentSearch(newSearch) {

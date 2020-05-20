@@ -12,18 +12,18 @@ If you want the TL;DR versions, jump to:
 
 ## Omnibus installations
 
-If you have used the [Omnibus packages][omnibus-dl] to install GitLab, then
+If you have used the [Omnibus packages](https://about.gitlab.com/install/) to install GitLab, then
 you should already have `gitlab-ctl` in your `PATH`.
 
 `gitlab-ctl` interacts with the Omnibus packages and can be used to restart the
-GitLab Rails application (Unicorn) as well as the other components, like:
+GitLab Rails application (Puma) as well as the other components, like:
 
 - GitLab Workhorse
 - Sidekiq
 - PostgreSQL (if you are using the bundled one)
 - NGINX (if you are using the bundled one)
 - Redis (if you are using the bundled one)
-- [Mailroom][]
+- [Mailroom](reply_by_email.md)
 - Logrotate
 
 ### Omnibus GitLab restart
@@ -45,7 +45,7 @@ ok: run: nginx: (pid 11309) 0s
 ok: run: postgresql: (pid 11316) 1s
 ok: run: redis: (pid 11325) 0s
 ok: run: sidekiq: (pid 11331) 1s
-ok: run: unicorn: (pid 11338) 0s
+ok: run: puma: (pid 11338) 0s
 ```
 
 To restart a component separately, you can append its service name to the
@@ -86,7 +86,7 @@ sudo gitlab-ctl reconfigure
 Reconfiguring GitLab should occur in the event that something in its
 configuration (`/etc/gitlab/gitlab.rb`) has changed.
 
-When you run this command, [Chef], the underlying configuration management
+When you run this command, [Chef](https://www.chef.io/products/chef-infra/), the underlying configuration management
 application that powers Omnibus GitLab, will make sure that all things like directories,
 permissions, and services are in place and in the same shape that they were
 initially shipped.
@@ -101,7 +101,7 @@ depend on those files.
 ## Installations from source
 
 If you have followed the official installation guide to [install GitLab from
-source][install], run the following command to restart GitLab:
+source](../install/installation.md), run the following command to restart GitLab:
 
 ```shell
 sudo service gitlab restart
@@ -110,46 +110,39 @@ sudo service gitlab restart
 The output should be similar to this:
 
 ```plaintext
-Shutting down GitLab Unicorn
+Shutting down GitLab Puma
 Shutting down GitLab Sidekiq
 Shutting down GitLab Workhorse
 Shutting down GitLab MailRoom
 ...
 GitLab is not running.
-Starting GitLab Unicorn
+Starting GitLab Puma
 Starting GitLab Sidekiq
 Starting GitLab Workhorse
 Starting GitLab MailRoom
 ...
-The GitLab Unicorn web server with pid 28059 is running.
+The GitLab Puma web server with pid 28059 is running.
 The GitLab Sidekiq job dispatcher with pid 28176 is running.
 The GitLab Workhorse with pid 28122 is running.
 The GitLab MailRoom email processor with pid 28114 is running.
 GitLab and all its components are up and running.
 ```
 
-This should restart Unicorn, Sidekiq, GitLab Workhorse, and [Mailroom][]
+This should restart Puma, Sidekiq, GitLab Workhorse, and [Mailroom](reply_by_email.md)
 (if enabled). The init service file that does all the magic can be found on
 your server in `/etc/init.d/gitlab`.
 
 ---
 
 If you are using other init systems, like systemd, you can check the
-[GitLab Recipes][gl-recipes] repository for some unofficial services. These are
+[GitLab Recipes](https://gitlab.com/gitlab-org/gitlab-recipes/tree/master/init) repository for some unofficial services. These are
 **not** officially supported so use them at your own risk.
-
-[omnibus-dl]: https://about.gitlab.com/install/ "Download the Omnibus packages"
-[install]: ../install/installation.md "Documentation to install GitLab from source"
-[mailroom]: reply_by_email.md "Used for replying by email in GitLab issues and merge requests"
-[chef]: https://www.chef.io/products/chef-infra/ "Chef official website"
-[src-service]: https://gitlab.com/gitlab-org/gitlab/blob/master/lib/support/init.d/gitlab "GitLab init service file"
-[gl-recipes]: https://gitlab.com/gitlab-org/gitlab-recipes/tree/master/init "GitLab Recipes repository"
 
 ## Helm chart installations
 
 There is no single command to restart the entire GitLab application installed via
 the [cloud native Helm Chart](https://docs.gitlab.com/charts/). Usually, it should be
-enough to restart a specific component separately (for example, `gitaly`, `unicorn`,
+enough to restart a specific component separately (for example, `gitaly`, `puma`,
 `workhorse`, or `gitlab-shell`) by deleting all the pods related to it:
 
 ```shell

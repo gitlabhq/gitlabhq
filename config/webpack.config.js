@@ -141,8 +141,8 @@ module.exports = {
   output: {
     path: path.join(ROOT_PATH, 'public/assets/webpack'),
     publicPath: '/assets/webpack/',
-    filename: IS_PRODUCTION ? '[name].[chunkhash:8].bundle.js' : '[name].bundle.js',
-    chunkFilename: IS_PRODUCTION ? '[name].[chunkhash:8].chunk.js' : '[name].chunk.js',
+    filename: IS_PRODUCTION ? '[name].[contenthash:8].bundle.js' : '[name].bundle.js',
+    chunkFilename: IS_PRODUCTION ? '[name].[contenthash:8].chunk.js' : '[name].chunk.js',
     globalObject: 'this', // allow HMR and web workers to play nice
   },
 
@@ -191,7 +191,7 @@ module.exports = {
         test: /icons\.svg$/,
         loader: 'file-loader',
         options: {
-          name: '[name].[hash:8].[ext]',
+          name: '[name].[contenthash:8].[ext]',
         },
       },
       {
@@ -210,7 +210,7 @@ module.exports = {
           {
             loader: 'worker-loader',
             options: {
-              name: '[name].[hash:8].worker.js',
+              name: '[name].[contenthash:8].worker.js',
               inline: IS_DEV_SERVER,
             },
           },
@@ -222,7 +222,7 @@ module.exports = {
         exclude: /node_modules/,
         loader: 'file-loader',
         options: {
-          name: '[name].[hash:8].[ext]',
+          name: '[name].[contenthash:8].[ext]',
         },
       },
       {
@@ -232,7 +232,8 @@ module.exports = {
           {
             loader: 'css-loader',
             options: {
-              name: '[name].[hash:8].[ext]',
+              modules: 'global',
+              localIdentName: '[name].[contenthash:8].[ext]',
             },
           },
         ],
@@ -242,13 +243,15 @@ module.exports = {
         include: /node_modules\/katex\/dist\/fonts/,
         loader: 'file-loader',
         options: {
-          name: '[name].[hash:8].[ext]',
+          name: '[name].[contenthash:8].[ext]',
         },
       },
     ],
   },
 
   optimization: {
+    // Replace 'hashed' with 'deterministic' in webpack 5
+    moduleIds: 'hashed',
     runtimeChunk: 'single',
     splitChunks: {
       maxInitialRequests: 4,
@@ -260,6 +263,30 @@ module.exports = {
           chunks: 'initial',
           minChunks: autoEntriesCount * 0.9,
         }),
+        monaco: {
+          priority: 15,
+          name: 'monaco',
+          chunks: 'initial',
+          test: /[\\/]node_modules[\\/]monaco-editor[\\/]/,
+          minChunks: 2,
+          reuseExistingChunk: true,
+        },
+        echarts: {
+          priority: 14,
+          name: 'echarts',
+          chunks: 'all',
+          test: /[\\/]node_modules[\\/](echarts|zrender)[\\/]/,
+          minChunks: 2,
+          reuseExistingChunk: true,
+        },
+        security_reports: {
+          priority: 13,
+          name: 'security_reports',
+          chunks: 'initial',
+          test: /[\\/](vue_shared[\\/](security_reports|license_compliance)|security_dashboard)[\\/]/,
+          minChunks: 2,
+          reuseExistingChunk: true,
+        },
         vendors: {
           priority: 10,
           chunks: 'async',

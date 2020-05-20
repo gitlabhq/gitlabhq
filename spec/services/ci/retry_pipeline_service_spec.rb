@@ -261,6 +261,25 @@ describe Ci::RetryPipelineService, '#execute' do
 
       service.execute(pipeline)
     end
+
+    context 'when pipeline has processables with nil scheduling_type' do
+      let!(:build1) { create_build('build1', :success, 0) }
+      let!(:build2) { create_build('build2', :failed, 0) }
+      let!(:build3) { create_build('build3', :failed, 1) }
+      let!(:build3_needs_build1) { create(:ci_build_need, build: build3, name: build1.name) }
+
+      before do
+        statuses.update_all(scheduling_type: nil)
+      end
+
+      it 'populates scheduling_type of processables' do
+        service.execute(pipeline)
+
+        expect(build1.reload.scheduling_type).to eq('stage')
+        expect(build2.reload.scheduling_type).to eq('stage')
+        expect(build3.reload.scheduling_type).to eq('dag')
+      end
+    end
   end
 
   context 'when user is not allowed to retry pipeline' do

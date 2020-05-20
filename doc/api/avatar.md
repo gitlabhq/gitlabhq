@@ -15,7 +15,7 @@ If:
 NOTE: **Note:**
 This endpoint can be accessed without authentication.
 
-```text
+```plaintext
 GET /avatar?email=admin@example.com
 ```
 

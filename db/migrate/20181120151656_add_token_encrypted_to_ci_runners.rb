@@ -6,6 +6,6 @@ class AddTokenEncryptedToCiRunners < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def change
-    add_column :ci_runners, :token_encrypted, :string # rubocop:disable Migration/AddLimitToStringColumns
+    add_column :ci_runners, :token_encrypted, :string # rubocop:disable Migration/PreventStrings
   end
 end

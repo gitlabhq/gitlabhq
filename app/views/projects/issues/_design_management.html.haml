@@ -1,0 +1,15 @@
+- if @project.design_management_enabled?
+  .js-design-management{ data: { project_path: @project.full_path, issue_iid: @issue.iid, issue_path: project_issue_path(@project, @issue) } }
+- else
+  .mt-4
+    .row.empty-state
+      .col-12
+        .text-content
+          %h4.center
+            = _('The one place for your designs')
+          %p.center
+            - requirements_link_url = help_page_path('user/project/issues/design_management', anchor: 'requirements')
+            - requirements_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: requirements_link_url }
+            - support_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: support_url }
+            - link_end = '</a>'.html_safe
+            = s_("DesignManagement|To enable design management, you'll need to  %{requirements_link_start}meet the requirements%{requirements_link_end}. If you need help, reach out to our %{support_link_start}support team%{support_link_end} for assistance.").html_safe % { requirements_link_start: requirements_link_start, requirements_link_end: link_end, support_link_start: support_link_start, support_link_end: link_end }

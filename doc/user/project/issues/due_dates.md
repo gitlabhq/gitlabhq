@@ -24,6 +24,11 @@ Changes are saved immediately.
 
 ![Edit a due date via the sidebar](img/due_dates_edit_sidebar.png)
 
+The last way to set a due date is by using [quick actions](../quick_actions.md), directly in an issue's description or comment:
+
+- `/due <date>`: set due date. Examples of valid `<date>` include `in 2 days`, `this Friday`, and `December 31st`.
+- `/remove_due_date`: remove due date.
+
 ## Making use of due dates
 
 Issues that have a due date can be easily seen in the issue tracker,

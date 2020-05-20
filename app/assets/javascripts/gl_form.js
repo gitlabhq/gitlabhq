@@ -8,7 +8,7 @@ export default class GLForm {
   constructor(form, enableGFM = {}) {
     this.form = form;
     this.textarea = this.form.find('textarea.js-gfm-input');
-    this.enableGFM = Object.assign({}, defaultAutocompleteConfig, enableGFM);
+    this.enableGFM = { ...defaultAutocompleteConfig, ...enableGFM };
     // Disable autocomplete for keywords which do not have dataSources available
     const dataSources = (gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources) || {};
     Object.keys(this.enableGFM).forEach(item => {
@@ -29,6 +29,10 @@ export default class GLForm {
     if (this.autoComplete) {
       this.autoComplete.destroy();
     }
+    if (this.formDropzone) {
+      this.formDropzone.destroy();
+    }
+
     this.form.data('glForm', null);
   }
 
@@ -45,7 +49,7 @@ export default class GLForm {
       );
       this.autoComplete = new GfmAutoComplete(gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources);
       this.autoComplete.setup(this.form.find('.js-gfm-input'), this.enableGFM);
-      dropzoneInput(this.form, { parallelUploads: 1 });
+      this.formDropzone = dropzoneInput(this.form, { parallelUploads: 1 });
       autosize(this.textarea);
     }
     // form and textarea event listeners

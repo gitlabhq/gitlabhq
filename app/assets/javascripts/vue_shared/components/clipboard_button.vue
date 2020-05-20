@@ -67,6 +67,7 @@ export default {
 <template>
   <gl-deprecated-button
     v-gl-tooltip="{ placement: tooltipPlacement, container: tooltipContainer }"
+    v-gl-tooltip.hover.blur
     :class="cssClass"
     :title="title"
     :data-clipboard-text="clipboardText"

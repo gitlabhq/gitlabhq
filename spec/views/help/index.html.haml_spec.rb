@@ -53,6 +53,18 @@ describe 'help/index' do
     end
   end
 
+  describe 'Markdown rendering' do
+    before do
+      assign(:help_index, 'Welcome to [GitLab](https://about.gitlab.com/) Documentation.')
+    end
+
+    it 'renders Markdown' do
+      render
+
+      expect(rendered).to have_link('GitLab', href: 'https://about.gitlab.com/')
+    end
+  end
+
   def stub_user(user = double)
     allow(view).to receive(:user_signed_in?).and_return(user)
   end

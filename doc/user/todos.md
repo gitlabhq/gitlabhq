@@ -38,7 +38,7 @@ A To Do appears on your To-Do List when:
   - Epic **(ULTIMATE)**
 - You are `@mentioned` in a comment on a:
   - Commit
-  - Design **(PREMIUM)**
+  - Design
 - A job in the CI pipeline running for your merge request failed, but this
   job is not allowed to fail
 - An open merge request becomes unmergeable due to conflict, and you are either:
@@ -137,7 +137,7 @@ There are four kinds of filters you can use on your To-Do List.
 | Project | Filter by project |
 | Group   | Filter by group |
 | Author  | Filter by the author that triggered the To Do |
-| Type    | Filter by issue, merge request, or epic **(ULTIMATE)** |
+| Type    | Filter by issue, merge request, design, or epic **(ULTIMATE)** |
 | Action  | Filter by the action that triggered the To Do |
 
 You can also filter by more than one of these at the same time. The possible Actions are

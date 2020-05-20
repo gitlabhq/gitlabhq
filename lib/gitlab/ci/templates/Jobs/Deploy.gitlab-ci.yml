@@ -1,5 +1,8 @@
 .auto-deploy:
-  image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-deploy-image:v0.13.0"
+  image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-deploy-image:v0.15.0"
+
+include:
+  - template: Jobs/Deploy/ECS.gitlab-ci.yml
 
 review:
   extends: .auto-deploy
@@ -18,16 +21,14 @@ review:
     on_stop: stop_review
   artifacts:
     paths: [environment_url.txt]
-  only:
-    refs:
-      - branches
-      - tags
-    kubernetes: active
-  except:
-    refs:
-      - master
-    variables:
-      - $REVIEW_DISABLED
+  rules:
+    - if: '$CI_KUBERNETES_ACTIVE == null || $CI_KUBERNETES_ACTIVE == ""'
+      when: never
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: never
+    - if: '$REVIEW_DISABLED'
+      when: never
+    - if: '$CI_COMMIT_TAG || $CI_COMMIT_BRANCH'
 
 stop_review:
   extends: .auto-deploy
@@ -41,18 +42,16 @@ stop_review:
     name: review/$CI_COMMIT_REF_NAME
     action: stop
   dependencies: []
-  when: manual
   allow_failure: true
-  only:
-    refs:
-      - branches
-      - tags
-    kubernetes: active
-  except:
-    refs:
-      - master
-    variables:
-      - $REVIEW_DISABLED
+  rules:
+    - if: '$CI_KUBERNETES_ACTIVE == null || $CI_KUBERNETES_ACTIVE == ""'
+      when: never
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: never
+    - if: '$REVIEW_DISABLED'
+      when: never
+    - if: '$CI_COMMIT_TAG || $CI_COMMIT_BRANCH'
+      when: manual
 
 # Staging deploys are disabled by default since
 # continuous deployment to production is enabled by default
@@ -73,12 +72,12 @@ staging:
   environment:
     name: staging
     url: http://$CI_PROJECT_PATH_SLUG-staging.$KUBE_INGRESS_BASE_DOMAIN
-  only:
-    refs:
-      - master
-    kubernetes: active
-    variables:
-      - $STAGING_ENABLED
+  rules:
+    - if: '$CI_KUBERNETES_ACTIVE == null || $CI_KUBERNETES_ACTIVE == ""'
+      when: never
+    - if: '$CI_COMMIT_BRANCH != "master"'
+      when: never
+    - if: '$STAGING_ENABLED'
 
 # Canaries are disabled by default, but if you want them,
 # and know what the downsides are, you can enable this by setting
@@ -97,13 +96,13 @@ canary:
   environment:
     name: production
     url: http://$CI_PROJECT_PATH_SLUG.$KUBE_INGRESS_BASE_DOMAIN
-  when: manual
-  only:
-    refs:
-      - master
-    kubernetes: active
-    variables:
-      - $CANARY_ENABLED
+  rules:
+    - if: '$CI_KUBERNETES_ACTIVE == null || $CI_KUBERNETES_ACTIVE == ""'
+      when: never
+    - if: '$CI_COMMIT_BRANCH != "master"'
+      when: never
+    - if: '$CANARY_ENABLED'
+      when: manual
 
 .production: &production_template
   extends: .auto-deploy
@@ -126,32 +125,33 @@ canary:
 
 production:
   <<: *production_template
-  only:
-    refs:
-      - master
-    kubernetes: active
-  except:
-    variables:
-      - $STAGING_ENABLED
-      - $CANARY_ENABLED
-      - $INCREMENTAL_ROLLOUT_ENABLED
-      - $INCREMENTAL_ROLLOUT_MODE
+  rules:
+    - if: '$CI_KUBERNETES_ACTIVE == null || $CI_KUBERNETES_ACTIVE == ""'
+      when: never
+    - if: '$STAGING_ENABLED'
+      when: never
+    - if: '$CANARY_ENABLED'
+      when: never
+    - if: '$INCREMENTAL_ROLLOUT_ENABLED'
+      when: never
+    - if: '$INCREMENTAL_ROLLOUT_MODE'
+      when: never
+    - if: '$CI_COMMIT_BRANCH == "master"'
 
 production_manual:
   <<: *production_template
-  when: manual
   allow_failure: false
-  only:
-    refs:
-      - master
-    kubernetes: active
-    variables:
-      - $STAGING_ENABLED
-      - $CANARY_ENABLED
-  except:
-    variables:
-      - $INCREMENTAL_ROLLOUT_ENABLED
-      - $INCREMENTAL_ROLLOUT_MODE
+  rules:
+    - if: '$CI_KUBERNETES_ACTIVE == null || $CI_KUBERNETES_ACTIVE == ""'
+      when: never
+    - if: '$INCREMENTAL_ROLLOUT_ENABLED'
+      when: never
+    - if: '$INCREMENTAL_ROLLOUT_MODE'
+      when: never
+    - if: '$CI_COMMIT_BRANCH == "master" && $STAGING_ENABLED'
+      when: manual
+    - if: '$CI_COMMIT_BRANCH == "master" && $CANARY_ENABLED'
+      when: manual
 
 # This job implements incremental rollout on for every push to `master`.
 
@@ -176,29 +176,29 @@ production_manual:
 .manual_rollout_template: &manual_rollout_template
   <<: *rollout_template
   stage: production
-  when: manual
-  # This selectors are backward compatible mode with $INCREMENTAL_ROLLOUT_ENABLED (before 11.4)
-  only:
-    refs:
-      - master
-    kubernetes: active
-    variables:
-      - $INCREMENTAL_ROLLOUT_MODE == "manual"
-      - $INCREMENTAL_ROLLOUT_ENABLED
-  except:
-    variables:
-      - $INCREMENTAL_ROLLOUT_MODE == "timed"
+  rules:
+    - if: '$CI_KUBERNETES_ACTIVE == null || $CI_KUBERNETES_ACTIVE == ""'
+      when: never
+    - if: '$INCREMENTAL_ROLLOUT_MODE == "timed"'
+      when: never
+    - if: '$CI_COMMIT_BRANCH != "master"'
+      when: never
+    # $INCREMENTAL_ROLLOUT_ENABLED is for compamtibilty with pre-GitLab 11.4 syntax
+    - if: '$INCREMENTAL_ROLLOUT_MODE == "manual" || $INCREMENTAL_ROLLOUT_ENABLED'
+      when: manual
 
 .timed_rollout_template: &timed_rollout_template
   <<: *rollout_template
-  when: delayed
-  start_in: 5 minutes
-  only:
-    refs:
-      - master
-    kubernetes: active
-    variables:
-      - $INCREMENTAL_ROLLOUT_MODE == "timed"
+  rules:
+    - if: '$CI_KUBERNETES_ACTIVE == null || $CI_KUBERNETES_ACTIVE == ""'
+      when: never
+    - if: '$INCREMENTAL_ROLLOUT_MODE == "manual"'
+      when: never
+    - if: '$CI_COMMIT_BRANCH != "master"'
+      when: never
+    - if: '$INCREMENTAL_ROLLOUT_MODE == "timed"'
+      when: delayed
+      start_in: 5 minutes
 
 timed rollout 10%:
   <<: *timed_rollout_template

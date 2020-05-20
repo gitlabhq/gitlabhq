@@ -2,17 +2,6 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
-## 12.10.6 (2020-05-15)
-
-### Fixed (5 changes)
-
-- Fix duplicate index removal on ci_pipelines.project_id. !31043
-- Fix 500 on creating an invalid domains and verification. !31190
-- Fix incorrect number of errors returned when querying sentry errors. !31252
-- Add instance column to services table if it's missing. !31631
-- Fix incorrect regex used in FileUploader#extract_dynamic_path. !32271
-
-
 ## 12.10.5 (2020-05-13)
 
 ### Added (1 change)
@@ -25,22 +14,6 @@ entry.
 ### Fixed (1 change)
 
 - Add a Project's group to list of groups when parsing for codeowner entries. !30934
-
-
-## 12.10.3 (2020-05-04)
-
-### Fixed (6 changes)
-
-- Fix errors creating project with active Prometheus service template. !30340
-- Fix incorrect commits number in commits list. !30412
-- Fix second 500 error with NULL restricted visibility levels. !30414
-- Add LFS badge feature flag to RefsController#logs_tree. !30442
-- Disable schema dumping after migrations in production. !30812
-- Fixes branch name not getting escaped correctly on frontend.
-
-### Changed (1 change)
-
-- Handle possible RSA key exceptions when generating CI_JOB_JWT. !30702
 
 
 ## 12.10.2 (2020-04-30)
@@ -516,6 +489,28 @@ entry.
 - Add Gitlab User-Agent to ContainerRegistry::Client. !29294 (Sashi Kumar)
 - Improve error message in DAST CI template. !29388
 - Remove store_mentions! in Snippets::CreateService. !29581 (Sashi Kumar)
+
+
+## 12.9.6 (2020-05-05)
+
+### Fixed (1 change)
+
+- Add a Project's group to list of groups when parsing for codeowner entries. !30934
+
+
+## 12.9.5 (2020-04-30)
+
+### Security (9 changes)
+
+- Ensure MR diff exists before codeowner check.
+- Apply CODEOWNERS validations to web requests.
+- Prevent unauthorized access to default branch.
+- Do not return private project ID without permission.
+- Fix doorkeeper CVE-2020-10187.
+- Prevent ES credentials leak.
+- Change GitHub service integration token input to password.
+- Return only safe urls for mirrors.
+- Validate workhorse 'rewritten_fields' and properly use them during multipart uploads.
 
 
 ## 12.9.4 (2020-04-16)
@@ -1034,6 +1029,19 @@ entry.
 - Add confidential attribute to notes table.
 - Replace content_viewer_spec setTimeouts with semantic actions / events. (Oregand)
 - Improvement in token reference.
+
+
+## 12.8.10 (2020-04-30)
+
+### Security (7 changes)
+
+- Ensure MR diff exists before codeowner check.
+- Prevent unauthorized access to default branch.
+- Do not return private project ID without permission.
+- Fix doorkeeper CVE-2020-10187.
+- Prevent ES credentials leak.
+- Return only safe urls for mirrors.
+- Validate workhorse 'rewritten_fields' and properly use them during multipart uploads.
 
 
 ## 12.8.9 (2020-04-14)

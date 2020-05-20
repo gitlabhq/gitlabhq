@@ -1,12 +1,13 @@
 require 'gitlab/testing/request_blocker_middleware'
 require 'gitlab/testing/request_inspector_middleware'
-require 'gitlab/testing/clear_thread_memory_cache_middleware'
+require 'gitlab/testing/clear_process_memory_cache_middleware'
+require 'gitlab/utils'
 
 Rails.application.configure do
   # Make sure the middleware is inserted first in middleware chain
   config.middleware.insert_before(ActionDispatch::Static, Gitlab::Testing::RequestBlockerMiddleware)
   config.middleware.insert_before(ActionDispatch::Static, Gitlab::Testing::RequestInspectorMiddleware)
-  config.middleware.insert_before(ActionDispatch::Static, Gitlab::Testing::ClearThreadMemoryCacheMiddleware)
+  config.middleware.insert_before(ActionDispatch::Static, Gitlab::Testing::ClearProcessMemoryCacheMiddleware)
 
   # Settings specified here will take precedence over those in config/application.rb
 
@@ -43,7 +44,7 @@ Rails.application.configure do
   # Print deprecation notices to the stderr
   config.active_support.deprecation = :stderr
 
-  config.eager_load = true
+  config.eager_load = Gitlab::Utils.to_boolean(ENV['GITLAB_TEST_EAGER_LOAD'], default: true)
 
   config.cache_store = :null_store
 

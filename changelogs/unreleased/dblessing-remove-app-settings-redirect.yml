@@ -1,0 +1,5 @@
+---
+title: Remove deprecated /admin/application_settings redirect
+merge_request: 30532
+author:
+type: removed

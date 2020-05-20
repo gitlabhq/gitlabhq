@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
-import waitForPromises from 'helpers/wait_for_promises';
 import { projectData } from 'jest/ide/mock_data';
 import store from '~/ide/stores';
 import CommitForm from '~/ide/components/commit_sidebar/form.vue';
@@ -31,10 +30,10 @@ describe('IDE commit form', () => {
   });
 
   describe('compact', () => {
-    beforeEach(done => {
+    beforeEach(() => {
       vm.isCompact = true;
 
-      vm.$nextTick(done);
+      return vm.$nextTick();
     });
 
     it('renders commit button in compact mode', () => {
@@ -46,95 +45,84 @@ describe('IDE commit form', () => {
       expect(vm.$el.querySelector('form')).toBeNull();
     });
 
-    it('renders overview text', done => {
+    it('renders overview text', () => {
       vm.$store.state.stagedFiles.push('test');
 
-      vm.$nextTick(() => {
+      return vm.$nextTick(() => {
         expect(vm.$el.querySelector('p').textContent).toContain('1 changed file');
-        done();
       });
     });
 
-    it('shows form when clicking commit button', done => {
+    it('shows form when clicking commit button', () => {
       vm.$el.querySelector('.btn-primary').click();
 
-      vm.$nextTick(() => {
+      return vm.$nextTick(() => {
         expect(vm.$el.querySelector('form')).not.toBeNull();
-
-        done();
       });
     });
 
-    it('toggles activity bar view when clicking commit button', done => {
+    it('toggles activity bar view when clicking commit button', () => {
       vm.$el.querySelector('.btn-primary').click();
 
-      vm.$nextTick(() => {
+      return vm.$nextTick(() => {
         expect(store.state.currentActivityView).toBe(leftSidebarViews.commit.name);
-
-        done();
       });
     });
 
-    it('collapses if lastCommitMsg is set to empty and current view is not commit view', done => {
+    it('collapses if lastCommitMsg is set to empty and current view is not commit view', () => {
       store.state.lastCommitMsg = 'abc';
       store.state.currentActivityView = leftSidebarViews.edit.name;
 
-      vm.$nextTick(() => {
-        // if commit message is set, form is uncollapsed
-        expect(vm.isCompact).toBe(false);
+      return vm
+        .$nextTick()
+        .then(() => {
+          // if commit message is set, form is uncollapsed
+          expect(vm.isCompact).toBe(false);
 
-        store.state.lastCommitMsg = '';
+          store.state.lastCommitMsg = '';
 
-        vm.$nextTick(() => {
+          return vm.$nextTick();
+        })
+        .then(() => {
           // collapsed when set to empty
           expect(vm.isCompact).toBe(true);
-
-          done();
         });
-      });
     });
   });
 
   describe('full', () => {
-    beforeEach(done => {
+    beforeEach(() => {
       vm.isCompact = false;
 
-      vm.$nextTick(done);
+      return vm.$nextTick();
     });
 
-    it('updates commitMessage in store on input', done => {
+    it('updates commitMessage in store on input', () => {
       const textarea = vm.$el.querySelector('textarea');
 
       textarea.value = 'testing commit message';
 
       textarea.dispatchEvent(new Event('input'));
 
-      waitForPromises()
-        .then(() => {
-          expect(vm.$store.state.commit.commitMessage).toBe('testing commit message');
-        })
-        .then(done)
-        .catch(done.fail);
-    });
-
-    it('updating currentActivityView not to commit view sets compact mode', done => {
-      store.state.currentActivityView = 'a';
-
-      vm.$nextTick(() => {
-        expect(vm.isCompact).toBe(true);
-
-        done();
+      return vm.$nextTick().then(() => {
+        expect(vm.$store.state.commit.commitMessage).toBe('testing commit message');
       });
     });
 
-    it('always opens itself in full view current activity view is not commit view when clicking commit button', done => {
+    it('updating currentActivityView not to commit view sets compact mode', () => {
+      store.state.currentActivityView = 'a';
+
+      return vm.$nextTick(() => {
+        expect(vm.isCompact).toBe(true);
+      });
+    });
+
+    it('always opens itself in full view current activity view is not commit view when clicking commit button', () => {
       vm.$el.querySelector('.btn-primary').click();
 
-      vm.$nextTick(() => {
+      return vm.$nextTick(() => {
         expect(store.state.currentActivityView).toBe(leftSidebarViews.commit.name);
         expect(vm.isCompact).toBe(false);
-
-        done();
       });
     });
 
@@ -143,41 +131,54 @@ describe('IDE commit form', () => {
         expect(vm.$el.querySelector('.btn-default').textContent).toContain('Collapse');
       });
 
-      it('resets commitMessage when clicking discard button', done => {
+      it('resets commitMessage when clicking discard button', () => {
         vm.$store.state.commit.commitMessage = 'testing commit message';
 
-        waitForPromises()
+        return vm
+          .$nextTick()
           .then(() => {
             vm.$el.querySelector('.btn-default').click();
           })
-          .then(Vue.nextTick)
+          .then(() => vm.$nextTick())
           .then(() => {
             expect(vm.$store.state.commit.commitMessage).not.toBe('testing commit message');
-          })
-          .then(done)
-          .catch(done.fail);
+          });
       });
     });
 
     describe('when submitting', () => {
       beforeEach(() => {
-        jest.spyOn(vm, 'commitChanges').mockImplementation(() => {});
+        jest.spyOn(vm, 'commitChanges');
+
         vm.$store.state.stagedFiles.push('test');
+        vm.$store.state.commit.commitMessage = 'testing commit message';
       });
 
-      it('calls commitChanges', done => {
-        vm.$store.state.commit.commitMessage = 'testing commit message';
+      it('calls commitChanges', () => {
+        vm.commitChanges.mockResolvedValue({ success: true });
 
-        waitForPromises()
+        return vm.$nextTick().then(() => {
+          vm.$el.querySelector('.btn-success').click();
+
+          expect(vm.commitChanges).toHaveBeenCalled();
+        });
+      });
+
+      it('opens new branch modal if commitChanges throws an error', () => {
+        vm.commitChanges.mockRejectedValue({ success: false });
+
+        jest.spyOn(vm.$refs.createBranchModal, 'show').mockImplementation();
+
+        return vm
+          .$nextTick()
           .then(() => {
             vm.$el.querySelector('.btn-success').click();
+
+            return vm.$nextTick();
           })
-          .then(Vue.nextTick)
           .then(() => {
-            expect(vm.commitChanges).toHaveBeenCalled();
-          })
-          .then(done)
-          .catch(done.fail);
+            expect(vm.$refs.createBranchModal.show).toHaveBeenCalled();
+          });
       });
     });
   });

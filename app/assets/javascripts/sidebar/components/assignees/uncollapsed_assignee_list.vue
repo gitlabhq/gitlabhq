@@ -66,7 +66,7 @@ export default {
 <template>
   <assignee-avatar-link
     v-if="hasOneUser"
-    v-slot="{ user }"
+    #default="{ user }"
     tooltip-placement="left"
     :tooltip-has-name="false"
     :user="firstUser"

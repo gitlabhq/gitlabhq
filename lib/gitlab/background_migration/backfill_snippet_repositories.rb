@@ -8,22 +8,41 @@ module Gitlab
       MAX_RETRIES = 2
 
       def perform(start_id, stop_id)
-        Snippet.includes(:author, snippet_repository: :shard).where(id: start_id..stop_id).find_each do |snippet|
+        snippets = snippet_relation.where(id: start_id..stop_id)
+
+        migrate_snippets(snippets)
+      end
+
+      def perform_by_ids(snippet_ids)
+        snippets = snippet_relation.where(id: snippet_ids)
+
+        migrate_snippets(snippets)
+      end
+
+      private
+
+      def migrate_snippets(snippets)
+        snippets.find_each do |snippet|
           # We need to expire the exists? value for the cached method in case it was cached
           snippet.repository.expire_exists_cache
 
           next if repository_present?(snippet)
 
           retry_index = 0
+          @invalid_path_error = false
+          @invalid_signature_error = false
 
           begin
             create_repository_and_files(snippet)
 
             logger.info(message: 'Snippet Migration: repository created and migrated', snippet: snippet.id)
           rescue => e
+            set_file_path_error(e)
+            set_signature_error(e)
+
             retry_index += 1
 
-            retry if retry_index < MAX_RETRIES
+            retry if retry_index < max_retries
 
             logger.error(message: "Snippet Migration: error migrating snippet. Reason: #{e.message}", snippet: snippet.id)
 
@@ -33,7 +52,9 @@ module Gitlab
         end
       end
 
-      private
+      def snippet_relation
+        @snippet_relation ||= Snippet.includes(:author, snippet_repository: :shard)
+      end
 
       def repository_present?(snippet)
         snippet.snippet_repository && !snippet.empty_repo?
@@ -44,16 +65,19 @@ module Gitlab
         create_commit(snippet)
       end
 
+      # Removing the db record
       def destroy_snippet_repository(snippet)
-        # Removing the db record
-        snippet.snippet_repository&.destroy
+        snippet.snippet_repository&.delete
       rescue => e
         logger.error(message: "Snippet Migration: error destroying snippet repository. Reason: #{e.message}", snippet: snippet.id)
       end
 
+      # Removing the repository in disk
       def delete_repository(snippet)
-        # Removing the repository in disk
-        snippet.repository.remove if snippet.repository_exists?
+        return unless snippet.repository_exists?
+
+        snippet.repository.remove
+        snippet.repository.expire_exists_cache
       rescue => e
         logger.error(message: "Snippet Migration: error deleting repository. Reason: #{e.message}", snippet: snippet.id)
       end
@@ -70,7 +94,10 @@ module Gitlab
       end
 
       def filename(snippet)
-        snippet.file_name.presence || empty_file_name
+        file_name = snippet.file_name
+        file_name = file_name.parameterize if @invalid_path_error
+
+        file_name.presence || empty_file_name
       end
 
       def empty_file_name
@@ -82,7 +109,56 @@ module Gitlab
       end
 
       def create_commit(snippet)
-        snippet.snippet_repository.multi_files_action(snippet.author, snippet_action(snippet), commit_attrs)
+        snippet.snippet_repository.multi_files_action(commit_author(snippet), snippet_action(snippet), commit_attrs)
+      end
+
+      # If the user is not allowed to access git or update the snippet
+      # because it is blocked, internal, ghost, ... we cannot commit
+      # files because these users are not allowed to, but we need to
+      # migrate their snippets as well.
+      # In this scenario the migration bot user will be the one that will commit the files.
+      def commit_author(snippet)
+        return migration_bot_user if snippet_content_size_over_limit?(snippet)
+        return migration_bot_user if @invalid_signature_error
+
+        if Gitlab::UserAccessSnippet.new(snippet.author, snippet: snippet).can_do_action?(:update_snippet)
+          snippet.author
+        else
+          migration_bot_user
+        end
+      end
+
+      def migration_bot_user
+        @migration_bot_user ||= User.migration_bot
+      end
+
+      # We sometimes receive invalid path errors from Gitaly if the Snippet filename
+      # cannot be parsed into a valid git path.
+      # In this situation, we need to parameterize the file name of the Snippet so that
+      # the migration can succeed, to achieve that, we'll identify in migration retries
+      # that the path is invalid
+      def set_file_path_error(error)
+        @invalid_path_error ||= error.is_a?(SnippetRepository::InvalidPathError)
+      end
+
+      # We sometimes receive invalid signature from Gitaly if the commit author
+      # name or email is invalid to create the commit signature.
+      # In this situation, we set the error and use the migration_bot since
+      # the information used to build it is valid
+      def set_signature_error(error)
+        @invalid_signature_error ||= error.is_a?(SnippetRepository::InvalidSignatureError)
+      end
+
+      # In the case where the snippet file_name is invalid and also the
+      # snippet author has invalid commit info, we need to increase the
+      # number of retries by 1, because we will receive two errors
+      # from Gitaly and, in the third one, we will commit successfully.
+      def max_retries
+        MAX_RETRIES + (@invalid_signature_error && @invalid_path_error ? 1 : 0)
+      end
+
+      def snippet_content_size_over_limit?(snippet)
+        snippet.content.size > Gitlab::CurrentSettings.snippet_size_limit
       end
     end
   end

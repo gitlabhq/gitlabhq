@@ -10,7 +10,7 @@ class AddBroadcastTypeToBroadcastMessage < ActiveRecord::Migration[5.2]
   disable_ddl_transaction!
 
   def up
-    add_column_with_default(:broadcast_messages, :broadcast_type, :smallint, default: BROADCAST_MESSAGE_BANNER_TYPE)
+    add_column_with_default(:broadcast_messages, :broadcast_type, :smallint, default: BROADCAST_MESSAGE_BANNER_TYPE) # rubocop:disable Migration/AddColumnWithDefault
   end
 
   def down

@@ -52,7 +52,7 @@ describe 'Import/Export - project export integration test', :js do
           project_json_path = File.join(tmpdir, 'project.json')
           expect(File).to exist(project_json_path)
 
-          project_hash = JSON.parse(IO.read(project_json_path))
+          project_hash = Gitlab::Json.parse(IO.read(project_json_path))
 
           sensitive_words.each do |sensitive_word|
             found = find_sensitive_attributes(sensitive_word, project_hash)
@@ -78,7 +78,7 @@ describe 'Import/Export - project export integration test', :js do
           expect(File).to exist(project_json_path)
 
           relations = []
-          relations << JSON.parse(IO.read(project_json_path))
+          relations << Gitlab::Json.parse(IO.read(project_json_path))
           Dir.glob(File.join(tmpdir, 'tree/project', '*.ndjson')) do |rb_filename|
             File.foreach(rb_filename) do |line|
               json = ActiveSupport::JSON.decode(line)

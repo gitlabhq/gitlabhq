@@ -152,7 +152,7 @@ module Gitlab
 
         raise "failed to get exif tags: #{output}" if status != 0
 
-        JSON.parse(output).first
+        Gitlab::Json.parse(output).first
       end
     end
   end

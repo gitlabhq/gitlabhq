@@ -1,4 +1,5 @@
 import * as types from './mutation_types';
+import { DropdownVariant } from '../constants';
 
 export default {
   [types.SET_INITIAL_STATE](state, props) {
@@ -10,7 +11,7 @@ export default {
   },
 
   [types.TOGGLE_DROPDOWN_CONTENTS](state) {
-    if (!state.dropdownOnly) {
+    if (state.variant === DropdownVariant.Sidebar) {
       state.showDropdownButton = !state.showDropdownButton;
     }
     state.showDropdownContents = !state.showDropdownContents;
@@ -57,20 +58,13 @@ export default {
   },
 
   [types.UPDATE_SELECTED_LABELS](state, { labels }) {
-    // Iterate over all the labels and update
-    // `set` prop value to represent their current state.
-    const labelIds = labels.map(label => label.id);
-    state.labels = state.labels.reduce((allLabels, label) => {
-      if (labelIds.includes(label.id)) {
-        allLabels.push({
-          ...label,
-          touched: true,
-          set: !label.set,
-        });
-      } else {
-        allLabels.push(label);
-      }
-      return allLabels;
-    }, []);
+    // Find the label to update from all the labels
+    // and change `set` prop value to represent their current state.
+    const labelId = labels.pop()?.id;
+    const candidateLabel = state.labels.find(label => labelId === label.id);
+    if (candidateLabel) {
+      candidateLabel.touched = true;
+      candidateLabel.set = !candidateLabel.set;
+    }
   },
 };

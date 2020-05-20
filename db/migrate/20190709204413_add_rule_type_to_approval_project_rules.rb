@@ -8,7 +8,7 @@ class AddRuleTypeToApprovalProjectRules < ActiveRecord::Migration[5.1]
   disable_ddl_transaction!
 
   def up
-    add_column_with_default :approval_project_rules, :rule_type, :integer, limit: 2, default: 0, allow_null: false
+    add_column_with_default :approval_project_rules, :rule_type, :integer, limit: 2, default: 0, allow_null: false # rubocop:disable Migration/AddColumnWithDefault
   end
 
   def down

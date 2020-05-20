@@ -8,6 +8,7 @@ module API
     before { authenticate! }
 
     resource :snippets do
+      helpers Helpers::SnippetsHelpers
       helpers do
         def snippets_for_current_user
           SnippetsFinder.new(current_user, author: current_user).execute
@@ -24,13 +25,13 @@ module API
 
       desc 'Get a snippets list for authenticated user' do
         detail 'This feature was introduced in GitLab 8.15.'
-        success Entities::PersonalSnippet
+        success Entities::Snippet
       end
       params do
         use :pagination
       end
       get do
-        present paginate(snippets_for_current_user), with: Entities::PersonalSnippet
+        present paginate(snippets_for_current_user), with: Entities::Snippet
       end
 
       desc 'List all public personal snippets current_user has access to' do
@@ -64,9 +65,9 @@ module API
         success Entities::PersonalSnippet
       end
       params do
-        requires :title, type: String, desc: 'The title of a snippet'
+        requires :title, type: String, allow_blank: false, desc: 'The title of a snippet'
         requires :file_name, type: String, desc: 'The name of a snippet file'
-        requires :content, type: String, desc: 'The content of a snippet'
+        requires :content, type: String, allow_blank: false, desc: 'The content of a snippet'
         optional :description, type: String, desc: 'The description of a snippet'
         optional :visibility, type: String,
                               values: Gitlab::VisibilityLevel.string_values,
@@ -80,12 +81,12 @@ module API
         service_response = ::Snippets::CreateService.new(nil, current_user, attrs).execute
         snippet = service_response.payload[:snippet]
 
-        render_spam_error! if snippet.spam?
-
-        if snippet.persisted?
+        if service_response.success?
           present snippet, with: Entities::PersonalSnippet
         else
-          render_validation_error!(snippet)
+          render_spam_error! if snippet.spam?
+
+          render_api_error!({ error: service_response.message }, service_response.http_status)
         end
       end
 
@@ -95,9 +96,9 @@ module API
       end
       params do
         requires :id, type: Integer, desc: 'The ID of a snippet'
-        optional :title, type: String, desc: 'The title of a snippet'
+        optional :title, type: String, allow_blank: false, desc: 'The title of a snippet'
         optional :file_name, type: String, desc: 'The name of a snippet file'
-        optional :content, type: String, desc: 'The content of a snippet'
+        optional :content, type: String, allow_blank: false, desc: 'The content of a snippet'
         optional :description, type: String, desc: 'The description of a snippet'
         optional :visibility, type: String,
                               values: Gitlab::VisibilityLevel.string_values,
@@ -114,12 +115,12 @@ module API
         service_response = ::Snippets::UpdateService.new(nil, current_user, attrs).execute(snippet)
         snippet = service_response.payload[:snippet]
 
-        render_spam_error! if snippet.spam?
-
-        if snippet.persisted?
+        if service_response.success?
           present snippet, with: Entities::PersonalSnippet
         else
-          render_validation_error!(snippet)
+          render_spam_error! if snippet.spam?
+
+          render_api_error!({ error: service_response.message }, service_response.http_status)
         end
       end
 
@@ -159,7 +160,7 @@ module API
         env['api.format'] = :txt
         content_type 'text/plain'
         header['Content-Disposition'] = 'attachment'
-        present snippet.content
+        present content_for(snippet)
       end
 
       desc 'Get the user agent details for a snippet' do

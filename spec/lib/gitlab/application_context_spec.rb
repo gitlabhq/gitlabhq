@@ -55,10 +55,10 @@ describe Gitlab::ApplicationContext do
   end
 
   describe '#to_lazy_hash' do
-    let(:user) { build(:user) }
-    let(:project) { build(:project) }
-    let(:namespace) { create(:group) }
-    let(:subgroup) { create(:group, parent: namespace) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:project) { create(:project) }
+    let_it_be(:namespace) { create(:group) }
+    let_it_be(:subgroup) { create(:group, parent: namespace) }
 
     def result(context)
       context.to_lazy_hash.transform_values { |v| v.respond_to?(:call) ? v.call : v }
@@ -105,6 +105,12 @@ describe Gitlab::ApplicationContext do
       expect(Labkit::Context).to receive(:with_context).with(a_hash_including(user: duck_type(:call)))
 
       context.use {}
+    end
+
+    it 'does not cause queries' do
+      context = described_class.new(project: create(:project), namespace: create(:group, :nested), user: create(:user))
+
+      expect { context.use { Labkit::Context.current.to_h } }.not_to exceed_query_limit(0)
     end
   end
 end

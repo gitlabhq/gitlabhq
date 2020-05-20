@@ -1,16 +1,20 @@
 # Read more about this feature here: https://docs.gitlab.com/ee/user/application_security/container_scanning/
 
 variables:
+  # Setting this variable will affect all Security templates
+  # (SAST, Dependency Scanning, ...)
+  SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/gitlab-org/security-products/analyzers"
+
   CS_MAJOR_VERSION: 2
 
 container_scanning:
   stage: test
-  image: registry.gitlab.com/gitlab-org/security-products/analyzers/klar:$CS_MAJOR_VERSION
+  image: $SECURE_ANALYZERS_PREFIX/klar:$CS_MAJOR_VERSION
   variables:
     # By default, use the latest clair vulnerabilities database, however, allow it to be overridden here with a specific image
     # to enable container scanning to run offline, or to provide a consistent list of vulnerabilities for integration testing purposes
     CLAIR_DB_IMAGE_TAG: "latest"
-    CLAIR_DB_IMAGE: "arminc/clair-db:$CLAIR_DB_IMAGE_TAG"
+    CLAIR_DB_IMAGE: "$SECURE_ANALYZERS_PREFIX/clair-vulnerabilities-db:$CLAIR_DB_IMAGE_TAG"
     # Override the GIT_STRATEGY variable in your `.gitlab-ci.yml` file and set it to `fetch` if you want to provide a `clair-whitelist.yml`
     # file. See https://docs.gitlab.com/ee/user/application_security/container_scanning/index.html#overriding-the-container-scanning-template
     # for details
@@ -25,11 +29,8 @@ container_scanning:
     reports:
       container_scanning: gl-container-scanning-report.json
   dependencies: []
-  only:
-    refs:
-      - branches
-    variables:
-      - $GITLAB_FEATURES =~ /\bcontainer_scanning\b/
-  except:
-    variables:
-      - $CONTAINER_SCANNING_DISABLED
+  rules:
+    - if: $CONTAINER_SCANNING_DISABLED
+      when: never
+    - if: $CI_COMMIT_BRANCH &&
+          $GITLAB_FEATURES =~ /\bcontainer_scanning\b/

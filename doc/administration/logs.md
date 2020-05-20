@@ -1,3 +1,9 @@
+---
+stage: Monitor
+group: APM
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Log system
 
 GitLab has an advanced log system where everything is logged, so you
@@ -333,6 +339,9 @@ only. For example:
 
 ## `audit_json.log`
 
+NOTE: **Note:**
+Most log entries only exist in [GitLab Starter](https://about.gitlab.com/pricing), however a few exist in GitLab Core.
+
 This file lives in `/var/log/gitlab/gitlab-rails/audit_json.log` for
 Omnibus GitLab packages or in `/home/git/gitlab/log/audit_json.log` for
 installations from source.
@@ -356,7 +365,11 @@ Changes to group or project settings are logged to this file. For example:
 }
 ```
 
-## `sidekiq.log`
+## Sidekiq Logs
+
+For Omnibus installations, some Sidekiq logs reside in `/var/log/gitlab/sidekiq/current` and as follows.
+
+### `sidekiq.log`
 
 This file lives in `/var/log/gitlab/gitlab-rails/sidekiq.log` for
 Omnibus GitLab packages or in `/home/git/gitlab/log/sidekiq.log` for
@@ -413,7 +426,7 @@ For source installations, edit the `gitlab.yml` and set the Sidekiq
     log_format: json
 ```
 
-## `sidekiq_client.log`
+### `sidekiq_client.log`
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26586) in GitLab 12.9.
 
@@ -424,21 +437,91 @@ installations from source.
 This file contains logging information about jobs before they are start
 being processed by Sidekiq, for example before being enqueued.
 
-This logfile follows the same structure as
+This log file follows the same structure as
 [`sidekiq.log`](#sidekiqlog), so it will be structured as JSON if
 you've configured this for Sidekiq as mentioned above.
 
 ## `gitlab-shell.log`
 
-This file lives in `/var/log/gitlab/gitaly/gitlab-shell.log` for
-Omnibus GitLab packages or in `/home/git/gitaly/gitlab-shell.log` for
-installations from source.
+GitLab Shell is used by GitLab for executing Git commands and provide SSH access to Git repositories.
 
-NOTE: **Note:**
+### For GitLab versions 12.10 and up
+
+For GitLab version 12.10 and later, there are 2 `gitlab-shell.log` files. Information containing `git-{upload-pack,receive-pack}` requests lives in `/var/log/gitlab/gitlab-shell/gitlab-shell.log`. Information about hooks to GitLab Shell from Gitaly lives in `/var/log/gitlab/gitaly/gitlab-shell.log`.
+
+Example log entries for `/var/log/gitlab/gitlab-shell/gitlab-shell.log`:
+
+```json
+{
+  "duration_ms": 74.104,
+  "level": "info",
+  "method": "POST",
+  "msg": "Finished HTTP request",
+  "time": "2020-04-17T20:28:46Z",
+  "url": "http://127.0.0.1:8080/api/v4/internal/allowed"
+}
+{
+  "command": "git-upload-pack",
+  "git_protocol": "",
+  "gl_project_path": "root/example",
+  "gl_repository": "project-1",
+  "level": "info",
+  "msg": "executing git command",
+  "time": "2020-04-17T20:28:46Z",
+  "user_id": "user-1",
+  "username": "root"
+}
+```
+
+Example log entries for `/var/log/gitlab/gitaly/gitlab-shell.log`:
+
+```json
+{
+  "method": "POST",
+  "url": "http://127.0.0.1:8080/api/v4/internal/allowed",
+  "duration": 0.058012959,
+  "gitaly_embedded": true,
+  "pid": 16636,
+  "level": "info",
+  "msg": "finished HTTP request",
+  "time": "2020-04-17T20:29:08+00:00"
+}
+{
+  "method": "POST",
+  "url": "http://127.0.0.1:8080/api/v4/internal/pre_receive",
+  "duration": 0.031022552,
+  "gitaly_embedded": true,
+  "pid": 16636,
+  "level": "info",
+  "msg": "finished HTTP request",
+  "time": "2020-04-17T20:29:08+00:00"
+}
+```
+
+### For GitLab versions 12.5 through 12.9
+
+For GitLab 12.5 to 12.9, this file lives in `/var/log/gitlab/gitaly/gitlab-shell.log` for Omnibus GitLab packages or in `/home/git/gitaly/gitlab-shell.log` for installations from source.
+
+Example log entries:
+
+```json
+{
+  "method": "POST",
+  "url": "http://127.0.0.1:8080/api/v4/internal/post_receive",
+  "duration": 0.031809164,
+  "gitaly_embedded": true,
+  "pid": 27056,
+  "level": "info",
+  "msg": "finished HTTP request",
+  "time": "2020-04-17T16:24:38+00:00"
+}
+```
+
+### For GitLab 12.5 and earlier
+
 For GitLab 12.5 and earlier, the file lives in `/var/log/gitlab/gitlab-shell/gitlab-shell.log`.
 
-GitLab Shell is used by GitLab for executing Git commands and provide
-SSH access to Git repositories. For example:
+Example log entries:
 
 ```plaintext
 I, [2015-02-13T06:17:00.671315 #9291]  INFO -- : Adding project root/example.git at </var/opt/gitlab/git-data/repositories/root/dcdcdcdcd.git>.
@@ -447,15 +530,29 @@ I, [2015-02-13T06:17:00.679433 #9291]  INFO -- : Moving existing hooks directory
 
 User clone/fetch activity using SSH transport appears in this log as `executing git command <gitaly-upload-pack...`.
 
-## `current`
+## Gitaly Logs
 
-This file lives in `/var/log/gitlab/gitaly/current` and is produced by [runit](http://smarden.org/runit/). `runit` is packaged with Omnibus and a brief explanation of its purpose is available [in the omnibus documentation](https://docs.gitlab.com/omnibus/architecture/#runit). [Log files are rotated](http://smarden.org/runit/svlogd.8.html), renamed in unix timestamp format and `gzip`-compressed (e.g. `@1584057562.s`).
+This file lives in `/var/log/gitlab/gitaly/current` and is produced by [runit](http://smarden.org/runit/). `runit` is packaged with Omnibus and a brief explanation of its purpose is available [in the omnibus documentation](https://docs.gitlab.com/omnibus/architecture/#runit). [Log files are rotated](http://smarden.org/runit/svlogd.8.html), renamed in Unix timestamp format and `gzip`-compressed (e.g. `@1584057562.s`).
 
-## `unicorn_stderr.log`
+### `grpc.log`
 
-This file lives in `/var/log/gitlab/unicorn/unicorn_stderr.log` for
-Omnibus GitLab packages or in `/home/git/gitlab/log/unicorn_stderr.log` for
-installations from source.
+This file lives in `/var/log/gitlab/gitlab-rails/grpc.log` for Omnibus GitLab packages. Native [gRPC](https://grpc.io/) logging used by Gitaly.
+
+## `puma_stderr.log` & `puma_stdout.log`
+
+This file lives in `/var/log/gitlab/puma/puma_stderr.log` and `/var/log/gitlab/puma/puma_stdout.log` for
+Omnibus GitLab packages or in `/home/git/gitlab/log/puma_stderr.log` and `/home/git/gitlab/log/puma_stdout.log`
+for installations from source.
+
+## `unicorn_stderr.log` & `unicorn_stdout.log`
+
+NOTE: **Note:**
+Starting with GitLab 13.0, Puma is the default web server used in GitLab
+all-in-one package based installations as well as GitLab Helm chart deployments.
+
+This file lives in `/var/log/gitlab/unicorn/unicorn_stderr.log` and `/var/log/gitlab/unicorn/unicorn_stdout.log` for
+Omnibus GitLab packages or in `/home/git/gitlab/log/unicorn_stderr.log` and `/home/git/gitlab/log/unicorn_stdout.log`
+for installations from source.
 
 Unicorn is a high-performance forking Web server which is used for
 serving the GitLab application. You can look at this log if, for
@@ -484,7 +581,7 @@ This file lives in `/var/log/gitlab/gitlab-rails/repocheck.log` for
 Omnibus GitLab packages or in `/home/git/gitlab/log/repocheck.log` for
 installations from source.
 
-It logs information whenever a [repository check is run][repocheck] on a project.
+It logs information whenever a [repository check is run](repository_checks.md) on a project.
 
 ## `importer.log`
 
@@ -493,6 +590,8 @@ It logs information whenever a [repository check is run][repocheck] on a project
 This file lives in `/var/log/gitlab/gitlab-rails/importer.log` for
 Omnibus GitLab packages or in `/home/git/gitlab/log/importer.log` for
 installations from source.
+
+It logs the progress of the import process.
 
 ## `auth.log`
 
@@ -504,9 +603,9 @@ installations from source.
 
 This log records:
 
-- Information whenever [Rack Attack] registers an abusive request.
-- Requests over the [Rate Limit] on raw endpoints.
-- [Protected paths] abusive requests.
+- Information whenever [Rack Attack](../security/rack_attack.md) registers an abusive request.
+- Requests over the [Rate Limit](../user/admin_area/settings/rate_limits_on_raw_endpoints.md) on raw endpoints.
+- [Protected paths](../user/admin_area/settings/protected_paths.md) abusive requests.
 
 NOTE: **Note:**
 From [%12.1](https://gitlab.com/gitlab-org/gitlab-foss/issues/62756), user ID and username are also
@@ -523,7 +622,7 @@ installations from source.
 GraphQL queries are recorded in that file. For example:
 
 ```json
-{"query_string":"query IntrospectionQuery{__schema {queryType { name },mutationType { name }}}...(etc)","variables":{"a":1,"b":2},"complexity":181,"depth":1,"duration":7}
+{"query_string":"query IntrospectionQuery{__schema {queryType { name },mutationType { name }}}...(etc)","variables":{"a":1,"b":2},"complexity":181,"depth":1,"duration_s":7}
 ```
 
 ## `migrations.log`
@@ -538,7 +637,7 @@ installations from source.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/19186) in GitLab 12.6.
 
-This file lives in `/var/log/gitlab/mail_room/mail_room_json.log` for
+This file lives in `/var/log/gitlab/mailroom/mail_room_json.log` for
 Omnibus GitLab packages or in `/home/git/gitlab/log/mail_room_json.log` for
 installations from source.
 
@@ -562,7 +661,7 @@ will be generated in `/var/log/gitlab/gitlab-rails/sidekiq_exporter.log` for
 Omnibus GitLab packages or in `/home/git/gitlab/log/sidekiq_exporter.log` for
 installations from source.
 
-If Prometheus metrics and the Web Exporter are both enabled, Unicorn/Puma will
+If Prometheus metrics and the Web Exporter are both enabled, Puma/Unicorn will
 start a Web server and listen to the defined port (default: `8083`). Access logs
 will be generated in `/var/log/gitlab/gitlab-rails/web_exporter.log` for
 Omnibus GitLab packages or in `/home/git/gitlab/log/web_exporter.log` for
@@ -578,7 +677,7 @@ It's stored at:
 - `/var/log/gitlab/gitlab-rails/database_load_balancing.log` for Omnibus GitLab packages.
 - `/home/git/gitlab/log/database_load_balancing.log` for installations from source.
 
-## `elasticsearch.log`
+## `elasticsearch.log` **(STARTER ONLY)**
 
 > Introduced in GitLab 12.6.
 
@@ -648,7 +747,24 @@ Each line contains a JSON line that can be ingested by Elasticsearch. For exampl
 }
 ```
 
-## `geo.log`
+## `service_measurement.log`
+
+> Introduced in GitLab 13.0.
+
+This file lives in `/var/log/gitlab/gitlab-rails/service_measurement.log` for
+Omnibus GitLab packages or in `/home/git/gitlab/log/service_measurement.log` for
+installations from source.
+
+It contain only a single structured log with measurements for each service execution.
+It will contain measurement such as: number of sql calls, execution_time, gc_stats, memory usage, etc...
+
+For example:
+
+```json
+{ "severity":"INFO", "time":"2020-04-22T16:04:50.691Z","correlation_id":"04f1366e-57a1-45b8-88c1-b00b23dc3616","class":"Projects::ImportExport::ExportService","current_user":"John Doe","project_full_path":"group1/test-export","file_path":"/path/to/archive","gc_stats":{"count":{"before":127,"after":127,"diff":0},"heap_allocated_pages":{"before":10369,"after":10369,"diff":0},"heap_sorted_length":{"before":10369,"after":10369,"diff":0},"heap_allocatable_pages":{"before":0,"after":0,"diff":0},"heap_available_slots":{"before":4226409,"after":4226409,"diff":0},"heap_live_slots":{"before":2542709,"after":2641420,"diff":98711},"heap_free_slots":{"before":1683700,"after":1584989,"diff":-98711},"heap_final_slots":{"before":0,"after":0,"diff":0},"heap_marked_slots":{"before":2542704,"after":2542704,"diff":0},"heap_eden_pages":{"before":10369,"after":10369,"diff":0},"heap_tomb_pages":{"before":0,"after":0,"diff":0},"total_allocated_pages":{"before":10369,"after":10369,"diff":0},"total_freed_pages":{"before":0,"after":0,"diff":0},"total_allocated_objects":{"before":24896308,"after":24995019,"diff":98711},"total_freed_objects":{"before":22353599,"after":22353599,"diff":0},"malloc_increase_bytes":{"before":140032,"after":6650240,"diff":6510208},"malloc_increase_bytes_limit":{"before":25804104,"after":25804104,"diff":0},"minor_gc_count":{"before":94,"after":94,"diff":0},"major_gc_count":{"before":33,"after":33,"diff":0},"remembered_wb_unprotected_objects":{"before":34284,"after":34284,"diff":0},"remembered_wb_unprotected_objects_limit":{"before":68568,"after":68568,"diff":0},"old_objects":{"before":2404725,"after":2404725,"diff":0},"old_objects_limit":{"before":4809450,"after":4809450,"diff":0},"oldmalloc_increase_bytes":{"before":140032,"after":6650240,"diff":6510208},"oldmalloc_increase_bytes_limit":{"before":68537556,"after":68537556,"diff":0}},"time_to_finish":0.12298400001600385,"number_of_sql_calls":70,"memory_usage":"0.0 MiB","label":"process_48616"}
+```
+
+## `geo.log` **(PREMIUM ONLY)**
 
 > Introduced in 9.5.
 
@@ -677,7 +793,9 @@ For Omnibus installations, NGINX logs reside in:
 - `/var/log/gitlab/nginx/gitlab_pages_access.log` contains a log of requests made to Pages static sites.
 - `/var/log/gitlab/nginx/gitlab_pages_error.log` contains a log of NGINX errors for Pages static sites.
 - `/var/log/gitlab/nginx/gitlab_registry_access.log` contains a log of requests made to the Container Registry.
-- `/var/log/gitlab/nginx/gitlab_registry_error.log` contains a log of NGINX errors for the Container Regsitry.
+- `/var/log/gitlab/nginx/gitlab_registry_error.log` contains a log of NGINX errors for the Container Registry.
+- `/var/log/gitlab/nginx/gitlab_mattermost_access.log` contains a log of requests made to Mattermost.
+- `/var/log/gitlab/nginx/gitlab_mattermost_error.log` contains a log of NGINX errors for Mattermost.
 
 Below is the default GitLab NGINX access log format:
 
@@ -685,7 +803,51 @@ Below is the default GitLab NGINX access log format:
 $remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent"
 ```
 
-[repocheck]: repository_checks.md
-[Rack Attack]: ../security/rack_attack.md
-[Rate Limit]: ../user/admin_area/settings/rate_limits_on_raw_endpoints.md
-[Protected paths]: ../user/admin_area/settings/protected_paths.md
+## Pages Logs
+
+For Omnibus installations, Pages logs reside in `/var/log/gitlab/gitlab-pages/current`.
+
+For example:
+
+```json
+{
+  "level": "info",
+  "msg": "GitLab Pages Daemon",
+  "revision": "52b2899",
+  "time": "2020-04-22T17:53:12Z",
+  "version": "1.17.0"
+}
+{
+  "level": "info",
+  "msg": "URL: https://gitlab.com/gitlab-org/gitlab-pages",
+  "time": "2020-04-22T17:53:12Z"
+}
+{
+  "gid": 998,
+  "in-place": false,
+  "level": "info",
+  "msg": "running the daemon as unprivileged user",
+  "time": "2020-04-22T17:53:12Z",
+  "uid": 998
+}
+```
+
+## Workhorse Logs
+
+For Omnibus installations, Workhorse logs reside in `/var/log/gitlab/gitlab-workhorse/current`.
+
+## PostgreSQL Logs
+
+For Omnibus installations, PostgreSQL logs reside in `/var/log/gitlab/postgresql/current`.
+
+## Prometheus Logs
+
+For Omnibus installations, Prometheus logs reside in `/var/log/gitlab/prometheus/current`.
+
+## Redis Logs
+
+For Omnibus installations, Redis logs reside in `/var/log/gitlab/redis/current`.
+
+## Mattermost Logs
+
+For Omnibus installations, Mattermost logs reside in `/var/log/gitlab/mattermost/mattermost.log`.

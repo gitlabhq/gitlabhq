@@ -253,7 +253,7 @@ If you need to utilize some code that was introduced in `master` after you creat
 If your feature branch has a merge conflict, creating a merge commit is a standard way of solving this.
 
 NOTE: **Note:**
-Sometimes you can use .gitattributes to reduce merge conflicts.
+Sometimes you can use `.gitattributes` to reduce merge conflicts.
 For example, you can set your changelog file to use the [union merge driver](https://git-scm.com/docs/gitattributes#gitattributes-union) so that multiple new entries don't conflict with each other.
 
 The last reason for creating merge commits is to keep long-running feature branches up-to-date with the latest state of the project.

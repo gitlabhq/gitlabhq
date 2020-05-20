@@ -198,7 +198,7 @@ RSpec.shared_examples "chat service" do |service_name|
           message: "user created page: Awesome wiki_page"
         }
       end
-      let(:wiki_page) { create(:wiki_page, wiki: project.wiki, attrs: opts) }
+      let(:wiki_page) { create(:wiki_page, wiki: project.wiki, **opts) }
       let(:sample_data) { Gitlab::DataBuilder::WikiPage.build(wiki_page, user, "create") }
 
       it_behaves_like "triggered #{service_name} service"

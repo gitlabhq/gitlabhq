@@ -34,7 +34,7 @@ function createMenuItemTemplate({ original }) {
 
   return `${avatarTag}
     ${original.username}
-    <small class="small font-weight-normal gl-color-inherit">${name}${count}</small>
+    <small class="small font-weight-normal gl-reset-color">${name}${count}</small>
     ${icon}`;
 }
 

@@ -12,7 +12,7 @@ class AddObjectStorageFlagToGeoNode < ActiveRecord::Migration[5.2]
   disable_ddl_transaction!
 
   def up
-    add_column_with_default :geo_nodes, :sync_object_storage, :boolean, default: false
+    add_column_with_default :geo_nodes, :sync_object_storage, :boolean, default: false # rubocop:disable Migration/AddColumnWithDefault
   end
 
   def down

@@ -65,32 +65,6 @@
               %tbody
                 %tr
                   %th
-                  %th= _('Web IDE')
-                %tr
-                  %td.shortcut
-                    - if browser.platform.mac?
-                      %kbd &#8984; p
-                    - else
-                      %kbd ctrl p
-                  %td= _('Go to file')
-                %tr
-                  %td.shortcut
-                    - if browser.platform.mac?
-                      %kbd &#8984; enter
-                    - else
-                      %kbd ctrl enter
-                  %td= _('Commit (when editing commit message)')
-              %tbody
-                %tr
-                  %th
-                  %th= _('Wiki pages')
-                %tr
-                  %td.shortcut
-                    %kbd e
-                  %td= _('Edit wiki page')
-              %tbody
-                %tr
-                  %th
                   %th= _('Editing')
                 %tr
                   %td.shortcut
@@ -104,6 +78,60 @@
                     %kbd
                       %i.fa.fa-arrow-up
                   %td= _('Edit your most recent comment in a thread (from an empty textarea)')
+              %tbody
+                %tr
+                  %th
+                  %th= _('Wiki')
+                %tr
+                  %td.shortcut
+                    %kbd e
+                  %td= _('Edit wiki page')
+              %tbody
+                %tr
+                  %th
+                  %th= _('Repository Graph')
+                %tr
+                  %td.shortcut
+                    %kbd
+                      %i.fa.fa-arrow-left
+                    \/
+                    %kbd h
+                  %td= _('Scroll left')
+                %tr
+                  %td.shortcut
+                    %kbd
+                      %i.fa.fa-arrow-right
+                    \/
+                    %kbd l
+                  %td= _('Scroll right')
+                %tr
+                  %td.shortcut
+                    %kbd
+                      %i.fa.fa-arrow-up
+                    \/
+                    %kbd k
+                  %td= _('Scroll up')
+                %tr
+                  %td.shortcut
+                    %kbd
+                      %i.fa.fa-arrow-down
+                    \/
+                    %kbd j
+                  %td= _('Scroll down')
+                %tr
+                  %td.shortcut
+                    %kbd
+                      shift
+                      %i.fa.fa-arrow-up
+                      \/ k
+                  %td= _('Scroll to top')
+                %tr
+                  %td.shortcut
+                    %kbd
+                      shift
+                      %i.fa.fa-arrow-down
+                      \/ j
+                  %td= _('Scroll to bottom')
           .col-lg-4
             %table.shortcut-mappings.text-2
               %tbody
@@ -229,15 +257,7 @@
               %tbody
                 %tr
                   %th
-                  %th= _('Issues / Merge Requests')
-                %tr
-                  %td.shortcut
-                    %kbd a
-                  %td= _('Change assignee')
-                %tr
-                  %td.shortcut
-                    %kbd m
-                  %td= _('Change milestone')
+                  %th= _('Epics, Issues, and Merge Requests')
                 %tr
                   %td.shortcut
                     %kbd r
@@ -250,92 +270,76 @@
                   %td.shortcut
                     %kbd l
                   %td= _('Change label')
+              %tbody
+                %tr
+                  %th
+                  %th= _('Issues and Merge Requests')
+                %tr
+                  %td.shortcut
+                    %kbd a
+                  %td= _('Change assignee')
+                %tr
+                  %td.shortcut
+                    %kbd m
+                  %td= _('Change milestone')
+              %tbody
+                %tr
+                  %th
+                  %th= _('Merge Requests')
                 %tr
                   %td.shortcut
                     %kbd ]
                     \/
                     %kbd j
-                  %td= _('Next file in diff (MRs only)')
+                  %td= _('Next file in diff')
                 %tr
                   %td.shortcut
                     %kbd [
                     \/
                     %kbd k
-                  %td= _('Previous file in diff (MRs only)')
+                  %td= _('Previous file in diff')
                 %tr
                   %td.shortcut
                     - if browser.platform.mac?
                       %kbd &#8984; p
                     - else
                       %kbd ctrl p
-                  %td= _('Go to file (MRs only)')
+                  %td= _('Go to file')
                 %tr
                   %td.shortcut
                     %kbd n
-                  %td= _('Next unresolved discussion (MRs only)')
+                  %td= _('Next unresolved discussion')
                 %tr
                   %td.shortcut
                     %kbd p
-                  %td= _('Previous unresolved discussion (MRs only)')
+                  %td= _('Previous unresolved discussion')
               %tbody
                 %tr
                   %th
-                  %th= _('Epics (Ultimate / Gold license only)')
+                  %th= _('Merge Request Commits')
                 %tr
                   %td.shortcut
-                    %kbd r
-                  %td= _('Comment/Reply (quoting selected text)')
+                    %kbd c
+                  %td= _('Next commit')
                 %tr
                   %td.shortcut
-                    %kbd e
-                  %td= _('Edit epic description')
-                %tr
-                  %td.shortcut
-                    %kbd l
-                  %td= _('Change label')
+                    %kbd x
+                  %td= _('Previous commit')
               %tbody
                 %tr
                   %th
-                  %th= _('Repository Graph')
+                  %th= _('Web IDE')
                 %tr
                   %td.shortcut
-                    %kbd
-                      %i.fa.fa-arrow-left
-                    \/
-                    %kbd h
-                  %td= _('Scroll left')
+                    - if browser.platform.mac?
+                      %kbd &#8984; p
+                    - else
+                      %kbd ctrl p
+                  %td= _('Go to file')
                 %tr
                   %td.shortcut
-                    %kbd
-                      %i.fa.fa-arrow-right
-                    \/
-                    %kbd l
-                  %td= _('Scroll right')
-                %tr
-                  %td.shortcut
-                    %kbd
-                      %i.fa.fa-arrow-up
-                    \/
-                    %kbd k
-                  %td= _('Scroll up')
-                %tr
-                  %td.shortcut
-                    %kbd
-                      %i.fa.fa-arrow-down
-                    \/
-                    %kbd j
-                  %td= _('Scroll down')
-                %tr
-                  %td.shortcut
-                    %kbd
-                      shift
-                      %i.fa.fa-arrow-up
-                      \/ k
-                  %td= _('Scroll to top')
-                %tr
-                  %td.shortcut
-                    %kbd
-                      shift
-                      %i.fa.fa-arrow-down
-                      \/ j
-                  %td= _('Scroll to bottom')
+                    - if browser.platform.mac?
+                      %kbd &#8984; enter
+                    - else
+                      %kbd ctrl enter
+                  %td= _('Commit (when editing commit message)')

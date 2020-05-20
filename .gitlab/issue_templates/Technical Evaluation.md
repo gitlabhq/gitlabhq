@@ -7,7 +7,7 @@
 
 ### Tasks to  Evaluate
 
-<!-- Outline the tasks with issues that you need evaluate as a part of the implementation issue -->
+<!-- Outline the tasks with issues that you need to evaluate as a part of the implementation issue -->
 
 - [ ] Determine feasibility of the feature
 - [ ] Create issue for implementation or update existing implementation issue description with implementation proposal 
@@ -18,7 +18,7 @@
 
 ### Risks and Implementation Considerations 
 
-<!-- Idenitfy any risks found in the research, whether this is performance, impacts to other functionality or other bugs -->
+<!-- Identify any risks found in the research, whether this is performance, impacts to other functionality or other bugs -->
 
 ### Team
 

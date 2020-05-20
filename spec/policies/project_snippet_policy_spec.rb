@@ -235,9 +235,18 @@ describe ProjectSnippetPolicy do
       let(:snippet_visibility) { :private }
       let(:current_user) { create(:admin) }
 
-      it do
-        expect_allowed(:read_snippet, :create_note)
-        expect_allowed(*author_permissions)
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it do
+          expect_allowed(:read_snippet, :create_note)
+          expect_allowed(*author_permissions)
+        end
+      end
+
+      context 'when admin mode is disabled' do
+        it do
+          expect_disallowed(:read_snippet, :create_note)
+          expect_disallowed(*author_permissions)
+        end
       end
     end
   end

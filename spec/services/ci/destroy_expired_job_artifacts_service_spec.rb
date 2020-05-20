@@ -11,8 +11,26 @@ describe Ci::DestroyExpiredJobArtifactsService, :clean_gitlab_redis_shared_state
     let(:service) { described_class.new }
     let!(:artifact) { create(:ci_job_artifact, expire_at: 1.day.ago) }
 
-    it 'destroys expired job artifacts' do
-      expect { subject }.to change { Ci::JobArtifact.count }.by(-1)
+    context 'when artifact is expired' do
+      context 'when artifact is not locked' do
+        before do
+          artifact.update!(locked: false)
+        end
+
+        it 'destroys job artifact' do
+          expect { subject }.to change { Ci::JobArtifact.count }.by(-1)
+        end
+      end
+
+      context 'when artifact is locked' do
+        before do
+          artifact.update!(locked: true)
+        end
+
+        it 'does not destroy job artifact' do
+          expect { subject }.not_to change { Ci::JobArtifact.count }
+        end
+      end
     end
 
     context 'when artifact is not expired' do
@@ -72,7 +90,7 @@ describe Ci::DestroyExpiredJobArtifactsService, :clean_gitlab_redis_shared_state
         stub_const('Ci::DestroyExpiredJobArtifactsService::BATCH_SIZE', 1)
       end
 
-      let!(:artifact) { create_list(:ci_job_artifact, 2, expire_at: 1.day.ago) }
+      let!(:second_artifact) { create(:ci_job_artifact, expire_at: 1.day.ago) }
 
       it 'raises an error and does not continue destroying' do
         is_expected.to be_falsy
@@ -96,7 +114,7 @@ describe Ci::DestroyExpiredJobArtifactsService, :clean_gitlab_redis_shared_state
         stub_const('Ci::DestroyExpiredJobArtifactsService::BATCH_SIZE', 1)
       end
 
-      let!(:artifact) { create_list(:ci_job_artifact, 2, expire_at: 1.day.ago) }
+      let!(:second_artifact) { create(:ci_job_artifact, expire_at: 1.day.ago) }
 
       it 'destroys all expired artifacts' do
         expect { subject }.to change { Ci::JobArtifact.count }.by(-2)

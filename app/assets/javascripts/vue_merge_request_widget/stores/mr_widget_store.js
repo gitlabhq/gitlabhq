@@ -103,6 +103,7 @@ export default class MergeRequestStore {
     this.ciStatusFaviconPath = pipelineStatus ? pipelineStatus.favicon : null;
     this.terraformReportsPath = data.terraform_reports_path;
     this.testResultsPath = data.test_reports_path;
+    this.accessibilityReportPath = data.accessibility_report_path;
     this.exposedArtifactsPath = data.exposed_artifacts_path;
     this.cancelAutoMergePath = data.cancel_auto_merge_path;
     this.canCancelAutomaticMerge = Boolean(data.cancel_auto_merge_path);
@@ -123,15 +124,13 @@ export default class MergeRequestStore {
 
     const currentUser = data.current_user;
 
-    if (currentUser) {
-      this.cherryPickInForkPath = currentUser.cherry_pick_in_fork_path;
-      this.revertInForkPath = currentUser.revert_in_fork_path;
+    this.cherryPickInForkPath = currentUser.cherry_pick_in_fork_path;
+    this.revertInForkPath = currentUser.revert_in_fork_path;
 
-      this.canRemoveSourceBranch = currentUser.can_remove_source_branch || false;
-      this.canCreateIssue = currentUser.can_create_issue || false;
-      this.canCherryPickInCurrentMR = currentUser.can_cherry_pick_on_current_merge_request || false;
-      this.canRevertInCurrentMR = currentUser.can_revert_on_current_merge_request || false;
-    }
+    this.canRemoveSourceBranch = currentUser.can_remove_source_branch || false;
+    this.canCreateIssue = currentUser.can_create_issue || false;
+    this.canCherryPickInCurrentMR = currentUser.can_cherry_pick_on_current_merge_request || false;
+    this.canRevertInCurrentMR = currentUser.can_revert_on_current_merge_request || false;
 
     this.setState(data);
   }
@@ -162,6 +161,7 @@ export default class MergeRequestStore {
     // Paths are set on the first load of the page and not auto-refreshed
     this.squashBeforeMergeHelpPath = data.squash_before_merge_help_path;
     this.troubleshootingDocsPath = data.troubleshooting_docs_path;
+    this.pipelineMustSucceedDocsPath = data.pipeline_must_succeed_docs_path;
     this.mergeRequestBasicPath = data.merge_request_basic_path;
     this.mergeRequestWidgetPath = data.merge_request_widget_path;
     this.mergeRequestCachedWidgetPath = data.merge_request_cached_widget_path;

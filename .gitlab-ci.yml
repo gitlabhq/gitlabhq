@@ -1,8 +1,7 @@
-image: "registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.6.5-golang-1.14-git-2.26-lfs-2.9-chrome-73.0-node-12.x-yarn-1.21-postgresql-10-graphicsmagick-1.3.34"
-
 stages:
   - sync
   - prepare
+  - build-images
   - fixtures
   - test
   - post-test
@@ -16,6 +15,7 @@ stages:
 # in cases where jobs require Docker-in-Docker, the job
 # definition must be extended with `.use-docker-in-docker`
 default:
+  image: "registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.6.6-golang-1.14-git-2.26-lfs-2.9-chrome-73.0-node-12.x-yarn-1.21-postgresql-9.6-graphicsmagick-1.3.34"
   tags:
     - gitlab-org
   # All jobs are interruptible by default
@@ -25,10 +25,17 @@ workflow:
   rules:
     # If `$FORCE_GITLAB_CI` is set, create a pipeline.
     - if: '$FORCE_GITLAB_CI'
+    # As part of the process of creating RCs automatically, we update stable
+    # branches with the changes of the most recent production deployment. The
+    # merge requests used for this merge a branch release-tools/X into a stable
+    # branch. For these merge requests we don't want to run any pipelines, as
+    # they serve no purpose and will run anyway when the changes are merged.
+    - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^release-tools\/\d+\.\d+\.\d+-rc\d+$/ && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^[\d-]+-stable(-ee)?$/ && $CI_PROJECT_PATH == "gitlab-org/gitlab"'
+      when: never
     # For merge requests, create a pipeline.
     - if: '$CI_MERGE_REQUEST_IID'
     # For `master` branch, create a pipeline (this includes on schedules, pushes, merges, etc.).
-    - if: '$CI_COMMIT_BRANCH == "master"'
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
     # For tags, create a pipeline.
     - if: '$CI_COMMIT_TAG'
     # If `$GITLAB_INTERNAL` isn't set, don't create a pipeline.

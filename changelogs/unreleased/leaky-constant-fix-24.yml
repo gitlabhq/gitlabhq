@@ -1,0 +1,5 @@
+---
+title: Fix leaky constant issue in simple executor spec
+merge_request: 32082
+author: Rajendra Kadam
+type: fixed

@@ -65,15 +65,19 @@ module Issues
     private
 
     def whitelisted_issue_params
+      base_params = [:title, :description, :confidential]
+      admin_params = [:milestone_id]
+
       if can?(current_user, :admin_issue, project)
-        params.slice(:title, :description, :milestone_id)
+        params.slice(*(base_params + admin_params))
       else
-        params.slice(:title, :description)
+        params.slice(*base_params)
       end
     end
 
     def build_issue_params
-      issue_params_with_info_from_discussions.merge(whitelisted_issue_params)
+      { author: current_user }.merge(issue_params_with_info_from_discussions)
+        .merge(whitelisted_issue_params)
     end
   end
 end

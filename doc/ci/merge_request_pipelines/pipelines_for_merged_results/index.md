@@ -34,14 +34,18 @@ In these cases, the pipeline runs as a [pipeline for merge requests](../index.md
 and is labeled as `detached`. If these cases no longer exist, new pipelines will
 again run against the merged results.
 
-## Requirements and limitations
+Any user who has developer [permissions](../../../user/permissions.md) can run a
+pipeline for merged results.
 
-Pipelines for merged results have the following requirements and limitations:
+## Prerequisites
 
-- Pipelines for merged results require [GitLab Runner](https://gitlab.com/gitlab-org/gitlab-runner) 11.9 or newer.
-- Forking/cross-repo workflows are not currently supported. To follow progress,
+To enable pipelines for merge results:
+
+- You must have maintainer [permissions](../../../user/permissions.md).
+- You must be using [GitLab Runner](https://gitlab.com/gitlab-org/gitlab-runner) 11.9 or later.
+- You must not be forking or using cross-repo workflows. To follow progress,
   see [#11934](https://gitlab.com/gitlab-org/gitlab/issues/11934).
-- This feature is not available for
+- You must not be using
   [fast forward merges](../../../user/project/merge_requests/fast_forward_merge.md) yet.
   To follow progress, see [#58226](https://gitlab.com/gitlab-org/gitlab/-/issues/26996).
 
@@ -93,7 +97,6 @@ canceled.
 Can be caused by some disabled feature flags. Please make sure that
 the following feature flags are enabled on your GitLab instance:
 
-- `:ci_use_merge_request_ref`
 - `:merge_ref_auto_sync`
 
 To check and set these feature flag values, please ask an administrator to:
@@ -107,14 +110,12 @@ To check and set these feature flag values, please ask an administrator to:
 1. Check if the flags are enabled or not:
 
    ```ruby
-   Feature.enabled?(:ci_use_merge_request_ref)
    Feature.enabled?(:merge_ref_auto_sync)
    ```
 
 1. If needed, enable the feature flags:
 
    ```ruby
-   Feature.enable(:ci_use_merge_request_ref)
    Feature.enable(:merge_ref_auto_sync)
    ```
 

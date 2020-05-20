@@ -8,7 +8,7 @@ class AddIssueLinksType < ActiveRecord::Migration[5.1]
   disable_ddl_transaction!
 
   def up
-    add_column_with_default :issue_links, :link_type, :integer, default: 0, limit: 2
+    add_column_with_default :issue_links, :link_type, :integer, default: 0, limit: 2 # rubocop:disable Migration/AddColumnWithDefault
   end
 
   def down

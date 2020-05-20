@@ -20,7 +20,7 @@ See [Award Emoji on Comments](#award-emoji-on-comments) for information on using
 
 Get a list of all award emoji for a specified awardable.
 
-```text
+```plaintext
 GET /projects/:id/issues/:issue_iid/award_emoji
 GET /projects/:id/merge_requests/:merge_request_iid/award_emoji
 GET /projects/:id/snippets/:snippet_id/award_emoji
@@ -82,7 +82,7 @@ Example response:
 
 Get a single award emoji from an issue, snippet, or merge request.
 
-```text
+```plaintext
 GET /projects/:id/issues/:issue_iid/award_emoji/:award_id
 GET /projects/:id/merge_requests/:merge_request_iid/award_emoji/:award_id
 GET /projects/:id/snippets/:snippet_id/award_emoji/:award_id
@@ -127,7 +127,7 @@ Example response:
 
 Create an award emoji on the specified awardable.
 
-```text
+```plaintext
 POST /projects/:id/issues/:issue_iid/award_emoji
 POST /projects/:id/merge_requests/:merge_request_iid/award_emoji
 POST /projects/:id/snippets/:snippet_id/award_emoji
@@ -173,7 +173,7 @@ Sometimes it's just not meant to be and you'll have to remove the award.
 NOTE: **Note:**
 Only available to administrators or the author of the award.
 
-```text
+```plaintext
 DELETE /projects/:id/issues/:issue_iid/award_emoji/:award_id
 DELETE /projects/:id/merge_requests/:merge_request_iid/award_emoji/:award_id
 DELETE /projects/:id/snippets/:snippet_id/award_emoji/:award_id
@@ -204,7 +204,7 @@ easily adapted for comments on a merge request or on a snippet. Therefore, you h
 
 Get all award emoji for a comment (note).
 
-```text
+```plaintext
 GET /projects/:id/issues/:issue_iid/notes/:note_id/award_emoji
 ```
 
@@ -249,7 +249,7 @@ Example response:
 
 Get a single award emoji for a comment (note).
 
-```text
+```plaintext
 GET /projects/:id/issues/:issue_iid/notes/:note_id/award_emoji/:award_id
 ```
 
@@ -293,7 +293,7 @@ Example response:
 
 Create an award emoji on the specified comment (note).
 
-```text
+```plaintext
 POST /projects/:id/issues/:issue_iid/notes/:note_id/award_emoji
 ```
 
@@ -340,7 +340,7 @@ Sometimes it's just not meant to be and you'll have to remove the award.
 NOTE: **Note:**
 Only available to administrators or the author of the award.
 
-```text
+```plaintext
 DELETE /projects/:id/issues/:issue_iid/notes/:note_id/award_emoji/:award_id
 ```
 

@@ -27,7 +27,8 @@ module API
       optional :logo, type: File, desc: 'Instance image used on the sign in / sign up page' # rubocop:disable Scalability/FileUploads
       optional :header_logo, type: File, desc: 'Instance image used for the main navigation bar' # rubocop:disable Scalability/FileUploads
       optional :favicon, type: File, desc: 'Instance favicon in .ico/.png format' # rubocop:disable Scalability/FileUploads
-      optional :new_project_guidelines, type: String, desc: 'Markmarkdown text shown on the new project page'
+      optional :new_project_guidelines, type: String, desc: 'Markdown text shown on the new project page'
+      optional :profile_image_guidelines, type: String, desc: 'Markdown text shown on the profile page below Public Avatar'
       optional :header_message, type: String, desc: 'Message within the system header bar'
       optional :footer_message, type: String, desc: 'Message within the system footer bar'
       optional :message_background_color, type: String, desc: 'Background color for the system header / footer bar'

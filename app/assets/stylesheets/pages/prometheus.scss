@@ -13,6 +13,14 @@
   .form-group {
     margin-bottom: map-get($spacing-scale, 3);
   }
+
+  .variables-section {
+    input {
+      @include media-breakpoint-up(sm) {
+        width: 160px;
+      }
+    }
+  }
 }
 
 .draggable {
@@ -143,7 +151,7 @@
       > .arrow::after {
         border-top: 6px solid transparent;
         border-bottom: 6px solid transparent;
-        border-left: 4px solid $gray-50;
+        border-left: 4px solid $gray-10;
       }
 
       .arrow-shadow {
@@ -165,7 +173,7 @@
       > .arrow::after {
         border-top: 6px solid transparent;
         border-bottom: 6px solid transparent;
-        border-right: 4px solid $gray-50;
+        border-right: 4px solid $gray-10;
       }
 
       .arrow-shadow {
@@ -199,7 +207,7 @@
     }
 
     > .popover-title {
-      background-color: $gray-50;
+      background-color: $gray-10;
       border-radius: $border-radius-default $border-radius-default 0 0;
     }
   }

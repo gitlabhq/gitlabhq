@@ -110,6 +110,7 @@ export default {
     <gl-new-dropdown
       :text="dropdownText"
       :disabled="hasSearchParam"
+      toggle-class="gl-py-3"
       class="gl-dropdown w-100 mt-2 mt-sm-0"
     >
       <gl-new-dropdown-header>

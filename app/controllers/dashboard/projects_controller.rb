@@ -83,11 +83,13 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
 
   def use_cte_for_finder?
     # The starred action loads public projects, which causes the CTE to be less efficient
-    action_name == 'index' && Feature.enabled?(:use_cte_for_projects_finder, default_enabled: true)
+    action_name == 'index'
   end
 
   def load_events
-    projects = load_projects(params.merge(non_public: true))
+    projects = ProjectsFinder
+                .new(params: params.merge(non_public: true), current_user: current_user)
+                .execute
 
     @events = EventCollection
       .new(projects, offset: params[:offset].to_i, filter: event_filter)

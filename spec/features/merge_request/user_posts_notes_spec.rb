@@ -147,7 +147,10 @@ describe 'Merge request > User posts notes', :js do
       it 'resets the edit note form textarea with the original content of the note if cancelled' do
         within('.current-note-edit-form') do
           fill_in 'note[note]', with: 'Some new content'
-          find('.btn-cancel').click
+
+          accept_confirm do
+            find('.btn-cancel').click
+          end
         end
         expect(find('.js-note-text').text).to eq ''
       end

@@ -6,6 +6,7 @@
 class AddOpenProjectTrackerData < ActiveRecord::Migration[6.0]
   DOWNTIME = false
 
+  # rubocop:disable Migration/PreventStrings
   def change
     create_table :open_project_tracker_data do |t|
       t.references :service, foreign_key: { on_delete: :cascade }, type: :integer, index: true, null: false
@@ -20,4 +21,5 @@ class AddOpenProjectTrackerData < ActiveRecord::Migration[6.0]
       t.string :project_identifier_code, limit: 100
     end
   end
+  # rubocop:enable Migration/PreventStrings
 end

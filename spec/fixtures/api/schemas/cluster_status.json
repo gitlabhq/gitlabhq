@@ -42,6 +42,8 @@
         "host": {"type": ["string", "null"]},
         "port": {"type": ["integer", "514"]},
         "protocol": {"type": ["integer", "0"]},
+        "waf_log_enabled": {"type": ["boolean", "true"]},
+        "cilium_log_enabled": {"type": ["boolean", "true"]},
         "update_available": { "type": ["boolean", "null"] },
         "can_uninstall": { "type": "boolean" },
         "available_domains": {

@@ -1,4 +1,4 @@
-export default [
+export const clusterList = [
   {
     name: 'My Cluster 1',
     environmentScope: '*',
@@ -40,8 +40,22 @@ export default [
     environmentScope: 'development',
     size: '12',
     clusterType: 'project_type',
-    status: 'connected',
+    status: 'created',
+    cpu: '6 (100% free)',
+    memory: '20.12 (35% free)',
+  },
+  {
+    name: 'My Cluster 6',
+    environmentScope: '*',
+    size: '1',
+    clusterType: 'project_type',
+    status: 'cleanup_ongoing',
     cpu: '6 (100% free)',
     memory: '20.12 (35% free)',
   },
 ];
+
+export const apiData = {
+  clusters: clusterList,
+  has_ancestor_clusters: false,
+};

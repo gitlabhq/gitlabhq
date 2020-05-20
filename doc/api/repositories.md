@@ -107,6 +107,8 @@ Parameters:
 Get an archive of the repository. This endpoint can be accessed without
 authentication if the repository is publicly accessible.
 
+This endpoint has a rate limit threshold of 5 requests per minute.
+
 ```plaintext
 GET /projects/:id/repository/archive[.format]
 ```

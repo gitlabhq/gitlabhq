@@ -1,7 +1,8 @@
 <script>
-import { mapState, mapActions } from 'vuex';
+import { mapState, mapActions, mapGetters } from 'vuex';
 import {
   GlAlert,
+  GlIcon,
   GlDropdown,
   GlDropdownItem,
   GlDropdownHeader,
@@ -21,6 +22,7 @@ const events = {
 export default {
   components: {
     GlAlert,
+    GlIcon,
     GlDropdown,
     GlDropdownItem,
     GlDropdownHeader,
@@ -34,11 +36,6 @@ export default {
     GlModal: GlModalDirective,
   },
   props: {
-    selectedDashboard: {
-      type: Object,
-      required: false,
-      default: () => ({}),
-    },
     defaultBranch: {
       type: String,
       required: true,
@@ -54,26 +51,41 @@ export default {
   },
   computed: {
     ...mapState('monitoringDashboard', ['allDashboards']),
+    ...mapGetters('monitoringDashboard', ['selectedDashboard']),
     isSystemDashboard() {
-      return this.selectedDashboard.system_dashboard;
+      return this.selectedDashboard?.system_dashboard;
     },
     selectedDashboardText() {
-      return this.selectedDashboard.display_name;
+      return this.selectedDashboard?.display_name;
     },
+    selectedDashboardPath() {
+      return this.selectedDashboard?.path;
+    },
+
     filteredDashboards() {
-      return this.allDashboards.filter(({ display_name }) =>
+      return this.allDashboards.filter(({ display_name = '' }) =>
         display_name.toLowerCase().includes(this.searchTerm.toLowerCase()),
       );
     },
     shouldShowNoMsgContainer() {
       return this.filteredDashboards.length === 0;
     },
+    starredDashboards() {
+      return this.filteredDashboards.filter(({ starred }) => starred);
+    },
+    nonStarredDashboards() {
+      return this.filteredDashboards.filter(({ starred }) => !starred);
+    },
+
     okButtonText() {
       return this.loading ? s__('Metrics|Duplicating...') : s__('Metrics|Duplicate');
     },
   },
   methods: {
     ...mapActions('monitoringDashboard', ['duplicateSystemDashboard']),
+    dashboardDisplayName(dashboard) {
+      return dashboard.display_name || dashboard.path || '';
+    },
     selectDashboard(dashboard) {
       this.$emit(events.selectDashboard, dashboard);
     },
@@ -127,15 +139,34 @@ export default {
         v-model="searchTerm"
         class="m-2"
       />
+
       <div class="flex-fill overflow-auto">
         <gl-dropdown-item
-          v-for="dashboard in filteredDashboards"
+          v-for="dashboard in starredDashboards"
           :key="dashboard.path"
-          :active="dashboard.path === selectedDashboard.path"
+          :active="dashboard.path === selectedDashboardPath"
           active-class="is-active"
           @click="selectDashboard(dashboard)"
         >
-          {{ dashboard.display_name || dashboard.path }}
+          <div class="d-flex">
+            {{ dashboardDisplayName(dashboard) }}
+            <gl-icon class="text-muted ml-auto" name="star" />
+          </div>
+        </gl-dropdown-item>
+
+        <gl-dropdown-divider
+          v-if="starredDashboards.length && nonStarredDashboards.length"
+          ref="starredListDivider"
+        />
+
+        <gl-dropdown-item
+          v-for="dashboard in nonStarredDashboards"
+          :key="dashboard.path"
+          :active="dashboard.path === selectedDashboardPath"
+          active-class="is-active"
+          @click="selectDashboard(dashboard)"
+        >
+          {{ dashboardDisplayName(dashboard) }}
         </gl-dropdown-item>
       </div>
 

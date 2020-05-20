@@ -8,7 +8,7 @@ class AddCloudRunToClustersProvidersGcp < ActiveRecord::Migration[5.2]
   disable_ddl_transaction!
 
   def up
-    add_column_with_default(:cluster_providers_gcp, :cloud_run, :boolean, default: false)
+    add_column_with_default(:cluster_providers_gcp, :cloud_run, :boolean, default: false) # rubocop:disable Migration/AddColumnWithDefault
   end
 
   def down

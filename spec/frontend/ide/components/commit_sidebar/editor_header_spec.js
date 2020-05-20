@@ -7,27 +7,32 @@ import { file } from '../../helpers';
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
+const TEST_FILE_PATH = 'test/file/path';
+
 describe('IDE commit editor header', () => {
   let wrapper;
-  let f;
   let store;
+
+  const createComponent = (fileProps = {}) => {
+    wrapper = mount(EditorHeader, {
+      store,
+      localVue,
+      propsData: {
+        activeFile: {
+          ...file(TEST_FILE_PATH),
+          staged: true,
+          ...fileProps,
+        },
+      },
+    });
+  };
 
   const findDiscardModal = () => wrapper.find({ ref: 'discardModal' });
   const findDiscardButton = () => wrapper.find({ ref: 'discardButton' });
 
   beforeEach(() => {
-    f = file('file');
     store = createStore();
-
-    wrapper = mount(EditorHeader, {
-      store,
-      localVue,
-      propsData: {
-        activeFile: f,
-      },
-    });
-
-    jest.spyOn(wrapper.vm, 'discardChanges').mockImplementation();
+    jest.spyOn(store, 'dispatch').mockImplementation();
   });
 
   afterEach(() => {
@@ -35,29 +40,38 @@ describe('IDE commit editor header', () => {
     wrapper = null;
   });
 
-  it('renders button to discard', () => {
-    expect(wrapper.vm.$el.querySelectorAll('.btn')).toHaveLength(1);
+  it.each`
+    fileProps                            | shouldExist
+    ${{ staged: false, changed: false }} | ${false}
+    ${{ staged: true, changed: false }}  | ${true}
+    ${{ staged: false, changed: true }}  | ${true}
+    ${{ staged: true, changed: true }}   | ${true}
+  `('with $fileProps, show discard button is $shouldExist', ({ fileProps, shouldExist }) => {
+    createComponent(fileProps);
+
+    expect(findDiscardButton().exists()).toBe(shouldExist);
   });
 
   describe('discard button', () => {
-    let modal;
-
     beforeEach(() => {
-      modal = findDiscardModal();
+      createComponent();
 
+      const modal = findDiscardModal();
       jest.spyOn(modal.vm, 'show');
 
       findDiscardButton().trigger('click');
     });
 
     it('opens a dialog confirming discard', () => {
-      expect(modal.vm.show).toHaveBeenCalled();
+      expect(findDiscardModal().vm.show).toHaveBeenCalled();
     });
 
     it('calls discardFileChanges if dialog result is confirmed', () => {
-      modal.vm.$emit('ok');
+      expect(store.dispatch).not.toHaveBeenCalled();
 
-      expect(wrapper.vm.discardChanges).toHaveBeenCalledWith(f.path);
+      findDiscardModal().vm.$emit('ok');
+
+      expect(store.dispatch).toHaveBeenCalledWith('discardFileChanges', TEST_FILE_PATH);
     });
   });
 });

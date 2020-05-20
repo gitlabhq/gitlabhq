@@ -1,6 +1,6 @@
 # Vuex
 
-When there's a clear benefit to separating state management from components (e.g. due to state complexity) we recommend using [Vuex][vuex-docs] over any other Flux pattern. Otherwise, feel free to manage state within the components.
+When there's a clear benefit to separating state management from components (e.g. due to state complexity) we recommend using [Vuex](https://vuex.vuejs.org) over any other Flux pattern. Otherwise, feel free to manage state within the components.
 
 Vuex should be strongly considered when:
 
@@ -9,7 +9,7 @@ Vuex should be strongly considered when:
 - There are complex interactions with Backend, e.g. multiple API calls
 - The app involves interacting with backend via both traditional REST API and GraphQL (especially when moving the REST API over to GraphQL is a pending backend task)
 
-_Note:_ All of the below is explained in more detail in the official [Vuex documentation][vuex-docs].
+_Note:_ All of the below is explained in more detail in the official [Vuex documentation](https://vuex.vuejs.org).
 
 ## Separation of concerns
 
@@ -86,70 +86,34 @@ You can use `mapState` to access state properties in the components.
 
 An action is a payload of information to send data from our application to our store.
 
-An action is usually composed by a `type` and a `payload` and they describe what happened.
-Enforcing that every change is described as an action lets us have a clear understanding of what is going on in the app.
+An action is usually composed by a `type` and a `payload` and they describe what happened. Unlike [mutations](#mutationsjs), actions can contain asynchronous operations - that's why we always need to handle asynchronous logic in actions.
 
-In this file, we will write the actions that will call the respective mutations:
+In this file, we will write the actions that will call mutations for handling a list of users:
 
 ```javascript
   import * as types from './mutation_types';
   import axios from '~/lib/utils/axios_utils';
   import createFlash from '~/flash';
 
-  export const requestUsers = ({ commit }) => commit(types.REQUEST_USERS);
-  export const receiveUsersSuccess = ({ commit }, data) => commit(types.RECEIVE_USERS_SUCCESS, data);
-  export const receiveUsersError = ({ commit }, error) => commit(types.RECEIVE_USERS_ERROR, error);
-
   export const fetchUsers = ({ state, dispatch }) => {
-    dispatch('requestUsers');
+    commit(types.REQUEST_USERS);
 
     axios.get(state.endpoint)
-      .then(({ data }) => dispatch('receiveUsersSuccess', data))
+      .then(({ data }) => commit(types.RECEIVE_USERS_SUCCESS, data))
       .catch((error) => {
-        dispatch('receiveUsersError', error)
+        commit(types.RECEIVE_USERS_ERROR, error)
         createFlash('There was an error')
       });
   }
 
-  export const requestAddUser = ({ commit }) => commit(types.REQUEST_ADD_USER);
-  export const receiveAddUserSuccess = ({ commit }, data) => commit(types.RECEIVE_ADD_USER_SUCCESS, data);
-  export const receiveAddUserError = ({ commit }, error) => commit(types.REQUEST_ADD_USER_ERROR, error);
-
   export const addUser = ({ state, dispatch }, user) => {
-    dispatch('requestAddUser');
+    commit(types.REQUEST_ADD_USER);
 
     axios.post(state.endpoint, user)
-      .then(({ data }) => dispatch('receiveAddUserSuccess', data))
-      .catch((error) => dispatch('receiveAddUserError', error));
+      .then(({ data }) => commit(types.RECEIVE_ADD_USER_SUCCESS, data))
+      .catch((error) => commit(types.REQUEST_ADD_USER_ERROR, error));
   }
 ```
-
-#### Actions Pattern: `request` and `receive` namespaces
-
-When a request is made we often want to show a loading state to the user.
-
-Instead of creating an action to toggle the loading state and dispatch it in the component,
-create:
-
-1. An action `requestSomething`, to toggle the loading state
-1. An action `receiveSomethingSuccess`, to handle the success callback
-1. An action `receiveSomethingError`, to handle the error callback
-1. An action `fetchSomething` to make the request.
-    1. In case your application does more than a `GET` request you can use these as examples:
-        - `POST`: `createSomething`
-        - `PUT`: `updateSomething`
-        - `DELETE`: `deleteSomething`
-
-The component MUST only dispatch the `fetchNamespace` action. Actions namespaced with `request` or `receive` should not be called from the component
-The `fetch` action will be responsible to dispatch `requestNamespace`, `receiveNamespaceSuccess` and `receiveNamespaceError`
-
-By following this pattern we guarantee:
-
-1. All applications follow the same pattern, making it easier for anyone to maintain the code
-1. All data in the application follows the same lifecycle pattern
-1. Actions are contained and human friendly
-1. Unit tests are easier
-1. Actions are simple and straightforward
 
 #### Dispatching actions
 
@@ -181,6 +145,8 @@ Remember that actions only describe that something happened, they don't describe
 
 **Never commit a mutation directly from a component**
 
+Instead, you should create an action that will commit a mutation.
+
 ```javascript
   import * as types from './mutation_types';
 
@@ -209,6 +175,31 @@ Remember that actions only describe that something happened, they don't describe
     },
   };
 ```
+
+#### Naming Pattern: `REQUEST` and `RECEIVE` namespaces
+
+When a request is made we often want to show a loading state to the user.
+
+Instead of creating an mutation to toggle the loading state, we should:
+
+1. A mutation with type `REQUEST_SOMETHING`, to toggle the loading state
+1. A mutation with type `RECEIVE_SOMETHING_SUCCESS`, to handle the success callback
+1. A mutation with type `RECEIVE_SOMETHING_ERROR`, to handle the error callback
+1. An action `fetchSomething` to make the request and commit mutations on mentioned cases
+    1. In case your application does more than a `GET` request you can use these as examples:
+        - `POST`: `createSomething`
+        - `PUT`: `updateSomething`
+        - `DELETE`: `deleteSomething`
+
+As a result, we can dispatch the `fetchNamespace` action from the component and it will be responsible to commit  `REQUEST_NAMESPACE`, `RECEIVE_NAMESPACE_SUCCESS` and `RECEIVE_NAMESPACE_ERROR` mutations.
+
+> Previously, we were dispatching actions from the `fetchNamespace` action instead of committing mutation, so please don't be confused if you find a different pattern in the older parts of the codebase. However, we encourage leveraging a new pattern whenever you write new Vuex stores
+
+By following this pattern we guarantee:
+
+1. All applications follow the same pattern, making it easier for anyone to maintain the code
+1. All data in the application follows the same lifecycle pattern
+1. Unit tests are easier
 
 ### `getters.js`
 
@@ -476,8 +467,6 @@ To prevent this error from happening, you need to export an empty function as `d
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};
 ```
-
-[vuex-docs]: https://vuex.vuejs.org
 
 ### Two way data binding
 

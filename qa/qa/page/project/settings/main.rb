@@ -5,7 +5,7 @@ module QA
     module Project
       module Settings
         class Main < Page::Base
-          include Common
+          include QA::Page::Settings::Common
           include Component::Select2
           include SubMenus::Project
 

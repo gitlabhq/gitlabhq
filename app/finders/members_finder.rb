@@ -4,17 +4,19 @@ class MembersFinder
   # Params can be any of the following:
   #   sort:       string
   #   search:     string
+  attr_reader :params
 
-  def initialize(project, current_user)
+  def initialize(project, current_user, params: {})
     @project = project
-    @current_user = current_user
     @group = project.group
+    @current_user = current_user
+    @params = params
   end
 
-  def execute(include_relations: [:inherited, :direct], params: {})
-    members = find_members(include_relations, params)
+  def execute(include_relations: [:inherited, :direct])
+    members = find_members(include_relations)
 
-    filter_members(members, params)
+    filter_members(members)
   end
 
   def can?(*args)
@@ -25,7 +27,7 @@ class MembersFinder
 
   attr_reader :project, :current_user, :group
 
-  def find_members(include_relations, params)
+  def find_members(include_relations)
     project_members = project.project_members
     project_members = project_members.non_invite unless can?(current_user, :admin_project, project)
 
@@ -39,7 +41,7 @@ class MembersFinder
     distinct_union_of_members(union_members)
   end
 
-  def filter_members(members, params)
+  def filter_members(members)
     members = members.search(params[:search]) if params[:search].present?
     members = members.sort_by_attribute(params[:sort]) if params[:sort].present?
     members

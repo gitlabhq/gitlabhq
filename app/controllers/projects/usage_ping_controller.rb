@@ -10,4 +10,10 @@ class Projects::UsagePingController < Projects::ApplicationController
 
     head(200)
   end
+
+  def web_ide_pipelines_count
+    Gitlab::UsageDataCounters::WebIdeCounter.increment_pipelines_count
+
+    head(200)
+  end
 end

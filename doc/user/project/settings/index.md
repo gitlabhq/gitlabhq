@@ -20,6 +20,16 @@ Adjust your project's name, description, avatar, [default branch](../repository/
 
 The project description also partially supports [standard Markdown](../../markdown.md#standard-markdown-and-extensions-in-gitlab). You can use [emphasis](../../markdown.md#emphasis), [links](../../markdown.md#links), and [line-breaks](../../markdown.md#line-breaks) to add more context to the project description.
 
+#### Compliance framework **(ULTIMATE)**
+
+You can select a framework label to identify that your project has certain compliance requirements or needs additional oversight. Available labels include:
+
+- GDPR - General Data Protection Regulation
+- HIPAA - Health Insurance Portability and Accountability Act
+- PCI-DSS - Payment Card Industry-Data Security Standard
+- SOC 2 - Service Organization Control 2
+- SOX - Sarbanes-Oxley
+
 ### Sharing and permissions
 
 For your repository, you can set up features such as public access, repository features,
@@ -46,18 +56,19 @@ Use the switches to enable or disable the following features:
 | **Forks**                         | ✓                         | Enables [forking](../index.md#fork-a-project) functionality                                                                                                                                    |
 | **Pipelines**                     | ✓                         | Enables [CI/CD](../../../ci/README.md) functionality                                                                                                                                           |
 | **Container Registry**            |                           | Activates a [registry](../../packages/container_registry/) for your docker images                                                                                                              |
-| **Git Large File Storage**        |                           | Enables the use of [large files](../../../topics/git/lfs/index.md#git-lfs)                                                                                    |
+| **Git Large File Storage**        |                           | Enables the use of [large files](../../../topics/git/lfs/index.md#git-large-file-storage-lfs)                                                                                    |
 | **Packages**                      |                           | Supports configuration of a [package registry](../../../administration/packages/index.md#gitlab-package-registry-administration-premium-only) functionality                                    |
 | **Wiki**                          | ✓                         | Enables a separate system for [documentation](../wiki/)                                                                                                                                        |
 | **Snippets**                      | ✓                         | Enables [sharing of code and text](../../snippets.md)                                                                                                                                          |
 | **Pages**                         | ✓                         | Allows you to [publish static websites](../pages/)                                                                                                                                             |
+| **Metrics Dashboard**             | ✓                         | Control access to [metrics dashboard](../integrations/prometheus.md)
 
 Some features depend on others:
 
 - If you disable the **Issues** option, GitLab also removes the following
   features:
   - **Issue Boards**
-  - [**Service Desk**](#service-desk-premium) **(PREMIUM)**
+  - [**Service Desk**](#service-desk-starter) **(STARTER)**
 
   NOTE: **Note:**
   When the **Issues** option is disabled, you can still access **Milestones**
@@ -70,12 +81,14 @@ Some features depend on others:
 
 - If you disable **Repository** functionality, GitLab also disables the following
   features for your project:
-
   - **Merge Requests**
   - **Pipelines**
   - **Container Registry**
   - **Git Large File Storage**
   - **Packages**
+
+- Metrics dashboard access requires reading both project environments and deployments.
+  Users with access to the metrics dashboard can also access environments and deployments.
 
 #### Disabling email notifications
 
@@ -96,7 +109,7 @@ Set up your project's merge request settings:
 
 ![project's merge request settings](img/merge_requests_settings.png)
 
-### Service Desk **(PREMIUM)**
+### Service Desk **(STARTER)**
 
 Enable [Service Desk](../service_desk.md) for your project to offer customer support.
 
@@ -247,7 +260,7 @@ To do so:
 1. Confirm the action by typing the project's path as instructed.
 
 NOTE: **Note:**
-Only project maintainers have the [permissions](../../permissions.md#project-members-permissions)
+Only project owners have the [permissions](../../permissions.md#project-members-permissions)
 to remove a fork relationship.
 
 ## Operations settings

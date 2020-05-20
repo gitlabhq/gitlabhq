@@ -61,6 +61,14 @@ Once a vulnerability is found, you can interact with it. Read more on how to
 Please note that in some cases the reported vulnerabilities provide metadata that can contain
 external links exposed in the UI. These links might not be accessible within an offline environment.
 
+### Suggested Solutions for vulnerabilities
+
+The [suggested solutions](../index.md#solutions-for-vulnerabilities-auto-remediation) feature
+(auto-remediation) is available for Dependency Scanning and Container Scanning, but may not work
+depending on your instance's configuration. We can only suggest solutions, which are generally more
+current versions that have been patched, when we are able to access up-to-date registry services
+hosting the latest versions of that dependency or image.
+
 ### Scanner signature and rule updates
 
 When connected to the internet, some scanners will reference public databases
@@ -79,3 +87,4 @@ above. You can find more information at each of the pages below:
 - [SAST offline directions](../sast/index.md#running-sast-in-an-offline-environment)
 - [DAST offline directions](../dast/index.md#running-dast-in-an-offline-environment)
 - [License Compliance offline directions](../../compliance/license_compliance/index.md#running-license-compliance-in-an-offline-environment)
+- [Dependency Scanning offline directions](../dependency_scanning/index.md#running-dependency-scanning-in-an-offline-environment)

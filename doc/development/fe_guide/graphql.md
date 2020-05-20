@@ -10,13 +10,13 @@ their execution by clicking **Execute query** button on the top left:
 
 ![GraphiQL interface](img/graphiql_explorer_v12_4.png)
 
-We use [Apollo] and [Vue Apollo][vue-apollo] for working with GraphQL
+We use [Apollo](https://www.apollographql.com/) and [Vue Apollo](https://github.com/vuejs/vue-apollo) for working with GraphQL
 on the frontend.
 
 ## Apollo Client
 
 To save duplicated clients getting created in different apps, we have a
-[default client][default-client] that should be used. This setups the
+[default client](https://gitlab.com/gitlab-org/gitlab/blob/master/app/assets/javascripts/lib/graphql.js) that should be used. This setups the
 Apollo client with the correct URL and also sets the CSRF headers.
 
 Default client accepts two parameters: `resolvers` and `config`.
@@ -73,7 +73,7 @@ More about fragments:
 
 ## Usage in Vue
 
-To use Vue Apollo, import the [Vue Apollo][vue-apollo] plugin as well
+To use Vue Apollo, import the [Vue Apollo](https://github.com/vuejs/vue-apollo) plugin as well
 as the default client. This should be created at the same point
 the Vue application is mounted.
 
@@ -94,7 +94,7 @@ new Vue({
 });
 ```
 
-Read more about [Vue Apollo][vue-apollo] in the [Vue Apollo documentation](https://vue-apollo.netlify.com/guide/).
+Read more about [Vue Apollo](https://github.com/vuejs/vue-apollo) in the [Vue Apollo documentation](https://vue-apollo.netlify.com/guide/).
 
 ### Local state with Apollo
 
@@ -212,7 +212,7 @@ Read more about local state management with Apollo in the [Vue Apollo documentat
 
 When Apollo Client is used within Vuex and fetched data is stored in the Vuex store, there is no need in keeping Apollo Client cache enabled. Otherwise we would have data from the API stored in two places - Vuex store and Apollo Client cache. More to say, with Apollo default settings, a subsequent fetch from the GraphQL API could result in fetching data from Apollo cache (in the case where we have the same query and variables). To prevent this behavior, we need to disable Apollo Client cache passing a valid `fetchPolicy` option to its constructor:
 
-```js
+```javascript
 import fetchPolicies from '~/graphql_shared/fetch_policy_constants';
 
 export const gqClient = createGqClient(
@@ -298,7 +298,8 @@ handleClick() {
 
 GitLab's GraphQL API uses [Relay-style cursor pagination](https://www.apollographql.com/docs/react/data/pagination/#cursor-based)
 for connection types. This means a "cursor" is used to keep track of where in the data
-set the next items should be fetched from.
+set the next items should be fetched from. [GraphQL Ruby Connection Concepts](https://graphql-ruby.org/pagination/connection_concepts.html)
+is a good overview and introduction to connections.
 
 Every connection type (for example, `DesignConnection` and `DiscussionConnection`) has a field `pageInfo` that contains an information required for pagination:
 
@@ -426,7 +427,7 @@ This should be resolved in the scope of the issue
 
 #### Mocking response as component data
 
-With [Vue test utils][vue-test-utils] it is easy to quickly test components that
+With [Vue test utils](https://vue-test-utils.vuejs.org/) it is easy to quickly test components that
 fetch GraphQL queries. The simplest way is to use `shallowMount` and then set
 the data on the component
 
@@ -598,11 +599,4 @@ defaultClient.query({ query })
   .then(result => console.log(result));
 ```
 
-Read more about the [Apollo] client in the [Apollo documentation](https://www.apollographql.com/docs/tutorial/client/).
-
-[Apollo]: https://www.apollographql.com/
-[vue-apollo]: https://github.com/vuejs/vue-apollo
-[feature-flags]: ../feature_flags.md
-[default-client]: https://gitlab.com/gitlab-org/gitlab/blob/master/app/assets/javascripts/lib/graphql.js
-[vue-test-utils]: https://vue-test-utils.vuejs.org/
-[apollo-link-state]: https://www.apollographql.com/docs/link/links/state.html
+Read more about the [Apollo](https://www.apollographql.com/) client in the [Apollo documentation](https://www.apollographql.com/docs/tutorial/client/).

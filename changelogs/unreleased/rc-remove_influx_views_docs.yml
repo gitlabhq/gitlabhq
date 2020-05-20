@@ -1,0 +1,5 @@
+---
+title: Remove deprecated InfluxDB
+merge_request: 30786
+author:
+type: removed

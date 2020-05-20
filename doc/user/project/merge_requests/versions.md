@@ -57,7 +57,7 @@ source and target branch can be shown mixed together making it hard to
 understand which changes are being added and which already exist in the
 target branch.
 
-In GitLab 12.10, we added an **experimental** comparison mode, which
+In GitLab 12.10, we added a comparison mode, which
 shows a diff calculated by simulating how it would look like once merged - a more accurate
 representation of the changes rather than using the base of the two
 branches. The new mode is available from the comparison target drop down
@@ -66,26 +66,6 @@ by selecting **master (HEAD)**. In the future it will
 current default comparison.
 
 ![Merge request versions compare HEAD](img/versions_compare_head_v12_10.png)
-
-### Enable or disable `HEAD` comparison mode **(CORE ONLY)**
-
-`HEAD` comparison mode is under development and not ready for production use. It is
-deployed behind a feature flag that is **disabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../../administration/troubleshooting/navigating_gitlab_via_rails_console.md#starting-a-rails-console-session)
-can enable it for your instance. You're welcome to test it, but use it at your
-own risk.
-
-To enable it:
-
-```ruby
-Feature.enable(:diff_compare_with_head)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:diff_compare_with_head)
-```
 
 <!-- ## Troubleshooting
 

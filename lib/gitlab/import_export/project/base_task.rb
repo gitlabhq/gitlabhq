@@ -11,17 +11,27 @@ module Gitlab
           @file_path    = opts.fetch(:file_path)
           @namespace    = Namespace.find_by_full_path(opts.fetch(:namespace_path))
           @current_user = User.find_by_username(opts.fetch(:username))
-          @measurement_enabled = opts.fetch(:measurement_enabled)
-          @measurement = Gitlab::Utils::Measuring.new(logger: logger) if @measurement_enabled
           @logger = logger
         end
 
         private
 
-        attr_reader :measurement, :project, :namespace, :current_user, :file_path, :project_path, :logger
+        attr_reader :project, :namespace, :current_user, :file_path, :project_path, :logger
 
-        def measurement_enabled?
-          @measurement_enabled
+        def disable_upload_object_storage
+          overwrite_uploads_setting('enabled', false) do
+            yield
+          end
+        end
+
+        def overwrite_uploads_setting(key, value)
+          old_value = Settings.uploads.object_store[key]
+          Settings.uploads.object_store[key] = value
+
+          yield
+
+        ensure
+          Settings.uploads.object_store[key] = old_value
         end
 
         def success(message)

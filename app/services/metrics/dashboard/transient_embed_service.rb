@@ -23,7 +23,9 @@ module Metrics
 
       override :get_raw_dashboard
       def get_raw_dashboard
-        JSON.parse(params[:embed_json])
+        Gitlab::Json.parse(params[:embed_json])
+      rescue JSON::ParserError => e
+        invalid_embed_json!(e.message)
       end
 
       override :sequence
@@ -34,6 +36,10 @@ module Metrics
       override :identifiers
       def identifiers
         Digest::SHA256.hexdigest(params[:embed_json])
+      end
+
+      def invalid_embed_json!(message)
+        raise DashboardProcessingError.new("Parsing error for param :embed_json. #{message}")
       end
     end
   end

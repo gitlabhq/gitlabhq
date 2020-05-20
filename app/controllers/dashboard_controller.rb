@@ -10,6 +10,7 @@ class DashboardController < Dashboard::ApplicationController
   before_action :projects, only: [:issues, :merge_requests]
   before_action :set_show_full_reference, only: [:issues, :merge_requests]
   before_action :check_filters_presence!, only: [:issues, :merge_requests]
+  before_action :set_not_query_feature_flag
 
   respond_to :html
 

@@ -1,0 +1,6 @@
+---
+title: Allow users to download a CSV of the recent daily code coverage values per
+  job
+merge_request: 27094
+author:
+type: added

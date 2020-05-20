@@ -18,7 +18,7 @@ class RemoveStateFromIssues < ActiveRecord::Migration[6.0]
     return if issue_state_column_exists?
 
     with_lock_retries do
-      add_column :issues, :state, :string # rubocop:disable Migration/AddLimitToStringColumns
+      add_column :issues, :state, :string
     end
   end
 

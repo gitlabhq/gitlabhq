@@ -12,7 +12,7 @@ class CreateIpRestriction < ActiveRecord::Migration[5.1]
                    type: :integer,
                    null: false,
                    index: true
-      t.string :range, null: false # rubocop:disable Migration/AddLimitToStringColumns
+      t.string :range, null: false # rubocop:disable Migration/PreventStrings
     end
 
     add_foreign_key(:ip_restrictions, :namespaces, column: :group_id, on_delete: :cascade) # rubocop: disable Migration/AddConcurrentForeignKey

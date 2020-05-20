@@ -6,6 +6,10 @@ module Ci
     include Importable
     include StripAttribute
     include Schedulable
+    include Limitable
+
+    self.limit_name = 'ci_pipeline_schedules'
+    self.limit_scope = :project
 
     belongs_to :project
     belongs_to :owner, class_name: 'User'

@@ -57,7 +57,7 @@ module Gitlab
           # For such cases we exit early if issue was already imported.
           next if already_imported?(jira_issue.id)
 
-          issue_attrs = IssueSerializer.new(project, jira_issue, { iid: next_iid }).execute
+          issue_attrs = IssueSerializer.new(project, jira_issue, running_import.user_id, { iid: next_iid }).execute
           Gitlab::JiraImport::ImportIssueWorker.perform_async(project.id, jira_issue.id, issue_attrs, job_waiter.key)
 
           job_waiter.jobs_remaining += 1

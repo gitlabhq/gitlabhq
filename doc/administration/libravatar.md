@@ -19,7 +19,7 @@ the configuration options as follows:
 
 ### For HTTP
 
-```yml
+```yaml
   gravatar:
     enabled: true
     # gravatar URLs: possible placeholders: %{hash} %{size} %{email} %{username}
@@ -28,7 +28,7 @@ the configuration options as follows:
 
 ### For HTTPS
 
-```yml
+```yaml
   gravatar:
     enabled: true
     # gravatar URLs: possible placeholders: %{hash} %{size} %{email} %{username}

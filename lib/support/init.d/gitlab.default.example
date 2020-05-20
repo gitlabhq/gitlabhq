@@ -6,7 +6,7 @@
 RAILS_ENV="production"
 
 # Uncomment the line below to enable the Unicorn web server instead of Puma.
-# USE_UNICORN=1
+# use_web_server="unicorn"
 
 # app_user defines the user that GitLab is run as.
 # The default is "git".
@@ -26,8 +26,8 @@ pid_path="$app_root/tmp/pids"
 socket_path="$app_root/tmp/sockets"
 
 # web_server_pid_path defines the path in which to create the pid file fo the web_server
-# The default is "$pid_path/unicorn.pid"
-web_server_pid_path="$pid_path/unicorn.pid"
+# The default is "$pid_path/puma.pid"
+web_server_pid_path="$pid_path/puma.pid"
 
 # sidekiq_pid_path defines the path in which to create the pid file for sidekiq
 # The default is "$pid_path/sidekiq.pid"

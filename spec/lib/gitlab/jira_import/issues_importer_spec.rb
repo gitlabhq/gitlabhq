@@ -3,15 +3,19 @@
 require 'spec_helper'
 
 describe Gitlab::JiraImport::IssuesImporter do
+  include JiraServiceHelper
+
   let_it_be(:user) { create(:user) }
+  let_it_be(:current_user) { create(:user) }
   let_it_be(:project) { create(:project) }
-  let_it_be(:jira_import) { create(:jira_import_state, project: project) }
+  let_it_be(:jira_import) { create(:jira_import_state, project: project, user: current_user) }
   let_it_be(:jira_service) { create(:jira_service, project: project) }
 
   subject { described_class.new(project) }
 
   before do
     stub_feature_flags(jira_issue_import: true)
+    stub_jira_service_test
   end
 
   describe '#imported_items_cache_key' do
@@ -36,8 +40,16 @@ describe Gitlab::JiraImport::IssuesImporter do
 
     context 'with results returned' do
       JiraIssue = Struct.new(:id)
-      let_it_be(:jira_issue1) { JiraIssue.new(1) }
-      let_it_be(:jira_issue2) { JiraIssue.new(2) }
+      let_it_be(:jira_issues) { [JiraIssue.new(1), JiraIssue.new(2)] }
+
+      def mock_issue_serializer(count)
+        serializer = instance_double(Gitlab::JiraImport::IssueSerializer, execute: { key: 'data' })
+
+        count.times do |i|
+          expect(Gitlab::JiraImport::IssueSerializer).to receive(:new)
+            .with(project, jira_issues[i], current_user.id, { iid: i + 1 }).and_return(serializer)
+        end
+      end
 
       context 'when single page of results is returned' do
         before do
@@ -45,13 +57,11 @@ describe Gitlab::JiraImport::IssuesImporter do
         end
 
         it 'schedules 2 import jobs' do
-          expect(subject).to receive(:fetch_issues).and_return([jira_issue1, jira_issue2])
+          expect(subject).to receive(:fetch_issues).with(0).and_return([jira_issues[0], jira_issues[1]])
           expect(Gitlab::JiraImport::ImportIssueWorker).to receive(:perform_async).twice
           expect(Gitlab::Cache::Import::Caching).to receive(:set_add).twice.and_call_original
           expect(Gitlab::Cache::Import::Caching).to receive(:set_includes?).twice.and_call_original
-          allow_next_instance_of(Gitlab::JiraImport::IssueSerializer) do |instance|
-            allow(instance).to receive(:execute).and_return({ key: 'data' })
-          end
+          mock_issue_serializer(2)
 
           job_waiter = subject.execute
 
@@ -66,13 +76,11 @@ describe Gitlab::JiraImport::IssuesImporter do
         end
 
         it 'schedules 3 import jobs' do
-          expect(subject).to receive(:fetch_issues).with(0).and_return([jira_issue1, jira_issue2])
+          expect(subject).to receive(:fetch_issues).with(0).and_return([jira_issues[0], jira_issues[1]])
           expect(Gitlab::JiraImport::ImportIssueWorker).to receive(:perform_async).twice.times
           expect(Gitlab::Cache::Import::Caching).to receive(:set_add).twice.times.and_call_original
           expect(Gitlab::Cache::Import::Caching).to receive(:set_includes?).twice.times.and_call_original
-          allow_next_instance_of(Gitlab::JiraImport::IssueSerializer) do |instance|
-            allow(instance).to receive(:execute).and_return({ key: 'data' })
-          end
+          mock_issue_serializer(2)
 
           job_waiter = subject.execute
 
@@ -87,13 +95,11 @@ describe Gitlab::JiraImport::IssuesImporter do
         end
 
         it 'schedules 2 import jobs' do
-          expect(subject).to receive(:fetch_issues).with(0).and_return([jira_issue1, jira_issue1])
+          expect(subject).to receive(:fetch_issues).with(0).and_return([jira_issues[0], jira_issues[0]])
           expect(Gitlab::JiraImport::ImportIssueWorker).to receive(:perform_async).once
           expect(Gitlab::Cache::Import::Caching).to receive(:set_add).once.and_call_original
           expect(Gitlab::Cache::Import::Caching).to receive(:set_includes?).twice.times.and_call_original
-          allow_next_instance_of(Gitlab::JiraImport::IssueSerializer) do |instance|
-            allow(instance).to receive(:execute).and_return({ key: 'data' })
-          end
+          mock_issue_serializer(1)
 
           job_waiter = subject.execute
 

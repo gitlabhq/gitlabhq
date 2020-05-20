@@ -3,6 +3,8 @@
 module QA
   context 'Create', :requires_admin do
     describe 'push after setting the file size limit via admin/application_settings' do
+      include Support::Api
+
       before(:context) do
         @project = Resource::Project.fabricate_via_api! do |p|
           p.name = 'project-test-push-limit'
@@ -39,12 +41,10 @@ module QA
 
       def set_file_size_limit(limit)
         request = Runtime::API::Request.new(@api_client, '/application/settings')
-        put request.url, receive_max_input_size: limit
+        response = put request.url, receive_max_input_size: limit
 
-        expect_status(200)
-        expect(json_body).to match(
-          a_hash_including(receive_max_input_size: limit)
-        )
+        expect(response.code).to eq(200)
+        expect(parse_body(response)[:receive_max_input_size]).to eq(limit)
       end
 
       def push_new_file(file_name, wait_for_push: true)

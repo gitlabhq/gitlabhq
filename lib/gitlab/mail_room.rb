@@ -19,7 +19,8 @@ module Gitlab
       start_tls: false,
       mailbox: 'inbox',
       idle_timeout: 60,
-      log_path: RAILS_ROOT_DIR.join('log', 'mail_room_json.log')
+      log_path: RAILS_ROOT_DIR.join('log', 'mail_room_json.log'),
+      expunge_deleted: false
     }.freeze
 
     # Email specific configuration which is merged with configuration

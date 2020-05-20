@@ -56,13 +56,16 @@ There are no special requirements if you are using GitLab.com.
    this would be `https://gitlab.com/login/oauth/callback`.
 
    NOTE: **Note**:
-   If using a GitLab version earlier than 11.3 the `Redirect URI` value should be `https://<your-gitlab-instance-domain>/-/jira/login/oauth/callback`.
+   If using a GitLab version earlier than 11.3, the `Redirect URI` must be
+   `https://<your-gitlab-instance-domain>/-/jira/login/oauth/callback`. If you want Jira
+   to have access to all projects, GitLab recommends an administrator creates the
+   Application.
 
    ![GitLab Application setup](img/jira_dev_panel_gl_setup_1.png)
 
    - Check `api` in the Scopes section.
 
-1. Click `Save application`. You will see the generated 'Application Id' and 'Secret' values.
+1. Click `Save application`. You will see the generated 'Application ID' and 'Secret' values.
    Copy these values that you will use on the Jira configuration side.
 
 ## Jira Configuration
@@ -164,7 +167,7 @@ Click the links to see your GitLab repository data.
 
 ## Limitations
 
-- This integration is currently not supported on GitLab instances under a [relative url](https://docs.gitlab.com/omnibus/settings/configuration.html#configuring-a-relative-url-for-gitlab) (for example, `http://example.com/gitlab`).
+- This integration is currently not supported on GitLab instances under a [relative URL](https://docs.gitlab.com/omnibus/settings/configuration.html#configuring-a-relative-url-for-gitlab) (for example, `http://example.com/gitlab`).
 
 ## Changelog
 

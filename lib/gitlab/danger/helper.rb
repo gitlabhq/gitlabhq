@@ -191,6 +191,23 @@ module Gitlab
         gitlab_helper.mr_json['web_url'].include?('/gitlab-org/security/')
       end
 
+      def mr_has_labels?(*labels)
+        return false unless gitlab_helper
+
+        labels = labels.flatten.uniq
+        (labels & gitlab_helper.mr_labels) == labels
+      end
+
+      def labels_list(labels, sep: ', ')
+        labels.map { |label| %Q{~"#{label}"} }.join(sep)
+      end
+
+      def prepare_labels_for_mr(labels)
+        return '' unless labels.any?
+
+        "/label #{labels_list(labels, sep: ' ')}"
+      end
+
       private
 
       def has_database_scoped_labels?(current_mr_labels)

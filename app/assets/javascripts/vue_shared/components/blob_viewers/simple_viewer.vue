@@ -44,7 +44,8 @@ export default {
 </script>
 <template>
   <div
-    class="file-content code js-syntax-highlight qa-file-content"
+    class="file-content code js-syntax-highlight"
+    data-qa-selector="file_content"
     :class="$options.userColorScheme"
   >
     <div class="line-numbers">

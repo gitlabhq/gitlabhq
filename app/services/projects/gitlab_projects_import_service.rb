@@ -29,16 +29,20 @@ module Projects
     end
 
     def project_with_same_full_path?
-      Project.find_by_full_path("#{current_namespace.full_path}/#{params[:path]}").present?
+      Project.find_by_full_path(project_path).present?
     end
 
     # rubocop: disable CodeReuse/ActiveRecord
     def current_namespace
       strong_memoize(:current_namespace) do
-        Namespace.find_by(id: params[:namespace_id])
+        Namespace.find_by(id: params[:namespace_id]) || current_user.namespace
       end
     end
     # rubocop: enable CodeReuse/ActiveRecord
+
+    def project_path
+      "#{current_namespace.full_path}/#{params[:path]}"
+    end
 
     def overwrite?
       strong_memoize(:overwrite) do

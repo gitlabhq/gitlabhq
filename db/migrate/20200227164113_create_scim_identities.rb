@@ -3,6 +3,7 @@
 class CreateScimIdentities < ActiveRecord::Migration[6.0]
   DOWNTIME = false
 
+  # rubocop:disable Migration/PreventStrings
   def change
     create_table :scim_identities do |t|
       t.references :group, foreign_key: { to_table: :namespaces, on_delete: :cascade }, null: false
@@ -15,4 +16,5 @@ class CreateScimIdentities < ActiveRecord::Migration[6.0]
       t.index [:user_id, :group_id], unique: true
     end
   end
+  # rubocop:enable Migration/PreventStrings
 end

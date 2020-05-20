@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Create', quarantine: { type: :new } do
+  context 'Create' do
     describe 'Review a merge request in Web IDE' do
       let(:new_file) { 'awesome_new_file.txt' }
       let(:original_text) { 'Text' }

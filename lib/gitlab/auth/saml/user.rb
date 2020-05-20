@@ -9,8 +9,6 @@ module Gitlab
   module Auth
     module Saml
       class User < Gitlab::Auth::OAuth::User
-        prepend_if_ee('::EE::Gitlab::Auth::Saml::User') # rubocop: disable Cop/InjectEnterpriseEditionModule
-
         extend ::Gitlab::Utils::Override
 
         def save
@@ -63,3 +61,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Auth::Saml::User.prepend_if_ee('::EE::Gitlab::Auth::Saml::User')

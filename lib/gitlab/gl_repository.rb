@@ -23,11 +23,18 @@ module Gitlab
       project_resolver: -> (snippet) { snippet&.project },
       guest_read_ability: :read_snippet
     ).freeze
+    DESIGN = ::Gitlab::GlRepository::RepoType.new(
+      name: :design,
+      access_checker_class: ::Gitlab::GitAccessDesign,
+      repository_resolver: -> (project) { ::DesignManagement::Repository.new(project) },
+      suffix: :design
+    ).freeze
 
     TYPES = {
       PROJECT.name.to_s => PROJECT,
       WIKI.name.to_s => WIKI,
-      SNIPPET.name.to_s => SNIPPET
+      SNIPPET.name.to_s => SNIPPET,
+      DESIGN.name.to_s => DESIGN
     }.freeze
 
     def self.types
@@ -58,5 +65,3 @@ module Gitlab
     private_class_method :instance
   end
 end
-
-Gitlab::GlRepository.prepend_if_ee('::EE::Gitlab::GlRepository')

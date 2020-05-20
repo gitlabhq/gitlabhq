@@ -50,6 +50,10 @@ module Banzai
             Addressable::URI.join(Gitlab.config.gitlab.base_url, path).to_s
           end
 
+        if html_attr.name == 'href'
+          html_attr.parent.set_attribute('data-link', 'true')
+        end
+
         html_attr.parent.add_class('gfm')
       end
 

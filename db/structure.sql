@@ -24,6 +24,40 @@ CREATE SEQUENCE public.abuse_reports_id_seq
 
 ALTER SEQUENCE public.abuse_reports_id_seq OWNED BY public.abuse_reports.id;
 
+CREATE TABLE public.alert_management_alerts (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    started_at timestamp with time zone NOT NULL,
+    ended_at timestamp with time zone,
+    events integer DEFAULT 1 NOT NULL,
+    iid integer NOT NULL,
+    severity smallint DEFAULT 0 NOT NULL,
+    status smallint DEFAULT 0 NOT NULL,
+    fingerprint bytea,
+    issue_id bigint,
+    project_id bigint NOT NULL,
+    title text NOT NULL,
+    description text,
+    service text,
+    monitoring_tool text,
+    hosts text[] DEFAULT '{}'::text[] NOT NULL,
+    payload jsonb DEFAULT '{}'::jsonb NOT NULL,
+    CONSTRAINT check_2df3e2fdc1 CHECK ((char_length(monitoring_tool) <= 100)),
+    CONSTRAINT check_5e9e57cadb CHECK ((char_length(description) <= 1000)),
+    CONSTRAINT check_bac14dddde CHECK ((char_length(service) <= 100)),
+    CONSTRAINT check_d1d1c2d14c CHECK ((char_length(title) <= 200))
+);
+
+CREATE SEQUENCE public.alert_management_alerts_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.alert_management_alerts_id_seq OWNED BY public.alert_management_alerts.id;
+
 CREATE TABLE public.alerts_service_data (
     id bigint NOT NULL,
     service_id integer NOT NULL,
@@ -137,7 +171,10 @@ CREATE TABLE public.appearances (
     message_background_color text,
     message_font_color text,
     favicon character varying,
-    email_header_and_footer_enabled boolean DEFAULT false NOT NULL
+    email_header_and_footer_enabled boolean DEFAULT false NOT NULL,
+    profile_image_guidelines text,
+    profile_image_guidelines_html text,
+    CONSTRAINT appearances_profile_image_guidelines CHECK ((char_length(profile_image_guidelines) <= 4096))
 );
 
 CREATE SEQUENCE public.appearances_id_seq
@@ -251,7 +288,6 @@ CREATE TABLE public.application_settings (
     geo_status_timeout integer DEFAULT 10,
     uuid character varying,
     polling_interval_multiplier numeric DEFAULT 1.0 NOT NULL,
-    elasticsearch_experimental_indexer boolean,
     cached_markdown_version integer,
     check_namespace_plan boolean DEFAULT false NOT NULL,
     mirror_max_delay integer DEFAULT 300 NOT NULL,
@@ -312,7 +348,7 @@ CREATE TABLE public.application_settings (
     diff_max_patch_bytes integer DEFAULT 102400 NOT NULL,
     archive_builds_in_seconds integer,
     commit_email_hostname character varying,
-    protected_ci_variables boolean DEFAULT false NOT NULL,
+    protected_ci_variables boolean DEFAULT true NOT NULL,
     runners_registration_token_encrypted character varying,
     local_markdown_version integer DEFAULT 0 NOT NULL,
     first_day_of_week integer DEFAULT 0 NOT NULL,
@@ -401,7 +437,12 @@ CREATE TABLE public.application_settings (
     container_expiration_policies_enable_historic_entries boolean DEFAULT false NOT NULL,
     issues_create_limit integer DEFAULT 300 NOT NULL,
     push_rule_id bigint,
-    group_owners_can_manage_default_branch_protection boolean DEFAULT true NOT NULL
+    group_owners_can_manage_default_branch_protection boolean DEFAULT true NOT NULL,
+    container_registry_vendor text DEFAULT ''::text NOT NULL,
+    container_registry_version text DEFAULT ''::text NOT NULL,
+    container_registry_features text[] DEFAULT '{}'::text[] NOT NULL,
+    CONSTRAINT check_d03919528d CHECK ((char_length(container_registry_vendor) <= 255)),
+    CONSTRAINT check_e5aba18f02 CHECK ((char_length(container_registry_version) <= 255))
 );
 
 CREATE SEQUENCE public.application_settings_id_seq
@@ -437,7 +478,9 @@ CREATE TABLE public.approval_merge_request_rules (
     code_owner boolean DEFAULT false NOT NULL,
     name character varying NOT NULL,
     rule_type smallint DEFAULT 1 NOT NULL,
-    report_type smallint
+    report_type smallint,
+    section text,
+    CONSTRAINT check_6fca5928b2 CHECK ((char_length(section) <= 255))
 );
 
 CREATE TABLE public.approval_merge_request_rules_approved_approvers (
@@ -988,6 +1031,25 @@ CREATE SEQUENCE public.ci_builds_runner_session_id_seq
 
 ALTER SEQUENCE public.ci_builds_runner_session_id_seq OWNED BY public.ci_builds_runner_session.id;
 
+CREATE TABLE public.ci_daily_build_group_report_results (
+    id bigint NOT NULL,
+    date date NOT NULL,
+    project_id bigint NOT NULL,
+    last_pipeline_id bigint NOT NULL,
+    ref_path text NOT NULL,
+    group_name text NOT NULL,
+    data jsonb NOT NULL
+);
+
+CREATE SEQUENCE public.ci_daily_build_group_report_results_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.ci_daily_build_group_report_results_id_seq OWNED BY public.ci_daily_build_group_report_results.id;
+
 CREATE TABLE public.ci_daily_report_results (
     id bigint NOT NULL,
     date date NOT NULL,
@@ -1007,6 +1069,25 @@ CREATE SEQUENCE public.ci_daily_report_results_id_seq
     CACHE 1;
 
 ALTER SEQUENCE public.ci_daily_report_results_id_seq OWNED BY public.ci_daily_report_results.id;
+
+CREATE TABLE public.ci_freeze_periods (
+    id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    freeze_start character varying(998) NOT NULL,
+    freeze_end character varying(998) NOT NULL,
+    cron_timezone character varying(255) NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL
+);
+
+CREATE SEQUENCE public.ci_freeze_periods_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.ci_freeze_periods_id_seq OWNED BY public.ci_freeze_periods.id;
 
 CREATE TABLE public.ci_group_variables (
     id integer NOT NULL,
@@ -1032,6 +1113,28 @@ CREATE SEQUENCE public.ci_group_variables_id_seq
 
 ALTER SEQUENCE public.ci_group_variables_id_seq OWNED BY public.ci_group_variables.id;
 
+CREATE TABLE public.ci_instance_variables (
+    id bigint NOT NULL,
+    variable_type smallint DEFAULT 1 NOT NULL,
+    masked boolean DEFAULT false,
+    protected boolean DEFAULT false,
+    key text NOT NULL,
+    encrypted_value text,
+    encrypted_value_iv text,
+    CONSTRAINT check_07a45a5bcb CHECK ((char_length(encrypted_value_iv) <= 255)),
+    CONSTRAINT check_5aede12208 CHECK ((char_length(key) <= 255)),
+    CONSTRAINT check_5ebd0515a0 CHECK ((char_length(encrypted_value) <= 1024))
+);
+
+CREATE SEQUENCE public.ci_instance_variables_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.ci_instance_variables_id_seq OWNED BY public.ci_instance_variables.id;
+
 CREATE TABLE public.ci_job_artifacts (
     id integer NOT NULL,
     project_id integer NOT NULL,
@@ -1042,10 +1145,11 @@ CREATE TABLE public.ci_job_artifacts (
     updated_at timestamp with time zone NOT NULL,
     expire_at timestamp with time zone,
     file character varying,
-    file_store integer,
+    file_store integer DEFAULT 1,
     file_sha256 bytea,
     file_format smallint,
-    file_location smallint
+    file_location smallint,
+    locked boolean
 );
 
 CREATE SEQUENCE public.ci_job_artifacts_id_seq
@@ -1663,7 +1767,9 @@ CREATE TABLE public.clusters_applications_fluentd (
     updated_at timestamp with time zone NOT NULL,
     version character varying(255) NOT NULL,
     host character varying(255) NOT NULL,
-    status_reason text
+    status_reason text,
+    waf_log_enabled boolean DEFAULT true NOT NULL,
+    cilium_log_enabled boolean DEFAULT true NOT NULL
 );
 
 CREATE SEQUENCE public.clusters_applications_fluentd_id_seq
@@ -2003,7 +2109,9 @@ CREATE TABLE public.deploy_tokens (
     username character varying,
     token_encrypted character varying(255),
     deploy_token_type smallint DEFAULT 2 NOT NULL,
-    write_registry boolean DEFAULT false NOT NULL
+    write_registry boolean DEFAULT false NOT NULL,
+    read_package_registry boolean DEFAULT false NOT NULL,
+    write_package_registry boolean DEFAULT false NOT NULL
 );
 
 CREATE SEQUENCE public.deploy_tokens_id_seq
@@ -3040,6 +3148,33 @@ CREATE SEQUENCE public.group_group_links_id_seq
 
 ALTER SEQUENCE public.group_group_links_id_seq OWNED BY public.group_group_links.id;
 
+CREATE TABLE public.group_import_states (
+    group_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    status smallint DEFAULT 0 NOT NULL,
+    jid text NOT NULL,
+    last_error text,
+    CONSTRAINT check_87b58f6b30 CHECK ((char_length(last_error) <= 255)),
+    CONSTRAINT check_96558fff96 CHECK ((char_length(jid) <= 100))
+);
+
+CREATE SEQUENCE public.group_import_states_group_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.group_import_states_group_id_seq OWNED BY public.group_import_states.group_id;
+
+CREATE TABLE public.group_wiki_repositories (
+    shard_id bigint NOT NULL,
+    group_id bigint NOT NULL,
+    disk_path text NOT NULL,
+    CONSTRAINT check_07f1c81806 CHECK ((char_length(disk_path) <= 80))
+);
+
 CREATE TABLE public.historical_data (
     id integer NOT NULL,
     date date NOT NULL,
@@ -3299,7 +3434,8 @@ CREATE TABLE public.issues (
     duplicated_to_id integer,
     promoted_to_epic_id integer,
     health_status smallint,
-    external_key character varying(255)
+    external_key character varying(255),
+    sprint_id bigint
 );
 
 CREATE SEQUENCE public.issues_id_seq
@@ -3374,7 +3510,8 @@ CREATE TABLE public.jira_imports (
     status smallint DEFAULT 0 NOT NULL,
     jid character varying(255),
     jira_project_key character varying(255) NOT NULL,
-    jira_project_name character varying(255) NOT NULL
+    jira_project_name character varying(255) NOT NULL,
+    scheduled_at timestamp with time zone
 );
 
 CREATE SEQUENCE public.jira_imports_id_seq
@@ -3539,7 +3676,7 @@ CREATE TABLE public.lfs_objects (
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
     file character varying,
-    file_store integer
+    file_store integer DEFAULT 1
 );
 
 CREATE SEQUENCE public.lfs_objects_id_seq
@@ -3874,7 +4011,8 @@ CREATE TABLE public.merge_requests (
     allow_maintainer_to_push boolean,
     state_id smallint DEFAULT 1 NOT NULL,
     rebase_jid character varying,
-    squash_commit_sha bytea
+    squash_commit_sha bytea,
+    sprint_id bigint
 );
 
 CREATE TABLE public.merge_requests_closing_issues (
@@ -3945,6 +4083,25 @@ CREATE SEQUENCE public.metrics_dashboard_annotations_id_seq
     CACHE 1;
 
 ALTER SEQUENCE public.metrics_dashboard_annotations_id_seq OWNED BY public.metrics_dashboard_annotations.id;
+
+CREATE TABLE public.metrics_users_starred_dashboards (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    project_id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    dashboard_path text NOT NULL,
+    CONSTRAINT check_79a84a0f57 CHECK ((char_length(dashboard_path) <= 255))
+);
+
+CREATE SEQUENCE public.metrics_users_starred_dashboards_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.metrics_users_starred_dashboards_id_seq OWNED BY public.metrics_users_starred_dashboards.id;
 
 CREATE TABLE public.milestone_releases (
     milestone_id bigint NOT NULL,
@@ -4035,7 +4192,6 @@ CREATE TABLE public.namespaces (
     require_two_factor_authentication boolean DEFAULT false NOT NULL,
     two_factor_grace_period integer DEFAULT 48 NOT NULL,
     cached_markdown_version integer,
-    plan_id integer,
     project_creation_level integer,
     runners_token character varying,
     trial_ends_on timestamp with time zone,
@@ -4355,6 +4511,21 @@ CREATE SEQUENCE public.operations_strategies_id_seq
 
 ALTER SEQUENCE public.operations_strategies_id_seq OWNED BY public.operations_strategies.id;
 
+CREATE TABLE public.operations_strategies_user_lists (
+    id bigint NOT NULL,
+    strategy_id bigint NOT NULL,
+    user_list_id bigint NOT NULL
+);
+
+CREATE SEQUENCE public.operations_strategies_user_lists_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.operations_strategies_user_lists_id_seq OWNED BY public.operations_strategies_user_lists.id;
+
 CREATE TABLE public.operations_user_lists (
     id bigint NOT NULL,
     project_id bigint NOT NULL,
@@ -4478,6 +4649,22 @@ CREATE SEQUENCE public.packages_maven_metadata_id_seq
 
 ALTER SEQUENCE public.packages_maven_metadata_id_seq OWNED BY public.packages_maven_metadata.id;
 
+CREATE TABLE public.packages_nuget_dependency_link_metadata (
+    dependency_link_id bigint NOT NULL,
+    target_framework text NOT NULL,
+    CONSTRAINT packages_nuget_dependency_link_metadata_target_framework_constr CHECK ((char_length(target_framework) <= 255))
+);
+
+CREATE TABLE public.packages_nuget_metadata (
+    package_id bigint NOT NULL,
+    license_url text,
+    project_url text,
+    icon_url text,
+    CONSTRAINT packages_nuget_metadata_icon_url_constraint CHECK ((char_length(icon_url) <= 255)),
+    CONSTRAINT packages_nuget_metadata_license_url_constraint CHECK ((char_length(license_url) <= 255)),
+    CONSTRAINT packages_nuget_metadata_project_url_constraint CHECK ((char_length(project_url) <= 255))
+);
+
 CREATE TABLE public.packages_package_files (
     id bigint NOT NULL,
     package_id bigint NOT NULL,
@@ -4492,9 +4679,9 @@ CREATE TABLE public.packages_package_files (
     file_sha256 bytea,
     verification_retry_at timestamp with time zone,
     verified_at timestamp with time zone,
-    verification_checksum character varying(255),
     verification_failure character varying(255),
-    verification_retry_count integer
+    verification_retry_count integer,
+    verification_checksum bytea
 );
 
 CREATE SEQUENCE public.packages_package_files_id_seq
@@ -4600,6 +4787,28 @@ CREATE SEQUENCE public.pages_domains_id_seq
 
 ALTER SEQUENCE public.pages_domains_id_seq OWNED BY public.pages_domains.id;
 
+CREATE TABLE public.partitioned_foreign_keys (
+    id bigint NOT NULL,
+    cascade_delete boolean DEFAULT true NOT NULL,
+    from_table text NOT NULL,
+    from_column text NOT NULL,
+    to_table text NOT NULL,
+    to_column text NOT NULL,
+    CONSTRAINT check_2c2e02a62b CHECK ((char_length(from_column) <= 63)),
+    CONSTRAINT check_40738efb57 CHECK ((char_length(to_table) <= 63)),
+    CONSTRAINT check_741676d405 CHECK ((char_length(from_table) <= 63)),
+    CONSTRAINT check_7e98be694f CHECK ((char_length(to_column) <= 63))
+);
+
+CREATE SEQUENCE public.partitioned_foreign_keys_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.partitioned_foreign_keys_id_seq OWNED BY public.partitioned_foreign_keys.id;
+
 CREATE TABLE public.path_locks (
     id integer NOT NULL,
     path character varying NOT NULL,
@@ -4651,7 +4860,8 @@ CREATE TABLE public.plan_limits (
     project_hooks integer DEFAULT 100 NOT NULL,
     group_hooks integer DEFAULT 50 NOT NULL,
     ci_project_subscriptions integer DEFAULT 2 NOT NULL,
-    ci_pipeline_schedules integer DEFAULT 10 NOT NULL
+    ci_pipeline_schedules integer DEFAULT 10 NOT NULL,
+    offset_pagination_limit integer DEFAULT 50000 NOT NULL
 );
 
 CREATE SEQUENCE public.plan_limits_id_seq
@@ -5028,11 +5238,34 @@ CREATE SEQUENCE public.project_repository_states_id_seq
 
 ALTER SEQUENCE public.project_repository_states_id_seq OWNED BY public.project_repository_states.id;
 
+CREATE TABLE public.project_repository_storage_moves (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    project_id bigint NOT NULL,
+    state smallint DEFAULT 1 NOT NULL,
+    source_storage_name text NOT NULL,
+    destination_storage_name text NOT NULL,
+    CONSTRAINT project_repository_storage_moves_destination_storage_name CHECK ((char_length(destination_storage_name) <= 255)),
+    CONSTRAINT project_repository_storage_moves_source_storage_name CHECK ((char_length(source_storage_name) <= 255))
+);
+
+CREATE SEQUENCE public.project_repository_storage_moves_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.project_repository_storage_moves_id_seq OWNED BY public.project_repository_storage_moves.id;
+
 CREATE TABLE public.project_settings (
     project_id integer NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    push_rule_id bigint
+    push_rule_id bigint,
+    show_default_award_emojis boolean DEFAULT true,
+    CONSTRAINT check_bde223416c CHECK ((show_default_award_emojis IS NOT NULL))
 );
 
 CREATE TABLE public.project_statistics (
@@ -5571,9 +5804,6 @@ CREATE TABLE public.resource_milestone_events (
     milestone_id bigint,
     action smallint NOT NULL,
     state smallint NOT NULL,
-    cached_markdown_version integer,
-    reference text,
-    reference_html text,
     created_at timestamp with time zone NOT NULL
 );
 
@@ -5585,6 +5815,26 @@ CREATE SEQUENCE public.resource_milestone_events_id_seq
     CACHE 1;
 
 ALTER SEQUENCE public.resource_milestone_events_id_seq OWNED BY public.resource_milestone_events.id;
+
+CREATE TABLE public.resource_state_events (
+    id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    issue_id bigint,
+    merge_request_id bigint,
+    created_at timestamp with time zone NOT NULL,
+    state smallint NOT NULL,
+    epic_id integer,
+    CONSTRAINT resource_state_events_must_belong_to_issue_or_merge_request CHECK ((((issue_id <> NULL::bigint) AND (merge_request_id IS NULL)) OR ((merge_request_id <> NULL::bigint) AND (issue_id IS NULL))))
+);
+
+CREATE SEQUENCE public.resource_state_events_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.resource_state_events_id_seq OWNED BY public.resource_state_events.id;
 
 CREATE TABLE public.resource_weight_events (
     id bigint NOT NULL,
@@ -5821,7 +6071,9 @@ CREATE TABLE public.services (
     description character varying(500),
     comment_on_event_enabled boolean DEFAULT true NOT NULL,
     template boolean DEFAULT false,
-    instance boolean DEFAULT false NOT NULL
+    instance boolean DEFAULT false NOT NULL,
+    comment_detail smallint,
+    inherit_from_id bigint
 );
 
 CREATE SEQUENCE public.services_id_seq
@@ -5993,6 +6245,50 @@ CREATE SEQUENCE public.spam_logs_id_seq
     CACHE 1;
 
 ALTER SEQUENCE public.spam_logs_id_seq OWNED BY public.spam_logs.id;
+
+CREATE TABLE public.sprints (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    start_date date,
+    due_date date,
+    project_id bigint,
+    group_id bigint,
+    iid integer NOT NULL,
+    cached_markdown_version integer,
+    title text NOT NULL,
+    title_html text,
+    description text,
+    description_html text,
+    state_enum smallint DEFAULT 1 NOT NULL,
+    CONSTRAINT sprints_must_belong_to_project_or_group CHECK ((((project_id <> NULL::bigint) AND (group_id IS NULL)) OR ((group_id <> NULL::bigint) AND (project_id IS NULL)))),
+    CONSTRAINT sprints_title CHECK ((char_length(title) <= 255))
+);
+
+CREATE SEQUENCE public.sprints_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.sprints_id_seq OWNED BY public.sprints.id;
+
+CREATE TABLE public.status_page_published_incidents (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    issue_id bigint NOT NULL
+);
+
+CREATE SEQUENCE public.status_page_published_incidents_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.status_page_published_incidents_id_seq OWNED BY public.status_page_published_incidents.id;
 
 CREATE TABLE public.status_page_settings (
     project_id bigint NOT NULL,
@@ -6243,7 +6539,7 @@ CREATE TABLE public.uploads (
     model_type character varying,
     uploader character varying NOT NULL,
     created_at timestamp without time zone NOT NULL,
-    store integer,
+    store integer DEFAULT 1,
     mount_point character varying,
     secret character varying
 );
@@ -6504,7 +6800,6 @@ CREATE TABLE public.users (
     commit_email character varying,
     group_view integer,
     managing_group_id integer,
-    bot_type smallint,
     first_name character varying(255),
     last_name character varying(255),
     static_object_token character varying(255),
@@ -6634,10 +6929,11 @@ CREATE TABLE public.vulnerability_exports (
     finished_at timestamp with time zone,
     status character varying(255) NOT NULL,
     file character varying(255),
-    project_id bigint NOT NULL,
+    project_id bigint,
     author_id bigint NOT NULL,
     file_store integer,
-    format smallint DEFAULT 0 NOT NULL
+    format smallint DEFAULT 0 NOT NULL,
+    group_id integer
 );
 
 CREATE SEQUENCE public.vulnerability_exports_id_seq
@@ -6987,6 +7283,8 @@ ALTER SEQUENCE public.zoom_meetings_id_seq OWNED BY public.zoom_meetings.id;
 
 ALTER TABLE ONLY public.abuse_reports ALTER COLUMN id SET DEFAULT nextval('public.abuse_reports_id_seq'::regclass);
 
+ALTER TABLE ONLY public.alert_management_alerts ALTER COLUMN id SET DEFAULT nextval('public.alert_management_alerts_id_seq'::regclass);
+
 ALTER TABLE ONLY public.alerts_service_data ALTER COLUMN id SET DEFAULT nextval('public.alerts_service_data_id_seq'::regclass);
 
 ALTER TABLE ONLY public.allowed_email_domains ALTER COLUMN id SET DEFAULT nextval('public.allowed_email_domains_id_seq'::regclass);
@@ -7057,9 +7355,15 @@ ALTER TABLE ONLY public.ci_builds_metadata ALTER COLUMN id SET DEFAULT nextval('
 
 ALTER TABLE ONLY public.ci_builds_runner_session ALTER COLUMN id SET DEFAULT nextval('public.ci_builds_runner_session_id_seq'::regclass);
 
+ALTER TABLE ONLY public.ci_daily_build_group_report_results ALTER COLUMN id SET DEFAULT nextval('public.ci_daily_build_group_report_results_id_seq'::regclass);
+
 ALTER TABLE ONLY public.ci_daily_report_results ALTER COLUMN id SET DEFAULT nextval('public.ci_daily_report_results_id_seq'::regclass);
 
+ALTER TABLE ONLY public.ci_freeze_periods ALTER COLUMN id SET DEFAULT nextval('public.ci_freeze_periods_id_seq'::regclass);
+
 ALTER TABLE ONLY public.ci_group_variables ALTER COLUMN id SET DEFAULT nextval('public.ci_group_variables_id_seq'::regclass);
+
+ALTER TABLE ONLY public.ci_instance_variables ALTER COLUMN id SET DEFAULT nextval('public.ci_instance_variables_id_seq'::regclass);
 
 ALTER TABLE ONLY public.ci_job_artifacts ALTER COLUMN id SET DEFAULT nextval('public.ci_job_artifacts_id_seq'::regclass);
 
@@ -7247,6 +7551,8 @@ ALTER TABLE ONLY public.group_deploy_tokens ALTER COLUMN id SET DEFAULT nextval(
 
 ALTER TABLE ONLY public.group_group_links ALTER COLUMN id SET DEFAULT nextval('public.group_group_links_id_seq'::regclass);
 
+ALTER TABLE ONLY public.group_import_states ALTER COLUMN group_id SET DEFAULT nextval('public.group_import_states_group_id_seq'::regclass);
+
 ALTER TABLE ONLY public.historical_data ALTER COLUMN id SET DEFAULT nextval('public.historical_data_id_seq'::regclass);
 
 ALTER TABLE ONLY public.identities ALTER COLUMN id SET DEFAULT nextval('public.identities_id_seq'::regclass);
@@ -7325,6 +7631,8 @@ ALTER TABLE ONLY public.merge_trains ALTER COLUMN id SET DEFAULT nextval('public
 
 ALTER TABLE ONLY public.metrics_dashboard_annotations ALTER COLUMN id SET DEFAULT nextval('public.metrics_dashboard_annotations_id_seq'::regclass);
 
+ALTER TABLE ONLY public.metrics_users_starred_dashboards ALTER COLUMN id SET DEFAULT nextval('public.metrics_users_starred_dashboards_id_seq'::regclass);
+
 ALTER TABLE ONLY public.milestones ALTER COLUMN id SET DEFAULT nextval('public.milestones_id_seq'::regclass);
 
 ALTER TABLE ONLY public.namespace_statistics ALTER COLUMN id SET DEFAULT nextval('public.namespace_statistics_id_seq'::regclass);
@@ -7357,6 +7665,8 @@ ALTER TABLE ONLY public.operations_scopes ALTER COLUMN id SET DEFAULT nextval('p
 
 ALTER TABLE ONLY public.operations_strategies ALTER COLUMN id SET DEFAULT nextval('public.operations_strategies_id_seq'::regclass);
 
+ALTER TABLE ONLY public.operations_strategies_user_lists ALTER COLUMN id SET DEFAULT nextval('public.operations_strategies_user_lists_id_seq'::regclass);
+
 ALTER TABLE ONLY public.operations_user_lists ALTER COLUMN id SET DEFAULT nextval('public.operations_user_lists_id_seq'::regclass);
 
 ALTER TABLE ONLY public.packages_build_infos ALTER COLUMN id SET DEFAULT nextval('public.packages_build_infos_id_seq'::regclass);
@@ -7380,6 +7690,8 @@ ALTER TABLE ONLY public.packages_tags ALTER COLUMN id SET DEFAULT nextval('publi
 ALTER TABLE ONLY public.pages_domain_acme_orders ALTER COLUMN id SET DEFAULT nextval('public.pages_domain_acme_orders_id_seq'::regclass);
 
 ALTER TABLE ONLY public.pages_domains ALTER COLUMN id SET DEFAULT nextval('public.pages_domains_id_seq'::regclass);
+
+ALTER TABLE ONLY public.partitioned_foreign_keys ALTER COLUMN id SET DEFAULT nextval('public.partitioned_foreign_keys_id_seq'::regclass);
 
 ALTER TABLE ONLY public.path_locks ALTER COLUMN id SET DEFAULT nextval('public.path_locks_id_seq'::regclass);
 
@@ -7422,6 +7734,8 @@ ALTER TABLE ONLY public.project_mirror_data ALTER COLUMN id SET DEFAULT nextval(
 ALTER TABLE ONLY public.project_repositories ALTER COLUMN id SET DEFAULT nextval('public.project_repositories_id_seq'::regclass);
 
 ALTER TABLE ONLY public.project_repository_states ALTER COLUMN id SET DEFAULT nextval('public.project_repository_states_id_seq'::regclass);
+
+ALTER TABLE ONLY public.project_repository_storage_moves ALTER COLUMN id SET DEFAULT nextval('public.project_repository_storage_moves_id_seq'::regclass);
 
 ALTER TABLE ONLY public.project_statistics ALTER COLUMN id SET DEFAULT nextval('public.project_statistics_id_seq'::regclass);
 
@@ -7467,6 +7781,8 @@ ALTER TABLE ONLY public.resource_label_events ALTER COLUMN id SET DEFAULT nextva
 
 ALTER TABLE ONLY public.resource_milestone_events ALTER COLUMN id SET DEFAULT nextval('public.resource_milestone_events_id_seq'::regclass);
 
+ALTER TABLE ONLY public.resource_state_events ALTER COLUMN id SET DEFAULT nextval('public.resource_state_events_id_seq'::regclass);
+
 ALTER TABLE ONLY public.resource_weight_events ALTER COLUMN id SET DEFAULT nextval('public.resource_weight_events_id_seq'::regclass);
 
 ALTER TABLE ONLY public.reviews ALTER COLUMN id SET DEFAULT nextval('public.reviews_id_seq'::regclass);
@@ -7504,6 +7820,10 @@ ALTER TABLE ONLY public.software_license_policies ALTER COLUMN id SET DEFAULT ne
 ALTER TABLE ONLY public.software_licenses ALTER COLUMN id SET DEFAULT nextval('public.software_licenses_id_seq'::regclass);
 
 ALTER TABLE ONLY public.spam_logs ALTER COLUMN id SET DEFAULT nextval('public.spam_logs_id_seq'::regclass);
+
+ALTER TABLE ONLY public.sprints ALTER COLUMN id SET DEFAULT nextval('public.sprints_id_seq'::regclass);
+
+ALTER TABLE ONLY public.status_page_published_incidents ALTER COLUMN id SET DEFAULT nextval('public.status_page_published_incidents_id_seq'::regclass);
 
 ALTER TABLE ONLY public.status_page_settings ALTER COLUMN project_id SET DEFAULT nextval('public.status_page_settings_project_id_seq'::regclass);
 
@@ -7593,6 +7913,9 @@ ALTER TABLE ONLY public.zoom_meetings ALTER COLUMN id SET DEFAULT nextval('publi
 
 ALTER TABLE ONLY public.abuse_reports
     ADD CONSTRAINT abuse_reports_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.alert_management_alerts
+    ADD CONSTRAINT alert_management_alerts_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY public.alerts_service_data
     ADD CONSTRAINT alerts_service_data_pkey PRIMARY KEY (id);
@@ -7687,6 +8010,15 @@ ALTER TABLE ONLY public.chat_names
 ALTER TABLE ONLY public.chat_teams
     ADD CONSTRAINT chat_teams_pkey PRIMARY KEY (id);
 
+ALTER TABLE public.ci_job_artifacts
+    ADD CONSTRAINT check_27f0f6dbab CHECK ((file_store IS NOT NULL)) NOT VALID;
+
+ALTER TABLE public.uploads
+    ADD CONSTRAINT check_5e9547379c CHECK ((store IS NOT NULL)) NOT VALID;
+
+ALTER TABLE public.lfs_objects
+    ADD CONSTRAINT check_eecfc5717d CHECK ((file_store IS NOT NULL)) NOT VALID;
+
 ALTER TABLE ONLY public.ci_build_needs
     ADD CONSTRAINT ci_build_needs_pkey PRIMARY KEY (id);
 
@@ -7705,11 +8037,20 @@ ALTER TABLE ONLY public.ci_builds
 ALTER TABLE ONLY public.ci_builds_runner_session
     ADD CONSTRAINT ci_builds_runner_session_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY public.ci_daily_build_group_report_results
+    ADD CONSTRAINT ci_daily_build_group_report_results_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY public.ci_daily_report_results
     ADD CONSTRAINT ci_daily_report_results_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY public.ci_freeze_periods
+    ADD CONSTRAINT ci_freeze_periods_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY public.ci_group_variables
     ADD CONSTRAINT ci_group_variables_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.ci_instance_variables
+    ADD CONSTRAINT ci_instance_variables_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY public.ci_job_artifacts
     ADD CONSTRAINT ci_job_artifacts_pkey PRIMARY KEY (id);
@@ -7999,6 +8340,12 @@ ALTER TABLE ONLY public.group_deploy_tokens
 ALTER TABLE ONLY public.group_group_links
     ADD CONSTRAINT group_group_links_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY public.group_import_states
+    ADD CONSTRAINT group_import_states_pkey PRIMARY KEY (group_id);
+
+ALTER TABLE ONLY public.group_wiki_repositories
+    ADD CONSTRAINT group_wiki_repositories_pkey PRIMARY KEY (group_id);
+
 ALTER TABLE ONLY public.historical_data
     ADD CONSTRAINT historical_data_pkey PRIMARY KEY (id);
 
@@ -8116,6 +8463,9 @@ ALTER TABLE ONLY public.merge_trains
 ALTER TABLE ONLY public.metrics_dashboard_annotations
     ADD CONSTRAINT metrics_dashboard_annotations_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY public.metrics_users_starred_dashboards
+    ADD CONSTRAINT metrics_users_starred_dashboards_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY public.milestones
     ADD CONSTRAINT milestones_pkey PRIMARY KEY (id);
 
@@ -8170,6 +8520,9 @@ ALTER TABLE ONLY public.operations_scopes
 ALTER TABLE ONLY public.operations_strategies
     ADD CONSTRAINT operations_strategies_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY public.operations_strategies_user_lists
+    ADD CONSTRAINT operations_strategies_user_lists_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY public.operations_user_lists
     ADD CONSTRAINT operations_user_lists_pkey PRIMARY KEY (id);
 
@@ -8191,6 +8544,12 @@ ALTER TABLE ONLY public.packages_dependency_links
 ALTER TABLE ONLY public.packages_maven_metadata
     ADD CONSTRAINT packages_maven_metadata_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY public.packages_nuget_dependency_link_metadata
+    ADD CONSTRAINT packages_nuget_dependency_link_metadata_pkey PRIMARY KEY (dependency_link_id);
+
+ALTER TABLE ONLY public.packages_nuget_metadata
+    ADD CONSTRAINT packages_nuget_metadata_pkey PRIMARY KEY (package_id);
+
 ALTER TABLE ONLY public.packages_package_files
     ADD CONSTRAINT packages_package_files_pkey PRIMARY KEY (id);
 
@@ -8208,6 +8567,9 @@ ALTER TABLE ONLY public.pages_domain_acme_orders
 
 ALTER TABLE ONLY public.pages_domains
     ADD CONSTRAINT pages_domains_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.partitioned_foreign_keys
+    ADD CONSTRAINT partitioned_foreign_keys_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY public.path_locks
     ADD CONSTRAINT path_locks_pkey PRIMARY KEY (id);
@@ -8284,6 +8646,9 @@ ALTER TABLE ONLY public.project_repositories
 ALTER TABLE ONLY public.project_repository_states
     ADD CONSTRAINT project_repository_states_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY public.project_repository_storage_moves
+    ADD CONSTRAINT project_repository_storage_moves_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY public.project_settings
     ADD CONSTRAINT project_settings_pkey PRIMARY KEY (project_id);
 
@@ -8353,6 +8718,9 @@ ALTER TABLE ONLY public.resource_label_events
 ALTER TABLE ONLY public.resource_milestone_events
     ADD CONSTRAINT resource_milestone_events_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY public.resource_state_events
+    ADD CONSTRAINT resource_state_events_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY public.resource_weight_events
     ADD CONSTRAINT resource_weight_events_pkey PRIMARY KEY (id);
 
@@ -8421,6 +8789,12 @@ ALTER TABLE ONLY public.software_licenses
 
 ALTER TABLE ONLY public.spam_logs
     ADD CONSTRAINT spam_logs_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.sprints
+    ADD CONSTRAINT sprints_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.status_page_published_incidents
+    ADD CONSTRAINT status_page_published_incidents_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY public.status_page_settings
     ADD CONSTRAINT status_page_settings_pkey PRIMARY KEY (project_id);
@@ -8616,6 +8990,8 @@ CREATE INDEX idx_merge_requests_on_state_id_and_merge_status ON public.merge_req
 
 CREATE INDEX idx_merge_requests_on_target_project_id_and_iid_opened ON public.merge_requests USING btree (target_project_id, iid) WHERE (state_id = 1);
 
+CREATE UNIQUE INDEX idx_metrics_users_starred_dashboard_on_user_project_dashboard ON public.metrics_users_starred_dashboards USING btree (user_id, project_id, dashboard_path);
+
 CREATE INDEX idx_mr_cc_diff_files_on_mr_cc_id_and_sha ON public.merge_request_context_commit_diff_files USING btree (merge_request_context_commit_id, sha);
 
 CREATE INDEX idx_packages_packages_on_project_id_name_version_package_type ON public.packages_packages USING btree (project_id, name, version, package_type);
@@ -8653,6 +9029,12 @@ CREATE UNIQUE INDEX idx_vulnerability_issue_links_on_vulnerability_id_and_issue_
 CREATE UNIQUE INDEX idx_vulnerability_issue_links_on_vulnerability_id_and_link_type ON public.vulnerability_issue_links USING btree (vulnerability_id, link_type) WHERE (link_type = 2);
 
 CREATE INDEX index_abuse_reports_on_user_id ON public.abuse_reports USING btree (user_id);
+
+CREATE INDEX index_alert_management_alerts_on_issue_id ON public.alert_management_alerts USING btree (issue_id);
+
+CREATE UNIQUE INDEX index_alert_management_alerts_on_project_id_and_fingerprint ON public.alert_management_alerts USING btree (project_id, fingerprint);
+
+CREATE UNIQUE INDEX index_alert_management_alerts_on_project_id_and_iid ON public.alert_management_alerts USING btree (project_id, iid);
 
 CREATE INDEX index_alerts_service_data_on_service_id ON public.alerts_service_data USING btree (service_id);
 
@@ -8864,9 +9246,15 @@ CREATE INDEX index_ci_builds_project_id_and_status_for_live_jobs_partial2 ON pub
 
 CREATE UNIQUE INDEX index_ci_builds_runner_session_on_build_id ON public.ci_builds_runner_session USING btree (build_id);
 
+CREATE INDEX index_ci_daily_build_group_report_results_on_last_pipeline_id ON public.ci_daily_build_group_report_results USING btree (last_pipeline_id);
+
 CREATE INDEX index_ci_daily_report_results_on_last_pipeline_id ON public.ci_daily_report_results USING btree (last_pipeline_id);
 
+CREATE INDEX index_ci_freeze_periods_on_project_id ON public.ci_freeze_periods USING btree (project_id);
+
 CREATE UNIQUE INDEX index_ci_group_variables_on_group_id_and_key ON public.ci_group_variables USING btree (group_id, key);
+
+CREATE UNIQUE INDEX index_ci_instance_variables_on_key ON public.ci_instance_variables USING btree (key);
 
 CREATE INDEX index_ci_job_artifacts_file_store_is_null ON public.ci_job_artifacts USING btree (id) WHERE (file_store IS NULL);
 
@@ -9030,6 +9418,8 @@ CREATE UNIQUE INDEX index_clusters_applications_helm_on_cluster_id ON public.clu
 
 CREATE UNIQUE INDEX index_clusters_applications_ingress_on_cluster_id ON public.clusters_applications_ingress USING btree (cluster_id);
 
+CREATE INDEX index_clusters_applications_ingress_on_modsecurity ON public.clusters_applications_ingress USING btree (modsecurity_enabled, modsecurity_mode, cluster_id);
+
 CREATE UNIQUE INDEX index_clusters_applications_jupyter_on_cluster_id ON public.clusters_applications_jupyter USING btree (cluster_id);
 
 CREATE INDEX index_clusters_applications_jupyter_on_oauth_application_id ON public.clusters_applications_jupyter USING btree (oauth_application_id);
@@ -9052,6 +9442,8 @@ CREATE INDEX index_clusters_kubernetes_namespaces_on_project_id ON public.cluste
 
 CREATE INDEX index_clusters_on_enabled_and_provider_type_and_id ON public.clusters USING btree (enabled, provider_type, id);
 
+CREATE INDEX index_clusters_on_enabled_cluster_type_id_and_created_at ON public.clusters USING btree (enabled, cluster_type, id, created_at);
+
 CREATE INDEX index_clusters_on_management_project_id ON public.clusters USING btree (management_project_id) WHERE (management_project_id IS NOT NULL);
 
 CREATE INDEX index_clusters_on_user_id ON public.clusters USING btree (user_id);
@@ -9063,6 +9455,10 @@ CREATE INDEX index_container_expiration_policies_on_next_run_at_and_enabled ON p
 CREATE INDEX index_container_repositories_on_project_id ON public.container_repositories USING btree (project_id);
 
 CREATE UNIQUE INDEX index_container_repositories_on_project_id_and_name ON public.container_repositories USING btree (project_id, name);
+
+CREATE INDEX index_container_repository_on_name_trigram ON public.container_repositories USING gin (name public.gin_trgm_ops);
+
+CREATE UNIQUE INDEX index_daily_build_group_report_results_unique_columns ON public.ci_daily_build_group_report_results USING btree (project_id, ref_path, date, group_name);
 
 CREATE UNIQUE INDEX index_daily_report_results_unique_columns ON public.ci_daily_report_results USING btree (project_id, ref_path, param_type, date, title);
 
@@ -9158,6 +9554,8 @@ CREATE UNIQUE INDEX index_emails_on_email ON public.emails USING btree (email);
 
 CREATE INDEX index_emails_on_user_id ON public.emails USING btree (user_id);
 
+CREATE INDEX index_enabled_clusters_on_id ON public.clusters USING btree (id) WHERE (enabled = true);
+
 CREATE INDEX index_environments_on_auto_stop_at ON public.environments USING btree (auto_stop_at) WHERE (auto_stop_at IS NOT NULL);
 
 CREATE INDEX index_environments_on_name_varchar_pattern_ops ON public.environments USING btree (name varchar_pattern_ops);
@@ -9233,8 +9631,6 @@ CREATE UNIQUE INDEX index_feature_flags_clients_on_project_id_and_token_encrypte
 CREATE UNIQUE INDEX index_feature_gates_on_feature_key_and_key_and_value ON public.feature_gates USING btree (feature_key, key, value);
 
 CREATE UNIQUE INDEX index_features_on_key ON public.features USING btree (key);
-
-CREATE INDEX index_for_migrating_user_highest_roles_table ON public.users USING btree (id) WHERE (((state)::text = 'active'::text) AND (user_type IS NULL) AND (bot_type IS NULL) AND (ghost IS NOT TRUE));
 
 CREATE INDEX index_for_resource_group ON public.ci_builds USING btree (resource_group_id, id) WHERE (resource_group_id IS NOT NULL);
 
@@ -9362,6 +9758,12 @@ CREATE UNIQUE INDEX index_group_group_links_on_shared_group_and_shared_with_grou
 
 CREATE INDEX index_group_group_links_on_shared_with_group_id ON public.group_group_links USING btree (shared_with_group_id);
 
+CREATE INDEX index_group_import_states_on_group_id ON public.group_import_states USING btree (group_id);
+
+CREATE UNIQUE INDEX index_group_wiki_repositories_on_disk_path ON public.group_wiki_repositories USING btree (disk_path);
+
+CREATE INDEX index_group_wiki_repositories_on_shard_id ON public.group_wiki_repositories USING btree (shard_id);
+
 CREATE INDEX index_identities_on_saml_provider_id ON public.identities USING btree (saml_provider_id) WHERE (saml_provider_id IS NOT NULL);
 
 CREATE INDEX index_identities_on_user_id ON public.identities USING btree (user_id);
@@ -9439,6 +9841,8 @@ CREATE UNIQUE INDEX index_issues_on_project_id_and_iid ON public.issues USING bt
 CREATE INDEX index_issues_on_promoted_to_epic_id ON public.issues USING btree (promoted_to_epic_id) WHERE (promoted_to_epic_id IS NOT NULL);
 
 CREATE INDEX index_issues_on_relative_position ON public.issues USING btree (relative_position);
+
+CREATE INDEX index_issues_on_sprint_id ON public.issues USING btree (sprint_id);
 
 CREATE INDEX index_issues_on_title_trigram ON public.issues USING gin (title public.gin_trgm_ops);
 
@@ -9602,6 +10006,8 @@ CREATE INDEX index_merge_requests_on_source_branch ON public.merge_requests USIN
 
 CREATE INDEX index_merge_requests_on_source_project_id_and_source_branch ON public.merge_requests USING btree (source_project_id, source_branch);
 
+CREATE INDEX index_merge_requests_on_sprint_id ON public.merge_requests USING btree (sprint_id);
+
 CREATE INDEX index_merge_requests_on_target_branch ON public.merge_requests USING btree (target_branch);
 
 CREATE UNIQUE INDEX index_merge_requests_on_target_project_id_and_iid ON public.merge_requests USING btree (target_project_id, iid);
@@ -9627,6 +10033,8 @@ CREATE INDEX index_merge_trains_on_user_id ON public.merge_trains USING btree (u
 CREATE INDEX index_metrics_dashboard_annotations_on_cluster_id_and_3_columns ON public.metrics_dashboard_annotations USING btree (cluster_id, dashboard_path, starting_at, ending_at) WHERE (cluster_id IS NOT NULL);
 
 CREATE INDEX index_metrics_dashboard_annotations_on_environment_id_and_3_col ON public.metrics_dashboard_annotations USING btree (environment_id, dashboard_path, starting_at, ending_at) WHERE (environment_id IS NOT NULL);
+
+CREATE INDEX index_metrics_users_starred_dashboards_on_project_id ON public.metrics_users_starred_dashboards USING btree (project_id);
 
 CREATE INDEX index_milestone_releases_on_release_id ON public.milestone_releases USING btree (release_id);
 
@@ -9678,8 +10086,6 @@ CREATE INDEX index_namespaces_on_path ON public.namespaces USING btree (path);
 
 CREATE INDEX index_namespaces_on_path_trigram ON public.namespaces USING gin (path public.gin_trgm_ops);
 
-CREATE INDEX index_namespaces_on_plan_id ON public.namespaces USING btree (plan_id);
-
 CREATE UNIQUE INDEX index_namespaces_on_push_rule_id ON public.namespaces USING btree (push_rule_id);
 
 CREATE INDEX index_namespaces_on_require_two_factor_authentication ON public.namespaces USING btree (require_two_factor_authentication);
@@ -9693,6 +10099,8 @@ CREATE INDEX index_namespaces_on_shared_and_extra_runners_minutes_limit ON publi
 CREATE INDEX index_namespaces_on_trial_ends_on ON public.namespaces USING btree (trial_ends_on) WHERE (trial_ends_on IS NOT NULL);
 
 CREATE INDEX index_namespaces_on_type_partial ON public.namespaces USING btree (type) WHERE (type IS NOT NULL);
+
+CREATE INDEX index_non_requested_project_members_on_source_id_and_type ON public.members USING btree (source_id, source_type) WHERE ((requested_at IS NULL) AND ((type)::text = 'ProjectMember'::text));
 
 CREATE UNIQUE INDEX index_note_diff_files_on_diff_note_id ON public.note_diff_files USING btree (diff_note_id);
 
@@ -9756,9 +10164,13 @@ CREATE UNIQUE INDEX index_operations_scopes_on_strategy_id_and_environment_scope
 
 CREATE INDEX index_operations_strategies_on_feature_flag_id ON public.operations_strategies USING btree (feature_flag_id);
 
+CREATE INDEX index_operations_strategies_user_lists_on_user_list_id ON public.operations_strategies_user_lists USING btree (user_list_id);
+
 CREATE UNIQUE INDEX index_operations_user_lists_on_project_id_and_iid ON public.operations_user_lists USING btree (project_id, iid);
 
 CREATE UNIQUE INDEX index_operations_user_lists_on_project_id_and_name ON public.operations_user_lists USING btree (project_id, name);
+
+CREATE UNIQUE INDEX index_ops_strategies_user_lists_on_strategy_id_and_user_list_id ON public.operations_strategies_user_lists USING btree (strategy_id, user_list_id);
 
 CREATE UNIQUE INDEX index_packages_build_infos_on_package_id ON public.packages_build_infos USING btree (package_id);
 
@@ -9773,6 +10185,8 @@ CREATE UNIQUE INDEX index_packages_dependencies_on_name_and_version_pattern ON p
 CREATE INDEX index_packages_dependency_links_on_dependency_id ON public.packages_dependency_links USING btree (dependency_id);
 
 CREATE INDEX index_packages_maven_metadata_on_package_id_and_path ON public.packages_maven_metadata USING btree (package_id, path);
+
+CREATE INDEX index_packages_nuget_dl_metadata_on_dependency_link_id ON public.packages_nuget_dependency_link_metadata USING btree (dependency_link_id);
 
 CREATE INDEX index_packages_package_files_on_package_id_and_file_name ON public.packages_package_files USING btree (package_id, file_name);
 
@@ -9794,7 +10208,9 @@ CREATE INDEX index_pages_domain_acme_orders_on_challenge_token ON public.pages_d
 
 CREATE INDEX index_pages_domain_acme_orders_on_pages_domain_id ON public.pages_domain_acme_orders USING btree (pages_domain_id);
 
-CREATE INDEX index_pages_domains_need_auto_ssl_renewal ON public.pages_domains USING btree (certificate_source, certificate_valid_not_after) WHERE (auto_ssl_enabled = true);
+CREATE INDEX index_pages_domains_need_auto_ssl_renewal_user_provided ON public.pages_domains USING btree (id) WHERE ((auto_ssl_enabled = true) AND (auto_ssl_failed = false) AND (certificate_source = 0));
+
+CREATE INDEX index_pages_domains_need_auto_ssl_renewal_valid_not_after ON public.pages_domains USING btree (certificate_valid_not_after) WHERE ((auto_ssl_enabled = true) AND (auto_ssl_failed = false));
 
 CREATE UNIQUE INDEX index_pages_domains_on_domain_and_wildcard ON public.pages_domains USING btree (domain, wildcard);
 
@@ -9816,6 +10232,8 @@ CREATE INDEX index_pages_domains_on_verified_at_and_enabled_until ON public.page
 
 CREATE INDEX index_pages_domains_on_wildcard ON public.pages_domains USING btree (wildcard);
 
+CREATE UNIQUE INDEX index_partitioned_foreign_keys_unique_index ON public.partitioned_foreign_keys USING btree (to_table, from_table, from_column);
+
 CREATE INDEX index_pat_on_user_id_and_expires_at ON public.personal_access_tokens USING btree (user_id, expires_at);
 
 CREATE INDEX index_path_locks_on_path ON public.path_locks USING btree (path);
@@ -9830,7 +10248,7 @@ CREATE INDEX index_personal_access_tokens_on_user_id ON public.personal_access_t
 
 CREATE UNIQUE INDEX index_plan_limits_on_plan_id ON public.plan_limits USING btree (plan_id);
 
-CREATE INDEX index_plans_on_name ON public.plans USING btree (name);
+CREATE UNIQUE INDEX index_plans_on_name ON public.plans USING btree (name);
 
 CREATE UNIQUE INDEX index_pool_repositories_on_disk_path ON public.pool_repositories USING btree (disk_path);
 
@@ -9905,6 +10323,8 @@ CREATE UNIQUE INDEX index_project_repositories_on_project_id ON public.project_r
 CREATE INDEX index_project_repositories_on_shard_id ON public.project_repositories USING btree (shard_id);
 
 CREATE UNIQUE INDEX index_project_repository_states_on_project_id ON public.project_repository_states USING btree (project_id);
+
+CREATE INDEX index_project_repository_storage_moves_on_project_id ON public.project_repository_storage_moves USING btree (project_id);
 
 CREATE UNIQUE INDEX index_project_settings_on_push_rule_id ON public.project_settings USING btree (push_rule_id);
 
@@ -10118,6 +10538,16 @@ CREATE INDEX index_resource_milestone_events_on_milestone_id ON public.resource_
 
 CREATE INDEX index_resource_milestone_events_on_user_id ON public.resource_milestone_events USING btree (user_id);
 
+CREATE INDEX index_resource_state_events_on_epic_id ON public.resource_state_events USING btree (epic_id);
+
+CREATE INDEX index_resource_state_events_on_issue_id_and_created_at ON public.resource_state_events USING btree (issue_id, created_at);
+
+CREATE INDEX index_resource_state_events_on_merge_request_id ON public.resource_state_events USING btree (merge_request_id);
+
+CREATE INDEX index_resource_state_events_on_user_id ON public.resource_state_events USING btree (user_id);
+
+CREATE INDEX index_resource_weight_events_on_issue_id_and_created_at ON public.resource_weight_events USING btree (issue_id, created_at);
+
 CREATE INDEX index_resource_weight_events_on_issue_id_and_weight ON public.resource_weight_events USING btree (issue_id, weight);
 
 CREATE INDEX index_resource_weight_events_on_user_id ON public.resource_weight_events USING btree (user_id);
@@ -10161,6 +10591,8 @@ CREATE INDEX index_serverless_domain_cluster_on_creator_id ON public.serverless_
 CREATE INDEX index_serverless_domain_cluster_on_pages_domain_id ON public.serverless_domain_cluster USING btree (pages_domain_id);
 
 CREATE INDEX index_service_desk_enabled_projects_on_id_creator_id_created_at ON public.projects USING btree (id, creator_id, created_at) WHERE (service_desk_enabled = true);
+
+CREATE INDEX index_services_on_inherit_from_id ON public.services USING btree (inherit_from_id);
 
 CREATE INDEX index_services_on_project_id_and_type ON public.services USING btree (project_id, type);
 
@@ -10216,11 +10648,31 @@ CREATE INDEX index_software_licenses_on_spdx_identifier ON public.software_licen
 
 CREATE UNIQUE INDEX index_software_licenses_on_unique_name ON public.software_licenses USING btree (name);
 
+CREATE INDEX index_sprints_on_description_trigram ON public.sprints USING gin (description public.gin_trgm_ops);
+
+CREATE INDEX index_sprints_on_due_date ON public.sprints USING btree (due_date);
+
+CREATE INDEX index_sprints_on_group_id ON public.sprints USING btree (group_id);
+
+CREATE UNIQUE INDEX index_sprints_on_group_id_and_title ON public.sprints USING btree (group_id, title) WHERE (group_id IS NOT NULL);
+
+CREATE UNIQUE INDEX index_sprints_on_project_id_and_iid ON public.sprints USING btree (project_id, iid);
+
+CREATE UNIQUE INDEX index_sprints_on_project_id_and_title ON public.sprints USING btree (project_id, title) WHERE (project_id IS NOT NULL);
+
+CREATE INDEX index_sprints_on_title ON public.sprints USING btree (title);
+
+CREATE INDEX index_sprints_on_title_trigram ON public.sprints USING gin (title public.gin_trgm_ops);
+
+CREATE UNIQUE INDEX index_status_page_published_incidents_on_issue_id ON public.status_page_published_incidents USING btree (issue_id);
+
 CREATE INDEX index_status_page_settings_on_project_id ON public.status_page_settings USING btree (project_id);
 
 CREATE INDEX index_subscriptions_on_project_id ON public.subscriptions USING btree (project_id);
 
 CREATE UNIQUE INDEX index_subscriptions_on_subscribable_and_user_id_and_project_id ON public.subscriptions USING btree (subscribable_id, subscribable_type, user_id, project_id);
+
+CREATE INDEX index_successful_deployments_on_cluster_id_and_environment_id ON public.deployments USING btree (cluster_id, environment_id) WHERE (status = 2);
 
 CREATE UNIQUE INDEX index_suggestions_on_note_id_and_relative_order ON public.suggestions USING btree (note_id, relative_order);
 
@@ -10326,8 +10778,6 @@ CREATE INDEX index_users_on_accepted_term_id ON public.users USING btree (accept
 
 CREATE INDEX index_users_on_admin ON public.users USING btree (admin);
 
-CREATE INDEX index_users_on_bot_type ON public.users USING btree (bot_type);
-
 CREATE UNIQUE INDEX index_users_on_confirmation_token ON public.users USING btree (confirmation_token);
 
 CREATE INDEX index_users_on_created_at ON public.users USING btree (created_at);
@@ -10404,7 +10854,9 @@ CREATE INDEX index_vulnerabilities_on_updated_by_id ON public.vulnerabilities US
 
 CREATE INDEX index_vulnerability_exports_on_author_id ON public.vulnerability_exports USING btree (author_id);
 
-CREATE UNIQUE INDEX index_vulnerability_exports_on_project_id_and_id ON public.vulnerability_exports USING btree (project_id, id);
+CREATE INDEX index_vulnerability_exports_on_group_id_not_null ON public.vulnerability_exports USING btree (group_id) WHERE (group_id IS NOT NULL);
+
+CREATE INDEX index_vulnerability_exports_on_project_id_not_null ON public.vulnerability_exports USING btree (project_id) WHERE (project_id IS NOT NULL);
 
 CREATE INDEX index_vulnerability_feedback_on_author_id ON public.vulnerability_feedback USING btree (author_id);
 
@@ -10426,6 +10878,8 @@ CREATE UNIQUE INDEX index_vulnerability_occurrence_identifiers_on_unique_keys ON
 
 CREATE INDEX index_vulnerability_occurrence_pipelines_on_pipeline_id ON public.vulnerability_occurrence_pipelines USING btree (pipeline_id);
 
+CREATE INDEX index_vulnerability_occurrences_on_id_and_confidence_eq_zero ON public.vulnerability_occurrences USING btree (id) WHERE (confidence = 0);
+
 CREATE INDEX index_vulnerability_occurrences_on_primary_identifier_id ON public.vulnerability_occurrences USING btree (primary_identifier_id);
 
 CREATE INDEX index_vulnerability_occurrences_on_scanner_id ON public.vulnerability_occurrences USING btree (scanner_id);
@@ -10435,6 +10889,8 @@ CREATE UNIQUE INDEX index_vulnerability_occurrences_on_unique_keys ON public.vul
 CREATE UNIQUE INDEX index_vulnerability_occurrences_on_uuid ON public.vulnerability_occurrences USING btree (uuid);
 
 CREATE INDEX index_vulnerability_occurrences_on_vulnerability_id ON public.vulnerability_occurrences USING btree (vulnerability_id);
+
+CREATE INDEX index_vulnerability_on_id_and_confidence_eq_zero ON public.vulnerabilities USING btree (id) WHERE (confidence = 0);
 
 CREATE UNIQUE INDEX index_vulnerability_scanners_on_project_id_and_external_id ON public.vulnerability_scanners USING btree (project_id, external_id);
 
@@ -10504,6 +10960,10 @@ CREATE INDEX note_mentions_temp_index ON public.notes USING btree (id, noteable_
 
 CREATE UNIQUE INDEX one_canonical_wiki_page_slug_per_metadata ON public.wiki_page_slugs USING btree (wiki_page_meta_id) WHERE (canonical = true);
 
+CREATE INDEX packages_packages_verification_checksum_partial ON public.packages_package_files USING btree (verification_checksum) WHERE (verification_checksum IS NOT NULL);
+
+CREATE INDEX packages_packages_verification_failure_partial ON public.packages_package_files USING btree (verification_failure) WHERE (verification_failure IS NOT NULL);
+
 CREATE INDEX partial_index_ci_builds_on_scheduled_at_with_scheduled_jobs ON public.ci_builds USING btree (scheduled_at) WHERE ((scheduled_at IS NOT NULL) AND ((type)::text = 'Ci::Build'::text) AND ((status)::text = 'scheduled'::text));
 
 CREATE INDEX partial_index_deployments_for_legacy_successful_deployments ON public.deployments USING btree (id) WHERE ((finished_at IS NULL) AND (status = 2));
@@ -10521,6 +10981,12 @@ CREATE UNIQUE INDEX term_agreements_unique_index ON public.term_agreements USING
 CREATE INDEX tmp_build_stage_position_index ON public.ci_builds USING btree (stage_id, stage_idx) WHERE (stage_idx IS NOT NULL);
 
 CREATE INDEX tmp_idx_on_user_id_where_bio_is_filled ON public.users USING btree (id) WHERE ((COALESCE(bio, ''::character varying))::text IS DISTINCT FROM ''::text);
+
+CREATE INDEX tmp_index_ci_builds_lock_version ON public.ci_builds USING btree (id) WHERE (lock_version IS NULL);
+
+CREATE INDEX tmp_index_ci_pipelines_lock_version ON public.ci_pipelines USING btree (id) WHERE (lock_version IS NULL);
+
+CREATE INDEX tmp_index_ci_stages_lock_version ON public.ci_stages USING btree (id) WHERE (lock_version IS NULL);
 
 CREATE UNIQUE INDEX users_security_dashboard_projects_unique_index ON public.users_security_dashboard_projects USING btree (project_id, user_id);
 
@@ -10597,6 +11063,9 @@ ALTER TABLE ONLY public.geo_container_repository_updated_events
 ALTER TABLE ONLY public.users_star_projects
     ADD CONSTRAINT fk_22cd27ddfc FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY public.alert_management_alerts
+    ADD CONSTRAINT fk_2358b75436 FOREIGN KEY (issue_id) REFERENCES public.issues(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY public.ci_stages
     ADD CONSTRAINT fk_2360681d1d FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
 
@@ -10654,14 +11123,14 @@ ALTER TABLE ONLY public.push_event_payloads
 ALTER TABLE ONLY public.ci_builds
     ADD CONSTRAINT fk_3a9eaa254d FOREIGN KEY (stage_id) REFERENCES public.ci_stages(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY public.issues
+    ADD CONSTRAINT fk_3b8c72ea56 FOREIGN KEY (sprint_id) REFERENCES public.sprints(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY public.epics
     ADD CONSTRAINT fk_3c1fd1cccc FOREIGN KEY (due_date_sourcing_milestone_id) REFERENCES public.milestones(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY public.ci_pipelines
     ADD CONSTRAINT fk_3d34ab2e06 FOREIGN KEY (pipeline_schedule_id) REFERENCES public.ci_pipeline_schedules(id) ON DELETE SET NULL;
-
-ALTER TABLE ONLY public.project_settings
-    ADD CONSTRAINT fk_413a953e20 FOREIGN KEY (push_rule_id) REFERENCES public.push_rules(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.ci_pipeline_schedule_variables
     ADD CONSTRAINT fk_41c35fda51 FOREIGN KEY (pipeline_schedule_id) REFERENCES public.ci_pipeline_schedules(id) ON DELETE CASCADE;
@@ -10771,8 +11240,14 @@ ALTER TABLE ONLY public.vulnerabilities
 ALTER TABLE ONLY public.labels
     ADD CONSTRAINT fk_7de4989a69 FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY public.merge_requests
+    ADD CONSTRAINT fk_7e85395a64 FOREIGN KEY (sprint_id) REFERENCES public.sprints(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY public.merge_request_metrics
     ADD CONSTRAINT fk_7f28d925f3 FOREIGN KEY (merged_by_id) REFERENCES public.users(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY public.sprints
+    ADD CONSTRAINT fk_80aa8a1f95 FOREIGN KEY (group_id) REFERENCES public.namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.import_export_uploads
     ADD CONSTRAINT fk_83319d9721 FOREIGN KEY (group_id) REFERENCES public.namespaces(id) ON DELETE CASCADE;
@@ -10785,6 +11260,9 @@ ALTER TABLE ONLY public.merge_request_diffs
 
 ALTER TABLE ONLY public.ci_pipelines
     ADD CONSTRAINT fk_86635dbd80 FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.services
+    ADD CONSTRAINT fk_868a8e7ad6 FOREIGN KEY (inherit_from_id) REFERENCES public.services(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY public.geo_event_log
     ADD CONSTRAINT fk_86c84214ec FOREIGN KEY (repository_renamed_event_id) REFERENCES public.geo_repository_renamed_events(id) ON DELETE CASCADE;
@@ -10852,6 +11330,9 @@ ALTER TABLE ONLY public.issues
 ALTER TABLE ONLY public.epics
     ADD CONSTRAINT fk_9d480c64b2 FOREIGN KEY (start_date_sourcing_epic_id) REFERENCES public.epics(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY public.alert_management_alerts
+    ADD CONSTRAINT fk_9e49e5c2b7 FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY public.ci_pipeline_schedules
     ADD CONSTRAINT fk_9ea99f58d2 FOREIGN KEY (owner_id) REFERENCES public.users(id) ON DELETE SET NULL;
 
@@ -10915,6 +11396,9 @@ ALTER TABLE ONLY public.deployments
 ALTER TABLE ONLY public.gitlab_subscriptions
     ADD CONSTRAINT fk_bd0c4019c3 FOREIGN KEY (hosted_plan_id) REFERENCES public.plans(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY public.metrics_users_starred_dashboards
+    ADD CONSTRAINT fk_bd6ae32fac FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY public.snippets
     ADD CONSTRAINT fk_be41fd4bb7 FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
 
@@ -10932,6 +11416,9 @@ ALTER TABLE ONLY public.design_management_versions
 
 ALTER TABLE ONLY public.geo_event_log
     ADD CONSTRAINT fk_c1f241c70d FOREIGN KEY (upload_deleted_event_id) REFERENCES public.geo_upload_deleted_events(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.vulnerability_exports
+    ADD CONSTRAINT fk_c3d3cb5d0f FOREIGN KEY (group_id) REFERENCES public.namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.geo_event_log
     ADD CONSTRAINT fk_c4b1c1f66e FOREIGN KEY (repository_deleted_event_id) REFERENCES public.geo_repository_deleted_events(id) ON DELETE CASCADE;
@@ -10965,6 +11452,9 @@ ALTER TABLE ONLY public.geo_event_log
 
 ALTER TABLE ONLY public.lists
     ADD CONSTRAINT fk_d6cf4279f7 FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.metrics_users_starred_dashboards
+    ADD CONSTRAINT fk_d76a2b9a8c FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.system_note_metadata
     ADD CONSTRAINT fk_d83a918cb1 FOREIGN KEY (note_id) REFERENCES public.notes(id) ON DELETE CASCADE;
@@ -11007,6 +11497,9 @@ ALTER TABLE ONLY public.namespaces
 
 ALTER TABLE ONLY public.fork_networks
     ADD CONSTRAINT fk_e7b436b2b5 FOREIGN KEY (root_project_id) REFERENCES public.projects(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY public.sprints
+    ADD CONSTRAINT fk_e8206c9686 FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.application_settings
     ADD CONSTRAINT fk_e8a145f3a7 FOREIGN KEY (instance_administrators_group_id) REFERENCES public.namespaces(id) ON DELETE SET NULL;
@@ -11053,9 +11546,6 @@ ALTER TABLE ONLY public.system_note_metadata
 ALTER TABLE ONLY public.merge_requests
     ADD CONSTRAINT fk_fd82eae0b9 FOREIGN KEY (head_pipeline_id) REFERENCES public.ci_pipelines(id) ON DELETE SET NULL;
 
-ALTER TABLE ONLY public.namespaces
-    ADD CONSTRAINT fk_fdd12e5b80 FOREIGN KEY (plan_id) REFERENCES public.plans(id) ON DELETE SET NULL;
-
 ALTER TABLE ONLY public.project_import_data
     ADD CONSTRAINT fk_ffb9ee3a10 FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
 
@@ -11070,6 +11560,12 @@ ALTER TABLE ONLY public.path_locks
 
 ALTER TABLE ONLY public.personal_access_tokens
     ADD CONSTRAINT fk_personal_access_tokens_user_id FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.project_settings
+    ADD CONSTRAINT fk_project_settings_push_rule_id FOREIGN KEY (push_rule_id) REFERENCES public.push_rules(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY public.projects
+    ADD CONSTRAINT fk_projects_namespace_id FOREIGN KEY (namespace_id) REFERENCES public.namespaces(id) ON DELETE RESTRICT;
 
 ALTER TABLE ONLY public.protected_branch_merge_access_levels
     ADD CONSTRAINT fk_protected_branch_merge_access_levels_user_id FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
@@ -11094,6 +11590,9 @@ ALTER TABLE ONLY public.events
 
 ALTER TABLE ONLY public.ip_restrictions
     ADD CONSTRAINT fk_rails_04a93778d5 FOREIGN KEY (group_id) REFERENCES public.namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.ci_daily_build_group_report_results
+    ADD CONSTRAINT fk_rails_0667f7608c FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.ci_subscriptions_projects
     ADD CONSTRAINT fk_rails_0818751483 FOREIGN KEY (downstream_project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
@@ -11179,6 +11678,9 @@ ALTER TABLE ONLY public.cluster_providers_aws
 ALTER TABLE ONLY public.grafana_integrations
     ADD CONSTRAINT fk_rails_18d0e2b564 FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY public.group_wiki_repositories
+    ADD CONSTRAINT fk_rails_19755e374b FOREIGN KEY (shard_id) REFERENCES public.shards(id) ON DELETE RESTRICT;
+
 ALTER TABLE ONLY public.open_project_tracker_data
     ADD CONSTRAINT fk_rails_1987546e48 FOREIGN KEY (service_id) REFERENCES public.services(id) ON DELETE CASCADE;
 
@@ -11227,11 +11729,17 @@ ALTER TABLE ONLY public.service_desk_settings
 ALTER TABLE ONLY public.group_custom_attributes
     ADD CONSTRAINT fk_rails_246e0db83a FOREIGN KEY (group_id) REFERENCES public.namespaces(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY public.group_wiki_repositories
+    ADD CONSTRAINT fk_rails_26f867598c FOREIGN KEY (group_id) REFERENCES public.namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY public.lfs_file_locks
     ADD CONSTRAINT fk_rails_27a1d98fa8 FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.project_alerting_settings
     ADD CONSTRAINT fk_rails_27a84b407d FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.resource_state_events
+    ADD CONSTRAINT fk_rails_29af06892a FOREIGN KEY (issue_id) REFERENCES public.issues(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.reviews
     ADD CONSTRAINT fk_rails_29e6f859c4 FOREIGN KEY (author_id) REFERENCES public.users(id) ON DELETE SET NULL;
@@ -11248,11 +11756,20 @@ ALTER TABLE ONLY public.geo_repository_updated_events
 ALTER TABLE ONLY public.protected_branch_unprotect_access_levels
     ADD CONSTRAINT fk_rails_2d2aba21ef FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY public.ci_freeze_periods
+    ADD CONSTRAINT fk_rails_2e02bbd1a6 FOREIGN KEY (project_id) REFERENCES public.projects(id);
+
 ALTER TABLE ONLY public.saml_providers
     ADD CONSTRAINT fk_rails_306d459be7 FOREIGN KEY (group_id) REFERENCES public.namespaces(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY public.resource_state_events
+    ADD CONSTRAINT fk_rails_3112bba7dc FOREIGN KEY (merge_request_id) REFERENCES public.merge_requests(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY public.merge_request_diff_commits
     ADD CONSTRAINT fk_rails_316aaceda3 FOREIGN KEY (merge_request_diff_id) REFERENCES public.merge_request_diffs(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.group_import_states
+    ADD CONSTRAINT fk_rails_31c3e0503a FOREIGN KEY (group_id) REFERENCES public.namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.zoom_meetings
     ADD CONSTRAINT fk_rails_3263f29616 FOREIGN KEY (issue_id) REFERENCES public.issues(id) ON DELETE CASCADE;
@@ -11347,6 +11864,9 @@ ALTER TABLE ONLY public.ci_resources
 ALTER TABLE ONLY public.clusters_applications_fluentd
     ADD CONSTRAINT fk_rails_4319b1dcd2 FOREIGN KEY (cluster_id) REFERENCES public.clusters(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY public.operations_strategies_user_lists
+    ADD CONSTRAINT fk_rails_43241e8d29 FOREIGN KEY (strategy_id) REFERENCES public.operations_strategies(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY public.lfs_file_locks
     ADD CONSTRAINT fk_rails_43df7a0412 FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
 
@@ -11416,6 +11936,9 @@ ALTER TABLE ONLY public.merge_request_diff_files
 ALTER TABLE ONLY public.status_page_settings
     ADD CONSTRAINT fk_rails_506e5ba391 FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY public.project_repository_storage_moves
+    ADD CONSTRAINT fk_rails_5106dbd44a FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY public.x509_commit_signatures
     ADD CONSTRAINT fk_rails_53fe41188f FOREIGN KEY (x509_certificate_id) REFERENCES public.x509_certificates(id) ON DELETE CASCADE;
 
@@ -11481,6 +12004,9 @@ ALTER TABLE ONLY public.dependency_proxy_group_settings
 
 ALTER TABLE ONLY public.group_deploy_tokens
     ADD CONSTRAINT fk_rails_61a572b41a FOREIGN KEY (group_id) REFERENCES public.namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.status_page_published_incidents
+    ADD CONSTRAINT fk_rails_61e5493940 FOREIGN KEY (issue_id) REFERENCES public.issues(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.deployment_clusters
     ADD CONSTRAINT fk_rails_6359a164df FOREIGN KEY (deployment_id) REFERENCES public.deployments(id) ON DELETE CASCADE;
@@ -11881,6 +12407,9 @@ ALTER TABLE ONLY public.user_canonical_emails
 ALTER TABLE ONLY public.project_repositories
     ADD CONSTRAINT fk_rails_c3258dc63b FOREIGN KEY (shard_id) REFERENCES public.shards(id) ON DELETE RESTRICT;
 
+ALTER TABLE ONLY public.packages_nuget_dependency_link_metadata
+    ADD CONSTRAINT fk_rails_c3313ee2e4 FOREIGN KEY (dependency_link_id) REFERENCES public.packages_dependency_links(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY public.merge_request_user_mentions
     ADD CONSTRAINT fk_rails_c440b9ea31 FOREIGN KEY (note_id) REFERENCES public.notes(id) ON DELETE CASCADE;
 
@@ -11905,6 +12434,9 @@ ALTER TABLE ONLY public.vulnerability_occurrences
 ALTER TABLE ONLY public.project_export_jobs
     ADD CONSTRAINT fk_rails_c88d8db2e1 FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY public.resource_state_events
+    ADD CONSTRAINT fk_rails_c913c64977 FOREIGN KEY (epic_id) REFERENCES public.epics(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY public.resource_milestone_events
     ADD CONSTRAINT fk_rails_c940fb9fc5 FOREIGN KEY (milestone_id) REFERENCES public.milestones(id) ON DELETE CASCADE;
 
@@ -11919,6 +12451,9 @@ ALTER TABLE ONLY public.ci_daily_report_results
 
 ALTER TABLE ONLY public.issues_self_managed_prometheus_alert_events
     ADD CONSTRAINT fk_rails_cc5d88bbb0 FOREIGN KEY (issue_id) REFERENCES public.issues(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.operations_strategies_user_lists
+    ADD CONSTRAINT fk_rails_ccb7e4bc0b FOREIGN KEY (user_list_id) REFERENCES public.operations_user_lists(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.issue_tracker_data
     ADD CONSTRAINT fk_rails_ccc0840427 FOREIGN KEY (service_id) REFERENCES public.services(id) ON DELETE CASCADE;
@@ -12019,6 +12554,9 @@ ALTER TABLE ONLY public.ci_daily_report_results
 ALTER TABLE ONLY public.cluster_providers_aws
     ADD CONSTRAINT fk_rails_ed1fdfaeb2 FOREIGN KEY (created_by_user_id) REFERENCES public.users(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY public.ci_daily_build_group_report_results
+    ADD CONSTRAINT fk_rails_ee072d13b3 FOREIGN KEY (last_pipeline_id) REFERENCES public.ci_pipelines(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY public.label_priorities
     ADD CONSTRAINT fk_rails_ef916d14fa FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
 
@@ -12052,6 +12590,9 @@ ALTER TABLE ONLY public.insights
 ALTER TABLE ONLY public.board_group_recent_visits
     ADD CONSTRAINT fk_rails_f410736518 FOREIGN KEY (group_id) REFERENCES public.namespaces(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY public.resource_state_events
+    ADD CONSTRAINT fk_rails_f5827a7ccd FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY public.design_user_mentions
     ADD CONSTRAINT fk_rails_f7075a53c1 FOREIGN KEY (design_id) REFERENCES public.design_management_designs(id) ON DELETE CASCADE;
 
@@ -12081,6 +12622,9 @@ ALTER TABLE ONLY public.serverless_domain_cluster
 
 ALTER TABLE ONLY public.ci_job_variables
     ADD CONSTRAINT fk_rails_fbf3b34792 FOREIGN KEY (job_id) REFERENCES public.ci_builds(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.packages_nuget_metadata
+    ADD CONSTRAINT fk_rails_fc0c19f5b4 FOREIGN KEY (package_id) REFERENCES public.packages_packages(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.cluster_groups
     ADD CONSTRAINT fk_rails_fdb8648a96 FOREIGN KEY (cluster_id) REFERENCES public.clusters(id) ON DELETE CASCADE;
@@ -13016,14 +13560,17 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200213204737
 20200213220159
 20200213220211
+20200213224220
 20200214025454
 20200214034836
 20200214085940
 20200214214934
 20200215222507
 20200215225103
+20200217210353
 20200217223651
 20200217225719
+20200218113721
 20200219105209
 20200219133859
 20200219135440
@@ -13064,6 +13611,10 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200303055348
 20200303074328
 20200303181648
+20200304023245
+20200304023851
+20200304024025
+20200304024042
 20200304085423
 20200304090155
 20200304121828
@@ -13094,6 +13645,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200310135818
 20200310135823
 20200310145304
+20200310215714
 20200311074438
 20200311082301
 20200311084025
@@ -13108,6 +13660,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200311214912
 20200312053852
 20200312125121
+20200312134637
 20200312160532
 20200312163407
 20200313101649
@@ -13136,6 +13689,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200319203901
 20200320112455
 20200320123839
+20200320212400
 20200323011225
 20200323011955
 20200323071918
@@ -13169,18 +13723,27 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200331132103
 20200331195952
 20200331220930
+20200401091051
 20200401095430
 20200401211005
+20200402001106
+20200402115013
+20200402115623
 20200402123926
 20200402124802
 20200402135250
 20200402185044
+20200403132349
 20200403184110
 20200403185127
 20200403185422
+20200406095930
+20200406100909
 20200406102111
 20200406102120
+20200406132529
 20200406135648
+20200406141452
 20200406192059
 20200406193427
 20200407094005
@@ -13189,7 +13752,10 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200407121321
 20200407171133
 20200407171417
+20200407182205
+20200407222647
 20200408110856
+20200408125046
 20200408133211
 20200408153842
 20200408154331
@@ -13203,18 +13769,103 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200408175424
 20200408212219
 20200409085956
+20200409105455
+20200409105456
 20200409211607
+20200410104828
 20200410232012
+20200411125656
 20200413072059
+20200413230056
+20200414112444
+20200414114611
+20200414115801
 20200414144547
+20200415153154
 20200415160722
 20200415161021
 20200415161206
 20200415192656
+20200415203024
+20200416005331
 20200416111111
 20200416120128
 20200416120354
+20200417044453
+20200417075843
+20200417145946
+20200420092011
+20200420094444
+20200420104303
+20200420104323
+20200420115948
+20200420141733
+20200420162730
+20200420172113
+20200420172752
+20200420172927
+20200420201933
+20200421092907
+20200421111005
+20200421233150
+20200422091541
+20200422213749
+20200423075720
+20200423080334
+20200423080607
+20200423081409
+20200423081441
+20200423081519
+20200423101529
+20200424043515
+20200424050250
+20200424101920
+20200424135319
+20200427064130
+20200428134356
+20200429001827
+20200429002150
+20200429015603
+20200429181335
+20200429181955
+20200429182245
+20200430103158
+20200430130048
+20200505164958
+20200505171834
+20200505172405
+20200506085748
+20200506125731
+20200506154421
+20200507221434
+20200508091106
+20200511080113
+20200511083541
+20200511092246
+20200511092505
+20200511092714
+20200511115430
+20200511115431
+20200511121549
+20200511121610
+20200511121620
+20200511130129
+20200511130130
+20200511145545
 20200511162057
 20200511162115
+20200511220023
+20200512085150
+20200512164334
+20200513160930
+20200513171959
+20200513224143
+20200513234502
+20200513235347
+20200513235532
+20200514000009
+20200514000132
+20200514000340
+20200515155620
 \.
 

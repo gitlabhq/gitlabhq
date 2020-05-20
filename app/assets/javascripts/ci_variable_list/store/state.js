@@ -5,6 +5,7 @@ export default () => ({
   projectId: null,
   isGroup: null,
   maskableRegex: null,
+  isProtectedByDefault: null,
   isLoading: false,
   isDeleting: false,
   variable: {

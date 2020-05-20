@@ -15,8 +15,9 @@ export default {
   [types.REQUEST_DATA_ERROR](state) {
     state.loading = false;
   },
-  [types.SET_CURRENT_DEFINITION](state, { definition, position }) {
+  [types.SET_CURRENT_DEFINITION](state, { definition, position, blobPath }) {
     state.currentDefinition = definition;
     state.currentDefinitionPosition = position;
+    state.currentBlobPath = blobPath;
   },
 };

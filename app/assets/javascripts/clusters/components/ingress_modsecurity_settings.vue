@@ -1,5 +1,5 @@
 <script>
-import { escape as esc } from 'lodash';
+import { escape } from 'lodash';
 import { s__, __ } from '../../locale';
 import { APPLICATION_STATUS, INGRESS, LOGGING_MODE, BLOCKING_MODE } from '~/clusters/constants';
 import {
@@ -87,7 +87,7 @@ export default {
       );
     },
     ingressModSecurityDescription() {
-      return esc(this.ingressModSecurityHelpPath);
+      return escape(this.ingressModSecurityHelpPath);
     },
     saving() {
       return [UPDATING].includes(this.ingress.status);

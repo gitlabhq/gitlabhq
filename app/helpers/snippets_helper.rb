@@ -42,72 +42,6 @@ module SnippetsHelper
     (lower..upper).to_a
   end
 
-  # Returns a sorted set of lines to be included in a snippet preview.
-  # This ensures matching adjacent lines do not display duplicated
-  # surrounding code.
-  #
-  # @returns Array, unique and sorted.
-  def matching_lines(lined_content, surrounding_lines, query)
-    used_lines = []
-    lined_content.each_with_index do |line, line_number|
-      used_lines.concat bounded_line_numbers(
-        line_number,
-        0,
-        lined_content.size,
-        surrounding_lines
-      ) if line.downcase.include?(query.downcase)
-    end
-
-    used_lines.uniq.sort
-  end
-
-  # 'Chunkify' entire snippet.  Splits the snippet data into matching lines +
-  # surrounding_lines() worth of unmatching lines.
-  #
-  # @returns a hash with {snippet_object, snippet_chunks:{data,start_line}}
-  def chunk_snippet(snippet, query, surrounding_lines = 3)
-    lined_content = snippet.content.split("\n")
-    used_lines = matching_lines(lined_content, surrounding_lines, query)
-
-    snippet_chunk = []
-    snippet_chunks = []
-    snippet_start_line = 0
-    last_line = -1
-
-    # Go through each used line, and add consecutive lines as a single chunk
-    # to the snippet chunk array.
-    used_lines.each do |line_number|
-      if last_line < 0
-        # Start a new chunk.
-        snippet_start_line = line_number
-        snippet_chunk << lined_content[line_number]
-      elsif last_line == line_number - 1
-        # Consecutive line, continue chunk.
-        snippet_chunk << lined_content[line_number]
-      else
-        # Non-consecutive line, add chunk to chunk array.
-        snippet_chunks << {
-          data: snippet_chunk.join("\n"),
-          start_line: snippet_start_line + 1
-        }
-
-        # Start a new chunk.
-        snippet_chunk = [lined_content[line_number]]
-        snippet_start_line = line_number
-      end
-
-      last_line = line_number
-    end
-    # Add final chunk to chunk array
-    snippet_chunks << {
-      data: snippet_chunk.join("\n"),
-      start_line: snippet_start_line + 1
-    }
-
-    # Return snippet with chunk array
-    { snippet_object: snippet, snippet_chunks: snippet_chunks }
-  end
-
   def snippet_embed_tag(snippet)
     content_tag(:script, nil, src: gitlab_snippet_url(snippet, format: :js))
   end
@@ -159,15 +93,5 @@ module SnippetsHelper
             target: '_blank',
             title: 'Download',
             rel: 'noopener noreferrer')
-  end
-
-  def snippet_file_name(snippet)
-    blob = if Feature.enabled?(:version_snippets, current_user) && !snippet.repository.empty?
-             snippet.blobs.first
-           else
-             snippet.blob
-           end
-
-    blob.name
   end
 end

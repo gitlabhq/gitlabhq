@@ -567,6 +567,61 @@ describe Gitlab::Diff::File do
     end
   end
 
+  describe '#alternate_viewer' do
+    subject { diff_file.alternate_viewer }
+
+    where(:viewer_class) do
+      [
+        DiffViewer::Image,
+        DiffViewer::Collapsed,
+        DiffViewer::NotDiffable,
+        DiffViewer::Text,
+        DiffViewer::NoPreview,
+        DiffViewer::Added,
+        DiffViewer::Deleted,
+        DiffViewer::ModeChanged,
+        DiffViewer::ModeChanged,
+        DiffViewer::NoPreview
+      ]
+    end
+
+    with_them do
+      let(:viewer) { viewer_class.new(diff_file) }
+
+      before do
+        allow(diff_file).to receive(:viewer).and_return(viewer)
+      end
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when viewer is DiffViewer::Renamed' do
+      let(:viewer) { DiffViewer::Renamed.new(diff_file) }
+
+      before do
+        allow(diff_file).to receive(:viewer).and_return(viewer)
+      end
+
+      context 'when it can be rendered as text' do
+        it { is_expected.to be_a(DiffViewer::Text) }
+      end
+
+      context 'when it can be rendered as image' do
+        let(:commit) { project.commit('2f63565e7aac07bcdadb654e253078b727143ec4') }
+        let(:diff_file) { commit.diffs.diff_file_with_new_path('files/images/6049019_460s.jpg') }
+
+        it { is_expected.to be_a(DiffViewer::Image) }
+      end
+
+      context 'when it is something else' do
+        let(:commit) { project.commit('ae73cb07c9eeaf35924a10f713b364d32b2dd34f') }
+        let(:diff_file) { commit.diffs.diff_file_with_new_path('Gemfile.zip') }
+
+        it { is_expected.to be_nil }
+      end
+    end
+  end
+
   describe '#rendered_as_text?' do
     context 'when the simple viewer is text-based' do
       let(:commit) { project.commit('570e7b2abdd848b95f2f578043fc23bd6f6fd24d') }

@@ -65,4 +65,16 @@ describe ObjectStorage::MigrateUploadsWorker do
       end
     end
   end
+
+  context 'for DesignManagement::DesignV432x230Uploader' do
+    let(:model_class) { DesignManagement::Action }
+    let!(:design_actions) { create_list(:design_action, 10, :with_image_v432x230) }
+    let(:mounted_as) { :image_v432x230 }
+
+    before do
+      stub_uploads_object_storage(DesignManagement::DesignV432x230Uploader)
+    end
+
+    it_behaves_like 'uploads migration worker'
+  end
 end

@@ -23,17 +23,20 @@ exports[`Code navigation popover component renders popover 1`] = `
   <div
     class="popover-body"
   >
-    <gl-deprecated-button-stub
+    <gl-button-stub
+      category="tertiary"
       class="w-100"
-      href="http://test.com"
-      size="md"
+      data-testid="go-to-definition-btn"
+      href="http://gitlab.com/test.js#L20"
+      icon=""
+      size="medium"
       target="_blank"
       variant="default"
     >
       
       Go to definition
     
-    </gl-deprecated-button-stub>
+    </gl-button-stub>
   </div>
 </div>
 `;

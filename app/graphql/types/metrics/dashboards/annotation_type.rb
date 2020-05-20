@@ -16,10 +16,10 @@ module Types
         field :panel_id, GraphQL::STRING_TYPE, null: true,
               description: 'ID of a dashboard panel to which the annotation should be scoped'
 
-        field :starting_at, GraphQL::STRING_TYPE, null: true,
+        field :starting_at, Types::TimeType, null: true,
               description: 'Timestamp marking start of annotated time span'
 
-        field :ending_at, GraphQL::STRING_TYPE, null: true,
+        field :ending_at, Types::TimeType, null: true,
               description: 'Timestamp marking end of annotated time span'
 
         def panel_id

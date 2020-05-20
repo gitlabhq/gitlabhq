@@ -7,7 +7,7 @@ class AddGroupOwnersCanManageDefaultBranchProtectionToApplicationSettings < Acti
   disable_ddl_transaction!
 
   def up
-    add_column_with_default(:application_settings,
+    add_column_with_default(:application_settings, # rubocop:disable Migration/AddColumnWithDefault
                             :group_owners_can_manage_default_branch_protection,
                             :boolean,
                             default: true)

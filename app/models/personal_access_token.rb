@@ -4,6 +4,7 @@ class PersonalAccessToken < ApplicationRecord
   include Expirable
   include TokenAuthenticatable
   include Sortable
+  extend ::Gitlab::Utils::Override
 
   add_authentication_token_field :token, digest: true
 
@@ -23,6 +24,8 @@ class PersonalAccessToken < ApplicationRecord
   scope :without_impersonation, -> { where(impersonation: false) }
   scope :for_user, -> (user) { where(user: user) }
   scope :preload_users, -> { preload(:user) }
+  scope :order_expires_at_asc, -> { reorder(expires_at: :asc) }
+  scope :order_expires_at_desc, -> { reorder(expires_at: :desc) }
 
   validates :scopes, presence: true
   validate :validate_scopes
@@ -39,12 +42,14 @@ class PersonalAccessToken < ApplicationRecord
 
   def self.redis_getdel(user_id)
     Gitlab::Redis::SharedState.with do |redis|
-      encrypted_token = redis.get(redis_shared_state_key(user_id))
-      redis.del(redis_shared_state_key(user_id))
+      redis_key = redis_shared_state_key(user_id)
+      encrypted_token = redis.get(redis_key)
+      redis.del(redis_key)
+
       begin
         Gitlab::CryptoHelper.aes256_gcm_decrypt(encrypted_token)
       rescue => ex
-        logger.warn "Failed to decrypt PersonalAccessToken value stored in Redis for User ##{user_id}: #{ex.class}"
+        logger.warn "Failed to decrypt #{self.name} value stored in Redis for key ##{redis_key}: #{ex.class}"
         encrypted_token
       end
     end
@@ -56,6 +61,16 @@ class PersonalAccessToken < ApplicationRecord
     Gitlab::Redis::SharedState.with do |redis|
       redis.set(redis_shared_state_key(user_id), encrypted_token, ex: REDIS_EXPIRY_TIME)
     end
+  end
+
+  override :simple_sorts
+  def self.simple_sorts
+    super.merge(
+      {
+        'expires_at_asc' => -> { order_expires_at_asc },
+        'expires_at_desc' => -> { order_expires_at_desc }
+      }
+    )
   end
 
   protected

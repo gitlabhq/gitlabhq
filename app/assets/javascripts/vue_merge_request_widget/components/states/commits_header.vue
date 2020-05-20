@@ -1,6 +1,6 @@
 <script>
 import { GlDeprecatedButton } from '@gitlab/ui';
-import { escape as esc } from 'lodash';
+import { escape } from 'lodash';
 import { __, n__, sprintf, s__ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
 
@@ -60,7 +60,7 @@ export default {
         {
           commitCount: `<strong class="commits-count-message">${this.commitsCountMessage}</strong>`,
           mergeCommitCount: `<strong>${s__('mrWidgetCommitsAdded|1 merge commit')}</strong>`,
-          targetBranch: `<span class="label-branch">${esc(this.targetBranch)}</span>`,
+          targetBranch: `<span class="label-branch">${escape(this.targetBranch)}</span>`,
         },
         false,
       );

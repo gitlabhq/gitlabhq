@@ -1,0 +1,20 @@
+{
+  "type": "object",
+  "required": [
+    "id",
+    "created_at",
+    "state",
+    "source_storage_name",
+    "destination_storage_name",
+    "project"
+  ],
+  "properties" : {
+    "id": { "type": "integer" },
+    "created_at": { "type": "date" },
+    "state": { "type": "string" },
+    "source_storage_name": { "type": "string" },
+    "destination_storage_name": { "type": "string" },
+    "project": { "type": "object" }
+  },
+  "additionalProperties": false
+}

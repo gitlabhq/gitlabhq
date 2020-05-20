@@ -7,7 +7,7 @@ class AddMaxIssueCountToList < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def up
-    add_column_with_default :lists, :max_issue_count, :integer, default: 0
+    add_column_with_default :lists, :max_issue_count, :integer, default: 0 # rubocop:disable Migration/AddColumnWithDefault
   end
 
   def down

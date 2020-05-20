@@ -174,15 +174,16 @@ describe MergeRequestsFinder do
             deployment1 = create(
               :deployment,
               project: project_with_repo,
-              sha: project_with_repo.commit.id,
-              merge_requests: [merge_request1, merge_request2]
+              sha: project_with_repo.commit.id
             )
-            create(
+            deployment2 = create(
               :deployment,
               project: project_with_repo,
-              sha: project_with_repo.commit.id,
-              merge_requests: [merge_request3]
+              sha: project_with_repo.commit.id
             )
+            deployment1.link_merge_requests(MergeRequest.where(id: [merge_request1.id, merge_request2.id]))
+            deployment2.link_merge_requests(MergeRequest.where(id: merge_request3.id))
+
             params = { deployment_id: deployment1.id }
             merge_requests = described_class.new(user, params).execute
 

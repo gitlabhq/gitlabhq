@@ -1,7 +1,7 @@
 /* eslint-disable class-methods-use-this */
 
 import { Mark } from 'tiptap';
-import { escape as esc } from 'lodash';
+import { escape } from 'lodash';
 
 // Transforms generated HTML back to GFM for Banzai::Filter::MarkdownFilter
 export default class InlineHTML extends Mark {
@@ -35,7 +35,7 @@ export default class InlineHTML extends Mark {
       mixable: true,
       open(state, mark) {
         return `<${mark.attrs.tag}${
-          mark.attrs.title ? ` title="${state.esc(esc(mark.attrs.title))}"` : ''
+          mark.attrs.title ? ` title="${state.esc(escape(mark.attrs.title))}"` : ''
         }>`;
       },
       close(state, mark) {

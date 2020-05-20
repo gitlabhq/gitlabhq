@@ -5,8 +5,12 @@ module QA
     module Component
       module WebIDE
         module Alert
-          def self.prepended(page)
-            page.module_eval do
+          extend QA::Page::PageConcern
+
+          def self.prepended(base)
+            super
+
+            base.class_eval do
               view 'app/assets/javascripts/ide/components/error_message.vue' do
                 element :flash_alert
               end

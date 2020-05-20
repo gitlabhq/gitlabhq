@@ -1,0 +1,43 @@
+type File {
+  title: String
+  content: String!
+}
+
+type SavedContentField {
+  label: String!
+  url: String!
+}
+
+type SavedContentMeta {
+  mergeRequest: SavedContentField!
+  commit: SavedContentField!
+  branch: SavedContentField!
+}
+
+type AppData {
+  isSupportedContent: Boolean!
+  project: String!
+  returnUrl: String
+  sourcePath: String!
+  username: String!
+}
+
+type SubmitContentChangesInput {
+  project: String!
+  sourcePath: String!
+  content: String!
+  username: String!
+}
+
+extend type Project {
+  file(path: ID!): File
+}
+
+extend type Query {
+  appData: AppData!
+  savedContentMeta: SavedContentMeta
+}
+
+extend type Mutation {
+  submitContentChanges(input: SubmitContentChangesInput!): SavedContentMeta
+}

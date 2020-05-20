@@ -10,7 +10,7 @@
           = _('Allow repository mirroring to be configured by project maintainers')
       %span.form-text.text-muted
         = _('If disabled, only admins will be able to configure repository mirroring.')
-        = link_to icon('question-circle'), help_page_path('workflow/repository_mirroring')
+        = link_to icon('question-circle'), help_page_path('user/project/repository/repository_mirroring.md')
 
     = render_if_exists 'admin/application_settings/mirror_settings', form: f
 

@@ -1,0 +1,5 @@
+---
+title: Drop support for `license_management` artifact
+merge_request: 31247
+author:
+type: removed

@@ -6,7 +6,7 @@ class AddAllowLocalRequestsFromHooksAndServicesToApplicationSettings < ActiveRec
   disable_ddl_transaction!
 
   def up
-    add_column_with_default(:application_settings, :allow_local_requests_from_hooks_and_services,
+    add_column_with_default(:application_settings, :allow_local_requests_from_hooks_and_services, # rubocop:disable Migration/AddColumnWithDefault
                             :boolean,
                             default: false,
                             allow_null: false)

@@ -1,8 +1,23 @@
 <script>
 import { uniqueId } from 'lodash';
 import { GlFormGroup, GlToggle, GlFormSelect, GlFormTextarea, GlSprintf } from '@gitlab/ui';
-import { s__, __ } from '~/locale';
-import { NAME_REGEX_LENGTH } from '../constants';
+import {
+  NAME_REGEX_LENGTH,
+  ENABLED_TEXT,
+  DISABLED_TEXT,
+  TEXT_AREA_INVALID_FEEDBACK,
+  EXPIRATION_INTERVAL_LABEL,
+  EXPIRATION_SCHEDULE_LABEL,
+  KEEP_N_LABEL,
+  NAME_REGEX_LABEL,
+  NAME_REGEX_PLACEHOLDER,
+  NAME_REGEX_DESCRIPTION,
+  NAME_REGEX_KEEP_LABEL,
+  NAME_REGEX_KEEP_PLACEHOLDER,
+  NAME_REGEX_KEEP_DESCRIPTION,
+  ENABLE_TOGGLE_LABEL,
+  ENABLE_TOGGLE_DESCRIPTION,
+} from '../constants';
 import { mapComputedToEvent } from '../utils';
 
 export default {
@@ -40,25 +55,47 @@ export default {
       default: 'right',
     },
   },
-  nameRegexPlaceholder: '.*',
+  i18n: {
+    textAreaInvalidFeedback: TEXT_AREA_INVALID_FEEDBACK,
+    enableToggleLabel: ENABLE_TOGGLE_LABEL,
+    enableToggleDescription: ENABLE_TOGGLE_DESCRIPTION,
+  },
   selectList: [
     {
       name: 'expiration-policy-interval',
-      label: s__('ContainerRegistry|Expiration interval:'),
+      label: EXPIRATION_INTERVAL_LABEL,
       model: 'older_than',
       optionKey: 'olderThan',
     },
     {
       name: 'expiration-policy-schedule',
-      label: s__('ContainerRegistry|Expiration schedule:'),
+      label: EXPIRATION_SCHEDULE_LABEL,
       model: 'cadence',
       optionKey: 'cadence',
     },
     {
       name: 'expiration-policy-latest',
-      label: s__('ContainerRegistry|Number of tags to retain:'),
+      label: KEEP_N_LABEL,
       model: 'keep_n',
       optionKey: 'keepN',
+    },
+  ],
+  textAreaList: [
+    {
+      name: 'expiration-policy-name-matching',
+      label: NAME_REGEX_LABEL,
+      model: 'name_regex',
+      placeholder: NAME_REGEX_PLACEHOLDER,
+      stateVariable: 'nameRegexState',
+      description: NAME_REGEX_DESCRIPTION,
+    },
+    {
+      name: 'expiration-policy-keep-name',
+      label: NAME_REGEX_KEEP_LABEL,
+      model: 'name_regex_keep',
+      placeholder: NAME_REGEX_KEEP_PLACEHOLDER,
+      stateVariable: 'nameKeepRegexState',
+      description: NAME_REGEX_KEEP_DESCRIPTION,
     },
   ],
   data() {
@@ -67,15 +104,24 @@ export default {
     };
   },
   computed: {
-    ...mapComputedToEvent(['enabled', 'cadence', 'older_than', 'keep_n', 'name_regex'], 'value'),
+    ...mapComputedToEvent(
+      ['enabled', 'cadence', 'older_than', 'keep_n', 'name_regex', 'name_regex_keep'],
+      'value',
+    ),
     policyEnabledText() {
-      return this.enabled ? __('enabled') : __('disabled');
+      return this.enabled ? ENABLED_TEXT : DISABLED_TEXT;
     },
-    nameRegexState() {
-      return this.name_regex ? this.name_regex.length <= NAME_REGEX_LENGTH : null;
+    textAreaState() {
+      return {
+        nameRegexState: this.validateNameRegex(this.name_regex),
+        nameKeepRegexState: this.validateNameRegex(this.name_regex_keep),
+      };
     },
     fieldsValidity() {
-      return this.nameRegexState !== false;
+      return (
+        this.textAreaState.nameRegexState !== false &&
+        this.textAreaState.nameKeepRegexState !== false
+      );
     },
     isFormElementDisabled() {
       return !this.enabled || this.isLoading;
@@ -94,6 +140,9 @@ export default {
     },
   },
   methods: {
+    validateNameRegex(value) {
+      return value ? value.length <= NAME_REGEX_LENGTH : null;
+    },
     idGenerator(id) {
       return `${id}_${this.uniqueId}`;
     },
@@ -111,7 +160,7 @@ export default {
       :label-cols="labelCols"
       :label-align="labelAlign"
       :label-for="idGenerator('expiration-policy-toggle')"
-      :label="s__('ContainerRegistry|Expiration policy:')"
+      :label="$options.i18n.enableToggleLabel"
     >
       <div class="d-flex align-items-start">
         <gl-toggle
@@ -120,9 +169,7 @@ export default {
           :disabled="isLoading"
         />
         <span class="mb-2 ml-1 lh-2">
-          <gl-sprintf
-            :message="s__('ContainerRegistry|Docker tag expiration policy is %{toggleStatus}')"
-          >
+          <gl-sprintf :message="$options.i18n.enableToggleDescription">
             <template #toggleStatus>
               <strong>{{ policyEnabledText }}</strong>
             </template>
@@ -157,35 +204,34 @@ export default {
     </gl-form-group>
 
     <gl-form-group
-      :id="idGenerator('expiration-policy-name-matching-group')"
+      v-for="textarea in $options.textAreaList"
+      :id="idGenerator(`${textarea.name}-group`)"
+      :key="textarea.name"
       :label-cols="labelCols"
       :label-align="labelAlign"
-      :label-for="idGenerator('expiration-policy-name-matching')"
-      :label="
-        s__('ContainerRegistry|Docker tags with names matching this regex pattern will expire:')
-      "
-      :state="nameRegexState"
-      :invalid-feedback="
-        s__('ContainerRegistry|The value of this input should be less than 255 characters')
-      "
+      :label-for="idGenerator(textarea.name)"
+      :state="textAreaState[textarea.stateVariable]"
+      :invalid-feedback="$options.i18n.textAreaInvalidFeedback"
     >
+      <template #label>
+        <gl-sprintf :message="textarea.label">
+          <template #italic="{content}">
+            <i>{{ content }}</i>
+          </template>
+        </gl-sprintf>
+      </template>
       <gl-form-textarea
-        :id="idGenerator('expiration-policy-name-matching')"
-        v-model="name_regex"
-        :placeholder="$options.nameRegexPlaceholder"
-        :state="nameRegexState"
+        :id="idGenerator(textarea.name)"
+        :value="value[textarea.model]"
+        :placeholder="textarea.placeholder"
+        :state="textAreaState[textarea.stateVariable]"
         :disabled="isFormElementDisabled"
         trim
+        @input="updateModel($event, textarea.model)"
       />
       <template #description>
         <span ref="regex-description">
-          <gl-sprintf
-            :message="
-              s__(
-                'ContainerRegistry|Wildcards such as %{codeStart}.*-stable%{codeEnd} or %{codeStart}production/.*%{codeEnd} are supported.  To select all tags, use %{codeStart}.*%{codeEnd}',
-              )
-            "
-          >
+          <gl-sprintf :message="textarea.description">
             <template #code="{content}">
               <code>{{ content }}</code>
             </template>

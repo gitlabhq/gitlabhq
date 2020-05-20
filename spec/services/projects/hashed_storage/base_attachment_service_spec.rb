@@ -31,7 +31,7 @@ describe Projects::HashedStorage::BaseAttachmentService do
       expect(Dir.exist?(target_path)).to be_truthy
 
       Timecop.freeze do
-        suffix = Time.now.utc.to_i
+        suffix = Time.current.utc.to_i
         subject.send(:discard_path!, target_path)
 
         expected_renamed_path = "#{target_path}-#{suffix}"

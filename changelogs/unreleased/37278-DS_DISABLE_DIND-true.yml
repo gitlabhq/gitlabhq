@@ -1,0 +1,5 @@
+---
+title: 'Disable Docker-in-Docker for Dependency Scanning by default'
+merge_request: 31588
+author:
+type: changed

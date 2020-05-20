@@ -8,7 +8,7 @@ class AddTokenDigestToPersonalAccessTokens < ActiveRecord::Migration[4.2]
   def up
     change_column :personal_access_tokens, :token, :string, null: true
 
-    add_column :personal_access_tokens, :token_digest, :string # rubocop:disable Migration/AddLimitToStringColumns
+    add_column :personal_access_tokens, :token_digest, :string # rubocop:disable Migration/PreventStrings
   end
 
   def down

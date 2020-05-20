@@ -59,7 +59,7 @@ We recommend setting the NameID format to `Persistent` unless using a field (suc
 
 With this option enabled, users must use your group's GitLab single sign on URL to be added to the group or be added via SCIM. Users cannot be added manually, and may only access project/group resources via the UI by signing in through the SSO URL.
 
-However, users will not be prompted to log via SSO on each visit. GitLab will check whether a user has authenticated through the SSO link, and will only prompt the user to login via SSO if it has been longer than 7 days.
+However, users will not be prompted to log via SSO on each visit. GitLab will check whether a user has authenticated through the SSO link, and will only prompt the user to login via SSO if the session has expired.
 
 We intend to add a similar SSO requirement for [Git and API activity](https://gitlab.com/gitlab-org/gitlab/issues/9152) in the future.
 
@@ -189,6 +189,9 @@ Once you've set up your identity provider to work with GitLab, you'll need to co
 
 ![Group SAML Settings for GitLab.com](img/group_saml_settings.png)
 
+NOTE: **Note:**
+Please note that the certificate [fingerprint algorithm](#additional-setup-options) must be in SHA1. When configuring the identity provider, use a secure [signature algorithm](#additional-setup-options).
+
 ## User access and management
 
 Once Group SSO is configured and enabled, users can access the GitLab.com group through the identity provider's dashboard. If [SCIM](scim_setup.md) is configured, please see the [user access and linking setup section on the SCIM page](scim_setup.md#user-access-and-linking-setup).
@@ -254,6 +257,9 @@ Set other user attributes and claims according to the [assertions table](#assert
 
 ### Okta setup notes
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For a demo of the Okta SAML setup including SCIM, see [Demo: Okta Group SAML & SCIM setup](https://youtu.be/0ES9HsZq0AQ).
+
 | GitLab Setting | Okta Field |
 |--------------|----------------|
 | Identifier | Audience URI |
@@ -297,7 +303,7 @@ GitLab [isn't limited to the SAML providers listed above](#my-identity-provider-
 | SAML Request Binding | HTTP Redirect | GitLab (the service provider) redirects users to your Identity Provider with a base64 encoded `SAMLRequest` HTTP parameter. |
 | SAML Response Binding | HTTP POST | Your Identity Provider responds to users with an HTTP form including the `SAMLResponse`, which a user's browser submits back to GitLab. |
 | Sign SAML Response | Yes | We require this to prevent tampering. |
-| X509 Certificate in response | Yes | This is used to sign the response and checked against the provided fingerprint. |
+| X.509 Certificate in response | Yes | This is used to sign the response and checked against the provided fingerprint. |
 | Fingerprint Algorithm | SHA-1  | We need a SHA-1 hash of the certificate used to sign the SAML Response. |
 | Signature Algorithm | SHA-1/SHA-256/SHA-384/SHA-512 | Also known as the Digest Method, this can be specified in the SAML response. It determines how a response is signed. |
 | Encrypt SAML Assertion | No | TLS is used between your Identity Provider, the user's browser, and GitLab. |

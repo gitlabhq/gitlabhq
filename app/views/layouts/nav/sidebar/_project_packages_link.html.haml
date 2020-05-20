@@ -4,12 +4,12 @@
       .nav-icon-container
         = sprite_icon('package')
       %span.nav-item-name
-        = _('Packages')
+        = _('Packages & Registries')
     %ul.sidebar-sub-level-items
       = nav_link(controller: :repositories, html_options: { class: "fly-out-top-item" } ) do
         = link_to project_container_registry_index_path(@project) do
           %strong.fly-out-top-item-name
-            = _('Packages')
+            = _('Packages & Registries')
       %li.divider.fly-out-top-item
       = nav_link controller: :repositories do
         = link_to project_container_registry_index_path(@project), class: 'shortcuts-container-registry', title: _('Container Registry') do

@@ -52,7 +52,7 @@ module Auth
     end
 
     def self.token_expire_at
-      Time.now + Gitlab::CurrentSettings.container_registry_token_expire_delay.minutes
+      Time.current + Gitlab::CurrentSettings.container_registry_token_expire_delay.minutes
     end
 
     private
@@ -103,17 +103,19 @@ module Auth
 
       return unless requested_project
 
-      actions = actions.select do |action|
+      authorized_actions = actions.select do |action|
         can_access?(requested_project, action)
       end
 
-      return unless actions.present?
+      log_if_actions_denied(type, requested_project, actions, authorized_actions)
+
+      return unless authorized_actions.present?
 
       # At this point user/build is already authenticated.
       #
-      ensure_container_repository!(path, actions)
+      ensure_container_repository!(path, authorized_actions)
 
-      { type: type, name: path.to_s, actions: actions }
+      { type: type, name: path.to_s, actions: authorized_actions }
     end
 
     ##
@@ -221,6 +223,23 @@ module Auth
       @authentication_abilities.any? do |ability|
         REGISTRY_LOGIN_ABILITIES.include?(ability)
       end
+    end
+
+    def log_if_actions_denied(type, requested_project, requested_actions, authorized_actions)
+      return if requested_actions == authorized_actions
+
+      log_info = {
+        message: "Denied container registry permissions",
+        scope_type: type,
+        requested_project_path: requested_project.full_path,
+        requested_actions: requested_actions,
+        authorized_actions: authorized_actions,
+        username: current_user&.username,
+        user_id: current_user&.id,
+        project_path: project&.full_path
+      }.compact
+
+      Gitlab::AuthLogger.warn(log_info)
     end
   end
 end

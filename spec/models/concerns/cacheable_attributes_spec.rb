@@ -205,11 +205,11 @@ describe CacheableAttributes do
       end
     end
 
-    it 'uses RequestStore in addition to Thread memory cache', :request_store do
+    it 'uses RequestStore in addition to process memory cache', :request_store do
       # Warm up the cache
       create(:application_setting).cache!
 
-      expect(ApplicationSetting.cache_backend).to eq(Gitlab::ThreadMemoryCache.cache_backend)
+      expect(ApplicationSetting.cache_backend).to eq(Gitlab::ProcessMemoryCache.cache_backend)
       expect(ApplicationSetting.cache_backend).to receive(:read).with(ApplicationSetting.cache_key).once.and_call_original
 
       2.times { ApplicationSetting.current }

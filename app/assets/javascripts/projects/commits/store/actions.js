@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/browser';
 import * as types from './mutation_types';
 import axios from '~/lib/utils/axios_utils';
 import createFlash from '~/flash';
@@ -26,6 +27,9 @@ export default {
         },
       })
       .then(({ data }) => dispatch('receiveAuthorsSuccess', data))
-      .catch(() => dispatch('receiveAuthorsError'));
+      .catch(error => {
+        Sentry.captureException(error);
+        dispatch('receiveAuthorsError');
+      });
   },
 };

@@ -8,7 +8,7 @@ describe EncryptPlaintextAttributesOnApplicationSettings do
   let(:application_settings) { table(:application_settings) }
   let(:plaintext) { 'secret-token' }
 
-  PLAINTEXT_ATTRIBUTES = %w[
+  plaintext_attributes = %w[
     akismet_api_key
     elasticsearch_aws_secret_access_key
     recaptcha_private_key
@@ -21,7 +21,7 @@ describe EncryptPlaintextAttributesOnApplicationSettings do
     it 'encrypts token and saves it' do
       application_setting = application_settings.create
       application_setting.update_columns(
-        PLAINTEXT_ATTRIBUTES.each_with_object({}) do |plaintext_attribute, attributes|
+        plaintext_attributes.each_with_object({}) do |plaintext_attribute, attributes|
           attributes[plaintext_attribute] = plaintext
         end
       )
@@ -29,7 +29,7 @@ describe EncryptPlaintextAttributesOnApplicationSettings do
       migration.up
 
       application_setting.reload
-      PLAINTEXT_ATTRIBUTES.each do |plaintext_attribute|
+      plaintext_attributes.each do |plaintext_attribute|
         expect(application_setting[plaintext_attribute]).not_to be_nil
         expect(application_setting["encrypted_#{plaintext_attribute}"]).not_to be_nil
         expect(application_setting["encrypted_#{plaintext_attribute}_iv"]).not_to be_nil
@@ -40,7 +40,7 @@ describe EncryptPlaintextAttributesOnApplicationSettings do
   describe '#down' do
     it 'decrypts encrypted token and saves it' do
       application_setting = application_settings.create(
-        PLAINTEXT_ATTRIBUTES.each_with_object({}) do |plaintext_attribute, attributes|
+        plaintext_attributes.each_with_object({}) do |plaintext_attribute, attributes|
           attributes[plaintext_attribute] = plaintext
         end
       )
@@ -48,7 +48,7 @@ describe EncryptPlaintextAttributesOnApplicationSettings do
       migration.down
 
       application_setting.reload
-      PLAINTEXT_ATTRIBUTES.each do |plaintext_attribute|
+      plaintext_attributes.each do |plaintext_attribute|
         expect(application_setting[plaintext_attribute]).to eq(plaintext)
         expect(application_setting["encrypted_#{plaintext_attribute}"]).to be_nil
         expect(application_setting["encrypted_#{plaintext_attribute}_iv"]).to be_nil

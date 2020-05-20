@@ -21,7 +21,8 @@ export default {
       return this.selectedSuite.total_count > 0;
     },
     showTests() {
-      return this.testReports.total_count > 0;
+      const { test_suites: testSuites = [] } = this.testReports;
+      return testSuites.length > 0;
     },
   },
   methods: {

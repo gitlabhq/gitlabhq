@@ -7,7 +7,12 @@ import CloneDropdownButton from '~/vue_shared/components/clone_dropdown.vue';
 
 import GetBlobContent from '../queries/snippet.blob.content.query.graphql';
 
-import { SIMPLE_BLOB_VIEWER, RICH_BLOB_VIEWER } from '~/blob/components/constants';
+import {
+  SIMPLE_BLOB_VIEWER,
+  RICH_BLOB_VIEWER,
+  BLOB_RENDER_EVENT_LOAD,
+  BLOB_RENDER_EVENT_SHOW_SOURCE,
+} from '~/blob/components/constants';
 
 export default {
   components: {
@@ -27,6 +32,16 @@ export default {
       },
       update: data =>
         data.snippets.edges[0].node.blob.richData || data.snippets.edges[0].node.blob.plainData,
+      result() {
+        if (this.activeViewerType === RICH_BLOB_VIEWER) {
+          this.blob.richViewer.renderError = null;
+        } else {
+          this.blob.simpleViewer.renderError = null;
+        }
+      },
+      skip() {
+        return this.viewer.renderError;
+      },
     },
   },
   props: {
@@ -62,9 +77,15 @@ export default {
   },
   methods: {
     switchViewer(newViewer) {
-      this.activeViewerType = newViewer;
+      this.activeViewerType = newViewer || SIMPLE_BLOB_VIEWER;
+    },
+    forceQuery() {
+      this.$apollo.queries.blobContent.skip = false;
+      this.$apollo.queries.blobContent.refetch();
     },
   },
+  BLOB_RENDER_EVENT_LOAD,
+  BLOB_RENDER_EVENT_SHOW_SOURCE,
 };
 </script>
 <template>
@@ -75,12 +96,21 @@ export default {
         <template #actions>
           <clone-dropdown-button
             v-if="canBeCloned"
+            class="mr-2"
             :ssh-link="snippet.sshUrlToRepo"
             :http-link="snippet.httpUrlToRepo"
+            data-qa-selector="clone_button"
           />
         </template>
       </blob-header>
-      <blob-content :loading="isContentLoading" :content="blobContent" :active-viewer="viewer" />
+      <blob-content
+        :loading="isContentLoading"
+        :content="blobContent"
+        :active-viewer="viewer"
+        :blob="blob"
+        @[$options.BLOB_RENDER_EVENT_LOAD]="forceQuery"
+        @[$options.BLOB_RENDER_EVENT_SHOW_SOURCE]="switchViewer"
+      />
     </article>
   </div>
 </template>

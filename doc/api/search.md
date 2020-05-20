@@ -17,7 +17,7 @@ GET /search
 | `scope`       | string   | yes        | The scope to search in                |
 | `search`      | string   | yes        | The search query  |
 
-Search the expression within the specified scope. Currently these scopes are supported: projects, issues, merge_requests, milestones, snippet_titles, snippet_blobs, users.
+Search the expression within the specified scope. Currently these scopes are supported: projects, issues, merge_requests, milestones, snippet_titles, users.
 
 If Elasticsearch is enabled additional scopes available are blobs, wiki_blobs and commits. Find more about [the feature](../integration/elasticsearch.md). **(STARTER)**
 
@@ -226,39 +226,6 @@ Example response:
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/search?scope=snippet_titles&search=sample
-```
-
-Example response:
-
-```json
-[
-  {
-    "id": 50,
-    "title": "Sample file",
-    "file_name": "file.rb",
-    "description": "Simple ruby file",
-    "author": {
-      "id": 1,
-      "name": "Administrator",
-      "username": "root",
-      "state": "active",
-      "avatar_url": "https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-      "web_url": "http://localhost:3000/root"
-    },
-    "updated_at": "2018-02-06T12:49:29.104Z",
-    "created_at": "2017-11-28T08:20:18.071Z",
-    "project_id": 9,
-    "web_url": "http://localhost:3000/root/jira-test/snippets/50"
-  }
-]
-```
-
-### Scope: snippet_blobs
-
-This scope will be disabled after GitLab 13.0.
-
-```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/search?scope=snippet_blobs&search=test
 ```
 
 Example response:

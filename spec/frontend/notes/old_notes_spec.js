@@ -33,7 +33,6 @@ gl.utils.disableButtonIfEmptyField = () => {};
 // eslint-disable-next-line jest/no-disabled-tests
 describe.skip('Old Notes (~/notes.js)', () => {
   beforeEach(() => {
-    jest.useFakeTimers();
     loadFixtures(fixture);
 
     // Re-declare this here so that test_setup.js#beforeEach() doesn't
@@ -194,7 +193,7 @@ describe.skip('Old Notes (~/notes.js)', () => {
       $('.js-comment-button').click();
 
       const $targetNote = $notesContainer.find(`#note_${noteEntity.id}`);
-      const updatedNote = Object.assign({}, noteEntity);
+      const updatedNote = { ...noteEntity };
       updatedNote.note = 'bar';
       notes.updateNote(updatedNote, $targetNote);
 
@@ -211,13 +210,6 @@ describe.skip('Old Notes (~/notes.js)', () => {
       $note = $(`<div id="${hash}"></div>`);
       jest.spyOn($note, 'filter');
       jest.spyOn($note, 'toggleClass');
-    });
-
-    afterEach(() => {
-      expect(typeof urlUtility.getLocationHash.mock).toBe('object');
-      urlUtility.getLocationHash.mockRestore();
-      expect(urlUtility.getLocationHash.mock).toBeUndefined();
-      expect(urlUtility.getLocationHash()).toBeNull();
     });
 
     // urlUtility is a dependency of the notes module. Its getLocatinHash() method should be called internally.
@@ -630,48 +622,6 @@ describe.skip('Old Notes (~/notes.js)', () => {
         done();
       });
     });
-
-    // This is a bad test carried over from the Karma -> Jest migration.
-    // The corresponding test in the Karma suite tests for
-    // elements and methods that don't actually exist, and gives a false
-    // positive pass.
-    /*
-    it('should show flash error message when comment failed to be updated', done => {
-      mockNotesPost();
-      jest.spyOn(notes, 'addFlash').mockName('addFlash');
-
-      $('.js-comment-button').click();
-
-      deferredPromise()
-        .then(() => {
-          const $noteEl = $notesContainer.find(`#note_${note.id}`);
-          $noteEl.find('.js-note-edit').click();
-          $noteEl.find('textarea.js-note-text').val(updatedComment);
-
-          mockNotesPostError();
-
-          $noteEl.find('.js-comment-save-button').click();
-          notes.updateComment({preventDefault: () => {}});
-        })
-        .then(() => deferredPromise())
-        .then(() => {
-          const $updatedNoteEl = $notesContainer.find(`#note_${note.id}`);
-
-          expect($updatedNoteEl.hasClass('.being-posted')).toEqual(false); // Remove being-posted visuals
-          expect(
-            $updatedNoteEl
-              .find('.note-text')
-              .text()
-              .trim(),
-          ).toEqual(sampleComment); // See if comment reverted back to original
-
-          expect(notes.addFlash).toHaveBeenCalled();
-          expect(notes.flashContainer.style.display).not.toBe('none');
-          done();
-        })
-        .catch(done.fail);
-    }, 5000);
-    */
   });
 
   describe('postComment with Slash commands', () => {

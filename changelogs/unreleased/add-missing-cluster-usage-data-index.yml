@@ -1,0 +1,5 @@
+---
+title: Add clusters index to improve usage data queries
+merge_request: 28626
+author:
+type: performance

@@ -1,3 +1,5 @@
+- parsed_with_gfm = "Content parsed with #{link_to('GitLab Flavored Markdown', help_page_path('user/markdown'), target: '_blank')}.".html_safe
+
 = form_for @appearance, url: admin_appearances_path, html: { class: 'prepend-top-default' } do |f|
   = form_errors(@appearance)
 
@@ -57,7 +59,7 @@
         = f.label :description, class: 'col-form-label label-bold'
         = f.text_area :description, class: "form-control", rows: 10
         .hint
-          Description parsed with #{link_to "GitLab Flavored Markdown", help_page_path('user/markdown'), target: '_blank'}.
+          = parsed_with_gfm
       .form-group
         = f.label :logo, class: 'col-form-label label-bold pt-0'
         %p
@@ -83,15 +85,30 @@
         %p
           = f.text_area :new_project_guidelines, class: "form-control", rows: 10
           .hint
-            Guidelines parsed with #{link_to "GitLab Flavored Markdown", help_page_path('user/markdown'), target: '_blank'}.
+            = parsed_with_gfm
+
+  %hr
+  .row
+    .col-lg-4.profile-settings-sidebar
+      %h4.prepend-top-0 Profile image guideline
+
+    .col-lg-8
+      .form-group
+        = f.label :profile_image_guidelines, class: 'col-form-label label-bold'
+        %p
+          = f.text_area :profile_image_guidelines, class: "form-control", rows: 10
+          .hint
+            = parsed_with_gfm
 
       .prepend-top-default.append-bottom-default
         = f.submit 'Update appearance settings', class: 'btn btn-success'
-        - if @appearance.persisted?
-          Preview last save:
-          = link_to 'Sign-in page', preview_sign_in_admin_appearances_path, class: 'btn', target: '_blank', rel: 'noopener noreferrer'
-          = link_to 'New project page', new_project_path, class: 'btn', target: '_blank', rel: 'noopener noreferrer'
+        - if @appearance.persisted? || @appearance.updated_at
+          .mt-4
+            - if @appearance.persisted?
+              Preview last save:
+              = link_to 'Sign-in page', preview_sign_in_admin_appearances_path, class: 'btn', target: '_blank', rel: 'noopener noreferrer'
+              = link_to 'New project page', new_project_path, class: 'btn', target: '_blank', rel: 'noopener noreferrer'
 
-        - if @appearance.updated_at
-          %span.float-right
-            Last edit #{time_ago_with_tooltip(@appearance.updated_at)}
+            - if @appearance.updated_at
+              %span.float-right
+                Last edit #{time_ago_with_tooltip(@appearance.updated_at)}

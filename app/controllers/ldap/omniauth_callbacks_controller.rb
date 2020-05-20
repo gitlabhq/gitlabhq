@@ -16,6 +16,10 @@ class Ldap::OmniauthCallbacksController < OmniauthCallbacksController
   def ldap
     return unless Gitlab::Auth::Ldap::Config.sign_in_enabled?
 
+    if Feature.enabled?(:user_mode_in_session)
+      return admin_mode_flow(Gitlab::Auth::Ldap::User) if current_user_mode.admin_mode_requested?
+    end
+
     sign_in_user_flow(Gitlab::Auth::Ldap::User)
   end
 

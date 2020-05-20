@@ -45,7 +45,7 @@ describe MetricsDashboard do
       it 'returns the specified dashboard' do
         expect(json_response['dashboard']['dashboard']).to eq('Environment metrics')
         expect(json_response).not_to have_key('all_dashboards')
-        expect(json_response).not_to have_key('metrics_data')
+        expect(json_response).to have_key('metrics_data')
       end
 
       context 'when the params are in an alternate format' do
@@ -54,7 +54,7 @@ describe MetricsDashboard do
         it 'returns the specified dashboard' do
           expect(json_response['dashboard']['dashboard']).to eq('Environment metrics')
           expect(json_response).not_to have_key('all_dashboards')
-          expect(json_response).not_to have_key('metrics_data')
+          expect(json_response).to have_key('metrics_data')
         end
       end
 
@@ -112,6 +112,35 @@ describe MetricsDashboard do
                 expect(system_dashboard["can_edit"]).to eq(system_can_edit)
                 expect(project_dashboard["can_edit"]).to eq(project_can_edit)
               end
+            end
+          end
+
+          context 'starred dashboards' do
+            let_it_be(:dashboard_yml) { fixture_file('lib/gitlab/metrics/dashboard/sample_dashboard.yml') }
+            let_it_be(:dashboards) do
+              {
+                '.gitlab/dashboards/test.yml' => dashboard_yml,
+                '.gitlab/dashboards/anomaly.yml' => dashboard_yml,
+                '.gitlab/dashboards/errors.yml' => dashboard_yml
+              }
+            end
+            let_it_be(:project) { create(:project, :custom_repo, files: dashboards) }
+
+            before do
+              create(:metrics_users_starred_dashboard, user: user, project: project, dashboard_path: '.gitlab/dashboards/errors.yml')
+              create(:metrics_users_starred_dashboard, user: user, project: project, dashboard_path: '.gitlab/dashboards/test.yml')
+            end
+
+            it 'adds starred dashboard information and sorts the list' do
+              all_dashboards = json_response['all_dashboards'].map { |dashboard| dashboard.slice('display_name', 'starred', 'user_starred_path') }
+              expected_response = [
+                { "display_name" => "Default", "starred" => false, 'user_starred_path' => api_v4_projects_metrics_user_starred_dashboards_path(id: project.id, params: { dashboard_path: 'config/prometheus/common_metrics.yml' }) },
+                { "display_name" => "anomaly.yml", "starred" => false, 'user_starred_path' => api_v4_projects_metrics_user_starred_dashboards_path(id: project.id, params: { dashboard_path: '.gitlab/dashboards/anomaly.yml' }) },
+                { "display_name" => "errors.yml", "starred" => true, 'user_starred_path' => api_v4_projects_metrics_user_starred_dashboards_path(id: project.id, params: { dashboard_path: '.gitlab/dashboards/errors.yml' }) },
+                { "display_name" => "test.yml", "starred" => true, 'user_starred_path' => api_v4_projects_metrics_user_starred_dashboards_path(id: project.id, params: { dashboard_path: '.gitlab/dashboards/test.yml' }) }
+              ]
+
+              expect(all_dashboards).to eql expected_response
             end
           end
         end

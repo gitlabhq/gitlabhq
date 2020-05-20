@@ -14,12 +14,16 @@ class AddEncryptedFieldsToApplicationSettings < ActiveRecord::Migration[5.2]
     slack_app_verification_token
   ].freeze
 
+  # rubocop:disable Migration/PreventStrings
+  # rubocop:disable Migration/AddLimitToTextColumns
   def up
     PLAINTEXT_ATTRIBUTES.each do |plaintext_attribute|
       add_column :application_settings, "encrypted_#{plaintext_attribute}", :text
       add_column :application_settings, "encrypted_#{plaintext_attribute}_iv", :string, limit: 255
     end
   end
+  # rubocop:enable Migration/AddLimitToTextColumns
+  # rubocop:enable Migration/PreventStrings
 
   def down
     PLAINTEXT_ATTRIBUTES.each do |plaintext_attribute|

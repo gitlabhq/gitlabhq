@@ -13,7 +13,7 @@ class RemovePendoFromApplicationSettings < ActiveRecord::Migration[5.2]
   end
 
   def down
-    add_column_with_default :application_settings, :pendo_enabled, :boolean, default: false, allow_null: false
+    add_column_with_default :application_settings, :pendo_enabled, :boolean, default: false, allow_null: false # rubocop:disable Migration/AddColumnWithDefault
     add_column :application_settings, :pendo_url, :string, limit: 255
   end
 end

@@ -1,6 +1,8 @@
 import { editor as monacoEditor, languages as monacoLanguages, Uri } from 'monaco-editor';
 import { DEFAULT_THEME, themes } from '~/ide/lib/themes';
+import languages from '~/ide/lib/languages';
 import { defaultEditorOptions } from '~/ide/lib/editor_options';
+import { registerLanguages } from '~/ide/utils';
 import { clearDomElement } from './utils';
 
 export default class Editor {
@@ -17,6 +19,8 @@ export default class Editor {
     };
 
     Editor.setupMonacoTheme();
+
+    registerLanguages(...languages);
   }
 
   static setupMonacoTheme() {

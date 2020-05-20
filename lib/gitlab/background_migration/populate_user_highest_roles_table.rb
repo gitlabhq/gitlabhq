@@ -20,6 +20,8 @@ module Gitlab
       end
 
       def perform(from_id, to_id)
+        return unless User.column_names.include?('bot_type')
+
         (from_id..to_id).each_slice(BATCH_SIZE) do |ids|
           execute(
             <<-EOF

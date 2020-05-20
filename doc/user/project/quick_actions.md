@@ -42,7 +42,7 @@ The following quick actions are applicable to descriptions, discussions and thre
 | `/remove_milestone`                   | ✓     | ✓             |      | Remove milestone |
 | `/label ~label1 ~label2`              | ✓     | ✓             | ✓    | Add label(s). Label names can also start without `~` but mixed syntax is not supported |
 | `/relabel ~label1 ~label2`            | ✓     | ✓             | ✓    | Replace existing label(s) with those specified |
-| `/unlabel ~label1 ~label2`            | ✓     | ✓             | ✓    | Remove all or specific label(s) |
+| `/unlabel ~label1 ~label2` or `/remove_label ~label1 ~label2` | ✓     | ✓             | ✓    | Remove all or specific label(s) |
 | `/copy_metadata <#issue>`             | ✓     | ✓             |      | Copy labels and milestone from another issue in the project |
 | `/copy_metadata <!merge_request>`     | ✓     | ✓             |      | Copy labels and milestone from another merge request in the project |
 | `/estimate <<W>w <DD>d <hh>h <mm>m>`  | ✓     | ✓             |      | Set time estimate. For example, `/estimate 1w 3d 2h 14m` |

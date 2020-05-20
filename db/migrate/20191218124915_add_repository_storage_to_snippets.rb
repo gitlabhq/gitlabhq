@@ -7,8 +7,9 @@ class AddRepositoryStorageToSnippets < ActiveRecord::Migration[5.2]
 
   disable_ddl_transaction!
 
+  # rubocop:disable Migration/PreventStrings
   def up
-    add_column_with_default(
+    add_column_with_default( # rubocop:disable Migration/AddColumnWithDefault
       :snippets,
       :repository_storage,
       :string,
@@ -17,6 +18,7 @@ class AddRepositoryStorageToSnippets < ActiveRecord::Migration[5.2]
       allow_null: false
     )
   end
+  # rubocop:enable Migration/PreventStrings
 
   def down
     remove_column(:snippets, :repository_storage)

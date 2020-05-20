@@ -1,0 +1,5 @@
+---
+title: Fix errors creating project with active Prometheus service template
+merge_request: 30340
+author:
+type: fixed

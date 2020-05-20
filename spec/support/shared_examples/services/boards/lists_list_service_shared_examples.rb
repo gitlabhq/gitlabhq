@@ -18,6 +18,10 @@ RSpec.shared_examples 'lists list service' do
       expect { service.execute(board) }.to change(board.lists, :count).by(1)
     end
 
+    it 'does not create a backlog list when create_default_lists is false' do
+      expect { service.execute(board, create_default_lists: false) }.not_to change(board.lists, :count)
+    end
+
     it "returns board's lists" do
       expect(service.execute(board)).to eq [board.backlog_list, list, board.closed_list]
     end

@@ -3,6 +3,7 @@
 class CreateContainerExpirationPolicies < ActiveRecord::Migration[5.2]
   DOWNTIME = false
 
+  # rubocop:disable Migration/PreventStrings
   def change
     create_table :container_expiration_policies, id: false, primary_key: :project_id do |t|
       t.timestamps_with_timezone null: false
@@ -18,4 +19,5 @@ class CreateContainerExpirationPolicies < ActiveRecord::Migration[5.2]
     add_index :container_expiration_policies, [:next_run_at, :enabled],
               name: 'index_container_expiration_policies_on_next_run_at_and_enabled'
   end
+  # rubocop:enable Migration/PreventStrings
 end

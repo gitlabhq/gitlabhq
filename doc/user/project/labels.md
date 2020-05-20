@@ -2,13 +2,18 @@
 
 ## Overview
 
-Labels allow you to categorize epics, issues, and merge requests using descriptive titles like
-`bug`, `feature request`, or `docs`, as well as customizable colors. They allow you to quickly
-and dynamically filter and manage epics, issues, and merge requests, and are a key
-part of [issue boards](issue_board.md).
+As your count of issues, merge requests, and epics grows in GitLab, it's more and more challenging
+to keep track of those items. Especially as your organization grows from just a few people to
+hundreds or thousands. This is where labels come in. They help you organize and tag your work
+so you can track and find the work items you're interested in.
 
-You can use labels to help [search](../search/index.md#issues-and-merge-requests) in
-lists of issues, merge requests, and epics, as well as [search in issue boards](../search/index.md#issue-boards).
+Labels are a key part of [issue boards](issue_board.md). With labels you can:
+
+- Categorize epics, issues, and merge requests using colors and descriptive titles like
+`bug`, `feature request`, or `docs`.
+- Dynamically filter and manage epics, issues, and merge requests.
+- [Search lists of issues, merge requests, and epics](../search/index.md#issues-and-merge-requests),
+  as well as [issue boards](../search/index.md#issue-boards).
 
 ## Project labels and group labels
 
@@ -164,7 +169,7 @@ Suppose you have the labels `workflow::development`, `workflow::review`, and
 applied, and a developer wanted to advance the issue to `workflow::review`, they
 would simply apply that label, and the `workflow::development` label would
 automatically be removed. This behavior already exists when you move issues
-across label lists in an [issue board](issue_board.md#creating-workflows), but
+across label lists in an [issue board](issue_board.md#create-workflows), but
 now, team members who may not be working in an issue board directly would still
 be able to advance workflow states consistently in issues themselves.
 

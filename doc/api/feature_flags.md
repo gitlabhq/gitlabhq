@@ -155,7 +155,7 @@ POST /projects/:id/feature_flags
 | `name`              | string           | yes        | The name of the feature flag. |
 | `description`       | string           | no         | The description of the feature flag. |
 | `scopes`            | JSON             | no         | The [feature flag specs](../user/project/operations/feature_flags.md#define-environment-specs) of the feature flag. |
-| `scopes:environment_scope` | string           | no         | The [environment spec](../ci/environments.md#scoping-environments-with-specs). |
+| `scopes:environment_scope` | string           | no         | The [environment spec](../ci/environments/index.md#scoping-environments-with-specs). |
 | `scopes:active`            | boolean          | no         | Whether the spec is active. |
 | `scopes:strategies`        | JSON             | no         | The [strategies](../user/project/operations/feature_flags.md#feature-flag-strategies) of the feature flag spec. |
 

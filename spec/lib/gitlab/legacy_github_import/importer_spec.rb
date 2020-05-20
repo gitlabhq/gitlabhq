@@ -294,6 +294,7 @@ describe Gitlab::LegacyGithubImport::Importer do
     it_behaves_like 'Gitlab::LegacyGithubImport::Importer#execute' do
       let(:expected_not_called) { [:import_releases, [:import_comments, :pull_requests]] }
     end
+
     it_behaves_like 'Gitlab::LegacyGithubImport::Importer#execute an error occurs'
     it_behaves_like 'Gitlab::LegacyGithubImport unit-testing'
 

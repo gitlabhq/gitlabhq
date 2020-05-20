@@ -1,2 +1,3 @@
 export const SET_CLUSTERS_DATA = 'SET_CLUSTERS_DATA';
 export const SET_LOADING_STATE = 'SET_LOADING_STATE';
+export const SET_PAGE = 'SET_PAGE';

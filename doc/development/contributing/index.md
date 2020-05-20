@@ -3,35 +3,40 @@
 Thank you for your interest in contributing to GitLab. This guide details how
 to contribute to GitLab in a way that is easy for everyone.
 
-For a first-time step-by-step guide to the contribution process, please see
-["Contributing to GitLab"](https://about.gitlab.com/community/contribute/).
+For a first-time step-by-step guide to the contribution process, see our
+[Contributing to GitLab](https://about.gitlab.com/community/contribute/) page.
 
-Looking for something to work on? Look for issues with the label [`Accepting merge requests`](#i-want-to-contribute).
+Looking for something to work on? Look for issues with the label
+[`~Accepting merge requests`](#how-to-contribute).
 
-GitLab comes in two flavors, GitLab Community Edition (CE) our free and open
-source edition, and GitLab Enterprise Edition (EE) which is our commercial
-edition. Throughout this guide you will see references to CE and EE for
-abbreviation.
+GitLab comes in two flavors:
 
-To get an overview of GitLab community membership including those that would be reviewing or merging your contributions, please visit [the community roles page](community_roles.md).
+- GitLab Community Edition (CE), our free and open source edition.
+- GitLab Enterprise Edition (EE), which is our commercial edition.
+
+Throughout this guide you will see references to CE and EE for abbreviation.
+
+To get an overview of GitLab community membership, including those that would review or merge
+your contributions, visit [the community roles page](community_roles.md).
 
 If you want to know how the GitLab [core team](https://about.gitlab.com/community/core-team/)
-operates please see [the GitLab contributing process](https://gitlab.com/gitlab-org/gitlab/blob/master/PROCESS.md).
+operates, see [the GitLab contributing process](https://gitlab.com/gitlab-org/gitlab/blob/master/PROCESS.md).
 
-[GitLab Inc engineers should refer to the engineering workflow document](https://about.gitlab.com/handbook/engineering/workflow/)
+GitLab Inc engineers should refer to the [engineering workflow document](https://about.gitlab.com/handbook/engineering/workflow/).
 
 ## Security vulnerability disclosure
 
-Please report suspected security vulnerabilities in private to
+Report suspected security vulnerabilities in private to
 `support@gitlab.com`, also see the
 [disclosure section on the GitLab.com website](https://about.gitlab.com/security/disclosure/).
-Please do **NOT** create publicly viewable issues for suspected security
-vulnerabilities.
+
+DANGER: **Danger:**
+Do **NOT** create publicly viewable issues for suspected security vulnerabilities.
 
 ## Code of conduct
 
 We want to create a welcoming environment for everyone who is interested in contributing.
-Please visit our [Code of Conduct page](https://about.gitlab.com/community/contribute/code-of-conduct/) to learn more about our commitment to an open and welcoming environment.
+Visit our [Code of Conduct page](https://about.gitlab.com/community/contribute/code-of-conduct/) to learn more about our commitment to an open and welcoming environment.
 
 ## Closing policy for issues and merge requests
 
@@ -40,39 +45,56 @@ and merge requests is limited. Out of respect for our volunteers, issues and
 merge requests not in line with the guidelines listed in this document may be
 closed without notice.
 
-Please treat our volunteers with courtesy and respect, it will go a long way
+Treat our volunteers with courtesy and respect, it will go a long way
 towards getting your issue resolved.
 
 Issues and merge requests should be in English and contain appropriate language
 for audiences of all ages.
 
-If a contributor is no longer actively working on a submitted merge request
-we can decide that the merge request will be finished by one of our
-[Merge request coaches](https://about.gitlab.com/company/team/) or close the merge request. We make this decision
-based on how important the change is for our product vision. If a merge request
-coach is going to finish the merge request we assign the
-~"coach will finish" label. When a team member picks up a community contribution,
+If a contributor is no longer actively working on a submitted merge request,
+we can:
+
+- Decide that the merge request will be finished by one of our
+  [Merge request coaches](https://about.gitlab.com/company/team/).
+- Close the merge request.
+
+We make this decision based on how important the change is for our product vision. If a merge
+request coach is going to finish the merge request, we assign the
+`~coach will finish` label.
+
+When a team member picks up a community contribution,
 we credit the original author by adding a changelog entry crediting the author
 and optionally include the original author on at least one of the commits
 within the MR.
 
 ## Helping others
 
-Please help other GitLab users when you can.
-The methods people will use to seek help can be found on the [getting help page](https://about.gitlab.com/get-help/).
+Help other GitLab users when you can.
+The methods people use to seek help can be found on the [getting help page](https://about.gitlab.com/get-help/).
 
-Sign up for the mailing list, answer GitLab questions on StackOverflow or
-respond in the IRC channel.
+Sign up for the mailing list, answer GitLab questions on StackOverflow or respond in the IRC channel.
 
-## I want to contribute
+## How to contribute
 
 If you want to contribute to GitLab,
-[issues with the `Accepting merge requests` label](issue_workflow.md#label-for-community-contributors)
+[issues with the `~Accepting merge requests` label](issue_workflow.md#label-for-community-contributors)
 are a great place to start.
+
 If you have any questions or need help visit [Getting Help](https://about.gitlab.com/get-help/) to
-learn how to communicate with GitLab. If you're looking for a Gitter or Slack channel
-please consider we favor
-[asynchronous communication](https://about.gitlab.com/handbook/communication/#internal-communication) over real time communication. Thanks for your contribution!
+learn how to communicate with GitLab. We have a [Gitter channel for contributors](https://gitter.im/gitlab/contributors),
+however we favor
+[asynchronous communication](https://about.gitlab.com/handbook/communication/#internal-communication) over real time communication.
+
+Thanks for your contribution!
+
+### GitLab Development Kit
+
+The GitLab Development Kit (GDK) helps contributors run a local GitLab instance with all the
+required dependencies. It can be used to test changes to GitLab and related projects before raising
+a Merge Request.
+
+For more information, see the [`gitlab-development-kit`](https://gitlab.com/gitlab-org/gitlab-development-kit)
+project.
 
 ## Contribution Flow
 
@@ -92,7 +114,7 @@ When submitting code to GitLab, you may feel that your contribution requires the
 
 When your code contains more than 500 changes, any major breaking changes, or an external library, `@mention` a maintainer in the merge request. If you are not sure who to mention, the reviewer will add one early in the merge request process.
 
-## Issues workflow
+### Issues workflow
 
 This [documentation](issue_workflow.md) outlines the current issue workflow:
 
@@ -105,7 +127,7 @@ This [documentation](issue_workflow.md) outlines the current issue workflow:
 - [Technical and UX debt](issue_workflow.md#technical-and-ux-debt)
 - [Technical debt in follow-up issues](issue_workflow.md#technical-debt-in-follow-up-issues)
 
-## Merge requests workflow
+### Merge requests workflow
 
 This [documentation](merge_request_workflow.md) outlines the current merge request process.
 
@@ -120,13 +142,15 @@ This [documentation](style_guides.md) outlines the current style guidelines.
 
 ## Implement design & UI elements
 
-This [design documentation](design.md) outlines the current process for implementing
-design & UI elements.
+This [design documentation](design.md) outlines the current process for implementing design and UI
+elements.
+
+## Contribute documentation
+
+For information on how to contribute documentation, see GitLab
+[documentation guidelines](../documentation/index.md).
 
 ## Getting an Enterprise Edition License
 
-If you need a license for contributing to an EE-feature, please [follow these instructions](https://about.gitlab.com/handbook/marketing/community-relations/code-contributor-program/#for-contributors-to-the-gitlab-enterprise-edition-ee).
-
----
-
-[Return to Development documentation](../README.md)
+If you need a license for contributing to an EE-feature, see
+[relevant information](https://about.gitlab.com/handbook/marketing/community-relations/code-contributor-program/#for-contributors-to-the-gitlab-enterprise-edition-ee).

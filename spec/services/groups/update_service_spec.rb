@@ -148,6 +148,26 @@ describe Groups::UpdateService do
     end
   end
 
+  context 'updating default_branch_protection' do
+    let(:service) do
+      described_class.new(internal_group, user, default_branch_protection: Gitlab::Access::PROTECTION_NONE)
+    end
+
+    context 'for users who have the ability to update default_branch_protection' do
+      it 'updates the attribute' do
+        internal_group.add_owner(user)
+
+        expect { service.execute }.to change { internal_group.default_branch_protection }.to(Gitlab::Access::PROTECTION_NONE)
+      end
+    end
+
+    context 'for users who do not have the ability to update default_branch_protection' do
+      it 'does not update the attribute' do
+        expect { service.execute }.not_to change { internal_group.default_branch_protection }
+      end
+    end
+  end
+
   context 'rename group' do
     let!(:service) { described_class.new(internal_group, user, path: SecureRandom.hex) }
 

@@ -94,6 +94,31 @@ describe MergeRequests::RefreshService do
         expect(@fork_build_failed_todo).to be_done
       end
 
+      context 'when a merge error exists' do
+        let(:error_message) { 'This is a merge error' }
+
+        before do
+          @merge_request = create(:merge_request,
+            source_project: @project,
+            source_branch: 'feature',
+            target_branch: 'master',
+            target_project: @project,
+            merge_error: error_message)
+        end
+
+        it 'clears merge errors when pushing to the source branch' do
+          expect { refresh_service.execute(@oldrev, @newrev, 'refs/heads/feature') }
+            .to change { @merge_request.reload.merge_error }
+            .from(error_message)
+            .to(nil)
+        end
+
+        it 'does not clear merge errors when pushing to the target branch' do
+          expect { refresh_service.execute(@oldrev, @newrev, 'refs/heads/master') }
+            .not_to change { @merge_request.reload.merge_error }
+        end
+      end
+
       it 'reloads source branch MRs memoization' do
         refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
 
@@ -205,19 +230,6 @@ describe MergeRequests::RefreshService do
               .to change { @fork_merge_request.pipelines_for_merge_request.count }.by(1)
 
             expect(@fork_merge_request.pipelines_for_merge_request.first)
-              .to be_legacy_detached_merge_request_pipeline
-          end
-        end
-
-        context 'when ci_use_merge_request_ref feature flag is false' do
-          before do
-            stub_feature_flags(ci_use_merge_request_ref: false)
-          end
-
-          it 'create legacy detached merge request pipeline for non-fork merge request' do
-            subject
-
-            expect(@merge_request.pipelines_for_merge_request.first)
               .to be_legacy_detached_merge_request_pipeline
           end
         end
@@ -623,7 +635,7 @@ describe MergeRequests::RefreshService do
           references: [issue],
           author_name: commit_author.name,
           author_email: commit_author.email,
-          committed_date: Time.now
+          committed_date: Time.current
         )
 
         allow_any_instance_of(MergeRequest).to receive(:commits).and_return(CommitCollection.new(@project, [commit], 'feature'))

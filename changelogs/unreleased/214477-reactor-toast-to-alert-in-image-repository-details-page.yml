@@ -1,0 +1,5 @@
+---
+title: Use alerts instead of toasts in Image Repository details
+merge_request: 29685
+author:
+type: changed

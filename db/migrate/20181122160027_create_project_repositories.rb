@@ -11,7 +11,7 @@ class CreateProjectRepositories < ActiveRecord::Migration[5.0]
   def change
     create_table :project_repositories, id: :bigserial do |t|
       t.references :shard, null: false, index: true, foreign_key: { on_delete: :restrict }
-      t.string :disk_path, null: false, index: { unique: true } # rubocop:disable Migration/AddLimitToStringColumns
+      t.string :disk_path, null: false, index: { unique: true } # rubocop:disable Migration/PreventStrings
       t.references :project, null: false, index: { unique: true }, foreign_key: { on_delete: :cascade }
     end
   end

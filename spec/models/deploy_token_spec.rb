@@ -72,8 +72,10 @@ describe DeployToken do
 
   describe '#scopes' do
     context 'with all the scopes' do
+      let_it_be(:deploy_token) { create(:deploy_token, :all_scopes) }
+
       it 'returns scopes assigned to DeployToken' do
-        expect(deploy_token.scopes).to eq([:read_repository, :read_registry])
+        expect(deploy_token.scopes).to eq(DeployToken::AVAILABLE_SCOPES)
       end
     end
 

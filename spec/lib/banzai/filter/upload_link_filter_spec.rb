@@ -51,6 +51,7 @@ describe Banzai::Filter::UploadLinkFilter do
 
         expect(doc.at_css('a')['href']).to eq(absolute_path)
         expect(doc.at_css('a').classes).to include('gfm')
+        expect(doc.at_css('a')['data-link']).to eq('true')
       end
     end
 
@@ -59,11 +60,13 @@ describe Banzai::Filter::UploadLinkFilter do
 
       expect(doc.at_css('a')['href']).to eq(relative_path)
       expect(doc.at_css('a').classes).to include('gfm')
+      expect(doc.at_css('a')['data-link']).to eq('true')
 
       doc = filter(nested(link(upload_path)))
 
       expect(doc.at_css('a')['href']).to eq(relative_path)
       expect(doc.at_css('a').classes).to include('gfm')
+      expect(doc.at_css('a')['data-link']).to eq('true')
     end
 
     it 'rebuilds relative URL for an image' do
@@ -71,11 +74,13 @@ describe Banzai::Filter::UploadLinkFilter do
 
       expect(doc.at_css('img')['src']).to eq(relative_path)
       expect(doc.at_css('img').classes).to include('gfm')
+      expect(doc.at_css('img')['data-link']).not_to eq('true')
 
       doc = filter(nested(image(upload_path)))
 
       expect(doc.at_css('img')['src']).to eq(relative_path)
       expect(doc.at_css('img').classes).to include('gfm')
+      expect(doc.at_css('img')['data-link']).not_to eq('true')
     end
 
     it 'does not modify absolute URL' do
@@ -83,6 +88,7 @@ describe Banzai::Filter::UploadLinkFilter do
 
       expect(doc.at_css('a')['href']).to eq 'http://example.com'
       expect(doc.at_css('a').classes).not_to include('gfm')
+      expect(doc.at_css('a')['data-link']).not_to eq('true')
     end
 
     it 'supports unescaped Unicode filenames' do
@@ -91,6 +97,7 @@ describe Banzai::Filter::UploadLinkFilter do
 
       expect(doc.at_css('a')['href']).to eq("/#{project.full_path}/uploads/%ED%95%9C%EA%B8%80.png")
       expect(doc.at_css('a').classes).to include('gfm')
+      expect(doc.at_css('a')['data-link']).to eq('true')
     end
 
     it 'supports escaped Unicode filenames' do
@@ -100,6 +107,7 @@ describe Banzai::Filter::UploadLinkFilter do
 
       expect(doc.at_css('img')['src']).to eq("/#{project.full_path}/uploads/%ED%95%9C%EA%B8%80.png")
       expect(doc.at_css('img').classes).to include('gfm')
+      expect(doc.at_css('img')['data-link']).not_to eq('true')
     end
   end
 
@@ -118,6 +126,7 @@ describe Banzai::Filter::UploadLinkFilter do
 
         expect(doc.at_css('a')['href']).to eq(absolute_path)
         expect(doc.at_css('a').classes).to include('gfm')
+        expect(doc.at_css('a')['data-link']).to eq('true')
       end
     end
 
@@ -126,6 +135,7 @@ describe Banzai::Filter::UploadLinkFilter do
 
       expect(doc.at_css('a')['href']).to eq(relative_path)
       expect(doc.at_css('a').classes).to include('gfm')
+      expect(doc.at_css('a')['data-link']).to eq('true')
     end
 
     it 'rewrites the link correctly for subgroup' do
@@ -135,6 +145,7 @@ describe Banzai::Filter::UploadLinkFilter do
 
       expect(doc.at_css('a')['href']).to eq(relative_path)
       expect(doc.at_css('a').classes).to include('gfm')
+      expect(doc.at_css('a')['data-link']).to eq('true')
     end
 
     it 'does not modify absolute URL' do
@@ -142,6 +153,7 @@ describe Banzai::Filter::UploadLinkFilter do
 
       expect(doc.at_css('a')['href']).to eq 'http://example.com'
       expect(doc.at_css('a').classes).not_to include('gfm')
+      expect(doc.at_css('a')['data-link']).not_to eq('true')
     end
   end
 
@@ -159,6 +171,7 @@ describe Banzai::Filter::UploadLinkFilter do
 
         expect(doc.at_css('a')['href']).to eq(absolute_path)
         expect(doc.at_css('a').classes).to include('gfm')
+        expect(doc.at_css('a')['data-link']).to eq('true')
       end
     end
 
@@ -178,6 +191,7 @@ describe Banzai::Filter::UploadLinkFilter do
 
           expect(doc.at_css('a')['href']).to eq(absolute_path)
           expect(doc.at_css('a').classes).to include('gfm')
+          expect(doc.at_css('a')['data-link']).to eq('true')
         end
       end
 
@@ -186,6 +200,7 @@ describe Banzai::Filter::UploadLinkFilter do
 
         expect(doc.at_css('a')['href']).to eq(gitlab_root + relative_path)
         expect(doc.at_css('a').classes).to include('gfm')
+        expect(doc.at_css('a')['data-link']).to eq('true')
       end
     end
 
@@ -194,6 +209,7 @@ describe Banzai::Filter::UploadLinkFilter do
 
       expect(doc.at_css('a')['href']).to eq(relative_path)
       expect(doc.at_css('a').classes).to include('gfm')
+      expect(doc.at_css('a')['data-link']).to eq('true')
     end
 
     it 'does not modify absolute URL' do
@@ -201,6 +217,7 @@ describe Banzai::Filter::UploadLinkFilter do
 
       expect(doc.at_css('a')['href']).to eq 'http://example.com'
       expect(doc.at_css('a').classes).not_to include('gfm')
+      expect(doc.at_css('a')['data-link']).not_to eq('true')
     end
   end
 

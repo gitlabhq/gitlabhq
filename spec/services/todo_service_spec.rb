@@ -895,6 +895,36 @@ describe TodoService do
     end
   end
 
+  describe 'Designs' do
+    include DesignManagementTestHelpers
+
+    let(:issue) { create(:issue, project: project) }
+    let(:design) { create(:design, issue: issue) }
+
+    before do
+      enable_design_management
+
+      project.add_guest(author)
+      project.add_developer(john_doe)
+    end
+
+    let(:note) do
+      build(:diff_note_on_design,
+             noteable: design,
+             author: author,
+             note: "Hey #{john_doe.to_reference}")
+    end
+
+    it 'creates a todo for mentioned user on new diff note' do
+      service.new_note(note, author)
+
+      should_create_todo(user: john_doe,
+                         target: design,
+                         action: Todo::MENTIONED,
+                         note: note)
+    end
+  end
+
   describe '#update_note' do
     let(:noteable) { create(:issue, project: project) }
     let(:note) { create(:note, project: project, note: mentions, noteable: noteable) }

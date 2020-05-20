@@ -80,8 +80,15 @@ describe Clusters::ClusterPolicy, :models do
       context 'when admin' do
         let(:user) { create(:admin) }
 
-        it { expect(policy).to be_allowed :update_cluster }
-        it { expect(policy).to be_allowed :admin_cluster }
+        context 'when admin mode is enabled', :enable_admin_mode do
+          it { expect(policy).to be_allowed :update_cluster }
+          it { expect(policy).to be_allowed :admin_cluster }
+        end
+
+        context 'when admin mode is disabled' do
+          it { expect(policy).to be_disallowed :update_cluster }
+          it { expect(policy).to be_disallowed :admin_cluster }
+        end
       end
     end
   end

@@ -270,6 +270,37 @@ describe GroupsController do
 
       it { expect(subject).to render_template(:new) }
     end
+
+    context 'when creating a group with `default_branch_protection` attribute' do
+      before do
+        sign_in(user)
+      end
+
+      subject do
+        post :create, params: { group: { name: 'new_group', path: 'new_group', default_branch_protection: Gitlab::Access::PROTECTION_NONE } }
+      end
+
+      context 'for users who have the ability to create a group with `default_branch_protection`' do
+        it 'creates group with the specified branch protection level' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:found)
+          expect(Group.last.default_branch_protection).to eq(Gitlab::Access::PROTECTION_NONE)
+        end
+      end
+
+      context 'for users who do not have the ability to create a group with `default_branch_protection`' do
+        it 'does not create the group with the specified branch protection level' do
+          allow(Ability).to receive(:allowed?).and_call_original
+          allow(Ability).to receive(:allowed?).with(user, :create_group_with_default_branch_protection) { false }
+
+          subject
+
+          expect(response).to have_gitlab_http_status(:found)
+          expect(Group.last.default_branch_protection).not_to eq(Gitlab::Access::PROTECTION_NONE)
+        end
+      end
+    end
   end
 
   describe 'GET #index' do
@@ -423,11 +454,31 @@ describe GroupsController do
       expect(group.reload.project_creation_level).to eq(::Gitlab::Access::MAINTAINER_PROJECT_ACCESS)
     end
 
-    it 'updates the default_branch_protection successfully' do
-      post :update, params: { id: group.to_param, group: { default_branch_protection: ::Gitlab::Access::PROTECTION_DEV_CAN_MERGE } }
+    context 'updating default_branch_protection' do
+      subject do
+        put :update, params: { id: group.to_param, group: { default_branch_protection: ::Gitlab::Access::PROTECTION_DEV_CAN_MERGE } }
+      end
 
-      expect(response).to have_gitlab_http_status(:found)
-      expect(group.reload.default_branch_protection).to eq(::Gitlab::Access::PROTECTION_DEV_CAN_MERGE)
+      context 'for users who have the ability to update default_branch_protection' do
+        it 'updates the attribute' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:found)
+          expect(group.reload.default_branch_protection).to eq(::Gitlab::Access::PROTECTION_DEV_CAN_MERGE)
+        end
+      end
+
+      context 'for users who do not have the ability to update default_branch_protection' do
+        it 'does not update the attribute' do
+          allow(Ability).to receive(:allowed?).and_call_original
+          allow(Ability).to receive(:allowed?).with(user, :update_default_branch_protection, group) { false }
+
+          subject
+
+          expect(response).to have_gitlab_http_status(:found)
+          expect(group.reload.default_branch_protection).not_to eq(::Gitlab::Access::PROTECTION_DEV_CAN_MERGE)
+        end
+      end
     end
 
     context 'when a project inside the group has container repositories' do

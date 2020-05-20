@@ -117,4 +117,27 @@ describe NavHelper, :do_not_mock_admin_mode do
 
     it { is_expected.to all(be_a(String)) }
   end
+
+  describe '#page_has_markdown?' do
+    using RSpec::Parameterized::TableSyntax
+
+    where path: %w(
+      merge_requests#show
+      projects/merge_requests/conflicts#show
+      issues#show
+      milestones#show
+      issues#designs
+    )
+
+    with_them do
+      before do
+        allow(helper).to receive(:current_path?).and_call_original
+        allow(helper).to receive(:current_path?).with(path).and_return(true)
+      end
+
+      subject { helper.page_has_markdown? }
+
+      it { is_expected.to eq(true) }
+    end
+  end
 end

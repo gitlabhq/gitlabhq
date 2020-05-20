@@ -14,10 +14,27 @@ export default () => ({
   emptyState: 'gettingStarted',
   showEmptyState: true,
   showErrorBanner: true,
+  isUpdatingStarredValue: false,
   dashboard: {
     panelGroups: [],
   },
+  /**
+   * Panel that is currently "zoomed" in as
+   * a single panel in view.
+   */
+  expandedPanel: {
+    /**
+     * {?String} Panel's group name.
+     */
+    group: null,
+    /**
+     * {?Object} Panel content from `dashboard`
+     * null when no panel is expanded.
+     */
+    panel: null,
+  },
   allDashboards: [],
+  promVariables: {},
 
   // Other project data
   annotations: [],

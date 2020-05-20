@@ -13,12 +13,12 @@ module IncidentManagement
       DESCRIPTION
     }.freeze
 
-    def initialize(project, params)
-      super(project, User.alert_bot, params)
+    def initialize(project, params, user = User.alert_bot)
+      super(project, user, params)
     end
 
-    def execute
-      return error_with('setting disabled') unless incident_management_setting.create_issue?
+    def execute(skip_settings_check: false)
+      return error_with('setting disabled') unless skip_settings_check || incident_management_setting.create_issue?
       return error_with('invalid alert') unless alert.valid?
 
       issue = create_issue

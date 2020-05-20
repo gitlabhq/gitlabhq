@@ -1,0 +1,5 @@
+---
+title: Fix bug in personal snippets when somebody is mentioned
+merge_request: 29835
+author: Sashi Kumar
+type: fixed

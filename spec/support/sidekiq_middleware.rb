@@ -31,3 +31,16 @@ class DisableQueryLimit
     end
   end
 end
+
+# When running `Sidekiq::Testing.inline!` each job is using a request-store.
+# This middleware makes sure the values don't leak into eachother.
+class IsolatedRequestStore
+  def call(_worker, msg, queue)
+    old_store = RequestStore.store.dup
+    RequestStore.clear!
+
+    yield
+
+    RequestStore.store = old_store
+  end
+end

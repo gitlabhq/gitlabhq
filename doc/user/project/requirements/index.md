@@ -10,6 +10,9 @@ Requirements allow you to create criteria to check your products against. They
 can be based on users, stakeholders, system, software, or anything else you
 find important to capture.
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an overview, see [GitLab 12.10 Introduces Requirements Management](https://www.youtube.com/watch?v=uSS7oUNSEoU).
+
 ![requirements list view](img/requirements_list_view_v12_10.png)
 
 ## Create a requirement

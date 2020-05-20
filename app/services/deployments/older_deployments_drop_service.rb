@@ -12,7 +12,9 @@ module Deployments
       return unless @deployment&.running?
 
       older_deployments.find_each do |older_deployment|
-        older_deployment.deployable&.drop!(:forward_deployment_failure)
+        Gitlab::OptimisticLocking.retry_lock(older_deployment.deployable) do |deployable|
+          deployable.drop(:forward_deployment_failure)
+        end
       rescue => e
         Gitlab::ErrorTracking.track_exception(e, subject_id: @deployment.id, deployment_id: older_deployment.id)
       end

@@ -24,8 +24,8 @@ export default {
     discardModalTitle() {
       return sprintf(__('Discard changes to %{path}?'), { path: this.activeFile.path });
     },
-    isStaged() {
-      return !this.activeFile.changed && this.activeFile.staged;
+    canDiscard() {
+      return this.activeFile.changed || this.activeFile.staged;
     },
   },
   methods: {
@@ -53,7 +53,7 @@ export default {
     <changed-file-icon :file="activeFile" :is-centered="false" />
     <div class="ml-auto">
       <button
-        v-if="!isStaged"
+        v-if="canDiscard"
         ref="discardButton"
         type="button"
         class="btn btn-remove btn-inverted append-right-8"

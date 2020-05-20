@@ -7,7 +7,7 @@ the [Elasticsearch integration documentation](../integration/elasticsearch.md#en
 
 ## Deep Dive
 
-In June 2019, Mario de la Ossa hosted a [Deep Dive](https://gitlab.com/gitlab-org/create-stage/issues/1) on GitLab's [Elasticsearch integration](../integration/elasticsearch.md) to share his domain specific knowledge with anyone who may work in this part of the code base in the future. You can find the [recording on YouTube](https://www.youtube.com/watch?v=vrvl-tN2EaA), and the slides on [Google Slides](https://docs.google.com/presentation/d/1H-pCzI_LNrgrL5pJAIQgvLX8Ji0-jIKOg1QeJQzChug/edit) and in [PDF](https://gitlab.com/gitlab-org/create-stage/uploads/c5aa32b6b07476fa8b597004899ec538/Elasticsearch_Deep_Dive.pdf). Everything covered in this deep dive was accurate as of GitLab 12.0, and while specific details may have changed since then, it should still serve as a good introduction.
+In June 2019, Mario de la Ossa hosted a Deep Dive (GitLab team members only: `https://gitlab.com/gitlab-org/create-stage/issues/1`) on GitLab's [Elasticsearch integration](../integration/elasticsearch.md) to share his domain specific knowledge with anyone who may work in this part of the code base in the future. You can find the [recording on YouTube](https://www.youtube.com/watch?v=vrvl-tN2EaA), and the slides on [Google Slides](https://docs.google.com/presentation/d/1H-pCzI_LNrgrL5pJAIQgvLX8Ji0-jIKOg1QeJQzChug/edit) and in [PDF](https://gitlab.com/gitlab-org/create-stage/uploads/c5aa32b6b07476fa8b597004899ec538/Elasticsearch_Deep_Dive.pdf). Everything covered in this deep dive was accurate as of GitLab 12.0, and while specific details may have changed since then, it should still serve as a good introduction.
 
 ## Supported Versions
 

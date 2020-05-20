@@ -27,7 +27,7 @@ describe Admin::ClustersController do
           create(:cluster, :disabled, :provided_by_gcp, :production_environment, :instance)
         end
 
-        it 'lists available clusters' do
+        it 'lists available clusters and displays html' do
           get_index
 
           expect(response).to have_gitlab_http_status(:ok)
@@ -35,19 +35,38 @@ describe Admin::ClustersController do
           expect(assigns(:clusters)).to match_array([enabled_cluster, disabled_cluster])
         end
 
+        it 'lists available clusters and renders json serializer' do
+          get_index(format: :json)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to match_response_schema('cluster_list')
+        end
+
         context 'when page is specified' do
           let(:last_page) { Clusters::Cluster.instance_type.page.total_pages }
+          let(:total_count) { Clusters::Cluster.instance_type.page.total_count }
 
           before do
-            allow(Clusters::Cluster).to receive(:paginates_per).and_return(1)
-            create_list(:cluster, 2, :provided_by_gcp, :production_environment, :instance)
+            create_list(:cluster, 30, :provided_by_gcp, :production_environment, :instance)
           end
 
           it 'redirects to the page' do
+            expect(last_page).to be > 1
+
             get_index(page: last_page)
 
             expect(response).to have_gitlab_http_status(:ok)
             expect(assigns(:clusters).current_page).to eq(last_page)
+          end
+
+          it 'displays cluster list for associated page' do
+            expect(last_page).to be > 1
+
+            get_index(page: last_page, format: :json)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response.headers['X-Page'].to_i).to eq(last_page)
+            expect(response.headers['X-Total'].to_i).to eq(total_count)
           end
         end
       end

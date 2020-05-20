@@ -16,6 +16,7 @@ import {
   idleCallback,
   allDiscussionWrappersExpanded,
   prepareDiffData,
+  prepareLineForRenamedFile,
 } from './utils';
 import * as types from './mutation_types';
 import {
@@ -627,6 +628,42 @@ export const toggleFullDiff = ({ dispatch, getters, state }, filePath) => {
   }
 };
 
+export function switchToFullDiffFromRenamedFile({ commit, dispatch, state }, { diffFile }) {
+  return axios
+    .get(diffFile.context_lines_path, {
+      params: {
+        full: true,
+        from_merge_request: true,
+      },
+    })
+    .then(({ data }) => {
+      const lines = data.map((line, index) =>
+        prepareLineForRenamedFile({
+          diffViewType: state.diffViewType,
+          line,
+          diffFile,
+          index,
+        }),
+      );
+
+      commit(types.SET_DIFF_FILE_VIEWER, {
+        filePath: diffFile.file_path,
+        viewer: {
+          ...diffFile.alternate_viewer,
+          collapsed: false,
+        },
+      });
+      commit(types.SET_CURRENT_VIEW_DIFF_FILE_LINES, { filePath: diffFile.file_path, lines });
+
+      dispatch('startRenderDiffsQueue');
+    })
+    .catch(error => {
+      dispatch('receiveFullDiffError', diffFile.file_path);
+
+      throw error;
+    });
+}
+
 export const setFileCollapsed = ({ commit }, { filePath, collapsed }) =>
   commit(types.SET_FILE_COLLAPSED, { filePath, collapsed });
 
@@ -641,6 +678,49 @@ export const setSuggestPopoverDismissed = ({ commit, state }) =>
     .catch(() => {
       createFlash(s__('MergeRequest|Error dismissing suggestion popover. Please try again.'));
     });
+
+export function changeCurrentCommit({ dispatch, commit, state }, { commitId }) {
+  /* eslint-disable @gitlab/require-i18n-strings */
+  if (!commitId) {
+    return Promise.reject(new Error('`commitId` is a required argument'));
+  } else if (!state.commit) {
+    return Promise.reject(new Error('`state` must already contain a valid `commit`'));
+  }
+  /* eslint-enable @gitlab/require-i18n-strings */
+
+  // this is less than ideal, see: https://gitlab.com/gitlab-org/gitlab/-/issues/215421
+  const commitRE = new RegExp(state.commit.id, 'g');
+
+  commit(types.SET_DIFF_FILES, []);
+  commit(types.SET_BASE_CONFIG, {
+    ...state,
+    endpoint: state.endpoint.replace(commitRE, commitId),
+    endpointBatch: state.endpointBatch.replace(commitRE, commitId),
+    endpointMetadata: state.endpointMetadata.replace(commitRE, commitId),
+  });
+
+  return dispatch('fetchDiffFilesMeta');
+}
+
+export function moveToNeighboringCommit({ dispatch, state }, { direction }) {
+  const previousCommitId = state.commit?.prev_commit_id;
+  const nextCommitId = state.commit?.next_commit_id;
+  const canMove = {
+    next: !state.isLoading && nextCommitId,
+    previous: !state.isLoading && previousCommitId,
+  };
+  let commitId;
+
+  if (direction === 'next' && canMove.next) {
+    commitId = nextCommitId;
+  } else if (direction === 'previous' && canMove.previous) {
+    commitId = previousCommitId;
+  }
+
+  if (commitId) {
+    dispatch('changeCurrentCommit', { commitId });
+  }
+}
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};

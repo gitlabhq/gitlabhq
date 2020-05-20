@@ -1,6 +1,6 @@
 # Group Import/Export API
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20353) in GitLab 12.8 as an experimental feature. May change in future releases.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20353) in GitLab 12.8.
 
 Group Import/Export allows you to export group structure and import it to a new location.
 When used with [Project Import/Export](project_import_export.md), you can preserve connections with
@@ -25,7 +25,7 @@ POST /groups/:id/export
 
 | Attribute | Type           | Required | Description                              |
 | --------- | -------------- | -------- | ---------------------------------------- |
-| `id`      | integer/string | yes      | ID of the groupd owned by the authenticated user |
+| `id`      | integer/string | yes      | ID of the group owned by the authenticated user |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/1/export
@@ -41,7 +41,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab
 
 Download the finished export.
 
-```text
+```plaintext
 GET /groups/:id/export/download
 ```
 
@@ -66,7 +66,7 @@ returns either:
 
 ## Import a file
 
-```text
+```plaintext
 POST /groups/import
 ```
 

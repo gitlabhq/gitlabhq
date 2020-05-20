@@ -40,7 +40,12 @@ export default {
     <button type="button" class="btn btn-default append-right-10" @click="closeForm">
       {{ __('Cancel') }}
     </button>
-    <button type="button" class="btn btn-close" @click.prevent="submitForm">
+    <button
+      type="button"
+      class="btn btn-close"
+      data-testid="confidential-toggle"
+      @click.prevent="submitForm"
+    >
       {{ toggleButtonText }}
     </button>
   </div>

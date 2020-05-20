@@ -34,6 +34,9 @@ export const savedContentMeta = {
 };
 
 export const submitChangesError = 'Could not save changes';
+export const commitBranchResponse = {
+  web_url: '/tree/root-master-patch-88195',
+};
 export const commitMultipleResponse = {
   short_id: 'ed899a2f4b5',
   web_url: '/commit/ed899a2f4b5',
@@ -42,3 +45,5 @@ export const createMergeRequestResponse = {
   iid: '123',
   web_url: '/merge_requests/123',
 };
+
+export const trackingCategory = 'projects:static_site_editor:show';

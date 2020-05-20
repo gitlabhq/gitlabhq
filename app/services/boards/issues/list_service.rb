@@ -12,7 +12,7 @@ module Boards
       def execute
         return fetch_issues.order_closed_date_desc if list&.closed?
 
-        fetch_issues.order_by_position_and_priority(with_cte: can_attempt_search_optimization?)
+        fetch_issues.order_by_position_and_priority(with_cte: params[:search].present?)
       end
 
       # rubocop: disable CodeReuse/ActiveRecord
@@ -91,7 +91,7 @@ module Boards
       end
 
       def set_attempt_search_optimizations
-        return unless can_attempt_search_optimization?
+        return unless params[:search].present?
 
         if board.group_board?
           params[:attempt_group_search_optimizations] = true
@@ -129,11 +129,6 @@ module Boards
 
       def board_group
         board.group_board? ? parent : parent.group
-      end
-
-      def can_attempt_search_optimization?
-        params[:search].present? &&
-          Feature.enabled?(:board_search_optimization, board_group, default_enabled: true)
       end
     end
   end

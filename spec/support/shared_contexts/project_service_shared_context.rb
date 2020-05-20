@@ -5,6 +5,7 @@ shared_context 'project service activation' do
   let(:user) { create(:user) }
 
   before do
+    stub_feature_flags(integration_form_refactor: false)
     project.add_maintainer(user)
     sign_in(user)
   end
@@ -16,6 +17,10 @@ shared_context 'project service activation' do
   def visit_project_integration(name)
     visit_project_integrations
     click_link(name)
+  end
+
+  def click_active_toggle
+    find('input[name="service[active]"] + button').click
   end
 
   def click_test_integration

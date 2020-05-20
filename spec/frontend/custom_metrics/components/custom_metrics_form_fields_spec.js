@@ -152,7 +152,6 @@ describe('custom metrics form fields component', () => {
 
     describe('when query validation is in flight', () => {
       beforeEach(() => {
-        jest.useFakeTimers();
         mountComponent(
           { metricPersisted: true, ...makeFormData({ query: 'validQuery' }) },
           {

@@ -10,6 +10,7 @@
       "description": { "type": ["string", "null"] },
       "visibility": { "type": "string" },
       "web_url": { "type": "string" },
+      "raw_url": { "type": "string" },
       "created_at": { "type": "date" },
       "updated_at": { "type": "date" },
       "author": {
@@ -22,12 +23,14 @@
           "avatar_url": { "type": "uri" },
           "web_url": { "type": "uri" }
         },
-        "additionalProperties": false
+        "required" : [
+          "id", "name", "username", "state", "avatar_url", "web_url"
+        ]
       }
     },
     "required": [
       "id", "title", "file_name", "description", "web_url",
-      "created_at", "updated_at", "author"
+      "created_at", "updated_at", "author", "raw_url"
     ],
     "additionalProperties": false
   }

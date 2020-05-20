@@ -28,19 +28,35 @@ module Gitlab
       private
 
       def create_issue(issue_attributes, project_id)
+        label_ids = issue_attributes.delete('label_ids')
+        assignee_ids = issue_attributes.delete('assignee_ids')
         issue_id = insert_and_return_id(issue_attributes, Issue)
 
-        label_issue(project_id, issue_id)
+        label_issue(project_id, issue_id, label_ids)
+        assign_issue(project_id, issue_id, assignee_ids)
 
         issue_id
       end
 
-      def label_issue(project_id, issue_id)
-        label_id = JiraImport.get_import_label_id(project_id)
-        return unless label_id
+      def label_issue(project_id, issue_id, label_ids)
+        label_link_attrs = label_ids.to_a.map do |label_id|
+          build_label_attrs(issue_id, label_id.to_i)
+        end
 
-        label_link_attrs = build_label_attrs(issue_id, label_id.to_i)
-        insert_and_return_id(label_link_attrs, LabelLink)
+        import_label_id = JiraImport.get_import_label_id(project_id)
+        return unless import_label_id
+
+        label_link_attrs << build_label_attrs(issue_id, import_label_id.to_i)
+
+        Gitlab::Database.bulk_insert(LabelLink.table_name, label_link_attrs)
+      end
+
+      def assign_issue(project_id, issue_id, assignee_ids)
+        return if assignee_ids.blank?
+
+        assignee_attrs = assignee_ids.map { |user_id| { issue_id: issue_id, user_id: user_id } }
+
+        Gitlab::Database.bulk_insert(IssueAssignee.table_name, assignee_attrs)
       end
 
       def build_label_attrs(issue_id, label_id)

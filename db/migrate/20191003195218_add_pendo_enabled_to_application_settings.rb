@@ -6,7 +6,7 @@ class AddPendoEnabledToApplicationSettings < ActiveRecord::Migration[5.2]
   disable_ddl_transaction!
 
   def up
-    add_column_with_default :application_settings, :pendo_enabled, :boolean, default: false, allow_null: false
+    add_column_with_default :application_settings, :pendo_enabled, :boolean, default: false, allow_null: false # rubocop:disable Migration/AddColumnWithDefault
   end
 
   def down

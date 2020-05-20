@@ -476,7 +476,7 @@ which can be avoided if a different driver is used, for example `overlay2`.
    On Ubuntu systems, this is done by editing `/etc/modules`. Just add the
    following line into it:
 
-   ```text
+   ```plaintext
    overlay
    ```
 

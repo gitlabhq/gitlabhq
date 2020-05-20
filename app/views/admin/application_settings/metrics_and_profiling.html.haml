@@ -2,17 +2,6 @@
 - page_title _("Metrics and profiling")
 - @content_class = "limit-container-width" unless fluid_layout
 
-%section.settings.as-influx.no-animate#js-influx-settings{ class: ('expanded' if expanded_by_default?) }
-  .settings-header
-    %h4
-      = _('Metrics - Influx')
-    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
-      = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p
-      = _('Enable and configure InfluxDB metrics.')
-  .settings-content
-    = render 'influx'
-
 %section.settings.as-prometheus.no-animate#js-prometheus-settings{ class: ('expanded' if expanded_by_default?) }
   .settings-header
     %h4

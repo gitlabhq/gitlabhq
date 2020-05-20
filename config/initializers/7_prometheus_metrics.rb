@@ -44,6 +44,10 @@ if !Rails.env.test? && Gitlab::Metrics.prometheus_metrics_enabled?
 
     Gitlab::Metrics::Samplers::RubySampler.initialize_instance(Settings.monitoring.ruby_sampler_interval).start
 
+    if Gitlab::Utils.to_boolean(ENV['ENABLE_DATABASE_CONNECTION_POOL_METRICS'])
+      Gitlab::Metrics::Samplers::DatabaseSampler.initialize_instance(Gitlab::Metrics::Samplers::DatabaseSampler::SAMPLING_INTERVAL_SECONDS).start
+    end
+
     if Gitlab.ee? && Gitlab::Runtime.sidekiq?
       Gitlab::Metrics::Samplers::GlobalSearchSampler.instance(Settings.monitoring.global_search_sampler_interval).start
     end
@@ -60,6 +64,8 @@ if !Rails.env.test? && Gitlab::Metrics.prometheus_metrics_enabled?
     elsif Gitlab::Runtime.puma?
       Gitlab::Metrics::Samplers::PumaSampler.instance(Settings.monitoring.puma_sampler_interval).start
     end
+
+    Gitlab::Metrics.gauge(:deployments, 'GitLab Version', {}, :max).set({ version: Gitlab::VERSION }, 1)
 
     Gitlab::Metrics::RequestsRackMiddleware.initialize_http_request_duration_seconds
   rescue IOError => e

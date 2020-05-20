@@ -6,6 +6,9 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   include Devise::Controllers::Rememberable
   include AuthHelper
   include InitializesCurrentUserMode
+  include KnownSignIn
+
+  after_action :verify_known_sign_in
 
   protect_from_forgery except: [:kerberos, :saml, :cas3, :failure], with: :exception, prepend: true
 
@@ -86,6 +89,14 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   private
+
+  def after_omniauth_failure_path_for(scope)
+    if Feature.enabled?(:user_mode_in_session)
+      return new_admin_session_path if current_user_mode.admin_mode_requested?
+    end
+
+    super
+  end
 
   def omniauth_flow(auth_module, identity_linker: nil)
     if fragment = request.env.dig('omniauth.params', 'redirect_fragment').presence

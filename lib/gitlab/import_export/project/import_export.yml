@@ -29,6 +29,14 @@ tree:
       - resource_label_events:
         - label:
           - :priorities
+      - designs:
+        - notes:
+          - :author
+          - events:
+            - :push_event_payload
+      - design_versions:
+        - actions:
+          - :design # Duplicate export of issues.designs in order to link the record to both Issue and Action
       - :issue_assignees
       - :zoom_meetings
       - :sentry_issue
@@ -160,6 +168,7 @@ excluded_attributes:
     - :marked_for_deletion_at
     - :marked_for_deletion_by_user_id
     - :compliance_framework_setting
+    - :show_default_award_emojis
   namespaces:
     - :runners_token
     - :runners_token_encrypted
@@ -190,6 +199,7 @@ excluded_attributes:
     - :merge_request_diff_id
   issues:
     - :milestone_id
+    - :sprint_id
     - :moved_to_id
     - :sent_notifications
     - :state_id
@@ -197,6 +207,7 @@ excluded_attributes:
     - :promoted_to_epic_id
   merge_request:
     - :milestone_id
+    - :sprint_id
     - :ref_fetched
     - :merge_jid
     - :rebase_jid
@@ -205,6 +216,7 @@ excluded_attributes:
     - :state_id
   merge_requests:
     - :milestone_id
+    - :sprint_id
     - :ref_fetched
     - :merge_jid
     - :rebase_jid
@@ -250,8 +262,9 @@ excluded_attributes:
     - :token
     - :token_encrypted
   services:
-    - :template
+    - :inherit_from_id
     - :instance
+    - :template
   error_tracking_setting:
     - :encrypted_token
     - :encrypted_token_iv
@@ -284,6 +297,7 @@ excluded_attributes:
   actions:
     - :design_id
     - :version_id
+    - image_v432x230
   links:
     - :release_id
   project_members:
@@ -376,14 +390,6 @@ ee:
   tree:
     project:
       - issues:
-        - designs:
-          - notes:
-            - :author
-            - events:
-              - :push_event_payload
-        - design_versions:
-          - actions:
-            - :design # Duplicate export of issues.designs in order to link the record to both Issue and Action
         - epic_issue:
           - :epic
       - protected_branches:
@@ -391,6 +397,3 @@ ee:
       - protected_environments:
         - :deploy_access_levels
       - :service_desk_setting
-  excluded_attributes:
-    actions:
-      - image_v432x230

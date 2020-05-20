@@ -5,7 +5,9 @@ class AddTokenEncryptedToOperationsFeatureFlagsClients < ActiveRecord::Migration
 
   DOWNTIME = false
 
+  # rubocop:disable Migration/PreventStrings
   def change
-    add_column :operations_feature_flags_clients, :token_encrypted, :string # rubocop:disable Migration/AddLimitToStringColumns
+    add_column :operations_feature_flags_clients, :token_encrypted, :string
   end
+  # rubocop:enable Migration/PreventStrings
 end

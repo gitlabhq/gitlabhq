@@ -780,28 +780,20 @@ describe API::Issues do
       end
 
       context 'filtering by non_archived' do
-        let_it_be(:group1) { create(:group) }
-        let_it_be(:archived_project) { create(:project, :archived, namespace: group1) }
-        let_it_be(:active_project) { create(:project, namespace: group1) }
-        let_it_be(:issue1) { create(:issue, project: active_project) }
-        let_it_be(:issue2) { create(:issue, project: active_project) }
-        let_it_be(:issue3) { create(:issue, project: archived_project) }
+        let_it_be(:archived_project) { create(:project, :archived, creator_id: user.id, namespace: user.namespace) }
+        let_it_be(:archived_issue) { create(:issue, author: user, project: archived_project) }
+        let_it_be(:active_issue) { create(:issue, author: user, project: project) }
 
-        before do
-          archived_project.add_developer(user)
-          active_project.add_developer(user)
+        it 'returns issues from non archived projects by default' do
+          get api('/issues', user)
+
+          expect_paginated_array_response(active_issue.id, issue.id, closed_issue.id)
         end
 
-        it 'returns issues from non archived projects only by default' do
-          get api("/groups/#{group1.id}/issues", user), params: { scope: 'all' }
+        it 'returns issues from archived project with non_archived set as false' do
+          get api("/issues", user), params: { non_archived: false }
 
-          expect_paginated_array_response([issue2.id, issue1.id])
-        end
-
-        it 'returns issues from archived and non archived projects when non_archived is false' do
-          get api("/groups/#{group1.id}/issues", user), params: { non_archived: false, scope: 'all' }
-
-          expect_paginated_array_response([issue3.id, issue2.id, issue1.id])
+          expect_paginated_array_response(active_issue.id, archived_issue.id, issue.id, closed_issue.id)
         end
       end
     end

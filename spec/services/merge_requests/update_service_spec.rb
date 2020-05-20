@@ -92,6 +92,7 @@ describe MergeRequests::UpdateService, :mailer do
               labels: [],
               mentioned_users: [user2],
               assignees: [user3],
+              milestone: nil,
               total_time_spent: 0,
               description: "FYI #{user2.to_reference}"
             }
@@ -452,7 +453,7 @@ describe MergeRequests::UpdateService, :mailer do
         end
 
         it 'updates updated_at' do
-          expect(merge_request.reload.updated_at).to be > Time.now
+          expect(merge_request.reload.updated_at).to be > Time.current
         end
       end
 

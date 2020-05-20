@@ -3,14 +3,17 @@
 require 'spec_helper'
 
 describe Mentionable do
-  class Example
-    include Mentionable
+  before do
+    stub_const('Example', Class.new)
+    Example.class_eval do
+      include Mentionable
 
-    attr_accessor :project, :message
-    attr_mentionable :message
+      attr_accessor :project, :message
+      attr_mentionable :message
 
-    def author
-      nil
+      def author
+        nil
+      end
     end
   end
 
@@ -28,11 +31,11 @@ describe Mentionable do
   end
 
   describe '#any_mentionable_attributes_changed?' do
-    Message = Struct.new(:text)
+    message = Struct.new(:text)
 
     let(:mentionable) { Example.new }
     let(:changes) do
-      msg = Message.new('test')
+      msg = message.new('test')
 
       changes = {}
       changes[msg] = ['', 'some message']
@@ -321,6 +324,39 @@ describe Snippet, 'Mentionable' do
   describe 'load mentions' do
     it_behaves_like 'load mentions from DB', :project_snippet do
       let(:note) { create(:note_on_project_snippet) }
+      let(:mentionable) { note.noteable }
+    end
+  end
+end
+
+describe PersonalSnippet, 'Mentionable' do
+  describe '#store_mentions!' do
+    it_behaves_like 'mentions in description', :personal_snippet
+    it_behaves_like 'mentions in notes', :personal_snippet do
+      let(:note) { create(:note_on_personal_snippet) }
+      let(:mentionable) { note.noteable }
+    end
+  end
+
+  describe 'load mentions' do
+    it_behaves_like 'load mentions from DB', :personal_snippet do
+      let(:note) { create(:note_on_personal_snippet) }
+      let(:mentionable) { note.noteable }
+    end
+  end
+end
+
+describe DesignManagement::Design do
+  describe '#store_mentions!' do
+    it_behaves_like 'mentions in notes', :design do
+      let(:note) { create(:diff_note_on_design) }
+      let(:mentionable) { note.noteable }
+    end
+  end
+
+  describe 'load mentions' do
+    it_behaves_like 'load mentions from DB', :design do
+      let(:note) { create(:diff_note_on_design) }
       let(:mentionable) { note.noteable }
     end
   end

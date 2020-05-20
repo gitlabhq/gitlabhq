@@ -241,7 +241,7 @@ describe Noteable do
 
   describe '.resolvable_types' do
     it 'exposes the replyable types' do
-      expect(described_class.resolvable_types).to include('MergeRequest')
+      expect(described_class.resolvable_types).to include('MergeRequest', 'DesignManagement::Design')
     end
   end
 

@@ -5,14 +5,16 @@ import { parseBoolean } from '~/lib/utils/common_utils';
 
 export default () => {
   const el = document.getElementById('js-ci-project-variables');
-  const { endpoint, projectId, group, maskableRegex } = el.dataset;
+  const { endpoint, projectId, group, maskableRegex, protectedByDefault } = el.dataset;
   const isGroup = parseBoolean(group);
+  const isProtectedByDefault = parseBoolean(protectedByDefault);
 
   const store = createStore({
     endpoint,
     projectId,
     isGroup,
     maskableRegex,
+    isProtectedByDefault,
   });
 
   return new Vue({

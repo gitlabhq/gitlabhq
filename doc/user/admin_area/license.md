@@ -10,8 +10,8 @@ by **signing into your GitLab instance as an admin** or add it at
 installation time.
 
 The license has the form of a base64 encoded ASCII text with a `.gitlab-license`
-extension and can be obtained when you [purchase one][pricing] or when you sign
-up for a [free trial].
+extension and can be obtained when you [purchase one](https://about.gitlab.com/pricing/) or when you sign
+up for a [free trial](https://about.gitlab.com/free-trial/).
 
 NOTE: **Note:**
 As of GitLab Enterprise Edition 9.4.0, a newly-installed instance without an
@@ -103,9 +103,6 @@ expired license(s).
 
 It's possible to upload and view more than one license,
 but only the latest license will be used as the active license.
-
-[free trial]: https://about.gitlab.com/free-trial/
-[pricing]: https://about.gitlab.com/pricing/
 
 <!-- ## Troubleshooting
 

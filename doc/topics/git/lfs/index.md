@@ -2,7 +2,7 @@
 disqus_identifier: 'https://docs.gitlab.com/ee/workflow/lfs/lfs/index.html'
 ---
 
-# Git LFS
+# Git Large File Storage (LFS)
 
 Managing large files such as audio, video and graphics files has always been one
 of the shortcomings of Git. The general recommendation is to not have Git repositories
@@ -154,7 +154,7 @@ also edit it:
 git lfs unlock images/banner.png
 ```
 
-You can also unlock by id:
+You can also unlock by ID:
 
 ```shell
 git lfs unlock --id=123
@@ -217,10 +217,10 @@ If you push a LFS object to a project and you receive an error similar to:
 the LFS client is trying to reach GitLab through HTTPS. However, your GitLab
 instance is being served on HTTP.
 
-This behaviour is caused by Git LFS using HTTPS connections by default when a
+This behavior is caused by Git LFS using HTTPS connections by default when a
 `lfsurl` is not set in the Git config.
 
-To prevent this from happening, set the lfs url in project Git config:
+To prevent this from happening, set the lfs URL in project Git config:
 
 ```shell
 git config --add lfs.url "http://gitlab.example.com/group/project.git/info/lfs"
@@ -265,7 +265,7 @@ If you are storing LFS files outside of GitLab you can disable LFS on the projec
 
 ### Hosting LFS objects externally
 
-It is possible to host LFS objects externally by setting a custom LFS url with `git config -f .lfsconfig lfs.url https://example.com/<project>.git/info/lfs`.
+It is possible to host LFS objects externally by setting a custom LFS URL with `git config -f .lfsconfig lfs.url https://example.com/<project>.git/info/lfs`.
 
 You might choose to do this if you are using an appliance like a Sonatype Nexus to store LFS data. If you choose to use an external LFS store,
 GitLab will not be able to verify LFS objects which means that pushes will fail if you have GitLab LFS support enabled.

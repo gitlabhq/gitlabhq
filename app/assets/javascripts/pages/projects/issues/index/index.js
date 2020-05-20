@@ -7,6 +7,7 @@ import UsersSelect from '~/users_select';
 import initFilteredSearch from '~/pages/search/init_filtered_search';
 import { FILTERED_SEARCH } from '~/pages/constants';
 import { ISSUABLE_INDEX } from '~/pages/projects/constants';
+import initIssuablesList from '~/issuables_list';
 import initManualOrdering from '~/manual_ordering';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -16,9 +17,11 @@ document.addEventListener('DOMContentLoaded', () => {
     page: FILTERED_SEARCH.ISSUES,
     filteredSearchTokenKeys: IssuableFilteredSearchTokenKeys,
   });
-  new IssuableIndex(ISSUABLE_INDEX.ISSUE);
 
+  new IssuableIndex(ISSUABLE_INDEX.ISSUE);
   new ShortcutsNavigation();
   new UsersSelect();
+
   initManualOrdering();
+  initIssuablesList();
 });

@@ -5,7 +5,7 @@ require 'securerandom'
 module Clusters
   module Applications
     class Jupyter < ApplicationRecord
-      VERSION = '0.9.0-beta.2'
+      VERSION = '0.9.0'
 
       self.table_name = 'clusters_applications_jupyter'
 

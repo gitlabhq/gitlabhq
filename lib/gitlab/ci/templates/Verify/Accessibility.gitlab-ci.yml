@@ -8,12 +8,14 @@ stages:
 
 a11y:
   stage: accessibility
-  image: registry.gitlab.com/gitlab-org/ci-cd/accessibility:5.3.0-gitlab.2
+  image: registry.gitlab.com/gitlab-org/ci-cd/accessibility:5.3.0-gitlab.3
   script: /gitlab-accessibility.sh $a11y_urls
   allow_failure: true
   artifacts:
     when: always
     expose_as: 'Accessibility Reports'
     paths: ['reports/']
+    reports:
+      accessibility: reports/gl-accessibility.json
   rules:
     - if: $a11y_urls

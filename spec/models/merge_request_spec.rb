@@ -18,6 +18,10 @@ describe MergeRequest do
     it { is_expected.to have_many(:assignees).through(:merge_request_assignees) }
     it { is_expected.to have_many(:merge_request_diffs) }
     it { is_expected.to have_many(:user_mentions).class_name("MergeRequestUserMention") }
+    it { is_expected.to belong_to(:milestone) }
+    it { is_expected.to belong_to(:iteration) }
+    it { is_expected.to have_many(:resource_milestone_events) }
+    it { is_expected.to have_many(:resource_state_events) }
 
     context 'for forks' do
       let!(:project) { create(:project) }
@@ -176,6 +180,8 @@ describe MergeRequest do
     it { is_expected.to include_module(Referable) }
     it { is_expected.to include_module(Sortable) }
     it { is_expected.to include_module(Taskable) }
+    it { is_expected.to include_module(MilestoneEventable) }
+    it { is_expected.to include_module(StateEventable) }
 
     it_behaves_like 'AtomicInternalId' do
       let(:internal_id_attribute) { :iid }
@@ -1610,6 +1616,32 @@ describe MergeRequest do
     end
   end
 
+  describe '#has_accessibility_reports?' do
+    subject { merge_request.has_accessibility_reports? }
+
+    let(:project) { create(:project, :repository) }
+
+    context 'when head pipeline has an accessibility reports' do
+      let(:merge_request) { create(:merge_request, :with_accessibility_reports, source_project: project) }
+
+      it { is_expected.to be_truthy }
+
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(accessibility_report_view: false)
+        end
+
+        it { is_expected.to be_falsey }
+      end
+    end
+
+    context 'when head pipeline does not have accessibility reports' do
+      let(:merge_request) { create(:merge_request, source_project: project) }
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
   describe '#has_coverage_reports?' do
     subject { merge_request.has_coverage_reports? }
 
@@ -1625,6 +1657,26 @@ describe MergeRequest do
       let(:merge_request) { create(:merge_request, source_project: project) }
 
       it { is_expected.to be_falsey }
+    end
+  end
+
+  describe '#has_terraform_reports?' do
+    let_it_be(:project) { create(:project, :repository) }
+
+    context 'when head pipeline has terraform reports' do
+      it 'returns true' do
+        merge_request = create(:merge_request, :with_terraform_reports, source_project: project)
+
+        expect(merge_request.has_terraform_reports?).to be_truthy
+      end
+    end
+
+    context 'when head pipeline does not have terraform reports' do
+      it 'returns false' do
+        merge_request = create(:merge_request, source_project: project)
+
+        expect(merge_request.has_terraform_reports?).to be_falsey
+      end
     end
   end
 
@@ -1833,6 +1885,62 @@ describe MergeRequest do
       it 'returns status and error message' do
         expect(subject[:status]).to eq(:error)
         expect(subject[:status_reason]).to eq('This merge request does not have test reports')
+      end
+    end
+  end
+
+  describe '#compare_accessibility_reports' do
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:merge_request, reload: true) { create(:merge_request, :with_accessibility_reports, source_project: project) }
+    let_it_be(:pipeline) { merge_request.head_pipeline }
+
+    subject { merge_request.compare_accessibility_reports }
+
+    context 'when head pipeline has accessibility reports' do
+      let(:job) do
+        create(:ci_build, options: { artifacts: { reports: { pa11y: ['accessibility.json'] } } }, pipeline: pipeline)
+      end
+
+      let(:artifacts_metadata) { create(:ci_job_artifact, :metadata, job: job) }
+
+      context 'when reactive cache worker is parsing results asynchronously' do
+        it 'returns parsing status' do
+          expect(subject[:status]).to eq(:parsing)
+        end
+      end
+
+      context 'when reactive cache worker is inline' do
+        before do
+          synchronous_reactive_cache(merge_request)
+        end
+
+        it 'returns parsed status' do
+          expect(subject[:status]).to eq(:parsed)
+          expect(subject[:data]).to be_present
+        end
+
+        context 'when an error occurrs' do
+          before do
+            merge_request.update!(head_pipeline: nil)
+          end
+
+          it 'returns an error status' do
+            expect(subject[:status]).to eq(:error)
+            expect(subject[:status_reason]).to eq("This merge request does not have accessibility reports")
+          end
+        end
+
+        context 'when cached result is not latest' do
+          before do
+            allow_next_instance_of(Ci::CompareAccessibilityReportsService) do |service|
+              allow(service).to receive(:latest?).and_return(false)
+            end
+          end
+
+          it 'raises an InvalidateReactiveCache error' do
+            expect { subject }.to raise_error(ReactiveCaching::InvalidateReactiveCache)
+          end
+        end
       end
     end
   end
@@ -3678,41 +3786,41 @@ describe MergeRequest do
   describe '#recent_visible_deployments' do
     let(:merge_request) { create(:merge_request) }
 
-    let(:environment) do
-      create(:environment, project: merge_request.target_project)
-    end
-
     it 'returns visible deployments' do
+      envs = create_list(:environment, 3, project: merge_request.target_project)
+
       created = create(
         :deployment,
         :created,
         project: merge_request.target_project,
-        environment: environment
+        environment: envs[0]
       )
 
       success = create(
         :deployment,
         :success,
         project: merge_request.target_project,
-        environment: environment
+        environment: envs[1]
       )
 
       failed = create(
         :deployment,
         :failed,
         project: merge_request.target_project,
-        environment: environment
+        environment: envs[2]
       )
 
-      merge_request.deployment_merge_requests.create!(deployment: created)
-      merge_request.deployment_merge_requests.create!(deployment: success)
-      merge_request.deployment_merge_requests.create!(deployment: failed)
+      merge_request_relation = MergeRequest.where(id: merge_request.id)
+      created.link_merge_requests(merge_request_relation)
+      success.link_merge_requests(merge_request_relation)
+      failed.link_merge_requests(merge_request_relation)
 
       expect(merge_request.recent_visible_deployments).to eq([failed, success])
     end
 
     it 'only returns a limited number of deployments' do
       20.times do
+        environment = create(:environment, project: merge_request.target_project)
         deploy = create(
           :deployment,
           :success,
@@ -3720,7 +3828,7 @@ describe MergeRequest do
           environment: environment
         )
 
-        merge_request.deployment_merge_requests.create!(deployment: deploy)
+        deploy.link_merge_requests(MergeRequest.where(id: merge_request.id))
       end
 
       expect(merge_request.recent_visible_deployments.count).to eq(10)
@@ -3728,40 +3836,28 @@ describe MergeRequest do
   end
 
   describe '#diffable_merge_ref?' do
-    context 'diff_compare_with_head enabled' do
-      context 'merge request can be merged' do
-        context 'merge_to_ref is not calculated' do
-          it 'returns true' do
-            expect(subject.diffable_merge_ref?).to eq(false)
-          end
-        end
-
-        context 'merge_to_ref is calculated' do
-          before do
-            MergeRequests::MergeToRefService.new(subject.project, subject.author).execute(subject)
-          end
-
-          it 'returns true' do
-            expect(subject.diffable_merge_ref?).to eq(true)
-          end
+    context 'merge request can be merged' do
+      context 'merge_to_ref is not calculated' do
+        it 'returns true' do
+          expect(subject.diffable_merge_ref?).to eq(false)
         end
       end
 
-      context 'merge request cannot be merged' do
-        it 'returns false' do
-          subject.mark_as_unchecked!
+      context 'merge_to_ref is calculated' do
+        before do
+          MergeRequests::MergeToRefService.new(subject.project, subject.author).execute(subject)
+        end
 
-          expect(subject.diffable_merge_ref?).to eq(false)
+        it 'returns true' do
+          expect(subject.diffable_merge_ref?).to eq(true)
         end
       end
     end
 
-    context 'diff_compare_with_head disabled' do
-      before do
-        stub_feature_flags(diff_compare_with_head: { enabled: false, thing: subject.target_project })
-      end
-
+    context 'merge request cannot be merged' do
       it 'returns false' do
+        subject.mark_as_unchecked!
+
         expect(subject.diffable_merge_ref?).to eq(false)
       end
     end

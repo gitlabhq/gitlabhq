@@ -7,6 +7,7 @@ module QA
         class Show < Page::Base
           include Page::Component::Issuable::Common
           include Page::Component::Note
+          include Page::Component::DesignManagement
 
           view 'app/assets/javascripts/notes/components/comment_form.vue' do
             element :comment_button
@@ -54,6 +55,23 @@ module QA
           view 'app/views/shared/notes/_form.html.haml' do
             element :new_note_form, 'new-note' # rubocop:disable QA/ElementWithPattern
             element :new_note_form, 'attr: :note' # rubocop:disable QA/ElementWithPattern
+          end
+
+          view 'app/views/projects/issues/_tabs.html.haml' do
+            element :discussion_tab_link
+            element :discussion_tab_content
+            element :designs_tab_link
+            element :designs_tab_content
+          end
+
+          def click_discussion_tab
+            click_element(:discussion_tab_link)
+            active_element?(:discussion_tab_content)
+          end
+
+          def click_designs_tab
+            click_element(:designs_tab_link)
+            active_element?(:designs_tab_content)
           end
 
           def click_milestone_link

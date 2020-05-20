@@ -5,8 +5,8 @@ require 'spec_helper'
 describe Gitlab::Elasticsearch::Logs::Pods do
   let(:client) { Elasticsearch::Transport::Client }
 
-  let(:es_query) { JSON.parse(fixture_file('lib/elasticsearch/pods_query.json'), symbolize_names: true) }
-  let(:es_response) { JSON.parse(fixture_file('lib/elasticsearch/pods_response.json')) }
+  let(:es_query) { Gitlab::Json.parse(fixture_file('lib/elasticsearch/pods_query.json'), symbolize_names: true) }
+  let(:es_response) { Gitlab::Json.parse(fixture_file('lib/elasticsearch/pods_response.json')) }
   let(:namespace) { "autodevops-deploy-9-production" }
 
   subject { described_class.new(client) }

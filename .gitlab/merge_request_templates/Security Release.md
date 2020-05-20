@@ -19,7 +19,7 @@ See [the general developer security release guidelines](https://gitlab.com/gitla
 - [ ] A [CHANGELOG entry](https://docs.gitlab.com/ee/development/changelog.html) is added without a `merge_request` value, with `type` set to `security`
 - [ ] Assign to a reviewer and maintainer, per our [Code Review process].
 - [ ] For the MR targeting `master`:
-  - [ ] Ping appsec team member who created the issue and ask for a non-blocking review with `Please review this MR`.
+  - [ ] Ask for a non-blocking review from the AppSec team member associated to the issue in the [Canonical repository](https://gitlab.com/gitlab-org/gitlab). If you're unsure who to ping, ask on `#sec-appsec` Slack channel.
   - [ ] Ensure it's approved according to our [Approval Guidelines].
 - [ ] Merge request _must not_ close the corresponding security issue, _unless_ it targets `master`.
 
