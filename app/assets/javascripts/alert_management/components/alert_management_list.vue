@@ -26,7 +26,6 @@ const bodyTrClass =
   'gl-border-1 gl-border-t-solid gl-border-gray-100 hover-bg-blue-50 hover-gl-cursor-pointer hover-gl-border-b-solid hover-gl-border-blue-200';
 
 export default {
-  bodyTrClass,
   i18n: {
     noAlertsMsg: s__(
       "AlertManagement|No alerts available to display. If you think you're seeing this message in error, refresh the page.",
@@ -132,7 +131,6 @@ export default {
   },
   data() {
     return {
-      alerts: null,
       errored: false,
       isAlertDismissed: false,
       isErrorAlertDismissed: false,
@@ -148,6 +146,12 @@ export default {
     },
     loading() {
       return this.$apollo.queries.alerts.loading;
+    },
+    hasAlerts() {
+      return this.alerts?.length;
+    },
+    tbodyTrClass() {
+      return !this.loading && this.hasAlerts ? bodyTrClass : '';
     },
   },
   methods: {
@@ -210,7 +214,7 @@ export default {
         :show-empty="true"
         :busy="loading"
         stacked="md"
-        :tbody-tr-class="$options.bodyTrClass"
+        :tbody-tr-class="tbodyTrClass"
         @row-clicked="navigateToAlertDetails"
       >
         <template #cell(severity)="{ item }">

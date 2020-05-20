@@ -142,6 +142,11 @@ describe('AlertManagementList', () => {
       });
       expect(findAlertsTable().exists()).toBe(true);
       expect(findLoader().exists()).toBe(true);
+      expect(
+        findAlerts()
+          .at(0)
+          .classes(),
+      ).not.toContain('hover-bg-blue-50');
     });
 
     it('error state', () => {
@@ -154,6 +159,11 @@ describe('AlertManagementList', () => {
       expect(findAlertsTable().text()).toContain('No alerts to display');
       expect(findLoader().exists()).toBe(false);
       expect(findAlert().props().variant).toBe('danger');
+      expect(
+        findAlerts()
+          .at(0)
+          .classes(),
+      ).not.toContain('hover-bg-blue-50');
     });
 
     it('empty state', () => {
@@ -166,6 +176,11 @@ describe('AlertManagementList', () => {
       expect(findAlertsTable().text()).toContain('No alerts to display');
       expect(findLoader().exists()).toBe(false);
       expect(findAlert().props().variant).toBe('info');
+      expect(
+        findAlerts()
+          .at(0)
+          .classes(),
+      ).not.toContain('hover-bg-blue-50');
     });
 
     it('has data state', () => {
@@ -177,6 +192,11 @@ describe('AlertManagementList', () => {
       expect(findLoader().exists()).toBe(false);
       expect(findAlertsTable().exists()).toBe(true);
       expect(findAlerts()).toHaveLength(mockAlerts.length);
+      expect(
+        findAlerts()
+          .at(0)
+          .classes(),
+      ).toContain('hover-bg-blue-50');
     });
 
     it('displays status dropdown', () => {

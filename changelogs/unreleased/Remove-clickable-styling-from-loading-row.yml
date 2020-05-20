@@ -1,0 +1,5 @@
+---
+title: Fix loading and empty state styling for alerts list
+merge_request: 32531
+author:
+type: fixed

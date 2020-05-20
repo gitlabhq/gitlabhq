@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative '../json'
+require 'json'
 
 module Gitlab
   module Danger
@@ -25,8 +25,8 @@ module Gitlab
       )}x.freeze
 
       def initialize
-        names = Gitlab::Json.parse(File.read(DIGESTS)).keys +
-          Gitlab::Json.parse(File.read(ALIASES)).keys
+        names = JSON.parse(File.read(DIGESTS)).keys +
+          JSON.parse(File.read(ALIASES)).keys
 
         @emoji = names.map { |name| ":#{name}:" }
       end

@@ -5773,6 +5773,24 @@ CREATE SEQUENCE public.requirements_id_seq
 
 ALTER SEQUENCE public.requirements_id_seq OWNED BY public.requirements.id;
 
+CREATE TABLE public.requirements_management_test_reports (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    requirement_id bigint NOT NULL,
+    pipeline_id bigint,
+    author_id bigint,
+    state smallint NOT NULL
+);
+
+CREATE SEQUENCE public.requirements_management_test_reports_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.requirements_management_test_reports_id_seq OWNED BY public.requirements_management_test_reports.id;
+
 CREATE TABLE public.resource_label_events (
     id bigint NOT NULL,
     action integer NOT NULL,
@@ -7777,6 +7795,8 @@ ALTER TABLE ONLY public.remote_mirrors ALTER COLUMN id SET DEFAULT nextval('publ
 
 ALTER TABLE ONLY public.requirements ALTER COLUMN id SET DEFAULT nextval('public.requirements_id_seq'::regclass);
 
+ALTER TABLE ONLY public.requirements_management_test_reports ALTER COLUMN id SET DEFAULT nextval('public.requirements_management_test_reports_id_seq'::regclass);
+
 ALTER TABLE ONLY public.resource_label_events ALTER COLUMN id SET DEFAULT nextval('public.resource_label_events_id_seq'::regclass);
 
 ALTER TABLE ONLY public.resource_milestone_events ALTER COLUMN id SET DEFAULT nextval('public.resource_milestone_events_id_seq'::regclass);
@@ -8708,6 +8728,9 @@ ALTER TABLE ONLY public.releases
 
 ALTER TABLE ONLY public.remote_mirrors
     ADD CONSTRAINT remote_mirrors_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.requirements_management_test_reports
+    ADD CONSTRAINT requirements_management_test_reports_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY public.requirements
     ADD CONSTRAINT requirements_pkey PRIMARY KEY (id);
@@ -10506,6 +10529,12 @@ CREATE INDEX index_remote_mirrors_on_project_id ON public.remote_mirrors USING b
 
 CREATE UNIQUE INDEX index_repository_languages_on_project_and_languages_id ON public.repository_languages USING btree (project_id, programming_language_id);
 
+CREATE INDEX index_requirements_management_test_reports_on_author_id ON public.requirements_management_test_reports USING btree (author_id);
+
+CREATE INDEX index_requirements_management_test_reports_on_pipeline_id ON public.requirements_management_test_reports USING btree (pipeline_id);
+
+CREATE INDEX index_requirements_management_test_reports_on_requirement_id ON public.requirements_management_test_reports USING btree (requirement_id);
+
 CREATE INDEX index_requirements_on_author_id ON public.requirements USING btree (author_id);
 
 CREATE INDEX index_requirements_on_created_at ON public.requirements USING btree (created_at);
@@ -11731,6 +11760,9 @@ ALTER TABLE ONLY public.service_desk_settings
 ALTER TABLE ONLY public.group_custom_attributes
     ADD CONSTRAINT fk_rails_246e0db83a FOREIGN KEY (group_id) REFERENCES public.namespaces(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY public.requirements_management_test_reports
+    ADD CONSTRAINT fk_rails_24cecc1e68 FOREIGN KEY (pipeline_id) REFERENCES public.ci_pipelines(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY public.group_wiki_repositories
     ADD CONSTRAINT fk_rails_26f867598c FOREIGN KEY (group_id) REFERENCES public.namespaces(id) ON DELETE CASCADE;
 
@@ -12472,6 +12504,9 @@ ALTER TABLE ONLY public.subscriptions
 ALTER TABLE ONLY public.operations_strategies
     ADD CONSTRAINT fk_rails_d183b6e6dd FOREIGN KEY (feature_flag_id) REFERENCES public.operations_feature_flags(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY public.requirements_management_test_reports
+    ADD CONSTRAINT fk_rails_d1e8b498bf FOREIGN KEY (author_id) REFERENCES public.users(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY public.pool_repositories
     ADD CONSTRAINT fk_rails_d2711daad4 FOREIGN KEY (source_project_id) REFERENCES public.projects(id) ON DELETE SET NULL;
 
@@ -12615,6 +12650,9 @@ ALTER TABLE ONLY public.merge_trains
 
 ALTER TABLE ONLY public.ci_runner_namespaces
     ADD CONSTRAINT fk_rails_f9d9ed3308 FOREIGN KEY (namespace_id) REFERENCES public.namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.requirements_management_test_reports
+    ADD CONSTRAINT fk_rails_fb3308ad55 FOREIGN KEY (requirement_id) REFERENCES public.requirements(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.board_project_recent_visits
     ADD CONSTRAINT fk_rails_fb6fc419cb FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
@@ -13856,6 +13894,9 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200511145545
 20200511162057
 20200511162115
+20200511181027
+20200511191027
+20200511208012
 20200511220023
 20200512085150
 20200512164334
