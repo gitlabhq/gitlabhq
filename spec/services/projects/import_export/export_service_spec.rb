@@ -119,9 +119,9 @@ describe Projects::ImportExport::ExportService do
         end
 
         it 'notifies logger' do
-          allow(Rails.logger).to receive(:error)
+          allow(Gitlab::AppLogger).to receive(:error)
 
-          expect(Rails.logger).to receive(:error)
+          expect(Gitlab::AppLogger).to receive(:error)
         end
       end
     end
@@ -149,7 +149,7 @@ describe Projects::ImportExport::ExportService do
       end
 
       it 'notifies logger' do
-        expect(Rails.logger).to receive(:error)
+        expect(Gitlab::AppLogger).to receive(:error)
       end
 
       it 'does not call the export strategy' do

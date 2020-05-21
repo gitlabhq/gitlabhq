@@ -223,7 +223,7 @@ export const fetchPrometheusMetric = (
     queryParams.step = metric.step;
   }
 
-  if (Object.keys(state.promVariables).length > 0) {
+  if (Object.keys(state.variables).length > 0) {
     queryParams.variables = getters.getCustomVariablesArray;
   }
 

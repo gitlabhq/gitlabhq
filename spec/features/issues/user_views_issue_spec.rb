@@ -35,17 +35,37 @@ describe "User views issue" do
   describe 'user status' do
     subject { visit(project_issue_path(project, issue)) }
 
-    describe 'showing status of the author of the issue' do
+    context 'when showing status of the author of the issue' do
       it_behaves_like 'showing user status' do
         let(:user_with_status) { issue.author }
       end
     end
 
-    describe 'showing status of a user who commented on an issue', :js do
+    context 'when showing status of a user who commented on an issue', :js do
       let!(:note) { create(:note, noteable: issue, project: project, author: user_with_status) }
 
       it_behaves_like 'showing user status' do
         let(:user_with_status) { create(:user) }
+      end
+    end
+
+    context 'when status message has an emoji', :js do
+      let(:message) { 'My status with an emoji' }
+      let(:message_emoji) { 'basketball' }
+
+      let!(:note) { create(:note, noteable: issue, project: project, author: user) }
+      let!(:status) { create(:user_status, user: user, emoji: 'smirk', message: "#{message} :#{message_emoji}:") }
+
+      it 'correctly renders the emoji' do
+        tooltip_span = page.first(".user-status-emoji[title^='#{message}']")
+
+        tooltip_span.hover
+
+        tooltip = page.find('.tooltip .tooltip-inner')
+
+        page.within(tooltip) do
+          expect(page).to have_emoji(message_emoji)
+        end
       end
     end
   end

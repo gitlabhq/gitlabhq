@@ -2,7 +2,7 @@
 import { mapState, mapActions } from 'vuex';
 import CustomVariable from './variables/custom_variable.vue';
 import TextVariable from './variables/text_variable.vue';
-import { setPromCustomVariablesFromUrl } from '../utils';
+import { setCustomVariablesFromUrl } from '../utils';
 
 export default {
   components: {
@@ -10,12 +10,12 @@ export default {
     TextVariable,
   },
   computed: {
-    ...mapState('monitoringDashboard', ['promVariables']),
+    ...mapState('monitoringDashboard', ['variables']),
   },
   methods: {
     ...mapActions('monitoringDashboard', ['fetchDashboardData', 'updateVariableValues']),
     refreshDashboard(variable, value) {
-      if (this.promVariables[variable].value !== value) {
+      if (this.variables[variable].value !== value) {
         const changedVariable = { key: variable, value };
         // update the Vuex store
         this.updateVariableValues(changedVariable);
@@ -24,7 +24,7 @@ export default {
         // mutation respond directly.
         // This can be further investigate in
         // https://gitlab.com/gitlab-org/gitlab/-/issues/217713
-        setPromCustomVariablesFromUrl(this.promVariables);
+        setCustomVariablesFromUrl(this.variables);
         // fetch data
         this.fetchDashboardData();
       }
@@ -41,7 +41,7 @@ export default {
 </script>
 <template>
   <div ref="variablesSection" class="d-sm-flex flex-sm-wrap pt-2 pr-1 pb-0 pl-2 variables-section">
-    <div v-for="(variable, key) in promVariables" :key="key" class="mb-1 pr-2 d-flex d-sm-block">
+    <div v-for="(variable, key) in variables" :key="key" class="mb-1 pr-2 d-flex d-sm-block">
       <component
         :is="variableComponent(variable.type)"
         class="mb-0 flex-grow-1"

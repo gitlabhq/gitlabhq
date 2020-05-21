@@ -254,6 +254,7 @@ module QA
         autoload :Main, 'qa/page/project/settings/main'
         autoload :Repository, 'qa/page/project/settings/repository'
         autoload :CICD, 'qa/page/project/settings/ci_cd'
+        autoload :Integrations, 'qa/page/project/settings/integrations'
         autoload :GeneralPipelines, 'qa/page/project/settings/general_pipelines'
         autoload :AutoDevops, 'qa/page/project/settings/auto_devops'
         autoload :DeployKeys, 'qa/page/project/settings/deploy_keys'
@@ -265,6 +266,10 @@ module QA
         autoload :Members, 'qa/page/project/settings/members'
         autoload :MirroringRepositories, 'qa/page/project/settings/mirroring_repositories'
         autoload :VisibilityFeaturesPermissions, 'qa/page/project/settings/visibility_features_permissions'
+
+        module Services
+          autoload :Jira, 'qa/page/project/settings/services/jira'
+        end
         autoload :Operations, 'qa/page/project/settings/operations'
         autoload :Incidents, 'qa/page/project/settings/incidents'
         autoload :Integrations, 'qa/page/project/settings/integrations'
@@ -511,6 +516,10 @@ module QA
         autoload :LastJobConsole, 'qa/vendor/jenkins/page/last_job_console'
         autoload :ConfigureJob, 'qa/vendor/jenkins/page/configure_job'
       end
+    end
+
+    module Jira
+      autoload :JiraAPI, 'qa/vendor/jira/jira_api'
     end
   end
 

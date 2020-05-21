@@ -135,7 +135,7 @@ describe CacheableAttributes do
         end
 
         it 'returns an uncached record and logs a warning' do
-          expect(Rails.logger).to receive(:warn).with("Cached record for TestClass couldn't be loaded, falling back to uncached record: Redis::BaseError")
+          expect(Gitlab::AppLogger).to receive(:warn).with("Cached record for TestClass couldn't be loaded, falling back to uncached record: Redis::BaseError")
 
           expect(MinimalTestClass.current).to eq(:last)
         end
@@ -147,7 +147,7 @@ describe CacheableAttributes do
         end
 
         it 'returns an uncached record and logs a warning' do
-          expect(Rails.logger).not_to receive(:warn)
+          expect(Gitlab::AppLogger).not_to receive(:warn)
 
           expect { MinimalTestClass.current }.to raise_error(Redis::BaseError)
         end

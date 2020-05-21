@@ -151,7 +151,7 @@ export const removePrefixFromLabel = label =>
 
 /**
  * Convert parsed template variables to an object
- * with just keys and values. Prepare the promVariables
+ * with just keys and values. Prepare the variables
  * to be added to the URL. Keys of the object will
  * have a prefix so that these params can be
  * differentiated from other URL params.
@@ -183,15 +183,15 @@ export const getPromCustomVariablesFromUrl = (search = window.location.search) =
 };
 
 /**
- * Update the URL with promVariables. This usually get triggered when
+ * Update the URL with variables. This usually get triggered when
  * the user interacts with the dynamic input elements in the monitoring
  * dashboard header.
  *
- * @param {Object} promVariables user defined variables
+ * @param {Object} variables user defined variables
  */
-export const setPromCustomVariablesFromUrl = promVariables => {
+export const setCustomVariablesFromUrl = variables => {
   // prep the variables to append to URL
-  const parsedVariables = convertVariablesForURL(promVariables);
+  const parsedVariables = convertVariablesForURL(variables);
   // update the URL
   updateHistory({
     url: mergeUrlParams(parsedVariables, window.location.href),
@@ -262,7 +262,7 @@ export const expandedPanelPayloadFromUrl = (dashboard, search = window.location.
  * If no group/panel is set, the dashboard URL is returned.
  *
  * @param {?String} dashboard - Dashboard path, used as identifier for a dashboard
- * @param {?Object} promVariables - Custom variables that came from the URL
+ * @param {?Object} variables - Custom variables that came from the URL
  * @param {?String} group - Group Identifier
  * @param {?Object} panel - Panel object from the dashboard
  * @param {?String} url - Base URL including current search params
@@ -270,14 +270,14 @@ export const expandedPanelPayloadFromUrl = (dashboard, search = window.location.
  */
 export const panelToUrl = (
   dashboard = null,
-  promVariables,
+  variables,
   group,
   panel,
   url = window.location.href,
 ) => {
   const params = {
     dashboard,
-    ...promVariables,
+    ...variables,
   };
 
   if (group && panel) {

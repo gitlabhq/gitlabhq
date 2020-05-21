@@ -115,11 +115,11 @@ module Projects
       end
 
       def notify_success
-        Rails.logger.info("Import/Export - Project #{project.name} with ID: #{project.id} successfully exported") # rubocop:disable Gitlab/RailsLogger
+        Gitlab::AppLogger.info("Import/Export - Project #{project.name} with ID: #{project.id} successfully exported")
       end
 
       def notify_error
-        Rails.logger.error("Import/Export - Project #{project.name} with ID: #{project.id} export error - #{shared.errors.join(', ')}") # rubocop:disable Gitlab/RailsLogger
+        Gitlab::AppLogger.error("Import/Export - Project #{project.name} with ID: #{project.id} export error - #{shared.errors.join(', ')}")
 
         notification_service.project_not_exported(project, current_user, shared.errors)
       end

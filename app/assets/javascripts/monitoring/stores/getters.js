@@ -122,7 +122,7 @@ export const filteredEnvironments = state =>
  */
 
 export const getCustomVariablesArray = state =>
-  flatMap(state.promVariables, (variable, key) => [key, variable.value]);
+  flatMap(state.variables, (variable, key) => [key, variable.value]);
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};

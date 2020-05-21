@@ -1539,12 +1539,17 @@ describe Gitlab::Database::MigrationHelpers do
   end
 
   describe '#create_or_update_plan_limit' do
-    class self::Plan < ActiveRecord::Base
-      self.table_name = 'plans'
-    end
+    before do
+      stub_const('Plan', Class.new(ActiveRecord::Base))
+      stub_const('PlanLimits', Class.new(ActiveRecord::Base))
 
-    class self::PlanLimits < ActiveRecord::Base
-      self.table_name = 'plan_limits'
+      Plan.class_eval do
+        self.table_name = 'plans'
+      end
+
+      PlanLimits.class_eval do
+        self.table_name = 'plan_limits'
+      end
     end
 
     it 'properly escapes names' do
@@ -1560,28 +1565,28 @@ describe Gitlab::Database::MigrationHelpers do
     context 'when plan does not exist' do
       it 'does not create any plan limits' do
         expect { model.create_or_update_plan_limit('project_hooks', 'plan_name', 10) }
-          .not_to change { self.class::PlanLimits.count }
+          .not_to change { PlanLimits.count }
       end
     end
 
     context 'when plan does exist' do
-      let!(:plan) { self.class::Plan.create!(name: 'plan_name') }
+      let!(:plan) { Plan.create!(name: 'plan_name') }
 
       context 'when limit does not exist' do
         it 'inserts a new plan limits' do
           expect { model.create_or_update_plan_limit('project_hooks', 'plan_name', 10) }
-            .to change { self.class::PlanLimits.count }.by(1)
+            .to change { PlanLimits.count }.by(1)
 
-          expect(self.class::PlanLimits.pluck(:project_hooks)).to contain_exactly(10)
+          expect(PlanLimits.pluck(:project_hooks)).to contain_exactly(10)
         end
       end
 
       context 'when limit does exist' do
-        let!(:plan_limit) { self.class::PlanLimits.create!(plan_id: plan.id) }
+        let!(:plan_limit) { PlanLimits.create!(plan_id: plan.id) }
 
         it 'updates an existing plan limits' do
           expect { model.create_or_update_plan_limit('project_hooks', 'plan_name', 999) }
-            .not_to change { self.class::PlanLimits.count }
+            .not_to change { PlanLimits.count }
 
           expect(plan_limit.reload.project_hooks).to eq(999)
         end
@@ -1605,19 +1610,23 @@ describe Gitlab::Database::MigrationHelpers do
   describe '#backfill_iids' do
     include MigrationsHelpers
 
-    class self::Issue < ActiveRecord::Base
-      include AtomicInternalId
+    before do
+      stub_const('Issue', Class.new(ActiveRecord::Base))
 
-      self.table_name = 'issues'
-      self.inheritance_column = :_type_disabled
+      Issue.class_eval do
+        include AtomicInternalId
 
-      belongs_to :project, class_name: "::Project"
+        self.table_name = 'issues'
+        self.inheritance_column = :_type_disabled
 
-      has_internal_id :iid,
-        scope: :project,
-        init: ->(s) { s&.project&.issues&.maximum(:iid) },
-        backfill: true,
-        presence: false
+        belongs_to :project, class_name: "::Project"
+
+        has_internal_id :iid,
+          scope: :project,
+          init: ->(s) { s&.project&.issues&.maximum(:iid) },
+          backfill: true,
+          presence: false
+      end
     end
 
     let(:namespaces)     { table(:namespaces) }
@@ -1636,7 +1645,7 @@ describe Gitlab::Database::MigrationHelpers do
 
       model.backfill_iids('issues')
 
-      issue = self.class::Issue.create!(project_id: project.id)
+      issue = Issue.create!(project_id: project.id)
 
       expect(issue.iid).to eq(1)
     end
@@ -1647,7 +1656,7 @@ describe Gitlab::Database::MigrationHelpers do
 
       model.backfill_iids('issues')
 
-      issue_b = self.class::Issue.create!(project_id: project.id)
+      issue_b = Issue.create!(project_id: project.id)
 
       expect(issue_a.reload.iid).to eq(1)
       expect(issue_b.iid).to eq(2)
@@ -1662,8 +1671,8 @@ describe Gitlab::Database::MigrationHelpers do
 
       model.backfill_iids('issues')
 
-      issue_a = self.class::Issue.create!(project_id: project_a.id)
-      issue_b = self.class::Issue.create!(project_id: project_b.id)
+      issue_a = Issue.create!(project_id: project_a.id)
+      issue_b = Issue.create!(project_id: project_b.id)
 
       expect(issue_a.iid).to eq(2)
       expect(issue_b.iid).to eq(3)
@@ -1672,7 +1681,7 @@ describe Gitlab::Database::MigrationHelpers do
     context 'when the new code creates a row post deploy but before the migration runs' do
       it 'does not change the row iid' do
         project = setup
-        issue = self.class::Issue.create!(project_id: project.id)
+        issue = Issue.create!(project_id: project.id)
 
         model.backfill_iids('issues')
 
@@ -1683,7 +1692,7 @@ describe Gitlab::Database::MigrationHelpers do
         project = setup
         issue_a = issues.create!(project_id: project.id)
         issue_b = issues.create!(project_id: project.id)
-        issue_c = self.class::Issue.create!(project_id: project.id)
+        issue_c = Issue.create!(project_id: project.id)
 
         model.backfill_iids('issues')
 
@@ -1697,8 +1706,8 @@ describe Gitlab::Database::MigrationHelpers do
         project_b = setup
         issue_a = issues.create!(project_id: project_a.id)
         issue_b = issues.create!(project_id: project_b.id)
-        issue_c = self.class::Issue.create!(project_id: project_a.id)
-        issue_d = self.class::Issue.create!(project_id: project_b.id)
+        issue_c = Issue.create!(project_id: project_a.id)
+        issue_d = Issue.create!(project_id: project_b.id)
 
         model.backfill_iids('issues')
 
@@ -1712,12 +1721,12 @@ describe Gitlab::Database::MigrationHelpers do
         project = setup
         issue_a = issues.create!(project_id: project.id)
         issue_b = issues.create!(project_id: project.id)
-        issue_c = self.class::Issue.create!(project_id: project.id)
+        issue_c = Issue.create!(project_id: project.id)
 
         model.backfill_iids('issues')
 
-        issue_d = self.class::Issue.create!(project_id: project.id)
-        issue_e = self.class::Issue.create!(project_id: project.id)
+        issue_d = Issue.create!(project_id: project.id)
+        issue_e = Issue.create!(project_id: project.id)
 
         expect(issue_a.reload.iid).to eq(1)
         expect(issue_b.reload.iid).to eq(2)
@@ -1731,14 +1740,14 @@ describe Gitlab::Database::MigrationHelpers do
         project_b = setup
         issue_a = issues.create!(project_id: project_a.id)
         issue_b = issues.create!(project_id: project_b.id)
-        issue_c = self.class::Issue.create!(project_id: project_a.id)
-        issue_d = self.class::Issue.create!(project_id: project_b.id)
+        issue_c = Issue.create!(project_id: project_a.id)
+        issue_d = Issue.create!(project_id: project_b.id)
 
         model.backfill_iids('issues')
 
-        issue_e = self.class::Issue.create!(project_id: project_a.id)
-        issue_f = self.class::Issue.create!(project_id: project_b.id)
-        issue_g = self.class::Issue.create!(project_id: project_a.id)
+        issue_e = Issue.create!(project_id: project_a.id)
+        issue_f = Issue.create!(project_id: project_b.id)
+        issue_g = Issue.create!(project_id: project_a.id)
 
         expect(issue_a.reload.iid).to eq(1)
         expect(issue_b.reload.iid).to eq(1)
@@ -1754,7 +1763,7 @@ describe Gitlab::Database::MigrationHelpers do
       it 'backfills iids' do
         project = setup
         issue_a = issues.create!(project_id: project.id)
-        issue_b = self.class::Issue.create!(project_id: project.id)
+        issue_b = Issue.create!(project_id: project.id)
         issue_c = issues.create!(project_id: project.id)
 
         model.backfill_iids('issues')
@@ -1768,12 +1777,12 @@ describe Gitlab::Database::MigrationHelpers do
         project = setup
         issue_a = issues.create!(project_id: project.id)
         issue_b = issues.create!(project_id: project.id)
-        issue_c = self.class::Issue.create!(project_id: project.id)
+        issue_c = Issue.create!(project_id: project.id)
         issue_d = issues.create!(project_id: project.id)
 
         model.backfill_iids('issues')
 
-        issue_e = self.class::Issue.create!(project_id: project.id)
+        issue_e = Issue.create!(project_id: project.id)
 
         expect(issue_a.reload.iid).to eq(1)
         expect(issue_b.reload.iid).to eq(2)
@@ -1787,9 +1796,9 @@ describe Gitlab::Database::MigrationHelpers do
       it 'backfills iids' do
         project = setup
         issue_a = issues.create!(project_id: project.id)
-        issue_b = self.class::Issue.create!(project_id: project.id)
+        issue_b = Issue.create!(project_id: project.id)
         issue_c = issues.create!(project_id: project.id)
-        issue_d = self.class::Issue.create!(project_id: project.id)
+        issue_d = Issue.create!(project_id: project.id)
 
         model.backfill_iids('issues')
 
@@ -1803,13 +1812,13 @@ describe Gitlab::Database::MigrationHelpers do
         project = setup
         issue_a = issues.create!(project_id: project.id)
         issue_b = issues.create!(project_id: project.id)
-        issue_c = self.class::Issue.create!(project_id: project.id)
+        issue_c = Issue.create!(project_id: project.id)
         issue_d = issues.create!(project_id: project.id)
-        issue_e = self.class::Issue.create!(project_id: project.id)
+        issue_e = Issue.create!(project_id: project.id)
 
         model.backfill_iids('issues')
 
-        issue_f = self.class::Issue.create!(project_id: project.id)
+        issue_f = Issue.create!(project_id: project.id)
 
         expect(issue_a.reload.iid).to eq(1)
         expect(issue_b.reload.iid).to eq(2)
@@ -1825,7 +1834,7 @@ describe Gitlab::Database::MigrationHelpers do
         project = setup
         issue_a = issues.create!(project_id: project.id)
         issue_b = issues.create!(project_id: project.id)
-        issue_c = self.class::Issue.create!(project_id: project.id)
+        issue_c = Issue.create!(project_id: project.id)
         issue_c.delete
 
         model.backfill_iids('issues')
@@ -1838,12 +1847,12 @@ describe Gitlab::Database::MigrationHelpers do
         project = setup
         issue_a = issues.create!(project_id: project.id)
         issue_b = issues.create!(project_id: project.id)
-        issue_c = self.class::Issue.create!(project_id: project.id)
+        issue_c = Issue.create!(project_id: project.id)
         issue_c.delete
 
         model.backfill_iids('issues')
 
-        issue_d = self.class::Issue.create!(project_id: project.id)
+        issue_d = Issue.create!(project_id: project.id)
 
         expect(issue_a.reload.iid).to eq(1)
         expect(issue_b.reload.iid).to eq(2)
@@ -1856,7 +1865,7 @@ describe Gitlab::Database::MigrationHelpers do
         project = setup
         issue_a = issues.create!(project_id: project.id)
         issue_b = issues.create!(project_id: project.id)
-        issue_c = self.class::Issue.create!(project_id: project.id)
+        issue_c = Issue.create!(project_id: project.id)
         issue_c.delete
         issue_d = issues.create!(project_id: project.id)
 
@@ -1871,13 +1880,13 @@ describe Gitlab::Database::MigrationHelpers do
         project = setup
         issue_a = issues.create!(project_id: project.id)
         issue_b = issues.create!(project_id: project.id)
-        issue_c = self.class::Issue.create!(project_id: project.id)
+        issue_c = Issue.create!(project_id: project.id)
         issue_c.delete
         issue_d = issues.create!(project_id: project.id)
 
         model.backfill_iids('issues')
 
-        issue_e = self.class::Issue.create!(project_id: project.id)
+        issue_e = Issue.create!(project_id: project.id)
 
         expect(issue_a.reload.iid).to eq(1)
         expect(issue_b.reload.iid).to eq(2)
@@ -1891,9 +1900,9 @@ describe Gitlab::Database::MigrationHelpers do
         project = setup
         issue_a = issues.create!(project_id: project.id)
         issue_b = issues.create!(project_id: project.id)
-        issue_c = self.class::Issue.create!(project_id: project.id)
+        issue_c = Issue.create!(project_id: project.id)
         issue_c.delete
-        issue_d = self.class::Issue.create!(project_id: project.id)
+        issue_d = Issue.create!(project_id: project.id)
 
         model.backfill_iids('issues')
 
@@ -1906,13 +1915,13 @@ describe Gitlab::Database::MigrationHelpers do
         project = setup
         issue_a = issues.create!(project_id: project.id)
         issue_b = issues.create!(project_id: project.id)
-        issue_c = self.class::Issue.create!(project_id: project.id)
+        issue_c = Issue.create!(project_id: project.id)
         issue_c.delete
-        issue_d = self.class::Issue.create!(project_id: project.id)
+        issue_d = Issue.create!(project_id: project.id)
 
         model.backfill_iids('issues')
 
-        issue_e = self.class::Issue.create!(project_id: project.id)
+        issue_e = Issue.create!(project_id: project.id)
 
         expect(issue_a.reload.iid).to eq(1)
         expect(issue_b.reload.iid).to eq(2)
@@ -1929,7 +1938,7 @@ describe Gitlab::Database::MigrationHelpers do
 
         model.backfill_iids('issues')
 
-        issue_b = self.class::Issue.create!(project_id: project_b.id)
+        issue_b = Issue.create!(project_id: project_b.id)
 
         expect(issue_a.reload.iid).to eq(1)
         expect(issue_b.reload.iid).to eq(1)

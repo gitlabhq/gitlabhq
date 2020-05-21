@@ -14,7 +14,7 @@ class ExpireBuildInstanceArtifactsWorker # rubocop:disable Scalability/Idempoten
 
     return unless build&.project && !build.project.pending_delete
 
-    Rails.logger.info "Removing artifacts for build #{build.id}..." # rubocop:disable Gitlab/RailsLogger
+    Gitlab::AppLogger.info("Removing artifacts for build #{build.id}...")
     build.erase_erasable_artifacts!
   end
   # rubocop: enable CodeReuse/ActiveRecord

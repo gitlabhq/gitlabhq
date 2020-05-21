@@ -210,6 +210,18 @@ module QA
         ENV['GITLAB_QA_1P_GITHUB_UUID']
       end
 
+      def jira_admin_username
+        ENV['JIRA_ADMIN_USERNAME']
+      end
+
+      def jira_admin_password
+        ENV['JIRA_ADMIN_PASSWORD']
+      end
+
+      def jira_hostname
+        ENV['JIRA_HOSTNAME']
+      end
+
       def knapsack?
         !!(ENV['KNAPSACK_GENERATE_REPORT'] || ENV['KNAPSACK_REPORT_PATH'] || ENV['KNAPSACK_TEST_FILE_PATTERN'])
       end

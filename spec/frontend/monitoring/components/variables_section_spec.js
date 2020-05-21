@@ -67,7 +67,7 @@ describe('Metrics dashboard/variables section component', () => {
             namespaced: true,
             state: {
               showEmptyState: false,
-              promVariables: sampleVariables,
+              variables: sampleVariables,
             },
             actions: {
               fetchDashboardData,

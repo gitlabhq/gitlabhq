@@ -302,6 +302,7 @@ applications.
 | `<ENVIRONMENT>_ADDITIONAL_HOSTS`        | For a specific environment, the fully qualified domain names specified as a comma-separated list that are added to the Ingress hosts. This takes precedence over `ADDITIONAL_HOSTS`. |
 | `AUTO_DEVOPS_ATOMIC_RELEASE`            | As of GitLab 13.0, Auto DevOps uses [`--atomic`](https://v2.helm.sh/docs/helm/#options-43) for Helm deployments by default. Set this variable to `false` to disable the use of `--atomic` |
 | `AUTO_DEVOPS_BUILD_IMAGE_CNB_ENABLED`   | When set to a non-empty value and no `Dockerfile` is present, Auto Build builds your application using Cloud Native Buildpacks instead of Herokuish. [More details](stages.md#auto-build-using-cloud-native-buildpacks-beta). |
+| `AUTO_DEVOPS_BUILD_IMAGE_CNB_BUILDER`   | The builder used when building with Cloud Native Buildpacks. The default builder is `heroku/buildpacks:18`. [More details](stages.md#auto-build-using-cloud-native-buildpacks-beta). |
 | `AUTO_DEVOPS_BUILD_IMAGE_EXTRA_ARGS`    | Extra arguments to be passed to the `docker build` command. Note that using quotes won't prevent word splitting. [More details](#passing-arguments-to-docker-build). |
 | `AUTO_DEVOPS_BUILD_IMAGE_FORWARDED_CI_VARIABLES` | A [comma-separated list of CI variable names](#passing-secrets-to-docker-build) to be passed to the `docker build` command as secrets. |
 | `AUTO_DEVOPS_CHART`                     | Helm Chart used to deploy your apps. Defaults to the one [provided by GitLab](https://gitlab.com/gitlab-org/charts/auto-deploy-app). |

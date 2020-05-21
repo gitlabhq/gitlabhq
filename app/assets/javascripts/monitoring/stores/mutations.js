@@ -189,11 +189,11 @@ export default {
     state.expandedPanel.panel = panel;
   },
   [types.SET_VARIABLES](state, variables) {
-    state.promVariables = variables;
+    state.variables = variables;
   },
   [types.UPDATE_VARIABLE_VALUES](state, updatedVariable) {
-    Object.assign(state.promVariables[updatedVariable.key], {
-      ...state.promVariables[updatedVariable.key],
+    Object.assign(state.variables[updatedVariable.key], {
+      ...state.variables[updatedVariable.key],
       value: updatedVariable.value,
     });
   },

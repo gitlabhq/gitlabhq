@@ -412,13 +412,13 @@ describe('Monitoring mutations', () => {
     it('stores an empty variables array when no custom variables are given', () => {
       mutations[types.SET_VARIABLES](stateCopy, {});
 
-      expect(stateCopy.promVariables).toEqual({});
+      expect(stateCopy.variables).toEqual({});
     });
 
     it('stores variables in the key key_value format in the array', () => {
       mutations[types.SET_VARIABLES](stateCopy, { pod: 'POD', stage: 'main ops' });
 
-      expect(stateCopy.promVariables).toEqual({ pod: 'POD', stage: 'main ops' });
+      expect(stateCopy.variables).toEqual({ pod: 'POD', stage: 'main ops' });
     });
   });
 
@@ -427,11 +427,11 @@ describe('Monitoring mutations', () => {
       mutations[types.SET_VARIABLES](stateCopy, {});
     });
 
-    it('updates only the value of the variable in promVariables', () => {
+    it('updates only the value of the variable in variables', () => {
       mutations[types.SET_VARIABLES](stateCopy, { environment: { value: 'prod', type: 'text' } });
       mutations[types.UPDATE_VARIABLE_VALUES](stateCopy, { key: 'environment', value: 'new prod' });
 
-      expect(stateCopy.promVariables).toEqual({ environment: { value: 'new prod', type: 'text' } });
+      expect(stateCopy.variables).toEqual({ environment: { value: 'new prod', type: 'text' } });
     });
   });
 });

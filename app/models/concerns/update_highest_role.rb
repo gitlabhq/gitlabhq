@@ -29,9 +29,7 @@ module UpdateHighestRole
         UpdateHighestRoleWorker.perform_in(HIGHEST_ROLE_JOB_DELAY, update_highest_role_attribute)
       else
         # use same logging as ExclusiveLeaseGuard
-        # rubocop:disable Gitlab/RailsLogger
-        Rails.logger.error('Cannot obtain an exclusive lease. There must be another instance already in execution.')
-        # rubocop:enable Gitlab/RailsLogger
+        Gitlab::AppLogger.error('Cannot obtain an exclusive lease. There must be another instance already in execution.')
       end
     end
   end

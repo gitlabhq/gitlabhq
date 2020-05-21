@@ -45,9 +45,7 @@ describe Spam::AkismetService do
       end
 
       it 'logs an error' do
-        logger_spy = double(:logger)
-        expect(Rails).to receive(:logger).and_return(logger_spy)
-        expect(logger_spy).to receive(:error).with(/skipping/)
+        expect(Gitlab::AppLogger).to receive(:error).with(/skipping/)
 
         subject.send(method_call)
       end
@@ -98,9 +96,7 @@ describe Spam::AkismetService do
         end
 
         it 'logs an error' do
-          logger_spy = double(:logger)
-          expect(Rails).to receive(:logger).and_return(logger_spy)
-          expect(logger_spy).to receive(:error).with(/skipping check/)
+          expect(Gitlab::AppLogger).to receive(:error).with(/skipping check/)
 
           subject.spam?
         end

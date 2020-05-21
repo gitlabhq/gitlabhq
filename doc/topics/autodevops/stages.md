@@ -53,7 +53,9 @@ troubleshoot.
 
 Auto Build supports building your application using [Cloud Native Buildpacks](https://buildpacks.io)
 through the [`pack` command](https://github.com/buildpacks/pack). To use Cloud Native Buildpacks,
-set the CI variable `AUTO_DEVOPS_BUILD_IMAGE_CNB_ENABLED` to a non-empty value.
+set the CI variable `AUTO_DEVOPS_BUILD_IMAGE_CNB_ENABLED` to a non-empty
+value. The default builder is `heroku/buildpacks:18` but a different builder
+can be selected using the CI variable `AUTO_DEVOPS_BUILD_IMAGE_CNB_BUILDER`.
 
 Cloud Native Buildpacks (CNBs) are an evolution of Heroku buildpacks, and
 will eventually supersede Herokuish-based builds within Auto DevOps. For more

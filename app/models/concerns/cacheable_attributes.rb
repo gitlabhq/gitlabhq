@@ -55,7 +55,7 @@ module CacheableAttributes
       current_without_cache.tap { |current_record| current_record&.cache! }
     rescue => e
       if Rails.env.production?
-        Rails.logger.warn("Cached record for #{name} couldn't be loaded, falling back to uncached record: #{e}") # rubocop:disable Gitlab/RailsLogger
+        Gitlab::AppLogger.warn("Cached record for #{name} couldn't be loaded, falling back to uncached record: #{e}")
       else
         raise e
       end

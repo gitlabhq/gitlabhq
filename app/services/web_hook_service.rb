@@ -63,7 +63,7 @@ class WebHookService
       error_message: e.to_s
     )
 
-    Rails.logger.error("WebHook Error => #{e}") # rubocop:disable Gitlab/RailsLogger
+    Gitlab::AppLogger.error("WebHook Error => #{e}")
 
     {
       status: :error,

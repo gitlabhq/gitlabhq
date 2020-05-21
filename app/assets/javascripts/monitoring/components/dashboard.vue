@@ -226,7 +226,7 @@ export default {
       'allDashboards',
       'environmentsLoading',
       'expandedPanel',
-      'promVariables',
+      'variables',
       'isUpdatingStarredValue',
     ]),
     ...mapGetters('monitoringDashboard', [
@@ -251,7 +251,7 @@ export default {
       return !this.environmentsLoading && this.filteredEnvironments.length === 0;
     },
     shouldShowVariablesSection() {
-      return Object.keys(this.promVariables).length > 0;
+      return Object.keys(this.variables).length > 0;
     },
   },
   watch: {
@@ -273,7 +273,7 @@ export default {
       handler({ group, panel }) {
         const dashboardPath = this.currentDashboard || this.selectedDashboard?.path;
         updateHistory({
-          url: panelToUrl(dashboardPath, convertVariablesForURL(this.promVariables), group, panel),
+          url: panelToUrl(dashboardPath, convertVariablesForURL(this.variables), group, panel),
           title: document.title,
         });
       },
@@ -344,7 +344,7 @@ export default {
     },
     generatePanelUrl(groupKey, panel) {
       const dashboardPath = this.currentDashboard || this.selectedDashboard?.path;
-      return panelToUrl(dashboardPath, convertVariablesForURL(this.promVariables), groupKey, panel);
+      return panelToUrl(dashboardPath, convertVariablesForURL(this.variables), groupKey, panel);
     },
     hideAddMetricModal() {
       this.$refs.addMetricModal.hide();

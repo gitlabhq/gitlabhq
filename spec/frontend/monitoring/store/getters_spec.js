@@ -334,11 +334,11 @@ describe('Monitoring store Getters', () => {
 
     beforeEach(() => {
       state = {
-        promVariables: {},
+        variables: {},
       };
     });
 
-    it('transforms the promVariables object to an array in the [variable, variable_value] format for all variable types', () => {
+    it('transforms the variables object to an array in the [variable, variable_value] format for all variable types', () => {
       mutations[types.SET_VARIABLES](state, mockTemplatingDataResponses.allVariableTypes);
       const variablesArray = getters.getCustomVariablesArray(state);
 
@@ -354,7 +354,7 @@ describe('Monitoring store Getters', () => {
       ]);
     });
 
-    it('transforms the promVariables object to an empty array when no keys are present', () => {
+    it('transforms the variables object to an empty array when no keys are present', () => {
       mutations[types.SET_VARIABLES](state, {});
       const variablesArray = getters.getCustomVariablesArray(state);
 

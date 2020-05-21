@@ -22,7 +22,7 @@ analyze_cmd = [
 # from master that was merged into for the merged pipeline.
 comparison_cmd = [
   "webpack-compare-reports",
-  "--from-sha #{gitlab.mr_json["diff_refs"]["start_sha"]}",
+  "--job #{ENV["CI_JOB_ID"]}",
   "--to-file #{analysis_result}",
   "--html ./bundle-size-review/comparison.html",
   "--markdown #{markdown_result}"

@@ -1,0 +1,5 @@
+---
+title: Use applogger in legacy project and namespace
+merge_request: 32190
+author: Rajendra Kadam
+type: fixed

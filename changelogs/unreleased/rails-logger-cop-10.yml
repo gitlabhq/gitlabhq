@@ -1,0 +1,5 @@
+---
+title: Use applogger in exclusive_lease_guard
+merge_request: 32194
+author: Rajendra Kadam
+type: fixed

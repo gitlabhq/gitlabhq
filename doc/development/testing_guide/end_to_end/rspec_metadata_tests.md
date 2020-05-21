@@ -16,3 +16,4 @@ This is a partial list of the [RSpec metadata](https://relishapp.com/rspec/rspec
 | `:runner`         | The test depends on and will set up a GitLab Runner instance, typically to run a pipeline. |
 | `:gitaly_ha`      | The test will run against a GitLab instance where repositories are stored on redundant Gitaly nodes behind a Praefect node. All nodes are [separate containers](../../../administration/gitaly/praefect.md#requirements-for-configuring-a-gitaly-cluster). Tests that use this tag have a longer setup time since there are three additional containers that need to be started. |
 | `:skip_live_env`  | The test will be excluded when run against live deployed environments such as Staging, Canary, and Production. |
+| `:jira`           | The test requires a Jira Server. [GitLab-QA](https://gitlab.com/gitlab-org/gitlab-qa) will provision the Jira Server in a docker container when the `Test::Integration::Jira` test scenario is run.

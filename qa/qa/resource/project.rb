@@ -109,6 +109,10 @@ module QA
         "#{api_get_path}/runners"
       end
 
+      def api_repository_branches_path
+        "#{api_get_path}/repository/branches"
+      end
+
       def api_pipelines_path
         "#{api_get_path}/pipelines"
       end
@@ -177,6 +181,11 @@ module QA
                      get Runtime::API::Request.new(api_client, "#{api_runners_path}").url
                    end
 
+        parse_body(response)
+      end
+
+      def repository_branches
+        response = get Runtime::API::Request.new(api_client, api_repository_branches_path).url
         parse_body(response)
       end
 

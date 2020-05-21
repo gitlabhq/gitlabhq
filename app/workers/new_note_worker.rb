@@ -16,7 +16,7 @@ class NewNoteWorker # rubocop:disable Scalability/IdempotentWorker
       NotificationService.new.new_note(note) unless skip_notification?(note)
       Notes::PostProcessService.new(note).execute
     else
-      Rails.logger.error("NewNoteWorker: couldn't find note with ID=#{note_id}, skipping job") # rubocop:disable Gitlab/RailsLogger
+      Gitlab::AppLogger.error("NewNoteWorker: couldn't find note with ID=#{note_id}, skipping job")
     end
   end
 

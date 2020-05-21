@@ -87,7 +87,7 @@ describe MergeRequests::FfMergeService do
       let(:service) { described_class.new(project, user, valid_merge_params.merge(commit_message: 'Awesome message')) }
 
       before do
-        allow(Rails.logger).to receive(:error)
+        allow(Gitlab::AppLogger).to receive(:error)
       end
 
       it 'logs and saves error if there is an exception' do
@@ -99,7 +99,7 @@ describe MergeRequests::FfMergeService do
         service.execute(merge_request)
 
         expect(merge_request.merge_error).to include(error_message)
-        expect(Rails.logger).to have_received(:error).with(a_string_matching(error_message))
+        expect(Gitlab::AppLogger).to have_received(:error).with(a_string_matching(error_message))
       end
 
       it 'logs and saves error if there is an PreReceiveError exception' do
@@ -111,7 +111,7 @@ describe MergeRequests::FfMergeService do
         service.execute(merge_request)
 
         expect(merge_request.merge_error).to include(error_message)
-        expect(Rails.logger).to have_received(:error).with(a_string_matching(error_message))
+        expect(Gitlab::AppLogger).to have_received(:error).with(a_string_matching(error_message))
       end
 
       it 'does not update squash_commit_sha if squash merge is not successful' do

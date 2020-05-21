@@ -11,6 +11,6 @@ class DeleteUserWorker # rubocop:disable Scalability/IdempotentWorker
 
     Users::DestroyService.new(current_user).execute(delete_user, options.symbolize_keys)
   rescue Gitlab::Access::AccessDeniedError => e
-    Rails.logger.warn("User could not be destroyed: #{e}") # rubocop:disable Gitlab/RailsLogger
+    Gitlab::AppLogger.warn("User could not be destroyed: #{e}")
   end
 end

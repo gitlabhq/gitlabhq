@@ -70,7 +70,12 @@ whitelist.acronym = [];
 whitelist.blockquote = [];
 whitelist.del = [];
 whitelist.ins = [];
-whitelist['gl-emoji'] = [];
+whitelist['gl-emoji'] = [
+  'data-name',
+  'data-unicode-version',
+  'data-fallback-src',
+  'data-fallback-sprite-class',
+];
 
 // Whitelisting SVG tags and attributes
 whitelist.svg = ['viewBox'];
