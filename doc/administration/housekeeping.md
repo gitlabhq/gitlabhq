@@ -1,6 +1,6 @@
 # Housekeeping
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/3041) in GitLab 8.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/3041) in GitLab 8.4.
 
 ## Automatic housekeeping
 

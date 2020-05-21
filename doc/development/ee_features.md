@@ -11,7 +11,7 @@
 ## Act as CE when unlicensed
 
 Since the implementation of
-[GitLab CE features to work with unlicensed EE instance](https://gitlab.com/gitlab-org/gitlab/issues/2500)
+[GitLab CE features to work with unlicensed EE instance](https://gitlab.com/gitlab-org/gitlab/-/issues/2500)
 GitLab Enterprise Edition should work like GitLab Community Edition
 when no license is active. So EE features always should be guarded by
 `project.feature_available?` or `group.feature_available?` (or

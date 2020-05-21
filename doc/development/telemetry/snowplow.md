@@ -40,7 +40,7 @@ From [Snowplow's documentation](https://github.com/snowplow/snowplow), Snowplow 
 
 ## Snowplow schema
 
-We currently have many definitions of Snowplow's schema. We have an active issue to [standardize this schema](https://gitlab.com/gitlab-org/gitlab/issues/207930) including the following definitions:
+We currently have many definitions of Snowplow's schema. We have an active issue to [standardize this schema](https://gitlab.com/gitlab-org/gitlab/-/issues/207930) including the following definitions:
 
 - Frontend and backend taxonomy as listed below
 - [Feature instrumentation taxonomy](https://about.gitlab.com/handbook/product/feature-instrumentation/#taxonomy)

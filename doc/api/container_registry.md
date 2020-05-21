@@ -1,6 +1,6 @@
 # Container Registry API
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/55978) in GitLab 11.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/55978) in GitLab 11.8.
 
 This is the API docs of the [GitLab Container Registry](../user/packages/container_registry/index.md).
 
@@ -260,7 +260,7 @@ This action does not delete blobs. In order to delete them and recycle disk spac
 
 NOTE: **Note:**
 Since GitLab 12.4, individual tags are deleted.
-For more details, see the [discussion](https://gitlab.com/gitlab-org/gitlab/issues/15737).
+For more details, see the [discussion](https://gitlab.com/gitlab-org/gitlab/-/issues/15737).
 
 Examples:
 

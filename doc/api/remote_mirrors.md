@@ -7,7 +7,7 @@ outlined below.
 
 ## List a project's remote mirrors
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/38121) in GitLab 12.9.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38121) in GitLab 12.9.
 
 Returns an Array of remote mirrors and their statuses:
 
@@ -46,7 +46,7 @@ and password information.
 
 ## Create a remote mirror
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/24189) in GitLab 12.9.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24189) in GitLab 12.9.
 
 Create a remote mirror for a project. The mirror will be disabled by default. You can enable it by including the optional parameter `enabled` when creating it:
 
@@ -86,7 +86,7 @@ Example response:
 
 ## Update a remote mirror's attributes
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/38121) in GitLab 12.9.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38121) in GitLab 12.9.
 
 Toggle a remote mirror on or off, or change which types of branches are
 mirrored:

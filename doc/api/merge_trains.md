@@ -1,6 +1,6 @@
 # Merge Trains API **(PREMIUM)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/36146) in GitLab 12.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36146) in GitLab 12.9.
 > - Using this API you can consume GitLab's [Merge Train](../ci/merge_request_pipelines/pipelines_for_merged_results/merge_trains/index.md) entries.
 
 Every API call to merge trains must be authenticated with Developer or higher [permissions](../user/permissions.md).

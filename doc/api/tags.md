@@ -19,7 +19,7 @@ Parameters:
 | `sort` | string | no | Return tags sorted in `asc` or `desc` order. Default is `desc` |
 | `search` | string | no | Return list of tags matching the search criteria. You can use `^term` and `term$` to find tags that begin and end with `term` respectively. |
 
-> Support for `search` was [introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/54401) in GitLab 11.8.
+> Support for `search` was [introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/54401) in GitLab 11.8.
 
 ```json
 [

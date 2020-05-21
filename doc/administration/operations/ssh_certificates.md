@@ -158,7 +158,7 @@ Users can still bypass SSH certificate authentication by manually
 uploading an SSH public key to their profile, relying on the
 `~/.ssh/authorized_keys` fallback to authenticate it. There's
 currently no feature to prevent this, [but there's an open request for
-adding it](https://gitlab.com/gitlab-org/gitlab-foss/issues/49218).
+adding it](https://gitlab.com/gitlab-org/gitlab/-/issues/23260).
 
 Such a restriction can currently be hacked in by e.g. providing a
 custom `AuthorizedKeysCommand` which checks if the discovered key-ID

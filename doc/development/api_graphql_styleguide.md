@@ -346,7 +346,7 @@ GitLab's GraphQL API is versionless, which means we maintain backwards
 compatibility with older versions of the API with every change. Rather
 than removing a field, we need to _deprecate_ the field instead. In
 future, GitLab
-[may remove deprecated fields](https://gitlab.com/gitlab-org/gitlab/issues/32292).
+[may remove deprecated fields](https://gitlab.com/gitlab-org/gitlab/-/issues/32292).
 
 Fields are deprecated using the `deprecated` property. The value
 of the property is a `Hash` of:
@@ -468,6 +468,23 @@ Example:
 field :id, GraphQL::ID_TYPE, description: 'ID of the Issue'
 field :confidential, GraphQL::BOOLEAN_TYPE, description: 'Indicates the issue is confidential'
 field :closed_at, Types::TimeType, description: 'Timestamp of when the issue was closed'
+```
+
+### `copy_field_description` helper
+
+Sometimes we want to ensure that two descriptions will always be identical.
+For example, to keep a type field description the same as a mutation argument
+when they both represent the same property.
+
+Instead of supplying a description, we can use the `copy_field_description` helper,
+passing it the type, and field name to copy the description of.
+
+Example:
+
+```ruby
+argument :title, GraphQL::STRING_TYPE,
+          required: false,
+          description: copy_field_description(Types::MergeRequestType, :title)
 ```
 
 ## Authorization

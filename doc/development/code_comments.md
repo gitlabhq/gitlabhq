@@ -9,6 +9,6 @@ Examples:
 
 ```ruby
 # Deprecated scope until code_owner column has been migrated to rule_type.
-# To be removed with https://gitlab.com/gitlab-org/gitlab/issues/11834.
+# To be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/11834.
 scope :code_owner, -> { where(code_owner: true).or(where(rule_type: :code_owner)) }
 ```

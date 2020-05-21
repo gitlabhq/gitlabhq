@@ -8,7 +8,7 @@ GitLab supports authentication using smartcards.
 
 ## Existing password authentication
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/33669) in GitLab 12.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33669) in GitLab 12.6.
 
 By default, existing users can continue to log in with a username and password when smartcard
 authentication is enabled.
@@ -25,7 +25,7 @@ GitLab supports two authentication methods:
 
 ### Authentication against a local database with X.509 certificates
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/726) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.6 as an experimental feature.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/726) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.6 as an experimental feature.
 
 CAUTION: **Caution:**
 Smartcard authentication against local databases may change or be removed completely in future
@@ -52,7 +52,7 @@ Certificate:
 
 ### Authentication against a local database with X.509 certificates and SAN extension
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/8605) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8605) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.3.
 
 Smartcards with X.509 certificates using SAN extensions can be used to authenticate
 with GitLab.
@@ -67,7 +67,7 @@ database with GitLab, in:
 - GitLab 12.4 and later, at least one of the `subjectAltName` (SAN) extensions
   need to define the user identity (`email`) within the GitLab instance (`URI`).
   `URI`: needs to match `Gitlab.config.host.gitlab`.
-- From [GitLab 12.5](https://gitlab.com/gitlab-org/gitlab/issues/33907),
+- From [GitLab 12.5](https://gitlab.com/gitlab-org/gitlab/-/issues/33907),
   if your certificate contains only **one** SAN email entry, you don't need to
   add or modify it to match the `email` with the `URI`.
 
@@ -95,7 +95,7 @@ Certificate:
 
 ### Authentication against an LDAP server
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/7693) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.8 as an experimental feature. Smartcard authentication against an LDAP server may change or be removed completely in future releases.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7693) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.8 as an experimental feature. Smartcard authentication against an LDAP server may change or be removed completely in future releases.
 
 GitLab implements a standard way of certificate matching following
 [RFC4523](https://tools.ietf.org/html/rfc4523). It uses the

@@ -196,7 +196,7 @@ GitLab can be considered to have two layers from a process perspective:
 - Process: `alertmanager`
 - GitLab.com: [Monitoring of GitLab.com](https://about.gitlab.com/handbook/engineering/monitoring/)
 
-[Alert manager](https://prometheus.io/docs/alerting/alertmanager/) is a tool provided by Prometheus that _"handles alerts sent by client applications such as the Prometheus server. It takes care of deduplicating, grouping, and routing them to the correct receiver integration such as email, PagerDuty, or OpsGenie. It also takes care of silencing and inhibition of alerts."_ You can read more in [issue #45740](https://gitlab.com/gitlab-org/gitlab-foss/issues/45740) about what we will be alerting on.
+[Alert manager](https://prometheus.io/docs/alerting/alertmanager/) is a tool provided by Prometheus that _"handles alerts sent by client applications such as the Prometheus server. It takes care of deduplicating, grouping, and routing them to the correct receiver integration such as email, PagerDuty, or OpsGenie. It also takes care of silencing and inhibition of alerts."_ You can read more in [issue #45740](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/45740) about what we will be alerting on.
 
 #### Certificate management
 
@@ -273,7 +273,7 @@ repository updates to secondary nodes.
 
 - Configuration:
   - [Omnibus](../administration/geo/replication/index.md#setup-instructions)
-  - [Charts](https://gitlab.com/gitlab-org/charts/gitlab/issues/8)
+  - [Charts](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/8)
   - [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/geo.md)
 - Layer: Core Service (Processor)
 
@@ -293,7 +293,7 @@ GitLab Exporter is a process designed in house that allows us to export metrics 
 
 - Configuration:
   - [Omnibus](../administration/pages/index.md)
-  - [Charts](https://gitlab.com/gitlab-org/charts/gitlab/issues/37)
+  - [Charts](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/37)
   - [Source](../install/installation.md#install-gitlab-pages)
   - [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/pages.md)
 - Layer: Core Service (Processor)
@@ -359,12 +359,12 @@ Grafana is an open source, feature rich metrics dashboard and graph editor for G
 
 - [Project page](https://github.com/jaegertracing/jaeger/blob/master/README.md)
 - Configuration:
-  - [Omnibus](https://gitlab.com/gitlab-org/omnibus-gitlab/issues/4104)
-  - [Charts](https://gitlab.com/gitlab-org/charts/gitlab/issues/1320)
+  - [Omnibus](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/4104)
+  - [Charts](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/1320)
   - [Source](../development/distributed_tracing.md#enabling-distributed-tracing)
   - [GDK](../development/distributed_tracing.md#using-jaeger-in-the-gitlab-development-kit)
 - Layer: Monitoring
-- GitLab.com: [Configuration to enable Tracing for a GitLab instance](https://gitlab.com/gitlab-org/omnibus-gitlab/issues/4104) issue.
+- GitLab.com: [Configuration to enable Tracing for a GitLab instance](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/4104) issue.
 
 Jaeger, inspired by Dapper and OpenZipkin, is a distributed tracing system.
 It can be used for monitoring microservices-based distributed systems.
@@ -424,7 +424,7 @@ NGINX has an Ingress port for all HTTP requests and routes them to the appropria
 - [Project page](https://github.com/prometheus/node_exporter/blob/master/README.md)
 - Configuration:
   - [Omnibus](../administration/monitoring/prometheus/node_exporter.md)
-  - [Charts](https://gitlab.com/gitlab-org/charts/gitlab/issues/1332)
+  - [Charts](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/1332)
 - Layer: Monitoring
 - Process: `node-exporter`
 - GitLab.com: [Monitoring of GitLab.com](https://about.gitlab.com/handbook/engineering/monitoring/)
@@ -545,7 +545,7 @@ An external registry can also be configured to use GitLab as an auth endpoint.
 - [Project page](https://github.com/getsentry/sentry/)
 - Configuration:
   - [Omnibus](https://docs.gitlab.com/omnibus/settings/configuration.html#error-reporting-and-logging-with-sentry)
-  - [Charts](https://gitlab.com/gitlab-org/charts/gitlab/issues/1319)
+  - [Charts](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/1319)
   - [Source](https://gitlab.com/gitlab-org/gitlab/blob/master/config/gitlab.yml.example)
   - [GDK](https://gitlab.com/gitlab-org/gitlab/blob/master/config/gitlab.yml.example)
 - Layer: Monitoring

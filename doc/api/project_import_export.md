@@ -1,6 +1,6 @@
 # Project import/export API
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/41899) in GitLab 10.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/41899) in GitLab 10.6.
 
 See also:
 

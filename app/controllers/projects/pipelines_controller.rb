@@ -96,7 +96,14 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def dag
-    render_show
+    respond_to do |format|
+      format.html { render_show }
+      format.json do
+        render json: Ci::DagPipelineSerializer
+          .new(project: @project, current_user: @current_user)
+          .represent(@pipeline)
+      end
+    end
   end
 
   def failures

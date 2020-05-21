@@ -132,7 +132,7 @@ as well as these:
 | `QA_RSPEC_TAGS` | The RSpec tags to add (no default) |
 
 For now [manual jobs with custom variables will not use the same variable
-when retried](https://gitlab.com/gitlab-org/gitlab/issues/31367), so if you want to run the same test(s) multiple times,
+when retried](https://gitlab.com/gitlab-org/gitlab/-/issues/31367), so if you want to run the same test(s) multiple times,
 specify the same variables in each `custom-parallel` job (up to as
 many of the 10 available jobs that you want to run).
 

@@ -26,8 +26,8 @@ The following are GitLab upgrade validation tests we performed.
   configuration.
 - Outcome: Upgrade test was successful.
 - Follow up issues:
-  - [Investigate Geo end-to-end test failures](https://gitlab.com/gitlab-org/gitlab/issues/201823).
-  - [Add more logging to Geo end-to-end tests](https://gitlab.com/gitlab-org/gitlab/issues/201830).
+  - [Investigate Geo end-to-end test failures](https://gitlab.com/gitlab-org/gitlab/-/issues/201823).
+  - [Add more logging to Geo end-to-end tests](https://gitlab.com/gitlab-org/gitlab/-/issues/201830).
   - [Excess service restarts during zero-downtime upgrade](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5047).
 
 [Upgrade Geo multi-server installation](https://gitlab.com/gitlab-org/gitlab/-/issues/199836):
@@ -43,7 +43,7 @@ The following are GitLab upgrade validation tests we performed.
   configuration.
 - Outcome: Upgrade test was successful.
 - Follow up issues:
-  - [Investigate why HTTP push spec failed on primary node](https://gitlab.com/gitlab-org/gitlab/issues/199825).
+  - [Investigate why HTTP push spec failed on primary node](https://gitlab.com/gitlab-org/gitlab/-/issues/199825).
   - [Investigate if documentation should be modified to include refresh foreign tables task](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5041).
 
 ### October 2019
@@ -89,7 +89,7 @@ The following are PostgreSQL upgrade validation tests we performed.
 
 ### September 2019
 
-[Test and validate PostgreSQL 10.0 upgrade for Geo](https://gitlab.com/gitlab-org/gitlab/issues/12092):
+[Test and validate PostgreSQL 10.0 upgrade for Geo](https://gitlab.com/gitlab-org/gitlab/-/issues/12092):
 
 - Description: With the 12.0 release, GitLab required an upgrade to PostgreSQL 10.0. We tested
   various upgrade scenarios from GitLab 11.11.5 through to GitLab 12.1.8.

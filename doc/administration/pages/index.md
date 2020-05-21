@@ -6,9 +6,9 @@ description: 'Learn how to administer GitLab Pages.'
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80) in GitLab EE 8.3.
 > - Custom CNAMEs with TLS support were [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/173) in GitLab EE 8.5.
-> - GitLab Pages [was ported](https://gitlab.com/gitlab-org/gitlab-foss/issues/14605) to Community Edition in GitLab 8.17.
+> - GitLab Pages [was ported](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/14605) to Community Edition in GitLab 8.17.
 > - Support for subgroup project's websites was
->   [introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/30548) in GitLab 11.8.
+>   [introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/30548) in GitLab 11.8.
 
 GitLab Pages allows for hosting of static sites. It must be configured by an
 administrator. Separate [user documentation](../../user/project/pages/index.md) is available.
@@ -75,7 +75,7 @@ among other things.
 Follow [these instructions](https://publicsuffix.org/submit/) to submit your
 GitLab Pages subdomain. For instance, if your domain is `example.io`, you should
 request that `example.io` is added to the Public Suffix List. GitLab.com
-added `gitlab.io` [in 2016](https://gitlab.com/gitlab-com/infrastructure/issues/230).
+added `gitlab.io` [in 2016](https://gitlab.com/gitlab-com/infrastructure/-/issues/230).
 
 ### DNS configuration
 
@@ -261,7 +261,7 @@ This setting is enabled by default.
 
 ### Let's Encrypt integration
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/28996) in GitLab 12.1.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/28996) in GitLab 12.1.
 
 [GitLab Pages' Let's Encrypt integration](../../user/project/pages/custom_domains_ssl_tls_certification/lets_encrypt_integration.md)
 allows users to add Let's Encrypt SSL certificates for GitLab Pages
@@ -278,7 +278,7 @@ To enable it, you'll need to:
 
 ### Access control
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/33422) in GitLab 11.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/33422) in GitLab 11.5.
 
 GitLab Pages access control can be configured per-project, and allows access to a Pages
 site to be controlled based on a user's membership to that project.
@@ -307,7 +307,7 @@ Pages access control is disabled by default. To enable it:
 
 #### Disabling public access to all Pages websites
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/32095) in GitLab 12.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32095) in GitLab 12.7.
 
 You can enforce [Access Control](#access-control) for all GitLab Pages websites hosted
 on your GitLab instance. By doing so, only logged-in users will have access to them.
@@ -324,7 +324,7 @@ To do that:
 CAUTION: **Warning:**
 This action will not make all currently public web-sites private until they redeployed.
 This issue among others will be resolved by
-[changing GitLab Pages configuration mechanism](https://gitlab.com/gitlab-org/gitlab-pages/issues/282).
+[changing GitLab Pages configuration mechanism](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/282).
 
 ### Running behind a proxy
 
@@ -353,7 +353,7 @@ For installation from source this can be fixed by installing the custom Certific
 Authority (CA) in the system certificate store.
 
 For Omnibus, normally this would be fixed by [installing a custom CA in Omnibus GitLab](https://docs.gitlab.com/omnibus/settings/ssl.html#install-custom-public-certificates)
-but a [bug](https://gitlab.com/gitlab-org/gitlab/issues/25411) is currently preventing
+but a [bug](https://gitlab.com/gitlab-org/gitlab/-/issues/25411) is currently preventing
 that method from working. Use the following workaround:
 
 1. Append your GitLab server TLS/SSL certificate to `/opt/gitlab/embedded/ssl/certs/cacert.pem` where `gitlab-domain-example.com` is your GitLab application URL
@@ -435,7 +435,7 @@ The default is 100MB.
 
 ### Override maximum pages size per project or group **(PREMIUM ONLY)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/16610) in GitLab 12.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/16610) in GitLab 12.7.
 
 To override the global maximum pages size for a specific project:
 

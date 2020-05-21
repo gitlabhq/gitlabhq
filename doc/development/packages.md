@@ -10,7 +10,7 @@ not cover the way the code should be written. However, you can find a good examp
 by looking at merge requests with Maven and NPM support:
 
 - [NPM registry support](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/8673).
-- [Conan repository](https://gitlab.com/gitlab-org/gitlab/issues/8248).
+- [Conan repository](https://gitlab.com/gitlab-org/gitlab/-/issues/8248).
 - [Maven repository](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6607).
 - [Instance level endpoint for Maven repository](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/8757)
 
@@ -61,8 +61,8 @@ The current state of existing package registries availability is:
 | Repository Type | Project Level | Group Level | Instance Level |
 |-----------------|---------------|-------------|----------------|
 | Maven           | Yes           | Yes         | Yes            |
-| Conan           | No - [open issue](https://gitlab.com/gitlab-org/gitlab/issues/11679) | No - [open issue](https://gitlab.com/gitlab-org/gitlab/issues/11679) | Yes |
-| NPM             | No - [open issue](https://gitlab.com/gitlab-org/gitlab/issues/36853) | Yes | No - [open issue](https://gitlab.com/gitlab-org/gitlab/issues/36853) |
+| Conan           | No - [open issue](https://gitlab.com/gitlab-org/gitlab/-/issues/11679) | No - [open issue](https://gitlab.com/gitlab-org/gitlab/-/issues/11679) | Yes |
+| NPM             | No - [open issue](https://gitlab.com/gitlab-org/gitlab/-/issues/36853) | Yes | No - [open issue](https://gitlab.com/gitlab-org/gitlab/-/issues/36853) |
 | NuGet           | Yes | No - [open issue](https://gitlab.com/gitlab-org/gitlab/-/issues/36423) | No |
 | PyPI            | Yes | No | No |
 

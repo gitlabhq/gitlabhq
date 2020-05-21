@@ -282,7 +282,7 @@ multiple times per patch release. This was compounded when we had to release
 multiple patches at once due to a security issue.
 
 We needed to automate all of this manual work. So we
-[started brainstorming](https://gitlab.com/gitlab-org/gitlab-foss/issues/17826).
+[started brainstorming](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/17826).
 After much discussion we settled on the current solution of one file per entry,
 and then compiling the entries into the overall `CHANGELOG.md` file during the
 [release process](https://gitlab.com/gitlab-org/release-tools).

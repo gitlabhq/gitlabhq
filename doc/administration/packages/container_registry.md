@@ -884,7 +884,7 @@ mounting the docker-daemon and setting `privileged = false` in the Runner's
     volumes = ["/var/run/docker.sock:/var/run/docker.sock", "/cache"]
 ```
 
-Additional information about this: [issue 18239](https://gitlab.com/gitlab-org/gitlab-foss/issues/18239).
+Additional information about this: [issue 18239](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/18239).
 
 ### `unauthorized: authentication required` when pushing large images
 
@@ -955,7 +955,7 @@ Start with a value between `25000000` (25MB) and `50000000` (50MB).
 
 ### Supporting older Docker clients
 
-As of GitLab 11.9, we began shipping version 2.7.1 of the Docker container registry, which disables the schema1 manifest by default. If you are still using older Docker clients (1.9 or older), you may experience an error pushing images. See [omnibus-4145](https://gitlab.com/gitlab-org/omnibus-gitlab/issues/4145) for more details.
+As of GitLab 11.9, we began shipping version 2.7.1 of the Docker container registry, which disables the schema1 manifest by default. If you are still using older Docker clients (1.9 or older), you may experience an error pushing images. See [omnibus-4145](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/4145) for more details.
 
 You can add a configuration option for backwards compatibility.
 

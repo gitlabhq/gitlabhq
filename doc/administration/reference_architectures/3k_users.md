@@ -59,7 +59,7 @@ following the [2,000-user reference architecture](2k_users.md).
 
 1. NFS can be used as an alternative for both repository data (replacing Gitaly) and
    object storage but this isn't typically recommended for performance reasons. Note however it is required for
-   [GitLab Pages](https://gitlab.com/gitlab-org/gitlab-pages/issues/196).
+   [GitLab Pages](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/196).
 
 1. Our architectures have been tested and validated with [HAProxy](https://www.haproxy.org/)
    as the load balancer. Although other load balancers with similar feature sets

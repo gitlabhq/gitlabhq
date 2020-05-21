@@ -534,7 +534,7 @@ the `gitlab-org/gitlab-foss` project.
 
 ## Pre-clone step
 
-The `gitlab-org/gitlab` project on GitLab.com uses a [pre-clone step](https://gitlab.com/gitlab-org/gitlab/issues/39134)
+The `gitlab-org/gitlab` project on GitLab.com uses a [pre-clone step](https://gitlab.com/gitlab-org/gitlab/-/issues/39134)
 to seed the project with a recent archive of the repository. This is done for
 several reasons:
 

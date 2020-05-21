@@ -1198,7 +1198,7 @@ Will return `201 OK` on success, `404 User Not Found` is user cannot be found or
 
 ## Deactivate user
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/22257) in GitLab 12.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22257) in GitLab 12.4.
 
 Deactivates the specified user. Available only for admin.
 
@@ -1220,7 +1220,7 @@ Returns:
 
 ## Activate user
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/22257) in GitLab 12.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22257) in GitLab 12.4.
 
 Activates the specified user. Available only for admin.
 
@@ -1407,7 +1407,7 @@ The activities that update the timestamp are:
 
 - Git HTTP/SSH activities (such as clone, push)
 - User logging in to GitLab
-- User visiting pages related to Dashboards, Projects, Issues, and Merge Requests ([introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/54947) in GitLab 11.8)
+- User visiting pages related to Dashboards, Projects, Issues, and Merge Requests ([introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/54947) in GitLab 11.8)
 - User using the API
 - User using the GraphQL API
 
@@ -1454,7 +1454,7 @@ Please note that `last_activity_at` is deprecated, please use `last_activity_on`
 
 ## User memberships (admin only)
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/20532) in GitLab 12.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20532) in GitLab 12.8.
 
 Lists all projects and groups a user is a member of. This endpoint is available for admins only.
 It returns the `source_id`, `source_name`, `source_type` and `access_level` of a membership.

@@ -150,7 +150,7 @@ limitation:
   [Odyssey](https://gitlab.com/gitlab-com/gl-infra/infrastructure/issues/7776).
 
 On some Linux systems, it's possible to run [multiple PgBouncer instances on
-the same port](https://gitlab.com/gitlab-org/omnibus-gitlab/issues/4796).
+the same port](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/4796).
 
 On GitLab.com, we run multiple PgBouncer instances on different ports to
 avoid saturating a single core.

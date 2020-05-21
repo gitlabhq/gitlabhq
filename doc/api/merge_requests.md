@@ -73,7 +73,7 @@ operation. If you are interested in the value of these fields from this
 endpoint, set the `with_merge_status_recheck` parameter to `true` in the query.
 
 NOTE: **Note:**
-[Starting in GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/issues/29984),
+[Starting in GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/-/issues/29984),
 when `async_merge_request_check_mergeability` feature flag is enabled, the
 mergeability (`merge_status`) of each merge request will be checked
 asynchronously when a request is made to this endpoint. Poll this API endpoint
@@ -554,7 +554,7 @@ Parameters:
 - `include_rebase_in_progress` (optional) - If `true` response includes whether a rebase operation is in progress
 
 NOTE: **Note:**
-[Starting in GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/issues/29984),
+[Starting in GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/-/issues/29984),
 when `async_merge_request_check_mergeability` feature flag is enabled, the
 mergeability (`merge_status`) of a merge request will be checked
 asynchronously when a request is made to this endpoint. Poll this API endpoint

@@ -138,7 +138,7 @@ migrations performed.
 
 ## Enable Monitoring
 
-> [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/issues/3786) in GitLab 12.0.
+> [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/3786) in GitLab 12.0.
 
 If you enable Monitoring, it must be enabled on **all** GitLab servers.
 
@@ -178,7 +178,7 @@ If you enable Monitoring, it must be enabled on **all** GitLab servers.
    running `sudo gitlab-ctl reconfigure`, it can take an extended period of time
    for Unicorn to complete reloading after receiving a `HUP`. For more
    information, see the
-   [issue](https://gitlab.com/gitlab-org/omnibus-gitlab/issues/4401).
+   [issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/4401).
 
 ## Troubleshooting
 

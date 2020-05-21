@@ -1,6 +1,6 @@
 # Appearance API **(CORE ONLY)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/16647) in GitLab 12.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/16647) in GitLab 12.7.
 
 Appearance API allows you to maintain GitLab's appearance as if using the GitLab UI at
 `/admin/appearance`. The API requires administrator privileges.

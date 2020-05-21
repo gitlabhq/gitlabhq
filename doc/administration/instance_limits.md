@@ -10,7 +10,7 @@ performance, data, or could even exhaust the allocated resources for the applica
 
 ## Number of comments per issue, merge request or commit
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/22388) in GitLab 12.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22388) in GitLab 12.4.
 
 There's a limit to the number of comments that can be submitted on an issue,
 merge request, or commit. When the limit is reached, system notes can still be
@@ -21,7 +21,7 @@ will fail.
 
 ## Size of comments and descriptions of issues, merge requests, and epics
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/61974) in GitLab 12.2.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/61974) in GitLab 12.2.
 
 There is a limit to the size of comments and descriptions of issues, merge requests, and epics.
 Attempting to add a body of text larger than the limit will result in an error, and the
@@ -43,7 +43,7 @@ When the number exceeds the limit the page displays an alert and links to a pagi
 
 ## Number of pipelines per Git push
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/51401) in GitLab 11.10.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/51401) in GitLab 11.10.
 
 The number of pipelines that can be created in a single push is 4.
 This is to prevent the accidental creation of pipelines when `git push --all`
@@ -53,9 +53,9 @@ Read more in the [CI documentation](../ci/yaml/README.md#processing-git-pushes).
 
 ## Retention of activity history
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/21164) in GitLab 8.12.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/21164) in GitLab 8.12.
 
-Activity history for projects and individuals' profiles was limited to one year until [GitLab 11.4](https://gitlab.com/gitlab-org/gitlab-foss/issues/52246) when it was extended to two years, and in [GitLab 12.4](https://gitlab.com/gitlab-org/gitlab/issues/33840) to three years.
+Activity history for projects and individuals' profiles was limited to one year until [GitLab 11.4](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/52246) when it was extended to two years, and in [GitLab 12.4](https://gitlab.com/gitlab-org/gitlab/-/issues/33840) to three years.
 
 ## Number of embedded metrics
 
@@ -87,7 +87,7 @@ NOTE: **Note:** Set the limit to `0` to disable it.
 
 ## Incoming emails from auto-responders
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/30327) in GitLab 12.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30327) in GitLab 12.4.
 
 GitLab ignores all incoming emails sent from auto-responders by looking for the `X-Autoreply`
 header. Such emails don't create comments on issues or merge requests.
@@ -126,7 +126,7 @@ NOTE: **Note:** Set the limit to `0` to disable it.
 
 ### Number of jobs in active pipelines
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/32823) in GitLab 12.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32823) in GitLab 12.6.
 
 The total number of jobs in active pipelines can be limited per project. This limit is checked
 each time a new pipeline is created. An active pipeline is any pipeline in one of the following states:
@@ -156,7 +156,7 @@ NOTE: **Note:** Set the limit to `0` to disable it.
 
 ### Number of CI/CD subscriptions to a project
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/9045) in GitLab 12.9.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9045) in GitLab 12.9.
 
 The total number of subscriptions can be limited per project. This limit is
 checked each time a new subscription is created.
@@ -243,7 +243,7 @@ Reports that go over the 20 MB limit won't be loaded. Affected reports:
 
 ### Maximum field length
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/201826) in GitLab 12.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/201826) in GitLab 12.8.
 
 You can set a limit on the content of text fields indexed for Global Search.
 Setting a maximum helps to reduce the load of the indexing processes. If any
@@ -270,7 +270,7 @@ See the [documentation on Snippets settings](snippets/index.md).
 
 ### Webhooks and Project Services
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/31009) in GitLab 12.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31009) in GitLab 12.4.
 
 Total number of changes (branches or tags) in a single push. If changes are more
 than the specified limit, hooks won't be executed.
@@ -282,7 +282,7 @@ More information can be found in these docs:
 
 ### Activities
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/31007) in GitLab 12.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31007) in GitLab 12.4.
 
 Total number of changes (branches or tags) in a single push to determine whether
 individual push events or bulk push event will be created.

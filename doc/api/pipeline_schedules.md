@@ -281,7 +281,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" "https://gi
 
 ## Run a scheduled pipeline immediately
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/201786) in GitLab 12.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/201786) in GitLab 12.8.
 
 Trigger a new scheduled pipeline, which runs immediately. The next scheduled run
 of this pipeline is not affected.
@@ -311,7 +311,7 @@ Example response:
 
 ## Pipeline schedule variables
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/34518) in GitLab 10.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/34518) in GitLab 10.0.
 
 ## Create a new pipeline schedule variable
 

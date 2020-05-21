@@ -164,7 +164,7 @@ _The artifacts are stored by default in
 
 CAUTION: **CAUTION:**
 JUnit test report artifact (`junit.xml.gz`) migration
-[is not supported](https://gitlab.com/gitlab-org/gitlab/issues/27698)
+[is not supported](https://gitlab.com/gitlab-org/gitlab/-/issues/27698)
 by the `gitlab:artifacts:migrate` script.
 
 **In installations from source:**
@@ -197,7 +197,7 @@ _The artifacts are stored by default in
 
 CAUTION: **CAUTION:**
 JUnit test report artifact (`junit.xml.gz`) migration
-[is not supported](https://gitlab.com/gitlab-org/gitlab/issues/27698)
+[is not supported](https://gitlab.com/gitlab-org/gitlab/-/issues/27698)
 by the `gitlab:artifacts:migrate` script.
 
 ### OpenStack compatible connection settings

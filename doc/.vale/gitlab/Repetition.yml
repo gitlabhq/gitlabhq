@@ -1,3 +1,6 @@
+---
+# Error: gitlab.Repetition
+#
 # Checks for duplicate words, like `the the` or `and and`.
 #
 # For a list of all options, see https://errata-ai.github.io/vale/styles/

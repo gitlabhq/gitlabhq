@@ -1,4 +1,6 @@
 ---
+# Error: gitlab.RelativeLinks
+#
 # Checks for the presence of absolute hyperlinks that should be relative.
 #
 # For a list of all options, see https://errata-ai.github.io/vale/styles/

@@ -236,6 +236,7 @@ statuses:
 - stage
 - user
 - auto_canceled_by
+- needs
 variables:
 - project
 triggers:

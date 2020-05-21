@@ -1,4 +1,6 @@
 ---
+# Error: gitlab.Substitutions
+#
 # Checks for use of some of the top misused terms at GitLab.
 # For substitutions only flagged as warnings, see SubstitutionWarning.yml
 #

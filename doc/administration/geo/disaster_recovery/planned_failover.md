@@ -126,7 +126,7 @@ will take to finish syncing. An example message would be:
 
 ## Prevent updates to the **primary** node
 
-Until a [read-only mode](https://gitlab.com/gitlab-org/gitlab-foss/issues/19739) is implemented, updates must be prevented
+Until a [read-only mode](https://gitlab.com/gitlab-org/gitlab/-/issues/14609) is implemented, updates must be prevented
 from happening manually. Note that your **secondary** node still needs read-only
 access to the **primary** node during the maintenance window.
 

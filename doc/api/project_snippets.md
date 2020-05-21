@@ -17,7 +17,7 @@ NOTE: **Note:**
 From July 2019, the `Internal` visibility setting is disabled for new projects, groups,
 and snippets on GitLab.com. Existing projects, groups, and snippets using the `Internal`
 visibility setting keep this setting. You can read more about the change in the
-[relevant issue](https://gitlab.com/gitlab-org/gitlab/issues/12388).
+[relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/12388).
 
 ## List snippets
 
@@ -185,7 +185,7 @@ curl https://gitlab.com/api/v4/projects/:id/snippets/:snippet_id/raw \
 
 ## Get user agent details
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/29508) in GitLab 9.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/29508) in GitLab 9.4.
 
 Available only for admins.
 

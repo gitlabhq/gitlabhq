@@ -218,7 +218,7 @@ October 07, 2014 11:25: Project "project133" was removed
 
 ## `application_json.log`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/22812) in GitLab 12.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22812) in GitLab 12.7.
 
 This file lives in `/var/log/gitlab/gitlab-rails/application_json.log` for
 Omnibus GitLab packages or in `/home/git/gitlab/log/application_json.log` for
@@ -608,12 +608,12 @@ This log records:
 - [Protected paths](../user/admin_area/settings/protected_paths.md) abusive requests.
 
 NOTE: **Note:**
-From [%12.1](https://gitlab.com/gitlab-org/gitlab-foss/issues/62756), user ID and username are also
+From [%12.3](https://gitlab.com/gitlab-org/gitlab/-/issues/29239), user ID and username are also
 recorded on this log, if available.
 
 ## `graphql_json.log`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/59587) in GitLab 12.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/59587) in GitLab 12.0.
 
 This file lives in `/var/log/gitlab/gitlab-rails/graphql_json.log` for
 Omnibus GitLab packages or in `/home/git/gitlab/log/graphql_json.log` for

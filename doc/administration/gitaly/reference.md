@@ -190,7 +190,7 @@ For historical reasons
 the Git hooks that allow GitLab to validate and react to Git pushes.
 Because Gitaly "owns" Git pushes, GitLab Shell must therefore be
 installed alongside Gitaly. This will be [simplified in the
-future](https://gitlab.com/gitlab-org/gitaly/issues/1226).
+future](https://gitlab.com/gitlab-org/gitaly/-/issues/1226).
 
 | Name | Type | Required | Description |
 | ---- | ---- | -------- | ----------- |

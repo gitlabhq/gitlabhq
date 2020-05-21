@@ -1,6 +1,6 @@
 # Feature Flags API **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/9566) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9566) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.5.
 
 API for accessing resources of [GitLab Feature Flags](../user/project/operations/feature_flags.md).
 

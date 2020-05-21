@@ -366,7 +366,7 @@ See also:
 
 - The [RSpec testing guidelines](../testing_guide/best_practices.md#rspec).
 - System / Feature tests in the [Testing Best Practices](best_practices.md#system--feature-tests).
-- [Issue #26159](https://gitlab.com/gitlab-org/gitlab/issues/26159) which aims at combining those guidelines with this page.
+- [Issue #26159](https://gitlab.com/gitlab-org/gitlab/-/issues/26159) which aims at combining those guidelines with this page.
 
 ```mermaid
 graph RL

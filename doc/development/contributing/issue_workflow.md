@@ -16,7 +16,7 @@ see fit.
 
 Our issue triage policies are [described in our handbook](https://about.gitlab.com/handbook/engineering/quality/issue-triage/).
 You are very welcome to help the GitLab team triage issues.
-We also organize [issue bash events](https://gitlab.com/gitlab-org/gitlab-foss/issues/17815)
+We also organize [issue bash events](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/17815)
 once every quarter.
 
 The most important thing is making sure valid issues receive feedback from the
@@ -351,7 +351,7 @@ features from GitLab EE to GitLab CE, related issues would be labeled with
 ~"stewardship".
 
 A recent example of this was the issue for
-[bringing the time tracking API to GitLab CE](https://gitlab.com/gitlab-org/gitlab-foss/issues/25517#note_20019084).
+[bringing the time tracking API to GitLab CE](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/25517#note_20019084).
 
 ## Feature proposals
 
@@ -403,7 +403,7 @@ below will make it easy to manage this, without unnecessary overhead.
 Every monthly release has a corresponding issue on the CE issue tracker to keep
 track of functionality broken by that release and any fixes that need to be
 included in a patch release (see
-[8.3 Regressions](https://gitlab.com/gitlab-org/gitlab-foss/issues/4127) as an example).
+[8.3 Regressions](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/4127) as an example).
 
 As outlined in the issue description, the intended workflow is to post one note
 with a reference to an issue describing the regression, and then to update that

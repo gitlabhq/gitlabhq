@@ -394,6 +394,12 @@ msgstr ""
 msgid "%{mrText}, this issue will be closed automatically."
 msgstr ""
 
+msgid "%{name_with_link} has %{percent} or less Shared Runner Pipeline minutes remaining. Once it runs out, no new jobs or pipelines in its projects will run."
+msgstr ""
+
+msgid "%{name_with_link} has run out of Shared Runner Pipeline minutes so no new jobs or pipelines in its projects will run."
+msgstr ""
+
 msgid "%{namespace_name} is now read-only. You cannot: %{base_message}"
 msgstr ""
 
@@ -403,16 +409,16 @@ msgstr ""
 msgid "%{name} found %{resultsString}"
 msgstr ""
 
-msgid "%{name} has %{percent} or less Shared Runner Pipeline minutes remaining. Once it runs out, no new jobs or pipelines in its projects will run."
-msgstr ""
-
-msgid "%{name} has run out of Shared Runner Pipeline minutes so no new jobs or pipelines in its projects will run."
-msgstr ""
-
 msgid "%{name} is scheduled for %{action}"
 msgstr ""
 
 msgid "%{name}'s avatar"
+msgstr ""
+
+msgid "%{name}(%{url}) has %{percent} or less Shared Runner Pipeline minutes remaining. Once it runs out, no new jobs or pipelines in its projects will run."
+msgstr ""
+
+msgid "%{name}(%{url}) has run out of Shared Runner Pipeline minutes so no new jobs or pipelines in its projects will run."
 msgstr ""
 
 msgid "%{no_of_days} day"
@@ -18197,10 +18203,7 @@ msgstr ""
 msgid "Requirements"
 msgstr ""
 
-msgid "Requirements allow you to create criteria to check your products against."
-msgstr ""
-
-msgid "Requirements can be based on users, stakeholders, system, software or anything else you find important to capture."
+msgid "Requirements can be based on users, stakeholders, system, software, or anything else you find important to capture."
 msgstr ""
 
 msgid "Requires approval from %{names}."
@@ -24626,6 +24629,9 @@ msgid "Will be created"
 msgstr ""
 
 msgid "Will deploy to"
+msgstr ""
+
+msgid "With requirements, you can set criteria to check your products against."
 msgstr ""
 
 msgid "Withdraw Access Request"

@@ -1,3 +1,6 @@
+---
+# Error: gitlab.ReferenceLinks
+#
 # Checks for the presence of reference-style links that must be inline.
 #
 # For a list of all options, see https://errata-ai.github.io/vale/styles/

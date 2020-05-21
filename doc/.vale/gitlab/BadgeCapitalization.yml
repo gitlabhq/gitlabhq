@@ -1,4 +1,6 @@
 ---
+# Error: gitlab.BadgeCapitalization
+#
 # Verifies that badges are not lower case, which won't render properly.
 #
 # For a list of all options, see https://errata-ai.github.io/vale/styles/

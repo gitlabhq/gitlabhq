@@ -27,7 +27,7 @@ transform them into structured links to the resources they represent.
 For example, the class
 [`Banzai::Filter::IssueReferenceFilter`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/banzai/filter/issue_reference_filter.rb)
 is responsible for handling references to issues, such as
-`gitlab-org/gitlab#123` and `https://gitlab.com/gitlab-org/gitlab/issues/200048`.
+`gitlab-org/gitlab#123` and `https://gitlab.com/gitlab-org/gitlab/-/issues/200048`.
 
 All reference filters are instances of [`HTML::Pipeline::Filter`](https://www.rubydoc.info/github/jch/html-pipeline/v1.11.0/HTML/Pipeline/Filter),
 and inherit (often indirectly) from [`Banzai::Filter::ReferenceFilter`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/banzai/filter/reference_filter.rb).

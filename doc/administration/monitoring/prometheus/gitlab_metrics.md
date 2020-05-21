@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # GitLab Prometheus metrics
 
 >**Note:**
-Available since [Omnibus GitLab 9.3](https://gitlab.com/gitlab-org/gitlab-foss/issues/29118). For
+Available since [Omnibus GitLab 9.3](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/29118). For
 installations from source you'll have to configure it yourself.
 
 To enable the GitLab Prometheus metrics:
@@ -174,7 +174,7 @@ The following metrics are available:
 
 | Metric                            | Type      | Since                                                         | Description                            |
 |:--------------------------------- |:--------- |:------------------------------------------------------------- |:-------------------------------------- |
-| `db_load_balancing_hosts`         | Gauge     | [12.3](https://gitlab.com/gitlab-org/gitlab/issues/13630)     | Current number of load balancing hosts |
+| `db_load_balancing_hosts`         | Gauge     | [12.3](https://gitlab.com/gitlab-org/gitlab/-/issues/13630)     | Current number of load balancing hosts |
 
 ## Ruby metrics
 

@@ -332,7 +332,7 @@ some of these queries will never be able to complete due to being canceled
 every time.
 
 These long-running queries are
-[planned to be removed in the future](https://gitlab.com/gitlab-org/gitlab/issues/34269),
+[planned to be removed in the future](https://gitlab.com/gitlab-org/gitlab/-/issues/34269),
 but as a workaround, we recommend enabling
 [hot_standby_feedback](https://www.postgresql.org/docs/10/hot-standby.html#HOT-STANDBY-CONFLICT).
 This increases the likelihood of bloat on the **primary** node as it prevents
@@ -353,7 +353,7 @@ sudo gitlab-ctl reconfigure
 ```
 
 To help us resolve this problem, consider commenting on
-[the issue](https://gitlab.com/gitlab-org/gitlab/issues/4489).
+[the issue](https://gitlab.com/gitlab-org/gitlab/-/issues/4489).
 
 ### Message: `LOG:  invalid CIDR mask in address`
 
@@ -405,7 +405,7 @@ long enough to accommodate a full clone of your largest repositories.
 
 If new LFS objects are never replicated to secondary Geo nodes, check the version of
 GitLab you are running. GitLab versions 11.11.x or 12.0.x are affected by
-[a bug that results in new LFS objects not being replicated to Geo secondary nodes](https://gitlab.com/gitlab-org/gitlab/issues/32696).
+[a bug that results in new LFS objects not being replicated to Geo secondary nodes](https://gitlab.com/gitlab-org/gitlab/-/issues/32696).
 
 To resolve the issue, upgrade to GitLab 12.1 or newer.
 

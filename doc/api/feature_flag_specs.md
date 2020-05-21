@@ -1,6 +1,6 @@
 # Feature Flag Specs API **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/9566) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9566) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.5.
 
 The API for creating, updating, reading and deleting [Feature Flag Specs](../user/project/operations/feature_flags.md#define-environment-specs).
 Automation engineers benefit from this API by being able to modify Feature Flag Specs without accessing user interface.

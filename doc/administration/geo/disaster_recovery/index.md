@@ -51,7 +51,7 @@ must disable the **primary** node.
 
    NOTE: **Note:**
    (**CentOS only**) In CentOS 6 or older, there is no easy way to prevent GitLab from being
-   started if the machine reboots isn't available (see [Omnibus GitLab issue #3058](https://gitlab.com/gitlab-org/omnibus-gitlab/issues/3058)).
+   started if the machine reboots isn't available (see [Omnibus GitLab issue #3058](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/3058)).
    It may be safest to uninstall the GitLab package completely:
 
    ```shell

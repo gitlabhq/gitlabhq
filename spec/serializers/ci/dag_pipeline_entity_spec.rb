@@ -32,13 +32,14 @@ describe Ci::DagPipelineEntity do
       end
     end
 
-    context 'when pipeline has parallel jobs and DAG needs' do
+    context 'when pipeline has parallel jobs, DAG needs and GenericCommitStatus' do
       let!(:stage_build)  { create(:ci_stage_entity, name: 'build',  position: 1, pipeline: pipeline) }
       let!(:stage_test)   { create(:ci_stage_entity, name: 'test',   position: 2, pipeline: pipeline) }
       let!(:stage_deploy) { create(:ci_stage_entity, name: 'deploy', position: 3, pipeline: pipeline) }
 
-      let!(:job_build_1) { create(:ci_build, name: 'build 1', stage: 'build', pipeline: pipeline) }
-      let!(:job_build_2) { create(:ci_build, name: 'build 2', stage: 'build', pipeline: pipeline) }
+      let!(:job_build_1)   { create(:ci_build, name: 'build 1', stage: 'build', pipeline: pipeline) }
+      let!(:job_build_2)   { create(:ci_build, name: 'build 2', stage: 'build', pipeline: pipeline) }
+      let!(:commit_status) { create(:generic_commit_status, stage: 'build', pipeline: pipeline) }
 
       let!(:job_rspec_1) { create(:ci_build, name: 'rspec 1/2', stage: 'test', pipeline: pipeline) }
       let!(:job_rspec_2) { create(:ci_build, name: 'rspec 2/2', stage: 'test', pipeline: pipeline) }
@@ -75,22 +76,52 @@ describe Ci::DagPipelineEntity do
             {
               name: 'build',
               groups: [
-                { name: 'build 1', size: 1, jobs: [{ name: 'build 1' }] },
-                { name: 'build 2', size: 1, jobs: [{ name: 'build 2' }] }
+                {
+                  name: 'build 1', size: 1, jobs: [
+                    { name: 'build 1', scheduling_type: 'stage' }
+                  ]
+                },
+                {
+                  name: 'build 2', size: 1, jobs: [
+                    { name: 'build 2', scheduling_type: 'stage' }
+                  ]
+                },
+                {
+                  name: 'generic', size: 1, jobs: [
+                    { name: 'generic', scheduling_type: nil }
+                  ]
+                }
               ]
             },
             {
               name: 'test',
               groups: [
-                { name: 'jest', size: 1, jobs: [{ name: 'jest', needs: ['build 1'] }] },
-                { name: 'rspec', size: 2, jobs: [{ name: 'rspec 1/2' }, { name: 'rspec 2/2' }] }
+                {
+                  name: 'jest', size: 1, jobs: [
+                    { name: 'jest', scheduling_type: 'dag', needs: ['build 1'] }
+                  ]
+                },
+                {
+                  name: 'rspec', size: 2, jobs: [
+                    { name: 'rspec 1/2', scheduling_type: 'stage' },
+                    { name: 'rspec 2/2', scheduling_type: 'stage' }
+                  ]
+                }
               ]
             },
             {
               name: 'deploy',
               groups: [
-                { name: 'deploy_js', size: 1, jobs: [{ name: 'deploy_js', needs: ['jest'] }] },
-                { name: 'deploy_ruby', size: 1, jobs: [{ name: 'deploy_ruby', needs: ['rspec 1/2', 'rspec 2/2'] }] }
+                {
+                  name: 'deploy_js', size: 1, jobs: [
+                    { name: 'deploy_js', scheduling_type: 'dag', needs: ['jest'] }
+                  ]
+                },
+                {
+                  name: 'deploy_ruby', size: 1, jobs: [
+                    { name: 'deploy_ruby', scheduling_type: 'dag', needs: ['rspec 1/2', 'rspec 2/2'] }
+                  ]
+                }
               ]
             }
           ]

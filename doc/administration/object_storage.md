@@ -79,7 +79,7 @@ with the Fog library that GitLab uses. Symptoms include:
 
 If you're working to add more GitLab servers for [scaling or fault tolerance](reference_architectures/index.md)
 and one of your requirements is [GitLab Pages](../user/project/pages/index.md) this currently requires
-NFS. There is [work in progress](https://gitlab.com/gitlab-org/gitlab-pages/issues/196)
+NFS. There is [work in progress](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/196)
 to remove this dependency. In the future, GitLab Pages may use
 [object storage](https://gitlab.com/gitlab-org/gitlab/-/issues/208135).
 

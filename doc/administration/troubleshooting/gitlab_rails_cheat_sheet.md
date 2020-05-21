@@ -518,7 +518,7 @@ group.project_creation_level=0
 
 ### Remove redirecting routes
 
-See <https://gitlab.com/gitlab-org/gitlab-foss/issues/41758#note_54828133>.
+See <https://gitlab.com/gitlab-org/gitlab-foss/-/issues/41758#note_54828133>.
 
 ```ruby
 path = 'foo'
@@ -576,7 +576,7 @@ This section has been moved to the [job artifacts troubleshooting documentation]
 
 ### Find reason failure (for when build trace is empty) (Introduced in 10.3.0)
 
-See <https://gitlab.com/gitlab-org/gitlab-foss/issues/41111>.
+See <https://gitlab.com/gitlab-org/gitlab-foss/-/issues/41111>.
 
 ```ruby
 build = Ci::Build.find(78420)

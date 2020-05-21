@@ -47,7 +47,7 @@ Sometimes we need to upgrade customers from old versions of GitLab to latest, so
 
 - [Installation Methods](https://about.gitlab.com/install/):
   - [Omnibus](https://gitlab.com/gitlab-org/omnibus-gitlab/)
-  - [Docker](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/docker)
+  - [Docker](../../install/docker.md)
   - [Source](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/install/installation.md)
 - Get yourself a Digital Ocean droplet, where you can install and maintain your own instance of GitLab
   - Ask in #infrastructure about this
@@ -154,7 +154,7 @@ Some tickets need specific knowledge or a deep understanding of a particular com
 - Understand what's in the pipeline and proposed features at GitLab: [Direction Page](https://about.gitlab.com/direction/)
 - Practice searching issues and filtering using [labels](https://gitlab.com/gitlab-org/gitlab/-/labels) to find existing feature proposals and bugs
 - If raising a new issue always provide a relevant label and a link to the relevant ticket in Zendesk
-- Add [customer labels](https://gitlab.com/gitlab-org/gitlab-foss/issues?label_name%5B%5D=customer) for those issues relevant to our subscribers
+- Add [customer labels](https://gitlab.com/gitlab-org/gitlab/issues?label_name%5B%5D=customer) for those issues relevant to our subscribers
 - Take a look at the [existing issue templates](https://gitlab.com/gitlab-org/gitlab/blob/master/CONTRIBUTING.md#issue-tracker) to see what is expected
 - Raise issues for bugs in a manner that would make the issue easily reproducible. A Developer or a contributor may work on your issue
 
@@ -176,7 +176,7 @@ Move on to understanding some of GitLab's more advanced features. You can make u
 - Set up [GitLab CI/CD](../../ci/quick_start/README.md)
 - Create your first [GitLab Page](../../administration/pages/index.md)
 - Get to know the GitLab Codebase by reading through the source code:
-  - Find the differences between the [EE codebase](https://gitlab.com/gitlab-org/gitlab-foss)
+  - Find the differences between the [EE codebase](https://gitlab.com/gitlab-org/gitlab)
      and the [CE codebase](https://gitlab.com/gitlab-org/gitlab-foss)
 - Ask as many questions as you can think of on the `#support` chat channel
 

@@ -448,7 +448,7 @@ Right now, GitLab cannot track a vulnerability if its location changes
 as new Git commits are pushed, and this results in user feedback being lost.
 For instance, user feedback on a SAST vulnerability is lost
 if the affected file is renamed or the affected line moves down.
-This is addressed in [issue #7586](https://gitlab.com/gitlab-org/gitlab/issues/7586).
+This is addressed in [issue #7586](https://gitlab.com/gitlab-org/gitlab/-/issues/7586).
 
 In some cases, the multiple scans executed in the same CI pipeline result in duplicates
 that are automatically merged using the vulnerability location and identifiers.

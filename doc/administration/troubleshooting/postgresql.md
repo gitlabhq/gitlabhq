@@ -95,15 +95,15 @@ This section is for links to information elsewhere in the GitLab documentation.
 
 References:
 
-- [Issue #1 Deadlocks with GitLab 12.1, PostgreSQL 10.7](https://gitlab.com/gitlab-org/gitlab/issues/30528)
+- [Issue #1 Deadlocks with GitLab 12.1, PostgreSQL 10.7](https://gitlab.com/gitlab-org/gitlab/-/issues/30528)
 - [Customer ticket (internal) GitLab 12.1.6](https://gitlab.zendesk.com/agent/tickets/134307) and [Google doc (internal)](https://docs.google.com/document/d/19xw2d_D1ChLiU-MO1QzWab-4-QXgsIUcN5e_04WTKy4)
-- [Issue #2 deadlocks can occur if an instance is flooded with pushes](https://gitlab.com/gitlab-org/gitlab/issues/33650). Provided for context about how GitLab code can have this sort of unanticipated effect in unusual situations.
+- [Issue #2 deadlocks can occur if an instance is flooded with pushes](https://gitlab.com/gitlab-org/gitlab/-/issues/33650). Provided for context about how GitLab code can have this sort of unanticipated effect in unusual situations.
 
 ```plaintext
 ERROR: deadlock detected
 ```
 
-Three applicable timeouts are identified in the issue [#1](https://gitlab.com/gitlab-org/gitlab/issues/30528); our recommended settings are as follows:
+Three applicable timeouts are identified in the issue [#1](https://gitlab.com/gitlab-org/gitlab/-/issues/30528); our recommended settings are as follows:
 
 ```ini
 deadlock_timeout = 5s
@@ -111,7 +111,7 @@ statement_timeout = 15s
 idle_in_transaction_session_timeout = 60s
 ```
 
-Quoting from issue [#1](https://gitlab.com/gitlab-org/gitlab/issues/30528):
+Quoting from issue [#1](https://gitlab.com/gitlab-org/gitlab/-/issues/30528):
 
 > "If a deadlock is hit, and we resolve it through aborting the transaction after a short period, then the retry mechanisms we already have will make the deadlocked piece of work try again, and it's unlikely we'll deadlock multiple times in a row."
 
@@ -124,7 +124,7 @@ PostgresSQL defaults:
 - `statement_timeout = 0` (never)
 - `idle_in_transaction_session_timeout = 0` (never)
 
-Comments in issue [#1](https://gitlab.com/gitlab-org/gitlab/issues/30528) indicate that these should both be set to at least a number of minutes for all Omnibus installations (so they don't hang indefinitely). However, 15s for statement_timeout is very short, and will only be effective if the underlying infrastructure is very performant.
+Comments in issue [#1](https://gitlab.com/gitlab-org/gitlab/-/issues/30528) indicate that these should both be set to at least a number of minutes for all Omnibus installations (so they don't hang indefinitely). However, 15s for statement_timeout is very short, and will only be effective if the underlying infrastructure is very performant.
 
 See current settings with:
 

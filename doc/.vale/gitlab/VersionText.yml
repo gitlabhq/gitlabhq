@@ -1,4 +1,6 @@
 ---
+# Error: gitlab.VersionText
+#
 # Checks that version text is formatted correctly.
 #
 # Specifically looks for either of the following that is immediately followed on the next line

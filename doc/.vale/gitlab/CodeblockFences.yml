@@ -1,3 +1,6 @@
+---
+# Error: gitlab.CodeblockFences
+#
 # Ensures all codeblock fences use the full name for the language.
 #
 # For a list of all options, see https://errata-ai.github.io/vale/styles/

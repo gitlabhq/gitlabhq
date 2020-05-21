@@ -122,7 +122,7 @@ Example response:
 
 ## Group Audit Events **(STARTER)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/34078) in GitLab 12.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34078) in GitLab 12.5.
 
 The Group Audit Events API allows you to retrieve [group audit events](../administration/audit_events.md#group-events-starter).
 

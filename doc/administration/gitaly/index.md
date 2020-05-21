@@ -56,7 +56,7 @@ be mounted on the Gitaly server.
 From GitLab v11.8 to v12.2, it is possible to use Elasticsearch in conjunction with
 a Gitaly setup that isn't utilising NFS. In order to use Elasticsearch in this
 scenario, the [new repository indexer](../../integration/elasticsearch.md#elasticsearch-repository-indexer)
-needs to be enabled in your GitLab configuration. [Since GitLab v12.3](https://gitlab.com/gitlab-org/gitlab/issues/6481),
+needs to be enabled in your GitLab configuration. [Since GitLab v12.3](https://gitlab.com/gitlab-org/gitlab/-/issues/6481),
 the new indexer becomes the default and no configuration is required.
 
 ### Network architecture
@@ -375,7 +375,7 @@ can read and write to `/mnt/gitlab/storage2`.
    NOTE: **Note:**
    `/some/dummy/path` should be set to a local folder that exists, however no
    data will be stored in this folder. This will no longer be necessary after
-   [this issue](https://gitlab.com/gitlab-org/gitaly/issues/1282) is resolved.
+   [this issue](https://gitlab.com/gitlab-org/gitaly/-/issues/1282) is resolved.
 
 1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source).
 1. Run `sudo -u git -H bundle exec rake gitlab:gitaly:check RAILS_ENV=production` to
@@ -547,7 +547,7 @@ calling into itself:
    NOTE: **Note:**
    `/some/dummy/path` should be set to a local folder that exists, however no
    data will be stored in this folder. This will no longer be necessary after
-   [this issue](https://gitlab.com/gitlab-org/gitaly/issues/1282) is resolved.
+   [this issue](https://gitlab.com/gitlab-org/gitaly/-/issues/1282) is resolved.
 
 1. Save the file and[restart GitLab](../restart_gitlab.md#installations-from-source)
 on client node(s).
@@ -1094,7 +1094,7 @@ unset https_proxy
 
 When updating the `gitaly['listen_addr']` or `gitaly['prometheus_listen_addr']` values, Gitaly may continue to listen on the old address after a `sudo gitlab-ctl reconfigure`.
 
-When this occurs, performing a `sudo gitlab-ctl restart` will resolve the issue. This will no longer be necessary after [this issue](https://gitlab.com/gitlab-org/gitaly/issues/2521) is resolved.
+When this occurs, performing a `sudo gitlab-ctl restart` will resolve the issue. This will no longer be necessary after [this issue](https://gitlab.com/gitlab-org/gitaly/-/issues/2521) is resolved.
 
 ### Permission denied errors appearing in Gitaly logs when accessing repositories from a standalone Gitaly node
 

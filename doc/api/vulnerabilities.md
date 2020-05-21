@@ -1,6 +1,6 @@
 # Vulnerabilities API **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/10242) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10242) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.6.
 
 NOTE: **Note:**
 The former Vulnerabilities API was renamed to Vulnerability Findings API

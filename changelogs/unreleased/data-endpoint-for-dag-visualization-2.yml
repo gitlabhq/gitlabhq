@@ -1,0 +1,5 @@
+---
+title: Add DAG serializer for pipelines controller
+merge_request: 31583
+author:
+type: added

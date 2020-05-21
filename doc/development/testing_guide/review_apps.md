@@ -321,7 +321,7 @@ kubectl get cm --sort-by='{.metadata.creationTimestamp}' | grep 'review-' | grep
 
 #### Finding the problem
 
-[In the past](https://gitlab.com/gitlab-org/gitlab-foss/issues/62834), it happened
+[In the past](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/62834), it happened
 that the `dns-gitlab-review-app-external-dns` Deployment was in a pending state,
 effectively preventing all the Review Apps from getting a DNS record assigned,
 making them unreachable via domain name.

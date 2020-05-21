@@ -56,4 +56,4 @@ For more information see:
 
 - [`Poll-Interval` header](fe_guide/performance.md#realtime-components)
 - [RFC 7232](https://tools.ietf.org/html/rfc7232)
-- [ETag proposal](https://gitlab.com/gitlab-org/gitlab-foss/issues/26926)
+- [ETag proposal](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/26926)

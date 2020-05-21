@@ -23,7 +23,7 @@ For more information about the permission model at GitLab, please see [the GitLa
 ### Impact
 
 Improper permission handling can have significant impacts on the security of an application.
-Some situations may reveal [sensitive data](https://gitlab.com/gitlab-com/gl-infra/production/issues/477) or allow a malicious actor to perform [harmful actions](https://gitlab.com/gitlab-org/gitlab/issues/8180).
+Some situations may reveal [sensitive data](https://gitlab.com/gitlab-com/gl-infra/production/issues/477) or allow a malicious actor to perform [harmful actions](https://gitlab.com/gitlab-org/gitlab/-/issues/8180).
 The overall impact depends heavily on what resources can be accessed or modified improperly.
 
 A common vulnerability when permission checks are missing is called [IDOR](https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/05-Authorization_Testing/04-Testing_for_Insecure_Direct_Object_References) for Insecure Direct Object References.
@@ -82,7 +82,7 @@ This Ruby Regex specialty can have security impact, as often regular expressions
 
 #### Examples
 
-GitLab specific examples can be found [here](https://gitlab.com/gitlab-org/gitlab/issues/36029#note_251262187) and [there](https://gitlab.com/gitlab-org/gitlab/issues/33569).
+GitLab specific examples can be found [here](https://gitlab.com/gitlab-org/gitlab/-/issues/36029#note_251262187) and [there](https://gitlab.com/gitlab-org/gitlab/-/issues/33569).
 
 Another example would be this fictional Ruby On Rails controller:
 
@@ -180,11 +180,11 @@ have been reported to GitLab include:
 
 - Network mapping of internal services
   - This can help an attacker gather information about internal services
-  that could be used in further attacks. [More details](https://gitlab.com/gitlab-org/gitlab-foss/issues/51327).
+  that could be used in further attacks. [More details](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/51327).
 - Reading internal services, including cloud service metadata.
   - The latter can be a serious problem, because an attacker can obtain keys that allow control of the victim's cloud infrastructure. (This is also a good reason
-  to give only necessary privileges to the token.). [More details](https://gitlab.com/gitlab-org/gitlab-foss/issues/51490).
-- When combined with CRLF vulnerability, remote code execution. [More details](https://gitlab.com/gitlab-org/gitlab-foss/issues/41293)
+  to give only necessary privileges to the token.). [More details](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/51490).
+- When combined with CRLF vulnerability, remote code execution. [More details](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/41293)
 
 ### When to Consider
 
@@ -308,7 +308,7 @@ Once you've [determined when and where](#setting-expectations) the user submitte
 #### Content Security Policy
 
 - [Content Security Policy](https://www.youtube.com/watch?v=2VFavqfDS6w&t=12991s)
-- [Use nonce-based Content Security Policy for inline JavaScript](https://gitlab.com/gitlab-org/gitlab-foss/issues/65330)
+- [Use nonce-based Content Security Policy for inline JavaScript](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/65330)
 
 #### Free form input fields
 
@@ -323,7 +323,7 @@ Once you've [determined when and where](#setting-expectations) the user submitte
 
 ### Select examples of past XSS issues affecting GitLab
 
-- [Stored XSS in user status](https://gitlab.com/gitlab-org/gitlab-foss/issues/55320)
+- [Stored XSS in user status](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/55320)
 
 ### Developer Training
 

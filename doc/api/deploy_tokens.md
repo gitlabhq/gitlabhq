@@ -2,7 +2,7 @@
 
 ## List all deploy tokens
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/21811) in GitLab 12.9.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21811) in GitLab 12.9.
 
 Get a list of all deploy tokens across the GitLab instance. This endpoint requires admin access.
 
@@ -39,7 +39,7 @@ Project deploy token API endpoints require project maintainer access or higher.
 
 ### List project deploy tokens
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/21811) in GitLab 12.9.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21811) in GitLab 12.9.
 
 Get a list of a project's deploy tokens.
 
@@ -78,7 +78,7 @@ Example response:
 
 ### Create a project deploy token
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/21811) in GitLab 12.9.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21811) in GitLab 12.9.
 
 Creates a new deploy token for a project.
 
@@ -115,7 +115,7 @@ Example response:
 
 ### Delete a project deploy token
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/21811) in GitLab 12.9.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21811) in GitLab 12.9.
 
 Removes a deploy token from the project.
 
@@ -140,7 +140,7 @@ These endpoints require group maintainer access or higher.
 
 ### List group deploy tokens
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/21811) in GitLab 12.9.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21811) in GitLab 12.9.
 
 Get a list of a group's deploy tokens
 
@@ -179,7 +179,7 @@ Example response:
 
 ### Create a group deploy token
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/21811) in GitLab 12.9.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21811) in GitLab 12.9.
 
 Creates a new deploy token for a group.
 
@@ -218,7 +218,7 @@ Example response:
 
 ### Delete a group deploy token
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/21811) in GitLab 12.9.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21811) in GitLab 12.9.
 
 Removes a deploy token from the group.
 

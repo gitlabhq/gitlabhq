@@ -1,6 +1,6 @@
 # Repository submodules API
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/41213) in GitLab 11.5
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/41213) in GitLab 11.5
 
 ## Update existing submodule reference in repository
 

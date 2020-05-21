@@ -1,6 +1,6 @@
 # Protected environments API **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/30595) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30595) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.8.
 
 ## Valid access levels
 

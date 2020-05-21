@@ -1,7 +1,7 @@
 # Epics API **(PREMIUM)**
 
 > - Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.2.
-> - Single-level Epics [were moved](https://gitlab.com/gitlab-org/gitlab/issues/37081) to [GitLab Premium](https://about.gitlab.com/pricing/) in 12.8.
+> - Single-level Epics [were moved](https://gitlab.com/gitlab-org/gitlab/-/issues/37081) to [GitLab Premium](https://about.gitlab.com/pricing/) in 12.8.
 
 Every API call to epic must be authenticated.
 

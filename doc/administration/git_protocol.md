@@ -4,9 +4,9 @@ description: "Set and configure Git protocol v2"
 
 # Configuring Git Protocol v2
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/46555) in GitLab 11.4.
-> - [Temporarily disabled](https://gitlab.com/gitlab-org/gitlab-foss/issues/55769) in GitLab 11.5.8, 11.6.6, 11.7.1, and 11.8+.
-> - [Re-enabled](https://gitlab.com/gitlab-org/gitlab/issues/27828) in GitLab 12.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/46555) in GitLab 11.4.
+> - [Temporarily disabled](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/55769) in GitLab 11.5.8, 11.6.6, 11.7.1, and 11.8+.
+> - [Re-enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/27828) in GitLab 12.8.
 
 Git protocol v2 improves the v1 wire protocol in several ways and is
 enabled by default in GitLab for HTTP requests. In order to enable SSH,

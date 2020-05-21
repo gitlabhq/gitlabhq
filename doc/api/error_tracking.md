@@ -1,6 +1,6 @@
 # Error Tracking settings API
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/34940) in GitLab 12.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34940) in GitLab 12.7.
 
 ## Error Tracking project settings
 

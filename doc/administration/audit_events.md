@@ -36,7 +36,7 @@ There are two kinds of events logged:
 
 ### Impersonation data **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/536) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/536) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.0.
 
 Impersonation is where an administrator uses credentials to perform an action as a different user.
 
@@ -93,13 +93,13 @@ From there, you can see the following actions:
 - Release was added to a project
 - Release was updated
 - Release milestone associations changed
-- Permission to approve merge requests by committers was updated ([introduced](https://gitlab.com/gitlab-org/gitlab/issues/7531) in GitLab 12.9)
-- Permission to approve merge requests by authors was updated ([introduced](https://gitlab.com/gitlab-org/gitlab/issues/7531) in GitLab 12.9)
-- Number of required approvals was updated ([introduced](https://gitlab.com/gitlab-org/gitlab/issues/7531) in GitLab 12.9)
+- Permission to approve merge requests by committers was updated ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7531) in GitLab 12.9)
+- Permission to approve merge requests by authors was updated ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7531) in GitLab 12.9)
+- Number of required approvals was updated ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7531) in GitLab 12.9)
 
 ### Instance events **(PREMIUM ONLY)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/2336) in [GitLab Premium](https://about.gitlab.com/pricing/) 9.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2336) in [GitLab Premium](https://about.gitlab.com/pricing/) 9.3.
 
 Server-wide audit logging introduces the ability to observe user actions across
 the entire instance of your GitLab server, making it easy to understand who
@@ -118,10 +118,10 @@ recorded:
 - Ask for password reset
 - Grant OAuth access
 - Started or stopped user impersonation
-- Changed username ([introduced](https://gitlab.com/gitlab-org/gitlab/issues/7797) in GitLab 12.8)
-- User was deleted ([introduced](https://gitlab.com/gitlab-org/gitlab/issues/251) in GitLab 12.8)
-- User was added ([introduced](https://gitlab.com/gitlab-org/gitlab/issues/251) in GitLab 12.8)
-- User was blocked via Admin Area ([introduced](https://gitlab.com/gitlab-org/gitlab/issues/251) in GitLab 12.8)
+- Changed username ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7797) in GitLab 12.8)
+- User was deleted ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/251) in GitLab 12.8)
+- User was added ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/251) in GitLab 12.8)
+- User was blocked via Admin Area ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/251) in GitLab 12.8)
 - User was blocked via API ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25872) in GitLab 12.9)
 
 It's possible to filter particular actions by choosing an audit data type from
@@ -152,7 +152,7 @@ It may make the user interface for your project or audit logs very busy, and the
 to prevent performance degradations on GitLab instances with very high Git write traffic.
 
 In an upcoming release, Audit Logs for Git push events will be enabled
-by default. Follow [#7865](https://gitlab.com/gitlab-org/gitlab/issues/7865) for updates.
+by default. Follow [#7865](https://gitlab.com/gitlab-org/gitlab/-/issues/7865) for updates.
 
 If you still wish to enable **Repository push** events in your instance, follow
 the steps bellow.

@@ -1,4 +1,6 @@
 ---
+# Error: gitlab.SentenceSpacing
+#
 # Check for the following in common content scenarios:
 #
 # - No spaces.

@@ -34,7 +34,7 @@ invalidated by a name change, it is better to include a hook that will expire
 the entry, instead of relying on the key changing.
 
 We don't use [Redis Cluster](https://redis.io/topics/cluster-tutorial) at the
-moment, but may wish to in the future: [#118820](https://gitlab.com/gitlab-org/gitlab/issues/118820).
+moment, but may wish to in the future: [#118820](https://gitlab.com/gitlab-org/gitlab/-/issues/118820).
 
 This imposes an additional constraint on naming: where GitLab is performing
 operations that require several keys to be held on the same Redis server - for

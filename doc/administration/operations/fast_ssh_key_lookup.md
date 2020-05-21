@@ -1,7 +1,7 @@
 # Fast lookup of authorized SSH keys in the database
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/1631) in [GitLab Starter](https://about.gitlab.com/pricing/) 9.3.
-> - [Available in](https://gitlab.com/gitlab-org/gitlab/issues/3953) GitLab Community Edition 10.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1631) in [GitLab Starter](https://about.gitlab.com/pricing/) 9.3.
+> - [Available in](https://gitlab.com/gitlab-org/gitlab/-/issues/3953) GitLab Community Edition 10.4.
 
 NOTE: **Note:** This document describes a drop-in replacement for the
 `authorized_keys` file. For normal (non-deploy key) users, consider using

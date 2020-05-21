@@ -198,7 +198,7 @@ column.
 
 1. NFS can be used as an alternative for object storage but this isn't typically
    recommended for performance reasons. Note however it is required for [GitLab
-   Pages](https://gitlab.com/gitlab-org/gitlab-pages/issues/196).
+   Pages](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/196).
 
 1. Our architectures have been tested and validated with [HAProxy](https://www.haproxy.org/)
    as the load balancer. Although other load balancers with similar feature sets

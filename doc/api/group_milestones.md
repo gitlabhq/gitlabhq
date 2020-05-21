@@ -150,7 +150,7 @@ Parameters:
 
 ## Get all burndown chart events for a single milestone **(STARTER)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/4737) in GitLab 12.1
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4737) in GitLab 12.1
 
 Get all burndown chart events for a single milestone.
 

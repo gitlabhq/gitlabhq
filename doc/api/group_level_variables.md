@@ -1,6 +1,6 @@
 # Group-level Variables API
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/34519) in GitLab 9.5
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/34519) in GitLab 9.5
 
 ## List group variables
 

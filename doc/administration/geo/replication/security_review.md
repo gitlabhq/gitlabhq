@@ -22,7 +22,7 @@ from [owasp.org](https://owasp.org/).
   etc) and repository + wiki data. In a typical configuration, this will
   happen across the public Internet, and be TLS-encrypted.
 - PostgreSQL replication is TLS-encrypted.
-- See also: [only TLSv1.2 should be supported](https://gitlab.com/gitlab-org/omnibus-gitlab/issues/2948)
+- See also: [only TLSv1.2 should be supported](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/2948)
 
 ### How can the data be classified into categories according to its sensitivity?
 
@@ -72,7 +72,7 @@ from [owasp.org](https://owasp.org/).
 
 - Nothing Geo-specific. Any user where `admin: true` is set in the database is
   considered an admin with super-user privileges.
-- See also: [more granular access control](https://gitlab.com/gitlab-org/gitlab-foss/issues/32730)
+- See also: [more granular access control](https://gitlab.com/gitlab-org/gitlab/-/issues/18242)
   (not Geo-specific).
 - Much of Geo’s integration (database replication, for instance) must be
   configured with the application, typically by system administrators.

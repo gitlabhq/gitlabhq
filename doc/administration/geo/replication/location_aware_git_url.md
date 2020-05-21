@@ -15,7 +15,7 @@ NOTE: **Note**
 You can also use a load balancer to distribute web UI or API traffic to
 [multiple Geo **secondary** nodes](../../../user/admin_area/geo_nodes.md#multiple-secondary-nodes-behind-a-load-balancer).
 Importantly, the **primary** node cannot yet be included. See the feature request
-[Support putting the **primary** behind a Geo node load balancer](https://gitlab.com/gitlab-org/gitlab/issues/10888).
+[Support putting the **primary** behind a Geo node load balancer](https://gitlab.com/gitlab-org/gitlab/-/issues/10888).
 
 ## Prerequisites
 

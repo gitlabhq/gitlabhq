@@ -1,7 +1,7 @@
 # GitLab self monitoring project
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/32351) in GitLab 12.7, behind a disabled feature flag (`self_monitoring_project`).
-> - The feature flag was removed and the Self Monitoring Project was [made generally available](https://gitlab.com/gitlab-org/gitlab/issues/198511) in GitLab 12.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32351) in GitLab 12.7, behind a disabled feature flag (`self_monitoring_project`).
+> - The feature flag was removed and the Self Monitoring Project was [made generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/198511) in GitLab 12.8.
 
 GitLab has been adding the ability for administrators to see insights into the health of
 their GitLab instance. In order to surface this experience in a native way, similar to how
@@ -69,7 +69,7 @@ You can add custom metrics in the self monitoring project by:
 
 ### Getting error message in logs: `Could not create instance administrators group. Errors: ["You don’t have permission to create groups."]`
 
-There is [a bug](https://gitlab.com/gitlab-org/gitlab/issues/208676) which causes
+There is [a bug](https://gitlab.com/gitlab-org/gitlab/-/issues/208676) which causes
 project creation to fail with the following error (which appears in the log file)
 when the first admin user is an
 [external user](../../../user/permissions.md#external-users-core-only):

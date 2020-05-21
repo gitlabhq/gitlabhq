@@ -1,6 +1,6 @@
 # Project import/export administration **(CORE ONLY)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/3050) in GitLab 8.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/3050) in GitLab 8.9.
 > - From GitLab 11.3, import/export can use object storage automatically.
 
 GitLab provides Rake tasks relating to project import and export. For more information, see:

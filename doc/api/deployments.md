@@ -364,7 +364,7 @@ Example of a response:
 
 ## List of merge requests associated with a deployment
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/35739) in GitLab 12.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35739) in GitLab 12.7.
 
 This API retrieves the list of merge requests shipped with a given deployment:
 

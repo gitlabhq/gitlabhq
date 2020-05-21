@@ -1,4 +1,6 @@
 ---
+# Error: gitlab.British
+#
 # Checks for use of some of the top misused terms at GitLab.
 #
 # For a list of all options, see https://errata-ai.github.io/vale/styles/
