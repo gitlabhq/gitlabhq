@@ -13,7 +13,7 @@ describe Gitlab::SidekiqMiddleware do
 
       def perform(_arg)
         Gitlab::SafeRequestStore['gitaly_call_actual'] = 1
-        Gitlab::GitalyClient.query_time = 5
+        Gitlab::SafeRequestStore[:gitaly_query_time] = 5
       end
     end
   end

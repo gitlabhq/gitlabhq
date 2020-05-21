@@ -7,10 +7,10 @@ describe Gitlab::RuggedInstrumentation, :request_store do
 
   describe '.query_time' do
     it 'increments query times' do
-      subject.query_time += 0.451
-      subject.query_time += 0.322
+      subject.add_query_time(0.4510004)
+      subject.add_query_time(0.3220004)
 
-      expect(subject.query_time).to be_within(0.001).of(0.773)
+      expect(subject.query_time).to eq(0.773001)
       expect(subject.query_time_ms).to eq(773.0)
     end
   end

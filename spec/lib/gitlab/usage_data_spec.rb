@@ -57,6 +57,8 @@ describe Gitlab::UsageData, :aggregate_failures do
         expect(count_data[:projects_with_error_tracking_enabled]).to eq(1)
         expect(count_data[:projects_with_alerts_service_enabled]).to eq(1)
         expect(count_data[:projects_with_prometheus_alerts]).to eq(2)
+        expect(count_data[:projects_with_terraform_reports]).to eq(2)
+        expect(count_data[:terraform_reports]).to eq(3)
         expect(count_data[:issues_created_from_gitlab_error_tracking_ui]).to eq(1)
         expect(count_data[:issues_with_associated_zoom_link]).to eq(2)
         expect(count_data[:issues_using_zoom_quick_actions]).to eq(3)

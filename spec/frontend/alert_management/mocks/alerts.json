@@ -4,6 +4,7 @@
       "title": "SyntaxError: Invalid or unexpected token",
       "severity": "CRITICAL",
       "eventCount": 7,
+      "createdAt": "2020-04-17T23:18:14.996Z",
       "startedAt": "2020-04-17T23:18:14.996Z",
       "endedAt": "2020-04-17T23:18:14.996Z",
       "status": "TRIGGERED"

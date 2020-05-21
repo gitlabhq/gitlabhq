@@ -371,10 +371,8 @@ RSpec/LeakyConstantDeclaration:
     - 'spec/models/concerns/bulk_insertable_associations_spec.rb'
     - 'spec/models/concerns/triggerable_hooks_spec.rb'
     - 'spec/models/repository_spec.rb'
-    - 'spec/serializers/commit_entity_spec.rb'
     - 'spec/services/clusters/applications/check_installation_progress_service_spec.rb'
     - 'spec/services/clusters/applications/check_uninstall_progress_service_spec.rb'
-    - 'spec/support/shared_contexts/spam_constants.rb'
     - 'spec/support/shared_examples/quick_actions/issuable/issuable_quick_actions_shared_examples.rb'
     - 'spec/support_specs/matchers/exceed_query_limit_helpers_spec.rb'
 

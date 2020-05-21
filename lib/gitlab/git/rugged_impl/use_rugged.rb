@@ -25,7 +25,7 @@ module Gitlab
 
             if Gitlab::RuggedInstrumentation.active?
               Gitlab::RuggedInstrumentation.increment_query_count
-              Gitlab::RuggedInstrumentation.query_time += duration
+              Gitlab::RuggedInstrumentation.add_query_time(duration)
 
               Gitlab::RuggedInstrumentation.add_call_details(
                 feature: method_name,

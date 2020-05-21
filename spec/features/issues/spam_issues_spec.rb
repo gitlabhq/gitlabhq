@@ -164,6 +164,8 @@ describe 'New issue', :js do
   end
 
   context 'when the SpamVerdictService allows' do
+    include_context 'includes Spam constants'
+
     before do
       allow_next_instance_of(Spam::SpamVerdictService) do |verdict_service|
         allow(verdict_service).to receive(:execute).and_return(ALLOW)

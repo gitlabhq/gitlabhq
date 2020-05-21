@@ -46,8 +46,8 @@ module Gitlab
       end
 
       def self.add_duration(duration)
-        total_time = query_time + duration
-        ::RequestStore[REDIS_CALL_DURATION] = total_time
+        ::RequestStore[REDIS_CALL_DURATION] ||= 0
+        ::RequestStore[REDIS_CALL_DURATION] += duration
       end
 
       def self.add_call_details(duration, args)

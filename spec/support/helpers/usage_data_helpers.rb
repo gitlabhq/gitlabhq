@@ -117,12 +117,14 @@ module UsageDataHelpers
       projects_with_expiration_policy_enabled_with_cadence_set_to_14d
       projects_with_expiration_policy_enabled_with_cadence_set_to_1month
       projects_with_expiration_policy_enabled_with_cadence_set_to_3month
+      projects_with_terraform_reports
       pages_domains
       protected_branches
       releases
       remote_mirrors
       snippets
       suggestions
+      terraform_reports
       todos
       uploads
       web_hooks

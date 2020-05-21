@@ -20,6 +20,8 @@ import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { ALERTS_SEVERITY_LABELS } from '../constants';
 import updateAlertStatus from '../graphql/mutations/update_alert_status.graphql';
+import createIssueQuery from '../graphql/mutations/create_issue_from_alert.graphql';
+import { visitUrl, joinPaths } from '~/lib/utils/url_utility';
 
 export default {
   statuses: {
@@ -60,7 +62,7 @@ export default {
       type: String,
       required: true,
     },
-    newIssuePath: {
+    projectIssuesPath: {
       type: String,
       required: true,
     },
@@ -85,7 +87,13 @@ export default {
     },
   },
   data() {
-    return { alert: null, errored: false, isErrorDismissed: false };
+    return {
+      alert: null,
+      errored: false,
+      isErrorDismissed: false,
+      createIssueError: '',
+      issueCreationInProgress: false,
+    };
   },
   computed: {
     loading() {
@@ -122,6 +130,33 @@ export default {
           );
         });
     },
+    createIssue() {
+      this.issueCreationInProgress = true;
+
+      this.$apollo
+        .mutate({
+          mutation: createIssueQuery,
+          variables: {
+            iid: this.alert.iid,
+            projectPath: this.projectPath,
+          },
+        })
+        .then(({ data: { createAlertIssue: { errors, issue } } }) => {
+          if (errors?.length) {
+            [this.createIssueError] = errors;
+            this.issueCreationInProgress = false;
+          } else if (issue) {
+            visitUrl(this.issuePath(issue.iid));
+          }
+        })
+        .catch(error => {
+          this.createIssueError = error;
+          this.issueCreationInProgress = false;
+        });
+    },
+    issuePath(issueId) {
+      return joinPaths(this.projectIssuesPath, issueId);
+    },
   },
 };
 </script>
@@ -129,6 +164,14 @@ export default {
   <div>
     <gl-alert v-if="showErrorMsg" variant="danger" @dismiss="dismissError">
       {{ $options.i18n.errorMsg }}
+    </gl-alert>
+    <gl-alert
+      v-if="createIssueError"
+      variant="danger"
+      data-testid="issueCreationError"
+      @dismiss="createIssueError = null"
+    >
+      {{ createIssueError }}
     </gl-alert>
     <div v-if="loading"><gl-loading-icon size="lg" class="gl-mt-5" /></div>
     <div v-if="alert" class="alert-management-details gl-relative">
@@ -158,16 +201,29 @@ export default {
             <template #tool>{{ alert.monitoringTool }}</template>
           </gl-sprintf>
         </div>
-        <gl-button
-          v-if="glFeatures.createIssueFromAlertEnabled"
-          class="gl-mt-3 mt-sm-0 align-self-center align-self-sm-baseline alert-details-create-issue-button"
-          data-testid="createIssueBtn"
-          :href="newIssuePath"
-          category="primary"
-          variant="success"
-        >
-          {{ s__('AlertManagement|Create issue') }}
-        </gl-button>
+        <div v-if="glFeatures.alertManagementCreateAlertIssue">
+          <gl-button
+            v-if="alert.issueIid"
+            class="gl-mt-3 mt-sm-0 align-self-center align-self-sm-baseline alert-details-issue-button"
+            data-testid="viewIssueBtn"
+            :href="issuePath(alert.issueIid)"
+            category="primary"
+            variant="success"
+          >
+            {{ s__('AlertManagement|View issue') }}
+          </gl-button>
+          <gl-button
+            v-else
+            class="gl-mt-3 mt-sm-0 align-self-center align-self-sm-baseline alert-details-issue-button"
+            data-testid="createIssueBtn"
+            :loading="issueCreationInProgress"
+            category="primary"
+            variant="success"
+            @click="createIssue()"
+          >
+            {{ s__('AlertManagement|Create issue') }}
+          </gl-button>
+        </div>
       </div>
       <div
         v-if="alert"

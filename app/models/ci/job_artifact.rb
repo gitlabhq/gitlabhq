@@ -5,6 +5,7 @@ module Ci
     include AfterCommitQueue
     include ObjectStorage::BackgroundMove
     include UpdateProjectStatistics
+    include UsageStatistics
     include Sortable
     extend Gitlab::Ci::Model
 

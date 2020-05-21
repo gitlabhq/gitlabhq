@@ -40,12 +40,6 @@ module Peek
 
         super.merge(request: pretty_request || {})
       end
-
-      def setup_subscribers
-        subscribe 'start_processing.action_controller' do
-          ::Gitlab::GitalyClient.query_time = 0
-        end
-      end
     end
   end
 end

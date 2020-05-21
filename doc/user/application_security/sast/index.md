@@ -313,19 +313,20 @@ Some analyzers can be customized with environment variables.
 
 | Environment variable        | Analyzer | Description |
 |-----------------------------|----------|-------------|
-| `SCAN_KUBERNETES_MANIFESTS` | Kubesec  | Set to `"true"` to scan Kubernetes manifests. |
-| `ANT_HOME`                  | SpotBugs | The `ANT_HOME` environment variable. |
-| `ANT_PATH`                  | SpotBugs | Path to the `ant` executable. |
-| `GRADLE_PATH`               | SpotBugs | Path to the `gradle` executable. |
-| `JAVA_OPTS`                 | SpotBugs | Additional arguments for the `java` executable. |
-| `JAVA_PATH`                 | SpotBugs | Path to the `java` executable. |
-| `SAST_JAVA_VERSION`         | SpotBugs | Which Java version to use. Supported versions are `8` and `11`. Defaults to `8`. |
-| `MAVEN_CLI_OPTS`            | SpotBugs | Additional arguments for the `mvn` or `mvnw` executable. |
-| `MAVEN_PATH`                | SpotBugs | Path to the `mvn` executable. |
-| `MAVEN_REPO_PATH`           | SpotBugs | Path to the Maven local repository (shortcut for the `maven.repo.local` property). |
-| `SBT_PATH`                  | SpotBugs | Path to the `sbt` executable. |
-| `FAIL_NEVER`                | SpotBugs | Set to `1` to ignore compilation failure. |
-| `SAST_GOSEC_CONFIG`         | Gosec    | Path to configuration for Gosec (optional). |
+| `SCAN_KUBERNETES_MANIFESTS`           | Kubesec              | Set to `"true"` to scan Kubernetes manifests. |
+| `ANT_HOME`                            | SpotBugs             | The `ANT_HOME` environment variable. |
+| `ANT_PATH`                            | SpotBugs             | Path to the `ant` executable. |
+| `GRADLE_PATH`                         | SpotBugs             | Path to the `gradle` executable. |
+| `JAVA_OPTS`                           | SpotBugs             | Additional arguments for the `java` executable. |
+| `JAVA_PATH`                           | SpotBugs             | Path to the `java` executable. |
+| `SAST_JAVA_VERSION`                   | SpotBugs             | Which Java version to use. Supported versions are `8` and `11`. Defaults to `8`. |
+| `MAVEN_CLI_OPTS`                      | SpotBugs             | Additional arguments for the `mvn` or `mvnw` executable. |
+| `MAVEN_PATH`                          | SpotBugs             | Path to the `mvn` executable. |
+| `MAVEN_REPO_PATH`                     | SpotBugs             | Path to the Maven local repository (shortcut for the `maven.repo.local` property). |
+| `SBT_PATH`                            | SpotBugs             | Path to the `sbt` executable. |
+| `FAIL_NEVER`                          | SpotBugs             | Set to `1` to ignore compilation failure. |
+| `SAST_GOSEC_CONFIG`                   | Gosec                | Path to configuration for Gosec (optional). |
+| `PHPCS_SECURITY_AUDIT_PHP_EXTENSIONS` | phpcs-security-audit | Comma separated list of additional PHP Extensions. |
 
 #### Custom environment variables
 

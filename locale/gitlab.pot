@@ -219,6 +219,16 @@ msgid_plural "%d unresolved threads"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d url scanned"
+msgid_plural "%d urls scanned"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d vulnerability"
+msgid_plural "%d vulnerabilities"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d vulnerability dismissed"
 msgid_plural "%d vulnerabilities dismissed"
 msgstr[0] ""
@@ -1845,6 +1855,9 @@ msgid "AlertManagement|Triggered"
 msgstr ""
 
 msgid "AlertManagement|Unknown"
+msgstr ""
+
+msgid "AlertManagement|View issue"
 msgstr ""
 
 msgid "AlertService|%{linkStart}Learn more%{linkEnd} about configuring this endpoint to receive alerts."

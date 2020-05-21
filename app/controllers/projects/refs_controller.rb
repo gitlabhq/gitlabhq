@@ -53,7 +53,7 @@ class Projects::RefsController < Projects::ApplicationController
       format.json do
         logs, next_offset = tree_summary.fetch_logs
 
-        response.headers["More-Logs-Offset"] = next_offset if next_offset
+        response.headers["More-Logs-Offset"] = next_offset.to_s if next_offset
 
         render json: logs
       end

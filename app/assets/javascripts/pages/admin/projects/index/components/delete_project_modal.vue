@@ -92,7 +92,7 @@ export default {
     @submit="onSubmit"
     @cancel="onCancel"
   >
-    <template slot="body" slot-scope="props">
+    <template #body="props">
       <p v-html="props.text"></p>
       <p v-html="confirmationTextLabel"></p>
       <form ref="form" :action="deleteProjectUrl" method="post">
