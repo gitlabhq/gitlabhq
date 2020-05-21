@@ -4,6 +4,8 @@ class ImportExportUpload < ApplicationRecord
   include WithUploads
   include ObjectStorage::BackgroundMove
 
+  MAXIMUM_IMPORT_FILE_SIZE = 50.megabytes.freeze
+
   belongs_to :project
   belongs_to :group
 

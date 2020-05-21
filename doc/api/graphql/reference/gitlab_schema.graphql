@@ -5421,6 +5421,16 @@ type JiraImport {
   createdAt: Time
 
   """
+  Count of issues that failed to import
+  """
+  failedToImportCount: Int!
+
+  """
+  Count of issues that were successfully imported
+  """
+  importedIssuesCount: Int!
+
+  """
   Project key for the imported Jira project
   """
   jiraProjectKey: String!
@@ -5434,6 +5444,11 @@ type JiraImport {
   User that started the Jira import
   """
   scheduledBy: User
+
+  """
+  Total count of issues that were attempted to import
+  """
+  totalIssueCount: Int!
 }
 
 """

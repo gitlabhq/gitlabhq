@@ -100,6 +100,8 @@ module Gitlab
         redis_url = config.delete(:url)
         redis_uri = URI.parse(redis_url)
 
+        config[:driver] ||= ::Gitlab::Instrumentation::RedisDriver
+
         if redis_uri.scheme == 'unix'
           # Redis::Store does not handle Unix sockets well, so let's do it for them
           config[:path] = redis_uri.path

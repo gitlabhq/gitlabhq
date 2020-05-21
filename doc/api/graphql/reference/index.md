@@ -801,9 +801,12 @@ Represents an iteration object.
 | Name  | Type  | Description |
 | ---   |  ---- | ----------  |
 | `createdAt` | Time | Timestamp of when the Jira import was created |
+| `failedToImportCount` | Int! | Count of issues that failed to import |
+| `importedIssuesCount` | Int! | Count of issues that were successfully imported |
 | `jiraProjectKey` | String! | Project key for the imported Jira project |
 | `scheduledAt` | Time | Timestamp of when the Jira import was scheduled |
 | `scheduledBy` | User | User that started the Jira import |
+| `totalIssueCount` | Int! | Total count of issues that were attempted to import |
 
 ## JiraImportStartPayload
 

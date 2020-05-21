@@ -9,7 +9,7 @@
       = _('Expand')
     %p
       = _('Action to take when receiving an alert.')
-      = link_to help_page_path('user/project/integrations/prometheus', anchor: 'taking-action-on-an-alert-ultimate') do
+      = link_to help_page_path('user/project/integrations/prometheus', anchor: 'taking-action-on-incidents-ultimate') do
         = _('More information')
   .settings-content
     = form_for @project, url: project_settings_operations_path(@project), method: :patch do |f|

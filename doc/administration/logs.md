@@ -46,6 +46,8 @@ Line breaks have been added to this example for legibility:
   "gitaly_duration_s":0.16,
   "redis_calls":115,
   "redis_duration_s":0.13,
+  "redis_read_bytes":1507378,
+  "redis_write_bytes":2920,
   "correlation_id":"O1SdybnnIq7",
   "cpu_s":17.50,
   "db_duration_s":0.08,
@@ -56,7 +58,7 @@ Line breaks have been added to this example for legibility:
 
 This example was a GET request for a specific
 issue. Each line also contains performance data, with times in
-milliseconds:
+seconds:
 
 1. `duration_s`: total time taken to retrieve the request
 1. `queue_duration_s`: total time that the request was queued inside GitLab Workhorse
@@ -67,6 +69,8 @@ milliseconds:
 1. `gitaly_duration_s`: total time taken by Gitaly calls
 1. `gitaly_calls`: total number of calls made to Gitaly
 1. `redis_calls`: total number of calls made to Redis
+1. `redis_read_bytes`: total bytes read from Redis
+1. `redis_write_bytes`: total bytes written to Redis
 
 User clone and fetch activity using HTTP transport appears in this log as `action: git_upload_pack`.
 

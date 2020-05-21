@@ -1,13 +1,10 @@
 # frozen_string_literal: true
 
 class Import::GitlabProjectsController < Import::BaseController
-  include WorkhorseRequest
+  include WorkhorseImportExportUpload
 
   before_action :whitelist_query_limiting, only: [:create]
   before_action :verify_gitlab_project_import_enabled
-
-  skip_before_action :verify_authenticity_token, only: [:authorize]
-  before_action :verify_workhorse_api!, only: [:authorize]
 
   def new
     @namespace = Namespace.find(project_params[:namespace_id])
@@ -17,7 +14,7 @@ class Import::GitlabProjectsController < Import::BaseController
   end
 
   def create
-    unless file_is_valid?
+    unless file_is_valid?(project_params[:file])
       return redirect_back_or_default(options: { alert: _("You need to upload a GitLab project export archive (ending in .gz).") })
     end
 
@@ -33,27 +30,7 @@ class Import::GitlabProjectsController < Import::BaseController
     end
   end
 
-  def authorize
-    set_workhorse_internal_api_content_type
-
-    authorized = ImportExportUploader.workhorse_authorize(
-      has_length: false,
-      maximum_size: Gitlab::CurrentSettings.max_attachment_size.megabytes.to_i)
-
-    render json: authorized
-  rescue SocketError
-    render json: _("Error uploading file"), status: :internal_server_error
-  end
-
   private
-
-  def file_is_valid?
-    return false unless project_params[:file].is_a?(::UploadedFile)
-
-    filename = project_params[:file].original_filename
-
-    ImportExportUploader::EXTENSION_WHITELIST.include?(File.extname(filename).delete('.'))
-  end
 
   def verify_gitlab_project_import_enabled
     render_404 unless gitlab_project_import_enabled?

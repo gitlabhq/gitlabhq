@@ -5,7 +5,7 @@ require 'spec_helper'
 describe TodosHelper do
   let_it_be(:user) { create(:user) }
   let_it_be(:author) { create(:user) }
-  let_it_be(:issue) { create(:issue) }
+  let_it_be(:issue) { create(:issue, title: 'Issue 1') }
   let_it_be(:design) { create(:design, issue: issue) }
   let_it_be(:note) do
     create(:note,
@@ -64,6 +64,41 @@ describe TodosHelper do
         expected = "<a href=\"#{path}\">design #{design.to_reference}</a>"
 
         expect(link).to eq(expected)
+      end
+    end
+  end
+
+  describe '#todo_target_title' do
+    context 'when the target does not exist' do
+      let(:todo) { double('Todo', target: nil) }
+
+      it 'returns an empty string' do
+        title = helper.todo_target_title(todo)
+        expect(title).to eq("")
+      end
+    end
+
+    context 'when given a design todo' do
+      let(:todo) { design_todo }
+
+      it 'returns an empty string' do
+        title = helper.todo_target_title(todo)
+        expect(title).to eq("")
+      end
+    end
+
+    context 'when given a non-design todo' do
+      let(:todo) do
+        create(:todo, :assigned,
+        user: user,
+        project: issue.project,
+        target: issue,
+        author: author)
+      end
+
+      it 'returns the title' do
+        title = helper.todo_target_title(todo)
+        expect(title).to eq("\"Issue 1\"")
       end
     end
   end

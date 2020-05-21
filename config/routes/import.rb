@@ -63,6 +63,10 @@ namespace :import do
     post :authorize
   end
 
+  resource :gitlab_group, only: [:create] do
+    post :authorize
+  end
+
   resource :manifest, only: [:create, :new], controller: :manifest do
     get :status
     get :jobs

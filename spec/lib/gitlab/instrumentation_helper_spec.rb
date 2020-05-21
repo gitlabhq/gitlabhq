@@ -34,12 +34,14 @@ describe Gitlab::InstrumentationHelper do
 
     context 'when Redis calls are made' do
       it 'adds Redis data and omits Gitaly data' do
-        Gitlab::Redis::Cache.with { |redis| redis.get('test-instrumentation') }
+        Gitlab::Redis::Cache.with { |redis| redis.set('test-instrumentation', 123) }
 
         subject
 
         expect(payload[:redis_calls]).to eq(1)
         expect(payload[:redis_duration_s]).to be >= 0
+        expect(payload[:redis_read_bytes]).to be >= 0
+        expect(payload[:redis_write_bytes]).to be >= 0
         expect(payload[:gitaly_calls]).to be_nil
         expect(payload[:gitaly_duration]).to be_nil
       end
